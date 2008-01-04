@@ -1,0 +1,666 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 42;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		57219A460B8377600033F495 /* Common.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 576ED8350AB223D2007F2844 /* Common.cpp */; };
+		57219A560B8378BA0033F495 /* Adapter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 57219A550B8378BA0033F495 /* Adapter.cpp */; };
+		57219D4B0B8A2D6A0033F495 /* AruspixHMM.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 57219D490B8A2D6A0033F495 /* AruspixHMM.cpp */; };
+		576ED8410AB223D8007F2844 /* Common.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 576ED8350AB223D2007F2844 /* Common.cpp */; };
+		576ED8420AB223D8007F2844 /* Init.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 576ED8370AB223D2007F2844 /* Init.cpp */; };
+		57A0BC790ABF1901001825D5 /* Common.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 576ED8350AB223D2007F2844 /* Common.cpp */; };
+		57A0BC820ABF199C001825D5 /* Trainer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 57A0BC810ABF199C001825D5 /* Trainer.cpp */; };
+		A51FEC270A02C1C900ACE377 /* ClassMapper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A51FEC140A02C1C900ACE377 /* ClassMapper.cpp */; };
+		A51FEC280A02C1C900ACE377 /* ClassModel.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A51FEC160A02C1C900ACE377 /* ClassModel.cpp */; };
+		A51FEC290A02C1C900ACE377 /* Decoder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A51FEC180A02C1C900ACE377 /* Decoder.cpp */; };
+		A51FEC2C0A02C1C900ACE377 /* MusicModel.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A51FEC1D0A02C1C900ACE377 /* MusicModel.cpp */; };
+		A51FEC2E0A02C1C900ACE377 /* RecBeamSearchDecoder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A51FEC200A02C1C900ACE377 /* RecBeamSearchDecoder.cpp */; };
+		A51FEC2F0A02C1C900ACE377 /* RecDecoderLine.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A51FEC220A02C1C900ACE377 /* RecDecoderLine.cpp */; };
+		A51FEC300A02C1C900ACE377 /* RecDecoderPage.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A51FEC240A02C1C900ACE377 /* RecDecoderPage.cpp */; };
+		A59120080A1278F100D64611 /* LMNGramBuilder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A59120030A1278F100D64611 /* LMNGramBuilder.cpp */; };
+		A59120090A1278F100D64611 /* LMNGramEntry.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A59120050A1278F100D64611 /* LMNGramEntry.cpp */; };
+		A591200A0A1278F100D64611 /* NGram.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A59120070A1278F100D64611 /* NGram.cpp */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		57219A4C0B8377610033F495 /* adapt */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = adapt; sourceTree = BUILT_PRODUCTS_DIR; };
+		57219A550B8378BA0033F495 /* Adapter.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = Adapter.cpp; path = ../src/torch/Adapter.cpp; sourceTree = SOURCE_ROOT; };
+		57219D490B8A2D6A0033F495 /* AruspixHMM.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = AruspixHMM.cpp; path = ../src/torch/AruspixHMM.cpp; sourceTree = SOURCE_ROOT; };
+		57219D4A0B8A2D6A0033F495 /* AruspixHMM.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = AruspixHMM.h; path = ../src/torch/AruspixHMM.h; sourceTree = SOURCE_ROOT; };
+		576ED8350AB223D2007F2844 /* Common.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = Common.cpp; path = ../src/torch/Common.cpp; sourceTree = SOURCE_ROOT; };
+		576ED8360AB223D2007F2844 /* Common.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = Common.h; path = ../src/torch/Common.h; sourceTree = SOURCE_ROOT; };
+		576ED8370AB223D2007F2844 /* Init.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = Init.cpp; path = ../src/torch/Init.cpp; sourceTree = SOURCE_ROOT; };
+		576ED8480AB223D8007F2844 /* init */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = init; sourceTree = BUILT_PRODUCTS_DIR; };
+		57A0BC7F0ABF1901001825D5 /* trainer */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = trainer; sourceTree = BUILT_PRODUCTS_DIR; };
+		57A0BC810ABF199C001825D5 /* Trainer.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = Trainer.cpp; path = ../src/torch/Trainer.cpp; sourceTree = SOURCE_ROOT; };
+		A51FEC000A02C15800ACE377 /* decoder */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = decoder; sourceTree = BUILT_PRODUCTS_DIR; };
+		A51FEC140A02C1C900ACE377 /* ClassMapper.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = ClassMapper.cpp; sourceTree = "<group>"; };
+		A51FEC150A02C1C900ACE377 /* ClassMapper.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = ClassMapper.h; sourceTree = "<group>"; };
+		A51FEC160A02C1C900ACE377 /* ClassModel.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = ClassModel.cpp; sourceTree = "<group>"; };
+		A51FEC170A02C1C900ACE377 /* ClassModel.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = ClassModel.h; sourceTree = "<group>"; };
+		A51FEC180A02C1C900ACE377 /* Decoder.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = Decoder.cpp; sourceTree = "<group>"; };
+		A51FEC1D0A02C1C900ACE377 /* MusicModel.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = MusicModel.cpp; sourceTree = "<group>"; };
+		A51FEC1E0A02C1C900ACE377 /* MusicModel.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = MusicModel.h; sourceTree = "<group>"; };
+		A51FEC200A02C1C900ACE377 /* RecBeamSearchDecoder.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = RecBeamSearchDecoder.cpp; sourceTree = "<group>"; };
+		A51FEC210A02C1C900ACE377 /* RecBeamSearchDecoder.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = RecBeamSearchDecoder.h; sourceTree = "<group>"; };
+		A51FEC220A02C1C900ACE377 /* RecDecoderLine.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = RecDecoderLine.cpp; sourceTree = "<group>"; };
+		A51FEC230A02C1C900ACE377 /* RecDecoderLine.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = RecDecoderLine.h; sourceTree = "<group>"; };
+		A51FEC240A02C1C900ACE377 /* RecDecoderPage.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = RecDecoderPage.cpp; sourceTree = "<group>"; };
+		A51FEC250A02C1C900ACE377 /* RecDecoderPage.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = RecDecoderPage.h; sourceTree = "<group>"; };
+		A59120010A1278D400D64611 /* ngram */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = ngram; sourceTree = BUILT_PRODUCTS_DIR; };
+		A59120030A1278F100D64611 /* LMNGramBuilder.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = LMNGramBuilder.cpp; path = ../src/torch/LMNGramBuilder.cpp; sourceTree = SOURCE_ROOT; };
+		A59120040A1278F100D64611 /* LMNGramBuilder.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = LMNGramBuilder.h; path = ../src/torch/LMNGramBuilder.h; sourceTree = SOURCE_ROOT; };
+		A59120050A1278F100D64611 /* LMNGramEntry.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = LMNGramEntry.cpp; path = ../src/torch/LMNGramEntry.cpp; sourceTree = SOURCE_ROOT; };
+		A59120060A1278F100D64611 /* LMNGramEntry.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = LMNGramEntry.h; path = ../src/torch/LMNGramEntry.h; sourceTree = SOURCE_ROOT; };
+		A59120070A1278F100D64611 /* NGram.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = NGram.cpp; path = ../src/torch/NGram.cpp; sourceTree = SOURCE_ROOT; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		57219A480B8377600033F495 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		576ED8440AB223D8007F2844 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		57A0BC7B0ABF1901001825D5 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A51FEBFE0A02C15800ACE377 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A5911FFF0A1278D400D64611 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		57219A510B8378500033F495 /* adapt */ = {
+			isa = PBXGroup;
+			children = (
+				57219D490B8A2D6A0033F495 /* AruspixHMM.cpp */,
+				57219A550B8378BA0033F495 /* Adapter.cpp */,
+				57219D4A0B8A2D6A0033F495 /* AruspixHMM.h */,
+			);
+			name = adapt;
+			sourceTree = "<group>";
+		};
+		576ED8340AB223B8007F2844 /* train */ = {
+			isa = PBXGroup;
+			children = (
+				57A0BC810ABF199C001825D5 /* Trainer.cpp */,
+				576ED8350AB223D2007F2844 /* Common.cpp */,
+				576ED8360AB223D2007F2844 /* Common.h */,
+				576ED8370AB223D2007F2844 /* Init.cpp */,
+			);
+			name = train;
+			sourceTree = "<group>";
+		};
+		A51FEBE00A02C0F500ACE377 = {
+			isa = PBXGroup;
+			children = (
+				57219A510B8378500033F495 /* adapt */,
+				576ED8340AB223B8007F2844 /* train */,
+				A591200E0A12790700D64611 /* ngram */,
+				A51FEC120A02C1C900ACE377 /* decoder */,
+				A51FEC010A02C15800ACE377 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		A51FEC010A02C15800ACE377 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				A51FEC000A02C15800ACE377 /* decoder */,
+				A59120010A1278D400D64611 /* ngram */,
+				576ED8480AB223D8007F2844 /* init */,
+				57A0BC7F0ABF1901001825D5 /* trainer */,
+				57219A4C0B8377610033F495 /* adapt */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		A51FEC120A02C1C900ACE377 /* decoder */ = {
+			isa = PBXGroup;
+			children = (
+				A51FEC140A02C1C900ACE377 /* ClassMapper.cpp */,
+				A51FEC150A02C1C900ACE377 /* ClassMapper.h */,
+				A51FEC160A02C1C900ACE377 /* ClassModel.cpp */,
+				A51FEC170A02C1C900ACE377 /* ClassModel.h */,
+				A51FEC180A02C1C900ACE377 /* Decoder.cpp */,
+				A51FEC1D0A02C1C900ACE377 /* MusicModel.cpp */,
+				A51FEC1E0A02C1C900ACE377 /* MusicModel.h */,
+				A51FEC200A02C1C900ACE377 /* RecBeamSearchDecoder.cpp */,
+				A51FEC210A02C1C900ACE377 /* RecBeamSearchDecoder.h */,
+				A51FEC220A02C1C900ACE377 /* RecDecoderLine.cpp */,
+				A51FEC230A02C1C900ACE377 /* RecDecoderLine.h */,
+				A51FEC240A02C1C900ACE377 /* RecDecoderPage.cpp */,
+				A51FEC250A02C1C900ACE377 /* RecDecoderPage.h */,
+			);
+			name = decoder;
+			path = ../src/torch;
+			sourceTree = SOURCE_ROOT;
+		};
+		A591200E0A12790700D64611 /* ngram */ = {
+			isa = PBXGroup;
+			children = (
+				A59120030A1278F100D64611 /* LMNGramBuilder.cpp */,
+				A59120040A1278F100D64611 /* LMNGramBuilder.h */,
+				A59120050A1278F100D64611 /* LMNGramEntry.cpp */,
+				A59120060A1278F100D64611 /* LMNGramEntry.h */,
+				A59120070A1278F100D64611 /* NGram.cpp */,
+			);
+			name = ngram;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		57219A440B8377600033F495 /* adapt */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 57219A490B8377600033F495 /* Build configuration list for PBXNativeTarget "adapt" */;
+			buildPhases = (
+				57219A450B8377600033F495 /* Sources */,
+				57219A480B8377600033F495 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = adapt;
+			productName = ngram;
+			productReference = 57219A4C0B8377610033F495 /* adapt */;
+			productType = "com.apple.product-type.tool";
+		};
+		576ED83C0AB223D8007F2844 /* init */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 576ED8450AB223D8007F2844 /* Build configuration list for PBXNativeTarget "init" */;
+			buildPhases = (
+				576ED83D0AB223D8007F2844 /* Sources */,
+				576ED8440AB223D8007F2844 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = init;
+			productName = ngram;
+			productReference = 576ED8480AB223D8007F2844 /* init */;
+			productType = "com.apple.product-type.tool";
+		};
+		57A0BC770ABF1901001825D5 /* trainer */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 57A0BC7C0ABF1901001825D5 /* Build configuration list for PBXNativeTarget "trainer" */;
+			buildPhases = (
+				57A0BC780ABF1901001825D5 /* Sources */,
+				57A0BC7B0ABF1901001825D5 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = trainer;
+			productName = ngram;
+			productReference = 57A0BC7F0ABF1901001825D5 /* trainer */;
+			productType = "com.apple.product-type.tool";
+		};
+		A51FEBFF0A02C15800ACE377 /* decoder */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A51FEC030A02C15900ACE377 /* Build configuration list for PBXNativeTarget "decoder" */;
+			buildPhases = (
+				A51FEBFD0A02C15800ACE377 /* Sources */,
+				A51FEBFE0A02C15800ACE377 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = decoder;
+			productName = decoder;
+			productReference = A51FEC000A02C15800ACE377 /* decoder */;
+			productType = "com.apple.product-type.tool";
+		};
+		A59120000A1278D400D64611 /* ngram */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A591200B0A1278F100D64611 /* Build configuration list for PBXNativeTarget "ngram" */;
+			buildPhases = (
+				A5911FFE0A1278D400D64611 /* Sources */,
+				A5911FFF0A1278D400D64611 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = ngram;
+			productName = ngram;
+			productReference = A59120010A1278D400D64611 /* ngram */;
+			productType = "com.apple.product-type.tool";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		A51FEBE20A02C0F500ACE377 /* Project object */ = {
+			isa = PBXProject;
+			buildConfigurationList = A51FEBE30A02C0F500ACE377 /* Build configuration list for PBXProject "torch" */;
+			hasScannedForEncodings = 0;
+			mainGroup = A51FEBE00A02C0F500ACE377;
+			productRefGroup = A51FEC010A02C15800ACE377 /* Products */;
+			projectDirPath = "";
+			targets = (
+				A51FEBFF0A02C15800ACE377 /* decoder */,
+				A59120000A1278D400D64611 /* ngram */,
+				576ED83C0AB223D8007F2844 /* init */,
+				57A0BC770ABF1901001825D5 /* trainer */,
+				57219A440B8377600033F495 /* adapt */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		57219A450B8377600033F495 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				57219A460B8377600033F495 /* Common.cpp in Sources */,
+				57219A560B8378BA0033F495 /* Adapter.cpp in Sources */,
+				57219D4B0B8A2D6A0033F495 /* AruspixHMM.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		576ED83D0AB223D8007F2844 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				576ED8410AB223D8007F2844 /* Common.cpp in Sources */,
+				576ED8420AB223D8007F2844 /* Init.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		57A0BC780ABF1901001825D5 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				57A0BC790ABF1901001825D5 /* Common.cpp in Sources */,
+				57A0BC820ABF199C001825D5 /* Trainer.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A51FEBFD0A02C15800ACE377 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A51FEC270A02C1C900ACE377 /* ClassMapper.cpp in Sources */,
+				A51FEC280A02C1C900ACE377 /* ClassModel.cpp in Sources */,
+				A51FEC290A02C1C900ACE377 /* Decoder.cpp in Sources */,
+				A51FEC2C0A02C1C900ACE377 /* MusicModel.cpp in Sources */,
+				A51FEC2E0A02C1C900ACE377 /* RecBeamSearchDecoder.cpp in Sources */,
+				A51FEC2F0A02C1C900ACE377 /* RecDecoderLine.cpp in Sources */,
+				A51FEC300A02C1C900ACE377 /* RecDecoderPage.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A5911FFE0A1278D400D64611 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A59120080A1278F100D64611 /* LMNGramBuilder.cpp in Sources */,
+				A59120090A1278F100D64611 /* LMNGramEntry.cpp in Sources */,
+				A591200A0A1278F100D64611 /* NGram.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		57219A4A0B8377600033F495 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_MODEL_TUNING = G5;
+				HEADER_SEARCH_PATHS = "$(ARUSPIX_TORCH)/include";
+				INSTALL_PATH = "$(HOME)/bin";
+				LIBRARY_SEARCH_PATHS = "$(ARUSPIX_TORCH)/libs/Darwin_opt_float";
+				OPTIMIZATION_CFLAGS = "-O0";
+				OTHER_CFLAGS = "-D__AXDEBUG__";
+				OTHER_LDFLAGS = "-ltorch";
+				OTHER_REZFLAGS = "";
+				PREBINDING = NO;
+				PRODUCT_NAME = adaptd;
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = (
+					"-Wmost",
+					"-Wno-four-char-constants",
+					"-Wno-unknown-pragmas",
+				);
+			};
+			name = Debug;
+		};
+		57219A4B0B8377600033F495 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				GCC_MODEL_TUNING = G5;
+				HEADER_SEARCH_PATHS = "$(ARUSPIX_TORCH)/include";
+				INSTALL_PATH = "$(HOME)/bin";
+				LIBRARY_SEARCH_PATHS = "$(ARUSPIX_TORCH)/libs/Darwin_opt_float";
+				OPTIMIZATION_CFLAGS = "-O0";
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = "-ltorch";
+				OTHER_REZFLAGS = "";
+				PREBINDING = NO;
+				PRODUCT_NAME = adapt;
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = (
+					"-Wmost",
+					"-Wno-four-char-constants",
+					"-Wno-unknown-pragmas",
+				);
+			};
+			name = Release;
+		};
+		576ED8460AB223D8007F2844 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_MODEL_TUNING = G5;
+				HEADER_SEARCH_PATHS = "$(ARUSPIX_TORCH)/include";
+				INSTALL_PATH = "$(HOME)/bin";
+				LIBRARY_SEARCH_PATHS = "$(ARUSPIX_TORCH)/libs/Darwin_opt_float";
+				OPTIMIZATION_CFLAGS = "-O0";
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = "-ltorch";
+				OTHER_REZFLAGS = "";
+				PREBINDING = NO;
+				PRODUCT_NAME = initd;
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = (
+					"-Wmost",
+					"-Wno-four-char-constants",
+					"-Wno-unknown-pragmas",
+				);
+			};
+			name = Debug;
+		};
+		576ED8470AB223D8007F2844 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				GCC_MODEL_TUNING = G5;
+				HEADER_SEARCH_PATHS = "$(ARUSPIX_TORCH)/include";
+				INSTALL_PATH = "$(HOME)/bin";
+				LIBRARY_SEARCH_PATHS = "$(ARUSPIX_TORCH)/libs/Darwin_opt_float";
+				OPTIMIZATION_CFLAGS = "-O0";
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = "-ltorch";
+				OTHER_REZFLAGS = "";
+				PREBINDING = NO;
+				PRODUCT_NAME = init;
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = (
+					"-Wmost",
+					"-Wno-four-char-constants",
+					"-Wno-unknown-pragmas",
+				);
+			};
+			name = Release;
+		};
+		57A0BC7D0ABF1901001825D5 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_MODEL_TUNING = G5;
+				HEADER_SEARCH_PATHS = "$(ARUSPIX_TORCH)/include";
+				INSTALL_PATH = "$(HOME)/bin";
+				LIBRARY_SEARCH_PATHS = "$(ARUSPIX_TORCH)/libs/Darwin_opt_float";
+				OPTIMIZATION_CFLAGS = "-O0";
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = "-ltorch";
+				OTHER_REZFLAGS = "";
+				PREBINDING = NO;
+				PRODUCT_NAME = trainerd;
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = (
+					"-Wmost",
+					"-Wno-four-char-constants",
+					"-Wno-unknown-pragmas",
+				);
+				ZERO_LINK = NO;
+			};
+			name = Debug;
+		};
+		57A0BC7E0ABF1901001825D5 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				GCC_MODEL_TUNING = G5;
+				HEADER_SEARCH_PATHS = "$(ARUSPIX_TORCH)/include";
+				INSTALL_PATH = "$(HOME)/bin";
+				LIBRARY_SEARCH_PATHS = "$(ARUSPIX_TORCH)/libs/Darwin_opt_float";
+				OPTIMIZATION_CFLAGS = "-O0";
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = "-ltorch";
+				OTHER_REZFLAGS = "";
+				PREBINDING = NO;
+				PRODUCT_NAME = trainer;
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = (
+					"-Wmost",
+					"-Wno-four-char-constants",
+					"-Wno-unknown-pragmas",
+				);
+			};
+			name = Release;
+		};
+		A51FEBE40A02C0F500ACE377 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				OBJROOT = "$(ARUSPIX)/obj";
+				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
+				SYMROOT = "$(ARUSPIX)/bin";
+			};
+			name = Debug;
+		};
+		A51FEBE50A02C0F500ACE377 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = (
+					ppc,
+					i386,
+				);
+				COPY_PHASE_STRIP = YES;
+				OBJROOT = "$(ARUSPIX)/obj";
+				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
+				SYMROOT = "$(ARUSPIX)/bin";
+			};
+			name = Release;
+		};
+		A51FEC040A02C15900ACE377 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_MODEL_TUNING = G5;
+				HEADER_SEARCH_PATHS = "$(ARUSPIX_TORCH)/include";
+				INSTALL_PATH = "$(HOME)/bin";
+				LIBRARY_SEARCH_PATHS = "$(ARUSPIX_TORCH)/libs/Darwin_opt_float";
+				OBJROOT = "$(ARUSPIX)/obj";
+				OPTIMIZATION_CFLAGS = "-O0";
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = "-ltorch";
+				OTHER_REZFLAGS = "";
+				PREBINDING = NO;
+				PRODUCT_NAME = decoderd;
+				SECTORDER_FLAGS = "";
+				SYMROOT = "$(ARUSPIX)/bin";
+				WARNING_CFLAGS = (
+					"-Wmost",
+					"-Wno-four-char-constants",
+					"-Wno-unknown-pragmas",
+				);
+			};
+			name = Debug;
+		};
+		A51FEC050A02C15900ACE377 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				GCC_MODEL_TUNING = G5;
+				HEADER_SEARCH_PATHS = "$(ARUSPIX_TORCH)/include";
+				INSTALL_PATH = "$(HOME)/bin";
+				LIBRARY_SEARCH_PATHS = "$(ARUSPIX_TORCH)/libs/Darwin_opt_float";
+				OBJROOT = "$(ARUSPIX)/obj";
+				OPTIMIZATION_CFLAGS = "-O0";
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = "-ltorch";
+				OTHER_REZFLAGS = "";
+				PREBINDING = NO;
+				PRODUCT_NAME = decoder;
+				SECTORDER_FLAGS = "";
+				SYMROOT = "$(ARUSPIX)/bin";
+				WARNING_CFLAGS = (
+					"-Wmost",
+					"-Wno-four-char-constants",
+					"-Wno-unknown-pragmas",
+				);
+			};
+			name = Release;
+		};
+		A591200C0A1278F100D64611 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_MODEL_TUNING = G5;
+				HEADER_SEARCH_PATHS = "$(ARUSPIX_TORCH)/include";
+				INSTALL_PATH = "$(HOME)/bin";
+				LIBRARY_SEARCH_PATHS = "$(ARUSPIX_TORCH)/libs/Darwin_opt_float";
+				OPTIMIZATION_CFLAGS = "-O0";
+				OTHER_CFLAGS = "-DDEBUG";
+				OTHER_LDFLAGS = "-ltorch";
+				OTHER_REZFLAGS = "";
+				PREBINDING = NO;
+				PRODUCT_NAME = ngramd;
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = (
+					"-Wmost",
+					"-Wno-four-char-constants",
+					"-Wno-unknown-pragmas",
+				);
+			};
+			name = Debug;
+		};
+		A591200D0A1278F100D64611 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				GCC_MODEL_TUNING = G5;
+				HEADER_SEARCH_PATHS = "$(ARUSPIX_TORCH)/include";
+				INSTALL_PATH = "$(HOME)/bin";
+				LIBRARY_SEARCH_PATHS = "$(ARUSPIX_TORCH)/libs/Darwin_opt_float";
+				OPTIMIZATION_CFLAGS = "-O0";
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = "-ltorch";
+				OTHER_REZFLAGS = "";
+				PREBINDING = NO;
+				PRODUCT_NAME = ngram;
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = (
+					"-Wmost",
+					"-Wno-four-char-constants",
+					"-Wno-unknown-pragmas",
+				);
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		57219A490B8377600033F495 /* Build configuration list for PBXNativeTarget "adapt" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				57219A4A0B8377600033F495 /* Debug */,
+				57219A4B0B8377600033F495 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		576ED8450AB223D8007F2844 /* Build configuration list for PBXNativeTarget "init" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				576ED8460AB223D8007F2844 /* Debug */,
+				576ED8470AB223D8007F2844 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		57A0BC7C0ABF1901001825D5 /* Build configuration list for PBXNativeTarget "trainer" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				57A0BC7D0ABF1901001825D5 /* Debug */,
+				57A0BC7E0ABF1901001825D5 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		A51FEBE30A02C0F500ACE377 /* Build configuration list for PBXProject "torch" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A51FEBE40A02C0F500ACE377 /* Debug */,
+				A51FEBE50A02C0F500ACE377 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		A51FEC030A02C15900ACE377 /* Build configuration list for PBXNativeTarget "decoder" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A51FEC040A02C15900ACE377 /* Debug */,
+				A51FEC050A02C15900ACE377 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		A591200B0A1278F100D64611 /* Build configuration list for PBXNativeTarget "ngram" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A591200C0A1278F100D64611 /* Debug */,
+				A591200D0A1278F100D64611 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = A51FEBE20A02C0F500ACE377 /* Project object */;
+}

@@ -1,0 +1,31 @@
+
+[OPTIONS]
+Auto Index=Yes
+Compatibility=1.1 or later
+Compiled file=superimposition.chm
+Contents file=superimposition.hhc
+Default Window=main
+Default topic=superimposition\superimposition.html
+Display compile progress=No
+Error log file=_errorlog.txt
+Full-text search=Yes
+Index file=superimposition.hhk
+Language=0x100c Français (Suisse)
+Title=Superposition
+
+[WINDOWS]
+main="Superposition","superimposition.hhc","superimposition.hhk","superimposition\superimposition.html","superimposition\superimposition.html",,,,,0x23520,222,0x1046,[10,10,640,450],0xb0000,,,,,,0
+
+
+[FILES]
+superimposition\axnode1.html
+superimposition\axnode2.html
+superimposition\axnode3.html
+superimposition\axnode4.html
+superimposition\axnode5.html
+superimposition\axnode6.html
+superimposition\superimposition.css
+superimposition\superimposition.html
+
+[INFOTYPES]
+

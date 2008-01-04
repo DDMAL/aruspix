@@ -1,0 +1,306 @@
+// !$*UTF8*$!
+{
+	A51FEBE20A02C0F500ACE377 /* Project object */ = {
+		activeBuildConfigurationName = Debug;
+		activeExecutable = A51FEC020A02C15800ACE377 /* decoder */;
+		activeTarget = A51FEBFF0A02C15800ACE377 /* decoder */;
+		addToTargets = (
+			A59120000A1278D400D64611 /* ngram */,
+		);
+		breakpointsGroup = A52C922F0A22422F00D33B62 /* XCBreakpointsBucket */;
+		codeSenseManager = A51FEBE70A02C0F500ACE377 /* Code sense */;
+		executables = (
+			A51FEC020A02C15800ACE377 /* decoder */,
+			A59120020A1278D400D64611 /* ngram */,
+		);
+		perUserDictionary = {
+			PBXConfiguration.PBXFileTableDataSource3.PBXExecutablesDataSource = {
+				PBXFileTableDataSourceColumnSortingDirectionKey = "-1";
+				PBXFileTableDataSourceColumnSortingKey = PBXExecutablesDataSource_NameID;
+				PBXFileTableDataSourceColumnWidthsKey = (
+					22,
+					300,
+					400,
+				);
+				PBXFileTableDataSourceColumnsKey = (
+					PBXExecutablesDataSource_ActiveFlagID,
+					PBXExecutablesDataSource_NameID,
+					PBXExecutablesDataSource_CommentsID,
+				);
+			};
+			PBXConfiguration.PBXFileTableDataSource3.PBXFileTableDataSource = {
+				PBXFileTableDataSourceColumnSortingDirectionKey = "-1";
+				PBXFileTableDataSourceColumnSortingKey = PBXFileDataSource_Filename_ColumnID;
+				PBXFileTableDataSourceColumnWidthsKey = (
+					20,
+					503,
+					20,
+					48,
+					43,
+					43,
+					20,
+				);
+				PBXFileTableDataSourceColumnsKey = (
+					PBXFileDataSource_FiletypeID,
+					PBXFileDataSource_Filename_ColumnID,
+					PBXFileDataSource_Built_ColumnID,
+					PBXFileDataSource_ObjectSize_ColumnID,
+					PBXFileDataSource_Errors_ColumnID,
+					PBXFileDataSource_Warnings_ColumnID,
+					PBXFileDataSource_Target_ColumnID,
+				);
+			};
+			PBXConfiguration.PBXTargetDataSource.PBXTargetDataSource = {
+				PBXFileTableDataSourceColumnSortingDirectionKey = "-1";
+				PBXFileTableDataSourceColumnSortingKey = PBXFileDataSource_Filename_ColumnID;
+				PBXFileTableDataSourceColumnWidthsKey = (
+					20,
+					200,
+					323,
+					20,
+					48,
+					43,
+					43,
+				);
+				PBXFileTableDataSourceColumnsKey = (
+					PBXFileDataSource_FiletypeID,
+					PBXFileDataSource_Filename_ColumnID,
+					PBXTargetDataSource_PrimaryAttribute,
+					PBXFileDataSource_Built_ColumnID,
+					PBXFileDataSource_ObjectSize_ColumnID,
+					PBXFileDataSource_Errors_ColumnID,
+					PBXFileDataSource_Warnings_ColumnID,
+				);
+			};
+			PBXPerProjectTemplateStateSaveDate = 177622293;
+			PBXWorkspaceStateSaveDate = 177622293;
+		};
+		perUserProjectItems = {
+			A5F390A00A964E190039CDC3 /* PBXTextBookmark */ = A5F390A00A964E190039CDC3 /* PBXTextBookmark */;
+			A5F390A10A964E190039CDC3 /* PBXTextBookmark */ = A5F390A10A964E190039CDC3 /* PBXTextBookmark */;
+			A5F390A30A964E190039CDC3 /* PBXTextBookmark */ = A5F390A30A964E190039CDC3 /* PBXTextBookmark */;
+			A5F390A40A964E190039CDC3 /* PBXTextBookmark */ = A5F390A40A964E190039CDC3 /* PBXTextBookmark */;
+			A5F390A50A964E190039CDC3 /* PBXTextBookmark */ = A5F390A50A964E190039CDC3 /* PBXTextBookmark */;
+			A5F390A70A964E190039CDC3 /* PBXTextBookmark */ = A5F390A70A964E190039CDC3 /* PBXTextBookmark */;
+		};
+		sourceControlManager = A51FEBE60A02C0F500ACE377 /* Source Control */;
+		userBuildSettings = {
+		};
+	};
+	A51FEBE60A02C0F500ACE377 /* Source Control */ = {
+		isa = PBXSourceControlManager;
+		fallbackIsa = XCSourceControlManager;
+		isSCMEnabled = 0;
+		scmConfiguration = {
+		};
+		scmType = "";
+	};
+	A51FEBE70A02C0F500ACE377 /* Code sense */ = {
+		isa = PBXCodeSenseManager;
+		indexTemplatePath = "";
+	};
+	A51FEBFF0A02C15800ACE377 /* decoder */ = {
+		activeExec = 0;
+		executables = (
+			A51FEC020A02C15800ACE377 /* decoder */,
+		);
+	};
+	A51FEC020A02C15800ACE377 /* decoder */ = {
+		isa = PBXExecutable;
+		activeArgIndex = 2147483647;
+		activeArgIndices = (
+		);
+		argumentStrings = (
+		);
+		autoAttachOnCrash = 1;
+		configStateDict = {
+		};
+		customDataFormattersEnabled = 1;
+		debuggerPlugin = GDBDebugging;
+		disassemblyDisplayState = 0;
+		dylibVariantSuffix = "";
+		enableDebugStr = 1;
+		environmentEntries = (
+		);
+		executableSystemSymbolLevel = 0;
+		executableUserSymbolLevel = 0;
+		libgmallocEnabled = 0;
+		name = decoder;
+		sourceDirectories = (
+		);
+	};
+	A51FEC170A02C1C900ACE377 /* ClassModel.h */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {665, 1848}}";
+			sepNavSelRange = "{3248, 63}";
+			sepNavVisRect = "{{0, 962}, {665, 415}}";
+		};
+	};
+	A51FEC180A02C1C900ACE377 /* Decoder.cpp */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1174, 4564}}";
+			sepNavSelRange = "{6225, 20}";
+			sepNavVisRect = "{{0, 1540}, {1174, 993}}";
+			sepNavWindowFrame = "{{9, 55}, {1213, 1122}}";
+		};
+	};
+	A51FEC1D0A02C1C900ACE377 /* MusicModel.cpp */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1174, 5950}}";
+			sepNavSelRange = "{0, 1}";
+			sepNavVisRect = "{{0, 0}, {1174, 993}}";
+			sepNavWindowFrame = "{{111, -75}, {1213, 1122}}";
+		};
+	};
+	A51FEC1E0A02C1C900ACE377 /* MusicModel.h */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {680, 1386}}";
+			sepNavSelRange = "{2735, 0}";
+			sepNavVisRect = "{{0, 828}, {665, 415}}";
+		};
+	};
+	A51FEC200A02C1C900ACE377 /* RecBeamSearchDecoder.cpp */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1173, 10234}}";
+			sepNavSelRange = "{2358, 18}";
+			sepNavVisRect = "{{0, 536}, {1173, 994}}";
+		};
+	};
+	A51FEC220A02C1C900ACE377 /* RecDecoderLine.cpp */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1173, 4732}}";
+			sepNavSelRange = "{11341, 6}";
+			sepNavVisRect = "{{0, 1841}, {1173, 994}}";
+		};
+	};
+	A51FEC230A02C1C900ACE377 /* RecDecoderLine.h */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1173, 1862}}";
+			sepNavSelRange = "{2216, 0}";
+			sepNavVisRect = "{{0, 0}, {1173, 994}}";
+			sepNavWindowFrame = "{{15, 50}, {1212, 1123}}";
+		};
+	};
+	A51FEC240A02C1C900ACE377 /* RecDecoderPage.cpp */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1173, 4396}}";
+			sepNavSelRange = "{10255, 0}";
+			sepNavVisRect = "{{0, 2698}, {1173, 994}}";
+		};
+	};
+	A52C922F0A22422F00D33B62 /* XCBreakpointsBucket */ = {
+		isa = XCBreakpointsBucket;
+		name = "Project Breakpoints";
+		objects = (
+		);
+	};
+	A59120000A1278D400D64611 /* ngram */ = {
+		activeExec = 0;
+		executables = (
+			A59120020A1278D400D64611 /* ngram */,
+		);
+	};
+	A59120020A1278D400D64611 /* ngram */ = {
+		isa = PBXExecutable;
+		activeArgIndex = 2147483647;
+		activeArgIndices = (
+		);
+		argumentStrings = (
+		);
+		autoAttachOnCrash = 1;
+		configStateDict = {
+		};
+		customDataFormattersEnabled = 1;
+		debuggerPlugin = GDBDebugging;
+		disassemblyDisplayState = 0;
+		dylibVariantSuffix = "";
+		enableDebugStr = 1;
+		environmentEntries = (
+		);
+		executableSystemSymbolLevel = 0;
+		executableUserSymbolLevel = 0;
+		libgmallocEnabled = 0;
+		name = ngram;
+		sourceDirectories = (
+		);
+	};
+	A59120040A1278F100D64611 /* LMNGramBuilder.h */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {644, 1330}}";
+			sepNavSelRange = "{1556, 21}";
+			sepNavVisRect = "{{0, 320}, {459, 186}}";
+		};
+	};
+	A5F390A00A964E190039CDC3 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = A51FEC220A02C1C900ACE377 /* RecDecoderLine.cpp */;
+		name = printf;
+		rLen = 6;
+		rLoc = 11341;
+		rType = 0;
+		vrLen = 2632;
+		vrLoc = 4523;
+	};
+	A5F390A10A964E190039CDC3 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = A5F390A20A964E190039CDC3 /* DecodingHypothesis.h */;
+		name = "class DecodingHypothesis";
+		rLen = 25;
+		rLoc = 1990;
+		rType = 0;
+		vrLen = 2882;
+		vrLoc = 115;
+	};
+	A5F390A20A964E190039CDC3 /* DecodingHypothesis.h */ = {
+		isa = PBXFileReference;
+		name = DecodingHypothesis.h;
+		path = /Users/puginlocal/libs/Torch3/include/DecodingHypothesis.h;
+		sourceTree = "<absolute>";
+	};
+	A5F390A30A964E190039CDC3 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = A51FEC200A02C1C900ACE377 /* RecBeamSearchDecoder.cpp */;
+		name = DecodingHypothesis;
+		rLen = 18;
+		rLoc = 2358;
+		rType = 0;
+		vrLen = 3986;
+		vrLoc = 115;
+	};
+	A5F390A40A964E190039CDC3 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = A51FEC220A02C1C900ACE377 /* RecDecoderLine.cpp */;
+		name = printf;
+		rLen = 6;
+		rLoc = 11341;
+		rType = 0;
+		vrLen = 2632;
+		vrLoc = 4523;
+	};
+	A5F390A50A964E190039CDC3 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = A5F390A60A964E190039CDC3 /* DecodingHypothesis.h */;
+		name = "class DecodingHypothesis";
+		rLen = 25;
+		rLoc = 1990;
+		rType = 0;
+		vrLen = 2882;
+		vrLoc = 115;
+	};
+	A5F390A60A964E190039CDC3 /* DecodingHypothesis.h */ = {
+		isa = PBXFileReference;
+		name = DecodingHypothesis.h;
+		path = /Users/puginlocal/libs/Torch3/include/DecodingHypothesis.h;
+		sourceTree = "<absolute>";
+	};
+	A5F390A70A964E190039CDC3 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = A51FEC200A02C1C900ACE377 /* RecBeamSearchDecoder.cpp */;
+		name = DecodingHypothesis;
+		rLen = 18;
+		rLoc = 2358;
+		rType = 0;
+		vrLen = 3226;
+		vrLoc = 1945;
+	};
+}
