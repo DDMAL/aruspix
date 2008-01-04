@@ -1,9 +1,0 @@
-#!/bin/sh
-
-# if [ ! -d ~/Documents/Aruspix.localized ]; then
-#	mv  /tmp/Aruspix.localized ~/Documents/
-# else
-#	rm -r -f  /tmp/Aruspix.localized
-# fi
-
-exit 0
