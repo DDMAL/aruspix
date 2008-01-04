@@ -1,0 +1,313 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Aruspix\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-12-21 12:58+0100\n"
+"PO-Revision-Date: 2004-12-27 12:23+0200\n"
+"Last-Translator: Laurent Pugin <laurent.pugin@lettres.unige.ch>\n"
+"Language-Team:  <laurent.pugin@lettres.unige.ch>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=iso-8859-1\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Language: English\n"
+"X-Poedit-SourceCharset: iso-8859-1\n"
+"X-Poedit-Basepath: ./../../\n"
+"X-Poedit-SearchPath-0: superimposition\n"
+
+#: superimposition/sup.cpp:116
+msgid "Operation canceled"
+msgstr "Oprération annulée"
+
+#: superimposition/sup.cpp:118
+msgid "Insufficient memory"
+msgstr "Mémoire insuffisante"
+
+#: superimposition/sup.cpp:153
+msgid "Preparartion of image 1 ..."
+msgstr "Préparation de l'image 1 ..."
+
+#: superimposition/sup.cpp:163
+#: superimposition/sup.cpp:221
+msgid "Filtering image ..."
+msgstr "Filtrage de l'image ..."
+
+#: superimposition/sup.cpp:183
+#: superimposition/sup.cpp:240
+msgid "Resizing image ..."
+msgstr "Redimensionnement de l'image ..."
+
+#: superimposition/sup.cpp:211
+msgid "Preparation of image 2 ..."
+msgstr "Préparation de l'image 2 ..."
+
+#: superimposition/sup.cpp:272
+msgid "Rotation of image 1 ..."
+msgstr "Rotation de l'image 1 ..."
+
+#: superimposition/sup.cpp:304
+msgid "Rotation of image 2 ..."
+msgstr "Rotation de l'image 2 ..."
+
+#: superimposition/sup.cpp:334
+msgid "Calculation of margins ..."
+msgstr "Calcul des marges ..."
+
+#: superimposition/sup.cpp:425
+msgid "Superimposition of the images ..."
+msgstr "Superposition des images ..."
+
+#: superimposition/sup.cpp:490
+msgid "Writing image on disk ..."
+msgstr "Ecriture de l'image sur le disque ..."
+
+#: superimposition/sup.cpp:756
+msgid "Click bottom-left"
+msgstr "Cliquer en-bas à gauche"
+
+#: superimposition/sup.cpp:761
+msgid "Click right"
+msgstr "Cliquer à droite"
+
+#: superimposition/sup.cpp:767
+msgid "Ready for superimposition"
+msgstr "Prêt pour la superposition"
+
+#: superimposition/sup.cpp:866
+#: superimposition/sup.cpp:874
+#: superimposition/sup_wdr.cpp:181
+#: superimposition/sup_wdr.cpp:218
+msgid "Put points"
+msgstr "Placer les points de repère"
+
+#: superimposition/sup.cpp:1028
+msgid "Parameters"
+msgstr "Parameters"
+
+#: superimposition/sup.cpp:1042
+#: superimposition/sup.cpp:1047
+msgid "Click top-left"
+msgstr "Cliquer en-haut à gauche"
+
+#: superimposition/sup.cpp:1062
+msgid "Save"
+msgstr "Enregistrer"
+
+#: superimposition/sup.cpp:1076
+msgid "Superposition"
+msgstr "Superposition"
+
+#: superimposition/sup.cpp:1098
+msgid "input files"
+msgstr "fichier d'entrée"
+
+#: superimposition/sup_wdr.cpp:59
+msgid "Superimposition parameters"
+msgstr "Paramètres de superposition"
+
+#: superimposition/sup_wdr.cpp:65
+msgid "OK"
+msgstr "OK"
+
+#: superimposition/sup_wdr.cpp:68
+msgid "Cancel"
+msgstr "Cancel"
+
+#: superimposition/sup_wdr.cpp:93
+msgid "Vertical size (in pixels)"
+msgstr "Taille verticale (en pixels)"
+
+#: superimposition/sup_wdr.cpp:99
+msgid "Interpolation"
+msgstr "Interpolation"
+
+#: superimposition/sup_wdr.cpp:104
+msgid "None"
+msgstr "Aucune"
+
+#: superimposition/sup_wdr.cpp:105
+msgid "Bi-linear"
+msgstr "Bi-linéaire"
+
+#: superimposition/sup_wdr.cpp:106
+msgid "Bi-cubic"
+msgstr "Bi-cubique"
+
+#: superimposition/sup_wdr.cpp:111
+msgid "Horizontal segmentation"
+msgstr "Segmentation horizontale"
+
+#: superimposition/sup_wdr.cpp:117
+msgid "Vertical segmentation"
+msgstr "Segmentation verticale"
+
+#: superimposition/sup_wdr.cpp:123
+msgid "Width of the correlation window"
+msgstr "Largeur de la zone de corrélation"
+
+#: superimposition/sup_wdr.cpp:129
+msgid "Height of the correlation window"
+msgstr "Hauteur de la zone de corrélation"
+
+#: superimposition/sup_wdr.cpp:135
+msgid "Filter image 1"
+msgstr "Filtrer l'image 1"
+
+#: superimposition/sup_wdr.cpp:142
+msgid "Filter image 2"
+msgstr "Filtrer l'image 2"
+
+#: superimposition/sup_wdr.cpp:173
+msgid "Open source &1"
+msgstr "Ouvrir source &1"
+
+#: superimposition/sup_wdr.cpp:173
+#: superimposition/sup_wdr.cpp:212
+msgid "Open the file of the source 1"
+msgstr "Ouvrir le fichier de la source 1"
+
+#: superimposition/sup_wdr.cpp:174
+msgid "Open source &2"
+msgstr "Ouvrir source &2"
+
+#: superimposition/sup_wdr.cpp:174
+#: superimposition/sup_wdr.cpp:213
+msgid "Open the file of the source 2"
+msgstr "Ouvrir le fichier de la source 1"
+
+#: superimposition/sup_wdr.cpp:176
+msgid "&Close"
+msgstr "&Fermer"
+
+#: superimposition/sup_wdr.cpp:176
+msgid "Close open files"
+msgstr "Ferme les fichier ouverts"
+
+#: superimposition/sup_wdr.cpp:177
+msgid "commun1"
+msgstr "commun1"
+
+#: superimposition/sup_wdr.cpp:181
+#: superimposition/sup_wdr.cpp:218
+msgid "Put the 3 superimposition points on both sources"
+msgstr "Placer les 3 points de superposition sur les 2 sources"
+
+#: superimposition/sup_wdr.cpp:182
+msgid "commun2"
+msgstr "commun2"
+
+#: superimposition/sup_wdr.cpp:185
+msgid "&Previous page"
+msgstr "&Page précédente"
+
+#: superimposition/sup_wdr.cpp:185
+#: superimposition/sup_wdr.cpp:215
+msgid "Go to the previous page in both files or directories"
+msgstr "Aller à la page précédente dans les 2 fichiers ou répertoires"
+
+#: superimposition/sup_wdr.cpp:186
+msgid "P&revious page (source 1)"
+msgstr "P&age précédente (source 1)"
+
+#: superimposition/sup_wdr.cpp:186
+msgid "Go to the previous page in the file or directory of source 1"
+msgstr "Aller à la page précédente dans le fichier ou répertoire de la source 1"
+
+#: superimposition/sup_wdr.cpp:187
+msgid "Pr&evious page (source 2)"
+msgstr "Pa&ge précédente (source 2)"
+
+#: superimposition/sup_wdr.cpp:187
+msgid "Go to the previous page in the file or directory of source 2"
+msgstr "Aller à la page précédente dans le fichier ou répertoire de la source 2"
+
+#: superimposition/sup_wdr.cpp:189
+msgid "&Next page"
+msgstr "Page &suivante"
+
+#: superimposition/sup_wdr.cpp:189
+#: superimposition/sup_wdr.cpp:216
+msgid "Go to the next page in both files or directories"
+msgstr "Aller à la page suivante dans les 2 fichiers ou répertoires"
+
+#: superimposition/sup_wdr.cpp:190
+msgid "Ne&xt page (source 1)"
+msgstr "Pag&e suivante (source 1)"
+
+#: superimposition/sup_wdr.cpp:190
+msgid "Go to the next page in the file or directory of source 1"
+msgstr "Aller à la page suivante dans le fichier ou répertoire de la source 1"
+
+#: superimposition/sup_wdr.cpp:191
+msgid "Nex&t page (source 2)"
+msgstr "Page s&uivante (source 2)"
+
+#: superimposition/sup_wdr.cpp:191
+msgid "Go to the next page in the file or directory of source 2"
+msgstr "Aller à la page suivante dans le fichier ou répertoire de la source 2"
+
+#: superimposition/sup_wdr.cpp:193
+msgid "&Go to page ... (source 1)"
+msgstr "A&ller à la page ... (source 1)"
+
+#: superimposition/sup_wdr.cpp:193
+msgid "Select a page in the file or directory of source 1"
+msgstr "Choisir une page dans le fichier ou répertoire de la source 1"
+
+#: superimposition/sup_wdr.cpp:194
+msgid "G&o to page ... (source 2)"
+msgstr "Alle&r à la page ... (source 2)"
+
+#: superimposition/sup_wdr.cpp:194
+msgid "Select a page in the file or directory of source 2"
+msgstr "Choisir une page dans le fichier ou répertoire de la source 2"
+
+#: superimposition/sup_wdr.cpp:195
+msgid "&Page"
+msgstr "&Page"
+
+#: superimposition/sup_wdr.cpp:198
+msgid "&Superimpose sources"
+msgstr "&Superposeer les sources"
+
+#: superimposition/sup_wdr.cpp:198
+#: superimposition/sup_wdr.cpp:219
+msgid "Execute the superimposition of the sources"
+msgstr "Execute la superpostion des sources"
+
+#: superimposition/sup_wdr.cpp:200
+msgid "&Parameters"
+msgstr "&Paramètres"
+
+#: superimposition/sup_wdr.cpp:200
+msgid "Modify the parameters of the environment"
+msgstr "Modifier les paramètres de l'environnement"
+
+#: superimposition/sup_wdr.cpp:201
+msgid "&Tools"
+msgstr "&Outils"
+
+#: superimposition/sup_wdr.cpp:212
+msgid "Open source 1"
+msgstr "Ouvrir source 1"
+
+#: superimposition/sup_wdr.cpp:213
+msgid "Open source 2"
+msgstr "Ouvrir source 2"
+
+#: superimposition/sup_wdr.cpp:215
+msgid "Previous page"
+msgstr "Page précédente"
+
+#: superimposition/sup_wdr.cpp:216
+msgid "Next page"
+msgstr "Page suivante"
+
+#: superimposition/sup_wdr.cpp:219
+msgid "Superimpose sources"
+msgstr "Superposeer les sources"
+

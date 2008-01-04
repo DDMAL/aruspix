@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CFBundleDevelopmentRegion</key>
+	<string>English</string>
+	<key>CFBundleDocumentTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeExtensions</key>
+			<array>
+				<string>axproj</string>
+			</array>
+			<key>CFBundleTypeIconFile</key>
+			<string>axproj</string>
+			<key>CFBundleTypeName</key>
+			<string>Aruspix Project</string>
+			<key>CFBundleTypeOSTypes</key>
+			<array>
+				<string>ARPX</string>
+			</array>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>LSTypeIsPackage</key>
+			<false/>
+			<key>NSPersistentStoreTypeKey</key>
+			<string>Binary</string>
+		</dict>
+		<dict>
+			<key>CFBundleTypeExtensions</key>
+			<array>
+				<string>axz</string>
+			</array>
+			<key>CFBundleTypeIconFile</key>
+			<string>axz</string>
+			<key>CFBundleTypeName</key>
+			<string>Aruspix Document</string>
+			<key>CFBundleTypeOSTypes</key>
+			<array>
+				<string>ARPX</string>
+			</array>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>LSTypeIsPackage</key>
+			<false/>
+			<key>NSPersistentStoreTypeKey</key>
+			<string>Binary</string>
+		</dict>
+		<dict>
+			<key>CFBundleTypeExtensions</key>
+			<array>
+				<string>axtyp</string>
+			</array>
+			<key>CFBundleTypeIconFile</key>
+			<string>axtyp</string>
+			<key>CFBundleTypeName</key>
+			<string>Aruspix Typographic Model</string>
+			<key>CFBundleTypeOSTypes</key>
+			<array>
+				<string>ARPX</string>
+			</array>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>LSTypeIsPackage</key>
+			<false/>
+			<key>NSPersistentStoreTypeKey</key>
+			<string>Binary</string>
+		</dict>
+		<dict>
+			<key>CFBundleTypeExtensions</key>
+			<array>
+				<string>axmus</string>
+			</array>
+			<key>CFBundleTypeIconFile</key>
+			<string>axmus</string>
+			<key>CFBundleTypeName</key>
+			<string>Aruspix Music Model</string>
+			<key>CFBundleTypeOSTypes</key>
+			<array>
+				<string>ARPX</string>
+			</array>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>LSTypeIsPackage</key>
+			<false/>
+			<key>NSPersistentStoreTypeKey</key>
+			<string>Binary</string>
+		</dict>
+	</array>
+	<key>CFBundleExecutable</key>
+	<string>Aruspix</string>
+	<key>CFBundleIconFile</key>
+	<string>ax</string>
+	<key>CFBundleIdentifier</key>
+	<string>net.aruspix.www</string>
+	<key>CFBundleInfoDictionaryVersion</key>
+	<string>6.0</string>
+	<key>CFBundlePackageType</key>
+	<string>APPL</string>
+	<key>CFBundleSignature</key>
+	<string>ARPX</string>
+	<key>CFBundleVersion</key>
+	<string>1.0.0</string>
+</dict>
+</plist>
