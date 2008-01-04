@@ -1,0 +1,46 @@
+# Date: Wed Jan 25 19:03:28 2006
+# Program: D:\Projects\Aruspix\bin\DecoderD.exe
+
+# Mode: default
+
+# Arguments:
+
+# Options:
+ *  -am_models_fname            [Y:/tmp/hmmdefs.MMF]
+ *  -am_sil_phone               [sp]
+    -am_pause_phone             []
+ *  -am_phone_del_pen           [1]
+    -am_apply_pause_del_pen     
+ *  -lex_dict_fname             [Y:/tmp/_mar_.torch.dic]
+    -lex_sent_start_word        [SP_START]
+    -lex_sent_end_word          [SP_END]
+    -lex_sil_word               [SP]
+ *  -lm_fname                   [Y:/tmp/train_0/]
+ *  -lm_ngram_order             [5]
+ *  -lm_scaling_factor          [4]
+    -cm_symb_factor             [1]
+    -cm_duration_factor         [1]
+    -cm_pitch_factor            [1]
+    -cm_interval_factor         [1]
+    -cm_symb_order              [-1]
+    -cm_duration_order          [-1]
+    -cm_pitch_order             [-1]
+    -cm_interval_order          [-1]
+    -cm_no_symb                 
+    -cm_no_duration             
+ *  -cm_no_pitch                
+    -cm_no_interval             
+ *  -cm_no_bigram               
+    -cm_bigram_factor           [1]
+    -dec_int_prune_window       [75]
+    -dec_end_prune_window       [-3.40282e+038]
+    -dec_word_entr_pen          [0]
+ *  -dec_delayed_lm             
+    -dec_verbose                
+ *  -input_fname                [Y:/tmp/t_mfcd_test_0.scp]
+ *  -output_fname               [Y:/output.mlf]
+ *  -wrdtrns_fname              [Y:/tmp/mar/mar.w.mlf]
+    -use_torch_decoder          
+
+<#>
+
