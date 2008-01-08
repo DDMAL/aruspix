@@ -18,7 +18,7 @@
 *
 */
 
-#include "im_ext.h"
+#include "imext.h"
 //#include <stdlib.h>
 //#include <string.h>
 //#include <math.h>

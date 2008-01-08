@@ -29,7 +29,7 @@
 
 #include "wg_wdr.h"
 
-#include "app/gotodlg.h"
+#include "app/axgotodlg.h"
 
 // WDR: class implementations
 

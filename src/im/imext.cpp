@@ -7,8 +7,8 @@
 // Extenstion de IM_LIB
 /////////////////////////////////////////////////////////////////////////////
 
-#include "im_ext.h"
-#include "im_kmeans.h"
+#include "imext.h"
+#include "imkmeans.h"
 
 #include <im.h>
 #include <im_image.h>

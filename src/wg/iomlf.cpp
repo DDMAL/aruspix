@@ -29,7 +29,7 @@
 #include "im/imstaffsegment.h"
 
 #include "app/axprocess.h"
-#include "app/progressdlg.h"
+#include "app/axprogressdlg.h"
 #include "app/axapp.h"
 
 #include "wx/arrimpl.cpp"

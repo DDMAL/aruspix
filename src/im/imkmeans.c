@@ -26,7 +26,7 @@
  * 	 -OPTIMIZE!!!
  */
 
-#include "im_kmeans.h"
+#include "imkmeans.h"
 
 //#include <im.h>
 //#include <im_image.h>

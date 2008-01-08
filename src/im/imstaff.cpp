@@ -217,49 +217,49 @@ int ImStaff::CalcEcart( int previous )
 
 bool ImStaff::GetStaffBorders( int threshold_in_percent, bool analyse_segments )
 {
-    wxASSERT_MSG( m_imMap, wxT("MAP Image cannot be NULL") );
+    wxASSERT_MSG( m_opImMap, wxT("MAP Image cannot be NULL") );
 
-    //if ( !GetImagePlane( &m_im, 0, SS_FACTOR_1 ) )
+    //if ( !GetImagePlane( &m_opIm, 0, SS_FACTOR_1 ) )
     //  return false;
     
     int i;
     
-    if ( !GetImagePlane( &m_im ) )
+    if ( !GetImagePlane( &m_opIm ) )
         return false;
 
-    m_imTmp = imImageCreate( m_im->width / SS_FACTOR_1, m_im->height / SS_FACTOR_1, m_im->color_space, m_im->data_type);
-    if ( !m_imTmp )
+    m_opImTmp1 = imImageCreate( m_opIm->width / SS_FACTOR_1, m_opIm->height / SS_FACTOR_1, m_opIm->color_space, m_opIm->data_type);
+    if ( !m_opImTmp1 )
             return this->Terminate( ERR_MEMORY );
-    imProcessResize( m_im, m_imTmp, 0);
-    SwapImages( &m_im, &m_imTmp );
+    imProcessResize( m_opIm, m_opImTmp1, 0);
+    SwapImages( &m_opIm, &m_opImTmp1 );
 
     // convovle
-    m_imTmp = imImageClone( m_im );
-    if ( !m_imTmp )
+    m_opImTmp1 = imImageClone( m_opIm );
+    if ( !m_opImTmp1 )
             return this->Terminate( ERR_MEMORY );
     imImage* kernel = imImageCreate( 3, 1, IM_GRAY, IM_INT);
     imImageSetAttribute(kernel, "Description", IM_BYTE, -1, (void*)"Erode");
     int* kernel_data = (int*)kernel->data[0];
     for(i = 0; i < kernel->count; i++)
         kernel_data[i] = 0;
-    //imProcessBinMorphClose( m_im, m_imTmp , 3, 1);
-    imProcessBinMorphConvolve( m_im, m_imTmp, kernel, 0, 1);
+    //imProcessBinMorphClose( m_opIm, m_opImTmp1 , 3, 1);
+    imProcessBinMorphConvolve( m_opIm, m_opImTmp1, kernel, 0, 1);
     imImageDestroy(kernel);
-    SwapImages( &m_im, &m_imTmp );
+    SwapImages( &m_opIm, &m_opImTmp1 );
 
     // roi image : seulement 120 pixels de haut
-    m_imTmp = imImageCreate( m_im->width, SS_STAFF_ROI_W / SS_FACTOR_1, m_im->color_space, m_im->data_type );
-    if ( !m_imTmp )
+    m_opImTmp1 = imImageCreate( m_opIm->width, SS_STAFF_ROI_W / SS_FACTOR_1, m_opIm->color_space, m_opIm->data_type );
+    if ( !m_opImTmp1 )
         return this->Terminate( ERR_MEMORY );
-    imProcessCrop( m_im, m_imTmp, 0, ( STAFF_HEIGHT -  SS_STAFF_ROI_W) / ( 2 * SS_FACTOR_1 ) );
+    imProcessCrop( m_opIm, m_opImTmp1, 0, ( STAFF_HEIGHT -  SS_STAFF_ROI_W) / ( 2 * SS_FACTOR_1 ) );
 
     // analyse de la projection verticale
     int f_width, avg;
-    m_hist = new int[ m_imTmp->width ];
-    imAnalyzeProjectionV( m_imTmp, m_hist );
+    m_opHist = new int[ m_opImTmp1->width ];
+    imAnalyzeProjectionV( m_opImTmp1, m_opHist );
     f_width = 30 / SS_FACTOR_1; // 30 px
-    MedianFilter( m_hist, m_imTmp->width , f_width, &avg );
-    m_med = median( m_hist, m_imTmp->width, false );
+    MedianFilter( m_opHist, m_opImTmp1->width , f_width, &avg );
+    m_med = median( m_opHist, m_opImTmp1->width, false );
 
     // coupure de portee si en dessous de 25 % de la valeur medianne
     int x_staff = 0;
@@ -268,9 +268,9 @@ bool ImStaff::GetStaffBorders( int threshold_in_percent, bool analyse_segments )
 	if ( (threshold_in_percent != 0) || (threshold_in_percent != 100) )
 		staff_threshold = m_med / (100  / threshold_in_percent); // threshold_in_percent		
     this->m_segments.Clear();
-    for ( i = 0; i < m_imTmp->width; i++ )
+    for ( i = 0; i < m_opImTmp1->width; i++ )
     {
-        if ( staff && (m_hist[i] < staff_threshold ))
+        if ( staff && (m_opHist[i] < staff_threshold ))
         {
             ImStaffSegment segment;
             segment.m_x1 = x_staff * SS_FACTOR_1;
@@ -278,7 +278,7 @@ bool ImStaff::GetStaffBorders( int threshold_in_percent, bool analyse_segments )
             this->m_segments.Add( segment );
             staff = false;
         }
-        else if ( !staff && (m_hist[i] > staff_threshold )) // debut de portee
+        else if ( !staff && (m_opHist[i] > staff_threshold )) // debut de portee
         {
             staff = true;
             x_staff = i;
@@ -292,9 +292,9 @@ bool ImStaff::GetStaffBorders( int threshold_in_percent, bool analyse_segments )
             segment.m_x2 = i * SS_FACTOR_1;
             this->m_segments.Add( segment );
     }
-    delete m_hist;
-    m_hist = NULL;
-    ImageDestroy( &m_imTmp );
+    delete m_opHist;
+    m_opHist = NULL;
+    ImageDestroy( &m_opImTmp1 );
 	
 	if ( !analyse_segments ) // analyse is used to find text in staves
 		return this->Terminate( ERR_NONE );	
@@ -302,22 +302,22 @@ bool ImStaff::GetStaffBorders( int threshold_in_percent, bool analyse_segments )
     int nb_segments = (int)m_segments.GetCount();
     for(i = 0; i < nb_segments; i++)
     {
-        m_imTmp = imImageCreate( (m_segments[i].m_x2 - m_segments[i].m_x1) / SS_FACTOR_1,
-            m_im->height, m_im->color_space, m_im->data_type );
-        if ( !m_imTmp )
+        m_opImTmp1 = imImageCreate( (m_segments[i].m_x2 - m_segments[i].m_x1) / SS_FACTOR_1,
+            m_opIm->height, m_opIm->color_space, m_opIm->data_type );
+        if ( !m_opImTmp1 )
             return this->Terminate( ERR_MEMORY );
-        imProcessCrop( m_im, m_imTmp, m_segments[i].m_x1 / SS_FACTOR_1, 0 );
+        imProcessCrop( m_opIm, m_opImTmp1, m_segments[i].m_x1 / SS_FACTOR_1, 0 );
 
-        /*m_imTmp = imImageCreate( (m_segments[i].m_x2 - m_segments[i].m_x1),
-            m_imMap->height, m_imMap->color_space, m_imMap->data_type );
-        if ( !m_imTmp )
+        /*m_opImTmp1 = imImageCreate( (m_segments[i].m_x2 - m_segments[i].m_x1),
+            m_opImMap->height, m_opImMap->color_space, m_opImMap->data_type );
+        if ( !m_opImTmp1 )
             return this->Terminate( ERR_MEMORY );
-        imProcessCrop( m_imMap, m_imTmp, m_segments[i].m_x1, 0 );*/
+        imProcessCrop( m_opImMap, m_opImTmp1, m_segments[i].m_x1, 0 );*/
 
 		//m_segments[i].SetProgressDlg( m_progressDlg );
-        m_segments[i].SetMapImage( m_imTmp );
+        m_segments[i].SetMapImage( m_opImTmp1 );
         m_segments[i].AnalyzeSegment();
-        ImageDestroy( &m_imTmp );
+        ImageDestroy( &m_opImTmp1 );
     }
 
     return this->Terminate( ERR_NONE );

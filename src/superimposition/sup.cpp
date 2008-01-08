@@ -23,7 +23,7 @@
 
 #include "sup.h"
 #include "app/axapp.h"
-#include "app/progressdlg.h"
+#include "app/axprogressdlg.h"
 #include "app/axframe.h"
 
 // IMLIB
@@ -103,7 +103,7 @@ void SupFile::ImageDestroy( _imImage **image )
 bool SupFile::Terminate( int code,  ... )
 {
     // Attention que deux de ces pointeurs ne refere pas la meme adresse lors de l'appel de cette methode !
-    //ImageDestroy( &m_imTmp);
+    //ImageDestroy( &m_opImTmp1);
     ImageDestroy( &m_im1);
     ImageDestroy( &m_im2);
     ImageDestroy( &m_im2_original);
@@ -208,29 +208,29 @@ bool SupFile::Superimpose( const SupImController *imController1,
         if ( !m_progressDlg->SetOperation( _("Filtering image ...") ))
             return this->Terminate( ERR_CANCELED );
 
-        m_imTmp = imImageClone( m_im1 );
-        if ( !m_imTmp )
+        m_opImTmp1 = imImageClone( m_im1 );
+        if ( !m_opImTmp1 )
             return this->Terminate( ERR_MEMORY );
 
-        if ( !imProcessMedianConvolve( m_im1 ,m_imTmp, 3 ) )
+        if ( !imProcessMedianConvolve( m_im1 ,m_opImTmp1, 3 ) )
             return this->Terminate( ERR_CANCELED );
 
-        SwapImages( &m_im1, &m_imTmp );
+        SwapImages( &m_im1, &m_opImTmp1 );
 
     }
     // resize
     if (!m_progressDlg->SetOperation( _("Resizing image ...") ))
         return this->Terminate( ERR_CANCELED );
 
-    m_imTmp = imImageCreate(  (int)(m_im1->width  * hfactor1), (int)(m_im1->height  * vfactor1),
+    m_opImTmp1 = imImageCreate(  (int)(m_im1->width  * hfactor1), (int)(m_im1->height  * vfactor1),
             m_im1->color_space, m_im1->data_type);
-    if ( !m_imTmp )
+    if ( !m_opImTmp1 )
         return this->Terminate( ERR_MEMORY );
 
-    if ( !imProcessResize( m_im1 ,m_imTmp, SupEnv::s_interpolation) )
+    if ( !imProcessResize( m_im1 ,m_opImTmp1, SupEnv::s_interpolation) )
         return this->Terminate( ERR_CANCELED );
 
-    SwapImages( &m_im1, &m_imTmp );
+    SwapImages( &m_im1, &m_opImTmp1 );
 
     // ajuster la position des points
     points1[0].x = (int)(points1[0].x * hfactor1);
@@ -254,28 +254,28 @@ bool SupFile::Superimpose( const SupImController *imController1,
         if (!m_progressDlg->SetOperation( _("Filtering image ...") ))
             return this->Terminate( ERR_CANCELED );
 
-        m_imTmp = imImageClone(  m_im2 );
-        if ( !m_imTmp )
+        m_opImTmp1 = imImageClone(  m_im2 );
+        if ( !m_opImTmp1 )
             return this->Terminate( ERR_MEMORY );
    
-        if ( !imProcessMedianConvolve( m_im2 ,m_imTmp, 3 ) )
+        if ( !imProcessMedianConvolve( m_im2 ,m_opImTmp1, 3 ) )
             return this->Terminate( ERR_CANCELED );
 
-        SwapImages( &m_im2, &m_imTmp );
+        SwapImages( &m_im2, &m_opImTmp1 );
     }
     // resize
     if (!m_progressDlg->SetOperation( _("Resizing image ...") ))
         return this->Terminate( ERR_CANCELED );
 
-    m_imTmp = imImageCreate(  (int)(m_im2->width  * hfactor2), (int)(m_im2->height  * vfactor2),
+    m_opImTmp1 = imImageCreate(  (int)(m_im2->width  * hfactor2), (int)(m_im2->height  * vfactor2),
             m_im2->color_space, m_im2->data_type);
-    if ( !m_imTmp )
+    if ( !m_opImTmp1 )
         return this->Terminate( ERR_MEMORY );
 
-    if ( !imProcessResize( m_im2 ,m_imTmp, SupEnv::s_interpolation ) )
+    if ( !imProcessResize( m_im2 ,m_opImTmp1, SupEnv::s_interpolation ) )
         return this->Terminate( ERR_CANCELED );
 
-    SwapImages( &m_im2, &m_imTmp );
+    SwapImages( &m_im2, &m_opImTmp1 );
 
     points2[0].x = (int)(points2[0].x * hfactor2);
     points2[0].y = (int)(points2[0].y * vfactor2);
@@ -309,15 +309,15 @@ bool SupFile::Superimpose( const SupImController *imController1,
     points1[1] = CalcPositionAfterRotation( points1[1], alpha1, m_im1->width, m_im1->height, new_w, new_h);
     points1[2] = CalcPositionAfterRotation( points1[2], alpha1, m_im1->width, m_im1->height, new_w, new_h);
 
-    m_imTmp = imImageCreate(new_w, new_h, m_im1->color_space, m_im1->data_type);
-    if ( !m_imTmp )
+    m_opImTmp1 = imImageCreate(new_w, new_h, m_im1->color_space, m_im1->data_type);
+    if ( !m_opImTmp1 )
         return this->Terminate( ERR_MEMORY );
 
-    imImageCopyAttributes( m_im1, m_imTmp);
-    if ( !imProcessRotate( m_im1, m_imTmp, cos0, sin0, SupEnv::s_interpolation) )
+    imImageCopyAttributes( m_im1, m_opImTmp1);
+    if ( !imProcessRotate( m_im1, m_opImTmp1, cos0, sin0, SupEnv::s_interpolation) )
         return this->Terminate( ERR_CANCELED );
 
-    SwapImages( &m_im1, &m_imTmp );
+    SwapImages( &m_im1, &m_opImTmp1 );
 
 
     // idem image 2
@@ -337,15 +337,15 @@ bool SupFile::Superimpose( const SupImController *imController1,
     points2[1] = CalcPositionAfterRotation( points2[1], alpha2, m_im2->width, m_im2->height, new_w, new_h);
     points2[2] = CalcPositionAfterRotation( points2[2], alpha2, m_im2->width, m_im2->height, new_w, new_h);
 
-    m_imTmp = imImageCreate( new_w, new_h, m_im2->color_space, m_im2->data_type );
-    if ( !m_imTmp )
+    m_opImTmp1 = imImageCreate( new_w, new_h, m_im2->color_space, m_im2->data_type );
+    if ( !m_opImTmp1 )
         return this->Terminate( ERR_MEMORY );
 
-    imImageCopyAttributes( m_im2, m_imTmp );
-    if ( !imProcessRotate( m_im2, m_imTmp, cos0, sin0, SupEnv::s_interpolation ) )
+    imImageCopyAttributes( m_im2, m_opImTmp1 );
+    if ( !imProcessRotate( m_im2, m_opImTmp1, cos0, sin0, SupEnv::s_interpolation ) )
         return this->Terminate( ERR_CANCELED );
 
-    SwapImages( &m_im2, &m_imTmp );
+    SwapImages( &m_im2, &m_opImTmp1 );
 
     // deplacer (crop ou marges)
     if (!m_progressDlg->SetOperation( _("Calculation of margins ...") ) )
@@ -380,19 +380,19 @@ bool SupFile::Superimpose( const SupImController *imController1,
     int im_width = origine.x + width + min( m_im1->width - m1x1 - width, m_im2->width - m1x2 - width );
     int im_height = origine.y + height + min( m_im1->height - m1y1 - height, m_im2->height - m1y2 - height );
     
-    m_imTmp = imImageCreate(im_width, im_height, m_im1->color_space, m_im1->data_type);
-    if ( !m_imTmp )
+    m_opImTmp1 = imImageCreate(im_width, im_height, m_im1->color_space, m_im1->data_type);
+    if ( !m_opImTmp1 )
         return this->Terminate( ERR_MEMORY );
 
-    imProcessCrop( m_im1 , m_imTmp, minx1, miny1 );
-    SwapImages( &m_im1, &m_imTmp );
+    imProcessCrop( m_im1 , m_opImTmp1, minx1, miny1 );
+    SwapImages( &m_im1, &m_opImTmp1 );
 
-    m_imTmp = imImageCreate(im_width, im_height, m_im2->color_space, m_im2->data_type);
-    if ( !m_imTmp )
+    m_opImTmp1 = imImageCreate(im_width, im_height, m_im2->color_space, m_im2->data_type);
+    if ( !m_opImTmp1 )
         return this->Terminate( ERR_MEMORY );
 
-    imProcessCrop( m_im2 , m_imTmp, minx2, miny2 );
-    SwapImages( &m_im2, &m_imTmp );
+    imProcessCrop( m_im2 , m_opImTmp1, minx2, miny2 );
+    SwapImages( &m_im2, &m_opImTmp1 );
 
     // garder l'image original pour le fichier
     m_im2_original = imImageDuplicate( m_im2 );
@@ -517,24 +517,24 @@ bool SupFile::Superimpose( const SupImController *imController1,
     ifile = imFileNew( filename.c_str(), "TIFF", &error);
     if (error == IM_ERR_NONE)
     {
-        m_imTmp = imImageClone( m_im3 );
-        if ( !m_imTmp )
+        m_opImTmp1 = imImageClone( m_im3 );
+        if ( !m_opImTmp1 )
             return this->Terminate( ERR_MEMORY );
 
-        imProcessFlip( m_im3, m_imTmp );
-        SwapImages( &m_im3, &m_imTmp );
+        imProcessFlip( m_im3, m_opImTmp1 );
+        SwapImages( &m_im3, &m_opImTmp1 );
         imImageSetAttribute( m_im3, "Software", IM_BYTE, 8, "Aruspix" );
         imImageSetAttribute( m_im3, "Author", IM_BYTE, 14, "Laurent Pugin" );
 		imFileSetInfo( ifile, "RLE" ); // LZW Unisys par defaut
         imFileSaveImage( ifile, m_im3);
 
         // original 2 -> necessaire pour visualiser sans les coupures de correlation
-        m_imTmp = imImageClone( m_im2_original );
-        if ( !m_imTmp )
+        m_opImTmp1 = imImageClone( m_im2_original );
+        if ( !m_opImTmp1 )
             return this->Terminate( ERR_MEMORY );
 
-        imProcessFlip( m_im2_original, m_imTmp );
-        SwapImages( &m_im2_original, &m_imTmp );
+        imProcessFlip( m_im2_original, m_opImTmp1 );
+        SwapImages( &m_im2_original, &m_opImTmp1 );
         imImageSetAttribute( m_im2_original, "Software", IM_BYTE, 8, "Aruspix" );
         imImageSetAttribute( m_im2_original, "Author", IM_BYTE, 14, "Laurent Pugin" );
         imFileSaveImage( ifile, m_im2_original);

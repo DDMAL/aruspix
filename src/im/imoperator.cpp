@@ -34,18 +34,18 @@ ImOperator::ImOperator( )
     m_progressDlg = NULL;
     m_error = ERR_NONE;
 
-    m_imAlign = NULL;
-    m_imMask = NULL;
-    m_imTmp2 = NULL;
-    m_imTmp = NULL;
-    m_imMain = NULL;
-    m_im = NULL;
-    m_imMap = NULL;
+    m_opImAlign = NULL;
+    m_opImMask = NULL;
+    m_opImTmp2 = NULL;
+    m_opImTmp1 = NULL;
+    m_opImMain = NULL;
+    m_opIm = NULL;
+    m_opImMap = NULL;
 
-    m_hist = NULL;
-    m_lines1 = NULL;
-    m_lines2 = NULL;
-    m_cols1 = NULL;
+    m_opHist = NULL;
+    m_opLines1 = NULL;
+    m_opLines2 = NULL;
+    m_opCols1 = NULL;
 }
 
 ImOperator::~ImOperator()
@@ -72,27 +72,27 @@ void ImOperator::ImageDestroy( _imImage **image )
 bool ImOperator::Terminate( int code, ... )
 {
     // Attention que deux de ces pointeurs ne refere pas la meme adresse lors de l'appel de cette methode !
-    ImageDestroy( &m_imAlign );
-    ImageDestroy( &m_imMask );
-    ImageDestroy( &m_imTmp2 );
-    ImageDestroy( &m_imTmp );
-    ImageDestroy( &m_imMain );
-    ImageDestroy( &m_im );
-    ImageDestroy( &m_imMap );
+    ImageDestroy( &m_opImAlign );
+    ImageDestroy( &m_opImMask );
+    ImageDestroy( &m_opImTmp2 );
+    ImageDestroy( &m_opImTmp1 );
+    ImageDestroy( &m_opImMain );
+    ImageDestroy( &m_opIm );
+    ImageDestroy( &m_opImMap );
 
-    if ( m_hist )
-        delete[] m_hist;
-    if ( m_lines1 )
-        delete[] m_lines1;
-    if ( m_lines2 )
-        delete[] m_lines2;
-    if ( m_cols1 )
-        delete[] m_cols1;
+    if ( m_opHist )
+        delete[] m_opHist;
+    if ( m_opLines1 )
+        delete[] m_opLines1;
+    if ( m_opLines2 )
+        delete[] m_opLines2;
+    if ( m_opCols1 )
+        delete[] m_opCols1;
 
-    m_hist = NULL;
-    m_lines1 = NULL;
-    m_lines2 = NULL;
-    m_cols1 = NULL;
+    m_opHist = NULL;
+    m_opLines1 = NULL;
+    m_opLines2 = NULL;
+    m_opCols1 = NULL;
 
     m_error = code;
 
@@ -136,8 +136,8 @@ void ImOperator::SetProgressDlg( ProgressDlg *dlg )
 
 void ImOperator::SetMapImage( _imImage *image )
 {
-    ImageDestroy( &m_imMap );
-    m_imMap = imImageDuplicate( image );
+    ImageDestroy( &m_opImMap );
+    m_opImMap = imImageDuplicate( image );
 }
 
 bool ImOperator::Read( wxString file, _imImage **image, int index )
@@ -148,8 +148,8 @@ bool ImOperator::Read( wxString file, _imImage **image, int index )
 
     if ( image == NULL )
     {
-        ImageDestroy( &m_imMap );
-        image = &m_imMap;
+        ImageDestroy( &m_opImMap );
+        image = &m_opImMap;
     }
 
     imFile* ifile = imFileOpen( file.c_str(), &error );
@@ -290,14 +290,14 @@ bool ImOperator::GetImagePlane( _imImage **image , int plane, int factor )
 
     imImage *imTmp;
 
-    if ( m_imMap == NULL )
+    if ( m_opImMap == NULL )
         return this->Terminate( ERR_UNKNOWN );
     
     ImageDestroy( image );
-    *image = imImageCreate( m_imMap->width, m_imMap->height, IM_BINARY, IM_BYTE );
+    *image = imImageCreate( m_opImMap->width, m_opImMap->height, IM_BINARY, IM_BYTE );
     if ( !*image )
         return this->Terminate( ERR_MEMORY );
-    imProcessBitPlane( m_imMap, *image, plane, 0 );
+    imProcessBitPlane( m_opImMap, *image, plane, 0 );
 
     // resize
     for(int i = 1; i < factor; i*= 2 )
@@ -337,11 +337,11 @@ bool ImOperator::GetImage( _imImage **image, int factor,  int binary_method, boo
     if ( binary_method != -1 )
         color_type = IM_BINARY;
 
-    if ( m_imMap == NULL )
+    if ( m_opImMap == NULL )
         return this->Terminate( ERR_UNKNOWN );
     
     ImageDestroy( image );
-    *image = imImageDuplicate( m_imMap );
+    *image = imImageDuplicate( m_opImMap );
     if ( !*image )
         return this->Terminate( ERR_MEMORY );
 
@@ -362,7 +362,7 @@ bool ImOperator::GetImage( _imImage **image, int factor,  int binary_method, boo
 		else // should not happen, but just in case
 		{	
 			wxLogWarning("Fix threshold used when resizing" );
-			imProcessThreshold( m_imMain, m_imTmp, 127, 1);
+			imProcessThreshold( m_opImMain, m_opImTmp1, 127, 1);
 		}
         SwapImages( image, &imTmp );
     }
@@ -409,7 +409,7 @@ bool ImOperator::GetImage( _imImage **image, int factor,  int binary_method, boo
 
 void ImOperator::PruneElementsZone( _imImage *image, int min_threshold, int max_threshold, int direction )
 {
-    imImage *region_image = imImageCreate(m_im->width, m_im->height, IM_GRAY, IM_USHORT);
+    imImage *region_image = imImageCreate(m_opIm->width, m_opIm->height, IM_GRAY, IM_USHORT);
     if (!region_image)
         return;
 
@@ -424,7 +424,7 @@ void ImOperator::PruneElementsZone( _imImage *image, int min_threshold, int max_
         imushort* region_data = (imushort*)region_image->data[0];
         imbyte* img_data = (imbyte*)image->data[0];
 
-        for (int i = 0; i < m_im->count; i++)
+        for (int i = 0; i < m_opIm->count; i++)
         {
             if (*region_data)
                 *img_data = 1;

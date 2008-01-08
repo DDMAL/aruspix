@@ -833,43 +833,43 @@ bool ImStaffSegment::GetImageFromPage( _imImage **image, _imImage *page, int y )
 
 bool ImStaffSegment::AnalyzeSegment()
 {
-    wxASSERT_MSG( m_imMap, wxT("MAP Image cannot be NULL") );
+    wxASSERT_MSG( m_opImMap, wxT("MAP Image cannot be NULL") );
     int i;
 
-    if ( !GetImagePlane( &m_imMain ) )
+    if ( !GetImagePlane( &m_opImMain ) )
         return false;
 
     // margins
-    m_imTmp = imImageCreate( m_imMain->width + 2, m_imMain->height + 2, m_imMain->color_space, m_imMain->data_type );
-    if (!m_imTmp)
+    m_opImTmp1 = imImageCreate( m_opImMain->width + 2, m_opImMain->height + 2, m_opImMain->color_space, m_opImMain->data_type );
+    if (!m_opImTmp1)
         return this->Terminate( ERR_MEMORY );
-    imProcessAddMargins( m_imMain, m_imTmp, 1, 1);
-    SwapImages( &m_imMain, &m_imTmp );
+    imProcessAddMargins( m_opImMain, m_opImTmp1, 1, 1);
+    SwapImages( &m_opImMain, &m_opImTmp1 );
 
 
     // close
-    m_imTmp = imImageClone( m_imMain );
-    if (!m_imTmp)
+    m_opImTmp1 = imImageClone( m_opImMain );
+    if (!m_opImTmp1)
         return this->Terminate( ERR_MEMORY );
-    imProcessBinMorphClose( m_imMain, m_imTmp, 5, 1);
-    SwapImages( &m_imMain, &m_imTmp );
+    imProcessBinMorphClose( m_opImMain, m_opImTmp1, 5, 1);
+    SwapImages( &m_opImMain, &m_opImTmp1 );
 
     
-    m_im = imImageCreate(m_imMain->width, m_imMain->height, IM_GRAY, IM_USHORT);
-    int region_count = imAnalyzeFindRegions ( m_imMain, m_im, 8, 1);
+    m_opIm = imImageCreate(m_opImMain->width, m_opImMain->height, IM_GRAY, IM_USHORT);
+    int region_count = imAnalyzeFindRegions ( m_opImMain, m_opIm, 8, 1);
     
     int* area = (int*)malloc( region_count * sizeof(int) );
     memset(area, 0, region_count * sizeof(int) );
     float* perim = (float*)malloc( region_count * sizeof(float) );
     memset(perim, 0, region_count * sizeof(float) );
 
-    imAnalyzeMeasureArea( m_im, area );
-    imAnalyzeMeasurePerimeter( m_im, perim );
+    imAnalyzeMeasureArea( m_opIm, area );
+    imAnalyzeMeasurePerimeter( m_opIm, perim );
 
     float c = 0;
     for (i = 0; i < region_count; i++ )
     {
-        c += pow(perim[i],2) / (4 * AX_PI * area[i]) * (area[i] / m_im->width);
+        c += pow(perim[i],2) / (4 * AX_PI * area[i]) * (area[i] / m_opIm->width);
     }
     //a /= median( area, region_count);
     //p /= medianf( perim, region_count);
@@ -977,13 +977,13 @@ void ImStaffSegment::SaveImage(const int staff, const int segment, const int y, 
 	// params 1: nom de base (ajouter par exemple .x.tif pour sauver l'image)
 
     imImage *page = (imImage*)params[0];    
-	if ( !GetImageFromPage( &m_im, page, y ) )
+	if ( !GetImageFromPage( &m_opIm, page, y ) )
 		return;
 
 	wxString filename = *(wxString*)params[1];
 	filename << "_" << staff << "." << segment <<".tif";
 
-    if ( !Write( filename, &m_im ) )
+    if ( !Write( filename, &m_opIm ) )
         return;
 
     this->Terminate( ERR_NONE );
@@ -998,7 +998,7 @@ void ImStaffSegment::CalcStaffHeight(const int staff, const int segment, const i
 	// param 2: current segment index int height array
 
     imImage *page = (imImage*)params[0];    
-	if ( !GetImageFromPage( &m_im, page, y ) )
+	if ( !GetImageFromPage( &m_opIm, page, y ) )
 		return;
 
 	int *height = (int*)params[1];
@@ -1006,63 +1006,63 @@ void ImStaffSegment::CalcStaffHeight(const int staff, const int segment, const i
 
     int x = 0;
     int width = POSITION_WIN;
-	if ( m_im->width < width ) // force at least one corretation
-		width = m_im->width;
+	if ( m_opIm->width < width ) // force at least one corretation
+		width = m_opIm->width;
     int step = POSITION_STEP;
 
-    m_imTmp = imImageCreate( width, STAFF_HEIGHT, m_im->color_space, m_im->data_type);
-    if ( !m_imTmp )
+    m_opImTmp1 = imImageCreate( width, STAFF_HEIGHT, m_opIm->color_space, m_opIm->data_type);
+    if ( !m_opImTmp1 )
     {
         this->Terminate( ERR_MEMORY );
         return;
     }
     
-    m_hist = new int[ m_imTmp->height ];
+    m_opHist = new int[ m_opImTmp1->height ];
 
-	m_lines1 = new int[ m_im->width];
+	m_opLines1 = new int[ m_opIm->width];
 	int lines = 0;
     //wxLogMessage("Segment %d - %d", staff, segment);
     while (1)
     {
-        if ( x + width > m_im->width )
+        if ( x + width > m_opIm->width )
             break;
 
-        imProcessCrop( m_im, m_imTmp, x, 0);
+        imProcessCrop( m_opIm, m_opImTmp1, x, 0);
 
-        imAnalyzeProjectionH( m_imTmp, m_hist );
+        imAnalyzeProjectionH( m_opImTmp1, m_opHist );
 
 		// pic de l'histogramme :bottom - top = epaisseur de portee;
 		int i, top = 0;
 		for (i = 0; i < STAFF_HEIGHT / 2; i++ )
-			if ( m_hist[i] > width / 2 )
+			if ( m_opHist[i] > width / 2 )
 				break;
 			else
 				top = i;
 
 		int bottom = STAFF_HEIGHT;
 		for (i = STAFF_HEIGHT -1; i > STAFF_HEIGHT / 2; i-- )
-			if ( m_hist[i] > width / 2 )
+			if ( m_opHist[i] > width / 2 )
 				break;
 			else
 				bottom = i;
 
-		m_lines1[lines] = bottom - top;
+		m_opLines1[lines] = bottom - top;
 		lines++;
 
         x += step;
     }
 
 	height += (*index);
-	*height = median( m_lines1, lines );
+	*height = median( m_opLines1, lines );
 	(*index) += 1;
 	//if ( height < 100 || height > 120)
-	//	wxLogMessage("--- staff %d : height %d - mean max %d", staff, height, median( m_lines2, lines ) );
+	//	wxLogMessage("--- staff %d : height %d - mean max %d", staff, height, median( m_opLines2, lines ) );
 
-    delete[] m_lines1;
-    m_lines1 = NULL;
+    delete[] m_opLines1;
+    m_opLines1 = NULL;
 
-    delete[] m_hist;
-    m_hist = NULL;
+    delete[] m_opHist;
+    m_opHist = NULL;
 
     this->Terminate( ERR_NONE );
 }
@@ -1075,24 +1075,24 @@ void ImStaffSegment::CalcCorrelation(const int staff, const int segment, const i
 	// params 2: hauteur de la portee
 
     imImage *page = (imImage*)params[0];    
-	if ( !GetImageFromPage( &m_im, page, y ) )
+	if ( !GetImageFromPage( &m_opIm, page, y ) )
 		return;
 
     int x = 0;
     int width = POSITION_WIN;
-	if ( m_im->width < width ) // force at least one corretation
-		width = m_im->width;
+	if ( m_opIm->width < width ) // force at least one corretation
+		width = m_opIm->width;
     int step = POSITION_STEP;
     int dec_y, max;
 
-    m_imTmp = imImageCreate( width, STAFF_HEIGHT, m_im->color_space, m_im->data_type);
-    if ( !m_imTmp )
+    m_opImTmp1 = imImageCreate( width, STAFF_HEIGHT, m_opIm->color_space, m_opIm->data_type);
+    if ( !m_opImTmp1 )
     {
         this->Terminate( ERR_MEMORY );
         return;
     }
     
-    m_hist = new int[ m_imTmp->height ];
+    m_opHist = new int[ m_opImTmp1->height ];
 
     int mask[STAFF_HEIGHT];
 	int height = *(int*)params[2];
@@ -1106,15 +1106,15 @@ void ImStaffSegment::CalcCorrelation(const int staff, const int segment, const i
     //wxLogMessage("Segment %d - %d", staff, segment);
     while (1)
     {
-        if ( x + width > m_im->width )
+        if ( x + width > m_opIm->width )
             break;
-        imProcessCrop( m_im, m_imTmp, x, 0);
-        imAnalyzeProjectionH( m_imTmp, m_hist );
-        corr(m_hist, mask, STAFF_HEIGHT, CORRELATION_HEIGHT, &dec_y, &max );
+        imProcessCrop( m_opIm, m_opImTmp1, x, 0);
+        imAnalyzeProjectionH( m_opImTmp1, m_opHist );
+        corr(m_opHist, mask, STAFF_HEIGHT, CORRELATION_HEIGHT, &dec_y, &max );
 		//wxLogMessage("dec y = %d - max %d", dec_y , max);
 		positions_tosave.Add( dec_y );
 		//
-		imAnalyzeRuns( m_imTmp, &peak_val, &median_val, 1 );
+		imAnalyzeRuns( m_opImTmp1, &peak_val, &median_val, 1 );
 		//wxLogMessage("peak_val = %d, median_val = %d", peak_val , median_val );
 		line_p_tosave.Add( peak_val );
 		line_m_tosave.Add( median_val );		
@@ -1122,8 +1122,8 @@ void ImStaffSegment::CalcCorrelation(const int staff, const int segment, const i
         x += step;
     }
 
-    delete[] m_hist;
-    m_hist = NULL;
+    delete[] m_opHist;
+    m_opHist = NULL;
 
 	SetValues( &positions_tosave, VALUES_POSITIONS ); // conversion positions par POSITION_STEP -> position pour chaque px
 	SetValues( &line_p_tosave, VALUES_LINE_P ); // idem
@@ -1134,35 +1134,35 @@ void ImStaffSegment::CalcCorrelation(const int staff, const int segment, const i
 	/*wxString filename = *(wxString*)params[1];
 	filename << "_" << staff << "." << segment <<".tif";
 
-	ImageDestroy( &m_imTmp );
-    m_imTmp = imImageClone( m_im );
-    if ( !m_imTmp )
+	ImageDestroy( &m_opImTmp1 );
+    m_opImTmp1 = imImageClone( m_opIm );
+    if ( !m_opImTmp1 )
     {
         this->Terminate( ERR_MEMORY );
         return;
     }
-	imImageClear( m_imTmp );
+	imImageClear( m_opImTmp1 );
 
-	imbyte *bufIm = (imbyte*)m_imTmp->data[0];
+	imbyte *bufIm = (imbyte*)m_opImTmp1->data[0];
 
 	int offset;
 	int pos[5] = {35, 61, 87, 113, 139};
-    for (int i = 0; i < m_imTmp->width; i++)
+    for (int i = 0; i < m_opImTmp1->width; i++)
     {
-		int dec = m_positions[i] *m_imTmp->width + i;
+		int dec = m_positions[i] *m_opImTmp1->width + i;
 		for (int m = 0; m < STAFF_HEIGHT; m++)
 		{
 			if ( mask[m] == 1 )
 			{
-				offset = dec + m * m_imTmp->width;
+				offset = dec + m * m_opImTmp1->width;
 				bufIm[ offset ] = 1;
 			}
 		}
     }
 
-    //if ( !Write( filename, &m_imTmp ) )
+    //if ( !Write( filename, &m_opImTmp1 ) )
     //    return;
-    if ( !WriteMAP( filename, &m_im, &m_imTmp ,6) )
+    if ( !WriteMAP( filename, &m_opIm, &m_opImTmp1 ,6) )
         return;
 	*/
 	/************/
@@ -1212,27 +1212,27 @@ void ImStaffSegment::CalcFeatures(const int staff, const int segment, const int 
 	//wxLogMessage("Staff segment %d.%d", staff , segment );
     
 	imImage *page = (imImage*)params[0];       
-	if ( !GetImageFromPage( &m_im, page, y ) )
+	if ( !GetImageFromPage( &m_opIm, page, y ) )
 		return;
 
     int x = 0;
     int width = *(int*)params[1];
-	if ( m_im->width < width ) // force at least one correlation
-		width = m_im->width;
+	if ( m_opIm->width < width ) // force at least one correlation
+		width = m_opIm->width;
     int step = width - *(int*)params[2];
 
-    m_imTmp = imImageCreate( width, STAFF_HEIGHT, m_im->color_space, m_im->data_type);
-    if ( !m_imTmp || !width )
+    m_opImTmp1 = imImageCreate( width, STAFF_HEIGHT, m_opIm->color_space, m_opIm->data_type);
+    if ( !m_opImTmp1 || !width )
     {
         this->Terminate( ERR_MEMORY );
         return;
     }
 	
 	// debug
-	//imdebug = imImageClone( m_im );
+	//imdebug = imImageClone( m_opIm );
 	//stepdebug = 0;
 
-	int size = FEATURES_COUNT * ( m_im->width / step );
+	int size = FEATURES_COUNT * ( m_opIm->width / step );
 	float *values = (float*)malloc( size * sizeof(float) );
 	memset(values, 0, size * sizeof(float) );
 	//wxLogMessage("step %d", step );
@@ -1242,12 +1242,12 @@ void ImStaffSegment::CalcFeatures(const int staff, const int segment, const int 
 
     while (1)
     {
-        if ( x + width > m_im->width )
+        if ( x + width > m_opIm->width )
             break;
 			
-        imProcessCrop( m_im, m_imTmp, x, 0);
-		CalcWinFeatures( m_imTmp, values + ( samples * FEATURES_COUNT ), m_positions[ x ], height, m_line_p[x] ); // 01 et al.
-		// CalcWinFeatures( m_imTmp, values + ( samples * FEATURES_COUNT ), m_positions[ x ], height, m_line_m[x] ); // 02
+        imProcessCrop( m_opIm, m_opImTmp1, x, 0);
+		CalcWinFeatures( m_opImTmp1, values + ( samples * FEATURES_COUNT ), m_positions[ x ], height, m_line_p[x] ); // 01 et al.
+		// CalcWinFeatures( m_opImTmp1, values + ( samples * FEATURES_COUNT ), m_positions[ x ], height, m_line_m[x] ); // 02
 		samples++;
 
         x += step;
@@ -1255,7 +1255,7 @@ void ImStaffSegment::CalcFeatures(const int staff, const int segment, const int 
 		//debug
 		stepdebug = x;
     }
-	//wxLogDebug("width %d",m_im->width );
+	//wxLogDebug("width %d",m_opIm->width );
 	//wxLogDebug("pos_index %d",pos_index  );
 	//wxLogDebug("samples %d",samples  );
 	//wxLogDebug("size %d",size /  FEATURES_COUNT);

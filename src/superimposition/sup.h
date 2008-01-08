@@ -73,7 +73,7 @@ private:
     //ProgressDlg *m_progressDlg;
     //int m_error;
 
-    //_imImage *m_imTmp;
+    //_imImage *m_opImTmp1;
     _imImage *m_im1;
     _imImage *m_im2;
     _imImage *m_im2_original;
