@@ -641,46 +641,6 @@
 			sepNavVisRect = "{{0, 0}, {1369, 807}}";
 		};
 	};
-	57CA54120D34136A001FC334 /* PBXTextBookmark */ = {
-		isa = PBXTextBookmark;
-		fRef = A585245D0A1B9604002D9D8A /* aximage.cpp */;
-		name = defs.h;
-		rLen = 0;
-		rLoc = 710;
-		rType = 0;
-		vrLen = 1093;
-		vrLoc = 0;
-	};
-	57CA54130D34136A001FC334 /* PBXTextBookmark */ = {
-		isa = PBXTextBookmark;
-		fRef = A585245E0A1B9604002D9D8A /* aximage.h */;
-		name = defs.h;
-		rLen = 6;
-		rLoc = 449;
-		rType = 0;
-		vrLen = 1390;
-		vrLoc = 0;
-	};
-	57CA54140D34136A001FC334 /* PBXTextBookmark */ = {
-		isa = PBXTextBookmark;
-		fRef = A585245D0A1B9604002D9D8A /* aximage.cpp */;
-		name = defs.h;
-		rLen = 0;
-		rLoc = 710;
-		rType = 0;
-		vrLen = 1093;
-		vrLoc = 0;
-	};
-	57CA54150D34136A001FC334 /* PBXTextBookmark */ = {
-		isa = PBXTextBookmark;
-		fRef = A585245E0A1B9604002D9D8A /* aximage.h */;
-		name = defs.h;
-		rLen = 6;
-		rLoc = 449;
-		rType = 0;
-		vrLen = 1390;
-		vrLoc = 0;
-	};
 	57CA54160D34139D001FC334 /* axprogressdlg.h */ = {
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {1001, 2058}}";
@@ -695,12 +655,56 @@
 			sepNavVisRect = "{{0, 0}, {644, 642}}";
 		};
 	};
+	57CA541D0D34139D001FC334 /* axgotodlg.cpp */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {644, 1134}}";
+			sepNavSelRange = "{607, 0}";
+			sepNavVisRect = "{{0, 0}, {644, 642}}";
+		};
+	};
 	57CA54310D3414BB001FC334 /* axdefs.h */ = {
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {1274, 743}}";
 			sepNavSelRange = "{1, 0}";
 			sepNavVisRect = "{{0, 0}, {1274, 743}}";
 		};
+	};
+	57CA54330D3414E2001FC334 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = A585245E0A1B9604002D9D8A /* aximage.h */;
+		rLen = 7;
+		rLoc = 449;
+		rType = 0;
+	};
+	57CA54360D341B31001FC334 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 57CA54310D3414BB001FC334 /* axdefs.h */;
+		name = "axdefs.h: min";
+		rLen = 0;
+		rLoc = 1;
+		rType = 0;
+		vrLen = 82;
+		vrLoc = 0;
+	};
+	57CA54370D341B31001FC334 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 57CA54310D3414BB001FC334 /* axdefs.h */;
+		name = "axdefs.h: min";
+		rLen = 0;
+		rLoc = 1;
+		rType = 0;
+		vrLen = 82;
+		vrLoc = 0;
+	};
+	57CA54380D341B31001FC334 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = A585245E0A1B9604002D9D8A /* aximage.h */;
+		name = "aximage.h: 15";
+		rLen = 0;
+		rLoc = 449;
+		rType = 0;
+		vrLen = 1529;
+		vrLoc = 0;
 	};
 	57D4B7C30BFF7DB100A26437 /* rec.cpp:873 */ = {
 		isa = PBXFileBreakpoint;
@@ -1009,10 +1013,10 @@
 			PBXWorkspaceStateSaveDate = 221515584;
 		};
 		perUserProjectItems = {
-			57CA54120D34136A001FC334 /* PBXTextBookmark */ = 57CA54120D34136A001FC334 /* PBXTextBookmark */;
-			57CA54130D34136A001FC334 /* PBXTextBookmark */ = 57CA54130D34136A001FC334 /* PBXTextBookmark */;
-			57CA54140D34136A001FC334 /* PBXTextBookmark */ = 57CA54140D34136A001FC334 /* PBXTextBookmark */;
-			57CA54150D34136A001FC334 /* PBXTextBookmark */ = 57CA54150D34136A001FC334 /* PBXTextBookmark */;
+			57CA54330D3414E2001FC334 /* PBXTextBookmark */ = 57CA54330D3414E2001FC334 /* PBXTextBookmark */;
+			57CA54360D341B31001FC334 /* PBXTextBookmark */ = 57CA54360D341B31001FC334 /* PBXTextBookmark */;
+			57CA54370D341B31001FC334 /* PBXTextBookmark */ = 57CA54370D341B31001FC334 /* PBXTextBookmark */;
+			57CA54380D341B31001FC334 /* PBXTextBookmark */ = 57CA54380D341B31001FC334 /* PBXTextBookmark */;
 		};
 		sourceControlManager = 576C2D310AA62AE1009D2053 /* Source Control */;
 		userBuildSettings = {
@@ -1075,18 +1079,18 @@
 	};
 	A585245D0A1B9604002D9D8A /* aximage.cpp */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1001, 7042}}";
-			sepNavSelRange = "{711, 19}";
+			sepNavIntBoundsRect = "{{0, 0}, {1001, 7028}}";
+			sepNavSelRange = "{710, 0}";
 			sepNavVisRange = "{378, 1514}";
-			sepNavVisRect = "{{0, 268}, {1001, 410}}";
+			sepNavVisRect = "{{0, 266}, {1001, 410}}";
 			sepNavWindowFrame = "{{213, 66}, {1212, 1112}}";
 		};
 	};
 	A585245E0A1B9604002D9D8A /* aximage.h */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {644, 1148}}";
-			sepNavSelRange = "{449, 7}";
-			sepNavVisRect = "{{0, 0}, {644, 642}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1274, 1148}}";
+			sepNavSelRange = "{449, 0}";
+			sepNavVisRect = "{{0, 0}, {1274, 743}}";
 		};
 	};
 	A585245F0A1B9604002D9D8A /* aximagecontroller.cpp */ = {
