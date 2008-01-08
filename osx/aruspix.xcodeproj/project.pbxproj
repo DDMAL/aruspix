@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		570C84890C186319007B375E /* im_kmeans.c in Sources */ = {isa = PBXBuildFile; fileRef = 570C84880C186319007B375E /* im_kmeans.c */; };
 		5736CE550C354E4A00254E7B /* cmp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5736CE460C354E4A00254E7B /* cmp.cpp */; };
 		5736CE570C354E4A00254E7B /* cmp_wdr.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5736CE490C354E4A00254E7B /* cmp_wdr.cpp */; };
 		5736CE580C354E4A00254E7B /* cmpctrl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5736CE4B0C354E4A00254E7B /* cmpctrl.cpp */; };
@@ -19,12 +18,18 @@
 		5769E11D0BF25A1D007772A6 /* axproj.icns in Resources */ = {isa = PBXBuildFile; fileRef = 5769E1190BF25A1D007772A6 /* axproj.icns */; };
 		5769E11E0BF25A1D007772A6 /* axtyp.icns in Resources */ = {isa = PBXBuildFile; fileRef = 5769E11A0BF25A1D007772A6 /* axtyp.icns */; };
 		5769E11F0BF25A1D007772A6 /* axz.icns in Resources */ = {isa = PBXBuildFile; fileRef = 5769E11B0BF25A1D007772A6 /* axz.icns */; };
-		579EB5170CE10B3F00BE3E91 /* im_brink.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 579EB5160CE10B3F00BE3E91 /* im_brink.cpp */; };
 		57A668710C331BF900622C70 /* recbookfile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 57A6686F0C331BF900622C70 /* recbookfile.cpp */; };
 		57A668950C333F3000622C70 /* axctrl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 57A668930C333F3000622C70 /* axctrl.cpp */; };
+		57CA53DD0D340F61001FC334 /* imbrink.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 57CA53D80D340F61001FC334 /* imbrink.cpp */; };
+		57CA53DE0D340F61001FC334 /* imext.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 57CA53D90D340F61001FC334 /* imext.cpp */; };
+		57CA53DF0D340F61001FC334 /* imkmeans.c in Sources */ = {isa = PBXBuildFile; fileRef = 57CA53DB0D340F61001FC334 /* imkmeans.c */; };
+		57CA54220D34139D001FC334 /* axprogressdlg.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 57CA54170D34139D001FC334 /* axprogressdlg.cpp */; };
+		57CA54230D34139D001FC334 /* axoptionsdlg.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 57CA54190D34139D001FC334 /* axoptionsdlg.cpp */; };
+		57CA54240D34139D001FC334 /* axoptions_wdr.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 57CA541B0D34139D001FC334 /* axoptions_wdr.cpp */; };
+		57CA54250D34139D001FC334 /* axgotodlg.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 57CA541D0D34139D001FC334 /* axgotodlg.cpp */; };
+		57CA54260D34139D001FC334 /* axapp_wdr.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 57CA541F0D34139D001FC334 /* axapp_wdr.cpp */; };
+		57CA54270D34139D001FC334 /* axabout_wdr.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 57CA54210D34139D001FC334 /* axabout_wdr.cpp */; };
 		57EA3DE50C00BDEB00414247 /* recbookctrl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 57EA3DE30C00BDEB00414247 /* recbookctrl.cpp */; };
-		A58524CA0A1B9604002D9D8A /* about_wdr.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A58524500A1B9603002D9D8A /* about_wdr.cpp */; };
-		A58524CC0A1B9604002D9D8A /* app_wdr.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A58524530A1B9604002D9D8A /* app_wdr.cpp */; };
 		A58524CE0A1B9604002D9D8A /* axapp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A58524560A1B9604002D9D8A /* axapp.cpp */; };
 		A58524CF0A1B9604002D9D8A /* axenv.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A58524580A1B9604002D9D8A /* axenv.cpp */; };
 		A58524D00A1B9604002D9D8A /* axframe.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A585245B0A1B9604002D9D8A /* axframe.cpp */; };
@@ -34,10 +39,6 @@
 		A58524D50A1B9604002D9D8A /* axundo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A58524640A1B9604002D9D8A /* axundo.cpp */; };
 		A58524D60A1B9604002D9D8A /* axprocess.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A58524660A1B9604002D9D8A /* axprocess.cpp */; };
 		A58524D70A1B9604002D9D8A /* axscrolledwindow.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A58524680A1B9604002D9D8A /* axscrolledwindow.cpp */; };
-		A58524D80A1B9604002D9D8A /* gotodlg.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A585246B0A1B9604002D9D8A /* gotodlg.cpp */; };
-		A58524DB0A1B9604002D9D8A /* options_wdr.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A58524700A1B9604002D9D8A /* options_wdr.cpp */; };
-		A58524DC0A1B9604002D9D8A /* optionsdlg.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A58524720A1B9604002D9D8A /* optionsdlg.cpp */; };
-		A58524DD0A1B9604002D9D8A /* progressdlg.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A58524740A1B9604002D9D8A /* progressdlg.cpp */; };
 		A58524DF0A1B9604002D9D8A /* ax.xpm in Resources */ = {isa = PBXBuildFile; fileRef = A58524780A1B9604002D9D8A /* ax.xpm */; };
 		A58524E00A1B9604002D9D8A /* wxprec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A585247A0A1B9604002D9D8A /* wxprec.cpp */; };
 		A58524E10A1B9604002D9D8A /* display.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A585247C0A1B9604002D9D8A /* display.cpp */; };
@@ -75,7 +76,6 @@
 		A5D0D4B50A65628800A4B1CA /* impage.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A5D0D4AE0A65628800A4B1CA /* impage.cpp */; };
 		A5D0D4B60A65628800A4B1CA /* imstaff.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A5D0D4B00A65628800A4B1CA /* imstaff.cpp */; };
 		A5D0D4B70A65628800A4B1CA /* imstaffsegment.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A5D0D4B20A65628800A4B1CA /* imstaffsegment.cpp */; };
-		A5D0D4BB0A65654900A4B1CA /* im_ext.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A5D0D4B90A65654900A4B1CA /* im_ext.cpp */; };
 		A5D0D5120A657A6300A4B1CA /* recim.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A5D0D5100A657A6300A4B1CA /* recim.cpp */; };
 		A5D0D5130A657A6300A4B1CA /* recwg.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A5D0D5110A657A6300A4B1CA /* recwg.cpp */; };
 		A5EFDAB40A275E8C0019FA6A /* iomlf.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A5EFDAB30A275E8C0019FA6A /* iomlf.cpp */; };
@@ -84,8 +84,6 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		570C84880C186319007B375E /* im_kmeans.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; path = im_kmeans.c; sourceTree = "<group>"; };
-		570C84AC0C1864D4007B375E /* im_kmeans.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = im_kmeans.h; sourceTree = "<group>"; };
 		5736CE460C354E4A00254E7B /* cmp.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = cmp.cpp; sourceTree = "<group>"; };
 		5736CE470C354E4A00254E7B /* cmp.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = cmp.h; sourceTree = "<group>"; };
 		5736CE490C354E4A00254E7B /* cmp_wdr.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = cmp_wdr.cpp; sourceTree = "<group>"; };
@@ -104,19 +102,32 @@
 		5769E1190BF25A1D007772A6 /* axproj.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = axproj.icns; sourceTree = "<group>"; };
 		5769E11A0BF25A1D007772A6 /* axtyp.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = axtyp.icns; sourceTree = "<group>"; };
 		5769E11B0BF25A1D007772A6 /* axz.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = axz.icns; sourceTree = "<group>"; };
-		579EB5160CE10B3F00BE3E91 /* im_brink.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = im_brink.cpp; sourceTree = "<group>"; };
 		57A6686F0C331BF900622C70 /* recbookfile.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = recbookfile.cpp; sourceTree = "<group>"; };
 		57A668700C331BF900622C70 /* recbookfile.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = recbookfile.h; sourceTree = "<group>"; };
 		57A668930C333F3000622C70 /* axctrl.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = axctrl.cpp; sourceTree = "<group>"; };
 		57A668940C333F3000622C70 /* axctrl.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = axctrl.h; sourceTree = "<group>"; };
+		57CA53D80D340F61001FC334 /* imbrink.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = imbrink.cpp; sourceTree = "<group>"; };
+		57CA53D90D340F61001FC334 /* imext.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = imext.cpp; sourceTree = "<group>"; };
+		57CA53DA0D340F61001FC334 /* imext.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = imext.h; sourceTree = "<group>"; };
+		57CA53DB0D340F61001FC334 /* imkmeans.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; path = imkmeans.c; sourceTree = "<group>"; };
+		57CA53DC0D340F61001FC334 /* imkmeans.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = imkmeans.h; sourceTree = "<group>"; };
+		57CA54160D34139D001FC334 /* axprogressdlg.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = axprogressdlg.h; sourceTree = "<group>"; };
+		57CA54170D34139D001FC334 /* axprogressdlg.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = axprogressdlg.cpp; sourceTree = "<group>"; };
+		57CA54180D34139D001FC334 /* axoptionsdlg.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = axoptionsdlg.h; sourceTree = "<group>"; };
+		57CA54190D34139D001FC334 /* axoptionsdlg.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = axoptionsdlg.cpp; sourceTree = "<group>"; };
+		57CA541A0D34139D001FC334 /* axoptions_wdr.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = axoptions_wdr.h; sourceTree = "<group>"; };
+		57CA541B0D34139D001FC334 /* axoptions_wdr.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = axoptions_wdr.cpp; sourceTree = "<group>"; };
+		57CA541C0D34139D001FC334 /* axgotodlg.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = axgotodlg.h; sourceTree = "<group>"; };
+		57CA541D0D34139D001FC334 /* axgotodlg.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = axgotodlg.cpp; sourceTree = "<group>"; };
+		57CA541E0D34139D001FC334 /* axapp_wdr.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = axapp_wdr.h; sourceTree = "<group>"; };
+		57CA541F0D34139D001FC334 /* axapp_wdr.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = axapp_wdr.cpp; sourceTree = "<group>"; };
+		57CA54200D34139D001FC334 /* axabout_wdr.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = axabout_wdr.h; sourceTree = "<group>"; };
+		57CA54210D34139D001FC334 /* axabout_wdr.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = axabout_wdr.cpp; sourceTree = "<group>"; };
+		57CA54310D3414BB001FC334 /* axdefs.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = axdefs.h; sourceTree = "<group>"; };
 		57EA3DE30C00BDEB00414247 /* recbookctrl.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = recbookctrl.cpp; sourceTree = "<group>"; };
 		57EA3DE40C00BDEB00414247 /* recbookctrl.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = recbookctrl.h; sourceTree = "<group>"; };
 		A50FE1390A6D6E240038D682 /* rec.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = rec.h; sourceTree = "<group>"; };
 		A58523900A1B9504002D9D8A /* Aruspix.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Aruspix.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		A58524500A1B9603002D9D8A /* about_wdr.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = about_wdr.cpp; sourceTree = "<group>"; };
-		A58524510A1B9603002D9D8A /* about_wdr.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = about_wdr.h; sourceTree = "<group>"; };
-		A58524530A1B9604002D9D8A /* app_wdr.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = app_wdr.cpp; sourceTree = "<group>"; };
-		A58524540A1B9604002D9D8A /* app_wdr.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = app_wdr.h; sourceTree = "<group>"; };
 		A58524560A1B9604002D9D8A /* axapp.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = axapp.cpp; sourceTree = "<group>"; };
 		A58524570A1B9604002D9D8A /* axapp.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = axapp.h; sourceTree = "<group>"; };
 		A58524580A1B9604002D9D8A /* axenv.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = axenv.cpp; sourceTree = "<group>"; };
@@ -135,15 +146,6 @@
 		A58524670A1B9604002D9D8A /* axprocess.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = axprocess.h; sourceTree = "<group>"; };
 		A58524680A1B9604002D9D8A /* axscrolledwindow.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = axscrolledwindow.cpp; sourceTree = "<group>"; };
 		A58524690A1B9604002D9D8A /* axscrolledwindow.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = axscrolledwindow.h; sourceTree = "<group>"; };
-		A585246A0A1B9604002D9D8A /* defs.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = defs.h; sourceTree = "<group>"; };
-		A585246B0A1B9604002D9D8A /* gotodlg.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = gotodlg.cpp; sourceTree = "<group>"; };
-		A585246C0A1B9604002D9D8A /* gotodlg.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = gotodlg.h; sourceTree = "<group>"; };
-		A58524700A1B9604002D9D8A /* options_wdr.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = options_wdr.cpp; sourceTree = "<group>"; };
-		A58524710A1B9604002D9D8A /* options_wdr.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = options_wdr.h; sourceTree = "<group>"; };
-		A58524720A1B9604002D9D8A /* optionsdlg.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = optionsdlg.cpp; sourceTree = "<group>"; };
-		A58524730A1B9604002D9D8A /* optionsdlg.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = optionsdlg.h; sourceTree = "<group>"; };
-		A58524740A1B9604002D9D8A /* progressdlg.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = progressdlg.cpp; sourceTree = "<group>"; };
-		A58524750A1B9604002D9D8A /* progressdlg.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = progressdlg.h; sourceTree = "<group>"; };
 		A58524780A1B9604002D9D8A /* ax.xpm */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = ax.xpm; sourceTree = "<group>"; };
 		A58524790A1B9604002D9D8A /* resource.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = resource.h; sourceTree = "<group>"; };
 		A585247A0A1B9604002D9D8A /* wxprec.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = wxprec.cpp; sourceTree = "<group>"; };
@@ -211,8 +213,6 @@
 		A5D0D4B10A65628800A4B1CA /* imstaff.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = imstaff.h; sourceTree = "<group>"; };
 		A5D0D4B20A65628800A4B1CA /* imstaffsegment.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = imstaffsegment.cpp; sourceTree = "<group>"; };
 		A5D0D4B30A65628800A4B1CA /* imstaffsegment.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = imstaffsegment.h; sourceTree = "<group>"; };
-		A5D0D4B90A65654900A4B1CA /* im_ext.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = im_ext.cpp; sourceTree = "<group>"; };
-		A5D0D4BA0A65654900A4B1CA /* im_ext.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = im_ext.h; sourceTree = "<group>"; };
 		A5D0D4F70A6576B500A4B1CA /* recim.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = recim.h; sourceTree = "<group>"; };
 		A5D0D5100A657A6300A4B1CA /* recim.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = recim.cpp; sourceTree = "<group>"; };
 		A5D0D5110A657A6300A4B1CA /* recwg.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = recwg.cpp; sourceTree = "<group>"; };
@@ -289,14 +289,23 @@
 		A585244E0A1B9603002D9D8A /* app */ = {
 			isa = PBXGroup;
 			children = (
+				57CA54160D34139D001FC334 /* axprogressdlg.h */,
+				57CA54170D34139D001FC334 /* axprogressdlg.cpp */,
+				57CA54180D34139D001FC334 /* axoptionsdlg.h */,
+				57CA54190D34139D001FC334 /* axoptionsdlg.cpp */,
+				57CA541A0D34139D001FC334 /* axoptions_wdr.h */,
+				57CA541B0D34139D001FC334 /* axoptions_wdr.cpp */,
+				57CA541C0D34139D001FC334 /* axgotodlg.h */,
+				57CA541D0D34139D001FC334 /* axgotodlg.cpp */,
+				57CA54310D3414BB001FC334 /* axdefs.h */,
+				57CA541E0D34139D001FC334 /* axapp_wdr.h */,
+				57CA541F0D34139D001FC334 /* axapp_wdr.cpp */,
+				57CA54200D34139D001FC334 /* axabout_wdr.h */,
+				57CA54210D34139D001FC334 /* axabout_wdr.cpp */,
 				57A668930C333F3000622C70 /* axctrl.cpp */,
 				57A668940C333F3000622C70 /* axctrl.h */,
 				A5AE82AC0A82AF50002BA6A5 /* axfile.cpp */,
 				A5AE82AD0A82AF50002BA6A5 /* axfile.h */,
-				A58524500A1B9603002D9D8A /* about_wdr.cpp */,
-				A58524510A1B9603002D9D8A /* about_wdr.h */,
-				A58524530A1B9604002D9D8A /* app_wdr.cpp */,
-				A58524540A1B9604002D9D8A /* app_wdr.h */,
 				A58524560A1B9604002D9D8A /* axapp.cpp */,
 				A58524570A1B9604002D9D8A /* axapp.h */,
 				A58524580A1B9604002D9D8A /* axenv.cpp */,
@@ -315,15 +324,6 @@
 				A58524670A1B9604002D9D8A /* axprocess.h */,
 				A58524680A1B9604002D9D8A /* axscrolledwindow.cpp */,
 				A58524690A1B9604002D9D8A /* axscrolledwindow.h */,
-				A585246A0A1B9604002D9D8A /* defs.h */,
-				A585246B0A1B9604002D9D8A /* gotodlg.cpp */,
-				A585246C0A1B9604002D9D8A /* gotodlg.h */,
-				A58524700A1B9604002D9D8A /* options_wdr.cpp */,
-				A58524710A1B9604002D9D8A /* options_wdr.h */,
-				A58524720A1B9604002D9D8A /* optionsdlg.cpp */,
-				A58524730A1B9604002D9D8A /* optionsdlg.h */,
-				A58524740A1B9604002D9D8A /* progressdlg.cpp */,
-				A58524750A1B9604002D9D8A /* progressdlg.h */,
 				A58524760A1B9604002D9D8A /* res */,
 				A58524790A1B9604002D9D8A /* resource.h */,
 				A585247A0A1B9604002D9D8A /* wxprec.cpp */,
@@ -458,11 +458,11 @@
 		A5D0D4AB0A65628800A4B1CA /* im */ = {
 			isa = PBXGroup;
 			children = (
-				579EB5160CE10B3F00BE3E91 /* im_brink.cpp */,
-				570C84AC0C1864D4007B375E /* im_kmeans.h */,
-				570C84880C186319007B375E /* im_kmeans.c */,
-				A5D0D4B90A65654900A4B1CA /* im_ext.cpp */,
-				A5D0D4BA0A65654900A4B1CA /* im_ext.h */,
+				57CA53D80D340F61001FC334 /* imbrink.cpp */,
+				57CA53D90D340F61001FC334 /* imext.cpp */,
+				57CA53DA0D340F61001FC334 /* imext.h */,
+				57CA53DB0D340F61001FC334 /* imkmeans.c */,
+				57CA53DC0D340F61001FC334 /* imkmeans.h */,
 				A5D0D4AC0A65628800A4B1CA /* imoperator.cpp */,
 				A5D0D4AD0A65628800A4B1CA /* imoperator.h */,
 				A5D0D4AE0A65628800A4B1CA /* impage.cpp */,
@@ -551,8 +551,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A58524CA0A1B9604002D9D8A /* about_wdr.cpp in Sources */,
-				A58524CC0A1B9604002D9D8A /* app_wdr.cpp in Sources */,
 				A58524CE0A1B9604002D9D8A /* axapp.cpp in Sources */,
 				A58524CF0A1B9604002D9D8A /* axenv.cpp in Sources */,
 				A58524D00A1B9604002D9D8A /* axframe.cpp in Sources */,
@@ -562,10 +560,6 @@
 				A58524D50A1B9604002D9D8A /* axundo.cpp in Sources */,
 				A58524D60A1B9604002D9D8A /* axprocess.cpp in Sources */,
 				A58524D70A1B9604002D9D8A /* axscrolledwindow.cpp in Sources */,
-				A58524D80A1B9604002D9D8A /* gotodlg.cpp in Sources */,
-				A58524DB0A1B9604002D9D8A /* options_wdr.cpp in Sources */,
-				A58524DC0A1B9604002D9D8A /* optionsdlg.cpp in Sources */,
-				A58524DD0A1B9604002D9D8A /* progressdlg.cpp in Sources */,
 				A58524E00A1B9604002D9D8A /* wxprec.cpp in Sources */,
 				A58524E10A1B9604002D9D8A /* display.cpp in Sources */,
 				A58524E30A1B9604002D9D8A /* display_wdr.cpp in Sources */,
@@ -603,12 +597,10 @@
 				A5D0D4B50A65628800A4B1CA /* impage.cpp in Sources */,
 				A5D0D4B60A65628800A4B1CA /* imstaff.cpp in Sources */,
 				A5D0D4B70A65628800A4B1CA /* imstaffsegment.cpp in Sources */,
-				A5D0D4BB0A65654900A4B1CA /* im_ext.cpp in Sources */,
 				A5D0D5120A657A6300A4B1CA /* recim.cpp in Sources */,
 				A5D0D5130A657A6300A4B1CA /* recwg.cpp in Sources */,
 				A5AE82AE0A82AF50002BA6A5 /* axfile.cpp in Sources */,
 				57EA3DE50C00BDEB00414247 /* recbookctrl.cpp in Sources */,
-				570C84890C186319007B375E /* im_kmeans.c in Sources */,
 				57A668710C331BF900622C70 /* recbookfile.cpp in Sources */,
 				57A668950C333F3000622C70 /* axctrl.cpp in Sources */,
 				5736CE550C354E4A00254E7B /* cmp.cpp in Sources */,
@@ -618,7 +610,15 @@
 				5736CE5A0C354E4A00254E7B /* cmpim.cpp in Sources */,
 				5736CE5B0C354E4A00254E7B /* cmpmlf.cpp in Sources */,
 				5736CE5C0C354E4A00254E7B /* cmpwg.cpp in Sources */,
-				579EB5170CE10B3F00BE3E91 /* im_brink.cpp in Sources */,
+				57CA53DD0D340F61001FC334 /* imbrink.cpp in Sources */,
+				57CA53DE0D340F61001FC334 /* imext.cpp in Sources */,
+				57CA53DF0D340F61001FC334 /* imkmeans.c in Sources */,
+				57CA54220D34139D001FC334 /* axprogressdlg.cpp in Sources */,
+				57CA54230D34139D001FC334 /* axoptionsdlg.cpp in Sources */,
+				57CA54240D34139D001FC334 /* axoptions_wdr.cpp in Sources */,
+				57CA54250D34139D001FC334 /* axgotodlg.cpp in Sources */,
+				57CA54260D34139D001FC334 /* axapp_wdr.cpp in Sources */,
+				57CA54270D34139D001FC334 /* axabout_wdr.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
