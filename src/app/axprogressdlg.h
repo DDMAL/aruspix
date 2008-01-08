@@ -9,7 +9,7 @@
 #define __progressdlg_H__
 
 #if defined(__GNUG__) && ! defined(__APPLE__)
-    #pragma interface "progressdlg.h"
+    #pragma interface "axprogressdlg.h"
 #endif
 
 #ifndef WX_PRECOMP
@@ -21,7 +21,7 @@
 // IMLIB
 #include <im_counter.h>
 
-#include "app_wdr.h"
+#include "axapp_wdr.h"
 
 #define TIMER_DECODING 0
 #define TIMER_MODEL_BIGRAM 1

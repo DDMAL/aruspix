@@ -6,7 +6,7 @@
 /////////////////////////////////////////////////////////////////////////////
 
 #if defined(__GNUG__) && ! defined(__APPLE__)
-    #pragma implementation "progressdlg.h"
+    #pragma implementation "axprogressdlg.h"
 #endif
 
 // For compilers that support precompilation, includes "wx/wx.h".
@@ -21,7 +21,7 @@
 #include "wx/fontutil.h"
 #include "wx/config.h"
 
-#include "progressdlg.h"
+#include "axprogressdlg.h"
 #include "axapp.h"
 //#include "resource.h"
 

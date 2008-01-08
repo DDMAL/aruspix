@@ -18,7 +18,7 @@
 #include "wx/process.h"
 
 
-#include "progressdlg.h"
+#include "axprogressdlg.h"
 
 // WDR: class declarations
 

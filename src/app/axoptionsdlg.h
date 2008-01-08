@@ -9,14 +9,14 @@
 #define __optionsdlg_H__
 
 #if defined(__GNUG__) && ! defined(__APPLE__)
-    #pragma interface "optionsdlg.h"
+    #pragma interface "axoptionsdlg.h"
 #endif
 
 #ifndef WX_PRECOMP
     #include "wx/wx.h"
 #endif
 
-#include "options_wdr.h"
+#include "axoptions_wdr.h"
 #include "wg/wgwindow.h"
 
 #ifdef AX_RECOGNITION

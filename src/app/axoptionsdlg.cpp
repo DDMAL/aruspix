@@ -6,7 +6,7 @@
 /////////////////////////////////////////////////////////////////////////////
 
 #if defined(__GNUG__) && ! defined(__APPLE__)
-    #pragma implementation "optionsdlg.h"
+    #pragma implementation "axoptionsdlg.h"
 #endif
 
 // For compilers that support precompilation, includes "wx/wx.h".
@@ -22,7 +22,7 @@
 
 //#include "wx/datetime.h"
 
-#include "optionsdlg.h"
+#include "axoptionsdlg.h"
 #include "aximage.h"
 #include "axapp.h"
 #include "wg/wgfile.h"

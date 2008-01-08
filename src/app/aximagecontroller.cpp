@@ -22,7 +22,7 @@
 
 #include "aximagecontroller.h"
 #include "axscrolledwindow.h"
-#include "gotodlg.h"
+#include "axgotodlg.h"
 #include "axapp.h"
 #include "axenv.h"
 

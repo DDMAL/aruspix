@@ -25,8 +25,8 @@
 #include "axframe.h"
 #include "resource.h"
 #include "axenv.h"
-#include "progressdlg.h"
-#include "optionsdlg.h"
+#include "axprogressdlg.h"
+#include "axoptionsdlg.h"
 #include "aximage.h"
 
 

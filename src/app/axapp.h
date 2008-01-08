@@ -25,8 +25,8 @@
 #include "wx/dir.h"
 #include "wx/wizard.h"
 
-#include "app_wdr.h"
-#include "about_wdr.h"
+#include "axapp_wdr.h"
+#include "axabout_wdr.h"
 
 /*
  * GESTION DES IDS

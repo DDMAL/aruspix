@@ -19,7 +19,7 @@
 class AxEnv;
 class AxEnvRow;
 
-#include "app_wdr.h"
+#include "axapp_wdr.h"
 
 WX_DECLARE_OBJARRAY(AxEnvRow, AxEnvArray);
 

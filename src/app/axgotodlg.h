@@ -9,14 +9,14 @@
 #define __gotodlg_H__
 
 #if defined(__GNUG__) && ! defined(__APPLE__)
-    #pragma interface "gotodlg.h"
+    #pragma interface "axgotodlg.h"
 #endif
 
 #ifndef WX_PRECOMP
     #include "wx/wx.h"
 #endif
 
-#include "app_wdr.h"
+#include "axapp_wdr.h"
 
 // WDR: class declarations
 
