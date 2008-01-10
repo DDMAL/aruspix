@@ -35,16 +35,16 @@
 // WDR: class implementations
 
 //----------------------------------------------------------------------------
-// RecWgController
+// RecMusController
 //----------------------------------------------------------------------------
 
-// WDR: event table for RecWgController
+// WDR: event table for RecMusController
 
-BEGIN_EVENT_TABLE(RecWgController,wxPanel)
-    EVT_SIZE( RecWgController::OnSize )
+BEGIN_EVENT_TABLE(RecMusController,wxPanel)
+    EVT_SIZE( RecMusController::OnSize )
 END_EVENT_TABLE()
 
-RecWgController::RecWgController( wxWindow *parent, wxWindowID id,
+RecMusController::RecMusController( wxWindow *parent, wxWindowID id,
     const wxPoint &position, const wxSize& size, long style ) :
     wxPanel( parent, id, position, size, style )
 {
@@ -61,13 +61,13 @@ RecWgController::RecWgController( wxWindow *parent, wxWindowID id,
     m_staffbmp_show = false;	
 }
 
-RecWgController::RecWgController()
+RecMusController::RecMusController()
 {
     if ( m_mlfBmp )
         delete m_mlfBmp;
 }
 
-void RecWgController::Init( RecEnv *env, RecWgWindow *window )
+void RecMusController::Init( RecEnv *env, RecMusWindow *window )
 {
 	// environement
     wxASSERT_MSG(env,"Environment cannot be NULL");
@@ -78,7 +78,7 @@ void RecWgController::Init( RecEnv *env, RecWgWindow *window )
     m_viewPtr = window;
 }
 
-void RecWgController::SetImViewAndController( RecImWindow *recImWindow, RecImController *recImController )
+void RecMusController::SetImViewAndController( RecImWindow *recImWindow, RecImController *recImController )
 {
 	m_imControlPtr = recImController;
 	m_imViewPtr = recImWindow;
@@ -87,14 +87,14 @@ void RecWgController::SetImViewAndController( RecImWindow *recImWindow, RecImCon
 
 
 
-void RecWgController::SetRecFile( RecFile *recFile )
+void RecMusController::SetRecFile( RecFile *recFile )
 {
 	m_recFilePtr = recFile;
 	m_viewPtr->SetRecFile( recFile );
 }
 
 
-void RecWgController::LoadBitmapsForFont( )
+void RecMusController::LoadBitmapsForFont( )
 {
 
     if ( m_mlfBmp )
@@ -113,7 +113,7 @@ void RecWgController::LoadBitmapsForFont( )
 }
 
 
-void RecWgController::SyncZoom()
+void RecMusController::SyncZoom()
 {
 	wxASSERT_MSG( m_viewPtr, "WG Window cannot be NULL ");
 	wxASSERT_MSG( m_imViewPtr, "RecImWindow cannot be NULL ");
@@ -122,7 +122,7 @@ void RecWgController::SyncZoom()
 	SyncStaffBitmap();
 }
 
-void RecWgController::SyncStaffBitmap( )
+void RecMusController::SyncStaffBitmap( )
 {
 	wxASSERT_MSG( m_viewPtr, "WG Window cannot be NULL ");
 	wxASSERT_MSG( m_imViewPtr, "RecImWindow cannot be NULL ");
@@ -219,20 +219,20 @@ void RecWgController::SyncStaffBitmap( )
     }
 }
 
-void RecWgController::GetStaffBitmap( wxBitmap *bmp, int *x, int *y )
+void RecMusController::GetStaffBitmap( wxBitmap *bmp, int *x, int *y )
 {
     *bmp = m_staffbmp;
     *x = m_staffbmp_x;
     *y = m_staffbmp_y;
 }
 
-void RecWgController::CancelShowStaffBitmap( )
+void RecMusController::CancelShowStaffBitmap( )
 {
     m_staffbmp_show = true; // force, but will be inversed
     InverseShowStaffBitmap( );
 }
 
-void RecWgController::InverseShowStaffBitmap( )
+void RecMusController::InverseShowStaffBitmap( )
 {
 	wxASSERT_MSG( m_viewPtr, "WG Window cannot be NULL ");
 
@@ -256,9 +256,9 @@ void RecWgController::InverseShowStaffBitmap( )
 }
 
 
-// WDR: handler implementations for RecWgController
+// WDR: handler implementations for RecMusController
 
-void RecWgController::OnSize( wxSizeEvent &event )
+void RecMusController::OnSize( wxSizeEvent &event )
 {
     this->Layout();
     /*wxWindow *w = FindWindowById( ID4_WGWINDOW );
@@ -274,22 +274,22 @@ void RecWgController::OnSize( wxSizeEvent &event )
 
 
 //----------------------------------------------------------------------------
-// RecWgWindow
+// RecMusWindow
 //----------------------------------------------------------------------------
 
-IMPLEMENT_CLASS(RecWgWindow, MusWindow)
+IMPLEMENT_CLASS(RecMusWindow, MusWindow)
 
-// WDR: event table for RecWgWindow
+// WDR: event table for RecMusWindow
 
-BEGIN_EVENT_TABLE(RecWgWindow,MusWindow)
-    EVT_MOUSE_EVENTS( RecWgWindow::OnMouse )
-    EVT_SCROLLWIN(RecWgWindow::OnScroll )
-    EVT_KEY_DOWN( RecWgWindow::OnKeyDown )
-    EVT_KEY_UP( RecWgWindow::OnKeyUp )
-    EVT_SIZE( RecWgWindow::OnSize )
+BEGIN_EVENT_TABLE(RecMusWindow,MusWindow)
+    EVT_MOUSE_EVENTS( RecMusWindow::OnMouse )
+    EVT_SCROLLWIN(RecMusWindow::OnScroll )
+    EVT_KEY_DOWN( RecMusWindow::OnKeyDown )
+    EVT_KEY_UP( RecMusWindow::OnKeyUp )
+    EVT_SIZE( RecMusWindow::OnSize )
 END_EVENT_TABLE()
 
-RecWgWindow::RecWgWindow( RecWgController *parent, wxWindowID id,
+RecMusWindow::RecMusWindow( RecMusController *parent, wxWindowID id,
     const wxPoint &position, const wxSize& size, long style, bool center ) :
     MusWindow( parent, id, position, size, style, center )
 {
@@ -302,31 +302,31 @@ RecWgWindow::RecWgWindow( RecWgController *parent, wxWindowID id,
 	m_imViewPtr = NULL;
 }
 
-RecWgWindow::RecWgWindow()
+RecMusWindow::RecMusWindow()
 {
 }
 
-RecWgWindow::~RecWgWindow()
+RecMusWindow::~RecMusWindow()
 {
 }
 
-void RecWgWindow::SetEnv( RecEnv *env )
+void RecMusWindow::SetEnv( RecEnv *env )
 {
     m_envPtr = env;
 }
 
-void RecWgWindow::SetImViewAndController( RecImWindow *recImWindow, RecImController *recImController )
+void RecMusWindow::SetImViewAndController( RecImWindow *recImWindow, RecImController *recImController )
 {
 	m_imControlPtr = recImController;
 	m_imViewPtr = recImWindow;
 }
 
-void RecWgWindow::SetRecFile( RecFile *recFile )
+void RecMusWindow::SetRecFile( RecFile *recFile )
 {
 	m_recFilePtr = recFile;
 }
 
-void RecWgWindow::OnBeginEditionClef()
+void RecMusWindow::OnBeginEditionClef()
 {
     if ( !m_envPtr )
         return;
@@ -336,7 +336,7 @@ void RecWgWindow::OnBeginEditionClef()
         MusMLFOutput::GetUt1( m_currentStaff, true );
 }
 
-void RecWgWindow::OnEndEditionClef()
+void RecMusWindow::OnEndEditionClef()
 {
     if ( !m_envPtr )
         return;
@@ -348,22 +348,22 @@ void RecWgWindow::OnEndEditionClef()
 }
 
 
-void RecWgWindow::OnEndEdition()
+void RecMusWindow::OnEndEdition()
 {
 	m_recFilePtr->Modify();
     m_wgControlPtr->SyncStaffBitmap();
 }
 
-// WDR: handler implementations for RecWgWindow
+// WDR: handler implementations for RecMusWindow
 
 
-void RecWgWindow::OnSize( wxSizeEvent &event )
+void RecMusWindow::OnSize( wxSizeEvent &event )
 {
 	m_wgControlPtr->SyncZoom();
     event.Skip();
 }
 
-void RecWgWindow::OnKeyUp( wxKeyEvent &event )
+void RecMusWindow::OnKeyUp( wxKeyEvent &event )
 {
     if (event.GetKeyCode() == WXK_SHIFT) 
         m_shiftDown = false;
@@ -375,7 +375,7 @@ void RecWgWindow::OnKeyUp( wxKeyEvent &event )
     event.Skip();
 }
 
-void RecWgWindow::OnKeyDown( wxKeyEvent &event )
+void RecMusWindow::OnKeyDown( wxKeyEvent &event )
 {
     if (event.GetKeyCode() == WXK_SHIFT) 
         m_shiftDown = true;
@@ -387,7 +387,7 @@ void RecWgWindow::OnKeyDown( wxKeyEvent &event )
     event.Skip();
 }
 
-void RecWgWindow::OnScroll( wxScrollWinEvent &event )
+void RecMusWindow::OnScroll( wxScrollWinEvent &event )
 {
     //this->SynchronizeScroll();
 
@@ -410,7 +410,7 @@ void RecWgWindow::OnScroll( wxScrollWinEvent &event )
     OnSyncScroll( scrollX, scrollY );
 }
 
-void RecWgWindow::OnMouse(wxMouseEvent &event)
+void RecMusWindow::OnMouse(wxMouseEvent &event)
 {
     if (event.GetEventType() == wxEVT_MOUSEWHEEL)
     {
@@ -435,7 +435,7 @@ void RecWgWindow::OnMouse(wxMouseEvent &event)
         event.Skip();
 }
 
-void RecWgWindow::OnSyncScroll( int x, int y )
+void RecMusWindow::OnSyncScroll( int x, int y )
 {
 	if ( m_imViewPtr )
 		m_imViewPtr->Scroll( x, y );

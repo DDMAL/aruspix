@@ -23,7 +23,7 @@
 //#include "rec_wdr.h"
 
 class RecEnv;
-class RecWgWindow;
+class RecMusWindow;
 
 class RecImWindow;
 class RecImController;
@@ -35,21 +35,21 @@ class RecTypModel;
 // WDR: class declarations
 
 //----------------------------------------------------------------------------
-// RecWgController
+// RecMusController
 //----------------------------------------------------------------------------
 
-class RecWgController: public wxPanel
+class RecMusController: public wxPanel
 {
 public:
     // constructors and destructors
-    RecWgController();
-    RecWgController( wxWindow *parent, wxWindowID id = -1,
+    RecMusController();
+    RecMusController( wxWindow *parent, wxWindowID id = -1,
         const wxPoint& pos = wxDefaultPosition,
         const wxSize& size = wxDefaultSize,
         long style = wxTAB_TRAVERSAL | wxNO_BORDER );
     
-    // WDR: method declarations for RecWgController
-	void Init( RecEnv *env, RecWgWindow *window );
+    // WDR: method declarations for RecMusController
+	void Init( RecEnv *env, RecMusWindow *window );
 	void SetImViewAndController( RecImWindow *recImWindow, RecImController *recImController );
 	void SetRecFile( RecFile *recFile );
 	// sync
@@ -63,9 +63,9 @@ public:
 	bool ShowStaffBitmap( ) { return m_staffbmp_show; }
     
 protected:
-    // WDR: member variable declarations for RecWgController
+    // WDR: member variable declarations for RecMusController
 	RecEnv *m_envPtr;
-    RecWgWindow *m_viewPtr;
+    RecMusWindow *m_viewPtr;
 	// to synchronize view
 	RecFile *m_recFilePtr;
 	RecImWindow *m_imViewPtr;
@@ -81,7 +81,7 @@ protected:
 	
     
 private:
-    // WDR: handler declarations for RecWgController
+    // WDR: handler declarations for RecMusController
     void OnSize( wxSizeEvent &event );
 
 private:
@@ -90,19 +90,19 @@ private:
 
 
 //----------------------------------------------------------------------------
-// RecWgWindow
+// RecMusWindow
 //----------------------------------------------------------------------------
 
-class RecWgWindow: public MusWindow
+class RecMusWindow: public MusWindow
 {
 public:
     // constructors and destructors
-    RecWgWindow();
-    RecWgWindow( RecWgController *parent, wxWindowID id = -1,
+    RecMusWindow();
+    RecMusWindow( RecMusController *parent, wxWindowID id = -1,
         const wxPoint& pos = wxDefaultPosition,
         const wxSize& size = wxDefaultSize,
         long style = wxScrolledWindowStyle, bool center = true );
-    virtual ~RecWgWindow();
+    virtual ~RecMusWindow();
     void SetEnv( RecEnv *env );
 	void SetImViewAndController( RecImWindow *recImWindow, RecImController *recImController );
 	void SetRecFile( RecFile *recFile );
@@ -114,27 +114,27 @@ public:
 	virtual void OnSyncScroll( int x, int y );
 	virtual void OnSize( wxSizeEvent &event );
     
-    // WDR: method declarations for RecWgWindow
+    // WDR: method declarations for RecMusWindow
     
 protected:
-    // WDR: member variable declarations for RecWgWindow
+    // WDR: member variable declarations for RecMusWindow
     bool m_shiftDown;
     RecEnv *m_envPtr;
-	RecWgController *m_wgControlPtr;
+	RecMusController *m_wgControlPtr;
     bool m_edition; // true if OnBeginEdition() has been called -> retranspose current staff
 	RecFile *m_recFilePtr;
 	RecImWindow *m_imViewPtr;
 	RecImController *m_imControlPtr;
     
 private:
-    // WDR: handler declarations for RecWgWindow
+    // WDR: handler declarations for RecMusWindow
     void OnMouse( wxMouseEvent &event );
     void OnScroll( wxScrollWinEvent &event );
     void OnKeyUp( wxKeyEvent &event );
     void OnKeyDown( wxKeyEvent &event );
 
 private:
-    DECLARE_CLASS(RecWgWindow)
+    DECLARE_CLASS(RecMusWindow)
     DECLARE_EVENT_TABLE()
 };
 

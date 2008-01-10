@@ -20,7 +20,7 @@
 
 #include "recim.h"
 #include "rec.h"
-#include "recwg.h"
+#include "recmus.h"
 #include "recfile.h"
 
 #include "app/axapp.h"
@@ -67,7 +67,7 @@ void RecImController::SetEnv( RecEnv *env )
     m_envPtr = env;
 }
 
-void RecImController::SetWgViewAndController( RecWgWindow *recWgWindow, RecWgController *recWgController )
+void RecImController::SetWgViewAndController( RecMusWindow *recWgWindow, RecMusController *recWgController )
 {   
     wxASSERT_MSG( m_viewPtr->IsKindOf( CLASSINFO( RecImWindow ) ) , wxT("View must be a RecImWindow") );
 
@@ -290,7 +290,7 @@ void RecImWindow::SetEnv( RecEnv *env )
     m_envPtr = env;
 }
 
-void RecImWindow::SetWgViewAndController( RecWgWindow *recWgWindow, RecWgController *recWgController )
+void RecImWindow::SetWgViewAndController( RecMusWindow *recWgWindow, RecMusController *recWgController )
 {
     m_wgControlPtr = recWgController;
     m_wgViewPtr = recWgWindow;

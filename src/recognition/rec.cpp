@@ -26,7 +26,7 @@
 
 #include "rec.h"
 #include "recim.h"
-#include "recwg.h"
+#include "recmus.h"
 #include "recfile.h"
 #include "recbookfile.h"
 #include "recbookctrl.h"
@@ -111,7 +111,7 @@ RecSplitterWindow::RecSplitterWindow( wxWindow *parent, wxWindowID id,
     m_envPtr = NULL;
 }
 
-void RecSplitterWindow::SetEnv( RecEnv *env, wxFlexGridSizer *sizer, MusToolPanel *toolpanel,    RecWgController *wgControlPtr )
+void RecSplitterWindow::SetEnv( RecEnv *env, wxFlexGridSizer *sizer, MusToolPanel *toolpanel,    RecMusController *wgControlPtr )
 {
     m_envPtr = env;
     m_wgsizer = sizer;
@@ -342,8 +342,8 @@ void RecEnv::LoadWindow()
 
     m_wgPanelPtr = new wxPanel( m_splitterPtr, ID4_DISPLAY );
     wxFlexGridSizer *wgsizer = (wxFlexGridSizer*)WgOutputFunc4( m_wgPanelPtr, TRUE );
-    m_wgControlPtr = (RecWgController*)m_envWindowPtr->FindWindowById( ID4_WGPANEL );
-    m_wgViewPtr = new RecWgWindow( m_wgControlPtr, ID4_WGWINDOW, wxDefaultPosition,
+    m_wgControlPtr = (RecMusController*)m_envWindowPtr->FindWindowById( ID4_WGPANEL );
+    m_wgViewPtr = new RecMusWindow( m_wgControlPtr, ID4_WGWINDOW, wxDefaultPosition,
             wxDefaultSize, wxHSCROLL |wxVSCROLL | wxNO_BORDER  /*| wxSIMPLE_BORDER */ , false);
     m_wgViewPtr->SetEnv( this );
     m_wgControlPtr->Init( this, m_wgViewPtr );
