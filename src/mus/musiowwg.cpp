@@ -1,5 +1,5 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        musiowwg.cpp
+// Name:        iowwg.cpp
 // Author:      Laurent Pugin
 // Created:     2005
 // Copyright (c) Laurent Pugin. All rights reserved.
@@ -8,7 +8,7 @@
 #ifdef AX_WG
 
 #ifdef __GNUG__
-    #pragma implementation "musiowwg.h"
+    #pragma implementation "iowwg.h"
 #endif
 
 // For compilers that support precompilation, includes "wx/wx.h".
@@ -19,8 +19,8 @@
 #endif
 #include "wx/filename.h"
 
-#include "musiowwg.h"
-#include "musiomlf.h"
+#include "iowwg.h"
+#include "iomlf.h"
 
 //----------------------------------------------------------------------------
 // WgFileOutputStream

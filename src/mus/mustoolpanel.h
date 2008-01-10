@@ -20,15 +20,15 @@
 
 #include "mus_wdr.h"
 
-#define MUS_TOOLS_NOTES 0
-#define MUS_TOOLS_CLEFS 1
-#define MUS_TOOLS_SIGNS 2
-#define MUS_TOOLS_OTHER 3
+#define WG_TOOLS_NOTES 0
+#define WG_TOOLS_KEYS 1
+#define WG_TOOLS_SIGNS 2
+#define WG_TOOLS_OTHER 3
 
-#define MUS_TOOLS_NUMBER 4 // Nombre de type de symbols
+#define WG_TOOLS_NUMBER 4 // Nombre de type de symbols
 
-#define MUS_MODE_EDIT 0
-#define MUS_MODE_INSERT 1
+#define WG_MODE_EDIT 0
+#define WG_MODE_INSERT 1
 
 class WgWindow;
 
@@ -52,7 +52,7 @@ private:
     // WDR: member variable declarations for WgToolRow
 	int m_type; // row type;
 	bool m_previous_edition;
-	wxBitmapButton *m_buttons[MUS_TOOLS_NUMBER + 1]; // +1 pour le bouton insert
+	wxBitmapButton *m_buttons[WG_TOOLS_NUMBER + 1]; // +1 pour le bouton insert
 
 public:
     

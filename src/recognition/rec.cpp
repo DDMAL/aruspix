@@ -1310,13 +1310,13 @@ void RecEnv::OnTools( wxCommandEvent &event )
     {
         m_wgViewPtr->SetInsertMode( true );
         if ( event.GetId() == ID4_NOTES )
-            m_wgViewPtr->SetToolType( MUS_TOOLS_NOTES );
+            m_wgViewPtr->SetToolType( WG_TOOLS_NOTES );
         else if ( event.GetId() == ID4_KEYS)
-            m_wgViewPtr->SetToolType( MUS_TOOLS_CLEFS );
+            m_wgViewPtr->SetToolType( WG_TOOLS_KEYS );
         else if ( event.GetId() == ID4_SIGNS )
-            m_wgViewPtr->SetToolType( MUS_TOOLS_SIGNS );
+            m_wgViewPtr->SetToolType( WG_TOOLS_SIGNS );
         else if ( event.GetId() == ID4_SYMBOLES )
-            m_wgViewPtr->SetToolType( MUS_TOOLS_OTHER );
+            m_wgViewPtr->SetToolType( WG_TOOLS_OTHER );
     }
 }
 

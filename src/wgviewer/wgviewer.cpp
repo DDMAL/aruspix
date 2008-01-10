@@ -156,13 +156,13 @@ void WgvEnv::OnTools( wxCommandEvent &event )
 	if ( event.GetId() == ID5_INSERT_MODE )
 		m_wgViewPtr->SetInsertMode( event.IsChecked() );
  	else if ( event.GetId() == ID5_NOTES )
-		m_wgViewPtr->SetToolType( MUS_TOOLS_NOTES );
+		m_wgViewPtr->SetToolType( WG_TOOLS_NOTES );
 	else if ( event.GetId() == ID5_KEYS)
-		m_wgViewPtr->SetToolType( MUS_TOOLS_CLEFS );
+		m_wgViewPtr->SetToolType( WG_TOOLS_KEYS );
 	else if ( event.GetId() == ID5_SIGNS )
-		m_wgViewPtr->SetToolType( MUS_TOOLS_SIGNS );
+		m_wgViewPtr->SetToolType( WG_TOOLS_SIGNS );
 	else if ( event.GetId() == ID5_SYMBOLES )
-		m_wgViewPtr->SetToolType( MUS_TOOLS_OTHER );
+		m_wgViewPtr->SetToolType( WG_TOOLS_OTHER );
 }
 
 void WgvEnv::OnUndo( wxCommandEvent &event )
