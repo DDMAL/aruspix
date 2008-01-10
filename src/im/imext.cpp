@@ -18,8 +18,8 @@
 #include <im_binfile.h>
 #include <im_counter.h>
 
-#define 	min(a, b)   ((a)<(b)?(a):(b))
-#define 	max(a, b)   ((a)>(b)?(a):(b))
+//#define 	min(a, b)   ((a)<(b)?(a):(b))
+//#define 	max(a, b)   ((a)>(b)?(a):(b))
 
 
 // Function taken from im_convolve_rank.cpp in imlib

@@ -5,13 +5,13 @@
 // Copyright (c) Laurent Pugin. All rights reserved.
 /////////////////////////////////////////////////////////////////////////////
 
-#ifndef __WG_FILE_H__
-#define __WG_FILE_H__
+#ifndef __MUS_FILE_H__
+#define __MUS_FILE_H__
 
 #ifdef AX_WG
 
 #ifdef __GNUG__
-    #pragma interface "wgfile.cpp"
+    #pragma interface "musfile.cpp"
 #endif
 
 #ifndef WX_PRECOMP
@@ -20,13 +20,13 @@
 #include "wx/wfstream.h"
 //#include "wx/dynarray.h"
 
-#include "wgfile.h"
-#include "wgpage.h"
-#include "wgstaff.h"
-#include "wgelement.h"
-#include "wgnote.h"
-#include "wgsymbole.h"
-#include "wg.h"
+#include "musfile.h"
+#include "muspage.h"
+#include "musstaff.h"
+#include "muselement.h"
+#include "musnote.h"
+#include "mussymbol.h"
+#include "mus.h"
 
 WX_DECLARE_OBJARRAY( WgPage, ArrayOfWgPages);
 

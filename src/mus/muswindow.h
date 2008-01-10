@@ -5,13 +5,13 @@
 // Copyright (c) Laurent Pugin. All rights reserved.
 /////////////////////////////////////////////////////////////////////////////
 
-#ifndef __WG_WINDOW_H__
-#define __WG_WINDOW_H__
+#ifndef __MUS_WINDOW_H__
+#define __MUS_WINDOW_H__
 
 #ifdef AX_WG
 
 #ifdef __GNUG__
-    #pragma interface "wgwindow.cpp"
+    #pragma interface "muswindow.cpp"
 #endif
 
 #ifndef WX_PRECOMP
@@ -19,7 +19,7 @@
 #endif
 #include "wx/dynarray.h"
 
-#include "wg.h"
+#include "mus.h"
 
 #include "app/axundo.h"
 
@@ -29,8 +29,8 @@ class WgElement;
 class WgStaff;
 class WgToolPanel;
 
-#include "wgnote.h"
-#include "wgsymbole.h"
+#include "musnote.h"
+#include "mussymbol.h"
 
 // kind of operation, maybe used in subclasses 
 enum

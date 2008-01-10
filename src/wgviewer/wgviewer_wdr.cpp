@@ -33,7 +33,7 @@
 #endif
 
 // Custom source
-#include "wg/wgtoolpanel.h"
+#include "mus/mustoolpanel.h"
 #include "wgviewer/wgviewer.h"
 
 // Implement window functions

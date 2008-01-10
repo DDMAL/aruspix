@@ -20,7 +20,7 @@
     #include "wx/wx.h"
 #endif
 
-#include "wg/iomlf.h"
+#include "mus/musiomlf.h"
 
 
 // WDR: class declarations

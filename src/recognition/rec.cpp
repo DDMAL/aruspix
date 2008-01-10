@@ -30,17 +30,17 @@
 #include "recfile.h"
 #include "recbookfile.h"
 #include "recbookctrl.h"
-#include "models.h"
+#include "recmodels.h"
+#include "recmlfbmp.h"
 
 #include "app/axapp.h"
 #include "app/axframe.h"
 
 #include "im/impage.h"
 
-#include "wg/wgfile.h"
-#include "wg/iowwg.h"
-#include "wg/mlfbmp.h"
-#include "wg/wgtoolpanel.h"
+#include "mus/musfile.h"
+#include "mus/musiowwg.h"
+#include "mus/mustoolpanel.h"
 
 // statics
 bool RecEnv::s_check = true;

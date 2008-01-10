@@ -8,7 +8,7 @@
 #ifdef AX_WG
 
 #ifdef __GNUG__
-    #pragma implementation "wgwindow.h"
+    #pragma implementation "muswindow.h"
 #endif
 
 // For compilers that support precompilation, includes "wx/wx.h".
@@ -18,7 +18,7 @@
     #pragma hdrstop
 #endif
 
-#include "wgwindow.h"
+#include "muswindow.h"
 
 #define NBInt	40
 

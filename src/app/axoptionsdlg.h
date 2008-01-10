@@ -17,7 +17,7 @@
 #endif
 
 #include "axoptions_wdr.h"
-#include "wg/wgwindow.h"
+#include "mus/muswindow.h"
 
 #ifdef AX_RECOGNITION
 //	#include "rec_wdr.h"

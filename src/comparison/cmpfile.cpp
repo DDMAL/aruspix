@@ -22,7 +22,7 @@
 
 #include "recognition/recfile.h"
 
-#include "wg/iowwg.h"
+#include "mus/musiowwg.h"
 
 #include "wx/arrimpl.cpp"
 WX_DEFINE_OBJARRAY( ArrayOfCmpBookItems );

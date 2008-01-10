@@ -19,7 +19,7 @@
 #include "recbookfile.h"
 #include "rec.h"
 #include "recfile.h"
-#include "models.h"
+#include "recmodels.h"
 
 #include "wx/arrimpl.cpp"
 WX_DEFINE_OBJARRAY( ArrayOfBookFiles );

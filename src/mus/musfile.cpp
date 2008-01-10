@@ -8,7 +8,7 @@
 #ifdef AX_WG
 
 #ifdef __GNUG__
-    #pragma implementation "wgfile.cpp"
+    #pragma implementation "musfile.cpp"
 #endif
 
 // For compilers that support precompilation, includes "wx/wx.h".
@@ -19,9 +19,9 @@
 #endif
 
 
-#include "wgfile.h"
+#include "musfile.h"
 
-#include "wgpage.h"
+#include "muspage.h"
 
 #include "wx/arrimpl.cpp"
 WX_DEFINE_OBJARRAY( ArrayOfWgPages );

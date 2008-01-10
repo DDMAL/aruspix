@@ -20,13 +20,13 @@
 #include "wx/txtstrm.h"
 #include "wx/stdpaths.h"
 
-#include "models.h"
+#include "recmodels.h"
 #include "recfile.h"
 
 #include "app/axapp.h"
 #include "app/axprocess.h"
 
-#include "wg/iomlf.h"
+#include "mus/musiomlf.h"
 
 // WDR: class implementations
 

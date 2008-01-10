@@ -5,13 +5,13 @@
 // Copyright (c) Laurent Pugin. All rights reserved.
 /////////////////////////////////////////////////////////////////////////////
 
-#ifndef __WG_PAGE_H__
-#define __WG_PAGE_H__
+#ifndef __MUS_PAGE_H__
+#define __MUS_PAGE_H__
 
 #ifdef AX_WG
 
 #ifdef __GNUG__
-	#pragma interface "wgpage.cpp"
+	#pragma interface "muspage.cpp"
 #endif
 
 #ifndef WX_PRECOMP
@@ -19,7 +19,7 @@
 #endif
 #include "wx/dynarray.h"
 
-#include "wgobject.h"
+#include "musobject.h"
 
 class WgStaff;
 WX_DECLARE_OBJARRAY( WgStaff, ArrayOfWgStaves);

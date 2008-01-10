@@ -213,13 +213,6 @@ bool AxApp::OnInit()
     if (!m_help->Initialize ( m_resourcesPath + "/" + lang + "/aruspix") )
         m_help->Initialize ( m_resourcesPath + "/en/aruspix" );
 
-
-#ifdef AX_DISPLAY
-    m_locale.AddCatalog( "display" );
-    if (!m_help->Initialize ( m_resourcesPath + "/" + lang + "/display") )
-        m_help->Initialize ( m_resourcesPath + "/en/display" );
-#endif //AX_DISPLAY
-
 #ifdef AX_SUPERIMPOSITION
     m_locale.AddCatalog( "superimposition" );
     if (!m_help->Initialize ( m_resourcesPath + "/" + lang + "/superimposition") )

@@ -5,13 +5,13 @@
 // Copyright (c) Laurent Pugin. All rights reserved.
 /////////////////////////////////////////////////////////////////////////////
 
-#ifndef __WG_SYMBOLE_H__
-#define __WG_SYMBOLE_H__
+#ifndef __MUS_SYMBOLE_H__
+#define __MUS_SYMBOLE_H__
 
 #ifdef AX_WG
 
 #ifdef __GNUG__
-    #pragma interface "wgsymbole.cpp"    
+    #pragma interface "mussymbole.cpp"    
 #endif
 
 #ifndef WX_PRECOMP
@@ -19,7 +19,7 @@
 #endif
 
 class WgStaff;
-#include "wgelement.h"
+#include "muselement.h"
 
 // WDR: class declarations
 

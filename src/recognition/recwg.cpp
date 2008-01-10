@@ -22,12 +22,12 @@
 #include "rec.h"
 #include "recim.h"
 #include "recfile.h"
-#include "models.h"
+#include "recmodels.h"
+#include "recmlfbmp.h"
 
 #include "app/axapp.h"
 
-#include "wg/mlfbmp.h"
-#include "wg/wgtoolpanel.h"
+#include "mus/mustoolpanel.h"
 
 #include "im/impage.h"
 #include "im/imstaff.h"

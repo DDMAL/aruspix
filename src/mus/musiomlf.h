@@ -5,8 +5,8 @@
 // Copyright (c) Laurent Pugin. All rights reserved.   
 /////////////////////////////////////////////////////////////////////////////
 
-#ifndef __WG_IOMLF_H__
-#define __WG_IOMLF_H__
+#ifndef __MUS_IOMLF_H__
+#define __MUS_IOMLF_H__
 
 #ifdef AX_WG
 
@@ -19,7 +19,7 @@
 #endif
 #include "wx/wfstream.h"
 
-#include "wgfile.h"
+#include "musfile.h"
 
 class MLFSymbol;
 WX_DECLARE_OBJARRAY( MLFSymbol, ArrayOfMLFSymboles);

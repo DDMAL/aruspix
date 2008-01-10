@@ -5,21 +5,21 @@
 // Copyright (c) Laurent Pugin. All rights reserved.
 /////////////////////////////////////////////////////////////////////////////
 
-#ifndef __WG_ELEMENT_H__
-#define __WG_ELEMENT_H__
+#ifndef __MUS_ELEMENT_H__
+#define __MUS_ELEMENT_H__
 
 #ifdef AX_WG
 
 #ifdef __GNUG__
-    #pragma interface "wgelement.cpp"    
+    #pragma interface "muselement.cpp"    
 #endif
 
 #ifndef WX_PRECOMP
     #include "wx/wx.h"
 #endif
 
-#include "wgobject.h"
-#include "wgdef.h"
+#include "musobject.h"
+#include "musdef.h"
 
 class WgStaff;
 

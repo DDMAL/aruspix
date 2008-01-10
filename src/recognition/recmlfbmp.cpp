@@ -21,7 +21,8 @@
 #include "wx/textfile.h"
 #include "wx/tokenzr.h"
 
-#include "mlfbmp.h"
+#include "recmlfbmp.h"
+
 #include "im/impage.h"
 #include "im/imstaff.h"
 

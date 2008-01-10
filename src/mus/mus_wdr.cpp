@@ -4,7 +4,7 @@
 //------------------------------------------------------------------------------
 
 #if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-    #pragma implementation "wg_wdr.h"
+    #pragma implementation "mus_wdr.h"
 #endif
 
 // For compilers that support precompilation
@@ -15,7 +15,7 @@
 #endif
 
 // Include private header
-#include "wg_wdr.h"
+#include "mus_wdr.h"
 
 
 // Euro sign hack of the year
@@ -41,94 +41,94 @@ wxSizer *NotesPanel( wxWindow *parent, bool call_fit, bool set_sizer )
 
     item0->Add( 2, 1, 0, wxALIGN_CENTER|wxALL, 0 );
 
-    wxBitmapButton *item1 = new wxBitmapButton( parent, ID_WG_BT_NOTES, Btn_selected( 0 ), wxDefaultPosition, wxDefaultSize );
+    wxBitmapButton *item1 = new wxBitmapButton( parent, ID_MUS_BT_NOTES, Btn_selected( 0 ), wxDefaultPosition, wxDefaultSize );
     item0->Add( item1, 0, wxALIGN_CENTER, 0 );
 
-    wxBitmapButton *item2 = new wxBitmapButton( parent, ID_WG_BT_KEY, Btn( 1 ), wxDefaultPosition, wxDefaultSize );
+    wxBitmapButton *item2 = new wxBitmapButton( parent, ID_MUS_BT_KEY, Btn( 1 ), wxDefaultPosition, wxDefaultSize );
     item0->Add( item2, 0, wxALIGN_CENTER, 0 );
 
-    wxBitmapButton *item3 = new wxBitmapButton( parent, ID_WG_BT_SIGNS, Btn( 2 ), wxDefaultPosition, wxDefaultSize );
+    wxBitmapButton *item3 = new wxBitmapButton( parent, ID_MUS_BT_SIGNS, Btn( 2 ), wxDefaultPosition, wxDefaultSize );
     item0->Add( item3, 0, wxALIGN_CENTER, 0 );
 
-    wxBitmapButton *item4 = new wxBitmapButton( parent, ID_WG_BT_SYMBOLES, Btn( 3 ), wxDefaultPosition, wxDefaultSize );
+    wxBitmapButton *item4 = new wxBitmapButton( parent, ID_MUS_BT_SYMBOLES, Btn( 3 ), wxDefaultPosition, wxDefaultSize );
     item0->Add( item4, 0, wxALIGN_CENTER, 0 );
 
     wxStaticLine *item5 = new wxStaticLine( parent, ID4_LINE, wxDefaultPosition, wxSize(-1,20), wxLI_VERTICAL );
     item0->Add( item5, 0, wxGROW|wxALIGN_CENTER_HORIZONTAL|wxLEFT|wxRIGHT, 5 );
 
-    wxBitmapButton *item6 = new wxBitmapButton( parent, ID_WG_BT_INSERT, Btn( 4 ), wxDefaultPosition, wxDefaultSize );
+    wxBitmapButton *item6 = new wxBitmapButton( parent, ID_MUS_BT_INSERT, Btn( 4 ), wxDefaultPosition, wxDefaultSize );
     item0->Add( item6, 0, wxALIGN_CENTER, 0 );
 
     wxStaticLine *item7 = new wxStaticLine( parent, ID4_LINE, wxDefaultPosition, wxSize(-1,20), wxLI_VERTICAL );
     item0->Add( item7, 0, wxGROW|wxALIGN_CENTER_HORIZONTAL|wxLEFT|wxRIGHT, 5 );
 
-    wxBitmapButton *item8 = new wxBitmapButton( parent, ID_WG_BT_N0, Notes( 0 ), wxDefaultPosition, wxDefaultSize );
+    wxBitmapButton *item8 = new wxBitmapButton( parent, ID_MUS_BT_N0, Notes( 0 ), wxDefaultPosition, wxDefaultSize );
     item0->Add( item8, 0, wxALIGN_CENTER, 0 );
 
-    wxBitmapButton *item9 = new wxBitmapButton( parent, ID_WG_BT_N1, Notes( 1 ), wxDefaultPosition, wxDefaultSize );
+    wxBitmapButton *item9 = new wxBitmapButton( parent, ID_MUS_BT_N1, Notes( 1 ), wxDefaultPosition, wxDefaultSize );
     item0->Add( item9, 0, wxALIGN_CENTER, 5 );
 
-    wxBitmapButton *item10 = new wxBitmapButton( parent, ID_WG_BT_N2, Notes( 2 ), wxDefaultPosition, wxDefaultSize );
+    wxBitmapButton *item10 = new wxBitmapButton( parent, ID_MUS_BT_N2, Notes( 2 ), wxDefaultPosition, wxDefaultSize );
     item0->Add( item10, 0, wxALIGN_CENTER, 5 );
 
-    wxBitmapButton *item11 = new wxBitmapButton( parent, ID_WG_BT_N3, Notes( 3 ), wxDefaultPosition, wxDefaultSize );
+    wxBitmapButton *item11 = new wxBitmapButton( parent, ID_MUS_BT_N3, Notes( 3 ), wxDefaultPosition, wxDefaultSize );
     item0->Add( item11, 0, wxALIGN_CENTER, 5 );
 
-    wxBitmapButton *item12 = new wxBitmapButton( parent, ID_WG_BT_N4, Notes( 4 ), wxDefaultPosition, wxDefaultSize );
+    wxBitmapButton *item12 = new wxBitmapButton( parent, ID_MUS_BT_N4, Notes( 4 ), wxDefaultPosition, wxDefaultSize );
     item0->Add( item12, 0, wxALIGN_CENTER, 5 );
 
-    wxBitmapButton *item13 = new wxBitmapButton( parent, ID_WG_BT_N5, Notes( 5 ), wxDefaultPosition, wxDefaultSize );
+    wxBitmapButton *item13 = new wxBitmapButton( parent, ID_MUS_BT_N5, Notes( 5 ), wxDefaultPosition, wxDefaultSize );
     item0->Add( item13, 0, wxALIGN_CENTER, 5 );
 
-    wxBitmapButton *item14 = new wxBitmapButton( parent, ID_WG_BT_N6, Notes( 6 ), wxDefaultPosition, wxDefaultSize );
+    wxBitmapButton *item14 = new wxBitmapButton( parent, ID_MUS_BT_N6, Notes( 6 ), wxDefaultPosition, wxDefaultSize );
     item0->Add( item14, 0, wxALIGN_CENTER, 5 );
 
-    wxBitmapButton *item15 = new wxBitmapButton( parent, ID_WG_BT_N7, Notes( 7 ), wxDefaultPosition, wxDefaultSize );
+    wxBitmapButton *item15 = new wxBitmapButton( parent, ID_MUS_BT_N7, Notes( 7 ), wxDefaultPosition, wxDefaultSize );
     item0->Add( item15, 0, wxALIGN_CENTER, 5 );
 
     wxStaticLine *item16 = new wxStaticLine( parent, ID4_LINE, wxDefaultPosition, wxSize(-1,20), wxLI_VERTICAL );
     item0->Add( item16, 0, wxGROW|wxALIGN_CENTER_HORIZONTAL|wxLEFT|wxRIGHT, 5 );
 
-    wxBitmapButton *item17 = new wxBitmapButton( parent, ID_WG_BT_R0, Silences( 0 ), wxDefaultPosition, wxDefaultSize );
+    wxBitmapButton *item17 = new wxBitmapButton( parent, ID_MUS_BT_R0, Silences( 0 ), wxDefaultPosition, wxDefaultSize );
     item0->Add( item17, 0, wxALIGN_CENTER|wxLEFT, 0 );
 
-    wxBitmapButton *item18 = new wxBitmapButton( parent, ID_WG_BT_R1, Silences( 1 ), wxDefaultPosition, wxDefaultSize );
+    wxBitmapButton *item18 = new wxBitmapButton( parent, ID_MUS_BT_R1, Silences( 1 ), wxDefaultPosition, wxDefaultSize );
     item0->Add( item18, 0, wxALIGN_CENTER, 5 );
 
-    wxBitmapButton *item19 = new wxBitmapButton( parent, ID_WG_BT_R2, Silences( 2 ), wxDefaultPosition, wxDefaultSize );
+    wxBitmapButton *item19 = new wxBitmapButton( parent, ID_MUS_BT_R2, Silences( 2 ), wxDefaultPosition, wxDefaultSize );
     item0->Add( item19, 0, wxALIGN_CENTER, 5 );
 
-    wxBitmapButton *item20 = new wxBitmapButton( parent, ID_WG_BT_R3, Silences( 3 ), wxDefaultPosition, wxDefaultSize );
+    wxBitmapButton *item20 = new wxBitmapButton( parent, ID_MUS_BT_R3, Silences( 3 ), wxDefaultPosition, wxDefaultSize );
     item0->Add( item20, 0, wxALIGN_CENTER, 5 );
 
-    wxBitmapButton *item21 = new wxBitmapButton( parent, ID_WG_BT_R4, Silences( 4 ), wxDefaultPosition, wxDefaultSize );
+    wxBitmapButton *item21 = new wxBitmapButton( parent, ID_MUS_BT_R4, Silences( 4 ), wxDefaultPosition, wxDefaultSize );
     item0->Add( item21, 0, wxALIGN_CENTER, 5 );
 
-    wxBitmapButton *item22 = new wxBitmapButton( parent, ID_WG_BT_R5, Silences( 5 ), wxDefaultPosition, wxDefaultSize );
+    wxBitmapButton *item22 = new wxBitmapButton( parent, ID_MUS_BT_R5, Silences( 5 ), wxDefaultPosition, wxDefaultSize );
     item0->Add( item22, 0, wxALIGN_CENTER, 5 );
 
-    wxBitmapButton *item23 = new wxBitmapButton( parent, ID_WG_BT_R6, Silences( 6 ), wxDefaultPosition, wxDefaultSize );
+    wxBitmapButton *item23 = new wxBitmapButton( parent, ID_MUS_BT_R6, Silences( 6 ), wxDefaultPosition, wxDefaultSize );
     item0->Add( item23, 0, wxALIGN_CENTER, 5 );
 
-    wxBitmapButton *item24 = new wxBitmapButton( parent, ID_WG_BT_CT, Silences( 7 ), wxDefaultPosition, wxDefaultSize );
+    wxBitmapButton *item24 = new wxBitmapButton( parent, ID_MUS_BT_CT, Silences( 7 ), wxDefaultPosition, wxDefaultSize );
     item0->Add( item24, 0, wxALIGN_CENTER, 5 );
 
     wxStaticLine *item25 = new wxStaticLine( parent, ID4_LINE, wxDefaultPosition, wxSize(-1,20), wxLI_VERTICAL );
     item0->Add( item25, 0, wxGROW|wxALIGN_CENTER_HORIZONTAL|wxLEFT|wxRIGHT, 5 );
 
-    wxBitmapButton *item26 = new wxBitmapButton( parent, ID_WG_BT_LG_D, Notes( 8 ), wxDefaultPosition, wxDefaultSize );
+    wxBitmapButton *item26 = new wxBitmapButton( parent, ID_MUS_BT_LG_D, Notes( 8 ), wxDefaultPosition, wxDefaultSize );
     item0->Add( item26, 0, wxALIGN_CENTER, 5 );
 
-    wxBitmapButton *item27 = new wxBitmapButton( parent, ID_WG_BT_LG_U, Notes( 9 ), wxDefaultPosition, wxDefaultSize );
+    wxBitmapButton *item27 = new wxBitmapButton( parent, ID_MUS_BT_LG_U, Notes( 9 ), wxDefaultPosition, wxDefaultSize );
     item0->Add( item27, 0, wxALIGN_CENTER, 5 );
 
     wxStaticLine *item28 = new wxStaticLine( parent, ID4_LINE, wxDefaultPosition, wxSize(-1,20), wxLI_VERTICAL );
     item0->Add( item28, 0, wxGROW|wxALIGN_CENTER_HORIZONTAL|wxLEFT|wxRIGHT, 5 );
 
-    wxBitmapButton *item29 = new wxBitmapButton( parent, ID_WG_BT_COLOR, Btn( 5 ), wxDefaultPosition, wxDefaultSize );
+    wxBitmapButton *item29 = new wxBitmapButton( parent, ID_MUS_BT_COLOR, Btn( 5 ), wxDefaultPosition, wxDefaultSize );
     item0->Add( item29, 0, wxALIGN_CENTER, 0 );
 
-    wxBitmapButton *item30 = new wxBitmapButton( parent, ID_WG_BT_UPDOWN, Btn( 6 ), wxDefaultPosition, wxDefaultSize );
+    wxBitmapButton *item30 = new wxBitmapButton( parent, ID_MUS_BT_UPDOWN, Btn( 6 ), wxDefaultPosition, wxDefaultSize );
     item0->Add( item30, 0, wxALIGN_CENTER, 0 );
 
     if (set_sizer)
@@ -147,61 +147,61 @@ wxSizer *KeysPanel( wxWindow *parent, bool call_fit, bool set_sizer )
     wxBoxSizer *item0 = new wxBoxSizer( wxHORIZONTAL );
     ToolKeysPanelBoxSizer = item0;
 
-    wxBitmapButton *item1 = new wxBitmapButton( parent, ID_WG_BT_NOTES, Btn( 0 ), wxDefaultPosition, wxDefaultSize );
+    wxBitmapButton *item1 = new wxBitmapButton( parent, ID_MUS_BT_NOTES, Btn( 0 ), wxDefaultPosition, wxDefaultSize );
     item0->Add( item1, 0, wxALIGN_CENTER, 0 );
 
-    wxBitmapButton *item2 = new wxBitmapButton( parent, ID_WG_BT_KEY, Btn_selected( 1 ), wxDefaultPosition, wxDefaultSize );
+    wxBitmapButton *item2 = new wxBitmapButton( parent, ID_MUS_BT_KEY, Btn_selected( 1 ), wxDefaultPosition, wxDefaultSize );
     item0->Add( item2, 0, wxALIGN_CENTER, 0 );
 
-    wxBitmapButton *item3 = new wxBitmapButton( parent, ID_WG_BT_SIGNS, Btn( 2 ), wxDefaultPosition, wxDefaultSize );
+    wxBitmapButton *item3 = new wxBitmapButton( parent, ID_MUS_BT_SIGNS, Btn( 2 ), wxDefaultPosition, wxDefaultSize );
     item0->Add( item3, 0, wxALIGN_CENTER, 0 );
 
-    wxBitmapButton *item4 = new wxBitmapButton( parent, ID_WG_BT_SYMBOLES, Btn( 3 ), wxDefaultPosition, wxDefaultSize );
+    wxBitmapButton *item4 = new wxBitmapButton( parent, ID_MUS_BT_SYMBOLES, Btn( 3 ), wxDefaultPosition, wxDefaultSize );
     item0->Add( item4, 0, wxALIGN_CENTER, 0 );
 
     wxStaticLine *item5 = new wxStaticLine( parent, ID4_LINE, wxDefaultPosition, wxSize(-1,20), wxLI_VERTICAL );
     item0->Add( item5, 0, wxGROW|wxALIGN_CENTER_HORIZONTAL|wxLEFT|wxRIGHT, 5 );
 
-    wxBitmapButton *item6 = new wxBitmapButton( parent, ID_WG_BT_INSERT, Btn( 4 ), wxDefaultPosition, wxDefaultSize );
+    wxBitmapButton *item6 = new wxBitmapButton( parent, ID_MUS_BT_INSERT, Btn( 4 ), wxDefaultPosition, wxDefaultSize );
     item0->Add( item6, 0, wxALIGN_CENTER, 0 );
 
     wxStaticLine *item7 = new wxStaticLine( parent, ID4_LINE, wxDefaultPosition, wxSize(-1,20), wxLI_VERTICAL );
     item0->Add( item7, 0, wxGROW|wxALIGN_CENTER_HORIZONTAL|wxLEFT|wxRIGHT, 5 );
 
-    wxBitmapButton *item8 = new wxBitmapButton( parent, ID_WG_BT_G1, Keys( 1 ), wxDefaultPosition, wxDefaultSize );
+    wxBitmapButton *item8 = new wxBitmapButton( parent, ID_MUS_BT_G1, Keys( 1 ), wxDefaultPosition, wxDefaultSize );
     item0->Add( item8, 0, wxALIGN_CENTER, 0 );
 
-    wxBitmapButton *item9 = new wxBitmapButton( parent, ID_WG_BT_G2, Keys( 0 ), wxDefaultPosition, wxDefaultSize );
+    wxBitmapButton *item9 = new wxBitmapButton( parent, ID_MUS_BT_G2, Keys( 0 ), wxDefaultPosition, wxDefaultSize );
     item0->Add( item9, 0, wxALIGN_CENTER, 5 );
 
     wxStaticLine *item10 = new wxStaticLine( parent, ID4_LINE, wxDefaultPosition, wxSize(-1,20), wxLI_VERTICAL );
     item0->Add( item10, 0, wxGROW|wxALIGN_CENTER_HORIZONTAL|wxLEFT|wxRIGHT, 5 );
 
-    wxBitmapButton *item11 = new wxBitmapButton( parent, ID_WG_BT_U1, Keys( 2 ), wxDefaultPosition, wxDefaultSize );
+    wxBitmapButton *item11 = new wxBitmapButton( parent, ID_MUS_BT_U1, Keys( 2 ), wxDefaultPosition, wxDefaultSize );
     item0->Add( item11, 0, wxALIGN_CENTER, 5 );
 
-    wxBitmapButton *item12 = new wxBitmapButton( parent, ID_WG_BT_U2, Keys( 4 ), wxDefaultPosition, wxDefaultSize );
+    wxBitmapButton *item12 = new wxBitmapButton( parent, ID_MUS_BT_U2, Keys( 4 ), wxDefaultPosition, wxDefaultSize );
     item0->Add( item12, 0, wxALIGN_CENTER, 5 );
 
-    wxBitmapButton *item13 = new wxBitmapButton( parent, ID_WG_BT_U3, Keys( 6 ), wxDefaultPosition, wxDefaultSize );
+    wxBitmapButton *item13 = new wxBitmapButton( parent, ID_MUS_BT_U3, Keys( 6 ), wxDefaultPosition, wxDefaultSize );
     item0->Add( item13, 0, wxALIGN_CENTER, 5 );
 
-    wxBitmapButton *item14 = new wxBitmapButton( parent, ID_WG_BT_U4, Keys( 5 ), wxDefaultPosition, wxDefaultSize );
+    wxBitmapButton *item14 = new wxBitmapButton( parent, ID_MUS_BT_U4, Keys( 5 ), wxDefaultPosition, wxDefaultSize );
     item0->Add( item14, 0, wxALIGN_CENTER, 5 );
 
-    wxBitmapButton *item15 = new wxBitmapButton( parent, ID_WG_BT_U5, Keys( 3 ), wxDefaultPosition, wxDefaultSize );
+    wxBitmapButton *item15 = new wxBitmapButton( parent, ID_MUS_BT_U5, Keys( 3 ), wxDefaultPosition, wxDefaultSize );
     item0->Add( item15, 0, wxALIGN_CENTER, 5 );
 
     wxStaticLine *item16 = new wxStaticLine( parent, ID4_LINE, wxDefaultPosition, wxSize(-1,20), wxLI_VERTICAL );
     item0->Add( item16, 0, wxGROW|wxALIGN_CENTER_HORIZONTAL|wxLEFT|wxRIGHT, 5 );
 
-    wxBitmapButton *item17 = new wxBitmapButton( parent, ID_WG_BT_F3, Keys( 7 ), wxDefaultPosition, wxDefaultSize );
+    wxBitmapButton *item17 = new wxBitmapButton( parent, ID_MUS_BT_F3, Keys( 7 ), wxDefaultPosition, wxDefaultSize );
     item0->Add( item17, 0, wxALIGN_CENTER, 5 );
 
-    wxBitmapButton *item18 = new wxBitmapButton( parent, ID_WG_BT_F4, Keys( 8 ), wxDefaultPosition, wxDefaultSize );
+    wxBitmapButton *item18 = new wxBitmapButton( parent, ID_MUS_BT_F4, Keys( 8 ), wxDefaultPosition, wxDefaultSize );
     item0->Add( item18, 0, wxALIGN_CENTER, 5 );
 
-    wxBitmapButton *item19 = new wxBitmapButton( parent, ID_WG_BT_F5, Keys( 9 ), wxDefaultPosition, wxDefaultSize );
+    wxBitmapButton *item19 = new wxBitmapButton( parent, ID_MUS_BT_F5, Keys( 9 ), wxDefaultPosition, wxDefaultSize );
     item0->Add( item19, 0, wxALIGN_CENTER, 5 );
 
     if (set_sizer)
@@ -220,79 +220,79 @@ wxSizer *SignsPanel( wxWindow *parent, bool call_fit, bool set_sizer )
     wxBoxSizer *item0 = new wxBoxSizer( wxHORIZONTAL );
     ToolSignsPanelBoxSizer = item0;
 
-    wxBitmapButton *item1 = new wxBitmapButton( parent, ID_WG_BT_NOTES, Btn( 0 ), wxDefaultPosition, wxDefaultSize );
+    wxBitmapButton *item1 = new wxBitmapButton( parent, ID_MUS_BT_NOTES, Btn( 0 ), wxDefaultPosition, wxDefaultSize );
     item0->Add( item1, 0, wxALIGN_CENTER, 0 );
 
-    wxBitmapButton *item2 = new wxBitmapButton( parent, ID_WG_BT_KEY, Btn( 1 ), wxDefaultPosition, wxDefaultSize );
+    wxBitmapButton *item2 = new wxBitmapButton( parent, ID_MUS_BT_KEY, Btn( 1 ), wxDefaultPosition, wxDefaultSize );
     item0->Add( item2, 0, wxALIGN_CENTER, 0 );
 
-    wxBitmapButton *item3 = new wxBitmapButton( parent, ID_WG_BT_SIGNS, Btn_selected( 2 ), wxDefaultPosition, wxDefaultSize );
+    wxBitmapButton *item3 = new wxBitmapButton( parent, ID_MUS_BT_SIGNS, Btn_selected( 2 ), wxDefaultPosition, wxDefaultSize );
     item0->Add( item3, 0, wxALIGN_CENTER, 0 );
 
-    wxBitmapButton *item4 = new wxBitmapButton( parent, ID_WG_BT_SYMBOLES, Btn( 3 ), wxDefaultPosition, wxDefaultSize );
+    wxBitmapButton *item4 = new wxBitmapButton( parent, ID_MUS_BT_SYMBOLES, Btn( 3 ), wxDefaultPosition, wxDefaultSize );
     item0->Add( item4, 0, wxALIGN_CENTER, 0 );
 
     wxStaticLine *item5 = new wxStaticLine( parent, ID4_LINE, wxDefaultPosition, wxSize(-1,20), wxLI_VERTICAL );
     item0->Add( item5, 0, wxGROW|wxALIGN_CENTER_HORIZONTAL|wxLEFT|wxRIGHT, 5 );
 
-    wxBitmapButton *item6 = new wxBitmapButton( parent, ID_WG_BT_INSERT, Btn( 4 ), wxDefaultPosition, wxDefaultSize );
+    wxBitmapButton *item6 = new wxBitmapButton( parent, ID_MUS_BT_INSERT, Btn( 4 ), wxDefaultPosition, wxDefaultSize );
     item0->Add( item6, 0, wxALIGN_CENTER, 0 );
 
     wxStaticLine *item7 = new wxStaticLine( parent, ID4_LINE, wxDefaultPosition, wxSize(-1,20), wxLI_VERTICAL );
     item0->Add( item7, 0, wxGROW|wxALIGN_CENTER_HORIZONTAL|wxLEFT|wxRIGHT, 5 );
 
-    wxBitmapButton *item8 = new wxBitmapButton( parent, ID_WG_BT_MTPP, Signs( 1 ), wxDefaultPosition, wxDefaultSize );
+    wxBitmapButton *item8 = new wxBitmapButton( parent, ID_MUS_BT_MTPP, Signs( 1 ), wxDefaultPosition, wxDefaultSize );
     item0->Add( item8, 0, wxALIGN_CENTER, 5 );
 
-    wxBitmapButton *item9 = new wxBitmapButton( parent, ID_WG_BT_MTPDP, Signs( 2 ), wxDefaultPosition, wxDefaultSize );
+    wxBitmapButton *item9 = new wxBitmapButton( parent, ID_MUS_BT_MTPDP, Signs( 2 ), wxDefaultPosition, wxDefaultSize );
     item0->Add( item9, 0, wxALIGN_CENTER, 5 );
 
-    wxBitmapButton *item10 = new wxBitmapButton( parent, ID_WG_BT_MTP, Signs( 0 ), wxDefaultPosition, wxDefaultSize );
+    wxBitmapButton *item10 = new wxBitmapButton( parent, ID_MUS_BT_MTP, Signs( 0 ), wxDefaultPosition, wxDefaultSize );
     item0->Add( item10, 0, wxALIGN_CENTER, 5 );
 
-    wxBitmapButton *item11 = new wxBitmapButton( parent, ID_WG_BT_MTPD, Signs( 3 ), wxDefaultPosition, wxDefaultSize );
+    wxBitmapButton *item11 = new wxBitmapButton( parent, ID_MUS_BT_MTPD, Signs( 3 ), wxDefaultPosition, wxDefaultSize );
     item0->Add( item11, 0, wxALIGN_CENTER, 5 );
 
     wxStaticLine *item12 = new wxStaticLine( parent, ID4_LINE, wxDefaultPosition, wxSize(-1,20), wxLI_VERTICAL );
     item0->Add( item12, 0, wxGROW|wxALIGN_CENTER_HORIZONTAL|wxLEFT|wxRIGHT, 5 );
 
-    wxBitmapButton *item13 = new wxBitmapButton( parent, ID_WG_BT_MTIP, Signs( 4 ), wxDefaultPosition, wxDefaultSize );
+    wxBitmapButton *item13 = new wxBitmapButton( parent, ID_MUS_BT_MTIP, Signs( 4 ), wxDefaultPosition, wxDefaultSize );
     item0->Add( item13, 0, wxALIGN_CENTER|wxLEFT, 0 );
 
-    wxBitmapButton *item14 = new wxBitmapButton( parent, ID_WG_BT_MTIDP, Signs( 5 ), wxDefaultPosition, wxDefaultSize );
+    wxBitmapButton *item14 = new wxBitmapButton( parent, ID_MUS_BT_MTIDP, Signs( 5 ), wxDefaultPosition, wxDefaultSize );
     item0->Add( item14, 0, wxALIGN_CENTER, 5 );
 
-    wxBitmapButton *item15 = new wxBitmapButton( parent, ID_WG_BT_MTI, Signs( 6 ), wxDefaultPosition, wxDefaultSize );
+    wxBitmapButton *item15 = new wxBitmapButton( parent, ID_MUS_BT_MTI, Signs( 6 ), wxDefaultPosition, wxDefaultSize );
     item0->Add( item15, 0, wxALIGN_CENTER, 5 );
 
-    wxBitmapButton *item16 = new wxBitmapButton( parent, ID_WG_BT_MTID, Signs( 7 ), wxDefaultPosition, wxDefaultSize );
+    wxBitmapButton *item16 = new wxBitmapButton( parent, ID_MUS_BT_MTID, Signs( 7 ), wxDefaultPosition, wxDefaultSize );
     item0->Add( item16, 0, wxALIGN_CENTER, 5 );
 
     wxStaticLine *item17 = new wxStaticLine( parent, ID4_LINE, wxDefaultPosition, wxSize(-1,20), wxLI_VERTICAL );
     item0->Add( item17, 0, wxGROW|wxALIGN_CENTER_HORIZONTAL|wxLEFT|wxRIGHT, 5 );
 
-    wxBitmapButton *item18 = new wxBitmapButton( parent, ID_WG_BT_MTI2P, Signs( 8 ), wxDefaultPosition, wxDefaultSize );
+    wxBitmapButton *item18 = new wxBitmapButton( parent, ID_MUS_BT_MTI2P, Signs( 8 ), wxDefaultPosition, wxDefaultSize );
     item0->Add( item18, 0, wxALIGN_CENTER|wxLEFT, 0 );
 
-    wxBitmapButton *item19 = new wxBitmapButton( parent, ID_WG_BT_MTI2DP, Signs( 9 ), wxDefaultPosition, wxDefaultSize );
+    wxBitmapButton *item19 = new wxBitmapButton( parent, ID_MUS_BT_MTI2DP, Signs( 9 ), wxDefaultPosition, wxDefaultSize );
     item0->Add( item19, 0, wxALIGN_CENTER, 5 );
 
-    wxBitmapButton *item20 = new wxBitmapButton( parent, ID_WG_BT_MTI2, Signs( 10 ), wxDefaultPosition, wxDefaultSize );
+    wxBitmapButton *item20 = new wxBitmapButton( parent, ID_MUS_BT_MTI2, Signs( 10 ), wxDefaultPosition, wxDefaultSize );
     item0->Add( item20, 0, wxALIGN_CENTER, 5 );
 
-    wxBitmapButton *item21 = new wxBitmapButton( parent, ID_WG_BT_MTI2D, Signs( 11 ), wxDefaultPosition, wxDefaultSize );
+    wxBitmapButton *item21 = new wxBitmapButton( parent, ID_MUS_BT_MTI2D, Signs( 11 ), wxDefaultPosition, wxDefaultSize );
     item0->Add( item21, 0, wxALIGN_CENTER, 5 );
 
     wxStaticLine *item22 = new wxStaticLine( parent, ID4_LINE, wxDefaultPosition, wxSize(-1,20), wxLI_VERTICAL );
     item0->Add( item22, 0, wxGROW|wxALIGN_CENTER_HORIZONTAL|wxLEFT|wxRIGHT, 5 );
 
-    wxBitmapButton *item23 = new wxBitmapButton( parent, ID_WG_BT_M32, Signs( 12 ), wxDefaultPosition, wxDefaultSize );
+    wxBitmapButton *item23 = new wxBitmapButton( parent, ID_MUS_BT_M32, Signs( 12 ), wxDefaultPosition, wxDefaultSize );
     item0->Add( item23, 0, wxALIGN_CENTER, 5 );
 
-    wxBitmapButton *item24 = new wxBitmapButton( parent, ID_WG_BT_M3, Signs( 13 ), wxDefaultPosition, wxDefaultSize );
+    wxBitmapButton *item24 = new wxBitmapButton( parent, ID_MUS_BT_M3, Signs( 13 ), wxDefaultPosition, wxDefaultSize );
     item0->Add( item24, 0, wxALIGN_CENTER, 5 );
 
-    wxBitmapButton *item25 = new wxBitmapButton( parent, ID_WG_BT_M2, Signs( 14 ), wxDefaultPosition, wxDefaultSize );
+    wxBitmapButton *item25 = new wxBitmapButton( parent, ID_MUS_BT_M2, Signs( 14 ), wxDefaultPosition, wxDefaultSize );
     item0->Add( item25, 0, wxALIGN_CENTER, 5 );
 
     if (set_sizer)
@@ -311,55 +311,55 @@ wxSizer *SymbolesPanel( wxWindow *parent, bool call_fit, bool set_sizer )
     wxBoxSizer *item0 = new wxBoxSizer( wxHORIZONTAL );
     ToolSymbolesPanelBoxSizer = item0;
 
-    wxBitmapButton *item1 = new wxBitmapButton( parent, ID_WG_BT_NOTES, Btn( 0 ), wxDefaultPosition, wxDefaultSize );
+    wxBitmapButton *item1 = new wxBitmapButton( parent, ID_MUS_BT_NOTES, Btn( 0 ), wxDefaultPosition, wxDefaultSize );
     item0->Add( item1, 0, wxALIGN_CENTER, 0 );
 
-    wxBitmapButton *item2 = new wxBitmapButton( parent, ID_WG_BT_KEY, Btn( 1 ), wxDefaultPosition, wxDefaultSize );
+    wxBitmapButton *item2 = new wxBitmapButton( parent, ID_MUS_BT_KEY, Btn( 1 ), wxDefaultPosition, wxDefaultSize );
     item0->Add( item2, 0, wxALIGN_CENTER, 0 );
 
-    wxBitmapButton *item3 = new wxBitmapButton( parent, ID_WG_BT_SIGNS, Btn( 2 ), wxDefaultPosition, wxDefaultSize );
+    wxBitmapButton *item3 = new wxBitmapButton( parent, ID_MUS_BT_SIGNS, Btn( 2 ), wxDefaultPosition, wxDefaultSize );
     item0->Add( item3, 0, wxALIGN_CENTER, 0 );
 
-    wxBitmapButton *item4 = new wxBitmapButton( parent, ID_WG_BT_SYMBOLES, Btn_selected( 3 ), wxDefaultPosition, wxDefaultSize );
+    wxBitmapButton *item4 = new wxBitmapButton( parent, ID_MUS_BT_SYMBOLES, Btn_selected( 3 ), wxDefaultPosition, wxDefaultSize );
     item0->Add( item4, 0, wxALIGN_CENTER, 0 );
 
     wxStaticLine *item5 = new wxStaticLine( parent, ID4_LINE, wxDefaultPosition, wxSize(-1,20), wxLI_VERTICAL );
     item0->Add( item5, 0, wxGROW|wxALIGN_CENTER_HORIZONTAL|wxLEFT|wxRIGHT, 5 );
 
-    wxBitmapButton *item6 = new wxBitmapButton( parent, ID_WG_BT_INSERT, Btn( 4 ), wxDefaultPosition, wxDefaultSize );
+    wxBitmapButton *item6 = new wxBitmapButton( parent, ID_MUS_BT_INSERT, Btn( 4 ), wxDefaultPosition, wxDefaultSize );
     item0->Add( item6, 0, wxALIGN_CENTER, 0 );
 
     wxStaticLine *item7 = new wxStaticLine( parent, ID4_LINE, wxDefaultPosition, wxSize(-1,20), wxLI_VERTICAL );
     item0->Add( item7, 0, wxGROW|wxALIGN_CENTER_HORIZONTAL|wxLEFT|wxRIGHT, 5 );
 
-    wxBitmapButton *item8 = new wxBitmapButton( parent, ID_WG_BT_PNT, Symboles( 8 ), wxDefaultPosition, wxDefaultSize );
+    wxBitmapButton *item8 = new wxBitmapButton( parent, ID_MUS_BT_PNT, Symboles( 8 ), wxDefaultPosition, wxDefaultSize );
     item0->Add( item8, 0, wxALIGN_CENTER, 5 );
 
     item0->Add( 10, 10, 0, wxALIGN_CENTER|wxALL, 0 );
 
-    wxBitmapButton *item9 = new wxBitmapButton( parent, ID_WG_BT_DIESE, Symboles( 4 ), wxDefaultPosition, wxDefaultSize );
+    wxBitmapButton *item9 = new wxBitmapButton( parent, ID_MUS_BT_DIESE, Symboles( 4 ), wxDefaultPosition, wxDefaultSize );
     item0->Add( item9, 0, wxALIGN_CENTER, 5 );
 
-    wxBitmapButton *item10 = new wxBitmapButton( parent, ID_WG_BT_BECAR, Symboles( 2 ), wxDefaultPosition, wxDefaultSize );
+    wxBitmapButton *item10 = new wxBitmapButton( parent, ID_MUS_BT_BECAR, Symboles( 2 ), wxDefaultPosition, wxDefaultSize );
     item0->Add( item10, 0, wxALIGN_CENTER, 5 );
 
-    wxBitmapButton *item11 = new wxBitmapButton( parent, ID_WG_BT_BEMOL, Symboles( 1 ), wxDefaultPosition, wxDefaultSize );
+    wxBitmapButton *item11 = new wxBitmapButton( parent, ID_MUS_BT_BEMOL, Symboles( 1 ), wxDefaultPosition, wxDefaultSize );
     item0->Add( item11, 0, wxALIGN_CENTER, 5 );
 
     item0->Add( 10, 10, 0, wxALIGN_CENTER|wxALL, 0 );
 
-    wxBitmapButton *item12 = new wxBitmapButton( parent, ID_WG_BT_DDIESE, Symboles( 7 ), wxDefaultPosition, wxDefaultSize );
+    wxBitmapButton *item12 = new wxBitmapButton( parent, ID_MUS_BT_DDIESE, Symboles( 7 ), wxDefaultPosition, wxDefaultSize );
     item0->Add( item12, 0, wxALIGN_CENTER, 5 );
 
-    wxBitmapButton *item13 = new wxBitmapButton( parent, ID_WG_BT_DBEMOL, Symboles( 6 ), wxDefaultPosition, wxDefaultSize );
+    wxBitmapButton *item13 = new wxBitmapButton( parent, ID_MUS_BT_DBEMOL, Symboles( 6 ), wxDefaultPosition, wxDefaultSize );
     item0->Add( item13, 0, wxALIGN_CENTER, 5 );
 
     item0->Add( 10, 10, 0, wxALIGN_CENTER|wxALL, 0 );
 
-    wxBitmapButton *item14 = new wxBitmapButton( parent, ID_WG_BT_BAR, Symboles( 5 ), wxDefaultPosition, wxDefaultSize );
+    wxBitmapButton *item14 = new wxBitmapButton( parent, ID_MUS_BT_BAR, Symboles( 5 ), wxDefaultPosition, wxDefaultSize );
     item0->Add( item14, 0, wxALIGN_CENTER, 5 );
 
-    wxBitmapButton *item15 = new wxBitmapButton( parent, ID_WG_BT_RDOTS, Symboles( 9 ), wxDefaultPosition, wxDefaultSize );
+    wxBitmapButton *item15 = new wxBitmapButton( parent, ID_MUS_BT_RDOTS, Symboles( 9 ), wxDefaultPosition, wxDefaultSize );
     item0->Add( item15, 0, wxALIGN_CENTER, 5 );
 
     if (set_sizer)
@@ -381,78 +381,78 @@ wxMenuBar *WgEditMenuFunc()
     wxMenu* item1 = new wxMenu;
     
     wxMenu* item2 = new wxMenu;
-    item2->Append( ID_WG_G1, wxT("Sol 1"), wxT("") );
-    item2->Append( ID_WG_G2, wxT("Sol 2"), wxT("") );
-    item2->Append( ID_WG_U1, wxT("Ut 1"), wxT("") );
-    item2->Append( ID_WG_U2, wxT("Ut 2"), wxT("") );
-    item2->Append( ID_WG_U3, wxT("Ut 3"), wxT("") );
-    item2->Append( ID_WG_U4, wxT("Ut 4"), wxT("") );
-    item2->Append( ID_WG_U5, wxT("Ut 5"), wxT("") );
-    item2->Append( ID_WG_F3, wxT("Fa 3"), wxT("") );
-    item2->Append( ID_WG_F4, wxT("Fa 4"), wxT("") );
-    item2->Append( ID_WG_F5, wxT("Fa 5"), wxT("") );
-    item1->Append( ID_WG_KEYS, wxT("Keys"), item2 );
+    item2->Append( ID_MUS_G1, wxT("Sol 1"), wxT("") );
+    item2->Append( ID_MUS_G2, wxT("Sol 2"), wxT("") );
+    item2->Append( ID_MUS_U1, wxT("Ut 1"), wxT("") );
+    item2->Append( ID_MUS_U2, wxT("Ut 2"), wxT("") );
+    item2->Append( ID_MUS_U3, wxT("Ut 3"), wxT("") );
+    item2->Append( ID_MUS_U4, wxT("Ut 4"), wxT("") );
+    item2->Append( ID_MUS_U5, wxT("Ut 5"), wxT("") );
+    item2->Append( ID_MUS_F3, wxT("Fa 3"), wxT("") );
+    item2->Append( ID_MUS_F4, wxT("Fa 4"), wxT("") );
+    item2->Append( ID_MUS_F5, wxT("Fa 5"), wxT("") );
+    item1->Append( ID_MUS_KEYS, wxT("Keys"), item2 );
 
     
     wxMenu* item3 = new wxMenu;
-    item3->Append( ID_WG_N0, wxT("Longa"), wxT("") );
-    item3->Append( ID_WG_N1, wxT("Brevis"), wxT("") );
-    item3->Append( ID_WG_N2, wxT("Semibrevis"), wxT("") );
-    item3->Append( ID_WG_N3, wxT("Minima"), wxT("") );
-    item3->Append( ID_WG_N4, wxT("Semiminima"), wxT("") );
-    item3->Append( ID_WG_N5, wxT("Fusa"), wxT("") );
-    item3->Append( ID_WG_N6, wxT("Semifusa"), wxT("") );
-    item3->Append( ID_WG_N7, wxT("Fusella"), wxT("") );
-    item1->Append( ID_WG_NOTES, wxT("Notes"), item3 );
+    item3->Append( ID_MUS_N0, wxT("Longa"), wxT("") );
+    item3->Append( ID_MUS_N1, wxT("Brevis"), wxT("") );
+    item3->Append( ID_MUS_N2, wxT("Semibrevis"), wxT("") );
+    item3->Append( ID_MUS_N3, wxT("Minima"), wxT("") );
+    item3->Append( ID_MUS_N4, wxT("Semiminima"), wxT("") );
+    item3->Append( ID_MUS_N5, wxT("Fusa"), wxT("") );
+    item3->Append( ID_MUS_N6, wxT("Semifusa"), wxT("") );
+    item3->Append( ID_MUS_N7, wxT("Fusella"), wxT("") );
+    item1->Append( ID_MUS_NOTES, wxT("Notes"), item3 );
 
     
     wxMenu* item4 = new wxMenu;
-    item4->Append( ID_WG_R0, wxT("Longa"), wxT("") );
-    item4->Append( ID_WG_R1, wxT("Brevis"), wxT("") );
-    item4->Append( ID_WG_R2, wxT("Semibrevis"), wxT("") );
-    item4->Append( ID_WG_R3, wxT("Minima"), wxT("") );
-    item4->Append( ID_WG_R4, wxT("Semiminima"), wxT("") );
-    item4->Append( ID_WG_R5, wxT("Fusa"), wxT("") );
-    item4->Append( ID_WG_R6, wxT("Semifusa"), wxT("") );
-    item4->Append( ID_WG_R7, wxT("Fusella"), wxT("") );
-    item4->Append( ID_WG_CT, wxT("Custos"), wxT("") );
-    item1->Append( ID_WG_RESTS, wxT("Rests"), item4 );
+    item4->Append( ID_MUS_R0, wxT("Longa"), wxT("") );
+    item4->Append( ID_MUS_R1, wxT("Brevis"), wxT("") );
+    item4->Append( ID_MUS_R2, wxT("Semibrevis"), wxT("") );
+    item4->Append( ID_MUS_R3, wxT("Minima"), wxT("") );
+    item4->Append( ID_MUS_R4, wxT("Semiminima"), wxT("") );
+    item4->Append( ID_MUS_R5, wxT("Fusa"), wxT("") );
+    item4->Append( ID_MUS_R6, wxT("Semifusa"), wxT("") );
+    item4->Append( ID_MUS_R7, wxT("Fusella"), wxT("") );
+    item4->Append( ID_MUS_CT, wxT("Custos"), wxT("") );
+    item1->Append( ID_MUS_RESTS, wxT("Rests"), item4 );
 
     
     wxMenu* item5 = new wxMenu;
-    item5->Append( ID_WG_MTPP, wxT("Tempus perfectum cum prolatione perfecta"), wxT("") );
-    item5->Append( ID_WG_MTPDP, wxT("Tempus perfectum diminutum cum prolatione perfecta "), wxT("") );
-    item5->Append( ID_WG_MTP, wxT("Tempus perfectum cum prolatione imperfecta"), wxT("") );
-    item5->Append( ID_WG_MTPD, wxT("Tempus perfectum diminutum cum prolatione imperfecta"), wxT("") );
+    item5->Append( ID_MUS_MTPP, wxT("Tempus perfectum cum prolatione perfecta"), wxT("") );
+    item5->Append( ID_MUS_MTPDP, wxT("Tempus perfectum diminutum cum prolatione perfecta "), wxT("") );
+    item5->Append( ID_MUS_MTP, wxT("Tempus perfectum cum prolatione imperfecta"), wxT("") );
+    item5->Append( ID_MUS_MTPD, wxT("Tempus perfectum diminutum cum prolatione imperfecta"), wxT("") );
     item5->AppendSeparator();
-    item5->Append( ID_WG_MTIP, wxT("Tempus imperfectum cum prolatione perfecta"), wxT("") );
-    item5->Append( ID_WG_MTIDP, wxT("Tempus imperfectum diminutum cum prolatione perfecta"), wxT("") );
-    item5->Append( ID_WG_MTI, wxT("Tempus imperfectum cum prolatione imperfecta"), wxT("") );
-    item5->Append( ID_WG_MTID, wxT("Tempus imperfectum diminutum cum prolatione imperfecta"), wxT("") );
+    item5->Append( ID_MUS_MTIP, wxT("Tempus imperfectum cum prolatione perfecta"), wxT("") );
+    item5->Append( ID_MUS_MTIDP, wxT("Tempus imperfectum diminutum cum prolatione perfecta"), wxT("") );
+    item5->Append( ID_MUS_MTI, wxT("Tempus imperfectum cum prolatione imperfecta"), wxT("") );
+    item5->Append( ID_MUS_MTID, wxT("Tempus imperfectum diminutum cum prolatione imperfecta"), wxT("") );
     item5->AppendSeparator();
-    item5->Append( ID_WG_MTI2P, wxT("Tempus imperfectum duplum cum prolatione perfecta"), wxT("") );
-    item5->Append( ID_WG_MTI2DP, wxT("Tempus imperfectum duplum diminutum cum prolatione perfecta"), wxT("") );
-    item5->Append( ID_WG_MTI2, wxT("Tempus imperfectum duplum cum prolatione imperfecta"), wxT("") );
-    item5->Append( ID_WG_MTI2D, wxT("Tempus imperfectum duplum diminutum cum prolatione imperfecta"), wxT("") );
+    item5->Append( ID_MUS_MTI2P, wxT("Tempus imperfectum duplum cum prolatione perfecta"), wxT("") );
+    item5->Append( ID_MUS_MTI2DP, wxT("Tempus imperfectum duplum diminutum cum prolatione perfecta"), wxT("") );
+    item5->Append( ID_MUS_MTI2, wxT("Tempus imperfectum duplum cum prolatione imperfecta"), wxT("") );
+    item5->Append( ID_MUS_MTI2D, wxT("Tempus imperfectum duplum diminutum cum prolatione imperfecta"), wxT("") );
     item5->AppendSeparator();
-    item5->Append( ID_WG_M32, wxT("Proportio sesquialtera (3/2)"), wxT("") );
-    item5->Append( ID_WG_M3, wxT("Proportio tripla (3)"), wxT("") );
-    item5->Append( ID_WG_M2, wxT("Proportio dupla (2)"), wxT("") );
-    item1->Append( ID_WG_SIGNS, wxT("Proportions"), item5 );
+    item5->Append( ID_MUS_M32, wxT("Proportio sesquialtera (3/2)"), wxT("") );
+    item5->Append( ID_MUS_M3, wxT("Proportio tripla (3)"), wxT("") );
+    item5->Append( ID_MUS_M2, wxT("Proportio dupla (2)"), wxT("") );
+    item1->Append( ID_MUS_SIGNS, wxT("Proportions"), item5 );
 
     
     wxMenu* item6 = new wxMenu;
-    item6->Append( ID_WG_PNT, wxT("Point"), wxT("") );
+    item6->Append( ID_MUS_PNT, wxT("Point"), wxT("") );
     item6->AppendSeparator();
-    item6->Append( ID_WG_DIESE, wxT("Diesis"), wxT("") );
-    item6->Append( ID_WG_BECAR, wxT("Becarre"), wxT("") );
-    item6->Append( ID_WG_BEMOL, wxT("Bemol"), wxT("") );
+    item6->Append( ID_MUS_DIESE, wxT("Diesis"), wxT("") );
+    item6->Append( ID_MUS_BECAR, wxT("Becarre"), wxT("") );
+    item6->Append( ID_MUS_BEMOL, wxT("Bemol"), wxT("") );
     item6->AppendSeparator();
-    item6->Append( ID_WG_DDIESE, wxT("Diese d'armure"), wxT("") );
-    item6->Append( ID_WG_DBEMOL, wxT("Bemol d'armure"), wxT("") );
+    item6->Append( ID_MUS_DDIESE, wxT("Diese d'armure"), wxT("") );
+    item6->Append( ID_MUS_DBEMOL, wxT("Bemol d'armure"), wxT("") );
     item6->AppendSeparator();
-    item6->Append( ID_WG_BAR, wxT("Barre de mesure"), wxT("") );
-    item1->Append( ID_WG_SYMBOLES, wxT("Symboles"), item6 );
+    item6->Append( ID_MUS_BAR, wxT("Barre de mesure"), wxT("") );
+    item1->Append( ID_MUS_SYMBOLES, wxT("Symboles"), item6 );
 
     item0->Append( item1, wxT("Edition") );
     

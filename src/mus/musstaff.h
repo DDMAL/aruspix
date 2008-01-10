@@ -5,13 +5,13 @@
 // Copyright (c) Laurent Pugin. All rights reserved.
 /////////////////////////////////////////////////////////////////////////////
 
-#ifndef __WG_STAFF_H__
-#define __WG_STAFF_H__
+#ifndef __MUS_STAFF_H__
+#define __MUS_STAFF_H__
 
 #ifdef AX_WG
 
 #ifdef __GNUG__
-    #pragma interface "wgstaff.cpp"
+    #pragma interface "musstaff.cpp"
 #endif
 
 #ifndef WX_PRECOMP
@@ -21,7 +21,7 @@
 
 // WDR: class declarations
 
-#include "wgobject.h"
+#include "musobject.h"
 
 class WgElement;
 WX_DECLARE_OBJARRAY( WgElement, ArrayOfWgElements);

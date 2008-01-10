@@ -25,8 +25,8 @@
 #include "axoptionsdlg.h"
 #include "aximage.h"
 #include "axapp.h"
-#include "wg/wgfile.h"
-#include "wg/iowwg.h"
+#include "mus/musfile.h"
+#include "mus/musiowwg.h"
 
 #ifdef AX_SUPERIMPOSITION
 	#include "superimposition/sup.h"

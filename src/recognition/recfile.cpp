@@ -21,7 +21,7 @@
 
 #include "recfile.h"
 #include "rec.h"
-#include "models.h"
+#include "recmodels.h"
 #include "im/impage.h"
 #include "im/imstaff.h"
 #include "im/imstaffsegment.h"
@@ -29,11 +29,11 @@
 #include "app/axapp.h"
 #include "app/axprocess.h"
 
-#include "wg/wgpage.h"
-#include "wg/wgstaff.h"
-#include "wg/wgfile.h"
-#include "wg/iowwg.h"
-#include "wg/iomlf.h"
+#include "mus/muspage.h"
+#include "mus/musstaff.h"
+#include "mus/musfile.h"
+#include "mus/musiowwg.h"
+#include "mus/musiomlf.h"
 
 
 // WDR: class implementations

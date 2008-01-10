@@ -9,7 +9,7 @@
 #define __wgtoolpanel_H__
 
 #if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-    #pragma interface "wgtoolpanel.cpp"
+    #pragma interface "mustoolpanel.cpp"
 #endif
 
 #ifndef WX_PRECOMP
@@ -18,7 +18,7 @@
 
 //#include "wx/bmpbuttn.h"
 
-#include "wg_wdr.h"
+#include "mus_wdr.h"
 
 #define WG_TOOLS_NOTES 0
 #define WG_TOOLS_KEYS 1

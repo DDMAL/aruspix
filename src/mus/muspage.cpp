@@ -8,7 +8,7 @@
 #ifdef AX_WG
 
 #ifdef __GNUG__
-    #pragma implementation "wgpage.cpp"
+    #pragma implementation "muspage.cpp"
 #endif
 
 // For compilers that support precompilation, includes "wx/wx.h".
@@ -19,13 +19,13 @@
 #endif
 
 
-#include "wgpage.h"
-#include "wgstaff.h"
-#include "wgelement.h"
-#include "wgsymbole.h"
-#include "wgnote.h"
-#include "wgwindow.h"
-#include "wg.h"
+#include "muspage.h"
+#include "musstaff.h"
+#include "muselement.h"
+#include "mussymbol.h"
+#include "musnote.h"
+#include "muswindow.h"
+#include "mus.h"
 
 #include "wx/arrimpl.cpp"
 WX_DEFINE_OBJARRAY( ArrayOfWgStaves );

@@ -8,7 +8,7 @@
 #ifdef AX_WG
 
 #ifdef __GNUG__
-    #pragma implementation "wgstaff.cpp"
+    #pragma implementation "musstaff.cpp"
 #endif
 
 // For compilers that support precompilation, includes "wx/wx.h".
@@ -19,12 +19,12 @@
 #endif
 
 
-#include "wgstaff.h"
-#include "wgelement.h"
-#include "wgsymbole.h"
-#include "wgnote.h"
-#include "wgpage.h"
-#include "wgwindow.h"
+#include "musstaff.h"
+#include "muselement.h"
+#include "mussymbol.h"
+#include "musnote.h"
+#include "muspage.h"
+#include "muswindow.h"
 
 #include <math.h>
 

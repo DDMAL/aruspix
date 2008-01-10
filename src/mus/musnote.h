@@ -5,20 +5,20 @@
 // Copyright (c) Laurent Pugin. All rights reserved.
 /////////////////////////////////////////////////////////////////////////////
 
-#ifndef __WG_NOTE_H__
-#define __WG_NOTE_H__
+#ifndef __MUS_NOTE_H__
+#define __MUS_NOTE_H__
 
 #ifdef AX_WG
 
 #ifdef __GNUG__
-    #pragma interface "wgnote.cpp"    
+    #pragma interface "musnote.cpp"    
 #endif
 
 #ifndef WX_PRECOMP
     #include "wx/wx.h"
 #endif
 
-#include "wgelement.h"
+#include "muselement.h"
 
 class WgStaff;
 

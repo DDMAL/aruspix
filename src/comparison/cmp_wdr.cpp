@@ -36,7 +36,7 @@
 #include "comparison/cmp.h"
 #include "comparison/cmpwg.h"
 #include "comparison/cmpctrl.h"
-#include "wg/wgtoolpanel.h"
+#include "mus/mustoolpanel.h"
 
 // Implement window functions
 

@@ -29,7 +29,7 @@
 #include "im/impage.h"
 #include "im/imstaff.h"
 
-#include "wg/wgstaff.h"
+#include "mus/musstaff.h"
 
 // WDR: class implementations
 

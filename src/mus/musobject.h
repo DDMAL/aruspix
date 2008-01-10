@@ -5,13 +5,13 @@
 // Copyright (c) Laurent Pugin. All rights reserved.
 /////////////////////////////////////////////////////////////////////////////
 
-#ifndef __WG_OBJECT_H__
-#define __WG_OBJECT_H__
+#ifndef __MUS_OBJECT_H__
+#define __MUS_OBJECT_H__
 
 #ifdef AX_WG
 
 #ifdef __GNUG__
-	#pragma interface "wgobject.cpp"
+	#pragma interface "musobject.cpp"
 #endif
 
 #ifndef WX_PRECOMP

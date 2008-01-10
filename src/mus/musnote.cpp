@@ -8,7 +8,7 @@
 #ifdef AX_WG
 
 #ifdef __GNUG__
-    #pragma implementation "wgnote.cpp"
+    #pragma implementation "musnote.cpp"
 #endif
 
 // For compilers that support precompilation, includes "wx/wx.h".
@@ -18,12 +18,12 @@
     #pragma hdrstop
 #endif
 
-#include "wgnote.h"
-#include "wgwindow.h"
-#include "wgstaff.h"
-#include "wgsymbole.h"
-#include "wgpage.h"
-#include "wgdef.h"
+#include "musnote.h"
+#include "muswindow.h"
+#include "musstaff.h"
+#include "mussymbol.h"
+#include "muspage.h"
+#include "musdef.h"
 
 #include <math.h>
 

@@ -8,7 +8,7 @@
 #ifdef AX_WG
 
 #ifdef __GNUG__
-    #pragma implementation "wgwindow.h"
+    #pragma implementation "muswindow.h"
 #endif
 
 // For compilers that support precompilation, includes "wx/wx.h".
@@ -21,13 +21,13 @@
 #include "wx/fontutil.h"
 
 #include "app/axapp.h"
-#include "wgwindow.h"
-#include "wgpage.h"
-#include "wgfile.h"
-#include "wgtoolpanel.h"
+#include "muswindow.h"
+#include "muspage.h"
+#include "musfile.h"
+#include "mustoolpanel.h"
 #include "iowwg.h"
 
-#include "wg_wdr.h"
+#include "mus_wdr.h"
 
 #include "app/axgotodlg.h"
 
@@ -53,11 +53,11 @@ BEGIN_EVENT_TABLE(WgWindow,wxScrolledWindow)
 	EVT_SIZE( WgWindow::OnSize )
 	EVT_KEY_DOWN( WgWindow::OnKeyDown )
 	EVT_KEY_UP( WgWindow::OnKeyUp )
-	EVT_MENU_RANGE( ID_WG_N0, ID_WG_CT, WgWindow::OnPopupMenuNote ) // popup menu
-	EVT_MENU_RANGE( ID_WG_R0, ID_WG_R7, WgWindow::OnPopupMenuNote ) // popup menu
-	EVT_MENU_RANGE( ID_WG_G1, ID_WG_F5, WgWindow::OnPopupMenuSymbole ) // popup menu
-	EVT_MENU_RANGE( ID_WG_MTPP, ID_WG_M2, WgWindow::OnPopupMenuSymbole ) // popup menu
-	EVT_MENU_RANGE( ID_WG_PNT, ID_WG_BAR, WgWindow::OnPopupMenuSymbole ) // popup menu
+	EVT_MENU_RANGE( ID_MUS_N0, ID_MUS_CT, WgWindow::OnPopupMenuNote ) // popup menu
+	EVT_MENU_RANGE( ID_MUS_R0, ID_MUS_R7, WgWindow::OnPopupMenuNote ) // popup menu
+	EVT_MENU_RANGE( ID_MUS_G1, ID_MUS_F5, WgWindow::OnPopupMenuSymbole ) // popup menu
+	EVT_MENU_RANGE( ID_MUS_MTPP, ID_MUS_M2, WgWindow::OnPopupMenuSymbole ) // popup menu
+	EVT_MENU_RANGE( ID_MUS_PNT, ID_MUS_BAR, WgWindow::OnPopupMenuSymbole ) // popup menu
 END_EVENT_TABLE()
 
 WgWindow::WgWindow( wxWindow *parent, wxWindowID id,
@@ -942,24 +942,24 @@ void WgWindow::OnPopupMenuNote( wxCommandEvent &event )
 
 	switch ( event.GetId() )
 	{
-	case ( ID_WG_N0 ): note->val = LG; break;
-	case ( ID_WG_N1 ): note->val = BR; break;
-	case ( ID_WG_N2 ): note->val = RD; break;
-	case ( ID_WG_N3 ): note->val = BL; break;
-	case ( ID_WG_N4 ): note->val = NR; break;
-	case ( ID_WG_N5 ): note->val = CR; break;
-	case ( ID_WG_N6 ): note->val = DC; break;
-	case ( ID_WG_N7 ): note->val = TC; break;
-	case ( ID_WG_CT ): note->val = CUSTOS; note->sil = true; break;
+	case ( ID_MUS_N0 ): note->val = LG; break;
+	case ( ID_MUS_N1 ): note->val = BR; break;
+	case ( ID_MUS_N2 ): note->val = RD; break;
+	case ( ID_MUS_N3 ): note->val = BL; break;
+	case ( ID_MUS_N4 ): note->val = NR; break;
+	case ( ID_MUS_N5 ): note->val = CR; break;
+	case ( ID_MUS_N6 ): note->val = DC; break;
+	case ( ID_MUS_N7 ): note->val = TC; break;
+	case ( ID_MUS_CT ): note->val = CUSTOS; note->sil = true; break;
 
-	case ( ID_WG_R0 ): note->val = LG; note->sil = true; break;
-	case ( ID_WG_R1 ): note->val = BR; note->sil = true; break;
-	case ( ID_WG_R2 ): note->val = RD; note->sil = true; break;
-	case ( ID_WG_R3 ): note->val = BL; note->sil = true; break;
-	case ( ID_WG_R4 ): note->val = NR; note->sil = true; break;
-	case ( ID_WG_R5 ): note->val = CR; note->sil = true; break;
-	case ( ID_WG_R6 ): note->val = DC; note->sil = true; break;
-	case ( ID_WG_R7 ): note->val = TC; note->sil = true; break;
+	case ( ID_MUS_R0 ): note->val = LG; note->sil = true; break;
+	case ( ID_MUS_R1 ): note->val = BR; note->sil = true; break;
+	case ( ID_MUS_R2 ): note->val = RD; note->sil = true; break;
+	case ( ID_MUS_R3 ): note->val = BL; note->sil = true; break;
+	case ( ID_MUS_R4 ): note->val = NR; note->sil = true; break;
+	case ( ID_MUS_R5 ): note->val = CR; note->sil = true; break;
+	case ( ID_MUS_R6 ): note->val = DC; note->sil = true; break;
+	case ( ID_MUS_R7 ): note->val = TC; note->sil = true; break;
 	}
 
 	//if ( !m_editElement )
@@ -999,38 +999,38 @@ void WgWindow::OnPopupMenuSymbole( wxCommandEvent &event )
 
 	int id = event.GetId();
 
-	if ( in(id , ID_WG_G1, ID_WG_F5) )
+	if ( in(id , ID_MUS_G1, ID_MUS_F5) )
 	{
 		symbole->flag = CLE; 
 		switch ( id )
 		{
-		case ( ID_WG_G1 ): symbole->code = SOL1; break;
-		case ( ID_WG_G2 ): symbole->code = SOL2; break;
-		case ( ID_WG_U1 ): symbole->code = UT1; break;
-		case ( ID_WG_U2 ): symbole->code = UT2; break;
-		case ( ID_WG_U3 ): symbole->code = UT3; break;
-		case ( ID_WG_U4 ): symbole->code = UT4; break;
-		case ( ID_WG_U5 ): symbole->code = UT5; break;
-		case ( ID_WG_F3 ): symbole->code = FA3; break;
-		case ( ID_WG_F4 ): symbole->code = FA4; break;
-		case ( ID_WG_F5 ): symbole->code = FA5; break;
+		case ( ID_MUS_G1 ): symbole->code = SOL1; break;
+		case ( ID_MUS_G2 ): symbole->code = SOL2; break;
+		case ( ID_MUS_U1 ): symbole->code = UT1; break;
+		case ( ID_MUS_U2 ): symbole->code = UT2; break;
+		case ( ID_MUS_U3 ): symbole->code = UT3; break;
+		case ( ID_MUS_U4 ): symbole->code = UT4; break;
+		case ( ID_MUS_U5 ): symbole->code = UT5; break;
+		case ( ID_MUS_F3 ): symbole->code = FA3; break;
+		case ( ID_MUS_F4 ): symbole->code = FA4; break;
+		case ( ID_MUS_F5 ): symbole->code = FA5; break;
 		}
 	}
-	else if ( in(id , ID_WG_DIESE, ID_WG_DBEMOL) )
+	else if ( in(id , ID_MUS_DIESE, ID_MUS_DBEMOL) )
 	{
 		symbole->flag = ALTER;
 		symbole->code = F6;
 		symbole->oct = 4;
 		switch ( id )
 		{
-		case ( ID_WG_DIESE): symbole->calte = DIESE; break;
-		case ( ID_WG_BEMOL): symbole->calte = BEMOL; break;
-		case ( ID_WG_BECAR): symbole->calte = BECAR; break;
-		case ( ID_WG_DDIESE): symbole->calte = D_DIESE; break;
-		case ( ID_WG_DBEMOL): symbole->calte = D_BEMOL; break;
+		case ( ID_MUS_DIESE): symbole->calte = DIESE; break;
+		case ( ID_MUS_BEMOL): symbole->calte = BEMOL; break;
+		case ( ID_MUS_BECAR): symbole->calte = BECAR; break;
+		case ( ID_MUS_DDIESE): symbole->calte = D_DIESE; break;
+		case ( ID_MUS_DBEMOL): symbole->calte = D_BEMOL; break;
 		}
 	}
-	else if ( id == ID_WG_PNT )
+	else if ( id == ID_MUS_PNT )
 	{
 		symbole->flag = PNT;
 		symbole->code = F6;
@@ -1066,19 +1066,19 @@ void WgWindow::OnMouseDClick(wxMouseEvent &event)
 			{
 				WgSymbole *symbole = (WgSymbole*)m_currentElement;
 				if ( symbole->flag == CLE )
-					submenu_id = ID_WG_KEYS;
+					submenu_id = ID_MUS_KEYS;
 				else if ( symbole->flag == IND_MES )
-					submenu_id = ID_WG_SIGNS;
+					submenu_id = ID_MUS_SIGNS;
 				else
-					submenu_id = ID_WG_SYMBOLES;
+					submenu_id = ID_MUS_SYMBOLES;
 			}
 			else
 			{
 				WgNote *note = (WgNote*)m_currentElement;
 				if ( note->sil != _SIL )
-					submenu_id = ID_WG_NOTES;
+					submenu_id = ID_MUS_NOTES;
 				else
-					submenu_id = ID_WG_RESTS;
+					submenu_id = ID_MUS_RESTS;
 			}
 			wxMenuItem *submenu = menu->Remove( submenu_id );
 			delete menu;

@@ -18,7 +18,7 @@
     #include "wx/wx.h"
 #endif
 
-#include "wg/wgwindow.h"
+#include "mus/muswindow.h"
 
 //#include "rec_wdr.h"
 

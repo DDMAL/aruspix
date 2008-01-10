@@ -18,30 +18,21 @@
 #ifdef __BORLANDC__
     #pragma hdrstop
 #endif
-//#include "wx/config.h"
-//#include "wx/valgen.h"
-//#include "wx/file.h"
-//#include "wx/filename.h"
-//#include "wx/dir.h"
 #include "wx/log.h"
 
 #include "cmp.h"
 #include "cmpim.h"
 #include "cmpwg.h"
 #include "cmpfile.h"
-//#include "recognition/recbookfile.h"
 #include "cmpctrl.h"
-//#include "models.h"
 
 #include "app/axapp.h"
 #include "app/axframe.h"
 
 #include "im/impage.h"
 
-#include "wg/wgfile.h"
-#include "wg/iowwg.h"
-//#include "wg/mlfbmp.h"
-//#include "wg/wgtoolpanel.h"
+#include "mus/musfile.h"
+#include "mus/musiowwg.h"
 
 int CmpEnv::s_book_sash = 200; // batch processing
 int CmpEnv::s_view_sash = 0;

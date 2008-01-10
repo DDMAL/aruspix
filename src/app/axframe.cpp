@@ -46,10 +46,6 @@ WX_DEFINE_OBJARRAY(AxEnvArray);
     #include "superimposition/sup.h"
 #endif
 
-#ifdef AX_DISPLAY
-	#include "display/display.h"
-#endif
-
 #ifdef AX_COMPARISON
     #include "comparison/cmp.h"
 #endif
@@ -154,13 +150,6 @@ AxFrame::AxFrame( wxWindow *parent, wxWindowID id, const wxString &title,
 	RecEnv::LoadConfig();
 #endif //AX_RECOGNITION
 
-#ifdef AX_DISPLAY
-    envRow = new AxEnvRow( "DspEnv",  _( "Visualization" ), menuId++, _("Visualization workspace") );
-    menuEnv->Insert( menuPos++, envRow->m_menuId, envRow->m_menuItem, envRow->m_helpStr, wxITEM_CHECK );
-    m_envArray.Add( envRow );
-	DspEnv::LoadConfig();
-#endif //AX_DISPLAY
-
 #ifdef AX_SUPERIMPOSITION
     envRow = new AxEnvRow( "SupEnv", _("Superimposition"), menuId++, _("Preparation and superimpostition workspace") );
     menuEnv->Insert( menuPos++, envRow->m_menuId, envRow->m_menuItem, envRow->m_helpStr, wxITEM_CHECK );
@@ -197,10 +186,6 @@ AxFrame::~AxFrame()
 #ifdef AX_RECOGNITION
 	RecEnv::SaveConfig();
 #endif //AX_RECOGNITION
-
-#ifdef AX_DISPLAY
-	DspEnv::SaveConfig();
-#endif //AX_DISPLAY
 
 #ifdef AX_SUPERIMPOSITION
 	SupEnv::SaveConfig();
@@ -259,15 +244,6 @@ void AxFrame::RealizeToolbar()
 		m_toolBarPtr->AddTool( envRow->m_menuId, EnvBitmapFunc(3), wxNullBitmap, TRUE, NULL, envRow->m_menuItem, envRow->m_helpStr );
     }
 #endif //AX_RECOGNITION
-
-#ifdef AX_DISPLAY
-	GetEnvironmentMenuId( "DspEnv", &pos );
-	if ( pos != -1 )
-	{
-		envRow = &m_envArray[pos];
-		m_toolBarPtr->AddTool( envRow->m_menuId, EnvBitmapFunc(2), wxNullBitmap, TRUE, NULL, envRow->m_menuItem, envRow->m_helpStr );
-    }
-#endif //AX_DISPLAY
 
 #ifdef AX_SUPERIMPOSITION
     GetEnvironmentMenuId( "SupEnv", &pos );

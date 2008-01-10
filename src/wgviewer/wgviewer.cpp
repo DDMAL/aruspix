@@ -24,11 +24,11 @@
 #include "app/axframe.h"
 #include "app/axapp.h"
 
-#include "wg/wgwindow.h"
-#include "wg/wgfile.h"
-#include "wg/wgtoolpanel.h"
-#include "wg/iowwg.h"
-#include "wg/iomlf.h"
+#include "mus/muswindow.h"
+#include "mus/musfile.h"
+#include "mus/mustoolpanel.h"
+#include "mus/musiowwg.h"
+#include "mus/musiomlf.h"
 
 // WDR: class implementations
 

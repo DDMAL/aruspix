@@ -37,7 +37,7 @@
 #include "recognition/recwg.h"
 #include "recognition/recim.h"
 #include "recognition/recbookctrl.h"
-#include "wg/wgtoolpanel.h"
+#include "mus/mustoolpanel.h"
 
 // Implement window functions
 

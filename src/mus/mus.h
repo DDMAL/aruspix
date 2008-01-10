@@ -5,20 +5,20 @@
 // Copyright (c) Laurent Pugin. All rights reserved.
 /////////////////////////////////////////////////////////////////////////////
 
-#ifndef __WG_H__
-#define __WG_H__
+#ifndef __MUS_H__
+#define __MUS_H__
 
 #ifdef AX_WG
 
 #ifdef __GNUG__
-    #pragma interface "wg.cpp"
+    #pragma interface "mus.cpp"
 #endif
 
 #ifndef WX_PRECOMP
     #include "wx/wx.h"
 #endif
 
-#include "wgdef.h"
+#include "musdef.h"
 
 // WDR: class declarations
 

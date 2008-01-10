@@ -8,7 +8,7 @@
 #ifdef AX_WG
 
 #ifdef __GNUG__
-    #pragma implementation "wgelement.cpp"
+    #pragma implementation "muselement.cpp"
 #endif
 
 // For compilers that support precompilation, includes "wx/wx.h".
@@ -18,9 +18,9 @@
     #pragma hdrstop
 #endif
 
-#include "wgelement.h"
-#include "wgwindow.h"
-#include "wgstaff.h"
+#include "muselement.h"
+#include "muswindow.h"
+#include "musstaff.h"
 
 // WDR: class implementations
 
