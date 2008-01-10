@@ -48,7 +48,7 @@ public:
         long style = wxTAB_TRAVERSAL | wxNO_BORDER );
     
     // WDR: method declarations for WgvPanel
-    wxPanel* GetWgPanel()  { return (wxPanel*) FindWindow( ID5_WGPANEL ); }
+    wxPanel* GetWgPanel()  { return (wxPanel*) FindWindow( ID5_MUSPANEL ); }
     MusToolPanel* GetWgToolPanel()  { return (MusToolPanel*) FindWindow( ID5_TOOLPANEL ); }
     
 private:

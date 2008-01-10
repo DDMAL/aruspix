@@ -119,7 +119,7 @@ void WgvEnv::LoadWindow()
     //m_panelPtr = ((WgvPanel*)m_envWindowPtr)->GetWgPanel();
 	//
 	WindowFunc5( m_envWindowPtr, true );
-	m_panelPtr = (WgvPanel*)m_envWindowPtr->FindWindowById( ID5_WGPANEL );
+	m_panelPtr = (WgvPanel*)m_envWindowPtr->FindWindowById( ID5_MUSPANEL );
     wxASSERT_MSG( m_panelPtr, "WG Panel cannot be NULL ");
     
     if ( wxSystemSettings::GetColour(wxSYS_COLOUR_APPWORKSPACE) == *wxWHITE )

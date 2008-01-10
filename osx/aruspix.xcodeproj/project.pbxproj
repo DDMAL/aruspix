@@ -26,13 +26,14 @@
 		4D3A8FFB0D35867200BBC1FB /* mussymbol.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D3A8FE70D35867200BBC1FB /* mussymbol.cpp */; };
 		4D3A8FFC0D35867200BBC1FB /* mustoolpanel.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D3A8FE90D35867200BBC1FB /* mustoolpanel.cpp */; };
 		4D3A8FFD0D35867200BBC1FB /* muswindow.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D3A8FEB0D35867200BBC1FB /* muswindow.cpp */; };
+		4D7362820D35C7D30030DFA6 /* recmus.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D7362800D35C7D30030DFA6 /* recmus.cpp */; };
+		4D7362A40D35CECC0030DFA6 /* cmpmus.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D7362A20D35CECC0030DFA6 /* cmpmus.cpp */; };
 		5736CE550C354E4A00254E7B /* cmp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5736CE460C354E4A00254E7B /* cmp.cpp */; };
 		5736CE570C354E4A00254E7B /* cmp_wdr.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5736CE490C354E4A00254E7B /* cmp_wdr.cpp */; };
 		5736CE580C354E4A00254E7B /* cmpctrl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5736CE4B0C354E4A00254E7B /* cmpctrl.cpp */; };
 		5736CE590C354E4A00254E7B /* cmpfile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5736CE4D0C354E4A00254E7B /* cmpfile.cpp */; };
 		5736CE5A0C354E4A00254E7B /* cmpim.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5736CE4F0C354E4A00254E7B /* cmpim.cpp */; };
 		5736CE5B0C354E4A00254E7B /* cmpmlf.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5736CE510C354E4A00254E7B /* cmpmlf.cpp */; };
-		5736CE5C0C354E4A00254E7B /* cmpwg.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5736CE530C354E4A00254E7B /* cmpwg.cpp */; };
 		5769E11C0BF25A1D007772A6 /* axmus.icns in Resources */ = {isa = PBXBuildFile; fileRef = 5769E1180BF25A1D007772A6 /* axmus.icns */; };
 		5769E11D0BF25A1D007772A6 /* axproj.icns in Resources */ = {isa = PBXBuildFile; fileRef = 5769E1190BF25A1D007772A6 /* axproj.icns */; };
 		5769E11E0BF25A1D007772A6 /* axtyp.icns in Resources */ = {isa = PBXBuildFile; fileRef = 5769E11A0BF25A1D007772A6 /* axtyp.icns */; };
@@ -77,7 +78,6 @@
 		A5D0D4B60A65628800A4B1CA /* imstaff.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A5D0D4B00A65628800A4B1CA /* imstaff.cpp */; };
 		A5D0D4B70A65628800A4B1CA /* imstaffsegment.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A5D0D4B20A65628800A4B1CA /* imstaffsegment.cpp */; };
 		A5D0D5120A657A6300A4B1CA /* recim.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A5D0D5100A657A6300A4B1CA /* recim.cpp */; };
-		A5D0D5130A657A6300A4B1CA /* recwg.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A5D0D5110A657A6300A4B1CA /* recwg.cpp */; };
 		A5EFDB220A278C980019FA6A /* rec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A5EFDB210A278C980019FA6A /* rec.cpp */; };
 /* End PBXBuildFile section */
 
@@ -117,6 +117,10 @@
 		4D3A8FEA0D35867200BBC1FB /* mustoolpanel.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = mustoolpanel.h; path = ../src/mus/mustoolpanel.h; sourceTree = SOURCE_ROOT; };
 		4D3A8FEB0D35867200BBC1FB /* muswindow.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = muswindow.cpp; path = ../src/mus/muswindow.cpp; sourceTree = SOURCE_ROOT; };
 		4D3A8FEC0D35867200BBC1FB /* muswindow.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = muswindow.h; path = ../src/mus/muswindow.h; sourceTree = SOURCE_ROOT; };
+		4D7362800D35C7D30030DFA6 /* recmus.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = recmus.cpp; sourceTree = "<group>"; };
+		4D7362810D35C7D30030DFA6 /* recmus.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = recmus.h; sourceTree = "<group>"; };
+		4D7362A20D35CECC0030DFA6 /* cmpmus.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = cmpmus.cpp; sourceTree = "<group>"; };
+		4D7362A30D35CECC0030DFA6 /* cmpmus.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = cmpmus.h; sourceTree = "<group>"; };
 		5736CE460C354E4A00254E7B /* cmp.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = cmp.cpp; sourceTree = "<group>"; };
 		5736CE470C354E4A00254E7B /* cmp.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = cmp.h; sourceTree = "<group>"; };
 		5736CE490C354E4A00254E7B /* cmp_wdr.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = cmp_wdr.cpp; sourceTree = "<group>"; };
@@ -129,8 +133,6 @@
 		5736CE500C354E4A00254E7B /* cmpim.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = cmpim.h; sourceTree = "<group>"; };
 		5736CE510C354E4A00254E7B /* cmpmlf.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = cmpmlf.cpp; sourceTree = "<group>"; };
 		5736CE520C354E4A00254E7B /* cmpmlf.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = cmpmlf.h; sourceTree = "<group>"; };
-		5736CE530C354E4A00254E7B /* cmpwg.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = cmpwg.cpp; sourceTree = "<group>"; };
-		5736CE540C354E4A00254E7B /* cmpwg.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = cmpwg.h; sourceTree = "<group>"; };
 		5769E1180BF25A1D007772A6 /* axmus.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = axmus.icns; sourceTree = "<group>"; };
 		5769E1190BF25A1D007772A6 /* axproj.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = axproj.icns; sourceTree = "<group>"; };
 		5769E11A0BF25A1D007772A6 /* axtyp.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = axtyp.icns; sourceTree = "<group>"; };
@@ -213,8 +215,6 @@
 		A5D0D4B30A65628800A4B1CA /* imstaffsegment.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = imstaffsegment.h; sourceTree = "<group>"; };
 		A5D0D4F70A6576B500A4B1CA /* recim.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = recim.h; sourceTree = "<group>"; };
 		A5D0D5100A657A6300A4B1CA /* recim.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = recim.cpp; sourceTree = "<group>"; };
-		A5D0D5110A657A6300A4B1CA /* recwg.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = recwg.cpp; sourceTree = "<group>"; };
-		A5EFDAAF0A275C290019FA6A /* recwg.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = recwg.h; sourceTree = "<group>"; };
 		A5EFDB210A278C980019FA6A /* rec.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = rec.cpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -270,6 +270,8 @@
 		5736CE450C354E4A00254E7B /* comparison */ = {
 			isa = PBXGroup;
 			children = (
+				4D7362A20D35CECC0030DFA6 /* cmpmus.cpp */,
+				4D7362A30D35CECC0030DFA6 /* cmpmus.h */,
 				5736CE460C354E4A00254E7B /* cmp.cpp */,
 				5736CE470C354E4A00254E7B /* cmp.h */,
 				5736CE490C354E4A00254E7B /* cmp_wdr.cpp */,
@@ -282,8 +284,6 @@
 				5736CE500C354E4A00254E7B /* cmpim.h */,
 				5736CE510C354E4A00254E7B /* cmpmlf.cpp */,
 				5736CE520C354E4A00254E7B /* cmpmlf.h */,
-				5736CE530C354E4A00254E7B /* cmpwg.cpp */,
-				5736CE540C354E4A00254E7B /* cmpwg.h */,
 			);
 			name = comparison;
 			path = ../src/comparison;
@@ -374,6 +374,8 @@
 		A58524810A1B9604002D9D8A /* recognition */ = {
 			isa = PBXGroup;
 			children = (
+				4D7362800D35C7D30030DFA6 /* recmus.cpp */,
+				4D7362810D35C7D30030DFA6 /* recmus.h */,
 				4D3A8FC70D35858D00BBC1FB /* recmlfbmp.cpp */,
 				4D3A8FC80D35858D00BBC1FB /* recmlfbmp.h */,
 				4D3A8FC90D35858D00BBC1FB /* recmodels.cpp */,
@@ -386,8 +388,6 @@
 				A5D0D4F70A6576B500A4B1CA /* recim.h */,
 				A5EFDB210A278C980019FA6A /* rec.cpp */,
 				A50FE1390A6D6E240038D682 /* rec.h */,
-				A5D0D5110A657A6300A4B1CA /* recwg.cpp */,
-				A5EFDAAF0A275C290019FA6A /* recwg.h */,
 				A585248D0A1B9604002D9D8A /* rec_wdr.cpp */,
 				A585248E0A1B9604002D9D8A /* rec_wdr.h */,
 				A585248F0A1B9604002D9D8A /* recfile.cpp */,
@@ -557,7 +557,6 @@
 				A5D0D4B60A65628800A4B1CA /* imstaff.cpp in Sources */,
 				A5D0D4B70A65628800A4B1CA /* imstaffsegment.cpp in Sources */,
 				A5D0D5120A657A6300A4B1CA /* recim.cpp in Sources */,
-				A5D0D5130A657A6300A4B1CA /* recwg.cpp in Sources */,
 				A5AE82AE0A82AF50002BA6A5 /* axfile.cpp in Sources */,
 				57EA3DE50C00BDEB00414247 /* recbookctrl.cpp in Sources */,
 				57A668710C331BF900622C70 /* recbookfile.cpp in Sources */,
@@ -568,7 +567,6 @@
 				5736CE590C354E4A00254E7B /* cmpfile.cpp in Sources */,
 				5736CE5A0C354E4A00254E7B /* cmpim.cpp in Sources */,
 				5736CE5B0C354E4A00254E7B /* cmpmlf.cpp in Sources */,
-				5736CE5C0C354E4A00254E7B /* cmpwg.cpp in Sources */,
 				57CA53DD0D340F61001FC334 /* imbrink.cpp in Sources */,
 				57CA53DE0D340F61001FC334 /* imext.cpp in Sources */,
 				57CA53DF0D340F61001FC334 /* imkmeans.c in Sources */,
@@ -597,6 +595,8 @@
 				4D3A8FFB0D35867200BBC1FB /* mussymbol.cpp in Sources */,
 				4D3A8FFC0D35867200BBC1FB /* mustoolpanel.cpp in Sources */,
 				4D3A8FFD0D35867200BBC1FB /* muswindow.cpp in Sources */,
+				4D7362820D35C7D30030DFA6 /* recmus.cpp in Sources */,
+				4D7362A40D35CECC0030DFA6 /* cmpmus.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -650,8 +650,6 @@
 					"-DAX_SUPERIMPOSITION",
 					"-DAX_WGVIEWER",
 					"-DWX_PRECOMP",
-					"-DAX_DISPLAY",
-					"-DAX_WG",
 					"-DAX_RECOGNITION",
 					"-DNO_GCC_PRAGMA",
 				);
@@ -750,11 +748,9 @@
 					"-D_FILE_OFFSET_BITS=64",
 					"-D_LARGE_FILES",
 					"-DWX_PRECOMP",
-					"-DAX_WG",
 					"-DAX_COMPARISON",
 					"-DAX_SUPERIMPOSITION",
 					"-DAX_WGVIEWER",
-					"-DAX_DISPLAY",
 					"-DAX_RECOGNITION",
 					"-DNO_GCC_PRAGMA",
 				);
@@ -836,8 +832,6 @@
 					"-DAX_COMPARISON",
 					"-DAX_WGVIEWER",
 					"-DWX_PRECOMP",
-					"-DAX_DISPLAY",
-					"-DAX_WG",
 					"-DAX_RECOGNITION",
 					"-DNO_GCC_PRAGMA",
 				);

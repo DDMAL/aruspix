@@ -341,8 +341,8 @@ void RecEnv::LoadWindow()
     m_imControlPtr->Init( this, m_imViewPtr );
 
     m_wgPanelPtr = new wxPanel( m_splitterPtr, ID4_DISPLAY );
-    wxFlexGridSizer *wgsizer = (wxFlexGridSizer*)WgOutputFunc4( m_wgPanelPtr, TRUE );
-    m_wgControlPtr = (RecMusController*)m_envWindowPtr->FindWindowById( ID4_WGPANEL );
+    wxFlexGridSizer *wgsizer = (wxFlexGridSizer*)MusOutputFunc4( m_wgPanelPtr, TRUE );
+    m_wgControlPtr = (RecMusController*)m_envWindowPtr->FindWindowById( ID4_MUSPANEL );
     m_wgViewPtr = new RecMusWindow( m_wgControlPtr, ID4_WGWINDOW, wxDefaultPosition,
             wxDefaultSize, wxHSCROLL |wxVSCROLL | wxNO_BORDER  /*| wxSIMPLE_BORDER */ , false);
     m_wgViewPtr->SetEnv( this );

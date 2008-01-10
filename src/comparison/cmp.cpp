@@ -22,7 +22,7 @@
 
 #include "cmp.h"
 #include "cmpim.h"
-#include "cmpwg.h"
+#include "cmpmus.h"
 #include "cmpfile.h"
 #include "cmpctrl.h"
 
