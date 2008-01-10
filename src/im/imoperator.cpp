@@ -128,7 +128,7 @@ bool ImOperator::Terminate( int code, ... )
     return false;
 }
 
-void ImOperator::SetProgressDlg( ProgressDlg *dlg )
+void ImOperator::SetProgressDlg( AxProgressDlg *dlg )
 {
     wxASSERT_MSG( dlg, "Progress dialog pointer cannot be NULL");
     m_progressDlg = dlg;

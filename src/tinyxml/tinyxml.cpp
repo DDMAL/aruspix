@@ -118,7 +118,7 @@ void TiXmlBase::PutString( const TIXML_STRING& str, TIXML_STRING* outString )
 
 
 // <-- Strange class for a bug fix. Search for STL_STRING_BUG
-TiXmlBase::StringToBuffer::StringToBuffer( const TIXML_STRING& str )
+TiXmlBase::TiXmlStrBuf::TiXmlStrBuf( const TIXML_STRING& str )
 {
 	buffer = new char[ str.length()+1 ];
 	if ( buffer )
@@ -128,7 +128,7 @@ TiXmlBase::StringToBuffer::StringToBuffer( const TIXML_STRING& str )
 }
 
 
-TiXmlBase::StringToBuffer::~StringToBuffer()
+TiXmlBase::TiXmlStrBuf::~TiXmlStrBuf()
 {
 	delete [] buffer;
 }
@@ -905,7 +905,7 @@ void TiXmlDocument::operator=( const TiXmlDocument& copy )
 bool TiXmlDocument::LoadFile( TiXmlEncoding encoding )
 {
 	// See STL_STRING_BUG below.
-	StringToBuffer buf( value );
+	TiXmlStrBuf buf( value );
 
 	if ( buf.buffer && LoadFile( buf.buffer, encoding ) )
 		return true;
@@ -917,7 +917,7 @@ bool TiXmlDocument::LoadFile( TiXmlEncoding encoding )
 bool TiXmlDocument::SaveFile() const
 {
 	// See STL_STRING_BUG below.
-	StringToBuffer buf( value );
+	TiXmlStrBuf buf( value );
 
 	if ( buf.buffer && SaveFile( buf.buffer ) )
 		return true;
@@ -938,7 +938,7 @@ bool TiXmlDocument::LoadFile( const char* filename, TiXmlEncoding encoding )
 	// address as it's c_str() method, and so bad things happen. Looks
 	// like a bug in the Microsoft STL implementation.
 	// See STL_STRING_BUG above.
-	// Fixed with the StringToBuffer class.
+	// Fixed with the TiXmlStrBuf class.
 	value = filename;
 
 	FILE* file = fopen( value.c_str (), "r" );

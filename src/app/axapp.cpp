@@ -115,7 +115,7 @@ bool AxApp::OnInit()
         }
 
         // IPC server
-        m_serverIPC = new AppIPCServer ();
+        m_serverIPC = new AxIPCServer ();
         if (!m_serverIPC->Create ( name ) ) {
             delete m_serverIPC;
             m_serverIPC = NULL;
@@ -415,13 +415,13 @@ void AxApp::MacOpenFile(const wxString &fileName)
 //! IPC connection for application APP_VENDOR-APP_NAME.
 //----------------------------------------------------------------------------
 
-AppIPCConnection::AppIPCConnection()
+AxIPCConnection::AxIPCConnection()
     : wxConnection (m_buffer, WXSIZEOF(m_buffer))
 {
 
 }
 
-bool AppIPCConnection::OnExecute(const wxString& WXUNUSED(topic),
+bool AxIPCConnection::OnExecute(const wxString& WXUNUSED(topic),
                             char *data, int size, wxIPCFormat WXUNUSED(format))
 {
     char** argv;
@@ -451,16 +451,16 @@ bool AppIPCConnection::OnExecute(const wxString& WXUNUSED(topic),
 
 
 //----------------------------------------------------------------------------
-// AboutDlg
+// AxAboutDlg
 //----------------------------------------------------------------------------
 
-// WDR: event table for AboutDlg
+// WDR: event table for AxAboutDlg
 
-BEGIN_EVENT_TABLE(AboutDlg,wxDialog)
+BEGIN_EVENT_TABLE(AxAboutDlg,wxDialog)
 
 END_EVENT_TABLE()
 
-AboutDlg::AboutDlg( wxWindow *parent, wxWindowID id, const wxString &title,
+AxAboutDlg::AxAboutDlg( wxWindow *parent, wxWindowID id, const wxString &title,
     const wxPoint &position, const wxSize& size, long style ) :
     wxDialog( parent, id, title, position, size, style )
 {
@@ -493,18 +493,18 @@ AboutDlg::AboutDlg( wxWindow *parent, wxWindowID id, const wxString &title,
 
 }
 
-// WDR: handler implementations for AboutDlg
+// WDR: handler implementations for AxAboutDlg
 
 
 //----------------------------------------------------------------------------
 //! IPC server for application APP_VENDOR-APP_NAME.
 //----------------------------------------------------------------------------
 
-wxConnectionBase *AppIPCServer::OnAcceptConnection (const wxString& topic)
+wxConnectionBase *AxIPCServer::OnAcceptConnection (const wxString& topic)
 {
     if (topic != IPC_START) 
         return NULL;
-    return new AppIPCConnection;
+    return new AxIPCConnection;
 }
 
 

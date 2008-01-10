@@ -1,5 +1,5 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        wgfile.h
+// Name:        musfile.h
 // Author:      Laurent Pugin
 // Created:     2005
 // Copyright (c) Laurent Pugin. All rights reserved.
@@ -7,8 +7,6 @@
 
 #ifndef __MUS_FILE_H__
 #define __MUS_FILE_H__
-
-#ifdef AX_WG
 
 #ifdef __GNUG__
     #pragma interface "musfile.cpp"
@@ -28,9 +26,9 @@
 #include "mussymbol.h"
 #include "mus.h"
 
-WX_DECLARE_OBJARRAY( WgPage, ArrayOfWgPages);
+WX_DECLARE_OBJARRAY( MusPage, ArrayOfWgPages);
 
-WX_DECLARE_OBJARRAY( WgFont, ArrayOfWgFonts);
+WX_DECLARE_OBJARRAY( MusFont, ArrayOfWgFonts);
 
 
 
@@ -38,131 +36,129 @@ WX_DECLARE_OBJARRAY( WgFont, ArrayOfWgFonts);
 
 
 //----------------------------------------------------------------------------
-// WgFile
+// MusFile
 //----------------------------------------------------------------------------
 
-class WgFile
+class MusFile
 {
-	//friend class WgFileOutputStream;
-	friend class WgFileInputStream;
+	//friend class MusFileOutputStream;
+	friend class MusFileInputStream;
 
 public:
     // constructors and destructors
-    WgFile();
-    virtual ~WgFile();
+    MusFile();
+    virtual ~MusFile();
     
-    // WDR: method declarations for WgFile
+    // WDR: method declarations for MusFile
 	void CheckIntegrity();
     
 public:
-    // WDR: member variable declarations for WgFile
+    // WDR: member variable declarations for MusFile
     /** nom complet du fichier */
     wxString m_fname;
     /** FileHeader du fichier - contient Parametres */
-    WgFileHeader m_fheader;
+    MusFileHeader m_fheader;
     /** ParametresMidi du fichier */
-    WgParametersMidi m_midi;
+    MusParametersMidi m_midi;
     /** Parametres2 du fichier */
-    WgParameters2 m_param2;
+    MusParameters2 m_param2;
     /** PolicesTable du fichier */
     ArrayOfWgFonts m_fonts;
     /** FileData du fichier - contient les pages */
     ArrayOfWgPages m_pages;
 	/** Masque fixe **/
-	WgPage m_masqueFixe;
+	MusPage m_masqueFixe;
 	/** Masque fixe **/
-	WgPage m_masqueVariable;
+	MusPage m_masqueVariable;
 	/** Pagination **/
-	WgPagination m_pagination;
+	MusPagination m_pagination;
 	/** Header **/
-	WgHeaderFooter m_header;
+	MusHeaderFooter m_header;
 	/** Footer **/
-	WgHeaderFooter m_footer;
+	MusHeaderFooter m_footer;
 	/** Separateur **/
 	static char* sep;
 
 private:
-	// WDR: handler declarations for WgFile
+	// WDR: handler declarations for MusFile
 
 };
 
 
 //----------------------------------------------------------------------------
-// WgFileOutputStream
+// MusFileOutputStream
 //----------------------------------------------------------------------------
 
-class WgFileOutputStream: public wxFileOutputStream
+class MusFileOutputStream: public wxFileOutputStream
 {
 public:
     // constructors and destructors
-    WgFileOutputStream( WgFile *file, wxString filename );
-	WgFileOutputStream( WgFile *file, int fd );
-	//WgFileOutputStream( WgFile *file, wxFile *wxfile );
-    virtual ~WgFileOutputStream();
+    MusFileOutputStream( MusFile *file, wxString filename );
+	MusFileOutputStream( MusFile *file, int fd );
+	//MusFileOutputStream( MusFile *file, wxFile *wxfile );
+    virtual ~MusFileOutputStream();
     
-    // WDR: method declarations for WgFileOutputStream
+    // WDR: method declarations for MusFileOutputStream
 	virtual bool ExportFile( ) { return true; }
-	virtual bool WriteFileHeader( const WgFileHeader *header ) { return true; }
-	virtual bool WriteParametersMidi( const WgParametersMidi *midi ) { return true; }
-	virtual bool WriteParameters2( const WgParameters2 *param2 ) { return true; }
+	virtual bool WriteFileHeader( const MusFileHeader *header ) { return true; }
+	virtual bool WriteParametersMidi( const MusParametersMidi *midi ) { return true; }
+	virtual bool WriteParameters2( const MusParameters2 *param2 ) { return true; }
 	virtual bool WriteFonts( const ArrayOfWgFonts *fonts ) { return true; }
 	virtual bool WriteSeparator( ) { return true; }
-	virtual bool WritePage( const WgPage *page ) { return true; }
-	virtual bool WriteStaff( const WgStaff *staff ) { return true; }
-	virtual bool WriteNote( const WgNote *note ) { return true; }
-	virtual bool WriteSymbole( const WgSymbole *symbole ) { return true; }
-	virtual bool WriteElementAttr( const WgElement *element ) { return true; }
-	virtual bool WriteDebord( const WgElement *element ) { return true; }
-	virtual bool WritePagination( const WgPagination *pagination ) { return true; }
-	virtual bool WriteHeaderFooter( const WgHeaderFooter *headerfooter) { return true; }
+	virtual bool WritePage( const MusPage *page ) { return true; }
+	virtual bool WriteStaff( const MusStaff *staff ) { return true; }
+	virtual bool WriteNote( const MusNote *note ) { return true; }
+	virtual bool WriteSymbole( const MusSymbol *symbole ) { return true; }
+	virtual bool WriteElementAttr( const MusElement *element ) { return true; }
+	virtual bool WriteDebord( const MusElement *element ) { return true; }
+	virtual bool WritePagination( const MusPagination *pagination ) { return true; }
+	virtual bool WriteHeaderFooter( const MusHeaderFooter *headerfooter) { return true; }
     
 public:
-    // WDR: member variable declarations for WgFileOutputStream
+    // WDR: member variable declarations for MusFileOutputStream
 
 protected:
-	// WDR: handler declarations for WgFileOutputStream
-	WgFile *m_file;
+	// WDR: handler declarations for MusFileOutputStream
+	MusFile *m_file;
 
 };
 
 //----------------------------------------------------------------------------
-// WgFileInputStream
+// MusFileInputStream
 //----------------------------------------------------------------------------
 
-class WgFileInputStream: public wxFileInputStream
+class MusFileInputStream: public wxFileInputStream
 {
 public:
     // constructors and destructors
-    WgFileInputStream( WgFile *file, wxString filename );
-    virtual ~WgFileInputStream();
+    MusFileInputStream( MusFile *file, wxString filename );
+    virtual ~MusFileInputStream();
     
-    // WDR: method declarations for WgFileInputStream
+    // WDR: method declarations for MusFileInputStream
 	// read
 	virtual bool ImportFile( ) { return true; }
-	virtual bool ReadFileHeader( WgFileHeader *header ) { return true; }
-	virtual bool ReadParametersMidi( WgParametersMidi *midi ) { return true; }
-	virtual bool ReadParameters2( WgParameters2 *param2 ) { return true; }
+	virtual bool ReadFileHeader( MusFileHeader *header ) { return true; }
+	virtual bool ReadParametersMidi( MusParametersMidi *midi ) { return true; }
+	virtual bool ReadParameters2( MusParameters2 *param2 ) { return true; }
 	virtual bool ReadFonts( ArrayOfWgFonts *fonts) { return true; }
 	virtual bool ReadSeparator( ) { return true; }
-	virtual bool ReadPage( WgPage *page ) { return true; }
-	virtual bool ReadStaff( WgStaff *staff ) { return true; }
-	virtual bool ReadNote( WgNote *note ) { return true; }
-	virtual bool ReadSymbole( WgSymbole *symbole ) { return true; }
-	virtual bool ReadElementAttr( WgElement *element ) { return true; }
-	virtual bool ReadDebord( WgElement *element ) { return true; }
-	virtual bool ReadPagination( WgPagination *pagination ) { return true; }
-	virtual bool ReadHeaderFooter( WgHeaderFooter *headerfooter) { return true; }
+	virtual bool ReadPage( MusPage *page ) { return true; }
+	virtual bool ReadStaff( MusStaff *staff ) { return true; }
+	virtual bool ReadNote( MusNote *note ) { return true; }
+	virtual bool ReadSymbole( MusSymbol *symbole ) { return true; }
+	virtual bool ReadElementAttr( MusElement *element ) { return true; }
+	virtual bool ReadDebord( MusElement *element ) { return true; }
+	virtual bool ReadPagination( MusPagination *pagination ) { return true; }
+	virtual bool ReadHeaderFooter( MusHeaderFooter *headerfooter) { return true; }
     
 public:
-    // WDR: member variable declarations for WgFileInputStream
+    // WDR: member variable declarations for MusFileInputStream
 
 protected:
-	// WDR: handler declarations for WgFileInputStream
-	WgFile *m_file;
+	// WDR: handler declarations for MusFileInputStream
+	MusFile *m_file;
 
 };
 
-
-#endif //AX_WG
 
 #endif

@@ -61,8 +61,8 @@ void WgvPanel::OnSize( wxSizeEvent &event )
 {
 	this->Layout();
     wxWindow *w = FindWindowById( ID5_WGWINDOW );
-    if ( w && w->IsKindOf( CLASSINFO( WgWindow ) ))
-        ((WgWindow*)w)->Resize( );
+    if ( w && w->IsKindOf( CLASSINFO( MusWindow ) ))
+        ((MusWindow*)w)->Resize( );
 
     event.Skip();
 }
@@ -156,13 +156,13 @@ void WgvEnv::OnTools( wxCommandEvent &event )
 	if ( event.GetId() == ID5_INSERT_MODE )
 		m_wgViewPtr->SetInsertMode( event.IsChecked() );
  	else if ( event.GetId() == ID5_NOTES )
-		m_wgViewPtr->SetToolType( WG_TOOLS_NOTES );
+		m_wgViewPtr->SetToolType( MUS_TOOLS_NOTES );
 	else if ( event.GetId() == ID5_KEYS)
-		m_wgViewPtr->SetToolType( WG_TOOLS_KEYS );
+		m_wgViewPtr->SetToolType( MUS_TOOLS_CLEFS );
 	else if ( event.GetId() == ID5_SIGNS )
-		m_wgViewPtr->SetToolType( WG_TOOLS_SIGNS );
+		m_wgViewPtr->SetToolType( MUS_TOOLS_SIGNS );
 	else if ( event.GetId() == ID5_SYMBOLES )
-		m_wgViewPtr->SetToolType( WG_TOOLS_OTHER );
+		m_wgViewPtr->SetToolType( MUS_TOOLS_OTHER );
 }
 
 void WgvEnv::OnUndo( wxCommandEvent &event )
@@ -194,7 +194,7 @@ void WgvEnv::OnSave( wxCommandEvent &event )
     
     m_filePtr->m_fheader.filesize = 0;
     m_filePtr->m_fname = wwg;
-    WwgOutput *wwgoutput = new WwgOutput( m_filePtr, wwg );
+    MusWWGOutput *wwgoutput = new MusWWGOutput( m_filePtr, wwg );
     wwgoutput->ExportFile();
     delete wwgoutput;
 }
@@ -218,12 +218,12 @@ void WgvEnv::OnOpenMLF( wxCommandEvent &event )
         m_filePtr = NULL;
     }
     
-    m_filePtr = new WgFile();
-	//WgPage *page = new WgPage();
-	//WgStaff *staff = new WgStaff();
+    m_filePtr = new MusFile();
+	//MusPage *page = new MusPage();
+	//MusStaff *staff = new MusStaff();
 	//page->m_staves.Add( staff );
 	//m_filePtr->m_pages.Add( page );
-    MLFInput *mlfinput = new MLFInput( m_filePtr, mlf );
+    MusMLFInput *mlfinput = new MusMLFInput( m_filePtr, mlf );
     bool import = mlfinput->ImportFile( 12 );
     delete mlfinput;
 
@@ -233,7 +233,7 @@ void WgvEnv::OnOpenMLF( wxCommandEvent &event )
         return;
     }
 
-    m_wgViewPtr = new WgWindow( m_panelPtr, ID5_WGWINDOW, wxDefaultPosition, wxDefaultSize, wxHSCROLL|wxVSCROLL|wxSIMPLE_BORDER );
+    m_wgViewPtr = new MusWindow( m_panelPtr, ID5_WGWINDOW, wxDefaultPosition, wxDefaultSize, wxHSCROLL|wxVSCROLL|wxSIMPLE_BORDER );
     m_wgViewPtr->SetFile( m_filePtr );
     m_wgViewPtr->Resize( );
 }
@@ -259,7 +259,7 @@ void WgvEnv::OnSaveMLF( wxCommandEvent &event )
     bool positions = ( wxMessageBox("Output symboles positions?", wxGetApp().GetAppName() ,
                             wxYES | wxNO | wxICON_QUESTION ) == wxYES );
 
-    MLFOutput *mlfoutput = new MLFOutput( m_filePtr, filename, "MLFSymbol" );
+    MusMLFOutput *mlfoutput = new MusMLFOutput( m_filePtr, filename, "MusMLFSymbol" );
 	//mlfoutput->LoadTypes( dic );
 	mlfoutput->m_writePosition = positions;
     mlfoutput->m_addPageNo = true;
@@ -358,14 +358,14 @@ void WgvEnv::OnOpen( wxCommandEvent &event )
         delete m_filePtr;
         m_filePtr = NULL;
     }
-    m_filePtr = new WgFile();
+    m_filePtr = new MusFile();
     m_filePtr->m_fname = filename;
-    WwgInput wwginput( m_filePtr, filename );
+    MusWWGInput wwginput( m_filePtr, filename );
 	if ( !wwginput.ImportFile() )
 		return;
 
     /*m_filePtr->m_fheader.filesize = 0;
-    WwgOutput *wwgoutput = new WwgOutput( m_filePtr, filename );
+    MusWWGOutput *wwgoutput = new MusWWGOutput( m_filePtr, filename );
     wwgoutput->ExportFile();
     delete wwgoutput;*/
     
@@ -375,7 +375,7 @@ void WgvEnv::OnOpen( wxCommandEvent &event )
         m_wgViewPtr->Destroy();
         m_wgViewPtr = NULL;
     }
-    m_wgViewPtr = new WgWindow( m_panelPtr, ID5_WGWINDOW, wxDefaultPosition, wxDefaultSize, wxHSCROLL|wxVSCROLL|wxSIMPLE_BORDER );
+    m_wgViewPtr = new MusWindow( m_panelPtr, ID5_WGWINDOW, wxDefaultPosition, wxDefaultSize, wxHSCROLL|wxVSCROLL|wxSIMPLE_BORDER );
     m_wgViewPtr->SetToolPanel( ((WgvPanel*)m_envWindowPtr)->GetWgToolPanel() );
     m_wgViewPtr->SetFile( m_filePtr );
     m_wgViewPtr->Resize( );

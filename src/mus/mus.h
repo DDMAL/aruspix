@@ -1,5 +1,5 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        wg.h
+// Name:        mus.h
 // Author:      Laurent Pugin
 // Created:     2004
 // Copyright (c) Laurent Pugin. All rights reserved.
@@ -7,8 +7,6 @@
 
 #ifndef __MUS_H__
 #define __MUS_H__
-
-#ifdef AX_WG
 
 #ifdef __GNUG__
     #pragma interface "mus.cpp"
@@ -23,43 +21,43 @@
 // WDR: class declarations
 
 //----------------------------------------------------------------------------
-// WgFont
+// MusFont
 //----------------------------------------------------------------------------
 
-class WgFont
+class MusFont
 {
 public:
     // constructors and destructors
-    WgFont();
-    virtual ~WgFont();
+    MusFont();
+    virtual ~MusFont();
     
-    // WDR: method declarations for WgFont
+    // WDR: method declarations for MusFont
     
 public:
-    // WDR: member variable declarations for WgFont
+    // WDR: member variable declarations for MusFont
 	signed char fonteJeu;
 	wxString fonteNom;
     
 private:
-    // WDR: handler declarations for WgFont
+    // WDR: handler declarations for MusFont
 
 };
 
 //----------------------------------------------------------------------------
-// WgParametersMidi
+// MusParametersMidi
 //----------------------------------------------------------------------------
 
-class WgParametersMidi
+class MusParametersMidi
 {
 public:
     // constructors and destructors
-    WgParametersMidi();
-    virtual ~WgParametersMidi();
+    MusParametersMidi();
+    virtual ~MusParametersMidi();
     
-    // WDR: method declarations for WgParametersMidi
+    // WDR: method declarations for MusParametersMidi
     
 public:
-    // WDR: member variable declarations for WgParametersMidi
+    // WDR: member variable declarations for MusParametersMidi
     /** tempo */
     long tempo;
     /** ???? */
@@ -84,25 +82,25 @@ public:
 	unsigned char piste2canal[MAXPORTNBRE+1];
     
 private:
-    // WDR: handler declarations for WgParametersMidi
+    // WDR: handler declarations for MusParametersMidi
 
 };
 
 //----------------------------------------------------------------------------
-// WgParameters2
+// MusParameters2
 //----------------------------------------------------------------------------
 
-class WgParameters2
+class MusParameters2
 {
 public:
     // constructors and destructors
-    WgParameters2();
-    virtual ~WgParameters2();
+    MusParameters2();
+    virtual ~MusParameters2();
     
-    // WDR: method declarations for WgParameters2
+    // WDR: method declarations for MusParameters2
     
 public:
-    // WDR: member variable declarations for WgParameters2
+    // WDR: member variable declarations for MusParameters2
 	/** transposition des silences */
     unsigned char transp_sil;
     /** rapport entre grande et petite portee, numerateur */
@@ -133,25 +131,25 @@ public:
     signed char transposition[MAXPORTNBRE+1];
     
 private:
-    // WDR: handler declarations for WgParameters2
+    // WDR: handler declarations for MusParameters2
 
 };
 
 //----------------------------------------------------------------------------
-// WgParameters
+// MusParameters
 //----------------------------------------------------------------------------
 
-class WgParameters 
+class MusParameters 
 {
 public:
     // constructors and destructors
-    WgParameters();
-    virtual ~WgParameters();
+    MusParameters();
+    virtual ~MusParameters();
     
-    // WDR: method declarations for WgParameters
+    // WDR: method declarations for MusParameters
     
 public:
-    // WDR: member variable declarations for WgParameters
+    // WDR: member variable declarations for MusParameters
     /** orientation de la page */
     char orientation;
     /** epaisseur des lignes de portees */
@@ -186,50 +184,50 @@ public:
     unsigned char Epais3;
     
 private:
-    // WDR: handler declarations for WgParameters
+    // WDR: handler declarations for MusParameters
 
 };
 
 //----------------------------------------------------------------------------
-// WgPosKey
+// MusPosKey
 //----------------------------------------------------------------------------
 
-class WgPosKey
+class MusPosKey
 {
 public:
     // constructors and destructors
-    WgPosKey();
-    virtual ~WgPosKey();
+    MusPosKey();
+    virtual ~MusPosKey();
     
-    // WDR: method declarations for WgPosKey
+    // WDR: method declarations for MusPosKey
     
 public:
-    // WDR: member variable declarations for WgPosKey
+    // WDR: member variable declarations for MusPosKey
 	int posx[MAXCLE]; /* x-position des clefs */
 	int dec[MAXCLE]; /* decalage y qu'elles entrainent*/
 	int compte;	/* compteur de reperage horizontal */
 	float yp;
     
 private:
-    // WDR: handler declarations for WgPosKey
+    // WDR: handler declarations for MusPosKey
 
 };
 
 //----------------------------------------------------------------------------
-// WgFileHeader
+// MusFileHeader
 //----------------------------------------------------------------------------
 
-class WgFileHeader
+class MusFileHeader
 {
 public:
     // constructors and destructors
-    WgFileHeader();
-    virtual ~WgFileHeader();
+    MusFileHeader();
+    virtual ~MusFileHeader();
     
-    // WDR: method declarations for WgFileHeader
+    // WDR: method declarations for MusFileHeader
     
 public:
-    // WDR: member variable declarations for WgFileHeader
+    // WDR: member variable declarations for MusFileHeader
     /** version */
     unsigned short maj_ver;
     /** sous-version */
@@ -247,33 +245,33 @@ public:
     /** position x courante */
     unsigned int xpos;
     /** Parametres du Header */
-    WgParameters param;
+    MusParameters param;
     /** reserve */
     signed char reserve[2];
 	//		reserve[0] = epais. trait liaisons
 	//		reserve[1] = augm/dimin nbre de passes liaisons
 
 private:
-    // WDR: handler declarations for WgFileHeader
+    // WDR: handler declarations for MusFileHeader
 
 
 };
 
 //----------------------------------------------------------------------------
-// WgPagination
+// MusPagination
 //----------------------------------------------------------------------------
 
-class WgPagination
+class MusPagination
 {
 public:
     // constructors and destructors
-    WgPagination();
-    virtual ~WgPagination();
+    MusPagination();
+    virtual ~MusPagination();
     
-    // WDR: method declarations for WgPagination
+    // WDR: method declarations for MusPagination
     
 public:
-    // WDR: member variable declarations for WgPagination
+    // WDR: member variable declarations for MusPagination
 	/** premier numero */
 	short numeroInitial;	
 	char aussiPremierPage;
@@ -298,26 +296,26 @@ public:
 	char offsetDuBord;	
 
 private:
-    // WDR: handler declarations for WgPagination
+    // WDR: handler declarations for MusPagination
 
 };
 
 
 //----------------------------------------------------------------------------
-// WgHeaderFooter
+// MusHeaderFooter
 //----------------------------------------------------------------------------
 
-class WgHeaderFooter
+class MusHeaderFooter
 {
 public:
     // constructors and destructors
-    WgHeaderFooter();
-    virtual ~WgHeaderFooter();
+    MusHeaderFooter();
+    virtual ~MusHeaderFooter();
     
-    // WDR: method declarations for WgHeaderFooter
+    // WDR: method declarations for MusHeaderFooter
     
 public:
-    // WDR: member variable declarations for WgHeaderFooter **/
+    // WDR: member variable declarations for MusHeaderFooter **/
 	wxString texte;	
 	// premier num‚ro: 16 bits, 100 BYTES **/
 	char aussiPremierPage;
@@ -341,12 +339,9 @@ public:
 	char offsetDuBord;
     
 private:
-    // WDR: handler declarations for WgHeaderFooter
+    // WDR: handler declarations for MusHeaderFooter
 
 };
-
-
-#endif //AX_WG
 
 #endif
 

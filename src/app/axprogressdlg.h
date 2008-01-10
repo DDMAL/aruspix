@@ -1,12 +1,12 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        progressdlg.h
+// Name:        axprogressdlg.h
 // Author:      Laurent Pugin
 // Created:     2004
 // Copyright (c) Laurent Pugin. All rights reserved.   
 /////////////////////////////////////////////////////////////////////////////
 
-#ifndef __progressdlg_H__
-#define __progressdlg_H__
+#ifndef __axprogressdlg_H__
+#define __axprogressdlg_H__
 
 #if defined(__GNUG__) && ! defined(__APPLE__)
     #pragma interface "axprogressdlg.h"
@@ -43,26 +43,26 @@ class AxProcess;
 // WDR: class declarations
 
 //----------------------------------------------------------------------------
-// ProgressDlg
+// AxProgressDlg
 //----------------------------------------------------------------------------
 
-class ProgressDlg: public wxDialog
+class AxProgressDlg: public wxDialog
 {
 public:
     // constructors and destructors
-    ProgressDlg();
-    ProgressDlg( wxWindow *parent, wxWindowID id, const wxString &title,
+    AxProgressDlg();
+    AxProgressDlg( wxWindow *parent, wxWindowID id, const wxString &title,
         const wxPoint& pos = wxDefaultPosition,
         const wxSize& size = wxDefaultSize,
         long style = wxDEFAULT_DIALOG_STYLE | wxTAB_TRAVERSAL | wxSTAY_ON_TOP );
-    virtual ~ProgressDlg();
+    virtual ~AxProgressDlg();
 
     // load and save timer values
     // must be done in application
     static void LoadValues( wxConfigBase *pConfig );
     static void SaveValues( wxConfigBase *pConfig );
     
-    // WDR: method declarations for ProgressDlg
+    // WDR: method declarations for AxProgressDlg
     wxCheckBox* GetCbCloseAtEnd()  { return (wxCheckBox*) FindWindow( ID_CB_CLOSE_AT_END ); }
     wxButton* GetCancel()  { return (wxButton*) FindWindow( wxID_CANCEL ); }
     wxStaticText* GetTxRestProgress()  { return (wxStaticText*) FindWindow( ID_TX_REST_PROGRESS ); }
@@ -101,7 +101,7 @@ public:
     bool GetCanceled( ) { return m_canceled; }
     
 private:
-    // WDR: member variable declarations for ProgressDlg
+    // WDR: member variable declarations for AxProgressDlg
     wxStopWatch m_stopWatch;
     long m_lastWatch;
     wxTimeSpan m_ts, m_old_ts;
@@ -132,11 +132,11 @@ public:
 	static bool s_instance_existing;
     
 private:
-    // WDR: handler declarations for ProgressDlg
+    // WDR: handler declarations for AxProgressDlg
     void OnCancel( wxCommandEvent &event );
 
 private:
-    DECLARE_DYNAMIC_CLASS( ProgressDlg )
+    DECLARE_DYNAMIC_CLASS( AxProgressDlg )
     DECLARE_EVENT_TABLE()
 };
 

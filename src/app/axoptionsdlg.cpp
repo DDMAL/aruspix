@@ -38,32 +38,32 @@
 #endif
 
 //----------------------------------------------------------------------------
-// OptionsDlg
+// AxOptionsDlg
 //----------------------------------------------------------------------------
 
-// WDR: event table for OptionsDlg
+// WDR: event table for AxOptionsDlg
 
-BEGIN_EVENT_TABLE(OptionsDlg,wxDialog)
-    EVT_BUTTON( wxID_OK, OptionsDlg::OnOk )
-    EVT_BUTTON( wxID_CANCEL, OptionsDlg::OnCancel )
-    EVT_COMBOBOX( ID_CB_LANGUAGE_OPS, OptionsDlg::OnChangeLanguage )
-    EVT_BUTTON( ID_BROWSE_WORKING_DIR, OptionsDlg::OnBrowseWorkDir )
-	EVT_BUTTON( ID_BROWSE_DOCUMENTS_DIR, OptionsDlg::OnBrowseDocDir )
-    EVT_BUTTON( ID_CHOOSE_FONT, OptionsDlg::OnChooseFont )
-    EVT_SPIN( ID_SC_WG_OFFSET, OptionsDlg::OnSpinCtrl )
-	EVT_TEXT( ID_SC_WG_OFFSET, OptionsDlg::OnSpinCtrlText )
-    EVT_SPIN( ID_SC_WG_SIZE, OptionsDlg::OnSpinCtrl )
-	EVT_TEXT( ID_SC_WG_SIZE, OptionsDlg::OnSpinCtrlText )
+BEGIN_EVENT_TABLE(AxOptionsDlg,wxDialog)
+    EVT_BUTTON( wxID_OK, AxOptionsDlg::OnOk )
+    EVT_BUTTON( wxID_CANCEL, AxOptionsDlg::OnCancel )
+    EVT_COMBOBOX( ID_CB_LANGUAGE_OPS, AxOptionsDlg::OnChangeLanguage )
+    EVT_BUTTON( ID_BROWSE_WORKING_DIR, AxOptionsDlg::OnBrowseWorkDir )
+	EVT_BUTTON( ID_BROWSE_DOCUMENTS_DIR, AxOptionsDlg::OnBrowseDocDir )
+    EVT_BUTTON( ID_CHOOSE_FONT, AxOptionsDlg::OnChooseFont )
+    EVT_SPIN( ID_SC_WG_OFFSET, AxOptionsDlg::OnSpinCtrl )
+	EVT_TEXT( ID_SC_WG_OFFSET, AxOptionsDlg::OnSpinCtrlText )
+    EVT_SPIN( ID_SC_WG_SIZE, AxOptionsDlg::OnSpinCtrl )
+	EVT_TEXT( ID_SC_WG_SIZE, AxOptionsDlg::OnSpinCtrlText )
 #ifdef AX_SUPERIMPOSITION
 #endif	
 #ifdef AX_RECOGNITION
-	EVT_BUTTON( ID4_PRE_DEFAULT, OptionsDlg::OnPreDefault )
-    EVT_BUTTON( ID4_REC_BT_MUS_MODELS, OptionsDlg::OnBrowse4 )
-    EVT_BUTTON( ID4_REC_BT_TYP_MODELS, OptionsDlg::OnBrowse4 )
+	EVT_BUTTON( ID4_PRE_DEFAULT, AxOptionsDlg::OnPreDefault )
+    EVT_BUTTON( ID4_REC_BT_MUS_MODELS, AxOptionsDlg::OnBrowse4 )
+    EVT_BUTTON( ID4_REC_BT_TYP_MODELS, AxOptionsDlg::OnBrowse4 )
 #endif
 END_EVENT_TABLE()
 
-OptionsDlg::OptionsDlg( wxWindow *parent, wxWindowID id, const wxString &title,
+AxOptionsDlg::AxOptionsDlg( wxWindow *parent, wxWindowID id, const wxString &title,
     const wxPoint &position, const wxSize& size, long style ) :
     wxDialog( parent, id, title, position, size, style )
 {
@@ -106,13 +106,13 @@ OptionsDlg::OptionsDlg( wxWindow *parent, wxWindowID id, const wxString &title,
 	item0->Fit( this );
 	item0->SetSizeHints( this );
 
-    m_wgWinPtr = new OptionsWgWindow( GetWgPanel(), -1, wxDefaultPosition, wxDefaultSize, wxHSCROLL|wxVSCROLL|wxNO_BORDER );
+    m_wgWinPtr = new AxOptMusWindow( GetWgPanel(), -1, wxDefaultPosition, wxDefaultSize, wxHSCROLL|wxVSCROLL|wxNO_BORDER );
 	m_wgWinPtr->SetBackgroundColour( wxSystemSettings::GetColour( wxSYS_COLOUR_MENU)  );
     m_wgWinPtr->Resize( );
 }
 
 
-void OptionsDlg::OptionsDlgStandard( wxNotebook *notebook )
+void AxOptionsDlg::OptionsDlgStandard( wxNotebook *notebook )
 {
     wxPanel *item1 = new wxPanel( notebook, -1 );
     wxSize size = System1DlgFunc( item1, false )->GetMinSize();
@@ -150,7 +150,7 @@ void OptionsDlg::OptionsDlgStandard( wxNotebook *notebook )
         wxGenericValidator(&AxImage::s_checkIfNegative));
 }
 
-void OptionsDlg::OptionsDlgSuperimposition( wxNotebook *notebook )
+void AxOptionsDlg::OptionsDlgSuperimposition( wxNotebook *notebook )
 {
 #ifdef AX_SUPERIMPOSITION	
     wxPanel *item1 = new wxPanel( notebook, -1 );
@@ -186,7 +186,7 @@ void OptionsDlg::OptionsDlgSuperimposition( wxNotebook *notebook )
 #endif
 }
 
-void OptionsDlg::OptionsDlgRecognition( wxNotebook *notebook )
+void AxOptionsDlg::OptionsDlgRecognition( wxNotebook *notebook )
 {
 #ifdef AX_RECOGNITION	
     wxPanel *item1 = new wxPanel( notebook, -1 );
@@ -239,7 +239,7 @@ void OptionsDlg::OptionsDlgRecognition( wxNotebook *notebook )
 }
 
 
-void OptionsDlg::UpdateFontCorrections( int eventID )
+void AxOptionsDlg::UpdateFontCorrections( int eventID )
 {
 	if ( !m_wgWinPtr )
 		return ;
@@ -255,10 +255,10 @@ void OptionsDlg::UpdateFontCorrections( int eventID )
     m_wgWinPtr->Resize( );
 }
 
-// WDR: handler implementations for OptionsDlg
+// WDR: handler implementations for AxOptionsDlg
 
 #ifdef AX_RECOGNITION
-void OptionsDlg::OnBrowse4( wxCommandEvent &event )
+void AxOptionsDlg::OnBrowse4( wxCommandEvent &event )
 {
     if ( event.GetId() == ID4_REC_BT_TYP_MODELS )
 	{
@@ -282,12 +282,12 @@ void OptionsDlg::OnBrowse4( wxCommandEvent &event )
 #endif
 
 
-void OptionsDlg::OnSpinCtrlText( wxCommandEvent &event )
+void AxOptionsDlg::OnSpinCtrlText( wxCommandEvent &event )
 {
 	UpdateFontCorrections( event.GetId() );
 }
 
-void OptionsDlg::OnSpinCtrl( wxSpinEvent &event )
+void AxOptionsDlg::OnSpinCtrl( wxSpinEvent &event )
 {
 	UpdateFontCorrections( event.GetId() );
 }
@@ -320,7 +320,7 @@ protected:
 #endif
 
 
-void OptionsDlg::OnChooseFont( wxCommandEvent &event )
+void AxOptionsDlg::OnChooseFont( wxCommandEvent &event )
 {
 
 #ifdef __WXMAC__ && !wxCHECK_VERSION(2,8,3)
@@ -366,7 +366,7 @@ void OptionsDlg::OnChooseFont( wxCommandEvent &event )
     this->GetFontName()->SetLabel( m_font.GetFaceName() );
 }
 
-void OptionsDlg::OnPreDefault( wxCommandEvent &event )
+void AxOptionsDlg::OnPreDefault( wxCommandEvent &event )
 {
     this->GetChTextOps3()->SetValue( true );
     this->GetChBordersPosOps3()->SetValue( true );
@@ -383,7 +383,7 @@ void OptionsDlg::OnPreDefault( wxCommandEvent &event )
 	this->GetScBinSizeOps3()->SetValue( 15 );
 }
 
-void OptionsDlg::OnBrowseDocDir( wxCommandEvent &event )
+void AxOptionsDlg::OnBrowseDocDir( wxCommandEvent &event )
 {
     wxString input = wxDirSelector( _("Documents folder"), wxGetApp().m_docDir );
     if ( input.empty() )
@@ -392,7 +392,7 @@ void OptionsDlg::OnBrowseDocDir( wxCommandEvent &event )
     this->GetDocDir()->SetValue(input);
 }
 
-void OptionsDlg::OnBrowseWorkDir( wxCommandEvent &event )
+void AxOptionsDlg::OnBrowseWorkDir( wxCommandEvent &event )
 {
     wxString input = wxDirSelector( _("Working folder"), wxGetApp().m_workingDir );
     if ( input.empty() )
@@ -401,12 +401,12 @@ void OptionsDlg::OnBrowseWorkDir( wxCommandEvent &event )
     this->GetWorkingDir()->SetValue(input);
 }
 
-void OptionsDlg::OnChangeLanguage( wxCommandEvent &event )
+void AxOptionsDlg::OnChangeLanguage( wxCommandEvent &event )
 {
     m_changeLanguage = true;
 }
 
-void OptionsDlg::OnOk(wxCommandEvent &event)
+void AxOptionsDlg::OnOk(wxCommandEvent &event)
 {
     if ( Validate() && TransferDataFromWindow() )
     {   
@@ -445,7 +445,7 @@ void OptionsDlg::OnOk(wxCommandEvent &event)
     }
 }
 
-void OptionsDlg::OnCancel(wxCommandEvent &event)
+void AxOptionsDlg::OnCancel(wxCommandEvent &event)
 {
 	// reset previous values;
 	wxGetApp().m_fontPosCorrection = m_previousFontPosCorrection;
@@ -456,36 +456,36 @@ void OptionsDlg::OnCancel(wxCommandEvent &event)
 
 
 //----------------------------------------------------------------------------
-// OptionsWgWindow
+// AxOptMusWindow
 //----------------------------------------------------------------------------
 
-IMPLEMENT_CLASS(OptionsWgWindow, WgWindow)
+IMPLEMENT_CLASS(AxOptMusWindow, MusWindow)
 
-// WDR: event table for OptionsWgWindow
+// WDR: event table for AxOptMusWindow
 
-BEGIN_EVENT_TABLE(OptionsWgWindow,WgWindow)
-    EVT_MOUSE_EVENTS( OptionsWgWindow::OnMouse )
+BEGIN_EVENT_TABLE(AxOptMusWindow,MusWindow)
+    EVT_MOUSE_EVENTS( AxOptMusWindow::OnMouse )
 END_EVENT_TABLE()
 
-OptionsWgWindow::OptionsWgWindow( wxWindow *parent, wxWindowID id,
+AxOptMusWindow::AxOptMusWindow( wxWindow *parent, wxWindowID id,
     const wxPoint &position, const wxSize& size, long style, bool center ) :
-    WgWindow( parent, id, position, size, style, center )
+    MusWindow( parent, id, position, size, style, center )
 {
     m_filePtr = NULL;
-    m_filePtr = new WgFile();
+    m_filePtr = new MusFile();
     m_filePtr->m_fheader.param.pageFormatHor = 20;
     m_filePtr->m_fheader.param.pageFormatVer = 20;
     m_filePtr->m_fheader.param.MargeGAUCHEIMPAIRE = 0;
     m_filePtr->m_fheader.param.MargeGAUCHEPAIRE = 0;
 
-    WgPage *page = new WgPage();
+    MusPage *page = new MusPage();
     page->defin = 20;
     page->lrg_lign = 20;
     
-    WgStaff *staff = new WgStaff();
+    MusStaff *staff = new MusStaff();
     staff->ecart = 4;
     
-    WgSymbole *clef = new WgSymbole();
+    MusSymbol *clef = new MusSymbol();
     clef->flag = CLE;
     clef->code = UT3;
     clef->xrel = 95;
@@ -496,7 +496,7 @@ OptionsWgWindow::OptionsWgWindow( wxWindow *parent, wxWindowID id,
     m_filePtr->CheckIntegrity();
 
     /*m_filePtr->m_fheader.filesize = 0;
-    WwgOutput *wwgoutput = new WwgOutput( m_filePtr, "D:/test.wwg" );
+    MusWWGOutput *wwgoutput = new MusWWGOutput( m_filePtr, "D:/test.wwg" );
     wwgoutput->ExportFile();
     delete wwgoutput;*/
 
@@ -504,18 +504,18 @@ OptionsWgWindow::OptionsWgWindow( wxWindow *parent, wxWindowID id,
 	//this->Resize();
 }
 
-OptionsWgWindow::OptionsWgWindow()
+AxOptMusWindow::AxOptMusWindow()
 {
 }
 
-OptionsWgWindow::~OptionsWgWindow()
+AxOptMusWindow::~AxOptMusWindow()
 {
     if (m_filePtr)
         delete m_filePtr;
 }
 
-// WDR: handler implementations for OptionsWgWindow
+// WDR: handler implementations for AxOptMusWindow
 
-void OptionsWgWindow::OnMouse(wxMouseEvent &event)
+void AxOptMusWindow::OnMouse(wxMouseEvent &event)
 {
 }

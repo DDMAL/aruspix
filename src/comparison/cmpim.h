@@ -24,8 +24,8 @@
 
 class CmpEnv;
 
-class RecWgWindow;
-class RecWgController;
+class RecMusWindow;
+class RecMusController;
 class RecFile;
 
 
@@ -47,7 +47,7 @@ public:
         long style = wxTAB_TRAVERSAL | wxNO_BORDER, int flags = CONTROLLER_ALL );
     virtual ~CmpImController();
 	void SetEnv( CmpEnv *env );
-    //void SetWgViewAndController( RecWgWindow *recWgWindow, RecWgController *recWgController );
+    //void SetWgViewAndController( RecMusWindow *recWgWindow, RecMusController *recWgController );
     RecFile *GetRecFile( ) { return m_recFilePtr; }
 	void LoadRecImage( int colId, wxString filename, int staff, int segment, int pos, int flag );
     

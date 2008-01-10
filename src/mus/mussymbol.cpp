@@ -1,11 +1,9 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        wgsymbole.cpp
+// Name:        mussymbol.cpp
 // Author:      Laurent Pugin
 // Created:     2005
 // Copyright (c) Laurent Pugin. All rights reserved.
 /////////////////////////////////////////////////////////////////////////////
-
-#ifdef AX_WG
 
 #ifdef __GNUG__
     #pragma implementation "mussymbol.cpp"
@@ -18,7 +16,6 @@
     #pragma hdrstop
 #endif
 
-
 #include "mussymbol.h"
 #include "muswindow.h"
 #include "musstaff.h"
@@ -28,11 +25,11 @@
 // WDR: class implementations
 
 //----------------------------------------------------------------------------
-// WgSymbole
+// MusSymbol
 //----------------------------------------------------------------------------
 
-WgSymbole::WgSymbole():
-	WgElement()
+MusSymbol::MusSymbol():
+	MusElement()
 {
 	TYPE = SYMB;
 	calte = 0;
@@ -45,7 +42,7 @@ WgSymbole::WgSymbole():
 	s_lie_l = 0;
 }
 
-WgSymbole::WgSymbole( unsigned char _flag, unsigned char _calte, unsigned short _code )
+MusSymbol::MusSymbol( unsigned char _flag, unsigned char _calte, unsigned short _code )
 {
 	TYPE = SYMB;
 	calte = _calte;
@@ -60,12 +57,12 @@ WgSymbole::WgSymbole( unsigned char _flag, unsigned char _calte, unsigned short 
 }
 
 
-WgSymbole::~WgSymbole()
+MusSymbol::~MusSymbol()
 {
 }
 
 
-void WgSymbole::SetPitch( int code, int oct, WgStaff *staff )
+void MusSymbol::SetPitch( int code, int oct, MusStaff *staff )
 {
 	if ( this->TYPE != SYMB )
 		return;
@@ -85,7 +82,7 @@ void WgSymbole::SetPitch( int code, int oct, WgStaff *staff )
 }
 
 
-void WgSymbole::SetValue( int value, WgStaff *staff, int vflag )
+void MusSymbol::SetValue( int value, MusStaff *staff, int vflag )
 {	
 	if ( this->TYPE != SYMB )
 		return;
@@ -184,11 +181,11 @@ void WgSymbole::SetValue( int value, WgStaff *staff, int vflag )
 }
 
 
-void WgSymbole::Draw ( wxDC *dc, WgStaff *pportee)
+void MusSymbol::Draw ( wxDC *dc, MusStaff *pportee)
 // touche;	 code relecture input (1) ou coord. du decalage (0) 
 {
 	wxASSERT_MSG( dc , "DC cannot be NULL");
-	wxASSERT_MSG( m_w, "WgWindow cannot be NULL ");
+	wxASSERT_MSG( m_w, "MusWindow cannot be NULL ");
 	if ( !Check() )
 		return;	
 
@@ -282,7 +279,7 @@ void WgSymbole::Draw ( wxDC *dc, WgStaff *pportee)
 }
 
 
-void WgSymbole::dess_symb( wxDC *dc, int x, int y, int symc, int symf, WgStaff *pportee)
+void MusSymbol::dess_symb( wxDC *dc, int x, int y, int symc, int symf, MusStaff *pportee)
 // symc = cat du symb, symf=code d'identite 
 {
 	wxASSERT_MSG( dc , "DC cannot be NULL");
@@ -321,7 +318,7 @@ void WgSymbole::dess_symb( wxDC *dc, int x, int y, int symc, int symf, WgStaff *
 }
 
 
-void WgSymbole::afficheMesure ( wxDC *dc, WgStaff *staff)
+void MusSymbol::afficheMesure ( wxDC *dc, MusStaff *staff)
 {
 	wxASSERT_MSG( dc , "DC cannot be NULL");
 	if ( !Check() )
@@ -397,7 +394,7 @@ void WgSymbole::afficheMesure ( wxDC *dc, WgStaff *staff)
 }
 
 
-void WgSymbole::mesCercle ( wxDC *dc, int x, int yy, WgStaff *staff )
+void MusSymbol::mesCercle ( wxDC *dc, int x, int yy, MusStaff *staff )
 {	
 	int y =  m_w->ToZoomY (yy - m_w->_interl[ staff->pTaille ] * 6);
 	int r = m_w->ToZoom( m_w->_interl[ staff->pTaille ]);
@@ -415,7 +412,7 @@ void WgSymbole::mesCercle ( wxDC *dc, int x, int yy, WgStaff *staff )
 	dc->SetBrush( wxNullBrush );
 }	
 
-void WgSymbole::demi_cercle ( wxDC *dc, int x, int yy, WgStaff *staff )
+void MusSymbol::demi_cercle ( wxDC *dc, int x, int yy, MusStaff *staff )
 {
 	wxASSERT_MSG( dc , "DC cannot be NULL");
 	if ( !Check() )
@@ -441,7 +438,7 @@ void WgSymbole::demi_cercle ( wxDC *dc, int x, int yy, WgStaff *staff )
 	return;
 }	
 
-void  WgSymbole::inv_d_cercle ( wxDC *dc, int x, int yy, WgStaff *staff )
+void  MusSymbol::inv_d_cercle ( wxDC *dc, int x, int yy, MusStaff *staff )
 {	
 	wxASSERT_MSG( dc , "DC cannot be NULL");
 	if ( !Check() )
@@ -467,7 +464,7 @@ void  WgSymbole::inv_d_cercle ( wxDC *dc, int x, int yy, WgStaff *staff )
 	return;
 }	
 
-void WgSymbole::prol ( wxDC *dc, int x, int yy, WgStaff *staff )
+void MusSymbol::prol ( wxDC *dc, int x, int yy, MusStaff *staff )
 {
 	wxASSERT_MSG( dc , "DC cannot be NULL");
 	if ( !Check() )
@@ -490,7 +487,7 @@ void WgSymbole::prol ( wxDC *dc, int x, int yy, WgStaff *staff )
 }	
 
 
-void WgSymbole::stroke ( wxDC *dc, int a, int yy, WgStaff *staff )
+void MusSymbol::stroke ( wxDC *dc, int a, int yy, MusStaff *staff )
 {	
 	wxASSERT_MSG( dc , "DC cannot be NULL");
 	if ( !Check() )
@@ -504,7 +501,7 @@ void WgSymbole::stroke ( wxDC *dc, int a, int yy, WgStaff *staff )
 }	
 
 
-void WgSymbole::chiffres ( wxDC *dc, int x, int y, WgStaff *staff)
+void MusSymbol::chiffres ( wxDC *dc, int x, int y, MusStaff *staff)
 {
 	wxASSERT_MSG( dc , "DC cannot be NULL");
 	if ( !Check() )
@@ -537,7 +534,7 @@ void WgSymbole::chiffres ( wxDC *dc, int x, int y, WgStaff *staff)
 }
 
 
-// WDR: handler implementations for WgSymbole
+// WDR: handler implementations for MusSymbol
 
 
-#endif // AX_WG
+

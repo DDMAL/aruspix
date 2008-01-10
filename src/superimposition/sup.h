@@ -36,7 +36,7 @@ enum
 
 struct _imImage;
 class SupImController;
-class ProgressDlg;
+class AxProgressDlg;
 
 // WDR: class declarations
 
@@ -48,7 +48,7 @@ class SupFile: public ImOperator
 {
 public:
     // constructors and destructors
-    SupFile( wxString path = "", wxString shortname = "", ProgressDlg *dlg  = NULL );
+    SupFile( wxString path = "", wxString shortname = "", AxProgressDlg *dlg  = NULL );
     virtual ~SupFile();
     
     // WDR: method declarations for SupFile
@@ -70,7 +70,7 @@ private:
 
 private:
     // WDR: handler declarations for SupFile
-    //ProgressDlg *m_progressDlg;
+    //AxProgressDlg *m_progressDlg;
     //int m_error;
 
     //_imImage *m_opImTmp1;

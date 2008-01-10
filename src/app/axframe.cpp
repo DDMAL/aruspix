@@ -364,7 +364,7 @@ void AxFrame::LoadConfig()
     this->SetEnvironment(val1);
 
 	// load last execution time
-	ProgressDlg::LoadValues( pConfig );
+	AxProgressDlg::LoadValues( pConfig );
 
     pConfig->SetPath("/");
 }
@@ -441,7 +441,7 @@ void AxFrame::SaveConfig(int lastEnvId)
     pConfig->Write("FontPosCorrection", wxGetApp().m_fontPosCorrection );
 
 	// load last execution time
-	ProgressDlg::SaveValues( pConfig );
+	AxProgressDlg::SaveValues( pConfig );
 
     // toolbar tool size and language - save only, loaded by AxApp before creating frame
 	pConfig->Write("ToolbarToolsize", wxGetApp().m_toolbar_toolsize );
@@ -565,7 +565,7 @@ void AxFrame::OnHelp( wxCommandEvent &event )
 
 void AxFrame::OnOptions( wxCommandEvent &event )
 {
-    OptionsDlg *dlg = new OptionsDlg(this, -1, _("Options"));
+    AxOptionsDlg *dlg = new AxOptionsDlg(this, -1, _("Options"));
     dlg->Center(wxBOTH);
     dlg->ShowModal();
     dlg->Destroy();
@@ -666,7 +666,7 @@ void AxFrame::OnClose( wxCloseEvent &event )
 
 void AxFrame::OnAbout( wxCommandEvent &event )
 {
-    AboutDlg *dlg = new AboutDlg(this,-1,_("About ..."));
+    AxAboutDlg *dlg = new AxAboutDlg(this,-1,_("About ..."));
     dlg->Center(wxBOTH);
     dlg->ShowModal();
     dlg->Destroy();

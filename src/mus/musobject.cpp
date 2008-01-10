@@ -1,11 +1,9 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        wgobject.cpp
+// Name:        musobject.cpp
 // Author:      Laurent Pugin
 // Created:     2005
 // Copyright (c) Laurent Pugin. All rights reserved.
 /////////////////////////////////////////////////////////////////////////////
-
-#ifdef AX_WG
 
 #ifdef __GNUG__
     #pragma implementation "musobject.cpp"
@@ -27,10 +25,10 @@
 // WDR: class implementations
 
 //----------------------------------------------------------------------------
-// WgObject
+// MusObject
 //----------------------------------------------------------------------------
 
-WgObject::WgObject() :
+MusObject::MusObject() :
 	wxObject()
 {
 	m_w = NULL;
@@ -41,11 +39,11 @@ WgObject::WgObject() :
 	m_ok = false;
 }
 
-WgObject::~WgObject()
+MusObject::~MusObject()
 {
 }
 
-bool WgObject::Init( WgWindow *win )
+bool MusObject::Init( MusWindow *win )
 {
 	if ( m_ok )
 		return true;
@@ -64,6 +62,6 @@ bool WgObject::Init( WgWindow *win )
 }
 
 
-// WDR: handler implementations for WgObject
+// WDR: handler implementations for MusObject
 
-#endif // AX_WG
+

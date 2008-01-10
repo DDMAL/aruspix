@@ -1,5 +1,5 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        wgnote.h
+// Name:        musnote.h
 // Author:      Laurent Pugin
 // Created:     2005
 // Copyright (c) Laurent Pugin. All rights reserved.
@@ -7,8 +7,6 @@
 
 #ifndef __MUS_NOTE_H__
 #define __MUS_NOTE_H__
-
-#ifdef AX_WG
 
 #ifdef __GNUG__
     #pragma interface "musnote.cpp"    
@@ -20,43 +18,43 @@
 
 #include "muselement.h"
 
-class WgStaff;
+class MusStaff;
 
 // WDR: class declarations
 
 //----------------------------------------------------------------------------
-// WgNote
+// MusNote
 //----------------------------------------------------------------------------
 
-class WgNote: public WgElement
+class MusNote: public MusElement
 {
 public:
     // constructors and destructors
-    WgNote();
-	WgNote( char _sil, unsigned char _val, unsigned char _code );
-    virtual ~WgNote();
+    MusNote();
+	MusNote( char _sil, unsigned char _val, unsigned char _code );
+    virtual ~MusNote();
     
-	virtual void WgNote::Draw( wxDC *dc, WgStaff *staff);
-	void WgNote::note ( wxDC *dc, WgStaff *staff);
-	void WgNote::silence ( wxDC *dc, WgStaff *staff);
-	void WgNote::leg_line( wxDC *dc, int y_n, int y_p, int xn, unsigned int smaller, int pTaille);
+	virtual void MusNote::Draw( wxDC *dc, MusStaff *staff);
+	void MusNote::note ( wxDC *dc, MusStaff *staff);
+	void MusNote::silence ( wxDC *dc, MusStaff *staff);
+	void MusNote::leg_line( wxDC *dc, int y_n, int y_p, int xn, unsigned int smaller, int pTaille);
 
-	void WgNote::s_special ( wxDC *dc, int a, WgStaff *staff);
-	void WgNote::s_lg ( wxDC *dc, int a, int b, WgStaff *staff);
-	void WgNote::s_br ( wxDC *dc, int a, int b, WgStaff *staff);
-	void WgNote::s_rd ( wxDC *dc, int a, int b, int valeur, WgStaff *staff);
-	void WgNote::s_nr ( wxDC *dc, int a, int b, int valeur, WgStaff *staff);
-	void WgNote::pointage ( wxDC *dc, int x1, int y1, int offy, unsigned int d_p, WgStaff *staff );
-	void WgNote::ligature ( wxDC *dc, int y, WgStaff *staff );
-    // WDR: method declarations for WgNote
-	virtual void WgNote::SetPitch( int code, int oct, WgStaff *staff = NULL );
-	virtual void WgNote::SetValue( int value, WgStaff *staff = NULL, int vflag = 0 );
-	virtual void WgNote::ChangeColoration(   WgStaff *staff = NULL );
-	virtual void WgNote::ChangeStem( WgStaff *staff = NULL );
-	virtual void WgNote::SetLigature( WgStaff *staff = NULL );
+	void MusNote::s_special ( wxDC *dc, int a, MusStaff *staff);
+	void MusNote::s_lg ( wxDC *dc, int a, int b, MusStaff *staff);
+	void MusNote::s_br ( wxDC *dc, int a, int b, MusStaff *staff);
+	void MusNote::s_rd ( wxDC *dc, int a, int b, int valeur, MusStaff *staff);
+	void MusNote::s_nr ( wxDC *dc, int a, int b, int valeur, MusStaff *staff);
+	void MusNote::pointage ( wxDC *dc, int x1, int y1, int offy, unsigned int d_p, MusStaff *staff );
+	void MusNote::ligature ( wxDC *dc, int y, MusStaff *staff );
+    // WDR: method declarations for MusNote
+	virtual void MusNote::SetPitch( int code, int oct, MusStaff *staff = NULL );
+	virtual void MusNote::SetValue( int value, MusStaff *staff = NULL, int vflag = 0 );
+	virtual void MusNote::ChangeColoration(   MusStaff *staff = NULL );
+	virtual void MusNote::ChangeStem( MusStaff *staff = NULL );
+	virtual void MusNote::SetLigature( MusStaff *staff = NULL );
 	
 public:
-	// WDR: member variable declarations for WgNote
+	// WDR: member variable declarations for MusNote
     /** silence (true) ou note (false) */
     char sil;
     /** valeur de la note
@@ -102,9 +100,8 @@ public:
     unsigned char typStac;
 
 private:
-    // WDR: handler declarations for WgNote
+    // WDR: handler declarations for MusNote
 };
 
-#endif //AX_WG
 
 #endif

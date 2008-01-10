@@ -1,12 +1,12 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        gotodlg.h
+// Name:        axgotodlg.h
 // Author:      Laurent Pugin
 // Created:     2004
 // Copyright (c) Laurent Pugin. All rights reserved.   
 /////////////////////////////////////////////////////////////////////////////
 
-#ifndef __gotodlg_H__
-#define __gotodlg_H__
+#ifndef __axgotodlg_H__
+#define __axgotodlg_H__
 
 #if defined(__GNUG__) && ! defined(__APPLE__)
     #pragma interface "axgotodlg.h"
@@ -21,20 +21,20 @@
 // WDR: class declarations
 
 //----------------------------------------------------------------------------
-// GotoDlg
+// AxGotoDlg
 //----------------------------------------------------------------------------
 
-class GotoDlg: public wxDialog
+class AxGotoDlg: public wxDialog
 {
 public:
     // constructors and destructors
-    GotoDlg( wxWindow *parent, wxWindowID id, const wxString &title,
+    AxGotoDlg( wxWindow *parent, wxWindowID id, const wxString &title,
         int nbOfPages, int currentPage,
         const wxPoint& pos = wxDefaultPosition,
         const wxSize& size = wxDefaultSize,
         long style = wxDEFAULT_DIALOG_STYLE );
     
-    // WDR: method declarations for GotoDlg
+    // WDR: method declarations for AxGotoDlg
 	int GetPage() { return m_pageNo -1; }
     wxSpinCtrl* GetScNoGoto()  { return (wxSpinCtrl*) FindWindow( ID_SC_NO_GOTO ); }
     wxRadioButton* GetRbNoGoto()  { return (wxRadioButton*) FindWindow( ID_RB_NO_GOTO ); }
@@ -42,12 +42,12 @@ public:
     wxRadioButton* GetRbFirstGoto()  { return (wxRadioButton*) FindWindow( ID_RB_FIRST_GOTO ); }
     
 private:
-    // WDR: member variable declarations for GotoDlg
+    // WDR: member variable declarations for AxGotoDlg
     int m_nbOfPages;
     int m_pageNo;
     
 private:
-    // WDR: handler declarations for GotoDlg
+    // WDR: handler declarations for AxGotoDlg
 	void OnSpinCtrl( wxSpinEvent &event );
 	void OnSpinCtrlText( wxCommandEvent &event );
     void OnOk( wxCommandEvent &event );

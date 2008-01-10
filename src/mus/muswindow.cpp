@@ -1,11 +1,9 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        wgwindow.cpp
+// Name:        muswindow.cpp
 // Author:      Laurent Pugin
 // Created:     2005
 // Copyright (c) Laurent Pugin. All rights reserved.
 /////////////////////////////////////////////////////////////////////////////
-
-#ifdef AX_WG
 
 #ifdef __GNUG__
     #pragma implementation "muswindow.h"
@@ -25,7 +23,7 @@
 #include "muspage.h"
 #include "musfile.h"
 #include "mustoolpanel.h"
-#include "iowwg.h"
+#include "musiowwg.h"
 
 #include "mus_wdr.h"
 
@@ -34,33 +32,33 @@
 // WDR: class implementations
 
 //----------------------------------------------------------------------------
-// WgWindow
+// MusWindow
 //----------------------------------------------------------------------------
 
-IMPLEMENT_DYNAMIC_CLASS(WgWindow,wxScrolledWindow)
+IMPLEMENT_DYNAMIC_CLASS(MusWindow,wxScrolledWindow)
 
-// WDR: event table for WgWindow
+// WDR: event table for MusWindow
 
 #include "wx/fontdlg.h"
 
-BEGIN_EVENT_TABLE(WgWindow,wxScrolledWindow)
-    EVT_LEFT_DOWN( WgWindow::OnMouseLeftDown )
-	EVT_LEFT_UP( WgWindow::OnMouseLeftUp )
-	EVT_LEFT_DCLICK( WgWindow::OnMouseDClick )
-	EVT_MOTION( WgWindow::OnMouseMotion )
-	EVT_LEAVE_WINDOW( WgWindow::OnMouseLeave )
-    EVT_PAINT( WgWindow::OnPaint )
-	EVT_SIZE( WgWindow::OnSize )
-	EVT_KEY_DOWN( WgWindow::OnKeyDown )
-	EVT_KEY_UP( WgWindow::OnKeyUp )
-	EVT_MENU_RANGE( ID_MUS_N0, ID_MUS_CT, WgWindow::OnPopupMenuNote ) // popup menu
-	EVT_MENU_RANGE( ID_MUS_R0, ID_MUS_R7, WgWindow::OnPopupMenuNote ) // popup menu
-	EVT_MENU_RANGE( ID_MUS_G1, ID_MUS_F5, WgWindow::OnPopupMenuSymbole ) // popup menu
-	EVT_MENU_RANGE( ID_MUS_MTPP, ID_MUS_M2, WgWindow::OnPopupMenuSymbole ) // popup menu
-	EVT_MENU_RANGE( ID_MUS_PNT, ID_MUS_BAR, WgWindow::OnPopupMenuSymbole ) // popup menu
+BEGIN_EVENT_TABLE(MusWindow,wxScrolledWindow)
+    EVT_LEFT_DOWN( MusWindow::OnMouseLeftDown )
+	EVT_LEFT_UP( MusWindow::OnMouseLeftUp )
+	EVT_LEFT_DCLICK( MusWindow::OnMouseDClick )
+	EVT_MOTION( MusWindow::OnMouseMotion )
+	EVT_LEAVE_WINDOW( MusWindow::OnMouseLeave )
+    EVT_PAINT( MusWindow::OnPaint )
+	EVT_SIZE( MusWindow::OnSize )
+	EVT_KEY_DOWN( MusWindow::OnKeyDown )
+	EVT_KEY_UP( MusWindow::OnKeyUp )
+	EVT_MENU_RANGE( ID_MS_N0, ID_MS_CT, MusWindow::OnPopupMenuNote ) // popup menu
+	EVT_MENU_RANGE( ID_MS_R0, ID_MS_R7, MusWindow::OnPopupMenuNote ) // popup menu
+	EVT_MENU_RANGE( ID_MS_G1, ID_MS_F5, MusWindow::OnPopupMenuSymbole ) // popup menu
+	EVT_MENU_RANGE( ID_MS_MTPP, ID_MS_M2, MusWindow::OnPopupMenuSymbole ) // popup menu
+	EVT_MENU_RANGE( ID_MS_PNT, ID_MS_BAR, MusWindow::OnPopupMenuSymbole ) // popup menu
 END_EVENT_TABLE()
 
-WgWindow::WgWindow( wxWindow *parent, wxWindowID id,
+MusWindow::MusWindow( wxWindow *parent, wxWindowID id,
     const wxPoint &position, const wxSize& size, long style, bool center ) :
     wxScrolledWindow( parent, id, position, size, style ), AxUndo( 100 )
 {
@@ -174,11 +172,11 @@ WgWindow::WgWindow( wxWindow *parent, wxWindowID id,
     m_activeFonts[1][1] = m_ftLeipzig;
 }
 
-WgWindow::WgWindow()
+MusWindow::MusWindow()
 {
 }
 
-WgWindow::~WgWindow()
+MusWindow::~MusWindow()
 {
 	//if ( m_toolpanel ) Do not do this here because m_toolpanel may have been deleted !!!
 	// THIS HAS TO BE CORRECTED !!!!!!!!!!!!!!!!!!!!
@@ -189,9 +187,9 @@ WgWindow::~WgWindow()
 
 
 // undo
-void WgWindow::Load( AxUndoFile *undoPtr )
+void MusWindow::Load( AxUndoFile *undoPtr )
 {
-	wxASSERT_MSG( m_f, "WgFile should not be NULL in UNDO");
+	wxASSERT_MSG( m_f, "MusFile should not be NULL in UNDO");
 
 	if ( !m_f )
 		return;
@@ -201,7 +199,7 @@ void WgWindow::Load( AxUndoFile *undoPtr )
 	
 	int page, staff, element;
 		
-	WwgInput *wwginput = new WwgInput( m_f, undoPtr->GetFilename() );
+	MusWWGInput *wwginput = new MusWWGInput( m_f, undoPtr->GetFilename() );
 
 	// keep current page, staff and element
 	wwginput->Read( &page, sizeof( int ));
@@ -215,7 +213,7 @@ void WgWindow::Load( AxUndoFile *undoPtr )
 	}
 	else if ( undoPtr->m_flags == WG_UNDO_PAGE )
 	{	
-		WgPage *wgpage = new WgPage();
+		MusPage *wgpage = new MusPage();
 		wwginput->ReadPage( wgpage );
 		m_f->m_pages.RemoveAt( page );
 		m_f->m_pages.Insert( wgpage, page );
@@ -231,13 +229,13 @@ void WgWindow::Load( AxUndoFile *undoPtr )
 		SetPage( &m_f->m_pages[page] );
 	m_npage = page;
 
-	WgStaff *previous = NULL;
+	MusStaff *previous = NULL;
 	if ( undoPtr->m_flags == WG_UNDO_STAFF )
 	{
 		previous = m_currentStaff;
 		if ( !previous || (previous->no == staff) )
 			previous = NULL; // this staff will be deleted
-		WgStaff *wgstaff = new WgStaff();
+		MusStaff *wgstaff = new MusStaff();
 		wwginput->ReadStaff( wgstaff );
 		// keep xrel and yrel
 		wgstaff->xrel = m_page->m_staves[ wgstaff->no ].xrel;
@@ -278,9 +276,9 @@ void WgWindow::Load( AxUndoFile *undoPtr )
 }
 
 
-void WgWindow::Store( AxUndoFile *undoPtr )
+void MusWindow::Store( AxUndoFile *undoPtr )
 {
-	wxASSERT_MSG( m_f, "WgFile should not be NULL in UNDO");
+	wxASSERT_MSG( m_f, "MusFile should not be NULL in UNDO");
 
 	if ( !m_f )
 		return;
@@ -296,7 +294,7 @@ void WgWindow::Store( AxUndoFile *undoPtr )
 	if ( m_currentElement )
 		element = m_currentElement->no;
 		
-    WwgOutput *wwgoutput = new WwgOutput( m_f, undoPtr->GetFilename() );
+    MusWWGOutput *wwgoutput = new MusWWGOutput( m_f, undoPtr->GetFilename() );
 	
 	wwgoutput->Write( &page, sizeof( int ) );
 	wwgoutput->Write( &staff, sizeof( int ) );
@@ -308,13 +306,13 @@ void WgWindow::Store( AxUndoFile *undoPtr )
 	}
 	else if ( undoPtr->m_flags == WG_UNDO_PAGE )
 	{	
-		wxASSERT_MSG( m_page, "WgPage should not be NULL in UNDO");
+		wxASSERT_MSG( m_page, "MusPage should not be NULL in UNDO");
 		wwgoutput->WritePage( m_page );
 
 	}
 	else if ( undoPtr->m_flags == WG_UNDO_STAFF )
 	{
-		wxASSERT_MSG( m_currentStaff, "WgStaff should not be NULL in UNDO");
+		wxASSERT_MSG( m_currentStaff, "MusStaff should not be NULL in UNDO");
 		wwgoutput->WriteStaff( m_currentStaff );
 	
 	}
@@ -323,7 +321,7 @@ void WgWindow::Store( AxUndoFile *undoPtr )
 
 }
 
-void WgWindow::InitDC( wxDC *dc )
+void MusWindow::InitDC( wxDC *dc )
 {
 	if ( m_center )
 		dc->SetLogicalOrigin( - (margeMorteHor - mrgG), -margeMorteVer );
@@ -333,7 +331,7 @@ void WgWindow::InitDC( wxDC *dc )
 	this->DoPrepareDC( *dc );
 }
 
-void WgWindow::Resize( )
+void MusWindow::Resize( )
 {
 	wxWindow *parent = this->GetParent();
 	if (!parent || !m_fh ) 
@@ -365,7 +363,7 @@ void WgWindow::Resize( )
 	Show( true );
 }
 
-void WgWindow::PaperSize( )
+void MusWindow::PaperSize( )
 {
 	if ( !m_fh ) 
 		return;
@@ -388,7 +386,7 @@ void WgWindow::PaperSize( )
 	return;
 }
 
-void WgWindow::SetFile( WgFile *file )
+void MusWindow::SetFile( MusFile *file )
 {
 	if ( file == NULL ) // unset file
 	{
@@ -411,9 +409,9 @@ void WgWindow::SetFile( WgFile *file )
 }
 
 
-void WgWindow::SetPage( WgPage *page )
+void MusWindow::SetPage( MusPage *page )
 {
-	wxASSERT_MSG( page, "WgPage cannot be NULL ");
+	wxASSERT_MSG( page, "MusPage cannot be NULL ");
 
 	m_page = page;
     UpdatePageValues();
@@ -436,7 +434,7 @@ void WgWindow::SetPage( WgPage *page )
     Refresh();
 }
 
-bool WgWindow::HasNext( bool forward ) 
+bool MusWindow::HasNext( bool forward ) 
 { 
 	if ( forward )
 		return ( m_f && ((int)m_f->m_pages.GetCount() - 1 > m_npage) );
@@ -445,7 +443,7 @@ bool WgWindow::HasNext( bool forward )
 		
 }
 
-void WgWindow::Next( bool forward ) 
+void MusWindow::Next( bool forward ) 
 { 
 	if ( !m_f || !m_fh )
 		return;
@@ -460,27 +458,27 @@ void WgWindow::Next( bool forward )
 
 
 
-int WgWindow::ToZoom( int i ) 
+int MusWindow::ToZoom( int i ) 
 { 
 	return (i*zoomNum)/zoomDen; 
 }
 
-int WgWindow::ToReel( int i )
+int MusWindow::ToReel( int i )
 { 
 	return (i*zoomDen)/zoomNum;
 }
 
-int WgWindow::ToZoomY( int i ) 
+int MusWindow::ToZoomY( int i ) 
 {
 	return ToZoom( wymax - i );
 }
 
-int WgWindow::ToReelY( int i )
+int MusWindow::ToReelY( int i )
 { 
 	return wymax - ToReel( i ); 
 }
 
-bool WgWindow::CanZoom( bool zoomIn ) 
+bool MusWindow::CanZoom( bool zoomIn ) 
 { 
 	if ( zoomIn )
 		return ( m_f && (zoomNum/zoomDen < 1) );
@@ -489,7 +487,7 @@ bool WgWindow::CanZoom( bool zoomIn )
 }
 
 
-void WgWindow::Zoom( bool zoomIn )
+void MusWindow::Zoom( bool zoomIn )
 {
 	if ( !m_f || !m_fh )
 		return;
@@ -504,7 +502,7 @@ void WgWindow::Zoom( bool zoomIn )
 	SetPage( &m_f->m_pages[m_npage] );
 }
 
-void WgWindow::SetZoom( int percent )
+void MusWindow::SetZoom( int percent )
 {
 	if ( !m_f || !m_fh )
 		return;
@@ -516,17 +514,17 @@ void WgWindow::SetZoom( int percent )
 	SetPage( &m_f->m_pages[m_npage] );
 }
 
-bool WgWindow::CanGoto( )
+bool MusWindow::CanGoto( )
 {
 	return ( m_fh && ( m_fh->nbpage > 1) );
 }
 
-void WgWindow::Goto( )
+void MusWindow::Goto( )
 {
 	if ( !m_f || !m_fh )
 		return;
 
-    GotoDlg *dlg = new GotoDlg(this, -1, _("Go to page ..."), m_fh->nbpage, m_npage );
+    AxGotoDlg *dlg = new AxGotoDlg(this, -1, _("Go to page ..."), m_fh->nbpage, m_npage );
     dlg->Center(wxBOTH);
     if ( dlg->ShowModal() == wxID_OK )
 	{
@@ -536,7 +534,7 @@ void WgWindow::Goto( )
 	dlg->Destroy();
 }
 
-void WgWindow::Goto( int nopage )
+void MusWindow::Goto( int nopage )
 {
 	if ( !m_f || !m_fh )
 		return;
@@ -549,7 +547,7 @@ void WgWindow::Goto( int nopage )
 }
 
 
-void WgWindow::UpdateZoomValues() 
+void MusWindow::UpdateZoomValues() 
 {
 	if ( !m_page )
 		return;	
@@ -611,7 +609,7 @@ void WgWindow::UpdateZoomValues()
 }
 
 
-void WgWindow::UpdatePageValues() 
+void MusWindow::UpdatePageValues() 
 {
 	if ( !m_page || !m_p2 || !m_fh ) 
 		return;
@@ -717,10 +715,10 @@ void WgWindow::UpdatePageValues()
 }
 
 
-void WgWindow::UpdateStavesPos() 
+void MusWindow::UpdateStavesPos() 
 {
 	int i,mPortTaille;
-    WgStaff *staff;
+    MusStaff *staff;
 
 	if ( !m_page || !m_p2 || !m_fh ) 
         return;
@@ -744,7 +742,7 @@ void WgWindow::UpdateStavesPos()
     }
 }
 
-void WgWindow::SetToolPanel( WgToolPanel *toolpanel )
+void MusWindow::SetToolPanel( MusToolPanel *toolpanel )
 {
 	wxASSERT_MSG( toolpanel , "ToolPanel cannot be NULL ");
 	m_toolpanel = toolpanel;
@@ -752,7 +750,7 @@ void WgWindow::SetToolPanel( WgToolPanel *toolpanel )
 	SyncToolPanel();
 }
 
-void WgWindow::SetInsertMode( bool mode )
+void MusWindow::SetInsertMode( bool mode )
 {
 	if ( m_editElement == !mode )
 		return; // nothing to change
@@ -769,15 +767,15 @@ void WgWindow::SetInsertMode( bool mode )
     this->ProcessEvent( kevent );
 }
 
-void WgWindow::SetToolType( int type )
+void MusWindow::SetToolType( int type )
 {
     int value = '0';
     switch ( type )
     {
-    case (WG_TOOLS_NOTES): value = 'N'; break;
-    case (WG_TOOLS_KEYS): value = 'K'; break;
-    case (WG_TOOLS_SIGNS): value = 'P'; break;
-    case (WG_TOOLS_OTHER): value = 'S'; break;
+    case (MUS_TOOLS_NOTES): value = 'N'; break;
+    case (MUS_TOOLS_CLEFS): value = 'K'; break;
+    case (MUS_TOOLS_SIGNS): value = 'P'; break;
+    case (MUS_TOOLS_OTHER): value = 'S'; break;
     }
         
     wxKeyEvent kevent;
@@ -790,9 +788,9 @@ void WgWindow::SetToolType( int type )
 }
 
 
-int WgWindow::GetToolType()
+int MusWindow::GetToolType()
 {
-	WgElement *sync = NULL;
+	MusElement *sync = NULL;
 
 	if (m_editElement)
 		sync = m_currentElement;
@@ -803,23 +801,23 @@ int WgWindow::GetToolType()
 	{
 		if ( sync->TYPE == SYMB )
 		{
-			if ( ((WgSymbole*)sync)->flag == CLE )
-				return WG_TOOLS_KEYS;
-			else if ( ((WgSymbole*)sync)->flag == IND_MES )
-				return WG_TOOLS_SIGNS;
+			if ( ((MusSymbol*)sync)->flag == CLE )
+				return MUS_TOOLS_CLEFS;
+			else if ( ((MusSymbol*)sync)->flag == IND_MES )
+				return MUS_TOOLS_SIGNS;
 			else
-				return WG_TOOLS_OTHER;
+				return MUS_TOOLS_OTHER;
 		}
 		else
 		{
-			return WG_TOOLS_NOTES;
+			return MUS_TOOLS_NOTES;
 		}
 	}
 	else
 		return -1;
 }
 
-void WgWindow::SyncToolPanel()
+void MusWindow::SyncToolPanel()
 {
 	int tool = this->GetToolType();
 
@@ -827,13 +825,13 @@ void WgWindow::SyncToolPanel()
 		return;
 
 	if ( tool == -1 )
-		tool = WG_TOOLS_NOTES;
+		tool = MUS_TOOLS_NOTES;
 	m_toolpanel->SetTools( tool, this->m_editElement);
 
 	this->SetFocus();
 }
 
-void WgWindow::Copy()
+void MusWindow::Copy()
 {
 	if ( !m_currentElement )
 		return;
@@ -842,12 +840,12 @@ void WgWindow::Copy()
 		delete m_bufferElement;
 
 	if ( m_currentElement->IsSymbole() )
-		m_bufferElement = new WgSymbole( *(WgSymbole*)m_currentElement );
+		m_bufferElement = new MusSymbol( *(MusSymbol*)m_currentElement );
 	else
-		m_bufferElement = new WgNote( *(WgNote*)m_currentElement );
+		m_bufferElement = new MusNote( *(MusNote*)m_currentElement );
 }
 
-void WgWindow::Cut()
+void MusWindow::Cut()
 {
 	if ( !m_currentElement )
 		return;
@@ -861,7 +859,7 @@ void WgWindow::Cut()
     this->ProcessEvent( kevent );
 }
 
-void WgWindow::Paste()
+void MusWindow::Paste()
 {
 	if ( !m_currentElement || !m_bufferElement)
 		return;
@@ -878,7 +876,7 @@ void WgWindow::Paste()
 	OnEndEdition();
 }
 
-void WgWindow::UpdateScroll()
+void MusWindow::UpdateScroll()
 {
 	if (!m_currentStaff)
 		return;
@@ -916,25 +914,25 @@ void WgWindow::UpdateScroll()
 	OnSyncScroll( x, y );
 }
 
-// WDR: handler implementations for WgWindow
+// WDR: handler implementations for MusWindow
 
-void WgWindow::OnPopupMenuNote( wxCommandEvent &event )
+void MusWindow::OnPopupMenuNote( wxCommandEvent &event )
 {
 	/*if ( !m_page || !m_currentStaff )
 		return;
 
-	WgNote *note = NULL;
+	MusNote *note = NULL;
 
 	if ( m_editElement )
 	{
 		if ( !m_currentElement || ( m_currentElement->TYPE == SYMB) )
 			return;
 		else
-			 note = (WgNote*)m_currentElement;
+			 note = (MusNote*)m_currentElement;
 	}
 	else
 	{
-		note = new WgNote( false, LG, F6 );
+		note = new MusNote( false, LG, F6 );
 		note->xrel = m_insertx;
 	}
 
@@ -942,24 +940,24 @@ void WgWindow::OnPopupMenuNote( wxCommandEvent &event )
 
 	switch ( event.GetId() )
 	{
-	case ( ID_MUS_N0 ): note->val = LG; break;
-	case ( ID_MUS_N1 ): note->val = BR; break;
-	case ( ID_MUS_N2 ): note->val = RD; break;
-	case ( ID_MUS_N3 ): note->val = BL; break;
-	case ( ID_MUS_N4 ): note->val = NR; break;
-	case ( ID_MUS_N5 ): note->val = CR; break;
-	case ( ID_MUS_N6 ): note->val = DC; break;
-	case ( ID_MUS_N7 ): note->val = TC; break;
-	case ( ID_MUS_CT ): note->val = CUSTOS; note->sil = true; break;
+	case ( ID_MS_N0 ): note->val = LG; break;
+	case ( ID_MS_N1 ): note->val = BR; break;
+	case ( ID_MS_N2 ): note->val = RD; break;
+	case ( ID_MS_N3 ): note->val = BL; break;
+	case ( ID_MS_N4 ): note->val = NR; break;
+	case ( ID_MS_N5 ): note->val = CR; break;
+	case ( ID_MS_N6 ): note->val = DC; break;
+	case ( ID_MS_N7 ): note->val = TC; break;
+	case ( ID_MS_CT ): note->val = CUSTOS; note->sil = true; break;
 
-	case ( ID_MUS_R0 ): note->val = LG; note->sil = true; break;
-	case ( ID_MUS_R1 ): note->val = BR; note->sil = true; break;
-	case ( ID_MUS_R2 ): note->val = RD; note->sil = true; break;
-	case ( ID_MUS_R3 ): note->val = BL; note->sil = true; break;
-	case ( ID_MUS_R4 ): note->val = NR; note->sil = true; break;
-	case ( ID_MUS_R5 ): note->val = CR; note->sil = true; break;
-	case ( ID_MUS_R6 ): note->val = DC; note->sil = true; break;
-	case ( ID_MUS_R7 ): note->val = TC; note->sil = true; break;
+	case ( ID_MS_R0 ): note->val = LG; note->sil = true; break;
+	case ( ID_MS_R1 ): note->val = BR; note->sil = true; break;
+	case ( ID_MS_R2 ): note->val = RD; note->sil = true; break;
+	case ( ID_MS_R3 ): note->val = BL; note->sil = true; break;
+	case ( ID_MS_R4 ): note->val = NR; note->sil = true; break;
+	case ( ID_MS_R5 ): note->val = CR; note->sil = true; break;
+	case ( ID_MS_R6 ): note->val = DC; note->sil = true; break;
+	case ( ID_MS_R7 ): note->val = TC; note->sil = true; break;
 	}
 
 	//if ( !m_editElement )
@@ -977,60 +975,60 @@ void WgWindow::OnPopupMenuNote( wxCommandEvent &event )
 	event.Skip();
 }
 
-void WgWindow::OnPopupMenuSymbole( wxCommandEvent &event )
+void MusWindow::OnPopupMenuSymbole( wxCommandEvent &event )
 {
 	if ( !m_page || !m_currentStaff )
 		return;
 
-	WgSymbole *symbole = NULL;
+	MusSymbol *symbole = NULL;
 
 	if ( m_editElement )
 	{
 		if ( !m_currentElement || ( m_currentElement->TYPE != SYMB) )
 			return;
 		else
-			 symbole = (WgSymbole*)m_currentElement;
+			 symbole = (MusSymbol*)m_currentElement;
 	}
 	else
 	{
-		symbole = new WgSymbole( );
+		symbole = new MusSymbol( );
 		symbole->xrel = m_insertx;
 	}
 
 	int id = event.GetId();
 
-	if ( in(id , ID_MUS_G1, ID_MUS_F5) )
+	if ( in(id , ID_MS_G1, ID_MS_F5) )
 	{
 		symbole->flag = CLE; 
 		switch ( id )
 		{
-		case ( ID_MUS_G1 ): symbole->code = SOL1; break;
-		case ( ID_MUS_G2 ): symbole->code = SOL2; break;
-		case ( ID_MUS_U1 ): symbole->code = UT1; break;
-		case ( ID_MUS_U2 ): symbole->code = UT2; break;
-		case ( ID_MUS_U3 ): symbole->code = UT3; break;
-		case ( ID_MUS_U4 ): symbole->code = UT4; break;
-		case ( ID_MUS_U5 ): symbole->code = UT5; break;
-		case ( ID_MUS_F3 ): symbole->code = FA3; break;
-		case ( ID_MUS_F4 ): symbole->code = FA4; break;
-		case ( ID_MUS_F5 ): symbole->code = FA5; break;
+		case ( ID_MS_G1 ): symbole->code = SOL1; break;
+		case ( ID_MS_G2 ): symbole->code = SOL2; break;
+		case ( ID_MS_U1 ): symbole->code = UT1; break;
+		case ( ID_MS_U2 ): symbole->code = UT2; break;
+		case ( ID_MS_U3 ): symbole->code = UT3; break;
+		case ( ID_MS_U4 ): symbole->code = UT4; break;
+		case ( ID_MS_U5 ): symbole->code = UT5; break;
+		case ( ID_MS_F3 ): symbole->code = FA3; break;
+		case ( ID_MS_F4 ): symbole->code = FA4; break;
+		case ( ID_MS_F5 ): symbole->code = FA5; break;
 		}
 	}
-	else if ( in(id , ID_MUS_DIESE, ID_MUS_DBEMOL) )
+	else if ( in(id , ID_MS_DIESE, ID_MS_DBEMOL) )
 	{
 		symbole->flag = ALTER;
 		symbole->code = F6;
 		symbole->oct = 4;
 		switch ( id )
 		{
-		case ( ID_MUS_DIESE): symbole->calte = DIESE; break;
-		case ( ID_MUS_BEMOL): symbole->calte = BEMOL; break;
-		case ( ID_MUS_BECAR): symbole->calte = BECAR; break;
-		case ( ID_MUS_DDIESE): symbole->calte = D_DIESE; break;
-		case ( ID_MUS_DBEMOL): symbole->calte = D_BEMOL; break;
+		case ( ID_MS_DIESE): symbole->calte = DIESE; break;
+		case ( ID_MS_BEMOL): symbole->calte = BEMOL; break;
+		case ( ID_MS_BECAR): symbole->calte = BECAR; break;
+		case ( ID_MS_DDIESE): symbole->calte = D_DIESE; break;
+		case ( ID_MS_DBEMOL): symbole->calte = D_BEMOL; break;
 		}
 	}
-	else if ( id == ID_MUS_PNT )
+	else if ( id == ID_MS_PNT )
 	{
 		symbole->flag = PNT;
 		symbole->code = F6;
@@ -1051,7 +1049,7 @@ void WgWindow::OnPopupMenuSymbole( wxCommandEvent &event )
 }
 
 
-void WgWindow::OnMouseDClick(wxMouseEvent &event)
+void MusWindow::OnMouseDClick(wxMouseEvent &event)
 {
 	if ( m_editElement )
 	{
@@ -1064,21 +1062,21 @@ void WgWindow::OnMouseDClick(wxMouseEvent &event)
 			int submenu_id = 0;
 			if ( m_currentElement->TYPE == SYMB )
 			{
-				WgSymbole *symbole = (WgSymbole*)m_currentElement;
+				MusSymbol *symbole = (MusSymbol*)m_currentElement;
 				if ( symbole->flag == CLE )
-					submenu_id = ID_MUS_KEYS;
+					submenu_id = ID_MS_KEYS;
 				else if ( symbole->flag == IND_MES )
-					submenu_id = ID_MUS_SIGNS;
+					submenu_id = ID_MS_SIGNS;
 				else
-					submenu_id = ID_MUS_SYMBOLES;
+					submenu_id = ID_MS_SYMBOLES;
 			}
 			else
 			{
-				WgNote *note = (WgNote*)m_currentElement;
+				MusNote *note = (MusNote*)m_currentElement;
 				if ( note->sil != _SIL )
-					submenu_id = ID_MUS_NOTES;
+					submenu_id = ID_MS_NOTES;
 				else
-					submenu_id = ID_MUS_RESTS;
+					submenu_id = ID_MS_RESTS;
 			}
 			wxMenuItem *submenu = menu->Remove( submenu_id );
 			delete menu;
@@ -1102,7 +1100,7 @@ void WgWindow::OnMouseDClick(wxMouseEvent &event)
 			
 			m_newElement->xrel = m_insertx;
 			if ( m_newElement->IsNote() || 
-				(((WgSymbole*)m_newElement)->flag == ALTER) || (((WgSymbole*)m_newElement)->flag == PNT))
+				(((MusSymbol*)m_newElement)->flag == ALTER) || (((MusSymbol*)m_newElement)->flag == PNT))
 			{
 				m_newElement->code = m_insertcode;
 				m_newElement->oct = m_insertoct;
@@ -1126,7 +1124,7 @@ void WgWindow::OnMouseDClick(wxMouseEvent &event)
 	event.Skip();
 }
 
-void WgWindow::OnMouseLeftUp(wxMouseEvent &event)
+void MusWindow::OnMouseLeftUp(wxMouseEvent &event)
 {
 	if ( m_editElement )
 	{
@@ -1148,13 +1146,13 @@ void WgWindow::OnMouseLeftUp(wxMouseEvent &event)
 }
 
 
-void WgWindow::OnMouseLeave(wxMouseEvent &event)
+void MusWindow::OnMouseLeave(wxMouseEvent &event)
 {
 	this->OnMouseLeftUp( event );
 	//event.Skip();
 }
 
-void WgWindow::OnMouseLeftDown(wxMouseEvent &event)
+void MusWindow::OnMouseLeftDown(wxMouseEvent &event)
 {
 	if ( m_editElement )
 	{
@@ -1170,7 +1168,7 @@ void WgWindow::OnMouseLeftDown(wxMouseEvent &event)
 		int y = ToReelY( dc.DeviceToLogicalY( event.m_y ) );
 			//wxLogMessage("x %d : y %d", x, y);
 
-		WgStaff *previous = NULL;
+		MusStaff *previous = NULL;
 		if ( m_page->GetAtPos( y ) )
 		{
 			previous = m_currentStaff;
@@ -1201,7 +1199,7 @@ void WgWindow::OnMouseLeftDown(wxMouseEvent &event)
 			int y = ToReelY( dc.DeviceToLogicalY( event.m_y ) );
 			int x  = ToReel( dc.DeviceToLogicalX( event.m_x ) );
 
-			WgElement *tmp = NULL;
+			MusElement *tmp = NULL;
 			if ( m_page->GetAtPos( y ) )
 				tmp = m_page->GetAtPos( y )->GetAtPos( x );
 
@@ -1209,9 +1207,9 @@ void WgWindow::OnMouseLeftDown(wxMouseEvent &event)
 			{
 				if ( tmp->IsNote() )
 					m_newElement = &m_note;
-				else if ( ((WgSymbole*)tmp)->flag == CLE )
+				else if ( ((MusSymbol*)tmp)->flag == CLE )
 					m_newElement = &m_key;
-				else if ( ((WgSymbole*)tmp)->flag == IND_MES )
+				else if ( ((MusSymbol*)tmp)->flag == IND_MES )
 					m_newElement = &m_proportion;
 				else
 					m_newElement = &m_symbole;
@@ -1231,7 +1229,7 @@ void WgWindow::OnMouseLeftDown(wxMouseEvent &event)
 	event.Skip();
 }
 
-void WgWindow::OnMouseMotion(wxMouseEvent &event)
+void MusWindow::OnMouseMotion(wxMouseEvent &event)
 {
 	if ( m_editElement )
 	{
@@ -1255,8 +1253,8 @@ void WgWindow::OnMouseMotion(wxMouseEvent &event)
 				{
 					ecartx = (ecartx > 1) ? 1 : -1;
 					m_dragging_x = m_insertx;
-					int vflag = ( ((WgNote*)m_currentElement)->sil == _SIL ) ? 1 : 0;
-					m_currentElement->SetValue( ((WgNote*)m_currentElement)->val - ecartx, m_currentStaff, vflag );
+					int vflag = ( ((MusNote*)m_currentElement)->sil == _SIL ) ? 1 : 0;
+					m_currentElement->SetValue( ((MusNote*)m_currentElement)->val - ecartx, m_currentStaff, vflag );
 					//OnEndEdition();
 				}
 			}*/
@@ -1283,7 +1281,7 @@ void WgWindow::OnMouseMotion(wxMouseEvent &event)
 	event.Skip();
 }
 
-void WgWindow::OnKeyUp(wxKeyEvent &event)
+void MusWindow::OnKeyUp(wxKeyEvent &event)
 {
     //if ( event.GetKeyCode() == WXK_CONTROL )
 	//	m_ctrlDown = false;
@@ -1318,7 +1316,7 @@ int GetNoteValue( int keycode )
 }
 
 
-void WgWindow::OnKeyDown(wxKeyEvent &event)
+void MusWindow::OnKeyDown(wxKeyEvent &event)
 {
 	if ( !m_page || !m_currentStaff )
 		return;
@@ -1340,9 +1338,9 @@ void WgWindow::OnKeyDown(wxKeyEvent &event)
 			{
 				if ( m_currentElement->IsNote() )
 					m_newElement = &m_note;
-				else if ( ((WgSymbole*)m_currentElement)->flag == CLE )
+				else if ( ((MusSymbol*)m_currentElement)->flag == CLE )
 					m_newElement = &m_key;
-				else if ( ((WgSymbole*)m_currentElement)->flag == IND_MES )
+				else if ( ((MusSymbol*)m_currentElement)->flag == IND_MES )
 					m_newElement = &m_proportion;
 				else
 					m_newElement = &m_symbole;
@@ -1368,8 +1366,8 @@ void WgWindow::OnKeyDown(wxKeyEvent &event)
 		if ( ((event.m_keyCode == WXK_DELETE ) || (event.m_keyCode == WXK_BACK)) && m_currentElement) // delete
 		{
 			PrepareCheckPoint( UNDO_PART, WG_UNDO_STAFF );
-			WgElement *del = m_currentElement;
-			WgStaff *delstaff = m_currentStaff;
+			MusElement *del = m_currentElement;
+			MusStaff *delstaff = m_currentStaff;
 
 			if (event.m_keyCode == WXK_DELETE )
 			{
@@ -1401,7 +1399,7 @@ void WgWindow::OnKeyDown(wxKeyEvent &event)
 			if ( m_currentStaff != delstaff )
 			{
 				// reset previous staff with no element before checkpoint and then swap again
-				WgStaff *tmp = m_currentStaff;
+				MusStaff *tmp = m_currentStaff;
 				m_currentStaff = delstaff;
 				del = m_currentElement;
 				m_currentElement = NULL;
@@ -1436,11 +1434,11 @@ void WgWindow::OnKeyDown(wxKeyEvent &event)
 			PrepareCheckPoint( UNDO_PART, WG_UNDO_STAFF );
 			if ( (event.GetKeyCode() == WXK_RIGHT) && m_currentElement->IsNote() && !m_currentElement->ligat ) 
 			{
-				m_currentElement->SetValue( ((WgNote*)m_currentElement)->val + 1, m_currentStaff );	
+				m_currentElement->SetValue( ((MusNote*)m_currentElement)->val + 1, m_currentStaff );	
 			}
 			else if ( (event.GetKeyCode() == WXK_LEFT ) && m_currentElement->IsNote() && !m_currentElement->ligat ) 
 			{
-				m_currentElement->SetValue( ((WgNote*)m_currentElement)->val - 1, m_currentStaff );	
+				m_currentElement->SetValue( ((MusNote*)m_currentElement)->val - 1, m_currentStaff );	
 			}
 			else if ( event.GetKeyCode() == WXK_UP )
 			{
@@ -1459,7 +1457,7 @@ void WgWindow::OnKeyDown(wxKeyEvent &event)
 			( (event.m_keyCode == 'B') || (event.m_keyCode == 'D' ) ) ) // ajouter un bemol à une note
 		{
 			PrepareCheckPoint( UNDO_PART, WG_UNDO_STAFF );
-			WgSymbole alteration;
+			MusSymbol alteration;
 			alteration.flag = ALTER;
 			alteration.code = m_currentElement->code;
 			alteration.oct = m_currentElement->oct;
@@ -1476,7 +1474,7 @@ void WgWindow::OnKeyDown(wxKeyEvent &event)
 			 (event.m_keyCode == '.')  ) // ajouter un point
 		{
 			PrepareCheckPoint( UNDO_PART, WG_UNDO_STAFF );
-			WgSymbole point;
+			MusSymbol point;
 			point.flag = PNT;
 			point.code = m_currentElement->code;
 			point.oct = m_currentElement->oct;
@@ -1547,7 +1545,7 @@ void WgWindow::OnKeyDown(wxKeyEvent &event)
 			wxClientDC dc(this);
 			InitDC( &dc );
 			
-			WgStaff *previous = NULL;
+			MusStaff *previous = NULL;
 			
 			if ( m_currentElement &&  m_currentStaff )
 				m_currentElement->ClearElement( &dc, m_currentStaff );
@@ -1664,7 +1662,7 @@ void WgWindow::OnKeyDown(wxKeyEvent &event)
 }
 
 
-void WgWindow::OnPaint(wxPaintEvent &event)
+void MusWindow::OnPaint(wxPaintEvent &event)
 {
 	if ( !m_page || !m_p2 || !m_fh )
 		return;
@@ -1713,9 +1711,9 @@ void WgWindow::OnPaint(wxPaintEvent &event)
 	m_page->DrawPage( &dc );
 }
 
-void WgWindow::OnSize(wxSizeEvent &event)
+void MusWindow::OnSize(wxSizeEvent &event)
 {
 	Resize();
 }
 
-#endif // AX_WG
+

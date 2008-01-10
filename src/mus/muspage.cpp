@@ -1,11 +1,9 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        wgpage.cpp
+// Name:        muspage.cpp
 // Author:      Laurent Pugin
 // Created:     2005
 // Copyright (c) Laurent Pugin. All rights reserved.
 /////////////////////////////////////////////////////////////////////////////
-
-#ifdef AX_WG
 
 #ifdef __GNUG__
     #pragma implementation "muspage.cpp"
@@ -34,20 +32,20 @@ WX_DEFINE_OBJARRAY( ArrayOfWgStaves );
 // WDR: class implementations
 
 //----------------------------------------------------------------------------
-// WgPage
+// MusPage
 //----------------------------------------------------------------------------
 
-WgPage::WgPage() :
-	WgObject()
+MusPage::MusPage() :
+	MusObject()
 {
 	Clear( );
 }
 
-WgPage::~WgPage()
+MusPage::~MusPage()
 {
 }
 
-void WgPage::Clear( )
+void MusPage::Clear( )
 {
 	m_staves.Clear( );
 	nbrePortees = 0;
@@ -62,11 +60,11 @@ void WgPage::Clear( )
 	npage = 0;
 }
 
-void WgPage::CheckIntegrity()
+void MusPage::CheckIntegrity()
 {
 	this->nbrePortees = (int)this->m_staves.GetCount();
 
-	WgStaff *staff;
+	MusStaff *staff;
 	int i;
 	int system = 1;
     for (i = 0; i < nbrePortees; i++) 
@@ -81,7 +79,7 @@ void WgPage::CheckIntegrity()
 }
 
 
-void WgPage::ClearStaves( wxDC *dc, WgStaff *start )
+void MusPage::ClearStaves( wxDC *dc, MusStaff *start )
 {
 	wxASSERT_MSG( dc , "DC cannot be NULL");
 	if ( !Check() )
@@ -98,14 +96,14 @@ void WgPage::ClearStaves( wxDC *dc, WgStaff *start )
 	}
 }
 
-WgStaff *WgPage::GetFirst( )
+MusStaff *MusPage::GetFirst( )
 {
 	if ( m_staves.IsEmpty() )
 		return NULL;
 	return &m_staves[0];
 }
 
-WgStaff *WgPage::GetLast( )
+MusStaff *MusPage::GetLast( )
 {
 	if ( m_staves.IsEmpty() )
 		return NULL;
@@ -113,7 +111,7 @@ WgStaff *WgPage::GetLast( )
 	return &m_staves[i];
 }
 
-WgStaff *WgPage::GetNext( WgStaff *staff )
+MusStaff *MusPage::GetNext( MusStaff *staff )
 {
 	if ( !staff || m_staves.IsEmpty() || ( staff->no >= (int)m_staves.GetCount() - 1 ) )
 		return NULL;
@@ -124,7 +122,7 @@ WgStaff *WgPage::GetNext( WgStaff *staff )
 	return &m_staves[staff->no + 1];
 }
 
-WgStaff *WgPage::GetPrevious( WgStaff *staff  )
+MusStaff *MusPage::GetPrevious( MusStaff *staff  )
 {
 	if ( !staff || m_staves.IsEmpty() || ( staff->no <= 0 ) )
 		return NULL;
@@ -136,9 +134,9 @@ WgStaff *WgPage::GetPrevious( WgStaff *staff  )
 }
 
 
-WgStaff *WgPage::GetAtPos( int y )
+MusStaff *MusPage::GetAtPos( int y )
 {
-	WgStaff *staff = this->GetFirst();
+	MusStaff *staff = this->GetFirst();
 	if ( !staff )
 		return NULL;
 	
@@ -160,13 +158,13 @@ WgStaff *WgPage::GetAtPos( int y )
 	return staff;
 }
 
-void WgPage::UpdateStavesPosition( ) 
+void MusPage::UpdateStavesPosition( ) 
 {
 	if ( !Check() )
 		return;
 
 	int i, yy, orgx;
-	WgStaff *staff = NULL;
+	MusStaff *staff = NULL;
 
 	yy = m_w->wymax;
     for (i = 0; i < nbrePortees; i++) 
@@ -189,7 +187,7 @@ void WgPage::UpdateStavesPosition( )
 	}
 }
 
-void WgPage::DrawPage( wxDC *dc, bool background ) 
+void MusPage::DrawPage( wxDC *dc, bool background ) 
 {
 	wxASSERT_MSG( dc , "DC cannot be NULL");
 
@@ -197,7 +195,7 @@ void WgPage::DrawPage( wxDC *dc, bool background )
 		return;
 
 	int i;
-    WgStaff *staff;
+    MusStaff *staff;
 
 	if (m_p->orientation)
 		i =  m_w->ToZoom( m_w->pageFormatHor ); //+mrgG; marge comprise dans SetDeviceOrigine
@@ -230,6 +228,6 @@ void WgPage::DrawPage( wxDC *dc, bool background )
 	}
 }
 
-// WDR: handler implementations for WgPage
+// WDR: handler implementations for MusPage
 
-#endif // AX_WG
+

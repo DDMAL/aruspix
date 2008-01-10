@@ -1,11 +1,9 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        wgelement.cpp
+// Name:        muselement.cpp
 // Author:      Laurent Pugin
 // Created:     2005
 // Copyright (c) Laurent Pugin. All rights reserved.
 /////////////////////////////////////////////////////////////////////////////
-
-#ifdef AX_WG
 
 #ifdef __GNUG__
     #pragma implementation "muselement.cpp"
@@ -25,11 +23,11 @@
 // WDR: class implementations
 
 //----------------------------------------------------------------------------
-// WgElement
+// MusElement
 //----------------------------------------------------------------------------
 
-WgElement::WgElement() :
-	WgObject()
+MusElement::MusElement() :
+	MusObject()
 {
 	liaison = false;
     dliai = false;
@@ -72,7 +70,7 @@ WgElement::WgElement() :
 	code = 0;
 }
 
-WgElement::WgElement( const WgElement& element )
+MusElement::MusElement( const MusElement& element )
 {
 	TYPE = element.TYPE;
 	liaison = element.liaison;
@@ -124,7 +122,7 @@ WgElement::WgElement( const WgElement& element )
 }
 
 
-WgElement& WgElement::operator=( const WgElement& element)
+MusElement& MusElement::operator=( const MusElement& element)
 {
 	if ( this != &element ) // not self assignement
 	{
@@ -179,7 +177,7 @@ WgElement& WgElement::operator=( const WgElement& element)
 	return *this;
 }
 
-WgElement::~WgElement()
+MusElement::~MusElement()
 {
 	if ( pdebord )
 	{
@@ -189,7 +187,7 @@ WgElement::~WgElement()
 }
 
 
-void WgElement::ClearElement( wxDC *dc, WgStaff *staff )
+void MusElement::ClearElement( wxDC *dc, MusStaff *staff )
 {
 	wxASSERT_MSG( dc , "DC cannot be NULL");
 	if ( !Check() )
@@ -207,7 +205,7 @@ void WgElement::ClearElement( wxDC *dc, WgStaff *staff )
 }
 
 
-wxClientDC *WgElement::InitAndClear( WgStaff *staff )
+wxClientDC *MusElement::InitAndClear( MusStaff *staff )
 {
 	if ( m_w || staff ) // effacement
 	{
@@ -220,7 +218,7 @@ wxClientDC *WgElement::InitAndClear( WgStaff *staff )
 		return NULL;
 }
 
-void WgElement::DrawAndRelease( wxDC *dc, WgStaff *staff )
+void MusElement::DrawAndRelease( wxDC *dc, MusStaff *staff )
 {
 	if ( dc == NULL )
 		return;
@@ -230,7 +228,7 @@ void WgElement::DrawAndRelease( wxDC *dc, WgStaff *staff )
 }
 
 
-int WgElement::filtrcod (int codElement, int *oct)
+int MusElement::filtrcod (int codElement, int *oct)
 {	
 	*oct = this->oct;
 
@@ -249,7 +247,7 @@ int WgElement::filtrcod (int codElement, int *oct)
 	return codElement;
 }
 
-// WDR: handler implementations for WgElement
+// WDR: handler implementations for MusElement
 
 
-#endif // AX_WG
+

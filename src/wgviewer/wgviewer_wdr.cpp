@@ -47,7 +47,7 @@ wxSizer *WindowFunc5( wxWindow *parent, bool call_fit, bool set_sizer )
     wxStaticLine *item1 = new wxStaticLine( parent, ID5_LINE, wxDefaultPosition, wxSize(20,-1), wxLI_HORIZONTAL );
     item0->Add( item1, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxBOTTOM, 5 );
 
-    WgToolPanel *item2 = new WgToolPanel( parent, ID5_TOOLPANEL, wxDefaultPosition, wxSize(10,10), 0 );
+    MusToolPanel *item2 = new MusToolPanel( parent, ID5_TOOLPANEL, wxDefaultPosition, wxSize(10,10), 0 );
     item0->Add( item2, 0, 0, 5 );
 
     WgvPanel *item3 = new WgvPanel( parent, ID5_WGPANEL, wxDefaultPosition, wxSize(200,160), wxSUNKEN_BORDER );

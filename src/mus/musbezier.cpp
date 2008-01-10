@@ -1,11 +1,9 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        wgwindow.cpp
+// Name:        muswindow.cpp
 // Author:      Laurent Pugin
 // Created:     2005
 // Copyright (c) Laurent Pugin. All rights reserved.
 /////////////////////////////////////////////////////////////////////////////
-
-#ifdef AX_WG
 
 #ifdef __GNUG__
     #pragma implementation "muswindow.h"
@@ -28,12 +26,12 @@ static long factor2;
 static int	*pCC = NULL;
 
 /** static members **/
-wxPoint WgWindow::point_[];
-wxPoint WgWindow::bcoord[];
-//wxPoint WgWindow::point_[4];
-//wxPoint WgWindow::bcoord[2*(PTCONTROL+1)];
+wxPoint MusWindow::point_[];
+wxPoint MusWindow::bcoord[];
+//wxPoint MusWindow::point_[4];
+//wxPoint MusWindow::bcoord[2*(PTCONTROL+1)];
 
-int WgWindow::CC(int n, int i) 
+int MusWindow::CC(int n, int i) 
 {
 	register int j;
 	register int a;
@@ -47,7 +45,7 @@ int WgWindow::CC(int n, int i)
 } 
 
 
-long WgWindow::BBlend(int i, int n, long u) 
+long MusWindow::BBlend(int i, int n, long u) 
 {
 	register int j;
     long	b;
@@ -62,7 +60,7 @@ long WgWindow::BBlend(int i, int n, long u)
 	return b; 
 }
 
-int WgWindow::InitBezier (register int n)
+int MusWindow::InitBezier (register int n)
 {
 	register int i;
 
@@ -79,7 +77,7 @@ int WgWindow::InitBezier (register int n)
 }
 
 
-void WgWindow::Bezier(long *x, long *y, long u, int n ) 
+void MusWindow::Bezier(long *x, long *y, long u, int n ) 
 {
 	int        i;
     long       b;
@@ -97,7 +95,7 @@ void WgWindow::Bezier(long *x, long *y, long u, int n )
 }
 
 
-void WgWindow::calcBez ( wxPoint *ptcoord, int _nbint )
+void MusWindow::calcBez ( wxPoint *ptcoord, int _nbint )
 {
 	int          i;
    long       x, y;
@@ -116,7 +114,7 @@ void WgWindow::calcBez ( wxPoint *ptcoord, int _nbint )
 	
 }
 
-void WgWindow::pntswap (wxPoint *x1, wxPoint *x2)
+void MusWindow::pntswap (wxPoint *x1, wxPoint *x2)
 {	wxPoint a;
 	a = *x1;
 	*x1 = *x2;
@@ -124,4 +122,4 @@ void WgWindow::pntswap (wxPoint *x1, wxPoint *x2)
 }
 
 
-#endif // AX_WG
+

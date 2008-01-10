@@ -62,7 +62,7 @@ RecSplitterWindow::RecSplitterWindow( wxWindow *parent, wxWindowID id,
     m_envPtr = NULL;
 }
 
-void RecSplitterWindow::SetEnv( CmpEnv *env, wxFlexGridSizer *sizer, WgToolPanel *toolpanel,    CmpWgController *wgControlPtr )
+void RecSplitterWindow::SetEnv( CmpEnv *env, wxFlexGridSizer *sizer, MusToolPanel *toolpanel,    CmpMusController *wgControlPtr )
 {
     m_envPtr = env;
     m_wgsizer = sizer;
@@ -247,8 +247,8 @@ void CmpEnv::LoadWindow()
     m_splitterPtr->SetMinimumPaneSize( 100 );
 		
 	// collation
-	m_wgControlPtr = new CmpWgController( m_splitterPtr, ID6_DISPLAY );
-    m_wgViewPtr = new CmpWgWindow( m_wgControlPtr, ID6_WGWINDOW, wxDefaultPosition,
+	m_wgControlPtr = new CmpMusController( m_splitterPtr, ID6_DISPLAY );
+    m_wgViewPtr = new CmpMusWindow( m_wgControlPtr, ID6_WGWINDOW, wxDefaultPosition,
             wxDefaultSize, wxHSCROLL|wxVSCROLL|wxSIMPLE_BORDER , false);
     m_wgViewPtr->SetEnv( this );
     m_wgControlPtr->Init( this, m_wgViewPtr );
@@ -281,7 +281,7 @@ void CmpEnv::LoadWindow()
     //m_imControlPtr->SetWgViewAndController( m_wgViewPtr, m_wgControlPtr );
     //m_imControlPtr->SetRecFile( m_recFilePtr );
    
-    //m_toolpanel = (WgToolPanel*)m_envWindowPtr->FindWindowById( ID4_TOOLPANEL );
+    //m_toolpanel = (MusToolPanel*)m_envWindowPtr->FindWindowById( ID4_TOOLPANEL );
    // wxASSERT_MSG( m_toolpanel, "Tool Panel cannot be NULL ");
     
  //   m_toolpanel->SetDirection( false );
@@ -484,7 +484,7 @@ void CmpEnv::OnCmpEdit( wxCommandEvent &event )
 
 void CmpEnv::OnCmpLoad( wxCommandEvent &event )
 {
-    if ( ProgressDlg::s_instance_existing )
+    if ( AxProgressDlg::s_instance_existing )
         return;
 	
 
@@ -504,7 +504,7 @@ void CmpEnv::OnCmpLoad( wxCommandEvent &event )
     //    return;
 						
 	
-    ProgressDlg *dlg = new ProgressDlg( m_framePtr, -1, _("Load book") );
+    AxProgressDlg *dlg = new AxProgressDlg( m_framePtr, -1, _("Load book") );
     dlg->Center( wxBOTH );
     dlg->Show();
     dlg->SetMaxBatchBar( nbOfFiles );
@@ -625,7 +625,7 @@ void CmpEnv::OnZoom( wxCommandEvent &event )
 
 void CmpEnv::OnCollate( wxCommandEvent &event )
 {
-    if ( ProgressDlg::s_instance_existing )
+    if ( AxProgressDlg::s_instance_existing )
         return;
 	
 
@@ -645,7 +645,7 @@ void CmpEnv::OnCollate( wxCommandEvent &event )
     //    return;
 						
 	
-    ProgressDlg *dlg = new ProgressDlg( m_framePtr, -1, _("Collation") );
+    AxProgressDlg *dlg = new AxProgressDlg( m_framePtr, -1, _("Collation") );
     dlg->Center( wxBOTH );
     dlg->Show();
     dlg->SetMaxBatchBar( nbOfFiles );

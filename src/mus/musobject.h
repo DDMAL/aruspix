@@ -1,5 +1,5 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        wgobject.h
+// Name:        musobject.h
 // Author:      Laurent Pugin
 // Created:     2005
 // Copyright (c) Laurent Pugin. All rights reserved.
@@ -7,8 +7,6 @@
 
 #ifndef __MUS_OBJECT_H__
 #define __MUS_OBJECT_H__
-
-#ifdef AX_WG
 
 #ifdef __GNUG__
 	#pragma interface "musobject.cpp"
@@ -18,51 +16,50 @@
     #include "wx/wx.h"
 #endif
 
-class WgWindow;
-class WgFile;
-class WgFileHeader;
-class WgParameters;
-class WgParameters2;
+class MusWindow;
+class MusFile;
+class MusFileHeader;
+class MusParameters;
+class MusParameters2;
 
 
 // WDR: class declarations
 
 //----------------------------------------------------------------------------
-// WgObject
+// MusObject
 //----------------------------------------------------------------------------
 
-class WgObject: public wxObject
+class MusObject: public wxObject
 {
 public:
     // constructors and destructors
-    WgObject();
-    virtual ~WgObject();
+    MusObject();
+    virtual ~MusObject();
     
-    // WDR: method declarations for WgObject
-	bool Init( WgWindow *win );
+    // WDR: method declarations for MusObject
+	bool Init( MusWindow *win );
 	bool Check() { return m_ok; }
     
 protected:
-    // WDR: member variable declarations for WgObject
-	WgWindow *m_w;
-	WgFile *m_f;
-	WgFileHeader *m_fh;
-	WgParameters *m_p;
-	WgParameters2 *m_p2;
+    // WDR: member variable declarations for MusObject
+	MusWindow *m_w;
+	MusFile *m_f;
+	MusFileHeader *m_fh;
+	MusParameters *m_p;
+	MusParameters2 *m_p2;
 
 private:
 	bool m_ok;
 
 
 public:
-    // WDR: member variable declarations for WgObject
+    // WDR: member variable declarations for MusObject
 
 
 private:
-    // WDR: handler declarations for WgObject
+    // WDR: handler declarations for MusObject
 
 };
 
-#endif //AX_WG
 
 #endif

@@ -1,11 +1,9 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        wg.cpp
+// Name:        mus.cpp
 // Author:      Laurent Pugin
 // Created:     2004
 // Copyright (c) Laurent Pugin. All rights reserved.
 /////////////////////////////////////////////////////////////////////////////
-
-#ifdef AX_WG
 
 #ifdef __GNUG__
     #pragma implementation "mus.cpp"
@@ -23,25 +21,25 @@
 // WDR: class implementations
 
 //----------------------------------------------------------------------------
-// WgFont
+// MusFont
 //----------------------------------------------------------------------------
 
-WgFont::WgFont()
+MusFont::MusFont()
 {
 }
 
-WgFont::~WgFont()
+MusFont::~MusFont()
 {
 }
 
-// WDR: handler implementations for WgFont
+// WDR: handler implementations for MusFont
 
 
 //----------------------------------------------------------------------------
-// WgParametersMidi
+// MusParametersMidi
 //----------------------------------------------------------------------------
 
-WgParametersMidi::WgParametersMidi()
+MusParametersMidi::MusParametersMidi()
 {
     tempo = 500000;
     minVeloc = 30;
@@ -62,18 +60,18 @@ WgParametersMidi::WgParametersMidi()
 		piste2canal[i] = 0;
 }
 
-WgParametersMidi::~WgParametersMidi()
+MusParametersMidi::~MusParametersMidi()
 {
 }
 
-// WDR: handler implementations for WgParametersMidi
+// WDR: handler implementations for MusParametersMidi
 
 
 //----------------------------------------------------------------------------
-// WgParameters2
+// MusParameters2
 //----------------------------------------------------------------------------
 
-WgParameters2::WgParameters2()
+MusParameters2::MusParameters2()
 {
 	transp_sil = 0;
     rapportPorteesNum = 16;
@@ -94,18 +92,18 @@ WgParameters2::WgParameters2()
 		transposition[i] = 0;
 }
 
-WgParameters2::~WgParameters2()
+MusParameters2::~MusParameters2()
 {
 }
 
-// WDR: handler implementations for WgParameters2
+// WDR: handler implementations for MusParameters2
 
 
 //----------------------------------------------------------------------------
-// WgParameters
+// MusParameters
 //----------------------------------------------------------------------------
 
-WgParameters::WgParameters()
+MusParameters::MusParameters()
 {
     orientation = true;
     EpLignesPortee = 1;
@@ -125,33 +123,32 @@ WgParameters::WgParameters()
     Epais3 = 9;
 }
 
-WgParameters::~WgParameters()
+MusParameters::~MusParameters()
 {
 }
 
-// WDR: handler implementations for WgParameters
+// WDR: handler implementations for MusParameters
 
 
 //----------------------------------------------------------------------------
-// WgPosKey
+// MusPosKey
 //----------------------------------------------------------------------------
 
-WgPosKey::WgPosKey()
+MusPosKey::MusPosKey()
 {
 }
 
-WgPosKey::~WgPosKey()
+MusPosKey::~MusPosKey()
 {
 }
 
-// WDR: handler implementations for WgPosKey
-
+// WDR: handler implementations for MusPosKey
 
 //----------------------------------------------------------------------------
-// WgPagination
+// MusPagination
 //----------------------------------------------------------------------------
 
-WgPagination::WgPagination()
+MusPagination::MusPagination()
 {
 	numeroInitial = 0;	
 	aussiPremierPage = 0;
@@ -162,18 +159,18 @@ WgPagination::WgPagination()
 	offsetDuBord = 0;	
 }
 
-WgPagination::~WgPagination()
+MusPagination::~MusPagination()
 {
 }
 
-// WDR: handler implementations for WgPagination
+// WDR: handler implementations for MusPagination
 
 
 //----------------------------------------------------------------------------
-// WgHeaderFooter
+// MusHeaderFooter
 //----------------------------------------------------------------------------
 
-WgHeaderFooter::WgHeaderFooter()
+MusHeaderFooter::MusHeaderFooter()
 {
 	aussiPremierPage = 0;
 	position = 0;
@@ -183,18 +180,18 @@ WgHeaderFooter::WgHeaderFooter()
 	offsetDuBord = 0;
 }
 
-WgHeaderFooter::~WgHeaderFooter()
+MusHeaderFooter::~MusHeaderFooter()
 {
 }
 
-// WDR: handler implementations for WgHeaderFooter
+// WDR: handler implementations for MusHeaderFooter
 
 
 //----------------------------------------------------------------------------
-// WgFileHeader
+// MusFileHeader
 //----------------------------------------------------------------------------
 
-WgFileHeader::WgFileHeader()
+MusFileHeader::MusFileHeader()
 {
 	maj_ver = 2;
     min_ver = 1;
@@ -207,13 +204,13 @@ WgFileHeader::WgFileHeader()
 	reserve[0] = 0;
 }
 
-WgFileHeader::~WgFileHeader()
+MusFileHeader::~MusFileHeader()
 {
 }
 
-// WDR: handler implementations for WgFileHeader
+// WDR: handler implementations for MusFileHeader
 
 
 
-#endif // AX_WG
+
 

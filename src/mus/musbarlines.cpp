@@ -1,11 +1,9 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        wgwindow.cpp
+// Name:        muswindow.cpp
 // Author:      Laurent Pugin
 // Created:     2005
 // Copyright (c) Laurent Pugin. All rights reserved.
 /////////////////////////////////////////////////////////////////////////////
-
-#ifdef AX_WG
 
 #ifdef __GNUG__
     #pragma implementation "muswindow.h"
@@ -24,7 +22,7 @@
 
 // WDR: class implementations
 
-void WgPage::braces ( wxDC *dc, int x, int y1, int y2, int cod, int pTaille)
+void MusPage::braces ( wxDC *dc, int x, int y1, int y2, int cod, int pTaille)
 //	int x, y1, y2;	x, 1e et 2e y de barre vert
 //	int cod; si ON, on fait 2e barre vert. mince en position  x
 {
@@ -78,7 +76,7 @@ void WgPage::braces ( wxDC *dc, int x, int y1, int y2, int cod, int pTaille)
 }
 
 
-void WgPage::DrawBarres( wxDC *dc )
+void MusPage::DrawBarres( wxDC *dc )
 {
 	wxASSERT_MSG( dc , "DC cannot be NULL");
 	if ( !Check() )
@@ -90,7 +88,7 @@ void WgPage::DrawBarres( wxDC *dc )
 	int b_acc, bb_acc;                
 	//extern int _encontinu;
 
-    WgStaff *staff;
+    MusStaff *staff;
 
 // 	if ((wxg+margeMorteHor) > (staff->indent ? portIndent : portNoIndent))
  	//if ((wxg+margeMorteHor) > max (portIndent, portNoIndent))
@@ -170,7 +168,7 @@ void WgPage::DrawBarres( wxDC *dc )
 
 
 
-void WgPage::accolade ( wxDC *dc, int x, int y1, int y2, int pTaille)
+void MusPage::accolade ( wxDC *dc, int x, int y1, int y2, int pTaille)
 {	
 	wxASSERT_MSG( dc , "DC cannot be NULL");
 	if ( !Check() )
@@ -247,7 +245,7 @@ void WgPage::accolade ( wxDC *dc, int x, int y1, int y2, int pTaille)
 	return;
 }
 
-void WgPage::bardroit ( wxDC *dc, int x, int y1, int y2, int pTaille)
+void MusPage::bardroit ( wxDC *dc, int x, int y1, int y2, int pTaille)
 {
 	wxASSERT_MSG( dc , "DC cannot be NULL");
 	if ( !Check() )
@@ -263,7 +261,7 @@ void WgPage::bardroit ( wxDC *dc, int x, int y1, int y2, int pTaille)
 }
 
 
-void WgPage::bar_mes ( wxDC *dc, int x, int cod, int porteeAutonome, WgStaff *pportee)
+void MusPage::bar_mes ( wxDC *dc, int x, int cod, int porteeAutonome, MusStaff *pportee)
 // cod: 0 = barre d'epaisseur 1 point; 1 = barre d'ep. "epLignesVer"
 // porteeAutonome: indique s'il faut des barres privees sur chaque portee plutôt que traversantes
 {
@@ -302,7 +300,7 @@ void WgPage::bar_mes ( wxDC *dc, int x, int cod, int porteeAutonome, WgStaff *pp
 /*	if (discontinu)
 		PenDash (discontinu);
 */
-	WgStaff *st_i = NULL;
+	MusStaff *st_i = NULL;
 
 	for (; i <= j; i++)	// parcours du groupe de portees concernees 
 	{
@@ -360,14 +358,14 @@ void WgPage::bar_mes ( wxDC *dc, int x, int cod, int porteeAutonome, WgStaff *pp
 }
 
 
-void WgPage::bigbarre( wxDC *dc, int x, char code, int porteeAutonome, WgStaff *pportee)
+void MusPage::bigbarre( wxDC *dc, int x, char code, int porteeAutonome, MusStaff *pportee)
 {
 	wxASSERT_MSG( dc , "DC cannot be NULL");
 	if ( !Check() )
 		return;	
 	
 	int x1, x2, bardroite = 0;
-	WgStaff *st = NULL;
+	MusStaff *st = NULL;
 
 	//if (modMetafile && !in (x, drawRect.left, drawRect.right) )
 	//	return;
@@ -434,7 +432,7 @@ void WgPage::bigbarre( wxDC *dc, int x, char code, int porteeAutonome, WgStaff *
 }
 
 
-void WgPage::barMesPartielle ( wxDC *dc, int x, WgStaff *pportee)
+void MusPage::barMesPartielle ( wxDC *dc, int x, MusStaff *pportee)
 {
 	wxASSERT_MSG( dc , "DC cannot be NULL");
 	if ( !Check() )
@@ -442,7 +440,7 @@ void WgPage::barMesPartielle ( wxDC *dc, int x, WgStaff *pportee)
 
 	int b, bb;
 
-	WgStaff *next = this->GetNext( false );	
+	MusStaff *next = this->GetNext( false );	
 	if ( next )
 	{	
 		b = pportee->yrel - m_w->_portee[ pportee->pTaille ]*2;
@@ -458,5 +456,3 @@ void WgPage::barMesPartielle ( wxDC *dc, int x, WgStaff *pportee)
 }
 
 
-
-#endif // AX_WG

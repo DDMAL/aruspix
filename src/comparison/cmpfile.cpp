@@ -84,8 +84,8 @@ CmpCollation::CmpCollation( wxString id, wxString name, wxString basename  )
 	
 	m_insStaff = NULL;
 
-	// new WgFile
-    m_wgFilePtr = new WgFile();
+	// new MusFile
+    m_wgFilePtr = new MusFile();
     m_wgFilePtr->m_fname = m_basename + m_id + ".wwg";
 }
 
@@ -104,7 +104,7 @@ bool CmpCollation::IsCollationLoaded( )
 		return false;
 		
 	bool failed = false;
-	WwgInput *wwginput = new WwgInput( m_wgFilePtr, m_wgFilePtr->m_fname, WWG_ARUSPIX_CMP  );
+	MusWWGInput *wwginput = new MusWWGInput( m_wgFilePtr, m_wgFilePtr->m_fname, WWG_ARUSPIX_CMP  );
 	failed = !wwginput->ImportFile();
 	delete wwginput;
 	if ( failed )
@@ -133,11 +133,11 @@ bool CmpCollation::Realize( )
 	int npages = ceil((float)m_length / (float)correct_lrg_lign);
 	for( int i = 0; i < npages; i++ )
 	{					
-		WgPage *page = new WgPage();
+		MusPage *page = new MusPage();
 		page->lrg_lign = lrg_lign;
 		for( int j = 0; j < nstaff; j++ )
 		{
-			WgStaff *staff = new WgStaff();
+			MusStaff *staff = new MusStaff();
 			staff->no = j;
 			if ( j == 0 )
 				staff->vertBarre = DEBUT;
@@ -152,23 +152,23 @@ bool CmpCollation::Realize( )
 	// fill the pages
 	for( int i = 0; i < nstaff; i++ )
 	{
-		WgStaff *full_staff = new WgStaff();
+		MusStaff *full_staff = new MusStaff();
 		CmpCollationPart *part = &m_collationParts[i];
 		wxString staffname = m_basename + m_id + "." + part->m_bookPart->m_id + ".swwg";
 		if ( part->m_flags & PART_REFERENCE )
 		{
 			staffname = m_basename + m_id + ".swwg";
 		}
-		WwgInput wwginput( NULL, staffname, WWG_ARUSPIX_CMP );
+		MusWWGInput wwginput( NULL, staffname, WWG_ARUSPIX_CMP );
 		wwginput.ReadStaff( full_staff );
-		WgSymbole *clef = NULL; // we keep last clef for next page
+		MusSymbol *clef = NULL; // we keep last clef for next page
 		for( int j = 0; j < npages; j++ )
 		{	
 			int clef_offset = 0;
-			WgStaff *staff = &m_wgFilePtr->m_pages[j].m_staves[i];
+			MusStaff *staff = &m_wgFilePtr->m_pages[j].m_staves[i];
 			if ( clef )
 			{
-				staff->m_elements.Add( new WgSymbole( *clef ) );
+				staff->m_elements.Add( new MusSymbol( *clef ) );
 				clef_offset += 45;
 			}
 			//FillStaff( staff, full_staff, j, correct_lrg_lign );
@@ -178,18 +178,18 @@ bool CmpCollation::Realize( )
 					break;
 				if ( full_staff->m_elements[0].TYPE == NOTE )
 				{
-					WgNote *nnote = (WgNote*)full_staff->m_elements.Detach( 0 );
+					MusNote *nnote = (MusNote*)full_staff->m_elements.Detach( 0 );
 					nnote->xrel -= (j * correct_lrg_lign) - clef_offset;
 					staff->m_elements.Add( nnote );
 				}
 				else
 				{
-					WgSymbole *nsymbole = (WgSymbole*)full_staff->m_elements.Detach( 0 );
+					MusSymbol *nsymbole = (MusSymbol*)full_staff->m_elements.Detach( 0 );
 					if ( nsymbole->flag == CLE ) // we keep last clef for next pages
 					{
 						if ( clef )
 							delete clef;
-						clef = new WgSymbole( *nsymbole );
+						clef = new MusSymbol( *nsymbole );
 						clef->m_im_filename = "";
 						clef->xrel = 0;
 						clef->m_cmp_flag = 0;
@@ -204,7 +204,7 @@ bool CmpCollation::Realize( )
 	}
 
     m_wgFilePtr->CheckIntegrity();
-	WwgOutput *wwgoutput = new WwgOutput( m_wgFilePtr, m_wgFilePtr->m_fname, WWG_ARUSPIX_CMP );
+	MusWWGOutput *wwgoutput = new MusWWGOutput( m_wgFilePtr, m_wgFilePtr->m_fname, WWG_ARUSPIX_CMP );
 	wwgoutput->ExportFile();
 	delete wwgoutput;
 	
@@ -223,12 +223,12 @@ bool CmpCollation::Collate( )
 	if ( nstaff == 0 )
 		return false;
 	
-	WgStaff *staves = new WgStaff[ nstaff ];
-	WgStaff *reference = NULL;
+	MusStaff *staves = new MusStaff[ nstaff ];
+	MusStaff *reference = NULL;
 	for( int i = 0; i < (int)m_collationParts.GetCount(); i++ )
 	{
 		CmpCollationPart *part = &m_collationParts[i];
-		WwgInput wwginput( NULL, m_basename + part->m_bookPart->m_id + ".swwg", WWG_ARUSPIX_CMP );
+		MusWWGInput wwginput( NULL, m_basename + part->m_bookPart->m_id + ".swwg", WWG_ARUSPIX_CMP );
 		wwginput.ReadStaff( &staves[i] );
 		if ( part->m_flags & PART_REFERENCE )
 		{
@@ -251,7 +251,7 @@ bool CmpCollation::Collate( )
 			//&align_staves[i] = 
 			Align( reference, &staves[i], part );
 			
-		//WwgOutput wwgoutput( NULL, m_basename + book->m_shortname + ".swwg", WWG_ARUSPIX_CMP  );
+		//MusWWGOutput wwgoutput( NULL, m_basename + book->m_shortname + ".swwg", WWG_ARUSPIX_CMP  );
 		//wwgoutput->m_flag = WWG_ARUSPIX_CMP;
 		//wwgoutput->WriteStaff( wgStaff );
 		//delete wwgoutput;
@@ -259,7 +259,7 @@ bool CmpCollation::Collate( )
 	}
 	
 	// save reference
-	WwgOutput wwgoutput( NULL, m_basename + m_id + ".swwg", WWG_ARUSPIX_CMP  );
+	MusWWGOutput wwgoutput( NULL, m_basename + m_id + ".swwg", WWG_ARUSPIX_CMP  );
 	wwgoutput.WriteStaff( reference );
 	
 	delete[] staves;
@@ -267,7 +267,7 @@ bool CmpCollation::Collate( )
 	
 }
 
-void CmpCollation::SetCmpValues( WgElement *dest, WgElement *src, int flag )
+void CmpCollation::SetCmpValues( MusElement *dest, MusElement *src, int flag )
 {
 	dest->m_cmp_flag = flag;
 	if ( src )
@@ -298,7 +298,7 @@ int minimum(int a,int b,int c)
 }
 
 	
-bool CmpCollation::Align( WgStaff *staff_ref, WgStaff *staff_var, CmpCollationPart *part_var )
+bool CmpCollation::Align( MusStaff *staff_ref, MusStaff *staff_var, CmpCollationPart *part_var )
 {
 	CmpMLFOutput m_cmpoutput1( NULL, wxGetApp().m_workingDir + "/cmp_staff1", "CmpMLFSymb"  );
 	m_cmpoutput1.WriteStaff( staff_ref );
@@ -310,8 +310,8 @@ bool CmpCollation::Align( WgStaff *staff_ref, WgStaff *staff_var, CmpCollationPa
 	ArrayOfMLFSymboles *variant = m_cmpoutput2.GetSymbols();
 	
 	
-	// We may eventually avoid the use of CmpMLFOuputs working directy on WgStaff
-	// A comparison method for WgElement would have to be provided though
+	// We may eventually avoid the use of CmpMLFOuputs working directy on MusStaff
+	// A comparison method for MusElement would have to be provided though
 
 	//Step 1
 	int k,i,j,n,m,cost,*d,distance;
@@ -380,7 +380,7 @@ bool CmpCollation::Align( WgStaff *staff_ref, WgStaff *staff_var, CmpCollationPa
 	// AddInsertion add the element to the current insertion staff
 	// if needed, AddInsertion create the insertion staff and add an element into the aligned staff (before position i)
 	// EndInsertion write the current insertion staff if it exists
-	WgStaff aligned = *staff_ref;
+	MusStaff aligned = *staff_ref;
 	wxASSERT( !m_insStaff );
 	m_insStaff = NULL;
 	int ii, jj;
@@ -412,9 +412,9 @@ bool CmpCollation::Align( WgStaff *staff_ref, WgStaff *staff_var, CmpCollationPa
 				ii = ((CmpMLFSymb*)&reference->Item(i))->m_index;
 				jj = ((CmpMLFSymb*)&variant->Item(j))->m_index;
 				if ( staff_var->m_elements[jj].TYPE == NOTE )
-					aligned.m_elements.Insert( new WgNote( *(WgNote*)&staff_var->m_elements[jj] ), ii );
+					aligned.m_elements.Insert( new MusNote( *(MusNote*)&staff_var->m_elements[jj] ), ii );
 				else
-					aligned.m_elements.Insert( new WgSymbole( *(WgSymbole*)&staff_var->m_elements[jj] ), ii );
+					aligned.m_elements.Insert( new MusSymbol( *(MusSymbol*)&staff_var->m_elements[jj] ), ii );
 				aligned.m_elements[ii].xrel = aligned.m_elements[ii+1].xrel;
 				aligned.m_elements.RemoveAt(ii+1);
 				SetCmpValues( &aligned.m_elements[ii], &staff_var->m_elements[jj], CMP_SUBST );
@@ -472,7 +472,7 @@ bool CmpCollation::Align( WgStaff *staff_ref, WgStaff *staff_var, CmpCollationPa
 	//printf("\nEnd (i = %d, j = %d)\n", i , j);
 	EndInsertion( part_var ); // flush the last insertion
 	
-	WwgOutput wwgoutput( NULL, m_basename + m_id + "." + part_var->m_bookPart->m_id + ".swwg", WWG_ARUSPIX_CMP  );
+	MusWWGOutput wwgoutput( NULL, m_basename + m_id + "." + part_var->m_bookPart->m_id + ".swwg", WWG_ARUSPIX_CMP  );
 	wwgoutput.WriteStaff( &aligned );
 	
 	part_var->m_ins = n_insert;
@@ -503,7 +503,7 @@ bool CmpCollation::Align( WgStaff *staff_ref, WgStaff *staff_var, CmpCollationPa
 	distance=d[n*m-1];
 	free(d);
 	
-	return new WgStaff();
+	return new MusStaff();
 }
 
 void  CmpCollation::EndInsertion( CmpCollationPart *part_var  )
@@ -516,12 +516,12 @@ void  CmpCollation::EndInsertion( CmpCollationPart *part_var  )
 	m_insStaff = NULL;
 }
 
-void  CmpCollation::AddInsertion( WgElement *elem, WgStaff *aligned, int i )
+void  CmpCollation::AddInsertion( MusElement *elem, MusStaff *aligned, int i )
 {
 	if ( !m_insStaff )
 	{
-		m_insStaff = new WgStaff();
-	    WgSymbole *asterix = new WgSymbole();
+		m_insStaff = new MusStaff();
+	    MusSymbol *asterix = new MusSymbol();
 		asterix->flag = AX_VARIANT;
 		//asterix->oct = 5;
 		//SetCmpValues( asterix, NULL, CMP_INS );
@@ -704,7 +704,7 @@ void CmpFile::OpenContent( )
 	if ( wxFileExists( m_basename + "collation.wwg") )
 	{
 		bool failed = false;
-		WwgInput *wwginput = new WwgInput( m_wgFilePtr, m_wgFilePtr->m_fname, WWG_ARUSPIX_CMP  );
+		MusWWGInput *wwginput = new MusWWGInput( m_wgFilePtr, m_wgFilePtr->m_fname, WWG_ARUSPIX_CMP  );
 		failed = !wwginput->ImportFile();
 		delete wwginput;
 		if ( failed )
@@ -784,7 +784,7 @@ void CmpFile::SaveContent( )
 	else
 	{
 		// save
-		WwgOutput *wwgoutput = new WwgOutput( m_wgFilePtr, m_wgFilePtr->m_fname, WWG_ARUSPIX_CMP );
+		MusWWGOutput *wwgoutput = new MusWWGOutput( m_wgFilePtr, m_wgFilePtr->m_fname, WWG_ARUSPIX_CMP );
 		wwgoutput->ExportFile();
 		delete wwgoutput;
 	}*/
@@ -811,9 +811,9 @@ CmpBookPart *CmpFile::FindBookPart( wxString id )
 	return NULL;
 }
 
-bool CmpFile::LoadBooks( wxArrayPtrVoid params, ProgressDlg *dlg )
+bool CmpFile::LoadBooks( wxArrayPtrVoid params, AxProgressDlg *dlg )
 {
-	wxASSERT_MSG( dlg, "ProgressDlg cannot be NULL" );
+	wxASSERT_MSG( dlg, "AxProgressDlg cannot be NULL" );
 
     wxArrayString paths, filenames;
     int nbooks, nparts, nfiles;
@@ -840,7 +840,7 @@ bool CmpFile::LoadBooks( wxArrayPtrVoid params, ProgressDlg *dlg )
 		{
 			CmpBookPart *part = &m_bookFiles[i].m_bookParts[j];
 			
-			MLFOutput *m_mlfoutput = new MLFOutput( NULL, m_basename + part->m_id + ".mlf", "MLFSymbol" );
+			MusMLFOutput *m_mlfoutput = new MusMLFOutput( NULL, m_basename + part->m_id + ".mlf", "MusMLFSymbol" );
 			m_mlfoutput->m_addPageNo = false;
 			m_mlfoutput->m_writePosition = true;
 		
@@ -889,7 +889,7 @@ bool CmpFile::LoadBooks( wxArrayPtrVoid params, ProgressDlg *dlg )
 			
 			wxLogMessage( _("Convert data ...") );
 			CmpMLFInput *m_cmpinput = new CmpMLFInput( NULL, m_basename + part->m_id + ".mlf"  );
-			WgStaff *wgStaff = m_cmpinput->ImportFileInStaff( );
+			MusStaff *wgStaff = m_cmpinput->ImportFileInStaff( );
 			wgStaff->no = 0;
 			wgStaff->vertBarre = DEB_FIN;
 			delete m_cmpinput;
@@ -897,7 +897,7 @@ bool CmpFile::LoadBooks( wxArrayPtrVoid params, ProgressDlg *dlg )
 			
 		
 			wxLogMessage( _("Write data ...") );
-			WwgOutput *wwgoutput = new WwgOutput( NULL, m_basename + part->m_id + ".swwg", WWG_ARUSPIX_CMP  );
+			MusWWGOutput *wwgoutput = new MusWWGOutput( NULL, m_basename + part->m_id + ".swwg", WWG_ARUSPIX_CMP  );
 			wwgoutput->WriteStaff( wgStaff );
 			delete wwgoutput;
 			delete wgStaff;
@@ -1030,9 +1030,9 @@ bool CmpFile::HasToBePreprocessed( wxString imagefile )
 */
 
 /*
-bool CmpFile::Collate( wxArrayPtrVoid params, ProgressDlg *dlg )
+bool CmpFile::Collate( wxArrayPtrVoid params, AxProgressDlg *dlg )
 {
-	wxASSERT_MSG( dlg, "ProgressDlg cannot be NULL" );
+	wxASSERT_MSG( dlg, "AxProgressDlg cannot be NULL" );
 
     wxArrayString paths, filenames;
     size_t nbOfFiles, book_nbOfFiles;
@@ -1051,7 +1051,7 @@ bool CmpFile::Collate( wxArrayPtrVoid params, ProgressDlg *dlg )
 			
 		RecBookFile *book = m_bookFiles[i].m_recBookFilePtr;
 		
-		MLFOutput *m_mlfoutput = new MLFOutput( NULL, m_basename + book->m_shortname + ".mlf", "MLFSymbol" );
+		MusMLFOutput *m_mlfoutput = new MusMLFOutput( NULL, m_basename + book->m_shortname + ".mlf", "MusMLFSymbol" );
 		m_mlfoutput->m_addPageNo = false;
 		m_mlfoutput->m_writePosition = true;
 		
@@ -1096,9 +1096,9 @@ bool CmpFile::Collate( wxArrayPtrVoid params, ProgressDlg *dlg )
 */
 
 /*
-bool CmpFile::Collate( wxArrayPtrVoid params, ProgressDlg *dlg )
+bool CmpFile::Collate( wxArrayPtrVoid params, AxProgressDlg *dlg )
 {
-	wxASSERT_MSG( dlg, "ProgressDlg cannot be NULL" );
+	wxASSERT_MSG( dlg, "AxProgressDlg cannot be NULL" );
 
     wxArrayString paths, filenames;
     size_t nbOfFiles;
@@ -1119,7 +1119,7 @@ bool CmpFile::Collate( wxArrayPtrVoid params, ProgressDlg *dlg )
 		/ *
 		CmpMLFInput *m_cmpinput = new CmpMLFInput( NULL, m_basename + book->m_shortname + ".mlf"  );
 		
-		WgStaff *wgStaff = m_cmpinput->ImportFileInStaff( );
+		MusStaff *wgStaff = m_cmpinput->ImportFileInStaff( );
         wgStaff->no = 0;
         //wgStaff->indent = imStaff->CalcIndentation( x1 );
         //wgStaff->ecart = (m_imPagePtr->ToViewY( imStaff->m_y ) -  previous ) / wgPage->defin;
@@ -1130,14 +1130,14 @@ bool CmpFile::Collate( wxArrayPtrVoid params, ProgressDlg *dlg )
 		//m_cmpinput->Close();
 		delete m_cmpinput;
 		
-		WwgOutput *wwgoutput = new WwgOutput( NULL, m_basename + book->m_shortname + ".swwg", WWG_ARUSPIX_CMP  );
+		MusWWGOutput *wwgoutput = new MusWWGOutput( NULL, m_basename + book->m_shortname + ".swwg", WWG_ARUSPIX_CMP  );
 		//wwgoutput->m_flag = WWG_ARUSPIX_CMP;
 		wwgoutput->WriteStaff( wgStaff );
 		delete wwgoutput;
 		* /
 		
-		WwgInput *wwginput = new WwgInput( NULL, m_basename + book->m_shortname + ".swwg", WWG_ARUSPIX_CMP );
-		WgStaff wgStaff_loaded;
+		MusWWGInput *wwginput = new MusWWGInput( NULL, m_basename + book->m_shortname + ".swwg", WWG_ARUSPIX_CMP );
+		MusStaff wgStaff_loaded;
 		wwginput->ReadStaff( &wgStaff_loaded );
 		delete wwginput;
 		
@@ -1159,9 +1159,9 @@ bool CmpFile::Collate( wxArrayPtrVoid params, ProgressDlg *dlg )
 }
 */
 
-bool CmpFile::Collate( wxArrayPtrVoid params, ProgressDlg *dlg )
+bool CmpFile::Collate( wxArrayPtrVoid params, AxProgressDlg *dlg )
 {
-	wxASSERT_MSG( dlg, "ProgressDlg cannot be NULL" );
+	wxASSERT_MSG( dlg, "AxProgressDlg cannot be NULL" );
 
 	int ncollation = (int)m_collations.GetCount();
     if ( ncollation == 0 )

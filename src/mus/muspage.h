@@ -1,5 +1,5 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        wgpage.h
+// Name:        muspage.h
 // Author:      Laurent Pugin
 // Created:     2005
 // Copyright (c) Laurent Pugin. All rights reserved.
@@ -7,8 +7,6 @@
 
 #ifndef __MUS_PAGE_H__
 #define __MUS_PAGE_H__
-
-#ifdef AX_WG
 
 #ifdef __GNUG__
 	#pragma interface "muspage.cpp"
@@ -21,36 +19,36 @@
 
 #include "musobject.h"
 
-class WgStaff;
-WX_DECLARE_OBJARRAY( WgStaff, ArrayOfWgStaves);
+class MusStaff;
+WX_DECLARE_OBJARRAY( MusStaff, ArrayOfWgStaves);
 
 // WDR: class declarations
 
 //----------------------------------------------------------------------------
-// WgPage
+// MusPage
 //----------------------------------------------------------------------------
 
-class WgPage: public WgObject
+class MusPage: public MusObject
 {
 public:
     // constructors and destructors
-    WgPage();
-    virtual ~WgPage();
+    MusPage();
+    virtual ~MusPage();
     
-    // WDR: method declarations for WgPage
+    // WDR: method declarations for MusPage
 	void CheckIntegrity();
 	
-	WgStaff *GetFirst( );
-	WgStaff *GetLast( );
-	WgStaff *GetNext( WgStaff *staff );
-	WgStaff *GetPrevious( WgStaff *staff );
-	WgStaff *WgPage::GetAtPos( int y );
+	MusStaff *GetFirst( );
+	MusStaff *GetLast( );
+	MusStaff *GetNext( MusStaff *staff );
+	MusStaff *GetPrevious( MusStaff *staff );
+	MusStaff *MusPage::GetAtPos( int y );
 	void Clear( );
 	/**
 		dessine la page en cours = draw_it
 	  */
 	void DrawPage( wxDC *dc, bool background = true );
-	void ClearStaves( wxDC *dc , WgStaff *start = NULL );
+	void ClearStaves( wxDC *dc , MusStaff *start = NULL );
 
 	void UpdateStavesPosition();
 
@@ -59,15 +57,15 @@ public:
 	void braces ( wxDC *dc, int x, int y1, int y2, int cod, int pTaille);
 	void accolade ( wxDC *dc, int x, int y1, int y2, int pTaille);
 	void bardroit ( wxDC *dc, int x, int y1, int y2, int pTaille);
-	void bar_mes ( wxDC *dc, int x, int cod, int porteeAutonome, WgStaff *pportee);
-	void bigbarre( wxDC *dc, int x, char code, int porteeAutonome, WgStaff *pportee);
-	void barMesPartielle ( wxDC *dc, int x, WgStaff *pportee);
+	void bar_mes ( wxDC *dc, int x, int cod, int porteeAutonome, MusStaff *pportee);
+	void bigbarre( wxDC *dc, int x, char code, int porteeAutonome, MusStaff *pportee);
+	void barMesPartielle ( wxDC *dc, int x, MusStaff *pportee);
     
 private:
-    // WDR: member variable declarations for WgPage
+    // WDR: member variable declarations for MusPage
 
 public:
-    // WDR: member variable declarations for WgPage
+    // WDR: member variable declarations for MusPage
 	ArrayOfWgStaves m_staves;
     /** numero de page */
     int npage;
@@ -89,10 +87,9 @@ public:
     int lrg_lign;
 
 private:
-    // WDR: handler declarations for WgPage
+    // WDR: handler declarations for MusPage
 
 };
 
-#endif //AX_WG
 
 #endif

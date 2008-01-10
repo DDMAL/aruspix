@@ -1,5 +1,5 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        progressdlg.cpp
+// Name:        axprogressdlg.cpp
 // Author:      Laurent Pugin
 // Created:     2004
 // Copyright (c) Laurent Pugin. All rights reserved.   
@@ -26,39 +26,39 @@
 //#include "resource.h"
 
 // static 
-bool ProgressDlg::s_close_at_end = false;
-bool ProgressDlg::s_instance_existing = false;
+bool AxProgressDlg::s_close_at_end = false;
+bool AxProgressDlg::s_instance_existing = false;
 //timer values
-int ProgressDlg::s_timer_decoding = 20000; // time for staff decoding one unit = on staff segment
-int ProgressDlg::s_timer_model_bigram = 5000;
-int ProgressDlg::s_timer_full_adapting = 20000; // time for staff adapting one unit = on staff segment
-int ProgressDlg::s_timer_fast_adapting = 20000; // time for staff adapting one unit = on staff segment
+int AxProgressDlg::s_timer_decoding = 20000; // time for staff decoding one unit = on staff segment
+int AxProgressDlg::s_timer_model_bigram = 5000;
+int AxProgressDlg::s_timer_full_adapting = 20000; // time for staff adapting one unit = on staff segment
+int AxProgressDlg::s_timer_fast_adapting = 20000; // time for staff adapting one unit = on staff segment
 
 
 // WDR: class implementations
 
 //----------------------------------------------------------------------------
-// ProgressDlg
+// AxProgressDlg
 //----------------------------------------------------------------------------
 
-IMPLEMENT_DYNAMIC_CLASS( ProgressDlg, wxDialog )
+IMPLEMENT_DYNAMIC_CLASS( AxProgressDlg, wxDialog )
 
-// WDR: event table for ProgressDlg
+// WDR: event table for AxProgressDlg
 
-BEGIN_EVENT_TABLE(ProgressDlg,wxDialog)
-    EVT_BUTTON( wxID_CANCEL, ProgressDlg::OnCancel )
+BEGIN_EVENT_TABLE(AxProgressDlg,wxDialog)
+    EVT_BUTTON( wxID_CANCEL, AxProgressDlg::OnCancel )
 END_EVENT_TABLE()
 
-ProgressDlg::ProgressDlg( wxWindow *parent, wxWindowID id, const wxString &title,
+AxProgressDlg::AxProgressDlg( wxWindow *parent, wxWindowID id, const wxString &title,
     const wxPoint &position, const wxSize& size, long style ) :
     wxDialog( NULL, id, title, position, size, style & ~wxSTAY_ON_TOP )
 	//wxDialog( NULL, id, title, position, size, style )
 {
-	wxASSERT_MSG( !ProgressDlg::s_instance_existing , "Single instance checker should be false" );
+	wxASSERT_MSG( !AxProgressDlg::s_instance_existing , "Single instance checker should be false" );
 	m_parent = parent;
 
     ProgressDlgFunc( this, TRUE );
-	this->GetCbCloseAtEnd()->SetValue( ProgressDlg::s_close_at_end );
+	this->GetCbCloseAtEnd()->SetValue( AxProgressDlg::s_close_at_end );
 
     m_stopWatch.Start();
     m_lastWatch = 0;
@@ -90,27 +90,27 @@ ProgressDlg::ProgressDlg( wxWindow *parent, wxWindowID id, const wxString &title
     m_counter = imCounterBegin( title.c_str() );
     imCounterTotal( m_counter, 1, title.c_str() );
 	
-	ProgressDlg::s_instance_existing = true;
+	AxProgressDlg::s_instance_existing = true;
 	
 	m_parent->Disable();
 }
 
-ProgressDlg::ProgressDlg()  
+AxProgressDlg::AxProgressDlg()  
 {
 }
 
-ProgressDlg::~ProgressDlg()
+AxProgressDlg::~AxProgressDlg()
 {
     delete wxLog::SetActiveTarget(NULL);
     // counter callback
     imCounterSetCallback(NULL, NULL);
 
-	wxASSERT_MSG( ProgressDlg::s_instance_existing , "Single instance checker should be true" );	
-	ProgressDlg::s_instance_existing = false;
+	wxASSERT_MSG( AxProgressDlg::s_instance_existing , "Single instance checker should be true" );	
+	AxProgressDlg::s_instance_existing = false;
 	m_parent->Enable( true );
 }
 
-void ProgressDlg::AxShowModal( bool failed )
+void AxProgressDlg::AxShowModal( bool failed )
 {
 	SetCanceled( true );
 	GetCancel()->SetLabel( _("Close") );
@@ -122,25 +122,25 @@ void ProgressDlg::AxShowModal( bool failed )
     this->SetFocus();
     this->GetCancel()->SetFocus();
 #endif
-	ProgressDlg::s_close_at_end = this->GetCbCloseAtEnd()->IsChecked();
-	if ( failed || !ProgressDlg::s_close_at_end )
+	AxProgressDlg::s_close_at_end = this->GetCbCloseAtEnd()->IsChecked();
+	if ( failed || !AxProgressDlg::s_close_at_end )
 		this->ShowModal();
 }
 
 
-void ProgressDlg::SuspendCounter()
+void AxProgressDlg::SuspendCounter()
 {
     imCounterSetCallback(NULL, NULL);
 }
 
 
-void ProgressDlg::ReactiveCounter()
+void AxProgressDlg::ReactiveCounter()
 {
     imCounterSetCallback( this, imDlgCounter );
 }
 
 /*
-bool ProgressDlg::IncOperation( )
+bool AxProgressDlg::IncOperation( )
 {
     if (m_canceled)
         return false;
@@ -153,18 +153,18 @@ bool ProgressDlg::IncOperation( )
 }
 */
 
-void ProgressDlg::UpdateBatchBar( )
+void AxProgressDlg::UpdateBatchBar( )
 {
 	this->GetGaugeBatch()->SetValue( (m_batchBar - 1) * 100 / m_maxBatchBar + ( this->GetGaugeJob()->GetValue( ) / m_maxBatchBar ) );
 }
 
-void ProgressDlg::UpdateJobBar( )
+void AxProgressDlg::UpdateJobBar( )
 {
 	this->GetGaugeJob()->SetValue( (m_jobBar - 1) * 100 / m_maxJobBar + ( this->GetGaugeOperation()->GetValue( ) / m_maxJobBar ) );
 	UpdateBatchBar( );
 }
 
-bool ProgressDlg::SetOperation( wxString msg )
+bool AxProgressDlg::SetOperation( wxString msg )
 {
     if (m_canceled)
         return false;
@@ -180,7 +180,7 @@ bool ProgressDlg::SetOperation( wxString msg )
 }
 
 
-bool ProgressDlg::SetJob( wxString msg )
+bool AxProgressDlg::SetJob( wxString msg )
 {
     if (m_canceled)
         return false;
@@ -195,7 +195,7 @@ bool ProgressDlg::SetJob( wxString msg )
     return true; 
 }
 
-bool ProgressDlg::IncTimerOperation( )
+bool AxProgressDlg::IncTimerOperation( )
 {
     if (m_canceled)
         return false;
@@ -214,7 +214,7 @@ bool ProgressDlg::IncTimerOperation( )
 }
 
 
-void ProgressDlg::StartTimerOperation( int code, int nb_units )
+void AxProgressDlg::StartTimerOperation( int code, int nb_units )
 {
     m_timer_start = this->m_stopWatch.Time();
     m_timer_units = nb_units;
@@ -229,7 +229,7 @@ void ProgressDlg::StartTimerOperation( int code, int nb_units )
 }
 
 
-void ProgressDlg::EndTimerOperation( int code )
+void AxProgressDlg::EndTimerOperation( int code )
 {
     int milliseconds = m_timer_units ? (this->m_stopWatch.Time() - m_timer_start) / m_timer_units : 0;
     switch (code)
@@ -241,7 +241,7 @@ void ProgressDlg::EndTimerOperation( int code )
     }
 }
 
-bool ProgressDlg::HasToBeUpdated()
+bool AxProgressDlg::HasToBeUpdated()
 {
     if ( this->m_lastWatch < this->m_stopWatch.Time() - 100 )
     {
@@ -258,9 +258,9 @@ bool ProgressDlg::HasToBeUpdated()
 
 // static methods
 
-void ProgressDlg::LoadValues( wxConfigBase *pConfig )
+void AxProgressDlg::LoadValues( wxConfigBase *pConfig )
 {
-	ProgressDlg::s_close_at_end = (pConfig->Read("ProgressCloseAtEnd",0L)==1);
+	AxProgressDlg::s_close_at_end = (pConfig->Read("ProgressCloseAtEnd",0L)==1);
 
     pConfig->Read("Timer_decoding",&s_timer_decoding, 20000);
     pConfig->Read("Timer_model_bigram",&s_timer_model_bigram, 5000);
@@ -268,9 +268,9 @@ void ProgressDlg::LoadValues( wxConfigBase *pConfig )
 	pConfig->Read("Timer_full_adapting",&s_timer_full_adapting, 20000);
 }
 
-void ProgressDlg::SaveValues( wxConfigBase *pConfig )
+void AxProgressDlg::SaveValues( wxConfigBase *pConfig )
 {
-	pConfig->Write("ProgressCloseAtEnd", ProgressDlg::s_close_at_end);
+	pConfig->Write("ProgressCloseAtEnd", AxProgressDlg::s_close_at_end);
 
     pConfig->Write("Timer_decoding",s_timer_decoding);
     pConfig->Write("Timer_model_bigram",s_timer_model_bigram);
@@ -278,9 +278,9 @@ void ProgressDlg::SaveValues( wxConfigBase *pConfig )
 	pConfig->Write("Timer_full_adapting",s_timer_full_adapting);
 }
 
-// WDR: handler implementations for ProgressDlg
+// WDR: handler implementations for AxProgressDlg
 
-void ProgressDlg::OnCancel(wxCommandEvent &event )
+void AxProgressDlg::OnCancel(wxCommandEvent &event )
 {
     if ( m_canceled )
     {
@@ -307,9 +307,9 @@ void ProgressDlg::OnCancel(wxCommandEvent &event )
 
 int imDlgCounter(int counter, void* user_data, const char* text, int progress)
 {
-   ProgressDlg *dlg = NULL;
-   if ( user_data && ((wxObject*)user_data)->IsKindOf( CLASSINFO( ProgressDlg ) ) )
-       dlg = (ProgressDlg*)user_data;
+   AxProgressDlg *dlg = NULL;
+   if ( user_data && ((wxObject*)user_data)->IsKindOf( CLASSINFO( AxProgressDlg ) ) )
+       dlg = (AxProgressDlg*)user_data;
 	   
 	if ( dlg && dlg->GetCounter() != counter )
 		return 1;

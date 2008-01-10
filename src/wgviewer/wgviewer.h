@@ -23,9 +23,9 @@
 
 #include "wgviewer_wdr.h"
 
-class WgFile;
-class WgWindow;
-class WgToolPanel;
+class MusFile;
+class MusWindow;
+class MusToolPanel;
 
 enum
 {
@@ -49,7 +49,7 @@ public:
     
     // WDR: method declarations for WgvPanel
     wxPanel* GetWgPanel()  { return (wxPanel*) FindWindow( ID5_WGPANEL ); }
-    WgToolPanel* GetWgToolPanel()  { return (WgToolPanel*) FindWindow( ID5_TOOLPANEL ); }
+    MusToolPanel* GetWgToolPanel()  { return (MusToolPanel*) FindWindow( ID5_TOOLPANEL ); }
     
 private:
     // WDR: member variable declarations for WgvPanel
@@ -81,8 +81,8 @@ public:
 private:
     // WDR: member variable declarations for WgvEnv
     wxPanel *m_panelPtr;
-    WgWindow *m_wgViewPtr;
-    WgFile *m_filePtr;
+    MusWindow *m_wgViewPtr;
+    MusFile *m_filePtr;
     
 private:
     // WDR: handler declarations for WgvEnv

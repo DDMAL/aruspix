@@ -1,14 +1,12 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        wgsymbole.h
+// Name:        mussymbol.h
 // Author:      Laurent Pugin
 // Created:     2005
 // Copyright (c) Laurent Pugin. All rights reserved.
 /////////////////////////////////////////////////////////////////////////////
 
-#ifndef __MUS_SYMBOLE_H__
-#define __MUS_SYMBOLE_H__
-
-#ifdef AX_WG
+#ifndef __MUS_SYMBOL_H__
+#define __MUS_SYMBOL_H__
 
 #ifdef __GNUG__
     #pragma interface "mussymbole.cpp"    
@@ -18,42 +16,42 @@
     #include "wx/wx.h"
 #endif
 
-class WgStaff;
+class MusStaff;
 #include "muselement.h"
 
 // WDR: class declarations
 
 //----------------------------------------------------------------------------
-// WgSymbole
+// MusSymbol
 //----------------------------------------------------------------------------
 
-class WgSymbole: public WgElement
+class MusSymbol: public MusElement
 {
 public:
     // constructors and destructors
-    WgSymbole();
-	WgSymbole( unsigned char _flag, unsigned char _calte, unsigned short _code );
-    virtual ~WgSymbole();
+    MusSymbol();
+	MusSymbol( unsigned char _flag, unsigned char _calte, unsigned short _code );
+    virtual ~MusSymbol();
     
-    // WDR: method declarations for WgSymbole
-	void Draw( wxDC *dc, WgStaff *staff);
-	void dess_symb( wxDC *dc, int x, int y, int symc, int symf, WgStaff *pportee);
+    // WDR: method declarations for MusSymbol
+	void Draw( wxDC *dc, MusStaff *staff);
+	void dess_symb( wxDC *dc, int x, int y, int symc, int symf, MusStaff *pportee);
 	/** wg_cle **/
 	static void calcoffs (int *offst, int clid);
-	void dess_cle ( wxDC *dc, int i, WgStaff *pportee);
-	void afficheMesure ( wxDC *dc, WgStaff *staff);
-	void mesCercle ( wxDC *dc, int x, int yy, WgStaff *staff );
-	void demi_cercle ( wxDC *dc, int x, int yy, WgStaff *staff );
-	void  inv_d_cercle ( wxDC *dc, int x, int yy, WgStaff *staff );
-	void prol ( wxDC *dc, int x, int yy, WgStaff *staff );
-	void stroke ( wxDC *dc, int a, int yy, WgStaff *staff );
-	void chiffres ( wxDC *dc, int x, int y, WgStaff *staff);
+	void dess_cle ( wxDC *dc, int i, MusStaff *pportee);
+	void afficheMesure ( wxDC *dc, MusStaff *staff);
+	void mesCercle ( wxDC *dc, int x, int yy, MusStaff *staff );
+	void demi_cercle ( wxDC *dc, int x, int yy, MusStaff *staff );
+	void  inv_d_cercle ( wxDC *dc, int x, int yy, MusStaff *staff );
+	void prol ( wxDC *dc, int x, int yy, MusStaff *staff );
+	void stroke ( wxDC *dc, int a, int yy, MusStaff *staff );
+	void chiffres ( wxDC *dc, int x, int y, MusStaff *staff);
 	// changement
-	virtual void SetPitch( int code, int oct, WgStaff *staff = NULL );
-	virtual void SetValue( int code, WgStaff *staff = NULL, int vflag = 0 );
+	virtual void SetPitch( int code, int oct, MusStaff *staff = NULL );
+	virtual void SetValue( int code, MusStaff *staff = NULL, int vflag = 0 );
     
 public:
-    // WDR: member variable declarations for WgSymbole
+    // WDR: member variable declarations for MusSymbol
     /** type de symbole
      @see JwgDef#BARRE JwgDef, valeurs de flag de Symbole pour les differents types */
     unsigned char flag;
@@ -80,10 +78,9 @@ public:
     unsigned short l_ptch;
 
 private:
-    // WDR: handler declarations for WgSymbole
+    // WDR: handler declarations for MusSymbol
 
 };
 
-#endif //AX_WG
 
 #endif

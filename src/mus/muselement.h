@@ -1,5 +1,5 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        wgelement.h
+// Name:        muselement.h
 // Author:      Laurent Pugin
 // Created:     2005
 // Copyright (c) Laurent Pugin. All rights reserved.
@@ -7,8 +7,6 @@
 
 #ifndef __MUS_ELEMENT_H__
 #define __MUS_ELEMENT_H__
-
-#ifdef AX_WG
 
 #ifdef __GNUG__
     #pragma interface "muselement.cpp"    
@@ -21,42 +19,42 @@
 #include "musobject.h"
 #include "musdef.h"
 
-class WgStaff;
+class MusStaff;
 
 // WDR: class declarations
 
 //----------------------------------------------------------------------------
-// WgElement
+// MusElement
 //----------------------------------------------------------------------------
 
-class WgElement: public WgObject
+class MusElement: public MusObject
 {
 public:
     // constructors and destructors
-    WgElement();
-	WgElement( const WgElement& element ); // copy contructor
-	WgElement& operator=( const WgElement& element); // copy assignement;
-    virtual ~WgElement();
+    MusElement();
+	MusElement( const MusElement& element ); // copy contructor
+	MusElement& operator=( const MusElement& element); // copy assignement;
+    virtual ~MusElement();
 
 	// common method
-	void WgElement::ClearElement( wxDC *dc, WgStaff *staff );
-	int WgElement::filtrcod( int codElement, int *oct );
-	bool WgElement::IsNote() { return (TYPE != SYMB ); }
+	void MusElement::ClearElement( wxDC *dc, MusStaff *staff );
+	int MusElement::filtrcod( int codElement, int *oct );
+	bool MusElement::IsNote() { return (TYPE != SYMB ); }
 	bool IsSymbole() { return (TYPE == SYMB ); }
-	wxClientDC *WgElement::InitAndClear( WgStaff *staff ); // init dc and clear element only if necessary
-	void WgElement::DrawAndRelease( wxDC *dc, WgStaff *staff ); // draw element only if necessary and release dc
+	wxClientDC *MusElement::InitAndClear( MusStaff *staff ); // init dc and clear element only if necessary
+	void MusElement::DrawAndRelease( wxDC *dc, MusStaff *staff ); // draw element only if necessary and release dc
 
-    // WDR: method declarations for WgElement
-	virtual void WgElement::SetPitch( int code, int oct, WgStaff *staff = NULL ) {};
-	virtual void WgElement::SetValue( int value, WgStaff *staff = NULL, int flag = 0 ) {};
-	virtual void WgElement::ChangeColoration( WgStaff *staff = NULL ) {};
-	virtual void WgElement::ChangeStem( WgStaff *staff = NULL ) {};
-	virtual void WgElement::SetLigature( WgStaff *staff = NULL ) {};
-	virtual void WgElement::Draw( wxDC *dc, WgStaff *staff ) {};
+    // WDR: method declarations for MusElement
+	virtual void MusElement::SetPitch( int code, int oct, MusStaff *staff = NULL ) {};
+	virtual void MusElement::SetValue( int value, MusStaff *staff = NULL, int flag = 0 ) {};
+	virtual void MusElement::ChangeColoration( MusStaff *staff = NULL ) {};
+	virtual void MusElement::ChangeStem( MusStaff *staff = NULL ) {};
+	virtual void MusElement::SetLigature( MusStaff *staff = NULL ) {};
+	virtual void MusElement::Draw( wxDC *dc, MusStaff *staff ) {};
 
       
 public:
-    // WDR: member variable declarations for WgElement
+    // WDR: member variable declarations for MusElement
     /** type de l'element. <pre>JwgDef.NOTE = note<br>JwgDef.SYMB = symbole</pre> */
     char TYPE;
     /** element a l'interieur d'un liaison */
@@ -132,11 +130,10 @@ public:
 	int no;
 
 private:
-	// WDR: handler declarations for WgElement
+	// WDR: handler declarations for MusElement
     
 
 };
 
-#endif //AX_WG
 
 #endif

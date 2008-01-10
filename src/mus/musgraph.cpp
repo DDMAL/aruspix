@@ -1,11 +1,11 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        wgwindow.cpp
+// Name:        muswindow.cpp
 // Author:      Laurent Pugin
 // Created:     2005
 // Copyright (c) Laurent Pugin. All rights reserved.
 /////////////////////////////////////////////////////////////////////////////
 
-#ifdef AX_WG
+
 
 #ifdef __GNUG__
     #pragma implementation "muswindow.h"
@@ -24,7 +24,7 @@
 
 // WDR: class implementations
 
-void WgWindow::v_bline ( wxDC *dc, int y1, int y2, int x1, int nbr)
+void MusWindow::v_bline ( wxDC *dc, int y1, int y2, int x1, int nbr)
 {
 	wxASSERT_MSG( dc , "DC cannot be NULL");
 
@@ -45,7 +45,7 @@ void WgWindow::v_bline ( wxDC *dc, int y1, int y2, int x1, int nbr)
 
 
 
-void WgWindow::v_bline2 ( wxDC *dc, int y1, int y2, int x1, int nbr)	
+void MusWindow::v_bline2 ( wxDC *dc, int y1, int y2, int x1, int nbr)	
 {
 	wxASSERT_MSG( dc , "DC cannot be NULL");
 
@@ -70,7 +70,7 @@ void WgWindow::v_bline2 ( wxDC *dc, int y1, int y2, int x1, int nbr)
 }
 
 
-void WgWindow::h_bline ( wxDC *dc, int x1, int x2, int y1, int nbr)
+void MusWindow::h_bline ( wxDC *dc, int x1, int x2, int y1, int nbr)
 {		
 	wxASSERT_MSG( dc , "DC cannot be NULL");
 
@@ -90,7 +90,7 @@ void WgWindow::h_bline ( wxDC *dc, int x1, int x2, int y1, int nbr)
 }
 
 
-void WgWindow::rect_plein2( wxDC *dc, int x1, int y1, int x2, int y2)	/* dessine rectangle plein */
+void MusWindow::rect_plein2( wxDC *dc, int x1, int y1, int x2, int y2)	/* dessine rectangle plein */
 {	
 	wxASSERT_MSG( dc , "DC cannot be NULL");
 
@@ -111,7 +111,7 @@ void WgWindow::rect_plein2( wxDC *dc, int x1, int y1, int x2, int y2)	/* dessine
 }
 
 
-int WgWindow::hGrosseligne ( wxDC *dc, int x1, int y1, int x2, int y2, int decal)
+int MusWindow::hGrosseligne ( wxDC *dc, int x1, int y1, int x2, int y2, int decal)
 {	
 	wxPoint p[4];
 	int dec = decal;
@@ -139,7 +139,7 @@ int WgWindow::hGrosseligne ( wxDC *dc, int x1, int y1, int x2, int y2, int decal
 }
 
 
-int WgWindow::pointer ( wxDC *dc, int x, int b, int decal, WgStaff *staff )
+int MusWindow::pointer ( wxDC *dc, int x, int b, int decal, MusStaff *staff )
 {	int y = b + staff->yrel;
 
 	if (decal > 600 || in (y, (int)staff->yrel - _portee[staff->pTaille], 
@@ -167,7 +167,7 @@ int WgWindow::pointer ( wxDC *dc, int x, int b, int decal, WgStaff *staff )
 }
 
 
-void WgWindow::putfont ( wxDC *dc, int x, int y, unsigned char c, WgStaff *staff, int dimin)
+void MusWindow::putfont ( wxDC *dc, int x, int y, unsigned char c, MusStaff *staff, int dimin)
 {  
 	int pTaille = staff->pTaille;
 	int fontCorr = this->hautFontCorr[pTaille][dimin];
@@ -226,7 +226,7 @@ void WgWindow::putfont ( wxDC *dc, int x, int y, unsigned char c, WgStaff *staff
   Utilise une table de bitmap m_fontsBitmaps
   Plus rapide que DrawText
   **/
-void WgWindow::putfontfast ( wxDC *dc, int x, int y, unsigned char c )
+void MusWindow::putfontfast ( wxDC *dc, int x, int y, unsigned char c )
 {  
 	//wxColour col = dc->GetTextForeground();
 	dc->SetTextForeground( *m_currentColour );
@@ -238,7 +238,7 @@ void WgWindow::putfontfast ( wxDC *dc, int x, int y, unsigned char c )
 }
 
 
-void WgWindow::putstring ( wxDC *dc, int x, int y, wxString s, int centrer, int pTaille)
+void MusWindow::putstring ( wxDC *dc, int x, int y, wxString s, int centrer, int pTaille)
 { 
 	wxASSERT_MSG( dc , "DC cannot be NULL");
 
@@ -257,4 +257,4 @@ void WgWindow::putstring ( wxDC *dc, int x, int y, wxString s, int centrer, int 
 
 
 
-#endif // AX_WG
+

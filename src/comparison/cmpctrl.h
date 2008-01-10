@@ -27,7 +27,7 @@ class CmpBookItem;
 class CmpCollation;
 
 class BookFile;
-class ProgressDlg;
+class AxProgressDlg;
 
 // WDR: class declarations
 
@@ -134,7 +134,7 @@ public:
 	virtual void SaveDisplay( );
 	virtual void LoadDisplay( );
 	//
-	bool Collate( wxArrayPtrVoid params, ProgressDlg *dlg );
+	bool Collate( wxArrayPtrVoid params, AxProgressDlg *dlg );
 	//
 	CmpBookItem *GetSelectedBookItem();
 	CmpCollation *CmpCtrl::GetSelectedCollation( );

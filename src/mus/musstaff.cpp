@@ -1,11 +1,9 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        wgstaff.cpp
+// Name:        musstaff.cpp
 // Author:      Laurent Pugin
 // Created:     2005
 // Copyright (c) Laurent Pugin. All rights reserved.
 /////////////////////////////////////////////////////////////////////////////
-
-#ifdef AX_WG
 
 #ifdef __GNUG__
     #pragma implementation "musstaff.cpp"
@@ -32,7 +30,7 @@
 WX_DEFINE_OBJARRAY( ArrayOfWgElements );
 
 // sorting function
-int SortElements(WgElement **first, WgElement **second)
+int SortElements(MusElement **first, MusElement **second)
 {
 	if ( (*first)->xrel < (*second)->xrel )
 		return -1;
@@ -45,16 +43,16 @@ int SortElements(WgElement **first, WgElement **second)
 // WDR: class implementations
 
 //----------------------------------------------------------------------------
-// WgStaff
+// MusStaff
 //----------------------------------------------------------------------------
 
-WgStaff::WgStaff():
-	WgObject()
+MusStaff::MusStaff():
+	MusObject()
 {
 	Clear( );
 }
 
-WgStaff::WgStaff( const WgStaff& staff )
+MusStaff::MusStaff( const MusStaff& staff )
 {
 	nblement = staff.nblement;
 	voix = staff.voix;
@@ -84,22 +82,22 @@ WgStaff::WgStaff( const WgStaff& staff )
 	{
 		if ( staff.m_elements[i].TYPE == NOTE )
 		{
-			WgNote *nnote = new WgNote( *(WgNote*)&staff.m_elements[i] );
+			MusNote *nnote = new MusNote( *(MusNote*)&staff.m_elements[i] );
 			this->m_elements.Add( nnote );
 		}
 		else
 		{
-			WgSymbole *nsymbole = new WgSymbole( *(WgSymbole*)&staff.m_elements[i] );
+			MusSymbol *nsymbole = new MusSymbol( *(MusSymbol*)&staff.m_elements[i] );
 			this->m_elements.Add( nsymbole );
 		}
 	}
 }
 
-WgStaff::~WgStaff()
+MusStaff::~MusStaff()
 {
 }
 
-void WgStaff::Clear()
+void MusStaff::Clear()
 {
 	m_elements.Clear();
 	nblement = 0;
@@ -127,7 +125,7 @@ void WgStaff::Clear()
 	xrel = 0;
 }
 
-void WgStaff::CopyAttributes( WgStaff *nstaff )
+void MusStaff::CopyAttributes( MusStaff *nstaff )
 {
 	if ( !nstaff )
 		return;
@@ -158,12 +156,12 @@ void WgStaff::CopyAttributes( WgStaff *nstaff )
 	nstaff->xrel = xrel;
 }
 
-void WgStaff::CheckIntegrity()
+void MusStaff::CheckIntegrity()
 {
 	this->m_elements.Sort( SortElements );
 	this->nblement = (int)this->m_elements.GetCount();
 
-	WgElement *element;
+	MusElement *element;
 	int i;
     for (i = 0; i < (int)nblement; i++) 
 	{
@@ -172,14 +170,14 @@ void WgStaff::CheckIntegrity()
 	}
 }
 
-WgElement *WgStaff::GetFirst( )
+MusElement *MusStaff::GetFirst( )
 {
 	if ( m_elements.IsEmpty() )
 		return NULL;
 	return &m_elements[0];
 }
 
-WgElement *WgStaff::GetLast( )
+MusElement *MusStaff::GetLast( )
 {
 	if ( m_elements.IsEmpty() )
 		return NULL;
@@ -187,7 +185,7 @@ WgElement *WgStaff::GetLast( )
 	return &m_elements[i];
 }
 
-WgElement *WgStaff::GetNext( WgElement *element )
+MusElement *MusStaff::GetNext( MusElement *element )
 {
 	if ( !element || m_elements.IsEmpty() || ( element->no >= (int)m_elements.GetCount() - 1 ) )
 		return NULL;
@@ -198,7 +196,7 @@ WgElement *WgStaff::GetNext( WgElement *element )
 	return &m_elements[element->no + 1];
 }
 
-WgElement *WgStaff::GetPrevious( WgElement *element )
+MusElement *MusStaff::GetPrevious( MusElement *element )
 {
 	if ( !element || m_elements.IsEmpty() || ( element->no <= 0 ) )
 		return NULL;
@@ -209,9 +207,9 @@ WgElement *WgStaff::GetPrevious( WgElement *element )
 	return &m_elements[element->no - 1];
 }
 
-WgElement *WgStaff::GetAtPos( int x )
+MusElement *MusStaff::GetAtPos( int x )
 {
-	WgElement *element = this->GetFirst();
+	MusElement *element = this->GetFirst();
 	if ( !element )
 		return NULL;
 
@@ -222,18 +220,18 @@ WgElement *WgStaff::GetAtPos( int x )
 	return element;
 }
 
-WgElement *WgStaff::Insert( WgElement *element )
+MusElement *MusStaff::Insert( MusElement *element )
 {
 	if ( !element ) return NULL;
 
 	// copy element
 	if ( element->IsSymbole() )
-		element = new WgSymbole( *(WgSymbole*)element );
+		element = new MusSymbol( *(MusSymbol*)element );
 	else
-		element = new WgNote( *(WgNote*)element );
+		element = new MusNote( *(MusNote*)element );
 
 	int idx = 0;
-	WgElement *tmp = this->GetFirst();
+	MusElement *tmp = this->GetFirst();
 	while ( tmp && (tmp->xrel < element->xrel) )
 	{
 		idx++;
@@ -249,7 +247,7 @@ WgElement *WgStaff::Insert( WgElement *element )
 	{
 		dc = new wxClientDC( m_w );
 		m_w->InitDC( dc );
-		if ( tmp &&  element->IsSymbole() && (((WgSymbole*)element)->flag == CLE) )
+		if ( tmp &&  element->IsSymbole() && (((MusSymbol*)element)->flag == CLE) )
 		{
 			this->ClearElements( dc, tmp );
 			m_w->OnBeginEditionClef();
@@ -263,7 +261,7 @@ WgElement *WgStaff::Insert( WgElement *element )
 	{
 		element->Init( m_w );
 		element->Draw( dc, this );
-		if ( element->IsSymbole() && (((WgSymbole*)element)->flag == CLE) )
+		if ( element->IsSymbole() && (((MusSymbol*)element)->flag == CLE) )
 		{
 			m_w->OnEndEditionClef();
 			this->DrawStaff( dc );
@@ -273,7 +271,7 @@ WgElement *WgStaff::Insert( WgElement *element )
 	return element;
 }
 
-void WgStaff::Delete( WgElement *element )
+void MusStaff::Delete( MusElement *element )
 {
 	if ( !element ) return;
 
@@ -284,7 +282,7 @@ void WgStaff::Delete( WgElement *element )
 		dc = new wxClientDC( m_w );
 		m_w->InitDC( dc );
 		element->ClearElement( dc, this );
-		if ( element->IsSymbole() && (((WgSymbole*)element)->flag == CLE) )
+		if ( element->IsSymbole() && (((MusSymbol*)element)->flag == CLE) )
 		{
 			this->ClearElements( dc, element );
 			m_w->OnBeginEditionClef();
@@ -296,7 +294,7 @@ void WgStaff::Delete( WgElement *element )
 
 	if ( dc )
 	{
-		if ( element->IsSymbole() && (((WgSymbole*)element)->flag == CLE) )
+		if ( element->IsSymbole() && (((MusSymbol*)element)->flag == CLE) )
 		{
 			m_w->OnEndEditionClef();
 			this->DrawStaff( dc );
@@ -312,13 +310,13 @@ void WgStaff::Delete( WgElement *element )
 // symbole, de la nature indiquee (flg). Retourne le ptr si succes, ou 
 // l'element de depart; le ptr succ est vrai si symb trouve. 
 
-WgElement *WgStaff::no_note ( WgElement *chk, unsigned int sens, unsigned int flg, int *succ)
+MusElement *MusStaff::no_note ( MusElement *chk, unsigned int sens, unsigned int flg, int *succ)
 /*
 	sens:	0, vers arriere; 1 avant --
 	flg:	symbole->flag a chercher --
 	*succ	test succes de recherche:0,echec 
 */
-{	WgElement *temoin = chk;
+{	MusElement *temoin = chk;
 
 	*succ = OFF;
 	if (chk == NULL)
@@ -328,7 +326,7 @@ WgElement *WgStaff::no_note ( WgElement *chk, unsigned int sens, unsigned int fl
 	if ( i == wxNOT_FOUND )
 		return (chk);
 
-	while (chk->TYPE != SYMB || ((WgSymbole*)chk)->flag != flg)
+	while (chk->TYPE != SYMB || ((MusSymbol*)chk)->flag != flg)
 	{
 		if (sens==AR)
 		{	
@@ -346,7 +344,7 @@ WgElement *WgStaff::no_note ( WgElement *chk, unsigned int sens, unsigned int fl
 
 	if (*succ == 0)
 	{	
-		if (chk->TYPE == SYMB && ((WgSymbole*)chk)->flag == flg)
+		if (chk->TYPE == SYMB && ((MusSymbol*)chk)->flag == flg)
 			*succ = ON;
 	}
 
@@ -356,14 +354,14 @@ WgElement *WgStaff::no_note ( WgElement *chk, unsigned int sens, unsigned int fl
 // mlf == 1 wwg to mlf
 // mlf == -1 mfl to wwg
 
-int WgStaff::getOctCl ( WgElement *test, char *cle_id, int mlf )
+int MusStaff::getOctCl ( MusElement *test, char *cle_id, int mlf )
 {
 	int succ=0;
 
 	if (test)
-	{	if ( test->TYPE == SYMB && ((WgSymbole*)test)->flag == CLE )
+	{	if ( test->TYPE == SYMB && ((MusSymbol*)test)->flag == CLE )
 			succ = 1;
-		else if ( test->TYPE != SYMB || ((WgSymbole*)test)->flag != CLE )
+		else if ( test->TYPE != SYMB || ((MusSymbol*)test)->flag != CLE )
 		{	
 			test = no_note(test,AR,CLE,&succ);
 			// LP mlf-> pas de recherche en avant si aucune cle trouvee
@@ -380,14 +378,14 @@ int WgStaff::getOctCl ( WgElement *test, char *cle_id, int mlf )
 		// LP -> succ == ON si n'importe quelle clef trouvee
 		if ( mlf != 1)
 		{
-			if (((WgSymbole*)test)->code == FA4 || ((WgSymbole*)test)->code == FA3
-			 || ((WgSymbole*)test)->code == FA5 || ((WgSymbole*)test)->code == UT4
-			 || ((WgSymbole*)test)->code == UT5 || ((WgSymbole*)test)->code == SOLva)
+			if (((MusSymbol*)test)->code == FA4 || ((MusSymbol*)test)->code == FA3
+			 || ((MusSymbol*)test)->code == FA5 || ((MusSymbol*)test)->code == UT4
+			 || ((MusSymbol*)test)->code == UT5 || ((MusSymbol*)test)->code == SOLva)
 						succ = ON;
 			else succ = OFF;
 		}
 		// LP
-		*cle_id = ((WgSymbole*)test)->code;
+		*cle_id = ((MusSymbol*)test)->code;
 	}
 
 	return (succ);
@@ -395,7 +393,7 @@ int WgStaff::getOctCl ( WgElement *test, char *cle_id, int mlf )
 
 
 // alternateur de position d'octave 
-void WgStaff::getOctDec (int ft, int _ot, int rupt, int *oct)
+void MusStaff::getOctDec (int ft, int _ot, int rupt, int *oct)
 {
 	if (ft>0)	// ordre DIESE 
 		if (rupt % 2 == 0)	// sens: au premier appel; puis on alterne...
@@ -409,7 +407,7 @@ void WgStaff::getOctDec (int ft, int _ot, int rupt, int *oct)
 }
 
 
-void WgStaff::updat_pscle (int i, WgElement *chk)
+void MusStaff::updat_pscle (int i, MusElement *chk)
 // int i;		nbre de cles sur cette ligne
 {	
 	//int size=0;
@@ -439,7 +437,7 @@ void WgStaff::updat_pscle (int i, WgElement *chk)
 }
 
 static char armatKey[] = {F5,F2,F6,F3,F7,F4,F8};
-int WgStaff::armatDisp ( wxDC *dc )
+int MusStaff::armatDisp ( wxDC *dc )
 {
 	wxASSERT_MSG( dc , "DC cannot be NULL");
 
@@ -453,7 +451,7 @@ int WgStaff::armatDisp ( wxDC *dc )
 	 *	la table poscle */
 	int step, oct;
 	unsigned int xrl;
-	WgElement *chk;
+	MusElement *chk;
 	int dec;
 	int pos=1, fact, i, c, clid=UT1, rupture=-1;	// rupture, 1e pos (in array) ou
 		// un shift d'octave est necessaire; ensuite, fonctionne par modulo
@@ -523,33 +521,33 @@ int WgStaff::armatDisp ( wxDC *dc )
 		{	this->getOctDec (fact,_oct,rupture, &oct); rupture = i+1;	}
 
 		//if (!modMetafile || in (xrl, drawRect.left, drawRect.right) && in (this->yrel, drawRect.top, drawRect.bottom+_portee[pTaille]))
-			((WgSymbole*)chk)->dess_symb ( dc,xrl,this->y_note(c,dec, oct),ALTER,this->armTyp , this);
+			((MusSymbol*)chk)->dess_symb ( dc,xrl,this->y_note(c,dec, oct),ALTER,this->armTyp , this);
 	}
 	return xrl;
 
 }
 
 
-void WgStaff::place_clef (  wxDC *dc )
+void MusStaff::place_clef (  wxDC *dc )
 {
 	wxASSERT_MSG( dc , "DC cannot be NULL");
 
 	if ( !Check() )
 		return;
 
-	WgElement *pelement = NULL;
+	MusElement *pelement = NULL;
 	int j;
 
 	for(j = 0; j < (int)this->nblement; j++)
 	{
 		pelement = &this->m_elements[j];
-		if (pelement->TYPE==SYMB && (((WgSymbole*)pelement)->flag==CLE
-			|| (((WgSymbole*)pelement)->flag==BARRE && ((WgSymbole*)pelement)->code != CTRL_L))
+		if (pelement->TYPE==SYMB && (((MusSymbol*)pelement)->flag==CLE
+			|| (((MusSymbol*)pelement)->flag==BARRE && ((MusSymbol*)pelement)->code != CTRL_L))
 			)
 		{
 			pelement->Init( m_w );
 			pelement->Draw( dc, this );
-			//((WgSymbole*)pelement)->rd_symb ( dc, this);
+			//((MusSymbol*)pelement)->rd_symb ( dc, this);
 		}
 	}
 	return;
@@ -557,7 +555,7 @@ void WgStaff::place_clef (  wxDC *dc )
 
 
 
-void WgStaff::DrawStaffLines( wxDC *dc, int i )
+void MusStaff::DrawStaffLines( wxDC *dc, int i )
 {
 	wxASSERT_MSG( dc , "DC cannot be NULL");
 	if ( !Check() )
@@ -601,7 +599,7 @@ void WgStaff::DrawStaffLines( wxDC *dc, int i )
 
 
 
-void WgStaff::DrawStaff( wxDC *dc, int i )
+void MusStaff::DrawStaff( wxDC *dc, int i )
 {
 	wxASSERT_MSG( dc , "DC cannot be NULL");
 	if ( !Check() )
@@ -622,7 +620,7 @@ void WgStaff::DrawStaff( wxDC *dc, int i )
 	//	DrawStaffLines( dc , i );		
 	//}
 
-	WgElement *pelement = NULL;
+	MusElement *pelement = NULL;
 	int j;
 
 	for(j = 0; j < (int)this->nblement; j++)
@@ -634,7 +632,7 @@ void WgStaff::DrawStaff( wxDC *dc, int i )
 }
 
 
-void WgStaff::ClearElements( wxDC *dc, WgElement *start )
+void MusStaff::ClearElements( wxDC *dc, MusElement *start )
 {
 	wxASSERT_MSG( dc , "DC cannot be NULL");
 	if ( !Check() )
@@ -652,7 +650,7 @@ void WgStaff::ClearElements( wxDC *dc, WgElement *start )
 }
 
 
-int WgStaff::y_note (int code, int dec_clef, int oct)
+int MusStaff::y_note (int code, int dec_clef, int oct)
 {	static int touches[] = {F1,F2,F3,F4,F5,F6,F7,F8,F9,F10};
 	int y_int;
 	int *ptouche, i;
@@ -675,7 +673,7 @@ int WgStaff::y_note (int code, int dec_clef, int oct)
 // a partir d'un y, trouve la hauteur d'une note exprimee en code touche et
 // octave. Retourne code clavier, et situe l'octave. 
 
-int WgStaff::trouveCodNote (int y_n, int x_pos, int *octave)
+int MusStaff::trouveCodNote (int y_n, int x_pos, int *octave)
 {	static int touches[] = {F2,F3,F4,F5,F6,F7,F8};
 	int y_dec, yb, plafond;
 	int degres, octaves, position, code, decalOct;
@@ -694,7 +692,7 @@ int WgStaff::trouveCodNote (int y_n, int x_pos, int *octave)
 	if (y_n > plafond)
 		y_n = plafond;
 
-	WgElement *pelement = this->GetAtPos( x_pos );
+	MusElement *pelement = this->GetAtPos( x_pos );
 	if ( this->GetPrevious( pelement ) )
 		pelement = this->GetPrevious( pelement );
 
@@ -744,7 +742,7 @@ wxPoint CalcPositionAfterRotation( wxPoint point , float rot_alpha, wxPoint cent
   up = liaison vers le haut
   heigth = hauteur de la liaison ( à plat )
   **/
-void WgStaff::DrawSlur( wxDC *dc, int x1, int y1, int x2, int y2, bool up, int height)
+void MusStaff::DrawSlur( wxDC *dc, int x1, int y1, int x2, int y2, bool up, int height)
 {
 
 	wxPen pen( *m_w->m_currentColour, 1, wxSOLID );
@@ -828,7 +826,7 @@ void WgStaff::DrawSlur( wxDC *dc, int x1, int y1, int x2, int y2, bool up, int h
 }
 
 
-// WDR: handler implementations for WgStaff
+// WDR: handler implementations for MusStaff
 
 
-#endif // AX_WG
+

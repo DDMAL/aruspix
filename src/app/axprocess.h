@@ -30,7 +30,7 @@ class AxProcess: public wxProcess
 {
 public:
     // constructors and destructors
-    AxProcess( wxString cmd, wxString arg, ProgressDlg *dlg );
+    AxProcess( wxString cmd, wxString arg, AxProgressDlg *dlg );
     virtual ~AxProcess();
 
 	// end process

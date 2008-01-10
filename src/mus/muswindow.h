@@ -1,5 +1,5 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        wgwindow.h
+// Name:        muswindow.h
 // Author:      Laurent Pugin
 // Created:     2005
 // Copyright (c) Laurent Pugin. All rights reserved.
@@ -7,8 +7,6 @@
 
 #ifndef __MUS_WINDOW_H__
 #define __MUS_WINDOW_H__
-
-#ifdef AX_WG
 
 #ifdef __GNUG__
     #pragma interface "muswindow.cpp"
@@ -23,11 +21,11 @@
 
 #include "app/axundo.h"
 
-class WgPage;
-class WgFile;
-class WgElement;
-class WgStaff;
-class WgToolPanel;
+class MusPage;
+class MusFile;
+class MusElement;
+class MusStaff;
+class MusToolPanel;
 
 #include "musnote.h"
 #include "mussymbol.h"
@@ -60,20 +58,20 @@ enum
 // WDR: class declarations
 
 //----------------------------------------------------------------------------
-// WgWindow
+// MusWindow
 //----------------------------------------------------------------------------
 
-class WgWindow: public wxScrolledWindow, public AxUndo
+class MusWindow: public wxScrolledWindow, public AxUndo
 {
 
 public:
     // constructors and destructors
-    WgWindow();
-    WgWindow( wxWindow *parent, wxWindowID id = -1,
+    MusWindow();
+    MusWindow( wxWindow *parent, wxWindowID id = -1,
         const wxPoint& pos = wxDefaultPosition,
         const wxSize& size = wxDefaultSize,
         long style = wxScrolledWindowStyle, bool center = true );
-	virtual ~WgWindow();
+	virtual ~MusWindow();
 
 	// copy paste
 	void Copy();
@@ -111,14 +109,14 @@ public:
 	void UpdateScroll(); // update scroll position if moving keys
 
 	// set the tool panel ptr
-	void SetToolPanel( WgToolPanel *toolpanel );
+	void SetToolPanel( MusToolPanel *toolpanel );
 	// get the current tool
 	int GetToolType( );
 	void SetToolType( int type );
 	void SetInsertMode( bool insert );
     
-    // WDR: method declarations for WgWindow
-	void SetFile( WgFile *file );
+    // WDR: method declarations for MusWindow
+	void SetFile( MusFile *file );
 	/**
 		Redimensionne la fenetre en fonction de la taille du parent et du zoom de la taille de la page
 	  */
@@ -149,12 +147,12 @@ public:
 	void v_bline ( wxDC *dc, int y1, int y2, int x1, int nbr);
 	void v_bline2 ( wxDC *dc, int y1, int y2, int x1, int nbr);
 	void h_bline ( wxDC *dc, int x1, int x2, int y1, int nbr);
-	void putfont ( wxDC *dc, int x, int y, unsigned char c, WgStaff *staff, int dimin );
+	void putfont ( wxDC *dc, int x, int y, unsigned char c, MusStaff *staff, int dimin );
 	void putfontfast ( wxDC *dc, int x, int y, unsigned char c );
 	void putstring ( wxDC *dc, int x, int y, wxString s, int centrer, int pTaille = 0);
 	void rect_plein2( wxDC *dc, int x1, int y1, int x2, int y2);
 	int hGrosseligne ( wxDC *dc, int x1, int y1, int x2, int y2, int decal);
-	int pointer ( wxDC *dc, int x, int b, int decal, WgStaff *staff );
+	int pointer ( wxDC *dc, int x, int b, int decal, MusStaff *staff );
 	/** wg_bezier */
 	static int CC(int ,int );
 	static long BBlend(int ,int ,long );
@@ -165,15 +163,15 @@ public:
 
     
 public:
-    // WDR: member variable declarations for WgWindow
+    // WDR: member variable declarations for MusWindow
     /** Fichier  */
-    WgFile *m_f;
+    MusFile *m_f;
     /** FileHeader du fichier contenant la page */
-    WgFileHeader *m_fh;
+    MusFileHeader *m_fh;
     /** Parametres2 du fichier contenant la page */
-    WgParameters2 *m_p2;
+    MusParameters2 *m_p2;
     /** Page affichee */
-    WgPage *m_page;
+    MusPage *m_page;
     /** No Page affichee */
     int m_npage;
     /** valeur du pas (10 par defaut) */
@@ -218,7 +216,7 @@ public:
     /** ???? */
     int DELTABAR;
     /** contient la positions des clefs */
-    WgPosKey kPos[MAXPORTNBRE+1];
+    MusPosKey kPos[MAXPORTNBRE+1];
     /** fontes actuelles mises a jour selon la taille du zoom */
     wxFont m_activeFonts[2][2];
     /** fonte Leipzig par defaut */
@@ -257,17 +255,17 @@ public:
 
 	const wxColour *m_currentColour;
 	wxColour m_black;
-	WgElement *m_currentElement;
-	WgElement *m_newElement;
-	WgElement *m_bufferElement;
+	MusElement *m_currentElement;
+	MusElement *m_newElement;
+	MusElement *m_bufferElement;
 
 	// keep elements statically - m_newElement will point on them
-	WgNote m_note;
-	WgSymbole m_key;
-	WgSymbole m_symbole;
-	WgSymbole m_proportion;
+	MusNote m_note;
+	MusSymbol m_key;
+	MusSymbol m_symbole;
+	MusSymbol m_proportion;
 
-	WgStaff *m_currentStaff;
+	MusStaff *m_currentStaff;
 	bool efface;
 	bool m_editElement; // edition mode or insertion mode
 	int m_insertx;
@@ -276,10 +274,10 @@ public:
 	int m_dragging_x;
 	int m_dragging_y_offset;
 	bool m_has_been_dragged;
-	WgToolPanel *m_toolpanel;
+	MusToolPanel *m_toolpanel;
     
 private:
-	void SetPage( WgPage *page );
+	void SetPage( MusPage *page );
 	/*
      Calcul la taille de la page = calculFormatPapier()
      */
@@ -291,7 +289,7 @@ private:
 
 
 
-    // WDR: handler declarations for WgWindow
+    // WDR: handler declarations for MusWindow
 	void OnSize( wxSizeEvent &event );
     void OnPaint( wxPaintEvent &event );
 	void OnMouseMotion( wxMouseEvent &event );
@@ -306,10 +304,9 @@ private:
 
 private:
     DECLARE_EVENT_TABLE()
-    DECLARE_DYNAMIC_CLASS(WgWindow)
+    DECLARE_DYNAMIC_CLASS(MusWindow)
 };
 
 
-#endif //AX_WG
 
 #endif

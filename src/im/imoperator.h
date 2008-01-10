@@ -79,7 +79,7 @@ public:
     
     // WDR: method declarations for ImOperator
     int GetError( ) { return m_error; }
-	void SetProgressDlg( ProgressDlg *dlg );
+	void SetProgressDlg( AxProgressDlg *dlg );
     void SetMapImage( _imImage *image );
     //wxString GetShortName() { return m_shortname; }
     
@@ -111,7 +111,7 @@ protected:
 
 protected:
     // WDR: handler declarations for ImOperator
-    ProgressDlg *m_progressDlg;
+    AxProgressDlg *m_progressDlg;
     int m_error;
 
     _imImage *m_opImMap;

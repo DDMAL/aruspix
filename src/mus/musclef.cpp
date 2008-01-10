@@ -1,14 +1,12 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        wgwindow.cpp
+// Name:        musclef.cpp
 // Author:      Laurent Pugin
 // Created:     2005
 // Copyright (c) Laurent Pugin. All rights reserved.
 /////////////////////////////////////////////////////////////////////////////
 
-#ifdef AX_WG
-
 #ifdef __GNUG__
-    #pragma implementation "mussymbole.cpp"
+    #pragma implementation "musclef.cpp"
 #endif
 
 // For compilers that support precompilation, includes "wx/wx.h".
@@ -32,7 +30,7 @@
   la ligne du bas.
 */
 
-void WgSymbole::calcoffs (int *offst, int clid)
+void MusSymbol::calcoffs (int *offst, int clid)
 {	
 	*offst = 0;		// case 5: UT 1e ligne par default, valable pour PERC
 	switch(clid)
@@ -53,13 +51,13 @@ void WgSymbole::calcoffs (int *offst, int clid)
 
 // Verifie la clef en fonction de la position a, b du curseur. 
 //   Retourne le decalage de la clef contenu dans struct poscle.
-int WgStaff::testcle (int a)
+int MusStaff::testcle (int a)
 {
 	if ( !Check() )
 		return 0;	
 
 	int s;
-	WgPosKey *pKey = &m_w->kPos[this->no];
+	MusPosKey *pKey = &m_w->kPos[this->no];
 	s = pKey->compte;
 
 	if (s == 0)
@@ -74,7 +72,7 @@ int WgStaff::testcle (int a)
 
 
 
-void WgSymbole::dess_cle ( wxDC *dc, int i, WgStaff *pportee)
+void MusSymbol::dess_cle ( wxDC *dc, int i, MusStaff *pportee)
 // int i;	indice de position clef in poscle
 {
 	wxASSERT_MSG( dc , "DC cannot be NULL");
@@ -132,4 +130,4 @@ void WgSymbole::dess_cle ( wxDC *dc, int i, WgStaff *pportee)
 	return;
 }
 
-#endif // AX_WG
+

@@ -1,5 +1,5 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        wgstaff.h
+// Name:        musstaff.h
 // Author:      Laurent Pugin
 // Created:     2005
 // Copyright (c) Laurent Pugin. All rights reserved.
@@ -7,8 +7,6 @@
 
 #ifndef __MUS_STAFF_H__
 #define __MUS_STAFF_H__
-
-#ifdef AX_WG
 
 #ifdef __GNUG__
     #pragma interface "musstaff.cpp"
@@ -23,50 +21,50 @@
 
 #include "musobject.h"
 
-class WgElement;
-WX_DECLARE_OBJARRAY( WgElement, ArrayOfWgElements);
+class MusElement;
+WX_DECLARE_OBJARRAY( MusElement, ArrayOfWgElements);
 
-class WgWindow;
-class WgSymbole;
-class WgNote;
+class MusWindow;
+class MusSymbol;
+class MusNote;
 
 
 //----------------------------------------------------------------------------
-// WgStaff
+// MusStaff
 //----------------------------------------------------------------------------
 
 // sorting function
-int SortElements(WgElement **first, WgElement **second);
+int SortElements(MusElement **first, MusElement **second);
 
-class WgStaff: public WgObject
+class MusStaff: public MusObject
 {
 public:
     // constructors and destructors
-    WgStaff();
-	WgStaff( const WgStaff& staff ); // copy contructor
-    virtual ~WgStaff();
+    MusStaff();
+	MusStaff( const MusStaff& staff ); // copy contructor
+    virtual ~MusStaff();
     
-    // WDR: method declarations for WgStaff
+    // WDR: method declarations for MusStaff
 	void CheckIntegrity();
 	void Clear( );
-	void CopyAttributes( WgStaff *staff ); // copy all attributes but none of the elements
+	void CopyAttributes( MusStaff *staff ); // copy all attributes but none of the elements
 	// draw
 	void DrawStaff( wxDC *dc, int i = -1 );
 	void DrawStaffLines( wxDC *dc, int i = -1);
-	void ClearElements( wxDC *dc , WgElement *start = NULL );
-	WgElement *GetFirst( );
-	WgElement *GetLast(  );
-	WgElement *GetNext( WgElement *element );
-	WgElement *GetPrevious( WgElement *element );
-	WgElement *GetAtPos( int x );
-	WgElement *Insert( WgElement *element ); // return a pointer on the inserted element
-	void Delete( WgElement *element );
-	WgElement *no_note ( WgElement *chk, unsigned int sens, unsigned int flg, int *succ);
+	void ClearElements( wxDC *dc , MusElement *start = NULL );
+	MusElement *GetFirst( );
+	MusElement *GetLast(  );
+	MusElement *GetNext( MusElement *element );
+	MusElement *GetPrevious( MusElement *element );
+	MusElement *GetAtPos( int x );
+	MusElement *Insert( MusElement *element ); // return a pointer on the inserted element
+	void Delete( MusElement *element );
+	MusElement *no_note ( MusElement *chk, unsigned int sens, unsigned int flg, int *succ);
 	int trouveCodNote( int y_n, int x_pos, int *octave);
-	int getOctCl ( WgElement *test, char *cle_id, int mlf = 0);
+	int getOctCl ( MusElement *test, char *cle_id, int mlf = 0);
 	void getOctDec (int ft, int _ot, int rupt, int *oct);
 	int y_note (int code, int dec_clef, int oct);
-	void updat_pscle (int i, WgElement *chk);
+	void updat_pscle (int i, MusElement *chk);
 	void DrawSlur( wxDC *dc, int x1, int y1, int x2, int y2, bool up, int height = -1);
 
 	void place_clef( wxDC *dc );
@@ -76,7 +74,7 @@ public:
 
     
 public:
-    // WDR: member variable declarations for WgStaff
+    // WDR: member variable declarations for MusStaff
 	ArrayOfWgElements m_elements;
 	/** nombre d'element sur la portee */
 	unsigned int nblement;
@@ -128,10 +126,9 @@ public:
 	unsigned int xrel;
 
 private:
-	// WDR: handler declarations for WgStaff
+	// WDR: handler declarations for MusStaff
 
 };
 
-#endif //AX_WG
 
 #endif

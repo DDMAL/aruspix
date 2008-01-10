@@ -1,5 +1,5 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        cmpwg.cpp
+// Name:        cmpmus.cpp
 // Author:      Laurent Pugin
 // Created:     2004
 // Copyright (c) Laurent Pugin. All rights reserved.
@@ -9,7 +9,7 @@
 	#ifdef AX_COMPARISON
 
 #ifdef __GNUG__
-    #pragma implementation "cmpwg.cpp"
+    #pragma implementation "cmpmus.cpp"
 #endif
 
 // For compilers that support precompilation, includes "wx/wx.h".
@@ -19,7 +19,7 @@
     #pragma hdrstop
 #endif
 
-#include "cmpwg.h"
+#include "cmpmus.h"
 #include "cmp.h"
 #include "cmpim.h"
 #include "recognition/recfile.h"
@@ -34,16 +34,16 @@
 // WDR: class implementations
 
 //----------------------------------------------------------------------------
-// CmpWgController
+// CmpMusController
 //----------------------------------------------------------------------------
 
-// WDR: event table for CmpWgController
+// WDR: event table for CmpMusController
 
-BEGIN_EVENT_TABLE(CmpWgController,wxPanel)
-    EVT_SIZE( CmpWgController::OnSize )
+BEGIN_EVENT_TABLE(CmpMusController,wxPanel)
+    EVT_SIZE( CmpMusController::OnSize )
 END_EVENT_TABLE()
 
-CmpWgController::CmpWgController( wxWindow *parent, wxWindowID id,
+CmpMusController::CmpMusController( wxWindow *parent, wxWindowID id,
     const wxPoint &position, const wxSize& size, long style ) :
     wxPanel( parent, id, position, size, style )
 {
@@ -59,11 +59,11 @@ CmpWgController::CmpWgController( wxWindow *parent, wxWindowID id,
 	m_cmpFilePtr = NULL;
 }
 
-CmpWgController::CmpWgController()
+CmpMusController::CmpMusController()
 {
 }
 
-void CmpWgController::Init( CmpEnv *env, CmpWgWindow *window )
+void CmpMusController::Init( CmpEnv *env, CmpMusWindow *window )
 {
 	// environement
     wxASSERT_MSG(env,"Environment cannot be NULL");
@@ -75,7 +75,7 @@ void CmpWgController::Init( CmpEnv *env, CmpWgWindow *window )
 }
 
 
-void CmpWgController::SetImViewAndController( CmpImWindow *cmpImWindow1, CmpImController *cmpImController1,
+void CmpMusController::SetImViewAndController( CmpImWindow *cmpImWindow1, CmpImController *cmpImController1,
 		CmpImWindow *cmpImWindow2, CmpImController *cmpImController2 )
 {
 	m_imControlPtr1 = cmpImController1;
@@ -86,22 +86,22 @@ void CmpWgController::SetImViewAndController( CmpImWindow *cmpImWindow1, CmpImCo
 }
 
 
-void CmpWgController::SetCmpFile( CmpFile *cmpFile )
+void CmpMusController::SetCmpFile( CmpFile *cmpFile )
 {
 	m_cmpFilePtr = cmpFile;
 	m_viewPtr->SetCmpFile( cmpFile );
 }
 
 
-// WDR: handler implementations for CmpWgController
+// WDR: handler implementations for CmpMusController
 
-void CmpWgController::OnSize( wxSizeEvent &event )
+void CmpMusController::OnSize( wxSizeEvent &event )
 {
     this->Layout();
     /*wxWindow *w = FindWindowById( ID4_WGWINDOW );
-    if ( w && w->IsKindOf( CLASSINFO( WgWindow ) ))
+    if ( w && w->IsKindOf( CLASSINFO( MusWindow ) ))
     {
-        ((WgWindow*)w)->Resize( );
+        ((MusWindow*)w)->Resize( );
     }*/
 	if ( m_viewPtr )
 		m_viewPtr->Resize();
@@ -111,24 +111,24 @@ void CmpWgController::OnSize( wxSizeEvent &event )
 
 
 //----------------------------------------------------------------------------
-// CmpWgWindow
+// CmpMusWindow
 //----------------------------------------------------------------------------
 
-IMPLEMENT_CLASS(CmpWgWindow, WgWindow)
+IMPLEMENT_CLASS(CmpMusWindow, MusWindow)
 
-// WDR: event table for CmpWgWindow
+// WDR: event table for CmpMusWindow
 
-BEGIN_EVENT_TABLE(CmpWgWindow,WgWindow)
-    EVT_MOUSE_EVENTS( CmpWgWindow::OnMouse )
-    EVT_SCROLLWIN(CmpWgWindow::OnScroll )
-    EVT_KEY_DOWN( CmpWgWindow::OnKeyDown )
-    EVT_KEY_UP( CmpWgWindow::OnKeyUp )
-    EVT_SIZE( CmpWgWindow::OnSize )
+BEGIN_EVENT_TABLE(CmpMusWindow,MusWindow)
+    EVT_MOUSE_EVENTS( CmpMusWindow::OnMouse )
+    EVT_SCROLLWIN(CmpMusWindow::OnScroll )
+    EVT_KEY_DOWN( CmpMusWindow::OnKeyDown )
+    EVT_KEY_UP( CmpMusWindow::OnKeyUp )
+    EVT_SIZE( CmpMusWindow::OnSize )
 END_EVENT_TABLE()
 
-CmpWgWindow::CmpWgWindow( CmpWgController *parent, wxWindowID id,
+CmpMusWindow::CmpMusWindow( CmpMusController *parent, wxWindowID id,
     const wxPoint &position, const wxSize& size, long style, bool center ) :
-    WgWindow( parent, id, position, size, style, center )
+    MusWindow( parent, id, position, size, style, center )
 {
 	m_wgControlPtr = parent;
     m_shiftDown = false;
@@ -144,20 +144,20 @@ CmpWgWindow::CmpWgWindow( CmpWgController *parent, wxWindowID id,
 	m_lastController = 1;
 }
 
-CmpWgWindow::CmpWgWindow()
+CmpMusWindow::CmpMusWindow()
 {
 }
 
-CmpWgWindow::~CmpWgWindow()
+CmpMusWindow::~CmpMusWindow()
 {
 }
 
-void CmpWgWindow::SetEnv( CmpEnv *env )
+void CmpMusWindow::SetEnv( CmpEnv *env )
 {
     m_envPtr = env;
 }
 
-void CmpWgWindow::SetImViewAndController( CmpImWindow *cmpImWindow1, CmpImController *cmpImController1,
+void CmpMusWindow::SetImViewAndController( CmpImWindow *cmpImWindow1, CmpImController *cmpImController1,
 		CmpImWindow *cmpImWindow2, CmpImController *cmpImController2 )
 {
 	m_imControlPtr1 = cmpImController1;
@@ -166,55 +166,55 @@ void CmpWgWindow::SetImViewAndController( CmpImWindow *cmpImWindow1, CmpImContro
 	m_imViewPtr2 = cmpImWindow2;
 }
 
-void CmpWgWindow::SetCmpFile( CmpFile *cmpFile )
+void CmpMusWindow::SetCmpFile( CmpFile *cmpFile )
 {
 	m_cmpFilePtr = cmpFile;
 }
 
 /*
-void CmpWgWindow::OnBeginEditionClef()
+void CmpMusWindow::OnBeginEditionClef()
 {
     if ( !m_envPtr )
         return;
 
     m_edition = true;
     if ( m_currentStaff )
-        MLFOutput::GetUt1( m_currentStaff, true );
+        MusMLFOutput::GetUt1( m_currentStaff, true );
 }
 
-void CmpWgWindow::OnEndEditionClef()
+void CmpMusWindow::OnEndEditionClef()
 {
     if ( !m_envPtr )
         return;
 
     if ( m_edition && m_currentStaff )
-        MLFInput::GetNotUt1( m_currentStaff, true );
+        MusMLFInput::GetNotUt1( m_currentStaff, true );
 
     m_edition = false;
 }
 
 
-void CmpWgWindow::OnEndEdition()
+void CmpMusWindow::OnEndEdition()
 {
 	m_recFilePtr->Modify();
     m_wgControlPtr->SyncStaffBitmap();
 }
 */
 
-// WDR: handler implementations for CmpWgWindow
+// WDR: handler implementations for CmpMusWindow
 
-void CmpWgWindow::OnSize( wxSizeEvent &event )
+void CmpMusWindow::OnSize( wxSizeEvent &event )
 {
 	//m_wgControlPtr->SyncZoom();
     event.Skip();
 }
 
-void CmpWgWindow::OnKeyUp( wxKeyEvent &event )
+void CmpMusWindow::OnKeyUp( wxKeyEvent &event )
 {
     event.Skip();
 }
 
-void CmpWgWindow::OnKeyDown( wxKeyEvent &event )
+void CmpMusWindow::OnKeyDown( wxKeyEvent &event )
 {
 	// navigation with arrows only, but not with crtl down
 	if (event.m_controlDown)
@@ -231,12 +231,12 @@ void CmpWgWindow::OnKeyDown( wxKeyEvent &event )
 	}
 }
 
-void CmpWgWindow::OnScroll( wxScrollWinEvent &event )
+void CmpMusWindow::OnScroll( wxScrollWinEvent &event )
 {
     event.Skip();
 }
 
-void CmpWgWindow::OnMouse(wxMouseEvent &event)
+void CmpMusWindow::OnMouse(wxMouseEvent &event)
 {
     if (event.GetEventType() == wxEVT_MOUSEWHEEL)
     {
@@ -277,7 +277,7 @@ void CmpWgWindow::OnMouse(wxMouseEvent &event)
         event.Skip();
 }
 
-void CmpWgWindow::OnSyncScroll( int x, int y )
+void CmpMusWindow::OnSyncScroll( int x, int y )
 {
 	//if ( m_imViewPtr )
 	//	m_imViewPtr->Scroll( x, y );

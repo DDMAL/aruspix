@@ -1,14 +1,12 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        iowwg.cpp
+// Name:        musiowwg.cpp
 // Author:      Laurent Pugin
 // Created:     2005
 // Copyright (c) Laurent Pugin. All rights reserved.
 /////////////////////////////////////////////////////////////////////////////
 
-#ifdef AX_WG
-
 #ifdef __GNUG__
-    #pragma implementation "iowwg.h"
+    #pragma implementation "musiowwg.h"
 #endif
 
 // For compilers that support precompilation, includes "wx/wx.h".
@@ -19,25 +17,25 @@
 #endif
 #include "wx/filename.h"
 
-#include "iowwg.h"
-#include "iomlf.h"
+#include "musiowwg.h"
+#include "musiomlf.h"
 
 //----------------------------------------------------------------------------
-// WgFileOutputStream
+// MusFileOutputStream
 //----------------------------------------------------------------------------
 
-WwgOutput::WwgOutput( WgFile *file, wxString filename, int flag ) :
-	WgFileOutputStream( file, filename )
+MusWWGOutput::MusWWGOutput( MusFile *file, wxString filename, int flag ) :
+	MusFileOutputStream( file, filename )
 {
 	m_flag = flag;
 	m_filename = filename;
 }
 
-WwgOutput::~WwgOutput()
+MusWWGOutput::~MusWWGOutput()
 {
 }
 
-bool WwgOutput::ExportFile( )
+bool MusWWGOutput::ExportFile( )
 {
 	int i;
 
@@ -55,7 +53,7 @@ bool WwgOutput::ExportFile( )
     WriteParametersMidi( &m_file->m_midi ); // parametres midi
     WriteParameters2( &m_file->m_param2 ); // param2
 	WriteFonts( &m_file->m_fonts );
-	WgPage *page = NULL;
+	MusPage *page = NULL;
     for (i = 0; i < m_file->m_fheader.nbpage; i++ )
 	{
 		page = &m_file->m_pages.Item(i);
@@ -80,7 +78,7 @@ bool WwgOutput::ExportFile( )
 	return true;
 }
 
-bool WwgOutput::WriteFileHeader( const WgFileHeader *header )
+bool MusWWGOutput::WriteFileHeader( const MusFileHeader *header )
 {
 	char buffer[WIN_MAX_FNAME + WIN_MAX_EXT + 1];
 	memset( buffer, 0, WIN_MAX_FNAME + WIN_MAX_EXT + 1 );
@@ -135,7 +133,7 @@ bool WwgOutput::WriteFileHeader( const WgFileHeader *header )
 	return true;
 }
 
-bool WwgOutput::WriteParametersMidi( const WgParametersMidi *midi )
+bool MusWWGOutput::WriteParametersMidi( const MusParametersMidi *midi )
 {
     int i;
 
@@ -158,7 +156,7 @@ bool WwgOutput::WriteParametersMidi( const WgParametersMidi *midi )
     return true;
 }
 
-bool WwgOutput::WriteParameters2( const WgParameters2 *param2 )
+bool MusWWGOutput::WriteParameters2( const MusParameters2 *param2 )
 {
 	int i;
 
@@ -181,12 +179,12 @@ bool WwgOutput::WriteParameters2( const WgParameters2 *param2 )
 	return true;
 }
 
-bool WwgOutput::WriteFonts( const ArrayOfWgFonts *fonts )
+bool MusWWGOutput::WriteFonts( const ArrayOfWgFonts *fonts )
 {
 	int i;
 	char buffer[MAXPOLICENAME + 1];
 	
-	WgFont font;
+	MusFont font;
     for (i = 0; i < MAXPOLICES; i++) // lecture des polices
 	{
 		memset( buffer, 0, MAXPOLICENAME + 1 );
@@ -201,13 +199,13 @@ bool WwgOutput::WriteFonts( const ArrayOfWgFonts *fonts )
 	return true;
 }
 
-bool WwgOutput::WriteSeparator( )
+bool MusWWGOutput::WriteSeparator( )
 {
-	Write( WgFile::sep, 7 );
+	Write( MusFile::sep, 7 );
 	return true;
 }
 
-bool WwgOutput::WritePage( const WgPage *page )
+bool MusWWGOutput::WritePage( const MusPage *page )
 {
 	int j;
 
@@ -227,7 +225,7 @@ bool WwgOutput::WritePage( const WgPage *page )
 	Write( &int32, 4 );
 	int32 = wxINT32_SWAP_ON_BE( page->lrg_lign );
 	Write( &int32, 4 );
-	/*WgStaff *staff = NULL;
+	/*MusStaff *staff = NULL;
     for (j = 0; j < page->nbrePortees; j++) 
 	{
 		staff = &page->m_staves[j];
@@ -235,11 +233,11 @@ bool WwgOutput::WritePage( const WgPage *page )
     }*/
 
 
-    WgStaff *staff = NULL;
+    MusStaff *staff = NULL;
 	for (j = 0; j < page->nbrePortees; j++) 
     {
-        WgStaff *cstaff = &page->m_staves[j];
-		staff = MLFOutput::SplitSymboles( cstaff );
+        MusStaff *cstaff = &page->m_staves[j];
+		staff = MusMLFOutput::SplitSymboles( cstaff );
         WriteStaff( staff );
 		delete staff;
 		staff = NULL;
@@ -248,7 +246,7 @@ bool WwgOutput::WritePage( const WgPage *page )
 	return true;
 
 }
-bool WwgOutput::WriteStaff( const WgStaff *staff )
+bool MusWWGOutput::WriteStaff( const MusStaff *staff )
 {
 	unsigned int k;
 
@@ -294,15 +292,15 @@ bool WwgOutput::WriteStaff( const WgStaff *staff )
 	{
 		if ( staff->m_elements[k].TYPE == NOTE )
 		{
-			WriteNote( (WgNote*)&staff->m_elements[k] );
+			WriteNote( (MusNote*)&staff->m_elements[k] );
 		}
 		else
 		{
-			WriteSymbole( (WgSymbole*)&staff->m_elements[k] );
+			WriteSymbole( (MusSymbol*)&staff->m_elements[k] );
 		}
 		if ( m_flag == WWG_ARUSPIX_CMP )
 		{		
-			WgElement *elem = &staff->m_elements[k];
+			MusElement *elem = &staff->m_elements[k];
 			int32 = wxINT32_SWAP_ON_BE( (int)elem->m_im_filename.Length() );
 			Write( &int32, 4 );
 			Write( elem->m_im_filename.c_str(), (int)elem->m_im_filename.Length() + 1 );
@@ -320,7 +318,7 @@ bool WwgOutput::WriteStaff( const WgStaff *staff )
 	return true;
 }
 
-bool WwgOutput::WriteNote( const WgNote *note )
+bool MusWWGOutput::WriteNote( const MusNote *note )
 {
 	Write( &note->TYPE, 1 );
 	WriteElementAttr( note );
@@ -354,7 +352,7 @@ bool WwgOutput::WriteNote( const WgNote *note )
 	return true;
 }
 
-bool WwgOutput::WriteSymbole( const WgSymbole *symbole )
+bool MusWWGOutput::WriteSymbole( const MusSymbol *symbole )
 {
 	Write( &symbole->TYPE, 1 );
 	WriteElementAttr( symbole );
@@ -377,7 +375,7 @@ bool WwgOutput::WriteSymbole( const WgSymbole *symbole )
 	return true;
 }
 
-bool WwgOutput::WriteElementAttr( const WgElement *element )
+bool MusWWGOutput::WriteElementAttr( const MusElement *element )
 {
 	Write( &element->liaison , 1 );
 	Write( &element->dliai , 1 );
@@ -413,7 +411,7 @@ bool WwgOutput::WriteElementAttr( const WgElement *element )
 	return true;
 }
 
-bool WwgOutput::WriteDebord( const WgElement *element )
+bool MusWWGOutput::WriteDebord( const MusElement *element )
 {
 	uint16 = wxUINT16_SWAP_ON_BE( element->debordSize );
 	Write( &uint16, 2 );
@@ -426,7 +424,7 @@ bool WwgOutput::WriteDebord( const WgElement *element )
 }
 
 
-bool WwgOutput::WritePagination( const WgPagination *pagination )
+bool MusWWGOutput::WritePagination( const MusPagination *pagination )
 {
 	int16 = wxINT16_SWAP_ON_BE( pagination->numeroInitial );
 	Write( &int16, 2 );
@@ -439,7 +437,7 @@ bool WwgOutput::WritePagination( const WgPagination *pagination )
 	return true;
 }
 
-bool WwgOutput::WriteHeaderFooter( const WgHeaderFooter *headerfooter)
+bool MusWWGOutput::WriteHeaderFooter( const MusHeaderFooter *headerfooter)
 {
 	char buffer[HEADER_FOOTER_TEXT + 1];
 	memset( buffer, 0, HEADER_FOOTER_TEXT + 1);
@@ -458,24 +456,24 @@ bool WwgOutput::WriteHeaderFooter( const WgHeaderFooter *headerfooter)
 
 
 
-// WDR: handler implementations for WwgOutput
+// WDR: handler implementations for MusWWGOutput
 
 
 //----------------------------------------------------------------------------
-// WwgInput
+// MusWWGInput
 //----------------------------------------------------------------------------
 
-WwgInput::WwgInput( WgFile *file, wxString filename, int flag ) :
-	WgFileInputStream( file, filename )
+MusWWGInput::MusWWGInput( MusFile *file, wxString filename, int flag ) :
+	MusFileInputStream( file, filename )
 {
 	m_flag = flag;
 }
 
-WwgInput::~WwgInput()
+MusWWGInput::~MusWWGInput()
 {
 }
 
-bool WwgInput::ImportFile( )
+bool MusWWGInput::ImportFile( )
 {
 	int i;
 
@@ -492,7 +490,7 @@ bool WwgInput::ImportFile( )
 	m_file->m_pages.Clear();		
     for (i = 0; i < m_file->m_fheader.nbpage; i++ )
 	{
-		WgPage *page = new WgPage();
+		MusPage *page = new MusPage();
 		ReadPage( page );
 		m_file->m_pages.Add( page );
     }
@@ -514,7 +512,7 @@ bool WwgInput::ImportFile( )
 	return true;
 }
 
-bool WwgInput::ReadFileHeader( WgFileHeader *header )
+bool MusWWGInput::ReadFileHeader( MusFileHeader *header )
 {
 
 
@@ -580,7 +578,7 @@ bool WwgInput::ReadFileHeader( WgFileHeader *header )
 	return true;
 }
 
-bool WwgInput::ReadParametersMidi( WgParametersMidi *midi )
+bool MusWWGInput::ReadParametersMidi( MusParametersMidi *midi )
 {
     int i;
 
@@ -604,7 +602,7 @@ bool WwgInput::ReadParametersMidi( WgParametersMidi *midi )
 	return true;
 }
 
-bool WwgInput::ReadParameters2( WgParameters2 *param2 )
+bool MusWWGInput::ReadParameters2( MusParameters2 *param2 )
 {
 	int i;
 
@@ -628,13 +626,13 @@ bool WwgInput::ReadParameters2( WgParameters2 *param2 )
 	return true;
 }
 
-bool WwgInput::ReadFonts( ArrayOfWgFonts *fonts )
+bool MusWWGInput::ReadFonts( ArrayOfWgFonts *fonts )
 {
 	int i;
 	char buffer[MAXPOLICENAME + 1];
 
 	fonts->Clear();
-	WgFont font;
+	MusFont font;
     for (i = 0; i < MAXPOLICES; i++) // lecture des polices
 	{
 		Read( &font.fonteJeu, 1 );
@@ -646,20 +644,20 @@ bool WwgInput::ReadFonts( ArrayOfWgFonts *fonts )
 	return true;
 }
 
-bool WwgInput::ReadSeparator( )
+bool MusWWGInput::ReadSeparator( )
 {
 	char buffer[7];
 
 	Read( buffer, 7 );
 	wxString str1( buffer, 0, 6 );
-	wxString str2( WgFile::sep );
+	wxString str2( MusFile::sep );
 	if ( str1 != str2 )
 		return false;
 	else
 		return true;
 }
 
-bool WwgInput::ReadPage( WgPage *page )
+bool MusWWGInput::ReadPage( MusPage *page )
 {
 	int j;
 
@@ -682,7 +680,7 @@ bool WwgInput::ReadPage( WgPage *page )
 	page->lrg_lign = wxINT32_SWAP_ON_BE( int32 );
     for (j = 0; j < page->nbrePortees; j++) 
 	{
-		WgStaff *staff = new WgStaff();
+		MusStaff *staff = new MusStaff();
 		ReadStaff( staff );
 		if ( (m_flag == WWG_WOLFGANG) && staff->indent )
 			staff->indent = page->indent;
@@ -692,7 +690,7 @@ bool WwgInput::ReadPage( WgPage *page )
 	return true;
 
 }
-bool WwgInput::ReadStaff( WgStaff *staff )
+bool MusWWGInput::ReadStaff( MusStaff *staff )
 {
 	unsigned int k;
 
@@ -744,21 +742,21 @@ bool WwgInput::ReadStaff( WgStaff *staff )
 		Read( &c, 1 );
 		if ( c == NOTE )
 		{
-			WgNote *note = new WgNote();
+			MusNote *note = new MusNote();
 			note->no = k;
 			ReadNote( note );
 			staff->m_elements.Add( note );
 		}
 		else
 		{
-			WgSymbole *symbole = new WgSymbole();
+			MusSymbol *symbole = new MusSymbol();
 			symbole->no = k;
 			ReadSymbole( symbole );
 			staff->m_elements.Add( symbole );
 		}
 		if ( m_flag == WWG_ARUSPIX_CMP )
 		{		
-			WgElement *elem = &staff->m_elements.Last();
+			MusElement *elem = &staff->m_elements.Last();
 			Read( &int32, 4 );
 			Read( elem->m_im_filename.GetWriteBuf( wxINT32_SWAP_ON_BE( int32 ) + 1 ) , wxINT32_SWAP_ON_BE( int32 ) + 1 );
 			elem->m_im_filename.UngetWriteBuf();
@@ -776,7 +774,7 @@ bool WwgInput::ReadStaff( WgStaff *staff )
 	return true;
 }
 
-bool WwgInput::ReadNote( WgNote *note )
+bool MusWWGInput::ReadNote( MusNote *note )
 {
 	ReadElementAttr( note );
 	Read( &note->sil, 1 );
@@ -808,7 +806,7 @@ bool WwgInput::ReadNote( WgNote *note )
 	return true;
 }
 
-bool WwgInput::ReadSymbole( WgSymbole *symbole )
+bool MusWWGInput::ReadSymbole( MusSymbol *symbole )
 {
 	ReadElementAttr( symbole );
 	Read( &symbole->flag , 1 );
@@ -830,7 +828,7 @@ bool WwgInput::ReadSymbole( WgSymbole *symbole )
 	return true;
 }
 
-bool WwgInput::ReadElementAttr( WgElement *element )
+bool MusWWGInput::ReadElementAttr( MusElement *element )
 {
 	Read( &element->liaison , 1 );
 	Read( &element->dliai , 1 );
@@ -866,7 +864,7 @@ bool WwgInput::ReadElementAttr( WgElement *element )
 	return true;
 }
 
-bool WwgInput::ReadDebord( WgElement *element )
+bool MusWWGInput::ReadDebord( MusElement *element )
 {
 	Read( &uint16, 2 );
 	element->debordSize = wxUINT16_SWAP_ON_BE( uint16 );
@@ -880,7 +878,7 @@ bool WwgInput::ReadDebord( WgElement *element )
 }
 
 
-bool WwgInput::ReadPagination( WgPagination *pagination )
+bool MusWWGInput::ReadPagination( MusPagination *pagination )
 {
 	Read( &int16, 2 );
 	pagination->numeroInitial = wxINT16_SWAP_ON_BE( int16 );
@@ -893,7 +891,7 @@ bool WwgInput::ReadPagination( WgPagination *pagination )
 	return true;
 }
 
-bool WwgInput::ReadHeaderFooter( WgHeaderFooter *headerfooter)
+bool MusWWGInput::ReadHeaderFooter( MusHeaderFooter *headerfooter)
 {
 	char buffer[HEADER_FOOTER_TEXT + 1];
 	Read( buffer, HEADER_FOOTER_TEXT );
@@ -908,6 +906,6 @@ bool WwgInput::ReadHeaderFooter( WgHeaderFooter *headerfooter)
 }
 
 
-// WDR: handler implementations for WwgInput
+// WDR: handler implementations for MusWWGInput
 
-#endif // AX_WG
+

@@ -1,11 +1,9 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        wgnote.cpp
+// Name:        musnote.cpp
 // Author:      Laurent Pugin
 // Created:     2005
 // Copyright (c) Laurent Pugin. All rights reserved.
 /////////////////////////////////////////////////////////////////////////////
-
-#ifdef AX_WG
 
 #ifdef __GNUG__
     #pragma implementation "musnote.cpp"
@@ -30,11 +28,11 @@
 // WDR: class implementations
 
 //----------------------------------------------------------------------------
-// WgNote
+// MusNote
 //----------------------------------------------------------------------------
 
-WgNote::WgNote():
-	WgElement()
+MusNote::MusNote():
+	MusElement()
 {
 	TYPE = NOTE;
     sil = false;
@@ -58,7 +56,7 @@ WgNote::WgNote():
     typStac = 0;
 }
 
-WgNote::WgNote( char _sil, unsigned char _val, unsigned char _code )
+MusNote::MusNote( char _sil, unsigned char _val, unsigned char _code )
 {
 	TYPE = NOTE;
     sil = _sil;
@@ -84,12 +82,12 @@ WgNote::WgNote( char _sil, unsigned char _val, unsigned char _code )
 	oct = 4;
 }
 
-WgNote::~WgNote()
+MusNote::~MusNote()
 {
 }
 
 
-void WgNote::SetPitch( int code, int oct, WgStaff *staff )
+void MusNote::SetPitch( int code, int oct, MusStaff *staff )
 {
 	if ( this->TYPE == SYMB )
 		return;
@@ -114,7 +112,7 @@ void WgNote::SetPitch( int code, int oct, WgStaff *staff )
 
 
 
-void WgNote::SetValue( int value, WgStaff *staff, int vflag )
+void MusNote::SetValue( int value, MusStaff *staff, int vflag )
 {	
 	if ( this->TYPE == SYMB )
 		return;
@@ -159,7 +157,7 @@ void WgNote::SetValue( int value, WgStaff *staff, int vflag )
 }
 
 
-void WgNote::ChangeColoration( WgStaff *staff )
+void MusNote::ChangeColoration( MusStaff *staff )
 {
 	if ( ( this->sil == _SIL ) || ( this->val == CUSTOS ) )
 		return;
@@ -180,7 +178,7 @@ void WgNote::ChangeColoration( WgStaff *staff )
 
 }
 
-void WgNote::SetLigature( WgStaff *staff )
+void MusNote::SetLigature( MusStaff *staff )
 {
 	if ( ( this->sil == _SIL ) || ( this->val == LG ) || ( this->val > RD ) )
 		return;
@@ -193,7 +191,7 @@ void WgNote::SetLigature( WgStaff *staff )
 	this->DrawAndRelease( dc, staff );
 }
 
-void WgNote::ChangeStem( WgStaff *staff )
+void MusNote::ChangeStem( MusStaff *staff )
 {
 	if ( ( this->sil == _SIL ) || (( this->val > LG ) && ( this->val < BL )) )
 		return;
@@ -206,11 +204,11 @@ void WgNote::ChangeStem( WgStaff *staff )
 }
 
 
-void WgNote::Draw( wxDC *dc, WgStaff *staff)
+void MusNote::Draw( wxDC *dc, MusStaff *staff)
 // unsigned touche;	 code relecture input (1) ou coord. du decalage (0) 
 {
 	wxASSERT_MSG( dc , "DC cannot be NULL");
-	wxASSERT_MSG( m_w, "WgWindow cannot be NULL ");
+	wxASSERT_MSG( m_w, "MusWindow cannot be NULL ");
 	if ( !Check() )
 		return;	
 
@@ -260,7 +258,7 @@ void WgNote::Draw( wxDC *dc, WgStaff *staff)
 // l'accord (ptr_n->fchord), la valeur y extreme opposee au sommet de la
 // queue: le ptr *testchord extern peut garder le x et l'y.
 
-void WgNote::note ( wxDC *dc, WgStaff *staff)
+void MusNote::note ( wxDC *dc, MusStaff *staff)
 {
 	int pTaille = staff->pTaille;
 
@@ -464,7 +462,7 @@ void WgNote::note ( wxDC *dc, WgStaff *staff)
 		{}/***x1 = x_acc_chrd (this,0);***/
 		else
 			x1 -= m_w->largAlter[pTaille][this->dimin];
-		WgSymbole symb;
+		MusSymbol symb;
 		symb.Init( m_w );
 		symb.flag = ALTER;
 		symb.calte = this->acc;
@@ -542,7 +540,7 @@ void WgNote::note ( wxDC *dc, WgStaff *staff)
 }
 
 
-void WgNote::leg_line( wxDC *dc, int y_n, int y_p, int xn, unsigned int smaller, int pTaille)
+void MusNote::leg_line( wxDC *dc, int y_n, int y_p, int xn, unsigned int smaller, int pTaille)
 {
 	int yn, ynt, yh, yb, test, v_decal = m_w->_interl[pTaille];
 	int dist, xng, xnd;
@@ -593,7 +591,7 @@ void WgNote::leg_line( wxDC *dc, int y_n, int y_p, int xn, unsigned int smaller,
 }
 
 
-void WgNote::silence ( wxDC *dc, WgStaff *staff)
+void MusNote::silence ( wxDC *dc, MusStaff *staff)
 {	
 	int formval = this->val;
 	int a = this->xrel + this->offset, b = this->dec_y;
@@ -635,7 +633,7 @@ void WgNote::silence ( wxDC *dc, WgStaff *staff)
 }
 
 
-void WgNote::s_special ( wxDC *dc, int a, WgStaff *staff)
+void MusNote::s_special ( wxDC *dc, int a, MusStaff *staff)
 
 {	int x, x2, y, y2, off;
 
@@ -647,7 +645,7 @@ void WgNote::s_special ( wxDC *dc, int a, WgStaff *staff)
 	return;
 }
 
-void WgNote::s_lg ( wxDC *dc, int a, int b, WgStaff *staff)
+void MusNote::s_lg ( wxDC *dc, int a, int b, MusStaff *staff)
 
 {	int x, x2, y = b + staff->yrel, y2;
 
@@ -661,7 +659,7 @@ void WgNote::s_lg ( wxDC *dc, int a, int b, WgStaff *staff)
 }
 
 
-void WgNote::s_br ( wxDC *dc, int a, int b, WgStaff *staff)
+void MusNote::s_br ( wxDC *dc, int a, int b, MusStaff *staff)
 
 {	int x, x2, y = b + staff->yrel, y2;
 
@@ -679,7 +677,7 @@ void WgNote::s_br ( wxDC *dc, int a, int b, WgStaff *staff)
 	return;
 }
 
-void WgNote::s_rd ( wxDC *dc, int a, int b, int valeur, WgStaff *staff)
+void MusNote::s_rd ( wxDC *dc, int a, int b, int valeur, MusStaff *staff)
 
 {	int x, x2, y = b + staff->yrel, y2, vertic = m_w->_espace[staff->pTaille];
 	int off;
@@ -723,7 +721,7 @@ void WgNote::s_rd ( wxDC *dc, int a, int b, int valeur, WgStaff *staff)
 }
 
 
-void WgNote::s_nr ( wxDC *dc, int a, int b, int valeur, WgStaff *staff)
+void MusNote::s_nr ( wxDC *dc, int a, int b, int valeur, MusStaff *staff)
 {
 	int _intrl = m_w->_interl[staff->pTaille];
 
@@ -740,7 +738,7 @@ void WgNote::s_nr ( wxDC *dc, int a, int b, int valeur, WgStaff *staff)
 }
 
 
-void WgNote::pointage ( wxDC *dc, int x1, int y1, int offy, unsigned int d_p, WgStaff *staff )
+void MusNote::pointage ( wxDC *dc, int x1, int y1, int offy, unsigned int d_p, MusStaff *staff )
 
 {
 	y1 += offy;
@@ -754,7 +752,7 @@ void WgNote::pointage ( wxDC *dc, int x1, int y1, int offy, unsigned int d_p, Wg
 
 
 
-void WgNote::ligature ( wxDC *dc, int y, WgStaff *staff )
+void MusNote::ligature ( wxDC *dc, int y, MusStaff *staff )
 {	
 	//static int ligat_x[2], ligat_y[2];	// pour garder coord. des ligatures
 	//static unsigned int marq_obl;	// marque le 1e passage pour une oblique
@@ -867,7 +865,7 @@ void WgNote::ligature ( wxDC *dc, int y, WgStaff *staff )
 }
 
 
-// WDR: handler implementations for WgNote
+// WDR: handler implementations for MusNote
 
 
-#endif // AX_WG
+

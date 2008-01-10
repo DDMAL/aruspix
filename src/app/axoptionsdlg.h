@@ -1,12 +1,12 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        optionsdlg.h
+// Name:        axoptionsdlg.h
 // Author:      Laurent Pugin
 // Created:     2004
 // Copyright (c) Laurent Pugin. All rights reserved.   
 /////////////////////////////////////////////////////////////////////////////
 
-#ifndef __optionsdlg_H__
-#define __optionsdlg_H__
+#ifndef __axoptionsdlg_H__
+#define __axoptionsdlg_H__
 
 #if defined(__GNUG__) && ! defined(__APPLE__)
     #pragma interface "axoptionsdlg.h"
@@ -23,22 +23,22 @@
 //	#include "rec_wdr.h"
 #endif
 
-class OptionsWgWindow;
+class AxOptMusWindow;
 
 //----------------------------------------------------------------------------
-// OptionsDlg
+// AxOptionsDlg
 //----------------------------------------------------------------------------
 
-class OptionsDlg: public wxDialog
+class AxOptionsDlg: public wxDialog
 {
 public:
     // constructors and destructors
-    OptionsDlg( wxWindow *parent, wxWindowID id, const wxString &title,
+    AxOptionsDlg( wxWindow *parent, wxWindowID id, const wxString &title,
         const wxPoint& pos = wxDefaultPosition,
         const wxSize& size = wxDefaultSize,
         long style = wxDEFAULT_DIALOG_STYLE );
     
-    // WDR: method declarations for OptionsDlg
+    // WDR: method declarations for AxOptionsDlg
     wxPanel* GetWgPanel()  { return (wxPanel*) FindWindow( ID_PANEL_WINKEY ); }
     wxSpinCtrl* GetScWgOffset()  { return (wxSpinCtrl*) FindWindow( ID_SC_WG_OFFSET ); }
     wxSpinCtrl* GetScWgSize()  { return (wxSpinCtrl*) FindWindow( ID_SC_WG_SIZE ); }
@@ -86,12 +86,12 @@ private:
 	void UpdateFontCorrections( int eventID );
     
 private:
-    // WDR: member variable declarations for OptionsDlg
+    // WDR: member variable declarations for AxOptionsDlg
     wxString m_imageSizeToReduceStr;
     bool m_changeLanguage;
     wxFont m_font;
     bool m_changeFont;
-	OptionsWgWindow *m_wgWinPtr;
+	AxOptMusWindow *m_wgWinPtr;
 	bool m_ignoreSpinEvent;
 	int m_previousFontPosCorrection; // keep if canceled
 	int m_previousFontSizeCorrection;
@@ -106,7 +106,7 @@ private:
 #endif
     
 private:
-    // WDR: handler declarations for OptionsDlg
+    // WDR: handler declarations for AxOptionsDlg
 	void OnSpinCtrl( wxSpinEvent &event );
 	void OnSpinCtrlText( wxCommandEvent &event );
     void OnChooseFont( wxCommandEvent &event );
@@ -117,11 +117,11 @@ private:
     void OnOk( wxCommandEvent &event );
     void OnCancel( wxCommandEvent &event );
 	// Standard tabs
-	void OptionsDlg::OptionsDlgStandard( wxNotebook *notebook );
+	void AxOptionsDlg::OptionsDlgStandard( wxNotebook *notebook );
 	// Superimposition tabs
-	void OptionsDlg::OptionsDlgSuperimposition( wxNotebook *notebook );
+	void AxOptionsDlg::OptionsDlgSuperimposition( wxNotebook *notebook );
 	// Recognition tabs
-	void OptionsDlg::OptionsDlgRecognition( wxNotebook *notebook );
+	void AxOptionsDlg::OptionsDlgRecognition( wxNotebook *notebook );
 	wxSize m_min_size; // keep min size to layout notebook; bug in auto layout ??? can't get it...
 	
 #ifdef AX_SUPERIMPOSITION
@@ -139,32 +139,32 @@ private:
 
 
 //----------------------------------------------------------------------------
-// OptionsWgWindow
+// AxOptMusWindow
 //----------------------------------------------------------------------------
 
-class OptionsWgWindow: public WgWindow
+class AxOptMusWindow: public MusWindow
 {
 public:
     // constructors and destructors
-    OptionsWgWindow();
-    OptionsWgWindow( wxWindow *parent, wxWindowID id = -1,
+    AxOptMusWindow();
+    AxOptMusWindow( wxWindow *parent, wxWindowID id = -1,
         const wxPoint& pos = wxDefaultPosition,
         const wxSize& size = wxDefaultSize,
         long style = wxScrolledWindowStyle, bool center = true );
-    virtual ~OptionsWgWindow();
+    virtual ~AxOptMusWindow();
         
-    // WDR: method declarations for OptionsWgWindow
+    // WDR: method declarations for AxOptMusWindow
     
 protected:
-    // WDR: member variable declarations for OptionsWgWindow
-    WgFile *m_filePtr;
+    // WDR: member variable declarations for AxOptMusWindow
+    MusFile *m_filePtr;
     
 private:
-    // WDR: handler declarations for OptionsWgWindow
+    // WDR: handler declarations for AxOptMusWindow
     void OnMouse( wxMouseEvent &event );
 
 private:
-    DECLARE_CLASS(OptionsWgWindow)
+    DECLARE_CLASS(AxOptMusWindow)
     DECLARE_EVENT_TABLE()
 };
 

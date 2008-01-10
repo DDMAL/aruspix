@@ -61,7 +61,7 @@ bool SupEnv::s_filter2 = true;
 //----------------------------------------------------------------------------
 
 
-SupFile::SupFile( wxString path, wxString shortname, ProgressDlg *dlg ):
+SupFile::SupFile( wxString path, wxString shortname, AxProgressDlg *dlg ):
 	ImOperator( )
 {
     m_im1 = NULL;
@@ -1069,7 +1069,7 @@ void SupEnv::OnSuperimpose( wxCommandEvent &event )
     m_imControl2Ptr->m_points[2] = wxPoint(580,840);*/
 
 
-    ProgressDlg *dlg = new ProgressDlg( m_framePtr, -1, _("Superposition") );
+    AxProgressDlg *dlg = new AxProgressDlg( m_framePtr, -1, _("Superposition") );
     dlg->Center( wxBOTH );
     dlg->Show();
     dlg->SetMaxBatchBar( 1 );
@@ -1095,6 +1095,8 @@ void SupEnv::OnSuperimpose( wxCommandEvent &event )
     if (res != wxYES)
         return;
 
+	// TODO, changed as Dsp doesn't exist anymore...
+	/*
     static const wxCmdLineEntryDesc cmdLineDesc[] = {
         {wxCMD_LINE_PARAM,  NULL, NULL, _("input files"),
          wxCMD_LINE_VAL_STRING,
@@ -1106,6 +1108,7 @@ void SupEnv::OnSuperimpose( wxCommandEvent &event )
     parser.SetCmdLine("cmd \"" + filename + "\"");
     ((AxFrame*)m_framePtr)->SetEnvironment( "DspEnv" );
     ((AxFrame*)m_framePtr)->ParseCmd( &parser );
+	*/
 }
 
 void SupEnv::OnPaste( wxCommandEvent &event )

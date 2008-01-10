@@ -1,18 +1,18 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        cmpwg.h
+// Name:        cmpmus.h
 // Author:      Laurent Pugin
 // Created:     2004
 // Copyright (c) Laurent Pugin. All rights reserved.
 /////////////////////////////////////////////////////////////////////////////
 
-#ifndef __cmpwg_H__
-#define __cmpwg_H__
+#ifndef __cmpmus_H__
+#define __cmpmus_H__
 
 #ifdef AX_RECOGNITION
 	#ifdef AX_COMPARISON
 
 #ifdef __GNUG__
-    #pragma interface "cmpwg.cpp"
+    #pragma interface "cmpmus.cpp"
 #endif
 
 #ifndef WX_PRECOMP
@@ -24,7 +24,7 @@
 //#include "cmp_wdr.h"
 
 class CmpEnv;
-class CmpWgWindow;
+class CmpMusWindow;
 
 class CmpImWindow;
 class CmpImController;
@@ -35,36 +35,36 @@ class CmpFile;
 // WDR: class declarations
 
 //----------------------------------------------------------------------------
-// CmpWgController
+// CmpMusController
 //----------------------------------------------------------------------------
 
-class CmpWgController: public wxPanel
+class CmpMusController: public wxPanel
 {
 public:
     // constructors and destructors
-    CmpWgController();
-    CmpWgController( wxWindow *parent, wxWindowID id = -1,
+    CmpMusController();
+    CmpMusController( wxWindow *parent, wxWindowID id = -1,
         const wxPoint& pos = wxDefaultPosition,
         const wxSize& size = wxDefaultSize,
         long style = wxTAB_TRAVERSAL | wxNO_BORDER );
     
-    // WDR: method declarations for CmpWgController
-	void Init( CmpEnv *env, CmpWgWindow *window );
+    // WDR: method declarations for CmpMusController
+	void Init( CmpEnv *env, CmpMusWindow *window );
 	void SetImViewAndController( CmpImWindow *cmpImWindow1, CmpImController *cmpImController1,
 		CmpImWindow *cmpImWindow2, CmpImController *cmpImController2 );
 	void SetCmpFile( CmpFile *cmpFile );
     
 protected:
-    // WDR: member variable declarations for CmpWgController
+    // WDR: member variable declarations for CmpMusController
 	CmpEnv *m_envPtr;
-    CmpWgWindow *m_viewPtr;
+    CmpMusWindow *m_viewPtr;
 	// to synchronize view
 	CmpFile *m_cmpFilePtr;
 	CmpImWindow *m_imViewPtr1, *m_imViewPtr2;
 	CmpImController *m_imControlPtr1, *m_imControlPtr2;
 	
 private:
-    // WDR: handler declarations for CmpWgController
+    // WDR: handler declarations for CmpMusController
     void OnSize( wxSizeEvent &event );
 
 private:
@@ -73,19 +73,19 @@ private:
 
 
 //----------------------------------------------------------------------------
-// CmpWgWindow
+// CmpMusWindow
 //----------------------------------------------------------------------------
 
-class CmpWgWindow: public WgWindow
+class CmpMusWindow: public MusWindow
 {
 public:
     // constructors and destructors
-    CmpWgWindow();
-    CmpWgWindow( CmpWgController *parent, wxWindowID id = -1,
+    CmpMusWindow();
+    CmpMusWindow( CmpMusController *parent, wxWindowID id = -1,
         const wxPoint& pos = wxDefaultPosition,
         const wxSize& size = wxDefaultSize,
         long style = wxScrolledWindowStyle, bool center = true );
-    virtual ~CmpWgWindow();
+    virtual ~CmpMusWindow();
     void SetEnv( CmpEnv *env );
 	void SetImViewAndController( CmpImWindow *cmpImWindow1, CmpImController *cmpImController1,
 		CmpImWindow *cmpImWindow2, CmpImController *cmpImController2 );
@@ -98,13 +98,13 @@ public:
 	virtual void OnSyncScroll( int x, int y );
 	virtual void OnSize( wxSizeEvent &event );
     
-    // WDR: method declarations for CmpWgWindow
+    // WDR: method declarations for CmpMusWindow
     
 protected:
-    // WDR: member variable declarations for CmpWgWindow
+    // WDR: member variable declarations for CmpMusWindow
     bool m_shiftDown;
     CmpEnv *m_envPtr;
-	CmpWgController *m_wgControlPtr;
+	CmpMusController *m_wgControlPtr;
     //bool m_edition; // true if OnBeginEdition() has been called -> retranspose current staff
 	CmpFile *m_cmpFilePtr;
 	CmpImWindow *m_imViewPtr1, *m_imViewPtr2;
@@ -113,14 +113,14 @@ protected:
 	int m_lastStaff, m_lastController;
     
 private:
-    // WDR: handler declarations for CmpWgWindow
+    // WDR: handler declarations for CmpMusWindow
     void OnMouse( wxMouseEvent &event );
     void OnScroll( wxScrollWinEvent &event );
     void OnKeyUp( wxKeyEvent &event );
     void OnKeyDown( wxKeyEvent &event );
 
 private:
-    DECLARE_CLASS(CmpWgWindow)
+    DECLARE_CLASS(CmpMusWindow)
     DECLARE_EVENT_TABLE()
 };
 

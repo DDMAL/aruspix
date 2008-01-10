@@ -1,11 +1,9 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        wgfile.cpp
+// Name:        musfile.cpp
 // Author:      Laurent Pugin
 // Created:     2005
 // Copyright (c) Laurent Pugin. All rights reserved.
 /////////////////////////////////////////////////////////////////////////////
-
-#ifdef AX_WG
 
 #ifdef __GNUG__
     #pragma implementation "musfile.cpp"
@@ -29,22 +27,22 @@ WX_DEFINE_OBJARRAY( ArrayOfWgPages );
 WX_DEFINE_OBJARRAY( ArrayOfWgFonts );
 
 
-char *WgFile::sep = "#ώτυώ#";
+char *MusFile::sep = "#ώτυώ#";
 
 // WDR: class implementations
 
 //----------------------------------------------------------------------------
-// WgFile
+// MusFile
 //----------------------------------------------------------------------------
 
-WgFile::WgFile()
+MusFile::MusFile()
 {
     m_pages.Clear();
 	m_masqueFixe.Clear();
 	m_masqueVariable.Clear();
 
 	m_fonts.Clear();
-	WgFont font;
+	MusFont font;
 
 	font.fonteJeu = 1;
 	font.fonteNom = "Leipzig 4.2";
@@ -59,15 +57,15 @@ WgFile::WgFile()
 	}
 }
 
-WgFile::~WgFile()
+MusFile::~MusFile()
 {
 }
 
-void WgFile::CheckIntegrity()
+void MusFile::CheckIntegrity()
 {
 	this->m_fheader.nbpage = (int)this->m_pages.GetCount();
 
-	WgPage *page;
+	MusPage *page;
 	int i;
     for (i = 0; i < m_fheader.nbpage; i++) 
 	{
@@ -78,21 +76,21 @@ void WgFile::CheckIntegrity()
 }
 
 
-// WDR: handler implementations for WgFile
+// WDR: handler implementations for MusFile
 
 
 //----------------------------------------------------------------------------
-// WgFileOutputStream
+// MusFileOutputStream
 //----------------------------------------------------------------------------
 
-WgFileOutputStream::WgFileOutputStream( WgFile *file, wxString filename ) :
+MusFileOutputStream::MusFileOutputStream( MusFile *file, wxString filename ) :
 	wxFileOutputStream( filename )
 {
 	//wxASSERT_MSG( file, "File cannot be NULL" );
 	m_file = file;
 }
 
-WgFileOutputStream::WgFileOutputStream( WgFile *file, int fd ) :
+MusFileOutputStream::MusFileOutputStream( MusFile *file, int fd ) :
 	wxFileOutputStream( fd )
 {
 	//wxASSERT_MSG( file, "File cannot be NULL" );
@@ -100,7 +98,7 @@ WgFileOutputStream::WgFileOutputStream( WgFile *file, int fd ) :
 }
 
 /*
-WgFileOutputStream::WgFileOutputStream( WgFile *file, wxFile *wxfile ) :
+MusFileOutputStream::MusFileOutputStream( MusFile *file, wxFile *wxfile ) :
 	wxFileOutputStream( *wxfile )
 {
 	//wxASSERT_MSG( file, "File cannot be NULL" );
@@ -108,30 +106,30 @@ WgFileOutputStream::WgFileOutputStream( WgFile *file, wxFile *wxfile ) :
 }
 */
 
-WgFileOutputStream::~WgFileOutputStream()
+MusFileOutputStream::~MusFileOutputStream()
 {
 }
 
-// WDR: handler implementations for WgFileOutputStream
+// WDR: handler implementations for MusFileOutputStream
 
 
 //----------------------------------------------------------------------------
-// WgFileInputStream
+// MusFileInputStream
 //----------------------------------------------------------------------------
 
-WgFileInputStream::WgFileInputStream( WgFile *file, wxString filename  ) :
+MusFileInputStream::MusFileInputStream( MusFile *file, wxString filename  ) :
 	wxFileInputStream( filename )
 {
 	//wxASSERT_MSG( file, "File cannot be NULL" );
 	m_file = file;
 }
 
-WgFileInputStream::~WgFileInputStream()
+MusFileInputStream::~MusFileInputStream()
 {
 }
 
-// WDR: handler implementations for WgFileInputStream
+// WDR: handler implementations for MusFileInputStream
 
 
 
-#endif // AX_WG
+

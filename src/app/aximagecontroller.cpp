@@ -445,7 +445,7 @@ void AxImageController::Previous()
 
 void AxImageController::Goto()
 {
-    GotoDlg *dlg = new GotoDlg(this, -1, _("Go to page ..."), m_nbOfPages, m_currentPage );
+    AxGotoDlg *dlg = new AxGotoDlg(this, -1, _("Go to page ..."), m_nbOfPages, m_currentPage );
     dlg->Center(wxBOTH);
     if ( dlg->ShowModal() == wxID_OK )
 	{
