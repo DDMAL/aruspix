@@ -34,8 +34,8 @@ const int ID4_SPLITTER1 = 15000;
 wxSizer *WindowFunc4( wxWindow *parent, bool call_fit = TRUE, bool set_sizer = TRUE );
 
 const int ID4_TOOLPANEL = 15001;
-const int ID4_WGPANEL = 15002;
-wxSizer *WgOutputFunc4( wxWindow *parent, bool call_fit = TRUE, bool set_sizer = TRUE );
+const int ID4_MUSPANEL = 15002;
+wxSizer *MusOutputFunc4( wxWindow *parent, bool call_fit = TRUE, bool set_sizer = TRUE );
 
 const int ID4_TREEBOOK = 15003;
 const int ID4_LINE2 = 15004;

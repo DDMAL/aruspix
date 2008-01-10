@@ -32,7 +32,7 @@
 
 const int ID5_LINE = 15000;
 const int ID5_TOOLPANEL = 15001;
-const int ID5_WGPANEL = 15002;
+const int ID5_MUSPANEL = 15002;
 wxSizer *WindowFunc5( wxWindow *parent, bool call_fit = TRUE, bool set_sizer = TRUE );
 
 // Declare menubar functions

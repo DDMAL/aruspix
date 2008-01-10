@@ -34,7 +34,7 @@
 
 // Custom source
 #include "comparison/cmp.h"
-#include "comparison/cmpwg.h"
+#include "comparison/cmpmus.h"
 #include "comparison/cmpctrl.h"
 #include "mus/mustoolpanel.h"
 
@@ -59,7 +59,7 @@ wxSizer *WindowFunc6( wxWindow *parent, bool call_fit, bool set_sizer )
     return item0;
 }
 
-wxSizer *WgOutputFunc6( wxWindow *parent, bool call_fit, bool set_sizer )
+wxSizer *MusOutputFunc6( wxWindow *parent, bool call_fit, bool set_sizer )
 {
     wxFlexGridSizer *item0 = new wxFlexGridSizer( 1, 0, 0 );
     item0->AddGrowableCol( 0 );
@@ -68,7 +68,7 @@ wxSizer *WgOutputFunc6( wxWindow *parent, bool call_fit, bool set_sizer )
     MusToolPanel *item1 = new MusToolPanel( parent, ID6_TOOLPANEL, wxDefaultPosition, wxSize(10,10), 0 );
     item0->Add( item1, 0, wxGROW, 0 );
 
-    CmpMusController *item2 = new CmpMusController( parent, ID6_WGPANEL, wxDefaultPosition, wxSize(200,160), wxSUNKEN_BORDER );
+    CmpMusController *item2 = new CmpMusController( parent, ID6_MUSPANEL, wxDefaultPosition, wxSize(200,160), wxSUNKEN_BORDER );
     item0->Add( item2, 0, wxGROW|wxALL, 0 );
 
     if (set_sizer)

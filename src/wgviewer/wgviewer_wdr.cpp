@@ -50,7 +50,7 @@ wxSizer *WindowFunc5( wxWindow *parent, bool call_fit, bool set_sizer )
     MusToolPanel *item2 = new MusToolPanel( parent, ID5_TOOLPANEL, wxDefaultPosition, wxSize(10,10), 0 );
     item0->Add( item2, 0, 0, 5 );
 
-    WgvPanel *item3 = new WgvPanel( parent, ID5_WGPANEL, wxDefaultPosition, wxSize(200,160), wxSUNKEN_BORDER );
+    WgvPanel *item3 = new WgvPanel( parent, ID5_MUSPANEL, wxDefaultPosition, wxSize(200,160), wxSUNKEN_BORDER );
     item0->Add( item3, 0, wxGROW|wxLEFT|wxRIGHT|wxBOTTOM, 0 );
 
     if (set_sizer)
