@@ -111,7 +111,7 @@ RecSplitterWindow::RecSplitterWindow( wxWindow *parent, wxWindowID id,
     m_envPtr = NULL;
 }
 
-void RecSplitterWindow::SetEnv( RecEnv *env, wxFlexGridSizer *sizer, WgToolPanel *toolpanel,    RecWgController *wgControlPtr )
+void RecSplitterWindow::SetEnv( RecEnv *env, wxFlexGridSizer *sizer, MusToolPanel *toolpanel,    RecWgController *wgControlPtr )
 {
     m_envPtr = env;
     m_wgsizer = sizer;
@@ -353,7 +353,7 @@ void RecEnv::LoadWindow()
     m_imControlPtr->SetWgViewAndController( m_wgViewPtr, m_wgControlPtr );
     m_imControlPtr->SetRecFile( m_recFilePtr );
    
-    m_toolpanel = (WgToolPanel*)m_envWindowPtr->FindWindowById( ID4_TOOLPANEL );
+    m_toolpanel = (MusToolPanel*)m_envWindowPtr->FindWindowById( ID4_TOOLPANEL );
     wxASSERT_MSG( m_toolpanel, "Tool Panel cannot be NULL ");
     
  //   m_toolpanel->SetDirection( false );
@@ -537,7 +537,7 @@ void RecEnv::ParseCmd( wxCmdLineParser *parser )
         //  outfile ...;
         //}
     
-        ProgressDlg *dlg = new ProgressDlg( m_framePtr, -1, _("Batch") );
+        AxProgressDlg *dlg = new AxProgressDlg( m_framePtr, -1, _("Batch") );
         dlg->Center( wxBOTH );
         //dlg->Show( );
         wxLog::SetActiveTarget( new wxLogStderr() );
@@ -762,7 +762,7 @@ void RecEnv::OnResetAdaptation( wxCommandEvent &event )
 
 void RecEnv::OnExportAxmus( wxCommandEvent &event )
 {
-    if ( ProgressDlg::s_instance_existing )
+    if ( AxProgressDlg::s_instance_existing )
         return;
 
     wxArrayString paths, filenames;
@@ -782,7 +782,7 @@ void RecEnv::OnExportAxmus( wxCommandEvent &event )
     params.Add( &nbOfFiles );
     params.Add( &paths );
     
-    ProgressDlg *dlg = new ProgressDlg( m_framePtr, -1, _("Export music model") );
+    AxProgressDlg *dlg = new AxProgressDlg( m_framePtr, -1, _("Export music model") );
     dlg->Center( wxBOTH );
     dlg->Show();
     dlg->SetMaxBatchBar( 2 );
@@ -812,7 +812,7 @@ void RecEnv::OnExportAxmus( wxCommandEvent &event )
 void RecEnv::OnExportAxtyp( wxCommandEvent &event )
 {
 #ifndef META_BATCH3
-    if ( ProgressDlg::s_instance_existing )
+    if ( AxProgressDlg::s_instance_existing )
         return;
 
     wxArrayString paths, filenames;
@@ -832,7 +832,7 @@ void RecEnv::OnExportAxtyp( wxCommandEvent &event )
     params.Add( &nbOfFiles );
     params.Add( &paths );
     
-    ProgressDlg *dlg = new ProgressDlg( m_framePtr, -1, _("Export typographic model") );
+    AxProgressDlg *dlg = new AxProgressDlg( m_framePtr, -1, _("Export typographic model") );
     dlg->Center( wxBOTH );
     dlg->Show();
     dlg->SetMaxBatchBar( 3 );
@@ -877,7 +877,7 @@ void RecEnv::OnBookEdit( wxCommandEvent &event )
 
 void RecEnv::OnBookOptimize( wxCommandEvent &event )
 {
-    if ( ProgressDlg::s_instance_existing )
+    if ( AxProgressDlg::s_instance_existing )
         return;
 
     if ( !m_recBookFilePtr->IsOpened() )
@@ -894,7 +894,7 @@ void RecEnv::OnBookOptimize( wxCommandEvent &event )
         return;  
 	}
                            
-    ProgressDlg *dlg = new ProgressDlg( m_framePtr, -1, _("Optimization") );
+    AxProgressDlg *dlg = new AxProgressDlg( m_framePtr, -1, _("Optimization") );
     dlg->Center( wxBOTH );
     dlg->Show();
 	dlg->SetMaxBatchBar( 6 );	
@@ -940,7 +940,7 @@ void RecEnv::OnBookOptimize( wxCommandEvent &event )
 
 void RecEnv::OnBookRecognize( wxCommandEvent &event )
 {
-    if ( ProgressDlg::s_instance_existing )
+    if ( AxProgressDlg::s_instance_existing )
         return;
         
     if ( !m_recBookFilePtr->IsOpened() )
@@ -956,7 +956,7 @@ void RecEnv::OnBookRecognize( wxCommandEvent &event )
         return;  
 	}
                            
-    ProgressDlg *dlg = new ProgressDlg( m_framePtr, -1, _("Batch recognition") );
+    AxProgressDlg *dlg = new AxProgressDlg( m_framePtr, -1, _("Batch recognition") );
     dlg->Center( wxBOTH );
     dlg->Show();
     dlg->SetMaxBatchBar( nbOfFiles );
@@ -1017,7 +1017,7 @@ void RecEnv::OnBookRecognize( wxCommandEvent &event )
 
 void RecEnv::OnBookPreprocess( wxCommandEvent &event )
 {
-    if ( ProgressDlg::s_instance_existing )
+    if ( AxProgressDlg::s_instance_existing )
         return;
         
     if ( !m_recBookFilePtr->IsOpened() )
@@ -1036,7 +1036,7 @@ void RecEnv::OnBookPreprocess( wxCommandEvent &event )
     wxString output = m_recBookFilePtr->m_axFileDir;
     output += wxFileName::GetPathSeparator();
     
-    ProgressDlg *dlg = new ProgressDlg( m_framePtr, -1, _("Batch preprocessing") );
+    AxProgressDlg *dlg = new AxProgressDlg( m_framePtr, -1, _("Batch preprocessing") );
     dlg->Center( wxBOTH );
     dlg->Show();
     dlg->SetMaxBatchBar( nbOfFiles );
@@ -1178,7 +1178,7 @@ void RecEnv::OnClose( wxCommandEvent &event )
 void RecEnv::BatchAdaptation( )
 {
 #ifdef META_BATCH3
-    if ( ProgressDlg::s_instance_existing )
+    if ( AxProgressDlg::s_instance_existing )
         return;
 
     wxArrayString paths, filenames;
@@ -1225,7 +1225,7 @@ void RecEnv::BatchAdaptation( )
         params.Add( &nbOfFiles );
         params.Add( &paths );
     
-        ProgressDlg *dlg = new ProgressDlg( m_framePtr, -1, _("Batch") );
+        AxProgressDlg *dlg = new AxProgressDlg( m_framePtr, -1, _("Batch") );
         dlg->Center( wxBOTH );
         dlg->Show();
         dlg->SetMaxBatchBar( 2 );
@@ -1255,7 +1255,7 @@ void RecEnv::BatchAdaptation( )
 /*
 void RecEnv::OnBatch4( wxCommandEvent &event )
 {
-    if ( ProgressDlg::s_instance_existing )
+    if ( AxProgressDlg::s_instance_existing )
         return;
 
     wxArrayString paths, filenames;
@@ -1277,7 +1277,7 @@ void RecEnv::OnBatch4( wxCommandEvent &event )
     params.Add( &nbOfFiles );
     params.Add( &paths );
     
-    ProgressDlg *dlg = new ProgressDlg( m_framePtr, -1, _("Batch") );
+    AxProgressDlg *dlg = new AxProgressDlg( m_framePtr, -1, _("Batch") );
     dlg->Center( wxBOTH );
     dlg->Show();
     dlg->SetMaxBatchBar( 2 );
@@ -1310,13 +1310,13 @@ void RecEnv::OnTools( wxCommandEvent &event )
     {
         m_wgViewPtr->SetInsertMode( true );
         if ( event.GetId() == ID4_NOTES )
-            m_wgViewPtr->SetToolType( WG_TOOLS_NOTES );
+            m_wgViewPtr->SetToolType( MUS_TOOLS_NOTES );
         else if ( event.GetId() == ID4_KEYS)
-            m_wgViewPtr->SetToolType( WG_TOOLS_KEYS );
+            m_wgViewPtr->SetToolType( MUS_TOOLS_CLEFS );
         else if ( event.GetId() == ID4_SIGNS )
-            m_wgViewPtr->SetToolType( WG_TOOLS_SIGNS );
+            m_wgViewPtr->SetToolType( MUS_TOOLS_SIGNS );
         else if ( event.GetId() == ID4_SYMBOLES )
-            m_wgViewPtr->SetToolType( WG_TOOLS_OTHER );
+            m_wgViewPtr->SetToolType( MUS_TOOLS_OTHER );
     }
 }
 
@@ -1422,10 +1422,10 @@ void RecEnv::Recognize(  )
     if ( m_recFilePtr->IsRecognized() ) // do nothing, should not happen
         return;
         
-    if ( ProgressDlg::s_instance_existing )
+    if ( AxProgressDlg::s_instance_existing )
         return;
         
-    ProgressDlg *dlg = new ProgressDlg( m_framePtr, -1, _("Recognition") );
+    AxProgressDlg *dlg = new AxProgressDlg( m_framePtr, -1, _("Recognition") );
     dlg->Center( wxBOTH );
     dlg->Show();
     dlg->SetMaxBatchBar( 1 );
@@ -1492,14 +1492,14 @@ void RecEnv::Preprocess( )
     if ( !m_imControlPtr->Ok() || !m_imControlPtr->HasFilename() )
         return;
         
-    if ( ProgressDlg::s_instance_existing )
+    if ( AxProgressDlg::s_instance_existing )
         return;
         
     // if a book is opened, check if the file has to be preprocessed
     if ( m_recBookFilePtr->IsOpened() && !m_recBookFilePtr->HasToBePreprocessed( m_imControlPtr->GetFilename() ) )
         return;
         
-    ProgressDlg *dlg = new ProgressDlg( m_framePtr, -1, _("Preprocessing") );
+    AxProgressDlg *dlg = new AxProgressDlg( m_framePtr, -1, _("Preprocessing") );
     dlg->Center( wxBOTH );
     dlg->Show();
     dlg->SetMaxBatchBar( 1 );

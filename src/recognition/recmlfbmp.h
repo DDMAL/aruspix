@@ -8,8 +8,6 @@
 #ifndef __WG_IOMLFBMP_H__
 #define __WG_IOMLFBMP_H__
 
-#ifdef AX_WG
-
 #ifdef __GNUG__
     #pragma interface "mlfbmp.cpp"
 #endif
@@ -25,27 +23,27 @@ class ImPage;
 class ImStaff;
 
 
-class MLFBitmapType;
-WX_DECLARE_OBJARRAY( MLFBitmapType, ArrayOfMLFBitmapTypes);
+class RecMLFBmpType;
+WX_DECLARE_OBJARRAY( RecMLFBmpType, ArrayOfMLFBitmapTypes);
 
 // WDR: class declarations
 
 
 //----------------------------------------------------------------------------
-// MLFBitmapType
+// RecMLFBmpType
 //----------------------------------------------------------------------------
 
-class MLFBitmapType: public wxObject
+class RecMLFBmpType: public wxObject
 {
 public:
     // constructors and destructors
-    MLFBitmapType( );
-    virtual ~MLFBitmapType() {};
+    RecMLFBmpType( );
+    virtual ~RecMLFBmpType() {};
     
-    // WDR: method declarations for MLFBitmapType
+    // WDR: method declarations for RecMLFBmpType
     
 public:
-    // WDR: member variable declarations for MLFBitmapType
+    // WDR: member variable declarations for RecMLFBmpType
 	//int m_width;
 	wxString m_label;
 	wxBitmap m_bitmap, m_flip_bitmap;
@@ -54,48 +52,48 @@ public:
 
 
 private:
-    // WDR: handler declarations for MLFBitmapType
+    // WDR: handler declarations for RecMLFBmpType
 };
 
 
 //----------------------------------------------------------------------------
-// MLFBitmapTypes
+// RecMLFBmpTypes
 //----------------------------------------------------------------------------
 
-class MLFBitmapTypes: public wxObject
+class RecMLFBmpTypes: public wxObject
 {
 public:
     // constructors and destructors
-    MLFBitmapTypes();
-    virtual ~MLFBitmapTypes();
+    RecMLFBmpTypes();
+    virtual ~RecMLFBmpTypes();
     
-    // WDR: method declarations for MLFBitmapTypes
-    //int GetWidth( MLFSymbol *symbole );
-	MLFBitmapType *GetType( MLFSymbol *symbole );
+    // WDR: method declarations for RecMLFBmpTypes
+    //int GetWidth( MusMLFSymbol *symbole );
+	RecMLFBmpType *GetType( MusMLFSymbol *symbole );
 	bool Load( wxString file );
 	int GetCount( ) { return (int)m_types.GetCount(); }
     
 private:
-    // WDR: member variable declarations for MLFBitmapTypes
+    // WDR: member variable declarations for RecMLFBmpTypes
 	ArrayOfMLFBitmapTypes m_types;
 
 private:
-    // WDR: handler declarations for MLFBitmapTypes
+    // WDR: handler declarations for RecMLFBmpTypes
 };
 
 
 //----------------------------------------------------------------------------
-// MLFSymbolBmp
+// RecMLFSymbolBmp
 //----------------------------------------------------------------------------
 
-class MLFSymbolBmp: public MLFSymbol
+class RecMLFSymbolBmp: public MusMLFSymbol
 {
 public:
     // constructors and destructors
-    MLFSymbolBmp();
-    virtual ~MLFSymbolBmp() {};
+    RecMLFSymbolBmp();
+    virtual ~RecMLFSymbolBmp() {};
     
-    // WDR: method declarations for MLFSymbolBmp
+    // WDR: method declarations for RecMLFSymbolBmp
 	virtual void SetValue( char type, wxString subtype, int position, int value = 0, char pitch = 0, int oct = 0, int flag = 0);
     virtual wxString GetLabel( );
 	int GetVOffset() { return m_voffset; }
@@ -103,41 +101,41 @@ public:
 	void SetCurrent( bool isCurrent = true ) { m_isCurrent = isCurrent; }
     
 protected:
-    // WDR: member variable declarations for MLFSymbolBmp
+    // WDR: member variable declarations for RecMLFSymbolBmp
 	int m_voffset;
 	bool m_isCurrent;
 
 private:
-    // WDR: handler declarations for MLFSymbolBmp
+    // WDR: handler declarations for RecMLFSymbolBmp
 
-	DECLARE_DYNAMIC_CLASS(MLFSymbolBmp)
+	DECLARE_DYNAMIC_CLASS(RecMLFSymbolBmp)
 };
 
 
 //----------------------------------------------------------------------------
-// MLFBitmaps
+// RecMLFBmp
 //----------------------------------------------------------------------------
 
-class MLFBitmaps: public MLFOutput
+class RecMLFBmp: public MusMLFOutput
 {
 public:
     // constructors and destructors
-    MLFBitmaps( WgFile *file, wxString filename, wxString model_symbole_name = "MLFSymbolBmp" );
-    virtual ~MLFBitmaps();
+    RecMLFBmp( MusFile *file, wxString filename, wxString model_symbole_name = "RecMLFSymbolBmp" );
+    virtual ~RecMLFBmp();
     
-    // WDR: method declarations for MLFBitmaps
+    // WDR: method declarations for RecMLFBmp
     //bool GenerateBitmaps( ImPage *impage );
-	wxBitmap GenerateBitmap( ImStaff *imstaff, WgStaff *wgstaff, int currentElementNo = -1 );
+	wxBitmap GenerateBitmap( ImStaff *imstaff, MusStaff *wgstaff, int currentElementNo = -1 );
 	int GetCurrentX() { return m_currentX; }
 	int GetCurrentWidth() { return m_currentWidth; }
-    //virtual bool WritePage( const WgPage *page );
-    virtual bool WriteStaff( const WgStaff *staff, int currentElementNo = -1 );
+    //virtual bool WritePage( const MusPage *page );
+    virtual bool WriteStaff( const MusStaff *staff, int currentElementNo = -1 );
 	// specific
 	virtual void StartLabel( );
 	//virtual void EndLabel( );
     
 protected:
-    // WDR: member variable declarations for MLFBitmaps
+    // WDR: member variable declarations for RecMLFBmp
 	// page
 	ImPage *m_impage;
 	int m_currentX; // keep x and width of currentElement in staff; used to redraw only this position
@@ -145,15 +143,13 @@ protected:
 
 public:
 	//bool m_addPageNo;
-	MLFBitmapTypes m_bitmap_types; // tableau des images - par type
+	RecMLFBmpTypes m_bitmap_types; // tableau des images - par type
 
 
 
 private:
-    // WDR: handler declarations for MLFBitmaps
+    // WDR: handler declarations for RecMLFBmp
 };
 
-
-#endif //AX_WG
 
 #endif

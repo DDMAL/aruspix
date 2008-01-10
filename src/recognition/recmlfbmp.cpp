@@ -5,8 +5,6 @@
 // Copyright (c) Laurent Pugin. All rights reserved.   
 /////////////////////////////////////////////////////////////////////////////
 
-#ifdef AX_WG
-
 #ifdef __GNUG__
     #pragma implementation "mlfbmp.h"
 #endif
@@ -29,14 +27,14 @@
 #include "wx/arrimpl.cpp"
 WX_DEFINE_OBJARRAY( ArrayOfMLFBitmapTypes );
 
-IMPLEMENT_DYNAMIC_CLASS(MLFSymbolBmp, MLFSymbol)
+IMPLEMENT_DYNAMIC_CLASS(RecMLFSymbolBmp, MusMLFSymbol)
 
 //----------------------------------------------------------------------------
-// MLFBitmapType
+// RecMLFBmpType
 //----------------------------------------------------------------------------
 
 
-MLFBitmapType::MLFBitmapType( ) :
+RecMLFBmpType::RecMLFBmpType( ) :
 	wxObject()
 {
 	//m_width = 0;
@@ -45,21 +43,21 @@ MLFBitmapType::MLFBitmapType( ) :
 }
 
 //----------------------------------------------------------------------------
-// MLFBitmapTypes
+// RecMLFBmpTypes
 //----------------------------------------------------------------------------
 
-MLFBitmapTypes::MLFBitmapTypes()
+RecMLFBmpTypes::RecMLFBmpTypes()
 {
 }
 
 
-MLFBitmapTypes::~MLFBitmapTypes()
+RecMLFBmpTypes::~RecMLFBmpTypes()
 {
 	m_types.Clear();
 }
 
 
-bool MLFBitmapTypes::Load( wxString file )
+bool RecMLFBmpTypes::Load( wxString file )
 {
 	m_types.Clear();
 
@@ -100,7 +98,7 @@ bool MLFBitmapTypes::Load( wxString file )
         if (!elem) 
 			return false;
 
-		MLFBitmapType tp;
+		RecMLFBmpType tp;
 		bool vflip = false;
      
 		if ( elem->Attribute("label"))
@@ -144,7 +142,7 @@ bool MLFBitmapTypes::Load( wxString file )
 }
 
 /*
-int MLFBitmapTypes::GetWidth( MLFSymbol *symbole )
+int RecMLFBmpTypes::GetWidth( MusMLFSymbol *symbole )
 {
 	if ( !symbole )
 		return 0;
@@ -158,7 +156,7 @@ int MLFBitmapTypes::GetWidth( MLFSymbol *symbole )
 }
 */
 
-MLFBitmapType *MLFBitmapTypes::GetType( MLFSymbol *symbole )
+RecMLFBmpType *RecMLFBmpTypes::GetType( MusMLFSymbol *symbole )
 {
 	if ( !symbole )
 		return NULL;
@@ -173,11 +171,11 @@ MLFBitmapType *MLFBitmapTypes::GetType( MLFSymbol *symbole )
 
 
 //----------------------------------------------------------------------------
-// MLFSymbolBmp
+// RecMLFSymbolBmp
 //----------------------------------------------------------------------------
 
-MLFSymbolBmp::MLFSymbolBmp( ) :
-	MLFSymbol()
+RecMLFSymbolBmp::RecMLFSymbolBmp( ) :
+	MusMLFSymbol()
 {
 	m_type = 0;
 	m_value = 0;
@@ -189,7 +187,7 @@ MLFSymbolBmp::MLFSymbolBmp( ) :
 	m_isCurrent = false;
 }
 
-void MLFSymbolBmp::SetValue( char type, wxString subtype, int position, int value, char pitch, int oct, int flag )
+void RecMLFSymbolBmp::SetValue( char type, wxString subtype, int position, int value, char pitch, int oct, int flag )
 {
 	m_type = type;
 	m_subtype = subtype;
@@ -241,36 +239,36 @@ void MLFSymbolBmp::SetValue( char type, wxString subtype, int position, int valu
 }
 
 
-wxString MLFSymbolBmp::GetLabel( )
+wxString RecMLFSymbolBmp::GetLabel( )
 {
 	wxString label = this->GetLabelType() << " " << m_voffset;
 	return label;
 }
 
 //----------------------------------------------------------------------------
-// MLFBitmaps
+// RecMLFBmp
 //----------------------------------------------------------------------------
 
-MLFBitmaps::MLFBitmaps( WgFile *file, wxString filename, wxString model_symbole_name ) :
-    MLFOutput( file, filename, model_symbole_name )
+RecMLFBmp::RecMLFBmp( MusFile *file, wxString filename, wxString model_symbole_name ) :
+    MusMLFOutput( file, filename, model_symbole_name )
 {
 	m_impage = NULL;
 }
 
-MLFBitmaps::~MLFBitmaps()
+RecMLFBmp::~RecMLFBmp()
 {
 }
 
 // specific
 
-void MLFBitmaps::StartLabel( )
+void RecMLFBmp::StartLabel( )
 {
 	m_symboles.Clear();
 	m_currentX = -1;
 	m_currentWidth = -1;
 }
 
-wxBitmap MLFBitmaps::GenerateBitmap( ImStaff *imstaff, WgStaff *wgstaff, int currentElementNo )
+wxBitmap RecMLFBmp::GenerateBitmap( ImStaff *imstaff, MusStaff *wgstaff, int currentElementNo )
 {
 	int mn, mx;
 	int bx, by;
@@ -284,7 +282,7 @@ wxBitmap MLFBitmaps::GenerateBitmap( ImStaff *imstaff, WgStaff *wgstaff, int cur
 
 	// fill symbole array with wgstaff elements
 	m_symboles.Clear();
-	WgStaff *ut1_staff = MLFOutput::GetUt1( wgstaff );
+	MusStaff *ut1_staff = MusMLFOutput::GetUt1( wgstaff );
     WriteStaff( ut1_staff, currentElementNo );
 	delete ut1_staff;
 
@@ -297,19 +295,19 @@ wxBitmap MLFBitmaps::GenerateBitmap( ImStaff *imstaff, WgStaff *wgstaff, int cur
 	{
 		wxString symbole;
 		int pos = (&m_symboles[i])->GetPosition();
-		MLFSymbol *mlf = &m_symboles[i];
-		MLFBitmapType *tp = m_bitmap_types.GetType( mlf );
+		MusMLFSymbol *mlf = &m_symboles[i];
+		RecMLFBmpType *tp = m_bitmap_types.GetType( mlf );
 		if ( tp )
 		{
 			imstaff->GetXandPos( pos, &bx, &by );
 			by += (STAFF_HEIGHT / 2) + 4 * STAFF_INTERLIGN; // UT1
-			by -= ((MLFSymbolBmp*)mlf)->GetVOffset() * STAFF_INTERLIGN;
+			by -= ((RecMLFSymbolBmp*)mlf)->GetVOffset() * STAFF_INTERLIGN;
 			by -= tp->m_bitmap.GetHeight(); // top
 			by += tp->m_bmpoffset; // offset de l'image
 
 			wxMemoryDC symDC;
 			wxBitmap current;
-			bool flip = ( tp->m_flip && (((MLFSymbolBmp*)mlf)->GetVOffset() > 4 ));
+			bool flip = ( tp->m_flip && (((RecMLFSymbolBmp*)mlf)->GetVOffset() > 4 ));
 			if ( m_symboles[i].m_flag & NOTE_STEM )
 				flip = !flip;
 			if ( flip )
@@ -320,7 +318,7 @@ wxBitmap MLFBitmaps::GenerateBitmap( ImStaff *imstaff, WgStaff *wgstaff, int cur
 			}
 			else
 				current = tp->m_bitmap;
-			if (((MLFSymbolBmp*)mlf)->IsCurrent())
+			if (((RecMLFSymbolBmp*)mlf)->IsCurrent())
 			{
 				wxImage img = current.ConvertToImage();
 				img = img.ConvertToMono( 0, 255, 255 );
@@ -349,7 +347,7 @@ wxBitmap MLFBitmaps::GenerateBitmap( ImStaff *imstaff, WgStaff *wgstaff, int cur
 }
 
 /*
-void MLFBitmaps::EndLabel( )
+void RecMLFBmp::EndLabel( )
 {
 	wxASSERT_MSG( m_impage , "ImPage cannot be NULL ");
 
@@ -370,18 +368,18 @@ void MLFBitmaps::EndLabel( )
 	{
 		wxString symbole;
 		int pos = (&m_symboles[i])->GetPosition();
-		MLFSymbol *mlf = &m_symboles[i];
-		MLFBitmapType *tp = m_bitmap_types.GetType( mlf );
+		MusMLFSymbol *mlf = &m_symboles[i];
+		RecMLFBmpType *tp = m_bitmap_types.GetType( mlf );
 		if ( tp )
 		{
 			m_impage->m_staves[m_staff_i].GetXandPos( pos, &bx, &by );
 			by += (STAFF_HEIGHT / 2) + 4 * STAFF_INTERLIGN; // UT1
-			by -= ((MLFSymbolBmp*)mlf)->GetVOffset() * STAFF_INTERLIGN;
+			by -= ((RecMLFSymbolBmp*)mlf)->GetVOffset() * STAFF_INTERLIGN;
 			by -= tp->m_bitmap.GetHeight(); // top
 			by += tp->m_bmpoffset; // offset de l'image
 
 			wxMemoryDC symDC;
-			if ( tp->m_flip && (((MLFSymbolBmp*)mlf)->GetVOffset() > 4 ))
+			if ( tp->m_flip && (((RecMLFSymbolBmp*)mlf)->GetVOffset() > 4 ))
 			{
 				by += tp->m_bitmap.GetHeight(); // top
 				by -= 2*tp->m_bmpoffset; // offset de l'image
@@ -406,11 +404,11 @@ void MLFBitmaps::EndLabel( )
 */
 
 /*
-bool MLFBitmaps::GenerateBitmaps( ImPage *impage )
+bool RecMLFBmp::GenerateBitmaps( ImPage *impage )
 {
 	m_impage = impage;
 
-    WgPage *page = NULL;
+    MusPage *page = NULL;
 
     for (m_page_i = 0; m_page_i < m_file->m_fheader.nbpage; m_page_i++ )
     {
@@ -423,14 +421,14 @@ bool MLFBitmaps::GenerateBitmaps( ImPage *impage )
 */
 
 /*
-bool MLFBitmaps::WritePage( const WgPage *page )
+bool RecMLFBmp::WritePage( const MusPage *page )
 {
     m_staff = NULL;
     for (m_staff_i = 0; m_staff_i < page->nbrePortees; m_staff_i++) 
     {
 		m_segment_i = 0;
-        WgStaff *staff = &page->m_staves[m_staff_i];
-		WgStaff *ut1_staff = MLFOutput::GetUt1( staff );
+        MusStaff *staff = &page->m_staves[m_staff_i];
+		MusStaff *ut1_staff = MusMLFOutput::GetUt1( staff );
         WriteStaff( ut1_staff );
 		delete ut1_staff;
     }
@@ -439,7 +437,7 @@ bool MLFBitmaps::WritePage( const WgPage *page )
 }
 */
 
-bool MLFBitmaps::WriteStaff( const WgStaff *staff, int currentElementNo )
+bool RecMLFBmp::WriteStaff( const MusStaff *staff, int currentElementNo )
 {
 	if (staff->nblement == 0)
 		return true;
@@ -453,11 +451,11 @@ bool MLFBitmaps::WriteStaff( const WgStaff *staff, int currentElementNo )
     for (k = 0;k < staff->nblement ; k++ )
     {
         if ( (&staff->m_elements[k])->TYPE == NOTE )
-            ok = WriteNote( (WgNote*)&staff->m_elements[k] );
+            ok = WriteNote( (MusNote*)&staff->m_elements[k] );
         else
-            ok = WriteSymbole( (WgSymbole*)&staff->m_elements[k] );
+            ok = WriteSymbole( (MusSymbol*)&staff->m_elements[k] );
         if ( ok && ( currentElementNo == (signed int)k ) )
-			((MLFSymbolBmp*)&m_symboles.Last())->SetCurrent();
+			((RecMLFSymbolBmp*)&m_symboles.Last())->SetCurrent();
 
     }
 	//EndLabel();
@@ -466,8 +464,5 @@ bool MLFBitmaps::WriteStaff( const WgStaff *staff, int currentElementNo )
 }
 
 
-// WDR: handler implementations for MLFBitmaps
+// WDR: handler implementations for RecMLFBmp
 
-
-
-#endif // AX_WG

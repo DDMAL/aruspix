@@ -83,9 +83,9 @@ public:
 	bool HasToBePreprocessed( wxString imagefile );
 	// adaptation
 	bool RecBookFile::ResetAdaptation( bool ask_user );
-	bool RecBookFile::FastAdaptation( wxArrayPtrVoid params, ProgressDlg *dlg );
-	bool RecBookFile::TypAdaptation( wxArrayPtrVoid params, ProgressDlg *dlg );
-	bool RecBookFile::MusAdaptation( wxArrayPtrVoid params, ProgressDlg *dlg );
+	bool RecBookFile::FastAdaptation( wxArrayPtrVoid params, AxProgressDlg *dlg );
+	bool RecBookFile::TypAdaptation( wxArrayPtrVoid params, AxProgressDlg *dlg );
+	bool RecBookFile::MusAdaptation( wxArrayPtrVoid params, AxProgressDlg *dlg );
 	wxString RecBookFile::GetTypFilename( ) { return m_basename + "book.axtyp";}
 	wxString RecBookFile::GetMusFilename( ) { return m_basename + "book.axmus";}
 	wxString GetTypCacheFilename( ) { return m_basename + "cache.axtyp";}

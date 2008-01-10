@@ -1,12 +1,12 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        models.cpp
+// Name:        recmodels.cpp
 // Author:      Laurent Pugin
 // Created:     2004
 // Copyright (c) Laurent Pugin. All rights reserved.   
 /////////////////////////////////////////////////////////////////////////////
 
 #if defined(__GNUG__) && ! defined(__APPLE__)
-    #pragma implementation "models.h"
+    #pragma implementation "recmodels.h"
 #endif
 
 // For compilers that support precompilation, includes "wx/wx.h".
@@ -57,7 +57,7 @@ void RecModel::OpenContent( )
 	wxString fname = m_basename + "mlf";
 	//wxFile *load = new wxFile( fname, wxFile::write_append );
 	wxFile load( fname, wxFile::write_append );
-	m_mlfoutput = new MLFOutput( NULL, load.fd(), fname, "MLFSymbol" );
+	m_mlfoutput = new MusMLFOutput( NULL, load.fd(), fname, "MusMLFSymbol" );
 	load.Detach();
 	if ( wxFileExists( m_basename + "dic_cache" ) )
 		m_mlfoutput->LoadSymbolDictionary( m_basename + "dic_cache" );
@@ -99,9 +99,9 @@ void RecModel::SaveContent( )
 	SaveModelContent();
 }
 
-bool RecModel::AddFiles( wxArrayPtrVoid params, ProgressDlg *dlg )
+bool RecModel::AddFiles( wxArrayPtrVoid params, AxProgressDlg *dlg )
 {
-	wxASSERT_MSG( dlg, "ProgressDlg cannot be NULL" );
+	wxASSERT_MSG( dlg, "AxProgressDlg cannot be NULL" );
 	
     // params 0: wxString: output_dir
 	int nbOfFiles = *(int*)params[0];
@@ -155,7 +155,7 @@ void RecTypModel::NewContent( )
 {
 	wxASSERT( !m_mlfoutput );
 
-	m_mlfoutput = new MLFOutput( NULL, m_basename + "mlf", "MLFSymbol" );
+	m_mlfoutput = new MusMLFOutput( NULL, m_basename + "mlf", "MusMLFSymbol" );
 	m_mlfoutput->CreateSubFile();
 	m_nbfiles = 0;
 	//mlfoutput->LoadTypes( types );
@@ -220,9 +220,9 @@ void RecTypModel::UpdateInputFiles( )
 
 
 
-bool RecTypModel::AddFile( wxArrayPtrVoid params, ProgressDlg *dlg )
+bool RecTypModel::AddFile( wxArrayPtrVoid params, AxProgressDlg *dlg )
 {
-	wxASSERT_MSG( dlg, "ProgressDlg cannot be NULL" );
+	wxASSERT_MSG( dlg, "AxProgressDlg cannot be NULL" );
 	wxASSERT( m_mlfoutput );
 	
 	this->Modify();
@@ -272,7 +272,7 @@ bool RecTypModel::AddFile( wxArrayPtrVoid params, ProgressDlg *dlg )
 	return true;
 }
 
-bool RecTypModel::Commit( ProgressDlg *dlg )
+bool RecTypModel::Commit( AxProgressDlg *dlg )
 {
 	wxASSERT( m_mlfoutput );
 	
@@ -391,14 +391,14 @@ bool RecTypModel::Commit( ProgressDlg *dlg )
 
 }
 
-bool RecTypModel::Train( wxArrayPtrVoid params, ProgressDlg *dlg )
+bool RecTypModel::Train( wxArrayPtrVoid params, AxProgressDlg *dlg )
 {
 	return true;
 }
 
-bool RecTypModel::Adapt( wxArrayPtrVoid params, ProgressDlg *dlg )
+bool RecTypModel::Adapt( wxArrayPtrVoid params, AxProgressDlg *dlg )
 {
-	wxASSERT_MSG( dlg, "ProgressDlg cannot be NULL" );
+	wxASSERT_MSG( dlg, "AxProgressDlg cannot be NULL" );
 	
 	// params 0: nbfiles (unused)
 	// params 1: paths (unused)
@@ -612,7 +612,7 @@ void RecMusModel::NewContent( )
 	//???????wxString model_dic = output + "no_mapping.dic";
 	//wxCopyFile( dic, model_dic, true );
 
-    m_mlfoutput = new MLFOutput( NULL, m_basename + "ngram.mlf", "MLFSymbol" );
+    m_mlfoutput = new MusMLFOutput( NULL, m_basename + "ngram.mlf", "MusMLFSymbol" );
 	m_mlfoutput->m_addPageNo = false;
 }
 
@@ -643,9 +643,9 @@ void RecMusModel::SaveModelContent( )
 
 
 
-bool RecMusModel::AddFile( wxArrayPtrVoid params, ProgressDlg *dlg )
+bool RecMusModel::AddFile( wxArrayPtrVoid params, AxProgressDlg *dlg )
 {
-	wxASSERT_MSG( dlg, "ProgressDlg cannot be NULL" );
+	wxASSERT_MSG( dlg, "AxProgressDlg cannot be NULL" );
 	wxASSERT( m_mlfoutput );
 	
 	this->Modify();
@@ -687,7 +687,7 @@ bool RecMusModel::AddFile( wxArrayPtrVoid params, ProgressDlg *dlg )
 	return true;
 }
 
-bool RecMusModel::Commit( ProgressDlg *dlg )
+bool RecMusModel::Commit( AxProgressDlg *dlg )
 {
 	wxASSERT( m_mlfoutput );
 	
@@ -712,9 +712,9 @@ bool RecMusModel::Commit( ProgressDlg *dlg )
 	return true;
 }
 	
-bool RecMusModel::Train( wxArrayPtrVoid params, ProgressDlg *dlg )
+bool RecMusModel::Train( wxArrayPtrVoid params, AxProgressDlg *dlg )
 {
-	wxASSERT_MSG( dlg, "ProgressDlg cannot be NULL" );
+	wxASSERT_MSG( dlg, "AxProgressDlg cannot be NULL" );
 	
 	wxString mlffile =  m_basename + "ngram.mlf";
 	wxString vocfile =  m_basename + "ngram.dic";
@@ -793,9 +793,9 @@ bool RecMusModel::Train( wxArrayPtrVoid params, ProgressDlg *dlg )
 }
 
 
-bool RecMusModel::Adapt( wxArrayPtrVoid params, ProgressDlg *dlg )
+bool RecMusModel::Adapt( wxArrayPtrVoid params, AxProgressDlg *dlg )
 {
-	wxASSERT_MSG( dlg, "ProgressDlg cannot be NULL" );
+	wxASSERT_MSG( dlg, "AxProgressDlg cannot be NULL" );
 	
 	// params 0: nbfiles (unused)
 	// params 1: paths (unused)

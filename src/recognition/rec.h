@@ -66,7 +66,7 @@ class RecWgController;
 class RecImWindow;
 class RecWgWindow;
 
-class WgToolPanel;
+class MusToolPanel;
 
 class RecFile;
 class RecBookCtrl;
@@ -91,7 +91,7 @@ public:
         const wxPoint& pos = wxDefaultPosition,
         const wxSize& size = wxDefaultSize,
         long style = 0 );
-    void SetEnv( RecEnv *env, wxFlexGridSizer *sizer, WgToolPanel *toolpanel,   RecWgController *wgControlPtr );
+    void SetEnv( RecEnv *env, wxFlexGridSizer *sizer, MusToolPanel *toolpanel,   RecWgController *wgControlPtr );
     
     // WDR: method declarations for RecSplitterWindow
     void ChangeOrientation( );
@@ -99,7 +99,7 @@ public:
 protected:
     // WDR: member variable declarations for RecSplitterWindow
     RecEnv *m_envPtr;
-    WgToolPanel *m_toolpanel;
+    MusToolPanel *m_toolpanel;
     wxFlexGridSizer *m_wgsizer;
     RecWgController *m_wgControlPtr;
     
@@ -183,7 +183,7 @@ private:
     // wg    
     RecWgController *m_wgControlPtr;
     RecWgWindow *m_wgViewPtr;
-    WgToolPanel *m_toolpanel;
+    MusToolPanel *m_toolpanel;
     wxPanel *m_wgPanelPtr; // panel complet: contient toolpanel et recwgcontoller
     // recognition elements
     RecFile *m_recFilePtr;

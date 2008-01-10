@@ -1,15 +1,15 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        models.h
+// Name:        recmodels.h
 // Author:      Laurent Pugin
 // Created:     2004
 // Copyright (c) Laurent Pugin. All rights reserved.   
 /////////////////////////////////////////////////////////////////////////////
 
-#ifndef __models_H__
-#define __models_H__
+#ifndef __recmodels_H__
+#define __recmodels_H__
 
 #if defined(__GNUG__) && ! defined(__APPLE__)
-    #pragma interface "models.cpp"
+    #pragma interface "recmodels.cpp"
 #endif
 
 #ifndef WX_PRECOMP
@@ -21,14 +21,13 @@
 
 #include "app/axfile.h"
 
-
 #define TYP_THRESHOLD 0.01
 #define TYP_ITER 100;
 #define TYP_N_GAUSSIANS 8
 
 #define MUS_NGRAM_ORDER 3
 
-class MLFOutput;
+class MusMLFOutput;
 
 // WDR: class declarations
 
@@ -50,15 +49,15 @@ public:
 	
 	virtual void OpenModelContent( ) {}; // Open content after archive extraction
 	virtual void SaveModelContent( ) {}; // Save content before archive creation
-	virtual bool AddFile( wxArrayPtrVoid params, ProgressDlg *dlg ) = 0;
-	virtual bool AddFiles( wxArrayPtrVoid params, ProgressDlg *dlg );
+	virtual bool AddFile( wxArrayPtrVoid params, AxProgressDlg *dlg ) = 0;
+	virtual bool AddFiles( wxArrayPtrVoid params, AxProgressDlg *dlg );
 
 public:
     // WDR: member variable declarations for RecTypModel
    
 protected:
     // WDR: handler declarations for RecTypModel
-	MLFOutput *m_mlfoutput;
+	MusMLFOutput *m_mlfoutput;
 	int m_nbfiles;
 	wxArrayString m_files;
 };
@@ -81,12 +80,12 @@ public:
 	virtual void RecTypModel::SaveModelContent( ); // Save content before archive creation
 	virtual void RecTypModel::CloseContent( ); // Desactivate content before deletion
 	
-	virtual bool AddFile( wxArrayPtrVoid params, ProgressDlg *dlg );
-	bool Adapt( wxArrayPtrVoid params, ProgressDlg *dlg );
-	bool Train( wxArrayPtrVoid params, ProgressDlg *dlg ); // train a new model, to be implemented
+	virtual bool AddFile( wxArrayPtrVoid params, AxProgressDlg *dlg );
+	bool Adapt( wxArrayPtrVoid params, AxProgressDlg *dlg );
+	bool Train( wxArrayPtrVoid params, AxProgressDlg *dlg ); // train a new model, to be implemented
 														   // some of the files (such as mfc) are not needed in
 															// the trained typographic model
-	bool Commit( ProgressDlg *dlg );
+	bool Commit( AxProgressDlg *dlg );
 	void UpdateInputFiles( );
         
 public:
@@ -114,10 +113,10 @@ public:
 	virtual void RecMusModel::SaveModelContent( ); // Save content before archive creation
 	virtual void RecMusModel::CloseContent( ); // Desactivate content before deletion
 	
-	virtual bool AddFile( wxArrayPtrVoid params, ProgressDlg *dlg );
-	bool Adapt( wxArrayPtrVoid params, ProgressDlg *dlg );
-	bool Train( wxArrayPtrVoid params, ProgressDlg *dlg );
-	bool Commit( ProgressDlg *dlg );
+	virtual bool AddFile( wxArrayPtrVoid params, AxProgressDlg *dlg );
+	bool Adapt( wxArrayPtrVoid params, AxProgressDlg *dlg );
+	bool Train( wxArrayPtrVoid params, AxProgressDlg *dlg );
+	bool Commit( AxProgressDlg *dlg );
 
 public:
     // WDR: member variable declarations for RecMusModel

@@ -1,5 +1,5 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        recwg.cpp
+// Name:        recmus.cpp
 // Author:      Laurent Pugin
 // Created:     2004
 // Copyright (c) Laurent Pugin. All rights reserved.
@@ -8,7 +8,7 @@
 #ifdef AX_RECOGNITION
 
 #ifdef __GNUG__
-    #pragma implementation "recwg.cpp"
+    #pragma implementation "recmus.cpp"
 #endif
 
 // For compilers that support precompilation, includes "wx/wx.h".
@@ -18,7 +18,7 @@
     #pragma hdrstop
 #endif
 
-#include "recwg.h"
+#include "recmus.h"
 #include "rec.h"
 #include "recim.h"
 #include "recfile.h"
@@ -107,8 +107,8 @@ void RecWgController::LoadBitmapsForFont( )
 	wxString tmp = wxGetApp().m_workingDir + "/.bitmaps"; // ouvre un descripteur de fichier inutile,
 														  // pas terrible .....
 	
-	WgFile wgtmp;																									
-	m_mlfBmp = new MLFBitmaps( &wgtmp, tmp );
+	MusFile wgtmp;																									
+	m_mlfBmp = new RecMLFBmp( &wgtmp, tmp );
 	m_mlfBmp->m_bitmap_types.Load( builtin_font );
 }
 
@@ -262,9 +262,9 @@ void RecWgController::OnSize( wxSizeEvent &event )
 {
     this->Layout();
     /*wxWindow *w = FindWindowById( ID4_WGWINDOW );
-    if ( w && w->IsKindOf( CLASSINFO( WgWindow ) ))
+    if ( w && w->IsKindOf( CLASSINFO( MusWindow ) ))
     {
-        ((WgWindow*)w)->Resize( );
+        ((MusWindow*)w)->Resize( );
     }*/
 	if ( m_viewPtr )
 		m_viewPtr->Resize();
@@ -277,11 +277,11 @@ void RecWgController::OnSize( wxSizeEvent &event )
 // RecWgWindow
 //----------------------------------------------------------------------------
 
-IMPLEMENT_CLASS(RecWgWindow, WgWindow)
+IMPLEMENT_CLASS(RecWgWindow, MusWindow)
 
 // WDR: event table for RecWgWindow
 
-BEGIN_EVENT_TABLE(RecWgWindow,WgWindow)
+BEGIN_EVENT_TABLE(RecWgWindow,MusWindow)
     EVT_MOUSE_EVENTS( RecWgWindow::OnMouse )
     EVT_SCROLLWIN(RecWgWindow::OnScroll )
     EVT_KEY_DOWN( RecWgWindow::OnKeyDown )
@@ -291,7 +291,7 @@ END_EVENT_TABLE()
 
 RecWgWindow::RecWgWindow( RecWgController *parent, wxWindowID id,
     const wxPoint &position, const wxSize& size, long style, bool center ) :
-    WgWindow( parent, id, position, size, style, center )
+    MusWindow( parent, id, position, size, style, center )
 {
 	m_wgControlPtr = parent;
     m_shiftDown = false;
@@ -333,7 +333,7 @@ void RecWgWindow::OnBeginEditionClef()
 
     m_edition = true;
     if ( m_currentStaff )
-        MLFOutput::GetUt1( m_currentStaff, true );
+        MusMLFOutput::GetUt1( m_currentStaff, true );
 }
 
 void RecWgWindow::OnEndEditionClef()
@@ -342,7 +342,7 @@ void RecWgWindow::OnEndEditionClef()
         return;
 
     if ( m_edition && m_currentStaff )
-        MLFInput::GetNotUt1( m_currentStaff, true );
+        MusMLFInput::GetNotUt1( m_currentStaff, true );
 
     m_edition = false;
 }

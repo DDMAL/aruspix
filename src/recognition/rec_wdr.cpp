@@ -66,7 +66,7 @@ wxSizer *WgOutputFunc4( wxWindow *parent, bool call_fit, bool set_sizer )
     item0->AddGrowableCol( 0 );
     item0->AddGrowableRow( 1 );
 
-    WgToolPanel *item1 = new WgToolPanel( parent, ID4_TOOLPANEL, wxDefaultPosition, wxSize(10,10), 0 );
+    MusToolPanel *item1 = new MusToolPanel( parent, ID4_TOOLPANEL, wxDefaultPosition, wxSize(10,10), 0 );
     item0->Add( item1, 0, wxGROW, 0 );
 
     RecWgController *item2 = new RecWgController( parent, ID4_WGPANEL, wxDefaultPosition, wxSize(200,160), wxSUNKEN_BORDER );

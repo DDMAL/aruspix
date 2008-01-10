@@ -1,17 +1,17 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        recwg.h
+// Name:        recmus.h
 // Author:      Laurent Pugin
 // Created:     2004
 // Copyright (c) Laurent Pugin. All rights reserved.
 /////////////////////////////////////////////////////////////////////////////
 
-#ifndef __recwg_H__
-#define __recwg_H__
+#ifndef __recmus_H__
+#define __recmus_H__
 
 #ifdef AX_RECOGNITION
 
 #ifdef __GNUG__
-    #pragma interface "recwg.cpp"
+    #pragma interface "recmus.cpp"
 #endif
 
 #ifndef WX_PRECOMP
@@ -29,7 +29,7 @@ class RecImWindow;
 class RecImController;
 class RecFile;
 
-class MLFBitmaps;
+class RecMLFBmp;
 class RecTypModel;
 
 // WDR: class declarations
@@ -75,7 +75,7 @@ protected:
     bool m_staffbmp_show;
     wxBitmap m_staffbmp;
     int m_staffbmp_x, m_staffbmp_y;
-    MLFBitmaps *m_mlfBmp;
+    RecMLFBmp *m_mlfBmp;
     int m_lastX, m_lastWidth; // keep last current element x and width to optimize redraw;
 
 	
@@ -93,7 +93,7 @@ private:
 // RecWgWindow
 //----------------------------------------------------------------------------
 
-class RecWgWindow: public WgWindow
+class RecWgWindow: public MusWindow
 {
 public:
     // constructors and destructors
