@@ -1,5 +1,5 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        iomlf.cpp
+// Name:        musiomlf.cpp
 // Author:      Laurent Pugin
 // Created:     2005
 // Copyright (c) Laurent Pugin. All rights reserved.   
@@ -8,7 +8,7 @@
 #ifdef AX_WG
 
 #ifdef __GNUG__
-    #pragma implementation "iomlf.h"
+    #pragma implementation "musiomlf.h"
 #endif
 
 // For compilers that support precompilation, includes "wx/wx.h".
@@ -22,7 +22,7 @@
 #include "wx/tokenzr.h"
 #include "wx/txtstrm.h"
 
-#include "iomlf.h"
+#include "musiomlf.h"
 
 #include "im/impage.h"
 #include "im/imstaff.h"

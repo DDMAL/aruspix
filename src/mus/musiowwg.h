@@ -1,5 +1,5 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        iowwg.h
+// Name:        musiowwg.h
 // Author:      Laurent Pugin
 // Created:     2005
 // Copyright (c) Laurent Pugin. All rights reserved.
@@ -11,7 +11,7 @@
 #ifdef AX_WG
 
 #ifdef __GNUG__
-    #pragma interface "iowwg.cpp"
+    #pragma interface "musiowwg.cpp"
 #endif
 
 #ifndef WX_PRECOMP
