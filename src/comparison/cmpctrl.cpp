@@ -5,6 +5,9 @@
 // Copyright (c) Laurent Pugin. All rights reserved.   
 /////////////////////////////////////////////////////////////////////////////
 
+#ifdef AX_RECOGNITION
+	#ifdef AX_COMPARISON
+
 #if defined(__GNUG__) && ! defined(__APPLE__)
 #pragma implementation "cmpctrl.h"
 #endif
@@ -680,3 +683,5 @@ void CmpCtrl::OnMenu( wxTreeEvent &event )
     PopupMenu(&popup, clientpt );
 }
 
+	#endif // AX_COMPARISON
+#endif // AX_RECOGNITION

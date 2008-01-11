@@ -158,7 +158,7 @@ private:
     CmpMusWindow *m_musViewPtr;
 	CmpCollation *m_cmpCollationPtr;
     //MusToolPanel *m_toolpanel;
-    //wxPanel *m_musPanelPtr; // panel complet: contient toolpanel et recwgcontoller
+    //wxPanel *m_musPanelPtr; // panel complet: contient toolpanel et recmuscontoller
     // recognition elements
     //RecFile *m_recFilePtr;
     // 

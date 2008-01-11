@@ -748,9 +748,9 @@
 					"-D_FILE_OFFSET_BITS=64",
 					"-D_LARGE_FILES",
 					"-DWX_PRECOMP",
-					"-DAX_COMPARISON",
 					"-DAX_SUPERIMPOSITION",
 					"-DAX_WGVIEWER",
+					"-DAX_COMPARISON",
 					"-DAX_RECOGNITION",
 					"-DNO_GCC_PRAGMA",
 				);

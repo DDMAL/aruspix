@@ -8,6 +8,8 @@
 #ifndef __recfile_H__
 #define __recfile_H__
 
+#ifdef AX_RECOGNITION
+
 #if defined(__GNUG__) && ! defined(__APPLE__)
     #pragma interface "recfile.cpp"
 #endif
@@ -103,5 +105,7 @@ private:
     // WDR: handler declarations for RecFile
 
 };
+
+#endif //AX_RECOGNITION
 
 #endif

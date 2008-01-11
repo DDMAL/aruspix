@@ -1,5 +1,5 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        mlfbmp.h
+// Name:        recmlfbmp.h
 // Author:      Laurent Pugin
 // Created:     2005
 // Copyright (c) Laurent Pugin. All rights reserved.   
@@ -8,8 +8,10 @@
 #ifndef __MUS_IOMLFBMP_H__
 #define __MUS_IOMLFBMP_H__
 
+#ifdef AX_RECOGNITION
+
 #ifdef __GNUG__
-    #pragma interface "mlfbmp.cpp"
+    #pragma interface "recmlfbmp.cpp"
 #endif
 
 #ifndef WX_PRECOMP
@@ -151,5 +153,6 @@ private:
     // WDR: handler declarations for RecMLFBmp
 };
 
+#endif //AX_RECOGNITION
 
 #endif

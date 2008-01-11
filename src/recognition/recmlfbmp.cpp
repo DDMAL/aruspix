@@ -1,12 +1,14 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        mlfbmp.cpp
+// Name:        recmlfbmp.cpp
 // Author:      Laurent Pugin
 // Created:     2005
 // Copyright (c) Laurent Pugin. All rights reserved.   
 /////////////////////////////////////////////////////////////////////////////
 
+#ifdef AX_RECOGNITION
+
 #ifdef __GNUG__
-    #pragma implementation "mlfbmp.h"
+    #pragma implementation "recmlfbmp.h"
 #endif
 
 // For compilers that support precompilation, includes "wx/wx.h".
@@ -463,6 +465,8 @@ bool RecMLFBmp::WriteStaff( const MusStaff *staff, int currentElementNo )
     return true;
 }
 
-
 // WDR: handler implementations for RecMLFBmp
+
+#endif //AX_RECOGNITION
+
 

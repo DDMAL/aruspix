@@ -5,6 +5,8 @@
 // Copyright (c) Laurent Pugin. All rights reserved.   
 /////////////////////////////////////////////////////////////////////////////
 
+#ifdef AX_RECOGNITION
+
 #if defined(__GNUG__) && ! defined(__APPLE__)
 #pragma implementation "recbookfile.h"
 #endif
@@ -652,3 +654,4 @@ bool RecBookFile::DeleteAxfile( wxString filename )
 
 // WDR: handler implementations for RecFile
 
+#endif //AX_RECOGNITION

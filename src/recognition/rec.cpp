@@ -1735,5 +1735,5 @@ void RecEnv::OnUpdateUI( wxUpdateUIEvent &event )
         event.Enable(true);
 }
 
-#endif // AX_SUPERIMPOSITION
+#endif // AX_RECOGNITION
 

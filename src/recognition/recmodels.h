@@ -8,6 +8,8 @@
 #ifndef __recmodels_H__
 #define __recmodels_H__
 
+#ifdef AX_RECOGNITION
+
 #if defined(__GNUG__) && ! defined(__APPLE__)
     #pragma interface "recmodels.cpp"
 #endif
@@ -126,5 +128,6 @@ private:
 	int m_order;
 };
 
+#endif //AX_RECOGNITION
 
 #endif

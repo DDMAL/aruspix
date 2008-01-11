@@ -8,6 +8,8 @@
 #ifndef __recbook_H__
 #define __recbook_H__
 
+#ifdef AX_RECOGNITION
+
 #if defined(__GNUG__) && ! defined(__APPLE__)
     #pragma interface "recbookfile.cpp"
 #endif
@@ -122,5 +124,7 @@ private:
     // WDR: handler declarations for RecBookFile
 
 };
+
+#endif //AX_RECOGNITION
 
 #endif

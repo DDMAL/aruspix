@@ -8,6 +8,9 @@
 #ifndef __cmpfile_H__
 #define __cmpfile_H__
 
+#ifdef AX_RECOGNITION
+	#ifdef AX_COMPARISON
+
 #if defined(__GNUG__) && ! defined(__APPLE__)
     #pragma interface "cmpfile.cpp"
 #endif
@@ -236,5 +239,8 @@ private:
     // WDR: handler declarations for CmpFile
 
 };
+
+	#endif //AX_COMPARISON
+#endif //AX_RECOGNITION
 
 #endif

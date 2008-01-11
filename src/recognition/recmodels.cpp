@@ -5,6 +5,8 @@
 // Copyright (c) Laurent Pugin. All rights reserved.   
 /////////////////////////////////////////////////////////////////////////////
 
+#ifdef AX_RECOGNITION
+
 #if defined(__GNUG__) && ! defined(__APPLE__)
     #pragma implementation "recmodels.h"
 #endif
@@ -907,3 +909,4 @@ bool RecMusModel::Adapt( wxArrayPtrVoid params, AxProgressDlg *dlg )
 
 // WDR: handler implementations for RecMusModel
 
+#endif //AX_RECOGNITION

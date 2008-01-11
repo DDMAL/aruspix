@@ -33,7 +33,6 @@
 #endif
 
 // Custom source
-#include "comparison/cmp.h"
 #include "comparison/cmpmus.h"
 #include "comparison/cmpctrl.h"
 #include "mus/mustoolpanel.h"

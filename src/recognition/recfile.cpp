@@ -5,6 +5,8 @@
 // Copyright (c) Laurent Pugin. All rights reserved.   
 /////////////////////////////////////////////////////////////////////////////
 
+#ifdef AX_RECOGNITION
+
 #if defined(__GNUG__) && ! defined(__APPLE__)
     #pragma implementation "recfile.h"
 #endif
@@ -723,4 +725,6 @@ bool RecFile::GenerateMFC( wxArrayPtrVoid params, AxProgressDlg *dlg )
 }
 
 // WDR: handler implementations for RecFile
+
+#endif //AX_RECOGNITION
 
