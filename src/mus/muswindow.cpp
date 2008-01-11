@@ -213,10 +213,10 @@ void MusWindow::Load( AxUndoFile *undoPtr )
 	}
 	else if ( undoPtr->m_flags == WG_UNDO_PAGE )
 	{	
-		MusPage *wgpage = new MusPage();
-		wwginput->ReadPage( wgpage );
+		MusPage *musPage = new MusPage();
+		wwginput->ReadPage( musPage );
 		m_f->m_pages.RemoveAt( page );
-		m_f->m_pages.Insert( wgpage, page );
+		m_f->m_pages.Insert( musPage, page );
 	}
 	
 	if ((page < 0) || (page > m_fh->nbpage - 1))
@@ -235,17 +235,17 @@ void MusWindow::Load( AxUndoFile *undoPtr )
 		previous = m_currentStaff;
 		if ( !previous || (previous->no == staff) )
 			previous = NULL; // this staff will be deleted
-		MusStaff *wgstaff = new MusStaff();
-		wwginput->ReadStaff( wgstaff );
+		MusStaff *musStaff = new MusStaff();
+		wwginput->ReadStaff( musStaff );
 		// keep xrel and yrel
-		wgstaff->xrel = m_page->m_staves[ wgstaff->no ].xrel;
-		wgstaff->yrel = m_page->m_staves[ wgstaff->no ].yrel;
-		wgstaff->Init( this );
+		musStaff->xrel = m_page->m_staves[ musStaff->no ].xrel;
+		musStaff->yrel = m_page->m_staves[ musStaff->no ].yrel;
+		musStaff->Init( this );
 		// clear and remove previous staff
-		m_page->m_staves[ wgstaff->no ].ClearElements( &dc );
-		m_page->m_staves.RemoveAt( wgstaff->no );
+		m_page->m_staves[ musStaff->no ].ClearElements( &dc );
+		m_page->m_staves.RemoveAt( musStaff->no );
 		// replace
-		m_page->m_staves.Insert( wgstaff, wgstaff->no );	
+		m_page->m_staves.Insert( musStaff, musStaff->no );	
 	}
 	delete wwginput;
 	

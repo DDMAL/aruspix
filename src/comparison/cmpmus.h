@@ -104,7 +104,7 @@ protected:
     // WDR: member variable declarations for CmpMusWindow
     bool m_shiftDown;
     CmpEnv *m_envPtr;
-	CmpMusController *m_wgControlPtr;
+	CmpMusController *m_musControlPtr;
     //bool m_edition; // true if OnBeginEdition() has been called -> retranspose current staff
 	CmpFile *m_cmpFilePtr;
 	CmpImWindow *m_imViewPtr1, *m_imViewPtr2;

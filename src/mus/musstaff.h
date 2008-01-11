@@ -69,7 +69,7 @@ public:
 
 	void place_clef( wxDC *dc );
 	int armatDisp ( wxDC *dc );
-	/** wg_cle **/
+	/** muscle **/
 	int testcle (int a);
 
     

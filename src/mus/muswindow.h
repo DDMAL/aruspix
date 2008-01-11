@@ -143,7 +143,7 @@ public:
 	
 	static void SwapY( int *y1, int *y2 ) { int tmp = *y1; *y1 = *y2; *y2 = tmp; }
 
-	/** wg_graph */
+	/** musgraph */
 	void v_bline ( wxDC *dc, int y1, int y2, int x1, int nbr);
 	void v_bline2 ( wxDC *dc, int y1, int y2, int x1, int nbr);
 	void h_bline ( wxDC *dc, int x1, int x2, int y1, int nbr);
@@ -153,7 +153,7 @@ public:
 	void rect_plein2( wxDC *dc, int x1, int y1, int x2, int y2);
 	int hGrosseligne ( wxDC *dc, int x1, int y1, int x2, int y2, int decal);
 	int pointer ( wxDC *dc, int x, int b, int decal, MusStaff *staff );
-	/** wg_bezier */
+	/** musbezier */
 	static int CC(int ,int );
 	static long BBlend(int ,int ,long );
 	static int InitBezier(int );

@@ -268,7 +268,7 @@ void RecMLFBmp::StartLabel( )
 	m_currentWidth = -1;
 }
 
-wxBitmap RecMLFBmp::GenerateBitmap( ImStaff *imstaff, MusStaff *wgstaff, int currentElementNo )
+wxBitmap RecMLFBmp::GenerateBitmap( ImStaff *imstaff, MusStaff *musStaff, int currentElementNo )
 {
 	int mn, mx;
 	int bx, by;
@@ -280,9 +280,9 @@ wxBitmap RecMLFBmp::GenerateBitmap( ImStaff *imstaff, MusStaff *wgstaff, int cur
 	}
 	wxBitmap bmp( mx-mn, STAFF_HEIGHT );
 
-	// fill symbole array with wgstaff elements
+	// fill symbole array with musStaff elements
 	m_symboles.Clear();
-	MusStaff *ut1_staff = MusMLFOutput::GetUt1( wgstaff );
+	MusStaff *ut1_staff = MusMLFOutput::GetUt1( musStaff );
     WriteStaff( ut1_staff, currentElementNo );
 	delete ut1_staff;
 

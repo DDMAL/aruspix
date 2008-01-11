@@ -36,7 +36,7 @@ public:
     // WDR: method declarations for MusSymbol
 	void Draw( wxDC *dc, MusStaff *staff);
 	void dess_symb( wxDC *dc, int x, int y, int symc, int symf, MusStaff *pportee);
-	/** wg_cle **/
+	/** muscle **/
 	static void calcoffs (int *offst, int clid);
 	void dess_cle ( wxDC *dc, int i, MusStaff *pportee);
 	void afficheMesure ( wxDC *dc, MusStaff *staff);

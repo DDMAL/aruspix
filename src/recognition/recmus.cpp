@@ -107,8 +107,8 @@ void RecMusController::LoadBitmapsForFont( )
 	wxString tmp = wxGetApp().m_workingDir + "/.bitmaps"; // ouvre un descripteur de fichier inutile,
 														  // pas terrible .....
 	
-	MusFile wgtmp;																									
-	m_mlfBmp = new RecMLFBmp( &wgtmp, tmp );
+	MusFile mustmp;																									
+	m_mlfBmp = new RecMLFBmp( &mustmp, tmp );
 	m_mlfBmp->m_bitmap_types.Load( builtin_font );
 }
 
@@ -293,7 +293,7 @@ RecMusWindow::RecMusWindow( RecMusController *parent, wxWindowID id,
     const wxPoint &position, const wxSize& size, long style, bool center ) :
     MusWindow( parent, id, position, size, style, center )
 {
-	m_wgControlPtr = parent;
+	m_musControlPtr = parent;
     m_shiftDown = false;
     m_envPtr = NULL;
     m_edition = false;
@@ -351,7 +351,7 @@ void RecMusWindow::OnEndEditionClef()
 void RecMusWindow::OnEndEdition()
 {
 	m_recFilePtr->Modify();
-    m_wgControlPtr->SyncStaffBitmap();
+    m_musControlPtr->SyncStaffBitmap();
 }
 
 // WDR: handler implementations for RecMusWindow
@@ -359,7 +359,7 @@ void RecMusWindow::OnEndEdition()
 
 void RecMusWindow::OnSize( wxSizeEvent &event )
 {
-	m_wgControlPtr->SyncZoom();
+	m_musControlPtr->SyncZoom();
     event.Skip();
 }
 
@@ -381,7 +381,7 @@ void RecMusWindow::OnKeyDown( wxKeyEvent &event )
         m_shiftDown = true;
     if ( event.m_controlDown && (event.GetKeyCode() == 'B') )
     {
-        m_wgControlPtr->InverseShowStaffBitmap( );
+        m_musControlPtr->InverseShowStaffBitmap( );
         return;  // do not skip event;  
     }
     event.Skip();

@@ -66,7 +66,7 @@ public:
         const wxPoint& pos = wxDefaultPosition,
         const wxSize& size = wxDefaultSize,
         long style = 0 );
-    void SetEnv( CmpEnv *env, wxFlexGridSizer *sizer, MusToolPanel *toolpanel,   CmpMusController *wgControlPtr );
+    void SetEnv( CmpEnv *env, wxFlexGridSizer *sizer, MusToolPanel *toolpanel,   CmpMusController *musControlPtr );
     
     // WDR: method declarations for RecSplitterWindow
     void ChangeOrientation( );
@@ -75,8 +75,8 @@ protected:
     // WDR: member variable declarations for RecSplitterWindow
     CmpEnv *m_envPtr;
     MusToolPanel *m_toolpanel;
-    wxFlexGridSizer *m_wgsizer;
-    CmpMusController *m_wgControlPtr;
+    wxFlexGridSizer *m_mussizer;
+    CmpMusController *m_musControlPtr;
     
 private:
     // WDR: handler declarations for RecSplitterWindow
@@ -153,12 +153,12 @@ private:
     // im
     CmpImController *m_imControlPtr1, *m_imControlPtr2;
     CmpImWindow *m_imViewPtr1, *m_imViewPtr2;
-    // wg    
-    CmpMusController *m_wgControlPtr;
-    CmpMusWindow *m_wgViewPtr;
+    // mus    
+    CmpMusController *m_musControlPtr;
+    CmpMusWindow *m_musViewPtr;
 	CmpCollation *m_cmpCollationPtr;
     //MusToolPanel *m_toolpanel;
-    //wxPanel *m_wgPanelPtr; // panel complet: contient toolpanel et recwgcontoller
+    //wxPanel *m_musPanelPtr; // panel complet: contient toolpanel et recwgcontoller
     // recognition elements
     //RecFile *m_recFilePtr;
     // 

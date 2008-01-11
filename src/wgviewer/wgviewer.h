@@ -81,7 +81,7 @@ public:
 private:
     // WDR: member variable declarations for WgvEnv
     wxPanel *m_panelPtr;
-    MusWindow *m_wgViewPtr;
+    MusWindow *m_musViewPtr;
     MusFile *m_filePtr;
     
 private:

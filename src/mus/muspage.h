@@ -52,8 +52,8 @@ public:
 
 	void UpdateStavesPosition();
 
-	/** wg_barmes */
-	void DrawBarres( wxDC *dc ); // wg == barres
+	/** musbarmes */
+	void DrawBarres( wxDC *dc ); // mus == barres
 	void braces ( wxDC *dc, int x, int y1, int y2, int cod, int pTaille);
 	void accolade ( wxDC *dc, int x, int y1, int y2, int pTaille);
 	void bardroit ( wxDC *dc, int x, int y1, int y2, int pTaille);

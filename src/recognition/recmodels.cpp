@@ -258,7 +258,7 @@ bool RecTypModel::AddFile( wxArrayPtrVoid params, AxProgressDlg *dlg )
     int count = names.GetCount() + 1;
     imCounterTotal( counter, count , operation.c_str() );
 	
-	m_mlfoutput->WritePage( &recFile.m_wgFilePtr->m_pages[0], shortname, recFile.m_imPagePtr );
+	m_mlfoutput->WritePage( &recFile.m_musFilePtr->m_pages[0], shortname, recFile.m_imPagePtr );
 	imCounterInc( dlg->GetCounter() );
 	
 	for( int i = 0; i < (int)names.GetCount(); i++ )
@@ -681,7 +681,7 @@ bool RecMusModel::AddFile( wxArrayPtrVoid params, AxProgressDlg *dlg )
 	bool failed = false;
 
 	if ( !failed && !dlg->GetCanceled() )
-		failed = !m_mlfoutput->WritePage( &recFile.m_wgFilePtr->m_pages[0], true );
+		failed = !m_mlfoutput->WritePage( &recFile.m_musFilePtr->m_pages[0], true );
 	imCounterInc( dlg->GetCounter() );	
 		
 	return true;

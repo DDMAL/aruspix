@@ -85,14 +85,14 @@ CmpCollation::CmpCollation( wxString id, wxString name, wxString basename  )
 	m_insStaff = NULL;
 
 	// new MusFile
-    m_wgFilePtr = new MusFile();
-    m_wgFilePtr->m_fname = m_basename + m_id + ".wwg";
+    m_musFilePtr = new MusFile();
+    m_musFilePtr->m_fname = m_basename + m_id + ".wwg";
 }
 
 CmpCollation::~CmpCollation( )
 {
-	if ( m_wgFilePtr )
-		delete m_wgFilePtr;
+	if ( m_musFilePtr )
+		delete m_musFilePtr;
 }
 
 bool CmpCollation::IsCollationLoaded( )
@@ -100,11 +100,11 @@ bool CmpCollation::IsCollationLoaded( )
 	if ( m_isColLoaded )
 		return true;
 
-	if ( !wxFileExists( m_wgFilePtr->m_fname ) )
+	if ( !wxFileExists( m_musFilePtr->m_fname ) )
 		return false;
 		
 	bool failed = false;
-	MusWWGInput *wwginput = new MusWWGInput( m_wgFilePtr, m_wgFilePtr->m_fname, WWG_ARUSPIX_CMP  );
+	MusWWGInput *wwginput = new MusWWGInput( m_musFilePtr, m_musFilePtr->m_fname, WWG_ARUSPIX_CMP  );
 	failed = !wwginput->ImportFile();
 	delete wwginput;
 	if ( failed )
@@ -116,8 +116,8 @@ bool CmpCollation::IsCollationLoaded( )
 
 bool CmpCollation::Realize( )
 {
-	wxASSERT( m_wgFilePtr );
-	m_wgFilePtr->m_pages.Clear();
+	wxASSERT( m_musFilePtr );
+	m_musFilePtr->m_pages.Clear();
 	m_isColLoaded = false;
 	int nstaff = (int)m_collationParts.GetCount();
 	 
@@ -146,7 +146,7 @@ bool CmpCollation::Realize( )
 			//staff->vertBarre = DEB_FIN;
 			page->m_staves.Add( staff );
 		}
-		m_wgFilePtr->m_pages.Add( page );
+		m_musFilePtr->m_pages.Add( page );
 	}
 	
 	// fill the pages
@@ -165,7 +165,7 @@ bool CmpCollation::Realize( )
 		for( int j = 0; j < npages; j++ )
 		{	
 			int clef_offset = 0;
-			MusStaff *staff = &m_wgFilePtr->m_pages[j].m_staves[i];
+			MusStaff *staff = &m_musFilePtr->m_pages[j].m_staves[i];
 			if ( clef )
 			{
 				staff->m_elements.Add( new MusSymbol( *clef ) );
@@ -203,8 +203,8 @@ bool CmpCollation::Realize( )
 			delete clef;
 	}
 
-    m_wgFilePtr->CheckIntegrity();
-	MusWWGOutput *wwgoutput = new MusWWGOutput( m_wgFilePtr, m_wgFilePtr->m_fname, WWG_ARUSPIX_CMP );
+    m_musFilePtr->CheckIntegrity();
+	MusWWGOutput *wwgoutput = new MusWWGOutput( m_musFilePtr, m_musFilePtr->m_fname, WWG_ARUSPIX_CMP );
 	wwgoutput->ExportFile();
 	delete wwgoutput;
 	
@@ -253,7 +253,7 @@ bool CmpCollation::Collate( )
 			
 		//MusWWGOutput wwgoutput( NULL, m_basename + book->m_shortname + ".swwg", WWG_ARUSPIX_CMP  );
 		//wwgoutput->m_flag = WWG_ARUSPIX_CMP;
-		//wwgoutput->WriteStaff( wgStaff );
+		//wwgoutput->WriteStaff( musStaff );
 		//delete wwgoutput;
 		//
 	}
@@ -704,7 +704,7 @@ void CmpFile::OpenContent( )
 	if ( wxFileExists( m_basename + "collation.wwg") )
 	{
 		bool failed = false;
-		MusWWGInput *wwginput = new MusWWGInput( m_wgFilePtr, m_wgFilePtr->m_fname, WWG_ARUSPIX_CMP  );
+		MusWWGInput *wwginput = new MusWWGInput( m_musFilePtr, m_musFilePtr->m_fname, WWG_ARUSPIX_CMP  );
 		failed = !wwginput->ImportFile();
 		delete wwginput;
 		if ( failed )
@@ -784,7 +784,7 @@ void CmpFile::SaveContent( )
 	else
 	{
 		// save
-		MusWWGOutput *wwgoutput = new MusWWGOutput( m_wgFilePtr, m_wgFilePtr->m_fname, WWG_ARUSPIX_CMP );
+		MusWWGOutput *wwgoutput = new MusWWGOutput( m_musFilePtr, m_musFilePtr->m_fname, WWG_ARUSPIX_CMP );
 		wwgoutput->ExportFile();
 		delete wwgoutput;
 	}*/
@@ -876,9 +876,9 @@ bool CmpFile::LoadBooks( wxArrayPtrVoid params, AxProgressDlg *dlg )
 				if ( !failed && !dlg->GetCanceled() )
 				{
 					if ( part->m_partpages[k].m_staves.IsEmpty() ) // all staves
-						failed = !m_mlfoutput->WritePage( &recFile.m_wgFilePtr->m_pages[0], wxFileName( part->m_partpages[k].m_axfile ).GetName(), recFile.m_imPagePtr );
+						failed = !m_mlfoutput->WritePage( &recFile.m_musFilePtr->m_pages[0], wxFileName( part->m_partpages[k].m_axfile ).GetName(), recFile.m_imPagePtr );
 					else
-						failed = !m_mlfoutput->WritePage( &recFile.m_wgFilePtr->m_pages[0], wxFileName( part->m_partpages[k].m_axfile ).GetName(), 
+						failed = !m_mlfoutput->WritePage( &recFile.m_musFilePtr->m_pages[0], wxFileName( part->m_partpages[k].m_axfile ).GetName(), 
 							recFile.m_imPagePtr, &part->m_partpages[k].m_staves );
 				
 				}
@@ -889,18 +889,18 @@ bool CmpFile::LoadBooks( wxArrayPtrVoid params, AxProgressDlg *dlg )
 			
 			wxLogMessage( _("Convert data ...") );
 			CmpMLFInput *m_cmpinput = new CmpMLFInput( NULL, m_basename + part->m_id + ".mlf"  );
-			MusStaff *wgStaff = m_cmpinput->ImportFileInStaff( );
-			wgStaff->no = 0;
-			wgStaff->vertBarre = DEB_FIN;
+			MusStaff *musStaff = m_cmpinput->ImportFileInStaff( );
+			musStaff->no = 0;
+			musStaff->vertBarre = DEB_FIN;
 			delete m_cmpinput;
 			imCounterInc( dlg->GetCounter() );
 			
 		
 			wxLogMessage( _("Write data ...") );
 			MusWWGOutput *wwgoutput = new MusWWGOutput( NULL, m_basename + part->m_id + ".swwg", WWG_ARUSPIX_CMP  );
-			wwgoutput->WriteStaff( wgStaff );
+			wwgoutput->WriteStaff( musStaff );
 			delete wwgoutput;
-			delete wgStaff;
+			delete musStaff;
 			imCounterInc( dlg->GetCounter() );
 		}
     }
@@ -1079,7 +1079,7 @@ bool CmpFile::Collate( wxArrayPtrVoid params, AxProgressDlg *dlg )
 			//imCounterTotal( counter, count , operation.c_str() );
 
 			if ( !failed && !dlg->GetCanceled() )
-				failed = !m_mlfoutput->WritePage( &recFile.m_wgFilePtr->m_pages[0], wxFileName( filenames[j] ).GetName(), recFile.m_imPagePtr );
+				failed = !m_mlfoutput->WritePage( &recFile.m_musFilePtr->m_pages[0], wxFileName( filenames[j] ).GetName(), recFile.m_imPagePtr );
 			//imCounterInc( dlg->GetCounter() );	
 		}
 		m_mlfoutput->Close();
@@ -1119,31 +1119,31 @@ bool CmpFile::Collate( wxArrayPtrVoid params, AxProgressDlg *dlg )
 		/ *
 		CmpMLFInput *m_cmpinput = new CmpMLFInput( NULL, m_basename + book->m_shortname + ".mlf"  );
 		
-		MusStaff *wgStaff = m_cmpinput->ImportFileInStaff( );
-        wgStaff->no = 0;
-        //wgStaff->indent = imStaff->CalcIndentation( x1 );
-        //wgStaff->ecart = (m_imPagePtr->ToViewY( imStaff->m_y ) -  previous ) / wgPage->defin;
-        wgStaff->vertBarre = DEB_FIN;
-        //previous += wgStaff->ecart * wgPage->defin;
-        //wgPage->m_staves.Add( wgStaff );
+		MusStaff *musStaff = m_cmpinput->ImportFileInStaff( );
+        musStaff->no = 0;
+        //musStaff->indent = imStaff->CalcIndentation( x1 );
+        //musStaff->ecart = (m_imPagePtr->ToViewY( imStaff->m_y ) -  previous ) / musPage->defin;
+        musStaff->vertBarre = DEB_FIN;
+        //previous += musStaff->ecart * musPage->defin;
+        //musPage->m_staves.Add( musStaff );
 
 		//m_cmpinput->Close();
 		delete m_cmpinput;
 		
 		MusWWGOutput *wwgoutput = new MusWWGOutput( NULL, m_basename + book->m_shortname + ".swwg", WWG_ARUSPIX_CMP  );
 		//wwgoutput->m_flag = WWG_ARUSPIX_CMP;
-		wwgoutput->WriteStaff( wgStaff );
+		wwgoutput->WriteStaff( musStaff );
 		delete wwgoutput;
 		* /
 		
 		MusWWGInput *wwginput = new MusWWGInput( NULL, m_basename + book->m_shortname + ".swwg", WWG_ARUSPIX_CMP );
-		MusStaff wgStaff_loaded;
-		wwginput->ReadStaff( &wgStaff_loaded );
+		MusStaff musStaff_loaded;
+		wwginput->ReadStaff( &musStaff_loaded );
 		delete wwginput;
 		
 		
 		CmpMLFOutput *m_cmpoutput = new CmpMLFOutput( NULL, m_basename + book->m_shortname + ".staff", "CmpMLFSymb"  );
-		m_cmpoutput->WriteStaff( &wgStaff_loaded );
+		m_cmpoutput->WriteStaff( &musStaff_loaded );
 		m_cmpoutput->Close();
 		delete m_cmpoutput;
 		

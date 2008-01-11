@@ -50,10 +50,10 @@ BEGIN_EVENT_TABLE(AxOptionsDlg,wxDialog)
     EVT_BUTTON( ID_BROWSE_WORKING_DIR, AxOptionsDlg::OnBrowseWorkDir )
 	EVT_BUTTON( ID_BROWSE_DOCUMENTS_DIR, AxOptionsDlg::OnBrowseDocDir )
     EVT_BUTTON( ID_CHOOSE_FONT, AxOptionsDlg::OnChooseFont )
-    EVT_SPIN( ID_SC_WG_OFFSET, AxOptionsDlg::OnSpinCtrl )
-	EVT_TEXT( ID_SC_WG_OFFSET, AxOptionsDlg::OnSpinCtrlText )
-    EVT_SPIN( ID_SC_WG_SIZE, AxOptionsDlg::OnSpinCtrl )
-	EVT_TEXT( ID_SC_WG_SIZE, AxOptionsDlg::OnSpinCtrlText )
+    EVT_SPIN( ID_SC_MUS_OFFSET, AxOptionsDlg::OnSpinCtrl )
+	EVT_TEXT( ID_SC_MUS_OFFSET, AxOptionsDlg::OnSpinCtrlText )
+    EVT_SPIN( ID_SC_MUS_SIZE, AxOptionsDlg::OnSpinCtrl )
+	EVT_TEXT( ID_SC_MUS_SIZE, AxOptionsDlg::OnSpinCtrlText )
 #ifdef AX_SUPERIMPOSITION
 #endif	
 #ifdef AX_RECOGNITION
@@ -106,9 +106,9 @@ AxOptionsDlg::AxOptionsDlg( wxWindow *parent, wxWindowID id, const wxString &tit
 	item0->Fit( this );
 	item0->SetSizeHints( this );
 
-    m_wgWinPtr = new AxOptMusWindow( GetWgPanel(), -1, wxDefaultPosition, wxDefaultSize, wxHSCROLL|wxVSCROLL|wxNO_BORDER );
-	m_wgWinPtr->SetBackgroundColour( wxSystemSettings::GetColour( wxSYS_COLOUR_MENU)  );
-    m_wgWinPtr->Resize( );
+    m_musWinPtr = new AxOptMusWindow( GetWgPanel(), -1, wxDefaultPosition, wxDefaultSize, wxHSCROLL|wxVSCROLL|wxNO_BORDER );
+	m_musWinPtr->SetBackgroundColour( wxSystemSettings::GetColour( wxSYS_COLOUR_MENU)  );
+    m_musWinPtr->Resize( );
 }
 
 
@@ -241,7 +241,7 @@ void AxOptionsDlg::OptionsDlgRecognition( wxNotebook *notebook )
 
 void AxOptionsDlg::UpdateFontCorrections( int eventID )
 {
-	if ( !m_wgWinPtr )
+	if ( !m_musWinPtr )
 		return ;
 
 	if ( !this->IsShown() || m_ignoreSpinEvent )
@@ -249,10 +249,10 @@ void AxOptionsDlg::UpdateFontCorrections( int eventID )
 
 	wxGetApp().m_fontPosCorrection = GetScWgOffset()->GetValue();
 	wxGetApp().m_fontSizeCorrection = GetScWgSize()->GetValue();
-	m_wgWinPtr->UpdatePageValues();
-	if ( eventID == ID_SC_WG_SIZE)
-		m_wgWinPtr->UpdateZoomValues();
-    m_wgWinPtr->Resize( );
+	m_musWinPtr->UpdatePageValues();
+	if ( eventID == ID_SC_MUS_SIZE)
+		m_musWinPtr->UpdateZoomValues();
+    m_musWinPtr->Resize( );
 }
 
 // WDR: handler implementations for AxOptionsDlg

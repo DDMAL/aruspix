@@ -111,12 +111,12 @@ RecSplitterWindow::RecSplitterWindow( wxWindow *parent, wxWindowID id,
     m_envPtr = NULL;
 }
 
-void RecSplitterWindow::SetEnv( RecEnv *env, wxFlexGridSizer *sizer, MusToolPanel *toolpanel,    RecMusController *wgControlPtr )
+void RecSplitterWindow::SetEnv( RecEnv *env, wxFlexGridSizer *sizer, MusToolPanel *toolpanel,    RecMusController *musControlPtr )
 {
     m_envPtr = env;
-    m_wgsizer = sizer;
+    m_mussizer = sizer;
     m_toolpanel = toolpanel;
-    m_wgControlPtr = wgControlPtr;
+    m_musControlPtr = musControlPtr;
 }
 
 void RecSplitterWindow::ChangeOrientation( )
@@ -143,15 +143,15 @@ void RecSplitterWindow::ChangeOrientation( )
     int cols = ( vertical ) ? 0 : 1;
     int rows = ( vertical ) ? 1 : 0;
 
-    m_wgsizer->AddGrowableCol( rows );
-    m_wgsizer->RemoveGrowableCol( cols );
-    m_wgsizer->AddGrowableRow( cols );
-    m_wgsizer->RemoveGrowableRow( rows );
+    m_mussizer->AddGrowableCol( rows );
+    m_mussizer->RemoveGrowableCol( cols );
+    m_mussizer->AddGrowableRow( cols );
+    m_mussizer->RemoveGrowableRow( rows );
 
-    m_wgsizer->SetCols( cols );
-    m_wgsizer->SetRows( rows );
-    m_wgsizer->Layout();
-    //m_wgsizer->SetSizeHints( win2 );
+    m_mussizer->SetCols( cols );
+    m_mussizer->SetRows( rows );
+    m_mussizer->Layout();
+    //m_mussizer->SetSizeHints( win2 );
 
 
     if ( m_envPtr )
@@ -263,8 +263,8 @@ RecEnv::RecEnv():
     m_vsplitterPtr = NULL;
     m_imControlPtr = NULL;
     m_imViewPtr = NULL;
-    m_wgControlPtr = NULL;
-    m_wgViewPtr = NULL;
+    m_musControlPtr = NULL;
+    m_musViewPtr = NULL;
     m_recBookPtr = NULL;
     m_recBookPanelPtr = NULL;
 
@@ -340,17 +340,17 @@ void RecEnv::LoadWindow()
     m_imViewPtr->m_popupMenu.AppendSeparator();
     m_imControlPtr->Init( this, m_imViewPtr );
 
-    m_wgPanelPtr = new wxPanel( m_splitterPtr, ID4_DISPLAY );
-    wxFlexGridSizer *wgsizer = (wxFlexGridSizer*)MusOutputFunc4( m_wgPanelPtr, TRUE );
-    m_wgControlPtr = (RecMusController*)m_envWindowPtr->FindWindowById( ID4_MUSPANEL );
-    m_wgViewPtr = new RecMusWindow( m_wgControlPtr, ID4_WGWINDOW, wxDefaultPosition,
+    m_musPanelPtr = new wxPanel( m_splitterPtr, ID4_DISPLAY );
+    wxFlexGridSizer *mussizer = (wxFlexGridSizer*)MusOutputFunc4( m_musPanelPtr, TRUE );
+    m_musControlPtr = (RecMusController*)m_envWindowPtr->FindWindowById( ID4_MUSPANEL );
+    m_musViewPtr = new RecMusWindow( m_musControlPtr, ID4_WGWINDOW, wxDefaultPosition,
             wxDefaultSize, wxHSCROLL |wxVSCROLL | wxNO_BORDER  /*| wxSIMPLE_BORDER */ , false);
-    m_wgViewPtr->SetEnv( this );
-    m_wgControlPtr->Init( this, m_wgViewPtr );
+    m_musViewPtr->SetEnv( this );
+    m_musControlPtr->Init( this, m_musViewPtr );
     
-    m_wgControlPtr->SetImViewAndController( m_imViewPtr, m_imControlPtr );
-    m_wgControlPtr->SetRecFile( m_recFilePtr );
-    m_imControlPtr->SetWgViewAndController( m_wgViewPtr, m_wgControlPtr );
+    m_musControlPtr->SetImViewAndController( m_imViewPtr, m_imControlPtr );
+    m_musControlPtr->SetRecFile( m_recFilePtr );
+    m_imControlPtr->SetWgViewAndController( m_musViewPtr, m_musControlPtr );
     m_imControlPtr->SetRecFile( m_recFilePtr );
    
     m_toolpanel = (MusToolPanel*)m_envWindowPtr->FindWindowById( ID4_TOOLPANEL );
@@ -358,16 +358,16 @@ void RecEnv::LoadWindow()
     
  //   m_toolpanel->SetDirection( false );
 
-    m_splitterPtr->SetEnv( this, wgsizer, m_toolpanel, m_wgControlPtr );
+    m_splitterPtr->SetEnv( this, mussizer, m_toolpanel, m_musControlPtr );
 
     if ( wxSystemSettings::GetColour(wxSYS_COLOUR_APPWORKSPACE) == *wxWHITE )
-        m_wgControlPtr->SetBackgroundColour( *wxLIGHT_GREY );
+        m_musControlPtr->SetBackgroundColour( *wxLIGHT_GREY );
     else
-        m_wgControlPtr->SetBackgroundColour( wxSystemSettings::GetColour(wxSYS_COLOUR_APPWORKSPACE) );
+        m_musControlPtr->SetBackgroundColour( wxSystemSettings::GetColour(wxSYS_COLOUR_APPWORKSPACE) );
 
 
-    //m_splitterPtr->SplitHorizontally(m_imControlPtr, m_wgControlPtr,  800 );
-    m_splitterPtr->SplitHorizontally(m_imControlPtr, m_wgPanelPtr );
+    //m_splitterPtr->SplitHorizontally(m_imControlPtr, m_musControlPtr,  800 );
+    m_splitterPtr->SplitHorizontally(m_imControlPtr, m_musPanelPtr );
     m_splitterPtr->Unsplit();
     
     ResetModels();
@@ -601,13 +601,13 @@ bool RecEnv::ResetBookFile()
 
 bool RecEnv::ResetFile()
 {
-    wxASSERT_MSG( m_wgViewPtr, "WG Window cannot be NULL ");
+    wxASSERT_MSG( m_musViewPtr, "WG Window cannot be NULL ");
     
     if ( !m_recFilePtr->Close( true ) )
         return false;
 
-    m_wgViewPtr->Show( false );
-    m_wgViewPtr->SetFile( NULL );
+    m_musViewPtr->Show( false );
+    m_musViewPtr->SetFile( NULL );
     
     if ( m_imControlPtr->Ok() )
     {
@@ -616,7 +616,7 @@ bool RecEnv::ResetFile()
     }
     
     m_toolpanel->SetWgWindow( NULL );    
-    m_wgControlPtr->CancelShowStaffBitmap();
+    m_musControlPtr->CancelShowStaffBitmap();
     m_splitterPtr->Unsplit();
     UpdateTitle( );
     
@@ -661,7 +661,7 @@ void RecEnv::ResetModels()
     if ( !m_musModelPtr->IsOpened() )
         m_musModelPtr->Open( to_use_mus );
         
-    m_wgControlPtr->LoadBitmapsForFont( );
+    m_musControlPtr->LoadBitmapsForFont( );
 }
 
 
@@ -669,16 +669,16 @@ void RecEnv::UpdateViews( int flags )
 {
     if ( m_recFilePtr->IsRecognized() )
     {
-        m_splitterPtr->SplitHorizontally(m_imControlPtr, m_wgPanelPtr );
+        m_splitterPtr->SplitHorizontally(m_imControlPtr, m_musPanelPtr );
         AxImage img;
         m_recFilePtr->GetImage1( &img );
         m_imControlPtr->ResetImage( img );
 
-        m_wgViewPtr->SetFile( m_recFilePtr->GetWgFile() );
-        //m_wgViewPtr->SetEnv( this );
-        m_wgViewPtr->SetToolPanel( m_toolpanel );
-        m_wgViewPtr->Goto( 1 );
-        m_wgControlPtr->SyncZoom();  
+        m_musViewPtr->SetFile( m_recFilePtr->GetWgFile() );
+        //m_musViewPtr->SetEnv( this );
+        m_musViewPtr->SetToolPanel( m_toolpanel );
+        m_musViewPtr->Goto( 1 );
+        m_musControlPtr->SyncZoom();  
     }
     else if ( m_recFilePtr->IsPreprocessed() )
     {
@@ -1302,27 +1302,27 @@ void RecEnv::OnBatch4( wxCommandEvent &event )
 
 void RecEnv::OnTools( wxCommandEvent &event )
 {
-    wxASSERT_MSG( m_wgViewPtr, "WG Window cannot be NULL ");
+    wxASSERT_MSG( m_musViewPtr, "WG Window cannot be NULL ");
 
     if ( event.GetId() == ID4_INSERT_MODE )
-        m_wgViewPtr->SetInsertMode( event.IsChecked() );
+        m_musViewPtr->SetInsertMode( event.IsChecked() );
     else 
     {
-        m_wgViewPtr->SetInsertMode( true );
+        m_musViewPtr->SetInsertMode( true );
         if ( event.GetId() == ID4_NOTES )
-            m_wgViewPtr->SetToolType( MUS_TOOLS_NOTES );
+            m_musViewPtr->SetToolType( MUS_TOOLS_NOTES );
         else if ( event.GetId() == ID4_KEYS)
-            m_wgViewPtr->SetToolType( MUS_TOOLS_CLEFS );
+            m_musViewPtr->SetToolType( MUS_TOOLS_CLEFS );
         else if ( event.GetId() == ID4_SIGNS )
-            m_wgViewPtr->SetToolType( MUS_TOOLS_SIGNS );
+            m_musViewPtr->SetToolType( MUS_TOOLS_SIGNS );
         else if ( event.GetId() == ID4_SYMBOLES )
-            m_wgViewPtr->SetToolType( MUS_TOOLS_OTHER );
+            m_musViewPtr->SetToolType( MUS_TOOLS_OTHER );
     }
 }
 
 void RecEnv::OnStaffCorrespondence( wxCommandEvent &event )
 {
-    m_wgControlPtr->InverseShowStaffBitmap( );
+    m_musControlPtr->InverseShowStaffBitmap( );
 }
 
 
@@ -1339,15 +1339,15 @@ void RecEnv::OnExportImage( wxCommandEvent &event )
     wxGetApp().m_lastDirTIFF_out = wxPathOnly( filename );
 
     wxMemoryDC memDC;
-    wxBitmap bitmap( m_wgViewPtr->ToZoom( m_wgViewPtr->pageFormatHor + 30 )  ,
-        m_wgViewPtr->ToZoom( m_wgViewPtr->pageFormatVer + 10 )); // marges bricolees ...
+    wxBitmap bitmap( m_musViewPtr->ToZoom( m_musViewPtr->pageFormatHor + 30 )  ,
+        m_musViewPtr->ToZoom( m_musViewPtr->pageFormatVer + 10 )); // marges bricolees ...
     memDC.SelectObject(bitmap);
     memDC.SetBackground(*wxWHITE_BRUSH);
     memDC.Clear();
-    memDC.SetLogicalOrigin( m_wgViewPtr->mrgG,10 );
+    memDC.SetLogicalOrigin( m_musViewPtr->mrgG,10 );
     //memDC.SetPen(*wxRED_PEN);
     //memDC.SetBrush(*wxTRANSPARENT_BRUSH);
-    m_wgViewPtr->m_page->DrawPage( &memDC, false );
+    m_musViewPtr->m_page->DrawPage( &memDC, false );
     memDC.SelectObject(wxNullBitmap);
     wxImage image = bitmap.ConvertToImage().ConvertToMono( 255 ,255 , 255 );
     image.SaveFile( filename );
@@ -1369,7 +1369,7 @@ void RecEnv::OnAdjust( wxCommandEvent &event )
         m_imViewPtr->SetAdjustMode( ADJUST_HORIZONTAL );
 
     m_imControlPtr->SyncSelectionBitmap();
-    m_wgControlPtr->SyncZoom();      
+    m_musControlPtr->SyncZoom();      
 }
 
 void RecEnv::OnZoom( wxCommandEvent &event )
@@ -1382,7 +1382,7 @@ void RecEnv::OnZoom( wxCommandEvent &event )
         m_imViewPtr->ZoomIn();
     
     m_imControlPtr->SyncSelectionBitmap();
-    m_wgControlPtr->SyncZoom();
+    m_musControlPtr->SyncZoom();
 }
 
 void RecEnv::OnCancelRecognition( wxCommandEvent &event )
@@ -1541,8 +1541,8 @@ void RecEnv::OnPaste( wxCommandEvent &event )
 
     if (win->GetId() == ID4_VIEW)
         m_imControlPtr->Paste();
-    else if (m_wgViewPtr && (win->GetId() == ID4_WGWINDOW))
-        m_wgViewPtr->Paste();
+    else if (m_musViewPtr && (win->GetId() == ID4_WGWINDOW))
+        m_musViewPtr->Paste();
 }
 
 void RecEnv::OnCopy( wxCommandEvent &event )
@@ -1555,8 +1555,8 @@ void RecEnv::OnCopy( wxCommandEvent &event )
 
     if (win->GetId() == ID4_VIEW)
         m_imControlPtr->Copy();
-    else if (m_wgViewPtr && (win->GetId() == ID4_WGWINDOW))
-        m_wgViewPtr->Copy();
+    else if (m_musViewPtr && (win->GetId() == ID4_WGWINDOW))
+        m_musViewPtr->Copy();
 }
 
 void RecEnv::OnCut( wxCommandEvent &event )
@@ -1569,8 +1569,8 @@ void RecEnv::OnCut( wxCommandEvent &event )
 
     if (win->GetId() == ID4_VIEW)
         m_imControlPtr->Cut();
-    else if (m_wgViewPtr && (win->GetId() == ID4_WGWINDOW))
-        m_wgViewPtr->Cut();
+    else if (m_musViewPtr && (win->GetId() == ID4_WGWINDOW))
+        m_musViewPtr->Cut();
 }
 
 
@@ -1580,8 +1580,8 @@ void RecEnv::OnUndo( wxCommandEvent &event )
 
     if ( m_recFilePtr->IsRecognized() )
     {
-       if (m_wgViewPtr && m_wgViewPtr->CanUndo() )
-        m_wgViewPtr->Undo();
+       if (m_musViewPtr && m_musViewPtr->CanUndo() )
+        m_musViewPtr->Undo();
     }
     else
     {
@@ -1599,8 +1599,8 @@ void RecEnv::OnRedo( wxCommandEvent &event )
 
     if ( m_recFilePtr->IsRecognized() )
     {
-        if (m_wgViewPtr && m_wgViewPtr->CanRedo() )
-            m_wgViewPtr->Redo();
+        if (m_musViewPtr && m_musViewPtr->CanRedo() )
+            m_musViewPtr->Redo();
     }
     else
     {
@@ -1617,7 +1617,7 @@ void RecEnv::OnUpdateUI( wxUpdateUIEvent &event )
 {
     wxASSERT_MSG( m_imControlPtr, wxT("Image controller cannot be NULL") );
     wxASSERT_MSG( m_imViewPtr, wxT("View cannot be NULL") );
-    wxASSERT_MSG( m_wgViewPtr, "WG Window cannot be NULL ");
+    wxASSERT_MSG( m_musViewPtr, "WG Window cannot be NULL ");
     wxASSERT_MSG( m_recFilePtr, "RecFile cannot be NULL ");
 	wxASSERT_MSG( m_recBookFilePtr, "RecBookFile cannot be NULL ");
     
@@ -1637,8 +1637,8 @@ void RecEnv::OnUpdateUI( wxUpdateUIEvent &event )
         //wxLogDebug("RecEnv::OnUpdateUI : update cut" );
         if (win->GetId() == ID4_VIEW)
            event.Enable( m_imControlPtr->CanCut() );
-        else if (m_wgViewPtr && (win->GetId() == ID4_WGWINDOW))
-            event.Enable( (m_wgViewPtr && m_wgViewPtr->CanCut()));
+        else if (m_musViewPtr && (win->GetId() == ID4_WGWINDOW))
+            event.Enable( (m_musViewPtr && m_musViewPtr->CanCut()));
         else
             event.Enable( false );
             
@@ -1647,8 +1647,8 @@ void RecEnv::OnUpdateUI( wxUpdateUIEvent &event )
     {
         if (win->GetId() == ID4_VIEW)
            event.Enable( m_imControlPtr->CanCopy() );
-        else if (m_wgViewPtr && (win->GetId() == ID4_WGWINDOW))
-            event.Enable( (m_wgViewPtr && m_wgViewPtr->CanCopy()));
+        else if (m_musViewPtr && (win->GetId() == ID4_WGWINDOW))
+            event.Enable( (m_musViewPtr && m_musViewPtr->CanCopy()));
         else
             event.Enable( false );
     }
@@ -1656,14 +1656,14 @@ void RecEnv::OnUpdateUI( wxUpdateUIEvent &event )
     {
         if (win->GetId() == ID4_VIEW)
            event.Enable( m_imControlPtr->CanPaste() );
-        else if (m_wgViewPtr && (win->GetId() == ID4_WGWINDOW))
-            event.Enable( (m_wgViewPtr && m_wgViewPtr->CanPaste()));
+        else if (m_musViewPtr && (win->GetId() == ID4_WGWINDOW))
+            event.Enable( (m_musViewPtr && m_musViewPtr->CanPaste()));
         else
             event.Enable( false );
     }
     else if (id == ID_UNDO)
     {
-        if ( m_recFilePtr->IsRecognized() && m_wgViewPtr && m_wgViewPtr->CanUndo() )
+        if ( m_recFilePtr->IsRecognized() && m_musViewPtr && m_musViewPtr->CanUndo() )
             event.Enable( true );
         else if ( m_recFilePtr->IsPreprocessed() && m_recFilePtr->m_imPagePtr && m_recFilePtr->m_imPagePtr->CanUndo() )
             event.Enable( true );
@@ -1672,7 +1672,7 @@ void RecEnv::OnUpdateUI( wxUpdateUIEvent &event )
     }
     else if (id == ID_REDO)
     {
-        if ( m_recFilePtr->IsRecognized() && m_wgViewPtr && m_wgViewPtr->CanRedo() )
+        if ( m_recFilePtr->IsRecognized() && m_musViewPtr && m_musViewPtr->CanRedo() )
             event.Enable( true );
         else if ( m_recFilePtr->IsPreprocessed() && m_recFilePtr->m_imPagePtr && m_recFilePtr->m_imPagePtr->CanRedo() )
             event.Enable( true );
@@ -1724,12 +1724,12 @@ void RecEnv::OnUpdateUI( wxUpdateUIEvent &event )
     else if (id == ID4_SHOW_STAFF_BMP )
     {
         event.Enable( m_recFilePtr->IsRecognized() );
-        event.Check( m_wgControlPtr->ShowStaffBitmap() );
+        event.Check( m_musControlPtr->ShowStaffBitmap() );
     }
     else if ( event.GetId() == ID4_INSERT_MODE )
     {
-        event.Enable( m_wgViewPtr->IsShown() );
-        event.Check( m_wgViewPtr && !m_wgViewPtr->m_editElement );
+        event.Enable( m_musViewPtr->IsShown() );
+        event.Check( m_musViewPtr && !m_musViewPtr->m_editElement );
     }
     else
         event.Enable(true);

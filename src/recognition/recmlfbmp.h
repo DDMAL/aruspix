@@ -5,8 +5,8 @@
 // Copyright (c) Laurent Pugin. All rights reserved.   
 /////////////////////////////////////////////////////////////////////////////
 
-#ifndef __WG_IOMLFBMP_H__
-#define __WG_IOMLFBMP_H__
+#ifndef __MUS_IOMLFBMP_H__
+#define __MUS_IOMLFBMP_H__
 
 #ifdef __GNUG__
     #pragma interface "mlfbmp.cpp"
@@ -125,7 +125,7 @@ public:
     
     // WDR: method declarations for RecMLFBmp
     //bool GenerateBitmaps( ImPage *impage );
-	wxBitmap GenerateBitmap( ImStaff *imstaff, MusStaff *wgstaff, int currentElementNo = -1 );
+	wxBitmap GenerateBitmap( ImStaff *imstaff, MusStaff *musStaff, int currentElementNo = -1 );
 	int GetCurrentX() { return m_currentX; }
 	int GetCurrentWidth() { return m_currentWidth; }
     //virtual bool WritePage( const MusPage *page );

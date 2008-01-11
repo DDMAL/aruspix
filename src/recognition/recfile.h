@@ -58,7 +58,7 @@ public:
 	bool RecFile::GenerateMFC( wxArrayPtrVoid params, AxProgressDlg *dlg );
     //int DoCorrelation( ImPage *imPage );
 	// getters
-	MusFile *RecFile::GetWgFile() { return m_wgFilePtr; }
+	MusFile *RecFile::GetWgFile() { return m_musFilePtr; }
 	ImPage *RecFile::GetImPage() { return m_imPagePtr; }
 	//RecTypModel *RecFile::GetTypModel() { return m_typModelPtr; }
 	
@@ -74,7 +74,7 @@ public:
     // WDR: member variable declarations for RecFile
 	RecEnv *m_envPtr;
 	ImPage *m_imPagePtr;
-	MusFile *m_wgFilePtr;
+	MusFile *m_musFilePtr;
 	// filename
 	// models
 	//RecTypModel *m_typModelPtr; // not used yet

@@ -31,9 +31,9 @@
 /*
  * GESTION DES IDS
  *
- * app.wdr 6000
- * options.wdr 8000
- * about.wdr 9000
+ * axapp.wdr 6000
+ * axoptions.wdr 8000
+ * axabout.wdr 9000
  */
  
  /*******************
@@ -44,7 +44,7 @@
  ** wgv 15000
  ** cmp 16000
  *******************
- * wg.wdr 20000
+ * mus.wdr 20000
  * aximcontrol.wdr 21000
  * local 22x000
  */

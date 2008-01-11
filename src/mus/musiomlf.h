@@ -117,7 +117,7 @@ public:
     virtual ~MusMLFOutput();
     
     // WDR: method declarations for MusMLFOutput
-	bool ExportFile( MusFile *file, wxString filename);	// replace  wgfile set in the constructor
+	bool ExportFile( MusFile *file, wxString filename);	// replace  musfile set in the constructor
 														// and export it
 														// allow exportation of several files in one mlf
     virtual bool ExportFile( );

@@ -5,8 +5,8 @@
 // Copyright (c) Laurent Pugin. All rights reserved.   
 /////////////////////////////////////////////////////////////////////////////
 
-#ifndef __WG_CMPMLF_H__
-#define __WG_CMPMLF_H__
+#ifndef __MUS_CMPMLF_H__
+#define __MUS_CMPMLF_H__
 
 #ifdef AX_RECOGNITION
 		#ifdef AX_COMPARISON
@@ -73,7 +73,7 @@ public:
     virtual ~CmpMLFOutput();
     
     // WDR: method declarations for CmpMLFOutput
-	//bool ExportFile( MusFile *file, wxString filename);	// replace  wgfile set in the constructor
+	//bool ExportFile( MusFile *file, wxString filename);	// replace  musfile set in the constructor
 														// and export it
 														// allow exportation of several files in one mlf
 														

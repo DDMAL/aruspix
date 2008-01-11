@@ -83,7 +83,7 @@ public:
 	bool Collate( );
 	bool Realize( );
 	bool IsCollationLoaded();
-	MusFile *GetWgFile() { return m_wgFilePtr; }
+	MusFile *GetWgFile() { return m_musFilePtr; }
 	
 	
 protected:
@@ -106,7 +106,7 @@ public:
 	
 private:
 	wxString m_basename; // the basename of the CmpFile, used to read/write file from this class
-	MusFile *m_wgFilePtr;
+	MusFile *m_musFilePtr;
 	bool m_isColLoaded;
 	
 	MusStaff *m_insStaff;

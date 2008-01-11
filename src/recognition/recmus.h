@@ -120,7 +120,7 @@ protected:
     // WDR: member variable declarations for RecMusWindow
     bool m_shiftDown;
     RecEnv *m_envPtr;
-	RecMusController *m_wgControlPtr;
+	RecMusController *m_musControlPtr;
     bool m_edition; // true if OnBeginEdition() has been called -> retranspose current staff
 	RecFile *m_recFilePtr;
 	RecImWindow *m_imViewPtr;

@@ -130,7 +130,7 @@ CmpMusWindow::CmpMusWindow( CmpMusController *parent, wxWindowID id,
     const wxPoint &position, const wxSize& size, long style, bool center ) :
     MusWindow( parent, id, position, size, style, center )
 {
-	m_wgControlPtr = parent;
+	m_musControlPtr = parent;
     m_shiftDown = false;
     m_envPtr = NULL;
     //m_edition = false;
@@ -197,7 +197,7 @@ void CmpMusWindow::OnEndEditionClef()
 void CmpMusWindow::OnEndEdition()
 {
 	m_recFilePtr->Modify();
-    m_wgControlPtr->SyncStaffBitmap();
+    m_musControlPtr->SyncStaffBitmap();
 }
 */
 
@@ -205,7 +205,7 @@ void CmpMusWindow::OnEndEdition()
 
 void CmpMusWindow::OnSize( wxSizeEvent &event )
 {
-	//m_wgControlPtr->SyncZoom();
+	//m_musControlPtr->SyncZoom();
     event.Skip();
 }
 

@@ -63,8 +63,8 @@ protected:
     RecEnv *m_envPtr;
     // to synchronize view
     RecFile *m_recFilePtr;
-    RecMusWindow *m_wgViewPtr;
-    RecMusController *m_wgControlPtr;
+    RecMusWindow *m_musViewPtr;
+    RecMusController *m_musControlPtr;
 
 public:
     wxPoint m_start;
@@ -112,8 +112,8 @@ protected:
     // WDR: member variable declarations for RecImWindow
     RecEnv *m_envPtr;
     RecFile *m_recFilePtr;
-    RecMusWindow *m_wgViewPtr;
-    RecMusController *m_wgControlPtr;
+    RecMusWindow *m_musViewPtr;
+    RecMusController *m_musControlPtr;
     
 private:
     wxMenu m_popupMenuClassification;

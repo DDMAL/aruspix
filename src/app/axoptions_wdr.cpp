@@ -145,13 +145,13 @@ wxSizer *System1DlgFunc( wxWindow *parent, bool call_fit, bool set_sizer )
     wxStaticText *item20 = new wxStaticText( parent, IDO_TEXT, _("Size (%)"), wxDefaultPosition, wxDefaultSize, 0 );
     item19->Add( item20, 0, wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
-    wxSpinCtrl *item21 = new wxSpinCtrl( parent, ID_SC_WG_SIZE, wxT("100"), wxDefaultPosition, wxSize(70,-1), 0, 50, 200, 100 );
+    wxSpinCtrl *item21 = new wxSpinCtrl( parent, ID_SC_MUS_SIZE, wxT("100"), wxDefaultPosition, wxSize(70,-1), 0, 50, 200, 100 );
     item19->Add( item21, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
     wxStaticText *item22 = new wxStaticText( parent, IDO_TEXT, _("Vertical offset"), wxDefaultPosition, wxDefaultSize, 0 );
     item19->Add( item22, 0, wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
-    wxSpinCtrl *item23 = new wxSpinCtrl( parent, ID_SC_WG_OFFSET, wxT("0"), wxDefaultPosition, wxSize(70,-1), 0, -50, 50, 0 );
+    wxSpinCtrl *item23 = new wxSpinCtrl( parent, ID_SC_MUS_OFFSET, wxT("0"), wxDefaultPosition, wxSize(70,-1), 0, -50, 50, 0 );
     item19->Add( item23, 0, wxALIGN_CENTER|wxALL, 5 );
 
     item18->Add( item19, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );

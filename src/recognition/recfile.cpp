@@ -47,7 +47,7 @@ RecFile::RecFile( wxString name, RecEnv *env )
 {
 	m_envPtr = env;
 
-	m_wgFilePtr = NULL;
+	m_musFilePtr = NULL;
 	m_imPagePtr = NULL;
 	
 	m_isPreprocessed = false;
@@ -58,8 +58,8 @@ RecFile::RecFile( wxString name, RecEnv *env )
 
 RecFile::~RecFile()
 {
-	if ( m_wgFilePtr )
-		delete m_wgFilePtr;
+	if ( m_musFilePtr )
+		delete m_musFilePtr;
 	if ( m_imPagePtr )
 		delete m_imPagePtr;
 }
@@ -68,11 +68,11 @@ RecFile::~RecFile()
 void RecFile::NewContent( )
 {
 	wxASSERT_MSG( !m_imPagePtr, "ImPage should be NULL" );
-	wxASSERT_MSG( !m_wgFilePtr, "MusFile should be NULL" );
+	wxASSERT_MSG( !m_musFilePtr, "MusFile should be NULL" );
 
 	// new MusFile
-    m_wgFilePtr = new MusFile();
-    m_wgFilePtr->m_fname = m_basename + "page.wwg";  
+    m_musFilePtr = new MusFile();
+    m_musFilePtr->m_fname = m_basename + "page.wwg";  
         
 	// new ImPage and Load
     m_imPagePtr = new ImPage( m_basename, &m_isModified );
@@ -97,7 +97,7 @@ void RecFile::OpenContent( )
 	
 	if ( wxFileExists( m_basename + "page.wwg") )
 	{
-		MusWWGInput *wwginput = new MusWWGInput( m_wgFilePtr, m_wgFilePtr->m_fname );
+		MusWWGInput *wwginput = new MusWWGInput( m_musFilePtr, m_musFilePtr->m_fname );
 		failed = !wwginput->ImportFile();
 		delete wwginput;
 		if ( failed )
@@ -154,7 +154,7 @@ void RecFile::OpenContent( )
 void RecFile::SaveContent( )
 {
 	wxASSERT_MSG( m_imPagePtr, "ImPage should not be NULL" );
-	wxASSERT_MSG( m_wgFilePtr, "MusFile should not be NULL" );
+	wxASSERT_MSG( m_musFilePtr, "MusFile should not be NULL" );
 	wxASSERT( m_xml_root );
 		
 	if ( !m_isPreprocessed )
@@ -167,13 +167,13 @@ void RecFile::SaveContent( )
 	else
 	{
 		// save
-		MusWWGOutput *wwgoutput = new MusWWGOutput( m_wgFilePtr, m_wgFilePtr->m_fname );
+		MusWWGOutput *wwgoutput = new MusWWGOutput( m_musFilePtr, m_musFilePtr->m_fname );
 		wwgoutput->ExportFile();
 		delete wwgoutput;
 		
-		MusMLFOutput *mlfoutput = new MusMLFOutput( m_wgFilePtr, m_basename + "page.mlf" );
+		MusMLFOutput *mlfoutput = new MusMLFOutput( m_musFilePtr, m_basename + "page.mlf" );
 		mlfoutput->m_writePosition = true;
-		mlfoutput->WritePage( &m_wgFilePtr->m_pages[0] , "staff", m_imPagePtr );
+		mlfoutput->WritePage( &m_musFilePtr->m_pages[0] , "staff", m_imPagePtr );
 		delete mlfoutput;
 	
 		TiXmlElement root("recpage");
@@ -194,10 +194,10 @@ void RecFile::SaveContent( )
 
 		// wwg
 		TiXmlElement wwg("wwg");
-		wxFileName fwwg( m_wgFilePtr->m_fname );
+		wxFileName fwwg( m_musFilePtr->m_fname );
 		wwg.SetAttribute("fname", fwwg.GetFullName().c_str() );
-		//if ( m_wgViewPtr )
-		//	wwg.SetAttribute("page",  m_wgViewPtr->m_npage );
+		//if ( m_musViewPtr )
+		//	wwg.SetAttribute("page",  m_musViewPtr->m_npage );
 		root.InsertEndChild( wwg );
 		
 		m_xml_root->InsertEndChild( root );
@@ -207,10 +207,10 @@ void RecFile::SaveContent( )
 void RecFile::CloseContent( )
 {
 	// nouveau fichier ?
-    if ( m_wgFilePtr )
+    if ( m_musFilePtr )
     {
-        delete m_wgFilePtr;
-        m_wgFilePtr = NULL;
+        delete m_musFilePtr;
+        m_musFilePtr = NULL;
     }
 
 	// old ImPage
@@ -620,36 +620,36 @@ bool RecFile::Decode( wxArrayPtrVoid params, AxProgressDlg *dlg )
 bool RecFile::RealizeFromMLF( wxArrayPtrVoid params, AxProgressDlg *dlg )
 {
     wxASSERT_MSG( m_imPagePtr , "Page cannot be NULL");
-    wxASSERT_MSG( m_wgFilePtr , "MusFile cannot be NULL");
+    wxASSERT_MSG( m_musFilePtr , "MusFile cannot be NULL");
 	wxASSERT_MSG( dlg, "AxProgressDlg cannot be NULL" );
 	
 	if (!dlg->SetOperation( _("Load results...") ) )
 		return this->Terminate( ERR_CANCELED );
 
-    MusPage *wgPage = new MusPage();
+    MusPage *musPage = new MusPage();
 
 	// deprecated, now always replace first page
-    /*if ( m_wgFilePtr->m_fheader.nbpage == 0) // premiere page
+    /*if ( m_musFilePtr->m_fheader.nbpage == 0) // premiere page
     {
-        m_wgFilePtr->m_fheader.param.pageFormatHor = m_imPagePtr->m_size.GetWidth() / 10;
-        m_wgFilePtr->m_fheader.param.pageFormatVer = m_imPagePtr->m_size.GetHeight() / 10;
+        m_musFilePtr->m_fheader.param.pageFormatHor = m_imPagePtr->m_size.GetWidth() / 10;
+        m_musFilePtr->m_fheader.param.pageFormatVer = m_imPagePtr->m_size.GetHeight() / 10;
     }
     else 
     {   
-        if ( m_wgFilePtr->m_fheader.param.pageFormatHor < m_imPagePtr->m_size.GetWidth() / 10 )
-            m_wgFilePtr->m_fheader.param.pageFormatHor = m_imPagePtr->m_size.GetWidth() / 10;
-        if ( m_wgFilePtr->m_fheader.param.pageFormatVer < m_imPagePtr->m_size.GetHeight() / 10 )
-            m_wgFilePtr->m_fheader.param.pageFormatVer = m_imPagePtr->m_size.GetHeight() / 10;
+        if ( m_musFilePtr->m_fheader.param.pageFormatHor < m_imPagePtr->m_size.GetWidth() / 10 )
+            m_musFilePtr->m_fheader.param.pageFormatHor = m_imPagePtr->m_size.GetWidth() / 10;
+        if ( m_musFilePtr->m_fheader.param.pageFormatVer < m_imPagePtr->m_size.GetHeight() / 10 )
+            m_musFilePtr->m_fheader.param.pageFormatVer = m_imPagePtr->m_size.GetHeight() / 10;
     }*/
-	m_wgFilePtr->m_pages.Clear();
-	m_wgFilePtr->m_fheader.param.pageFormatHor = m_imPagePtr->m_size.GetWidth() / 10;
-	m_wgFilePtr->m_fheader.param.pageFormatVer = m_imPagePtr->m_size.GetHeight() / 10;
+	m_musFilePtr->m_pages.Clear();
+	m_musFilePtr->m_fheader.param.pageFormatHor = m_imPagePtr->m_size.GetWidth() / 10;
+	m_musFilePtr->m_fheader.param.pageFormatVer = m_imPagePtr->m_size.GetHeight() / 10;
 
     int x1 = 5, x2 = 195;
     m_imPagePtr->CalcLeftRight( &x1, &x2 );
-    m_wgFilePtr->m_fheader.param.MargeGAUCHEIMPAIRE = x1 / 10;
-    m_wgFilePtr->m_fheader.param.MargeGAUCHEPAIRE = x1 / 10;
-    wgPage->lrg_lign = (x2 - x1) / 10;
+    m_musFilePtr->m_fheader.param.MargeGAUCHEIMPAIRE = x1 / 10;
+    m_musFilePtr->m_fheader.param.MargeGAUCHEPAIRE = x1 / 10;
+    musPage->lrg_lign = (x2 - x1) / 10;
 
     int nb = (int)m_imPagePtr->m_staves.GetCount();
     int previous = 0;
@@ -657,28 +657,28 @@ bool RecFile::RealizeFromMLF( wxArrayPtrVoid params, AxProgressDlg *dlg )
     for (int i = 0; i < nb; i++)
     {
         imStaff = &m_imPagePtr->m_staves[i];
-        MusStaff *wgStaff = new MusStaff();
-        wgStaff->no = nb;
-        wgStaff->indent = imStaff->CalcIndentation( x1 );
-        wgStaff->ecart = (m_imPagePtr->ToViewY( imStaff->m_y ) -  previous ) / wgPage->defin;
-            //imStaff->CalcEcart( previous ) / wgPage->defin;
-        wgStaff->vertBarre = DEB_FIN;
-        //wgStaff->brace = DEB_FIN;
-        previous += wgStaff->ecart * wgPage->defin;
-        wgPage->m_staves.Add( wgStaff );
+        MusStaff *musStaff = new MusStaff();
+        musStaff->no = nb;
+        musStaff->indent = imStaff->CalcIndentation( x1 );
+        musStaff->ecart = (m_imPagePtr->ToViewY( imStaff->m_y ) -  previous ) / musPage->defin;
+            //imStaff->CalcEcart( previous ) / musPage->defin;
+        musStaff->vertBarre = DEB_FIN;
+        //musStaff->brace = DEB_FIN;
+        previous += musStaff->ecart * musPage->defin;
+        musPage->m_staves.Add( musStaff );
     }   
-    m_wgFilePtr->m_pages.Add( wgPage );
-    m_wgFilePtr->CheckIntegrity();
+    m_musFilePtr->m_pages.Add( musPage );
+    m_musFilePtr->CheckIntegrity();
 	
 	///// FAKE JUST FOR COMPILATION
 	wxString m_rec_output = m_basename + "rec.mlf";
 	
-    MusMLFInput *mlfinput = new MusMLFInput( m_wgFilePtr, m_rec_output );
-    mlfinput->ReadPage( wgPage, true, m_imPagePtr );
+    MusMLFInput *mlfinput = new MusMLFInput( m_musFilePtr, m_rec_output );
+    mlfinput->ReadPage( musPage, true, m_imPagePtr );
     delete mlfinput;
 
 	// save ????
-    // Output *wwgoutput = new MusWWGOutput( m_wgFilePtr, m_wgFilePtr->m_fname );
+    // Output *wwgoutput = new MusWWGOutput( m_musFilePtr, m_musFilePtr->m_fname );
     //wwgoutput->ExportFile();
     //delete wwgoutput;
 
