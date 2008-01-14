@@ -185,97 +185,7 @@
 	<key>Notifications</key>
 	<array/>
 	<key>OpenEditors</key>
-	<array>
-		<dict>
-			<key>Content</key>
-			<dict>
-				<key>PBXProjectModuleGUID</key>
-				<string>578083CA0D381387003F354E</string>
-				<key>PBXProjectModuleLabel</key>
-				<string>cmpmus.cpp</string>
-				<key>PBXSplitModuleInNavigatorKey</key>
-				<dict>
-					<key>Split0</key>
-					<dict>
-						<key>PBXProjectModuleGUID</key>
-						<string>578083EA0D381830003F354E</string>
-						<key>PBXProjectModuleLabel</key>
-						<string>cmpmus.cpp</string>
-						<key>_historyCapacity</key>
-						<integer>0</integer>
-						<key>bookmark</key>
-						<string>5780841C0D381891003F354E</string>
-						<key>history</key>
-						<array>
-							<string>578083EB0D381830003F354E</string>
-							<string>578083EC0D381830003F354E</string>
-							<string>578083ED0D381830003F354E</string>
-							<string>578083EE0D381830003F354E</string>
-							<string>578083EF0D381830003F354E</string>
-							<string>578083F00D381830003F354E</string>
-							<string>578083F10D381830003F354E</string>
-							<string>578083F20D381830003F354E</string>
-							<string>578083F30D381830003F354E</string>
-							<string>578083F40D381830003F354E</string>
-							<string>578083F50D381830003F354E</string>
-							<string>578083F60D381830003F354E</string>
-							<string>578083F70D381830003F354E</string>
-							<string>578083F80D381830003F354E</string>
-							<string>578083F90D381830003F354E</string>
-						</array>
-						<key>prevStack</key>
-						<array>
-							<string>578083FA0D381830003F354E</string>
-							<string>578083FB0D381830003F354E</string>
-							<string>578083FC0D381830003F354E</string>
-							<string>578083FD0D381830003F354E</string>
-							<string>578083FE0D381830003F354E</string>
-							<string>578083FF0D381830003F354E</string>
-							<string>578084000D381830003F354E</string>
-							<string>578084010D381830003F354E</string>
-							<string>578084020D381830003F354E</string>
-							<string>578084030D381830003F354E</string>
-							<string>578084040D381830003F354E</string>
-							<string>578084050D381830003F354E</string>
-							<string>578084060D381830003F354E</string>
-							<string>578084070D381830003F354E</string>
-							<string>578084080D381830003F354E</string>
-							<string>578084090D381830003F354E</string>
-							<string>5780840A0D381830003F354E</string>
-							<string>5780840B0D381830003F354E</string>
-							<string>5780840C0D381830003F354E</string>
-							<string>5780840D0D381830003F354E</string>
-							<string>5780840E0D381830003F354E</string>
-							<string>5780840F0D381830003F354E</string>
-							<string>578084100D381830003F354E</string>
-							<string>578084110D381830003F354E</string>
-							<string>578084120D381830003F354E</string>
-							<string>578084130D381830003F354E</string>
-							<string>578084140D381830003F354E</string>
-							<string>578084150D381830003F354E</string>
-							<string>578084160D381830003F354E</string>
-							<string>578084170D381830003F354E</string>
-							<string>578084180D381830003F354E</string>
-							<string>578084190D381830003F354E</string>
-						</array>
-					</dict>
-					<key>SplitCount</key>
-					<string>1</string>
-				</dict>
-				<key>StatusBarVisibility</key>
-				<true/>
-			</dict>
-			<key>Geometry</key>
-			<dict>
-				<key>Frame</key>
-				<string>{{0, 20}, {1408, 839}}</string>
-				<key>PBXModuleWindowStatusBarHidden2</key>
-				<false/>
-				<key>RubberWindowFrame</key>
-				<string>61 251 1408 880 0 0 1920 1178 </string>
-			</dict>
-		</dict>
-	</array>
+	<array/>
 	<key>PerspectiveWidths</key>
 	<array>
 		<integer>-1</integer>
@@ -346,6 +256,8 @@
 							<key>PBXSmartGroupTreeModuleOutlineStateExpansionKey</key>
 							<array>
 								<string>A58508B20A001129006E82B1</string>
+								<string>A585244E0A1B9603002D9D8A</string>
+								<string>A58524810A1B9604002D9D8A</string>
 								<string>1C37FBAC04509CD000000102</string>
 								<string>1C37FAAC04509CD000000102</string>
 								<string>1C37FABC05509CD000000102</string>
@@ -353,7 +265,9 @@
 							<key>PBXSmartGroupTreeModuleOutlineStateSelectionKey</key>
 							<array>
 								<array>
-									<integer>10</integer>
+									<integer>19</integer>
+									<integer>1</integer>
+									<integer>0</integer>
 								</array>
 							</array>
 							<key>PBXSmartGroupTreeModuleOutlineStateVisibleRectKey</key>
@@ -572,7 +486,7 @@
 	<key>PerspectivesBarVisible</key>
 	<false/>
 	<key>PinnedNavigatorIdentifier</key>
-	<string>578083CA0D381387003F354E</string>
+	<string>5780843E0D381977003F354E</string>
 	<key>ShelfIsVisible</key>
 	<false/>
 	<key>SourceDescription</key>
@@ -595,10 +509,10 @@
 	<integer>5</integer>
 	<key>WindowOrderList</key>
 	<array>
+		<string>576C2D2D0AA62AC2009D2053</string>
 		<string>1C0AD2AF069F1E9B00FABCE6</string>
 		<string>1C0AD2B3069F1EA900FABCE6</string>
-		<string>578083CA0D381387003F354E</string>
-		<string>576C2D2D0AA62AC2009D2053</string>
+		<string>1C530D57069F1CE1000CFCEE</string>
 		<string>/Users/puginl/projects/aruspix_1.3.0/osx/aruspix.xcodeproj</string>
 	</array>
 	<key>WindowString</key>
@@ -623,7 +537,7 @@
 								<key>PBXProjectModuleGUID</key>
 								<string>1CD0528F0623707200166675</string>
 								<key>PBXProjectModuleLabel</key>
-								<string>cmp_wdr.cpp</string>
+								<string>musobject.cpp</string>
 								<key>StatusBarVisibility</key>
 								<true/>
 							</dict>
@@ -692,7 +606,7 @@
 			<key>WindowToolGUID</key>
 			<string>576C2D2D0AA62AC2009D2053</string>
 			<key>WindowToolIsVisible</key>
-			<true/>
+			<false/>
 		</dict>
 		<dict>
 			<key>FirstTimeWindowDisplayed</key>
@@ -828,7 +742,7 @@
 										<key>PBXProjectModuleGUID</key>
 										<string>1CDD528C0622207200134675</string>
 										<key>PBXProjectModuleLabel</key>
-										<string>cmp.h</string>
+										<string>recfile.cpp</string>
 										<key>StatusBarVisibility</key>
 										<true/>
 									</dict>

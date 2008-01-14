@@ -504,6 +504,7 @@ bool RecFile::Decode( wxArrayPtrVoid params, AxProgressDlg *dlg )
 	double rec_int_prune = RecEnv::s_rec_int_prune;
 	double rec_word_pen = RecEnv::s_rec_word_pen;
 	
+	args << " -use_torch_decoder";
 	args << " -log_fname " << log.c_str();
 	args << " -am_models_fname " << rec_models.c_str();
 	args << " -am_sil_phone \"{s}\" ";

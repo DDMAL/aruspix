@@ -272,7 +272,7 @@
 								</array>
 							</array>
 							<key>PBXSmartGroupTreeModuleOutlineStateVisibleRectKey</key>
-							<string>{{0, 31}, {186, 605}}</string>
+							<string>{{0, 0}, {186, 605}}</string>
 						</dict>
 						<key>PBXTopSmartGroupGIDs</key>
 						<array/>
@@ -372,9 +372,9 @@
 			</array>
 			<key>TableOfContents</key>
 			<array>
-				<string>57BDD66E0CC6678E00D1502C</string>
+				<string>578084710D3821E1003F354E</string>
 				<string>1CE0B1FE06471DED0097A5F4</string>
-				<string>57BDD66F0CC6678E00D1502C</string>
+				<string>578084720D3821E1003F354E</string>
 				<string>1CE0B20306471E060097A5F4</string>
 				<string>1CE0B20506471E060097A5F4</string>
 			</array>
@@ -510,9 +510,9 @@
 	<integer>5</integer>
 	<key>WindowOrderList</key>
 	<array>
-		<string>57BDD6760CC6678E00D1502C</string>
-		<string>/Users/Shared/puginl/projects/aruspix/osx/torch.xcodeproj</string>
+		<string>578084790D3821E1003F354E</string>
 		<string>1CD10A99069EF8BA00B06720</string>
+		<string>/Users/puginl/projects/aruspix_1.3.0/osx/torch.xcodeproj</string>
 	</array>
 	<key>WindowString</key>
 	<string>-700 397 677 664 -1920 0 1920 1200 </string>
@@ -702,14 +702,14 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>1CD10A99069EF8BA00B06720</string>
-				<string>57BDD6700CC6678E00D1502C</string>
+				<string>578084730D3821E1003F354E</string>
 				<string>1C162984064C10D400B95A72</string>
-				<string>57BDD6710CC6678E00D1502C</string>
-				<string>57BDD6720CC6678E00D1502C</string>
-				<string>57BDD6730CC6678E00D1502C</string>
-				<string>57BDD6740CC6678E00D1502C</string>
-				<string>57BDD6750CC6678E00D1502C</string>
-				<string>57BDD6760CC6678E00D1502C</string>
+				<string>578084740D3821E1003F354E</string>
+				<string>578084750D3821E1003F354E</string>
+				<string>578084760D3821E1003F354E</string>
+				<string>578084770D3821E1003F354E</string>
+				<string>578084780D3821E1003F354E</string>
+				<string>578084790D3821E1003F354E</string>
 			</array>
 			<key>ToolbarConfiguration</key>
 			<string>xcode.toolbar.config.debug</string>

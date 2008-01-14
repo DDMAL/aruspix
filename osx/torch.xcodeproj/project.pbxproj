@@ -35,7 +35,7 @@
 		576ED8360AB223D2007F2844 /* Common.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = Common.h; path = ../src/torch/Common.h; sourceTree = SOURCE_ROOT; };
 		576ED8370AB223D2007F2844 /* Init.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = Init.cpp; path = ../src/torch/Init.cpp; sourceTree = SOURCE_ROOT; };
 		576ED8480AB223D8007F2844 /* init */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = init; sourceTree = BUILT_PRODUCTS_DIR; };
-		57A0BC7F0ABF1901001825D5 /* trainer */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = trainer; sourceTree = BUILT_PRODUCTS_DIR; };
+		57A0BC7F0ABF1901001825D5 /* trainer */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = "compiled.mach-o.executable"; path = trainer; sourceTree = BUILT_PRODUCTS_DIR; };
 		57A0BC810ABF199C001825D5 /* Trainer.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = Trainer.cpp; path = ../src/torch/Trainer.cpp; sourceTree = SOURCE_ROOT; };
 		A51FEC000A02C15800ACE377 /* decoder */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = decoder; sourceTree = BUILT_PRODUCTS_DIR; };
 		A51FEC140A02C1C900ACE377 /* ClassMapper.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = ClassMapper.cpp; sourceTree = "<group>"; };
