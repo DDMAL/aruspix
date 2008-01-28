@@ -26,14 +26,12 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#ifndef __REC_DECODER_LINE_H__
-#define __REC_DECODER_LINE_H__
-
-#include "RecBeamSearchDecoder.h"
+#ifndef __ML_DECODER_STAFF_H__
+#define __ML_DECODER_STAFF_H__
 
 // 
 #include "general.h"
-//#include "BeamSearchDecoder.h"
+#include "BeamSearchDecoder.h"
 #include "PhoneModels.h"
 #include "Vocabulary.h"
 
@@ -46,7 +44,7 @@ using namespace Torch;
     @author Darren Moore (moore@idiap.ch)
 */
 
-class RecDecoderLine
+class MlDecoderStaff
 {
 public:
     char *test_filename ;
@@ -69,8 +67,8 @@ public:
     PhoneModels *phone_models ;
 
     /* Constructors/destructor */
-    RecDecoderLine() ;
-    ~RecDecoderLine() ;
+    MlDecoderStaff() ;
+    ~MlDecoderStaff() ;
 
     /* Methods */
 
@@ -111,7 +109,7 @@ public:
     /// 'archive_fd' is the big file containing the input data. When
     ///   this is not NULL, the archive_offset member variable is used
     ///   to fseek to the correct point in the archive file.
-    void run( RecBeamSearchDecoder *decoder , FILE *archive_fd=NULL ) ;
+    void run( BeamSearchDecoder *decoder , FILE *archive_fd=NULL ) ;
 
     /// Outputs the recognition result. If 'vocab' is defined, then the
     ///   recognition result (ie. vocab entry indices) are converted to

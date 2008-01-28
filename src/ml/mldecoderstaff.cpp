@@ -24,7 +24,7 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#include "RecDecoderLine.h"
+#include "mldecoderstaff.h"
 
 // torch
 #include "Allocator.h"
@@ -38,7 +38,7 @@
 using namespace Torch;
 
 
-RecDecoderLine::RecDecoderLine()
+MlDecoderStaff::MlDecoderStaff()
 {
     test_filename = NULL ;
     test_id = -1 ;
@@ -61,7 +61,7 @@ RecDecoderLine::RecDecoderLine()
 }
 
 
-RecDecoderLine::~RecDecoderLine()
+MlDecoderStaff::~MlDecoderStaff()
 {
     if ( test_filename != NULL )
         free( test_filename ) ;
@@ -80,14 +80,14 @@ RecDecoderLine::~RecDecoderLine()
 }
 
 
-void RecDecoderLine::configure( int test_id_ , char *test_filename_ , int n_expected_words_ ,
+void MlDecoderStaff::configure( int test_id_ , char *test_filename_ , int n_expected_words_ ,
                              int *expected_words_ ,PhoneModels *phone_models_ , bool remove_sent_marks_ , 
                              bool output_result_ , FILE *out_fd )
 {
     test_id = test_id_ ;
     archive_offset = -1 ;
     if ( (phone_models = phone_models_) == NULL )
-        error("RecDecoderLine::configure - phone_models is NULL\n") ;
+        error("MlDecoderStaff::configure - phone_models is NULL\n") ;
     
     // Allocate memory to hold the filename of the test data and copy the string.
     test_filename = (char *)Allocator::sysAlloc( (strlen(test_filename_)+1) * sizeof(char) ) ;
@@ -127,14 +127,14 @@ void RecDecoderLine::configure( int test_id_ , char *test_filename_ , int n_expe
 }
 
 
-void RecDecoderLine::configure( int test_id_ , long archive_offset_ , int n_expected_words_ ,
+void MlDecoderStaff::configure( int test_id_ , long archive_offset_ , int n_expected_words_ ,
                               int *expected_words_ , PhoneModels *phone_models_ , bool remove_sent_marks_ , 
                               bool output_result_ , FILE *out_fd )
 {
     test_id = test_id_ ;
     test_filename = NULL ;
     if ( (phone_models = phone_models_) == NULL )
-        error("RecDecoderLine::configure(2) - phone_models is NULL\n") ;
+        error("MlDecoderStaff::configure(2) - phone_models is NULL\n") ;
     archive_offset = archive_offset_ ;
     
     // Allocate memory to hold the array of word indices that constitute the
@@ -171,7 +171,7 @@ void RecDecoderLine::configure( int test_id_ , long archive_offset_ , int n_expe
 }
 
 
-void RecDecoderLine::run( RecBeamSearchDecoder *decoder , FILE *archive_fd )
+void MlDecoderStaff::run( BeamSearchDecoder *decoder , FILE *archive_fd )
 {
     clock_t start_time , end_time ;
     int start_index = 0 ;
@@ -186,13 +186,13 @@ void RecDecoderLine::run( RecBeamSearchDecoder *decoder , FILE *archive_fd )
     {
         // We've got feature vectors (or nothing), but the phone_models is expecting
         //   vectors of emission probabilities (or vice versa).
-        error("RecDecoderLine::run - datafile format does not agree with phone_models\n") ;
+        error("MlDecoderStaff::run - datafile format does not agree with phone_models\n") ;
     }
 
     if ( (n_features != phone_models->n_features) && 
          (n_emission_probs != phone_models->n_emission_probs) )
     {
-        error("RecDecoderLine::run - input vector size does not agree with phone_models\n") ;
+        error("MlDecoderStaff::run - input vector size does not agree with phone_models\n") ;
     }
    
     // If the input vectors are features and we are calculating emission probs
@@ -236,7 +236,7 @@ void RecDecoderLine::run( RecBeamSearchDecoder *decoder , FILE *archive_fd )
 }
 
 
-void RecDecoderLine::removeSentMarksFromActual( Vocabulary *vocabulary )
+void MlDecoderStaff::removeSentMarksFromActual( Vocabulary *vocabulary )
 {
     if ( (n_actual_words == 0) || (vocabulary == NULL) )
         return ;
@@ -275,12 +275,12 @@ void RecDecoderLine::removeSentMarksFromActual( Vocabulary *vocabulary )
 }
 
 
-void RecDecoderLine::loadDataFile( FILE *archive_fd )
+void MlDecoderStaff::loadDataFile( FILE *archive_fd )
 {
     // Make sure that the test_filename and data_format member variables
     //   have been configured.
     if ( (test_filename == NULL) && (archive_fd == NULL) )
-        error("RecDecoderLine::loadDataFile - test_filename/archive_fd not configured\n") ;
+        error("MlDecoderStaff::loadDataFile - test_filename/archive_fd not configured\n") ;
 
     // Free any existing data and reset the size-related member variables
     if ( decoder_input != NULL )
@@ -318,12 +318,12 @@ void RecDecoderLine::loadDataFile( FILE *archive_fd )
 
 #ifdef DEBUG
     if ( (n_features==0) && (n_emission_probs==0) )
-        error("RecDecoderLine::loadDataFile - no data loaded\n") ;
+        error("MlDecoderStaff::loadDataFile - no data loaded\n") ;
 #endif
 }
 
 
-void RecDecoderLine::outputText( Vocabulary *vocab )
+void MlDecoderStaff::outputText( Vocabulary *vocab )
 {
     if ( (test_filename == NULL) && (archive_offset<0) )
         return ;

@@ -26,15 +26,14 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#ifndef __REC_DECODER_PAGE_H__
-#define __REC_DECODER_PAGE_H__
+#ifndef __ML_DECODER_PAGE_H__
+#define __ML_DECODER_PAGE_H__
 
-#include "RecDecoderLine.h"
-#include "RecBeamSearchDecoder.h"
+#include "mldecoderstaff.h"
 
 // torch
 #include "general.h"
-//#include "BeamSearchDecoder.h"
+#include "BeamSearchDecoder.h"
 #include "Vocabulary.h"
 
 
@@ -49,13 +48,13 @@ using namespace Torch;
 
 
 
-class RecDecoderPage
+class MlDecoderPage
 {
 public:
-    RecBeamSearchDecoder *decoder ;
+    BeamSearchDecoder *decoder ;
     Vocabulary *vocabulary ;
     int n_tests ;
-    RecDecoderLine **tests ;
+    MlDecoderStaff **tests ;
     real total_time ;
     FILE *archive_fd ;
     FILE *output_fd ;
@@ -87,9 +86,9 @@ public:
     /// 'pre_calc_emission_probs' indicates whether emission probabilities for
     ///   all input files are to be calculated before the decoder is invoked.  This
     ///   only applies if 'preload_data' is true.
-    RecDecoderPage( char *datafiles_filename , char *expected_results_file , RecBeamSearchDecoder *decoder_ , 
+    MlDecoderPage( char *datafiles_filename , char *expected_results_file , BeamSearchDecoder *decoder_ , 
                       bool remove_sil=false, bool output_res=false , char *out_fname=NULL ) ; 
-    ~RecDecoderPage() ;
+    ~MlDecoderPage() ;
 
     /* Methods */
     void configureWithIndividualInputs( char *datafiles_filename , 

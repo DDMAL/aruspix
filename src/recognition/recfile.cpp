@@ -29,13 +29,15 @@
 #include "im/imstaffsegment.h"
 
 #include "app/axapp.h"
-#include "app/axprocess.h"
+//#include "app/axprocess.h"
 
 #include "mus/muspage.h"
 #include "mus/musstaff.h"
 #include "mus/musfile.h"
 #include "mus/musiowwg.h"
 #include "mus/musiomlf.h"
+
+#include "ml/mldecoder.h"
 
 
 // WDR: class implementations
@@ -467,34 +469,10 @@ bool RecFile::Decode( wxArrayPtrVoid params, AxProgressDlg *dlg )
 		rec_lm_order = MUS_NGRAM_ORDER;
 	double rec_lm_scaling =  *(double*)params[4];
 	wxString rec_wrdtrns =  *(wxString*)params[5];
-
-#ifdef __WXMSW__
-	#if defined(_DEBUG)
-		wxString cmd = "DecoderD.exe";
-	#else
-		wxString cmd = "Decoder.exe";
-	#endif   
-#elif __WXGTK__
-	#if defined(__DEBUG__)
-		wxString cmd = "decoderd";
-	#else
-		wxString cmd = "decoder";
-	#endif   
-#elif __WXMAC__
-	#ifdef __AXDEBUG__
-		wxString cmd = "decoderd";
-	#else
-		wxString cmd = "decoder";
-	#endif   
-#endif
-
-	wxString args = " ";
 	
-	wxString log = "\"" + wxGetApp().m_logDir + "/decoder.log\"";
-
+	wxString log = wxGetApp().m_logDir + "/decoder.log";
 	wxString input = m_basename + "mfc.input";
 	input.Replace( "\\/", "/" );
-	
 	wxString rec_models = typModelPtr->m_basename + "hmm";
 	wxString rec_dict = typModelPtr->m_basename + "dic";
 	wxString rec_lm = typModelPtr->m_basename;
@@ -504,45 +482,40 @@ bool RecFile::Decode( wxArrayPtrVoid params, AxProgressDlg *dlg )
 	double rec_int_prune = RecEnv::s_rec_int_prune;
 	double rec_word_pen = RecEnv::s_rec_word_pen;
 	
-	args << " -use_torch_decoder";
-	args << " -log_fname " << log.c_str();
-	args << " -am_models_fname " << rec_models.c_str();
-	args << " -am_sil_phone \"{s}\" ";
-	args << " -am_phone_del_pen " << rec_phone_pen;
+	MlDecoder decoder( input, rec_models, rec_dict );
 
-	args << " -lex_dict_fname " << rec_dict.c_str();
+	decoder.log_fname = log;
+	decoder.am_models_fname = rec_models;
+	decoder.am_sil_phone = "{s}";
+	decoder.am_phone_del_pen = rec_phone_pen;
+
+	decoder.lex_dict_fname = rec_dict;
 
 	if ( rec_lm_order && !rec_lm.IsEmpty() )
 	{
-		args << " -lm_fname " << musModelPtr->m_basename;
-		args << " -lm_ngram_order " << rec_lm_order;
-		args << " -lm_scaling_factor " << rec_lm_scaling;
-		args << " -cm_no_symb";
-		args << " -cm_no_duration";
-		args << " -cm_no_pitch";
-		args << " -cm_no_interval";
+		decoder.lm_fname = musModelPtr->m_basename + "ngram.gram";
+		decoder.lm_ngram_order = rec_lm_order;
+		decoder.lm_scaling_factor = rec_lm_scaling;
 	}
 	
 	if ( rec_int_prune != 0.0 )
-		args << " -dec_int_prune_window " << rec_int_prune;
+		decoder.dec_int_prune_window = rec_int_prune;
 		
 	if ( rec_word_pen != 0.0 )
-		args << " -dec_word_entr_pen " << rec_word_pen;
+		decoder.dec_word_entr_pen = rec_word_pen;
 
 	if ( rec_delayed )
-		args << " -dec_delayed_lm";
-
-	args << " -input_fname " << input.c_str();
+		decoder.dec_delayed_lm = true;
 	
 	if ( !rec_output.IsEmpty() )
-		args << " -output_fname " << rec_output.c_str();
+		decoder.output_fname = rec_output;
 
 	if ( !rec_wrdtrns.IsEmpty() )
-		args << " -wrdtrns_fname " << rec_wrdtrns.c_str();
+		decoder.wrdtrns_fname = rec_wrdtrns;
 
-	wxLogDebug(args);
-	//printf(args.c_str());
+	decoder.Run();
 
+	/*
 	if (!dlg->SetOperation( _("Recognition...") ) )
 		return this->Terminate( ERR_CANCELED );
 
@@ -573,6 +546,7 @@ bool RecFile::Decode( wxArrayPtrVoid params, AxProgressDlg *dlg )
 	}
 	dlg->EndTimerOperation( TIMER_DECODING );
 	delete process;
+	*/
 
 
 	/*Torch::DiskXFile::setBigEndianMode() ;

@@ -24,7 +24,7 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#include "RecDecoderPage.h"
+#include "mldecoderpage.h"
 
 // torch
 #include "Allocator.h"
@@ -35,8 +35,8 @@
 
 using namespace Torch;
 
-RecDecoderPage::RecDecoderPage( char *datafiles_filename , char *expected_results_file , 
-							   RecBeamSearchDecoder *decoder_ , bool remove_sil, 
+MlDecoderPage::MlDecoderPage( char *datafiles_filename , char *expected_results_file , 
+							   BeamSearchDecoder *decoder_ , bool remove_sil, 
 							   bool output_res , char *out_fname )
 {
     clock_t start_time , end_time ;
@@ -86,7 +86,7 @@ RecDecoderPage::RecDecoderPage( char *datafiles_filename , char *expected_result
 }
 
 
-RecDecoderPage::~RecDecoderPage()
+MlDecoderPage::~MlDecoderPage()
 {
     if ( archive_fd != NULL )
         fclose( archive_fd ) ;
@@ -103,7 +103,7 @@ RecDecoderPage::~RecDecoderPage()
 }
 
 
-void RecDecoderPage::setOutputOptions( bool print_by_page_, bool print_by_part_, bool print_by_book_ )
+void MlDecoderPage::setOutputOptions( bool print_by_page_, bool print_by_part_, bool print_by_book_ )
 {
 	print_by_page = print_by_page_;
 	print_by_part = print_by_part_;
@@ -111,7 +111,7 @@ void RecDecoderPage::setOutputOptions( bool print_by_page_, bool print_by_part_,
 }
 
 
-void RecDecoderPage::printStatistics( int i_cost , int d_cost , int s_cost )
+void MlDecoderPage::printStatistics( int i_cost , int d_cost , int s_cost )
 {
     // Calculates the insertions, deletions, substitutions, accuracy
     //   and outputs. Also calculates the total time taken to decode (not including
@@ -255,7 +255,7 @@ void RecDecoderPage::printStatistics( int i_cost , int d_cost , int s_cost )
     printf("\n") ;
 }
 
-void RecDecoderPage::printResults( EditDistance *distance, char *prefix_, char *name_ )
+void MlDecoderPage::printResults( EditDistance *distance, char *prefix_, char *name_ )
 {
 	if ( name_ && strrchr(name_, '/' ) )
 		name_ = strrchr(name_, '/' ) + 1; // try to remove path
@@ -278,7 +278,7 @@ void RecDecoderPage::printResults( EditDistance *distance, char *prefix_, char *
 		name);
 }
 
-void RecDecoderPage::run()
+void MlDecoderPage::run()
 {
     clock_t start_time , end_time ;
     real decode_time=0.0 ;
@@ -302,7 +302,7 @@ void RecDecoderPage::run()
 }
 
 
-void RecDecoderPage::configureWithIndividualInputs( char *datafiles_filename , char *expected_results_file , 
+void MlDecoderPage::configureWithIndividualInputs( char *datafiles_filename , char *expected_results_file , 
 												   bool remove_sil, bool output_res )
 {    
     FILE *datafiles_fd=NULL , *results_fd=NULL ;
@@ -329,7 +329,7 @@ void RecDecoderPage::configureWithIndividualInputs( char *datafiles_filename , c
         if ( strstr( line , "MLF" ) )
             have_mlf = true ;
         else
-			error("RecDecoderPage::configureWII - non MLF datafiles file") ;
+			error("MlDecoderPage::configureWII - non MLF datafiles file") ;
     }
     
     // Determine the number of filenames present in the datafiles file
@@ -340,8 +340,8 @@ void RecDecoderPage::configureWithIndividualInputs( char *datafiles_filename , c
              (line[0] == '\r') || (line[0] == ' ') || (line[0] == '\t') )
             continue ;
         n_tests++ ;
-        tests = (RecDecoderLine **)Allocator::sysRealloc( tests ,
-                                                   n_tests * sizeof(RecDecoderLine *) ) ;
+        tests = (MlDecoderStaff **)Allocator::sysRealloc( tests ,
+                                                   n_tests * sizeof(MlDecoderStaff *) ) ;
         tests[n_tests-1] = NULL ;
         filenames = (char **)Allocator::sysRealloc( filenames , n_tests * sizeof(char *) ) ;
         filenames[n_tests-1] = (char *)Allocator::sysAlloc( (strlen(fname)+1)*sizeof(char) ) ;
@@ -351,7 +351,7 @@ void RecDecoderPage::configureWithIndividualInputs( char *datafiles_filename , c
     if ( have_expected_results == true )
     {
         // Read each entry in the expected results file, find its corresponding
-        //   filename in the temporary list of filename, create a RecDecoderLine
+        //   filename in the temporary list of filename, create a MlDecoderStaff
         //   instance and add it to the list of tests.
         test_index = 0 ;
         while ( fgets( line , 1000 , results_fd ) != NULL )
@@ -386,11 +386,11 @@ void RecDecoderPage::configureWithIndividualInputs( char *datafiles_filename , c
                             fgets( line , 1000 , results_fd ) ;
                         }
 
-                        // Now configure the next RecDecoderLine instance 
+                        // Now configure the next MlDecoderStaff instance 
                         //   with the details of the test.
                         if ( tests[i] != NULL )
-                            error("RecDecoderLine::configureWII - duplicate exp results\n");
-                        tests[i] = new RecDecoderLine() ;
+                            error("MlDecoderStaff::configureWII - duplicate exp results\n");
+                        tests[i] = new MlDecoderStaff() ;
                         tests[i]->configure( i , filenames[i] , n_sentence_words , 
                                 temp_result_list , decoder->phone_models , 
                                 remove_sil, output_res , output_fd ) ;
@@ -405,7 +405,7 @@ void RecDecoderPage::configureWithIndividualInputs( char *datafiles_filename , c
         {
             if ( tests[i] == NULL )
             {
-                error( "RecDecoderLine::configureWII - exp res not found for file %s\n" ,
+                error( "MlDecoderStaff::configureWII - exp res not found for file %s\n" ,
                        filenames[i] ) ;
             }
 
@@ -419,7 +419,7 @@ void RecDecoderPage::configureWithIndividualInputs( char *datafiles_filename , c
     {
         for ( i=0 ; i<n_tests ; i++ )
         {
-            tests[i] = new RecDecoderLine() ;
+            tests[i] = new MlDecoderStaff() ;
             tests[i]->configure( i , filenames[i] , 0 , NULL ,
                                  decoder->phone_models , remove_sil, output_res , output_fd ) ;
         }
@@ -437,7 +437,7 @@ void RecDecoderPage::configureWithIndividualInputs( char *datafiles_filename , c
 
 
 #ifdef DEBUG
-void RecDecoderPage::outputText()
+void MlDecoderPage::outputText()
 {
     printf("Number of tests = %d\n",n_tests) ;
     for ( int i=0 ; i<n_tests ; i++ )

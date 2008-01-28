@@ -19,8 +19,8 @@
 #include "PhoneModels.h"
 #include "LexiconInfo.h"
 
-#include "RecDecoderPage.h"
-#include "RecBeamSearchDecoder.h"
+#include "../ml/ml.h"
+#include "../ml/mldecoderpage.h"
 
 using namespace Torch ;
 
@@ -37,30 +37,10 @@ char *lex_sent_start_word=NULL ;
 char *lex_sent_end_word=NULL;
 char *lex_sil_word=NULL ;
 
-#define SP_START "SP_START"
-#define SP_END "SP_END"
-#define SP_WORD "SP"
-
 // Music Model Parameters
 int lm_ngram_order=0 ;
 char *lm_fname=NULL ;
 real lm_scaling_factor=1.0 ;
-// Classes models
-int cm_symb_order=-1;
-int cm_duration_order=-1;
-int cm_pitch_order=-1;
-int cm_interval_order=-1;
-real cm_symb_factor=1.0;
-real cm_duration_factor=1.0;
-real cm_pitch_factor=1.0;
-real cm_interval_factor=1.0;
-bool cm_no_symb=false;
-bool cm_no_duration=false;
-bool cm_no_pitch=false;
-bool cm_no_interval=false;
-// Bigram model
-real cm_bigram_factor=1.0;
-bool cm_no_bigram=false;
 
 // Beam Search Decoder Parameters
 real dec_int_prune_window= LOG_ZERO ; // plus petit = pruning -> plus rapide, mais plus d'erreurs (si trop petit)
@@ -82,8 +62,6 @@ char *output_fname=NULL ;
 // Log
 char *log_fname=NULL ;
 
-// Varia
-bool use_torch_decoder=false ;
 
 void processCmdLine( CmdLine *cmd , int argc , char *argv[] )
 {
@@ -119,38 +97,6 @@ void processCmdLine( CmdLine *cmd , int argc , char *argv[] )
                         "the order of the n-gram language model" ) ;
     cmd->addRCmdOption( "-lm_scaling_factor" , &lm_scaling_factor , 1.0 ,
                         "the factor by which log LM probs are scaled during decoding" ) ;
-	// Classes Model
-    cmd->addRCmdOption( "-cm_symb_factor" , &cm_symb_factor , 1.0 ,
-                        "the factor by which log symbols models probs are scaled during decoding" ) ;
-    cmd->addRCmdOption( "-cm_duration_factor" , &cm_duration_factor , 1.0 ,
-                        "the factor by which log durations models probs are scaled during decoding" ) ;
-    cmd->addRCmdOption( "-cm_pitch_factor" , &cm_pitch_factor , 1.0 ,
-                        "the factor by which log pitches models probs are scaled during decoding" ) ;
-    cmd->addRCmdOption( "-cm_interval_factor" , &cm_interval_factor , 1.0 ,
-                        "the factor by which log intervals models probs are scaled during decoding" ) ;
-	//
-    cmd->addICmdOption( "-cm_symb_order" , &cm_symb_order , -1 , 
-                        "the order of the n-gram symbols class model (if different from lm_ngram_order)" ) ;
-    cmd->addICmdOption( "-cm_duration_order" , &cm_duration_order , -1 , 
-                        "the order of the n-gram durations class model (if different from lm_ngram_order)" ) ;
-    cmd->addICmdOption( "-cm_pitch_order" , &cm_pitch_order , -1 , 
-                        "the order of the n-gram pitches class model (if different from lm_ngram_order)" ) ;
-    cmd->addICmdOption( "-cm_interval_order" , &cm_interval_order , -1 , 
-                        "the order of the n-gram intervals  class model (if different from lm_ngram_order)" ) ;
-	//
-    cmd->addBCmdOption( "-cm_no_symb" , &cm_no_symb , false ,
-                        "don't use symbols class model" ) ;
-    cmd->addBCmdOption( "-cm_no_duration" , &cm_no_duration , false ,
-                        "don't use durations class model" ) ;
-    cmd->addBCmdOption( "-cm_no_pitch" , &cm_no_pitch , false ,
-                        "don't use pitch  class model" ) ;
-    cmd->addBCmdOption( "-cm_no_interval" , &cm_no_interval , false ,
-                        "don't use intervals  class model" ) ;
-    // Bigram Model Parameters
-    cmd->addBCmdOption( "-cm_no_bigram" , &cm_no_bigram , false ,
-                        "don't use bigram class model" ) ;
-    cmd->addRCmdOption( "-cm_bigram_factor" , &cm_bigram_factor , 1.0 ,
-                        "the factor by which log bigram model probs are scaled during decoding" ) ;
 
     // Beam Search Decoder Parameters
     cmd->addText("\nBeam Search Decoding Options:") ;
@@ -182,8 +128,6 @@ void processCmdLine( CmdLine *cmd , int argc , char *argv[] )
                         "the file containing word-level reference transcriptions" ) ;
 
 	// Varia
-    cmd->addBCmdOption( "-use_torch_decoder" , &use_torch_decoder , false ,
-                        "User original torch decoder an language model" ) ;
 	cmd->addSCmdOption( "-log_fname" , &log_fname , "", 
 						"the log output file, standard output if none" ) ;
 	
@@ -200,45 +144,6 @@ void processCmdLine( CmdLine *cmd , int argc , char *argv[] )
     // Some parameter dependencies
     if ( (lm_ngram_order > 0) && (strcmp(lm_fname,"") == 0) )
         error("lm_ngram_order > 0 but no LM file specified\n") ;
-	// cm_orders
-	if ( cm_symb_order == -1 )
-		cm_symb_order = lm_ngram_order;
-	if ( cm_duration_order == -1 )
-		cm_duration_order = lm_ngram_order;
-	if ( cm_pitch_order == -1 )
-		cm_pitch_order = lm_ngram_order;
-	if ( cm_interval_order == -1 )
-		cm_interval_order = lm_ngram_order;
-}
-
-
-// file names buffer
-char dir[1000];
-char gram[1000];
-char dic[1000];
-char dic_interval[1000];
-char map[1000];
-
-void formatFilenames( const char *directory, const char *basename, bool interval=false )
-{
-	// base filename
-	strcpy(dir, directory);
-	strcat(dir, basename);
-	// dic
-	strcpy(dic, dir);
-	strcat(dic, ".dic");
-	// interval dic
-	strcpy(dic_interval, dir);
-	strcat(dic_interval, ".notes.dic");
-	// map
-	strcpy(map, dir);
-	if ( interval )
-		strcat(map, ".notes.map");
-	else
-		strcat(map, ".map");
-	// gram
-	strcpy(gram, dir );
-	strcat(gram, ".gram");	
 }
 
 int main( int argc , char *argv[] )
@@ -279,92 +184,26 @@ int main( int argc , char *argv[] )
 
     LinearLexicon lexicon( &lex_info , &phone_models ) ;
 
-	if ( use_torch_decoder == false )
-	{
-		MusicModel *mus_model ;
-		if ( lm_ngram_order <= 0 )
-			mus_model = NULL ;
-		else
-		{
-			strcpy(dir, lm_fname);
-			strcat(dir, "ngram.dic");
-			printf("dir");
-			Vocabulary mus_vocabulary( dir , lex_sent_start_word , lex_sent_end_word , lex_sil_word ) ;
-		
-			strcpy( dir, lm_fname );
-			//mus_model = new MusicModel( lex_info.vocabulary, lm_scaling_factor ) ;
-			mus_model = new MusicModel( &mus_vocabulary, lm_scaling_factor ) ;
 
-			if ( cm_no_bigram == false )
-			{
-				formatFilenames( lm_fname, "ngram" );
-				mus_model->addClassModel( gram, lm_ngram_order, cm_bigram_factor);
-			}
-		
-			if ( cm_no_symb == false )
-			{
-				formatFilenames( lm_fname, "symb" );
-				mus_model->addClassModel( dic,
-					gram, map, cm_symb_order, cm_symb_factor);
-			}	
-			
-			if ( cm_no_duration == false )
-			{
-				formatFilenames( lm_fname, "duration" );
-				mus_model->addClassModel( dic,
-					gram, map, cm_duration_order, cm_duration_factor);
-			}
-
-			if ( cm_no_pitch == false )
-			{
-				formatFilenames( lm_fname, "pitch" );
-				mus_model->addClassModel( dic,
-					gram, map, cm_pitch_order, cm_pitch_factor);
-			}
-
-			if ( cm_no_interval == false )
-			{
-				formatFilenames( lm_fname, "interval", true );
-				mus_model->addClassModel( dic,
-					gram, map, 3, cm_interval_factor, true, dic_interval );
-					//gram, map, cm_interval_order, cm_interval_factor, true, dic_interval );
-			}
-		}
-
-		RecBeamSearchDecoder bs_decoder( &lexicon , mus_model , dec_word_entr_pen ,
-									  dec_int_prune_window , dec_end_prune_window , 
-									  dec_delayed_lm , dec_verbose ) ;
-
-		RecDecoderPage batch_tester( input_fname , wrdtrns_fname , &bs_decoder , 
-									   true , true , output_fname ) ;
-		
-		batch_tester.setOutputOptions( print_by_page, print_by_part, print_by_book ); 
-
-		batch_tester.run() ;
-	}
+	LanguageModel *lang_model ;
+	if ( lm_ngram_order <= 0 )
+		lang_model = NULL ;
 	else
 	{
-		LanguageModel *lang_model ;
-		if ( lm_ngram_order <= 0 )
-			lang_model = NULL ;
-		else
-		{
-			char gram[1000];
-			strcpy( gram, lm_fname );
-			strcat( gram, "ngram.gram");
-			lang_model = new LanguageModel( 2 , lex_info.vocabulary , 
-											gram, lm_scaling_factor ) ;
-		}
-		BeamSearchDecoder bs_decoder( &lexicon , lang_model , dec_word_entr_pen ,
-									  dec_int_prune_window , dec_end_prune_window , 
-									  dec_delayed_lm , dec_verbose ) ;
-		
-
-		DecoderBatchTest batch_tester( input_fname , DST_FEATS_HTK , wrdtrns_fname , &bs_decoder , 
-									   true , true , output_fname , false , 10.0 ) ;
-		
-		batch_tester.run() ;	
+		lang_model = new LanguageModel( 2 , lex_info.vocabulary , 
+										lm_fname, lm_scaling_factor ) ;
 	}
+	BeamSearchDecoder bs_decoder( &lexicon , lang_model , dec_word_entr_pen ,
+								  dec_int_prune_window , dec_end_prune_window , 
+								  dec_delayed_lm , dec_verbose ) ;
+	
+
+	MlDecoderPage batch_tester( input_fname , wrdtrns_fname , &bs_decoder , 
+								   true , true , output_fname ) ;
+	
+	batch_tester.setOutputOptions( print_by_page, print_by_part, print_by_book ); 
+
+	batch_tester.run() ;
 	
 	if ( out_fd )
 		fclose( out_fd );
