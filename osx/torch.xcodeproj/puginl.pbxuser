@@ -448,9 +448,9 @@
 		state = 1;
 	};
 	A51FEBE20A02C0F500ACE377 /* Project object */ = {
-		activeBuildConfigurationName = Release;
-		activeExecutable = 57A0BC800ABF1901001825D5 /* trainer */;
-		activeTarget = 57A0BC770ABF1901001825D5 /* trainer */;
+		activeBuildConfigurationName = Debug;
+		activeExecutable = 57219A4D0B8377610033F495 /* adapt */;
+		activeTarget = 57219A440B8377600033F495 /* adapt */;
 		addToTargets = (
 			57219A440B8377600033F495 /* adapt */,
 		);
@@ -497,6 +497,20 @@
 					PBXBreakpointsDataSource_LocationID,
 					PBXBreakpointsDataSource_ConditionID,
 					PBXBreakpointsDataSource_ContinueID,
+				);
+			};
+			PBXConfiguration.PBXFileTableDataSource3.PBXErrorsWarningsDataSource = {
+				PBXFileTableDataSourceColumnSortingDirectionKey = "-1";
+				PBXFileTableDataSourceColumnSortingKey = PBXErrorsWarningsDataSource_LocationID;
+				PBXFileTableDataSourceColumnWidthsKey = (
+					20,
+					300,
+					120.2085,
+				);
+				PBXFileTableDataSourceColumnsKey = (
+					PBXErrorsWarningsDataSource_TypeID,
+					PBXErrorsWarningsDataSource_MessageID,
+					PBXErrorsWarningsDataSource_LocationID,
 				);
 			};
 			PBXConfiguration.PBXFileTableDataSource3.PBXExecutablesDataSource = {
@@ -557,8 +571,8 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 221782481;
-			PBXWorkspaceStateSaveDate = 221782481;
+			PBXPerProjectTemplateStateSaveDate = 223923335;
+			PBXWorkspaceStateSaveDate = 223923335;
 		};
 		sourceControlManager = 57B8FCD30AA64AD0007C93F6 /* Source Control */;
 		userBuildSettings = {
@@ -570,90 +584,12 @@
 			57B8FCC80AA64AB8007C93F6 /* decoder */,
 		);
 	};
-	A51FEC150A02C1C900ACE377 /* ClassMapper.h */ = {
-		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1173, 1134}}";
-			sepNavSelRange = "{0, 1523}";
-			sepNavVisRect = "{{0, 0}, {1173, 994}}";
-		};
-	};
-	A51FEC160A02C1C900ACE377 /* ClassModel.cpp */ = {
-		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1249, 7308}}";
-			sepNavSelRange = "{8447, 0}";
-			sepNavVisRect = "{{0, 3395}, {1249, 365}}";
-		};
-	};
-	A51FEC170A02C1C900ACE377 /* ClassModel.h */ = {
-		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1173, 1848}}";
-			sepNavSelRange = "{0, 0}";
-			sepNavVisRect = "{{0, 0}, {1173, 994}}";
-		};
-	};
 	A51FEC180A02C1C900ACE377 /* Decoder.cpp */ = {
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {1117, 5250}}";
 			sepNavSelRange = "{12470, 14}";
 			sepNavVisRect = "{{0, 1436}, {1117, 818}}";
 			sepNavWindowFrame = "{{116, 105}, {1156, 947}}";
-		};
-	};
-	A51FEC1D0A02C1C900ACE377 /* MusicModel.cpp */ = {
-		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1249, 5950}}";
-			sepNavSelRange = "{13212, 0}";
-			sepNavVisRect = "{{0, 5383}, {1249, 365}}";
-		};
-	};
-	A51FEC1E0A02C1C900ACE377 /* MusicModel.h */ = {
-		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1173, 1386}}";
-			sepNavSelRange = "{1434, 0}";
-			sepNavVisRect = "{{0, 0}, {1173, 994}}";
-		};
-	};
-	A51FEC200A02C1C900ACE377 /* RecBeamSearchDecoder.cpp */ = {
-		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1236, 10234}}";
-			sepNavSelRange = "{8957, 26}";
-			sepNavVisRect = "{{0, 2172}, {1236, 994}}";
-		};
-	};
-	A51FEC210A02C1C900ACE377 /* RecBeamSearchDecoder.h */ = {
-		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1236, 1666}}";
-			sepNavSelRange = "{160, 0}";
-			sepNavVisRect = "{{0, 462}, {1236, 994}}";
-		};
-	};
-	A51FEC220A02C1C900ACE377 /* RecDecoderLine.cpp */ = {
-		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1236, 4732}}";
-			sepNavSelRange = "{5954, 19}";
-			sepNavVisRect = "{{0, 2306}, {1236, 994}}";
-		};
-	};
-	A51FEC230A02C1C900ACE377 /* RecDecoderLine.h */ = {
-		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1236, 1862}}";
-			sepNavSelRange = "{2316, 0}";
-			sepNavVisRect = "{{0, 504}, {1236, 994}}";
-		};
-	};
-	A51FEC240A02C1C900ACE377 /* RecDecoderPage.cpp */ = {
-		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1236, 6328}}";
-			sepNavSelRange = "{4002, 31}";
-			sepNavVisRect = "{{0, 5334}, {1236, 994}}";
-			sepNavWindowFrame = "{{-1466, 39}, {1275, 1123}}";
-		};
-	};
-	A51FEC250A02C1C900ACE377 /* RecDecoderPage.h */ = {
-		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1236, 1722}}";
-			sepNavSelRange = "{2245, 4}";
-			sepNavVisRect = "{{0, 214}, {1236, 994}}";
 		};
 	};
 	A59120000A1278D400D64611 /* ngram */ = {

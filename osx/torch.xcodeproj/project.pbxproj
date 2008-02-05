@@ -27,19 +27,19 @@
 		4DF692A50D496E28007DE3CF /* mldecoderpage.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = mldecoderpage.h; path = ../src/ml/mldecoderpage.h; sourceTree = SOURCE_ROOT; };
 		4DF692A60D496E28007DE3CF /* mldecoderstaff.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = mldecoderstaff.cpp; path = ../src/ml/mldecoderstaff.cpp; sourceTree = SOURCE_ROOT; };
 		4DF692A70D496E28007DE3CF /* mldecoderstaff.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = mldecoderstaff.h; path = ../src/ml/mldecoderstaff.h; sourceTree = SOURCE_ROOT; };
-		57219A4C0B8377610033F495 /* adapt */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = adapt; sourceTree = BUILT_PRODUCTS_DIR; };
+		57219A4C0B8377610033F495 /* adaptd */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = adaptd; sourceTree = BUILT_PRODUCTS_DIR; };
 		57219A550B8378BA0033F495 /* Adapter.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = Adapter.cpp; path = ../src/torch/Adapter.cpp; sourceTree = SOURCE_ROOT; };
 		57219D490B8A2D6A0033F495 /* AruspixHMM.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = AruspixHMM.cpp; path = ../src/torch/AruspixHMM.cpp; sourceTree = SOURCE_ROOT; };
 		57219D4A0B8A2D6A0033F495 /* AruspixHMM.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = AruspixHMM.h; path = ../src/torch/AruspixHMM.h; sourceTree = SOURCE_ROOT; };
 		576ED8350AB223D2007F2844 /* Common.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = Common.cpp; path = ../src/torch/Common.cpp; sourceTree = SOURCE_ROOT; };
 		576ED8360AB223D2007F2844 /* Common.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = Common.h; path = ../src/torch/Common.h; sourceTree = SOURCE_ROOT; };
 		576ED8370AB223D2007F2844 /* Init.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = Init.cpp; path = ../src/torch/Init.cpp; sourceTree = SOURCE_ROOT; };
-		576ED8480AB223D8007F2844 /* init */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = init; sourceTree = BUILT_PRODUCTS_DIR; };
-		57A0BC7F0ABF1901001825D5 /* trainer */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = trainer; sourceTree = BUILT_PRODUCTS_DIR; };
+		576ED8480AB223D8007F2844 /* initd */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = initd; sourceTree = BUILT_PRODUCTS_DIR; };
+		57A0BC7F0ABF1901001825D5 /* trainerd */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = trainerd; sourceTree = BUILT_PRODUCTS_DIR; };
 		57A0BC810ABF199C001825D5 /* Trainer.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = Trainer.cpp; path = ../src/torch/Trainer.cpp; sourceTree = SOURCE_ROOT; };
-		A51FEC000A02C15800ACE377 /* decoder */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = decoder; sourceTree = BUILT_PRODUCTS_DIR; };
+		A51FEC000A02C15800ACE377 /* decoderd */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = decoderd; sourceTree = BUILT_PRODUCTS_DIR; };
 		A51FEC180A02C1C900ACE377 /* Decoder.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = Decoder.cpp; sourceTree = "<group>"; };
-		A59120010A1278D400D64611 /* ngram */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = ngram; sourceTree = BUILT_PRODUCTS_DIR; };
+		A59120010A1278D400D64611 /* ngramd */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = ngramd; sourceTree = BUILT_PRODUCTS_DIR; };
 		A59120030A1278F100D64611 /* LMNGramBuilder.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = LMNGramBuilder.cpp; path = ../src/torch/LMNGramBuilder.cpp; sourceTree = SOURCE_ROOT; };
 		A59120040A1278F100D64611 /* LMNGramBuilder.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = LMNGramBuilder.h; path = ../src/torch/LMNGramBuilder.h; sourceTree = SOURCE_ROOT; };
 		A59120050A1278F100D64611 /* LMNGramEntry.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = LMNGramEntry.cpp; path = ../src/torch/LMNGramEntry.cpp; sourceTree = SOURCE_ROOT; };
@@ -121,11 +121,11 @@
 		A51FEC010A02C15800ACE377 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				A51FEC000A02C15800ACE377 /* decoder */,
-				A59120010A1278D400D64611 /* ngram */,
-				576ED8480AB223D8007F2844 /* init */,
-				57A0BC7F0ABF1901001825D5 /* trainer */,
-				57219A4C0B8377610033F495 /* adapt */,
+				A51FEC000A02C15800ACE377 /* decoderd */,
+				A59120010A1278D400D64611 /* ngramd */,
+				576ED8480AB223D8007F2844 /* initd */,
+				57A0BC7F0ABF1901001825D5 /* trainerd */,
+				57219A4C0B8377610033F495 /* adaptd */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -171,7 +171,7 @@
 			);
 			name = adapt;
 			productName = ngram;
-			productReference = 57219A4C0B8377610033F495 /* adapt */;
+			productReference = 57219A4C0B8377610033F495 /* adaptd */;
 			productType = "com.apple.product-type.tool";
 		};
 		576ED83C0AB223D8007F2844 /* init */ = {
@@ -187,7 +187,7 @@
 			);
 			name = init;
 			productName = ngram;
-			productReference = 576ED8480AB223D8007F2844 /* init */;
+			productReference = 576ED8480AB223D8007F2844 /* initd */;
 			productType = "com.apple.product-type.tool";
 		};
 		57A0BC770ABF1901001825D5 /* trainer */ = {
@@ -203,7 +203,7 @@
 			);
 			name = trainer;
 			productName = ngram;
-			productReference = 57A0BC7F0ABF1901001825D5 /* trainer */;
+			productReference = 57A0BC7F0ABF1901001825D5 /* trainerd */;
 			productType = "com.apple.product-type.tool";
 		};
 		A51FEBFF0A02C15800ACE377 /* decoder */ = {
@@ -219,7 +219,7 @@
 			);
 			name = decoder;
 			productName = decoder;
-			productReference = A51FEC000A02C15800ACE377 /* decoder */;
+			productReference = A51FEC000A02C15800ACE377 /* decoderd */;
 			productType = "com.apple.product-type.tool";
 		};
 		A59120000A1278D400D64611 /* ngram */ = {
@@ -235,7 +235,7 @@
 			);
 			name = ngram;
 			productName = ngram;
-			productReference = A59120010A1278D400D64611 /* ngram */;
+			productReference = A59120010A1278D400D64611 /* ngramd */;
 			productType = "com.apple.product-type.tool";
 		};
 /* End PBXNativeTarget section */

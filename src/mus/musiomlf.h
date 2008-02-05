@@ -104,6 +104,35 @@ private:
 
 
 //----------------------------------------------------------------------------
+// MusMLFSymbolWP
+//----------------------------------------------------------------------------
+
+// Idem MusMLFSymbol but without pitch
+
+class MusMLFSymbolWP: public MusMLFSymbol
+{
+public:
+    // constructors and destructors
+    MusMLFSymbolWP();
+    virtual ~MusMLFSymbolWP() {};
+    
+    // WDR: method declarations for MusMLFSymbolWP
+	//virtual void SetValue( char type, wxString subtype, int position, int value = 0, char pitch = 0, int oct = 0, int flag = 0);
+    virtual wxString GetLabel( );
+    
+protected:
+    // WDR: member variable declarations for MusMLFSymbolWP
+	
+public:
+
+private:
+    // WDR: handler declarations for MusMLFSymbolWP
+
+	DECLARE_DYNAMIC_CLASS(MusMLFSymbolWP)
+};
+
+
+//----------------------------------------------------------------------------
 // MusMLFOutput
 //----------------------------------------------------------------------------
 
@@ -174,6 +203,35 @@ public:
 
 private:
     // WDR: handler declarations for MusMLFOutput
+};
+
+
+//----------------------------------------------------------------------------
+// MusMLFOutputWP
+//----------------------------------------------------------------------------
+
+// Idem MusMLFOutput but without pitch
+
+class MusMLFOutputWP: public MusMLFOutput
+{
+public:
+    // constructors and destructors
+    MusMLFOutputWP( MusFile *file, wxString filename, wxString model_symbole_name = "MusMLFSymbolWP" );
+	MusMLFOutputWP( MusFile *file, int fd, wxString filename, wxString model_symbole_name = "MusMLFSymbolWP" );
+    virtual ~MusMLFOutputWP();
+    
+    // WDR: method declarations for MusMLFOutputWP
+    virtual bool WriteNote( MusNote *note );
+    virtual bool WriteSymbole( MusSymbol *symbole );
+	// specific
+    
+protected:
+    // WDR: member variable declarations for MusMLFOutputWP
+
+public:
+
+private:
+    // WDR: handler declarations for MusMLFOutputWP
 };
 
 

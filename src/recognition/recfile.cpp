@@ -29,7 +29,7 @@
 #include "im/imstaffsegment.h"
 
 #include "app/axapp.h"
-//#include "app/axprocess.h"
+#include "app/axprocess.h"
 
 #include "mus/muspage.h"
 #include "mus/musstaff.h"
@@ -461,6 +461,9 @@ bool RecFile::Decode( wxArrayPtrVoid params, AxProgressDlg *dlg )
 	// params 4: double: rec_lm_scaling
 	// params 5: wxString: rec_wrdtrns
 	
+	
+	/*
+		
 	RecTypModel *typModelPtr = (RecTypModel*)params[0];
 	RecMusModel *musModelPtr = (RecMusModel*)params[1];
 	bool rec_delayed =  *(bool*)params[2];
@@ -470,6 +473,7 @@ bool RecFile::Decode( wxArrayPtrVoid params, AxProgressDlg *dlg )
 	double rec_lm_scaling =  *(double*)params[4];
 	wxString rec_wrdtrns =  *(wxString*)params[5];
 	
+
 	wxString log = wxGetApp().m_logDir + "/decoder.log";
 	wxString input = m_basename + "mfc.input";
 	input.Replace( "\\/", "/" );
@@ -514,8 +518,91 @@ bool RecFile::Decode( wxArrayPtrVoid params, AxProgressDlg *dlg )
 		decoder.wrdtrns_fname = rec_wrdtrns;
 
 	decoder.Run();
+	*/
+	
+	RecTypModel *typModelPtr = (RecTypModel*)params[0];
+	RecMusModel *musModelPtr = (RecMusModel*)params[1];
+	bool rec_delayed =  *(bool*)params[2];
+	int rec_lm_order =  *(int*)params[3];
+	if ( rec_lm_order > MUS_NGRAM_ORDER )
+		rec_lm_order = MUS_NGRAM_ORDER;
+	double rec_lm_scaling =  *(double*)params[4];
+	wxString rec_wrdtrns =  *(wxString*)params[5];
 
-	/*
+#ifdef __WXMSW__
+	#if defined(_DEBUG)
+		wxString cmd = "DecoderD.exe";
+	#else
+		wxString cmd = "Decoder.exe";
+	#endif   
+#elif __WXGTK__
+	#if defined(__DEBUG__)
+		wxString cmd = "decoderd";
+	#else
+		wxString cmd = "decoder";
+	#endif   
+#elif __WXMAC__
+	#ifdef __AXDEBUG__
+		wxString cmd = "decoderd";
+	#else
+		wxString cmd = "decoder";
+	#endif   
+#endif
+
+	wxString args = " ";
+	
+	wxString log = "\"" + wxGetApp().m_logDir + "/decoder.log\"";
+
+	wxString input = m_basename + "mfc.input";
+	input.Replace( "\\/", "/" );
+	
+	wxString rec_models = typModelPtr->m_basename + "hmm";
+	wxString rec_dict = typModelPtr->m_basename + "dic";
+	wxString rec_lm = typModelPtr->m_basename;
+	wxString rec_output = m_basename + "rec.mlf";
+	// cannot be changed from interface
+	double rec_phone_pen = RecEnv::s_rec_phone_pen;
+	double rec_int_prune = RecEnv::s_rec_int_prune;
+	double rec_word_pen = RecEnv::s_rec_word_pen;
+	
+	args << " -log_fname " << log.c_str();
+	args << " -am_models_fname " << rec_models.c_str();
+	args << " -am_sil_phone \"{s}\" ";
+	args << " -am_phone_del_pen " << rec_phone_pen;
+
+	args << " -lex_dict_fname " << rec_dict.c_str();
+
+	if ( rec_lm_order && !rec_lm.IsEmpty() )
+	{
+		args << " -lm_fname " << musModelPtr->m_basename;
+		args << " -lm_ngram_order " << rec_lm_order;
+		args << " -lm_scaling_factor " << rec_lm_scaling;
+		//args << " -cm_no_symb";
+		//args << " -cm_no_duration";
+		//args << " -cm_no_pitch";
+		//args << " -cm_no_interval";
+	}
+	
+	if ( rec_int_prune != 0.0 )
+		args << " -dec_int_prune_window " << rec_int_prune;
+		
+	if ( rec_word_pen != 0.0 )
+		args << " -dec_word_entr_pen " << rec_word_pen;
+
+	if ( rec_delayed )
+		args << " -dec_delayed_lm";
+
+	args << " -input_fname " << input.c_str();
+	
+	if ( !rec_output.IsEmpty() )
+		args << " -output_fname " << rec_output.c_str();
+
+	if ( !rec_wrdtrns.IsEmpty() )
+		args << " -wrdtrns_fname " << rec_wrdtrns.c_str();
+
+	wxLogDebug(args);
+	//printf(args.c_str());
+
 	if (!dlg->SetOperation( _("Recognition...") ) )
 		return this->Terminate( ERR_CANCELED );
 
@@ -546,7 +633,6 @@ bool RecFile::Decode( wxArrayPtrVoid params, AxProgressDlg *dlg )
 	}
 	dlg->EndTimerOperation( TIMER_DECODING );
 	delete process;
-	*/
 
 
 	/*Torch::DiskXFile::setBigEndianMode() ;
