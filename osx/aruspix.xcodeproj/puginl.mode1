@@ -185,7 +185,60 @@
 	<key>Notifications</key>
 	<array/>
 	<key>OpenEditors</key>
-	<array/>
+	<array>
+		<dict>
+			<key>Content</key>
+			<dict>
+				<key>PBXProjectModuleGUID</key>
+				<string>578B3D750D576F0000FD6143</string>
+				<key>PBXProjectModuleLabel</key>
+				<string>recfile.cpp</string>
+				<key>PBXSplitModuleInNavigatorKey</key>
+				<dict>
+					<key>Split0</key>
+					<dict>
+						<key>PBXProjectModuleGUID</key>
+						<string>578B3D9E0D58CCEA00FD6143</string>
+						<key>PBXProjectModuleLabel</key>
+						<string>recfile.cpp</string>
+						<key>_historyCapacity</key>
+						<integer>0</integer>
+						<key>bookmark</key>
+						<string>578B3DA90D58CCEA00FD6143</string>
+						<key>history</key>
+						<array>
+							<string>578B3D9F0D58CCEA00FD6143</string>
+							<string>578B3DA00D58CCEA00FD6143</string>
+							<string>578B3DA10D58CCEA00FD6143</string>
+							<string>578B3DA20D58CCEA00FD6143</string>
+							<string>578B3DA30D58CCEA00FD6143</string>
+						</array>
+						<key>prevStack</key>
+						<array>
+							<string>578B3DA40D58CCEA00FD6143</string>
+							<string>578B3DA50D58CCEA00FD6143</string>
+							<string>578B3DA60D58CCEA00FD6143</string>
+							<string>578B3DA70D58CCEA00FD6143</string>
+							<string>578B3DA80D58CCEA00FD6143</string>
+						</array>
+					</dict>
+					<key>SplitCount</key>
+					<string>1</string>
+				</dict>
+				<key>StatusBarVisibility</key>
+				<true/>
+			</dict>
+			<key>Geometry</key>
+			<dict>
+				<key>Frame</key>
+				<string>{{0, 20}, {1408, 839}}</string>
+				<key>PBXModuleWindowStatusBarHidden2</key>
+				<false/>
+				<key>RubberWindowFrame</key>
+				<string>38 272 1408 880 0 0 1920 1178 </string>
+			</dict>
+		</dict>
+	</array>
 	<key>PerspectiveWidths</key>
 	<array>
 		<integer>-1</integer>
@@ -218,8 +271,6 @@
 			<key>Layout</key>
 			<array>
 				<dict>
-					<key>BecomeActive</key>
-					<true/>
 					<key>ContentConfiguration</key>
 					<dict>
 						<key>PBXBottomSmartGroupGIDs</key>
@@ -256,7 +307,6 @@
 							<key>PBXSmartGroupTreeModuleOutlineStateExpansionKey</key>
 							<array>
 								<string>A58508B20A001129006E82B1</string>
-								<string>A585244E0A1B9603002D9D8A</string>
 								<string>A58524810A1B9604002D9D8A</string>
 								<string>1C37FBAC04509CD000000102</string>
 								<string>1C37FAAC04509CD000000102</string>
@@ -265,8 +315,8 @@
 							<key>PBXSmartGroupTreeModuleOutlineStateSelectionKey</key>
 							<array>
 								<array>
-									<integer>19</integer>
-									<integer>1</integer>
+									<integer>24</integer>
+									<integer>7</integer>
 									<integer>0</integer>
 								</array>
 							</array>
@@ -335,6 +385,8 @@
 							<string>0pt</string>
 						</dict>
 						<dict>
+							<key>BecomeActive</key>
+							<true/>
 							<key>ContentConfiguration</key>
 							<dict>
 								<key>PBXProjectModuleGUID</key>
@@ -371,9 +423,9 @@
 			</array>
 			<key>TableOfContents</key>
 			<array>
-				<string>5780827D0D380DB9003F354E</string>
+				<string>578B3D9C0D58CCEA00FD6143</string>
 				<string>1CE0B1FE06471DED0097A5F4</string>
-				<string>5780827E0D380DB9003F354E</string>
+				<string>578B3D9D0D58CCEA00FD6143</string>
 				<string>1CE0B20306471E060097A5F4</string>
 				<string>1CE0B20506471E060097A5F4</string>
 			</array>
@@ -486,7 +538,7 @@
 	<key>PerspectivesBarVisible</key>
 	<false/>
 	<key>PinnedNavigatorIdentifier</key>
-	<string>5780843E0D381977003F354E</string>
+	<string>578B3D750D576F0000FD6143</string>
 	<key>ShelfIsVisible</key>
 	<false/>
 	<key>SourceDescription</key>
@@ -509,10 +561,8 @@
 	<integer>5</integer>
 	<key>WindowOrderList</key>
 	<array>
-		<string>576C2D2D0AA62AC2009D2053</string>
 		<string>1C0AD2AF069F1E9B00FABCE6</string>
 		<string>1C0AD2B3069F1EA900FABCE6</string>
-		<string>1C530D57069F1CE1000CFCEE</string>
 		<string>/Users/puginl/projects/aruspix_1.3.0/osx/aruspix.xcodeproj</string>
 	</array>
 	<key>WindowString</key>
@@ -957,9 +1007,9 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>1C0AD2B3069F1EA900FABCE6</string>
-				<string>578082790D380D54003F354E</string>
+				<string>578B3DAA0D58CCEA00FD6143</string>
 				<string>1CD0528B0623707200166675</string>
-				<string>5780827A0D380D54003F354E</string>
+				<string>578B3DAB0D58CCEA00FD6143</string>
 			</array>
 			<key>ToolbarConfiguration</key>
 			<string>xcode.toolbar.config.run</string>
@@ -1333,7 +1383,7 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>1C0AD2AF069F1E9B00FABCE6</string>
-				<string>5780827B0D380D54003F354E</string>
+				<string>578B3DAC0D58CCEA00FD6143</string>
 				<string>1CA6456E063B45B4001379D8</string>
 			</array>
 			<key>ToolbarConfiguration</key>
