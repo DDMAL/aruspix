@@ -19,7 +19,7 @@
 #include "wx/zipstrm.h"
 #include "wx/wfstream.h"
 
-#include "progressdlg.h"
+#include "axprogressdlg.h"
 
 // TINYXML
 #if defined (__WXMSW__)

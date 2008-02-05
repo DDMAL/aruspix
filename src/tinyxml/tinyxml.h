@@ -213,11 +213,11 @@ protected:
 
 	// See STL_STRING_BUG
 	// Utility class to overcome a bug.
-	class StringToBuffer
+	class TiXmlStrBuf
 	{
 	  public:
-		StringToBuffer( const TIXML_STRING& str );
-		~StringToBuffer();
+		TiXmlStrBuf( const TIXML_STRING& str );
+		~TiXmlStrBuf();
 		char* buffer;
 	};
 
@@ -437,7 +437,7 @@ public:
 	/// STL std::string form.
 	void SetValue( const std::string& _value )    
 	{	  
-		StringToBuffer buf( _value );
+		TiXmlStrBuf buf( _value );
 		SetValue( buf.buffer ? buf.buffer : "" );    	
 	}	
 	#endif
@@ -720,13 +720,13 @@ public:
 	/// STL std::string form.
 	void SetName( const std::string& _name )	
 	{	
-		StringToBuffer buf( _name );
+		TiXmlStrBuf buf( _name );
 		SetName ( buf.buffer ? buf.buffer : "error" );	
 	}
 	/// STL std::string form.	
 	void SetValue( const std::string& _value )	
 	{	
-		StringToBuffer buf( _value );
+		TiXmlStrBuf buf( _value );
 		SetValue( buf.buffer ? buf.buffer : "error" );	
 	}
 	#endif
@@ -881,15 +881,15 @@ public:
 	/// STL std::string form.
 	void SetAttribute( const std::string& name, const std::string& _value )	
 	{	
-		StringToBuffer n( name );
-		StringToBuffer v( _value );
+		TiXmlStrBuf n( name );
+		TiXmlStrBuf v( _value );
 		if ( n.buffer && v.buffer )
 			SetAttribute (n.buffer, v.buffer );	
 	}	
 	///< STL std::string form.
 	void SetAttribute( const std::string& name, int _value )	
 	{	
-		StringToBuffer n( name );
+		TiXmlStrBuf n( name );
 		if ( n.buffer )
 			SetAttribute (n.buffer, _value);	
 	}	
@@ -1170,12 +1170,12 @@ public:
 	#ifdef TIXML_USE_STL
 	bool LoadFile( const std::string& filename, TiXmlEncoding encoding = TIXML_DEFAULT_ENCODING )			///< STL std::string version.
 	{
-		StringToBuffer f( filename );
+		TiXmlStrBuf f( filename );
 		return ( f.buffer && LoadFile( f.buffer, encoding ));
 	}
 	bool SaveFile( const std::string& filename ) const		///< STL std::string version.
 	{
-		StringToBuffer f( filename );
+		TiXmlStrBuf f( filename );
 		return ( f.buffer && SaveFile( f.buffer ));
 	}
 	#endif

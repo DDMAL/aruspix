@@ -8,6 +8,8 @@
 #ifndef __recbookctrl_H__
 #define __recbookctrl_H__
 
+#ifdef AX_RECOGNITION
+
 #if defined(__GNUG__) && ! defined(__APPLE__)
     #pragma interface "recbookctrl.cpp"
 #endif
@@ -159,5 +161,7 @@ private:
 private:
     DECLARE_EVENT_TABLE()
 };
+
+#endif //AX_RECOGNITION
 
 #endif

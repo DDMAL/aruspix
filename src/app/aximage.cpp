@@ -29,8 +29,6 @@
 
 #include "aximage.h"
 
-#include "defs.h"
-
 // statics
 bool AxImage::s_reduceBigImages = true;
 bool AxImage::s_gray = true;

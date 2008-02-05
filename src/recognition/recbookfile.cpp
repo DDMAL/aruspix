@@ -5,6 +5,8 @@
 // Copyright (c) Laurent Pugin. All rights reserved.   
 /////////////////////////////////////////////////////////////////////////////
 
+#ifdef AX_RECOGNITION
+
 #if defined(__GNUG__) && ! defined(__APPLE__)
 #pragma implementation "recbookfile.h"
 #endif
@@ -19,7 +21,7 @@
 #include "recbookfile.h"
 #include "rec.h"
 #include "recfile.h"
-#include "models.h"
+#include "recmodels.h"
 
 #include "wx/arrimpl.cpp"
 WX_DEFINE_OBJARRAY( ArrayOfBookFiles );
@@ -376,7 +378,7 @@ bool RecBookFile::ResetAdaptation( bool ask_user )
 	return true;
 }
 
-bool RecBookFile::TypAdaptation( wxArrayPtrVoid params, ProgressDlg *dlg )
+bool RecBookFile::TypAdaptation( wxArrayPtrVoid params, AxProgressDlg *dlg )
 {
 	// params 0: nbfiles (unused)
 	// params 1: paths (unused)
@@ -433,7 +435,7 @@ bool RecBookFile::TypAdaptation( wxArrayPtrVoid params, ProgressDlg *dlg )
 
 
 
-bool RecBookFile::MusAdaptation( wxArrayPtrVoid params, ProgressDlg *dlg )
+bool RecBookFile::MusAdaptation( wxArrayPtrVoid params, AxProgressDlg *dlg )
 {
 	// params 0: nbfiles (unused)
 	// params 1: paths (unused)
@@ -468,9 +470,9 @@ bool RecBookFile::MusAdaptation( wxArrayPtrVoid params, ProgressDlg *dlg )
     return ( !failed );
 }  
 
-bool RecBookFile::FastAdaptation( wxArrayPtrVoid params, ProgressDlg *dlg )
+bool RecBookFile::FastAdaptation( wxArrayPtrVoid params, AxProgressDlg *dlg )
 {
-	wxASSERT_MSG( dlg, "ProgressDlg cannot be NULL" );
+	wxASSERT_MSG( dlg, "AxProgressDlg cannot be NULL" );
 
     wxArrayString paths, filenames;
     size_t nbOfFiles;
@@ -652,3 +654,4 @@ bool RecBookFile::DeleteAxfile( wxString filename )
 
 // WDR: handler implementations for RecFile
 
+#endif //AX_RECOGNITION

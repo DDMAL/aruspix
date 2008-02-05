@@ -23,8 +23,8 @@
 
 class RecEnv;
 
-class RecWgWindow;
-class RecWgController;
+class RecMusWindow;
+class RecMusController;
 class RecFile;
 
 
@@ -46,7 +46,7 @@ public:
         long style = wxTAB_TRAVERSAL | wxNO_BORDER, int flags = CONTROLLER_ALL );
     virtual ~RecImController();
 	void SetEnv( RecEnv *env );
-    void SetWgViewAndController( RecWgWindow *recWgWindow, RecWgController *recWgController );
+    void SetWgViewAndController( RecMusWindow *recWgWindow, RecMusController *recWgController );
     void SetRecFile( RecFile *recFile );
 	// selection
 	void CancelMagicSelection( );
@@ -63,8 +63,8 @@ protected:
     RecEnv *m_envPtr;
     // to synchronize view
     RecFile *m_recFilePtr;
-    RecWgWindow *m_wgViewPtr;
-    RecWgController *m_wgControlPtr;
+    RecMusWindow *m_musViewPtr;
+    RecMusController *m_musControlPtr;
 
 public:
     wxPoint m_start;
@@ -105,15 +105,15 @@ public:
     
     // WDR: method declarations for RecImWindow
     void SetEnv( RecEnv *env );
-    void SetWgViewAndController( RecWgWindow *recWgWindow, RecWgController *recWgController );
+    void SetWgViewAndController( RecMusWindow *recWgWindow, RecMusController *recWgController );
 	void SetRecFile( RecFile *recFile );
     
 protected:
     // WDR: member variable declarations for RecImWindow
     RecEnv *m_envPtr;
     RecFile *m_recFilePtr;
-    RecWgWindow *m_wgViewPtr;
-    RecWgController *m_wgControlPtr;
+    RecMusWindow *m_musViewPtr;
+    RecMusController *m_musControlPtr;
     
 private:
     wxMenu m_popupMenuClassification;

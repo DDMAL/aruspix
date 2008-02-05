@@ -24,11 +24,11 @@
 #include "app/axframe.h"
 #include "app/axapp.h"
 
-#include "wg/wgwindow.h"
-#include "wg/wgfile.h"
-#include "wg/wgtoolpanel.h"
-#include "wg/iowwg.h"
-#include "wg/iomlf.h"
+#include "mus/muswindow.h"
+#include "mus/musfile.h"
+#include "mus/mustoolpanel.h"
+#include "mus/musiowwg.h"
+#include "mus/musiomlf.h"
 
 // WDR: class implementations
 
@@ -61,8 +61,8 @@ void WgvPanel::OnSize( wxSizeEvent &event )
 {
 	this->Layout();
     wxWindow *w = FindWindowById( ID5_WGWINDOW );
-    if ( w && w->IsKindOf( CLASSINFO( WgWindow ) ))
-        ((WgWindow*)w)->Resize( );
+    if ( w && w->IsKindOf( CLASSINFO( MusWindow ) ))
+        ((MusWindow*)w)->Resize( );
 
     event.Skip();
 }
@@ -98,7 +98,7 @@ WgvEnv::WgvEnv():
 {
     m_panelPtr = NULL;
     m_filePtr = NULL;
-    m_wgViewPtr = NULL;
+    m_musViewPtr = NULL;
 
     this->m_envMenuBarFuncPtr = MenuBarFunc5;
 }
@@ -119,7 +119,7 @@ void WgvEnv::LoadWindow()
     //m_panelPtr = ((WgvPanel*)m_envWindowPtr)->GetWgPanel();
 	//
 	WindowFunc5( m_envWindowPtr, true );
-	m_panelPtr = (WgvPanel*)m_envWindowPtr->FindWindowById( ID5_WGPANEL );
+	m_panelPtr = (WgvPanel*)m_envWindowPtr->FindWindowById( ID5_MUSPANEL );
     wxASSERT_MSG( m_panelPtr, "WG Panel cannot be NULL ");
     
     if ( wxSystemSettings::GetColour(wxSYS_COLOUR_APPWORKSPACE) == *wxWHITE )
@@ -150,35 +150,35 @@ void WgvEnv::OnSize( wxSizeEvent &event )
 
 void WgvEnv::OnTools( wxCommandEvent &event )
 {
-	if ( !m_wgViewPtr )
+	if ( !m_musViewPtr )
 		return;
 
 	if ( event.GetId() == ID5_INSERT_MODE )
-		m_wgViewPtr->SetInsertMode( event.IsChecked() );
+		m_musViewPtr->SetInsertMode( event.IsChecked() );
  	else if ( event.GetId() == ID5_NOTES )
-		m_wgViewPtr->SetToolType( WG_TOOLS_NOTES );
+		m_musViewPtr->SetToolType( MUS_TOOLS_NOTES );
 	else if ( event.GetId() == ID5_KEYS)
-		m_wgViewPtr->SetToolType( WG_TOOLS_KEYS );
+		m_musViewPtr->SetToolType( MUS_TOOLS_CLEFS );
 	else if ( event.GetId() == ID5_SIGNS )
-		m_wgViewPtr->SetToolType( WG_TOOLS_SIGNS );
+		m_musViewPtr->SetToolType( MUS_TOOLS_SIGNS );
 	else if ( event.GetId() == ID5_SYMBOLES )
-		m_wgViewPtr->SetToolType( WG_TOOLS_OTHER );
+		m_musViewPtr->SetToolType( MUS_TOOLS_OTHER );
 }
 
 void WgvEnv::OnUndo( wxCommandEvent &event )
 {
-    if ( !m_wgViewPtr || !m_wgViewPtr->CanUndo() )
+    if ( !m_musViewPtr || !m_musViewPtr->CanUndo() )
 		return;
 		
-	m_wgViewPtr->Undo();
+	m_musViewPtr->Undo();
 }
 
 void WgvEnv::OnRedo( wxCommandEvent &event )
 {
-    if ( !m_wgViewPtr || !m_wgViewPtr->CanRedo() )
+    if ( !m_musViewPtr || !m_musViewPtr->CanRedo() )
 		return;
 		
-	m_wgViewPtr->Redo();
+	m_musViewPtr->Redo();
 }
 
 
@@ -194,7 +194,7 @@ void WgvEnv::OnSave( wxCommandEvent &event )
     
     m_filePtr->m_fheader.filesize = 0;
     m_filePtr->m_fname = wwg;
-    WwgOutput *wwgoutput = new WwgOutput( m_filePtr, wwg );
+    MusWWGOutput *wwgoutput = new MusWWGOutput( m_filePtr, wwg );
     wwgoutput->ExportFile();
     delete wwgoutput;
 }
@@ -206,10 +206,10 @@ void WgvEnv::OnOpenMLF( wxCommandEvent &event )
         return;
     //wxGetApp().m_lastDirMLF_in = wxPathOnly( mlf );
 
-    if ( m_wgViewPtr )
+    if ( m_musViewPtr )
     {
-        m_wgViewPtr->Destroy();
-        m_wgViewPtr = NULL;
+        m_musViewPtr->Destroy();
+        m_musViewPtr = NULL;
     }
 
     if ( m_filePtr )
@@ -218,12 +218,12 @@ void WgvEnv::OnOpenMLF( wxCommandEvent &event )
         m_filePtr = NULL;
     }
     
-    m_filePtr = new WgFile();
-	//WgPage *page = new WgPage();
-	//WgStaff *staff = new WgStaff();
+    m_filePtr = new MusFile();
+	//MusPage *page = new MusPage();
+	//MusStaff *staff = new MusStaff();
 	//page->m_staves.Add( staff );
 	//m_filePtr->m_pages.Add( page );
-    MLFInput *mlfinput = new MLFInput( m_filePtr, mlf );
+    MusMLFInput *mlfinput = new MusMLFInput( m_filePtr, mlf );
     bool import = mlfinput->ImportFile( 12 );
     delete mlfinput;
 
@@ -233,9 +233,9 @@ void WgvEnv::OnOpenMLF( wxCommandEvent &event )
         return;
     }
 
-    m_wgViewPtr = new WgWindow( m_panelPtr, ID5_WGWINDOW, wxDefaultPosition, wxDefaultSize, wxHSCROLL|wxVSCROLL|wxSIMPLE_BORDER );
-    m_wgViewPtr->SetFile( m_filePtr );
-    m_wgViewPtr->Resize( );
+    m_musViewPtr = new MusWindow( m_panelPtr, ID5_WGWINDOW, wxDefaultPosition, wxDefaultSize, wxHSCROLL|wxVSCROLL|wxSIMPLE_BORDER );
+    m_musViewPtr->SetFile( m_filePtr );
+    m_musViewPtr->Resize( );
 }
 
 void WgvEnv::OnSaveMLF( wxCommandEvent &event )
@@ -259,7 +259,7 @@ void WgvEnv::OnSaveMLF( wxCommandEvent &event )
     bool positions = ( wxMessageBox("Output symboles positions?", wxGetApp().GetAppName() ,
                             wxYES | wxNO | wxICON_QUESTION ) == wxYES );
 
-    MLFOutput *mlfoutput = new MLFOutput( m_filePtr, filename, "MLFSymbol" );
+    MusMLFOutput *mlfoutput = new MusMLFOutput( m_filePtr, filename, "MusMLFSymbol" );
 	//mlfoutput->LoadTypes( dic );
 	mlfoutput->m_writePosition = positions;
     mlfoutput->m_addPageNo = true;
@@ -271,42 +271,42 @@ void WgvEnv::OnSaveMLF( wxCommandEvent &event )
 
 void WgvEnv::OnZoomOut( wxCommandEvent &event )
 {
-    if ( !m_wgViewPtr )
+    if ( !m_musViewPtr )
         return;
-    if ( m_wgViewPtr->CanZoom( false ) )
-        m_wgViewPtr->Zoom( false );
+    if ( m_musViewPtr->CanZoom( false ) )
+        m_musViewPtr->Zoom( false );
 }
 
 void WgvEnv::OnZoomIn( wxCommandEvent &event )
 {
-    if ( !m_wgViewPtr )
+    if ( !m_musViewPtr )
         return;
-    if (m_wgViewPtr->CanZoom( true ) )
-        m_wgViewPtr->Zoom( true );    
+    if (m_musViewPtr->CanZoom( true ) )
+        m_musViewPtr->Zoom( true );    
 }
 
 void WgvEnv::OnGoto( wxCommandEvent &event )
 {
-    if ( !m_wgViewPtr )
+    if ( !m_musViewPtr )
         return;
-    if (m_wgViewPtr->CanGoto(  ) )
-        m_wgViewPtr->Goto(  );    
+    if (m_musViewPtr->CanGoto(  ) )
+        m_musViewPtr->Goto(  );    
 }
 
 void WgvEnv::OnPrevious( wxCommandEvent &event )
 {
-    if ( !m_wgViewPtr )
+    if ( !m_musViewPtr )
         return;
-    if (m_wgViewPtr->HasNext( false ) )
-        m_wgViewPtr->Next( false );    
+    if (m_musViewPtr->HasNext( false ) )
+        m_musViewPtr->Next( false );    
 }
 
 void WgvEnv::OnNext( wxCommandEvent &event )
 {
-    if ( !m_wgViewPtr )
+    if ( !m_musViewPtr )
         return;
-    if (m_wgViewPtr->HasNext( true ) )
-        m_wgViewPtr->Next( true );    
+    if (m_musViewPtr->HasNext( true ) )
+        m_musViewPtr->Next( true );    
 }
 
 void WgvEnv::OnUpdateUI( wxUpdateUIEvent &event )
@@ -316,28 +316,28 @@ void WgvEnv::OnUpdateUI( wxUpdateUIEvent &event )
     else if ( event.GetId() == ID5_OPEN_MLF )
         event.Enable( true );
 
-    else if ( !m_wgViewPtr )
+    else if ( !m_musViewPtr )
         event.Enable(false);
     else if ( event.GetId() == ID_UNDO )
-        event.Enable( m_wgViewPtr->CanUndo() );
+        event.Enable( m_musViewPtr->CanUndo() );
     else if ( event.GetId() == ID_REDO )
-        event.Enable( m_wgViewPtr->CanRedo() );
+        event.Enable( m_musViewPtr->CanRedo() );
     else if ( event.GetId() == ID5_GOTO )
-        event.Enable( m_wgViewPtr->CanGoto() );
+        event.Enable( m_musViewPtr->CanGoto() );
     else if ( event.GetId() == ID5_PREVIOUS )
-        event.Enable( m_wgViewPtr->HasNext( false ) );
+        event.Enable( m_musViewPtr->HasNext( false ) );
     else if ( event.GetId() == ID5_NEXT )
-        event.Enable( m_wgViewPtr->HasNext( true ) );
+        event.Enable( m_musViewPtr->HasNext( true ) );
     else if ( event.GetId() == ID5_ZOOMOUT )
-        event.Enable( m_wgViewPtr->CanZoom( false ) );
+        event.Enable( m_musViewPtr->CanZoom( false ) );
     else if ( event.GetId() == ID5_ZOOMIN )
-        event.Enable( m_wgViewPtr->CanZoom( true ) );
+        event.Enable( m_musViewPtr->CanZoom( true ) );
     else if ( event.GetId() == ID5_SAVE_MLF )
-        event.Enable( m_wgViewPtr != NULL );
+        event.Enable( m_musViewPtr != NULL );
 	else if ( event.GetId() == ID5_INSERT_MODE )
 	{
 		event.Enable( true );
-		event.Check( m_wgViewPtr && !m_wgViewPtr->m_editElement );
+		event.Check( m_musViewPtr && !m_musViewPtr->m_editElement );
 	}
     else
         event.Enable(true);
@@ -358,27 +358,27 @@ void WgvEnv::OnOpen( wxCommandEvent &event )
         delete m_filePtr;
         m_filePtr = NULL;
     }
-    m_filePtr = new WgFile();
+    m_filePtr = new MusFile();
     m_filePtr->m_fname = filename;
-    WwgInput wwginput( m_filePtr, filename );
+    MusWWGInput wwginput( m_filePtr, filename );
 	if ( !wwginput.ImportFile() )
 		return;
 
     /*m_filePtr->m_fheader.filesize = 0;
-    WwgOutput *wwgoutput = new WwgOutput( m_filePtr, filename );
+    MusWWGOutput *wwgoutput = new MusWWGOutput( m_filePtr, filename );
     wwgoutput->ExportFile();
     delete wwgoutput;*/
     
 
-    if ( m_wgViewPtr )
+    if ( m_musViewPtr )
     {
-        m_wgViewPtr->Destroy();
-        m_wgViewPtr = NULL;
+        m_musViewPtr->Destroy();
+        m_musViewPtr = NULL;
     }
-    m_wgViewPtr = new WgWindow( m_panelPtr, ID5_WGWINDOW, wxDefaultPosition, wxDefaultSize, wxHSCROLL|wxVSCROLL|wxSIMPLE_BORDER );
-    m_wgViewPtr->SetToolPanel( ((WgvPanel*)m_envWindowPtr)->GetWgToolPanel() );
-    m_wgViewPtr->SetFile( m_filePtr );
-    m_wgViewPtr->Resize( );
+    m_musViewPtr = new MusWindow( m_panelPtr, ID5_WGWINDOW, wxDefaultPosition, wxDefaultSize, wxHSCROLL|wxVSCROLL|wxSIMPLE_BORDER );
+    m_musViewPtr->SetToolPanel( ((WgvPanel*)m_envWindowPtr)->GetWgToolPanel() );
+    m_musViewPtr->SetFile( m_filePtr );
+    m_musViewPtr->Resize( );
 }
 
 #endif // AX_WGVIEWER

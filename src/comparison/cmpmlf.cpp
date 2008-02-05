@@ -6,7 +6,6 @@
 /////////////////////////////////////////////////////////////////////////////
 
 #ifdef AX_RECOGNITION
-	#ifdef AX_WG
 		#ifdef AX_COMPARISON
 
 #ifdef __GNUG__
@@ -34,10 +33,10 @@
 // CmpMLFSymb
 //----------------------------------------------------------------------------
 
-IMPLEMENT_DYNAMIC_CLASS(CmpMLFSymb, MLFSymbol)
+IMPLEMENT_DYNAMIC_CLASS(CmpMLFSymb, MusMLFSymbol)
 
 CmpMLFSymb::CmpMLFSymb( ) :
-	MLFSymbol()
+	MusMLFSymbol()
 {
 }
 
@@ -45,7 +44,7 @@ void CmpMLFSymb::SetValue( char type, wxString subtype, int position, int value,
 {
 	if ( flag & NOTE_STEM )
 		flag -= NOTE_STEM;
-	MLFSymbol::SetValue( type, subtype, position, value, pitch, oct, flag );
+	MusMLFSymbol::SetValue( type, subtype, position, value, pitch, oct, flag );
 }
 
 
@@ -96,8 +95,8 @@ wxString CmpMLFSymb::GetLabel( )
 // CmpMLFOutput
 //----------------------------------------------------------------------------
 
-CmpMLFOutput::CmpMLFOutput( WgFile *file, wxString filename, wxString model_symbole_name ) :
-    MLFOutput(  file, filename, model_symbole_name  )
+CmpMLFOutput::CmpMLFOutput( MusFile *file, wxString filename, wxString model_symbole_name ) :
+    MusMLFOutput(  file, filename, model_symbole_name  )
 {
 	// temporary, cannot be modified, but should be...
 	m_ignore_clefs = true;
@@ -105,10 +104,10 @@ CmpMLFOutput::CmpMLFOutput( WgFile *file, wxString filename, wxString model_symb
 	m_ignore_keys = true;
 }
 
-//CmpMLFOutput::CmpMLFOutput( WgFile *file, wxFile *wxfile, wxString filename, wxString model_symbole_name ) :
-//    WgFileOutputStream( file, wxfile )
-CmpMLFOutput::CmpMLFOutput( WgFile *file, int fd, wxString filename, wxString model_symbole_name ) :
-	MLFOutput( file, fd, filename, model_symbole_name )
+//CmpMLFOutput::CmpMLFOutput( MusFile *file, wxFile *wxfile, wxString filename, wxString model_symbole_name ) :
+//    MusFileOutputStream( file, wxfile )
+CmpMLFOutput::CmpMLFOutput( MusFile *file, int fd, wxString filename, wxString model_symbole_name ) :
+	MusMLFOutput( file, fd, filename, model_symbole_name )
 {
 	// idem previous constructor
 	m_ignore_clefs = true;
@@ -144,7 +143,7 @@ void CmpMLFOutput::EndLabel( )
 	//m_symboles.Clear();	
 }
 
-bool CmpMLFOutput::WriteStaff( const WgStaff *staff )
+bool CmpMLFOutput::WriteStaff( const MusStaff *staff )
 {
 	if (staff->nblement == 0)
 		return true;
@@ -154,7 +153,7 @@ bool CmpMLFOutput::WriteStaff( const WgStaff *staff )
 
 	StartLabel();
 	
-	WgSymbole *clef = NULL;
+	MusSymbol *clef = NULL;
 	bool last_is_clef = false;
 
     for (k = 0;k < staff->nblement ; k++ )
@@ -165,7 +164,7 @@ bool CmpMLFOutput::WriteStaff( const WgStaff *staff )
 			last_is_clef = false;
 
 			bool ignore = false;
-			WgNote *cur = (WgNote*)&staff->m_elements[k];
+			MusNote *cur = (MusNote*)&staff->m_elements[k];
 			if (cur->val == CUSTOS)			
 			{
 				if ( m_ignore_custos ) // not safe because will ignore any alteration after a clef, even if not part of a key ...
@@ -173,14 +172,14 @@ bool CmpMLFOutput::WriteStaff( const WgStaff *staff )
 			}
 			
 			if (!ignore)
-				added = WriteNote( (WgNote*)&staff->m_elements[k] );
+				added = WriteNote( (MusNote*)&staff->m_elements[k] );
 			else
 				cur->m_cmp_flag = CMP_MATCH;
         }
 		else
 		{
 			bool ignore = false;
-			WgSymbole *cur = (WgSymbole*)&staff->m_elements[k];
+			MusSymbol *cur = (MusSymbol*)&staff->m_elements[k];
 			if (cur->flag == CLE)
 			{
 				last_is_clef = true;
@@ -198,7 +197,7 @@ bool CmpMLFOutput::WriteStaff( const WgStaff *staff )
 				last_is_clef = false;
 			
 			if (!ignore)
-				added = WriteSymbole( (WgSymbole*)&staff->m_elements[k] );
+				added = WriteSymbole( (MusSymbol*)&staff->m_elements[k] );
 			else
 				cur->m_cmp_flag = CMP_MATCH;
 		}
@@ -223,8 +222,8 @@ bool CmpMLFOutput::WriteStaff( const WgStaff *staff )
 // CmpMLFInput
 //----------------------------------------------------------------------------
 
-CmpMLFInput::CmpMLFInput( WgFile *file, wxString filename ) :
-    MLFInput( file, filename )
+CmpMLFInput::CmpMLFInput( MusFile *file, wxString filename ) :
+    MusMLFInput( file, filename )
 {
 }
 
@@ -256,7 +255,7 @@ bool CmpMLFInput::ReadLabelStr( wxString label )
 }
 
 
-WgStaff* CmpMLFInput::ImportFileInStaff( )
+MusStaff* CmpMLFInput::ImportFileInStaff( )
 {
 	wxString line;
 	if ( !ReadLine( &line )  || (line != "#!MLF!#" ))
@@ -264,12 +263,12 @@ WgStaff* CmpMLFInput::ImportFileInStaff( )
 		
 	m_cmp_pos = 50;
 
-	WgStaff *staff = new WgStaff();
+	MusStaff *staff = new MusStaff();
 	while ( ReadLine( &line ) && ReadLabelStr( line ) )
 	{
 		ReadLabel( staff );
 	}
-	WgStaff *staff_ut1 = GetNotUt1( staff );
+	MusStaff *staff_ut1 = GetNotUt1( staff );
 	delete staff;
 	staff_ut1->CheckIntegrity();
 	return staff_ut1;
@@ -279,7 +278,7 @@ WgStaff* CmpMLFInput::ImportFileInStaff( )
 // offset est la position x relative du label (p ex segment)
 // normalement donne par imPage si present
 
-bool CmpMLFInput::ReadLabel( WgStaff *staff )
+bool CmpMLFInput::ReadLabel( MusStaff *staff )
 {
 	bool is_note;
 	int pos = 0;
@@ -287,10 +286,10 @@ bool CmpMLFInput::ReadLabel( WgStaff *staff )
 
 	while ( ReadLine( &line ) &&  CmpMLFInput::IsElement( &is_note, &line, &pos ) )
 	{
-		WgElement *e = NULL;
+		MusElement *e = NULL;
 		if ( !is_note )
 		{
-			WgSymbole *s = CmpMLFInput::ConvertSymbole( line );
+			MusSymbol *s = CmpMLFInput::ConvertSymbole( line );
 			if ( s )
 			{
 				e = s;
@@ -300,7 +299,7 @@ bool CmpMLFInput::ReadLabel( WgStaff *staff )
 		}
 		else
 		{
-			WgNote *n = CmpMLFInput::ConvertNote( line );
+			MusNote *n = CmpMLFInput::ConvertNote( line );
 			if ( n )
 			{
 				e = n;
@@ -324,5 +323,4 @@ bool CmpMLFInput::ReadLabel( WgStaff *staff )
 // WDR: handler implementations for CmpMLFInput
 
 		#endif // AX_COMPARISON
-	#endif // AX_WG
 #endif // AX_RECOGNITION

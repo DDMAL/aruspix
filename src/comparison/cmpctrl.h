@@ -8,6 +8,9 @@
 #ifndef __cmpctrl_H__
 #define __cmpctrl_H__
 
+#ifdef AX_RECOGNITION
+	#ifdef AX_COMPARISON
+
 #if defined(__GNUG__) && ! defined(__APPLE__)
     #pragma interface "cmpctrl.cpp"
 #endif
@@ -27,7 +30,7 @@ class CmpBookItem;
 class CmpCollation;
 
 class BookFile;
-class ProgressDlg;
+class AxProgressDlg;
 
 // WDR: class declarations
 
@@ -134,7 +137,7 @@ public:
 	virtual void SaveDisplay( );
 	virtual void LoadDisplay( );
 	//
-	bool Collate( wxArrayPtrVoid params, ProgressDlg *dlg );
+	bool Collate( wxArrayPtrVoid params, AxProgressDlg *dlg );
 	//
 	CmpBookItem *GetSelectedBookItem();
 	CmpCollation *CmpCtrl::GetSelectedCollation( );
@@ -166,5 +169,8 @@ private:
 private:
     DECLARE_EVENT_TABLE()
 };
+
+	#endif //AX_COMPARISON
+#endif //AX_RECOGNITION
 
 #endif

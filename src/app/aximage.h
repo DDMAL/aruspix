@@ -12,7 +12,7 @@
     #pragma interface "aximage.h"
 #endif
 
-#include "defs.h"
+#include "axdefs.h"
 
 #ifndef WX_PRECOMP
     #include "wx/wx.h"

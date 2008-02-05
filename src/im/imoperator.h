@@ -16,7 +16,7 @@
     #include "wx/wx.h"
 #endif
 
-#include "app/progressdlg.h"
+#include "app/axprogressdlg.h"
 //struct _imImage;
 
 // IMLIB
@@ -30,7 +30,7 @@
 #include <im_math_op.h>
 #include <im_palette.h>
 
-#include "im_ext.h"
+#include "imext.h"
 
 #define MAX_STAVES 24
 #define STAVES_CONV_REDUCTION 2
@@ -79,7 +79,7 @@ public:
     
     // WDR: method declarations for ImOperator
     int GetError( ) { return m_error; }
-	void SetProgressDlg( ProgressDlg *dlg );
+	void SetProgressDlg( AxProgressDlg *dlg );
     void SetMapImage( _imImage *image );
     //wxString GetShortName() { return m_shortname; }
     
@@ -111,21 +111,21 @@ protected:
 
 protected:
     // WDR: handler declarations for ImOperator
-    ProgressDlg *m_progressDlg;
+    AxProgressDlg *m_progressDlg;
     int m_error;
 
-    _imImage *m_imMap;
-    _imImage *m_im;
-    _imImage *m_imMain;
-    _imImage *m_imTmp;
-    _imImage *m_imTmp2;
-    _imImage *m_imMask;
-    _imImage *m_imAlign;
+    _imImage *m_opImMap;
+    _imImage *m_opIm;
+    _imImage *m_opImMain;
+    _imImage *m_opImTmp1;
+    _imImage *m_opImTmp2;
+    _imImage *m_opImMask;
+    _imImage *m_opImAlign;
 
-    int *m_hist;
-    int *m_lines1;
-    int *m_lines2;
-    int *m_cols1;
+    int *m_opHist;
+    int *m_opLines1;
+    int *m_opLines2;
+    int *m_opCols1;
 
 
 public: // DEBUG variables

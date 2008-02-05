@@ -8,6 +8,8 @@
 #ifndef __recfile_H__
 #define __recfile_H__
 
+#ifdef AX_RECOGNITION
+
 #if defined(__GNUG__) && ! defined(__APPLE__)
     #pragma interface "recfile.cpp"
 #endif
@@ -19,7 +21,7 @@
 #include "app/axfile.h"
 
 class ImPage;
-class WgFile;
+class MusFile;
 class RecEnv;
 class RecTypModel;
 class RecMusModel;
@@ -51,14 +53,14 @@ public:
 	void RecFile::GetImage1( AxImage *image );
 	bool RecFile::CancelRecognition( bool ask_user ); // remove all recognition files
 	// functor
-	bool RecFile::Preprocess( wxArrayPtrVoid params, ProgressDlg *dlg );
-	bool RecFile::Recognize( wxArrayPtrVoid params, ProgressDlg *dlg );
-    bool RecFile::Decode( wxArrayPtrVoid params, ProgressDlg *dlg );
-	bool RecFile::RealizeFromMLF( wxArrayPtrVoid params, ProgressDlg *dlg );
-	bool RecFile::GenerateMFC( wxArrayPtrVoid params, ProgressDlg *dlg );
+	bool RecFile::Preprocess( wxArrayPtrVoid params, AxProgressDlg *dlg );
+	bool RecFile::Recognize( wxArrayPtrVoid params, AxProgressDlg *dlg );
+    bool RecFile::Decode( wxArrayPtrVoid params, AxProgressDlg *dlg );
+	bool RecFile::RealizeFromMLF( wxArrayPtrVoid params, AxProgressDlg *dlg );
+	bool RecFile::GenerateMFC( wxArrayPtrVoid params, AxProgressDlg *dlg );
     //int DoCorrelation( ImPage *imPage );
 	// getters
-	WgFile *RecFile::GetWgFile() { return m_wgFilePtr; }
+	MusFile *RecFile::GetWgFile() { return m_musFilePtr; }
 	ImPage *RecFile::GetImPage() { return m_imPagePtr; }
 	//RecTypModel *RecFile::GetTypModel() { return m_typModelPtr; }
 	
@@ -74,7 +76,7 @@ public:
     // WDR: member variable declarations for RecFile
 	RecEnv *m_envPtr;
 	ImPage *m_imPagePtr;
-	WgFile *m_wgFilePtr;
+	MusFile *m_musFilePtr;
 	// filename
 	// models
 	//RecTypModel *m_typModelPtr; // not used yet
@@ -103,5 +105,7 @@ private:
     // WDR: handler declarations for RecFile
 
 };
+
+#endif //AX_RECOGNITION
 
 #endif

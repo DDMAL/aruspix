@@ -5,11 +5,10 @@
 // Copyright (c) Laurent Pugin. All rights reserved.   
 /////////////////////////////////////////////////////////////////////////////
 
-#ifndef __WG_CMPMLF_H__
-#define __WG_CMPMLF_H__
+#ifndef __MUS_CMPMLF_H__
+#define __MUS_CMPMLF_H__
 
 #ifdef AX_RECOGNITION
-	#ifdef AX_WG
 		#ifdef AX_COMPARISON
 
 #ifdef __GNUG__
@@ -20,7 +19,7 @@
     #include "wx/wx.h"
 #endif
 
-#include "wg/iomlf.h"
+#include "mus/musiomlf.h"
 
 
 // WDR: class declarations
@@ -30,7 +29,7 @@
 // CmpMLFSymb
 //----------------------------------------------------------------------------
 
-class CmpMLFSymb: public MLFSymbol
+class CmpMLFSymb: public MusMLFSymbol
 {
 public:
     // constructors and destructors
@@ -64,22 +63,22 @@ private:
 // CmpMLFOutput
 //----------------------------------------------------------------------------
 
-class CmpMLFOutput: public MLFOutput
+class CmpMLFOutput: public MusMLFOutput
 {
 public:
     // constructors and destructors
-    CmpMLFOutput( WgFile *file, wxString filename, wxString model_symbole_name = "CmpSymbol" );
-	CmpMLFOutput( WgFile *file, int fd, wxString filename, wxString model_symbole_name = "CmpSymbol" );
-	//CmpMLFOutput( WgFile *file, wxFile *wxfile, wxString filename, wxString model_symbole_name = "CmpSymbol" );
+    CmpMLFOutput( MusFile *file, wxString filename, wxString model_symbole_name = "CmpSymbol" );
+	CmpMLFOutput( MusFile *file, int fd, wxString filename, wxString model_symbole_name = "CmpSymbol" );
+	//CmpMLFOutput( MusFile *file, wxFile *wxfile, wxString filename, wxString model_symbole_name = "CmpSymbol" );
     virtual ~CmpMLFOutput();
     
     // WDR: method declarations for CmpMLFOutput
-	//bool ExportFile( WgFile *file, wxString filename);	// replace  wgfile set in the constructor
+	//bool ExportFile( MusFile *file, wxString filename);	// replace  musfile set in the constructor
 														// and export it
 														// allow exportation of several files in one mlf
 														
-    //virtual bool WritePage( const WgPage *page, bool write_header = false );
-    virtual bool WriteStaff( const WgStaff *staff );
+    //virtual bool WritePage( const MusPage *page, bool write_header = false );
+    virtual bool WriteStaff( const MusStaff *staff );
 	// output methods
 	virtual void StartLabel( );
 	virtual void EndLabel( );
@@ -101,16 +100,16 @@ private:
 // CmpMLFInput
 //----------------------------------------------------------------------------
 
-class CmpMLFInput: public MLFInput
+class CmpMLFInput: public MusMLFInput
 {
 public:
     // constructors and destructors
-    CmpMLFInput( WgFile *file, wxString filename );
+    CmpMLFInput( MusFile *file, wxString filename );
     virtual ~CmpMLFInput();
     
     // WDR: method declarations for CmpMLFInput
-    virtual WgStaff *ImportFileInStaff(  );
-    virtual bool ReadLabel( WgStaff *staff );
+    virtual MusStaff *ImportFileInStaff(  );
+    virtual bool ReadLabel( MusStaff *staff );
 	// specific
 	bool ReadLabelStr( wxString label );
     
@@ -125,7 +124,6 @@ private:
 };
 
 		#endif // AX_COMPARISON
-	#endif // AX_WG
 #endif // AX_RECOGNITION
 
 #endif
