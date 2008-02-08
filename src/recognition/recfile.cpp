@@ -20,6 +20,7 @@
 
 #include "wx/file.h"
 #include "wx/filename.h"
+#include "wx/txtstrm.h"
 
 #include "recfile.h"
 #include "rec.h"
@@ -292,6 +293,48 @@ bool RecFile::CancelRecognition( bool ask_user )
 	m_isModified = true;
 	return true;
 	
+}
+
+void RecFile::WriteMLFWP(  )
+{
+	if ( !m_isRecognized )
+		return;
+
+	MusMLFOutputWP *mlfoutputwp = new MusMLFOutputWP( m_musFilePtr, m_basename + "pagewp.mlf" );
+	mlfoutputwp->m_writePosition = true;
+	//mlfoutputwp->CreateSubFile();
+	mlfoutputwp->WritePage( &m_musFilePtr->m_pages[0] , "" );//wxString("staff") );
+	delete mlfoutputwp;
+	
+	wxFileInputStream input( m_basename + "pagewp.mlf" );
+	if ( !input.Ok() )
+		return;
+		
+	wxTextInputStream text( input );
+	wxFile output;
+
+	while( !input.Eof() )
+	{
+		wxString str = text.ReadLine();
+		if ( str.IsEmpty() || ( str[0]=='#' ) )
+			continue; // skip line
+		else if ( str[0]=='"' )
+		{
+			wxASSERT( !output.IsOpened() );
+			wxString out = str.AfterLast('_').BeforeLast('.');
+			output.Open( m_basename + "staff_" + out + ".nplab", wxFile::write );
+		}
+		else if ( str[0]=='.' )
+		{
+			wxASSERT( output.IsOpened() );
+			output.Close();
+		}
+		else // write content
+		{
+			wxASSERT( output.IsOpened() );
+			output.Write( str + "\n" );
+		}
+	}
 }
 
 // functors

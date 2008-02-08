@@ -752,13 +752,16 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/Carbon.framework/Headers/Carbon.h";
 				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
+				GCC_WARN_UNUSED_FUNCTION = NO;
+				GCC_WARN_UNUSED_PARAMETER = NO;
+				GCC_WARN_UNUSED_VARIABLE = NO;
 				HEADER_SEARCH_PATHS = (
 					"$(ARUSPIX)/src",
 					"$(ARUSPIX_IMLIB)/include",
-					"$(ARUSPIX_TORCH)/include",
 					"$(ARUSPIX_WX)/osx-static-debug/lib/wx/include/mac-ansi-debug-static-2.8",
 					"$(ARUSPIX_WX)/include",
 					"$(ARUSPIX_WX)/contrib/include",
+					"$(ARUSPIX_TORCH)/include",
 				);
 				INFOPLIST_FILE = "Aruspix-Info.plist";
 				INSTALL_PATH = "$(USER_APPS_DIR)";

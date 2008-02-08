@@ -37,7 +37,7 @@
 		576ED8480AB223D8007F2844 /* initd */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = initd; sourceTree = BUILT_PRODUCTS_DIR; };
 		57A0BC7F0ABF1901001825D5 /* trainerd */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = trainerd; sourceTree = BUILT_PRODUCTS_DIR; };
 		57A0BC810ABF199C001825D5 /* Trainer.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = Trainer.cpp; path = ../src/torch/Trainer.cpp; sourceTree = SOURCE_ROOT; };
-		A51FEC000A02C15800ACE377 /* decoderd */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = decoderd; sourceTree = BUILT_PRODUCTS_DIR; };
+		A51FEC000A02C15800ACE377 /* decoderd */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = "compiled.mach-o.executable"; path = decoderd; sourceTree = BUILT_PRODUCTS_DIR; };
 		A51FEC180A02C1C900ACE377 /* Decoder.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = Decoder.cpp; sourceTree = "<group>"; };
 		A59120010A1278D400D64611 /* ngramd */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = ngramd; sourceTree = BUILT_PRODUCTS_DIR; };
 		A59120030A1278F100D64611 /* LMNGramBuilder.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = LMNGramBuilder.cpp; path = ../src/torch/LMNGramBuilder.cpp; sourceTree = SOURCE_ROOT; };

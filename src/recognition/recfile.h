@@ -52,6 +52,7 @@ public:
 	void RecFile::GetImage0( AxImage *image );
 	void RecFile::GetImage1( AxImage *image );
 	bool RecFile::CancelRecognition( bool ask_user ); // remove all recognition files
+	void RecFile::WriteMLFWP( ); // write MLF Without Pitch using the current page content
 	// functor
 	bool RecFile::Preprocess( wxArrayPtrVoid params, AxProgressDlg *dlg );
 	bool RecFile::Recognize( wxArrayPtrVoid params, AxProgressDlg *dlg );

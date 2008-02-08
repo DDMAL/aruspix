@@ -1155,7 +1155,17 @@ bool MusMLFOutputWP::WriteNote(  MusNote *note )
 		mlfsb = (MusMLFSymbol*)wxCreateDynamicObject( m_model_symbole_name );
 		int flag = 0;
 		// hampe
-		if ((note->q_auto == false) && (note->sil != _SIL) && ((note->val ==  LG) || (note->val > RD )))
+		// major different without pitch
+		// the rule is here that flag stem is on if stem is up, whatever the pitch
+		bool stem_up = false;
+		if ((note->sil != _SIL) && ((note->val ==  LG) || (note->val > RD )))
+		{
+			if ((note->q_auto == true) && (oct * 7 + code <= 33)) // G4 or lower
+				stem_up = true;
+			else if ((note->q_auto == false) && (oct * 7 + code > 33)) // higher than G4
+				stem_up = true;
+		}	
+		if (stem_up)
 			flag += NOTE_STEM;
 		
 		// ligature
@@ -1171,10 +1181,13 @@ bool MusMLFOutputWP::WriteNote(  MusNote *note )
 		//silence
 		if (note->sil == _SIL)
 		{
+			// major difference, as we ignore the distinction between RD and BL rests
+			// they are both considered as RD
+			unsigned char sil_val = (note->val == BL) ? RD : note->val;
 			if ( oct % 2 )
-				mlfsb->SetValue( TYPE_REST, "", note->xrel, note->val, _sil0[code],oct + _oct0[code]);	
+				mlfsb->SetValue( TYPE_REST, "", note->xrel, sil_val, _sil0[code],oct + _oct0[code]);	
 			else
-				mlfsb->SetValue( TYPE_REST, "", note->xrel, note->val, _sil1[code],oct + _oct1[code]);
+				mlfsb->SetValue( TYPE_REST, "", note->xrel, sil_val, _sil1[code],oct + _oct1[code]);
 		}
 		else
 			mlfsb->SetValue( TYPE_NOTE, "", note->xrel, note->val, _note[code],oct, flag);

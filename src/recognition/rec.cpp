@@ -520,8 +520,14 @@ void RecEnv::ParseCmd( wxCmdLineParser *parser )
         wxString file = parser->GetParam( 0 );
 		                        
         // upgrade file version
-        m_recFilePtr->Open( file );
-        m_recFilePtr->Modify( );
+        //m_recFilePtr->Open( file );
+        //m_recFilePtr->Modify( );
+        //m_recFilePtr->Save( false );
+		
+		// generate special ground-truth
+		m_recFilePtr->Open( file );
+		m_recFilePtr->Modify( );
+        m_recFilePtr->WriteMLFWP( );
         m_recFilePtr->Save( false );
         
         /*
