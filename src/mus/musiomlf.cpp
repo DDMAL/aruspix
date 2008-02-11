@@ -576,18 +576,17 @@ void MusMLFOutput::EndLabel( int offsets[], int end_points[] )
 		if ( symbole_label == "" ) // skip empty labels
 			continue;
 		int pos;
-		if ( m_writePosition )
+		if ( m_writePosition )  // this is a basic position, without checking overlaps between symbols 
+								// nor overflow
 		{
 			pos = m_symboles[i].GetPosition();
 			if ( offsets )
 				pos -= offsets[m_segment_i];
-				
-			int next = pos * 1;
-			//if ( m_types.GetCount() > 0 ) // types loaded
-			//	next = pos + m_types.GetWidth( &m_symboles[i] ) * 1;
-				
-				
-			symbole << ( pos * 1 ) << " " << ( next ) << " "; // !!!!!!  VERIFIER !!!!!
+			if ( pos < 0 )
+				pos = 0;
+			
+			int width = pos + m_symboles[i].GetWidth();
+			symbole << ( pos ) << " " << ( width ) << " "; // !!!!!!  VERIFIER !!!!!
 		}
 		// si verifier dans le dictionnaire, tenir jour la liste dans 
 		if ( m_dict.Index( symbole_label ) == wxNOT_FOUND )
