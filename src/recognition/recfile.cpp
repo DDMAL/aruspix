@@ -284,7 +284,7 @@ bool RecFile::CancelRecognition( bool ask_user )
 		wxRemoveFile( names[i] );
 	wxRemoveFile( m_basename + "rec.mlf" );
 	wxRemoveFile( m_basename + "rec.xml" );
-	wxRemoveFile( m_basename + "mfc.input" );
+	wxRemoveFile( m_basename + MFC + ".input" );
 	wxRemoveFile( m_basename + "page.wwg" );
 	wxRemoveFile( m_basename + "page.mlf" );
 	wxRemoveFile( m_basename + "staves.tif" );
@@ -460,7 +460,7 @@ bool RecFile::Recognize( wxArrayPtrVoid params, AxProgressDlg *dlg )
 		wxRemoveFile( names[i] );
 	wxRemoveFile( m_basename + "rec.mlf" );
 	wxRemoveFile( m_basename + "rec.xml" );
-	wxRemoveFile( m_basename + "mfc.input" );
+	wxRemoveFile( m_basename + MFC + ".input" );
 	wxRemoveFile( m_basename + "staves.tif" );
 		
     if ( !failed ) 
@@ -518,7 +518,7 @@ bool RecFile::Decode( wxArrayPtrVoid params, AxProgressDlg *dlg )
 	
 
 	wxString log = wxGetApp().m_logDir + "/decoder.log";
-	wxString input = m_basename + "mfc.input";
+	wxString input = m_basename + MFC + ".input";
 	input.Replace( "\\/", "/" );
 	wxString rec_models = typModelPtr->m_basename + "hmm";
 	wxString rec_dict = typModelPtr->m_basename + "dic";
@@ -596,7 +596,7 @@ bool RecFile::Decode( wxArrayPtrVoid params, AxProgressDlg *dlg )
 	
 	wxString log = "\"" + wxGetApp().m_logDir + "/decoder.log\"";
 
-	wxString input = m_basename + "mfc.input";
+	wxString input = m_basename + MFC + ".input";
 	input.Replace( "\\/", "/" );
 	
 	wxString rec_models = typModelPtr->m_basename + "hmm";

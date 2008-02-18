@@ -525,9 +525,22 @@ void RecEnv::ParseCmd( wxCmdLineParser *parser )
         //m_recFilePtr->Save( false );
 		
 		// generate special ground-truth
+		/*
 		m_recFilePtr->Open( file );
 		m_recFilePtr->Modify( );
-        m_recFilePtr->WriteMLFWP( );
+		m_recFilePtr->WriteMLFWP( );
+        m_recFilePtr->Save( false );
+		*/
+		// HACK : force MFC generation here
+		m_recFilePtr->Open( file );
+		m_recFilePtr->Modify( );
+		wxArrayPtrVoid mfc_params;
+		wxString mfcfile = "";
+		bool merged = false;
+		mfc_params.Add(  &merged );
+		mfc_params.Add( &mfcfile );
+		AxProgressDlg dlg( m_framePtr, -1, _("Recognition") );
+		m_recFilePtr->GenerateMFC( mfc_params, &dlg ); // 2 operations
         m_recFilePtr->Save( false );
         
         /*
@@ -813,7 +826,7 @@ void RecEnv::OnExportAxmus( wxCommandEvent &event )
         model.Save();
 }
 
-//#define META_BATCH3
+#define META_BATCH3
 
 void RecEnv::OnExportAxtyp( wxCommandEvent &event )
 {
@@ -1205,7 +1218,12 @@ void RecEnv::BatchAdaptation( )
     while ( cont )
     {
         wxLogMessage(filename);
-        paths.Clear();
+		if ( filename == "Pages_01")
+		{
+			cont = dir.GetNext(&filename);
+			continue;
+        }
+		paths.Clear();
         filenames.Clear();
         nbOfFiles = wxDir::GetAllFiles( dir.GetName() + "/" + filename, &paths, "*.axz" );
     
@@ -1249,7 +1267,7 @@ void RecEnv::BatchAdaptation( )
         dlg->AxShowModal( ); // stop process  ( failed ???? )
         dlg->Destroy();
     
-        model.SaveAs( filename + ".axz" );
+        model.SaveAs( filename + ".axtyp" );
     
         cont = dir.GetNext(&filename);
     }

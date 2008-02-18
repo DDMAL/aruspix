@@ -145,6 +145,9 @@ bool RecModel::AddFiles( wxArrayPtrVoid params, AxProgressDlg *dlg )
 RecTypModel::RecTypModel( wxString filename ) :
 	RecModel( filename, AX_FILE_TYP_MODEL )
 {
+	// this is just a memo not to forget changes when hacking the code...
+	//if ( MFC != "mfc" )
+	//	wxLogWarning("Non standrad MFC extension" );
 }
 
 
@@ -209,12 +212,11 @@ void RecTypModel::UpdateInputFiles( )
 	m_nbfiles = (int)names.GetCount();
 	for( int i = 0; i < (int)names.GetCount(); i++ )
 	{
-		mfcs.Write(	names[i].BeforeLast('.') + ".mfc\n" );
+		mfcs.Write(	names[i].BeforeLast('.') + "." + MFC + "\n" );
 		labs.Write(	names[i].BeforeLast('.') + ".lab\n" );
 		alis.Write(	names[i].BeforeLast('.') + ".ali\n" );
 	}
 
-	
 	mfcs.Close();
 	labs.Close();
 	alis.Close();
@@ -253,7 +255,7 @@ bool RecTypModel::AddFile( wxArrayPtrVoid params, AxProgressDlg *dlg )
 	dlg->SetOperation( operation );
 	
 	wxArrayString names;
-	wxDir::GetAllFiles( recFile.m_basename, &names , "*.mfc", wxDIR_FILES );
+	wxDir::GetAllFiles( recFile.m_basename, &names , wxString("*.") + MFC, wxDIR_FILES );
 	
 	// counter
     int counter = dlg->GetCounter();
@@ -312,7 +314,7 @@ bool RecTypModel::Commit( AxProgressDlg *dlg )
 			nbfiles++;
 			imCounterInc( dlg->GetCounter() );
 			
-			wxASSERT_MSG( wxFileExists( m_basename + out + ".mfc" ), "MFC file is missing" );
+			wxASSERT_MSG( wxFileExists( m_basename + out + "." MFC ), "MFC file is missing" );
 		}
 		else if ( str[0]=='.' )
 		{
@@ -349,7 +351,7 @@ bool RecTypModel::Commit( AxProgressDlg *dlg )
 			output.Open( m_basename + out + ".ali", wxFile::write );
 			nbfiles++;
 			imCounterInc( dlg->GetCounter() );
-			wxASSERT_MSG( wxFileExists( m_basename + out + ".mfc" ), "MFC file is missing" );
+			wxASSERT_MSG( wxFileExists( m_basename + out + "." + MFC ), "MFC file is missing" );
 		}
 		else if ( str[0]=='.' )
 		{

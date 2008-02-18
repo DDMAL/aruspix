@@ -22,6 +22,8 @@
 #include "imstaffsegment.h"
 #include "impage.h"
 
+#include "app/axapp.h"
+
 // WDR: class implementations
 
 // hauteur de la zone de correlation pour le calcul de la courbure de staff
@@ -1192,13 +1194,13 @@ void ImStaffSegment::CalcFeatures(const int staff, const int segment, const int 
 	
 	wxString filename = *(wxString*)params[3];
 	if ( segment == -1 ) // merged segment : change name to avoid confusion
-		filename << "." << staff << ".0.mfc"; 
+		filename << "." << staff << ".0." << MFC; 
 			// force 0, but rewrite the mfc file( see below ). 
 			// Ne marche que dans un sens... une autre solution serait de ne pas mettre le no de segment dans le fichier
 			// et de simplement copier le fichier si identique (staves.0.0.mfc devient staves.0.mfc), mais cette solution
 			// doit etre synchronizee avec output.mlf (ajouter une option merged pour les nom de fichiers .lab)
 	else
-		filename << "_" << staff << "." << segment <<".mfc";
+		filename << "_" << staff << "." << segment << "." << MFC;
 	wxString mfc_name = filename;
 	mfc_name.Replace( "\\/", "/" );
 	wxFile *file = (wxFile*)params[4];
@@ -1269,7 +1271,7 @@ void ImStaffSegment::CalcFeatures(const int staff, const int segment, const int 
 	//imImageDestroy( imdebug );
 
 	//wxString filename = *(wxString*)params[3];
-	//filename << "." << staff << "." << segment <<".mfc";
+	//filename << "." << staff << "." << segment << "." << MFC;
 	this->WriteMFC( filename, samples, step*100, FEATURES_COUNT, values );
 
 	free( values );

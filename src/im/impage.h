@@ -118,6 +118,8 @@ public:
     // WDR: member variable declarations for ImPage
 	_imImage *m_img0; // processed image, with pre-classification
 	_imImage *m_img1; // processed image, grascale (alternative)
+	// HACK : page with removed staves
+	_imImage *m_img2; // processed image, removed staves
 	_imImage *m_selection; // buffer used to change classification
 	wxPoint m_selection_pos;
 	bool *m_isModified;

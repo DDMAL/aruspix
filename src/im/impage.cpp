@@ -69,6 +69,7 @@ ImPage::ImPage( wxString path, bool *isModified ) :
 	m_path = path;
 	m_img0 = NULL;
 	m_img1 = NULL;
+	m_img2 = NULL;
 	m_selection = NULL;
 	m_isModified = 	isModified;
     Clear( );
@@ -80,6 +81,8 @@ ImPage::~ImPage()
 		ImageDestroy( &m_img0 );
 	if ( m_img1 )
 		ImageDestroy( &m_img1 );
+	if ( m_img2 )
+		ImageDestroy( &m_img2 );
 	if ( m_selection )
 		ImageDestroy( &m_selection );
 }
@@ -110,13 +113,19 @@ bool ImPage::Load( TiXmlElement *file_root )
 
 	this->Clear();
 	bool failed = false;
-
+	
     if ( !failed && wxFileExists( m_path + "img0.tif" ) )
 		failed = !Read( m_path + "img0.tif", &m_img0, 0 );
 
     if ( !failed && wxFileExists( m_path + "img1.tif" ) )
 		failed = !Read( m_path + "img1.tif", &m_img1, 0 );
-
+		
+	// HACK : load images without staves
+    if ( !failed && wxFileExists( m_path + "img2.tif" ) )
+	{
+		failed = !Read( m_path + "img2.tif", &m_img2, 0 );	
+		imProcessNegative( m_img2, m_img2 );
+	}
 	
     //TiXmlDocument dom( ( m_path + "img0.xml" ) .c_str() );
 	
@@ -2310,6 +2319,10 @@ bool ImPage::GenerateMFC( bool merged, wxString output_dir )
 {
     wxASSERT_MSG( m_progressDlg, "Progress dialog cannot be NULL");
 	wxASSERT_MSG( m_img0, "Img0 cannot be NULL");
+	
+	// this is just a memo not to forget changes when hacking the code...
+	if ( MFC != "mfc" )
+		wxLogWarning("Non standrad MFC extension" );
 
     if (!m_progressDlg->SetOperation( _("Prepare staves ...") ) )
         return this->Terminate( ERR_CANCELED );
@@ -2323,7 +2336,9 @@ bool ImPage::GenerateMFC( bool merged, wxString output_dir )
 	if ( m_staff_height <= 0 )
 		return false;
 
-	this->SetMapImage( m_img0 );
+	//this->SetMapImage( m_img0 );
+	// HACK ; removed staves
+	this->SetMapImage( m_img2 );
 
     if ( !GetImagePlane( &m_opImMain ) )
         return false;
@@ -2334,7 +2349,7 @@ bool ImPage::GenerateMFC( bool merged, wxString output_dir )
     imCounterTotal( counter, count, "Prepare staves ..." );
 
 	// calculer les features (ImStaffSegment::CalcFeatures)
-	wxString input = output_dir + "mfc.input";
+	wxString input = output_dir + MFC + ".input";
 	wxString filename = output_dir + "staff";
 	wxFile finput( input, wxFile::write );
 	if ( !finput.IsOpened() )
