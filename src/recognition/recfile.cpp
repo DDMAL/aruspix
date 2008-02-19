@@ -474,7 +474,7 @@ bool RecFile::Decode( wxArrayPtrVoid params, AxProgressDlg *dlg )
 	input.Replace( "\\/", "/" );
 	wxString rec_models = typModelPtr->m_basename + "hmm";
 	wxString rec_dict = typModelPtr->m_basename + "dic";
-	wxString rec_lm = typModelPtr->m_basename;
+	wxString rec_lm = musModelPtr->m_basename + "ngram.gram";
 	wxString rec_output = m_basename + "rec.mlf";
 	// cannot be changed from interface
 	double rec_phone_pen = RecEnv::s_rec_phone_pen;
@@ -571,13 +571,9 @@ bool RecFile::Decode( wxArrayPtrVoid params, AxProgressDlg *dlg )
 
 	if ( rec_lm_order && !rec_lm.IsEmpty() )
 	{
-		args << " -lm_fname " << musModelPtr->m_basename;
+		args << " -lm_fname " << rec_lm;
 		args << " -lm_ngram_order " << rec_lm_order;
 		args << " -lm_scaling_factor " << rec_lm_scaling;
-		args << " -cm_no_symb";
-		args << " -cm_no_duration";
-		args << " -cm_no_pitch";
-		args << " -cm_no_interval";
 	}
 	
 	if ( rec_int_prune != 0.0 )
