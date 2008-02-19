@@ -34,6 +34,8 @@ char *data_fname=NULL ;
 char *log_fname=NULL ;
 char *reload_data_fname=NULL ;
 
+char *end_fname=NULL ; // file to notify the end of the process
+
 bool dec_verbose=false ;
 
 
@@ -65,6 +67,8 @@ void processCmdLine( CmdLine *cmd , int argc , char *argv[] )
                         "the data output file" ) ;
 	cmd->addSCmdOption( "-log_fname" , &log_fname , "",
                         "the log output file, standard output if none" ) ;
+	cmd->addSCmdOption( "-end_fname" , &end_fname , "", 
+						"File used to notify the end of the process. Used to avoid a bug in Mac 10.5 that cannot be fixed" ) ;
 
     cmd->read( argc , argv ) ;
         
@@ -106,6 +110,12 @@ int main( int argc , char *argv[] )
 		ngram.reloadFile( reload_data_fname );
 		
 	ngram.loadFile( input_wrdtrns_fname, output_fname, data_fname);
+	
+	if ( strlen( end_fname ) )
+	{
+		FILE *out_fd = fopen( end_fname, "w"  );
+		fclose( out_fd );
+	}
  
     return(0) ;
 }

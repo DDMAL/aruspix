@@ -84,6 +84,7 @@ int main(int argc, char **argv)
 	char *model_file_out;
 	char *dir_name;
 	char *log_fname;
+	char *end_fname;
 
 	real accuracy;
 	real threshold;
@@ -175,6 +176,8 @@ int main(int argc, char **argv)
 	cmd.addText("\nMisc Options:");
 	cmd.addSCmdOption("-dir", &dir_name, ".", "directory to save measures");
 	cmd.addSCmdOption( "-log_fname" , &log_fname , "", "the log output file, standard output if none" ) ;
+	cmd.addSCmdOption( "-end_fname" , &end_fname , "", 
+			"File used to notify the end of the process. Used to avoid a bug in Mac 10.5 that cannot be fixed" ) ;
 
 	// Read the command line
 	cmd.read(argc, argv);
@@ -268,5 +271,12 @@ int main(int argc, char **argv)
 		fclose( out_fd );
 
 	delete allocator;
+	
+	if ( strlen( end_fname ) )
+	{
+		out_fd = fopen( end_fname, "w"  );
+		fclose( out_fd );
+	}	
+	
 	return(0);
 }

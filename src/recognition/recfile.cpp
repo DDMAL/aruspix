@@ -29,7 +29,7 @@
 #include "im/imstaffsegment.h"
 
 #include "app/axapp.h"
-//#include "app/axprocess.h"
+#include "app/axprocess.h"
 
 #include "mus/muspage.h"
 #include "mus/musstaff.h"
@@ -470,7 +470,6 @@ bool RecFile::Decode( wxArrayPtrVoid params, AxProgressDlg *dlg )
 	double rec_lm_scaling =  *(double*)params[4];
 	wxString rec_wrdtrns =  *(wxString*)params[5];
 	
-	wxString log = wxGetApp().m_logDir + "/decoder.log";
 	wxString input = m_basename + "mfc.input";
 	input.Replace( "\\/", "/" );
 	wxString rec_models = typModelPtr->m_basename + "hmm";
@@ -481,6 +480,9 @@ bool RecFile::Decode( wxArrayPtrVoid params, AxProgressDlg *dlg )
 	double rec_phone_pen = RecEnv::s_rec_phone_pen;
 	double rec_int_prune = RecEnv::s_rec_int_prune;
 	double rec_word_pen = RecEnv::s_rec_word_pen;
+	
+	/*
+	wxString log = wxGetApp().m_logDir + "/decoder.log";
 	
 	MlDecoder *decoder = new MlDecoder( input, rec_models, rec_dict );
 
@@ -516,8 +518,8 @@ bool RecFile::Decode( wxArrayPtrVoid params, AxProgressDlg *dlg )
 	decoder->Create();
 	decoder->Run();
 	
-	wxMilliSleep( 10000 );
-	/*
+	//wxMilliSleep( 10000 );
+	
 	while  ( decoder->IsAlive()  )
 	{
 		wxMilliSleep( 200 );
@@ -531,7 +533,71 @@ bool RecFile::Decode( wxArrayPtrVoid params, AxProgressDlg *dlg )
 		}
 	}
 	*/
-	/*
+	
+#ifdef __WXMSW__
+	#if defined(_DEBUG)
+		wxString cmd = "DecoderD.exe";
+	#else
+		wxString cmd = "Decoder.exe";
+	#endif   
+#elif __WXGTK__
+	#if defined(__DEBUG__)
+		wxString cmd = "decoderd";
+	#else
+		wxString cmd = "decoder";
+	#endif   
+#elif __WXMAC__
+	#ifdef __AXDEBUG__
+		wxString cmd = "decoderd";
+	#else
+		wxString cmd = "decoder";
+	#endif   
+#endif
+
+	wxString args = " ";
+	wxString log = "\"" + wxGetApp().m_logDir + "/decoder.log\"";
+	wxString end = wxGetApp().m_workingDir + "end_process";
+	wxRemoveFile( end );
+	
+	args << " -log_fname " << log.c_str();
+	args << " -end_fname " << end.c_str();
+	args << " -am_models_fname " << rec_models.c_str();
+	args << " -am_sil_phone \"{s}\" ";
+	args << " -am_phone_del_pen " << rec_phone_pen;
+
+	args << " -lex_dict_fname " << rec_dict.c_str();
+
+	if ( rec_lm_order && !rec_lm.IsEmpty() )
+	{
+		args << " -lm_fname " << musModelPtr->m_basename;
+		args << " -lm_ngram_order " << rec_lm_order;
+		args << " -lm_scaling_factor " << rec_lm_scaling;
+		args << " -cm_no_symb";
+		args << " -cm_no_duration";
+		args << " -cm_no_pitch";
+		args << " -cm_no_interval";
+	}
+	
+	if ( rec_int_prune != 0.0 )
+		args << " -dec_int_prune_window " << rec_int_prune;
+		
+	if ( rec_word_pen != 0.0 )
+		args << " -dec_word_entr_pen " << rec_word_pen;
+
+	if ( rec_delayed )
+		args << " -dec_delayed_lm";
+
+	args << " -input_fname " << input.c_str();
+	
+	if ( !rec_output.IsEmpty() )
+		args << " -output_fname " << rec_output.c_str();
+
+	if ( !rec_wrdtrns.IsEmpty() )
+		args << " -wrdtrns_fname " << rec_wrdtrns.c_str();
+
+	wxLogDebug(args);
+	//printf(args.c_str());
+
 	if (!dlg->SetOperation( _("Recognition...") ) )
 		return this->Terminate( ERR_CANCELED );
 
@@ -542,7 +608,16 @@ bool RecFile::Decode( wxArrayPtrVoid params, AxProgressDlg *dlg )
 		process->Detach();
 		process->m_deleteOnTerminate = false;
 		int pid = process->GetPid();
+#ifdef __POWERPC__  & __WXMAC__
+		// on PPC machine, from Leopard (10.5), end detection of wxProcess does not work
+		// Instead, an 'end_file' is written by the external process to enable the end of 
+		// the task to be detected. This is not optimal as the file won't be written if the
+		// process fails.
+		wxLogDebug("AxProcess end detetion with a file");
+		while  ( !wxFileExists( end ) )
+#else
 		while  ( process->GetPid() == pid )
+#endif
 		{
 			wxMilliSleep( 200 );
 			if( !dlg->IncTimerOperation( ) )
@@ -562,7 +637,7 @@ bool RecFile::Decode( wxArrayPtrVoid params, AxProgressDlg *dlg )
 	}
 	dlg->EndTimerOperation( TIMER_DECODING );
 	delete process;
-	*/
+
 
 
 	/*Torch::DiskXFile::setBigEndianMode() ;
