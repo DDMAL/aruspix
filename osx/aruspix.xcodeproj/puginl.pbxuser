@@ -643,7 +643,7 @@
 		fRef = A585248F0A1B9604002D9D8A /* recfile.cpp */;
 		name = "recfile.cpp: mlfinput";
 		rLen = 0;
-		rLoc = 20075;
+		rLoc = 20080;
 		rType = 0;
 		vrLen = 2290;
 		vrLoc = 16135;
@@ -673,7 +673,7 @@
 		fRef = A585248F0A1B9604002D9D8A /* recfile.cpp */;
 		name = "recfile.cpp: mlfinput";
 		rLen = 0;
-		rLoc = 20075;
+		rLoc = 20080;
 		rType = 0;
 		vrLen = 2290;
 		vrLoc = 16135;
@@ -798,7 +798,7 @@
 		comments = "error: 'class AxApp' has no member named 'm_workDir'";
 		fRef = A585248F0A1B9604002D9D8A /* recfile.cpp */;
 		rLen = 1;
-		rLoc = 558;
+		rLoc = 561;
 		rType = 1;
 	};
 	579F659A0D6B5BB0000BF8F9 /* PBXTextBookmark */ = {
@@ -826,7 +826,7 @@
 		fRef = A585248F0A1B9604002D9D8A /* recfile.cpp */;
 		name = "recfile.cpp: 559";
 		rLen = 0;
-		rLoc = 14230;
+		rLoc = 14275;
 		rType = 0;
 		vrLen = 1555;
 		vrLoc = 13564;
@@ -836,7 +836,7 @@
 		fRef = A585248F0A1B9604002D9D8A /* recfile.cpp */;
 		name = "recfile.cpp: 615";
 		rLen = 0;
-		rLoc = 16084;
+		rLoc = 16089;
 		rType = 0;
 		vrLen = 1672;
 		vrLoc = 14408;
@@ -846,7 +846,7 @@
 		fRef = A585248F0A1B9604002D9D8A /* recfile.cpp */;
 		name = "recfile.cpp: 615";
 		rLen = 0;
-		rLoc = 16084;
+		rLoc = 16089;
 		rType = 0;
 		vrLen = 1674;
 		vrLoc = 14408;
@@ -856,7 +856,7 @@
 		fRef = A585248F0A1B9604002D9D8A /* recfile.cpp */;
 		name = "recfile.cpp: 616";
 		rLen = 0;
-		rLoc = 16050;
+		rLoc = 16055;
 		rType = 0;
 		vrLen = 1675;
 		vrLoc = 14408;
@@ -866,7 +866,7 @@
 		fRef = A585248F0A1B9604002D9D8A /* recfile.cpp */;
 		name = "recfile.cpp: 619";
 		rLen = 0;
-		rLoc = 16084;
+		rLoc = 16089;
 		rType = 0;
 		vrLen = 1892;
 		vrLoc = 14408;
@@ -876,7 +876,7 @@
 		comments = "error: expected `)' before 'while'";
 		fRef = A585248F0A1B9604002D9D8A /* recfile.cpp */;
 		rLen = 1;
-		rLoc = 616;
+		rLoc = 618;
 		rType = 1;
 	};
 	579F65AF0D6B7249000BF8F9 /* PBXTextBookmark */ = {
@@ -913,7 +913,7 @@
 		isa = PBXTextBookmark;
 		fRef = A585248F0A1B9604002D9D8A /* recfile.cpp */;
 		rLen = 13;
-		rLoc = 15530;
+		rLoc = 15535;
 		rType = 0;
 	};
 	579F65B40D6B7249000BF8F9 /* PBXTextBookmark */ = {
@@ -931,7 +931,7 @@
 		fRef = 4D3A8FC90D35858D00BBC1FB /* recmodels.cpp */;
 		name = "recmodels.cpp: 862";
 		rLen = 0;
-		rLoc = 21430;
+		rLoc = 21836;
 		rType = 0;
 		vrLen = 1129;
 		vrLoc = 20815;
@@ -965,6 +965,16 @@
 		rType = 0;
 		vrLen = 1155;
 		vrLoc = 13792;
+	};
+	579F65DF0D6B73FE000BF8F9 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = A585248F0A1B9604002D9D8A /* recfile.cpp */;
+		name = "recfile.cpp: 611";
+		rLen = 0;
+		rLoc = 15657;
+		rType = 0;
+		vrLen = 1824;
+		vrLoc = 16305;
 	};
 	57A6683C0C32D76B00622C70 /* rec.cpp:1243 */ = {
 		isa = PBXFileBreakpoint;
@@ -1490,6 +1500,7 @@
 			579F65B60D6B7249000BF8F9 /* PBXTextBookmark */ = 579F65B60D6B7249000BF8F9 /* PBXTextBookmark */;
 			579F65B70D6B7249000BF8F9 /* PBXTextBookmark */ = 579F65B70D6B7249000BF8F9 /* PBXTextBookmark */;
 			579F65B80D6B7249000BF8F9 /* PBXTextBookmark */ = 579F65B80D6B7249000BF8F9 /* PBXTextBookmark */;
+			579F65DF0D6B73FE000BF8F9 /* PBXTextBookmark */ = 579F65DF0D6B73FE000BF8F9 /* PBXTextBookmark */;
 		};
 		sourceControlManager = 576C2D310AA62AE1009D2053 /* Source Control */;
 		userBuildSettings = {
@@ -1669,10 +1680,10 @@
 	};
 	A585248F0A1B9604002D9D8A /* recfile.cpp */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {824, 11186}}";
-			sepNavSelRange = "{15535, 13}";
+			sepNavIntBoundsRect = "{{0, 0}, {1001, 11186}}";
+			sepNavSelRange = "{15994, 0}";
 			sepNavVisRange = "{13620, 914}";
-			sepNavVisRect = "{{0, 7533}, {644, 642}}";
+			sepNavVisRect = "{{0, 8310}, {1001, 410}}";
 			sepNavWindowFrame = "{{454, 220}, {1408, 936}}";
 		};
 	};

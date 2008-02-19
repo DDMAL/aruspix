@@ -204,7 +204,7 @@
 						<key>_historyCapacity</key>
 						<integer>0</integer>
 						<key>bookmark</key>
-						<string>579F65AC0D6B6F87000BF8F9</string>
+						<string>579F65DF0D6B73FE000BF8F9</string>
 						<key>history</key>
 						<array>
 							<string>579F659A0D6B5BB0000BF8F9</string>
@@ -311,7 +311,7 @@
 							<key>PBXSmartGroupTreeModuleOutlineStateSelectionKey</key>
 							<array>
 								<array>
-									<integer>24</integer>
+									<integer>12</integer>
 									<integer>7</integer>
 									<integer>0</integer>
 								</array>
@@ -555,12 +555,11 @@
 	<integer>5</integer>
 	<key>WindowOrderList</key>
 	<array>
-		<string>1C0AD2AF069F1E9B00FABCE6</string>
-		<string>/Users/puginl/projects/aruspix_1.3.0/osx/aruspix.xcodeproj</string>
-		<string>579F65510D6B58F5000BF8F9</string>
 		<string>1C530D57069F1CE1000CFCEE</string>
+		<string>1C0AD2AF069F1E9B00FABCE6</string>
 		<string>1C0AD2B3069F1EA900FABCE6</string>
 		<string>576C2D2D0AA62AC2009D2053</string>
+		<string>/Users/puginl/projects/aruspix_1.3.0/osx/aruspix.xcodeproj</string>
 	</array>
 	<key>WindowString</key>
 	<string>-1103 106 1056 887 -1920 0 1920 1200 </string>
@@ -787,7 +786,7 @@
 										<key>PBXProjectModuleGUID</key>
 										<string>1CDD528C0622207200134675</string>
 										<key>PBXProjectModuleLabel</key>
-										<string>axfile.cpp</string>
+										<string>recfile.cpp</string>
 										<key>StatusBarVisibility</key>
 										<true/>
 									</dict>
@@ -808,6 +807,8 @@
 							<string>674pt</string>
 						</dict>
 						<dict>
+							<key>BecomeActive</key>
+							<true/>
 							<key>ContentConfiguration</key>
 							<dict>
 								<key>PBXProjectModuleGUID</key>
@@ -853,7 +854,7 @@
 			<key>WindowToolGUID</key>
 			<string>1C530D57069F1CE1000CFCEE</string>
 			<key>WindowToolIsVisible</key>
-			<true/>
+			<false/>
 		</dict>
 		<dict>
 			<key>Identifier</key>

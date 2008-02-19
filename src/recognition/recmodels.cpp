@@ -476,6 +476,11 @@ bool RecTypModel::Adapt( wxArrayPtrVoid params, AxProgressDlg *dlg )
 	
 	args << " -dir " << wxGetApp().m_workingDir.c_str();
 	args << " -log_fname " << log.c_str();
+	
+	wxString end = wxGetApp().m_workingDir + "end_process";
+	wxRemoveFile( end );
+	args << " -end_fname " << end.c_str();
+	
 	args << " -spacing_model \"{s}\"";
 	args << " -threshold " << threshold;
 	args << " -n_gaussians " << n_gaussians;
@@ -518,7 +523,16 @@ bool RecTypModel::Adapt( wxArrayPtrVoid params, AxProgressDlg *dlg )
 		process->Detach();
 		process->m_deleteOnTerminate = false;
 		int pid = process->GetPid();
-		while ( process->GetPid() == pid )
+#ifdef __POWERPC__  & __WXMAC__
+		// on PPC machine, from Leopard (10.5), end detection of wxProcess does not work
+		// Instead, an 'end_file' is written by the external process to enable the end of 
+		// the task to be detected. This is not optimal as the file won't be written if the
+		// process fails.
+		wxLogDebug("AxProcess end detetion with a file");
+		while  ( !wxFileExists( end ) )
+#else
+		while  ( process->GetPid() == pid )
+#endif
 		{
 			wxMilliSleep( 200 );
 			if( !dlg->IncTimerOperation( ) )
@@ -743,11 +757,15 @@ bool RecMusModel::Train( wxArrayPtrVoid params, AxProgressDlg *dlg )
 	#endif   
 #endif
 
-	wxString log = "\"" + wxGetApp().m_logDir + "/ngram.log\"";
-
 	wxString args = " ";
-
+	
+	wxString log = "\"" + wxGetApp().m_logDir + "/ngram.log\"";
 	args << " -log_fname " << log.c_str();
+	
+	wxString end = wxGetApp().m_workingDir + "end_process";
+	wxRemoveFile( end );
+	args << " -end_fname " << end.c_str();
+	
 	args << " -data_fname " << outputdatafile.c_str();
 	args << " " << mlffile.c_str();
 	args << " " << vocfile.c_str();
@@ -769,7 +787,16 @@ bool RecMusModel::Train( wxArrayPtrVoid params, AxProgressDlg *dlg )
 		process->Detach();
 		process->m_deleteOnTerminate = false;
 		int pid = process->GetPid();
-		while ( process->GetPid() == pid )
+#ifdef __POWERPC__  & __WXMAC__
+		// on PPC machine, from Leopard (10.5), end detection of wxProcess does not work
+		// Instead, an 'end_file' is written by the external process to enable the end of 
+		// the task to be detected. This is not optimal as the file won't be written if the
+		// process fails.
+		wxLogDebug("AxProcess end detetion with a file");
+		while  ( !wxFileExists( end ) )
+#else
+		while  ( process->GetPid() == pid )
+#endif
 		{
 			wxMilliSleep( 200 );
 			//wxSafeYield();
@@ -837,12 +864,16 @@ bool RecMusModel::Adapt( wxArrayPtrVoid params, AxProgressDlg *dlg )
 		wxString cmd = "ngram";
 	#endif   
 #endif
-
-	wxString log = "\"" + wxGetApp().m_logDir + "/ngram.log\"";
-
+	
 	wxString args = " ";
 
+	wxString log = "\"" + wxGetApp().m_logDir + "/ngram.log\"";
 	args << " -log_fname " << log.c_str();
+	
+	wxString end = wxGetApp().m_workingDir + "end_process";
+	wxRemoveFile( end );
+	args << " -end_fname " << end.c_str();
+	
 	args << " -reload_data_fname " << inputdatafile.c_str();
 	args << " -data_fname " << outputdatafile.c_str();
 	args << " " << mlffile.c_str();
@@ -865,7 +896,16 @@ bool RecMusModel::Adapt( wxArrayPtrVoid params, AxProgressDlg *dlg )
 		process->Detach();
 		process->m_deleteOnTerminate = false;
 		int pid = process->GetPid();
-		while ( process->GetPid() == pid )
+#ifdef __POWERPC__  & __WXMAC__
+		// on PPC machine, from Leopard (10.5), end detection of wxProcess does not work
+		// Instead, an 'end_file' is written by the external process to enable the end of 
+		// the task to be detected. This is not optimal as the file won't be written if the
+		// process fails.
+		wxLogDebug("AxProcess end detetion with a file");
+		while  ( !wxFileExists( end ) )
+#else
+		while  ( process->GetPid() == pid )
+#endif
 		{
 			wxMilliSleep( 200 );
 			//wxSafeYield();
