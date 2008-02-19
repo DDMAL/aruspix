@@ -72,12 +72,11 @@ void MusSymbol::SetPitch( int code, int oct, MusStaff *staff )
 		if ((this->code == code) && (this->oct == oct ))
 			return;
 
-		wxClientDC *dc = this->InitAndClear( staff );
-
 		this->oct = oct;
 		this->code = code;
 		
-		this->DrawAndRelease( dc, staff );
+		if (m_w)
+			m_w->Refresh();
 	}
 }
 
@@ -87,13 +86,10 @@ void MusSymbol::SetValue( int value, MusStaff *staff, int vflag )
 	if ( this->TYPE != SYMB )
 		return;
 
-	wxClientDC *dc = this->InitAndClear( staff );
-
 	if ( this->flag == CLE )
 	{
-		if (dc)
+		if (m_w)
 		{
-			staff->ClearElements( dc, this );
 			m_w->OnBeginEditionClef();
 		}
 
@@ -111,10 +107,10 @@ void MusSymbol::SetValue( int value, MusStaff *staff, int vflag )
 		case ('0'): this->code = FA5; break;
 		}
 
-		if (dc)
+		if (m_w)
 		{
 			m_w->OnEndEditionClef();
-			staff->DrawStaff( dc );
+			m_w->Refresh();
 		}
 	}
 	else if ( this->flag == IND_MES )
@@ -164,20 +160,11 @@ void MusSymbol::SetValue( int value, MusStaff *staff, int vflag )
 		}
 	}
 	
-	if ( dc )
+	if ( m_w )
 	{
-		this->Draw( dc, staff );
+		m_w->Refresh();
 		m_w->OnEndEdition();
-		delete dc;
 	}
-
-
-	// rafraichir approximativement le signe 100 x 300
-	/*wxClientDC dc( m_w );
-	m_w->InitDC( &dc );
-	int x = dc.LogicalToDeviceX( m_w->ToZoom( 0)  );
-	int y =  dc.LogicalToDeviceY( m_w->ToZoomY( staff->yrel ) );
-	m_w->RefreshRect( wxRect(x, y, m_w->ToZoom(100), m_w->ToZoom(300) ) );*/
 }
 
 

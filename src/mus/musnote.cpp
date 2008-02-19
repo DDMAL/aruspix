@@ -95,19 +95,12 @@ void MusNote::SetPitch( int code, int oct, MusStaff *staff )
 	if ((this->code == code) && (this->oct == oct ))
 		return;
 
-	wxClientDC *dc = this->InitAndClear( staff );
-
 	this->oct = oct;
 	this->code = code;
 	
-	this->DrawAndRelease( dc, staff );
 
-	// rafraichir approximativement le signe 100 x 300
-	/*wxClientDC dc( m_w );
-	m_w->InitDC( &dc );
-	int x = dc.LogicalToDeviceX( m_w->ToZoom( this->xrel - 50)  );
-	int y =  dc.LogicalToDeviceY( m_w->ToZoomY( staff->yrel ) );
-	m_w->RefreshRect( wxRect(x, y, m_w->ToZoom(100), m_w->ToZoom(300) ) );*/
+	if (m_w)
+		m_w->Refresh();
 }
 
 
@@ -127,7 +120,7 @@ void MusNote::SetValue( int value, MusStaff *staff, int vflag )
 		if (!(vflag & 1) || (value != CUSTOS)) // custos exception
 			return;
 
-	wxClientDC *dc = this->InitAndClear( staff );
+	//wxClientDC *dc = this->InitAndClear( staff );
 
 	this->val = value;
 	if ( vflag & 1 )
@@ -146,14 +139,8 @@ void MusNote::SetValue( int value, MusStaff *staff, int vflag )
 	if ( ( this->sil == _SIL ) || (( value > LG ) && ( value < BL )) )
 		this->q_auto = true;
 	
-	this->DrawAndRelease( dc, staff );
-
-	// rafraichir approximativement le signe 100 x 300
-	/*wxClientDC dc( m_w );
-	m_w->InitDC( &dc );
-	int x = dc.LogicalToDeviceX( m_w->ToZoom( this->xrel - 50)  );
-	int y =  dc.LogicalToDeviceY( m_w->ToZoomY( staff->yrel ) );
-	m_w->RefreshRect( wxRect(x, y, m_w->ToZoom(100), m_w->ToZoom(300) ) );*/
+	if (m_w)
+		m_w->Refresh();
 }
 
 
@@ -162,7 +149,6 @@ void MusNote::ChangeColoration( MusStaff *staff )
 	if ( ( this->sil == _SIL ) || ( this->val == CUSTOS ) )
 		return;
 		
-	wxClientDC *dc = this->InitAndClear( staff );
 	// mimized the number of symbols
 	switch ( this->val )
 	{
@@ -174,7 +160,8 @@ void MusNote::ChangeColoration( MusStaff *staff )
 	default : this->oblique = !this->oblique;
 	}
 	
-	this->DrawAndRelease( dc, staff );
+	if (m_w)
+		m_w->Refresh();
 
 }
 
@@ -182,13 +169,12 @@ void MusNote::SetLigature( MusStaff *staff )
 {
 	if ( ( this->sil == _SIL ) || ( this->val == LG ) || ( this->val > RD ) )
 		return;
-		
-	wxClientDC *dc = this->InitAndClear( staff );
 	
 	this->q_auto = true;
 	this->ligat = true;
 	
-	this->DrawAndRelease( dc, staff );
+	if (m_w)
+		m_w->Refresh();
 }
 
 void MusNote::ChangeStem( MusStaff *staff )
@@ -196,11 +182,10 @@ void MusNote::ChangeStem( MusStaff *staff )
 	if ( ( this->sil == _SIL ) || (( this->val > LG ) && ( this->val < BL )) )
 		return;
 		
-	wxClientDC *dc = this->InitAndClear( staff );
-		
 	this->q_auto = !this->q_auto;
 	
-	this->DrawAndRelease( dc, staff );
+	if (m_w)
+		m_w->Refresh();
 }
 
 

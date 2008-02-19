@@ -48,7 +48,7 @@ public:
 		dessine la page en cours = draw_it
 	  */
 	void DrawPage( wxDC *dc, bool background = true );
-	void ClearStaves( wxDC *dc , MusStaff *start = NULL );
+	//void ClearStaves( wxDC *dc , MusStaff *start = NULL );
 
 	void UpdateStavesPosition();
 

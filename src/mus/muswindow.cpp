@@ -193,9 +193,6 @@ void MusWindow::Load( AxUndoFile *undoPtr )
 
 	if ( !m_f )
 		return;
-		
-	wxClientDC dc(this);
-	InitDC( &dc );
 	
 	int page, staff, element;
 		
@@ -242,7 +239,6 @@ void MusWindow::Load( AxUndoFile *undoPtr )
 		musStaff->yrel = m_page->m_staves[ musStaff->no ].yrel;
 		musStaff->Init( this );
 		// clear and remove previous staff
-		m_page->m_staves[ musStaff->no ].ClearElements( &dc );
 		m_page->m_staves.RemoveAt( musStaff->no );
 		// replace
 		m_page->m_staves.Insert( musStaff, musStaff->no );	
@@ -264,13 +260,7 @@ void MusWindow::Load( AxUndoFile *undoPtr )
 	}
 		
 	UpdateScroll();
-	
-	wxClientDC dc2(this);
-	InitDC( &dc2 );
-	
-	m_currentStaff->DrawStaff( &dc2 );
-	if ( previous )
-		previous->DrawStaff( &dc2 );
+	this->Refresh();
 	OnEndEdition();
 	SyncToolPanel();
 }
@@ -328,6 +318,7 @@ void MusWindow::InitDC( wxDC *dc )
 	else
 		dc->SetLogicalOrigin( mrgG, 5 );
 
+	dc->SetAxisOrientation( true, false );
 	this->DoPrepareDC( *dc );
 }
 
@@ -870,9 +861,7 @@ void MusWindow::Paste()
 	m_bufferElement->xrel = m_currentElement->xrel + this->_pas * 3; // valeur arbitraire
 	m_currentElement = m_currentStaff->Insert( m_bufferElement );
 
-	wxClientDC dc(this);
-	InitDC( &dc );
-	m_currentStaff->DrawStaff( &dc );
+	this->Refresh();
 	OnEndEdition();
 }
 
@@ -963,16 +952,9 @@ void MusWindow::OnPopupMenuNote( wxCommandEvent &event )
 	//if ( !m_editElement )
 	//	m_currentStaff->Insert( note );
 
-
-	wxClientDC dc(this);
-	InitDC( &dc );
-	m_currentStaff->DrawStaff( &dc );
-
-	// rafraichir approximativement le signe 100 x 300
-	int x = dc.LogicalToDeviceX( ToZoom( note->xrel - 50)  );
-	int y =  dc.LogicalToDeviceY( ToZoomY(m_currentStaff->yrel ) );
-	this->RefreshRect( wxRect(x, y, ToZoom(100), ToZoom(300) ) );*/
+	this->Refresh();
 	event.Skip();
+	*/
 }
 
 void MusWindow::OnPopupMenuSymbole( wxCommandEvent &event )
@@ -1038,14 +1020,7 @@ void MusWindow::OnPopupMenuSymbole( wxCommandEvent &event )
 	//if ( !m_editElement )
 	//	m_currentStaff->Insert( symbole );
 
-	wxClientDC dc(this);
-	InitDC( &dc );
-	m_currentStaff->DrawStaff( &dc );
-
-	// rafraichir approximativement le signe 100 x 300
-	int x = dc.LogicalToDeviceX( ToZoom( symbole->xrel - 50)  );
-	int y =  dc.LogicalToDeviceY( ToZoomY(m_currentStaff->yrel ) );
-	this->RefreshRect( wxRect(x, y, ToZoom(m_page->lrg_lign*11), ToZoom(300) ) );
+	this->Refresh();
 }
 
 
@@ -1182,9 +1157,7 @@ void MusWindow::OnMouseLeftDown(wxMouseEvent &event)
 		else
 			m_dragging_y_offset = 0;
 
-		m_currentStaff->DrawStaff( &dc );
-		if ( previous )
-			previous->DrawStaff( &dc );
+		this->Refresh();
 		OnEndEdition();
 		SyncToolPanel();
 		
@@ -1266,8 +1239,8 @@ void MusWindow::OnMouseMotion(wxMouseEvent &event)
 					m_currentElement->ClearElement( &dc, m_currentStaff );
 					m_currentElement->xrel += ( m_insertx - m_dragging_x );
 					m_dragging_x = m_insertx;
-					m_currentElement->Draw( &dc, m_currentStaff );
 					m_currentStaff->CheckIntegrity();
+					this->Refresh();
 					//OnEndEdition();
 				}
 			}
@@ -1354,10 +1327,7 @@ void MusWindow::OnKeyDown(wxKeyEvent &event)
 			this->SetCursor( wxCURSOR_ARROW );
 			m_newElement = NULL;
 		}
-
-		wxClientDC dc(this);
-		InitDC( &dc );
-		m_currentStaff->DrawStaff( &dc );
+		this->Refresh();
 		OnEndEdition();
 		SyncToolPanel();
 	}
@@ -1528,27 +1498,18 @@ void MusWindow::OnKeyDown(wxKeyEvent &event)
 		else if ( event.m_keyCode == WXK_SPACE && m_currentElement) // deplacement
 		{
 			PrepareCheckPoint( UNDO_PART, WG_UNDO_STAFF );
-			wxClientDC dc(this);
-			InitDC( &dc );
-			m_currentElement->ClearElement( &dc, m_currentStaff );
 			if ( event.m_controlDown )
 				m_currentElement->xrel -=3;
 			else
 				m_currentElement->xrel +=3;
-			m_currentElement->Draw( &dc, m_currentStaff );
+			this->Refresh();
 			m_currentStaff->CheckIntegrity();
 			CheckPoint( UNDO_PART, WG_UNDO_STAFF );
 			OnEndEdition();
 		}
 		else // navigation avec les fleches
 		{
-			wxClientDC dc(this);
-			InitDC( &dc );
-			
 			MusStaff *previous = NULL;
-			
-			if ( m_currentElement &&  m_currentStaff )
-				m_currentElement->ClearElement( &dc, m_currentStaff );
 
 			if ( event.GetKeyCode() == WXK_RIGHT ) 
 			{
@@ -1610,14 +1571,7 @@ void MusWindow::OnKeyDown(wxKeyEvent &event)
 				if ( m_currentStaff->GetLast( ) )
 					m_currentElement = m_currentStaff->GetLast( );
 			}
-			
-			// reinit, if scroll changed
-			wxClientDC dc2(this);
-			InitDC( &dc2 );
-
-			m_currentStaff->DrawStaff( &dc2 );
-			if ( previous )
-				previous->DrawStaff( &dc2 );
+			this->Refresh();
 			OnEndEdition();
 			SyncToolPanel();
 			

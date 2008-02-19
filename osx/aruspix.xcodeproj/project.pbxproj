@@ -171,7 +171,7 @@
 		57EA3DE30C00BDEB00414247 /* recbookctrl.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = recbookctrl.cpp; sourceTree = "<group>"; };
 		57EA3DE40C00BDEB00414247 /* recbookctrl.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = recbookctrl.h; sourceTree = "<group>"; };
 		A50FE1390A6D6E240038D682 /* rec.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = rec.h; sourceTree = "<group>"; };
-		A58523900A1B9504002D9D8A /* Aruspix.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = Aruspix.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		A58523900A1B9504002D9D8A /* Aruspix.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Aruspix.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A58524560A1B9604002D9D8A /* axapp.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = axapp.cpp; sourceTree = "<group>"; };
 		A58524570A1B9604002D9D8A /* axapp.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = axapp.h; sourceTree = "<group>"; };
 		A58524580A1B9604002D9D8A /* axenv.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = axenv.cpp; sourceTree = "<group>"; };

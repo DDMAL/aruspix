@@ -34,6 +34,7 @@
 #ifndef WX_PRECOMP
     #include "wx/wx.h"
 #endif
+#include "wx/thread.h"
 
 #include "ml.h"
 
@@ -46,16 +47,23 @@
 // MlDecoder
 //----------------------------------------------------------------------------
 
-class MlDecoder
+class MlDecoder: public wxThread
 {
 
 public:
     // constructors and destructors
     MlDecoder( wxString input_fname, wxString models_fname, wxString dic_fname );
     virtual ~MlDecoder();
+	
+    // thread execution starts here
+    virtual void *Entry();
+
+    // called when the thread exits - whether it terminates normally or is
+    // stopped with Delete() (but not when it is Kill()ed!)
+    //virtual void OnExit();
     
     // WDR: method declarations for MlDecoder
-	void Run();
+	//void Run();
     
 public:
     // WDR: member variable declarations for MlDecoder

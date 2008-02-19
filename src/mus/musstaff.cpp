@@ -241,33 +241,18 @@ MusElement *MusStaff::Insert( MusElement *element )
 			break;
 	}
 
-	wxClientDC *dc = NULL;
-	
-	if ( m_w ) // si cle effacement depuis tmp
-	{
-		dc = new wxClientDC( m_w );
-		m_w->InitDC( dc );
-		if ( tmp &&  element->IsSymbole() && (((MusSymbol*)element)->flag == CLE) )
-		{
-			this->ClearElements( dc, tmp );
-			m_w->OnBeginEditionClef();
-		}
-	}
+	if ( tmp &&  element->IsSymbole() && (((MusSymbol*)element)->flag == CLE) )
+		m_w->OnBeginEditionClef();
 
 	m_elements.Insert( element, idx );
 	this->CheckIntegrity();
 	
-	if ( dc ) // redessinement
-	{
-		element->Init( m_w );
-		element->Draw( dc, this );
-		if ( element->IsSymbole() && (((MusSymbol*)element)->flag == CLE) )
-		{
-			m_w->OnEndEditionClef();
-			this->DrawStaff( dc );
-		}
-		delete dc;
-	}
+	if ( element->IsSymbole() && (((MusSymbol*)element)->flag == CLE) )
+		m_w->OnEndEditionClef();
+
+	if (m_w)
+		m_w->Refresh();
+
 	return element;
 }
 
@@ -275,33 +260,23 @@ void MusStaff::Delete( MusElement *element )
 {
 	if ( !element ) return;
 
-	wxClientDC *dc = NULL;
 	
 	if ( m_w ) // effacement
 	{
-		dc = new wxClientDC( m_w );
-		m_w->InitDC( dc );
-		element->ClearElement( dc, this );
 		if ( element->IsSymbole() && (((MusSymbol*)element)->flag == CLE) )
-		{
-			this->ClearElements( dc, element );
 			m_w->OnBeginEditionClef();
-		}
 	}
 	
 	m_elements.Detach( element->no );
 	this->CheckIntegrity();
 
-	if ( dc )
+	if ( m_w )
 	{
 		if ( element->IsSymbole() && (((MusSymbol*)element)->flag == CLE) )
-		{
 			m_w->OnEndEditionClef();
-			this->DrawStaff( dc );
-		}
-		delete dc;
+		m_w->Refresh();
 	}
-
+	
 	delete element;
 }
 
@@ -631,7 +606,7 @@ void MusStaff::DrawStaff( wxDC *dc, int i )
 	}
 }
 
-
+/*
 void MusStaff::ClearElements( wxDC *dc, MusElement *start )
 {
 	wxASSERT_MSG( dc , "DC cannot be NULL");
@@ -648,7 +623,7 @@ void MusStaff::ClearElements( wxDC *dc, MusElement *start )
 		(&this->m_elements[j])->ClearElement( dc, this );
 	}
 }
-
+*/
 
 int MusStaff::y_note (int code, int dec_clef, int oct)
 {	static int touches[] = {F1,F2,F3,F4,F5,F6,F7,F8,F9,F10};

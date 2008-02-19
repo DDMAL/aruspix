@@ -78,7 +78,7 @@ void MusPage::CheckIntegrity()
 	}
 }
 
-
+/*
 void MusPage::ClearStaves( wxDC *dc, MusStaff *start )
 {
 	wxASSERT_MSG( dc , "DC cannot be NULL");
@@ -95,6 +95,7 @@ void MusPage::ClearStaves( wxDC *dc, MusStaff *start )
 		(&this->m_staves[j])->ClearElements( dc );
 	}
 }
+*/
 
 MusStaff *MusPage::GetFirst( )
 {

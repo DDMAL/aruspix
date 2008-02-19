@@ -482,39 +482,55 @@ bool RecFile::Decode( wxArrayPtrVoid params, AxProgressDlg *dlg )
 	double rec_int_prune = RecEnv::s_rec_int_prune;
 	double rec_word_pen = RecEnv::s_rec_word_pen;
 	
-	MlDecoder decoder( input, rec_models, rec_dict );
+	MlDecoder *decoder = new MlDecoder( input, rec_models, rec_dict );
 
-	decoder.log_fname = log;
-	decoder.am_models_fname = rec_models;
-	decoder.am_sil_phone = "{s}";
-	decoder.am_phone_del_pen = rec_phone_pen;
+	decoder->log_fname = log;
+	decoder->am_models_fname = rec_models;
+	decoder->am_sil_phone = "{s}";
+	decoder->am_phone_del_pen = rec_phone_pen;
 
-	decoder.lex_dict_fname = rec_dict;
+	decoder->lex_dict_fname = rec_dict;
 
 	if ( rec_lm_order && !rec_lm.IsEmpty() )
 	{
-		decoder.lm_fname = musModelPtr->m_basename + "ngram.gram";
-		decoder.lm_ngram_order = rec_lm_order;
-		decoder.lm_scaling_factor = rec_lm_scaling;
+		decoder->lm_fname = musModelPtr->m_basename + "ngram.gram";
+		decoder->lm_ngram_order = rec_lm_order;
+		decoder->lm_scaling_factor = rec_lm_scaling;
 	}
 	
 	if ( rec_int_prune != 0.0 )
-		decoder.dec_int_prune_window = rec_int_prune;
+		decoder->dec_int_prune_window = rec_int_prune;
 		
 	if ( rec_word_pen != 0.0 )
-		decoder.dec_word_entr_pen = rec_word_pen;
+		decoder->dec_word_entr_pen = rec_word_pen;
 
 	if ( rec_delayed )
-		decoder.dec_delayed_lm = true;
+		decoder->dec_delayed_lm = true;
 	
 	if ( !rec_output.IsEmpty() )
-		decoder.output_fname = rec_output;
+		decoder->output_fname = rec_output;
 
 	if ( !rec_wrdtrns.IsEmpty() )
-		decoder.wrdtrns_fname = rec_wrdtrns;
+		decoder->wrdtrns_fname = rec_wrdtrns;
 
-	decoder.Run();
-
+	decoder->Create();
+	decoder->Run();
+	
+	wxMilliSleep( 10000 );
+	/*
+	while  ( decoder->IsAlive()  )
+	{
+		wxMilliSleep( 200 );
+		if( !dlg->IncTimerOperation( ) )
+		{
+				//process->m_deleteOnTerminate = true;
+				//process->m_canceled = true;
+				//wxKill( pid, wxSIGKILL );
+				decoder->Delete(); 
+				return this->Terminate( ERR_CANCELED );
+		}
+	}
+	*/
 	/*
 	if (!dlg->SetOperation( _("Recognition...") ) )
 		return this->Terminate( ERR_CANCELED );
