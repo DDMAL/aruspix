@@ -783,6 +783,7 @@
 				OTHER_LDFLAGS = (
 					"-lz",
 					"-lpthread",
+					"-liconv",
 					"-framework",
 					QuickTime,
 					"-framework",
@@ -793,7 +794,6 @@
 					Cocoa,
 					"-framework",
 					System,
-					"-liconv",
 					"-lim_u",
 					"-lim_process_u",
 					"-lwx_macd_core-$(ARUSPIX_WX_VERSION)",
