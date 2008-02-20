@@ -93,215 +93,1023 @@ LINK32=link.exe
 # PROP Default_Filter "cpp"
 # Begin Source File
 
-SOURCE=..\src\app\about_wdr.cpp
-# End Source File
-# Begin Source File
+SOURCE=..\src\app\axabout_wdr.cpp
 
-SOURCE=..\src\app\app_wdr.cpp
+!IF  "$(CFG)" == "Aruspix - Win32 Release"
+
+# ADD CPP /I "D:\libs\wx2.8.7\lib\vc_lib\msw" /D "AX_COMPARISON"
+# SUBTRACT CPP /I "D:\libs\wx2.6.0\lib\vc_lib\msw" /D "AX_WG" /D "AX_DISPLAY"
+
+!ELSEIF  "$(CFG)" == "Aruspix - Win32 Debug"
+
+# ADD CPP /I ".\.." /I "$(WXWIN)\lib\vc_lib\mswd" /I ".\..\src" /D "AX_COMPARISON"
+# SUBTRACT CPP /I ".\..\src\\" /I "D:\libs\wx2.6.0\lib\vc_lib\mswd" /I "D:\libs\im3.0\include" /I "D:\libs\tinyxml" /D "AX_DISPLAY" /D "AX_WG"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
 SOURCE=..\src\app\axapp.cpp
+
+!IF  "$(CFG)" == "Aruspix - Win32 Release"
+
+# ADD CPP /I "D:\libs\wx2.8.7\lib\vc_lib\msw" /D "AX_COMPARISON"
+# SUBTRACT CPP /I "D:\libs\wx2.6.0\lib\vc_lib\msw" /D "AX_WG" /D "AX_DISPLAY"
+
+!ELSEIF  "$(CFG)" == "Aruspix - Win32 Debug"
+
+# ADD CPP /I ".\.." /I "$(WXWIN)\lib\vc_lib\mswd" /I ".\..\src" /D "AX_COMPARISON"
+# SUBTRACT CPP /I ".\..\src\\" /I "D:\libs\wx2.6.0\lib\vc_lib\mswd" /I "D:\libs\im3.0\include" /I "D:\libs\tinyxml" /D "AX_DISPLAY" /D "AX_WG"
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\app\axapp_wdr.cpp
+
+!IF  "$(CFG)" == "Aruspix - Win32 Release"
+
+# ADD CPP /I "D:\libs\wx2.8.7\lib\vc_lib\msw" /D "AX_COMPARISON"
+# SUBTRACT CPP /I "D:\libs\wx2.6.0\lib\vc_lib\msw" /D "AX_WG" /D "AX_DISPLAY"
+
+!ELSEIF  "$(CFG)" == "Aruspix - Win32 Debug"
+
+# ADD CPP /I ".\.." /I "$(WXWIN)\lib\vc_lib\mswd" /I ".\..\src" /D "AX_COMPARISON"
+# SUBTRACT CPP /I ".\..\src\\" /I "D:\libs\wx2.6.0\lib\vc_lib\mswd" /I "D:\libs\im3.0\include" /I "D:\libs\tinyxml" /D "AX_DISPLAY" /D "AX_WG"
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\app\axctrl.cpp
+
+!IF  "$(CFG)" == "Aruspix - Win32 Release"
+
+# ADD CPP /I "D:\libs\wx2.8.7\lib\vc_lib\msw" /D "AX_COMPARISON"
+# SUBTRACT CPP /I "D:\libs\wx2.6.0\lib\vc_lib\msw" /D "AX_WG" /D "AX_DISPLAY"
+
+!ELSEIF  "$(CFG)" == "Aruspix - Win32 Debug"
+
+# ADD CPP /I ".\..\src" /I "$(WXWIN)\lib\vc_lib\mswd" /D "AX_COMPARISON"
+# SUBTRACT CPP /I ".\..\src\\" /I "D:\libs\wx2.6.0\lib\vc_lib\mswd" /I "D:\libs\im3.0\include" /I "D:\libs\tinyxml" /D "AX_DISPLAY" /D "AX_WG"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
 SOURCE=..\src\app\axenv.cpp
+
+!IF  "$(CFG)" == "Aruspix - Win32 Release"
+
+# ADD CPP /I "D:\libs\wx2.8.7\lib\vc_lib\msw" /D "AX_COMPARISON"
+# SUBTRACT CPP /I "D:\libs\wx2.6.0\lib\vc_lib\msw" /D "AX_WG" /D "AX_DISPLAY"
+
+!ELSEIF  "$(CFG)" == "Aruspix - Win32 Debug"
+
+# ADD CPP /I ".\.." /I "$(WXWIN)\lib\vc_lib\mswd" /I ".\..\src" /D "AX_COMPARISON"
+# SUBTRACT CPP /I ".\..\src\\" /I "D:\libs\wx2.6.0\lib\vc_lib\mswd" /I "D:\libs\im3.0\include" /I "D:\libs\tinyxml" /D "AX_DISPLAY" /D "AX_WG"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
 SOURCE=..\src\app\axfile.cpp
+
+!IF  "$(CFG)" == "Aruspix - Win32 Release"
+
+# ADD CPP /I "D:\libs\wx2.8.7\lib\vc_lib\msw" /D "AX_COMPARISON"
+# SUBTRACT CPP /I "D:\libs\wx2.6.0\lib\vc_lib\msw" /D "AX_WG" /D "AX_DISPLAY"
+
+!ELSEIF  "$(CFG)" == "Aruspix - Win32 Debug"
+
+# ADD CPP /I ".\.." /I "$(WXWIN)\lib\vc_lib\mswd" /I ".\..\src" /D "AX_COMPARISON"
+# SUBTRACT CPP /I ".\..\src\\" /I "D:\libs\wx2.6.0\lib\vc_lib\mswd" /I "D:\libs\im3.0\include" /I "D:\libs\tinyxml" /D "AX_DISPLAY" /D "AX_WG"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
 SOURCE=..\src\app\axframe.cpp
+
+!IF  "$(CFG)" == "Aruspix - Win32 Release"
+
+# ADD CPP /I "D:\libs\wx2.8.7\lib\vc_lib\msw" /D "AX_COMPARISON"
+# SUBTRACT CPP /I "D:\libs\wx2.6.0\lib\vc_lib\msw" /D "AX_WG" /D "AX_DISPLAY"
+
+!ELSEIF  "$(CFG)" == "Aruspix - Win32 Debug"
+
+# ADD CPP /I ".\.." /I "$(WXWIN)\lib\vc_lib\mswd" /I ".\..\src" /D "AX_COMPARISON"
+# SUBTRACT CPP /I ".\..\src\\" /I "D:\libs\wx2.6.0\lib\vc_lib\mswd" /I "D:\libs\im3.0\include" /I "D:\libs\tinyxml" /D "AX_DISPLAY" /D "AX_WG"
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\app\axgotodlg.cpp
+
+!IF  "$(CFG)" == "Aruspix - Win32 Release"
+
+# ADD CPP /I "D:\libs\wx2.8.7\lib\vc_lib\msw" /D "AX_COMPARISON"
+# SUBTRACT CPP /I "D:\libs\wx2.6.0\lib\vc_lib\msw" /D "AX_WG" /D "AX_DISPLAY"
+
+!ELSEIF  "$(CFG)" == "Aruspix - Win32 Debug"
+
+# ADD CPP /I ".\.." /I "$(WXWIN)\lib\vc_lib\mswd" /I ".\..\src" /D "AX_COMPARISON"
+# SUBTRACT CPP /I ".\..\src\\" /I "D:\libs\wx2.6.0\lib\vc_lib\mswd" /I "D:\libs\im3.0\include" /I "D:\libs\tinyxml" /D "AX_DISPLAY" /D "AX_WG"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
 SOURCE=..\src\app\aximage.cpp
+
+!IF  "$(CFG)" == "Aruspix - Win32 Release"
+
+# ADD CPP /I "D:\libs\wx2.8.7\lib\vc_lib\msw" /D "AX_COMPARISON"
+# SUBTRACT CPP /I "D:\libs\wx2.6.0\lib\vc_lib\msw" /D "AX_WG" /D "AX_DISPLAY"
+
+!ELSEIF  "$(CFG)" == "Aruspix - Win32 Debug"
+
+# ADD CPP /I ".\.." /I "$(WXWIN)\lib\vc_lib\mswd" /I ".\..\src" /D "AX_COMPARISON"
+# SUBTRACT CPP /I ".\..\src\\" /I "D:\libs\wx2.6.0\lib\vc_lib\mswd" /I "D:\libs\im3.0\include" /I "D:\libs\tinyxml" /D "AX_DISPLAY" /D "AX_WG"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
 SOURCE=..\src\app\aximagecontroller.cpp
+
+!IF  "$(CFG)" == "Aruspix - Win32 Release"
+
+# ADD CPP /I "D:\libs\wx2.8.7\lib\vc_lib\msw" /D "AX_COMPARISON"
+# SUBTRACT CPP /I "D:\libs\wx2.6.0\lib\vc_lib\msw" /D "AX_WG" /D "AX_DISPLAY"
+
+!ELSEIF  "$(CFG)" == "Aruspix - Win32 Debug"
+
+# ADD CPP /I ".\.." /I "$(WXWIN)\lib\vc_lib\mswd" /I ".\..\src" /D "AX_COMPARISON"
+# SUBTRACT CPP /I ".\..\src\\" /I "D:\libs\wx2.6.0\lib\vc_lib\mswd" /I "D:\libs\im3.0\include" /I "D:\libs\tinyxml" /D "AX_DISPLAY" /D "AX_WG"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
 SOURCE=..\src\app\aximcontrol_wdr.cpp
+
+!IF  "$(CFG)" == "Aruspix - Win32 Release"
+
+# ADD CPP /I "D:\libs\wx2.8.7\lib\vc_lib\msw" /D "AX_COMPARISON"
+# SUBTRACT CPP /I "D:\libs\wx2.6.0\lib\vc_lib\msw" /D "AX_WG" /D "AX_DISPLAY"
+
+!ELSEIF  "$(CFG)" == "Aruspix - Win32 Debug"
+
+# ADD CPP /I ".\.." /I "$(WXWIN)\lib\vc_lib\mswd" /I ".\..\src" /D "AX_COMPARISON"
+# SUBTRACT CPP /I ".\..\src\\" /I "D:\libs\wx2.6.0\lib\vc_lib\mswd" /I "D:\libs\im3.0\include" /I "D:\libs\tinyxml" /D "AX_DISPLAY" /D "AX_WG"
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\app\axoptions_wdr.cpp
+
+!IF  "$(CFG)" == "Aruspix - Win32 Release"
+
+# ADD CPP /I "D:\libs\wx2.8.7\lib\vc_lib\msw" /D "AX_COMPARISON"
+# SUBTRACT CPP /I "D:\libs\wx2.6.0\lib\vc_lib\msw" /D "AX_WG" /D "AX_DISPLAY"
+
+!ELSEIF  "$(CFG)" == "Aruspix - Win32 Debug"
+
+# ADD CPP /I ".\.." /I "$(WXWIN)\lib\vc_lib\mswd" /I ".\..\src" /D "AX_COMPARISON"
+# SUBTRACT CPP /I ".\..\src\\" /I "D:\libs\wx2.6.0\lib\vc_lib\mswd" /I "D:\libs\im3.0\include" /I "D:\libs\tinyxml" /D "AX_DISPLAY" /D "AX_WG"
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\app\axoptionsdlg.cpp
+
+!IF  "$(CFG)" == "Aruspix - Win32 Release"
+
+# ADD CPP /I "D:\libs\wx2.8.7\lib\vc_lib\msw" /D "AX_COMPARISON"
+# SUBTRACT CPP /I "D:\libs\wx2.6.0\lib\vc_lib\msw" /D "AX_WG" /D "AX_DISPLAY"
+
+!ELSEIF  "$(CFG)" == "Aruspix - Win32 Debug"
+
+# ADD CPP /I ".\.." /I "$(WXWIN)\lib\vc_lib\mswd" /I ".\..\src" /D "AX_COMPARISON"
+# SUBTRACT CPP /I ".\..\src\\" /I "D:\libs\wx2.6.0\lib\vc_lib\mswd" /I "D:\libs\im3.0\include" /I "D:\libs\tinyxml" /D "AX_DISPLAY" /D "AX_WG"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
 SOURCE=..\src\app\axprocess.cpp
+
+!IF  "$(CFG)" == "Aruspix - Win32 Release"
+
+# ADD CPP /I "D:\libs\wx2.8.7\lib\vc_lib\msw" /D "AX_COMPARISON"
+# SUBTRACT CPP /I "D:\libs\wx2.6.0\lib\vc_lib\msw" /D "AX_WG" /D "AX_DISPLAY"
+
+!ELSEIF  "$(CFG)" == "Aruspix - Win32 Debug"
+
+# ADD CPP /I ".\.." /I "$(WXWIN)\lib\vc_lib\mswd" /I ".\..\src" /D "AX_COMPARISON"
+# SUBTRACT CPP /I ".\..\src\\" /I "D:\libs\wx2.6.0\lib\vc_lib\mswd" /I "D:\libs\im3.0\include" /I "D:\libs\tinyxml" /D "AX_DISPLAY" /D "AX_WG"
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\app\axprogressdlg.cpp
+
+!IF  "$(CFG)" == "Aruspix - Win32 Release"
+
+# ADD CPP /I "D:\libs\wx2.8.7\lib\vc_lib\msw" /D "AX_COMPARISON"
+# SUBTRACT CPP /I "D:\libs\wx2.6.0\lib\vc_lib\msw" /D "AX_WG" /D "AX_DISPLAY"
+
+!ELSEIF  "$(CFG)" == "Aruspix - Win32 Debug"
+
+# ADD CPP /I ".\.." /I "$(WXWIN)\lib\vc_lib\mswd" /I ".\..\src" /D "AX_COMPARISON"
+# SUBTRACT CPP /I ".\..\src\\" /I "D:\libs\wx2.6.0\lib\vc_lib\mswd" /I "D:\libs\im3.0\include" /I "D:\libs\tinyxml" /D "AX_DISPLAY" /D "AX_WG"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
 SOURCE=..\src\app\axscrolledwindow.cpp
+
+!IF  "$(CFG)" == "Aruspix - Win32 Release"
+
+# ADD CPP /I "D:\libs\wx2.8.7\lib\vc_lib\msw" /D "AX_COMPARISON"
+# SUBTRACT CPP /I "D:\libs\wx2.6.0\lib\vc_lib\msw" /D "AX_WG" /D "AX_DISPLAY"
+
+!ELSEIF  "$(CFG)" == "Aruspix - Win32 Debug"
+
+# ADD CPP /I ".\.." /I "$(WXWIN)\lib\vc_lib\mswd" /I ".\..\src" /D "AX_COMPARISON"
+# SUBTRACT CPP /I ".\..\src\\" /I "D:\libs\wx2.6.0\lib\vc_lib\mswd" /I "D:\libs\im3.0\include" /I "D:\libs\tinyxml" /D "AX_DISPLAY" /D "AX_WG"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
 SOURCE=..\src\app\axundo.cpp
+
+!IF  "$(CFG)" == "Aruspix - Win32 Release"
+
+# ADD CPP /I "D:\libs\wx2.8.7\lib\vc_lib\msw" /D "AX_COMPARISON"
+# SUBTRACT CPP /I "D:\libs\wx2.6.0\lib\vc_lib\msw" /D "AX_WG" /D "AX_DISPLAY"
+
+!ELSEIF  "$(CFG)" == "Aruspix - Win32 Debug"
+
+# ADD CPP /I ".\.." /I "$(WXWIN)\lib\vc_lib\mswd" /I ".\..\src" /D "AX_COMPARISON"
+# SUBTRACT CPP /I ".\..\src\\" /I "D:\libs\wx2.6.0\lib\vc_lib\mswd" /I "D:\libs\im3.0\include" /I "D:\libs\tinyxml" /D "AX_DISPLAY" /D "AX_WG"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\display\display.cpp
+SOURCE=..\src\comparison\cmp.cpp
+
+!IF  "$(CFG)" == "Aruspix - Win32 Release"
+
+# ADD CPP /I "D:\libs\wx2.8.7\lib\vc_lib\msw" /D "AX_COMPARISON"
+# SUBTRACT CPP /I "D:\libs\wx2.6.0\lib\vc_lib\msw" /D "AX_WG" /D "AX_DISPLAY"
+
+!ELSEIF  "$(CFG)" == "Aruspix - Win32 Debug"
+
+# ADD CPP /I ".\.." /I "$(WXWIN)\lib\vc_lib\mswd" /I ".\..\src" /D "AX_COMPARISON"
+# SUBTRACT CPP /I ".\..\src\\" /I "D:\libs\wx2.6.0\lib\vc_lib\mswd" /I "D:\libs\im3.0\include" /I "D:\libs\tinyxml" /D "AX_DISPLAY" /D "AX_WG"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\display\display_wdr.cpp
+SOURCE=..\src\comparison\cmp_wdr.cpp
+
+!IF  "$(CFG)" == "Aruspix - Win32 Release"
+
+# ADD CPP /I "D:\libs\wx2.8.7\lib\vc_lib\msw" /D "AX_COMPARISON"
+# SUBTRACT CPP /I "D:\libs\wx2.6.0\lib\vc_lib\msw" /D "AX_WG" /D "AX_DISPLAY"
+
+!ELSEIF  "$(CFG)" == "Aruspix - Win32 Debug"
+
+# ADD CPP /I ".\.." /I "$(WXWIN)\lib\vc_lib\mswd" /I ".\..\src" /D "AX_COMPARISON"
+# SUBTRACT CPP /I ".\..\src\\" /I "D:\libs\wx2.6.0\lib\vc_lib\mswd" /I "D:\libs\im3.0\include" /I "D:\libs\tinyxml" /D "AX_DISPLAY" /D "AX_WG"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\app\gotodlg.cpp
+SOURCE=..\src\comparison\cmpctrl.cpp
+
+!IF  "$(CFG)" == "Aruspix - Win32 Release"
+
+# ADD CPP /I "D:\libs\wx2.8.7\lib\vc_lib\msw" /D "AX_COMPARISON"
+# SUBTRACT CPP /I "D:\libs\wx2.6.0\lib\vc_lib\msw" /D "AX_WG" /D "AX_DISPLAY"
+
+!ELSEIF  "$(CFG)" == "Aruspix - Win32 Debug"
+
+# ADD CPP /I ".\.." /I "$(WXWIN)\lib\vc_lib\mswd" /I ".\..\src" /D "AX_COMPARISON"
+# SUBTRACT CPP /I ".\..\src\\" /I "D:\libs\wx2.6.0\lib\vc_lib\mswd" /I "D:\libs\im3.0\include" /I "D:\libs\tinyxml" /D "AX_DISPLAY" /D "AX_WG"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\im\im_ext.cpp
+SOURCE=..\src\comparison\cmpfile.cpp
+
+!IF  "$(CFG)" == "Aruspix - Win32 Release"
+
+# ADD CPP /I "D:\libs\wx2.8.7\lib\vc_lib\msw" /D "AX_COMPARISON"
+# SUBTRACT CPP /I "D:\libs\wx2.6.0\lib\vc_lib\msw" /D "AX_WG" /D "AX_DISPLAY"
+
+!ELSEIF  "$(CFG)" == "Aruspix - Win32 Debug"
+
+# ADD CPP /I ".\.." /I "$(WXWIN)\lib\vc_lib\mswd" /I ".\..\src" /D "AX_COMPARISON"
+# SUBTRACT CPP /I ".\..\src\\" /I "D:\libs\wx2.6.0\lib\vc_lib\mswd" /I "D:\libs\im3.0\include" /I "D:\libs\tinyxml" /D "AX_DISPLAY" /D "AX_WG"
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\comparison\cmpim.cpp
+
+!IF  "$(CFG)" == "Aruspix - Win32 Release"
+
+# ADD CPP /I "D:\libs\wx2.8.7\lib\vc_lib\msw" /D "AX_COMPARISON"
+# SUBTRACT CPP /I "D:\libs\wx2.6.0\lib\vc_lib\msw" /D "AX_WG" /D "AX_DISPLAY"
+
+!ELSEIF  "$(CFG)" == "Aruspix - Win32 Debug"
+
+# ADD CPP /I ".\.." /I "$(WXWIN)\lib\vc_lib\mswd" /I ".\..\src" /D "AX_COMPARISON"
+# SUBTRACT CPP /I ".\..\src\\" /I "D:\libs\wx2.6.0\lib\vc_lib\mswd" /I "D:\libs\im3.0\include" /I "D:\libs\tinyxml" /D "AX_DISPLAY" /D "AX_WG"
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\comparison\cmpmlf.cpp
+
+!IF  "$(CFG)" == "Aruspix - Win32 Release"
+
+# ADD CPP /I "D:\libs\wx2.8.7\lib\vc_lib\msw" /D "AX_COMPARISON"
+# SUBTRACT CPP /I "D:\libs\wx2.6.0\lib\vc_lib\msw" /D "AX_WG" /D "AX_DISPLAY"
+
+!ELSEIF  "$(CFG)" == "Aruspix - Win32 Debug"
+
+# ADD CPP /I ".\.." /I "$(WXWIN)\lib\vc_lib\mswd" /I ".\..\src" /D "AX_COMPARISON"
+# SUBTRACT CPP /I ".\..\src\\" /I "D:\libs\wx2.6.0\lib\vc_lib\mswd" /I "D:\libs\im3.0\include" /I "D:\libs\tinyxml" /D "AX_DISPLAY" /D "AX_WG"
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\comparison\cmpmus.cpp
+
+!IF  "$(CFG)" == "Aruspix - Win32 Release"
+
+# ADD CPP /I "D:\libs\wx2.8.7\lib\vc_lib\msw" /D "AX_COMPARISON"
+# SUBTRACT CPP /I "D:\libs\wx2.6.0\lib\vc_lib\msw" /D "AX_WG" /D "AX_DISPLAY"
+
+!ELSEIF  "$(CFG)" == "Aruspix - Win32 Debug"
+
+# ADD CPP /I ".\.." /I "$(WXWIN)\lib\vc_lib\mswd" /I ".\..\src" /D "AX_COMPARISON"
+# SUBTRACT CPP /I ".\..\src\\" /I "D:\libs\wx2.6.0\lib\vc_lib\mswd" /I "D:\libs\im3.0\include" /I "D:\libs\tinyxml" /D "AX_DISPLAY" /D "AX_WG"
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\im\imbrink.cpp
+
+!IF  "$(CFG)" == "Aruspix - Win32 Release"
+
+# ADD CPP /I "D:\libs\wx2.8.7\lib\vc_lib\msw" /D "AX_COMPARISON"
+# SUBTRACT CPP /I "D:\libs\wx2.6.0\lib\vc_lib\msw" /D "AX_WG" /D "AX_DISPLAY"
+
+!ELSEIF  "$(CFG)" == "Aruspix - Win32 Debug"
+
+# ADD CPP /I ".\.." /I "$(WXWIN)\lib\vc_lib\mswd" /I ".\..\src" /D "AX_COMPARISON"
+# SUBTRACT CPP /I ".\..\src\\" /I "D:\libs\wx2.6.0\lib\vc_lib\mswd" /I "D:\libs\im3.0\include" /I "D:\libs\tinyxml" /D "AX_DISPLAY" /D "AX_WG"
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\im\imext.cpp
+
+!IF  "$(CFG)" == "Aruspix - Win32 Release"
+
+# ADD CPP /I "D:\libs\wx2.8.7\lib\vc_lib\msw" /D "AX_COMPARISON"
+# SUBTRACT CPP /I "D:\libs\wx2.6.0\lib\vc_lib\msw" /D "AX_WG" /D "AX_DISPLAY"
+
+!ELSEIF  "$(CFG)" == "Aruspix - Win32 Debug"
+
+# ADD CPP /I ".\.." /I "$(WXWIN)\lib\vc_lib\mswd" /I ".\..\src" /D "AX_COMPARISON"
+# SUBTRACT CPP /I ".\..\src\\" /I "D:\libs\wx2.6.0\lib\vc_lib\mswd" /I "D:\libs\im3.0\include" /I "D:\libs\tinyxml" /D "AX_DISPLAY" /D "AX_WG"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
 SOURCE=..\src\im\imoperator.cpp
+
+!IF  "$(CFG)" == "Aruspix - Win32 Release"
+
+# ADD CPP /I "D:\libs\wx2.8.7\lib\vc_lib\msw" /D "AX_COMPARISON"
+# SUBTRACT CPP /I "D:\libs\wx2.6.0\lib\vc_lib\msw" /D "AX_WG" /D "AX_DISPLAY"
+
+!ELSEIF  "$(CFG)" == "Aruspix - Win32 Debug"
+
+# ADD CPP /I ".\.." /I "$(WXWIN)\lib\vc_lib\mswd" /I ".\..\src" /D "AX_COMPARISON"
+# SUBTRACT CPP /I ".\..\src\\" /I "D:\libs\wx2.6.0\lib\vc_lib\mswd" /I "D:\libs\im3.0\include" /I "D:\libs\tinyxml" /D "AX_DISPLAY" /D "AX_WG"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
 SOURCE=..\src\im\impage.cpp
+
+!IF  "$(CFG)" == "Aruspix - Win32 Release"
+
+# ADD CPP /I "D:\libs\wx2.8.7\lib\vc_lib\msw" /D "AX_COMPARISON"
+# SUBTRACT CPP /I "D:\libs\wx2.6.0\lib\vc_lib\msw" /D "AX_WG" /D "AX_DISPLAY"
+
+!ELSEIF  "$(CFG)" == "Aruspix - Win32 Debug"
+
+# ADD CPP /I ".\.." /I "$(WXWIN)\lib\vc_lib\mswd" /I ".\..\src" /D "AX_COMPARISON"
+# SUBTRACT CPP /I ".\..\src\\" /I "D:\libs\wx2.6.0\lib\vc_lib\mswd" /I "D:\libs\im3.0\include" /I "D:\libs\tinyxml" /D "AX_DISPLAY" /D "AX_WG"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
 SOURCE=..\src\im\imstaff.cpp
+
+!IF  "$(CFG)" == "Aruspix - Win32 Release"
+
+# ADD CPP /I "D:\libs\wx2.8.7\lib\vc_lib\msw" /D "AX_COMPARISON"
+# SUBTRACT CPP /I "D:\libs\wx2.6.0\lib\vc_lib\msw" /D "AX_WG" /D "AX_DISPLAY"
+
+!ELSEIF  "$(CFG)" == "Aruspix - Win32 Debug"
+
+# ADD CPP /I ".\.." /I "$(WXWIN)\lib\vc_lib\mswd" /I ".\..\src" /D "AX_COMPARISON"
+# SUBTRACT CPP /I ".\..\src\\" /I "D:\libs\wx2.6.0\lib\vc_lib\mswd" /I "D:\libs\im3.0\include" /I "D:\libs\tinyxml" /D "AX_DISPLAY" /D "AX_WG"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
 SOURCE=..\src\im\imstaffsegment.cpp
+
+!IF  "$(CFG)" == "Aruspix - Win32 Release"
+
+# ADD CPP /I "D:\libs\wx2.8.7\lib\vc_lib\msw" /D "AX_COMPARISON"
+# SUBTRACT CPP /I "D:\libs\wx2.6.0\lib\vc_lib\msw" /D "AX_WG" /D "AX_DISPLAY"
+
+!ELSEIF  "$(CFG)" == "Aruspix - Win32 Debug"
+
+# ADD CPP /I ".\.." /I "$(WXWIN)\lib\vc_lib\mswd" /I ".\..\src" /D "AX_COMPARISON"
+# SUBTRACT CPP /I ".\..\src\\" /I "D:\libs\wx2.6.0\lib\vc_lib\mswd" /I "D:\libs\im3.0\include" /I "D:\libs\tinyxml" /D "AX_DISPLAY" /D "AX_WG"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\wg\iomlf.cpp
+SOURCE=..\src\mus\mus.cpp
+
+!IF  "$(CFG)" == "Aruspix - Win32 Release"
+
+# ADD CPP /I "D:\libs\wx2.8.7\lib\vc_lib\msw" /D "AX_COMPARISON"
+# SUBTRACT CPP /I "D:\libs\wx2.6.0\lib\vc_lib\msw" /D "AX_WG" /D "AX_DISPLAY"
+
+!ELSEIF  "$(CFG)" == "Aruspix - Win32 Debug"
+
+# ADD CPP /I ".\.." /I "$(WXWIN)\lib\vc_lib\mswd" /I ".\..\src" /D "AX_COMPARISON"
+# SUBTRACT CPP /I ".\..\src\\" /I "D:\libs\wx2.6.0\lib\vc_lib\mswd" /I "D:\libs\im3.0\include" /I "D:\libs\tinyxml" /D "AX_DISPLAY" /D "AX_WG"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\wg\iomlfclass.cpp
+SOURCE=..\src\mus\mus_wdr.cpp
+
+!IF  "$(CFG)" == "Aruspix - Win32 Release"
+
+# ADD CPP /I "D:\libs\wx2.8.7\lib\vc_lib\msw" /D "AX_COMPARISON"
+# SUBTRACT CPP /I "D:\libs\wx2.6.0\lib\vc_lib\msw" /D "AX_WG" /D "AX_DISPLAY"
+
+!ELSEIF  "$(CFG)" == "Aruspix - Win32 Debug"
+
+# ADD CPP /I ".\.." /I "$(WXWIN)\lib\vc_lib\mswd" /I ".\..\src" /D "AX_COMPARISON"
+# SUBTRACT CPP /I ".\..\src\\" /I "D:\libs\wx2.6.0\lib\vc_lib\mswd" /I "D:\libs\im3.0\include" /I "D:\libs\tinyxml" /D "AX_DISPLAY" /D "AX_WG"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\wg\iowwg.cpp
+SOURCE=..\src\mus\musbarlines.cpp
+
+!IF  "$(CFG)" == "Aruspix - Win32 Release"
+
+# ADD CPP /I "D:\libs\wx2.8.7\lib\vc_lib\msw" /D "AX_COMPARISON"
+# SUBTRACT CPP /I "D:\libs\wx2.6.0\lib\vc_lib\msw" /D "AX_WG" /D "AX_DISPLAY"
+
+!ELSEIF  "$(CFG)" == "Aruspix - Win32 Debug"
+
+# ADD CPP /I ".\.." /I "$(WXWIN)\lib\vc_lib\mswd" /I ".\..\src" /D "AX_COMPARISON"
+# SUBTRACT CPP /I ".\..\src\\" /I "D:\libs\wx2.6.0\lib\vc_lib\mswd" /I "D:\libs\im3.0\include" /I "D:\libs\tinyxml" /D "AX_DISPLAY" /D "AX_WG"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\wg\mlfbmp.cpp
+SOURCE=..\src\mus\musbezier.cpp
+
+!IF  "$(CFG)" == "Aruspix - Win32 Release"
+
+# ADD CPP /I "D:\libs\wx2.8.7\lib\vc_lib\msw" /D "AX_COMPARISON"
+# SUBTRACT CPP /I "D:\libs\wx2.6.0\lib\vc_lib\msw" /D "AX_WG" /D "AX_DISPLAY"
+
+!ELSEIF  "$(CFG)" == "Aruspix - Win32 Debug"
+
+# ADD CPP /I ".\.." /I "$(WXWIN)\lib\vc_lib\mswd" /I ".\..\src" /D "AX_COMPARISON"
+# SUBTRACT CPP /I ".\..\src\\" /I "D:\libs\wx2.6.0\lib\vc_lib\mswd" /I "D:\libs\im3.0\include" /I "D:\libs\tinyxml" /D "AX_DISPLAY" /D "AX_WG"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\recognition\models.cpp
+SOURCE=..\src\mus\musclef.cpp
+
+!IF  "$(CFG)" == "Aruspix - Win32 Release"
+
+# ADD CPP /I "D:\libs\wx2.8.7\lib\vc_lib\msw" /D "AX_COMPARISON"
+# SUBTRACT CPP /I "D:\libs\wx2.6.0\lib\vc_lib\msw" /D "AX_WG" /D "AX_DISPLAY"
+
+!ELSEIF  "$(CFG)" == "Aruspix - Win32 Debug"
+
+# ADD CPP /I ".\.." /I "$(WXWIN)\lib\vc_lib\mswd" /I ".\..\src" /D "AX_COMPARISON"
+# SUBTRACT CPP /I ".\..\src\\" /I "D:\libs\wx2.6.0\lib\vc_lib\mswd" /I "D:\libs\im3.0\include" /I "D:\libs\tinyxml" /D "AX_DISPLAY" /D "AX_WG"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\app\options_wdr.cpp
+SOURCE=..\src\mus\muselement.cpp
+
+!IF  "$(CFG)" == "Aruspix - Win32 Release"
+
+# ADD CPP /I "D:\libs\wx2.8.7\lib\vc_lib\msw" /D "AX_COMPARISON"
+# SUBTRACT CPP /I "D:\libs\wx2.6.0\lib\vc_lib\msw" /D "AX_WG" /D "AX_DISPLAY"
+
+!ELSEIF  "$(CFG)" == "Aruspix - Win32 Debug"
+
+# ADD CPP /I ".\.." /I "$(WXWIN)\lib\vc_lib\mswd" /I ".\..\src" /D "AX_COMPARISON"
+# SUBTRACT CPP /I ".\..\src\\" /I "D:\libs\wx2.6.0\lib\vc_lib\mswd" /I "D:\libs\im3.0\include" /I "D:\libs\tinyxml" /D "AX_DISPLAY" /D "AX_WG"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\app\optionsdlg.cpp
+SOURCE=..\src\mus\musfile.cpp
+
+!IF  "$(CFG)" == "Aruspix - Win32 Release"
+
+# ADD CPP /I "D:\libs\wx2.8.7\lib\vc_lib\msw" /D "AX_COMPARISON"
+# SUBTRACT CPP /I "D:\libs\wx2.6.0\lib\vc_lib\msw" /D "AX_WG" /D "AX_DISPLAY"
+
+!ELSEIF  "$(CFG)" == "Aruspix - Win32 Debug"
+
+# ADD CPP /I ".\.." /I "$(WXWIN)\lib\vc_lib\mswd" /I ".\..\src" /D "AX_COMPARISON"
+# SUBTRACT CPP /I ".\..\src\\" /I "D:\libs\wx2.6.0\lib\vc_lib\mswd" /I "D:\libs\im3.0\include" /I "D:\libs\tinyxml" /D "AX_DISPLAY" /D "AX_WG"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\app\progressdlg.cpp
+SOURCE=..\src\mus\musgraph.cpp
+
+!IF  "$(CFG)" == "Aruspix - Win32 Release"
+
+# ADD CPP /I "D:\libs\wx2.8.7\lib\vc_lib\msw" /D "AX_COMPARISON"
+# SUBTRACT CPP /I "D:\libs\wx2.6.0\lib\vc_lib\msw" /D "AX_WG" /D "AX_DISPLAY"
+
+!ELSEIF  "$(CFG)" == "Aruspix - Win32 Debug"
+
+# ADD CPP /I ".\.." /I "$(WXWIN)\lib\vc_lib\mswd" /I ".\..\src" /D "AX_COMPARISON"
+# SUBTRACT CPP /I ".\..\src\\" /I "D:\libs\wx2.6.0\lib\vc_lib\mswd" /I "D:\libs\im3.0\include" /I "D:\libs\tinyxml" /D "AX_DISPLAY" /D "AX_WG"
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\mus\musiomlf.cpp
+
+!IF  "$(CFG)" == "Aruspix - Win32 Release"
+
+# ADD CPP /I "D:\libs\wx2.8.7\lib\vc_lib\msw" /D "AX_COMPARISON"
+# SUBTRACT CPP /I "D:\libs\wx2.6.0\lib\vc_lib\msw" /D "AX_WG" /D "AX_DISPLAY"
+
+!ELSEIF  "$(CFG)" == "Aruspix - Win32 Debug"
+
+# ADD CPP /I ".\.." /I "$(WXWIN)\lib\vc_lib\mswd" /I ".\..\src" /D "AX_COMPARISON"
+# SUBTRACT CPP /I ".\..\src\\" /I "D:\libs\wx2.6.0\lib\vc_lib\mswd" /I "D:\libs\im3.0\include" /I "D:\libs\tinyxml" /D "AX_DISPLAY" /D "AX_WG"
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\mus\musiowwg.cpp
+
+!IF  "$(CFG)" == "Aruspix - Win32 Release"
+
+# ADD CPP /I "D:\libs\wx2.8.7\lib\vc_lib\msw" /D "AX_COMPARISON"
+# SUBTRACT CPP /I "D:\libs\wx2.6.0\lib\vc_lib\msw" /D "AX_WG" /D "AX_DISPLAY"
+
+!ELSEIF  "$(CFG)" == "Aruspix - Win32 Debug"
+
+# ADD CPP /I ".\.." /I "$(WXWIN)\lib\vc_lib\mswd" /I ".\..\src" /D "AX_COMPARISON"
+# SUBTRACT CPP /I ".\..\src\\" /I "D:\libs\wx2.6.0\lib\vc_lib\mswd" /I "D:\libs\im3.0\include" /I "D:\libs\tinyxml" /D "AX_DISPLAY" /D "AX_WG"
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\mus\musnote.cpp
+
+!IF  "$(CFG)" == "Aruspix - Win32 Release"
+
+# ADD CPP /I "D:\libs\wx2.8.7\lib\vc_lib\msw" /D "AX_COMPARISON"
+# SUBTRACT CPP /I "D:\libs\wx2.6.0\lib\vc_lib\msw" /D "AX_WG" /D "AX_DISPLAY"
+
+!ELSEIF  "$(CFG)" == "Aruspix - Win32 Debug"
+
+# ADD CPP /I ".\.." /I "$(WXWIN)\lib\vc_lib\mswd" /I ".\..\src" /D "AX_COMPARISON"
+# SUBTRACT CPP /I ".\..\src\\" /I "D:\libs\wx2.6.0\lib\vc_lib\mswd" /I "D:\libs\im3.0\include" /I "D:\libs\tinyxml" /D "AX_DISPLAY" /D "AX_WG"
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\mus\musobject.cpp
+
+!IF  "$(CFG)" == "Aruspix - Win32 Release"
+
+# ADD CPP /I "D:\libs\wx2.8.7\lib\vc_lib\msw" /D "AX_COMPARISON"
+# SUBTRACT CPP /I "D:\libs\wx2.6.0\lib\vc_lib\msw" /D "AX_WG" /D "AX_DISPLAY"
+
+!ELSEIF  "$(CFG)" == "Aruspix - Win32 Debug"
+
+# ADD CPP /I ".\.." /I "$(WXWIN)\lib\vc_lib\mswd" /I ".\..\src" /D "AX_COMPARISON"
+# SUBTRACT CPP /I ".\..\src\\" /I "D:\libs\wx2.6.0\lib\vc_lib\mswd" /I "D:\libs\im3.0\include" /I "D:\libs\tinyxml" /D "AX_DISPLAY" /D "AX_WG"
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\mus\muspage.cpp
+
+!IF  "$(CFG)" == "Aruspix - Win32 Release"
+
+# ADD CPP /I "D:\libs\wx2.8.7\lib\vc_lib\msw" /D "AX_COMPARISON"
+# SUBTRACT CPP /I "D:\libs\wx2.6.0\lib\vc_lib\msw" /D "AX_WG" /D "AX_DISPLAY"
+
+!ELSEIF  "$(CFG)" == "Aruspix - Win32 Debug"
+
+# ADD CPP /I ".\.." /I "$(WXWIN)\lib\vc_lib\mswd" /I ".\..\src" /D "AX_COMPARISON"
+# SUBTRACT CPP /I ".\..\src\\" /I "D:\libs\wx2.6.0\lib\vc_lib\mswd" /I "D:\libs\im3.0\include" /I "D:\libs\tinyxml" /D "AX_DISPLAY" /D "AX_WG"
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\mus\musstaff.cpp
+
+!IF  "$(CFG)" == "Aruspix - Win32 Release"
+
+# ADD CPP /I "D:\libs\wx2.8.7\lib\vc_lib\msw" /D "AX_COMPARISON"
+# SUBTRACT CPP /I "D:\libs\wx2.6.0\lib\vc_lib\msw" /D "AX_WG" /D "AX_DISPLAY"
+
+!ELSEIF  "$(CFG)" == "Aruspix - Win32 Debug"
+
+# ADD CPP /I ".\.." /I "$(WXWIN)\lib\vc_lib\mswd" /I ".\..\src" /D "AX_COMPARISON"
+# SUBTRACT CPP /I ".\..\src\\" /I "D:\libs\wx2.6.0\lib\vc_lib\mswd" /I "D:\libs\im3.0\include" /I "D:\libs\tinyxml" /D "AX_DISPLAY" /D "AX_WG"
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\mus\mussymbol.cpp
+
+!IF  "$(CFG)" == "Aruspix - Win32 Release"
+
+# ADD CPP /I "D:\libs\wx2.8.7\lib\vc_lib\msw" /D "AX_COMPARISON"
+# SUBTRACT CPP /I "D:\libs\wx2.6.0\lib\vc_lib\msw" /D "AX_WG" /D "AX_DISPLAY"
+
+!ELSEIF  "$(CFG)" == "Aruspix - Win32 Debug"
+
+# ADD CPP /I ".\.." /I "$(WXWIN)\lib\vc_lib\mswd" /I ".\..\src" /D "AX_COMPARISON"
+# SUBTRACT CPP /I ".\..\src\\" /I "D:\libs\wx2.6.0\lib\vc_lib\mswd" /I "D:\libs\im3.0\include" /I "D:\libs\tinyxml" /D "AX_DISPLAY" /D "AX_WG"
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\mus\mustoolpanel.cpp
+
+!IF  "$(CFG)" == "Aruspix - Win32 Release"
+
+# ADD CPP /I "D:\libs\wx2.8.7\lib\vc_lib\msw" /D "AX_COMPARISON"
+# SUBTRACT CPP /I "D:\libs\wx2.6.0\lib\vc_lib\msw" /D "AX_WG" /D "AX_DISPLAY"
+
+!ELSEIF  "$(CFG)" == "Aruspix - Win32 Debug"
+
+# ADD CPP /I ".\.." /I "$(WXWIN)\lib\vc_lib\mswd" /I ".\..\src" /D "AX_COMPARISON"
+# SUBTRACT CPP /I ".\..\src\\" /I "D:\libs\wx2.6.0\lib\vc_lib\mswd" /I "D:\libs\im3.0\include" /I "D:\libs\tinyxml" /D "AX_DISPLAY" /D "AX_WG"
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\mus\muswindow.cpp
+
+!IF  "$(CFG)" == "Aruspix - Win32 Release"
+
+# ADD CPP /I "D:\libs\wx2.8.7\lib\vc_lib\msw" /D "AX_COMPARISON"
+# SUBTRACT CPP /I "D:\libs\wx2.6.0\lib\vc_lib\msw" /D "AX_WG" /D "AX_DISPLAY"
+
+!ELSEIF  "$(CFG)" == "Aruspix - Win32 Debug"
+
+# ADD CPP /I ".\.." /I "$(WXWIN)\lib\vc_lib\mswd" /I ".\..\src" /D "AX_COMPARISON"
+# SUBTRACT CPP /I ".\..\src\\" /I "D:\libs\wx2.6.0\lib\vc_lib\mswd" /I "D:\libs\im3.0\include" /I "D:\libs\tinyxml" /D "AX_DISPLAY" /D "AX_WG"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
 SOURCE=..\src\recognition\rec.cpp
+
+!IF  "$(CFG)" == "Aruspix - Win32 Release"
+
+# ADD CPP /I "D:\libs\wx2.8.7\lib\vc_lib\msw" /D "AX_COMPARISON"
+# SUBTRACT CPP /I "D:\libs\wx2.6.0\lib\vc_lib\msw" /D "AX_WG" /D "AX_DISPLAY"
+
+!ELSEIF  "$(CFG)" == "Aruspix - Win32 Debug"
+
+# ADD CPP /I ".\.." /I "$(WXWIN)\lib\vc_lib\mswd" /I ".\..\src" /D "AX_COMPARISON"
+# SUBTRACT CPP /I ".\..\src\\" /I "D:\libs\wx2.6.0\lib\vc_lib\mswd" /I "D:\libs\im3.0\include" /I "D:\libs\tinyxml" /D "AX_DISPLAY" /D "AX_WG"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
 SOURCE=..\src\recognition\rec_wdr.cpp
+
+!IF  "$(CFG)" == "Aruspix - Win32 Release"
+
+# ADD CPP /I "D:\libs\wx2.8.7\lib\vc_lib\msw" /D "AX_COMPARISON"
+# SUBTRACT CPP /I "D:\libs\wx2.6.0\lib\vc_lib\msw" /D "AX_WG" /D "AX_DISPLAY"
+
+!ELSEIF  "$(CFG)" == "Aruspix - Win32 Debug"
+
+# ADD CPP /I ".\.." /I "$(WXWIN)\lib\vc_lib\mswd" /I ".\..\src" /D "AX_COMPARISON"
+# SUBTRACT CPP /I ".\..\src\\" /I "D:\libs\wx2.6.0\lib\vc_lib\mswd" /I "D:\libs\im3.0\include" /I "D:\libs\tinyxml" /D "AX_DISPLAY" /D "AX_WG"
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\recognition\recbookctrl.cpp
+
+!IF  "$(CFG)" == "Aruspix - Win32 Release"
+
+# ADD CPP /I "D:\libs\wx2.8.7\lib\vc_lib\msw" /D "AX_COMPARISON"
+# SUBTRACT CPP /I "D:\libs\wx2.6.0\lib\vc_lib\msw" /D "AX_WG" /D "AX_DISPLAY"
+
+!ELSEIF  "$(CFG)" == "Aruspix - Win32 Debug"
+
+# ADD CPP /I ".\.." /I "$(WXWIN)\lib\vc_lib\mswd" /I ".\..\src" /D "AX_COMPARISON"
+# SUBTRACT CPP /I ".\..\src\\" /I "D:\libs\wx2.6.0\lib\vc_lib\mswd" /I "D:\libs\im3.0\include" /I "D:\libs\tinyxml" /D "AX_DISPLAY" /D "AX_WG"
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\recognition\recbookfile.cpp
+
+!IF  "$(CFG)" == "Aruspix - Win32 Release"
+
+# ADD CPP /I "D:\libs\wx2.8.7\lib\vc_lib\msw" /D "AX_COMPARISON"
+# SUBTRACT CPP /I "D:\libs\wx2.6.0\lib\vc_lib\msw" /D "AX_WG" /D "AX_DISPLAY"
+
+!ELSEIF  "$(CFG)" == "Aruspix - Win32 Debug"
+
+# ADD CPP /I ".\.." /I "$(WXWIN)\lib\vc_lib\mswd" /I ".\..\src" /D "AX_COMPARISON"
+# SUBTRACT CPP /I ".\..\src\\" /I "D:\libs\wx2.6.0\lib\vc_lib\mswd" /I "D:\libs\im3.0\include" /I "D:\libs\tinyxml" /D "AX_DISPLAY" /D "AX_WG"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
 SOURCE=..\src\recognition\recfile.cpp
+
+!IF  "$(CFG)" == "Aruspix - Win32 Release"
+
+# ADD CPP /I "D:\libs\wx2.8.7\lib\vc_lib\msw" /D "AX_COMPARISON"
+# SUBTRACT CPP /I "D:\libs\wx2.6.0\lib\vc_lib\msw" /D "AX_WG" /D "AX_DISPLAY"
+
+!ELSEIF  "$(CFG)" == "Aruspix - Win32 Debug"
+
+# ADD CPP /I ".\.." /I "$(WXWIN)\lib\vc_lib\mswd" /I ".\..\src" /D "AX_COMPARISON"
+# SUBTRACT CPP /I ".\..\src\\" /I "D:\libs\wx2.6.0\lib\vc_lib\mswd" /I "D:\libs\im3.0\include" /I "D:\libs\tinyxml" /D "AX_DISPLAY" /D "AX_WG"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
 SOURCE=..\src\recognition\recim.cpp
+
+!IF  "$(CFG)" == "Aruspix - Win32 Release"
+
+# ADD CPP /I "D:\libs\wx2.8.7\lib\vc_lib\msw" /D "AX_COMPARISON"
+# SUBTRACT CPP /I "D:\libs\wx2.6.0\lib\vc_lib\msw" /D "AX_WG" /D "AX_DISPLAY"
+
+!ELSEIF  "$(CFG)" == "Aruspix - Win32 Debug"
+
+# ADD CPP /I ".\.." /I "$(WXWIN)\lib\vc_lib\mswd" /I ".\..\src" /D "AX_COMPARISON"
+# SUBTRACT CPP /I ".\..\src\\" /I "D:\libs\wx2.6.0\lib\vc_lib\mswd" /I "D:\libs\im3.0\include" /I "D:\libs\tinyxml" /D "AX_DISPLAY" /D "AX_WG"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\recognition\recwg.cpp
+SOURCE=..\src\recognition\recmlfbmp.cpp
+
+!IF  "$(CFG)" == "Aruspix - Win32 Release"
+
+# ADD CPP /I "D:\libs\wx2.8.7\lib\vc_lib\msw" /D "AX_COMPARISON"
+# SUBTRACT CPP /I "D:\libs\wx2.6.0\lib\vc_lib\msw" /D "AX_WG" /D "AX_DISPLAY"
+
+!ELSEIF  "$(CFG)" == "Aruspix - Win32 Debug"
+
+# ADD CPP /I ".\.." /I "$(WXWIN)\lib\vc_lib\mswd" /I ".\..\src" /D "AX_COMPARISON"
+# SUBTRACT CPP /I ".\..\src\\" /I "D:\libs\wx2.6.0\lib\vc_lib\mswd" /I "D:\libs\im3.0\include" /I "D:\libs\tinyxml" /D "AX_DISPLAY" /D "AX_WG"
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\recognition\recmodels.cpp
+
+!IF  "$(CFG)" == "Aruspix - Win32 Release"
+
+# ADD CPP /I "D:\libs\wx2.8.7\lib\vc_lib\msw" /D "AX_COMPARISON"
+# SUBTRACT CPP /I "D:\libs\wx2.6.0\lib\vc_lib\msw" /D "AX_WG" /D "AX_DISPLAY"
+
+!ELSEIF  "$(CFG)" == "Aruspix - Win32 Debug"
+
+# ADD CPP /I ".\.." /I "$(WXWIN)\lib\vc_lib\mswd" /I ".\..\src" /D "AX_COMPARISON"
+# SUBTRACT CPP /I ".\..\src\\" /I "D:\libs\wx2.6.0\lib\vc_lib\mswd" /I "D:\libs\im3.0\include" /I "D:\libs\tinyxml" /D "AX_DISPLAY" /D "AX_WG"
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\recognition\recmus.cpp
+
+!IF  "$(CFG)" == "Aruspix - Win32 Release"
+
+# ADD CPP /I "D:\libs\wx2.8.7\lib\vc_lib\msw" /D "AX_COMPARISON"
+# SUBTRACT CPP /I "D:\libs\wx2.6.0\lib\vc_lib\msw" /D "AX_WG" /D "AX_DISPLAY"
+
+!ELSEIF  "$(CFG)" == "Aruspix - Win32 Debug"
+
+# ADD CPP /I ".\.." /I "$(WXWIN)\lib\vc_lib\mswd" /I ".\..\src" /D "AX_COMPARISON"
+# SUBTRACT CPP /I ".\..\src\\" /I "D:\libs\wx2.6.0\lib\vc_lib\mswd" /I "D:\libs\im3.0\include" /I "D:\libs\tinyxml" /D "AX_DISPLAY" /D "AX_WG"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
 SOURCE=..\src\superimposition\sup.cpp
+
+!IF  "$(CFG)" == "Aruspix - Win32 Release"
+
+# ADD CPP /I "D:\libs\wx2.8.7\lib\vc_lib\msw" /D "AX_COMPARISON"
+# SUBTRACT CPP /I "D:\libs\wx2.6.0\lib\vc_lib\msw" /D "AX_WG" /D "AX_DISPLAY"
+
+!ELSEIF  "$(CFG)" == "Aruspix - Win32 Debug"
+
+# ADD CPP /I ".\.." /I "$(WXWIN)\lib\vc_lib\mswd" /I ".\..\src" /D "AX_COMPARISON"
+# SUBTRACT CPP /I ".\..\src\\" /I "D:\libs\wx2.6.0\lib\vc_lib\mswd" /I "D:\libs\im3.0\include" /I "D:\libs\tinyxml" /D "AX_DISPLAY" /D "AX_WG"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
 SOURCE=..\src\superimposition\sup_wdr.cpp
-# End Source File
-# Begin Source File
 
-SOURCE=..\src\wg\wg.cpp
-# End Source File
-# Begin Source File
+!IF  "$(CFG)" == "Aruspix - Win32 Release"
 
-SOURCE=..\src\wg\wg_barmes.cpp
-# End Source File
-# Begin Source File
+# ADD CPP /I "D:\libs\wx2.8.7\lib\vc_lib\msw" /D "AX_COMPARISON"
+# SUBTRACT CPP /I "D:\libs\wx2.6.0\lib\vc_lib\msw" /D "AX_WG" /D "AX_DISPLAY"
 
-SOURCE=..\src\wg\wg_bezier.cpp
-# End Source File
-# Begin Source File
+!ELSEIF  "$(CFG)" == "Aruspix - Win32 Debug"
 
-SOURCE=..\src\wg\wg_cle.cpp
-# End Source File
-# Begin Source File
+# ADD CPP /I ".\.." /I "$(WXWIN)\lib\vc_lib\mswd" /I ".\..\src" /D "AX_COMPARISON"
+# SUBTRACT CPP /I ".\..\src\\" /I "D:\libs\wx2.6.0\lib\vc_lib\mswd" /I "D:\libs\im3.0\include" /I "D:\libs\tinyxml" /D "AX_DISPLAY" /D "AX_WG"
 
-SOURCE=..\src\wg\wg_graph.cpp
-# End Source File
-# Begin Source File
+!ENDIF 
 
-SOURCE=..\src\wg\wg_wdr.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\src\wg\wgelement.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\src\wg\wgfile.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\src\wg\wgnote.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\src\wg\wgobject.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\src\wg\wgpage.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\src\wg\wgstaff.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\src\wg\wgsymbole.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\src\wg\wgtoolpanel.cpp
 # End Source File
 # Begin Source File
 
 SOURCE=..\src\wgviewer\wgviewer.cpp
+
+!IF  "$(CFG)" == "Aruspix - Win32 Release"
+
+# ADD CPP /I "D:\libs\wx2.8.7\lib\vc_lib\msw" /D "AX_COMPARISON"
+# SUBTRACT CPP /I "D:\libs\wx2.6.0\lib\vc_lib\msw" /D "AX_WG" /D "AX_DISPLAY"
+
+!ELSEIF  "$(CFG)" == "Aruspix - Win32 Debug"
+
+# ADD CPP /I ".\.." /I "$(WXWIN)\lib\vc_lib\mswd" /I ".\..\src" /D "AX_COMPARISON"
+# SUBTRACT CPP /I ".\..\src\\" /I "D:\libs\wx2.6.0\lib\vc_lib\mswd" /I "D:\libs\im3.0\include" /I "D:\libs\tinyxml" /D "AX_DISPLAY" /D "AX_WG"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
 SOURCE=..\src\wgviewer\wgviewer_wdr.cpp
-# End Source File
-# Begin Source File
 
-SOURCE=..\src\wg\wgwindow.cpp
-# End Source File
-# Begin Source File
+!IF  "$(CFG)" == "Aruspix - Win32 Release"
 
-SOURCE=..\src\app\wxprec.cpp
+# ADD CPP /I "D:\libs\wx2.8.7\lib\vc_lib\msw" /D "AX_COMPARISON"
+# SUBTRACT CPP /I "D:\libs\wx2.6.0\lib\vc_lib\msw" /D "AX_WG" /D "AX_DISPLAY"
+
+!ELSEIF  "$(CFG)" == "Aruspix - Win32 Debug"
+
+# ADD CPP /I ".\.." /I "$(WXWIN)\lib\vc_lib\mswd" /I ".\..\src" /D "AX_COMPARISON"
+# SUBTRACT CPP /I ".\..\src\\" /I "D:\libs\wx2.6.0\lib\vc_lib\mswd" /I "D:\libs\im3.0\include" /I "D:\libs\tinyxml" /D "AX_DISPLAY" /D "AX_WG"
+
+!ENDIF 
+
 # End Source File
 # End Group
 # Begin Group "Header Files"
@@ -309,11 +1117,7 @@ SOURCE=..\src\app\wxprec.cpp
 # PROP Default_Filter "h"
 # Begin Source File
 
-SOURCE=..\src\app\about_wdr.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\src\app\app_wdr.h
+SOURCE=..\src\app\axabout_wdr.h
 # End Source File
 # Begin Source File
 
@@ -321,11 +1125,19 @@ SOURCE=..\src\app\axapp.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\app\axenv.h
+SOURCE=..\src\app\axapp_wdr.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\app\axenvrow.h
+SOURCE=..\src\app\axctrl.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\app\axdefs.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\app\axenv.h
 # End Source File
 # Begin Source File
 
@@ -334,6 +1146,10 @@ SOURCE=..\src\app\axfile.h
 # Begin Source File
 
 SOURCE=..\src\app\axframe.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\app\axgotodlg.h
 # End Source File
 # Begin Source File
 
@@ -349,11 +1165,19 @@ SOURCE=..\src\app\aximcontrol_wdr.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\app\axoperator.h
+SOURCE=..\src\app\axoptions_wdr.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\app\axoptionsdlg.h
 # End Source File
 # Begin Source File
 
 SOURCE=..\src\app\axprocess.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\app\axprogressdlg.h
 # End Source File
 # Begin Source File
 
@@ -365,23 +1189,39 @@ SOURCE=..\src\app\axundo.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\app\defs.h
+SOURCE=..\src\comparison\cmp.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\display\display.h
+SOURCE=..\src\comparison\cmp_wdr.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\display\display_wdr.h
+SOURCE=..\src\comparison\cmpctrl.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\app\gotodlg.h
+SOURCE=..\src\comparison\cmpfile.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\im\im_ext.h
+SOURCE=..\src\comparison\cmpim.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\comparison\cmpmlf.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\comparison\cmpmus.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\im\imext.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\im\imkmeans.h
 # End Source File
 # Begin Source File
 
@@ -401,35 +1241,59 @@ SOURCE=..\src\im\imstaffsegment.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\wg\iomlf.h
+SOURCE=..\src\mus\mus.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\wg\iomlfclass.h
+SOURCE=..\src\mus\mus_wdr.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\wg\iowwg.h
+SOURCE=..\src\mus\musdef.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\wg\mlfbmp.h
+SOURCE=..\src\mus\muselement.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\recognition\models.h
+SOURCE=..\src\mus\musfile.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\app\options_wdr.h
+SOURCE=..\src\mus\musiomlf.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\app\optionsdlg.h
+SOURCE=..\src\mus\musiowwg.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\app\progressdlg.h
+SOURCE=..\src\mus\musnote.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\mus\musobject.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\mus\muspage.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\mus\musstaff.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\mus\mussymbol.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\mus\mustoolpanel.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\mus\muswindow.h
 # End Source File
 # Begin Source File
 
@@ -441,6 +1305,14 @@ SOURCE=..\src\recognition\rec_wdr.h
 # End Source File
 # Begin Source File
 
+SOURCE=..\src\recognition\recbookctrl.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\recognition\recbookfile.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\src\recognition\recfile.h
 # End Source File
 # Begin Source File
@@ -449,11 +1321,15 @@ SOURCE=..\src\recognition\recim.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\recognition\recwg.h
+SOURCE=..\src\recognition\recmlfbmp.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\app\resource.h
+SOURCE=..\src\recognition\recmodels.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\recognition\recmus.h
 # End Source File
 # Begin Source File
 
@@ -465,59 +1341,11 @@ SOURCE=..\src\superimposition\sup_wdr.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\wg\wg.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\src\wg\wg_wdr.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\src\wg\wgdef.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\src\wg\wgelement.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\src\wg\wgfile.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\src\wg\wgnote.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\src\wg\wgobject.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\src\wg\wgpage.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\src\wg\wgstaff.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\src\wg\wgsymbole.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\src\wg\wgtoolpanel.h
-# End Source File
-# Begin Source File
-
 SOURCE=..\src\wgviewer\wgviewer.h
 # End Source File
 # Begin Source File
 
 SOURCE=..\src\wgviewer\wgviewer_wdr.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\src\wg\wgwindow.h
 # End Source File
 # End Group
 # Begin Source File
@@ -567,6 +1395,10 @@ SOURCE=.\..\app\wx\msw\folder2.ico
 # Begin Source File
 
 SOURCE=.\..\app\wx\msw\hand.cur
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\im\imkmeans.c
 # End Source File
 # Begin Source File
 

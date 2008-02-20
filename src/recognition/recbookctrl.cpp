@@ -358,6 +358,7 @@ void RecBookCtrl::Update( )
     wxASSERT( m_recEnvPtr );
     
     wxTreeItemId id;
+	int i;
 	
 	this->SaveDisplay( );
     
@@ -381,7 +382,7 @@ void RecBookCtrl::Update( )
         SetItemText( m_imgFilesId, wxString::Format( _("Images (%d)"), img ) );
     else
         SetItemText( m_imgFilesId, _("Images") );
-    for ( int i = 0; i < img; i++)
+    for ( i = 0; i < img; i++)
     {
         id = AppendItem( m_imgFilesId, m_recBookFilePtr->m_imgFiles[i].m_filename, IMG_DOC, IMG_DOC_S );
         if (  m_recBookFilePtr->m_imgFiles[i].m_flags & FILE_DESACTIVATED ) 
@@ -396,7 +397,7 @@ void RecBookCtrl::Update( )
         SetItemText( m_axFilesId, wxString::Format( _("Aruspix files (%d)"), ax ) );
     else
         SetItemText( m_axFilesId, _("Aruspix files") );
-    for ( int i = 0; i < ax; i++)
+    for ( i = 0; i < ax; i++)
     {
         id = AppendItem( m_axFilesId, m_recBookFilePtr->m_axFiles[i].m_filename, IMG_AXZ, IMG_AXZ_S );
         if (  m_recBookFilePtr->m_axFiles[i].m_flags & FILE_DESACTIVATED ) 
@@ -421,7 +422,7 @@ void RecBookCtrl::Update( )
 	}
 	else
         SetItemText( m_optFilesId, _("Optimization files") );
-    for ( int i = 0; i < opt; i++)
+    for ( i = 0; i < opt; i++)
     {
         id = AppendItem( m_optFilesId, m_recBookFilePtr->m_optFiles[i], IMG_AXZ_OK, IMG_AXZ_OK_S );
         if ( !wxFileExists( m_recBookFilePtr->m_axFileDir + wxFileName::GetPathSeparator() +  m_recBookFilePtr->m_optFiles[i] ) ) 

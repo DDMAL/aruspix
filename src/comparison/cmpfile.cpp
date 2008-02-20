@@ -119,6 +119,8 @@ bool CmpCollation::IsCollationLoaded( )
 
 bool CmpCollation::Realize( )
 {
+	int i;
+
 	wxASSERT( m_musFilePtr );
 	m_musFilePtr->m_pages.Clear();
 	m_isColLoaded = false;
@@ -134,7 +136,7 @@ bool CmpCollation::Realize( )
 	int lrg_lign = 190;
 	int correct_lrg_lign = lrg_lign * 10 - 90; // margin of 100 pt for the width of the last element + clef
 	int npages = ceil((float)m_length / (float)correct_lrg_lign);
-	for( int i = 0; i < npages; i++ )
+	for( i = 0; i < npages; i++ )
 	{					
 		MusPage *page = new MusPage();
 		page->lrg_lign = lrg_lign;
@@ -153,7 +155,7 @@ bool CmpCollation::Realize( )
 	}
 	
 	// fill the pages
-	for( int i = 0; i < nstaff; i++ )
+	for( i = 0; i < nstaff; i++ )
 	{
 		MusStaff *full_staff = new MusStaff();
 		CmpCollationPart *part = &m_collationParts[i];
@@ -218,6 +220,7 @@ bool CmpCollation::Realize( )
 
 bool CmpCollation::Collate( )
 {
+	int i;
 	// !!! THERE IS NO CHECK THAT THE FILES HAVE BEEN LOADED
 	// IF NOT, THE READING STAFF WILL CRASH...
 
@@ -228,7 +231,7 @@ bool CmpCollation::Collate( )
 	
 	MusStaff *staves = new MusStaff[ nstaff ];
 	MusStaff *reference = NULL;
-	for( int i = 0; i < (int)m_collationParts.GetCount(); i++ )
+	for( i = 0; i < (int)m_collationParts.GetCount(); i++ )
 	{
 		CmpCollationPart *part = &m_collationParts[i];
 		MusWWGInput wwginput( NULL, m_basename + part->m_bookPart->m_id + ".swwg", WWG_ARUSPIX_CMP );
@@ -247,7 +250,7 @@ bool CmpCollation::Collate( )
 		return false;
 	}
 
-	for( int i = 0; i < (int)m_collationParts.GetCount(); i++ )
+	for( i = 0; i < (int)m_collationParts.GetCount(); i++ )
 	{
 		CmpCollationPart *part = &m_collationParts[i];
 		if ( &staves[i] != reference )
@@ -722,9 +725,10 @@ void CmpFile::OpenContent( )
 void CmpFile::SaveContent( )
 {
     wxASSERT( m_xml_root );
+	int i, j, k, l;
     
     TiXmlElement books("books");
-    for ( int i = 0; i < (int)m_bookFiles.GetCount(); i++)
+    for ( i = 0; i < (int)m_bookFiles.GetCount(); i++)
     {
         TiXmlElement book("book");
 		wxFileName filename = m_bookFiles[i].m_filename;
@@ -734,21 +738,21 @@ void CmpFile::SaveContent( )
         book.SetAttribute("flags", wxString::Format("%d", m_bookFiles[i].m_flags ).c_str() );
 		
 		// parts
-		for ( int j = 0; j < (int)m_bookFiles[i].m_bookParts.GetCount(); j++ )
+		for ( j = 0; j < (int)m_bookFiles[i].m_bookParts.GetCount(); j++ )
 		{
 			CmpBookPart *bookpart = &m_bookFiles[i].m_bookParts[j];
 			TiXmlElement part("part");
 			part.SetAttribute("id", bookpart->m_id.c_str() );
 			part.SetAttribute("name", bookpart->m_name.c_str() );
 			part.SetAttribute("bookname", bookpart->m_bookname.c_str() );
-			for ( int k = 0; k < (int)bookpart->m_partpages.GetCount(); k++)
+			for ( k = 0; k < (int)bookpart->m_partpages.GetCount(); k++)
 			{
 				TiXmlElement axfile("axfile");
 				axfile.SetAttribute("filename", bookpart->m_partpages[k].m_axfile.c_str() );
 				axfile.SetAttribute("flags", wxString::Format("%d", 0 ) );
 				// add staves if any
 				CmpPartPage *partpage = &bookpart->m_partpages[k];
-				for ( int l = 0; l < (int)partpage->m_staves.GetCount(); l++)
+				for ( l = 0; l < (int)partpage->m_staves.GetCount(); l++)
 				{
 					TiXmlElement staff("staff");
 					staff.SetAttribute("no", wxString::Format("%d", partpage->m_staves[l] ) );
@@ -763,14 +767,14 @@ void CmpFile::SaveContent( )
     m_xml_root->InsertEndChild( books );
 	
     TiXmlElement collations("collations");
-    for ( int i = 0; i < (int)m_collations.GetCount(); i++)
+    for ( i = 0; i < (int)m_collations.GetCount(); i++)
     {
         TiXmlElement collation("collation");
         collation.SetAttribute("id", m_collations[i].m_id.c_str() );
         collation.SetAttribute("name", m_collations[i].m_name.c_str() );
 		
 		// parts
-		for ( int j = 0; j < (int)m_collations[i].m_collationParts.GetCount(); j++ )
+		for ( j = 0; j < (int)m_collations[i].m_collationParts.GetCount(); j++ )
 		{
 			CmpCollationPart *colpart = &m_collations[i].m_collationParts[j];
 			TiXmlElement part("part");

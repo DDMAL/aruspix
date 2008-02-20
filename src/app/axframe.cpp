@@ -631,7 +631,7 @@ void AxFrame::OnQuit( wxCommandEvent &event )
 
 void AxFrame::OnClose( wxCloseEvent &event )
 {
-    int lastEnvId = 0;
+    int lastEnvId = 0, i;
     if (m_env && m_env->m_isShown)
     {
 		if ( !m_env->CloseAll( ) ) 
@@ -642,14 +642,14 @@ void AxFrame::OnClose( wxCloseEvent &event )
 	
 	// check if all allow to close
 	// doesn't work if a file is open in a hidden environment...
-    for (int i=0; i < (int)m_envArray.GetCount(); i++)
+    for (i=0; i < (int)m_envArray.GetCount(); i++)
     {
         AxEnv *env = (AxEnv*)(m_envArray[i]).m_envPtr;
         if (env && !env->CloseAll( ))
 			return;
     }
 
-    for (int i=0; i < (int)m_envArray.GetCount(); i++)
+    for (i=0; i < (int)m_envArray.GetCount(); i++)
     {
         AxEnv *env = (AxEnv*)(m_envArray[i]).m_envPtr;
         if (env && env->m_isLoaded)

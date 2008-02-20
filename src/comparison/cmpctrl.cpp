@@ -354,6 +354,7 @@ void CmpCtrl::Update( )
     wxASSERT( m_cmpEnvPtr );
     
     wxTreeItemId id;
+	int i, j, k;
 	
 	this->SaveDisplay( );
 	
@@ -363,7 +364,7 @@ void CmpCtrl::Update( )
         SetItemText( m_booksId, wxString::Format( _("Books (%d)"), books ) );
     else
         SetItemText( m_booksId, _("Books") );
-    for ( int i = 0; i < books; i++)
+    for ( i = 0; i < books; i++)
     {
 		RecBookFile *book = m_cmpFilePtr->m_bookFiles[i].m_recBookFilePtr;
         m_cmpFilePtr->m_bookFiles[i].m_bookId = AppendItem( m_booksId, m_cmpFilePtr->m_bookFiles[i].m_shortname );
@@ -420,13 +421,13 @@ void CmpCtrl::Update( )
 			SetItemText( m_cmpFilePtr->m_bookFiles[i].m_partsId, wxString::Format( _("Parts (%d)"), parts ) );
 		else
 			SetItemText( m_cmpFilePtr->m_bookFiles[i].m_partsId, _("Parts") );
-		for ( int j = 0; j < parts; j++)
+		for ( j = 0; j < parts; j++)
 		{
 			CmpBookPart *part = &m_cmpFilePtr->m_bookFiles[i].m_bookParts[j];
 			wxTreeItemId partid;
 			partid = AppendItem( m_cmpFilePtr->m_bookFiles[i].m_partsId, part->m_name );
 			SetTypeImages( partid, IMG_FOLDER );
-			for ( int k = 0; k < (int)part->m_partpages.GetCount(); k++)
+			for ( k = 0; k < (int)part->m_partpages.GetCount(); k++)
 			{
 				wxString staves = part->m_partpages[k].m_axfile;
 				if ( !part->m_partpages[k].m_staves.IsEmpty() )
@@ -444,7 +445,7 @@ void CmpCtrl::Update( )
         SetItemText( m_cmpId, wxString::Format( _("Collations (%d)"), collations ) );
     else
         SetItemText( m_cmpId, _("Collations") );
-    for ( int i = 0; i < collations; i++)
+    for ( i = 0; i < collations; i++)
     {
 		//RecBookFile *book = m_cmpFilePtr->m_bookFiles[i].m_recBookFilePtr;
 		m_cmpFilePtr->m_collations[i].m_colId = AppendItem( m_cmpId, m_cmpFilePtr->m_collations[i].m_name );
@@ -456,7 +457,7 @@ void CmpCtrl::Update( )
 		//	SetItemText( colid, wxString::Format( _("Parts (%d)"), parts ) );
 		//else
 		//	SetItemText( colid, _("Parts") );
-		for ( int j = 0; j < parts; j++)
+		for ( j = 0; j < parts; j++)
 		{
 			CmpCollationPart *part = &m_cmpFilePtr->m_collations[i].m_collationParts[j];
 			wxString label = wxString::Format("%s (%s)", part->m_bookPart->m_bookname.c_str(), part->m_bookPart->m_name.c_str() ); 

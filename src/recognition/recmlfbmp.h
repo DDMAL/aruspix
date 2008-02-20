@@ -19,7 +19,7 @@
 #endif
 #include "wx/wfstream.h"
 
-#include "musiomlf.h"
+#include "mus/musiomlf.h"
 
 class ImPage;
 class ImStaff;

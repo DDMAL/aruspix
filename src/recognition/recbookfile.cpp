@@ -171,6 +171,7 @@ void RecBookFile::SaveContent( )
     wxASSERT( m_xml_root );
 
     TiXmlElement book("book");
+	int i;
     
     book.SetAttribute("RISM",  m_RISM.c_str() );
     book.SetAttribute("Composer", m_Composer.c_str() );    
@@ -185,7 +186,7 @@ void RecBookFile::SaveContent( )
     dirname1.MakeRelativeTo( wxFileName( m_filename ).GetFullPath() );
     //wxLogDebug( dirname1.GetPath() );
     images.SetAttribute("Path", dirname1.GetPath().c_str() );
-    for ( int i = 0; i < (int)m_imgFiles.GetCount(); i++)
+    for ( i = 0; i < (int)m_imgFiles.GetCount(); i++)
     {
         TiXmlElement image("image");
         image.SetAttribute("filename", m_imgFiles[i].m_filename.c_str() );
@@ -199,7 +200,7 @@ void RecBookFile::SaveContent( )
     dirname2.MakeRelativeTo( wxFileName( m_filename ).GetFullPath() );
     //wxLogDebug( dirname2.GetPath() );
     axfiles.SetAttribute("Path", dirname2.GetPath().c_str() );
-    for ( int i = 0; i < (int)m_axFiles.GetCount(); i++)
+    for ( i = 0; i < (int)m_axFiles.GetCount(); i++)
     {
         TiXmlElement axfile("axfile");
         axfile.SetAttribute("filename", m_axFiles[i].m_filename.c_str() );
@@ -211,7 +212,7 @@ void RecBookFile::SaveContent( )
     TiXmlElement adapt("adaptation");
     adapt.SetAttribute("full", wxString::Format("%d", m_fullOptimized ).c_str() );
 	adapt.SetAttribute("nb_files_for_full", wxString::Format("%d", m_nbFilesOptimization ).c_str() );
-    for ( int i = 0; i < (int)m_optFiles.GetCount(); i++)
+    for ( i = 0; i < (int)m_optFiles.GetCount(); i++)
     {
         TiXmlElement adapt_file("file");
         adapt_file.SetAttribute("filename", m_optFiles[i].c_str() );
@@ -292,12 +293,13 @@ int RecBookFile::FilesToRecognize( wxArrayString *filenames, wxArrayString *path
 int RecBookFile::FilesForAdaptation( wxArrayString *filenames, wxArrayString *paths, bool *isCacheOk )
 {
 	wxASSERT( isCacheOk );
+	int i;
 
 	filenames->Clear();
 	paths->Clear();
 	*isCacheOk = false;
 
-	for( int i = 0; i < (int)m_axFiles.GetCount(); i++)
+	for( i = 0; i < (int)m_axFiles.GetCount(); i++)
 	{
 		if ( m_axFiles[i].m_flags & FILE_DESACTIVATED )
 			continue;
@@ -320,12 +322,12 @@ int RecBookFile::FilesForAdaptation( wxArrayString *filenames, wxArrayString *pa
 	// cache is not optimized for path changes
 	
 	// first go through and check is the cache is valid
-	for ( int i = 0; i < (int)m_optFiles.GetCount(); i++ )
+	for ( i = 0; i < (int)m_optFiles.GetCount(); i++ )
 		if ( filenames->Index( m_optFiles[i] ) == wxNOT_FOUND )
 			return (int)filenames->GetCount(); // cache is not valid, 
 			
 	// cache is valid, remove the files
-	for ( int i = 0; i < (int)m_optFiles.GetCount(); i++ )
+	for ( i = 0; i < (int)m_optFiles.GetCount(); i++ )
 	{
 		int idx = filenames->Index( m_optFiles[i] );
 		wxASSERT( idx != wxNOT_FOUND );

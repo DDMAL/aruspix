@@ -6,140 +6,190 @@
 --------------------Configuration: Aruspix - Win32 Debug--------------------
 </h3>
 <h3>Command Lines</h3>
-Creating temporary file "C:\DOCUME~1\ADMINI~1\LOCALS~1\Temp\RSP417.tmp" with contents
+Creating temporary file "C:\DOCUME~1\laurent\LOCALS~1\Temp\RSP12F.tmp" with contents
+[
+/nologo /MDd /W3 /GX /Zi /Od /I ".\..\src" /I "D:\laurent\libs\wx2.8.7\lib\vc_lib\mswd" /D "_DEBUG" /D "__WXDEBUG__" /D WXDEBUG=1 /D "WIN32" /D "_WINDOWS" /D WINVER=0x400 /D "_MT" /D wxUSE_GUI=1 /D "AX_RECOGNITION" /D "AX_WGVIEWER" /D "AX_SUPERIMPOSITION" /D "AX_COMPARISON" /FR"../obj/AruspixDebug/" /Fp"../obj/AruspixDebug/Aruspix.pch" /YX /Fo"../obj/AruspixDebug/" /Fd"../obj/AruspixDebug/" /FD /c 
+"C:\laurent\projects\aruspix_1.4.0\src\app\axctrl.cpp"
+]
+Creating command line "cl.exe @C:\DOCUME~1\laurent\LOCALS~1\Temp\RSP12F.tmp" 
+Creating temporary file "C:\DOCUME~1\laurent\LOCALS~1\Temp\RSP130.tmp" with contents
+[
+/nologo /MDd /W3 /GX /Zi /Od /I ".\.." /I "D:\laurent\libs\wx2.8.7\lib\vc_lib\mswd" /I ".\..\src" /D "_DEBUG" /D "__WXDEBUG__" /D WXDEBUG=1 /D "WIN32" /D "_WINDOWS" /D WINVER=0x400 /D "_MT" /D wxUSE_GUI=1 /D "AX_RECOGNITION" /D "AX_WGVIEWER" /D "AX_SUPERIMPOSITION" /D "AX_COMPARISON" /FR"../obj/AruspixDebug/" /Fp"../obj/AruspixDebug/Aruspix.pch" /YX /Fo"../obj/AruspixDebug/" /Fd"../obj/AruspixDebug/" /FD /c 
+"C:\laurent\projects\aruspix_1.4.0\src\comparison\cmp.cpp"
+"C:\laurent\projects\aruspix_1.4.0\src\comparison\cmp_wdr.cpp"
+"C:\laurent\projects\aruspix_1.4.0\src\comparison\cmpctrl.cpp"
+"C:\laurent\projects\aruspix_1.4.0\src\im\imstaffsegment.cpp"
+"C:\laurent\projects\aruspix_1.4.0\src\recognition\rec.cpp"
+"C:\laurent\projects\aruspix_1.4.0\src\recognition\rec_wdr.cpp"
+"C:\laurent\projects\aruspix_1.4.0\src\recognition\recbookctrl.cpp"
+]
+Creating command line "cl.exe @C:\DOCUME~1\laurent\LOCALS~1\Temp\RSP130.tmp" 
+Creating temporary file "C:\DOCUME~1\laurent\LOCALS~1\Temp\RSP131.tmp" with contents
 [
 /nologo /MDd /W3 /GX /Zi /Od /I ".\..\src\\" /I "D:\libs\wx2.6.0\lib\vc_lib\mswd" /I "D:\libs\im3.0\include" /I "D:\libs\tinyxml" /D "_DEBUG" /D "__WXDEBUG__" /D WXDEBUG=1 /D "AX_DISPLAY" /D "WIN32" /D "_WINDOWS" /D WINVER=0x400 /D "_MT" /D wxUSE_GUI=1 /D "AX_RECOGNITION" /D "AX_WG" /D "AX_WGVIEWER" /D "AX_SUPERIMPOSITION" /FR"../obj/AruspixDebug/" /Fp"../obj/AruspixDebug/Aruspix.pch" /YX /Fo"../obj/AruspixDebug/" /Fd"../obj/AruspixDebug/" /FD /c 
-"D:\Projects\Aruspix\src\app\axframe.cpp"
+"C:\laurent\projects\aruspix_1.4.0\src\im\imkmeans.c"
 ]
-Creating command line "cl.exe @C:\DOCUME~1\ADMINI~1\LOCALS~1\Temp\RSP417.tmp" 
-Creating temporary file "C:\DOCUME~1\ADMINI~1\LOCALS~1\Temp\RSP418.tmp" with contents
+Creating command line "cl.exe @C:\DOCUME~1\laurent\LOCALS~1\Temp\RSP131.tmp" 
+Creating temporary file "C:\DOCUME~1\laurent\LOCALS~1\Temp\RSP132.tmp" with contents
 [
 wxmsw26d_core.lib wxbase26d.lib wxmsw26d_html.lib wxtiffd.lib wxpngd.lib wxjpegd.lib wxzlibd.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib comctl32.lib rpcrt4.lib wsock32.lib im.lib im_process.lib im_fftw.lib tinyxmld.lib /nologo /subsystem:windows /pdb:none /debug /machine:I386 /nodefaultlib:"libc.lib" /nodefaultlib:"libcd.lib" /out:"../bin/AruspixD.exe" /libpath:"D:\libs\im3.0\lib\dll" /libpath:"D:\libs\tinyxml\Debug" 
-\Projects\Aruspix\obj\AruspixDebug\about_wdr.obj
-\Projects\Aruspix\obj\AruspixDebug\app_wdr.obj
-\Projects\Aruspix\obj\AruspixDebug\axapp.obj
-\Projects\Aruspix\obj\AruspixDebug\axenv.obj
-\Projects\Aruspix\obj\AruspixDebug\axfile.obj
-\Projects\Aruspix\obj\AruspixDebug\axframe.obj
-\Projects\Aruspix\obj\AruspixDebug\aximage.obj
-\Projects\Aruspix\obj\AruspixDebug\aximagecontroller.obj
-\Projects\Aruspix\obj\AruspixDebug\aximcontrol_wdr.obj
-\Projects\Aruspix\obj\AruspixDebug\axprocess.obj
-\Projects\Aruspix\obj\AruspixDebug\axscrolledwindow.obj
-\Projects\Aruspix\obj\AruspixDebug\axundo.obj
-\Projects\Aruspix\obj\AruspixDebug\display.obj
-\Projects\Aruspix\obj\AruspixDebug\display_wdr.obj
-\Projects\Aruspix\obj\AruspixDebug\gotodlg.obj
-\Projects\Aruspix\obj\AruspixDebug\im_ext.obj
-\Projects\Aruspix\obj\AruspixDebug\imoperator.obj
-\Projects\Aruspix\obj\AruspixDebug\impage.obj
-\Projects\Aruspix\obj\AruspixDebug\imstaff.obj
-\Projects\Aruspix\obj\AruspixDebug\imstaffsegment.obj
-\Projects\Aruspix\obj\AruspixDebug\iomlf.obj
-\Projects\Aruspix\obj\AruspixDebug\iomlfclass.obj
-\Projects\Aruspix\obj\AruspixDebug\iowwg.obj
-\Projects\Aruspix\obj\AruspixDebug\mlfbmp.obj
-\Projects\Aruspix\obj\AruspixDebug\optionsdlg.obj
-\Projects\Aruspix\obj\AruspixDebug\progressdlg.obj
-\Projects\Aruspix\obj\AruspixDebug\rec.obj
-\Projects\Aruspix\obj\AruspixDebug\rec_wdr.obj
-\Projects\Aruspix\obj\AruspixDebug\sup.obj
-\Projects\Aruspix\obj\AruspixDebug\sup_wdr.obj
-\Projects\Aruspix\obj\AruspixDebug\wg.obj
-\Projects\Aruspix\obj\AruspixDebug\wg_barmes.obj
-\Projects\Aruspix\obj\AruspixDebug\wg_bezier.obj
-\Projects\Aruspix\obj\AruspixDebug\wg_cle.obj
-\Projects\Aruspix\obj\AruspixDebug\wg_graph.obj
-\Projects\Aruspix\obj\AruspixDebug\wg_wdr.obj
-\Projects\Aruspix\obj\AruspixDebug\wgelement.obj
-\Projects\Aruspix\obj\AruspixDebug\wgfile.obj
-\Projects\Aruspix\obj\AruspixDebug\wgnote.obj
-\Projects\Aruspix\obj\AruspixDebug\wgobject.obj
-\Projects\Aruspix\obj\AruspixDebug\wgpage.obj
-\Projects\Aruspix\obj\AruspixDebug\wgstaff.obj
-\Projects\Aruspix\obj\AruspixDebug\wgsymbole.obj
-\Projects\Aruspix\obj\AruspixDebug\wgtoolpanel.obj
-\Projects\Aruspix\obj\AruspixDebug\wgviewer.obj
-\Projects\Aruspix\obj\AruspixDebug\wgviewer_wdr.obj
-\Projects\Aruspix\obj\AruspixDebug\wgwindow.obj
-\Projects\Aruspix\obj\AruspixDebug\wxprec.obj
-\Projects\Aruspix\obj\AruspixDebug\ax.res
-\Projects\Aruspix\obj\AruspixDebug\recfile.obj
-\Projects\Aruspix\obj\AruspixDebug\recim.obj
-\Projects\Aruspix\obj\AruspixDebug\recwg.obj
-\Projects\Aruspix\obj\AruspixDebug\models.obj
-\Projects\Aruspix\obj\AruspixDebug\options_wdr.obj
+\laurent\projects\aruspix_1.4.0\obj\AruspixDebug\axabout_wdr.obj
+\laurent\projects\aruspix_1.4.0\obj\AruspixDebug\axapp.obj
+\laurent\projects\aruspix_1.4.0\obj\AruspixDebug\axapp_wdr.obj
+\laurent\projects\aruspix_1.4.0\obj\AruspixDebug\axctrl.obj
+\laurent\projects\aruspix_1.4.0\obj\AruspixDebug\axenv.obj
+\laurent\projects\aruspix_1.4.0\obj\AruspixDebug\axfile.obj
+\laurent\projects\aruspix_1.4.0\obj\AruspixDebug\axframe.obj
+\laurent\projects\aruspix_1.4.0\obj\AruspixDebug\axgotodlg.obj
+\laurent\projects\aruspix_1.4.0\obj\AruspixDebug\aximage.obj
+\laurent\projects\aruspix_1.4.0\obj\AruspixDebug\aximagecontroller.obj
+\laurent\projects\aruspix_1.4.0\obj\AruspixDebug\aximcontrol_wdr.obj
+\laurent\projects\aruspix_1.4.0\obj\AruspixDebug\axoptions_wdr.obj
+\laurent\projects\aruspix_1.4.0\obj\AruspixDebug\axoptionsdlg.obj
+\laurent\projects\aruspix_1.4.0\obj\AruspixDebug\axprocess.obj
+\laurent\projects\aruspix_1.4.0\obj\AruspixDebug\axprogressdlg.obj
+\laurent\projects\aruspix_1.4.0\obj\AruspixDebug\axscrolledwindow.obj
+\laurent\projects\aruspix_1.4.0\obj\AruspixDebug\axundo.obj
+\laurent\projects\aruspix_1.4.0\obj\AruspixDebug\cmp.obj
+\laurent\projects\aruspix_1.4.0\obj\AruspixDebug\cmp_wdr.obj
+\laurent\projects\aruspix_1.4.0\obj\AruspixDebug\cmpctrl.obj
+\laurent\projects\aruspix_1.4.0\obj\AruspixDebug\cmpfile.obj
+\laurent\projects\aruspix_1.4.0\obj\AruspixDebug\cmpim.obj
+\laurent\projects\aruspix_1.4.0\obj\AruspixDebug\cmpmlf.obj
+\laurent\projects\aruspix_1.4.0\obj\AruspixDebug\cmpmus.obj
+\laurent\projects\aruspix_1.4.0\obj\AruspixDebug\imbrink.obj
+\laurent\projects\aruspix_1.4.0\obj\AruspixDebug\imext.obj
+\laurent\projects\aruspix_1.4.0\obj\AruspixDebug\imoperator.obj
+\laurent\projects\aruspix_1.4.0\obj\AruspixDebug\impage.obj
+\laurent\projects\aruspix_1.4.0\obj\AruspixDebug\imstaff.obj
+\laurent\projects\aruspix_1.4.0\obj\AruspixDebug\imstaffsegment.obj
+\laurent\projects\aruspix_1.4.0\obj\AruspixDebug\mus.obj
+\laurent\projects\aruspix_1.4.0\obj\AruspixDebug\mus_wdr.obj
+\laurent\projects\aruspix_1.4.0\obj\AruspixDebug\musbarlines.obj
+\laurent\projects\aruspix_1.4.0\obj\AruspixDebug\musbezier.obj
+\laurent\projects\aruspix_1.4.0\obj\AruspixDebug\musclef.obj
+\laurent\projects\aruspix_1.4.0\obj\AruspixDebug\muselement.obj
+\laurent\projects\aruspix_1.4.0\obj\AruspixDebug\musfile.obj
+\laurent\projects\aruspix_1.4.0\obj\AruspixDebug\musgraph.obj
+\laurent\projects\aruspix_1.4.0\obj\AruspixDebug\musiomlf.obj
+\laurent\projects\aruspix_1.4.0\obj\AruspixDebug\musiowwg.obj
+\laurent\projects\aruspix_1.4.0\obj\AruspixDebug\musnote.obj
+\laurent\projects\aruspix_1.4.0\obj\AruspixDebug\musobject.obj
+\laurent\projects\aruspix_1.4.0\obj\AruspixDebug\muspage.obj
+\laurent\projects\aruspix_1.4.0\obj\AruspixDebug\musstaff.obj
+\laurent\projects\aruspix_1.4.0\obj\AruspixDebug\mussymbol.obj
+\laurent\projects\aruspix_1.4.0\obj\AruspixDebug\mustoolpanel.obj
+\laurent\projects\aruspix_1.4.0\obj\AruspixDebug\muswindow.obj
+\laurent\projects\aruspix_1.4.0\obj\AruspixDebug\rec.obj
+\laurent\projects\aruspix_1.4.0\obj\AruspixDebug\rec_wdr.obj
+\laurent\projects\aruspix_1.4.0\obj\AruspixDebug\recbookctrl.obj
+\laurent\projects\aruspix_1.4.0\obj\AruspixDebug\recbookfile.obj
+\laurent\projects\aruspix_1.4.0\obj\AruspixDebug\recfile.obj
+\laurent\projects\aruspix_1.4.0\obj\AruspixDebug\recim.obj
+\laurent\projects\aruspix_1.4.0\obj\AruspixDebug\recmlfbmp.obj
+\laurent\projects\aruspix_1.4.0\obj\AruspixDebug\recmodels.obj
+\laurent\projects\aruspix_1.4.0\obj\AruspixDebug\recmus.obj
+\laurent\projects\aruspix_1.4.0\obj\AruspixDebug\sup.obj
+\laurent\projects\aruspix_1.4.0\obj\AruspixDebug\sup_wdr.obj
+\laurent\projects\aruspix_1.4.0\obj\AruspixDebug\wgviewer.obj
+\laurent\projects\aruspix_1.4.0\obj\AruspixDebug\wgviewer_wdr.obj
+\laurent\projects\aruspix_1.4.0\obj\AruspixDebug\imkmeans.obj
+\laurent\projects\aruspix_1.4.0\obj\AruspixDebug\ax.res
 ]
-Creating command line "link.exe @C:\DOCUME~1\ADMINI~1\LOCALS~1\Temp\RSP418.tmp"
+Creating command line "link.exe @C:\DOCUME~1\laurent\LOCALS~1\Temp\RSP132.tmp"
 <h3>Output Window</h3>
 Compiling...
-axframe.cpp
-Linking...
-   Creating library ../bin/AruspixD.lib and object ../bin/AruspixD.exp
-Creating temporary file "C:\DOCUME~1\ADMINI~1\LOCALS~1\Temp\RSP41C.tmp" with contents
+axctrl.cpp
+Compiling...
+cmp.cpp
+cmp_wdr.cpp
+cmpctrl.cpp
+imstaffsegment.cpp
+C:\laurent\projects\aruspix_1.4.0\src\im\imstaffsegment.cpp(48) : warning C4273: '__mb_cur_max' : inconsistent dll linkage.  dllexport assumed.
+C:\laurent\projects\aruspix_1.4.0\src\im\imstaffsegment.cpp(49) : warning C4273: '_pctype' : inconsistent dll linkage.  dllexport assumed.
+C:\laurent\projects\aruspix_1.4.0\src\im\imstaffsegment.cpp(400) : error C2660: 'imAnalyzeMeasureArea' : function does not take 2 parameters
+C:\laurent\projects\aruspix_1.4.0\src\im\imstaffsegment.cpp(449) : error C2660: 'imAnalyzeMeasureArea' : function does not take 2 parameters
+C:\laurent\projects\aruspix_1.4.0\src\im\imstaffsegment.cpp(472) : error C2660: 'imAnalyzeMeasureArea' : function does not take 2 parameters
+C:\laurent\projects\aruspix_1.4.0\src\im\imstaffsegment.cpp(866) : error C2660: 'imAnalyzeMeasureArea' : function does not take 2 parameters
+C:\laurent\projects\aruspix_1.4.0\src\im\imstaffsegment.cpp(867) : error C2660: 'imAnalyzeMeasurePerimeter' : function does not take 2 parameters
+rec.cpp
+rec_wdr.cpp
+recbookctrl.cpp
+Error executing cl.exe.
+Creating temporary file "C:\DOCUME~1\laurent\LOCALS~1\Temp\RSP133.tmp" with contents
 [
 /nologo /o"../obj/AruspixDebug/Aruspix.bsc" 
-\Projects\Aruspix\obj\AruspixDebug\about_wdr.sbr
-\Projects\Aruspix\obj\AruspixDebug\app_wdr.sbr
-\Projects\Aruspix\obj\AruspixDebug\axapp.sbr
-\Projects\Aruspix\obj\AruspixDebug\axenv.sbr
-\Projects\Aruspix\obj\AruspixDebug\axfile.sbr
-\Projects\Aruspix\obj\AruspixDebug\axframe.sbr
-\Projects\Aruspix\obj\AruspixDebug\aximage.sbr
-\Projects\Aruspix\obj\AruspixDebug\aximagecontroller.sbr
-\Projects\Aruspix\obj\AruspixDebug\aximcontrol_wdr.sbr
-\Projects\Aruspix\obj\AruspixDebug\axprocess.sbr
-\Projects\Aruspix\obj\AruspixDebug\axscrolledwindow.sbr
-\Projects\Aruspix\obj\AruspixDebug\axundo.sbr
-\Projects\Aruspix\obj\AruspixDebug\display.sbr
-\Projects\Aruspix\obj\AruspixDebug\display_wdr.sbr
-\Projects\Aruspix\obj\AruspixDebug\gotodlg.sbr
-\Projects\Aruspix\obj\AruspixDebug\im_ext.sbr
-\Projects\Aruspix\obj\AruspixDebug\imoperator.sbr
-\Projects\Aruspix\obj\AruspixDebug\impage.sbr
-\Projects\Aruspix\obj\AruspixDebug\imstaff.sbr
-\Projects\Aruspix\obj\AruspixDebug\imstaffsegment.sbr
-\Projects\Aruspix\obj\AruspixDebug\iomlf.sbr
-\Projects\Aruspix\obj\AruspixDebug\iomlfclass.sbr
-\Projects\Aruspix\obj\AruspixDebug\iowwg.sbr
-\Projects\Aruspix\obj\AruspixDebug\mlfbmp.sbr
-\Projects\Aruspix\obj\AruspixDebug\optionsdlg.sbr
-\Projects\Aruspix\obj\AruspixDebug\progressdlg.sbr
-\Projects\Aruspix\obj\AruspixDebug\rec.sbr
-\Projects\Aruspix\obj\AruspixDebug\rec_wdr.sbr
-\Projects\Aruspix\obj\AruspixDebug\sup.sbr
-\Projects\Aruspix\obj\AruspixDebug\sup_wdr.sbr
-\Projects\Aruspix\obj\AruspixDebug\wg.sbr
-\Projects\Aruspix\obj\AruspixDebug\wg_barmes.sbr
-\Projects\Aruspix\obj\AruspixDebug\wg_bezier.sbr
-\Projects\Aruspix\obj\AruspixDebug\wg_cle.sbr
-\Projects\Aruspix\obj\AruspixDebug\wg_graph.sbr
-\Projects\Aruspix\obj\AruspixDebug\wg_wdr.sbr
-\Projects\Aruspix\obj\AruspixDebug\wgelement.sbr
-\Projects\Aruspix\obj\AruspixDebug\wgfile.sbr
-\Projects\Aruspix\obj\AruspixDebug\wgnote.sbr
-\Projects\Aruspix\obj\AruspixDebug\wgobject.sbr
-\Projects\Aruspix\obj\AruspixDebug\wgpage.sbr
-\Projects\Aruspix\obj\AruspixDebug\wgstaff.sbr
-\Projects\Aruspix\obj\AruspixDebug\wgsymbole.sbr
-\Projects\Aruspix\obj\AruspixDebug\wgtoolpanel.sbr
-\Projects\Aruspix\obj\AruspixDebug\wgviewer.sbr
-\Projects\Aruspix\obj\AruspixDebug\wgviewer_wdr.sbr
-\Projects\Aruspix\obj\AruspixDebug\wgwindow.sbr
-\Projects\Aruspix\obj\AruspixDebug\wxprec.sbr
-\Projects\Aruspix\obj\AruspixDebug\recfile.sbr
-\Projects\Aruspix\obj\AruspixDebug\recim.sbr
-\Projects\Aruspix\obj\AruspixDebug\recwg.sbr
-\Projects\Aruspix\obj\AruspixDebug\models.sbr
-\Projects\Aruspix\obj\AruspixDebug\options_wdr.sbr]
-Creating command line "bscmake.exe @C:\DOCUME~1\ADMINI~1\LOCALS~1\Temp\RSP41C.tmp"
+\laurent\projects\aruspix_1.4.0\obj\AruspixDebug\axabout_wdr.sbr
+\laurent\projects\aruspix_1.4.0\obj\AruspixDebug\axapp.sbr
+\laurent\projects\aruspix_1.4.0\obj\AruspixDebug\axapp_wdr.sbr
+\laurent\projects\aruspix_1.4.0\obj\AruspixDebug\axctrl.sbr
+\laurent\projects\aruspix_1.4.0\obj\AruspixDebug\axenv.sbr
+\laurent\projects\aruspix_1.4.0\obj\AruspixDebug\axfile.sbr
+\laurent\projects\aruspix_1.4.0\obj\AruspixDebug\axframe.sbr
+\laurent\projects\aruspix_1.4.0\obj\AruspixDebug\axgotodlg.sbr
+\laurent\projects\aruspix_1.4.0\obj\AruspixDebug\aximage.sbr
+\laurent\projects\aruspix_1.4.0\obj\AruspixDebug\aximagecontroller.sbr
+\laurent\projects\aruspix_1.4.0\obj\AruspixDebug\aximcontrol_wdr.sbr
+\laurent\projects\aruspix_1.4.0\obj\AruspixDebug\axoptions_wdr.sbr
+\laurent\projects\aruspix_1.4.0\obj\AruspixDebug\axoptionsdlg.sbr
+\laurent\projects\aruspix_1.4.0\obj\AruspixDebug\axprocess.sbr
+\laurent\projects\aruspix_1.4.0\obj\AruspixDebug\axprogressdlg.sbr
+\laurent\projects\aruspix_1.4.0\obj\AruspixDebug\axscrolledwindow.sbr
+\laurent\projects\aruspix_1.4.0\obj\AruspixDebug\axundo.sbr
+\laurent\projects\aruspix_1.4.0\obj\AruspixDebug\cmp.sbr
+\laurent\projects\aruspix_1.4.0\obj\AruspixDebug\cmp_wdr.sbr
+\laurent\projects\aruspix_1.4.0\obj\AruspixDebug\cmpctrl.sbr
+\laurent\projects\aruspix_1.4.0\obj\AruspixDebug\cmpfile.sbr
+\laurent\projects\aruspix_1.4.0\obj\AruspixDebug\cmpim.sbr
+\laurent\projects\aruspix_1.4.0\obj\AruspixDebug\cmpmlf.sbr
+\laurent\projects\aruspix_1.4.0\obj\AruspixDebug\cmpmus.sbr
+\laurent\projects\aruspix_1.4.0\obj\AruspixDebug\imbrink.sbr
+\laurent\projects\aruspix_1.4.0\obj\AruspixDebug\imext.sbr
+\laurent\projects\aruspix_1.4.0\obj\AruspixDebug\imoperator.sbr
+\laurent\projects\aruspix_1.4.0\obj\AruspixDebug\impage.sbr
+\laurent\projects\aruspix_1.4.0\obj\AruspixDebug\imstaff.sbr
+\laurent\projects\aruspix_1.4.0\obj\AruspixDebug\imstaffsegment.sbr
+\laurent\projects\aruspix_1.4.0\obj\AruspixDebug\mus.sbr
+\laurent\projects\aruspix_1.4.0\obj\AruspixDebug\mus_wdr.sbr
+\laurent\projects\aruspix_1.4.0\obj\AruspixDebug\musbarlines.sbr
+\laurent\projects\aruspix_1.4.0\obj\AruspixDebug\musbezier.sbr
+\laurent\projects\aruspix_1.4.0\obj\AruspixDebug\musclef.sbr
+\laurent\projects\aruspix_1.4.0\obj\AruspixDebug\muselement.sbr
+\laurent\projects\aruspix_1.4.0\obj\AruspixDebug\musfile.sbr
+\laurent\projects\aruspix_1.4.0\obj\AruspixDebug\musgraph.sbr
+\laurent\projects\aruspix_1.4.0\obj\AruspixDebug\musiomlf.sbr
+\laurent\projects\aruspix_1.4.0\obj\AruspixDebug\musiowwg.sbr
+\laurent\projects\aruspix_1.4.0\obj\AruspixDebug\musnote.sbr
+\laurent\projects\aruspix_1.4.0\obj\AruspixDebug\musobject.sbr
+\laurent\projects\aruspix_1.4.0\obj\AruspixDebug\muspage.sbr
+\laurent\projects\aruspix_1.4.0\obj\AruspixDebug\musstaff.sbr
+\laurent\projects\aruspix_1.4.0\obj\AruspixDebug\mussymbol.sbr
+\laurent\projects\aruspix_1.4.0\obj\AruspixDebug\mustoolpanel.sbr
+\laurent\projects\aruspix_1.4.0\obj\AruspixDebug\muswindow.sbr
+\laurent\projects\aruspix_1.4.0\obj\AruspixDebug\rec.sbr
+\laurent\projects\aruspix_1.4.0\obj\AruspixDebug\rec_wdr.sbr
+\laurent\projects\aruspix_1.4.0\obj\AruspixDebug\recbookctrl.sbr
+\laurent\projects\aruspix_1.4.0\obj\AruspixDebug\recbookfile.sbr
+\laurent\projects\aruspix_1.4.0\obj\AruspixDebug\recfile.sbr
+\laurent\projects\aruspix_1.4.0\obj\AruspixDebug\recim.sbr
+\laurent\projects\aruspix_1.4.0\obj\AruspixDebug\recmlfbmp.sbr
+\laurent\projects\aruspix_1.4.0\obj\AruspixDebug\recmodels.sbr
+\laurent\projects\aruspix_1.4.0\obj\AruspixDebug\recmus.sbr
+\laurent\projects\aruspix_1.4.0\obj\AruspixDebug\sup.sbr
+\laurent\projects\aruspix_1.4.0\obj\AruspixDebug\sup_wdr.sbr
+\laurent\projects\aruspix_1.4.0\obj\AruspixDebug\wgviewer.sbr
+\laurent\projects\aruspix_1.4.0\obj\AruspixDebug\wgviewer_wdr.sbr
+\laurent\projects\aruspix_1.4.0\obj\AruspixDebug\imkmeans.sbr]
+Creating command line "bscmake.exe @C:\DOCUME~1\laurent\LOCALS~1\Temp\RSP133.tmp"
 Creating browse info file...
+BSCMAKE: error BK1506 : cannot open file '\laurent\projects\aruspix_1.4.0\obj\AruspixDebug\imkmeans.sbr': No such file or directory
+Error executing bscmake.exe.
 <h3>Output Window</h3>
 
 
 
 <h3>Results</h3>
-AruspixD.exe - 0 error(s), 0 warning(s)
+AruspixD.exe - 6 error(s), 2 warning(s)
 </pre>
 </body>
 </html>

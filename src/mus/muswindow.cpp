@@ -551,7 +551,7 @@ void MusWindow::UpdateZoomValues()
 
 	int i;
 	m_memDC.SetBackgroundMode( wxTRANSPARENT );
-	wxMask *mask;
+	//wxMask *mask;
 	for (i = 0; i < 256; i++)
 	{
 		/*m_memDC.SetFont( m_activeFonts[0][0] );
