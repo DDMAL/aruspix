@@ -2354,7 +2354,7 @@ bool ImPage::GenerateMFC( bool merged, wxString output_dir )
 	wxFile finput( input, wxFile::write );
 	if ( !finput.IsOpened() )
 		return this->Terminate( ERR_FILE, input.c_str() );
-	wxLogMessage("Check win and overlap (win = %d and overlap = %d)", WIN_WIDTH, WIN_OVERLAP);
+	wxLogDebug("Check win and overlap (win = %d and overlap = %d)", WIN_WIDTH, WIN_OVERLAP);
 	int win = WIN_WIDTH;
 	int overlap = WIN_OVERLAP;
 	params.Clear();

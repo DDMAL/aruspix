@@ -49,6 +49,7 @@ using namespace Torch;
 //----------------------------------------------------------------------------
 
 MlDecoder::MlDecoder( wxString input_fname_, wxString am_models_fname_, wxString lex_dic_fname_ )
+	: wxThread( )
 {
 	am_models_fname = am_models_fname_;
 	am_sil_phone = "";
@@ -92,13 +93,13 @@ MlDecoder::~MlDecoder()
 {
 }
 
-void MlDecoder::Run()
+void *MlDecoder::Entry()
 {
     // Basic parameter checks
     if ( input_fname.IsEmpty() || am_models_fname.IsEmpty() || lex_dict_fname.IsEmpty() )
 	{ 
 		wxLogError("Missing input files");
-		return;
+		return NULL;
 	}
     
     if ( (lm_ngram_order > 0) && lm_fname.IsEmpty() )
@@ -167,5 +168,7 @@ void MlDecoder::Run()
 	
 	if ( out_fd )
 		fclose( out_fd );
+		
+	return NULL;
 }
 

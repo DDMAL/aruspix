@@ -101,7 +101,7 @@ wxSizer *AboutDlgFunc( wxWindow *parent, bool call_fit, bool set_sizer )
 
     item5->Add( 20, 5, 0, wxALIGN_CENTER|wxALL, 5 );
 
-    wxStaticText *item19 = new wxStaticText( parent, ID0_TEXT, _("Copyright 2004-2007 Laurent Pugin"), wxDefaultPosition, wxDefaultSize, 0 );
+    wxStaticText *item19 = new wxStaticText( parent, ID0_TEXT, _("Copyright 2004-2008 Laurent Pugin"), wxDefaultPosition, wxDefaultSize, 0 );
     item5->Add( item19, 0, wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxTOP, 5 );
 
     wxStaticText *item20 = new wxStaticText( parent, ID0_TEXT, _("All Rights Reserved"), wxDefaultPosition, wxDefaultSize, 0 );

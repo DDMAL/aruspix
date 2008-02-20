@@ -38,7 +38,7 @@
 #include "mus/musiowwg.h"
 #include "mus/musiomlf.h"
 
-#include "ml/mldecoder.h"
+//#include "ml/mldecoder.h"
 
 
 // WDR: class implementations
@@ -504,9 +504,6 @@ bool RecFile::Decode( wxArrayPtrVoid params, AxProgressDlg *dlg )
 	// params 4: double: rec_lm_scaling
 	// params 5: wxString: rec_wrdtrns
 	
-	
-	/*
-		
 	RecTypModel *typModelPtr = (RecTypModel*)params[0];
 	RecMusModel *musModelPtr = (RecMusModel*)params[1];
 	bool rec_delayed =  *(bool*)params[2];
@@ -516,62 +513,70 @@ bool RecFile::Decode( wxArrayPtrVoid params, AxProgressDlg *dlg )
 	double rec_lm_scaling =  *(double*)params[4];
 	wxString rec_wrdtrns =  *(wxString*)params[5];
 	
-
-	wxString log = wxGetApp().m_logDir + "/decoder.log";
 	wxString input = m_basename + MFC + ".input";
 	input.Replace( "\\/", "/" );
 	wxString rec_models = typModelPtr->m_basename + "hmm";
 	wxString rec_dict = typModelPtr->m_basename + "dic";
-	wxString rec_lm = typModelPtr->m_basename;
+	wxString rec_lm = musModelPtr->m_basename + "ngram.gram";
 	wxString rec_output = m_basename + "rec.mlf";
 	// cannot be changed from interface
 	double rec_phone_pen = RecEnv::s_rec_phone_pen;
 	double rec_int_prune = RecEnv::s_rec_int_prune;
 	double rec_word_pen = RecEnv::s_rec_word_pen;
 	
-	MlDecoder decoder( input, rec_models, rec_dict );
+	/*
+	wxString log = wxGetApp().m_logDir + "/decoder.log";
+	
+	MlDecoder *decoder = new MlDecoder( input, rec_models, rec_dict );
 
-	decoder.log_fname = log;
-	decoder.am_models_fname = rec_models;
-	decoder.am_sil_phone = "{s}";
-	decoder.am_phone_del_pen = rec_phone_pen;
+	decoder->log_fname = log;
+	decoder->am_models_fname = rec_models;
+	decoder->am_sil_phone = "{s}";
+	decoder->am_phone_del_pen = rec_phone_pen;
 
-	decoder.lex_dict_fname = rec_dict;
+	decoder->lex_dict_fname = rec_dict;
 
 	if ( rec_lm_order && !rec_lm.IsEmpty() )
 	{
-		decoder.lm_fname = musModelPtr->m_basename + "ngram.gram";
-		decoder.lm_ngram_order = rec_lm_order;
-		decoder.lm_scaling_factor = rec_lm_scaling;
+		decoder->lm_fname = musModelPtr->m_basename + "ngram.gram";
+		decoder->lm_ngram_order = rec_lm_order;
+		decoder->lm_scaling_factor = rec_lm_scaling;
 	}
 	
 	if ( rec_int_prune != 0.0 )
-		decoder.dec_int_prune_window = rec_int_prune;
+		decoder->dec_int_prune_window = rec_int_prune;
 		
 	if ( rec_word_pen != 0.0 )
-		decoder.dec_word_entr_pen = rec_word_pen;
+		decoder->dec_word_entr_pen = rec_word_pen;
 
 	if ( rec_delayed )
-		decoder.dec_delayed_lm = true;
+		decoder->dec_delayed_lm = true;
 	
 	if ( !rec_output.IsEmpty() )
-		decoder.output_fname = rec_output;
+		decoder->output_fname = rec_output;
 
 	if ( !rec_wrdtrns.IsEmpty() )
-		decoder.wrdtrns_fname = rec_wrdtrns;
+		decoder->wrdtrns_fname = rec_wrdtrns;
 
-	decoder.Run();
+	decoder->Create();
+	decoder->Run();
+	
+	//wxMilliSleep( 10000 );
+	
+	while  ( decoder->IsAlive()  )
+	{
+		wxMilliSleep( 200 );
+		if( !dlg->IncTimerOperation( ) )
+		{
+				//process->m_deleteOnTerminate = true;
+				//process->m_canceled = true;
+				//wxKill( pid, wxSIGKILL );
+				decoder->Delete(); 
+				return this->Terminate( ERR_CANCELED );
+		}
+	}
 	*/
 	
-	RecTypModel *typModelPtr = (RecTypModel*)params[0];
-	RecMusModel *musModelPtr = (RecMusModel*)params[1];
-	bool rec_delayed =  *(bool*)params[2];
-	int rec_lm_order =  *(int*)params[3];
-	if ( rec_lm_order > MUS_NGRAM_ORDER )
-		rec_lm_order = MUS_NGRAM_ORDER;
-	double rec_lm_scaling =  *(double*)params[4];
-	wxString rec_wrdtrns =  *(wxString*)params[5];
-
 #ifdef __WXMSW__
 	#if defined(_DEBUG)
 		wxString cmd = "DecoderD.exe";
@@ -595,20 +600,12 @@ bool RecFile::Decode( wxArrayPtrVoid params, AxProgressDlg *dlg )
 	wxString args = " ";
 	
 	wxString log = "\"" + wxGetApp().m_logDir + "/decoder.log\"";
-
-	wxString input = m_basename + MFC + ".input";
-	input.Replace( "\\/", "/" );
+	args << " -log_fname " << log.c_str();	
 	
-	wxString rec_models = typModelPtr->m_basename + "hmm";
-	wxString rec_dict = typModelPtr->m_basename + "dic";
-	wxString rec_lm = typModelPtr->m_basename;
-	wxString rec_output = m_basename + "rec.mlf";
-	// cannot be changed from interface
-	double rec_phone_pen = RecEnv::s_rec_phone_pen;
-	double rec_int_prune = RecEnv::s_rec_int_prune;
-	double rec_word_pen = RecEnv::s_rec_word_pen;
+	wxString end = wxGetApp().m_workingDir + "end_process";
+	wxRemoveFile( end );
+	args << " -end_fname " << end.c_str();
 	
-	args << " -log_fname " << log.c_str();
 	args << " -am_models_fname " << rec_models.c_str();
 	args << " -am_sil_phone \"{s}\" ";
 	args << " -am_phone_del_pen " << rec_phone_pen;
@@ -617,13 +614,9 @@ bool RecFile::Decode( wxArrayPtrVoid params, AxProgressDlg *dlg )
 
 	if ( rec_lm_order && !rec_lm.IsEmpty() )
 	{
-		args << " -lm_fname " << musModelPtr->m_basename;
+		args << " -lm_fname " << rec_lm;
 		args << " -lm_ngram_order " << rec_lm_order;
 		args << " -lm_scaling_factor " << rec_lm_scaling;
-		//args << " -cm_no_symb";
-		//args << " -cm_no_duration";
-		//args << " -cm_no_pitch";
-		//args << " -cm_no_interval";
 	}
 	
 	if ( rec_int_prune != 0.0 )
@@ -656,7 +649,16 @@ bool RecFile::Decode( wxArrayPtrVoid params, AxProgressDlg *dlg )
 		process->Detach();
 		process->m_deleteOnTerminate = false;
 		int pid = process->GetPid();
+#ifdef __POWERPC__  & __WXMAC__
+		// on PPC machine, from Leopard (10.5), end detection of wxProcess does not work
+		// Instead, an 'end_file' is written by the external process to enable the end of 
+		// the task to be detected. This is not optimal as the file won't be written if the
+		// process fails.
+		wxLogDebug("AxProcess end detetion with a file");
+		while  ( !wxFileExists( end ) )
+#else
 		while  ( process->GetPid() == pid )
+#endif
 		{
 			wxMilliSleep( 200 );
 			if( !dlg->IncTimerOperation( ) )
@@ -676,6 +678,7 @@ bool RecFile::Decode( wxArrayPtrVoid params, AxProgressDlg *dlg )
 	}
 	dlg->EndTimerOperation( TIMER_DECODING );
 	delete process;
+
 
 
 	/*Torch::DiskXFile::setBigEndianMode() ;

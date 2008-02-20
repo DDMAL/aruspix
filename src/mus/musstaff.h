@@ -51,7 +51,7 @@ public:
 	// draw
 	void DrawStaff( wxDC *dc, int i = -1 );
 	void DrawStaffLines( wxDC *dc, int i = -1);
-	void ClearElements( wxDC *dc , MusElement *start = NULL );
+	//void ClearElements( wxDC *dc , MusElement *start = NULL );
 	MusElement *GetFirst( );
 	MusElement *GetLast(  );
 	MusElement *GetNext( MusElement *element );

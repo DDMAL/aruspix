@@ -36,8 +36,7 @@
 #define MAX_WORD_LEN 1000
 #define MAX_ORDER 10
 
-namespace Torch {
-
+using namespace Torch;
 
 /**
     This class is the main class for N-gram language modelling.
@@ -47,7 +46,7 @@ namespace Torch {
     @author Darren Moore (moore@idiap.ch)
 */
 
-class LMNGramEntry
+class MlNgramEntry
 {
 public:
     /// The order of the N-Gram
@@ -63,7 +62,7 @@ public:
     real bow ;
 
     /// Points to the start of the language model tree structure.
-    LMNGramEntry *entries ;
+    MlNgramEntry *entries ;
 	int n_entries;
 
 	//
@@ -73,13 +72,13 @@ public:
 
 	static int order;
 
-	static LMNGramEntry *root;
+	static MlNgramEntry *root;
 
     /* Constructors / destructor */
 
     /// Creates an empty N-Gram data structure. 'n_' is the N-gram order.
-    LMNGramEntry( int level_ ) ;
-    virtual ~LMNGramEntry() ;
+    MlNgramEntry( int level_ ) ;
+    virtual ~MlNgramEntry() ;
 
     /* Methods */
 
@@ -88,7 +87,7 @@ public:
 	void outputData( FILE *out_fd_, Vocabulary *vocab_ ) ;
 
 #ifdef DEBUG
-	void checkValues( int order_, char *output_ , int *words_,  LMNGramEntry *previous , Vocabulary *vocab_ );
+	void checkValues( int order_, char *output_ , int *words_,  MlNgramEntry *previous , Vocabulary *vocab_ );
 #endif
 
 	void discount( );
@@ -107,9 +106,9 @@ public:
     ///   ([w1 w2 w3] for trigram entry).
     /// 'prob' is the log probability for the entry
     /// 'bo_wt' is the log back-off weight for the entry. If order is
-    ///   equal to the LMNGramEntry order (n), then 'bo_wt' is ignored.
+    ///   equal to the MlNgramEntry order (n), then 'bo_wt' is ignored.
     //void addEntry( int order , int *words , real prob , real bo_wt=LOG_ZERO ) ;
-	LMNGramEntry *findWord( int word_, int *insert_pos_ );
+	MlNgramEntry *findWord( int word_, int *insert_pos_ );
 
     /// Finds the N-gram probability of a given word sequence, with full
     ///   backoff.
@@ -125,7 +124,5 @@ public:
 #endif
 };
 
-
-}
 
 #endif

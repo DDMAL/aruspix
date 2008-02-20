@@ -31,7 +31,7 @@
 
 // statics
 bool AxImage::s_reduceBigImages = true;
-bool AxImage::s_gray = true;
+bool AxImage::s_zoomInterpolation = true;
 int AxImage::s_imageSizeToReduce = 3000;
 bool AxImage::s_checkIfNegative = true;
 
@@ -167,7 +167,7 @@ wxBitmap AxImage::GetAxBitmap(int width, int height)
 {
 	if ((width != -1) && (height != -1))
 	{
-		wxBitmap bmp(this->ScaleInterpolate(width,height,AxImage::s_gray));
+		wxBitmap bmp(this->ScaleInterpolate(width,height,AxImage::s_zoomInterpolation));
 		//wxBitmap bmp(this->Scale(width,height));
 		return bmp;
 	}

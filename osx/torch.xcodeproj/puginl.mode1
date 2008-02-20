@@ -185,7 +185,56 @@
 	<key>Notifications</key>
 	<array/>
 	<key>OpenEditors</key>
-	<array/>
+	<array>
+		<dict>
+			<key>Content</key>
+			<dict>
+				<key>PBXProjectModuleGUID</key>
+				<string>579F65C00D6B72DB000BF8F9</string>
+				<key>PBXProjectModuleLabel</key>
+				<string>Adapter.cpp</string>
+				<key>PBXSplitModuleInNavigatorKey</key>
+				<dict>
+					<key>Split0</key>
+					<dict>
+						<key>PBXProjectModuleGUID</key>
+						<string>579F65CC0D6B7354000BF8F9</string>
+						<key>PBXProjectModuleLabel</key>
+						<string>Adapter.cpp</string>
+						<key>_historyCapacity</key>
+						<integer>0</integer>
+						<key>bookmark</key>
+						<string>579F65D30D6B7354000BF8F9</string>
+						<key>history</key>
+						<array>
+							<string>579F65CD0D6B7354000BF8F9</string>
+							<string>579F65CE0D6B7354000BF8F9</string>
+						</array>
+						<key>prevStack</key>
+						<array>
+							<string>579F65CF0D6B7354000BF8F9</string>
+							<string>579F65D00D6B7354000BF8F9</string>
+							<string>579F65D10D6B7354000BF8F9</string>
+							<string>579F65D20D6B7354000BF8F9</string>
+						</array>
+					</dict>
+					<key>SplitCount</key>
+					<string>1</string>
+				</dict>
+				<key>StatusBarVisibility</key>
+				<true/>
+			</dict>
+			<key>Geometry</key>
+			<dict>
+				<key>Frame</key>
+				<string>{{0, 20}, {1275, 1026}}</string>
+				<key>PBXModuleWindowStatusBarHidden2</key>
+				<false/>
+				<key>RubberWindowFrame</key>
+				<string>321 111 1275 1067 0 0 1920 1178 </string>
+			</dict>
+		</dict>
+	</array>
 	<key>PerspectiveWidths</key>
 	<array>
 		<integer>-1</integer>
@@ -291,7 +340,7 @@
 							<real>186</real>
 						</array>
 						<key>RubberWindowFrame</key>
-						<string>-1075 424 677 664 -1920 0 1920 1200 </string>
+						<string>138 462 677 664 0 0 1920 1178 </string>
 					</dict>
 					<key>Module</key>
 					<string>PBXSmartGroupTreeModule</string>
@@ -328,7 +377,7 @@
 								<key>Frame</key>
 								<string>{{0, 0}, {469, 0}}</string>
 								<key>RubberWindowFrame</key>
-								<string>-1075 424 677 664 -1920 0 1920 1200 </string>
+								<string>138 462 677 664 0 0 1920 1178 </string>
 							</dict>
 							<key>Module</key>
 							<string>PBXNavigatorGroup</string>
@@ -348,7 +397,7 @@
 								<key>Frame</key>
 								<string>{{0, 5}, {469, 618}}</string>
 								<key>RubberWindowFrame</key>
-								<string>-1075 424 677 664 -1920 0 1920 1200 </string>
+								<string>138 462 677 664 0 0 1920 1178 </string>
 							</dict>
 							<key>Module</key>
 							<string>XCDetailModule</string>
@@ -372,9 +421,9 @@
 			</array>
 			<key>TableOfContents</key>
 			<array>
-				<string>578B3D900D58CCCB00FD6143</string>
+				<string>579F65CA0D6B7354000BF8F9</string>
 				<string>1CE0B1FE06471DED0097A5F4</string>
-				<string>578B3D910D58CCCB00FD6143</string>
+				<string>579F65CB0D6B7354000BF8F9</string>
 				<string>1CE0B20306471E060097A5F4</string>
 				<string>1CE0B20506471E060097A5F4</string>
 			</array>
@@ -487,7 +536,7 @@
 	<key>PerspectivesBarVisible</key>
 	<false/>
 	<key>PinnedNavigatorIdentifier</key>
-	<string>57EA40230C031CE100414247</string>
+	<string>579F65C00D6B72DB000BF8F9</string>
 	<key>ShelfIsVisible</key>
 	<false/>
 	<key>SourceDescription</key>
@@ -510,13 +559,14 @@
 	<integer>5</integer>
 	<key>WindowOrderList</key>
 	<array>
-		<string>57B8FCD10AA64AD0007C93F6</string>
-		<string>578B3D990D58CCCB00FD6143</string>
+		<string>579F65DB0D6B7354000BF8F9</string>
 		<string>1CD10A99069EF8BA00B06720</string>
-		<string>/Users/puginl/projects/aruspix_gamera.0/osx/torch.xcodeproj</string>
+		<string>57B8FCD10AA64AD0007C93F6</string>
+		<string>579F65C00D6B72DB000BF8F9</string>
+		<string>/Users/puginl/projects/aruspix_1.3.0/osx/torch.xcodeproj</string>
 	</array>
 	<key>WindowString</key>
-	<string>-1075 424 677 664 -1920 0 1920 1200 </string>
+	<string>138 462 677 664 0 0 1920 1178 </string>
 	<key>WindowTools</key>
 	<array>
 		<dict>
@@ -537,7 +587,7 @@
 								<key>PBXProjectModuleGUID</key>
 								<string>1CD0528F0623707200166675</string>
 								<key>PBXProjectModuleLabel</key>
-								<string></string>
+								<string>&lt;No Editor&gt;</string>
 								<key>StatusBarVisibility</key>
 								<true/>
 							</dict>
@@ -595,7 +645,7 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>57B8FCD10AA64AD0007C93F6</string>
-				<string>578B3D920D58CCCB00FD6143</string>
+				<string>579F65D40D6B7354000BF8F9</string>
 				<string>1CD0528F0623707200166675</string>
 				<string>XCMainBuildResultsModuleGUID</string>
 			</array>
@@ -606,7 +656,7 @@
 			<key>WindowToolGUID</key>
 			<string>57B8FCD10AA64AD0007C93F6</string>
 			<key>WindowToolIsVisible</key>
-			<false/>
+			<true/>
 		</dict>
 		<dict>
 			<key>FirstTimeWindowDisplayed</key>
@@ -701,14 +751,14 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>1CD10A99069EF8BA00B06720</string>
-				<string>578B3D930D58CCCB00FD6143</string>
+				<string>579F65D50D6B7354000BF8F9</string>
 				<string>1C162984064C10D400B95A72</string>
-				<string>578B3D940D58CCCB00FD6143</string>
-				<string>578B3D950D58CCCB00FD6143</string>
-				<string>578B3D960D58CCCB00FD6143</string>
-				<string>578B3D970D58CCCB00FD6143</string>
-				<string>578B3D980D58CCCB00FD6143</string>
-				<string>578B3D990D58CCCB00FD6143</string>
+				<string>579F65D60D6B7354000BF8F9</string>
+				<string>579F65D70D6B7354000BF8F9</string>
+				<string>579F65D80D6B7354000BF8F9</string>
+				<string>579F65D90D6B7354000BF8F9</string>
+				<string>579F65DA0D6B7354000BF8F9</string>
+				<string>579F65DB0D6B7354000BF8F9</string>
 			</array>
 			<key>ToolbarConfiguration</key>
 			<string>xcode.toolbar.config.debug</string>

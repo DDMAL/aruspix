@@ -182,7 +182,7 @@ bool AxApp::OnInit()
 			int x = 140;
 			dest.DrawText( version , x, 230 );
 			dest.DrawText( build , x, 245 );
-			dest.DrawText( "Laurent Pugin, Copyright 2004-2007" , x, 260 );
+			dest.DrawText( "Laurent Pugin, Copyright 2004-2008" , x, 260 );
 			dest.DrawText( "All Rights Reserved" , x, 275 );
 
 #ifndef __AXDEBUG__		
@@ -266,6 +266,12 @@ int AxApp::OnExit()
 
     delete wxConfigBase::Set((wxConfigBase *) NULL);
     return 0;
+	
+	// clean the working directory in Release mode only
+#ifndef __AXDEBUG__		
+	if ( wxDirExists( wxGetApp().m_workingDir ) )
+		AxDirTraverser clean( wxGetApp().m_workingDir );
+#endif
 }
 
 void AxApp::AxBeginBusyCursor()

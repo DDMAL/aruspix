@@ -205,6 +205,7 @@ void MusElement::ClearElement( wxDC *dc, MusStaff *staff )
 }
 
 
+/*
 wxClientDC *MusElement::InitAndClear( MusStaff *staff )
 {
 	if ( m_w || staff ) // effacement
@@ -217,7 +218,9 @@ wxClientDC *MusElement::InitAndClear( MusStaff *staff )
 	else
 		return NULL;
 }
+*/
 
+/*
 void MusElement::DrawAndRelease( wxDC *dc, MusStaff *staff )
 {
 	if ( dc == NULL )
@@ -226,7 +229,7 @@ void MusElement::DrawAndRelease( wxDC *dc, MusStaff *staff )
 	this->Draw( dc, staff );
 	delete dc;
 }
-
+*/
 
 int MusElement::filtrcod (int codElement, int *oct)
 {	

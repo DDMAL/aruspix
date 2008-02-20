@@ -5,8 +5,8 @@
 #include "Vocabulary.h"
 #include "CmdLine.h"
 
-
-#include "LMNGramBuilder.h"
+#include "../ml/ml.h"
+#include "../ml/mlngrambuilder.h"
 
 #ifdef WIN32
 	#include <io.h>
@@ -21,10 +21,6 @@ char *lex_sent_start_word=NULL ;
 char *lex_sent_end_word=NULL ;
 char *lex_sil_word=NULL ;
 
-#define SP_START "SP_START"
-#define SP_END "SP_END"
-#define SP_WORD "SP"
-
 // Language Model Parameters
 int lm_ngram_order=0 ;
 char *input_wrdtrns_fname=NULL ;
@@ -33,6 +29,8 @@ char *output_fname=NULL ;
 char *data_fname=NULL ;
 char *log_fname=NULL ;
 char *reload_data_fname=NULL ;
+
+char *end_fname=NULL ; // file to notify the end of the process
 
 bool dec_verbose=false ;
 
@@ -65,6 +63,8 @@ void processCmdLine( CmdLine *cmd , int argc , char *argv[] )
                         "the data output file" ) ;
 	cmd->addSCmdOption( "-log_fname" , &log_fname , "",
                         "the log output file, standard output if none" ) ;
+	cmd->addSCmdOption( "-end_fname" , &end_fname , "", 
+						"File used to notify the end of the process. Used to avoid a bug in Mac 10.5 that cannot be fixed" ) ;
 
     cmd->read( argc , argv ) ;
         
@@ -100,12 +100,18 @@ int main( int argc , char *argv[] )
     Vocabulary vocabulary ( input_dict_fname , lex_sent_start_word , 
                                             lex_sent_end_word , lex_sil_word ) ;
 
-	LMNGramBuilder ngram( lm_ngram_order, &vocabulary );
+	MlNgramBuilder ngram( lm_ngram_order, &vocabulary );
 	
 	if ( strlen( reload_data_fname ) )
 		ngram.reloadFile( reload_data_fname );
 		
 	ngram.loadFile( input_wrdtrns_fname, output_fname, data_fname);
+	
+	if ( strlen( end_fname ) )
+	{
+		FILE *out_fd = fopen( end_fname, "w"  );
+		fclose( out_fd );
+	}
  
     return(0) ;
 }

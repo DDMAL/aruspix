@@ -303,8 +303,8 @@ void AxFrame::LoadConfig()
     pConfig->SetPath("/");
     // frame size and position
     int val1,val2;
-    pConfig->Read("Width",&val1,700);
-    pConfig->Read("Height",&val2,500);
+    pConfig->Read("Width",&val1,800);
+    pConfig->Read("Height",&val2,650);
     this->SetSize(val1,val2);
     pConfig->Read("PX",&val1,50);
     pConfig->Read("PY",&val2,50);
@@ -313,7 +313,7 @@ void AxFrame::LoadConfig()
         this->Maximize();
 
     //images
-    AxImage::s_gray = (pConfig->Read("Gray",1)==1);
+    AxImage::s_zoomInterpolation = (pConfig->Read("Gray",0L)==1);
     AxImage::s_reduceBigImages = (pConfig->Read("ReduceBigImages",0L)==1);
     AxImage::s_imageSizeToReduce = pConfig->Read("ImageSizeToReduce",3000);
 	AxImage::s_checkIfNegative = (pConfig->Read("ImageCheckIfNegative",0L)==1);
@@ -408,7 +408,7 @@ void AxFrame::SaveConfig(int lastEnvId)
     pConfig->Write("EnvID",lastEnvId);
 
     // images
-    pConfig->Write("Gray", AxImage::s_gray);
+    pConfig->Write("Gray", AxImage::s_zoomInterpolation);
     pConfig->Write("ReduceBigImages", AxImage::s_reduceBigImages);
     pConfig->Write("ImageSizeToReduce", AxImage::s_imageSizeToReduce);
 	pConfig->Write("ImageCheckIfNegative", AxImage::s_checkIfNegative);
