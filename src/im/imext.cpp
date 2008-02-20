@@ -22,6 +22,8 @@
 //#define 	max(a, b)   ((a)>(b)?(a):(b))
 
 
+
+
 // Function taken from im_convolve_rank.cpp in imlib
 template <class T, class DT> 
 static int DoConvolveRankFunc(T *map, DT* new_map, int width, int height, int kw, int kh, DT (*func)(T* value, int count, int center), int counter)

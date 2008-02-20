@@ -79,7 +79,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib comctl32.lib rpcrt4.lib wsock32.lib /nologo /subsystem:windows /debug /machine:I386 /pdbtype:sept
-# ADD LINK32 wxmsw26d_core.lib wxbase26d.lib wxmsw26d_html.lib wxtiffd.lib wxpngd.lib wxjpegd.lib wxzlibd.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib comctl32.lib rpcrt4.lib wsock32.lib im.lib im_process.lib im_fftw.lib tinyxmld.lib /nologo /subsystem:windows /pdb:none /debug /machine:I386 /nodefaultlib:"libc.lib" /nodefaultlib:"libcd.lib" /out:"../bin/AruspixD.exe" /libpath:"D:\libs\im3.0\lib\dll" /libpath:"D:\libs\tinyxml\Debug"
+# ADD LINK32 wxmsw28d_core.lib wxbase28d.lib wxmsw28d_html.lib wxtiffd.lib wxpngd.lib wxjpegd.lib wxzlibd.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib comctl32.lib rpcrt4.lib wsock32.lib im.lib im_process.lib im_fftw.lib tinyxmld.lib /nologo /subsystem:windows /pdb:none /debug /machine:I386 /nodefaultlib:"libc.lib" /nodefaultlib:"libcd.lib" /out:"../bin/AruspixD.exe" /libpath:"D:\libs\im3.0\lib\dll" /libpath:"D:\libs\tinyxml\Debug"
 # SUBTRACT LINK32 /nodefaultlib
 
 !ENDIF 
@@ -532,6 +532,10 @@ SOURCE=..\src\im\imext.cpp
 
 !ENDIF 
 
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\im\imkmeans.cpp
 # End Source File
 # Begin Source File
 
@@ -1395,10 +1399,6 @@ SOURCE=.\..\app\wx\msw\folder2.ico
 # Begin Source File
 
 SOURCE=.\..\app\wx\msw\hand.cur
-# End Source File
-# Begin Source File
-
-SOURCE=..\src\im\imkmeans.c
 # End Source File
 # Begin Source File
 
