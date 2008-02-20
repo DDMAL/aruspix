@@ -25,21 +25,21 @@
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 //#include "Allocator.h"
-#include "LMNGramBuilder.h"
+#include "MlNgramBuilder.h"
 
 #include <stdlib.h>
 #include <stdio.h>
 
-namespace Torch {
+using namespace Torch;
 
 
-LMNGramBuilder::LMNGramBuilder( int order_ ,  Vocabulary *vocab_ )
+MlNgramBuilder::MlNgramBuilder( int order_ ,  Vocabulary *vocab_ )
 {
 #ifdef DEBUG
     if ( order_ < 1 )
-        error("::LMNGramBuilder - order_ cannot be < 1\n") ;
+        error("::MlNgramBuilder - order_ cannot be < 1\n") ;
     if ( order_ > MAX_ORDER)
-        error("::LMNGramBuilder - order_ cannot be > MAX_ORDER\n") ;
+        error("::MlNgramBuilder - order_ cannot be > MAX_ORDER\n") ;
 #endif
 	
 	int i;
@@ -48,7 +48,7 @@ LMNGramBuilder::LMNGramBuilder( int order_ ,  Vocabulary *vocab_ )
     vocab = vocab_ ;
 	root = NULL;
 
-	root = (LMNGramEntry*)allocator->alloc( sizeof(LMNGramEntry) );
+	root = (MlNgramEntry*)allocator->alloc( sizeof(MlNgramEntry) );
 	root->n_entries = 0;
 	root->count = 0;
 	root->level = 0;
@@ -56,27 +56,27 @@ LMNGramBuilder::LMNGramBuilder( int order_ ,  Vocabulary *vocab_ )
 
 	// static values
 	// array of int for count at each level
-	LMNGramEntry::ngram_count = (int*)allocator->alloc( order * sizeof(int) );
-	memset( LMNGramEntry::ngram_count, 0, order * sizeof(int) );
+	MlNgramEntry::ngram_count = (int*)allocator->alloc( order * sizeof(int) );
+	memset( MlNgramEntry::ngram_count, 0, order * sizeof(int) );
 	// NGram order (highest level)
-	LMNGramEntry::order = order;
+	MlNgramEntry::order = order;
 	// root
-	LMNGramEntry::root = root;
+	MlNgramEntry::root = root;
 
 	// Init with all vocabulary entries
 	root->n_entries = vocab->n_words;
-    root->entries = (LMNGramEntry*)allocator->alloc( (vocab->n_words)*sizeof(LMNGramEntry) ) ;
-	LMNGramEntry empty( 1 ); // for values initilization
+    root->entries = (MlNgramEntry*)allocator->alloc( (vocab->n_words)*sizeof(MlNgramEntry) ) ;
+	MlNgramEntry empty( 1 ); // for values initilization
 	for (i = 0; i < root->n_entries; i++)
 	{
-		(LMNGramEntry::ngram_count[0])++;
+		(MlNgramEntry::ngram_count[0])++;
 		root->entries[i] = empty; // initilization is not done by the allocator
 		root->entries[i].word = i;
 	}
 }
 
 
-void LMNGramBuilder::loadFile( const char *wrdtrns_fname, const char *output_fname, const char *data_fname  )
+void MlNgramBuilder::loadFile( const char *wrdtrns_fname, const char *output_fname, const char *data_fname  )
 {
 	char line[1000], res_word[1000];
 	int size;
@@ -86,11 +86,11 @@ void LMNGramBuilder::loadFile( const char *wrdtrns_fname, const char *output_fna
 
     wrdtrns_fd = fopen( wrdtrns_fname , "r" ) ;
     if ( wrdtrns_fd == NULL )
-        error("LMNGramBuilder::LMNGramBuilder - error opening wrdtrns file") ;
+        error("MlNgramBuilder::MlNgramBuilder - error opening wrdtrns file") ;
 
 	fgets( line , 1000 , wrdtrns_fd ) ;
     if ( !strstr( line , "MLF" ) )
-		error("LMNGramBuilder::LMNGramBuilder - error opening wrdtrns file is not a HTK MLF file") ;
+		error("MlNgramBuilder::MlNgramBuilder - error opening wrdtrns file is not a HTK MLF file") ;
 
 
 	size = 0;
@@ -183,7 +183,7 @@ void LMNGramBuilder::loadFile( const char *wrdtrns_fname, const char *output_fna
 }
 
 
-void LMNGramBuilder::reloadFile( const char *fname )
+void MlNgramBuilder::reloadFile( const char *fname )
 {
 	
 	char line[1000], res_word[1000];
@@ -193,16 +193,16 @@ void LMNGramBuilder::reloadFile( const char *fname )
 	
     fname_fd = fopen( fname , "r" ) ;
     if ( fname_fd == NULL )
-        error("LMNGramBuilder::relaodFile - error opening wrdtrns file") ;
+        error("MlNgramBuilder::relaodFile - error opening wrdtrns file") ;
 
 	fgets( line , 1000 , fname_fd ) ;
     if ( !strstr( line , "NGRAM" ) )
-		error("LMNGramBuilder::relaodFile - error opening wrdtrns file is not a NGRAM file") ;
+		error("MlNgramBuilder::relaodFile - error opening wrdtrns file is not a NGRAM file") ;
 		
     sscanf( line , "# %s %d" , res_word, &level ) ;
 	if ( level < order )
 	{
-		warning("LMNGramBuilder::relaodFile - order of previous model is smaller, order reduced to it") ;
+		warning("MlNgramBuilder::relaodFile - order of previous model is smaller, order reduced to it") ;
 		order = level;
 	}
 
@@ -233,12 +233,12 @@ void LMNGramBuilder::reloadFile( const char *fname )
 }
 
 
-LMNGramBuilder::~LMNGramBuilder()
+MlNgramBuilder::~MlNgramBuilder()
 {
 }
 
 
-void LMNGramBuilder::saveData( const char *data_fname )
+void MlNgramBuilder::saveData( const char *data_fname )
 {
 	FILE *out_fd = NULL;
 	int i;
@@ -248,7 +248,7 @@ void LMNGramBuilder::saveData( const char *data_fname )
 
 	out_fd = fopen( data_fname, "w" );
 	if ( out_fd == NULL )
-		error("LMNGramBuilder::saveData - error opening data file") ;
+		error("MlNgramBuilder::saveData - error opening data file") ;
 	
 	// header
 	fprintf( out_fd, "# NGRAM %d\n", order );
@@ -261,7 +261,7 @@ void LMNGramBuilder::saveData( const char *data_fname )
 	fclose( out_fd );
 }
 
-void LMNGramBuilder::printGram( const char *output_fname )
+void MlNgramBuilder::printGram( const char *output_fname )
 {	
 	FILE *out_fd = NULL;
 	int i, j;
@@ -272,12 +272,12 @@ void LMNGramBuilder::printGram( const char *output_fname )
 
 	out_fd = fopen( output_fname, "w" );
 	if ( out_fd == NULL )
-		error("LMNGramBuilder::printGram - error opening output file") ;
+		error("MlNgramBuilder::printGram - error opening output file") ;
 	
 	// ARPA header
 	fprintf( out_fd, "\\data\\\n");
 	for (j = 0; j < order; j++)
-		fprintf( out_fd, "ngram %d=%d\n", j+1, LMNGramEntry::ngram_count[j] );
+		fprintf( out_fd, "ngram %d=%d\n", j+1, MlNgramEntry::ngram_count[j] );
 	fprintf( out_fd, "\n");
 
 	for (j = 0; j < order; j++)
@@ -299,7 +299,7 @@ void LMNGramBuilder::printGram( const char *output_fname )
 }
 
 #ifdef DEBUG
-void LMNGramBuilder::checkGram( )
+void MlNgramBuilder::checkGram( )
 {
 
 	if ( !root )
@@ -327,7 +327,7 @@ void LMNGramBuilder::checkGram( )
 #endif
 
 #ifdef DEBUG
-void LMNGramBuilder::outputText( )
+void MlNgramBuilder::outputText( )
 {
 	if ( !root )
 		return;
@@ -341,5 +341,3 @@ void LMNGramBuilder::outputText( )
 }
 #endif
 
-
-}

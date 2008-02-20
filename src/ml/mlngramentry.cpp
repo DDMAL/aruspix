@@ -25,20 +25,20 @@
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "Allocator.h"
-#include "LMNGramEntry.h"
+#include "MlNgramEntry.h"
 
-namespace Torch {
+using namespace Torch;
 
-int *LMNGramEntry::ngram_count = NULL ;
-int LMNGramEntry::order = 1;
-LMNGramEntry *LMNGramEntry::root = NULL ;
+int *MlNgramEntry::ngram_count = NULL ;
+int MlNgramEntry::order = 1;
+MlNgramEntry *MlNgramEntry::root = NULL ;
 
 
-LMNGramEntry::LMNGramEntry( int level_ )
+MlNgramEntry::MlNgramEntry( int level_ )
 {
 #ifdef DEBUG
     if ( level_ < 1 )
-        error("LMNGramEntry::LMNGramEntry - level_ cannot be < 1\n") ;
+        error("MlNgramEntry::MlNgramEntry - level_ cannot be < 1\n") ;
 #endif
 
 	level = level_;
@@ -50,17 +50,17 @@ LMNGramEntry::LMNGramEntry( int level_ )
 }
 
 
-LMNGramEntry::~LMNGramEntry()
+MlNgramEntry::~MlNgramEntry()
 {
 }
 
-real LMNGramEntry::getProb( int *words_, int level_ )
+real MlNgramEntry::getProb( int *words_, int level_ )
 {
 	int insert;
 	if ( n_entries == 0 )
 		return 0;
 
-	LMNGramEntry *entry ;
+	MlNgramEntry *entry ;
 	if ( (entry = this->findWord( words_[0], &insert )) == NULL )
 		return 0;
 		
@@ -71,13 +71,13 @@ real LMNGramEntry::getProb( int *words_, int level_ )
 }
 
 
-real LMNGramEntry::getBow( int *words_, int level_ )
+real MlNgramEntry::getBow( int *words_, int level_ )
 {
 	int insert;
 	if ( n_entries == 0 )
 		return 0;
 
-	LMNGramEntry *entry ;
+	MlNgramEntry *entry ;
 	if ( (entry = this->findWord( words_[0], &insert )) == NULL )
 		return 0;
 		
@@ -88,7 +88,7 @@ real LMNGramEntry::getBow( int *words_, int level_ )
 }
 
 
-void LMNGramEntry::discount()
+void MlNgramEntry::discount()
 {
 	int i;
 
@@ -107,7 +107,7 @@ void LMNGramEntry::discount()
 	}
 }
 
-void LMNGramEntry::backoff( int *words_, int level_ )
+void MlNgramEntry::backoff( int *words_, int level_ )
 {
 	int i, j;
 
@@ -140,7 +140,7 @@ void LMNGramEntry::backoff( int *words_, int level_ )
 }
 
 
-void LMNGramEntry::printValues( FILE *out_fd_, int order_, char *output_ , Vocabulary *vocab_ )
+void MlNgramEntry::printValues( FILE *out_fd_, int order_, char *output_ , Vocabulary *vocab_ )
 {
 	int i;
 	int len = MAX_WORD_LEN * (level + 1);
@@ -153,7 +153,7 @@ void LMNGramEntry::printValues( FILE *out_fd_, int order_, char *output_ , Vocab
 
 	if ( level == order_ )
 	{
-		if ( level == LMNGramEntry::order )
+		if ( level == MlNgramEntry::order )
 			// Last level - no bow
 			fprintf( out_fd_, "%.09f %s\n", log10( prob ), output);
 			//print( "%.09f %s\n", ( prob ), output);
@@ -176,7 +176,7 @@ void LMNGramEntry::printValues( FILE *out_fd_, int order_, char *output_ , Vocab
 }
 
 #ifdef DEBUG
-void LMNGramEntry::checkValues( int order_, char *output_ , int *words_, LMNGramEntry *previous , Vocabulary *vocab_ )
+void MlNgramEntry::checkValues( int order_, char *output_ , int *words_, MlNgramEntry *previous , Vocabulary *vocab_ )
 {
 	if ( order_ == 0 )
 		return; // don't check first level - nothing to check
@@ -197,7 +197,7 @@ void LMNGramEntry::checkValues( int order_, char *output_ , int *words_, LMNGram
 		{
 			words_[ 1 ] = i;
 			int insert;
-			LMNGramEntry *entry ;
+			MlNgramEntry *entry ;
 			if ( (entry = this->findWord( i, &insert )) == NULL )
 			{
 				real p = previous->getProb( words_ + 1, level );
@@ -223,20 +223,20 @@ void LMNGramEntry::checkValues( int order_, char *output_ , int *words_, LMNGram
 }
 #endif
 
-void LMNGramEntry::addWords( int *words_, int size, Allocator *allocator, int number )
+void MlNgramEntry::addWords( int *words_, int size, Allocator *allocator, int number )
 {
 	int insert;
-	LMNGramEntry *new_entry ;
+	MlNgramEntry *new_entry ;
 	if ( (new_entry = this->findWord( words_[0], &insert )) == NULL )
     {
         // No we don't so we need to create an entry and add it to our 'entries' array.
-        entries = (LMNGramEntry*)allocator->realloc( entries , 
-                                         (n_entries+1)*sizeof(LMNGramEntry) ) ;
+        entries = (MlNgramEntry*)allocator->realloc( entries , 
+                                         (n_entries+1)*sizeof(MlNgramEntry) ) ;
 
 		//if ( size == 0)
-			(LMNGramEntry::ngram_count[level])++;
+			(MlNgramEntry::ngram_count[level])++;
 
-        LMNGramEntry tmp_entry( level + 1 );
+        MlNgramEntry tmp_entry( level + 1 );
 		tmp_entry.word = words_[0];
 
         // If the list is empty, just insert it straight off.  Also
@@ -249,7 +249,7 @@ void LMNGramEntry::addWords( int *words_, int size, Allocator *allocator, int nu
         else
         {
             // Place in the list of words at the insert position retruned by findWord
-            memmove( entries+insert+1 , entries+insert , (n_entries-insert)*sizeof(LMNGramEntry) ) ;
+            memmove( entries+insert+1 , entries+insert , (n_entries-insert)*sizeof(MlNgramEntry) ) ;
             entries[insert] = tmp_entry ;
 			new_entry = &entries[insert];
         }
@@ -266,7 +266,7 @@ void LMNGramEntry::addWords( int *words_, int size, Allocator *allocator, int nu
 	}
 }
 
-LMNGramEntry *LMNGramEntry::findWord( int word_ , int *insert_pos_ )
+MlNgramEntry *MlNgramEntry::findWord( int word_ , int *insert_pos_ )
 {
     // We assume that the list of words is in ascending order so 
     //   that we can do a binary search.
@@ -319,7 +319,7 @@ LMNGramEntry *LMNGramEntry::findWord( int word_ , int *insert_pos_ )
     }
 }
 
-void LMNGramEntry::outputData( FILE *out_fd_, Vocabulary *vocab_ )
+void MlNgramEntry::outputData( FILE *out_fd_, Vocabulary *vocab_ )
 {
 	int i;
 
@@ -333,7 +333,7 @@ void LMNGramEntry::outputData( FILE *out_fd_, Vocabulary *vocab_ )
 }
 
 #ifdef DEBUG
-void LMNGramEntry::outputText( Vocabulary *vocab_ )
+void MlNgramEntry::outputText( Vocabulary *vocab_ )
 {
 	int i;
 
@@ -349,5 +349,3 @@ void LMNGramEntry::outputText( Vocabulary *vocab_ )
 }
 #endif
 
-
-}

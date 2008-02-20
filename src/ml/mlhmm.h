@@ -44,9 +44,7 @@
 #include "PhoneInfo.h"
 #include "MAPDiagonalGMM.h"
 
-#define SP_START "SP_START"
-#define SP_END "SP_END"
-#define SP_WORD "SP"
+#include "ml.h"
 
 using namespace Torch;
 
@@ -56,7 +54,7 @@ using namespace Torch;
 
     @author Laurent Pugin (laurent.pugin@lettres.unige.ch)
 */
-class AruspixHMM : public Object
+class MlHMM : public Object
 {
 public:
 	
@@ -105,7 +103,7 @@ public:
 	bool adapt_separate;
 	bool adapt_separate_set_data;
 	
-    AruspixHMM( );
+    MlHMM( );
 	
 	virtual void setLexicon( const char *model_fname_, const char *spacing_model_ , const char *lex_fname_ , const char *sent_start_symbol_=NULL );
 				 
@@ -139,7 +137,7 @@ public:
 	
 	void virtual writeHTK(const char* filename, SpeechHMM* shmm, char**phonemes );
 
-    virtual ~AruspixHMM();
+    virtual ~MlHMM();
 };
 
 

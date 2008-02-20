@@ -28,9 +28,6 @@
 		4D3A8FFD0D35867200BBC1FB /* muswindow.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D3A8FEB0D35867200BBC1FB /* muswindow.cpp */; };
 		4D7362820D35C7D30030DFA6 /* recmus.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D7362800D35C7D30030DFA6 /* recmus.cpp */; };
 		4D7362A40D35CECC0030DFA6 /* cmpmus.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D7362A20D35CECC0030DFA6 /* cmpmus.cpp */; };
-		4DFEF4BF0D4952F9005ED3B7 /* mldecoder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4DFEF4BD0D4952F9005ED3B7 /* mldecoder.cpp */; };
-		4DFEF5D70D496BA9005ED3B7 /* mldecoderpage.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4DFEF5D40D496BA9005ED3B7 /* mldecoderpage.cpp */; };
-		4DFEF5D80D496BA9005ED3B7 /* mldecoderstaff.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4DFEF5D50D496BA9005ED3B7 /* mldecoderstaff.cpp */; };
 		5736CE550C354E4A00254E7B /* cmp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5736CE460C354E4A00254E7B /* cmp.cpp */; };
 		5736CE570C354E4A00254E7B /* cmp_wdr.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5736CE490C354E4A00254E7B /* cmp_wdr.cpp */; };
 		5736CE580C354E4A00254E7B /* cmpctrl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5736CE4B0C354E4A00254E7B /* cmpctrl.cpp */; };
@@ -124,12 +121,6 @@
 		4D7362810D35C7D30030DFA6 /* recmus.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = recmus.h; sourceTree = "<group>"; };
 		4D7362A20D35CECC0030DFA6 /* cmpmus.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = cmpmus.cpp; sourceTree = "<group>"; };
 		4D7362A30D35CECC0030DFA6 /* cmpmus.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = cmpmus.h; sourceTree = "<group>"; };
-		4DFEF4BC0D4952F9005ED3B7 /* ml.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = ml.h; path = ../src/ml/ml.h; sourceTree = SOURCE_ROOT; };
-		4DFEF4BD0D4952F9005ED3B7 /* mldecoder.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = mldecoder.cpp; path = ../src/ml/mldecoder.cpp; sourceTree = SOURCE_ROOT; };
-		4DFEF4BE0D4952F9005ED3B7 /* mldecoder.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = mldecoder.h; path = ../src/ml/mldecoder.h; sourceTree = SOURCE_ROOT; };
-		4DFEF5D40D496BA9005ED3B7 /* mldecoderpage.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = mldecoderpage.cpp; path = ../src/ml/mldecoderpage.cpp; sourceTree = SOURCE_ROOT; };
-		4DFEF5D50D496BA9005ED3B7 /* mldecoderstaff.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = mldecoderstaff.cpp; path = ../src/ml/mldecoderstaff.cpp; sourceTree = SOURCE_ROOT; };
-		4DFEF5D60D496BA9005ED3B7 /* mldecoderstaff.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = mldecoderstaff.h; path = ../src/ml/mldecoderstaff.h; sourceTree = SOURCE_ROOT; };
 		5736CE460C354E4A00254E7B /* cmp.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = cmp.cpp; sourceTree = "<group>"; };
 		5736CE470C354E4A00254E7B /* cmp.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = cmp.h; sourceTree = "<group>"; };
 		5736CE490C354E4A00254E7B /* cmp_wdr.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = cmp_wdr.cpp; sourceTree = "<group>"; };
@@ -276,19 +267,6 @@
 			name = mus;
 			sourceTree = "<group>";
 		};
-		4DFEF4BB0D4952D1005ED3B7 /* ml */ = {
-			isa = PBXGroup;
-			children = (
-				4DFEF5D40D496BA9005ED3B7 /* mldecoderpage.cpp */,
-				4DFEF5D50D496BA9005ED3B7 /* mldecoderstaff.cpp */,
-				4DFEF5D60D496BA9005ED3B7 /* mldecoderstaff.h */,
-				4DFEF4BC0D4952F9005ED3B7 /* ml.h */,
-				4DFEF4BD0D4952F9005ED3B7 /* mldecoder.cpp */,
-				4DFEF4BE0D4952F9005ED3B7 /* mldecoder.h */,
-			);
-			name = ml;
-			sourceTree = "<group>";
-		};
 		5736CE450C354E4A00254E7B /* comparison */ = {
 			isa = PBXGroup;
 			children = (
@@ -316,7 +294,6 @@
 			children = (
 				A585244E0A1B9603002D9D8A /* app */,
 				A5D0D4AB0A65628800A4B1CA /* im */,
-				4DFEF4BB0D4952D1005ED3B7 /* ml */,
 				4D3A8FCD0D3585AB00BBC1FB /* mus */,
 				A58524970A1B9604002D9D8A /* tinyxml */,
 				5736CE450C354E4A00254E7B /* comparison */,
@@ -620,9 +597,6 @@
 				4D3A8FFD0D35867200BBC1FB /* muswindow.cpp in Sources */,
 				4D7362820D35C7D30030DFA6 /* recmus.cpp in Sources */,
 				4D7362A40D35CECC0030DFA6 /* cmpmus.cpp in Sources */,
-				4DFEF4BF0D4952F9005ED3B7 /* mldecoder.cpp in Sources */,
-				4DFEF5D70D496BA9005ED3B7 /* mldecoderpage.cpp in Sources */,
-				4DFEF5D80D496BA9005ED3B7 /* mldecoderstaff.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

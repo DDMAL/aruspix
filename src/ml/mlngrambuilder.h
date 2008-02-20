@@ -26,13 +26,14 @@
 
 #ifndef LMNGRAMBUILDER_INC
 #define LMNGRAMBUILDER_INC
-
+// torch
 #include "general.h"
 #include "log_add.h"
 #include "Vocabulary.h"
-#include "LMNGramEntry.h"
 
-namespace Torch {
+#include "mlngramentry.h"
+
+using namespace Torch;
 
 
 /**
@@ -43,21 +44,21 @@ namespace Torch {
     @author Laurent Pugin (laurent.pugin@lettres.unige.ch)
 */
 
-class LMNGramBuilder : public Object
+class MlNgramBuilder : public Object
 {
 public:
     /// The order of the N-Gram
     int order ;
     Vocabulary *vocab ;
 
-	//LMNGramEntry *entries;
-	LMNGramEntry *root;
+	//MlNgramEntry *entries;
+	MlNgramEntry *root;
 
     /* Constructors / destructor */
 
     /// Creates an empty N-Gram data structure. 'n_' is the N-gram order.
-    LMNGramBuilder( int n_ , Vocabulary *vocab_ ) ;
-    virtual ~LMNGramBuilder() ;
+    MlNgramBuilder( int n_ , Vocabulary *vocab_ ) ;
+    virtual ~MlNgramBuilder() ;
 
     /* Methods */
 	
@@ -76,7 +77,7 @@ public:
     ///   ([w1 w2 w3] for trigram entry).
     /// 'prob' is the log probability for the entry
     /// 'bo_wt' is the log back-off weight for the entry. If order is
-    ///   equal to the LMNGramBuilder order (n), then 'bo_wt' is ignored.
+    ///   equal to the MlNgramBuilder order (n), then 'bo_wt' is ignored.
     //void addEntry( int order , int *words , real prob , real bo_wt=LOG_ZERO ) ;
 
     /// Finds the N-gram probability of a given word sequence, with full
@@ -95,7 +96,5 @@ public:
 #endif
 };
 
-
-}
 
 #endif

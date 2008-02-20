@@ -140,7 +140,7 @@ void AxOptionsDlg::OptionsDlgStandard( wxNotebook *notebook )
 	
 	// Images
     this->GetCbGrayOpi()->SetValidator(
-        wxGenericValidator(&AxImage::s_gray));
+        wxGenericValidator(&AxImage::s_zoomInterpolation));
     this->GetCbReduceOpi()->SetValidator(
         wxGenericValidator(&AxImage::s_reduceBigImages));
     m_imageSizeToReduceStr = wxString::Format("%d",AxImage::s_imageSizeToReduce);
@@ -297,7 +297,7 @@ void AxOptionsDlg::OnSpinCtrl( wxSpinEvent &event )
 // -------------------------------------------------------------
 #include "wx/fontenum.h"
 
-class MyFontEnumerator : public wxFontEnumerator
+class AxFontEnumerator : public wxFontEnumerator
 {
 public:
     bool GotAny() const
@@ -324,7 +324,7 @@ void AxOptionsDlg::OnChooseFont( wxCommandEvent &event )
 {
 
 #ifdef __WXMAC__ && !wxCHECK_VERSION(2,8,3)
-    MyFontEnumerator fontEnumerator;
+    AxFontEnumerator fontEnumerator;
 	wxString facename;
     fontEnumerator.EnumerateFacenames( wxFONTENCODING_CP1252 );
 	//fontEnumerator.EnumerateFacenames( wxFONTENCODING_SYSTEM );

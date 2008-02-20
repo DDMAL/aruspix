@@ -11,55 +11,10 @@ HMM Adaptation (c) Laurent Pugin 2007\n";
 	#include <unistd.h>
 #endif
 
-#include "AruspixHMM.h"
+#include "../ml/mlhmm.h"
 
 using namespace Torch;
 
-//#include "Common.h"
-/*
-void newMAPSpeechHMM( SpeechHMM *shmm, real* thresh, real prior, Allocator* allocator, int max )
-{
-	MAPDiagonalGMM*** gmms = (MAPDiagonalGMM ***)allocator->alloc(sizeof(MAPDiagonalGMM**)*shmm->n_models);
-	DiagonalGMM** priors = NULL;
-
-	for (int i=0;i<shmm->n_models;i++) 
-	{
-		int states = shmm->models[i]->n_states;
-		priors = (DiagonalGMM**)shmm->models[i]->states;
-		gmms[i] = (MAPDiagonalGMM**)allocator->alloc(sizeof(MAPDiagonalGMM*)*states);
-		for (int j=1;j<states-1;j++) 
-		{
-			MAPDiagonalGMM* gmm = new(allocator)MAPDiagonalGMM(priors[j]);
-			// set the training options
-			if (thresh)
-				gmm->setVarThreshold(thresh);
-			if (prior>0)
-				gmm->setROption("prior weights",prior);
-		
-			//gmm->setROption("weight on prior",map_factor);
-			//gmm->setBOption("learn means",!no_learn_means);
-			//gmm->setBOption("learn variances",learn_var);
-			//gmm->setBOption("learn weights",learn_weights);
-			gmm->setROption("weight on prior", 0.5 );
-			gmm->setBOption("learn means",true);
-			if ( i < max )
-			{
-				//gmm->setBOption("learn variances",true);
-				//gmm->setBOption("learn weights",true);			
-			}
-			//gmm->setBOption("learn variances",true);
-			//gmm->setBOption("learn weights",true);
-			gmms[i][j] = gmm;
-		}
-
-		gmms[i][0] = NULL;
-		gmms[i][states-1] = NULL;
-
-		shmm->models[i]->states = (Distribution**)gmms[i];
-		
-		}
-}
-*/
 
 int main(int argc, char **argv)
 {
@@ -214,53 +169,53 @@ int main(int argc, char **argv)
     real total_time = 0.0 ;
     start_time = clock() ;
 	
-	AruspixHMM ahmm;
+	MlHMM hmm;
 	
 	//==================================================================== 
 	//=================== Set Options ====================================
 	//====================================================================
 	
 	// initialization
-	ahmm.setIOption("number of gaussians", n_gaussians );
-	ahmm.setIOption("number of states", n_states );
-	ahmm.setBOption("train separate", train_separate );
+	hmm.setIOption("number of gaussians", n_gaussians );
+	hmm.setIOption("number of states", n_states );
+	hmm.setBOption("train separate", train_separate );
 	
 	// data
-	ahmm.setBOption("is symbol", is_symbol );
-	ahmm.setBOption("add spacing", add_space_to_targets );
-	ahmm.setIOption("max load", max_load );
-	ahmm.setBOption("disk", disk );
+	hmm.setBOption("is symbol", is_symbol );
+	hmm.setBOption("add spacing", add_space_to_targets );
+	hmm.setIOption("max load", max_load );
+	hmm.setBOption("disk", disk );
 
 	// training
-	ahmm.setROption("accuracy", accuracy );
-	ahmm.setROption("threshold", threshold );
-	ahmm.setIOption("iterations", max_iter );
-	ahmm.setROption("prior", prior );
-	ahmm.setBOption("viterbi", viterbi );
+	hmm.setROption("accuracy", accuracy );
+	hmm.setROption("threshold", threshold );
+	hmm.setIOption("iterations", max_iter );
+	hmm.setROption("prior", prior );
+	hmm.setBOption("viterbi", viterbi );
 	
 	// map
-	ahmm.setROption("map factor", map_factor );
-	ahmm.setBOption("no means", no_learn_means );
-	ahmm.setBOption("learn var", learn_var );
-	ahmm.setBOption("learn weights", learn_weights );
-	ahmm.setBOption("adapt separate", adapt_separate );
-	ahmm.setBOption("adapt separate set data", adapt_separate_set_data );
+	hmm.setROption("map factor", map_factor );
+	hmm.setBOption("no means", no_learn_means );
+	hmm.setBOption("learn var", learn_var );
+	hmm.setBOption("learn weights", learn_weights );
+	hmm.setBOption("adapt separate", adapt_separate );
+	hmm.setBOption("adapt separate set data", adapt_separate_set_data );
 	
-	ahmm.setLexicon( model_name1, spacing_model, lex_name1, add_space_to_targets ? sent_start_symbol : NULL );
+	hmm.setLexicon( model_name1, spacing_model, lex_name1, add_space_to_targets ? sent_start_symbol : NULL );
 
-	ahmm.mapSetDataLexicon( model_name2, lex_name2, model_name3, lex_name3 );
+	hmm.mapSetDataLexicon( model_name2, lex_name2, model_name3, lex_name3 );
 
 	//==================================================================== 
 	//=================== Create the DataSet ... =========================
 	//==================================================================== 
 	
-	ahmm.setData( input_file_list.file_names, input_file_list.n_files, target_file_list.file_names, target_file_list.n_files );
+	hmm.setData( input_file_list.file_names, input_file_list.n_files, target_file_list.file_names, target_file_list.n_files );
 	
-	ahmm.mapInit( file_states );
+	hmm.mapInit( file_states );
 	
 	char* n_nll = strConcat(2,"hmm_train_val_",viterbi ? "viterbi" : "em");
 	allocator->retain(n_nll);
-	ahmm.mapAdapt( model_file_in, model_file_out, cmd.getXFile(n_nll) );
+	hmm.mapAdapt( model_file_in, model_file_out, cmd.getXFile(n_nll) );
 	
 	end_time = clock() ;
     total_time = (real)(end_time-start_time) / CLOCKS_PER_SEC ;

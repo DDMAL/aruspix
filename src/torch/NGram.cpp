@@ -5,8 +5,8 @@
 #include "Vocabulary.h"
 #include "CmdLine.h"
 
-
-#include "LMNGramBuilder.h"
+#include "../ml/ml.h"
+#include "../ml/mlngrambuilder.h"
 
 #ifdef WIN32
 	#include <io.h>
@@ -20,10 +20,6 @@ using namespace Torch ;
 char *lex_sent_start_word=NULL ;
 char *lex_sent_end_word=NULL ;
 char *lex_sil_word=NULL ;
-
-#define SP_START "SP_START"
-#define SP_END "SP_END"
-#define SP_WORD "SP"
 
 // Language Model Parameters
 int lm_ngram_order=0 ;
@@ -104,7 +100,7 @@ int main( int argc , char *argv[] )
     Vocabulary vocabulary ( input_dict_fname , lex_sent_start_word , 
                                             lex_sent_end_word , lex_sil_word ) ;
 
-	LMNGramBuilder ngram( lm_ngram_order, &vocabulary );
+	MlNgramBuilder ngram( lm_ngram_order, &vocabulary );
 	
 	if ( strlen( reload_data_fname ) )
 		ngram.reloadFile( reload_data_fname );

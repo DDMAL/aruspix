@@ -347,7 +347,7 @@ SpeechHMM* newSpeechHMM(int* states, int n_gaussians, int n_models, int n_inputs
 }
 
 /*
-AruspixHMM* newAruspixHMMWithTrainer(int* states, int n_gaussians, int n_models, int n_inputs, LexiconInfo* lex, 
+MlHMM* newAruspixHMMWithTrainer(int* states, int n_gaussians, int n_models, int n_inputs, LexiconInfo* lex, 
 	DataSet* data, real* thresh, real prior, int max_iter, real accuracy, bool train_separate, Allocator* allocator)
 {
 	// create the GMM
@@ -405,7 +405,7 @@ AruspixHMM* newAruspixHMMWithTrainer(int* states, int n_gaussians, int n_models,
 	if (train_separate)
 		hmm_trainer_ = hmm_trainer;
 
-	AruspixHMM* ahmm = new(allocator) AruspixHMM(n_models,hmm,lex,hmm_trainer_);
+	MlHMM* ahmm = new(allocator) MlHMM(n_models,hmm,lex,hmm_trainer_);
 	return ahmm;
 }
 */

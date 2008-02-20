@@ -24,12 +24,12 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#include "AruspixHMM.h"
+#include "mlhmm.h"
 #include "log_add.h"
 
 using namespace Torch;
 
-AruspixHMM::AruspixHMM()
+MlHMM::MlHMM()
 {
 	// initialization
 	addIOption("number of gaussians", &n_gaussians, 10, "number of gaussians");
@@ -77,15 +77,15 @@ AruspixHMM::AruspixHMM()
 	
 }
 
-void AruspixHMM::init( const char *states_fname )
+void MlHMM::init( const char *states_fname )
 {	
 }
 
-void AruspixHMM::train( const char *input_fname, const char *output_fname, XFile *measurer_file )
+void MlHMM::train( const char *input_fname, const char *output_fname, XFile *measurer_file )
 {
 }
 
-void AruspixHMM::mapInit( const char *states_fname )
+void MlHMM::mapInit( const char *states_fname )
 {
 	if ( n_new == 0 )
 	{
@@ -179,7 +179,7 @@ void AruspixHMM::mapInit( const char *states_fname )
 }
 
 
-void AruspixHMM::mapAdapt( const char *input_fname, const char *output_fname, XFile *measurer_file )
+void MlHMM::mapAdapt( const char *input_fname, const char *output_fname, XFile *measurer_file )
 {
 	if ( (n_new > 0) && !init_shmm )
 		error("The new symbols have not been initialized\n" );	
@@ -317,7 +317,7 @@ void AruspixHMM::mapAdapt( const char *input_fname, const char *output_fname, XF
 }
 
 
-void AruspixHMM::setLexicon( const char *model_fname_, const char *spacing_model_ , const char *lex_fname_ , const char *sent_start_symbol_ )
+void MlHMM::setLexicon( const char *model_fname_, const char *spacing_model_ , const char *lex_fname_ , const char *sent_start_symbol_ )
 {
 	// NULL is string is empty
 	if ( strlen(spacing_model_) == 0 )
@@ -340,7 +340,7 @@ void AruspixHMM::setLexicon( const char *model_fname_, const char *spacing_model
 }
 
 
-void AruspixHMM::mapSetDataLexicon( const char *model_data_fname, const char *lex_data_fname,
+void MlHMM::mapSetDataLexicon( const char *model_data_fname, const char *lex_data_fname,
 		const char *model_output_fname, const char *lex_output_fname )
 {
 	lex_data = new(allocator) LexiconInfo( model_data_fname, spacing_model , NULL ,
@@ -425,7 +425,7 @@ void AruspixHMM::mapSetDataLexicon( const char *model_data_fname, const char *le
 	// save new models list
 	FILE* fp=fopen(model_output_fname,"w");
 	if (!fp)
-		error("AruspixHMM::mapSetDataLexicon : file %s cannot be opened", model_output_fname);
+		error("MlHMM::mapSetDataLexicon : file %s cannot be opened", model_output_fname);
 	for ( int i=0; i < n_models; i++ )
 		fprintf(fp,"%s\n", models[i] ) ;
 	//fprintf(fp,"\n");
@@ -439,7 +439,7 @@ void AruspixHMM::mapSetDataLexicon( const char *model_data_fname, const char *le
 	char line[1000];
 	FILE* fl=fopen(lex_output_fname,"w");
 	if (!fl)
-		error("AruspixHMM::mapSetDataLexicon : file %s cannot be opened", lex_output_fname);
+		error("MlHMM::mapSetDataLexicon : file %s cannot be opened", lex_output_fname);
 		
 	// copy all entries in the first lex1
     for ( int i=0 ; i<lex_input->n_entries ; i++ )
@@ -505,12 +505,12 @@ void AruspixHMM::mapSetDataLexicon( const char *model_data_fname, const char *le
 	{
 		new_in_output[i] = lex_output->phone_info->getIndex( lex_data->phone_info->getPhone( new_in_data[i] ) );
 		if ( new_in_output[i] == -1 )
-			error("AruspixHMM::mapSetDataLexicon : the new phone %s not found in the output set\n",lex_data->phone_info->getPhone( new_in_data[i] ));
+			error("MlHMM::mapSetDataLexicon : the new phone %s not found in the output set\n",lex_data->phone_info->getPhone( new_in_data[i] ));
 	}
 }
 
 
-void AruspixHMM::setData( char **input_fnames_, int n_inputs_, char** target_fnames_, int n_targets_ )
+void MlHMM::setData( char **input_fnames_, int n_inputs_, char** target_fnames_, int n_targets_ )
 {
 	// some basic tests on the files
 	if (n_inputs_ != n_targets_) {
@@ -539,7 +539,7 @@ void AruspixHMM::setData( char **input_fnames_, int n_inputs_, char** target_fna
 	n_targets = n_targets_;
 }
 
-SpeechHMM* AruspixHMM::create(int* states, int n_models, int n_inputs, LexiconInfo *lex, real* thresh)
+SpeechHMM* MlHMM::create(int* states, int n_models, int n_inputs, LexiconInfo *lex, real* thresh)
 {
 	// create the GMM
 	DiagonalGMM*** gmms = (DiagonalGMM ***)allocator->alloc(sizeof(DiagonalGMM**)*n_models);
@@ -600,7 +600,7 @@ SpeechHMM* AruspixHMM::create(int* states, int n_models, int n_inputs, LexiconIn
 }
 
 
-HMM** AruspixHMM::create(int* states, int* gaussians, int n_models, int n_inputs, LexiconInfo* lex, real* thresh)
+HMM** MlHMM::create(int* states, int* gaussians, int n_models, int n_inputs, LexiconInfo* lex, real* thresh)
 {
 	DiagonalGMM*** gmms = (DiagonalGMM ***)allocator->alloc(sizeof(DiagonalGMM**)*n_models);
 	HMM** hmm = (HMM**)allocator->alloc(sizeof(HMM*)*n_models);
@@ -636,7 +636,7 @@ HMM** AruspixHMM::create(int* states, int* gaussians, int n_models, int n_inputs
   return hmm;
 }
 
-HMM** AruspixHMM::readHTK( const char* filename, LexiconInfo* lex, real* thresh )
+HMM** MlHMM::readHTK( const char* filename, LexiconInfo* lex, real* thresh )
 {
 	DiskXFile* f = new(allocator) DiskXFile(filename,"r");
 	int n_models = 0;
@@ -657,9 +657,9 @@ HMM** AruspixHMM::readHTK( const char* filename, LexiconInfo* lex, real* thresh 
 			//printf("model %s",line);
 			strtok( line , "\"" ) ; // get past the ~h
             if ( (str = strtok( NULL , "\"" )) == NULL )
-                error("AruspixHMM::readHTK - could not locate model name\n") ;
+                error("MlHMM::readHTK - could not locate model name\n") ;
 			if ( lex->phone_info->getIndex( str ) != n_models )
-                error("AruspixHMM::readHTK - order in model list and HMM file do not match\n");
+                error("MlHMM::readHTK - order in model list and HMM file do not match\n");
 			n_models++;
 			states = (int*)allocator->realloc(states,sizeof(int)*n_models);
 			gaussians = (int*)allocator->realloc(gaussians,sizeof(int)*n_models);
@@ -775,7 +775,7 @@ HMM** AruspixHMM::readHTK( const char* filename, LexiconInfo* lex, real* thresh 
 
 
 // this function saves in HTK format a given SpeechHMM
-void AruspixHMM::writeHTK( const char* filename, SpeechHMM* shmm, char**phonemes )
+void MlHMM::writeHTK( const char* filename, SpeechHMM* shmm, char**phonemes )
 {
 	DiskXFile* f = new(allocator) DiskXFile(filename,"w");
 	f->printf("~o\n");
@@ -818,7 +818,7 @@ void AruspixHMM::writeHTK( const char* filename, SpeechHMM* shmm, char**phonemes
   allocator->free(f);
 }
 
-void AruspixHMM::initializeThreshold(DataSet* data,real* thresh, real threshold)
+void MlHMM::initializeThreshold(DataSet* data,real* thresh, real threshold)
 {
 	MeanVarNorm norm(data);
 	real* ptr = norm.inputs_stdv;
@@ -827,7 +827,7 @@ void AruspixHMM::initializeThreshold(DataSet* data,real* thresh, real threshold)
 		*p_var++ = *ptr * *ptr++ * threshold;
 }
 
-int* AruspixHMM::initStates(const char* filename, int n_models, int n_states, int space_model)
+int* MlHMM::initStates(const char* filename, int n_models, int n_states, int space_model)
 {
 	int* states = (int*)allocator->alloc(sizeof(int)*n_models);
 	if (strcmp(filename,"")==0) {
@@ -844,7 +844,7 @@ int* AruspixHMM::initStates(const char* filename, int n_models, int n_states, in
 	return states;
 }
 
-void AruspixHMM::setTransitions(real** transitions, int model_n_states, int current_model, int space_model )
+void MlHMM::setTransitions(real** transitions, int model_n_states, int current_model, int space_model )
 {
 	for (int j=0;j<model_n_states;j++) 
 	{
@@ -878,7 +878,7 @@ void AruspixHMM::setTransitions(real** transitions, int model_n_states, int curr
 	}
 }
 
-AruspixHMM::~AruspixHMM()
+MlHMM::~MlHMM()
 {
 }
 
