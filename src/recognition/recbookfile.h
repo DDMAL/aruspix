@@ -8,6 +8,8 @@
 #ifndef __recbook_H__
 #define __recbook_H__
 
+#ifdef AX_RECOGNITION
+
 #if defined(__GNUG__) && ! defined(__APPLE__)
     #pragma interface "recbookfile.cpp"
 #endif
@@ -83,9 +85,9 @@ public:
 	bool HasToBePreprocessed( wxString imagefile );
 	// adaptation
 	bool RecBookFile::ResetAdaptation( bool ask_user );
-	bool RecBookFile::FastAdaptation( wxArrayPtrVoid params, ProgressDlg *dlg );
-	bool RecBookFile::TypAdaptation( wxArrayPtrVoid params, ProgressDlg *dlg );
-	bool RecBookFile::MusAdaptation( wxArrayPtrVoid params, ProgressDlg *dlg );
+	bool RecBookFile::FastAdaptation( wxArrayPtrVoid params, AxProgressDlg *dlg );
+	bool RecBookFile::TypAdaptation( wxArrayPtrVoid params, AxProgressDlg *dlg );
+	bool RecBookFile::MusAdaptation( wxArrayPtrVoid params, AxProgressDlg *dlg );
 	wxString RecBookFile::GetTypFilename( ) { return m_basename + "book.axtyp";}
 	wxString RecBookFile::GetMusFilename( ) { return m_basename + "book.axmus";}
 	wxString GetTypCacheFilename( ) { return m_basename + "cache.axtyp";}
@@ -122,5 +124,7 @@ private:
     // WDR: handler declarations for RecBookFile
 
 };
+
+#endif //AX_RECOGNITION
 
 #endif

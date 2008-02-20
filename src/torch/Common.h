@@ -45,7 +45,7 @@ void setTransitions(real** transitions, int phoneme_n_states, int current_phonem
 SpeechHMM* newSpeechHMM(int* states, int n_gaussians, int n_models, int n_inputs, LexiconInfo* lex, real* thresh, real prior, Allocator* allocator);
 
 
-//AruspixHMM* newAruspixHMMWithTrainer(int* states, int n_gaussians, int n_models, int n_inputs, LexiconInfo* lex, 
+//MlHMM* newAruspixHMMWithTrainer(int* states, int n_gaussians, int n_models, int n_inputs, LexiconInfo* lex, 
 //	DataSet* data, real* thresh, real prior, int max_iter, real accuracy, bool train_separate, Allocator* allocator);
 
 SpeechHMM* newSpeechHMMFromTorch(char* file, LexiconInfo* lex, real* thresh, real prior, Allocator* allocator, CmdLine* cmd);

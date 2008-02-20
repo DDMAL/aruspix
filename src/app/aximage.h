@@ -12,7 +12,7 @@
     #pragma interface "aximage.h"
 #endif
 
-#include "defs.h"
+#include "axdefs.h"
 
 #ifndef WX_PRECOMP
     #include "wx/wx.h"
@@ -46,7 +46,7 @@ private:
     // WDR: member variable declarations for wxImage
 
 public:
-	static bool s_gray;
+	static bool s_zoomInterpolation;
 	static bool s_reduceBigImages;
 	static int s_imageSizeToReduce;
 	bool static s_checkIfNegative;

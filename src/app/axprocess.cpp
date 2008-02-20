@@ -29,7 +29,7 @@
 
 // WDR: event table for AxProcess
 
-AxProcess::AxProcess( wxString cmd, wxString args, ProgressDlg *dlg )
+AxProcess::AxProcess( wxString cmd, wxString args, AxProgressDlg *dlg )
 {
 	//Redirect();
 	m_pid = 0;

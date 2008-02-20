@@ -18,30 +18,21 @@
 #ifdef __BORLANDC__
     #pragma hdrstop
 #endif
-//#include "wx/config.h"
-//#include "wx/valgen.h"
-//#include "wx/file.h"
-//#include "wx/filename.h"
-//#include "wx/dir.h"
 #include "wx/log.h"
 
 #include "cmp.h"
 #include "cmpim.h"
-#include "cmpwg.h"
+#include "cmpmus.h"
 #include "cmpfile.h"
-//#include "recognition/recbookfile.h"
 #include "cmpctrl.h"
-//#include "models.h"
 
 #include "app/axapp.h"
 #include "app/axframe.h"
 
 #include "im/impage.h"
 
-#include "wg/wgfile.h"
-#include "wg/iowwg.h"
-//#include "wg/mlfbmp.h"
-//#include "wg/wgtoolpanel.h"
+#include "mus/musfile.h"
+#include "mus/musiowwg.h"
 
 int CmpEnv::s_book_sash = 200; // batch processing
 int CmpEnv::s_view_sash = 0;
@@ -71,12 +62,12 @@ RecSplitterWindow::RecSplitterWindow( wxWindow *parent, wxWindowID id,
     m_envPtr = NULL;
 }
 
-void RecSplitterWindow::SetEnv( CmpEnv *env, wxFlexGridSizer *sizer, WgToolPanel *toolpanel,    CmpWgController *wgControlPtr )
+void RecSplitterWindow::SetEnv( CmpEnv *env, wxFlexGridSizer *sizer, MusToolPanel *toolpanel,    CmpMusController *musControlPtr )
 {
     m_envPtr = env;
-    m_wgsizer = sizer;
+    m_mussizer = sizer;
     m_toolpanel = toolpanel;
-    m_wgControlPtr = wgControlPtr;
+    m_musControlPtr = musControlPtr;
 }
 
 void RecSplitterWindow::ChangeOrientation( )
@@ -103,15 +94,15 @@ void RecSplitterWindow::ChangeOrientation( )
     int cols = ( vertical ) ? 0 : 1;
     int rows = ( vertical ) ? 1 : 0;
 
-    m_wgsizer->AddGrowableCol( rows );
-    m_wgsizer->RemoveGrowableCol( cols );
-    m_wgsizer->AddGrowableRow( cols );
-    m_wgsizer->RemoveGrowableRow( rows );
+    m_mussizer->AddGrowableCol( rows );
+    m_mussizer->RemoveGrowableCol( cols );
+    m_mussizer->AddGrowableRow( cols );
+    m_mussizer->RemoveGrowableRow( rows );
 
-    m_wgsizer->SetCols( cols );
-    m_wgsizer->SetRows( rows );
-    m_wgsizer->Layout();
-    //m_wgsizer->SetSizeHints( win2 );
+    m_mussizer->SetCols( cols );
+    m_mussizer->SetRows( rows );
+    m_mussizer->Layout();
+    //m_mussizer->SetSizeHints( win2 );
 
 
     if ( m_envPtr )
@@ -214,8 +205,8 @@ CmpEnv::CmpEnv():
     m_imViewPtr1 = NULL;
     m_imControlPtr2 = NULL;
     m_imViewPtr2 = NULL;
-    m_wgControlPtr = NULL;
-    m_wgViewPtr = NULL;
+    m_musControlPtr = NULL;
+    m_musViewPtr = NULL;
     m_cmpFilePtr = NULL;
     m_cmpCtrlPanelPtr = NULL;
 	m_cmpCollationPtr = NULL;
@@ -256,11 +247,11 @@ void CmpEnv::LoadWindow()
     m_splitterPtr->SetMinimumPaneSize( 100 );
 		
 	// collation
-	m_wgControlPtr = new CmpWgController( m_splitterPtr, ID6_DISPLAY );
-    m_wgViewPtr = new CmpWgWindow( m_wgControlPtr, ID6_WGWINDOW, wxDefaultPosition,
+	m_musControlPtr = new CmpMusController( m_splitterPtr, ID6_DISPLAY );
+    m_musViewPtr = new CmpMusWindow( m_musControlPtr, ID6_WGWINDOW, wxDefaultPosition,
             wxDefaultSize, wxHSCROLL|wxVSCROLL|wxSIMPLE_BORDER , false);
-    m_wgViewPtr->SetEnv( this );
-    m_wgControlPtr->Init( this, m_wgViewPtr );
+    m_musViewPtr->SetEnv( this );
+    m_musControlPtr->Init( this, m_musViewPtr );
 
 	// images: splitter image / image
 	m_isplitterPtr = new wxSplitterWindow( m_splitterPtr, -1 );
@@ -283,32 +274,32 @@ void CmpEnv::LoadWindow()
     m_imViewPtr2->SetEnv( this );
     m_imControlPtr2->Init( this, m_imViewPtr2 );
 	
-	m_wgControlPtr->SetImViewAndController( m_imViewPtr1, m_imControlPtr1, m_imViewPtr2, m_imControlPtr2 );
+	m_musControlPtr->SetImViewAndController( m_imViewPtr1, m_imControlPtr1, m_imViewPtr2, m_imControlPtr2 );
 
-    //m_wgControlPtr->SetImViewAndController( m_imViewPtr, m_imControlPtr );
-    //m_wgControlPtr->SetRecFile( m_recFilePtr );
-    //m_imControlPtr->SetWgViewAndController( m_wgViewPtr, m_wgControlPtr );
+    //m_musControlPtr->SetImViewAndController( m_imViewPtr, m_imControlPtr );
+    //m_musControlPtr->SetRecFile( m_recFilePtr );
+    //m_imControlPtr->SetWgViewAndController( m_musViewPtr, m_musControlPtr );
     //m_imControlPtr->SetRecFile( m_recFilePtr );
    
-    //m_toolpanel = (WgToolPanel*)m_envWindowPtr->FindWindowById( ID4_TOOLPANEL );
+    //m_toolpanel = (MusToolPanel*)m_envWindowPtr->FindWindowById( ID4_TOOLPANEL );
    // wxASSERT_MSG( m_toolpanel, "Tool Panel cannot be NULL ");
     
  //   m_toolpanel->SetDirection( false );
 
-    //m_splitterPtr->SetEnv( this, wgsizer, m_toolpanel, m_wgControlPtr );
+    //m_splitterPtr->SetEnv( this, mussizer, m_toolpanel, m_musControlPtr );
 
     if ( wxSystemSettings::GetColour(wxSYS_COLOUR_APPWORKSPACE) == *wxWHITE )
-        m_wgControlPtr->SetBackgroundColour( *wxLIGHT_GREY );
+        m_musControlPtr->SetBackgroundColour( *wxLIGHT_GREY );
     else
-        m_wgControlPtr->SetBackgroundColour( wxSystemSettings::GetColour(wxSYS_COLOUR_APPWORKSPACE) );
+        m_musControlPtr->SetBackgroundColour( wxSystemSettings::GetColour(wxSYS_COLOUR_APPWORKSPACE) );
 
 	// load splitter
     m_vsplitterPtr->SplitVertically( m_cmpCtrlPanelPtr, m_splitterPtr, CmpEnv::s_book_sash );
 	//m_vsplitterPtr->SplitHorizontally( m_cmpCtrlPanelPtr, m_splitterPtr, CmpEnv::s_book_sash );
     m_vsplitterPtr->Unsplit( m_cmpCtrlPanelPtr );
 
-    //m_splitterPtr->SplitHorizontally( m_wgControlPtr , m_isplitterPtr, CmpEnv::s_view_sash);
-	m_splitterPtr->SplitVertically( m_wgControlPtr , m_isplitterPtr, CmpEnv::s_view_sash);
+    //m_splitterPtr->SplitHorizontally( m_musControlPtr , m_isplitterPtr, CmpEnv::s_view_sash);
+	m_splitterPtr->SplitVertically( m_musControlPtr , m_isplitterPtr, CmpEnv::s_view_sash);
     m_splitterPtr->Unsplit();
 	
 	//m_isplitterPtr->SplitVertically( m_imControlPtr1 , m_imControlPtr2);
@@ -385,10 +376,10 @@ void CmpEnv::UpdateTitle( )
     wxASSERT_MSG( m_cmpFilePtr, wxT("Cmp file cannot be NULL") );
 
     wxString msg = m_cmpFilePtr->m_shortname;
-    if ( m_cmpCollationPtr && m_wgViewPtr )
+    if ( m_cmpCollationPtr && m_musViewPtr )
         msg += wxString::Format("- %s - page %d / %d", 
 			m_cmpCollationPtr->m_name.c_str(), 
-			m_wgViewPtr->m_npage + 1,
+			m_musViewPtr->m_npage + 1,
 			(int)m_cmpCollationPtr->GetWgFile()->m_pages.GetCount()  );
 
     SetTitle( "%s", msg.c_str() );
@@ -398,7 +389,7 @@ void CmpEnv::UpdateTitle( )
 
 bool CmpEnv::ResetFile()
 {
-	wxASSERT_MSG( m_wgViewPtr, "WG Window cannot be NULL ");
+	wxASSERT_MSG( m_musViewPtr, "WG Window cannot be NULL ");
 
     if ( !m_cmpFilePtr->Close( true ) )
         return false;
@@ -407,8 +398,8 @@ bool CmpEnv::ResetFile()
         CmpEnv::s_book_sash = m_vsplitterPtr->GetSashPosition( );
     m_vsplitterPtr->Unsplit( m_cmpCtrlPanelPtr );
 
-    m_wgViewPtr->Show( false );
-    m_wgViewPtr->SetFile( NULL );
+    m_musViewPtr->Show( false );
+    m_musViewPtr->SetFile( NULL );
 	m_cmpCollationPtr = NULL;
     
     if ( m_imControlPtr1->Ok() )
@@ -434,13 +425,13 @@ void CmpEnv::UpdateViews( int flags )
 {
     if ( m_cmpCollationPtr && m_cmpCollationPtr->IsCollationLoaded() )
     {
-        //m_splitterPtr->SplitHorizontally( m_wgControlPtr , m_isplitterPtr, CmpEnv::s_view_sash );
-		m_splitterPtr->SplitVertically( m_wgControlPtr , m_isplitterPtr, CmpEnv::s_view_sash );
-        m_wgViewPtr->SetFile( m_cmpCollationPtr->GetWgFile() );
-        //m_wgViewPtr->SetEnv( this );
-        //m_wgViewPtr->SetToolPanel( m_toolpanel );
-        m_wgViewPtr->Goto( 0 );
-        m_wgViewPtr->Resize( );  
+        //m_splitterPtr->SplitHorizontally( m_musControlPtr , m_isplitterPtr, CmpEnv::s_view_sash );
+		m_splitterPtr->SplitVertically( m_musControlPtr , m_isplitterPtr, CmpEnv::s_view_sash );
+        m_musViewPtr->SetFile( m_cmpCollationPtr->GetWgFile() );
+        //m_musViewPtr->SetEnv( this );
+        //m_musViewPtr->SetToolPanel( m_toolpanel );
+        m_musViewPtr->Goto( 0 );
+        m_musViewPtr->Resize( );  
     }
 	UpdateTitle( );
 }
@@ -493,7 +484,7 @@ void CmpEnv::OnCmpEdit( wxCommandEvent &event )
 
 void CmpEnv::OnCmpLoad( wxCommandEvent &event )
 {
-    if ( ProgressDlg::s_instance_existing )
+    if ( AxProgressDlg::s_instance_existing )
         return;
 	
 
@@ -513,7 +504,7 @@ void CmpEnv::OnCmpLoad( wxCommandEvent &event )
     //    return;
 						
 	
-    ProgressDlg *dlg = new ProgressDlg( m_framePtr, -1, _("Load book") );
+    AxProgressDlg *dlg = new AxProgressDlg( m_framePtr, -1, _("Load book") );
     dlg->Center( wxBOTH );
     dlg->Show();
     dlg->SetMaxBatchBar( nbOfFiles );
@@ -611,7 +602,7 @@ void CmpEnv::OnAdjust( wxCommandEvent &event )
         m_imViewPtr->SetAdjustMode( ADJUST_HORIZONTAL );
 
     m_imControlPtr->SyncSelectionBitmap();
-    m_wgControlPtr->SyncZoom();  
+    m_musControlPtr->SyncZoom();  
 	*/    
 }
 
@@ -626,7 +617,7 @@ void CmpEnv::OnZoom( wxCommandEvent &event )
         m_imViewPtr->ZoomIn();
     
     m_imControlPtr->SyncSelectionBitmap();
-    m_wgControlPtr->SyncZoom();
+    m_musControlPtr->SyncZoom();
 	*/
 }
 
@@ -634,7 +625,7 @@ void CmpEnv::OnZoom( wxCommandEvent &event )
 
 void CmpEnv::OnCollate( wxCommandEvent &event )
 {
-    if ( ProgressDlg::s_instance_existing )
+    if ( AxProgressDlg::s_instance_existing )
         return;
 	
 
@@ -654,7 +645,7 @@ void CmpEnv::OnCollate( wxCommandEvent &event )
     //    return;
 						
 	
-    ProgressDlg *dlg = new ProgressDlg( m_framePtr, -1, _("Collation") );
+    AxProgressDlg *dlg = new AxProgressDlg( m_framePtr, -1, _("Collation") );
     dlg->Center( wxBOTH );
     dlg->Show();
     dlg->SetMaxBatchBar( nbOfFiles );
@@ -700,28 +691,28 @@ void CmpEnv::OnRedo( wxCommandEvent &event )
 
 void CmpEnv::OnGoto( wxCommandEvent &event )
 {
-    if ( !m_wgViewPtr )
+    if ( !m_musViewPtr )
         return;
-    if (m_wgViewPtr->CanGoto(  ) )
-        m_wgViewPtr->Goto(  );
+    if (m_musViewPtr->CanGoto(  ) )
+        m_musViewPtr->Goto(  );
 	UpdateTitle( );
 }
 
 void CmpEnv::OnPrevious( wxCommandEvent &event )
 {
-    if ( !m_wgViewPtr )
+    if ( !m_musViewPtr )
         return;
-    if (m_wgViewPtr->HasNext( false ) )
-        m_wgViewPtr->Next( false );
+    if (m_musViewPtr->HasNext( false ) )
+        m_musViewPtr->Next( false );
 	UpdateTitle( );
 }
 
 void CmpEnv::OnNext( wxCommandEvent &event )
 {
-    if ( !m_wgViewPtr )
+    if ( !m_musViewPtr )
         return;
-    if (m_wgViewPtr->HasNext( true ) )
-        m_wgViewPtr->Next( true );
+    if (m_musViewPtr->HasNext( true ) )
+        m_musViewPtr->Next( true );
 	UpdateTitle( );
 }
 
@@ -730,7 +721,7 @@ void CmpEnv::OnUpdateUI( wxUpdateUIEvent &event )
 	/*
     wxASSERT_MSG( m_imControlPtr, wxT("Image controller cannot be NULL") );
     wxASSERT_MSG( m_imViewPtr, wxT("View cannot be NULL") );
-    wxASSERT_MSG( m_wgViewPtr, "WG Window cannot be NULL ");
+    wxASSERT_MSG( m_musViewPtr, "WG Window cannot be NULL ");
     wxASSERT_MSG( m_recFilePtr, "RecFile cannot be NULL ");
 	wxASSERT_MSG( m_recBookFilePtr, "RecBookFile cannot be NULL ");
     
@@ -750,8 +741,8 @@ void CmpEnv::OnUpdateUI( wxUpdateUIEvent &event )
         //wxLogDebug("CmpEnv::OnUpdateUI : update cut" );
         if (win->GetId() == ID4_VIEW)
            event.Enable( m_imControlPtr->CanCut() );
-        else if (m_wgViewPtr && (win->GetId() == ID4_WGWINDOW))
-            event.Enable( (m_wgViewPtr && m_wgViewPtr->CanCut()));
+        else if (m_musViewPtr && (win->GetId() == ID4_WGWINDOW))
+            event.Enable( (m_musViewPtr && m_musViewPtr->CanCut()));
         else
             event.Enable( false );
             
@@ -760,8 +751,8 @@ void CmpEnv::OnUpdateUI( wxUpdateUIEvent &event )
     {
         if (win->GetId() == ID4_VIEW)
            event.Enable( m_imControlPtr->CanCopy() );
-        else if (m_wgViewPtr && (win->GetId() == ID4_WGWINDOW))
-            event.Enable( (m_wgViewPtr && m_wgViewPtr->CanCopy()));
+        else if (m_musViewPtr && (win->GetId() == ID4_WGWINDOW))
+            event.Enable( (m_musViewPtr && m_musViewPtr->CanCopy()));
         else
             event.Enable( false );
     }
@@ -769,14 +760,14 @@ void CmpEnv::OnUpdateUI( wxUpdateUIEvent &event )
     {
         if (win->GetId() == ID4_VIEW)
            event.Enable( m_imControlPtr->CanPaste() );
-        else if (m_wgViewPtr && (win->GetId() == ID4_WGWINDOW))
-            event.Enable( (m_wgViewPtr && m_wgViewPtr->CanPaste()));
+        else if (m_musViewPtr && (win->GetId() == ID4_WGWINDOW))
+            event.Enable( (m_musViewPtr && m_musViewPtr->CanPaste()));
         else
             event.Enable( false );
     }
     else if (id == ID_UNDO)
     {
-        if ( m_recFilePtr->IsRecognized() && m_wgViewPtr && m_wgViewPtr->CanUndo() )
+        if ( m_recFilePtr->IsRecognized() && m_musViewPtr && m_musViewPtr->CanUndo() )
             event.Enable( true );
         else if ( m_recFilePtr->IsPreprocessed() && m_recFilePtr->m_imPagePtr && m_recFilePtr->m_imPagePtr->CanUndo() )
             event.Enable( true );
@@ -785,7 +776,7 @@ void CmpEnv::OnUpdateUI( wxUpdateUIEvent &event )
     }
     else if (id == ID_REDO)
     {
-        if ( m_recFilePtr->IsRecognized() && m_wgViewPtr && m_wgViewPtr->CanRedo() )
+        if ( m_recFilePtr->IsRecognized() && m_musViewPtr && m_musViewPtr->CanRedo() )
             event.Enable( true );
         else if ( m_recFilePtr->IsPreprocessed() && m_recFilePtr->m_imPagePtr && m_recFilePtr->m_imPagePtr->CanRedo() )
             event.Enable( true );
@@ -837,12 +828,12 @@ void CmpEnv::OnUpdateUI( wxUpdateUIEvent &event )
     else if (id == ID4_SHOW_STAFF_BMP )
     {
         event.Enable( m_recFilePtr->IsRecognized() );
-        event.Check( m_wgControlPtr->ShowStaffBitmap() );
+        event.Check( m_musControlPtr->ShowStaffBitmap() );
     }
     else if ( event.GetId() == ID4_INSERT_MODE )
     {
-        event.Enable( m_wgViewPtr->IsShown() );
-        event.Check( m_wgViewPtr && !m_wgViewPtr->m_editElement );
+        event.Enable( m_musViewPtr->IsShown() );
+        event.Check( m_musViewPtr && !m_musViewPtr->m_editElement );
     }
     else
         event.Enable(true);

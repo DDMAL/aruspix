@@ -25,15 +25,15 @@
 #include "wx/dir.h"
 #include "wx/wizard.h"
 
-#include "app_wdr.h"
-#include "about_wdr.h"
+#include "axapp_wdr.h"
+#include "axabout_wdr.h"
 
 /*
  * GESTION DES IDS
  *
- * app.wdr 6000
- * options.wdr 8000
- * about.wdr 9000
+ * axapp.wdr 6000
+ * axoptions.wdr 8000
+ * axabout.wdr 9000
  */
  
  /*******************
@@ -44,7 +44,7 @@
  ** wgv 15000
  ** cmp 16000
  *******************
- * wg.wdr 20000
+ * mus.wdr 20000
  * aximcontrol.wdr 21000
  * local 22x000
  */
@@ -53,8 +53,8 @@
 #define ENV_IDS_MAX 19999
 #define ENV_IDS_MIN_SUP 12000
 #define ENV_IDS_MAX_SUP 12999
-#define ENV_IDS_MIN_DSP 13000
-#define ENV_IDS_MAX_DSP 13999
+//#define ENV_IDS_MIN_DSP 13000 Free as Dsp doesn't exist anymore
+//#define ENV_IDS_MAX_DSP 13999
 #define ENV_IDS_MIN_REC 14000
 #define ENV_IDS_MAX_REC 14999
 #define ENV_IDS_MIN_WGV 15000
@@ -65,7 +65,7 @@
 
 #define ENV_IDS_LOCAL 22000
 #define ENV_IDS_LOCAL_SUP ENV_IDS_LOCAL + 200
-#define ENV_IDS_LOCAL_DSP ENV_IDS_LOCAL + 300
+//#define ENV_IDS_LOCAL_DSP ENV_IDS_LOCAL + 300 Free as Dsp doesn't exist anymore
 #define ENV_IDS_LOCAL_REC ENV_IDS_LOCAL + 400
 #define ENV_IDS_LOCAL_WGV ENV_IDS_LOCAL + 500
 #define ENV_IDS_LOCAL_CMP ENV_IDS_LOCAL + 600
@@ -77,28 +77,28 @@ class AxFrame;
 // WDR: class declarations
 
 //----------------------------------------------------------------------------
-// AboutDlg
+// AxAboutDlg
 //----------------------------------------------------------------------------
 
-class AboutDlg: public wxDialog
+class AxAboutDlg: public wxDialog
 {
 public:
     // constructors and destructors
-    AboutDlg( wxWindow *parent, wxWindowID id, const wxString &title,
+    AxAboutDlg( wxWindow *parent, wxWindowID id, const wxString &title,
         const wxPoint& pos = wxDefaultPosition,
         const wxSize& size = wxDefaultSize,
         long style = wxDEFAULT_DIALOG_STYLE );
     
-    // WDR: method declarations for AboutDlg
+    // WDR: method declarations for AxAboutDlg
     wxStaticBitmap* GetLogo()  { return (wxStaticBitmap*) FindWindow( ID0_LOGO ); }
     wxStaticText* GetTxAppVersion()  { return (wxStaticText*) FindWindow( TX_APP_VERSION ); }
     wxStaticText* GetTxAppBuild()  { return (wxStaticText*) FindWindow( TX_APP_BUILD ); }
 
 private:
-    // WDR: member variable declarations for AboutDlg
+    // WDR: member variable declarations for AxAboutDlg
     
 private:
-    // WDR: handler declarations for AboutDlg
+    // WDR: handler declarations for AxAboutDlg
 
 private:
     DECLARE_EVENT_TABLE()
@@ -110,7 +110,7 @@ private:
 
 class AxApp: public wxApp
 {
-    friend class AppIPCConnection;
+    friend class AxIPCConnection;
 
 public:
     // constructors and destructors
@@ -195,11 +195,11 @@ DECLARE_APP(AxApp)
 //! IPC connection for application APP_VENDOR-APP_NAME.
 //----------------------------------------------------------------------------
 
-class AppIPCConnection : public wxConnection 
+class AxIPCConnection : public wxConnection 
 {
 public:
     //! application IPC connection
-    AppIPCConnection();
+    AxIPCConnection();
 
     //! execute handler
     virtual bool OnExecute (const wxString& WXUNUSED(topic),
@@ -216,7 +216,7 @@ private:
 //! IPC server for application APP_VENDOR-APP_NAME.
 //----------------------------------------------------------------------------
 
-class AppIPCServer : public wxServer {
+class AxIPCServer : public wxServer {
 
 public:
     //! accept conncetion handler

@@ -25,8 +25,8 @@
 #include "axframe.h"
 #include "resource.h"
 #include "axenv.h"
-#include "progressdlg.h"
-#include "optionsdlg.h"
+#include "axprogressdlg.h"
+#include "axoptionsdlg.h"
 #include "aximage.h"
 
 
@@ -44,10 +44,6 @@ WX_DEFINE_OBJARRAY(AxEnvArray);
 
 #ifdef AX_SUPERIMPOSITION
     #include "superimposition/sup.h"
-#endif
-
-#ifdef AX_DISPLAY
-	#include "display/display.h"
 #endif
 
 #ifdef AX_COMPARISON
@@ -154,13 +150,6 @@ AxFrame::AxFrame( wxWindow *parent, wxWindowID id, const wxString &title,
 	RecEnv::LoadConfig();
 #endif //AX_RECOGNITION
 
-#ifdef AX_DISPLAY
-    envRow = new AxEnvRow( "DspEnv",  _( "Visualization" ), menuId++, _("Visualization workspace") );
-    menuEnv->Insert( menuPos++, envRow->m_menuId, envRow->m_menuItem, envRow->m_helpStr, wxITEM_CHECK );
-    m_envArray.Add( envRow );
-	DspEnv::LoadConfig();
-#endif //AX_DISPLAY
-
 #ifdef AX_SUPERIMPOSITION
     envRow = new AxEnvRow( "SupEnv", _("Superimposition"), menuId++, _("Preparation and superimpostition workspace") );
     menuEnv->Insert( menuPos++, envRow->m_menuId, envRow->m_menuItem, envRow->m_helpStr, wxITEM_CHECK );
@@ -197,10 +186,6 @@ AxFrame::~AxFrame()
 #ifdef AX_RECOGNITION
 	RecEnv::SaveConfig();
 #endif //AX_RECOGNITION
-
-#ifdef AX_DISPLAY
-	DspEnv::SaveConfig();
-#endif //AX_DISPLAY
 
 #ifdef AX_SUPERIMPOSITION
 	SupEnv::SaveConfig();
@@ -260,15 +245,6 @@ void AxFrame::RealizeToolbar()
     }
 #endif //AX_RECOGNITION
 
-#ifdef AX_DISPLAY
-	GetEnvironmentMenuId( "DspEnv", &pos );
-	if ( pos != -1 )
-	{
-		envRow = &m_envArray[pos];
-		m_toolBarPtr->AddTool( envRow->m_menuId, EnvBitmapFunc(2), wxNullBitmap, TRUE, NULL, envRow->m_menuItem, envRow->m_helpStr );
-    }
-#endif //AX_DISPLAY
-
 #ifdef AX_SUPERIMPOSITION
     GetEnvironmentMenuId( "SupEnv", &pos );
 	if ( pos != -1 )
@@ -327,8 +303,8 @@ void AxFrame::LoadConfig()
     pConfig->SetPath("/");
     // frame size and position
     int val1,val2;
-    pConfig->Read("Width",&val1,700);
-    pConfig->Read("Height",&val2,500);
+    pConfig->Read("Width",&val1,800);
+    pConfig->Read("Height",&val2,650);
     this->SetSize(val1,val2);
     pConfig->Read("PX",&val1,50);
     pConfig->Read("PY",&val2,50);
@@ -337,7 +313,7 @@ void AxFrame::LoadConfig()
         this->Maximize();
 
     //images
-    AxImage::s_gray = (pConfig->Read("Gray",1)==1);
+    AxImage::s_zoomInterpolation = (pConfig->Read("Gray",0L)==1);
     AxImage::s_reduceBigImages = (pConfig->Read("ReduceBigImages",0L)==1);
     AxImage::s_imageSizeToReduce = pConfig->Read("ImageSizeToReduce",3000);
 	AxImage::s_checkIfNegative = (pConfig->Read("ImageCheckIfNegative",0L)==1);
@@ -388,7 +364,7 @@ void AxFrame::LoadConfig()
     this->SetEnvironment(val1);
 
 	// load last execution time
-	ProgressDlg::LoadValues( pConfig );
+	AxProgressDlg::LoadValues( pConfig );
 
     pConfig->SetPath("/");
 }
@@ -432,7 +408,7 @@ void AxFrame::SaveConfig(int lastEnvId)
     pConfig->Write("EnvID",lastEnvId);
 
     // images
-    pConfig->Write("Gray", AxImage::s_gray);
+    pConfig->Write("Gray", AxImage::s_zoomInterpolation);
     pConfig->Write("ReduceBigImages", AxImage::s_reduceBigImages);
     pConfig->Write("ImageSizeToReduce", AxImage::s_imageSizeToReduce);
 	pConfig->Write("ImageCheckIfNegative", AxImage::s_checkIfNegative);
@@ -465,7 +441,7 @@ void AxFrame::SaveConfig(int lastEnvId)
     pConfig->Write("FontPosCorrection", wxGetApp().m_fontPosCorrection );
 
 	// load last execution time
-	ProgressDlg::SaveValues( pConfig );
+	AxProgressDlg::SaveValues( pConfig );
 
     // toolbar tool size and language - save only, loaded by AxApp before creating frame
 	pConfig->Write("ToolbarToolsize", wxGetApp().m_toolbar_toolsize );
@@ -589,7 +565,7 @@ void AxFrame::OnHelp( wxCommandEvent &event )
 
 void AxFrame::OnOptions( wxCommandEvent &event )
 {
-    OptionsDlg *dlg = new OptionsDlg(this, -1, _("Options"));
+    AxOptionsDlg *dlg = new AxOptionsDlg(this, -1, _("Options"));
     dlg->Center(wxBOTH);
     dlg->ShowModal();
     dlg->Destroy();
@@ -690,7 +666,7 @@ void AxFrame::OnClose( wxCloseEvent &event )
 
 void AxFrame::OnAbout( wxCommandEvent &event )
 {
-    AboutDlg *dlg = new AboutDlg(this,-1,_("About ..."));
+    AxAboutDlg *dlg = new AxAboutDlg(this,-1,_("About ..."));
     dlg->Center(wxBOTH);
     dlg->ShowModal();
     dlg->Destroy();

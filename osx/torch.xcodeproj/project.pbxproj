@@ -7,30 +7,34 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		4D76C6F70D6BBBAA009253DE /* mlngrambuilder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D76C6F30D6BBBAA009253DE /* mlngrambuilder.cpp */; };
+		4D76C6F80D6BBBAA009253DE /* mlngramentry.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D76C6F50D6BBBAA009253DE /* mlngramentry.cpp */; };
+		4D76C70B0D6BBC88009253DE /* mlhmm.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D76C7090D6BBC88009253DE /* mlhmm.cpp */; };
+		4DF692A80D496E28007DE3CF /* mldecoderpage.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4DF692A40D496E28007DE3CF /* mldecoderpage.cpp */; };
+		4DF692A90D496E28007DE3CF /* mldecoderstaff.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4DF692A60D496E28007DE3CF /* mldecoderstaff.cpp */; };
 		57219A460B8377600033F495 /* Common.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 576ED8350AB223D2007F2844 /* Common.cpp */; };
 		57219A560B8378BA0033F495 /* Adapter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 57219A550B8378BA0033F495 /* Adapter.cpp */; };
-		57219D4B0B8A2D6A0033F495 /* AruspixHMM.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 57219D490B8A2D6A0033F495 /* AruspixHMM.cpp */; };
 		576ED8410AB223D8007F2844 /* Common.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 576ED8350AB223D2007F2844 /* Common.cpp */; };
 		576ED8420AB223D8007F2844 /* Init.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 576ED8370AB223D2007F2844 /* Init.cpp */; };
 		57A0BC790ABF1901001825D5 /* Common.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 576ED8350AB223D2007F2844 /* Common.cpp */; };
 		57A0BC820ABF199C001825D5 /* Trainer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 57A0BC810ABF199C001825D5 /* Trainer.cpp */; };
-		A51FEC270A02C1C900ACE377 /* ClassMapper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A51FEC140A02C1C900ACE377 /* ClassMapper.cpp */; };
-		A51FEC280A02C1C900ACE377 /* ClassModel.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A51FEC160A02C1C900ACE377 /* ClassModel.cpp */; };
 		A51FEC290A02C1C900ACE377 /* Decoder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A51FEC180A02C1C900ACE377 /* Decoder.cpp */; };
-		A51FEC2C0A02C1C900ACE377 /* MusicModel.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A51FEC1D0A02C1C900ACE377 /* MusicModel.cpp */; };
-		A51FEC2E0A02C1C900ACE377 /* RecBeamSearchDecoder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A51FEC200A02C1C900ACE377 /* RecBeamSearchDecoder.cpp */; };
-		A51FEC2F0A02C1C900ACE377 /* RecDecoderLine.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A51FEC220A02C1C900ACE377 /* RecDecoderLine.cpp */; };
-		A51FEC300A02C1C900ACE377 /* RecDecoderPage.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A51FEC240A02C1C900ACE377 /* RecDecoderPage.cpp */; };
-		A59120080A1278F100D64611 /* LMNGramBuilder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A59120030A1278F100D64611 /* LMNGramBuilder.cpp */; };
-		A59120090A1278F100D64611 /* LMNGramEntry.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A59120050A1278F100D64611 /* LMNGramEntry.cpp */; };
 		A591200A0A1278F100D64611 /* NGram.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A59120070A1278F100D64611 /* NGram.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		4D76C6F30D6BBBAA009253DE /* mlngrambuilder.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = mlngrambuilder.cpp; path = ../src/ml/mlngrambuilder.cpp; sourceTree = SOURCE_ROOT; };
+		4D76C6F40D6BBBAA009253DE /* mlngrambuilder.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = mlngrambuilder.h; path = ../src/ml/mlngrambuilder.h; sourceTree = SOURCE_ROOT; };
+		4D76C6F50D6BBBAA009253DE /* mlngramentry.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = mlngramentry.cpp; path = ../src/ml/mlngramentry.cpp; sourceTree = SOURCE_ROOT; };
+		4D76C6F60D6BBBAA009253DE /* mlngramentry.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = mlngramentry.h; path = ../src/ml/mlngramentry.h; sourceTree = SOURCE_ROOT; };
+		4D76C7090D6BBC88009253DE /* mlhmm.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = mlhmm.cpp; path = ../src/ml/mlhmm.cpp; sourceTree = SOURCE_ROOT; };
+		4D76C70A0D6BBC88009253DE /* mlhmm.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = mlhmm.h; path = ../src/ml/mlhmm.h; sourceTree = SOURCE_ROOT; };
+		4DF692A40D496E28007DE3CF /* mldecoderpage.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = mldecoderpage.cpp; path = ../src/ml/mldecoderpage.cpp; sourceTree = SOURCE_ROOT; };
+		4DF692A50D496E28007DE3CF /* mldecoderpage.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = mldecoderpage.h; path = ../src/ml/mldecoderpage.h; sourceTree = SOURCE_ROOT; };
+		4DF692A60D496E28007DE3CF /* mldecoderstaff.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = mldecoderstaff.cpp; path = ../src/ml/mldecoderstaff.cpp; sourceTree = SOURCE_ROOT; };
+		4DF692A70D496E28007DE3CF /* mldecoderstaff.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = mldecoderstaff.h; path = ../src/ml/mldecoderstaff.h; sourceTree = SOURCE_ROOT; };
 		57219A4C0B8377610033F495 /* adapt */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = adapt; sourceTree = BUILT_PRODUCTS_DIR; };
 		57219A550B8378BA0033F495 /* Adapter.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = Adapter.cpp; path = ../src/torch/Adapter.cpp; sourceTree = SOURCE_ROOT; };
-		57219D490B8A2D6A0033F495 /* AruspixHMM.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = AruspixHMM.cpp; path = ../src/torch/AruspixHMM.cpp; sourceTree = SOURCE_ROOT; };
-		57219D4A0B8A2D6A0033F495 /* AruspixHMM.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = AruspixHMM.h; path = ../src/torch/AruspixHMM.h; sourceTree = SOURCE_ROOT; };
 		576ED8350AB223D2007F2844 /* Common.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = Common.cpp; path = ../src/torch/Common.cpp; sourceTree = SOURCE_ROOT; };
 		576ED8360AB223D2007F2844 /* Common.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = Common.h; path = ../src/torch/Common.h; sourceTree = SOURCE_ROOT; };
 		576ED8370AB223D2007F2844 /* Init.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = Init.cpp; path = ../src/torch/Init.cpp; sourceTree = SOURCE_ROOT; };
@@ -38,24 +42,8 @@
 		57A0BC7F0ABF1901001825D5 /* trainer */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = trainer; sourceTree = BUILT_PRODUCTS_DIR; };
 		57A0BC810ABF199C001825D5 /* Trainer.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = Trainer.cpp; path = ../src/torch/Trainer.cpp; sourceTree = SOURCE_ROOT; };
 		A51FEC000A02C15800ACE377 /* decoder */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = decoder; sourceTree = BUILT_PRODUCTS_DIR; };
-		A51FEC140A02C1C900ACE377 /* ClassMapper.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = ClassMapper.cpp; sourceTree = "<group>"; };
-		A51FEC150A02C1C900ACE377 /* ClassMapper.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = ClassMapper.h; sourceTree = "<group>"; };
-		A51FEC160A02C1C900ACE377 /* ClassModel.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = ClassModel.cpp; sourceTree = "<group>"; };
-		A51FEC170A02C1C900ACE377 /* ClassModel.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = ClassModel.h; sourceTree = "<group>"; };
 		A51FEC180A02C1C900ACE377 /* Decoder.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = Decoder.cpp; sourceTree = "<group>"; };
-		A51FEC1D0A02C1C900ACE377 /* MusicModel.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = MusicModel.cpp; sourceTree = "<group>"; };
-		A51FEC1E0A02C1C900ACE377 /* MusicModel.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = MusicModel.h; sourceTree = "<group>"; };
-		A51FEC200A02C1C900ACE377 /* RecBeamSearchDecoder.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = RecBeamSearchDecoder.cpp; sourceTree = "<group>"; };
-		A51FEC210A02C1C900ACE377 /* RecBeamSearchDecoder.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = RecBeamSearchDecoder.h; sourceTree = "<group>"; };
-		A51FEC220A02C1C900ACE377 /* RecDecoderLine.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = RecDecoderLine.cpp; sourceTree = "<group>"; };
-		A51FEC230A02C1C900ACE377 /* RecDecoderLine.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = RecDecoderLine.h; sourceTree = "<group>"; };
-		A51FEC240A02C1C900ACE377 /* RecDecoderPage.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = RecDecoderPage.cpp; sourceTree = "<group>"; };
-		A51FEC250A02C1C900ACE377 /* RecDecoderPage.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = RecDecoderPage.h; sourceTree = "<group>"; };
 		A59120010A1278D400D64611 /* ngram */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = ngram; sourceTree = BUILT_PRODUCTS_DIR; };
-		A59120030A1278F100D64611 /* LMNGramBuilder.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = LMNGramBuilder.cpp; path = ../src/torch/LMNGramBuilder.cpp; sourceTree = SOURCE_ROOT; };
-		A59120040A1278F100D64611 /* LMNGramBuilder.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = LMNGramBuilder.h; path = ../src/torch/LMNGramBuilder.h; sourceTree = SOURCE_ROOT; };
-		A59120050A1278F100D64611 /* LMNGramEntry.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = LMNGramEntry.cpp; path = ../src/torch/LMNGramEntry.cpp; sourceTree = SOURCE_ROOT; };
-		A59120060A1278F100D64611 /* LMNGramEntry.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = LMNGramEntry.h; path = ../src/torch/LMNGramEntry.h; sourceTree = SOURCE_ROOT; };
 		A59120070A1278F100D64611 /* NGram.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = NGram.cpp; path = ../src/torch/NGram.cpp; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
@@ -101,9 +89,9 @@
 		57219A510B8378500033F495 /* adapt */ = {
 			isa = PBXGroup;
 			children = (
-				57219D490B8A2D6A0033F495 /* AruspixHMM.cpp */,
+				4D76C7090D6BBC88009253DE /* mlhmm.cpp */,
+				4D76C70A0D6BBC88009253DE /* mlhmm.h */,
 				57219A550B8378BA0033F495 /* Adapter.cpp */,
-				57219D4A0B8A2D6A0033F495 /* AruspixHMM.h */,
 			);
 			name = adapt;
 			sourceTree = "<group>";
@@ -145,19 +133,11 @@
 		A51FEC120A02C1C900ACE377 /* decoder */ = {
 			isa = PBXGroup;
 			children = (
-				A51FEC140A02C1C900ACE377 /* ClassMapper.cpp */,
-				A51FEC150A02C1C900ACE377 /* ClassMapper.h */,
-				A51FEC160A02C1C900ACE377 /* ClassModel.cpp */,
-				A51FEC170A02C1C900ACE377 /* ClassModel.h */,
+				4DF692A40D496E28007DE3CF /* mldecoderpage.cpp */,
+				4DF692A50D496E28007DE3CF /* mldecoderpage.h */,
+				4DF692A60D496E28007DE3CF /* mldecoderstaff.cpp */,
+				4DF692A70D496E28007DE3CF /* mldecoderstaff.h */,
 				A51FEC180A02C1C900ACE377 /* Decoder.cpp */,
-				A51FEC1D0A02C1C900ACE377 /* MusicModel.cpp */,
-				A51FEC1E0A02C1C900ACE377 /* MusicModel.h */,
-				A51FEC200A02C1C900ACE377 /* RecBeamSearchDecoder.cpp */,
-				A51FEC210A02C1C900ACE377 /* RecBeamSearchDecoder.h */,
-				A51FEC220A02C1C900ACE377 /* RecDecoderLine.cpp */,
-				A51FEC230A02C1C900ACE377 /* RecDecoderLine.h */,
-				A51FEC240A02C1C900ACE377 /* RecDecoderPage.cpp */,
-				A51FEC250A02C1C900ACE377 /* RecDecoderPage.h */,
 			);
 			name = decoder;
 			path = ../src/torch;
@@ -166,10 +146,10 @@
 		A591200E0A12790700D64611 /* ngram */ = {
 			isa = PBXGroup;
 			children = (
-				A59120030A1278F100D64611 /* LMNGramBuilder.cpp */,
-				A59120040A1278F100D64611 /* LMNGramBuilder.h */,
-				A59120050A1278F100D64611 /* LMNGramEntry.cpp */,
-				A59120060A1278F100D64611 /* LMNGramEntry.h */,
+				4D76C6F30D6BBBAA009253DE /* mlngrambuilder.cpp */,
+				4D76C6F40D6BBBAA009253DE /* mlngrambuilder.h */,
+				4D76C6F50D6BBBAA009253DE /* mlngramentry.cpp */,
+				4D76C6F60D6BBBAA009253DE /* mlngramentry.h */,
 				A59120070A1278F100D64611 /* NGram.cpp */,
 			);
 			name = ngram;
@@ -184,6 +164,7 @@
 			buildPhases = (
 				57219A450B8377600033F495 /* Sources */,
 				57219A480B8377600033F495 /* Frameworks */,
+				579F65C80D6B734F000BF8F9 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -278,6 +259,22 @@
 		};
 /* End PBXProject section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		579F65C80D6B734F000BF8F9 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "";
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		57219A450B8377600033F495 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
@@ -285,7 +282,7 @@
 			files = (
 				57219A460B8377600033F495 /* Common.cpp in Sources */,
 				57219A560B8378BA0033F495 /* Adapter.cpp in Sources */,
-				57219D4B0B8A2D6A0033F495 /* AruspixHMM.cpp in Sources */,
+				4D76C70B0D6BBC88009253DE /* mlhmm.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -311,13 +308,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A51FEC270A02C1C900ACE377 /* ClassMapper.cpp in Sources */,
-				A51FEC280A02C1C900ACE377 /* ClassModel.cpp in Sources */,
 				A51FEC290A02C1C900ACE377 /* Decoder.cpp in Sources */,
-				A51FEC2C0A02C1C900ACE377 /* MusicModel.cpp in Sources */,
-				A51FEC2E0A02C1C900ACE377 /* RecBeamSearchDecoder.cpp in Sources */,
-				A51FEC2F0A02C1C900ACE377 /* RecDecoderLine.cpp in Sources */,
-				A51FEC300A02C1C900ACE377 /* RecDecoderPage.cpp in Sources */,
+				4DF692A80D496E28007DE3CF /* mldecoderpage.cpp in Sources */,
+				4DF692A90D496E28007DE3CF /* mldecoderstaff.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -325,9 +318,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A59120080A1278F100D64611 /* LMNGramBuilder.cpp in Sources */,
-				A59120090A1278F100D64611 /* LMNGramEntry.cpp in Sources */,
 				A591200A0A1278F100D64611 /* NGram.cpp in Sources */,
+				4D76C6F70D6BBBAA009253DE /* mlngrambuilder.cpp in Sources */,
+				4D76C6F80D6BBBAA009253DE /* mlngramentry.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

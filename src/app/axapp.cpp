@@ -32,8 +32,8 @@
 const wxString IPC_START = "StartOther";
 
 int AxApp::s_version_major = 1;
-int AxApp::s_version_minor = 2;
-int AxApp::s_version_revision = 2;
+int AxApp::s_version_minor = 3;
+int AxApp::s_version_revision = 0;
 wxString AxApp::s_version = wxString::Format("%d.%d.%d", AxApp::s_version_major, AxApp::s_version_minor, AxApp::s_version_revision);
 wxString AxApp::s_build_date = __DATE__;
 wxString AxApp::s_build_time = __TIME__;
@@ -115,7 +115,7 @@ bool AxApp::OnInit()
         }
 
         // IPC server
-        m_serverIPC = new AppIPCServer ();
+        m_serverIPC = new AxIPCServer ();
         if (!m_serverIPC->Create ( name ) ) {
             delete m_serverIPC;
             m_serverIPC = NULL;
@@ -182,7 +182,7 @@ bool AxApp::OnInit()
 			int x = 140;
 			dest.DrawText( version , x, 230 );
 			dest.DrawText( build , x, 245 );
-			dest.DrawText( "Laurent Pugin, Copyright 2004-2007" , x, 260 );
+			dest.DrawText( "Laurent Pugin, Copyright 2004-2008" , x, 260 );
 			dest.DrawText( "All Rights Reserved" , x, 275 );
 
 #ifndef __AXDEBUG__		
@@ -212,13 +212,6 @@ bool AxApp::OnInit()
 
     if (!m_help->Initialize ( m_resourcesPath + "/" + lang + "/aruspix") )
         m_help->Initialize ( m_resourcesPath + "/en/aruspix" );
-
-
-#ifdef AX_DISPLAY
-    m_locale.AddCatalog( "display" );
-    if (!m_help->Initialize ( m_resourcesPath + "/" + lang + "/display") )
-        m_help->Initialize ( m_resourcesPath + "/en/display" );
-#endif //AX_DISPLAY
 
 #ifdef AX_SUPERIMPOSITION
     m_locale.AddCatalog( "superimposition" );
@@ -273,6 +266,12 @@ int AxApp::OnExit()
 
     delete wxConfigBase::Set((wxConfigBase *) NULL);
     return 0;
+	
+	// clean the working directory in Release mode only
+#ifndef __AXDEBUG__		
+	if ( wxDirExists( wxGetApp().m_workingDir ) )
+		AxDirTraverser clean( wxGetApp().m_workingDir );
+#endif
 }
 
 void AxApp::AxBeginBusyCursor()
@@ -422,13 +421,13 @@ void AxApp::MacOpenFile(const wxString &fileName)
 //! IPC connection for application APP_VENDOR-APP_NAME.
 //----------------------------------------------------------------------------
 
-AppIPCConnection::AppIPCConnection()
+AxIPCConnection::AxIPCConnection()
     : wxConnection (m_buffer, WXSIZEOF(m_buffer))
 {
 
 }
 
-bool AppIPCConnection::OnExecute(const wxString& WXUNUSED(topic),
+bool AxIPCConnection::OnExecute(const wxString& WXUNUSED(topic),
                             char *data, int size, wxIPCFormat WXUNUSED(format))
 {
     char** argv;
@@ -458,16 +457,16 @@ bool AppIPCConnection::OnExecute(const wxString& WXUNUSED(topic),
 
 
 //----------------------------------------------------------------------------
-// AboutDlg
+// AxAboutDlg
 //----------------------------------------------------------------------------
 
-// WDR: event table for AboutDlg
+// WDR: event table for AxAboutDlg
 
-BEGIN_EVENT_TABLE(AboutDlg,wxDialog)
+BEGIN_EVENT_TABLE(AxAboutDlg,wxDialog)
 
 END_EVENT_TABLE()
 
-AboutDlg::AboutDlg( wxWindow *parent, wxWindowID id, const wxString &title,
+AxAboutDlg::AxAboutDlg( wxWindow *parent, wxWindowID id, const wxString &title,
     const wxPoint &position, const wxSize& size, long style ) :
     wxDialog( parent, id, title, position, size, style )
 {
@@ -500,18 +499,18 @@ AboutDlg::AboutDlg( wxWindow *parent, wxWindowID id, const wxString &title,
 
 }
 
-// WDR: handler implementations for AboutDlg
+// WDR: handler implementations for AxAboutDlg
 
 
 //----------------------------------------------------------------------------
 //! IPC server for application APP_VENDOR-APP_NAME.
 //----------------------------------------------------------------------------
 
-wxConnectionBase *AppIPCServer::OnAcceptConnection (const wxString& topic)
+wxConnectionBase *AxIPCServer::OnAcceptConnection (const wxString& topic)
 {
     if (topic != IPC_START) 
         return NULL;
-    return new AppIPCConnection;
+    return new AxIPCConnection;
 }
 
 

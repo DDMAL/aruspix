@@ -8,6 +8,9 @@
 #ifndef __cmpfile_H__
 #define __cmpfile_H__
 
+#ifdef AX_RECOGNITION
+	#ifdef AX_COMPARISON
+
 #if defined(__GNUG__) && ! defined(__APPLE__)
     #pragma interface "cmpfile.cpp"
 #endif
@@ -20,7 +23,7 @@
 
 #include "app/axfile.h"
 #include "recognition/recbookfile.h"
-#include "wg/iomlf.h"
+#include "mus/musiomlf.h"
 
 #include "cmp_wdr.h"
 
@@ -43,7 +46,7 @@ WX_DECLARE_OBJARRAY( CmpPartPage, ArrayOfCmpPartPages);
 class CmpCollationPart;
 WX_DECLARE_OBJARRAY( CmpCollationPart, ArrayOfCmpCollationParts);
 
-class WgStaff;
+class MusStaff;
 
 // WDR: class declarations
 
@@ -83,15 +86,15 @@ public:
 	bool Collate( );
 	bool Realize( );
 	bool IsCollationLoaded();
-	WgFile *GetWgFile() { return m_wgFilePtr; }
+	MusFile *GetWgFile() { return m_musFilePtr; }
 	
 	
 protected:
-	bool Align( WgStaff *staff_ref, WgStaff *staff_var, CmpCollationPart *part_var );
+	bool Align( MusStaff *staff_ref, MusStaff *staff_var, CmpCollationPart *part_var );
 	void EndInsertion( CmpCollationPart *part_var  );
-	void AddInsertion( WgElement *elem, WgStaff *aligned_staff, int i ); // Add elem into an insertion Staff
+	void AddInsertion( MusElement *elem, MusStaff *aligned_staff, int i ); // Add elem into an insertion Staff
 			// If this staff has to be created, a symbol is added into the aligned staff before element i 
-	void SetCmpValues( WgElement *dest, WgElement *src, int flag );
+	void SetCmpValues( MusElement *dest, MusElement *src, int flag );
 	
 
 public:
@@ -106,10 +109,10 @@ public:
 	
 private:
 	wxString m_basename; // the basename of the CmpFile, used to read/write file from this class
-	WgFile *m_wgFilePtr;
+	MusFile *m_musFilePtr;
 	bool m_isColLoaded;
 	
-	WgStaff *m_insStaff;
+	MusStaff *m_insStaff;
 };
 
 //----------------------------------------------------------------------------
@@ -214,8 +217,8 @@ public:
 	//int FilesForAdaptation( wxArrayString *filenames, wxArrayString *paths, bool *isCacheOk );
 	//bool HasToBePreprocessed( wxString imagefile );
 	CmpBookPart *FindBookPart( wxString id );
-	bool CmpFile::LoadBooks( wxArrayPtrVoid params, ProgressDlg *dlg );
-    bool Collate( wxArrayPtrVoid params, ProgressDlg *dlg );
+	bool CmpFile::LoadBooks( wxArrayPtrVoid params, AxProgressDlg *dlg );
+    bool Collate( wxArrayPtrVoid params, AxProgressDlg *dlg );
     // static on arrays
     static CmpBookItem *FindFile( ArrayOfCmpBookItems *array, wxString filename, int* index  );
 	// distance
@@ -236,5 +239,8 @@ private:
     // WDR: handler declarations for CmpFile
 
 };
+
+	#endif //AX_COMPARISON
+#endif //AX_RECOGNITION
 
 #endif

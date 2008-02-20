@@ -20,7 +20,7 @@
 
 #include "recim.h"
 #include "rec.h"
-#include "recwg.h"
+#include "recmus.h"
 #include "recfile.h"
 
 #include "app/axapp.h"
@@ -46,8 +46,8 @@ RecImController::RecImController( wxWindow *parent, wxWindowID id,
 {
     m_envPtr = NULL;
     
-    m_wgControlPtr = NULL;
-    m_wgViewPtr = NULL;
+    m_musControlPtr = NULL;
+    m_musViewPtr = NULL;
     
     m_recFilePtr = NULL;
 	
@@ -67,12 +67,12 @@ void RecImController::SetEnv( RecEnv *env )
     m_envPtr = env;
 }
 
-void RecImController::SetWgViewAndController( RecWgWindow *recWgWindow, RecWgController *recWgController )
+void RecImController::SetWgViewAndController( RecMusWindow *recWgWindow, RecMusController *recWgController )
 {   
     wxASSERT_MSG( m_viewPtr->IsKindOf( CLASSINFO( RecImWindow ) ) , wxT("View must be a RecImWindow") );
 
-    m_wgControlPtr = recWgController;
-    m_wgViewPtr = recWgWindow;
+    m_musControlPtr = recWgController;
+    m_musViewPtr = recWgWindow;
     
     ((RecImWindow*)m_viewPtr)->SetWgViewAndController( recWgWindow, recWgController );
 }
@@ -290,10 +290,10 @@ void RecImWindow::SetEnv( RecEnv *env )
     m_envPtr = env;
 }
 
-void RecImWindow::SetWgViewAndController( RecWgWindow *recWgWindow, RecWgController *recWgController )
+void RecImWindow::SetWgViewAndController( RecMusWindow *recWgWindow, RecMusController *recWgController )
 {
-    m_wgControlPtr = recWgController;
-    m_wgViewPtr = recWgWindow;
+    m_musControlPtr = recWgController;
+    m_musViewPtr = recWgWindow;
 }
 
 void RecImWindow::SetRecFile( RecFile *recFile )
@@ -322,8 +322,8 @@ void RecImWindow::OnScroll( wxScrollWinEvent &event )
     else
         scrollY += CalcScrollInc(event);
     
-    if ( m_wgViewPtr )
-        m_wgViewPtr->Scroll( scrollX, scrollY);
+    if ( m_musViewPtr )
+        m_musViewPtr->Scroll( scrollX, scrollY);
 }
 
 // WDR: handler implementations for RecImWindow
@@ -337,7 +337,7 @@ void RecImWindow::OnPaint( wxPaintEvent &event )
     wxASSERT_MSG( info,"Class info cannot be NULL" );
     wxASSERT_MSG( info->IsKindOf( CLASSINFO( RecImController ) ), "Controller must be a RecImController");
     RecImController *controller = (RecImController*)m_imControlPtr;
-    wxASSERT_MSG( m_wgControlPtr, wxT("WG controller cannot be NULL") );
+    wxASSERT_MSG( m_musControlPtr, wxT("WG controller cannot be NULL") );
 
     wxPaintDC dc( this );
     PrepareDC( dc );
@@ -350,7 +350,7 @@ void RecImWindow::OnPaint( wxPaintEvent &event )
 		int x, y;
     
 		if ( m_recFilePtr->IsRecognized() ) // get staff bitmap (if exists)
-			m_wgControlPtr->GetStaffBitmap( &bmp, &x, &y );
+			m_musControlPtr->GetStaffBitmap( &bmp, &x, &y );
 		else // get selection bitmap (if exists)
 			controller->GetSelectionBitmap( &bmp, &x, &y );
 		
@@ -397,8 +397,8 @@ void RecImWindow::OnMouse(wxMouseEvent &event)
         y = max( 0, y );
         
         event.Skip();
-        if ( m_wgViewPtr )
-            m_wgViewPtr->Scroll( x, y);
+        if ( m_musViewPtr )
+            m_musViewPtr->Scroll( x, y);
     }
     //else if ( event.GetEventType() == wxEVT_LEAVE_WINDOW)
     //  return; // don't skip event

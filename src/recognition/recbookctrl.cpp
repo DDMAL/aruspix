@@ -5,6 +5,8 @@
 // Copyright (c) Laurent Pugin. All rights reserved.   
 /////////////////////////////////////////////////////////////////////////////
 
+#ifdef AX_RECOGNITION
+
 #if defined(__GNUG__) && ! defined(__APPLE__)
 #pragma implementation "recbookctrl.h"
 #endif
@@ -593,3 +595,4 @@ void RecBookCtrl::OnMenu( wxTreeEvent &event )
     PopupMenu(&popup, clientpt );
 }
 
+#endif //AX_RECOGNITION

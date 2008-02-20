@@ -18,7 +18,7 @@
 #include "wx/process.h"
 
 
-#include "progressdlg.h"
+#include "axprogressdlg.h"
 
 // WDR: class declarations
 
@@ -30,7 +30,7 @@ class AxProcess: public wxProcess
 {
 public:
     // constructors and destructors
-    AxProcess( wxString cmd, wxString arg, ProgressDlg *dlg );
+    AxProcess( wxString cmd, wxString arg, AxProgressDlg *dlg );
     virtual ~AxProcess();
 
 	// end process

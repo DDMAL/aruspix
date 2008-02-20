@@ -62,11 +62,11 @@ enum
 
 class AxImageController;
 class RecImController;
-class RecWgController;
+class RecMusController;
 class RecImWindow;
-class RecWgWindow;
+class RecMusWindow;
 
-class WgToolPanel;
+class MusToolPanel;
 
 class RecFile;
 class RecBookCtrl;
@@ -91,7 +91,7 @@ public:
         const wxPoint& pos = wxDefaultPosition,
         const wxSize& size = wxDefaultSize,
         long style = 0 );
-    void SetEnv( RecEnv *env, wxFlexGridSizer *sizer, WgToolPanel *toolpanel,   RecWgController *wgControlPtr );
+    void SetEnv( RecEnv *env, wxFlexGridSizer *sizer, MusToolPanel *toolpanel,   RecMusController *musControlPtr );
     
     // WDR: method declarations for RecSplitterWindow
     void ChangeOrientation( );
@@ -99,9 +99,9 @@ public:
 protected:
     // WDR: member variable declarations for RecSplitterWindow
     RecEnv *m_envPtr;
-    WgToolPanel *m_toolpanel;
-    wxFlexGridSizer *m_wgsizer;
-    RecWgController *m_wgControlPtr;
+    MusToolPanel *m_toolpanel;
+    wxFlexGridSizer *m_mussizer;
+    RecMusController *m_musControlPtr;
     
 private:
     // WDR: handler declarations for RecSplitterWindow
@@ -180,11 +180,11 @@ private:
     // im
     RecImController *m_imControlPtr;
     RecImWindow *m_imViewPtr;
-    // wg    
-    RecWgController *m_wgControlPtr;
-    RecWgWindow *m_wgViewPtr;
-    WgToolPanel *m_toolpanel;
-    wxPanel *m_wgPanelPtr; // panel complet: contient toolpanel et recwgcontoller
+    // mus    
+    RecMusController *m_musControlPtr;
+    RecMusWindow *m_musViewPtr;
+    MusToolPanel *m_toolpanel;
+    wxPanel *m_musPanelPtr; // panel complet: contient toolpanel et recmuscontoller
     // recognition elements
     RecFile *m_recFilePtr;
     // 

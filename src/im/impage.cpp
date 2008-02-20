@@ -292,17 +292,17 @@ void ImPage::Store( AxUndoFile *undoPtr )
 {
 	if ( undoPtr->m_flags == IM_UNDO_CLASSIFICATION )
 	{
-		wxASSERT_MSG( m_imTmp2 , wxT("Store: m_imTmp2 cannot be NULL") );
+		wxASSERT_MSG( m_opImTmp2 , wxT("Store: m_opImTmp2 cannot be NULL") );
 		
 		wxFile output( undoPtr->GetFilename().c_str(), wxFile::write );
 		if ( output.IsOpened() )
 		{
 			output.Write( &m_selection_pos.x, sizeof( int ) );
 			output.Write( &m_selection_pos.y, sizeof( int ) );
-			output.Write( &m_imTmp2->width, sizeof( int ) );
-			output.Write( &m_imTmp2->height, sizeof( int ) );
-			output.Write( &m_imTmp2->size, sizeof( int ) );
-			output.Write( *m_imTmp2->data, m_imTmp2->size );
+			output.Write( &m_opImTmp2->width, sizeof( int ) );
+			output.Write( &m_opImTmp2->height, sizeof( int ) );
+			output.Write( &m_opImTmp2->size, sizeof( int ) );
+			output.Write( *m_opImTmp2->data, m_opImTmp2->size );
 		}
 	}
 }
@@ -342,49 +342,49 @@ bool ImPage::Check( wxString infile, int max_binary, int index )
     if (!m_progressDlg->SetOperation( _("Checking the image ...") ) )
         return this->Terminate( ERR_CANCELED );
 
-    if ( !Read( infile, &m_imMain, index ) )
+    if ( !Read( infile, &m_opImMain, index ) )
         return false;
 
-    int max_size = max( m_imMain->width, m_imMain->height );
+    int max_size = max( m_opImMain->width, m_opImMain->height );
 
     // verifier que l'image est de type IM_BYTE
-    if ( m_imMain->data_type != IM_BYTE )
+    if ( m_opImMain->data_type != IM_BYTE )
     {
-        m_imTmp = imImageCreate( m_imMain->width, m_imMain->height, m_imMain->color_space, IM_BYTE);
-        if ( !m_imTmp )
+        m_opImTmp1 = imImageCreate( m_opImMain->width, m_opImMain->height, m_opImMain->color_space, IM_BYTE);
+        if ( !m_opImTmp1 )
             return this->Terminate( ERR_MEMORY );
-        imConvertDataType( m_imMain, m_imTmp,0,0,0,0);
-        SwapImages( &m_imMain, &m_imTmp );
+        imConvertDataType( m_opImMain, m_opImTmp1,0,0,0,0);
+        SwapImages( &m_opImMain, &m_opImTmp1 );
     }
 
     // verifier que l'image n'est pas RGB
-    if ( imColorModeMatch( m_imMain->color_space, IM_RGB ) )
+    if ( imColorModeMatch( m_opImMain->color_space, IM_RGB ) )
     {
-        m_imTmp = imImageCreate( m_imMain->width, m_imMain->height, IM_GRAY, IM_BYTE);
-        if ( !m_imTmp )
+        m_opImTmp1 = imImageCreate( m_opImMain->width, m_opImMain->height, IM_GRAY, IM_BYTE);
+        if ( !m_opImTmp1 )
             return this->Terminate( ERR_MEMORY );
-        imConvertColorSpace( m_imMain, m_imTmp );
-        SwapImages( &m_imMain, &m_imTmp );
+        imConvertColorSpace( m_opImMain, m_opImTmp1 );
+        SwapImages( &m_opImMain, &m_opImTmp1 );
     }
 
     // convertir les images niveaux de gris en binaires 
-    if ( imColorModeMatch( m_imMain->color_space, IM_BINARY ) )
+    if ( imColorModeMatch( m_opImMain->color_space, IM_BINARY ) )
     {
-        m_imTmp = imImageCreate( m_imMain->width, m_imMain->height , IM_GRAY, IM_BYTE);
-        if ( !m_imTmp )
+        m_opImTmp1 = imImageCreate( m_opImMain->width, m_opImMain->height , IM_GRAY, IM_BYTE);
+        if ( !m_opImTmp1 )
             return this->Terminate( ERR_MEMORY );
-        imConvertColorSpace( m_imMain, m_imTmp );
-        SwapImages( &m_imMain, &m_imTmp );
+        imConvertColorSpace( m_opImMain, m_opImTmp1 );
+        SwapImages( &m_opImMain, &m_opImTmp1 );
 
         // appliquer un filtre moyenneur
         if ( !m_progressDlg->SetOperation( _("Filtering (binary image) ...") ) )
             return this->Terminate( ERR_CANCELED );
-        m_imTmp = imImageClone( m_imMain );
-        if ( !m_imTmp )
+        m_opImTmp1 = imImageClone( m_opImMain );
+        if ( !m_opImTmp1 )
             return this->Terminate( ERR_MEMORY );
-        if ( !imProcessMeanConvolve( m_imMain ,m_imTmp, 3 ) )
+        if ( !imProcessMeanConvolve( m_opImMain ,m_opImTmp1, 3 ) )
             return this->Terminate( ERR_CANCELED );
-        SwapImages( &m_imMain, &m_imTmp );
+        SwapImages( &m_opImMain, &m_opImTmp1 );
 
         // reduire par 4 si l'image est plus grande que max_binary
         while ( max_size > max_binary )
@@ -412,7 +412,7 @@ bool ImPage::Check( wxString infile, int max_binary, int index )
 	}
 
 	imStats istats;
-	imCalcImageStatistics( m_imMain, &istats );
+	imCalcImageStatistics( m_opImMain, &istats );
     if ( AxImage::s_checkIfNegative )
 		minIsBlack = (istats.mean > 127) ? true : false;
 	else if ( (istats.mean > 127) && !minIsBlack )
@@ -420,33 +420,33 @@ bool ImPage::Check( wxString infile, int max_binary, int index )
 	
 	if ( minIsBlack )
 	{
-		m_imTmp = imImageClone( m_imMain );
-		if ( !m_imTmp )
+		m_opImTmp1 = imImageClone( m_opImMain );
+		if ( !m_opImTmp1 )
 			return this->Terminate( ERR_MEMORY );
-		imProcessNegative( m_imMain, m_imTmp );
-		SwapImages( &m_imMain, &m_imTmp );
+		imProcessNegative( m_opImMain, m_opImTmp1 );
+		SwapImages( &m_opImMain, &m_opImTmp1 );
     }
 
 	// historgramme (debug)
 	//unsigned long histo[256];
-	//imbyte *bufIm = (imbyte*)m_imMain->data[0];
-	//imCalcHistogram( bufIm, m_imMain->plane_size, histo, 0 );
+	//imbyte *bufIm = (imbyte*)m_opImMain->data[0];
+	//imCalcHistogram( bufIm, m_opImMain->plane_size, histo, 0 );
     //wxString im_histo = m_path + "im_histo.csv";
 	//imSaveValues( (int*)histo, 256, im_histo.c_str() );
 	
 	///// TEST
-    //m_imTmp = imImageCreate( m_imMain->width, m_imMain->height, IM_BINARY, IM_BYTE );
-    //if ( !m_imTmp )
+    //m_opImTmp1 = imImageCreate( m_opImMain->width, m_opImMain->height, IM_BINARY, IM_BYTE );
+    //if ( !m_opImTmp1 )
     //    return this->Terminate( ERR_MEMORY );
 	//if ( !m_progressDlg->SetOperation( _("Binarization ...") ) )
 	//	return this->Terminate( ERR_CANCELED );
 	//wxLogMessage("Pugin binarization");
-	//imProcessPuginThreshold( m_imMain, m_imTmp, false );
-	//SwapImages( &m_imMain, &m_imTmp );
+	//imProcessPuginThreshold( m_opImMain, m_opImTmp1, false );
+	//SwapImages( &m_opImMain, &m_opImTmp1 );
 	//////
 
     // save file
-	SwapImages( &m_img0, &m_imMain );
+	SwapImages( &m_img0, &m_opImMain );
 	if ( m_isModified ) 
 		*m_isModified = true;
 	return this->Terminate( ERR_NONE );
@@ -463,25 +463,25 @@ bool ImPage::Deskew( double max_alpha )
 
 	this->SetMapImage( m_img0 );
 
-    if ( !GetImage( &m_im, DESKEW_FACTOR + m_reduction ) )
+    if ( !GetImage( &m_opIm, DESKEW_FACTOR + m_reduction ) )
         return false;
 
     imStats istats;
-    imCalcImageStatistics( m_im, &istats );
+    imCalcImageStatistics( m_opIm, &istats );
     // binary images - forcer la lecture en niveau de gris -> verifier la palette
     //if ( imColorModeMatch( file_color_mode, IM_BINARY ) )
-    if ( (m_im->palette_count == 2) || (istats.max == 1) )
+    if ( (m_opIm->palette_count == 2) || (istats.max == 1) )
     {
-        m_imTmp = imImageCreate( m_im->width, m_im->height , IM_GRAY, IM_BYTE);
-        if ( !m_imTmp )
+        m_opImTmp1 = imImageCreate( m_opIm->width, m_opIm->height , IM_GRAY, IM_BYTE);
+        if ( !m_opImTmp1 )
             return this->Terminate( ERR_MEMORY );
-        imConvertColorSpace( m_im, m_imTmp );
-        SwapImages( &m_im, &m_imTmp );
+        imConvertColorSpace( m_opIm, m_opImTmp1 );
+        SwapImages( &m_opIm, &m_opImTmp1 );
     }
     
     // detection de l'inclinaison
     int counter = m_progressDlg->GetCounter();
-    int count = ((int)max_alpha / 2 + 11 ) * m_im->height;
+    int count = ((int)max_alpha / 2 + 11 ) * m_opIm->height;
         // count = nb d'approximation : 5x à 0.25 + 5x à 1 + Xx à 4 selon max_alpha
         // counter incremente  par ligne dans la methode GetAlignement
     imCounterTotal( counter, count , "Skew detection ..." );
@@ -497,7 +497,7 @@ bool ImPage::Deskew( double max_alpha )
     max = 0;
     for ( diff = -max_alpha; diff <= max_alpha; diff += 4 )
     {
-        align = GetDeskewAlignement( m_im, diff );
+        align = GetDeskewAlignement( m_opIm, diff );
         if ( align > max )
         {
             skew2 = diff;
@@ -509,7 +509,7 @@ bool ImPage::Deskew( double max_alpha )
     max = 0;
     for ( diff = skew2 - 2; diff <= skew2 + 2; diff += 1 )
     {
-        align = GetDeskewAlignement( m_im, diff );
+        align = GetDeskewAlignement( m_opIm, diff );
         if ( align > max )
         {
             skew1 = diff;
@@ -521,7 +521,7 @@ bool ImPage::Deskew( double max_alpha )
     max = 0;
     for ( diff = skew1 - 0.5; diff <= skew1 + 0.5; diff += 0.25 )
     {
-        align = GetDeskewAlignement( m_im, diff );
+        align = GetDeskewAlignement( m_opIm, diff );
         if ( align > max )
         {
             skew = diff;
@@ -530,7 +530,7 @@ bool ImPage::Deskew( double max_alpha )
     }
 
     wxLogMessage("Skew %.2f", skew  );
-    //ImageDestroy( &m_imAlign );
+    //ImageDestroy( &m_opImAlign );
 
     if ( skew != 0.0 )
     {
@@ -541,24 +541,24 @@ bool ImPage::Deskew( double max_alpha )
         double cos0, sin0;
         sin0 = sin( deg2rad( skew ) );
         cos0 = cos( deg2rad( skew ) );
-        imProcessCalcRotateSize( m_imMap->width, m_imMap->height, 
+        imProcessCalcRotateSize( m_opImMap->width, m_opImMap->height, 
                               &new_w, &new_h, cos0, sin0);
 
 
-        m_imTmp = imImageCreate( new_w, new_h, m_imMap->color_space, m_imMap->data_type);
-        if ( !m_imTmp )
+        m_opImTmp1 = imImageCreate( new_w, new_h, m_opImMap->color_space, m_opImMap->data_type);
+        if ( !m_opImTmp1 )
             return this->Terminate( ERR_MEMORY );
 
-        if ( !imProcessRotate( m_imMap, m_imTmp, cos0, sin0, 1 ) )
+        if ( !imProcessRotate( m_opImMap, m_opImTmp1, cos0, sin0, 1 ) )
             return this->Terminate( ERR_CANCELED );
 
-        SwapImages( &m_imMap, &m_imTmp );
+        SwapImages( &m_opImMap, &m_opImTmp1 );
 
         this->m_skew = skew;
     }
 
     // save file
-	SwapImages( &m_img0, &m_imMap );
+	SwapImages( &m_img0, &m_opImMap );
 	if ( m_isModified ) 
 		*m_isModified = true;
 	return this->Terminate( ERR_NONE );
@@ -636,25 +636,25 @@ bool ImPage::FindStaves( int min, int max, bool normalize, bool crop )
 
 	this->SetMapImage( m_img0 );
 
-    if ( !GetImage( &m_im, resize_factor, RecEnv::s_pre_threshold_method_resize, true ) )
+    if ( !GetImage( &m_opIm, resize_factor, RecEnv::s_pre_threshold_method_resize, true ) )
         return false;
 
-    m_imTmp = imImageClone( m_im );
-    if ( !m_imTmp )
+    m_opImTmp1 = imImageClone( m_opIm );
+    if ( !m_opImTmp1 )
         return this->Terminate( ERR_MEMORY );
 
-    imImageClear( m_imTmp );
+    imImageClear( m_opImTmp1 );
 
     ArrayOfRLE ImRLE_spaces;  // run length des espaces blancs
-    ImRLE_spaces.Alloc( m_im->height * m_im->width / 10 ); // 10% de l'image
+    ImRLE_spaces.Alloc( m_opIm->height * m_opIm->width / 10 ); // 10% de l'image
     ArrayOfRLE ImRLE_lines; // run length des lignes
-    ImRLE_lines.Alloc( m_im->height * m_im->width / 20 ); // 5% de l'image
+    ImRLE_lines.Alloc( m_opIm->height * m_opIm->width / 20 ); // 5% de l'image
 
 
-    imbyte *bufIm = (imbyte*)m_im->data[0];
-    imbyte *bufImTmp = (imbyte*)m_imTmp->data[0];
-    int h = m_im->height;
-    int w = m_im->width;
+    imbyte *bufIm = (imbyte*)m_opIm->data[0];
+    imbyte *bufImTmp = (imbyte*)m_opImTmp1->data[0];
+    int h = m_opIm->height;
+    int w = m_opIm->width;
     min = h * min / 1000; // parameters in 0/00
     max = h * max / 1000;
     int* maxRLE = new int[max]; // tableau du nombre de runs ; index = valeur du run ( 0 à max - 1)
@@ -746,15 +746,15 @@ bool ImPage::FindStaves( int min, int max, bool normalize, bool crop )
         if ( !imCounterInc( counter ) )
             return this->Terminate( ERR_CANCELED );
     }
-    SwapImages( &m_im, &m_imTmp );
+    SwapImages( &m_opIm, &m_opImTmp1 );
 
     //wxString rle = m_path + "rle.tif";
-    //if ( !Write( rle, &m_im ) )
+    //if ( !Write( rle, &m_opIm ) )
     //    return false;
 
     // convolve pour allonger le run
-    m_imTmp = imImageClone( m_im );
-    if ( !m_imTmp )
+    m_opImTmp1 = imImageClone( m_opIm );
+    if ( !m_opImTmp1 )
         return this->Terminate( ERR_MEMORY );
 
     imImage* kernel = imImageCreate( 7, 1, IM_GRAY, IM_INT);
@@ -766,12 +766,12 @@ bool ImPage::FindStaves( int min, int max, bool normalize, bool crop )
 
     if ( !m_progressDlg->SetOperation( _("Sharpen staff lines ...") ) )
         return this->Terminate( ERR_CANCELED );
-    imProcessBinMorphConvolve( m_im, m_imTmp, kernel, 0, 1);
+    imProcessBinMorphConvolve( m_opIm, m_opImTmp1, kernel, 0, 1);
     imImageDestroy(kernel);
-    SwapImages( &m_im, &m_imTmp );
+    SwapImages( &m_opIm, &m_opImTmp1 );
 
     //wxString rle_conv = m_path + "rle_conv.tif";
-    //if ( !Write( rle_conv, &m_im ) )
+    //if ( !Write( rle_conv, &m_opIm ) )
     //    return false;
 
     // calculer l'epaisseur des lignes de portees - procede identique
@@ -784,7 +784,7 @@ bool ImPage::FindStaves( int min, int max, bool normalize, bool crop )
     maxRLE = new int[space];
     memset( maxRLE, 0, space * sizeof(int) );
 
-    bufIm = (imbyte*)m_im->data[0];
+    bufIm = (imbyte*)m_opIm->data[0];
     for (x = 0; x < w; x++)
     {
         run.type = 0;
@@ -857,98 +857,98 @@ bool ImPage::FindStaves( int min, int max, bool normalize, bool crop )
 
         // binary images
         //if ( imColorModeMatch( file_color_mode, IM_BINARY ) )
-        if ( m_imMap->palette_count == 2 )
+        if ( m_opImMap->palette_count == 2 )
         {
-            m_imTmp = imImageCreate( m_imMap->width, m_imMap->height , IM_GRAY, IM_BYTE);
-            if ( !m_imTmp )
+            m_opImTmp1 = imImageCreate( m_opImMap->width, m_opImMap->height , IM_GRAY, IM_BYTE);
+            if ( !m_opImTmp1 )
                 return this->Terminate( ERR_MEMORY );
 
-            imConvertColorSpace( m_imMap, m_imTmp );
-            SwapImages( &m_imMap, &m_imTmp );
+            imConvertColorSpace( m_opImMap, m_opImTmp1 );
+            SwapImages( &m_opImMap, &m_opImTmp1 );
         }
 
 
         // resize
-        m_imTmp = imImageCreate( (int)(m_imMap->width * normalization_factor), (int)(m_imMap->height * normalization_factor), 
-        m_imMap->color_space, m_imMap->data_type );
-        if ( !m_imTmp )
+        m_opImTmp1 = imImageCreate( (int)(m_opImMap->width * normalization_factor), (int)(m_opImMap->height * normalization_factor), 
+        m_opImMap->color_space, m_opImMap->data_type );
+        if ( !m_opImTmp1 )
             return this->Terminate( ERR_MEMORY );
 
-        imProcessResize( m_imMap, m_imTmp, 1 );
-        SwapImages( &m_imMap, &m_imTmp );
+        imProcessResize( m_opImMap, m_opImTmp1, 1 );
+        SwapImages( &m_opImMap, &m_opImTmp1 );
 		
 		this->m_resized = this->m_resize;
 		this->m_resize = 1.0;
 
         // threshold
-        /*m_imTmp = imImageCreate( m_imMain->width, m_imMain->height, IM_BINARY, IM_BYTE );
-        if ( !m_imTmp )
+        /*m_opImTmp1 = imImageCreate( m_opImMain->width, m_opImMain->height, IM_BINARY, IM_BYTE );
+        if ( !m_opImTmp1 )
             return this->Terminate( ERR_MEMORY );
 
-        //imProcessThreshold( m_imMain, m_imTmp, 128, 1);
-        imProcessOtsuThreshold( m_imMain, m_imTmp );
-        //imProcessPercentThreshold(m_imMain, m_imTmp, 15);
-        SwapImages( &m_imMain, &m_imTmp );*/
+        //imProcessThreshold( m_opImMain, m_opImTmp1, 128, 1);
+        imProcessOtsuThreshold( m_opImMain, m_opImTmp1 );
+        //imProcessPercentThreshold(m_opImMain, m_opImTmp1, 15);
+        SwapImages( &m_opImMain, &m_opImTmp1 );*/
     }
 
     // resize image convolved -> keep for staves position detection
-    m_imTmp = imImageCreate( 
-        (int)(m_im->width / STAVES_CONV_REDUCTION * factor * normalization_factor),
-        (int)(m_im->height / STAVES_CONV_REDUCTION  * factor * normalization_factor), 
-        m_im->color_space, m_im->data_type );
-    if ( !m_imTmp )
+    m_opImTmp1 = imImageCreate( 
+        (int)(m_opIm->width / STAVES_CONV_REDUCTION * factor * normalization_factor),
+        (int)(m_opIm->height / STAVES_CONV_REDUCTION  * factor * normalization_factor), 
+        m_opIm->color_space, m_opIm->data_type );
+    if ( !m_opImTmp1 )
         return this->Terminate( ERR_MEMORY );
 
-    imProcessResize( m_im, m_imTmp, 0 );
-    SwapImages( &m_im, &m_imTmp );
+    imProcessResize( m_opIm, m_opImTmp1, 0 );
+    SwapImages( &m_opIm, &m_opImTmp1 );
 
     if ( !m_progressDlg->SetOperation( _("Detect staves position ...") ) )
         return this->Terminate( ERR_CANCELED );
 
     int f_width, avg;
-    int width = m_im->width;
-    int height = m_im->height;
+    int width = m_opIm->width;
+    int height = m_opIm->height;
     // projection verticale
-    m_hist = new int[ width ];
-    imAnalyzeProjectionV( m_im, m_hist );
+    m_opHist = new int[ width ];
+    imAnalyzeProjectionV( m_opIm, m_opHist );
 
     //wxString staves_v = m_path + "staves_v.csv";
-	//imSaveValues( m_hist, width, staves_v.c_str() );
+	//imSaveValues( m_opHist, width, staves_v.c_str() );
 
     f_width = 100 / RESIZE_FACTOR / 4; // 25 % de la hauteur de la portee
-    MedianFilter( m_hist, width, f_width, &avg );
+    MedianFilter( m_opHist, width, f_width, &avg );
 
     //wxString staves_v_med = m_path + "staves_v_med.csv";
-	//imSaveValues( m_hist, width, staves_v_med.c_str() );
+	//imSaveValues( m_opHist, width, staves_v_med.c_str() );
 
     int x1, x2;
-    GetHorizontalStavesPosition( m_hist, width, avg, &x1, &x2 );
+    GetHorizontalStavesPosition( m_opHist, width, avg, &x1, &x2 );
     this->m_x1 = x1 * RESIZE_FACTOR * STAVES_CONV_REDUCTION / this->m_resize;
     this->m_x2 = x2 * RESIZE_FACTOR * STAVES_CONV_REDUCTION / this->m_resize;
     wxLogMessage("Borders position %d %d", this->m_x1, this->m_x2 );
     
-    delete[] m_hist;
-    m_hist = NULL;
+    delete[] m_opHist;
+    m_opHist = NULL;
 
     // projection horizontales
-    m_hist = new int[ height ];
-    imAnalyzeProjectionH( m_im, m_hist );
+    m_opHist = new int[ height ];
+    imAnalyzeProjectionH( m_opIm, m_opHist );
 
     //wxString staves_h = m_path + "staves_h.csv";
-	//imSaveValues( m_hist, height, staves_h.c_str() );
+	//imSaveValues( m_opHist, height, staves_h.c_str() );
 
     f_width = 100 / RESIZE_FACTOR / 10; // 10 % de la hauteur de la portee
-    MedianFilter( m_hist, height, f_width, &avg );
+    MedianFilter( m_opHist, height, f_width, &avg );
 
     //wxString staves_h_med = m_path + "staves_h_med.csv";
-	//imSaveValues( m_hist, height, staves_h_med.c_str() );
+	//imSaveValues( m_opHist, height, staves_h_med.c_str() );
 
-    m_lines1 = new int[MAX_STAVES];
+    m_opLines1 = new int[MAX_STAVES];
     int nb_staves;
-    GetVerticalStavesPosition( m_hist, height, avg, m_lines1, &nb_staves );
+    GetVerticalStavesPosition( m_opHist, height, avg, m_opLines1, &nb_staves );
     //wxLogMessage("%d - %d", m_page_x1, m_page_x2 );
-    delete[] m_hist;
-    m_hist = NULL;
+    delete[] m_opHist;
+    m_opHist = NULL;
     
     if (nb_staves == 0)
         return this->Terminate( ERR_UNKNOWN );
@@ -959,7 +959,7 @@ bool ImPage::FindStaves( int min, int max, bool normalize, bool crop )
 	if ( crop )
 	{	
 		// crop
-		if ( !GetImage( &m_imMain ) )
+		if ( !GetImage( &m_opImMain ) )
 			return false;
 
 		/*
@@ -969,37 +969,37 @@ bool ImPage::FindStaves( int min, int max, bool normalize, bool crop )
 		*/
 
 		x1 = max( 0, this->m_x1  - RecEnv::s_pre_margin_left ); // 30 px en moins = de marge d'erreur
-		x2 = min( m_imMain->width - 1 , this->m_x2 + RecEnv::s_pre_margin_right ); // 20 px en plus = de marge d'erreur
+		x2 = min( m_opImMain->width - 1 , this->m_x2 + RecEnv::s_pre_margin_right ); // 20 px en plus = de marge d'erreur
 		this->m_x1 -= x1;
 		this->m_x2 -= x1;
-		y1 = max ( 0, m_lines1[0] - 50 - RecEnv::s_pre_margin_bottom ); // 120 px en dessous de la derniere portee
-		y2 = min ( m_imMain->height -1 , m_lines1[nb_staves - 1] + 50 + RecEnv::s_pre_margin_top ); // 150 px en dessus de la premiere portee
+		y1 = max ( 0, m_opLines1[0] - 50 - RecEnv::s_pre_margin_bottom ); // 120 px en dessous de la derniere portee
+		y2 = min ( m_opImMain->height -1 , m_opLines1[nb_staves - 1] + 50 + RecEnv::s_pre_margin_top ); // 150 px en dessus de la premiere portee
 
-		m_imTmp = imImageCreate( x2 - x1, y2 - y1, m_imMain->color_space, m_imMain->data_type );    
-		imProcessCrop( m_imMain, m_imTmp, x1, y1);
-		SwapImages( &m_imMain, &m_imTmp );
-		this->m_size = wxSize( m_imMain->width, m_imMain->height );
-		SwapImages( &m_img0, &m_imMain );
+		m_opImTmp1 = imImageCreate( x2 - x1, y2 - y1, m_opImMain->color_space, m_opImMain->data_type );    
+		imProcessCrop( m_opImMain, m_opImTmp1, x1, y1);
+		SwapImages( &m_opImMain, &m_opImTmp1 );
+		this->m_size = wxSize( m_opImMain->width, m_opImMain->height );
+		SwapImages( &m_img0, &m_opImMain );
 		if ( m_isModified ) 
 			*m_isModified = true;
 			
 		// crop staves image
-		m_imTmp = imImageCreate( (x2 - x1) / (RESIZE_FACTOR * STAVES_CONV_REDUCTION), (y2 - y1)  / (RESIZE_FACTOR * STAVES_CONV_REDUCTION),
-			m_im->color_space, m_im->data_type );    
-		imProcessCrop( m_im, m_imTmp, x1  / (RESIZE_FACTOR * STAVES_CONV_REDUCTION), y1  / (RESIZE_FACTOR * STAVES_CONV_REDUCTION));
-		SwapImages( &m_im, &m_imTmp );
+		m_opImTmp1 = imImageCreate( (x2 - x1) / (RESIZE_FACTOR * STAVES_CONV_REDUCTION), (y2 - y1)  / (RESIZE_FACTOR * STAVES_CONV_REDUCTION),
+			m_opIm->color_space, m_opIm->data_type );    
+		imProcessCrop( m_opIm, m_opImTmp1, x1  / (RESIZE_FACTOR * STAVES_CONV_REDUCTION), y1  / (RESIZE_FACTOR * STAVES_CONV_REDUCTION));
+		SwapImages( &m_opIm, &m_opImTmp1 );
 	}
 	else
 	{
-		SwapImages( &m_img0, &m_imMap );
+		SwapImages( &m_img0, &m_opImMap );
 		if ( m_isModified ) 
 			*m_isModified = true;
 	}
 	
 	//wxString staves_file = m_path + "staves.tif";
-    //if ( !Write( staves_file, &m_im ) )
+    //if ( !Write( staves_file, &m_opIm ) )
     //    return false;	
-    ImageDestroy( &m_im );
+    ImageDestroy( &m_opIm );
 	
 	// keep grayscale alternative
 	ImageDestroy( &m_img1 );
@@ -1014,7 +1014,7 @@ bool ImPage::FindStaves( int min, int max, bool normalize, bool crop )
     for( i = nb_staves; i > 0; i--) // flip staves order
     {
         ImStaff imstaff;
-        imstaff.m_y = m_lines1[i-1] - y1;
+        imstaff.m_y = m_opLines1[i-1] - y1;
         this->m_staves.Add( imstaff );
     }
 	
@@ -1130,26 +1130,26 @@ bool ImPage::BinarizeAndClean( )
 
 	this->SetMapImage( m_img0 );
 
-	if ( !GetImage( &m_imMain ) )
+	if ( !GetImage( &m_opImMain ) )
       return false;
 
 	// binarisation APRES filtrage
 	// pas de difference sensible, mais mieux niveau bruit selon Bunke
 
-    m_imTmp = imImageClone( m_imMain );
-    if ( !m_imTmp )
+    m_opImTmp1 = imImageClone( m_opImMain );
+    if ( !m_opImTmp1 )
         return this->Terminate( ERR_MEMORY );
-    if ( !imProcessMedianConvolve( m_imMain ,m_imTmp, 3 ) )
+    if ( !imProcessMedianConvolve( m_opImMain ,m_opImTmp1, 3 ) )
         return this->Terminate( ERR_CANCELED );
-    SwapImages( &m_imMain, &m_imTmp );
+    SwapImages( &m_opImMain, &m_opImTmp1 );
 		
-    m_imTmp = imImageCreate( m_imMain->width, m_imMain->height, IM_BINARY, IM_BYTE );
-    if ( !m_imTmp )
+    m_opImTmp1 = imImageCreate( m_opImMain->width, m_opImMain->height, IM_BINARY, IM_BYTE );
+    if ( !m_opImTmp1 )
         return this->Terminate( ERR_MEMORY );
 
 	if ( RecEnv::s_pre_threshold_method == PRE_BINARIZATION_OTSU )
 	{
-		int otsu = imProcessOtsuThreshold( m_imMain, m_imTmp );
+		int otsu = imProcessOtsuThreshold( m_opImMain, m_opImTmp1 );
 		wxLogMessage("Otsu thresholding at %d", otsu);
 	}
 	else if ( RecEnv::s_pre_threshold_method == PRE_BINARIZATION_SAUVOLA )
@@ -1157,46 +1157,46 @@ bool ImPage::BinarizeAndClean( )
 		if ( !m_progressDlg->SetOperation( _("Binarization ...") ) )
 			return this->Terminate( ERR_CANCELED );
 		wxLogMessage("Sauvola binarization (region size is %d)", RecEnv::s_pre_threshold_region_size );
-		imProcessSauvolaThreshold( m_imMain, m_imTmp, RecEnv::s_pre_threshold_region_size, 0.5, 128, 20, 150, false );
+		imProcessSauvolaThreshold( m_opImMain, m_opImTmp1, RecEnv::s_pre_threshold_region_size, 0.5, 128, 20, 150, false );
 	}
 	else if ( RecEnv::s_pre_threshold_method == PRE_BINARIZATION_BRINK )
 	{
 		if ( !m_progressDlg->SetOperation( _("Binarization ...") ) )
 			return this->Terminate( ERR_CANCELED );
 		wxLogMessage("Entropy Brink binarization" );
-		imProcessBrinkThreshold( m_imMain, m_imTmp, false );
+		imProcessBrinkThreshold( m_opImMain, m_opImTmp1, false );
 	}
 	else if ( RecEnv::s_pre_threshold_method == PRE_BINARIZATION_PUGIN )
 	{
 		if ( !m_progressDlg->SetOperation( _("Binarization ...") ) )
 			return this->Terminate( ERR_CANCELED );
 		wxLogMessage("Pugin binarization" );
-		imProcessPuginThreshold( m_imMain, m_imTmp, false );
+		imProcessPuginThreshold( m_opImMain, m_opImTmp1, false );
 	}
 	else // should not happen, but just in case
 	{	
 		wxLogWarning("Fix threshold used" );
-		imProcessThreshold( m_imMain, m_imTmp, 127, 1);
+		imProcessThreshold( m_opImMain, m_opImTmp1, 127, 1);
 	}
-	//int otsu = imProcessKittlerThreshold( m_imMain, m_imTmp );
-    //imProcessPercentThreshold(m_imMap, m_imMain, 15);
-    SwapImages( &m_imMain, &m_imTmp );
+	//int otsu = imProcessKittlerThreshold( m_opImMain, m_opImTmp1 );
+    //imProcessPercentThreshold(m_opImMap, m_opImMain, 15);
+    SwapImages( &m_opImMain, &m_opImTmp1 );
 
     // nettoyage par pruning
     imStats istats;
-    imCalcImageStatistics( m_imMain, &istats );
+    imCalcImageStatistics( m_opImMain, &istats );
 	
     // verifier negatif - positif : mean < 0.5
 	// just in case, usually should not happen. It was the case when using 
 	// impages binarized externally using another algorithm
     if ( istats.mean > 0.5 )
     {
-        m_imTmp = imImageClone( m_imMain );
-        if ( !m_imTmp )
+        m_opImTmp1 = imImageClone( m_opImMain );
+        if ( !m_opImTmp1 )
             return this->Terminate( ERR_MEMORY );
-        imProcessNegative( m_imMain, m_imTmp );
-        SwapImages( &m_imMain, &m_imTmp );
-		imCalcImageStatistics( m_imMain, &istats );
+        imProcessNegative( m_opImMain, m_opImTmp1 );
+        SwapImages( &m_opImMain, &m_opImTmp1 );
+		imCalcImageStatistics( m_opImMain, &istats );
     }
 
     double ink_factor = (double)this->m_space_width / (double)this->m_line_width;
@@ -1209,12 +1209,12 @@ bool ImPage::BinarizeAndClean( )
 	int threshold = min( (int)threshold_d, TP_MAX_SMALL_ELEMENT );
 
     // add margin - bug si des elements touche le bord dans imProcessPrune  
-    m_imTmp = imImageCreate( m_imMain->width + 2, m_imMain->height + 2, 
-        m_imMain->color_space, m_imMain->data_type );
-    if ( !m_imTmp )
+    m_opImTmp1 = imImageCreate( m_opImMain->width + 2, m_opImMain->height + 2, 
+        m_opImMain->color_space, m_opImMain->data_type );
+    if ( !m_opImTmp1 )
         return this->Terminate( ERR_MEMORY );
-    imProcessAddMargins( m_imMain, m_imTmp, 1, 1 );
-    SwapImages( &m_imMain, &m_imTmp );
+    imProcessAddMargins( m_opImMain, m_opImTmp1, 1, 1 );
+    SwapImages( &m_opImMain, &m_opImTmp1 );
 
 	// debug values
 	/*wxString clean_morph = m_path + "clean_morph.csv";
@@ -1235,36 +1235,36 @@ bool ImPage::BinarizeAndClean( )
 			return this->Terminate( ERR_CANCELED );
 	
         wxLogMessage("Cleaning by morphological opening (mean / stddev = %f)" , istats.mean / istats.stddev  );
-        m_imTmp = imImageClone( m_imMain );
-        if ( !m_imTmp )
+        m_opImTmp1 = imImageClone( m_opImMain );
+        if ( !m_opImTmp1 )
             return this->Terminate( ERR_MEMORY );
-        imProcessBinMorphOpen( m_imMain, m_imTmp, 3, 1);
-        SwapImages( &m_imMain, &m_imTmp );
+        imProcessBinMorphOpen( m_opImMain, m_opImTmp1, 3, 1);
+        SwapImages( &m_opImMain, &m_opImTmp1 );
 
     }
 
-    /*imImage *NewImage = imImageCreate(m_imMain->width, m_imMain->height, IM_GRAY, IM_USHORT);
-    imAnalyzeFindRegions ( m_imMain, NewImage, 8, 1);
+    /*imImage *NewImage = imImageCreate(m_opImMain->width, m_opImMain->height, IM_GRAY, IM_USHORT);
+    imAnalyzeFindRegions ( m_opImMain, NewImage, 8, 1);
     imImageDestroy( NewImage );*/
 
     wxLogMessage("Removing small elements (minimal size = %d)" ,threshold );
-    m_imTmp = imImageClone( m_imMain );
-    if ( !m_imTmp )
+    m_opImTmp1 = imImageClone( m_opImMain );
+    if ( !m_opImTmp1 )
         return this->Terminate( ERR_MEMORY );
-    imProcessPrune( m_imMain, m_imTmp, 8, threshold, 0 );
-    SwapImages( &m_imMain, &m_imTmp );
+    imProcessPrune( m_opImMain, m_opImTmp1, 8, threshold, 0 );
+    SwapImages( &m_opImMain, &m_opImTmp1 );
     
-    m_imTmp = imImageCreate( m_imMain->width - 2, m_imMain->height - 2, 
-        m_imMain->color_space, m_imMain->data_type );
-    if ( !m_imTmp )
+    m_opImTmp1 = imImageCreate( m_opImMain->width - 2, m_opImMain->height - 2, 
+        m_opImMain->color_space, m_opImMain->data_type );
+    if ( !m_opImTmp1 )
         return this->Terminate( ERR_MEMORY );
-    imProcessCrop( m_imMain, m_imTmp, 1, 1);
-    SwapImages( &m_imMain, &m_imTmp );
+    imProcessCrop( m_opImMain, m_opImTmp1, 1, 1);
+    SwapImages( &m_opImMain, &m_opImTmp1 );
 
-    if ( !ConvertToMAP( &m_imMain ) )
+    if ( !ConvertToMAP( &m_opImMain ) )
         return false;
 		
-	SwapImages( &m_img0, &m_imMain );
+	SwapImages( &m_img0, &m_opImMain );
 	if ( m_isModified ) 
 		*m_isModified = true;
 	return this->Terminate( ERR_NONE );
@@ -1281,105 +1281,105 @@ bool ImPage::FindOrnateLetters( )
 
 	this->SetMapImage( m_img0 );
 
-    if ( !GetImagePlane( &m_imMain ) )
+    if ( !GetImagePlane( &m_opImMain ) )
         return false;
 
-    m_im = imImageDuplicate( m_imMain );
-    if ( !m_im )
+    m_opIm = imImageDuplicate( m_opImMain );
+    if ( !m_opIm )
         return this->Terminate( ERR_MEMORY );
 
     // resize
-    m_imTmp = imImageCreate( m_im->width / TIP_FACTOR_1, m_im->height / TIP_FACTOR_1, m_im->color_space, m_im->data_type );
-    if ( !m_imTmp )
+    m_opImTmp1 = imImageCreate( m_opIm->width / TIP_FACTOR_1, m_opIm->height / TIP_FACTOR_1, m_opIm->color_space, m_opIm->data_type );
+    if ( !m_opImTmp1 )
         return this->Terminate( ERR_MEMORY );
-    imProcessResize( m_im, m_imTmp, 0 );
-    SwapImages( &m_im, &m_imTmp );
+    imProcessResize( m_opIm, m_opImTmp1, 0 );
+    SwapImages( &m_opIm, &m_opImTmp1 );
 
     // close
-    m_imTmp = imImageClone( m_im );
-    if ( !m_imTmp )
+    m_opImTmp1 = imImageClone( m_opIm );
+    if ( !m_opImTmp1 )
         return this->Terminate( ERR_MEMORY );
-    imProcessBinMorphClose( m_im, m_imTmp, 3, 2);
-    SwapImages( &m_im, &m_imTmp );
+    imProcessBinMorphClose( m_opIm, m_opImTmp1, 3, 2);
+    SwapImages( &m_opIm, &m_opImTmp1 );
 
     // open
-    m_imTmp = imImageClone( m_im );
-    if ( !m_imTmp )
+    m_opImTmp1 = imImageClone( m_opIm );
+    if ( !m_opImTmp1 )
         return this->Terminate( ERR_MEMORY );
-    imProcessBinMorphOpen( m_im, m_imTmp, 3, 1);
-    SwapImages( &m_im, &m_imTmp );
+    imProcessBinMorphOpen( m_opIm, m_opImTmp1, 3, 1);
+    SwapImages( &m_opIm, &m_opImTmp1 );
 
     // fill holes
-    m_imTmp = imImageClone( m_im );
-    if ( !m_imTmp )
+    m_opImTmp1 = imImageClone( m_opIm );
+    if ( !m_opImTmp1 )
         return this->Terminate( ERR_MEMORY );
-    imProcessFillHoles( m_im, m_imTmp, 4);
-    SwapImages( &m_im, &m_imTmp );
+    imProcessFillHoles( m_opIm, m_opImTmp1, 4);
+    SwapImages( &m_opIm, &m_opImTmp1 );
 
     // open
-    m_imTmp = imImageClone( m_im );
-    if ( !m_imTmp )
+    m_opImTmp1 = imImageClone( m_opIm );
+    if ( !m_opImTmp1 )
         return this->Terminate( ERR_MEMORY );
-    imProcessBinMorphOpen( m_im, m_imTmp, 5, 1);
-    SwapImages( &m_im, &m_imTmp );
+    imProcessBinMorphOpen( m_opIm, m_opImTmp1, 5, 1);
+    SwapImages( &m_opIm, &m_opImTmp1 );
 
     // prune
-    m_imTmp = imImageClone( m_im );
-    if ( !m_imTmp )
+    m_opImTmp1 = imImageClone( m_opIm );
+    if ( !m_opImTmp1 )
         return this->Terminate( ERR_MEMORY );
-    imProcessPrune( m_im, m_imTmp, 4, (int)(pow( 100 / TIP_FACTOR_1, 2 )), 0);
-    SwapImages( &m_im, &m_imTmp );
+    imProcessPrune( m_opIm, m_opImTmp1, 4, (int)(pow( 100 / TIP_FACTOR_1, 2 )), 0);
+    SwapImages( &m_opIm, &m_opImTmp1 );
 
     // close
-    m_imTmp = imImageClone( m_im );
-    if ( !m_imTmp )
+    m_opImTmp1 = imImageClone( m_opIm );
+    if ( !m_opImTmp1 )
         return this->Terminate( ERR_MEMORY );
-    imProcessBinMorphClose( m_im, m_imTmp, 5, 2);
-    SwapImages( &m_im, &m_imTmp );
+    imProcessBinMorphClose( m_opIm, m_opImTmp1, 5, 2);
+    SwapImages( &m_opIm, &m_opImTmp1 );
 
     // supprimer les zones d'elements dont la hauteur moyenne < 140
-    PruneElementsZone( m_im, 140 / TIP_FACTOR_1, 0 );
+    PruneElementsZone( m_opIm, 140 / TIP_FACTOR_1, 0 );
 
     // supprimer les zones d'elements dont la largeur moyenne < 120 
-    PruneElementsZone( m_im, 120 / TIP_FACTOR_1, 0, 1 );
+    PruneElementsZone( m_opIm, 120 / TIP_FACTOR_1, 0, 1 );
 
     // supprimer les zones d'elements dont la hauteur moyenne < 140 
-    PruneElementsZone( m_im, 140 / TIP_FACTOR_1, 0 );
+    PruneElementsZone( m_opIm, 140 / TIP_FACTOR_1, 0 );
 
     // supprimer les zones d'elements dont la largeur moyenne < 120 ou > 600
-    PruneElementsZone( m_im, 120 / TIP_FACTOR_1, 600 / TIP_FACTOR_1, 1 );
+    PruneElementsZone( m_opIm, 120 / TIP_FACTOR_1, 600 / TIP_FACTOR_1, 1 );
 
     // supprimer les zones d'elements dont la hauteur moyenne > 600
-    PruneElementsZone( m_im, 120 / TIP_FACTOR_1, 600 / TIP_FACTOR_1 );
+    PruneElementsZone( m_opIm, 120 / TIP_FACTOR_1, 600 / TIP_FACTOR_1 );
 
 
-    m_imTmp2 = imImageClone( m_imMain );
-    if ( !m_imTmp2 )
+    m_opImTmp2 = imImageClone( m_opImMain );
+    if ( !m_opImTmp2 )
         return this->Terminate( ERR_MEMORY );
-    imImageClear( m_imTmp2 );
-    //imProcessBitwiseNot( m_imTmp2, m_imTmp2 );
+    imImageClear( m_opImTmp2 );
+    //imProcessBitwiseNot( m_opImTmp2, m_opImTmp2 );
 
-    m_imTmp = imImageCreate(m_im->width, m_im->height, IM_GRAY, IM_USHORT);
-    if (!m_imTmp)
+    m_opImTmp1 = imImageCreate(m_opIm->width, m_opIm->height, IM_GRAY, IM_USHORT);
+    if (!m_opImTmp1)
         return this->Terminate( ERR_MEMORY );
 
-    int region_count = imAnalyzeFindRegions(m_im, m_imTmp, 4, 1);
+    int region_count = imAnalyzeFindRegions(m_opIm, m_opImTmp1, 4, 1);
     if (region_count)
     {
         int* boxes = (int*)malloc(4 * region_count * sizeof(int));
         memset(boxes, 0, 4 *  region_count * sizeof(int));
-        imAnalyzeBoundingBoxes(m_imTmp, boxes, region_count);
+        imAnalyzeBoundingBoxes(m_opImTmp1, boxes, region_count);
         int margins[4] = {50, 10, 50, 50};
-        this->MoveElements( m_imMain, m_imTmp2, boxes, region_count, margins, TIP_FACTOR_1 );
+        this->MoveElements( m_opImMain, m_opImTmp2, boxes, region_count, margins, TIP_FACTOR_1 );
         free( boxes );
     }
-    ImageDestroy( &m_imTmp );
+    ImageDestroy( &m_opImTmp1 );
 
-    if ( !ExtractPlane( &m_imMap, &m_imTmp2, IMAGE_ORNATE_LETTER ) )
+    if ( !ExtractPlane( &m_opImMap, &m_opImTmp2, IMAGE_ORNATE_LETTER ) )
         return false;
 
     // save file
-	SwapImages( &m_img0, &m_imMap );
+	SwapImages( &m_img0, &m_opImMap );
 	if ( m_isModified ) 
 		*m_isModified = true;
 	return this->Terminate( ERR_NONE );
@@ -1397,11 +1397,11 @@ bool ImPage::FindText( )
 
 	this->SetMapImage( m_img0 );
 
-    if ( !GetImagePlane( &m_imMain ) )
+    if ( !GetImagePlane( &m_opImMain ) )
         return false;
 
-    m_imTmp = imImageClone( m_imMain );
-    if ( !m_imTmp )
+    m_opImTmp1 = imImageClone( m_opImMain );
+    if ( !m_opImTmp1 )
         return this->Terminate( ERR_MEMORY );
 
     int nb_staves = (int)this->m_staves.GetCount();
@@ -1411,7 +1411,7 @@ bool ImPage::FindText( )
     // suppression des portees - deplacement par bounding boxes
     int st;
     int x1 = 0;
-    int x2 = m_imMain->width - 1;
+    int x2 = m_opImMain->width - 1;
     int* boxes = (int*)malloc(4 * nb_staves * sizeof(int));
     memset(boxes, 0, 4 *  nb_staves * sizeof(int));
     for (st = 0; st < nb_staves; st++ )
@@ -1425,10 +1425,10 @@ bool ImPage::FindText( )
 
     int y_margin = STAFF_HEIGHT - TP_STAFF_ROI_H / 2;
     int margins[4] = {0, 0, y_margin, y_margin};
-    this->MoveElements( m_imMain, m_imTmp, boxes, st, margins, 1 );
+    this->MoveElements( m_opImMain, m_opImTmp1, boxes, st, margins, 1 );
     free( boxes );
-    //SwapImages( &m_imMain, &m_imTmp );
-    ImageDestroy( &m_imTmp );
+    //SwapImages( &m_opImMain, &m_opImTmp1 );
+    ImageDestroy( &m_opImTmp1 );
 
 
     // extraction du text - centre sous la portee
@@ -1438,11 +1438,11 @@ bool ImPage::FindText( )
     int y_margin1 = min( text_centroid - STAFF / 2 - TP_MARGIN_MIN, TP_MARGIN_Y1 );
     int y_margin2 = min( text_centroid - STAFF / 2 - TP_MARGIN_MIN, TP_MARGIN_Y2 );
 
-    m_imTmp = imImageCreate(m_imMain->width, m_imMain->height, IM_GRAY, IM_USHORT);
-    if (!m_imTmp)
+    m_opImTmp1 = imImageCreate(m_opImMain->width, m_opImMain->height, IM_GRAY, IM_USHORT);
+    if (!m_opImTmp1)
         return this->Terminate( ERR_MEMORY );
 
-    int region_count = imAnalyzeFindRegions(m_imMain, m_imTmp, 4, 1);
+    int region_count = imAnalyzeFindRegions(m_opImMain, m_opImTmp1, 4, 1);
     if (!region_count)
         return this->Terminate( ERR_NONE );
 
@@ -1451,16 +1451,16 @@ bool ImPage::FindText( )
     memset(cx, 0, region_count*sizeof(float));
     float* cy = (float*)malloc(region_count*sizeof(float));
     memset(cy, 0, region_count*sizeof(float));
-    imAnalyzeMeasureCentroid (m_imTmp, NULL, region_count, cx, cy);
+    imAnalyzeMeasureCentroid (m_opImTmp1, NULL, region_count, cx, cy);
     
     int y_min, y_max, i;
     imbyte* img_data = NULL;
     imushort* region_data = NULL;
 
-    imImageClear( m_imMain );
-    img_data = (imbyte*)m_imMain->data[0];
-    region_data = (imushort*)m_imTmp->data[0];
-    for (i = 0; i < m_imTmp->count; i++)
+    imImageClear( m_opImMain );
+    img_data = (imbyte*)m_opImMain->data[0];
+    region_data = (imushort*)m_opImTmp1->data[0];
+    for (i = 0; i < m_opImTmp1->count; i++)
     {
         *img_data = 0;
         // conserver si le centroid y dans une fourchette ( -15 + 35 autour du centroid de texte
@@ -1483,19 +1483,19 @@ bool ImPage::FindText( )
         region_data++;
     }
 
-    if ( !ExtractPlane( &m_imMap, &m_imMain, IMAGE_LYRICS ) )
+    if ( !ExtractPlane( &m_opImMap, &m_opImMain, IMAGE_LYRICS ) )
     {
         free(cx);
         free(cy);
         return false;
     }
 
-    imImageClear( m_imMain );
-    img_data = (imbyte*)m_imMain->data[0];
-    region_data = (imushort*)m_imTmp->data[0];
-    //y_min = min( m_imMain->height - 1, m_staves[nb_staves - 1].m_y + STAFF / 2 + TP_MARGIN_Y_TITLE );
-    y_min = min( m_imMain->height - 1, m_staves[0].m_y + STAFF / 2 + TP_MARGIN_Y_TITLE );
-    for (i = 0; i < m_imTmp->count; i++)
+    imImageClear( m_opImMain );
+    img_data = (imbyte*)m_opImMain->data[0];
+    region_data = (imushort*)m_opImTmp1->data[0];
+    //y_min = min( m_opImMain->height - 1, m_staves[nb_staves - 1].m_y + STAFF / 2 + TP_MARGIN_Y_TITLE );
+    y_min = min( m_opImMain->height - 1, m_staves[0].m_y + STAFF / 2 + TP_MARGIN_Y_TITLE );
+    for (i = 0; i < m_opImTmp1->count; i++)
     {
         // conserver si le centroid y au dessus de y min
         if (*region_data)
@@ -1513,11 +1513,11 @@ bool ImPage::FindText( )
     free(cx);
     free(cy);
 	
-    if ( !ExtractPlane( &m_imMap, &m_imMain, IMAGE_TITLE ) )
+    if ( !ExtractPlane( &m_opImMap, &m_opImMain, IMAGE_TITLE ) )
         return false;
 
     // save file
-	SwapImages( &m_img0, &m_imMap );
+	SwapImages( &m_img0, &m_opImMap );
 	return this->Terminate( ERR_NONE );
 }
 
@@ -1533,38 +1533,38 @@ bool ImPage::FindBorders( )
 
 	this->SetMapImage( m_img0 );
 
-    if ( !GetImagePlane( &m_imMain ) )
+    if ( !GetImagePlane( &m_opImMain ) )
         return false;
 
-    m_im = imImageDuplicate( m_imMain );
-    if ( !m_im )
+    m_opIm = imImageDuplicate( m_opImMain );
+    if ( !m_opIm )
         return this->Terminate( ERR_MEMORY );
 
     /*
 	// debug
-	m_hist = new int[ m_im->width ];
-    imAnalyzeProjectionV( m_im, m_hist );
+	m_opHist = new int[ m_opIm->width ];
+    imAnalyzeProjectionV( m_opIm, m_opHist );
     wxString borders_v = m_path + "borders_v.csv";
-	imSaveValues( m_hist, m_im->width, borders_v.c_str() );
+	imSaveValues( m_opHist, m_opIm->width, borders_v.c_str() );
     //f_width = 100 / RESIZE_FACTOR / 4; // 25 % de la hauteur de la portee
-    //MedianFilter( m_hist, width, f_width, &avg );
+    //MedianFilter( m_opHist, width, f_width, &avg );
     //wxString staves_v_med = m_path + "staves_v_med.csv";
-	//imSaveValues( m_hist, width, staves_v_med.c_str() );
-	delete[] m_hist;
-	m_hist = NULL;*/
+	//imSaveValues( m_opHist, width, staves_v_med.c_str() );
+	delete[] m_opHist;
+	m_opHist = NULL;*/
 
     // buffer avec les colonnes à traiter ( toutes, initialiser à 1 )
     int i;
-    int w1 = m_im->width;
-    m_cols1 = new int[ w1 ];
+    int w1 = m_opIm->width;
+    m_opCols1 = new int[ w1 ];
     for ( i = 0; i < w1; i++ )
-        m_cols1[i] = 1;
+        m_opCols1[i] = 1;
 
     // buffer avec les lignes à traiter == 1 - initialiser à toutes
-    int h1 = m_im->height;
-    m_lines1 = new int[ h1 ];
+    int h1 = m_opIm->height;
+    m_opLines1 = new int[ h1 ];
     for ( i = 0; i < h1; i++ )
-        m_lines1[i] = 1;
+        m_opLines1[i] = 1;
 
     // mettre à zero les zones à ignorer : staff position -60 / + 60
     for( i = 0; i < (int)this->m_staves.GetCount(); i++)
@@ -1574,103 +1574,103 @@ bool ImPage::FindBorders( )
         if ( ( pos < (staff_height / 2 ) ) ||
             ( pos > h1 - ( staff_height / 2) - 1 ) ) 
             continue;
-        memset( m_lines1 + pos - staff_height / 2, 0, staff_height * sizeof(int) );
+        memset( m_opLines1 + pos - staff_height / 2, 0, staff_height * sizeof(int) );
     }
 
-    // images avec les lignes à considerer uniquement -> somme de m_lines1
-    int h2 = sum( m_lines1, h1 );
-    m_imTmp = imImageCreate( m_im->width, h2, m_im->color_space, m_im->data_type );
-    if ( !m_imTmp )
+    // images avec les lignes à considerer uniquement -> somme de m_opLines1
+    int h2 = sum( m_opLines1, h1 );
+    m_opImTmp1 = imImageCreate( m_opIm->width, h2, m_opIm->color_space, m_opIm->data_type );
+    if ( !m_opImTmp1 )
             return this->Terminate( ERR_MEMORY );
 
-    imbyte *bufIm = (imbyte*)m_im->data[0];
-    imbyte *bufImTmp = (imbyte*)m_imTmp->data[0];
+    imbyte *bufIm = (imbyte*)m_opIm->data[0];
+    imbyte *bufImTmp = (imbyte*)m_opImTmp1->data[0];
 
     // copier les lignes
     int i2;
     for ( i = 0, i2 = 0; i < h1; i++ )
     {
-        if ( (m_lines1[i] == 0) || (i2 >= h2) )
+        if ( (m_opLines1[i] == 0) || (i2 >= h2) )
             continue;
 
-        int offset1 = i * m_im->width;
-        int offset2 = i2 * m_im->width;
-        memcpy( &bufImTmp[ offset2], &bufIm[ offset1 ], m_im->width * sizeof(imbyte) );
+        int offset1 = i * m_opIm->width;
+        int offset2 = i2 * m_opIm->width;
+        memcpy( &bufImTmp[ offset2], &bufIm[ offset1 ], m_opIm->width * sizeof(imbyte) );
         i2++;
     }
-    SwapImages( &m_im, &m_imTmp );
+    SwapImages( &m_opIm, &m_opImTmp1 );
 
     // bord gauche et droit
-    m_imMask = imImageCreate( 100, m_im->height, m_im->color_space, m_im->data_type );
-    if ( !m_imMask )
+    m_opImMask = imImageCreate( 100, m_opIm->height, m_opIm->color_space, m_opIm->data_type );
+    if ( !m_opImMask )
             return this->Terminate( ERR_MEMORY );
-    m_imTmp = imImageClone( m_im );
-    if ( !m_imTmp )
+    m_opImTmp1 = imImageClone( m_opIm );
+    if ( !m_opImTmp1 )
             return this->Terminate( ERR_MEMORY );
-    m_imTmp2 = imImageClone( m_imMain );
-    if ( !m_imTmp2 )
+    m_opImTmp2 = imImageClone( m_opImMain );
+    if ( !m_opImTmp2 )
             return this->Terminate( ERR_MEMORY );
 
     // bord gauche
-    imProcessCrop( m_im, m_imMask, 0, 0 );
-    CleanBorder( m_lines1, h1, m_imMask, m_imMain, 2 );
+    imProcessCrop( m_opIm, m_opImMask, 0, 0 );
+    CleanBorder( m_opLines1, h1, m_opImMask, m_opImMain, 2 );
 
     // bord droit - flip
-    imProcessMirror( m_im, m_imTmp );
-    imProcessMirror( m_imMain, m_imTmp2 );
-    imProcessCrop( m_imTmp, m_imMask, 0, 0 );
-    CleanBorder( m_lines1, h1, m_imMask, m_imTmp2, 2 );
-    imProcessMirror( m_imTmp2, m_imMain );
+    imProcessMirror( m_opIm, m_opImTmp1 );
+    imProcessMirror( m_opImMain, m_opImTmp2 );
+    imProcessCrop( m_opImTmp1, m_opImMask, 0, 0 );
+    CleanBorder( m_opLines1, h1, m_opImMask, m_opImTmp2, 2 );
+    imProcessMirror( m_opImTmp2, m_opImMain );
 
     // fin gauche et droit
-    ImageDestroy( &m_imTmp );
-    ImageDestroy( &m_imTmp2 );
-    ImageDestroy( &m_imMask );
+    ImageDestroy( &m_opImTmp1 );
+    ImageDestroy( &m_opImTmp2 );
+    ImageDestroy( &m_opImMask );
 
 
     // bords du haut et du bas
-    m_imMask = imImageCreate( 100, m_im->width, m_im->color_space, m_im->data_type );
-    if ( !m_imMask )
+    m_opImMask = imImageCreate( 100, m_opIm->width, m_opIm->color_space, m_opIm->data_type );
+    if ( !m_opImMask )
             return this->Terminate( ERR_MEMORY );
-    m_imTmp = imImageCreate( m_im->height, m_im->width, m_im->color_space, m_im->data_type );
-    if ( !m_imTmp )
+    m_opImTmp1 = imImageCreate( m_opIm->height, m_opIm->width, m_opIm->color_space, m_opIm->data_type );
+    if ( !m_opImTmp1 )
             return this->Terminate( ERR_MEMORY );
-    m_imTmp2 = imImageCreate( m_imMain->height, m_imMain->width, m_imMain->color_space, m_imMain->data_type );
-    if ( !m_imTmp2 )
+    m_opImTmp2 = imImageCreate( m_opImMain->height, m_opImMain->width, m_opImMain->color_space, m_opImMain->data_type );
+    if ( !m_opImTmp2 )
             return this->Terminate( ERR_MEMORY );
 
     // bas
-    imProcessRotate90( m_im, m_imTmp, 1 );
-    imProcessRotate90( m_imMain, m_imTmp2, 1 );
-    imProcessCrop( m_imTmp, m_imMask, 0, 0 );
-    CleanBorder( m_cols1, w1, m_imMask, m_imTmp2, 1 );
-    imProcessRotate90( m_imTmp2, m_imMain, -1 );
+    imProcessRotate90( m_opIm, m_opImTmp1, 1 );
+    imProcessRotate90( m_opImMain, m_opImTmp2, 1 );
+    imProcessCrop( m_opImTmp1, m_opImMask, 0, 0 );
+    CleanBorder( m_opCols1, w1, m_opImMask, m_opImTmp2, 1 );
+    imProcessRotate90( m_opImTmp2, m_opImMain, -1 );
 
     // haut
-    imProcessRotate90( m_im, m_imTmp, -1 );
-    imProcessRotate90( m_imMain, m_imTmp2, -1 );
-    imProcessCrop( m_imTmp, m_imMask, 0, 0 );
-    CleanBorder( m_cols1, w1, m_imMask, m_imTmp2, 1 );
-    imProcessRotate90( m_imTmp2, m_imMain, 1 );
+    imProcessRotate90( m_opIm, m_opImTmp1, -1 );
+    imProcessRotate90( m_opImMain, m_opImTmp2, -1 );
+    imProcessCrop( m_opImTmp1, m_opImMask, 0, 0 );
+    CleanBorder( m_opCols1, w1, m_opImMask, m_opImTmp2, 1 );
+    imProcessRotate90( m_opImTmp2, m_opImMain, 1 );
 
     // fin haut et bas
-    ImageDestroy( &m_imTmp );
-    ImageDestroy( &m_imMask );
-    ImageDestroy( &m_imTmp2 );
+    ImageDestroy( &m_opImTmp1 );
+    ImageDestroy( &m_opImMask );
+    ImageDestroy( &m_opImTmp2 );
 
 
-    //imProcessBitwiseNot( m_imMain, m_imMain );
-    if ( !GetImagePlane( &m_imTmp ) )
+    //imProcessBitwiseNot( m_opImMain, m_opImMain );
+    if ( !GetImagePlane( &m_opImTmp1 ) )
         return false;
-    imProcessBitwiseNot( m_imTmp, m_imTmp );
-    imProcessArithmeticOp( m_imTmp, m_imMain, m_imTmp, IM_BIT_OR );
-    imProcessBitwiseNot( m_imTmp, m_imTmp );
+    imProcessBitwiseNot( m_opImTmp1, m_opImTmp1 );
+    imProcessArithmeticOp( m_opImTmp1, m_opImMain, m_opImTmp1, IM_BIT_OR );
+    imProcessBitwiseNot( m_opImTmp1, m_opImTmp1 );
 
-    if ( !ExtractPlane( &m_imMap, &m_imTmp, IMAGE_BLANK ) )
+    if ( !ExtractPlane( &m_opImMap, &m_opImTmp1, IMAGE_BLANK ) )
         return false;
 
     // save file
-	SwapImages( &m_img0, &m_imMap );
+	SwapImages( &m_img0, &m_opImMap );
 	return this->Terminate( ERR_NONE );
 }
 
@@ -1726,11 +1726,11 @@ void ImPage::CleanBorder( int rows[], int size, _imImage *border, _imImage *imag
 
         imProcessCrop( tmp, tmp2, x1, y1 );
 
-        m_hist = new int[ tmp2->width ];
-        imAnalyzeProjectionV( tmp2, m_hist );
+        m_opHist = new int[ tmp2->width ];
+        imAnalyzeProjectionV( tmp2, m_opHist );
             
         int x_border;
-        int max = max_val( m_hist, tmp2->width, &x_border );
+        int max = max_val( m_opHist, tmp2->width, &x_border );
 
         int px = 1; // true if border
         // verification de la valeur maximal - 
@@ -1741,7 +1741,7 @@ void ImPage::CleanBorder( int rows[], int size, _imImage *border, _imImage *imag
             has_border = true;
 
         // mettre les pixels du bord à max à 1 = remplissage jusq'au bord detecte
-        //bufIm = (imbyte*)m_im->data[0];
+        //bufIm = (imbyte*)m_opIm->data[0];
         bufImTmp = (imbyte*)tmp->data[0];
         for (y = y1; y < y2; y++)
         {
@@ -1755,8 +1755,8 @@ void ImPage::CleanBorder( int rows[], int size, _imImage *border, _imImage *imag
         }
 
         imImageDestroy( tmp2 );
-        delete[] m_hist;
-        m_hist = NULL;
+        delete[] m_opHist;
+        m_opHist = NULL;
     }
 
 
@@ -1771,7 +1771,7 @@ void ImPage::CleanBorder( int rows[], int size, _imImage *border, _imImage *imag
     int i2;
 
     // calculer la largeur du bord pour chaque ligne
-    m_lines2 = new int[ h2 ];
+    m_opLines2 = new int[ h2 ];
     bufImTmp = (imbyte*)tmp->data[0];
     for ( i = 0; i < h2; i++ )
     {
@@ -1780,20 +1780,20 @@ void ImPage::CleanBorder( int rows[], int size, _imImage *border, _imImage *imag
         for ( j = 0; j < hist_width ; j++ )
             if ( bufImTmp[ offset + j ] == 0 )
                 break;
-        m_lines2[i] = j;
+        m_opLines2[i] = j;
     }
-    this->MedianFilter( m_lines2, h2, 20 );
+    this->MedianFilter( m_opLines2, h2, 20 );
 
 
     // effacer le bord dans l'image
     bufIm = (imbyte*)image->data[0];
-    int last_val = m_lines2[0];
+    int last_val = m_opLines2[0];
     int val, offset;
     for ( i = 0, i2 = 0; i < h1; i++ )
     {
         if ( (rows[i] != 0) && (i2 < h2) )
         {
-            last_val = m_lines2[i2];
+            last_val = m_opLines2[i2];
             i2++;
         }
         val = last_val;
@@ -1807,8 +1807,8 @@ void ImPage::CleanBorder( int rows[], int size, _imImage *border, _imImage *imag
 
         memset( &bufIm[ offset ], 0, val * sizeof(imbyte) );
     }
-    delete[] m_lines2;
-    m_lines2 = NULL;
+    delete[] m_opLines2;
+    m_opLines2 = NULL;
 
     imImageDestroy( tmp );
 
@@ -1826,12 +1826,12 @@ bool ImPage::FindTextInStaves( )
 
 	this->SetMapImage( m_img0 );
 
-    if ( !GetImagePlane( &m_imMain ) )
+    if ( !GetImagePlane( &m_opImMain ) )
         return false;
 
     // staff image
-    m_imTmp = imImageCreate( m_imMain->width, STAFF_HEIGHT, m_imMain->color_space, m_imMain->data_type );
-    if ( !m_imTmp )
+    m_opImTmp1 = imImageCreate( m_opImMain->width, STAFF_HEIGHT, m_opImMain->color_space, m_opImMain->data_type );
+    if ( !m_opImTmp1 )
         return this->Terminate( ERR_MEMORY );
 
     int nb_staves = (int)this->m_staves.GetCount();
@@ -1839,15 +1839,15 @@ bool ImPage::FindTextInStaves( )
     for (st = 0; st < nb_staves; st++ )
     {
         int stave_y = this->m_staves[st].m_y - ( STAFF_HEIGHT / 2 );
-        if ( (stave_y < 0) || (stave_y >= m_imMain->height) )
+        if ( (stave_y < 0) || (stave_y >= m_opImMain->height) )
             continue;
 
-        imProcessCrop( m_imMain, m_imTmp, x1, stave_y);
+        imProcessCrop( m_opImMain, m_opImTmp1, x1, stave_y);
 		//this->m_staves[st].SetProgressDlg( m_progressDlg );
-        this->m_staves[st].SetMapImage( m_imTmp );
+        this->m_staves[st].SetMapImage( m_opImTmp1 );
         this->m_staves[st].GetStaffBorders( 25, true );
     }
-    ImageDestroy( &m_imTmp );
+    ImageDestroy( &m_opImTmp1 );
 
 	float c = 0;
     int i, segments_count = 0;
@@ -1862,10 +1862,10 @@ bool ImPage::FindTextInStaves( )
     }
     c /= segments_count;
 
-    m_imTmp = imImageClone( m_imMain );
-    if ( !m_imTmp )
+    m_opImTmp1 = imImageClone( m_opImMain );
+    if ( !m_opImTmp1 )
         return this->Terminate( ERR_MEMORY );
-    imImageClear( m_imTmp );    
+    imImageClear( m_opImTmp1 );    
 
     int to_remove = 0;
     int* boxes = (int*)malloc(4 * segments_count * sizeof(int));
@@ -1893,14 +1893,14 @@ bool ImPage::FindTextInStaves( )
 	}
 
 	int margins[4] = {10, 10, 70, 70};
-    this->MoveElements( m_imMain, m_imTmp, boxes, to_remove, margins, 1 );
+    this->MoveElements( m_opImMain, m_opImTmp1, boxes, to_remove, margins, 1 );
     free( boxes );
 		
-	if ( !ExtractPlane( &m_imMap, &m_imTmp, IMAGE_TEXT_IN_STAFF ) )
+	if ( !ExtractPlane( &m_opImMap, &m_opImTmp1, IMAGE_TEXT_IN_STAFF ) )
 		return false;
 
 	// save file
-	SwapImages( &m_img0, &m_imMap );
+	SwapImages( &m_img0, &m_opImMap );
 	return this->Terminate( ERR_NONE );
 }
 
@@ -1916,12 +1916,12 @@ bool ImPage::StaffSegments( )
 
 	this->SetMapImage( m_img0 );
 
-    if ( !GetImagePlane( &m_imMain ) )
+    if ( !GetImagePlane( &m_opImMain ) )
         return false;
 
     // staff image
-    m_imTmp = imImageCreate( m_imMain->width, STAFF_HEIGHT, m_imMain->color_space, m_imMain->data_type );
-    if ( !m_imTmp )
+    m_opImTmp1 = imImageCreate( m_opImMain->width, STAFF_HEIGHT, m_opImMain->color_space, m_opImMain->data_type );
+    if ( !m_opImTmp1 )
         return this->Terminate( ERR_MEMORY );
 
     int nb_staves = (int)this->m_staves.GetCount();
@@ -1929,12 +1929,12 @@ bool ImPage::StaffSegments( )
     for (st = 0; st < nb_staves; st++ )
     {
         int stave_y = this->m_staves[st].m_y - ( STAFF_HEIGHT / 2 );
-        if ( (stave_y < 0) || (stave_y >= m_imMain->height) )
+        if ( (stave_y < 0) || (stave_y >= m_opImMain->height) )
             continue;
 
-        imProcessCrop( m_imMain, m_imTmp, x1, stave_y);
+        imProcessCrop( m_opImMain, m_opImTmp1, x1, stave_y);
 		//this->m_staves[st].SetProgressDlg( m_progressDlg );
-        this->m_staves[st].SetMapImage( m_imTmp );
+        this->m_staves[st].SetMapImage( m_opImTmp1 );
         this->m_staves[st].GetStaffBorders( 20, false );
     }
 	
@@ -1979,29 +1979,29 @@ bool ImPage::MagicSelection( int x, int y, AxImage *selection, int *xmin, int *y
 	
 	y = ToViewY( y );
 	
-	m_imMain = imImageDuplicate( m_imMap );
-    if ( !m_imMain )
+	m_opImMain = imImageDuplicate( m_opImMap );
+    if ( !m_opImMain )
         return this->Terminate( ERR_MEMORY );
 		
-	imImageSetBinary( m_imMain );
-	imImageMakeBinary( m_imMain );
+	imImageSetBinary( m_opImMain );
+	imImageMakeBinary( m_opImMain );
 	
-    m_imTmp = imImageCreate(m_imMain->width, m_imMain->height, IM_GRAY, IM_USHORT);
-    if (!m_imTmp)
+    m_opImTmp1 = imImageCreate(m_opImMain->width, m_opImMain->height, IM_GRAY, IM_USHORT);
+    if (!m_opImTmp1)
         return this->Terminate( ERR_MEMORY );
 	
-    int region_count = imAnalyzeFindRegions(m_imMain, m_imTmp, 4, 1);
+    int region_count = imAnalyzeFindRegions(m_opImMain, m_opImTmp1, 4, 1);
     if (!region_count)
         return this->Terminate( ERR_NONE );
 		
-	imushort* img_data = (imushort*)m_imTmp->data[0];
-	imbyte* img_data_main = (imbyte*)m_imMain->data[0];
-	imushort pixel = *(img_data + (y * m_imTmp->width) + x);
+	imushort* img_data = (imushort*)m_opImTmp1->data[0];
+	imbyte* img_data_main = (imbyte*)m_opImMain->data[0];
+	imushort pixel = *(img_data + (y * m_opImTmp1->width) + x);
 
     if (!pixel)
         return this->Terminate( ERR_NONE );
 		
-	for (int i = 0; i < m_imTmp->count; i++)
+	for (int i = 0; i < m_opImTmp1->count; i++)
 	{
 		if (*img_data)
 		{
@@ -2019,7 +2019,7 @@ bool ImPage::MagicSelection( int x, int y, AxImage *selection, int *xmin, int *y
 	
 	int box[4];
 	memset( box, 0, 4 * sizeof( int ) );
-	imAnalyzeBoundingBoxes(m_imTmp, box, 1);
+	imAnalyzeBoundingBoxes(m_opImTmp1, box, 1);
 	box[1] += 1; // bug in imAnalyzeBoundingBoxes ??? needed
 	box[3] += 1;
 	
@@ -2028,24 +2028,24 @@ bool ImPage::MagicSelection( int x, int y, AxImage *selection, int *xmin, int *y
     if ( !m_selection )
         return this->Terminate( ERR_MEMORY );
 	
-	imProcessCrop( m_imMain, m_selection, box[0], box[2] );	
+	imProcessCrop( m_opImMain, m_selection, box[0], box[2] );	
 	m_selection_pos.x = box[0];
 	m_selection_pos.y = box[2];
 	
 	// change in red
-	ImageDestroy( &m_imTmp );
-	m_imTmp = imImageCreate( m_selection->width, m_selection->height, IM_MAP, IM_BYTE );
-	if (!m_imTmp)
+	ImageDestroy( &m_opImTmp1 );
+	m_opImTmp1 = imImageCreate( m_selection->width, m_selection->height, IM_MAP, IM_BYTE );
+	if (!m_opImTmp1)
 		return this->Terminate( ERR_MEMORY );
         
-	imImageClear( m_imTmp );
-	imProcessArithmeticOp( m_imTmp, m_selection, m_imTmp, IM_BIN_ADD );
+	imImageClear( m_opImTmp1 );
+	imProcessArithmeticOp( m_opImTmp1, m_selection, m_opImTmp1, IM_BIN_ADD );
     long *pal = imPaletteGray();
     pal[0] = imColorEncode( 255, 255, 255 ); // fond blanc
     pal[1] = imColorEncode( 255, 0, 0 ); // rouge
-    imImageSetPalette( m_imTmp, pal, 256 );
+    imImageSetPalette( m_opImTmp1, pal, 256 );
 	
-	SetImImage( m_imTmp, selection );
+	SetImImage( m_opImTmp1, selection );
 	*xmin = m_selection_pos.x;
 	*ymin = ToViewY( m_selection_pos.y ) - m_selection->height; 
 	
@@ -2076,19 +2076,19 @@ bool ImPage::ChangeClassification( int _x1, int _y1, int _x2, int _y2, int plane
 	
     // selection image
 	//ImageDestroy( &m_selection );
-    m_imTmp2 = imImageCreate( x2 - x1, y2 - y1, m_imMap->color_space, m_imMap->data_type );
-    if ( !m_imTmp2 )
+    m_opImTmp2 = imImageCreate( x2 - x1, y2 - y1, m_opImMap->color_space, m_opImMap->data_type );
+    if ( !m_opImTmp2 )
         return this->Terminate( ERR_MEMORY );
 	
-	imProcessCrop( m_imMap, m_imTmp2, x1, y1 );
+	imProcessCrop( m_opImMap, m_opImTmp2, x1, y1 );
 
 	PrepareCheckPoint( UNDO_PART, IM_UNDO_CLASSIFICATION );	
 
-	imImageSetBinary( m_imTmp2 );
-	imImageMakeBinary( m_imTmp2 );
+	imImageSetBinary( m_opImTmp2 );
+	imImageMakeBinary( m_opImTmp2 );
 	
-	imProcessArithmeticConstOp( m_imTmp2, pow(2, plane_number), m_imTmp2, IM_BIN_MUL );
-	imProcessInsert( m_imMap, m_imTmp2, m_imMap, m_selection_pos.x, m_selection_pos.y ); 
+	imProcessArithmeticConstOp( m_opImTmp2, pow(2, plane_number), m_opImTmp2, IM_BIN_MUL );
+	imProcessInsert( m_opImMap, m_opImTmp2, m_opImMap, m_selection_pos.x, m_selection_pos.y ); 
 
 	CheckPoint( UNDO_PART, IM_UNDO_CLASSIFICATION );
 	
@@ -2098,7 +2098,7 @@ bool ImPage::ChangeClassification( int _x1, int _y1, int _x2, int _y2, int plane
 		*m_isModified = true;
 	
 	// save file
-	SwapImages( &m_img0, &m_imMap );
+	SwapImages( &m_img0, &m_opImMap );
 	return this->Terminate( ERR_NONE );
 }
 
@@ -2108,51 +2108,51 @@ bool ImPage::ChangeClassification( int plane_number  )
 	wxASSERT_MSG( m_img0, "Img0 cannot be NULL");
 	wxASSERT_MSG( m_selection, "Selection cannot be NULL");
 
-	if ( !m_imMap )
+	if ( !m_opImMap )
 		this->SetMapImage( m_img0 );
 		
 	// buffer (selection size)
-	m_imTmp = imImageCreate( m_selection->width, m_selection->height, m_imMap->color_space, m_imMap->data_type );
-    if ( !m_imTmp )
+	m_opImTmp1 = imImageCreate( m_selection->width, m_selection->height, m_opImMap->color_space, m_opImMap->data_type );
+    if ( !m_opImTmp1 )
         return this->Terminate( ERR_MEMORY );
 		
 	// map selection from which the planes are extracted
-	m_imTmp2 = imImageDuplicate( m_imTmp );
-    if ( !m_imTmp2 )
+	m_opImTmp2 = imImageDuplicate( m_opImTmp1 );
+    if ( !m_opImTmp2 )
         return this->Terminate( ERR_MEMORY );
-	imProcessCrop( m_imMap, m_imTmp2, m_selection_pos.x, m_selection_pos.y );
+	imProcessCrop( m_opImMap, m_opImTmp2, m_selection_pos.x, m_selection_pos.y );
 	
 	PrepareCheckPoint( UNDO_PART, IM_UNDO_CLASSIFICATION );	
 	
 	// destination buffer
-	m_imMain = imImageClone( m_imTmp );
-    if ( !m_imMain )
+	m_opImMain = imImageClone( m_opImTmp1 );
+    if ( !m_opImMain )
         return this->Terminate( ERR_MEMORY );
-	imImageClear( m_imMain) ;
+	imImageClear( m_opImMain) ;
 		
     for (int i = 0; i <= IMAGE_PLANES; i ++ )
     {
-		imProcessBitPlane( m_imTmp2, m_imTmp, i, 0);
+		imProcessBitPlane( m_opImTmp2, m_opImTmp1, i, 0);
 		if ( i == plane_number )
-			imProcessBitwiseOp( m_imTmp, m_selection, m_imTmp, IM_BIT_OR );
+			imProcessBitwiseOp( m_opImTmp1, m_selection, m_opImTmp1, IM_BIT_OR );
 		else
 		{
-		    imProcessBitwiseNot( m_imTmp, m_imTmp );
-			imProcessBitwiseOp( m_imTmp, m_selection, m_imTmp, IM_BIT_OR );
-			imProcessBitwiseNot( m_imTmp, m_imTmp );
+		    imProcessBitwiseNot( m_opImTmp1, m_opImTmp1 );
+			imProcessBitwiseOp( m_opImTmp1, m_selection, m_opImTmp1, IM_BIT_OR );
+			imProcessBitwiseNot( m_opImTmp1, m_opImTmp1 );
 		}
-		imProcessArithmeticConstOp( m_imTmp, pow(2, i), m_imTmp, IM_BIN_MUL );
-		imProcessArithmeticOp( m_imTmp, m_imMain, m_imMain, IM_BIN_ADD );
+		imProcessArithmeticConstOp( m_opImTmp1, pow(2, i), m_opImTmp1, IM_BIN_MUL );
+		imProcessArithmeticOp( m_opImTmp1, m_opImMain, m_opImMain, IM_BIN_ADD );
 		
     }
 	//ImageDestroy( &m_selection );
 	
-	imProcessInsert( m_imMap, m_imMain, m_imMap, m_selection_pos.x, m_selection_pos.y ); 
+	imProcessInsert( m_opImMap, m_opImMain, m_opImMap, m_selection_pos.x, m_selection_pos.y ); 
 	
 	// for undo
-	ImageDestroy( &m_imTmp2 );
-	m_imTmp2 = imImageDuplicate( m_imMain );
-    if ( !m_imTmp2 )
+	ImageDestroy( &m_opImTmp2 );
+	m_opImTmp2 = imImageDuplicate( m_opImMain );
+    if ( !m_opImTmp2 )
         return this->Terminate( ERR_MEMORY );
 	CheckPoint( UNDO_PART, IM_UNDO_CLASSIFICATION );	
 	
@@ -2160,7 +2160,7 @@ bool ImPage::ChangeClassification( int plane_number  )
 		*m_isModified = true;
 	
 	// save file
-	SwapImages( &m_img0, &m_imMap );
+	SwapImages( &m_img0, &m_opImMap );
 	return this->Terminate( ERR_NONE );
 }
 
@@ -2239,12 +2239,12 @@ bool ImPage::SaveSegmentsImages( )
 
 	this->SetMapImage( m_img0 );
 
-    if ( !GetImagePlane( &m_imMain ) )
+    if ( !GetImagePlane( &m_opImMain ) )
         return false;
 
     // sauver l'image dans le working directory
 	wxString filename = m_path + "/staff";
-	params.Add( m_imMain );
+	params.Add( m_opImMain );
 	params.Add( &filename );
     ImStaffSegmentFunctor segmentFuncSI(&ImStaffSegment::SaveImage);
     this->Process(&segmentFuncSI, params );
@@ -2267,7 +2267,7 @@ bool ImPage::StaffCurvatures( )
 
 	this->SetMapImage( m_img0 );
 
-    if ( !GetImagePlane( &m_imMain ) )
+    if ( !GetImagePlane( &m_opImMain ) )
         return false;
 		
     // counter
@@ -2277,16 +2277,16 @@ bool ImPage::StaffCurvatures( )
 
     // calculer la hauteur de la portee par projection d'histgramme (ImStaffSegment::CalcStaffHeight)
 	int seg = this->GetStaffSegmentsCount( true );
-	m_lines1 = new int[ seg ];
+	m_opLines1 = new int[ seg ];
 	int segment_index = 0;
-	memset( m_lines1, 0, seg * sizeof( int ) );
-	params.Add( m_imMain );
-	params.Add( m_lines1 );
+	memset( m_opLines1, 0, seg * sizeof( int ) );
+	params.Add( m_opImMain );
+	params.Add( m_opLines1 );
 	params.Add( &segment_index );
     ImStaffSegmentFunctor segmentFuncSH(&ImStaffSegment::CalcStaffHeight);
     this->Process(&segmentFuncSH, params, counter );
 	// valeur medianne de tous les segments de portee
-	m_staff_height = median( m_lines1, seg );
+	m_staff_height = median( m_opLines1, seg );
 	//int sw = m_space_width * this->m_resize;
 	//int lw = m_line_width * this->m_resize;
 	//wxLogMessage( "---staff space %d staff line = %d %d ----- height %d",
@@ -2296,7 +2296,7 @@ bool ImPage::StaffCurvatures( )
 	// les valeurs sont conservee dans m_positions de chaque segment
 	wxString filename = m_path + "staff";
     params.Clear();
-	params.Add( m_imMain );	
+	params.Add( m_opImMain );	
 	params.Add( &filename );
 	params.Add( &m_staff_height );
     ImStaffSegmentFunctor segmentFunc(&ImStaffSegment::CalcCorrelation);
@@ -2325,7 +2325,7 @@ bool ImPage::GenerateMFC( bool merged, wxString output_dir )
 
 	this->SetMapImage( m_img0 );
 
-    if ( !GetImagePlane( &m_imMain ) )
+    if ( !GetImagePlane( &m_opImMain ) )
         return false;
 		
     // counter
@@ -2339,11 +2339,11 @@ bool ImPage::GenerateMFC( bool merged, wxString output_dir )
 	wxFile finput( input, wxFile::write );
 	if ( !finput.IsOpened() )
 		return this->Terminate( ERR_FILE, input.c_str() );
-	wxLogMessage("Check win and overlap (win = %d and overlap = %d)", WIN_WIDTH, WIN_OVERLAP);
+	wxLogDebug("Check win and overlap (win = %d and overlap = %d)", WIN_WIDTH, WIN_OVERLAP);
 	int win = WIN_WIDTH;
 	int overlap = WIN_OVERLAP;
 	params.Clear();
-    params.Add( m_imMain );
+    params.Add( m_opImMain );
     params.Add( &win );
 	params.Add( &overlap );
 	params.Add( &filename );

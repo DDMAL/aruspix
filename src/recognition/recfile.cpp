@@ -5,6 +5,8 @@
 // Copyright (c) Laurent Pugin. All rights reserved.   
 /////////////////////////////////////////////////////////////////////////////
 
+#ifdef AX_RECOGNITION
+
 #if defined(__GNUG__) && ! defined(__APPLE__)
     #pragma implementation "recfile.h"
 #endif
@@ -21,7 +23,7 @@
 
 #include "recfile.h"
 #include "rec.h"
-#include "models.h"
+#include "recmodels.h"
 #include "im/impage.h"
 #include "im/imstaff.h"
 #include "im/imstaffsegment.h"
@@ -29,11 +31,13 @@
 #include "app/axapp.h"
 #include "app/axprocess.h"
 
-#include "wg/wgpage.h"
-#include "wg/wgstaff.h"
-#include "wg/wgfile.h"
-#include "wg/iowwg.h"
-#include "wg/iomlf.h"
+#include "mus/muspage.h"
+#include "mus/musstaff.h"
+#include "mus/musfile.h"
+#include "mus/musiowwg.h"
+#include "mus/musiomlf.h"
+
+//#include "ml/mldecoder.h"
 
 
 // WDR: class implementations
@@ -47,7 +51,7 @@ RecFile::RecFile( wxString name, RecEnv *env )
 {
 	m_envPtr = env;
 
-	m_wgFilePtr = NULL;
+	m_musFilePtr = NULL;
 	m_imPagePtr = NULL;
 	
 	m_isPreprocessed = false;
@@ -58,8 +62,8 @@ RecFile::RecFile( wxString name, RecEnv *env )
 
 RecFile::~RecFile()
 {
-	if ( m_wgFilePtr )
-		delete m_wgFilePtr;
+	if ( m_musFilePtr )
+		delete m_musFilePtr;
 	if ( m_imPagePtr )
 		delete m_imPagePtr;
 }
@@ -68,11 +72,11 @@ RecFile::~RecFile()
 void RecFile::NewContent( )
 {
 	wxASSERT_MSG( !m_imPagePtr, "ImPage should be NULL" );
-	wxASSERT_MSG( !m_wgFilePtr, "WgFile should be NULL" );
+	wxASSERT_MSG( !m_musFilePtr, "MusFile should be NULL" );
 
-	// new WgFile
-    m_wgFilePtr = new WgFile();
-    m_wgFilePtr->m_fname = m_basename + "page.wwg";  
+	// new MusFile
+    m_musFilePtr = new MusFile();
+    m_musFilePtr->m_fname = m_basename + "page.wwg";  
         
 	// new ImPage and Load
     m_imPagePtr = new ImPage( m_basename, &m_isModified );
@@ -97,7 +101,7 @@ void RecFile::OpenContent( )
 	
 	if ( wxFileExists( m_basename + "page.wwg") )
 	{
-		WwgInput *wwginput = new WwgInput( m_wgFilePtr, m_wgFilePtr->m_fname );
+		MusWWGInput *wwginput = new MusWWGInput( m_musFilePtr, m_musFilePtr->m_fname );
 		failed = !wwginput->ImportFile();
 		delete wwginput;
 		if ( failed )
@@ -154,7 +158,7 @@ void RecFile::OpenContent( )
 void RecFile::SaveContent( )
 {
 	wxASSERT_MSG( m_imPagePtr, "ImPage should not be NULL" );
-	wxASSERT_MSG( m_wgFilePtr, "WgFile should not be NULL" );
+	wxASSERT_MSG( m_musFilePtr, "MusFile should not be NULL" );
 	wxASSERT( m_xml_root );
 		
 	if ( !m_isPreprocessed )
@@ -167,13 +171,13 @@ void RecFile::SaveContent( )
 	else
 	{
 		// save
-		WwgOutput *wwgoutput = new WwgOutput( m_wgFilePtr, m_wgFilePtr->m_fname );
+		MusWWGOutput *wwgoutput = new MusWWGOutput( m_musFilePtr, m_musFilePtr->m_fname );
 		wwgoutput->ExportFile();
 		delete wwgoutput;
 		
-		MLFOutput *mlfoutput = new MLFOutput( m_wgFilePtr, m_basename + "page.mlf" );
+		MusMLFOutput *mlfoutput = new MusMLFOutput( m_musFilePtr, m_basename + "page.mlf" );
 		mlfoutput->m_writePosition = true;
-		mlfoutput->WritePage( &m_wgFilePtr->m_pages[0] , "staff", m_imPagePtr );
+		mlfoutput->WritePage( &m_musFilePtr->m_pages[0] , "staff", m_imPagePtr );
 		delete mlfoutput;
 	
 		TiXmlElement root("recpage");
@@ -194,10 +198,10 @@ void RecFile::SaveContent( )
 
 		// wwg
 		TiXmlElement wwg("wwg");
-		wxFileName fwwg( m_wgFilePtr->m_fname );
+		wxFileName fwwg( m_musFilePtr->m_fname );
 		wwg.SetAttribute("fname", fwwg.GetFullName().c_str() );
-		//if ( m_wgViewPtr )
-		//	wwg.SetAttribute("page",  m_wgViewPtr->m_npage );
+		//if ( m_musViewPtr )
+		//	wwg.SetAttribute("page",  m_musViewPtr->m_npage );
 		root.InsertEndChild( wwg );
 		
 		m_xml_root->InsertEndChild( root );
@@ -207,10 +211,10 @@ void RecFile::SaveContent( )
 void RecFile::CloseContent( )
 {
 	// nouveau fichier ?
-    if ( m_wgFilePtr )
+    if ( m_musFilePtr )
     {
-        delete m_wgFilePtr;
-        m_wgFilePtr = NULL;
+        delete m_musFilePtr;
+        m_musFilePtr = NULL;
     }
 
 	// old ImPage
@@ -292,9 +296,9 @@ bool RecFile::CancelRecognition( bool ask_user )
 
 // functors
 
-bool RecFile::Preprocess( wxArrayPtrVoid params, ProgressDlg *dlg )
+bool RecFile::Preprocess( wxArrayPtrVoid params, AxProgressDlg *dlg )
 {
-	wxASSERT_MSG( dlg, "ProgressDlg cannot be NULL" );
+	wxASSERT_MSG( dlg, "AxProgressDlg cannot be NULL" );
 	
     // params 0: wxString: output_dir
 	wxString image_file = *(wxString*)params[0];
@@ -350,9 +354,9 @@ bool RecFile::Preprocess( wxArrayPtrVoid params, ProgressDlg *dlg )
 	return !failed;
 }
 
-bool RecFile::Recognize( wxArrayPtrVoid params, ProgressDlg *dlg )
+bool RecFile::Recognize( wxArrayPtrVoid params, AxProgressDlg *dlg )
 {
-	wxASSERT_MSG( dlg, "ProgressDlg cannot be NULL" );
+	wxASSERT_MSG( dlg, "AxProgressDlg cannot be NULL" );
 	
     // params 0: RecTypModel: typModelPtr
 	// params 1: RecMusModel: musModelPtr
@@ -445,10 +449,10 @@ bool RecFile::Recognize( wxArrayPtrVoid params, ProgressDlg *dlg )
 }
 
 
-bool RecFile::Decode( wxArrayPtrVoid params, ProgressDlg *dlg )
+bool RecFile::Decode( wxArrayPtrVoid params, AxProgressDlg *dlg )
 {
 	wxASSERT_MSG( m_imPagePtr, "ImPage cannot be NULL" );
-	wxASSERT_MSG( dlg, "ProgressDlg cannot be NULL" );
+	wxASSERT_MSG( dlg, "AxProgressDlg cannot be NULL" );
 	
     // params 0: RecTypModel: typModelPtr
 	// params 1: RecMusModel: musModelPtr
@@ -465,7 +469,71 @@ bool RecFile::Decode( wxArrayPtrVoid params, ProgressDlg *dlg )
 		rec_lm_order = MUS_NGRAM_ORDER;
 	double rec_lm_scaling =  *(double*)params[4];
 	wxString rec_wrdtrns =  *(wxString*)params[5];
+	
+	wxString input = m_basename + "mfc.input";
+	input.Replace( "\\/", "/" );
+	wxString rec_models = typModelPtr->m_basename + "hmm";
+	wxString rec_dict = typModelPtr->m_basename + "dic";
+	wxString rec_lm = musModelPtr->m_basename + "ngram.gram";
+	wxString rec_output = m_basename + "rec.mlf";
+	// cannot be changed from interface
+	double rec_phone_pen = RecEnv::s_rec_phone_pen;
+	double rec_int_prune = RecEnv::s_rec_int_prune;
+	double rec_word_pen = RecEnv::s_rec_word_pen;
+	
+	/*
+	wxString log = wxGetApp().m_logDir + "/decoder.log";
+	
+	MlDecoder *decoder = new MlDecoder( input, rec_models, rec_dict );
 
+	decoder->log_fname = log;
+	decoder->am_models_fname = rec_models;
+	decoder->am_sil_phone = "{s}";
+	decoder->am_phone_del_pen = rec_phone_pen;
+
+	decoder->lex_dict_fname = rec_dict;
+
+	if ( rec_lm_order && !rec_lm.IsEmpty() )
+	{
+		decoder->lm_fname = musModelPtr->m_basename + "ngram.gram";
+		decoder->lm_ngram_order = rec_lm_order;
+		decoder->lm_scaling_factor = rec_lm_scaling;
+	}
+	
+	if ( rec_int_prune != 0.0 )
+		decoder->dec_int_prune_window = rec_int_prune;
+		
+	if ( rec_word_pen != 0.0 )
+		decoder->dec_word_entr_pen = rec_word_pen;
+
+	if ( rec_delayed )
+		decoder->dec_delayed_lm = true;
+	
+	if ( !rec_output.IsEmpty() )
+		decoder->output_fname = rec_output;
+
+	if ( !rec_wrdtrns.IsEmpty() )
+		decoder->wrdtrns_fname = rec_wrdtrns;
+
+	decoder->Create();
+	decoder->Run();
+	
+	//wxMilliSleep( 10000 );
+	
+	while  ( decoder->IsAlive()  )
+	{
+		wxMilliSleep( 200 );
+		if( !dlg->IncTimerOperation( ) )
+		{
+				//process->m_deleteOnTerminate = true;
+				//process->m_canceled = true;
+				//wxKill( pid, wxSIGKILL );
+				decoder->Delete(); 
+				return this->Terminate( ERR_CANCELED );
+		}
+	}
+	*/
+	
 #ifdef __WXMSW__
 	#if defined(_DEBUG)
 		wxString cmd = "DecoderD.exe";
@@ -489,20 +557,12 @@ bool RecFile::Decode( wxArrayPtrVoid params, ProgressDlg *dlg )
 	wxString args = " ";
 	
 	wxString log = "\"" + wxGetApp().m_logDir + "/decoder.log\"";
-
-	wxString input = m_basename + "mfc.input";
-	input.Replace( "\\/", "/" );
+	args << " -log_fname " << log.c_str();	
 	
-	wxString rec_models = typModelPtr->m_basename + "hmm";
-	wxString rec_dict = typModelPtr->m_basename + "dic";
-	wxString rec_lm = typModelPtr->m_basename;
-	wxString rec_output = m_basename + "rec.mlf";
-	// cannot be changed from interface
-	double rec_phone_pen = RecEnv::s_rec_phone_pen;
-	double rec_int_prune = RecEnv::s_rec_int_prune;
-	double rec_word_pen = RecEnv::s_rec_word_pen;
+	wxString end = wxGetApp().m_workingDir + "end_process";
+	wxRemoveFile( end );
+	args << " -end_fname " << end.c_str();
 	
-	args << " -log_fname " << log.c_str();
 	args << " -am_models_fname " << rec_models.c_str();
 	args << " -am_sil_phone \"{s}\" ";
 	args << " -am_phone_del_pen " << rec_phone_pen;
@@ -511,13 +571,9 @@ bool RecFile::Decode( wxArrayPtrVoid params, ProgressDlg *dlg )
 
 	if ( rec_lm_order && !rec_lm.IsEmpty() )
 	{
-		args << " -lm_fname " << musModelPtr->m_basename;
+		args << " -lm_fname " << rec_lm;
 		args << " -lm_ngram_order " << rec_lm_order;
 		args << " -lm_scaling_factor " << rec_lm_scaling;
-		args << " -cm_no_symb";
-		args << " -cm_no_duration";
-		args << " -cm_no_pitch";
-		args << " -cm_no_interval";
 	}
 	
 	if ( rec_int_prune != 0.0 )
@@ -550,7 +606,16 @@ bool RecFile::Decode( wxArrayPtrVoid params, ProgressDlg *dlg )
 		process->Detach();
 		process->m_deleteOnTerminate = false;
 		int pid = process->GetPid();
+#ifdef __POWERPC__  & __WXMAC__
+		// on PPC machine, from Leopard (10.5), end detection of wxProcess does not work
+		// Instead, an 'end_file' is written by the external process to enable the end of 
+		// the task to be detected. This is not optimal as the file won't be written if the
+		// process fails.
+		wxLogDebug("AxProcess end detetion with a file");
+		while  ( !wxFileExists( end ) )
+#else
 		while  ( process->GetPid() == pid )
+#endif
 		{
 			wxMilliSleep( 200 );
 			if( !dlg->IncTimerOperation( ) )
@@ -570,6 +635,7 @@ bool RecFile::Decode( wxArrayPtrVoid params, ProgressDlg *dlg )
 	}
 	dlg->EndTimerOperation( TIMER_DECODING );
 	delete process;
+
 
 
 	/*Torch::DiskXFile::setBigEndianMode() ;
@@ -617,39 +683,39 @@ bool RecFile::Decode( wxArrayPtrVoid params, ProgressDlg *dlg )
 	return true;
 }
 
-bool RecFile::RealizeFromMLF( wxArrayPtrVoid params, ProgressDlg *dlg )
+bool RecFile::RealizeFromMLF( wxArrayPtrVoid params, AxProgressDlg *dlg )
 {
     wxASSERT_MSG( m_imPagePtr , "Page cannot be NULL");
-    wxASSERT_MSG( m_wgFilePtr , "WgFile cannot be NULL");
-	wxASSERT_MSG( dlg, "ProgressDlg cannot be NULL" );
+    wxASSERT_MSG( m_musFilePtr , "MusFile cannot be NULL");
+	wxASSERT_MSG( dlg, "AxProgressDlg cannot be NULL" );
 	
 	if (!dlg->SetOperation( _("Load results...") ) )
 		return this->Terminate( ERR_CANCELED );
 
-    WgPage *wgPage = new WgPage();
+    MusPage *musPage = new MusPage();
 
 	// deprecated, now always replace first page
-    /*if ( m_wgFilePtr->m_fheader.nbpage == 0) // premiere page
+    /*if ( m_musFilePtr->m_fheader.nbpage == 0) // premiere page
     {
-        m_wgFilePtr->m_fheader.param.pageFormatHor = m_imPagePtr->m_size.GetWidth() / 10;
-        m_wgFilePtr->m_fheader.param.pageFormatVer = m_imPagePtr->m_size.GetHeight() / 10;
+        m_musFilePtr->m_fheader.param.pageFormatHor = m_imPagePtr->m_size.GetWidth() / 10;
+        m_musFilePtr->m_fheader.param.pageFormatVer = m_imPagePtr->m_size.GetHeight() / 10;
     }
     else 
     {   
-        if ( m_wgFilePtr->m_fheader.param.pageFormatHor < m_imPagePtr->m_size.GetWidth() / 10 )
-            m_wgFilePtr->m_fheader.param.pageFormatHor = m_imPagePtr->m_size.GetWidth() / 10;
-        if ( m_wgFilePtr->m_fheader.param.pageFormatVer < m_imPagePtr->m_size.GetHeight() / 10 )
-            m_wgFilePtr->m_fheader.param.pageFormatVer = m_imPagePtr->m_size.GetHeight() / 10;
+        if ( m_musFilePtr->m_fheader.param.pageFormatHor < m_imPagePtr->m_size.GetWidth() / 10 )
+            m_musFilePtr->m_fheader.param.pageFormatHor = m_imPagePtr->m_size.GetWidth() / 10;
+        if ( m_musFilePtr->m_fheader.param.pageFormatVer < m_imPagePtr->m_size.GetHeight() / 10 )
+            m_musFilePtr->m_fheader.param.pageFormatVer = m_imPagePtr->m_size.GetHeight() / 10;
     }*/
-	m_wgFilePtr->m_pages.Clear();
-	m_wgFilePtr->m_fheader.param.pageFormatHor = m_imPagePtr->m_size.GetWidth() / 10;
-	m_wgFilePtr->m_fheader.param.pageFormatVer = m_imPagePtr->m_size.GetHeight() / 10;
+	m_musFilePtr->m_pages.Clear();
+	m_musFilePtr->m_fheader.param.pageFormatHor = m_imPagePtr->m_size.GetWidth() / 10;
+	m_musFilePtr->m_fheader.param.pageFormatVer = m_imPagePtr->m_size.GetHeight() / 10;
 
     int x1 = 5, x2 = 195;
     m_imPagePtr->CalcLeftRight( &x1, &x2 );
-    m_wgFilePtr->m_fheader.param.MargeGAUCHEIMPAIRE = x1 / 10;
-    m_wgFilePtr->m_fheader.param.MargeGAUCHEPAIRE = x1 / 10;
-    wgPage->lrg_lign = (x2 - x1) / 10;
+    m_musFilePtr->m_fheader.param.MargeGAUCHEIMPAIRE = x1 / 10;
+    m_musFilePtr->m_fheader.param.MargeGAUCHEPAIRE = x1 / 10;
+    musPage->lrg_lign = (x2 - x1) / 10;
 
     int nb = (int)m_imPagePtr->m_staves.GetCount();
     int previous = 0;
@@ -657,35 +723,35 @@ bool RecFile::RealizeFromMLF( wxArrayPtrVoid params, ProgressDlg *dlg )
     for (int i = 0; i < nb; i++)
     {
         imStaff = &m_imPagePtr->m_staves[i];
-        WgStaff *wgStaff = new WgStaff();
-        wgStaff->no = nb;
-        wgStaff->indent = imStaff->CalcIndentation( x1 );
-        wgStaff->ecart = (m_imPagePtr->ToViewY( imStaff->m_y ) -  previous ) / wgPage->defin;
-            //imStaff->CalcEcart( previous ) / wgPage->defin;
-        wgStaff->vertBarre = DEB_FIN;
-        //wgStaff->brace = DEB_FIN;
-        previous += wgStaff->ecart * wgPage->defin;
-        wgPage->m_staves.Add( wgStaff );
+        MusStaff *musStaff = new MusStaff();
+        musStaff->no = nb;
+        musStaff->indent = imStaff->CalcIndentation( x1 );
+        musStaff->ecart = (m_imPagePtr->ToViewY( imStaff->m_y ) -  previous ) / musPage->defin;
+            //imStaff->CalcEcart( previous ) / musPage->defin;
+        musStaff->vertBarre = DEB_FIN;
+        //musStaff->brace = DEB_FIN;
+        previous += musStaff->ecart * musPage->defin;
+        musPage->m_staves.Add( musStaff );
     }   
-    m_wgFilePtr->m_pages.Add( wgPage );
-    m_wgFilePtr->CheckIntegrity();
+    m_musFilePtr->m_pages.Add( musPage );
+    m_musFilePtr->CheckIntegrity();
 	
 	///// FAKE JUST FOR COMPILATION
 	wxString m_rec_output = m_basename + "rec.mlf";
 	
-    MLFInput *mlfinput = new MLFInput( m_wgFilePtr, m_rec_output );
-    mlfinput->ReadPage( wgPage, true, m_imPagePtr );
+    MusMLFInput *mlfinput = new MusMLFInput( m_musFilePtr, m_rec_output );
+    mlfinput->ReadPage( musPage, true, m_imPagePtr );
     delete mlfinput;
 
 	// save ????
-    // Output *wwgoutput = new WwgOutput( m_wgFilePtr, m_wgFilePtr->m_fname );
+    // Output *wwgoutput = new MusWWGOutput( m_musFilePtr, m_musFilePtr->m_fname );
     //wwgoutput->ExportFile();
     //delete wwgoutput;
 
     return true;
 }
 
-bool RecFile::GenerateMFC( wxArrayPtrVoid params, ProgressDlg *dlg )
+bool RecFile::GenerateMFC( wxArrayPtrVoid params, AxProgressDlg *dlg )
 {
     // param 0: bool: merged
 	// params 1: wxString: output_dir
@@ -694,7 +760,7 @@ bool RecFile::GenerateMFC( wxArrayPtrVoid params, ProgressDlg *dlg )
 	wxString output_dir = *(wxString*)params[1];
 	
     wxASSERT_MSG( m_imPagePtr , "Page cannot be NULL");
-	wxASSERT_MSG( dlg, "ProgressDlg cannot be NULL" );
+	wxASSERT_MSG( dlg, "AxProgressDlg cannot be NULL" );
 	
 	m_imPagePtr->SetProgressDlg( dlg );
 
@@ -723,4 +789,6 @@ bool RecFile::GenerateMFC( wxArrayPtrVoid params, ProgressDlg *dlg )
 }
 
 // WDR: handler implementations for RecFile
+
+#endif //AX_RECOGNITION
 

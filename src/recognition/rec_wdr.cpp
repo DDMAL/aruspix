@@ -34,10 +34,10 @@
 
 // Custom source
 #include "recognition/rec.h"
-#include "recognition/recwg.h"
+#include "recognition/recmus.h"
 #include "recognition/recim.h"
 #include "recognition/recbookctrl.h"
-#include "wg/wgtoolpanel.h"
+#include "mus/mustoolpanel.h"
 
 // Implement window functions
 
@@ -60,16 +60,16 @@ wxSizer *WindowFunc4( wxWindow *parent, bool call_fit, bool set_sizer )
     return item0;
 }
 
-wxSizer *WgOutputFunc4( wxWindow *parent, bool call_fit, bool set_sizer )
+wxSizer *MusOutputFunc4( wxWindow *parent, bool call_fit, bool set_sizer )
 {
     wxFlexGridSizer *item0 = new wxFlexGridSizer( 1, 0, 0 );
     item0->AddGrowableCol( 0 );
     item0->AddGrowableRow( 1 );
 
-    WgToolPanel *item1 = new WgToolPanel( parent, ID4_TOOLPANEL, wxDefaultPosition, wxSize(10,10), 0 );
+    MusToolPanel *item1 = new MusToolPanel( parent, ID4_TOOLPANEL, wxDefaultPosition, wxSize(10,10), 0 );
     item0->Add( item1, 0, wxGROW, 0 );
 
-    RecWgController *item2 = new RecWgController( parent, ID4_WGPANEL, wxDefaultPosition, wxSize(200,160), wxSUNKEN_BORDER );
+    RecMusController *item2 = new RecMusController( parent, ID4_MUSPANEL, wxDefaultPosition, wxSize(200,160), wxSUNKEN_BORDER );
     item0->Add( item2, 0, wxGROW|wxALL, 0 );
 
     if (set_sizer)
