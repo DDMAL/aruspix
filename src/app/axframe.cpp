@@ -19,6 +19,7 @@
 #endif
 
 #include "wx/config.h"
+#include "wx/stdpaths.h"
 
 #include "axapp.h"
 #include "axfile.h"
@@ -318,12 +319,19 @@ void AxFrame::LoadConfig()
     AxImage::s_imageSizeToReduce = pConfig->Read("ImageSizeToReduce",3000);
 	AxImage::s_checkIfNegative = (pConfig->Read("ImageCheckIfNegative",0L)==1);
 
-	//system OS X
+#if defined(__WXMSW__)
+	wxString default_workingDir = wxStandardPaths::Get().GetUserDataDir();		
+	wxString default_docDir = wxStandardPaths::Get().GetDocumentsDir();
+	wxString default_images = default_docDir + "/Images";
+	wxString default_pages = default_docDir + "/Pages";
+	wxString default_models = default_docDir + "/Models";
+#else // OS X
 	wxString default_workingDir = wxGetHomeDir() + "/.aruspix"; // on OS X		
 	wxString default_docDir = wxGetHomeDir() + "/Documents/Aruspix.localized"; // on OS X
 	wxString default_images = default_docDir + "/Images.localized";
 	wxString default_pages = default_docDir + "/Pages.localized";
 	wxString default_models = default_docDir + "/Models.localized";
+#endif
 	
 	//wxGetApp().m_workingDir = pConfig->Read("WorkingDir", wxGetApp().m_path );
 	wxGetApp().m_workingDir = pConfig->Read("WorkingDir", default_workingDir );
