@@ -59,10 +59,6 @@ char *input_format_s=NULL ;
 char *wrdtrns_fname=NULL ;
 char *output_fname=NULL ;
 
-// Log
-char *log_fname=NULL ;
-char *end_fname=NULL ; // file to notify the end of the process
-
 
 void processCmdLine( CmdLine *cmd , int argc , char *argv[] )
 {
@@ -127,12 +123,6 @@ void processCmdLine( CmdLine *cmd , int argc , char *argv[] )
                         "the file where decoding results are written" ) ;
     cmd->addSCmdOption( "-wrdtrns_fname" , &wrdtrns_fname , "" ,
                         "the file containing word-level reference transcriptions" ) ;
-
-	// Varia
-	cmd->addSCmdOption( "-log_fname" , &log_fname , "", 
-						"the log output file, standard output if none" ) ;
-	cmd->addSCmdOption( "-end_fname" , &end_fname , "", 
-						"File used to notify the end of the process. Used to avoid a bug in Mac 10.5 that cannot be fixed" ) ;
 	
     cmd->read( argc , argv ) ;
         
@@ -156,25 +146,7 @@ int main( int argc , char *argv[] )
     DiskXFile::setBigEndianMode() ;
 
     processCmdLine( &cmd , argc , argv ) ;
-	
-	//==================================================================== 
-	//=================== Log file  ======================================
-	//====================================================================
-	
-	int saved_stdout = 0;
-	FILE *out_fd = NULL;
-	if ( strlen( log_fname ) )
-	{
-		// redirect stdout if output file is supplied
-		saved_stdout = dup( fileno(stdout) );
-		out_fd = freopen( log_fname, "a", stdout );
-		if ( out_fd == NULL )
-		{
-			dup2(saved_stdout, fileno(stdout) );
-			close(saved_stdout);
-			warning("Opening log file failed") ;
-		}
-	}
+
 	
     LexiconInfo lex_info( am_models_fname , am_sil_phone , am_pause_phone , lex_dict_fname , 
                           lex_sent_start_word , lex_sent_end_word , lex_sil_word ) ;
@@ -208,14 +180,7 @@ int main( int argc , char *argv[] )
 
 	batch_tester.run() ;
 	
-	if ( out_fd )
-		fclose( out_fd );
-		
-	if ( strlen( end_fname ) )
-	{
-		out_fd = fopen( end_fname, "w"  );
-		fclose( out_fd );
-	}
+	printf( SUCCESS );
 
     return(0) ;
 }

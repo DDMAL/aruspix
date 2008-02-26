@@ -17,6 +17,7 @@
 #endif
 
 #include "wx/txtstrm.h"
+#include "wx/wfstream.h"
 
 #include "axprocess.h"
 #include "axapp.h"
@@ -30,57 +31,88 @@
 // WDR: event table for AxProcess
 
 AxProcess::AxProcess( wxString cmd, wxString args, AxProgressDlg *dlg )
+	//:  wxProcess( dlg )
 {
-	//Redirect();
+	Redirect();
 	m_pid = 0;
 	m_status = 0;
 	m_cmd = wxGetApp().m_appPath + "/" + cmd + " "  + args;
-	m_deleteOnTerminate = false;
-	m_canceled = false;
+	m_log = NULL;
+	m_logStream = NULL;
 }
 
 AxProcess::~AxProcess()
 {
+	wxLogDebug("AxProcess deleted");
+	if ( m_log )
+		delete m_log;
+	if ( m_logStream )
+	{
+		m_logStream->Close();
+		delete m_logStream;
+	}
 }
 
 
+void AxProcess::SetLog( wxString log_fname )
+{
+	m_logStream = new wxFileOutputStream( log_fname );
+	if ( !m_logStream->IsOk() )
+	{
+		wxLogWarning("Unable to open log file '%s'", log_fname.c_str() );
+		return;
+	}
+	
+	m_log = new wxTextOutputStream( *m_logStream );
+	m_log->WriteString( m_cmd );
+	m_log->WriteString( "\n" );
+}
+
 void AxProcess::OnTerminate(int pid, int status)
 {
-	wxString line;
-	m_status = status;
+}
+
+
+bool AxProcess::HasEnded( )
+{
+	wxString msg;
 
 	// redirect in now disabled (see constructor)
 	// nothing will happen
 	wxTextInputStream tis(*GetInputStream());
-    while ( IsInputAvailable() )
-	{
-		line = tis.ReadLine();
-		if ( !line.IsEmpty() )
-			wxLogMessage( _("%s"), line.c_str() );
-	}
-
 	wxTextInputStream tes(*GetErrorStream());
+	
+	// we don't know where Error is going to be output
     while ( IsInputAvailable() )
 	{
-		line = tes.ReadLine();
-		if ( !line.IsEmpty() )
-			wxLogError( _("%s"), line.c_str() );
+		msg = tis.ReadLine();
+		if ( msg.StartsWith("$ Success!") )
+		{
+			return true;
+		}
+		else if ( msg.StartsWith("$ Error: ") )
+		{
+			m_status = 255;
+			return true;
+		}
+		if ( !msg.IsEmpty() && m_log )
+			m_log->WriteString( msg + "\n" );
 	}
-
-	if (status != 0)
+    while ( IsErrorAvailable() )
 	{
-		if ( !m_canceled )
-			wxLogError( _T("Process %u terminated with exit code %d"), pid,  status);
-		else
-			wxLogMessage( _T("Process %u terminated, operation canceled"), pid);
-	}
+		msg = tes.ReadLine();
+		if ( msg.StartsWith("$ Error: ") )
+		{
+			m_status = 255;
+			return true;
+		}
+		if ( !msg.IsEmpty() && m_log )
+			m_log->WriteString( msg + "\n" );
+    }
 
-	m_pid = 0;
-	
-	if ( m_deleteOnTerminate )
-		delete this;
+
+    return false;
 }
-
 
 bool AxProcess::Start( )
 {

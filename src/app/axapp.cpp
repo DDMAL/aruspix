@@ -33,7 +33,7 @@ const wxString IPC_START = "StartOther";
 
 int AxApp::s_version_major = 1;
 int AxApp::s_version_minor = 3;
-int AxApp::s_version_revision = 0;
+int AxApp::s_version_revision = 1;
 wxString AxApp::s_version = wxString::Format("%d.%d.%d", AxApp::s_version_major, AxApp::s_version_minor, AxApp::s_version_revision);
 wxString AxApp::s_build_date = __DATE__;
 wxString AxApp::s_build_time = __TIME__;

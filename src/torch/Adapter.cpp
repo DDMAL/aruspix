@@ -38,8 +38,6 @@ int main(int argc, char **argv)
 	char *model_file_in;
 	char *model_file_out;
 	char *dir_name;
-	char *log_fname;
-	char *end_fname;
 
 	real accuracy;
 	real threshold;
@@ -130,34 +128,12 @@ int main(int argc, char **argv)
 	// Misc Options
 	cmd.addText("\nMisc Options:");
 	cmd.addSCmdOption("-dir", &dir_name, ".", "directory to save measures");
-	cmd.addSCmdOption( "-log_fname" , &log_fname , "", "the log output file, standard output if none" ) ;
-	cmd.addSCmdOption( "-end_fname" , &end_fname , "", 
-			"File used to notify the end of the process. Used to avoid a bug in Mac 10.5 that cannot be fixed" ) ;
 
 	// Read the command line
 	cmd.read(argc, argv);
 	cmd.setWorkingDirectory(dir_name);
 
 	DiskXFile::setBigEndianMode();
-	
-	//==================================================================== 
-	//=================== Log file  ======================================
-	//====================================================================
-	
-	int saved_stdout = 0;
-	FILE *out_fd = NULL;
-	if ( strlen( log_fname ) )
-	{
-		// redirect stdout if output file is supplied
-		saved_stdout = dup( fileno(stdout) );
-		out_fd = freopen( log_fname, "a", stdout );
-		if ( out_fd == NULL )
-		{
-			dup2(saved_stdout, fileno(stdout) );
-			close(saved_stdout);
-			warning("Opening log file failed") ;
-		}
-	}
 
 	//==================================================================== 
 	//=================== Data preparation ===============================
@@ -221,17 +197,10 @@ int main(int argc, char **argv)
     total_time = (real)(end_time-start_time) / CLOCKS_PER_SEC ;
 	
     printf("\nTotal time spent adapting = %.2f secs\n", total_time) ;
-	
-	if ( out_fd )
-		fclose( out_fd );
 
 	delete allocator;
 	
-	if ( strlen( end_fname ) )
-	{
-		out_fd = fopen( end_fname, "w"  );
-		fclose( out_fd );
-	}	
+	printf( SUCCESS );
 	
 	return(0);
 }

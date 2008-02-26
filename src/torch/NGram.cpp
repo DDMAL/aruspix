@@ -27,10 +27,7 @@ char *input_wrdtrns_fname=NULL ;
 char *input_dict_fname=NULL ;
 char *output_fname=NULL ;
 char *data_fname=NULL ;
-char *log_fname=NULL ;
 char *reload_data_fname=NULL ;
-
-char *end_fname=NULL ; // file to notify the end of the process
 
 bool dec_verbose=false ;
 
@@ -61,10 +58,6 @@ void processCmdLine( CmdLine *cmd , int argc , char *argv[] )
 	// output
 	cmd->addSCmdOption( "-data_fname" , &data_fname , "" ,
                         "the data output file" ) ;
-	cmd->addSCmdOption( "-log_fname" , &log_fname , "",
-                        "the log output file, standard output if none" ) ;
-	cmd->addSCmdOption( "-end_fname" , &end_fname , "", 
-						"File used to notify the end of the process. Used to avoid a bug in Mac 10.5 that cannot be fixed" ) ;
 
     cmd->read( argc , argv ) ;
         
@@ -80,22 +73,6 @@ int main( int argc , char *argv[] )
     DiskXFile::setBigEndianMode() ;
 
     processCmdLine( &cmd , argc , argv ) ;
-	
-	// log file
-	int saved_stdout = 0;
-	//FILE *out_fd = NULL;
-	if ( strlen( log_fname ) )
-	{
-		// redirect stdout if output file is supplied
-		saved_stdout = dup( fileno(stdout) );
-		FILE *out_fd = freopen( log_fname, "a", stdout );
-		if ( out_fd == NULL )
-		{
-			dup2(saved_stdout, fileno(stdout) );
-			close(saved_stdout);
-			warning("Opening log file failed") ;
-		}
-	}
 
     Vocabulary vocabulary ( input_dict_fname , lex_sent_start_word , 
                                             lex_sent_end_word , lex_sil_word ) ;
@@ -107,11 +84,7 @@ int main( int argc , char *argv[] )
 		
 	ngram.loadFile( input_wrdtrns_fname, output_fname, data_fname);
 	
-	if ( strlen( end_fname ) )
-	{
-		FILE *out_fd = fopen( end_fname, "w"  );
-		fclose( out_fd );
-	}
+	printf( SUCCESS );
  
     return(0) ;
 }

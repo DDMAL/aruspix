@@ -453,7 +453,7 @@ bool RecTypModel::Adapt( wxArrayPtrVoid params, AxProgressDlg *dlg )
 
 	wxString args = " ";
 	
-	wxString log = "\"" + wxGetApp().m_logDir + "/adapt.log\"";
+	wxString log = wxGetApp().m_logDir + "/adapt.log";
 	
 	wxString states = m_basename + "states3";
 	// input
@@ -475,11 +475,6 @@ bool RecTypModel::Adapt( wxArrayPtrVoid params, AxProgressDlg *dlg )
 	wxLocale set( wxLANGUAGE_ENGLISH );
 	
 	args << " -dir " << wxGetApp().m_workingDir.c_str();
-	args << " -log_fname " << log.c_str();
-	
-	wxString end = wxGetApp().m_workingDir + "/end_process";
-	wxRemoveFile( end );
-	args << " -end_fname " << end.c_str();
 	
 	args << " -spacing_model \"{s}\"";
 	args << " -threshold " << threshold;
@@ -506,7 +501,6 @@ bool RecTypModel::Adapt( wxArrayPtrVoid params, AxProgressDlg *dlg )
 	wxLocale reset( wxGetApp().m_locale.GetLanguage() );
 
 	wxLogDebug(args);
-	//printf(args.c_str());
 	
 	dlg->SetMaxJobBar( 1 ); 
 	dlg->SetJob( _("Generate the optimized typographic model") );
@@ -515,36 +509,28 @@ bool RecTypModel::Adapt( wxArrayPtrVoid params, AxProgressDlg *dlg )
 		return this->Terminate( ERR_CANCELED );
 		
 	int dlg_timer = fast ? TIMER_FAST_ADAPTING : TIMER_FULL_ADAPTING;
-
+	
 	dlg->StartTimerOperation( dlg_timer, m_nbfiles );
+	int pid;
 	AxProcess *process = new AxProcess( cmd, args, NULL );
+	process->SetLog( log );
 	if ( process->Start() )
 	{
-		process->Detach();
-		process->m_deleteOnTerminate = false;
-		int pid = process->GetPid();
-#ifdef __POWERPC__  & __WXMAC__
-		// on PPC machine, from Leopard (10.5), end detection of wxProcess does not work
-		// Instead, an 'end_file' is written by the external process to enable the end of 
-		// the task to be detected. This is not optimal as the file won't be written if the
-		// process fails.
-		wxLogDebug("AxProcess end detetion with a file");
-		while  ( !wxFileExists( end ) )
-#else
-		while  ( process->GetPid() == pid )
-#endif
+		pid = process->GetPid();
+		while  ( !process->HasEnded() )
 		{
-			wxMilliSleep( 200 );
 			if( !dlg->IncTimerOperation( ) )
 			{
-				process->m_deleteOnTerminate = true;
-				process->m_canceled = true;
-				wxKill( pid, wxSIGKILL ); 
+				wxKill( pid, wxSIGKILL );
+				wxYield();
+				delete process; 
 				return this->Terminate( ERR_CANCELED );
 			}
+			wxMilliSleep( 200 );
 		}
 		
 	}
+	wxYield(); // flush termination event before deleting the process.
 	if ( process->m_status != 0 )
 	{
 		delete process;
@@ -759,12 +745,7 @@ bool RecMusModel::Train( wxArrayPtrVoid params, AxProgressDlg *dlg )
 
 	wxString args = " ";
 	
-	wxString log = "\"" + wxGetApp().m_logDir + "/ngram.log\"";
-	args << " -log_fname " << log.c_str();
-	
-	wxString end = wxGetApp().m_workingDir + "/end_process";
-	wxRemoveFile( end );
-	args << " -end_fname " << end.c_str();
+	wxString log = wxGetApp().m_logDir + "/ngram.log";
 	
 	args << " -data_fname " << outputdatafile.c_str();
 	args << " " << mlffile.c_str();
@@ -781,42 +762,34 @@ bool RecMusModel::Train( wxArrayPtrVoid params, AxProgressDlg *dlg )
 		return this->Terminate( ERR_CANCELED );
 
 	dlg->StartTimerOperation( TIMER_MODEL_BIGRAM, m_nbfiles );
+	int pid;
 	AxProcess *process = new AxProcess( cmd, args, NULL );
+	process->SetLog( log );
 	if ( process->Start() )
 	{
-		process->Detach();
-		process->m_deleteOnTerminate = false;
-		int pid = process->GetPid();
-#ifdef __POWERPC__  & __WXMAC__
-		// on PPC machine, from Leopard (10.5), end detection of wxProcess does not work
-		// Instead, an 'end_file' is written by the external process to enable the end of 
-		// the task to be detected. This is not optimal as the file won't be written if the
-		// process fails.
-		wxLogDebug("AxProcess end detetion with a file");
-		while  ( !wxFileExists( end ) )
-#else
-		while  ( process->GetPid() == pid )
-#endif
+		pid = process->GetPid();
+		while  ( !process->HasEnded() )
 		{
-			wxMilliSleep( 200 );
-			//wxSafeYield();
-			if ( !dlg->IncTimerOperation() )
+			if( !dlg->IncTimerOperation( ) )
 			{
-				process->m_deleteOnTerminate = true;
-				process->m_canceled = true;
-				wxKill( pid, wxSIGKILL ); 
+				wxKill( pid, wxSIGKILL );
+				wxYield();
+				delete process; 
 				return this->Terminate( ERR_CANCELED );
-			}	
+			}
+			wxMilliSleep( 200 );
 		}
+		
 	}
+	wxYield(); // flush termination event before deleting the process.
 	if ( process->m_status != 0 )
 	{
 		delete process;
 		return this->Terminate( ERR_UNKNOWN );
 	}
-	dlg->EndTimerOperation( TIMER_MODEL_BIGRAM );
+	dlg->EndTimerOperation( TIMER_MODEL_BIGRAM );	
 	delete process;
-	
+
 	return true;
 
 }
@@ -867,12 +840,7 @@ bool RecMusModel::Adapt( wxArrayPtrVoid params, AxProgressDlg *dlg )
 	
 	wxString args = " ";
 
-	wxString log = "\"" + wxGetApp().m_logDir + "/ngram.log\"";
-	args << " -log_fname " << log.c_str();
-	
-	wxString end = wxGetApp().m_workingDir + "/end_process";
-	wxRemoveFile( end );
-	args << " -end_fname " << end.c_str();
+	wxString log = wxGetApp().m_logDir + "/ngram.log";
 	
 	args << " -reload_data_fname " << inputdatafile.c_str();
 	args << " -data_fname " << outputdatafile.c_str();
@@ -890,40 +858,32 @@ bool RecMusModel::Adapt( wxArrayPtrVoid params, AxProgressDlg *dlg )
 		return this->Terminate( ERR_CANCELED );
 
 	dlg->StartTimerOperation( TIMER_MODEL_BIGRAM, m_nbfiles );
+	int pid;
 	AxProcess *process = new AxProcess( cmd, args, NULL );
+	process->SetLog( log );
 	if ( process->Start() )
 	{
-		process->Detach();
-		process->m_deleteOnTerminate = false;
-		int pid = process->GetPid();
-#ifdef __POWERPC__  & __WXMAC__
-		// on PPC machine, from Leopard (10.5), end detection of wxProcess does not work
-		// Instead, an 'end_file' is written by the external process to enable the end of 
-		// the task to be detected. This is not optimal as the file won't be written if the
-		// process fails.
-		wxLogDebug("AxProcess end detetion with a file");
-		while  ( !wxFileExists( end ) )
-#else
-		while  ( process->GetPid() == pid )
-#endif
+		pid = process->GetPid();
+		while  ( !process->HasEnded() )
 		{
-			wxMilliSleep( 200 );
-			//wxSafeYield();
-			if ( !dlg->IncTimerOperation() )
+			if( !dlg->IncTimerOperation( ) )
 			{
-				process->m_deleteOnTerminate = true;
-				process->m_canceled = true;
-				wxKill( pid, wxSIGKILL ); 
+				wxKill( pid, wxSIGKILL );
+				wxYield();
+				delete process; 
 				return this->Terminate( ERR_CANCELED );
 			}
+			wxMilliSleep( 200 );
 		}
+		
 	}
+	wxYield(); // flush termination event before deleting the process.
 	if ( process->m_status != 0 )
 	{
 		delete process;
 		return this->Terminate( ERR_UNKNOWN );
 	}
-	dlg->EndTimerOperation( TIMER_MODEL_BIGRAM );
+	dlg->EndTimerOperation( TIMER_MODEL_BIGRAM );	
 	delete process;
 	
 	return true;

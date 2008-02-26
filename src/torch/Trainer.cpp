@@ -202,5 +202,8 @@ int main(int argc, char **argv)
   printf("\nTotal time spent training = %.2f secs\n", total_time) ;
 
   delete allocator;
+  
+  //printf( SUCCESS );
+  
   return(0);
 }

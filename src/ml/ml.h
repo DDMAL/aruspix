@@ -9,4 +9,6 @@
 #define SP_END "SP_END"
 #define SP_WORD "SP"
 
+#define SUCCESS "$ Success!"
+
 
