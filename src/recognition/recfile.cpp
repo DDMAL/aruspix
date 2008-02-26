@@ -559,7 +559,7 @@ bool RecFile::Decode( wxArrayPtrVoid params, AxProgressDlg *dlg )
 	wxString log = "\"" + wxGetApp().m_logDir + "/decoder.log\"";
 	args << " -log_fname " << log.c_str();	
 	
-	wxString end = wxGetApp().m_workingDir + "end_process";
+	wxString end = wxGetApp().m_workingDir + "/end_process";
 	wxRemoveFile( end );
 	args << " -end_fname " << end.c_str();
 	

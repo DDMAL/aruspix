@@ -477,7 +477,7 @@ bool RecTypModel::Adapt( wxArrayPtrVoid params, AxProgressDlg *dlg )
 	args << " -dir " << wxGetApp().m_workingDir.c_str();
 	args << " -log_fname " << log.c_str();
 	
-	wxString end = wxGetApp().m_workingDir + "end_process";
+	wxString end = wxGetApp().m_workingDir + "/end_process";
 	wxRemoveFile( end );
 	args << " -end_fname " << end.c_str();
 	
@@ -762,7 +762,7 @@ bool RecMusModel::Train( wxArrayPtrVoid params, AxProgressDlg *dlg )
 	wxString log = "\"" + wxGetApp().m_logDir + "/ngram.log\"";
 	args << " -log_fname " << log.c_str();
 	
-	wxString end = wxGetApp().m_workingDir + "end_process";
+	wxString end = wxGetApp().m_workingDir + "/end_process";
 	wxRemoveFile( end );
 	args << " -end_fname " << end.c_str();
 	
@@ -870,7 +870,7 @@ bool RecMusModel::Adapt( wxArrayPtrVoid params, AxProgressDlg *dlg )
 	wxString log = "\"" + wxGetApp().m_logDir + "/ngram.log\"";
 	args << " -log_fname " << log.c_str();
 	
-	wxString end = wxGetApp().m_workingDir + "end_process";
+	wxString end = wxGetApp().m_workingDir + "/end_process";
 	wxRemoveFile( end );
 	args << " -end_fname " << end.c_str();
 	
