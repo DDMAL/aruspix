@@ -35,9 +35,9 @@
 #include "wx/arrimpl.cpp"
 WX_DEFINE_OBJARRAY( ArrayOfMLFSymboles );
 
-WX_DEFINE_OBJARRAY( ArrayOfRecSymbols );
+WX_DEFINE_OBJARRAY( ArrayOfMLFWords );
 
-int SortRecSymbols( RecSymbol **first, RecSymbol **second )
+int SortMLFWords( MusMLFWord **first, MusMLFWord **second )
 {
     if ( (*first)->m_word < (*second)->m_word )
         return -1;
@@ -364,7 +364,7 @@ wxString MusMLFSymbolWP::GetLabel( )
 // MusFileOutputStream
 //----------------------------------------------------------------------------
 
-MusMLFOutput::MusMLFOutput( MusFile *file, wxString filename, wxString model_symbole_name ) :
+MusMLFOutput::MusMLFOutput( MusFile *file, wxString filename, MusMLFDictionary *dict, wxString model_symbole_name ) :
     MusFileOutputStream( file, filename )
 {
     m_filename = filename;
@@ -374,12 +374,12 @@ MusMLFOutput::MusMLFOutput( MusFile *file, wxString filename, wxString model_sym
 	m_writePosition = false;
 	m_staff = NULL;
 	m_model_symbole_name = model_symbole_name;
-	m_subfile = NULL;
+	wxASSERT_MSG( dict, "MusMLFOutput: dictionnary cannot be NULL");
+	m_dict = dict;
 }
 
-//MusMLFOutput::MusMLFOutput( MusFile *file, wxFile *wxfile, wxString filename, wxString model_symbole_name ) :
-//    MusFileOutputStream( file, wxfile )
-MusMLFOutput::MusMLFOutput( MusFile *file, int fd, wxString filename, wxString model_symbole_name ) :
+
+MusMLFOutput::MusMLFOutput( MusFile *file, int fd, wxString filename, MusMLFDictionary *dict,  wxString model_symbole_name ) :
 	MusFileOutputStream( file, fd )
 {
     m_filename = filename;
@@ -389,13 +389,12 @@ MusMLFOutput::MusMLFOutput( MusFile *file, int fd, wxString filename, wxString m
 	m_writePosition = false;
 	m_staff = NULL;
 	m_model_symbole_name = model_symbole_name;
-	m_subfile = NULL;
+	wxASSERT_MSG( dict, "MusMLFOutput: dictionnary cannot be NULL");
+	m_dict = dict;
 }
 
 MusMLFOutput::~MusMLFOutput()
 {
-	if ( m_subfile )
-		delete m_subfile;
 }
 
 // specific
@@ -482,6 +481,7 @@ MusStaff *MusMLFOutput::SplitSymboles( MusStaff *staff )
 	return nstaff;
 }
 
+/*
 void MusMLFOutput::LoadSymbolDictionary( wxString filename )
 {
 	wxTextFile file( filename );
@@ -518,7 +518,9 @@ void MusMLFOutput::LoadSymbolDictionary( wxString filename )
 		str = file.GetNextLine();
 	}
 }
+*/
 
+/*
 void MusMLFOutput::WriteSymbolDictionary( wxString filename )
 {
 	int i;
@@ -547,6 +549,7 @@ void MusMLFOutput::LoadSubFile()
 	subfile.Detach();
 	wxASSERT( m_subfile->Ok() );
 }
+*/
 
 void MusMLFOutput::StartLabel( )
 {
@@ -557,8 +560,8 @@ void MusMLFOutput::StartLabel( )
 		label = wxString::Format("\"*/%s_%03d.%d.%d.lab\"\n", m_shortname.c_str(), m_page_i + 1, m_staff_i, m_segment_i);
 	Write( label, label.Length() );
 	
-	if ( m_subfile )
-		m_subfile->Write( label.BeforeLast('.') + ".ali\"\n", label.Length() );
+	//if ( m_subfile )
+	//	m_subfile->Write( label.BeforeLast('.') + ".ali\"\n", label.Length() );
 	
 	m_symboles.Clear();
 
@@ -589,19 +592,21 @@ void MusMLFOutput::EndLabel( int offsets[], int end_points[] )
 			symbole << ( pos ) << " " << ( width ) << " "; // !!!!!!  VERIFIER !!!!!
 		}
 		// si verifier dans le dictionnaire, tenir jour la liste dans 
-		if ( m_dict.Index( symbole_label ) == wxNOT_FOUND )
+		// TO BE CHANGED
+		/*if ( m_dict->Index( symbole_label ) == wxNOT_FOUND )
 		{
-			m_dict.Add( symbole_label );
+			// IDEM m_dict.Add( symbole_label );
 			RecSymbol *s = new RecSymbol();
 			s->m_word = symbole_label;
 			s->m_hmm_symbol = symbole_label;
 			s->m_hmm_symbol.MakeLower();
 			s->m_states = m_symboles[i].GetNbOfStates();
 			this->m_dictSymbols.Add( s );
-		}
+		}*/
 		symbole << symbole_label << "\n";
 		Write( symbole, symbole.Length() );
 		// sous symbole avec position
+		/*
 		if ( m_subfile )
 		{
 			wxASSERT( offsets );
@@ -640,16 +645,13 @@ void MusMLFOutput::EndLabel( int offsets[], int end_points[] )
 				subsymbole << ( width * fact) << " " << ( next * fact) << " {s}\n";
 			 
 			m_subfile->Write( subsymbole, subsymbole.Length() );		
-		}
+		}*/
 	}
 	m_symboles.Clear();
 	m_segment_i++;
 
-	wxString label = ".\n";
-	Write( label, label.Length() );
-	
-	if ( m_subfile )
-		m_subfile->Write( label, label.Length() );	
+	wxString end_label = ".\n";
+	Write( end_label, end_label.Length() );
 }
 
 // copie le portee en convertissant les symboles de la clef courante vers Ut1
@@ -733,6 +735,7 @@ void MusMLFOutput::GetUt1( MusStaff *staff, MusElement *pelement, int *code, int
 	};
 }
 
+/*
 bool MusMLFOutput::ExportFile( MusFile *file, wxString filename )
 {
 	wxASSERT_MSG( file, "File cannot be NULL" );
@@ -742,7 +745,9 @@ bool MusMLFOutput::ExportFile( MusFile *file, wxString filename )
 	this->m_file = file;
 	return ExportFile();
 }
+*/
 
+/*
 bool MusMLFOutput::ExportFile( )
 {
 	wxASSERT_MSG( m_file, "File cannot be NULL" );
@@ -768,8 +773,9 @@ bool MusMLFOutput::ExportFile( )
 
     return true;
 }
+*/
 
-
+/*
 bool MusMLFOutput::WritePage( const MusPage *page, bool write_header )
 {
 	if ( write_header && m_addHeader )
@@ -793,7 +799,7 @@ bool MusMLFOutput::WritePage( const MusPage *page, bool write_header )
     return true;
 
 }
-
+*/
 
 // idem ExportFile() puis WritePage(), mais gere les segment de portee au moyen de imPage et les portee selon staff numbers
 bool MusMLFOutput::WritePage( const MusPage *page, wxString filename, ImPage *imPage, wxArrayInt *staff_numbers )
@@ -829,7 +835,8 @@ bool MusMLFOutput::WritePage( const MusPage *page, wxString filename, ImPage *im
 		delete m_staff;
 		m_staff = NULL;
     }
-	m_dictSymbols.Sort( SortRecSymbols );
+	// TO BE CHANGED
+	//m_dictSymbols.Sort( SortRecSymbols );
 
     return true;
 
@@ -1047,6 +1054,7 @@ bool MusMLFOutput::WriteSymbole(  MusSymbol *symbole )
 	return true;
 }
 
+/*
 void MusMLFOutput::WriteDictionary( wxString filename )
 {
 	int i;
@@ -1061,7 +1069,9 @@ void MusMLFOutput::WriteDictionary( wxString filename )
 	fdic.WriteString( wxString::Format( "SP_END {s}\n" ) );
 	stream.Close();
 }
+*/
 	
+/*
 void MusMLFOutput::WriteStatesPerSymbol( wxString filename )
 {
 	int i;
@@ -1094,7 +1104,9 @@ void MusMLFOutput::WriteStatesPerSymbol( wxString filename )
 	fdic_htk.WriteString( wxString::Format( "{s} %02d\n", 4 ) );
 	stream_htk.Close();
 }
+*/
 
+/*
 void MusMLFOutput::WriteHMMSymbols( wxString filename )
 {
 	int i;
@@ -1107,6 +1119,7 @@ void MusMLFOutput::WriteHMMSymbols( wxString filename )
 	fdic.WriteString( wxString::Format( "{s}\n" ) );
 	stream.Close();
 }
+*/
 
 // WDR: handler implementations for MusMLFOutput
 
@@ -1115,14 +1128,14 @@ void MusMLFOutput::WriteHMMSymbols( wxString filename )
 // MusMLFOutputWP
 //----------------------------------------------------------------------------
 
-MusMLFOutputWP::MusMLFOutputWP( MusFile *file, wxString filename, wxString model_symbole_name ) :
-    MusMLFOutput( file, filename, model_symbole_name )
+MusMLFOutputWP::MusMLFOutputWP( MusFile *file, wxString filename, MusMLFDictionary *dict, wxString model_symbole_name ) :
+    MusMLFOutput( file, filename, dict, model_symbole_name )
 {
 }
 
 
-MusMLFOutputWP::MusMLFOutputWP( MusFile *file, int fd, wxString filename, wxString model_symbole_name ) :
-	MusMLFOutput( file, fd, filename, model_symbole_name )
+MusMLFOutputWP::MusMLFOutputWP( MusFile *file, int fd, wxString filename, MusMLFDictionary *dict, wxString model_symbole_name ) :
+	MusMLFOutput( file, fd, filename, dict, model_symbole_name )
 {
 }
 

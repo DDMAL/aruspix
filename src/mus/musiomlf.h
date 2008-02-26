@@ -46,26 +46,42 @@ class AxProgressDlg;
 #define NOTE_LIGATURE 4
 
 
-class RecSymbol;
-WX_DECLARE_OBJARRAY(RecSymbol, ArrayOfRecSymbols);
+class MusMLFWord;
+WX_DECLARE_OBJARRAY(MusMLFWord, ArrayOfMLFWords);
 
 // WDR: class declarations
 
 //----------------------------------------------------------------------------
-// RecSymbol
+// MusMLFWord
 //----------------------------------------------------------------------------
 
-class RecSymbol: public wxObject
+class MusMLFWord: public wxObject
 {
 public:
     // constructors and destructors
-    RecSymbol() {};
-    ~RecSymbol() {};
+    MusMLFWord() {};
+    ~MusMLFWord() {};
 
 public:
 	wxString m_word;
 	wxString m_hmm_symbol;
     int m_states;
+};
+
+
+//----------------------------------------------------------------------------
+// MusMLFDictionary
+//----------------------------------------------------------------------------
+
+class MusMLFDictionary: public wxObject
+{
+public:
+    // constructors and destructors
+    MusMLFDictionary() {};
+    ~MusMLFDictionary() {};
+
+public:
+	ArrayOfMLFWords m_dict;
 };
 
 
@@ -140,20 +156,20 @@ class MusMLFOutput: public MusFileOutputStream
 {
 public:
     // constructors and destructors
-    MusMLFOutput( MusFile *file, wxString filename, wxString model_symbole_name = "MusMLFSymbol" );
-	MusMLFOutput( MusFile *file, int fd, wxString filename, wxString model_symbole_name = "MusMLFSymbol" );
-	//MusMLFOutput( MusFile *file, wxFile *wxfile, wxString filename, wxString model_symbole_name = "MusMLFSymbol" );
+    MusMLFOutput( MusFile *file, wxString filename, MusMLFDictionary *dict, wxString model_symbole_name = "MusMLFSymbol" );
+	MusMLFOutput( MusFile *file, int fd, wxString filename,  MusMLFDictionary *dict, wxString model_symbole_name = "MusMLFSymbol" );
     virtual ~MusMLFOutput();
     
     // WDR: method declarations for MusMLFOutput
-	bool ExportFile( MusFile *file, wxString filename);	// replace  musfile set in the constructor
-														// and export it
+	//bool ExportFile( MusFile *file, wxString filename);	// replace  musfile set in the constructor
+														// and export by calling ExportFile
 														// allow exportation of several files in one mlf
-    virtual bool ExportFile( );
-    virtual bool WritePage( const MusPage *page, bool write_header = false );
+    //virtual bool ExportFile( );
+    //virtual bool WritePage( const MusPage *page, bool write_header = false );
 	bool WritePage( const MusPage *page, wxString filename, ImPage *imPage,
 		wxArrayInt *staff_numbers = NULL ); // manage segments through imPage and staves throuhg staff_numbers
 											// write all staves if staff_numbers == NULL
+											
     virtual bool WriteStaff( const MusStaff *staff, int offsets[] = NULL, int split_points[] = NULL, int end_points[] = NULL );
     virtual bool WriteNote( MusNote *note );
     virtual bool WriteSymbole( MusSymbol *symbole );
@@ -162,27 +178,26 @@ public:
 	static MusStaff *GetUt1( MusStaff *staff, bool inPlace = false );
 	static void GetUt1( MusStaff *staff, MusElement *pelement, int *code, int *oct);
 	// charge le dictionnaire ( .dic )
-	void LoadSymbolDictionary( wxString filename );
-	void WriteSymbolDictionary( wxString filename );
+	//void LoadSymbolDictionary( wxString filename );
+	//void WriteSymbolDictionary( wxString filename );
 	// si writePosition, charge .xml et calcul la largeur
-	//void LoadTypes( wxString filename );
-	void CreateSubFile(); // open a subfile xxxp to write subsymbols with position
-	void LoadSubFile(); // idem but with cache
+	//void CreateSubFile(); // open a subfile xxxp to write subsymbols with position
+	//void LoadSubFile(); // idem but with cache
 	// output methods
-	void WriteDictionary( wxString filename );
-	void WriteStatesPerSymbol( wxString filename );
-	void WriteHMMSymbols( wxString filename );
+	//void WriteDictionary( wxString filename );
+	//void WriteStatesPerSymbol( wxString filename );
+	//void WriteHMMSymbols( wxString filename );
 	virtual void StartLabel( );
 	virtual void EndLabel( int offsets[] = NULL, int end_points[] = NULL );
 	// access
-	ArrayOfMLFSymboles *GetSymbols( ) { return &m_symboles; };
+	//ArrayOfMLFSymboles *GetSymbols( ) { return &m_symboles; };
     
 protected:
     // WDR: member variable declarations for MusMLFOutput
     wxString m_filename;
-	wxFileOutputStream *m_subfile;
+	//wxFileOutputStream *m_subfile;
 	// specific
-	ArrayOfMLFSymboles m_symboles; // tableau des symbole
+	ArrayOfMLFSymboles m_symboles; // symbol list
 	//MLFTypes m_types; // tableau des largeur - par type, uniquement avec MusMLFSymbol
 	wxString m_model_symbole_name;
 	wxString m_shortname;
@@ -195,9 +210,9 @@ protected:
 
 public:
 	bool m_addPageNo;
-	wxArrayString m_loadedDict; // symboles charge avec LoadDictionnary
-	wxArrayString m_dict; // symboles de l'exportation
-	ArrayOfRecSymbols m_dictSymbols; // symboles de l'exportation, version complete avec phone et position. m_dict allows fast access
+	//wxArrayString m_loadedDict; // symboles charge avec LoadDictionnary
+	//wxArrayString m_dict; // symboles de l'exportation
+	MusMLFDictionary *m_dict; // symboles de l'exportation, version complete avec phone et position. m_dict allows fast access
 	bool m_writePosition; // ecrit les position dans MLF, uniquement avec MLFSymbol_
 
 
@@ -216,8 +231,8 @@ class MusMLFOutputWP: public MusMLFOutput
 {
 public:
     // constructors and destructors
-    MusMLFOutputWP( MusFile *file, wxString filename, wxString model_symbole_name = "MusMLFSymbolWP" );
-	MusMLFOutputWP( MusFile *file, int fd, wxString filename, wxString model_symbole_name = "MusMLFSymbolWP" );
+    MusMLFOutputWP( MusFile *file, wxString filename, MusMLFDictionary *dict, wxString model_symbole_name = "MusMLFSymbolWP" );
+	MusMLFOutputWP( MusFile *file, int fd, wxString filename, MusMLFDictionary *dict, wxString model_symbole_name = "MusMLFSymbolWP" );
     virtual ~MusMLFOutputWP();
     
     // WDR: method declarations for MusMLFOutputWP
