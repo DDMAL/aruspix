@@ -72,7 +72,7 @@
 #define ENV_BASE_ID 30000 // base id for environment menu items
 #define ENV_MAX 50 // max of environments (used for RANGE_ID event)
 
-#define MFC "mfc01"
+#define MFC "mfc"
 
 class AxFrame;
 

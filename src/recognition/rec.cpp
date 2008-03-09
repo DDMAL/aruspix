@@ -826,7 +826,7 @@ void RecEnv::OnExportAxmus( wxCommandEvent &event )
         model.Save();
 }
 
-#define META_BATCH3
+//#define META_BATCH3
 
 void RecEnv::OnExportAxtyp( wxCommandEvent &event )
 {
