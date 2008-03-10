@@ -1,5 +1,119 @@
 // !$*UTF8*$!
 {
+	4DF692A40D496E28007DE3CF /* mldecoderpage.cpp */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1035, 8666}}";
+			sepNavSelRange = "{6835, 8}";
+			sepNavVisRect = "{{0, 1204}, {1035, 589}}";
+		};
+	};
+	4DF692A50D496E28007DE3CF /* mldecoderpage.h */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1246, 1778}}";
+			sepNavSelRange = "{4079, 0}";
+			sepNavVisRect = "{{0, 669}, {1246, 913}}";
+		};
+	};
+	4DF692A60D496E28007DE3CF /* mldecoderstaff.cpp */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1246, 4732}}";
+			sepNavSelRange = "{3272, 583}";
+			sepNavVisRect = "{{0, 926}, {1246, 913}}";
+		};
+	};
+	4DF692A70D496E28007DE3CF /* mldecoderstaff.h */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1246, 1834}}";
+			sepNavSelRange = "{2303, 0}";
+			sepNavVisRect = "{{0, 700}, {1246, 913}}";
+		};
+	};
+	570E04E40D7F5B71007E7BCA /* eval */ = {
+		activeExec = 0;
+		executables = (
+			570E04EE0D7F5B71007E7BCA /* eval */,
+		);
+	};
+	570E04EE0D7F5B71007E7BCA /* eval */ = {
+		isa = PBXExecutable;
+		activeArgIndex = 0;
+		activeArgIndices = (
+			YES,
+			YES,
+			YES,
+			NO,
+			YES,
+		);
+		argumentStrings = (
+			"-print_by_book -print_by_page ",
+			"-results_fname test_a_02/output",
+			"-wrdtrns_fname test_a_02/mlf ",
+			"-lex_dict_fname ac40_02/dic ",
+			"-lex_dict_fname dic ",
+		);
+		autoAttachOnCrash = 1;
+		configStateDict = {
+			"PBXLSLaunchAction-0" = {
+				PBXLSLaunchAction = 0;
+				PBXLSLaunchStartAction = 1;
+				PBXLSLaunchStdioStyle = 2;
+				PBXLSLaunchStyle = 0;
+				class = PBXLSRunLaunchConfig;
+				displayName = "Executable Runner";
+				identifier = com.apple.Xcode.launch.runConfig;
+				remoteHostInfo = "";
+				startActionInfo = "";
+			};
+		};
+		customDataFormattersEnabled = 1;
+		debuggerPlugin = GDBDebugging;
+		disassemblyDisplayState = 0;
+		dylibVariantSuffix = "";
+		enableDebugStr = 1;
+		environmentEntries = (
+		);
+		executableSystemSymbolLevel = 0;
+		executableUserSymbolLevel = 0;
+		libgmallocEnabled = 0;
+		name = eval;
+		savedGlobals = {
+		};
+		sourceDirectories = (
+		);
+		startupPath = /Users/puginl/models02;
+		variableFormatDictionary = {
+		};
+	};
+	570E05020D7F5D3D007E7BCA /* Eval.cpp */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1246, 1414}}";
+			sepNavSelRange = "{3214, 0}";
+			sepNavVisRect = "{{0, 501}, {1246, 913}}";
+			sepNavWindowFrame = "{{15, 131}, {1285, 1042}}";
+		};
+	};
+	570E05EC0D805C73007E7BCA /* AruspixHMM.cpp */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1246, 12404}}";
+			sepNavSelRange = "{21221, 0}";
+			sepNavVisRect = "{{0, 11491}, {1246, 913}}";
+		};
+	};
+	570E06130D80607F007E7BCA /* Eval.cpp:86 */ = {
+		isa = PBXFileBreakpoint;
+		actions = (
+		);
+		breakpointStyle = 0;
+		continueAfterActions = 0;
+		delayBeforeContinue = 0;
+		fileReference = 570E05020D7F5D3D007E7BCA /* Eval.cpp */;
+		functionName = "main()";
+		hitCount = 1;
+		lineNumber = 86;
+		location = evald;
+		modificationTime = 226521647.22103;
+		state = 1;
+	};
 	57219A440B8377600033F495 /* adapt */ = {
 		activeExec = 0;
 		executables = (
@@ -49,26 +163,24 @@
 		};
 	};
 	57219A550B8378BA0033F495 /* Adapter.cpp */ = {
+		isa = PBXFileReference;
+		fileEncoding = 30;
+		lastKnownFileType = sourcecode.cpp.cpp;
+		name = Adapter.cpp;
+		path = /Users/puginl/projects/aruspix_gamera.0/src/torch/Adapter.cpp;
+		sourceTree = "<absolute>";
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1236, 3962}}";
-			sepNavSelRange = "{9632, 0}";
-			sepNavVisRect = "{{0, 2572}, {1236, 994}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1246, 3822}}";
+			sepNavSelRange = "{201, 23}";
+			sepNavVisRect = "{{0, 2909}, {1246, 913}}";
 			sepNavWindowFrame = "{{-1466, 39}, {1275, 1123}}";
-		};
-	};
-	57219D490B8A2D6A0033F495 /* AruspixHMM.cpp */ = {
-		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1117, 12404}}";
-			sepNavSelRange = "{11848, 0}";
-			sepNavVisRect = "{{0, 5633}, {1117, 818}}";
-			sepNavWindowFrame = "{{14, 55}, {1275, 1123}}";
 		};
 	};
 	57219D4A0B8A2D6A0033F495 /* AruspixHMM.h */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1236, 2058}}";
-			sepNavSelRange = "{3002, 0}";
-			sepNavVisRect = "{{0, 603}, {1236, 994}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1246, 2058}}";
+			sepNavSelRange = "{3350, 0}";
+			sepNavVisRect = "{{0, 1136}, {1246, 913}}";
 			sepNavWindowFrame = "{{-1466, 39}, {1275, 1123}}";
 		};
 	};
@@ -83,10 +195,10 @@
 		functionName = "main()";
 		hitCount = 1;
 		lineNumber = 215;
-		modificationTime = 201474948.395745;
+		modificationTime = 226521758.774627;
 		state = 1;
 	};
-	57639AF60B8B5885004B9E89 /* Adapter.cpp:251 */ = {
+	57639AF60B8B5885004B9E89 /* Adapter.cpp:248 */ = {
 		isa = PBXFileBreakpoint;
 		actions = (
 		);
@@ -96,11 +208,11 @@
 		fileReference = 57219A550B8378BA0033F495 /* Adapter.cpp */;
 		functionName = "main()";
 		hitCount = 1;
-		lineNumber = 251;
-		modificationTime = 201474948.384538;
+		lineNumber = 248;
+		modificationTime = 226521758.77107;
 		state = 1;
 	};
-	57639B0F0B8B5C5D004B9E89 /* Adapter.cpp:269 */ = {
+	57639B0F0B8B5C5D004B9E89 /* Adapter.cpp:266 */ = {
 		isa = PBXFileBreakpoint;
 		actions = (
 		);
@@ -110,11 +222,11 @@
 		fileReference = 57219A550B8378BA0033F495 /* Adapter.cpp */;
 		functionName = "main()";
 		hitCount = 1;
-		lineNumber = 269;
-		modificationTime = 201474948.362246;
+		lineNumber = 266;
+		modificationTime = 226521758.773735;
 		state = 1;
 	};
-	57639BAA0B8B9F19004B9E89 /* Adapter.cpp:269 */ = {
+	57639BAA0B8B9F19004B9E89 /* Adapter.cpp:266 */ = {
 		isa = PBXFileBreakpoint;
 		actions = (
 		);
@@ -124,11 +236,11 @@
 		fileReference = 57219A550B8378BA0033F495 /* Adapter.cpp */;
 		functionName = "main()";
 		hitCount = 1;
-		lineNumber = 269;
-		modificationTime = 201474948.306219;
+		lineNumber = 266;
+		modificationTime = 226521758.766298;
 		state = 1;
 	};
-	57639BB50B8B9F93004B9E89 /* Adapter.cpp:176 */ = {
+	57639BB50B8B9F93004B9E89 /* Adapter.cpp:175 */ = {
 		isa = PBXFileBreakpoint;
 		actions = (
 		);
@@ -138,11 +250,11 @@
 		fileReference = 57219A550B8378BA0033F495 /* Adapter.cpp */;
 		functionName = "main()";
 		hitCount = 1;
-		lineNumber = 176;
-		modificationTime = 201474948.313515;
+		lineNumber = 175;
+		modificationTime = 226521758.775504;
 		state = 1;
 	};
-	57639BB80B8BA011004B9E89 /* Adapter.cpp:269 */ = {
+	57639BB80B8BA011004B9E89 /* Adapter.cpp:266 */ = {
 		isa = PBXFileBreakpoint;
 		actions = (
 		);
@@ -152,11 +264,11 @@
 		fileReference = 57219A550B8378BA0033F495 /* Adapter.cpp */;
 		functionName = "main()";
 		hitCount = 1;
-		lineNumber = 269;
-		modificationTime = 201474948.354957;
+		lineNumber = 266;
+		modificationTime = 226521758.770174;
 		state = 1;
 	};
-	57639DF30B8D2201004B9E89 /* Adapter.cpp:257 */ = {
+	57639DF30B8D2201004B9E89 /* Adapter.cpp:254 */ = {
 		isa = PBXFileBreakpoint;
 		actions = (
 		);
@@ -166,11 +278,11 @@
 		fileReference = 57219A550B8378BA0033F495 /* Adapter.cpp */;
 		functionName = "main()";
 		hitCount = 1;
-		lineNumber = 257;
-		modificationTime = 201474948.358463;
+		lineNumber = 254;
+		modificationTime = 226521758.771942;
 		state = 1;
 	};
-	57639EF40B8E20D4004B9E89 /* Decoder.cpp:224 */ = {
+	57639EF40B8E20D4004B9E89 /* Decoder.cpp:215 */ = {
 		isa = PBXFileBreakpoint;
 		actions = (
 		);
@@ -180,8 +292,8 @@
 		fileReference = A51FEC180A02C1C900ACE377 /* Decoder.cpp */;
 		functionName = "main()";
 		hitCount = 1;
-		lineNumber = 224;
-		modificationTime = 201474948.309797;
+		lineNumber = 215;
+		modificationTime = 226521758.768309;
 		state = 1;
 	};
 	576ED8350AB223D2007F2844 /* Common.cpp */ = {
@@ -330,16 +442,17 @@
 		name = "Project Breakpoints";
 		objects = (
 			572B38E00AC8891900428B98 /* Init.cpp:215 */,
-			57639AF60B8B5885004B9E89 /* Adapter.cpp:251 */,
-			57639B0F0B8B5C5D004B9E89 /* Adapter.cpp:269 */,
-			57639BAA0B8B9F19004B9E89 /* Adapter.cpp:269 */,
-			57639BB50B8B9F93004B9E89 /* Adapter.cpp:176 */,
-			57639BB80B8BA011004B9E89 /* Adapter.cpp:269 */,
-			57639DF30B8D2201004B9E89 /* Adapter.cpp:257 */,
-			57639EF40B8E20D4004B9E89 /* Decoder.cpp:224 */,
-			57EA3F290C023FF600414247 /* NGram.cpp:105 */,
-			57EA3F310C02402800414247 /* NGram.cpp:107 */,
-			57EA3F360C02405400414247 /* NGram.cpp:104 */,
+			57639AF60B8B5885004B9E89 /* Adapter.cpp:248 */,
+			57639B0F0B8B5C5D004B9E89 /* Adapter.cpp:266 */,
+			57639BAA0B8B9F19004B9E89 /* Adapter.cpp:266 */,
+			57639BB50B8B9F93004B9E89 /* Adapter.cpp:175 */,
+			57639BB80B8BA011004B9E89 /* Adapter.cpp:266 */,
+			57639DF30B8D2201004B9E89 /* Adapter.cpp:254 */,
+			57639EF40B8E20D4004B9E89 /* Decoder.cpp:215 */,
+			57EA3F290C023FF600414247 /* NGram.cpp:101 */,
+			57EA3F310C02402800414247 /* NGram.cpp:103 */,
+			57EA3F360C02405400414247 /* NGram.cpp:100 */,
+			570E06130D80607F007E7BCA /* Eval.cpp:86 */,
 		);
 	};
 	57A0BC770ABF1901001825D5 /* trainer */ = {
@@ -472,7 +585,7 @@
 		isa = PBXCodeSenseManager;
 		indexTemplatePath = "";
 	};
-	57EA3F290C023FF600414247 /* NGram.cpp:105 */ = {
+	57EA3F290C023FF600414247 /* NGram.cpp:101 */ = {
 		isa = PBXFileBreakpoint;
 		actions = (
 		);
@@ -482,12 +595,11 @@
 		fileReference = A59120070A1278F100D64611 /* NGram.cpp */;
 		functionName = "main()";
 		hitCount = 1;
-		lineNumber = 105;
-		location = ngramd;
-		modificationTime = 201474930.332998;
+		lineNumber = 101;
+		modificationTime = 226521758.772836;
 		state = 1;
 	};
-	57EA3F310C02402800414247 /* NGram.cpp:107 */ = {
+	57EA3F310C02402800414247 /* NGram.cpp:103 */ = {
 		isa = PBXFileBreakpoint;
 		actions = (
 		);
@@ -497,12 +609,11 @@
 		fileReference = A59120070A1278F100D64611 /* NGram.cpp */;
 		functionName = "main()";
 		hitCount = 1;
-		lineNumber = 107;
-		location = ngramd;
-		modificationTime = 201474930.335582;
+		lineNumber = 103;
+		modificationTime = 226521758.769231;
 		state = 1;
 	};
-	57EA3F360C02405400414247 /* NGram.cpp:104 */ = {
+	57EA3F360C02405400414247 /* NGram.cpp:100 */ = {
 		isa = PBXFileBreakpoint;
 		actions = (
 		);
@@ -512,30 +623,31 @@
 		fileReference = A59120070A1278F100D64611 /* NGram.cpp */;
 		functionName = "main()";
 		hitCount = 1;
-		lineNumber = 104;
-		location = ngramd;
-		modificationTime = 201474934.817418;
+		lineNumber = 100;
+		modificationTime = 226521758.767378;
 		state = 1;
 	};
 	A51FEBE20A02C0F500ACE377 /* Project object */ = {
 		activeBuildConfigurationName = Debug;
-		activeExecutable = 57219A4D0B8377610033F495 /* adapt */;
-		activeTarget = 57219A440B8377600033F495 /* adapt */;
+		activeExecutable = 570E04EE0D7F5B71007E7BCA /* eval */;
+		activeTarget = 570E04E40D7F5B71007E7BCA /* eval */;
 		addToTargets = (
 			57219A440B8377600033F495 /* adapt */,
+			570E04E40D7F5B71007E7BCA /* eval */,
 		);
 		breakpoints = (
 			572B38E00AC8891900428B98 /* Init.cpp:215 */,
-			57639AF60B8B5885004B9E89 /* Adapter.cpp:251 */,
-			57639B0F0B8B5C5D004B9E89 /* Adapter.cpp:269 */,
-			57639BAA0B8B9F19004B9E89 /* Adapter.cpp:269 */,
-			57639BB50B8B9F93004B9E89 /* Adapter.cpp:176 */,
-			57639BB80B8BA011004B9E89 /* Adapter.cpp:269 */,
-			57639DF30B8D2201004B9E89 /* Adapter.cpp:257 */,
-			57639EF40B8E20D4004B9E89 /* Decoder.cpp:224 */,
-			57EA3F290C023FF600414247 /* NGram.cpp:105 */,
-			57EA3F310C02402800414247 /* NGram.cpp:107 */,
-			57EA3F360C02405400414247 /* NGram.cpp:104 */,
+			57639AF60B8B5885004B9E89 /* Adapter.cpp:248 */,
+			57639B0F0B8B5C5D004B9E89 /* Adapter.cpp:266 */,
+			57639BAA0B8B9F19004B9E89 /* Adapter.cpp:266 */,
+			57639BB50B8B9F93004B9E89 /* Adapter.cpp:175 */,
+			57639BB80B8BA011004B9E89 /* Adapter.cpp:266 */,
+			57639DF30B8D2201004B9E89 /* Adapter.cpp:254 */,
+			57639EF40B8E20D4004B9E89 /* Decoder.cpp:215 */,
+			57EA3F290C023FF600414247 /* NGram.cpp:101 */,
+			57EA3F310C02402800414247 /* NGram.cpp:103 */,
+			57EA3F360C02405400414247 /* NGram.cpp:100 */,
+			570E06130D80607F007E7BCA /* Eval.cpp:86 */,
 		);
 		breakpointsGroup = 57A0BC390ABF0606001825D5 /* XCBreakpointsBucket */;
 		codeSenseManager = 57B8FCD40AA64AD0007C93F6 /* Code sense */;
@@ -545,6 +657,7 @@
 			576ED8490AB223D8007F2844 /* init */,
 			57A0BC800ABF1901001825D5 /* trainer */,
 			57219A4D0B8377610033F495 /* adapt */,
+			570E04EE0D7F5B71007E7BCA /* eval */,
 		);
 		perUserDictionary = {
 			"PBXConfiguration.PBXBreakpointsDataSource.v1:1CA1AED706398EBD00589147" = {
@@ -641,17 +754,8 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 225139208;
-			PBXWorkspaceStateSaveDate = 225139208;
-		};
-		perUserProjectItems = {
-			579F65CD0D6B7354000BF8F9 /* PBXTextBookmark */ = 579F65CD0D6B7354000BF8F9 /* PBXTextBookmark */;
-			579F65CE0D6B7354000BF8F9 /* PBXTextBookmark */ = 579F65CE0D6B7354000BF8F9 /* PBXTextBookmark */;
-			579F65CF0D6B7354000BF8F9 /* PBXTextBookmark */ = 579F65CF0D6B7354000BF8F9 /* PBXTextBookmark */;
-			579F65D00D6B7354000BF8F9 /* PBXTextBookmark */ = 579F65D00D6B7354000BF8F9 /* PBXTextBookmark */;
-			579F65D10D6B7354000BF8F9 /* PBXTextBookmark */ = 579F65D10D6B7354000BF8F9 /* PBXTextBookmark */;
-			579F65D20D6B7354000BF8F9 /* PBXTextBookmark */ = 579F65D20D6B7354000BF8F9 /* PBXTextBookmark */;
-			579F65D30D6B7354000BF8F9 /* PBXTextBookmark */ = 579F65D30D6B7354000BF8F9 /* PBXTextBookmark */;
+			PBXPerProjectTemplateStateSaveDate = 226447540;
+			PBXWorkspaceStateSaveDate = 226447540;
 		};
 		sourceControlManager = 57B8FCD30AA64AD0007C93F6 /* Source Control */;
 		userBuildSettings = {
@@ -665,9 +769,9 @@
 	};
 	A51FEC180A02C1C900ACE377 /* Decoder.cpp */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1236, 3122}}";
-			sepNavSelRange = "{8377, 90}";
-			sepNavVisRect = "{{0, 2128}, {1236, 994}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1246, 2996}}";
+			sepNavSelRange = "{7149, 0}";
+			sepNavVisRect = "{{0, 2083}, {1246, 913}}";
 			sepNavWindowFrame = "{{116, 105}, {1156, 947}}";
 		};
 	};
@@ -693,9 +797,9 @@
 	};
 	A59120050A1278F100D64611 /* LMNGramEntry.cpp */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1117, 4956}}";
-			sepNavSelRange = "{4186, 0}";
-			sepNavVisRect = "{{0, 1944}, {1117, 818}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1060, 4956}}";
+			sepNavSelRange = "{5736, 53}";
+			sepNavVisRect = "{{0, 2708}, {1060, 254}}";
 		};
 	};
 	A59120060A1278F100D64611 /* LMNGramEntry.h */ = {
@@ -707,10 +811,10 @@
 	};
 	A59120070A1278F100D64611 /* NGram.cpp */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1060, 1722}}";
-			sepNavSelRange = "{3389, 0}";
-			sepNavVisRect = "{{0, 1184}, {1060, 254}}";
-			sepNavWindowFrame = "{{434, 149}, {1156, 947}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1117, 1582}}";
+			sepNavSelRange = "{3042, 0}";
+			sepNavVisRect = "{{0, 764}, {1117, 818}}";
+			sepNavWindowFrame = "{{246, 176}, {1156, 947}}";
 		};
 	};
 }

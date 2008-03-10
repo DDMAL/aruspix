@@ -291,6 +291,8 @@ void CalcWinFeatures(const imImage* image, float *features, int position_v, int 
 
 */
 
+/*
+
 // features count per window - used for memory allocation 
 // must be changed if function is modified
 #define FEATURES_COUNT 7
@@ -399,7 +401,7 @@ void CalcWinFeatures(const imImage* image, float *features, int position_v, int 
 	// area (without lines)
 	int* area = (int*)malloc(region_count*sizeof(int));
 	memset( area, 0, region_count*sizeof(int));
-	imAnalyzeMeasureArea( imRegions, area, region_count );
+	imAnalyzeMeasureArea( imRegions, area );
 	
 	int tot_area = 0;
 	int max_area = 0;
@@ -448,7 +450,7 @@ void CalcWinFeatures(const imImage* image, float *features, int position_v, int 
 	{
 		int* forground = (int*)malloc(region_count*sizeof(int));
 		memset( forground, 0, region_count*sizeof(int));
-		imAnalyzeMeasureArea( imRegions, forground, region_count );
+		imAnalyzeMeasureArea( imRegions, forground );
 
 		int max_forground = 0;
 		for (i = 0; i < region_count; i++)
@@ -471,7 +473,7 @@ void CalcWinFeatures(const imImage* image, float *features, int position_v, int 
 	{	
 		int* background = (int*)malloc(region_count*sizeof(int));
 		memset( background, 0, region_count*sizeof(int));
-		imAnalyzeMeasureArea( imRegions, background, region_count );
+		imAnalyzeMeasureArea( imRegions, background );
 
 		int min_background = image->width * image->height;
 		for (i = 0; i < region_count; i++)
@@ -486,152 +488,94 @@ void CalcWinFeatures(const imImage* image, float *features, int position_v, int 
 
 	imImageDestroy( imRegions );
 	imImageDestroy( negate );
+}
 
+*/
+
+// features count per window - used for memory allocation 
+// must be changed if function is modified
+#define FEATURES_COUNT 8
+#define FEATURE_LINES 7
+
+// 01
+// 02
+// 10 with biggest black without line removal
+// 11 with masked area (as in origninal)
+
+//#define STAFF_HEIGHT 180
+//#define STAFF 100
+
+// fonction d'extration de caracteristique par fenetres
+void CalcWinFeatures(const imImage* image, float *features, int position_v, int height, int width )
+{
 	
-	// 11
-	/*
-	// marge verticale vers le bas contient aussi l'espace pour la ligne ( height / 4 ) et le decalage maximal (CORRELATION_HEIGHT)
- 	// à optimiser, calcul pas necessaire à chaque passage ??? height est identique sur la portee ?? sur la page ??
-	imImage *imMargins = imImageCreate( image->width, image->height + CORRELATION_HEIGHT + height / 4, 
-        image->color_space, image->data_type );
-    if ( !imMargins )
-        return;
-	imImageClear( imMargins );
-	// debug1
-	//imImage *writeMask = imImageCreate( image->width, image->height + CORRELATION_HEIGHT + height / 4, 
-    //    IM_GRAY, image->data_type );
-	//imbyte *writeMaskBuf = (imbyte*)writeMask->data[0];
-
-    imProcessAddMargins( image, imMargins, 0, 0 );
-
-    imRegions = imImageCreate(imMargins->width, imMargins->height, IM_GRAY, IM_USHORT);
-    region_count = imAnalyzeFindRegions ( imMargins, imRegions, 8, 1 );
-
-	// image de sous-fenetres
-    imImage *imLine = imImageCreate( imMargins->width, height / 4 + 2, 
-        imMargins->color_space, imMargins->data_type );
-    if ( !imLine )
-	{	
-		imImageDestroy( imMargins );
-		imImageDestroy( imRegions );
-		return;
-	}
-
-	int *mask = (int*)malloc( imLine->height * sizeof( int ));
-	//mfc8
-	int m_size = 4;
-	//mfc9
-	//int m_size = 3;
-	//mfc10
-	//int m_size = 2;
-	for (int y = 0; y < imLine->height; y++)
+	if ( width > ( STAFF / 8 ) )
 	{
-		if ( y < imLine->height / 2)
-			mask[y] = y / m_size + 1;
-		else
-			mask[y] = mask[imLine->height - 1 - y];
+		//wxLogDebug( "Staff width larger than half staff space" );
+		width = STAFF / 8;
 	}
-	if ( imLine->height % 2 )
-		mask[imLine->height / 2] = mask[imLine->height / 2 - 1];
-
-	int margins_offset;
-	int rows;
-	imbyte *marginsBuf = (imbyte*)imMargins->data[0];
-	imbyte *lineBuf = (imbyte*)imLine->data[0];
-	// every line
-	int zoom_height = 0;
-	int sum = 0;
-	for (int l = 0; l < 8; l++)
-	{
-		imImageClear( imLine );
-		margins_offset = pos[l];
-		line_offset = 0;
-		rows = height / 4 + 2;
-		if ( pos[l] < 0 ) // depassement de l'image
-		{
-			margins_offset = 0;
-			line_offset -= pos[l];
-			rows += pos[l]; // reduire le nombre de lignes à copier
-			if ( rows < 0 ) // impossible si < 0;
-				continue;
-		}
-		memcpy( lineBuf + line_offset * imMargins->width ,
-			marginsBuf + margins_offset * imMargins->width,
-			rows * imMargins->width );
-
-		//int sum = 0;
-		for (int y = 0; y < imLine->height; y++)
-		{
-			zoom_height += mask[y];
-	 		for (int x = 0; x < imLine->width; x++)
-			{
-				int offset = y * imLine->width + x;
-				sum += lineBuf[ offset ] * mask[y];
-
-				// debug1
-				//int val = lineBuf[ offset ];
-				//lineBuf[ offset ] = val * mask[y];
-			}
-		}
-
-		// debug1
-		//memcpy( writeMaskBuf + margins_offset * imMargins->width, 
-		//	lineBuf + line_offset * imMargins->width,
-		//	rows * imMargins->width );
-
-		// mfc4
-		//features[l+6] = float(sum) / float(tot_area);
-		// mfc5
-		//features[l+6] = float(sum) / float(image->width * image->height);
-
-		// **********
-		//wxString filename = "D:/line";
-		//filename << "." << l <<".tif";
-		//int error;
-	    //imFile *ifile = imFileNew( filename.c_str(), "TIFF", &error);
-		//if (error == IM_ERR_NONE)
-		//{
-		//	imFileSetInfo( ifile, "RLE" ); // LZW Unisys par defaut
-		//	error = imFileSaveImage( ifile, imLine );
-		//	imFileClose(ifile);
-		//}
-		// ***********
-
-	    //imImage *imLineRegions = imImageCreate(imLine->width, imLine->height, IM_GRAY, IM_USHORT);
-		//region_count = imAnalyzeFindRegions ( imLine, imLineRegions, 8, 1 );
-
-		// area
-		//int* area = (int*)malloc(region_count*sizeof(int));
-		//memset( area, 0, region_count*sizeof(int));
-		//imAnalyzeMeasureArea( imLineRegions, area );
-		//int sum = 0;
-		//for (i = 0; i < region_count; i++)
-		//	sum += area[i];
-		//features[2*l+2] = (float)sum /(imLine->width * imLine->height);
-
-		//imImageDestroy( imLineMargins );
-		//imImageDestroy( imLineRegions );
-		//free( area );
-
-
-	}
-	features[1] = (float)sum /(image->width * zoom_height); // 11
-
-	// debug1
-	//wxString writeMSTr;
-	//writeMSTr = wxString::Format("%s%05d%s", "D:/out/test" , idxx , ".tif");
-	//idxx++;
-	//int error;
-	//imFile *ifile = imFileNew( writeMSTr.c_str(), "TIFF", &error);
-	//error = imFileSaveImage( ifile, writeMask );
-	//imFileClose(ifile);
-	//imImageDestroy( writeMask );
 	
-	free(mask);
-	imImageDestroy( imMargins );
-	imImageDestroy( imLine );
-	imImageDestroy( imRegions );
-	*/
+	
+	// empiric adjustment		
+	height -= width;
+
+	// valeurs par defaut
+	int i;
+	for ( i = 0; i < FEATURES_COUNT; i++ )
+		features[i] = 0.0;
+
+	int half_staff_height = STAFF_HEIGHT / 2;
+	int line_step = height / 8;
+	int pos[FEATURE_LINES]; // line positions ; 90 au lieu de 89 à cause de margins
+	pos[0] = half_staff_height - height / 2 - height / 4 + position_v;
+	pos[1] = half_staff_height - height / 2 + position_v;
+	pos[2] = half_staff_height - height / 4 + position_v;
+	pos[3] = half_staff_height + position_v;	
+	pos[4] = half_staff_height + height / 4 + position_v;
+	pos[5] = half_staff_height + height / 2 + position_v;
+	pos[6] = half_staff_height + height / 2 + height / 4 + position_v;
+	//pos[7] = half_staff_height - height + position_v;
+	
+	//pos[0] = half_staff_height - (6 * line_step) + position_v;
+	//pos[1] = half_staff_height - (5 * line_step) + position_v;
+	//pos[2] = half_staff_height - (4 * line_step) + position_v;
+	//pos[3] = half_staff_height - (3 * line_step) + position_v;
+	//pos[4] = half_staff_height - (2 * line_step) + position_v;
+	//pos[5] = half_staff_height - (1 * line_step) + position_v;
+	//pos[6] = half_staff_height + position_v;	
+	//pos[7] = half_staff_height + (1 * line_step) + position_v;
+	//pos[8] = half_staff_height + (2 * line_step) + position_v;
+	//pos[9] = half_staff_height + (3 * line_step) + position_v;
+	//pos[10] = half_staff_height + (4 * line_step) + position_v;
+	//pos[11] = half_staff_height + (5 * line_step) + position_v;
+	//pos[12] = half_staff_height + (6 * line_step) + position_v;
+		
+	imbyte *imBuf = (imbyte*)image->data[0];	
+		
+	int line_top, line_bottom, line_height;
+	int j, l, sum;
+	imStats istats;
+	// completer les lignes
+	for (l = 0; l < FEATURE_LINES + 1; l++)
+	{
+		if ((l < FEATURE_LINES) && ( ( pos[l] < 0 ) || ( pos[l] >= STAFF_HEIGHT ) ) )
+			continue;
+		line_top = (l == 0) ? 0 : pos[l - 1];
+		line_bottom = (l >= FEATURE_LINES) ? image->height - 1 : pos[l];
+		line_height = line_bottom - line_top;
+		sum = 0;
+		for ( j = line_top * image->width; j < line_bottom * image->width; j++)
+			sum += imBuf[j];
+		
+		//wxLogMessage("%d, %d", sum, line_height * image->width);
+		features[l] = float(sum) / (line_height * image->width);
+		//wxLogMessage( "%d %d", line_bottom, line_top );
+		//imImage *imRegion = imImageCreate(image->width, line_bottom - line_top, IM_BINARY, IM_BYTE);
+		//imProcessCrop( image, imRegion, line_top, 0 );
+		//imCalcImageStatistics( imRegion, &istats );
+		//features[l] = 1 - istats.mean;
+		//imImageDestroy( imRegion );
+	}
 }
 
 
@@ -865,8 +809,8 @@ bool ImStaffSegment::AnalyzeSegment()
     float* perim = (float*)malloc( region_count * sizeof(float) );
     memset(perim, 0, region_count * sizeof(float) );
 
-    imAnalyzeMeasureArea( m_opIm, area, region_count );
-    imAnalyzeMeasurePerimeter( m_opIm, perim, region_count );
+    imAnalyzeMeasureArea( m_opIm, area );
+    imAnalyzeMeasurePerimeter( m_opIm, perim );
 
     float c = 0;
     for (i = 0; i < region_count; i++ )

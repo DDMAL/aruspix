@@ -123,7 +123,7 @@ bool ImPage::Load( TiXmlElement *file_root )
 	// HACK : load images without staves
     if ( !failed && wxFileExists( m_path + "img2.tif" ) )
 	{
-		failed = !Read( m_path + "img2.tif", &m_img2, 0 );	
+		failed = !Read( m_path + "img2.tif", &m_img2, 0 );
 		imProcessNegative( m_img2, m_img2 );
 	}
 	
@@ -1347,19 +1347,19 @@ bool ImPage::FindOrnateLetters( )
     SwapImages( &m_opIm, &m_opImTmp1 );
 
     // supprimer les zones d'elements dont la hauteur moyenne < 140
-    PruneElementsZone( m_opIm, 140 / TIP_FACTOR_1, 0 );
+    PruneElementsZone( m_opIm, 140 / TIP_FACTOR_1, 0, IM_PRUNE_CLEAR_HEIGHT );
 
     // supprimer les zones d'elements dont la largeur moyenne < 120 
-    PruneElementsZone( m_opIm, 120 / TIP_FACTOR_1, 0, 1 );
+    PruneElementsZone( m_opIm, 120 / TIP_FACTOR_1, 0, IM_PRUNE_CLEAR_WIDTH );
 
     // supprimer les zones d'elements dont la hauteur moyenne < 140 
-    PruneElementsZone( m_opIm, 140 / TIP_FACTOR_1, 0 );
+    PruneElementsZone( m_opIm, 140 / TIP_FACTOR_1, 0, IM_PRUNE_CLEAR_HEIGHT );
 
     // supprimer les zones d'elements dont la largeur moyenne < 120 ou > 600
-    PruneElementsZone( m_opIm, 120 / TIP_FACTOR_1, 600 / TIP_FACTOR_1, 1 );
+    PruneElementsZone( m_opIm, 120 / TIP_FACTOR_1, 600 / TIP_FACTOR_1, IM_PRUNE_CLEAR_WIDTH );
 
     // supprimer les zones d'elements dont la hauteur moyenne > 600
-    PruneElementsZone( m_opIm, 120 / TIP_FACTOR_1, 600 / TIP_FACTOR_1 );
+    PruneElementsZone( m_opIm, 120 / TIP_FACTOR_1, 600 / TIP_FACTOR_1, IM_PRUNE_CLEAR_HEIGHT );
 
 
     m_opImTmp2 = imImageClone( m_opImMain );
@@ -2338,6 +2338,7 @@ bool ImPage::GenerateMFC( bool merged, wxString output_dir )
 
 	//this->SetMapImage( m_img0 );
 	// HACK ; removed staves
+	PruneElementsZone( m_img2, 5, 0, IM_PRUNE_CLEAR_MIN ); // mfc03-04-05
 	this->SetMapImage( m_img2 );
 
     if ( !GetImagePlane( &m_opImMain ) )

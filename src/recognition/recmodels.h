@@ -29,7 +29,8 @@
 
 #define MUS_NGRAM_ORDER 3
 
-class MusMLFOutput;
+#include "mus/musiomlf.h"
+#include "mus/musmlfdic.h"
 
 // WDR: class declarations
 
@@ -45,7 +46,7 @@ public:
     RecModel::RecModel( wxString filename, int type );
     virtual RecModel::~RecModel();
     
-    // WDR: method declarations for RecTypModel	
+    // WDR: method declarations for RecModel	
 	virtual void OpenContent( ); // Open content after archive extraction
 	virtual void SaveContent( ); // Save content before archive creation
 	
@@ -55,11 +56,12 @@ public:
 	virtual bool AddFiles( wxArrayPtrVoid params, AxProgressDlg *dlg );
 
 public:
-    // WDR: member variable declarations for RecTypModel
+    // WDR: member variable declarations for RecModel
    
 protected:
-    // WDR: handler declarations for RecTypModel
-	MusMLFOutput *m_mlfoutput;
+    // WDR: handler declarations for RecModel
+	MusMLFOutput *m_mlf;
+	MusMLFDictionary m_mlfDic;
 	int m_nbfiles;
 	wxArrayString m_files;
 };
@@ -92,6 +94,10 @@ public:
         
 public:
     // WDR: member variable declarations for RecTypModel
+	
+protected:
+    // WDR: handler declarations for RecTypModel
+	MusMLFOutput *m_mlf_hmms;
    
 private:
     // WDR: handler declarations for RecTypModel

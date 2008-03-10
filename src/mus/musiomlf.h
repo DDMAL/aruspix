@@ -8,8 +8,6 @@
 #ifndef __MUS_IOMLF_H__
 #define __MUS_IOMLF_H__
 
-
-
 #ifdef __GNUG__
     #pragma interface "musiomlf.cpp"
 #endif
@@ -20,16 +18,10 @@
 #include "wx/wfstream.h"
 
 #include "musfile.h"
-
-class MusMLFSymbol;
-WX_DECLARE_OBJARRAY( MusMLFSymbol, ArrayOfMLFSymboles);
+#include "musmlfdic.h"
 
 class ImPage;
 class AxProgressDlg;
-
-#define SP_START "SP_START"
-#define SP_END "SP_END"
-#define SP_WORD "SP"
 
 #define TYPE_NOTE 'N'
 #define TYPE_REST 'R'
@@ -44,46 +36,6 @@ class AxProgressDlg;
 #define NOTE_STEM 1
 #define NOTE_COLORATION 2
 #define NOTE_LIGATURE 4
-
-
-class MusMLFWord;
-WX_DECLARE_OBJARRAY(MusMLFWord, ArrayOfMLFWords);
-
-// WDR: class declarations
-
-//----------------------------------------------------------------------------
-// MusMLFWord
-//----------------------------------------------------------------------------
-
-class MusMLFWord: public wxObject
-{
-public:
-    // constructors and destructors
-    MusMLFWord() {};
-    ~MusMLFWord() {};
-
-public:
-	wxString m_word;
-	wxString m_hmm_symbol;
-    int m_states;
-};
-
-
-//----------------------------------------------------------------------------
-// MusMLFDictionary
-//----------------------------------------------------------------------------
-
-class MusMLFDictionary: public wxObject
-{
-public:
-    // constructors and destructors
-    MusMLFDictionary() {};
-    ~MusMLFDictionary() {};
-
-public:
-	ArrayOfMLFWords m_dict;
-};
-
 
 //----------------------------------------------------------------------------
 // MusMLFSymbol
@@ -165,7 +117,7 @@ public:
 														// and export by calling ExportFile
 														// allow exportation of several files in one mlf
     //virtual bool ExportFile( );
-    //virtual bool WritePage( const MusPage *page, bool write_header = false );
+    virtual bool WritePage( const MusPage *page, bool write_header = false );
 	bool WritePage( const MusPage *page, wxString filename, ImPage *imPage,
 		wxArrayInt *staff_numbers = NULL ); // manage segments through imPage and staves throuhg staff_numbers
 											// write all staves if staff_numbers == NULL
@@ -190,16 +142,15 @@ public:
 	virtual void StartLabel( );
 	virtual void EndLabel( int offsets[] = NULL, int end_points[] = NULL );
 	// access
-	//ArrayOfMLFSymboles *GetSymbols( ) { return &m_symboles; };
+	ArrayOfMLFSymbols *GetSymbols( ) { return &m_symbols; };
     
 protected:
     // WDR: member variable declarations for MusMLFOutput
     wxString m_filename;
 	//wxFileOutputStream *m_subfile;
 	// specific
-	ArrayOfMLFSymboles m_symboles; // symbol list
-	//MLFTypes m_types; // tableau des largeur - par type, uniquement avec MusMLFSymbol
-	wxString m_model_symbole_name;
+	ArrayOfMLFSymbols m_symbols; // symbol list
+	wxString m_mlf_class_name;
 	wxString m_shortname;
 	MusStaff *m_staff; // utilise pour les segments de portee, doit etre accessible dans WriteSymbole
 	// page, staff and segment index
@@ -213,7 +164,8 @@ public:
 	//wxArrayString m_loadedDict; // symboles charge avec LoadDictionnary
 	//wxArrayString m_dict; // symboles de l'exportation
 	MusMLFDictionary *m_dict; // symboles de l'exportation, version complete avec phone et position. m_dict allows fast access
-	bool m_writePosition; // ecrit les position dans MLF, uniquement avec MLFSymbol_
+	bool m_pagePosition; // ecrit les position dans MLF, avec MusMLFSymbol
+	bool m_hmmLevel; // write symbols rather the words in EndLabel; basic for now, do not handle several symbols per word
 
 
 private:

@@ -427,6 +427,36 @@ void imAnalyzeClearHeight(const imImage* image, int region_count, int min_thresh
 	free(heights);
 }
 
+
+/*
+	Supprime les element dont la largeur ou la hauteur maximal est plus petite que threshold
+	*image est une image labelisee (bg = 0, puis 1,2 ...)
+	region_count est le nombre de regions
+ */
+void imAnalyzeClearMin(const imImage* image, int region_count, int threshold )
+{
+	imushort* img_data = (imushort*)image->data[0];
+	int i, j;
+
+	int* boxes = (int*)malloc(4 * region_count * sizeof(int));
+    memset(boxes, 0, 4 *  region_count * sizeof(int));
+    imAnalyzeBoundingBoxes(image, boxes, region_count);
+
+	img_data = (imushort*)image->data[0];
+	for (i = 0; i < image->count; i++)
+	{
+		if (*img_data)
+		{
+			j = ((*img_data) - 1) * 4;
+			if ( (boxes[j+1] - boxes[j+0] < threshold) || (boxes[j+3] - boxes[j+2] < threshold) )
+				(*img_data) = 0;
+
+		}
+		img_data++;
+	}
+	free( boxes );
+}
+
 /*
 	Supprime les element dont la largeur moyenne n'est pas entre min et max
 	Si max = 0, le seuil superieur est ignore

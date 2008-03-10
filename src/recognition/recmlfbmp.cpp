@@ -252,7 +252,7 @@ wxString RecMLFSymbolBmp::GetLabel( )
 //----------------------------------------------------------------------------
 
 RecMLFBmp::RecMLFBmp( MusFile *file, wxString filename, wxString model_symbole_name ) :
-    MusMLFOutput( file, filename, model_symbole_name )
+    MusMLFOutput( file, filename, NULL, model_symbole_name )
 {
 	m_impage = NULL;
 }
@@ -265,7 +265,7 @@ RecMLFBmp::~RecMLFBmp()
 
 void RecMLFBmp::StartLabel( )
 {
-	m_symboles.Clear();
+	m_symbols.Clear();
 	m_currentX = -1;
 	m_currentWidth = -1;
 }
@@ -283,7 +283,7 @@ wxBitmap RecMLFBmp::GenerateBitmap( ImStaff *imstaff, MusStaff *musStaff, int cu
 	wxBitmap bmp( mx-mn, STAFF_HEIGHT );
 
 	// fill symbole array with musStaff elements
-	m_symboles.Clear();
+	m_symbols.Clear();
 	MusStaff *ut1_staff = MusMLFOutput::GetUt1( musStaff );
     WriteStaff( ut1_staff, currentElementNo );
 	delete ut1_staff;
@@ -293,11 +293,11 @@ wxBitmap RecMLFBmp::GenerateBitmap( ImStaff *imstaff, MusStaff *musStaff, int cu
 	memDC.SetBackground( *wxWHITE_BRUSH );
 	memDC.Clear();
     
-	for (int i = 0; i < (int)m_symboles.GetCount(); i++ )
+	for (int i = 0; i < (int)m_symbols.GetCount(); i++ )
 	{
 		wxString symbole;
-		int pos = (&m_symboles[i])->GetPosition();
-		MusMLFSymbol *mlf = &m_symboles[i];
+		int pos = (&m_symbols[i])->GetPosition();
+		MusMLFSymbol *mlf = &m_symbols[i];
 		RecMLFBmpType *tp = m_bitmap_types.GetType( mlf );
 		if ( tp )
 		{
@@ -310,7 +310,7 @@ wxBitmap RecMLFBmp::GenerateBitmap( ImStaff *imstaff, MusStaff *musStaff, int cu
 			wxMemoryDC symDC;
 			wxBitmap current;
 			bool flip = ( tp->m_flip && (((RecMLFSymbolBmp*)mlf)->GetVOffset() > 4 ));
-			if ( m_symboles[i].m_flag & NOTE_STEM )
+			if ( m_symbols[i].m_flag & NOTE_STEM )
 				flip = !flip;
 			if ( flip )
 			{
@@ -339,7 +339,7 @@ wxBitmap RecMLFBmp::GenerateBitmap( ImStaff *imstaff, MusStaff *musStaff, int cu
 		//else
 		//	wxLogWarning( _("Cant' find type ") );
 	}
-	//m_symboles.Clear();
+	//m_symbols.Clear();
 
 	memDC.SelectObject( wxNullBitmap );
 	return bmp;
@@ -366,11 +366,11 @@ void RecMLFBmp::EndLabel( )
 	memDC.SetBackground( *wxWHITE_BRUSH );
 	memDC.Clear();
     
-	for (int i = 0; i < (int)m_symboles.GetCount(); i++ )
+	for (int i = 0; i < (int)m_symbols.GetCount(); i++ )
 	{
 		wxString symbole;
-		int pos = (&m_symboles[i])->GetPosition();
-		MusMLFSymbol *mlf = &m_symboles[i];
+		int pos = (&m_symbols[i])->GetPosition();
+		MusMLFSymbol *mlf = &m_symbols[i];
 		RecMLFBmpType *tp = m_bitmap_types.GetType( mlf );
 		if ( tp )
 		{
@@ -396,7 +396,7 @@ void RecMLFBmp::EndLabel( )
 		else
 			wxLogWarning( _("Cant' find type ") );
 	}
-	m_symboles.Clear();
+	m_symbols.Clear();
 
 	memDC.SelectObject( wxNullBitmap );
 	wxString file = m_filename;
@@ -457,7 +457,7 @@ bool RecMLFBmp::WriteStaff( const MusStaff *staff, int currentElementNo )
         else
             ok = WriteSymbole( (MusSymbol*)&staff->m_elements[k] );
         if ( ok && ( currentElementNo == (signed int)k ) )
-			((RecMLFSymbolBmp*)&m_symboles.Last())->SetCurrent();
+			((RecMLFSymbolBmp*)&m_symbols.Last())->SetCurrent();
 
     }
 	//EndLabel();

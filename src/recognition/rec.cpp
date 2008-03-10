@@ -827,6 +827,7 @@ void RecEnv::OnExportAxmus( wxCommandEvent &event )
 }
 
 #define META_BATCH3
+//#define META_BATCH_MUS
 
 void RecEnv::OnExportAxtyp( wxCommandEvent &event )
 {
@@ -1191,8 +1192,6 @@ void RecEnv::OnClose( wxCommandEvent &event )
 }
 
 
-
-
 // meta batch
 void RecEnv::BatchAdaptation( )
 {
@@ -1240,8 +1239,13 @@ void RecEnv::BatchAdaptation( )
             continue;   
     
         // name of model to generate - temporary...
-        RecTypModel model( "rec_batch3_model" );
-        model.New();    
+        //
+#ifdef META_BATCH_MUS    
+        RecMusModel model( "rec_batch3_model" );
+#else
+		RecTypModel model( "rec_batch3_model" );
+#endif
+		model.New();    
 
         //Reset();
 
@@ -1262,12 +1266,21 @@ void RecEnv::BatchAdaptation( )
         if ( !failed )  
             failed = !model.Commit( dlg );
 
-        imCounterEnd( dlg->GetCounter() );
+#ifdef META_BATCH_MUS
+	    if ( !failed )  
+			failed = !model.Train( params, dlg );
+#endif
+		
+		imCounterEnd( dlg->GetCounter() );
 
         dlg->AxShowModal( ); // stop process  ( failed ???? )
         dlg->Destroy();
-    
-        model.SaveAs( filename + ".axtyp" );
+
+#ifdef META_BATCH_MUS    
+        model.SaveAs( filename + ".axmus" );
+#else
+		model.SaveAs( filename + ".axtyp" );
+#endif
     
         cont = dir.GetNext(&filename);
     }

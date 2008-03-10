@@ -222,7 +222,7 @@ public:
     // static on arrays
     static CmpBookItem *FindFile( ArrayOfCmpBookItems *array, wxString filename, int* index  );
 	// distance
-	void CmpFile::Align( ArrayOfMLFSymboles *obtained, ArrayOfMLFSymboles *desired );
+	void CmpFile::Align( ArrayOfMLFSymbols *obtained, ArrayOfMLFSymbols *desired );
     
 public:
     // WDR: member variable declarations for CmpFile

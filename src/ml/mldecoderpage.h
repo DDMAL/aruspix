@@ -87,8 +87,11 @@ public:
     ///   all input files are to be calculated before the decoder is invoked.  This
     ///   only applies if 'preload_data' is true.
     MlDecoderPage( char *datafiles_filename , char *expected_results_file , BeamSearchDecoder *decoder_ , 
-                      bool remove_sil=false, bool output_res=false , char *out_fname=NULL ) ; 
-    ~MlDecoderPage() ;
+                      bool remove_sil=false, bool output_res=false , char *out_fname=NULL ) ;
+	// Just for evaluation
+	MlDecoderPage( Vocabulary *vocabulary_, char *expected_results_file );
+    
+	~MlDecoderPage() ;
 
     /* Methods */
     void configureWithIndividualInputs( char *datafiles_filename , 
@@ -111,6 +114,8 @@ public:
 
     /// Runs the batch test according to the options set by the call to 'configure'.
     void run() ;
+	
+	void eval( char *results_file );
 
 #ifdef DEBUG
     void outputText() ;

@@ -176,8 +176,8 @@ void RecFile::SaveContent( )
 		wwgoutput->ExportFile();
 		delete wwgoutput;
 		
-		MusMLFOutput *mlfoutput = new MusMLFOutput( m_musFilePtr, m_basename + "page.mlf" );
-		mlfoutput->m_writePosition = true;
+		MusMLFOutput *mlfoutput = new MusMLFOutput( m_musFilePtr, m_basename + "page.mlf", NULL );
+		mlfoutput->m_pagePosition = true;
 		mlfoutput->WritePage( &m_musFilePtr->m_pages[0] , "staff", m_imPagePtr );
 		delete mlfoutput;
 	
@@ -300,8 +300,8 @@ void RecFile::WriteMLFWP(  )
 	if ( !m_isRecognized )
 		return;
 
-	MusMLFOutputWP *mlfoutputwp = new MusMLFOutputWP( m_musFilePtr, m_basename + "pagewp.mlf" );
-	mlfoutputwp->m_writePosition = true;
+	MusMLFOutputWP *mlfoutputwp = new MusMLFOutputWP( m_musFilePtr, m_basename + "pagewp.mlf", NULL );
+	mlfoutputwp->m_pagePosition = true;
 	//mlfoutputwp->CreateSubFile();
 	mlfoutputwp->WritePage( &m_musFilePtr->m_pages[0] , "" );//wxString("staff") );
 	delete mlfoutputwp;
