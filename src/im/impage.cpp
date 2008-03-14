@@ -2336,10 +2336,10 @@ bool ImPage::GenerateMFC( bool merged, wxString output_dir )
 	if ( m_staff_height <= 0 )
 		return false;
 
-	//this->SetMapImage( m_img0 );
+	this->SetMapImage( m_img0 );
 	// HACK ; removed staves
-	PruneElementsZone( m_img2, 5, 0, IM_PRUNE_CLEAR_MIN ); // mfc03-04-05
-	this->SetMapImage( m_img2 );
+	//PruneElementsZone( m_img2, 5, 0, IM_PRUNE_CLEAR_MIN ); // mfc03-04-05
+	//this->SetMapImage( m_img2 );
 
     if ( !GetImagePlane( &m_opImMain ) )
         return false;

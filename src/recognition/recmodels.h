@@ -60,7 +60,9 @@ public:
    
 protected:
     // WDR: handler declarations for RecModel
-	MusMLFOutput *m_mlf;
+	// HACK!
+	MusMLFOutputWP *m_mlf;
+	//MusMLFOutput *m_mlf;
 	MusMLFDictionary m_mlfDic;
 	int m_nbfiles;
 	wxArrayString m_files;
@@ -97,7 +99,9 @@ public:
 	
 protected:
     // WDR: handler declarations for RecTypModel
-	MusMLFOutput *m_mlf_hmms;
+	// HACK!
+	MusMLFOutputWP *m_mlf_hmms;
+	//MusMLFOutput *m_mlf_hmms;
    
 private:
     // WDR: handler declarations for RecTypModel

@@ -149,8 +149,11 @@ void RecTypModel::NewContent( )
 	wxASSERT( !m_mlf );
 	wxASSERT( !m_mlf_hmms );
 
-	m_mlf = new MusMLFOutput( NULL, m_basename + "mlf", &m_mlfDic, "MusMLFSymbol" );
-	m_mlf_hmms = new MusMLFOutput( NULL, m_basename + "mlf_align", NULL, "MusMLFSymbol" );
+	// HACK
+	m_mlf = new MusMLFOutputWP( NULL, m_basename + "mlf", &m_mlfDic, "MusMLFSymbolWP" );
+	m_mlf_hmms = new MusMLFOutputWP( NULL, m_basename + "mlf_align", NULL, "MusMLFSymbolWP" );
+	//m_mlf = new MusMLFOutput( NULL, m_basename + "mlf", &m_mlfDic, "MusMLFSymbol" );
+	//m_mlf_hmms = new MusMLFOutput( NULL, m_basename + "mlf_align", NULL, "MusMLFSymbol" );
 	m_mlf_hmms->m_hmmLevel = true;
 }
 
@@ -180,12 +183,16 @@ void RecTypModel::OpenModelContent( )
 	
 	fname = m_basename + "mlf";
 	wxFile load1( fname, wxFile::write_append );
-	m_mlf = new MusMLFOutput( NULL, load1.fd(), fname, &m_mlfDic, "MusMLFSymbol" );
+	// HACK
+	m_mlf = new MusMLFOutputWP( NULL, load1.fd(), fname, &m_mlfDic, "MusMLFSymbolWP" );
+	//m_mlf = new MusMLFOutput( NULL, load1.fd(), fname, &m_mlfDic, "MusMLFSymbol" );
 	load1.Detach();
 	
 	fname = m_basename + "mlf_align";
 	wxFile load2( fname, wxFile::write_append );
-	m_mlf_hmms = new MusMLFOutput( NULL, load2.fd(), fname, NULL, "MusMLFSymbol" );
+	// HACK
+	m_mlf_hmms = new MusMLFOutputWP( NULL, load2.fd(), fname, NULL, "MusMLFSymbolWP" );
+	//m_mlf_hmms = new MusMLFOutput( NULL, load2.fd(), fname, NULL, "MusMLFSymbol" );
 	m_mlf_hmms->m_hmmLevel = true;
 	load2.Detach();
 }
@@ -260,13 +267,13 @@ bool RecTypModel::AddFile( wxArrayPtrVoid params, AxProgressDlg *dlg )
 	}
 	
 	// HACK! force mfc generation
-	//wxArrayPtrVoid mfc_params;
-	//wxString mfcfile = "";
-	//bool merged = false;
-	//mfc_params.Add(  &merged );
-	//mfc_params.Add( &mfcfile );
-	//recFile.GenerateMFC( mfc_params, dlg ); // 2 operations
-	
+	/*wxArrayPtrVoid mfc_params;
+	wxString mfcfile = "";
+	bool merged = false;
+	mfc_params.Add(  &merged );
+	mfc_params.Add( &mfcfile );
+	recFile.GenerateMFC( mfc_params, dlg ); // 2 operations
+	*/
 	wxString operation =  wxString::Format( _("Adding data from file '%s' (%d/%d)"), shortname.c_str(), file_nb + 1, nb_files ) ;
 	dlg->SetOperation( operation );
 	
@@ -586,7 +593,9 @@ void RecMusModel::NewContent( )
 {
 	wxASSERT( !m_mlf );
 
-    m_mlf = new MusMLFOutput( NULL, m_basename + "ngram.mlf", &m_mlfDic, "MusMLFSymbol" );
+	// HACK
+    m_mlf = new MusMLFOutputWP( NULL, m_basename + "ngram.mlf", &m_mlfDic, "MusMLFSymbolWP" );
+	//m_mlf = new MusMLFOutput( NULL, m_basename + "ngram.mlf", &m_mlfDic, "MusMLFSymbol" );
 }
 
 void RecMusModel::CloseContent( )
@@ -608,7 +617,9 @@ void RecMusModel::OpenModelContent( )
 	
 	wxString fname = m_basename + "ngram.mlf";
 	wxFile load( fname, wxFile::write_append );
-	m_mlf = new MusMLFOutput( NULL, load.fd(), fname, &m_mlfDic, "MusMLFSymbol" );
+	// HACK
+	m_mlf = new MusMLFOutputWP( NULL, load.fd(), fname, &m_mlfDic, "MusMLFSymbolWP" );
+	//m_mlf = new MusMLFOutput( NULL, load.fd(), fname, &m_mlfDic, "MusMLFSymbol" );
 	load.Detach();
 }
 

@@ -291,7 +291,7 @@ void CalcWinFeatures(const imImage* image, float *features, int position_v, int 
 
 */
 
-/*
+
 
 // features count per window - used for memory allocation 
 // must be changed if function is modified
@@ -490,7 +490,8 @@ void CalcWinFeatures(const imImage* image, float *features, int position_v, int 
 	imImageDestroy( negate );
 }
 
-*/
+
+/*
 
 // features count per window - used for memory allocation 
 // must be changed if function is modified
@@ -579,6 +580,179 @@ void CalcWinFeatures(const imImage* image, float *features, int position_v, int 
 }
 
 
+/*
+
+// features count per window - used for memory allocation 
+// must be changed if function is modified
+#define FEATURES_COUNT 5
+
+// 01
+// 02
+// 10 with biggest black without line removal
+// 11 with masked area (as in origninal)
+
+//#define STAFF_HEIGHT 180
+//#define STAFF 100
+
+// fonction d'extration de caracteristique par fenetres
+void CalcWinFeatures(const imImage* image, float *features, int position_v, int height, int width )
+{
+	
+	if ( width > ( STAFF / 8 ) )
+	{
+		//wxLogDebug( "Staff width larger than half staff space" );
+		width = STAFF / 8;
+	}
+	
+	
+	// empiric adjustment		
+	height -= width;
+
+	// valeurs par defaut
+	int i;
+	for ( i = 0; i < FEATURES_COUNT; i++ )
+		features[i] = 0.0;
+	features[0] = 1.0; // euler
+	features[1] = 0.0; // area
+	features[2] = 0.5; // x centroid
+	features[3] = 0.0; // bigest black
+	features[4] = 1.0; // smallest white
+
+	int half_staff_height = STAFF_HEIGHT / 2;
+	int pos[8]; // line positions ; 90 au lieu de 89 à cause de margins
+	pos[0] = half_staff_height + height / 2 + height / 4 + position_v;
+	pos[1] = half_staff_height + height / 2 + position_v;
+	pos[2] = half_staff_height + height / 4 + position_v;
+	pos[3] = half_staff_height + position_v;
+	pos[4] = half_staff_height - height / 4 + position_v;
+	pos[5] = half_staff_height - height / 2 + position_v;
+	pos[6] = half_staff_height - height / 2 - height / 4 + position_v;
+	pos[7] = half_staff_height - height + position_v;
+	
+	imbyte *imBuf = (imbyte*)image->data[0];
+	
+	int line_offset;
+	int l;
+	// completer les lignes
+	for (l = 0; l < 8; l++)
+	{
+		if ( ( pos[l] < 0 ) || ( pos[l] >= STAFF_HEIGHT ) )
+			continue;
+		line_offset = pos[l];
+		memset( imBuf + line_offset * image->width,
+			1, image->width );
+	}
+	
+	//if ( imdebug )
+	//	imProcessInsert( imdebug, image, imdebug, stepdebug, 0 );
+
+	//global
+    imImage *imRegions = imImageCreate(image->width, image->height, IM_GRAY, IM_USHORT);
+    int region_count = imAnalyzeFindRegions ( image, imRegions, 8, 1 );
+
+	if (region_count == 0)
+	{	
+		imImageDestroy( imRegions );
+		return;
+	}
+
+	// euler (+-)
+	features[0] = 1.0 / (region_count + 1); // global
+
+	// centroid
+	float *cx = (float*)malloc(region_count*sizeof(float));
+	memset( cx, 0, region_count*sizeof(float));
+	float *cy = (float*)malloc(region_count*sizeof(float));
+	memset( cy, 0, region_count*sizeof(float));
+	imAnalyzeMeasureCentroid( imRegions, NULL, region_count, cx, cy );
+
+	// remove staff lines from area
+	imushort *regionsBuf = (imushort*)imRegions->data[0];
+	
+	if ( (width % 2) == 0 )
+		width++;
+	int m;
+
+	for (l = 0; l < 8; l++)
+	{
+		for (m = -(width / 2); m <= (width / 2); m++)
+		{
+			line_offset = pos[l] + m;
+			if ( ( line_offset < 0 ) || ( line_offset >= STAFF_HEIGHT ) )
+				continue;
+			memset( regionsBuf + line_offset * image->width,
+				0, sizeof( imushort ) * image->width );
+		}
+	}	
+	
+	// area (without lines)
+	int* area = (int*)malloc(region_count*sizeof(int));
+	memset( area, 0, region_count*sizeof(int));
+	imAnalyzeMeasureArea( imRegions, area );
+	
+	int tot_area = 0;
+	int max_area = 0;
+	float max_black_cy = 0.5;
+	for (i = 0; i < region_count; i++)
+	{
+		tot_area += area[i];
+		if ( area[i] > max_area )
+		{
+			max_area = area[i];
+			max_black_cy = cy[i];
+		}
+	}
+	features[1] = (float)tot_area /(image->width * image->height);
+	// plus grand noir
+	features[3] = float(max_area) /(image->width * image->height); // 01
+
+	// centroid
+	float sum_cx = 0, sum_cy = 0;
+	for (i = 0; i < region_count; i++)
+	{
+		sum_cx += cx[i] * area[i];
+		sum_cy += cy[i] * area[i];
+	}
+	if (tot_area)
+	{
+		features[2] = ((sum_cx / tot_area) + 1) / image->width;
+	}
+	free(cy);
+	free(cx);
+	free(area);
+	
+	// get biggest black
+    region_count = imAnalyzeFindRegions ( image, imRegions, 8, 1 );
+
+
+	// get smallest white
+	imImage *negate = imImageClone( image );
+	imProcessNegative( image, negate );
+    region_count = imAnalyzeFindRegions ( negate, imRegions, 8, 1 );
+
+	if (region_count != 0)
+	{	
+		int* background = (int*)malloc(region_count*sizeof(int));
+		memset( background, 0, region_count*sizeof(int));
+		imAnalyzeMeasureArea( imRegions, background );
+
+		int min_background = image->width * image->height;
+		for (i = 0; i < region_count; i++)
+		{
+			if ( background[i] < min_background )
+				min_background = background[i];
+		}
+		free(background);
+		// smallest white
+		features[4] = float(min_background) / (image->width * image->height);
+	}
+
+	imImageDestroy( imRegions );
+	imImageDestroy( negate );
+}
+
+
+*/
 
 //----------------------------------------------------------------------------
 // ImStaffSegment
