@@ -41,23 +41,23 @@ class AxProgressDlg;
 // WDR: class declarations
 
 //----------------------------------------------------------------------------
-// SupFile
+// SupOldFile
 //----------------------------------------------------------------------------
 
-class SupFile: public ImOperator 
+class SupOldFile: public ImOperator 
 {
 public:
     // constructors and destructors
-    SupFile( wxString path = "", wxString shortname = "", AxProgressDlg *dlg  = NULL );
-    virtual ~SupFile();
+    SupOldFile( wxString path = "", wxString shortname = "", AxProgressDlg *dlg  = NULL );
+    virtual ~SupOldFile();
     
-    // WDR: method declarations for SupFile
+    // WDR: method declarations for SupOldFile
     bool Superimpose(const SupImController *imController1, 
         const SupImController *imController2, const wxString filename );
     //int GetError( ) { return m_error; }
     
 private:
-    // WDR: member variable declarations for SupFile
+    // WDR: member variable declarations for SupOldFile
     void DistByCorrelation(_imImage *image1, _imImage *image2,
                                 wxSize window, int *decalageX, int *decalageY);
     //void DistByCorrelationFFT(const _imImage *image1, const _imImage *image2,
@@ -69,7 +69,7 @@ private:
     //void ImageDestroy( _imImage **image );*/
 
 private:
-    // WDR: handler declarations for SupFile
+    // WDR: handler declarations for SupOldFile
     //AxProgressDlg *m_progressDlg;
     //int m_error;
 

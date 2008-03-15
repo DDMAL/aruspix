@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		4D1675E70D8B628900F4D912 /* imkmeans.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D1675E60D8B628900F4D912 /* imkmeans.cpp */; };
+		4D1676650D8B765000F4D912 /* supbookfile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D1676610D8B765000F4D912 /* supbookfile.cpp */; };
+		4D1676660D8B765000F4D912 /* supfile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D1676630D8B765000F4D912 /* supfile.cpp */; };
 		4D3A8FCB0D35858D00BBC1FB /* recmlfbmp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D3A8FC70D35858D00BBC1FB /* recmlfbmp.cpp */; };
 		4D3A8FCC0D35858D00BBC1FB /* recmodels.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D3A8FC90D35858D00BBC1FB /* recmodels.cpp */; };
 		4D3A8FED0D35867200BBC1FB /* mus_wdr.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D3A8FCE0D35867200BBC1FB /* mus_wdr.cpp */; };
@@ -28,6 +31,7 @@
 		4D3A8FFD0D35867200BBC1FB /* muswindow.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D3A8FEB0D35867200BBC1FB /* muswindow.cpp */; };
 		4D7362820D35C7D30030DFA6 /* recmus.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D7362800D35C7D30030DFA6 /* recmus.cpp */; };
 		4D7362A40D35CECC0030DFA6 /* cmpmus.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D7362A20D35CECC0030DFA6 /* cmpmus.cpp */; };
+		4DB2D96D0D8383EA003401B0 /* musmlfdic.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4DB2D96B0D8383EA003401B0 /* musmlfdic.cpp */; };
 		5736CE550C354E4A00254E7B /* cmp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5736CE460C354E4A00254E7B /* cmp.cpp */; };
 		5736CE570C354E4A00254E7B /* cmp_wdr.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5736CE490C354E4A00254E7B /* cmp_wdr.cpp */; };
 		5736CE580C354E4A00254E7B /* cmpctrl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5736CE4B0C354E4A00254E7B /* cmpctrl.cpp */; };
@@ -42,7 +46,6 @@
 		57A668950C333F3000622C70 /* axctrl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 57A668930C333F3000622C70 /* axctrl.cpp */; };
 		57CA53DD0D340F61001FC334 /* imbrink.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 57CA53D80D340F61001FC334 /* imbrink.cpp */; };
 		57CA53DE0D340F61001FC334 /* imext.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 57CA53D90D340F61001FC334 /* imext.cpp */; };
-		57CA53DF0D340F61001FC334 /* imkmeans.c in Sources */ = {isa = PBXBuildFile; fileRef = 57CA53DB0D340F61001FC334 /* imkmeans.c */; };
 		57CA54220D34139D001FC334 /* axprogressdlg.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 57CA54170D34139D001FC334 /* axprogressdlg.cpp */; };
 		57CA54230D34139D001FC334 /* axoptionsdlg.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 57CA54190D34139D001FC334 /* axoptionsdlg.cpp */; };
 		57CA54240D34139D001FC334 /* axoptions_wdr.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 57CA541B0D34139D001FC334 /* axoptions_wdr.cpp */; };
@@ -82,6 +85,11 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		4D1675E60D8B628900F4D912 /* imkmeans.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = imkmeans.cpp; sourceTree = "<group>"; };
+		4D1676610D8B765000F4D912 /* supbookfile.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = supbookfile.cpp; sourceTree = "<group>"; };
+		4D1676620D8B765000F4D912 /* supbookfile.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = supbookfile.h; sourceTree = "<group>"; };
+		4D1676630D8B765000F4D912 /* supfile.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = supfile.cpp; sourceTree = "<group>"; };
+		4D1676640D8B765000F4D912 /* supfile.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = supfile.h; sourceTree = "<group>"; };
 		4D3A8FC70D35858D00BBC1FB /* recmlfbmp.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = recmlfbmp.cpp; sourceTree = "<group>"; };
 		4D3A8FC80D35858D00BBC1FB /* recmlfbmp.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = recmlfbmp.h; sourceTree = "<group>"; };
 		4D3A8FC90D35858D00BBC1FB /* recmodels.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = recmodels.cpp; sourceTree = "<group>"; };
@@ -121,6 +129,8 @@
 		4D7362810D35C7D30030DFA6 /* recmus.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = recmus.h; sourceTree = "<group>"; };
 		4D7362A20D35CECC0030DFA6 /* cmpmus.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = cmpmus.cpp; sourceTree = "<group>"; };
 		4D7362A30D35CECC0030DFA6 /* cmpmus.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = cmpmus.h; sourceTree = "<group>"; };
+		4DB2D96B0D8383EA003401B0 /* musmlfdic.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = musmlfdic.cpp; path = ../src/mus/musmlfdic.cpp; sourceTree = SOURCE_ROOT; };
+		4DB2D96C0D8383EA003401B0 /* musmlfdic.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = musmlfdic.h; path = ../src/mus/musmlfdic.h; sourceTree = SOURCE_ROOT; };
 		5736CE460C354E4A00254E7B /* cmp.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = cmp.cpp; sourceTree = "<group>"; };
 		5736CE470C354E4A00254E7B /* cmp.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = cmp.h; sourceTree = "<group>"; };
 		5736CE490C354E4A00254E7B /* cmp_wdr.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = cmp_wdr.cpp; sourceTree = "<group>"; };
@@ -144,7 +154,6 @@
 		57CA53D80D340F61001FC334 /* imbrink.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = imbrink.cpp; sourceTree = "<group>"; };
 		57CA53D90D340F61001FC334 /* imext.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = imext.cpp; sourceTree = "<group>"; };
 		57CA53DA0D340F61001FC334 /* imext.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = imext.h; sourceTree = "<group>"; };
-		57CA53DB0D340F61001FC334 /* imkmeans.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; path = imkmeans.c; sourceTree = "<group>"; };
 		57CA53DC0D340F61001FC334 /* imkmeans.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = imkmeans.h; sourceTree = "<group>"; };
 		57CA54160D34139D001FC334 /* axprogressdlg.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = axprogressdlg.h; sourceTree = "<group>"; };
 		57CA54170D34139D001FC334 /* axprogressdlg.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = axprogressdlg.cpp; sourceTree = "<group>"; };
@@ -232,6 +241,8 @@
 		4D3A8FCD0D3585AB00BBC1FB /* mus */ = {
 			isa = PBXGroup;
 			children = (
+				4DB2D96B0D8383EA003401B0 /* musmlfdic.cpp */,
+				4DB2D96C0D8383EA003401B0 /* musmlfdic.h */,
 				4D3A8FCE0D35867200BBC1FB /* mus_wdr.cpp */,
 				4D3A8FCF0D35867200BBC1FB /* mus_wdr.h */,
 				4D3A8FD00D35867200BBC1FB /* mus.cpp */,
@@ -400,6 +411,10 @@
 		A58524910A1B9604002D9D8A /* superimposition */ = {
 			isa = PBXGroup;
 			children = (
+				4D1676610D8B765000F4D912 /* supbookfile.cpp */,
+				4D1676620D8B765000F4D912 /* supbookfile.h */,
+				4D1676630D8B765000F4D912 /* supfile.cpp */,
+				4D1676640D8B765000F4D912 /* supfile.h */,
 				A58524920A1B9604002D9D8A /* sup.cpp */,
 				A58524930A1B9604002D9D8A /* sup.h */,
 				A58524950A1B9604002D9D8A /* sup_wdr.cpp */,
@@ -441,8 +456,8 @@
 				57CA53D80D340F61001FC334 /* imbrink.cpp */,
 				57CA53D90D340F61001FC334 /* imext.cpp */,
 				57CA53DA0D340F61001FC334 /* imext.h */,
-				57CA53DB0D340F61001FC334 /* imkmeans.c */,
 				57CA53DC0D340F61001FC334 /* imkmeans.h */,
+				4D1675E60D8B628900F4D912 /* imkmeans.cpp */,
 				A5D0D4AC0A65628800A4B1CA /* imoperator.cpp */,
 				A5D0D4AD0A65628800A4B1CA /* imoperator.h */,
 				A5D0D4AE0A65628800A4B1CA /* impage.cpp */,
@@ -569,7 +584,6 @@
 				5736CE5B0C354E4A00254E7B /* cmpmlf.cpp in Sources */,
 				57CA53DD0D340F61001FC334 /* imbrink.cpp in Sources */,
 				57CA53DE0D340F61001FC334 /* imext.cpp in Sources */,
-				57CA53DF0D340F61001FC334 /* imkmeans.c in Sources */,
 				57CA54220D34139D001FC334 /* axprogressdlg.cpp in Sources */,
 				57CA54230D34139D001FC334 /* axoptionsdlg.cpp in Sources */,
 				57CA54240D34139D001FC334 /* axoptions_wdr.cpp in Sources */,
@@ -597,6 +611,10 @@
 				4D3A8FFD0D35867200BBC1FB /* muswindow.cpp in Sources */,
 				4D7362820D35C7D30030DFA6 /* recmus.cpp in Sources */,
 				4D7362A40D35CECC0030DFA6 /* cmpmus.cpp in Sources */,
+				4DB2D96D0D8383EA003401B0 /* musmlfdic.cpp in Sources */,
+				4D1675E70D8B628900F4D912 /* imkmeans.cpp in Sources */,
+				4D1676650D8B765000F4D912 /* supbookfile.cpp in Sources */,
+				4D1676660D8B765000F4D912 /* supfile.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

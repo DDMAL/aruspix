@@ -22,8 +22,6 @@
 //#define 	max(a, b)   ((a)>(b)?(a):(b))
 
 
-
-
 // Function taken from im_convolve_rank.cpp in imlib
 template <class T, class DT> 
 static int DoConvolveRankFunc(T *map, DT* new_map, int width, int height, int kw, int kh, DT (*func)(T* value, int count, int center), int counter)
@@ -427,6 +425,36 @@ void imAnalyzeClearHeight(const imImage* image, int region_count, int min_thresh
 		img_data++;
 	}
 	free(heights);
+}
+
+
+/*
+	Supprime les element dont la largeur ou la hauteur maximal est plus petite que threshold
+	*image est une image labelisee (bg = 0, puis 1,2 ...)
+	region_count est le nombre de regions
+ */
+void imAnalyzeClearMin(const imImage* image, int region_count, int threshold )
+{
+	imushort* img_data = (imushort*)image->data[0];
+	int i, j;
+
+	int* boxes = (int*)malloc(4 * region_count * sizeof(int));
+    memset(boxes, 0, 4 *  region_count * sizeof(int));
+    imAnalyzeBoundingBoxes(image, boxes, region_count);
+
+	img_data = (imushort*)image->data[0];
+	for (i = 0; i < image->count; i++)
+	{
+		if (*img_data)
+		{
+			j = ((*img_data) - 1) * 4;
+			if ( (boxes[j+1] - boxes[j+0] < threshold) || (boxes[j+3] - boxes[j+2] < threshold) )
+				(*img_data) = 0;
+
+		}
+		img_data++;
+	}
+	free( boxes );
 }
 
 /*

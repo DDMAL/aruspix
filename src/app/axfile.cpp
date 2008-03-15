@@ -59,7 +59,45 @@ const char *envtypes[] = {
 };
 
 
+#include "wx/arrimpl.cpp"
+WX_DEFINE_OBJARRAY( ArrayOfBookFileItems );
+
+int SortBookFileItems( AxBookFileItem **first, AxBookFileItem **second )
+{
+    if ( (*first)->m_filename < (*second)->m_filename )
+        return -1;
+    else if ( (*first)->m_filename > (*second)->m_filename )
+        return 1;
+    else
+        return 0;
+}
+
+
+
+
 // WDR: class implementations
+
+//----------------------------------------------------------------------------
+// AxBookFileItem
+//----------------------------------------------------------------------------
+
+// static
+AxBookFileItem *AxBookFileItem::FindFile( ArrayOfBookFileItems *array, wxString filename, int* index )
+{
+    wxASSERT( array );
+    wxASSERT( index );
+
+    *index = -1;
+
+    for( int i = 0; i < (int)array->GetCount(); i++ )
+        if ( array->Item(i).m_filename == filename )
+        {
+            *index = i;
+            return &array->Item(i);
+        }
+        
+    return NULL;
+}
 
 //----------------------------------------------------------------------------
 // AxFile

@@ -1338,19 +1338,19 @@ bool ImPage::FindOrnateLetters( )
     SwapImages( &m_opIm, &m_opImTmp1 );
 
     // supprimer les zones d'elements dont la hauteur moyenne < 140
-    PruneElementsZone( m_opIm, 140 / TIP_FACTOR_1, 0 );
+    PruneElementsZone( m_opIm, 140 / TIP_FACTOR_1, 0, IM_PRUNE_CLEAR_HEIGHT );
 
     // supprimer les zones d'elements dont la largeur moyenne < 120 
-    PruneElementsZone( m_opIm, 120 / TIP_FACTOR_1, 0, 1 );
+    PruneElementsZone( m_opIm, 120 / TIP_FACTOR_1, 0, IM_PRUNE_CLEAR_WIDTH );
 
     // supprimer les zones d'elements dont la hauteur moyenne < 140 
-    PruneElementsZone( m_opIm, 140 / TIP_FACTOR_1, 0 );
+    PruneElementsZone( m_opIm, 140 / TIP_FACTOR_1, 0, IM_PRUNE_CLEAR_HEIGHT );
 
     // supprimer les zones d'elements dont la largeur moyenne < 120 ou > 600
-    PruneElementsZone( m_opIm, 120 / TIP_FACTOR_1, 600 / TIP_FACTOR_1, 1 );
+    PruneElementsZone( m_opIm, 120 / TIP_FACTOR_1, 600 / TIP_FACTOR_1, IM_PRUNE_CLEAR_WIDTH );
 
     // supprimer les zones d'elements dont la hauteur moyenne > 600
-    PruneElementsZone( m_opIm, 120 / TIP_FACTOR_1, 600 / TIP_FACTOR_1 );
+    PruneElementsZone( m_opIm, 120 / TIP_FACTOR_1, 600 / TIP_FACTOR_1, IM_PRUNE_CLEAR_HEIGHT );
 
 
     m_opImTmp2 = imImageClone( m_opImMain );

@@ -61,6 +61,13 @@ enum
 	IM_BINARIZATION_BRINK
 };
 
+enum
+{
+	IM_PRUNE_CLEAR_HEIGHT = 0,
+	IM_PRUNE_CLEAR_WIDTH,
+	IM_PRUNE_CLEAR_MIN
+};
+
 // WDR: class declarations
 
 
@@ -86,7 +93,7 @@ public:
 protected:
     // WDR: member variable declarations for ImOperator
     void MedianFilter( int values[], int size, int filter_size, int *avg_ptr = NULL);
-    void PruneElementsZone( _imImage *image, int min_threshold, int max_threshold, int direction = 0 );
+    void PruneElementsZone( _imImage *image, int min_threshold, int max_threshold, int type = IM_PRUNE_CLEAR_HEIGHT );
     void MoveElements( _imImage *src, _imImage *dest, int bounding_boxes[],
         int count, int margins[4], int factor = 1 );
     void DistByCorrelation(const _imImage *image1, const _imImage *image2,

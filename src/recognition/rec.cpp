@@ -520,8 +520,27 @@ void RecEnv::ParseCmd( wxCmdLineParser *parser )
         wxString file = parser->GetParam( 0 );
 		                        
         // upgrade file version
-        m_recFilePtr->Open( file );
-        m_recFilePtr->Modify( );
+        //m_recFilePtr->Open( file );
+        //m_recFilePtr->Modify( );
+        //m_recFilePtr->Save( false );
+		
+		// generate special ground-truth
+		/*
+		m_recFilePtr->Open( file );
+		m_recFilePtr->Modify( );
+		m_recFilePtr->WriteNoPitchMLF( );
+        m_recFilePtr->Save( false );
+		*/
+		// HACK : force MFC generation here
+		m_recFilePtr->Open( file );
+		m_recFilePtr->Modify( );
+		wxArrayPtrVoid mfc_params;
+		wxString mfcfile = "";
+		bool merged = false;
+		mfc_params.Add(  &merged );
+		mfc_params.Add( &mfcfile );
+		AxProgressDlg dlg( m_framePtr, -1, _("Recognition") );
+		m_recFilePtr->GenerateMFC( mfc_params, &dlg ); // 2 operations
         m_recFilePtr->Save( false );
         
         /*
@@ -807,7 +826,8 @@ void RecEnv::OnExportAxmus( wxCommandEvent &event )
         model.Save();
 }
 
-//#define META_BATCH3
+#define META_BATCH3
+//#define META_BATCH_MUS
 
 void RecEnv::OnExportAxtyp( wxCommandEvent &event )
 {
@@ -1172,8 +1192,6 @@ void RecEnv::OnClose( wxCommandEvent &event )
 }
 
 
-
-
 // meta batch
 void RecEnv::BatchAdaptation( )
 {
@@ -1216,8 +1234,13 @@ void RecEnv::BatchAdaptation( )
             continue;   
     
         // name of model to generate - temporary...
-        RecTypModel model( "rec_batch3_model" );
-        model.New();    
+        //
+#ifdef META_BATCH_MUS    
+        RecMusModel model( "rec_batch3_model" );
+#else
+		RecTypModel model( "rec_batch3_model" );
+#endif
+		model.New();    
 
         //Reset();
 
@@ -1238,12 +1261,21 @@ void RecEnv::BatchAdaptation( )
         if ( !failed )  
             failed = !model.Commit( dlg );
 
-        imCounterEnd( dlg->GetCounter() );
+#ifdef META_BATCH_MUS
+	    if ( !failed )  
+			failed = !model.Train( params, dlg );
+#endif
+		
+		imCounterEnd( dlg->GetCounter() );
 
         dlg->AxShowModal( ); // stop process  ( failed ???? )
         dlg->Destroy();
-    
-        model.SaveAs( filename + ".axz" );
+
+#ifdef META_BATCH_MUS    
+        model.SaveAs( filename + ".axmus" );
+#else
+		model.SaveAs( filename + ".axtyp" );
+#endif
     
         cont = dir.GetNext(&filename);
     }

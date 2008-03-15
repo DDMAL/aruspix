@@ -57,11 +57,11 @@ bool SupEnv::s_filter2 = true;
 // WDR: class implementations
 
 //----------------------------------------------------------------------------
-// SupFile
+// SupOldFile
 //----------------------------------------------------------------------------
 
 
-SupFile::SupFile( wxString path, wxString shortname, AxProgressDlg *dlg ):
+SupOldFile::SupOldFile( wxString path, wxString shortname, AxProgressDlg *dlg ):
 	ImOperator( )
 {
     m_im1 = NULL;
@@ -77,19 +77,19 @@ SupFile::SupFile( wxString path, wxString shortname, AxProgressDlg *dlg ):
 	m_progressDlg = dlg;
 }
 
-SupFile::~SupFile()
+SupOldFile::~SupOldFile()
 {
 }
 
 /*
-void SupFile::SwapImages( _imImage **image1, _imImage **image2 )
+void SupOldFile::SwapImages( _imImage **image1, _imImage **image2 )
 {
     ImageDestroy( image1 );
     *image1 = *image2;
     *image2 = NULL;
 }
 
-void SupFile::ImageDestroy( _imImage **image )
+void SupOldFile::ImageDestroy( _imImage **image )
 {
     if ( *image )
     {
@@ -100,7 +100,7 @@ void SupFile::ImageDestroy( _imImage **image )
 }
 */
 
-bool SupFile::Terminate( int code,  ... )
+bool SupOldFile::Terminate( int code,  ... )
 {
     // Attention que deux de ces pointeurs ne refere pas la meme adresse lors de l'appel de cette methode !
     //ImageDestroy( &m_opImTmp1);
@@ -126,7 +126,7 @@ bool SupFile::Terminate( int code,  ... )
 }
 
 
-bool SupFile::Superimpose( const SupImController *imController1, 
+bool SupOldFile::Superimpose( const SupImController *imController1, 
         const SupImController *imController2, const wxString filename )
 {
     wxASSERT_MSG( m_progressDlg, "Progress dialog cannot be NULL");
@@ -547,10 +547,10 @@ bool SupFile::Superimpose( const SupImController *imController1,
 
 
 /*
-void SupFile::DistByCorrelationFFT(const AxImage image1, const AxImage image2,
+void SupOldFile::DistByCorrelationFFT(const AxImage image1, const AxImage image2,
                                 wxSize window, int *decalageX, int *decalageY)*/
 /*
-void SupFile::DistByCorrelationFFT(const _imImage *im1, const _imImage *im2,
+void SupOldFile::DistByCorrelationFFT(const _imImage *im1, const _imImage *im2,
                                 wxSize window, int *decalageX, int *decalageY)
 {
     wxASSERT_MSG(decalageX, wxT("decalageX cannot be NULL") );
@@ -608,10 +608,10 @@ void SupFile::DistByCorrelationFFT(const _imImage *im1, const _imImage *im2,
 */
 
 /*
-void SupFile::DistByCorrelation(const AxImage image1, const AxImage image2,
+void SupOldFile::DistByCorrelation(const AxImage image1, const AxImage image2,
                                 wxSize window, int *decalageX, int *decalageY)*/
 
-void SupFile::DistByCorrelation(_imImage *im1, _imImage *im2,
+void SupOldFile::DistByCorrelation(_imImage *im1, _imImage *im2,
                                 wxSize window, int *decalageX, int *decalageY)
 {
     wxASSERT_MSG(decalageX, wxT("decalageX cannot be NULL") );
@@ -682,7 +682,7 @@ void SupFile::DistByCorrelation(_imImage *im1, _imImage *im2,
 }
 
 
-wxPoint SupFile::CalcPositionAfterRotation( wxPoint point , float rot_alpha, 
+wxPoint SupOldFile::CalcPositionAfterRotation( wxPoint point , float rot_alpha, 
                                   int w, int h, int new_w, int new_h)
 {
 
@@ -717,7 +717,7 @@ wxPoint SupFile::CalcPositionAfterRotation( wxPoint point , float rot_alpha,
     return new_p;
 }
 
-// WDR: handler implementations for SupFile
+// WDR: handler implementations for SupOldFile
 
 
 //----------------------------------------------------------------------------
@@ -1076,7 +1076,7 @@ void SupEnv::OnSuperimpose( wxCommandEvent &event )
 //    dlg->SetBatchBar( "Superposition (1/1)", 0 );
     wxYield();
 
-    SupFile sp( "", "", dlg );
+    SupOldFile sp( "", "", dlg );
     if ( sp.Superimpose( m_imControl1Ptr, m_imControl2Ptr, filename  ))
 
     imCounterEnd( dlg->GetCounter() );

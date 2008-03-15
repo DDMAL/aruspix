@@ -64,7 +64,32 @@ enum
     PART_REFERENCE = (1<<0)
 };
 
+class AxBookFileItem;
+WX_DECLARE_OBJARRAY( AxBookFileItem, ArrayOfBookFileItems);
+
+int SortBookFileItems( AxBookFileItem **first, AxBookFileItem **second );
+
 // WDR: class declarations
+
+//----------------------------------------------------------------------------
+// AxBookFileItem
+//----------------------------------------------------------------------------
+
+class AxBookFileItem: public wxObject
+{
+public:
+    // constructors and destructors
+    AxBookFileItem() { m_flags = 0; }
+    AxBookFileItem( wxString filename, int flags = 0 ) { m_filename = filename; m_flags = flags; }
+    ~AxBookFileItem() {};
+	
+    // static on arrays
+    static AxBookFileItem *FindFile( ArrayOfBookFileItems *array, wxString filename, int* index  );
+
+public:
+    wxString m_filename;
+    int m_flags;
+};
 
 //----------------------------------------------------------------------------
 // AxFile

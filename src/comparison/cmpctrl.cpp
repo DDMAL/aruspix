@@ -401,7 +401,7 @@ void CmpCtrl::Update( )
 			SetItemText( m_cmpFilePtr->m_bookFiles[i].m_axFilesId, wxString::Format( _("Aruspix files (%d)"), ax ) );
 		else
 			SetItemText( m_cmpFilePtr->m_bookFiles[i].m_axFilesId, _("Aruspix files") );
-		for ( int j = 0; j < ax; j++)
+		for ( j = 0; j < ax; j++)
 		{
 			id = AppendItem( m_cmpFilePtr->m_bookFiles[i].m_axFilesId, book->m_axFiles[j].m_filename, IMG_AXZ, IMG_AXZ_S );
 			if (  book->m_axFiles[j].m_flags & FILE_DESACTIVATED ) 

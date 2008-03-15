@@ -312,8 +312,8 @@ bool CmpCollation::Align( MusStaff *staff_ref, MusStaff *staff_var, CmpCollation
 	CmpMLFOutput m_cmpoutput2( NULL, wxGetApp().m_workingDir + "/cmp_staff2", "CmpMLFSymb"  );
 	m_cmpoutput2.WriteStaff( staff_var );
 	
-	ArrayOfMLFSymboles *reference = m_cmpoutput1.GetSymbols();
-	ArrayOfMLFSymboles *variant = m_cmpoutput2.GetSymbols();
+	ArrayOfMLFSymbols *reference = m_cmpoutput1.GetSymbols();
+	ArrayOfMLFSymbols *variant = m_cmpoutput2.GetSymbols();
 	
 	
 	// We may eventually avoid the use of CmpMLFOuputs working directy on MusStaff
@@ -847,9 +847,8 @@ bool CmpFile::LoadBooks( wxArrayPtrVoid params, AxProgressDlg *dlg )
 		{
 			CmpBookPart *part = &m_bookFiles[i].m_bookParts[j];
 			
-			MusMLFOutput *m_mlfoutput = new MusMLFOutput( NULL, m_basename + part->m_id + ".mlf", "MusMLFSymbol" );
-			m_mlfoutput->m_addPageNo = false;
-			m_mlfoutput->m_writePosition = true;
+			MusMLFOutput *m_mlf = new MusMLFOutput( NULL, m_basename + part->m_id + ".mlf", NULL, "MusMLFSymbol" );
+			m_mlf->m_pagePosition = true;
 		
 			nfiles = (int)part->m_partpages.GetCount();
 			wxLogMessage( part->m_name );
@@ -883,16 +882,16 @@ bool CmpFile::LoadBooks( wxArrayPtrVoid params, AxProgressDlg *dlg )
 				if ( !failed && !dlg->GetCanceled() )
 				{
 					if ( part->m_partpages[k].m_staves.IsEmpty() ) // all staves
-						failed = !m_mlfoutput->WritePage( &recFile.m_musFilePtr->m_pages[0], wxFileName( part->m_partpages[k].m_axfile ).GetName(), recFile.m_imPagePtr );
+						failed = !m_mlf->WritePage( &recFile.m_musFilePtr->m_pages[0], wxFileName( part->m_partpages[k].m_axfile ).GetName(), recFile.m_imPagePtr );
 					else
-						failed = !m_mlfoutput->WritePage( &recFile.m_musFilePtr->m_pages[0], wxFileName( part->m_partpages[k].m_axfile ).GetName(), 
+						failed = !m_mlf->WritePage( &recFile.m_musFilePtr->m_pages[0], wxFileName( part->m_partpages[k].m_axfile ).GetName(), 
 							recFile.m_imPagePtr, &part->m_partpages[k].m_staves );
 				
 				}
 				//imCounterInc( dlg->GetCounter() );	
 			}
-			m_mlfoutput->Close();
-			delete m_mlfoutput;
+			m_mlf->Close();
+			delete m_mlf;
 			
 			wxLogMessage( _("Convert data ...") );
 			CmpMLFInput *m_cmpinput = new CmpMLFInput( NULL, m_basename + part->m_id + ".mlf"  );
@@ -1058,9 +1057,8 @@ bool CmpFile::Collate( wxArrayPtrVoid params, AxProgressDlg *dlg )
 			
 		RecBookFile *book = m_bookFiles[i].m_recBookFilePtr;
 		
-		MusMLFOutput *m_mlfoutput = new MusMLFOutput( NULL, m_basename + book->m_shortname + ".mlf", "MusMLFSymbol" );
-		m_mlfoutput->m_addPageNo = false;
-		m_mlfoutput->m_writePosition = true;
+		MusMLFOutput *m_mlf = new MusMLFOutput( NULL, m_basename + book->m_shortname + ".mlf", "MusMLFSymbol" );
+		m_mlf->m_writePosition = true;
 		
 		book_nbOfFiles = book->RecognizedFiles( &filenames, &paths );
 		for ( int j = 0; j < (int)book_nbOfFiles; j++ )
@@ -1086,11 +1084,11 @@ bool CmpFile::Collate( wxArrayPtrVoid params, AxProgressDlg *dlg )
 			//imCounterTotal( counter, count , operation.c_str() );
 
 			if ( !failed && !dlg->GetCanceled() )
-				failed = !m_mlfoutput->WritePage( &recFile.m_musFilePtr->m_pages[0], wxFileName( filenames[j] ).GetName(), recFile.m_imPagePtr );
+				failed = !m_mlf->WritePage( &recFile.m_musFilePtr->m_pages[0], wxFileName( filenames[j] ).GetName(), recFile.m_imPagePtr );
 			//imCounterInc( dlg->GetCounter() );	
 		}
-		m_mlfoutput->Close();
-		delete m_mlfoutput;
+		m_mlf->Close();
+		delete m_mlf;
     }
 
     imCounterEnd( dlg->GetCounter() );

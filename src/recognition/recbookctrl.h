@@ -26,7 +26,7 @@ class RecEnv;
 class RecBookFile;
 class RecBookCtrl;
 
-class RecBookFileItem;
+class AxBookFileItem;
 
 // WDR: class declarations
 

@@ -30,27 +30,9 @@ class RecBookFile;
 class RecBookCtrl;
 class RecModel;
 
-class RecBookFileItem;
-WX_DECLARE_OBJARRAY( RecBookFileItem, ArrayOfBookFiles);
+
 
 // WDR: class declarations
-
-//----------------------------------------------------------------------------
-// RecBookFileItem
-//----------------------------------------------------------------------------
-
-class RecBookFileItem: public wxObject
-{
-public:
-    // constructors and destructors
-    RecBookFileItem() { m_flags = 0; }
-    RecBookFileItem( wxString filename, int flags = 0 ) { m_filename = filename; m_flags = flags; }
-    ~RecBookFileItem() {};
-
-public:
-    wxString m_filename;
-    int m_flags;
-};
 
 //----------------------------------------------------------------------------
 // RecBookFile
@@ -93,9 +75,6 @@ public:
 	wxString GetTypCacheFilename( ) { return m_basename + "cache.axtyp";}
 	wxString GetMusCacheFilename( ) { return m_basename + "cache.axmus";}
     
-    // static on arrays
-    static RecBookFileItem *FindFile( ArrayOfBookFiles *array, wxString filename, int* index  );
-    
 public:
     // WDR: member variable declarations for RecBookFile
     // infos
@@ -108,8 +87,8 @@ public:
     // files
     wxString m_axFileDir;
     wxString m_imgFileDir;
-    ArrayOfBookFiles m_axFiles;
-    ArrayOfBookFiles m_imgFiles;
+    ArrayOfBookFileItems m_axFiles;
+    ArrayOfBookFileItems m_imgFiles;
 	//
 	bool m_fullOptimized; // a full Adaptation has been performed, don't use fast adaptation
 	int m_nbFilesOptimization; // number of files used for full Adaptation

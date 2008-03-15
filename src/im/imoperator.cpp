@@ -407,24 +407,26 @@ bool ImOperator::GetImage( _imImage **image, int factor,  int binary_method, boo
 }
 
 
-void ImOperator::PruneElementsZone( _imImage *image, int min_threshold, int max_threshold, int direction )
+void ImOperator::PruneElementsZone( _imImage *image, int min_threshold, int max_threshold, int type )
 {
-    imImage *region_image = imImageCreate(m_opIm->width, m_opIm->height, IM_GRAY, IM_USHORT);
+    imImage *region_image = imImageCreate(image->width, image->height, IM_GRAY, IM_USHORT);
     if (!region_image)
         return;
 
     int region_count = imAnalyzeFindRegions(image, region_image, 4, 1);
     if (region_count)
     {
-        if  ( direction == 0 ) // min height
+        if  ( type == IM_PRUNE_CLEAR_HEIGHT ) // min height
             imAnalyzeClearHeight(region_image, region_count, min_threshold, max_threshold);
-        else // min width
+        else if  ( type == IM_PRUNE_CLEAR_WIDTH ) // min width
             imAnalyzeClearWidth(region_image, region_count, min_threshold, max_threshold);
+		else // IM_PRUNE_CLEAR_MIN
+			imAnalyzeClearMin(region_image, region_count, min_threshold );
 
         imushort* region_data = (imushort*)region_image->data[0];
         imbyte* img_data = (imbyte*)image->data[0];
 
-        for (int i = 0; i < m_opIm->count; i++)
+        for (int i = 0; i < image->count; i++)
         {
             if (*region_data)
                 *img_data = 1;
