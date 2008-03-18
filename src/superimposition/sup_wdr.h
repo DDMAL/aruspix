@@ -30,29 +30,51 @@
 
 // Declare window functions
 
-const int ID2_SPLITTER1 = 12002;
+const int ID2_SPLITTER1 = 12000;
 wxSizer *WindowFunc2( wxWindow *parent, bool call_fit = TRUE, bool set_sizer = TRUE );
+
+const int ID2_TREEBOOK = 12001;
+const int ID2_LINE2 = 12002;
+const int ID2_PREVIEW = 12003;
+const int ID2_CB_PREVIEW = 12004;
+wxSizer *SupFunc2( wxWindow *parent, bool call_fit = TRUE, bool set_sizer = TRUE );
+
+const int ID2_TEXT = 12005;
+const int ID2_RISM = 12006;
+const int ID2_COMPOSER = 12007;
+const int ID2_TITLE = 12008;
+const int ID2_PRINTER = 12009;
+const int ID2_YEAR = 12010;
+const int ID2_LIBRARY1 = 12011;
+const int ID2_LIBRARY2 = 12012;
+const int ID2_BOOK_IMAGES1 = 12013;
+const int ID2_ON_BOOK_IMAGES1 = 12014;
+const int ID2_BOOK_IMAGES2 = 12015;
+const int ID2_ON_BOOK_IMAGES2 = 12016;
+const int ID2_BOOK_AXFILES = 12017;
+const int ID2_ON_BOOK_AXFILES = 12018;
+wxSizer *SupFuncData2( wxWindow *parent, bool call_fit = TRUE, bool set_sizer = TRUE );
 
 // Declare menubar functions
 
-const int ID2_MENU_FILE = 12003;
-const int ID2_MENU0 = 12004;
-const int ID2_OPEN1 = 12005;
-const int ID2_OPEN2 = 12006;
-const int ID2_MENU_EDIT = 12007;
-const int ID2_MENU = 12008;
-const int ID2_POINTS = 12009;
-const int ID2_PAGE = 12010;
-const int ID2_PREVIOUS = 12011;
-const int ID2_PREVIOUS1 = 12012;
-const int ID2_PREVIOUS2 = 12013;
-const int ID2_NEXT = 12014;
-const int ID2_NEXT1 = 12015;
-const int ID2_NEXT2 = 12016;
-const int ID2_GOTO1 = 12017;
-const int ID2_GOTO2 = 12018;
-const int ID2_TOOLS = 12019;
-const int ID2_SUPERIMPOSE = 12020;
+const int ID2_MENU_FILE = 12019;
+const int ID2_MENU0 = 12020;
+const int ID2_OPEN1 = 12021;
+const int ID2_OPEN2 = 12022;
+const int ID2_MENU_EDIT = 12023;
+const int ID2_MENU = 12024;
+const int ID2_POINTS = 12025;
+const int ID2_PAGE = 12026;
+const int ID2_PREVIOUS = 12027;
+const int ID2_PREVIOUS1 = 12028;
+const int ID2_PREVIOUS2 = 12029;
+const int ID2_NEXT = 12030;
+const int ID2_NEXT1 = 12031;
+const int ID2_NEXT2 = 12032;
+const int ID2_GOTO1 = 12033;
+const int ID2_GOTO2 = 12034;
+const int ID2_TOOLS = 12035;
+const int ID2_SUPERIMPOSE = 12036;
 wxMenuBar *MenuBarFunc2();
 
 // Declare toolbar functions
