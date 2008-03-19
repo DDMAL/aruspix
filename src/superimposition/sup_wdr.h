@@ -93,6 +93,8 @@ wxMenuBar *MenuBarFunc2();
 
 // Declare bitmap functions
 
+wxBitmap BitmapsFunc2( size_t index );
+
 #endif
 
 // End of generated file

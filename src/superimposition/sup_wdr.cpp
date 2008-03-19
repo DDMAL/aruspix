@@ -68,7 +68,7 @@ wxSizer *SupBookFunc2( wxWindow *parent, bool call_fit, bool set_sizer )
     wxStaticLine *item2 = new wxStaticLine( parent, ID2_LINE2, wxDefaultPosition, wxSize(20,-1), wxLI_HORIZONTAL );
     item0->Add( item2, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
-    wxStaticText *item3 = new wxStaticText( parent, ID2_PREVIEW, "No image", wxDefaultPosition, wxSize(200,200) );
+    wxStaticBitmap *item3 = new wxStaticBitmap( parent, ID2_PREVIEW, BitmapsFunc2( 0 ), wxDefaultPosition, wxSize(200,200) );
     item0->Add( item3, 0, wxALIGN_CENTER|wxALL, 5 );
 
     wxCheckBox *item4 = new wxCheckBox( parent, ID2_CB_PREVIEW, _("Preview"), wxDefaultPosition, wxDefaultSize, 0 );
@@ -275,6 +275,38 @@ wxMenuBar *MenuBarFunc2()
 // Implement toolbar functions
 
 // Implement bitmap functions
+
+wxBitmap BitmapsFunc2( size_t index )
+{
+    if (index == 0)
+    {
+        /* XPM */
+        static const char *xpm_data[] = {
+        /* columns rows colors chars-per-pixel */
+        "16 15 1 1",
+        "  c None",
+        /* pixels */
+        "                ",
+        "                ",
+        "                ",
+        "                ",
+        "                ",
+        "                ",
+        "                ",
+        "                ",
+        "                ",
+        "                ",
+        "                ",
+        "                ",
+        "                ",
+        "                ",
+        "                "
+        };
+        wxBitmap bitmap( xpm_data );
+        return bitmap;
+    }
+    return wxNullBitmap;
+}
 
 
 // End of generated file
