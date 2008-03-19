@@ -261,7 +261,7 @@ wxMenuBar *MenuBarFunc2()
     wxMenu* item5 = new wxMenu;
     item5->Append( ID2_ZOOM_OUT, _("Zoom out\t-"), _("Zoom out") );
     item5->Append( ID2_ZOOM_IN, _("Zoom in\t+"), _("Zoom in") );
-    item5->Append( ID4_ADJUST, _("Adjust"), _("Adjust to fit the window"), wxITEM_CHECK );
+    item5->Append( ID2_ADJUST, _("Adjust"), _("Adjust to fit the window"), wxITEM_CHECK );
     item5->Append( ID2_ADJUST_V, _("Adjust vertically"), _("Adjust to fit the window vertically"), wxITEM_CHECK );
     item5->Append( ID2_ADJUST_H, _("Adjust horizontally"), _("Adjust to fit the window horizontally"), wxITEM_CHECK );
     item0->Append( item5, _("&Page") );

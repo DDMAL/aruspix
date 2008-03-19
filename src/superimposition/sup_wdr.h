@@ -84,7 +84,7 @@ const int ID2_GOTO2 = 12042;
 const int ID2_PAGE = 12043;
 const int ID2_ZOOM_OUT = 12044;
 const int ID2_ZOOM_IN = 12045;
-const int ID4_ADJUST = 12046;
+const int ID2_ADJUST = 12046;
 const int ID2_ADJUST_V = 12047;
 const int ID2_ADJUST_H = 12048;
 wxMenuBar *MenuBarFunc2();
