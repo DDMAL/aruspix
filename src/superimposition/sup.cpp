@@ -209,11 +209,32 @@ SupEnv::~SupEnv()
 
 void SupEnv::LoadWindow()
 {
-    this->m_envWindowPtr = new SupPanel(m_framePtr,-1);
+    m_vsplitterPtr = new wxSplitterWindow( m_framePtr, -1 );
+    this->m_envWindowPtr = m_vsplitterPtr;
     if (!m_envWindowPtr)
         return;
+        
+    m_supBookPanelPtr = new SupBookPanel( m_vsplitterPtr, -1);
+    m_supBookPtr = m_supBookPanelPtr->GetTree();
+    m_supBookPtr->SetBookFile( m_supBookFilePtr );
+    m_supBookPtr->SetEnv( this );
+    m_supBookPtr->SetBookPanel( m_supBookPanelPtr );
+
+    m_splitterPtr = new wxSplitterWindow( m_vsplitterPtr, -1 );
+    if (!m_splitterPtr)
+        return;
+    m_vsplitterPtr->SetMinimumPaneSize( 100 );
+    m_vsplitterPtr->SplitVertically( m_supBookPanelPtr, m_splitterPtr, SupEnv::s_book_sash );
+    m_vsplitterPtr->Unsplit( m_supBookPanelPtr );
+
+    m_splitterPtr->SetWindowStyleFlag( wxSP_FULLSASH );
+    m_splitterPtr->SetMinimumPaneSize( 100 );
 
 	/*
+    this->m_envWindowPtr = new SupPanel(m_framePtr,-1);
+    if (!m_envWindowPtr)
+        return
+		
     SupPanel *panel = ((SupPanel*)m_envWindowPtr);
     if (!panel)
         return;

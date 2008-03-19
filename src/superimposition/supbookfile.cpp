@@ -30,7 +30,7 @@
 //----------------------------------------------------------------------------
 
 SupBookFile::SupBookFile( wxString name, SupEnv *env )
-: AxFile( name, AX_FILE_PROJECT, AX_FILE_RECOGNITION )
+: AxFile( name, AX_FILE_PROJECT, AX_FILE_SUPERIMPOSITION )
 {
     m_envPtr = env;
 }
