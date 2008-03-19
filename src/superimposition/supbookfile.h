@@ -26,7 +26,6 @@
 #include "sup_wdr.h"
 
 class SupEnv;
-
 class SupBookCtrl;
 
 
@@ -48,7 +47,8 @@ public:
     virtual void SupBookFile::CloseContent( ); // Desactivate content before deletion
     
     // operations
-    bool LoadImages( );
+    bool LoadImages1( );
+	bool LoadImages2( );
     bool LoadAxfiles( );
     bool RemoveImage( wxString filename );
     bool DesactivateImage( wxString filename );

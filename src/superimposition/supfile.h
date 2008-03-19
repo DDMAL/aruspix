@@ -56,6 +56,10 @@ public:
 	// status
 	static bool SupFile::IsSuperimposed( wxString filename );
 	
+private:
+	wxPoint CalcPositionAfterRotation( wxPoint point , float rot_alpha, 
+                                  int w, int h, int new_w, int new_h);
+	
     
 public:
     // WDR: member variable declarations for SupFile

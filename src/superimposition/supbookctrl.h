@@ -24,7 +24,8 @@
 
 class SupEnv;
 class SupFile;
-class SupCtrl;
+class SupBookFile;
+class SupBookCtrl;
 
 class AxBookFileItem;
 
@@ -43,10 +44,10 @@ public:
     
     // WDR: method declarations for SupBookDataDlg
     wxTextCtrl* Axfiles()  { return (wxTextCtrl*) FindWindow( ID2_BOOK_AXFILES ); }
-    wxTextCtrl* Images()  { return (wxTextCtrl*) FindWindow( ID2_BOOK_IMAGES1 ); }
-	wxTextCtrl* Images()  { return (wxTextCtrl*) FindWindow( ID2_BOOK_IMAGES2 ); }
-    wxTextCtrl* Library()  { return (wxTextCtrl*) FindWindow( ID2_LIBRARY1 ); }
-	wxTextCtrl* Library()  { return (wxTextCtrl*) FindWindow( ID2_LIBRARY2 ); }
+    wxTextCtrl* Images1()  { return (wxTextCtrl*) FindWindow( ID2_BOOK_IMAGES1 ); }
+	wxTextCtrl* Images2()  { return (wxTextCtrl*) FindWindow( ID2_BOOK_IMAGES2 ); }
+    wxTextCtrl* Library1()  { return (wxTextCtrl*) FindWindow( ID2_LIBRARY1 ); }
+	wxTextCtrl* Library2()  { return (wxTextCtrl*) FindWindow( ID2_LIBRARY2 ); }
     wxTextCtrl* Year()  { return (wxTextCtrl*) FindWindow( ID2_YEAR ); }
     wxTextCtrl* Printer()  { return (wxTextCtrl*) FindWindow( ID2_PRINTER ); }
     wxTextCtrl* Title()  { return (wxTextCtrl*) FindWindow( ID2_TITLE ); }
@@ -60,7 +61,8 @@ private:
     // WDR: member variable declarations for SupBookDataDlg
     SupBookFile *m_supBookFile;
     bool m_loadAxfiles;
-    bool m_loadImages;
+    bool m_loadImages1;
+	bool m_loadImages2;
     
 private:
     // WDR: handler declarations for SupBookDataDlg

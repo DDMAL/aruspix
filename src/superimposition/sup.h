@@ -31,12 +31,27 @@ enum
 	ID2_CONTROLLER1 = ENV_IDS_LOCAL_SUP,
 	ID2_CONTROLLER2,
 	ID2_VIEW1,
-	ID2_VIEW2
+	ID2_VIEW2,
+
+    ID2_POPUP_TREE_LOAD,
+    ID2_POPUP_TREE_SUP,
+    ID2_POPUP_TREE_BOOK_EDIT,
+    ID2_POPUP_TREE_IMG_REMOVE,
+    ID2_POPUP_TREE_IMG_DESACTIVATE,
+    ID2_POPUP_TREE_AX_REMOVE,
+    ID2_POPUP_TREE_AX_DESACTIVATE,
+    ID2_POPUP_TREE_AX_DELETE
 };
 
 struct _imImage;
 class SupImController;
 class AxProgressDlg;
+
+class SupFile;
+class SupBookCtrl;
+class SupBookFile;
+class SupBookPanel;
+class SupEnv;
 
 // WDR: class declarations
 
@@ -167,13 +182,30 @@ public:
     virtual void ParseCmd( wxCmdLineParser *parser );
     virtual void UpdateTitle( );
 	virtual void RealizeToolbar( );
-
+    virtual void Open( wxString filename, int type );
+    virtual bool CloseAll( );
+    //
+    bool ResetFile(); // must be called when new file is created or opened
+    bool ResetBookFile(); // must be called when new file is created or opened
+    void OpenFile( wxString filename, int type );
+    void OpenBookFile( wxString filename );
+    void UpdateViews( int flags );
+	
 private:
     // WDR: member variable declarations for SupEnv
     SupImController *m_imControl1Ptr;
     SupImController *m_imControl2Ptr;
     AxScrolledWindow *m_view1Ptr;
     AxScrolledWindow *m_view2Ptr;
+	
+    wxSplitterWindow *m_vsplitterPtr;
+	wxSplitterWindow *m_splitterPtr;
+    // superimposition elements
+    SupFile *m_supFilePtr;
+    // 
+    SupBookCtrl *m_supBookPtr; // tree
+    SupBookFile *m_supBookFilePtr;
+    SupBookPanel *m_supBookPanelPtr;
 
 public:
     static int s_segmentSize;
@@ -184,21 +216,43 @@ public:
     static int s_interpolation;
     static bool s_filter1;
     static bool s_filter2;
+    // sash
+    static int s_book_sash;
+	static int s_view_sash;
+	// tree
+    static bool s_expand_root;
+	static bool s_expand_book;
+    static bool s_expand_img;   
+	static bool s_expand_ax;
     
 private:
     // WDR: handler declarations for SupEnv
+    void OnBookEdit( wxCommandEvent &event );
+    void OnBookOptimize( wxCommandEvent &event );
+    void OnBookSuperimpose( wxCommandEvent &event );
+    void OnBookLoad( wxCommandEvent &event );
+    void OnCloseBook( wxCommandEvent &event );
+    void OnOpenBook( wxCommandEvent &event );
+    void OnNewBook( wxCommandEvent &event );
+    void OnSaveBookAs( wxCommandEvent &event );
+    void OnSaveBook( wxCommandEvent &event );
+    void OnNew( wxCommandEvent &event );
+    void OnSave( wxCommandEvent &event );
+    void OnSaveAs( wxCommandEvent &event );
+    void OnClose( wxCommandEvent &event );
+    void OnExportImage( wxCommandEvent &event );
+    void OnAdjust( wxCommandEvent &event );
+    void OnZoom( wxCommandEvent &event );
     void OnPrevious( wxCommandEvent &event );
     void OnNext( wxCommandEvent &event );
     void OnGoto( wxCommandEvent &event );
-    void OnClose( wxCommandEvent &event );
     void OnNextBoth( wxCommandEvent &event );
     void OnPreviousBoth( wxCommandEvent &event );
     void OnPaste( wxCommandEvent &event );
     void OnCopy( wxCommandEvent &event );
     void OnCut( wxCommandEvent &event );
-    void OnOpen( wxCommandEvent &event );
     void OnPutPoints( wxCommandEvent &event );
-    void OnSuperimpose( wxCommandEvent &event );
+    void OnRun( wxCommandEvent &event );
     void OnUpdateUI( wxUpdateUIEvent &event );
 
 private:

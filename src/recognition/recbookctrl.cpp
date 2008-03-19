@@ -8,7 +8,7 @@
 #ifdef AX_RECOGNITION
 
 #if defined(__GNUG__) && ! defined(__APPLE__)
-#pragma implementation "recbookctrl.h"
+	#pragma implementation "recbookctrl.h"
 #endif
 
 // For compilers that support precompilation, includes "wx/wx.h".
@@ -48,7 +48,7 @@ RecBookDataDlg::RecBookDataDlg( wxWindow *parent, wxWindowID id, const wxString 
     wxDialog( parent, id, title )
 {
     // WDR: dialog function BookDataFunc4 for RecBookDataDlg
-    BookDataFunc4( this, TRUE );
+    RecBookDataFunc4( this, TRUE );
     m_recBookFile = recBookFile;
     m_loadAxfiles = false;
     m_loadImages = false;
@@ -162,7 +162,7 @@ RecBookPanel::RecBookPanel( wxWindow *parent, wxWindowID id,
 wxPanel( parent, id, position, size, style )
 {
     // WDR: dialog function BookFunc4 for RecBookPanel
-    BookFunc4( this, TRUE );
+    RecBookFunc4( this, TRUE );
     this->GetPreviewCB( )->SetValue( true );
 	m_show_preview = true;
 	m_filename = "";

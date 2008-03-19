@@ -48,7 +48,7 @@ SupBookDataDlg::SupBookDataDlg( wxWindow *parent, wxWindowID id, const wxString 
     wxDialog( parent, id, title )
 {
     // WDR: dialog function BookDataFunc4 for SupBookDataDlg
-    BookDataFunc4( this, TRUE );
+    SupBookDataFunc2( this, TRUE );
     m_supBookFile = supBookFile;
     m_loadAxfiles = false;
     m_loadImages1 = false;
@@ -110,9 +110,9 @@ void SupBookDataDlg::OnBrowseAxfiles( wxCommandEvent &event )
     m_loadAxfiles = true;
 }
 
-void SupBookDataDlg::OnBrowseImages( wxCommandEvent &event )
+void SupBookDataDlg::OnBrowseImages1( wxCommandEvent &event )
 {
-    wxString start = this->Images1()->GetValue( ).IsEmpty() ? wxGetApp().m_lastDirTIFF_in : this->Images()->GetValue( );
+    wxString start = this->Images1()->GetValue( ).IsEmpty() ? wxGetApp().m_lastDirTIFF_in : this->Images1()->GetValue( );
     wxString input = wxDirSelector( _("Images folder"), start );
     if ( input.empty() )
         return;
@@ -124,7 +124,7 @@ void SupBookDataDlg::OnBrowseImages( wxCommandEvent &event )
 
 void SupBookDataDlg::OnBrowseImages2( wxCommandEvent &event )
 {
-    wxString start = this->Images2()->GetValue( ).IsEmpty() ? wxGetApp().m_lastDirTIFF_in : this->Images()->GetValue( );
+    wxString start = this->Images2()->GetValue( ).IsEmpty() ? wxGetApp().m_lastDirTIFF_in : this->Images2()->GetValue( );
     wxString input = wxDirSelector( _("Images folder"), start );
     if ( input.empty() )
         return;
@@ -181,7 +181,7 @@ SupBookPanel::SupBookPanel( wxWindow *parent, wxWindowID id,
 wxPanel( parent, id, position, size, style )
 {
     // WDR: dialog function BookFunc4 for SupBookPanel
-    BookFunc4( this, TRUE );
+    SupBookFunc2( this, TRUE );
     this->GetPreviewCB( )->SetValue( true );
 	m_show_preview = true;
 	m_filename = "";
@@ -428,7 +428,7 @@ void SupBookCtrl::Update( )
 			SetItemTextColour( id , *wxLIGHT_GREY );
         if ( !wxFileExists( m_supBookFilePtr->m_axFileDir + wxFileName::GetPathSeparator() +  m_supBookFilePtr->m_axFiles[i].m_filename ) ) 
             SetItemTextColour( id , *wxRED );
-		else if ( SupFile::IsRecognized( m_supBookFilePtr->m_axFileDir + wxFileName::GetPathSeparator() +  m_supBookFilePtr->m_axFiles[i].m_filename ) )
+		else if ( SupFile::IsSuperimposed( m_supBookFilePtr->m_axFileDir + wxFileName::GetPathSeparator() +  m_supBookFilePtr->m_axFiles[i].m_filename ) )
 		{
 			SetItemImage( id, IMG_AXZ_OK ); 
 			SetItemImage( id, IMG_AXZ_OK_S,  wxTreeItemIcon_Selected );

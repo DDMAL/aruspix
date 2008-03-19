@@ -913,3 +913,108 @@ void imSaveValues( int *values, int count, const char *filename )
 	fclose( fid );
 
 }
+
+/*
+void SupOldFile::DistByCorrelationFFT(const _imImage *im1, const _imImage *im2,
+                                wxSize window, int *decalageX, int *decalageY)
+{
+    wxASSERT_MSG(decalageX, wxT("decalageX cannot be NULL") );
+    wxASSERT_MSG(decalageY, wxT("decalagY cannot be NULL") );
+    wxASSERT_MSG(im1, wxT("Image 1 cannot be NULL") );
+    wxASSERT_MSG(im2, wxT("Image 2 cannot be NULL") );
+
+    imImage *corr = imImageCreate( im1->width, im1->height, im1->color_space, IM_CFLOAT);
+    imProcessCrossCorrelation( im1, im2, corr );
+    imImage *corrCrop = imImageCreate( window.GetWidth() * 2 + 1, window.GetHeight() * 2 + 1,
+        corr->color_space, IM_CFLOAT );
+    int xmin = im1->width / 2 - window.GetWidth();
+    int ymin = im1->height / 2 - window.GetHeight();
+    imProcessCrop( corr, corrCrop, xmin, ymin );
+
+    imImage *corrReal = imImageCreate( corrCrop->width , corrCrop->height , corrCrop->color_space, IM_BYTE );
+    imConvertDataType( corrCrop, corrReal, IM_CPX_MAG, IM_GAMMA_LINEAR, 0, IM_CAST_MINMAX);
+
+    int width = corrReal->width;
+    int height = corrReal->height;
+    int max = 0, maxX = 0, maxY = 0;
+    imbyte *buf = (imbyte*)corrReal->data[0];
+
+    for (int y = 0; y < height; y++)
+    {
+        for (int x = 0; x < width; x++)
+        {
+            if ( buf[y * width + x] > max )
+            {
+                max = buf[y * width + x];
+                maxX = x;
+                maxY = y;
+
+            }
+        }
+    }
+
+    *decalageX = maxX - window.GetWidth();
+    *decalageY = maxY - window.GetHeight();
+
+    //int error;
+    //imFile* ifile = NULL;
+    //ifile = imFileNew("D:/Mes Images/corr1.tif", "TIFF", &error);
+    //imFileSaveImage(ifile,corrReal);
+    //imFileClose(ifile);
+
+    imImageDestroy( corrReal );
+    imImageDestroy( corrCrop );
+    imImageDestroy( corr );
+}
+*/
+
+void DistByCorrelation( imImage *im1, imImage *im2, int width, int height, int *decalageX, int *decalageY)
+{
+    wxASSERT_MSG(decalageX, wxT("decalageX cannot be NULL") );
+    wxASSERT_MSG(decalageY, wxT("decalagY cannot be NULL") );
+    wxASSERT_MSG(im1, wxT("Image 1 cannot be NULL") );
+    wxASSERT_MSG(im2, wxT("Image 2 cannot be NULL") );
+
+    
+	imProcessNegative( im1, im1 );
+	imProcessNegative( im2, im2 );
+
+	imImage *imTmp1 = imImageCreate(
+            im1->width +  width * 2,
+            im1->height +  height * 2,
+            im1->color_space, im1->data_type);
+	imProcessAddMargins( im1 ,imTmp1, width, height );
+
+
+    int conv_width = 2 * width;
+    int conv_height = 2 * height;
+    imImage *mask = imImageCreate(im2->width, im2->height,im2->color_space, im2->data_type);
+    imbyte *bufIm2 = (imbyte*)im2->data[0];
+	
+    int maxSum = 0, maxX = 0, maxY = 0;
+    for (int y = 0; y < conv_height; y++)
+    {
+        for (int x = 0; x < conv_width; x++)
+        {
+            imProcessCrop(imTmp1,mask, x, y);
+            imbyte *bufMask = (imbyte*)mask->data[0]; 
+            int sum = 0;
+            for (int i = 0; i < mask->plane_size; i++)
+            {
+                sum += (bufIm2[i] / 255) * (bufMask[i] / 255);
+            }
+            if (sum > maxSum)
+            {
+                maxSum = sum;
+                maxX = x;
+                maxY = y;
+            }
+        }
+    }
+
+    *decalageX = maxX - width;
+    *decalageY = maxY - height;
+    imImageDestroy(imTmp1);
+    imImageDestroy(mask);
+}
+

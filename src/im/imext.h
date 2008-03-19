@@ -58,6 +58,8 @@ void imSaveValues( int *values, int count, const char *filename );
 
 void imPrintValues( int *values, int count );
 
+void DistByCorrelation( _imImage *im1, _imImage *im2, int width, int height, int *decalageX, int *decalageY);
+
 #if defined(__cplusplus)
 }
 #endif

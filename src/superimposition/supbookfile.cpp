@@ -290,7 +290,7 @@ bool SupBookFile::LoadAxfiles( )
 }
 
 
-bool SupBookFile::LoadImages( )
+bool SupBookFile::LoadImages1( )
 {
     wxArrayString paths;
     int index, nbfiles, i;
@@ -307,6 +307,14 @@ bool SupBookFile::LoadImages( )
         }
         m_imgFiles1.Sort( SortBookFileItems );
     }
+    
+    return true;
+}
+
+bool SupBookFile::LoadImages2( )
+{
+    wxArrayString paths;
+    int index, nbfiles, i;
 
     if ( wxDirExists( m_imgFileDir2 ) )
     {
@@ -318,7 +326,7 @@ bool SupBookFile::LoadImages( )
             if ( !AxBookFileItem::FindFile( &m_imgFiles2, name.GetFullName(), &index ) )
                 m_imgFiles2.Add( AxBookFileItem( name.GetFullName() ) );
         }
-        m_imgFiles1.Sort( SortBookFileItems );
+        m_imgFiles2.Sort( SortBookFileItems );
     }
     
     return true;
