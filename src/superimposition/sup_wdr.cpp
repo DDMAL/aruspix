@@ -244,7 +244,7 @@ wxMenuBar *MenuBarFunc2()
     wxMenu* item3 = new wxMenu;
     item3->Append( ID2_BOOK_EDIT, _("Edit"), _("Edit the book informations") );
     item3->Append( ID2_BOOK_LOAD, _("Reload files"), _("Reload images and Aruspix files into the book") );
-    item3->Append( ID2_MENU, wxT(""), wxT(""), wxITEM_RADIO );
+    item3->AppendSeparator();
     item3->Append( ID2_BOOK_SUP, _("Batch superimposition"), _("Superimpose active pages of the book") );
     item0->Append( item3, _("&Book") );
     
