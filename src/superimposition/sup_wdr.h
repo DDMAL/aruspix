@@ -59,31 +59,39 @@ wxSizer *SupFuncData2( wxWindow *parent, bool call_fit = TRUE, bool set_sizer = 
 
 const int ID2_MENU_FILE = 12019;
 const int ID2_MENU0 = 12020;
-const int ID2_OPEN1 = 12021;
-const int ID2_OPEN2 = 12022;
-const int ID2_MENU_EDIT = 12023;
-const int ID2_MENU = 12024;
-const int ID2_POINTS = 12025;
-const int ID2_PAGE = 12026;
-const int ID2_PREVIOUS = 12027;
-const int ID2_PREVIOUS1 = 12028;
-const int ID2_PREVIOUS2 = 12029;
-const int ID2_NEXT = 12030;
-const int ID2_NEXT1 = 12031;
-const int ID2_NEXT2 = 12032;
-const int ID2_GOTO1 = 12033;
-const int ID2_GOTO2 = 12034;
-const int ID2_TOOLS = 12035;
-const int ID2_SUPERIMPOSE = 12036;
+const int ID2_NEW_BOOK = 12021;
+const int ID2_OPEN_BOOK = 12022;
+const int ID2_CLOSE_BOOK = 12023;
+const int ID2_SAVE_BOOK = 12024;
+const int ID2_SAVE_AS_BOOK = 12025;
+const int ID2_EXPORT_IMAGE = 12026;
+const int ID2_MENU_EDIT = 12027;
+const int ID2_MENU = 12028;
+const int ID2_PROCESS = 12029;
+const int ID2_BOOK = 12030;
+const int ID2_BOOK_EDIT = 12031;
+const int ID2_BOOK_LOAD = 12032;
+const int ID2_BOOK_SUP = 12033;
+const int ID2_PAGE = 12034;
+const int ID2_PREVIOUS = 12035;
+const int ID2_PREVIOUS1 = 12036;
+const int ID2_PREVIOUS2 = 12037;
+const int ID2_NEXT = 12038;
+const int ID2_NEXT1 = 12039;
+const int ID2_NEXT2 = 12040;
+const int ID2_GOTO1 = 12041;
+const int ID2_GOTO2 = 12042;
+const int ID4_PAGE = 12043;
+const int ID2_ZOOM_OUT = 12044;
+const int ID2_ZOOM_IN = 12045;
+const int ID4_ADJUST = 12046;
+const int ID2_ADJUST_V = 12047;
+const int ID2_ADJUST_H = 12048;
 wxMenuBar *MenuBarFunc2();
 
 // Declare toolbar functions
 
-void ToolBarFunc2( wxToolBar *parent );
-
 // Declare bitmap functions
-
-wxBitmap BitmapsFunc2( size_t index );
 
 #endif
 

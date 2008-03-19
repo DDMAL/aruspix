@@ -223,246 +223,55 @@ wxMenuBar *MenuBarFunc2()
     
     wxMenu* item1 = new wxMenu;
     item1->AppendSeparator();
-    item1->Append( ID2_OPEN1, _("Open source &1"), _("Open the file of the source 1") );
-    item1->Append( ID2_OPEN2, _("Open source &2"), _("Open the file of the source 2") );
+    item1->Append( ID2_NEW_BOOK, _("N&ew book"), _("Create a new book") );
+    item1->Append( ID2_OPEN_BOOK, _("Open &book"), _("Open a book") );
+    item1->Append( ID2_CLOSE_BOOK, _("C&lose book"), _("Close the book") );
+    item1->AppendSeparator();
+    item1->Append( ID2_SAVE_BOOK, _("Sa&ve book"), _("Save the book") );
+    item1->Append( ID2_SAVE_AS_BOOK, _("Save boo&k as"), _("Save the book under a new name") );
+    item1->AppendSeparator();
+    item1->Append( ID2_EXPORT_IMAGE, _("Export as &image"), _("Save superimposed result  into an image file") );
     item0->Append( item1, _("commun1") );
     
     wxMenu* item2 = new wxMenu;
     item2->AppendSeparator();
-    item2->Append( ID2_POINTS, _("Put points"), _("Put the 3 superimposition points on both sources") );
+    item2->Append( ID2_PROCESS, _("&Run"), _("Process current page") );
     item0->Append( item2, _("commun2") );
     
     wxMenu* item3 = new wxMenu;
-    item3->Append( ID2_PREVIOUS, _("&Previous page"), _("Go to the previous page in both files or directories") );
-    item3->Append( ID2_PREVIOUS1, _("P&revious page (source 1)"), _("Go to the previous page in the file or directory of source 1") );
-    item3->Append( ID2_PREVIOUS2, _("Pr&evious page (source 2)"), _("Go to the previous page in the file or directory of source 2") );
-    item3->AppendSeparator();
-    item3->Append( ID2_NEXT, _("&Next page"), _("Go to the next page in both files or directories") );
-    item3->Append( ID2_NEXT1, _("Ne&xt page (source 1)"), _("Go to the next page in the file or directory of source 1") );
-    item3->Append( ID2_NEXT2, _("Nex&t page (source 2)"), _("Go to the next page in the file or directory of source 2") );
-    item3->AppendSeparator();
-    item3->Append( ID2_GOTO1, _("&Go to page ... (source 1)"), _("Select a page in the file or directory of source 1") );
-    item3->Append( ID2_GOTO2, _("G&o to page ... (source 2)"), _("Select a page in the file or directory of source 2") );
-    item0->Append( item3, _("&Page") );
+    item3->Append( ID2_BOOK_EDIT, _("Edit"), _("Edit the book informations") );
+    item3->Append( ID2_BOOK_LOAD, _("Reload files"), _("Reload images and Aruspix files into the book") );
+    item3->Append( ID2_MENU, wxT(""), wxT(""), wxITEM_RADIO );
+    item3->Append( ID2_BOOK_SUP, _("Batch superimposition"), _("Superimpose active pages of the book") );
+    item0->Append( item3, _("&Book") );
     
     wxMenu* item4 = new wxMenu;
-    item4->Append( ID2_SUPERIMPOSE, _("&Superimpose sources"), _("Execute the superimposition of the sources") );
-    item0->Append( item4, _("&Tools") );
+    item4->Append( ID2_PREVIOUS, _("&Previous page"), _("Go to the previous page in both files or directories") );
+    item4->Append( ID2_PREVIOUS1, _("P&revious page (source 1)"), _("Go to the previous page in the file or directory of source 1") );
+    item4->Append( ID2_PREVIOUS2, _("Pr&evious page (source 2)"), _("Go to the previous page in the file or directory of source 2") );
+    item4->AppendSeparator();
+    item4->Append( ID2_NEXT, _("&Next page"), _("Go to the next page in both files or directories") );
+    item4->Append( ID2_NEXT1, _("Ne&xt page (source 1)"), _("Go to the next page in the file or directory of source 1") );
+    item4->Append( ID2_NEXT2, _("Nex&t page (source 2)"), _("Go to the next page in the file or directory of source 2") );
+    item4->AppendSeparator();
+    item4->Append( ID2_GOTO1, _("&Go to page ... (source 1)"), _("Select a page in the file or directory of source 1") );
+    item4->Append( ID2_GOTO2, _("G&o to page ... (source 2)"), _("Select a page in the file or directory of source 2") );
+    item0->Append( item4, _("&Page") );
+    
+    wxMenu* item5 = new wxMenu;
+    item5->Append( ID2_ZOOM_OUT, _("Zoom out\t-"), _("Zoom out") );
+    item5->Append( ID2_ZOOM_IN, _("Zoom in\t+"), _("Zoom in") );
+    item5->Append( ID4_ADJUST, _("Adjust"), _("Adjust to fit the window"), wxITEM_CHECK );
+    item5->Append( ID2_ADJUST_V, _("Adjust vertically"), _("Adjust to fit the window vertically"), wxITEM_CHECK );
+    item5->Append( ID2_ADJUST_H, _("Adjust horizontally"), _("Adjust to fit the window horizontally"), wxITEM_CHECK );
+    item0->Append( item5, _("&Page") );
     
     return item0;
 }
 
 // Implement toolbar functions
 
-void ToolBarFunc2( wxToolBar *parent )
-{
-    parent->SetMargins( 2, 2 );
-    
-    parent->AddTool( ID2_OPEN1, wxT(""), BitmapsFunc2( 0 ), wxNullBitmap, wxITEM_NORMAL, _("Open source 1"), _("Open the file of the source 1") );
-    parent->AddTool( ID2_OPEN2, wxT(""), BitmapsFunc2( 1 ), wxNullBitmap, wxITEM_NORMAL, _("Open source 2"), _("Open the file of the source 2") );
-    parent->AddSeparator();
-    parent->AddTool( ID2_PREVIOUS, wxT(""), BitmapsFunc2( 4 ), wxNullBitmap, wxITEM_NORMAL, _("Previous page"), _("Go to the previous page in both files or directories") );
-    parent->AddTool( ID2_NEXT, wxT(""), BitmapsFunc2( 5 ), wxNullBitmap, wxITEM_NORMAL, _("Next page"), _("Go to the next page in both files or directories") );
-    parent->AddSeparator();
-    parent->AddTool( ID2_POINTS, wxT(""), BitmapsFunc2( 2 ), wxNullBitmap, wxITEM_NORMAL, _("Put points"), _("Put the 3 superimposition points on both sources") );
-    parent->AddTool( ID2_SUPERIMPOSE, wxT(""), BitmapsFunc2( 3 ), wxNullBitmap, wxITEM_NORMAL, _("Superimpose sources"), _("Execute the superimposition of the sources") );
-    
-    parent->Realize();
-}
-
 // Implement bitmap functions
-
-wxBitmap BitmapsFunc2( size_t index )
-{
-    if (index == 0)
-    {
-        /* XPM */
-        static const char *xpm_data[] = {
-        /* columns rows colors chars-per-pixel */
-        "16 15 6 1",
-        "  c None",
-        "a c Black",
-        "b c #FFFFFF",
-        "c c #FFFF00",
-        "d c #FF0000",
-        "f c #808000",
-        /* pixels */
-        " ddd            ",
-        "dddd            ",
-        "  dd            ",
-        "  dd      aaaa a",
-        "  dd     a    aa",
-        "dddddd       aaa",
-        "                ",
-        "     aa         ",
-        "    abcaaaaa    ",
-        "    acbcbcbcaffa",
-        "    abcaffffffa ",
-        "    acafffffffa ",
-        "    aafffffffa  ",
-        "    affffffff   ",
-        "    aaaaaaaaa   "
-        };
-        wxBitmap bitmap( xpm_data );
-        return bitmap;
-    }
-    if (index == 1)
-    {
-        /* XPM */
-        static const char *xpm_data[] = {
-        /* columns rows colors chars-per-pixel */
-        "16 15 6 1",
-        "  c None",
-        "a c Black",
-        "b c #FFFFFF",
-        "c c #FFFF00",
-        "d c #FF0000",
-        "f c #808000",
-        /* pixels */
-        " dddd           ",
-        "d   dd          ",
-        "   dd           ",
-        "  dd      aaaa a",
-        " dd      a    aa",
-        "dddddd       aaa",
-        "                ",
-        "     aa         ",
-        "    abcaaaaa    ",
-        "    acbcbcbcaffa",
-        "    abcaffffffa ",
-        "    acafffffffa ",
-        "    aafffffffa  ",
-        "    affffffff   ",
-        "    aaaaaaaaa   "
-        };
-        wxBitmap bitmap( xpm_data );
-        return bitmap;
-    }
-    if (index == 2)
-    {
-        /* XPM */
-        static const char *xpm_data[] = {
-        /* columns rows colors chars-per-pixel */
-        "16 15 5 1",
-        "  c None",
-        "a c Black",
-        "b c #FFFFFF",
-        "c c #C0C0C0",
-        "e c #D4D0C9",
-        /* pixels */
-        "                ",
-        "   aaaaaaaa     ",
-        "   abbbbbbaa   e",
-        "   abbbabbaba  e",
-        "   abbaaacaaaa  ",
-        "   abbbabbbbba  ",
-        "   abbbcccccba  ",
-        "   abbbbbbbbba  ",
-        "   abbccccccba  ",
-        "   abbabbbbbba  ",
-        "   abaaaccccba  ",
-        "   abbabbbbbba  ",
-        "   abbbbbbbbba  ",
-        "   aaaaaaaaaaa  ",
-        "                "
-        };
-        wxBitmap bitmap( xpm_data );
-        return bitmap;
-    }
-    if (index == 3)
-    {
-        /* XPM */
-        static const char *xpm_data[] = {
-        /* columns rows colors chars-per-pixel */
-        "16 15 6 1",
-        "  c None",
-        "a c Black",
-        "b c #FFFFFF",
-        "c c #FF0000",
-        "d c #C0C0C0",
-        "f c #D4D0C9",
-        /* pixels */
-        "aaaaaaaafffff   ",
-        "abbbbbbaaffff   ",
-        "abbbbaaaaaaaafff",
-        "abbbdabbbbbbaaff",
-        "abbbbabbbbbbabaf",
-        "abbbdabbddddaaaa",
-        "abcbbabbbbbbbbba",
-        "acccdabbddddddba",
-        "cccccabbbbbbbbba",
-        "abcddabbddddddba",
-        "abcbbabbbbbbbbba",
-        "abcbbabdddddddba",
-        "aaccaabbbbbbbbba",
-        "fffccabbbbbbbbba",
-        "     aaaaaaaaaaa"
-        };
-        wxBitmap bitmap( xpm_data );
-        return bitmap;
-    }
-    if (index == 4)
-    {
-        /* XPM */
-        static const char *xpm_data[] = {
-        /* columns rows colors chars-per-pixel */
-        "16 15 4 1",
-        "  c None",
-        "a c Black",
-        "b c #FFFFFF",
-        "c c #FF0000",
-        /* pixels */
-        "                ",
-        "      aaaaaaa   ",
-        "     aabbbbba   ",
-        "    ababbbbba   ",
-        "   aaaabbbbba   ",
-        "   abbbbcbbba   ",
-        "   abbbccbbba   ",
-        "   abbcccccba   ",
-        "   abccccccba   ",
-        "   abbcccccba   ",
-        "   abbbccbbba   ",
-        "   abbbbcbbba   ",
-        "   abbbbbbbba   ",
-        "   aaaaaaaaaa   ",
-        "                "
-        };
-        wxBitmap bitmap( xpm_data );
-        return bitmap;
-    }
-    if (index == 5)
-    {
-        /* XPM */
-        static const char *xpm_data[] = {
-        /* columns rows colors chars-per-pixel */
-        "16 15 4 1",
-        "  c None",
-        "a c Black",
-        "b c #FFFFFF",
-        "c c #FF0000",
-        /* pixels */
-        "                ",
-        "   aaaaaaa      ",
-        "   abbbbbaa     ",
-        "   abbbbbaba    ",
-        "   abbbbbaaaa   ",
-        "   abbbcbbbba   ",
-        "   abbbccbbba   ",
-        "   abcccccbba   ",
-        "   abccccccba   ",
-        "   abcccccbba   ",
-        "   abbbccbbba   ",
-        "   abbbcbbbba   ",
-        "   abbbbbbbba   ",
-        "   aaaaaaaaaa   ",
-        "                "
-        };
-        wxBitmap bitmap( xpm_data );
-        return bitmap;
-    }
-    return wxNullBitmap;
-}
 
 
 // End of generated file
