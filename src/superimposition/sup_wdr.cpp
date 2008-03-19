@@ -256,7 +256,7 @@ wxMenuBar *MenuBarFunc2()
     item4->AppendSeparator();
     item4->Append( ID2_GOTO1, _("&Go to page ... (source 1)"), _("Select a page in the file or directory of source 1") );
     item4->Append( ID2_GOTO2, _("G&o to page ... (source 2)"), _("Select a page in the file or directory of source 2") );
-    item0->Append( item4, _("&Page") );
+    item0->Append( item4, _("&Page old") );
     
     wxMenu* item5 = new wxMenu;
     item5->Append( ID2_ZOOM_OUT, _("Zoom out\t-"), _("Zoom out") );
