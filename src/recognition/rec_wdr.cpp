@@ -82,7 +82,7 @@ wxSizer *MusOutputFunc4( wxWindow *parent, bool call_fit, bool set_sizer )
     return item0;
 }
 
-wxSizer *BookFunc4( wxWindow *parent, bool call_fit, bool set_sizer )
+wxSizer *RecBookFunc4( wxWindow *parent, bool call_fit, bool set_sizer )
 {
     wxFlexGridSizer *item0 = new wxFlexGridSizer( 1, 0, 0 );
     item0->AddGrowableCol( 0 );
@@ -110,7 +110,7 @@ wxSizer *BookFunc4( wxWindow *parent, bool call_fit, bool set_sizer )
     return item0;
 }
 
-wxSizer *BookDataFunc4( wxWindow *parent, bool call_fit, bool set_sizer )
+wxSizer *RecBookDataFunc4( wxWindow *parent, bool call_fit, bool set_sizer )
 {
     wxFlexGridSizer *item0 = new wxFlexGridSizer( 1, 0, 0 );
     item0->AddGrowableCol( 0 );

@@ -37,7 +37,7 @@ const int ID2_TREEBOOK = 12001;
 const int ID2_LINE2 = 12002;
 const int ID2_PREVIEW = 12003;
 const int ID2_CB_PREVIEW = 12004;
-wxSizer *SupFunc2( wxWindow *parent, bool call_fit = TRUE, bool set_sizer = TRUE );
+wxSizer *SupBookFunc2( wxWindow *parent, bool call_fit = TRUE, bool set_sizer = TRUE );
 
 const int ID2_TEXT = 12005;
 const int ID2_RISM = 12006;
@@ -53,7 +53,7 @@ const int ID2_BOOK_IMAGES2 = 12015;
 const int ID2_ON_BOOK_IMAGES2 = 12016;
 const int ID2_BOOK_AXFILES = 12017;
 const int ID2_ON_BOOK_AXFILES = 12018;
-wxSizer *SupFuncData2( wxWindow *parent, bool call_fit = TRUE, bool set_sizer = TRUE );
+wxSizer *SupBookDataFunc2( wxWindow *parent, bool call_fit = TRUE, bool set_sizer = TRUE );
 
 // Declare menubar functions
 

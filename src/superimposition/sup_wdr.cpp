@@ -32,6 +32,9 @@
     #endif
 #endif
 
+// Custom source
+#include "superimposition/supbookctrl.h"
+
 // Implement window functions
 
 wxSizer *WindowFunc2( wxWindow *parent, bool call_fit, bool set_sizer )
@@ -53,13 +56,13 @@ wxSizer *WindowFunc2( wxWindow *parent, bool call_fit, bool set_sizer )
     return item0;
 }
 
-wxSizer *SupFunc2( wxWindow *parent, bool call_fit, bool set_sizer )
+wxSizer *SupBookFunc2( wxWindow *parent, bool call_fit, bool set_sizer )
 {
     wxFlexGridSizer *item0 = new wxFlexGridSizer( 1, 0, 0 );
     item0->AddGrowableCol( 0 );
     item0->AddGrowableRow( 0 );
 
-    CmpCtrl *item1 = new CmpCtrl( parent, ID2_TREEBOOK, wxDefaultPosition, wxSize(120,160), wxTR_HAS_BUTTONS|wxTR_LINES_AT_ROOT|wxSUNKEN_BORDER );
+    SupBookCtrl *item1 = new SupBookCtrl( parent, ID2_TREEBOOK, wxDefaultPosition, wxSize(120,160), wxTR_HAS_BUTTONS|wxTR_LINES_AT_ROOT|wxSUNKEN_BORDER );
     item0->Add( item1, 0, wxGROW|wxALL, 5 );
 
     wxStaticLine *item2 = new wxStaticLine( parent, ID2_LINE2, wxDefaultPosition, wxSize(20,-1), wxLI_HORIZONTAL );
@@ -81,7 +84,7 @@ wxSizer *SupFunc2( wxWindow *parent, bool call_fit, bool set_sizer )
     return item0;
 }
 
-wxSizer *SupFuncData2( wxWindow *parent, bool call_fit, bool set_sizer )
+wxSizer *SupBookDataFunc2( wxWindow *parent, bool call_fit, bool set_sizer )
 {
     wxFlexGridSizer *item0 = new wxFlexGridSizer( 1, 0, 0 );
     item0->AddGrowableCol( 0 );

@@ -41,7 +41,7 @@ const int ID4_TREEBOOK = 15003;
 const int ID4_LINE2 = 15004;
 const int ID4_PREVIEW = 15005;
 const int ID4_CB_PREVIEW = 15006;
-wxSizer *BookFunc4( wxWindow *parent, bool call_fit = TRUE, bool set_sizer = TRUE );
+wxSizer *RecBookFunc4( wxWindow *parent, bool call_fit = TRUE, bool set_sizer = TRUE );
 
 const int ID4_TEXT = 15007;
 const int ID4_RISM = 15008;
@@ -54,7 +54,7 @@ const int ID4_BOOK_IMAGES = 15014;
 const int ID4_ON_BOOK_IMAGES = 15015;
 const int ID4_BOOK_AXFILES = 15016;
 const int ID4_ON_BOOK_AXFILES = 15017;
-wxSizer *BookDataFunc4( wxWindow *parent, bool call_fit = TRUE, bool set_sizer = TRUE );
+wxSizer *RecBookDataFunc4( wxWindow *parent, bool call_fit = TRUE, bool set_sizer = TRUE );
 
 // Declare menubar functions
 
