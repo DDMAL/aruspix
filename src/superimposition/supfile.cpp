@@ -557,6 +557,38 @@ void SupFile::OpenContent( )
 	// start
     bool failed = false;
 	
+    TiXmlElement *root = NULL;
+    TiXmlNode *node = NULL;
+    
+    wxASSERT( m_xml_root );
+        
+    // images
+    node = m_xml_root->FirstChild( "image1" );
+    if ( !node ) return;
+    root = node->ToElement();
+    if ( !root ) return;
+	
+    wxString file1;
+    if ( root->Attribute("filename") )
+        file1 = root->Attribute("filename");
+    wxFileName img1( file1 );
+    img1.MakeAbsolute( wxFileName( m_filename ).GetFullPath() );
+    //wxLogDebug( img1.GetFullPath() );
+    m_original1 = img1.GetFullPath();
+	
+    node = m_xml_root->FirstChild( "image2" );
+    if ( !node ) return;
+    root = node->ToElement();
+    if ( !root ) return;
+	
+    wxString file2;
+    if ( root->Attribute("filename") )
+        file2 = root->Attribute("filename");
+    wxFileName img2(  file2 );
+    img2.MakeAbsolute( wxFileName( m_filename ).GetFullPath() );
+    //wxLogDebug( img2.GetFullPath() );
+    m_original2 = img2.GetFullPath();
+	
 	// saving has to be fixed before...
 	/*
 	failed = !m_imPagePtr1->Load( m_xml_root );
@@ -569,7 +601,7 @@ void SupFile::OpenContent( )
 		
 	// if both ImPage loaded, superimposed is true??
 	*/	
-	m_isSuperimposed = true;
+	m_isSuperimposed = false;
 	
 	return;       
 }
@@ -580,6 +612,20 @@ void SupFile::SaveContent( )
 	wxASSERT_MSG( m_imPagePtr1, "ImPage1 should not be NULL" );
 	wxASSERT_MSG( m_imPagePtr2, "ImPage2 should not be NULL" );
 	wxASSERT( m_xml_root );
+	
+    TiXmlElement image1("image1");
+    wxFileName orig1( m_original1 );
+    orig1.MakeRelativeTo( wxFileName( m_filename ).GetFullPath() );
+    //wxLogDebug( orig1.GetPath() );
+	image1.SetAttribute( "filename" , orig1.GetFullPath().c_str() );
+    m_xml_root->InsertEndChild( image1 );
+	
+    TiXmlElement image2("image2");
+    wxFileName orig2( m_original2 );
+    orig2.MakeRelativeTo( wxFileName( m_filename ).GetFullPath() );
+    //wxLogDebug( orig2.GetPath() );
+	image2.SetAttribute( "filename" , orig2.GetFullPath().c_str() );
+    m_xml_root->InsertEndChild( image2 );
 		
 	if ( !m_isSuperimposed )
 		return;

@@ -29,6 +29,7 @@
 		4D3A8FFB0D35867200BBC1FB /* mussymbol.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D3A8FE70D35867200BBC1FB /* mussymbol.cpp */; };
 		4D3A8FFC0D35867200BBC1FB /* mustoolpanel.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D3A8FE90D35867200BBC1FB /* mustoolpanel.cpp */; };
 		4D3A8FFD0D35867200BBC1FB /* muswindow.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D3A8FEB0D35867200BBC1FB /* muswindow.cpp */; };
+		4D64284F0D9344FD00DA3A64 /* supim.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D64284D0D9344FD00DA3A64 /* supim.cpp */; };
 		4D7362820D35C7D30030DFA6 /* recmus.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D7362800D35C7D30030DFA6 /* recmus.cpp */; };
 		4D7362A40D35CECC0030DFA6 /* cmpmus.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D7362A20D35CECC0030DFA6 /* cmpmus.cpp */; };
 		4DA9FDDD0D90984E000E7BA6 /* supbookctrl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4DA9FDDB0D90984E000E7BA6 /* supbookctrl.cpp */; };
@@ -126,6 +127,8 @@
 		4D3A8FEA0D35867200BBC1FB /* mustoolpanel.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = mustoolpanel.h; path = ../src/mus/mustoolpanel.h; sourceTree = SOURCE_ROOT; };
 		4D3A8FEB0D35867200BBC1FB /* muswindow.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = muswindow.cpp; path = ../src/mus/muswindow.cpp; sourceTree = SOURCE_ROOT; };
 		4D3A8FEC0D35867200BBC1FB /* muswindow.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = muswindow.h; path = ../src/mus/muswindow.h; sourceTree = SOURCE_ROOT; };
+		4D64284D0D9344FD00DA3A64 /* supim.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = supim.cpp; sourceTree = "<group>"; };
+		4D64284E0D9344FD00DA3A64 /* supim.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = supim.h; sourceTree = "<group>"; };
 		4D7362800D35C7D30030DFA6 /* recmus.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = recmus.cpp; sourceTree = "<group>"; };
 		4D7362810D35C7D30030DFA6 /* recmus.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = recmus.h; sourceTree = "<group>"; };
 		4D7362A20D35CECC0030DFA6 /* cmpmus.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = cmpmus.cpp; sourceTree = "<group>"; };
@@ -414,6 +417,8 @@
 		A58524910A1B9604002D9D8A /* superimposition */ = {
 			isa = PBXGroup;
 			children = (
+				4D64284D0D9344FD00DA3A64 /* supim.cpp */,
+				4D64284E0D9344FD00DA3A64 /* supim.h */,
 				4DA9FDDB0D90984E000E7BA6 /* supbookctrl.cpp */,
 				4DA9FDDC0D90984E000E7BA6 /* supbookctrl.h */,
 				4D1676610D8B765000F4D912 /* supbookfile.cpp */,
@@ -621,6 +626,7 @@
 				4D1676650D8B765000F4D912 /* supbookfile.cpp in Sources */,
 				4D1676660D8B765000F4D912 /* supfile.cpp in Sources */,
 				4DA9FDDD0D90984E000E7BA6 /* supbookctrl.cpp in Sources */,
+				4D64284F0D9344FD00DA3A64 /* supim.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

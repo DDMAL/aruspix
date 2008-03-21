@@ -175,8 +175,8 @@ public:
 
 private:
     // WDR: member variable declarations for RecEnv
-    RecSplitterWindow *m_splitterPtr;
-    wxSplitterWindow *m_vsplitterPtr;
+    RecSplitterWindow *m_pageSplitterPtr;
+    wxSplitterWindow *m_bookSplitterPtr;
     // im
     RecImController *m_imControlPtr;
     RecImWindow *m_imViewPtr;

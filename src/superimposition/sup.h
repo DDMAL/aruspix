@@ -20,8 +20,6 @@
 
 #include "app/axapp.h"
 #include "app/axenv.h"
-#include "app/aximagecontroller.h"
-#include "app/axscrolledwindow.h"
 #include "im/imoperator.h"
 
 #include "sup_wdr.h"
@@ -32,6 +30,10 @@ enum
 	ID2_CONTROLLER2,
 	ID2_VIEW1,
 	ID2_VIEW2,
+	ID2_SRC_CONTROLLER1,
+	ID2_SRC_CONTROLLER2,
+	ID2_SRC_VIEW1,
+	ID2_SRC_VIEW2,
 
     ID2_POPUP_TREE_LOAD,
     ID2_POPUP_TREE_SUP,
@@ -44,9 +46,13 @@ enum
 };
 
 struct _imImage;
-class SupImController;
-class AxProgressDlg;
 
+class AxProgressDlg;
+class AxImageController;
+
+class SupImController;
+class SupImWindow;
+class SupImSrcWindow;
 class SupFile;
 class SupBookCtrl;
 class SupBookFile;
@@ -55,6 +61,7 @@ class SupEnv;
 
 // WDR: class declarations
 
+/*
 //----------------------------------------------------------------------------
 // SupOldFile
 //----------------------------------------------------------------------------
@@ -81,7 +88,7 @@ private:
                                 int w, int h, int new_w, int new_h);
     bool Terminate( int code = 0, ... );
     //void SwapImages( _imImage **image1, _imImage **image2 );
-    //void ImageDestroy( _imImage **image );*/
+    //void ImageDestroy( _imImage **image );
 
 private:
     // WDR: handler declarations for SupOldFile
@@ -100,7 +107,9 @@ private:
     _imImage *m_selection;
 
 };
+*/
 
+/*
 //----------------------------------------------------------------------------
 // SupImController
 //----------------------------------------------------------------------------
@@ -133,36 +142,7 @@ private:
     DECLARE_CLASS(SupImController)
     DECLARE_EVENT_TABLE()
 };
-
-
-
-//----------------------------------------------------------------------------
-// SupPanel
-//----------------------------------------------------------------------------
-
-class SupPanel: public wxPanel
-{
-public:
-    // constructors and destructors
-    SupPanel( wxWindow *parent, wxWindowID id = -1,
-        const wxPoint& pos = wxDefaultPosition,
-        const wxSize& size = wxDefaultSize,
-        long style = wxTAB_TRAVERSAL | wxNO_BORDER );
-    
-    // WDR: method declarations for SupPanel
-    wxSplitterWindow* GetSplitter1()  { return (wxSplitterWindow*) FindWindow( ID2_SPLITTER1 ); }
-    AxImageController* GetController2()  { return (AxImageController*) FindWindow( ID2_CONTROLLER2 ); }
-    AxImageController* GetController1()  { return (AxImageController*) FindWindow( ID2_CONTROLLER1 ); }
-    
-private:
-    // WDR: member variable declarations for SupPanel
-    
-private:
-    // WDR: handler declarations for SupPanel
-
-private:
-    DECLARE_EVENT_TABLE()
-};
+*/
 
 //----------------------------------------------------------------------------
 // SupEnv
@@ -194,12 +174,18 @@ public:
 private:
     // WDR: member variable declarations for SupEnv
     SupImController *m_imControl1Ptr;
-    SupImController *m_imControl2Ptr;
-    AxScrolledWindow *m_view1Ptr;
-    AxScrolledWindow *m_view2Ptr;
+    SupImController *m_imControl2Ptr;	
+    SupImWindow *m_imView1Ptr;
+    SupImWindow *m_imView2Ptr;
+	// sources for displaying results
+	AxImageController *m_srcControl1Ptr;
+    AxImageController *m_srcControl2Ptr;
+    SupImSrcWindow *m_srcView1Ptr;
+    SupImSrcWindow *m_srcView2Ptr;
 	
-    wxSplitterWindow *m_vsplitterPtr;
-	wxSplitterWindow *m_splitterPtr;
+    wxSplitterWindow *m_bookSplitterPtr;
+	wxSplitterWindow *m_pageSplitterPtr;
+	wxSplitterWindow *m_srcSplitterPtr;
     // superimposition elements
     SupFile *m_supFilePtr;
     // 

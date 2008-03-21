@@ -65,10 +65,12 @@ public:
     // WDR: member variable declarations for SupFile
 	SupEnv *m_envPtr;
 	ImPage *m_imPagePtr1, *m_imPagePtr2;
+	wxString m_original1, m_original2;
 
 protected:
     // WDR: member variable declarations for SupFile
 	bool m_isSuperimposed;
+	//AxImage 
    
 private:
     // WDR: handler declarations for SupFile

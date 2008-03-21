@@ -147,9 +147,9 @@ public:
 
 private:
     // WDR: member variable declarations for CmpEnv
-    wxSplitterWindow *m_splitterPtr;
-    wxSplitterWindow *m_vsplitterPtr;
-	wxSplitterWindow *m_isplitterPtr;
+    wxSplitterWindow *m_bookSplitterPtr;
+    wxSplitterWindow *m_pageSplitterPtr;
+	wxSplitterWindow *m_srcSplitterPtr;
     // im
     CmpImController *m_imControlPtr1, *m_imControlPtr2;
     CmpImWindow *m_imViewPtr1, *m_imViewPtr2;

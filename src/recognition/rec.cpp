@@ -259,8 +259,8 @@ IMPLEMENT_DYNAMIC_CLASS(RecEnv,AxEnv)
 RecEnv::RecEnv():
     AxEnv()
 {
-    m_splitterPtr = NULL;
-    m_vsplitterPtr = NULL;
+    m_pageSplitterPtr = NULL;
+    m_bookSplitterPtr = NULL;
     m_imControlPtr = NULL;
     m_imViewPtr = NULL;
     m_musControlPtr = NULL;
@@ -310,28 +310,28 @@ void RecEnv::LoadWindow()
     
     return item0;*/
         
-    m_vsplitterPtr = new wxSplitterWindow( m_framePtr, -1 );
-    this->m_envWindowPtr = m_vsplitterPtr;
+    m_bookSplitterPtr = new wxSplitterWindow( m_framePtr, -1 );
+    this->m_envWindowPtr = m_bookSplitterPtr;
     if (!m_envWindowPtr)
         return;
         
-    m_recBookPanelPtr = new RecBookPanel( m_vsplitterPtr, -1);
+    m_recBookPanelPtr = new RecBookPanel( m_bookSplitterPtr, -1);
     m_recBookPtr = m_recBookPanelPtr->GetTree();
     m_recBookPtr->SetBookFile( m_recBookFilePtr );
     m_recBookPtr->SetEnv( this );
     m_recBookPtr->SetBookPanel( m_recBookPanelPtr );
 
-    m_splitterPtr = new RecSplitterWindow( m_vsplitterPtr, -1 );
-    if (!m_splitterPtr)
+    m_pageSplitterPtr = new RecSplitterWindow( m_bookSplitterPtr, -1 );
+    if (!m_pageSplitterPtr)
         return;
-    m_vsplitterPtr->SetMinimumPaneSize( 100 );
-    m_vsplitterPtr->SplitVertically( m_recBookPanelPtr, m_splitterPtr, RecEnv::s_book_sash );
-    m_vsplitterPtr->Unsplit( m_recBookPanelPtr );
+    m_bookSplitterPtr->SetMinimumPaneSize( 100 );
+    m_bookSplitterPtr->SplitVertically( m_recBookPanelPtr, m_pageSplitterPtr, RecEnv::s_book_sash );
+    m_bookSplitterPtr->Unsplit( m_recBookPanelPtr );
 
-    m_splitterPtr->SetWindowStyleFlag( wxSP_FULLSASH );
-    m_splitterPtr->SetMinimumPaneSize( 100 );
+    m_pageSplitterPtr->SetWindowStyleFlag( wxSP_FULLSASH );
+    m_pageSplitterPtr->SetMinimumPaneSize( 100 );
 
-    m_imControlPtr = new RecImController( m_splitterPtr, ID4_CONTROLLER, wxDefaultPosition, wxDefaultSize, 0,
+    m_imControlPtr = new RecImController( m_pageSplitterPtr, ID4_CONTROLLER, wxDefaultPosition, wxDefaultSize, 0,
         CONTROLLER_NO_TOOLBAR );
     m_imControlPtr->SetEnv( this );
     m_imViewPtr = new RecImWindow( m_imControlPtr, ID4_VIEW , wxDefaultPosition, 
@@ -340,7 +340,7 @@ void RecEnv::LoadWindow()
     m_imViewPtr->m_popupMenu.AppendSeparator();
     m_imControlPtr->Init( this, m_imViewPtr );
 
-    m_musPanelPtr = new wxPanel( m_splitterPtr, ID4_DISPLAY );
+    m_musPanelPtr = new wxPanel( m_pageSplitterPtr, ID4_DISPLAY );
     wxFlexGridSizer *mussizer = (wxFlexGridSizer*)MusOutputFunc4( m_musPanelPtr, TRUE );
     m_musControlPtr = (RecMusController*)m_envWindowPtr->FindWindowById( ID4_MUSPANEL );
     m_musViewPtr = new RecMusWindow( m_musControlPtr, ID4_WGWINDOW, wxDefaultPosition,
@@ -358,7 +358,7 @@ void RecEnv::LoadWindow()
     
  //   m_toolpanel->SetDirection( false );
 
-    m_splitterPtr->SetEnv( this, mussizer, m_toolpanel, m_musControlPtr );
+    m_pageSplitterPtr->SetEnv( this, mussizer, m_toolpanel, m_musControlPtr );
 
     if ( wxSystemSettings::GetColour(wxSYS_COLOUR_APPWORKSPACE) == *wxWHITE )
         m_musControlPtr->SetBackgroundColour( *wxLIGHT_GREY );
@@ -366,9 +366,9 @@ void RecEnv::LoadWindow()
         m_musControlPtr->SetBackgroundColour( wxSystemSettings::GetColour(wxSYS_COLOUR_APPWORKSPACE) );
 
 
-    //m_splitterPtr->SplitHorizontally(m_imControlPtr, m_musControlPtr,  800 );
-    m_splitterPtr->SplitHorizontally(m_imControlPtr, m_musPanelPtr );
-    m_splitterPtr->Unsplit();
+    //m_pageSplitterPtr->SplitHorizontally(m_imControlPtr, m_musControlPtr,  800 );
+    m_pageSplitterPtr->SplitHorizontally(m_imControlPtr, m_musPanelPtr );
+    m_pageSplitterPtr->Unsplit();
     
     ResetModels();
 }
@@ -612,9 +612,9 @@ bool RecEnv::ResetBookFile()
     if ( !m_recBookFilePtr->Close( true ) )
         return false;
 
-    if ( m_vsplitterPtr->IsSplit() ) // keep position if splitted
-        RecEnv::s_book_sash = m_vsplitterPtr->GetSashPosition( );
-    m_vsplitterPtr->Unsplit( m_recBookPanelPtr );
+    if ( m_bookSplitterPtr->IsSplit() ) // keep position if splitted
+        RecEnv::s_book_sash = m_bookSplitterPtr->GetSashPosition( );
+    m_bookSplitterPtr->Unsplit( m_recBookPanelPtr );
     return true;
 }
 
@@ -636,7 +636,7 @@ bool RecEnv::ResetFile()
     
     m_toolpanel->SetWgWindow( NULL );    
     m_musControlPtr->CancelShowStaffBitmap();
-    m_splitterPtr->Unsplit();
+    m_pageSplitterPtr->Unsplit();
     UpdateTitle( );
     
     return true;
@@ -688,7 +688,7 @@ void RecEnv::UpdateViews( int flags )
 {
     if ( m_recFilePtr->IsRecognized() )
     {
-        m_splitterPtr->SplitHorizontally(m_imControlPtr, m_musPanelPtr );
+        m_pageSplitterPtr->SplitHorizontally(m_imControlPtr, m_musPanelPtr );
         AxImage img;
         m_recFilePtr->GetImage1( &img );
         m_imControlPtr->ResetImage( img );
@@ -708,7 +708,7 @@ void RecEnv::UpdateViews( int flags )
         }
         else
         {
-            m_splitterPtr->Unsplit();
+            m_pageSplitterPtr->Unsplit();
             AxImage img;
             m_recFilePtr->GetImage0( &img );
             m_imControlPtr->ResetImage( img );
@@ -752,7 +752,7 @@ void RecEnv::OpenBookFile( wxString filename  )
     if ( this->m_recBookFilePtr->Open( filename ) )
     {
         wxGetApp().AxBeginBusyCursor( );
-        m_vsplitterPtr->SplitVertically( m_recBookPanelPtr, m_splitterPtr, RecEnv::s_book_sash );
+        m_bookSplitterPtr->SplitVertically( m_recBookPanelPtr, m_pageSplitterPtr, RecEnv::s_book_sash );
         m_recBookPtr->Build();
         wxGetApp().AxEndBusyCursor();
     }
@@ -1150,7 +1150,7 @@ void RecEnv::OnNewBook( wxCommandEvent &event )
     {
         m_recBookFilePtr->Modify();
         wxGetApp().AxBeginBusyCursor( );
-        m_vsplitterPtr->SplitVertically( m_recBookPanelPtr, m_splitterPtr, RecEnv::s_book_sash );
+        m_bookSplitterPtr->SplitVertically( m_recBookPanelPtr, m_pageSplitterPtr, RecEnv::s_book_sash );
         m_recBookPtr->Build();
         wxGetApp().AxEndBusyCursor();
     }

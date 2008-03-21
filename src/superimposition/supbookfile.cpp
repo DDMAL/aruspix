@@ -185,7 +185,7 @@ void SupBookFile::SaveContent( )
     }   
     m_xml_root->InsertEndChild( images1 );
 	
-    TiXmlElement images2("images");
+    TiXmlElement images2("images2");
     wxFileName dirname2 = wxFileName::DirName( m_imgFileDir2 );
     dirname2.MakeRelativeTo( wxFileName( m_filename ).GetFullPath() );
     //wxLogDebug( dirname1.GetPath() );

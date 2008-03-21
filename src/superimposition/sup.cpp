@@ -19,6 +19,7 @@
 #endif
 
 #include "sup.h"
+#include "supim.h"
 #include "supfile.h"
 #include "supbookfile.h"
 #include "supbookctrl.h"
@@ -46,82 +47,6 @@ bool SupEnv::s_expand_img = true;
 bool SupEnv::s_expand_ax = true; 
 
 // WDR: class implementations
-
-//----------------------------------------------------------------------------
-// SupImController
-//----------------------------------------------------------------------------
-
-IMPLEMENT_CLASS(SupImController,AxImageController)
-
-// WDR: event table for SupImController
-
-BEGIN_EVENT_TABLE(SupImController,AxImageController)
-END_EVENT_TABLE()
-
-SupImController::SupImController( wxWindow *parent, wxWindowID id,
-    const wxPoint &position, const wxSize& size, long style , int flags) :
-    AxImageController( parent, id, position, size, style, flags )
-{
-    m_selectCounter = 0;
-}
-
-SupImController::SupImController()
-{
-}
-
-SupImController::~SupImController()
-{
-}
-
-void SupImController::CloseDraggingSelection(wxPoint start, wxPoint end)
-{
-    m_points[m_selectCounter] = end;
-
-    if (m_selectCounter == 0)
-    {
-        m_selectCounter++;
-		//wxLogDebug("point 1");
-    }
-    else if (m_selectCounter == 1)
-    {
-        m_selectCounter++;
-		//wxLogDebug("point 2");
-    }
-    else if (m_selectCounter == 2)
-    {
-        m_selectCounter++;
-		//wxLogDebug("point 3");
-    }
-    else if (m_selectCounter == 3)
-    {
-        m_selectCounter = 0;
-		//wxLogDebug("point 4");
-        this->m_viewPtr->EndSelection();
-    }
-}
-
-
-// WDR: handler implementations for SupImController
-
-
-//----------------------------------------------------------------------------
-// SupPanel
-//----------------------------------------------------------------------------
-
-// WDR: event table for SupPanel
-
-BEGIN_EVENT_TABLE(SupPanel,wxPanel)
-END_EVENT_TABLE()
-
-SupPanel::SupPanel( wxWindow *parent, wxWindowID id,
-    const wxPoint &position, const wxSize& size, long style ) :
-    wxPanel( parent, id, position, size, style )
-{
-    WindowFunc2( this, TRUE ); 
-}
-
-// WDR: handler implementations for SupPanel
-
 
 //----------------------------------------------------------------------------
 // SupEnv
@@ -184,11 +109,19 @@ IMPLEMENT_DYNAMIC_CLASS(SupEnv,AxEnv)
 SupEnv::SupEnv():
     AxEnv()
 {
-	m_vsplitterPtr = NULL;
+	m_bookSplitterPtr = NULL;
+	m_pageSplitterPtr = NULL;
+	m_srcSplitterPtr = NULL;
+	
     m_imControl1Ptr = NULL;
     m_imControl2Ptr = NULL;
-    m_view1Ptr = NULL;
-    m_view2Ptr = NULL;
+    m_imView1Ptr = NULL;
+    m_imView2Ptr = NULL;
+	
+    m_srcControl1Ptr = NULL;
+    m_srcControl2Ptr = NULL;
+    m_srcView1Ptr = NULL;
+    m_srcView2Ptr = NULL;
 	
     m_supFilePtr = new SupFile( "sup_env_file", this );
     m_supBookFilePtr = new SupBookFile( "sup_book_file", this );
@@ -198,8 +131,9 @@ SupEnv::SupEnv():
 
 SupEnv::~SupEnv()
 {
-    if (m_envWindowPtr) m_envWindowPtr->Destroy();
-    m_envWindowPtr = NULL;
+    if (m_envWindowPtr)
+		m_envWindowPtr->Destroy();
+	m_envWindowPtr = NULL;
 	
     if ( m_supFilePtr )
         delete m_supFilePtr; 
@@ -209,60 +143,67 @@ SupEnv::~SupEnv()
 
 void SupEnv::LoadWindow()
 {
-    m_vsplitterPtr = new wxSplitterWindow( m_framePtr, -1 );
-    this->m_envWindowPtr = m_vsplitterPtr;
+	// book
+    m_bookSplitterPtr = new wxSplitterWindow( m_framePtr, -1 );
+    this->m_envWindowPtr = m_bookSplitterPtr;
     if (!m_envWindowPtr)
         return;
         
-    m_supBookPanelPtr = new SupBookPanel( m_vsplitterPtr, -1);
+    m_supBookPanelPtr = new SupBookPanel( m_bookSplitterPtr, -1);
     m_supBookPtr = m_supBookPanelPtr->GetTree();
     m_supBookPtr->SetBookFile( m_supBookFilePtr );
     m_supBookPtr->SetEnv( this );
     m_supBookPtr->SetBookPanel( m_supBookPanelPtr );
 
-    m_splitterPtr = new wxSplitterWindow( m_vsplitterPtr, -1 );
-    if (!m_splitterPtr)
-        return;
-    m_vsplitterPtr->SetMinimumPaneSize( 100 );
-    m_vsplitterPtr->SplitVertically( m_supBookPanelPtr, m_splitterPtr, SupEnv::s_book_sash );
-    m_vsplitterPtr->Unsplit( m_supBookPanelPtr );
-
-    m_splitterPtr->SetWindowStyleFlag( wxSP_FULLSASH );
-    m_splitterPtr->SetMinimumPaneSize( 100 );
-
-	/*
-    this->m_envWindowPtr = new SupPanel(m_framePtr,-1);
-    if (!m_envWindowPtr)
-        return
-		
-    SupPanel *panel = ((SupPanel*)m_envWindowPtr);
-    if (!panel)
+	// page
+    m_pageSplitterPtr = new wxSplitterWindow( m_bookSplitterPtr, -1 );
+    if (!m_pageSplitterPtr)
         return;
 
-    wxSplitterWindow *splitter = panel->GetSplitter1();
-    if (!splitter)
-        return;
+    m_pageSplitterPtr->SetWindowStyleFlag( wxSP_FULLSASH );
+    m_pageSplitterPtr->SetMinimumPaneSize( 100 );
 
-    splitter->SetWindowStyleFlag( wxSP_FULLSASH );
-    splitter->SetMinimumPaneSize( 100 );
-
-    m_imControl1Ptr = new SupImController( splitter, ID2_CONTROLLER1  );
-    m_view1Ptr = new AxScrolledWindow( m_imControl1Ptr, ID2_VIEW1 , wxDefaultPosition, 
+    m_imControl1Ptr = new SupImController( m_pageSplitterPtr, ID2_CONTROLLER1  );
+    m_imView1Ptr = new SupImWindow( m_imControl1Ptr, ID2_VIEW1 , wxDefaultPosition, 
         wxDefaultSize, wxHSCROLL| wxVSCROLL | wxSUNKEN_BORDER);
-    m_view1Ptr->m_popupMenu.AppendSeparator();
-    m_view1Ptr->m_popupMenu.Append(ID2_POINTS,_("Put points"));
-    m_imControl1Ptr->Init( this, m_view1Ptr );
+    //m_imView1Ptr->m_popupMenu.AppendSeparator();
+    //m_imView1Ptr->m_popupMenu.Append(ID2_POINTS,_("Put points"));
+    m_imControl1Ptr->Init( this, m_imView1Ptr );
 
-
-    m_imControl2Ptr = new SupImController( splitter, ID2_CONTROLLER2 );
-    m_view2Ptr = new AxScrolledWindow( m_imControl2Ptr, ID2_VIEW2 , wxDefaultPosition, 
+    m_imControl2Ptr = new SupImController( m_pageSplitterPtr, ID2_CONTROLLER2 );
+    m_imView2Ptr = new SupImWindow( m_imControl2Ptr, ID2_VIEW2 , wxDefaultPosition, 
         wxDefaultSize, wxHSCROLL| wxVSCROLL | wxSUNKEN_BORDER);
-    m_view2Ptr->m_popupMenu.AppendSeparator();
-    m_view2Ptr->m_popupMenu.Append(ID2_POINTS,_("Put points"));
-    m_imControl2Ptr->Init( this, m_view2Ptr );
+    //m_imView2Ptr->m_popupMenu.AppendSeparator();
+    //m_imView2Ptr->m_popupMenu.Append(ID2_POINTS,_("Put points"));
+    m_imControl2Ptr->Init( this, m_imView2Ptr );
 
-    splitter->SplitVertically(m_imControl1Ptr,m_imControl2Ptr);
-	*/
+	// sources
+    m_srcSplitterPtr = new wxSplitterWindow( m_pageSplitterPtr, -1 );
+    if (!m_srcSplitterPtr)
+        return;
+
+    m_srcSplitterPtr->SetWindowStyleFlag( wxSP_FULLSASH );
+    m_srcSplitterPtr->SetMinimumPaneSize( 100 );
+
+    m_srcControl1Ptr = new AxImageController( m_srcSplitterPtr, ID2_SRC_CONTROLLER1  );
+    m_srcView1Ptr = new SupImSrcWindow( m_srcControl1Ptr, ID2_SRC_VIEW1 , wxDefaultPosition, 
+        wxDefaultSize, wxHSCROLL| wxVSCROLL | wxSUNKEN_BORDER);
+    m_srcControl1Ptr->Init( this, m_srcView1Ptr );
+
+    m_srcControl2Ptr = new AxImageController( m_srcSplitterPtr, ID2_SRC_CONTROLLER2 );
+    m_srcView2Ptr = new SupImSrcWindow( m_srcControl2Ptr, ID2_SRC_VIEW2 , wxDefaultPosition, 
+        wxDefaultSize, wxHSCROLL| wxVSCROLL | wxSUNKEN_BORDER);
+    m_srcControl2Ptr->Init( this, m_srcView2Ptr );
+
+	// split - unsplit
+	m_srcSplitterPtr->SplitHorizontally(m_srcControl1Ptr,m_srcControl2Ptr);
+    m_pageSplitterPtr->SplitVertically(m_imControl1Ptr,m_imControl2Ptr);
+	m_pageSplitterPtr->Unsplit( m_imControl1Ptr );
+	m_pageSplitterPtr->SplitVertically(m_imControl1Ptr,m_srcSplitterPtr);
+	
+    m_bookSplitterPtr->SetMinimumPaneSize( 100 );
+    m_bookSplitterPtr->SplitVertically( m_supBookPanelPtr, m_pageSplitterPtr, SupEnv::s_book_sash );
+    //m_bookSplitterPtr->Unsplit( m_supBookPanelPtr );
 }
 
 void SupEnv::RealizeToolbar( )
@@ -375,9 +316,9 @@ bool SupEnv::ResetBookFile()
     if ( !m_supBookFilePtr->Close( true ) )
         return false;
 
-    if ( m_vsplitterPtr->IsSplit() ) // keep position if splitted
-        SupEnv::s_book_sash = m_vsplitterPtr->GetSashPosition( );
-    m_vsplitterPtr->Unsplit( m_supBookPanelPtr );
+    if ( m_bookSplitterPtr->IsSplit() ) // keep position if splitted
+        SupEnv::s_book_sash = m_bookSplitterPtr->GetSashPosition( );
+    m_bookSplitterPtr->Unsplit( m_supBookPanelPtr );
     return true;
 }
 
@@ -386,31 +327,42 @@ bool SupEnv::ResetFile()
 	
     if ( !m_supFilePtr->Close( true ) )
         return false;
+    
+    if ( m_imControl1Ptr->Ok() )
+        m_imControl1Ptr->Close();
+    if ( m_imControl2Ptr->Ok() )
+        m_imControl2Ptr->Close();
+    if ( m_srcControl1Ptr->Ok() )
+        m_srcControl1Ptr->Close();
+    if ( m_srcControl2Ptr->Ok() )
+        m_srcControl2Ptr->Close();
 		
-	wxLogWarning("Partially implemented");
-	return true;
-	/*
-    m_musViewPtr->Show( false );
-    m_musViewPtr->SetFile( NULL );
+	m_imControl1Ptr->SetControllers( NULL, NULL );
+    m_imControl1Ptr->SetViews( NULL, NULL );
     
-    if ( m_imControlPtr->Ok() )
-    {
-        m_imControlPtr->CancelMagicSelection();
-        m_imControlPtr->Close();
-    }
-    
-    m_toolpanel->SetWgWindow( NULL );    
-    m_musControlPtr->CancelShowStaffBitmap();
-    m_splitterPtr->Unsplit();
+    m_pageSplitterPtr->Unsplit();
     UpdateTitle( );
     
     return true;
-	*/
 }
 
 void SupEnv::UpdateViews( int flags )
 {
-	wxLogWarning("UpdateViews does nothing...");
+    if ( m_supFilePtr->IsSuperimposed() )
+    {
+        m_pageSplitterPtr->SplitVertically( m_imControl1Ptr, m_srcSplitterPtr );
+		m_imControl1Ptr->SetControllers( m_srcControl1Ptr, m_srcControl2Ptr );
+		m_imControl1Ptr->SetViews( m_srcView1Ptr , m_srcView2Ptr );
+        //AxImage img;
+        //m_recFilePtr->GetImage1( &img );
+        //m_imControlPtr->ResetImage( img );
+    }
+    else
+    {
+		m_pageSplitterPtr->SplitVertically( m_imControl1Ptr, m_imControl2Ptr );
+		m_imControl1Ptr->Open( m_supFilePtr->m_original1 );
+		m_imControl2Ptr->Open( m_supFilePtr->m_original2 );
+    }
 }
 
 void SupEnv::Open( wxString filename, int type )
@@ -434,12 +386,6 @@ void SupEnv::OpenFile( wxString filename, int type )
         UpdateViews( 0 );
         wxGetApp().AxEndBusyCursor();
     }
-	/*
-    else if ( (type == -1) && this->m_supFilePtr->New() )
-    {
-         m_imControlPtr->Open( filename );
-    }
-	*/
 }
 
 
@@ -451,7 +397,7 @@ void SupEnv::OpenBookFile( wxString filename  )
     if ( this->m_supBookFilePtr->Open( filename ) )
     {
         wxGetApp().AxBeginBusyCursor( );
-        m_vsplitterPtr->SplitVertically( m_supBookPanelPtr, m_splitterPtr, SupEnv::s_book_sash );
+        m_bookSplitterPtr->SplitVertically( m_supBookPanelPtr, m_pageSplitterPtr, SupEnv::s_book_sash );
         m_supBookPtr->Build();
         wxGetApp().AxEndBusyCursor();
     }
@@ -593,7 +539,7 @@ void SupEnv::OnNewBook( wxCommandEvent &event )
     {
         m_supBookFilePtr->Modify();
         wxGetApp().AxBeginBusyCursor( );
-        m_vsplitterPtr->SplitVertically( m_supBookPanelPtr, m_splitterPtr, SupEnv::s_book_sash );
+        m_bookSplitterPtr->SplitVertically( m_supBookPanelPtr, m_pageSplitterPtr, SupEnv::s_book_sash );
         m_supBookPtr->Build();
         wxGetApp().AxEndBusyCursor();
     }
@@ -602,12 +548,22 @@ void SupEnv::OnNewBook( wxCommandEvent &event )
 
 void SupEnv::OnNew( wxCommandEvent &event )
 {
-	/*
-    if ( !CloseAll( ) )
+    if ( !CloseAll( ) || !this->m_supFilePtr->New())
         return;
-
-    OpenFile( "" , -1 );
-	*/
+	
+	m_pageSplitterPtr->SplitVertically( m_imControl1Ptr, m_imControl2Ptr, SupEnv::s_view_sash );
+		
+	m_imControl1Ptr->Open( "" );
+    if ( !m_imControl1Ptr->Ok() || !m_imControl1Ptr->HasFilename() )
+        return;
+	
+	m_imControl2Ptr->Open( "" );
+    if ( !m_imControl2Ptr->Ok() || !m_imControl2Ptr->HasFilename() )
+        return;
+	
+	m_supFilePtr->m_original1 = m_imControl1Ptr->GetFilename();
+	m_supFilePtr->m_original2 = m_imControl2Ptr->GetFilename();
+	m_supFilePtr->Modify();
 }
 
 void SupEnv::OnSave( wxCommandEvent &event )

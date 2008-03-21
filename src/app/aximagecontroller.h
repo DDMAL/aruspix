@@ -84,7 +84,7 @@ public:
     void Copy( );
 	void Cut( );
     void Open( const wxString fname = "", const int index = 0 );
-    void Close( bool yield = true );
+    void Close( bool yield = false );
     void Next( );
     void Previous( );
     void Goto( );
@@ -107,7 +107,7 @@ public:
 
 
 protected:
-    virtual void OpenPage( bool yield = true );
+    virtual void OpenPage( bool yield = false );
 	void SetMultipage( bool multi );
 	void LoadDirectoryFilenames( );
 
