@@ -55,7 +55,7 @@ public:
 	
 protected:
     // WDR: member variable declarations for CmpImController
-    CmpEnv *m_envPtr;
+    //CmpEnv *m_envPtr;
     // to synchronize view
     RecFile *m_recFilePtr;
 

@@ -583,35 +583,29 @@ void ImOperator::DistByCorrelationFFT(const _imImage *im1, const _imImage *im2,
 
 
 /// works on binary images 
-void ImOperator::DistByCorrelation(const _imImage *im1, const _imImage *im2,
+void ImOperator::DistByCorrelation( _imImage *im1, _imImage *im2,
                                 wxSize window, int *decalageX, int *decalageY, int *max)
 {
     wxASSERT_MSG(decalageX, wxT("decalageX cannot be NULL") );
     wxASSERT_MSG(decalageY, wxT("decalagY cannot be NULL") );
     wxASSERT_MSG(max, wxT("max cannot be NULL") );
-
     wxASSERT_MSG(im1, wxT("Image 1 cannot be NULL") );
     wxASSERT_MSG(im2, wxT("Image 2 cannot be NULL") );
+	
+	imProcessNegative( im1, im1 );
+	imProcessNegative( im2, im2 );
 
     // zero padding
-
-        imImage *imTmp1 = imImageCreate(
+	imImage *imTmp1 = imImageCreate(
             im1->width +  window.GetWidth() * 2,
             im1->height +  window.GetHeight() * 2,
             im1->color_space, im1->data_type);
-        imProcessAddMargins(im1 ,imTmp1, window.GetWidth(), window.GetHeight());
-        //imImageDestroy(im1);
-        //im1 = imTmp1;
-
-
+	imProcessAddMargins(im1 ,imTmp1, window.GetWidth(), window.GetHeight());
 
     int conv_width = 2 * window.GetWidth();
     int conv_height = 2 * window.GetHeight();
-    //imImage *conv = imImageCreate(conv_width, conv_height, IM_GRAY, IM_BYTE);
     imImage *mask = imImageCreate(im2->width, im2->height,im2->color_space, im2->data_type);
     imbyte *bufIm2 = (imbyte*)im2->data[0];
-    //imbyte *bufConv = (imbyte*)conv->data[0];
-    //int offset;
     int maxSum = 0, maxX = 0, maxY = 0;
     for (int y = 0; y < conv_height; y++)
     {
@@ -624,8 +618,6 @@ void ImOperator::DistByCorrelation(const _imImage *im1, const _imImage *im2,
             {
                 sum += (bufIm2[i] ) * (bufMask[i] );
             }
-            //offset = y * conv_width + x;
-            //bufConv[offset] = sum;
             if (sum > maxSum)
             {
                 maxSum = sum;
@@ -670,6 +662,5 @@ void ImOperator::MedianFilter( int values[], int size, int filter_size, int *avg
     if ( avg_ptr )
         *avg_ptr = avg;
 }
-
 
 // WDR: handler implementations for ImOperator

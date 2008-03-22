@@ -968,6 +968,7 @@ void SupOldFile::DistByCorrelationFFT(const _imImage *im1, const _imImage *im2,
 }
 */
 
+/*
 void DistByCorrelation( imImage *im1, imImage *im2, int width, int height, int *decalageX, int *decalageY)
 {
     wxASSERT_MSG(decalageX, wxT("decalageX cannot be NULL") );
@@ -1017,4 +1018,4 @@ void DistByCorrelation( imImage *im1, imImage *im2, int width, int height, int *
     imImageDestroy(imTmp1);
     imImageDestroy(mask);
 }
-
+*/

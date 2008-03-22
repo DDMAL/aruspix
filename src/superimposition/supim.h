@@ -135,7 +135,7 @@ public:
 	
 protected:
     // WDR: member variable declarations for SupImController
-    SupEnv *m_envPtr;
+    //SupEnv *m_envPtr;
     // to synchronize view
     //SupFile *m_supFilePtr;
     

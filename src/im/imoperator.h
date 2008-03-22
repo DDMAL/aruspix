@@ -96,13 +96,13 @@ protected:
     void PruneElementsZone( _imImage *image, int min_threshold, int max_threshold, int type = IM_PRUNE_CLEAR_HEIGHT );
     void MoveElements( _imImage *src, _imImage *dest, int bounding_boxes[],
         int count, int margins[4], int factor = 1 );
-    void DistByCorrelation(const _imImage *image1, const _imImage *image2,
+    void DistByCorrelation( _imImage *image1, _imImage *image2,
                                 wxSize window, int *decalageX, int *decalageY, int *max);
     //void DistByCorrelationFFT(const _imImage *image1, const _imImage *image2,
     //                            wxSize window, int *decalageX, int *decalageY);
     
 	// Memory managment methods
-    bool Terminate( int code = 0, ... );
+    virtual bool Terminate( int code = 0, ... );
     bool GetImagePlane( _imImage **image , int plane = 0, int factor = 1 );
     bool GetImage( _imImage **image, int factor = 1 , int binary_method = -1, bool median_filtering = false );
     bool Read( wxString file, _imImage **image, int index );

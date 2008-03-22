@@ -34,6 +34,7 @@
 		4D7362A40D35CECC0030DFA6 /* cmpmus.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D7362A20D35CECC0030DFA6 /* cmpmus.cpp */; };
 		4DA9FDDD0D90984E000E7BA6 /* supbookctrl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4DA9FDDB0D90984E000E7BA6 /* supbookctrl.cpp */; };
 		4DB2D96D0D8383EA003401B0 /* musmlfdic.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4DB2D96B0D8383EA003401B0 /* musmlfdic.cpp */; };
+		4DB9F0530D94A66E00ED8E3E /* imregister.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4DB9F0510D94A66E00ED8E3E /* imregister.cpp */; };
 		5736CE550C354E4A00254E7B /* cmp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5736CE460C354E4A00254E7B /* cmp.cpp */; };
 		5736CE570C354E4A00254E7B /* cmp_wdr.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5736CE490C354E4A00254E7B /* cmp_wdr.cpp */; };
 		5736CE580C354E4A00254E7B /* cmpctrl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5736CE4B0C354E4A00254E7B /* cmpctrl.cpp */; };
@@ -137,6 +138,8 @@
 		4DA9FDDC0D90984E000E7BA6 /* supbookctrl.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = supbookctrl.h; sourceTree = "<group>"; };
 		4DB2D96B0D8383EA003401B0 /* musmlfdic.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = musmlfdic.cpp; path = ../src/mus/musmlfdic.cpp; sourceTree = SOURCE_ROOT; };
 		4DB2D96C0D8383EA003401B0 /* musmlfdic.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = musmlfdic.h; path = ../src/mus/musmlfdic.h; sourceTree = SOURCE_ROOT; };
+		4DB9F0510D94A66E00ED8E3E /* imregister.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = imregister.cpp; sourceTree = "<group>"; };
+		4DB9F0520D94A66E00ED8E3E /* imregister.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = imregister.h; sourceTree = "<group>"; };
 		5736CE460C354E4A00254E7B /* cmp.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = cmp.cpp; sourceTree = "<group>"; };
 		5736CE470C354E4A00254E7B /* cmp.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = cmp.h; sourceTree = "<group>"; };
 		5736CE490C354E4A00254E7B /* cmp_wdr.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = cmp_wdr.cpp; sourceTree = "<group>"; };
@@ -463,6 +466,8 @@
 		A5D0D4AB0A65628800A4B1CA /* im */ = {
 			isa = PBXGroup;
 			children = (
+				4DB9F0510D94A66E00ED8E3E /* imregister.cpp */,
+				4DB9F0520D94A66E00ED8E3E /* imregister.h */,
 				57CA53D80D340F61001FC334 /* imbrink.cpp */,
 				57CA53D90D340F61001FC334 /* imext.cpp */,
 				57CA53DA0D340F61001FC334 /* imext.h */,
@@ -627,6 +632,7 @@
 				4D1676660D8B765000F4D912 /* supfile.cpp in Sources */,
 				4DA9FDDD0D90984E000E7BA6 /* supbookctrl.cpp in Sources */,
 				4D64284F0D9344FD00DA3A64 /* supim.cpp in Sources */,
+				4DB9F0530D94A66E00ED8E3E /* imregister.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

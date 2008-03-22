@@ -75,13 +75,13 @@ void CmpImController::LoadRecImage( int colNo, wxString filename, int staff, int
     wxASSERT_MSG( info->IsKindOf( CLASSINFO( CmpImWindow ) ),
         "View must be a CmpImWindow");
 	
-	if ( m_envPtr->GetCollationPtr() == NULL )
+	if ( ((CmpEnv*)m_envPtr)->GetCollationPtr() == NULL )
 		return;
 	if ( filename.IsEmpty() )
 		return;
 		
 	// pas tres plombe.......
-	wxString full_filename = (m_envPtr->GetCollationPtr())->m_collationParts[colNo].m_bookPart->m_book->m_recBookFilePtr->m_axFileDir
+	wxString full_filename = (((CmpEnv*)m_envPtr)->GetCollationPtr())->m_collationParts[colNo].m_bookPart->m_book->m_recBookFilePtr->m_axFileDir
 		+ wxFileName::GetPathSeparator() + filename + ".axz";
 		
 	if ( full_filename != m_recFilePtr->m_filename )

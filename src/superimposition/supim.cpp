@@ -347,8 +347,9 @@ void SupImController::OpenPage( bool yield )
     if ( ( m_red != 0 ) || ( m_green != 0 ))
     {
         this->UpdateBrightness( );
-
     }
+	
+	/*
     wxGetApp().Yield( );
 
     // image sources
@@ -366,10 +367,12 @@ void SupImController::OpenPage( bool yield )
         SetImImage( m_greenIm, &img );
         m_imControl2Ptr->SetImage( img );
     }
+	*/
     
     imImageDestroy( im1 );
 
     wxGetApp().AxEndBusyCursor();
+
 }
 
 void SupImController::UpdateBrightness( )
@@ -484,6 +487,10 @@ void SupImController::CloseDraggingSelection(wxPoint start, wxPoint end)
         m_selectCounter = 0;
 		//wxLogDebug("point 4");
         this->m_viewPtr->EndSelection();
+		
+		wxCommandEvent event( AX_PUT_POINTS_EVT, GetId() );
+		event.SetEventObject( m_envPtr );
+		m_envPtr->ProcessEvent( event );
     }
 }
 

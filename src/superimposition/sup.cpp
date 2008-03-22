@@ -48,6 +48,8 @@ bool SupEnv::s_expand_ax = true;
 
 // WDR: class implementations
 
+DEFINE_EVENT_TYPE(AX_PUT_POINTS_EVT)
+
 //----------------------------------------------------------------------------
 // SupEnv
 //----------------------------------------------------------------------------
@@ -89,7 +91,8 @@ BEGIN_EVENT_TABLE(SupEnv,AxEnv)
     EVT_MENU( ID2_ZOOM_IN, SupEnv::OnZoom )
     EVT_MENU( ID2_ADJUST, SupEnv::OnAdjust )
     EVT_MENU( ID2_ADJUST_H, SupEnv::OnAdjust )
-    EVT_MENU( ID2_ADJUST_V, SupEnv::OnAdjust )
+    //EVT_MENU( ID2_ADJUST_V, SupEnv::OnAdjust )
+	EVT_MENU( ID2_ADJUST_V, SupEnv::OnPutPoints )
     EVT_MENU( ID2_EXPORT_IMAGE, SupEnv::OnExportImage )
     EVT_MENU( ID2_SAVE_BOOK, SupEnv::OnSaveBook )
     EVT_MENU( ID2_SAVE_AS_BOOK, SupEnv::OnSaveBookAs )
@@ -102,6 +105,9 @@ BEGIN_EVENT_TABLE(SupEnv,AxEnv)
     EVT_MENU( ID2_BOOK_EDIT, SupEnv::OnBookEdit )
     EVT_MENU( ID2_POPUP_TREE_SUP, SupEnv::OnBookSuperimpose )
     EVT_MENU( ID2_POPUP_TREE_BOOK_EDIT, SupEnv::OnBookEdit )
+	// end of put poins
+	EVT_COMMAND( ID2_CONTROLLER1, AX_PUT_POINTS_EVT, SupEnv::OnEndPutPoints )
+	EVT_COMMAND( ID2_CONTROLLER2, AX_PUT_POINTS_EVT, SupEnv::OnEndPutPoints )
 END_EVENT_TABLE()
 
 IMPLEMENT_DYNAMIC_CLASS(SupEnv,AxEnv)
@@ -353,9 +359,13 @@ void SupEnv::UpdateViews( int flags )
         m_pageSplitterPtr->SplitVertically( m_imControl1Ptr, m_srcSplitterPtr );
 		m_imControl1Ptr->SetControllers( m_srcControl1Ptr, m_srcControl2Ptr );
 		m_imControl1Ptr->SetViews( m_srcView1Ptr , m_srcView2Ptr );
-        //AxImage img;
-        //m_recFilePtr->GetImage1( &img );
-        //m_imControlPtr->ResetImage( img );
+        AxImage img;
+        m_supFilePtr->GetResult( &img );
+        m_imControl1Ptr->ResetImage( img );
+		m_supFilePtr->GetSrc2( &img );
+        m_srcControl1Ptr->ResetImage( img );
+		m_supFilePtr->GetSrc2( &img );
+        m_srcControl2Ptr->ResetImage( img );
     }
     else
     {
@@ -662,56 +672,75 @@ void SupEnv::OnPreviousBoth( wxCommandEvent &event )
 
 void SupEnv::OnPutPoints( wxCommandEvent &event )
 {
-/*
-    wxASSERT_MSG( m_imControl1Ptr, wxT("Image controller 1 cannot be NULL") );
+	wxASSERT_MSG( m_imControl1Ptr, wxT("Image controller 1 cannot be NULL") );
     wxASSERT_MSG( m_imControl2Ptr, wxT("Image controller 2 cannot be NULL") );
 
     if ( m_imControl1Ptr->Ok() )
     {
-        m_view1Ptr->BeginSelection( SHAPE_POINT );
+        m_imView1Ptr->BeginSelection( SHAPE_POINT );
     }
     if ( m_imControl2Ptr->Ok() )
     {
-        m_view2Ptr->BeginSelection( SHAPE_POINT );
+        m_imView2Ptr->BeginSelection( SHAPE_POINT );
     }
-*/
+}
+
+void SupEnv::OnEndPutPoints( wxCommandEvent &event )
+{
+	wxASSERT_MSG( m_imControl1Ptr, wxT("Image controller 1 cannot be NULL") );
+    wxASSERT_MSG( m_imControl2Ptr, wxT("Image controller 2 cannot be NULL") );
+
+	int id = event.GetId();
+
+    if (id == ID2_CONTROLLER1)
+    {
+		wxLogMessage("End id 1");
+    }
+    else if (id == ID2_CONTROLLER2)
+    {
+        wxLogMessage("End id 2");
+    }
 }
 
 void SupEnv::OnRun( wxCommandEvent &event )
 {
-	/*
-    wxASSERT_MSG( m_imControlPtr, wxT("Image controller cannot be NULL") );
-    wxASSERT_MSG( m_imViewPtr, wxT("View cannot be NULL") );
+	wxASSERT_MSG( m_imControl1Ptr, wxT("Image controller1 cannot be NULL") );
+	wxASSERT_MSG( m_imControl2Ptr, wxT("Image controller2 cannot be NULL") );
     wxASSERT_MSG( m_supFilePtr, wxT("SupFile cannot be NULL") );
     
-    wxASSERT( !m_supFilePtr->IsPreprocessed() );
-    if ( m_supFilePtr->IsPreprocessed() ) // do nothing, should not happen
+    wxASSERT( !m_supFilePtr->IsSuperimposed() );
+    if ( m_supFilePtr->IsSuperimposed() ) // do nothing, should not happen
         return;
     
-    if ( !m_imControlPtr->Ok() || !m_imControlPtr->HasFilename() )
+    if ( !m_imControl1Ptr->Ok() || !m_imControl1Ptr->HasFilename() )
+        return;
+		
+    if ( !m_imControl2Ptr->Ok() || !m_imControl2Ptr->HasFilename() )
         return;
         
     if ( AxProgressDlg::s_instance_existing )
         return;
         
-    // if a book is opened, check if the file has to be preprocessed
-    if ( m_supBookFilePtr->IsOpened() && !m_supBookFilePtr->HasToBePreprocessed( m_imControlPtr->GetFilename() ) )
-        return;
+    // if a book is opened, check if the file has to be superimposed
+	// really ?
+    //if ( m_supBookFilePtr->IsOpened() && !m_supBookFilePtr->HasToBeSuperimposed( m_imControlPtr->GetFilename() ) )
+    //    return;
         
     AxProgressDlg *dlg = new AxProgressDlg( m_framePtr, -1, _("Preprocessing") );
     dlg->Center( wxBOTH );
     dlg->Show();
     dlg->SetMaxBatchBar( 1 );
     
-    wxString file = m_imControlPtr->GetFilename();
-    wxFileName::SplitPath( file, NULL, &m_supFilePtr->m_shortname, NULL );
-    
+	wxString infile1 = m_imControl1Ptr->GetFilename();
+	wxString infile2 = m_imControl2Ptr->GetFilename();
+	
     wxArrayPtrVoid params;
-    params.Add( &file );
+    params.Add( &infile1 );
+	params.Add( &infile2 );
     
     bool failed = false;
     
-    failed = !m_supFilePtr->Preprocess( params, dlg );
+    failed = !m_supFilePtr->Superimpose( params, dlg );
 
     imCounterEnd( dlg->GetCounter() );
 
@@ -728,7 +757,6 @@ void SupEnv::OnRun( wxCommandEvent &event )
     }
 
     UpdateViews( 0 );
-	*/
 }
 
 

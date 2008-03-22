@@ -20,7 +20,7 @@
 
 #include "app/axfile.h"
 
-class ImPage;
+class ImRegister;
 class SupEnv;
 class AxImage;
 
@@ -46,9 +46,12 @@ public:
 	
 	// functor
 	bool SupFile::Superimpose( wxArrayPtrVoid params, AxProgressDlg *dlg );
+	bool SupFile::DetectPoints( wxArrayPtrVoid params, AxProgressDlg *dlg );
+	bool SupFile::RegisterImages( wxArrayPtrVoid params, AxProgressDlg *dlg ); 
 	// getters
-	ImPage *SupFile::GetImPage1() { return m_imPagePtr1; }
-	ImPage *SupFile::GetImPage2() { return m_imPagePtr2; }
+	void SupFile::GetSrc1( AxImage *image );
+	void SupFile::GetSrc2( AxImage *image );
+	void SupFile::GetResult( AxImage *image );
 	
 	// status
 	bool SupFile::IsSuperimposed() { return m_isSuperimposed; }
@@ -57,19 +60,20 @@ public:
 	static bool SupFile::IsSuperimposed( wxString filename );
 	
 private:
-	wxPoint CalcPositionAfterRotation( wxPoint point , float rot_alpha, 
-                                  int w, int h, int new_w, int new_h);
-	
     
 public:
     // WDR: member variable declarations for SupFile
 	SupEnv *m_envPtr;
-	ImPage *m_imPagePtr1, *m_imPagePtr2;
+	ImRegister *m_imRegisterPtr;
 	wxString m_original1, m_original2;
+	bool m_hasNewPoints1, m_hasNewPoints2;
+	wxPoint m_points1[4];
+    wxPoint m_points2[4];
 
 protected:
     // WDR: member variable declarations for SupFile
 	bool m_isSuperimposed;
+	bool m_hasPoints;
 	//AxImage 
    
 private:

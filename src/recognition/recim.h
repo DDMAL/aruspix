@@ -60,7 +60,7 @@ public:
 	
 protected:
     // WDR: member variable declarations for RecImController
-    RecEnv *m_envPtr;
+    //RecEnv *m_envPtr;
     // to synchronize view
     RecFile *m_recFilePtr;
     RecMusWindow *m_musViewPtr;

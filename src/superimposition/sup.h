@@ -144,6 +144,8 @@ private:
 };
 */
 
+DECLARE_EVENT_TYPE(AX_PUT_POINTS_EVT, -1)
+
 //----------------------------------------------------------------------------
 // SupEnv
 //----------------------------------------------------------------------------
@@ -240,6 +242,8 @@ private:
     void OnPutPoints( wxCommandEvent &event );
     void OnRun( wxCommandEvent &event );
     void OnUpdateUI( wxUpdateUIEvent &event );
+	// custom event
+	void OnEndPutPoints( wxCommandEvent &event );
 
 private:
     DECLARE_DYNAMIC_CLASS(SupEnv)
