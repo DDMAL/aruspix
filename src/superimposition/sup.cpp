@@ -356,19 +356,24 @@ void SupEnv::UpdateViews( int flags )
 {
     if ( m_supFilePtr->IsSuperimposed() )
     {
+		m_pageSplitterPtr->Unsplit();
         m_pageSplitterPtr->SplitVertically( m_imControl1Ptr, m_srcSplitterPtr );
 		m_imControl1Ptr->SetControllers( m_srcControl1Ptr, m_srcControl2Ptr );
 		m_imControl1Ptr->SetViews( m_srcView1Ptr , m_srcView2Ptr );
         AxImage img;
         m_supFilePtr->GetResult( &img );
         m_imControl1Ptr->ResetImage( img );
-		m_supFilePtr->GetSrc2( &img );
+		m_supFilePtr->GetSrc1( &img );
         m_srcControl1Ptr->ResetImage( img );
 		m_supFilePtr->GetSrc2( &img );
         m_srcControl2Ptr->ResetImage( img );
+		
+		m_imControl1Ptr->m_red = 10;
+		m_imControl1Ptr->UpdateBrightness( );
     }
     else
     {
+		m_pageSplitterPtr->Unsplit();
 		m_pageSplitterPtr->SplitVertically( m_imControl1Ptr, m_imControl2Ptr );
 		m_imControl1Ptr->Open( m_supFilePtr->m_original1 );
 		m_imControl2Ptr->Open( m_supFilePtr->m_original2 );
@@ -675,6 +680,8 @@ void SupEnv::OnPutPoints( wxCommandEvent &event )
 	wxASSERT_MSG( m_imControl1Ptr, wxT("Image controller 1 cannot be NULL") );
     wxASSERT_MSG( m_imControl2Ptr, wxT("Image controller 2 cannot be NULL") );
 
+	// do we need to cancel previous points?
+
     if ( m_imControl1Ptr->Ok() )
     {
         m_imView1Ptr->BeginSelection( SHAPE_POINT );
@@ -689,16 +696,24 @@ void SupEnv::OnEndPutPoints( wxCommandEvent &event )
 {
 	wxASSERT_MSG( m_imControl1Ptr, wxT("Image controller 1 cannot be NULL") );
     wxASSERT_MSG( m_imControl2Ptr, wxT("Image controller 2 cannot be NULL") );
+	wxASSERT_MSG( m_supFilePtr, wxT("SupFile cannot be NULL") );
+
+	int i;
 
 	int id = event.GetId();
-
     if (id == ID2_CONTROLLER1)
     {
-		wxLogMessage("End id 1");
+		m_supFilePtr->m_hasPoints1 = true;
+		m_supFilePtr->Modify();
+		for (i = 0; i < 4; i++ )
+			m_supFilePtr->m_points1[i] = m_imControl1Ptr->m_points[i];
     }
     else if (id == ID2_CONTROLLER2)
     {
-        wxLogMessage("End id 2");
+		m_supFilePtr->m_hasPoints2 = true;
+		m_supFilePtr->Modify();
+		for (i = 0; i < 4; i++ )
+			m_supFilePtr->m_points2[i] = m_imControl2Ptr->m_points[i];
     }
 }
 

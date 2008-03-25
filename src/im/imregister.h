@@ -18,6 +18,7 @@
 
 #include "im/imoperator.h"
 
+class ImPage;
 
 // WDR: class declarations
 
@@ -40,7 +41,9 @@ public:
     bool ImRegister::Load( TiXmlElement *file_root );
     bool ImRegister::Save( TiXmlElement *file_root );
     // Processing
-    bool ImRegister::Register( );
+	bool ImRegister::DetectPoints( wxPoint *points1, wxPoint *points2 );
+	bool ImRegister::Init( wxString filename1, wxString filename2 );
+    bool ImRegister::Register( wxPoint *points1, wxPoint *points2 );
     
 private:
     // WDR: member variable declarations for ImRegister
@@ -60,6 +63,9 @@ public:
     wxPoint m_reg_points2[4];
 	bool *m_isModified;
 	wxString m_path; // path of the SupFile
+	// impage
+	ImPage *m_imPage1Ptr;
+	ImPage *m_imPage2Ptr;
     
 private:
     // WDR: handler declarations for ImRegister

@@ -366,7 +366,7 @@ bool RecFile::Preprocess( wxArrayPtrVoid params, AxProgressDlg *dlg )
 	//return true;
 		
     if ( RecEnv::s_deskew && !failed ) 
-        failed = !m_imPagePtr->Deskew( 2.0 ); // 2 operations max
+        failed = !m_imPagePtr->Deskew( 10.0 ); // 2 operations max
     //op.m_inputfile = output + "/deskew." + shortname + ".tif";
         
     if ( RecEnv::s_staves_position && !failed ) 

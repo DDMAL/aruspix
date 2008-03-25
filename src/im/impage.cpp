@@ -386,8 +386,8 @@ bool ImPage::Check( wxString infile, int max_binary, int index )
             return this->Terminate( ERR_CANCELED );
         SwapImages( &m_opImMain, &m_opImTmp1 );
 
-        // reduire par 4 si l'image est plus grande que max_binary
-        while ( max_size > max_binary )
+        // reduire par 4 si l'image est plus grande que max_binary, only if max_binary > -1
+        while ( (max_binary > -1) && (max_size > max_binary) )
         {
             this->m_reduction *= 2;
             max_size /= 2;
@@ -492,6 +492,7 @@ bool ImPage::Deskew( double max_alpha )
     double skew = 0.0;
     double skew1 = 0.0;
     double skew2 = 0.0;
+	double skew3 = 0.0;
 
     // approximation par 4 degres ( nb de fois determine par le parametre max_alpha )
     max = 0;
@@ -500,14 +501,14 @@ bool ImPage::Deskew( double max_alpha )
         align = GetDeskewAlignement( m_opIm, diff );
         if ( align > max )
         {
-            skew2 = diff;
+            skew3 = diff;
             max = align;
         }
     }
 
     // approximation par 1 degre ( 5x )
     max = 0;
-    for ( diff = skew2 - 2; diff <= skew2 + 2; diff += 1 )
+    for ( diff = skew3 - 2; diff <= skew3 + 2; diff += 1 )
     {
         align = GetDeskewAlignement( m_opIm, diff );
         if ( align > max )
@@ -519,7 +520,19 @@ bool ImPage::Deskew( double max_alpha )
 
     // approximation par 0.25 degre ( 5x )
     max = 0;
-    for ( diff = skew1 - 0.5; diff <= skew1 + 0.5; diff += 0.25 )
+    for ( diff = skew2 - 0.5; diff <= skew2 + 0.5; diff += 0.25 )
+    {
+        align = GetDeskewAlignement( m_opIm, diff );
+        if ( align > max )
+        {
+            skew = diff;
+            max = align;
+        }
+    }
+	
+    // approximation par 0.125 degre ( 5x )
+    max = 0;
+    for ( diff = skew1 - 0.25; diff <= skew1 + 0.25; diff += 0.125 )
     {
         align = GetDeskewAlignement( m_opIm, diff );
         if ( align > max )

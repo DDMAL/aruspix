@@ -69,11 +69,12 @@ public:
 	bool m_hasNewPoints1, m_hasNewPoints2;
 	wxPoint m_points1[4];
     wxPoint m_points2[4];
+	bool m_hasPoints1;
+	bool m_hasPoints2;
 
 protected:
     // WDR: member variable declarations for SupFile
 	bool m_isSuperimposed;
-	bool m_hasPoints;
 	//AxImage 
    
 private:

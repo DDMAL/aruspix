@@ -97,7 +97,7 @@ protected:
     void MoveElements( _imImage *src, _imImage *dest, int bounding_boxes[],
         int count, int margins[4], int factor = 1 );
     void DistByCorrelation( _imImage *image1, _imImage *image2,
-                                wxSize window, int *decalageX, int *decalageY, int *max);
+                                wxSize window, int *decalageX, int *decalageY, int *maxCorr );
     //void DistByCorrelationFFT(const _imImage *image1, const _imImage *image2,
     //                            wxSize window, int *decalageX, int *decalageY);
     

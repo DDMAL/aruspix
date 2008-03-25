@@ -19,6 +19,8 @@
 #include "wx/file.h"
 
 #include "imregister.h"
+#include "impage.h"
+#include "imstaff.h"
 
 #include "app/axapp.h"
 
@@ -49,6 +51,9 @@ ImRegister::ImRegister( wxString path, bool *isModified ) :
 	// aditional temporary images
     m_im1 = NULL;
     m_im2 = NULL;
+	
+	m_imPage1Ptr = new ImPage( m_path );
+	m_imPage2Ptr = new ImPage( m_path );
 }
 
 ImRegister::~ImRegister()
@@ -59,6 +64,10 @@ ImRegister::~ImRegister()
 		ImageDestroy( &m_src2 );
 	if ( m_result )
 		ImageDestroy( &m_result );
+	if ( m_imPage1Ptr )
+		delete m_imPage1Ptr;
+	if ( m_imPage2Ptr )
+		delete m_imPage2Ptr;
 }
 
 bool ImRegister::Terminate( int code,  ... )
@@ -220,6 +229,43 @@ bool ImRegister::Save( TiXmlElement *file_root )
 }
 
 
+bool ImRegister::Init( wxString filename1, wxString filename2 )
+{
+    wxASSERT_MSG( m_progressDlg, "Progress dialog cannot be NULL");
+	wxASSERT_MSG( m_imPage1Ptr, "ImPage1 cannot be NULL" );
+	wxASSERT_MSG( m_imPage2Ptr, "ImPage2 cannot be NULL" );
+	
+    if (!m_progressDlg->SetOperation( _("Checking the images ...") ) )
+        return this->Terminate( ERR_CANCELED );
+
+	m_imPage1Ptr->SetProgressDlg( m_progressDlg );
+	
+	if ( !m_imPage1Ptr->Check( filename1 ) )
+		return false;
+
+	m_imPage2Ptr->SetProgressDlg( m_progressDlg );
+	
+	if ( !m_imPage2Ptr->Check( filename2 ) )
+		return false;
+
+	ImageDestroy( &m_src1 );
+	ImageDestroy( &m_src2 );
+	
+    m_src1 = imImageDuplicate( m_imPage1Ptr->m_img0 );
+    if ( !m_src1 )
+        return this->Terminate( ERR_MEMORY );
+	ImageDestroy( &m_src2 );
+    m_src2 = imImageDuplicate( m_imPage2Ptr->m_img0 );
+    if ( !m_src2 )
+        return this->Terminate( ERR_MEMORY );
+
+	if ( m_isModified ) 
+		*m_isModified = true;
+	return this->Terminate( ERR_NONE );
+}
+
+
+
 wxPoint ImRegister::CalcPositionAfterRotation( wxPoint point , float rot_alpha, 
                                   int w, int h, int new_w, int new_h)
 {
@@ -255,8 +301,68 @@ wxPoint ImRegister::CalcPositionAfterRotation( wxPoint point , float rot_alpha,
     return new_p;
 }
 
+bool ImRegister::DetectPoints( wxPoint *points1, wxPoint *points2)
+{
+    wxASSERT_MSG( m_progressDlg, "Progress dialog cannot be NULL");
+	wxASSERT_MSG( m_src1, "Src1 cannot be NULL");
+	wxASSERT_MSG( m_src2, "Src2 cannot be NULL");
+	wxASSERT_MSG( m_imPage1Ptr, "ImPage1 cannot be NULL" );
+	wxASSERT_MSG( m_imPage2Ptr, "ImPage2 cannot be NULL" );
+	
+	bool failed = false;
+	
+	if ( !failed ) 
+        failed = !m_imPage1Ptr->Deskew( 10.0 ); // 2 operations max
+        
+    if ( !failed ) 
+        failed = !m_imPage1Ptr->FindStaves(  3, 50, false, false );  // 4 operations max
+	
+	if ( !failed ) 
+        failed = !m_imPage2Ptr->Deskew( 10.0 ); // 2 operations max
+        
+    if ( !failed ) 
+        failed = !m_imPage2Ptr->FindStaves(  3, 50, false, false );  // 4 operations max
+		
+	if ( failed )
+		return this->Terminate( ERR_UNKNOWN );
+		
+	if ( (int)m_imPage1Ptr->m_staves.GetCount() != (int)m_imPage2Ptr->m_staves.GetCount() )
+		wxLogWarning( "Staff detection did not retrieve the same number of staves of both images" );
+		
+	int staff_nb = min( (int)m_imPage1Ptr->m_staves.GetCount(), (int)m_imPage2Ptr->m_staves.GetCount() );
+	
+	int x1, x2;
+	
+	//m_imPage1Ptr->m_staves[0].GetMinMax( &x1, &x2 );
+	points1[1] = wxPoint( m_imPage1Ptr->m_x1, m_imPage1Ptr->m_staves[0].m_y );
+	points1[3] = wxPoint( m_imPage1Ptr->m_x2, m_imPage1Ptr->m_staves[0].m_y );
+	m_imPage1Ptr->m_staves[staff_nb - 1].GetMinMax( &x1, &x2 );
+	points1[0] = wxPoint( m_imPage1Ptr->m_x1, m_imPage1Ptr->m_staves[staff_nb - 1].m_y );
+	points1[2] = wxPoint( m_imPage1Ptr->m_x2, m_imPage1Ptr->m_staves[staff_nb - 1].m_y );
 
-bool ImRegister::Register(  )
+	m_imPage2Ptr->m_staves[0].GetMinMax( &x1, &x2 );
+	points2[1] = wxPoint( m_imPage2Ptr->m_x1, m_imPage2Ptr->m_staves[0].m_y );
+	points2[3] = wxPoint( m_imPage2Ptr->m_x2, m_imPage2Ptr->m_staves[0].m_y );
+	m_imPage2Ptr->m_staves[staff_nb - 1].GetMinMax( &x1, &x2 );
+	points2[0] = wxPoint( m_imPage2Ptr->m_x1, m_imPage2Ptr->m_staves[staff_nb - 1].m_y );
+	points2[2] = wxPoint( m_imPage2Ptr->m_x2, m_imPage2Ptr->m_staves[staff_nb - 1].m_y );
+	
+	ImageDestroy( &m_src1 );
+    m_src1 = imImageDuplicate( m_imPage1Ptr->m_img1 );
+    if ( !m_src1 )
+        return this->Terminate( ERR_MEMORY );
+	imProcessNegative( m_src1, m_src1 );
+	ImageDestroy( &m_src2 );
+    m_src2 = imImageDuplicate( m_imPage2Ptr->m_img1 );
+    if ( !m_src2 )
+        return this->Terminate( ERR_MEMORY );
+	imProcessNegative( m_src2, m_src2 );
+	
+	return this->Terminate( ERR_NONE );	
+}
+
+
+bool ImRegister::Register( wxPoint *points1, wxPoint *points2)
 {
     wxASSERT_MSG( m_progressDlg, "Progress dialog cannot be NULL");
 	wxASSERT_MSG( m_src1, "Src1 cannot be NULL");
@@ -268,12 +374,11 @@ bool ImRegister::Register(  )
 	int counter = m_progressDlg->GetCounter();
 
 	int i;
-    wxPoint m_reg_points1[4]; // copy m_reg_points locally for registration, keep class m_reg_points intact
-    wxPoint m_reg_points2[4];
+    // copy m_reg_points locally for registration
 	for (i = 0; i < 4; i++ )
 	{
-		m_reg_points1[i] = this->m_reg_points1[i];
-		m_reg_points2[i] = this->m_reg_points2[i];
+		m_reg_points1[i] = points1[i];
+		m_reg_points2[i] = points2[i];
 	}
 
     // calculer la hauteur des segments et redimensionner
@@ -293,8 +398,10 @@ bool ImRegister::Register(  )
         pow( (double)(m_reg_points2[2].y - m_reg_points2[3].y), 2));
 	int vmean2 = (left2 + right2) / 2; // moyenne des deux cotes
     // facteur de redimensionnement
-    float vfactor1 = (float)SupEnv::s_segmentSize / (float)vmean1;
-    float vfactor2 = (float)SupEnv::s_segmentSize / (float)vmean2;
+    float vfactor1 = 1.0;
+	//float vfactor1 = (float)SupEnv::s_segmentSize / (float)vmean1;
+	float vfactor2 = vfactor1 *(float)vmean1 / (float)vmean2;
+    //float vfactor2 = (float)SupEnv::s_segmentSize / (float)vmean2;
 	
 	
     // idem segments horizontaux
@@ -427,8 +534,8 @@ bool ImRegister::Register(  )
     right_alpha1 = atan(right_alpha1);
 	float alpha1 = (left_alpha1 + right_alpha1) / 2;
 
-    sin0 = sin(-alpha1);
-    cos0 = cos(-alpha1);
+    sin0 = sin(alpha1);
+    cos0 = cos(alpha1);
     imProcessCalcRotateSize( m_im1->width, m_im1->height, &new_w, &new_h, cos0, sin0 );
     // ajuster la position des m_reg_points
     m_reg_points1[0] = CalcPositionAfterRotation( m_reg_points1[0], alpha1, m_im1->width, m_im1->height, new_w, new_h);
@@ -456,8 +563,8 @@ bool ImRegister::Register(  )
     right_alpha2 = atan( right_alpha2 );
 	float alpha2 = (left_alpha2 + right_alpha2) / 2;
 
-    sin0 = sin(-alpha2);
-    cos0 = cos(-alpha2);
+    sin0 = sin(alpha2);
+    cos0 = cos(alpha2);
     imProcessCalcRotateSize( m_im2->width, m_im2->height, &new_w, &new_h, cos0, sin0 );
     m_reg_points2[0] = CalcPositionAfterRotation( m_reg_points2[0], alpha2, m_im2->width, m_im2->height, new_w, new_h);
     m_reg_points2[1] = CalcPositionAfterRotation( m_reg_points2[1], alpha2, m_im2->width, m_im2->height, new_w, new_h);
@@ -522,13 +629,15 @@ bool ImRegister::Register(  )
 
     // garder l'image original pour le fichier
 	ImageDestroy( &m_src1 );
-    m_src1 = imImageDuplicate( m_im1 );
+    m_src1 = imImageClone( m_im1 );
     if ( !m_src1 )
         return this->Terminate( ERR_MEMORY );
+	imProcessNegative( m_im1, m_src1 );
 	ImageDestroy( &m_src2 );
-    m_src2 = imImageDuplicate( m_im2 );
+    m_src2 = imImageClone( m_im2 );
     if ( !m_src2 )
         return this->Terminate( ERR_MEMORY );
+	imProcessNegative( m_im2, m_src2 );
     
     int x, y, maxCorr;
     wxSize window(SupEnv::s_corr_x,SupEnv::s_corr_y);
@@ -562,7 +671,7 @@ bool ImRegister::Register(  )
     {
         for (int s_x = 0; s_x < SupEnv::s_split_x; s_x++ )
         {
-            if ( !imCounterInc( counter ) )
+            if ( !imCounterInc( counter ) || m_progressDlg->GetCanceled() )
             {
                 m_progressDlg->ReactiveCounter( );
                 return this->Terminate( ERR_CANCELED );
@@ -570,11 +679,11 @@ bool ImRegister::Register(  )
             m_progressDlg->SuspendCounter( );
 
             imProcessCrop( m_im1, m_opImTmp1, origine.x + s_x * s_w, origine.y + s_y * s_h);
+			//imProcessThreshold( m_opImTmp1, m_opImTmp1, 127, 255 );
             imProcessCrop( m_im2, m_opImTmp2, origine.x + s_x * s_w, origine.y + s_y * s_h);
+			//imProcessThreshold( m_opImTmp2, m_opImTmp2, 127, 255 );
             
-			/// !!!!!!! Won't work ....
 			DistByCorrelation( m_opImTmp1, m_opImTmp2, window, &x, &y, &maxCorr );
-			//DistByCorrelation( m_opImTmp1, m_opImTmp2, window, &x, &y);
             wxLogDebug( "Correlation decalage (position %d-%d) %d-%d", s_x, s_y, x, y );
             int marge_x = origine.x + s_x * s_w;
             int marge_y = origine.y + s_y * s_h;
@@ -620,23 +729,26 @@ bool ImRegister::Register(  )
     if (!m_progressDlg->SetOperation( _("Writing image on disk ...") ) )
         return this->Terminate( ERR_CANCELED );
 
+	// image for negative and bitwise operation
     m_opImAlign = imImageCreate(im_width, im_height, IM_GRAY, IM_BYTE );
     if ( !m_opImAlign )
         return this->Terminate( ERR_MEMORY );
-
-    //imProcessBitwiseOp( im1, im2, m_opImAlign, IM_BIT_XOR );
-    imProcessBitwiseOp( m_im1, m_im2, m_opImAlign, IM_BIT_AND );
-
-    // superposition des 3 buffers
+		
+    // superposition in result imge
 	ImageDestroy( &m_result );
     m_result = imImageCreate(im_width, im_height, IM_RGB, IM_BYTE );
     if ( !m_result )
         return this->Terminate( ERR_MEMORY );
+	
+	imProcessNegative( m_im1, m_opImAlign );
+	memcpy( m_result->data[0], m_opImAlign->data[0], m_opImAlign->size );
+	imProcessNegative( m_im2, m_opImAlign );
+	memcpy( m_result->data[1], m_opImAlign->data[0], m_opImAlign->size );	
 
-    memcpy( m_result->data[0], m_im1->data[0], m_im1->size );
-    memcpy( m_result->data[1], m_im2->data[0], m_im2->size );
+    imProcessBitwiseOp( m_im1, m_im2, m_opImAlign, IM_BIT_XOR );
+    //imProcessBitwiseOp( m_im1, m_im2, m_opImAlign, IM_BIT_AND );
+
     memcpy( m_result->data[2], m_opImAlign->data[0], m_opImAlign->size );
-    ImageDestroy( &m_opImAlign );
 	
 	/*	
     wxFile file( filename, wxFile::write ); // necessaire sous Linux pour les masques de fichiers
@@ -672,6 +784,9 @@ bool ImRegister::Register(  )
     }
     imFileClose( ifile );
 	*/
+	
+	if ( m_isModified ) 
+		*m_isModified = true;
 	
     return this->Terminate( ERR_NONE );	
 }

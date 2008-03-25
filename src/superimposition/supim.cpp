@@ -377,15 +377,32 @@ void SupImController::OpenPage( bool yield )
 
 void SupImController::UpdateBrightness( )
 {
-    if (! m_redIm || ! m_greenIm ) 
+    /*if (! m_redIm || ! m_greenIm ) 
         return;
 		
 	if ( !m_imControl1Ptr || !m_imControl2Ptr )
 		return;
 
-    wxASSERT_MSG(m_viewPtr,"View cannot be NULL");
+    wxASSERT_MSG(m_viewPtr,"View cannot be NULL");*/
 
     wxGetApp().AxBeginBusyCursor();
+	
+    imImage *im = GetImImage( this, ( IM_RGB ) );
+
+    if ( m_redIm ) 
+		imImageDestroy( m_redIm );
+    m_redIm = NULL;
+    if ( m_greenIm ) 
+		imImageDestroy( m_greenIm );
+    m_greenIm = NULL;
+
+    // memorisation des 2 buffers
+    m_redIm = imImageCreate( im->width, im->height, IM_GRAY, IM_BYTE );
+    memcpy( m_redIm->data[0], im->data[0], m_redIm->size );
+    m_greenIm = imImageCreate( im->width, im->height, IM_GRAY, IM_BYTE );
+    memcpy( m_greenIm->data[0], im->data[1], m_greenIm->size );
+	
+	imImageDestroy( im );
     
     int w = m_redIm->width;
     int h = m_redIm->height;

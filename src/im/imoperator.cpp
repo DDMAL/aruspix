@@ -584,16 +584,16 @@ void ImOperator::DistByCorrelationFFT(const _imImage *im1, const _imImage *im2,
 
 /// works on binary images 
 void ImOperator::DistByCorrelation( _imImage *im1, _imImage *im2,
-                                wxSize window, int *decalageX, int *decalageY, int *max)
+                                wxSize window, int *decalageX, int *decalageY, int *maxCorr)
 {
     wxASSERT_MSG(decalageX, wxT("decalageX cannot be NULL") );
     wxASSERT_MSG(decalageY, wxT("decalagY cannot be NULL") );
-    wxASSERT_MSG(max, wxT("max cannot be NULL") );
+    wxASSERT_MSG(maxCorr, wxT("maxCorr cannot be NULL") );
     wxASSERT_MSG(im1, wxT("Image 1 cannot be NULL") );
     wxASSERT_MSG(im2, wxT("Image 2 cannot be NULL") );
 	
-	imProcessNegative( im1, im1 );
-	imProcessNegative( im2, im2 );
+	//imProcessNegative( im1, im1 );
+	//imProcessNegative( im2, im2 );
 
     // zero padding
 	imImage *imTmp1 = imImageCreate(
@@ -616,10 +616,12 @@ void ImOperator::DistByCorrelation( _imImage *im1, _imImage *im2,
             int sum = 0;
             for (int i = 0; i < mask->plane_size; i++)
             {
-                sum += (bufIm2[i] ) * (bufMask[i] );
+				sum += (bufIm2[i] / 255) * (bufMask[i] / 255);
+                //sum += (bufIm2[i]) * (bufMask[i]) / (255 * 255);
             }
             if (sum > maxSum)
             {
+				//wxLogDebug("Sum %d", sum );
                 maxSum = sum;
                 maxX = x;
                 maxY = y;
@@ -629,7 +631,7 @@ void ImOperator::DistByCorrelation( _imImage *im1, _imImage *im2,
 
     *decalageX = maxX - window.GetWidth();
     *decalageY = maxY - window.GetHeight();
-    *max = maxSum;
+    *maxCorr = maxSum;
     imImageDestroy(imTmp1);
     imImageDestroy(mask);
 }

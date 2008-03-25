@@ -55,7 +55,9 @@ SupFile::SupFile( wxString name, SupEnv *env )
 	m_imRegisterPtr = NULL;
 	
 	m_isSuperimposed = false;
-	m_hasPoints = false;
+	m_hasPoints1 = false;
+	m_hasPoints2 = false;
+	
 }
 
 
@@ -72,10 +74,11 @@ void SupFile::NewContent( )
 	wxASSERT_MSG( !m_imRegisterPtr, "ImRegister should be NULL" );
 	        
 	// new ImPage and Load
-    m_imRegisterPtr = new ImRegister( m_basename );
+    m_imRegisterPtr = new ImRegister( m_basename, &m_isModified );
 	
 	m_isSuperimposed = false;
-	m_hasPoints = false;
+	m_hasPoints1 = false;
+	m_hasPoints2 = false;
 }
 
 
@@ -120,7 +123,10 @@ void SupFile::OpenContent( )
     //wxLogDebug( img2.GetFullPath() );
     m_original2 = img2.GetFullPath();
 	
+	
     // points
+	m_hasPoints1 = false;
+	m_hasPoints2 = false;
     node = m_xml_root->FirstChild( "points" );
     if ( node )
 	{
@@ -129,7 +135,7 @@ void SupFile::OpenContent( )
 			return;
     
 		i = 0;
-		for( node = root->FirstChild( "point1" ); node && i < 4; node = node->NextSibling( "point1" ) )
+		for( node = root->FirstChild( "point1" ); node && i < 4; node = node->NextSibling( "point1" ), i++ )
 		{
 			elem = node->ToElement();
 			if (!elem || !elem->Attribute("x") || !elem->Attribute( "y" ) ) 
@@ -137,17 +143,17 @@ void SupFile::OpenContent( )
 			m_points1[i] = wxPoint( atoi( elem->Attribute( "x" ) ), atoi( elem->Attribute( "y" ) ) );
 		}
 		i = 0;
-		for( node = root->FirstChild( "point2" ); node && i < 4; node = node->NextSibling( "point2" ) )
+		for( node = root->FirstChild( "point2" ); node && i < 4; node = node->NextSibling( "point2" ), i++ )
 		{
 			elem = node->ToElement();
 			if (!elem || !elem->Attribute("x") || !elem->Attribute( "y" ) ) 
 				continue;
 			m_points2[i] = wxPoint( atoi( elem->Attribute( "x" ) ), atoi( elem->Attribute( "y" ) ) );
 		}
-		m_hasPoints = true;
+		// we assume that, if there is a 'points' element all points are present
+		m_hasPoints1 = true;
+		m_hasPoints2 = true;
 	}
-	else
-		m_hasPoints = false;
 	
 	failed = !m_imRegisterPtr->Load( m_xml_root );
 	if ( failed )
@@ -180,7 +186,7 @@ void SupFile::SaveContent( )
 	image2.SetAttribute( "filename" , orig2.GetFullPath().c_str() );
     m_xml_root->InsertEndChild( image2 );
 	
-	if ( m_hasPoints )
+	if ( m_hasPoints1 && m_hasPoints2 )
 	{
 		TiXmlElement points("points");
 		for (i = 0; i < 4; i++ )
@@ -214,7 +220,8 @@ void SupFile::CloseContent( )
     }
 	
 	m_isSuperimposed = false;
-	m_hasPoints = false;
+	m_hasPoints1 = false;
+	m_hasPoints2 = false;
 }
 
 
@@ -265,9 +272,6 @@ bool SupFile::Superimpose( wxArrayPtrVoid params, AxProgressDlg *dlg )
 	
 	m_imRegisterPtr->SetProgressDlg( dlg );
 	
-	bool failed = false;
-
-	/*
     wxString ext, shortname1, shortname2;
     wxFileName::SplitPath( image_file1, NULL, &shortname1, &ext );
 	wxFileName::SplitPath( image_file2, NULL, &shortname2, &ext );
@@ -278,6 +282,7 @@ bool SupFile::Superimpose( wxArrayPtrVoid params, AxProgressDlg *dlg )
 		
     bool failed = false;
 	
+	/*
     if ( !failed ) 
         failed = !m_imPage1Ptr->Check( m_original1, 2500 ); // 2 operations max
 		
@@ -286,15 +291,28 @@ bool SupFile::Superimpose( wxArrayPtrVoid params, AxProgressDlg *dlg )
         
     if ( !failed ) 
         failed = !m_imPage1Ptr->FindStaves(  3, 50, false, false );  // 4 operations max
-	/*
+
     if ( RecEnv::s_check && !failed ) 
         failed = !m_imPagePtr->Check( image_file, 2500 ); // 2 operations max
+	*/
 	
-	//// TEST
-	//m_error = m_imPagePtr->GetError();
-	//this->m_isPreprocessed = true;
-	//return true;
-		
+	if ( !failed )
+		failed = !m_imRegisterPtr->Init( image_file1, image_file2 );
+
+	if ( !failed && !m_hasPoints1 && !m_hasPoints2)
+		failed = !m_imRegisterPtr->DetectPoints( m_points1, m_points2 );
+
+	if ( !failed )
+		failed = !m_imRegisterPtr->Register( m_points1, m_points2 );
+	
+	if (!failed)
+		this->m_isSuperimposed = true;
+	
+	m_error = m_imRegisterPtr->GetError();
+	
+	return true;
+	
+	/*	
     if ( RecEnv::s_deskew && !failed ) 
         failed = !m_imPagePtr->Deskew( 2.0 ); // 2 operations max
     //op.m_inputfile = output + "/deskew." + shortname + ".tif";
