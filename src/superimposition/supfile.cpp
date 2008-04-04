@@ -256,8 +256,7 @@ void SupFile::GetResult( AxImage *image )
 bool SupFile::IsSuperimposed( wxString filename )
 {
 	// don't know which file to check....
-	//return !AxFile::GetPreview( filename, "page.wwg"  ).IsEmpty();
-	return true;
+	return !AxFile::GetPreview( filename, "result.tif"  ).IsEmpty();
 }
 
 // functors
@@ -299,7 +298,7 @@ bool SupFile::Superimpose( wxArrayPtrVoid params, AxProgressDlg *dlg )
 	if ( !failed )
 		failed = !m_imRegisterPtr->Init( image_file1, image_file2 );
 
-	if ( !failed && !m_hasPoints1 && !m_hasPoints2)
+	if ( !failed && !m_hasPoints1 && !m_hasPoints2 )
 		failed = !m_imRegisterPtr->DetectPoints( m_points1, m_points2 );
 
 	if ( !failed )

@@ -346,6 +346,8 @@ bool SupEnv::ResetFile()
 	m_imControl1Ptr->SetControllers( NULL, NULL );
     m_imControl1Ptr->SetViews( NULL, NULL );
     
+    if ( m_pageSplitterPtr->IsSplit() ) // keep position if splitted
+        SupEnv::s_view_sash = m_pageSplitterPtr->GetSashPosition( );
     m_pageSplitterPtr->Unsplit();
     UpdateTitle( );
     
@@ -356,7 +358,10 @@ void SupEnv::UpdateViews( int flags )
 {
     if ( m_supFilePtr->IsSuperimposed() )
     {
+	    //if ( m_pageSplitterPtr->IsSplit() ) // keep position if splitted
+		//	SupEnv::s_view_sash = m_pageSplitterPtr->GetSashPosition( );
 		m_pageSplitterPtr->Unsplit();
+		
         m_pageSplitterPtr->SplitVertically( m_imControl1Ptr, m_srcSplitterPtr );
 		m_imControl1Ptr->SetControllers( m_srcControl1Ptr, m_srcControl2Ptr );
 		m_imControl1Ptr->SetViews( m_srcView1Ptr , m_srcView2Ptr );
@@ -368,13 +373,15 @@ void SupEnv::UpdateViews( int flags )
 		m_supFilePtr->GetSrc2( &img );
         m_srcControl2Ptr->ResetImage( img );
 		
-		m_imControl1Ptr->m_red = 10;
-		m_imControl1Ptr->UpdateBrightness( );
+		//m_imControl1Ptr->m_red = 10;
+		//m_imControl1Ptr->UpdateBrightness( );
     }
     else
     {
+		if ( m_pageSplitterPtr->IsSplit() ) // keep position if splitted // not good, keep position only if already superimposed
+			SupEnv::s_view_sash = m_pageSplitterPtr->GetSashPosition( );
 		m_pageSplitterPtr->Unsplit();
-		m_pageSplitterPtr->SplitVertically( m_imControl1Ptr, m_imControl2Ptr );
+		m_pageSplitterPtr->SplitVertically( m_imControl1Ptr, m_imControl2Ptr, SupEnv::s_view_sash );
 		m_imControl1Ptr->Open( m_supFilePtr->m_original1 );
 		m_imControl2Ptr->Open( m_supFilePtr->m_original2 );
     }
@@ -449,18 +456,15 @@ void SupEnv::OnBookSuperimpose( wxCommandEvent &event )
     if ( !m_supBookFilePtr->IsOpened() )
         return;
 
-    wxArrayString paths1, paths2, output_filenames;
+    wxArrayString filenames, paths;
     size_t nbOfFiles;
     
-    nbOfFiles = m_supBookFilePtr->FilesToSuperimpose( &paths1, &paths2, &output_filenames );
+    nbOfFiles = m_supBookFilePtr->FilesToSuperimpose( &filenames, &paths );
     if ( nbOfFiles == 0 )
     {
         wxLogMessage( _("Nothing to do! All active files are already superimposed") );
         return;  
      }
-
-    wxString output = m_supBookFilePtr->m_axFileDir;
-    output += wxFileName::GetPathSeparator();
     
     AxProgressDlg *dlg = new AxProgressDlg( m_framePtr, -1, _("Batch superimposition") );
     dlg->Center( wxBOTH );
@@ -473,21 +477,26 @@ void SupEnv::OnBookSuperimpose( wxCommandEvent &event )
     {
         if ( dlg->GetCanceled() )
             break;
+			
+        wxString outfile = paths[i];
 
-        SupFile recFilePtr( "rec_batch1_file" );
-        recFilePtr.New();
-        
-        wxArrayPtrVoid params;
-        params.Add( &paths1[i] );
-		params.Add( &paths2[i] );
-    
+        SupFile supFile( "sup_batch1_file" );
+        supFile.New();
+            
         bool failed = false;
+        
+        if ( !failed )
+            failed = !supFile.Open( paths[i] );
+			
+		wxArrayPtrVoid params;
+        params.Add( &supFile.m_original1 );
+		params.Add( &supFile.m_original2 );
 
         if ( !failed )
-            failed = !recFilePtr.Superimpose( params, dlg );
+            failed = !supFile.Superimpose( params, dlg );
 
         if ( !failed )
-            failed = !recFilePtr.SaveAs( output + output_filenames[i] + ".axz" );
+            failed = !supFile.SaveAs( outfile );
             
         if ( failed )
             failed_once = true;
@@ -705,15 +714,23 @@ void SupEnv::OnEndPutPoints( wxCommandEvent &event )
     {
 		m_supFilePtr->m_hasPoints1 = true;
 		m_supFilePtr->Modify();
-		for (i = 0; i < 4; i++ )
-			m_supFilePtr->m_points1[i] = m_imControl1Ptr->m_points[i];
+		m_supFilePtr->m_points1[0] = m_imControl1Ptr->m_points[1];
+		m_supFilePtr->m_points1[1] = m_imControl1Ptr->m_points[0];
+		m_supFilePtr->m_points1[2] = m_imControl1Ptr->m_points[3];
+		m_supFilePtr->m_points1[3] = m_imControl1Ptr->m_points[2];
+		//for (i = 0; i < 4; i++ )
+		//	m_supFilePtr->m_points1[i] = m_imControl1Ptr->m_points[i];
     }
     else if (id == ID2_CONTROLLER2)
     {
 		m_supFilePtr->m_hasPoints2 = true;
 		m_supFilePtr->Modify();
-		for (i = 0; i < 4; i++ )
-			m_supFilePtr->m_points2[i] = m_imControl2Ptr->m_points[i];
+		m_supFilePtr->m_points2[0] = m_imControl2Ptr->m_points[1];
+		m_supFilePtr->m_points2[1] = m_imControl2Ptr->m_points[0];
+		m_supFilePtr->m_points2[2] = m_imControl2Ptr->m_points[3];
+		m_supFilePtr->m_points2[3] = m_imControl2Ptr->m_points[2];
+		//for (i = 0; i < 4; i++ )
+		//	m_supFilePtr->m_points2[i] = m_imControl2Ptr->m_points[i];
     }
 }
 

@@ -482,7 +482,9 @@ void SupImController::DrawCircles( bool clear )
 
 void SupImController::CloseDraggingSelection(wxPoint start, wxPoint end)
 {
-    m_points[m_selectCounter] = end;
+	wxPoint flipped_end = end;
+	flipped_end.y = this->GetHeight() - end.y;
+    m_points[m_selectCounter] = flipped_end;
 
     if (m_selectCounter == 0)
     {

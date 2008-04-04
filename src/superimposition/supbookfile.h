@@ -56,8 +56,8 @@ public:
     bool DeleteAxfile( wxString filename );
 	bool DesactivateAxfile( wxString filename );
 	// files
-	int FilesToSuperimpose( wxArrayString *filenames, wxArrayString *paths, bool add_axfiles = true );
-	bool HasToBeSuperimposed( wxString imagefile );
+	int FilesToSuperimpose( wxArrayString *filenames, wxArrayString *paths );
+	//bool HasToBeSuperimposed( wxString imagefile );
     
 public:
     // WDR: member variable declarations for SupBookFile

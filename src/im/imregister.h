@@ -49,6 +49,7 @@ private:
     // WDR: member variable declarations for ImRegister
 	wxPoint CalcPositionAfterRotation( wxPoint point , float rot_alpha, 
                                   int w, int h, int new_w, int new_h);
+	bool ImRegister::SubRegister( wxPoint origine, wxSize window, wxSize size );
 
 
 public:

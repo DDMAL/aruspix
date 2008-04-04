@@ -233,7 +233,7 @@ void SupBookPanel::LoadPreview( )
 	wxString filename = m_filename;
 	if ( wxFileName( m_filename ).GetExt() == "axz" ) // Aruspix preview
 	{	
-		filename = AxFile::GetPreview( m_filename, "img0.tif" );
+		filename = AxFile::GetPreview( m_filename, "result.tif" );
 		if ( filename.IsEmpty( ) )
 		{
 			m_preview = m_nopreview;

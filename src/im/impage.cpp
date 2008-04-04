@@ -855,10 +855,21 @@ bool ImPage::FindStaves( int min, int max, bool normalize, bool crop )
     double factor = (double)resize_factor / 2.0; 
         // toujours 2 une fois que l'image à ete normalisee
         // EX si 4 avant normalisation, image des staves X2
-    //this->m_reduction = 2;
-    this->m_resize = normalization_factor;
+	this->m_resize = normalization_factor;
 
     wxLogMessage("Line width=%d; Space beetween lines=%d", this->m_line_width, this->m_space_width );
+	
+	// binary images
+	//if ( imColorModeMatch( file_color_mode, IM_BINARY ) )
+	if ( m_opImMap->palette_count == 2 )
+	{
+		m_opImTmp1 = imImageCreate( m_opImMap->width, m_opImMap->height , IM_GRAY, IM_BYTE);
+		if ( !m_opImTmp1 )
+			return this->Terminate( ERR_MEMORY );
+
+		imConvertColorSpace( m_opImMap, m_opImTmp1 );
+		SwapImages( &m_opImMap, &m_opImTmp1 );
+	}
 	
 	// resize main image
     if ( normalize && (normalization_factor != 1.0) )
@@ -867,19 +878,6 @@ bool ImPage::FindStaves( int min, int max, bool normalize, bool crop )
             return this->Terminate( ERR_CANCELED );
 
 		wxLogMessage("Normalization factor %f", normalization_factor );
-
-        // binary images
-        //if ( imColorModeMatch( file_color_mode, IM_BINARY ) )
-        if ( m_opImMap->palette_count == 2 )
-        {
-            m_opImTmp1 = imImageCreate( m_opImMap->width, m_opImMap->height , IM_GRAY, IM_BYTE);
-            if ( !m_opImTmp1 )
-                return this->Terminate( ERR_MEMORY );
-
-            imConvertColorSpace( m_opImMap, m_opImTmp1 );
-            SwapImages( &m_opImMap, &m_opImTmp1 );
-        }
-
 
         // resize
         m_opImTmp1 = imImageCreate( (int)(m_opImMap->width * normalization_factor), (int)(m_opImMap->height * normalization_factor), 
@@ -892,16 +890,6 @@ bool ImPage::FindStaves( int min, int max, bool normalize, bool crop )
 		
 		this->m_resized = this->m_resize;
 		this->m_resize = 1.0;
-
-        // threshold
-        /*m_opImTmp1 = imImageCreate( m_opImMain->width, m_opImMain->height, IM_BINARY, IM_BYTE );
-        if ( !m_opImTmp1 )
-            return this->Terminate( ERR_MEMORY );
-
-        //imProcessThreshold( m_opImMain, m_opImTmp1, 128, 1);
-        imProcessOtsuThreshold( m_opImMain, m_opImTmp1 );
-        //imProcessPercentThreshold(m_opImMain, m_opImTmp1, 15);
-        SwapImages( &m_opImMain, &m_opImTmp1 );*/
     }
 
     // resize image convolved -> keep for staves position detection
@@ -975,12 +963,6 @@ bool ImPage::FindStaves( int min, int max, bool normalize, bool crop )
 		if ( !GetImage( &m_opImMain ) )
 			return false;
 
-		/*
-			TODO
-			add margin as parameters
-			user must have the possibility to change them
-		*/
-
 		x1 = max( 0, this->m_x1  - RecEnv::s_pre_margin_left ); // 30 px en moins = de marge d'erreur
 		x2 = min( m_opImMain->width - 1 , this->m_x2 + RecEnv::s_pre_margin_right ); // 20 px en plus = de marge d'erreur
 		this->m_x1 -= x1;
@@ -1023,12 +1005,13 @@ bool ImPage::FindStaves( int min, int max, bool normalize, bool crop )
 		
 	// keep staff positions
     this->m_staves.Clear( );
-    //for (y = 0; y < nb_staves; y++ )
+    //wxLogDebug("Page dimension: %d - %d", m_img1->height, m_img1->width );
     for( i = nb_staves; i > 0; i--) // flip staves order
     {
         ImStaff imstaff;
         imstaff.m_y = m_opLines1[i-1] - y1;
         this->m_staves.Add( imstaff );
+		//wxLogDebug("Staff %d: y=%d", i, imstaff.m_y );
     }
 	
 	return this->Terminate( ERR_NONE );

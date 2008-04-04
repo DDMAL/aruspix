@@ -219,33 +219,26 @@ void SupBookFile::CloseContent( )
 }
 
 // probably to be modified to return two lists...
-int SupBookFile::FilesToSuperimpose( wxArrayString *filenames, wxArrayString *paths, bool add_axfiles )
+int SupBookFile::FilesToSuperimpose( wxArrayString *filenames, wxArrayString *paths )
 {
-	int index;
-	
 	filenames->Clear();
 	paths->Clear();
 
-	for( int i = 0; i < (int)m_imgFiles1.GetCount(); i++)
+	for( int i = 0; i < (int)m_axFiles.GetCount(); i++)
 	{
-		if ( m_imgFiles1[i].m_flags & FILE_DESACTIVATED )
+		if ( m_axFiles[i].m_flags & FILE_DESACTIVATED )
 			continue;
-		wxFileName filename( m_imgFiles1[i].m_filename );
-		filename.SetExt("axz");
-		//wxLogDebug( filename.GetFullName() );
-		if ( AxBookFileItem::FindFile( &m_axFiles, filename.GetFullName() , &index ) )
+
+		if ( SupFile::IsSuperimposed( m_axFileDir + wxFileName::GetPathSeparator() +  m_axFiles[i].m_filename ) )
 			continue;
-		
-		if ( add_axfiles )
-			m_axFiles.Add( AxBookFileItem( filename.GetFullName() ) );
-		paths->Add( m_imgFileDir1 + wxFileName::GetPathSeparator() +  m_imgFiles1[i].m_filename );
-		filenames->Add( m_imgFiles1[i].m_filename );
+			
+		paths->Add( m_axFileDir + wxFileName::GetPathSeparator() +  m_axFiles[i].m_filename );
+		filenames->Add( m_axFiles[i].m_filename );
 	}
-	m_axFiles.Sort( SortBookFileItems );
 	return (int)filenames->GetCount();
 }
 
-
+/*
 bool SupBookFile::HasToBeSuperimposed( wxString imagefile )
 {
 	wxArrayString paths, filenames;
@@ -266,7 +259,7 @@ bool SupBookFile::HasToBeSuperimposed( wxString imagefile )
 		return true;
 	}
 }
-
+*/
 
 bool SupBookFile::LoadAxfiles( )
 {
