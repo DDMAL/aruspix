@@ -50,12 +50,13 @@ public:
     bool LoadImages1( );
 	bool LoadImages2( );
     bool LoadAxfiles( );
-    bool RemoveImage( wxString filename );
-    bool DesactivateImage( wxString filename );
+    bool RemoveImage( wxString filename, int book_no );
+    bool DesactivateImage( wxString filename, int book_no );
     bool RemoveAxfile( wxString filename );
     bool DeleteAxfile( wxString filename );
 	bool DesactivateAxfile( wxString filename );
 	// files
+	bool CreateFiles( bool ask_user );
 	int FilesToSuperimpose( wxArrayString *filenames, wxArrayString *paths );
 	//bool HasToBeSuperimposed( wxString imagefile );
     

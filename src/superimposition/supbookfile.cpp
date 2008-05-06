@@ -219,6 +219,56 @@ void SupBookFile::CloseContent( )
 }
 
 // probably to be modified to return two lists...
+bool SupBookFile::CreateFiles( bool ask_user )
+{
+	int i;
+
+	if ( ask_user && !m_axFiles.IsEmpty() )
+	{	
+		wxString msg = wxString::Format(_("This will erase previously superimposed files for this book. Do you want to continue ?") );
+		int res = wxMessageBox( msg, wxGetApp().GetAppName() , wxYES_NO | wxICON_QUESTION );
+		if ( res != wxYES )
+			return false;
+	}
+	
+	for( i = 0; i < (int)m_axFiles.GetCount(); i++)
+	{
+		wxString fullname = m_axFileDir + wxFileName::GetPathSeparator() +  m_axFiles[i].m_filename;
+		if ( wxFileExists( fullname ) )
+			wxRemoveFile( fullname );
+	}
+	
+	// get active image files from both sets
+	wxArrayString paths1, paths2;	
+	for( i = 0; i < (int)m_imgFiles1.GetCount(); i++)
+	{
+		if ( m_imgFiles1[i].m_flags & FILE_DESACTIVATED )
+			continue;
+		paths1.Add( m_imgFileDir1 + wxFileName::GetPathSeparator() +  m_imgFiles1[i].m_filename );
+	}
+	for( i = 0; i < (int)m_imgFiles2.GetCount(); i++)
+	{
+		if ( m_imgFiles2[i].m_flags & FILE_DESACTIVATED )
+			continue;
+		paths2.Add( m_imgFileDir2 + wxFileName::GetPathSeparator() +  m_imgFiles2[i].m_filename );
+	}
+	
+	// create Aruspix files using active image files
+	for( i = 0; (i < (int)paths1.GetCount()) && (i < (int)paths2.GetCount()); i++)
+	{
+		wxString axfile = wxString::Format("%s_%03d.axz", m_shortname.c_str(), i+1 );
+		SupFile supfile( "sup_book_file_create" );
+		supfile.New();
+		supfile.m_original1 = paths1[i];
+		supfile.m_original2 = paths2[i];
+		supfile.Modify();
+		supfile.SaveAs( m_axFileDir + wxFileName::GetPathSeparator() + axfile );
+	}
+	LoadAxfiles();
+	return true;
+}
+
+// probably to be modified to return two lists...
 int SupBookFile::FilesToSuperimpose( wxArrayString *filenames, wxArrayString *paths )
 {
 	filenames->Clear();
@@ -325,39 +375,51 @@ bool SupBookFile::LoadImages2( )
     return true;
 }
 
-bool SupBookFile::RemoveImage( wxString filename )
+bool SupBookFile::RemoveImage( wxString filename, int book_no )
 {
     int index;
     const AxBookFileItem *book = NULL;
-	book = AxBookFileItem::FindFile( &m_imgFiles1, filename, &index );
-    if ( book )
-        m_imgFiles1.RemoveAt( index );
-    book = AxBookFileItem::FindFile( &m_imgFiles2, filename, &index );
-    if ( book )
-        m_imgFiles2.RemoveAt( index );
+	if ( book_no == 1 )
+	{
+		book = AxBookFileItem::FindFile( &m_imgFiles1, filename, &index );
+		if ( book )
+			m_imgFiles1.RemoveAt( index );
+    }
+	else if ( book_no == 2)
+	{
+		book = AxBookFileItem::FindFile( &m_imgFiles2, filename, &index );
+		if ( book )
+			m_imgFiles2.RemoveAt( index );
+	}
     return true;
 }
 
-bool SupBookFile::DesactivateImage( wxString filename )
+bool SupBookFile::DesactivateImage( wxString filename, int book_no )
 {
     int index;
     AxBookFileItem *book = NULL;
-	book = AxBookFileItem::FindFile( &m_imgFiles1, filename, &index );
-    if ( book )
-    {
-        if (book->m_flags & FILE_DESACTIVATED)
-            book->m_flags &= ~FILE_DESACTIVATED;
-        else
-            book->m_flags |= FILE_DESACTIVATED;
-    }
-	book = AxBookFileItem::FindFile( &m_imgFiles2, filename, &index );
-    if ( book )
-    {
-        if (book->m_flags & FILE_DESACTIVATED)
-            book->m_flags &= ~FILE_DESACTIVATED;
-        else
-            book->m_flags |= FILE_DESACTIVATED;
-    }
+	if ( book_no == 1 )
+	{
+		book = AxBookFileItem::FindFile( &m_imgFiles1, filename, &index );
+		if ( book )
+		{
+			if (book->m_flags & FILE_DESACTIVATED)
+				book->m_flags &= ~FILE_DESACTIVATED;
+			else
+				book->m_flags |= FILE_DESACTIVATED;
+		}
+	}
+	else if ( book_no == 2)
+	{
+		book = AxBookFileItem::FindFile( &m_imgFiles2, filename, &index );
+		if ( book )
+		{
+			if (book->m_flags & FILE_DESACTIVATED)
+				book->m_flags &= ~FILE_DESACTIVATED;
+			else
+				book->m_flags |= FILE_DESACTIVATED;
+		}
+	}
     return true;
 }
 

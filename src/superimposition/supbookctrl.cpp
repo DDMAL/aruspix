@@ -303,8 +303,10 @@ BEGIN_EVENT_TABLE(SupBookCtrl,AxCtrl)
     EVT_MENU( ID2_POPUP_TREE_LOAD, SupBookCtrl::OnBook )
     EVT_MENU( ID2_POPUP_TREE_SUP, SupBookCtrl::OnBook )
     EVT_MENU( ID2_POPUP_TREE_BOOK_EDIT, SupBookCtrl::OnBook )
-    EVT_MENU( ID2_POPUP_TREE_IMG_REMOVE, SupBookCtrl::OnImgRemove )
-    EVT_MENU( ID2_POPUP_TREE_IMG_DESACTIVATE, SupBookCtrl::OnImgDesactivate )
+    EVT_MENU( ID2_POPUP_TREE_IMG_REMOVE1, SupBookCtrl::OnImgRemove )
+    EVT_MENU( ID2_POPUP_TREE_IMG_DESACTIVATE1, SupBookCtrl::OnImgDesactivate )
+	EVT_MENU( ID2_POPUP_TREE_IMG_REMOVE2, SupBookCtrl::OnImgRemove )
+    EVT_MENU( ID2_POPUP_TREE_IMG_DESACTIVATE2, SupBookCtrl::OnImgDesactivate )
     EVT_MENU( ID2_POPUP_TREE_AX_DELETE, SupBookCtrl::OnAxDelete )
     EVT_MENU( ID2_POPUP_TREE_AX_REMOVE, SupBookCtrl::OnAxRemove )
 	EVT_MENU( ID2_POPUP_TREE_AX_DESACTIVATE, SupBookCtrl::OnAxDesactivate )
@@ -329,7 +331,8 @@ void SupBookCtrl::SaveDisplay( )
 {
     if ( m_rootId.IsOk() && ItemHasChildren( m_rootId ) ) SupEnv::s_expand_root = IsExpanded( m_rootId );
 	if ( m_bookId.IsOk() && ItemHasChildren( m_bookId ) ) SupEnv::s_expand_book = IsExpanded( m_bookId );
-	if ( m_imgFilesId.IsOk() && ItemHasChildren( m_imgFilesId ) ) SupEnv::s_expand_img = IsExpanded( m_imgFilesId );
+	if ( m_imgFilesId1.IsOk() && ItemHasChildren( m_imgFilesId1 ) ) SupEnv::s_expand_img1 = IsExpanded( m_imgFilesId1 );
+	if ( m_imgFilesId2.IsOk() && ItemHasChildren( m_imgFilesId2 ) ) SupEnv::s_expand_img2 = IsExpanded( m_imgFilesId2 );
 	if ( m_axFilesId.IsOk() && ItemHasChildren( m_axFilesId )) SupEnv::s_expand_ax = IsExpanded( m_axFilesId );
 }
 
@@ -337,7 +340,8 @@ void SupBookCtrl::LoadDisplay( )
 {
     if ( m_rootId.IsOk() && SupEnv::s_expand_root ) Expand( m_rootId );
 	if ( m_bookId.IsOk() && SupEnv::s_expand_book ) Expand( m_bookId );
-	if ( m_imgFilesId.IsOk() && SupEnv::s_expand_img ) Expand( m_imgFilesId );
+	if ( m_imgFilesId1.IsOk() && SupEnv::s_expand_img1 ) Expand( m_imgFilesId1 );
+	if ( m_imgFilesId2.IsOk() && SupEnv::s_expand_img2 ) Expand( m_imgFilesId2 );
 	if ( m_axFilesId.IsOk() && SupEnv::s_expand_ax ) Expand( m_axFilesId );
 }
 
@@ -354,8 +358,10 @@ void SupBookCtrl::Build( )
     SetTypeImages( m_rootId, IMG_FOLDER );
     m_bookId = AppendItem( m_rootId, _("Book") );
     SetTypeImages( m_bookId, IMG_FOLDER );
-    m_imgFilesId = AppendItem( m_rootId, _("Images") );
-    SetTypeImages( m_imgFilesId, IMG_FOLDER );
+    m_imgFilesId1 = AppendItem( m_rootId, _("Images 1") );
+    SetTypeImages( m_imgFilesId1, IMG_FOLDER );
+    m_imgFilesId2 = AppendItem( m_rootId, _("Images 2") );	
+    SetTypeImages( m_imgFilesId2, IMG_FOLDER );
     m_axFilesId = AppendItem( m_rootId, _("Aruspix files") );
     SetTypeImages( m_axFilesId, IMG_FOLDER );
 
@@ -391,24 +397,29 @@ void SupBookCtrl::Update( )
     if ( !m_supBookFilePtr->m_Library2.IsEmpty() )
         AppendItem( m_bookId, m_supBookFilePtr->m_Library2, IMG_TEXT, IMG_TEXT_S );
         
-    DeleteChildren( m_imgFilesId );
+    DeleteChildren( m_imgFilesId1 );
     int img1 = (int)m_supBookFilePtr->m_imgFiles1.GetCount();
-	int img2 = (int)m_supBookFilePtr->m_imgFiles2.GetCount();
-    if ( img1 + img2 > 0 )
-        SetItemText( m_imgFilesId, wxString::Format( _("Images (%d)"), img1 + img2 ) );
+    if ( img1 )
+        SetItemText( m_imgFilesId1, wxString::Format( _("Images 1 (%d)"), img1 ) );
     else
-        SetItemText( m_imgFilesId, _("Images") );
+        SetItemText( m_imgFilesId1, _("Images 1") );
     for ( i = 0; i < img1; i++)
     {
-        id = AppendItem( m_imgFilesId, m_supBookFilePtr->m_imgFiles1[i].m_filename, IMG_DOC, IMG_DOC_S );
+        id = AppendItem( m_imgFilesId1, m_supBookFilePtr->m_imgFiles1[i].m_filename, IMG_DOC, IMG_DOC_S );
         if (  m_supBookFilePtr->m_imgFiles1[i].m_flags & FILE_DESACTIVATED ) 
             SetItemTextColour( id , *wxLIGHT_GREY );
         if ( !wxFileExists( m_supBookFilePtr->m_imgFileDir1 + wxFileName::GetPathSeparator() +  m_supBookFilePtr->m_imgFiles1[i].m_filename ) ) 
             SetItemTextColour( id , *wxRED );
     }
+    DeleteChildren( m_imgFilesId2 );
+	int img2 = (int)m_supBookFilePtr->m_imgFiles2.GetCount();
+    if ( img2 > 0 )
+        SetItemText( m_imgFilesId2, wxString::Format( _("Images 2 (%d)"), img2 ) );
+    else
+        SetItemText( m_imgFilesId2, _("Images 2") );
     for ( i = 0; i < img2; i++)
     {
-        id = AppendItem( m_imgFilesId, m_supBookFilePtr->m_imgFiles2[i].m_filename, IMG_DOC, IMG_DOC_S );
+        id = AppendItem( m_imgFilesId2, m_supBookFilePtr->m_imgFiles2[i].m_filename, IMG_DOC, IMG_DOC_S );
         if (  m_supBookFilePtr->m_imgFiles2[i].m_flags & FILE_DESACTIVATED ) 
             SetItemTextColour( id , *wxLIGHT_GREY );
         if ( !wxFileExists( m_supBookFilePtr->m_imgFileDir2 + wxFileName::GetPathSeparator() +  m_supBookFilePtr->m_imgFiles2[i].m_filename ) ) 
@@ -451,13 +462,15 @@ void SupBookCtrl::OnSelection( wxTreeEvent &event )
 	if ( !itemId.IsOk() )
 		return;
 
-	//if ( ItemIsChildOf( m_imgFilesId, itemId ) )
-    //{   
-    //    m_supBookPanelPtr->Preview( m_supBookFilePtr->m_imgFileDir + wxFileName::GetPathSeparator() +  GetItemText( itemId ) );
-    //}
-    //else 
-	
-	if ( ItemIsChildOf( m_axFilesId, itemId ) )
+	if ( ItemIsChildOf( m_imgFilesId1, itemId ) )
+    {   
+        m_supBookPanelPtr->Preview( m_supBookFilePtr->m_imgFileDir1 + wxFileName::GetPathSeparator() +  GetItemText( itemId ) );
+    }
+	else if ( ItemIsChildOf( m_imgFilesId2, itemId ) )
+    {   
+        m_supBookPanelPtr->Preview( m_supBookFilePtr->m_imgFileDir2 + wxFileName::GetPathSeparator() +  GetItemText( itemId ) );
+    }
+    else if ( ItemIsChildOf( m_axFilesId, itemId ) )
     {
         m_supBookPanelPtr->Preview( m_supBookFilePtr->m_axFileDir + wxFileName::GetPathSeparator() +  GetItemText( itemId ) );
     }
@@ -475,11 +488,14 @@ void SupBookCtrl::OnActivate( wxTreeEvent &event )
     {
         // edition
     }
-    //else if ( ItemIsChildOf( m_imgFilesId, itemId ) )
-    //{   
-	//    // todo
-    //    m_supEnvPtr->OpenFile( m_supBookFilePtr->m_imgFileDir + wxFileName::GetPathSeparator() +  GetItemText( itemId ), -1 );
-    //}
+    else if ( ItemIsChildOf( m_imgFilesId1, itemId ) )
+    {   
+        //m_supEnvPtr->OpenFile( m_supBookFilePtr->m_imgFileDir1 + wxFileName::GetPathSeparator() +  GetItemText( itemId ), -1 );
+    }
+    else if ( ItemIsChildOf( m_imgFilesId2, itemId ) )
+    {   
+        //m_supEnvPtr->OpenFile( m_supBookFilePtr->m_imgFileDir2 + wxFileName::GetPathSeparator() +  GetItemText( itemId ), -1 );
+    }
     else if ( ItemIsChildOf( m_axFilesId, itemId ) )
     {
         m_supEnvPtr->OpenFile( m_supBookFilePtr->m_axFileDir + wxFileName::GetPathSeparator() +  GetItemText( itemId ), AX_FILE_DEFAULT );
@@ -530,12 +546,13 @@ void SupBookCtrl::OnAxDelete( wxCommandEvent &event )
 
 void SupBookCtrl::OnImgDesactivate( wxCommandEvent &event )
 {
+	int book_no = (event.GetId() == ID2_POPUP_TREE_IMG_DESACTIVATE1) ? 1 : 2;
     wxArrayTreeItemIds array;
     size_t count = GetSelections(array);
     for ( size_t n = 0; n < count; n++ )
     {
         wxString name = GetItemText(array.Item(n));
-        m_supBookFilePtr->DesactivateImage( name );
+        m_supBookFilePtr->DesactivateImage( name, book_no );
     }
     Update( );    
 }
@@ -545,12 +562,13 @@ void SupBookCtrl::OnImgRemove( wxCommandEvent &event )
     if ( wxMessageBox("The files won't be deleted. Do you want to remove the files?", wxGetApp().GetAppName() , wxYES | wxNO | wxICON_QUESTION ) != wxYES )
         return;
 
+	int book_no = (event.GetId() == ID2_POPUP_TREE_IMG_REMOVE1) ? 1 : 2;
     wxArrayTreeItemIds array;
     size_t count = GetSelections(array);
     for ( size_t n = 0; n < count; n++ )
     {
         wxString name = GetItemText(array.Item(n));
-        m_supBookFilePtr->RemoveImage( name );
+        m_supBookFilePtr->RemoveImage( name, book_no );
     }
     Update( );    
 }
@@ -575,13 +593,21 @@ void SupBookCtrl::OnMenu( wxTreeEvent &event )
     //    popup.Append( ID2_POPUP_TREE_BOOK_EDIT, _("Edit") );
     //}
 	   
-    //if ( SelectionIsChildOf( m_imgFilesId ) )
-    //{
-    //    popup.AppendSeparator( );
-    //    popup.Append( ID2_POPUP_TREE_IMG_REMOVE, _("Remove file reference from book") );
-	//	popup.AppendSeparator( );
-    //    popup.Append( ID2_POPUP_TREE_IMG_DESACTIVATE, _("Desactivate / reactivate") );
-    //}
+    if ( SelectionIsChildOf( m_imgFilesId1 ) )
+    {
+        popup.AppendSeparator( );
+        popup.Append( ID2_POPUP_TREE_IMG_REMOVE1, _("Remove file reference from book") );
+		popup.AppendSeparator( );
+        popup.Append( ID2_POPUP_TREE_IMG_DESACTIVATE1, _("Desactivate / reactivate") );
+    }
+	
+    if ( SelectionIsChildOf( m_imgFilesId2 ) )
+    {
+        popup.AppendSeparator( );
+        popup.Append( ID2_POPUP_TREE_IMG_REMOVE2, _("Remove file reference from book") );
+		popup.AppendSeparator( );
+        popup.Append( ID2_POPUP_TREE_IMG_DESACTIVATE2, _("Desactivate / reactivate") );
+    }
 	
 	if ( SelectionIsChildOf( m_axFilesId ) )
     {

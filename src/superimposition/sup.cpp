@@ -43,7 +43,8 @@ int SupEnv::s_view_sash = 0;
 
 bool SupEnv::s_expand_root = true;
 bool SupEnv::s_expand_book = true;
-bool SupEnv::s_expand_img = true;   
+bool SupEnv::s_expand_img1 = true;  
+bool SupEnv::s_expand_img2 = true;   
 bool SupEnv::s_expand_ax = true; 
 
 // WDR: class implementations
@@ -256,7 +257,8 @@ void SupEnv::LoadConfig()
 	// tree
 	SupEnv::s_expand_root = (pConfig->Read("Tree root",1)==1);
 	SupEnv::s_expand_book = (pConfig->Read("Tree book",1)==1);
-	SupEnv::s_expand_img = (pConfig->Read("Tree img",1)==1);
+	SupEnv::s_expand_img1 = (pConfig->Read("Tree img1",1)==1);
+	SupEnv::s_expand_img2 = (pConfig->Read("Tree img2",1)==1);
 	SupEnv::s_expand_ax = (pConfig->Read("Tree ax",1)==1);
 
     pConfig->SetPath("/");
@@ -285,7 +287,8 @@ void SupEnv::SaveConfig()
 	// tree
 	pConfig->Write("Tree root", SupEnv::s_expand_root );
 	pConfig->Write("Tree book", SupEnv::s_expand_book );
-	pConfig->Write("Tree img", SupEnv::s_expand_img );
+	pConfig->Write("Tree img1", SupEnv::s_expand_img1 );
+	pConfig->Write("Tree img2", SupEnv::s_expand_img2 );
 	pConfig->Write("Tree ax", SupEnv::s_expand_ax );
 
     pConfig->SetPath("/");
@@ -450,6 +453,9 @@ void SupEnv::OnBookEdit( wxCommandEvent &event )
 
 void SupEnv::OnBookSuperimpose( wxCommandEvent &event )
 {
+	m_supBookFilePtr->CreateFiles( true );
+	return;
+
     if ( AxProgressDlg::s_instance_existing )
         return;
         

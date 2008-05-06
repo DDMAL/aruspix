@@ -38,8 +38,10 @@ enum
     ID2_POPUP_TREE_LOAD,
     ID2_POPUP_TREE_SUP,
     ID2_POPUP_TREE_BOOK_EDIT,
-    ID2_POPUP_TREE_IMG_REMOVE,
-    ID2_POPUP_TREE_IMG_DESACTIVATE,
+    ID2_POPUP_TREE_IMG_REMOVE1,
+    ID2_POPUP_TREE_IMG_DESACTIVATE1,
+    ID2_POPUP_TREE_IMG_REMOVE2,
+    ID2_POPUP_TREE_IMG_DESACTIVATE2,
     ID2_POPUP_TREE_AX_REMOVE,
     ID2_POPUP_TREE_AX_DESACTIVATE,
     ID2_POPUP_TREE_AX_DELETE
@@ -210,7 +212,8 @@ public:
 	// tree
     static bool s_expand_root;
 	static bool s_expand_book;
-    static bool s_expand_img;   
+    static bool s_expand_img1;
+	static bool s_expand_img2;   
 	static bool s_expand_ax;
     
 private:

@@ -145,7 +145,8 @@ private:
     wxTreeItemId m_rootId;
     wxTreeItemId m_bookId;
     wxTreeItemId m_axFilesId;
-    wxTreeItemId m_imgFilesId;
+    wxTreeItemId m_imgFilesId1;
+	wxTreeItemId m_imgFilesId2;
     
     
     
