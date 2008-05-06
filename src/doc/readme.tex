@@ -1,0 +1,141 @@
+%
+%  untitled
+%
+%  Created by Tristan Himmelman on 2008-05-06.
+%  Copyright (c) 2008 __MyCompanyName__. All rights reserved.
+%
+\documentclass[]{article}
+
+% Use utf-8 encoding for foreign characters
+\usepackage[utf8]{inputenc}
+
+% Setup for fullpage use
+\usepackage{fullpage}
+
+% Uncomment some of the following if you use the features
+%
+% Running Headers and footers
+%\usepackage{fancyhdr}
+
+% Multipart figures
+%\usepackage{subfigure}
+
+% More symbols
+%\usepackage{amsmath}
+%\usepackage{amssymb}
+%\usepackage{latexsym}
+
+% Surround parts of graphics with box
+\usepackage{boxedminipage}
+
+% Package for including code in the document
+\usepackage{listings}
+
+% If you want to generate a toc for each chapter (use with book)
+\usepackage{minitoc}
+
+% This is now the recommended way for checking for PDFLaTeX:
+\usepackage{ifpdf}
+
+%\newif\ifpdf
+%\ifx\pdfoutput\undefined
+%\pdffalse % we are not running PDFLaTeX
+%\else
+%\pdfoutput=1 % we are running PDFLaTeX
+%\pdftrue
+%\fi
+
+\ifpdf
+\usepackage[pdftex]{graphicx}
+\else
+\usepackage{graphicx}
+\fi
+\title{Aruspix Development Set up}
+\author{  }
+
+\begin{document}
+
+\ifpdf
+\DeclareGraphicsExtensions{.pdf, .jpg, .tif}
+\else
+\DeclareGraphicsExtensions{.eps, .jpg}
+\fi
+
+\maketitle
+
+Three libraries must be downloaded and compiled in order to be able to compile Aruspix. 
+They are the following:
+\begin{itemize}
+\item wxWidgets 2.8.3 (http://www.wxwidgets.org/)
+\item IM (http://www.tecgraf.puc-rio.br/im/) 
+\item Torch(http://www.torch.ch/)
+\end{itemize}
+
+\section{wxWidgets Compilation}
+	
+Note: wxWidgets must be compiled using the MaxOSX 10.4u sdk to enable Aruspix use with both Mac OS 10.4 and 10.5.
+\begin{enumerate}
+	\item Create two directories within the wxWidgets directory: osx-static, osx-static-debug.
+	\item In the osx-static-debug directory run the following commands to compile for debug mode:
+	\begin{verbatim} ../configure --disable-shared --enable-debug --with-libjpeg=builtin --with-libpng=builtin 
+     	--with-macosx-sdk=/Developer/SDKs/MacOSX10.4u.sdk
+ 		clean
+ 		make
+	\end{verbatim}
+
+	\item In the osx-static directory run the following commands to compile for release mode:
+	\begin{verbatim} ../configure --disable-shared --enable-universal_binary --with-libjpeg=builtin
+	     --with-libpng=builtin --with-macosx-sdk=/Developer/SDKs/MacOSX10.4u.sdk 
+	 clean
+	 make
+	\end{verbatim}
+\end{enumerate}
+
+\section{Aruspix Compilation}
+
+\subsection{Setting Aruspix Environment Variables}
+	In the aruspix/osx directory you will find an XML file named enviroment.plist. This file is used by Xcode to set the following environment variables for linking purposes:
+	\begin{itemize}
+		\item \begin{verbatim}ARUSPIX: Location of Aruspix project directory.\end{verbatim}
+		\item \begin{verbatim}ARUSPIX_IMLIB: Location of IM library.\end{verbatim}
+		\item \begin{verbatim}ARUSPIX_TORCH: Location of Torch library.\end{verbatim}
+		\item \begin{verbatim}ARUSPIX_WX: Location of wxWidgets library.\end{verbatim}
+		\item \begin{verbatim}ARUSPIX_WX_VERSION: wxWidgets library version number.\end{verbatim}
+	\end{itemize}
+
+	environment.plist prototype:
+	\begin{verbatim}
+		<?xml version="1.0" encoding="UTF-8"?>
+		<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+		<plist version="1.0">
+		<dict>
+		    <key>ARUSPIX</key>
+		    <string>/Users/puginl/projects/aruspix</string>
+		    <key>ARUSPIX_IMLIB</key>
+		    <string>/Users/puginl/libs/imlib</string>
+		    <key>ARUSPIX_TORCH</key>
+		    <string>/Users/puginl/libs/Torch3</string>
+		    <key>ARUSPIX_WX</key>
+		    <string>/Users/puginl/libs/wx2.8.7</string>
+		    <key>ARUSPIX_WX_VERSION</key>
+		    <string>2.8</string>
+		</dict>
+		</plist>
+	\end{verbatim}
+	\begin{enumerate}
+		\item You must modify the paths within this file to match your directory structure.
+		\item In the home directory create the following hidden directory: .MacOSX.
+		\item Now copy the modified environment.plist file into the .MacOSX directory.
+		\item You must now log out and log back in.
+	\end{enumerate}
+
+\subsection{Compilation of Machine Learning Executables used by Aruspix}
+	\begin{enumerate}
+		\item Open aruspix/osx/torch.xcodeproj with Xcode.
+		\item Compile the following executables in both release and debug mode: adapt, decoder, ngram.
+	\end{enumerate}
+
+Open aruspix/osx/aruspix.xcodeproj with Xcode.
+
+Now Aruspix is ready to be compiled in both Debug and Release mode. 
+\end{document}
