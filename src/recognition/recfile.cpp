@@ -599,12 +599,7 @@ bool RecFile::Decode( wxArrayPtrVoid params, AxProgressDlg *dlg )
 
 	wxString args = " ";
 	
-	wxString log = "\"" + wxGetApp().m_logDir + "/decoder.log\"";
-	args << " -log_fname " << log.c_str();	
-	
-	wxString end = wxGetApp().m_workingDir + "end_process";
-	wxRemoveFile( end );
-	args << " -end_fname " << end.c_str();
+	wxString log = wxGetApp().m_logDir + "/decoder.log";
 	
 	args << " -am_models_fname " << rec_models.c_str();
 	args << " -am_sil_phone \"{s}\" ";
@@ -637,46 +632,37 @@ bool RecFile::Decode( wxArrayPtrVoid params, AxProgressDlg *dlg )
 		args << " -wrdtrns_fname " << rec_wrdtrns.c_str();
 
 	wxLogDebug(args);
-	//printf(args.c_str());
 
 	if (!dlg->SetOperation( _("Recognition...") ) )
 		return this->Terminate( ERR_CANCELED );
 
 	dlg->StartTimerOperation( TIMER_DECODING, m_imPagePtr->GetStaffSegmentsCount() );
+	int pid;
 	AxProcess *process = new AxProcess( cmd, args, NULL );
+	process->SetLog( log );
 	if ( process->Start() )
 	{
-		process->Detach();
-		process->m_deleteOnTerminate = false;
-		int pid = process->GetPid();
-#ifdef __POWERPC__  & __WXMAC__
-		// on PPC machine, from Leopard (10.5), end detection of wxProcess does not work
-		// Instead, an 'end_file' is written by the external process to enable the end of 
-		// the task to be detected. This is not optimal as the file won't be written if the
-		// process fails.
-		wxLogDebug("AxProcess end detetion with a file");
-		while  ( !wxFileExists( end ) )
-#else
-		while  ( process->GetPid() == pid )
-#endif
+		pid = process->GetPid();
+		while  ( !process->HasEnded() )
 		{
-			wxMilliSleep( 200 );
 			if( !dlg->IncTimerOperation( ) )
 			{
-				process->m_deleteOnTerminate = true;
-				process->m_canceled = true;
-				wxKill( pid, wxSIGKILL ); 
+				wxKill( pid, wxSIGKILL );
+				wxYield();
+				delete process; 
 				return this->Terminate( ERR_CANCELED );
 			}
+			wxMilliSleep( 200 );
 		}
 		
 	}
+	wxYield(); // flush termination event before deleting the process.
 	if ( process->m_status != 0 )
 	{
 		delete process;
 		return this->Terminate( ERR_UNKNOWN );
 	}
-	dlg->EndTimerOperation( TIMER_DECODING );
+	dlg->EndTimerOperation( TIMER_DECODING );	
 	delete process;
 
 

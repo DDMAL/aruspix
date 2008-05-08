@@ -1137,12 +1137,14 @@
 		);
 		breakpointStyle = 0;
 		continueAfterActions = 0;
+		countType = 0;
 		delayBeforeContinue = 0;
 		fileReference = 570C84880C186319007B375E /* im_kmeans.c */;
 		functionName = "kmeans()";
 		hitCount = 1;
+		ignoreCount = 0;
 		lineNumber = 292;
-		modificationTime = 226861712.71998;
+		modificationTime = 226861712.7199799;
 		state = 1;
 	};
 	570C45E90C1F16EC00A72FF4 /* im_kmeans.c:280 */ = {
@@ -1151,10 +1153,12 @@
 		);
 		breakpointStyle = 0;
 		continueAfterActions = 0;
+		countType = 0;
 		delayBeforeContinue = 0;
 		fileReference = 570C84880C186319007B375E /* im_kmeans.c */;
 		functionName = "kmeans()";
 		hitCount = 1;
+		ignoreCount = 0;
 		lineNumber = 280;
 		modificationTime = 226861712.720016;
 		state = 1;
@@ -1165,10 +1169,12 @@
 		);
 		breakpointStyle = 0;
 		continueAfterActions = 0;
+		countType = 0;
 		delayBeforeContinue = 0;
 		fileReference = 570C84880C186319007B375E /* im_kmeans.c */;
 		functionName = "kmeans()";
 		hitCount = 1;
+		ignoreCount = 0;
 		lineNumber = 159;
 		modificationTime = 226861712.719996;
 		state = 1;
@@ -1179,10 +1185,12 @@
 		);
 		breakpointStyle = 0;
 		continueAfterActions = 0;
+		countType = 0;
 		delayBeforeContinue = 0;
 		fileReference = 570C84880C186319007B375E /* im_kmeans.c */;
 		functionName = "kmeans()";
 		hitCount = 1;
+		ignoreCount = 0;
 		lineNumber = 277;
 		modificationTime = 226861712.71997;
 		state = 1;
@@ -1299,27 +1307,15 @@
 		);
 		breakpointStyle = 0;
 		continueAfterActions = 0;
+		countType = 0;
 		delayBeforeContinue = 0;
 		fileReference = A5D0D4AE0A65628800A4B1CA /* impage.cpp */;
 		functionName = "ImPage::FindStaves()";
 		hitCount = 1;
+		ignoreCount = 0;
 		lineNumber = 710;
 		location = Aruspix;
 		modificationTime = 226861470.962801;
-		state = 1;
-	};
-	5724A4800BFE2B9500AAE4B4 /* (null):790 */ = {
-		isa = PBXFileBreakpoint;
-		actions = (
-		);
-		breakpointStyle = 0;
-		continueAfterActions = 0;
-		delayBeforeContinue = 0;
-		functionName = "RecMusModel::Train()";
-		hitCount = 1;
-		lineNumber = 790;
-		location = Aruspix;
-		modificationTime = 226861470.962926;
 		state = 1;
 	};
 	5736CD760C345EEB00254E7B /* rec.cpp:904 */ = {
@@ -1328,12 +1324,14 @@
 		);
 		breakpointStyle = 0;
 		continueAfterActions = 0;
+		countType = 0;
 		delayBeforeContinue = 0;
 		fileReference = A5EFDB210A278C980019FA6A /* rec.cpp */;
 		functionName = "RecEnv::OnBookOptimize()";
 		hitCount = 1;
+		ignoreCount = 0;
 		lineNumber = 904;
-		modificationTime = 226861470.962857;
+		modificationTime = 226861470.9628569;
 		state = 2;
 	};
 	5736CE1A0C354BA100254E7B /* cmpmlf.h */ = {
@@ -1349,9 +1347,11 @@
 		);
 		breakpointStyle = 0;
 		continueAfterActions = 0;
+		countType = 0;
 		delayBeforeContinue = 0;
 		fileReference = 5736CE1A0C354BA100254E7B /* cmpmlf.h */;
 		hitCount = 1;
+		ignoreCount = 0;
 		lineNumber = 82;
 		location = Aruspix;
 		modificationTime = 226861470.962864;
@@ -1451,10 +1451,12 @@
 		);
 		breakpointStyle = 0;
 		continueAfterActions = 0;
+		countType = 0;
 		delayBeforeContinue = 0;
 		fileReference = 5736CE4D0C354E4A00254E7B /* cmpfile.cpp */;
 		functionName = "CmpFile::LoadBooks()";
 		hitCount = 1;
+		ignoreCount = 0;
 		lineNumber = 826;
 		location = Aruspix;
 		modificationTime = 226861470.96287;
@@ -1466,10 +1468,12 @@
 		);
 		breakpointStyle = 0;
 		continueAfterActions = 0;
+		countType = 0;
 		delayBeforeContinue = 0;
 		fileReference = 5736CE4D0C354E4A00254E7B /* cmpfile.cpp */;
 		functionName = "CmpFile::LoadBooks()";
 		hitCount = 1;
+		ignoreCount = 0;
 		lineNumber = 839;
 		location = Aruspix;
 		modificationTime = 226861470.962876;
@@ -1477,7 +1481,6 @@
 	};
 	576C2D290AA62AA5009D2053 /* Aruspix */ = {
 		isa = PBXExecutable;
-		activeArgIndex = 2147483647;
 		activeArgIndices = (
 			NO,
 			NO,
@@ -1491,6 +1494,7 @@
 			../Debug/PetO_1502_1502.1_I.Bc_01_009.axz,
 		);
 		autoAttachOnCrash = 1;
+		breakpointsEnabled = 1;
 		configStateDict = {
 			"PBXLSLaunchAction-0" = {
 				PBXLSLaunchAction = 0;
@@ -1540,47 +1544,18 @@
 		isa = PBXCodeSenseManager;
 		indexTemplatePath = "";
 	};
-	576F8D560D185C2400ECB366 /* XCBreakpointsBucket */ = {
-		isa = XCBreakpointsBucket;
-		name = "Project Breakpoints";
-		objects = (
-			57FAFD460AA89024007A3658 /* wgviewer.cpp:363 */,
-			57FBA4EA0B7D3ABF000165E9 /* im_ext.cpp:524 */,
-			57FBA5160B7D42C5000165E9 /* im_ext.cpp:579 */,
-			579B56AC0BEA2C8A005CC733 /* wgviewer.cpp:143 */,
-			57B7BE560BEB8BC200B6B37B /* axapp.cpp:647 */,
-			5724A2A10BFCA7A200AAE4B4 /* impage.cpp:710 */,
-			5724A4800BFE2B9500AAE4B4 /* (null):790 */,
-			57D4B7C30BFF7DB100A26437 /* rec.cpp:887 */,
-			57D4B8770BFFABE400A26437 /* (null):411 */,
-			57772CF90C04D69E004DC772 /* recbook.cpp:589 */,
-			57772CFB0C04D6B0004DC772 /* recbook.cpp:427 */,
-			57772D6D0C04EEB4004DC772 /* (null):387 */,
-			57772DBD0C05C5D3004DC772 /* (null):387 */,
-			570C45E30C1F167E00A72FF4 /* im_kmeans.c:292 */,
-			570C45E90C1F16EC00A72FF4 /* im_kmeans.c:280 */,
-			570C45F70C1F1D5600A72FF4 /* im_kmeans.c:159 */,
-			570C46240C1F22FE00A72FF4 /* im_kmeans.c:277 */,
-			57A6685F0C3307FD00622C70 /* cmpim.cpp:147 */,
-			5736CD760C345EEB00254E7B /* rec.cpp:904 */,
-			5736CE1C0C354BA100254E7B /* cmpmlf.h:82 */,
-			5736D2C20C36DBA100254E7B /* cmpfile.cpp:826 */,
-			5736D2D50C36DD2F00254E7B /* cmpfile.cpp:839 */,
-			57E18CFD0C3A95480013DBB4 /* cmp.cpp:437 */,
-			57B8A7EB0CC6B2DB008D84B2 /* cmpctrl.cpp:633 */,
-			57AE72060CE381B40044A3F6 /* axprocess.cpp:70 */,
-		);
-	};
 	57772CF90C04D69E004DC772 /* recbook.cpp:589 */ = {
 		isa = PBXFileBreakpoint;
 		actions = (
 		);
 		breakpointStyle = 0;
 		continueAfterActions = 0;
+		countType = 0;
 		delayBeforeContinue = 0;
 		fileReference = 5715555E0BF3A64200BDDEE9 /* recbook.cpp */;
 		functionName = "RecBookFile::DesactivateImage()";
 		hitCount = 1;
+		ignoreCount = 0;
 		lineNumber = 589;
 		modificationTime = 226861712.720031;
 		state = 1;
@@ -1591,40 +1566,14 @@
 		);
 		breakpointStyle = 0;
 		continueAfterActions = 0;
+		countType = 0;
 		delayBeforeContinue = 0;
 		fileReference = 5715555E0BF3A64200BDDEE9 /* recbook.cpp */;
 		functionName = "RecBookFile::MusAdaptation()";
 		hitCount = 1;
+		ignoreCount = 0;
 		lineNumber = 427;
 		modificationTime = 226861712.719955;
-		state = 1;
-	};
-	57772D6D0C04EEB4004DC772 /* (null):387 */ = {
-		isa = PBXFileBreakpoint;
-		actions = (
-		);
-		breakpointStyle = 0;
-		continueAfterActions = 0;
-		delayBeforeContinue = 0;
-		functionName = "RecTypModel::Commit()";
-		hitCount = 1;
-		lineNumber = 387;
-		location = Aruspix;
-		modificationTime = 226861470.962978;
-		state = 1;
-	};
-	57772DBD0C05C5D3004DC772 /* (null):387 */ = {
-		isa = PBXFileBreakpoint;
-		actions = (
-		);
-		breakpointStyle = 0;
-		continueAfterActions = 0;
-		delayBeforeContinue = 0;
-		functionName = "RecTypModel::Commit()";
-		hitCount = 1;
-		lineNumber = 387;
-		location = Aruspix;
-		modificationTime = 226861470.963021;
 		state = 1;
 	};
 	579B56AC0BEA2C8A005CC733 /* wgviewer.cpp:143 */ = {
@@ -1633,10 +1582,12 @@
 		);
 		breakpointStyle = 0;
 		continueAfterActions = 0;
+		countType = 0;
 		delayBeforeContinue = 0;
 		fileReference = A58524C40A1B9604002D9D8A /* wgviewer.cpp */;
 		functionName = "WgvEnv::OnSaveModel()";
 		hitCount = 1;
+		ignoreCount = 0;
 		lineNumber = 143;
 		location = Aruspix;
 		modificationTime = 226861470.962685;
@@ -1655,10 +1606,12 @@
 		);
 		breakpointStyle = 0;
 		continueAfterActions = 0;
+		countType = 0;
 		delayBeforeContinue = 0;
 		fileReference = 57A6685D0C3307FD00622C70 /* cmpim.cpp */;
 		functionName = "CmpImWindow::CmpImWindow()";
 		hitCount = 1;
+		ignoreCount = 0;
 		lineNumber = 147;
 		modificationTime = 226861470.962852;
 		state = 2;
@@ -1699,10 +1652,12 @@
 		);
 		breakpointStyle = 0;
 		continueAfterActions = 0;
+		countType = 0;
 		delayBeforeContinue = 0;
 		fileReference = A58524660A1B9604002D9D8A /* axprocess.cpp */;
 		functionName = "AxProcess::OnTerminate(int pid, int status)";
 		hitCount = 1;
+		ignoreCount = 0;
 		lineNumber = 70;
 		location = Aruspix;
 		modificationTime = 226861470.96292;
@@ -1714,10 +1669,12 @@
 		);
 		breakpointStyle = 0;
 		continueAfterActions = 0;
+		countType = 0;
 		delayBeforeContinue = 0;
 		fileReference = A58524560A1B9604002D9D8A /* axapp.cpp */;
 		functionName = "TransferDataFromWindow()";
 		hitCount = 1;
+		ignoreCount = 0;
 		lineNumber = 647;
 		location = Aruspix;
 		modificationTime = 226861470.962692;
@@ -1729,10 +1686,12 @@
 		);
 		breakpointStyle = 0;
 		continueAfterActions = 0;
+		countType = 0;
 		delayBeforeContinue = 0;
 		fileReference = 5736CE4B0C354E4A00254E7B /* cmpctrl.cpp */;
 		functionName = "CmpCtrl::OnAssembleParts()";
 		hitCount = 1;
+		ignoreCount = 0;
 		lineNumber = 633;
 		location = Aruspix;
 		modificationTime = 226861470.962888;
@@ -1758,13 +1717,6 @@
 			sepNavIntBoundsRect = "{{0, 0}, {1173, 994}}";
 			sepNavSelRange = "{1252, 0}";
 			sepNavVisRect = "{{0, 0}, {1173, 994}}";
-		};
-	};
-	57CA53DB0D340F61001FC334 /* imkmeans.c */ = {
-		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1369, 4116}}";
-			sepNavSelRange = "{1021, 21}";
-			sepNavVisRect = "{{0, 0}, {1369, 807}}";
 		};
 	};
 	57CA53DC0D340F61001FC334 /* imkmeans.h */ = {
@@ -1816,27 +1768,15 @@
 		);
 		breakpointStyle = 0;
 		continueAfterActions = 0;
+		countType = 0;
 		delayBeforeContinue = 0;
 		fileReference = A5EFDB210A278C980019FA6A /* rec.cpp */;
 		functionName = "RecEnv::OnBookRecognize()";
 		hitCount = 1;
+		ignoreCount = 0;
 		lineNumber = 887;
 		location = Aruspix;
 		modificationTime = 226861470.96281;
-		state = 1;
-	};
-	57D4B8770BFFABE400A26437 /* (null):411 */ = {
-		isa = PBXFileBreakpoint;
-		actions = (
-		);
-		breakpointStyle = 0;
-		continueAfterActions = 0;
-		delayBeforeContinue = 0;
-		functionName = "RecTypModel::Adapt()";
-		hitCount = 1;
-		lineNumber = 411;
-		location = Aruspix;
-		modificationTime = 226861470.96297;
 		state = 1;
 	};
 	57E18CFD0C3A95480013DBB4 /* cmp.cpp:437 */ = {
@@ -1845,10 +1785,12 @@
 		);
 		breakpointStyle = 0;
 		continueAfterActions = 0;
+		countType = 0;
 		delayBeforeContinue = 0;
 		fileReference = 5736CE460C354E4A00254E7B /* cmp.cpp */;
 		functionName = "CmpEnv::UpdateViews()";
 		hitCount = 1;
+		ignoreCount = 0;
 		lineNumber = 437;
 		location = Aruspix;
 		modificationTime = 226861470.962882;
@@ -1874,10 +1816,12 @@
 		);
 		breakpointStyle = 0;
 		continueAfterActions = 0;
+		countType = 0;
 		delayBeforeContinue = 0;
 		fileReference = A58524C40A1B9604002D9D8A /* wgviewer.cpp */;
 		functionName = "WgvEnv::OnOpen()";
 		hitCount = 1;
+		ignoreCount = 0;
 		lineNumber = 363;
 		location = Aruspix;
 		modificationTime = 226861470.962644;
@@ -1889,12 +1833,14 @@
 		);
 		breakpointStyle = 0;
 		continueAfterActions = 0;
+		countType = 0;
 		delayBeforeContinue = 0;
 		fileReference = A5D0D4B90A65654900A4B1CA /* im_ext.cpp */;
 		functionName = "Kittler()";
 		hitCount = 1;
+		ignoreCount = 0;
 		lineNumber = 524;
-		modificationTime = 226861712.720005;
+		modificationTime = 226861712.7200049;
 		state = 1;
 	};
 	57FBA5160B7D42C5000165E9 /* im_ext.cpp:579 */ = {
@@ -1903,10 +1849,12 @@
 		);
 		breakpointStyle = 0;
 		continueAfterActions = 0;
+		countType = 0;
 		delayBeforeContinue = 0;
 		fileReference = A5D0D4B90A65654900A4B1CA /* im_ext.cpp */;
 		functionName = "Kittler()";
 		hitCount = 1;
+		ignoreCount = 0;
 		lineNumber = 579;
 		modificationTime = 226861712.719923;
 		state = 1;
@@ -1920,6 +1868,7 @@
 		};
 	};
 	A58508B40A001129006E82B1 /* Project object */ = {
+		activeArchitecture = ppc;
 		activeBuildConfigurationName = Debug;
 		activeExecutable = 576C2D290AA62AA5009D2053 /* Aruspix */;
 		activeTarget = A58508C00A00113C006E82B1 /* Aruspix */;
@@ -1948,12 +1897,7 @@
 			57E18CFD0C3A95480013DBB4 /* cmp.cpp:437 */,
 			57B8A7EB0CC6B2DB008D84B2 /* cmpctrl.cpp:633 */,
 			57AE72060CE381B40044A3F6 /* axprocess.cpp:70 */,
-			5724A4800BFE2B9500AAE4B4 /* (null):790 */,
-			57D4B8770BFFABE400A26437 /* (null):411 */,
-			57772D6D0C04EEB4004DC772 /* (null):387 */,
-			57772DBD0C05C5D3004DC772 /* (null):387 */,
 		);
-		breakpointsGroup = 576F8D560D185C2400ECB366 /* XCBreakpointsBucket */;
 		codeSenseManager = 576C2D320AA62AE1009D2053 /* Code sense */;
 		executables = (
 			576C2D290AA62AA5009D2053 /* Aruspix */,
@@ -2001,7 +1945,7 @@
 				PBXFileTableDataSourceColumnWidthsKey = (
 					22,
 					300,
-					496.5835,
+					496.58349609375,
 				);
 				PBXFileTableDataSourceColumnsKey = (
 					PBXExecutablesDataSource_ActiveFlagID,
@@ -2105,8 +2049,8 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 226856199;
-			PBXWorkspaceStateSaveDate = 226856199;
+			PBXPerProjectTemplateStateSaveDate = 231954704;
+			PBXWorkspaceStateSaveDate = 231954704;
 		};
 		perUserProjectItems = {
 			5707ED1A0D8193020051DF08 = 5707ED1A0D8193020051DF08 /* PBXTextBookmark */;
@@ -2204,12 +2148,12 @@
 			5707EDB60D81EE0F0051DF08 = 5707EDB60D81EE0F0051DF08 /* PBXTextBookmark */;
 			5707EDB70D81EE0F0051DF08 = 5707EDB70D81EE0F0051DF08 /* PBXTextBookmark */;
 			5707EDB80D81EE0F0051DF08 = 5707EDB80D81EE0F0051DF08 /* PBXTextBookmark */;
-			5707EE120D85A3BF0051DF08 /* PBXTextBookmark */ = 5707EE120D85A3BF0051DF08 /* PBXTextBookmark */;
-			5707EE130D85A3BF0051DF08 /* PBXTextBookmark */ = 5707EE130D85A3BF0051DF08 /* PBXTextBookmark */;
-			5707EE150D85A3BF0051DF08 /* PBXTextBookmark */ = 5707EE150D85A3BF0051DF08 /* PBXTextBookmark */;
-			5707EE160D85A3BF0051DF08 /* PBXTextBookmark */ = 5707EE160D85A3BF0051DF08 /* PBXTextBookmark */;
-			5707EE1B0D85A70D0051DF08 /* PBXTextBookmark */ = 5707EE1B0D85A70D0051DF08 /* PBXTextBookmark */;
-			5707EE1C0D85A70D0051DF08 /* PBXTextBookmark */ = 5707EE1C0D85A70D0051DF08 /* PBXTextBookmark */;
+			5707EE120D85A3BF0051DF08 = 5707EE120D85A3BF0051DF08 /* PBXTextBookmark */;
+			5707EE130D85A3BF0051DF08 = 5707EE130D85A3BF0051DF08 /* PBXTextBookmark */;
+			5707EE150D85A3BF0051DF08 = 5707EE150D85A3BF0051DF08 /* PBXTextBookmark */;
+			5707EE160D85A3BF0051DF08 = 5707EE160D85A3BF0051DF08 /* PBXTextBookmark */;
+			5707EE1B0D85A70D0051DF08 = 5707EE1B0D85A70D0051DF08 /* PBXTextBookmark */;
+			5707EE1C0D85A70D0051DF08 = 5707EE1C0D85A70D0051DF08 /* PBXTextBookmark */;
 			571BA2450D7EFDE400B55DF9 = 571BA2450D7EFDE400B55DF9 /* PBXTextBookmark */;
 			571BA2470D7EFDE400B55DF9 = 571BA2470D7EFDE400B55DF9 /* PBXTextBookmark */;
 			571BA2480D7EFDE400B55DF9 = 571BA2480D7EFDE400B55DF9 /* PBXTextBookmark */;
