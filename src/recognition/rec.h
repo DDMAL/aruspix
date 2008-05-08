@@ -216,9 +216,9 @@ public:
     static int s_pre_margin_left;
     static int s_pre_margin_right;
     // static values not changed
-    static int s_pre_threshold_method_resize;
-    static int s_pre_threshold_method;
-    static int s_pre_threshold_region_size;
+    static int s_pre_image_binarization_method; // used in ImOperator, should be moved if RecEnv is not used...
+    static int s_pre_page_binarization_method; // used in ImPage, idem
+    static int s_pre_page_binarization_method_size;
     // decoder
     static wxString s_rec_typ_model;
     static wxString s_rec_mus_model;    

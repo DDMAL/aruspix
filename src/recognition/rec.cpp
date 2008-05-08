@@ -60,9 +60,9 @@ int RecEnv::s_pre_margin_top = 150;
 int RecEnv::s_pre_margin_bottom = 120;
 int RecEnv::s_pre_margin_left = 30;
 int RecEnv::s_pre_margin_right = 20;
-int RecEnv::s_pre_threshold_method_resize = PRE_BINARIZATION_OTSU;
-int RecEnv::s_pre_threshold_method = PRE_BINARIZATION_BRINK;
-int RecEnv::s_pre_threshold_region_size = 15;
+int RecEnv::s_pre_image_binarization_method = PRE_BINARIZATION_OTSU;
+int RecEnv::s_pre_page_binarization_method = PRE_BINARIZATION_BRINK;
+int RecEnv::s_pre_page_binarization_method_size = 15;
 
 
 
@@ -422,9 +422,9 @@ void RecEnv::LoadConfig()
     RecEnv::s_pre_margin_bottom = pConfig->Read("Pre margin bottom", 120);
     RecEnv::s_pre_margin_left = pConfig->Read("Pre margin left", 30);
     RecEnv::s_pre_margin_right = pConfig->Read("Pre margin right", 20);
-    RecEnv::s_pre_threshold_method_resize = pConfig->Read("Binarization method resize", PRE_BINARIZATION_OTSU );
-    RecEnv::s_pre_threshold_method = pConfig->Read("Binarization method", PRE_BINARIZATION_BRINK );
-    RecEnv::s_pre_threshold_region_size = pConfig->Read("Binarization region size", 15);
+    RecEnv::s_pre_image_binarization_method = pConfig->Read("Binarization method resize", IM_BINARIZATION_OTSU );
+    RecEnv::s_pre_page_binarization_method = pConfig->Read("Binarization method", PRE_BINARIZATION_BRINK );
+    RecEnv::s_pre_page_binarization_method_size = pConfig->Read("Binarization region size", 15);
     
     RecEnv::s_last_batch = pConfig->Read("Last Batch", 0L );
     RecEnv::s_book_sash = pConfig->Read("Book Sash", 200 );
@@ -479,9 +479,9 @@ void RecEnv::SaveConfig()
     pConfig->Write("Pre margin bottom",RecEnv::s_pre_margin_bottom);
     pConfig->Write("Pre margin left", RecEnv::s_pre_margin_left);
     pConfig->Write("Pre margin right", RecEnv::s_pre_margin_right );
-    pConfig->Write("Binarization method resize", RecEnv::s_pre_threshold_method_resize );
-    pConfig->Write("Binarization method", RecEnv::s_pre_threshold_method );
-    pConfig->Write("Binarization region size", RecEnv::s_pre_threshold_region_size );
+    pConfig->Write("Binarization method resize", RecEnv::s_pre_image_binarization_method );
+    pConfig->Write("Binarization method", RecEnv::s_pre_page_binarization_method );
+    pConfig->Write("Binarization region size", RecEnv::s_pre_page_binarization_method_size );
     
     pConfig->Write("Last Batch", RecEnv::s_last_batch );
     pConfig->Write("Book Sash", RecEnv::s_book_sash);

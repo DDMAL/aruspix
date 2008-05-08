@@ -38,7 +38,7 @@ public:
 	ImStaff( );
     virtual ~ImStaff();
     
-    // WDR: method declarations for ImStaff
+    //WDR: method declarations for ImStaff
     //bool Load( DOMNode *node );
     //bool Save( DOMNode *node, DOMDocument *dom );
     bool Load( TiXmlNode *node );

@@ -649,7 +649,7 @@ bool ImPage::FindStaves( int min, int max, bool normalize, bool crop )
 
 	this->SetMapImage( m_img0 );
 
-    if ( !GetImage( &m_opIm, resize_factor, RecEnv::s_pre_threshold_method_resize, true ) )
+    if ( !GetImage( &m_opIm, resize_factor, RecEnv::s_pre_image_binarization_method, true ) )
         return false;
 
     m_opImTmp1 = imImageClone( m_opIm );
@@ -1143,26 +1143,26 @@ bool ImPage::BinarizeAndClean( )
     if ( !m_opImTmp1 )
         return this->Terminate( ERR_MEMORY );
 
-	if ( RecEnv::s_pre_threshold_method == PRE_BINARIZATION_OTSU )
+	if ( RecEnv::s_pre_page_binarization_method == PRE_BINARIZATION_OTSU )
 	{
 		int otsu = imProcessOtsuThreshold( m_opImMain, m_opImTmp1 );
 		wxLogMessage("Otsu thresholding at %d", otsu);
 	}
-	else if ( RecEnv::s_pre_threshold_method == PRE_BINARIZATION_SAUVOLA )
+	else if ( RecEnv::s_pre_page_binarization_method == PRE_BINARIZATION_SAUVOLA )
 	{
 		if ( !m_progressDlg->SetOperation( _("Binarization ...") ) )
 			return this->Terminate( ERR_CANCELED );
-		wxLogMessage("Sauvola binarization (region size is %d)", RecEnv::s_pre_threshold_region_size );
-		imProcessSauvolaThreshold( m_opImMain, m_opImTmp1, RecEnv::s_pre_threshold_region_size, 0.5, 128, 20, 150, false );
+		wxLogMessage("Sauvola binarization (region size is %d)", RecEnv::s_pre_page_binarization_method_size );
+		imProcessSauvolaThreshold( m_opImMain, m_opImTmp1, RecEnv::s_pre_page_binarization_method_size, 0.5, 128, 20, 150, false );
 	}
-	else if ( RecEnv::s_pre_threshold_method == PRE_BINARIZATION_BRINK )
+	else if ( RecEnv::s_pre_page_binarization_method == PRE_BINARIZATION_BRINK )
 	{
 		if ( !m_progressDlg->SetOperation( _("Binarization ...") ) )
 			return this->Terminate( ERR_CANCELED );
 		wxLogMessage("Entropy Brink binarization" );
 		imProcessBrinkThreshold( m_opImMain, m_opImTmp1, false );
 	}
-	else if ( RecEnv::s_pre_threshold_method == PRE_BINARIZATION_PUGIN )
+	else if ( RecEnv::s_pre_page_binarization_method == PRE_BINARIZATION_PUGIN )
 	{
 		if ( !m_progressDlg->SetOperation( _("Binarization ...") ) )
 			return this->Terminate( ERR_CANCELED );

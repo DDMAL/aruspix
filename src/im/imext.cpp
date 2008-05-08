@@ -450,7 +450,6 @@ void imAnalyzeClearMin(const imImage* image, int region_count, int threshold )
 			j = ((*img_data) - 1) * 4;
 			if ( (boxes[j+1] - boxes[j+0] < threshold) || (boxes[j+3] - boxes[j+2] < threshold) )
 				(*img_data) = 0;
-
 		}
 		img_data++;
 	}
@@ -537,7 +536,6 @@ void imAnalyzeBoundingBoxes(const imImage* image, int* boxes, int region_count )
 
 static unsigned char Kittler(const imImage* src_image, double *mu_1, double *mu_2, double *mu)
 {
-
   unsigned long h[256];
   int threshold;
   double criterion;

@@ -214,11 +214,11 @@ void AxOptionsDlg::OptionsDlgRecognition( wxNotebook *notebook )
         wxGenericValidator(&RecEnv::s_pre_margin_right));
 	// binarization
 	this->GetRbBinResOps3()->SetValidator(
-        wxGenericValidator(&RecEnv::s_pre_threshold_method_resize));
+        wxGenericValidator(&RecEnv::s_pre_image_binarization_method));
 	this->GetRbBinOps3()->SetValidator(
-        wxGenericValidator(&RecEnv::s_pre_threshold_method));
+        wxGenericValidator(&RecEnv::s_pre_page_binarization_method));
 	this->GetScBinSizeOps3()->SetValidator(
-        wxGenericValidator(&RecEnv::s_pre_threshold_region_size));
+        wxGenericValidator(&RecEnv::s_pre_page_binarization_method_size));
 
     // typographic model
     this->GetTypModel()->SetValidator(
