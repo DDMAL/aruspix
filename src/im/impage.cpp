@@ -1169,6 +1169,13 @@ bool ImPage::BinarizeAndClean( )
 		wxLogMessage("Pugin binarization" );
 		imProcessPuginThreshold( m_opImMain, m_opImTmp1, false );
 	}
+	else if ( RecEnv::s_pre_page_binarization_method == PRE_BINARIZATION_BRINK3CLASSES )
+	{
+		if ( !m_progressDlg->SetOperation( _("Binarization ...") ) )
+			return this->Terminate( ERR_CANCELED );
+		wxLogMessage("Brink 3 Classes Binarization (Final)" );
+		imProcessBrinkThreshold( m_opImMain, m_opImTmp1, false );
+	}
 	else // should not happen, but just in case
 	{	
 		wxLogWarning("Fix threshold used" );

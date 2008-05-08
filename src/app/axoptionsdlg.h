@@ -78,8 +78,8 @@ public:
     wxCheckBox* GetChStavesSegOps3()  { return (wxCheckBox*) FindWindow( ID4_CHB_STAVES_SEG ); }
     wxCheckBox* GetChTextOps3()  { return (wxCheckBox*) FindWindow( ID4_CHB_TEXT_POS ); }
 	wxSpinCtrl* GetScBinSizeOps3()  { return (wxSpinCtrl*) FindWindow( ID4_BIN_REGION_SIZE ); }
-	wxRadioBox* GetRbBinOps3()  { return (wxRadioBox*) FindWindow( ID4_BINARIZATION ); }
-	wxRadioBox* GetRbBinResOps3()  { return (wxRadioBox*) FindWindow( ID4_BINARIZATION_RESIZE ); }
+	wxChoice* GetRbBinOps3()  { return (wxChoice*) FindWindow( ID4_BINARIZATION ); }
+	wxChoice* GetRbBinResOps3()  { return (wxChoice*) FindWindow( ID4_BINARIZATION_RESIZE ); }
 #endif
 
 private:

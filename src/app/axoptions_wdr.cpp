@@ -286,40 +286,40 @@ wxSizer *Rec1DlgFunc( wxWindow *parent, bool call_fit, bool set_sizer )
 
     item1->Add( item3, 0, wxALIGN_CENTER|wxLEFT|wxRIGHT|wxTOP, 5 );
 
-    wxBoxSizer *item22 = new wxBoxSizer( wxVERTICAL );
+    wxFlexGridSizer *item22 = new wxFlexGridSizer( 2, 0, 0 );
 
-    wxString strs23[] = 
+    wxStaticText *item23 = new wxStaticText( parent, IDO_TEXT, _("Binarization (Resize)"), wxDefaultPosition, wxDefaultSize, 0 );
+    item22->Add( item23, 0, wxALIGN_CENTER|wxALL, 5 );
+
+    wxString strs24[] = 
     {
         _("Otsu"), 
         _("MinMax"), 
-        _("Brink")
+        _("Brink"), 
+        _("Brink3Classes")
     };
-    wxRadioBox *item23 = new wxRadioBox( parent, ID4_BINARIZATION_RESIZE, _("Binarization (resize)"), wxDefaultPosition, wxSize(180,-1), 3, strs23, 1, wxNO_BORDER|wxRA_SPECIFY_ROWS );
-    item22->Add( item23, 0, wxGROW|wxALL, 5 );
+    wxChoice *item24 = new wxChoice( parent, ID4_BINARIZATION_RESIZE, wxDefaultPosition, wxSize(100,-1), 4, strs24, 0 );
+    item22->Add( item24, 0, wxALIGN_CENTER|wxALL, 5 );
 
-    wxFlexGridSizer *item24 = new wxFlexGridSizer( 2, 0, 0 );
+    wxStaticText *item25 = new wxStaticText( parent, IDO_TEXT, _("Binarization (Final)"), wxDefaultPosition, wxDefaultSize, 0 );
+    item22->Add( item25, 0, wxALIGN_CENTER|wxALL, 5 );
 
-    wxString strs25[] = 
+    wxString strs26[] = 
     {
         _("Otsu"), 
         _("Sauvola"), 
         _("Pugin"), 
-        _("Entropy Brink")
+        _("Brink"), 
+        _("Brink3Classes")
     };
-    wxRadioBox *item25 = new wxRadioBox( parent, ID4_BINARIZATION, _("Binarization (final)"), wxDefaultPosition, wxSize(180,-1), 4, strs25, 1, wxNO_BORDER|wxRA_SPECIFY_COLS );
-    item24->Add( item25, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
-
-    wxFlexGridSizer *item26 = new wxFlexGridSizer( 1, 0, 0 );
+    wxChoice *item26 = new wxChoice( parent,  ID4_BINARIZATION, wxDefaultPosition, wxSize(100,-1), 5, strs26, 0 );
+    item22->Add( item26, 0, wxALIGN_CENTER|wxALL, 5 );
 
     wxStaticText *item27 = new wxStaticText( parent, IDO_TEXT, _("Region size (Sauvola)"), wxDefaultPosition, wxDefaultSize, 0 );
-    item26->Add( item27, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+    item22->Add( item27, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
     wxSpinCtrl *item28 = new wxSpinCtrl( parent, ID4_BIN_REGION_SIZE, wxT("15"), wxDefaultPosition, wxSize(80,-1), 0, 3, 255, 15 );
-    item26->Add( item28, 0, wxALIGN_CENTER_VERTICAL, 5 );
-
-    item24->Add( item26, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
-
-    item22->Add( item24, 0, wxALIGN_CENTER, 5 );
+    item22->Add( item28, 0, wxALIGN_CENTER, 5 );
 
     item1->Add( item22, 0, wxALIGN_CENTER|wxALL, 5 );
 

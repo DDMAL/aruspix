@@ -357,8 +357,11 @@ bool ImOperator::GetImage( _imImage **image, int factor,  int binary_method, boo
 			imProcessMinMaxThreshold( *image, imTmp );
 		else if ( binary_method == IM_BINARIZATION_BRINK )
 			imProcessBrinkThreshold( *image, imTmp, false );
-		//else if ( binary_method == IM_BINARIZATION_PUGIN )
-		//	imProcessPuginThreshold( *image, imTmp, false );
+		else if ( binary_method == IM_BINARIZATION_BRINK3CLASSES )
+		{
+			wxLogMessage("Brink 3 Classes Binarization (Resize)" );
+			imProcessBrinkThreshold( *image, imTmp, false );
+		}
 		else // should not happen, but just in case
 		{	
 			wxLogWarning("Fix threshold used when resizing" );
