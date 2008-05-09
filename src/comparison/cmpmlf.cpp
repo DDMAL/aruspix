@@ -27,7 +27,6 @@
 
 #include "im/impage.h"
 #include "im/imstaff.h"
-#include "im/imstaffsegment.h"
 
 //----------------------------------------------------------------------------
 // CmpMLFSymb
@@ -137,7 +136,7 @@ void CmpMLFOutput::EndLabel( )
 			continue;
 		pos = current->GetPosition();
 		symbole << pos  << " ";
-		symbole << symbole_label << " " <<  current->m_im_staff << " " <<  current->m_im_staff_segment <<  " " << current->m_im_pos << " " << current->m_im_filename << "\n";
+		symbole << symbole_label << " " <<  current->m_im_staff << " " << current->m_im_pos << " " << current->m_im_filename << "\n";
 		Write( symbole, symbole.Length() );
 	}
 	//m_symbols.Clear();	
@@ -205,7 +204,6 @@ bool CmpMLFOutput::WriteStaff( const MusStaff *staff )
 		{	
 			((CmpMLFSymb*)&m_symbols.Last())->m_im_filename = (&staff->m_elements[k])->m_im_filename;
 			((CmpMLFSymb*)&m_symbols.Last())->m_im_staff = (&staff->m_elements[k])->m_im_staff;
-			((CmpMLFSymb*)&m_symbols.Last())->m_im_staff_segment = (&staff->m_elements[k])->m_im_staff_segment;
 			((CmpMLFSymb*)&m_symbols.Last())->m_im_pos = (&staff->m_elements[k])->m_im_pos;
 			((CmpMLFSymb*)&m_symbols.Last())->m_index = k;
 		}
@@ -243,7 +241,7 @@ bool CmpMLFInput::ReadLabelStr( wxString label )
 		return false;
 
 	wxString str = label.BeforeLast('.'); // remove .lab"
-	m_segment_label = atoi( str.AfterLast('.').c_str() );
+	//m_segment_label = atoi( str.AfterLast('.').c_str() );
 	str = str.BeforeLast('.'); // remove .seg"
 	m_staff_label = atoi ( str.AfterLast('_').c_str() );
 	
@@ -275,7 +273,7 @@ MusStaff* CmpMLFInput::ImportFileInStaff( )
 }
 
 
-// offset est la position x relative du label (p ex segment)
+// offset est la position x relative du label
 // normalement donne par imPage si present
 
 bool CmpMLFInput::ReadLabel( MusStaff *staff )
@@ -312,7 +310,6 @@ bool CmpMLFInput::ReadLabel( MusStaff *staff )
 		{
 			e->m_im_filename = m_cmp_page_label;
 			e->m_im_staff = m_staff_label;
-			e->m_im_staff_segment = m_segment_label;
 			e->m_im_pos = pos;
 		}
 		m_cmp_pos += 45; // default step;

@@ -461,16 +461,6 @@ void RecEnv::SaveConfig()
     wxASSERT_MSG( pConfig, wxT("pConfig cannot be NULL") );
     pConfig->SetPath("/Recognition");
 
-    // superimposition
-    /*pConfig->Write("SegmentSize", this->s_segmentSize);
-    pConfig->Write("Interpolation", this->s_interpolation);
-    pConfig->Write("SplitX", this->s_split_x);
-    pConfig->Write("SplitY", this->s_split_y);
-    pConfig->Write("CorrX", this->s_corr_x);
-    pConfig->Write("CorrY", this->s_corr_y);
-    pConfig->Write("Filter1", this->s_filter1);
-    pConfig->Write("Filter2", this->s_filter2);*/
-
     pConfig->Write("Borders", RecEnv::s_find_borders);
     pConfig->Write("Text initials", RecEnv::s_find_ornate_letters);
     pConfig->Write("Text", RecEnv::s_find_text );
@@ -536,8 +526,6 @@ void RecEnv::ParseCmd( wxCmdLineParser *parser )
 		m_recFilePtr->Modify( );
 		wxArrayPtrVoid mfc_params;
 		wxString mfcfile = "";
-		bool merged = false;
-		mfc_params.Add(  &merged );
 		mfc_params.Add( &mfcfile );
 		AxProgressDlg dlg( m_framePtr, -1, _("Recognition") );
 		m_recFilePtr->GenerateMFC( mfc_params, &dlg ); // 2 operations
@@ -826,7 +814,7 @@ void RecEnv::OnExportAxmus( wxCommandEvent &event )
         model.Save();
 }
 
-#define META_BATCH3
+//#define META_BATCH3
 //#define META_BATCH_MUS
 
 void RecEnv::OnExportAxtyp( wxCommandEvent &event )

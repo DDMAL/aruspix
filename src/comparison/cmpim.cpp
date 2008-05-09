@@ -65,7 +65,7 @@ void CmpImController::SetEnv( CmpEnv *env )
     m_envPtr = env;
 }
 
-void CmpImController::LoadRecImage( int colNo, wxString filename, int staff, int segment, int pos, int flag )
+void CmpImController::LoadRecImage( int colNo, wxString filename, int staff, int pos, int flag )
 {
 	wxASSERT( m_envPtr );
 	wxASSERT( m_recFilePtr );

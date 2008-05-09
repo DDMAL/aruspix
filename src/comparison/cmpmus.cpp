@@ -267,7 +267,7 @@ void CmpMusWindow::OnMouse(wxMouseEvent &event)
 			CmpImController *controller = (m_lastController == 0) ? m_imControlPtr1 : m_imControlPtr2;
 			if ( controller )
 				controller->LoadRecImage( m_lastStaff, m_currentElement->m_im_filename, m_currentElement->m_im_staff, 
-					m_currentElement->m_im_staff_segment, m_currentElement->m_im_pos, m_currentElement->m_cmp_flag );
+					m_currentElement->m_im_pos, m_currentElement->m_cmp_flag );
 		
 			//wxLogMessage(" %s, %d", m_currentElement->m_im_filename.c_str(), m_currentElement->m_im_staff );
 		}

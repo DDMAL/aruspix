@@ -122,8 +122,11 @@ public:
 	virtual void AxFile::SaveContent( ) {}; // Save content before archive creation
 	virtual void AxFile::CloseContent( ) {}; // Desactivate content before deletion
 	
+	// the static methods enable some informations on the file to be obtained before (or without) opening it completely
 	// check version, and return type and envtype of a file (given by filename)
 	static bool AxFile::Check( wxString filename, int *type, int *envtype );
+	static void AxFile::GetVersion( TiXmlElement *root, int *vmaj, int *vmin, int *vrev );
+	static wxString AxFile::FormatVersion( int vmaj, int vmin, int vrev );
 	// file chooser
 	static wxString AxFile::Open( int file_type );
 	//
@@ -148,6 +151,10 @@ protected:
 	bool m_isModified;
 	bool m_isNew;
 	int m_error;
+	// version
+	int m_vmaj;
+	int m_vmin;
+	int m_vrev;
 };
 
 

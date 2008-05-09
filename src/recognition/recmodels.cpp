@@ -263,8 +263,6 @@ bool RecTypModel::AddFile( wxArrayPtrVoid params, AxProgressDlg *dlg )
 	// HACK! force mfc generation
 	//wxArrayPtrVoid mfc_params;
 	//wxString mfcfile = "";
-	//bool merged = false;
-	//mfc_params.Add(  &merged );
 	//mfc_params.Add( &mfcfile );
 	//recFile.GenerateMFC( mfc_params, dlg ); // 2 operations
 	

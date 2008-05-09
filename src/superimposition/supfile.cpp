@@ -24,8 +24,6 @@
 #include "supfile.h"
 #include "sup.h"
 #include "im/imregister.h"
-//#include "im/imstaff.h"
-//#include "im/imstaffsegment.h"
 
 #include "app/axapp.h"
 #include "app/axprocess.h"

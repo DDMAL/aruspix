@@ -27,7 +27,6 @@
 #include "recmodels.h"
 #include "im/impage.h"
 #include "im/imstaff.h"
-#include "im/imstaffsegment.h"
 
 #include "app/axapp.h"
 #include "app/axprocess.h"
@@ -70,6 +69,79 @@ RecFile::~RecFile()
 }
 
 
+void RecFile::UpgradeTo_1_4_0()
+{
+	if ( AxFile::FormatVersion(m_vmaj, m_vmin, m_vrev) >= AxFile::FormatVersion(1, 4, 0) )
+		return; // when do not need to upgrade the file
+		
+	// From version 1.4.0, they are no staff segments anymore
+	// Files with staff multiple segments cannot be upgraded
+	// Margin were fixed in the music editor
+	// To upgrade, we neww to remap the xml file
+
+	
+	if ( !wxFileExists( m_basename + "page.wwg") )
+		return; // nothing has to be done for files that were only preprocessed
+		
+	bool failed = false;
+		
+	// map the xml file
+	TiXmlElement *root = NULL;
+    TiXmlNode *node1 = NULL;
+	TiXmlNode *node2 = NULL;
+    TiXmlElement *elem1 = NULL;
+	TiXmlElement *elem2 = NULL;
+	
+	node1 = m_xml_root->FirstChild( "impage" );
+	if ( !node1 ) 
+		failed = true;
+	else
+		root = node1->ToElement();
+    if ( !root )
+		failed = true;
+
+    // staves
+    for( node1 = root->FirstChild( "staff" ); node1; node1 = node1->NextSibling( "staff" ) )
+    {
+		if ( failed )
+			break;
+			
+		int x1 = 0;
+		int x2 = 0;
+        elem1 = node1->ToElement();
+        if (!elem1)
+			continue;
+			
+		int i = 0;
+		for( node2 = elem1->FirstChild( "staffsegment" ); node2; node2 = node2->NextSibling( "staffsegment" ) )
+		{
+			if ( i > 0 ) // Upgrade cannot handle file with multiple segments
+			{
+				failed = true;
+				break;
+			}
+			i++;
+			elem2 = node2->ToElement();
+			if (!elem2) 
+				continue;
+			elem2->Attribute("x1", &x1 );
+			elem2->Attribute("x2", &x2 );
+			elem2->Attribute("order", &m_rec_lm_order );
+			elem2->Attribute("scaling", &m_rec_lm_scaling );
+		}
+		elem1->SetAttribute("x1", x1 );
+		elem1->SetAttribute("x2", x2 );
+    }
+	
+	if ( failed )
+	{
+		wxLogError(_("This file was generated with a previous version of Aruspix and the recognition results cannot be loaded"));
+		this->CancelRecognition( false );
+	}
+	else
+		wxLogDebug("File successfully upgraded to 1.4.0");
+}
+
 void RecFile::NewContent( )
 {
 	wxASSERT_MSG( !m_imPagePtr, "ImPage should be NULL" );
@@ -90,6 +162,8 @@ void RecFile::NewContent( )
 void RecFile::OpenContent( )
 {
 	this->NewContent();
+	
+	UpgradeTo_1_4_0();
 	
 	// start
     bool failed = false;
@@ -411,11 +485,8 @@ bool RecFile::Recognize( wxArrayPtrVoid params, AxProgressDlg *dlg )
 	//if (this->m_isRecognized)
 	//	return true;
 	
-	// never merge and default out_dir for MFC in recognition
 	wxArrayPtrVoid mfc_params;
 	wxString file = "";
-	bool merged = false;
-	mfc_params.Add(  &merged );
 	mfc_params.Add( &file );
 	
 	m_imPagePtr->SetProgressDlg( dlg );
@@ -427,10 +498,10 @@ bool RecFile::Recognize( wxArrayPtrVoid params, AxProgressDlg *dlg )
     bool failed = false;
 	
     if ( !failed ) 
-        failed = !m_imPagePtr->StaffSegments( ); // 1 operation
+        failed = !m_imPagePtr->ExtractStaves( ); // 1 operation
 	
     if ( RecEnv::s_save_images && !failed )
-        failed = !m_imPagePtr->SaveSegmentsImages( );
+        failed = !m_imPagePtr->SaveStaffImages( );
 
     if ( !failed )
         failed = !this->GenerateMFC( mfc_params, dlg ); // 2 operations
@@ -636,7 +707,7 @@ bool RecFile::Decode( wxArrayPtrVoid params, AxProgressDlg *dlg )
 	if (!dlg->SetOperation( _("Recognition...") ) )
 		return this->Terminate( ERR_CANCELED );
 
-	dlg->StartTimerOperation( TIMER_DECODING, m_imPagePtr->GetStaffSegmentsCount() );
+	dlg->StartTimerOperation( TIMER_DECODING, m_imPagePtr->GetStaffCount() );
 	int pid;
 	AxProcess *process = new AxProcess( cmd, args, NULL );
 	process->SetLog( log );
@@ -742,6 +813,7 @@ bool RecFile::RealizeFromMLF( wxArrayPtrVoid params, AxProgressDlg *dlg )
 
     int x1 = 5, x2 = 195;
     m_imPagePtr->CalcLeftRight( &x1, &x2 );
+	x1 = 0; // force it, indentation will be calculated staff by staff
     m_musFilePtr->m_fheader.param.MargeGAUCHEIMPAIRE = x1 / 10;
     m_musFilePtr->m_fheader.param.MargeGAUCHEPAIRE = x1 / 10;
     musPage->lrg_lign = (x2 - x1) / 10;
@@ -782,11 +854,9 @@ bool RecFile::RealizeFromMLF( wxArrayPtrVoid params, AxProgressDlg *dlg )
 
 bool RecFile::GenerateMFC( wxArrayPtrVoid params, AxProgressDlg *dlg )
 {
-    // param 0: bool: merged
-	// params 1: wxString: output_dir
+	// params 0: wxString: output_dir
 	
-	bool merged = *(bool*)params[0];
-	wxString output_dir = *(wxString*)params[1];
+	wxString output_dir = *(wxString*)params[0];
 	
     wxASSERT_MSG( m_imPagePtr , "Page cannot be NULL");
 	wxASSERT_MSG( dlg, "AxProgressDlg cannot be NULL" );
@@ -810,7 +880,7 @@ bool RecFile::GenerateMFC( wxArrayPtrVoid params, AxProgressDlg *dlg )
 	//}
 
     if ( !failed )
-        failed = !m_imPagePtr->GenerateMFC( merged, output_dir );
+        failed = !m_imPagePtr->GenerateMFC( output_dir );
 		
 	m_error = m_imPagePtr->GetError();
 

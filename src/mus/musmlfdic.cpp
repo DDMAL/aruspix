@@ -24,10 +24,6 @@
 
 #include "musmlfdic.h"
 
-//#include "im/impage.h"
-//#include "im/imstaff.h"
-//#include "im/imstaffsegment.h""
-
 #include "wx/arrimpl.cpp"
 WX_DEFINE_OBJARRAY( ArrayOfMLFWords );
 

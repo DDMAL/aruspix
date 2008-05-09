@@ -27,7 +27,6 @@
 
 #include "im/impage.h"
 #include "im/imstaff.h"
-#include "im/imstaffsegment.h"
 
 #include "app/axprocess.h"
 #include "app/axprogressdlg.h"
@@ -473,20 +472,17 @@ void MusMLFOutput::StartLabel( )
 {
 	wxString label;
 	if ( !m_addPageNo )
-		label = wxString::Format("\"*/%s_%d.%d.lab\"\n", m_shortname.c_str(), m_staff_i, m_segment_i);
+		label = wxString::Format("\"*/%s_%d.0.lab\"\n", m_shortname.c_str(), m_staff_i );
 	else
-		label = wxString::Format("\"*/%s_%03d.%d.%d.lab\"\n", m_shortname.c_str(), m_page_i + 1, m_staff_i, m_segment_i);
+		label = wxString::Format("\"*/%s_%03d.%d.0.lab\"\n", m_shortname.c_str(), m_page_i + 1, m_staff_i );
 	Write( label, label.Length() );
 	
 	m_symbols.Clear();
 
 }
 
-void MusMLFOutput::EndLabel( int offsets[], int end_points[] )
+void MusMLFOutput::EndLabel( int offset, int end_point )
 {
-	//if ( m_writePosition )
-	//	wxASSERT_MSG( ( m_types.GetCount() > 0 ), "Not types loaded but write positions wanted" );  
-
 	for (int i = 0; i < (int)m_symbols.GetCount(); i++ )
 	{
 		wxString word;
@@ -520,23 +516,23 @@ void MusMLFOutput::EndLabel( int offsets[], int end_points[] )
 		// See comment above
 		if ( m_hmmLevel )
 		{
-			wxASSERT( offsets );
-			wxASSERT( end_points );
+			wxASSERT( offset != -1 );
+			wxASSERT( end_point != -1 );
 			
 			int fact = 100;
 		
 			wxString hmm;
 			wxString hmm_label = word_label;
 			hmm_label.MakeLower();
-			pos = m_symbols[i].GetPosition() - offsets[m_segment_i];
+			pos = m_symbols[i].GetPosition() - offset;
 			if ( pos < 0 )
 				pos = 0;
 			
-			int next = end_points[m_segment_i];
+			int next = end_point;
 			int next_symbol = next;
 			// position du symbole suivant, mais seulement si pas hors portee
 			if ( i < (int)m_symbols.GetCount() - 1 )
-				next_symbol = m_symbols[i+1].GetPosition() - offsets[m_segment_i];
+				next_symbol = m_symbols[i+1].GetPosition() - offset;
 			if ( next_symbol < next )
 				next = next_symbol;
 			
@@ -566,8 +562,8 @@ void MusMLFOutput::EndLabel( int offsets[], int end_points[] )
 				pos = m_symbols[i].GetPosition();
 				// really ???? this is not page position anymore.... 
 				// I think that offset are used in CmpFile... has to be checked...
-				if ( offsets )
-					pos -= offsets[m_segment_i];
+				if ( offset != -1 )
+					pos -= offset;
 				if ( pos < 0 )
 					pos = 0;
 				
@@ -579,7 +575,6 @@ void MusMLFOutput::EndLabel( int offsets[], int end_points[] )
 		}
 	}
 	m_symbols.Clear();
-	m_segment_i++;
 
 	wxString end_label = ".\n";
 	Write( end_label, end_label.Length() );
@@ -677,7 +672,6 @@ bool MusMLFOutput::WritePage( const MusPage *page, bool write_header )
     m_staff = NULL;
     for (m_staff_i = 0; m_staff_i < page->nbrePortees; m_staff_i++) 
     {
-		m_segment_i = 0;
         MusStaff *staff = &page->m_staves[m_staff_i];
 		m_staff = MusMLFOutput::SplitSymboles( staff );
         WriteStaff( m_staff );
@@ -690,7 +684,7 @@ bool MusMLFOutput::WritePage( const MusPage *page, bool write_header )
 
 }
 
-// idem ExportFile() puis WritePage(), mais gere les segment de portee au moyen de imPage et les portee selon staff numbers
+// idem ExportFile() puis WritePage(), mais gere la position des portee de imPage et les portee selon staff numbers
 bool MusMLFOutput::WritePage( const MusPage *page, wxString filename, ImPage *imPage, wxArrayInt *staff_numbers )
 {
 	wxASSERT_MSG( page, "MusPage cannot be NULL" );
@@ -706,21 +700,19 @@ bool MusMLFOutput::WritePage( const MusPage *page, wxString filename, ImPage *im
 		m_addHeader = false;
 	}
 	
-	int offsets[256]; // maximum 256 segment per staff, seems ok... but not secure
-	int split_points[256]; // maximum 256 segment per staff, seems ok... but not secure
-	int end_points[256];
+	int offset;
+	int end_point;
 
     m_staff = NULL;
     for (m_staff_i = 0; m_staff_i < page->nbrePortees; m_staff_i++) 
     {
 		if ( staff_numbers && ( staff_numbers->Index( m_staff_i ) == wxNOT_FOUND ) )
 			continue;
-	
-		m_segment_i = 0;
+
         MusStaff *staff = &page->m_staves[m_staff_i];
-		imPage->GetStaffSegmentOffsets( m_staff_i, offsets, split_points, end_points);
+		imPage->m_staves[m_staff_i].GetMinMax( &offset, &end_point );
 		m_staff = MusMLFOutput::SplitSymboles( staff );
-        WriteStaff( m_staff, offsets, split_points, end_points );
+        WriteStaff( m_staff, offset, end_point );
 		delete m_staff;
 		m_staff = NULL;
     }
@@ -730,7 +722,7 @@ bool MusMLFOutput::WritePage( const MusPage *page, wxString filename, ImPage *im
 }
 
 
-bool MusMLFOutput::WriteStaff( const MusStaff *staff, int offsets[], int split_points[], int end_points[] )
+bool MusMLFOutput::WriteStaff( const MusStaff *staff, int offset,  int end_point )
 {
 	if (staff->nblement == 0)
 		return true;
@@ -741,14 +733,6 @@ bool MusMLFOutput::WriteStaff( const MusStaff *staff, int offsets[], int split_p
 
     for (k = 0;k < staff->nblement ; k++ )
     {
-		if ( offsets && (split_points[m_segment_i] != -1) ) // gestion des segments, et pas dernier segment
-		{
-			if ( staff->m_elements[k].xrel > (unsigned int)split_points[m_segment_i] ) // next segment
-			{
-					EndLabel( offsets, end_points );
-					StartLabel();
-			}
-		}
         if ( staff->m_elements[k].TYPE == NOTE )
         {
             WriteNote( (MusNote*)&staff->m_elements[k] );
@@ -758,7 +742,7 @@ bool MusMLFOutput::WriteStaff( const MusStaff *staff, int offsets[], int split_p
             WriteSymbole( (MusSymbol*)&staff->m_elements[k] );
         }
     }
-	EndLabel( offsets, end_points );
+	EndLabel( offset, end_point );
 
     return true;
 }
@@ -1438,7 +1422,6 @@ MusMLFInput::MusMLFInput( MusFile *file, wxString filename ) :
     MusFileInputStream( file, filename )
 {
 	m_staff_i = m_staff_label = -1;
-	m_segment_i = m_segment_label = 0;
 }
 
 MusMLFInput::~MusMLFInput()
@@ -1573,7 +1556,7 @@ bool MusMLFInput::ReadLabelStr( wxString label )
 		return false;
 
 	wxString str = label.BeforeLast('.'); // remove .lab"
-	m_segment_label = atoi( str.AfterLast('.').c_str() );
+	//m_segment_label = atoi( str.AfterLast('.').c_str() );
 	str = str.BeforeLast('.'); // remove .seg"
 	m_staff_label = atoi ( str.AfterLast('_').c_str() );
 
@@ -1644,7 +1627,7 @@ bool MusMLFInput::ImportFile( int staff_per_page )
 
 // permet d'importer un fichier par page
 // dans ce cas la premiere ligne == #!MLF!#
-// Si imPage, ajustera les position en fonction des position x dans imPage (staff et segment)
+// Si imPage, ajustera les position en fonction des position x dans imPage (staff)
 
 bool MusMLFInput::ReadPage( MusPage *page , bool firstLineMLF, ImPage *imPage )
 {
@@ -1667,18 +1650,13 @@ bool MusMLFInput::ReadPage( MusPage *page , bool firstLineMLF, ImPage *imPage )
 				staff = &page->m_staves[ m_staff_label ];
 				m_staff_i = m_staff_label; //m_staff_i++;
 			}
-			m_segment_i = 0;
 			offset = 0;
-			
 		}
-		else
-			m_segment_i++;
 
 		if ( staff )
 		{
 			if ( imPage )
-				//offset = imPage->m_staves[m_staff_i].m_segments[m_segment_i].m_x1 - m_file->m_fheader.param.MargeGAUCHEIMPAIRE * 10;
-				offset = imPage->m_staves[m_staff_i].m_segments[m_segment_i].m_x1;
+				offset = imPage->m_staves[m_staff_i].m_x1;
 			ReadLabel( staff, offset );
 		}
 	}
@@ -1692,7 +1670,7 @@ bool MusMLFInput::ReadPage( MusPage *page , bool firstLineMLF, ImPage *imPage )
 
 }
 
-// offset est la position x relative du label (p ex segment)
+// offset est la position x relative du label
 // normalement donne par imPage si present
 
 bool MusMLFInput::ReadLabel( MusStaff *staff, int offset )

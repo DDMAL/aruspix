@@ -122,7 +122,6 @@ public:
 	// additional information for comparison
 	wxString m_im_filename;
 	int m_im_staff;
-	int m_im_staff_segment;
 	int m_im_pos;
 	int m_cmp_flag;
 

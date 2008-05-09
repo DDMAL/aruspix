@@ -49,7 +49,7 @@ public:
 	void SetEnv( CmpEnv *env );
     //void SetWgViewAndController( RecMusWindow *recWgWindow, RecMusController *recWgController );
     RecFile *GetRecFile( ) { return m_recFilePtr; }
-	void LoadRecImage( int colId, wxString filename, int staff, int segment, int pos, int flag );
+	void LoadRecImage( int colId, wxString filename, int staff, int pos, int flag );
     
     // WDR: method declarations for CmpImController
 	

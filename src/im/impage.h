@@ -23,7 +23,6 @@
 #include "app/axundo.h"
 
 class ImStaffFunctor;
-class ImStaffSegmentFunctor;
 
 class ImStaff;
 WX_DECLARE_OBJARRAY( ImStaff, ArrayOfStaves);
@@ -83,21 +82,22 @@ public:
     bool ImPage::FindOrnateLetters( );
     bool ImPage::FindText( );
     bool ImPage::FindTextInStaves( );
-    bool ImPage::StaffSegments( ); 
+    bool ImPage::ExtractStaves( ); 
     bool ImPage::StaffCurvatures( );    
-	bool ImPage::GenerateMFC( bool merged = false, wxString output_dir = "" );
+	bool ImPage::GenerateMFC( wxString output_dir = "" );
 	bool ImPage::ChangeClassification( int x1, int y1, int x2, int y2, int plane_number  );
 	bool ImPage::ChangeClassification( int plane_number  );
 	bool ImPage::MagicSelection( int x, int y, AxImage *selection, int *xmin, int *ymin );
 	// Working methods
-	bool ImPage::SaveSegmentsImages(); // enregistre les images des segments de portees dans working dir
+	bool ImPage::SaveStaffImages(); // enregistre les images de portees dans working dir
     // moulinette
-    virtual void ImPage::Process(ImStaffSegmentFunctor *functor, wxArrayPtrVoid params, int counter = -1 );
-	virtual void ImPage::Process(ImStaffFunctor *functor, wxArrayPtrVoid params, 
-		ImStaffSegmentFunctor *subfunctor = NULL, int counter = -1 );
+    virtual void ImPage::Process(ImStaffFunctor *functor, wxArrayPtrVoid params, int counter = -1 );
+	//virtual void ImPage::Process(ImStaffFunctor *functor, wxArrayPtrVoid params, 
+	//	ImStaffSegmentFunctor *subfunctor = NULL, int counter = -1 );
     // values
     void ImPage::CalcLeftRight(int *x1, int *x2);
-	int ImPage::GetStaffSegmentsCount( bool segment_only = false );
+	int ImPage::GetStaffCount( );
+	//int ImPage::GetStaffSegmentsCount( bool segment_only = false );
 	void ImPage::GetStaffSegmentOffsets( int staff_no, int offsets[],  int split_points[], int end_points[] );
     int ImPage::ToViewY( int y ) { return m_size.GetHeight() - y;}
 	

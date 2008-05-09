@@ -280,14 +280,12 @@ void CmpCollation::SetCmpValues( MusElement *dest, MusElement *src, int flag )
 	{
 		dest->m_im_filename = src->m_im_filename;
 		dest->m_im_staff = src->m_im_staff;
-		dest->m_im_staff_segment = src->m_im_staff_segment;
 		dest->m_im_pos = src->m_im_pos;
 	}
 	else
 	{
 		dest->m_im_filename = "";
 		dest->m_im_staff = 0;
-		dest->m_im_staff_segment = 0;
 		dest->m_im_pos = 0;
 	}
 }

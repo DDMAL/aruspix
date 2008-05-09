@@ -428,7 +428,6 @@ bool RecMLFBmp::WritePage( const MusPage *page )
     m_staff = NULL;
     for (m_staff_i = 0; m_staff_i < page->nbrePortees; m_staff_i++) 
     {
-		m_segment_i = 0;
         MusStaff *staff = &page->m_staves[m_staff_i];
 		MusStaff *ut1_staff = MusMLFOutput::GetUt1( staff );
         WriteStaff( ut1_staff );
@@ -447,7 +446,6 @@ bool RecMLFBmp::WriteStaff( const MusStaff *staff, int currentElementNo )
     unsigned int k;
 
 	StartLabel();
-	m_segment_i++;
 	bool ok;
 
     for (k = 0;k < staff->nblement ; k++ )

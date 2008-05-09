@@ -119,10 +119,10 @@ public:
     //virtual bool ExportFile( );
     virtual bool WritePage( const MusPage *page, bool write_header = false );
 	bool WritePage( const MusPage *page, wxString filename, ImPage *imPage,
-		wxArrayInt *staff_numbers = NULL ); // manage segments through imPage and staves throuhg staff_numbers
+		wxArrayInt *staff_numbers = NULL ); // manage staves throuhg staff_numbers
 											// write all staves if staff_numbers == NULL
 											
-    virtual bool WriteStaff( const MusStaff *staff, int offsets[] = NULL, int split_points[] = NULL, int end_points[] = NULL );
+    virtual bool WriteStaff( const MusStaff *staff, int offset = -1, int end_point = -1 );
     virtual bool WriteNote( MusNote *note );
     virtual bool WriteSymbole( MusSymbol *symbole );
 	// specific
@@ -140,7 +140,7 @@ public:
 	//void WriteStatesPerSymbol( wxString filename );
 	//void WriteHMMSymbols( wxString filename );
 	virtual void StartLabel( );
-	virtual void EndLabel( int offsets[] = NULL, int end_points[] = NULL );
+	virtual void EndLabel( int offset = -1, int end_point = -1 );
 	// access
 	ArrayOfMLFSymbols *GetSymbols( ) { return &m_symbols; };
     
@@ -153,10 +153,9 @@ protected:
 	wxString m_mlf_class_name;
 	wxString m_shortname;
 	MusStaff *m_staff; // utilise pour les segments de portee, doit etre accessible dans WriteSymbole
-	// page, staff and segment index
+	// page, staff index
 	int m_page_i;
 	int m_staff_i;
-	int m_segment_i;
 	bool m_addHeader; // used to know if #MLF# header must be added (first file or not)
 
 public:
@@ -231,9 +230,8 @@ public:
     
 protected:
     // WDR: member variable declarations for MusMLFInput
-	// page, staff and segment index
+	// page, staff index
 	int m_staff_i, m_staff_label;
-	int m_segment_i, m_segment_label;
 
 private:
     // WDR: handler declarations for MusMLFInput

@@ -17,11 +17,13 @@
 #endif
 
 #include "im/imoperator.h"
-//#include "rec_wdr.h"
 
 // WDR: class declarations
 
-class ImStaffSegmentFunctor;
+#define SS_FACTOR_1 3
+#define SS_STAFF_ROI_W 120
+#define SS_STAFF_ROI_H 120
+#define SS_MIN_SEGMENT 50
 
 class ImStaffSegment;
 WX_DECLARE_OBJARRAY( ImStaffSegment, ArrayOfStaffSegments);
@@ -39,15 +41,15 @@ public:
     virtual ~ImStaff();
     
     //WDR: method declarations for ImStaff
-    //bool Load( DOMNode *node );
-    //bool Save( DOMNode *node, DOMDocument *dom );
     bool Load( TiXmlNode *node );
     bool Save( TiXmlNode *node );
     // Processing
     bool GetStaffBorders( int threshold_in_percent, bool analyse_segments );
     // moulinette
-    virtual void Process(ImStaffSegmentFunctor *functor, int staff, int y, wxArrayPtrVoid params );
     // values
+	bool IsVoid( ) { return (m_x2 == 0); } // a staff is void if its length is 0; This should not happen as void staves
+		// are removed (in ImPage::ExtractStaves). Ideally, staff detection would have to be redone once the preprocessing
+		// errors have been corrected.
     void GetMinMax(int *minx, int *maxx);
     int CalcIndentation( int leftmargin );
     int CalcEcart( int previous );
@@ -55,11 +57,31 @@ public:
 													// and the vertical position (decalage) from m_positions in segment		
 	
 	// functors																								
-	void MergeSegments(const int staff, const int y, wxArrayPtrVoid params, ImStaffSegmentFunctor *functor = NULL );
-    
+	bool GetImageFromPage( _imImage **image, _imImage *page, int y );
+	bool WriteMFC( wxString filename, int samplesCount, int period, int sampleSize, float *samples );
+
+    // functors
+	void SaveImage(const int staff, const int y, wxArrayPtrVoid params );
+    void CalcCorrelation( const int count, const int y, wxArrayPtrVoid params  );
+	void CalcFeatures( const int count, const int y, wxArrayPtrVoid params  );
+	void CalcStaffHeight(const int staff, const int y, wxArrayPtrVoid params );
+	
+protected:
+	// calculate positions (all x) from/to save positions (one x evey POSITION_STEP )
+	void SetValues( wxArrayInt *saved_values, int type );
+	void static CalcMask( int height, int mask[] );
+	// inverse - keep only one x every POSITION_STEP
+	wxArrayInt GetValuesToSave( int type ); 
+	
+public:
+    int m_x1, m_x2;
+	wxArrayInt m_positions;
+	wxArrayInt m_line_p; // line width (peak in run lengths)
+	wxArrayInt m_line_m; // line width (median in run lengths)
+    ArrayOfStaffSegments m_segments; // now used only during processing, not stored anymore
+		    
 public:
     // WDR: member variable declarations for ImStaff
-    ArrayOfStaffSegments m_segments;
     int m_y;
     int m_med;
     
@@ -68,24 +90,26 @@ private:
 
 };
 
+
 //----------------------------------------------------------------------------
 // abstract base class ImStaffFunctor
 //----------------------------------------------------------------------------
 class ImStaffFunctor
 {
 private:
-    void (ImStaff::*fpt)(const int, const int, wxArrayPtrVoid params, ImStaffSegmentFunctor *functor );   // pointer to member function
+    void (ImStaff::*fpt)(const int, const int, wxArrayPtrVoid params );   // pointer to member function
 
 public:
 
     // constructor - takes pointer to an object and pointer to a member and stores
     // them in two private variables
-    ImStaffFunctor( void(ImStaff::*_fpt)(const int, const int, wxArrayPtrVoid, ImStaffSegmentFunctor* )) { fpt=_fpt; };
+    ImStaffFunctor( void(ImStaff::*_fpt)(const int, const int, wxArrayPtrVoid )) { fpt=_fpt; };
 	virtual ImStaffFunctor::~ImStaffFunctor() {};
 
     // override function "Call"
-    virtual void Call( ImStaff *ptr, const int staff, const int y, wxArrayPtrVoid params, ImStaffSegmentFunctor *functor )
-        { (*ptr.*fpt)( staff, y, params, functor);};          // execute member function
+    virtual void Call( ImStaff *ptr, const int staff, const int y, wxArrayPtrVoid params )
+        { (*ptr.*fpt)( staff, y, params);};          // execute member function
 };
+
 
 #endif

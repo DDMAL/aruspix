@@ -46,7 +46,6 @@ protected:
 public:
 	wxString m_im_filename;
 	int m_im_staff;
-	int m_im_staff_segment;
 	int m_im_pos;
 	int m_index;
 	//
@@ -115,7 +114,6 @@ public:
     
 protected:
     // WDR: member variable declarations for CmpMLFInput
-	// page, staff and segment index
 
 private:
     // WDR: handler declarations for CmpMLFInput

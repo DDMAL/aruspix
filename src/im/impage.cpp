@@ -1909,7 +1909,7 @@ bool ImPage::FindTextInStaves( )
 
 
 
-bool ImPage::StaffSegments( )
+bool ImPage::ExtractStaves( )
 {
     wxASSERT_MSG( m_progressDlg, "Progress dialog cannot be NULL");
 	wxASSERT_MSG( m_img0, "Img0 cannot be NULL");
@@ -1965,6 +1965,23 @@ bool ImPage::StaffSegments( )
             {
 				m_staves[st].m_segments.RemoveAt(i);
 			}   
+		}
+	}
+	
+	// set m_x1 and m_x2 for all staves (or remove empty staves)
+    for (st = nb_staves - 1; st >= 0; st-- )
+    {
+        int nb_segments = (int)m_staves[st].m_segments.GetCount();
+		if (nb_segments == 0)
+		{
+			m_staves.RemoveAt(st); // The staves are removed permanentely, as the staff detection is performed in preprocessing only
+			//m_staves[st].m_x1 = 0;
+			//m_staves[st].m_x2 = 0;
+		}
+		else
+		{
+			m_staves[st].m_x1 = m_staves[st].m_segments[0].m_x1;
+			m_staves[st].m_x2 = m_staves[st].m_segments[nb_segments-1].m_x2;
 		}
 	}
 	
@@ -2184,6 +2201,13 @@ int ImPage::GetMedianStavesSpace( )
     return med;
 }
 
+int ImPage::GetStaffCount( )
+{
+    int nb = (int)this->m_staves.GetCount();
+	return nb;
+}
+
+/*
 // retourne le nombre de segment de staff dans cette page
 // une portee sans segment vaut 1 if segment_only == false !!!
 int ImPage::GetStaffSegmentsCount( bool segment_only )
@@ -2205,7 +2229,9 @@ int ImPage::GetStaffSegmentsCount( bool segment_only )
     }
     return count;
 }
+*/
 
+/*
 // retourne pour chaque segment l'offset (m_x1) et les points ou commencent un nouveau segment (entre m_x2 et m_x1 du suivant)
 // split_point == -1 pour le dernier segment
 void ImPage::GetStaffSegmentOffsets( int staff_no, int offsets[], int split_points[], int end_points[] )
@@ -2233,8 +2259,9 @@ void ImPage::GetStaffSegmentOffsets( int staff_no, int offsets[], int split_poin
 	}
     return;
 }
+*/
 
-bool ImPage::SaveSegmentsImages( )
+bool ImPage::SaveStaffImages( )
 {
 	wxASSERT_MSG( m_img0, "Img0 cannot be NULL");
 
@@ -2249,8 +2276,8 @@ bool ImPage::SaveSegmentsImages( )
 	wxString filename = m_path + "/staff";
 	params.Add( m_opImMain );
 	params.Add( &filename );
-    ImStaffSegmentFunctor segmentFuncSI(&ImStaffSegment::SaveImage);
-    this->Process(&segmentFuncSI, params );
+    ImStaffFunctor staffFuncSI(&ImStaff::SaveImage);
+    this->Process(&staffFuncSI, params );
 
     return this->Terminate( ERR_NONE );
 }
@@ -2278,18 +2305,16 @@ bool ImPage::StaffCurvatures( )
     int count = this->m_staves.GetCount(); //GetStaffSegmentsCount();
     imCounterTotal( counter, count * 2 , "Detect staff curvature ..." );
 
-    // calculer la hauteur de la portee par projection d'histgramme (ImStaffSegment::CalcStaffHeight)
-	int seg = this->GetStaffSegmentsCount( true );
-	m_opLines1 = new int[ seg ];
-	int segment_index = 0;
-	memset( m_opLines1, 0, seg * sizeof( int ) );
+    // calculer la hauteur de la portee par projection d'histgramme (ImStaff::CalcStaffHeight)
+	int st = this->GetStaffCount();
+	m_opLines1 = new int[ st ];
+	memset( m_opLines1, 0, st * sizeof( int ) );
 	params.Add( m_opImMain );
 	params.Add( m_opLines1 );
-	params.Add( &segment_index );
-    ImStaffSegmentFunctor segmentFuncSH(&ImStaffSegment::CalcStaffHeight);
-    this->Process(&segmentFuncSH, params, counter );
+    ImStaffFunctor staffFuncSH(&ImStaff::CalcStaffHeight);
+    this->Process(&staffFuncSH, params, counter );
 	// valeur medianne de tous les segments de portee
-	m_staff_height = median( m_opLines1, seg );
+	m_staff_height = median( m_opLines1, st );
 	//int sw = m_space_width * this->m_resize;
 	//int lw = m_line_width * this->m_resize;
 	//wxLogMessage( "---staff space %d staff line = %d %d ----- height %d",
@@ -2302,14 +2327,14 @@ bool ImPage::StaffCurvatures( )
 	params.Add( m_opImMain );	
 	params.Add( &filename );
 	params.Add( &m_staff_height );
-    ImStaffSegmentFunctor segmentFunc(&ImStaffSegment::CalcCorrelation);
-    this->Process(&segmentFunc, params, counter );
+    ImStaffFunctor staffFunc(&ImStaff::CalcCorrelation);
+    this->Process(&staffFunc, params, counter );
 
 	return this->Terminate( ERR_NONE );
 }
 
 
-bool ImPage::GenerateMFC( bool merged, wxString output_dir )
+bool ImPage::GenerateMFC( wxString output_dir )
 {
     wxASSERT_MSG( m_progressDlg, "Progress dialog cannot be NULL");
 	wxASSERT_MSG( m_img0, "Img0 cannot be NULL");
@@ -2342,7 +2367,6 @@ bool ImPage::GenerateMFC( bool merged, wxString output_dir )
 	wxFile finput( input, wxFile::write );
 	if ( !finput.IsOpened() )
 		return this->Terminate( ERR_FILE, input.c_str() );
-	wxLogDebug("Check win and overlap (win = %d and overlap = %d)", WIN_WIDTH, WIN_OVERLAP);
 	int win = WIN_WIDTH;
 	int overlap = WIN_OVERLAP;
 	params.Clear();
@@ -2352,14 +2376,8 @@ bool ImPage::GenerateMFC( bool merged, wxString output_dir )
 	params.Add( &filename );
 	params.Add( &finput );
 	params.Add( &m_staff_height );
-    ImStaffSegmentFunctor segmentFuncFeatures(&ImStaffSegment::CalcFeatures);
-	if ( merged )
-	{
-		ImStaffFunctor staffFunc(&ImStaff::MergeSegments);
-		this->Process( &staffFunc, params , &segmentFuncFeatures, counter);
-	}
-	else
-		this->Process(&segmentFuncFeatures, params, counter );
+    ImStaffFunctor staffFuncFeatures(&ImStaff::CalcFeatures);
+	this->Process(&staffFuncFeatures, params, counter );
 
 	finput.Close();
 
@@ -2367,14 +2385,18 @@ bool ImPage::GenerateMFC( bool merged, wxString output_dir )
 }
 
 
-void ImPage::Process(ImStaffSegmentFunctor *functor, wxArrayPtrVoid params, int counter )
+void ImPage::Process(ImStaffFunctor *functor, wxArrayPtrVoid params, int counter )
 {
     int nb_staves = (int)this->m_staves.GetCount();
     int st;
     for (st = 0; st < nb_staves; st++ )
     {
+		if ( m_staves[st].IsVoid() )
+			continue;
+			
         int stave_y = this->m_staves[st].m_y - ( STAFF_HEIGHT / 2 );
-        this->m_staves[st].Process( functor, st, stave_y, params );
+        functor->Call( &this->m_staves[st] , st , stave_y, params);
+		//this->m_staves[st].Process( functor, st, stave_y, params );
 		
 		if ( ( counter != -1 ) && !imCounterInc( this->m_progressDlg->GetCounter() ) )
 		{
@@ -2384,7 +2406,7 @@ void ImPage::Process(ImStaffSegmentFunctor *functor, wxArrayPtrVoid params, int 
     }
 }
 
-
+/*
 void ImPage::Process(ImStaffFunctor *functor, wxArrayPtrVoid params, ImStaffSegmentFunctor *subfunctor, int counter )
 {
     int nb_staves = (int)this->m_staves.GetCount();
@@ -2401,6 +2423,7 @@ void ImPage::Process(ImStaffFunctor *functor, wxArrayPtrVoid params, ImStaffSegm
 		}		
     }
 }
+*/
 
 // WDR: handler implementations for ImPage
 
