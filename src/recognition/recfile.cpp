@@ -430,7 +430,7 @@ bool RecFile::Preprocess( wxArrayPtrVoid params, AxProgressDlg *dlg )
     wxYield();
 		
     bool failed = false;
-
+		
     if ( RecEnv::s_check && !failed ) 
         failed = !m_imPagePtr->Check( image_file, 2500 ); // 2 operations max
 	
@@ -438,13 +438,13 @@ bool RecFile::Preprocess( wxArrayPtrVoid params, AxProgressDlg *dlg )
 	//m_error = m_imPagePtr->GetError();
 	//this->m_isPreprocessed = true;
 	//return true;
-		
+	
     if ( RecEnv::s_deskew && !failed ) 
         failed = !m_imPagePtr->Deskew( 10.0 ); // 2 operations max
     //op.m_inputfile = output + "/deskew." + shortname + ".tif";
         
     if ( RecEnv::s_staves_position && !failed ) 
-        failed = !m_imPagePtr->FindStaves(  3, 50 );  // 4 operations max
+        failed = !m_imPagePtr->FindStaves( 3, 50 );  // 4 operations max
     //op.m_inputfile = output + "/resize." + shortname + ".tif";
 
     if ( RecEnv::s_binarize_and_clean  && !failed ) 

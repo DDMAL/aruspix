@@ -98,7 +98,6 @@ protected:
     // WDR: member variable declarations for RecBookFile
     RecEnv *m_envPtr;
 
-
 private:
     // WDR: handler declarations for RecBookFile
 

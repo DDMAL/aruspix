@@ -454,10 +454,10 @@ bool ImPage::Check( wxString infile, int max_binary, int index )
 }
 
 bool ImPage::Deskew( double max_alpha )
-{
-    wxASSERT_MSG( m_progressDlg, "Progress dialog cannot be NULL");
+{	
+	wxASSERT_MSG( m_progressDlg, "Progress dialog cannot be NULL");
 	wxASSERT_MSG( m_img0, "Img0 cannot be NULL");
-
+	
     if (!m_progressDlg->SetOperation( _("Skew detection ...") ) )
         return this->Terminate( ERR_CANCELED );
 
@@ -1116,7 +1116,6 @@ void ImPage::GetVerticalStavesPosition( int values[], int size, int avg, int sta
 
 bool ImPage::BinarizeAndClean( )
 {
-
     wxASSERT_MSG( m_progressDlg, "Progress dialog cannot be NULL");
 	wxASSERT_MSG( m_img0, "Img0 cannot be NULL");
 	wxASSERT_MSG( ( this->m_resize == 1.0) , "Image should be normalized cannot be NULL");
@@ -1160,7 +1159,8 @@ bool ImPage::BinarizeAndClean( )
 		if ( !m_progressDlg->SetOperation( _("Binarization ...") ) )
 			return this->Terminate( ERR_CANCELED );
 		wxLogMessage("Entropy Brink binarization" );
-		imProcessBrinkThreshold( m_opImMain, m_opImTmp1, false );
+		int T = imProcessBrinkThreshold( m_opImMain, m_opImTmp1, false );
+		wxLogMessage("Brink Threshold: %d", T );
 	}
 	else if ( RecEnv::s_pre_page_binarization_method == PRE_BINARIZATION_PUGIN )
 	{
@@ -1173,8 +1173,9 @@ bool ImPage::BinarizeAndClean( )
 	{
 		if ( !m_progressDlg->SetOperation( _("Binarization ...") ) )
 			return this->Terminate( ERR_CANCELED );
-		wxLogMessage("Brink 3 Classes Binarization (Final)" );
-		imProcessBrinkThreshold( m_opImMain, m_opImTmp1, false );
+		wxLogMessage( "Brink 3 Classes Binarization (Final)" );
+		int T = imProcessBrinkThreshold2( m_opImMain, m_opImTmp1, false, BRINK_AND_PENDOCK, 2 );
+		wxLogMessage( "Brink 3 Classes Threshold: %d", T );
 	}
 	else // should not happen, but just in case
 	{	
@@ -1250,7 +1251,7 @@ bool ImPage::BinarizeAndClean( )
     imAnalyzeFindRegions ( m_opImMain, NewImage, 8, 1);
     imImageDestroy( NewImage );*/
 
-    wxLogMessage("Removing small elements (minimal size = %d)" ,threshold );
+    wxLogMessage("Removing small elements (minimal size = %d)" , threshold );
     m_opImTmp1 = imImageClone( m_opImMain );
     if ( !m_opImTmp1 )
         return this->Terminate( ERR_MEMORY );

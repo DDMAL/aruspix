@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0A5FB27A0DD49D2D001E460E /* imbrink3classes.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0A5FB2790DD49D2D001E460E /* imbrink3classes.cpp */; };
 		4D1675E70D8B628900F4D912 /* imkmeans.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D1675E60D8B628900F4D912 /* imkmeans.cpp */; };
 		4D1676650D8B765000F4D912 /* supbookfile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D1676610D8B765000F4D912 /* supbookfile.cpp */; };
 		4D1676660D8B765000F4D912 /* supfile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D1676630D8B765000F4D912 /* supfile.cpp */; };
@@ -88,6 +89,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		0A5FB2790DD49D2D001E460E /* imbrink3classes.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = imbrink3classes.cpp; sourceTree = "<group>"; };
 		4D1675E60D8B628900F4D912 /* imkmeans.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = imkmeans.cpp; sourceTree = "<group>"; };
 		4D1676610D8B765000F4D912 /* supbookfile.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = supbookfile.cpp; sourceTree = "<group>"; };
 		4D1676620D8B765000F4D912 /* supbookfile.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = supbookfile.h; sourceTree = "<group>"; };
@@ -469,6 +471,7 @@
 				4DB9F0510D94A66E00ED8E3E /* imregister.cpp */,
 				4DB9F0520D94A66E00ED8E3E /* imregister.h */,
 				57CA53D80D340F61001FC334 /* imbrink.cpp */,
+				0A5FB2790DD49D2D001E460E /* imbrink3classes.cpp */,
 				57CA53D90D340F61001FC334 /* imext.cpp */,
 				57CA53DA0D340F61001FC334 /* imext.h */,
 				57CA53DC0D340F61001FC334 /* imkmeans.h */,
@@ -634,6 +637,7 @@
 				4DA9FDDD0D90984E000E7BA6 /* supbookctrl.cpp in Sources */,
 				4D64284F0D9344FD00DA3A64 /* supim.cpp in Sources */,
 				4DB9F0530D94A66E00ED8E3E /* imregister.cpp in Sources */,
+				0A5FB27A0DD49D2D001E460E /* imbrink3classes.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -360,7 +360,8 @@ bool ImOperator::GetImage( _imImage **image, int factor,  int binary_method, boo
 		else if ( binary_method == IM_BINARIZATION_BRINK3CLASSES )
 		{
 			wxLogMessage("Brink 3 Classes Binarization (Resize)" );
-			imProcessBrinkThreshold( *image, imTmp, false );
+			int T = imProcessBrinkThreshold2( *image, imTmp, false, 0, 3 );
+			wxLogMessage( "Binarization Threshold: %d", T );
 		}
 		else // should not happen, but just in case
 		{	
