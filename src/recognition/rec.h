@@ -284,7 +284,7 @@ private:
 private:
     DECLARE_DYNAMIC_CLASS(RecEnv)
 
-    DECLARE_EVENT_TABLE()
+    DECLARE_EVENT_TABLE( )
 };
 
 #endif //AX_RECOGNITION

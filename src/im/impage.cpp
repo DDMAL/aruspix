@@ -1173,9 +1173,8 @@ bool ImPage::BinarizeAndClean( )
 	{
 		if ( !m_progressDlg->SetOperation( _("Binarization ...") ) )
 			return this->Terminate( ERR_CANCELED );
-		wxLogMessage( "Brink 3 Classes Binarization (Final)" );
-		int T = imProcessBrinkThreshold2( m_opImMain, m_opImTmp1, false, BRINK_AND_PENDOCK, 2 );
-		wxLogMessage( "Brink 3 Classes Threshold: %d", T );
+		int T = imProcessBrinkThreshold2( m_opImMain, m_opImTmp1, false, BRINK_AND_PENDOCK, 3 );
+		wxLogMessage( "Brink Threshold: %d", T );
 	}
 	else // should not happen, but just in case
 	{	
