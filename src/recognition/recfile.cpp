@@ -153,6 +153,14 @@ void RecFile::NewContent( )
         
 	// new ImPage and Load
     m_imPagePtr = new ImPage( m_basename, &m_isModified );
+
+	m_pre_image_binarization_method = ImOperator::s_pre_image_binarization_method;
+	m_pre_page_binarization_method =  ImPage::s_pre_page_binarization_method;
+	m_pre_page_binarization_method_size = ImPage::s_pre_page_binarization_method_size;
+	
+	m_imPagePtr->m_pre_image_binarization_methodPtr = &m_pre_image_binarization_method;
+	m_imPagePtr->m_pre_page_binarization_methodPtr = &m_pre_page_binarization_method;
+	m_imPagePtr->m_pre_page_binarization_method_sizePtr = &m_pre_page_binarization_method_size;
 	
 	m_isPreprocessed = false;
 	m_isRecognized = false;
@@ -162,6 +170,9 @@ void RecFile::NewContent( )
 void RecFile::OpenContent( )
 {
 	this->NewContent();
+	
+	TiXmlElement *root = NULL;
+    TiXmlNode *node = NULL;
 	
 	UpgradeTo_1_4_0();
 	
@@ -174,6 +185,19 @@ void RecFile::OpenContent( )
 	else
 		m_isPreprocessed = true;
 	
+		// binarization variables	
+		node = m_xml_root->FirstChild( "binarization" );
+		if ( !node ) return;
+		root = node->ToElement();
+		if ( !root ) return;
+		
+		if ( root->Attribute( "pre_image_binarization_method" ) )
+			RecFile::m_pre_image_binarization_method = atoi( root->Attribute( "pre_image_binarization_method" ) );
+		if ( root->Attribute( "pre_page_binarization_method" ) )
+			RecFile::m_pre_page_binarization_method = atoi( root->Attribute( "pre_page_binarization_method" ) );
+		if ( root->Attribute( "pre_page_binarization_method_size" ) )
+			RecFile::m_pre_page_binarization_method_size = atoi( root->Attribute( "pre_page_binarization_method_size" ) );
+		
 	if ( wxFileExists( m_basename + "page.wwg") )
 	{
 		MusWWGInput *wwginput = new MusWWGInput( m_musFilePtr, m_musFilePtr->m_fname );
@@ -229,7 +253,6 @@ void RecFile::OpenContent( )
 	*/
 }
 
-
 void RecFile::SaveContent( )
 {
 	wxASSERT_MSG( m_imPagePtr, "ImPage should not be NULL" );
@@ -238,9 +261,17 @@ void RecFile::SaveContent( )
 		
 	if ( !m_isPreprocessed )
 		return;
-	else
-		m_imPagePtr->Save( m_xml_root ); // save in the RecFile directory
+	else {
+		m_imPagePtr->Save( m_xml_root ); // save in the RecFile directory		
 		
+		// binarization variables
+		TiXmlElement binarization( "binarization" );
+		binarization.SetAttribute( "pre_image_binarization_method", RecFile::m_pre_image_binarization_method );
+		binarization.SetAttribute( "pre_page_binarization_method", RecFile::m_pre_page_binarization_method );
+		binarization.SetAttribute( "pre_page_binarization_method_size", RecFile::m_pre_page_binarization_method_size );
+		m_xml_root->InsertEndChild( binarization );
+	}
+
 	if ( !m_isRecognized )
 		return;
 	else
@@ -255,30 +286,30 @@ void RecFile::SaveContent( )
 		mlfoutput->WritePage( &m_musFilePtr->m_pages[0] , "staff", m_imPagePtr );
 		delete mlfoutput;
 	
-		TiXmlElement root("recpage");
+		TiXmlElement root( "recpage" );
     
 		// models
-		TiXmlElement models("models");
-		models.SetAttribute("typographic_model",  m_rec_typ_model.c_str() );
-		models.SetAttribute("music_model",  m_rec_mus_model.c_str() );	
+		TiXmlElement models( "models" );
+		models.SetAttribute( "typographic_model",  m_rec_typ_model.c_str() );
+		models.SetAttribute( "music_model",  m_rec_mus_model.c_str() );	
 		root.InsertEndChild( models );
 
 		// decoder
-		TiXmlElement decoder("decoder");
-		decoder.SetAttribute("wrdtrns",  m_rec_wrdtrns.c_str() );
-		decoder.SetAttribute("lm_delayed",  m_rec_delayed);
-		decoder.SetAttribute("order",  m_rec_lm_order );
-		decoder.SetDoubleAttribute("scaling",  m_rec_lm_scaling );
+		TiXmlElement decoder( "decoder" );
+		decoder.SetAttribute( "wrdtrns",  m_rec_wrdtrns.c_str() );
+		decoder.SetAttribute( "lm_delayed",  m_rec_delayed );
+		decoder.SetAttribute( "order",  m_rec_lm_order );
+		decoder.SetDoubleAttribute( "scaling",  m_rec_lm_scaling );
 		root.InsertEndChild( decoder );
 
 		// wwg
 		TiXmlElement wwg("wwg");
 		wxFileName fwwg( m_musFilePtr->m_fname );
-		wwg.SetAttribute("fname", fwwg.GetFullName().c_str() );
+		wwg.SetAttribute( "fname", fwwg.GetFullName().c_str() );
 		//if ( m_musViewPtr )
 		//	wwg.SetAttribute("page",  m_musViewPtr->m_npage );
 		root.InsertEndChild( wwg );
-		
+			
 		m_xml_root->InsertEndChild( root );
 	}
 }
@@ -301,6 +332,12 @@ void RecFile::CloseContent( )
 	
 	m_isPreprocessed = false;
 	m_isRecognized = false;
+}
+
+void RecFile::SetBinarization( int image_binarization_method, int page_binarization_method, int page_binarization_size ){
+	this->m_pre_image_binarization_method = image_binarization_method;
+	this->m_pre_page_binarization_method = page_binarization_method;
+	this->m_pre_page_binarization_method_size = page_binarization_size;
 }
 
 // static

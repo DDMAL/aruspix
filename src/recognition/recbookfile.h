@@ -93,6 +93,12 @@ public:
 	bool m_fullOptimized; // a full Adaptation has been performed, don't use fast adaptation
 	int m_nbFilesOptimization; // number of files used for full Adaptation
 	wxArrayString m_optFiles;
+	
+	// binarization
+	int m_pre_image_binarization_method;
+	int m_pre_page_binarization_method;
+	int m_pre_page_binarization_method_size;
+	bool m_pre_page_binarization_select;
 
 protected:
     // WDR: member variable declarations for RecBookFile

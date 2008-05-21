@@ -57,6 +57,11 @@ int SortRLE( ImRLE **first, ImRLE **second )
 #define TP_MARGIN_Y_TITLE 35 // marge entre la portee superieur et le elements de titre
 #define TP_MAX_SMALL_ELEMENT 100
 
+//Static variables that hold selected binarization method
+int ImPage::s_pre_page_binarization_method = PRE_BINARIZATION_BRINK;
+int ImPage::s_pre_page_binarization_method_size = 15;
+bool ImPage::s_pre_page_binarization_select = true;
+
 // WDR: class implementations
 
 //----------------------------------------------------------------------------
@@ -649,7 +654,7 @@ bool ImPage::FindStaves( int min, int max, bool normalize, bool crop )
 
 	this->SetMapImage( m_img0 );
 
-    if ( !GetImage( &m_opIm, resize_factor, RecEnv::s_pre_image_binarization_method, true ) )
+    if ( !GetImage( &m_opIm, resize_factor, *ImOperator::m_pre_image_binarization_methodPtr, true ) )
         return false;
 
     m_opImTmp1 = imImageClone( m_opIm );
@@ -1142,39 +1147,28 @@ bool ImPage::BinarizeAndClean( )
     if ( !m_opImTmp1 )
         return this->Terminate( ERR_MEMORY );
 
-	if ( RecEnv::s_pre_page_binarization_method == PRE_BINARIZATION_OTSU )
-	{
-		int otsu = imProcessOtsuThreshold( m_opImMain, m_opImTmp1 );
-		wxLogMessage("Otsu thresholding at %d", otsu);
-	}
-	else if ( RecEnv::s_pre_page_binarization_method == PRE_BINARIZATION_SAUVOLA )
+	if ( *ImPage::m_pre_page_binarization_methodPtr == PRE_BINARIZATION_SAUVOLA )
 	{
 		if ( !m_progressDlg->SetOperation( _("Binarization ...") ) )
 			return this->Terminate( ERR_CANCELED );
-		wxLogMessage("Sauvola binarization (region size is %d)", RecEnv::s_pre_page_binarization_method_size );
-		imProcessSauvolaThreshold( m_opImMain, m_opImTmp1, RecEnv::s_pre_page_binarization_method_size, 0.5, 128, 20, 150, false );
+		wxLogMessage("Sauvola binarization (region size is %d)", ImPage::s_pre_page_binarization_method_size );
+		imProcessSauvolaThreshold( m_opImMain, m_opImTmp1, ImPage::s_pre_page_binarization_method_size, 0.5, 128, 20, 150, false );
 	}
-	else if ( RecEnv::s_pre_page_binarization_method == PRE_BINARIZATION_BRINK )
+	else if ( *ImPage::m_pre_page_binarization_methodPtr == PRE_BINARIZATION_BRINK )
 	{
 		if ( !m_progressDlg->SetOperation( _("Binarization ...") ) )
 			return this->Terminate( ERR_CANCELED );
-		wxLogMessage("Entropy Brink binarization" );
-		int T = imProcessBrinkThreshold( m_opImMain, m_opImTmp1, false );
-		wxLogMessage("Brink Threshold: %d", T );
+		wxLogMessage( "Brink (2 classes) binarization" );
+		int T = imProcessBrink2ClassesThreshold( m_opImMain, m_opImTmp1, false, BRINK_AND_PENDOCK );
+		wxLogMessage("Binarization threshold: %d", T );
 	}
-	else if ( RecEnv::s_pre_page_binarization_method == PRE_BINARIZATION_PUGIN )
+	else if ( *ImPage::m_pre_page_binarization_methodPtr == PRE_BINARIZATION_BRINK3CLASSES )
 	{
 		if ( !m_progressDlg->SetOperation( _("Binarization ...") ) )
 			return this->Terminate( ERR_CANCELED );
-		wxLogMessage("Pugin binarization" );
-		imProcessPuginThreshold( m_opImMain, m_opImTmp1, false );
-	}
-	else if ( RecEnv::s_pre_page_binarization_method == PRE_BINARIZATION_BRINK3CLASSES )
-	{
-		if ( !m_progressDlg->SetOperation( _("Binarization ...") ) )
-			return this->Terminate( ERR_CANCELED );
-		int T = imProcessBrinkThreshold2( m_opImMain, m_opImTmp1, false, BRINK_AND_PENDOCK, 3 );
-		wxLogMessage( "Brink Threshold: %d", T );
+		wxLogMessage( "Brink (3 classes) binarization" );
+		int T = imProcessBrink3ClassesThreshold( m_opImMain, m_opImTmp1, false, BRINK_AND_PENDOCK );	
+		wxLogMessage( "Binarization threshold: %d", T );
 	}
 	else // should not happen, but just in case
 	{	

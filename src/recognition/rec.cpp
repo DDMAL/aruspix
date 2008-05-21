@@ -35,6 +35,7 @@
 
 #include "app/axapp.h"
 #include "app/axframe.h"
+#include "app/axoptionsdlg.h"
 
 #include "im/impage.h"
 
@@ -60,11 +61,6 @@ int RecEnv::s_pre_margin_top = 150;
 int RecEnv::s_pre_margin_bottom = 120;
 int RecEnv::s_pre_margin_left = 30;
 int RecEnv::s_pre_margin_right = 20;
-int RecEnv::s_pre_image_binarization_method = PRE_BINARIZATION_OTSU;
-int RecEnv::s_pre_page_binarization_method = PRE_BINARIZATION_BRINK;
-int RecEnv::s_pre_page_binarization_method_size = 15;
-
-
 
 wxString RecEnv::s_rec_typ_model = "";
 wxString RecEnv::s_rec_mus_model = "";
@@ -422,9 +418,6 @@ void RecEnv::LoadConfig()
     RecEnv::s_pre_margin_bottom = pConfig->Read("Pre margin bottom", 120);
     RecEnv::s_pre_margin_left = pConfig->Read("Pre margin left", 30);
     RecEnv::s_pre_margin_right = pConfig->Read("Pre margin right", 20);
-    RecEnv::s_pre_image_binarization_method = pConfig->Read("Binarization method resize", IM_BINARIZATION_OTSU );
-    RecEnv::s_pre_page_binarization_method = pConfig->Read("Binarization method", PRE_BINARIZATION_BRINK );
-    RecEnv::s_pre_page_binarization_method_size = pConfig->Read("Binarization region size", 15);
     
     RecEnv::s_last_batch = pConfig->Read("Last Batch", 0L );
     RecEnv::s_book_sash = pConfig->Read("Book Sash", 200 );
@@ -469,10 +462,7 @@ void RecEnv::SaveConfig()
     pConfig->Write("Pre margin bottom",RecEnv::s_pre_margin_bottom);
     pConfig->Write("Pre margin left", RecEnv::s_pre_margin_left);
     pConfig->Write("Pre margin right", RecEnv::s_pre_margin_right );
-    pConfig->Write("Binarization method resize", RecEnv::s_pre_image_binarization_method );
-    pConfig->Write("Binarization method", RecEnv::s_pre_page_binarization_method );
-    pConfig->Write("Binarization region size", RecEnv::s_pre_page_binarization_method_size );
-    
+        
     pConfig->Write("Last Batch", RecEnv::s_last_batch );
     pConfig->Write("Book Sash", RecEnv::s_book_sash);
 
@@ -1063,6 +1053,10 @@ void RecEnv::OnBookPreprocess( wxCommandEvent &event )
         RecFile recFilePtr( "rec_batch1_file" );
         recFilePtr.New();
         
+		recFilePtr.SetBinarization( m_recBookFilePtr->m_pre_image_binarization_method, 
+									m_recBookFilePtr->m_pre_page_binarization_method,
+									m_recBookFilePtr->m_pre_page_binarization_method_size);
+		
         wxArrayPtrVoid params;
         params.Add( &infile );
     
@@ -1423,10 +1417,10 @@ void RecEnv::OnCancelRecognition( wxCommandEvent &event )
 
 void RecEnv::OnRun( wxCommandEvent &event )
 {
-    
-    if ( !m_recFilePtr->IsPreprocessed() )
-        this->Preprocess();
-    else if ( !m_recFilePtr->IsRecognized() )
+    if ( !m_recFilePtr->IsPreprocessed() ){
+		this->Preprocess();
+	}
+	else if ( !m_recFilePtr->IsRecognized() )
         this->Recognize();
 }
 
@@ -1518,7 +1512,20 @@ void RecEnv::Preprocess( )
     // if a book is opened, check if the file has to be preprocessed
     if ( m_recBookFilePtr->IsOpened() && !m_recBookFilePtr->HasToBePreprocessed( m_imControlPtr->GetFilename() ) )
         return;
-        
+	
+	// if a book is opened, use the book binarization parameters
+	if ( m_recBookFilePtr->IsOpened() && m_recBookFilePtr->m_pre_page_binarization_select == true ){
+		AxBinSelectDlgFunc *bindlg = new AxBinSelectDlgFunc( m_framePtr, -1, _("Binarization Selection"), m_recFilePtr, m_recBookFilePtr );
+		bindlg->Center( wxBOTH );
+		bindlg->ShowModal();
+		bindlg->Destroy();
+	} else if ( !m_recBookFilePtr->IsOpened() && ImPage::s_pre_page_binarization_select == true ){
+		AxBinSelectDlgFunc *bindlg = new AxBinSelectDlgFunc( m_framePtr, -1, _("Binarization Selection"), m_recFilePtr, NULL );
+		bindlg->Center( wxBOTH );
+		bindlg->ShowModal();
+		bindlg->Destroy();
+	}
+	
     AxProgressDlg *dlg = new AxProgressDlg( m_framePtr, -1, _("Preprocessing") );
     dlg->Center( wxBOTH );
     dlg->Show();

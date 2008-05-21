@@ -136,7 +136,12 @@ protected:
     int *m_opCols1;
 
 
-public: // DEBUG variables
+public: 
+	// static binarization variable
+	static int s_pre_image_binarization_method; 
+	int *m_pre_image_binarization_methodPtr;
+	
+	// DEBUG variables
     wxString m_inputfile; // utilise dans la methode Read
 };
 

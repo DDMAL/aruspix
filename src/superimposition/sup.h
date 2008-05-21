@@ -20,7 +20,6 @@
 
 #include "app/axapp.h"
 #include "app/axenv.h"
-#include "im/imoperator.h"
 
 #include "sup_wdr.h"
 

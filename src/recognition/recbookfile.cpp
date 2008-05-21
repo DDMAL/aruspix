@@ -22,6 +22,7 @@
 #include "rec.h"
 #include "recfile.h"
 #include "recmodels.h"
+#include "im/impage.h"
 
 // WDR: class implementations
 
@@ -57,6 +58,9 @@ void RecBookFile::NewContent( )
 	m_fullOptimized = false;
 	m_nbFilesOptimization = 0;
 	m_optFiles.Clear();
+	m_pre_image_binarization_method = ImOperator::s_pre_image_binarization_method;
+	m_pre_page_binarization_method = ImPage::s_pre_page_binarization_method;
+	m_pre_page_binarization_method_size = ImPage::s_pre_page_binarization_method_size;
 }
 
 
@@ -150,6 +154,19 @@ void RecBookFile::OpenContent( )
             continue;
         m_optFiles.Add( elem->Attribute("filename") );
     }	
+	
+	// binarization variables
+	node = m_xml_root->FirstChild( "binarization" );
+	if ( !node ) return;
+    root = node->ToElement();
+    if ( !root ) return;
+	
+	if ( root->Attribute( "pre_image_binarization_method" ) )
+		RecBookFile::m_pre_image_binarization_method = atoi( root->Attribute( "pre_image_binarization_method" ) );
+	if ( root->Attribute( "pre_page_binarization_method" ) )
+		RecBookFile::m_pre_page_binarization_method = atoi( root->Attribute( "pre_page_binarization_method" ) );
+	if ( root->Attribute( "pre_page_binarization_method_size" ) )
+		RecBookFile::m_pre_page_binarization_method_size = atoi( root->Attribute( "pre_page_binarization_method_size" ) );
 }
 
 
@@ -206,6 +223,13 @@ void RecBookFile::SaveContent( )
         adapt.InsertEndChild( adapt_file );
     }   
     m_xml_root->InsertEndChild( adapt );
+
+	// binarization variables
+	TiXmlElement binarization( "binarization" );
+	binarization.SetAttribute( "pre_image_binarization_method", RecBookFile::m_pre_image_binarization_method );
+	binarization.SetAttribute( "pre_page_binarization_method", RecBookFile::m_pre_page_binarization_method );
+	binarization.SetAttribute( "pre_page_binarization_method_size", RecBookFile::m_pre_page_binarization_method_size );
+	m_xml_root->InsertEndChild( binarization );
 }
 
 void RecBookFile::CloseContent( )

@@ -34,7 +34,6 @@ int AxProgressDlg::s_timer_model_bigram = 5000;
 int AxProgressDlg::s_timer_full_adapting = 20000; // time for staff adapting one unit = on staff
 int AxProgressDlg::s_timer_fast_adapting = 20000; // time for staff adapting one unit = on staff
 
-
 // WDR: class implementations
 
 //----------------------------------------------------------------------------

@@ -14,7 +14,7 @@ enum{
 	BRINK_AND_PENDOCK = 0,
 	LI_AND_LEE	
 };	
-	
+
 struct _imImage;
 
 int median( int a[], int size, bool sort_array = true );
@@ -60,7 +60,8 @@ int imProcessPuginThreshold( const _imImage* src, _imImage* dest, bool white_is_
 int imProcessBrinkThreshold( const _imImage* src, _imImage* dest, bool white_is_255 = true );
 
 // implemented in imbrink3classes.cpp
-int imProcessBrinkThreshold2( const _imImage* image, _imImage* dest, bool white_is_255, int algorithm, int numClasses );	
+int imProcessBrink2ClassesThreshold( const _imImage* image,_imImage* dest, bool white_is_255, int algorithm );	
+int imProcessBrink3ClassesThreshold( const _imImage* image,_imImage* dest, bool white_is_255, int algorithm );		
 	
 void imSaveValues( int *values, int count, const char *filename );
 

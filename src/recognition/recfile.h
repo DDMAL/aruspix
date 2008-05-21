@@ -75,6 +75,8 @@ public:
 	// status
 	static bool RecFile::IsRecognized( wxString filename );
 	
+	// setter
+	void RecFile::SetBinarization( int image_binarization_method, int page_binarization_method, int page_binarization_size );
     
 public:
     // WDR: member variable declarations for RecFile
@@ -99,6 +101,11 @@ public:
     bool m_rec_delayed; // dec_delayed_lm
     int m_rec_lm_order; // lm_ngram_order
     double m_rec_lm_scaling; // lm_scaling_factor
+	
+	// binarization
+	int m_pre_image_binarization_method;
+	int m_pre_page_binarization_method;
+	int m_pre_page_binarization_method_size;
 
 protected:
     // WDR: member variable declarations for RecFile

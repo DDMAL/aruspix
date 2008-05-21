@@ -21,8 +21,9 @@
 
 #include "imoperator.h"
 
-// WDR: class implementations
+int ImOperator::s_pre_image_binarization_method = IM_BINARIZATION_OTSU;
 
+// WDR: class implementations
 
 //----------------------------------------------------------------------------
 // ImOperator
@@ -356,12 +357,9 @@ bool ImOperator::GetImage( _imImage **image, int factor,  int binary_method, boo
 		else if ( binary_method == IM_BINARIZATION_MINMAX )
 			imProcessMinMaxThreshold( *image, imTmp );
 		else if ( binary_method == IM_BINARIZATION_BRINK )
-			imProcessBrinkThreshold( *image, imTmp, false );
+			imProcessBrink2ClassesThreshold( *image, imTmp, false, BRINK_AND_PENDOCK );
 		else if ( binary_method == IM_BINARIZATION_BRINK3CLASSES )
-		{
-			int T = imProcessBrinkThreshold2( *image, imTmp, false, 0, 3 );
-			wxLogMessage( "Binarization Threshold: %d", T );
-		}
+			imProcessBrink3ClassesThreshold( *image, imTmp, false, BRINK_AND_PENDOCK );
 		else // should not happen, but just in case
 		{	
 			wxLogWarning("Fix threshold used when resizing" );

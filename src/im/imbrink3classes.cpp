@@ -310,14 +310,3 @@ int imProcessBrink3ClassesThreshold( const imImage* image, imImage* dest, bool w
 	
 	return T;
 }
-
-int imProcessBrinkThreshold2( const imImage* image, imImage* dest, bool white_is_255, int algorithm, int numClasses ){
-	wxASSERT( numClasses == 2 || numClasses == 3 );
-	
-	if ( numClasses == 2 )
-		return imProcessBrink2ClassesThreshold(image, dest, white_is_255, algorithm);
-	else if ( numClasses == 3)
-		return imProcessBrink3ClassesThreshold(image, dest, white_is_255, algorithm);
-	else 
-		return 0;
-}

@@ -21,12 +21,14 @@
 //#include "wx/file.h"
 //#include "wx/filename.h"
 #include "wx/imaglist.h"
+#include "wx/valgen.h"
 
 #include "recbookctrl.h"
 #include "recbookfile.h"
 #include "recfile.h"
 #include "rec.h"
 
+#include "app/axoptionsdlg.h"
 
 // WDR: class implementations
 
@@ -53,6 +55,10 @@ RecBookDataDlg::RecBookDataDlg( wxWindow *parent, wxWindowID id, const wxString 
     m_loadAxfiles = false;
     m_loadImages = false;
     
+	PageBinarizationMethod()->SetString(0, BRINK_2CLASSES_DESCRIPTION);
+	PageBinarizationMethod()->SetString(1, SAUVOLA_DESCRIPTION);
+	PageBinarizationMethod()->SetString(2, BRINK_3CLASSES_DESCRIPTION);
+	
     this->RISM()->SetValidator(
         wxTextValidator( wxFILTER_ASCII, &recBookFile->m_RISM ));   
     this->Composer()->SetValidator(
@@ -70,6 +76,13 @@ RecBookDataDlg::RecBookDataDlg( wxWindow *parent, wxWindowID id, const wxString 
         wxTextValidator( wxFILTER_NONE, &recBookFile->m_axFileDir ));
     this->Images()->SetValidator(
         wxTextValidator( wxFILTER_NONE, &recBookFile->m_imgFileDir ));
+	// binarization
+	this->PageBinarizationMethod()->SetValidator( 
+		wxGenericValidator( &m_recBookFile->m_pre_page_binarization_method ) );	
+	this->BinarizationRegionSize()->SetValidator( 
+		wxGenericValidator( &m_recBookFile->m_pre_page_binarization_method_size ) );	
+	this->BinarizationSelect()->SetValidator( 
+		wxGenericValidator( &m_recBookFile->m_pre_page_binarization_select ) );
 }
 
 /*

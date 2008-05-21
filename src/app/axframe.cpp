@@ -30,6 +30,7 @@
 #include "axoptionsdlg.h"
 #include "aximage.h"
 
+#include "im/impage.h"
 
 #include "wx/arrimpl.cpp"
 WX_DEFINE_OBJARRAY(AxEnvArray);
@@ -318,6 +319,12 @@ void AxFrame::LoadConfig()
     AxImage::s_reduceBigImages = (pConfig->Read("ReduceBigImages",0L)==1);
     AxImage::s_imageSizeToReduce = pConfig->Read("ImageSizeToReduce",3000);
 	AxImage::s_checkIfNegative = (pConfig->Read("ImageCheckIfNegative",0L)==1);
+	
+	// binarization parameters
+	ImOperator::s_pre_image_binarization_method = pConfig->Read( "Image binarization method", IM_BINARIZATION_BRINK );
+    ImPage::s_pre_page_binarization_method = pConfig->Read( "Page binarization method", PRE_BINARIZATION_BRINK );
+    ImPage::s_pre_page_binarization_method_size = pConfig->Read( "Binarization region size", 15 );
+	ImPage::s_pre_page_binarization_select = ( pConfig->Read( "Binarization selector dialogue", 0L ) == 0 );
 
 #if defined(__WXMSW__)
 	wxString default_workingDir = wxStandardPaths::Get().GetUserDataDir();		
@@ -421,6 +428,12 @@ void AxFrame::SaveConfig(int lastEnvId)
     pConfig->Write("ImageSizeToReduce", AxImage::s_imageSizeToReduce);
 	pConfig->Write("ImageCheckIfNegative", AxImage::s_checkIfNegative);
 
+	// binarization parameters
+	pConfig->Write("Image binarization method", ImOperator::s_pre_image_binarization_method );
+    pConfig->Write("Page binarization method", ImPage::s_pre_page_binarization_method );
+    pConfig->Write("Binarization region size", ImPage::s_pre_page_binarization_method_size );	
+	pConfig->Write("Binarization selector dialogue", ImPage::s_pre_page_binarization_select );		
+	
 	// system
 	pConfig->Write("DocumentsDir", wxGetApp().m_docDir );
 	pConfig->Write("WorkingDir", wxGetApp().m_workingDir );

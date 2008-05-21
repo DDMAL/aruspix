@@ -21,7 +21,13 @@
 
 #ifdef AX_RECOGNITION
 //	#include "rec_wdr.h"
+	#include "recfile.h"
+	#include "recbookfile.h"
 #endif
+
+#define SAUVOLA_DESCRIPTION _("Degraded with uneven lighting")
+#define BRINK_2CLASSES_DESCRIPTION _("Good condition")
+#define BRINK_3CLASSES_DESCRIPTION _("Degraded with bleedthough")
 
 class AxOptMusWindow;
 
@@ -50,7 +56,7 @@ public:
     wxTextCtrl* GetTcMaxsizeOpi()  { return (wxTextCtrl*) FindWindow( ID_TC_MAXSIZE_OPI ); }
     wxCheckBox* GetCbReduceOpi()  { return (wxCheckBox*) FindWindow( ID_CB_REDUCE_OPI ); }
 	wxCheckBox* GetCbNegativeOpi()  { return (wxCheckBox*) FindWindow( ID_CB_NEGATIVE_OPI ); }
-	
+	wxChoice* GetRbImageBin()  { return (wxChoice*) FindWindow( ID_C_IMAGE_BINARIZATION ); }
 	
 #ifdef AX_SUPERIMPOSITION
     wxCheckBox* GetChFilter2Ops1()  { return (wxCheckBox*) FindWindow( ID2_CH_FILTER2_OPS1 ); }
@@ -78,8 +84,9 @@ public:
     wxCheckBox* GetChStavesSegOps3()  { return (wxCheckBox*) FindWindow( ID4_CHB_STAVES_SEG ); }
     wxCheckBox* GetChTextOps3()  { return (wxCheckBox*) FindWindow( ID4_CHB_TEXT_POS ); }
 	wxSpinCtrl* GetScBinSizeOps3()  { return (wxSpinCtrl*) FindWindow( ID4_BIN_REGION_SIZE ); }
-	wxChoice* GetRbBinOps3()  { return (wxChoice*) FindWindow( ID4_BINARIZATION ); }
-	wxChoice* GetRbBinResOps3()  { return (wxChoice*) FindWindow( ID4_BINARIZATION_RESIZE ); }
+	wxChoice* GetCBinOps3()  { return (wxChoice*) FindWindow( ID4_BINARIZATION ); }
+	wxCheckBox* GetCbBinSelect() { return (wxCheckBox*) FindWindow( ID4_BINARIZATION_SELECT ); }
+
 #endif
 
 private:
@@ -135,6 +142,10 @@ private:
 
 private:
     DECLARE_EVENT_TABLE()
+	
+public:
+	wxNotebook *m_notebook;
+	static int s_last_open_tab;
 };
 
 
@@ -169,3 +180,19 @@ private:
 };
 
 #endif
+
+//-------------------------------------------------------------------------------
+// AxBinSelectDlgFunc
+//-------------------------------------------------------------------------------
+
+class AxBinSelectDlgFunc: public wxDialog
+{
+public:
+	// constructors and destructors
+	AxBinSelectDlgFunc( wxWindow *parent, wxWindowID id, const wxString &title, RecFile *recfile, RecBookFile *recbookfile );
+	
+	// WDR: method declarations for AxBinSelectDlgFunc
+	wxChoice* GetCPageBin()  { return (wxChoice*) FindWindow( ID0_BIN_CHOICE ); }
+	wxSpinCtrl* GetScBinRgnSize()  { return (wxSpinCtrl*) FindWindow( ID0_RGN_SIZE_SPINCTRL ); }
+	wxCheckBox* GetCbDeactivateDlg()  { return (wxCheckBox*) FindWindow( ID0_DEACTIVATE_DIALOG_CHECKBOX ); }
+};

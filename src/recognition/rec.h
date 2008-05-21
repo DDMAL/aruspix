@@ -49,15 +49,6 @@ enum
     ID4_POPUP_TREE_AX_DELETE
 };
 
-enum
-{
-    PRE_BINARIZATION_OTSU = 0,
-    PRE_BINARIZATION_SAUVOLA,
-	PRE_BINARIZATION_PUGIN,
-	PRE_BINARIZATION_BRINK,
-	PRE_BINARIZATION_BRINK3CLASSES
-};
-
 #define REC_UPDATE_DEFAULT 0
 #define REC_UPDATE_FAST 1
 
@@ -216,10 +207,6 @@ public:
     static int s_pre_margin_bottom;
     static int s_pre_margin_left;
     static int s_pre_margin_right;
-    // static values not changed
-    static int s_pre_image_binarization_method; // used in ImOperator, should be moved if RecEnv is not used...
-    static int s_pre_page_binarization_method; // used in ImPage, idem
-    static int s_pre_page_binarization_method_size;
     // decoder
     static wxString s_rec_typ_model;
     static wxString s_rec_mus_model;    
