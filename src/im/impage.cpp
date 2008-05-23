@@ -1515,6 +1515,13 @@ bool ImPage::FindText( )
 
     // save file
 	SwapImages( &m_img0, &m_opImMap );
+	
+	// keep grayscale alternative
+	//ImageDestroy( &m_img0 );
+	//m_img0 = imImageDuplicate( m_img1 );
+	//imPhotogrammetric( m_img1, m_img0 );
+	//imPhotogrammetric( m_img1, m_img1 );
+	
 	return this->Terminate( ERR_NONE );
 }
 

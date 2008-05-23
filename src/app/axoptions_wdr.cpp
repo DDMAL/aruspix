@@ -287,7 +287,7 @@ wxSizer *Rec1DlgFunc( wxWindow *parent, bool call_fit, bool set_sizer )
     item13->Add( item17, 0, wxALIGN_CENTER, 5 );
 
     wxStaticText *item18 = new wxStaticText( parent, IDO_TEXT, _("Left margin"), wxDefaultPosition, wxDefaultSize, 0 );
-    item13->Add( item18, 0, wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL, 5 );
+    item13->Add( item18, 0, wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL|wxRIGHT, 5 );
 
     wxSpinCtrl *item19 = new wxSpinCtrl( parent, ID4_MARGIN_LEFT, wxT("0"), wxDefaultPosition, wxSize(80,-1), 0, 0, 100, 0 );
     item13->Add( item19, 0, wxALIGN_CENTER, 5 );
@@ -313,92 +313,96 @@ wxSizer *Rec1DlgFunc( wxWindow *parent, bool call_fit, bool set_sizer )
         _("Sauvola"), 
         _("Brink (3 Classes)")
     };
-    wxChoice *item24 = new wxChoice( parent,  ID4_BINARIZATION, wxDefaultPosition, wxSize(200,-1), 3, strs24, 0 );
+    wxChoice *item24 = new wxChoice( parent,  ID4_BINARIZATION, wxDefaultPosition, wxSize(140,-1), 3, strs24, 0 );
     item22->Add( item24, 0, wxALIGN_CENTER|wxALL, 5 );
 
-    wxStaticText *item25 = new wxStaticText( parent, IDO_TEXT, _("Region size (Sauvola)"), wxDefaultPosition, wxDefaultSize, 0 );
-    item22->Add( item25, 0, wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+    item1->Add( item22, 0, wxALIGN_CENTER|wxLEFT|wxRIGHT|wxTOP, 5 );
 
-    wxSpinCtrl *item26 = new wxSpinCtrl( parent, ID4_BIN_REGION_SIZE, wxT("15"), wxDefaultPosition, wxSize(80,-1), 0, 3, 255, 15 );
-    item22->Add( item26, 0, wxALIGN_CENTER_VERTICAL|wxLEFT, 5 );
+    wxBoxSizer *item25 = new wxBoxSizer( wxHORIZONTAL );
 
-    item1->Add( item22, 0, wxALIGN_CENTER|wxALL, 5 );
+    wxStaticText *item26 = new wxStaticText( parent, IDO_TEXT, _("Region size (uneven lighting)"), wxDefaultPosition, wxDefaultSize, 0 );
+    item25->Add( item26, 0, wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
-    wxBoxSizer *item27 = new wxBoxSizer( wxHORIZONTAL );
+    wxSpinCtrl *item27 = new wxSpinCtrl( parent, ID4_BIN_REGION_SIZE, wxT("15"), wxDefaultPosition, wxSize(60,-1), 0, 3, 50, 15 );
+    item25->Add( item27, 0, wxALIGN_CENTER_VERTICAL|wxLEFT, 5 );
 
-    wxCheckBox *item28 = new wxCheckBox( parent, ID4_BINARIZATION_SELECT, wxT(""), wxDefaultPosition, wxDefaultSize, 0 );
-    item27->Add( item28, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+    item1->Add( item25, 0, wxALIGN_CENTER|wxLEFT|wxRIGHT, 5 );
 
-    wxStaticText *item29 = new wxStaticText( parent, IDO_TEXT, _("Show selection dialog at run time"), wxDefaultPosition, wxDefaultSize, 0 );
-    item27->Add( item29, 0, wxALIGN_CENTER|wxALL, 5 );
+    wxBoxSizer *item28 = new wxBoxSizer( wxHORIZONTAL );
 
-    item1->Add( item27, 0, wxALIGN_CENTER|wxLEFT|wxRIGHT|wxTOP, 5 );
+    wxCheckBox *item29 = new wxCheckBox( parent, ID4_BINARIZATION_SELECT, wxT(""), wxDefaultPosition, wxDefaultSize, 0 );
+    item28->Add( item29, 0, wxALIGN_CENTER_VERTICAL|wxLEFT|wxTOP|wxBOTTOM, 5 );
 
-    wxButton *item30 = new wxButton( parent, ID4_PRE_DEFAULT, _("Default values"), wxDefaultPosition, wxDefaultSize, 0 );
-    item1->Add( item30, 0, wxALIGN_CENTER|wxALL, 5 );
+    wxStaticText *item30 = new wxStaticText( parent, IDO_TEXT, _("Show selection dialog at run time"), wxDefaultPosition, wxDefaultSize, 0 );
+    item28->Add( item30, 0, wxALIGN_CENTER|wxALL, 5 );
+
+    item1->Add( item28, 0, wxALIGN_CENTER|wxLEFT|wxRIGHT|wxTOP, 5 );
+
+    wxButton *item31 = new wxButton( parent, ID4_PRE_DEFAULT, _("Default values"), wxDefaultPosition, wxDefaultSize, 0 );
+    item1->Add( item31, 0, wxALIGN_CENTER|wxALL, 5 );
 
     item0->Add( item1, 0, wxGROW|wxALL, 5 );
 
-    wxStaticBox *item32 = new wxStaticBox( parent, -1, _("Typographic model") );
-    wxStaticBoxSizer *item31 = new wxStaticBoxSizer( item32, wxVERTICAL );
+    wxStaticBox *item33 = new wxStaticBox( parent, -1, _("Typographic model") );
+    wxStaticBoxSizer *item32 = new wxStaticBoxSizer( item33, wxVERTICAL );
 
-    wxFlexGridSizer *item33 = new wxFlexGridSizer( 2, 0, 0 );
+    wxFlexGridSizer *item34 = new wxFlexGridSizer( 2, 0, 0 );
 
-    wxBoxSizer *item34 = new wxBoxSizer( wxHORIZONTAL );
+    wxBoxSizer *item35 = new wxBoxSizer( wxHORIZONTAL );
 
-    wxTextCtrl *item35 = new wxTextCtrl( parent, ID4_REC_TYP_MODELS, wxT(""), wxDefaultPosition, wxSize(300,-1), 0 );
-    item34->Add( item35, 0, wxALIGN_CENTER|wxALL, 5 );
+    wxTextCtrl *item36 = new wxTextCtrl( parent, ID4_REC_TYP_MODELS, wxT(""), wxDefaultPosition, wxSize(300,-1), 0 );
+    item35->Add( item36, 0, wxALIGN_CENTER|wxALL, 5 );
 
-    wxButton *item36 = new wxButton( parent, ID4_REC_BT_TYP_MODELS, _("Browse"), wxDefaultPosition, wxDefaultSize, 0 );
-    item34->Add( item36, 0, wxALIGN_CENTER|wxALL, 5 );
+    wxButton *item37 = new wxButton( parent, ID4_REC_BT_TYP_MODELS, _("Browse"), wxDefaultPosition, wxDefaultSize, 0 );
+    item35->Add( item37, 0, wxALIGN_CENTER|wxALL, 5 );
 
-    item33->Add( item34, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL, 0 );
+    item34->Add( item35, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL, 0 );
 
-    item31->Add( item33, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+    item32->Add( item34, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
-    item0->Add( item31, 0, wxGROW|wxALL, 5 );
+    item0->Add( item32, 0, wxGROW|wxALL, 5 );
 
-    wxStaticBox *item38 = new wxStaticBox( parent, -1, _("Music model") );
-    wxStaticBoxSizer *item37 = new wxStaticBoxSizer( item38, wxVERTICAL );
+    wxStaticBox *item39 = new wxStaticBox( parent, -1, _("Music model") );
+    wxStaticBoxSizer *item38 = new wxStaticBoxSizer( item39, wxVERTICAL );
 
-    wxFlexGridSizer *item39 = new wxFlexGridSizer( 2, 0, 0 );
+    wxFlexGridSizer *item40 = new wxFlexGridSizer( 2, 0, 0 );
 
-    wxBoxSizer *item40 = new wxBoxSizer( wxHORIZONTAL );
+    wxBoxSizer *item41 = new wxBoxSizer( wxHORIZONTAL );
 
-    wxTextCtrl *item41 = new wxTextCtrl( parent, ID4_REC_MUS_MODELS, wxT(""), wxDefaultPosition, wxSize(300,-1), 0 );
-    item40->Add( item41, 0, wxALIGN_CENTER|wxALL, 5 );
+    wxTextCtrl *item42 = new wxTextCtrl( parent, ID4_REC_MUS_MODELS, wxT(""), wxDefaultPosition, wxSize(300,-1), 0 );
+    item41->Add( item42, 0, wxALIGN_CENTER|wxALL, 5 );
 
-    wxButton *item42 = new wxButton( parent, ID4_REC_BT_MUS_MODELS, _("Browse"), wxDefaultPosition, wxDefaultSize, 0 );
-    item40->Add( item42, 0, wxALIGN_CENTER|wxALL, 5 );
+    wxButton *item43 = new wxButton( parent, ID4_REC_BT_MUS_MODELS, _("Browse"), wxDefaultPosition, wxDefaultSize, 0 );
+    item41->Add( item43, 0, wxALIGN_CENTER|wxALL, 5 );
 
-    item39->Add( item40, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL, 0 );
+    item40->Add( item41, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL, 0 );
 
-    item37->Add( item39, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+    item38->Add( item40, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
-    wxBoxSizer *item43 = new wxBoxSizer( wxHORIZONTAL );
+    wxBoxSizer *item44 = new wxBoxSizer( wxHORIZONTAL );
 
-    wxStaticText *item44 = new wxStaticText( parent, IDO_TEXT, _("Delayed"), wxDefaultPosition, wxDefaultSize, 0 );
-    item43->Add( item44, 0, wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+    wxStaticText *item45 = new wxStaticText( parent, IDO_TEXT, _("Delayed"), wxDefaultPosition, wxDefaultSize, 0 );
+    item44->Add( item45, 0, wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
-    wxCheckBox *item45 = new wxCheckBox( parent, ID4_REC_DELAYED, wxT(""), wxDefaultPosition, wxDefaultSize, 0 );
-    item45->SetValue( TRUE );
-    item43->Add( item45, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+    wxCheckBox *item46 = new wxCheckBox( parent, ID4_REC_DELAYED, wxT(""), wxDefaultPosition, wxDefaultSize, 0 );
+    item46->SetValue( TRUE );
+    item44->Add( item46, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
-    wxStaticText *item46 = new wxStaticText( parent, IDO_TEXT, _("Order"), wxDefaultPosition, wxDefaultSize, 0 );
-    item43->Add( item46, 0, wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+    wxStaticText *item47 = new wxStaticText( parent, IDO_TEXT, _("Order"), wxDefaultPosition, wxDefaultSize, 0 );
+    item44->Add( item47, 0, wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
-    wxSpinCtrl *item47 = new wxSpinCtrl( parent, ID4_REC_LMORDER, wxT("0"), wxDefaultPosition, wxSize(50,-1), 0, 0, 5, 0 );
-    item43->Add( item47, 0, wxALIGN_CENTER|wxALL, 5 );
+    wxSpinCtrl *item48 = new wxSpinCtrl( parent, ID4_REC_LMORDER, wxT("0"), wxDefaultPosition, wxSize(50,-1), 0, 0, 5, 0 );
+    item44->Add( item48, 0, wxALIGN_CENTER|wxALL, 5 );
 
-    wxStaticText *item48 = new wxStaticText( parent, IDO_TEXT, _("Scaling factor (1.0)"), wxDefaultPosition, wxDefaultSize, 0 );
-    item43->Add( item48, 0, wxALIGN_CENTER|wxALL, 5 );
+    wxStaticText *item49 = new wxStaticText( parent, IDO_TEXT, _("Scaling factor (1.0)"), wxDefaultPosition, wxDefaultSize, 0 );
+    item44->Add( item49, 0, wxALIGN_CENTER|wxALL, 5 );
 
-    wxTextCtrl *item49 = new wxTextCtrl( parent, ID4_LMSCALING, wxT(""), wxDefaultPosition, wxSize(50,-1), 0 );
-    item43->Add( item49, 0, wxALIGN_CENTER|wxALL, 5 );
+    wxTextCtrl *item50 = new wxTextCtrl( parent, ID4_LMSCALING, wxT(""), wxDefaultPosition, wxSize(50,-1), 0 );
+    item44->Add( item50, 0, wxALIGN_CENTER|wxALL, 5 );
 
-    item37->Add( item43, 0, wxALIGN_CENTER_VERTICAL|wxALL, 0 );
+    item38->Add( item44, 0, wxALIGN_CENTER_VERTICAL|wxALL, 0 );
 
-    item0->Add( item37, 0, wxGROW|wxALL, 5 );
+    item0->Add( item38, 0, wxGROW|wxALL, 5 );
 
     if (set_sizer)
     {
@@ -491,7 +495,7 @@ wxSizer *BinSelectDlgFunc( wxWindow *parent, bool call_fit, bool set_sizer )
     wxFlexGridSizer *item1 = new wxFlexGridSizer( 2, 0, 0 );
 
     wxStaticText *item2 = new wxStaticText( parent, ID0_TEXTPgBin, _("Document condition"), wxDefaultPosition, wxDefaultSize, 0 );
-    item1->Add( item2, 0, wxALIGN_CENTER|wxALL, 5 );
+    item1->Add( item2, 0, wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
     wxString strs3[] = 
     {
@@ -499,29 +503,29 @@ wxSizer *BinSelectDlgFunc( wxWindow *parent, bool call_fit, bool set_sizer )
         _("Sauvola"), 
         _("Brink (3 Classes)")
     };
-    wxChoice *item3 = new wxChoice( parent, ID0_BIN_CHOICE, wxDefaultPosition, wxSize(250,-1), 3, strs3, 0 );
+    wxChoice *item3 = new wxChoice( parent, ID0_BIN_CHOICE, wxDefaultPosition, wxSize(140,-1), 3, strs3, 0 );
     item1->Add( item3, 0, wxALIGN_CENTER|wxALL, 5 );
 
-    wxStaticText *item4 = new wxStaticText( parent, ID0_TEXTRgnSize, _("Region Size (Sauvola)"), wxDefaultPosition, wxDefaultSize, wxALIGN_RIGHT );
-    item1->Add( item4, 0, wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+    item0->Add( item1, 0, wxLEFT|wxRIGHT, 5 );
 
-    wxSpinCtrl *item5 = new wxSpinCtrl( parent, ID0_RGN_SIZE_SPINCTRL, wxT("0"), wxDefaultPosition, wxSize(55,-1), 0, 0, 100, 0 );
-    item1->Add( item5, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+    wxBoxSizer *item4 = new wxBoxSizer( wxHORIZONTAL );
 
-    item0->Add( item1, 0, wxALL, 5 );
+    wxStaticText *item5 = new wxStaticText( parent, ID0_TEXTRgnSize, _("Region Size (uneven lighting)"), wxDefaultPosition, wxDefaultSize, wxALIGN_RIGHT );
+    item4->Add( item5, 0, wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
-    wxStaticLine *item6 = new wxStaticLine( parent, ID0_LINE1, wxDefaultPosition, wxSize(300,-1), wxLI_HORIZONTAL );
-    item0->Add( item6, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+    wxSpinCtrl *item6 = new wxSpinCtrl( parent, ID0_RGN_SIZE_SPINCTRL, wxT("15"), wxDefaultPosition, wxSize(55,-1), 0, 3, 50, 15 );
+    item4->Add( item6, 0, wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT, 5 );
 
-    wxCheckBox *item7 = new wxCheckBox( parent, ID0_DEACTIVATE_DIALOG_CHECKBOX, _("Deactivate this dialog"), wxDefaultPosition, wxDefaultSize, 0 );
-    item0->Add( item7, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+    item0->Add( item4, 0, wxALIGN_CENTER|wxLEFT|wxRIGHT, 5 );
 
-    wxBoxSizer *item8 = new wxBoxSizer( wxHORIZONTAL );
+    wxStaticLine *item7 = new wxStaticLine( parent, ID0_LINE1, wxDefaultPosition, wxSize(300,-1), wxLI_HORIZONTAL );
+    item0->Add( item7, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+
+    wxCheckBox *item8 = new wxCheckBox( parent, ID0_DEACTIVATE_DIALOG_CHECKBOX, _("Deactivate this dialog"), wxDefaultPosition, wxDefaultSize, 0 );
+    item0->Add( item8, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
     wxButton *item9 = new wxButton( parent, wxID_OK, _("OK"), wxDefaultPosition, wxDefaultSize, 0 );
-    item8->Add( item9, 0, wxALIGN_CENTER|wxALL, 5 );
-
-    item0->Add( item8, 0, wxALIGN_CENTER|wxALL, 5 );
+    item0->Add( item9, 0, wxALIGN_CENTER|wxALL, 5 );
 
     if (set_sizer)
     {

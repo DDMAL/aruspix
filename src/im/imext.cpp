@@ -895,6 +895,137 @@ int imProcessKittlerThreshold(const imImage* image, imImage* NewImage )
   return level;
 }
 
+void imPhotogrammetric( const imImage* image, imImage* dest ){
+	
+	int height = image->height;
+	int width = image->width;
+	
+	if ( height % 2 != 0 ) height += 1;
+	if ( width % 2 != 0 ) width += 1;
+
+	imImage *imagetmp = imImageCreate(width, height, image->color_space, image->data_type);
+	imProcessAddMargins( image, imagetmp, 0, 0 );
+	
+	int i, j;
+	double *vk = (double*) malloc( height * sizeof(double) );
+	double *vl = (double*) malloc( width * sizeof(double) );
+	double **matk = (double**) malloc( height * sizeof(double*) );
+	double **matl = (double**) malloc( height * sizeof(double*) );
+	
+	imbyte* X = (imbyte*)imagetmp->data[0];
+	double sum_vk, sum_vl;
+	double a = 0;
+	double b = 0;
+	double c = 0;
+	double **X2 = (double**) malloc ( height * sizeof(double*) );
+	double **X3 = (double**) malloc ( height * sizeof(double*) );
+	
+	for ( i = 0; i < height; i++ ){
+		matk[i] = (double*) malloc ( width * sizeof(double) );
+		matl[i] = (double*) malloc ( width * sizeof(double) );
+		X2[i] = (double*) malloc ( width * sizeof(double) );
+		X3[i] = (double*) malloc ( width * sizeof(double) );
+	}
+	
+	for ( i = 0; i < (height / 2); i++ ){
+		vk[i] = 0;
+		double val = -(height / 2) + i;
+		if ( val <= -1 ) vk[i] = val;					// vk(1:(height/2)) = [-(height/2):1:-1]	
+	}
+	for ( i = (height / 2) ; i < height; i++ ){
+		vk[i] = 0;
+		double val = 1 + i - (height / 2);
+		if ( val <= (height / 2) ) vk[i] = val;			// vk((height/2)+1:height) = [1:1:(height/2)]	
+	}
+	
+	for ( i = 0; i < (width / 2); i++ ){
+		vl[i] = 0;
+		double val = -(width / 2) + i;
+		if ( val <= -1 ) vl[i] = val;					// vl(1:(width/2)) = [-(width/2):1:-1]	
+	}
+	for ( i = (width / 2) ; i < width; i++ ){
+		vl[i] = 0.0;
+		double val = 1 + i - (width / 2);
+		if ( val <= (width / 2) ) vl[i] = val;			// vl((width/2)+1:width) = [1:1:(width/2)]	
+	}
+	
+	for ( i = 0; i < width; i++ )
+		for ( j = 0; j < height; j++ )
+			matk[j][i] = vk[j];							// matk = repmat(vk, 1, width)
+		 
+	for ( i = 0; i < height; i++ )
+		for ( j = 0; j < width; j++ )
+			matl[i][j] = vl[j];							// matl = repmat(vl, height, 1)
+
+	/*
+	 Coordinates of the plane:
+	 a=sum(sum(X.*matk))/(width*sum(vk.^2));
+	 b=sum(sum(X.*matl))/(height*sum(vl.^2));
+	 c=sum(sum(X))/(height*width);
+	*/	
+	
+	for ( i = 0; i < height; i++ ) sum_vk += (vk[i] * vk[i]);		// sum(vk.^2)
+	for ( i = 0; i < width; i++ ) sum_vl += (vl[i] * vl[i]);		// sum(vl.^2)
+	
+	for ( i = 0; i < height; i++ ){
+		for ( j = 0; j < width; j++ ){
+			int offset = i*width + j;
+			a += ( (double) X[offset] * matk[i][j] );			// sum(sum(X.*matk))
+			b += ( (double) X[offset] * matl[i][j] );			// sum(sum(X.*matl))
+			c += X[offset];										// sum(sum(X))
+		}
+	}
+	
+	a /= ( width * sum_vk );									// a=sum(sum(X.*matk))/(width*sum(vk.^2))
+	b /= ( height * sum_vl );									// b=sum(sum(X.*matl))/(height*sum(vl.^2))
+	c /= ( height * width );									// c=sum(sum(X))/(height*width)
+	for ( i = 0; i < height; i++ ){
+		for ( j = 0; j < width; j++ ){
+			X2[i][j] = (matk[i][j] * a) + (matl[i][j] * b) + c;		// X2=matk.*a+matl.*b+c
+			X3[i][j] = (double) X[i*width + j] - X2[i][j];			// X3 = X - X2
+		}
+	}
+		
+	/* Normalize */
+	double min = X3[0][0];
+	for ( i = 0; i < height; i++ )
+		for ( j = 0; j < width; j++ )
+			if ( min > X3[i][j] ) min = X3[i][j];					// Find minimum
+			
+	for ( i = 0; i < height; i++ )
+		for ( j = 0; j < width; j++ )
+			X3[i][j] = X3[i][j] + abs(min);							// X3=X3+abs(min(min(X3)))
+			
+	double max = X3[0][0];
+	for ( i = 0; i < height; i++ )
+		for ( j = 0; j < width; j++ )
+			if ( max < X3[i][j] ) max = X3[i][j];					// Find maximum
+	
+	for ( i = 0; i < height; i++ ){
+		for ( j = 0; j < width; j++ ){
+			X3[i][j] = X3[i][j] / max;								// X3=X3+abs(min(min(X3)))
+			
+			//copy new image (X3) back into X
+			X[i*width + j] = (imbyte) (X3[i][j] * 255);
+		}
+	}
+	
+	imProcessCrop(imagetmp, dest, 0, 0);
+	
+	for ( i = 0; i < height; i++ ){
+		free( matk[i] );
+		free( matl[i] );
+		free( X2[i] );
+		free( X3[i] );
+	}
+	free( matk );
+	free( matl );
+	free( X2 );
+	free( X3 );
+	free( vk );
+	free( vl );
+}
+
 /*
 	ecrit les valeurs d'un tableaux d'int (fonction de debbuging)
 */

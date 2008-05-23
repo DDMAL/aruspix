@@ -12,8 +12,6 @@
 // For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"
 
-
-
 #ifdef __BORLANDC__
     #pragma hdrstop
 #endif
@@ -34,7 +32,6 @@
 
 #include "wx/arrimpl.cpp"
 WX_DEFINE_OBJARRAY(AxEnvArray);
-
 
 #ifdef AX_RECOGNITION
     #include "recognition/rec.h"
@@ -324,7 +321,7 @@ void AxFrame::LoadConfig()
 	ImOperator::s_pre_image_binarization_method = pConfig->Read( "Image binarization method", IM_BINARIZATION_BRINK );
     ImPage::s_pre_page_binarization_method = pConfig->Read( "Page binarization method", PRE_BINARIZATION_BRINK );
     ImPage::s_pre_page_binarization_method_size = pConfig->Read( "Binarization region size", 15 );
-	ImPage::s_pre_page_binarization_select = ( pConfig->Read( "Binarization selector dialogue", 0L ) == 0 );
+	ImPage::s_pre_page_binarization_select = ( pConfig->Read( "Binarization selector dialogue", 0L ) == 1 );
 
 #if defined(__WXMSW__)
 	wxString default_workingDir = wxStandardPaths::Get().GetUserDataDir();		

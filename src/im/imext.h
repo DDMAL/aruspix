@@ -63,6 +63,8 @@ int imProcessBrinkThreshold( const _imImage* src, _imImage* dest, bool white_is_
 int imProcessBrink2ClassesThreshold( const _imImage* image,_imImage* dest, bool white_is_255, int algorithm );	
 int imProcessBrink3ClassesThreshold( const _imImage* image,_imImage* dest, bool white_is_255, int algorithm );		
 	
+void imPhotogrammetric( const _imImage* image,_imImage* dest );
+	
 void imSaveValues( int *values, int count, const char *filename );
 
 void imPrintValues( int *values, int count );

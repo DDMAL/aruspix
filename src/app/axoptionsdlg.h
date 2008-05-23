@@ -25,9 +25,9 @@
 	#include "recbookfile.h"
 #endif
 
-#define SAUVOLA_DESCRIPTION _("Degraded with uneven lighting")
-#define BRINK_2CLASSES_DESCRIPTION _("Good condition")
-#define BRINK_3CLASSES_DESCRIPTION _("Degraded with bleedthough")
+#define SAUVOLA_DESCRIPTION _("Uneven lighting")
+#define BRINK_2CLASSES_DESCRIPTION _("Clean")
+#define BRINK_3CLASSES_DESCRIPTION _("Bleedthough")
 
 class AxOptMusWindow;
 

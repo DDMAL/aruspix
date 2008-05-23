@@ -158,8 +158,13 @@ int imProcessBrink3ClassesThreshold( const imImage* image, imImage* dest, bool w
 	double KL_f_base[MAX_GREY][MAX_GREY], KL_b_base[MAX_GREY][MAX_GREY], KL_t_base[MAX_GREY][MAX_GREY];
 	double KL_f[MAX_GREY][MAX_GREY], KL_b[MAX_GREY][MAX_GREY], KL_t[MAX_GREY][MAX_GREY];
 	
-	//double mu_f_term[MAX_GREY][MAX_GREY], mu_b_term[MAX_GREY][MAX_GREY], mu_t_term[MAX_GREY][MAX_GREY];
-	//The above allocation caused a EXC_BAD_ACCESS error in Xcode. It is now allocated within the Li and Lee if statement below
+	/*
+	double mu_f_term[MAX_GREY][MAX_GREY], mu_b_term[MAX_GREY][MAX_GREY], mu_t_term[MAX_GREY][MAX_GREY];
+	The above allocation caused a runtime error (EXC_BAD_ACCESS) error in Xcode. It is now allocated within the Li and Lee if statement below
+	
+	Note: This error is most probably caused by a limitation in the stack memory. To overcome any more problems simply malloc memory from
+		  the heap.
+	 */
 	
 	imCalcGrayHistogram( src, imhist, NON_CUMULATIVE );			//Compute gray histogram
 	for ( i = 0; i < MAX_GREY; i++ ) 

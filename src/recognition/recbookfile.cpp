@@ -162,13 +162,14 @@ void RecBookFile::OpenContent( )
     if ( !root ) return;
 	
 	if ( root->Attribute( "pre_image_binarization_method" ) )
-		RecBookFile::m_pre_image_binarization_method = atoi( root->Attribute( "pre_image_binarization_method" ) );
+		m_pre_image_binarization_method = atoi( root->Attribute( "pre_image_binarization_method" ) );
 	if ( root->Attribute( "pre_page_binarization_method" ) )
-		RecBookFile::m_pre_page_binarization_method = atoi( root->Attribute( "pre_page_binarization_method" ) );
+		m_pre_page_binarization_method = atoi( root->Attribute( "pre_page_binarization_method" ) );
 	if ( root->Attribute( "pre_page_binarization_method_size" ) )
-		RecBookFile::m_pre_page_binarization_method_size = atoi( root->Attribute( "pre_page_binarization_method_size" ) );
+		m_pre_page_binarization_method_size = atoi( root->Attribute( "pre_page_binarization_method_size" ) );
+	if ( root->Attribute( "pre_page_binarization_select" ) )
+		m_pre_page_binarization_select = atoi( root->Attribute( "pre_page_binarization_select" ) );
 }
-
 
 void RecBookFile::SaveContent( )
 {
@@ -226,9 +227,10 @@ void RecBookFile::SaveContent( )
 
 	// binarization variables
 	TiXmlElement binarization( "binarization" );
-	binarization.SetAttribute( "pre_image_binarization_method", RecBookFile::m_pre_image_binarization_method );
-	binarization.SetAttribute( "pre_page_binarization_method", RecBookFile::m_pre_page_binarization_method );
-	binarization.SetAttribute( "pre_page_binarization_method_size", RecBookFile::m_pre_page_binarization_method_size );
+	binarization.SetAttribute( "pre_image_binarization_method", m_pre_image_binarization_method );
+	binarization.SetAttribute( "pre_page_binarization_method", m_pre_page_binarization_method );
+	binarization.SetAttribute( "pre_page_binarization_method_size", m_pre_page_binarization_method_size );
+	binarization.SetAttribute( "pre_page_binarization_select", m_pre_page_binarization_select );
 	m_xml_root->InsertEndChild( binarization );
 }
 
