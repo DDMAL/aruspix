@@ -47,6 +47,8 @@ ImOperator::ImOperator( )
     m_opLines1 = NULL;
     m_opLines2 = NULL;
     m_opCols1 = NULL;
+	
+	m_pre_image_binarization_methodPtr = &ImOperator::s_pre_image_binarization_method;
 }
 
 ImOperator::~ImOperator()

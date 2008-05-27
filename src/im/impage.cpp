@@ -76,6 +76,10 @@ ImPage::ImPage( wxString path, bool *isModified ) :
 	m_img1 = NULL;
 	m_selection = NULL;
 	m_isModified = 	isModified;
+	
+	m_pre_page_binarization_methodPtr = &ImPage::s_pre_page_binarization_method;
+	m_pre_page_binarization_method_sizePtr = &ImPage::s_pre_page_binarization_method_size;
+	
     Clear( );
 }
 
@@ -654,7 +658,7 @@ bool ImPage::FindStaves( int min, int max, bool normalize, bool crop )
 
 	this->SetMapImage( m_img0 );
 
-    if ( !GetImage( &m_opIm, resize_factor, *ImOperator::m_pre_image_binarization_methodPtr, true ) )
+    if ( !GetImage( &m_opIm, resize_factor, *m_pre_image_binarization_methodPtr, true ) )
         return false;
 
     m_opImTmp1 = imImageClone( m_opIm );

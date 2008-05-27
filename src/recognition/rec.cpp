@@ -1082,6 +1082,9 @@ void RecEnv::OnBookPreprocess( wxCommandEvent &event )
 
 void RecEnv::OnBookLoad( wxCommandEvent &event )
 {
+    if ( !m_recBookFilePtr->IsOpened() )
+        return;
+
     m_recBookFilePtr->LoadImages();
     m_recBookFilePtr->LoadAxfiles();
     m_recBookPtr->Update();
@@ -1090,11 +1093,17 @@ void RecEnv::OnBookLoad( wxCommandEvent &event )
 
 void RecEnv::OnSaveBookAs( wxCommandEvent &event )
 {
+    if ( !m_recBookFilePtr->IsOpened() )
+        return;
+		
     m_recBookFilePtr->SaveAs();  
 }
 
 void RecEnv::OnSaveBook( wxCommandEvent &event )
 {
+    if ( !m_recBookFilePtr->IsOpened() )
+        return;
+
     m_recBookFilePtr->Save();    
 }
 

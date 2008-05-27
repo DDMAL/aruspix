@@ -447,15 +447,14 @@ void SupEnv::OnBookEdit( wxCommandEvent &event )
     {
         m_supBookFilePtr->Modify();
         m_supBookPtr->Update();
+		if (!m_supBookFilePtr->CreateFiles( true ));
+			return;
     }
 }
 
 
 void SupEnv::OnBookSuperimpose( wxCommandEvent &event )
 {
-	m_supBookFilePtr->CreateFiles( true );
-	return;
-
     if ( AxProgressDlg::s_instance_existing )
         return;
         
@@ -522,6 +521,8 @@ void SupEnv::OnBookLoad( wxCommandEvent &event )
 	m_supBookFilePtr->LoadImages2();
     m_supBookFilePtr->LoadAxfiles();
     m_supBookPtr->Update();
+	if (!m_supBookFilePtr->CreateFiles( true ));
+		return;
 }
 
 
