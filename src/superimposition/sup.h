@@ -207,7 +207,8 @@ public:
     static bool s_filter2;
     // sash
     static int s_book_sash;
-	static int s_view_sash;
+	static int s_page_viewer_sash;
+	static int s_page_images_sash;
 	// tree
     static bool s_expand_root;
 	static bool s_expand_book;

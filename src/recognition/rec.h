@@ -83,28 +83,23 @@ public:
         const wxPoint& pos = wxDefaultPosition,
         const wxSize& size = wxDefaultSize,
         long style = 0 );
-    void SetEnv( RecEnv *env, wxFlexGridSizer *sizer, MusToolPanel *toolpanel,   RecMusController *musControlPtr );
+    void SetEnv( RecEnv *env );
     
     // WDR: method declarations for RecSplitterWindow
-    void ChangeOrientation( );
     
 protected:
     // WDR: member variable declarations for RecSplitterWindow
     RecEnv *m_envPtr;
-    MusToolPanel *m_toolpanel;
-    wxFlexGridSizer *m_mussizer;
-    RecMusController *m_musControlPtr;
     
 private:
     // WDR: handler declarations for RecSplitterWindow
-    void OnSashDoubleClick( wxSplitterEvent &event );
     void OnSashChanged( wxSplitterEvent &event );
 
 private:
     DECLARE_EVENT_TABLE()
 };
 
-
+/*
 //----------------------------------------------------------------------------
 // RecPanel
 //----------------------------------------------------------------------------
@@ -131,7 +126,7 @@ private:
 private:
     DECLARE_EVENT_TABLE()
 };
-
+*/
 
 
 //----------------------------------------------------------------------------

@@ -30,8 +30,12 @@
 
 class ProcessDlg;
 
-//#include "wx/ptr_scpd.h"
-//wxDECLARE_SCOPED_PTR(wxZipEntry, wxZipEntryPtr);
+
+// IMPORTANT 
+// Any change of MAX_FILE_TYPES must be reported in axfile.cpp where
+// the enum values are mapped with const *char
+
+#define MAX_FILE_TYPES 4
 
 enum
 {
@@ -41,6 +45,12 @@ enum
 	AX_FILE_PROJECT = 3,
 	AX_FILE_ZIP
 };
+
+// IMPORTANT 
+// Any change of MAX_ENV_TYPES must be reported in axfile.cpp where
+// the enum values are mapped with const *char
+
+#define MAX_ENV_TYPES 2 
 
 enum
 {
@@ -131,6 +141,7 @@ public:
 	static wxString AxFile::Open( int file_type );
 	//
 	static wxString AxFile::GetEnvName( int envtype );
+	static bool AxFile::ContainsFile( wxString filename, wxString search_filename );
 	// unzip the preview file into the working directory and return path to it if success ("" otherwise)
 	static wxString AxFile::GetPreview( wxString filename, wxString preview );
 

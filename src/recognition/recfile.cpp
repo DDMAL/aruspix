@@ -343,7 +343,7 @@ void RecFile::SetBinarization( int image_binarization_method, int page_binarizat
 // static
 bool RecFile::IsRecognized( wxString filename )
 {
-	return !AxFile::GetPreview( filename, "page.wwg"  ).IsEmpty();
+	return AxFile::ContainsFile( filename, "page.wwg"  );
 }
 
 void RecFile::GetImage1( AxImage *image )

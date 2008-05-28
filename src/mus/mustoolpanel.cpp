@@ -23,6 +23,48 @@
 
 // WDR: class implementations
 
+
+wxSizer *NotesPanel1( wxWindow *parent, bool call_fit, bool set_sizer )
+{
+    wxBoxSizer *item0 = new wxBoxSizer( wxHORIZONTAL );
+    ToolNotesPaneBoxSizer = item0;
+
+    item0->Add( 2, 1, 0, wxALIGN_CENTER|wxALL, 0 );
+	
+    wxToolBar *toolbar = new wxToolBar( parent, ID_MS_BT_INSERT, wxDefaultPosition, wxDefaultSize );
+    item0->Add( toolbar, 0, wxALIGN_CENTER, 0 );
+    
+	/*
+    toolbar->InsertTool( 0, -, _T("New"), m_framePtr->GetToolbarBitmap( "book_new.png" ), wxNullBitmap, wxITEM_NORMAL, _("New book"), _("New book") );
+    toolbar->InsertTool( 1, ID4_OPEN_BOOK, _T("Open"), m_framePtr->GetToolbarBitmap( "book_open.png" ), wxNullBitmap, wxITEM_NORMAL, _("Open book"), _("Open book") );
+    toolbar->InsertSeparator( 2 );
+    
+    toolbar->AddTool( ID4_ZOOM_OUT, _T("Zoom out"), m_framePtr->GetToolbarBitmap( "viewmag-.png" ), wxNullBitmap, wxITEM_NORMAL, _("Zoom out"), _("Zoom out") );
+    toolbar->AddTool( ID4_ZOOM_IN, _T("Zoom in"), m_framePtr->GetToolbarBitmap( "viewmag+.png" ), wxNullBitmap, wxITEM_NORMAL, _("Zoom in"), _("Zoom in") );
+    toolbar->AddTool( ID4_ADJUST, _T("Fit"), m_framePtr->GetToolbarBitmap( "viewmagfit.png" ), wxNullBitmap, wxITEM_CHECK, _("Adjust"), _("Adjust to fit the window") );
+    //toolbar->AddTool( ID4_ADJUST_V, _T(""), BitmapsFunc4( 10 ), wxNullBitmap, wxITEM_CHECK, _("Adjust vertically"), _("Adjust to fit the window vertically") );
+    //toolbar->AddTool( ID4_ADJUST_H, _T(""), BitmapsFunc4( 11 ), wxNullBitmap, wxITEM_CHECK, _("Adjust horizontally"), _("Adjust to fit the window horizontally") );
+    //toolbar->AddSeparator();
+    //toolbar->AddTool( ID4_SHOW_STAFF_BMP, _("Staff correspondence"), BitmapsFunc4( 12 ), wxNullBitmap, wxITEM_CHECK, _("Staff correspondence"), _("Show staff correspondence on image") );
+    toolbar->AddSeparator();
+    toolbar->AddTool( ID4_PROCESS, _T("Run"), m_framePtr->GetToolbarBitmap( "noatun.png" ), wxNullBitmap, wxITEM_NORMAL, _("Process"), _("Process the current page") );
+    //parent->AddTool( ID4_RECOGNIZE, _T(""), BitmapsFunc4( 5 ), wxNullBitmap, wxITEM_NORMAL, _("Recognize"), _("Recognize current page") );
+	*/
+    toolbar->AddSeparator();
+    //toolbar->AddTool( ID4_BATCH, _T("Batch"), m_framePtr->GetToolbarBitmap( "bookcase.png" ), wxNullBitmap, wxITEM_NORMAL, _("Batch pre-processing"), _("Execute batch pre-processing") );
+    
+    toolbar->Realize();
+
+    if (set_sizer)
+    {
+        parent->SetSizer( item0 );
+        if (call_fit)
+            item0->SetSizeHints( parent );
+    }
+    
+    return item0;
+}
+
 //----------------------------------------------------------------------------
 // MusToolRow
 //----------------------------------------------------------------------------
@@ -35,7 +77,7 @@ MusToolRow::MusToolRow( wxWindow *parent, wxWindowID id, int type ) :
 	m_type = type;
 	switch (type)
 	{
-	case (MUS_TOOLS_NOTES): NotesPanel( this, true, true ); break;
+	case (MUS_TOOLS_NOTES): NotesPanel1( this, true, true ); break;
 	case (MUS_TOOLS_CLEFS): ClefsPanel( this, true, true ); break;
 	case (MUS_TOOLS_SIGNS): SignsPanel( this, true, true ); break;
 	case (MUS_TOOLS_OTHER): SymbolsPanel( this, true, true ); break;

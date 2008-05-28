@@ -89,6 +89,8 @@ bool RecEnv::s_expand_opt = true;
 
 // WDR: class implementations
 
+
+
 //----------------------------------------------------------------------------
 // RecSplitterWindow
 //----------------------------------------------------------------------------
@@ -96,7 +98,6 @@ bool RecEnv::s_expand_opt = true;
 // WDR: event table for RecSplitterWindow
 
 BEGIN_EVENT_TABLE(RecSplitterWindow,wxSplitterWindow)
-    EVT_SPLITTER_DCLICK( -1, RecSplitterWindow::OnSashDoubleClick )
     EVT_SPLITTER_SASH_POS_CHANGED( -1, RecSplitterWindow::OnSashChanged)
 END_EVENT_TABLE()
 
@@ -107,54 +108,9 @@ RecSplitterWindow::RecSplitterWindow( wxWindow *parent, wxWindowID id,
     m_envPtr = NULL;
 }
 
-void RecSplitterWindow::SetEnv( RecEnv *env, wxFlexGridSizer *sizer, MusToolPanel *toolpanel,    RecMusController *musControlPtr )
+void RecSplitterWindow::SetEnv( RecEnv *env )
 {
     m_envPtr = env;
-    m_mussizer = sizer;
-    m_toolpanel = toolpanel;
-    m_musControlPtr = musControlPtr;
-}
-
-void RecSplitterWindow::ChangeOrientation( )
-{
-    /*
-    if ( !IsSplit() )
-        return;
-        
-    bool vertical = true;
-    if ( this->GetSplitMode() == wxSPLIT_VERTICAL )
-        vertical = false;
-
-    wxWindow *win1 = this->GetWindow1();
-    wxWindow *win2 = this->GetWindow2();
-    this->Unsplit();
-    win2->Show();
-
-    if (vertical)
-        this->SplitVertically( win1, win2 );
-    else
-        this->SplitHorizontally( win1, win2 );
-    
-    m_toolpanel->SetDirection( vertical );
-    int cols = ( vertical ) ? 0 : 1;
-    int rows = ( vertical ) ? 1 : 0;
-
-    m_mussizer->AddGrowableCol( rows );
-    m_mussizer->RemoveGrowableCol( cols );
-    m_mussizer->AddGrowableRow( cols );
-    m_mussizer->RemoveGrowableRow( rows );
-
-    m_mussizer->SetCols( cols );
-    m_mussizer->SetRows( rows );
-    m_mussizer->Layout();
-    //m_mussizer->SetSizeHints( win2 );
-
-
-    if ( m_envPtr )
-    {
-        m_envPtr->SyncZoom();
-    }
-    */
 }
 
 // WDR: handler implementations for RecSplitterWindow
@@ -164,31 +120,65 @@ void RecSplitterWindow::OnSashChanged( wxSplitterEvent &event )
     UpdateSize();
     if ( m_envPtr )
     {
-       // m_envPtr->SyncZoom();
+       m_envPtr->UpdateViews( 0 );
     }
     event.Skip();
 }
 
-void RecSplitterWindow::OnSashDoubleClick( wxSplitterEvent &event )
+
+//----------------------------------------------------------------------------
+// MusPanel
+//----------------------------------------------------------------------------
+
+class MusPanel: public wxPanel
 {
-    this->ChangeOrientation();
-}
+public:
+    // constructors and destructors
+    MusPanel( wxWindow *parent, wxWindowID id = -1,
+        const wxPoint& pos = wxDefaultPosition,
+        const wxSize& size = wxDefaultSize,
+        long style = wxTAB_TRAVERSAL | wxNO_BORDER );
+    
+    // WDR: method declarations for MusPanel
+    
+private:
+    // WDR: member variable declarations for MusPanel
+    
+private:
+    // WDR: handler declarations for MusPanel
+
+private:
+    DECLARE_EVENT_TABLE()
+};
+
 
 
 //----------------------------------------------------------------------------
-// RecPanel
+// MusPanel
 //----------------------------------------------------------------------------
 
-// WDR: event table for RecPanel
+// WDR: event table for MusPanel
 
-BEGIN_EVENT_TABLE(RecPanel,wxPanel)
+BEGIN_EVENT_TABLE(MusPanel,wxPanel)
 END_EVENT_TABLE()
 
-RecPanel::RecPanel( wxWindow *parent, wxWindowID id,
+MusPanel::MusPanel( wxWindow *parent, wxWindowID id,
     const wxPoint &position, const wxSize& size, long style ) :
     wxPanel( parent, id, position, size, style )
 {
-    WindowFunc4( this, TRUE ); 
+    wxFlexGridSizer *item0 = new wxFlexGridSizer( 1, 0, 0 );
+    item0->AddGrowableCol( 0 );
+    item0->AddGrowableRow( 1 );
+
+    MusToolPanel *item1 = new MusToolPanel( this, ID4_TOOLPANEL, wxDefaultPosition, wxSize(10,10), 0 );
+    item0->Add( item1, 0, wxGROW, 0 );
+
+    RecMusController *item2 = new RecMusController( this, ID4_MUSPANEL, wxDefaultPosition, wxSize(200,160), wxSUNKEN_BORDER );
+    item0->Add( item2, 0, wxGROW|wxALL, 0 );
+
+
+	this->SetSizer( item0 );
+	item0->SetSizeHints( this );
 }
 
 // WDR: handler implementations for RecPanel
@@ -336,14 +326,16 @@ void RecEnv::LoadWindow()
     m_imViewPtr->m_popupMenu.AppendSeparator();
     m_imControlPtr->Init( this, m_imViewPtr );
 
-    m_musPanelPtr = new wxPanel( m_pageSplitterPtr, ID4_DISPLAY );
-    wxFlexGridSizer *mussizer = (wxFlexGridSizer*)MusOutputFunc4( m_musPanelPtr, TRUE );
+    m_musPanelPtr = new MusPanel( m_pageSplitterPtr, ID4_DISPLAY );
+	//m_musPanelPtr = new wxPanel( m_pageSplitterPtr, ID4_DISPLAY );
+    //wxFlexGridSizer *mussizer = (wxFlexGridSizer*)MusOutputFunc4( m_musPanelPtr, TRUE );
     m_musControlPtr = (RecMusController*)m_envWindowPtr->FindWindowById( ID4_MUSPANEL );
     m_musViewPtr = new RecMusWindow( m_musControlPtr, ID4_WGWINDOW, wxDefaultPosition,
             wxDefaultSize, wxHSCROLL |wxVSCROLL | wxNO_BORDER  /*| wxSIMPLE_BORDER */ , false);
     m_musViewPtr->SetEnv( this );
     m_musControlPtr->Init( this, m_musViewPtr );
     
+	// cross pointers on views and controller and pointer to the file
     m_musControlPtr->SetImViewAndController( m_imViewPtr, m_imControlPtr );
     m_musControlPtr->SetRecFile( m_recFilePtr );
     m_imControlPtr->SetWgViewAndController( m_musViewPtr, m_musControlPtr );
@@ -351,11 +343,9 @@ void RecEnv::LoadWindow()
    
     m_toolpanel = (MusToolPanel*)m_envWindowPtr->FindWindowById( ID4_TOOLPANEL );
     wxASSERT_MSG( m_toolpanel, "Tool Panel cannot be NULL ");
-    
- //   m_toolpanel->SetDirection( false );
 
-    m_pageSplitterPtr->SetEnv( this, mussizer, m_toolpanel, m_musControlPtr );
-
+    m_pageSplitterPtr->SetEnv( this );
+	
     if ( wxSystemSettings::GetColour(wxSYS_COLOUR_APPWORKSPACE) == *wxWHITE )
         m_musControlPtr->SetBackgroundColour( *wxLIGHT_GREY );
     else
@@ -372,9 +362,6 @@ void RecEnv::LoadWindow()
 
 void RecEnv::RealizeToolbar( )
 {
-
-    //ToolBarFunc4( m_framePtr->GetToolBar() ); // function generated by wxDesigner
-
     wxToolBar *toolbar =  m_framePtr->GetToolBar();
     
     toolbar->InsertTool( 0, ID4_NEW_BOOK, _T("New"), m_framePtr->GetToolbarBitmap( "book_new.png" ), wxNullBitmap, wxITEM_NORMAL, _("New book"), _("New book") );

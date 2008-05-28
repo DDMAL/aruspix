@@ -30,57 +30,48 @@
 
 // Declare window functions
 
-const int ID6_SPLITTER1 = 16000;
-wxSizer *WindowFunc6( wxWindow *parent, bool call_fit = TRUE, bool set_sizer = TRUE );
-
-const int ID6_TOOLPANEL = 16001;
-const int ID6_MUSPANEL = 16002;
-wxSizer *MusOutputFunc6( wxWindow *parent, bool call_fit = TRUE, bool set_sizer = TRUE );
-
-const int ID6_TREEBOOK = 16003;
-const int ID6_LINE2 = 16004;
-const int ID6_PREVIEW = 16005;
-const int ID6_CB_PREVIEW = 16006;
+const int ID6_TREEBOOK = 16000;
+const int ID6_LINE2 = 16001;
+const int ID6_PREVIEW = 16002;
+const int ID6_CB_PREVIEW = 16003;
 wxSizer *CmpFunc6( wxWindow *parent, bool call_fit = TRUE, bool set_sizer = TRUE );
 
-const int ID6_TEXT = 16007;
-const int ID6_RISM = 16008;
-const int ID6_COMPOSER = 16009;
-const int ID6_TITLE = 16010;
-const int ID6_PRINTER = 16011;
-const int ID6_YEAR = 16012;
-const int ID6_LIBRARY = 16013;
-const int ID6_BOOK_IMAGES = 16014;
-const int ID6_ON_BOOK_IMAGES = 16015;
-const int ID6_BOOK_AXFILES = 16016;
-const int ID6_ON_BOOK_AXFILES = 16017;
+const int ID6_TEXT = 16004;
+const int ID6_RISM = 16005;
+const int ID6_COMPOSER = 16006;
+const int ID6_TITLE = 16007;
+const int ID6_PRINTER = 16008;
+const int ID6_YEAR = 16009;
+const int ID6_LIBRARY = 16010;
+const int ID6_BOOK_IMAGES = 16011;
+const int ID6_ON_BOOK_IMAGES = 16012;
+const int ID6_BOOK_AXFILES = 16013;
+const int ID6_ON_BOOK_AXFILES = 16014;
 wxSizer *CmpDataFunc6( wxWindow *parent, bool call_fit = TRUE, bool set_sizer = TRUE );
 
 // Declare menubar functions
 
-const int ID6_MENU_FILE = 16018;
-const int ID6_OPEN_CMP = 16019;
-const int ID6_MENU_EDIT = 16020;
-const int ID6_COLLATOR = 16021;
-const int ID6_CMP_EDIT = 16022;
-const int ID6_CMP_LOAD = 16023;
-const int ID6_PAGE = 16024;
-const int ID6_ZOOM_OUT = 16025;
-const int ID6_ZOOM_IN = 16026;
-const int ID6_ADJUST = 16027;
-const int ID6_ADJUST_V = 16028;
-const int ID6_ADJUST_H = 16029;
-const int ID6_MENU = 16030;
-const int ID6_PREVIOUS = 16031;
-const int ID6_NEXT = 16032;
-const int ID6_GOTO = 16033;
-const int ID6_TOOLS = 16034;
+const int ID6_MENU_FILE = 16015;
+const int ID6_OPEN_CMP = 16016;
+const int ID6_MENU_EDIT = 16017;
+const int ID6_COLLATOR = 16018;
+const int ID6_CMP_EDIT = 16019;
+const int ID6_CMP_LOAD = 16020;
+const int ID6_MENU = 16021;
+const int ID6_COLLATE = 16022;
+const int ID6_PAGE = 16023;
+const int ID6_ZOOM_OUT = 16024;
+const int ID6_ZOOM_IN = 16025;
+const int ID6_ADJUST = 16026;
+const int ID6_ADJUST_V = 16027;
+const int ID6_ADJUST_H = 16028;
+const int ID6_PREVIOUS = 16029;
+const int ID6_NEXT = 16030;
+const int ID6_GOTO = 16031;
+const int ID6_TOOLS = 16032;
 wxMenuBar *MenuBarFunc6();
 
 // Declare toolbar functions
-
-const int ID6_COLLATE = 16035;
-void ToolBarFunc6( wxToolBar *parent );
 
 // Declare bitmap functions
 

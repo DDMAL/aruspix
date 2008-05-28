@@ -1065,8 +1065,8 @@ bool ImRegister::Register( wxPoint *points1, wxPoint *points2)
 	
 	
     //wxSize window( min( 10, width / 25 ), min( 10, height / 25 ) );
-	//wxSize window( 50 ,  50 );
-	wxSize window( width / 25 ,  height / 25 );
+	wxSize window( 50 ,  50 );
+	//wxSize window( width / 25 ,  height / 25 );
 	wxLogDebug( "Window %d x %d", window.GetWidth(), window.GetHeight() );
 
     m_opImAlign = imImageCreate( m_im2->width + 2 * window.GetWidth(), m_im2->height + 2 * window.GetHeight(),
@@ -1123,7 +1123,7 @@ bool ImRegister::SubRegister( wxPoint origine, wxSize window, wxSize size )
 	int x = 0, y = 0, maxCorr;
 	
 
-	//if ( (window.GetWidth() <= 30) && (window.GetWidth() <= 30) )
+	if ( (window.GetWidth() <= 30) && (window.GetHeight() <= 30) )
 	{
 		int factor = max( 1, min( window.GetWidth() / 15, window.GetHeight() / 15 ) ); // smallest value, but at least 1
 	

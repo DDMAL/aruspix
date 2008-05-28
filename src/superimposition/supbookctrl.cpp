@@ -440,6 +440,7 @@ void SupBookCtrl::Update( )
         if ( !wxFileExists( m_supBookFilePtr->m_axFileDir + wxFileName::GetPathSeparator() +  m_supBookFilePtr->m_axFiles[i].m_filename ) ) 
             SetItemTextColour( id , *wxRED );
 		else if ( SupFile::IsSuperimposed( m_supBookFilePtr->m_axFileDir + wxFileName::GetPathSeparator() +  m_supBookFilePtr->m_axFiles[i].m_filename ) )
+		//else if ( m_supBookFilePtr->m_axFiles[i].m_flags & FILE_FULLY_PROCESSED ) 
 		{
 			SetItemImage( id, IMG_AXZ_OK ); 
 			SetItemImage( id, IMG_AXZ_OK_S,  wxTreeItemIcon_Selected );

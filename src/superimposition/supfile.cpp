@@ -254,7 +254,7 @@ void SupFile::GetResult( AxImage *image )
 bool SupFile::IsSuperimposed( wxString filename )
 {
 	// don't know which file to check....
-	return !AxFile::GetPreview( filename, "result.tif"  ).IsEmpty();
+	return AxFile::ContainsFile( filename, "result.tif"  );
 }
 
 // functors

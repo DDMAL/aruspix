@@ -39,7 +39,8 @@ bool SupEnv::s_filter1 = true;
 bool SupEnv::s_filter2 = true;
 
 int SupEnv::s_book_sash = 200; // batch processing
-int SupEnv::s_view_sash = 0;
+int SupEnv::s_page_viewer_sash = 0;
+int SupEnv::s_page_images_sash = 0;
 
 bool SupEnv::s_expand_root = true;
 bool SupEnv::s_expand_book = true;
@@ -203,14 +204,17 @@ void SupEnv::LoadWindow()
     m_srcControl2Ptr->Init( this, m_srcView2Ptr );
 
 	// split - unsplit
-	m_srcSplitterPtr->SplitHorizontally(m_srcControl1Ptr,m_srcControl2Ptr);
-    m_pageSplitterPtr->SplitVertically(m_imControl1Ptr,m_imControl2Ptr);
+	m_srcSplitterPtr->SplitHorizontally( m_srcControl1Ptr, m_srcControl2Ptr);
+    m_pageSplitterPtr->SplitVertically( m_imControl1Ptr, m_imControl2Ptr, SupEnv::s_page_images_sash );
 	m_pageSplitterPtr->Unsplit( m_imControl1Ptr );
-	m_pageSplitterPtr->SplitVertically(m_imControl1Ptr,m_srcSplitterPtr);
+	m_pageSplitterPtr->SplitVertically( m_imControl1Ptr, m_srcSplitterPtr, SupEnv::s_page_viewer_sash  );
+	//m_pageSplitterPtr->Unsplit( m_imControl1Ptr );
 	
     m_bookSplitterPtr->SetMinimumPaneSize( 100 );
     m_bookSplitterPtr->SplitVertically( m_supBookPanelPtr, m_pageSplitterPtr, SupEnv::s_book_sash );
     //m_bookSplitterPtr->Unsplit( m_supBookPanelPtr );
+	
+	CloseAll( );
 }
 
 void SupEnv::RealizeToolbar( )
@@ -244,7 +248,8 @@ void SupEnv::LoadConfig()
 	
 	// sash
     SupEnv::s_book_sash = pConfig->Read("Book Sash", 200 );
-	SupEnv::s_view_sash = pConfig->Read("View Sash", 0L );
+	SupEnv::s_page_viewer_sash = pConfig->Read("Page Viewer Sash", 0L );
+	SupEnv::s_page_images_sash = pConfig->Read("Page Images Sash", 0L );
     // superimposition
     SupEnv::s_segmentSize = pConfig->Read("SegmentSize", 1200);
     SupEnv::s_interpolation = pConfig->Read("Interpolation", 0L);
@@ -274,7 +279,8 @@ void SupEnv::SaveConfig()
 
 	// sash
     pConfig->Write("Book Sash", SupEnv::s_book_sash);
-	pConfig->Write("View Sash", SupEnv::s_view_sash);
+	pConfig->Write("Page Viewer Sash", SupEnv::s_page_viewer_sash);
+	pConfig->Write("Page Images Sash", SupEnv::s_page_images_sash);
     // superimposition
     pConfig->Write("SegmentSize", SupEnv::s_segmentSize);
     pConfig->Write("Interpolation", SupEnv::s_interpolation);
@@ -327,12 +333,20 @@ bool SupEnv::ResetBookFile()
 
     if ( m_bookSplitterPtr->IsSplit() ) // keep position if splitted
         SupEnv::s_book_sash = m_bookSplitterPtr->GetSashPosition( );
+		
     m_bookSplitterPtr->Unsplit( m_supBookPanelPtr );
     return true;
 }
 
 bool SupEnv::ResetFile()
 {
+    if ( m_supFilePtr->IsOpened() && m_pageSplitterPtr->IsSplit() )
+	{
+		if ( m_supFilePtr->IsSuperimposed() ) // keep position if splitted
+			SupEnv::s_page_viewer_sash = m_pageSplitterPtr->GetSashPosition( );
+		else
+			SupEnv::s_page_images_sash = m_pageSplitterPtr->GetSashPosition( );
+	}
 	
     if ( !m_supFilePtr->Close( true ) )
         return false;
@@ -349,8 +363,6 @@ bool SupEnv::ResetFile()
 	m_imControl1Ptr->SetControllers( NULL, NULL );
     m_imControl1Ptr->SetViews( NULL, NULL );
     
-    if ( m_pageSplitterPtr->IsSplit() ) // keep position if splitted
-        SupEnv::s_view_sash = m_pageSplitterPtr->GetSashPosition( );
     m_pageSplitterPtr->Unsplit();
     UpdateTitle( );
     
@@ -359,13 +371,11 @@ bool SupEnv::ResetFile()
 
 void SupEnv::UpdateViews( int flags )
 {
+	m_pageSplitterPtr->Unsplit();
+	
     if ( m_supFilePtr->IsSuperimposed() )
     {
-	    //if ( m_pageSplitterPtr->IsSplit() ) // keep position if splitted
-		//	SupEnv::s_view_sash = m_pageSplitterPtr->GetSashPosition( );
-		m_pageSplitterPtr->Unsplit();
-		
-        m_pageSplitterPtr->SplitVertically( m_imControl1Ptr, m_srcSplitterPtr );
+        m_pageSplitterPtr->SplitVertically( m_imControl1Ptr, m_srcSplitterPtr, SupEnv::s_page_viewer_sash );
 		m_imControl1Ptr->SetControllers( m_srcControl1Ptr, m_srcControl2Ptr );
 		m_imControl1Ptr->SetViews( m_srcView1Ptr , m_srcView2Ptr );
         AxImage img;
@@ -381,10 +391,7 @@ void SupEnv::UpdateViews( int flags )
     }
     else
     {
-		if ( m_pageSplitterPtr->IsSplit() ) // keep position if splitted // not good, keep position only if already superimposed
-			SupEnv::s_view_sash = m_pageSplitterPtr->GetSashPosition( );
-		m_pageSplitterPtr->Unsplit();
-		m_pageSplitterPtr->SplitVertically( m_imControl1Ptr, m_imControl2Ptr, SupEnv::s_view_sash );
+		m_pageSplitterPtr->SplitVertically( m_imControl1Ptr, m_imControl2Ptr, SupEnv::s_page_images_sash );
 		m_imControl1Ptr->Open( m_supFilePtr->m_original1 );
 		m_imControl2Ptr->Open( m_supFilePtr->m_original2 );
     }
@@ -520,9 +527,8 @@ void SupEnv::OnBookLoad( wxCommandEvent &event )
     m_supBookFilePtr->LoadImages1();
 	m_supBookFilePtr->LoadImages2();
     m_supBookFilePtr->LoadAxfiles();
+	m_supBookFilePtr->CreateFiles( true );
     m_supBookPtr->Update();
-	if (!m_supBookFilePtr->CreateFiles( true ));
-		return;
 }
 
 
@@ -582,7 +588,7 @@ void SupEnv::OnNew( wxCommandEvent &event )
     if ( !CloseAll( ) || !this->m_supFilePtr->New())
         return;
 	
-	m_pageSplitterPtr->SplitVertically( m_imControl1Ptr, m_imControl2Ptr, SupEnv::s_view_sash );
+	m_pageSplitterPtr->SplitVertically( m_imControl1Ptr, m_imControl2Ptr, SupEnv::s_page_images_sash );
 		
 	m_imControl1Ptr->Open( "" );
     if ( !m_imControl1Ptr->Ok() || !m_imControl1Ptr->HasFilename() )
@@ -713,8 +719,6 @@ void SupEnv::OnEndPutPoints( wxCommandEvent &event )
 	wxASSERT_MSG( m_imControl1Ptr, wxT("Image controller 1 cannot be NULL") );
     wxASSERT_MSG( m_imControl2Ptr, wxT("Image controller 2 cannot be NULL") );
 	wxASSERT_MSG( m_supFilePtr, wxT("SupFile cannot be NULL") );
-
-	int i;
 
 	int id = event.GetId();
     if (id == ID2_CONTROLLER1)

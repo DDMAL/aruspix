@@ -24,8 +24,6 @@
 #include "wx/ptr_scpd.h"
 wxDEFINE_SCOPED_PTR_TYPE(wxZipEntry);
 
-#define MAX_FILE_TYPES 4
-
 const char *extensions[] = { 
 	"axz", 
 	"axtyp", 
@@ -49,8 +47,6 @@ const char *types[] = {
 	"Project",
 	"Zip archive"
 };
-
-#define MAX_ENV_TYPES 2 
 
 const char *envtypes[] = { 
 	"Rec", 
@@ -524,6 +520,33 @@ wxString AxFile::GetPreview( wxString filename, wxString preview )
     }
 
 	return "";	
+}
+
+// static method
+bool AxFile::ContainsFile( wxString filename, wxString search_filename )
+{
+	if ( !wxFileExists( filename ) )
+		return false;
+		
+	wxString basename = wxGetApp().m_workingDir + "/axfile/";
+	
+	if ( wxDirExists( basename ) )
+		AxDirTraverser clean( basename );
+	else
+		wxMkdir( basename );
+
+	wxZipEntryPtr entry;
+    wxFFileInputStream in( filename );
+    wxZipInputStream zip(in);
+
+    while (entry.reset( zip.GetNextEntry()), entry.get() != NULL)
+    {
+        wxString name = entry->GetName();
+		if ( name == search_filename )
+			return true;
+    }
+
+	return false;	
 }
 
 bool AxFile::Terminate( int code, ... )
