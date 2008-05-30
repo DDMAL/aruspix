@@ -176,7 +176,8 @@ void SupBookFile::SaveContent( )
     dirname1.MakeRelativeTo( wxFileName( m_filename ).GetFullPath() );
     //wxLogDebug( dirname1.GetPath() );
     images1.SetAttribute("Path", dirname1.GetPath().c_str() );
-    for ( int i = 0; i < (int)m_imgFiles1.GetCount(); i++)
+    int i;
+	for ( i = 0; i < (int)m_imgFiles1.GetCount(); i++)
     {
         TiXmlElement image("image");
         image.SetAttribute("filename", m_imgFiles1[i].m_filename.c_str() );
@@ -190,7 +191,7 @@ void SupBookFile::SaveContent( )
     dirname2.MakeRelativeTo( wxFileName( m_filename ).GetFullPath() );
     //wxLogDebug( dirname1.GetPath() );
     images2.SetAttribute("Path", dirname2.GetPath().c_str() );
-    for ( int i = 0; i < (int)m_imgFiles2.GetCount(); i++)
+    for ( i = 0; i < (int)m_imgFiles2.GetCount(); i++)
     {
         TiXmlElement image("image");
         image.SetAttribute("filename", m_imgFiles2[i].m_filename.c_str() );
@@ -204,7 +205,7 @@ void SupBookFile::SaveContent( )
     dirname3.MakeRelativeTo( wxFileName( m_filename ).GetFullPath() );
     //wxLogDebug( dirname2.GetPath() );
     axfiles.SetAttribute("Path", dirname3.GetPath().c_str() );
-    for ( int i = 0; i < (int)m_axFiles.GetCount(); i++)
+    for ( i = 0; i < (int)m_axFiles.GetCount(); i++)
     {
         TiXmlElement axfile("axfile");
         axfile.SetAttribute("filename", m_axFiles[i].m_filename.c_str() );

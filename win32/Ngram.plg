@@ -6,36 +6,35 @@
 --------------------Configuration: Ngram - Win32 Debug--------------------
 </h3>
 <h3>Command Lines</h3>
-Creating temporary file "C:\DOCUME~1\ADMINI~1\LOCALS~1\Temp\RSP421.tmp" with contents
+Creating temporary file "C:\DOCUME~1\Tristan\LOCALS~1\Temp\RSP220.tmp" with contents
 [
-/nologo /MDd /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /D DEBUG=1 /FR"../obj/NgramDebug/" /Fp"../obj/NgramDebug/Ngram.pch" /YX /Fo"../obj/NgramDebug/" /Fd"../obj/NgramDebug/" /FD /GZ /c 
-"D:\Projects\Aruspix\src\torch\LMNGramBuilder.cpp"
-"D:\Projects\Aruspix\src\torch\LMNGramEntry.cpp"
-"D:\Projects\Aruspix\src\torch\NGram.cpp"
+/nologo /MDd /W3 /Gm /GX /ZI /Od /I "C:\Torch3\src" /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /D DEBUG=1 /FR"../obj/NgramDebug/" /Fp"../obj/NgramDebug/Ngram.pch" /YX /Fo"../obj/NgramDebug/" /Fd"../obj/NgramDebug/" /FD /GZ /c 
+"C:\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\src\torch\LMNGramBuilder.cpp"
+"C:\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\src\torch\LMNGramEntry.cpp"
+"C:\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\src\torch\NGram.cpp"
 ]
-Creating command line "cl.exe @C:\DOCUME~1\ADMINI~1\LOCALS~1\Temp\RSP421.tmp" 
-Creating temporary file "C:\DOCUME~1\ADMINI~1\LOCALS~1\Temp\RSP422.tmp" with contents
+Creating command line "cl.exe @C:\DOCUME~1\Tristan\LOCALS~1\Temp\RSP220.tmp" 
+Creating temporary file "C:\DOCUME~1\Tristan\LOCALS~1\Temp\RSP221.tmp" with contents
 [
 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib Torch3d.lib /nologo /subsystem:console /incremental:yes /pdb:"../obj/NgramDebug/NgramD.pdb" /debug /machine:I386 /out:"../bin/NgramD.exe" /pdbtype:sept 
-\Projects\Aruspix\obj\NgramDebug\LMNGramBuilder.obj
-\Projects\Aruspix\obj\NgramDebug\LMNGramEntry.obj
-\Projects\Aruspix\obj\NgramDebug\NGram.obj
+"\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\obj\NgramDebug\LMNGramBuilder.obj"
+"\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\obj\NgramDebug\LMNGramEntry.obj"
+"\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\obj\NgramDebug\NGram.obj"
 ]
-Creating command line "link.exe @C:\DOCUME~1\ADMINI~1\LOCALS~1\Temp\RSP422.tmp"
+Creating command line "link.exe @C:\DOCUME~1\Tristan\LOCALS~1\Temp\RSP221.tmp"
 <h3>Output Window</h3>
 Compiling...
 LMNGramBuilder.cpp
+fatal error C1083: Cannot open source file: 'C:\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\src\torch\LMNGramBuilder.cpp': No such file or directory
 LMNGramEntry.cpp
+fatal error C1083: Cannot open source file: 'C:\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\src\torch\LMNGramEntry.cpp': No such file or directory
 NGram.cpp
-Linking...
-Creating command line "bscmake.exe /nologo /o"../obj/NgramDebug/Ngram.bsc"  \Projects\Aruspix\obj\NgramDebug\LMNGramBuilder.sbr \Projects\Aruspix\obj\NgramDebug\LMNGramEntry.sbr \Projects\Aruspix\obj\NgramDebug\NGram.sbr"
-Creating browse info file...
-<h3>Output Window</h3>
+Error executing cl.exe.
 
 
 
 <h3>Results</h3>
-NgramD.exe - 0 error(s), 0 warning(s)
+NgramD.exe - 2 error(s), 0 warning(s)
 </pre>
 </body>
 </html>

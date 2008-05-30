@@ -722,7 +722,7 @@ void SupEnv::OnEndPutPoints( wxCommandEvent &event )
 
 	int id = event.GetId();
     if (id == ID2_CONTROLLER1)
-    {
+    { 
 		m_supFilePtr->m_hasPoints1 = true;
 		m_supFilePtr->Modify();
 		m_supFilePtr->m_points1[0] = m_imControl1Ptr->m_points[1];
@@ -832,7 +832,7 @@ void SupEnv::OnExportImage( wxCommandEvent &event )
     //bitmap.SaveFile( filename, wxBITMAP_TYPE_BMP );
 */
 }
-
+ 
 
 void SupEnv::OnAdjust( wxCommandEvent &event )
 {

@@ -20,9 +20,9 @@
 #include "mus/muswindow.h"
 
 #ifdef AX_RECOGNITION
-//	#include "rec_wdr.h"
-	#include "recfile.h"
-	#include "recbookfile.h"
+//	#include "recognition/rec_wdr.h"
+	#include "recognition/recfile.h"
+	#include "recognition/recbookfile.h"
 #endif
 
 #define SAUVOLA_DESCRIPTION _("Uneven lighting")

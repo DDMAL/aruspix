@@ -976,22 +976,22 @@ bool MusMLFOutputNoPitch::WriteNote(  MusNote *note )
 		bool stem_up = false;
 		if ((note->sil != _SIL) && ((note->val ==  LG) || (note->val > RD )))
 		{
-			if ((note->q_auto == true) && (oct * 7 + code <= 33)) // G4 or lower
+			if ((bool)((note->q_auto) == true) && (oct * 7 + code <= 33)) // G4 or lower
 				stem_up = true;
-			else if ((note->q_auto == false) && (oct * 7 + code > 33)) // higher than G4
+			else if ((bool)((note->q_auto) == false) && (oct * 7 + code > 33)) // higher than G4
 				stem_up = true;
 		}	
 		if (stem_up)
 			flag += NOTE_STEM;
 		
 		// ligature
-		if ((note->ligat == true) && (note->sil != _SIL) && (note->val >  LG) && (note->val < BL ))
+		if ((bool)((note->ligat) == true) && (note->sil != _SIL) && (note->val >  LG) && (note->val < BL ))
 			flag += NOTE_LIGATURE;
 			
 		// coloration
-		if ((note->inv_val == true) && (note->sil != _SIL) && (note->val < BL ))
+		if ((bool)((note->inv_val) == true) && (note->sil != _SIL) && (note->val < BL ))
 			flag += NOTE_COLORATION;
-		else if ((note->oblique == true) && (note->sil != _SIL) && (note->val > NR ))
+		else if ((bool)((note->oblique) == true) && (note->sil != _SIL) && (note->val > NR ))
 			flag += NOTE_COLORATION;
 
 		//silence

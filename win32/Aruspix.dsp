@@ -43,17 +43,17 @@ RSC=rc.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W4 /O2 /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D WINVER=0x400 /YX /FD /c
-# ADD CPP /nologo /MD /W3 /GX /Od /I ".\..\src" /I "D:\libs\wx2.6.0\lib\vc_lib\msw" /I "D:\libs\im3.0\include" /I "D:\libs\tinyxml" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D WINVER=0x400 /D "_MT" /D wxUSE_GUI=1 /D "AX_RECOGNITION" /D "AX_WG" /D "AX_WGVIEWER" /D "AX_SUPERIMPOSITION" /D "AX_DISPLAY" /FR /YX /FD /c
+# ADD CPP /nologo /MDd /W3 /GX /Zi /Od /I ".\..\src\\" /I "$(WXWIN)\include" /I "$(WXWIN)\include\msvc" /I "$(WXWIN)\lib\vc_lib\mswd" /I "$(IMLIB)\include" /I "$(TINYXML)" /D "_DEBUG" /D "__WXDEBUG__" /D WXDEBUG=1 /D "__AXDEBUG__" /D "AX_DISPLAY" /D "WIN32" /D "_WINDOWS" /D WINVER=0x400 /D "_MT" /D wxUSE_GUI=1 /D "AX_RECOGNITION" /D "AX_WG" /D "AX_WGVIEWER" /D "AX_SUPERIMPOSITION" /FR"../obj/AruspixDebug/" /Fp"../obj/AruspixDebug/Aruspix.pch" /YX /Fo"../obj/AruspixDebug/" /Fd"../obj/AruspixDebug/" /FD /c
 # ADD BASE MTL /nologo /D "NDEBUG" /mktyplib203 /o "NUL" /win32
 # ADD MTL /nologo /D "NDEBUG" /mktyplib203 /o "NUL" /win32
 # ADD BASE RSC /l 0x409 /i "../include" /d "NDEBUG"
-# ADD RSC /l 0x409 /i "D:\libs\wx2.6.0\include" /d "NDEBUG"
+# ADD RSC /l 0x409 /d "NDEBUG"
 BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib comctl32.lib rpcrt4.lib wsock32.lib /nologo /subsystem:windows /machine:I386
-# ADD LINK32 wxmsw26_core.lib wxbase26.lib wxmsw26_html.lib wxtiff.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib comctl32.lib rpcrt4.lib wsock32.lib im.lib im_process.lib im_fftw.lib tinyxml.lib /nologo /subsystem:windows /machine:I386 /nodefaultlib:"libc.lib" /out:"../bin/Aruspix.exe" /libpath:"D:\libs\im3.0\lib\\" /libpath:"D:\libs\tinyxml\Release"
+# ADD LINK32 wxmsw$(WXWIN_VERSION)d_core.lib wxbase$(WXWIN_VERSION)d.lib wxmsw$(WXWIN_VERSION)d_html.lib wxpngd.lib wxzlibd.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib comctl32.lib rpcrt4.lib wsock32.lib im.lib im_process.lib im_fftw.lib tinyxmld.lib /nologo /subsystem:windows /machine:I386 /nodefaultlib:"libc.lib" /nodefaultlib:"libcd.lib" /out:"../bin/Release/Aruspix.exe" /libpath:"$(IMLIB)\lib" /libpath:"$(TINYXML)\Debug" /libpath:"$(WXWIN)\lib\vc_lib"
 
 !ELSEIF  "$(CFG)" == "Aruspix - Win32 Debug"
 
@@ -79,7 +79,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib comctl32.lib rpcrt4.lib wsock32.lib /nologo /subsystem:windows /debug /machine:I386 /pdbtype:sept
-# ADD LINK32 wxmsw28d_core.lib wxbase28d.lib wxmsw28d_html.lib wxpngd.lib wxzlibd.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib comctl32.lib rpcrt4.lib wsock32.lib im.lib im_process.lib im_fftw.lib tinyxmld.lib /nologo /subsystem:windows /pdb:none /debug /machine:I386 /nodefaultlib:"libc.lib" /nodefaultlib:"libcd.lib" /out:"../bin/Debug/AruspixD.exe" /libpath:"$(IMLIB)\lib" /libpath:"$(TINYXML)\Debug" /libpath:"$(WXWIN)\lib\vc_lib"
+# ADD LINK32 wxmsw$(WXWIN_VERSION)d_core.lib wxbase$(WXWIN_VERSION)d.lib wxmsw$(WXWIN_VERSION)d_html.lib wxpngd.lib wxzlibd.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib comctl32.lib rpcrt4.lib wsock32.lib im.lib im_process.lib im_fftw.lib tinyxmld.lib /nologo /subsystem:windows /pdb:none /debug /machine:I386 /nodefaultlib:"libc.lib" /nodefaultlib:"libcd.lib" /out:"../bin/Debug/Aruspix.exe" /libpath:"$(IMLIB)\lib" /libpath:"$(TINYXML)\Debug" /libpath:"$(WXWIN)\lib\vc_lib"
 # SUBTRACT LINK32 /nodefaultlib
 # Begin Special Build Tool
 SOURCE="$(InputPath)"
@@ -103,7 +103,7 @@ SOURCE=..\src\app\axabout_wdr.cpp
 !IF  "$(CFG)" == "Aruspix - Win32 Release"
 
 # ADD CPP /I "D:\libs\wx2.8.7\lib\vc_lib\msw" /D "AX_COMPARISON"
-# SUBTRACT CPP /I "D:\libs\wx2.6.0\lib\vc_lib\msw" /D "AX_WG" /D "AX_DISPLAY"
+# SUBTRACT CPP /D "AX_WG" /D "AX_DISPLAY"
 
 !ELSEIF  "$(CFG)" == "Aruspix - Win32 Debug"
 
@@ -120,7 +120,7 @@ SOURCE=..\src\app\axapp.cpp
 !IF  "$(CFG)" == "Aruspix - Win32 Release"
 
 # ADD CPP /I "D:\libs\wx2.8.7\lib\vc_lib\msw" /D "AX_COMPARISON"
-# SUBTRACT CPP /I "D:\libs\wx2.6.0\lib\vc_lib\msw" /D "AX_WG" /D "AX_DISPLAY"
+# SUBTRACT CPP /D "AX_WG" /D "AX_DISPLAY"
 
 !ELSEIF  "$(CFG)" == "Aruspix - Win32 Debug"
 
@@ -137,7 +137,7 @@ SOURCE=..\src\app\axapp_wdr.cpp
 !IF  "$(CFG)" == "Aruspix - Win32 Release"
 
 # ADD CPP /I "D:\libs\wx2.8.7\lib\vc_lib\msw" /D "AX_COMPARISON"
-# SUBTRACT CPP /I "D:\libs\wx2.6.0\lib\vc_lib\msw" /D "AX_WG" /D "AX_DISPLAY"
+# SUBTRACT CPP /D "AX_WG" /D "AX_DISPLAY"
 
 !ELSEIF  "$(CFG)" == "Aruspix - Win32 Debug"
 
@@ -154,7 +154,7 @@ SOURCE=..\src\app\axctrl.cpp
 !IF  "$(CFG)" == "Aruspix - Win32 Release"
 
 # ADD CPP /I "D:\libs\wx2.8.7\lib\vc_lib\msw" /D "AX_COMPARISON"
-# SUBTRACT CPP /I "D:\libs\wx2.6.0\lib\vc_lib\msw" /D "AX_WG" /D "AX_DISPLAY"
+# SUBTRACT CPP /D "AX_WG" /D "AX_DISPLAY"
 
 !ELSEIF  "$(CFG)" == "Aruspix - Win32 Debug"
 
@@ -171,7 +171,7 @@ SOURCE=..\src\app\axenv.cpp
 !IF  "$(CFG)" == "Aruspix - Win32 Release"
 
 # ADD CPP /I "D:\libs\wx2.8.7\lib\vc_lib\msw" /D "AX_COMPARISON"
-# SUBTRACT CPP /I "D:\libs\wx2.6.0\lib\vc_lib\msw" /D "AX_WG" /D "AX_DISPLAY"
+# SUBTRACT CPP /D "AX_WG" /D "AX_DISPLAY"
 
 !ELSEIF  "$(CFG)" == "Aruspix - Win32 Debug"
 
@@ -188,7 +188,7 @@ SOURCE=..\src\app\axfile.cpp
 !IF  "$(CFG)" == "Aruspix - Win32 Release"
 
 # ADD CPP /I "D:\libs\wx2.8.7\lib\vc_lib\msw" /D "AX_COMPARISON"
-# SUBTRACT CPP /I "D:\libs\wx2.6.0\lib\vc_lib\msw" /D "AX_WG" /D "AX_DISPLAY"
+# SUBTRACT CPP /D "AX_WG" /D "AX_DISPLAY"
 
 !ELSEIF  "$(CFG)" == "Aruspix - Win32 Debug"
 
@@ -205,7 +205,7 @@ SOURCE=..\src\app\axframe.cpp
 !IF  "$(CFG)" == "Aruspix - Win32 Release"
 
 # ADD CPP /I "D:\libs\wx2.8.7\lib\vc_lib\msw" /D "AX_COMPARISON"
-# SUBTRACT CPP /I "D:\libs\wx2.6.0\lib\vc_lib\msw" /D "AX_WG" /D "AX_DISPLAY"
+# SUBTRACT CPP /D "AX_WG" /D "AX_DISPLAY"
 
 !ELSEIF  "$(CFG)" == "Aruspix - Win32 Debug"
 
@@ -222,7 +222,7 @@ SOURCE=..\src\app\axgotodlg.cpp
 !IF  "$(CFG)" == "Aruspix - Win32 Release"
 
 # ADD CPP /I "D:\libs\wx2.8.7\lib\vc_lib\msw" /D "AX_COMPARISON"
-# SUBTRACT CPP /I "D:\libs\wx2.6.0\lib\vc_lib\msw" /D "AX_WG" /D "AX_DISPLAY"
+# SUBTRACT CPP /D "AX_WG" /D "AX_DISPLAY"
 
 !ELSEIF  "$(CFG)" == "Aruspix - Win32 Debug"
 
@@ -239,7 +239,7 @@ SOURCE=..\src\app\aximage.cpp
 !IF  "$(CFG)" == "Aruspix - Win32 Release"
 
 # ADD CPP /I "D:\libs\wx2.8.7\lib\vc_lib\msw" /D "AX_COMPARISON"
-# SUBTRACT CPP /I "D:\libs\wx2.6.0\lib\vc_lib\msw" /D "AX_WG" /D "AX_DISPLAY"
+# SUBTRACT CPP /D "AX_WG" /D "AX_DISPLAY"
 
 !ELSEIF  "$(CFG)" == "Aruspix - Win32 Debug"
 
@@ -256,7 +256,7 @@ SOURCE=..\src\app\aximagecontroller.cpp
 !IF  "$(CFG)" == "Aruspix - Win32 Release"
 
 # ADD CPP /I "D:\libs\wx2.8.7\lib\vc_lib\msw" /D "AX_COMPARISON"
-# SUBTRACT CPP /I "D:\libs\wx2.6.0\lib\vc_lib\msw" /D "AX_WG" /D "AX_DISPLAY"
+# SUBTRACT CPP /D "AX_WG" /D "AX_DISPLAY"
 
 !ELSEIF  "$(CFG)" == "Aruspix - Win32 Debug"
 
@@ -273,7 +273,7 @@ SOURCE=..\src\app\aximcontrol_wdr.cpp
 !IF  "$(CFG)" == "Aruspix - Win32 Release"
 
 # ADD CPP /I "D:\libs\wx2.8.7\lib\vc_lib\msw" /D "AX_COMPARISON"
-# SUBTRACT CPP /I "D:\libs\wx2.6.0\lib\vc_lib\msw" /D "AX_WG" /D "AX_DISPLAY"
+# SUBTRACT CPP /D "AX_WG" /D "AX_DISPLAY"
 
 !ELSEIF  "$(CFG)" == "Aruspix - Win32 Debug"
 
@@ -290,7 +290,7 @@ SOURCE=..\src\app\axoptions_wdr.cpp
 !IF  "$(CFG)" == "Aruspix - Win32 Release"
 
 # ADD CPP /I "D:\libs\wx2.8.7\lib\vc_lib\msw" /D "AX_COMPARISON"
-# SUBTRACT CPP /I "D:\libs\wx2.6.0\lib\vc_lib\msw" /D "AX_WG" /D "AX_DISPLAY"
+# SUBTRACT CPP /D "AX_WG" /D "AX_DISPLAY"
 
 !ELSEIF  "$(CFG)" == "Aruspix - Win32 Debug"
 
@@ -307,7 +307,7 @@ SOURCE=..\src\app\axoptionsdlg.cpp
 !IF  "$(CFG)" == "Aruspix - Win32 Release"
 
 # ADD CPP /I "D:\libs\wx2.8.7\lib\vc_lib\msw" /D "AX_COMPARISON"
-# SUBTRACT CPP /I "D:\libs\wx2.6.0\lib\vc_lib\msw" /D "AX_WG" /D "AX_DISPLAY"
+# SUBTRACT CPP /D "AX_WG" /D "AX_DISPLAY"
 
 !ELSEIF  "$(CFG)" == "Aruspix - Win32 Debug"
 
@@ -324,7 +324,7 @@ SOURCE=..\src\app\axprocess.cpp
 !IF  "$(CFG)" == "Aruspix - Win32 Release"
 
 # ADD CPP /I "D:\libs\wx2.8.7\lib\vc_lib\msw" /D "AX_COMPARISON"
-# SUBTRACT CPP /I "D:\libs\wx2.6.0\lib\vc_lib\msw" /D "AX_WG" /D "AX_DISPLAY"
+# SUBTRACT CPP /D "AX_WG" /D "AX_DISPLAY"
 
 !ELSEIF  "$(CFG)" == "Aruspix - Win32 Debug"
 
@@ -341,7 +341,7 @@ SOURCE=..\src\app\axprogressdlg.cpp
 !IF  "$(CFG)" == "Aruspix - Win32 Release"
 
 # ADD CPP /I "D:\libs\wx2.8.7\lib\vc_lib\msw" /D "AX_COMPARISON"
-# SUBTRACT CPP /I "D:\libs\wx2.6.0\lib\vc_lib\msw" /D "AX_WG" /D "AX_DISPLAY"
+# SUBTRACT CPP /D "AX_WG" /D "AX_DISPLAY"
 
 !ELSEIF  "$(CFG)" == "Aruspix - Win32 Debug"
 
@@ -358,7 +358,7 @@ SOURCE=..\src\app\axscrolledwindow.cpp
 !IF  "$(CFG)" == "Aruspix - Win32 Release"
 
 # ADD CPP /I "D:\libs\wx2.8.7\lib\vc_lib\msw" /D "AX_COMPARISON"
-# SUBTRACT CPP /I "D:\libs\wx2.6.0\lib\vc_lib\msw" /D "AX_WG" /D "AX_DISPLAY"
+# SUBTRACT CPP /D "AX_WG" /D "AX_DISPLAY"
 
 !ELSEIF  "$(CFG)" == "Aruspix - Win32 Debug"
 
@@ -375,7 +375,7 @@ SOURCE=..\src\app\axundo.cpp
 !IF  "$(CFG)" == "Aruspix - Win32 Release"
 
 # ADD CPP /I "D:\libs\wx2.8.7\lib\vc_lib\msw" /D "AX_COMPARISON"
-# SUBTRACT CPP /I "D:\libs\wx2.6.0\lib\vc_lib\msw" /D "AX_WG" /D "AX_DISPLAY"
+# SUBTRACT CPP /D "AX_WG" /D "AX_DISPLAY"
 
 !ELSEIF  "$(CFG)" == "Aruspix - Win32 Debug"
 
@@ -392,7 +392,7 @@ SOURCE=..\src\comparison\cmp.cpp
 !IF  "$(CFG)" == "Aruspix - Win32 Release"
 
 # ADD CPP /I "D:\libs\wx2.8.7\lib\vc_lib\msw" /D "AX_COMPARISON"
-# SUBTRACT CPP /I "D:\libs\wx2.6.0\lib\vc_lib\msw" /D "AX_WG" /D "AX_DISPLAY"
+# SUBTRACT CPP /D "AX_WG" /D "AX_DISPLAY"
 
 !ELSEIF  "$(CFG)" == "Aruspix - Win32 Debug"
 
@@ -409,7 +409,7 @@ SOURCE=..\src\comparison\cmp_wdr.cpp
 !IF  "$(CFG)" == "Aruspix - Win32 Release"
 
 # ADD CPP /I "D:\libs\wx2.8.7\lib\vc_lib\msw" /D "AX_COMPARISON"
-# SUBTRACT CPP /I "D:\libs\wx2.6.0\lib\vc_lib\msw" /D "AX_WG" /D "AX_DISPLAY"
+# SUBTRACT CPP /D "AX_WG" /D "AX_DISPLAY"
 
 !ELSEIF  "$(CFG)" == "Aruspix - Win32 Debug"
 
@@ -426,7 +426,7 @@ SOURCE=..\src\comparison\cmpctrl.cpp
 !IF  "$(CFG)" == "Aruspix - Win32 Release"
 
 # ADD CPP /I "D:\libs\wx2.8.7\lib\vc_lib\msw" /D "AX_COMPARISON"
-# SUBTRACT CPP /I "D:\libs\wx2.6.0\lib\vc_lib\msw" /D "AX_WG" /D "AX_DISPLAY"
+# SUBTRACT CPP /D "AX_WG" /D "AX_DISPLAY"
 
 !ELSEIF  "$(CFG)" == "Aruspix - Win32 Debug"
 
@@ -443,7 +443,7 @@ SOURCE=..\src\comparison\cmpfile.cpp
 !IF  "$(CFG)" == "Aruspix - Win32 Release"
 
 # ADD CPP /I "D:\libs\wx2.8.7\lib\vc_lib\msw" /D "AX_COMPARISON"
-# SUBTRACT CPP /I "D:\libs\wx2.6.0\lib\vc_lib\msw" /D "AX_WG" /D "AX_DISPLAY"
+# SUBTRACT CPP /D "AX_WG" /D "AX_DISPLAY"
 
 !ELSEIF  "$(CFG)" == "Aruspix - Win32 Debug"
 
@@ -460,7 +460,7 @@ SOURCE=..\src\comparison\cmpim.cpp
 !IF  "$(CFG)" == "Aruspix - Win32 Release"
 
 # ADD CPP /I "D:\libs\wx2.8.7\lib\vc_lib\msw" /D "AX_COMPARISON"
-# SUBTRACT CPP /I "D:\libs\wx2.6.0\lib\vc_lib\msw" /D "AX_WG" /D "AX_DISPLAY"
+# SUBTRACT CPP /D "AX_WG" /D "AX_DISPLAY"
 
 !ELSEIF  "$(CFG)" == "Aruspix - Win32 Debug"
 
@@ -477,7 +477,7 @@ SOURCE=..\src\comparison\cmpmlf.cpp
 !IF  "$(CFG)" == "Aruspix - Win32 Release"
 
 # ADD CPP /I "D:\libs\wx2.8.7\lib\vc_lib\msw" /D "AX_COMPARISON"
-# SUBTRACT CPP /I "D:\libs\wx2.6.0\lib\vc_lib\msw" /D "AX_WG" /D "AX_DISPLAY"
+# SUBTRACT CPP /D "AX_WG" /D "AX_DISPLAY"
 
 !ELSEIF  "$(CFG)" == "Aruspix - Win32 Debug"
 
@@ -494,7 +494,7 @@ SOURCE=..\src\comparison\cmpmus.cpp
 !IF  "$(CFG)" == "Aruspix - Win32 Release"
 
 # ADD CPP /I "D:\libs\wx2.8.7\lib\vc_lib\msw" /D "AX_COMPARISON"
-# SUBTRACT CPP /I "D:\libs\wx2.6.0\lib\vc_lib\msw" /D "AX_WG" /D "AX_DISPLAY"
+# SUBTRACT CPP /D "AX_WG" /D "AX_DISPLAY"
 
 !ELSEIF  "$(CFG)" == "Aruspix - Win32 Debug"
 
@@ -511,7 +511,7 @@ SOURCE=..\src\im\imbrink.cpp
 !IF  "$(CFG)" == "Aruspix - Win32 Release"
 
 # ADD CPP /I "D:\libs\wx2.8.7\lib\vc_lib\msw" /D "AX_COMPARISON"
-# SUBTRACT CPP /I "D:\libs\wx2.6.0\lib\vc_lib\msw" /D "AX_WG" /D "AX_DISPLAY"
+# SUBTRACT CPP /D "AX_WG" /D "AX_DISPLAY"
 
 !ELSEIF  "$(CFG)" == "Aruspix - Win32 Debug"
 
@@ -523,12 +523,16 @@ SOURCE=..\src\im\imbrink.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\src\im\imbrink3classes.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\src\im\imext.cpp
 
 !IF  "$(CFG)" == "Aruspix - Win32 Release"
 
 # ADD CPP /I "D:\libs\wx2.8.7\lib\vc_lib\msw" /D "AX_COMPARISON"
-# SUBTRACT CPP /I "D:\libs\wx2.6.0\lib\vc_lib\msw" /D "AX_WG" /D "AX_DISPLAY"
+# SUBTRACT CPP /D "AX_WG" /D "AX_DISPLAY"
 
 !ELSEIF  "$(CFG)" == "Aruspix - Win32 Debug"
 
@@ -549,7 +553,7 @@ SOURCE=..\src\im\imoperator.cpp
 !IF  "$(CFG)" == "Aruspix - Win32 Release"
 
 # ADD CPP /I "D:\libs\wx2.8.7\lib\vc_lib\msw" /D "AX_COMPARISON"
-# SUBTRACT CPP /I "D:\libs\wx2.6.0\lib\vc_lib\msw" /D "AX_WG" /D "AX_DISPLAY"
+# SUBTRACT CPP /D "AX_WG" /D "AX_DISPLAY"
 
 !ELSEIF  "$(CFG)" == "Aruspix - Win32 Debug"
 
@@ -566,7 +570,7 @@ SOURCE=..\src\im\impage.cpp
 !IF  "$(CFG)" == "Aruspix - Win32 Release"
 
 # ADD CPP /I "D:\libs\wx2.8.7\lib\vc_lib\msw" /D "AX_COMPARISON"
-# SUBTRACT CPP /I "D:\libs\wx2.6.0\lib\vc_lib\msw" /D "AX_WG" /D "AX_DISPLAY"
+# SUBTRACT CPP /D "AX_WG" /D "AX_DISPLAY"
 
 !ELSEIF  "$(CFG)" == "Aruspix - Win32 Debug"
 
@@ -578,12 +582,16 @@ SOURCE=..\src\im\impage.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\src\im\imregister.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\src\im\imstaff.cpp
 
 !IF  "$(CFG)" == "Aruspix - Win32 Release"
 
 # ADD CPP /I "D:\libs\wx2.8.7\lib\vc_lib\msw" /D "AX_COMPARISON"
-# SUBTRACT CPP /I "D:\libs\wx2.6.0\lib\vc_lib\msw" /D "AX_WG" /D "AX_DISPLAY"
+# SUBTRACT CPP /D "AX_WG" /D "AX_DISPLAY"
 
 !ELSEIF  "$(CFG)" == "Aruspix - Win32 Debug"
 
@@ -600,7 +608,7 @@ SOURCE=..\src\im\imstaffsegment.cpp
 !IF  "$(CFG)" == "Aruspix - Win32 Release"
 
 # ADD CPP /I "D:\libs\wx2.8.7\lib\vc_lib\msw" /D "AX_COMPARISON"
-# SUBTRACT CPP /I "D:\libs\wx2.6.0\lib\vc_lib\msw" /D "AX_WG" /D "AX_DISPLAY"
+# SUBTRACT CPP /D "AX_WG" /D "AX_DISPLAY"
 
 !ELSEIF  "$(CFG)" == "Aruspix - Win32 Debug"
 
@@ -617,7 +625,7 @@ SOURCE=..\src\mus\mus.cpp
 !IF  "$(CFG)" == "Aruspix - Win32 Release"
 
 # ADD CPP /I "D:\libs\wx2.8.7\lib\vc_lib\msw" /D "AX_COMPARISON"
-# SUBTRACT CPP /I "D:\libs\wx2.6.0\lib\vc_lib\msw" /D "AX_WG" /D "AX_DISPLAY"
+# SUBTRACT CPP /D "AX_WG" /D "AX_DISPLAY"
 
 !ELSEIF  "$(CFG)" == "Aruspix - Win32 Debug"
 
@@ -634,7 +642,7 @@ SOURCE=..\src\mus\mus_wdr.cpp
 !IF  "$(CFG)" == "Aruspix - Win32 Release"
 
 # ADD CPP /I "D:\libs\wx2.8.7\lib\vc_lib\msw" /D "AX_COMPARISON"
-# SUBTRACT CPP /I "D:\libs\wx2.6.0\lib\vc_lib\msw" /D "AX_WG" /D "AX_DISPLAY"
+# SUBTRACT CPP /D "AX_WG" /D "AX_DISPLAY"
 
 !ELSEIF  "$(CFG)" == "Aruspix - Win32 Debug"
 
@@ -651,7 +659,7 @@ SOURCE=..\src\mus\musbarlines.cpp
 !IF  "$(CFG)" == "Aruspix - Win32 Release"
 
 # ADD CPP /I "D:\libs\wx2.8.7\lib\vc_lib\msw" /D "AX_COMPARISON"
-# SUBTRACT CPP /I "D:\libs\wx2.6.0\lib\vc_lib\msw" /D "AX_WG" /D "AX_DISPLAY"
+# SUBTRACT CPP /D "AX_WG" /D "AX_DISPLAY"
 
 !ELSEIF  "$(CFG)" == "Aruspix - Win32 Debug"
 
@@ -668,7 +676,7 @@ SOURCE=..\src\mus\musbezier.cpp
 !IF  "$(CFG)" == "Aruspix - Win32 Release"
 
 # ADD CPP /I "D:\libs\wx2.8.7\lib\vc_lib\msw" /D "AX_COMPARISON"
-# SUBTRACT CPP /I "D:\libs\wx2.6.0\lib\vc_lib\msw" /D "AX_WG" /D "AX_DISPLAY"
+# SUBTRACT CPP /D "AX_WG" /D "AX_DISPLAY"
 
 !ELSEIF  "$(CFG)" == "Aruspix - Win32 Debug"
 
@@ -685,7 +693,7 @@ SOURCE=..\src\mus\musclef.cpp
 !IF  "$(CFG)" == "Aruspix - Win32 Release"
 
 # ADD CPP /I "D:\libs\wx2.8.7\lib\vc_lib\msw" /D "AX_COMPARISON"
-# SUBTRACT CPP /I "D:\libs\wx2.6.0\lib\vc_lib\msw" /D "AX_WG" /D "AX_DISPLAY"
+# SUBTRACT CPP /D "AX_WG" /D "AX_DISPLAY"
 
 !ELSEIF  "$(CFG)" == "Aruspix - Win32 Debug"
 
@@ -702,7 +710,7 @@ SOURCE=..\src\mus\muselement.cpp
 !IF  "$(CFG)" == "Aruspix - Win32 Release"
 
 # ADD CPP /I "D:\libs\wx2.8.7\lib\vc_lib\msw" /D "AX_COMPARISON"
-# SUBTRACT CPP /I "D:\libs\wx2.6.0\lib\vc_lib\msw" /D "AX_WG" /D "AX_DISPLAY"
+# SUBTRACT CPP /D "AX_WG" /D "AX_DISPLAY"
 
 !ELSEIF  "$(CFG)" == "Aruspix - Win32 Debug"
 
@@ -719,7 +727,7 @@ SOURCE=..\src\mus\musfile.cpp
 !IF  "$(CFG)" == "Aruspix - Win32 Release"
 
 # ADD CPP /I "D:\libs\wx2.8.7\lib\vc_lib\msw" /D "AX_COMPARISON"
-# SUBTRACT CPP /I "D:\libs\wx2.6.0\lib\vc_lib\msw" /D "AX_WG" /D "AX_DISPLAY"
+# SUBTRACT CPP /D "AX_WG" /D "AX_DISPLAY"
 
 !ELSEIF  "$(CFG)" == "Aruspix - Win32 Debug"
 
@@ -736,7 +744,7 @@ SOURCE=..\src\mus\musgraph.cpp
 !IF  "$(CFG)" == "Aruspix - Win32 Release"
 
 # ADD CPP /I "D:\libs\wx2.8.7\lib\vc_lib\msw" /D "AX_COMPARISON"
-# SUBTRACT CPP /I "D:\libs\wx2.6.0\lib\vc_lib\msw" /D "AX_WG" /D "AX_DISPLAY"
+# SUBTRACT CPP /D "AX_WG" /D "AX_DISPLAY"
 
 !ELSEIF  "$(CFG)" == "Aruspix - Win32 Debug"
 
@@ -753,7 +761,7 @@ SOURCE=..\src\mus\musiomlf.cpp
 !IF  "$(CFG)" == "Aruspix - Win32 Release"
 
 # ADD CPP /I "D:\libs\wx2.8.7\lib\vc_lib\msw" /D "AX_COMPARISON"
-# SUBTRACT CPP /I "D:\libs\wx2.6.0\lib\vc_lib\msw" /D "AX_WG" /D "AX_DISPLAY"
+# SUBTRACT CPP /D "AX_WG" /D "AX_DISPLAY"
 
 !ELSEIF  "$(CFG)" == "Aruspix - Win32 Debug"
 
@@ -770,7 +778,7 @@ SOURCE=..\src\mus\musiowwg.cpp
 !IF  "$(CFG)" == "Aruspix - Win32 Release"
 
 # ADD CPP /I "D:\libs\wx2.8.7\lib\vc_lib\msw" /D "AX_COMPARISON"
-# SUBTRACT CPP /I "D:\libs\wx2.6.0\lib\vc_lib\msw" /D "AX_WG" /D "AX_DISPLAY"
+# SUBTRACT CPP /D "AX_WG" /D "AX_DISPLAY"
 
 !ELSEIF  "$(CFG)" == "Aruspix - Win32 Debug"
 
@@ -782,12 +790,16 @@ SOURCE=..\src\mus\musiowwg.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\src\mus\musmlfdic.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\src\mus\musnote.cpp
 
 !IF  "$(CFG)" == "Aruspix - Win32 Release"
 
 # ADD CPP /I "D:\libs\wx2.8.7\lib\vc_lib\msw" /D "AX_COMPARISON"
-# SUBTRACT CPP /I "D:\libs\wx2.6.0\lib\vc_lib\msw" /D "AX_WG" /D "AX_DISPLAY"
+# SUBTRACT CPP /D "AX_WG" /D "AX_DISPLAY"
 
 !ELSEIF  "$(CFG)" == "Aruspix - Win32 Debug"
 
@@ -804,7 +816,7 @@ SOURCE=..\src\mus\musobject.cpp
 !IF  "$(CFG)" == "Aruspix - Win32 Release"
 
 # ADD CPP /I "D:\libs\wx2.8.7\lib\vc_lib\msw" /D "AX_COMPARISON"
-# SUBTRACT CPP /I "D:\libs\wx2.6.0\lib\vc_lib\msw" /D "AX_WG" /D "AX_DISPLAY"
+# SUBTRACT CPP /D "AX_WG" /D "AX_DISPLAY"
 
 !ELSEIF  "$(CFG)" == "Aruspix - Win32 Debug"
 
@@ -821,7 +833,7 @@ SOURCE=..\src\mus\muspage.cpp
 !IF  "$(CFG)" == "Aruspix - Win32 Release"
 
 # ADD CPP /I "D:\libs\wx2.8.7\lib\vc_lib\msw" /D "AX_COMPARISON"
-# SUBTRACT CPP /I "D:\libs\wx2.6.0\lib\vc_lib\msw" /D "AX_WG" /D "AX_DISPLAY"
+# SUBTRACT CPP /D "AX_WG" /D "AX_DISPLAY"
 
 !ELSEIF  "$(CFG)" == "Aruspix - Win32 Debug"
 
@@ -838,7 +850,7 @@ SOURCE=..\src\mus\musstaff.cpp
 !IF  "$(CFG)" == "Aruspix - Win32 Release"
 
 # ADD CPP /I "D:\libs\wx2.8.7\lib\vc_lib\msw" /D "AX_COMPARISON"
-# SUBTRACT CPP /I "D:\libs\wx2.6.0\lib\vc_lib\msw" /D "AX_WG" /D "AX_DISPLAY"
+# SUBTRACT CPP /D "AX_WG" /D "AX_DISPLAY"
 
 !ELSEIF  "$(CFG)" == "Aruspix - Win32 Debug"
 
@@ -855,7 +867,7 @@ SOURCE=..\src\mus\mussymbol.cpp
 !IF  "$(CFG)" == "Aruspix - Win32 Release"
 
 # ADD CPP /I "D:\libs\wx2.8.7\lib\vc_lib\msw" /D "AX_COMPARISON"
-# SUBTRACT CPP /I "D:\libs\wx2.6.0\lib\vc_lib\msw" /D "AX_WG" /D "AX_DISPLAY"
+# SUBTRACT CPP /D "AX_WG" /D "AX_DISPLAY"
 
 !ELSEIF  "$(CFG)" == "Aruspix - Win32 Debug"
 
@@ -872,7 +884,7 @@ SOURCE=..\src\mus\mustoolpanel.cpp
 !IF  "$(CFG)" == "Aruspix - Win32 Release"
 
 # ADD CPP /I "D:\libs\wx2.8.7\lib\vc_lib\msw" /D "AX_COMPARISON"
-# SUBTRACT CPP /I "D:\libs\wx2.6.0\lib\vc_lib\msw" /D "AX_WG" /D "AX_DISPLAY"
+# SUBTRACT CPP /D "AX_WG" /D "AX_DISPLAY"
 
 !ELSEIF  "$(CFG)" == "Aruspix - Win32 Debug"
 
@@ -889,7 +901,7 @@ SOURCE=..\src\mus\muswindow.cpp
 !IF  "$(CFG)" == "Aruspix - Win32 Release"
 
 # ADD CPP /I "D:\libs\wx2.8.7\lib\vc_lib\msw" /D "AX_COMPARISON"
-# SUBTRACT CPP /I "D:\libs\wx2.6.0\lib\vc_lib\msw" /D "AX_WG" /D "AX_DISPLAY"
+# SUBTRACT CPP /D "AX_WG" /D "AX_DISPLAY"
 
 !ELSEIF  "$(CFG)" == "Aruspix - Win32 Debug"
 
@@ -906,7 +918,7 @@ SOURCE=..\src\recognition\rec.cpp
 !IF  "$(CFG)" == "Aruspix - Win32 Release"
 
 # ADD CPP /I "D:\libs\wx2.8.7\lib\vc_lib\msw" /D "AX_COMPARISON"
-# SUBTRACT CPP /I "D:\libs\wx2.6.0\lib\vc_lib\msw" /D "AX_WG" /D "AX_DISPLAY"
+# SUBTRACT CPP /D "AX_WG" /D "AX_DISPLAY"
 
 !ELSEIF  "$(CFG)" == "Aruspix - Win32 Debug"
 
@@ -923,7 +935,7 @@ SOURCE=..\src\recognition\rec_wdr.cpp
 !IF  "$(CFG)" == "Aruspix - Win32 Release"
 
 # ADD CPP /I "D:\libs\wx2.8.7\lib\vc_lib\msw" /D "AX_COMPARISON"
-# SUBTRACT CPP /I "D:\libs\wx2.6.0\lib\vc_lib\msw" /D "AX_WG" /D "AX_DISPLAY"
+# SUBTRACT CPP /D "AX_WG" /D "AX_DISPLAY"
 
 !ELSEIF  "$(CFG)" == "Aruspix - Win32 Debug"
 
@@ -940,7 +952,7 @@ SOURCE=..\src\recognition\recbookctrl.cpp
 !IF  "$(CFG)" == "Aruspix - Win32 Release"
 
 # ADD CPP /I "D:\libs\wx2.8.7\lib\vc_lib\msw" /D "AX_COMPARISON"
-# SUBTRACT CPP /I "D:\libs\wx2.6.0\lib\vc_lib\msw" /D "AX_WG" /D "AX_DISPLAY"
+# SUBTRACT CPP /D "AX_WG" /D "AX_DISPLAY"
 
 !ELSEIF  "$(CFG)" == "Aruspix - Win32 Debug"
 
@@ -957,7 +969,7 @@ SOURCE=..\src\recognition\recbookfile.cpp
 !IF  "$(CFG)" == "Aruspix - Win32 Release"
 
 # ADD CPP /I "D:\libs\wx2.8.7\lib\vc_lib\msw" /D "AX_COMPARISON"
-# SUBTRACT CPP /I "D:\libs\wx2.6.0\lib\vc_lib\msw" /D "AX_WG" /D "AX_DISPLAY"
+# SUBTRACT CPP /D "AX_WG" /D "AX_DISPLAY"
 
 !ELSEIF  "$(CFG)" == "Aruspix - Win32 Debug"
 
@@ -974,7 +986,7 @@ SOURCE=..\src\recognition\recfile.cpp
 !IF  "$(CFG)" == "Aruspix - Win32 Release"
 
 # ADD CPP /I "D:\libs\wx2.8.7\lib\vc_lib\msw" /D "AX_COMPARISON"
-# SUBTRACT CPP /I "D:\libs\wx2.6.0\lib\vc_lib\msw" /D "AX_WG" /D "AX_DISPLAY"
+# SUBTRACT CPP /D "AX_WG" /D "AX_DISPLAY"
 
 !ELSEIF  "$(CFG)" == "Aruspix - Win32 Debug"
 
@@ -991,7 +1003,7 @@ SOURCE=..\src\recognition\recim.cpp
 !IF  "$(CFG)" == "Aruspix - Win32 Release"
 
 # ADD CPP /I "D:\libs\wx2.8.7\lib\vc_lib\msw" /D "AX_COMPARISON"
-# SUBTRACT CPP /I "D:\libs\wx2.6.0\lib\vc_lib\msw" /D "AX_WG" /D "AX_DISPLAY"
+# SUBTRACT CPP /D "AX_WG" /D "AX_DISPLAY"
 
 !ELSEIF  "$(CFG)" == "Aruspix - Win32 Debug"
 
@@ -1008,7 +1020,7 @@ SOURCE=..\src\recognition\recmlfbmp.cpp
 !IF  "$(CFG)" == "Aruspix - Win32 Release"
 
 # ADD CPP /I "D:\libs\wx2.8.7\lib\vc_lib\msw" /D "AX_COMPARISON"
-# SUBTRACT CPP /I "D:\libs\wx2.6.0\lib\vc_lib\msw" /D "AX_WG" /D "AX_DISPLAY"
+# SUBTRACT CPP /D "AX_WG" /D "AX_DISPLAY"
 
 !ELSEIF  "$(CFG)" == "Aruspix - Win32 Debug"
 
@@ -1025,7 +1037,7 @@ SOURCE=..\src\recognition\recmodels.cpp
 !IF  "$(CFG)" == "Aruspix - Win32 Release"
 
 # ADD CPP /I "D:\libs\wx2.8.7\lib\vc_lib\msw" /D "AX_COMPARISON"
-# SUBTRACT CPP /I "D:\libs\wx2.6.0\lib\vc_lib\msw" /D "AX_WG" /D "AX_DISPLAY"
+# SUBTRACT CPP /D "AX_WG" /D "AX_DISPLAY"
 
 !ELSEIF  "$(CFG)" == "Aruspix - Win32 Debug"
 
@@ -1042,7 +1054,7 @@ SOURCE=..\src\recognition\recmus.cpp
 !IF  "$(CFG)" == "Aruspix - Win32 Release"
 
 # ADD CPP /I "D:\libs\wx2.8.7\lib\vc_lib\msw" /D "AX_COMPARISON"
-# SUBTRACT CPP /I "D:\libs\wx2.6.0\lib\vc_lib\msw" /D "AX_WG" /D "AX_DISPLAY"
+# SUBTRACT CPP /D "AX_WG" /D "AX_DISPLAY"
 
 !ELSEIF  "$(CFG)" == "Aruspix - Win32 Debug"
 
@@ -1059,7 +1071,7 @@ SOURCE=..\src\superimposition\sup.cpp
 !IF  "$(CFG)" == "Aruspix - Win32 Release"
 
 # ADD CPP /I "D:\libs\wx2.8.7\lib\vc_lib\msw" /D "AX_COMPARISON"
-# SUBTRACT CPP /I "D:\libs\wx2.6.0\lib\vc_lib\msw" /D "AX_WG" /D "AX_DISPLAY"
+# SUBTRACT CPP /D "AX_WG" /D "AX_DISPLAY"
 
 !ELSEIF  "$(CFG)" == "Aruspix - Win32 Debug"
 
@@ -1076,7 +1088,7 @@ SOURCE=..\src\superimposition\sup_wdr.cpp
 !IF  "$(CFG)" == "Aruspix - Win32 Release"
 
 # ADD CPP /I "D:\libs\wx2.8.7\lib\vc_lib\msw" /D "AX_COMPARISON"
-# SUBTRACT CPP /I "D:\libs\wx2.6.0\lib\vc_lib\msw" /D "AX_WG" /D "AX_DISPLAY"
+# SUBTRACT CPP /D "AX_WG" /D "AX_DISPLAY"
 
 !ELSEIF  "$(CFG)" == "Aruspix - Win32 Debug"
 
@@ -1088,12 +1100,28 @@ SOURCE=..\src\superimposition\sup_wdr.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\src\superimposition\supbookctrl.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\superimposition\supbookfile.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\superimposition\supfile.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\superimposition\supim.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\src\wgviewer\wgviewer.cpp
 
 !IF  "$(CFG)" == "Aruspix - Win32 Release"
 
 # ADD CPP /I "D:\libs\wx2.8.7\lib\vc_lib\msw" /D "AX_COMPARISON"
-# SUBTRACT CPP /I "D:\libs\wx2.6.0\lib\vc_lib\msw" /D "AX_WG" /D "AX_DISPLAY"
+# SUBTRACT CPP /D "AX_WG" /D "AX_DISPLAY"
 
 !ELSEIF  "$(CFG)" == "Aruspix - Win32 Debug"
 
@@ -1110,7 +1138,7 @@ SOURCE=..\src\wgviewer\wgviewer_wdr.cpp
 !IF  "$(CFG)" == "Aruspix - Win32 Release"
 
 # ADD CPP /I "D:\libs\wx2.8.7\lib\vc_lib\msw" /D "AX_COMPARISON"
-# SUBTRACT CPP /I "D:\libs\wx2.6.0\lib\vc_lib\msw" /D "AX_WG" /D "AX_DISPLAY"
+# SUBTRACT CPP /D "AX_WG" /D "AX_DISPLAY"
 
 !ELSEIF  "$(CFG)" == "Aruspix - Win32 Debug"
 
@@ -1360,6 +1388,10 @@ SOURCE=..\src\wgviewer\wgviewer_wdr.h
 # Begin Source File
 
 SOURCE=.\..\app\res\ax.ico
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\app\res\ax.ico
 # End Source File
 # Begin Source File
 
