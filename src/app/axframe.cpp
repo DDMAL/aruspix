@@ -324,7 +324,7 @@ void AxFrame::LoadConfig()
 	ImPage::s_pre_page_binarization_select = ( pConfig->Read( "Binarization selector dialogue", 0L ) == 1 );
 
 #if defined(__WXMSW__)
-	wxString default_workingDir = wxStandardPaths::Get().GetUserDataDir();		
+	wxString default_workingDir = wxStandardPaths::Get().GetTempDir();		
 	wxString default_docDir = wxStandardPaths::Get().GetDocumentsDir();
 	wxString default_images = default_docDir + "/Images";
 	wxString default_pages = default_docDir + "/Pages";

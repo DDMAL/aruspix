@@ -700,7 +700,7 @@ bool RecMusModel::Train( wxArrayPtrVoid params, AxProgressDlg *dlg )
 
 #ifdef __WXMSW__
 	#if defined(_DEBUG)
-		wxString cmd = "NgramD.exe";
+		wxString cmd = "Ngram.exe";
 	#else
 		wxString cmd = "Ngram.exe";
 	#endif   
@@ -795,7 +795,7 @@ bool RecMusModel::Adapt( wxArrayPtrVoid params, AxProgressDlg *dlg )
 
 #ifdef __WXMSW__
 	#if defined(_DEBUG)
-		wxString cmd = "NgramD.exe";
+		wxString cmd = "Ngram.exe";
 	#else
 		wxString cmd = "Ngram.exe";
 	#endif   

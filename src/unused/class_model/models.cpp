@@ -375,7 +375,7 @@ bool RecTypModel::Adapt( wxArrayPtrVoid params, ProgressDlg *dlg )
 
 #ifdef __WXMSW__
 	#if defined(_DEBUG)
-		wxString cmd = "AdaptD.exe";
+		wxString cmd = "Adapt.exe";
 	#else
 		wxString cmd = "Adapt.exe";
 	#endif   
@@ -383,7 +383,7 @@ bool RecTypModel::Adapt( wxArrayPtrVoid params, ProgressDlg *dlg )
 	#if defined(__DEBUG__)
 		wxString cmd = "adaptd";
 	#else
-		wxString cmd = "adapt";
+		wxString cmd = "adapt"; 
 	#endif   
 #elif __WXMAC__
 	#ifdef __AXDEBUG__

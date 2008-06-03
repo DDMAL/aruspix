@@ -107,6 +107,7 @@ AxProgressDlg::~AxProgressDlg()
 	wxASSERT_MSG( AxProgressDlg::s_instance_existing , "Single instance checker should be true" );	
 	AxProgressDlg::s_instance_existing = false;
 	m_parent->Enable( true );
+	m_parent->SetFocus( );
 }
 
 void AxProgressDlg::AxShowModal( bool failed )

@@ -687,7 +687,7 @@ bool RecFile::Decode( wxArrayPtrVoid params, AxProgressDlg *dlg )
 	
 #ifdef __WXMSW__
 	#if defined(_DEBUG)
-		wxString cmd = "DecoderD.exe";
+		wxString cmd = "Decoder.exe";
 	#else
 		wxString cmd = "Decoder.exe";
 	#endif   
@@ -709,15 +709,15 @@ bool RecFile::Decode( wxArrayPtrVoid params, AxProgressDlg *dlg )
 	
 	wxString log = wxGetApp().m_logDir + "/decoder.log";
 	
-	args << " -am_models_fname " << rec_models.c_str();
+	args << " -am_models_fname " << "\"" << rec_models.c_str() << "\"";
 	args << " -am_sil_phone \"{s}\" ";
 	args << " -am_phone_del_pen " << rec_phone_pen;
 
-	args << " -lex_dict_fname " << rec_dict.c_str();
+	args << " -lex_dict_fname " << "\"" << rec_dict.c_str() << "\"";
 
 	if ( rec_lm_order && !rec_lm.IsEmpty() )
 	{
-		args << " -lm_fname " << rec_lm;
+		args << " -lm_fname " << "\"" << rec_lm << "\"";
 		args << " -lm_ngram_order " << rec_lm_order;
 		args << " -lm_scaling_factor " << rec_lm_scaling;
 	}
@@ -731,13 +731,13 @@ bool RecFile::Decode( wxArrayPtrVoid params, AxProgressDlg *dlg )
 	if ( rec_delayed )
 		args << " -dec_delayed_lm";
 
-	args << " -input_fname " << input.c_str();
+	args << " -input_fname " << "\"" << input.c_str() << "\"";
 	
 	if ( !rec_output.IsEmpty() )
-		args << " -output_fname " << rec_output.c_str();
+		args << " -output_fname " << "\"" << rec_output.c_str() << "\"";
 
 	if ( !rec_wrdtrns.IsEmpty() )
-		args << " -wrdtrns_fname " << rec_wrdtrns.c_str();
+		args << " -wrdtrns_fname " << "\"" << rec_wrdtrns.c_str() << "\"";
 
 	wxLogDebug(args);
 
@@ -849,7 +849,7 @@ bool RecFile::RealizeFromMLF( wxArrayPtrVoid params, AxProgressDlg *dlg )
 	m_musFilePtr->m_fheader.param.pageFormatVer = m_imPagePtr->m_size.GetHeight() / 10;
 
     int x1 = 5, x2 = 195;
-    m_imPagePtr->CalcLeftRight( &x1, &x2 );
+    m_imPagePtr->CalcLeftRight( &x1, &x2 ); 
 	x1 = 0; // force it, indentation will be calculated staff by staff
     m_musFilePtr->m_fheader.param.MargeGAUCHEIMPAIRE = x1 / 10;
     m_musFilePtr->m_fheader.param.MargeGAUCHEPAIRE = x1 / 10;
@@ -857,7 +857,7 @@ bool RecFile::RealizeFromMLF( wxArrayPtrVoid params, AxProgressDlg *dlg )
 
     int nb = (int)m_imPagePtr->m_staves.GetCount();
     int previous = 0;
-    ImStaff *imStaff;
+    ImStaff *imStaff;   
     for (int i = 0; i < nb; i++)
     {
         imStaff = &m_imPagePtr->m_staves[i];
