@@ -1,7 +1,7 @@
 %
 %  untitled
 %
-%  Created by Tristan Himmelman on 2008-05-06.
+%  Created by Tristan Himmelman on 2008-06-03.
 %  Copyright (c) 2008 __MyCompanyName__. All rights reserved.
 %
 \documentclass[]{article}
@@ -50,7 +50,7 @@
 \else
 \usepackage{graphicx}
 \fi
-\title{Aruspix Development Set up}
+\title{Aruspix Development Set Up}
 \author{  }
 
 \begin{document}
@@ -62,16 +62,85 @@
 \fi
 
 \maketitle
-
-Three libraries must be downloaded and compiled in order to be able to compile Aruspix. 
+Four libraries must be downloaded in order to be able to compile Aruspix. 
 They are the following:
 \begin{itemize}
-\item wxWidgets 2.8.3 (http://www.wxwidgets.org/)
-\item IM (http://www.tecgraf.puc-rio.br/im/) 
-\item Torch(http://www.torch.ch/)
+	\item wxWidgets 2.8.7 (http://www.wxwidgets.org/)
+	\item IM 3.1 for VC 6 (http://www.tecgraf.puc-rio.br/im/) 
+	\item Torch 2.0 (http://www.torch.ch/)
+	\item TinyXML (http://www.grinninglizard.com/tinyxml/index.html/)
 \end{itemize}
+This document will outline the steps involved in compiling these libraries for Mac OS X and Windows XP operating systems.
 
-\section{wxWidgets Compilation}
+%*****************************************************************************
+\section{Windows XP Set Up (Using Microsoft Visual C++ 6)}
+%*****************************************************************************
+
+%*****************************
+\subsection{wxWidgets}
+To compile wxWidgets open \begin{verbatim} wxWidgets-2.8.7\build\msw\wx.dsw \end{verbatim} using VC 6. Select Batch Build from the Build drop down menu. Now select the following three configurations from each section and build:
+\begin{itemize}
+    \item Win32 DLL Debug
+    \item Win32 Release
+    \item Win32 Debug
+\end{itemize}	
+
+%*****************************
+\subsection{IM Library}
+
+This library is available pre-compiled. Just ensure that the library you've downloaded has a file structure matches the following example:
+\begin{verbatim}
+\imlib
+    \include : should contain all source files
+    \lib : should contain all library files
+\end{verbatim}
+ 
+%*****************************
+\subsection{TinyXML}
+
+To compile this library simply open \begin{verbatim} tinyxml\tinyxml.dsw \end{verbatim} with VC 6. Select Batch Build from the Build drop down menu and the build the whole project. Now ensure that the file structure matches the following example:
+\begin{verbatim}
+\tinyxml : Contains the tinyxml source files.
+    \Debug : Contains the debug tinyxml lib file.
+    \Release : Contains the release tinyxml lib file.
+\end{verbatim}
+	
+%*****************************
+\subsection{Torch}
+
+After downloading Torch, follow the instructions provided on the Torch website for compiling the library on Windows. Be sure to compile the library in both Debug and Release mode. \begin{verbatim}http://www.torch.ch/matos/w_install.pdf \end{verbatim}
+After compilation, make sure the Torch library folder has a file structure that matches the following example:
+\begin{verbatim}
+\Torch3
+    \Debug : Contains the Torch3.lib (Debug) file
+    \Release : Contains the Torch3.lib (Release) file
+    \src : Contains the Torch source files
+\end{verbatim}
+Next you need to add the following environment variable to your system: 
+\begin{itemize}
+	\item TORCH : Path to the Torch folder. 
+\end{itemize}
+To do this, right click on the My Computer icon and select properties. Then select Environment Variables from the Advanced tab. Add the variable to the "User variables" section.\\\\
+Now open \begin{verbatim} aruspix\win32\torch.dsw \end{verbatim} with VC 6. Select batch build and build all the project configurations.
+  
+%*****************************
+\subsection{Aruspix}
+
+To compile Aruspix the following environment variables must added to operating system's configuration:
+\begin{itemize}
+	\item IMLIB : Path of the IMlib folder
+	\item TINYXML : Path of the TinyXML folder
+	\item WXWIN : Path of the wxWidgets folder
+	\item WXWIN\_VERSION : wxWidgets version number (format ex. for 2.8.7: 28)
+\end{itemize}
+Now simply open aruspix/win32/Aruspix.dsw and you should be ready to compile Aruspix.
+
+%*****************************************************************************
+\section{Mac OS 10 Set Up (Using Xcode)}
+%*****************************************************************************
+
+%******************************
+\subsection{wxWidgets Compilation}
 	
 Note: wxWidgets must be compiled using the MaxOSX 10.4u sdk to enable Aruspix use with both Mac OS 10.4 and 10.5.
 \begin{enumerate}
@@ -91,8 +160,8 @@ Note: wxWidgets must be compiled using the MaxOSX 10.4u sdk to enable Aruspix us
 	\end{verbatim}
 \end{enumerate}
 
-\section{Aruspix Compilation}
 
+%******************************
 \subsection{Setting Aruspix Environment Variables}
 	In the aruspix/osx directory you will find an XML file named enviroment.plist. This file is used by Xcode to set the following environment variables for linking purposes:
 	\begin{itemize}
@@ -128,14 +197,37 @@ Note: wxWidgets must be compiled using the MaxOSX 10.4u sdk to enable Aruspix us
 		\item Now copy the modified environment.plist file into the .MacOSX directory.
 		\item You must now log out and log back in.
 	\end{enumerate}
-
+	
+%******************************
 \subsection{Compilation of Machine Learning Executables used by Aruspix}
 	\begin{enumerate}
 		\item Open aruspix/osx/torch.xcodeproj with Xcode.
 		\item Compile the following executables in both release and debug mode: adapt, decoder, ngram.
 	\end{enumerate}
 
+%******************************
+\subsection{Compilation of Aruspix}
 Open aruspix/osx/aruspix.xcodeproj with Xcode.
+Aruspix should be ready to be compiled in both Debug and Release mode. 
 
-Now Aruspix is ready to be compiled in both Debug and Release mode. 
+%*****************************
+\section{Aruspix Source Code Organization}
+
+This file describe the source code organization of the project, with the directory tree. A first group of directories contains files that are common to the application, as the other directories are specific to the different workspace environment. Every workspace environment is contained into a single directory that can be excluded from the application by changing the preprocessor definitions.\\
+
+\subsection{Common files}
+
+/app : This directory contains the files that constitute the core of the application. The are prefixed with "ax". Most of the a related to GUI classes.\\\\
+/im : This directory contains the files related to image processing. Classes and function that extend some functionalities of the IMLIB image processing library, such as advanced binarization methods, are to be find here.\\\\
+/ml : This directory contains the files that relate to machine learning.\\\\
+/mus : This directory contains the files that implement the music editor and handle the music files.\\\\
+
+\subsection{Workspace environment files}
+
+Workspace environments can be enabled or disabled at compilation by changing preprocessor definitions. The files generated with wxDesigner cannot be disabled by changing the preprocessor definitions and have to be removed by hand (this has to be fixed).\\\\
+/empty : This directory contains a workspace template (May be out of date).\\\\ 
+/superimposition : This directory contains the files that implement the superimposition of digital music on to the original images.\\\\
+/recognition : This directory contains the files that deal with the music recognition.\\\\
+/comparison :
+
 \end{document}

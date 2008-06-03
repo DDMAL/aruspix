@@ -970,15 +970,15 @@ void imPhotogrammetric( const imImage* image, imImage* dest ){
 	for ( i = 0; i < height; i++ ){
 		for ( j = 0; j < width; j++ ){
 			int offset = i*width + j;
-			a += ( (double) X[offset] * matk[i][j] );			// sum(sum(X.*matk))
-			b += ( (double) X[offset] * matl[i][j] );			// sum(sum(X.*matl))
-			c += X[offset];										// sum(sum(X))
+			a += ( (double) X[offset] * matk[i][j] );				// sum(sum(X.*matk))
+			b += ( (double) X[offset] * matl[i][j] );				// sum(sum(X.*matl))
+			c += X[offset];											// sum(sum(X))
 		}
 	}
 	
-	a /= ( width * sum_vk );									// a=sum(sum(X.*matk))/(width*sum(vk.^2))
-	b /= ( height * sum_vl );									// b=sum(sum(X.*matl))/(height*sum(vl.^2))
-	c /= ( height * width );									// c=sum(sum(X))/(height*width)
+	a /= ( width * sum_vk );										// a=sum(sum(X.*matk))/(width*sum(vk.^2))
+	b /= ( height * sum_vl );										// b=sum(sum(X.*matl))/(height*sum(vl.^2))
+	c /= ( height * width );										// c=sum(sum(X))/(height*width)
 	for ( i = 0; i < height; i++ ){
 		for ( j = 0; j < width; j++ ){
 			X2[i][j] = (matk[i][j] * a) + (matl[i][j] * b) + c;		// X2=matk.*a+matl.*b+c
