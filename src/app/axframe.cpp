@@ -18,6 +18,7 @@
 
 #include "wx/config.h"
 #include "wx/stdpaths.h"
+#include "wx/gdicmn.h"
 
 #include "axapp.h"
 #include "axfile.h"
@@ -301,15 +302,27 @@ void AxFrame::LoadConfig()
     wxASSERT_MSG( pConfig, wxT("pConfig cannot be NULL") );
     pConfig->SetPath("/");
     // frame size and position
-    int val1,val2;
-    pConfig->Read("Width",&val1,800);
-    pConfig->Read("Height",&val2,650);
+	int width, height;
+	int val1,val2;
+	wxDisplaySize(&width, &height);
+	pConfig->Read("Width",&val1,width-50);
+    pConfig->Read("Height",&val2,height-50);
     this->SetSize(val1,val2);
-    pConfig->Read("PX",&val1,50);
-    pConfig->Read("PY",&val2,50);
+    pConfig->Read("PX",&val1,5);
+    pConfig->Read("PY",&val2,5);
     this->Move(val1,val2);
     if (1 == pConfig->Read("Maximize",0L))
         this->Maximize();
+    
+//	int val1,val2;
+//    pConfig->Read("Width",&val1,800);
+//    pConfig->Read("Height",&val2,650);
+//   this->SetSize(val1,val2);
+//    pConfig->Read("PX",&val1,50);
+//    pConfig->Read("PY",&val2,50);
+//    this->Move(val1,val2);
+//    if (1 == pConfig->Read("Maximize",0L))
+//        this->Maximize();
 
     //images
     AxImage::s_zoomInterpolation = (pConfig->Read("Gray",0L)==1);
@@ -363,8 +376,13 @@ void AxFrame::LoadConfig()
 	//wxGetApp().m_musicFontDesc = pConfig->Read("MusicFontDesc", "0;12;70;90;90;0;Leipzig 4.4;33" ); // on OS X
 	//wxGetApp().m_musicFontName = pConfig->Read("MusicFontName", "Leipzig 4.4" ); // on OS X
 	// Leipzig 4.5
+#if defined(__WXMSW__)
+	wxGetApp().m_musicFontDesc = pConfig->Read("MusicFontDesc", "0;-13;0;0;0;400;0;0;0;2;3;2;1;2;Leipzig 4.3" );
+	wxGetApp().m_musicFontName = pConfig->Read("MusicFontName", "Leipzig 4.3" );
+#else // OS X	
 	wxGetApp().m_musicFontDesc = pConfig->Read("MusicFontDesc", "0;13;70;90;90;0;Leipzig 4.5;0" ); // on OS X
 	wxGetApp().m_musicFontName = pConfig->Read("MusicFontName", "Leipzig 4.5" ); // on OS X
+#endif
     pConfig->Read("FontSizeCorrection",&wxGetApp().m_fontSizeCorrection,100);
     pConfig->Read("FontPosCorrection",&wxGetApp().m_fontPosCorrection,0);
 
@@ -411,12 +429,18 @@ void AxFrame::SaveConfig(int lastEnvId)
         this->Restore();
     pConfig->Write("Maximize",max);
     wxSize fsize = this->GetSize();
-    pConfig->Write("Width",fsize.GetWidth());
-    pConfig->Write("Height",fsize.GetHeight());
-    wxPoint fpos = this->GetPosition();
-    pConfig->Write("PX",fpos.x);
-    pConfig->Write("PY",fpos.y);
-    // last environment
+	int width, height;
+	wxDisplaySize( &width, &height );
+	if ( ( fsize.GetWidth() < width ) && ( fsize.GetHeight() < height ) ) {
+		pConfig->Write("Width",fsize.GetWidth());
+		pConfig->Write("Height",fsize.GetHeight());
+    }
+	wxPoint fpos = this->GetPosition();
+    if ( ( fpos.x < width - 50 ) && ( fpos.y < height - 50 ) ){
+		pConfig->Write("PX",fpos.x);
+		pConfig->Write("PY",fpos.y);
+    }
+	// last environment
     pConfig->Write("EnvID",lastEnvId);
 
     // images

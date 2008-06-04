@@ -43,7 +43,7 @@ RSC=rc.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W4 /O2 /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D WINVER=0x400 /YX /FD /c
-# ADD CPP /nologo /MDd /W3 /GX /Zd /Od /I ".\..\src\\" /I "$(WXWIN)\include" /I "$(WXWIN)\include\msvc" /I "$(WXWIN)\lib\vc_lib\mswd" /I "$(IMLIB)\include" /I "$(TINYXML)" /D "_DEBUG" /D "__WXDEBUG__" /D WXDEBUG=1 /D "__AXDEBUG__" /D "AX_DISPLAY" /D "WIN32" /D "_WINDOWS" /D WINVER=0x400 /D "_MT" /D wxUSE_GUI=1 /D "AX_RECOGNITION" /D "AX_WG" /D "AX_WGVIEWER" /D "AX_SUPERIMPOSITION" /FR"../obj/AruspixDebug/" /Fp"../obj/AruspixDebug/Aruspix.pch" /YX /Fo"../obj/AruspixDebug/" /Fd"../obj/AruspixDebug/" /FD /c
+# ADD CPP /nologo /MD /W3 /GX /Zd /I ".\..\src\\" /I "$(WXWIN)\include" /I "$(WXWIN)\include\msvc" /I "$(IMLIB)\include" /I "$(TINYXML)" /D "AX_DISPLAY" /D "WIN32" /D "_WINDOWS" /D WINVER=0x400 /D "_MT" /D wxUSE_GUI=1 /D "AX_RECOGNITION" /D "AX_WG" /D "AX_WGVIEWER" /D "AX_SUPERIMPOSITION" /FR /YX /FD /c
 # ADD BASE MTL /nologo /D "NDEBUG" /mktyplib203 /o "NUL" /win32
 # ADD MTL /nologo /D "NDEBUG" /mktyplib203 /o "NUL" /win32
 # ADD BASE RSC /l 0x409 /i "../include" /d "NDEBUG"
@@ -53,7 +53,8 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib comctl32.lib rpcrt4.lib wsock32.lib /nologo /subsystem:windows /machine:I386
-# ADD LINK32 wxmsw$(WXWIN_VERSION)d_core.lib wxbase$(WXWIN_VERSION)d.lib wxmsw$(WXWIN_VERSION)d_html.lib wxpngd.lib wxzlibd.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib comctl32.lib rpcrt4.lib wsock32.lib im.lib im_process.lib im_fftw.lib tinyxmld.lib /nologo /subsystem:windows /incremental:yes /machine:I386 /nodefaultlib:"libc.lib" /nodefaultlib:"libcd.lib" /out:"../bin/Release/Aruspix.exe" /libpath:"$(IMLIB)\lib" /libpath:"$(TINYXML)\Debug" /libpath:"$(WXWIN)\lib\vc_lib"
+# ADD LINK32 wxmsw$(WXWIN_VERSION)_core.lib wxbase$(WXWIN_VERSION).lib wxmsw$(WXWIN_VERSION)_html.lib wxpng.lib wxzlib.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib comctl32.lib rpcrt4.lib wsock32.lib im.lib im_process.lib im_fftw.lib tinyxml.lib /nologo /subsystem:windows /incremental:yes /machine:I386 /nodefaultlib:"libc.lib" /nodefaultlib:"libcd.lib" /nodefaultlib:"LIBCMT" /out:"../bin/Release/Aruspix.exe" /libpath:"$(IMLIB)\lib" /libpath:"$(TINYXML)\Release" /libpath:"$(WXWIN)\lib\vc_lib"
+# SUBTRACT LINK32 /pdb:none
 # Begin Special Build Tool
 SOURCE="$(InputPath)"
 PreLink_Cmds=clean.bat Release
@@ -124,8 +125,8 @@ SOURCE=..\src\app\axapp.cpp
 
 !IF  "$(CFG)" == "Aruspix - Win32 Release"
 
-# ADD CPP /I "D:\libs\wx2.8.7\lib\vc_lib\msw" /D "AX_COMPARISON"
-# SUBTRACT CPP /D "AX_WG" /D "AX_DISPLAY"
+# ADD CPP /Od /I "D:\libs\wx2.8.7\lib\vc_lib\msw" /D "AX_COMPARISON"
+# SUBTRACT CPP /D "AX_WG" /D "AX_DISPLAY" /YX
 
 !ELSEIF  "$(CFG)" == "Aruspix - Win32 Debug"
 

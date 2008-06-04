@@ -76,7 +76,7 @@ MusToolRow::MusToolRow( wxWindow *parent, wxWindowID id, int type ) :
 {
 	m_type = type;
 	switch (type)
-	{
+	{  
 	case (MUS_TOOLS_NOTES): NotesPanel1( this, true, true ); break;
 	case (MUS_TOOLS_CLEFS): ClefsPanel( this, true, true ); break;
 	case (MUS_TOOLS_SIGNS): SignsPanel( this, true, true ); break;
@@ -89,22 +89,22 @@ MusToolRow::MusToolRow( wxWindow *parent, wxWindowID id, int type ) :
 	m_buttons[MUS_TOOLS_OTHER] = (wxBitmapButton*) FindWindow( ID_MS_BT_SYMBOLES );
 	m_buttons[MUS_TOOLS_NUMBER] = (wxBitmapButton*) FindWindow( ID_MS_BT_INSERT );
 }
-
+ 
 
 void MusToolRow::UpdateTools( bool edition )
 {
 	if ( edition == m_previous_edition )
-		return;
+		return; 
 
-	//int i;
+	//int i;  
 	if ( edition )
 	{ 
 		//for(i = 0; i < MUS_TOOLS_NUMBER; i++) // only if we want to disable
 		//	m_buttons[i]->Disable();
 		//m_buttons[m_type]->Enable();
 		m_buttons[MUS_TOOLS_NUMBER]->SetBitmapLabel( Btn( MUS_TOOLS_NUMBER ) );
-	}
-	else
+	}  
+	else 
 	{ 
 		//for(i = 0; i < MUS_TOOLS_NUMBER; i++)
 		//	m_buttons[i]->Enable();
