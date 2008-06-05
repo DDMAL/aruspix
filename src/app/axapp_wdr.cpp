@@ -174,7 +174,7 @@ wxMenuBar *MainMenuBarFunc()
     item3->Append( ID_PASTE, _("&Paste\tCtrl-V"), _("Paste the image from clipboard") );
     item3->AppendSeparator();
     item3->Append( ID_MENU_OPTIONS, _("&Options"), _("Modify Aruspix options") );
-    item0->Append( item3, _("&Edition") );
+    item0->Append( item3, _("&Edit") );
     
     wxMenu* item4 = new wxMenu;
     item4->Append( ID_HELP, _("&Help"), wxT("") );

@@ -24,8 +24,6 @@
 #include "wx/ptr_scpd.h"
 wxDEFINE_SCOPED_PTR_TYPE(wxZipEntry);
 
-#define MAX_FILE_TYPES 4
-
 const char *extensions[] = { 
 	"axz", 
 	"axtyp", 
@@ -50,8 +48,6 @@ const char *types[] = {
 	"Zip archive"
 };
 
-#define MAX_ENV_TYPES 2 
-
 const char *envtypes[] = { 
 	"Rec", 
 	"Sup",
@@ -59,7 +55,45 @@ const char *envtypes[] = {
 };
 
 
+#include "wx/arrimpl.cpp"
+WX_DEFINE_OBJARRAY( ArrayOfBookFileItems );
+
+int SortBookFileItems( AxBookFileItem **first, AxBookFileItem **second )
+{
+    if ( (*first)->m_filename < (*second)->m_filename )
+        return -1;
+    else if ( (*first)->m_filename > (*second)->m_filename )
+        return 1;
+    else
+        return 0;
+}
+
+
+
+
 // WDR: class implementations
+
+//----------------------------------------------------------------------------
+// AxBookFileItem
+//----------------------------------------------------------------------------
+
+// static
+AxBookFileItem *AxBookFileItem::FindFile( ArrayOfBookFileItems *array, wxString filename, int* index )
+{
+    wxASSERT( array );
+    wxASSERT( index );
+
+    *index = -1;
+
+    for( int i = 0; i < (int)array->GetCount(); i++ )
+        if ( array->Item(i).m_filename == filename )
+        {
+            *index = i;
+            return &array->Item(i);
+        }
+        
+    return NULL;
+}
 
 //----------------------------------------------------------------------------
 // AxFile
@@ -144,6 +178,7 @@ bool AxFile::New()
 		
 	m_filename = "";
 	m_shortname = _("untitled");
+	m_vmaj = m_vmin = m_vrev = 10000; // arbitrary version, we assume we will never reach version 10000...
 	
 	// open content
 	this->NewContent( );
@@ -186,8 +221,11 @@ bool AxFile::Open( wxString filename )
 	wxASSERT( !m_xml_root );
     TiXmlDocument dom( (m_basename + "index.xml").c_str() );
 	if ( dom.LoadFile() )
+	{
 		m_xml_root = dom.RootElement();
-		// add warning ???
+		AxFile::GetVersion( m_xml_root, &m_vmaj, &m_vmin, &m_vrev );
+	}
+	// add warning if failed ???
 	
 	// open content
 	this->OpenContent( );
@@ -361,6 +399,23 @@ bool AxFile::Check( wxString filename )
 }
 
 // static method
+void AxFile::GetVersion( TiXmlElement *root, int *vmaj, int *vmin, int *vrev )
+{
+    if ( root->Attribute("version_major"))
+        *vmaj = atoi(root->Attribute("version_major"));
+    if ( root->Attribute("version_minor"))
+        *vmin = atoi(root->Attribute("version_minor"));
+    if ( root->Attribute("version_revision"))
+        *vrev = atoi(root->Attribute("version_revision"));
+}
+
+// static method
+wxString AxFile::FormatVersion( int vmaj, int vmin, int vrev )
+{
+	return wxString::Format("%04d.%04d.%04d", vmaj, vmin, vrev );
+}
+
+// static method
 bool AxFile::Check( wxString filename, int *type, int *envtype )
 {
 	wxASSERT( type );
@@ -416,15 +471,12 @@ bool AxFile::Check( wxString filename, int *type, int *envtype )
     if ( !root ) 
 		return false;
 
-	int vmaj, vmin,vrev;
+	int vmaj, vmin, vrev;
 	vmaj = vmin = vrev = 10000; // arbitrary version, we assume we will never reach version 10000...
-    if ( root->Attribute("version_major"))
-        vmaj = atoi(root->Attribute("version_major"));
-    if ( root->Attribute("version_minor"))
-        vmin = atoi(root->Attribute("version_minor"));
-    if ( root->Attribute("version_revision"))
-        vrev = atoi(root->Attribute("version_revision"));
-	if ((AxApp::s_version_major <= vmaj) && (AxApp::s_version_minor <= vmin) && (AxApp::s_version_revision < vrev))
+	AxFile::GetVersion( root, &vmaj, &vmin, &vrev );
+	if ( AxFile::FormatVersion( vmaj, vmin, vrev ) > 
+		AxFile::FormatVersion( AxApp::s_version_major, AxApp::s_version_minor, AxApp::s_version_revision ) )
+	//if ((AxApp::s_version_major <= vmaj) && (AxApp::s_version_minor <= vmin) || (AxApp::s_version_revision < vrev))
 	{	
 		wxLogError(_("Aruspix version is anterior to file version (%d.%d.%d)"), vmaj, vmin, vrev );
 		return false;
@@ -468,6 +520,33 @@ wxString AxFile::GetPreview( wxString filename, wxString preview )
     }
 
 	return "";	
+}
+
+// static method
+bool AxFile::ContainsFile( wxString filename, wxString search_filename )
+{
+	if ( !wxFileExists( filename ) )
+		return false;
+		
+	wxString basename = wxGetApp().m_workingDir + "/axfile/";
+	
+	if ( wxDirExists( basename ) )
+		AxDirTraverser clean( basename );
+	else
+		wxMkdir( basename );
+
+	wxZipEntryPtr entry;
+    wxFFileInputStream in( filename );
+    wxZipInputStream zip(in);
+
+    while (entry.reset( zip.GetNextEntry()), entry.get() != NULL)
+    {
+        wxString name = entry->GetName();
+		if ( name == search_filename )
+			return true;
+    }
+
+	return false;	
 }
 
 bool AxFile::Terminate( int code, ... )

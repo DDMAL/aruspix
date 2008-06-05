@@ -28,8 +28,6 @@
 #include "app/axapp.h"
 #include "app/axprocess.h"
 
-#include "mus/musiomlf.h"
-
 // WDR: class implementations
 
 
@@ -40,42 +38,29 @@
 RecModel::RecModel( wxString filename, int type ) :
 	AxFile( filename, type, AX_FILE_RECOGNITION )
 {
-	m_mlfoutput = NULL;
+	m_mlf = NULL;
 	m_nbfiles = 0;
 }
 
 
 RecModel::~RecModel()
 {
-	if ( m_mlfoutput )	
-		delete m_mlfoutput; 
+	if ( m_mlf )	
+		delete m_mlf; 
 }
 
 void RecModel::OpenContent( )
 {
     wxASSERT( m_xml_root );
-	wxASSERT( !m_mlfoutput );
+	wxASSERT( !m_mlf );
 	
-	wxString fname = m_basename + "mlf";
-	//wxFile *load = new wxFile( fname, wxFile::write_append );
-	wxFile load( fname, wxFile::write_append );
-	m_mlfoutput = new MusMLFOutput( NULL, load.fd(), fname, "MusMLFSymbol" );
-	load.Detach();
-	if ( wxFileExists( m_basename + "dic_cache" ) )
-		m_mlfoutput->LoadSymbolDictionary( m_basename + "dic_cache" );
-
-    TiXmlElement *root = NULL;
     TiXmlNode *node = NULL;
-    //TiXmlElement *elem = NULL;
+    TiXmlElement *elem = NULL;
     
     // book information
     node = m_xml_root->FirstChild( "cache" );
-    if ( !node ) return;        
-    root = node->ToElement();
-    if ( !root ) return;
-
-    if ( root->Attribute("nbfiles"))
-        m_nbfiles = atoi(root->Attribute("nbfiles"));
+    if (node && ((elem = node->ToElement()) != NULL) &&  elem->Attribute("nbfiles"))
+        m_nbfiles = atoi(elem->Attribute("nbfiles"));
 		
 	OpenModelContent();
 }
@@ -83,7 +68,7 @@ void RecModel::OpenContent( )
 void RecModel::SaveContent( )
 {
     wxASSERT( m_xml_root );
-	wxASSERT( m_mlfoutput );
+	wxASSERT( m_mlf );
 
     TiXmlElement axfiles("axfiles");
     for ( int i = 0; i < (int)m_files.GetCount(); i++)
@@ -145,47 +130,72 @@ bool RecModel::AddFiles( wxArrayPtrVoid params, AxProgressDlg *dlg )
 RecTypModel::RecTypModel( wxString filename ) :
 	RecModel( filename, AX_FILE_TYP_MODEL )
 {
+	// this is just a memo not to forget changes when hacking the code...
+	//if ( MFC != "mfc" )
+	//	wxLogWarning("Non standrad MFC extension" );
+	m_mlf_hmms = NULL;	
 }
 
 
 RecTypModel::~RecTypModel()
 {
+	if ( m_mlf_hmms )	
+		delete m_mlf_hmms; 
 }
 
 
 void RecTypModel::NewContent( )
 {
-	wxASSERT( !m_mlfoutput );
+	wxASSERT( !m_mlf );
+	wxASSERT( !m_mlf_hmms );
 
-	m_mlfoutput = new MusMLFOutput( NULL, m_basename + "mlf", "MusMLFSymbol" );
-	m_mlfoutput->CreateSubFile();
-	m_nbfiles = 0;
-	//mlfoutput->LoadTypes( types );
-	//m_mlfoutput->m_writePosition = RecEnv::s_train_positions;
-	//mlfoutput->m_addPageNo = false;
+	m_mlf = new MusMLFOutput( NULL, m_basename + "mlf", &m_mlfDic, "MusMLFSymbol" );
+	m_mlf_hmms = new MusMLFOutput( NULL, m_basename + "mlf_align", NULL, "MusMLFSymbol" );
+	m_mlf_hmms->m_hmmLevel = true;
 }
 
 void RecTypModel::CloseContent( )
 {
-	if ( m_mlfoutput )	
-		delete m_mlfoutput; 
-	m_mlfoutput = NULL;
+	if ( m_mlf )	
+		delete m_mlf; 
+	m_mlf = NULL;
+	if ( m_mlf_hmms )	
+		delete m_mlf_hmms; 
+	m_mlf_hmms = NULL;
+	m_nbfiles = 0;
 }
 
 
 void RecTypModel::OpenModelContent( )
 {
     wxASSERT( m_xml_root );
-	wxASSERT( m_mlfoutput );
+	wxASSERT( !m_mlf );
+	wxASSERT( !m_mlf_hmms );
 	
-	m_mlfoutput->LoadSubFile();
+	//wxASSERT( wxFileExists( m_basename + "dic_cache" ) );
+	//if ( wxFileExists( m_basename + "dic_cache" ) )
+	m_mlfDic.Load( m_xml_root );
+	
+	wxString fname;
+	
+	fname = m_basename + "mlf";
+	wxFile load1( fname, wxFile::write_append );
+	m_mlf = new MusMLFOutput( NULL, load1.fd(), fname, &m_mlfDic, "MusMLFSymbol" );
+	load1.Detach();
+	
+	fname = m_basename + "mlf_align";
+	wxFile load2( fname, wxFile::write_append );
+	m_mlf_hmms = new MusMLFOutput( NULL, load2.fd(), fname, NULL, "MusMLFSymbol" );
+	m_mlf_hmms->m_hmmLevel = true;
+	load2.Detach();
 }
 
 
 void RecTypModel::SaveModelContent( )
 {
     wxASSERT( m_xml_root );
-	wxASSERT( m_mlfoutput );
+	
+	m_mlfDic.Save( m_xml_root );
 }
 
 void RecTypModel::UpdateInputFiles( )
@@ -225,7 +235,8 @@ void RecTypModel::UpdateInputFiles( )
 bool RecTypModel::AddFile( wxArrayPtrVoid params, AxProgressDlg *dlg )
 {
 	wxASSERT_MSG( dlg, "AxProgressDlg cannot be NULL" );
-	wxASSERT( m_mlfoutput );
+	wxASSERT( m_mlf );
+	wxASSERT( m_mlf_hmms );
 	
 	this->Modify();
 
@@ -249,6 +260,12 @@ bool RecTypModel::AddFile( wxArrayPtrVoid params, AxProgressDlg *dlg )
 		return true;
 	}
 	
+	// HACK! force mfc generation
+	//wxArrayPtrVoid mfc_params;
+	//wxString mfcfile = "";
+	//mfc_params.Add( &mfcfile );
+	//recFile.GenerateMFC( mfc_params, dlg ); // 2 operations
+	
 	wxString operation =  wxString::Format( _("Adding data from file '%s' (%d/%d)"), shortname.c_str(), file_nb + 1, nb_files ) ;
 	dlg->SetOperation( operation );
 	
@@ -257,10 +274,12 @@ bool RecTypModel::AddFile( wxArrayPtrVoid params, AxProgressDlg *dlg )
 	
 	// counter
     int counter = dlg->GetCounter();
-    int count = names.GetCount() + 1;
+    int count = names.GetCount() + 2;
     imCounterTotal( counter, count , operation.c_str() );
 	
-	m_mlfoutput->WritePage( &recFile.m_musFilePtr->m_pages[0], shortname, recFile.m_imPagePtr );
+	m_mlf->WritePage( &recFile.m_musFilePtr->m_pages[0], shortname, recFile.m_imPagePtr );
+	imCounterInc( dlg->GetCounter() );
+	m_mlf_hmms->WritePage( &recFile.m_musFilePtr->m_pages[0], shortname, recFile.m_imPagePtr );
 	imCounterInc( dlg->GetCounter() );
 	
 	for( int i = 0; i < (int)names.GetCount(); i++ )
@@ -276,9 +295,12 @@ bool RecTypModel::AddFile( wxArrayPtrVoid params, AxProgressDlg *dlg )
 
 bool RecTypModel::Commit( AxProgressDlg *dlg )
 {
-	wxASSERT( m_mlfoutput );
+	wxASSERT_MSG( dlg, "AxProgressDlg cannot be NULL" );
+	wxASSERT( m_mlf );
+	wxASSERT( m_mlf_hmms );
 	
-	m_mlfoutput->Close();
+	m_mlf->Close();
+	m_mlf_hmms->Close();
 	
 	wxArrayString mfc_input, lab_input, ali_input;
 	
@@ -363,7 +385,7 @@ bool RecTypModel::Commit( AxProgressDlg *dlg )
 		}
 	}
 	
-    count = 5;
+    count = 4;
 	dlg->SetOperation( _("Write files ...") );
     imCounterTotal( counter, count , "Write files ..." );
 	
@@ -373,20 +395,17 @@ bool RecTypModel::Commit( AxProgressDlg *dlg )
 	//wxASSERT_MSG( nbfiles == m_nbfiles, "Number of MFC and LAB files mismatch");
 
 	//write dictionary
-	m_mlfoutput->WriteDictionary( m_basename + "dic" );
+	m_mlfDic.WriteDic( m_basename + "dic" );
 	imCounterInc( dlg->GetCounter() );
 	
 	//write states per symbol
 	//wxString states_filename = outdir + "/states";
-	m_mlfoutput->WriteStatesPerSymbol( m_basename + "states" );
+	m_mlfDic.WriteStates( m_basename + "states" );
 	imCounterInc( dlg->GetCounter() );
 
 	//write symbols
 	//wxString symb_filename = outdir + "/symb";
-	m_mlfoutput->WriteHMMSymbols( m_basename + "symb" );
-	imCounterInc( dlg->GetCounter() );
-	
-	m_mlfoutput->WriteSymbolDictionary( m_basename + "dic_cache" );
+	m_mlfDic.WriteHMMs( m_basename + "symb" );
 	imCounterInc( dlg->GetCounter() );
 	
 	return true;
@@ -541,49 +560,6 @@ bool RecTypModel::Adapt( wxArrayPtrVoid params, AxProgressDlg *dlg )
 	
 	outModelPtr->Modify();
 
-
-	/*Torch::DiskXFile::setBigEndianMode() ;
-
-	wxString input = wxGetApp().m_workingDir + "/" + imPage->GetShortName() + ".input";
-	input.Replace( "\\/", "/" );
-
-	Torch::LexiconInfo lex_info( m_rec_models.c_str() , "{s}" , "" , m_rec_dict.c_str() , 
-                          "" , "" , "" ) ;
-
-    Torch::PhoneModels phone_models ( lex_info.phone_info , (char*) m_rec_models.c_str(),
-							   true , m_rec_phone_pen , 
-                               false , "" , "" , 
-                               9 , "" , false , 
-                               (real)0.005 , (real)0.005 ) ;
-
-    Torch::LinearLexicon lexicon( &lex_info , &phone_models ) ;
-
-    Torch::LanguageModel *lang_model;
-    if ( m_rec_lm_order <= 0 )
-        lang_model = NULL ;
-    else
-    {
-        lang_model = new Torch::LanguageModel( m_rec_lm_order , lex_info.vocabulary , 
-			(char*)m_rec_lm.c_str() , m_rec_ls_scaling ) ;
-    }
-
-	real end_prune = m_rec_end_prune;
-	if ( end_prune == 0 )
-		end_prune = LOG_ZERO;
-    Torch::BeamSearchDecoder bs_decoder( &lexicon , lang_model , m_rec_word_pen ,
-			LOG_ZERO, end_prune ,
-			m_rec_delayed , false ) ;
-
-
-    Torch::DecoderBatchTest batch_tester( (char*)input.c_str() , Torch::DST_FEATS_HTK , (char*)m_rec_wrdtrns.c_str()  , &bs_decoder , 
-                                   true , true , (char*)m_rec_output.c_str() , false , 10.0 ) ;
-    	
-	batch_tester.run() ;
-
-    if ( lang_model != NULL )
-        delete lang_model ; 
-    return(0) ;*/
-
 	return true;
 }
 
@@ -596,7 +572,6 @@ bool RecTypModel::Adapt( wxArrayPtrVoid params, AxProgressDlg *dlg )
 RecMusModel::RecMusModel( wxString filename ) :
 	RecModel( filename, AX_FILE_MUS_MODEL )
 {
-	m_nbfiles = 0;
 	m_order = MUS_NGRAM_ORDER;
 }
 
@@ -608,39 +583,40 @@ RecMusModel::~RecMusModel()
 
 void RecMusModel::NewContent( )
 {
-	wxASSERT( !m_mlfoutput );
+	wxASSERT( !m_mlf );
 
-	// copy dictionnary (just to keep everything in directory)
-	//???????wxString model_dic = output + "no_mapping.dic";
-	//wxCopyFile( dic, model_dic, true );
-
-    m_mlfoutput = new MusMLFOutput( NULL, m_basename + "ngram.mlf", "MusMLFSymbol" );
-	m_mlfoutput->m_addPageNo = false;
+    m_mlf = new MusMLFOutput( NULL, m_basename + "ngram.mlf", &m_mlfDic, "MusMLFSymbol" );
 }
 
 void RecMusModel::CloseContent( )
 {
-	if ( m_mlfoutput )	
-		delete m_mlfoutput; 
-	m_mlfoutput = NULL;
+	if ( m_mlf )	
+		delete m_mlf; 
+	m_mlf = NULL;
+	m_nbfiles = 0;
 }
 
 void RecMusModel::OpenModelContent( )
 {
     wxASSERT( m_xml_root );
-	wxASSERT( m_mlfoutput );
+	wxASSERT( !m_mlf );
 	
-
+	//wxASSERT( wxFileExists( m_basename + "dic_cache" ) );
+	//if ( wxFileExists( m_basename + "dic_cache" ) )
+	m_mlfDic.Load( m_xml_root );
 	
-	m_mlfoutput->m_addPageNo = false;
-
+	wxString fname = m_basename + "ngram.mlf";
+	wxFile load( fname, wxFile::write_append );
+	m_mlf = new MusMLFOutput( NULL, load.fd(), fname, &m_mlfDic, "MusMLFSymbol" );
+	load.Detach();
 }
 
 
 void RecMusModel::SaveModelContent( )
 {
     wxASSERT( m_xml_root );
-	wxASSERT( m_mlfoutput );
+	
+	m_mlfDic.Save( m_xml_root );
 }
 
 
@@ -648,7 +624,7 @@ void RecMusModel::SaveModelContent( )
 bool RecMusModel::AddFile( wxArrayPtrVoid params, AxProgressDlg *dlg )
 {
 	wxASSERT_MSG( dlg, "AxProgressDlg cannot be NULL" );
-	wxASSERT( m_mlfoutput );
+	wxASSERT( m_mlf );
 	
 	this->Modify();
 
@@ -683,32 +659,31 @@ bool RecMusModel::AddFile( wxArrayPtrVoid params, AxProgressDlg *dlg )
 	bool failed = false;
 
 	if ( !failed && !dlg->GetCanceled() )
-		failed = !m_mlfoutput->WritePage( &recFile.m_musFilePtr->m_pages[0], true );
+		failed = !m_mlf->WritePage( &recFile.m_musFilePtr->m_pages[0], true );
 	imCounterInc( dlg->GetCounter() );	
+	
+	m_nbfiles++;
 		
 	return true;
 }
 
 bool RecMusModel::Commit( AxProgressDlg *dlg )
 {
-	wxASSERT( m_mlfoutput );
+	wxASSERT( m_mlf );
 	
 	dlg->SetMaxJobBar( 3 );
 	dlg->SetJob( _("Commit the data set") );
 	// counter
     int counter = dlg->GetCounter();
 	
-	m_mlfoutput->Close();
+	m_mlf->Close();
 	
-    int count = 2;
+    int count = 1;
 	dlg->SetOperation( _("Write files ...") );
     imCounterTotal( counter, count , "Write files ..." );
 	
 	wxString model_dic = m_basename + "ngram.dic";
-	m_mlfoutput->WriteDictionary( model_dic );
-	imCounterInc( dlg->GetCounter() );
-	
-	m_mlfoutput->WriteSymbolDictionary( m_basename + "dic_cache" );
+	m_mlfDic.WriteDic( model_dic );
 	imCounterInc( dlg->GetCounter() );
 	
 	return true;
@@ -725,7 +700,7 @@ bool RecMusModel::Train( wxArrayPtrVoid params, AxProgressDlg *dlg )
 
 #ifdef __WXMSW__
 	#if defined(_DEBUG)
-		wxString cmd = "NgramD.exe";
+		wxString cmd = "Ngram.exe";
 	#else
 		wxString cmd = "Ngram.exe";
 	#endif   
@@ -820,7 +795,7 @@ bool RecMusModel::Adapt( wxArrayPtrVoid params, AxProgressDlg *dlg )
 
 #ifdef __WXMSW__
 	#if defined(_DEBUG)
-		wxString cmd = "NgramD.exe";
+		wxString cmd = "Ngram.exe";
 	#else
 		wxString cmd = "Ngram.exe";
 	#endif   
@@ -887,24 +862,6 @@ bool RecMusModel::Adapt( wxArrayPtrVoid params, AxProgressDlg *dlg )
 	delete process;
 	
 	return true;
-
-	/*
-	wxASSERT( m_mlfoutput );
-	
-	dlg->SetMaxJobBar( 1 );
-		
-	dlg->SetMaxJobBar( 1 );
-	
-	dlg->SetJob( "Generate the new model" );
-	dlg->SetOperation( _("N-gram model...")  );
-	dlg->StartTimerOperation( TIMER_MODEL_BIGRAM, m_nbfiles );
-	if ( m_mlfoutput->GenerateNGram( m_basename + "ngram", m_order, dlg  ) )
-		dlg->EndTimerOperation( TIMER_MODEL_BIGRAM );
-	else
-		return this->Terminate( ERR_UNKNOWN );
-	
-	return true;
-	*/
 }
 
 // WDR: handler implementations for RecMusModel

@@ -236,7 +236,7 @@ void RecImController::OnChangeClassification( wxCommandEvent &event )
 
 	this->CancelMagicSelection();
 	this->m_viewPtr->EndSelection();
-	this->m_envPtr->UpdateViews( REC_UPDATE_FAST );
+	((RecEnv*)this->m_envPtr)->UpdateViews( REC_UPDATE_FAST );
 	wxGetApp().AxEndBusyCursor();
 }
 

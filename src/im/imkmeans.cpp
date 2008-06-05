@@ -28,34 +28,35 @@
 
 #include "imkmeans.h"
 
-//#include <im.h>
-//#include <im_image.h>
-//#include <im_convert.h>
-//#include <im_process.h>
-//#include <im_binfile.h>
-//#include <im_counter.h>
 
 #include <math.h>
-//#include <string.h>
 #include <stdlib.h>
+
+#include <im.h>
+#include <im_image.h>
+#include <im_convert.h>
+#include <im_process.h>
+#include <im_util.h>
+#include <im_binfile.h>
+#include <im_counter.h>
 
 #define NOT_FOUND -1
 
 // finds minimum value in imbyte vector
 imbyte vecMin(imbyte *im, const int imsize)
 {
-	int i;
 	if (imsize < 1)
-		exit(EXIT_FAILURE);	
+		return 0;
 
-	imbyte min = im[0];
+	imbyte minimum = im[0];
+	int i;
 
 	for (i = 1; i < imsize; i++)
 	{
-		if (im[i] < min)
-			min = im[i];
+		if (im[i] < minimum)
+			minimum = im[i];
 	}
-	return min;
+	return minimum;
 }
 
 // finds minimum value in double vector
@@ -63,8 +64,9 @@ double vecDblMin(double *vec, const int vecSize, int *index)
 {
 	*index = 0;
 	int i;
-	if (vecSize < 1)
-		exit(EXIT_FAILURE);	
+	//if (vecSize < 1)
+		//exit(EXIT_FAILURE);
+	//	return 0;
 
 	double min = vec[0];
 

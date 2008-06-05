@@ -427,6 +427,35 @@ void imAnalyzeClearHeight(const imImage* image, int region_count, int min_thresh
 	free(heights);
 }
 
+
+/*
+	Supprime les element dont la largeur ou la hauteur maximal est plus petite que threshold
+	*image est une image labelisee (bg = 0, puis 1,2 ...)
+	region_count est le nombre de regions
+ */
+void imAnalyzeClearMin(const imImage* image, int region_count, int threshold )
+{
+	imushort* img_data = (imushort*)image->data[0];
+	int i, j;
+
+	int* boxes = (int*)malloc(4 * region_count * sizeof(int));
+    memset(boxes, 0, 4 *  region_count * sizeof(int));
+    imAnalyzeBoundingBoxes(image, boxes, region_count);
+
+	img_data = (imushort*)image->data[0];
+	for (i = 0; i < image->count; i++)
+	{
+		if (*img_data)
+		{
+			j = ((*img_data) - 1) * 4;
+			if ( (boxes[j+1] - boxes[j+0] < threshold) || (boxes[j+3] - boxes[j+2] < threshold) )
+				(*img_data) = 0;
+		}
+		img_data++;
+	}
+	free( boxes );
+}
+
 /*
 	Supprime les element dont la largeur moyenne n'est pas entre min et max
 	Si max = 0, le seuil superieur est ignore
@@ -507,7 +536,6 @@ void imAnalyzeBoundingBoxes(const imImage* image, int* boxes, int region_count )
 
 static unsigned char Kittler(const imImage* src_image, double *mu_1, double *mu_2, double *mu)
 {
-
   unsigned long h[256];
   int threshold;
   double criterion;
@@ -867,6 +895,137 @@ int imProcessKittlerThreshold(const imImage* image, imImage* NewImage )
   return level;
 }
 
+void imPhotogrammetric( const imImage* image, imImage* dest ){
+	
+	int height = image->height;
+	int width = image->width;
+	
+	if ( height % 2 != 0 ) height += 1;
+	if ( width % 2 != 0 ) width += 1;
+
+	imImage *imagetmp = imImageCreate(width, height, image->color_space, image->data_type);
+	imProcessAddMargins( image, imagetmp, 0, 0 );
+	
+	int i, j;
+	double *vk = (double*) malloc( height * sizeof(double) );
+	double *vl = (double*) malloc( width * sizeof(double) );
+	double **matk = (double**) malloc( height * sizeof(double*) );
+	double **matl = (double**) malloc( height * sizeof(double*) );
+	
+	imbyte* X = (imbyte*)imagetmp->data[0];
+	double sum_vk, sum_vl;
+	double a = 0;
+	double b = 0;
+	double c = 0;
+	double **X2 = (double**) malloc ( height * sizeof(double*) );
+	double **X3 = (double**) malloc ( height * sizeof(double*) );
+	
+	for ( i = 0; i < height; i++ ){
+		matk[i] = (double*) malloc ( width * sizeof(double) );
+		matl[i] = (double*) malloc ( width * sizeof(double) );
+		X2[i] = (double*) malloc ( width * sizeof(double) );
+		X3[i] = (double*) malloc ( width * sizeof(double) );
+	}
+	
+	for ( i = 0; i < (height / 2); i++ ){
+		vk[i] = 0;
+		double val = -(height / 2) + i;
+		if ( val <= -1 ) vk[i] = val;					// vk(1:(height/2)) = [-(height/2):1:-1]	
+	}
+	for ( i = (height / 2) ; i < height; i++ ){
+		vk[i] = 0;
+		double val = 1 + i - (height / 2);
+		if ( val <= (height / 2) ) vk[i] = val;			// vk((height/2)+1:height) = [1:1:(height/2)]	
+	}
+	
+	for ( i = 0; i < (width / 2); i++ ){
+		vl[i] = 0;
+		double val = -(width / 2) + i;
+		if ( val <= -1 ) vl[i] = val;					// vl(1:(width/2)) = [-(width/2):1:-1]	
+	}
+	for ( i = (width / 2) ; i < width; i++ ){
+		vl[i] = 0.0;
+		double val = 1 + i - (width / 2);
+		if ( val <= (width / 2) ) vl[i] = val;			// vl((width/2)+1:width) = [1:1:(width/2)]	
+	}
+	
+	for ( i = 0; i < width; i++ )
+		for ( j = 0; j < height; j++ )
+			matk[j][i] = vk[j];							// matk = repmat(vk, 1, width)
+		 
+	for ( i = 0; i < height; i++ )
+		for ( j = 0; j < width; j++ )
+			matl[i][j] = vl[j];							// matl = repmat(vl, height, 1)
+
+	/*
+	 Coordinates of the plane:
+	 a=sum(sum(X.*matk))/(width*sum(vk.^2));
+	 b=sum(sum(X.*matl))/(height*sum(vl.^2));
+	 c=sum(sum(X))/(height*width);
+	*/	
+	
+	for ( i = 0; i < height; i++ ) sum_vk += (vk[i] * vk[i]);		// sum(vk.^2)
+	for ( i = 0; i < width; i++ ) sum_vl += (vl[i] * vl[i]);		// sum(vl.^2)
+	
+	for ( i = 0; i < height; i++ ){
+		for ( j = 0; j < width; j++ ){
+			int offset = i*width + j;
+			a += ( (double) X[offset] * matk[i][j] );				// sum(sum(X.*matk))
+			b += ( (double) X[offset] * matl[i][j] );				// sum(sum(X.*matl))
+			c += X[offset];											// sum(sum(X))
+		}
+	}
+	
+	a /= ( width * sum_vk );										// a=sum(sum(X.*matk))/(width*sum(vk.^2))
+	b /= ( height * sum_vl );										// b=sum(sum(X.*matl))/(height*sum(vl.^2))
+	c /= ( height * width );										// c=sum(sum(X))/(height*width)
+	for ( i = 0; i < height; i++ ){
+		for ( j = 0; j < width; j++ ){
+			X2[i][j] = (matk[i][j] * a) + (matl[i][j] * b) + c;		// X2=matk.*a+matl.*b+c
+			X3[i][j] = (double) X[i*width + j] - X2[i][j];			// X3 = X - X2
+		}
+	}
+		
+	/* Normalize */
+	double min = X3[0][0];
+	for ( i = 0; i < height; i++ )
+		for ( j = 0; j < width; j++ )
+			if ( min > X3[i][j] ) min = X3[i][j];					// Find minimum
+			
+	for ( i = 0; i < height; i++ )
+		for ( j = 0; j < width; j++ )
+			X3[i][j] = X3[i][j] + abs(min);							// X3=X3+abs(min(min(X3)))
+			
+	double max = X3[0][0];
+	for ( i = 0; i < height; i++ )
+		for ( j = 0; j < width; j++ )
+			if ( max < X3[i][j] ) max = X3[i][j];					// Find maximum
+	
+	for ( i = 0; i < height; i++ ){
+		for ( j = 0; j < width; j++ ){
+			X3[i][j] = X3[i][j] / max;								// X3=X3+abs(min(min(X3)))
+			
+			//copy new image (X3) back into X
+			X[i*width + j] = (imbyte) (X3[i][j] * 255);
+		}
+	}
+	
+	imProcessCrop(imagetmp, dest, 0, 0);
+	
+	for ( i = 0; i < height; i++ ){
+		free( matk[i] );
+		free( matl[i] );
+		free( X2[i] );
+		free( X3[i] );
+	}
+	free( matk );
+	free( matl );
+	free( X2 );
+	free( X3 );
+	free( vk );
+	free( vl );
+}
+
 /*
 	ecrit les valeurs d'un tableaux d'int (fonction de debbuging)
 */
@@ -883,3 +1042,109 @@ void imSaveValues( int *values, int count, const char *filename )
 	fclose( fid );
 
 }
+
+/*
+void SupOldFile::DistByCorrelationFFT(const _imImage *im1, const _imImage *im2,
+                                wxSize window, int *decalageX, int *decalageY)
+{
+    wxASSERT_MSG(decalageX, wxT("decalageX cannot be NULL") );
+    wxASSERT_MSG(decalageY, wxT("decalagY cannot be NULL") );
+    wxASSERT_MSG(im1, wxT("Image 1 cannot be NULL") );
+    wxASSERT_MSG(im2, wxT("Image 2 cannot be NULL") );
+
+    imImage *corr = imImageCreate( im1->width, im1->height, im1->color_space, IM_CFLOAT);
+    imProcessCrossCorrelation( im1, im2, corr );
+    imImage *corrCrop = imImageCreate( window.GetWidth() * 2 + 1, window.GetHeight() * 2 + 1,
+        corr->color_space, IM_CFLOAT );
+    int xmin = im1->width / 2 - window.GetWidth();
+    int ymin = im1->height / 2 - window.GetHeight();
+    imProcessCrop( corr, corrCrop, xmin, ymin );
+
+    imImage *corrReal = imImageCreate( corrCrop->width , corrCrop->height , corrCrop->color_space, IM_BYTE );
+    imConvertDataType( corrCrop, corrReal, IM_CPX_MAG, IM_GAMMA_LINEAR, 0, IM_CAST_MINMAX);
+
+    int width = corrReal->width;
+    int height = corrReal->height;
+    int max = 0, maxX = 0, maxY = 0;
+    imbyte *buf = (imbyte*)corrReal->data[0];
+
+    for (int y = 0; y < height; y++)
+    {
+        for (int x = 0; x < width; x++)
+        {
+            if ( buf[y * width + x] > max )
+            {
+                max = buf[y * width + x];
+                maxX = x;
+                maxY = y;
+
+            }
+        }
+    }
+
+    *decalageX = maxX - window.GetWidth();
+    *decalageY = maxY - window.GetHeight();
+
+    //int error;
+    //imFile* ifile = NULL;
+    //ifile = imFileNew("D:/Mes Images/corr1.tif", "TIFF", &error);
+    //imFileSaveImage(ifile,corrReal);
+    //imFileClose(ifile);
+
+    imImageDestroy( corrReal );
+    imImageDestroy( corrCrop );
+    imImageDestroy( corr );
+}
+*/
+
+/*
+void DistByCorrelation( imImage *im1, imImage *im2, int width, int height, int *decalageX, int *decalageY)
+{
+    wxASSERT_MSG(decalageX, wxT("decalageX cannot be NULL") );
+    wxASSERT_MSG(decalageY, wxT("decalagY cannot be NULL") );
+    wxASSERT_MSG(im1, wxT("Image 1 cannot be NULL") );
+    wxASSERT_MSG(im2, wxT("Image 2 cannot be NULL") );
+
+    
+	imProcessNegative( im1, im1 );
+	imProcessNegative( im2, im2 );
+
+	imImage *imTmp1 = imImageCreate(
+            im1->width +  width * 2,
+            im1->height +  height * 2,
+            im1->color_space, im1->data_type);
+	imProcessAddMargins( im1 ,imTmp1, width, height );
+
+
+    int conv_width = 2 * width;
+    int conv_height = 2 * height;
+    imImage *mask = imImageCreate(im2->width, im2->height,im2->color_space, im2->data_type);
+    imbyte *bufIm2 = (imbyte*)im2->data[0];
+	
+    int maxSum = 0, maxX = 0, maxY = 0;
+    for (int y = 0; y < conv_height; y++)
+    {
+        for (int x = 0; x < conv_width; x++)
+        {
+            imProcessCrop(imTmp1,mask, x, y);
+            imbyte *bufMask = (imbyte*)mask->data[0]; 
+            int sum = 0;
+            for (int i = 0; i < mask->plane_size; i++)
+            {
+                sum += (bufIm2[i] / 255) * (bufMask[i] / 255);
+            }
+            if (sum > maxSum)
+            {
+                maxSum = sum;
+                maxX = x;
+                maxY = y;
+            }
+        }
+    }
+
+    *decalageX = maxX - width;
+    *decalageY = maxY - height;
+    imImageDestroy(imTmp1);
+    imImageDestroy(mask);
+}
+*/

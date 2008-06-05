@@ -86,6 +86,90 @@ MlDecoderPage::MlDecoderPage( char *datafiles_filename , char *expected_results_
 }
 
 
+MlDecoderPage::MlDecoderPage( Vocabulary *vocabulary_, char *expected_results_file )
+{
+    n_tests = 0 ;
+    tests = NULL ;
+    total_time = 0.0 ;
+    decoder = NULL ;
+    vocabulary = vocabulary_ ;
+    archive_fd = NULL ;
+	output_fd = NULL;
+
+    FILE *expected_results_fd=NULL ;
+    char line[1000] , result_fname[1000] , res_word[1000] , *ptr ;
+    int temp_result_list[1000] , n_sentence_words=0 , i=0  ;
+
+    if ( (expected_results_fd = fopen( expected_results_file , "r" )) == NULL )
+		error("RecDecoderBatch::configureWII - error opening results file") ;
+	// Read the first line of the results file to determine its type
+    fgets( line , 1000 , expected_results_fd ) ;
+    if ( !strstr( line , "MLF" ) )
+		error("MlDecoderPage::configureWII - non MLF datafiles file") ;
+    
+    // Determine the number of filenames present in the datafiles file
+    n_tests=0 ;
+    while ( fgets( line , 1000 , expected_results_fd ) != NULL )
+    {
+		if ( sscanf(line,"\"%[^\"]", result_fname) != 0 )
+			n_tests++;
+    }
+	fclose( expected_results_fd );
+    expected_results_fd = fopen( expected_results_file , "r" ) ;
+	fgets( line , 1000 , expected_results_fd ) ;
+	// alloc the memory
+	tests = (MlDecoderStaff **)Allocator::sysAlloc( n_tests * sizeof(MlDecoderStaff *) ) ;
+	for (i = 0; i < n_tests; i++ )
+		tests[i] = NULL;
+
+	i = 0;
+	while ( fgets( line , 1000 , expected_results_fd ) != NULL )
+	{
+		if ( sscanf(line,"\"%[^\"]",result_fname) != 0 )
+		{
+			// remove the extension and path from the filename
+			if ( (ptr=strrchr( result_fname , '/' )) != NULL )
+				memmove( result_fname , ptr+1 , strlen(ptr)+1 ) ;
+			if ( (ptr=strrchr( result_fname , '.' )) != NULL )
+				*ptr = '\0' ;
+
+			n_sentence_words = 0 ;
+			fgets( line , 1000 , expected_results_fd ) ;
+			while ( line[0] != '.' )
+			{
+				int x, y;
+				if ( strstr( line, " " ) == NULL )
+					sscanf( line , "%s" , res_word );
+				else
+					sscanf( line , "%d %d %s" , &x, &y , res_word );
+				temp_result_list[n_sentence_words]=vocabulary->getIndex(res_word) ;
+				if ( temp_result_list[n_sentence_words] >= 0 )
+					n_sentence_words++ ;
+				fgets( line , 1000 , expected_results_fd ) ;
+			}
+
+			// Now configure the next MlDecoderStaff instance 
+			//   with the details of the test.
+			if ( tests[i] != NULL )
+				error("MlDecoderStaff::configureWII - duplicate exp results\n");
+			tests[i] = new MlDecoderStaff() ;
+			tests[i]->test_filename = (char *)Allocator::sysAlloc( (strlen(result_fname)+1) * sizeof(char) ) ;
+			strcpy( tests[i]->test_filename , result_fname ) ;
+			if ( (n_sentence_words>0) )
+			{
+				tests[i]->n_expected_words = n_sentence_words ;
+				tests[i]->expected_words = (int *)Allocator::sysAlloc( n_sentence_words * sizeof(int) ) ;
+				memcpy( tests[i]->expected_words , temp_result_list , n_sentence_words*sizeof(int) ) ;
+			}
+			i++;
+			//tests[i]->configure( i , result_fname , n_sentence_words , temp_result_list  ) ;
+		}
+	}
+	fclose( expected_results_fd ) ;
+
+}
+
+
 MlDecoderPage::~MlDecoderPage()
 {
     if ( archive_fd != NULL )
@@ -300,6 +384,89 @@ void MlDecoderPage::run()
     if ( have_expected_results == true )
         printStatistics(7,7,10) ;   // HTK settings for Ins, Sub, Del calculations
 }
+
+
+void MlDecoderPage::eval( char *results_file )
+{    
+    FILE *results_fd=NULL ;
+    char line[1000] , result_fname[1000] , res_word[1000] , *ptr ;
+    int temp_result_list[1000] , n_sentence_words=0 , i=0 , test_index ;
+    bool have_mlf=false ;
+
+    // Open the file containing the expected results for each test.
+    // We assume that the format is as per HTK MLF format.
+    // Note that the filename line must be enclosed in "". 
+	if ( (results_fd = fopen( results_file , "r" )) == NULL )
+            error("RecDecoderBatch::eval - error opening results file") ;
+
+	// Read the first line of the results file to determine its type
+    fgets( line , 1000 , results_fd ) ;
+    if ( strstr( line , "MLF" ) )
+        have_mlf = true ;
+    else
+		error("MlDecoderPage::eval - non MLF datafiles file") ;
+    
+
+	// Read each entry in the expected results file, find its corresponding
+	//   filename in the temporary list of filename, create a MlDecoderStaff
+	//   instance and add it to the list of tests.
+	test_index = 0 ;
+	while ( fgets( line , 1000 , results_fd ) != NULL )
+	{
+		if ( sscanf(line,"\"%[^\"]",result_fname) != 0 )
+		{
+			// remove the extension and path from the filename
+			if ( (ptr=strrchr( result_fname , '/' )) != NULL )
+				memmove( result_fname , ptr+1 , strlen(ptr)+1 ) ;
+			if ( (ptr=strrchr( result_fname , '.' )) != NULL )
+				*ptr = '\0' ;
+
+			// find the filename in the temporary list of filenames
+			for ( i=0 ; i<n_tests ; i++ )
+			{
+				if ( tests[i] == NULL )
+						error("MlDecoderStaff::eval - no staff to load results\n");
+				if ( strstr( tests[i]->test_filename , result_fname ) )
+				{
+					// Now load the sequence into the MlDecoderStaff instance 
+		
+					// We found the filename in the temporary list of filenames.
+					// Read the expected words.
+					n_sentence_words = 0 ;
+					fgets( line , 1000 , results_fd ) ;
+					while ( line[0] != '.' )
+					{
+						int x, y;
+						if ( strstr( line, " " ) == NULL )
+							sscanf( line , "%s" , res_word );
+						else
+							sscanf( line , "%d %d %s" , &x, &y , res_word );
+						temp_result_list[n_sentence_words]=vocabulary->getIndex(res_word) ;
+						if ( temp_result_list[n_sentence_words] >= 0 )
+							n_sentence_words++ ;
+						fgets( line , 1000 , results_fd ) ;
+					}
+
+					// Now configure the next MlDecoderStaff instance 
+					//   with the details of the test.
+					tests[i]->actual_words = (int *)Allocator::sysAlloc( (n_sentence_words) * sizeof(int) ) ;
+					//*result_words_times = (int *)Allocator::sysAlloc( (*num_result_words) * sizeof(int) ) ;
+					for ( int w=0 ; w<(n_sentence_words) ; w++ )
+					{
+						tests[i]->actual_words[w] = temp_result_list[w] ;
+						//(*result_words_times)[w] = temp_times[(*num_result_words)-w-1] ;
+					}
+					tests[i]->n_actual_words = n_sentence_words;
+					break ;
+				}
+			}
+		}
+	}
+    fclose( results_fd ) ;
+	
+	printStatistics(7,7,10) ; 
+}
+
 
 
 void MlDecoderPage::configureWithIndividualInputs( char *datafiles_filename , char *expected_results_file , 

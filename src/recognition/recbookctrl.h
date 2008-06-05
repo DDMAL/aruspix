@@ -26,7 +26,7 @@ class RecEnv;
 class RecBookFile;
 class RecBookCtrl;
 
-class RecBookFileItem;
+class AxBookFileItem;
 
 // WDR: class declarations
 
@@ -50,7 +50,10 @@ public:
     wxTextCtrl* Title()  { return (wxTextCtrl*) FindWindow( ID4_TITLE ); }
     wxTextCtrl* Composer()  { return (wxTextCtrl*) FindWindow( ID4_COMPOSER ); }
     wxTextCtrl* RISM()  { return (wxTextCtrl*) FindWindow( ID4_RISM ); }
-    //virtual bool Validate();
+    wxChoice* PageBinarizationMethod() { return (wxChoice*) FindWindow ( ID4_PAGE_BIN_CHOICE ); }
+	wxSpinCtrl* BinarizationRegionSize() { return (wxSpinCtrl*) FindWindow ( ID4_RGN_SIZE_SPINCTRL ); }
+	wxCheckBox* BinarizationSelect() { return (wxCheckBox*) FindWindow ( ID4_BIN_SELECT_CHECKBOX ); }
+	//virtual bool Validate();
     //virtual bool TransferDataToWindow();
     //virtual bool TransferDataFromWindow();
     

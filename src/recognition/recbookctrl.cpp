@@ -8,7 +8,7 @@
 #ifdef AX_RECOGNITION
 
 #if defined(__GNUG__) && ! defined(__APPLE__)
-#pragma implementation "recbookctrl.h"
+	#pragma implementation "recbookctrl.h"
 #endif
 
 // For compilers that support precompilation, includes "wx/wx.h".
@@ -21,12 +21,14 @@
 //#include "wx/file.h"
 //#include "wx/filename.h"
 #include "wx/imaglist.h"
+#include "wx/valgen.h"
 
 #include "recbookctrl.h"
 #include "recbookfile.h"
 #include "recfile.h"
 #include "rec.h"
 
+#include "app/axoptionsdlg.h"
 
 // WDR: class implementations
 
@@ -48,11 +50,15 @@ RecBookDataDlg::RecBookDataDlg( wxWindow *parent, wxWindowID id, const wxString 
     wxDialog( parent, id, title )
 {
     // WDR: dialog function BookDataFunc4 for RecBookDataDlg
-    BookDataFunc4( this, TRUE );
+    RecBookDataFunc4( this, TRUE );
     m_recBookFile = recBookFile;
     m_loadAxfiles = false;
     m_loadImages = false;
     
+	PageBinarizationMethod()->SetString(0, BRINK_2CLASSES_DESCRIPTION);
+	PageBinarizationMethod()->SetString(1, SAUVOLA_DESCRIPTION);
+	PageBinarizationMethod()->SetString(2, BRINK_3CLASSES_DESCRIPTION);
+	
     this->RISM()->SetValidator(
         wxTextValidator( wxFILTER_ASCII, &recBookFile->m_RISM ));   
     this->Composer()->SetValidator(
@@ -70,6 +76,13 @@ RecBookDataDlg::RecBookDataDlg( wxWindow *parent, wxWindowID id, const wxString 
         wxTextValidator( wxFILTER_NONE, &recBookFile->m_axFileDir ));
     this->Images()->SetValidator(
         wxTextValidator( wxFILTER_NONE, &recBookFile->m_imgFileDir ));
+	// binarization
+	this->PageBinarizationMethod()->SetValidator( 
+		wxGenericValidator( &m_recBookFile->m_pre_page_binarization_method ) );	
+	this->BinarizationRegionSize()->SetValidator( 
+		wxGenericValidator( &m_recBookFile->m_pre_page_binarization_method_size ) );	
+	this->BinarizationSelect()->SetValidator( 
+		wxGenericValidator( &m_recBookFile->m_pre_page_binarization_select ) );
 }
 
 /*
@@ -162,7 +175,7 @@ RecBookPanel::RecBookPanel( wxWindow *parent, wxWindowID id,
 wxPanel( parent, id, position, size, style )
 {
     // WDR: dialog function BookFunc4 for RecBookPanel
-    BookFunc4( this, TRUE );
+    RecBookFunc4( this, TRUE );
     this->GetPreviewCB( )->SetValue( true );
 	m_show_preview = true;
 	m_filename = "";
@@ -358,6 +371,7 @@ void RecBookCtrl::Update( )
     wxASSERT( m_recEnvPtr );
     
     wxTreeItemId id;
+	int i;
 	
 	this->SaveDisplay( );
     
@@ -381,7 +395,7 @@ void RecBookCtrl::Update( )
         SetItemText( m_imgFilesId, wxString::Format( _("Images (%d)"), img ) );
     else
         SetItemText( m_imgFilesId, _("Images") );
-    for ( int i = 0; i < img; i++)
+    for ( i = 0; i < img; i++)
     {
         id = AppendItem( m_imgFilesId, m_recBookFilePtr->m_imgFiles[i].m_filename, IMG_DOC, IMG_DOC_S );
         if (  m_recBookFilePtr->m_imgFiles[i].m_flags & FILE_DESACTIVATED ) 
@@ -396,7 +410,7 @@ void RecBookCtrl::Update( )
         SetItemText( m_axFilesId, wxString::Format( _("Aruspix files (%d)"), ax ) );
     else
         SetItemText( m_axFilesId, _("Aruspix files") );
-    for ( int i = 0; i < ax; i++)
+    for ( i = 0; i < ax; i++)
     {
         id = AppendItem( m_axFilesId, m_recBookFilePtr->m_axFiles[i].m_filename, IMG_AXZ, IMG_AXZ_S );
         if (  m_recBookFilePtr->m_axFiles[i].m_flags & FILE_DESACTIVATED ) 
@@ -421,7 +435,7 @@ void RecBookCtrl::Update( )
 	}
 	else
         SetItemText( m_optFilesId, _("Optimization files") );
-    for ( int i = 0; i < opt; i++)
+    for ( i = 0; i < opt; i++)
     {
         id = AppendItem( m_optFilesId, m_recBookFilePtr->m_optFiles[i], IMG_AXZ_OK, IMG_AXZ_OK_S );
         if ( !wxFileExists( m_recBookFilePtr->m_axFileDir + wxFileName::GetPathSeparator() +  m_recBookFilePtr->m_optFiles[i] ) ) 

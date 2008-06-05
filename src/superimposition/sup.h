@@ -20,9 +20,6 @@
 
 #include "app/axapp.h"
 #include "app/axenv.h"
-#include "app/aximagecontroller.h"
-#include "app/axscrolledwindow.h"
-#include "im/imoperator.h"
 
 #include "sup_wdr.h"
 
@@ -31,33 +28,59 @@ enum
 	ID2_CONTROLLER1 = ENV_IDS_LOCAL_SUP,
 	ID2_CONTROLLER2,
 	ID2_VIEW1,
-	ID2_VIEW2
+	ID2_VIEW2,
+	ID2_SRC_CONTROLLER1,
+	ID2_SRC_CONTROLLER2,
+	ID2_SRC_VIEW1,
+	ID2_SRC_VIEW2,
+
+    ID2_POPUP_TREE_LOAD,
+    ID2_POPUP_TREE_SUP,
+    ID2_POPUP_TREE_BOOK_EDIT,
+    ID2_POPUP_TREE_IMG_REMOVE1,
+    ID2_POPUP_TREE_IMG_DESACTIVATE1,
+    ID2_POPUP_TREE_IMG_REMOVE2,
+    ID2_POPUP_TREE_IMG_DESACTIVATE2,
+    ID2_POPUP_TREE_AX_REMOVE,
+    ID2_POPUP_TREE_AX_DESACTIVATE,
+    ID2_POPUP_TREE_AX_DELETE
 };
 
 struct _imImage;
-class SupImController;
+
 class AxProgressDlg;
+class AxImageController;
+
+class SupImController;
+class SupImWindow;
+class SupImSrcWindow;
+class SupFile;
+class SupBookCtrl;
+class SupBookFile;
+class SupBookPanel;
+class SupEnv;
 
 // WDR: class declarations
 
+/*
 //----------------------------------------------------------------------------
-// SupFile
+// SupOldFile
 //----------------------------------------------------------------------------
 
-class SupFile: public ImOperator 
+class SupOldFile: public ImOperator 
 {
 public:
     // constructors and destructors
-    SupFile( wxString path = "", wxString shortname = "", AxProgressDlg *dlg  = NULL );
-    virtual ~SupFile();
+    SupOldFile( wxString path = "", wxString shortname = "", AxProgressDlg *dlg  = NULL );
+    virtual ~SupOldFile();
     
-    // WDR: method declarations for SupFile
+    // WDR: method declarations for SupOldFile
     bool Superimpose(const SupImController *imController1, 
         const SupImController *imController2, const wxString filename );
     //int GetError( ) { return m_error; }
     
 private:
-    // WDR: member variable declarations for SupFile
+    // WDR: member variable declarations for SupOldFile
     void DistByCorrelation(_imImage *image1, _imImage *image2,
                                 wxSize window, int *decalageX, int *decalageY);
     //void DistByCorrelationFFT(const _imImage *image1, const _imImage *image2,
@@ -66,10 +89,10 @@ private:
                                 int w, int h, int new_w, int new_h);
     bool Terminate( int code = 0, ... );
     //void SwapImages( _imImage **image1, _imImage **image2 );
-    //void ImageDestroy( _imImage **image );*/
+    //void ImageDestroy( _imImage **image );
 
 private:
-    // WDR: handler declarations for SupFile
+    // WDR: handler declarations for SupOldFile
     //AxProgressDlg *m_progressDlg;
     //int m_error;
 
@@ -85,7 +108,9 @@ private:
     _imImage *m_selection;
 
 };
+*/
 
+/*
 //----------------------------------------------------------------------------
 // SupImController
 //----------------------------------------------------------------------------
@@ -118,36 +143,9 @@ private:
     DECLARE_CLASS(SupImController)
     DECLARE_EVENT_TABLE()
 };
+*/
 
-
-
-//----------------------------------------------------------------------------
-// SupPanel
-//----------------------------------------------------------------------------
-
-class SupPanel: public wxPanel
-{
-public:
-    // constructors and destructors
-    SupPanel( wxWindow *parent, wxWindowID id = -1,
-        const wxPoint& pos = wxDefaultPosition,
-        const wxSize& size = wxDefaultSize,
-        long style = wxTAB_TRAVERSAL | wxNO_BORDER );
-    
-    // WDR: method declarations for SupPanel
-    wxSplitterWindow* GetSplitter1()  { return (wxSplitterWindow*) FindWindow( ID2_SPLITTER1 ); }
-    AxImageController* GetController2()  { return (AxImageController*) FindWindow( ID2_CONTROLLER2 ); }
-    AxImageController* GetController1()  { return (AxImageController*) FindWindow( ID2_CONTROLLER1 ); }
-    
-private:
-    // WDR: member variable declarations for SupPanel
-    
-private:
-    // WDR: handler declarations for SupPanel
-
-private:
-    DECLARE_EVENT_TABLE()
-};
+DECLARE_EVENT_TYPE(AX_PUT_POINTS_EVT, -1)
 
 //----------------------------------------------------------------------------
 // SupEnv
@@ -167,13 +165,36 @@ public:
     virtual void ParseCmd( wxCmdLineParser *parser );
     virtual void UpdateTitle( );
 	virtual void RealizeToolbar( );
-
+    virtual void Open( wxString filename, int type );
+    virtual bool CloseAll( );
+    //
+    bool ResetFile(); // must be called when new file is created or opened
+    bool ResetBookFile(); // must be called when new file is created or opened
+    void OpenFile( wxString filename, int type );
+    void OpenBookFile( wxString filename );
+    void UpdateViews( int flags );
+	
 private:
     // WDR: member variable declarations for SupEnv
     SupImController *m_imControl1Ptr;
-    SupImController *m_imControl2Ptr;
-    AxScrolledWindow *m_view1Ptr;
-    AxScrolledWindow *m_view2Ptr;
+    SupImController *m_imControl2Ptr;	
+    SupImWindow *m_imView1Ptr;
+    SupImWindow *m_imView2Ptr;
+	// sources for displaying results
+	AxImageController *m_srcControl1Ptr;
+    AxImageController *m_srcControl2Ptr;
+    SupImSrcWindow *m_srcView1Ptr;
+    SupImSrcWindow *m_srcView2Ptr;
+	
+    wxSplitterWindow *m_bookSplitterPtr;
+	wxSplitterWindow *m_pageSplitterPtr;
+	wxSplitterWindow *m_srcSplitterPtr;
+    // superimposition elements
+    SupFile *m_supFilePtr;
+    // 
+    SupBookCtrl *m_supBookPtr; // tree
+    SupBookFile *m_supBookFilePtr;
+    SupBookPanel *m_supBookPanelPtr;
 
 public:
     static int s_segmentSize;
@@ -184,22 +205,48 @@ public:
     static int s_interpolation;
     static bool s_filter1;
     static bool s_filter2;
+    // sash
+    static int s_book_sash;
+	static int s_page_viewer_sash;
+	static int s_page_images_sash;
+	// tree
+    static bool s_expand_root;
+	static bool s_expand_book;
+    static bool s_expand_img1;
+	static bool s_expand_img2;   
+	static bool s_expand_ax;
     
 private:
     // WDR: handler declarations for SupEnv
+    void OnBookEdit( wxCommandEvent &event );
+    void OnBookOptimize( wxCommandEvent &event );
+    void OnBookSuperimpose( wxCommandEvent &event );
+    void OnBookLoad( wxCommandEvent &event );
+    void OnCloseBook( wxCommandEvent &event );
+    void OnOpenBook( wxCommandEvent &event );
+    void OnNewBook( wxCommandEvent &event );
+    void OnSaveBookAs( wxCommandEvent &event );
+    void OnSaveBook( wxCommandEvent &event );
+    void OnNew( wxCommandEvent &event );
+    void OnSave( wxCommandEvent &event );
+    void OnSaveAs( wxCommandEvent &event );
+    void OnClose( wxCommandEvent &event );
+    void OnExportImage( wxCommandEvent &event );
+    void OnAdjust( wxCommandEvent &event );
+    void OnZoom( wxCommandEvent &event );
     void OnPrevious( wxCommandEvent &event );
     void OnNext( wxCommandEvent &event );
     void OnGoto( wxCommandEvent &event );
-    void OnClose( wxCommandEvent &event );
     void OnNextBoth( wxCommandEvent &event );
     void OnPreviousBoth( wxCommandEvent &event );
     void OnPaste( wxCommandEvent &event );
     void OnCopy( wxCommandEvent &event );
     void OnCut( wxCommandEvent &event );
-    void OnOpen( wxCommandEvent &event );
     void OnPutPoints( wxCommandEvent &event );
-    void OnSuperimpose( wxCommandEvent &event );
+    void OnRun( wxCommandEvent &event );
     void OnUpdateUI( wxUpdateUIEvent &event );
+	// custom event
+	void OnEndPutPoints( wxCommandEvent &event );
 
 private:
     DECLARE_DYNAMIC_CLASS(SupEnv)

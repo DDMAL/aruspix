@@ -35,6 +35,7 @@
 
 #include "app/axapp.h"
 #include "app/axframe.h"
+#include "app/axoptionsdlg.h"
 
 #include "im/impage.h"
 
@@ -60,11 +61,6 @@ int RecEnv::s_pre_margin_top = 150;
 int RecEnv::s_pre_margin_bottom = 120;
 int RecEnv::s_pre_margin_left = 30;
 int RecEnv::s_pre_margin_right = 20;
-int RecEnv::s_pre_threshold_method_resize = PRE_BINARIZATION_OTSU;
-int RecEnv::s_pre_threshold_method = PRE_BINARIZATION_BRINK;
-int RecEnv::s_pre_threshold_region_size = 15;
-
-
 
 wxString RecEnv::s_rec_typ_model = "";
 wxString RecEnv::s_rec_mus_model = "";
@@ -93,6 +89,8 @@ bool RecEnv::s_expand_opt = true;
 
 // WDR: class implementations
 
+
+
 //----------------------------------------------------------------------------
 // RecSplitterWindow
 //----------------------------------------------------------------------------
@@ -100,7 +98,6 @@ bool RecEnv::s_expand_opt = true;
 // WDR: event table for RecSplitterWindow
 
 BEGIN_EVENT_TABLE(RecSplitterWindow,wxSplitterWindow)
-    EVT_SPLITTER_DCLICK( -1, RecSplitterWindow::OnSashDoubleClick )
     EVT_SPLITTER_SASH_POS_CHANGED( -1, RecSplitterWindow::OnSashChanged)
 END_EVENT_TABLE()
 
@@ -111,54 +108,9 @@ RecSplitterWindow::RecSplitterWindow( wxWindow *parent, wxWindowID id,
     m_envPtr = NULL;
 }
 
-void RecSplitterWindow::SetEnv( RecEnv *env, wxFlexGridSizer *sizer, MusToolPanel *toolpanel,    RecMusController *musControlPtr )
+void RecSplitterWindow::SetEnv( RecEnv *env )
 {
     m_envPtr = env;
-    m_mussizer = sizer;
-    m_toolpanel = toolpanel;
-    m_musControlPtr = musControlPtr;
-}
-
-void RecSplitterWindow::ChangeOrientation( )
-{
-    /*
-    if ( !IsSplit() )
-        return;
-        
-    bool vertical = true;
-    if ( this->GetSplitMode() == wxSPLIT_VERTICAL )
-        vertical = false;
-
-    wxWindow *win1 = this->GetWindow1();
-    wxWindow *win2 = this->GetWindow2();
-    this->Unsplit();
-    win2->Show();
-
-    if (vertical)
-        this->SplitVertically( win1, win2 );
-    else
-        this->SplitHorizontally( win1, win2 );
-    
-    m_toolpanel->SetDirection( vertical );
-    int cols = ( vertical ) ? 0 : 1;
-    int rows = ( vertical ) ? 1 : 0;
-
-    m_mussizer->AddGrowableCol( rows );
-    m_mussizer->RemoveGrowableCol( cols );
-    m_mussizer->AddGrowableRow( cols );
-    m_mussizer->RemoveGrowableRow( rows );
-
-    m_mussizer->SetCols( cols );
-    m_mussizer->SetRows( rows );
-    m_mussizer->Layout();
-    //m_mussizer->SetSizeHints( win2 );
-
-
-    if ( m_envPtr )
-    {
-        m_envPtr->SyncZoom();
-    }
-    */
 }
 
 // WDR: handler implementations for RecSplitterWindow
@@ -168,31 +120,65 @@ void RecSplitterWindow::OnSashChanged( wxSplitterEvent &event )
     UpdateSize();
     if ( m_envPtr )
     {
-       // m_envPtr->SyncZoom();
+       m_envPtr->UpdateViews( 0 );
     }
     event.Skip();
 }
 
-void RecSplitterWindow::OnSashDoubleClick( wxSplitterEvent &event )
+
+//----------------------------------------------------------------------------
+// MusPanel
+//----------------------------------------------------------------------------
+
+class MusPanel: public wxPanel
 {
-    this->ChangeOrientation();
-}
+public:
+    // constructors and destructors
+    MusPanel( wxWindow *parent, wxWindowID id = -1,
+        const wxPoint& pos = wxDefaultPosition,
+        const wxSize& size = wxDefaultSize,
+        long style = wxTAB_TRAVERSAL | wxNO_BORDER );
+    
+    // WDR: method declarations for MusPanel
+    
+private:
+    // WDR: member variable declarations for MusPanel
+    
+private:
+    // WDR: handler declarations for MusPanel
+
+private:
+    DECLARE_EVENT_TABLE()
+};
+
 
 
 //----------------------------------------------------------------------------
-// RecPanel
+// MusPanel
 //----------------------------------------------------------------------------
 
-// WDR: event table for RecPanel
+// WDR: event table for MusPanel
 
-BEGIN_EVENT_TABLE(RecPanel,wxPanel)
+BEGIN_EVENT_TABLE(MusPanel,wxPanel)
 END_EVENT_TABLE()
 
-RecPanel::RecPanel( wxWindow *parent, wxWindowID id,
+MusPanel::MusPanel( wxWindow *parent, wxWindowID id,
     const wxPoint &position, const wxSize& size, long style ) :
     wxPanel( parent, id, position, size, style )
 {
-    WindowFunc4( this, TRUE ); 
+    wxFlexGridSizer *item0 = new wxFlexGridSizer( 1, 0, 0 );
+    item0->AddGrowableCol( 0 );
+    item0->AddGrowableRow( 1 );
+
+    MusToolPanel *item1 = new MusToolPanel( this, ID4_TOOLPANEL, wxDefaultPosition, wxSize(10,10), 0 );
+    item0->Add( item1, 0, wxGROW, 0 );
+
+    RecMusController *item2 = new RecMusController( this, ID4_MUSPANEL, wxDefaultPosition, wxSize(200,160), wxSUNKEN_BORDER );
+    item0->Add( item2, 0, wxGROW|wxALL, 0 );
+
+
+	this->SetSizer( item0 );
+	item0->SetSizeHints( this );
 }
 
 // WDR: handler implementations for RecPanel
@@ -259,8 +245,8 @@ IMPLEMENT_DYNAMIC_CLASS(RecEnv,AxEnv)
 RecEnv::RecEnv():
     AxEnv()
 {
-    m_splitterPtr = NULL;
-    m_vsplitterPtr = NULL;
+    m_pageSplitterPtr = NULL;
+    m_bookSplitterPtr = NULL;
     m_imControlPtr = NULL;
     m_imViewPtr = NULL;
     m_musControlPtr = NULL;
@@ -310,28 +296,28 @@ void RecEnv::LoadWindow()
     
     return item0;*/
         
-    m_vsplitterPtr = new wxSplitterWindow( m_framePtr, -1 );
-    this->m_envWindowPtr = m_vsplitterPtr;
+    m_bookSplitterPtr = new wxSplitterWindow( m_framePtr, -1 );
+    this->m_envWindowPtr = m_bookSplitterPtr;
     if (!m_envWindowPtr)
         return;
         
-    m_recBookPanelPtr = new RecBookPanel( m_vsplitterPtr, -1);
+    m_recBookPanelPtr = new RecBookPanel( m_bookSplitterPtr, -1);
     m_recBookPtr = m_recBookPanelPtr->GetTree();
     m_recBookPtr->SetBookFile( m_recBookFilePtr );
     m_recBookPtr->SetEnv( this );
     m_recBookPtr->SetBookPanel( m_recBookPanelPtr );
 
-    m_splitterPtr = new RecSplitterWindow( m_vsplitterPtr, -1 );
-    if (!m_splitterPtr)
+    m_pageSplitterPtr = new RecSplitterWindow( m_bookSplitterPtr, -1 );
+    if (!m_pageSplitterPtr)
         return;
-    m_vsplitterPtr->SetMinimumPaneSize( 100 );
-    m_vsplitterPtr->SplitVertically( m_recBookPanelPtr, m_splitterPtr, RecEnv::s_book_sash );
-    m_vsplitterPtr->Unsplit( m_recBookPanelPtr );
+    m_bookSplitterPtr->SetMinimumPaneSize( 100 );
+    m_bookSplitterPtr->SplitVertically( m_recBookPanelPtr, m_pageSplitterPtr, RecEnv::s_book_sash );
+    m_bookSplitterPtr->Unsplit( m_recBookPanelPtr );
 
-    m_splitterPtr->SetWindowStyleFlag( wxSP_FULLSASH );
-    m_splitterPtr->SetMinimumPaneSize( 100 );
+    m_pageSplitterPtr->SetWindowStyleFlag( wxSP_FULLSASH );
+    m_pageSplitterPtr->SetMinimumPaneSize( 100 );
 
-    m_imControlPtr = new RecImController( m_splitterPtr, ID4_CONTROLLER, wxDefaultPosition, wxDefaultSize, 0,
+    m_imControlPtr = new RecImController( m_pageSplitterPtr, ID4_CONTROLLER, wxDefaultPosition, wxDefaultSize, 0,
         CONTROLLER_NO_TOOLBAR );
     m_imControlPtr->SetEnv( this );
     m_imViewPtr = new RecImWindow( m_imControlPtr, ID4_VIEW , wxDefaultPosition, 
@@ -340,14 +326,16 @@ void RecEnv::LoadWindow()
     m_imViewPtr->m_popupMenu.AppendSeparator();
     m_imControlPtr->Init( this, m_imViewPtr );
 
-    m_musPanelPtr = new wxPanel( m_splitterPtr, ID4_DISPLAY );
-    wxFlexGridSizer *mussizer = (wxFlexGridSizer*)MusOutputFunc4( m_musPanelPtr, TRUE );
+    m_musPanelPtr = new MusPanel( m_pageSplitterPtr, ID4_DISPLAY );
+	//m_musPanelPtr = new wxPanel( m_pageSplitterPtr, ID4_DISPLAY );
+    //wxFlexGridSizer *mussizer = (wxFlexGridSizer*)MusOutputFunc4( m_musPanelPtr, TRUE );
     m_musControlPtr = (RecMusController*)m_envWindowPtr->FindWindowById( ID4_MUSPANEL );
     m_musViewPtr = new RecMusWindow( m_musControlPtr, ID4_WGWINDOW, wxDefaultPosition,
             wxDefaultSize, wxHSCROLL |wxVSCROLL | wxNO_BORDER  /*| wxSIMPLE_BORDER */ , false);
     m_musViewPtr->SetEnv( this );
     m_musControlPtr->Init( this, m_musViewPtr );
     
+	// cross pointers on views and controller and pointer to the file
     m_musControlPtr->SetImViewAndController( m_imViewPtr, m_imControlPtr );
     m_musControlPtr->SetRecFile( m_recFilePtr );
     m_imControlPtr->SetWgViewAndController( m_musViewPtr, m_musControlPtr );
@@ -355,20 +343,18 @@ void RecEnv::LoadWindow()
    
     m_toolpanel = (MusToolPanel*)m_envWindowPtr->FindWindowById( ID4_TOOLPANEL );
     wxASSERT_MSG( m_toolpanel, "Tool Panel cannot be NULL ");
-    
- //   m_toolpanel->SetDirection( false );
 
-    m_splitterPtr->SetEnv( this, mussizer, m_toolpanel, m_musControlPtr );
-
+    m_pageSplitterPtr->SetEnv( this );
+	
     if ( wxSystemSettings::GetColour(wxSYS_COLOUR_APPWORKSPACE) == *wxWHITE )
         m_musControlPtr->SetBackgroundColour( *wxLIGHT_GREY );
     else
         m_musControlPtr->SetBackgroundColour( wxSystemSettings::GetColour(wxSYS_COLOUR_APPWORKSPACE) );
 
 
-    //m_splitterPtr->SplitHorizontally(m_imControlPtr, m_musControlPtr,  800 );
-    m_splitterPtr->SplitHorizontally(m_imControlPtr, m_musPanelPtr );
-    m_splitterPtr->Unsplit();
+    //m_pageSplitterPtr->SplitHorizontally(m_imControlPtr, m_musControlPtr,  800 );
+    m_pageSplitterPtr->SplitHorizontally(m_imControlPtr, m_musPanelPtr );
+    m_pageSplitterPtr->Unsplit();
     
     ResetModels();
 }
@@ -376,9 +362,6 @@ void RecEnv::LoadWindow()
 
 void RecEnv::RealizeToolbar( )
 {
-
-    //ToolBarFunc4( m_framePtr->GetToolBar() ); // function generated by wxDesigner
-
     wxToolBar *toolbar =  m_framePtr->GetToolBar();
     
     toolbar->InsertTool( 0, ID4_NEW_BOOK, _T("New"), m_framePtr->GetToolbarBitmap( "book_new.png" ), wxNullBitmap, wxITEM_NORMAL, _("New book"), _("New book") );
@@ -422,9 +405,6 @@ void RecEnv::LoadConfig()
     RecEnv::s_pre_margin_bottom = pConfig->Read("Pre margin bottom", 120);
     RecEnv::s_pre_margin_left = pConfig->Read("Pre margin left", 30);
     RecEnv::s_pre_margin_right = pConfig->Read("Pre margin right", 20);
-    RecEnv::s_pre_threshold_method_resize = pConfig->Read("Binarization method resize", PRE_BINARIZATION_OTSU );
-    RecEnv::s_pre_threshold_method = pConfig->Read("Binarization method", PRE_BINARIZATION_BRINK );
-    RecEnv::s_pre_threshold_region_size = pConfig->Read("Binarization region size", 15);
     
     RecEnv::s_last_batch = pConfig->Read("Last Batch", 0L );
     RecEnv::s_book_sash = pConfig->Read("Book Sash", 200 );
@@ -461,16 +441,6 @@ void RecEnv::SaveConfig()
     wxASSERT_MSG( pConfig, wxT("pConfig cannot be NULL") );
     pConfig->SetPath("/Recognition");
 
-    // superimposition
-    /*pConfig->Write("SegmentSize", this->s_segmentSize);
-    pConfig->Write("Interpolation", this->s_interpolation);
-    pConfig->Write("SplitX", this->s_split_x);
-    pConfig->Write("SplitY", this->s_split_y);
-    pConfig->Write("CorrX", this->s_corr_x);
-    pConfig->Write("CorrY", this->s_corr_y);
-    pConfig->Write("Filter1", this->s_filter1);
-    pConfig->Write("Filter2", this->s_filter2);*/
-
     pConfig->Write("Borders", RecEnv::s_find_borders);
     pConfig->Write("Text initials", RecEnv::s_find_ornate_letters);
     pConfig->Write("Text", RecEnv::s_find_text );
@@ -479,10 +449,7 @@ void RecEnv::SaveConfig()
     pConfig->Write("Pre margin bottom",RecEnv::s_pre_margin_bottom);
     pConfig->Write("Pre margin left", RecEnv::s_pre_margin_left);
     pConfig->Write("Pre margin right", RecEnv::s_pre_margin_right );
-    pConfig->Write("Binarization method resize", RecEnv::s_pre_threshold_method_resize );
-    pConfig->Write("Binarization method", RecEnv::s_pre_threshold_method );
-    pConfig->Write("Binarization region size", RecEnv::s_pre_threshold_region_size );
-    
+        
     pConfig->Write("Last Batch", RecEnv::s_last_batch );
     pConfig->Write("Book Sash", RecEnv::s_book_sash);
 
@@ -520,8 +487,25 @@ void RecEnv::ParseCmd( wxCmdLineParser *parser )
         wxString file = parser->GetParam( 0 );
 		                        
         // upgrade file version
-        m_recFilePtr->Open( file );
-        m_recFilePtr->Modify( );
+        //m_recFilePtr->Open( file );
+        //m_recFilePtr->Modify( );
+        //m_recFilePtr->Save( false );
+		
+		// generate special ground-truth
+		/*
+		m_recFilePtr->Open( file );
+		m_recFilePtr->Modify( );
+		m_recFilePtr->WriteNoPitchMLF( );
+        m_recFilePtr->Save( false );
+		*/
+		// HACK : force MFC generation here
+		m_recFilePtr->Open( file );
+		m_recFilePtr->Modify( );
+		wxArrayPtrVoid mfc_params;
+		wxString mfcfile = "";
+		mfc_params.Add( &mfcfile );
+		AxProgressDlg dlg( m_framePtr, -1, _("Recognition") );
+		m_recFilePtr->GenerateMFC( mfc_params, &dlg ); // 2 operations
         m_recFilePtr->Save( false );
         
         /*
@@ -593,9 +577,9 @@ bool RecEnv::ResetBookFile()
     if ( !m_recBookFilePtr->Close( true ) )
         return false;
 
-    if ( m_vsplitterPtr->IsSplit() ) // keep position if splitted
-        RecEnv::s_book_sash = m_vsplitterPtr->GetSashPosition( );
-    m_vsplitterPtr->Unsplit( m_recBookPanelPtr );
+    if ( m_bookSplitterPtr->IsSplit() ) // keep position if splitted
+        RecEnv::s_book_sash = m_bookSplitterPtr->GetSashPosition( );
+    m_bookSplitterPtr->Unsplit( m_recBookPanelPtr );
     return true;
 }
 
@@ -617,7 +601,7 @@ bool RecEnv::ResetFile()
     
     m_toolpanel->SetWgWindow( NULL );    
     m_musControlPtr->CancelShowStaffBitmap();
-    m_splitterPtr->Unsplit();
+    m_pageSplitterPtr->Unsplit();
     UpdateTitle( );
     
     return true;
@@ -669,7 +653,7 @@ void RecEnv::UpdateViews( int flags )
 {
     if ( m_recFilePtr->IsRecognized() )
     {
-        m_splitterPtr->SplitHorizontally(m_imControlPtr, m_musPanelPtr );
+        m_pageSplitterPtr->SplitHorizontally(m_imControlPtr, m_musPanelPtr );
         AxImage img;
         m_recFilePtr->GetImage1( &img );
         m_imControlPtr->ResetImage( img );
@@ -689,7 +673,7 @@ void RecEnv::UpdateViews( int flags )
         }
         else
         {
-            m_splitterPtr->Unsplit();
+            m_pageSplitterPtr->Unsplit();
             AxImage img;
             m_recFilePtr->GetImage0( &img );
             m_imControlPtr->ResetImage( img );
@@ -733,7 +717,7 @@ void RecEnv::OpenBookFile( wxString filename  )
     if ( this->m_recBookFilePtr->Open( filename ) )
     {
         wxGetApp().AxBeginBusyCursor( );
-        m_vsplitterPtr->SplitVertically( m_recBookPanelPtr, m_splitterPtr, RecEnv::s_book_sash );
+        m_bookSplitterPtr->SplitVertically( m_recBookPanelPtr, m_pageSplitterPtr, RecEnv::s_book_sash );
         m_recBookPtr->Build();
         wxGetApp().AxEndBusyCursor();
     }
@@ -808,6 +792,7 @@ void RecEnv::OnExportAxmus( wxCommandEvent &event )
 }
 
 //#define META_BATCH3
+//#define META_BATCH_MUS
 
 void RecEnv::OnExportAxtyp( wxCommandEvent &event )
 {
@@ -1055,6 +1040,10 @@ void RecEnv::OnBookPreprocess( wxCommandEvent &event )
         RecFile recFilePtr( "rec_batch1_file" );
         recFilePtr.New();
         
+		recFilePtr.SetBinarization( m_recBookFilePtr->m_pre_image_binarization_method, 
+									m_recBookFilePtr->m_pre_page_binarization_method,
+									m_recBookFilePtr->m_pre_page_binarization_method_size);
+		
         wxArrayPtrVoid params;
         params.Add( &infile );
     
@@ -1080,6 +1069,9 @@ void RecEnv::OnBookPreprocess( wxCommandEvent &event )
 
 void RecEnv::OnBookLoad( wxCommandEvent &event )
 {
+    if ( !m_recBookFilePtr->IsOpened() )
+        return;
+
     m_recBookFilePtr->LoadImages();
     m_recBookFilePtr->LoadAxfiles();
     m_recBookPtr->Update();
@@ -1088,11 +1080,17 @@ void RecEnv::OnBookLoad( wxCommandEvent &event )
 
 void RecEnv::OnSaveBookAs( wxCommandEvent &event )
 {
+    if ( !m_recBookFilePtr->IsOpened() )
+        return;
+		
     m_recBookFilePtr->SaveAs();  
 }
 
 void RecEnv::OnSaveBook( wxCommandEvent &event )
 {
+    if ( !m_recBookFilePtr->IsOpened() )
+        return;
+
     m_recBookFilePtr->Save();    
 }
 
@@ -1130,7 +1128,7 @@ void RecEnv::OnNewBook( wxCommandEvent &event )
     {
         m_recBookFilePtr->Modify();
         wxGetApp().AxBeginBusyCursor( );
-        m_vsplitterPtr->SplitVertically( m_recBookPanelPtr, m_splitterPtr, RecEnv::s_book_sash );
+        m_bookSplitterPtr->SplitVertically( m_recBookPanelPtr, m_pageSplitterPtr, RecEnv::s_book_sash );
         m_recBookPtr->Build();
         wxGetApp().AxEndBusyCursor();
     }
@@ -1170,8 +1168,6 @@ void RecEnv::OnClose( wxCommandEvent &event )
 {
     ResetFile();
 }
-
-
 
 
 // meta batch
@@ -1216,8 +1212,13 @@ void RecEnv::BatchAdaptation( )
             continue;   
     
         // name of model to generate - temporary...
-        RecTypModel model( "rec_batch3_model" );
-        model.New();    
+        //
+#ifdef META_BATCH_MUS    
+        RecMusModel model( "rec_batch3_model" );
+#else
+		RecTypModel model( "rec_batch3_model" );
+#endif
+		model.New();    
 
         //Reset();
 
@@ -1238,12 +1239,21 @@ void RecEnv::BatchAdaptation( )
         if ( !failed )  
             failed = !model.Commit( dlg );
 
-        imCounterEnd( dlg->GetCounter() );
+#ifdef META_BATCH_MUS
+	    if ( !failed )  
+			failed = !model.Train( params, dlg );
+#endif
+		
+		imCounterEnd( dlg->GetCounter() );
 
         dlg->AxShowModal( ); // stop process  ( failed ???? )
         dlg->Destroy();
-    
-        model.SaveAs( filename + ".axz" );
+
+#ifdef META_BATCH_MUS    
+        model.SaveAs( filename + ".axmus" );
+#else
+		model.SaveAs( filename + ".axtyp" );
+#endif
     
         cont = dir.GetNext(&filename);
     }
@@ -1403,10 +1413,10 @@ void RecEnv::OnCancelRecognition( wxCommandEvent &event )
 
 void RecEnv::OnRun( wxCommandEvent &event )
 {
-    
-    if ( !m_recFilePtr->IsPreprocessed() )
-        this->Preprocess();
-    else if ( !m_recFilePtr->IsRecognized() )
+    if ( !m_recFilePtr->IsPreprocessed() ){
+		this->Preprocess();
+	}
+	else if ( !m_recFilePtr->IsRecognized() )
         this->Recognize();
 }
 
@@ -1498,7 +1508,20 @@ void RecEnv::Preprocess( )
     // if a book is opened, check if the file has to be preprocessed
     if ( m_recBookFilePtr->IsOpened() && !m_recBookFilePtr->HasToBePreprocessed( m_imControlPtr->GetFilename() ) )
         return;
-        
+	
+	// if a book is opened, use the book binarization parameters
+	if ( m_recBookFilePtr->IsOpened() && m_recBookFilePtr->m_pre_page_binarization_select == true ){
+		AxBinSelectDlgFunc *bindlg = new AxBinSelectDlgFunc( m_framePtr, -1, _("Binarization Selection"), m_recFilePtr, m_recBookFilePtr );
+		bindlg->Center( wxBOTH );
+		bindlg->ShowModal();
+		bindlg->Destroy();
+	} else if ( !m_recBookFilePtr->IsOpened() && ImPage::s_pre_page_binarization_select == true ){
+		AxBinSelectDlgFunc *bindlg = new AxBinSelectDlgFunc( m_framePtr, -1, _("Binarization Selection"), m_recFilePtr, NULL );
+		bindlg->Center( wxBOTH );
+		bindlg->ShowModal();
+		bindlg->Destroy();
+	}
+	
     AxProgressDlg *dlg = new AxProgressDlg( m_framePtr, -1, _("Preprocessing") );
     dlg->Center( wxBOTH );
     dlg->Show();

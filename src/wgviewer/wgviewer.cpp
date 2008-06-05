@@ -259,9 +259,9 @@ void WgvEnv::OnSaveMLF( wxCommandEvent &event )
     bool positions = ( wxMessageBox("Output symboles positions?", wxGetApp().GetAppName() ,
                             wxYES | wxNO | wxICON_QUESTION ) == wxYES );
 
-    MusMLFOutput *mlfoutput = new MusMLFOutput( m_filePtr, filename, "MusMLFSymbol" );
+    MusMLFOutput *mlfoutput = new MusMLFOutput( m_filePtr, filename, NULL, "MusMLFSymbol" );
 	//mlfoutput->LoadTypes( dic );
-	mlfoutput->m_writePosition = positions;
+	mlfoutput->m_pagePosition = positions;
     mlfoutput->m_addPageNo = true;
     
     mlfoutput->ExportFile();

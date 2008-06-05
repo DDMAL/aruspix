@@ -27,6 +27,7 @@
 #include "axapp.h"
 #include "mus/musfile.h"
 #include "mus/musiowwg.h"
+#include "im/impage.h"
 
 #ifdef AX_SUPERIMPOSITION
 	#include "superimposition/sup.h"
@@ -34,7 +35,6 @@
 
 #ifdef AX_RECOGNITION
 	#include "recognition/rec.h"
-	#include "im/imoperator.h"
 #endif
 
 //----------------------------------------------------------------------------
@@ -63,6 +63,8 @@ BEGIN_EVENT_TABLE(AxOptionsDlg,wxDialog)
 #endif
 END_EVENT_TABLE()
 
+int AxOptionsDlg::s_last_open_tab = 0;
+
 AxOptionsDlg::AxOptionsDlg( wxWindow *parent, wxWindowID id, const wxString &title,
     const wxPoint &position, const wxSize& size, long style ) :
     wxDialog( parent, id, title, position, size, style )
@@ -70,29 +72,28 @@ AxOptionsDlg::AxOptionsDlg( wxWindow *parent, wxWindowID id, const wxString &tit
     m_changeLanguage = false;
     m_changeFont = false;
 	
-	
 	this->SetAutoLayout( true );
 
     this->SetExtraStyle(wxWS_EX_VALIDATE_RECURSIVELY);
 		
     //OptionsDlgFunc( this, TRUE ); do it manually to allow conditionnal adds
     wxBoxSizer *item0 = new wxBoxSizer( wxVERTICAL );
-    wxNotebook *notebook = new wxNotebook( this, ID_NOTEBOOK_OP, wxDefaultPosition, wxSize(50,50) );//, 0 );
+    m_notebook = new wxNotebook( this, ID_NOTEBOOK_OP, wxDefaultPosition, wxSize(50,50) );//, 0 );
 	m_min_size.Set( 0, 0 );
 
 	// Standard tabs
-	this->OptionsDlgStandard( notebook );	
+	this->OptionsDlgStandard( m_notebook );	
 	
 	// Superimposition tabs
-	this->OptionsDlgSuperimposition( notebook );	
+	this->OptionsDlgSuperimposition( m_notebook );	
 	
 	// Recognition tabs
-	this->OptionsDlgRecognition( notebook );	
+	this->OptionsDlgRecognition( m_notebook );	
 
 	// Notebook and Buttons
 	// Layout 'a la main' .... pffff
-	notebook->SetMinSize( notebook->CalcSizeFromPage( m_min_size ) );
-    item0->Add( notebook, 0, wxALIGN_CENTER|wxALL, 5 );
+	m_notebook->SetMinSize( m_notebook->CalcSizeFromPage( m_min_size ) );
+    item0->Add( m_notebook, 0, wxALIGN_CENTER|wxALL, 5 );
     wxBoxSizer *item5 = new wxBoxSizer( wxHORIZONTAL );
     wxButton *item6 = new wxButton( this, wxID_OK, _("OK"), wxDefaultPosition, wxDefaultSize, 0 );
     item5->Add( item6, 0, wxALIGN_CENTER|wxALL, 5 );
@@ -109,6 +110,8 @@ AxOptionsDlg::AxOptionsDlg( wxWindow *parent, wxWindowID id, const wxString &tit
     m_musWinPtr = new AxOptMusWindow( GetWgPanel(), -1, wxDefaultPosition, wxDefaultSize, wxHSCROLL|wxVSCROLL|wxNO_BORDER );
 	m_musWinPtr->SetBackgroundColour( wxSystemSettings::GetColour( wxSYS_COLOUR_MENU)  );
     m_musWinPtr->Resize( );
+	
+	m_notebook->SetSelection(s_last_open_tab);
 }
 
 
@@ -148,6 +151,8 @@ void AxOptionsDlg::OptionsDlgStandard( wxNotebook *notebook )
         wxTextValidator(wxFILTER_NUMERIC,&m_imageSizeToReduceStr));
 	this->GetCbNegativeOpi()->SetValidator(
         wxGenericValidator(&AxImage::s_checkIfNegative));
+	this->GetRbImageBin()->SetValidator(
+		wxGenericValidator(&ImOperator::s_pre_image_binarization_method));
 }
 
 void AxOptionsDlg::OptionsDlgSuperimposition( wxNotebook *notebook )
@@ -194,6 +199,10 @@ void AxOptionsDlg::OptionsDlgRecognition( wxNotebook *notebook )
 	m_min_size.Set( max( m_min_size.GetWidth(), size.GetWidth() ), max( m_min_size.GetHeight(), size.GetHeight() ) );
     notebook->AddPage( item1, _("Recognition") );
 	
+	GetCBinOps3()->SetString(0, BRINK_2CLASSES_DESCRIPTION);
+	GetCBinOps3()->SetString(1, SAUVOLA_DESCRIPTION);
+	GetCBinOps3()->SetString(2, BRINK_3CLASSES_DESCRIPTION);
+	
 	// pre-processing
     this->GetChTextOps3()->SetValidator(
         wxGenericValidator(&RecEnv::s_find_text));
@@ -213,12 +222,12 @@ void AxOptionsDlg::OptionsDlgRecognition( wxNotebook *notebook )
 	this->GetScMarginRightOps3()->SetValidator(
         wxGenericValidator(&RecEnv::s_pre_margin_right));
 	// binarization
-	this->GetRbBinResOps3()->SetValidator(
-        wxGenericValidator(&RecEnv::s_pre_threshold_method_resize));
-	this->GetRbBinOps3()->SetValidator(
-        wxGenericValidator(&RecEnv::s_pre_threshold_method));
+	this->GetCBinOps3()->SetValidator(
+        wxGenericValidator(&ImPage::s_pre_page_binarization_method));
 	this->GetScBinSizeOps3()->SetValidator(
-        wxGenericValidator(&RecEnv::s_pre_threshold_region_size));
+        wxGenericValidator(&ImPage::s_pre_page_binarization_method_size));
+	this->GetCbBinSelect()->SetValidator(
+		wxGenericValidator(&ImPage::s_pre_page_binarization_select));
 
     // typographic model
     this->GetTypModel()->SetValidator(
@@ -322,8 +331,8 @@ protected:
 
 void AxOptionsDlg::OnChooseFont( wxCommandEvent &event )
 {
-
 #ifdef __WXMAC__ && !wxCHECK_VERSION(2,8,3)
+
     AxFontEnumerator fontEnumerator;
 	wxString facename;
     fontEnumerator.EnumerateFacenames( wxFONTENCODING_CP1252 );
@@ -378,9 +387,10 @@ void AxOptionsDlg::OnPreDefault( wxCommandEvent &event )
 	this->GetScMarginLeftOps3()->SetValue( 30 );
 	this->GetScMarginRightOps3()->SetValue( 20 );
 	// binarization
-	this->GetRbBinResOps3()->SetSelection( IM_BINARIZATION_OTSU );
-	this->GetRbBinOps3()->SetSelection( PRE_BINARIZATION_BRINK );
+	this->GetRbImageBin()->SetSelection( IM_BINARIZATION_BRINK );
+	this->GetCBinOps3()->SetSelection( PRE_BINARIZATION_BRINK );
 	this->GetScBinSizeOps3()->SetValue( 15 );
+	this->GetCbBinSelect()->SetValue( true );
 }
 
 void AxOptionsDlg::OnBrowseDocDir( wxCommandEvent &event )
@@ -440,7 +450,8 @@ void AxOptionsDlg::OnOk(wxCommandEvent &event)
         //RecEnv::s_rec_word_pen = atof(m_wordPenStr);
         RecEnv::s_rec_lm_scaling = atof(m_lmScalingStr);
 	#endif
-	
+		
+		s_last_open_tab = m_notebook->GetSelection( );
         event.Skip();
     }
 }
@@ -450,7 +461,8 @@ void AxOptionsDlg::OnCancel(wxCommandEvent &event)
 	// reset previous values;
 	wxGetApp().m_fontPosCorrection = m_previousFontPosCorrection;
 	wxGetApp().m_fontSizeCorrection = m_previousFontSizeCorrection;
-    event.Skip();
+	s_last_open_tab = m_notebook->GetSelection( );
+	event.Skip();
 }
 
 
@@ -518,4 +530,25 @@ AxOptMusWindow::~AxOptMusWindow()
 
 void AxOptMusWindow::OnMouse(wxMouseEvent &event)
 {
+}
+
+//----------------------------------------------------------------------------
+// AxBinSelectDlgFunc
+//----------------------------------------------------------------------------
+
+AxBinSelectDlgFunc::AxBinSelectDlgFunc(wxWindow *parent, wxWindowID id, const wxString &title, RecFile *recfile, RecBookFile *recbookfile ) : 
+					wxDialog( parent, id, title )
+{
+	BinSelectDlgFunc( this, TRUE );
+	
+	GetCPageBin()->SetString(0, BRINK_2CLASSES_DESCRIPTION);
+	GetCPageBin()->SetString(1, SAUVOLA_DESCRIPTION);
+	GetCPageBin()->SetString(2, BRINK_3CLASSES_DESCRIPTION);
+	
+	this->GetCPageBin()->SetValidator( wxGenericValidator( &recfile->m_pre_page_binarization_method ) );
+	this->GetScBinRgnSize()->SetValidator( wxGenericValidator( &recfile->m_pre_page_binarization_method_size ) );
+	if ( recbookfile == NULL )
+		this->GetCbDeactivateDlg()->SetValidator( wxGenericValidator( &ImPage::s_pre_page_binarization_select ) );
+	else 
+		this->GetCbDeactivateDlg()->SetValidator( wxGenericValidator( &recbookfile->m_pre_page_binarization_select ) );
 }

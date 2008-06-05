@@ -92,7 +92,7 @@ public:
     // timer opertation
     void StartTimerOperation( int code, int nb_units = 1 );
         // le principe est de garder en memoire (variable statiques et dans le fichier de conf)
-        // les temps d'execution pour certaines operations (code) et par unite (ex staff segment)
+        // les temps d'execution pour certaines operations (code) et par unite (ex staff)
     void EndTimerOperation( int code );
     bool IncTimerOperation( );
     // etat
@@ -122,10 +122,10 @@ private:
     // static members to keep timer operation values
 	static bool s_close_at_end;
     // values are in milliseconds second per units
-    static int s_timer_decoding; // time for staff decoding | one unit = on staff segment
+    static int s_timer_decoding; // time for staff decoding | one unit = on staff 
     static int s_timer_model_bigram;  // time for models generation | one unit = 1 file
-	static int s_timer_full_adapting; // time for staff decoding | one unit = on staff segment
-	static int s_timer_fast_adapting; // time for staff decoding | one unit = on staff segment
+	static int s_timer_full_adapting; // time for staff decoding | one unit = on staff
+	static int s_timer_fast_adapting; // time for staff decoding | one unit = on staff
 
 public:
     int m_counter;

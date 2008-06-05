@@ -32,8 +32,8 @@
 const wxString IPC_START = "StartOther";
 
 int AxApp::s_version_major = 1;
-int AxApp::s_version_minor = 3;
-int AxApp::s_version_revision = 1;
+int AxApp::s_version_minor = 4;
+int AxApp::s_version_revision = 0;
 wxString AxApp::s_version = wxString::Format("%d.%d.%d", AxApp::s_version_major, AxApp::s_version_minor, AxApp::s_version_revision);
 wxString AxApp::s_build_date = __DATE__;
 wxString AxApp::s_build_time = __TIME__;
@@ -128,20 +128,14 @@ bool AxApp::OnInit()
     }
     delete logNo;
 #endif
-	
-	/*
-    // get application filename without extension
-	m_appPath = wxFileName(argv[0]).GetPath (wxPATH_GET_VOLUME);
-    m_resourcesPath = m_appPath;
-#if defined(__APPLE__)
-    m_resourcesPath = m_appPath.BeforeLast('/');
-    m_resourcesPath += "/Resources";    
-    //wxLogMessage(appPath);
-#endif
-	*/
+
 
 	m_appPath = wxFileName(wxStandardPaths::Get().GetExecutablePath()).GetPath (wxPATH_GET_VOLUME);
+#if defined(__WXMSW__)
+    m_resourcesPath = m_appPath;
+#else // OS X
 	m_resourcesPath = wxStandardPaths::Get().GetResourcesDir();
+#endif
 	m_logDir = wxStandardPaths::Get().GetUserDataDir();
 
     // configuration that has to be loaded before building the frame
@@ -156,7 +150,7 @@ bool AxApp::OnInit()
     pConfig->Read("Language",&m_language,-1);
     
 	wxSplashScreen* splash = NULL; 
-    if ( m_language == -1 ) // never choosed before, run setup
+    if ( m_language == -1 ) // never choosed before, it is the first time the user run aruspix, run setup
     {
 		SetExitOnFrameDelete(FALSE);
 		AxSetup setup( wxBitmap( m_resourcesPath + "/logo.png", wxBITMAP_TYPE_PNG ) );
@@ -169,14 +163,20 @@ bool AxApp::OnInit()
 			
 		SetExitOnFrameDelete(TRUE);
     }
-	else
+	else // splash screen,but not shown in Debug mode
 	{
 		wxBitmap bitmap;
 		if (bitmap.LoadFile( m_resourcesPath + "/splash.png", wxBITMAP_TYPE_PNG))
 		{
 			wxMemoryDC dest;
 			dest.SelectObject( bitmap );
-			dest.SetFont( *wxSMALL_FONT );
+#if defined(__WXMSW__)
+			long splash_style = wxSIMPLE_BORDER | wxSTAY_ON_TOP;
+			dest.SetFont( *wxNORMAL_FONT );
+#else
+			long splash_style = wxSIMPLE_BORDER; // stay on top did not work on OS X
+			dest.SetFont( *wxSMALL_FONT );		
+#endif
 			wxString version = wxString::Format( "Version %s", AxApp::s_version.c_str() );
 			wxString build = wxString::Format( "Build %s - %s", AxApp::s_build_date.c_str() , AxApp::s_build_time.c_str() );
 			int x = 140;
@@ -184,16 +184,16 @@ bool AxApp::OnInit()
 			dest.DrawText( build , x, 245 );
 			dest.DrawText( "Laurent Pugin, Copyright 2004-2008" , x, 260 );
 			dest.DrawText( "All Rights Reserved" , x, 275 );
+			dest.SelectObject( wxNullBitmap );
 
-#ifndef __AXDEBUG__		
+#ifndef __AXDEBUG__
 			splash = new wxSplashScreen(bitmap,
 					wxSPLASH_CENTRE_ON_SCREEN | wxSPLASH_TIMEOUT,
-					4000, NULL, -1, wxDefaultPosition, wxDefaultSize, wxSIMPLE_BORDER );
+					4000, NULL, -1, wxDefaultPosition, wxDefaultSize, splash_style );
 #endif
 		}
 	}
 	
-
     switch (m_language)
     {
         case 0 : m_locale.Init( wxLANGUAGE_ENGLISH ); break;
@@ -248,7 +248,9 @@ bool AxApp::OnInit()
         m_mainFrame->Close();
     else
         m_mainFrame->Show(TRUE);
-	m_mainFrame->Lower( );  
+#if !defined(__WXMSW__)
+	m_mainFrame->Lower( ); 	// again, stay on top did not work for OS X	
+#endif
 
     return TRUE;
 }
@@ -673,10 +675,15 @@ AxSetup::AxSetup( wxBitmap logo )
     // a wizard page may be either an object of predefined class
 	m_language = -1;
     m_page1 = new AxSetupPage1(this, &m_language);
-	
-    AxSetupPage2 *page2 = new AxSetupPage2(this);
 
-    wxWizardPageSimple::Chain(m_page1, page2);
+
+#if defined(__WXMSW__) // to tired to fix this on Windows... language only
+    //wxWizardPageSimple::Chain(m_page1);
+#else // OS X
+    AxSetupPage2 *page2 = new AxSetupPage2(this);
+    wxWizardPageSimple::Chain(m_page1, page2);;
+#endif
+
 
 }
 

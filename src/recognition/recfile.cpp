@@ -20,13 +20,13 @@
 
 #include "wx/file.h"
 #include "wx/filename.h"
+#include "wx/txtstrm.h"
 
 #include "recfile.h"
 #include "rec.h"
 #include "recmodels.h"
 #include "im/impage.h"
 #include "im/imstaff.h"
-#include "im/imstaffsegment.h"
 
 #include "app/axapp.h"
 #include "app/axprocess.h"
@@ -69,6 +69,79 @@ RecFile::~RecFile()
 }
 
 
+void RecFile::UpgradeTo_1_4_0()
+{
+	if ( AxFile::FormatVersion(m_vmaj, m_vmin, m_vrev) >= AxFile::FormatVersion(1, 4, 0) )
+		return; // when do not need to upgrade the file
+		
+	// From version 1.4.0, they are no staff segments anymore
+	// Files with staff multiple segments cannot be upgraded
+	// Margin were fixed in the music editor
+	// To upgrade, we neww to remap the xml file
+
+	
+	if ( !wxFileExists( m_basename + "page.wwg") )
+		return; // nothing has to be done for files that were only preprocessed
+		
+	bool failed = false;
+		
+	// map the xml file
+	TiXmlElement *root = NULL;
+    TiXmlNode *node1 = NULL;
+	TiXmlNode *node2 = NULL;
+    TiXmlElement *elem1 = NULL;
+	TiXmlElement *elem2 = NULL;
+	
+	node1 = m_xml_root->FirstChild( "impage" );
+	if ( !node1 ) 
+		failed = true;
+	else
+		root = node1->ToElement();
+    if ( !root )
+		failed = true;
+
+    // staves
+    for( node1 = root->FirstChild( "staff" ); node1; node1 = node1->NextSibling( "staff" ) )
+    {
+		if ( failed )
+			break;
+			
+		int x1 = 0;
+		int x2 = 0;
+        elem1 = node1->ToElement();
+        if (!elem1)
+			continue;
+			
+		int i = 0;
+		for( node2 = elem1->FirstChild( "staffsegment" ); node2; node2 = node2->NextSibling( "staffsegment" ) )
+		{
+			if ( i > 0 ) // Upgrade cannot handle file with multiple segments
+			{
+				failed = true;
+				break;
+			}
+			i++;
+			elem2 = node2->ToElement();
+			if (!elem2) 
+				continue;
+			elem2->Attribute("x1", &x1 );
+			elem2->Attribute("x2", &x2 );
+			elem2->Attribute("order", &m_rec_lm_order );
+			elem2->Attribute("scaling", &m_rec_lm_scaling );
+		}
+		elem1->SetAttribute("x1", x1 );
+		elem1->SetAttribute("x2", x2 );
+    }
+	
+	if ( failed )
+	{
+		wxLogError(_("This file was generated with a previous version of Aruspix and the recognition results cannot be loaded"));
+		this->CancelRecognition( false );
+	}
+	else
+		wxLogDebug("File successfully upgraded to 1.4.0");
+}
+
 void RecFile::NewContent( )
 {
 	wxASSERT_MSG( !m_imPagePtr, "ImPage should be NULL" );
@@ -80,6 +153,14 @@ void RecFile::NewContent( )
         
 	// new ImPage and Load
     m_imPagePtr = new ImPage( m_basename, &m_isModified );
+
+	m_pre_image_binarization_method = ImOperator::s_pre_image_binarization_method;
+	m_pre_page_binarization_method =  ImPage::s_pre_page_binarization_method;
+	m_pre_page_binarization_method_size = ImPage::s_pre_page_binarization_method_size;
+	
+	m_imPagePtr->m_pre_image_binarization_methodPtr = &m_pre_image_binarization_method;
+	m_imPagePtr->m_pre_page_binarization_methodPtr = &m_pre_page_binarization_method;
+	m_imPagePtr->m_pre_page_binarization_method_sizePtr = &m_pre_page_binarization_method_size;
 	
 	m_isPreprocessed = false;
 	m_isRecognized = false;
@@ -90,6 +171,11 @@ void RecFile::OpenContent( )
 {
 	this->NewContent();
 	
+	TiXmlElement *root = NULL;
+    TiXmlNode *node = NULL;
+	
+	UpgradeTo_1_4_0();
+	
 	// start
     bool failed = false;
 	
@@ -99,6 +185,19 @@ void RecFile::OpenContent( )
 	else
 		m_isPreprocessed = true;
 	
+		// binarization variables	
+		node = m_xml_root->FirstChild( "binarization" );
+		if ( !node ) return;
+		root = node->ToElement();
+		if ( !root ) return;
+		
+		if ( root->Attribute( "pre_image_binarization_method" ) )
+			RecFile::m_pre_image_binarization_method = atoi( root->Attribute( "pre_image_binarization_method" ) );
+		if ( root->Attribute( "pre_page_binarization_method" ) )
+			RecFile::m_pre_page_binarization_method = atoi( root->Attribute( "pre_page_binarization_method" ) );
+		if ( root->Attribute( "pre_page_binarization_method_size" ) )
+			RecFile::m_pre_page_binarization_method_size = atoi( root->Attribute( "pre_page_binarization_method_size" ) );
+		
 	if ( wxFileExists( m_basename + "page.wwg") )
 	{
 		MusWWGInput *wwginput = new MusWWGInput( m_musFilePtr, m_musFilePtr->m_fname );
@@ -154,7 +253,6 @@ void RecFile::OpenContent( )
 	*/
 }
 
-
 void RecFile::SaveContent( )
 {
 	wxASSERT_MSG( m_imPagePtr, "ImPage should not be NULL" );
@@ -163,9 +261,17 @@ void RecFile::SaveContent( )
 		
 	if ( !m_isPreprocessed )
 		return;
-	else
-		m_imPagePtr->Save( m_xml_root ); // save in the RecFile directory
+	else {
+		m_imPagePtr->Save( m_xml_root ); // save in the RecFile directory		
 		
+		// binarization variables
+		TiXmlElement binarization( "binarization" );
+		binarization.SetAttribute( "pre_image_binarization_method", RecFile::m_pre_image_binarization_method );
+		binarization.SetAttribute( "pre_page_binarization_method", RecFile::m_pre_page_binarization_method );
+		binarization.SetAttribute( "pre_page_binarization_method_size", RecFile::m_pre_page_binarization_method_size );
+		m_xml_root->InsertEndChild( binarization );
+	}
+
 	if ( !m_isRecognized )
 		return;
 	else
@@ -175,35 +281,35 @@ void RecFile::SaveContent( )
 		wwgoutput->ExportFile();
 		delete wwgoutput;
 		
-		MusMLFOutput *mlfoutput = new MusMLFOutput( m_musFilePtr, m_basename + "page.mlf" );
-		mlfoutput->m_writePosition = true;
+		MusMLFOutput *mlfoutput = new MusMLFOutput( m_musFilePtr, m_basename + "page.mlf", NULL );
+		mlfoutput->m_pagePosition = true;
 		mlfoutput->WritePage( &m_musFilePtr->m_pages[0] , "staff", m_imPagePtr );
 		delete mlfoutput;
 	
-		TiXmlElement root("recpage");
+		TiXmlElement root( "recpage" );
     
 		// models
-		TiXmlElement models("models");
-		models.SetAttribute("typographic_model",  m_rec_typ_model.c_str() );
-		models.SetAttribute("music_model",  m_rec_mus_model.c_str() );	
+		TiXmlElement models( "models" );
+		models.SetAttribute( "typographic_model",  m_rec_typ_model.c_str() );
+		models.SetAttribute( "music_model",  m_rec_mus_model.c_str() );	
 		root.InsertEndChild( models );
 
 		// decoder
-		TiXmlElement decoder("decoder");
-		decoder.SetAttribute("wrdtrns",  m_rec_wrdtrns.c_str() );
-		decoder.SetAttribute("lm_delayed",  m_rec_delayed);
-		decoder.SetAttribute("order",  m_rec_lm_order );
-		decoder.SetDoubleAttribute("scaling",  m_rec_lm_scaling );
+		TiXmlElement decoder( "decoder" );
+		decoder.SetAttribute( "wrdtrns",  m_rec_wrdtrns.c_str() );
+		decoder.SetAttribute( "lm_delayed",  m_rec_delayed );
+		decoder.SetAttribute( "order",  m_rec_lm_order );
+		decoder.SetDoubleAttribute( "scaling",  m_rec_lm_scaling );
 		root.InsertEndChild( decoder );
 
 		// wwg
 		TiXmlElement wwg("wwg");
 		wxFileName fwwg( m_musFilePtr->m_fname );
-		wwg.SetAttribute("fname", fwwg.GetFullName().c_str() );
+		wwg.SetAttribute( "fname", fwwg.GetFullName().c_str() );
 		//if ( m_musViewPtr )
 		//	wwg.SetAttribute("page",  m_musViewPtr->m_npage );
 		root.InsertEndChild( wwg );
-		
+			
 		m_xml_root->InsertEndChild( root );
 	}
 }
@@ -228,10 +334,16 @@ void RecFile::CloseContent( )
 	m_isRecognized = false;
 }
 
+void RecFile::SetBinarization( int image_binarization_method, int page_binarization_method, int page_binarization_size ){
+	this->m_pre_image_binarization_method = image_binarization_method;
+	this->m_pre_page_binarization_method = page_binarization_method;
+	this->m_pre_page_binarization_method_size = page_binarization_size;
+}
+
 // static
 bool RecFile::IsRecognized( wxString filename )
 {
-	return !AxFile::GetPreview( filename, "page.wwg"  ).IsEmpty();
+	return AxFile::ContainsFile( filename, "page.wwg"  );
 }
 
 void RecFile::GetImage1( AxImage *image )
@@ -294,6 +406,48 @@ bool RecFile::CancelRecognition( bool ask_user )
 	
 }
 
+void RecFile::WriteNoPitchMLF(  )
+{
+	if ( !m_isRecognized )
+		return;
+
+	MusMLFOutputNoPitch *mlfoutputwp = new MusMLFOutputNoPitch( m_musFilePtr, m_basename + "pagewp.mlf", NULL );
+	mlfoutputwp->m_pagePosition = true;
+	//mlfoutputwp->CreateSubFile();
+	mlfoutputwp->WritePage( &m_musFilePtr->m_pages[0] , "" );//wxString("staff") );
+	delete mlfoutputwp;
+	
+	wxFileInputStream input( m_basename + "pagewp.mlf" );
+	if ( !input.Ok() )
+		return;
+		
+	wxTextInputStream text( input );
+	wxFile output;
+
+	while( !input.Eof() )
+	{
+		wxString str = text.ReadLine();
+		if ( str.IsEmpty() || ( str[0]=='#' ) )
+			continue; // skip line
+		else if ( str[0]=='"' )
+		{
+			wxASSERT( !output.IsOpened() );
+			wxString out = str.AfterLast('_').BeforeLast('.');
+			output.Open( m_basename + "staff_" + out + ".nplab", wxFile::write );
+		}
+		else if ( str[0]=='.' )
+		{
+			wxASSERT( output.IsOpened() );
+			output.Close();
+		}
+		else // write content
+		{
+			wxASSERT( output.IsOpened() );
+			output.Write( str + "\n" );
+		}
+	}
+}
+
 // functors
 
 bool RecFile::Preprocess( wxArrayPtrVoid params, AxProgressDlg *dlg )
@@ -313,7 +467,7 @@ bool RecFile::Preprocess( wxArrayPtrVoid params, AxProgressDlg *dlg )
     wxYield();
 		
     bool failed = false;
-
+		
     if ( RecEnv::s_check && !failed ) 
         failed = !m_imPagePtr->Check( image_file, 2500 ); // 2 operations max
 	
@@ -321,13 +475,13 @@ bool RecFile::Preprocess( wxArrayPtrVoid params, AxProgressDlg *dlg )
 	//m_error = m_imPagePtr->GetError();
 	//this->m_isPreprocessed = true;
 	//return true;
-		
+	
     if ( RecEnv::s_deskew && !failed ) 
-        failed = !m_imPagePtr->Deskew( 2.0 ); // 2 operations max
+        failed = !m_imPagePtr->Deskew( 10.0 ); // 2 operations max
     //op.m_inputfile = output + "/deskew." + shortname + ".tif";
         
     if ( RecEnv::s_staves_position && !failed ) 
-        failed = !m_imPagePtr->FindStaves(  3, 50 );  // 4 operations max
+        failed = !m_imPagePtr->FindStaves( 3, 50 );  // 4 operations max
     //op.m_inputfile = output + "/resize." + shortname + ".tif";
 
     if ( RecEnv::s_binarize_and_clean  && !failed ) 
@@ -368,11 +522,8 @@ bool RecFile::Recognize( wxArrayPtrVoid params, AxProgressDlg *dlg )
 	//if (this->m_isRecognized)
 	//	return true;
 	
-	// never merge and default out_dir for MFC in recognition
 	wxArrayPtrVoid mfc_params;
 	wxString file = "";
-	bool merged = false;
-	mfc_params.Add(  &merged );
 	mfc_params.Add( &file );
 	
 	m_imPagePtr->SetProgressDlg( dlg );
@@ -384,10 +535,10 @@ bool RecFile::Recognize( wxArrayPtrVoid params, AxProgressDlg *dlg )
     bool failed = false;
 	
     if ( !failed ) 
-        failed = !m_imPagePtr->StaffSegments( ); // 1 operation
+        failed = !m_imPagePtr->ExtractStaves( ); // 1 operation
 	
     if ( RecEnv::s_save_images && !failed )
-        failed = !m_imPagePtr->SaveSegmentsImages( );
+        failed = !m_imPagePtr->SaveStaffImages( );
 
     if ( !failed )
         failed = !this->GenerateMFC( mfc_params, dlg ); // 2 operations
@@ -536,7 +687,7 @@ bool RecFile::Decode( wxArrayPtrVoid params, AxProgressDlg *dlg )
 	
 #ifdef __WXMSW__
 	#if defined(_DEBUG)
-		wxString cmd = "DecoderD.exe";
+		wxString cmd = "Decoder.exe";
 	#else
 		wxString cmd = "Decoder.exe";
 	#endif   
@@ -558,15 +709,15 @@ bool RecFile::Decode( wxArrayPtrVoid params, AxProgressDlg *dlg )
 	
 	wxString log = wxGetApp().m_logDir + "/decoder.log";
 	
-	args << " -am_models_fname " << rec_models.c_str();
+	args << " -am_models_fname " << "\"" << rec_models.c_str() << "\"";
 	args << " -am_sil_phone \"{s}\" ";
 	args << " -am_phone_del_pen " << rec_phone_pen;
 
-	args << " -lex_dict_fname " << rec_dict.c_str();
+	args << " -lex_dict_fname " << "\"" << rec_dict.c_str() << "\"";
 
 	if ( rec_lm_order && !rec_lm.IsEmpty() )
 	{
-		args << " -lm_fname " << rec_lm;
+		args << " -lm_fname " << "\"" << rec_lm << "\"";
 		args << " -lm_ngram_order " << rec_lm_order;
 		args << " -lm_scaling_factor " << rec_lm_scaling;
 	}
@@ -580,20 +731,20 @@ bool RecFile::Decode( wxArrayPtrVoid params, AxProgressDlg *dlg )
 	if ( rec_delayed )
 		args << " -dec_delayed_lm";
 
-	args << " -input_fname " << input.c_str();
+	args << " -input_fname " << "\"" << input.c_str() << "\"";
 	
 	if ( !rec_output.IsEmpty() )
-		args << " -output_fname " << rec_output.c_str();
+		args << " -output_fname " << "\"" << rec_output.c_str() << "\"";
 
 	if ( !rec_wrdtrns.IsEmpty() )
-		args << " -wrdtrns_fname " << rec_wrdtrns.c_str();
+		args << " -wrdtrns_fname " << "\"" << rec_wrdtrns.c_str() << "\"";
 
 	wxLogDebug(args);
 
 	if (!dlg->SetOperation( _("Recognition...") ) )
 		return this->Terminate( ERR_CANCELED );
 
-	dlg->StartTimerOperation( TIMER_DECODING, m_imPagePtr->GetStaffSegmentsCount() );
+	dlg->StartTimerOperation( TIMER_DECODING, m_imPagePtr->GetStaffCount() );
 	int pid;
 	AxProcess *process = new AxProcess( cmd, args, NULL );
 	process->SetLog( log );
@@ -698,14 +849,15 @@ bool RecFile::RealizeFromMLF( wxArrayPtrVoid params, AxProgressDlg *dlg )
 	m_musFilePtr->m_fheader.param.pageFormatVer = m_imPagePtr->m_size.GetHeight() / 10;
 
     int x1 = 5, x2 = 195;
-    m_imPagePtr->CalcLeftRight( &x1, &x2 );
+    m_imPagePtr->CalcLeftRight( &x1, &x2 ); 
+	x1 = 0; // force it, indentation will be calculated staff by staff
     m_musFilePtr->m_fheader.param.MargeGAUCHEIMPAIRE = x1 / 10;
     m_musFilePtr->m_fheader.param.MargeGAUCHEPAIRE = x1 / 10;
     musPage->lrg_lign = (x2 - x1) / 10;
 
     int nb = (int)m_imPagePtr->m_staves.GetCount();
     int previous = 0;
-    ImStaff *imStaff;
+    ImStaff *imStaff;   
     for (int i = 0; i < nb; i++)
     {
         imStaff = &m_imPagePtr->m_staves[i];
@@ -739,11 +891,9 @@ bool RecFile::RealizeFromMLF( wxArrayPtrVoid params, AxProgressDlg *dlg )
 
 bool RecFile::GenerateMFC( wxArrayPtrVoid params, AxProgressDlg *dlg )
 {
-    // param 0: bool: merged
-	// params 1: wxString: output_dir
+	// params 0: wxString: output_dir
 	
-	bool merged = *(bool*)params[0];
-	wxString output_dir = *(wxString*)params[1];
+	wxString output_dir = *(wxString*)params[0];
 	
     wxASSERT_MSG( m_imPagePtr , "Page cannot be NULL");
 	wxASSERT_MSG( dlg, "AxProgressDlg cannot be NULL" );
@@ -767,7 +917,7 @@ bool RecFile::GenerateMFC( wxArrayPtrVoid params, AxProgressDlg *dlg )
 	//}
 
     if ( !failed )
-        failed = !m_imPagePtr->GenerateMFC( merged, output_dir );
+        failed = !m_imPagePtr->GenerateMFC( output_dir );
 		
 	m_error = m_imPagePtr->GetError();
 

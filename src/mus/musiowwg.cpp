@@ -306,8 +306,6 @@ bool MusWWGOutput::WriteStaff( const MusStaff *staff )
 			Write( elem->m_im_filename.c_str(), (int)elem->m_im_filename.Length() + 1 );
 			int32 = wxINT32_SWAP_ON_BE( elem->m_im_staff );
 			Write( &int32, 4 );
-			int32 = wxINT32_SWAP_ON_BE( elem->m_im_staff_segment );
-			Write( &int32, 4 );
 			int32 = wxINT32_SWAP_ON_BE( elem->m_im_pos );
 			Write( &int32, 4 );
 			int32 = wxINT32_SWAP_ON_BE( elem->m_cmp_flag );
@@ -762,8 +760,6 @@ bool MusWWGInput::ReadStaff( MusStaff *staff )
 			elem->m_im_filename.UngetWriteBuf();
 			Read( &int32, 4 );
 			elem->m_im_staff = wxINT32_SWAP_ON_BE( int32 );
-			Read( &int32, 4 );
-			elem->m_im_staff_segment = wxINT32_SWAP_ON_BE( int32 );
 			Read( &int32, 4 );
 			elem->m_im_pos = wxINT32_SWAP_ON_BE( int32 );
 			Read( &int32, 4 );

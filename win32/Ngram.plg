@@ -3,39 +3,283 @@
 <pre>
 <h1>Build Log</h1>
 <h3>
---------------------Configuration: Ngram - Win32 Debug--------------------
+--------------------Configuration: Adapter - Win32 Release--------------------
 </h3>
 <h3>Command Lines</h3>
-Creating temporary file "C:\DOCUME~1\ADMINI~1\LOCALS~1\Temp\RSP421.tmp" with contents
+Creating temporary file "C:\DOCUME~1\Tristan\LOCALS~1\Temp\RSP24F.tmp" with contents
 [
-/nologo /MDd /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /D DEBUG=1 /FR"../obj/NgramDebug/" /Fp"../obj/NgramDebug/Ngram.pch" /YX /Fo"../obj/NgramDebug/" /Fd"../obj/NgramDebug/" /FD /GZ /c 
-"D:\Projects\Aruspix\src\torch\LMNGramBuilder.cpp"
-"D:\Projects\Aruspix\src\torch\LMNGramEntry.cpp"
-"D:\Projects\Aruspix\src\torch\NGram.cpp"
+/nologo /ML /W3 /GX /O2 /I "C:\Torch3\src" /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /Fp"../obj/AdapterRelease/Adapter.pch" /YX /Fo"../obj/AdapterRelease/" /Fd"../obj/AdapterRelease/" /FD /c 
+"C:\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\src\torch\Adapter.cpp"
+"C:\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\src\ml\mlhmm.cpp"
 ]
-Creating command line "cl.exe @C:\DOCUME~1\ADMINI~1\LOCALS~1\Temp\RSP421.tmp" 
-Creating temporary file "C:\DOCUME~1\ADMINI~1\LOCALS~1\Temp\RSP422.tmp" with contents
+Creating command line "cl.exe @C:\DOCUME~1\Tristan\LOCALS~1\Temp\RSP24F.tmp" 
+Creating temporary file "C:\DOCUME~1\Tristan\LOCALS~1\Temp\RSP250.tmp" with contents
 [
-kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib Torch3d.lib /nologo /subsystem:console /incremental:yes /pdb:"../obj/NgramDebug/NgramD.pdb" /debug /machine:I386 /out:"../bin/NgramD.exe" /pdbtype:sept 
-\Projects\Aruspix\obj\NgramDebug\LMNGramBuilder.obj
-\Projects\Aruspix\obj\NgramDebug\LMNGramEntry.obj
-\Projects\Aruspix\obj\NgramDebug\NGram.obj
+kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib Torch3.lib /nologo /subsystem:console /incremental:no /pdb:"../obj/AdapterRelease/Adapt.pdb" /machine:I386 /out:"../bin/Release/Adapt.exe" /libpath:"C:\Torch3\Release" 
+"\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\obj\AdapterRelease\Adapter.obj"
+"\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\obj\AdapterRelease\mlhmm.obj"
 ]
-Creating command line "link.exe @C:\DOCUME~1\ADMINI~1\LOCALS~1\Temp\RSP422.tmp"
+Creating command line "link.exe @C:\DOCUME~1\Tristan\LOCALS~1\Temp\RSP250.tmp"
 <h3>Output Window</h3>
 Compiling...
-LMNGramBuilder.cpp
-LMNGramEntry.cpp
-NGram.cpp
+Adapter.cpp
+C:\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\src\torch\Adapter.cpp(114) : warning C4305: 'argument' : truncation from 'const double' to 'float'
+C:\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\src\torch\Adapter.cpp(115) : warning C4305: 'argument' : truncation from 'const double' to 'float'
+C:\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\src\torch\Adapter.cpp(117) : warning C4305: 'argument' : truncation from 'const double' to 'float'
+mlhmm.cpp
+C:\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\src\ml\mlhmm.cpp(46) : warning C4305: 'argument' : truncation from 'const double' to 'float'
+C:\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\src\ml\mlhmm.cpp(47) : warning C4305: 'argument' : truncation from 'const double' to 'float'
+C:\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\src\ml\mlhmm.cpp(49) : warning C4305: 'argument' : truncation from 'const double' to 'float'
+C:\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\src\ml\mlhmm.cpp(103) : warning C4291: 'void *__cdecl Torch::Object::operator new(unsigned int,class Torch::Allocator *)' : no matching operator delete found; memory will not be freed if initialization throws an exception
+        C:\Torch3\src\Object.h(139) : see declaration of 'new'
+C:\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\src\ml\mlhmm.cpp(105) : warning C4291: 'void *__cdecl Torch::Object::operator new(unsigned int,class Torch::Allocator *)' : no matching operator delete found; memory will not be freed if initialization throws an exception
+        C:\Torch3\src\Object.h(139) : see declaration of 'new'
+C:\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\src\ml\mlhmm.cpp(125) : warning C4291: 'void *__cdecl Torch::Object::operator new(unsigned int,class Torch::Allocator *)' : no matching operator delete found; memory will not be freed if initialization throws an exception
+        C:\Torch3\src\Object.h(139) : see declaration of 'new'
+C:\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\src\ml\mlhmm.cpp(189) : warning C4291: 'void *__cdecl Torch::Object::operator new(unsigned int,class Torch::Allocator *)' : no matching operator delete found; memory will not be freed if initialization throws an exception
+        C:\Torch3\src\Object.h(139) : see declaration of 'new'
+C:\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\src\ml\mlhmm.cpp(191) : warning C4291: 'void *__cdecl Torch::Object::operator new(unsigned int,class Torch::Allocator *)' : no matching operator delete found; memory will not be freed if initialization throws an exception
+        C:\Torch3\src\Object.h(139) : see declaration of 'new'
+C:\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\src\ml\mlhmm.cpp(227) : warning C4291: 'void *__cdecl Torch::Object::operator new(unsigned int,class Torch::Allocator *)' : no matching operator delete found; memory will not be freed if initialization throws an exception
+        C:\Torch3\src\Object.h(139) : see declaration of 'new'
+C:\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\src\ml\mlhmm.cpp(255) : warning C4291: 'void *__cdecl Torch::Object::operator new(unsigned int,class Torch::Allocator *)' : no matching operator delete found; memory will not be freed if initialization throws an exception
+        C:\Torch3\src\Object.h(139) : see declaration of 'new'
+C:\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\src\ml\mlhmm.cpp(257) : warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
+C:\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\src\ml\mlhmm.cpp(263) : warning C4291: 'void *__cdecl Torch::Object::operator new(unsigned int,class Torch::Allocator *)' : no matching operator delete found; memory will not be freed if initialization throws an exception
+        C:\Torch3\src\Object.h(139) : see declaration of 'new'
+C:\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\src\ml\mlhmm.cpp(270) : warning C4291: 'void *__cdecl Torch::Object::operator new(unsigned int,class Torch::Allocator *)' : no matching operator delete found; memory will not be freed if initialization throws an exception
+        C:\Torch3\src\Object.h(139) : see declaration of 'new'
+C:\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\src\ml\mlhmm.cpp(339) : warning C4291: 'void *__cdecl Torch::Object::operator new(unsigned int,class Torch::Allocator *)' : no matching operator delete found; memory will not be freed if initialization throws an exception
+        C:\Torch3\src\Object.h(139) : see declaration of 'new'
+C:\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\src\ml\mlhmm.cpp(347) : warning C4291: 'void *__cdecl Torch::Object::operator new(unsigned int,class Torch::Allocator *)' : no matching operator delete found; memory will not be freed if initialization throws an exception
+        C:\Torch3\src\Object.h(139) : see declaration of 'new'
+C:\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\src\ml\mlhmm.cpp(499) : warning C4291: 'void *__cdecl Torch::Object::operator new(unsigned int,class Torch::Allocator *)' : no matching operator delete found; memory will not be freed if initialization throws an exception
+        C:\Torch3\src\Object.h(139) : see declaration of 'new'
+C:\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\src\ml\mlhmm.cpp(561) : warning C4291: 'void *__cdecl Torch::Object::operator new(unsigned int,class Torch::Allocator *)' : no matching operator delete found; memory will not be freed if initialization throws an exception
+        C:\Torch3\src\Object.h(139) : see declaration of 'new'
+C:\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\src\ml\mlhmm.cpp(564) : warning C4291: 'void *__cdecl Torch::Object::operator new(unsigned int,class Torch::Allocator *)' : no matching operator delete found; memory will not be freed if initialization throws an exception
+        C:\Torch3\src\Object.h(139) : see declaration of 'new'
+C:\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\src\ml\mlhmm.cpp(568) : warning C4291: 'void *__cdecl Torch::Object::operator new(unsigned int,class Torch::Allocator *)' : no matching operator delete found; memory will not be freed if initialization throws an exception
+        C:\Torch3\src\Object.h(139) : see declaration of 'new'
+C:\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\src\ml\mlhmm.cpp(586) : warning C4291: 'void *__cdecl Torch::Object::operator new(unsigned int,class Torch::Allocator *)' : no matching operator delete found; memory will not be freed if initialization throws an exception
+        C:\Torch3\src\Object.h(139) : see declaration of 'new'
+C:\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\src\ml\mlhmm.cpp(589) : warning C4291: 'void *__cdecl Torch::Object::operator new(unsigned int,class Torch::Allocator *)' : no matching operator delete found; memory will not be freed if initialization throws an exception
+        C:\Torch3\src\Object.h(139) : see declaration of 'new'
+C:\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\src\ml\mlhmm.cpp(598) : warning C4291: 'void *__cdecl Torch::Object::operator new(unsigned int,class Torch::Allocator *)' : no matching operator delete found; memory will not be freed if initialization throws an exception
+        C:\Torch3\src\Object.h(139) : see declaration of 'new'
+C:\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\src\ml\mlhmm.cpp(611) : warning C4291: 'void *__cdecl Torch::Object::operator new(unsigned int,class Torch::Allocator *)' : no matching operator delete found; memory will not be freed if initialization throws an exception
+        C:\Torch3\src\Object.h(139) : see declaration of 'new'
+C:\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\src\ml\mlhmm.cpp(631) : warning C4291: 'void *__cdecl Torch::Object::operator new(unsigned int,class Torch::Allocator *)' : no matching operator delete found; memory will not be freed if initialization throws an exception
+        C:\Torch3\src\Object.h(139) : see declaration of 'new'
+C:\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\src\ml\mlhmm.cpp(641) : warning C4291: 'void *__cdecl Torch::Object::operator new(unsigned int,class Torch::Allocator *)' : no matching operator delete found; memory will not be freed if initialization throws an exception
+        C:\Torch3\src\Object.h(139) : see declaration of 'new'
+C:\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\src\ml\mlhmm.cpp(735) : warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
+C:\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\src\ml\mlhmm.cpp(758) : warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
+C:\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\src\ml\mlhmm.cpp(759) : warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
+C:\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\src\ml\mlhmm.cpp(780) : warning C4291: 'void *__cdecl Torch::Object::operator new(unsigned int,class Torch::Allocator *)' : no matching operator delete found; memory will not be freed if initialization throws an exception
+        C:\Torch3\src\Object.h(139) : see declaration of 'new'
+C:\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\src\ml\mlhmm.cpp(872) : warning C4305: '=' : truncation from 'const double' to 'float'
+C:\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\src\ml\mlhmm.cpp(873) : warning C4305: '=' : truncation from 'const double' to 'float'
+C:\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\src\ml\mlhmm.cpp(874) : warning C4305: '=' : truncation from 'const double' to 'float'
+C:\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\src\ml\mlhmm.cpp(875) : warning C4305: '=' : truncation from 'const double' to 'float'
+C:\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\src\ml\mlhmm.cpp(876) : warning C4305: '=' : truncation from 'const double' to 'float'
+C:\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\src\ml\mlhmm.cpp(877) : warning C4305: '=' : truncation from 'const double' to 'float'
 Linking...
-Creating command line "bscmake.exe /nologo /o"../obj/NgramDebug/Ngram.bsc"  \Projects\Aruspix\obj\NgramDebug\LMNGramBuilder.sbr \Projects\Aruspix\obj\NgramDebug\LMNGramEntry.sbr \Projects\Aruspix\obj\NgramDebug\NGram.sbr"
-Creating browse info file...
-<h3>Output Window</h3>
 
 
 
 <h3>Results</h3>
-NgramD.exe - 0 error(s), 0 warning(s)
+Adapt.exe - 0 error(s), 38 warning(s)
+<h3>
+--------------------Configuration: Adapter - Win32 Debug--------------------
+</h3>
+<h3>Command Lines</h3>
+Creating temporary file "C:\DOCUME~1\Tristan\LOCALS~1\Temp\RSP252.tmp" with contents
+[
+/nologo /MLd /W3 /Gm /GX /ZI /Od /I "C:\Torch3\src" /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /D DEBUG=1 /FR"../obj/AdapterDebug/" /Fp"../obj/AdapterDebug/Adapter.pch" /YX /Fo"../obj/AdapterDebug/" /Fd"../obj/AdapterDebug/" /FD /GZ /c 
+"C:\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\src\torch\Adapter.cpp"
+"C:\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\src\ml\mlhmm.cpp"
+]
+Creating command line "cl.exe @C:\DOCUME~1\Tristan\LOCALS~1\Temp\RSP252.tmp" 
+Creating temporary file "C:\DOCUME~1\Tristan\LOCALS~1\Temp\RSP253.tmp" with contents
+[
+kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib Torch3.lib /nologo /subsystem:console /incremental:yes /pdb:"../obj/AdapterDebug/Adapt.pdb" /debug /machine:I386 /out:"../bin/Debug/Adapt.exe" /pdbtype:sept /libpath:"C:\Torch3\Debug" 
+"\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\obj\AdapterDebug\Adapter.obj"
+"\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\obj\AdapterDebug\mlhmm.obj"
+]
+Creating command line "link.exe @C:\DOCUME~1\Tristan\LOCALS~1\Temp\RSP253.tmp"
+<h3>Output Window</h3>
+Compiling...
+Adapter.cpp
+c:\documents and settings\tristan\my documents\aruspix-1.4.0\src\torch\adapter.cpp(114) : warning C4305: 'argument' : truncation from 'const double' to 'float'
+c:\documents and settings\tristan\my documents\aruspix-1.4.0\src\torch\adapter.cpp(115) : warning C4305: 'argument' : truncation from 'const double' to 'float'
+c:\documents and settings\tristan\my documents\aruspix-1.4.0\src\torch\adapter.cpp(117) : warning C4305: 'argument' : truncation from 'const double' to 'float'
+mlhmm.cpp
+C:\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\src\ml\mlhmm.cpp(46) : warning C4305: 'argument' : truncation from 'const double' to 'float'
+C:\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\src\ml\mlhmm.cpp(47) : warning C4305: 'argument' : truncation from 'const double' to 'float'
+C:\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\src\ml\mlhmm.cpp(49) : warning C4305: 'argument' : truncation from 'const double' to 'float'
+C:\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\src\ml\mlhmm.cpp(103) : warning C4291: 'void *__cdecl Torch::Object::operator new(unsigned int,class Torch::Allocator *)' : no matching operator delete found; memory will not be freed if initialization throws an exception
+        c:\torch3\src\object.h(139) : see declaration of 'new'
+C:\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\src\ml\mlhmm.cpp(105) : warning C4291: 'void *__cdecl Torch::Object::operator new(unsigned int,class Torch::Allocator *)' : no matching operator delete found; memory will not be freed if initialization throws an exception
+        c:\torch3\src\object.h(139) : see declaration of 'new'
+C:\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\src\ml\mlhmm.cpp(125) : warning C4291: 'void *__cdecl Torch::Object::operator new(unsigned int,class Torch::Allocator *)' : no matching operator delete found; memory will not be freed if initialization throws an exception
+        c:\torch3\src\object.h(139) : see declaration of 'new'
+C:\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\src\ml\mlhmm.cpp(189) : warning C4291: 'void *__cdecl Torch::Object::operator new(unsigned int,class Torch::Allocator *)' : no matching operator delete found; memory will not be freed if initialization throws an exception
+        c:\torch3\src\object.h(139) : see declaration of 'new'
+C:\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\src\ml\mlhmm.cpp(191) : warning C4291: 'void *__cdecl Torch::Object::operator new(unsigned int,class Torch::Allocator *)' : no matching operator delete found; memory will not be freed if initialization throws an exception
+        c:\torch3\src\object.h(139) : see declaration of 'new'
+C:\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\src\ml\mlhmm.cpp(227) : warning C4291: 'void *__cdecl Torch::Object::operator new(unsigned int,class Torch::Allocator *)' : no matching operator delete found; memory will not be freed if initialization throws an exception
+        c:\torch3\src\object.h(139) : see declaration of 'new'
+C:\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\src\ml\mlhmm.cpp(255) : warning C4291: 'void *__cdecl Torch::Object::operator new(unsigned int,class Torch::Allocator *)' : no matching operator delete found; memory will not be freed if initialization throws an exception
+        c:\torch3\src\object.h(139) : see declaration of 'new'
+C:\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\src\ml\mlhmm.cpp(257) : warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
+C:\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\src\ml\mlhmm.cpp(263) : warning C4291: 'void *__cdecl Torch::Object::operator new(unsigned int,class Torch::Allocator *)' : no matching operator delete found; memory will not be freed if initialization throws an exception
+        c:\torch3\src\object.h(139) : see declaration of 'new'
+C:\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\src\ml\mlhmm.cpp(270) : warning C4291: 'void *__cdecl Torch::Object::operator new(unsigned int,class Torch::Allocator *)' : no matching operator delete found; memory will not be freed if initialization throws an exception
+        c:\torch3\src\object.h(139) : see declaration of 'new'
+C:\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\src\ml\mlhmm.cpp(339) : warning C4291: 'void *__cdecl Torch::Object::operator new(unsigned int,class Torch::Allocator *)' : no matching operator delete found; memory will not be freed if initialization throws an exception
+        c:\torch3\src\object.h(139) : see declaration of 'new'
+C:\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\src\ml\mlhmm.cpp(347) : warning C4291: 'void *__cdecl Torch::Object::operator new(unsigned int,class Torch::Allocator *)' : no matching operator delete found; memory will not be freed if initialization throws an exception
+        c:\torch3\src\object.h(139) : see declaration of 'new'
+C:\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\src\ml\mlhmm.cpp(499) : warning C4291: 'void *__cdecl Torch::Object::operator new(unsigned int,class Torch::Allocator *)' : no matching operator delete found; memory will not be freed if initialization throws an exception
+        c:\torch3\src\object.h(139) : see declaration of 'new'
+C:\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\src\ml\mlhmm.cpp(561) : warning C4291: 'void *__cdecl Torch::Object::operator new(unsigned int,class Torch::Allocator *)' : no matching operator delete found; memory will not be freed if initialization throws an exception
+        c:\torch3\src\object.h(139) : see declaration of 'new'
+C:\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\src\ml\mlhmm.cpp(564) : warning C4291: 'void *__cdecl Torch::Object::operator new(unsigned int,class Torch::Allocator *)' : no matching operator delete found; memory will not be freed if initialization throws an exception
+        c:\torch3\src\object.h(139) : see declaration of 'new'
+C:\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\src\ml\mlhmm.cpp(568) : warning C4291: 'void *__cdecl Torch::Object::operator new(unsigned int,class Torch::Allocator *)' : no matching operator delete found; memory will not be freed if initialization throws an exception
+        c:\torch3\src\object.h(139) : see declaration of 'new'
+C:\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\src\ml\mlhmm.cpp(586) : warning C4291: 'void *__cdecl Torch::Object::operator new(unsigned int,class Torch::Allocator *)' : no matching operator delete found; memory will not be freed if initialization throws an exception
+        c:\torch3\src\object.h(139) : see declaration of 'new'
+C:\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\src\ml\mlhmm.cpp(589) : warning C4291: 'void *__cdecl Torch::Object::operator new(unsigned int,class Torch::Allocator *)' : no matching operator delete found; memory will not be freed if initialization throws an exception
+        c:\torch3\src\object.h(139) : see declaration of 'new'
+C:\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\src\ml\mlhmm.cpp(598) : warning C4291: 'void *__cdecl Torch::Object::operator new(unsigned int,class Torch::Allocator *)' : no matching operator delete found; memory will not be freed if initialization throws an exception
+        c:\torch3\src\object.h(139) : see declaration of 'new'
+C:\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\src\ml\mlhmm.cpp(611) : warning C4291: 'void *__cdecl Torch::Object::operator new(unsigned int,class Torch::Allocator *)' : no matching operator delete found; memory will not be freed if initialization throws an exception
+        c:\torch3\src\object.h(139) : see declaration of 'new'
+C:\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\src\ml\mlhmm.cpp(631) : warning C4291: 'void *__cdecl Torch::Object::operator new(unsigned int,class Torch::Allocator *)' : no matching operator delete found; memory will not be freed if initialization throws an exception
+        c:\torch3\src\object.h(139) : see declaration of 'new'
+C:\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\src\ml\mlhmm.cpp(641) : warning C4291: 'void *__cdecl Torch::Object::operator new(unsigned int,class Torch::Allocator *)' : no matching operator delete found; memory will not be freed if initialization throws an exception
+        c:\torch3\src\object.h(139) : see declaration of 'new'
+C:\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\src\ml\mlhmm.cpp(735) : warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
+C:\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\src\ml\mlhmm.cpp(758) : warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
+C:\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\src\ml\mlhmm.cpp(759) : warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
+C:\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\src\ml\mlhmm.cpp(780) : warning C4291: 'void *__cdecl Torch::Object::operator new(unsigned int,class Torch::Allocator *)' : no matching operator delete found; memory will not be freed if initialization throws an exception
+        c:\torch3\src\object.h(139) : see declaration of 'new'
+C:\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\src\ml\mlhmm.cpp(872) : warning C4305: '=' : truncation from 'const double' to 'float'
+C:\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\src\ml\mlhmm.cpp(873) : warning C4305: '=' : truncation from 'const double' to 'float'
+C:\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\src\ml\mlhmm.cpp(874) : warning C4305: '=' : truncation from 'const double' to 'float'
+C:\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\src\ml\mlhmm.cpp(875) : warning C4305: '=' : truncation from 'const double' to 'float'
+C:\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\src\ml\mlhmm.cpp(876) : warning C4305: '=' : truncation from 'const double' to 'float'
+C:\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\src\ml\mlhmm.cpp(877) : warning C4305: '=' : truncation from 'const double' to 'float'
+Linking...
+
+
+
+<h3>Results</h3>
+Adapt.exe - 0 error(s), 38 warning(s)
+<h3>
+--------------------Configuration: Decoder - Win32 Release--------------------
+</h3>
+<h3>Command Lines</h3>
+Creating temporary file "C:\DOCUME~1\Tristan\LOCALS~1\Temp\RSP255.tmp" with contents
+[
+/nologo /ML /W3 /GX /O2 /I "C:\Torch3\src" /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /Fp"../obj/DecoderRelease/Decoder.pch" /YX /Fo"../obj/DecoderRelease/" /Fd"../obj/DecoderRelease/" /FD /c 
+"C:\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\src\torch\Decoder.cpp"
+"C:\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\src\ml\mldecoderpage.cpp"
+"C:\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\src\ml\mldecoderstaff.cpp"
+]
+Creating command line "cl.exe @C:\DOCUME~1\Tristan\LOCALS~1\Temp\RSP255.tmp" 
+Creating temporary file "C:\DOCUME~1\Tristan\LOCALS~1\Temp\RSP256.tmp" with contents
+[
+kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib Torch3.lib /nologo /subsystem:console /incremental:no /pdb:"../obj/DecoderRelease/Decoder.pdb" /machine:I386 /out:"../bin/Release/Decoder.exe" /libpath:"C:\Torch3\Release" 
+"\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\obj\DecoderRelease\Decoder.obj"
+"\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\obj\DecoderRelease\mldecoderpage.obj"
+"\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\obj\DecoderRelease\mldecoderstaff.obj"
+]
+Creating command line "link.exe @C:\DOCUME~1\Tristan\LOCALS~1\Temp\RSP256.tmp"
+<h3>Output Window</h3>
+Compiling...
+Decoder.cpp
+mldecoderpage.cpp
+mldecoderstaff.cpp
+Linking...
+
+
+
+<h3>Results</h3>
+Decoder.exe - 0 error(s), 0 warning(s)
+<h3>
+--------------------Configuration: Decoder - Win32 Debug--------------------
+</h3>
+<h3>Command Lines</h3>
+Creating temporary file "C:\DOCUME~1\Tristan\LOCALS~1\Temp\RSP258.tmp" with contents
+[
+/nologo /MLd /W3 /Gm /GX /ZI /Od /I "C:\Torch3\src" /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /D DEBUG=1 /FR"../obj/DecoderDebug/" /Fp"../obj/DecoderDebug/Decoder.pch" /YX /Fo"../obj/DecoderDebug/" /Fd"../obj/DecoderDebug/" /FD /GZ /c 
+"C:\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\src\torch\Decoder.cpp"
+"C:\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\src\ml\mldecoderpage.cpp"
+"C:\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\src\ml\mldecoderstaff.cpp"
+]
+Creating command line "cl.exe @C:\DOCUME~1\Tristan\LOCALS~1\Temp\RSP258.tmp" 
+Creating temporary file "C:\DOCUME~1\Tristan\LOCALS~1\Temp\RSP259.tmp" with contents
+[
+kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib Torch3.lib /nologo /subsystem:console /incremental:yes /pdb:"../obj/DecoderDebug/Decoder.pdb" /debug /machine:I386 /out:"../bin/Debug/Decoder.exe" /pdbtype:sept /libpath:"C:\Torch3\Debug" 
+"\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\obj\DecoderDebug\Decoder.obj"
+"\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\obj\DecoderDebug\mldecoderpage.obj"
+"\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\obj\DecoderDebug\mldecoderstaff.obj"
+]
+Creating command line "link.exe @C:\DOCUME~1\Tristan\LOCALS~1\Temp\RSP259.tmp"
+<h3>Output Window</h3>
+Compiling...
+Decoder.cpp
+mldecoderpage.cpp
+mldecoderstaff.cpp
+Linking...
+
+
+
+<h3>Results</h3>
+Decoder.exe - 0 error(s), 0 warning(s)
+<h3>
+--------------------Configuration: Ngram - Win32 Release--------------------
+</h3>
+<h3>Command Lines</h3>
+Creating temporary file "C:\DOCUME~1\Tristan\LOCALS~1\Temp\RSP25B.tmp" with contents
+[
+/nologo /ML /W3 /GX /O2 /I "C:\Torch3\src" /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /Fp"../obj/NgramRelease/Ngram.pch" /YX /Fo"../obj/NgramRelease/" /Fd"../obj/NgramRelease/" /FD /c 
+"C:\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\src\ml\mlngrambuilder.cpp"
+"C:\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\src\ml\mlngramentry.cpp"
+"C:\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\src\torch\NGram.cpp"
+]
+Creating command line "cl.exe @C:\DOCUME~1\Tristan\LOCALS~1\Temp\RSP25B.tmp" 
+Creating temporary file "C:\DOCUME~1\Tristan\LOCALS~1\Temp\RSP25C.tmp" with contents
+[
+kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib Torch3.lib /nologo /subsystem:console /incremental:no /pdb:"../obj/NgramRelease/Ngram.pdb" /machine:I386 /out:"../bin/Release/Ngram.exe" /libpath:"C:\Torch3\Release" 
+"\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\obj\NgramRelease\mlngrambuilder.obj"
+"\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\obj\NgramRelease\mlngramentry.obj"
+"\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\obj\NgramRelease\NGram.obj"
+]
+Creating command line "link.exe @C:\DOCUME~1\Tristan\LOCALS~1\Temp\RSP25C.tmp"
+<h3>Output Window</h3>
+Compiling...
+mlngrambuilder.cpp
+mlngramentry.cpp
+NGram.cpp
+Linking...
+
+
+
+<h3>Results</h3>
+Ngram.exe - 0 error(s), 0 warning(s)
+<h3>
+--------------------Configuration: Ngram - Win32 Debug--------------------
+</h3>
+<h3>Command Lines</h3>
+
+
+
+<h3>Results</h3>
+Ngram.exe - 0 error(s), 0 warning(s)
 </pre>
 </body>
 </html>

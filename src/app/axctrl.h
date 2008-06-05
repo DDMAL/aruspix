@@ -16,7 +16,12 @@
     #include "wx/wx.h"
 #endif
 
-#include "rec_wdr.h"
+#include <wx/treectrl.h>
+
+#ifndef wxGenericTreeCtrl
+#define wxGenericTreeCtrl wxTreeCtrl
+//#define sm_classwxTreeCtrl sm_classwxGenericTreeCtrl
+#endif
 
 #define NB_IMAGES 16
 

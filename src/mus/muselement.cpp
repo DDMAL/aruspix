@@ -63,7 +63,6 @@ MusElement::MusElement() :
 	
 	// Aruspix only, for comparison
 	m_im_staff = 0;
-	m_im_staff_segment = 0;
 	m_im_pos = 0;
 	m_cmp_flag = 0;
 
@@ -108,7 +107,6 @@ MusElement::MusElement( const MusElement& element )
 	// comparison
 	m_im_filename = element.m_im_filename;
 	m_im_staff = element.m_im_staff;
-	m_im_staff_segment = element.m_im_staff_segment;
 	m_im_pos = element.m_im_pos;
 	m_cmp_flag = element.m_cmp_flag;
 
@@ -162,7 +160,6 @@ MusElement& MusElement::operator=( const MusElement& element)
 		// comparison
 		m_im_filename = element.m_im_filename;
 		m_im_staff = element.m_im_staff;
-		m_im_staff_segment = element.m_im_staff_segment;
 		m_im_pos = element.m_im_pos;
 		m_cmp_flag = element.m_cmp_flag;
 

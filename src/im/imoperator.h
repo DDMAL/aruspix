@@ -58,7 +58,15 @@ enum
 {
 	IM_BINARIZATION_OTSU = 0,
 	IM_BINARIZATION_MINMAX,
-	IM_BINARIZATION_BRINK
+	IM_BINARIZATION_BRINK,
+	IM_BINARIZATION_BRINK3CLASSES
+};
+
+enum
+{
+	IM_PRUNE_CLEAR_HEIGHT = 0,
+	IM_PRUNE_CLEAR_WIDTH,
+	IM_PRUNE_CLEAR_MIN
 };
 
 // WDR: class declarations
@@ -86,16 +94,16 @@ public:
 protected:
     // WDR: member variable declarations for ImOperator
     void MedianFilter( int values[], int size, int filter_size, int *avg_ptr = NULL);
-    void PruneElementsZone( _imImage *image, int min_threshold, int max_threshold, int direction = 0 );
+    void PruneElementsZone( _imImage *image, int min_threshold, int max_threshold, int type = IM_PRUNE_CLEAR_HEIGHT );
     void MoveElements( _imImage *src, _imImage *dest, int bounding_boxes[],
         int count, int margins[4], int factor = 1 );
-    void DistByCorrelation(const _imImage *image1, const _imImage *image2,
-                                wxSize window, int *decalageX, int *decalageY, int *max);
+    void DistByCorrelation( _imImage *image1, _imImage *image2,
+                                wxSize window, int *decalageX, int *decalageY, int *maxCorr );
     //void DistByCorrelationFFT(const _imImage *image1, const _imImage *image2,
     //                            wxSize window, int *decalageX, int *decalageY);
     
 	// Memory managment methods
-    bool Terminate( int code = 0, ... );
+    virtual bool Terminate( int code = 0, ... );
     bool GetImagePlane( _imImage **image , int plane = 0, int factor = 1 );
     bool GetImage( _imImage **image, int factor = 1 , int binary_method = -1, bool median_filtering = false );
     bool Read( wxString file, _imImage **image, int index );
@@ -128,7 +136,12 @@ protected:
     int *m_opCols1;
 
 
-public: // DEBUG variables
+public: 
+	// static binarization variable
+	static int s_pre_image_binarization_method; 
+	int *m_pre_image_binarization_methodPtr;
+	
+	// DEBUG variables
     wxString m_inputfile; // utilise dans la methode Read
 };
 

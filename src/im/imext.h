@@ -10,6 +10,11 @@
 extern "C" {
 #endif
 
+enum{
+	BRINK_AND_PENDOCK = 0,
+	LI_AND_LEE	
+};	
+
 struct _imImage;
 
 int median( int a[], int size, bool sort_array = true );
@@ -42,6 +47,8 @@ void imAnalyzeBoundingBoxes(const _imImage* image, int* boxes, int region_count 
 
 void imAnalyzeClearWidth(const _imImage* image, int region_count, int min_threshold, int max_threshold );
 
+void imAnalyzeClearMin(const _imImage* image, int region_count, int threshold );
+
 int imProcessKittlerThreshold(const _imImage* image, _imImage* NewImage);
 
 int imProcessSauvolaThreshold( const _imImage* src, _imImage* dest,	int region_size,
@@ -52,9 +59,17 @@ int imProcessPuginThreshold( const _imImage* src, _imImage* dest, bool white_is_
 // implementation in im_brink.cpp
 int imProcessBrinkThreshold( const _imImage* src, _imImage* dest, bool white_is_255 = true );
 
+// implemented in imbrink3classes.cpp
+int imProcessBrink2ClassesThreshold( const _imImage* image,_imImage* dest, bool white_is_255, int algorithm );	
+int imProcessBrink3ClassesThreshold( const _imImage* image,_imImage* dest, bool white_is_255, int algorithm );		
+	
+void imPhotogrammetric( const _imImage* image,_imImage* dest );
+	
 void imSaveValues( int *values, int count, const char *filename );
 
 void imPrintValues( int *values, int count );
+
+//void DistByCorrelation( _imImage *im1, _imImage *im2, int width, int height, int *decalageX, int *decalageY);
 
 #if defined(__cplusplus)
 }

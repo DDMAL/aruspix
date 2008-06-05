@@ -810,7 +810,7 @@ bool MLFOutput::GenerateNGram( wxString base_filename, int order, ProgressDlg *d
 
 #ifdef __WXMSW__
 	#if defined(_DEBUG)
-		wxString cmd = "NgramD.exe";
+		wxString cmd = "Ngram.exe";
 	#else
 		wxString cmd = "Ngram.exe";
 	#endif   

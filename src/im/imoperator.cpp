@@ -21,8 +21,9 @@
 
 #include "imoperator.h"
 
-// WDR: class implementations
+int ImOperator::s_pre_image_binarization_method = IM_BINARIZATION_OTSU;
 
+// WDR: class implementations
 
 //----------------------------------------------------------------------------
 // ImOperator
@@ -46,6 +47,8 @@ ImOperator::ImOperator( )
     m_opLines1 = NULL;
     m_opLines2 = NULL;
     m_opCols1 = NULL;
+	
+	m_pre_image_binarization_methodPtr = &ImOperator::s_pre_image_binarization_method;
 }
 
 ImOperator::~ImOperator()
@@ -356,9 +359,9 @@ bool ImOperator::GetImage( _imImage **image, int factor,  int binary_method, boo
 		else if ( binary_method == IM_BINARIZATION_MINMAX )
 			imProcessMinMaxThreshold( *image, imTmp );
 		else if ( binary_method == IM_BINARIZATION_BRINK )
-			imProcessBrinkThreshold( *image, imTmp, false );
-		//else if ( binary_method == IM_BINARIZATION_PUGIN )
-		//	imProcessPuginThreshold( *image, imTmp, false );
+			imProcessBrink2ClassesThreshold( *image, imTmp, false, BRINK_AND_PENDOCK );
+		else if ( binary_method == IM_BINARIZATION_BRINK3CLASSES )
+			imProcessBrink3ClassesThreshold( *image, imTmp, false, BRINK_AND_PENDOCK );
 		else // should not happen, but just in case
 		{	
 			wxLogWarning("Fix threshold used when resizing" );
@@ -407,24 +410,26 @@ bool ImOperator::GetImage( _imImage **image, int factor,  int binary_method, boo
 }
 
 
-void ImOperator::PruneElementsZone( _imImage *image, int min_threshold, int max_threshold, int direction )
+void ImOperator::PruneElementsZone( _imImage *image, int min_threshold, int max_threshold, int type )
 {
-    imImage *region_image = imImageCreate(m_opIm->width, m_opIm->height, IM_GRAY, IM_USHORT);
+    imImage *region_image = imImageCreate(image->width, image->height, IM_GRAY, IM_USHORT);
     if (!region_image)
         return;
 
     int region_count = imAnalyzeFindRegions(image, region_image, 4, 1);
     if (region_count)
     {
-        if  ( direction == 0 ) // min height
+        if  ( type == IM_PRUNE_CLEAR_HEIGHT ) // min height
             imAnalyzeClearHeight(region_image, region_count, min_threshold, max_threshold);
-        else // min width
+        else if  ( type == IM_PRUNE_CLEAR_WIDTH ) // min width
             imAnalyzeClearWidth(region_image, region_count, min_threshold, max_threshold);
+		else // IM_PRUNE_CLEAR_MIN
+			imAnalyzeClearMin(region_image, region_count, min_threshold );
 
         imushort* region_data = (imushort*)region_image->data[0];
         imbyte* img_data = (imbyte*)image->data[0];
 
-        for (int i = 0; i < m_opIm->count; i++)
+        for (int i = 0; i < image->count; i++)
         {
             if (*region_data)
                 *img_data = 1;
@@ -581,35 +586,29 @@ void ImOperator::DistByCorrelationFFT(const _imImage *im1, const _imImage *im2,
 
 
 /// works on binary images 
-void ImOperator::DistByCorrelation(const _imImage *im1, const _imImage *im2,
-                                wxSize window, int *decalageX, int *decalageY, int *max)
+void ImOperator::DistByCorrelation( _imImage *im1, _imImage *im2,
+                                wxSize window, int *decalageX, int *decalageY, int *maxCorr)
 {
     wxASSERT_MSG(decalageX, wxT("decalageX cannot be NULL") );
     wxASSERT_MSG(decalageY, wxT("decalagY cannot be NULL") );
-    wxASSERT_MSG(max, wxT("max cannot be NULL") );
-
+    wxASSERT_MSG(maxCorr, wxT("maxCorr cannot be NULL") );
     wxASSERT_MSG(im1, wxT("Image 1 cannot be NULL") );
     wxASSERT_MSG(im2, wxT("Image 2 cannot be NULL") );
+	
+	//imProcessNegative( im1, im1 );
+	//imProcessNegative( im2, im2 );
 
     // zero padding
-
-        imImage *imTmp1 = imImageCreate(
+	imImage *imTmp1 = imImageCreate(
             im1->width +  window.GetWidth() * 2,
             im1->height +  window.GetHeight() * 2,
             im1->color_space, im1->data_type);
-        imProcessAddMargins(im1 ,imTmp1, window.GetWidth(), window.GetHeight());
-        //imImageDestroy(im1);
-        //im1 = imTmp1;
-
-
+	imProcessAddMargins(im1 ,imTmp1, window.GetWidth(), window.GetHeight());
 
     int conv_width = 2 * window.GetWidth();
     int conv_height = 2 * window.GetHeight();
-    //imImage *conv = imImageCreate(conv_width, conv_height, IM_GRAY, IM_BYTE);
     imImage *mask = imImageCreate(im2->width, im2->height,im2->color_space, im2->data_type);
     imbyte *bufIm2 = (imbyte*)im2->data[0];
-    //imbyte *bufConv = (imbyte*)conv->data[0];
-    //int offset;
     int maxSum = 0, maxX = 0, maxY = 0;
     for (int y = 0; y < conv_height; y++)
     {
@@ -620,12 +619,12 @@ void ImOperator::DistByCorrelation(const _imImage *im1, const _imImage *im2,
             int sum = 0;
             for (int i = 0; i < mask->plane_size; i++)
             {
-                sum += (bufIm2[i] ) * (bufMask[i] );
+				sum += (bufIm2[i] / 255) * (bufMask[i] / 255);
+                //sum += (bufIm2[i]) * (bufMask[i]) / (255 * 255);
             }
-            //offset = y * conv_width + x;
-            //bufConv[offset] = sum;
             if (sum > maxSum)
             {
+				//wxLogDebug("Sum %d", sum );
                 maxSum = sum;
                 maxX = x;
                 maxY = y;
@@ -635,7 +634,7 @@ void ImOperator::DistByCorrelation(const _imImage *im1, const _imImage *im2,
 
     *decalageX = maxX - window.GetWidth();
     *decalageY = maxY - window.GetHeight();
-    *max = maxSum;
+    *maxCorr = maxSum;
     imImageDestroy(imTmp1);
     imImageDestroy(mask);
 }
@@ -668,6 +667,5 @@ void ImOperator::MedianFilter( int values[], int size, int filter_size, int *avg
     if ( avg_ptr )
         *avg_ptr = avg;
 }
-
 
 // WDR: handler implementations for ImOperator

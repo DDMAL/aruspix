@@ -49,14 +49,6 @@ enum
     ID4_POPUP_TREE_AX_DELETE
 };
 
-enum
-{
-    PRE_BINARIZATION_OTSU = 0,
-    PRE_BINARIZATION_SAUVOLA,
-	PRE_BINARIZATION_PUGIN,
-	PRE_BINARIZATION_BRINK
-};
-
 #define REC_UPDATE_DEFAULT 0
 #define REC_UPDATE_FAST 1
 
@@ -91,28 +83,23 @@ public:
         const wxPoint& pos = wxDefaultPosition,
         const wxSize& size = wxDefaultSize,
         long style = 0 );
-    void SetEnv( RecEnv *env, wxFlexGridSizer *sizer, MusToolPanel *toolpanel,   RecMusController *musControlPtr );
+    void SetEnv( RecEnv *env );
     
     // WDR: method declarations for RecSplitterWindow
-    void ChangeOrientation( );
     
 protected:
     // WDR: member variable declarations for RecSplitterWindow
     RecEnv *m_envPtr;
-    MusToolPanel *m_toolpanel;
-    wxFlexGridSizer *m_mussizer;
-    RecMusController *m_musControlPtr;
     
 private:
     // WDR: handler declarations for RecSplitterWindow
-    void OnSashDoubleClick( wxSplitterEvent &event );
     void OnSashChanged( wxSplitterEvent &event );
 
 private:
     DECLARE_EVENT_TABLE()
 };
 
-
+/*
 //----------------------------------------------------------------------------
 // RecPanel
 //----------------------------------------------------------------------------
@@ -139,7 +126,7 @@ private:
 private:
     DECLARE_EVENT_TABLE()
 };
-
+*/
 
 
 //----------------------------------------------------------------------------
@@ -175,8 +162,8 @@ public:
 
 private:
     // WDR: member variable declarations for RecEnv
-    RecSplitterWindow *m_splitterPtr;
-    wxSplitterWindow *m_vsplitterPtr;
+    RecSplitterWindow *m_pageSplitterPtr;
+    wxSplitterWindow *m_bookSplitterPtr;
     // im
     RecImController *m_imControlPtr;
     RecImWindow *m_imViewPtr;
@@ -215,10 +202,6 @@ public:
     static int s_pre_margin_bottom;
     static int s_pre_margin_left;
     static int s_pre_margin_right;
-    // static values not changed
-    static int s_pre_threshold_method_resize;
-    static int s_pre_threshold_method;
-    static int s_pre_threshold_region_size;
     // decoder
     static wxString s_rec_typ_model;
     static wxString s_rec_mus_model;    
@@ -283,7 +266,7 @@ private:
 private:
     DECLARE_DYNAMIC_CLASS(RecEnv)
 
-    DECLARE_EVENT_TABLE()
+    DECLARE_EVENT_TABLE( )
 };
 
 #endif //AX_RECOGNITION

@@ -43,115 +43,6 @@ bool CmpEnv::s_expand_cmp = true;
 
 // WDR: class implementations
 
-/*
-//----------------------------------------------------------------------------
-// RecSplitterWindow
-//----------------------------------------------------------------------------
-
-// WDR: event table for RecSplitterWindow
-
-BEGIN_EVENT_TABLE(RecSplitterWindow,wxSplitterWindow)
-    EVT_SPLITTER_DCLICK( -1, RecSplitterWindow::OnSashDoubleClick )
-    EVT_SPLITTER_SASH_POS_CHANGED( -1, RecSplitterWindow::OnSashChanged)
-END_EVENT_TABLE()
-
-RecSplitterWindow::RecSplitterWindow( wxWindow *parent, wxWindowID id,
-    const wxPoint &position, const wxSize& size, long style ) :
-    wxSplitterWindow( parent, id, position, size, style )
-{
-    m_envPtr = NULL;
-}
-
-void RecSplitterWindow::SetEnv( CmpEnv *env, wxFlexGridSizer *sizer, MusToolPanel *toolpanel,    CmpMusController *musControlPtr )
-{
-    m_envPtr = env;
-    m_mussizer = sizer;
-    m_toolpanel = toolpanel;
-    m_musControlPtr = musControlPtr;
-}
-
-void RecSplitterWindow::ChangeOrientation( )
-{
-    / *
-    if ( !IsSplit() )
-        return;
-        
-    bool vertical = true;
-    if ( this->GetSplitMode() == wxSPLIT_VERTICAL )
-        vertical = false;
-
-    wxWindow *win1 = this->GetWindow1();
-    wxWindow *win2 = this->GetWindow2();
-    this->Unsplit();
-    win2->Show();
-
-    if (vertical)
-        this->SplitVertically( win1, win2 );
-    else
-        this->SplitHorizontally( win1, win2 );
-    
-    m_toolpanel->SetDirection( vertical );
-    int cols = ( vertical ) ? 0 : 1;
-    int rows = ( vertical ) ? 1 : 0;
-
-    m_mussizer->AddGrowableCol( rows );
-    m_mussizer->RemoveGrowableCol( cols );
-    m_mussizer->AddGrowableRow( cols );
-    m_mussizer->RemoveGrowableRow( rows );
-
-    m_mussizer->SetCols( cols );
-    m_mussizer->SetRows( rows );
-    m_mussizer->Layout();
-    //m_mussizer->SetSizeHints( win2 );
-
-
-    if ( m_envPtr )
-    {
-        m_envPtr->SyncZoom();
-    }
-    * /
-}
-
-
-// WDR: handler implementations for RecSplitterWindow
-
-void RecSplitterWindow::OnSashChanged( wxSplitterEvent &event )
-{
-    UpdateSize();
-    if ( m_envPtr )
-    {
-       // m_envPtr->SyncZoom();
-    }
-    event.Skip();
-}
-
-void RecSplitterWindow::OnSashDoubleClick( wxSplitterEvent &event )
-{
-    this->ChangeOrientation();
-}
-
-
-//----------------------------------------------------------------------------
-// RecPanel
-//----------------------------------------------------------------------------
-
-// WDR: event table for RecPanel
-
-BEGIN_EVENT_TABLE(RecPanel,wxPanel)
-END_EVENT_TABLE()
-
-RecPanel::RecPanel( wxWindow *parent, wxWindowID id,
-    const wxPoint &position, const wxSize& size, long style ) :
-    wxPanel( parent, id, position, size, style )
-{
-    WindowFunc4( this, TRUE ); 
-}
-
-// WDR: handler implementations for RecPanel
-
-*/
-
-
 //----------------------------------------------------------------------------
 // CmpEnv
 //----------------------------------------------------------------------------
@@ -198,9 +89,9 @@ IMPLEMENT_DYNAMIC_CLASS(CmpEnv,AxEnv)
 CmpEnv::CmpEnv():
     AxEnv()
 {
-    m_splitterPtr = NULL;
-    m_vsplitterPtr = NULL;
-	m_isplitterPtr = NULL;
+    m_bookSplitterPtr = NULL;
+    m_pageSplitterPtr = NULL;
+	m_srcSplitterPtr = NULL;
     m_imControlPtr1 = NULL;
     m_imViewPtr1 = NULL;
     m_imControlPtr2 = NULL;
@@ -228,37 +119,37 @@ CmpEnv::~CmpEnv()
 void CmpEnv::LoadWindow()
 {
 	// splitter project / viewer
-    m_vsplitterPtr = new wxSplitterWindow( m_framePtr, -1 );
-    this->m_envWindowPtr = m_vsplitterPtr;
+    m_bookSplitterPtr = new wxSplitterWindow( m_framePtr, -1 );
+    this->m_envWindowPtr = m_bookSplitterPtr;
     if (!m_envWindowPtr)
         return;
-	m_vsplitterPtr->SetMinimumPaneSize( 100 );
+	m_bookSplitterPtr->SetMinimumPaneSize( 100 );
         
 	// project
-    m_cmpCtrlPanelPtr = new CmpCtrlPanel( m_vsplitterPtr, -1);
+    m_cmpCtrlPanelPtr = new CmpCtrlPanel( m_bookSplitterPtr, -1);
     m_cmpCtrlPtr = m_cmpCtrlPanelPtr->GetTree();
     m_cmpCtrlPtr->SetBookFile( m_cmpFilePtr );
     m_cmpCtrlPtr->SetEnv( this );
     m_cmpCtrlPtr->SetBookPanel( m_cmpCtrlPanelPtr );
 
 	// viewer: splitter collation / images
-    m_splitterPtr = new wxSplitterWindow( m_vsplitterPtr, -1 );
-    m_splitterPtr->SetWindowStyleFlag( wxSP_FULLSASH );
-    m_splitterPtr->SetMinimumPaneSize( 100 );
+    m_pageSplitterPtr = new wxSplitterWindow( m_bookSplitterPtr, -1 );
+    m_pageSplitterPtr->SetWindowStyleFlag( wxSP_FULLSASH );
+    m_pageSplitterPtr->SetMinimumPaneSize( 100 );
 		
 	// collation
-	m_musControlPtr = new CmpMusController( m_splitterPtr, ID6_DISPLAY );
+	m_musControlPtr = new CmpMusController( m_pageSplitterPtr, ID6_DISPLAY );
     m_musViewPtr = new CmpMusWindow( m_musControlPtr, ID6_WGWINDOW, wxDefaultPosition,
             wxDefaultSize, wxHSCROLL|wxVSCROLL|wxSIMPLE_BORDER , false);
     m_musViewPtr->SetEnv( this );
     m_musControlPtr->Init( this, m_musViewPtr );
 
 	// images: splitter image / image
-	m_isplitterPtr = new wxSplitterWindow( m_splitterPtr, -1 );
-    m_isplitterPtr->SetWindowStyleFlag( wxSP_FULLSASH );
-    m_isplitterPtr->SetMinimumPaneSize( 100 );
+	m_srcSplitterPtr = new wxSplitterWindow( m_pageSplitterPtr, -1 );
+    m_srcSplitterPtr->SetWindowStyleFlag( wxSP_FULLSASH );
+    m_srcSplitterPtr->SetMinimumPaneSize( 100 );
 
-    m_imControlPtr1 = new CmpImController( m_isplitterPtr, ID6_CONTROLLER1, wxDefaultPosition, wxDefaultSize, 0,
+    m_imControlPtr1 = new CmpImController( m_srcSplitterPtr, ID6_CONTROLLER1, wxDefaultPosition, wxDefaultSize, 0,
         CONTROLLER_NO_TOOLBAR );
     m_imControlPtr1->SetEnv( this );
     m_imViewPtr1 = new CmpImWindow( m_imControlPtr1, ID6_VIEW1 , wxDefaultPosition, 
@@ -266,7 +157,7 @@ void CmpEnv::LoadWindow()
     m_imViewPtr1->SetEnv( this );
     m_imControlPtr1->Init( this, m_imViewPtr1 );
 
-    m_imControlPtr2 = new CmpImController( m_isplitterPtr, ID6_CONTROLLER2, wxDefaultPosition, wxDefaultSize, 0,
+    m_imControlPtr2 = new CmpImController( m_srcSplitterPtr, ID6_CONTROLLER2, wxDefaultPosition, wxDefaultSize, 0,
         CONTROLLER_NO_TOOLBAR );
     m_imControlPtr2->SetEnv( this );
     m_imViewPtr2 = new CmpImWindow( m_imControlPtr2, ID6_VIEW2 , wxDefaultPosition, 
@@ -286,7 +177,7 @@ void CmpEnv::LoadWindow()
     
  //   m_toolpanel->SetDirection( false );
 
-    //m_splitterPtr->SetEnv( this, mussizer, m_toolpanel, m_musControlPtr );
+    //m_pageSplitterPtr->SetEnv( this, mussizer, m_toolpanel, m_musControlPtr );
 
     if ( wxSystemSettings::GetColour(wxSYS_COLOUR_APPWORKSPACE) == *wxWHITE )
         m_musControlPtr->SetBackgroundColour( *wxLIGHT_GREY );
@@ -294,16 +185,16 @@ void CmpEnv::LoadWindow()
         m_musControlPtr->SetBackgroundColour( wxSystemSettings::GetColour(wxSYS_COLOUR_APPWORKSPACE) );
 
 	// load splitter
-    m_vsplitterPtr->SplitVertically( m_cmpCtrlPanelPtr, m_splitterPtr, CmpEnv::s_book_sash );
-	//m_vsplitterPtr->SplitHorizontally( m_cmpCtrlPanelPtr, m_splitterPtr, CmpEnv::s_book_sash );
-    m_vsplitterPtr->Unsplit( m_cmpCtrlPanelPtr );
+    m_bookSplitterPtr->SplitVertically( m_cmpCtrlPanelPtr, m_pageSplitterPtr, CmpEnv::s_book_sash );
+	//m_bookSplitterPtr->SplitHorizontally( m_cmpCtrlPanelPtr, m_pageSplitterPtr, CmpEnv::s_book_sash );
+    m_bookSplitterPtr->Unsplit( m_cmpCtrlPanelPtr );
 
-    //m_splitterPtr->SplitHorizontally( m_musControlPtr , m_isplitterPtr, CmpEnv::s_view_sash);
-	m_splitterPtr->SplitVertically( m_musControlPtr , m_isplitterPtr, CmpEnv::s_view_sash);
-    m_splitterPtr->Unsplit();
+    //m_pageSplitterPtr->SplitHorizontally( m_musControlPtr , m_srcSplitterPtr, CmpEnv::s_view_sash);
+	m_pageSplitterPtr->SplitVertically( m_musControlPtr , m_srcSplitterPtr, CmpEnv::s_view_sash);
+    m_pageSplitterPtr->Unsplit();
 	
-	//m_isplitterPtr->SplitVertically( m_imControlPtr1 , m_imControlPtr2);
-	m_isplitterPtr->SplitHorizontally( m_imControlPtr1 , m_imControlPtr2);
+	//m_srcSplitterPtr->SplitVertically( m_imControlPtr1 , m_imControlPtr2);
+	m_srcSplitterPtr->SplitHorizontally( m_imControlPtr1 , m_imControlPtr2);
     
 }
 
@@ -394,9 +285,9 @@ bool CmpEnv::ResetFile()
     if ( !m_cmpFilePtr->Close( true ) )
         return false;
 
-    if ( m_vsplitterPtr->IsSplit() ) // keep position if splitted
-        CmpEnv::s_book_sash = m_vsplitterPtr->GetSashPosition( );
-    m_vsplitterPtr->Unsplit( m_cmpCtrlPanelPtr );
+    if ( m_bookSplitterPtr->IsSplit() ) // keep position if splitted
+        CmpEnv::s_book_sash = m_bookSplitterPtr->GetSashPosition( );
+    m_bookSplitterPtr->Unsplit( m_cmpCtrlPanelPtr );
 
     m_musViewPtr->Show( false );
     m_musViewPtr->SetFile( NULL );
@@ -407,9 +298,9 @@ bool CmpEnv::ResetFile()
 	if ( m_imControlPtr2->Ok() )
         m_imControlPtr2->Close();
 
-    if ( m_splitterPtr->IsSplit() ) // keep position if splitted
-        CmpEnv::s_view_sash = m_splitterPtr->GetSashPosition( );
-    m_splitterPtr->Unsplit();
+    if ( m_pageSplitterPtr->IsSplit() ) // keep position if splitted
+        CmpEnv::s_view_sash = m_pageSplitterPtr->GetSashPosition( );
+    m_pageSplitterPtr->Unsplit();
     UpdateTitle( );
     
     return true;
@@ -425,8 +316,8 @@ void CmpEnv::UpdateViews( int flags )
 {
     if ( m_cmpCollationPtr && m_cmpCollationPtr->IsCollationLoaded() )
     {
-        //m_splitterPtr->SplitHorizontally( m_musControlPtr , m_isplitterPtr, CmpEnv::s_view_sash );
-		m_splitterPtr->SplitVertically( m_musControlPtr , m_isplitterPtr, CmpEnv::s_view_sash );
+        //m_pageSplitterPtr->SplitHorizontally( m_musControlPtr , m_srcSplitterPtr, CmpEnv::s_view_sash );
+		m_pageSplitterPtr->SplitVertically( m_musControlPtr , m_srcSplitterPtr, CmpEnv::s_view_sash );
         m_musViewPtr->SetFile( m_cmpCollationPtr->GetWgFile() );
         //m_musViewPtr->SetEnv( this );
         //m_musViewPtr->SetToolPanel( m_toolpanel );
@@ -452,7 +343,7 @@ void CmpEnv::OpenFile( wxString filename )
     if ( this->m_cmpFilePtr->Open( filename ) )
     {
         wxGetApp().AxBeginBusyCursor( );
-        m_vsplitterPtr->SplitVertically( m_cmpCtrlPanelPtr, m_splitterPtr, CmpEnv::s_book_sash );
+        m_bookSplitterPtr->SplitVertically( m_cmpCtrlPanelPtr, m_pageSplitterPtr, CmpEnv::s_book_sash );
         m_cmpCtrlPtr->Build();
 		UpdateViews( 0 );
         wxGetApp().AxEndBusyCursor();
@@ -541,7 +432,7 @@ void CmpEnv::OnOpen( wxCommandEvent &event )
         return;
     if  (envtype != AX_FILE_COMPARISON)
     {
-        wxLogError("Invalid file");
+        wxLogError("Invalid file project file");
         return;
     }
     OpenFile( filename );
@@ -566,7 +457,7 @@ void CmpEnv::OnNew( wxCommandEvent &event )
     {
         m_recBookFilePtr->Modify();
         wxGetApp().AxBeginBusyCursor( );
-        m_vsplitterPtr->SplitVertically( m_recBookPanelPtr, m_splitterPtr, CmpEnv::s_book_sash );
+        m_bookSplitterPtr->SplitVertically( m_recBookPanelPtr, m_pageSplitterPtr, CmpEnv::s_book_sash );
         m_recBookPtr->Build();
         wxGetApp().AxEndBusyCursor();
     }

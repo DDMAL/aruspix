@@ -19,7 +19,7 @@
 #endif
 #include "wx/wfstream.h"
 
-#include "musiomlf.h"
+#include "mus/musiomlf.h"
 
 class ImPage;
 class ImStaff;
@@ -144,7 +144,6 @@ protected:
 	int m_currentWidth;
 
 public:
-	//bool m_addPageNo;
 	RecMLFBmpTypes m_bitmap_types; // tableau des images - par type
 
 

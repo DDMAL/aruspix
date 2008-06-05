@@ -1,6 +1,6 @@
 /////////////////////////////////////////////////////////////////////////////
 
-#include "wx/msw/wx.rc"	//Includes WX library default resources 
+//#include "wx/msw/wx.rc"	//Includes WX library default resources 
 
 
 /////////////////////////////////////////////////////////////////////////////
@@ -8,7 +8,10 @@
 // ICONS
 //
 Ax                ICON    "res/ax.ico"
-
+Axz				  ICON	  "res/axz.ico"
+Axmus			  ICON	  "res/axmus.ico"
+Axproj			  ICON	  "res/axproj.ico"
+Axtyp			  ICON    "res/axtyp.ico"
 
 /////////////////////////////////////////////////////////////////////////////
 //

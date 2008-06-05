@@ -21,9 +21,9 @@
 //#include "rec_wdr.h"
 
 #include "app/axundo.h"
+//#include "im/imbrink3classes.h"
 
 class ImStaffFunctor;
-class ImStaffSegmentFunctor;
 
 class ImStaff;
 WX_DECLARE_OBJARRAY( ImStaff, ArrayOfStaves);
@@ -36,6 +36,13 @@ WX_DECLARE_OBJARRAY(ImRLE, ArrayOfRLE);
 enum
 {
 	IM_UNDO_CLASSIFICATION = 0
+};
+
+enum
+{
+	PRE_BINARIZATION_BRINK = 0,
+	PRE_BINARIZATION_SAUVOLA,
+	PRE_BINARIZATION_BRINK3CLASSES
 };
 
 #define WIN_WIDTH 2
@@ -75,29 +82,30 @@ public:
     bool ImPage::Load( TiXmlElement *file_root );
     bool ImPage::Save( TiXmlElement *file_root );
     // Processing
-    bool ImPage::Check( wxString infile, int max_binary, int index = 0 );
-    bool ImPage::Deskew( double max_alpha);
+    bool ImPage::Check( wxString infile, int max_binary = -1, int index = 0 );
+    bool ImPage::Deskew( double max_alpha );
     bool ImPage::FindStaves( int min, int max, bool normalize = true, bool crop = true ); // if normalize, then resize to get a staff height of 100
 	bool ImPage::BinarizeAndClean( );
     bool ImPage::FindBorders( );
     bool ImPage::FindOrnateLetters( );
     bool ImPage::FindText( );
     bool ImPage::FindTextInStaves( );
-    bool ImPage::StaffSegments( ); 
+    bool ImPage::ExtractStaves( ); 
     bool ImPage::StaffCurvatures( );    
-	bool ImPage::GenerateMFC( bool merged = false, wxString output_dir = "" );
+	bool ImPage::GenerateMFC( wxString output_dir = "" );
 	bool ImPage::ChangeClassification( int x1, int y1, int x2, int y2, int plane_number  );
 	bool ImPage::ChangeClassification( int plane_number  );
 	bool ImPage::MagicSelection( int x, int y, AxImage *selection, int *xmin, int *ymin );
 	// Working methods
-	bool ImPage::SaveSegmentsImages(); // enregistre les images des segments de portees dans working dir
+	bool ImPage::SaveStaffImages(); // enregistre les images de portees dans working dir
     // moulinette
-    virtual void ImPage::Process(ImStaffSegmentFunctor *functor, wxArrayPtrVoid params, int counter = -1 );
-	virtual void ImPage::Process(ImStaffFunctor *functor, wxArrayPtrVoid params, 
-		ImStaffSegmentFunctor *subfunctor = NULL, int counter = -1 );
+    virtual void ImPage::Process(ImStaffFunctor *functor, wxArrayPtrVoid params, int counter = -1 );
+	//virtual void ImPage::Process(ImStaffFunctor *functor, wxArrayPtrVoid params, 
+	//	ImStaffSegmentFunctor *subfunctor = NULL, int counter = -1 );
     // values
     void ImPage::CalcLeftRight(int *x1, int *x2);
-	int ImPage::GetStaffSegmentsCount( bool segment_only = false );
+	int ImPage::GetStaffCount( );
+	//int ImPage::GetStaffSegmentsCount( bool segment_only = false );
 	void ImPage::GetStaffSegmentOffsets( int staff_no, int offsets[],  int split_points[], int end_points[] );
     int ImPage::ToViewY( int y ) { return m_size.GetHeight() - y;}
 	
@@ -117,7 +125,7 @@ private:
 public:
     // WDR: member variable declarations for ImPage
 	_imImage *m_img0; // processed image, with pre-classification
-	_imImage *m_img1; // processed image, grascale (alternative)
+	_imImage *m_img1; // processed image, greyscale (alternative)
 	_imImage *m_selection; // buffer used to change classification
 	wxPoint m_selection_pos;
 	bool *m_isModified;
@@ -132,6 +140,14 @@ public:
     int m_line_width;
     int m_space_width;
 	int m_staff_height; // taille de la portee (calculee par correlation dans StaffCurvatures())
+	
+	// static values not changed
+	static int ImPage::s_pre_page_binarization_method; // used in ImPage, idem
+    static int ImPage::s_pre_page_binarization_method_size;
+	static bool ImPage::s_pre_page_binarization_select;
+	
+	int *m_pre_page_binarization_methodPtr;
+	int *m_pre_page_binarization_method_sizePtr;
     
 private:
     // WDR: handler declarations for ImPage

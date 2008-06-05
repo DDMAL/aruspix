@@ -8,8 +8,6 @@
 #ifndef __MUS_IOMLF_H__
 #define __MUS_IOMLF_H__
 
-
-
 #ifdef __GNUG__
     #pragma interface "musiomlf.cpp"
 #endif
@@ -20,16 +18,10 @@
 #include "wx/wfstream.h"
 
 #include "musfile.h"
-
-class MusMLFSymbol;
-WX_DECLARE_OBJARRAY( MusMLFSymbol, ArrayOfMLFSymboles);
+#include "musmlfdic.h"
 
 class ImPage;
 class AxProgressDlg;
-
-#define SP_START "SP_START"
-#define SP_END "SP_END"
-#define SP_WORD "SP"
 
 #define TYPE_NOTE 'N'
 #define TYPE_REST 'R'
@@ -44,30 +36,6 @@ class AxProgressDlg;
 #define NOTE_STEM 1
 #define NOTE_COLORATION 2
 #define NOTE_LIGATURE 4
-
-
-class RecSymbol;
-WX_DECLARE_OBJARRAY(RecSymbol, ArrayOfRecSymbols);
-
-// WDR: class declarations
-
-//----------------------------------------------------------------------------
-// RecSymbol
-//----------------------------------------------------------------------------
-
-class RecSymbol: public wxObject
-{
-public:
-    // constructors and destructors
-    RecSymbol() {};
-    ~RecSymbol() {};
-
-public:
-	wxString m_word;
-	wxString m_hmm_symbol;
-    int m_states;
-};
-
 
 //----------------------------------------------------------------------------
 // MusMLFSymbol
@@ -104,6 +72,35 @@ private:
 
 
 //----------------------------------------------------------------------------
+// MusMLFSymbolNoPitch
+//----------------------------------------------------------------------------
+
+// Idem MusMLFSymbol but without pitch
+
+class MusMLFSymbolNoPitch: public MusMLFSymbol
+{
+public:
+    // constructors and destructors
+    MusMLFSymbolNoPitch();
+    virtual ~MusMLFSymbolNoPitch() {};
+    
+    // WDR: method declarations for MusMLFSymbolNoPitch
+	//virtual void SetValue( char type, wxString subtype, int position, int value = 0, char pitch = 0, int oct = 0, int flag = 0);
+    virtual wxString GetLabel( );
+    
+protected:
+    // WDR: member variable declarations for MusMLFSymbolNoPitch
+	
+public:
+
+private:
+    // WDR: handler declarations for MusMLFSymbolNoPitch
+
+	DECLARE_DYNAMIC_CLASS(MusMLFSymbolNoPitch)
+};
+
+
+//----------------------------------------------------------------------------
 // MusMLFOutput
 //----------------------------------------------------------------------------
 
@@ -111,21 +108,21 @@ class MusMLFOutput: public MusFileOutputStream
 {
 public:
     // constructors and destructors
-    MusMLFOutput( MusFile *file, wxString filename, wxString model_symbole_name = "MusMLFSymbol" );
-	MusMLFOutput( MusFile *file, int fd, wxString filename, wxString model_symbole_name = "MusMLFSymbol" );
-	//MusMLFOutput( MusFile *file, wxFile *wxfile, wxString filename, wxString model_symbole_name = "MusMLFSymbol" );
+    MusMLFOutput( MusFile *file, wxString filename, MusMLFDictionary *dict, wxString model_symbole_name = "MusMLFSymbol" );
+	MusMLFOutput( MusFile *file, int fd, wxString filename,  MusMLFDictionary *dict, wxString model_symbole_name = "MusMLFSymbol" );
     virtual ~MusMLFOutput();
     
     // WDR: method declarations for MusMLFOutput
-	bool ExportFile( MusFile *file, wxString filename);	// replace  musfile set in the constructor
-														// and export it
+	//bool ExportFile( MusFile *file, wxString filename);	// replace  musfile set in the constructor
+														// and export by calling ExportFile
 														// allow exportation of several files in one mlf
-    virtual bool ExportFile( );
+    //virtual bool ExportFile( );
     virtual bool WritePage( const MusPage *page, bool write_header = false );
 	bool WritePage( const MusPage *page, wxString filename, ImPage *imPage,
-		wxArrayInt *staff_numbers = NULL ); // manage segments through imPage and staves throuhg staff_numbers
+		wxArrayInt *staff_numbers = NULL ); // manage staves throuhg staff_numbers
 											// write all staves if staff_numbers == NULL
-    virtual bool WriteStaff( const MusStaff *staff, int offsets[] = NULL, int split_points[] = NULL, int end_points[] = NULL );
+											
+    virtual bool WriteStaff( const MusStaff *staff, int offset = -1, int end_point = -1 );
     virtual bool WriteNote( MusNote *note );
     virtual bool WriteSymbole( MusSymbol *symbole );
 	// specific
@@ -133,47 +130,74 @@ public:
 	static MusStaff *GetUt1( MusStaff *staff, bool inPlace = false );
 	static void GetUt1( MusStaff *staff, MusElement *pelement, int *code, int *oct);
 	// charge le dictionnaire ( .dic )
-	void LoadSymbolDictionary( wxString filename );
-	void WriteSymbolDictionary( wxString filename );
+	//void LoadSymbolDictionary( wxString filename );
+	//void WriteSymbolDictionary( wxString filename );
 	// si writePosition, charge .xml et calcul la largeur
-	//void LoadTypes( wxString filename );
-	void CreateSubFile(); // open a subfile xxxp to write subsymbols with position
-	void LoadSubFile(); // idem but with cache
+	//void CreateSubFile(); // open a subfile xxxp to write subsymbols with position
+	//void LoadSubFile(); // idem but with cache
 	// output methods
-	void WriteDictionary( wxString filename );
-	void WriteStatesPerSymbol( wxString filename );
-	void WriteHMMSymbols( wxString filename );
+	//void WriteDictionary( wxString filename );
+	//void WriteStatesPerSymbol( wxString filename );
+	//void WriteHMMSymbols( wxString filename );
 	virtual void StartLabel( );
-	virtual void EndLabel( int offsets[] = NULL, int end_points[] = NULL );
+	virtual void EndLabel( int offset = -1, int end_point = -1 );
 	// access
-	ArrayOfMLFSymboles *GetSymbols( ) { return &m_symboles; };
+	ArrayOfMLFSymbols *GetSymbols( ) { return &m_symbols; };
     
 protected:
     // WDR: member variable declarations for MusMLFOutput
     wxString m_filename;
-	wxFileOutputStream *m_subfile;
+	//wxFileOutputStream *m_subfile;
 	// specific
-	ArrayOfMLFSymboles m_symboles; // tableau des symbole
-	//MLFTypes m_types; // tableau des largeur - par type, uniquement avec MusMLFSymbol
-	wxString m_model_symbole_name;
+	ArrayOfMLFSymbols m_symbols; // symbol list
+	wxString m_mlf_class_name;
 	wxString m_shortname;
 	MusStaff *m_staff; // utilise pour les segments de portee, doit etre accessible dans WriteSymbole
-	// page, staff and segment index
+	// page, staff index
 	int m_page_i;
 	int m_staff_i;
-	int m_segment_i;
 	bool m_addHeader; // used to know if #MLF# header must be added (first file or not)
 
 public:
 	bool m_addPageNo;
-	wxArrayString m_loadedDict; // symboles charge avec LoadDictionnary
-	wxArrayString m_dict; // symboles de l'exportation
-	ArrayOfRecSymbols m_dictSymbols; // symboles de l'exportation, version complete avec phone et position. m_dict allows fast access
-	bool m_writePosition; // ecrit les position dans MLF, uniquement avec MLFSymbol_
+	//wxArrayString m_loadedDict; // symboles charge avec LoadDictionnary
+	//wxArrayString m_dict; // symboles de l'exportation
+	MusMLFDictionary *m_dict; // symboles de l'exportation, version complete avec phone et position. m_dict allows fast access
+	bool m_pagePosition; // ecrit les position dans MLF, avec MusMLFSymbol
+	bool m_hmmLevel; // write symbols rather the words in EndLabel; basic for now, do not handle several symbols per word
 
 
 private:
     // WDR: handler declarations for MusMLFOutput
+};
+
+
+//----------------------------------------------------------------------------
+// MusMLFOutputNoPitch
+//----------------------------------------------------------------------------
+
+// Idem MusMLFOutput but without pitch
+
+class MusMLFOutputNoPitch: public MusMLFOutput
+{
+public:
+    // constructors and destructors
+    MusMLFOutputNoPitch( MusFile *file, wxString filename, MusMLFDictionary *dict, wxString model_symbole_name = "MusMLFSymbolNoPitch" );
+	MusMLFOutputNoPitch( MusFile *file, int fd, wxString filename, MusMLFDictionary *dict, wxString model_symbole_name = "MusMLFSymbolNoPitch" );
+    virtual ~MusMLFOutputNoPitch();
+    
+    // WDR: method declarations for MusMLFOutputNoPitch
+    virtual bool WriteNote( MusNote *note );
+    virtual bool WriteSymbole( MusSymbol *symbole );
+	// specific
+    
+protected:
+    // WDR: member variable declarations for MusMLFOutputNoPitch
+
+public:
+
+private:
+    // WDR: handler declarations for MusMLFOutputNoPitch
 };
 
 
@@ -206,9 +230,8 @@ public:
     
 protected:
     // WDR: member variable declarations for MusMLFInput
-	// page, staff and segment index
+	// page, staff index
 	int m_staff_i, m_staff_label;
-	int m_segment_i, m_segment_label;
 
 private:
     // WDR: handler declarations for MusMLFInput

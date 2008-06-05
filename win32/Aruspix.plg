@@ -6,140 +6,120 @@
 --------------------Configuration: Aruspix - Win32 Debug--------------------
 </h3>
 <h3>Command Lines</h3>
-Creating temporary file "C:\DOCUME~1\ADMINI~1\LOCALS~1\Temp\RSP417.tmp" with contents
+Creating temporary file "C:\DOCUME~1\Tristan\LOCALS~1\Temp\RSP85.bat" with contents
 [
-/nologo /MDd /W3 /GX /Zi /Od /I ".\..\src\\" /I "D:\libs\wx2.6.0\lib\vc_lib\mswd" /I "D:\libs\im3.0\include" /I "D:\libs\tinyxml" /D "_DEBUG" /D "__WXDEBUG__" /D WXDEBUG=1 /D "AX_DISPLAY" /D "WIN32" /D "_WINDOWS" /D WINVER=0x400 /D "_MT" /D wxUSE_GUI=1 /D "AX_RECOGNITION" /D "AX_WG" /D "AX_WGVIEWER" /D "AX_SUPERIMPOSITION" /FR"../obj/AruspixDebug/" /Fp"../obj/AruspixDebug/Aruspix.pch" /YX /Fo"../obj/AruspixDebug/" /Fd"../obj/AruspixDebug/" /FD /c 
-"D:\Projects\Aruspix\src\app\axframe.cpp"
+@echo off
+clean.bat Debug
 ]
-Creating command line "cl.exe @C:\DOCUME~1\ADMINI~1\LOCALS~1\Temp\RSP417.tmp" 
-Creating temporary file "C:\DOCUME~1\ADMINI~1\LOCALS~1\Temp\RSP418.tmp" with contents
+Creating command line "C:\DOCUME~1\Tristan\LOCALS~1\Temp\RSP85.bat"
+Creating temporary file "C:\DOCUME~1\Tristan\LOCALS~1\Temp\RSP86.tmp" with contents
 [
-wxmsw26d_core.lib wxbase26d.lib wxmsw26d_html.lib wxtiffd.lib wxpngd.lib wxjpegd.lib wxzlibd.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib comctl32.lib rpcrt4.lib wsock32.lib im.lib im_process.lib im_fftw.lib tinyxmld.lib /nologo /subsystem:windows /pdb:none /debug /machine:I386 /nodefaultlib:"libc.lib" /nodefaultlib:"libcd.lib" /out:"../bin/AruspixD.exe" /libpath:"D:\libs\im3.0\lib\dll" /libpath:"D:\libs\tinyxml\Debug" 
-\Projects\Aruspix\obj\AruspixDebug\about_wdr.obj
-\Projects\Aruspix\obj\AruspixDebug\app_wdr.obj
-\Projects\Aruspix\obj\AruspixDebug\axapp.obj
-\Projects\Aruspix\obj\AruspixDebug\axenv.obj
-\Projects\Aruspix\obj\AruspixDebug\axfile.obj
-\Projects\Aruspix\obj\AruspixDebug\axframe.obj
-\Projects\Aruspix\obj\AruspixDebug\aximage.obj
-\Projects\Aruspix\obj\AruspixDebug\aximagecontroller.obj
-\Projects\Aruspix\obj\AruspixDebug\aximcontrol_wdr.obj
-\Projects\Aruspix\obj\AruspixDebug\axprocess.obj
-\Projects\Aruspix\obj\AruspixDebug\axscrolledwindow.obj
-\Projects\Aruspix\obj\AruspixDebug\axundo.obj
-\Projects\Aruspix\obj\AruspixDebug\display.obj
-\Projects\Aruspix\obj\AruspixDebug\display_wdr.obj
-\Projects\Aruspix\obj\AruspixDebug\gotodlg.obj
-\Projects\Aruspix\obj\AruspixDebug\im_ext.obj
-\Projects\Aruspix\obj\AruspixDebug\imoperator.obj
-\Projects\Aruspix\obj\AruspixDebug\impage.obj
-\Projects\Aruspix\obj\AruspixDebug\imstaff.obj
-\Projects\Aruspix\obj\AruspixDebug\imstaffsegment.obj
-\Projects\Aruspix\obj\AruspixDebug\iomlf.obj
-\Projects\Aruspix\obj\AruspixDebug\iomlfclass.obj
-\Projects\Aruspix\obj\AruspixDebug\iowwg.obj
-\Projects\Aruspix\obj\AruspixDebug\mlfbmp.obj
-\Projects\Aruspix\obj\AruspixDebug\optionsdlg.obj
-\Projects\Aruspix\obj\AruspixDebug\progressdlg.obj
-\Projects\Aruspix\obj\AruspixDebug\rec.obj
-\Projects\Aruspix\obj\AruspixDebug\rec_wdr.obj
-\Projects\Aruspix\obj\AruspixDebug\sup.obj
-\Projects\Aruspix\obj\AruspixDebug\sup_wdr.obj
-\Projects\Aruspix\obj\AruspixDebug\wg.obj
-\Projects\Aruspix\obj\AruspixDebug\wg_barmes.obj
-\Projects\Aruspix\obj\AruspixDebug\wg_bezier.obj
-\Projects\Aruspix\obj\AruspixDebug\wg_cle.obj
-\Projects\Aruspix\obj\AruspixDebug\wg_graph.obj
-\Projects\Aruspix\obj\AruspixDebug\wg_wdr.obj
-\Projects\Aruspix\obj\AruspixDebug\wgelement.obj
-\Projects\Aruspix\obj\AruspixDebug\wgfile.obj
-\Projects\Aruspix\obj\AruspixDebug\wgnote.obj
-\Projects\Aruspix\obj\AruspixDebug\wgobject.obj
-\Projects\Aruspix\obj\AruspixDebug\wgpage.obj
-\Projects\Aruspix\obj\AruspixDebug\wgstaff.obj
-\Projects\Aruspix\obj\AruspixDebug\wgsymbole.obj
-\Projects\Aruspix\obj\AruspixDebug\wgtoolpanel.obj
-\Projects\Aruspix\obj\AruspixDebug\wgviewer.obj
-\Projects\Aruspix\obj\AruspixDebug\wgviewer_wdr.obj
-\Projects\Aruspix\obj\AruspixDebug\wgwindow.obj
-\Projects\Aruspix\obj\AruspixDebug\wxprec.obj
-\Projects\Aruspix\obj\AruspixDebug\ax.res
-\Projects\Aruspix\obj\AruspixDebug\recfile.obj
-\Projects\Aruspix\obj\AruspixDebug\recim.obj
-\Projects\Aruspix\obj\AruspixDebug\recwg.obj
-\Projects\Aruspix\obj\AruspixDebug\models.obj
-\Projects\Aruspix\obj\AruspixDebug\options_wdr.obj
+wxmsw28d_core.lib wxbase28d.lib wxmsw28d_html.lib wxpngd.lib wxzlibd.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib comctl32.lib rpcrt4.lib wsock32.lib im.lib im_process.lib im_fftw.lib tinyxmld.lib /nologo /subsystem:windows /pdb:none /debug /machine:I386 /nodefaultlib:"libc.lib" /nodefaultlib:"libcd.lib" /out:"../bin/Debug/Aruspix.exe" /libpath:"C:\imlib\lib" /libpath:"C:\tinyxml\Debug" /libpath:"C:\wxWidgets-2.8.7\lib\vc_lib" 
+"\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\obj\AruspixDebug\axabout_wdr.obj"
+"\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\obj\AruspixDebug\axapp.obj"
+"\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\obj\AruspixDebug\axapp_wdr.obj"
+"\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\obj\AruspixDebug\axctrl.obj"
+"\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\obj\AruspixDebug\axenv.obj"
+"\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\obj\AruspixDebug\axfile.obj"
+"\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\obj\AruspixDebug\axframe.obj"
+"\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\obj\AruspixDebug\axgotodlg.obj"
+"\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\obj\AruspixDebug\aximage.obj"
+"\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\obj\AruspixDebug\aximagecontroller.obj"
+"\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\obj\AruspixDebug\aximcontrol_wdr.obj"
+"\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\obj\AruspixDebug\axoptions_wdr.obj"
+"\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\obj\AruspixDebug\axoptionsdlg.obj"
+"\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\obj\AruspixDebug\axprocess.obj"
+"\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\obj\AruspixDebug\axprogressdlg.obj"
+"\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\obj\AruspixDebug\axscrolledwindow.obj"
+"\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\obj\AruspixDebug\axundo.obj"
+"\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\obj\AruspixDebug\cmp.obj"
+"\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\obj\AruspixDebug\cmp_wdr.obj"
+"\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\obj\AruspixDebug\cmpctrl.obj"
+"\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\obj\AruspixDebug\cmpfile.obj"
+"\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\obj\AruspixDebug\cmpim.obj"
+"\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\obj\AruspixDebug\cmpmlf.obj"
+"\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\obj\AruspixDebug\cmpmus.obj"
+"\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\obj\AruspixDebug\imbrink.obj"
+"\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\obj\AruspixDebug\imbrink3classes.obj"
+"\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\obj\AruspixDebug\imext.obj"
+"\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\obj\AruspixDebug\imkmeans.obj"
+"\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\obj\AruspixDebug\imoperator.obj"
+"\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\obj\AruspixDebug\impage.obj"
+"\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\obj\AruspixDebug\imregister.obj"
+"\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\obj\AruspixDebug\imstaff.obj"
+"\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\obj\AruspixDebug\imstaffsegment.obj"
+"\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\obj\AruspixDebug\mus.obj"
+"\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\obj\AruspixDebug\mus_wdr.obj"
+"\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\obj\AruspixDebug\musbarlines.obj"
+"\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\obj\AruspixDebug\musbezier.obj"
+"\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\obj\AruspixDebug\musclef.obj"
+"\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\obj\AruspixDebug\muselement.obj"
+"\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\obj\AruspixDebug\musfile.obj"
+"\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\obj\AruspixDebug\musgraph.obj"
+"\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\obj\AruspixDebug\musiomlf.obj"
+"\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\obj\AruspixDebug\musiowwg.obj"
+"\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\obj\AruspixDebug\musmlfdic.obj"
+"\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\obj\AruspixDebug\musnote.obj"
+"\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\obj\AruspixDebug\musobject.obj"
+"\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\obj\AruspixDebug\muspage.obj"
+"\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\obj\AruspixDebug\musstaff.obj"
+"\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\obj\AruspixDebug\mussymbol.obj"
+"\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\obj\AruspixDebug\mustoolpanel.obj"
+"\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\obj\AruspixDebug\muswindow.obj"
+"\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\obj\AruspixDebug\rec.obj"
+"\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\obj\AruspixDebug\rec_wdr.obj"
+"\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\obj\AruspixDebug\recbookctrl.obj"
+"\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\obj\AruspixDebug\recbookfile.obj"
+"\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\obj\AruspixDebug\recfile.obj"
+"\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\obj\AruspixDebug\recim.obj"
+"\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\obj\AruspixDebug\recmlfbmp.obj"
+"\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\obj\AruspixDebug\recmodels.obj"
+"\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\obj\AruspixDebug\recmus.obj"
+"\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\obj\AruspixDebug\sup.obj"
+"\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\obj\AruspixDebug\sup_wdr.obj"
+"\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\obj\AruspixDebug\supbookctrl.obj"
+"\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\obj\AruspixDebug\supbookfile.obj"
+"\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\obj\AruspixDebug\supfile.obj"
+"\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\obj\AruspixDebug\supim.obj"
+"\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\obj\AruspixDebug\wgviewer.obj"
+"\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\obj\AruspixDebug\wgviewer_wdr.obj"
+"\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\obj\AruspixDebug\ax.res"
 ]
-Creating command line "link.exe @C:\DOCUME~1\ADMINI~1\LOCALS~1\Temp\RSP418.tmp"
+Creating command line "link.exe @C:\DOCUME~1\Tristan\LOCALS~1\Temp\RSP86.tmp"
+
+C:\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\bin\Debug\Adapt.exe
+C:\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\bin\Debug\Aruspix.exe
+C:\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\bin\Debug\Decoder.exe
+C:\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\bin\Debug\Ngram.exe
+C:\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\bin\Debug\.svn\all-wcprops
+Access is denied.
+C:\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\bin\Debug\.svn\entries
+Access is denied.
+C:\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\bin\Debug\.svn\format
+Access is denied.
+C:\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\bin\Adapt.exe
+C:\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\bin\Aruspix.exe
+C:\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\bin\Decoder.exe
+C:\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\bin\Ngram.exe
+output dir cleaned
 <h3>Output Window</h3>
-Compiling...
-axframe.cpp
 Linking...
-   Creating library ../bin/AruspixD.lib and object ../bin/AruspixD.exp
-Creating temporary file "C:\DOCUME~1\ADMINI~1\LOCALS~1\Temp\RSP41C.tmp" with contents
+   Creating library ../bin/Debug/Aruspix.lib and object ../bin/Debug/Aruspix.exp
+Creating temporary file "C:\DOCUME~1\Tristan\LOCALS~1\Temp\RSP8A.bat" with contents
 [
-/nologo /o"../obj/AruspixDebug/Aruspix.bsc" 
-\Projects\Aruspix\obj\AruspixDebug\about_wdr.sbr
-\Projects\Aruspix\obj\AruspixDebug\app_wdr.sbr
-\Projects\Aruspix\obj\AruspixDebug\axapp.sbr
-\Projects\Aruspix\obj\AruspixDebug\axenv.sbr
-\Projects\Aruspix\obj\AruspixDebug\axfile.sbr
-\Projects\Aruspix\obj\AruspixDebug\axframe.sbr
-\Projects\Aruspix\obj\AruspixDebug\aximage.sbr
-\Projects\Aruspix\obj\AruspixDebug\aximagecontroller.sbr
-\Projects\Aruspix\obj\AruspixDebug\aximcontrol_wdr.sbr
-\Projects\Aruspix\obj\AruspixDebug\axprocess.sbr
-\Projects\Aruspix\obj\AruspixDebug\axscrolledwindow.sbr
-\Projects\Aruspix\obj\AruspixDebug\axundo.sbr
-\Projects\Aruspix\obj\AruspixDebug\display.sbr
-\Projects\Aruspix\obj\AruspixDebug\display_wdr.sbr
-\Projects\Aruspix\obj\AruspixDebug\gotodlg.sbr
-\Projects\Aruspix\obj\AruspixDebug\im_ext.sbr
-\Projects\Aruspix\obj\AruspixDebug\imoperator.sbr
-\Projects\Aruspix\obj\AruspixDebug\impage.sbr
-\Projects\Aruspix\obj\AruspixDebug\imstaff.sbr
-\Projects\Aruspix\obj\AruspixDebug\imstaffsegment.sbr
-\Projects\Aruspix\obj\AruspixDebug\iomlf.sbr
-\Projects\Aruspix\obj\AruspixDebug\iomlfclass.sbr
-\Projects\Aruspix\obj\AruspixDebug\iowwg.sbr
-\Projects\Aruspix\obj\AruspixDebug\mlfbmp.sbr
-\Projects\Aruspix\obj\AruspixDebug\optionsdlg.sbr
-\Projects\Aruspix\obj\AruspixDebug\progressdlg.sbr
-\Projects\Aruspix\obj\AruspixDebug\rec.sbr
-\Projects\Aruspix\obj\AruspixDebug\rec_wdr.sbr
-\Projects\Aruspix\obj\AruspixDebug\sup.sbr
-\Projects\Aruspix\obj\AruspixDebug\sup_wdr.sbr
-\Projects\Aruspix\obj\AruspixDebug\wg.sbr
-\Projects\Aruspix\obj\AruspixDebug\wg_barmes.sbr
-\Projects\Aruspix\obj\AruspixDebug\wg_bezier.sbr
-\Projects\Aruspix\obj\AruspixDebug\wg_cle.sbr
-\Projects\Aruspix\obj\AruspixDebug\wg_graph.sbr
-\Projects\Aruspix\obj\AruspixDebug\wg_wdr.sbr
-\Projects\Aruspix\obj\AruspixDebug\wgelement.sbr
-\Projects\Aruspix\obj\AruspixDebug\wgfile.sbr
-\Projects\Aruspix\obj\AruspixDebug\wgnote.sbr
-\Projects\Aruspix\obj\AruspixDebug\wgobject.sbr
-\Projects\Aruspix\obj\AruspixDebug\wgpage.sbr
-\Projects\Aruspix\obj\AruspixDebug\wgstaff.sbr
-\Projects\Aruspix\obj\AruspixDebug\wgsymbole.sbr
-\Projects\Aruspix\obj\AruspixDebug\wgtoolpanel.sbr
-\Projects\Aruspix\obj\AruspixDebug\wgviewer.sbr
-\Projects\Aruspix\obj\AruspixDebug\wgviewer_wdr.sbr
-\Projects\Aruspix\obj\AruspixDebug\wgwindow.sbr
-\Projects\Aruspix\obj\AruspixDebug\wxprec.sbr
-\Projects\Aruspix\obj\AruspixDebug\recfile.sbr
-\Projects\Aruspix\obj\AruspixDebug\recim.sbr
-\Projects\Aruspix\obj\AruspixDebug\recwg.sbr
-\Projects\Aruspix\obj\AruspixDebug\models.sbr
-\Projects\Aruspix\obj\AruspixDebug\options_wdr.sbr]
-Creating command line "bscmake.exe @C:\DOCUME~1\ADMINI~1\LOCALS~1\Temp\RSP41C.tmp"
-Creating browse info file...
-<h3>Output Window</h3>
+@echo off
+copy.bat Debug
+]
+Creating command line "C:\DOCUME~1\Tristan\LOCALS~1\Temp\RSP8A.bat"
+
+93 File(s) copied
+149 File(s) copied
+local and data files copied
 
 
 
 <h3>Results</h3>
-AruspixD.exe - 0 error(s), 0 warning(s)
+Aruspix.exe - 0 error(s), 0 warning(s)
 </pre>
 </body>
 </html>

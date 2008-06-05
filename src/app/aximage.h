@@ -55,9 +55,8 @@ public:
 private:
     // WDR: handler declarations for wxVigraImage
     DECLARE_CLASS(AxImage)
-
+	
 };
-
 
 
 #if	defined(__cplusplus)
@@ -65,7 +64,6 @@ extern "C" {
 #endif
 
 struct _imImage;
-
 
 _imImage* GetImImage(const AxImage *img, const int color_space = 0, const int data_type = 0);
 

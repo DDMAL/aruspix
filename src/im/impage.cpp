@@ -57,6 +57,11 @@ int SortRLE( ImRLE **first, ImRLE **second )
 #define TP_MARGIN_Y_TITLE 35 // marge entre la portee superieur et le elements de titre
 #define TP_MAX_SMALL_ELEMENT 100
 
+//Static variables that hold selected binarization method
+int ImPage::s_pre_page_binarization_method = PRE_BINARIZATION_BRINK;
+int ImPage::s_pre_page_binarization_method_size = 15;
+bool ImPage::s_pre_page_binarization_select = true;
+
 // WDR: class implementations
 
 //----------------------------------------------------------------------------
@@ -71,6 +76,10 @@ ImPage::ImPage( wxString path, bool *isModified ) :
 	m_img1 = NULL;
 	m_selection = NULL;
 	m_isModified = 	isModified;
+	
+	m_pre_page_binarization_methodPtr = &ImPage::s_pre_page_binarization_method;
+	m_pre_page_binarization_method_sizePtr = &ImPage::s_pre_page_binarization_method_size;
+	
     Clear( );
 }
 
@@ -386,8 +395,8 @@ bool ImPage::Check( wxString infile, int max_binary, int index )
             return this->Terminate( ERR_CANCELED );
         SwapImages( &m_opImMain, &m_opImTmp1 );
 
-        // reduire par 4 si l'image est plus grande que max_binary
-        while ( max_size > max_binary )
+        // reduire par 4 si l'image est plus grande que max_binary, only if max_binary > -1
+        while ( (max_binary > -1) && (max_size > max_binary) )
         {
             this->m_reduction *= 2;
             max_size /= 2;
@@ -454,10 +463,10 @@ bool ImPage::Check( wxString infile, int max_binary, int index )
 }
 
 bool ImPage::Deskew( double max_alpha )
-{
-    wxASSERT_MSG( m_progressDlg, "Progress dialog cannot be NULL");
+{	
+	wxASSERT_MSG( m_progressDlg, "Progress dialog cannot be NULL");
 	wxASSERT_MSG( m_img0, "Img0 cannot be NULL");
-
+	
     if (!m_progressDlg->SetOperation( _("Skew detection ...") ) )
         return this->Terminate( ERR_CANCELED );
 
@@ -492,6 +501,7 @@ bool ImPage::Deskew( double max_alpha )
     double skew = 0.0;
     double skew1 = 0.0;
     double skew2 = 0.0;
+	double skew3 = 0.0;
 
     // approximation par 4 degres ( nb de fois determine par le parametre max_alpha )
     max = 0;
@@ -500,14 +510,14 @@ bool ImPage::Deskew( double max_alpha )
         align = GetDeskewAlignement( m_opIm, diff );
         if ( align > max )
         {
-            skew2 = diff;
+            skew3 = diff;
             max = align;
         }
     }
 
     // approximation par 1 degre ( 5x )
     max = 0;
-    for ( diff = skew2 - 2; diff <= skew2 + 2; diff += 1 )
+    for ( diff = skew3 - 2; diff <= skew3 + 2; diff += 1 )
     {
         align = GetDeskewAlignement( m_opIm, diff );
         if ( align > max )
@@ -519,7 +529,19 @@ bool ImPage::Deskew( double max_alpha )
 
     // approximation par 0.25 degre ( 5x )
     max = 0;
-    for ( diff = skew1 - 0.5; diff <= skew1 + 0.5; diff += 0.25 )
+    for ( diff = skew2 - 0.5; diff <= skew2 + 0.5; diff += 0.25 )
+    {
+        align = GetDeskewAlignement( m_opIm, diff );
+        if ( align > max )
+        {
+            skew = diff;
+            max = align;
+        }
+    }
+	
+    // approximation par 0.125 degre ( 5x )
+    max = 0;
+    for ( diff = skew1 - 0.25; diff <= skew1 + 0.25; diff += 0.125 )
     {
         align = GetDeskewAlignement( m_opIm, diff );
         if ( align > max )
@@ -636,7 +658,7 @@ bool ImPage::FindStaves( int min, int max, bool normalize, bool crop )
 
 	this->SetMapImage( m_img0 );
 
-    if ( !GetImage( &m_opIm, resize_factor, RecEnv::s_pre_threshold_method_resize, true ) )
+    if ( !GetImage( &m_opIm, resize_factor, *m_pre_image_binarization_methodPtr, true ) )
         return false;
 
     m_opImTmp1 = imImageClone( m_opIm );
@@ -842,10 +864,21 @@ bool ImPage::FindStaves( int min, int max, bool normalize, bool crop )
     double factor = (double)resize_factor / 2.0; 
         // toujours 2 une fois que l'image à ete normalisee
         // EX si 4 avant normalisation, image des staves X2
-    //this->m_reduction = 2;
-    this->m_resize = normalization_factor;
+	this->m_resize = normalization_factor;
 
     wxLogMessage("Line width=%d; Space beetween lines=%d", this->m_line_width, this->m_space_width );
+	
+	// binary images
+	//if ( imColorModeMatch( file_color_mode, IM_BINARY ) )
+	if ( m_opImMap->palette_count == 2 )
+	{
+		m_opImTmp1 = imImageCreate( m_opImMap->width, m_opImMap->height , IM_GRAY, IM_BYTE);
+		if ( !m_opImTmp1 )
+			return this->Terminate( ERR_MEMORY );
+
+		imConvertColorSpace( m_opImMap, m_opImTmp1 );
+		SwapImages( &m_opImMap, &m_opImTmp1 );
+	}
 	
 	// resize main image
     if ( normalize && (normalization_factor != 1.0) )
@@ -854,19 +887,6 @@ bool ImPage::FindStaves( int min, int max, bool normalize, bool crop )
             return this->Terminate( ERR_CANCELED );
 
 		wxLogMessage("Normalization factor %f", normalization_factor );
-
-        // binary images
-        //if ( imColorModeMatch( file_color_mode, IM_BINARY ) )
-        if ( m_opImMap->palette_count == 2 )
-        {
-            m_opImTmp1 = imImageCreate( m_opImMap->width, m_opImMap->height , IM_GRAY, IM_BYTE);
-            if ( !m_opImTmp1 )
-                return this->Terminate( ERR_MEMORY );
-
-            imConvertColorSpace( m_opImMap, m_opImTmp1 );
-            SwapImages( &m_opImMap, &m_opImTmp1 );
-        }
-
 
         // resize
         m_opImTmp1 = imImageCreate( (int)(m_opImMap->width * normalization_factor), (int)(m_opImMap->height * normalization_factor), 
@@ -879,16 +899,6 @@ bool ImPage::FindStaves( int min, int max, bool normalize, bool crop )
 		
 		this->m_resized = this->m_resize;
 		this->m_resize = 1.0;
-
-        // threshold
-        /*m_opImTmp1 = imImageCreate( m_opImMain->width, m_opImMain->height, IM_BINARY, IM_BYTE );
-        if ( !m_opImTmp1 )
-            return this->Terminate( ERR_MEMORY );
-
-        //imProcessThreshold( m_opImMain, m_opImTmp1, 128, 1);
-        imProcessOtsuThreshold( m_opImMain, m_opImTmp1 );
-        //imProcessPercentThreshold(m_opImMain, m_opImTmp1, 15);
-        SwapImages( &m_opImMain, &m_opImTmp1 );*/
     }
 
     // resize image convolved -> keep for staves position detection
@@ -962,12 +972,6 @@ bool ImPage::FindStaves( int min, int max, bool normalize, bool crop )
 		if ( !GetImage( &m_opImMain ) )
 			return false;
 
-		/*
-			TODO
-			add margin as parameters
-			user must have the possibility to change them
-		*/
-
 		x1 = max( 0, this->m_x1  - RecEnv::s_pre_margin_left ); // 30 px en moins = de marge d'erreur
 		x2 = min( m_opImMain->width - 1 , this->m_x2 + RecEnv::s_pre_margin_right ); // 20 px en plus = de marge d'erreur
 		this->m_x1 -= x1;
@@ -1010,12 +1014,13 @@ bool ImPage::FindStaves( int min, int max, bool normalize, bool crop )
 		
 	// keep staff positions
     this->m_staves.Clear( );
-    //for (y = 0; y < nb_staves; y++ )
+    //wxLogDebug("Page dimension: %d - %d", m_img1->height, m_img1->width );
     for( i = nb_staves; i > 0; i--) // flip staves order
     {
         ImStaff imstaff;
         imstaff.m_y = m_opLines1[i-1] - y1;
         this->m_staves.Add( imstaff );
+		//wxLogDebug("Staff %d: y=%d", i, imstaff.m_y );
     }
 	
 	return this->Terminate( ERR_NONE );
@@ -1120,7 +1125,6 @@ void ImPage::GetVerticalStavesPosition( int values[], int size, int avg, int sta
 
 bool ImPage::BinarizeAndClean( )
 {
-
     wxASSERT_MSG( m_progressDlg, "Progress dialog cannot be NULL");
 	wxASSERT_MSG( m_img0, "Img0 cannot be NULL");
 	wxASSERT_MSG( ( this->m_resize == 1.0) , "Image should be normalized cannot be NULL");
@@ -1147,31 +1151,28 @@ bool ImPage::BinarizeAndClean( )
     if ( !m_opImTmp1 )
         return this->Terminate( ERR_MEMORY );
 
-	if ( RecEnv::s_pre_threshold_method == PRE_BINARIZATION_OTSU )
-	{
-		int otsu = imProcessOtsuThreshold( m_opImMain, m_opImTmp1 );
-		wxLogMessage("Otsu thresholding at %d", otsu);
-	}
-	else if ( RecEnv::s_pre_threshold_method == PRE_BINARIZATION_SAUVOLA )
+	if ( *ImPage::m_pre_page_binarization_methodPtr == PRE_BINARIZATION_SAUVOLA )
 	{
 		if ( !m_progressDlg->SetOperation( _("Binarization ...") ) )
 			return this->Terminate( ERR_CANCELED );
-		wxLogMessage("Sauvola binarization (region size is %d)", RecEnv::s_pre_threshold_region_size );
-		imProcessSauvolaThreshold( m_opImMain, m_opImTmp1, RecEnv::s_pre_threshold_region_size, 0.5, 128, 20, 150, false );
+		wxLogMessage("Sauvola binarization (region size is %d)", ImPage::s_pre_page_binarization_method_size );
+		imProcessSauvolaThreshold( m_opImMain, m_opImTmp1, ImPage::s_pre_page_binarization_method_size, 0.5, 128, 20, 150, false );
 	}
-	else if ( RecEnv::s_pre_threshold_method == PRE_BINARIZATION_BRINK )
+	else if ( *ImPage::m_pre_page_binarization_methodPtr == PRE_BINARIZATION_BRINK )
 	{
 		if ( !m_progressDlg->SetOperation( _("Binarization ...") ) )
 			return this->Terminate( ERR_CANCELED );
-		wxLogMessage("Entropy Brink binarization" );
-		imProcessBrinkThreshold( m_opImMain, m_opImTmp1, false );
+		wxLogMessage( "Brink (2 classes) binarization" );
+		int T = imProcessBrink2ClassesThreshold( m_opImMain, m_opImTmp1, false, BRINK_AND_PENDOCK );
+		wxLogMessage("Binarization threshold: %d", T );
 	}
-	else if ( RecEnv::s_pre_threshold_method == PRE_BINARIZATION_PUGIN )
+	else if ( *ImPage::m_pre_page_binarization_methodPtr == PRE_BINARIZATION_BRINK3CLASSES )
 	{
 		if ( !m_progressDlg->SetOperation( _("Binarization ...") ) )
 			return this->Terminate( ERR_CANCELED );
-		wxLogMessage("Pugin binarization" );
-		imProcessPuginThreshold( m_opImMain, m_opImTmp1, false );
+		wxLogMessage( "Brink (3 classes) binarization" );
+		int T = imProcessBrink3ClassesThreshold( m_opImMain, m_opImTmp1, false, BRINK_AND_PENDOCK );	
+		wxLogMessage( "Binarization threshold: %d", T );
 	}
 	else // should not happen, but just in case
 	{	
@@ -1247,7 +1248,7 @@ bool ImPage::BinarizeAndClean( )
     imAnalyzeFindRegions ( m_opImMain, NewImage, 8, 1);
     imImageDestroy( NewImage );*/
 
-    wxLogMessage("Removing small elements (minimal size = %d)" ,threshold );
+    wxLogMessage("Removing small elements (minimal size = %d)" , threshold );
     m_opImTmp1 = imImageClone( m_opImMain );
     if ( !m_opImTmp1 )
         return this->Terminate( ERR_MEMORY );
@@ -1338,19 +1339,19 @@ bool ImPage::FindOrnateLetters( )
     SwapImages( &m_opIm, &m_opImTmp1 );
 
     // supprimer les zones d'elements dont la hauteur moyenne < 140
-    PruneElementsZone( m_opIm, 140 / TIP_FACTOR_1, 0 );
+    PruneElementsZone( m_opIm, 140 / TIP_FACTOR_1, 0, IM_PRUNE_CLEAR_HEIGHT );
 
     // supprimer les zones d'elements dont la largeur moyenne < 120 
-    PruneElementsZone( m_opIm, 120 / TIP_FACTOR_1, 0, 1 );
+    PruneElementsZone( m_opIm, 120 / TIP_FACTOR_1, 0, IM_PRUNE_CLEAR_WIDTH );
 
     // supprimer les zones d'elements dont la hauteur moyenne < 140 
-    PruneElementsZone( m_opIm, 140 / TIP_FACTOR_1, 0 );
+    PruneElementsZone( m_opIm, 140 / TIP_FACTOR_1, 0, IM_PRUNE_CLEAR_HEIGHT );
 
     // supprimer les zones d'elements dont la largeur moyenne < 120 ou > 600
-    PruneElementsZone( m_opIm, 120 / TIP_FACTOR_1, 600 / TIP_FACTOR_1, 1 );
+    PruneElementsZone( m_opIm, 120 / TIP_FACTOR_1, 600 / TIP_FACTOR_1, IM_PRUNE_CLEAR_WIDTH );
 
     // supprimer les zones d'elements dont la hauteur moyenne > 600
-    PruneElementsZone( m_opIm, 120 / TIP_FACTOR_1, 600 / TIP_FACTOR_1 );
+    PruneElementsZone( m_opIm, 120 / TIP_FACTOR_1, 600 / TIP_FACTOR_1, IM_PRUNE_CLEAR_HEIGHT );
 
 
     m_opImTmp2 = imImageClone( m_opImMain );
@@ -1518,6 +1519,13 @@ bool ImPage::FindText( )
 
     // save file
 	SwapImages( &m_img0, &m_opImMap );
+	
+	// keep grayscale alternative
+	//ImageDestroy( &m_img0 );
+	//m_img0 = imImageDuplicate( m_img1 );
+	//imPhotogrammetric( m_img1, m_img0 );
+	//imPhotogrammetric( m_img1, m_img1 );
+	
 	return this->Terminate( ERR_NONE );
 }
 
@@ -1906,7 +1914,7 @@ bool ImPage::FindTextInStaves( )
 
 
 
-bool ImPage::StaffSegments( )
+bool ImPage::ExtractStaves( )
 {
     wxASSERT_MSG( m_progressDlg, "Progress dialog cannot be NULL");
 	wxASSERT_MSG( m_img0, "Img0 cannot be NULL");
@@ -1962,6 +1970,23 @@ bool ImPage::StaffSegments( )
             {
 				m_staves[st].m_segments.RemoveAt(i);
 			}   
+		}
+	}
+	
+	// set m_x1 and m_x2 for all staves (or remove empty staves)
+    for (st = nb_staves - 1; st >= 0; st-- )
+    {
+        int nb_segments = (int)m_staves[st].m_segments.GetCount();
+		if (nb_segments == 0)
+		{
+			m_staves.RemoveAt(st); // The staves are removed permanentely, as the staff detection is performed in preprocessing only
+			//m_staves[st].m_x1 = 0;
+			//m_staves[st].m_x2 = 0;
+		}
+		else
+		{
+			m_staves[st].m_x1 = m_staves[st].m_segments[0].m_x1;
+			m_staves[st].m_x2 = m_staves[st].m_segments[nb_segments-1].m_x2;
 		}
 	}
 	
@@ -2181,6 +2206,13 @@ int ImPage::GetMedianStavesSpace( )
     return med;
 }
 
+int ImPage::GetStaffCount( )
+{
+    int nb = (int)this->m_staves.GetCount();
+	return nb;
+}
+
+/*
 // retourne le nombre de segment de staff dans cette page
 // une portee sans segment vaut 1 if segment_only == false !!!
 int ImPage::GetStaffSegmentsCount( bool segment_only )
@@ -2202,7 +2234,9 @@ int ImPage::GetStaffSegmentsCount( bool segment_only )
     }
     return count;
 }
+*/
 
+/*
 // retourne pour chaque segment l'offset (m_x1) et les points ou commencent un nouveau segment (entre m_x2 et m_x1 du suivant)
 // split_point == -1 pour le dernier segment
 void ImPage::GetStaffSegmentOffsets( int staff_no, int offsets[], int split_points[], int end_points[] )
@@ -2230,8 +2264,9 @@ void ImPage::GetStaffSegmentOffsets( int staff_no, int offsets[], int split_poin
 	}
     return;
 }
+*/
 
-bool ImPage::SaveSegmentsImages( )
+bool ImPage::SaveStaffImages( )
 {
 	wxASSERT_MSG( m_img0, "Img0 cannot be NULL");
 
@@ -2246,8 +2281,8 @@ bool ImPage::SaveSegmentsImages( )
 	wxString filename = m_path + "/staff";
 	params.Add( m_opImMain );
 	params.Add( &filename );
-    ImStaffSegmentFunctor segmentFuncSI(&ImStaffSegment::SaveImage);
-    this->Process(&segmentFuncSI, params );
+    ImStaffFunctor staffFuncSI(&ImStaff::SaveImage);
+    this->Process(&staffFuncSI, params );
 
     return this->Terminate( ERR_NONE );
 }
@@ -2275,18 +2310,16 @@ bool ImPage::StaffCurvatures( )
     int count = this->m_staves.GetCount(); //GetStaffSegmentsCount();
     imCounterTotal( counter, count * 2 , "Detect staff curvature ..." );
 
-    // calculer la hauteur de la portee par projection d'histgramme (ImStaffSegment::CalcStaffHeight)
-	int seg = this->GetStaffSegmentsCount( true );
-	m_opLines1 = new int[ seg ];
-	int segment_index = 0;
-	memset( m_opLines1, 0, seg * sizeof( int ) );
+    // calculer la hauteur de la portee par projection d'histgramme (ImStaff::CalcStaffHeight)
+	int st = this->GetStaffCount();
+	m_opLines1 = new int[ st ];
+	memset( m_opLines1, 0, st * sizeof( int ) );
 	params.Add( m_opImMain );
 	params.Add( m_opLines1 );
-	params.Add( &segment_index );
-    ImStaffSegmentFunctor segmentFuncSH(&ImStaffSegment::CalcStaffHeight);
-    this->Process(&segmentFuncSH, params, counter );
+    ImStaffFunctor staffFuncSH(&ImStaff::CalcStaffHeight);
+    this->Process(&staffFuncSH, params, counter );
 	// valeur medianne de tous les segments de portee
-	m_staff_height = median( m_opLines1, seg );
+	m_staff_height = median( m_opLines1, st );
 	//int sw = m_space_width * this->m_resize;
 	//int lw = m_line_width * this->m_resize;
 	//wxLogMessage( "---staff space %d staff line = %d %d ----- height %d",
@@ -2299,14 +2332,14 @@ bool ImPage::StaffCurvatures( )
 	params.Add( m_opImMain );	
 	params.Add( &filename );
 	params.Add( &m_staff_height );
-    ImStaffSegmentFunctor segmentFunc(&ImStaffSegment::CalcCorrelation);
-    this->Process(&segmentFunc, params, counter );
+    ImStaffFunctor staffFunc(&ImStaff::CalcCorrelation);
+    this->Process(&staffFunc, params, counter );
 
 	return this->Terminate( ERR_NONE );
 }
 
 
-bool ImPage::GenerateMFC( bool merged, wxString output_dir )
+bool ImPage::GenerateMFC( wxString output_dir )
 {
     wxASSERT_MSG( m_progressDlg, "Progress dialog cannot be NULL");
 	wxASSERT_MSG( m_img0, "Img0 cannot be NULL");
@@ -2339,7 +2372,6 @@ bool ImPage::GenerateMFC( bool merged, wxString output_dir )
 	wxFile finput( input, wxFile::write );
 	if ( !finput.IsOpened() )
 		return this->Terminate( ERR_FILE, input.c_str() );
-	wxLogDebug("Check win and overlap (win = %d and overlap = %d)", WIN_WIDTH, WIN_OVERLAP);
 	int win = WIN_WIDTH;
 	int overlap = WIN_OVERLAP;
 	params.Clear();
@@ -2349,14 +2381,8 @@ bool ImPage::GenerateMFC( bool merged, wxString output_dir )
 	params.Add( &filename );
 	params.Add( &finput );
 	params.Add( &m_staff_height );
-    ImStaffSegmentFunctor segmentFuncFeatures(&ImStaffSegment::CalcFeatures);
-	if ( merged )
-	{
-		ImStaffFunctor staffFunc(&ImStaff::MergeSegments);
-		this->Process( &staffFunc, params , &segmentFuncFeatures, counter);
-	}
-	else
-		this->Process(&segmentFuncFeatures, params, counter );
+    ImStaffFunctor staffFuncFeatures(&ImStaff::CalcFeatures);
+	this->Process(&staffFuncFeatures, params, counter );
 
 	finput.Close();
 
@@ -2364,14 +2390,18 @@ bool ImPage::GenerateMFC( bool merged, wxString output_dir )
 }
 
 
-void ImPage::Process(ImStaffSegmentFunctor *functor, wxArrayPtrVoid params, int counter )
+void ImPage::Process(ImStaffFunctor *functor, wxArrayPtrVoid params, int counter )
 {
     int nb_staves = (int)this->m_staves.GetCount();
     int st;
     for (st = 0; st < nb_staves; st++ )
     {
+		if ( m_staves[st].IsVoid() )
+			continue;
+			
         int stave_y = this->m_staves[st].m_y - ( STAFF_HEIGHT / 2 );
-        this->m_staves[st].Process( functor, st, stave_y, params );
+        functor->Call( &this->m_staves[st] , st , stave_y, params);
+		//this->m_staves[st].Process( functor, st, stave_y, params );
 		
 		if ( ( counter != -1 ) && !imCounterInc( this->m_progressDlg->GetCounter() ) )
 		{
@@ -2381,7 +2411,7 @@ void ImPage::Process(ImStaffSegmentFunctor *functor, wxArrayPtrVoid params, int 
     }
 }
 
-
+/*
 void ImPage::Process(ImStaffFunctor *functor, wxArrayPtrVoid params, ImStaffSegmentFunctor *subfunctor, int counter )
 {
     int nb_staves = (int)this->m_staves.GetCount();
@@ -2398,6 +2428,7 @@ void ImPage::Process(ImStaffFunctor *functor, wxArrayPtrVoid params, ImStaffSegm
 		}		
     }
 }
+*/
 
 // WDR: handler implementations for ImPage
 

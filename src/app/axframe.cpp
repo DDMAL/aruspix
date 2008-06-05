@@ -12,13 +12,13 @@
 // For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"
 
-
-
 #ifdef __BORLANDC__
     #pragma hdrstop
 #endif
 
 #include "wx/config.h"
+#include "wx/stdpaths.h"
+#include "wx/gdicmn.h"
 
 #include "axapp.h"
 #include "axfile.h"
@@ -29,10 +29,10 @@
 #include "axoptionsdlg.h"
 #include "aximage.h"
 
+#include "im/impage.h"
 
 #include "wx/arrimpl.cpp"
 WX_DEFINE_OBJARRAY(AxEnvArray);
-
 
 #ifdef AX_RECOGNITION
     #include "recognition/rec.h"
@@ -302,28 +302,53 @@ void AxFrame::LoadConfig()
     wxASSERT_MSG( pConfig, wxT("pConfig cannot be NULL") );
     pConfig->SetPath("/");
     // frame size and position
-    int val1,val2;
-    pConfig->Read("Width",&val1,800);
-    pConfig->Read("Height",&val2,650);
+	int width, height;
+	int val1,val2;
+	wxDisplaySize(&width, &height);
+	pConfig->Read( "Width", &val1, width - 150);
+    pConfig->Read( "Height", &val2, height - 150);
     this->SetSize(val1,val2);
-    pConfig->Read("PX",&val1,50);
-    pConfig->Read("PY",&val2,50);
+    pConfig->Read("PX",&val1,10);
+    pConfig->Read("PY",&val2,30);
     this->Move(val1,val2);
     if (1 == pConfig->Read("Maximize",0L))
         this->Maximize();
+    
+//	int val1,val2;
+//    pConfig->Read("Width",&val1,800);
+//    pConfig->Read("Height",&val2,650);
+//   this->SetSize(val1,val2);
+//    pConfig->Read("PX",&val1,50);
+//    pConfig->Read("PY",&val2,50);
+//    this->Move(val1,val2);
+//    if (1 == pConfig->Read("Maximize",0L))
+//        this->Maximize();
 
     //images
     AxImage::s_zoomInterpolation = (pConfig->Read("Gray",0L)==1);
     AxImage::s_reduceBigImages = (pConfig->Read("ReduceBigImages",0L)==1);
     AxImage::s_imageSizeToReduce = pConfig->Read("ImageSizeToReduce",3000);
 	AxImage::s_checkIfNegative = (pConfig->Read("ImageCheckIfNegative",0L)==1);
+	
+	// binarization parameters
+	ImOperator::s_pre_image_binarization_method = pConfig->Read( "Image binarization method", IM_BINARIZATION_BRINK );
+    ImPage::s_pre_page_binarization_method = pConfig->Read( "Page binarization method", PRE_BINARIZATION_BRINK );
+    ImPage::s_pre_page_binarization_method_size = pConfig->Read( "Binarization region size", 15 );
+	ImPage::s_pre_page_binarization_select = ( pConfig->Read( "Binarization selector dialogue", 1L ) == 1 );
 
-	//system OS X
+#if defined(__WXMSW__)
+	wxString default_workingDir = wxStandardPaths::Get().GetTempDir();		
+	wxString default_docDir = wxStandardPaths::Get().GetDocumentsDir();
+	wxString default_images = default_docDir + "/Images";
+	wxString default_pages = default_docDir + "/Pages";
+	wxString default_models = default_docDir + "/Models";
+#else // OS X
 	wxString default_workingDir = wxGetHomeDir() + "/.aruspix"; // on OS X		
 	wxString default_docDir = wxGetHomeDir() + "/Documents/Aruspix.localized"; // on OS X
 	wxString default_images = default_docDir + "/Images.localized";
 	wxString default_pages = default_docDir + "/Pages.localized";
 	wxString default_models = default_docDir + "/Models.localized";
+#endif
 	
 	//wxGetApp().m_workingDir = pConfig->Read("WorkingDir", wxGetApp().m_path );
 	wxGetApp().m_workingDir = pConfig->Read("WorkingDir", default_workingDir );
@@ -351,8 +376,13 @@ void AxFrame::LoadConfig()
 	//wxGetApp().m_musicFontDesc = pConfig->Read("MusicFontDesc", "0;12;70;90;90;0;Leipzig 4.4;33" ); // on OS X
 	//wxGetApp().m_musicFontName = pConfig->Read("MusicFontName", "Leipzig 4.4" ); // on OS X
 	// Leipzig 4.5
+#if defined(__WXMSW__)
+	wxGetApp().m_musicFontDesc = pConfig->Read("MusicFontDesc", "0;-13;0;0;0;400;0;0;0;2;3;2;1;2;Leipzig 4.3" );
+	wxGetApp().m_musicFontName = pConfig->Read("MusicFontName", "Leipzig 4.3" );
+#else // OS X	
 	wxGetApp().m_musicFontDesc = pConfig->Read("MusicFontDesc", "0;13;70;90;90;0;Leipzig 4.5;0" ); // on OS X
 	wxGetApp().m_musicFontName = pConfig->Read("MusicFontName", "Leipzig 4.5" ); // on OS X
+#endif
     pConfig->Read("FontSizeCorrection",&wxGetApp().m_fontSizeCorrection,100);
     pConfig->Read("FontPosCorrection",&wxGetApp().m_fontPosCorrection,0);
 
@@ -399,12 +429,18 @@ void AxFrame::SaveConfig(int lastEnvId)
         this->Restore();
     pConfig->Write("Maximize",max);
     wxSize fsize = this->GetSize();
-    pConfig->Write("Width",fsize.GetWidth());
-    pConfig->Write("Height",fsize.GetHeight());
-    wxPoint fpos = this->GetPosition();
-    pConfig->Write("PX",fpos.x);
-    pConfig->Write("PY",fpos.y);
-    // last environment
+	int width, height;
+	wxDisplaySize( &width, &height );
+	if ( ( fsize.GetWidth() < width - 50 ) && ( fsize.GetHeight() < height - 50 ) ) {
+		pConfig->Write("Width",fsize.GetWidth());
+		pConfig->Write("Height",fsize.GetHeight());
+    }
+	wxPoint fpos = this->GetPosition();
+    if ( ( fpos.x < width - 50 ) && ( fpos.y < height - 50 ) ){
+		pConfig->Write("PX",fpos.x);
+		pConfig->Write("PY",fpos.y);
+    }
+	// last environment
     pConfig->Write("EnvID",lastEnvId);
 
     // images
@@ -413,6 +449,12 @@ void AxFrame::SaveConfig(int lastEnvId)
     pConfig->Write("ImageSizeToReduce", AxImage::s_imageSizeToReduce);
 	pConfig->Write("ImageCheckIfNegative", AxImage::s_checkIfNegative);
 
+	// binarization parameters
+	pConfig->Write("Image binarization method", ImOperator::s_pre_image_binarization_method );
+    pConfig->Write("Page binarization method", ImPage::s_pre_page_binarization_method );
+    pConfig->Write("Binarization region size", ImPage::s_pre_page_binarization_method_size );	
+	pConfig->Write("Binarization selector dialogue", ImPage::s_pre_page_binarization_select );		
+	
 	// system
 	pConfig->Write("DocumentsDir", wxGetApp().m_docDir );
 	pConfig->Write("WorkingDir", wxGetApp().m_workingDir );
@@ -631,7 +673,7 @@ void AxFrame::OnQuit( wxCommandEvent &event )
 
 void AxFrame::OnClose( wxCloseEvent &event )
 {
-    int lastEnvId = 0;
+    int lastEnvId = 0, i;
     if (m_env && m_env->m_isShown)
     {
 		if ( !m_env->CloseAll( ) ) 
@@ -642,14 +684,14 @@ void AxFrame::OnClose( wxCloseEvent &event )
 	
 	// check if all allow to close
 	// doesn't work if a file is open in a hidden environment...
-    for (int i=0; i < (int)m_envArray.GetCount(); i++)
+    for (i=0; i < (int)m_envArray.GetCount(); i++)
     {
         AxEnv *env = (AxEnv*)(m_envArray[i]).m_envPtr;
         if (env && !env->CloseAll( ))
 			return;
     }
 
-    for (int i=0; i < (int)m_envArray.GetCount(); i++)
+    for (i=0; i < (int)m_envArray.GetCount(); i++)
     {
         AxEnv *env = (AxEnv*)(m_envArray[i]).m_envPtr;
         if (env && env->m_isLoaded)

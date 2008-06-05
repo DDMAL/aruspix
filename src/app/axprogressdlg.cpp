@@ -29,11 +29,10 @@
 bool AxProgressDlg::s_close_at_end = false;
 bool AxProgressDlg::s_instance_existing = false;
 //timer values
-int AxProgressDlg::s_timer_decoding = 20000; // time for staff decoding one unit = on staff segment
+int AxProgressDlg::s_timer_decoding = 20000; // time for staff decoding one unit = on staff 
 int AxProgressDlg::s_timer_model_bigram = 5000;
-int AxProgressDlg::s_timer_full_adapting = 20000; // time for staff adapting one unit = on staff segment
-int AxProgressDlg::s_timer_fast_adapting = 20000; // time for staff adapting one unit = on staff segment
-
+int AxProgressDlg::s_timer_full_adapting = 20000; // time for staff adapting one unit = on staff
+int AxProgressDlg::s_timer_fast_adapting = 20000; // time for staff adapting one unit = on staff
 
 // WDR: class implementations
 
@@ -108,6 +107,7 @@ AxProgressDlg::~AxProgressDlg()
 	wxASSERT_MSG( AxProgressDlg::s_instance_existing , "Single instance checker should be true" );	
 	AxProgressDlg::s_instance_existing = false;
 	m_parent->Enable( true );
+	m_parent->SetFocus( );
 }
 
 void AxProgressDlg::AxShowModal( bool failed )

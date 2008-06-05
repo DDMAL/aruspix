@@ -27,7 +27,6 @@
 
 #include "im/impage.h"
 #include "im/imstaff.h"
-#include "im/imstaffsegment.h"
 
 //----------------------------------------------------------------------------
 // CmpMLFSymb
@@ -96,7 +95,7 @@ wxString CmpMLFSymb::GetLabel( )
 //----------------------------------------------------------------------------
 
 CmpMLFOutput::CmpMLFOutput( MusFile *file, wxString filename, wxString model_symbole_name ) :
-    MusMLFOutput(  file, filename, model_symbole_name  )
+    MusMLFOutput(  file, filename, NULL, model_symbole_name  )
 {
 	// temporary, cannot be modified, but should be...
 	m_ignore_clefs = true;
@@ -107,7 +106,7 @@ CmpMLFOutput::CmpMLFOutput( MusFile *file, wxString filename, wxString model_sym
 //CmpMLFOutput::CmpMLFOutput( MusFile *file, wxFile *wxfile, wxString filename, wxString model_symbole_name ) :
 //    MusFileOutputStream( file, wxfile )
 CmpMLFOutput::CmpMLFOutput( MusFile *file, int fd, wxString filename, wxString model_symbole_name ) :
-	MusMLFOutput( file, fd, filename, model_symbole_name )
+	MusMLFOutput( file, fd, filename, NULL, model_symbole_name )
 {
 	// idem previous constructor
 	m_ignore_clefs = true;
@@ -121,26 +120,26 @@ CmpMLFOutput::~CmpMLFOutput()
 
 void CmpMLFOutput::StartLabel( )
 {
-	m_symboles.Clear();
+	m_symbols.Clear();
 }
 
 void CmpMLFOutput::EndLabel( )
 {
 	int pos;
 
-	for (int i = 0; i < (int)m_symboles.GetCount(); i++ )
+	for (int i = 0; i < (int)m_symbols.GetCount(); i++ )
 	{
-		CmpMLFSymb *current = (CmpMLFSymb*)&m_symboles[i];
+		CmpMLFSymb *current = (CmpMLFSymb*)&m_symbols[i];
 		wxString symbole;
 		wxString symbole_label = current->GetLabel();
 		if ( symbole_label == "" ) // skip empty labels
 			continue;
 		pos = current->GetPosition();
 		symbole << pos  << " ";
-		symbole << symbole_label << " " <<  current->m_im_staff << " " <<  current->m_im_staff_segment <<  " " << current->m_im_pos << " " << current->m_im_filename << "\n";
+		symbole << symbole_label << " " <<  current->m_im_staff << " " << current->m_im_pos << " " << current->m_im_filename << "\n";
 		Write( symbole, symbole.Length() );
 	}
-	//m_symboles.Clear();	
+	//m_symbols.Clear();	
 }
 
 bool CmpMLFOutput::WriteStaff( const MusStaff *staff )
@@ -203,11 +202,10 @@ bool CmpMLFOutput::WriteStaff( const MusStaff *staff )
 		}
 		if ( added )
 		{	
-			((CmpMLFSymb*)&m_symboles.Last())->m_im_filename = (&staff->m_elements[k])->m_im_filename;
-			((CmpMLFSymb*)&m_symboles.Last())->m_im_staff = (&staff->m_elements[k])->m_im_staff;
-			((CmpMLFSymb*)&m_symboles.Last())->m_im_staff_segment = (&staff->m_elements[k])->m_im_staff_segment;
-			((CmpMLFSymb*)&m_symboles.Last())->m_im_pos = (&staff->m_elements[k])->m_im_pos;
-			((CmpMLFSymb*)&m_symboles.Last())->m_index = k;
+			((CmpMLFSymb*)&m_symbols.Last())->m_im_filename = (&staff->m_elements[k])->m_im_filename;
+			((CmpMLFSymb*)&m_symbols.Last())->m_im_staff = (&staff->m_elements[k])->m_im_staff;
+			((CmpMLFSymb*)&m_symbols.Last())->m_im_pos = (&staff->m_elements[k])->m_im_pos;
+			((CmpMLFSymb*)&m_symbols.Last())->m_index = k;
 		}
     }
 	//EndLabel( );
@@ -243,7 +241,7 @@ bool CmpMLFInput::ReadLabelStr( wxString label )
 		return false;
 
 	wxString str = label.BeforeLast('.'); // remove .lab"
-	m_segment_label = atoi( str.AfterLast('.').c_str() );
+	//m_segment_label = atoi( str.AfterLast('.').c_str() );
 	str = str.BeforeLast('.'); // remove .seg"
 	m_staff_label = atoi ( str.AfterLast('_').c_str() );
 	
@@ -275,7 +273,7 @@ MusStaff* CmpMLFInput::ImportFileInStaff( )
 }
 
 
-// offset est la position x relative du label (p ex segment)
+// offset est la position x relative du label
 // normalement donne par imPage si present
 
 bool CmpMLFInput::ReadLabel( MusStaff *staff )
@@ -312,7 +310,6 @@ bool CmpMLFInput::ReadLabel( MusStaff *staff )
 		{
 			e->m_im_filename = m_cmp_page_label;
 			e->m_im_staff = m_staff_label;
-			e->m_im_staff_segment = m_segment_label;
 			e->m_im_pos = pos;
 		}
 		m_cmp_pos += 45; // default step;

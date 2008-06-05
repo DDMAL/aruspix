@@ -198,7 +198,7 @@ int imProcessBrinkThreshold(const imImage* image, imImage* dest, bool white_is_2
 
 	sumMinusDiagCumSum(tmpVec2, tmp4);		// sum columns, subtract diagonal of cumsum of tmp4 
 
-	for (int i = 0; i < MAX_GRAY; ++i)
+	for (i = 0; i < MAX_GRAY; ++i)
 		tmpVec1[i] += tmpVec2[i];
 
 	Topt = calcTopt(m_f, m_b, tmpVec1);		// DO I NEED TO ADD ONE?

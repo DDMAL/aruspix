@@ -22,19 +22,7 @@
 #include "rec.h"
 #include "recfile.h"
 #include "recmodels.h"
-
-#include "wx/arrimpl.cpp"
-WX_DEFINE_OBJARRAY( ArrayOfBookFiles );
-
-int SortBookFiles( RecBookFileItem **first, RecBookFileItem **second )
-{
-    if ( (*first)->m_filename < (*second)->m_filename )
-        return -1;
-    else if ( (*first)->m_filename > (*second)->m_filename )
-        return 1;
-    else
-        return 0;
-}
+#include "im/impage.h"
 
 // WDR: class implementations
 
@@ -70,6 +58,9 @@ void RecBookFile::NewContent( )
 	m_fullOptimized = false;
 	m_nbFilesOptimization = 0;
 	m_optFiles.Clear();
+	m_pre_image_binarization_method = ImOperator::s_pre_image_binarization_method;
+	m_pre_page_binarization_method = ImPage::s_pre_page_binarization_method;
+	m_pre_page_binarization_method_size = ImPage::s_pre_page_binarization_method_size;
 }
 
 
@@ -120,7 +111,7 @@ void RecBookFile::OpenContent( )
         elem = node->ToElement();
         if (!elem || !elem->Attribute("filename") || !elem->Attribute( "flags" ) ) 
             continue;
-        m_imgFiles.Add( RecBookFileItem( elem->Attribute("filename"), atoi(elem->Attribute( "flags" )) ) );
+        m_imgFiles.Add( AxBookFileItem( elem->Attribute("filename"), atoi(elem->Attribute( "flags" )) ) );
     }
     
 	
@@ -142,7 +133,7 @@ void RecBookFile::OpenContent( )
         elem = node->ToElement();
         if (!elem || !elem->Attribute("filename") || !elem->Attribute( "flags" ) ) 
             continue;
-        m_axFiles.Add( RecBookFileItem( elem->Attribute("filename"), atoi(elem->Attribute( "flags" )) ) );
+        m_axFiles.Add( AxBookFileItem( elem->Attribute("filename"), atoi(elem->Attribute( "flags" )) ) );
     }
 	
 	
@@ -163,14 +154,29 @@ void RecBookFile::OpenContent( )
             continue;
         m_optFiles.Add( elem->Attribute("filename") );
     }	
+	
+	// binarization variables
+	node = m_xml_root->FirstChild( "binarization" );
+	if ( !node ) return;
+    root = node->ToElement();
+    if ( !root ) return;
+	
+	if ( root->Attribute( "pre_image_binarization_method" ) )
+		m_pre_image_binarization_method = atoi( root->Attribute( "pre_image_binarization_method" ) );
+	if ( root->Attribute( "pre_page_binarization_method" ) )
+		m_pre_page_binarization_method = atoi( root->Attribute( "pre_page_binarization_method" ) );
+	if ( root->Attribute( "pre_page_binarization_method_size" ) )
+		m_pre_page_binarization_method_size = atoi( root->Attribute( "pre_page_binarization_method_size" ) );
+	if ( root->Attribute( "pre_page_binarization_select" ) )
+		m_pre_page_binarization_select = atoi( root->Attribute( "pre_page_binarization_select" ) );
 }
-
 
 void RecBookFile::SaveContent( )
 {
     wxASSERT( m_xml_root );
 
     TiXmlElement book("book");
+	int i;
     
     book.SetAttribute("RISM",  m_RISM.c_str() );
     book.SetAttribute("Composer", m_Composer.c_str() );    
@@ -185,7 +191,7 @@ void RecBookFile::SaveContent( )
     dirname1.MakeRelativeTo( wxFileName( m_filename ).GetFullPath() );
     //wxLogDebug( dirname1.GetPath() );
     images.SetAttribute("Path", dirname1.GetPath().c_str() );
-    for ( int i = 0; i < (int)m_imgFiles.GetCount(); i++)
+    for ( i = 0; i < (int)m_imgFiles.GetCount(); i++)
     {
         TiXmlElement image("image");
         image.SetAttribute("filename", m_imgFiles[i].m_filename.c_str() );
@@ -199,7 +205,7 @@ void RecBookFile::SaveContent( )
     dirname2.MakeRelativeTo( wxFileName( m_filename ).GetFullPath() );
     //wxLogDebug( dirname2.GetPath() );
     axfiles.SetAttribute("Path", dirname2.GetPath().c_str() );
-    for ( int i = 0; i < (int)m_axFiles.GetCount(); i++)
+    for ( i = 0; i < (int)m_axFiles.GetCount(); i++)
     {
         TiXmlElement axfile("axfile");
         axfile.SetAttribute("filename", m_axFiles[i].m_filename.c_str() );
@@ -211,13 +217,21 @@ void RecBookFile::SaveContent( )
     TiXmlElement adapt("adaptation");
     adapt.SetAttribute("full", wxString::Format("%d", m_fullOptimized ).c_str() );
 	adapt.SetAttribute("nb_files_for_full", wxString::Format("%d", m_nbFilesOptimization ).c_str() );
-    for ( int i = 0; i < (int)m_optFiles.GetCount(); i++)
+    for ( i = 0; i < (int)m_optFiles.GetCount(); i++)
     {
         TiXmlElement adapt_file("file");
         adapt_file.SetAttribute("filename", m_optFiles[i].c_str() );
         adapt.InsertEndChild( adapt_file );
     }   
     m_xml_root->InsertEndChild( adapt );
+
+	// binarization variables
+	TiXmlElement binarization( "binarization" );
+	binarization.SetAttribute( "pre_image_binarization_method", m_pre_image_binarization_method );
+	binarization.SetAttribute( "pre_page_binarization_method", m_pre_page_binarization_method );
+	binarization.SetAttribute( "pre_page_binarization_method_size", m_pre_page_binarization_method_size );
+	binarization.SetAttribute( "pre_page_binarization_select", m_pre_page_binarization_select );
+	m_xml_root->InsertEndChild( binarization );
 }
 
 void RecBookFile::CloseContent( )
@@ -238,15 +252,15 @@ int RecBookFile::FilesToPreprocess( wxArrayString *filenames, wxArrayString *pat
 		wxFileName filename( m_imgFiles[i].m_filename );
 		filename.SetExt("axz");
 		//wxLogDebug( filename.GetFullName() );
-		if ( RecBookFile::FindFile( &m_axFiles, filename.GetFullName() , &index ) )
+		if ( AxBookFileItem::FindFile( &m_axFiles, filename.GetFullName() , &index ) )
 			continue;
 		
 		if ( add_axfiles )
-			m_axFiles.Add( RecBookFileItem( filename.GetFullName() ) );
+			m_axFiles.Add( AxBookFileItem( filename.GetFullName() ) );
 		paths->Add( m_imgFileDir + wxFileName::GetPathSeparator() +  m_imgFiles[i].m_filename );
 		filenames->Add( m_imgFiles[i].m_filename );
 	}
-	m_axFiles.Sort( SortBookFiles );
+	m_axFiles.Sort( SortBookFileItems );
 	return (int)filenames->GetCount();
 }
 
@@ -292,12 +306,13 @@ int RecBookFile::FilesToRecognize( wxArrayString *filenames, wxArrayString *path
 int RecBookFile::FilesForAdaptation( wxArrayString *filenames, wxArrayString *paths, bool *isCacheOk )
 {
 	wxASSERT( isCacheOk );
+	int i;
 
 	filenames->Clear();
 	paths->Clear();
 	*isCacheOk = false;
 
-	for( int i = 0; i < (int)m_axFiles.GetCount(); i++)
+	for( i = 0; i < (int)m_axFiles.GetCount(); i++)
 	{
 		if ( m_axFiles[i].m_flags & FILE_DESACTIVATED )
 			continue;
@@ -320,12 +335,12 @@ int RecBookFile::FilesForAdaptation( wxArrayString *filenames, wxArrayString *pa
 	// cache is not optimized for path changes
 	
 	// first go through and check is the cache is valid
-	for ( int i = 0; i < (int)m_optFiles.GetCount(); i++ )
+	for ( i = 0; i < (int)m_optFiles.GetCount(); i++ )
 		if ( filenames->Index( m_optFiles[i] ) == wxNOT_FOUND )
 			return (int)filenames->GetCount(); // cache is not valid, 
 			
 	// cache is valid, remove the files
-	for ( int i = 0; i < (int)m_optFiles.GetCount(); i++ )
+	for ( i = 0; i < (int)m_optFiles.GetCount(); i++ )
 	{
 		int idx = filenames->Index( m_optFiles[i] );
 		wxASSERT( idx != wxNOT_FOUND );
@@ -351,8 +366,8 @@ bool RecBookFile::HasToBePreprocessed( wxString imagefile )
 	{
 		wxFileName filename( imagefile );
 		filename.SetExt("axz");
-		m_axFiles.Add( RecBookFileItem( filename.GetFullName() ) );
-		m_axFiles.Sort( SortBookFiles );
+		m_axFiles.Add( AxBookFileItem( filename.GetFullName() ) );
+		m_axFiles.Sort( SortBookFileItems );
 		return true;
 	}
 }
@@ -534,24 +549,6 @@ bool RecBookFile::FastAdaptation( wxArrayPtrVoid params, AxProgressDlg *dlg )
 		
 	return !failed;
 }
-	
-// static
-RecBookFileItem *RecBookFile::FindFile( ArrayOfBookFiles *array, wxString filename, int* index )
-{
-    wxASSERT( array );
-    wxASSERT( index );
-
-    *index = -1;
-
-    for( int i = 0; i < (int)array->GetCount(); i++ )
-        if ( array->Item(i).m_filename == filename )
-        {
-            *index = i;
-            return &array->Item(i);
-        }
-        
-    return NULL;
-}
 
 
 bool RecBookFile::LoadAxfiles( )
@@ -566,10 +563,10 @@ bool RecBookFile::LoadAxfiles( )
         for ( i = 0; i < (int)nbfiles; i++ )
         {
             wxFileName name( paths[i] );
-            if ( !RecBookFile::FindFile( &m_axFiles, name.GetFullName(), &index ) )
-                m_axFiles.Add( RecBookFileItem( name.GetFullName() ) );
+            if ( !AxBookFileItem::FindFile( &m_axFiles, name.GetFullName(), &index ) )
+                m_axFiles.Add( AxBookFileItem( name.GetFullName() ) );
         }
-        m_axFiles.Sort( SortBookFiles );
+        m_axFiles.Sort( SortBookFileItems );
     }
     
     return true;
@@ -588,10 +585,10 @@ bool RecBookFile::LoadImages( )
         for ( i = 0; i < (int)nbfiles; i++ )
         {
             wxFileName name( paths[i] );
-            if ( !RecBookFile::FindFile( &m_imgFiles, name.GetFullName(), &index ) )
-                m_imgFiles.Add( RecBookFileItem( name.GetFullName() ) );
+            if ( !AxBookFileItem::FindFile( &m_imgFiles, name.GetFullName(), &index ) )
+                m_imgFiles.Add( AxBookFileItem( name.GetFullName() ) );
         }
-        m_imgFiles.Sort( SortBookFiles );
+        m_imgFiles.Sort( SortBookFileItems );
     }
     
     return true;
@@ -600,7 +597,7 @@ bool RecBookFile::LoadImages( )
 bool RecBookFile::RemoveImage( wxString filename )
 {
     int index;
-    const RecBookFileItem *book = RecBookFile::FindFile( &m_imgFiles, filename, &index );
+    const AxBookFileItem *book = AxBookFileItem::FindFile( &m_imgFiles, filename, &index );
     if ( book )
         m_imgFiles.RemoveAt( index );
     return true;
@@ -609,7 +606,7 @@ bool RecBookFile::RemoveImage( wxString filename )
 bool RecBookFile::DesactivateImage( wxString filename )
 {
     int index;
-    RecBookFileItem *book = RecBookFile::FindFile( &m_imgFiles, filename, &index );
+    AxBookFileItem *book = AxBookFileItem::FindFile( &m_imgFiles, filename, &index );
     if ( book )
     {
         if (book->m_flags & FILE_DESACTIVATED)
@@ -623,7 +620,7 @@ bool RecBookFile::DesactivateImage( wxString filename )
 bool RecBookFile::DesactivateAxfile( wxString filename )
 {
     int index;
-    RecBookFileItem *book = RecBookFile::FindFile( &m_axFiles, filename, &index );
+    AxBookFileItem *book = AxBookFileItem::FindFile( &m_axFiles, filename, &index );
     if ( book )
     {
         if (book->m_flags & FILE_DESACTIVATED)
@@ -637,7 +634,7 @@ bool RecBookFile::DesactivateAxfile( wxString filename )
 bool RecBookFile::RemoveAxfile( wxString filename )
 {
     int index;
-    const RecBookFileItem *book = RecBookFile::FindFile( &m_axFiles, filename, &index );
+    const AxBookFileItem *book = AxBookFileItem::FindFile( &m_axFiles, filename, &index );
     if ( book )
         m_axFiles.RemoveAt( index );
     return true;
