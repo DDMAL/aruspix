@@ -305,11 +305,11 @@ void AxFrame::LoadConfig()
 	int width, height;
 	int val1,val2;
 	wxDisplaySize(&width, &height);
-	pConfig->Read("Width",&val1,width-50);
-    pConfig->Read("Height",&val2,height-50);
+	pConfig->Read( "Width", &val1, width - 150);
+    pConfig->Read( "Height", &val2, height - 150);
     this->SetSize(val1,val2);
-    pConfig->Read("PX",&val1,5);
-    pConfig->Read("PY",&val2,5);
+    pConfig->Read("PX",&val1,10);
+    pConfig->Read("PY",&val2,30);
     this->Move(val1,val2);
     if (1 == pConfig->Read("Maximize",0L))
         this->Maximize();
@@ -334,7 +334,7 @@ void AxFrame::LoadConfig()
 	ImOperator::s_pre_image_binarization_method = pConfig->Read( "Image binarization method", IM_BINARIZATION_BRINK );
     ImPage::s_pre_page_binarization_method = pConfig->Read( "Page binarization method", PRE_BINARIZATION_BRINK );
     ImPage::s_pre_page_binarization_method_size = pConfig->Read( "Binarization region size", 15 );
-	ImPage::s_pre_page_binarization_select = ( pConfig->Read( "Binarization selector dialogue", 0L ) == 1 );
+	ImPage::s_pre_page_binarization_select = ( pConfig->Read( "Binarization selector dialogue", 1L ) == 1 );
 
 #if defined(__WXMSW__)
 	wxString default_workingDir = wxStandardPaths::Get().GetTempDir();		
@@ -431,7 +431,7 @@ void AxFrame::SaveConfig(int lastEnvId)
     wxSize fsize = this->GetSize();
 	int width, height;
 	wxDisplaySize( &width, &height );
-	if ( ( fsize.GetWidth() < width ) && ( fsize.GetHeight() < height ) ) {
+	if ( ( fsize.GetWidth() < width - 50 ) && ( fsize.GetHeight() < height - 50 ) ) {
 		pConfig->Write("Width",fsize.GetWidth());
 		pConfig->Write("Height",fsize.GetHeight());
     }

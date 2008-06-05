@@ -720,7 +720,7 @@ void ImStaff::CalcStaffHeight(const int staff, const int y, wxArrayPtrVoid param
 				top = i;
 
 		int bottom = STAFF_HEIGHT;
-		for (i = STAFF_HEIGHT -1; i > STAFF_HEIGHT / 2; i-- )
+		for (i = STAFF_HEIGHT - 1; i > STAFF_HEIGHT / 2; i-- )
 			if ( m_opHist[i] > width / 2 )
 				break;
 			else
