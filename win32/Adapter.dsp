@@ -1,24 +1,24 @@
-# Microsoft Developer Studio Project File - Name="Decoder" - Package Owner=<4>
+# Microsoft Developer Studio Project File - Name="Adapter" - Package Owner=<4>
 # Microsoft Developer Studio Generated Build File, Format Version 6.00
 # ** DO NOT EDIT **
 
 # TARGTYPE "Win32 (x86) Console Application" 0x0103
 
-CFG=Decoder - Win32 Debug
+CFG=Adapter - Win32 Debug
 !MESSAGE This is not a valid makefile. To build this project using NMAKE,
 !MESSAGE use the Export Makefile command and run
 !MESSAGE 
-!MESSAGE NMAKE /f "Decoder.mak".
+!MESSAGE NMAKE /f "Adapter.mak".
 !MESSAGE 
 !MESSAGE You can specify a configuration when running NMAKE
 !MESSAGE by defining the macro CFG on the command line. For example:
 !MESSAGE 
-!MESSAGE NMAKE /f "Decoder.mak" CFG="Decoder - Win32 Debug"
+!MESSAGE NMAKE /f "Adapter.mak" CFG="Adapter - Win32 Debug"
 !MESSAGE 
 !MESSAGE Possible choices for configuration are:
 !MESSAGE 
-!MESSAGE "Decoder - Win32 Release" (based on "Win32 (x86) Console Application")
-!MESSAGE "Decoder - Win32 Debug" (based on "Win32 (x86) Console Application")
+!MESSAGE "Adapter - Win32 Release" (based on "Win32 (x86) Console Application")
+!MESSAGE "Adapter - Win32 Debug" (based on "Win32 (x86) Console Application")
 !MESSAGE 
 
 # Begin Project
@@ -28,7 +28,7 @@ CFG=Decoder - Win32 Debug
 CPP=cl.exe
 RSC=rc.exe
 
-!IF  "$(CFG)" == "Decoder - Win32 Release"
+!IF  "$(CFG)" == "Adapter - Win32 Release"
 
 # PROP BASE Use_MFC 0
 # PROP BASE Use_Debug_Libraries 0
@@ -37,24 +37,22 @@ RSC=rc.exe
 # PROP BASE Target_Dir ""
 # PROP Use_MFC 0
 # PROP Use_Debug_Libraries 0
-# PROP Output_Dir "../obj/DecoderRelease"
-# PROP Intermediate_Dir "../obj/DecoderRelease"
+# PROP Output_Dir "../obj/AdapterRelease"
+# PROP Intermediate_Dir "../obj/AdapterRelease"
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
-# ADD BASE CPP /nologo /W3 /GX /Od /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /c
+# ADD BASE CPP /nologo /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /c
 # ADD CPP /nologo /MD /W3 /GX /O2 /I "$(TORCH)\src" /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /c
-# SUBTRACT CPP /Fr
-# ADD BASE RSC /l 0x100c /d "NDEBUG"
-# ADD RSC /l 0x100c /d "NDEBUG"
+# ADD BASE RSC /l 0x409 /d "NDEBUG"
+# ADD RSC /l 0x409 /d "NDEBUG"
 BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /machine:I386
-# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib Torch3.lib /nologo /subsystem:console /machine:I386 /out:"../bin/Release/Decoder.exe" /libpath:"$(TORCH)\Release"
-# SUBTRACT LINK32 /incremental:yes /nodefaultlib
+# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib Torch3.lib /nologo /subsystem:console /machine:I386 /out:"../bin/Release/Adapt.exe" /libpath:"$(TORCH)\Release"
 
-!ELSEIF  "$(CFG)" == "Decoder - Win32 Debug"
+!ELSEIF  "$(CFG)" == "Adapter - Win32 Debug"
 
 # PROP BASE Use_MFC 0
 # PROP BASE Use_Debug_Libraries 1
@@ -63,41 +61,37 @@ LINK32=link.exe
 # PROP BASE Target_Dir ""
 # PROP Use_MFC 0
 # PROP Use_Debug_Libraries 1
-# PROP Output_Dir "../obj/DecoderDebug"
-# PROP Intermediate_Dir "../obj/DecoderDebug"
+# PROP Output_Dir "../obj/AdapterDebug"
+# PROP Intermediate_Dir "../obj/AdapterDebug"
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /GZ /c
 # ADD CPP /nologo /MDd /W3 /Gm /GX /ZI /Od /I "$(TORCH)\src" /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /D DEBUG=1 /FR /YX /FD /GZ /c
-# ADD BASE RSC /l 0x100c /d "_DEBUG"
+# ADD BASE RSC /l 0x409 /d "_DEBUG"
 # ADD RSC /l 0x100c /d "_DEBUG"
 BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /debug /machine:I386 /pdbtype:sept
-# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib Torch3.lib /nologo /subsystem:console /debug /machine:I386 /out:"../bin/Debug/Decoder.exe" /pdbtype:sept /libpath:"$(TORCH)\Debug"
+# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib Torch3.lib /nologo /subsystem:console /debug /machine:I386 /out:"../bin/Debug/Adapt.exe" /pdbtype:sept /libpath:"$(TORCH)\Debug"
 
 !ENDIF 
 
 # Begin Target
 
-# Name "Decoder - Win32 Release"
-# Name "Decoder - Win32 Debug"
+# Name "Adapter - Win32 Release"
+# Name "Adapter - Win32 Debug"
 # Begin Group "Source Files"
 
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
 # Begin Source File
 
-SOURCE=..\src\torch\Decoder.cpp
+SOURCE=..\src\torch\Adapter.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\ml\mldecoderpage.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\src\ml\mldecoderstaff.cpp
+SOURCE=..\src\ml\mlhmm.cpp
 # End Source File
 # End Group
 # Begin Group "Header Files"
@@ -105,11 +99,7 @@ SOURCE=..\src\ml\mldecoderstaff.cpp
 # PROP Default_Filter "h;hpp;hxx;hm;inl"
 # Begin Source File
 
-SOURCE=..\src\ml\mldecoderpage.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\src\ml\mldecoderstaff.h
+SOURCE=..\src\ml\mlhmm.h
 # End Source File
 # End Group
 # Begin Group "Resource Files"
