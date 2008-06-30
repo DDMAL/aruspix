@@ -1937,17 +1937,17 @@ bool ImPage::ExtractStaves( )
     for (st = 0; st < nb_staves; st++ )
     {
         int stave_y = this->m_staves[st].m_y - ( STAFF_HEIGHT / 2 );
-        if ( (stave_y < 0) || (stave_y >= m_opImMain->height) )
+        if ( ( stave_y < 0 ) || ( stave_y >= m_opImMain->height ) )
             continue;
 
-        imProcessCrop( m_opImMain, m_opImTmp1, x1, stave_y);
+        imProcessCrop( m_opImMain, m_opImTmp1, x1, stave_y );
 		//this->m_staves[st].SetProgressDlg( m_progressDlg );
         this->m_staves[st].SetMapImage( m_opImTmp1 );
         this->m_staves[st].GetStaffBorders( 20, false );
     }
 	
 	// merge segments separated by less than 80 pixels
-    for (st = 0; st < nb_staves; st++ )
+    for ( st = 0; st < nb_staves; st++ )
     {
         int nb_segments = (int)m_staves[st].m_segments.GetCount();
         for(int i = nb_segments - 1; i >= 1; i--)
@@ -2316,8 +2316,8 @@ bool ImPage::StaffCurvatures( )
 	memset( m_opLines1, 0, st * sizeof( int ) );
 	params.Add( m_opImMain );
 	params.Add( m_opLines1 );
-    ImStaffFunctor staffFuncSH(&ImStaff::CalcStaffHeight);
-    this->Process(&staffFuncSH, params, counter );
+    ImStaffFunctor staffFuncSH( &ImStaff::CalcStaffHeight );
+    this->Process( &staffFuncSH, params, counter );
 	// valeur medianne de tous les segments de portee
 	m_staff_height = median( m_opLines1, st );
 	//int sw = m_space_width * this->m_resize;
@@ -2332,8 +2332,8 @@ bool ImPage::StaffCurvatures( )
 	params.Add( m_opImMain );	
 	params.Add( &filename );
 	params.Add( &m_staff_height );
-    ImStaffFunctor staffFunc(&ImStaff::CalcCorrelation);
-    this->Process(&staffFunc, params, counter );
+    ImStaffFunctor staffFunc( &ImStaff::CalcCorrelation );
+    this->Process( &staffFunc, params, counter );
 
 	return this->Terminate( ERR_NONE );
 }
@@ -2365,7 +2365,7 @@ bool ImPage::GenerateMFC( wxString output_dir )
     int counter = m_progressDlg->GetCounter();
     int count = this->m_staves.GetCount();//GetStaffSegmentsCount();
     imCounterTotal( counter, count, "Prepare staves ..." );
-
+	
 	// calculer les features (ImStaffSegment::CalcFeatures)
 	wxString input = output_dir + "mfc.input";
 	wxString filename = output_dir + "staff";
@@ -2389,6 +2389,86 @@ bool ImPage::GenerateMFC( wxString output_dir )
     return this->Terminate( ERR_NONE );
 }
 
+bool ImPage::GenerateLyricMFC( wxString output_dir )
+{
+    wxASSERT_MSG( m_progressDlg, "Progress dialog cannot be NULL");
+	wxASSERT_MSG( m_img0, "Img0 cannot be NULL");
+	
+    if (!m_progressDlg->SetOperation( _("Prepare lyrics ...") ) )
+        return this->Terminate( ERR_CANCELED );
+	
+	if ( output_dir.IsEmpty() )
+		//output_dir = wxGetApp().m_workingDir + "/";
+		output_dir = m_path;
+	
+	wxArrayPtrVoid params; // tableau de pointeurs pour parametres
+	
+	if ( m_staff_height <= 0 )
+		return false;
+	
+	this->SetMapImage( m_img0 );
+	
+    if ( !GetImagePlane( &m_opImMain, 4 ) )
+        return false;
+	
+    // counter
+    int counter = m_progressDlg->GetCounter();
+    int count = this->m_staves.GetCount();//GetStaffSegmentsCount();
+    imCounterTotal( counter, count, "Prepare lyrics ..." );
+	
+	int st = this->GetStaffCount();
+	m_opLines1 = new int[ st ];		// will hold the position for the top of each lyric subimage
+	m_opLines2 = new int[ st ];		// will hold the position for the bottom of each lyric subimage
+	memset( m_opLines1, 0, st * sizeof( int ) );
+	memset( m_opLines2, 0, st * sizeof( int ) );
+	
+	int i;
+	int maxLyricHeight = 0;
+	
+	//Calculate coordinates for removal of lyric subimages
+	for ( i = 0; i < st; i++ ){
+		m_opLines1[i] = this->m_staves[ i ].m_y - ( STAFF / 2 );
+		
+		if ( i + 1 < st ) {
+			m_opLines2[i] = this->m_staves[ i + 1 ].m_y + ( STAFF / 2 );
+			int height = m_opLines1[i] - m_opLines2[i]; 
+			if ( height > maxLyricHeight )
+				maxLyricHeight = height;			
+		} else {
+			if ( m_opLines1[i] > maxLyricHeight )
+				m_opLines2[i] = m_opLines1[i] - maxLyricHeight;
+			else
+				m_opLines2[i] = 0;
+		}
+		
+	}
+	
+	// calculer les features (ImStaffSegment::CalcFeatures)
+	wxString input = output_dir + "mfclyric.input";
+	wxString filename = output_dir + "staff";
+	wxFile finput( input, wxFile::write );
+	if ( !finput.IsOpened() )
+		return this->Terminate( ERR_FILE, input.c_str() );
+	int win = WIN_WIDTH;
+	int overlap = WIN_OVERLAP;
+	params.Clear();
+    params.Add( m_opImMain );
+    params.Add( &win );
+	params.Add( &overlap );
+	params.Add( &filename );
+	params.Add( &finput );
+	params.Add( &m_staff_height );
+	params.Add( m_opLines1 );
+	params.Add( m_opLines2 );
+	
+    ImStaffFunctor staffFuncFeatures( &ImStaff::CalcLyricFeatures );
+	this->Process( &staffFuncFeatures, params, counter );
+	
+	finput.Close();
+
+    return this->Terminate( ERR_NONE );
+}
+
 
 void ImPage::Process(ImStaffFunctor *functor, wxArrayPtrVoid params, int counter )
 {
@@ -2399,8 +2479,8 @@ void ImPage::Process(ImStaffFunctor *functor, wxArrayPtrVoid params, int counter
 		if ( m_staves[st].IsVoid() )
 			continue;
 			
-        int stave_y = this->m_staves[st].m_y - ( STAFF_HEIGHT / 2 );
-        functor->Call( &this->m_staves[st] , st , stave_y, params);
+        //int stave_y = this->m_staves[st].m_y - ( STAFF_HEIGHT / 2 );
+        functor->Call( &this->m_staves[st] , st , params);
 		//this->m_staves[st].Process( functor, st, stave_y, params );
 		
 		if ( ( counter != -1 ) && !imCounterInc( this->m_progressDlg->GetCounter() ) )

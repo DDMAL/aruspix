@@ -54,17 +54,20 @@ public:
     int CalcIndentation( int leftmargin );
     int CalcEcart( int previous );
 	void GetXandPos( int posx, int *x, int *vpos ); // return the x position in the staff (remove margin)
-													// and the vertical position (decalage) from m_positions in segment		
+													// and the vertical position (decalage) from m_positions in segment	
+	void CorrectLyricCurvature( imImage *src, imImage *dest );
+	void FindLyricBaseLine( imImage *src, imImage *dest );
 	
 	// functors																								
-	bool GetImageFromPage( _imImage **image, _imImage *page, int y );
+	bool GetImageFromPage( _imImage **image, _imImage *page, int y1, int y2 = -1 );
 	bool WriteMFC( wxString filename, int samplesCount, int period, int sampleSize, float *samples );
 
     // functors
-	void SaveImage(const int staff, const int y, wxArrayPtrVoid params );
-    void CalcCorrelation( const int count, const int y, wxArrayPtrVoid params  );
-	void CalcFeatures( const int count, const int y, wxArrayPtrVoid params  );
-	void CalcStaffHeight(const int staff, const int y, wxArrayPtrVoid params );
+	void SaveImage(const int staff, wxArrayPtrVoid params );
+    void CalcCorrelation( const int count, wxArrayPtrVoid params  );
+	void CalcFeatures( const int count, wxArrayPtrVoid params  );
+	void CalcLyricFeatures(const int staff, wxArrayPtrVoid params );
+	void CalcStaffHeight(const int staff, wxArrayPtrVoid params );
 	
 protected:
 	// calculate positions (all x) from/to save positions (one x evey POSITION_STEP )
@@ -97,18 +100,18 @@ private:
 class ImStaffFunctor
 {
 private:
-    void (ImStaff::*fpt)(const int, const int, wxArrayPtrVoid params );   // pointer to member function
+    void (ImStaff::*fpt)(const int, wxArrayPtrVoid params );   // pointer to member function
 
 public:
 
     // constructor - takes pointer to an object and pointer to a member and stores
     // them in two private variables
-    ImStaffFunctor( void(ImStaff::*_fpt)(const int, const int, wxArrayPtrVoid )) { fpt=_fpt; };
+    ImStaffFunctor( void(ImStaff::*_fpt)(const int, wxArrayPtrVoid )) { fpt=_fpt; };
 	virtual ImStaffFunctor::~ImStaffFunctor() {};
 
     // override function "Call"
-    virtual void Call( ImStaff *ptr, const int staff, const int y, wxArrayPtrVoid params )
-        { (*ptr.*fpt)( staff, y, params);};          // execute member function
+    virtual void Call( ImStaff *ptr, const int staff, wxArrayPtrVoid params )
+        { (*ptr.*fpt)( staff, params);};          // execute member function
 };
 
 

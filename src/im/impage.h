@@ -93,6 +93,7 @@ public:
     bool ImPage::ExtractStaves( ); 
     bool ImPage::StaffCurvatures( );    
 	bool ImPage::GenerateMFC( wxString output_dir = "" );
+	bool ImPage::GenerateLyricMFC( wxString output_dir );
 	bool ImPage::ChangeClassification( int x1, int y1, int x2, int y2, int plane_number  );
 	bool ImPage::ChangeClassification( int plane_number  );
 	bool ImPage::MagicSelection( int x, int y, AxImage *selection, int *xmin, int *ymin );
