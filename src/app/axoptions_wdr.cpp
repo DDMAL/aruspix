@@ -525,6 +525,7 @@ wxSizer *BinSelectDlgFunc( wxWindow *parent, bool call_fit, bool set_sizer )
     item0->Add( item8, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
     wxButton *item9 = new wxButton( parent, wxID_OK, _("OK"), wxDefaultPosition, wxDefaultSize, 0 );
+    item9->SetDefault();
     item0->Add( item9, 0, wxALIGN_CENTER|wxALL, 5 );
 
     if (set_sizer)

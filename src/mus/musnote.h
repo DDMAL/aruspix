@@ -19,6 +19,7 @@
 #include "muselement.h"
 
 class MusStaff;
+class MusSymbol;
 
 // WDR: class declarations
 
@@ -98,7 +99,9 @@ public:
     unsigned char tetenot;
     /** type de staccato (0 a 6) */
     unsigned char typStac;
-
+	/** Associated lyric */
+	MusSymbol *m_lyric_ptr;
+	
 private:
     // WDR: handler declarations for MusNote
 };

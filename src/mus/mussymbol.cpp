@@ -176,7 +176,7 @@ void MusSymbol::Draw ( wxDC *dc, MusStaff *pportee)
 	if ( !Check() )
 		return;	
 
-	if (this->ElemInvisible)
+	if ( this->ElemInvisible )
 		return;
 	
 	if (!m_w->efface && (this == m_w->m_currentElement))
@@ -233,13 +233,13 @@ void MusSymbol::Draw ( wxDC *dc, MusStaff *pportee)
 				}
 			break;*/
 		case IND_MES :	// MESURECOL;
-				afficheMesure ( dc, pportee );
-				break;
+			afficheMesure ( dc, pportee );
+			break;
 		case CLE :		 
-				calcoffs (&x,(int)this->code);
-				this->dec_y = x;
-				this->dess_cle( dc,m_w->kPos[pportee->no].compte, pportee); 
-				break;
+			calcoffs (&x,(int)this->code);
+			this->dec_y = x;
+			this->dess_cle( dc,m_w->kPos[pportee->no].compte, pportee); 
+			break;
 
 		/*case VECT: pt = (Debord *)this->pdebord; pt++; //SYMBOLCOL;
 			playGraphRec (hdc, x, (pportee->yrel+this->dec_y*v4_unit[pTaille]), (short *)pt);

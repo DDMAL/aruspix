@@ -23,6 +23,8 @@
 #include "imstaff.h"
 #include "imstaffsegment.h"
 
+#include "math.h"
+
 #include "wx/arrimpl.cpp"
 WX_DEFINE_OBJARRAY( ArrayOfStaffSegments );
 
@@ -1120,6 +1122,8 @@ void ImStaff::CalcLyricFeatures( const int staff, wxArrayPtrVoid params )
 	// params 5: taille de la portee
 	// params 6: array holding coordinates for the top of each lyric subimage
 	// params 7: array holding coordinates for the bottom of each lyric subimage
+	// params 8: array holding overall projection of all the lyric lines
+	// params 9: array holding offsets for all the lyric images
 	
 	if ( m_progressDlg && m_progressDlg->GetCancel() )
 	{
@@ -1144,6 +1148,8 @@ void ImStaff::CalcLyricFeatures( const int staff, wxArrayPtrVoid params )
 	imImage *page = (imImage*)params[0];
 	int *TopOfLyricLine = (int*)params[6];
 	int *BottomOfLyricLine = (int*)params[7];
+	double *overallProjection = (double*)params[8];
+	int *offsets = (int*)params[9];
 
 	if ( !GetImageFromPage( &m_opIm, page, TopOfLyricLine[staff], BottomOfLyricLine[staff] ) )
 		return;
@@ -1151,12 +1157,13 @@ void ImStaff::CalcLyricFeatures( const int staff, wxArrayPtrVoid params )
 	m_opImTmp1 = imImageCreate( m_opIm->height, m_opIm->width, m_opIm->color_space, m_opIm->data_type );
 
 	CorrectLyricCurvature( m_opIm, m_opImTmp1 );
+	FindLyricBaseLine( m_opIm, overallProjection, &offsets[staff] );
 	
-//	filena = *(wxString*)params[3];
-//	filena << "_" << staff << "lyric.0.tif"; // .0.tif stays for backward compatibility with previous versions with segments
-//	
-//    if ( !Write( filena, &m_opIm ) )
-//        return;
+	wxString filena = *(wxString*)params[3];
+	filena << "_" << staff << "lyric.0.tif"; // .0.tif stays for backward compatibility with previous versions with segments
+	
+    if ( !Write( filena, &m_opIm ) )
+        return;
 	
     this->Terminate( ERR_NONE );
 }
@@ -1183,37 +1190,93 @@ void ImStaff::CorrectLyricCurvature( imImage *src, imImage *dest ){
 	free ( tmp );
 }
 
-void ImStaff::FindLyricBaseLine( imImage *src, imImage *dest ){
+void ImStaff::FindLyricBaseLine( imImage *src, double *overallProjection, int *offsets ){
+	int subimageSize = 30;
+	int height = src->height;
+	int width = src->width;
 	imbyte *buffer = (imbyte*)src->data[0];
-	int projection[src->height];
-	int reference[src->height];
+	int reference[height];
 	
-	for ( int i = 0; i < src->height; i++ ){
-		projection[i] = 0;
-		for ( int j = 0; j < src->width; j++ ){
-			if ( buffer[ j + ( i * src->width ) ] != 0 ) projection[i]++; 
+	// Get vertical reference array by taking the projection of the first non-empty lyric subimage. 
+	int temp = 0;
+	int j = 0;
+	while ( temp == 0 ){
+		for ( int i = 0; i < height; i++ ){
+			reference[i] = 0;
+			for ( int k = 0; k < subimageSize; k++ )
+				if ( k + ( j * subimageSize ) < width && buffer[ k + ( j * subimageSize ) + ( i * width ) ] != 0 ) 
+					reference[i]++;
+			temp += reference[i];
+		}
+		j++;
+	}
+	
+	double alignedProjection[height][(int)ceil( width / subimageSize )];
+	int averageOffset = 0;
+	int counter = 0;
+	
+	// Loop through all subimages
+	for ( int k = 0; k < ceil( width / subimageSize ); k++ ){
+
+		// Do a horizontal projection on the k-th lyric subimage
+		double projection[height];
+		for ( int i = 0; i < height; i++ ){
+			projection[i] = 0;
+			for ( int j = 0; j < subimageSize; j++ )
+				if ( j + ( k * subimageSize ) < width && buffer[ j + ( k * subimageSize) + ( i * width ) ] != 0 ) 
+					projection[i]++; 
+		}	
+		
+		// Add padding to the projection
+		double paddedProjection[ 2 * height ];
+		for ( int i = 0; i < 2 * height; i++ ){
+			if ( i < height ) paddedProjection[i] = projection[i];
+			else paddedProjection[i] = 0;
+		} 
+		
+		// Perform a filter on the paddedprojection i.e filter(reference, 1, paddedProjection)
+		// Also find the index of the maximum value in the result:
+		int maxIndex = 0;
+		double convolution[ 2 * height ];
+		for ( int i = 0; i < 2 * height; i++ ){
+			convolution[i] = 0;
+			int j = 0;
+			while ( i - j >= 0 && j < height ){
+				convolution[i] += reference[j] * paddedProjection[i-j];
+				j++;
+			}
+			if ( convolution[maxIndex] < convolution[i] ) maxIndex = i;
+		}
+		
+		int offset = maxIndex - 50;
+		if ( maxIndex != 0 ){
+			averageOffset += offset;			
+			counter++;
+		}
+
+		// Copy and align lyric subimage projections into the aligned projection matrix
+		for ( int i = 0; i < height; i++ ){
+			if ( offset >= ceil( height / 2 ) ) {
+				int index = i + ( offset - ceil( height / 2 ) );
+				if ( index < height ) alignedProjection[i][k] = projection[index];
+				else alignedProjection[i][k] = 0;
+			} else if ( offset < ceil ( height / 2 ) ){
+				int index = i - ( ceil( height / 2 ) - offset );
+				if ( index >= 0 ) alignedProjection[i][k] = projection[index];
+				else alignedProjection[i][k] = 0;				
+			}
 		}
 	}
 	
-	double paddedProjection[ 2 * src->height + 101 ];
-	double convolution[ 2 * src->height + 101 ];
-	for ( int i = 0; i < 2 * src->height + 101; i++ ){
-		convolution[i] = 0;
-		paddedProjection[i] = 0;
-		if ( i < src->height ) paddedProjection[i] = projection[i];
-	} 
+	averageOffset /= counter;
+	*offsets = averageOffset;
 	
-	//filter(reference, 1, paddedProjection)
-	int maxIndex = 0;
-	for ( int i = 0; i < 2 * src->height + 101; i++ ){
-		int j = 0;
-		while ( i - j >= 0 ){
-			convolution[i] += reference[j] * paddedProjection[i-j];
-			j++;
+	for ( int i = 0; i < height; i++ ){
+		for ( int j = 0; j < ceil ( width / subimageSize ); j++ ){
+			overallProjection[i] += alignedProjection[i][j];
 		}
-		if ( convolution[maxIndex] < convolution[i] ) maxIndex = i;
 	}
-	
+
 }
 // WDR: handler implementations for ImStaff
 

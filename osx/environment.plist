@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
 	<key>ARUSPIX</key>
-	<string>/Users/puginl/projects/aruspix</string>
+	<string>/Users/puginl/projects/aruspix_tr</string>
 	<key>ARUSPIX_IMLIB</key>
 	<string>/Users/puginl/libs/imlib</string>
 	<key>ARUSPIX_TORCH</key>

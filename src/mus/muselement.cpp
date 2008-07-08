@@ -1,4 +1,4 @@
-/////////////////////////////////////////////////////////////////////////////
+ /////////////////////////////////////////////////////////////////////////////
 // Name:        muselement.cpp
 // Author:      Laurent Pugin
 // Created:     2005
@@ -65,6 +65,7 @@ MusElement::MusElement() :
 	m_im_staff = 0;
 	m_im_pos = 0;
 	m_cmp_flag = 0;
+	m_debord_str = "";
 
 	code = 0;
 }
@@ -109,6 +110,7 @@ MusElement::MusElement( const MusElement& element )
 	m_im_staff = element.m_im_staff;
 	m_im_pos = element.m_im_pos;
 	m_cmp_flag = element.m_cmp_flag;
+	m_debord_str = element.m_debord_str;
 
 	pdebord = NULL;
 	if ( existDebord )
@@ -117,8 +119,7 @@ MusElement::MusElement( const MusElement& element )
 		pdebord = malloc( size );
 		memcpy( pdebord, element.pdebord, size );
 	}
-}
-
+} 
 
 MusElement& MusElement::operator=( const MusElement& element)
 {
@@ -162,6 +163,7 @@ MusElement& MusElement::operator=( const MusElement& element)
 		m_im_staff = element.m_im_staff;
 		m_im_pos = element.m_im_pos;
 		m_cmp_flag = element.m_cmp_flag;
+		m_debord_str = element.m_debord_str;
 
 		pdebord = NULL;
 		if ( existDebord )
@@ -228,7 +230,7 @@ void MusElement::DrawAndRelease( wxDC *dc, MusStaff *staff )
 }
 */
 
-int MusElement::filtrcod (int codElement, int *oct)
+int MusElement::filtrcod( int codElement, int *oct )
 {	
 	*oct = this->oct;
 

@@ -38,6 +38,7 @@ VERSION DOS.*/
 #define VALBARRES 11
 #define METAFILE_W 12
 #define AX_VARIANT 13
+#define LYRICS 14
 
 
 ///#define PS_MODECOURANT 2	// A METTRE DANS UNE VARIABLE d'environnement!!!

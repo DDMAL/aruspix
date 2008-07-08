@@ -318,7 +318,6 @@
 				A5D0D4AB0A65628800A4B1CA /* im */,
 				4D3A8FCD0D3585AB00BBC1FB /* mus */,
 				A58524970A1B9604002D9D8A /* tinyxml */,
-				5736CE450C354E4A00254E7B /* comparison */,
 				A58524810A1B9604002D9D8A /* recognition */,
 				A58524910A1B9604002D9D8A /* superimposition */,
 				A58524C30A1B9604002D9D8A /* wgviewer */,
@@ -442,6 +441,7 @@
 		A58524970A1B9604002D9D8A /* tinyxml */ = {
 			isa = PBXGroup;
 			children = (
+				5736CE450C354E4A00254E7B /* comparison */,
 				A58524980A1B9604002D9D8A /* tinystr.cpp */,
 				A58524990A1B9604002D9D8A /* tinystr.h */,
 				A585249A0A1B9604002D9D8A /* tinyxml.cpp */,
@@ -556,7 +556,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "cp -rf $ARUSPIX/local/* $BUILT_PRODUCTS_DIR/$TARGET_NAME.app/Contents/Resources/\ncp -rf $ARUSPIX/data/* $BUILT_PRODUCTS_DIR/$TARGET_NAME.app/Contents/Resources/\n\nif [ $BUILD_STYLE == \"Debug\" -o $BUILD_STYLE == \"DebugDyn\" ]\nthen\n\t#echo \"dummy script...\"\n     cp -rf $ARUSPIX/bin/Debug/decoderd $BUILT_PRODUCTS_DIR/$TARGET_NAME.app/Contents/MacOS/;\n\tcp -rf $ARUSPIX/bin/Debug/ngramd $BUILT_PRODUCTS_DIR/$TARGET_NAME.app/Contents/MacOS/;\n\tcp -rf $ARUSPIX/bin/Debug/adaptd $BUILT_PRODUCTS_DIR/$TARGET_NAME.app/Contents/MacOS/;\nelse\n\tcp -rf $ARUSPIX/bin/Release/decoder $BUILT_PRODUCTS_DIR/$TARGET_NAME.app/Contents/MacOS/;\n\tcp -rf $ARUSPIX/bin/Release/ngram $BUILT_PRODUCTS_DIR/$TARGET_NAME.app/Contents/MacOS/;\n\tcp -rf $ARUSPIX/bin/Release/adapt $BUILT_PRODUCTS_DIR/$TARGET_NAME.app/Contents/MacOS/;\n\t# prepare installer\n\tcp -rf $ARUSPIX/osx/install_root $ARUSPIX/bin;\n\tcp -rf $ARUSPIX/bin/Release/$TARGET_NAME.app $ARUSPIX/bin/install_root/Applications/;\n\tchmod -R g+rwX $ARUSPIX/bin/install_root/\n\tchmod -R o+rX $ARUSPIX/bin/install_root/\n\tchmod 1775 $ARUSPIX/bin/install_root/Library\n\tchgrp -R admin $ARUSPIX/bin/install_root/\n\tsudo chown -R root $ARUSPIX/bin/install_root/\nfi\n";
+			shellScript = " cp -rf $ARUSPIX/local/* $BUILT_PRODUCTS_DIR/$TARGET_NAME.app/Contents/Resources/\n cp -rf $ARUSPIX/data/* $BUILT_PRODUCTS_DIR/$TARGET_NAME.app/Contents/Resources/\n\n if [ $BUILD_STYLE == \"Debug\" -o $BUILD_STYLE == \"DebugDyn\" ]\n then\n\t#echo \"dummy script...\"\n     cp -rf $ARUSPIX/bin/Debug/decoderd $BUILT_PRODUCTS_DIR/$TARGET_NAME.app/Contents/MacOS/;\n\tcp -rf $ARUSPIX/bin/Debug/ngramd $BUILT_PRODUCTS_DIR/$TARGET_NAME.app/Contents/MacOS/;\n\tcp -rf $ARUSPIX/bin/Debug/adaptd $BUILT_PRODUCTS_DIR/$TARGET_NAME.app/Contents/MacOS/;\n else\n\tcp -rf $ARUSPIX/bin/Release/decoder $BUILT_PRODUCTS_DIR/$TARGET_NAME.app/Contents/MacOS/;\n\tcp -rf $ARUSPIX/bin/Release/ngram $BUILT_PRODUCTS_DIR/$TARGET_NAME.app/Contents/MacOS/;\n\tcp -rf $ARUSPIX/bin/Release/adapt $BUILT_PRODUCTS_DIR/$TARGET_NAME.app/Contents/MacOS/;\n\t# prepare installer\n\tcp -rf $ARUSPIX/osx/install_root $ARUSPIX/bin;\n\tcp -rf $ARUSPIX/bin/Release/$TARGET_NAME.app $ARUSPIX/bin/install_root/Applications/;\n\tchmod -R g+rwX $ARUSPIX/bin/install_root/\n\tchmod -R o+rX $ARUSPIX/bin/install_root/\n\tchmod 1775 $ARUSPIX/bin/install_root/Library\n\tchgrp -R admin $ARUSPIX/bin/install_root/\n\t# sudo chown -R root $ARUSPIX/bin/install_root/\n fi";
 		};
 /* End PBXShellScriptBuildPhase section */
 

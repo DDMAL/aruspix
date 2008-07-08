@@ -34,7 +34,7 @@ public:
     MusElement();
 	MusElement( const MusElement& element ); // copy contructor
 	MusElement& operator=( const MusElement& element); // copy assignement;
-    virtual ~MusElement();
+    virtual ~MusElement();		
 
 	// common method
 	void MusElement::ClearElement( wxDC *dc, MusStaff *staff );
@@ -124,6 +124,7 @@ public:
 	int m_im_staff;
 	int m_im_pos;
 	int m_cmp_flag;
+	wxString m_debord_str;
 
 	int no;
 

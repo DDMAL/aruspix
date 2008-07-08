@@ -62,6 +62,7 @@
 \fi
 
 \maketitle
+
 Four libraries must be downloaded in order to be able to compile Aruspix. 
 They are the following:
 \begin{itemize}
@@ -75,7 +76,7 @@ This document will outline the steps involved in compiling these libraries for M
 %*****************************************************************************
 \section{Windows XP Set Up (Using Microsoft Visual C++ 6)}
 %*****************************************************************************
-
+Note: Microsoft Visual C++ 6 has been the main Windows development tool up to date. However the project has also been compiled and run successfully using Microsoft Visual C++ 8 following the same set up guide. Some of the project properties may need to be adjusted as they are not always maintained when upgrading a project. Refer to the trouble shooting section if issues occur.
 %*****************************
 \subsection{wxWidgets}
 To compile wxWidgets open \begin{verbatim} wxWidgets-2.8.7\build\msw\wx.dsw \end{verbatim} using VC 6. Select Batch Build from the Build drop down menu. Now select the following three configurations from each section and build:
@@ -88,7 +89,7 @@ To compile wxWidgets open \begin{verbatim} wxWidgets-2.8.7\build\msw\wx.dsw \end
 %*****************************
 \subsection{IM Library}
 
-This library is available pre-compiled. Just ensure that the library you've downloaded has a file structure matches the following example:
+This library is available pre-compiled. Just ensure that the library you've downloaded has a file structure that matches the following example:
 \begin{verbatim}
 \imlib
     \include : should contain all source files
@@ -108,7 +109,7 @@ To compile this library simply open \begin{verbatim} tinyxml\tinyxml.dsw \end{ve
 %*****************************
 \subsection{Torch}
 
-After downloading Torch, follow the instructions provided on the Torch website for compiling the library on Windows. Be sure to compile the library in both Debug and Release mode. \begin{verbatim}http://www.torch.ch/matos/w_install.pdf \end{verbatim}
+After downloading Torch, follow the instructions provided on the Torch website for compiling the library on Windows. Be sure to name the project "Torch3". \begin{verbatim}http://www.torch.ch/matos/w_install.pdf \end{verbatim}
 After compilation, make sure the Torch library folder has a file structure that matches the following example:
 \begin{verbatim}
 \Torch3
@@ -134,6 +135,11 @@ To compile Aruspix the following environment variables must added to operating s
 	\item WXWIN\_VERSION : wxWidgets version number (format ex. for 2.8.7: 28)
 \end{itemize}
 Now simply open aruspix/win32/Aruspix.dsw and you should be ready to compile Aruspix.
+
+\subsection{Troubleshooting}
+
+If linking errors occur at any stage in the setup it is likely due to the code generation settings of the projects.
+To fix the problem ensure that all the libraries and projects are compiled using the same code generation settings (can be found in project settings/properties -> C/C++ -> Code Generation -> Use run-time library). We have been using "Multithreaded DLL" for release versions and "Multithreaded Debug DLL" for debug versions.
 
 %*****************************************************************************
 \section{Mac OS 10 Set Up (Using Xcode)}

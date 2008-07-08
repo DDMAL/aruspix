@@ -492,7 +492,7 @@ bool MusWWGInput::ImportFile( )
 		ReadPage( page );
 		m_file->m_pages.Add( page );
     }
-    if (!ReadSeparator() ) 
+    if ( !ReadSeparator() ) 
 		return false;
 	if ( m_file->m_param2.entetePied & PAGINATION )
 		ReadPagination( &m_file->m_pagination );
@@ -553,7 +553,7 @@ bool MusWWGInput::ReadFileHeader( MusFileHeader *header )
 	Read( &header->param.EpLignesPortee, 1 ); // param - epLignesPortee
 	Read( &header->param.EpQueueNote, 1 ); // param - epQueueNotes
 	Read( &header->param.EpBarreMesure, 1 ); // param - epBarreMesure
-	Read( &header->param.EpBarreValeur, 1); // param - epBarreValeur
+	Read( &header->param.EpBarreValeur, 1 ); // param - epBarreValeur
 	Read( &header->param.EpBlancBarreValeur, 1 ); // param - epBlancBarreValeur
 	Read( &header->param.beamPenteMax, 1 ); // param - beamPenteMax
 	Read( &header->param.beamPenteMin, 1 ); // param - beamPenteMin
@@ -743,6 +743,17 @@ bool MusWWGInput::ReadStaff( MusStaff *staff )
 			MusNote *note = new MusNote();
 			note->no = k;
 			ReadNote( note );
+			
+			//Test code
+			MusSymbol *lyric = new MusSymbol();
+			lyric->TYPE = SYMB;
+			lyric->flag = LYRIC;
+			lyric->m_debord_str = "a";
+			lyric->xrel = note->xrel;
+			lyric->dec_y = note->dec_y;
+			lyric->offset = note->offset;
+			note->m_lyric_ptr = lyric;
+			
 			staff->m_elements.Add( note );
 		}
 		else

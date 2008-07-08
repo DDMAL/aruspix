@@ -717,7 +717,7 @@ wxPoint CalcPositionAfterRotation( wxPoint point , float rot_alpha, wxPoint cent
   up = liaison vers le haut
   heigth = hauteur de la liaison ( à plat )
   **/
-void MusStaff::DrawSlur( wxDC *dc, int x1, int y1, int x2, int y2, bool up, int height)
+void MusStaff::DrawSlur( wxDC *dc, int x1, int y1, int x2, int y2, bool up, int height )
 {
 
 	wxPen pen( *m_w->m_currentColour, 1, wxSOLID );
@@ -732,7 +732,7 @@ void MusStaff::DrawSlur( wxDC *dc, int x1, int y1, int x2, int y2, bool up, int 
     int dist = (int)sqrt( pow( (double)distX, 2 ) + pow( (double)distY, 2 ) );
 
 	// angle
-    float alpha2 = float( distY ) / float(distX);
+    float alpha2 = float( distY ) / float( distX );
     alpha2 = atan( alpha2 );
 	wxPoint orig(0,0);
 
@@ -764,11 +764,11 @@ void MusStaff::DrawSlur( wxDC *dc, int x1, int y1, int x2, int y2, bool up, int 
 	int dec_y = points[0].y; // decalage y à cause des 2 pas ajoutes
 	for(i = 0; i < nbpoints; i++)
 	{
-		points[i] = CalcPositionAfterRotation( points[i], alpha2, orig); // rotation		
-		points[i].x = m_w->ToZoom( points[i].x + x1 - 1*step); // transposition
-		points[i].y = m_w->ToZoomY( points[i].y + y1 - dec_y);
+		points[i] = CalcPositionAfterRotation( points[i], alpha2, orig ); // rotation		
+		points[i].x = m_w->ToZoom( points[i].x + x1 - 1*step ); // transposition
+		points[i].y = m_w->ToZoomY( points[i].y + y1 - dec_y );
 	}
-	dc->DrawSpline( nbpoints, points);
+	dc->DrawSpline( nbpoints, points );
 
 	// retour idem
 	b = 90;	
@@ -786,10 +786,10 @@ void MusStaff::DrawSlur( wxDC *dc, int x1, int y1, int x2, int y2, bool up, int 
 	for(i = nbpoints; i < 2*nbpoints; i++)
 	{
 		points[i] = CalcPositionAfterRotation( points[i], alpha2, orig );
-		points[i].x = m_w->ToZoom( points[i].x + x1 - 1*step);
-		points[i].y = m_w->ToZoomY( points[i].y + y1 - dec_y);
+		points[i].x = m_w->ToZoom( points[i].x + x1 - 1*step );
+		points[i].y = m_w->ToZoomY( points[i].y + y1 - dec_y );
 	}
-	dc->DrawSpline( nbpoints, points+nbpoints);
+	dc->DrawSpline( nbpoints, points+nbpoints );
 
 	// remplissage ?
 

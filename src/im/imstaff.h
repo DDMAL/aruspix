@@ -56,7 +56,7 @@ public:
 	void GetXandPos( int posx, int *x, int *vpos ); // return the x position in the staff (remove margin)
 													// and the vertical position (decalage) from m_positions in segment	
 	void CorrectLyricCurvature( imImage *src, imImage *dest );
-	void FindLyricBaseLine( imImage *src, imImage *dest );
+	void FindLyricBaseLine( imImage *src, double *overallProjection, int *offsets );
 	
 	// functors																								
 	bool GetImageFromPage( _imImage **image, _imImage *page, int y1, int y2 = -1 );
@@ -82,6 +82,7 @@ public:
 	wxArrayInt m_line_p; // line width (peak in run lengths)
 	wxArrayInt m_line_m; // line width (median in run lengths)
     ArrayOfStaffSegments m_segments; // now used only during processing, not stored anymore
+	int m_lyricBase; // position of lyric baseline
 		    
 public:
     // WDR: member variable declarations for ImStaff

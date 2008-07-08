@@ -150,7 +150,7 @@ bool AxApp::OnInit()
     pConfig->Read("Language",&m_language,-1);
     
 	wxSplashScreen* splash = NULL; 
-    if ( m_language == -1 ) // never choosed before, it is the first time the user run aruspix, run setup
+    if ( m_language == -1 ) // never choosen before, it is the first time the user run aruspix, run setup
     {
 		SetExitOnFrameDelete(FALSE);
 		AxSetup setup( wxBitmap( m_resourcesPath + "/logo.png", wxBITMAP_TYPE_PNG ) );

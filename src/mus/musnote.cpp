@@ -54,6 +54,7 @@ MusNote::MusNote():
     code = 0;
     tetenot = 0;
     typStac = 0;
+	m_lyric_ptr = NULL;
 }
 
 MusNote::MusNote( char _sil, unsigned char _val, unsigned char _code )
@@ -78,12 +79,14 @@ MusNote::MusNote( char _sil, unsigned char _val, unsigned char _code )
     code = _code;
     tetenot = 0;
     typStac = 0;
-
+	m_lyric_ptr = NULL;
+	
 	oct = 4;
 }
 
 MusNote::~MusNote()
 {
+	if (m_lyric_ptr != NULL) delete m_lyric_ptr; 
 }
 
 
@@ -199,7 +202,6 @@ void MusNote::Draw( wxDC *dc, MusStaff *staff)
 
 	int oct = this->oct - 4;
 
-
 	if (!m_w->efface && (this == m_w->m_currentElement))
 		m_w->m_currentColour = wxRED;
 	else if (!m_w->efface && (this->m_cmp_flag == CMP_MATCH))
@@ -226,13 +228,16 @@ void MusNote::Draw( wxDC *dc, MusStaff *staff)
 		//	pnote->code = getSilencePitch (pelement);
 		this->dec_y = staff->y_note((int)this->code, staff->testcle( this->xrel ), oct);
 		silence ( dc, staff );
-		
-
 	}
 
 	if ( !m_w->efface )
 		m_w->m_currentColour = &m_w->m_black;
 
+	if ( m_lyric_ptr != NULL ){
+		m_w->putstring(dc, m_lyric_ptr->xrel + staff->xrel, staff->yrel-250, 
+					   m_lyric_ptr->m_debord_str, 1, staff->pTaille);
+	}
+	
 	return;
 }
 
@@ -243,7 +248,7 @@ void MusNote::Draw( wxDC *dc, MusStaff *staff)
 // l'accord (ptr_n->fchord), la valeur y extreme opposee au sommet de la
 // queue: le ptr *testchord extern peut garder le x et l'y.
 
-void MusNote::note ( wxDC *dc, MusStaff *staff)
+void MusNote::note ( wxDC *dc, MusStaff *staff )
 {
 	int pTaille = staff->pTaille;
 

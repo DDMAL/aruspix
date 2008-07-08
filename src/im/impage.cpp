@@ -22,6 +22,8 @@
 #include "imstaff.h"
 #include "imstaffsegment.h"
 
+#include <math.h>
+
 #include "app/axapp.h"
 
 #include "recognition/rec.h" // not optimal, should be restructured...
@@ -2440,9 +2442,15 @@ bool ImPage::GenerateLyricMFC( wxString output_dir )
 			else
 				m_opLines2[i] = 0;
 		}
-		
 	}
 	
+	// array holding overall projection of all the lyric lines as they are processed
+	double overallProjection[maxLyricHeight];
+	for ( int i = 0; i < maxLyricHeight; i++ ) overallProjection[i] = 0;
+	
+	// array holding the offsets for each lyric line
+	int offsets[st];
+		
 	// calculer les features (ImStaffSegment::CalcFeatures)
 	wxString input = output_dir + "mfclyric.input";
 	wxString filename = output_dir + "staff";
@@ -2460,9 +2468,44 @@ bool ImPage::GenerateLyricMFC( wxString output_dir )
 	params.Add( &m_staff_height );
 	params.Add( m_opLines1 );
 	params.Add( m_opLines2 );
+	params.Add( overallProjection );
+	params.Add( offsets );
 	
     ImStaffFunctor staffFuncFeatures( &ImStaff::CalcLyricFeatures );
 	this->Process( &staffFuncFeatures, params, counter );
+	
+	double sum = 0;		
+	// Find sum of overallProjection
+	for ( int i = 0; i < maxLyricHeight; i++ ){
+		sum += overallProjection[i];
+	}
+									   
+	// Find index of largest value in the projection and store in 'centre'
+	int centre = 0;
+	for ( int i = 0; i < maxLyricHeight; i++ ){
+		overallProjection[i] = overallProjection[i] / sum;
+		if (overallProjection[centre] < overallProjection[i]) centre = i;
+	}
+
+	// Find top of lyric lines
+	int top = -1;
+	for ( int i = 0; i < centre; i++ ){
+		if ( overallProjection[i] < exp( -3.6 ) )
+			if ( top == -1 || i > top ) top = i;
+	}
+
+	// Find bottom of lyric lines
+	int bottom = -1;
+	for ( int i = centre; i < maxLyricHeight; i++ ){
+		if ( overallProjection[i] < exp( -3.6 ) ){
+			if ( bottom == -1 || i < bottom ) bottom = i;
+		}
+	}
+	bottom = centre + bottom;
+	
+	for ( int i = 0; i < st; i++ ){
+		this->m_staves[i].m_lyricBase = bottom;
+	}
 	
 	finput.Close();
 

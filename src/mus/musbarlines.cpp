@@ -85,7 +85,7 @@ void MusPage::DrawBarres( wxDC *dc )
 	int i, flLine=0, flBrace=0;
 	int xx, portee;
 	int b_gr, bb_gr;
-	int b_acc, bb_acc;                
+	int b_acc, bb_acc;               
 	//extern int _encontinu;
 
     MusStaff *staff;
