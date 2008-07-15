@@ -35,11 +35,13 @@ MusSymbol::MusSymbol():
 	calte = 0;
 	carOrient = 0;
 	carStyle = 0;
-	flag = 0;
+	flag = 0; 
 	fonte = 0;
 	l_ptch = 0;
 	point = 0;
 	s_lie_l = 0;
+	m_note_ptr = NULL;
+	m_hasAssociatedNote = false;
 }
 
 MusSymbol::MusSymbol( unsigned char _flag, unsigned char _calte, unsigned short _code )
@@ -54,11 +56,19 @@ MusSymbol::MusSymbol( unsigned char _flag, unsigned char _calte, unsigned short 
 	l_ptch = 0;
 	point = 0;
 	s_lie_l = 0;
+	m_note_ptr = NULL;
+	m_hasAssociatedNote = false;
 }
 
 
 MusSymbol::~MusSymbol()
 {
+	if ( m_hasAssociatedNote ){
+		m_note_ptr->m_hasAssociatedLyric = false;
+		m_note_ptr->m_lyric_ptr = NULL;
+		m_hasAssociatedNote = false;
+		m_note_ptr = NULL;
+	}
 }
 
 

@@ -55,6 +55,7 @@ MusNote::MusNote():
     tetenot = 0;
     typStac = 0;
 	m_lyric_ptr = NULL;
+	m_hasAssociatedLyric = false;
 }
 
 MusNote::MusNote( char _sil, unsigned char _val, unsigned char _code )
@@ -80,13 +81,18 @@ MusNote::MusNote( char _sil, unsigned char _val, unsigned char _code )
     tetenot = 0;
     typStac = 0;
 	m_lyric_ptr = NULL;
+	m_hasAssociatedLyric = false;
 	
 	oct = 4;
 }
 
 MusNote::~MusNote()
 {
-	if (m_lyric_ptr != NULL) delete m_lyric_ptr; 
+	if ( m_hasAssociatedLyric == true && m_lyric_ptr != NULL ) {
+		delete m_lyric_ptr;
+		m_lyric_ptr = NULL;
+		m_hasAssociatedLyric = false;
+	}
 }
 
 

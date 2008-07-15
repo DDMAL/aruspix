@@ -17,6 +17,7 @@
 #endif
 
 class MusStaff;
+class MusNote;
 #include "muselement.h"
 
 // WDR: class declarations
@@ -76,6 +77,9 @@ public:
     //unsigned short code; // moved in element
     /** longueur de la chaine de caracteres */
     unsigned short l_ptch;
+	
+	MusNote *m_note_ptr;
+	bool m_hasAssociatedNote;
 
 private:
     // WDR: handler declarations for MusSymbol

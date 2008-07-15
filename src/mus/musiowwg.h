@@ -53,6 +53,7 @@ public:
 	virtual bool WriteSymbole( const MusSymbol *symbole );
 	virtual bool WriteElementAttr( const MusElement *element );
 	virtual bool WriteDebord( const MusElement *element );
+	virtual bool WriteLyric( const MusElement *element );
 	virtual bool WritePagination( const MusPagination *pagination );
 	virtual bool WriteHeaderFooter( const MusHeaderFooter *headerfooter);
     
@@ -94,6 +95,7 @@ public:
 	virtual bool ReadSymbole( MusSymbol *symbole );
 	virtual bool ReadElementAttr( MusElement *element );
 	virtual bool ReadDebord( MusElement *element );
+	virtual bool ReadLyric( MusElement *element );
 	virtual bool ReadPagination( MusPagination *pagination );
 	virtual bool ReadHeaderFooter( MusHeaderFooter *headerfooter);
     

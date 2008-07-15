@@ -111,6 +111,7 @@ public:
 	virtual bool WriteSymbole( const MusSymbol *symbole ) { return true; }
 	virtual bool WriteElementAttr( const MusElement *element ) { return true; }
 	virtual bool WriteDebord( const MusElement *element ) { return true; }
+	virtual bool WriteLyric( const MusElement * element ) { return true; }
 	virtual bool WritePagination( const MusPagination *pagination ) { return true; }
 	virtual bool WriteHeaderFooter( const MusHeaderFooter *headerfooter) { return true; }
     
@@ -148,6 +149,7 @@ public:
 	virtual bool ReadSymbole( MusSymbol *symbole ) { return true; }
 	virtual bool ReadElementAttr( MusElement *element ) { return true; }
 	virtual bool ReadDebord( MusElement *element ) { return true; }
+	virtual bool ReadLyric( MusElement * element ) { return true; }
 	virtual bool ReadPagination( MusPagination *pagination ) { return true; }
 	virtual bool ReadHeaderFooter( MusHeaderFooter *headerfooter) { return true; }
     

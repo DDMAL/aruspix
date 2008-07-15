@@ -121,7 +121,7 @@ MusElement::MusElement( const MusElement& element )
 	}
 } 
 
-MusElement& MusElement::operator=( const MusElement& element)
+MusElement& MusElement::operator=( const MusElement& element )
 {
 	if ( this != &element ) // not self assignement
 	{

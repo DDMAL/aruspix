@@ -346,7 +346,15 @@ bool MusWWGOutput::WriteNote( const MusNote *note )
 	Write( &note->typStac, 1 );
 	if ( note->existDebord ) 
 		WriteDebord( note );
-     
+	
+	char tmp;
+	if ( note->m_hasAssociatedLyric ) tmp = 1;
+	else tmp = 0;
+	Write( &tmp, 1 );
+	//Write( &note->m_hasAssociatedLyric, 1 );
+	if ( note->m_hasAssociatedLyric )
+		WriteSymbole( note->m_lyric_ptr );
+	
 	return true;
 }
 
@@ -369,7 +377,9 @@ bool MusWWGOutput::WriteSymbole( const MusSymbol *symbole )
 	Write( &int32, 4 );
 	if ( symbole->existDebord ) 
 		WriteDebord( symbole );
-     
+    if ( symbole->flag == LYRIC )
+		WriteLyric( symbole );
+	
 	return true;
 }
 
@@ -421,6 +431,14 @@ bool MusWWGOutput::WriteDebord( const MusElement *element )
 	return true;
 }
 
+bool MusWWGOutput::WriteLyric( const MusElement *element )
+{
+	int32 = wxINT32_SWAP_ON_BE( (int)element->m_debord_str.Length() );
+	Write( &int32, 4 );
+	
+	Write( element->m_debord_str.c_str(), (int)element->m_debord_str.Length() + 1 );
+	return true;
+}
 
 bool MusWWGOutput::WritePagination( const MusPagination *pagination )
 {
@@ -735,7 +753,7 @@ bool MusWWGInput::ReadStaff( MusStaff *staff )
 	Read( &uint16, 2 );
 	staff->reserve = wxUINT16_SWAP_ON_BE( uint16 );
 	unsigned char c;
-	for (k = 0;k < staff->nblement ; k++ )
+	for ( k = 0; k < staff->nblement; k++ )
 	{
 		Read( &c, 1 );
 		if ( c == NOTE )
@@ -743,16 +761,20 @@ bool MusWWGInput::ReadStaff( MusStaff *staff )
 			MusNote *note = new MusNote();
 			note->no = k;
 			ReadNote( note );
-			
+			  
 			//Test code
-			MusSymbol *lyric = new MusSymbol();
-			lyric->TYPE = SYMB;
-			lyric->flag = LYRIC;
-			lyric->m_debord_str = "a";
-			lyric->xrel = note->xrel;
-			lyric->dec_y = note->dec_y;
-			lyric->offset = note->offset;
-			note->m_lyric_ptr = lyric;
+			if ( note->m_hasAssociatedLyric == false ){
+				note->m_lyric_ptr = new MusSymbol();
+				note->m_lyric_ptr->TYPE = SYMB;
+				note->m_lyric_ptr->flag = LYRIC;
+				note->m_lyric_ptr->m_debord_str = "a";
+				note->m_lyric_ptr->xrel = note->xrel;
+				note->m_lyric_ptr->dec_y = note->dec_y;
+				note->m_lyric_ptr->offset = note->offset;
+				note->m_lyric_ptr->m_note_ptr = note;
+				note->m_lyric_ptr->m_hasAssociatedNote = true;
+				note->m_hasAssociatedLyric = true;				
+			}
 			
 			staff->m_elements.Add( note );
 		}
@@ -809,7 +831,21 @@ bool MusWWGInput::ReadNote( MusNote *note )
 	Read( &note->typStac, 1 );
 	if ( note->existDebord ) 
 		ReadDebord( note );
-     
+	
+	char tmp;
+	Read( &tmp, 1 );
+	if ( tmp != 0 ) note->m_hasAssociatedLyric = true;
+	else note->m_hasAssociatedLyric = false;
+	
+	if ( note->m_hasAssociatedLyric ){
+		note->m_lyric_ptr = new MusSymbol();
+		Read( &note->m_lyric_ptr->TYPE, 1 );
+		ReadSymbole( note->m_lyric_ptr );
+		
+		note->m_lyric_ptr->m_hasAssociatedNote = true;
+		note->m_lyric_ptr->m_note_ptr = note;
+	}
+	
 	return true;
 }
 
@@ -831,6 +867,8 @@ bool MusWWGInput::ReadSymbole( MusSymbol *symbole )
 	symbole->dec_y = wxINT32_SWAP_ON_BE( int32 );
 	if ( symbole->existDebord ) 
 		ReadDebord( symbole );
+	if ( symbole->flag == LYRIC )
+		ReadLyric( symbole );
      
 	return true;
 }
@@ -884,7 +922,13 @@ bool MusWWGInput::ReadDebord( MusElement *element )
 	return true;
 }
 
-
+bool MusWWGInput::ReadLyric( MusElement *element )
+{
+	Read( &int32, 4 );
+	Read( element->m_debord_str.GetWriteBuf( wxINT32_SWAP_ON_BE( int32 ) + 1 ) , wxINT32_SWAP_ON_BE( int32 ) + 1 );
+	element->m_debord_str.UngetWriteBuf();
+	return true;
+}
 bool MusWWGInput::ReadPagination( MusPagination *pagination )
 {
 	Read( &int16, 2 );
