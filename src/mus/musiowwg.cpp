@@ -347,10 +347,15 @@ bool MusWWGOutput::WriteNote( const MusNote *note )
 	if ( note->existDebord ) 
 		WriteDebord( note );
 	
-	char tmp;
+	// small thing for code optimization ...
+	//char tmp;
+	//if ( note->m_hasAssociatedLyric ) tmp = 1;
+	//else tmp = 0;
+	//... on less instruction here ;)
+	char tmp = 0;
 	if ( note->m_hasAssociatedLyric ) tmp = 1;
-	else tmp = 0;
 	Write( &tmp, 1 );
+	
 	//Write( &note->m_hasAssociatedLyric, 1 );
 	if ( note->m_hasAssociatedLyric )
 		WriteSymbole( note->m_lyric_ptr );

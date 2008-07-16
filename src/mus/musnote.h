@@ -33,6 +33,8 @@ public:
     // constructors and destructors
     MusNote();
 	MusNote( char _sil, unsigned char _val, unsigned char _code );
+	MusNote( const MusNote& note ); // copy contructor
+	MusNote& operator=( const MusNote& note ); // copy assignement;
     virtual ~MusNote();
     
 	virtual void MusNote::Draw( wxDC *dc, MusStaff *staff);

@@ -38,7 +38,7 @@ VERSION DOS.*/
 #define VALBARRES 11
 #define METAFILE_W 12
 #define AX_VARIANT 13
-#define LYRICS 14
+// #define AX_LYRICS 14 // It is not used, is it? Added an AX_ prefix to avoid confusion with wolfgang #defines
 
 
 ///#define PS_MODECOURANT 2	// A METTRE DANS UNE VARIABLE d'environnement!!!

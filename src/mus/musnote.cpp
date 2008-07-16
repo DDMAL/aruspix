@@ -86,6 +86,72 @@ MusNote::MusNote( char _sil, unsigned char _val, unsigned char _code )
 	oct = 4;
 }
 
+MusNote::MusNote( const MusNote& note )
+{
+	TYPE = note.TYPE;
+	sil = note.sil;
+	val = note.val;
+	inv_val = note.inv_val;
+	point = note.point;
+	stop_rel = note.stop_rel;
+	acc = note.acc;
+	accInvis = note.accInvis;
+	q_auto = note.q_auto;
+	queue = note.queue;
+	stacc = note.stacc;
+	oblique = note.oblique;
+	queue_lig = note.queue_lig;
+	chord = note.chord;
+	fchord = note.fchord;
+	lat = note.lat;
+	haste = note.haste;
+	code = note.code;
+	tetenot = note.tetenot;
+	typStac = note.typStac;
+	m_hasAssociatedLyric = note.m_hasAssociatedLyric;
+	if ( m_hasAssociatedLyric ) // special case where we have to copy the symbol by hand
+	{
+		m_lyric_ptr = new MusSymbol( *note.m_lyric_ptr );
+		m_lyric_ptr->m_hasAssociatedNote = true;
+		m_lyric_ptr->m_note_ptr = this;
+	}
+} 
+
+MusNote& MusNote::operator=( const MusNote& note )
+{
+	if ( this != &note ) // not self assignement
+	{
+		TYPE = note.TYPE;
+		sil = note.sil;
+		val = note.val;
+		inv_val = note.inv_val;
+		point = note.point;
+		stop_rel = note.stop_rel;
+		acc = note.acc;
+		accInvis = note.accInvis;
+		q_auto = note.q_auto;
+		queue = note.queue;
+		stacc = note.stacc;
+		oblique = note.oblique;
+		queue_lig = note.queue_lig;
+		chord = note.chord;
+		fchord = note.fchord;
+		lat = note.lat;
+		haste = note.haste;
+		code = note.code;
+		tetenot = note.tetenot;
+		typStac = note.typStac;
+		m_hasAssociatedLyric = note.m_hasAssociatedLyric;
+		if ( m_hasAssociatedLyric ) // special case where we have to copy the symbol by hand
+		{
+			m_lyric_ptr = new MusSymbol( *note.m_lyric_ptr );
+			m_lyric_ptr->m_hasAssociatedNote = true;
+			m_lyric_ptr->m_note_ptr = this;
+		}
+	}
+	return *this;
+}
+
 MusNote::~MusNote()
 {
 	if ( m_hasAssociatedLyric == true && m_lyric_ptr != NULL ) {

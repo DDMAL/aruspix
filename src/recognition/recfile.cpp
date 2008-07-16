@@ -276,6 +276,7 @@ void RecFile::SaveContent( )
 		return;
 	else
 	{
+		
 		// save
 		MusWWGOutput *wwgoutput = new MusWWGOutput( m_musFilePtr, m_musFilePtr->m_fname );
 		wwgoutput->ExportFile();
@@ -293,7 +294,7 @@ void RecFile::SaveContent( )
 		models.SetAttribute( "typographic_model",  m_rec_typ_model.c_str() );
 		models.SetAttribute( "music_model",  m_rec_mus_model.c_str() );	
 		root.InsertEndChild( models );
-
+		
 		// decoder
 		TiXmlElement decoder( "decoder" );
 		decoder.SetAttribute( "wrdtrns",  m_rec_wrdtrns.c_str() );
@@ -301,7 +302,7 @@ void RecFile::SaveContent( )
 		decoder.SetAttribute( "order",  m_rec_lm_order );
 		decoder.SetDoubleAttribute( "scaling",  m_rec_lm_scaling );
 		root.InsertEndChild( decoder );
-
+		
 		// wwg
 		TiXmlElement wwg("wwg");
 		wxFileName fwwg( m_musFilePtr->m_fname );
