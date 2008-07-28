@@ -1480,9 +1480,9 @@ void MusMLFInput::GetNotUt1( MusStaff *staff, MusElement *pelement, int *code, i
 	char valeur = 0;
 	int offs;
 
-	if (!staff || (staff->getOctCl(pelement,&valeur, 1 )==0))
+	if ( !staff || ( staff->getOctCl( pelement, &valeur, 1 ) == 0 ) )
 		valeur = 5;
-	MusSymbol::calcoffs(&offs, valeur);
+	MusSymbol::calcoffs( &offs, valeur );
 
 	*oct = pelement->oct;
 	*code = 0;
@@ -1632,7 +1632,7 @@ bool MusMLFInput::ImportFile( int staff_per_page )
 bool MusMLFInput::ReadPage( MusPage *page , bool firstLineMLF, ImPage *imPage )
 {
 	wxString line;
-	if ( firstLineMLF  && (!ReadLine( &line )  || (line != "#!MLF!#" )))
+	if ( firstLineMLF  && ( !ReadLine( &line )  || ( line != "#!MLF!#" )))
 		return false;
 
 	MusStaff *staff = NULL;
@@ -1645,7 +1645,7 @@ bool MusMLFInput::ReadPage( MusPage *page , bool firstLineMLF, ImPage *imPage )
 			if ( staff )
 				GetNotUt1( staff, true ); // convert pitches
 
-			if (m_staff_label < (int)page->m_staves.GetCount())
+			if ( m_staff_label < (int)page->m_staves.GetCount() )
 			{
 				staff = &page->m_staves[ m_staff_label ];
 				m_staff_i = m_staff_label; //m_staff_i++;
@@ -1667,7 +1667,6 @@ bool MusMLFInput::ReadPage( MusPage *page , bool firstLineMLF, ImPage *imPage )
 	page->CheckIntegrity();
 
     return true;
-
 }
 
 // offset est la position x relative du label

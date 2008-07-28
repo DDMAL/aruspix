@@ -56,7 +56,8 @@ public:
 	void GetXandPos( int posx, int *x, int *vpos ); // return the x position in the staff (remove margin)
 													// and the vertical position (decalage) from m_positions in segment	
 	void CorrectLyricCurvature( imImage *src, imImage *dest );
-	void FindLyricBaseLine( imImage *src, double *overallProjection, int *offsets );
+	void FindLyricBaseLine( imImage *src, double *overallProjection, int *offsets, int windowWidth );
+	void CropLyric( imImage *src, imImage *dest, int baseline, int topline, int *offsets, int width );
 	
 	// functors																								
 	bool GetImageFromPage( _imImage **image, _imImage *page, int y1, int y2 = -1 );
@@ -68,6 +69,7 @@ public:
 	void CalcFeatures( const int count, wxArrayPtrVoid params  );
 	void CalcLyricFeatures(const int staff, wxArrayPtrVoid params );
 	void CalcStaffHeight(const int staff, wxArrayPtrVoid params );
+	void ExtractLyricImages( const int staff, wxArrayPtrVoid params );
 	
 protected:
 	// calculate positions (all x) from/to save positions (one x evey POSITION_STEP )

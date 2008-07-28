@@ -2445,37 +2445,47 @@ bool ImPage::GenerateLyricMFC( wxString output_dir )
 	}
 	
 	// array holding overall projection of all the lyric lines as they are processed
-	double overallProjection[maxLyricHeight];
+	//double overallProjection[maxLyricHeight];
+	double overallProjection[115];
 	for ( int i = 0; i < maxLyricHeight; i++ ) overallProjection[i] = 0;
 	
 	// array holding the offsets for each lyric line
-	int offsets[st];
-		
+	//int offsets[st][(int)ceil( m_opImMain->width / 30 )];
+	int **offsets = (int**)malloc( st * sizeof( int* ) );
+	for ( int i = 0; i < st; i++ )
+		offsets[i] = (int*)malloc( (int)ceil( m_opImMain->width / 30 ) * sizeof( int ) );
+
+	for ( int i = 0; i < st; i++ )
+		for ( int j = 0; j < ceil( m_opImMain->width / 30 ); j++ )
+			offsets[i][j] = -1;
+
 	// calculer les features (ImStaffSegment::CalcFeatures)
 	wxString input = output_dir + "mfclyric.input";
 	wxString filename = output_dir + "staff";
 	wxFile finput( input, wxFile::write );
 	if ( !finput.IsOpened() )
 		return this->Terminate( ERR_FILE, input.c_str() );
-	int win = WIN_WIDTH;
-	int overlap = WIN_OVERLAP;
+
+	int windowWidth = 30; // Window width used for finding lyric baseline 
 	params.Clear();
     params.Add( m_opImMain );
-    params.Add( &win );
-	params.Add( &overlap );
 	params.Add( &filename );
-	params.Add( &finput );
-	params.Add( &m_staff_height );
 	params.Add( m_opLines1 );
 	params.Add( m_opLines2 );
 	params.Add( overallProjection );
 	params.Add( offsets );
+	params.Add( &windowWidth );
 	
-    ImStaffFunctor staffFuncFeatures( &ImStaff::CalcLyricFeatures );
-	this->Process( &staffFuncFeatures, params, counter );
+    ImStaffFunctor lyricFuncFeatures( &ImStaff::CalcLyricFeatures );
+	this->Process( &lyricFuncFeatures, params, counter );
 	
-	double sum = 0;		
+	int tmp[8][45];
+	for ( int i = 0; i < st; i++ )
+		for ( int j = 0; j < ceil( m_opImMain->width / 30 ); j++ )
+			tmp[i][j] = offsets[i][j];
+		
 	// Find sum of overallProjection
+	double sum = 0;		
 	for ( int i = 0; i < maxLyricHeight; i++ ){
 		sum += overallProjection[i];
 	}
@@ -2484,29 +2494,44 @@ bool ImPage::GenerateLyricMFC( wxString output_dir )
 	int centre = 0;
 	for ( int i = 0; i < maxLyricHeight; i++ ){
 		overallProjection[i] = overallProjection[i] / sum;
-		if (overallProjection[centre] < overallProjection[i]) centre = i;
+		if ( overallProjection[centre] < overallProjection[i] ) centre = i;
 	}
 
 	// Find top of lyric lines
-	int top = -1;
+	int topline = -1;
 	for ( int i = 0; i < centre; i++ ){
-		if ( overallProjection[i] < exp( -3.6 ) )
-			if ( top == -1 || i > top ) top = i;
+		if ( overallProjection[i] < exp( -6.0 ) )
+			if ( topline == -1 || i > topline ) topline = i;
 	}
 
 	// Find bottom of lyric lines
-	int bottom = -1;
+	int baseline = -1;
 	for ( int i = centre; i < maxLyricHeight; i++ ){
-		if ( overallProjection[i] < exp( -3.6 ) ){
-			if ( bottom == -1 || i < bottom ) bottom = i;
+		if ( overallProjection[i] < exp( -6.0 ) ){
+			if ( baseline == -1 || i < baseline ) baseline = i;
 		}
 	}
-	bottom = centre + bottom;
 	
 	for ( int i = 0; i < st; i++ ){
-		this->m_staves[i].m_lyricBase = bottom;
+		this->m_staves[i].m_lyricBase = baseline;
 	}
 	
+	params.Clear();
+	params.Add( m_opImMain );
+	params.Add( &windowWidth );
+	params.Add( &filename );
+	params.Add( offsets );
+	params.Add( &baseline );
+	params.Add( &topline );
+	params.Add( m_opLines1 );
+	params.Add( m_opLines2 );
+	
+	counter = m_progressDlg->GetCounter();
+    count = this->m_staves.GetCount();//GetStaffSegmentsCount();
+    imCounterTotal( counter, count, "Extract/Recognize lyrics ..." );	
+	
+	ImStaffFunctor lyricExtraction( &ImStaff::ExtractLyricImages );
+	this->Process( &lyricExtraction, params, counter );
 	finput.Close();
 
     return this->Terminate( ERR_NONE );

@@ -249,188 +249,87 @@ void CalcWinFeatures(const imImage* image, float *features, int position_v, int 
 	imImageDestroy( negate );
 }
 
-void CalcLyricWinFeatures(const imImage* image, float *features, int position_v, int height, int width )
+void CalcLyricWinFeatures(const imImage* image )
 {
-	
-	if ( width > ( STAFF / 8 ) )
-	{
-		//wxLogDebug( "Staff width larger than half staff space" );
-		width = STAFF / 8;
-	}
-	
-	
-	// empiric adjustment		
-	height -= width;
-	
-	// valeurs par defaut
-	int i;
-	for ( i = 0; i < FEATURES_COUNT; i++ )
-		features[i] = 0.0;
-	features[0] = 1.0; // euler
-	features[1] = 0.0; // area
-	features[2] = 0.5; // centroids
-	features[3] = 0.5;
-	features[4] = 0.0; // bigest black
-	features[5] = 1.0; // smallest white
-	features[6] = 0.5; // bigest black cy
-	
-	int half_staff_height = STAFF_HEIGHT / 2;
-	int pos[8]; // line positions ; 90 au lieu de 89 à cause de margins
-	pos[0] = half_staff_height + height / 2 + height / 4 + position_v;
-	pos[1] = half_staff_height + height / 2 + position_v;
-	pos[2] = half_staff_height + height / 4 + position_v;
-	pos[3] = half_staff_height + position_v;
-	pos[4] = half_staff_height - height / 4 + position_v;
-	pos[5] = half_staff_height - height / 2 + position_v;
-	pos[6] = half_staff_height - height / 2 - height / 4 + position_v;
-	pos[7] = half_staff_height - height + position_v;
-	
-	imbyte *imBuf = (imbyte*)image->data[0];
-	
-	int line_offset;
-	int l;
-	// completer les lignes
-	for (l = 0; l < 8; l++)
-	{
-		if ( ( pos[l] < 0 ) || ( pos[l] >= STAFF_HEIGHT ) )
-			continue;
-		line_offset = pos[l];
-		memset( imBuf + line_offset * image->width,
-			   1, image->width );
-	}
-	
-	//if ( imdebug )
-	//	imProcessInsert( imdebug, image, imdebug, stepdebug, 0 );
-	
-	//global
-    imImage *imRegions = imImageCreate(image->width, image->height, IM_GRAY, IM_USHORT);
-    int region_count = imAnalyzeFindRegions ( image, imRegions, 8, 1 );
-	
-	if (region_count == 0)
-	{	
-		imImageDestroy( imRegions );
-		return;
-	}
-	
-	// euler (+-)
-	features[0] = 1.0 / (region_count + 1); // global
-	
-	// centroid
-	float *cx = (float*)malloc(region_count*sizeof(float));
-	memset( cx, 0, region_count*sizeof(float));
-	float *cy = (float*)malloc(region_count*sizeof(float));
-	memset( cy, 0, region_count*sizeof(float));
-	imAnalyzeMeasureCentroid( imRegions, NULL, region_count, cx, cy );
-	
-	// remove staff lines from area
-	imushort *regionsBuf = (imushort*)imRegions->data[0];
-	
-	if ( (width % 2) == 0 )
-		width++;
-	int m;
-	
-	for (l = 0; l < 8; l++)
-	{
-		for (m = -(width / 2); m <= (width / 2); m++)
-		{
-			line_offset = pos[l] + m;
-			if ( ( line_offset < 0 ) || ( line_offset >= STAFF_HEIGHT ) )
-				continue;
-			memset( regionsBuf + line_offset * image->width,
-				   0, sizeof( imushort ) * image->width );
-		}
-	}	
-	
-	// area (without lines)
-	int* area = (int*)malloc(region_count*sizeof(int));
-	memset( area, 0, region_count*sizeof(int));
-	imAnalyzeMeasureArea( imRegions, area );
-	
-	int tot_area = 0;
-	int max_area = 0;
-	float max_black_cy = 0.5;
-	for (i = 0; i < region_count; i++)
-	{
-		tot_area += area[i];
-		if ( area[i] > max_area )
-		{
-			max_area = area[i];
-			max_black_cy = cy[i];
+	int height = image->height;
+	int width = image->width;
+	imbyte *buffer = (imbyte*)image->data[0];
+	imbyte *tmp = (imbyte*)malloc( 4 * height * 4 * width );
+
+	// Scale original image by a factor of 4 on both axis
+	for ( int i = 0; i < height; i++ ){
+		for ( int j = 0; j < width; j++){
+			for ( int k = 0; k < 4; k++ ){
+				for ( int m = 0; m < 4; m++ ){
+					tmp[ ( 4 * i + k ) * 4 * width + j * 4 + m  ] = buffer[ i * width + j ];
+				}
+			}
 		}
 	}
-	features[1] = (float)tot_area /(image->width * image->height);
-	// plus grand noir
-	features[4] = float(max_area) /(image->width * image->height); // 01
 	
-	// intersafflines cy
-	max_black_cy -= position_v;
-	int interline = height / 4;
-	max_black_cy += interline - (half_staff_height % interline) + interline / 2;
-	max_black_cy = (int)max_black_cy % interline;
-	//printf("interligne %d, max_black_cy %f\n", interline, max_black_cy);
-	features[6] = max_black_cy / interline;
+	height *= 4;
+	width *= 4;
 	
-	// centroid
-	float sum_cx = 0, sum_cy = 0;
-	for (i = 0; i < region_count; i++)
-	{
-		sum_cx += cx[i] * area[i];
-		sum_cy += cy[i] * area[i];
-	}
-	if (tot_area)
-	{
-		features[2] = ((sum_cy / tot_area) - 1 - position_v) / image->height;
-		features[3] = ((sum_cx / tot_area) + 1) / image->width;
-	}
-	free(cy);
-	free(cx);
-	free(area);
+	// Pixel count for each of the 16 cells
+	int pixel_count[4][4];
+	for ( int i = 0; i < 4; i++ )
+		for ( int j = 0; j < 4; j++ )
+			pixel_count[i][j] = 0;
 	
-	// get biggest black
-    region_count = imAnalyzeFindRegions ( image, imRegions, 8, 1 );
+	int y1 = height / 4;		// y-coordinates that split the image 4 times horizontally
+	int y2 = 2 * y1;
+	int y3 = 3 * y1;
+
+	int x1 = width / 4;		// x-coordinates that split the image 4 times vertically
+	int x2 = 2 * x1;
+	int x3 = 3 * x1;
 	
-	if (region_count != 0)
-	{
-		int* forground = (int*)malloc(region_count*sizeof(int));
-		memset( forground, 0, region_count*sizeof(int));
-		imAnalyzeMeasureArea( imRegions, forground );
-		
-		int max_forground = 0;
-		for (i = 0; i < region_count; i++)
-		{
-			if ( forground[i] > max_forground )
-				max_forground = forground[i];
+	// Count the number of pixels in each cell
+	for ( int i = 0; i < width; i ++ ){
+		for ( int j = 0; j < height; j++ ){
+			int index = i * width + j;				
+			if ( j < y1 && i < x1 ){										// [0,0]
+				if ( tmp[index] != 0 ) pixel_count[0][0]++;
+			} else if ( ( j >= y1 && j < y2 ) && i < x1 ){					// [1,0]	
+				if ( tmp[index] != 0 ) pixel_count[1][0]++;
+			} else if ( ( j >= y2 && j < y3 ) && i < x1 ){					// [2,0]
+				if ( tmp[index] != 0 ) pixel_count[2][0]++;			
+			} else if ( j >= y3 && i < x1 ){								// [3,0]
+				if ( tmp[index] != 0 ) pixel_count[3][0]++;
+			} else if ( j < y1 && ( i >= x1 && i < x2 ) ){					// [0,1]
+				if ( tmp[index] != 0 ) pixel_count[0][1]++;
+			} else if ( ( j >= y1 && j < y2 ) && ( i >= x1 && i < x2 ) ){	// [1,1]
+				if ( tmp[index] != 0 ) pixel_count[1][1]++;
+			} else if ( ( j >= y2 && j < y3 ) && ( i >= x1 && i < x2 ) ){	// [2,1]
+				if ( tmp[index] != 0 ) pixel_count[2][1]++;			
+			} else if ( j >= y3 && ( i >= x1 && i < x2 ) ){					// [3,1]
+				if ( tmp[index] != 0 ) pixel_count[3][1]++;
+			} else if ( j < y1 && ( i >= x2 && i < x3 ) ){					// [0,2]
+				if ( tmp[index] != 0 ) pixel_count[0][2]++;
+			} else if ( ( j >= y1 && j < y2 ) && ( i >= x2 && i < x3 ) ){	// [1,2]
+				if ( tmp[index] != 0 ) pixel_count[1][2]++;
+			} else if ( ( j >= y2 && j < y3 ) && ( i >= x2 && i < x3 ) ){	// [2,2]
+				if ( tmp[index] != 0 ) pixel_count[2][2]++;			
+			} else if ( j >= y3 && ( i >= x2 && i < x3 ) ){					// [3,2]
+				if ( tmp[index] != 0 ) pixel_count[3][2]++;
+			} else if ( j < y1 && i >= x3 ){								// [0,3]
+				if ( tmp[index] != 0 ) pixel_count[0][3]++;
+			} else if ( ( j >= y1 && j < y2 ) && i >= x3 ){					// [1,3]
+				if ( tmp[index] != 0 ) pixel_count[1][3]++;
+			} else if ( ( j >= y2 && j < y3 ) && i >= x3 ){					// [2,3]
+				if ( tmp[index] != 0 ) pixel_count[2][3]++;			
+			} else if ( j >= y3 && i >= x3 ){								// [3,3]
+				if ( tmp[index] != 0 ) pixel_count[3][3]++;
+			} 
 		}
-		free(forground);
-		// plus grand noir
-		//features[4] = float(max_forground) /(image->width * image->height); // 10
 	}
+	free( tmp );
 	
+	double pixel_density[4][4];
+	for ( int i = 0; i < 4; i++ )
+		for ( int j = 0; j < 4; j++ )
+			pixel_density[i][j] = pixel_count[i][j] / ( y1 * x1 );
 	
-	// get smallest white
-	imImage *negate = imImageClone( image );
-	imProcessNegative( image, negate );
-    region_count = imAnalyzeFindRegions ( negate, imRegions, 8, 1 );
-	
-	if (region_count != 0)
-	{	
-		int* background = (int*)malloc(region_count*sizeof(int));
-		memset( background, 0, region_count*sizeof(int));
-		imAnalyzeMeasureArea( imRegions, background );
-		
-		int min_background = image->width * image->height;
-		for (i = 0; i < region_count; i++)
-		{
-			if ( background[i] < min_background )
-				min_background = background[i];
-		}
-		free(background);
-		// smallest white
-		features[5] = float(min_background) / (image->width * image->height);
-	}
-	
-	imImageDestroy( imRegions );
-	imImageDestroy( negate );
 }
 
 //----------------------------------------------------------------------------
@@ -1115,54 +1014,38 @@ void ImStaff::CalcFeatures(const int staff, wxArrayPtrVoid params )
 void ImStaff::CalcLyricFeatures( const int staff, wxArrayPtrVoid params )
 {
     // params 0: image de la page
-	// params 1: taille de la fenetre
-	// params 2: taille de la zone de recouvrement
-	// params 3: nom de base du fichier de sortie (ajout de .x.mfc)
-	// params 4: fichier contenant la liste des fichiers mfc
-	// params 5: taille de la portee
-	// params 6: array holding coordinates for the top of each lyric subimage
-	// params 7: array holding coordinates for the bottom of each lyric subimage
-	// params 8: array holding overall projection of all the lyric lines
-	// params 9: array holding offsets for all the lyric images
+	// params 1: nom de base du fichier de sortie (ajout de .x.mfc)
+	// params 2: array holding coordinates for the top of each lyric subimage
+	// params 3: array holding coordinates for the bottom of each lyric subimage
+	// params 4: array holding overall projection of all the lyric lines
+	// params 5: array holding offsets for all the lyric images
+	// params 6: window width used for feature extraction
 	
 	if ( m_progressDlg && m_progressDlg->GetCancel() )
 	{
         this->Terminate( ERR_NONE ); // do not print cancel message since it doesn't return a value
 		return;
 	}
-	
-	wxString filename = *(wxString*)params[3];
-	filename << "_" << staff << "lyric.0.mfc"; // .0.mfc stays for backward compatibility with previous versions with segments
-	wxString mfc_name = filename;
-	mfc_name.Replace( "\\/", "/" );
-	wxFile *file = (wxFile*)params[4];
-	file->Write( mfc_name );
-	file->Write( "\n" );
-	// check if file already exists
-	//wxLogMessage("ImStaffSegment::CalcFeatures 01");
-	//if ( wxFileExists( filename ) && ( segment != -1 ) )
-	//	return;
-	
-	//wxLogMessage("Staff segment %d.%d", staff, segment );
-    
+	   
 	imImage *page = (imImage*)params[0];
-	int *TopOfLyricLine = (int*)params[6];
-	int *BottomOfLyricLine = (int*)params[7];
-	double *overallProjection = (double*)params[8];
-	int *offsets = (int*)params[9];
-
+	wxString filename = *(wxString*)params[1];
+	int *TopOfLyricLine = (int*)params[2];
+	int *BottomOfLyricLine = (int*)params[3];
+	double *overallProjection = (double*)params[4];
+	int **offsets = (int**)params[5];
+	int width = *(int*)params[6];
+	
 	if ( !GetImageFromPage( &m_opIm, page, TopOfLyricLine[staff], BottomOfLyricLine[staff] ) )
 		return;
 	
 	m_opImTmp1 = imImageCreate( m_opIm->height, m_opIm->width, m_opIm->color_space, m_opIm->data_type );
-
-	CorrectLyricCurvature( m_opIm, m_opImTmp1 );
-	FindLyricBaseLine( m_opIm, overallProjection, &offsets[staff] );
 	
-	wxString filena = *(wxString*)params[3];
-	filena << "_" << staff << "lyric.0.tif"; // .0.tif stays for backward compatibility with previous versions with segments
+//	CorrectLyricCurvature( m_opIm, m_opImTmp1 );
+	FindLyricBaseLine( m_opIm, overallProjection, offsets[staff], width );
 	
-    if ( !Write( filena, &m_opIm ) )
+	// Save lyric images testing purposes
+	filename << "_" << staff << "lyric.0.tif"; // .0.tif stays for backward compatibility with previous versions with segments
+    if ( !Write( filename, &m_opIm ) )
         return;
 	
     this->Terminate( ERR_NONE );
@@ -1190,8 +1073,8 @@ void ImStaff::CorrectLyricCurvature( imImage *src, imImage *dest ){
 	free ( tmp );
 }
 
-void ImStaff::FindLyricBaseLine( imImage *src, double *overallProjection, int *offsets ){
-	int subimageSize = 30;
+void ImStaff::FindLyricBaseLine( imImage *src, double *overallProjection, int *offsets, int windowWidth ){
+	int subimageSize = windowWidth;
 	int height = src->height;
 	int width = src->width;
 	imbyte *buffer = (imbyte*)src->data[0];
@@ -1212,8 +1095,6 @@ void ImStaff::FindLyricBaseLine( imImage *src, double *overallProjection, int *o
 	}
 	
 	double alignedProjection[height][(int)ceil( width / subimageSize )];
-	int averageOffset = 0;
-	int counter = 0;
 	
 	// Loop through all subimages
 	for ( int k = 0; k < ceil( width / subimageSize ); k++ ){
@@ -1227,7 +1108,7 @@ void ImStaff::FindLyricBaseLine( imImage *src, double *overallProjection, int *o
 					projection[i]++; 
 		}	
 		
-		// Add padding to the projection
+		// Add zero padding to the projection
 		double paddedProjection[ 2 * height ];
 		for ( int i = 0; i < 2 * height; i++ ){
 			if ( i < height ) paddedProjection[i] = projection[i];
@@ -1249,35 +1130,115 @@ void ImStaff::FindLyricBaseLine( imImage *src, double *overallProjection, int *o
 		}
 		
 		int offset = maxIndex - 50;
-		if ( maxIndex != 0 ){
-			averageOffset += offset;			
-			counter++;
-		}
+		if ( maxIndex != 0)
+			offsets[k] = offset;
 
 		// Copy and align lyric subimage projections into the aligned projection matrix
 		for ( int i = 0; i < height; i++ ){
-			if ( offset >= ceil( height / 2 ) ) {
-				int index = i + ( offset - ceil( height / 2 ) );
+			if ( offset >= 50 ) {
+				int index = i + ( offset - 50 );
 				if ( index < height ) alignedProjection[i][k] = projection[index];
 				else alignedProjection[i][k] = 0;
-			} else if ( offset < ceil ( height / 2 ) ){
-				int index = i - ( ceil( height / 2 ) - offset );
+			} else if ( offset < 50 ){
+				int index = i - ( 50 - offset );
 				if ( index >= 0 ) alignedProjection[i][k] = projection[index];
 				else alignedProjection[i][k] = 0;				
 			}
 		}
 	}
 	
-	averageOffset /= counter;
-	*offsets = averageOffset;
-	
 	for ( int i = 0; i < height; i++ ){
 		for ( int j = 0; j < ceil ( width / subimageSize ); j++ ){
 			overallProjection[i] += alignedProjection[i][j];
 		}
 	}
-
 }
+
+void ImStaff::ExtractLyricImages( const int staff, wxArrayPtrVoid params )
+{
+    // params 0: image de la page
+	// params 1: window width
+	// params 2: nom de base du fichier de sortie (ajout de .x.mfc)
+	// params 3: 2D array holding offsets for all the lyric images
+	// params 4: Lyric baseline
+	// params 5: Lyric top
+
+	imImage *page = (imImage*)params[0];
+	int width = *(int*)params[1];
+	wxString filename = *(wxString*)params[2];
+	filename << "_" << staff << "lyric.0.tif";
+	int **offsets = (int**)params[3];
+	int baseline = *(int*)params[4];
+	int topline = *(int*)params[5];
+	
+	int imageHeight = baseline - topline;
+
+	// Load saved lyric image
+	//	m_opIm = imFileImageLoad( filename, 0, 0 );
+	//	if ( m_opIm )
+	//	return;
+	
+	//Should open the saved file instead of recropping...
+	int *TopOfLyricLine = (int*)params[6];
+	int *BottomOfLyricLine = (int*)params[7];
+	
+	if ( !GetImageFromPage( &m_opIm, page, TopOfLyricLine[staff], BottomOfLyricLine[staff] ) )
+		return;
+	
+	m_opImTmp1 = imImageCreate( m_opIm->height, m_opIm->width, m_opIm->color_space, m_opIm->data_type );	
+	//	CorrectLyricCurvature( m_opIm, m_opImTmp1 );	
+
+	ImageDestroy( &m_opImTmp1 );	
+	
+	m_opImTmp1 = imImageCreate( m_opIm->width, imageHeight, m_opIm->color_space, m_opIm->data_type );
+	CropLyric( m_opIm, m_opImTmp1, baseline, topline, offsets[staff], width );
+	
+	// Save cropped lyric image
+	filename = *(wxString*)params[2];
+	filename << "_" << staff << "croppedLyric.0.tif";
+	if ( !Write( filename, &m_opImTmp1 ) )
+        return;
+	
+	this->Terminate( ERR_NONE );
+}
+
+// Crop lyric image using the offsets and the baseline and topline values previously found
+void ImStaff::CropLyric( imImage *src, imImage *dest, int baseline, int topline, int *offsets, int width ){
+	
+	m_opImMain = imImageCreate( width, baseline - topline, src->color_space, src->data_type );
+	
+	imbyte *buffer = (imbyte*)dest->data[0];
+	memset( buffer, 0, dest->width * dest->height );
+	
+	double avg_offset = 0.0;
+	int count = 0;
+	for ( int i = 0; i < ceil( src->width / width); i++ )
+		if ( offsets[i] > 0 ) {
+			avg_offset += offsets[i];
+			count++;
+		}
+	avg_offset /= count;
+	
+	for ( int i = 0; i < ceil( src->width / width); i++){
+		int top_offset = topline + avg_offset - 50;
+		//if ( offsets[i] > 0 ) top_offset = topline + offsets[i] - 50;
+		
+		if ( ( i + 1 ) * width < dest->width )
+			m_opImMain = imImageCreate( width, baseline - topline, src->color_space, src->data_type );
+		else
+			m_opImMain = imImageCreate( dest->width - ( i * width ), baseline - topline, src->color_space, src->data_type );
+		imProcessCrop( src, m_opImMain, i * width, top_offset );
+		imbyte *tmp = (imbyte*)m_opImMain->data[0];
+		for ( int j = 0; j < m_opImMain->height; j++ ){
+			if ( ( i + 1 ) * width < dest->width )
+				memcpy( buffer + ( j * dest->width ) + ( i * width ), tmp + ( j * width ), width );				
+			else
+				memcpy( buffer + ( j * dest->width ) + ( i * width ), tmp + ( j * width ), dest->width - ( i * width ) );
+
+		}			
+	}
+}						
+					
 // WDR: handler implementations for ImStaff
 
 
