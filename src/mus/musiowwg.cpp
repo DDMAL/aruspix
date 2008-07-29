@@ -356,7 +356,6 @@ bool MusWWGOutput::WriteNote( const MusNote *note )
 	if ( note->m_hasAssociatedLyric ) tmp = 1;
 	Write( &tmp, 1 );
 	
-	//Write( &note->m_hasAssociatedLyric, 1 );
 	if ( note->m_hasAssociatedLyric )
 		WriteSymbole( note->m_lyric_ptr );
 	

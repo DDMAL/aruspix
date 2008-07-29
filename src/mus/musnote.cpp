@@ -87,6 +87,7 @@ MusNote::MusNote( char _sil, unsigned char _val, unsigned char _code )
 }
 
 MusNote::MusNote( const MusNote& note )
+: MusElement( note )
 {
 	TYPE = note.TYPE;
 	sil = note.sil;
@@ -121,6 +122,8 @@ MusNote& MusNote::operator=( const MusNote& note )
 {
 	if ( this != &note ) // not self assignement
 	{
+		// For base class MusElement copy assignement
+		(MusElement&)*this = note;
 		TYPE = note.TYPE;
 		sil = note.sil;
 		val = note.val;

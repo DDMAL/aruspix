@@ -60,6 +60,21 @@ MusSymbol::MusSymbol( unsigned char _flag, unsigned char _calte, unsigned short 
 	m_hasAssociatedNote = false;
 }
 
+MusSymbol::MusSymbol( const MusSymbol& symbol )
+{
+	TYPE = symbol.TYPE;
+	calte = symbol.calte;
+	carOrient = symbol.carOrient;
+	carStyle = symbol.carStyle;
+	code = symbol.code;
+	flag = symbol.flag;
+	fonte = symbol.fonte;
+	l_ptch = symbol.l_ptch;
+	point = symbol.point;
+	s_lie_l = symbol.s_lie_l;
+	m_hasAssociatedNote = false;
+	m_note_ptr = NULL;
+}
 
 MusSymbol::~MusSymbol()
 {
