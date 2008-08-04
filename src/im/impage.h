@@ -47,6 +47,8 @@ enum
 
 #define WIN_WIDTH 2
 #define WIN_OVERLAP 0
+#define LYRIC_WIN_WIDTH 2 
+#define LYRIC_WIN_OVERLAP 0
 
 // WDR: class declarations
 

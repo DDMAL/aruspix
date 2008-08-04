@@ -347,16 +347,13 @@ bool MusWWGOutput::WriteNote( const MusNote *note )
 	if ( note->existDebord ) 
 		WriteDebord( note );
 	
-	// small thing for code optimization ...
-	//char tmp;
-	//if ( note->m_hasAssociatedLyric ) tmp = 1;
-	//else tmp = 0;
-	//... on less instruction here ;)
+	// lyric
 	char tmp = 0;
-	if ( note->m_hasAssociatedLyric ) tmp = 1;
+	if ( note->m_lyric_ptr ) 
+		tmp = 1;
 	Write( &tmp, 1 );
 	
-	if ( note->m_hasAssociatedLyric )
+	if ( note->m_lyric_ptr )
 		WriteSymbole( note->m_lyric_ptr );
 	
 	return true;
@@ -767,17 +764,15 @@ bool MusWWGInput::ReadStaff( MusStaff *staff )
 			ReadNote( note );
 			  
 			//Test code
-			if ( note->m_hasAssociatedLyric == false ){
+			if ( note->m_lyric_ptr == NULL ){
 				note->m_lyric_ptr = new MusSymbol();
 				note->m_lyric_ptr->TYPE = SYMB;
 				note->m_lyric_ptr->flag = LYRIC;
-				note->m_lyric_ptr->m_debord_str = "a";
+				note->m_lyric_ptr->m_debord_str = "z";
 				note->m_lyric_ptr->xrel = note->xrel;
-				note->m_lyric_ptr->dec_y = note->dec_y;
+				note->m_lyric_ptr->dec_y = - 280;
 				note->m_lyric_ptr->offset = note->offset;
-				note->m_lyric_ptr->m_note_ptr = note;
-				note->m_lyric_ptr->m_hasAssociatedNote = true;
-				note->m_hasAssociatedLyric = true;				
+				note->m_lyric_ptr->m_note_ptr = note;			
 			}
 			
 			staff->m_elements.Add( note );
@@ -838,15 +833,11 @@ bool MusWWGInput::ReadNote( MusNote *note )
 	
 	char tmp;
 	Read( &tmp, 1 );
-	if ( tmp != 0 ) note->m_hasAssociatedLyric = true;
-	else note->m_hasAssociatedLyric = false;
-	
-	if ( note->m_hasAssociatedLyric ){
+	if ( tmp != 0 )
+	{ 
 		note->m_lyric_ptr = new MusSymbol();
 		Read( &note->m_lyric_ptr->TYPE, 1 );
 		ReadSymbole( note->m_lyric_ptr );
-		
-		note->m_lyric_ptr->m_hasAssociatedNote = true;
 		note->m_lyric_ptr->m_note_ptr = note;
 	}
 	

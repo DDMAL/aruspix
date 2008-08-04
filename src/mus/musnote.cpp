@@ -55,10 +55,10 @@ MusNote::MusNote():
     tetenot = 0;
     typStac = 0;
 	m_lyric_ptr = NULL;
-	m_hasAssociatedLyric = false;
 }
 
 MusNote::MusNote( char _sil, unsigned char _val, unsigned char _code )
+	: MusElement()
 {
 	TYPE = NOTE;
     sil = _sil;
@@ -81,13 +81,12 @@ MusNote::MusNote( char _sil, unsigned char _val, unsigned char _code )
     tetenot = 0;
     typStac = 0;
 	m_lyric_ptr = NULL;
-	m_hasAssociatedLyric = false;
 	
 	oct = 4;
 }
 
 MusNote::MusNote( const MusNote& note )
-: MusElement( note )
+	: MusElement( note )
 {
 	TYPE = note.TYPE;
 	sil = note.sil;
@@ -109,13 +108,14 @@ MusNote::MusNote( const MusNote& note )
 	code = note.code;
 	tetenot = note.tetenot;
 	typStac = note.typStac;
-	m_hasAssociatedLyric = note.m_hasAssociatedLyric;
-	if ( m_hasAssociatedLyric ) // special case where we have to copy the symbol by hand
+	if ( note.m_lyric_ptr ) // special case where we have to copy the symbol by hand
 	{
 		m_lyric_ptr = new MusSymbol( *note.m_lyric_ptr );
-		m_lyric_ptr->m_hasAssociatedNote = true;
 		m_lyric_ptr->m_note_ptr = this;
 	}
+	else
+		m_lyric_ptr = NULL;
+		
 } 
 
 MusNote& MusNote::operator=( const MusNote& note )
@@ -144,24 +144,21 @@ MusNote& MusNote::operator=( const MusNote& note )
 		code = note.code;
 		tetenot = note.tetenot;
 		typStac = note.typStac;
-		m_hasAssociatedLyric = note.m_hasAssociatedLyric;
-		if ( m_hasAssociatedLyric ) // special case where we have to copy the symbol by hand
+		if ( note.m_lyric_ptr ) // special case where we have to copy the symbol by hand
 		{
 			m_lyric_ptr = new MusSymbol( *note.m_lyric_ptr );
-			m_lyric_ptr->m_hasAssociatedNote = true;
 			m_lyric_ptr->m_note_ptr = this;
 		}
+		else
+			m_lyric_ptr = NULL;
 	}
 	return *this;
 }
 
 MusNote::~MusNote()
 {
-	if ( m_hasAssociatedLyric == true && m_lyric_ptr != NULL ) {
+	if ( m_lyric_ptr )
 		delete m_lyric_ptr;
-		m_lyric_ptr = NULL;
-		m_hasAssociatedLyric = false;
-	}
 }
 
 
@@ -309,8 +306,8 @@ void MusNote::Draw( wxDC *dc, MusStaff *staff)
 		m_w->m_currentColour = &m_w->m_black;
 
 	if ( m_lyric_ptr != NULL ){
-		m_w->putstring(dc, m_lyric_ptr->xrel + staff->xrel, staff->yrel-250, 
-					   m_lyric_ptr->m_debord_str, 1, staff->pTaille);
+		m_w->putlyric(dc, m_lyric_ptr->xrel + staff->xrel, staff->yrel + m_lyric_ptr->dec_y , 
+					   m_lyric_ptr->m_debord_str, staff->pTaille);
 	}
 	
 	return;

@@ -22,6 +22,7 @@
 #include "muspage.h"
 #include "musdef.h"
 
+
 // WDR: class implementations
 
 //----------------------------------------------------------------------------
@@ -41,10 +42,10 @@ MusSymbol::MusSymbol():
 	point = 0;
 	s_lie_l = 0;
 	m_note_ptr = NULL;
-	m_hasAssociatedNote = false;
 }
 
-MusSymbol::MusSymbol( unsigned char _flag, unsigned char _calte, unsigned short _code )
+MusSymbol::MusSymbol( unsigned char _flag, unsigned char _calte, unsigned short _code ):
+	MusElement()
 {
 	TYPE = SYMB;
 	calte = _calte;
@@ -57,33 +58,10 @@ MusSymbol::MusSymbol( unsigned char _flag, unsigned char _calte, unsigned short 
 	point = 0;
 	s_lie_l = 0;
 	m_note_ptr = NULL;
-	m_hasAssociatedNote = false;
-}
-
-MusSymbol::MusSymbol( const MusSymbol& symbol )
-{
-	TYPE = symbol.TYPE;
-	calte = symbol.calte;
-	carOrient = symbol.carOrient;
-	carStyle = symbol.carStyle;
-	code = symbol.code;
-	flag = symbol.flag;
-	fonte = symbol.fonte;
-	l_ptch = symbol.l_ptch;
-	point = symbol.point;
-	s_lie_l = symbol.s_lie_l;
-	m_hasAssociatedNote = false;
-	m_note_ptr = NULL;
 }
 
 MusSymbol::~MusSymbol()
 {
-	if ( m_hasAssociatedNote ){
-		m_note_ptr->m_hasAssociatedLyric = false;
-		m_note_ptr->m_lyric_ptr = NULL;
-		m_hasAssociatedNote = false;
-		m_note_ptr = NULL;
-	}
 }
 
 
@@ -192,6 +170,29 @@ void MusSymbol::SetValue( int value, MusStaff *staff, int vflag )
 	}
 }
 
+
+void MusSymbol::ResetToKey( )
+{
+	MusSymbol reset;
+	reset.flag = CLE;
+	reset.code = SOL2;
+	*this = reset;
+}
+
+void MusSymbol::ResetToSymbol( )
+{
+	MusSymbol reset;
+	reset.flag = PNT;
+	*this = reset;
+}
+
+void MusSymbol::ResetToProportion( )
+{
+	MusSymbol reset;
+	reset.flag = IND_MES;
+	reset.code = 34;
+	*this = reset;
+}
 
 void MusSymbol::Draw ( wxDC *dc, MusStaff *pportee)
 // touche;	 code relecture input (1) ou coord. du decalage (0) 

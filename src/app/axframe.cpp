@@ -378,10 +378,10 @@ void AxFrame::LoadConfig()
 	// Leipzig 4.5
 #if defined(__WXMSW__)
 	wxGetApp().m_musicFontDesc = pConfig->Read("MusicFontDesc", "0;-13;0;0;0;400;0;0;0;2;3;2;1;2;Leipzig 4.3" );
-	wxGetApp().m_musicFontName = pConfig->Read("MusicFontName", "Leipzig 4.3" );
+	wxGetApp().m_lyricFontDesc = pConfig->Read("LyricFontDesc", "0;-13;0;0;0;400;0;0;0;2;3;2;1;2;Leipzig 4.3" );
 #else // OS X	
 	wxGetApp().m_musicFontDesc = pConfig->Read("MusicFontDesc", "0;13;70;90;90;0;Leipzig 4.5;0" ); // on OS X
-	wxGetApp().m_musicFontName = pConfig->Read("MusicFontName", "Leipzig 4.5" ); // on OS X
+	wxGetApp().m_lyricFontDesc = pConfig->Read("LyricFontDesc", "0;12;70;93;90;0;Garamond;0" ); // on OS X
 #endif
     pConfig->Read("FontSizeCorrection",&wxGetApp().m_fontSizeCorrection,100);
     pConfig->Read("FontPosCorrection",&wxGetApp().m_fontPosCorrection,0);
@@ -478,7 +478,7 @@ void AxFrame::SaveConfig(int lastEnvId)
 	pConfig->Write("LastDirTypModel_in", wxGetApp().m_lastDirTypModel_in );
 
 	pConfig->Write("MusicFontDesc", wxGetApp().m_musicFontDesc );
-	pConfig->Write("MusicFontName", wxGetApp().m_musicFontName );
+	pConfig->Write("LyricFontDesc", wxGetApp().m_lyricFontDesc );
     pConfig->Write("FontSizeCorrection", wxGetApp().m_fontSizeCorrection );
     pConfig->Write("FontPosCorrection", wxGetApp().m_fontPosCorrection );
 

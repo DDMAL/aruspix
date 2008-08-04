@@ -131,6 +131,10 @@ public:
      */
 	void UpdatePageValues();
     /**
+     Initialise les donnees de polices (music and lyrics)
+     */
+	void UpdateFontValues();
+    /**
      Retourne la valeur correspondante de i pour le zoom qui a cours
      */
 	int ToZoom( int i );
@@ -150,6 +154,7 @@ public:
 	void putfont ( wxDC *dc, int x, int y, unsigned char c, MusStaff *staff, int dimin );
 	void putfontfast ( wxDC *dc, int x, int y, unsigned char c );
 	void putstring ( wxDC *dc, int x, int y, wxString s, int centrer, int pTaille = 0);
+	void putlyric ( wxDC *dc, int x, int y, wxString s, int pTaille = 0);
 	void rect_plein2( wxDC *dc, int x1, int y1, int x2, int y2);
 	int hGrosseligne ( wxDC *dc, int x1, int y1, int x2, int y2, int decal);
 	int pointer ( wxDC *dc, int x, int b, int decal, MusStaff *staff );
@@ -221,6 +226,10 @@ public:
     wxFont m_activeFonts[2][2];
     /** fonte Leipzig par defaut */
     wxFont m_ftLeipzig;
+    /** fontes actuelles mises a jour selon la taille du zoom */
+    wxFont m_activeLyricFonts[2];
+    /** fonte Leipzig par defaut */
+    wxFont m_ftLyrics;
 
 	/** format max utile; en principe, celui de la feuille **/
 	int wymax, wxmax;
@@ -258,12 +267,11 @@ public:
 	MusElement *m_currentElement;
 	MusElement *m_newElement;
 	MusElement *m_bufferElement;
+	MusElement *m_lastEditedElement;
 
 	// keep elements statically - m_newElement will point on them
 	MusNote m_note;
-	MusSymbol m_key;
-	MusSymbol m_symbole;
-	MusSymbol m_proportion;
+	MusSymbol m_symbol;
 
 	MusStaff *m_currentStaff;
 	bool efface;

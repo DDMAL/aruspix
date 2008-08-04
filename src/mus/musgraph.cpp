@@ -255,6 +255,16 @@ void MusWindow::putstring ( wxDC *dc, int x, int y, wxString s, int centrer, int
 	dc->DrawText( s, x, ToZoomY(y + this->hautFontCorr[pTaille][0]) );
 }
 
+void MusWindow::putlyric ( wxDC *dc, int x, int y, wxString s, int pTaille)
+{ 
+	wxASSERT_MSG( dc , "DC cannot be NULL");
+
+    dc->SetFont( m_activeLyricFonts[ pTaille ] );
+    x = ToZoom(x);
+
+	dc->SetTextForeground( *m_currentColour );
+	dc->DrawText( s, x, ToZoomY(y + this->hautFontCorr[pTaille][0]) );
+}
 
 
 

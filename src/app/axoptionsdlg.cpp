@@ -50,6 +50,7 @@ BEGIN_EVENT_TABLE(AxOptionsDlg,wxDialog)
     EVT_BUTTON( ID_BROWSE_WORKING_DIR, AxOptionsDlg::OnBrowseWorkDir )
 	EVT_BUTTON( ID_BROWSE_DOCUMENTS_DIR, AxOptionsDlg::OnBrowseDocDir )
     EVT_BUTTON( ID_CHOOSE_FONT, AxOptionsDlg::OnChooseFont )
+	EVT_BUTTON( ID_CHOOSE_LYRIC_FONT, AxOptionsDlg::OnChooseLyricFont )
     EVT_SPIN( ID_SC_MUS_OFFSET, AxOptionsDlg::OnSpinCtrl )
 	EVT_TEXT( ID_SC_MUS_OFFSET, AxOptionsDlg::OnSpinCtrlText )
     EVT_SPIN( ID_SC_MUS_SIZE, AxOptionsDlg::OnSpinCtrl )
@@ -131,7 +132,11 @@ void AxOptionsDlg::OptionsDlgStandard( wxNotebook *notebook )
         wxTextValidator(wxFILTER_NONE,&wxGetApp().m_workingDir));
 		
 	// Music Font
-    this->GetFontName()->SetLabel(wxGetApp().m_musicFontName);
+	wxNativeFontInfo info;
+	info.FromString( wxGetApp().m_musicFontDesc );
+	m_font.SetNativeFontInfo( info );
+    //this->GetFontName()->SetLabel(wxGetApp().m_musicFontName);
+	this->GetFontName()->SetLabel( info.GetFaceName() );
 	m_ignoreSpinEvent = true;
     this->GetScWgOffset()->SetValidator(
         wxGenericValidator(&wxGetApp().m_fontPosCorrection));
@@ -141,6 +146,11 @@ void AxOptionsDlg::OptionsDlgStandard( wxNotebook *notebook )
 	m_previousFontSizeCorrection = wxGetApp().m_fontSizeCorrection;
 	m_ignoreSpinEvent = false;
 	
+	// Lyric Font
+	info.FromString( wxGetApp().m_lyricFontDesc );
+	m_lyric_font.SetNativeFontInfo( info );
+	this->GetLyricFontName()->SetLabel( info.GetFaceName() );
+		
 	// Images
     this->GetCbGrayOpi()->SetValidator(
         wxGenericValidator(&AxImage::s_zoomInterpolation));
@@ -375,6 +385,18 @@ void AxOptionsDlg::OnChooseFont( wxCommandEvent &event )
     this->GetFontName()->SetLabel( m_font.GetFaceName() );
 }
 
+
+void AxOptionsDlg::OnChooseLyricFont( wxCommandEvent &event )
+{
+    wxFont font = wxGetFontFromUser( this, m_lyric_font );
+    if ( !font.Ok() )
+        return;
+		
+    m_lyric_font = font;
+    m_changeFont = true;
+    this->GetLyricFontName()->SetLabel( m_lyric_font.GetFaceName() );
+}
+
 void AxOptionsDlg::OnPreDefault( wxCommandEvent &event )
 {
     this->GetChTextOps3()->SetValue( true );
@@ -427,10 +449,13 @@ void AxOptionsDlg::OnOk(wxCommandEvent &event)
 
         if ( m_changeFont )
         {
-            const wxNativeFontInfo *info = m_font.GetNativeFontInfo();
-            wxString infos = info->ToString();
-            wxGetApp().m_musicFontDesc = infos;
-            wxGetApp().m_musicFontName = m_font.GetFaceName();
+            const wxNativeFontInfo *info;
+			info = m_font.GetNativeFontInfo();
+            wxGetApp().m_musicFontDesc = info->ToString();
+			
+            info = m_lyric_font.GetNativeFontInfo();
+            wxGetApp().m_lyricFontDesc = info->ToString();
+
         }
 		
 	#ifdef AX_SUPERIMPOSITION

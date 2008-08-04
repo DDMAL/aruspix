@@ -101,10 +101,10 @@ public:
     unsigned char tetenot;
     /** type de staccato (0 a 6) */
     unsigned char typStac;
+	
 	/** Associated lyric */
 	MusSymbol *m_lyric_ptr;
 
-	bool m_hasAssociatedLyric;
 	
 private:
     // WDR: handler declarations for MusNote

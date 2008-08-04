@@ -49,6 +49,7 @@ public:
     wxSpinCtrl* GetScWgOffset()  { return (wxSpinCtrl*) FindWindow( ID_SC_MUS_OFFSET ); }
     wxSpinCtrl* GetScWgSize()  { return (wxSpinCtrl*) FindWindow( ID_SC_MUS_SIZE ); }
     wxStaticText* GetFontName()  { return (wxStaticText*) FindWindow( ID_FONT_NAME ); }
+	wxStaticText* GetLyricFontName()  { return (wxStaticText*) FindWindow( ID_LYRIC_FONT_NAME ); }
 	wxTextCtrl* GetDocDir()  { return (wxTextCtrl*) FindWindow( ID_DOCUMENTS_DIR ); }
     wxTextCtrl* GetWorkingDir()  { return (wxTextCtrl*) FindWindow( ID_WORKING_DIR ); }
     wxComboBox* GetCbLanguageOps()  { return (wxComboBox*) FindWindow( ID_CB_LANGUAGE_OPS ); }
@@ -97,6 +98,7 @@ private:
     wxString m_imageSizeToReduceStr;
     bool m_changeLanguage;
     wxFont m_font;
+	wxFont m_lyric_font;
     bool m_changeFont;
 	AxOptMusWindow *m_musWinPtr;
 	bool m_ignoreSpinEvent;
@@ -117,6 +119,7 @@ private:
 	void OnSpinCtrl( wxSpinEvent &event );
 	void OnSpinCtrlText( wxCommandEvent &event );
     void OnChooseFont( wxCommandEvent &event );
+	void OnChooseLyricFont( wxCommandEvent &event );
 	void OnPreDefault( wxCommandEvent &event );
 	void OnBrowseDocDir( wxCommandEvent &event );
     void OnBrowseWorkDir( wxCommandEvent &event );

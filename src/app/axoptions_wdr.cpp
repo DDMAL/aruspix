@@ -154,73 +154,93 @@ wxSizer *System1DlgFunc( wxWindow *parent, bool call_fit, bool set_sizer )
     wxSpinCtrl *item23 = new wxSpinCtrl( parent, ID_SC_MUS_OFFSET, wxT("0"), wxDefaultPosition, wxSize(70,-1), 0, -50, 50, 0 );
     item19->Add( item23, 0, wxALIGN_CENTER|wxALL, 5 );
 
-    item18->Add( item19, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+    item18->Add( item19, 0, wxALIGN_CENTER_VERTICAL, 5 );
 
-    item18->Add( 10, 120, 0, wxGROW|wxALIGN_CENTER_HORIZONTAL|wxALL, 0 );
+    item18->Add( 10, 110, 0, wxGROW|wxALIGN_CENTER_HORIZONTAL|wxTOP|wxBOTTOM, 0 );
 
     wxPanel *item24 = new wxPanel( parent, ID_PANEL_WINKEY, wxDefaultPosition, wxSize(100,100), 0 );
     item18->Add( item24, 0, wxALIGN_CENTER_VERTICAL|wxALL, 0 );
 
-    item13->Add( item18, 0, wxALIGN_CENTER|wxALL, 5 );
+    item13->Add( item18, 0, wxALIGN_CENTER, 5 );
 
     item0->Add( item13, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
     wxStaticLine *item25 = new wxStaticLine( parent, IDO_LINE, wxDefaultPosition, wxSize(20,-1), wxLI_HORIZONTAL );
     item0->Add( item25, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
-    wxStaticText *item26 = new wxStaticText( parent, IDO_TEXT, _("Images"), wxDefaultPosition, wxDefaultSize, 0 );
-    item0->Add( item26, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+    wxBoxSizer *item26 = new wxBoxSizer( wxVERTICAL );
 
-    wxBoxSizer *item27 = new wxBoxSizer( wxVERTICAL );
+    wxBoxSizer *item27 = new wxBoxSizer( wxHORIZONTAL );
 
-    wxFlexGridSizer *item28 = new wxFlexGridSizer( 2, 0, 0 );
+    wxStaticText *item28 = new wxStaticText( parent, IDO_TEXT, _("Lyric font"), wxDefaultPosition, wxDefaultSize, 0 );
+    item27->Add( item28, 0, wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
-    wxStaticText *item29 = new wxStaticText( parent, IDO_TEXT, _("Grayscale interpolation"), wxDefaultPosition, wxDefaultSize, 0 );
-    item28->Add( item29, 0, wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+    wxStaticText *item29 = new wxStaticText( parent, ID_LYRIC_FONT_NAME, wxT(""), wxDefaultPosition, wxSize(240,-1), 0 );
+    item27->Add( item29, 0, wxALIGN_CENTER|wxALL, 5 );
 
-    wxCheckBox *item30 = new wxCheckBox( parent, ID_CB_GRAY_OPI, wxT(""), wxDefaultPosition, wxDefaultSize, 0 );
-    item30->SetValue( TRUE );
-    item28->Add( item30, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+    wxButton *item30 = new wxButton( parent, ID_CHOOSE_LYRIC_FONT, _("Choose Font"), wxDefaultPosition, wxDefaultSize, 0 );
+    item27->Add( item30, 0, wxALIGN_CENTER|wxALL, 5 );
 
-    wxStaticText *item31 = new wxStaticText( parent, IDO_TEXT, _("Reduce big images"), wxDefaultPosition, wxDefaultSize, 0 );
-    item28->Add( item31, 0, wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+    item26->Add( item27, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL, 0 );
 
-    wxCheckBox *item32 = new wxCheckBox( parent, ID_CB_REDUCE_OPI, wxT(""), wxDefaultPosition, wxDefaultSize, 0 );
-    item32->SetValue( TRUE );
-    item28->Add( item32, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+    item0->Add( item26, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
-    wxStaticText *item33 = new wxStaticText( parent, IDO_TEXT, _("Maximum size"), wxDefaultPosition, wxDefaultSize, 0 );
-    item28->Add( item33, 0, wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+    wxStaticLine *item31 = new wxStaticLine( parent, IDO_LINE, wxDefaultPosition, wxSize(20,-1), wxLI_HORIZONTAL );
+    item0->Add( item31, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
-    wxTextCtrl *item34 = new wxTextCtrl( parent, ID_TC_MAXSIZE_OPI, wxT(""), wxDefaultPosition, wxSize(80,-1), 0 );
-    item28->Add( item34, 0, wxALIGN_CENTER_VERTICAL|wxALL, 0 );
+    wxStaticText *item32 = new wxStaticText( parent, IDO_TEXT, _("Images"), wxDefaultPosition, wxDefaultSize, 0 );
+    item0->Add( item32, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
-    wxStaticText *item35 = new wxStaticText( parent, IDO_TEXT, _("Check if negative (based on mean)"), wxDefaultPosition, wxDefaultSize, 0 );
-    item28->Add( item35, 0, wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+    wxBoxSizer *item33 = new wxBoxSizer( wxVERTICAL );
 
-    wxCheckBox *item36 = new wxCheckBox( parent, ID_CB_NEGATIVE_OPI, wxT(""), wxDefaultPosition, wxDefaultSize, 0 );
+    wxFlexGridSizer *item34 = new wxFlexGridSizer( 2, 0, 0 );
+
+    wxStaticText *item35 = new wxStaticText( parent, IDO_TEXT, _("Grayscale interpolation"), wxDefaultPosition, wxDefaultSize, 0 );
+    item34->Add( item35, 0, wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+
+    wxCheckBox *item36 = new wxCheckBox( parent, ID_CB_GRAY_OPI, wxT(""), wxDefaultPosition, wxDefaultSize, 0 );
     item36->SetValue( TRUE );
-    item28->Add( item36, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+    item34->Add( item36, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
-    wxStaticText *item37 = new wxStaticText( parent, IDO_TEXT, 
+    wxStaticText *item37 = new wxStaticText( parent, IDO_TEXT, _("Reduce big images"), wxDefaultPosition, wxDefaultSize, 0 );
+    item34->Add( item37, 0, wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+
+    wxCheckBox *item38 = new wxCheckBox( parent, ID_CB_REDUCE_OPI, wxT(""), wxDefaultPosition, wxDefaultSize, 0 );
+    item38->SetValue( TRUE );
+    item34->Add( item38, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+
+    wxStaticText *item39 = new wxStaticText( parent, IDO_TEXT, _("Maximum size"), wxDefaultPosition, wxDefaultSize, 0 );
+    item34->Add( item39, 0, wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+
+    wxTextCtrl *item40 = new wxTextCtrl( parent, ID_TC_MAXSIZE_OPI, wxT(""), wxDefaultPosition, wxSize(80,-1), 0 );
+    item34->Add( item40, 0, wxALIGN_CENTER_VERTICAL|wxALL, 0 );
+
+    wxStaticText *item41 = new wxStaticText( parent, IDO_TEXT, _("Check if negative (based on mean)"), wxDefaultPosition, wxDefaultSize, 0 );
+    item34->Add( item41, 0, wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+
+    wxCheckBox *item42 = new wxCheckBox( parent, ID_CB_NEGATIVE_OPI, wxT(""), wxDefaultPosition, wxDefaultSize, 0 );
+    item42->SetValue( TRUE );
+    item34->Add( item42, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+
+    wxStaticText *item43 = new wxStaticText( parent, IDO_TEXT, 
         _("Image analysis binarization\n"
           ""),
         wxDefaultPosition, wxDefaultSize, 0 );
-    item28->Add( item37, 0, wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL|wxLEFT|wxTOP|wxBOTTOM, 5 );
+    item34->Add( item43, 0, wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL|wxLEFT|wxTOP|wxBOTTOM, 5 );
 
-    wxString strs38[] = 
+    wxString strs44[] = 
     {
         _("Otsu"), 
         _("Min Max"), 
         _("Brink (2 Classes)"), 
         _("Brink (3 Classes)")
     };
-    wxChoice *item38 = new wxChoice( parent, ID_C_IMAGE_BINARIZATION, wxDefaultPosition, wxSize(145,-1), 4, strs38, 0 );
-    item28->Add( item38, 0, wxALIGN_CENTER|wxALL, 5 );
+    wxChoice *item44 = new wxChoice( parent, ID_C_IMAGE_BINARIZATION, wxDefaultPosition, wxSize(145,-1), 4, strs44, 0 );
+    item34->Add( item44, 0, wxALIGN_CENTER|wxALL, 5 );
 
-    item27->Add( item28, 0, wxALIGN_CENTER|wxALL, 5 );
+    item33->Add( item34, 0, wxALIGN_CENTER|wxALL, 5 );
 
-    item0->Add( item27, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+    item0->Add( item33, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
     if (set_sizer)
     {

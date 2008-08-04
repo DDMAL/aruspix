@@ -111,15 +111,8 @@ MusWindow::MusWindow( wxWindow *parent, wxWindowID id,
 	m_currentElement = NULL;
 	m_bufferElement = NULL;
 	m_newElement = NULL;
+	m_lastEditedElement = NULL;
 	m_currentStaff = NULL;
-
-	m_proportion.flag = IND_MES;
-	m_proportion.code = 34;
-
-	m_key.flag = CLE;
-	m_key.code = SOL2;
-
-	m_symbole.flag = PNT;
 
 	efface = false;
 	
@@ -140,37 +133,9 @@ MusWindow::MusWindow( wxWindow *parent, wxWindowID id,
 		this->SetBackgroundColour( wxSystemSettings::GetColour(wxSYS_COLOUR_APPWORKSPACE) );
 	this->SetForegroundColour( *wxBLACK );
 
-	//m_ftLeipzig = wxFont( 14, 77, 90, 90, false, "leipzig 4.2" );
-	/*m_ftLeipzig = wxGetFontFromUser();
-	wxNativeFontInfo *info = m_ftLeipzig.GetNativeFontInfo();
-	wxString infos = info->ToString();
-	info->FromString( infos );
-	wxLogMessage( infos );*/
-	
-	//wxFont tmp( 26, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTFLAG_NOT_ANTIALIASED, "" );
-	//m_ftLeipzig = tmp;
-	
-	wxNativeFontInfo info;
-	info.FromString( wxGetApp().m_musicFontDesc );
-	m_ftLeipzig.SetNativeFontInfo( info );
-
-	if ( !m_ftLeipzig.Ok() )
-		wxLogWarning(_("Impossible to load font 'Leipzig'") );
-	
-	//wxLogMessage(_("Size %d, Family %d, Style %d, Weight %d, Underline %d, Face %s, Desc %s"),
-	//	m_ftLeipzig.GetPointSize(),
-	//	m_ftLeipzig.GetFamily(),
-	//	m_ftLeipzig.GetStyle(),
-	//	m_ftLeipzig.GetWeight(),
-	//	m_ftLeipzig.GetUnderlined(),
-	//	m_ftLeipzig.GetFaceName().c_str(),
-	//	m_ftLeipzig.GetNativeFontInfoDesc().c_str());
-
-	m_activeFonts[0][0] = m_ftLeipzig;
-    m_activeFonts[0][1] = m_ftLeipzig;
-    m_activeFonts[1][0] = m_ftLeipzig;
-    m_activeFonts[1][1] = m_ftLeipzig;
+	this->UpdateFontValues();
 }
+
 
 MusWindow::MusWindow()
 {
@@ -538,6 +503,41 @@ void MusWindow::Goto( int nopage )
 }
 
 
+void MusWindow::UpdateFontValues() 
+{	
+	wxNativeFontInfo info;
+	info.FromString( wxGetApp().m_musicFontDesc );
+	m_ftLeipzig.SetNativeFontInfo( info );
+
+	if ( !m_ftLeipzig.Ok() )
+		wxLogWarning(_("Impossible to load font 'Leipzig'") );
+	
+	//wxLogMessage(_("Size %d, Family %d, Style %d, Weight %d, Underline %d, Face %s, Desc %s"),
+	//	m_ftLeipzig.GetPointSize(),
+	//	m_ftLeipzig.GetFamily(),
+	//	m_ftLeipzig.GetStyle(),
+	//	m_ftLeipzig.GetWeight(),
+	//	m_ftLeipzig.GetUnderlined(),
+	//	m_ftLeipzig.GetFaceName().c_str(),
+	//	m_ftLeipzig.GetNativeFontInfoDesc().c_str());
+
+	m_activeFonts[0][0] = m_ftLeipzig;
+    m_activeFonts[0][1] = m_ftLeipzig;
+    m_activeFonts[1][0] = m_ftLeipzig;
+    m_activeFonts[1][1] = m_ftLeipzig;
+	
+	// Lyrics
+	info.FromString( wxGetApp().m_lyricFontDesc );
+	m_ftLyrics.SetNativeFontInfo( info );
+
+	if ( !m_ftLyrics.Ok() )
+		wxLogWarning(_("Impossible to load font for the lyrics") );
+
+	m_activeLyricFonts[0] = m_ftLyrics;
+    m_activeLyricFonts[1] = m_ftLyrics;
+}
+
+
 void MusWindow::UpdateZoomValues() 
 {
 	if ( !m_page )
@@ -548,13 +548,14 @@ void MusWindow::UpdateZoomValues()
     m_activeFonts[1][0].SetPointSize( ToZoom( nTailleFont[1][0] ) );
     m_activeFonts[1][1].SetPointSize( ToZoom( nTailleFont[1][1] ) );
 
+	m_activeLyricFonts[0].SetPointSize( ToZoom( nTailleFont[0][0] * m_ftLyrics.GetPointSize() / 50 ) );
+    m_activeLyricFonts[1].SetPointSize( ToZoom( nTailleFont[1][0] * m_ftLyrics.GetPointSize() / 50 ) );
 
-	int i;
 	m_memDC.SetBackgroundMode( wxTRANSPARENT );
 	//wxMask *mask;
-	for (i = 0; i < 256; i++)
+	/*for (i = 0; i < 256; i++)
 	{
-		/*m_memDC.SetFont( m_activeFonts[0][0] );
+		m_memDC.SetFont( m_activeFonts[0][0] );
 		m_fontBitmaps[i][0][0].Create( ToZoom( nTailleFont[0][0]) ,ToZoom( 2*nTailleFont[0][0]), 1 );
 		m_memDC.SelectObject( m_fontBitmaps[i][0][0] );
 		m_memDC.Clear();
@@ -563,9 +564,8 @@ void MusWindow::UpdateZoomValues()
 		m_memDC.SelectObject( wxNullBitmap );
 		mask = new wxMask( m_fontBitmaps[i][0][0], *wxWHITE );
 		m_fontBitmaps[i][0][0].SetMask( mask );
-		*/
 
-		/*m_memDC.SetFont( m_activeFonts[1][0] );
+		m_memDC.SetFont( m_activeFonts[1][0] );
 		m_fontBitmaps[i][1][0].Create( ToZoom( nTailleFont[1][0]) ,ToZoom( 2*nTailleFont[1][0]) , 1 );
 		m_memDC.SelectObject( m_fontBitmaps[i][1][0] );
 		m_memDC.Clear();
@@ -593,8 +593,8 @@ void MusWindow::UpdateZoomValues()
 		m_memDC.DrawText( m_str, 2, 0 );
 		m_memDC.SelectObject( wxNullBitmap );
 		mask = new wxMask( m_fontBitmaps[i][1][1], *wxWHITE );
-		m_fontBitmaps[i][1][1].SetMask( mask );*/
-	}
+		m_fontBitmaps[i][1][1].SetMask( mask );
+	}*/
 
 	m_charDefin = m_page->defin;
 }
@@ -750,11 +750,8 @@ void MusWindow::SetInsertMode( bool mode )
     kevent.SetEventType( wxEVT_KEY_DOWN );
     kevent.SetId( this->GetId() );
     kevent.SetEventObject( this );
-#ifdef __WXMAC__
     kevent.m_keyCode = WXK_HELP;
-#else
-	kevent.m_keyCode = WXK_INSERT;
-#endif
+	kevent.m_keyCode = WXK_RETURN;
     this->ProcessEvent( kevent );
 }
 
@@ -1081,7 +1078,7 @@ void MusWindow::OnMouseDClick(wxMouseEvent &event)
 				m_newElement->oct = m_insertoct;
 			}
 			PrepareCheckPoint( UNDO_PART, WG_UNDO_STAFF );
-			m_currentStaff->Insert( m_newElement );
+			m_lastEditedElement = m_currentStaff->Insert( m_newElement );
 			CheckPoint( UNDO_PART, WG_UNDO_STAFF );
 			OnEndEdition();
 
@@ -1179,13 +1176,15 @@ void MusWindow::OnMouseLeftDown(wxMouseEvent &event)
 			if ( tmp )
 			{
 				if ( tmp->IsNote() )
+				{
+					m_note = *(MusNote*)tmp;
 					m_newElement = &m_note;
-				else if ( ((MusSymbol*)tmp)->flag == CLE )
-					m_newElement = &m_key;
-				else if ( ((MusSymbol*)tmp)->flag == IND_MES )
-					m_newElement = &m_proportion;
+				}
 				else
-					m_newElement = &m_symbole;
+				{
+					m_symbol = *(MusSymbol*)tmp;
+					m_newElement = &m_symbol;
+				}
 			}
 		}
 		else // update current staff
@@ -1297,11 +1296,7 @@ void MusWindow::OnKeyDown(wxKeyEvent &event)
 	int noteKeyCode = GetNoteValue( event.m_keyCode );
 
 	// change mode edition -- insertion
-#ifdef __WXMAC__
-    if ( event.GetKeyCode() == WXK_HELP )
-#else
-	if ( event.GetKeyCode() == WXK_INSERT )
-#endif
+	if ( event.GetKeyCode() == WXK_RETURN )
 	{
 		m_editElement = !m_editElement;
 		if ( !m_editElement ) // edition -> insertion
@@ -1309,21 +1304,29 @@ void MusWindow::OnKeyDown(wxKeyEvent &event)
 			this->SetCursor( wxCURSOR_PENCIL );
 			if ( m_currentElement )
 			{
+				// keep the last edited element for when we come back to edition mode
+				m_lastEditedElement = m_currentElement;
 				if ( m_currentElement->IsNote() )
+				{
+					m_note = *(MusNote*)m_currentElement;
 					m_newElement = &m_note;
-				else if ( ((MusSymbol*)m_currentElement)->flag == CLE )
-					m_newElement = &m_key;
-				else if ( ((MusSymbol*)m_currentElement)->flag == IND_MES )
-					m_newElement = &m_proportion;
+				}
 				else
-					m_newElement = &m_symbole;
+				{
+					m_symbol = *(MusSymbol*)m_currentElement;
+					m_newElement = &m_symbol;
+				}
 			}
 			else
+			{
 				m_newElement = &m_note;
+				m_lastEditedElement = NULL;
+			}
 			m_currentElement = NULL;
 		}
 		else if ( m_newElement ) // insertion -> edition
 		{
+			m_currentElement = m_lastEditedElement;
 			this->SetCursor( wxCURSOR_ARROW );
 			m_newElement = NULL;
 		}
@@ -1449,7 +1452,8 @@ void MusWindow::OnKeyDown(wxKeyEvent &event)
 			point.code = m_currentElement->code;
 			point.oct = m_currentElement->oct;
 			point.xrel = m_currentElement->xrel + _pas * 3;
-			m_currentStaff->Insert( &point );
+			// special case where we move forward
+			m_currentElement = m_currentStaff->Insert( &point );
 			CheckPoint( UNDO_PART, WG_UNDO_STAFF );
 			OnEndEdition();
 		}
@@ -1582,11 +1586,20 @@ void MusWindow::OnKeyDown(wxKeyEvent &event)
 		if ( event.m_controlDown && (event.m_keyCode == 'N')) // change set (note, rests, key, signs, symbols, ....
 			m_newElement = &m_note;	
 		else if ( event.m_controlDown && (event.m_keyCode == 'K')) // keys
-			m_newElement = &m_key;		
+		{	
+			m_symbol.ResetToKey();
+			m_newElement = &m_symbol ;	
+		}	
 		else if ( event.m_controlDown && (event.m_keyCode == 'P')) // proportions
-			m_newElement = &m_proportion;
+		{	
+			m_symbol.ResetToProportion() ;
+			m_newElement = &m_symbol ;	
+		}	
 		else if ( event.m_controlDown && (event.m_keyCode == 'S')) // symboles
-			m_newElement = &m_symbole;
+		{
+			m_symbol.ResetToSymbol() ;
+			m_newElement = &m_symbol ;	
+		}	
 		else if ( m_newElement && m_newElement->IsNote() &&
 			(in( noteKeyCode, 0, 7 ) || (noteKeyCode == CUSTOS))) // change duree sur une note ou un silence
 		{

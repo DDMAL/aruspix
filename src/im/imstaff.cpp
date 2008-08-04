@@ -63,6 +63,7 @@ enum
 // features count per window - used for memory allocation 
 // must be changed if function is modified
 #define FEATURES_COUNT 7
+#define LYRIC_FEATURES_COUNT 16
 
 // Feature extration fonction on one window
 void CalcWinFeatures(const imImage* image, float *features, int position_v, int height, int width )
@@ -249,7 +250,12 @@ void CalcWinFeatures(const imImage* image, float *features, int position_v, int 
 	imImageDestroy( negate );
 }
 
-void CalcLyricWinFeatures(const imImage* image )
+/*
+Breaks the image into a 4x4 grid and calculates the forground pixel density in each cell.
+	image: a slice of a cropped lyric image
+	pixel_density: a 16 dimensional vector 
+ */
+bool CalcLyricWinFeatures(const imImage* image, float *pixel_density )
 {
 	int height = image->height;
 	int width = image->width;
@@ -289,7 +295,8 @@ void CalcLyricWinFeatures(const imImage* image )
 		for ( int j = 0; j < height; j++ ){
 			int index = i * width + j;				
 			if ( j < y1 && i < x1 ){										// [0,0]
-				if ( tmp[index] != 0 ) pixel_count[0][0]++;
+				if ( tmp[index] != 0 ) 
+					pixel_count[0][0]++;
 			} else if ( ( j >= y1 && j < y2 ) && i < x1 ){					// [1,0]	
 				if ( tmp[index] != 0 ) pixel_count[1][0]++;
 			} else if ( ( j >= y2 && j < y3 ) && i < x1 ){					// [2,0]
@@ -325,11 +332,20 @@ void CalcLyricWinFeatures(const imImage* image )
 	}
 	free( tmp );
 	
-	double pixel_density[4][4];
+	float pixel_sum = 0.0;
 	for ( int i = 0; i < 4; i++ )
 		for ( int j = 0; j < 4; j++ )
-			pixel_density[i][j] = pixel_count[i][j] / ( y1 * x1 );
+			pixel_sum += pixel_count[i][j];
 	
+	if ( pixel_sum == 0 ) return false;
+	
+	float a[16];
+	for ( int i = 0; i < 4; i++ )
+		for ( int j = 0; j < 4; j++ )
+			if ( pixel_sum != 0 )
+				pixel_density[ i * 4 + j ] = (float) pixel_count[i][j] / pixel_sum;	
+	
+	return true;
 }
 
 //----------------------------------------------------------------------------
@@ -711,7 +727,6 @@ bool ImStaff::WriteMFC( wxString filename, int samplesCount, int period, int sam
 
 	file.Close();
 	return true;
-
 }
 
 
@@ -1038,9 +1053,9 @@ void ImStaff::CalcLyricFeatures( const int staff, wxArrayPtrVoid params )
 	if ( !GetImageFromPage( &m_opIm, page, TopOfLyricLine[staff], BottomOfLyricLine[staff] ) )
 		return;
 	
-	m_opImTmp1 = imImageCreate( m_opIm->height, m_opIm->width, m_opIm->color_space, m_opIm->data_type );
-	
+//	m_opImTmp1 = imImageCreate( m_opIm->height, m_opIm->width, m_opIm->color_space, m_opIm->data_type );	
 //	CorrectLyricCurvature( m_opIm, m_opImTmp1 );
+
 	FindLyricBaseLine( m_opIm, overallProjection, offsets[staff], width );
 	
 	// Save lyric images testing purposes
@@ -1053,7 +1068,8 @@ void ImStaff::CalcLyricFeatures( const int staff, wxArrayPtrVoid params )
  
 //  The dest image must have the same dimensions as the src image but with inverted dimension (i.e. a 90 degree rotation of the src)
 //  The corrected image is saved in the src
-void ImStaff::CorrectLyricCurvature( imImage *src, imImage *dest ){
+void ImStaff::CorrectLyricCurvature( imImage *src, imImage *dest )
+{
 	imProcessRotate90( src, dest, true);
 	
 	imbyte *buffer = (imbyte*)dest->data[0];
@@ -1073,7 +1089,8 @@ void ImStaff::CorrectLyricCurvature( imImage *src, imImage *dest ){
 	free ( tmp );
 }
 
-void ImStaff::FindLyricBaseLine( imImage *src, double *overallProjection, int *offsets, int windowWidth ){
+void ImStaff::FindLyricBaseLine( imImage *src, double *overallProjection, int *offsets, int windowWidth )
+{
 	int subimageSize = windowWidth;
 	int height = src->height;
 	int width = src->width;
@@ -1083,7 +1100,7 @@ void ImStaff::FindLyricBaseLine( imImage *src, double *overallProjection, int *o
 	// Get vertical reference array by taking the projection of the first non-empty lyric subimage. 
 	int temp = 0;
 	int j = 0;
-	while ( temp == 0 ){
+	while ( ( temp == 0 ) && ( ( j + 1 ) * subimageSize < width ) ){
 		for ( int i = 0; i < height; i++ ){
 			reference[i] = 0;
 			for ( int k = 0; k < subimageSize; k++ )
@@ -1129,18 +1146,19 @@ void ImStaff::FindLyricBaseLine( imImage *src, double *overallProjection, int *o
 			if ( convolution[maxIndex] < convolution[i] ) maxIndex = i;
 		}
 		
-		int offset = maxIndex - 50;
+		int off = height / 2;
+		int offset = maxIndex - off;
 		if ( maxIndex != 0)
 			offsets[k] = offset;
 
 		// Copy and align lyric subimage projections into the aligned projection matrix
 		for ( int i = 0; i < height; i++ ){
-			if ( offset >= 50 ) {
-				int index = i + ( offset - 50 );
+			if ( offset >= off ) {
+				int index = i + ( offset - off );
 				if ( index < height ) alignedProjection[i][k] = projection[index];
 				else alignedProjection[i][k] = 0;
-			} else if ( offset < 50 ){
-				int index = i - ( 50 - offset );
+			} else if ( offset < off ){
+				int index = i - ( off - offset );
 				if ( index >= 0 ) alignedProjection[i][k] = projection[index];
 				else alignedProjection[i][k] = 0;				
 			}
@@ -1154,22 +1172,27 @@ void ImStaff::FindLyricBaseLine( imImage *src, double *overallProjection, int *o
 	}
 }
 
+//Crop lyric images using the lyric baseline and topline and then run a recognition function on the lyric image
 void ImStaff::ExtractLyricImages( const int staff, wxArrayPtrVoid params )
 {
     // params 0: image de la page
-	// params 1: window width
-	// params 2: nom de base du fichier de sortie (ajout de .x.mfc)
-	// params 3: 2D array holding offsets for all the lyric images
-	// params 4: Lyric baseline
-	// params 5: Lyric top
+	// params 1: recognition window width
+	// params 2: overlap
+	// params 3: nom de base du fichier de sortie (ajout de .x.mfc)
+	// params 4: 2D array holding offsets for all the lyric images
+	// params 5: Lyric baseline
+	// params 6: Lyric top
+	// params 7: array holding coordinates for the top of each lyric subimage
+	// params 8: array holding coordinates for the bottom of each lyric subimage
+	// params 9: baseline window width
+	// params 10: fichier contenant la liste des fichiers mfc
 
 	imImage *page = (imImage*)params[0];
 	int width = *(int*)params[1];
-	wxString filename = *(wxString*)params[2];
-	filename << "_" << staff << "lyric.0.tif";
-	int **offsets = (int**)params[3];
-	int baseline = *(int*)params[4];
-	int topline = *(int*)params[5];
+	wxString filename = *(wxString*)params[3];
+	int **offsets = (int**)params[4];
+	int baseline = *(int*)params[5];
+	int topline = *(int*)params[6];
 	
 	int imageHeight = baseline - topline;
 
@@ -1178,70 +1201,88 @@ void ImStaff::ExtractLyricImages( const int staff, wxArrayPtrVoid params )
 	//	if ( m_opIm )
 	//	return;
 	
-	//Should open the saved file instead of recropping...
-	int *TopOfLyricLine = (int*)params[6];
-	int *BottomOfLyricLine = (int*)params[7];
-	
+	//Should open the saved file here instead of recropping...
+	int *TopOfLyricLine = (int*)params[7];
+	int *BottomOfLyricLine = (int*)params[8];
 	if ( !GetImageFromPage( &m_opIm, page, TopOfLyricLine[staff], BottomOfLyricLine[staff] ) )
 		return;
 	
-	m_opImTmp1 = imImageCreate( m_opIm->height, m_opIm->width, m_opIm->color_space, m_opIm->data_type );	
-	//	CorrectLyricCurvature( m_opIm, m_opImTmp1 );	
-
-	ImageDestroy( &m_opImTmp1 );	
+	//This was removed because better results were obtained when cropping the lyrics without the curvature adjustment
+	//  m_opImTmp1 = imImageCreate( m_opIm->height, m_opIm->width, m_opIm->color_space, m_opIm->data_type );	
+	//  CorrectLyricCurvature( m_opIm, m_opImTmp1 );	
+	//  ImageDestroy( &m_opImTmp1 );	
 	
-	m_opImTmp1 = imImageCreate( m_opIm->width, imageHeight, m_opIm->color_space, m_opIm->data_type );
-	CropLyric( m_opIm, m_opImTmp1, baseline, topline, offsets[staff], width );
-	
-	// Save cropped lyric image
-	filename = *(wxString*)params[2];
-	filename << "_" << staff << "croppedLyric.0.tif";
-	if ( !Write( filename, &m_opImTmp1 ) )
-        return;
-	
-	this->Terminate( ERR_NONE );
-}
-
-// Crop lyric image using the offsets and the baseline and topline values previously found
-void ImStaff::CropLyric( imImage *src, imImage *dest, int baseline, int topline, int *offsets, int width ){
-	
-	m_opImMain = imImageCreate( width, baseline - topline, src->color_space, src->data_type );
-	
-	imbyte *buffer = (imbyte*)dest->data[0];
-	memset( buffer, 0, dest->width * dest->height );
-	
-	double avg_offset = 0.0;
+	// Crop lyric image using topline and baseline value
+	// m_opIm = large image
+	// m_opImTmp1 = cropped image
+	int avg_offset = 0;
 	int count = 0;
-	for ( int i = 0; i < ceil( src->width / width); i++ )
-		if ( offsets[i] > 0 ) {
-			avg_offset += offsets[i];
+	for ( int i = 0; i < ceil( m_opIm->width / *(int*)params[9] ); i++ ){
+		if ( offsets[staff][i] > 0 ) {
+			avg_offset += offsets[staff][i];
 			count++;
 		}
-	avg_offset /= count;
-	
-	for ( int i = 0; i < ceil( src->width / width); i++){
-		int top_offset = topline + avg_offset - 50;
-		//if ( offsets[i] > 0 ) top_offset = topline + offsets[i] - 50;
-		
-		if ( ( i + 1 ) * width < dest->width )
-			m_opImMain = imImageCreate( width, baseline - topline, src->color_space, src->data_type );
-		else
-			m_opImMain = imImageCreate( dest->width - ( i * width ), baseline - topline, src->color_space, src->data_type );
-		imProcessCrop( src, m_opImMain, i * width, top_offset );
-		imbyte *tmp = (imbyte*)m_opImMain->data[0];
-		for ( int j = 0; j < m_opImMain->height; j++ ){
-			if ( ( i + 1 ) * width < dest->width )
-				memcpy( buffer + ( j * dest->width ) + ( i * width ), tmp + ( j * width ), width );				
-			else
-				memcpy( buffer + ( j * dest->width ) + ( i * width ), tmp + ( j * width ), dest->width - ( i * width ) );
-
-		}			
 	}
-}						
+	avg_offset /= count;
+	int top_offset = topline + avg_offset - ( m_opIm->height / 2 );	
+	
+	if ( top_offset + imageHeight >= m_opIm-> height )
+		m_opImTmp1 = imImageCreate( m_opIm->width, m_opIm->height - top_offset, m_opIm->color_space, m_opIm->data_type );
+	else 
+		m_opImTmp1 = imImageCreate( m_opIm->width, imageHeight , m_opIm->color_space, m_opIm->data_type );
+	imImageClear( m_opImTmp1 );
+	imProcessCrop( m_opIm, m_opImTmp1, 0, top_offset );
+	
+	// Save cropped lyric image 
+	wxString image_filename = filename;
+	image_filename << "_" << staff << "croppedLyric.0.tif";
+	if ( !Write( image_filename, &m_opImTmp1 ) )
+        return;
+	
+	// Do feature recognition on the cropped lyric image by calling CalcLyricWinFeatures on subwindows of the image
+	int x = 0;    
+	if ( m_opImTmp1->width < width ) // force at least one correlation
+		width = m_opIm->width;
+    int step = width - *(int*)params[2];
+	
+    m_opImTmp2 = imImageCreate( width, m_opImTmp1->height, m_opImTmp1->color_space, m_opImTmp1->data_type );
+    if ( !m_opImTmp2 || !width )
+    {
+        this->Terminate( ERR_MEMORY );
+        return;
+    }
+	
+	int size = LYRIC_FEATURES_COUNT * ( m_opImTmp1->width / step );
+	float *values = (float*)malloc( size * sizeof(float) );
+	memset(values, 0, size * sizeof(float) );
+	//wxLogMessage("step %d", step );
+	int samples = 0; 
+
+    while (1)
+    {
+        if ( x + width > m_opImTmp1->width )
+            break;
+		
+        imProcessCrop( m_opImTmp1, m_opImTmp2, x, 0);
+		if ( CalcLyricWinFeatures( m_opImTmp2, values + ( samples * LYRIC_FEATURES_COUNT ) ) ){
+			samples++;		
+		}
+        x += step;
+    }
+	
+	filename << "_" << staff << "lyric.0.mfc";
+	wxString mfc_name = filename;
+	mfc_name.Replace( "\\/", "/" );
+	wxFile *file = (wxFile*)params[10];
+	file->Write( mfc_name );
+	file->Write( "\n" );
+	
+	this->WriteMFC( filename, samples, step * 100, LYRIC_FEATURES_COUNT, values );
+	
+	free( values );
+	
+	this->Terminate( ERR_NONE );
+}					
 					
 // WDR: handler implementations for ImStaff
-
-
-
-
 

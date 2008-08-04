@@ -32,7 +32,6 @@ public:
     // constructors and destructors
     MusSymbol();
 	MusSymbol( unsigned char _flag, unsigned char _calte, unsigned short _code );
-	MusSymbol( const MusSymbol& symbol );
     virtual ~MusSymbol();
     
     // WDR: method declarations for MusSymbol
@@ -51,6 +50,10 @@ public:
 	// changement
 	virtual void SetPitch( int code, int oct, MusStaff *staff = NULL );
 	virtual void SetValue( int code, MusStaff *staff = NULL, int vflag = 0 );
+	//
+	void ResetToKey( );
+	void ResetToSymbol( );
+	void ResetToProportion( );
     
 public:
     // WDR: member variable declarations for MusSymbol
@@ -80,11 +83,9 @@ public:
     unsigned short l_ptch;
 	
 	MusNote *m_note_ptr;
-	bool m_hasAssociatedNote;
 
 private:
     // WDR: handler declarations for MusSymbol
-
 };
 
 

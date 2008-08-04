@@ -2444,17 +2444,17 @@ bool ImPage::GenerateLyricMFC( wxString output_dir )
 		}
 	}
 	
-	// array holding overall projection of all the lyric lines as they are processed
-	//double overallProjection[maxLyricHeight];
-	double overallProjection[115];
+
+	int windowWidth = 30;		// Window width used for finding lyric baseline 							
+	
+	// array holding overall projection of all the lyric lines
+	double overallProjection[maxLyricHeight];				
 	for ( int i = 0; i < maxLyricHeight; i++ ) overallProjection[i] = 0;
 	
 	// array holding the offsets for each lyric line
-	//int offsets[st][(int)ceil( m_opImMain->width / 30 )];
-	int **offsets = (int**)malloc( st * sizeof( int* ) );
+	int **offsets = (int**)malloc( st * sizeof( int* ) );	
 	for ( int i = 0; i < st; i++ )
 		offsets[i] = (int*)malloc( (int)ceil( m_opImMain->width / 30 ) * sizeof( int ) );
-
 	for ( int i = 0; i < st; i++ )
 		for ( int j = 0; j < ceil( m_opImMain->width / 30 ); j++ )
 			offsets[i][j] = -1;
@@ -2466,7 +2466,6 @@ bool ImPage::GenerateLyricMFC( wxString output_dir )
 	if ( !finput.IsOpened() )
 		return this->Terminate( ERR_FILE, input.c_str() );
 
-	int windowWidth = 30; // Window width used for finding lyric baseline 
 	params.Clear();
     params.Add( m_opImMain );
 	params.Add( &filename );
@@ -2478,11 +2477,6 @@ bool ImPage::GenerateLyricMFC( wxString output_dir )
 	
     ImStaffFunctor lyricFuncFeatures( &ImStaff::CalcLyricFeatures );
 	this->Process( &lyricFuncFeatures, params, counter );
-	
-	int tmp[8][45];
-	for ( int i = 0; i < st; i++ )
-		for ( int j = 0; j < ceil( m_opImMain->width / 30 ); j++ )
-			tmp[i][j] = offsets[i][j];
 		
 	// Find sum of overallProjection
 	double sum = 0;		
@@ -2516,15 +2510,20 @@ bool ImPage::GenerateLyricMFC( wxString output_dir )
 		this->m_staves[i].m_lyricBase = baseline;
 	}
 	
+	int win = LYRIC_WIN_WIDTH;
+	int overlap = LYRIC_WIN_OVERLAP;
 	params.Clear();
 	params.Add( m_opImMain );
-	params.Add( &windowWidth );
+	params.Add( &win );
+	params.Add( &overlap );
 	params.Add( &filename );
 	params.Add( offsets );
 	params.Add( &baseline );
 	params.Add( &topline );
 	params.Add( m_opLines1 );
 	params.Add( m_opLines2 );
+	params.Add( &windowWidth );
+	params.Add( &finput );
 	
 	counter = m_progressDlg->GetCounter();
     count = this->m_staves.GetCount();//GetStaffSegmentsCount();

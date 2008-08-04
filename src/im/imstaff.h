@@ -57,7 +57,6 @@ public:
 													// and the vertical position (decalage) from m_positions in segment	
 	void CorrectLyricCurvature( imImage *src, imImage *dest );
 	void FindLyricBaseLine( imImage *src, double *overallProjection, int *offsets, int windowWidth );
-	void CropLyric( imImage *src, imImage *dest, int baseline, int topline, int *offsets, int width );
 	
 	// functors																								
 	bool GetImageFromPage( _imImage **image, _imImage *page, int y1, int y2 = -1 );
