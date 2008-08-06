@@ -124,6 +124,8 @@ MusWindow::MusWindow( wxWindow *parent, wxWindowID id,
 	m_insertoct = 4;
 	m_dragging_x = 0;
 	m_dragging_y_offset = 0;
+	m_lyricMode = false;
+	m_inputLyric = false;
 
 	m_str.Alloc(1000);
 
@@ -1334,7 +1336,7 @@ void MusWindow::OnKeyDown(wxKeyEvent &event)
 		OnEndEdition();
 		SyncToolPanel();
 	}
-	else if ( m_editElement ) // mode edition
+	else if ( m_editElement && !m_lyricMode ) // mode edition
 	{
 		if ( ((event.m_keyCode == WXK_DELETE ) || (event.m_keyCode == WXK_BACK)) && m_currentElement) // delete
 		{
@@ -1511,6 +1513,16 @@ void MusWindow::OnKeyDown(wxKeyEvent &event)
 			CheckPoint( UNDO_PART, WG_UNDO_STAFF );
 			OnEndEdition();
 		}
+		else if ( event.m_keyCode == 'T' && m_currentElement->IsNote() )
+		{
+			m_lyricMode = true;
+			if ( ((MusNote*)m_currentElement)->m_lyric_ptr )
+				m_currentElement = ((MusNote*)m_currentElement)->m_lyric_ptr;
+			else 
+				m_currentElement = m_currentStaff->GetFirstLyric();
+
+			this->Refresh();
+		} 
 		else // navigation avec les fleches
 		{
 			MusStaff *previous = NULL;
@@ -1579,6 +1591,91 @@ void MusWindow::OnKeyDown(wxKeyEvent &event)
 			OnEndEdition();
 			SyncToolPanel();
 			
+		}
+	}
+	else if ( m_editElement && m_lyricMode )		// Lyric navigation mode
+	{	
+		if ( event.m_keyCode == WXK_ESCAPE )	// Escape lyric navigaition mode
+		{
+			m_lyricMode = false;
+			if ( ((MusSymbol*)m_currentElement)->m_note_ptr )
+				m_currentElement = ((MusSymbol*)m_currentElement)->m_note_ptr;
+			else 
+				m_currentElement = m_currentStaff->GetFirst();
+			
+			this->Refresh();
+		} 
+		else if ( event.m_keyCode == WXK_RETURN )	// Enter lyric insertion mode
+		{
+			m_inputLyric = true;
+		}
+		else	// Navigation over lyrics using arrow keys
+		{
+			MusStaff *previous = NULL;
+			
+			if ( event.GetKeyCode() == WXK_RIGHT ) 
+			{
+				if ( m_currentStaff->GetNextLyric( (MusSymbol*)m_currentElement ) )
+					m_currentElement = m_currentStaff->GetNextLyric( (MusSymbol*)m_currentElement );
+				else if ( m_page->GetNext( m_currentStaff ) )
+				{
+					previous = m_currentStaff;
+					m_currentStaff = m_page->GetNext( m_currentStaff );
+					m_currentElement = m_currentStaff->GetFirstLyric();
+				}
+				UpdateScroll();
+			}
+			else if ( event.GetKeyCode() == WXK_LEFT )
+			{
+				if ( m_currentStaff->GetPreviousLyric( (MusSymbol*)m_currentElement ) )
+					m_currentElement = m_currentStaff->GetPreviousLyric( (MusSymbol*)m_currentElement );
+				else if ( m_page->GetPrevious( m_currentStaff ) )
+				{
+					previous = m_currentStaff;
+					m_currentStaff = m_page->GetPrevious( m_currentStaff );
+					m_currentElement = m_currentStaff->GetLastLyric();
+				}
+				UpdateScroll();
+			}
+			else if ( event.GetKeyCode() == WXK_UP )
+			{
+				if ( m_page->GetPrevious( m_currentStaff ) )
+				{
+					int x = 0;
+					if ( m_currentElement )
+						x = m_currentElement->xrel;
+					previous = m_currentStaff;
+					m_currentStaff = m_page->GetPrevious( m_currentStaff );
+					m_currentElement = m_currentStaff->GetLyricAtPos(x);
+					UpdateScroll();
+				}
+			}
+			else if ( event.GetKeyCode() == WXK_DOWN )
+			{
+				if ( m_page->GetNext( m_currentStaff ) )
+				{
+					int x = 0;
+					if ( m_currentElement )
+						x = m_currentElement->xrel;
+					previous = m_currentStaff;
+					m_currentStaff = m_page->GetNext( m_currentStaff );
+					m_currentElement = m_currentStaff->GetLyricAtPos(x);
+					UpdateScroll();
+				}
+			}
+			if ( event.GetKeyCode() == WXK_HOME ) 
+			{
+				if ( m_currentStaff->GetFirstLyric( ) )
+					m_currentElement = m_currentStaff->GetFirstLyric( );
+			}
+			if ( event.GetKeyCode() == WXK_END ) 
+			{
+				if ( m_currentStaff->GetLastLyric( ) )
+					m_currentElement = m_currentStaff->GetLastLyric( );
+			}
+			this->Refresh();
+			OnEndEdition();
+			SyncToolPanel();
 		}
 	}
 	else // mode insertion

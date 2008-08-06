@@ -800,6 +800,88 @@ void MusStaff::DrawSlur( wxDC *dc, int x1, int y1, int x2, int y2, bool up, int 
 
 }
 
+// Gets the y coordinate of the previous lyric. If lyric is NULL, it will return the y coordinate of the first lyric 
+// in the stave. If there are no lyrics in the Stave -1 is returned.
+int MusStaff::GetLyricPos( MusSymbol *lyric )
+{
+	MusSymbol *tmp;
+	if ( !lyric ){
+		if ( !( tmp = GetFirstLyric() ) )
+			return -1;
+		return tmp->dec_y;
+	}
+	
+	if ( !( tmp = GetPreviousLyric( lyric ) ) )
+		return -1;
+	return tmp->dec_y;
+}
+
+MusSymbol *MusStaff::GetPreviousLyric( MusSymbol *lyric )
+{
+	if ( !lyric || m_elements.IsEmpty() || !lyric->m_note_ptr || lyric->m_note_ptr->no <= 0 )
+		return NULL;
+	
+	int no = lyric->m_note_ptr->no - 1;
+	while ( no >= 0 ){
+		if ( m_elements[ no ].TYPE == NOTE  && ((MusNote*)&m_elements[ no ])->m_lyric_ptr ) 
+			return ((MusNote*)&m_elements[ no ])->m_lyric_ptr;
+		no--;
+	}
+	return NULL;
+}
+
+MusSymbol *MusStaff::GetNextLyric( MusSymbol *lyric )
+{	
+	if ( !lyric || m_elements.IsEmpty() || !lyric->m_note_ptr || lyric->m_note_ptr->no >= (int)m_elements.GetCount() - 1 )
+		return NULL;
+	
+	int no = lyric->m_note_ptr->no + 1;
+	while ( no < (int)m_elements.GetCount() ){
+		if ( m_elements[ no ].TYPE == NOTE && ((MusNote*)&m_elements[ no ])->m_lyric_ptr ) 
+			return ((MusNote*)&m_elements[ no ])->m_lyric_ptr;
+		no++;
+	}
+	return NULL;
+}
+
+MusSymbol *MusStaff::GetFirstLyric( )
+{
+	if ( m_elements.IsEmpty() )
+		return NULL;
+	int no = 0;
+	while ( no < (int)m_elements.GetCount() ){
+		if ( m_elements[ no ].TYPE == NOTE && ((MusNote*)&m_elements[ no ])->m_lyric_ptr )
+			return ((MusNote*)&m_elements[ no ])->m_lyric_ptr;
+		no++;
+	}
+	return NULL;	
+}
+
+MusSymbol *MusStaff::GetLastLyric( )
+{
+	if ( m_elements.IsEmpty() )
+		return NULL;
+	int no = (int)m_elements.GetCount() - 1;
+	while ( no >= 0 ){
+		if ( m_elements[ no ].TYPE == NOTE && ((MusNote*)&m_elements[ no ])->m_lyric_ptr )
+			return ((MusNote*)&m_elements[ no ])->m_lyric_ptr;
+		no--;
+	}
+	return NULL;
+}
+
+MusSymbol *MusStaff::GetLyricAtPos( int x )
+{
+	MusSymbol *lyric = this->GetFirstLyric();
+	if ( !lyric )
+		return NULL;
+	
+	//int xx = 0;
+	while (this->GetNextLyric( lyric ) && ((int)lyric->xrel < x) )
+		lyric = this->GetNextLyric( lyric );
+	
+	return lyric;
+}
 
 // WDR: handler implementations for MusStaff
 

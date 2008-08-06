@@ -283,6 +283,8 @@ public:
 	int m_dragging_y_offset;
 	bool m_has_been_dragged;
 	MusToolPanel *m_toolpanel;
+	bool m_lyricMode;
+	bool m_inputLyric;
     
 private:
 	void SetPage( MusPage *page );

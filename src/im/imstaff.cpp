@@ -295,8 +295,7 @@ bool CalcLyricWinFeatures(const imImage* image, float *pixel_density )
 		for ( int j = 0; j < height; j++ ){
 			int index = i * width + j;				
 			if ( j < y1 && i < x1 ){										// [0,0]
-				if ( tmp[index] != 0 ) 
-					pixel_count[0][0]++;
+				if ( tmp[index] != 0 ) pixel_count[0][0]++;
 			} else if ( ( j >= y1 && j < y2 ) && i < x1 ){					// [1,0]	
 				if ( tmp[index] != 0 ) pixel_count[1][0]++;
 			} else if ( ( j >= y2 && j < y3 ) && i < x1 ){					// [2,0]
@@ -339,7 +338,6 @@ bool CalcLyricWinFeatures(const imImage* image, float *pixel_density )
 	
 	if ( pixel_sum == 0 ) return false;
 	
-	float a[16];
 	for ( int i = 0; i < 4; i++ )
 		for ( int j = 0; j < 4; j++ )
 			if ( pixel_sum != 0 )
@@ -359,6 +357,9 @@ ImStaff::ImStaff( ) :
     m_med = 0;
     m_x1 = 0;
     m_x2 = 0;
+	m_lyricCentre = -1;		
+	m_lyricBaseline = -1;	
+	m_lyricTopline = -1;		
 }
 
 
@@ -379,7 +380,13 @@ bool ImStaff::Load( TiXmlNode *node )
         m_x1 = atoi(current->Attribute("x1"));
     if ( current->Attribute("x2"))
         m_x2 = atoi(current->Attribute("x2"));
-
+	
+	if ( current->Attribute("lyricBaseline"))
+        m_lyricBaseline = atoi(current->Attribute("lyricBaseline"));
+	if ( current->Attribute("lyricTopline"))
+        m_lyricTopline = atoi(current->Attribute("lyricTopline"));
+	if ( current->Attribute("lyricCentre"))
+        m_lyricCentre = atoi(current->Attribute("lyricCentre"));
 
     if ( current->Attribute("positions"))
 	{
@@ -426,6 +433,13 @@ bool ImStaff::Save( TiXmlNode *node )
     current->SetAttribute( "x1", tmp.c_str() );
     tmp = wxString::Format("%d", m_x2 );
     current->SetAttribute( "x2", tmp.c_str() );
+	
+    tmp = wxString::Format("%d", m_lyricBaseline );
+    current->SetAttribute( "lyricBaseline", tmp.c_str() );
+	tmp = wxString::Format("%d", m_lyricTopline );
+    current->SetAttribute( "lyricTopline", tmp.c_str() );
+	tmp = wxString::Format("%d", m_lyricCentre );
+    current->SetAttribute( "lyricCentre", tmp.c_str() );
 
 	wxArrayInt positions_tosave = this->GetValuesToSave( VALUES_POSITIONS );
 	wxArrayInt line_p_tosave = this->GetValuesToSave( VALUES_LINE_P );

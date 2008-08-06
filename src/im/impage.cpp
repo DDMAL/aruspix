@@ -2454,9 +2454,9 @@ bool ImPage::GenerateLyricMFC( wxString output_dir )
 	// array holding the offsets for each lyric line
 	int **offsets = (int**)malloc( st * sizeof( int* ) );	
 	for ( int i = 0; i < st; i++ )
-		offsets[i] = (int*)malloc( (int)ceil( m_opImMain->width / 30 ) * sizeof( int ) );
+		offsets[i] = (int*)malloc( (int)ceil( m_opImMain->width / windowWidth ) * sizeof( int ) );
 	for ( int i = 0; i < st; i++ )
-		for ( int j = 0; j < ceil( m_opImMain->width / 30 ); j++ )
+		for ( int j = 0; j < ceil( m_opImMain->width / windowWidth ); j++ )
 			offsets[i][j] = -1;
 
 	// calculer les features (ImStaffSegment::CalcFeatures)
@@ -2506,8 +2506,20 @@ bool ImPage::GenerateLyricMFC( wxString output_dir )
 		}
 	}
 	
+	// Store the lyric attributes that were just found making necessary adjustments for each lyric line (offsets)  
 	for ( int i = 0; i < st; i++ ){
-		this->m_staves[i].m_lyricBase = baseline;
+		int avg_offset = 0;
+		int count = 0;
+		for ( int j = 0; j < ceil( m_opImMain->width / windowWidth ); j++ ){
+			if ( offsets[i][j] > 0 ){
+				avg_offset += offsets[i][j];
+				count++;
+			}
+		}
+		avg_offset /= count;
+		this->m_staves[i].m_lyricBaseline = baseline + avg_offset + ( ( m_opLines1[i] - m_opLines2[i] ) / 2 );
+		this->m_staves[i].m_lyricTopline = topline + avg_offset + ( ( m_opLines1[i] - m_opLines2[i] ) / 2 );
+		this->m_staves[i].m_lyricCentre = centre + avg_offset + ( ( m_opLines1[i] - m_opLines2[i] ) / 2 );
 	}
 	
 	int win = LYRIC_WIN_WIDTH;

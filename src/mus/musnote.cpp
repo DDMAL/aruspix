@@ -302,13 +302,18 @@ void MusNote::Draw( wxDC *dc, MusStaff *staff)
 		silence ( dc, staff );
 	}
 
-	if ( !m_w->efface )
-		m_w->m_currentColour = &m_w->m_black;
-
+	if (!m_w->efface && (this->m_lyric_ptr == m_w->m_currentElement))
+		m_w->m_currentColour = wxRED;
+	else 
+		m_w->m_currentColour = wxBLACK;
+	
 	if ( m_lyric_ptr != NULL ){
 		m_w->putlyric(dc, m_lyric_ptr->xrel + staff->xrel, staff->yrel + m_lyric_ptr->dec_y , 
-					   m_lyric_ptr->m_debord_str, staff->pTaille);
+					  m_lyric_ptr->m_debord_str, staff->pTaille);
 	}
+	
+	if ( !m_w->efface )
+		m_w->m_currentColour = &m_w->m_black;
 	
 	return;
 }

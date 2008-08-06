@@ -83,7 +83,9 @@ public:
 	wxArrayInt m_line_p; // line width (peak in run lengths)
 	wxArrayInt m_line_m; // line width (median in run lengths)
     ArrayOfStaffSegments m_segments; // now used only during processing, not stored anymore
-	int m_lyricBase; // position of lyric baseline
+	int m_lyricCentre;		// y-coordinate of center of lyric
+	int m_lyricBaseline;	// y-coordinate of baseline of lyric
+	int m_lyricTopline;		// y-coordinate of topline of lyric
 		    
 public:
     // WDR: member variable declarations for ImStaff

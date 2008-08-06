@@ -66,6 +66,14 @@ public:
 	int y_note (int code, int dec_clef, int oct);
 	void updat_pscle (int i, MusElement *chk);
 	void DrawSlur( wxDC *dc, int x1, int y1, int x2, int y2, bool up, int height = -1);
+	
+	//Lyric related methods
+	int GetLyricPos( MusSymbol *lyric );
+	MusSymbol *GetPreviousLyric( MusSymbol *lyric );
+	MusSymbol *GetNextLyric( MusSymbol *lyric );
+	MusSymbol *GetFirstLyric( );
+	MusSymbol *GetLastLyric( );
+	MusSymbol *GetLyricAtPos( int x );
 
 	void place_clef( wxDC *dc );
 	int armatDisp ( wxDC *dc );
