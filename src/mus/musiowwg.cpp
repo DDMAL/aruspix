@@ -348,13 +348,19 @@ bool MusWWGOutput::WriteNote( const MusNote *note )
 		WriteDebord( note );
 	
 	// lyric
-	char tmp = 0;
-	if ( note->m_lyric_ptr ) 
-		tmp = 1;
-	Write( &tmp, 1 );
+	char count = 0;
+	for ( int i = 0; i < (int)note->m_lyrics.GetCount(); i++ ){
+		MusSymbol *lyric = &note->m_lyrics[i];
+		if ( lyric )
+			count++;
+	}
+	Write( &count, 1 );
 	
-	if ( note->m_lyric_ptr )
-		WriteSymbole( note->m_lyric_ptr );
+	for ( int i = 0; i < (int)note->m_lyrics.GetCount(); i++ ){
+		MusSymbol *lyric = &note->m_lyrics[i];
+		if ( lyric )
+			WriteSymbole( lyric );
+	}
 	
 	return true;
 }
@@ -764,17 +770,29 @@ bool MusWWGInput::ReadStaff( MusStaff *staff )
 			ReadNote( note );
 			  
 			//Test code
-			if ( note->m_lyric_ptr == NULL ){
-				note->m_lyric_ptr = new MusSymbol();
-				note->m_lyric_ptr->TYPE = SYMB;
-				note->m_lyric_ptr->flag = LYRIC;
-				note->m_lyric_ptr->m_debord_str = "z";
-				note->m_lyric_ptr->xrel = note->xrel;
-				note->m_lyric_ptr->dec_y = - 280;
-				note->m_lyric_ptr->offset = note->offset;
-				note->m_lyric_ptr->m_note_ptr = note;			
+			if ( (int)note->m_lyrics.GetCount() == 0 ){
+				MusSymbol *lyric = new MusSymbol();
+				lyric->TYPE = SYMB;
+				lyric->flag = LYRIC;
+				lyric->m_debord_str = "z";
+				lyric->xrel = note->xrel - 10;
+				lyric->dec_y = - STAFF_OFFSET;   //Add define for height
+				lyric->offset = note->offset;
+				lyric->m_note_ptr = note;		
+				note->m_lyrics.Add( lyric );	
+				
+				MusSymbol *lyric2 = new MusSymbol();
+				lyric2->TYPE = SYMB;
+				lyric2->flag = LYRIC;
+				lyric2->m_debord_str = "d";
+				lyric2->xrel = note->xrel;
+				lyric2->dec_y = - STAFF_OFFSET;   //Add define for height
+				lyric2->offset = note->offset;
+				lyric2->m_note_ptr = note;
+				note->m_lyrics.Add( lyric2 );
+				
 			}
-			
+				 
 			staff->m_elements.Add( note );
 		}
 		else
@@ -831,16 +849,17 @@ bool MusWWGInput::ReadNote( MusNote *note )
 	if ( note->existDebord ) 
 		ReadDebord( note );
 	
-	char tmp;
-	Read( &tmp, 1 );
-	if ( tmp != 0 )
-	{ 
-		note->m_lyric_ptr = new MusSymbol();
-		Read( &note->m_lyric_ptr->TYPE, 1 );
-		ReadSymbole( note->m_lyric_ptr );
-		note->m_lyric_ptr->m_note_ptr = note;
-	}
+	char count;
+	Read( &count, 1 );
 	
+	for ( int i = 0; i < count; i++ ) {
+		MusSymbol *lyric = new MusSymbol();
+		Read( &lyric->TYPE, 1 );
+		ReadSymbole( lyric );
+		lyric->m_note_ptr = note;				 		
+		note->m_lyrics.Add( lyric );
+	}
+
 	return true;
 }
 

@@ -1128,7 +1128,7 @@ void MusWindow::OnMouseLeave(wxMouseEvent &event)
 
 void MusWindow::OnMouseLeftDown(wxMouseEvent &event)
 {
-	if ( m_editElement )
+	if ( m_editElement || m_lyricMode )
 	{
 		wxClientDC dc( this );
 		InitDC( &dc );
@@ -1143,13 +1143,17 @@ void MusWindow::OnMouseLeftDown(wxMouseEvent &event)
 			//wxLogMessage("x %d : y %d", x, y);
 
 		MusStaff *previous = NULL;
+		if ( m_lyricMode ) y += 50;
 		if ( m_page->GetAtPos( y ) )
 		{
 			previous = m_currentStaff;
 			m_currentStaff = m_page->GetAtPos( y );
 		}
 		if ( m_currentStaff )
-			m_currentElement = m_currentStaff->GetAtPos(x);
+			if ( !m_lyricMode )
+				m_currentElement = m_currentStaff->GetAtPos(x);
+			else
+				m_currentElement = m_currentStaff->GetLyricAtPos(x);
 
 		if ( m_currentElement )
 			m_dragging_y_offset = y - m_currentStaff->yrel - m_currentElement->dec_y;
@@ -1298,7 +1302,7 @@ void MusWindow::OnKeyDown(wxKeyEvent &event)
 	int noteKeyCode = GetNoteValue( event.m_keyCode );
 
 	// change mode edition -- insertion
-	if ( event.GetKeyCode() == WXK_RETURN )
+	if ( !m_lyricMode && event.GetKeyCode() == WXK_RETURN )
 	{
 		m_editElement = !m_editElement;
 		if ( !m_editElement ) // edition -> insertion
@@ -1336,7 +1340,7 @@ void MusWindow::OnKeyDown(wxKeyEvent &event)
 		OnEndEdition();
 		SyncToolPanel();
 	}
-	else if ( m_editElement && !m_lyricMode ) // mode edition
+	else if ( m_editElement ) // mode edition
 	{
 		if ( ((event.m_keyCode == WXK_DELETE ) || (event.m_keyCode == WXK_BACK)) && m_currentElement) // delete
 		{
@@ -1513,13 +1517,16 @@ void MusWindow::OnKeyDown(wxKeyEvent &event)
 			CheckPoint( UNDO_PART, WG_UNDO_STAFF );
 			OnEndEdition();
 		}
-		else if ( event.m_keyCode == 'T' && m_currentElement->IsNote() )
+		else if ( event.m_keyCode == 'T' )
 		{
+			m_editElement = false;
 			m_lyricMode = true;
-			if ( ((MusNote*)m_currentElement)->m_lyric_ptr )
-				m_currentElement = ((MusNote*)m_currentElement)->m_lyric_ptr;
+			if ( m_currentElement->IsNote() ){
+				MusSymbol *lyric = &((MusNote*)m_currentElement)->m_lyrics[0];
+				m_currentElement = lyric;
+			}
 			else 
-				m_currentElement = m_currentStaff->GetFirstLyric();
+				m_currentElement = m_currentStaff->GetLyricAtPos( m_currentElement->xrel );
 
 			this->Refresh();
 		} 
@@ -1593,11 +1600,13 @@ void MusWindow::OnKeyDown(wxKeyEvent &event)
 			
 		}
 	}
-	else if ( m_editElement && m_lyricMode )		// Lyric navigation mode
+	else if ( m_lyricMode )		// Lyric navigation mode
 	{	
-		if ( event.m_keyCode == WXK_ESCAPE )	// Escape lyric navigaition mode
+		if ( event.m_keyCode == 'T' )	// Escape lyric navigaition mode
 		{
 			m_lyricMode = false;
+			m_inputLyric = false;
+			m_editElement = true;
 			if ( ((MusSymbol*)m_currentElement)->m_note_ptr )
 				m_currentElement = ((MusSymbol*)m_currentElement)->m_note_ptr;
 			else 
@@ -1607,7 +1616,141 @@ void MusWindow::OnKeyDown(wxKeyEvent &event)
 		} 
 		else if ( event.m_keyCode == WXK_RETURN )	// Enter lyric insertion mode
 		{
-			m_inputLyric = true;
+			m_inputLyric = !m_inputLyric;
+			this->Refresh();
+		}
+		else if ( event.m_controlDown && in( event.m_keyCode, WXK_LEFT, WXK_DOWN) && m_currentElement)
+		{
+			PrepareCheckPoint( UNDO_PART, WG_UNDO_STAFF );
+			if ( event.GetKeyCode() == WXK_RIGHT && m_currentElement->IsSymbole() )
+			{
+				MusElement *element = ((MusSymbol*)m_currentElement)->m_note_ptr;
+				MusNote *oldNote = (MusNote*)element;
+				while ( m_currentStaff->GetNext( element ) ){
+					element = m_currentStaff->GetNext( element );
+					if ( element->IsNote() )
+						break;
+				}	
+				
+				MusNote *newNote = (MusNote*)element;
+				((MusSymbol*)m_currentElement)->m_note_ptr = newNote;
+				newNote->m_lyrics.Insert( (MusSymbol*)m_currentElement, 0 );
+				for ( int i = 0; i < (int)oldNote->m_lyrics.GetCount(); i++ ){
+					MusSymbol *lyric = &oldNote->m_lyrics[i];
+					if ( lyric == m_currentElement ) {
+						oldNote->m_lyrics.Detach(i);
+						break;
+					}
+				}
+			}
+			else if ( event.GetKeyCode() == WXK_LEFT && m_currentElement->IsSymbole() )
+			{
+				MusElement *element = ((MusSymbol*)m_currentElement)->m_note_ptr;
+				MusNote *oldNote = (MusNote*)element;
+				while ( m_currentStaff->GetPrevious( element ) ){
+					element = m_currentStaff->GetPrevious( element );
+					if ( element->IsNote() )
+						break;
+				}	
+				
+				MusNote *newNote = (MusNote*)element;
+				((MusSymbol*)m_currentElement)->m_note_ptr = newNote;
+				newNote->m_lyrics.Insert( (MusSymbol*)m_currentElement, newNote->m_lyrics.GetCount() );
+				for ( int i = 0; i < (int)oldNote->m_lyrics.GetCount(); i++ ){
+					MusSymbol *lyric = &oldNote->m_lyrics[i];
+					if ( lyric == m_currentElement ) {
+						oldNote->m_lyrics.Detach(i);
+						break;
+					}
+				}				
+			}
+			else if ( event.GetKeyCode() == WXK_UP && m_currentElement->IsSymbole() )
+			{
+				for ( int i = 0; i < (int)m_currentStaff->m_elements.GetCount(); i++ ){
+					MusElement *element = &m_currentStaff->m_elements[i];
+					if ( element->IsNote() ){
+						for ( int j = 0; j < (int)((MusNote*)element)->m_lyrics.GetCount(); j++ ){
+							MusSymbol *lyric = &((MusNote*)element)->m_lyrics[j];
+							lyric->dec_y += 3;
+						}
+					}
+				}
+			}
+			else if ( event.GetKeyCode() == WXK_DOWN && m_currentElement->IsSymbole() )
+			{
+				for ( int i = 0; i < (int)m_currentStaff->m_elements.GetCount(); i++ ){
+					MusElement *element = &m_currentStaff->m_elements[i];
+					if ( element->IsNote() ){
+						for ( int j = 0; j < (int)((MusNote*)element)->m_lyrics.GetCount(); j++ ){
+							MusSymbol *lyric = &((MusNote*)element)->m_lyrics[j];
+							lyric->dec_y -= 3;
+						}
+					}
+				}
+			}
+			CheckPoint(UNDO_PART, WG_UNDO_STAFF );
+			OnEndEdition();
+			this->Refresh();
+		}
+		if ( ((event.m_keyCode == WXK_DELETE ) || (event.m_keyCode == WXK_BACK)) && m_currentElement 
+			&& m_currentElement->IsSymbole() ) // delete
+		{
+			
+			PrepareCheckPoint( UNDO_PART, WG_UNDO_STAFF );
+			MusElement *del = m_currentElement;
+			MusStaff *delstaff = m_currentStaff;
+			
+			if (event.m_keyCode == WXK_DELETE )
+			{
+				if ( m_currentStaff->GetNextLyric( (MusSymbol*)del ) )
+					m_currentElement = m_currentStaff->GetNextLyric( (MusSymbol*)del );
+				else if ( m_page->GetNext( m_currentStaff ) )
+				{
+					
+					m_currentStaff = m_page->GetNext( m_currentStaff );
+					m_currentElement = m_currentStaff->GetFirstLyric();
+				}
+				else
+					m_currentElement = NULL;
+			}
+			else
+			{
+				if ( m_currentStaff->GetPreviousLyric( (MusSymbol*)del ) )
+					m_currentElement = m_currentStaff->GetPreviousLyric( (MusSymbol*)del );
+				else if ( m_page->GetPrevious( m_currentStaff ) )
+				{
+					m_currentStaff = m_page->GetPrevious( m_currentStaff );
+					m_currentElement = m_currentStaff->GetLastLyric();
+				}
+				else
+					m_currentElement = NULL;
+			}
+			
+			delstaff->DeleteLyric( (MusSymbol*)del );
+			if ( m_currentStaff != delstaff )
+			{
+				// reset previous staff with no element before checkpoint and then swap again
+				MusStaff *tmp = m_currentStaff;
+				m_currentStaff = delstaff;
+				del = m_currentElement;
+				m_currentElement = NULL;
+				CheckPoint( UNDO_PART, WG_UNDO_STAFF );
+				m_currentStaff = tmp;
+				m_currentElement = del;
+			}
+			else
+				CheckPoint( UNDO_PART, WG_UNDO_STAFF );
+			
+			if ( m_currentStaff )
+			{
+				wxClientDC dc(this);
+				InitDC( &dc );
+				m_currentStaff->DrawStaff( &dc );
+				if (m_currentStaff != delstaff)
+					delstaff->DrawStaff( &dc );
+			}
+			OnEndEdition();
+			SyncToolPanel();
 		}
 		else	// Navigation over lyrics using arrow keys
 		{

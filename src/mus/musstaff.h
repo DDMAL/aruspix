@@ -21,6 +21,8 @@
 
 #include "musobject.h"
 
+#define STAFF_OFFSET 280
+
 class MusElement;
 WX_DECLARE_OBJARRAY( MusElement, ArrayOfWgElements);
 
@@ -74,6 +76,8 @@ public:
 	MusSymbol *GetFirstLyric( );
 	MusSymbol *GetLastLyric( );
 	MusSymbol *GetLyricAtPos( int x );
+	void DeleteLyric( MusSymbol *symbol );
+
 
 	void place_clef( wxDC *dc );
 	int armatDisp ( wxDC *dc );

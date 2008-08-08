@@ -15,11 +15,14 @@
 #ifndef WX_PRECOMP
     #include "wx/wx.h"
 #endif
+#include "wx/dynarray.h"
 
 #include "muselement.h"
 
 class MusStaff;
 class MusSymbol;
+
+WX_DECLARE_OBJARRAY( MusSymbol, ArrayOfWgSymbols);
 
 // WDR: class declarations
 
@@ -103,7 +106,7 @@ public:
     unsigned char typStac;
 	
 	/** Associated lyric */
-	MusSymbol *m_lyric_ptr;
+	ArrayOfWgSymbols m_lyrics; 
 
 	
 private:

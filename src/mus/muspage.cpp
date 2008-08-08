@@ -137,20 +137,27 @@ MusStaff *MusPage::GetPrevious( MusStaff *staff  )
 
 MusStaff *MusPage::GetAtPos( int y )
 {
+	y += ( STAFF_OFFSET / 2 );
 	MusStaff *staff = this->GetFirst();
 	if ( !staff )
 		return NULL;
 	
+	int dif =  abs( staff->yrel - y );
 	while ( this->GetNext(staff) )
 	{
 		if ( (int)staff->yrel < y )
 		{
 			// one too much
-			if ( this->GetPrevious( staff ) )
+			if ( this->GetPrevious( staff ) ){
 				staff = this->GetPrevious( staff );
+				if ( dif < abs( staff->yrel - y ) )
+					staff = this->GetNext( staff );
+			}
+				
 			return staff;
 		}
 		staff = this->GetNext( staff );
+		dif = abs( staff->yrel - y );
 	}
 
 	if ( ( (int)staff->yrel < y )  && this->GetPrevious( staff ) )

@@ -25,6 +25,9 @@
 
 #include <math.h>
 
+#include "wx/arrimpl.cpp"
+WX_DEFINE_OBJARRAY( ArrayOfWgSymbols );
+
 // WDR: class implementations
 
 //----------------------------------------------------------------------------
@@ -54,7 +57,10 @@ MusNote::MusNote():
     code = 0;
     tetenot = 0;
     typStac = 0;
-	m_lyric_ptr = NULL;
+	for ( int i = 0; i < (int)this->m_lyrics.GetCount(); i++){
+		MusSymbol *lyric = NULL;
+		this->m_lyrics.Add( lyric );
+	}
 }
 
 MusNote::MusNote( char _sil, unsigned char _val, unsigned char _code )
@@ -80,8 +86,11 @@ MusNote::MusNote( char _sil, unsigned char _val, unsigned char _code )
     code = _code;
     tetenot = 0;
     typStac = 0;
-	m_lyric_ptr = NULL;
-	
+	for ( int i = 0; i < (int)this->m_lyrics.GetCount(); i++){
+		MusSymbol *lyric = NULL;
+		this->m_lyrics.Add( lyric );
+	}
+		
 	oct = 4;
 }
 
@@ -108,14 +117,11 @@ MusNote::MusNote( const MusNote& note )
 	code = note.code;
 	tetenot = note.tetenot;
 	typStac = note.typStac;
-	if ( note.m_lyric_ptr ) // special case where we have to copy the symbol by hand
-	{
-		m_lyric_ptr = new MusSymbol( *note.m_lyric_ptr );
-		m_lyric_ptr->m_note_ptr = this;
-	}
-	else
-		m_lyric_ptr = NULL;
-		
+	for (int i = 0; i < (int)note.m_lyrics.GetCount(); i++){
+		MusSymbol *lyric = new MusSymbol( note.m_lyrics[i] );
+		lyric->m_note_ptr = this;
+		this->m_lyrics.Add( lyric );
+	}	
 } 
 
 MusNote& MusNote::operator=( const MusNote& note )
@@ -144,21 +150,22 @@ MusNote& MusNote::operator=( const MusNote& note )
 		code = note.code;
 		tetenot = note.tetenot;
 		typStac = note.typStac;
-		if ( note.m_lyric_ptr ) // special case where we have to copy the symbol by hand
-		{
-			m_lyric_ptr = new MusSymbol( *note.m_lyric_ptr );
-			m_lyric_ptr->m_note_ptr = this;
+		for (int i = 0; i < (int)note.m_lyrics.GetCount(); i++){
+			MusSymbol *lyric = new MusSymbol( note.m_lyrics[i] );
+			lyric->m_note_ptr = this;
+			this->m_lyrics.Add( lyric );
+			
 		}
-		else
-			m_lyric_ptr = NULL;
 	}
 	return *this;
 }
 
 MusNote::~MusNote()
 {
-	if ( m_lyric_ptr )
-		delete m_lyric_ptr;
+//	for (int i = 0; i < (int)m_lyrics.GetCount(); i++){
+//		if ( m_lyrics[i] )
+//			delete m_lyrics[i];	
+//	}
 }
 
 
@@ -283,6 +290,15 @@ void MusNote::Draw( wxDC *dc, MusStaff *staff)
 	else if (!m_w->efface && (this->m_cmp_flag == CMP_SUBST))
 		m_w->m_currentColour = wxBLUE;
 
+	for ( int i = 0; i < (int)m_lyrics.GetCount(); i++ ){
+		MusSymbol *lyric = &m_lyrics[i];
+		
+		if (!m_w->efface && ( lyric == m_w->m_currentElement ) ){
+			if ( m_w->m_lyricMode )
+				m_w->m_currentColour = wxCYAN;
+		}
+	}
+		
 	if ( this->sil == _NOT)
 	{	
 		this->dec_y = staff->y_note((int)this->code, staff->testcle( this->xrel ), oct);
@@ -301,15 +317,23 @@ void MusNote::Draw( wxDC *dc, MusStaff *staff)
 		this->dec_y = staff->y_note((int)this->code, staff->testcle( this->xrel ), oct);
 		silence ( dc, staff );
 	}
-
-	if (!m_w->efface && (this->m_lyric_ptr == m_w->m_currentElement))
-		m_w->m_currentColour = wxRED;
-	else 
-		m_w->m_currentColour = wxBLACK;
 	
-	if ( m_lyric_ptr != NULL ){
-		m_w->putlyric(dc, m_lyric_ptr->xrel + staff->xrel, staff->yrel + m_lyric_ptr->dec_y , 
-					  m_lyric_ptr->m_debord_str, staff->pTaille);
+	for ( int i = 0; i < (int)m_lyrics.GetCount(); i++ ){
+		MusSymbol *lyric = &m_lyrics[i];
+		
+		if (!m_w->efface && ( lyric == m_w->m_currentElement))
+			if ( m_w->m_inputLyric )
+				m_w->m_currentColour = wxBLUE;
+			else
+				m_w->m_currentColour = wxRED;
+			else 
+				m_w->m_currentColour = wxBLACK;
+		
+		
+		if ( lyric != NULL ){
+			m_w->putlyric(dc, lyric->xrel + staff->xrel, staff->yrel + lyric->dec_y , 
+						  lyric->m_debord_str, staff->pTaille);
+		}		
 	}
 	
 	if ( !m_w->efface )
