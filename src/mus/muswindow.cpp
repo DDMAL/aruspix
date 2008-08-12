@@ -1626,15 +1626,19 @@ void MusWindow::OnKeyDown(wxKeyEvent &event)
 			{
 				MusElement *element = ((MusSymbol*)m_currentElement)->m_note_ptr;
 				MusNote *oldNote = (MusNote*)element;
+				
+				//Find next note in staff
 				while ( m_currentStaff->GetNext( element ) ){
 					element = m_currentStaff->GetNext( element );
 					if ( element->IsNote() )
 						break;
 				}	
+				if ( !element->IsNote() ) return;
 				
+				//Add current element into new note and remove it from the old note
 				MusNote *newNote = (MusNote*)element;
-				((MusSymbol*)m_currentElement)->m_note_ptr = newNote;
 				newNote->m_lyrics.Insert( (MusSymbol*)m_currentElement, 0 );
+				((MusSymbol*)m_currentElement)->m_note_ptr = newNote;
 				for ( int i = 0; i < (int)oldNote->m_lyrics.GetCount(); i++ ){
 					MusSymbol *lyric = &oldNote->m_lyrics[i];
 					if ( lyric == m_currentElement ) {
@@ -1645,6 +1649,7 @@ void MusWindow::OnKeyDown(wxKeyEvent &event)
 			}
 			else if ( event.GetKeyCode() == WXK_LEFT && m_currentElement->IsSymbole() )
 			{
+				//Find next note in staff
 				MusElement *element = ((MusSymbol*)m_currentElement)->m_note_ptr;
 				MusNote *oldNote = (MusNote*)element;
 				while ( m_currentStaff->GetPrevious( element ) ){
@@ -1653,6 +1658,7 @@ void MusWindow::OnKeyDown(wxKeyEvent &event)
 						break;
 				}	
 				
+				//Add current element into new note and remove it from the old note
 				MusNote *newNote = (MusNote*)element;
 				((MusSymbol*)m_currentElement)->m_note_ptr = newNote;
 				newNote->m_lyrics.Insert( (MusSymbol*)m_currentElement, newNote->m_lyrics.GetCount() );
@@ -1692,7 +1698,7 @@ void MusWindow::OnKeyDown(wxKeyEvent &event)
 			OnEndEdition();
 			this->Refresh();
 		}
-		if ( ((event.m_keyCode == WXK_DELETE ) || (event.m_keyCode == WXK_BACK)) && m_currentElement 
+		else if ( ((event.m_keyCode == WXK_DELETE ) || (event.m_keyCode == WXK_BACK)) && m_currentElement 
 			&& m_currentElement->IsSymbole() ) // delete
 		{
 			

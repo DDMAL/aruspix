@@ -932,8 +932,6 @@ MusSymbol *MusStaff::GetLyricAtPos( int x )
 		dif = x - lyric->xrel;
 	}
 		
-	
-	
 	return lyric;
 }
 
