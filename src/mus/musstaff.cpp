@@ -957,7 +957,7 @@ void MusStaff::DeleteLyric( MusSymbol *symbol )
 	
 	if ( m_w )
 	{
-		if ( symbol->IsSymbole() && (((MusSymbol*)symbol)->flag == CLE) )
+		if ( symbol->IsSymbole() && (((MusSymbol*)symbol)->flag == LYRIC) )
 			m_w->OnEndEditionClef();
 		m_w->Refresh();
 	}

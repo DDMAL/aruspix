@@ -579,7 +579,7 @@ void MusMLFOutput::EndLabel( int offset, int end_point )
 	wxString end_label = ".\n";
 	Write( end_label, end_label.Length() );
 }
-
+	
 // copie le portee en convertissant les symboles de la clef courante vers Ut1
 // si inPlace, directment dans staff
 
