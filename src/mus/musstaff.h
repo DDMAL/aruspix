@@ -77,7 +77,10 @@ public:
 	MusSymbol *GetLastLyric( );
 	MusSymbol *GetLyricAtPos( int x );
 	void DeleteLyric( MusSymbol *symbol );
-
+	MusNote *GetNextNote( MusSymbol * lyric );
+	MusNote *GetPreviousNote( MusSymbol * lyric );
+	void SwitchLyricNoteAssociation( MusSymbol *lyric, MusNote *oldNote, MusNote* newNote, bool beginning );
+	void AdjustLyricLineHeight( int delta );
 
 	void place_clef( wxDC *dc );
 	int armatDisp ( wxDC *dc );

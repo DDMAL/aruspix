@@ -546,6 +546,32 @@ void MusSymbol::chiffres ( wxDC *dc, int x, int y, MusStaff *staff)
 	return;
 }
 
+void MusSymbol::InsertCharInLyricAt( int x, char letter )
+{	
+	if ( x < 0 || !letter )
+		return;
+	
+	wxString lyric = this->m_debord_str;
+	wxString part1 = lyric.SubString( 0, x - 1 );
+	wxString part2 = lyric.SubString( x, lyric.Length() );
+	
+	lyric = part1 << letter << part2;
+	this->m_debord_str = lyric;
+}
+
+bool MusSymbol::DeleteCharInLyricAt( int x )
+{
+	if ( x < 0 )
+		return false;
+	
+	wxString lyric = this->m_debord_str;
+	wxString part1 = lyric.SubString( 0, x - 1 );
+	wxString part2 = lyric.SubString( x + 1, lyric.Length() );
+	
+	lyric = part1 << part2;
+	this->m_debord_str = lyric;
+	return true;
+}
 
 // WDR: handler implementations for MusSymbol
 

@@ -965,6 +965,70 @@ void MusStaff::DeleteLyric( MusSymbol *symbol )
 	delete symbol;
 }
 
+MusNote *MusStaff::GetNextNote( MusSymbol * lyric )
+{
+	if ( !lyric || m_elements.IsEmpty() || !lyric->m_note_ptr || lyric->m_note_ptr->no >= (int)m_elements.GetCount() - 1 )
+		return NULL;
+	
+	int no = lyric->m_note_ptr->no + 1;
+	for ( int i = no; i < (int)m_elements.GetCount(); i++ ){
+		MusElement *element = &m_elements[i];
+		if ( element->IsNote() && ((MusNote*)element)->sil == _NOT )
+			return (MusNote*)element; 
+	}
+	return NULL;
+}
+
+MusNote *MusStaff::GetPreviousNote( MusSymbol * lyric )
+{
+	if ( !lyric || m_elements.IsEmpty() || !lyric->m_note_ptr || lyric->m_note_ptr->no <= 0 )
+		return NULL;
+	
+	int no = lyric->m_note_ptr->no - 1;
+	for ( int i = no; i >= 0; i-- ){
+		MusElement *element = &m_elements[i];
+		if ( element->IsNote() && ((MusNote*)element)->sil == _NOT )
+			return (MusNote*)element; 
+	}
+	return NULL;
+}
+
+//Switches the note association of lyric from oldNote to newNote and modifies the two notes accordingly
+//bool beginning: indicates if we want to add the lyric to beginning or end of the lyric array in newNote 
+//		true = beginning of array
+//		false = end of array
+void MusStaff::SwitchLyricNoteAssociation( MusSymbol *lyric, MusNote *oldNote, MusNote* newNote, bool beginning )
+{
+	if ( !lyric || !oldNote || !newNote )
+		return;
+	
+	lyric->m_note_ptr = newNote;
+	if ( beginning )
+		newNote->m_lyrics.Insert( lyric, 0 );
+	else
+		newNote->m_lyrics.Insert( lyric, newNote->m_lyrics.GetCount() );
+	
+	for ( int i = 0; i < (int)oldNote->m_lyrics.GetCount(); i++ ){
+		MusSymbol *element = &oldNote->m_lyrics[i];
+		if ( element == lyric ){
+			oldNote->m_lyrics.Detach(i);
+			break;
+		}			
+	}
+}
+
+void MusStaff::AdjustLyricLineHeight( int delta ) 
+{
+	for ( int i = 0; i < (int)m_elements.GetCount(); i++ ){
+		MusElement *element = &m_elements[i];
+		if ( element->IsNote() ){
+			for ( int j = 0; j < (int)((MusNote*)element)->m_lyrics.GetCount(); j++ ){
+				MusSymbol *lyric = &((MusNote*)element)->m_lyrics[j];
+				lyric->dec_y += delta;
+			}
+		}
+	}
+}
 // WDR: handler implementations for MusStaff
 
 

@@ -59,6 +59,8 @@ public:
 	virtual void MusNote::ChangeStem( MusStaff *staff = NULL );
 	virtual void MusNote::SetLigature( MusStaff *staff = NULL );
 	
+	void DeleteLyricFromNote( MusSymbol *lyric );
+	
 public:
 	// WDR: member variable declarations for MusNote
     /** silence (true) ou note (false) */

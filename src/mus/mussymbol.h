@@ -54,6 +54,9 @@ public:
 	void ResetToKey( );
 	void ResetToSymbol( );
 	void ResetToProportion( );
+	
+	void InsertCharInLyricAt( int x, char letter );
+	bool DeleteCharInLyricAt( int x );
     
 public:
     // WDR: member variable declarations for MusSymbol

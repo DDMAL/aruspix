@@ -161,11 +161,7 @@ MusNote& MusNote::operator=( const MusNote& note )
 }
 
 MusNote::~MusNote()
-{
-//	for (int i = 0; i < (int)m_lyrics.GetCount(); i++){
-//		if ( m_lyrics[i] )
-//			delete m_lyrics[i];	
-//	}
+{	
 }
 
 
@@ -332,7 +328,7 @@ void MusNote::Draw( wxDC *dc, MusStaff *staff)
 		
 		if ( lyric != NULL ){
 			m_w->putlyric(dc, lyric->xrel + staff->xrel, staff->yrel + lyric->dec_y , 
-						  lyric->m_debord_str, staff->pTaille);
+						  lyric->m_debord_str, staff->pTaille, ( lyric == m_w->m_currentElement && m_w->m_inputLyric ) );
 		}		
 	}
 	
@@ -955,6 +951,16 @@ void MusNote::ligature ( wxDC *dc, int y, MusStaff *staff )
 	return;
 }
 
+void MusNote::DeleteLyricFromNote( MusSymbol *lyric )
+{
+	for ( int i = 0; i < (int)this->m_lyrics.GetCount(); i++ ){
+		MusSymbol *tmp = &this->m_lyrics[i];
+		if ( lyric == tmp ){
+			this->m_lyrics.RemoveAt( i );
+			break;
+		}
+	}
+}
 
 // WDR: handler implementations for MusNote
 

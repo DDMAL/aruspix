@@ -16,6 +16,7 @@
     #include "wx/wx.h"
 #endif
 #include "wx/dynarray.h"
+#include "wx/caret.h"
 
 #include "mus.h"
 
@@ -154,7 +155,7 @@ public:
 	void putfont ( wxDC *dc, int x, int y, unsigned char c, MusStaff *staff, int dimin );
 	void putfontfast ( wxDC *dc, int x, int y, unsigned char c );
 	void putstring ( wxDC *dc, int x, int y, wxString s, int centrer, int pTaille = 0);
-	void putlyric ( wxDC *dc, int x, int y, wxString s, int pTaille = 0);
+	void putlyric ( wxDC *dc, int x, int y, wxString s, int pTaille = 0, bool cursor = false);
 	void rect_plein2( wxDC *dc, int x1, int y1, int x2, int y2);
 	int hGrosseligne ( wxDC *dc, int x1, int y1, int x2, int y2, int decal);
 	int pointer ( wxDC *dc, int x, int b, int decal, MusStaff *staff );
@@ -285,6 +286,8 @@ public:
 	MusToolPanel *m_toolpanel;
 	bool m_lyricMode;
 	bool m_inputLyric;
+	int m_lyricCursor;
+	wxCaret m_lyricCaret; 
     
 private:
 	void SetPage( MusPage *page );

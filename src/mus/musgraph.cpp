@@ -255,15 +255,27 @@ void MusWindow::putstring ( wxDC *dc, int x, int y, wxString s, int centrer, int
 	dc->DrawText( s, x, ToZoomY(y + this->hautFontCorr[pTaille][0]) );
 }
 
-void MusWindow::putlyric ( wxDC *dc, int x, int y, wxString s, int pTaille)
+void MusWindow::putlyric ( wxDC *dc, int x, int y, wxString s, int pTaille, bool cursor)
 { 
 	wxASSERT_MSG( dc , "DC cannot be NULL");
 
     dc->SetFont( m_activeLyricFonts[ pTaille ] );
-    x = ToZoom(x);
+	if ( cursor ){
+		int xCursor = x;
+		if ( m_lyricCursor > 0 ){
+			wxArrayInt lyricPos;
+			dc->GetPartialTextExtents( s, lyricPos );
+			xCursor += lyricPos[m_lyricCursor-1];			
+		}
+		xCursor = ToZoom( xCursor );
+		m_lyricCaret.Move( xCursor, ToZoomY( y + this->hautFontCorr[pTaille][0] ) );
+		if ( !m_lyricCaret.IsVisible() ) m_lyricCaret.Show();
+	}
+	x = ToZoom(x);
 
 	dc->SetTextForeground( *m_currentColour );
 	dc->DrawText( s, x, ToZoomY(y + this->hautFontCorr[pTaille][0]) );
+	
 }
 
 
