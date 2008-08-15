@@ -32,6 +32,7 @@ public:
     // constructors and destructors
     MusSymbol();
 	MusSymbol( unsigned char _flag, unsigned char _calte, unsigned short _code );
+	MusSymbol( const MusSymbol& symbol );
     virtual ~MusSymbol();
     
     // WDR: method declarations for MusSymbol
@@ -57,6 +58,7 @@ public:
 	
 	void InsertCharInLyricAt( int x, char letter );
 	bool DeleteCharInLyricAt( int x );
+	bool IsLastLyricElementInNote( );
     
 public:
     // WDR: member variable declarations for MusSymbol

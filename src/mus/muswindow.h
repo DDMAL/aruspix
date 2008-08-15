@@ -16,7 +16,6 @@
     #include "wx/wx.h"
 #endif
 #include "wx/dynarray.h"
-#include "wx/caret.h"
 
 #include "mus.h"
 
@@ -287,7 +286,6 @@ public:
 	bool m_lyricMode;
 	bool m_inputLyric;
 	int m_lyricCursor;
-	wxCaret m_lyricCaret; 
     
 private:
 	void SetPage( MusPage *page );

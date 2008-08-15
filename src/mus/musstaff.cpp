@@ -826,7 +826,7 @@ int MusStaff::GetLyricPos( MusSymbol *lyric )
 
 MusSymbol *MusStaff::GetPreviousLyric( MusSymbol *lyric )
 {
-	if ( !lyric || m_elements.IsEmpty() || !lyric->m_note_ptr || lyric->m_note_ptr->no <= 0 )
+	if ( !lyric || m_elements.IsEmpty() || !lyric->m_note_ptr || lyric->m_note_ptr->no < 0 )
 		return NULL;
 	
 	// If there are other lyrics attached to the note that lyric is attached to...
@@ -854,7 +854,7 @@ MusSymbol *MusStaff::GetPreviousLyric( MusSymbol *lyric )
 
 MusSymbol *MusStaff::GetNextLyric( MusSymbol *lyric )
 {	
-	if ( !lyric || m_elements.IsEmpty() || !lyric->m_note_ptr || lyric->m_note_ptr->no >= (int)m_elements.GetCount() - 1 )
+	if ( !lyric || m_elements.IsEmpty() || !lyric->m_note_ptr || lyric->m_note_ptr->no > (int)m_elements.GetCount() - 1 )
 		return NULL;
 	
 	// If there are other lyrics attached to the note that lyric is attached to...
@@ -862,8 +862,10 @@ MusSymbol *MusStaff::GetNextLyric( MusSymbol *lyric )
 		bool check = false; // Keeps track if we have past the pointer to this element in m_lyrics
 		for ( int i = 0; i < (int)lyric->m_note_ptr->m_lyrics.GetCount(); i++ ){
 			MusSymbol *nextLyric = &lyric->m_note_ptr->m_lyrics[i];
-			if ( check ) return nextLyric;
-			if ( nextLyric == lyric ) check = true;
+			if ( check ) 
+				return nextLyric;
+			if ( nextLyric == lyric ) 
+				check = true;
 		}
 	}
 	// Check next note in staff for lyric

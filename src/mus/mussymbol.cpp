@@ -60,6 +60,23 @@ MusSymbol::MusSymbol( unsigned char _flag, unsigned char _calte, unsigned short 
 	m_note_ptr = NULL;
 }
 
+MusSymbol::MusSymbol( const MusSymbol& symbol )
+	: MusElement( symbol )
+{
+	TYPE = symbol.TYPE;
+	calte = symbol.calte;
+	carOrient = symbol.carOrient;
+	carStyle = symbol.carStyle;
+	code = symbol.code;
+	flag = symbol.flag;
+	fonte = symbol.fonte;
+	l_ptch = symbol.l_ptch;
+	point = symbol.point;
+	s_lie_l = symbol.s_lie_l;
+	m_note_ptr = symbol.m_note_ptr;
+	m_debord_str = symbol.m_debord_str;
+}
+
 MusSymbol::~MusSymbol()
 {
 }
@@ -571,6 +588,18 @@ bool MusSymbol::DeleteCharInLyricAt( int x )
 	lyric = part1 << part2;
 	this->m_debord_str = lyric;
 	return true;
+}
+
+bool MusSymbol::IsLastLyricElementInNote( )
+{
+	MusNote *note = this->m_note_ptr;	
+	int no = (int)note->m_lyrics.GetCount();
+	MusSymbol *tmp = &note->m_lyrics[ no - 1];
+
+	if ( this == tmp )
+		return true;
+	else
+		return false;
 }
 
 // WDR: handler implementations for MusSymbol
