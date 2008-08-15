@@ -59,7 +59,9 @@ public:
 	virtual void MusNote::ChangeStem( MusStaff *staff = NULL );
 	virtual void MusNote::SetLigature( MusStaff *staff = NULL );
 	
+	// lyrics
 	void DeleteLyricFromNote( MusSymbol *lyric );
+	bool BelongsToTheNote( MusElement *element ); 
 	
 public:
 	// WDR: member variable declarations for MusNote

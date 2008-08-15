@@ -260,21 +260,43 @@ void MusWindow::putlyric ( wxDC *dc, int x, int y, wxString s, int pTaille, bool
 	wxASSERT_MSG( dc , "DC cannot be NULL");
 
     dc->SetFont( m_activeLyricFonts[ pTaille ] );
+	x = ToZoom(x);
+	
 	if ( cursor ){
 		int xCursor = x;
 		if ( m_lyricCursor > 0 ){
 			wxArrayInt lyricPos;
 			dc->GetPartialTextExtents( s, lyricPos );
-			xCursor += lyricPos[m_lyricCursor-1];			
+			if ( m_lyricCursor <= (int)lyricPos.GetCount() )
+				xCursor += lyricPos[m_lyricCursor-1];			
 		}
-		xCursor = ToZoom( xCursor );
-		m_lyricCaret.Move( xCursor, ToZoomY( y + this->hautFontCorr[pTaille][0] ) );
-		if ( !m_lyricCaret.IsVisible() ) m_lyricCaret.Show();
+		// the cursor witdh
+		int wCursor = max( 1, ToZoom( 2 ) );
+		
+		// get the bounding box and draw it
+		int wBox, hBox;
+		dc->GetTextExtent( s, &wBox, &hBox );
+		wxPen penBox( *wxBLACK, 1, wxSHORT_DASH );
+		dc->SetPen( penBox );
+		dc->DrawRectangle( x - 2 * wCursor, ToZoomY( y ) - wCursor, 
+			wBox + 4 * wCursor, hBox + 2 * wCursor  ); 
+		
+		// draw the cursor
+		xCursor -= wCursor / 2;
+		wxPen penCursor( *wxBLACK, 1, wxSOLID );
+		dc->SetPen( penCursor );
+		wxBrush brush( *wxBLACK, wxSOLID );
+		dc->SetBrush( brush );
+		dc->DrawRectangle( xCursor, ToZoomY( y ), wCursor , hBox  );
+
+		// reset the pens
+		dc->SetPen( wxNullPen );
+		dc->SetBrush( wxNullBrush );
 	}
-	x = ToZoom(x);
+	
 
 	dc->SetTextForeground( *m_currentColour );
-	dc->DrawText( s, x, ToZoomY(y + this->hautFontCorr[pTaille][0]) );
+	dc->DrawText( s, x, ToZoomY( y ) );
 	
 }
 

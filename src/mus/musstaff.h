@@ -21,7 +21,7 @@
 
 #include "musobject.h"
 
-#define STAFF_OFFSET 280
+#define STAFF_OFFSET 190
 
 class MusElement;
 WX_DECLARE_OBJARRAY( MusElement, ArrayOfWgElements);

@@ -164,6 +164,17 @@ MusNote::~MusNote()
 {	
 }
 
+bool MusNote::BelongsToTheNote( MusElement *element )
+{
+	for ( int i = 0; i < (int)m_lyrics.GetCount(); i++ )
+	{
+		MusSymbol *lyric = &m_lyrics[i];
+		if (lyric == element )
+			return true;
+	}
+	return false;
+}
+
 
 void MusNote::SetPitch( int code, int oct, MusStaff *staff )
 {
@@ -284,16 +295,15 @@ void MusNote::Draw( wxDC *dc, MusStaff *staff)
 	else if (!m_w->efface && (this->m_cmp_flag == CMP_DEL))
 		m_w->m_currentColour = wxGREEN;
 	else if (!m_w->efface && (this->m_cmp_flag == CMP_SUBST))
-		m_w->m_currentColour = wxBLUE;
-
-	for ( int i = 0; i < (int)m_lyrics.GetCount(); i++ ){
-		MusSymbol *lyric = &m_lyrics[i];
-		
-		if (!m_w->efface && ( lyric == m_w->m_currentElement ) ){
-			if ( m_w->m_lyricMode )
-				m_w->m_currentColour = wxCYAN;
-		}
-	}
+		m_w->m_currentColour = wxBLUE;	
+	
+	// To Tristan
+	// this is call every single time a note is drawn, so it has to be optimized
+	// First thing : don't do the loop if efface or !lyricMode
+	// Second thing : break as soon as you get the element
+	// Third thing : put the access stuff into a method (used below as well)
+	if ( !m_w->efface && m_w->m_lyricMode && BelongsToTheNote( m_w->m_currentElement ) )
+		m_w->m_currentColour = wxCYAN;
 		
 	if ( this->sil == _NOT)
 	{	
@@ -317,16 +327,15 @@ void MusNote::Draw( wxDC *dc, MusStaff *staff)
 	for ( int i = 0; i < (int)m_lyrics.GetCount(); i++ ){
 		MusSymbol *lyric = &m_lyrics[i];
 		
-		if (!m_w->efface && ( lyric == m_w->m_currentElement))
-			if ( m_w->m_inputLyric )
-				m_w->m_currentColour = wxBLUE;
-			else
-				m_w->m_currentColour = wxRED;
-			else 
-				m_w->m_currentColour = wxBLACK;
-		
-		
-		if ( lyric != NULL ){
+		if ( lyric != NULL )
+		{
+			if (!m_w->efface) 
+			{
+				if ( lyric == m_w->m_currentElement )
+					m_w->m_currentColour = wxRED;
+				else if ( (this == m_w->m_currentElement) || BelongsToTheNote( m_w->m_currentElement ) )
+					m_w->m_currentColour = wxCYAN;
+			}
 			m_w->putlyric(dc, lyric->xrel + staff->xrel, staff->yrel + lyric->dec_y , 
 						  lyric->m_debord_str, staff->pTaille, ( lyric == m_w->m_currentElement && m_w->m_inputLyric ) );
 		}		
