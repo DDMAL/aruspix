@@ -1,6 +1,8 @@
 
 [INFOTYPES]
 
+[MERGE FILES]
+
 [OPTIONS]
 Auto Index=Yes
 Compatibility=1.1 or later
@@ -18,18 +20,28 @@ Binary TOC=No
 Binary Index=Yes
 Default Font=
 Create CHI file=No
+Full text search stop list file=
+Display compile notes=Yes
 
 [WINDOWS]
-main="Aruspixxx","aruspix.hhc","aruspix.hhk","aruspix\aruspix.html","aruspix\aruspix.html",,,,,0x23520,222,0x1046,[10,10,640,450],0xB0000,,,,,,0
+main="Aruspix","aruspix.hhc","aruspix.hhk","aruspix\aruspix.html","aruspix\aruspix.html",,,,,0x23520,222,0x1046,[10,10,640,450],0xB0000,,,,,,0
 
 [FILES]
-aruspix\aruspix.css
+aruspix\node17.html
 aruspix\aruspix.html
-aruspix\axnode1.html
-aruspix\axnode2.html
-aruspix\axnode3.html
-aruspix\axnode4.html
-aruspix\axnode5.html
-aruspix\axnode6.html
-
-[MERGE FILES]
+aruspix\node1.html
+aruspix\node2.html
+aruspix\node3.html
+aruspix\node4.html
+aruspix\node5.html
+aruspix\node6.html
+aruspix\node7.html
+aruspix\node8.html
+aruspix\node9.html
+aruspix\node10.html
+aruspix\node11.html
+aruspix\node12.html
+aruspix\node13.html
+aruspix\node14.html
+aruspix\node15.html
+aruspix\node16.html
