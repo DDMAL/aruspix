@@ -1,3 +1,7 @@
+LATEX2HTML
+latex2html -local_icons -noinfo -split 4 -address '<a href="mailto:help@aruspix.net">help@aruspix.net</a>' aruspix.tex
+
+HHC
 1. copier les fichiers html générés avec latex2html sous linux (help2win.bat)
 2. ouvrir FAR
 3. Authoring - Help Wizard
