@@ -6,20 +6,20 @@
 --------------------Configuration: Adapter - Win32 Release--------------------
 </h3>
 <h3>Command Lines</h3>
-Creating temporary file "C:\DOCUME~1\Tristan\LOCALS~1\Temp\RSP24F.tmp" with contents
+Creating temporary file "C:\DOCUME~1\Tristan\LOCALS~1\Temp\RSPE6.tmp" with contents
 [
-/nologo /ML /W3 /GX /O2 /I "C:\Torch3\src" /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /Fp"../obj/AdapterRelease/Adapter.pch" /YX /Fo"../obj/AdapterRelease/" /Fd"../obj/AdapterRelease/" /FD /c 
+/nologo /MD /W3 /GX /O2 /I "C:\Torch3\src" /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /Fp"../obj/AdapterRelease/Adapter.pch" /YX /Fo"../obj/AdapterRelease/" /Fd"../obj/AdapterRelease/" /FD /c 
 "C:\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\src\torch\Adapter.cpp"
 "C:\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\src\ml\mlhmm.cpp"
 ]
-Creating command line "cl.exe @C:\DOCUME~1\Tristan\LOCALS~1\Temp\RSP24F.tmp" 
-Creating temporary file "C:\DOCUME~1\Tristan\LOCALS~1\Temp\RSP250.tmp" with contents
+Creating command line "cl.exe @C:\DOCUME~1\Tristan\LOCALS~1\Temp\RSPE6.tmp" 
+Creating temporary file "C:\DOCUME~1\Tristan\LOCALS~1\Temp\RSPE7.tmp" with contents
 [
 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib Torch3.lib /nologo /subsystem:console /incremental:no /pdb:"../obj/AdapterRelease/Adapt.pdb" /machine:I386 /out:"../bin/Release/Adapt.exe" /libpath:"C:\Torch3\Release" 
 "\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\obj\AdapterRelease\Adapter.obj"
 "\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\obj\AdapterRelease\mlhmm.obj"
 ]
-Creating command line "link.exe @C:\DOCUME~1\Tristan\LOCALS~1\Temp\RSP250.tmp"
+Creating command line "link.exe @C:\DOCUME~1\Tristan\LOCALS~1\Temp\RSPE7.tmp"
 <h3>Output Window</h3>
 Compiling...
 Adapter.cpp
@@ -94,20 +94,20 @@ Adapt.exe - 0 error(s), 38 warning(s)
 --------------------Configuration: Adapter - Win32 Debug--------------------
 </h3>
 <h3>Command Lines</h3>
-Creating temporary file "C:\DOCUME~1\Tristan\LOCALS~1\Temp\RSP252.tmp" with contents
+Creating temporary file "C:\DOCUME~1\Tristan\LOCALS~1\Temp\RSPE9.tmp" with contents
 [
-/nologo /MLd /W3 /Gm /GX /ZI /Od /I "C:\Torch3\src" /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /D DEBUG=1 /FR"../obj/AdapterDebug/" /Fp"../obj/AdapterDebug/Adapter.pch" /YX /Fo"../obj/AdapterDebug/" /Fd"../obj/AdapterDebug/" /FD /GZ /c 
+/nologo /MDd /W3 /Gm /GX /ZI /Od /I "C:\Torch3\src" /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /D DEBUG=1 /FR"../obj/AdapterDebug/" /Fp"../obj/AdapterDebug/Adapter.pch" /YX /Fo"../obj/AdapterDebug/" /Fd"../obj/AdapterDebug/" /FD /GZ /c 
 "C:\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\src\torch\Adapter.cpp"
 "C:\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\src\ml\mlhmm.cpp"
 ]
-Creating command line "cl.exe @C:\DOCUME~1\Tristan\LOCALS~1\Temp\RSP252.tmp" 
-Creating temporary file "C:\DOCUME~1\Tristan\LOCALS~1\Temp\RSP253.tmp" with contents
+Creating command line "cl.exe @C:\DOCUME~1\Tristan\LOCALS~1\Temp\RSPE9.tmp" 
+Creating temporary file "C:\DOCUME~1\Tristan\LOCALS~1\Temp\RSPEA.tmp" with contents
 [
 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib Torch3.lib /nologo /subsystem:console /incremental:yes /pdb:"../obj/AdapterDebug/Adapt.pdb" /debug /machine:I386 /out:"../bin/Debug/Adapt.exe" /pdbtype:sept /libpath:"C:\Torch3\Debug" 
 "\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\obj\AdapterDebug\Adapter.obj"
 "\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\obj\AdapterDebug\mlhmm.obj"
 ]
-Creating command line "link.exe @C:\DOCUME~1\Tristan\LOCALS~1\Temp\RSP253.tmp"
+Creating command line "link.exe @C:\DOCUME~1\Tristan\LOCALS~1\Temp\RSPEA.tmp"
 <h3>Output Window</h3>
 Compiling...
 Adapter.cpp
@@ -178,108 +178,6 @@ Linking...
 
 <h3>Results</h3>
 Adapt.exe - 0 error(s), 38 warning(s)
-<h3>
---------------------Configuration: Decoder - Win32 Release--------------------
-</h3>
-<h3>Command Lines</h3>
-Creating temporary file "C:\DOCUME~1\Tristan\LOCALS~1\Temp\RSP255.tmp" with contents
-[
-/nologo /ML /W3 /GX /O2 /I "C:\Torch3\src" /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /Fp"../obj/DecoderRelease/Decoder.pch" /YX /Fo"../obj/DecoderRelease/" /Fd"../obj/DecoderRelease/" /FD /c 
-"C:\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\src\torch\Decoder.cpp"
-"C:\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\src\ml\mldecoderpage.cpp"
-"C:\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\src\ml\mldecoderstaff.cpp"
-]
-Creating command line "cl.exe @C:\DOCUME~1\Tristan\LOCALS~1\Temp\RSP255.tmp" 
-Creating temporary file "C:\DOCUME~1\Tristan\LOCALS~1\Temp\RSP256.tmp" with contents
-[
-kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib Torch3.lib /nologo /subsystem:console /incremental:no /pdb:"../obj/DecoderRelease/Decoder.pdb" /machine:I386 /out:"../bin/Release/Decoder.exe" /libpath:"C:\Torch3\Release" 
-"\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\obj\DecoderRelease\Decoder.obj"
-"\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\obj\DecoderRelease\mldecoderpage.obj"
-"\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\obj\DecoderRelease\mldecoderstaff.obj"
-]
-Creating command line "link.exe @C:\DOCUME~1\Tristan\LOCALS~1\Temp\RSP256.tmp"
-<h3>Output Window</h3>
-Compiling...
-Decoder.cpp
-mldecoderpage.cpp
-mldecoderstaff.cpp
-Linking...
-
-
-
-<h3>Results</h3>
-Decoder.exe - 0 error(s), 0 warning(s)
-<h3>
---------------------Configuration: Decoder - Win32 Debug--------------------
-</h3>
-<h3>Command Lines</h3>
-Creating temporary file "C:\DOCUME~1\Tristan\LOCALS~1\Temp\RSP258.tmp" with contents
-[
-/nologo /MLd /W3 /Gm /GX /ZI /Od /I "C:\Torch3\src" /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /D DEBUG=1 /FR"../obj/DecoderDebug/" /Fp"../obj/DecoderDebug/Decoder.pch" /YX /Fo"../obj/DecoderDebug/" /Fd"../obj/DecoderDebug/" /FD /GZ /c 
-"C:\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\src\torch\Decoder.cpp"
-"C:\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\src\ml\mldecoderpage.cpp"
-"C:\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\src\ml\mldecoderstaff.cpp"
-]
-Creating command line "cl.exe @C:\DOCUME~1\Tristan\LOCALS~1\Temp\RSP258.tmp" 
-Creating temporary file "C:\DOCUME~1\Tristan\LOCALS~1\Temp\RSP259.tmp" with contents
-[
-kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib Torch3.lib /nologo /subsystem:console /incremental:yes /pdb:"../obj/DecoderDebug/Decoder.pdb" /debug /machine:I386 /out:"../bin/Debug/Decoder.exe" /pdbtype:sept /libpath:"C:\Torch3\Debug" 
-"\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\obj\DecoderDebug\Decoder.obj"
-"\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\obj\DecoderDebug\mldecoderpage.obj"
-"\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\obj\DecoderDebug\mldecoderstaff.obj"
-]
-Creating command line "link.exe @C:\DOCUME~1\Tristan\LOCALS~1\Temp\RSP259.tmp"
-<h3>Output Window</h3>
-Compiling...
-Decoder.cpp
-mldecoderpage.cpp
-mldecoderstaff.cpp
-Linking...
-
-
-
-<h3>Results</h3>
-Decoder.exe - 0 error(s), 0 warning(s)
-<h3>
---------------------Configuration: Ngram - Win32 Release--------------------
-</h3>
-<h3>Command Lines</h3>
-Creating temporary file "C:\DOCUME~1\Tristan\LOCALS~1\Temp\RSP25B.tmp" with contents
-[
-/nologo /ML /W3 /GX /O2 /I "C:\Torch3\src" /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /Fp"../obj/NgramRelease/Ngram.pch" /YX /Fo"../obj/NgramRelease/" /Fd"../obj/NgramRelease/" /FD /c 
-"C:\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\src\ml\mlngrambuilder.cpp"
-"C:\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\src\ml\mlngramentry.cpp"
-"C:\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\src\torch\NGram.cpp"
-]
-Creating command line "cl.exe @C:\DOCUME~1\Tristan\LOCALS~1\Temp\RSP25B.tmp" 
-Creating temporary file "C:\DOCUME~1\Tristan\LOCALS~1\Temp\RSP25C.tmp" with contents
-[
-kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib Torch3.lib /nologo /subsystem:console /incremental:no /pdb:"../obj/NgramRelease/Ngram.pdb" /machine:I386 /out:"../bin/Release/Ngram.exe" /libpath:"C:\Torch3\Release" 
-"\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\obj\NgramRelease\mlngrambuilder.obj"
-"\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\obj\NgramRelease\mlngramentry.obj"
-"\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\obj\NgramRelease\NGram.obj"
-]
-Creating command line "link.exe @C:\DOCUME~1\Tristan\LOCALS~1\Temp\RSP25C.tmp"
-<h3>Output Window</h3>
-Compiling...
-mlngrambuilder.cpp
-mlngramentry.cpp
-NGram.cpp
-Linking...
-
-
-
-<h3>Results</h3>
-Ngram.exe - 0 error(s), 0 warning(s)
-<h3>
---------------------Configuration: Ngram - Win32 Debug--------------------
-</h3>
-<h3>Command Lines</h3>
-
-
-
-<h3>Results</h3>
-Ngram.exe - 0 error(s), 0 warning(s)
 </pre>
 </body>
 </html>

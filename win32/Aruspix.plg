@@ -3,123 +3,288 @@
 <pre>
 <h1>Build Log</h1>
 <h3>
---------------------Configuration: Aruspix - Win32 Debug--------------------
+--------------------Configuration: Aruspix - Win32 Release--------------------
 </h3>
 <h3>Command Lines</h3>
-Creating temporary file "C:\DOCUME~1\Tristan\LOCALS~1\Temp\RSP85.bat" with contents
+Creating temporary file "C:\DOCUME~1\laurent\LOCALS~1\Temp\RSPCE.tmp" with contents
+[
+/nologo /MD /W3 /GX /Zd /I ".\..\src\\" /I "C:\laurent\libs\wx2.8.7\include" /I "C:\laurent\libs\wx2.8.7\include\msvc" /I "C:\laurent\libs\imlib\include" /I "C:\laurent\libs\tinyxml" /I "D:\libs\wx2.8.7\lib\vc_lib\msw" /D "WIN32" /D "_WINDOWS" /D WINVER=0x400 /D "_MT" /D wxUSE_GUI=1 /D "AX_RECOGNITION" /D "AX_WGVIEWER" /D "AX_SUPERIMPOSITION" /D "AX_COMPARISON" /Fp"../obj/AruspixRelease/Aruspix.pch" /YX /Fo"../obj/AruspixRelease/" /Fd"../obj/AruspixRelease/" /FD /c 
+"C:\laurent\projects\aruspix_1.4\src\app\axabout_wdr.cpp"
+"C:\laurent\projects\aruspix_1.4\src\app\axapp_wdr.cpp"
+"C:\laurent\projects\aruspix_1.4\src\app\axctrl.cpp"
+"C:\laurent\projects\aruspix_1.4\src\app\axenv.cpp"
+"C:\laurent\projects\aruspix_1.4\src\app\axfile.cpp"
+"C:\laurent\projects\aruspix_1.4\src\app\axframe.cpp"
+"C:\laurent\projects\aruspix_1.4\src\app\axgotodlg.cpp"
+"C:\laurent\projects\aruspix_1.4\src\app\aximage.cpp"
+"C:\laurent\projects\aruspix_1.4\src\app\aximagecontroller.cpp"
+"C:\laurent\projects\aruspix_1.4\src\app\aximcontrol_wdr.cpp"
+"C:\laurent\projects\aruspix_1.4\src\app\axoptions_wdr.cpp"
+"C:\laurent\projects\aruspix_1.4\src\app\axoptionsdlg.cpp"
+"C:\laurent\projects\aruspix_1.4\src\app\axprocess.cpp"
+"C:\laurent\projects\aruspix_1.4\src\app\axprogressdlg.cpp"
+"C:\laurent\projects\aruspix_1.4\src\app\axscrolledwindow.cpp"
+"C:\laurent\projects\aruspix_1.4\src\app\axundo.cpp"
+"C:\laurent\projects\aruspix_1.4\src\comparison\cmp.cpp"
+"C:\laurent\projects\aruspix_1.4\src\comparison\cmp_wdr.cpp"
+"C:\laurent\projects\aruspix_1.4\src\comparison\cmpctrl.cpp"
+"C:\laurent\projects\aruspix_1.4\src\comparison\cmpfile.cpp"
+"C:\laurent\projects\aruspix_1.4\src\comparison\cmpim.cpp"
+"C:\laurent\projects\aruspix_1.4\src\comparison\cmpmlf.cpp"
+"C:\laurent\projects\aruspix_1.4\src\comparison\cmpmus.cpp"
+"C:\laurent\projects\aruspix_1.4\src\im\imbrink.cpp"
+"C:\laurent\projects\aruspix_1.4\src\im\imext.cpp"
+"C:\laurent\projects\aruspix_1.4\src\im\imoperator.cpp"
+"C:\laurent\projects\aruspix_1.4\src\im\impage.cpp"
+"C:\laurent\projects\aruspix_1.4\src\im\imstaff.cpp"
+"C:\laurent\projects\aruspix_1.4\src\im\imstaffsegment.cpp"
+"C:\laurent\projects\aruspix_1.4\src\mus\mus.cpp"
+"C:\laurent\projects\aruspix_1.4\src\mus\mus_wdr.cpp"
+"C:\laurent\projects\aruspix_1.4\src\mus\musbarlines.cpp"
+"C:\laurent\projects\aruspix_1.4\src\mus\musbezier.cpp"
+"C:\laurent\projects\aruspix_1.4\src\mus\musclef.cpp"
+"C:\laurent\projects\aruspix_1.4\src\mus\muselement.cpp"
+"C:\laurent\projects\aruspix_1.4\src\mus\musfile.cpp"
+"C:\laurent\projects\aruspix_1.4\src\mus\musgraph.cpp"
+"C:\laurent\projects\aruspix_1.4\src\mus\musiomlf.cpp"
+"C:\laurent\projects\aruspix_1.4\src\mus\musiowwg.cpp"
+"C:\laurent\projects\aruspix_1.4\src\mus\musnote.cpp"
+"C:\laurent\projects\aruspix_1.4\src\mus\musobject.cpp"
+"C:\laurent\projects\aruspix_1.4\src\mus\muspage.cpp"
+"C:\laurent\projects\aruspix_1.4\src\mus\musstaff.cpp"
+"C:\laurent\projects\aruspix_1.4\src\mus\mussymbol.cpp"
+"C:\laurent\projects\aruspix_1.4\src\mus\mustoolpanel.cpp"
+"C:\laurent\projects\aruspix_1.4\src\mus\muswindow.cpp"
+"C:\laurent\projects\aruspix_1.4\src\recognition\rec.cpp"
+"C:\laurent\projects\aruspix_1.4\src\recognition\rec_wdr.cpp"
+"C:\laurent\projects\aruspix_1.4\src\recognition\recbookctrl.cpp"
+"C:\laurent\projects\aruspix_1.4\src\recognition\recbookfile.cpp"
+"C:\laurent\projects\aruspix_1.4\src\recognition\recfile.cpp"
+"C:\laurent\projects\aruspix_1.4\src\recognition\recim.cpp"
+"C:\laurent\projects\aruspix_1.4\src\recognition\recmlfbmp.cpp"
+"C:\laurent\projects\aruspix_1.4\src\recognition\recmodels.cpp"
+"C:\laurent\projects\aruspix_1.4\src\recognition\recmus.cpp"
+"C:\laurent\projects\aruspix_1.4\src\superimposition\sup.cpp"
+"C:\laurent\projects\aruspix_1.4\src\superimposition\sup_wdr.cpp"
+"C:\laurent\projects\aruspix_1.4\src\wgviewer\wgviewer.cpp"
+"C:\laurent\projects\aruspix_1.4\src\wgviewer\wgviewer_wdr.cpp"
+]
+Creating command line "cl.exe @C:\DOCUME~1\laurent\LOCALS~1\Temp\RSPCE.tmp" 
+Creating temporary file "C:\DOCUME~1\laurent\LOCALS~1\Temp\RSPCF.tmp" with contents
+[
+/nologo /MD /W3 /GX /Zd /Od /I ".\..\src\\" /I "C:\laurent\libs\wx2.8.7\include" /I "C:\laurent\libs\wx2.8.7\include\msvc" /I "C:\laurent\libs\imlib\include" /I "C:\laurent\libs\tinyxml" /I "D:\libs\wx2.8.7\lib\vc_lib\msw" /D "WIN32" /D "_WINDOWS" /D WINVER=0x400 /D "_MT" /D wxUSE_GUI=1 /D "AX_RECOGNITION" /D "AX_WGVIEWER" /D "AX_SUPERIMPOSITION" /D "AX_COMPARISON" /Fo"../obj/AruspixRelease/" /Fd"../obj/AruspixRelease/" /FD /c 
+"C:\laurent\projects\aruspix_1.4\src\app\axapp.cpp"
+]
+Creating command line "cl.exe @C:\DOCUME~1\laurent\LOCALS~1\Temp\RSPCF.tmp" 
+Creating temporary file "C:\DOCUME~1\laurent\LOCALS~1\Temp\RSPD0.tmp" with contents
+[
+/nologo /MD /W3 /GX /Zd /I ".\..\src\\" /I "C:\laurent\libs\wx2.8.7\include" /I "C:\laurent\libs\wx2.8.7\include\msvc" /I "C:\laurent\libs\imlib\include" /I "C:\laurent\libs\tinyxml" /D "AX_DISPLAY" /D "WIN32" /D "_WINDOWS" /D WINVER=0x400 /D "_MT" /D wxUSE_GUI=1 /D "AX_RECOGNITION" /D "AX_WG" /D "AX_WGVIEWER" /D "AX_SUPERIMPOSITION" /Fp"../obj/AruspixRelease/Aruspix.pch" /YX /Fo"../obj/AruspixRelease/" /Fd"../obj/AruspixRelease/" /FD /c 
+"C:\laurent\projects\aruspix_1.4\src\im\imbrink3classes.cpp"
+"C:\laurent\projects\aruspix_1.4\src\im\imkmeans.cpp"
+"C:\laurent\projects\aruspix_1.4\src\im\imregister.cpp"
+"C:\laurent\projects\aruspix_1.4\src\mus\musmlfdic.cpp"
+"C:\laurent\projects\aruspix_1.4\src\superimposition\supbookctrl.cpp"
+"C:\laurent\projects\aruspix_1.4\src\superimposition\supbookfile.cpp"
+"C:\laurent\projects\aruspix_1.4\src\superimposition\supfile.cpp"
+"C:\laurent\projects\aruspix_1.4\src\superimposition\supim.cpp"
+]
+Creating command line "cl.exe @C:\DOCUME~1\laurent\LOCALS~1\Temp\RSPD0.tmp" 
+Creating temporary file "C:\DOCUME~1\laurent\LOCALS~1\Temp\RSPD1.bat" with contents
 [
 @echo off
-clean.bat Debug
+clean.bat Release
 ]
-Creating command line "C:\DOCUME~1\Tristan\LOCALS~1\Temp\RSP85.bat"
-Creating temporary file "C:\DOCUME~1\Tristan\LOCALS~1\Temp\RSP86.tmp" with contents
+Creating command line "C:\DOCUME~1\laurent\LOCALS~1\Temp\RSPD1.bat"
+Compiling...
+axabout_wdr.cpp
+axapp_wdr.cpp
+axctrl.cpp
+axenv.cpp
+axfile.cpp
+axframe.cpp
+axgotodlg.cpp
+aximage.cpp
+aximagecontroller.cpp
+aximcontrol_wdr.cpp
+axoptions_wdr.cpp
+axoptionsdlg.cpp
+C:\laurent\projects\aruspix_1.4\src\app\axoptionsdlg.cpp(334) : warning C4067: unexpected tokens following preprocessor directive - expected a newline
+axprocess.cpp
+axprogressdlg.cpp
+axscrolledwindow.cpp
+axundo.cpp
+cmp.cpp
+cmp_wdr.cpp
+cmpctrl.cpp
+cmpfile.cpp
+C:\laurent\projects\aruspix_1.4\src\comparison\cmpfile.cpp(510) : warning C4800: 'class MusStaff *' : forcing value to bool 'true' or 'false' (performance warning)
+cmpim.cpp
+cmpmlf.cpp
+cmpmus.cpp
+imbrink.cpp
+imext.cpp
+imoperator.cpp
+impage.cpp
+imstaff.cpp
+C:\laurent\projects\aruspix_1.4\src\im\imstaff.cpp(52) : warning C4273: '__mb_cur_max' : inconsistent dll linkage.  dllexport assumed.
+C:\laurent\projects\aruspix_1.4\src\im\imstaff.cpp(53) : warning C4273: '_pctype' : inconsistent dll linkage.  dllexport assumed.
+imstaffsegment.cpp
+mus.cpp
+mus_wdr.cpp
+musbarlines.cpp
+musbezier.cpp
+musclef.cpp
+muselement.cpp
+musfile.cpp
+musgraph.cpp
+musiomlf.cpp
+C:\laurent\projects\aruspix_1.4\src\mus\musiomlf.cpp(776) : warning C4805: '==' : unsafe mix of type 'char' and type 'const bool' in operation
+C:\laurent\projects\aruspix_1.4\src\mus\musiomlf.cpp(780) : warning C4805: '==' : unsafe mix of type 'char' and type 'const bool' in operation
+C:\laurent\projects\aruspix_1.4\src\mus\musiomlf.cpp(782) : warning C4805: '==' : unsafe mix of type 'char' and type 'const bool' in operation
+C:\laurent\projects\aruspix_1.4\src\mus\musiomlf.cpp(979) : warning C4805: '==' : unsafe mix of type 'char' and type 'const bool' in operation
+C:\laurent\projects\aruspix_1.4\src\mus\musiomlf.cpp(988) : warning C4805: '==' : unsafe mix of type 'char' and type 'const bool' in operation
+C:\laurent\projects\aruspix_1.4\src\mus\musiomlf.cpp(992) : warning C4805: '==' : unsafe mix of type 'char' and type 'const bool' in operation
+C:\laurent\projects\aruspix_1.4\src\mus\musiomlf.cpp(994) : warning C4805: '==' : unsafe mix of type 'char' and type 'const bool' in operation
+musiowwg.cpp
+musnote.cpp
+musobject.cpp
+muspage.cpp
+musstaff.cpp
+mussymbol.cpp
+mustoolpanel.cpp
+muswindow.cpp
+rec.cpp
+rec_wdr.cpp
+recbookctrl.cpp
+recbookfile.cpp
+C:\laurent\projects\aruspix_1.4\src\recognition\recbookfile.cpp(171) : warning C4800: 'int' : forcing value to bool 'true' or 'false' (performance warning)
+recfile.cpp
+C:\laurent\projects\aruspix_1.4\src\recognition\recfile.cpp(417) : warning C4800: 'char *' : forcing value to bool 'true' or 'false' (performance warning)
+recim.cpp
+recmlfbmp.cpp
+recmodels.cpp
+recmus.cpp
+sup.cpp
+C:\laurent\projects\aruspix_1.4\src\superimposition\sup.cpp(458) : warning C4390: ';' : empty controlled statement found; is this the intent?
+sup_wdr.cpp
+wgviewer.cpp
+wgviewer_wdr.cpp
+Compiling...
+axapp.cpp
+Compiling...
+imbrink3classes.cpp
+imkmeans.cpp
+imregister.cpp
+musmlfdic.cpp
+supbookctrl.cpp
+supbookfile.cpp
+supfile.cpp
+supim.cpp
+Creating temporary file "C:\DOCUME~1\laurent\LOCALS~1\Temp\RSPD2.tmp" with contents
 [
-wxmsw28d_core.lib wxbase28d.lib wxmsw28d_html.lib wxpngd.lib wxzlibd.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib comctl32.lib rpcrt4.lib wsock32.lib im.lib im_process.lib im_fftw.lib tinyxmld.lib /nologo /subsystem:windows /pdb:none /debug /machine:I386 /nodefaultlib:"libc.lib" /nodefaultlib:"libcd.lib" /out:"../bin/Debug/Aruspix.exe" /libpath:"C:\imlib\lib" /libpath:"C:\tinyxml\Debug" /libpath:"C:\wxWidgets-2.8.7\lib\vc_lib" 
-"\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\obj\AruspixDebug\axabout_wdr.obj"
-"\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\obj\AruspixDebug\axapp.obj"
-"\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\obj\AruspixDebug\axapp_wdr.obj"
-"\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\obj\AruspixDebug\axctrl.obj"
-"\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\obj\AruspixDebug\axenv.obj"
-"\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\obj\AruspixDebug\axfile.obj"
-"\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\obj\AruspixDebug\axframe.obj"
-"\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\obj\AruspixDebug\axgotodlg.obj"
-"\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\obj\AruspixDebug\aximage.obj"
-"\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\obj\AruspixDebug\aximagecontroller.obj"
-"\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\obj\AruspixDebug\aximcontrol_wdr.obj"
-"\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\obj\AruspixDebug\axoptions_wdr.obj"
-"\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\obj\AruspixDebug\axoptionsdlg.obj"
-"\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\obj\AruspixDebug\axprocess.obj"
-"\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\obj\AruspixDebug\axprogressdlg.obj"
-"\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\obj\AruspixDebug\axscrolledwindow.obj"
-"\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\obj\AruspixDebug\axundo.obj"
-"\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\obj\AruspixDebug\cmp.obj"
-"\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\obj\AruspixDebug\cmp_wdr.obj"
-"\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\obj\AruspixDebug\cmpctrl.obj"
-"\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\obj\AruspixDebug\cmpfile.obj"
-"\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\obj\AruspixDebug\cmpim.obj"
-"\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\obj\AruspixDebug\cmpmlf.obj"
-"\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\obj\AruspixDebug\cmpmus.obj"
-"\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\obj\AruspixDebug\imbrink.obj"
-"\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\obj\AruspixDebug\imbrink3classes.obj"
-"\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\obj\AruspixDebug\imext.obj"
-"\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\obj\AruspixDebug\imkmeans.obj"
-"\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\obj\AruspixDebug\imoperator.obj"
-"\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\obj\AruspixDebug\impage.obj"
-"\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\obj\AruspixDebug\imregister.obj"
-"\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\obj\AruspixDebug\imstaff.obj"
-"\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\obj\AruspixDebug\imstaffsegment.obj"
-"\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\obj\AruspixDebug\mus.obj"
-"\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\obj\AruspixDebug\mus_wdr.obj"
-"\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\obj\AruspixDebug\musbarlines.obj"
-"\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\obj\AruspixDebug\musbezier.obj"
-"\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\obj\AruspixDebug\musclef.obj"
-"\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\obj\AruspixDebug\muselement.obj"
-"\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\obj\AruspixDebug\musfile.obj"
-"\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\obj\AruspixDebug\musgraph.obj"
-"\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\obj\AruspixDebug\musiomlf.obj"
-"\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\obj\AruspixDebug\musiowwg.obj"
-"\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\obj\AruspixDebug\musmlfdic.obj"
-"\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\obj\AruspixDebug\musnote.obj"
-"\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\obj\AruspixDebug\musobject.obj"
-"\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\obj\AruspixDebug\muspage.obj"
-"\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\obj\AruspixDebug\musstaff.obj"
-"\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\obj\AruspixDebug\mussymbol.obj"
-"\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\obj\AruspixDebug\mustoolpanel.obj"
-"\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\obj\AruspixDebug\muswindow.obj"
-"\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\obj\AruspixDebug\rec.obj"
-"\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\obj\AruspixDebug\rec_wdr.obj"
-"\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\obj\AruspixDebug\recbookctrl.obj"
-"\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\obj\AruspixDebug\recbookfile.obj"
-"\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\obj\AruspixDebug\recfile.obj"
-"\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\obj\AruspixDebug\recim.obj"
-"\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\obj\AruspixDebug\recmlfbmp.obj"
-"\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\obj\AruspixDebug\recmodels.obj"
-"\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\obj\AruspixDebug\recmus.obj"
-"\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\obj\AruspixDebug\sup.obj"
-"\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\obj\AruspixDebug\sup_wdr.obj"
-"\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\obj\AruspixDebug\supbookctrl.obj"
-"\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\obj\AruspixDebug\supbookfile.obj"
-"\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\obj\AruspixDebug\supfile.obj"
-"\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\obj\AruspixDebug\supim.obj"
-"\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\obj\AruspixDebug\wgviewer.obj"
-"\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\obj\AruspixDebug\wgviewer_wdr.obj"
-"\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\obj\AruspixDebug\ax.res"
+wxmsw28_core.lib wxbase28.lib wxmsw28_html.lib wxpng.lib wxzlib.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib comctl32.lib rpcrt4.lib wsock32.lib im.lib im_process.lib im_fftw.lib tinyxml.lib /nologo /subsystem:windows /incremental:yes /pdb:"../obj/AruspixRelease/Aruspix.pdb" /machine:I386 /nodefaultlib:"libc.lib" /nodefaultlib:"libcd.lib" /nodefaultlib:"LIBCMT" /out:"../bin/Release/Aruspix.exe" /libpath:"C:\laurent\libs\imlib\lib" /libpath:"C:\laurent\libs\tinyxml\Release" /libpath:"C:\laurent\libs\wx2.8.7\lib\vc_lib" 
+\laurent\projects\aruspix_1.4\obj\AruspixRelease\axabout_wdr.obj
+\laurent\projects\aruspix_1.4\obj\AruspixRelease\axapp.obj
+\laurent\projects\aruspix_1.4\obj\AruspixRelease\axapp_wdr.obj
+\laurent\projects\aruspix_1.4\obj\AruspixRelease\axctrl.obj
+\laurent\projects\aruspix_1.4\obj\AruspixRelease\axenv.obj
+\laurent\projects\aruspix_1.4\obj\AruspixRelease\axfile.obj
+\laurent\projects\aruspix_1.4\obj\AruspixRelease\axframe.obj
+\laurent\projects\aruspix_1.4\obj\AruspixRelease\axgotodlg.obj
+\laurent\projects\aruspix_1.4\obj\AruspixRelease\aximage.obj
+\laurent\projects\aruspix_1.4\obj\AruspixRelease\aximagecontroller.obj
+\laurent\projects\aruspix_1.4\obj\AruspixRelease\aximcontrol_wdr.obj
+\laurent\projects\aruspix_1.4\obj\AruspixRelease\axoptions_wdr.obj
+\laurent\projects\aruspix_1.4\obj\AruspixRelease\axoptionsdlg.obj
+\laurent\projects\aruspix_1.4\obj\AruspixRelease\axprocess.obj
+\laurent\projects\aruspix_1.4\obj\AruspixRelease\axprogressdlg.obj
+\laurent\projects\aruspix_1.4\obj\AruspixRelease\axscrolledwindow.obj
+\laurent\projects\aruspix_1.4\obj\AruspixRelease\axundo.obj
+\laurent\projects\aruspix_1.4\obj\AruspixRelease\cmp.obj
+\laurent\projects\aruspix_1.4\obj\AruspixRelease\cmp_wdr.obj
+\laurent\projects\aruspix_1.4\obj\AruspixRelease\cmpctrl.obj
+\laurent\projects\aruspix_1.4\obj\AruspixRelease\cmpfile.obj
+\laurent\projects\aruspix_1.4\obj\AruspixRelease\cmpim.obj
+\laurent\projects\aruspix_1.4\obj\AruspixRelease\cmpmlf.obj
+\laurent\projects\aruspix_1.4\obj\AruspixRelease\cmpmus.obj
+\laurent\projects\aruspix_1.4\obj\AruspixRelease\imbrink.obj
+\laurent\projects\aruspix_1.4\obj\AruspixRelease\imbrink3classes.obj
+\laurent\projects\aruspix_1.4\obj\AruspixRelease\imext.obj
+\laurent\projects\aruspix_1.4\obj\AruspixRelease\imkmeans.obj
+\laurent\projects\aruspix_1.4\obj\AruspixRelease\imoperator.obj
+\laurent\projects\aruspix_1.4\obj\AruspixRelease\impage.obj
+\laurent\projects\aruspix_1.4\obj\AruspixRelease\imregister.obj
+\laurent\projects\aruspix_1.4\obj\AruspixRelease\imstaff.obj
+\laurent\projects\aruspix_1.4\obj\AruspixRelease\imstaffsegment.obj
+\laurent\projects\aruspix_1.4\obj\AruspixRelease\mus.obj
+\laurent\projects\aruspix_1.4\obj\AruspixRelease\mus_wdr.obj
+\laurent\projects\aruspix_1.4\obj\AruspixRelease\musbarlines.obj
+\laurent\projects\aruspix_1.4\obj\AruspixRelease\musbezier.obj
+\laurent\projects\aruspix_1.4\obj\AruspixRelease\musclef.obj
+\laurent\projects\aruspix_1.4\obj\AruspixRelease\muselement.obj
+\laurent\projects\aruspix_1.4\obj\AruspixRelease\musfile.obj
+\laurent\projects\aruspix_1.4\obj\AruspixRelease\musgraph.obj
+\laurent\projects\aruspix_1.4\obj\AruspixRelease\musiomlf.obj
+\laurent\projects\aruspix_1.4\obj\AruspixRelease\musiowwg.obj
+\laurent\projects\aruspix_1.4\obj\AruspixRelease\musmlfdic.obj
+\laurent\projects\aruspix_1.4\obj\AruspixRelease\musnote.obj
+\laurent\projects\aruspix_1.4\obj\AruspixRelease\musobject.obj
+\laurent\projects\aruspix_1.4\obj\AruspixRelease\muspage.obj
+\laurent\projects\aruspix_1.4\obj\AruspixRelease\musstaff.obj
+\laurent\projects\aruspix_1.4\obj\AruspixRelease\mussymbol.obj
+\laurent\projects\aruspix_1.4\obj\AruspixRelease\mustoolpanel.obj
+\laurent\projects\aruspix_1.4\obj\AruspixRelease\muswindow.obj
+\laurent\projects\aruspix_1.4\obj\AruspixRelease\rec.obj
+\laurent\projects\aruspix_1.4\obj\AruspixRelease\rec_wdr.obj
+\laurent\projects\aruspix_1.4\obj\AruspixRelease\recbookctrl.obj
+\laurent\projects\aruspix_1.4\obj\AruspixRelease\recbookfile.obj
+\laurent\projects\aruspix_1.4\obj\AruspixRelease\recfile.obj
+\laurent\projects\aruspix_1.4\obj\AruspixRelease\recim.obj
+\laurent\projects\aruspix_1.4\obj\AruspixRelease\recmlfbmp.obj
+\laurent\projects\aruspix_1.4\obj\AruspixRelease\recmodels.obj
+\laurent\projects\aruspix_1.4\obj\AruspixRelease\recmus.obj
+\laurent\projects\aruspix_1.4\obj\AruspixRelease\sup.obj
+\laurent\projects\aruspix_1.4\obj\AruspixRelease\sup_wdr.obj
+\laurent\projects\aruspix_1.4\obj\AruspixRelease\supbookctrl.obj
+\laurent\projects\aruspix_1.4\obj\AruspixRelease\supbookfile.obj
+\laurent\projects\aruspix_1.4\obj\AruspixRelease\supfile.obj
+\laurent\projects\aruspix_1.4\obj\AruspixRelease\supim.obj
+\laurent\projects\aruspix_1.4\obj\AruspixRelease\wgviewer.obj
+\laurent\projects\aruspix_1.4\obj\AruspixRelease\wgviewer_wdr.obj
+\laurent\projects\aruspix_1.4\obj\AruspixRelease\ax.res
 ]
-Creating command line "link.exe @C:\DOCUME~1\Tristan\LOCALS~1\Temp\RSP86.tmp"
+Creating command line "link.exe @C:\DOCUME~1\laurent\LOCALS~1\Temp\RSPD2.tmp"
 
-C:\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\bin\Debug\Adapt.exe
-C:\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\bin\Debug\Aruspix.exe
-C:\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\bin\Debug\Decoder.exe
-C:\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\bin\Debug\Ngram.exe
-C:\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\bin\Debug\.svn\all-wcprops
-Access is denied.
-C:\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\bin\Debug\.svn\entries
-Access is denied.
-C:\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\bin\Debug\.svn\format
-Access is denied.
-C:\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\bin\Adapt.exe
-C:\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\bin\Aruspix.exe
-C:\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\bin\Decoder.exe
-C:\Documents and Settings\Tristan\My Documents\aruspix-1.4.0\bin\Ngram.exe
+C:\laurent\projects\aruspix_1.4\bin\Release\Adapt.exe
+C:\laurent\projects\aruspix_1.4\bin\Release\Aruspix.exe
+C:\laurent\projects\aruspix_1.4\bin\Release\Decoder.exe
+C:\laurent\projects\aruspix_1.4\bin\Release\Ngram.exe
+Deleted file - C:\laurent\projects\aruspix_1.4\bin\Release\Aruspix.exp
+Deleted file - C:\laurent\projects\aruspix_1.4\bin\Release\Aruspix.ilk
+Deleted file - C:\laurent\projects\aruspix_1.4\bin\Release\Aruspix.lib
+C:\laurent\projects\aruspix_1.4\bin\Adapt.exe
+C:\laurent\projects\aruspix_1.4\bin\Aruspix.exe
+C:\laurent\projects\aruspix_1.4\bin\Decoder.exe
+C:\laurent\projects\aruspix_1.4\bin\Ngram.exe
 output dir cleaned
 <h3>Output Window</h3>
 Linking...
-   Creating library ../bin/Debug/Aruspix.lib and object ../bin/Debug/Aruspix.exp
-Creating temporary file "C:\DOCUME~1\Tristan\LOCALS~1\Temp\RSP8A.bat" with contents
+   Creating library ../bin/Release/Aruspix.lib and object ../bin/Release/Aruspix.exp
+Creating temporary file "C:\DOCUME~1\laurent\LOCALS~1\Temp\RSPD6.bat" with contents
 [
 @echo off
-copy.bat Debug
+copy.bat Release
 ]
-Creating command line "C:\DOCUME~1\Tristan\LOCALS~1\Temp\RSP8A.bat"
+Creating command line "C:\DOCUME~1\laurent\LOCALS~1\Temp\RSPD6.bat"
 
-93 File(s) copied
+98 File(s) copied
 149 File(s) copied
 local and data files copied
 
 
 
 <h3>Results</h3>
-Aruspix.exe - 0 error(s), 0 warning(s)
+Aruspix.exe - 0 error(s), 14 warning(s)
 </pre>
 </body>
 </html>

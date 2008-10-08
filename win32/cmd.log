@@ -1,46 +1,19 @@
-# Date: Wed Jan 25 19:03:28 2006
-# Program: D:\Projects\Aruspix\bin\DecoderD.exe
+# Date: Tue Jun 10 12:04:42 2008
+# Program: C:\Documents and Settings\Tristan\My Documents\aruspix-tr\bin\Release/Ngram.exe
 
 # Mode: default
 
 # Arguments:
+    -input_wrdtrns_fname        [C:\DOCUME~1\Tristan\LOCALS~1\Temp/rec_mus_adapt/ngram.mlf]
+    -input_dict_fname           [C:\DOCUME~1\Tristan\LOCALS~1\Temp/rec_mus_adapt/ngram.dic]
+    -lm_ngram_order             [3]
+    -output_fname               [C:\DOCUME~1\Tristan\LOCALS~1\Temp/rec_mus_adapt/ngram.gram]
 
 # Options:
- *  -am_models_fname            [Y:/tmp/hmmdefs.MMF]
- *  -am_sil_phone               [sp]
-    -am_pause_phone             []
- *  -am_phone_del_pen           [1]
-    -am_apply_pause_del_pen     
- *  -lex_dict_fname             [Y:/tmp/_mar_.torch.dic]
     -lex_sent_start_word        [SP_START]
     -lex_sent_end_word          [SP_END]
-    -lex_sil_word               [SP]
- *  -lm_fname                   [Y:/tmp/train_0/]
- *  -lm_ngram_order             [5]
- *  -lm_scaling_factor          [4]
-    -cm_symb_factor             [1]
-    -cm_duration_factor         [1]
-    -cm_pitch_factor            [1]
-    -cm_interval_factor         [1]
-    -cm_symb_order              [-1]
-    -cm_duration_order          [-1]
-    -cm_pitch_order             [-1]
-    -cm_interval_order          [-1]
-    -cm_no_symb                 
-    -cm_no_duration             
- *  -cm_no_pitch                
-    -cm_no_interval             
- *  -cm_no_bigram               
-    -cm_bigram_factor           [1]
-    -dec_int_prune_window       [75]
-    -dec_end_prune_window       [-3.40282e+038]
-    -dec_word_entr_pen          [0]
- *  -dec_delayed_lm             
-    -dec_verbose                
- *  -input_fname                [Y:/tmp/t_mfcd_test_0.scp]
- *  -output_fname               [Y:/output.mlf]
- *  -wrdtrns_fname              [Y:/tmp/mar/mar.w.mlf]
-    -use_torch_decoder          
+ *  -reload_data_fname          [C:\DOCUME~1\Tristan\LOCALS~1\Temp/rec_env_mus/ngram.data]
+ *  -data_fname                 [C:\DOCUME~1\Tristan\LOCALS~1\Temp/rec_mus_adapt/ngram.data]
 
 <#>
 
