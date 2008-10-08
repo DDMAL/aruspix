@@ -1,0 +1,90 @@
+<html>
+<body>
+<pre>
+<h1>Build Log</h1>
+<h3>
+--------------------Configuration: Adapter - Win32 Release--------------------
+</h3>
+<h3>Command Lines</h3>
+
+
+
+<h3>Results</h3>
+Adapt.exe - 0 error(s), 0 warning(s)
+<h3>
+--------------------Configuration: Adapter - Win32 Debug--------------------
+</h3>
+<h3>Command Lines</h3>
+Creating temporary file "C:\DOCUME~1\laurent\LOCALS~1\Temp\RSP1B.tmp" with contents
+[
+kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib Torch3d.lib /nologo /subsystem:console /incremental:yes /pdb:"../obj/AdapterDebug/Adapt.pdb" /debug /machine:I386 /out:"../bin/Debug/Adapt.exe" /pdbtype:sept /libpath:"C:\laurent\libs\Torch3\Debug" 
+\laurent\projects\aruspix_1.4\obj\AdapterDebug\Adapter.obj
+\laurent\projects\aruspix_1.4\obj\AdapterDebug\mlhmm.obj
+]
+Creating command line "link.exe @C:\DOCUME~1\laurent\LOCALS~1\Temp\RSP1B.tmp"
+<h3>Output Window</h3>
+Linking...
+
+
+
+<h3>Results</h3>
+Adapt.exe - 0 error(s), 0 warning(s)
+<h3>
+--------------------Configuration: Decoder - Win32 Release--------------------
+</h3>
+<h3>Command Lines</h3>
+
+
+
+<h3>Results</h3>
+Decoder.exe - 0 error(s), 0 warning(s)
+<h3>
+--------------------Configuration: Decoder - Win32 Debug--------------------
+</h3>
+<h3>Command Lines</h3>
+Creating temporary file "C:\DOCUME~1\laurent\LOCALS~1\Temp\RSP1D.tmp" with contents
+[
+kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib Torch3d.lib /nologo /subsystem:console /incremental:yes /pdb:"../obj/DecoderDebug/Decoder.pdb" /debug /machine:I386 /out:"../bin/Debug/Decoder.exe" /pdbtype:sept /libpath:"C:\laurent\libs\Torch3\Debug" 
+\laurent\projects\aruspix_1.4\obj\DecoderDebug\Decoder.obj
+\laurent\projects\aruspix_1.4\obj\DecoderDebug\mldecoderpage.obj
+\laurent\projects\aruspix_1.4\obj\DecoderDebug\mldecoderstaff.obj
+]
+Creating command line "link.exe @C:\DOCUME~1\laurent\LOCALS~1\Temp\RSP1D.tmp"
+<h3>Output Window</h3>
+Linking...
+
+
+
+<h3>Results</h3>
+Decoder.exe - 0 error(s), 0 warning(s)
+<h3>
+--------------------Configuration: Ngram - Win32 Release--------------------
+</h3>
+<h3>Command Lines</h3>
+
+
+
+<h3>Results</h3>
+Ngram.exe - 0 error(s), 0 warning(s)
+<h3>
+--------------------Configuration: Ngram - Win32 Debug--------------------
+</h3>
+<h3>Command Lines</h3>
+Creating temporary file "C:\DOCUME~1\laurent\LOCALS~1\Temp\RSP1F.tmp" with contents
+[
+kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib Torch3d.lib /nologo /subsystem:console /incremental:yes /pdb:"../obj/NgramDebug/Ngram.pdb" /debug /machine:I386 /out:"../bin/Debug/Ngram.exe" /pdbtype:sept /libpath:"C:\laurent\libs\Torch3\Debug" 
+\laurent\projects\aruspix_1.4\obj\NgramDebug\mlngrambuilder.obj
+\laurent\projects\aruspix_1.4\obj\NgramDebug\mlngramentry.obj
+\laurent\projects\aruspix_1.4\obj\NgramDebug\NGram.obj
+]
+Creating command line "link.exe @C:\DOCUME~1\laurent\LOCALS~1\Temp\RSP1F.tmp"
+<h3>Output Window</h3>
+Linking...
+
+
+
+<h3>Results</h3>
+Ngram.exe - 0 error(s), 0 warning(s)
+</pre>
+</body>
+</html>
