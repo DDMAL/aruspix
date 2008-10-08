@@ -153,7 +153,12 @@ bool AxApp::OnInit()
     if ( m_language == -1 ) // never choosed before, it is the first time the user run aruspix, run setup
     {
 		SetExitOnFrameDelete(FALSE);
+#if defined(__WXMSW__)
+    	AxSetup setup( wxBitmap( m_resourcesPath + "/logo.win.png", wxBITMAP_TYPE_PNG ) );
+#else // OS X
 		AxSetup setup( wxBitmap( m_resourcesPath + "/logo.png", wxBITMAP_TYPE_PNG ) );
+#endif
+		
 		setup.RunWizard(setup.GetFirstPage());
 
         if ( setup.m_language == -1 ) //canceled
@@ -496,9 +501,13 @@ AxAboutDlg::AxAboutDlg( wxWindow *parent, wxWindowID id, const wxString &title,
     this->GetTxAppVersion()->SetLabel( AxApp::s_version );
     str = wxString::Format( "%s - %s", AxApp::s_build_date.c_str() , AxApp::s_build_time.c_str() );
     this->GetTxAppBuild()->SetLabel( str );
-	
-	this->GetLogo()->SetBitmap( wxBitmap( wxGetApp().m_resourcesPath + "/logo.png" , wxBITMAP_TYPE_PNG ) );
 
+#if defined(__WXMSW__)
+    this->GetLogo()->SetBitmap( wxBitmap( wxGetApp().m_resourcesPath + "/logo.win.png" , wxBITMAP_TYPE_PNG ) );
+#else // OS X
+	this->GetLogo()->SetBitmap( wxBitmap( wxGetApp().m_resourcesPath + "/logo.png" , wxBITMAP_TYPE_PNG ) );
+#endif	
+	
 }
 
 // WDR: handler implementations for AxAboutDlg
