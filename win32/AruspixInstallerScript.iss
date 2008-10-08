@@ -7,7 +7,7 @@
 ; (To generate a new GUID, click Tools | Generate GUID inside the IDE.)
 AppId={{9C2706CB-FC69-4659-9585-DEBC4C9F2F5C}
 AppName=Aruspix
-AppVerName=Aruspix 1.4.0
+AppVerName=Aruspix 1.4.2
 AppPublisherURL=http://www.aruspix.net/
 AppSupportURL=http://www.aruspix.net/
 AppUpdatesURL=http://www.aruspix.net/
@@ -16,7 +16,7 @@ DefaultGroupName=Aruspix
 AllowNoIcons=yes
 OutputDir=..\bin\AruspixInstaller
 OutputBaseFilename=AruspixInstaller
-SetupIconFile=..\varia\images\ax.ico
+SetupIconFile=images\axinstaller.ico
 WizardImageFile=images\splash.bmp
 WizardSmallImageFile=images\logo.bmp
 Compression=lzma
@@ -46,7 +46,7 @@ Root: HKCR; Subkey: "AruspixTypographicModel\shell\open\command"; ValueType: str
 
 [Languages]
 Name: "english"; MessagesFile: "compiler:Default.isl"
-Name: "french"; MessagesFile: "compiler:Languages\French.isl"
+;Name: "french"; MessagesFile: "compiler:Languages\French.isl"
 
 [Tasks]
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
@@ -55,7 +55,7 @@ Name: "quicklaunchicon"; Description: "{cm:CreateQuickLaunchIcon}"; GroupDescrip
 [Files]
 Source: "..\bin\Release\Aruspix.exe"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\bin\Release\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
-Source: "LEIPZI43.ttf"; DestDir: "{fonts}"; FontInstall: "Leipzi"; Flags: onlyifdoesntexist uninsneveruninstall
+Source: "LEIPZI43.ttf"; DestDir: "{fonts}"; FontInstall: "Leipzig"; Flags: onlyifdoesntexist uninsneveruninstall
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Icons]
