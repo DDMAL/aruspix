@@ -36,19 +36,19 @@
 		4DF692A50D496E28007DE3CF /* mldecoderpage.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = mldecoderpage.h; path = ../src/ml/mldecoderpage.h; sourceTree = SOURCE_ROOT; };
 		4DF692A60D496E28007DE3CF /* mldecoderstaff.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = mldecoderstaff.cpp; path = ../src/ml/mldecoderstaff.cpp; sourceTree = SOURCE_ROOT; };
 		4DF692A70D496E28007DE3CF /* mldecoderstaff.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = mldecoderstaff.h; path = ../src/ml/mldecoderstaff.h; sourceTree = SOURCE_ROOT; };
-		570E04ED0D7F5B71007E7BCA /* evald */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = evald; sourceTree = BUILT_PRODUCTS_DIR; };
+		570E04ED0D7F5B71007E7BCA /* eval */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = eval; sourceTree = BUILT_PRODUCTS_DIR; };
 		570E05020D7F5D3D007E7BCA /* Eval.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = Eval.cpp; path = ../src/torch/Eval.cpp; sourceTree = SOURCE_ROOT; };
 		570E05EA0D805C58007E7BCA /* Adapter.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = Adapter.cpp; path = ../src/torch/Adapter.cpp; sourceTree = SOURCE_ROOT; };
-		57219A4C0B8377610033F495 /* adaptd */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = adaptd; sourceTree = BUILT_PRODUCTS_DIR; };
+		57219A4C0B8377610033F495 /* adapt */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = adapt; sourceTree = BUILT_PRODUCTS_DIR; };
 		576ED8350AB223D2007F2844 /* Common.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = Common.cpp; path = ../src/torch/Common.cpp; sourceTree = SOURCE_ROOT; };
 		576ED8360AB223D2007F2844 /* Common.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = Common.h; path = ../src/torch/Common.h; sourceTree = SOURCE_ROOT; };
 		576ED8370AB223D2007F2844 /* Init.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = Init.cpp; path = ../src/torch/Init.cpp; sourceTree = SOURCE_ROOT; };
-		576ED8480AB223D8007F2844 /* initd */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = initd; sourceTree = BUILT_PRODUCTS_DIR; };
-		57A0BC7F0ABF1901001825D5 /* trainerd */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = trainerd; sourceTree = BUILT_PRODUCTS_DIR; };
+		576ED8480AB223D8007F2844 /* init */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = init; sourceTree = BUILT_PRODUCTS_DIR; };
+		57A0BC7F0ABF1901001825D5 /* trainer */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = trainer; sourceTree = BUILT_PRODUCTS_DIR; };
 		57A0BC810ABF199C001825D5 /* Trainer.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = Trainer.cpp; path = ../src/torch/Trainer.cpp; sourceTree = SOURCE_ROOT; };
-		A51FEC000A02C15800ACE377 /* decoderd */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = decoderd; sourceTree = BUILT_PRODUCTS_DIR; };
+		A51FEC000A02C15800ACE377 /* decoder */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = decoder; sourceTree = BUILT_PRODUCTS_DIR; };
 		A51FEC180A02C1C900ACE377 /* Decoder.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = Decoder.cpp; sourceTree = "<group>"; };
-		A59120010A1278D400D64611 /* ngramd */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = ngramd; sourceTree = BUILT_PRODUCTS_DIR; };
+		A59120010A1278D400D64611 /* ngram */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = ngram; sourceTree = BUILT_PRODUCTS_DIR; };
 		A59120070A1278F100D64611 /* NGram.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = NGram.cpp; path = ../src/torch/NGram.cpp; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
@@ -142,12 +142,12 @@
 		A51FEC010A02C15800ACE377 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				A51FEC000A02C15800ACE377 /* decoderd */,
-				A59120010A1278D400D64611 /* ngramd */,
-				576ED8480AB223D8007F2844 /* initd */,
-				57A0BC7F0ABF1901001825D5 /* trainerd */,
-				57219A4C0B8377610033F495 /* adaptd */,
-				570E04ED0D7F5B71007E7BCA /* evald */,
+				A51FEC000A02C15800ACE377 /* decoder */,
+				A59120010A1278D400D64611 /* ngram */,
+				576ED8480AB223D8007F2844 /* init */,
+				57A0BC7F0ABF1901001825D5 /* trainer */,
+				57219A4C0B8377610033F495 /* adapt */,
+				570E04ED0D7F5B71007E7BCA /* eval */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -193,7 +193,7 @@
 			);
 			name = eval;
 			productName = decoder;
-			productReference = 570E04ED0D7F5B71007E7BCA /* evald */;
+			productReference = 570E04ED0D7F5B71007E7BCA /* eval */;
 			productType = "com.apple.product-type.tool";
 		};
 		57219A440B8377600033F495 /* adapt */ = {
@@ -209,7 +209,7 @@
 			);
 			name = adapt;
 			productName = ngram;
-			productReference = 57219A4C0B8377610033F495 /* adaptd */;
+			productReference = 57219A4C0B8377610033F495 /* adapt */;
 			productType = "com.apple.product-type.tool";
 		};
 		576ED83C0AB223D8007F2844 /* init */ = {
@@ -225,7 +225,7 @@
 			);
 			name = init;
 			productName = ngram;
-			productReference = 576ED8480AB223D8007F2844 /* initd */;
+			productReference = 576ED8480AB223D8007F2844 /* init */;
 			productType = "com.apple.product-type.tool";
 		};
 		57A0BC770ABF1901001825D5 /* trainer */ = {
@@ -241,7 +241,7 @@
 			);
 			name = trainer;
 			productName = ngram;
-			productReference = 57A0BC7F0ABF1901001825D5 /* trainerd */;
+			productReference = 57A0BC7F0ABF1901001825D5 /* trainer */;
 			productType = "com.apple.product-type.tool";
 		};
 		A51FEBFF0A02C15800ACE377 /* decoder */ = {
@@ -257,7 +257,7 @@
 			);
 			name = decoder;
 			productName = decoder;
-			productReference = A51FEC000A02C15800ACE377 /* decoderd */;
+			productReference = A51FEC000A02C15800ACE377 /* decoder */;
 			productType = "com.apple.product-type.tool";
 		};
 		A59120000A1278D400D64611 /* ngram */ = {
@@ -273,7 +273,7 @@
 			);
 			name = ngram;
 			productName = ngram;
-			productReference = A59120010A1278D400D64611 /* ngramd */;
+			productReference = A59120010A1278D400D64611 /* ngram */;
 			productType = "com.apple.product-type.tool";
 		};
 /* End PBXNativeTarget section */
@@ -366,10 +366,12 @@
 			buildSettings = {
 				COPY_PHASE_STRIP = NO;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
 				GCC_MODEL_TUNING = G5;
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				HEADER_SEARCH_PATHS = "$(ARUSPIX_TORCH)/include";
 				INSTALL_PATH = "$(HOME)/bin";
-				LIBRARY_SEARCH_PATHS = "$(ARUSPIX_TORCH)/libs/Darwin_opt_float";
+				LIBRARY_SEARCH_PATHS = "$(ARUSPIX_TORCH)/lib";
 				OBJROOT = "$(ARUSPIX)/obj";
 				OPTIMIZATION_CFLAGS = "-O0";
 				OTHER_CFLAGS = "";
@@ -392,10 +394,12 @@
 			buildSettings = {
 				COPY_PHASE_STRIP = YES;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
 				GCC_MODEL_TUNING = G5;
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				HEADER_SEARCH_PATHS = "$(ARUSPIX_TORCH)/include";
 				INSTALL_PATH = "$(HOME)/bin";
-				LIBRARY_SEARCH_PATHS = "$(ARUSPIX_TORCH)/libs/Darwin_opt_float";
+				LIBRARY_SEARCH_PATHS = "$(ARUSPIX_TORCH)/lib";
 				OBJROOT = "$(ARUSPIX)/obj";
 				OPTIMIZATION_CFLAGS = "-O0";
 				OTHER_CFLAGS = "";
@@ -418,10 +422,12 @@
 			buildSettings = {
 				COPY_PHASE_STRIP = NO;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
 				GCC_MODEL_TUNING = G5;
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				HEADER_SEARCH_PATHS = "$(ARUSPIX_TORCH)/include";
 				INSTALL_PATH = "$(HOME)/bin";
-				LIBRARY_SEARCH_PATHS = "$(ARUSPIX_TORCH)/libs/Darwin_opt_float";
+				LIBRARY_SEARCH_PATHS = "$(ARUSPIX_TORCH)/lib";
 				OPTIMIZATION_CFLAGS = "-O0";
 				OTHER_CFLAGS = "-D__AXDEBUG__";
 				OTHER_LDFLAGS = "-ltorch";
@@ -442,10 +448,12 @@
 			buildSettings = {
 				COPY_PHASE_STRIP = YES;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
 				GCC_MODEL_TUNING = G5;
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				HEADER_SEARCH_PATHS = "$(ARUSPIX_TORCH)/include";
 				INSTALL_PATH = "$(HOME)/bin";
-				LIBRARY_SEARCH_PATHS = "$(ARUSPIX_TORCH)/libs/Darwin_opt_float";
+				LIBRARY_SEARCH_PATHS = "$(ARUSPIX_TORCH)/lib";
 				OPTIMIZATION_CFLAGS = "-O0";
 				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = "-ltorch";
@@ -466,10 +474,12 @@
 			buildSettings = {
 				COPY_PHASE_STRIP = NO;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
 				GCC_MODEL_TUNING = G5;
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				HEADER_SEARCH_PATHS = "$(ARUSPIX_TORCH)/include";
 				INSTALL_PATH = "$(HOME)/bin";
-				LIBRARY_SEARCH_PATHS = "$(ARUSPIX_TORCH)/libs/Darwin_opt_float";
+				LIBRARY_SEARCH_PATHS = "$(ARUSPIX_TORCH)/lib";
 				OPTIMIZATION_CFLAGS = "-O0";
 				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = "-ltorch";
@@ -490,10 +500,12 @@
 			buildSettings = {
 				COPY_PHASE_STRIP = YES;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
 				GCC_MODEL_TUNING = G5;
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				HEADER_SEARCH_PATHS = "$(ARUSPIX_TORCH)/include";
 				INSTALL_PATH = "$(HOME)/bin";
-				LIBRARY_SEARCH_PATHS = "$(ARUSPIX_TORCH)/libs/Darwin_opt_float";
+				LIBRARY_SEARCH_PATHS = "$(ARUSPIX_TORCH)/lib";
 				OPTIMIZATION_CFLAGS = "-O0";
 				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = "-ltorch";
@@ -514,10 +526,12 @@
 			buildSettings = {
 				COPY_PHASE_STRIP = NO;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
 				GCC_MODEL_TUNING = G5;
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				HEADER_SEARCH_PATHS = "$(ARUSPIX_TORCH)/include";
 				INSTALL_PATH = "$(HOME)/bin";
-				LIBRARY_SEARCH_PATHS = "$(ARUSPIX_TORCH)/libs/Darwin_opt_float";
+				LIBRARY_SEARCH_PATHS = "$(ARUSPIX_TORCH)/lib";
 				OPTIMIZATION_CFLAGS = "-O0";
 				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = "-ltorch";
@@ -539,10 +553,12 @@
 			buildSettings = {
 				COPY_PHASE_STRIP = YES;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
 				GCC_MODEL_TUNING = G5;
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				HEADER_SEARCH_PATHS = "$(ARUSPIX_TORCH)/include";
 				INSTALL_PATH = "$(HOME)/bin";
-				LIBRARY_SEARCH_PATHS = "$(ARUSPIX_TORCH)/libs/Darwin_opt_float";
+				LIBRARY_SEARCH_PATHS = "$(ARUSPIX_TORCH)/lib";
 				OPTIMIZATION_CFLAGS = "-O0";
 				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = "-ltorch";
@@ -587,10 +603,12 @@
 			buildSettings = {
 				COPY_PHASE_STRIP = NO;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
 				GCC_MODEL_TUNING = G5;
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				HEADER_SEARCH_PATHS = "$(ARUSPIX_TORCH)/include";
 				INSTALL_PATH = "$(HOME)/bin";
-				LIBRARY_SEARCH_PATHS = "$(ARUSPIX_TORCH)/libs/Darwin_opt_float";
+				LIBRARY_SEARCH_PATHS = "$(ARUSPIX_TORCH)/lib";
 				OBJROOT = "$(ARUSPIX)/obj";
 				OPTIMIZATION_CFLAGS = "-O0";
 				OTHER_CFLAGS = "";
@@ -613,10 +631,12 @@
 			buildSettings = {
 				COPY_PHASE_STRIP = YES;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
 				GCC_MODEL_TUNING = G5;
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				HEADER_SEARCH_PATHS = "$(ARUSPIX_TORCH)/include";
 				INSTALL_PATH = "$(HOME)/bin";
-				LIBRARY_SEARCH_PATHS = "$(ARUSPIX_TORCH)/libs/Darwin_opt_float";
+				LIBRARY_SEARCH_PATHS = "$(ARUSPIX_TORCH)/lib";
 				OBJROOT = "$(ARUSPIX)/obj";
 				OPTIMIZATION_CFLAGS = "-O0";
 				OTHER_CFLAGS = "";
@@ -639,10 +659,12 @@
 			buildSettings = {
 				COPY_PHASE_STRIP = NO;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
 				GCC_MODEL_TUNING = G5;
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				HEADER_SEARCH_PATHS = "$(ARUSPIX_TORCH)/include";
 				INSTALL_PATH = "$(HOME)/bin";
-				LIBRARY_SEARCH_PATHS = "$(ARUSPIX_TORCH)/libs/Darwin_opt_float";
+				LIBRARY_SEARCH_PATHS = "$(ARUSPIX_TORCH)/lib";
 				OPTIMIZATION_CFLAGS = "-O0";
 				OTHER_CFLAGS = "-DDEBUG";
 				OTHER_LDFLAGS = "-ltorch";
@@ -663,10 +685,12 @@
 			buildSettings = {
 				COPY_PHASE_STRIP = YES;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
 				GCC_MODEL_TUNING = G5;
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				HEADER_SEARCH_PATHS = "$(ARUSPIX_TORCH)/include";
 				INSTALL_PATH = "$(HOME)/bin";
-				LIBRARY_SEARCH_PATHS = "$(ARUSPIX_TORCH)/libs/Darwin_opt_float";
+				LIBRARY_SEARCH_PATHS = "$(ARUSPIX_TORCH)/lib";
 				OPTIMIZATION_CFLAGS = "-O0";
 				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = "-ltorch";

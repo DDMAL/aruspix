@@ -12,28 +12,20 @@
    </OBJECT>
    <UL>
       <LI><OBJECT type="text/sitemap">
-            <param name="Name" value="Contents">
-            <param name="Local" value="aruspix/axnode1.html">
+            <param name="Name" value="Introduction">
+            <param name="Local" value="aruspix/node1.html">
           </OBJECT>
       <LI><OBJECT type="text/sitemap">
-            <param name="Name" value="List of Figures">
-            <param name="Local" value="aruspix/axnode2.html">
+            <param name="Name" value="Processing a single page">
+            <param name="Local" value="aruspix/node2.html">
           </OBJECT>
       <LI><OBJECT type="text/sitemap">
-            <param name="Name" value="1. Start">
-            <param name="Local" value="aruspix/axnode3.html">
+            <param name="Name" value="Processing a whole book.">
+            <param name="Local" value="aruspix/node3.html">
           </OBJECT>
       <LI><OBJECT type="text/sitemap">
-            <param name="Name" value="1.1 Support">
-            <param name="Local" value="aruspix/axnode4.html">
-          </OBJECT>
-      <LI><OBJECT type="text/sitemap">
-            <param name="Name" value="1.2 System requirements">
-            <param name="Local" value="aruspix/axnode5.html">
-          </OBJECT>
-      <LI><OBJECT type="text/sitemap">
-            <param name="Name" value="Index">
-            <param name="Local" value="aruspix/axnode6.html">
+            <param name="Name" value="Editing Reference">
+            <param name="Local" value="aruspix/node4.html">
           </OBJECT>
    </UL>
 </BODY>

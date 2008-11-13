@@ -354,7 +354,7 @@ void AxFrame::LoadConfig()
 	wxGetApp().m_workingDir = pConfig->Read("WorkingDir", default_workingDir );
 	wxGetApp().m_docDir = pConfig->Read("DocumentsDir", default_docDir );
 	
-	wxGetApp().m_lastDir = pConfig->Read("LastDir", wxGetHomeDir() );
+	wxGetApp().m_lastDir = pConfig->Read("LastDir", default_docDir );
 	wxGetApp().m_lastDirAX0_in = pConfig->Read("LastDirAX0_in", wxGetApp().m_lastDir );
 	wxGetApp().m_lastDirAX0_out = pConfig->Read("LastDirAX0_out", wxGetApp().m_lastDir );
 	wxGetApp().m_lastDirAX1_in = pConfig->Read("LastDirAX1_in", wxGetApp().m_lastDir );
