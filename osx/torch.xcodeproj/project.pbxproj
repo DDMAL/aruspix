@@ -375,7 +375,7 @@
 				OBJROOT = "$(ARUSPIX)/obj";
 				OPTIMIZATION_CFLAGS = "-O0";
 				OTHER_CFLAGS = "";
-				OTHER_LDFLAGS = "-ltorch";
+				OTHER_LDFLAGS = "-ltorchd";
 				OTHER_REZFLAGS = "";
 				PREBINDING = NO;
 				PRODUCT_NAME = evald;
@@ -430,7 +430,7 @@
 				LIBRARY_SEARCH_PATHS = "$(ARUSPIX_TORCH)/lib";
 				OPTIMIZATION_CFLAGS = "-O0";
 				OTHER_CFLAGS = "-D__AXDEBUG__";
-				OTHER_LDFLAGS = "-ltorch";
+				OTHER_LDFLAGS = "-ltorchd";
 				OTHER_REZFLAGS = "";
 				PREBINDING = NO;
 				PRODUCT_NAME = adaptd;
@@ -482,7 +482,7 @@
 				LIBRARY_SEARCH_PATHS = "$(ARUSPIX_TORCH)/lib";
 				OPTIMIZATION_CFLAGS = "-O0";
 				OTHER_CFLAGS = "";
-				OTHER_LDFLAGS = "-ltorch";
+				OTHER_LDFLAGS = "-ltorchd";
 				OTHER_REZFLAGS = "";
 				PREBINDING = NO;
 				PRODUCT_NAME = initd;
@@ -534,7 +534,7 @@
 				LIBRARY_SEARCH_PATHS = "$(ARUSPIX_TORCH)/lib";
 				OPTIMIZATION_CFLAGS = "-O0";
 				OTHER_CFLAGS = "";
-				OTHER_LDFLAGS = "-ltorch";
+				OTHER_LDFLAGS = "-ltorchd";
 				OTHER_REZFLAGS = "";
 				PREBINDING = NO;
 				PRODUCT_NAME = trainerd;
@@ -612,7 +612,7 @@
 				OBJROOT = "$(ARUSPIX)/obj";
 				OPTIMIZATION_CFLAGS = "-O0";
 				OTHER_CFLAGS = "";
-				OTHER_LDFLAGS = "-ltorch";
+				OTHER_LDFLAGS = "-ltorchd";
 				OTHER_REZFLAGS = "";
 				PREBINDING = NO;
 				PRODUCT_NAME = decoderd;
@@ -667,7 +667,7 @@
 				LIBRARY_SEARCH_PATHS = "$(ARUSPIX_TORCH)/lib";
 				OPTIMIZATION_CFLAGS = "-O0";
 				OTHER_CFLAGS = "-DDEBUG";
-				OTHER_LDFLAGS = "-ltorch";
+				OTHER_LDFLAGS = "-ltorchd";
 				OTHER_REZFLAGS = "";
 				PREBINDING = NO;
 				PRODUCT_NAME = ngramd;
