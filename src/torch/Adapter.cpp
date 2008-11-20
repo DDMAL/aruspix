@@ -116,7 +116,7 @@ int main(int argc, char **argv)
 	cmd.addICmdOption("-iter", &max_iter, 25, "max number of iterations of HMM");
 	cmd.addRCmdOption("-e", &accuracy, 0.00001, "end accuracy");
 	cmd.addBCmdOption("-adapt_separate", &adapt_separate, false, "adapt models separately");
-	cmd.addBCmdOption("-adapt_separate_set_data", &adapt_separate_set_data, false, "set data to non represented models when adapting  models separately");
+	cmd.addBCmdOption("-adapt_separate_set_data", &adapt_separate_set_data, true, "set data to non represented models when adapting  models separately");
 	
 	// MAP Options
 	cmd.addText("\nMAP Options:");
