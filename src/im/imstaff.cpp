@@ -262,11 +262,13 @@ bool CalcLyricWinFeatures(const imImage* image, float *pixel_density )
 	imbyte *buffer = (imbyte*)image->data[0];
 	imbyte *tmp = (imbyte*)malloc( 4 * height * 4 * width );
 
+	int i, j, k, m;
+
 	// Scale original image by a factor of 4 on both axis
-	for ( int i = 0; i < height; i++ ){
-		for ( int j = 0; j < width; j++){
-			for ( int k = 0; k < 4; k++ ){
-				for ( int m = 0; m < 4; m++ ){
+	for ( i = 0; i < height; i++ ){
+		for ( j = 0; j < width; j++){
+			for ( k = 0; k < 4; k++ ){
+				for ( m = 0; m < 4; m++ ){
 					tmp[ ( 4 * i + k ) * 4 * width + j * 4 + m  ] = buffer[ i * width + j ];
 				}
 			}
@@ -278,8 +280,8 @@ bool CalcLyricWinFeatures(const imImage* image, float *pixel_density )
 	
 	// Pixel count for each of the 16 cells
 	int pixel_count[4][4];
-	for ( int i = 0; i < 4; i++ )
-		for ( int j = 0; j < 4; j++ )
+	for ( i = 0; i < 4; i++ )
+		for ( j = 0; j < 4; j++ )
 			pixel_count[i][j] = 0;
 	
 	int y1 = height / 4;		// y-coordinates that split the image 4 times horizontally
@@ -291,8 +293,8 @@ bool CalcLyricWinFeatures(const imImage* image, float *pixel_density )
 	int x3 = 3 * x1;
 	
 	// Count the number of pixels in each cell
-	for ( int i = 0; i < width; i ++ ){
-		for ( int j = 0; j < height; j++ ){
+	for ( i = 0; i < width; i ++ ){
+		for ( j = 0; j < height; j++ ){
 			int index = i * width + j;				
 			if ( j < y1 && i < x1 ){										// [0,0]
 				if ( tmp[index] != 0 ) pixel_count[0][0]++;
@@ -332,14 +334,14 @@ bool CalcLyricWinFeatures(const imImage* image, float *pixel_density )
 	free( tmp );
 	
 	float pixel_sum = 0.0;
-	for ( int i = 0; i < 4; i++ )
-		for ( int j = 0; j < 4; j++ )
+	for ( i = 0; i < 4; i++ )
+		for ( j = 0; j < 4; j++ )
 			pixel_sum += pixel_count[i][j];
 	
 	if ( pixel_sum == 0 ) return false;
 	
-	for ( int i = 0; i < 4; i++ )
-		for ( int j = 0; j < 4; j++ )
+	for ( i = 0; i < 4; i++ )
+		for ( j = 0; j < 4; j++ )
 			if ( pixel_sum != 0 )
 				pixel_density[ i * 4 + j ] = (float) pixel_count[i][j] / pixel_sum;	
 	
@@ -1109,15 +1111,17 @@ void ImStaff::FindLyricBaseLine( imImage *src, double *overallProjection, int *o
 	int height = src->height;
 	int width = src->width;
 	imbyte *buffer = (imbyte*)src->data[0];
-	int reference[height];
+	int *reference = (int*)malloc( height * sizeof(int) );
+
+	int i, j, k;
 	
 	// Get vertical reference array by taking the projection of the first non-empty lyric subimage. 
 	int temp = 0;
-	int j = 0;
+	j = 0;
 	while ( ( temp == 0 ) && ( ( j + 1 ) * subimageSize < width ) ){
-		for ( int i = 0; i < height; i++ ){
+		for ( i = 0; i < height; i++ ){
 			reference[i] = 0;
-			for ( int k = 0; k < subimageSize; k++ )
+			for ( k = 0; k < subimageSize; k++ )
 				if ( k + ( j * subimageSize ) < width && buffer[ k + ( j * subimageSize ) + ( i * width ) ] != 0 ) 
 					reference[i]++;
 			temp += reference[i];
@@ -1125,23 +1129,26 @@ void ImStaff::FindLyricBaseLine( imImage *src, double *overallProjection, int *o
 		j++;
 	}
 	
-	double alignedProjection[height][(int)ceil( width / subimageSize )];
+	// array holding the offsets for each lyric line
+	double **alignedProjection = (double**)malloc( height * sizeof( double* ) );	
+	for ( i = 0; i < height; i++ )
+		alignedProjection[i] = (double*)malloc( (int)ceil( width / subimageSize ) * sizeof( double ) );
 	
 	// Loop through all subimages
-	for ( int k = 0; k < ceil( width / subimageSize ); k++ ){
+	for (  k = 0; k < ceil( width / subimageSize ); k++ ){
 
 		// Do a horizontal projection on the k-th lyric subimage
-		double projection[height];
-		for ( int i = 0; i < height; i++ ){
+		double *projection = (double*)malloc( height * sizeof (double) );
+		for (  i = 0; i < height; i++ ){
 			projection[i] = 0;
-			for ( int j = 0; j < subimageSize; j++ )
+			for (  j = 0; j < subimageSize; j++ )
 				if ( j + ( k * subimageSize ) < width && buffer[ j + ( k * subimageSize) + ( i * width ) ] != 0 ) 
 					projection[i]++; 
 		}	
 		
 		// Add zero padding to the projection
-		double paddedProjection[ 2 * height ];
-		for ( int i = 0; i < 2 * height; i++ ){
+		double *paddedProjection = (double*)malloc( 2 * height * sizeof(double) );
+		for (  i = 0; i < 2 * height; i++ ){
 			if ( i < height ) paddedProjection[i] = projection[i];
 			else paddedProjection[i] = 0;
 		} 
@@ -1149,10 +1156,10 @@ void ImStaff::FindLyricBaseLine( imImage *src, double *overallProjection, int *o
 		// Perform a filter on the paddedprojection i.e filter(reference, 1, paddedProjection)
 		// Also find the index of the maximum value in the result:
 		int maxIndex = 0;
-		double convolution[ 2 * height ];
-		for ( int i = 0; i < 2 * height; i++ ){
+		double *convolution = (double*)malloc( 2 * height * sizeof(double) );
+		for (  i = 0; i < 2 * height; i++ ){
 			convolution[i] = 0;
-			int j = 0;
+			j = 0;
 			while ( i - j >= 0 && j < height ){
 				convolution[i] += reference[j] * paddedProjection[i-j];
 				j++;
@@ -1166,7 +1173,7 @@ void ImStaff::FindLyricBaseLine( imImage *src, double *overallProjection, int *o
 			offsets[k] = offset;
 
 		// Copy and align lyric subimage projections into the aligned projection matrix
-		for ( int i = 0; i < height; i++ ){
+		for ( i = 0; i < height; i++ ){
 			if ( offset >= off ) {
 				int index = i + ( offset - off );
 				if ( index < height ) alignedProjection[i][k] = projection[index];
@@ -1177,13 +1184,20 @@ void ImStaff::FindLyricBaseLine( imImage *src, double *overallProjection, int *o
 				else alignedProjection[i][k] = 0;				
 			}
 		}
+		free( projection );
+		free( paddedProjection );
+		free( convolution );
 	}
 	
-	for ( int i = 0; i < height; i++ ){
-		for ( int j = 0; j < ceil ( width / subimageSize ); j++ ){
+	for ( i = 0; i < height; i++ ){
+		for ( j = 0; j < ceil ( width / subimageSize ); j++ ){
 			overallProjection[i] += alignedProjection[i][j];
 		}
 	}
+
+	free( reference );	
+	for ( i = 0; i < height; i++ ) free( alignedProjection[i] );
+	free( alignedProjection );
 }
 
 //Crop lyric images using the lyric baseline and topline and then run a recognition function on the lyric image

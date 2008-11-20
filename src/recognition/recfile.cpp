@@ -920,8 +920,8 @@ bool RecFile::GenerateMFC( wxArrayPtrVoid params, AxProgressDlg *dlg )
     if ( !failed )
         failed = !m_imPagePtr->GenerateMFC( output_dir );
 
-	if ( !failed )
-        failed = !m_imPagePtr->GenerateLyricMFC( output_dir );
+	//if ( !failed )
+    //    failed = !m_imPagePtr->GenerateLyricMFC( output_dir );
 	
 	m_error = m_imPagePtr->GetError();
 

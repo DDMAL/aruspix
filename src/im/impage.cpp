@@ -2424,7 +2424,7 @@ bool ImPage::GenerateLyricMFC( wxString output_dir )
 	memset( m_opLines1, 0, st * sizeof( int ) );
 	memset( m_opLines2, 0, st * sizeof( int ) );
 	
-	int i;
+	int i, j;
 	int maxLyricHeight = 0;
 	
 	//Calculate coordinates for removal of lyric subimages
@@ -2448,15 +2448,15 @@ bool ImPage::GenerateLyricMFC( wxString output_dir )
 	int windowWidth = 30;		// Window width used for finding lyric baseline 							
 	
 	// array holding overall projection of all the lyric lines
-	double overallProjection[maxLyricHeight];				
-	for ( int i = 0; i < maxLyricHeight; i++ ) overallProjection[i] = 0;
+	double *overallProjection = (double*)malloc( maxLyricHeight * sizeof( double ) );				
+	for ( i = 0; i < maxLyricHeight; i++ ) overallProjection[i] = 0;
 	
 	// array holding the offsets for each lyric line
 	int **offsets = (int**)malloc( st * sizeof( int* ) );	
-	for ( int i = 0; i < st; i++ )
+	for ( i = 0; i < st; i++ )
 		offsets[i] = (int*)malloc( (int)ceil( m_opImMain->width / windowWidth ) * sizeof( int ) );
-	for ( int i = 0; i < st; i++ )
-		for ( int j = 0; j < ceil( m_opImMain->width / windowWidth ); j++ )
+	for ( i = 0; i < st; i++ )
+		for ( j = 0; j < ceil( m_opImMain->width / windowWidth ); j++ )
 			offsets[i][j] = -1;
 
 	// calculer les features (ImStaffSegment::CalcFeatures)
@@ -2480,37 +2480,37 @@ bool ImPage::GenerateLyricMFC( wxString output_dir )
 		
 	// Find sum of overallProjection
 	double sum = 0;		
-	for ( int i = 0; i < maxLyricHeight; i++ ){
+	for ( i = 0; i < maxLyricHeight; i++ ){
 		sum += overallProjection[i];
 	}
 									   
 	// Find index of largest value in the projection and store in 'centre'
 	int centre = 0;
-	for ( int i = 0; i < maxLyricHeight; i++ ){
+	for ( i = 0; i < maxLyricHeight; i++ ){
 		overallProjection[i] = overallProjection[i] / sum;
 		if ( overallProjection[centre] < overallProjection[i] ) centre = i;
 	}
 
 	// Find top of lyric lines
 	int topline = -1;
-	for ( int i = 0; i < centre; i++ ){
+	for ( i = 0; i < centre; i++ ){
 		if ( overallProjection[i] < exp( -6.0 ) )
 			if ( topline == -1 || i > topline ) topline = i;
 	}
 
 	// Find bottom of lyric lines
 	int baseline = -1;
-	for ( int i = centre; i < maxLyricHeight; i++ ){
+	for ( i = centre; i < maxLyricHeight; i++ ){
 		if ( overallProjection[i] < exp( -6.0 ) ){
 			if ( baseline == -1 || i < baseline ) baseline = i;
 		}
 	}
 	
 	// Store the lyric attributes that were just found making necessary adjustments for each lyric line (offsets)  
-	for ( int i = 0; i < st; i++ ){
+	for ( i = 0; i < st; i++ ){
 		int avg_offset = 0;
 		int count = 0;
-		for ( int j = 0; j < ceil( m_opImMain->width / windowWidth ); j++ ){
+		for ( j = 0; j < ceil( m_opImMain->width / windowWidth ); j++ ){
 			if ( offsets[i][j] > 0 ){
 				avg_offset += offsets[i][j];
 				count++;
@@ -2544,6 +2544,10 @@ bool ImPage::GenerateLyricMFC( wxString output_dir )
 	ImStaffFunctor lyricExtraction( &ImStaff::ExtractLyricImages );
 	this->Process( &lyricExtraction, params, counter );
 	finput.Close();
+
+	free(overallProjection);	
+	for ( i = 0; i < st; i++ ) free( offsets[i] );
+	free(offsets);
 
     return this->Terminate( ERR_NONE );
 }

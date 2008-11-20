@@ -1,19 +1,19 @@
-# Date: Tue Jun 10 12:04:42 2008
-# Program: C:\Documents and Settings\Tristan\My Documents\aruspix-tr\bin\Release/Ngram.exe
+# Date: Thu Nov 20 00:05:37 2008
+# Program: C:\laurent\projects\aruspix_trunk\bin\Debug/Ngram.exe
 
 # Mode: default
 
 # Arguments:
-    -input_wrdtrns_fname        [C:\DOCUME~1\Tristan\LOCALS~1\Temp/rec_mus_adapt/ngram.mlf]
-    -input_dict_fname           [C:\DOCUME~1\Tristan\LOCALS~1\Temp/rec_mus_adapt/ngram.dic]
+    -input_wrdtrns_fname        [C:\AXTEMP/rec_mus_adapt/ngram.mlf]
+    -input_dict_fname           [C:\AXTEMP/rec_mus_adapt/ngram.dic]
     -lm_ngram_order             [3]
-    -output_fname               [C:\DOCUME~1\Tristan\LOCALS~1\Temp/rec_mus_adapt/ngram.gram]
+    -output_fname               [C:\AXTEMP/rec_mus_adapt/ngram.gram]
 
 # Options:
     -lex_sent_start_word        [SP_START]
     -lex_sent_end_word          [SP_END]
- *  -reload_data_fname          [C:\DOCUME~1\Tristan\LOCALS~1\Temp/rec_env_mus/ngram.data]
- *  -data_fname                 [C:\DOCUME~1\Tristan\LOCALS~1\Temp/rec_mus_adapt/ngram.data]
+ *  -reload_data_fname          [C:\AXTEMP/rec_env_mus/ngram.data]
+ *  -data_fname                 [C:\AXTEMP/rec_mus_adapt/ngram.data]
 
 <#>
 

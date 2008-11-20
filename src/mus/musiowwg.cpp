@@ -318,6 +318,8 @@ bool MusWWGOutput::WriteStaff( const MusStaff *staff )
 
 bool MusWWGOutput::WriteNote( const MusNote *note )
 {
+	int i;
+
 	Write( &note->TYPE, 1 );
 	WriteElementAttr( note );
 	Write( &note->sil, 1 );
@@ -349,14 +351,14 @@ bool MusWWGOutput::WriteNote( const MusNote *note )
 	
 	// lyric
 	char count = 0;
-	for ( int i = 0; i < (int)note->m_lyrics.GetCount(); i++ ){
+	for ( i = 0; i < (int)note->m_lyrics.GetCount(); i++ ){
 		MusSymbol *lyric = &note->m_lyrics[i];
 		if ( lyric )
 			count++;
 	}
 	Write( &count, 1 );
 	
-	for ( int i = 0; i < (int)note->m_lyrics.GetCount(); i++ ){
+	for ( i = 0; i < (int)note->m_lyrics.GetCount(); i++ ){
 		MusSymbol *lyric = &note->m_lyrics[i];
 		if ( lyric )
 			WriteSymbole( lyric );
@@ -848,6 +850,9 @@ bool MusWWGInput::ReadNote( MusNote *note )
 	Read( &note->typStac, 1 );
 	if ( note->existDebord ) 
 		ReadDebord( note );
+
+	//if ( AxFile::FormatVersion(m_vmaj, m_vmin, m_vrev) < AxFile::FormatVersion(1, 5, 0) )
+		return true; // no lyrics before 1.5.0
 	
 	char count;
 	Read( &count, 1 );
@@ -881,8 +886,8 @@ bool MusWWGInput::ReadSymbole( MusSymbol *symbole )
 	symbole->dec_y = wxINT32_SWAP_ON_BE( int32 );
 	if ( symbole->existDebord ) 
 		ReadDebord( symbole );
-	if ( symbole->flag == LYRIC )
-		ReadLyric( symbole );
+	//if ( symbole->flag == LYRIC )
+	//	ReadLyric( symbole );
      
 	return true;
 }

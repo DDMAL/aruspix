@@ -3,288 +3,440 @@
 <pre>
 <h1>Build Log</h1>
 <h3>
---------------------Configuration: Aruspix - Win32 Release--------------------
+--------------------Configuration: Aruspix - Win32 Debug--------------------
 </h3>
 <h3>Command Lines</h3>
-Creating temporary file "C:\DOCUME~1\laurent\LOCALS~1\Temp\RSPCE.tmp" with contents
-[
-/nologo /MD /W3 /GX /Zd /I ".\..\src\\" /I "C:\laurent\libs\wx2.8.7\include" /I "C:\laurent\libs\wx2.8.7\include\msvc" /I "C:\laurent\libs\imlib\include" /I "C:\laurent\libs\tinyxml" /I "D:\libs\wx2.8.7\lib\vc_lib\msw" /D "WIN32" /D "_WINDOWS" /D WINVER=0x400 /D "_MT" /D wxUSE_GUI=1 /D "AX_RECOGNITION" /D "AX_WGVIEWER" /D "AX_SUPERIMPOSITION" /D "AX_COMPARISON" /Fp"../obj/AruspixRelease/Aruspix.pch" /YX /Fo"../obj/AruspixRelease/" /Fd"../obj/AruspixRelease/" /FD /c 
-"C:\laurent\projects\aruspix_1.4\src\app\axabout_wdr.cpp"
-"C:\laurent\projects\aruspix_1.4\src\app\axapp_wdr.cpp"
-"C:\laurent\projects\aruspix_1.4\src\app\axctrl.cpp"
-"C:\laurent\projects\aruspix_1.4\src\app\axenv.cpp"
-"C:\laurent\projects\aruspix_1.4\src\app\axfile.cpp"
-"C:\laurent\projects\aruspix_1.4\src\app\axframe.cpp"
-"C:\laurent\projects\aruspix_1.4\src\app\axgotodlg.cpp"
-"C:\laurent\projects\aruspix_1.4\src\app\aximage.cpp"
-"C:\laurent\projects\aruspix_1.4\src\app\aximagecontroller.cpp"
-"C:\laurent\projects\aruspix_1.4\src\app\aximcontrol_wdr.cpp"
-"C:\laurent\projects\aruspix_1.4\src\app\axoptions_wdr.cpp"
-"C:\laurent\projects\aruspix_1.4\src\app\axoptionsdlg.cpp"
-"C:\laurent\projects\aruspix_1.4\src\app\axprocess.cpp"
-"C:\laurent\projects\aruspix_1.4\src\app\axprogressdlg.cpp"
-"C:\laurent\projects\aruspix_1.4\src\app\axscrolledwindow.cpp"
-"C:\laurent\projects\aruspix_1.4\src\app\axundo.cpp"
-"C:\laurent\projects\aruspix_1.4\src\comparison\cmp.cpp"
-"C:\laurent\projects\aruspix_1.4\src\comparison\cmp_wdr.cpp"
-"C:\laurent\projects\aruspix_1.4\src\comparison\cmpctrl.cpp"
-"C:\laurent\projects\aruspix_1.4\src\comparison\cmpfile.cpp"
-"C:\laurent\projects\aruspix_1.4\src\comparison\cmpim.cpp"
-"C:\laurent\projects\aruspix_1.4\src\comparison\cmpmlf.cpp"
-"C:\laurent\projects\aruspix_1.4\src\comparison\cmpmus.cpp"
-"C:\laurent\projects\aruspix_1.4\src\im\imbrink.cpp"
-"C:\laurent\projects\aruspix_1.4\src\im\imext.cpp"
-"C:\laurent\projects\aruspix_1.4\src\im\imoperator.cpp"
-"C:\laurent\projects\aruspix_1.4\src\im\impage.cpp"
-"C:\laurent\projects\aruspix_1.4\src\im\imstaff.cpp"
-"C:\laurent\projects\aruspix_1.4\src\im\imstaffsegment.cpp"
-"C:\laurent\projects\aruspix_1.4\src\mus\mus.cpp"
-"C:\laurent\projects\aruspix_1.4\src\mus\mus_wdr.cpp"
-"C:\laurent\projects\aruspix_1.4\src\mus\musbarlines.cpp"
-"C:\laurent\projects\aruspix_1.4\src\mus\musbezier.cpp"
-"C:\laurent\projects\aruspix_1.4\src\mus\musclef.cpp"
-"C:\laurent\projects\aruspix_1.4\src\mus\muselement.cpp"
-"C:\laurent\projects\aruspix_1.4\src\mus\musfile.cpp"
-"C:\laurent\projects\aruspix_1.4\src\mus\musgraph.cpp"
-"C:\laurent\projects\aruspix_1.4\src\mus\musiomlf.cpp"
-"C:\laurent\projects\aruspix_1.4\src\mus\musiowwg.cpp"
-"C:\laurent\projects\aruspix_1.4\src\mus\musnote.cpp"
-"C:\laurent\projects\aruspix_1.4\src\mus\musobject.cpp"
-"C:\laurent\projects\aruspix_1.4\src\mus\muspage.cpp"
-"C:\laurent\projects\aruspix_1.4\src\mus\musstaff.cpp"
-"C:\laurent\projects\aruspix_1.4\src\mus\mussymbol.cpp"
-"C:\laurent\projects\aruspix_1.4\src\mus\mustoolpanel.cpp"
-"C:\laurent\projects\aruspix_1.4\src\mus\muswindow.cpp"
-"C:\laurent\projects\aruspix_1.4\src\recognition\rec.cpp"
-"C:\laurent\projects\aruspix_1.4\src\recognition\rec_wdr.cpp"
-"C:\laurent\projects\aruspix_1.4\src\recognition\recbookctrl.cpp"
-"C:\laurent\projects\aruspix_1.4\src\recognition\recbookfile.cpp"
-"C:\laurent\projects\aruspix_1.4\src\recognition\recfile.cpp"
-"C:\laurent\projects\aruspix_1.4\src\recognition\recim.cpp"
-"C:\laurent\projects\aruspix_1.4\src\recognition\recmlfbmp.cpp"
-"C:\laurent\projects\aruspix_1.4\src\recognition\recmodels.cpp"
-"C:\laurent\projects\aruspix_1.4\src\recognition\recmus.cpp"
-"C:\laurent\projects\aruspix_1.4\src\superimposition\sup.cpp"
-"C:\laurent\projects\aruspix_1.4\src\superimposition\sup_wdr.cpp"
-"C:\laurent\projects\aruspix_1.4\src\wgviewer\wgviewer.cpp"
-"C:\laurent\projects\aruspix_1.4\src\wgviewer\wgviewer_wdr.cpp"
-]
-Creating command line "cl.exe @C:\DOCUME~1\laurent\LOCALS~1\Temp\RSPCE.tmp" 
-Creating temporary file "C:\DOCUME~1\laurent\LOCALS~1\Temp\RSPCF.tmp" with contents
-[
-/nologo /MD /W3 /GX /Zd /Od /I ".\..\src\\" /I "C:\laurent\libs\wx2.8.7\include" /I "C:\laurent\libs\wx2.8.7\include\msvc" /I "C:\laurent\libs\imlib\include" /I "C:\laurent\libs\tinyxml" /I "D:\libs\wx2.8.7\lib\vc_lib\msw" /D "WIN32" /D "_WINDOWS" /D WINVER=0x400 /D "_MT" /D wxUSE_GUI=1 /D "AX_RECOGNITION" /D "AX_WGVIEWER" /D "AX_SUPERIMPOSITION" /D "AX_COMPARISON" /Fo"../obj/AruspixRelease/" /Fd"../obj/AruspixRelease/" /FD /c 
-"C:\laurent\projects\aruspix_1.4\src\app\axapp.cpp"
-]
-Creating command line "cl.exe @C:\DOCUME~1\laurent\LOCALS~1\Temp\RSPCF.tmp" 
-Creating temporary file "C:\DOCUME~1\laurent\LOCALS~1\Temp\RSPD0.tmp" with contents
-[
-/nologo /MD /W3 /GX /Zd /I ".\..\src\\" /I "C:\laurent\libs\wx2.8.7\include" /I "C:\laurent\libs\wx2.8.7\include\msvc" /I "C:\laurent\libs\imlib\include" /I "C:\laurent\libs\tinyxml" /D "AX_DISPLAY" /D "WIN32" /D "_WINDOWS" /D WINVER=0x400 /D "_MT" /D wxUSE_GUI=1 /D "AX_RECOGNITION" /D "AX_WG" /D "AX_WGVIEWER" /D "AX_SUPERIMPOSITION" /Fp"../obj/AruspixRelease/Aruspix.pch" /YX /Fo"../obj/AruspixRelease/" /Fd"../obj/AruspixRelease/" /FD /c 
-"C:\laurent\projects\aruspix_1.4\src\im\imbrink3classes.cpp"
-"C:\laurent\projects\aruspix_1.4\src\im\imkmeans.cpp"
-"C:\laurent\projects\aruspix_1.4\src\im\imregister.cpp"
-"C:\laurent\projects\aruspix_1.4\src\mus\musmlfdic.cpp"
-"C:\laurent\projects\aruspix_1.4\src\superimposition\supbookctrl.cpp"
-"C:\laurent\projects\aruspix_1.4\src\superimposition\supbookfile.cpp"
-"C:\laurent\projects\aruspix_1.4\src\superimposition\supfile.cpp"
-"C:\laurent\projects\aruspix_1.4\src\superimposition\supim.cpp"
-]
-Creating command line "cl.exe @C:\DOCUME~1\laurent\LOCALS~1\Temp\RSPD0.tmp" 
-Creating temporary file "C:\DOCUME~1\laurent\LOCALS~1\Temp\RSPD1.bat" with contents
+Creating temporary file "C:\DOCUME~1\laurent\LOCALS~1\Temp\RSP6B.bat" with contents
 [
 @echo off
-clean.bat Release
+clean.bat Debug
 ]
-Creating command line "C:\DOCUME~1\laurent\LOCALS~1\Temp\RSPD1.bat"
-Compiling...
-axabout_wdr.cpp
-axapp_wdr.cpp
-axctrl.cpp
-axenv.cpp
-axfile.cpp
-axframe.cpp
-axgotodlg.cpp
-aximage.cpp
-aximagecontroller.cpp
-aximcontrol_wdr.cpp
-axoptions_wdr.cpp
-axoptionsdlg.cpp
-C:\laurent\projects\aruspix_1.4\src\app\axoptionsdlg.cpp(334) : warning C4067: unexpected tokens following preprocessor directive - expected a newline
-axprocess.cpp
-axprogressdlg.cpp
-axscrolledwindow.cpp
-axundo.cpp
-cmp.cpp
-cmp_wdr.cpp
-cmpctrl.cpp
-cmpfile.cpp
-C:\laurent\projects\aruspix_1.4\src\comparison\cmpfile.cpp(510) : warning C4800: 'class MusStaff *' : forcing value to bool 'true' or 'false' (performance warning)
-cmpim.cpp
-cmpmlf.cpp
-cmpmus.cpp
-imbrink.cpp
-imext.cpp
-imoperator.cpp
-impage.cpp
-imstaff.cpp
-C:\laurent\projects\aruspix_1.4\src\im\imstaff.cpp(52) : warning C4273: '__mb_cur_max' : inconsistent dll linkage.  dllexport assumed.
-C:\laurent\projects\aruspix_1.4\src\im\imstaff.cpp(53) : warning C4273: '_pctype' : inconsistent dll linkage.  dllexport assumed.
-imstaffsegment.cpp
-mus.cpp
-mus_wdr.cpp
-musbarlines.cpp
-musbezier.cpp
-musclef.cpp
-muselement.cpp
-musfile.cpp
-musgraph.cpp
-musiomlf.cpp
-C:\laurent\projects\aruspix_1.4\src\mus\musiomlf.cpp(776) : warning C4805: '==' : unsafe mix of type 'char' and type 'const bool' in operation
-C:\laurent\projects\aruspix_1.4\src\mus\musiomlf.cpp(780) : warning C4805: '==' : unsafe mix of type 'char' and type 'const bool' in operation
-C:\laurent\projects\aruspix_1.4\src\mus\musiomlf.cpp(782) : warning C4805: '==' : unsafe mix of type 'char' and type 'const bool' in operation
-C:\laurent\projects\aruspix_1.4\src\mus\musiomlf.cpp(979) : warning C4805: '==' : unsafe mix of type 'char' and type 'const bool' in operation
-C:\laurent\projects\aruspix_1.4\src\mus\musiomlf.cpp(988) : warning C4805: '==' : unsafe mix of type 'char' and type 'const bool' in operation
-C:\laurent\projects\aruspix_1.4\src\mus\musiomlf.cpp(992) : warning C4805: '==' : unsafe mix of type 'char' and type 'const bool' in operation
-C:\laurent\projects\aruspix_1.4\src\mus\musiomlf.cpp(994) : warning C4805: '==' : unsafe mix of type 'char' and type 'const bool' in operation
-musiowwg.cpp
-musnote.cpp
-musobject.cpp
-muspage.cpp
-musstaff.cpp
-mussymbol.cpp
-mustoolpanel.cpp
-muswindow.cpp
-rec.cpp
-rec_wdr.cpp
-recbookctrl.cpp
-recbookfile.cpp
-C:\laurent\projects\aruspix_1.4\src\recognition\recbookfile.cpp(171) : warning C4800: 'int' : forcing value to bool 'true' or 'false' (performance warning)
-recfile.cpp
-C:\laurent\projects\aruspix_1.4\src\recognition\recfile.cpp(417) : warning C4800: 'char *' : forcing value to bool 'true' or 'false' (performance warning)
-recim.cpp
-recmlfbmp.cpp
-recmodels.cpp
-recmus.cpp
-sup.cpp
-C:\laurent\projects\aruspix_1.4\src\superimposition\sup.cpp(458) : warning C4390: ';' : empty controlled statement found; is this the intent?
-sup_wdr.cpp
-wgviewer.cpp
-wgviewer_wdr.cpp
-Compiling...
-axapp.cpp
-Compiling...
-imbrink3classes.cpp
-imkmeans.cpp
-imregister.cpp
-musmlfdic.cpp
-supbookctrl.cpp
-supbookfile.cpp
-supfile.cpp
-supim.cpp
-Creating temporary file "C:\DOCUME~1\laurent\LOCALS~1\Temp\RSPD2.tmp" with contents
+Creating command line "C:\DOCUME~1\laurent\LOCALS~1\Temp\RSP6B.bat"
+Creating temporary file "C:\DOCUME~1\laurent\LOCALS~1\Temp\RSP6C.tmp" with contents
 [
-wxmsw28_core.lib wxbase28.lib wxmsw28_html.lib wxpng.lib wxzlib.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib comctl32.lib rpcrt4.lib wsock32.lib im.lib im_process.lib im_fftw.lib tinyxml.lib /nologo /subsystem:windows /incremental:yes /pdb:"../obj/AruspixRelease/Aruspix.pdb" /machine:I386 /nodefaultlib:"libc.lib" /nodefaultlib:"libcd.lib" /nodefaultlib:"LIBCMT" /out:"../bin/Release/Aruspix.exe" /libpath:"C:\laurent\libs\imlib\lib" /libpath:"C:\laurent\libs\tinyxml\Release" /libpath:"C:\laurent\libs\wx2.8.7\lib\vc_lib" 
-\laurent\projects\aruspix_1.4\obj\AruspixRelease\axabout_wdr.obj
-\laurent\projects\aruspix_1.4\obj\AruspixRelease\axapp.obj
-\laurent\projects\aruspix_1.4\obj\AruspixRelease\axapp_wdr.obj
-\laurent\projects\aruspix_1.4\obj\AruspixRelease\axctrl.obj
-\laurent\projects\aruspix_1.4\obj\AruspixRelease\axenv.obj
-\laurent\projects\aruspix_1.4\obj\AruspixRelease\axfile.obj
-\laurent\projects\aruspix_1.4\obj\AruspixRelease\axframe.obj
-\laurent\projects\aruspix_1.4\obj\AruspixRelease\axgotodlg.obj
-\laurent\projects\aruspix_1.4\obj\AruspixRelease\aximage.obj
-\laurent\projects\aruspix_1.4\obj\AruspixRelease\aximagecontroller.obj
-\laurent\projects\aruspix_1.4\obj\AruspixRelease\aximcontrol_wdr.obj
-\laurent\projects\aruspix_1.4\obj\AruspixRelease\axoptions_wdr.obj
-\laurent\projects\aruspix_1.4\obj\AruspixRelease\axoptionsdlg.obj
-\laurent\projects\aruspix_1.4\obj\AruspixRelease\axprocess.obj
-\laurent\projects\aruspix_1.4\obj\AruspixRelease\axprogressdlg.obj
-\laurent\projects\aruspix_1.4\obj\AruspixRelease\axscrolledwindow.obj
-\laurent\projects\aruspix_1.4\obj\AruspixRelease\axundo.obj
-\laurent\projects\aruspix_1.4\obj\AruspixRelease\cmp.obj
-\laurent\projects\aruspix_1.4\obj\AruspixRelease\cmp_wdr.obj
-\laurent\projects\aruspix_1.4\obj\AruspixRelease\cmpctrl.obj
-\laurent\projects\aruspix_1.4\obj\AruspixRelease\cmpfile.obj
-\laurent\projects\aruspix_1.4\obj\AruspixRelease\cmpim.obj
-\laurent\projects\aruspix_1.4\obj\AruspixRelease\cmpmlf.obj
-\laurent\projects\aruspix_1.4\obj\AruspixRelease\cmpmus.obj
-\laurent\projects\aruspix_1.4\obj\AruspixRelease\imbrink.obj
-\laurent\projects\aruspix_1.4\obj\AruspixRelease\imbrink3classes.obj
-\laurent\projects\aruspix_1.4\obj\AruspixRelease\imext.obj
-\laurent\projects\aruspix_1.4\obj\AruspixRelease\imkmeans.obj
-\laurent\projects\aruspix_1.4\obj\AruspixRelease\imoperator.obj
-\laurent\projects\aruspix_1.4\obj\AruspixRelease\impage.obj
-\laurent\projects\aruspix_1.4\obj\AruspixRelease\imregister.obj
-\laurent\projects\aruspix_1.4\obj\AruspixRelease\imstaff.obj
-\laurent\projects\aruspix_1.4\obj\AruspixRelease\imstaffsegment.obj
-\laurent\projects\aruspix_1.4\obj\AruspixRelease\mus.obj
-\laurent\projects\aruspix_1.4\obj\AruspixRelease\mus_wdr.obj
-\laurent\projects\aruspix_1.4\obj\AruspixRelease\musbarlines.obj
-\laurent\projects\aruspix_1.4\obj\AruspixRelease\musbezier.obj
-\laurent\projects\aruspix_1.4\obj\AruspixRelease\musclef.obj
-\laurent\projects\aruspix_1.4\obj\AruspixRelease\muselement.obj
-\laurent\projects\aruspix_1.4\obj\AruspixRelease\musfile.obj
-\laurent\projects\aruspix_1.4\obj\AruspixRelease\musgraph.obj
-\laurent\projects\aruspix_1.4\obj\AruspixRelease\musiomlf.obj
-\laurent\projects\aruspix_1.4\obj\AruspixRelease\musiowwg.obj
-\laurent\projects\aruspix_1.4\obj\AruspixRelease\musmlfdic.obj
-\laurent\projects\aruspix_1.4\obj\AruspixRelease\musnote.obj
-\laurent\projects\aruspix_1.4\obj\AruspixRelease\musobject.obj
-\laurent\projects\aruspix_1.4\obj\AruspixRelease\muspage.obj
-\laurent\projects\aruspix_1.4\obj\AruspixRelease\musstaff.obj
-\laurent\projects\aruspix_1.4\obj\AruspixRelease\mussymbol.obj
-\laurent\projects\aruspix_1.4\obj\AruspixRelease\mustoolpanel.obj
-\laurent\projects\aruspix_1.4\obj\AruspixRelease\muswindow.obj
-\laurent\projects\aruspix_1.4\obj\AruspixRelease\rec.obj
-\laurent\projects\aruspix_1.4\obj\AruspixRelease\rec_wdr.obj
-\laurent\projects\aruspix_1.4\obj\AruspixRelease\recbookctrl.obj
-\laurent\projects\aruspix_1.4\obj\AruspixRelease\recbookfile.obj
-\laurent\projects\aruspix_1.4\obj\AruspixRelease\recfile.obj
-\laurent\projects\aruspix_1.4\obj\AruspixRelease\recim.obj
-\laurent\projects\aruspix_1.4\obj\AruspixRelease\recmlfbmp.obj
-\laurent\projects\aruspix_1.4\obj\AruspixRelease\recmodels.obj
-\laurent\projects\aruspix_1.4\obj\AruspixRelease\recmus.obj
-\laurent\projects\aruspix_1.4\obj\AruspixRelease\sup.obj
-\laurent\projects\aruspix_1.4\obj\AruspixRelease\sup_wdr.obj
-\laurent\projects\aruspix_1.4\obj\AruspixRelease\supbookctrl.obj
-\laurent\projects\aruspix_1.4\obj\AruspixRelease\supbookfile.obj
-\laurent\projects\aruspix_1.4\obj\AruspixRelease\supfile.obj
-\laurent\projects\aruspix_1.4\obj\AruspixRelease\supim.obj
-\laurent\projects\aruspix_1.4\obj\AruspixRelease\wgviewer.obj
-\laurent\projects\aruspix_1.4\obj\AruspixRelease\wgviewer_wdr.obj
-\laurent\projects\aruspix_1.4\obj\AruspixRelease\ax.res
+wxmsw28d_core.lib wxbase28d.lib wxmsw28d_html.lib wxpngd.lib wxzlibd.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib comctl32.lib rpcrt4.lib wsock32.lib im.lib im_process.lib im_fftw.lib tinyxmld.lib /nologo /subsystem:windows /pdb:none /debug /machine:I386 /nodefaultlib:"libc.lib" /nodefaultlib:"libcd.lib" /nodefaultlib:"LIBCMT" /out:"../bin/Debug/Aruspix.exe" /libpath:"C:\laurent\libs\imlib\lib" /libpath:"C:\laurent\libs\tinyxml\Debug" /libpath:"C:\laurent\libs\wx2.8.7\lib\vc_lib" 
+\laurent\projects\aruspix_trunk\obj\AruspixDebug\axabout_wdr.obj
+\laurent\projects\aruspix_trunk\obj\AruspixDebug\axapp.obj
+\laurent\projects\aruspix_trunk\obj\AruspixDebug\axapp_wdr.obj
+\laurent\projects\aruspix_trunk\obj\AruspixDebug\axctrl.obj
+\laurent\projects\aruspix_trunk\obj\AruspixDebug\axenv.obj
+\laurent\projects\aruspix_trunk\obj\AruspixDebug\axfile.obj
+\laurent\projects\aruspix_trunk\obj\AruspixDebug\axframe.obj
+\laurent\projects\aruspix_trunk\obj\AruspixDebug\axgotodlg.obj
+\laurent\projects\aruspix_trunk\obj\AruspixDebug\aximage.obj
+\laurent\projects\aruspix_trunk\obj\AruspixDebug\aximagecontroller.obj
+\laurent\projects\aruspix_trunk\obj\AruspixDebug\aximcontrol_wdr.obj
+\laurent\projects\aruspix_trunk\obj\AruspixDebug\axoptions_wdr.obj
+\laurent\projects\aruspix_trunk\obj\AruspixDebug\axoptionsdlg.obj
+\laurent\projects\aruspix_trunk\obj\AruspixDebug\axprocess.obj
+\laurent\projects\aruspix_trunk\obj\AruspixDebug\axprogressdlg.obj
+\laurent\projects\aruspix_trunk\obj\AruspixDebug\axscrolledwindow.obj
+\laurent\projects\aruspix_trunk\obj\AruspixDebug\axundo.obj
+\laurent\projects\aruspix_trunk\obj\AruspixDebug\cmp.obj
+\laurent\projects\aruspix_trunk\obj\AruspixDebug\cmp_wdr.obj
+\laurent\projects\aruspix_trunk\obj\AruspixDebug\cmpctrl.obj
+\laurent\projects\aruspix_trunk\obj\AruspixDebug\cmpfile.obj
+\laurent\projects\aruspix_trunk\obj\AruspixDebug\cmpim.obj
+\laurent\projects\aruspix_trunk\obj\AruspixDebug\cmpmlf.obj
+\laurent\projects\aruspix_trunk\obj\AruspixDebug\cmpmus.obj
+\laurent\projects\aruspix_trunk\obj\AruspixDebug\imbrink.obj
+\laurent\projects\aruspix_trunk\obj\AruspixDebug\imbrink3classes.obj
+\laurent\projects\aruspix_trunk\obj\AruspixDebug\imext.obj
+\laurent\projects\aruspix_trunk\obj\AruspixDebug\imkmeans.obj
+\laurent\projects\aruspix_trunk\obj\AruspixDebug\imoperator.obj
+\laurent\projects\aruspix_trunk\obj\AruspixDebug\impage.obj
+\laurent\projects\aruspix_trunk\obj\AruspixDebug\imregister.obj
+\laurent\projects\aruspix_trunk\obj\AruspixDebug\imstaff.obj
+\laurent\projects\aruspix_trunk\obj\AruspixDebug\imstaffsegment.obj
+\laurent\projects\aruspix_trunk\obj\AruspixDebug\mus.obj
+\laurent\projects\aruspix_trunk\obj\AruspixDebug\mus_wdr.obj
+\laurent\projects\aruspix_trunk\obj\AruspixDebug\musbarlines.obj
+\laurent\projects\aruspix_trunk\obj\AruspixDebug\musbezier.obj
+\laurent\projects\aruspix_trunk\obj\AruspixDebug\musclef.obj
+\laurent\projects\aruspix_trunk\obj\AruspixDebug\muselement.obj
+\laurent\projects\aruspix_trunk\obj\AruspixDebug\musfile.obj
+\laurent\projects\aruspix_trunk\obj\AruspixDebug\musgraph.obj
+\laurent\projects\aruspix_trunk\obj\AruspixDebug\musiomlf.obj
+\laurent\projects\aruspix_trunk\obj\AruspixDebug\musiowwg.obj
+\laurent\projects\aruspix_trunk\obj\AruspixDebug\musmlfdic.obj
+\laurent\projects\aruspix_trunk\obj\AruspixDebug\musnote.obj
+\laurent\projects\aruspix_trunk\obj\AruspixDebug\musobject.obj
+\laurent\projects\aruspix_trunk\obj\AruspixDebug\muspage.obj
+\laurent\projects\aruspix_trunk\obj\AruspixDebug\musstaff.obj
+\laurent\projects\aruspix_trunk\obj\AruspixDebug\mussymbol.obj
+\laurent\projects\aruspix_trunk\obj\AruspixDebug\mustoolpanel.obj
+\laurent\projects\aruspix_trunk\obj\AruspixDebug\muswindow.obj
+\laurent\projects\aruspix_trunk\obj\AruspixDebug\rec.obj
+\laurent\projects\aruspix_trunk\obj\AruspixDebug\rec_wdr.obj
+\laurent\projects\aruspix_trunk\obj\AruspixDebug\recbookctrl.obj
+\laurent\projects\aruspix_trunk\obj\AruspixDebug\recbookfile.obj
+\laurent\projects\aruspix_trunk\obj\AruspixDebug\recfile.obj
+\laurent\projects\aruspix_trunk\obj\AruspixDebug\recim.obj
+\laurent\projects\aruspix_trunk\obj\AruspixDebug\recmlfbmp.obj
+\laurent\projects\aruspix_trunk\obj\AruspixDebug\recmodels.obj
+\laurent\projects\aruspix_trunk\obj\AruspixDebug\recmus.obj
+\laurent\projects\aruspix_trunk\obj\AruspixDebug\sup.obj
+\laurent\projects\aruspix_trunk\obj\AruspixDebug\sup_wdr.obj
+\laurent\projects\aruspix_trunk\obj\AruspixDebug\supbookctrl.obj
+\laurent\projects\aruspix_trunk\obj\AruspixDebug\supbookfile.obj
+\laurent\projects\aruspix_trunk\obj\AruspixDebug\supfile.obj
+\laurent\projects\aruspix_trunk\obj\AruspixDebug\supim.obj
+\laurent\projects\aruspix_trunk\obj\AruspixDebug\wgviewer.obj
+\laurent\projects\aruspix_trunk\obj\AruspixDebug\wgviewer_wdr.obj
+\laurent\projects\aruspix_trunk\obj\AruspixDebug\ax.res
 ]
-Creating command line "link.exe @C:\DOCUME~1\laurent\LOCALS~1\Temp\RSPD2.tmp"
+Creating command line "link.exe @C:\DOCUME~1\laurent\LOCALS~1\Temp\RSP6C.tmp"
 
-C:\laurent\projects\aruspix_1.4\bin\Release\Adapt.exe
-C:\laurent\projects\aruspix_1.4\bin\Release\Aruspix.exe
-C:\laurent\projects\aruspix_1.4\bin\Release\Decoder.exe
-C:\laurent\projects\aruspix_1.4\bin\Release\Ngram.exe
-Deleted file - C:\laurent\projects\aruspix_1.4\bin\Release\Aruspix.exp
-Deleted file - C:\laurent\projects\aruspix_1.4\bin\Release\Aruspix.ilk
-Deleted file - C:\laurent\projects\aruspix_1.4\bin\Release\Aruspix.lib
-C:\laurent\projects\aruspix_1.4\bin\Adapt.exe
-C:\laurent\projects\aruspix_1.4\bin\Aruspix.exe
-C:\laurent\projects\aruspix_1.4\bin\Decoder.exe
-C:\laurent\projects\aruspix_1.4\bin\Ngram.exe
+C:\laurent\projects\aruspix_trunk\bin\Debug\Adapt.exe
+C:\laurent\projects\aruspix_trunk\bin\Debug\Aruspix.exe
+C:\laurent\projects\aruspix_trunk\bin\Debug\Decoder.exe
+C:\laurent\projects\aruspix_trunk\bin\Debug\Ngram.exe
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\Adapt.ilk
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\Aruspix.exp
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\Aruspix.lib
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\logo.png
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\logo.win.png
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\splash.png
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\Aruspix.localized\.localized\en.strings
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\Aruspix.localized\.localized\fr.strings
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\Aruspix.localized\Books.localized\.localized\en.strings
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\Aruspix.localized\Books.localized\.localized\fr.strings
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\Aruspix.localized\Images.localized\.localized\en.strings
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\Aruspix.localized\Models.localized\.localized\en.strings
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\Aruspix.localized\Models.localized\.localized\fr.strings
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\Aruspix.localized\Pages.localized\.localized\en.strings
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\Aruspix.localized\Pages.localized\.localized\fr.strings
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\en\aruspix.chm
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\en\aruspix.hhc
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\en\aruspix.hhk
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\en\aruspix.hhp
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\en\display.hhc
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\en\display.hhk
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\en\display.hhp
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\en\aruspix\ApplicationMenu.png
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\en\aruspix\aruspix.css
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\en\aruspix\aruspix.html
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\en\aruspix\BarLine.png
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\en\aruspix\BassClefButtons.png
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\en\aruspix\BassClefs.png
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\en\aruspix\BlackBorderRed.png
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\en\aruspix\CantoClef.png
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\en\aruspix\DottedNoteWithFlat.png
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\en\aruspix\EditButton.png
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\en\aruspix\EditScreen.png
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\en\aruspix\FClef.png
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\en\aruspix\FileDeactivation.png
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\en\aruspix\FusaWithBreve.png
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\en\aruspix\Highlight.png
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\en\aruspix\index.html
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\en\aruspix\InsertButton.png
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\en\aruspix\internals.pl
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\en\aruspix\labels.pl
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\en\aruspix\LigatureButtons.png
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\en\aruspix\LigatureSample.png
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\en\aruspix\LongRest.png
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\en\aruspix\NewBookIcon.png
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\en\aruspix\NewBookWindow.png
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\en\aruspix\next.png
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\en\aruspix\node1.html
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\en\aruspix\node2.html
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\en\aruspix\node3.html
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\en\aruspix\node4.html
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\en\aruspix\nx_grp_g.png
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\en\aruspix\OctaveKeySignatures.png
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\en\aruspix\OpenNewFileButton.png
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\en\aruspix\PPCorrection.png
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\en\aruspix\prev.png
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\en\aruspix\prev_g.png
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\en\aruspix\RunButton.png
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\en\aruspix\ScannedTextRaw.png
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\en\aruspix\SemiMinim.png
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\en\aruspix\SpecialSymbols.png
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\en\aruspix\ToolBar.png
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\en\aruspix\up.png
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\en\aruspix\up_g.png
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\en\aruspix\WARNINGS
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\en\aruspix\ZoomButtons.png
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\en\display\axlabels.pl
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\en\display\axnode1.html
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\en\display\axnode2.html
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\en\display\axnode3.html
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\en\display\axnode4.html
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\en\display\axnode5.html
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\en\display\axnode6.html
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\en\display\display.css
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\en\display\display.html
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\en\display\index.html
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\en\display\WARNINGS
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\fnt\A_B.bmp
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\fnt\A_BB.bmp
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\fnt\A_D.bmp
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\fnt\A_DD.bmp
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\fnt\A_H.bmp
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\fnt\C.bmp
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\fnt\K_F.bmp
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\fnt\K_S.bmp
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\fnt\K_U.bmp
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\fnt\M_CH_3_2.bmp
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\fnt\M_S_2.bmp
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\fnt\M_S_3.bmp
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\fnt\M_TI.bmp
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\fnt\M_TID.bmp
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\fnt\M_TID_B.bmp
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\fnt\M_TID_B_P.bmp
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\fnt\M_TID_P.bmp
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\fnt\M_TI_B.bmp
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\fnt\M_TI_B_P.bmp
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\fnt\M_TI_P.bmp
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\fnt\M_TP.bmp
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\fnt\M_TP_B.bmp
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\fnt\M_TP_B_P.bmp
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\fnt\M_TP_P.bmp
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\fnt\N_0.bmp
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\fnt\N_0_2.bmp
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\fnt\N_1.bmp
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\fnt\N_1_2.bmp
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\fnt\N_1_4.bmp
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\fnt\N_1_6.bmp
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\fnt\N_2.bmp
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\fnt\N_2_2.bmp
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\fnt\N_2_4.bmp
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\fnt\N_2_6.bmp
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\fnt\N_3.bmp
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\fnt\N_4.bmp
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\fnt\N_5.bmp
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\fnt\N_5_2.bmp
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\fnt\N_6.bmp
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\fnt\N_6_2.bmp
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\fnt\N_7.bmp
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\fnt\N_7_2.bmp
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\fnt\P.bmp
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\fnt\R_0.bmp
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\fnt\R_1.bmp
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\fnt\R_2.bmp
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\fnt\R_3.bmp
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\fnt\R_4.bmp
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\fnt\R_5.bmp
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\fnt\R_6.bmp
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\fnt\S_B.bmp
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\fnt\types.xml
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\fr\aruspix.hhc
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\fr\aruspix.hhk
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\fr\aruspix.hhp
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\fr\aruspix.mo
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\fr\aruspix.po
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\fr\display.hhc
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\fr\display.hhk
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\fr\display.hhp
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\fr\display.mo
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\fr\display.po
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\fr\recognition.mo
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\fr\recognition.po
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\fr\wxstd.mo
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\fr\aruspix\aruspix.css
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\fr\aruspix\aruspix.html
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\fr\aruspix\axlabels.pl
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\fr\aruspix\axnode1.html
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\fr\aruspix\axnode2.html
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\fr\aruspix\axnode3.html
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\fr\aruspix\axnode4.html
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\fr\aruspix\axnode5.html
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\fr\aruspix\axnode6.html
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\fr\aruspix\index.html
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\fr\aruspix\WARNINGS
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\fr\display\axlabels.pl
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\fr\display\axnode1.html
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\fr\display\axnode2.html
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\fr\display\axnode3.html
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\fr\display\axnode4.html
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\fr\display\axnode5.html
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\fr\display\axnode6.html
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\fr\display\display.css
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\fr\display\display.html
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\fr\display\index.html
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\fr\display\WARNINGS
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\icons\16x16\bookcase.png
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\icons\16x16\book_new.png
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\icons\16x16\book_open.png
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\icons\16x16\cmp_new.png
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\icons\16x16\cmp_open.png
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\icons\16x16\compfile.png
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\icons\16x16\editcopy.png
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\icons\16x16\editcut.png
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\icons\16x16\editpaste.png
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\icons\16x16\filenew.png
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\icons\16x16\filesave.png
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\icons\16x16\folder_yellow.png
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\icons\16x16\next.png
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\icons\16x16\noatun.png
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\icons\16x16\previous.png
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\icons\16x16\redo.png
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\icons\16x16\sup_new.png
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\icons\16x16\sup_open.png
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\icons\16x16\undo.png
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\icons\16x16\viewmag+.png
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\icons\16x16\viewmag-.png
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\icons\16x16\viewmagfit.png
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\icons\32x32\bookcase.png
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\icons\32x32\book_new.png
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\icons\32x32\book_open.png
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\icons\32x32\cmp_new.png
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\icons\32x32\cmp_open.png
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\icons\32x32\compfile.png
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\icons\32x32\editcopy.png
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\icons\32x32\editcut.png
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\icons\32x32\editpaste.png
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\icons\32x32\filenew.png
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\icons\32x32\filesave.png
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\icons\32x32\folder_yellow.png
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\icons\32x32\next.png
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\icons\32x32\noatun.png
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\icons\32x32\previous.png
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\icons\32x32\redo.png
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\icons\32x32\sup_new.png
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\icons\32x32\sup_open.png
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\icons\32x32\undo.png
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\icons\32x32\viewmag+.png
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\icons\32x32\viewmag-.png
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\icons\32x32\viewmagfit.png
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\icons\48x48\bookcase.png
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\icons\48x48\book_new.png
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\icons\48x48\book_open.png
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\icons\48x48\cmp_new.png
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\icons\48x48\cmp_open.png
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\icons\48x48\compfile.png
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\icons\48x48\editcopy.png
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\icons\48x48\editcut.png
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\icons\48x48\editpaste.png
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\icons\48x48\filenew.png
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\icons\48x48\filesave.png
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\icons\48x48\folder_yellow.png
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\icons\48x48\next.png
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\icons\48x48\noatun.png
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\icons\48x48\previous.png
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\icons\48x48\redo.png
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\icons\48x48\sup_new.png
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\icons\48x48\sup_open.png
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\icons\48x48\undo.png
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\icons\48x48\viewmag+.png
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\icons\48x48\viewmag-.png
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\icons\48x48\viewmagfit.png
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\models\builtin.axmus
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\models\builtin.axtyp
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\tree\axmus.png
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\tree\axmus_grey.png
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\tree\axtyp.png
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\tree\axtyp_grey.png
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\tree\axz.png
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\tree\axz_grey.png
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\tree\axz_ok.png
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\tree\axz_ok_grey.png
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\tree\doc.png
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\tree\doc_grey.png
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\tree\folder_blue.png
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\tree\folder_blue_open.png
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\tree\folder_grey.png
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\tree\folder_grey_open.png
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\tree\loading.png
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\tree\text.png
+Deleted file - C:\laurent\projects\aruspix_trunk\bin\Debug\tree\text_grey.png
+C:\laurent\projects\aruspix_trunk\bin\Adapt.exe
+C:\laurent\projects\aruspix_trunk\bin\Aruspix.exe
+C:\laurent\projects\aruspix_trunk\bin\Decoder.exe
+C:\laurent\projects\aruspix_trunk\bin\Ngram.exe
 output dir cleaned
 <h3>Output Window</h3>
 Linking...
-   Creating library ../bin/Release/Aruspix.lib and object ../bin/Release/Aruspix.exp
-Creating temporary file "C:\DOCUME~1\laurent\LOCALS~1\Temp\RSPD6.bat" with contents
+   Creating library ../bin/Debug/Aruspix.lib and object ../bin/Debug/Aruspix.exp
+Creating temporary file "C:\DOCUME~1\laurent\LOCALS~1\Temp\RSP70.tmp" with contents
+[
+/nologo /o"../obj/AruspixDebug/Aruspix.bsc" 
+\laurent\projects\aruspix_trunk\obj\AruspixDebug\axabout_wdr.sbr
+\laurent\projects\aruspix_trunk\obj\AruspixDebug\axapp.sbr
+\laurent\projects\aruspix_trunk\obj\AruspixDebug\axapp_wdr.sbr
+\laurent\projects\aruspix_trunk\obj\AruspixDebug\axctrl.sbr
+\laurent\projects\aruspix_trunk\obj\AruspixDebug\axenv.sbr
+\laurent\projects\aruspix_trunk\obj\AruspixDebug\axfile.sbr
+\laurent\projects\aruspix_trunk\obj\AruspixDebug\axframe.sbr
+\laurent\projects\aruspix_trunk\obj\AruspixDebug\axgotodlg.sbr
+\laurent\projects\aruspix_trunk\obj\AruspixDebug\aximage.sbr
+\laurent\projects\aruspix_trunk\obj\AruspixDebug\aximagecontroller.sbr
+\laurent\projects\aruspix_trunk\obj\AruspixDebug\aximcontrol_wdr.sbr
+\laurent\projects\aruspix_trunk\obj\AruspixDebug\axoptions_wdr.sbr
+\laurent\projects\aruspix_trunk\obj\AruspixDebug\axoptionsdlg.sbr
+\laurent\projects\aruspix_trunk\obj\AruspixDebug\axprocess.sbr
+\laurent\projects\aruspix_trunk\obj\AruspixDebug\axprogressdlg.sbr
+\laurent\projects\aruspix_trunk\obj\AruspixDebug\axscrolledwindow.sbr
+\laurent\projects\aruspix_trunk\obj\AruspixDebug\axundo.sbr
+\laurent\projects\aruspix_trunk\obj\AruspixDebug\cmp.sbr
+\laurent\projects\aruspix_trunk\obj\AruspixDebug\cmp_wdr.sbr
+\laurent\projects\aruspix_trunk\obj\AruspixDebug\cmpctrl.sbr
+\laurent\projects\aruspix_trunk\obj\AruspixDebug\cmpfile.sbr
+\laurent\projects\aruspix_trunk\obj\AruspixDebug\cmpim.sbr
+\laurent\projects\aruspix_trunk\obj\AruspixDebug\cmpmlf.sbr
+\laurent\projects\aruspix_trunk\obj\AruspixDebug\cmpmus.sbr
+\laurent\projects\aruspix_trunk\obj\AruspixDebug\imbrink.sbr
+\laurent\projects\aruspix_trunk\obj\AruspixDebug\imbrink3classes.sbr
+\laurent\projects\aruspix_trunk\obj\AruspixDebug\imext.sbr
+\laurent\projects\aruspix_trunk\obj\AruspixDebug\imkmeans.sbr
+\laurent\projects\aruspix_trunk\obj\AruspixDebug\imoperator.sbr
+\laurent\projects\aruspix_trunk\obj\AruspixDebug\impage.sbr
+\laurent\projects\aruspix_trunk\obj\AruspixDebug\imregister.sbr
+\laurent\projects\aruspix_trunk\obj\AruspixDebug\imstaff.sbr
+\laurent\projects\aruspix_trunk\obj\AruspixDebug\imstaffsegment.sbr
+\laurent\projects\aruspix_trunk\obj\AruspixDebug\mus.sbr
+\laurent\projects\aruspix_trunk\obj\AruspixDebug\mus_wdr.sbr
+\laurent\projects\aruspix_trunk\obj\AruspixDebug\musbarlines.sbr
+\laurent\projects\aruspix_trunk\obj\AruspixDebug\musbezier.sbr
+\laurent\projects\aruspix_trunk\obj\AruspixDebug\musclef.sbr
+\laurent\projects\aruspix_trunk\obj\AruspixDebug\muselement.sbr
+\laurent\projects\aruspix_trunk\obj\AruspixDebug\musfile.sbr
+\laurent\projects\aruspix_trunk\obj\AruspixDebug\musgraph.sbr
+\laurent\projects\aruspix_trunk\obj\AruspixDebug\musiomlf.sbr
+\laurent\projects\aruspix_trunk\obj\AruspixDebug\musiowwg.sbr
+\laurent\projects\aruspix_trunk\obj\AruspixDebug\musmlfdic.sbr
+\laurent\projects\aruspix_trunk\obj\AruspixDebug\musnote.sbr
+\laurent\projects\aruspix_trunk\obj\AruspixDebug\musobject.sbr
+\laurent\projects\aruspix_trunk\obj\AruspixDebug\muspage.sbr
+\laurent\projects\aruspix_trunk\obj\AruspixDebug\musstaff.sbr
+\laurent\projects\aruspix_trunk\obj\AruspixDebug\mussymbol.sbr
+\laurent\projects\aruspix_trunk\obj\AruspixDebug\mustoolpanel.sbr
+\laurent\projects\aruspix_trunk\obj\AruspixDebug\muswindow.sbr
+\laurent\projects\aruspix_trunk\obj\AruspixDebug\rec.sbr
+\laurent\projects\aruspix_trunk\obj\AruspixDebug\rec_wdr.sbr
+\laurent\projects\aruspix_trunk\obj\AruspixDebug\recbookctrl.sbr
+\laurent\projects\aruspix_trunk\obj\AruspixDebug\recbookfile.sbr
+\laurent\projects\aruspix_trunk\obj\AruspixDebug\recfile.sbr
+\laurent\projects\aruspix_trunk\obj\AruspixDebug\recim.sbr
+\laurent\projects\aruspix_trunk\obj\AruspixDebug\recmlfbmp.sbr
+\laurent\projects\aruspix_trunk\obj\AruspixDebug\recmodels.sbr
+\laurent\projects\aruspix_trunk\obj\AruspixDebug\recmus.sbr
+\laurent\projects\aruspix_trunk\obj\AruspixDebug\sup.sbr
+\laurent\projects\aruspix_trunk\obj\AruspixDebug\sup_wdr.sbr
+\laurent\projects\aruspix_trunk\obj\AruspixDebug\supbookctrl.sbr
+\laurent\projects\aruspix_trunk\obj\AruspixDebug\supbookfile.sbr
+\laurent\projects\aruspix_trunk\obj\AruspixDebug\supfile.sbr
+\laurent\projects\aruspix_trunk\obj\AruspixDebug\supim.sbr
+\laurent\projects\aruspix_trunk\obj\AruspixDebug\wgviewer.sbr
+\laurent\projects\aruspix_trunk\obj\AruspixDebug\wgviewer_wdr.sbr]
+Creating command line "bscmake.exe @C:\DOCUME~1\laurent\LOCALS~1\Temp\RSP70.tmp"
+Creating browse info file...
+<h3>Output Window</h3>
+Creating temporary file "C:\DOCUME~1\laurent\LOCALS~1\Temp\RSP71.bat" with contents
 [
 @echo off
-copy.bat Release
+copy.bat Debug
 ]
-Creating command line "C:\DOCUME~1\laurent\LOCALS~1\Temp\RSPD6.bat"
+Creating command line "C:\DOCUME~1\laurent\LOCALS~1\Temp\RSP71.bat"
 
-98 File(s) copied
+97 File(s) copied
 149 File(s) copied
 local and data files copied
 
 
 
 <h3>Results</h3>
-Aruspix.exe - 0 error(s), 14 warning(s)
+Aruspix.exe - 0 error(s), 0 warning(s)
 </pre>
 </body>
 </html>
