@@ -55,7 +55,7 @@ MlHMM::MlHMM()
 	addBOption("learn var", &learn_var, false, "enroll var");
 	addBOption("learn weights", &learn_weights, false, "enroll weights");
 	addBOption("adapt separate", &adapt_separate, false, "adapt models separately");
-	addBOption("adapt separate set data", &adapt_separate_set_data, false, "set data to non represented models when adapting  models separately");
+	addBOption("adapt separate set data", &adapt_separate_set_data, true, "set data to non represented models when adapting models separately");
 	
 	lex_input = NULL;
     spacing_model = NULL;
@@ -276,7 +276,7 @@ void MlHMM::mapAdapt( const char *input_fname, const char *output_fname, XFile *
 		{
 			int m = i;
 			// the transitions and emission parameters will be set in each model
-			if (sub_dataset[m]->n_examples==0) {
+			if (sub_dataset[m]->n_examples==0 || sub_dataset[m]->inputs->n_frames <= 0) {
 				if ( adapt_separate_set_data )
 				{
 					message("No example (just set data)");
