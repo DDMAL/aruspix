@@ -1409,27 +1409,19 @@ void MusWindow::OnKeyDown(wxKeyEvent &event)
 			CheckPoint( UNDO_PART, WG_UNDO_STAFF );
 			OnEndEdition();
 		}
-		else if ( event.m_controlDown && in( event.m_keyCode, WXK_LEFT, WXK_DOWN) && m_currentElement) // correction hauteur / duree avec les fleches
+		else if ( event.m_controlDown && ( event.m_keyCode == WXK_UP ) && m_currentElement) // correction hauteur avec les fleches, up
 		{
 			PrepareCheckPoint( UNDO_PART, WG_UNDO_STAFF );
-			if ( (event.GetKeyCode() == WXK_RIGHT) && m_currentElement->IsNote() && !m_currentElement->ligat ) 
-			{
-				m_currentElement->SetValue( ((MusNote*)m_currentElement)->val + 1, m_currentStaff );	
-			}
-			else if ( (event.GetKeyCode() == WXK_LEFT ) && m_currentElement->IsNote() && !m_currentElement->ligat ) 
-			{
-				m_currentElement->SetValue( ((MusNote*)m_currentElement)->val - 1, m_currentStaff );	
-			}
-			else if ( event.GetKeyCode() == WXK_UP )
-			{
-				m_insertcode = m_currentElement->filtrcod( m_currentElement->code + 1, &m_insertoct );
-				m_currentElement->SetPitch( m_insertcode, m_insertoct, m_currentStaff );
-			}
-			else if ( event.GetKeyCode() == WXK_DOWN )
-			{
-				m_insertcode = m_currentElement->filtrcod( m_currentElement->code - 1, &m_insertoct );
-				m_currentElement->SetPitch( m_insertcode, m_insertoct, m_currentStaff );
-			}
+         m_insertcode = m_currentElement->filtrcod( m_currentElement->code + 1, &m_insertoct );
+         m_currentElement->SetPitch( m_insertcode, m_insertoct, m_currentStaff );
+			CheckPoint( UNDO_PART, WG_UNDO_STAFF );
+			OnEndEdition();
+		}
+		else if ( event.m_controlDown && ( event.m_keyCode == WXK_DOWN ) && m_currentElement) // correction hauteur avec les fleches, down
+		{
+			PrepareCheckPoint( UNDO_PART, WG_UNDO_STAFF );
+         m_insertcode = m_currentElement->filtrcod( m_currentElement->code - 1, &m_insertoct );
+         m_currentElement->SetPitch( m_insertcode, m_insertoct, m_currentStaff );
 			CheckPoint( UNDO_PART, WG_UNDO_STAFF );
 			OnEndEdition();
 		}
@@ -1497,10 +1489,10 @@ void MusWindow::OnKeyDown(wxKeyEvent &event)
 			CheckPoint( UNDO_PART, WG_UNDO_STAFF );
 			OnEndEdition();
 		}
-		else if ( event.m_keyCode == WXK_SPACE && m_currentElement ) // deplacement
-		{
+		else if ( event.m_controlDown && (( event.m_keyCode == WXK_LEFT ) || (event.m_keyCode == WXK_RIGHT )) && m_currentElement) // moving element
+      {
 			PrepareCheckPoint( UNDO_PART, WG_UNDO_STAFF );
-			if ( event.m_controlDown )
+			if ( event.m_keyCode == WXK_LEFT )
 				m_currentElement->xrel -=3;
 			else
 				m_currentElement->xrel +=3;
