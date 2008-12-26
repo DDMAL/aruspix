@@ -23,7 +23,7 @@
 #include "muspage.h"
 #include "musfile.h"
 #include "mustoolpanel.h"
-#include "musiowwg.h"
+#include "musiobin.h"
 
 #include "mus_wdr.h"
 
@@ -49,7 +49,8 @@ BEGIN_EVENT_TABLE(MusWindow,wxScrolledWindow)
 	EVT_LEAVE_WINDOW( MusWindow::OnMouseLeave )
     EVT_PAINT( MusWindow::OnPaint )
 	EVT_SIZE( MusWindow::OnSize )
-	EVT_KEY_DOWN( MusWindow::OnKeyDown )
+	EVT_CHAR( MusWindow::OnChar )
+    EVT_KEY_DOWN( MusWindow::OnKeyDown )
 	EVT_KEY_UP( MusWindow::OnKeyUp )
 	EVT_MENU_RANGE( ID_MS_N0, ID_MS_CT, MusWindow::OnPopupMenuNote ) // popup menu
 	EVT_MENU_RANGE( ID_MS_R0, ID_MS_R7, MusWindow::OnPopupMenuNote ) // popup menu
@@ -64,7 +65,6 @@ MusWindow::MusWindow( wxWindow *parent, wxWindowID id,
 {
 	m_f = NULL;
     m_fh = NULL;
-    m_p2 = NULL;
     m_page = NULL;
 	m_npage = 0;
 	m_center = center;
@@ -164,29 +164,29 @@ void MusWindow::Load( AxUndoFile *undoPtr )
 	
 	int page, staff, element;
 		
-	MusWWGInput *wwginput = new MusWWGInput( m_f, undoPtr->GetFilename() );
+	MusBinInput *bin_input = new MusBinInput( m_f, undoPtr->GetFilename() );
 
 	// keep current page, staff and element
-	wwginput->Read( &page, sizeof( int ));
-	wwginput->Read( &staff, sizeof( int ));
-	wwginput->Read( &element, sizeof( int ));
+	bin_input->Read( &page, sizeof( int ));
+	bin_input->Read( &staff, sizeof( int ));
+	bin_input->Read( &element, sizeof( int ));
 		
 	if ( undoPtr->m_flags == WG_UNDO_FILE )
 	{
-	    wwginput->ImportFile();
+	    bin_input->ImportFile();
 		PaperSize();
 	}
 	else if ( undoPtr->m_flags == WG_UNDO_PAGE )
 	{	
 		MusPage *musPage = new MusPage();
-		wwginput->ReadPage( musPage );
+		bin_input->ReadPage( musPage );
 		m_f->m_pages.RemoveAt( page );
 		m_f->m_pages.Insert( musPage, page );
 	}
 	
 	if ((page < 0) || (page > m_fh->nbpage - 1))
 	{
-		delete wwginput;
+		delete bin_input;
 		return;
 	}
 	
@@ -201,7 +201,7 @@ void MusWindow::Load( AxUndoFile *undoPtr )
 		if ( !previous || (previous->no == staff) )
 			previous = NULL; // this staff will be deleted
 		MusStaff *musStaff = new MusStaff();
-		wwginput->ReadStaff( musStaff );
+		bin_input->ReadStaff( musStaff );
 		// keep xrel and yrel
 		musStaff->xrel = m_page->m_staves[ musStaff->no ].xrel;
 		musStaff->yrel = m_page->m_staves[ musStaff->no ].yrel;
@@ -211,7 +211,7 @@ void MusWindow::Load( AxUndoFile *undoPtr )
 		// replace
 		m_page->m_staves.Insert( musStaff, musStaff->no );	
 	}
-	delete wwginput;
+	delete bin_input;
 	
 	m_currentElement = NULL;
 	m_currentStaff = NULL;
@@ -252,30 +252,30 @@ void MusWindow::Store( AxUndoFile *undoPtr )
 	if ( m_currentElement )
 		element = m_currentElement->no;
 		
-    MusWWGOutput *wwgoutput = new MusWWGOutput( m_f, undoPtr->GetFilename() );
+    MusBinOutput *bin_output = new MusBinOutput( m_f, undoPtr->GetFilename() );
 	
-	wwgoutput->Write( &page, sizeof( int ) );
-	wwgoutput->Write( &staff, sizeof( int ) );
-	wwgoutput->Write( &element, sizeof( int ) );
+	bin_output->Write( &page, sizeof( int ) );
+	bin_output->Write( &staff, sizeof( int ) );
+	bin_output->Write( &element, sizeof( int ) );
 		
 	if ( undoPtr->m_flags == WG_UNDO_FILE )
 	{
-	    wwgoutput->ExportFile();
+	    bin_output->ExportFile();
 	}
 	else if ( undoPtr->m_flags == WG_UNDO_PAGE )
 	{	
 		wxASSERT_MSG( m_page, "MusPage should not be NULL in UNDO");
-		wwgoutput->WritePage( m_page );
+		bin_output->WritePage( m_page );
 
 	}
 	else if ( undoPtr->m_flags == WG_UNDO_STAFF )
 	{
 		wxASSERT_MSG( m_currentStaff, "MusStaff should not be NULL in UNDO");
-		wwgoutput->WriteStaff( m_currentStaff );
+		bin_output->WriteStaff( m_currentStaff );
 	
 	}
 
-    delete wwgoutput;
+    delete bin_output;
 
 }
 
@@ -338,10 +338,13 @@ void MusWindow::PaperSize( )
 		pageFormatHor = m_fh->param.pageFormatVer*10;
 	}
 	wymax = pageFormatVer-40;
+    
+    /*
 	beamPenteMx = m_fh->param.beamPenteMax;
 	beamPenteMin = m_fh->param.beamPenteMin;
 	beamPenteMx /= 100;
 	beamPenteMin /= 100;
+    */
 	return;
 }
 
@@ -351,7 +354,6 @@ void MusWindow::SetFile( MusFile *file )
 	{
 		m_f = NULL;
 		m_fh = NULL;
-		m_p2 = NULL;
 		m_page = NULL;
 		zoomNum = 4;
 		return;
@@ -359,7 +361,6 @@ void MusWindow::SetFile( MusFile *file )
 
 	m_f = file;
 	m_fh = &file->m_fheader;
-	m_p2 = &file->m_param2;
 	m_npage = 0;
 	zoomNum = 4;
 	PaperSize();
@@ -605,12 +606,12 @@ void MusWindow::UpdateZoomValues()
 
 void MusWindow::UpdatePageValues() 
 {
-	if ( !m_page || !m_p2 || !m_fh ) 
+	if ( !m_page || !m_fh ) 
 		return;
 
 	// margins
 	int page = m_page->npage;
-	if ( m_p2->entetePied & PAGINATION )
+	if ( m_fh->param.entetePied & PAGINATION )
 		page += m_f->m_pagination.numeroInitial;
 
 	if (page % 2)	//pages impaires 
@@ -624,10 +625,10 @@ void MusWindow::UpdatePageValues()
 		m_charDefin = 0;
     int defin = m_page->defin;
 
-    RapportPortee[0] = m_p2->rapportPorteesNum;
-    RapportPortee[1] = m_p2->rapportPorteesDen;
-    RapportDimin[0] = m_p2->rapportDiminNum;
-    RapportDimin[1] = m_p2->rapportDiminDen;
+    RapportPortee[0] = m_fh->param.rapportPorteesNum;
+    RapportPortee[1] = m_fh->param.rapportPorteesDen;
+    RapportDimin[0] = m_fh->param.rapportDiminNum;
+    RapportDimin[1] = m_fh->param.rapportDiminDen;
 
     _espace[0] = defin/2;
     _espace[1] = (_espace[0] * RapportPortee[0]) / RapportPortee[1];
@@ -714,7 +715,7 @@ void MusWindow::UpdateStavesPos()
 	int i,mPortTaille;
     MusStaff *staff;
 
-	if ( !m_page || !m_p2 || !m_fh ) 
+	if ( !m_page || !m_fh ) 
         return;
        
 	int yy = wymax; //JwgDef.MRGMORTE;    // sommet utile "dessinable" de la page (bord - 5mm)
@@ -869,8 +870,6 @@ void MusWindow::UpdateScroll()
 {
 	if (!m_currentStaff)
 		return;
-		
-	
 		
 	int x = 0;
 	if ( m_currentElement )
@@ -1390,14 +1389,7 @@ void MusWindow::OnKeyDown(wxKeyEvent &event)
 			else
 				CheckPoint( UNDO_PART, WG_UNDO_STAFF );
 
-			if ( m_currentStaff  )
-			{
-				wxClientDC dc(this);
-				InitDC( &dc );
-				m_currentStaff->DrawStaff( &dc );
-				if (m_currentStaff != delstaff)
-					delstaff->DrawStaff( &dc );
-			}
+			this->Refresh();
 			OnEndEdition();
 			SyncToolPanel();
 		}
@@ -1518,8 +1510,7 @@ void MusWindow::OnKeyDown(wxKeyEvent &event)
 				m_editElement = true;
 				m_lyricMode = false;
 			}
-				
-			this->Refresh();
+         this->Refresh();
 		} 
 		else if ( m_currentElement && m_currentElement->IsSymbole() &&
 				 in( event.m_keyCode, 33, 125) ) // any other keycode on symbole (ascii codes)
@@ -1591,7 +1582,6 @@ void MusWindow::OnKeyDown(wxKeyEvent &event)
 			this->Refresh();
 			OnEndEdition();
 			SyncToolPanel();
-			
 		}
 	}
 	else if ( m_lyricMode && !m_inputLyric )		// Lyric navigation mode
@@ -1695,14 +1685,7 @@ void MusWindow::OnKeyDown(wxKeyEvent &event)
 			else
 				CheckPoint( UNDO_PART, WG_UNDO_STAFF );
 			
-			if ( m_currentStaff )
-			{
-				wxClientDC dc(this);
-				InitDC( &dc );
-				m_currentStaff->DrawStaff( &dc );
-				if (m_currentStaff != delstaff)
-					delstaff->DrawStaff( &dc );
-			}
+			this->Refresh();
 			OnEndEdition();
 			SyncToolPanel();
 		}
@@ -1775,15 +1758,6 @@ void MusWindow::OnKeyDown(wxKeyEvent &event)
 		{
 			m_inputLyric = !m_inputLyric;
 		}
-		else if ( ((event.m_keyCode >= 65 && event.m_keyCode <= 90) || (event.m_keyCode >= 97 && event.m_keyCode <= 122 ))
-			&& m_currentElement->IsSymbole() )
-		{	
-			PrepareCheckPoint( UNDO_PART, WG_UNDO_STAFF );
-			((MusSymbol*)m_currentElement)->InsertCharInLyricAt( m_lyricCursor, (char)event.m_keyCode );
-			m_lyricCursor++;
-			CheckPoint( UNDO_PART, WG_UNDO_STAFF );
-			OnEndEdition();
-		} 
 		else if ( event.m_keyCode == WXK_BACK && m_currentElement->IsSymbole() )
 		{
 			PrepareCheckPoint( UNDO_PART, WG_UNDO_STAFF );
@@ -1848,7 +1822,7 @@ void MusWindow::OnKeyDown(wxKeyEvent &event)
 					
 					//Add dash ("-") element between the two lyrics
 					MusSymbol *lyric2 = new MusSymbol( *((MusSymbol*)m_currentElement) );
-					lyric2->m_debord_str = "=";
+					lyric2->m_debord_str = "-";
 					lyric2->xrel = lyric->xrel - (lyric->xrel - m_currentElement->xrel) / 2;					
 					m_currentStaff->SwitchLyricNoteAssociation( lyric2, ((MusSymbol*)m_currentElement)->m_note_ptr, note, true );				
 					
@@ -1951,13 +1925,29 @@ void MusWindow::OnKeyDown(wxKeyEvent &event)
     //else if ( event.GetKeyCode() == WXK_CONTROL )
 	//		m_ctrlDown = !m_ctrlDown;
 
-	//event.Skip();
+	event.Skip();
+}
+
+void MusWindow::OnChar(wxKeyEvent &event)
+{
+    if ( m_lyricMode && m_inputLyric )
+	{
+		if ( ((event.m_keyCode >= 65 && event.m_keyCode <= 90) || (event.m_keyCode >= 97 && event.m_keyCode <= 122 ))
+			&& m_currentElement->IsSymbole() )
+		{	
+			PrepareCheckPoint( UNDO_PART, WG_UNDO_STAFF );
+			((MusSymbol*)m_currentElement)->InsertCharInLyricAt( m_lyricCursor, (char)event.m_keyCode );
+			m_lyricCursor++;
+			CheckPoint( UNDO_PART, WG_UNDO_STAFF );
+			OnEndEdition();
+		}
+    }
 }
 
 
 void MusWindow::OnPaint(wxPaintEvent &event)
 {
-	if ( !m_page || !m_p2 || !m_fh )
+	if ( !m_page || !m_fh )
 		return;
 
 	// marge

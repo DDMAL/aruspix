@@ -192,7 +192,6 @@ void WgvEnv::OnSave( wxCommandEvent &event )
         return;
     //wxGetApp().m_lastDirWWG_out = wxPathOnly( wwg );   
     
-    m_filePtr->m_fheader.filesize = 0;
     m_filePtr->m_fname = wwg;
     MusWWGOutput *wwgoutput = new MusWWGOutput( m_filePtr, wwg );
     wwgoutput->ExportFile();
@@ -364,7 +363,7 @@ void WgvEnv::OnOpen( wxCommandEvent &event )
 	if ( !wwginput.ImportFile() )
 		return;
 
-    /*m_filePtr->m_fheader.filesize = 0;
+    /*
     MusWWGOutput *wwgoutput = new MusWWGOutput( m_filePtr, filename );
     wwgoutput->ExportFile();
     delete wwgoutput;*/

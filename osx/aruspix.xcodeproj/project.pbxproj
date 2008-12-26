@@ -22,7 +22,7 @@
 		4D3A8FF30D35867200BBC1FB /* musfile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D3A8FD80D35867200BBC1FB /* musfile.cpp */; };
 		4D3A8FF40D35867200BBC1FB /* musgraph.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D3A8FDA0D35867200BBC1FB /* musgraph.cpp */; };
 		4D3A8FF50D35867200BBC1FB /* musiomlf.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D3A8FDB0D35867200BBC1FB /* musiomlf.cpp */; };
-		4D3A8FF60D35867200BBC1FB /* musiowwg.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D3A8FDD0D35867200BBC1FB /* musiowwg.cpp */; };
+		4D3A8FF60D35867200BBC1FB /* musiobin.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D3A8FDD0D35867200BBC1FB /* musiobin.cpp */; };
 		4D3A8FF70D35867200BBC1FB /* musnote.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D3A8FDF0D35867200BBC1FB /* musnote.cpp */; };
 		4D3A8FF80D35867200BBC1FB /* musobject.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D3A8FE10D35867200BBC1FB /* musobject.cpp */; };
 		4D3A8FF90D35867200BBC1FB /* muspage.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D3A8FE30D35867200BBC1FB /* muspage.cpp */; };
@@ -36,6 +36,7 @@
 		4DA9FDDD0D90984E000E7BA6 /* supbookctrl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4DA9FDDB0D90984E000E7BA6 /* supbookctrl.cpp */; };
 		4DB2D96D0D8383EA003401B0 /* musmlfdic.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4DB2D96B0D8383EA003401B0 /* musmlfdic.cpp */; };
 		4DB9F0530D94A66E00ED8E3E /* imregister.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4DB9F0510D94A66E00ED8E3E /* imregister.cpp */; };
+		4DDE3CDE0EF1B1D6006D4F2C /* musiowwg.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4DDE3CDD0EF1B1D6006D4F2C /* musiowwg.cpp */; };
 		5736CE550C354E4A00254E7B /* cmp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5736CE460C354E4A00254E7B /* cmp.cpp */; };
 		5736CE570C354E4A00254E7B /* cmp_wdr.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5736CE490C354E4A00254E7B /* cmp_wdr.cpp */; };
 		5736CE580C354E4A00254E7B /* cmpctrl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5736CE4B0C354E4A00254E7B /* cmpctrl.cpp */; };
@@ -114,7 +115,7 @@
 		4D3A8FDA0D35867200BBC1FB /* musgraph.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = musgraph.cpp; path = ../src/mus/musgraph.cpp; sourceTree = SOURCE_ROOT; };
 		4D3A8FDB0D35867200BBC1FB /* musiomlf.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = musiomlf.cpp; path = ../src/mus/musiomlf.cpp; sourceTree = SOURCE_ROOT; };
 		4D3A8FDC0D35867200BBC1FB /* musiomlf.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = musiomlf.h; path = ../src/mus/musiomlf.h; sourceTree = SOURCE_ROOT; };
-		4D3A8FDD0D35867200BBC1FB /* musiowwg.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = musiowwg.cpp; path = ../src/mus/musiowwg.cpp; sourceTree = SOURCE_ROOT; };
+		4D3A8FDD0D35867200BBC1FB /* musiobin.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = musiobin.cpp; path = ../src/mus/musiobin.cpp; sourceTree = SOURCE_ROOT; };
 		4D3A8FDE0D35867200BBC1FB /* musiowwg.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = musiowwg.h; path = ../src/mus/musiowwg.h; sourceTree = SOURCE_ROOT; };
 		4D3A8FDF0D35867200BBC1FB /* musnote.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = musnote.cpp; path = ../src/mus/musnote.cpp; sourceTree = SOURCE_ROOT; };
 		4D3A8FE00D35867200BBC1FB /* musnote.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = musnote.h; path = ../src/mus/musnote.h; sourceTree = SOURCE_ROOT; };
@@ -142,6 +143,8 @@
 		4DB2D96C0D8383EA003401B0 /* musmlfdic.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = musmlfdic.h; path = ../src/mus/musmlfdic.h; sourceTree = SOURCE_ROOT; };
 		4DB9F0510D94A66E00ED8E3E /* imregister.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = imregister.cpp; sourceTree = "<group>"; };
 		4DB9F0520D94A66E00ED8E3E /* imregister.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = imregister.h; sourceTree = "<group>"; };
+		4DDE3CDD0EF1B1D6006D4F2C /* musiowwg.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = musiowwg.cpp; path = ../src/mus/musiowwg.cpp; sourceTree = SOURCE_ROOT; };
+		4DDE3CDF0EF1B25E006D4F2C /* musiobin.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = musiobin.h; path = ../src/mus/musiobin.h; sourceTree = SOURCE_ROOT; };
 		5736CE460C354E4A00254E7B /* cmp.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = cmp.cpp; sourceTree = "<group>"; };
 		5736CE470C354E4A00254E7B /* cmp.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = cmp.h; sourceTree = "<group>"; };
 		5736CE490C354E4A00254E7B /* cmp_wdr.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = cmp_wdr.cpp; sourceTree = "<group>"; };
@@ -252,6 +255,7 @@
 		4D3A8FCD0D3585AB00BBC1FB /* mus */ = {
 			isa = PBXGroup;
 			children = (
+				4DDE3CDF0EF1B25E006D4F2C /* musiobin.h */,
 				4DB2D96B0D8383EA003401B0 /* musmlfdic.cpp */,
 				4DB2D96C0D8383EA003401B0 /* musmlfdic.h */,
 				4D3A8FCE0D35867200BBC1FB /* mus_wdr.cpp */,
@@ -269,7 +273,8 @@
 				4D3A8FDA0D35867200BBC1FB /* musgraph.cpp */,
 				4D3A8FDB0D35867200BBC1FB /* musiomlf.cpp */,
 				4D3A8FDC0D35867200BBC1FB /* musiomlf.h */,
-				4D3A8FDD0D35867200BBC1FB /* musiowwg.cpp */,
+				4D3A8FDD0D35867200BBC1FB /* musiobin.cpp */,
+				4DDE3CDD0EF1B1D6006D4F2C /* musiowwg.cpp */,
 				4D3A8FDE0D35867200BBC1FB /* musiowwg.h */,
 				4D3A8FDF0D35867200BBC1FB /* musnote.cpp */,
 				4D3A8FE00D35867200BBC1FB /* musnote.h */,
@@ -620,7 +625,7 @@
 				4D3A8FF30D35867200BBC1FB /* musfile.cpp in Sources */,
 				4D3A8FF40D35867200BBC1FB /* musgraph.cpp in Sources */,
 				4D3A8FF50D35867200BBC1FB /* musiomlf.cpp in Sources */,
-				4D3A8FF60D35867200BBC1FB /* musiowwg.cpp in Sources */,
+				4D3A8FF60D35867200BBC1FB /* musiobin.cpp in Sources */,
 				4D3A8FF70D35867200BBC1FB /* musnote.cpp in Sources */,
 				4D3A8FF80D35867200BBC1FB /* musobject.cpp in Sources */,
 				4D3A8FF90D35867200BBC1FB /* muspage.cpp in Sources */,
@@ -638,6 +643,7 @@
 				4D64284F0D9344FD00DA3A64 /* supim.cpp in Sources */,
 				4DB9F0530D94A66E00ED8E3E /* imregister.cpp in Sources */,
 				0A5FB27A0DD49D2D001E460E /* imbrink3classes.cpp in Sources */,
+				4DDE3CDE0EF1B1D6006D4F2C /* musiowwg.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -28,9 +28,6 @@
 
 WX_DECLARE_OBJARRAY( MusPage, ArrayOfWgPages);
 
-WX_DECLARE_OBJARRAY( MusFont, ArrayOfWgFonts);
-
-
 
 // WDR: class declarations
 
@@ -58,18 +55,8 @@ public:
     wxString m_fname;
     /** FileHeader du fichier - contient Parametres */
     MusFileHeader m_fheader;
-    /** ParametresMidi du fichier */
-    MusParametersMidi m_midi;
-    /** Parametres2 du fichier */
-    MusParameters2 m_param2;
-    /** PolicesTable du fichier */
-    ArrayOfWgFonts m_fonts;
     /** FileData du fichier - contient les pages */
     ArrayOfWgPages m_pages;
-	/** Masque fixe **/
-	MusPage m_masqueFixe;
-	/** Masque fixe **/
-	MusPage m_masqueVariable;
 	/** Pagination **/
 	MusPagination m_pagination;
 	/** Header **/
@@ -101,9 +88,9 @@ public:
     // WDR: method declarations for MusFileOutputStream
 	virtual bool ExportFile( ) { return true; }
 	virtual bool WriteFileHeader( const MusFileHeader *header ) { return true; }
-	virtual bool WriteParametersMidi( const MusParametersMidi *midi ) { return true; }
-	virtual bool WriteParameters2( const MusParameters2 *param2 ) { return true; }
-	virtual bool WriteFonts( const ArrayOfWgFonts *fonts ) { return true; }
+	virtual bool WriteParametersMidi( ) { return true; }
+	virtual bool WriteParameters2( const MusParameters *param ) { return true; }
+	virtual bool WriteFonts( ) { return true; }
 	virtual bool WriteSeparator( ) { return true; }
 	virtual bool WritePage( const MusPage *page ) { return true; }
 	virtual bool WriteStaff( const MusStaff *staff ) { return true; }
@@ -139,9 +126,9 @@ public:
 	// read
 	virtual bool ImportFile( ) { return true; }
 	virtual bool ReadFileHeader( MusFileHeader *header ) { return true; }
-	virtual bool ReadParametersMidi( MusParametersMidi *midi ) { return true; }
-	virtual bool ReadParameters2( MusParameters2 *param2 ) { return true; }
-	virtual bool ReadFonts( ArrayOfWgFonts *fonts) { return true; }
+	virtual bool ReadParametersMidi( ) { return true; }
+	virtual bool ReadParameters2( MusParameters *param ) { return true; }
+	virtual bool ReadFonts( ) { return true; }
 	virtual bool ReadSeparator( ) { return true; }
 	virtual bool ReadPage( MusPage *page ) { return true; }
 	virtual bool ReadStaff( MusStaff *staff ) { return true; }

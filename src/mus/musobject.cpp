@@ -35,7 +35,6 @@ MusObject::MusObject() :
 	m_f = NULL;
 	m_fh = NULL;
 	m_p = NULL;
-	m_p2 = NULL;
 	m_ok = false;
 }
 
@@ -48,14 +47,13 @@ bool MusObject::Init( MusWindow *win )
 	if ( m_ok )
 		return true;
 
-	if ( !win  || !win->m_f || !win->m_fh ||!win->m_p2 )
+	if ( !win  || !win->m_f || !win->m_fh )
 		return false;
 
 	m_w = win;
 	m_f = win->m_f;
 	m_fh = win->m_fh;
 	m_p = &m_fh->param;
-	m_p2 = win->m_p2;
 
 	m_ok = true;
 	return true;

@@ -173,8 +173,6 @@ public:
     MusFile *m_f;
     /** FileHeader du fichier contenant la page */
     MusFileHeader *m_fh;
-    /** Parametres2 du fichier contenant la page */
-    MusParameters2 *m_p2;
     /** Page affichee */
     MusPage *m_page;
     /** No Page affichee */
@@ -310,6 +308,7 @@ private:
 	void OnMouseLeave( wxMouseEvent &event );
 	void OnKeyUp( wxKeyEvent &event );
 	void OnKeyDown( wxKeyEvent &event );
+    void OnChar( wxKeyEvent &event );
 	void OnPopupMenuNote( wxCommandEvent &event );
 	void OnPopupMenuSymbole( wxCommandEvent &event );
 

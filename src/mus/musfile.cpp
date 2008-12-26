@@ -24,9 +24,6 @@
 #include "wx/arrimpl.cpp"
 WX_DEFINE_OBJARRAY( ArrayOfWgPages );
 
-WX_DEFINE_OBJARRAY( ArrayOfWgFonts );
-
-
 char *MusFile::sep = "#ώτυώ#";
 
 // WDR: class implementations
@@ -38,23 +35,6 @@ char *MusFile::sep = "#ώτυώ#";
 MusFile::MusFile()
 {
     m_pages.Clear();
-	m_masqueFixe.Clear();
-	m_masqueVariable.Clear();
-
-	m_fonts.Clear();
-	MusFont font;
-
-	font.fonteJeu = 1;
-	font.fonteNom = "Leipzig 4.2";
-	m_fonts.Add( font );
-
-	int i;
-    for (i = 0; i < MAXPOLICES - 1; i++) // chargement des polices vides
-	{
-		font.fonteJeu = 0;
-		font.fonteNom = "";
-		m_fonts.Add( font );
-	}
 }
 
 MusFile::~MusFile()

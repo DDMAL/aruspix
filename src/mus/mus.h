@@ -21,121 +21,6 @@
 // WDR: class declarations
 
 //----------------------------------------------------------------------------
-// MusFont
-//----------------------------------------------------------------------------
-
-class MusFont
-{
-public:
-    // constructors and destructors
-    MusFont();
-    virtual ~MusFont();
-    
-    // WDR: method declarations for MusFont
-    
-public:
-    // WDR: member variable declarations for MusFont
-	signed char fonteJeu;
-	wxString fonteNom;
-    
-private:
-    // WDR: handler declarations for MusFont
-
-};
-
-//----------------------------------------------------------------------------
-// MusParametersMidi
-//----------------------------------------------------------------------------
-
-class MusParametersMidi
-{
-public:
-    // constructors and destructors
-    MusParametersMidi();
-    virtual ~MusParametersMidi();
-    
-    // WDR: method declarations for MusParametersMidi
-    
-public:
-    // WDR: member variable declarations for MusParametersMidi
-    /** tempo */
-    long tempo;
-    /** ???? */
-    unsigned char minVeloc;
-    /** ???? */
-    unsigned char maxVeloc;
-    /** style legato de jeu. <pre>0 = aucun<br>1 = beam<br>2 = liaison</pre> */
-    unsigned char collerBeamLiai;
-    /** valeur de la pedale. <pre>1 = silences<br>2 = pedale</pre> */
-    unsigned char pedale;
-    /** tolerance horizontale x max pour la simultaneite */
-    unsigned char xResolution1;
-    /** tolerance horizontale x max en alignement verticale pour la simultaneite */
-    unsigned char xResolution2;
-    /** traiter les notes ornementales comme des appogiatures */
-    unsigned char appogg;
-    /** traiter les mesures commes de proportions temporelles */
-    unsigned char mes_proportion;
-    /** table des numeros de canal pour chaque instrument */
-	unsigned char canal2patch[MAXMIDICANAL];	// contient le no d'instr pour chaque canal
-	unsigned char volume[MAXMIDICANAL];	// 64, volume, entre 0 et 128
-	unsigned char piste2canal[MAXPORTNBRE+1];
-    
-private:
-    // WDR: handler declarations for MusParametersMidi
-
-};
-
-//----------------------------------------------------------------------------
-// MusParameters2
-//----------------------------------------------------------------------------
-
-class MusParameters2
-{
-public:
-    // constructors and destructors
-    MusParameters2();
-    virtual ~MusParameters2();
-    
-    // WDR: method declarations for MusParameters2
-    
-public:
-    // WDR: member variable declarations for MusParameters2
-	/** transposition des silences */
-    unsigned char transp_sil;
-    /** rapport entre grande et petite portee, numerateur */
-    unsigned char rapportPorteesNum;
-    /** rapport entre grande et petite portee, denominateur */
-    unsigned char rapportPorteesDen;
-    /** rapport entre grand et petit element, numerateur */
-    unsigned char rapportDiminNum;
-    /** rapport entre grand et petit element, denominateur */
-    unsigned char rapportDiminDen;
-    /** valeur automatique de silence ???? */
-    unsigned char autoval_sil;
-    /** nombre de page contenues dans une page en continu */
-    unsigned char nbPagesEncontinu;
-    /** correction vertical pour l'affichage a l'ecran */
-    signed char vertCorrEcr;
-    /** correction vertical pour l'impression */
-    signed char vertCorrPrn;
-    /** correction de la position de hampes*/
-    signed char hampesCorr;
-    /** epaisseur des courbes de bezier */
-    signed char epaisBezier;
-    /** type d'entete et de pied de page. <p>Le type d'entete est determine par un &amp; logique
-     avec les differents types (Faire par ex: entetePied &amp; JwgDef.PAGINATION)
-     @see JwgDef#PAGINATION JwgDef,type d'en-entete et de pied de page */
-    unsigned int entetePied;
-    /** table de transpositions de voix */
-    signed char transposition[MAXPORTNBRE+1];
-    
-private:
-    // WDR: handler declarations for MusParameters2
-
-};
-
-//----------------------------------------------------------------------------
 // MusParameters
 //----------------------------------------------------------------------------
 
@@ -163,7 +48,7 @@ public:
     /** epaisseur de l'espace entre les barres de valeur */
     unsigned char EpBlancBarreValeur;
     /** pente maximale des barres de valeur */
-    unsigned char beamPenteMax;
+    ///unsigned char beamPenteMax;
     /** pente minimale des barres de valeur */
     unsigned char beamPenteMin;
     /** largueur de la page */
@@ -177,11 +62,46 @@ public:
     /** marge droite sur les pages paires */
     short MargeGAUCHEPAIRE;
     /** epaisseur 1 */
-    unsigned char Epais1;
+    ///unsigned char Epais1;
     /** epaisseur 2 */
-    unsigned char Epais2;
+    ///unsigned char Epais2;
     /** epaisseur 3 */
-    unsigned char Epais3;
+    ///unsigned char Epais3;
+    
+    
+    /* the following variables were originally in MusParameters2 */
+    /** rapport entre grande et petite portee, numerateur */
+    unsigned char rapportPorteesNum;
+    /** rapport entre grande et petite portee, denominateur */
+    unsigned char rapportPorteesDen;
+    /** rapport entre grand et petit element, numerateur */
+    unsigned char rapportDiminNum;
+    /** rapport entre grand et petit element, denominateur */
+    unsigned char rapportDiminDen;
+    /** correction de la position de hampes*/
+    signed char hampesCorr;
+    /** type d'entete et de pied de page. */
+    unsigned int entetePied;
+    
+    // unused variables
+	/** transposition des silences */
+    //unsigned char transp_sil; // unused
+    /** valeur automatique de silence ???? */
+    //unsigned char autoval_sil; // unused
+    /** nombre de page contenues dans une page en continu */
+    //unsigned char nbPagesEncontinu; // unused
+    /** correction vertical pour l'affichage a l'ecran */
+    //signed char vertCorrEcr; // unused
+    /** correction vertical pour l'impression */
+    //signed char vertCorrPrn; // unused
+    /** epaisseur des courbes de bezier */
+    //signed char epaisBezier; // unused
+    /** type d'entete et de pied de page. <p>Le type d'entete est determine par un &amp; logique
+     avec les differents types (Faire par ex: entetePied &amp; JwgDef.PAGINATION)
+     @see JwgDef#PAGINATION JwgDef,type d'en-entete et de pied de page */
+    //unsigned int entetePied; // unused
+    /** table de transpositions de voix */
+    //signed char transposition[MAXPORTNBRE+1]; // unused
     
 private:
     // WDR: handler declarations for MusParameters
@@ -229,13 +149,13 @@ public:
 public:
     // WDR: member variable declarations for MusFileHeader
     /** version */
-    unsigned short maj_ver;
+    unsigned short maj_ver; // unused
     /** sous-version */
-    unsigned short min_ver;
+    unsigned short min_ver; // unused
     /** nom du fichier */
     wxString name;
     /** taille du fichier en bytes */
-    unsigned int filesize;
+    // unsigned int filesize; // unused
     /** nombre de pages */
     unsigned short nbpage;
     /** numero de page courante */
@@ -247,7 +167,7 @@ public:
     /** Parametres du Header */
     MusParameters param;
     /** reserve */
-    signed char reserve[2];
+    ///signed char reserve[2];
 	//		reserve[0] = epais. trait liaisons
 	//		reserve[1] = augm/dimin nbre de passes liaisons
 

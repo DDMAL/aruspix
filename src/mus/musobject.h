@@ -20,7 +20,6 @@ class MusWindow;
 class MusFile;
 class MusFileHeader;
 class MusParameters;
-class MusParameters2;
 
 
 // WDR: class declarations
@@ -46,7 +45,6 @@ protected:
 	MusFile *m_f;
 	MusFileHeader *m_fh;
 	MusParameters *m_p;
-	MusParameters2 *m_p2;
 
 private:
 	bool m_ok;

@@ -386,7 +386,7 @@ void MusNote::note ( wxDC *dc, MusStaff *staff )
 
 	/*NEW: diminuer le rayon d'une quantitÇ paramÇtrable*/
 	if (val>RD)
-		rayon -= ((rayon * m_p2->hampesCorr) / 20);
+		rayon -= ((rayon * m_fh->param.hampesCorr) / 20);
 	x1 = xn-rayon;	// position d'appel du caractäre et de la queue gauche
 	xl = xn;
 

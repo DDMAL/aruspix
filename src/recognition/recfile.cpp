@@ -34,7 +34,7 @@
 #include "mus/muspage.h"
 #include "mus/musstaff.h"
 #include "mus/musfile.h"
-#include "mus/musiowwg.h"
+#include "mus/musiobin.h"
 #include "mus/musiomlf.h"
 
 //#include "ml/mldecoder.h"
@@ -142,6 +142,38 @@ void RecFile::UpgradeTo_1_4_0()
 		wxLogDebug("File successfully upgraded to 1.4.0");
 }
 
+void RecFile::UpgradeTo_1_5_0()
+{
+	if ( AxFile::FormatVersion(m_vmaj, m_vmin, m_vrev) >= AxFile::FormatVersion(1, 5, 0) )
+		return; // when do not need to upgrade the file
+		
+	// From version 1.5.0, we don't use wwg anymore, but aruspix binaries
+    // We need to reload the page from the mlf
+	
+	if ( !wxFileExists( m_basename + "page.wwg") )
+		return; // nothing has to be done for files that were only preprocessed
+    // backup rec.mlf
+	if ( !wxCopyFile( m_basename + "rec.mlf", m_basename + "rec.old.mlf") )  
+        return;
+    // we need to read page.mlf 
+	if ( !wxCopyFile( m_basename + "page.mlf", m_basename + "rec.mlf", true) )  
+        return;
+        
+    wxArrayPtrVoid params;
+    
+    if ( !this->RealizeFromMLF( params, NULL ) )
+        return;
+	if ( !wxCopyFile( m_basename + "rec.old.mlf", m_basename + "rec.mlf", true) )  
+        return;
+        
+    // output the new binary file
+    MusBinOutput bin_output( m_musFilePtr, m_musFilePtr->m_fname );
+    bin_output.ExportFile();
+        
+    wxRemoveFile( m_basename + "rec.old.mlf" );        
+    wxRemoveFile( m_basename + "page.wwg" );
+}
+
 void RecFile::NewContent( )
 {
 	wxASSERT_MSG( !m_imPagePtr, "ImPage should be NULL" );
@@ -149,7 +181,7 @@ void RecFile::NewContent( )
 
 	// new MusFile
     m_musFilePtr = new MusFile();
-    m_musFilePtr->m_fname = m_basename + "page.wwg";  
+    m_musFilePtr->m_fname = m_basename + "page.bin";  
         
 	// new ImPage and Load
     m_imPagePtr = new ImPage( m_basename, &m_isModified );
@@ -184,25 +216,27 @@ void RecFile::OpenContent( )
 		return;
 	else
 		m_isPreprocessed = true;
+        
+    UpgradeTo_1_5_0();
 	
-		// binarization variables	
-		node = m_xml_root->FirstChild( "binarization" );
-		if ( !node ) return;
-		root = node->ToElement();
-		if ( !root ) return;
+    // binarization variables	
+    node = m_xml_root->FirstChild( "binarization" );
+    if ( !node ) return;
+    root = node->ToElement();
+    if ( !root ) return;
 		
-		if ( root->Attribute( "pre_image_binarization_method" ) )
-			RecFile::m_pre_image_binarization_method = atoi( root->Attribute( "pre_image_binarization_method" ) );
-		if ( root->Attribute( "pre_page_binarization_method" ) )
-			RecFile::m_pre_page_binarization_method = atoi( root->Attribute( "pre_page_binarization_method" ) );
-		if ( root->Attribute( "pre_page_binarization_method_size" ) )
-			RecFile::m_pre_page_binarization_method_size = atoi( root->Attribute( "pre_page_binarization_method_size" ) );
+    if ( root->Attribute( "pre_image_binarization_method" ) )
+        RecFile::m_pre_image_binarization_method = atoi( root->Attribute( "pre_image_binarization_method" ) );
+    if ( root->Attribute( "pre_page_binarization_method" ) )
+        RecFile::m_pre_page_binarization_method = atoi( root->Attribute( "pre_page_binarization_method" ) );
+    if ( root->Attribute( "pre_page_binarization_method_size" ) )
+        RecFile::m_pre_page_binarization_method_size = atoi( root->Attribute( "pre_page_binarization_method_size" ) );
 		
-	if ( wxFileExists( m_basename + "page.wwg") )
+	if ( wxFileExists( m_basename + "page.bin") )
 	{
-		MusWWGInput *wwginput = new MusWWGInput( m_musFilePtr, m_musFilePtr->m_fname );
-		failed = !wwginput->ImportFile();
-		delete wwginput;
+		MusBinInput *bin_input = new MusBinInput( m_musFilePtr, m_musFilePtr->m_fname );
+		failed = !bin_input->ImportFile();
+		delete bin_input;
 		if ( failed )
 			return;
 		else
@@ -278,9 +312,9 @@ void RecFile::SaveContent( )
 	{
 		
 		// save
-		MusWWGOutput *wwgoutput = new MusWWGOutput( m_musFilePtr, m_musFilePtr->m_fname );
-		wwgoutput->ExportFile();
-		delete wwgoutput;
+		MusBinOutput *bin_output = new MusBinOutput( m_musFilePtr, m_musFilePtr->m_fname );
+		bin_output->ExportFile();
+		delete bin_output;
 		
 		MusMLFOutput *mlfoutput = new MusMLFOutput( m_musFilePtr, m_basename + "page.mlf", NULL );
 		mlfoutput->m_pagePosition = true;
@@ -302,14 +336,6 @@ void RecFile::SaveContent( )
 		decoder.SetAttribute( "order",  m_rec_lm_order );
 		decoder.SetDoubleAttribute( "scaling",  m_rec_lm_scaling );
 		root.InsertEndChild( decoder );
-		
-		// wwg
-		TiXmlElement wwg("wwg");
-		wxFileName fwwg( m_musFilePtr->m_fname );
-		wwg.SetAttribute( "fname", fwwg.GetFullName().c_str() );
-		//if ( m_musViewPtr )
-		//	wwg.SetAttribute("page",  m_musViewPtr->m_npage );
-		root.InsertEndChild( wwg );
 			
 		m_xml_root->InsertEndChild( root );
 	}
@@ -344,7 +370,7 @@ void RecFile::SetBinarization( int image_binarization_method, int page_binarizat
 // static
 bool RecFile::IsRecognized( wxString filename )
 {
-	return AxFile::ContainsFile( filename, "page.wwg"  );
+	return AxFile::ContainsFile( filename, "page.bin"  );
 }
 
 void RecFile::GetImage1( AxImage *image )
@@ -397,7 +423,7 @@ bool RecFile::CancelRecognition( bool ask_user )
 	wxRemoveFile( m_basename + "rec.mlf" );
 	wxRemoveFile( m_basename + "rec.xml" );
 	wxRemoveFile( m_basename + "mfc.input" );
-	wxRemoveFile( m_basename + "page.wwg" );
+	wxRemoveFile( m_basename + "page.bin" );
 	wxRemoveFile( m_basename + "page.mlf" );
 	wxRemoveFile( m_basename + "staves.tif" );
 	
@@ -825,9 +851,9 @@ bool RecFile::RealizeFromMLF( wxArrayPtrVoid params, AxProgressDlg *dlg )
 {
     wxASSERT_MSG( m_imPagePtr , "Page cannot be NULL");
     wxASSERT_MSG( m_musFilePtr , "MusFile cannot be NULL");
-	wxASSERT_MSG( dlg, "AxProgressDlg cannot be NULL" );
+	//wxASSERT_MSG( dlg, "AxProgressDlg cannot be NULL" );
 	
-	if (!dlg->SetOperation( _("Load results...") ) )
+	if (dlg && !dlg->SetOperation( _("Load results...") ) )
 		return this->Terminate( ERR_CANCELED );
 
     MusPage *musPage = new MusPage();
@@ -883,9 +909,9 @@ bool RecFile::RealizeFromMLF( wxArrayPtrVoid params, AxProgressDlg *dlg )
     delete mlfinput;
 	
 	// save ????
-    // Output *wwgoutput = new MusWWGOutput( m_musFilePtr, m_musFilePtr->m_fname );
-    //wwgoutput->ExportFile();
-    //delete wwgoutput;
+    // MusBinOutput *bin_output = new MusBinOutput( m_musFilePtr, m_musFilePtr->m_fname );
+    //bin_output->ExportFile();
+    //delete bin_output;
 
     return true;
 }

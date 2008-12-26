@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592-1.40.3 (Web2C 7.5.6) (format=pdflatex 2008.9.10)  11 SEP 2008 00:19
+This is pdfTeX, Version 3.141592-1.40.3 (Web2C 7.5.6) (format=pdflatex 2008.9.10)  9 DEC 2008 21:52
 entering extended mode
 **aruspix.tex
 (./aruspix.tex
@@ -173,6 +173,12 @@ LaTeX Font Info:    External font `cmex10' loaded for size
 
 LaTeX Warning: No \author given.
 
+
+LaTeX Warning: Reference `fig:Menu-bar' on page 1 undefined on input line 46.
+
+
+LaTeX Warning: Reference `fig:Tool-bar' on page 1 undefined on input line 49.
+
 <ApplicationMenu.png, id=1, 503.8825pt x 25.09375pt>
 File: ApplicationMenu.png Graphic file (type png)
  <use ApplicationMenu.png>
@@ -182,59 +188,79 @@ File: ToolBar.png Graphic file (type png)
 <OpenNewFileButton.png, id=3, 45.16875pt x 44.165pt>
 File: OpenNewFileButton.png Graphic file (type png)
 
-<use OpenNewFileButton.png> <ZoomButtons.png, id=4, 146.5475pt x 45.16875pt>
+<use OpenNewFileButton.png>
+
+LaTeX Warning: Reference `fig:Image-processed' on page 1 undefined on input lin
+e 85.
+
+<ZoomButtons.png, id=4, 146.5475pt x 45.16875pt>
 File: ZoomButtons.png Graphic file (type png)
-
-<use ZoomButtons.png> <ScannedTextRaw.png, id=5, 749.80125pt x 446.66875pt>
+ <use ZoomButtons.png>
+<ScannedTextRaw.png, id=5, 749.80125pt x 446.66875pt>
 File: ScannedTextRaw.png Graphic file (type png)
-
-<use ScannedTextRaw.png>
+ <use ScannedTextRaw.png>
 
 LaTeX Warning: `h' float specifier changed to `ht'.
 
 <RunButton.png, id=6, 45.16875pt x 44.165pt>
 File: RunButton.png Graphic file (type png)
- <use RunButton.png> [1
+ <use RunButton.png>
+
+LaTeX Warning: Reference `fig:Correction-preprocessing' on page 1 undefined on 
+input line 111.
+
+
+LaTeX Warning: Reference `fig:Pre-processing-categories' on page 1 undefined on
+ input line 113.
+
+[1
 
 {/opt/local/share/texmf/fonts/map/pdftex/updmap/pdftex.map} <./ApplicationMenu.
 png> <./ToolBar.png> <./OpenNewFileButton.png> <./ZoomButtons.png> <./RunButton
-.png>]
-<BlackBorderRed.png, id=20, 659.46375pt x 312.16624pt>
+.png>] <BlackBorderRed.png, id=21, 659.46375pt x 312.16624pt>
 File: BlackBorderRed.png Graphic file (type png)
 
-<use BlackBorderRed.png> <PPCorrection.png, id=21, 369.38pt x 211.79124pt>
+<use BlackBorderRed.png> <PPCorrection.png, id=22, 369.38pt x 211.79124pt>
 File: PPCorrection.png Graphic file (type png)
 
 <use PPCorrection.png>
 
 LaTeX Warning: `h' float specifier changed to `ht'.
 
-<EditScreen.png, id=22, 1401.235pt x 993.7125pt>
+
+LaTeX Warning: Reference `fig:Page-after-recognition' on page 2 undefined on in
+put line 152.
+
+<EditScreen.png, id=23, 1401.235pt x 993.7125pt>
 File: EditScreen.png Graphic file (type png)
  <use EditScreen.png> [2 <./ScannedTextRaw.png> <./BlackBorderRed.png>]
-<SemiMinim.png, id=28, 29.10875pt x 38.1425pt>
+<SemiMinim.png, id=29, 29.10875pt x 38.1425pt>
 File: SemiMinim.png Graphic file (type png)
  <use SemiMinim.png> [3 <./PPCorrection.png> <./EditScreen.png> <./SemiMinim.pn
 g>]
-<InsertButton.png, id=35, 42.1575pt x 41.15375pt>
+<InsertButton.png, id=36, 42.1575pt x 41.15375pt>
 File: InsertButton.png Graphic file (type png)
  <use InsertButton.png>
-<CantoClef.png, id=36, 32.12pt x 40.15pt>
+<CantoClef.png, id=37, 32.12pt x 40.15pt>
 File: CantoClef.png Graphic file (type png)
  <use CantoClef.png>
-<EditButton.png, id=37, 40.15pt x 39.14626pt>
+<EditButton.png, id=38, 40.15pt x 39.14626pt>
 File: EditButton.png Graphic file (type png)
  <use EditButton.png>
-<FusaWithBreve.png, id=38, 27.10126pt x 43.16125pt>
+<FusaWithBreve.png, id=39, 27.10126pt x 43.16125pt>
 File: FusaWithBreve.png Graphic file (type png)
  <use FusaWithBreve.png>
-<BarLine.png, id=39, 31.11626pt x 39.14626pt>
+<BarLine.png, id=40, 31.11626pt x 39.14626pt>
 File: BarLine.png Graphic file (type png)
  <use BarLine.png>
-<LongRest.png, id=40, 30.1125pt x 39.14626pt>
+<LongRest.png, id=41, 30.1125pt x 39.14626pt>
 File: LongRest.png Graphic file (type png)
  <use LongRest.png>
-<Highlight.png, id=41, 445.665pt x 114.4275pt>
+
+LaTeX Warning: Reference `fig:Highlighted-transcription' on page 4 undefined on
+ input line 250.
+
+<Highlight.png, id=42, 445.665pt x 114.4275pt>
 File: Highlight.png Graphic file (type png)
  <use Highlight.png> [4 <./InsertButton.png> <./CantoClef.png> <./EditButton.pn
 g> <./FusaWithBreve.png> <./BarLine.png> <./LongRest.png> <./Highlight.png>]
@@ -247,28 +273,36 @@ File: omscmr.fd 1999/05/25 v2.5h Standard LaTeX font definitions
 LaTeX Font Info:    Font shape `OMS/cmr/m/n' in size <10.95> not available
 (Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 272.
 
-<NewBookIcon.png, id=52, 39.14626pt x 46.1725pt>
+<NewBookIcon.png, id=53, 39.14626pt x 46.1725pt>
 File: NewBookIcon.png Graphic file (type png)
  <use NewBookIcon.png>
-<NewBookWindow.png, id=53, 427.5975pt x 459.7175pt>
+
+LaTeX Warning: Reference `fig:Book-metadata' on page 5 undefined on input line 
+294.
+
+<NewBookWindow.png, id=54, 427.5975pt x 459.7175pt>
 File: NewBookWindow.png Graphic file (type png)
  <use NewBookWindow.png>
 [5 <./NewBookIcon.png> <./NewBookWindow.png>]
-<FileDeactivation.png, id=60, 630.355pt x 287.0725pt>
+
+LaTeX Warning: Reference `fig:Images-desactivated' on page 6 undefined on input
+ line 337.
+
+<FileDeactivation.png, id=61, 630.355pt x 287.0725pt>
 File: FileDeactivation.png Graphic file (type png)
 
 <use FileDeactivation.png> [6 <./FileDeactivation.png>]
 LaTeX Font Info:    External font `cmex10' loaded for size
 (Font)              <10.95> on input line 441.
 
-<DottedNoteWithFlat.png, id=65, 60.225pt x 77.28876pt>
+<DottedNoteWithFlat.png, id=66, 60.225pt x 77.28876pt>
 File: DottedNoteWithFlat.png Graphic file (type png)
 
 <use DottedNoteWithFlat.png>
-<SpecialSymbols.png, id=66, 318.18875pt x 86.3225pt>
+<SpecialSymbols.png, id=67, 318.18875pt x 86.3225pt>
 File: SpecialSymbols.png Graphic file (type png)
  <use SpecialSymbols.png>
-<OctaveKeySignatures.png, id=67, 81.30376pt x 87.32625pt>
+<OctaveKeySignatures.png, id=68, 81.30376pt x 87.32625pt>
 File: OctaveKeySignatures.png Graphic file (type png)
 
 <use OctaveKeySignatures.png>
@@ -285,14 +319,25 @@ File: LigatureSample.png Graphic file (type png)
 <use LigatureSample.png> <BassClefButtons.png, id=82, 91.34125pt x 42.1575pt>
 File: BassClefButtons.png Graphic file (type png)
 
-<use BassClefButtons.png> <BassClefs.png, id=83, 121.45375pt x 95.35625pt>
-File: BassClefs.png Graphic file (type png)
+<use BassClefButtons.png>
 
-<use BassClefs.png> <FClef.png, id=84, 68.255pt x 78.2925pt>
+LaTeX Warning: Reference `fig:F-clefs-symbols' on page 9 undefined on input lin
+e 567.
+
+<BassClefs.png, id=83, 121.45375pt x 95.35625pt>
+File: BassClefs.png Graphic file (type png)
+ <use BassClefs.png>
+<FClef.png, id=84, 68.255pt x 78.2925pt>
 File: FClef.png Graphic file (type png)
- <use FClef.png>
-[9 <./LigatureButtons.png> <./LigatureSample.png> <./BassClefButtons.png> <./Ba
-ssClefs.png> <./FClef.png>] (./aruspix.aux) ) 
+ <use FClef.png> [9 <./LigatureButtons.png> <./LigatureSample.png> <./BassClefB
+uttons.png> <./BassClefs.png> <./FClef.png>] (./aruspix.aux)
+
+LaTeX Warning: There were undefined references.
+
+
+LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
+
+ ) 
 Here is how much of TeX's memory you used:
  1927 strings out of 94073
  24857 string characters out of 1164797
@@ -301,15 +346,15 @@ Here is how much of TeX's memory you used:
  12695 words of font info for 33 fonts, out of 1200000 for 2000
  645 hyphenation exceptions out of 8191
  25i,12n,19p,204b,311s stack positions out of 5000i,500n,6000p,200000b,5000s
-{/opt/local/share/texmf-dist/fonts
-/enc/dvips/cm-super/cm-super-t1.enc}</opt/local/share/texmf-dist/fonts/type1/bl
-uesky/cm/cmsy10.pfb></opt/local/share/texmf-dist/fonts/type1/public/cm-super/sf
-bx1095.pfb></opt/local/share/texmf-dist/fonts/type1/public/cm-super/sfbx1200.pf
-b></opt/local/share/texmf-dist/fonts/type1/public/cm-super/sfbx1440.pfb></opt/l
-ocal/share/texmf-dist/fonts/type1/public/cm-super/sfrm1095.pfb></opt/local/shar
-e/texmf-dist/fonts/type1/public/cm-super/sfrm1200.pfb></opt/local/share/texmf-d
-ist/fonts/type1/public/cm-super/sfrm1728.pfb>
-Output written on aruspix.pdf (9 pages, 1298634 bytes).
+{/opt/local/share/texmf-dist/fonts/enc/dvips/cm-super/cm-super-t1.enc}</opt/l
+ocal/share/texmf-dist/fonts/type1/bluesky/cm/cmsy10.pfb></opt/local/share/texmf
+-dist/fonts/type1/public/cm-super/sfbx1095.pfb></opt/local/share/texmf-dist/fon
+ts/type1/public/cm-super/sfbx1200.pfb></opt/local/share/texmf-dist/fonts/type1/
+public/cm-super/sfbx1440.pfb></opt/local/share/texmf-dist/fonts/type1/public/cm
+-super/sfrm1095.pfb></opt/local/share/texmf-dist/fonts/type1/public/cm-super/sf
+rm1200.pfb></opt/local/share/texmf-dist/fonts/type1/public/cm-super/sfrm1728.pf
+b>
+Output written on aruspix.pdf (9 pages, 1299492 bytes).
 PDF statistics:
  117 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 131072)

@@ -25,7 +25,7 @@
 
 #include "recognition/recfile.h"
 
-#include "mus/musiowwg.h"
+#include "mus/musiobin.h"
 
 #include "wx/arrimpl.cpp"
 WX_DEFINE_OBJARRAY( ArrayOfCmpBookItems );
@@ -107,9 +107,9 @@ bool CmpCollation::IsCollationLoaded( )
 		return false;
 		
 	bool failed = false;
-	MusWWGInput *wwginput = new MusWWGInput( m_musFilePtr, m_musFilePtr->m_fname, WWG_ARUSPIX_CMP  );
-	failed = !wwginput->ImportFile();
-	delete wwginput;
+	MusBinInput *bin_input = new MusBinInput( m_musFilePtr, m_musFilePtr->m_fname, MUS_BIN_ARUSPIX_CMP  );
+	failed = !bin_input->ImportFile();
+	delete bin_input;
 	if ( failed )
 		return false;
 
@@ -164,8 +164,8 @@ bool CmpCollation::Realize( )
 		{
 			staffname = m_basename + m_id + ".swwg";
 		}
-		MusWWGInput wwginput( NULL, staffname, WWG_ARUSPIX_CMP );
-		wwginput.ReadStaff( full_staff );
+		MusBinInput bin_input( NULL, staffname, MUS_BIN_ARUSPIX_CMP );
+		bin_input.ReadStaff( full_staff );
 		MusSymbol *clef = NULL; // we keep last clef for next page
 		for( int j = 0; j < npages; j++ )
 		{	
@@ -209,9 +209,9 @@ bool CmpCollation::Realize( )
 	}
 
     m_musFilePtr->CheckIntegrity();
-	MusWWGOutput *wwgoutput = new MusWWGOutput( m_musFilePtr, m_musFilePtr->m_fname, WWG_ARUSPIX_CMP );
-	wwgoutput->ExportFile();
-	delete wwgoutput;
+	MusBinOutput *bin_output = new MusBinOutput( m_musFilePtr, m_musFilePtr->m_fname, MUS_BIN_ARUSPIX_CMP );
+	bin_output->ExportFile();
+	delete bin_output;
 	
 	m_isColLoaded = true;
 	
@@ -234,8 +234,8 @@ bool CmpCollation::Collate( )
 	for( i = 0; i < (int)m_collationParts.GetCount(); i++ )
 	{
 		CmpCollationPart *part = &m_collationParts[i];
-		MusWWGInput wwginput( NULL, m_basename + part->m_bookPart->m_id + ".swwg", WWG_ARUSPIX_CMP );
-		wwginput.ReadStaff( &staves[i] );
+		MusBinInput bin_input( NULL, m_basename + part->m_bookPart->m_id + ".swwg", MUS_BIN_ARUSPIX_CMP );
+		bin_input.ReadStaff( &staves[i] );
 		if ( part->m_flags & PART_REFERENCE )
 		{
 			reference = &staves[i];
@@ -257,16 +257,13 @@ bool CmpCollation::Collate( )
 			//&align_staves[i] = 
 			Align( reference, &staves[i], part );
 			
-		//MusWWGOutput wwgoutput( NULL, m_basename + book->m_shortname + ".swwg", WWG_ARUSPIX_CMP  );
-		//wwgoutput->m_flag = WWG_ARUSPIX_CMP;
-		//wwgoutput->WriteStaff( musStaff );
-		//delete wwgoutput;
-		//
+		//MusBinOutput bin_output( NULL, m_basename + book->m_shortname + ".swwg", MUS_BIN_ARUSPIX_CMP  );
+		//bin_output.WriteStaff( musStaff );
 	}
 	
 	// save reference
-	MusWWGOutput wwgoutput( NULL, m_basename + m_id + ".swwg", WWG_ARUSPIX_CMP  );
-	wwgoutput.WriteStaff( reference );
+	MusBinOutput bin_output( NULL, m_basename + m_id + ".swwg", MUS_BIN_ARUSPIX_CMP  );
+	bin_output.WriteStaff( reference );
 	
 	delete[] staves;
 	return true;
@@ -476,8 +473,8 @@ bool CmpCollation::Align( MusStaff *staff_ref, MusStaff *staff_var, CmpCollation
 	//printf("\nEnd (i = %d, j = %d)\n", i , j);
 	EndInsertion( part_var ); // flush the last insertion
 	
-	MusWWGOutput wwgoutput( NULL, m_basename + m_id + "." + part_var->m_bookPart->m_id + ".swwg", WWG_ARUSPIX_CMP  );
-	wwgoutput.WriteStaff( &aligned );
+	MusBinOutput bin_output( NULL, m_basename + m_id + "." + part_var->m_bookPart->m_id + ".swwg", MUS_BIN_ARUSPIX_CMP  );
+	bin_output.WriteStaff( &aligned );
 	
 	part_var->m_ins = n_insert;
 	part_var->m_del = n_delete;
@@ -708,9 +705,9 @@ void CmpFile::OpenContent( )
 	if ( wxFileExists( m_basename + "collation.wwg") )
 	{
 		bool failed = false;
-		MusWWGInput *wwginput = new MusWWGInput( m_musFilePtr, m_musFilePtr->m_fname, WWG_ARUSPIX_CMP  );
-		failed = !wwginput->ImportFile();
-		delete wwginput;
+		MusBinInput *bin_input = new MusBinInput( m_musFilePtr, m_musFilePtr->m_fname, MUS_BIN_ARUSPIX_CMP  );
+		failed = !bin_input->ImportFile();
+		delete bin_input;
 		if ( failed )
 			return;
 		else
@@ -789,9 +786,9 @@ void CmpFile::SaveContent( )
 	else
 	{
 		// save
-		MusWWGOutput *wwgoutput = new MusWWGOutput( m_musFilePtr, m_musFilePtr->m_fname, WWG_ARUSPIX_CMP );
-		wwgoutput->ExportFile();
-		delete wwgoutput;
+		MusBinOutput *bin_output = new MusBinOutput( m_musFilePtr, m_musFilePtr->m_fname, MUS_BIN_ARUSPIX_CMP );
+		bin_output->ExportFile();
+		delete bin_output;
 	}*/
 }
 
@@ -901,9 +898,9 @@ bool CmpFile::LoadBooks( wxArrayPtrVoid params, AxProgressDlg *dlg )
 			
 		
 			wxLogMessage( _("Write data ...") );
-			MusWWGOutput *wwgoutput = new MusWWGOutput( NULL, m_basename + part->m_id + ".swwg", WWG_ARUSPIX_CMP  );
-			wwgoutput->WriteStaff( musStaff );
-			delete wwgoutput;
+			MusBinOutput *bin_output = new MusBinOutput( NULL, m_basename + part->m_id + ".swwg", MUS_BIN_ARUSPIX_CMP  );
+			bin_output->WriteStaff( musStaff );
+			delete bin_output;
 			delete musStaff;
 			imCounterInc( dlg->GetCounter() );
 		}
@@ -1133,16 +1130,15 @@ bool CmpFile::Collate( wxArrayPtrVoid params, AxProgressDlg *dlg )
 		//m_cmpinput->Close();
 		delete m_cmpinput;
 		
-		MusWWGOutput *wwgoutput = new MusWWGOutput( NULL, m_basename + book->m_shortname + ".swwg", WWG_ARUSPIX_CMP  );
-		//wwgoutput->m_flag = WWG_ARUSPIX_CMP;
-		wwgoutput->WriteStaff( musStaff );
-		delete wwgoutput;
+		MusBinOutput *bin_output = new MusBinOutput( NULL, m_basename + book->m_shortname + ".swwg", MUS_BIN_ARUSPIX_CMP  );
+		bin_output->WriteStaff( musStaff );
+		delete bin_output;
 		* /
 		
-		MusWWGInput *wwginput = new MusWWGInput( NULL, m_basename + book->m_shortname + ".swwg", WWG_ARUSPIX_CMP );
+		MusBinInput *bin_input = new MusBinInput( NULL, m_basename + book->m_shortname + ".swwg", MUS_BIN_ARUSPIX_CMP );
 		MusStaff musStaff_loaded;
-		wwginput->ReadStaff( &musStaff_loaded );
-		delete wwginput;
+		bin_input->ReadStaff( &musStaff_loaded );
+		delete bin_input;
 		
 		
 		CmpMLFOutput *m_cmpoutput = new CmpMLFOutput( NULL, m_basename + book->m_shortname + ".staff", "CmpMLFSymb"  );

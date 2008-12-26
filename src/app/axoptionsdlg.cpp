@@ -532,10 +532,10 @@ AxOptMusWindow::AxOptMusWindow( wxWindow *parent, wxWindowID id,
     m_filePtr->m_pages.Add( page );
     m_filePtr->CheckIntegrity();
 
-    /*m_filePtr->m_fheader.filesize = 0;
-    MusWWGOutput *wwgoutput = new MusWWGOutput( m_filePtr, "D:/test.wwg" );
-    wwgoutput->ExportFile();
-    delete wwgoutput;*/
+    /*
+    MusBinOutput *bin_output = new MusBinOutput( m_filePtr, "D:/test.wwg" );
+    bin_output->ExportFile();
+    delete bin_output;*/
 
 	this->SetFile( m_filePtr );
 	//this->Resize();

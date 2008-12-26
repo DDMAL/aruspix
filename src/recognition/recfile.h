@@ -71,6 +71,7 @@ public:
 	
 	// backward compatibility to be check when a opening the file
 	void RecFile::UpgradeTo_1_4_0();
+    void RecFile::UpgradeTo_1_5_0();
 	
 	// status
 	static bool RecFile::IsRecognized( wxString filename );

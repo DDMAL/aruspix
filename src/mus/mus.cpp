@@ -21,85 +21,6 @@
 // WDR: class implementations
 
 //----------------------------------------------------------------------------
-// MusFont
-//----------------------------------------------------------------------------
-
-MusFont::MusFont()
-{
-}
-
-MusFont::~MusFont()
-{
-}
-
-// WDR: handler implementations for MusFont
-
-
-//----------------------------------------------------------------------------
-// MusParametersMidi
-//----------------------------------------------------------------------------
-
-MusParametersMidi::MusParametersMidi()
-{
-    tempo = 500000;
-    minVeloc = 30;
-    maxVeloc = 110;
-    collerBeamLiai = 1;
-    pedale = 1;
-    xResolution1 = 20;
-    xResolution2 = 15;
-    appogg = 0;
-    mes_proportion = 0;
-
-	int i;
-	for (i = 0; i < MAXMIDICANAL; i++) // canal2patch
-		canal2patch[i] = 0;
-	for (i = 0; i < MAXMIDICANAL; i++) // volume
-		volume[i] = 64;
-	for (i = 0; i < MAXPORTNBRE + 1; i++) // piste2canal
-		piste2canal[i] = 0;
-}
-
-MusParametersMidi::~MusParametersMidi()
-{
-}
-
-// WDR: handler implementations for MusParametersMidi
-
-
-//----------------------------------------------------------------------------
-// MusParameters2
-//----------------------------------------------------------------------------
-
-MusParameters2::MusParameters2()
-{
-	transp_sil = 0;
-    rapportPorteesNum = 16;
-    rapportPorteesDen = 20;
-    rapportDiminNum = 3;
-    rapportDiminDen = 4;
-    autoval_sil = 1;
-    nbPagesEncontinu = 3;
-    vertCorrEcr = 2;
-    vertCorrPrn = 0;
-    //hampesCorr = 2;
-	hampesCorr = 0;
-    epaisBezier = 0;
-    entetePied = 0;
-
-	int i;
-	for (i = 0; i < MAXPORTNBRE+1; i++) // transposition
-		transposition[i] = 0;
-}
-
-MusParameters2::~MusParameters2()
-{
-}
-
-// WDR: handler implementations for MusParameters2
-
-
-//----------------------------------------------------------------------------
 // MusParameters
 //----------------------------------------------------------------------------
 
@@ -111,16 +32,19 @@ MusParameters::MusParameters()
     EpBarreMesure = 3;
     EpBarreValeur = 10;
     EpBlancBarreValeur = 5;
-    beamPenteMax = 30;
-    beamPenteMin = 10;
     pageFormatHor = 210;
     pageFormatVer = 297;
     MargeSOMMET = 0;
     MargeGAUCHEIMPAIRE = 9;
     MargeGAUCHEPAIRE = 9;
-    Epais1 = 1;
-    Epais2 = 5;
-    Epais3 = 9;
+
+    // originally in MusParameters2
+    rapportPorteesNum = 16;
+    rapportPorteesDen = 20;
+    rapportDiminNum = 3;
+    rapportDiminDen = 4;
+	hampesCorr = 0;
+    entetePied = 0;
 }
 
 MusParameters::~MusParameters()
@@ -195,13 +119,10 @@ MusFileHeader::MusFileHeader()
 {
 	maj_ver = 2;
     min_ver = 1;
-    filesize = 0;
     nbpage = 0;
     nopage = 1;
     noligne = 0;
     xpos = 0;
-	reserve[0] = 0;
-	reserve[0] = 0;
 }
 
 MusFileHeader::~MusFileHeader()
