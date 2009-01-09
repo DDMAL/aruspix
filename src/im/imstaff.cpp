@@ -1286,6 +1286,7 @@ void ImStaff::ExtractLyricImages( const int staff, wxArrayPtrVoid params )
 	//wxLogMessage("step %d", step );
 	int samples = 0; 
 
+	int white_spaces = 0;
     while (1)
     {
         if ( x + width > m_opImTmp1->width )
@@ -1293,7 +1294,12 @@ void ImStaff::ExtractLyricImages( const int staff, wxArrayPtrVoid params )
 		
         imProcessCrop( m_opImTmp1, m_opImTmp2, x, 0);
 		if ( CalcLyricWinFeatures( m_opImTmp2, values + ( samples * LYRIC_FEATURES_COUNT ) ) ){
-			samples++;		
+			samples++;
+			white_spaces = 0;
+		} else if ( white_spaces < 2 ){
+			memset( values + ( samples * LYRIC_FEATURES_COUNT ), 0, LYRIC_FEATURES_COUNT * sizeof(float) );
+			white_spaces++;
+			samples++;
 		}
         x += step;
     }

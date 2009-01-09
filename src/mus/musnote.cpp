@@ -28,6 +28,17 @@
 #include "wx/arrimpl.cpp"
 WX_DEFINE_OBJARRAY( ArrayOfWgSymbols );
 
+// sorting function
+int SortElements(MusSymbol **first, MusSymbol **second)
+{
+	if ( (*first)->xrel < (*second)->xrel )
+		return -1;
+	else if ( (*first)->xrel > (*second)->xrel )
+		return 1;
+	else 
+		return 0;
+}
+
 // WDR: class implementations
 
 //----------------------------------------------------------------------------
@@ -970,6 +981,34 @@ void MusNote::DeleteLyricFromNote( MusSymbol *lyric )
 		}
 	}
 }
+
+void MusNote::CheckLyricIntegrity( )
+{
+	this->m_lyrics.Sort( SortElements );
+	int num = this->m_lyrics.GetCount();
+	int i = 0;
+	for ( i = 0; i< num; i++ ){
+		MusElement *element = &this->m_lyrics[i];
+		element->no = i;
+	}
+}
+
+MusSymbol *MusNote::GetFirstLyric( ){
+	if ( this->m_lyrics.GetCount() == 0 ) 
+		return NULL;
+	else
+		return &this->m_lyrics[0];
+}
+
+MusSymbol *MusNote::GetLastLyric( ){
+	int num = this->m_lyrics.GetCount(); 
+
+	if ( num == 0 ) 
+		return NULL;
+	else 
+		return &this->m_lyrics[num-1];
+}
+
 
 // WDR: handler implementations for MusNote
 

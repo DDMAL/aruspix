@@ -602,6 +602,21 @@ bool MusSymbol::IsLastLyricElementInNote( )
 		return false;
 }
 
+bool MusSymbol::IsLyricEmpty( )
+{
+	wxString str = this->m_debord_str;
+	int length = str.Length();
+	int i = 0;
+	while ( i < length ){
+		if ( str[i] == 20 )
+			i++;
+		else 
+			break;
+	}
+	if ( length == i ) return true;
+	else return false;
+}
+
 // WDR: handler implementations for MusSymbol
 
 

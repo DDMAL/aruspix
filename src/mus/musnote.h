@@ -62,6 +62,9 @@ public:
 	// lyrics
 	void DeleteLyricFromNote( MusSymbol *lyric );
 	bool BelongsToTheNote( MusElement *element ); 
+	void CheckLyricIntegrity( );
+	MusSymbol *MusNote::GetFirstLyric( );
+	MusSymbol *MusNote::GetLastLyric( );
 	
 public:
 	// WDR: member variable declarations for MusNote

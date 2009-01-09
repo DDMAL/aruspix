@@ -59,6 +59,7 @@ public:
 	void InsertCharInLyricAt( int x, char letter );
 	bool DeleteCharInLyricAt( int x );
 	bool IsLastLyricElementInNote( );
+	bool IsLyricEmpty( );
     
 public:
     // WDR: member variable declarations for MusSymbol
