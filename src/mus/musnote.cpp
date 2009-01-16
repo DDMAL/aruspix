@@ -987,7 +987,21 @@ void MusNote::CheckLyricIntegrity( )
 	this->m_lyrics.Sort( SortElements );
 	int num = this->m_lyrics.GetCount();
 	int i = 0;
-	for ( i = 0; i< num; i++ ){
+	
+	// Check for empty lyric elements
+	while ( i < num ){
+		MusSymbol *symbol = &this->m_lyrics[i];		
+		if ( symbol->IsLyricEmpty() ){
+			this->m_lyrics.RemoveAt( i );
+			delete symbol;
+			num = this->m_lyrics.GetCount();
+		}
+		else i++;
+	}
+	
+	//Ensure elements have correct numbering within array
+	num = this->m_lyrics.GetCount();
+	for ( i = 0; i < num; i++ ){
 		MusElement *element = &this->m_lyrics[i];
 		element->no = i;
 	}
