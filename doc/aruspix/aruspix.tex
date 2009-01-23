@@ -32,9 +32,9 @@ early printed music sources. Starting with scanned images of these
 early sources, Aruspix will first pre-process the image, to clean,
 correct and pre-classify the various elements, then digitally recognize
 the image for musical content. This two-step process can be applied
-to single pages, or to an enitre book, or batch, of pages. When working
-with books, a process called optimization can be applied after a significant
-number of pages (approx. 20) has been corrected. The optimiziation
+to single pages, or to an entire book, or batch, of pages. When working
+with books, an optimization process can be applied after a significant
+number of pages (approx. 20) has been corrected. The optimization
 process will improve results for the recognition of the book. Your
 prepared images for use with Aruspix must be stored as TIFF files.
 A resolution of at least 300 dpi is recommended. Each single file
@@ -577,5 +577,65 @@ To create an F clef in Aruspix, you will need to combine two symbols
 \caption{F clefs symbols and a F clef with the additional Long symbol\label{fig:F-clefs-symbols}}
 
 \end{figure}
+
+\subsubsection{Editing Lyrics}
+
+Aruspix also allows users to edit the lyric elements of the music. All lyrics
+in Aruspix are associated to a single note and a note may have several lyric
+elements associated to it. When an element is selected lyrics or notes that
+are associated to it are highlighted in light blue. There are two modes in
+Aruspix which allow users to manipulate lyrics. The modes are "Lyric Editing"
+mode and "Lyric Insertion" mode. Lyric Editing mode allows users to change
+the location of lyrics and their note associations while Lyric Insertion mode
+allows users to input new lyrics and modify existing lyrics.
+\newline\newline \textbf{Lyric Editing} mode is entered by either selecting an
+element with the mouse, or pressing the "T" key. Pressing the "T" key will
+select the lyric associated to the currently selected note. 
+% \newline NOTE: If the currently selected note has no associated lyrics, a
+% new empty lyric element will be created underneath the note, and Aruspix will
+%a utomatically go into "Lyric Insertion" mode to allow the user to input the
+% new lyric. More on "Lyric Insertion" mode will follow.
+\newline In Lyric Editing mode you have the following options:
+\begin{itemize}
+	\item You can navigate through all the lyrics on a page using the "Up" and
+	"Down" arrow keys to move between lyric lines and the "Left" and "Right"
+	arrow keys to move between lyrics on a lyric line.
+	\item A lyric element can be moved by clicking and dragging it to a new
+	location.
+	\item A lyric line can be shifted vertically by selecting a lyric element
+	on the line and holding down the "CTRL" key and pressing the "Up" or "Down"
+	arrow keys.
+	\item A lyric's association to a note can be modified by selecting the
+	element and holding down the "CTRL" key and then pressing the "Left" or
+	"Right" arrow keys. Pressing the "Left" arrow key will associate the lyric
+	to the next note on the left and pressing the "Right" arrow key will
+	associated it to the next note on the right.
+	\item A selected lyric element can be deleted by pressing the "Backspace"
+	or "Delete" key.
+	\item To exit Lyric Editing mode either press the "T" key or select a
+	note using the mouse.
+\end{itemize} 
+\textbf{Lyric Insertion} mode allows users to insert new lyrics or modify
+existing lyrics. There are two ways to enter Lyric Insertion mode. The first is
+to select a lyric element that you wish to modify and press the "Return" key.
+A bounding box will appear around the lyric and you will now be able to modify
+it. The second way to enter Lyric Insertion node is to select a note with no
+associated lyric elements and then press the "T" key. This will create a new
+lyric element underneath the note.
+\newline In Lyric Insertion mode you have the following options:
+\begin{itemize}
+	\item You can insert and delete characters at the current cursor location
+	using the keyboard as you would in any text editor.
+	\item You can move the cursor to the left and right using the "Left" and
+	"Right" arrow keys. If you move the cursor past the beginning or end of a
+	lyric, it will jump to the beginning or end of the next lyric.
+	\item With the cursor at the end of a lyric element, you can create a new
+	lyric element associated to the next note by pressing the "Space" bar. 
+	\item With the cursor at the end of a lyric element, you can create a new
+	lyric element separated by a hyphen and associated to the next note by
+	pressing the "Tab" key.
+	\item Lyric Insertion mode is exited by pressing the "Return" key. This
+	will put Aruspix back into Lyric Editing mode.
+\end{itemize}    
 
 \end{document}

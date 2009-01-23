@@ -1,18 +1,21 @@
-This is pdfTeX, Version 3.141592-1.40.3 (Web2C 7.5.6) (format=pdflatex 2008.9.10)  9 DEC 2008 21:52
+This is pdfTeXk, Version 3.1415926-1.40.9 (Web2C 7.5.7) (format=pdflatex 2008.12.28)  23 JAN 2009 13:40
 entering extended mode
+ file:line:error style messages enabled.
+ %&-line parsing enabled.
 **aruspix.tex
 (./aruspix.tex
 LaTeX2e <2005/12/01>
-Babel <v3.8h> and hyphenation patterns for english, usenglishmax, dumylang, noh
-yphenation, arabic, basque, bulgarian, coptic, welsh, czech, slovak, german, ng
-erman, danish, esperanto, spanish, catalan, galician, estonian, farsi, finnish,
- french, greek, monogreek, ancientgreek, croatian, hungarian, interlingua, ibyc
-us, indonesian, icelandic, italian, latin, mongolian, dutch, norsk, polish, por
-tuguese, pinyin, romanian, russian, slovenian, uppersorbian, serbian, swedish, 
-turkish, ukenglish, ukrainian, loaded.
-(/opt/local/share/texmf-dist/tex/latex/base/article.cls
+Babel <v3.8l> and hyphenation patterns for english, usenglishmax, dumylang, noh
+yphenation, german-x-2008-06-18, ngerman-x-2008-06-18, ancientgreek, ibycus, ar
+abic, basque, bulgarian, catalan, pinyin, coptic, croatian, czech, danish, dutc
+h, esperanto, estonian, farsi, finnish, french, galician, german, ngerman, mono
+greek, greek, hungarian, icelandic, indonesian, interlingua, irish, italian, la
+tin, lithuanian, mongolian, mongolian2a, bokmal, nynorsk, polish, portuguese, r
+omanian, russian, sanskrit, serbian, slovak, slovenian, spanish, swedish, turki
+sh, ukenglish, ukrainian, uppersorbian, welsh, loaded.
+(/usr/local/texlive/2008/texmf-dist/tex/latex/base/article.cls
 Document Class: article 2005/09/16 v1.4f Standard LaTeX document class
-(/opt/local/share/texmf-dist/tex/latex/base/size11.clo
+(/usr/local/texlive/2008/texmf-dist/tex/latex/base/size11.clo
 File: size11.clo 2005/09/16 v1.4f Standard LaTeX file (size option)
 )
 \c@part=\count79
@@ -27,28 +30,35 @@ File: size11.clo 2005/09/16 v1.4f Standard LaTeX file (size option)
 \belowcaptionskip=\skip42
 \bibindent=\dimen102
 )
-(/opt/local/share/texmf-dist/tex/latex/base/fontenc.sty
+(/usr/local/texlive/2008/texmf-dist/tex/latex/base/fontenc.sty
 Package: fontenc 2005/09/27 v1.99g Standard LaTeX package
 
-(/opt/local/share/texmf-dist/tex/latex/base/t1enc.def
+(/usr/local/texlive/2008/texmf-dist/tex/latex/base/t1enc.def
 File: t1enc.def 2005/09/27 v1.99g Standard LaTeX file
 LaTeX Font Info:    Redeclaring font encoding T1 on input line 43.
 ))
-(/opt/local/share/texmf-dist/tex/latex/base/inputenc.sty
+(/usr/local/texlive/2008/texmf-dist/tex/latex/base/inputenc.sty
 Package: inputenc 2006/05/05 v1.1b Input encoding file
 \inpenc@prehook=\toks14
 \inpenc@posthook=\toks15
 
-(/opt/local/share/texmf-local/tex/latex/html/latin9.def
-File: latin1.def 1998/03/05 v0.97 Input encoding file(test version: still liabl
-e to change)
+(/usr/local/texlive/2008/texmf-dist/tex/latex/base/latin9.def
+File: latin9.def 2006/05/05 v1.1b Input encoding file
 ))
-(/opt/local/share/texmf-dist/tex/latex/geometry/geometry.sty
-Package: geometry 2002/07/08 v3.2 Page Geometry
+(/usr/local/texlive/2008/texmf-dist/tex/latex/geometry/geometry.sty
+Package: geometry 2008/12/21 v4.2 Page Geometry
 
-(/opt/local/share/texmf-dist/tex/latex/graphics/keyval.sty
+(/usr/local/texlive/2008/texmf-dist/tex/latex/graphics/keyval.sty
 Package: keyval 1999/03/16 v1.13 key=value parser (DPC)
 \KV@toks@=\toks16
+)
+(/usr/local/texlive/2008/texmf-dist/tex/generic/oberdiek/ifpdf.sty
+Package: ifpdf 2007/12/12 v1.6 Provides the ifpdf switch (HO)
+Package ifpdf Info: pdfTeX in pdf mode detected.
+)
+(/usr/local/texlive/2008/texmf-dist/tex/generic/oberdiek/ifvtex.sty
+Package: ifvtex 2008/11/04 v1.4 Switches for detecting VTeX and its modes (HO)
+Package ifvtex Info: VTeX not detected.
 )
 \Gm@cnth=\count87
 \Gm@cntv=\count88
@@ -58,45 +68,45 @@ Package: keyval 1999/03/16 v1.13 key=value parser (DPC)
 \Gm@odd@mp=\dimen105
 \Gm@even@mp=\dimen106
 \Gm@dimlist=\toks17
-)
-(/opt/local/share/texmf-dist/tex/latex/graphics/graphicx.sty
+
+(/usr/local/texlive/2008/texmf-dist/tex/xelatex/xetexconfig/geometry.cfg))
+(/usr/local/texlive/2008/texmf-dist/tex/latex/graphics/graphicx.sty
 Package: graphicx 1999/02/16 v1.0f Enhanced LaTeX Graphics (DPC,SPQR)
 
-(/opt/local/share/texmf-dist/tex/latex/graphics/graphics.sty
+(/usr/local/texlive/2008/texmf-dist/tex/latex/graphics/graphics.sty
 Package: graphics 2006/02/20 v1.0o Standard LaTeX Graphics (DPC,SPQR)
 
-(/opt/local/share/texmf-dist/tex/latex/graphics/trig.sty
+(/usr/local/texlive/2008/texmf-dist/tex/latex/graphics/trig.sty
 Package: trig 1999/03/16 v1.09 sin cos tan (DPC)
 )
-(/opt/local/share/texmf/tex/latex/config/graphics.cfg
+(/usr/local/texlive/2008/texmf/tex/latex/config/graphics.cfg
 File: graphics.cfg 2007/01/18 v1.5 graphics configuration of teTeX/TeXLive
 )
 Package graphics Info: Driver file: pdftex.def on input line 90.
 
-(/opt/local/share/texmf-dist/tex/latex/pdftex-def/pdftex.def
-File: pdftex.def 2007/01/08 v0.04d Graphics/color for pdfTeX
+(/usr/local/texlive/2008/texmf-dist/tex/latex/pdftex-def/pdftex.def
+File: pdftex.def 2008/09/08 v0.04l Graphics/color for pdfTeX
 \Gread@gobject=\count90
 ))
 \Gin@req@height=\dimen107
 \Gin@req@width=\dimen108
 )
-(/opt/local/share/texmf-dist/tex/generic/babel/babel.sty
-Package: babel 2005/11/23 v3.8h The Babel package
+(/usr/local/texlive/2008/texmf-dist/tex/generic/babel/babel.sty
+Package: babel 2008/07/06 v3.8l The Babel package
 
-(/opt/local/share/texmf-dist/tex/generic/babel/english.ldf
+(/usr/local/texlive/2008/texmf-dist/tex/generic/babel/english.ldf
 Language: english 2005/03/30 v3.3o English support from the babel system
 
-(/opt/local/share/texmf-dist/tex/generic/babel/babel.def
-File: babel.def 2005/11/23 v3.8h Babel common definitions
+(/usr/local/texlive/2008/texmf-dist/tex/generic/babel/babel.def
+File: babel.def 2008/07/06 v3.8l Babel common definitions
 \babel@savecnt=\count91
 \U@D=\dimen109
 )
-\l@british = a dialect from \language\l@english 
-\l@UKenglish = a dialect from \language\l@english 
 \l@canadian = a dialect from \language\l@american 
 \l@australian = a dialect from \language\l@british 
 \l@newzealand = a dialect from \language\l@british 
-)) (./aruspix.aux)
+))
+(./aruspix.aux)
 \openout1 = `aruspix.aux'.
 
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 22.
@@ -112,6 +122,8 @@ LaTeX Font Info:    ... okay on input line 22.
 LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 22.
 LaTeX Font Info:    ... okay on input line 22.
 
+*geometry auto-detecting driver*
+*geometry detected driver: pdftex*
 -------------------- Geometry parameters
 paper: letterpaper
 landscape: --
@@ -151,17 +163,18 @@ driver: pdftex
 
 (1in=72.27pt, 1cm=28.45pt)
 -----------------------
-(/opt/local/share/texmf-dist/tex/context/base/supp-pdf.tex
+(/usr/local/texlive/2008/texmf-dist/tex/context/base/supp-pdf.tex
 [Loading MPS to PDF converter (version 2006.09.02).]
 \scratchcounter=\count92
 \scratchdimen=\dimen110
 \scratchbox=\box26
 \nofMPsegments=\count93
 \nofMParguments=\count94
+\everyMPshowfont=\toks18
 \MPscratchCnt=\count95
 \MPscratchDim=\dimen111
 \MPnumerator=\count96
-\everyMPtoPDFconversion=\toks18
+\everyMPtoPDFconversion=\toks19
 )
 LaTeX Font Info:    External font `cmex10' loaded for size
 (Font)              <12> on input line 26.
@@ -173,51 +186,32 @@ LaTeX Font Info:    External font `cmex10' loaded for size
 
 LaTeX Warning: No \author given.
 
-
-LaTeX Warning: Reference `fig:Menu-bar' on page 1 undefined on input line 46.
-
-
-LaTeX Warning: Reference `fig:Tool-bar' on page 1 undefined on input line 49.
-
 <ApplicationMenu.png, id=1, 503.8825pt x 25.09375pt>
 File: ApplicationMenu.png Graphic file (type png)
  <use ApplicationMenu.png>
-<ToolBar.png, id=2, 604.2575pt x 48.18pt>
+<ToolBar.png, id=3, 604.2575pt x 48.18pt>
 File: ToolBar.png Graphic file (type png)
  <use ToolBar.png>
-<OpenNewFileButton.png, id=3, 45.16875pt x 44.165pt>
+<OpenNewFileButton.png, id=4, 45.16875pt x 44.165pt>
 File: OpenNewFileButton.png Graphic file (type png)
 
-<use OpenNewFileButton.png>
-
-LaTeX Warning: Reference `fig:Image-processed' on page 1 undefined on input lin
-e 85.
-
-<ZoomButtons.png, id=4, 146.5475pt x 45.16875pt>
+<use OpenNewFileButton.png> <ZoomButtons.png, id=5, 146.5475pt x 45.16875pt>
 File: ZoomButtons.png Graphic file (type png)
- <use ZoomButtons.png>
-<ScannedTextRaw.png, id=5, 749.80125pt x 446.66875pt>
+
+<use ZoomButtons.png> <ScannedTextRaw.png, id=6, 749.80125pt x 446.66875pt>
 File: ScannedTextRaw.png Graphic file (type png)
- <use ScannedTextRaw.png>
+
+<use ScannedTextRaw.png>
 
 LaTeX Warning: `h' float specifier changed to `ht'.
 
-<RunButton.png, id=6, 45.16875pt x 44.165pt>
+<RunButton.png, id=7, 45.16875pt x 44.165pt>
 File: RunButton.png Graphic file (type png)
- <use RunButton.png>
+ <use RunButton.png> [1
 
-LaTeX Warning: Reference `fig:Correction-preprocessing' on page 1 undefined on 
-input line 111.
-
-
-LaTeX Warning: Reference `fig:Pre-processing-categories' on page 1 undefined on
- input line 113.
-
-[1
-
-{/opt/local/share/texmf/fonts/map/pdftex/updmap/pdftex.map} <./ApplicationMenu.
-png> <./ToolBar.png> <./OpenNewFileButton.png> <./ZoomButtons.png> <./RunButton
-.png>] <BlackBorderRed.png, id=21, 659.46375pt x 312.16624pt>
+{/usr/local/texlive/2008/texmf-var/fonts/map/pdftex/updmap/pdftex.map} <./Appli
+cationMenu.png> <./ToolBar.png> <./OpenNewFileButton.png> <./ZoomButtons.png> <
+./RunButton.png>] <BlackBorderRed.png, id=21, 659.46375pt x 312.16624pt>
 File: BlackBorderRed.png Graphic file (type png)
 
 <use BlackBorderRed.png> <PPCorrection.png, id=22, 369.38pt x 211.79124pt>
@@ -226,10 +220,6 @@ File: PPCorrection.png Graphic file (type png)
 <use PPCorrection.png>
 
 LaTeX Warning: `h' float specifier changed to `ht'.
-
-
-LaTeX Warning: Reference `fig:Page-after-recognition' on page 2 undefined on in
-put line 152.
 
 <EditScreen.png, id=23, 1401.235pt x 993.7125pt>
 File: EditScreen.png Graphic file (type png)
@@ -256,10 +246,6 @@ File: BarLine.png Graphic file (type png)
 <LongRest.png, id=41, 30.1125pt x 39.14626pt>
 File: LongRest.png Graphic file (type png)
  <use LongRest.png>
-
-LaTeX Warning: Reference `fig:Highlighted-transcription' on page 4 undefined on
- input line 250.
-
 <Highlight.png, id=42, 445.665pt x 114.4275pt>
 File: Highlight.png Graphic file (type png)
  <use Highlight.png> [4 <./InsertButton.png> <./CantoClef.png> <./EditButton.pn
@@ -267,7 +253,7 @@ g> <./FusaWithBreve.png> <./BarLine.png> <./LongRest.png> <./Highlight.png>]
 LaTeX Font Info:    Try loading font information for OMS+cmr on input line 272.
 
 
-(/opt/local/share/texmf-dist/tex/latex/base/omscmr.fd
+(/usr/local/texlive/2008/texmf-dist/tex/latex/base/omscmr.fd
 File: omscmr.fd 1999/05/25 v2.5h Standard LaTeX font definitions
 )
 LaTeX Font Info:    Font shape `OMS/cmr/m/n' in size <10.95> not available
@@ -276,18 +262,10 @@ LaTeX Font Info:    Font shape `OMS/cmr/m/n' in size <10.95> not available
 <NewBookIcon.png, id=53, 39.14626pt x 46.1725pt>
 File: NewBookIcon.png Graphic file (type png)
  <use NewBookIcon.png>
-
-LaTeX Warning: Reference `fig:Book-metadata' on page 5 undefined on input line 
-294.
-
 <NewBookWindow.png, id=54, 427.5975pt x 459.7175pt>
 File: NewBookWindow.png Graphic file (type png)
  <use NewBookWindow.png>
 [5 <./NewBookIcon.png> <./NewBookWindow.png>]
-
-LaTeX Warning: Reference `fig:Images-desactivated' on page 6 undefined on input
- line 337.
-
 <FileDeactivation.png, id=61, 630.355pt x 287.0725pt>
 File: FileDeactivation.png Graphic file (type png)
 
@@ -310,53 +288,47 @@ File: OctaveKeySignatures.png Graphic file (type png)
 LaTeX Warning: `h' float specifier changed to `ht'.
 
 [7] [8 <./DottedNoteWithFlat.png> <./SpecialSymbols.png> <./OctaveKeySignatures
-.png>] <LigatureButtons.png, id=80, 62.2325pt x 39.14626pt>
+.png>] <LigatureButtons.png, id=81, 62.2325pt x 39.14626pt>
 File: LigatureButtons.png Graphic file (type png)
 
-<use LigatureButtons.png> <LigatureSample.png, id=81, 60.225pt x 81.30376pt>
+<use LigatureButtons.png> <LigatureSample.png, id=82, 60.225pt x 81.30376pt>
 File: LigatureSample.png Graphic file (type png)
 
-<use LigatureSample.png> <BassClefButtons.png, id=82, 91.34125pt x 42.1575pt>
+<use LigatureSample.png> <BassClefButtons.png, id=83, 91.34125pt x 42.1575pt>
 File: BassClefButtons.png Graphic file (type png)
 
-<use BassClefButtons.png>
-
-LaTeX Warning: Reference `fig:F-clefs-symbols' on page 9 undefined on input lin
-e 567.
-
-<BassClefs.png, id=83, 121.45375pt x 95.35625pt>
+<use BassClefButtons.png> <BassClefs.png, id=84, 121.45375pt x 95.35625pt>
 File: BassClefs.png Graphic file (type png)
- <use BassClefs.png>
-<FClef.png, id=84, 68.255pt x 78.2925pt>
+
+<use BassClefs.png> <FClef.png, id=85, 68.255pt x 78.2925pt>
 File: FClef.png Graphic file (type png)
- <use FClef.png> [9 <./LigatureButtons.png> <./LigatureSample.png> <./BassClefB
-uttons.png> <./BassClefs.png> <./FClef.png>] (./aruspix.aux)
+ <use FClef.png>
+Underfull \hbox (badness 10000) in paragraph at lines 583--599
 
-LaTeX Warning: There were undefined references.
+ []
 
-
-LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
-
- ) 
+[9 <./LigatureButtons.png> <./LigatureSample.png> <./BassClefButtons.png> <./Ba
+ssClefs.png> <./FClef.png>] [10] (./aruspix.aux) ) 
 Here is how much of TeX's memory you used:
- 1927 strings out of 94073
- 24857 string characters out of 1164797
- 76392 words of memory out of 1500000
- 5201 multiletter control sequences out of 10000+50000
- 12695 words of font info for 33 fonts, out of 1200000 for 2000
- 645 hyphenation exceptions out of 8191
- 25i,12n,19p,204b,311s stack positions out of 5000i,500n,6000p,200000b,5000s
-{/opt/local/share/texmf-dist/fonts/enc/dvips/cm-super/cm-super-t1.enc}</opt/l
-ocal/share/texmf-dist/fonts/type1/bluesky/cm/cmsy10.pfb></opt/local/share/texmf
--dist/fonts/type1/public/cm-super/sfbx1095.pfb></opt/local/share/texmf-dist/fon
-ts/type1/public/cm-super/sfbx1200.pfb></opt/local/share/texmf-dist/fonts/type1/
-public/cm-super/sfbx1440.pfb></opt/local/share/texmf-dist/fonts/type1/public/cm
--super/sfrm1095.pfb></opt/local/share/texmf-dist/fonts/type1/public/cm-super/sf
-rm1200.pfb></opt/local/share/texmf-dist/fonts/type1/public/cm-super/sfrm1728.pf
-b>
-Output written on aruspix.pdf (9 pages, 1299492 bytes).
+ 2011 strings out of 493876
+ 26660 string characters out of 1150567
+ 81951 words of memory out of 3000000
+ 5265 multiletter control sequences out of 10000+50000
+ 12695 words of font info for 33 fonts, out of 3000000 for 5000
+ 714 hyphenation exceptions out of 8191
+ 25i,12n,19p,207b,312s stack positions out of 5000i,500n,10000p,200000b,50000s
+{/usr/local/texlive/2008/texm
+f-dist/fonts/enc/dvips/cm-super/cm-super-t1.enc}</usr/local/texlive/2008/texmf-
+dist/fonts/type1/bluesky/cm/cmsy10.pfb></usr/local/texlive/2008/texmf-dist/font
+s/type1/public/cm-super/sfbx1095.pfb></usr/local/texlive/2008/texmf-dist/fonts/
+type1/public/cm-super/sfbx1200.pfb></usr/local/texlive/2008/texmf-dist/fonts/ty
+pe1/public/cm-super/sfbx1440.pfb></usr/local/texlive/2008/texmf-dist/fonts/type
+1/public/cm-super/sfrm1095.pfb></usr/local/texlive/2008/texmf-dist/fonts/type1/
+public/cm-super/sfrm1200.pfb></usr/local/texlive/2008/texmf-dist/fonts/type1/pu
+blic/cm-super/sfrm1728.pfb>
+Output written on aruspix.pdf (10 pages, 1306733 bytes).
 PDF statistics:
- 117 PDF objects out of 1000 (max. 8388607)
+ 121 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 131072)
  141 words of extra memory for PDF output out of 10000 (max. 10000000)
 

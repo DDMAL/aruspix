@@ -1112,7 +1112,7 @@ void MusWindow::OnMouseLeftUp(wxMouseEvent &event)
 		}
 	}
 	
-	if ( m_currentElement->IsSymbole() && ((MusSymbol*)m_currentElement)->flag == LYRIC ){
+	if ( m_currentElement && m_currentElement->IsSymbole() && ((MusSymbol*)m_currentElement)->flag == LYRIC ){
 		MusNote *note = ((MusSymbol*)m_currentElement)->m_note_ptr;
 		note->CheckLyricIntegrity();
 	}
@@ -1260,9 +1260,9 @@ void MusWindow::OnMouseMotion(wxMouseEvent &event)
 			m_dragging_x = m_insertx;
 			if ( m_editElement )
 				m_currentStaff->CheckIntegrity();
-			this->Refresh();
 			//OnEndEdition();
 		}
+		this->Refresh();	
 	} 
 
 	event.Skip();
@@ -1591,12 +1591,12 @@ void MusWindow::OnKeyDown(wxKeyEvent &event)
 					UpdateScroll();
 				}
 			}
-			if ( event.GetKeyCode() == WXK_HOME ) 
+			else if ( event.GetKeyCode() == WXK_HOME ) 
 			{
 				if ( m_currentStaff->GetFirst( ) )
 					m_currentElement = m_currentStaff->GetFirst( );
 			}
-			if ( event.GetKeyCode() == WXK_END ) 
+			else if ( event.GetKeyCode() == WXK_END ) 
 			{
 				if ( m_currentStaff->GetLast( ) )
 					m_currentElement = m_currentStaff->GetLast( );
@@ -1606,7 +1606,7 @@ void MusWindow::OnKeyDown(wxKeyEvent &event)
 			SyncToolPanel();
 		}
 	}
-	else if ( m_lyricMode && !m_inputLyric )	/*** Lyric navigation mode ***/
+	else if ( m_lyricMode && !m_inputLyric )	/*** Lyric Editing mode ***/
 	{	
 		if ( event.m_keyCode == 'T' )			//"T" event: Escape lyric navigaition mode
 		{
@@ -1626,7 +1626,7 @@ void MusWindow::OnKeyDown(wxKeyEvent &event)
 				
 			this->Refresh();
 		} 
-		else if ( event.m_keyCode == WXK_RETURN && m_currentElement && m_currentElement->IsSymbole() )		//"Enter" event: Enter lyric insertion mode
+		else if ( event.m_keyCode == WXK_RETURN && m_currentElement && m_currentElement->IsSymbole() )		//"Return" event: Enter lyric insertion mode
 		{
 			m_inputLyric = !m_inputLyric;
 			m_lyricCursor = m_currentElement->m_debord_str.Length();
@@ -1671,6 +1671,7 @@ void MusWindow::OnKeyDown(wxKeyEvent &event)
 			MusElement *del = m_currentElement;
 			MusStaff *delstaff = m_currentStaff;
 			
+			// Find next element to select
 			if (event.m_keyCode == WXK_DELETE )												//"Delete" event
 			{
 				if ( m_currentStaff->GetNextLyric( (MusSymbol*)del ) )
@@ -1711,9 +1712,9 @@ void MusWindow::OnKeyDown(wxKeyEvent &event)
 			else
 				CheckPoint( UNDO_PART, WG_UNDO_STAFF );
 			
-			this->Refresh();
 			OnEndEdition();
 			SyncToolPanel();
+			this->Refresh();
 		}
 		else	// Navigation over lyrics using arrows
 		{
@@ -1832,11 +1833,13 @@ void MusWindow::OnKeyDown(wxKeyEvent &event)
 					MusNote *note = m_currentStaff->GetNextNote( (MusSymbol*)m_currentElement );
 					if ( !note )
 						return;
-					//Add mew lyric element to the next note
+					
+					//Add new lyric element to the next note
 					MusSymbol *lyric = new MusSymbol( *((MusSymbol*)m_currentElement) );
 					lyric->m_debord_str = "";
 					lyric->xrel = note->xrel - 10;
 					m_currentStaff->SwitchLyricNoteAssociation( lyric, ((MusSymbol*)m_currentElement)->m_note_ptr, note, true );				
+					(((MusSymbol*)m_currentElement)->m_note_ptr)->CheckLyricIntegrity();
 					m_currentElement = lyric;
 					m_lyricCursor = 0;
 				} else {
@@ -1855,6 +1858,7 @@ void MusWindow::OnKeyDown(wxKeyEvent &event)
 					MusNote *note = m_currentStaff->GetNextNote( (MusSymbol*)m_currentElement );
 					if ( !note )
 						return;
+					
 					//Add new lyric to next note
 					MusSymbol *lyric = new MusSymbol( *((MusSymbol*)m_currentElement) );
 					lyric->m_debord_str = "";
@@ -1864,7 +1868,8 @@ void MusWindow::OnKeyDown(wxKeyEvent &event)
 					//Add dash ("-") element between the two lyrics
 					MusSymbol *lyric2 = new MusSymbol( *((MusSymbol*)m_currentElement) );
 					lyric2->m_debord_str = "-";
-					lyric2->xrel = lyric->xrel - (lyric->xrel - m_currentElement->xrel) / 2;					
+					int length = ((MusSymbol*)m_currentElement)->m_debord_str.Length();
+					lyric2->xrel = lyric->xrel - ( lyric->xrel - ( m_currentElement->xrel + length * 10 ) ) / 2;			
 					m_currentStaff->SwitchLyricNoteAssociation( lyric2, ((MusSymbol*)m_currentElement)->m_note_ptr, note, true );				
 					
 					m_currentElement = lyric;
