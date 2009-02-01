@@ -60,6 +60,13 @@ public:
 	void bar_mes ( wxDC *dc, int x, int cod, int porteeAutonome, MusStaff *pportee);
 	void bigbarre( wxDC *dc, int x, char code, int porteeAutonome, MusStaff *pportee);
 	void barMesPartielle ( wxDC *dc, int x, MusStaff *pportee);
+    // moulinette
+    //virtual void MusPage::Process(MusStaffFunctor *functor, wxArrayPtrVoid params );
+    // functors
+    void MusPage::ProcessStaves( wxArrayPtrVoid params );
+    void MusPage::ProcessVoices( wxArrayPtrVoid params );
+    void MusPage::CountVoices( wxArrayPtrVoid params );
+    
     
 private:
     // WDR: member variable declarations for MusPage
@@ -90,6 +97,28 @@ private:
     // WDR: handler declarations for MusPage
 
 };
+
+
+//----------------------------------------------------------------------------
+// abstract base class MusPageFunctor
+//----------------------------------------------------------------------------
+class MusPageFunctor
+{
+private:
+    void (MusPage::*fpt)( wxArrayPtrVoid params );   // pointer to member function
+
+public:
+
+    // constructor - takes pointer to an object and pointer to a member and stores
+    // them in two private variables
+    MusPageFunctor( void(MusPage::*_fpt)( wxArrayPtrVoid )) { fpt=_fpt; };
+	virtual MusPageFunctor::~MusPageFunctor() {};
+
+    // override function "Call"
+    virtual void Call( MusPage *ptr, wxArrayPtrVoid params )
+        { (*ptr.*fpt)( params);};          // execute member function
+};
+
 
 
 #endif

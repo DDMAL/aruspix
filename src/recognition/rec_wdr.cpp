@@ -273,9 +273,9 @@ wxMenuBar *MenuBarFunc4()
     item1->Append( ID4_SAVE_BOOK, _("Sa&ve book"), _("Close the book") );
     item1->Append( ID4_SAVE_AS_BOOK, _("Save boo&k as"), _("Close the book") );
     item1->AppendSeparator();
-    item1->Append( ID4_EXPORT_IMAGE, _("Export as &image"), _("Save music part in an image file") );
-    item1->Append( ID4_EXPORT_AXTYP, _("Export typographic model"), _("Export Aruspix files to train a new typographic model") );
-    item1->Append( ID4_EXPORT_AXMUS, _("Export music model"), _("Export Aruspix files to train a new music model") );
+    item1->Append( ID4_EXPORT_WWG, _("Export to WWG"), _("Save music part as a Wolfgang WWG file") );
+    item1->Append( ID4_EXPORT_CMME, _("Export to CMME"), _("Save music part as a CMME XML file") );
+    item1->Append( ID4_EXPORT_IMAGE, _("Export as image (beta)"), _("Save music part in an image file") );
     item0->Append( item1, _("commun1") );
     
     wxMenu* item2 = new wxMenu;
@@ -290,9 +290,12 @@ wxMenuBar *MenuBarFunc4()
     item3->AppendSeparator();
     item3->Append( ID4_BOOK_PRE, _("Batch preprocessing"), _("Preprocess active pages of the book") );
     item3->Append( ID4_BOOK_REC, _("Batch recognition"), _("Run recognition on remaining pages of the book") );
-    item3->Append( ID4_BOOK_ADAPT, _("Optimize"), _("Perform full optimization on recognized pages of the book") );
     item3->AppendSeparator();
+    item3->Append( ID4_BOOK_ADAPT, _("Optimize"), _("Perform full optimization on recognized pages of the book") );
     item3->Append( ID4_BOOK_RESET_ADAPT, _("Reset optimization"), _("Reset optimization") );
+    item3->AppendSeparator();
+    item3->Append( ID4_EXPORT_AXTYP, _("Export typographic model"), _("Export Aruspix files to train a new typographic model") );
+    item3->Append( ID4_EXPORT_AXMUS, _("Export music model"), _("Export Aruspix files to train a new music model") );
     item0->Append( item3, _("&Book") );
     
     wxMenu* item4 = new wxMenu;

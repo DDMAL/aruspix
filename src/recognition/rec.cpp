@@ -41,6 +41,7 @@
 
 #include "mus/musfile.h"
 #include "mus/musiowwg.h"
+#include "mus/musiocmme.h"
 #include "mus/mustoolpanel.h"
 
 // statics
@@ -218,6 +219,8 @@ BEGIN_EVENT_TABLE(RecEnv,AxEnv)
     EVT_MENU( ID4_ADJUST_H, RecEnv::OnAdjust )
     EVT_MENU( ID4_ADJUST_V, RecEnv::OnAdjust )
     EVT_MENU( ID4_EXPORT_IMAGE, RecEnv::OnExportImage )
+    EVT_MENU( ID4_EXPORT_CMME, RecEnv::OnExportCmme )
+    EVT_MENU( ID4_EXPORT_WWG, RecEnv::OnExportWWG )
     EVT_MENU( ID4_SHOW_STAFF_BMP, RecEnv::OnStaffCorrespondence )
     EVT_MENU_RANGE( ID4_INSERT_MODE, ID4_SYMBOLES, RecEnv::OnTools )
     EVT_MENU( ID4_SAVE_BOOK, RecEnv::OnSaveBook )
@@ -1342,7 +1345,7 @@ void RecEnv::OnStaffCorrespondence( wxCommandEvent &event )
 void RecEnv::OnExportImage( wxCommandEvent &event )
 {
     wxString filename;
-    filename = wxFileSelector( _("Open"), wxGetApp().m_lastDirTIFF_out, _T(""), NULL, IMAGE_FILES, wxOPEN);
+    filename = wxFileSelector( _("Save"), wxGetApp().m_lastDirTIFF_out, _T(""), NULL, IMAGE_FILES, wxSAVE);
     if (filename.IsEmpty())
         return;
         
@@ -1365,6 +1368,41 @@ void RecEnv::OnExportImage( wxCommandEvent &event )
 
 }
 
+void RecEnv::OnExportCmme( wxCommandEvent &event )
+{
+   	if ( !m_recFilePtr->IsRecognized() )
+		return;
+   
+    wxString filename;
+    filename = wxFileSelector( _("Save"), wxGetApp().m_lastDirAX0_out, m_recFilePtr->m_shortname + ".xml", "xml", "CMME XML|*.xml", wxSAVE);
+    if (filename.IsEmpty())
+        return;
+        
+    wxGetApp().m_lastDirAX0_out = wxPathOnly( filename );
+    
+    // save
+    MusCmmeOutput *cmme_output = new MusCmmeOutput( m_recFilePtr->m_musFilePtr, filename );
+    cmme_output->ExportFile();
+    delete cmme_output;
+}
+
+void RecEnv::OnExportWWG( wxCommandEvent &event )
+{
+   	if ( !m_recFilePtr->IsRecognized() )
+		return;
+   
+    wxString filename;
+    filename = wxFileSelector( _("Save"), wxGetApp().m_lastDirAX0_out, m_recFilePtr->m_shortname + "wwg", "wwg", "Wolfgang WWG|*.wwg", wxSAVE);
+    if (filename.IsEmpty())
+        return;
+        
+    wxGetApp().m_lastDirAX0_out = wxPathOnly( filename );
+    
+    // save
+    MusWWGOutput *wwg_output = new MusWWGOutput( m_recFilePtr->m_musFilePtr, filename );
+    wwg_output->ExportFile();
+    delete wwg_output;
+}
 
 void RecEnv::OnAdjust( wxCommandEvent &event )
 {
@@ -1723,6 +1761,10 @@ void RecEnv::OnUpdateUI( wxUpdateUIEvent &event )
     else if (id == ID_CLOSE )
         event.Enable( m_recFilePtr->IsPreprocessed() );
     else if (id == ID4_EXPORT_IMAGE )
+        event.Enable( m_recFilePtr->IsRecognized() );
+    else if (id == ID4_EXPORT_CMME )
+        event.Enable( m_recFilePtr->IsRecognized() );
+    else if (id == ID4_EXPORT_WWG )
         event.Enable( m_recFilePtr->IsRecognized() );
 	// book
     else if (id == ID4_CLOSE_BOOK )

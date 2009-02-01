@@ -1031,6 +1031,40 @@ void MusStaff::AdjustLyricLineHeight( int delta )
 		}
 	}
 }
+
+// functors for MusStaff
+
+void MusStaff::CopyElements( wxArrayPtrVoid params )
+{
+    // param 0: MusStaff
+    MusStaff *staff = (MusStaff*)params[0];
+
+	MusElement *element = staff->GetLast();
+    int x_last = 0;
+    if (element) {
+        x_last = element->xrel;
+    }
+	int i;
+    for (i = 0; i < (int)nblement; i++) 
+	{
+		if ( m_elements[i].TYPE == NOTE )
+		{
+			MusNote *nnote = new MusNote( *(MusNote*)&m_elements[i] );
+            nnote->xrel += x_last;
+			staff->m_elements.Add( nnote );
+		}
+		else
+		{
+			MusSymbol *nsymbole = new MusSymbol( *(MusSymbol*)&m_elements[i] );
+            nsymbole->xrel += x_last;
+			staff->m_elements.Add( nsymbole );
+		}
+	}
+    staff->CheckIntegrity();
+}
+
+
+
 // WDR: handler implementations for MusStaff
 
 

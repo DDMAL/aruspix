@@ -403,6 +403,7 @@ bool MusBinInput::ImportFile( )
 		ReadHeaderFooter( &m_file->m_footer );
 
 	//wxLogMessage("OK %d", m_file->m_pages.GetCount() );
+    //m_file->CheckIntegrity();
 
 	return true;
 }
@@ -490,6 +491,7 @@ bool MusBinInput::ReadPage( MusPage *page )
 	{
 		MusStaff *staff = new MusStaff();
 		ReadStaff( staff );
+        staff->voix = (j % 2 == 0) ? 1 : 0; // add voices
 		page->m_staves.Add( staff );
 	}
 

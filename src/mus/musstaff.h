@@ -46,6 +46,10 @@ public:
 	MusStaff( const MusStaff& staff ); // copy contructor
     virtual ~MusStaff();
     
+    // functors
+    void MusStaff::CopyElements( wxArrayPtrVoid params );
+    
+    
     // WDR: method declarations for MusStaff
 	void CheckIntegrity();
 	void Clear( );
@@ -143,6 +147,27 @@ public:
 private:
 	// WDR: handler declarations for MusStaff
 
+};
+
+
+//----------------------------------------------------------------------------
+// abstract base class MusStaffFunctor
+//----------------------------------------------------------------------------
+class MusStaffFunctor
+{
+private:
+    void (MusStaff::*fpt)( wxArrayPtrVoid params );   // pointer to member function
+
+public:
+
+    // constructor - takes pointer to an object and pointer to a member and stores
+    // them in two private variables
+    MusStaffFunctor( void(MusStaff::*_fpt)( wxArrayPtrVoid )) { fpt=_fpt; };
+	virtual MusStaffFunctor::~MusStaffFunctor() {};
+
+    // override function "Call"
+    virtual void Call( MusStaff *ptr, wxArrayPtrVoid params )
+        { (*ptr.*fpt)( params);};          // execute member function
 };
 
 

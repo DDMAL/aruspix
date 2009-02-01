@@ -236,6 +236,71 @@ void MusPage::DrawPage( wxDC *dc, bool background )
 	}
 }
 
+
+// functors for MusPage
+
+void MusPage::ProcessStaves( wxArrayPtrVoid params )
+{
+    // param 0: MusStaffFunctor
+    // param 1; wxArrayPtrVoid
+    
+    MusStaffFunctor *staffFunctor = (MusStaffFunctor*)params[0];
+    wxArrayPtrVoid *staffParams = (wxArrayPtrVoid*)params[1];
+    
+	int i;
+    MusStaff *staff;
+
+    for (i = 0; i < nbrePortees; i++) 
+	{
+		staff = &m_staves[i];
+		staffFunctor->Call( staff, *staffParams );	
+	}
+
+}
+
+
+void MusPage::ProcessVoices( wxArrayPtrVoid params )
+{
+    // param 0: MusStaffFunctor
+    // param 1; wxArrayPtrVoid 
+    // param 2; int (voice number)
+    
+    MusStaffFunctor *staffFunctor = (MusStaffFunctor*)params[0];
+    wxArrayPtrVoid *staffParams = (wxArrayPtrVoid*)params[1];
+    int *voice = (int*)params[2];
+    
+	int i;
+    MusStaff *staff;
+
+    for (i = 0; i < nbrePortees; i++) 
+	{
+		staff = &m_staves[i];
+        if (staff->voix == (*voice)) {
+            staffFunctor->Call( staff, *staffParams );
+        }
+	}
+
+}
+
+void MusPage::CountVoices( wxArrayPtrVoid params )
+{
+    // param 0; int (number of voice number)
+    
+    int *number_of_voice = (int*)params[0];
+    
+	int i;
+    MusStaff *staff;
+
+    for (i = 0; i < nbrePortees; i++) 
+	{
+		staff = &m_staves[i];
+        if (staff->voix > (*number_of_voice)) {
+           (*number_of_voice) = staff->voix;
+        }
+	}
+
+}
+
 // WDR: handler implementations for MusPage
 
 

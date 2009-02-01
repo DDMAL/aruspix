@@ -380,7 +380,7 @@ void AxFrame::LoadConfig()
 	wxGetApp().m_musicFontDesc = pConfig->Read("MusicFontDesc", "0;-13;0;0;0;400;0;0;0;2;3;2;1;2;Leipzig 4.3" );
 	wxGetApp().m_lyricFontDesc = pConfig->Read("LyricFontDesc", "0;-13;0;0;0;400;0;0;0;2;3;2;1;2;Leipzig 4.3" );
 #else // OS X	
-	wxGetApp().m_musicFontDesc = pConfig->Read("MusicFontDesc", "0;13;70;90;90;0;Leipzig 4.5;0" ); // on OS X
+	wxGetApp().m_musicFontDesc = pConfig->Read("MusicFontDesc", "0;13;70;90;90;0;Leipzig 4.6;0" ); // on OS X
 	wxGetApp().m_lyricFontDesc = pConfig->Read("LyricFontDesc", "0;12;70;93;90;0;Garamond;0" ); // on OS X
 #endif
     pConfig->Read("FontSizeCorrection",&wxGetApp().m_fontSizeCorrection,100);

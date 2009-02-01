@@ -274,8 +274,12 @@ void MusWindow::putlyric ( wxDC *dc, int x, int y, wxString s, int pTaille, bool
 		int wCursor = max( 1, ToZoom( 2 ) );
 		
 		// get the bounding box and draw it
-		int wBox, hBox;
+		int wBox, hBox, wBox_empty;
 		dc->GetTextExtent( s, &wBox, &hBox );
+        if (s.Length() == 0) // we need the height of the BB even if the sting is empty
+        {
+            dc->GetTextExtent( "d", &wBox_empty, &hBox );
+        }
 		wxPen penBox( *wxBLACK, 1, wxSHORT_DASH );
 		dc->SetPen( penBox );
 		dc->DrawRectangle( x - 2 * wCursor, ToZoomY( y ) - wCursor, 

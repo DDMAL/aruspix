@@ -151,15 +151,15 @@ public:
     wxString m_workingDir;
 	wxString m_logDir;
     wxString m_lastDir;
-    wxString m_lastDirAX0_in;
+    wxString m_lastDirAX0_in; // default file
     wxString m_lastDirAX0_out;
-    wxString m_lastDirAX1_in;
+    wxString m_lastDirAX1_in; // typographic model
     wxString m_lastDirAX1_out;
-    wxString m_lastDirAX2_in;
+    wxString m_lastDirAX2_in; // music model
     wxString m_lastDirAX2_out;
-    wxString m_lastDirAX3_in;
+    wxString m_lastDirAX3_in; // project
     wxString m_lastDirAX3_out;
-    wxString m_lastDirAX4_in;
+    wxString m_lastDirAX4_in; // zip file
     wxString m_lastDirAX4_out;
     wxString m_lastDirTIFF_in;
     wxString m_lastDirTIFF_out;

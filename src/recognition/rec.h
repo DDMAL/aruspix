@@ -253,6 +253,8 @@ private:
     void OnSaveAs( wxCommandEvent &event );
     void OnClose( wxCommandEvent &event );
     void OnExportImage( wxCommandEvent &event );
+    void OnExportCmme( wxCommandEvent &event );
+    void OnExportWWG( wxCommandEvent &event );
     void OnAdjust( wxCommandEvent &event );
     void OnZoom( wxCommandEvent &event );
     void OnPaste( wxCommandEvent &event );

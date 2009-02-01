@@ -41,6 +41,37 @@ MusFile::~MusFile()
 {
 }
 
+int MusFile::GetNumberOfVoices()
+{
+	wxArrayPtrVoid params; // tableau de pointeurs pour parametres
+    
+    int voice_number = 0;
+
+	params.Add( &voice_number );
+    MusPageFunctor countVoices( &MusPage::CountVoices );
+    this->Process( &countVoices, params );
+    return voice_number + 1;
+}
+    
+    
+MusStaff *MusFile::GetVoice( int i )
+{
+	wxArrayPtrVoid params; // tableau de pointeurs pour parametres
+    
+    MusStaffFunctor copyElements( &MusStaff::CopyElements );
+    wxArrayPtrVoid staffParams; // idem for staff functor
+    MusStaff *staff = new MusStaff();
+    staffParams.Add( staff );
+    
+    params.Add(&copyElements);
+    params.Add(&staffParams);
+    params.Add(&i);
+
+    MusPageFunctor processVoices( &MusPage::ProcessVoices );
+    this->Process( &processVoices, params );
+    return staff;
+}
+
 void MusFile::CheckIntegrity()
 {
 	this->m_fheader.nbpage = (int)this->m_pages.GetCount();
@@ -55,6 +86,16 @@ void MusFile::CheckIntegrity()
 	}
 }
 
+void MusFile::Process(MusPageFunctor *functor, wxArrayPtrVoid params )
+{
+    MusPage *page;
+	int i;
+    for (i = 0; i < m_fheader.nbpage; i++) 
+	{
+		page = &m_pages[i];
+        functor->Call( page, params );
+	}
+}
 
 // WDR: handler implementations for MusFile
 

@@ -48,6 +48,10 @@ public:
     
     // WDR: method declarations for MusFile
 	void CheckIntegrity();
+    // moulinette
+    virtual void MusFile::Process(MusPageFunctor *functor, wxArrayPtrVoid params );
+    int MusFile::GetNumberOfVoices();
+    MusStaff *MusFile::GetVoice( int i );
     
 public:
     // WDR: member variable declarations for MusFile
