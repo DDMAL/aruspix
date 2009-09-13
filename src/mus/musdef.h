@@ -24,7 +24,7 @@ VERSION DOS.*/
 #define _NOT 0	/* pour bitflag silence/note de struct note */
 #define _SIL 1
 
-#define BARRE 0	/* pour flag (3 bits) de struct symbole */
+#define BARRE 0	/* pour flag (3 bits) de struct symbol */
 #define ALTER 1
 #define PNT	2
 #define LIAI 3
@@ -47,7 +47,7 @@ VERSION DOS.*/
 /* pour qualifier differents genres de CHAINE (texte), et permettre des
  * operations */
 
-/* groupe stocke in fonte, 3 bits in structure symbole */
+/* groupe stocke in fonte, 3 bits in structure symbol */
 #define DYN 0	/* indication pp, ff, mf etc. */
 #define LYRIC 1	/* paroles de chant: plusieurs couches possibles */
 #define INSTRUM 2	/* nom, identification de l'instr. */
@@ -56,7 +56,7 @@ VERSION DOS.*/
 #define TEMPO 5
 #define TITRE_DIV 6
 
-/* v. 5.5 - groupe stocke in calte, 3 bits in structure symbole */
+/* v. 5.5 - groupe stocke in calte, 3 bits in structure symbol */
 #define SOUSCATEG_1 0
 #define SOUSCATEG_2 1
 #define SOUSCATEG_3 2
@@ -65,7 +65,7 @@ VERSION DOS.*/
 #define SOUSCATEG_6 5
 #define SOUSCATEG_7 6
 
-/* groupe stocke in calte, 3 bits in structure symbole, si MARQ_REPERE */
+/* groupe stocke in calte, 3 bits in structure symbol, si MARQ_REPERE */
 #define SILENCESPECIAL 0	// jusqu'… v. 5.3, VARIA
 #define NUMMES 1
 #define CHIFFRAGE 2
@@ -287,7 +287,7 @@ VERSION DOS.*/
 
 
 /*** WGSYMB.H ***/
-/* numero d'ordre des symboles dans les fontes - Inclure in:
+/* numero d'ordre des symbols dans les fontes - Inclure in:
 	note.c, cle.c, input.c, main.c, symb2.c, symb.c
 */
 
@@ -344,7 +344,7 @@ VERSION DOS.*/
 #define ACCENT_OBL_PNT 6
 #define ACCENT_VERT_PNT 7
 
-/* positions des symboles correspondants in fonte speciale */
+/* positions des symbols correspondants in fonte speciale */
 #define sSTACC 0
 #define sLOURE 'k'
 #define sACCENT_OBL '>'

@@ -26,7 +26,7 @@
 #include "mussymbol.h"
 #include "mus.h"
 
-WX_DECLARE_OBJARRAY( MusPage, ArrayOfWgPages);
+WX_DECLARE_OBJARRAY( MusPage, ArrayOfMusPages);
 
 
 // WDR: class declarations
@@ -60,7 +60,7 @@ public:
     /** FileHeader du fichier - contient Parametres */
     MusFileHeader m_fheader;
     /** FileData du fichier - contient les pages */
-    ArrayOfWgPages m_pages;
+    ArrayOfMusPages m_pages;
 	/** Pagination **/
 	MusPagination m_pagination;
 	/** Header **/
@@ -99,7 +99,7 @@ public:
 	virtual bool WritePage( const MusPage *page ) { return true; }
 	virtual bool WriteStaff( const MusStaff *staff ) { return true; }
 	virtual bool WriteNote( const MusNote *note ) { return true; }
-	virtual bool WriteSymbole( const MusSymbol *symbole ) { return true; }
+	virtual bool WriteSymbole( const MusSymbol *symbol ) { return true; }
 	virtual bool WriteElementAttr( const MusElement *element ) { return true; }
 	virtual bool WriteDebord( const MusElement *element ) { return true; }
 	virtual bool WriteLyric( const MusElement * element ) { return true; }
@@ -137,7 +137,7 @@ public:
 	virtual bool ReadPage( MusPage *page ) { return true; }
 	virtual bool ReadStaff( MusStaff *staff ) { return true; }
 	virtual bool ReadNote( MusNote *note ) { return true; }
-	virtual bool ReadSymbole( MusSymbol *symbole ) { return true; }
+	virtual bool ReadSymbole( MusSymbol *symbol ) { return true; }
 	virtual bool ReadElementAttr( MusElement *element ) { return true; }
 	virtual bool ReadDebord( MusElement *element ) { return true; }
 	virtual bool ReadLyric( MusElement * element ) { return true; }

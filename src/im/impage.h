@@ -84,7 +84,7 @@ public:
     bool ImPage::Load( TiXmlElement *file_root );
     bool ImPage::Save( TiXmlElement *file_root );
     // Processing
-    bool ImPage::Check( wxString infile, int max_binary = -1, int index = 0 );
+    bool ImPage::Check( wxString infile, int max_size = -1, int min_size = -1, int index = 0 );
     bool ImPage::Deskew( double max_alpha );
     bool ImPage::FindStaves( int min, int max, bool normalize = true, bool crop = true ); // if normalize, then resize to get a staff height of 100
 	bool ImPage::BinarizeAndClean( );

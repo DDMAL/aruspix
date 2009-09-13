@@ -27,8 +27,8 @@
 
 #define MUS_TOOLS_NUMBER 4 // Nombre de type de symbols
 
-#define WG_MODE_EDIT 0
-#define WG_MODE_INSERT 1
+#define MUS_MODE_EDIT 0
+#define MUS_MODE_INSERT 1
 
 class MusWindow;
 
@@ -76,7 +76,7 @@ public:
         const wxSize& size = wxDefaultSize,
         long style = wxTAB_TRAVERSAL );
 
-    void SetWgWindow( MusWindow *w );
+    void SetMusWindow( MusWindow *w );
     void SetTools( int tools, bool edition );
     
     // WDR: method declarations for MusToolPanel

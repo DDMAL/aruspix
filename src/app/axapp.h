@@ -41,7 +41,7 @@
  ** sup 12000
  ** dsp 13000
  ** rec 14000
- ** wgv 15000
+ ** edt 15000
  ** cmp 16000
  *******************
  * mus.wdr 20000
@@ -57,8 +57,8 @@
 //#define ENV_IDS_MAX_DSP 13999
 #define ENV_IDS_MIN_REC 14000
 #define ENV_IDS_MAX_REC 14999
-#define ENV_IDS_MIN_WGV 15000
-#define ENV_IDS_MAX_WGV 15999
+#define ENV_IDS_MIN_EDT 15000
+#define ENV_IDS_MAX_EDT 15999
 #define ENV_IDS_MIN_CMP 16000
 #define ENV_IDS_MAX_CMP 16999
 
@@ -67,7 +67,7 @@
 #define ENV_IDS_LOCAL_SUP ENV_IDS_LOCAL + 200
 //#define ENV_IDS_LOCAL_DSP ENV_IDS_LOCAL + 300 Free as Dsp doesn't exist anymore
 #define ENV_IDS_LOCAL_REC ENV_IDS_LOCAL + 400
-#define ENV_IDS_LOCAL_WGV ENV_IDS_LOCAL + 500
+#define ENV_IDS_LOCAL_EDT ENV_IDS_LOCAL + 500
 #define ENV_IDS_LOCAL_CMP ENV_IDS_LOCAL + 600
 #define ENV_BASE_ID 30000 // base id for environment menu items
 #define ENV_MAX 50 // max of environments (used for RANGE_ID event)

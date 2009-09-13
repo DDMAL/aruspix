@@ -39,8 +39,8 @@ public:
 	// common method
 	void MusElement::ClearElement( wxDC *dc, MusStaff *staff );
 	int MusElement::filtrcod( int codElement, int *oct );
-	bool MusElement::IsNote() { return (TYPE != SYMB ); }
-	bool IsSymbole() { return (TYPE == SYMB ); }
+	bool MusElement::IsNote() { return ( TYPE != SYMB ); }
+	bool IsSymbole() { return ( TYPE == SYMB ); }
 	wxClientDC *MusElement::InitAndClear( MusStaff *staff ); // init dc and clear element only if necessary
 
     // WDR: method declarations for MusElement
@@ -54,7 +54,7 @@ public:
       
 public:
     // WDR: member variable declarations for MusElement
-    /** type de l'element. <pre>JwgDef.NOTE = note<br>JwgDef.SYMB = symbole</pre> */
+    /** type de l'element. <pre>JwgDef.NOTE = note<br>JwgDef.SYMB = symbol</pre> */
     char TYPE;
     /** element a l'interieur d'un liaison */
     char liaison;
@@ -116,7 +116,7 @@ public:
     unsigned short debordCode;
     /** taille de la chaine de debordement, y compris code et taille */
     unsigned short debordSize;
-	/** from symbole and note !! à l'exporation en wwg unsigned char dans note !! */
+	/** from symbol and note !! à l'exporation en wwg unsigned char dans note !! */
 	unsigned short code;
 	
 	// additional information for comparison

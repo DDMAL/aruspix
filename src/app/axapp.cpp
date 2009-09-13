@@ -230,11 +230,11 @@ bool AxApp::OnInit()
         m_help->Initialize ( m_resourcesPath + "/en/recognition" );
 #endif //AX_RECOGNITION
 
-#ifdef AX_WGVIEWER
-    m_locale.AddCatalog( "wgviewer" );
-    if (!m_help->Initialize ( m_resourcesPath + "/" + lang + "/wgviewer") )
-        m_help->Initialize ( m_resourcesPath + "/en/wgviewer" );
-#endif //AX_WGVIEWER
+#ifdef AX_EDT
+    m_locale.AddCatalog( "edt" );
+    if (!m_help->Initialize ( m_resourcesPath + "/" + lang + "/edt") )
+        m_help->Initialize ( m_resourcesPath + "/en/edt" );
+#endif //AX_EDT
 
 #ifdef AX_COMPARISON
     m_locale.AddCatalog( "comparison" );

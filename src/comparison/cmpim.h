@@ -47,7 +47,7 @@ public:
         long style = wxTAB_TRAVERSAL | wxNO_BORDER, int flags = CONTROLLER_ALL );
     virtual ~CmpImController();
 	void SetEnv( CmpEnv *env );
-    //void SetWgViewAndController( RecMusWindow *recWgWindow, RecMusController *recWgController );
+    //void SetMusViewAndController( RecMusWindow *recMusWindow, RecMusController *recMusController );
     RecFile *GetRecFile( ) { return m_recFilePtr; }
 	void LoadRecImage( int colId, wxString filename, int staff, int pos, int flag );
     

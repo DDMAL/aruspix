@@ -189,18 +189,18 @@ bool CmpCollation::Realize( )
 				}
 				else
 				{
-					MusSymbol *nsymbole = (MusSymbol*)full_staff->m_elements.Detach( 0 );
-					if ( nsymbole->flag == CLE ) // we keep last clef for next pages
+					MusSymbol *nsymbol = (MusSymbol*)full_staff->m_elements.Detach( 0 );
+					if ( nsymbol->flag == CLE ) // we keep last clef for next pages
 					{
 						if ( clef )
 							delete clef;
-						clef = new MusSymbol( *nsymbole );
+						clef = new MusSymbol( *nsymbol );
 						clef->m_im_filename = "";
 						clef->xrel = 0;
 						clef->m_cmp_flag = 0;
 					}
-					nsymbole->xrel -= (j * correct_lrg_lign) - clef_offset;
-					staff->m_elements.Add( nsymbole );
+					nsymbol->xrel -= (j * correct_lrg_lign) - clef_offset;
+					staff->m_elements.Add( nsymbol );
 				}
 			}
 		}

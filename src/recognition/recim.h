@@ -46,7 +46,7 @@ public:
         long style = wxTAB_TRAVERSAL | wxNO_BORDER, int flags = CONTROLLER_ALL );
     virtual ~RecImController();
 	void SetEnv( RecEnv *env );
-    void SetWgViewAndController( RecMusWindow *recWgWindow, RecMusController *recWgController );
+    void SetMusViewAndController( RecMusWindow *recMusWindow, RecMusController *recMusController );
     void SetRecFile( RecFile *recFile );
 	// selection
 	void CancelMagicSelection( );
@@ -105,7 +105,7 @@ public:
     
     // WDR: method declarations for RecImWindow
     void SetEnv( RecEnv *env );
-    void SetWgViewAndController( RecMusWindow *recWgWindow, RecMusController *recWgController );
+    void SetMusViewAndController( RecMusWindow *recMusWindow, RecMusController *recMusController );
 	void SetRecFile( RecFile *recFile );
     
 protected:

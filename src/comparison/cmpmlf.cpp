@@ -54,7 +54,7 @@ wxString CmpMLFSymb::GetLabel( )
 		
 	if ( m_type == 0 )
 	{
-		wxLogWarning( _("Uninitialized symbole") );
+		wxLogWarning( _("Uninitialized symbol") );
 		return "";
 	}
 
@@ -94,8 +94,8 @@ wxString CmpMLFSymb::GetLabel( )
 // CmpMLFOutput
 //----------------------------------------------------------------------------
 
-CmpMLFOutput::CmpMLFOutput( MusFile *file, wxString filename, wxString model_symbole_name ) :
-    MusMLFOutput(  file, filename, NULL, model_symbole_name  )
+CmpMLFOutput::CmpMLFOutput( MusFile *file, wxString filename, wxString model_symbol_name ) :
+    MusMLFOutput(  file, filename, NULL, model_symbol_name  )
 {
 	// temporary, cannot be modified, but should be...
 	m_ignore_clefs = true;
@@ -103,10 +103,10 @@ CmpMLFOutput::CmpMLFOutput( MusFile *file, wxString filename, wxString model_sym
 	m_ignore_keys = true;
 }
 
-//CmpMLFOutput::CmpMLFOutput( MusFile *file, wxFile *wxfile, wxString filename, wxString model_symbole_name ) :
+//CmpMLFOutput::CmpMLFOutput( MusFile *file, wxFile *wxfile, wxString filename, wxString model_symbol_name ) :
 //    MusFileOutputStream( file, wxfile )
-CmpMLFOutput::CmpMLFOutput( MusFile *file, int fd, wxString filename, wxString model_symbole_name ) :
-	MusMLFOutput( file, fd, filename, NULL, model_symbole_name )
+CmpMLFOutput::CmpMLFOutput( MusFile *file, int fd, wxString filename, wxString model_symbol_name ) :
+	MusMLFOutput( file, fd, filename, NULL, model_symbol_name )
 {
 	// idem previous constructor
 	m_ignore_clefs = true;
@@ -130,14 +130,14 @@ void CmpMLFOutput::EndLabel( )
 	for (int i = 0; i < (int)m_symbols.GetCount(); i++ )
 	{
 		CmpMLFSymb *current = (CmpMLFSymb*)&m_symbols[i];
-		wxString symbole;
-		wxString symbole_label = current->GetLabel();
-		if ( symbole_label == "" ) // skip empty labels
+		wxString symbol;
+		wxString symbol_label = current->GetLabel();
+		if ( symbol_label == "" ) // skip empty labels
 			continue;
 		pos = current->GetPosition();
-		symbole << pos  << " ";
-		symbole << symbole_label << " " <<  current->m_im_staff << " " << current->m_im_pos << " " << current->m_im_filename << "\n";
-		Write( symbole, symbole.Length() );
+		symbol << pos  << " ";
+		symbol << symbol_label << " " <<  current->m_im_staff << " " << current->m_im_pos << " " << current->m_im_filename << "\n";
+		Write( symbol, symbol.Length() );
 	}
 	//m_symbols.Clear();	
 }

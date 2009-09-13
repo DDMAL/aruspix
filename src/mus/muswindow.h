@@ -33,26 +33,26 @@ class MusToolPanel;
 // kind of operation, maybe used in subclasses 
 enum
 {
-	WG_NONE = 0,
-	WG_NOTE_INSERT,
-	WG_NOTE_DEL,
-	WG_NOTE_PITCH,
-	WG_NOTE_VALUE,
-	WG_NOTE_STEM,
-	WG_NOTE_LIGATURE,
-	WG_NOTE_COLORATION,
-	WG_SYMBOL_INSERT,
-	WG_SYMBOL_DEL,
-	WG_ELEMENT_MOVE
+	MUS_NONE = 0,
+	MUS_NOTE_INSERT,
+	MUS_NOTE_DEL,
+	MUS_NOTE_PITCH,
+	MUS_NOTE_VALUE,
+	MUS_NOTE_STEM,
+	MUS_NOTE_LIGATURE,
+	MUS_NOTE_COLORATION,
+	MUS_SYMBOL_INSERT,
+	MUS_SYMBOL_DEL,
+	MUS_ELEMENT_MOVE
 };
 
 // levels of undo
 // save either staff, page or file depending on operation
 enum
 {
-	WG_UNDO_STAFF = 0,
-	WG_UNDO_PAGE,
-	WG_UNDO_FILE
+	MUS_UNDO_STAFF = 0,
+	MUS_UNDO_PAGE,
+	MUS_UNDO_FILE
 };
 
 // WDR: class declarations
@@ -99,6 +99,7 @@ public:
 	void Zoom( bool zoomIn );
 	bool CanZoom( bool zoomIn );
 	void SetZoom( int percent );
+    int GetZoom( ) { return 100 * zoomNum / zoomDen; };
 	// navigation
 	void Next( bool forward );
 	bool HasNext( bool forward );

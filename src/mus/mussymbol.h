@@ -9,7 +9,7 @@
 #define __MUS_SYMBOL_H__
 
 #ifdef __GNUG__
-    #pragma interface "mussymbole.cpp"    
+    #pragma interface "mussymbol.cpp"    
 #endif
 
 #ifndef WX_PRECOMP
@@ -60,13 +60,14 @@ public:
 	bool DeleteCharInLyricAt( int x );
 	bool IsLastLyricElementInNote( );
 	bool IsLyricEmpty( );
+    bool IsLyric( );
     
 public:
     // WDR: member variable declarations for MusSymbol
-    /** type de symbole
+    /** type de symbol
      @see JwgDef#BARRE JwgDef, valeurs de flag de Symbole pour les differents types */
     unsigned char flag;
-    /** sous - type de symbole
+    /** sous - type de symbol
      @see JwgDef#SOUSCATEG_1 JwgDef, valeurs de calte
      @see JwgDef#SILENCESPECIAL JwgDef, valeurs de calte (fonte = JwgDef.MARQUE_REPERE)
      @see JwgDef#DIESE JwgDef, valeurs de calte (flag = JwgDef.ALTER) */
@@ -78,11 +79,11 @@ public:
     /** categorie de texte (DYN, LYRIC, ...)
      @see JwgDef#DYN JwgDef, valeurs de fonte de Symbole pour les chaines de caracteres */
     unsigned char fonte;
-    /** symbole de liaison limites. <pre>0 = aucun<br>1 = debut<br>2 = fin</pre> */
+    /** symbol de liaison limites. <pre>0 = aucun<br>1 = debut<br>2 = fin</pre> */
     unsigned char s_lie_l;
     /** type de point. <pre>false = simple point<br>true = double point</pre> */
     char point;
-    /** code du symbole
+    /** code du symbol
      @see JwgDef#SOL2 JwgDef, valeurs des codes de clefs */
     //unsigned short code; // moved in element
     /** longueur de la chaine de caracteres */

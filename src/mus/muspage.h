@@ -20,7 +20,7 @@
 #include "musobject.h"
 
 class MusStaff;
-WX_DECLARE_OBJARRAY( MusStaff, ArrayOfWgStaves);
+WX_DECLARE_OBJARRAY( MusStaff, ArrayOfMusStaves);
 
 // WDR: class declarations
 
@@ -73,7 +73,7 @@ private:
 
 public:
     // WDR: member variable declarations for MusPage
-	ArrayOfWgStaves m_staves;
+	ArrayOfMusStaves m_staves;
     /** numero de page */
     int npage;
     /** nombre de portees dans la page */

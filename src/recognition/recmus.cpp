@@ -48,7 +48,7 @@ RecMusController::RecMusController( wxWindow *parent, wxWindowID id,
     const wxPoint &position, const wxSize& size, long style ) :
     wxPanel( parent, id, position, size, style )
 {
-    //WgOutputFunc4( this, TRUE );	
+    //MusOutputFunc4( this, TRUE );	
 	m_envPtr = NULL;
 	m_viewPtr = NULL;
 	
@@ -131,8 +131,8 @@ void RecMusController::SyncStaffBitmap( )
     if ( !m_staffbmp_show )
         return;
 
-    //if ( !m_recFilePtr || !m_recFilePtr->GetImPage() || !m_recFilePtr->GetWgFile() || !m_recFilePtr->GetTypModel() || !m_recFilePtr->GetTypModel()->m_isLoaded )
-	if ( !m_recFilePtr->GetImPage() || !m_recFilePtr->GetWgFile() )
+    //if ( !m_recFilePtr || !m_recFilePtr->GetImPage() || !m_recFilePtr->GetMusFile() || !m_recFilePtr->GetTypModel() || !m_recFilePtr->GetTypModel()->m_isLoaded )
+	if ( !m_recFilePtr->GetImPage() || !m_recFilePtr->GetMusFile() )
         return;
 
     if ( !m_viewPtr->m_currentStaff )
@@ -261,7 +261,7 @@ void RecMusController::InverseShowStaffBitmap( )
 void RecMusController::OnSize( wxSizeEvent &event )
 {
     this->Layout();
-    /*wxWindow *w = FindWindowById( ID4_WGWINDOW );
+    /*wxWindow *w = FindWindowById( ID4_MUSWINDOW );
     if ( w && w->IsKindOf( CLASSINFO( MusWindow ) ))
     {
         ((MusWindow*)w)->Resize( );

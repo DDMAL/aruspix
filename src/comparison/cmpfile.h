@@ -86,7 +86,7 @@ public:
 	bool Collate( );
 	bool Realize( );
 	bool IsCollationLoaded();
-	MusFile *GetWgFile() { return m_musFilePtr; }
+	MusFile *GetMusFile() { return m_musFilePtr; }
 	
 	
 protected:

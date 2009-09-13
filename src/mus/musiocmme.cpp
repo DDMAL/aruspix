@@ -120,7 +120,7 @@ bool MusCmmeOutput::ExportFile( )
 
 bool MusCmmeOutput::WriteFileHeader( const MusFileHeader *header )
 {
-    int i;
+    //int i;
 
     m_xml_root->SetAttribute( "xmlns", "http://www.cmme.org" );
     m_xml_root->SetAttribute( "xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance" );
@@ -247,10 +247,11 @@ bool MusCmmeOutput::WriteNote( const MusNote *note )
 	return true;
 }
 
-bool MusCmmeOutput::WriteSymbole( const MusSymbol *symbole )
+bool MusCmmeOutput::WriteSymbole( const MusSymbol *symbol )
 {
-    if ( symbole->flag == LYRIC )
-		WriteLyric( symbole );
+    // if ( symbol->IsLyric() ) // To be fixed ??
+    if ( (symbol->flag == CHAINE) && (symbol->fonte == LYRIC) )
+		WriteLyric( symbol );
 	
 	return true;
 }
@@ -365,10 +366,10 @@ bool MusCmmeInput::ReadStaff( MusStaff *staff )
 		}
 		else
 		{
-			MusSymbol *symbole = new MusSymbol();
-			symbole->no = k;
-			ReadSymbole( symbole );
-			staff->m_elements.Add( symbole );
+			MusSymbol *symbol = new MusSymbol();
+			symbol->no = k;
+			ReadSymbole( symbol );
+			staff->m_elements.Add( symbol );
 		}
 	}
 			
@@ -390,10 +391,10 @@ bool MusCmmeInput::ReadNote( MusNote *note )
 	return true;
 }
 
-bool MusCmmeInput::ReadSymbole( MusSymbol *symbole )
+bool MusCmmeInput::ReadSymbole( MusSymbol *symbol )
 {
-	if ( symbole->flag == LYRIC )
-        ReadLyric( symbole );
+	if ( symbol->IsLyric() )
+        ReadLyric( symbol );
      
 	return true;
 }

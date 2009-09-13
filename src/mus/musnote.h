@@ -22,7 +22,7 @@
 class MusStaff;
 class MusSymbol;
 
-WX_DECLARE_OBJARRAY( MusSymbol, ArrayOfWgSymbols);
+WX_DECLARE_OBJARRAY( MusSymbol, ArrayOfMusSymbols);
 
 // WDR: class declarations
 
@@ -65,6 +65,7 @@ public:
 	void CheckLyricIntegrity( );
 	MusSymbol *MusNote::GetFirstLyric( );
 	MusSymbol *MusNote::GetLastLyric( );
+    MusSymbol *MusNote::GetLyricNo( int no );
 	
 public:
 	// WDR: member variable declarations for MusNote
@@ -113,7 +114,7 @@ public:
     unsigned char typStac;
 	
 	/** Associated lyric */
-	ArrayOfWgSymbols m_lyrics; 
+	ArrayOfMusSymbols m_lyrics; 
 
 	
 private:

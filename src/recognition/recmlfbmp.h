@@ -70,8 +70,8 @@ public:
     virtual ~RecMLFBmpTypes();
     
     // WDR: method declarations for RecMLFBmpTypes
-    //int GetWidth( MusMLFSymbol *symbole );
-	RecMLFBmpType *GetType( MusMLFSymbol *symbole );
+    //int GetWidth( MusMLFSymbol *symbol );
+	RecMLFBmpType *GetType( MusMLFSymbol *symbol );
 	bool Load( wxString file );
 	int GetCount( ) { return (int)m_types.GetCount(); }
     
@@ -122,7 +122,7 @@ class RecMLFBmp: public MusMLFOutput
 {
 public:
     // constructors and destructors
-    RecMLFBmp( MusFile *file, wxString filename, wxString model_symbole_name = "RecMLFSymbolBmp" );
+    RecMLFBmp( MusFile *file, wxString filename, wxString model_symbol_name = "RecMLFSymbolBmp" );
     virtual ~RecMLFBmp();
     
     // WDR: method declarations for RecMLFBmp

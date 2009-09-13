@@ -66,9 +66,9 @@ class CmpMLFOutput: public MusMLFOutput
 {
 public:
     // constructors and destructors
-    CmpMLFOutput( MusFile *file, wxString filename, wxString model_symbole_name = "CmpSymbol" );
-	CmpMLFOutput( MusFile *file, int fd, wxString filename, wxString model_symbole_name = "CmpSymbol" );
-	//CmpMLFOutput( MusFile *file, wxFile *wxfile, wxString filename, wxString model_symbole_name = "CmpSymbol" );
+    CmpMLFOutput( MusFile *file, wxString filename, wxString model_symbol_name = "CmpSymbol" );
+	CmpMLFOutput( MusFile *file, int fd, wxString filename, wxString model_symbol_name = "CmpSymbol" );
+	//CmpMLFOutput( MusFile *file, wxFile *wxfile, wxString filename, wxString model_symbol_name = "CmpSymbol" );
     virtual ~CmpMLFOutput();
     
     // WDR: method declarations for CmpMLFOutput

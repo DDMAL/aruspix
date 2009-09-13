@@ -496,7 +496,7 @@ bool RecFile::Preprocess( wxArrayPtrVoid params, AxProgressDlg *dlg )
     bool failed = false;
 		
     if ( RecEnv::s_check && !failed ) 
-        failed = !m_imPagePtr->Check( image_file, 2500 ); // 2 operations max
+        failed = !m_imPagePtr->Check( image_file, 2500, 1200 ); // 2 operations max
 	
 	//// TEST
 	//m_error = m_imPagePtr->GetError();

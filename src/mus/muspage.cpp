@@ -26,7 +26,7 @@
 #include "mus.h"
 
 #include "wx/arrimpl.cpp"
-WX_DEFINE_OBJARRAY( ArrayOfWgStaves );
+WX_DEFINE_OBJARRAY( ArrayOfMusStaves );
 
 
 // WDR: class implementations

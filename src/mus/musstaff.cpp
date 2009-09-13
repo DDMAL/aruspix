@@ -27,7 +27,7 @@
 #include <math.h>
 
 #include "wx/arrimpl.cpp"
-WX_DEFINE_OBJARRAY( ArrayOfWgElements );
+WX_DEFINE_OBJARRAY( ArrayOfMusElements );
 
 // sorting function
 int SortElements(MusElement **first, MusElement **second)
@@ -87,8 +87,8 @@ MusStaff::MusStaff( const MusStaff& staff )
 		}
 		else
 		{
-			MusSymbol *nsymbole = new MusSymbol( *(MusSymbol*)&staff.m_elements[i] );
-			this->m_elements.Add( nsymbole );
+			MusSymbol *nsymbol = new MusSymbol( *(MusSymbol*)&staff.m_elements[i] );
+			this->m_elements.Add( nsymbol );
 		}
 	}
 }
@@ -290,13 +290,13 @@ void MusStaff::Delete( MusElement *element )
 
 
 // Dans la direction indiquee (sens), cavale sur tout element qui n'est pas un
-// symbole, de la nature indiquee (flg). Retourne le ptr si succes, ou 
+// symbol, de la nature indiquee (flg). Retourne le ptr si succes, ou 
 // l'element de depart; le ptr succ est vrai si symb trouve. 
 
 MusElement *MusStaff::no_note ( MusElement *chk, unsigned int sens, unsigned int flg, int *succ)
 /*
 	sens:	0, vers arriere; 1 avant --
-	flg:	symbole->flag a chercher --
+	flg:	symbol->flag a chercher --
 	*succ	test succes de recherche:0,echec 
 */
 {	MusElement *temoin = chk;
@@ -944,7 +944,7 @@ void MusStaff::DeleteLyric( MusSymbol *symbol )
 	
 	if ( m_w ) // effacement
 	{
-		if ( symbol->IsSymbole() && (((MusSymbol*)symbol)->flag == LYRIC) )
+		if ( symbol->IsSymbole() && (((MusSymbol*)symbol)->IsLyric()) )
 			m_w->OnBeginEditionClef();
 	}
 	
@@ -959,7 +959,7 @@ void MusStaff::DeleteLyric( MusSymbol *symbol )
 	
 	if ( m_w )
 	{
-		if ( symbol->IsSymbole() && (((MusSymbol*)symbol)->flag == LYRIC) )
+		if ( symbol->IsSymbole() && (((MusSymbol*)symbol)->IsLyric()) )
 			m_w->OnEndEditionClef();
 		m_w->Refresh();
 	}
@@ -1055,9 +1055,9 @@ void MusStaff::CopyElements( wxArrayPtrVoid params )
 		}
 		else
 		{
-			MusSymbol *nsymbole = new MusSymbol( *(MusSymbol*)&m_elements[i] );
-            nsymbole->xrel += x_last;
-			staff->m_elements.Add( nsymbole );
+			MusSymbol *nsymbol = new MusSymbol( *(MusSymbol*)&m_elements[i] );
+            nsymbol->xrel += x_last;
+			staff->m_elements.Add( nsymbol );
 		}
 	}
     staff->CheckIntegrity();

@@ -32,7 +32,7 @@ class AxProgressDlg;
 #define TYPE_MESURE 'M'
 #define TYPE_SYMBOLE 'S'
 
-// MLFsymbole flags
+// MLFsymbol flags
 #define NOTE_STEM 1
 #define NOTE_COLORATION 2
 #define NOTE_LIGATURE 4
@@ -108,8 +108,8 @@ class MusMLFOutput: public MusFileOutputStream
 {
 public:
     // constructors and destructors
-    MusMLFOutput( MusFile *file, wxString filename, MusMLFDictionary *dict, wxString model_symbole_name = "MusMLFSymbol" );
-	MusMLFOutput( MusFile *file, int fd, wxString filename,  MusMLFDictionary *dict, wxString model_symbole_name = "MusMLFSymbol" );
+    MusMLFOutput( MusFile *file, wxString filename, MusMLFDictionary *dict, wxString model_symbol_name = "MusMLFSymbol" );
+	MusMLFOutput( MusFile *file, int fd, wxString filename,  MusMLFDictionary *dict, wxString model_symbol_name = "MusMLFSymbol" );
     virtual ~MusMLFOutput();
     
     // WDR: method declarations for MusMLFOutput
@@ -124,7 +124,7 @@ public:
 											
     virtual bool WriteStaff( const MusStaff *staff, int offset = -1, int end_point = -1 );
     virtual bool WriteNote( MusNote *note );
-    virtual bool WriteSymbole( MusSymbol *symbole );
+    virtual bool WriteSymbole( MusSymbol *symbol );
 	// specific
 	static MusStaff *SplitSymboles( MusStaff *staff );
 	static MusStaff *GetUt1( MusStaff *staff, bool inPlace = false );
@@ -160,9 +160,9 @@ protected:
 
 public:
 	bool m_addPageNo;
-	//wxArrayString m_loadedDict; // symboles charge avec LoadDictionnary
-	//wxArrayString m_dict; // symboles de l'exportation
-	MusMLFDictionary *m_dict; // symboles de l'exportation, version complete avec phone et position. m_dict allows fast access
+	//wxArrayString m_loadedDict; // symbols charge avec LoadDictionnary
+	//wxArrayString m_dict; // symbols de l'exportation
+	MusMLFDictionary *m_dict; // symbols de l'exportation, version complete avec phone et position. m_dict allows fast access
 	bool m_pagePosition; // ecrit les position dans MLF, avec MusMLFSymbol
 	bool m_hmmLevel; // write symbols rather the words in EndLabel; basic for now, do not handle several symbols per word
 
@@ -182,13 +182,13 @@ class MusMLFOutputNoPitch: public MusMLFOutput
 {
 public:
     // constructors and destructors
-    MusMLFOutputNoPitch( MusFile *file, wxString filename, MusMLFDictionary *dict, wxString model_symbole_name = "MusMLFSymbolNoPitch" );
-	MusMLFOutputNoPitch( MusFile *file, int fd, wxString filename, MusMLFDictionary *dict, wxString model_symbole_name = "MusMLFSymbolNoPitch" );
+    MusMLFOutputNoPitch( MusFile *file, wxString filename, MusMLFDictionary *dict, wxString model_symbol_name = "MusMLFSymbolNoPitch" );
+	MusMLFOutputNoPitch( MusFile *file, int fd, wxString filename, MusMLFDictionary *dict, wxString model_symbol_name = "MusMLFSymbolNoPitch" );
     virtual ~MusMLFOutputNoPitch();
     
     // WDR: method declarations for MusMLFOutputNoPitch
     virtual bool WriteNote( MusNote *note );
-    virtual bool WriteSymbole( MusSymbol *symbole );
+    virtual bool WriteSymbole( MusSymbol *symbol );
 	// specific
     
 protected:

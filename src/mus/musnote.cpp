@@ -26,7 +26,7 @@
 #include <math.h>
 
 #include "wx/arrimpl.cpp"
-WX_DEFINE_OBJARRAY( ArrayOfWgSymbols );
+WX_DEFINE_OBJARRAY( ArrayOfMusSymbols );
 
 // sorting function
 int SortElements(MusSymbol **first, MusSymbol **second)
@@ -334,6 +334,47 @@ void MusNote::Draw( wxDC *dc, MusStaff *staff)
 		this->dec_y = staff->y_note((int)this->code, staff->testcle( this->xrel ), oct);
 		silence ( dc, staff );
 	}
+    
+
+		wxPen pen( *m_w->m_currentColour, m_p->EpLignesPortee, wxSOLID );
+		dc->SetPen( pen );
+		wxBrush brush( *m_w->m_currentColour , wxSOLID );
+		dc->SetBrush( brush );
+
+    
+    /* liaison, testcode 
+	int nbrInt;
+	wxPoint *ptcoord;
+	nbrInt = PTCONTROL;
+    
+    m_w->point_[0].x = m_w->ToZoom(xrel);
+    m_w->point_[0].y =  m_w->ToZoomY(staff->yrel);
+    m_w->point_[1].x =  m_w->ToZoom(xrel + 100);
+    m_w->point_[1].y = m_w->ToZoomY(staff->yrel + 50);
+    m_w->point_[2].x =  m_w->ToZoom(xrel + 300);
+    m_w->point_[2].y = m_w->ToZoomY(staff->yrel + 50);
+    m_w->point_[3].x =  m_w->ToZoom(xrel + 400);
+    m_w->point_[3].y = m_w->ToZoomY(staff->yrel);
+    //dc->DrawSpline( 4, point );
+    
+	ptcoord = &m_w->bcoord[0];
+	m_w->calcBez ( ptcoord, nbrInt );
+
+	m_w->pntswap (&m_w->point_[0], &m_w->point_[3]);
+	m_w->pntswap (&m_w->point_[1], &m_w->point_[2]);
+	
+	m_w->point_[1].y +=  m_w->ToZoom(5);
+	m_w->point_[2].y +=  m_w->ToZoom(5);
+
+	ptcoord = &m_w->bcoord[nbrInt+1];	// suite de la matrice: retour du bezier
+	m_w->calcBez ( ptcoord, nbrInt );
+
+	//SetPolyFillMode (hdc, WINDING);
+	dc->DrawPolygon (nbrInt*2,  m_w->bcoord, 0, 0, wxWINDING_RULE ); //(sizeof (bcoord)*2) / sizeof (POINT)); nbrInt*2+ 1;
+    */
+    
+		dc->SetPen( wxNullPen );
+		dc->SetBrush( wxNullBrush );
 	
 	for ( int i = 0; i < (int)m_lyrics.GetCount(); i++ ){
 		MusSymbol *lyric = &m_lyrics[i];
@@ -999,7 +1040,7 @@ void MusNote::CheckLyricIntegrity( )
 		else i++;
 	}
 	
-	//Ensure elements have correct numbering within array
+	// Ensure elements have correct numbering within array
 	num = this->m_lyrics.GetCount();
 	for ( i = 0; i < num; i++ ){
 		MusElement *element = &this->m_lyrics[i];
@@ -1007,20 +1048,30 @@ void MusNote::CheckLyricIntegrity( )
 	}
 }
 
-MusSymbol *MusNote::GetFirstLyric( ){
+MusSymbol *MusNote::GetFirstLyric( )
+{
 	if ( this->m_lyrics.GetCount() == 0 ) 
 		return NULL;
 	else
 		return &this->m_lyrics[0];
 }
 
-MusSymbol *MusNote::GetLastLyric( ){
+MusSymbol *MusNote::GetLastLyric( )
+{
 	int num = this->m_lyrics.GetCount(); 
-
 	if ( num == 0 ) 
 		return NULL;
 	else 
 		return &this->m_lyrics[num-1];
+}
+
+MusSymbol *MusNote::GetLyricNo( int no )
+{
+	int num = this->m_lyrics.GetCount(); 
+	if ( (no < 0) || (num <= no) ) 
+		return NULL;
+	else 
+		return &this->m_lyrics[no];
 }
 
 

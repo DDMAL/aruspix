@@ -256,25 +256,26 @@ bool MusBinOutput::WriteNote( const MusNote *note )
 	return true;
 }
 
-bool MusBinOutput::WriteSymbole( const MusSymbol *symbole )
+bool MusBinOutput::WriteSymbole( const MusSymbol *symbol )
 {
-	Write( &symbole->TYPE, 1 );
-	WriteElementAttr( symbole );
-	Write( &symbole->flag , 1 );
-	Write( &symbole->calte , 1 );
-	Write( &symbole->carStyle , 1 );
-	Write( &symbole->carOrient , 1 );
-	Write( &symbole->fonte , 1 );
-	Write( &symbole->s_lie_l , 1 );
-	Write( &symbole->point , 1 );
-	uint16 = wxUINT16_SWAP_ON_BE( symbole->code );
+	Write( &symbol->TYPE, 1 );
+	WriteElementAttr( symbol );
+	Write( &symbol->flag , 1 );
+	Write( &symbol->calte , 1 );
+	Write( &symbol->carStyle , 1 );
+	Write( &symbol->carOrient , 1 );
+	Write( &symbol->fonte , 1 );
+	Write( &symbol->s_lie_l , 1 );
+	Write( &symbol->point , 1 );
+	uint16 = wxUINT16_SWAP_ON_BE( symbol->code );
 	Write( &uint16, 2 );
-	uint16 = wxUINT16_SWAP_ON_BE( symbole->l_ptch );
+	uint16 = wxUINT16_SWAP_ON_BE( symbol->l_ptch );
 	Write( &uint16, 2 );	
-	int32 = wxINT32_SWAP_ON_BE( symbole->dec_y );
+	int32 = wxINT32_SWAP_ON_BE( symbol->dec_y );
 	Write( &int32, 4 );
-    if ( symbole->flag == LYRIC )
-		WriteLyric( symbole );
+    // if ( symbol->IsLyric() ) // To be fixed ??
+    if ( (symbol->flag == CHAINE) && (symbol->fonte == LYRIC) )
+		WriteLyric( symbol );
 	
 	return true;
 }
@@ -542,12 +543,13 @@ bool MusBinInput::ReadStaff( MusStaff *staff )
 			MusNote *note = new MusNote();
 			note->no = k;
 			ReadNote( note );
-			  
+            
+            /*
 			//Test code
 			if ( (int)note->m_lyrics.GetCount() == 0 ){
 				MusSymbol *lyric = new MusSymbol();
-				lyric->TYPE = SYMB;
-				lyric->flag = LYRIC;
+				lyric->flag = CHAINE;
+				lyric->fonte = LYRIC;
 				lyric->m_debord_str = "z";
 				lyric->xrel = note->xrel - 10;
 				lyric->dec_y = - STAFF_OFFSET;   //Add define for height
@@ -556,8 +558,8 @@ bool MusBinInput::ReadStaff( MusStaff *staff )
 				note->m_lyrics.Add( lyric );	
 				
 				MusSymbol *lyric2 = new MusSymbol();
-				lyric2->TYPE = SYMB;
-				lyric2->flag = LYRIC;
+				lyric2->flag = CHAINE;
+				lyric2->fonte = LYRIC;
 				lyric2->m_debord_str = "d";
 				lyric2->xrel = note->xrel;
 				lyric2->dec_y = - STAFF_OFFSET;   //Add define for height
@@ -565,15 +567,16 @@ bool MusBinInput::ReadStaff( MusStaff *staff )
 				lyric2->m_note_ptr = note;
 				note->m_lyrics.Add( lyric2 );
 			}
+            */
 				 
 			staff->m_elements.Add( note );
 		}
 		else
 		{
-			MusSymbol *symbole = new MusSymbol();
-			symbole->no = k;
-			ReadSymbole( symbole );
-			staff->m_elements.Add( symbole );
+			MusSymbol *symbol = new MusSymbol();
+			symbol->no = k;
+			ReadSymbole( symbol );
+			staff->m_elements.Add( symbol );
 		}
 		if ( m_flag == MUS_BIN_ARUSPIX_CMP )
 		{		
@@ -632,24 +635,24 @@ bool MusBinInput::ReadNote( MusNote *note )
 	return true;
 }
 
-bool MusBinInput::ReadSymbole( MusSymbol *symbole )
+bool MusBinInput::ReadSymbole( MusSymbol *symbol )
 {
-	ReadElementAttr( symbole );
-	Read( &symbole->flag , 1 );
-	Read( &symbole->calte , 1 );
-	Read( &symbole->carStyle , 1 );
-	Read( &symbole->carOrient , 1 );
-	Read( &symbole->fonte , 1 );
-	Read( &symbole->s_lie_l , 1 );
-	Read( &symbole->point , 1 );
+	ReadElementAttr( symbol );
+	Read( &symbol->flag , 1 );
+	Read( &symbol->calte , 1 );
+	Read( &symbol->carStyle , 1 );
+	Read( &symbol->carOrient , 1 );
+	Read( &symbol->fonte , 1 );
+	Read( &symbol->s_lie_l , 1 );
+	Read( &symbol->point , 1 );
 	Read( &uint16, 2 );
-	symbole->code = wxUINT16_SWAP_ON_BE( uint16 );
+	symbol->code = wxUINT16_SWAP_ON_BE( uint16 );
 	Read( &uint16, 2 );
-	symbole->l_ptch = wxUINT16_SWAP_ON_BE( uint16 );
+	symbol->l_ptch = wxUINT16_SWAP_ON_BE( uint16 );
 	Read( &int32, 4 );
-	symbole->dec_y = wxINT32_SWAP_ON_BE( int32 );
-	if ( symbole->flag == LYRIC )
-        ReadLyric( symbole );
+	symbol->dec_y = wxINT32_SWAP_ON_BE( int32 );
+	if ( symbol->IsLyric() )
+        ReadLyric( symbol );
      
 	return true;
 }

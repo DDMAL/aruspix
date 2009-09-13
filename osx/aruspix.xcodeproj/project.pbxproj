@@ -11,6 +11,7 @@
 		4D1675E70D8B628900F4D912 /* imkmeans.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D1675E60D8B628900F4D912 /* imkmeans.cpp */; };
 		4D1676650D8B765000F4D912 /* supbookfile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D1676610D8B765000F4D912 /* supbookfile.cpp */; };
 		4D1676660D8B765000F4D912 /* supfile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D1676630D8B765000F4D912 /* supfile.cpp */; };
+		4D33DF37103D375C009EE145 /* mussvg.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D33DF35103D375C009EE145 /* mussvg.cpp */; };
 		4D3A8FCB0D35858D00BBC1FB /* recmlfbmp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D3A8FC70D35858D00BBC1FB /* recmlfbmp.cpp */; };
 		4D3A8FCC0D35858D00BBC1FB /* recmodels.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D3A8FC90D35858D00BBC1FB /* recmodels.cpp */; };
 		4D3A8FED0D35867200BBC1FB /* mus_wdr.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D3A8FCE0D35867200BBC1FB /* mus_wdr.cpp */; };
@@ -30,6 +31,8 @@
 		4D3A8FFB0D35867200BBC1FB /* mussymbol.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D3A8FE70D35867200BBC1FB /* mussymbol.cpp */; };
 		4D3A8FFC0D35867200BBC1FB /* mustoolpanel.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D3A8FE90D35867200BBC1FB /* mustoolpanel.cpp */; };
 		4D3A8FFD0D35867200BBC1FB /* muswindow.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D3A8FEB0D35867200BBC1FB /* muswindow.cpp */; };
+		4D47AB7C1047B13F005FB374 /* edt.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D47AB781047B13E005FB374 /* edt.cpp */; };
+		4D47AB7D1047B13F005FB374 /* edt_wdr.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D47AB7A1047B13F005FB374 /* edt_wdr.cpp */; };
 		4D64284F0D9344FD00DA3A64 /* supim.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D64284D0D9344FD00DA3A64 /* supim.cpp */; };
 		4D7362820D35C7D30030DFA6 /* recmus.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D7362800D35C7D30030DFA6 /* recmus.cpp */; };
 		4D7362A40D35CECC0030DFA6 /* cmpmus.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D7362A20D35CECC0030DFA6 /* cmpmus.cpp */; };
@@ -78,8 +81,6 @@
 		A58524F00A1B9604002D9D8A /* tinyxml.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A585249A0A1B9604002D9D8A /* tinyxml.cpp */; };
 		A58524F10A1B9604002D9D8A /* tinyxmlerror.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A585249C0A1B9604002D9D8A /* tinyxmlerror.cpp */; };
 		A58524F20A1B9604002D9D8A /* tinyxmlparser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A585249D0A1B9604002D9D8A /* tinyxmlparser.cpp */; };
-		A58525070A1B9604002D9D8A /* wgviewer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A58524C40A1B9604002D9D8A /* wgviewer.cpp */; };
-		A58525090A1B9604002D9D8A /* wgviewer_wdr.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A58524C70A1B9604002D9D8A /* wgviewer_wdr.cpp */; };
 		A585251C0A1B983B002D9D8A /* ax.icns in Resources */ = {isa = PBXBuildFile; fileRef = A585251B0A1B983B002D9D8A /* ax.icns */; };
 		A5AE82AE0A82AF50002BA6A5 /* axfile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A5AE82AC0A82AF50002BA6A5 /* axfile.cpp */; };
 		A5D0D4B40A65628800A4B1CA /* imoperator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A5D0D4AC0A65628800A4B1CA /* imoperator.cpp */; };
@@ -97,6 +98,8 @@
 		4D1676620D8B765000F4D912 /* supbookfile.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = supbookfile.h; sourceTree = "<group>"; };
 		4D1676630D8B765000F4D912 /* supfile.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = supfile.cpp; sourceTree = "<group>"; };
 		4D1676640D8B765000F4D912 /* supfile.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = supfile.h; sourceTree = "<group>"; };
+		4D33DF35103D375C009EE145 /* mussvg.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = mussvg.cpp; path = ../src/mus/mussvg.cpp; sourceTree = SOURCE_ROOT; };
+		4D33DF36103D375C009EE145 /* mussvg.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = mussvg.h; path = ../src/mus/mussvg.h; sourceTree = SOURCE_ROOT; };
 		4D3A8FC70D35858D00BBC1FB /* recmlfbmp.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = recmlfbmp.cpp; sourceTree = "<group>"; };
 		4D3A8FC80D35858D00BBC1FB /* recmlfbmp.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = recmlfbmp.h; sourceTree = "<group>"; };
 		4D3A8FC90D35858D00BBC1FB /* recmodels.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = recmodels.cpp; sourceTree = "<group>"; };
@@ -132,6 +135,10 @@
 		4D3A8FEA0D35867200BBC1FB /* mustoolpanel.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = mustoolpanel.h; path = ../src/mus/mustoolpanel.h; sourceTree = SOURCE_ROOT; };
 		4D3A8FEB0D35867200BBC1FB /* muswindow.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = muswindow.cpp; path = ../src/mus/muswindow.cpp; sourceTree = SOURCE_ROOT; };
 		4D3A8FEC0D35867200BBC1FB /* muswindow.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = muswindow.h; path = ../src/mus/muswindow.h; sourceTree = SOURCE_ROOT; };
+		4D47AB781047B13E005FB374 /* edt.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = edt.cpp; path = ../src/edt/edt.cpp; sourceTree = SOURCE_ROOT; };
+		4D47AB791047B13F005FB374 /* edt.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = edt.h; path = ../src/edt/edt.h; sourceTree = SOURCE_ROOT; };
+		4D47AB7A1047B13F005FB374 /* edt_wdr.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = edt_wdr.cpp; path = ../src/edt/edt_wdr.cpp; sourceTree = SOURCE_ROOT; };
+		4D47AB7B1047B13F005FB374 /* edt_wdr.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = edt_wdr.h; path = ../src/edt/edt_wdr.h; sourceTree = SOURCE_ROOT; };
 		4D64284D0D9344FD00DA3A64 /* supim.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = supim.cpp; sourceTree = "<group>"; };
 		4D64284E0D9344FD00DA3A64 /* supim.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = supim.h; sourceTree = "<group>"; };
 		4D7362800D35C7D30030DFA6 /* recmus.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = recmus.cpp; sourceTree = "<group>"; };
@@ -224,10 +231,6 @@
 		A585249B0A1B9604002D9D8A /* tinyxml.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = tinyxml.h; sourceTree = "<group>"; };
 		A585249C0A1B9604002D9D8A /* tinyxmlerror.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = tinyxmlerror.cpp; sourceTree = "<group>"; };
 		A585249D0A1B9604002D9D8A /* tinyxmlparser.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = tinyxmlparser.cpp; sourceTree = "<group>"; };
-		A58524C40A1B9604002D9D8A /* wgviewer.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = wgviewer.cpp; sourceTree = "<group>"; };
-		A58524C50A1B9604002D9D8A /* wgviewer.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = wgviewer.h; sourceTree = "<group>"; };
-		A58524C70A1B9604002D9D8A /* wgviewer_wdr.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = wgviewer_wdr.cpp; sourceTree = "<group>"; };
-		A58524C80A1B9604002D9D8A /* wgviewer_wdr.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = wgviewer_wdr.h; sourceTree = "<group>"; };
 		A585251B0A1B983B002D9D8A /* ax.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = ax.icns; sourceTree = "<group>"; };
 		A5AE82AC0A82AF50002BA6A5 /* axfile.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = axfile.cpp; sourceTree = "<group>"; };
 		A5AE82AD0A82AF50002BA6A5 /* axfile.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = axfile.h; sourceTree = "<group>"; };
@@ -258,6 +261,8 @@
 		4D3A8FCD0D3585AB00BBC1FB /* mus */ = {
 			isa = PBXGroup;
 			children = (
+				4D33DF35103D375C009EE145 /* mussvg.cpp */,
+				4D33DF36103D375C009EE145 /* mussvg.h */,
 				4D832FFE0F2E6E35006E6B5F /* musiocmme.cpp */,
 				4D832FFF0F2E6E35006E6B5F /* musiocmme.h */,
 				4DB2D96B0D8383EA003401B0 /* musmlfdic.cpp */,
@@ -299,6 +304,17 @@
 			name = mus;
 			sourceTree = "<group>";
 		};
+		4D47AB771047B128005FB374 /* edition */ = {
+			isa = PBXGroup;
+			children = (
+				4D47AB781047B13E005FB374 /* edt.cpp */,
+				4D47AB791047B13F005FB374 /* edt.h */,
+				4D47AB7A1047B13F005FB374 /* edt_wdr.cpp */,
+				4D47AB7B1047B13F005FB374 /* edt_wdr.h */,
+			);
+			name = edition;
+			sourceTree = "<group>";
+		};
 		5736CE450C354E4A00254E7B /* comparison */ = {
 			isa = PBXGroup;
 			children = (
@@ -324,14 +340,14 @@
 		A58508B20A001129006E82B1 = {
 			isa = PBXGroup;
 			children = (
-				A585244E0A1B9603002D9D8A /* app */,
+				A585244E0A1B9603002D9D8A /* application */,
 				A5D0D4AB0A65628800A4B1CA /* im */,
 				4D3A8FCD0D3585AB00BBC1FB /* mus */,
 				A58524970A1B9604002D9D8A /* tinyxml */,
-				5736CE450C354E4A00254E7B /* comparison */,
-				A58524810A1B9604002D9D8A /* recognition */,
 				A58524910A1B9604002D9D8A /* superimposition */,
-				A58524C30A1B9604002D9D8A /* wgviewer */,
+				A58524810A1B9604002D9D8A /* recognition */,
+				5736CE450C354E4A00254E7B /* comparison */,
+				4D47AB771047B128005FB374 /* edition */,
 				A58508C20A00113C006E82B1 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -349,7 +365,7 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		A585244E0A1B9603002D9D8A /* app */ = {
+		A585244E0A1B9603002D9D8A /* application */ = {
 			isa = PBXGroup;
 			children = (
 				57CA54160D34139D001FC334 /* axprogressdlg.h */,
@@ -391,7 +407,7 @@
 				A58524790A1B9604002D9D8A /* resource.h */,
 				A585247A0A1B9604002D9D8A /* wxprec.cpp */,
 			);
-			name = app;
+			name = application;
 			path = ../src/app;
 			sourceTree = SOURCE_ROOT;
 		};
@@ -461,18 +477,6 @@
 			);
 			name = tinyxml;
 			path = ../src/tinyxml;
-			sourceTree = SOURCE_ROOT;
-		};
-		A58524C30A1B9604002D9D8A /* wgviewer */ = {
-			isa = PBXGroup;
-			children = (
-				A58524C40A1B9604002D9D8A /* wgviewer.cpp */,
-				A58524C50A1B9604002D9D8A /* wgviewer.h */,
-				A58524C70A1B9604002D9D8A /* wgviewer_wdr.cpp */,
-				A58524C80A1B9604002D9D8A /* wgviewer_wdr.h */,
-			);
-			name = wgviewer;
-			path = ../src/wgviewer;
 			sourceTree = SOURCE_ROOT;
 		};
 		A5D0D4AB0A65628800A4B1CA /* im */ = {
@@ -593,8 +597,6 @@
 				A58524F00A1B9604002D9D8A /* tinyxml.cpp in Sources */,
 				A58524F10A1B9604002D9D8A /* tinyxmlerror.cpp in Sources */,
 				A58524F20A1B9604002D9D8A /* tinyxmlparser.cpp in Sources */,
-				A58525070A1B9604002D9D8A /* wgviewer.cpp in Sources */,
-				A58525090A1B9604002D9D8A /* wgviewer_wdr.cpp in Sources */,
 				A5EFDB220A278C980019FA6A /* rec.cpp in Sources */,
 				A5D0D4B40A65628800A4B1CA /* imoperator.cpp in Sources */,
 				A5D0D4B50A65628800A4B1CA /* impage.cpp in Sources */,
@@ -650,6 +652,9 @@
 				0A5FB27A0DD49D2D001E460E /* imbrink3classes.cpp in Sources */,
 				4DDE3CDE0EF1B1D6006D4F2C /* musiowwg.cpp in Sources */,
 				4D8330000F2E6E35006E6B5F /* musiocmme.cpp in Sources */,
+				4D33DF37103D375C009EE145 /* mussvg.cpp in Sources */,
+				4D47AB7C1047B13F005FB374 /* edt.cpp in Sources */,
+				4D47AB7D1047B13F005FB374 /* edt_wdr.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -701,7 +706,7 @@
 					"-D_LARGE_FILES",
 					"-DAX_COMPARISON",
 					"-DAX_SUPERIMPOSITION",
-					"-DAX_WGVIEWER",
+					"-DAX_EDT",
 					"-DWX_PRECOMP",
 					"-DAX_RECOGNITION",
 					"-DNO_GCC_PRAGMA",
@@ -802,7 +807,7 @@
 					"-D_LARGE_FILES",
 					"-DWX_PRECOMP",
 					"-DAX_SUPERIMPOSITION",
-					"-DAX_WGVIEWER",
+					"-DAX_EDT",
 					"-DAX_COMPARISON",
 					"-DAX_RECOGNITION",
 					"-DNO_GCC_PRAGMA",
@@ -823,6 +828,7 @@
 					"-liconv",
 					"-lim_u",
 					"-lim_process_u",
+					"-lim_fftw_u",
 					"-lwx_macd_core-$(ARUSPIX_WX_VERSION)",
 					"-lwx_base_carbond-$(ARUSPIX_WX_VERSION)",
 					"-lwx_base_carbond_net-$(ARUSPIX_WX_VERSION)",
@@ -883,7 +889,7 @@
 					"-D_LARGE_FILES",
 					"-DAX_SUPERIMPOSITION",
 					"-DAX_COMPARISON",
-					"-DAX_WGVIEWER",
+					"-DAX_EDT",
 					"-DWX_PRECOMP",
 					"-DAX_RECOGNITION",
 					"-DNO_GCC_PRAGMA",
@@ -904,6 +910,7 @@
 					"-liconv",
 					"-lim_u",
 					"-lim_process_u",
+					lim_fftw_u,
 					"-lwx_mac_html-$(ARUSPIX_WX_VERSION)",
 					"-lwx_mac_adv-$(ARUSPIX_WX_VERSION)",
 					"-lwx_mac_core-$(ARUSPIX_WX_VERSION)",

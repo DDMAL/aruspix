@@ -55,7 +55,6 @@ SupFile::SupFile( wxString name, SupEnv *env )
 	m_isSuperimposed = false;
 	m_hasPoints1 = false;
 	m_hasPoints2 = false;
-	
 }
 
 
@@ -281,7 +280,7 @@ bool SupFile::Superimpose( wxArrayPtrVoid params, AxProgressDlg *dlg )
 	
 	/*
     if ( !failed ) 
-        failed = !m_imPage1Ptr->Check( m_original1, 2500 ); // 2 operations max
+        failed = !m_imPage1Ptr->Check( m_original1, 2500, 1200 ); // 2 operations max
 		
     if ( !failed ) 
         failed = !m_imPage1Ptr->Deskew( 2.0 ); // 2 operations max
@@ -290,7 +289,7 @@ bool SupFile::Superimpose( wxArrayPtrVoid params, AxProgressDlg *dlg )
         failed = !m_imPage1Ptr->FindStaves(  3, 50, false, false );  // 4 operations max
 
     if ( RecEnv::s_check && !failed ) 
-        failed = !m_imPagePtr->Check( image_file, 2500 ); // 2 operations max
+        failed = !m_imPagePtr->Check( image_file, 2500, 1200 ); // 2 operations max
 	*/
 	
 	if ( !failed )

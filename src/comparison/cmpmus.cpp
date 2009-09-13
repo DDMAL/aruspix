@@ -47,7 +47,7 @@ CmpMusController::CmpMusController( wxWindow *parent, wxWindowID id,
     const wxPoint &position, const wxSize& size, long style ) :
     wxPanel( parent, id, position, size, style )
 {
-    //WgOutputFunc4( this, TRUE );	
+    //MusOutputFunc4( this, TRUE );	
 	m_envPtr = NULL;
 	m_viewPtr = NULL;
 	
@@ -98,7 +98,7 @@ void CmpMusController::SetCmpFile( CmpFile *cmpFile )
 void CmpMusController::OnSize( wxSizeEvent &event )
 {
     this->Layout();
-    /*wxWindow *w = FindWindowById( ID4_WGWINDOW );
+    /*wxWindow *w = FindWindowById( ID4_MUSWINDOW );
     if ( w && w->IsKindOf( CLASSINFO( MusWindow ) ))
     {
         ((MusWindow*)w)->Resize( );

@@ -108,7 +108,7 @@ AxOptionsDlg::AxOptionsDlg( wxWindow *parent, wxWindowID id, const wxString &tit
 	item0->Fit( this );
 	item0->SetSizeHints( this );
 
-    m_musWinPtr = new AxOptMusWindow( GetWgPanel(), -1, wxDefaultPosition, wxDefaultSize, wxHSCROLL|wxVSCROLL|wxNO_BORDER );
+    m_musWinPtr = new AxOptMusWindow( GetMusPanel(), -1, wxDefaultPosition, wxDefaultSize, wxHSCROLL|wxVSCROLL|wxNO_BORDER );
 	m_musWinPtr->SetBackgroundColour( wxSystemSettings::GetColour( wxSYS_COLOUR_MENU)  );
     m_musWinPtr->Resize( );
 	
@@ -138,9 +138,9 @@ void AxOptionsDlg::OptionsDlgStandard( wxNotebook *notebook )
     //this->GetFontName()->SetLabel(wxGetApp().m_musicFontName);
 	this->GetFontName()->SetLabel( info.GetFaceName() );
 	m_ignoreSpinEvent = true;
-    this->GetScWgOffset()->SetValidator(
+    this->GetScMusOffset()->SetValidator(
         wxGenericValidator(&wxGetApp().m_fontPosCorrection));
-    this->GetScWgSize()->SetValidator(
+    this->GetScMusSize()->SetValidator(
         wxGenericValidator(&wxGetApp().m_fontSizeCorrection));
 	m_previousFontPosCorrection = wxGetApp().m_fontPosCorrection; // keep if canceled
 	m_previousFontSizeCorrection = wxGetApp().m_fontSizeCorrection;
@@ -266,8 +266,8 @@ void AxOptionsDlg::UpdateFontCorrections( int eventID )
 	if ( !this->IsShown() || m_ignoreSpinEvent )
 		return;
 
-	wxGetApp().m_fontPosCorrection = GetScWgOffset()->GetValue();
-	wxGetApp().m_fontSizeCorrection = GetScWgSize()->GetValue();
+	wxGetApp().m_fontPosCorrection = GetScMusOffset()->GetValue();
+	wxGetApp().m_fontSizeCorrection = GetScMusSize()->GetValue();
 	m_musWinPtr->UpdatePageValues();
 	if ( eventID == ID_SC_MUS_SIZE)
 		m_musWinPtr->UpdateZoomValues();

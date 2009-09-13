@@ -23,7 +23,7 @@
 
 class MusFont;
 
-WX_DECLARE_OBJARRAY( MusFont, ArrayOfWgFonts);
+WX_DECLARE_OBJARRAY( MusFont, ArrayOfMusFonts);
 
 //----------------------------------------------------------------------------
 // MusFont
@@ -113,7 +113,7 @@ public:
 	virtual bool WritePage( const MusPage *page );
 	virtual bool WriteStaff( const MusStaff *staff );
 	virtual bool WriteNote( const MusNote *note );
-	virtual bool WriteSymbole( const MusSymbol *symbole );
+	virtual bool WriteSymbole( const MusSymbol *symbol );
 	virtual bool WriteElementAttr( const MusElement *element );
 	virtual bool WriteDebord( const MusElement *element );
 	virtual bool WritePagination( const MusPagination *pagination );
@@ -153,7 +153,7 @@ public:
 	virtual bool ReadPage( MusPage *page );
 	virtual bool ReadStaff( MusStaff *staff );
 	virtual bool ReadNote( MusNote *note );
-	virtual bool ReadSymbole( MusSymbol *symbole );
+	virtual bool ReadSymbole( MusSymbol *symbol );
 	virtual bool ReadElementAttr( MusElement *element );
 	virtual bool ReadDebord( MusElement *element );
 	virtual bool ReadPagination( MusPagination *pagination );
@@ -165,6 +165,8 @@ private:
 	wxInt16 int16;
 	wxUint32 uint32;
 	wxInt32 int32;
+    // 
+    MusSymbol *m_lyric;
 
 private:
 	// WDR: handler declarations for MusWWGInput

@@ -67,14 +67,14 @@ void RecImController::SetEnv( RecEnv *env )
     m_envPtr = env;
 }
 
-void RecImController::SetWgViewAndController( RecMusWindow *recWgWindow, RecMusController *recWgController )
+void RecImController::SetMusViewAndController( RecMusWindow *recMusWindow, RecMusController *recMusController )
 {   
     wxASSERT_MSG( m_viewPtr->IsKindOf( CLASSINFO( RecImWindow ) ) , wxT("View must be a RecImWindow") );
 
-    m_musControlPtr = recWgController;
-    m_musViewPtr = recWgWindow;
+    m_musControlPtr = recMusController;
+    m_musViewPtr = recMusWindow;
     
-    ((RecImWindow*)m_viewPtr)->SetWgViewAndController( recWgWindow, recWgController );
+    ((RecImWindow*)m_viewPtr)->SetMusViewAndController( recMusWindow, recMusController );
 }
 
 
@@ -290,10 +290,10 @@ void RecImWindow::SetEnv( RecEnv *env )
     m_envPtr = env;
 }
 
-void RecImWindow::SetWgViewAndController( RecMusWindow *recWgWindow, RecMusController *recWgController )
+void RecImWindow::SetMusViewAndController( RecMusWindow *recMusWindow, RecMusController *recMusController )
 {
-    m_musControlPtr = recWgController;
-    m_musViewPtr = recWgWindow;
+    m_musControlPtr = recMusController;
+    m_musViewPtr = recMusWindow;
 }
 
 void RecImWindow::SetRecFile( RecFile *recFile )

@@ -86,7 +86,7 @@ wxString MusMLFSymbol::GetLabel( )
 {
 	if ( m_type == 0 )
 	{
-		wxLogWarning( _("Uninitialized symbole") );
+		wxLogWarning( _("Uninitialized symbol") );
 		return "";
 	}
 
@@ -124,7 +124,7 @@ int MusMLFSymbol::GetNbOfStates( )
 {
 	if ( m_type == 0 )
 	{
-		wxLogWarning( _("Uninitialized symbole") );
+		wxLogWarning( _("Uninitialized symbol") );
 		return 0;
 	}
 	
@@ -196,7 +196,7 @@ int MusMLFSymbol::GetWidth( )
 {
 	if ( m_type == 0 )
 	{
-		wxLogWarning( _("Uninitialized symbole") );
+		wxLogWarning( _("Uninitialized symbol") );
 		return 0;
 	}
 	
@@ -270,7 +270,7 @@ wxString MusMLFSymbol::GetLabelType( )
 {
 	if ( m_type == 0 )
 	{
-		wxLogWarning( _("Uninitialized symbole") );
+		wxLogWarning( _("Uninitialized symbol") );
 		return "";
 	}
 
@@ -312,7 +312,7 @@ wxString MusMLFSymbolNoPitch::GetLabel( )
 {
 	if ( m_type == 0 )
 	{
-		wxLogWarning( _("Uninitialized symbole") );
+		wxLogWarning( _("Uninitialized symbol") );
 		return "";
 	}
 
@@ -351,7 +351,7 @@ wxString MusMLFSymbolNoPitch::GetLabel( )
 // MusFileOutputStream
 //----------------------------------------------------------------------------
 
-MusMLFOutput::MusMLFOutput( MusFile *file, wxString filename, MusMLFDictionary *dict, wxString model_symbole_name ) :
+MusMLFOutput::MusMLFOutput( MusFile *file, wxString filename, MusMLFDictionary *dict, wxString model_symbol_name ) :
     MusFileOutputStream( file, filename )
 {
     m_filename = filename;
@@ -361,12 +361,12 @@ MusMLFOutput::MusMLFOutput( MusFile *file, wxString filename, MusMLFDictionary *
 	m_pagePosition = false;
 	m_hmmLevel = false;
 	m_staff = NULL;
-	m_mlf_class_name = model_symbole_name;
+	m_mlf_class_name = model_symbol_name;
 	m_dict = dict;
 }
 
 
-MusMLFOutput::MusMLFOutput( MusFile *file, int fd, wxString filename, MusMLFDictionary *dict,  wxString model_symbole_name ) :
+MusMLFOutput::MusMLFOutput( MusFile *file, int fd, wxString filename, MusMLFDictionary *dict,  wxString model_symbol_name ) :
 	MusFileOutputStream( file, fd )
 {
     m_filename = filename;
@@ -376,7 +376,7 @@ MusMLFOutput::MusMLFOutput( MusFile *file, int fd, wxString filename, MusMLFDict
 	m_pagePosition = false;
 	m_hmmLevel = false;
 	m_staff = NULL;
-	m_mlf_class_name = model_symbole_name;
+	m_mlf_class_name = model_symbol_name;
 	m_dict = dict;
 }
 
@@ -393,8 +393,8 @@ MusStaff *MusMLFOutput::SplitSymboles( MusStaff *staff )
 	MusStaff *nstaff = new MusStaff();
 	staff->CopyAttributes( nstaff );
 	MusNote *nnote = NULL;
-	MusSymbol *nsymbole1 = NULL;
-	MusSymbol *nsymbole2 = NULL;
+	MusSymbol *nsymbol1 = NULL;
+	MusSymbol *nsymbol2 = NULL;
 
     for (k = 0;k < staff->nblement ; k++ )
     {
@@ -404,14 +404,14 @@ MusStaff *MusMLFOutput::SplitSymboles( MusStaff *staff )
 			// alteration
 			if (nnote->acc != 0)
 			{
-				nsymbole2 = new MusSymbol();
-				nsymbole2->flag = ALTER;
-				nsymbole2->calte = nnote->acc;
-				nsymbole2->xrel = nnote->xrel - 10*4; // 10 = pas par defaut
-				nsymbole2->dec_y = nnote->dec_y;
-				nsymbole2->oct = nnote->oct;
-				nsymbole2->code = nnote->code;
-				nstaff->m_elements.Add( nsymbole2 );
+				nsymbol2 = new MusSymbol();
+				nsymbol2->flag = ALTER;
+				nsymbol2->calte = nnote->acc;
+				nsymbol2->xrel = nnote->xrel - 10*4; // 10 = pas par defaut
+				nsymbol2->dec_y = nnote->dec_y;
+				nsymbol2->oct = nnote->oct;
+				nsymbol2->code = nnote->code;
+				nstaff->m_elements.Add( nsymbol2 );
 				nnote->acc = 0;
 			}
 			nstaff->m_elements.Add( nnote );
@@ -422,44 +422,44 @@ MusStaff *MusMLFOutput::SplitSymboles( MusStaff *staff )
 					wxLogWarning( _("Pointed rest not allowed, point has been removed.") );
 				else
 				{
-					nsymbole2 = new MusSymbol();
-					nsymbole2->flag = PNT;
-					nsymbole2->point = 0;
-					nsymbole2->xrel = nnote->xrel + 30;
-					nsymbole2->dec_y = nnote->dec_y;
-					nsymbole2->oct = nnote->oct;
-					nsymbole2->code = nnote->code;
-					nstaff->m_elements.Add( nsymbole2 );
+					nsymbol2 = new MusSymbol();
+					nsymbol2->flag = PNT;
+					nsymbol2->point = 0;
+					nsymbol2->xrel = nnote->xrel + 30;
+					nsymbol2->dec_y = nnote->dec_y;
+					nsymbol2->oct = nnote->oct;
+					nsymbol2->code = nnote->code;
+					nstaff->m_elements.Add( nsymbol2 );
 				}
 				nnote->point = 0;
 			}				
 		}
 		else
 		{
-			nsymbole1 = new MusSymbol( *(MusSymbol*)&staff->m_elements[k] );
-			nstaff->m_elements.Add( nsymbole1 );
+			nsymbol1 = new MusSymbol( *(MusSymbol*)&staff->m_elements[k] );
+			nstaff->m_elements.Add( nsymbol1 );
 			// barre TODO repetion points
-			if (nsymbole1->flag == BARRE)
+			if (nsymbol1->flag == BARRE)
 			{			
-				if ( nsymbole1->code == 'D' ) // double barre
+				if ( nsymbol1->code == 'D' ) // double barre
 				{
-					nsymbole2 = new MusSymbol( *nsymbole1 );
-					nsymbole2->code = '|';
-					nsymbole2->xrel += 10;
-					nstaff->m_elements.Add( nsymbole2 );
-					nsymbole1->code = '|';
+					nsymbol2 = new MusSymbol( *nsymbol1 );
+					nsymbol2->code = '|';
+					nsymbol2->xrel += 10;
+					nstaff->m_elements.Add( nsymbol2 );
+					nsymbol1->code = '|';
 				}
 			}
-			// indication de mesure - splitter indication avec chiffre ET symbole
-			else if (nsymbole1->flag == IND_MES)
+			// indication de mesure - splitter indication avec chiffre ET symbol
+			else if (nsymbol1->flag == IND_MES)
 			{
-				if ((nsymbole1->code & 1) && (nsymbole1->code != 1)) // pas chiffre seuls
+				if ((nsymbol1->code & 1) && (nsymbol1->code != 1)) // pas chiffre seuls
 				{
-					nsymbole2 = new MusSymbol( *nsymbole1 );
-					nsymbole2->code = 1;
-					nsymbole2->xrel += 10*5; // 10 = pas par defaut
-					nstaff->m_elements.Add( nsymbole2 );
-					nsymbole1->code -= 1;
+					nsymbol2 = new MusSymbol( *nsymbol1 );
+					nsymbol2->code = 1;
+					nsymbol2->xrel += 10*5; // 10 = pas par defaut
+					nstaff->m_elements.Add( nsymbol2 );
+					nsymbol1->code -= 1;
 				}
 			}
 		}
@@ -530,7 +530,7 @@ void MusMLFOutput::EndLabel( int offset, int end_point )
 			
 			int next = end_point;
 			int next_symbol = next;
-			// position du symbole suivant, mais seulement si pas hors portee
+			// position du symbol suivant, mais seulement si pas hors portee
 			if ( i < (int)m_symbols.GetCount() - 1 )
 				next_symbol = m_symbols[i+1].GetPosition() - offset;
 			if ( next_symbol < next )
@@ -540,7 +540,7 @@ void MusMLFOutput::EndLabel( int offset, int end_point )
 			// width
 			if ( width > next )
 			{
-				//wxLogDebug( _("Label position %s out of range (symbol truncated)"), subsymbole_label.c_str() );
+				//wxLogDebug( _("Label position %s out of range (symbol truncated)"), subsymbol_label.c_str() );
 				width = next;
 			}
 			if ( pos < width ) // else skip symbol
@@ -580,7 +580,7 @@ void MusMLFOutput::EndLabel( int offset, int end_point )
 	Write( end_label, end_label.Length() );
 }
 	
-// copie le portee en convertissant les symboles de la clef courante vers Ut1
+// copie le portee en convertissant les symbols de la clef courante vers Ut1
 // si inPlace, directment dans staff
 
 MusStaff *MusMLFOutput::GetUt1( MusStaff *staff , bool inPlace )
@@ -607,12 +607,12 @@ MusStaff *MusMLFOutput::GetUt1( MusStaff *staff , bool inPlace )
 		}
 		else
 		{
-			MusSymbol *symbole = (MusSymbol*)&nstaff->m_elements[i];
-			if ((symbole->flag == ALTER) || (symbole->flag == PNT))
+			MusSymbol *symbol = (MusSymbol*)&nstaff->m_elements[i];
+			if ((symbol->flag == ALTER) || (symbol->flag == PNT))
 			{
-				GetUt1( nstaff, symbole, &code, &oct );
-				symbole->code = code;
-				symbole->oct = oct;
+				GetUt1( nstaff, symbol, &code, &oct );
+				symbol->code = code;
+				symbol->oct = oct;
 			}
 		}
 	}
@@ -625,7 +625,7 @@ MusStaff *MusMLFOutput::GetUt1( MusStaff *staff , bool inPlace )
 
 
 /* Calcule l'offset de la cle; doit etre separe de cle_id pour pouvoir
-  etre appele depuis rd_symbole() en cas de changement de definition.
+  etre appele depuis rd_symbol() en cas de changement de definition.
 	La valeur attribuee est un facteur de multiplication d'espaces
   (espace[pTaille]) decrivant l'eloignement de la clef par rapport a
   la ligne du bas.
@@ -807,10 +807,10 @@ bool MusMLFOutput::WriteNote(  MusNote *note )
   autre
   */
 
-bool MusMLFOutput::WriteSymbole(  MusSymbol *symbole )
+bool MusMLFOutput::WriteSymbole(  MusSymbol *symbol )
 {
 	// gestion des segment de portees (pas actif ?????)
-	if ((symbole->flag == BARRE) && (symbole->code == 'I'))
+	if ((symbol->flag == BARRE) && (symbol->code == 'I'))
 	{	
 		wxASSERT_MSG( false, "Should not happen..." );
 		EndLabel();
@@ -820,101 +820,101 @@ bool MusMLFOutput::WriteSymbole(  MusSymbol *symbole )
 
 	MusMLFSymbol *mlfsb = (MusMLFSymbol*)wxCreateDynamicObject( m_mlf_class_name );
 
-	if (symbole->flag == BARRE)
+	if (symbol->flag == BARRE)
 	{
-		mlfsb->SetValue( TYPE_SYMBOLE, "B", symbole->xrel );
+		mlfsb->SetValue( TYPE_SYMBOLE, "B", symbol->xrel );
 		m_symbols.Add( mlfsb );
 	}
-	else if (symbole->flag == CLE)
+	else if (symbol->flag == CLE)
 	{
-		switch(symbole->code)
-		{	case SOL2 : mlfsb->SetValue( TYPE_KEY, "S",  symbole->xrel, 2 ); break;
-			case SOL1 : mlfsb->SetValue( TYPE_KEY, "S",  symbole->xrel, 1 ); break;
-			case SOLva : mlfsb->SetValue( TYPE_KEY, "S",  symbole->xrel, 8 ); break;
-			case FA5 : mlfsb->SetValue( TYPE_KEY, "F",  symbole->xrel, 5 ); break;
-			case FA4 : mlfsb->SetValue( TYPE_KEY, "F",  symbole->xrel, 4 ); break;
-			case FA3 : mlfsb->SetValue( TYPE_KEY, "F",  symbole->xrel, 3 ); break;
-			case UT1 : mlfsb->SetValue( TYPE_KEY, "U",  symbole->xrel, 1 ); break;
-			case UT2 : mlfsb->SetValue( TYPE_KEY, "U",  symbole->xrel, 2 ); break;
-			case UT3 : mlfsb->SetValue( TYPE_KEY, "U",  symbole->xrel, 3 ); break;
-			case UT5 : mlfsb->SetValue( TYPE_KEY, "U",  symbole->xrel, 5); break;
-			case UT4 : mlfsb->SetValue( TYPE_KEY, "U",  symbole->xrel, 4 ); break;
+		switch(symbol->code)
+		{	case SOL2 : mlfsb->SetValue( TYPE_KEY, "S",  symbol->xrel, 2 ); break;
+			case SOL1 : mlfsb->SetValue( TYPE_KEY, "S",  symbol->xrel, 1 ); break;
+			case SOLva : mlfsb->SetValue( TYPE_KEY, "S",  symbol->xrel, 8 ); break;
+			case FA5 : mlfsb->SetValue( TYPE_KEY, "F",  symbol->xrel, 5 ); break;
+			case FA4 : mlfsb->SetValue( TYPE_KEY, "F",  symbol->xrel, 4 ); break;
+			case FA3 : mlfsb->SetValue( TYPE_KEY, "F",  symbol->xrel, 3 ); break;
+			case UT1 : mlfsb->SetValue( TYPE_KEY, "U",  symbol->xrel, 1 ); break;
+			case UT2 : mlfsb->SetValue( TYPE_KEY, "U",  symbol->xrel, 2 ); break;
+			case UT3 : mlfsb->SetValue( TYPE_KEY, "U",  symbol->xrel, 3 ); break;
+			case UT5 : mlfsb->SetValue( TYPE_KEY, "U",  symbol->xrel, 5); break;
+			case UT4 : mlfsb->SetValue( TYPE_KEY, "U",  symbol->xrel, 4 ); break;
 			default: break;
 		}
 		m_symbols.Add( mlfsb );
 	}
-	else if (symbole->flag == ALTER)
+	else if (symbol->flag == ALTER)
 	{
 		int  code = 0, oct = 0;
-		GetUt1( m_staff, symbole, &code, &oct);
-		if (symbole->calte == DIESE)
-			mlfsb->SetValue( TYPE_ALTERATION, "D",  symbole->xrel, 0, _note[code], oct );
-		else if (symbole->calte == BEMOL)
-			mlfsb->SetValue( TYPE_ALTERATION, "B",  symbole->xrel, 0, _note[code], oct );
-		else if (symbole->calte == BECAR)
-			mlfsb->SetValue( TYPE_ALTERATION, "H",  symbole->xrel, 0, _note[code], oct );
-		else if (symbole->calte == D_DIESE)
-			mlfsb->SetValue( TYPE_ALTERATION, "D",  symbole->xrel, 1, _note[code], oct );
-		else if (symbole->calte == D_BEMOL)
-			mlfsb->SetValue( TYPE_ALTERATION, "B",  symbole->xrel, 1, _note[code], oct );
+		GetUt1( m_staff, symbol, &code, &oct);
+		if (symbol->calte == DIESE)
+			mlfsb->SetValue( TYPE_ALTERATION, "D",  symbol->xrel, 0, _note[code], oct );
+		else if (symbol->calte == BEMOL)
+			mlfsb->SetValue( TYPE_ALTERATION, "B",  symbol->xrel, 0, _note[code], oct );
+		else if (symbol->calte == BECAR)
+			mlfsb->SetValue( TYPE_ALTERATION, "H",  symbol->xrel, 0, _note[code], oct );
+		else if (symbol->calte == D_DIESE)
+			mlfsb->SetValue( TYPE_ALTERATION, "D",  symbol->xrel, 1, _note[code], oct );
+		else if (symbol->calte == D_BEMOL)
+			mlfsb->SetValue( TYPE_ALTERATION, "B",  symbol->xrel, 1, _note[code], oct );
 		m_symbols.Add( mlfsb );
 	}
-	else if (symbole->flag == PNT)
+	else if (symbol->flag == PNT)
 	{
 		int  code = 0, oct = 0;
-		GetUt1( m_staff, symbole, &code, &oct);
-		mlfsb->SetValue( TYPE_POINT, "", symbole->xrel, 0, _note[code + ((code+oct) % 2)], ((code + ((code+oct) % 2)) == 8) ? (oct+1) : oct );
+		GetUt1( m_staff, symbol, &code, &oct);
+		mlfsb->SetValue( TYPE_POINT, "", symbol->xrel, 0, _note[code + ((code+oct) % 2)], ((code + ((code+oct) % 2)) == 8) ? (oct+1) : oct );
 		//str += wxString::Format("P_%s_%d\n",
-		//	_note[code + ((code+oct) % 2)],((code + ((code+oct) % 2)) == 8) ? (oct+1) : oct,symbole->code,code,oct);
+		//	_note[code + ((code+oct) % 2)],((code + ((code+oct) % 2)) == 8) ? (oct+1) : oct,symbol->code,code,oct);
 		m_symbols.Add( mlfsb );
 	}
-	else if (symbole->flag == IND_MES)
+	else if (symbol->flag == IND_MES)
 	{
 		// signes standard
-		if ((int)symbole->code & 64)
+		if ((int)symbol->code & 64)
 		{
-			switch (symbole->calte)
+			switch (symbol->calte)
 			{	
-				case 0: mlfsb->SetValue( TYPE_MESURE, "S_C", symbole->xrel ); break;
-				case 1: mlfsb->SetValue( TYPE_MESURE, "S_CB", symbole->xrel ); break;
-				case 2: mlfsb->SetValue( TYPE_MESURE, "S_2", symbole->xrel ); break;
-				case 3: mlfsb->SetValue( TYPE_MESURE, "S_3", symbole->xrel ); break;
-				case 4: mlfsb->SetValue( TYPE_MESURE, "S_2B", symbole->xrel ); break;
-				case 5: mlfsb->SetValue( TYPE_MESURE, "S_3B", symbole->xrel ); break;
+				case 0: mlfsb->SetValue( TYPE_MESURE, "S_C", symbol->xrel ); break;
+				case 1: mlfsb->SetValue( TYPE_MESURE, "S_CB", symbol->xrel ); break;
+				case 2: mlfsb->SetValue( TYPE_MESURE, "S_2", symbol->xrel ); break;
+				case 3: mlfsb->SetValue( TYPE_MESURE, "S_3", symbol->xrel ); break;
+				case 4: mlfsb->SetValue( TYPE_MESURE, "S_2B", symbol->xrel ); break;
+				case 5: mlfsb->SetValue( TYPE_MESURE, "S_3B", symbol->xrel ); break;
 			}
 			m_symbols.Add( mlfsb );
 		}
-		else if (symbole->code != 1)
+		else if (symbol->code != 1)
 		{
 			wxString subtype;
 			// temps parfait
-			if ((int)symbole->code & 32)
+			if ((int)symbol->code & 32)
 				subtype += wxString::Format("TP");
 			// temps imparfait	
-			else if ((int)symbole->code & 16)
+			else if ((int)symbol->code & 16)
 				subtype += wxString::Format("TI");
 			// temps imparfait double
-			else if ((int)symbole->code & 8)
+			else if ((int)symbol->code & 8)
 				subtype += wxString::Format("TID");
 			// barre
-			if ((int)symbole->code & 4)
+			if ((int)symbol->code & 4)
 				subtype += wxString::Format("_B");
 			// prolation parfaite
-			if ((int)symbole->code & 2)
+			if ((int)symbol->code & 2)
 				subtype += wxString::Format("_P");
 
-			mlfsb->SetValue( TYPE_MESURE, subtype, symbole->xrel );
+			mlfsb->SetValue( TYPE_MESURE, subtype, symbol->xrel );
 			m_symbols.Add( mlfsb );
 		}
 		// chiffres
 		else
 		{
-			wxString subtype = wxString::Format("CH_%d_%d",max (symbole->durNum, 1),max (symbole->durDen, 1));
-			mlfsb->SetValue( TYPE_MESURE, subtype, symbole->xrel );
+			wxString subtype = wxString::Format("CH_%d_%d",max (symbol->durNum, 1),max (symbol->durDen, 1));
+			mlfsb->SetValue( TYPE_MESURE, subtype, symbol->xrel );
 			m_symbols.Add( mlfsb );
 		}
 	}
-	//else if ((symbole->flag == CHAINE ) && (symbole->calte == NUMMES))
+	//else if ((symbol->flag == CHAINE ) && (symbol->calte == NUMMES))
 	//{}
 	else
 	{
@@ -932,14 +932,14 @@ bool MusMLFOutput::WriteSymbole(  MusSymbol *symbole )
 // MusMLFOutputNoPitch
 //----------------------------------------------------------------------------
 
-MusMLFOutputNoPitch::MusMLFOutputNoPitch( MusFile *file, wxString filename, MusMLFDictionary *dict, wxString model_symbole_name ) :
-    MusMLFOutput( file, filename, dict, model_symbole_name )
+MusMLFOutputNoPitch::MusMLFOutputNoPitch( MusFile *file, wxString filename, MusMLFDictionary *dict, wxString model_symbol_name ) :
+    MusMLFOutput( file, filename, dict, model_symbol_name )
 {
 }
 
 
-MusMLFOutputNoPitch::MusMLFOutputNoPitch( MusFile *file, int fd, wxString filename, MusMLFDictionary *dict, wxString model_symbole_name ) :
-	MusMLFOutput( file, fd, filename, dict, model_symbole_name )
+MusMLFOutputNoPitch::MusMLFOutputNoPitch( MusFile *file, int fd, wxString filename, MusMLFDictionary *dict, wxString model_symbol_name ) :
+	MusMLFOutput( file, fd, filename, dict, model_symbol_name )
 {
 }
 
@@ -1022,10 +1022,10 @@ bool MusMLFOutputNoPitch::WriteNote(  MusNote *note )
   autre
   */
 
-bool MusMLFOutputNoPitch::WriteSymbole(  MusSymbol *symbole )
+bool MusMLFOutputNoPitch::WriteSymbole(  MusSymbol *symbol )
 {
 	// gestion des segment de portees (pas actif ?????)
-	if ((symbole->flag == BARRE) && (symbole->code == 'I'))
+	if ((symbol->flag == BARRE) && (symbol->code == 'I'))
 	{	
 		wxASSERT_MSG( false, "Should not happen..." );
 		EndLabel();
@@ -1035,101 +1035,101 @@ bool MusMLFOutputNoPitch::WriteSymbole(  MusSymbol *symbole )
 
 	MusMLFSymbol *mlfsb = (MusMLFSymbol*)wxCreateDynamicObject( m_mlf_class_name );
 
-	if (symbole->flag == BARRE)
+	if (symbol->flag == BARRE)
 	{
-		mlfsb->SetValue( TYPE_SYMBOLE, "B", symbole->xrel );
+		mlfsb->SetValue( TYPE_SYMBOLE, "B", symbol->xrel );
 		m_symbols.Add( mlfsb );
 	}
-	else if (symbole->flag == CLE)
+	else if (symbol->flag == CLE)
 	{
-		switch(symbole->code)
-		{	case SOL2 : mlfsb->SetValue( TYPE_KEY, "S",  symbole->xrel, 2 ); break;
-			case SOL1 : mlfsb->SetValue( TYPE_KEY, "S",  symbole->xrel, 1 ); break;
-			case SOLva : mlfsb->SetValue( TYPE_KEY, "S",  symbole->xrel, 8 ); break;
-			case FA5 : mlfsb->SetValue( TYPE_KEY, "F",  symbole->xrel, 5 ); break;
-			case FA4 : mlfsb->SetValue( TYPE_KEY, "F",  symbole->xrel, 4 ); break;
-			case FA3 : mlfsb->SetValue( TYPE_KEY, "F",  symbole->xrel, 3 ); break;
-			case UT1 : mlfsb->SetValue( TYPE_KEY, "U",  symbole->xrel, 1 ); break;
-			case UT2 : mlfsb->SetValue( TYPE_KEY, "U",  symbole->xrel, 2 ); break;
-			case UT3 : mlfsb->SetValue( TYPE_KEY, "U",  symbole->xrel, 3 ); break;
-			case UT5 : mlfsb->SetValue( TYPE_KEY, "U",  symbole->xrel, 5); break;
-			case UT4 : mlfsb->SetValue( TYPE_KEY, "U",  symbole->xrel, 4 ); break;
+		switch(symbol->code)
+		{	case SOL2 : mlfsb->SetValue( TYPE_KEY, "S",  symbol->xrel, 2 ); break;
+			case SOL1 : mlfsb->SetValue( TYPE_KEY, "S",  symbol->xrel, 1 ); break;
+			case SOLva : mlfsb->SetValue( TYPE_KEY, "S",  symbol->xrel, 8 ); break;
+			case FA5 : mlfsb->SetValue( TYPE_KEY, "F",  symbol->xrel, 5 ); break;
+			case FA4 : mlfsb->SetValue( TYPE_KEY, "F",  symbol->xrel, 4 ); break;
+			case FA3 : mlfsb->SetValue( TYPE_KEY, "F",  symbol->xrel, 3 ); break;
+			case UT1 : mlfsb->SetValue( TYPE_KEY, "U",  symbol->xrel, 1 ); break;
+			case UT2 : mlfsb->SetValue( TYPE_KEY, "U",  symbol->xrel, 2 ); break;
+			case UT3 : mlfsb->SetValue( TYPE_KEY, "U",  symbol->xrel, 3 ); break;
+			case UT5 : mlfsb->SetValue( TYPE_KEY, "U",  symbol->xrel, 5); break;
+			case UT4 : mlfsb->SetValue( TYPE_KEY, "U",  symbol->xrel, 4 ); break;
 			default: break;
 		}
 		m_symbols.Add( mlfsb );
 	}
-	else if (symbole->flag == ALTER)
+	else if (symbol->flag == ALTER)
 	{
 		int  code = 0, oct = 0;
-		GetUt1( m_staff, symbole, &code, &oct);
-		if (symbole->calte == DIESE)
-			mlfsb->SetValue( TYPE_ALTERATION, "D",  symbole->xrel, 0, _note[code], oct );
-		else if (symbole->calte == BEMOL)
-			mlfsb->SetValue( TYPE_ALTERATION, "B",  symbole->xrel, 0, _note[code], oct );
-		else if (symbole->calte == BECAR)
-			mlfsb->SetValue( TYPE_ALTERATION, "H",  symbole->xrel, 0, _note[code], oct );
-		else if (symbole->calte == D_DIESE)
-			mlfsb->SetValue( TYPE_ALTERATION, "D",  symbole->xrel, 1, _note[code], oct );
-		else if (symbole->calte == D_BEMOL)
-			mlfsb->SetValue( TYPE_ALTERATION, "B",  symbole->xrel, 1, _note[code], oct );
+		GetUt1( m_staff, symbol, &code, &oct);
+		if (symbol->calte == DIESE)
+			mlfsb->SetValue( TYPE_ALTERATION, "D",  symbol->xrel, 0, _note[code], oct );
+		else if (symbol->calte == BEMOL)
+			mlfsb->SetValue( TYPE_ALTERATION, "B",  symbol->xrel, 0, _note[code], oct );
+		else if (symbol->calte == BECAR)
+			mlfsb->SetValue( TYPE_ALTERATION, "H",  symbol->xrel, 0, _note[code], oct );
+		else if (symbol->calte == D_DIESE)
+			mlfsb->SetValue( TYPE_ALTERATION, "D",  symbol->xrel, 1, _note[code], oct );
+		else if (symbol->calte == D_BEMOL)
+			mlfsb->SetValue( TYPE_ALTERATION, "B",  symbol->xrel, 1, _note[code], oct );
 		m_symbols.Add( mlfsb );
 	}
-	else if (symbole->flag == PNT)
+	else if (symbol->flag == PNT)
 	{
 		int  code = 0, oct = 0;
-		GetUt1( m_staff, symbole, &code, &oct);
-		mlfsb->SetValue( TYPE_POINT, "", symbole->xrel, 0, _note[code + ((code+oct) % 2)], ((code + ((code+oct) % 2)) == 8) ? (oct+1) : oct );
+		GetUt1( m_staff, symbol, &code, &oct);
+		mlfsb->SetValue( TYPE_POINT, "", symbol->xrel, 0, _note[code + ((code+oct) % 2)], ((code + ((code+oct) % 2)) == 8) ? (oct+1) : oct );
 		//str += wxString::Format("P_%s_%d\n",
-		//	_note[code + ((code+oct) % 2)],((code + ((code+oct) % 2)) == 8) ? (oct+1) : oct,symbole->code,code,oct);
+		//	_note[code + ((code+oct) % 2)],((code + ((code+oct) % 2)) == 8) ? (oct+1) : oct,symbol->code,code,oct);
 		m_symbols.Add( mlfsb );
 	}
-	else if (symbole->flag == IND_MES)
+	else if (symbol->flag == IND_MES)
 	{
 		// signes standard
-		if ((int)symbole->code & 64)
+		if ((int)symbol->code & 64)
 		{
-			switch (symbole->calte)
+			switch (symbol->calte)
 			{	
-				case 0: mlfsb->SetValue( TYPE_MESURE, "S_C", symbole->xrel ); break;
-				case 1: mlfsb->SetValue( TYPE_MESURE, "S_CB", symbole->xrel ); break;
-				case 2: mlfsb->SetValue( TYPE_MESURE, "S_2", symbole->xrel ); break;
-				case 3: mlfsb->SetValue( TYPE_MESURE, "S_3", symbole->xrel ); break;
-				case 4: mlfsb->SetValue( TYPE_MESURE, "S_2B", symbole->xrel ); break;
-				case 5: mlfsb->SetValue( TYPE_MESURE, "S_3B", symbole->xrel ); break;
+				case 0: mlfsb->SetValue( TYPE_MESURE, "S_C", symbol->xrel ); break;
+				case 1: mlfsb->SetValue( TYPE_MESURE, "S_CB", symbol->xrel ); break;
+				case 2: mlfsb->SetValue( TYPE_MESURE, "S_2", symbol->xrel ); break;
+				case 3: mlfsb->SetValue( TYPE_MESURE, "S_3", symbol->xrel ); break;
+				case 4: mlfsb->SetValue( TYPE_MESURE, "S_2B", symbol->xrel ); break;
+				case 5: mlfsb->SetValue( TYPE_MESURE, "S_3B", symbol->xrel ); break;
 			}
 			m_symbols.Add( mlfsb );
 		}
-		else if (symbole->code != 1)
+		else if (symbol->code != 1)
 		{
 			wxString subtype;
 			// temps parfait
-			if ((int)symbole->code & 32)
+			if ((int)symbol->code & 32)
 				subtype += wxString::Format("TP");
 			// temps imparfait	
-			else if ((int)symbole->code & 16)
+			else if ((int)symbol->code & 16)
 				subtype += wxString::Format("TI");
 			// temps imparfait double
-			else if ((int)symbole->code & 8)
+			else if ((int)symbol->code & 8)
 				subtype += wxString::Format("TID");
 			// barre
-			if ((int)symbole->code & 4)
+			if ((int)symbol->code & 4)
 				subtype += wxString::Format("_B");
 			// prolation parfaite
-			if ((int)symbole->code & 2)
+			if ((int)symbol->code & 2)
 				subtype += wxString::Format("_P");
 
-			mlfsb->SetValue( TYPE_MESURE, subtype, symbole->xrel );
+			mlfsb->SetValue( TYPE_MESURE, subtype, symbol->xrel );
 			m_symbols.Add( mlfsb );
 		}
 		// chiffres
 		else
 		{
-			wxString subtype = wxString::Format("CH_%d_%d",max (symbole->durNum, 1),max (symbole->durDen, 1));
-			mlfsb->SetValue( TYPE_MESURE, subtype, symbole->xrel );
+			wxString subtype = wxString::Format("CH_%d_%d",max (symbol->durNum, 1),max (symbol->durDen, 1));
+			mlfsb->SetValue( TYPE_MESURE, subtype, symbol->xrel );
 			m_symbols.Add( mlfsb );
 		}
 	}
-	//else if ((symbole->flag == CHAINE ) && (symbole->calte == NUMMES))
+	//else if ((symbol->flag == CHAINE ) && (symbol->calte == NUMMES))
 	//{}
 	else
 	{
@@ -1266,11 +1266,11 @@ MusSymbol *MusMLFInput::ConvertSymbole( wxString line )
 		str = tkz.GetNextToken();
 		if ( str == "B" )
 		{
-			MusSymbol *symbole = new MusSymbol();
-			symbole->flag = BARRE;
-			symbole->code = '|';
+			MusSymbol *symbol = new MusSymbol();
+			symbol->flag = BARRE;
+			symbol->code = '|';
 
-			return symbole;
+			return symbol;
 		}
 	}
 	else if ( str == "K" )
@@ -1278,32 +1278,32 @@ MusSymbol *MusMLFInput::ConvertSymbole( wxString line )
 		if ( ! tkz.HasMoreTokens() )
 			return NULL;
 		str = tkz.GetNextToken(); 
-		MusSymbol *symbole = new MusSymbol();
-		symbole->flag = CLE;
+		MusSymbol *symbol = new MusSymbol();
+		symbol->flag = CLE;
 		if ( str == "S2" )
-			symbole->code = SOL2;
+			symbol->code = SOL2;
 		else if ( str == "S1" )
-			symbole->code = SOL1;
+			symbol->code = SOL1;
 		else if ( str == "S8" )
-			symbole->code = SOLva;
+			symbol->code = SOLva;
 		else if ( str == "F4" )
-			symbole->code = FA4;
+			symbol->code = FA4;
 		else if ( str == "F3" )
-			symbole->code = FA3;
+			symbol->code = FA3;
 		else if ( str == "U1" )
-			symbole->code = UT1;
+			symbol->code = UT1;
 		else if ( str == "U2" )
-			symbole->code = UT2;
+			symbol->code = UT2;
 		else if ( str == "U3" )
-			symbole->code = UT3;
+			symbol->code = UT3;
 		else if ( str == "U5" )
-			symbole->code = UT5;
+			symbol->code = UT5;
 		else if ( str == "U4" )
-			symbole->code = UT4;
+			symbol->code = UT4;
 		else
 			wxLogWarning( _("Unkown key") );
 
-		return symbole;
+		return symbol;
 	}
 	else if ( str == "A" )
 	{
@@ -1316,25 +1316,25 @@ MusSymbol *MusMLFInput::ConvertSymbole( wxString line )
 		if ( ! tkz.HasMoreTokens() )
 			return NULL;
 		wxString str2 = tkz.GetNextToken(); 
-		MusSymbol *symbole = new MusSymbol();
-		symbole->flag = ALTER;
+		MusSymbol *symbol = new MusSymbol();
+		symbol->flag = ALTER;
 		GetPitchWWG( str1.GetChar(0), &code );
-		symbole->code = code;
-		symbole->oct = atoi( str2.c_str() );
+		symbol->code = code;
+		symbol->oct = atoi( str2.c_str() );
 		if ( str == "D0" )
-			symbole->calte = DIESE;
+			symbol->calte = DIESE;
 		else if ( str == "B0" )
-			symbole->calte = BEMOL;
+			symbol->calte = BEMOL;
 		else if ( str == "H0" )
-			symbole->calte = BECAR;
+			symbol->calte = BECAR;
 		else if ( str == "D1" )
-			symbole->calte = D_DIESE;
+			symbol->calte = D_DIESE;
 		else if ( str == "B1" )
-			symbole->calte = D_BEMOL;
+			symbol->calte = D_BEMOL;
 		else
 			wxLogWarning( _("Unkown alteration") );
 
-		return symbole;
+		return symbol;
 	}
 	else if ( str == "P" )
 	{
@@ -1344,21 +1344,21 @@ MusSymbol *MusMLFInput::ConvertSymbole( wxString line )
 		if ( ! tkz.HasMoreTokens() )
 			return NULL;
 		wxString str2 = tkz.GetNextToken();
-		MusSymbol *symbole = new MusSymbol();
-		symbole->flag = PNT;
+		MusSymbol *symbol = new MusSymbol();
+		symbol->flag = PNT;
 		GetPitchWWG( str1.GetChar(0), &code );
-		symbole->code = code;
-		symbole->oct = atoi( str2.c_str() );
+		symbol->code = code;
+		symbol->oct = atoi( str2.c_str() );
 
-		return symbole;
+		return symbol;
 	}
 	else if ( str == "M" )
 	{
 		if ( ! tkz.HasMoreTokens() )
 			return NULL;
 
-		MusSymbol *symbole = new MusSymbol();
-		symbole->flag = IND_MES;
+		MusSymbol *symbol = new MusSymbol();
+		symbol->flag = IND_MES;
 
 		wxString str = tkz.GetNextToken();
 		wxString option1;
@@ -1370,50 +1370,50 @@ MusSymbol *MusMLFInput::ConvertSymbole( wxString line )
 
 		if ( str == "S" )
 		{
-			symbole->code = 64;
+			symbol->code = 64;
 			if ( option1 == "C" )
-				symbole->calte = 0;
+				symbol->calte = 0;
 			else if ( option1 == "CB" )
-				symbole->calte = 1;
+				symbol->calte = 1;
 			else if ( option1 == "2" )
-				symbole->calte = 2;
+				symbol->calte = 2;
 			else if ( option1 == "3" )
-				symbole->calte = 3;
+				symbol->calte = 3;
 			else if ( option1 == "2B" )
-				symbole->calte = 4;
+				symbol->calte = 4;
 			else if ( option1 == "3B" )
-				symbole->calte = 5;
+				symbol->calte = 5;
 			else if ( option1 == "C" )
-				symbole->calte = 0;
+				symbol->calte = 0;
 			else
 				wxLogWarning( _("Unkown mesure signe indication") );
 		}
 		else if ( str == "CH" )
 		{
-			symbole->code = 1;
-			symbole->durNum = atoi( option1.c_str() );
-			symbole->durDen = atoi( option2.c_str() );
+			symbol->code = 1;
+			symbol->durNum = atoi( option1.c_str() );
+			symbol->durDen = atoi( option2.c_str() );
 		}
 		else 
 		{
 			if ( str == "TP" )
-				symbole->code = 32;
+				symbol->code = 32;
 			else if ( str == "TI" )
-				symbole->code = 16;
+				symbol->code = 16;
 			else if ( str == "TID" )
-				symbole->code = 8;
+				symbol->code = 8;
 			else
 				wxLogWarning( _("Unkown mesure indication") );
 			if ( option1 == "B" )
-				symbole->code += 4;
+				symbol->code += 4;
 			if (( option1 == "P" ) || ( option2 == "P" ))
-				symbole->code += 2;
+				symbol->code += 2;
 		}
 
-		return symbole;
+		return symbol;
 	}
 	else if ( str != "SP" )
-		wxLogWarning( _("Unknown symbole '%s'"), str.c_str() );
+		wxLogWarning( _("Unknown symbol '%s'"), str.c_str() );
 
 	return NULL;
 }
@@ -1429,7 +1429,7 @@ MusMLFInput::~MusMLFInput()
 }
 
 
-// copie le portee en convertissant les symboles de Ut vers Clef courrant
+// copie le portee en convertissant les symbols de Ut vers Clef courrant
 // si inPlace, directment dans staff
 
 MusStaff *MusMLFInput::GetNotUt1( MusStaff *staff , bool inPlace )
@@ -1456,12 +1456,12 @@ MusStaff *MusMLFInput::GetNotUt1( MusStaff *staff , bool inPlace )
 		}
 		else
 		{
-			MusSymbol *symbole = (MusSymbol*)&nstaff->m_elements[i];
-			if ((symbole->flag == ALTER) || (symbole->flag == PNT))
+			MusSymbol *symbol = (MusSymbol*)&nstaff->m_elements[i];
+			if ((symbol->flag == ALTER) || (symbol->flag == PNT))
 			{
-				GetNotUt1( nstaff, symbole, &code, &oct );
-				symbole->code = code;
-				symbole->oct = oct;
+				GetNotUt1( nstaff, symbol, &code, &oct );
+				symbol->code = code;
+				symbol->oct = oct;
 			}
 		}
 	}

@@ -333,7 +333,7 @@ void RecEnv::LoadWindow()
 	//m_musPanelPtr = new wxPanel( m_pageSplitterPtr, ID4_DISPLAY );
     //wxFlexGridSizer *mussizer = (wxFlexGridSizer*)MusOutputFunc4( m_musPanelPtr, TRUE );
     m_musControlPtr = (RecMusController*)m_envWindowPtr->FindWindowById( ID4_MUSPANEL );
-    m_musViewPtr = new RecMusWindow( m_musControlPtr, ID4_WGWINDOW, wxDefaultPosition,
+    m_musViewPtr = new RecMusWindow( m_musControlPtr, ID4_MUSWINDOW, wxDefaultPosition,
             wxDefaultSize, wxHSCROLL |wxVSCROLL | wxNO_BORDER  /*| wxSIMPLE_BORDER */ , false);
     m_musViewPtr->SetEnv( this );
     m_musControlPtr->Init( this, m_musViewPtr );
@@ -341,7 +341,7 @@ void RecEnv::LoadWindow()
 	// cross pointers on views and controller and pointer to the file
     m_musControlPtr->SetImViewAndController( m_imViewPtr, m_imControlPtr );
     m_musControlPtr->SetRecFile( m_recFilePtr );
-    m_imControlPtr->SetWgViewAndController( m_musViewPtr, m_musControlPtr );
+    m_imControlPtr->SetMusViewAndController( m_musViewPtr, m_musControlPtr );
     m_imControlPtr->SetRecFile( m_recFilePtr );
    
     m_toolpanel = (MusToolPanel*)m_envWindowPtr->FindWindowById( ID4_TOOLPANEL );
@@ -602,7 +602,7 @@ bool RecEnv::ResetFile()
         m_imControlPtr->Close();
     }
     
-    m_toolpanel->SetWgWindow( NULL );    
+    m_toolpanel->SetMusWindow( NULL );    
     m_musControlPtr->CancelShowStaffBitmap();
     m_pageSplitterPtr->Unsplit();
     UpdateTitle( );
@@ -661,7 +661,7 @@ void RecEnv::UpdateViews( int flags )
         m_recFilePtr->GetImage1( &img );
         m_imControlPtr->ResetImage( img );
 
-        m_musViewPtr->SetFile( m_recFilePtr->GetWgFile() );
+        m_musViewPtr->SetFile( m_recFilePtr->GetMusFile() );
         //m_musViewPtr->SetEnv( this );
         m_musViewPtr->SetToolPanel( m_toolpanel );
         m_musViewPtr->Goto( 1 );
@@ -1342,6 +1342,10 @@ void RecEnv::OnStaffCorrespondence( wxCommandEvent &event )
 /* 
     Methode de travail !!!!!!!!! Pas DU TOUT plombee !!!!
   */ 
+  
+#include "mus/mussvg.h"
+
+/*
 void RecEnv::OnExportImage( wxCommandEvent &event )
 {
     wxString filename;
@@ -1365,8 +1369,25 @@ void RecEnv::OnExportImage( wxCommandEvent &event )
     wxImage image = bitmap.ConvertToImage().ConvertToMono( 255 ,255 , 255 );
     image.SaveFile( filename );
     //bitmap.SaveFile( filename, wxBITMAP_TYPE_BMP );
+}*/
 
+void RecEnv::OnExportImage( wxCommandEvent &event )
+{
+    wxString filename;
+    filename = wxFileSelector( _("Save"), wxGetApp().m_lastDirTIFF_out, _T(""), NULL, IMAGE_FILES, wxSAVE);
+    if (filename.IsEmpty())
+        return;
+        
+    wxGetApp().m_lastDirTIFF_out = wxPathOnly( filename );
+    
+    MusSVGFileDC svgDC (filename, m_musViewPtr->ToZoom( m_musViewPtr->pageFormatHor + 30 )  ,
+        m_musViewPtr->ToZoom( m_musViewPtr->pageFormatVer + 10 )) ;
+	svgDC.SetTextForeground( *wxBLACK );
+	//dc.SetMapMode( wxMM_TEXT );
+	svgDC.SetAxisOrientation( true, false );
+   m_musViewPtr->m_page->DrawPage( &svgDC, false );
 }
+  
 
 void RecEnv::OnExportCmme( wxCommandEvent &event )
 {
@@ -1602,7 +1623,7 @@ void RecEnv::OnPaste( wxCommandEvent &event )
 
     if (win->GetId() == ID4_VIEW)
         m_imControlPtr->Paste();
-    else if (m_musViewPtr && (win->GetId() == ID4_WGWINDOW))
+    else if (m_musViewPtr && (win->GetId() == ID4_MUSWINDOW))
         m_musViewPtr->Paste();
 }
 
@@ -1616,7 +1637,7 @@ void RecEnv::OnCopy( wxCommandEvent &event )
 
     if (win->GetId() == ID4_VIEW)
         m_imControlPtr->Copy();
-    else if (m_musViewPtr && (win->GetId() == ID4_WGWINDOW))
+    else if (m_musViewPtr && (win->GetId() == ID4_MUSWINDOW))
         m_musViewPtr->Copy();
 }
 
@@ -1630,7 +1651,7 @@ void RecEnv::OnCut( wxCommandEvent &event )
 
     if (win->GetId() == ID4_VIEW)
         m_imControlPtr->Cut();
-    else if (m_musViewPtr && (win->GetId() == ID4_WGWINDOW))
+    else if (m_musViewPtr && (win->GetId() == ID4_MUSWINDOW))
         m_musViewPtr->Cut();
 }
 
@@ -1698,7 +1719,7 @@ void RecEnv::OnUpdateUI( wxUpdateUIEvent &event )
         //wxLogDebug("RecEnv::OnUpdateUI : update cut" );
         if (win->GetId() == ID4_VIEW)
            event.Enable( m_imControlPtr->CanCut() );
-        else if (m_musViewPtr && (win->GetId() == ID4_WGWINDOW))
+        else if (m_musViewPtr && (win->GetId() == ID4_MUSWINDOW))
             event.Enable( (m_musViewPtr && m_musViewPtr->CanCut()));
         else
             event.Enable( false );
@@ -1708,7 +1729,7 @@ void RecEnv::OnUpdateUI( wxUpdateUIEvent &event )
     {
         if (win->GetId() == ID4_VIEW)
            event.Enable( m_imControlPtr->CanCopy() );
-        else if (m_musViewPtr && (win->GetId() == ID4_WGWINDOW))
+        else if (m_musViewPtr && (win->GetId() == ID4_MUSWINDOW))
             event.Enable( (m_musViewPtr && m_musViewPtr->CanCopy()));
         else
             event.Enable( false );
@@ -1717,7 +1738,7 @@ void RecEnv::OnUpdateUI( wxUpdateUIEvent &event )
     {
         if (win->GetId() == ID4_VIEW)
            event.Enable( m_imControlPtr->CanPaste() );
-        else if (m_musViewPtr && (win->GetId() == ID4_WGWINDOW))
+        else if (m_musViewPtr && (win->GetId() == ID4_MUSWINDOW))
             event.Enable( (m_musViewPtr && m_musViewPtr->CanPaste()));
         else
             event.Enable( false );

@@ -523,10 +523,10 @@ void ImOperator::MoveElements( _imImage *src, _imImage *dest, int boxes[], int c
 }
 
 
-// don't works on binary images !!!!!!!
-/*
-void ImOperator::DistByCorrelationFFT(const _imImage *im1, const _imImage *im2,
-                                wxSize window, int *decalageX, int *decalageY)
+// FFT don't works on binary images !!!!!!!
+
+void ImOperator::DistByCorrelation( _imImage *im1,  _imImage *im2,
+                                wxSize window, int *decalageX, int *decalageY, int *maxCorr)
 {
     wxASSERT_MSG(decalageX, wxT("decalageX cannot be NULL") );
     wxASSERT_MSG(decalageY, wxT("decalagY cannot be NULL") );
@@ -535,14 +535,13 @@ void ImOperator::DistByCorrelationFFT(const _imImage *im1, const _imImage *im2,
     wxASSERT_MSG(im1->palette_count!=2, wxT("Image 1 cannot be binary") );
     wxASSERT_MSG(im2->palette_count!=2, wxT("Image 2 cannot be binary") );
 
-    
     //imImage *im1 = GetImImage(&image1, IM_GRAY);
     //imImage *im2 = GetImImage(&image2, IM_GRAY);
 
     imImage *corr = imImageCreate( im1->width, im1->height, IM_GRAY, IM_CFLOAT);
     imProcessCrossCorrelation( im1, im2, corr );
     imImage *corrCrop = imImageCreate( window.GetWidth() * 2 + 1, window.GetHeight() * 2 + 1,
-        corr->color_space, IM_CFLOAT );
+        IM_GRAY, IM_CFLOAT );
     int xmin = im1->width / 2 - window.GetWidth();
     int ymin = im1->height / 2 - window.GetHeight();
     imProcessCrop( corr, corrCrop, xmin, ymin );
@@ -582,10 +581,10 @@ void ImOperator::DistByCorrelationFFT(const _imImage *im1, const _imImage *im2,
     imImageDestroy( corrCrop );
     imImageDestroy( corr );
 }
-*/
 
 
 /// works on binary images 
+/*
 void ImOperator::DistByCorrelation( _imImage *im1, _imImage *im2,
                                 wxSize window, int *decalageX, int *decalageY, int *maxCorr)
 {
@@ -638,7 +637,7 @@ void ImOperator::DistByCorrelation( _imImage *im1, _imImage *im2,
     imImageDestroy(imTmp1);
     imImageDestroy(mask);
 }
-
+*/
 
 void ImOperator::MedianFilter( int values[], int size, int filter_size, int *avg_ptr )
 {

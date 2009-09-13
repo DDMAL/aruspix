@@ -61,7 +61,7 @@ public:
 	bool RecFile::GenerateMFC( wxArrayPtrVoid params, AxProgressDlg *dlg );
     //int DoCorrelation( ImPage *imPage );
 	// getters
-	MusFile *RecFile::GetWgFile() { return m_musFilePtr; }
+	MusFile *RecFile::GetMusFile() { return m_musFilePtr; }
 	ImPage *RecFile::GetImPage() { return m_imPagePtr; }
 	//RecTypModel *RecFile::GetTypModel() { return m_typModelPtr; }
 	

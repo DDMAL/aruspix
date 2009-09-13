@@ -594,7 +594,7 @@ bool MusSymbol::IsLastLyricElementInNote( )
 {
 	MusNote *note = this->m_note_ptr;	
 	int no = (int)note->m_lyrics.GetCount();
-	MusSymbol *tmp = &note->m_lyrics[ no - 1];
+	MusSymbol *tmp = &note->m_lyrics[ no - 1 ];
 
 	if ( this == tmp )
 		return true;
@@ -602,6 +602,8 @@ bool MusSymbol::IsLastLyricElementInNote( )
 		return false;
 }
 
+// Laurent: I am not sure what this method is doing...
+// Why can't we just check the length of the string?
 bool MusSymbol::IsLyricEmpty( )
 {
 	wxString str = this->m_debord_str;
@@ -615,6 +617,11 @@ bool MusSymbol::IsLyricEmpty( )
 	}
 	if ( length == i ) return true;
 	else return false;
+}
+
+bool MusSymbol::IsLyric( )
+{
+    return ((flag == CHAINE) && (fonte == LYRIC)); 
 }
 
 // WDR: handler implementations for MusSymbol

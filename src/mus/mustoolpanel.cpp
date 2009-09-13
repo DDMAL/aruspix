@@ -114,7 +114,7 @@ MusToolPanel::MusToolPanel( wxWindow *parent, wxWindowID id,
     m_w = NULL;
 }
 
-void MusToolPanel::SetWgWindow( MusWindow *w )
+void MusToolPanel::SetMusWindow( MusWindow *w )
 {
     m_w = w;
 }

@@ -139,7 +139,7 @@ void CmpEnv::LoadWindow()
 		
 	// collation
 	m_musControlPtr = new CmpMusController( m_pageSplitterPtr, ID6_DISPLAY );
-    m_musViewPtr = new CmpMusWindow( m_musControlPtr, ID6_WGWINDOW, wxDefaultPosition,
+    m_musViewPtr = new CmpMusWindow( m_musControlPtr, ID6_MUSWINDOW, wxDefaultPosition,
             wxDefaultSize, wxHSCROLL|wxVSCROLL|wxSIMPLE_BORDER , false);
     m_musViewPtr->SetEnv( this );
     m_musControlPtr->Init( this, m_musViewPtr );
@@ -169,7 +169,7 @@ void CmpEnv::LoadWindow()
 
     //m_musControlPtr->SetImViewAndController( m_imViewPtr, m_imControlPtr );
     //m_musControlPtr->SetRecFile( m_recFilePtr );
-    //m_imControlPtr->SetWgViewAndController( m_musViewPtr, m_musControlPtr );
+    //m_imControlPtr->SetMusViewAndController( m_musViewPtr, m_musControlPtr );
     //m_imControlPtr->SetRecFile( m_recFilePtr );
    
     //m_toolpanel = (MusToolPanel*)m_envWindowPtr->FindWindowById( ID4_TOOLPANEL );
@@ -271,7 +271,7 @@ void CmpEnv::UpdateTitle( )
         msg += wxString::Format("- %s - page %d / %d", 
 			m_cmpCollationPtr->m_name.c_str(), 
 			m_musViewPtr->m_npage + 1,
-			(int)m_cmpCollationPtr->GetWgFile()->m_pages.GetCount()  );
+			(int)m_cmpCollationPtr->GetMusFile()->m_pages.GetCount()  );
 
     SetTitle( "%s", msg.c_str() );
 
@@ -318,7 +318,7 @@ void CmpEnv::UpdateViews( int flags )
     {
         //m_pageSplitterPtr->SplitHorizontally( m_musControlPtr , m_srcSplitterPtr, CmpEnv::s_view_sash );
 		m_pageSplitterPtr->SplitVertically( m_musControlPtr , m_srcSplitterPtr, CmpEnv::s_view_sash );
-        m_musViewPtr->SetFile( m_cmpCollationPtr->GetWgFile() );
+        m_musViewPtr->SetFile( m_cmpCollationPtr->GetMusFile() );
         //m_musViewPtr->SetEnv( this );
         //m_musViewPtr->SetToolPanel( m_toolpanel );
         m_musViewPtr->Goto( 0 );
@@ -632,7 +632,7 @@ void CmpEnv::OnUpdateUI( wxUpdateUIEvent &event )
         //wxLogDebug("CmpEnv::OnUpdateUI : update cut" );
         if (win->GetId() == ID4_VIEW)
            event.Enable( m_imControlPtr->CanCut() );
-        else if (m_musViewPtr && (win->GetId() == ID4_WGWINDOW))
+        else if (m_musViewPtr && (win->GetId() == ID4_MUSWINDOW))
             event.Enable( (m_musViewPtr && m_musViewPtr->CanCut()));
         else
             event.Enable( false );
@@ -642,7 +642,7 @@ void CmpEnv::OnUpdateUI( wxUpdateUIEvent &event )
     {
         if (win->GetId() == ID4_VIEW)
            event.Enable( m_imControlPtr->CanCopy() );
-        else if (m_musViewPtr && (win->GetId() == ID4_WGWINDOW))
+        else if (m_musViewPtr && (win->GetId() == ID4_MUSWINDOW))
             event.Enable( (m_musViewPtr && m_musViewPtr->CanCopy()));
         else
             event.Enable( false );
@@ -651,7 +651,7 @@ void CmpEnv::OnUpdateUI( wxUpdateUIEvent &event )
     {
         if (win->GetId() == ID4_VIEW)
            event.Enable( m_imControlPtr->CanPaste() );
-        else if (m_musViewPtr && (win->GetId() == ID4_WGWINDOW))
+        else if (m_musViewPtr && (win->GetId() == ID4_MUSWINDOW))
             event.Enable( (m_musViewPtr && m_musViewPtr->CanPaste()));
         else
             event.Enable( false );

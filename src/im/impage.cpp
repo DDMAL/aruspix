@@ -346,7 +346,7 @@ void ImPage::CalcLeftRight( int *x1, int *x2)
 }
 
 
-bool ImPage::Check( wxString infile, int max_binary, int index )
+bool ImPage::Check( wxString infile, int max_size, int min_size, int index )
 {
     wxASSERT_MSG( m_progressDlg, "Progress dialog cannot be NULL");
 
@@ -355,8 +355,31 @@ bool ImPage::Check( wxString infile, int max_binary, int index )
 
     if ( !Read( infile, &m_opImMain, index ) )
         return false;
+        
+    // resize
+    // the biggest side of the image is reduced to max_size when bigger than max_size (and max_side != -1)
+    // the biggest side of the image is expanded to min_size when smaller 
+    float reduce = max( (float)m_opImMain->width / (float)max_size, (float)m_opImMain->height / (float)max_size );
+    float expand = min( (float)min_size / (float)m_opImMain->width, (float)min_size / (float)m_opImMain->height );
+    // trick: both reduce and expand are > 1.0 when true because the fraction above is reverse
+    if ( (expand > 1 ) || (reduce > 1) )
+    {
+        float resize_factor = (expand > reduce) ? 1.0 / expand : reduce;
+    
+        if (!m_progressDlg->SetOperation( _("Resizing image ...") ))
+            return this->Terminate( ERR_CANCELED );
 
-    int max_size = max( m_opImMain->width, m_opImMain->height );
+        m_opImTmp1 = imImageCreate(  (int)(m_opImMain->width  / resize_factor), (int)(m_opImMain->height  / resize_factor),
+            m_opImMain->color_space, m_opImMain->data_type);
+    
+        if ( !m_opImTmp1 )
+            return this->Terminate( ERR_MEMORY );
+
+        if ( !imProcessResize( m_opImMain ,m_opImTmp1, 1) )
+            return this->Terminate( ERR_CANCELED );
+        
+        SwapImages( &m_opImMain, &m_opImTmp1 );
+    }
 
     // verifier que l'image est de type IM_BYTE
     if ( m_opImMain->data_type != IM_BYTE )
@@ -396,13 +419,6 @@ bool ImPage::Check( wxString infile, int max_binary, int index )
         if ( !imProcessMeanConvolve( m_opImMain ,m_opImTmp1, 3 ) )
             return this->Terminate( ERR_CANCELED );
         SwapImages( &m_opImMain, &m_opImTmp1 );
-
-        // reduire par 4 si l'image est plus grande que max_binary, only if max_binary > -1
-        while ( (max_binary > -1) && (max_size > max_binary) )
-        {
-            this->m_reduction *= 2;
-            max_size /= 2;
-        }
     }
 
     // verifier negatif - positif : looking at the TIFF tag
@@ -460,6 +476,7 @@ bool ImPage::Check( wxString infile, int max_binary, int index )
 	SwapImages( &m_img0, &m_opImMain );
 	if ( m_isModified ) 
 		*m_isModified = true;
+        
 	return this->Terminate( ERR_NONE );
 
 }
@@ -474,7 +491,7 @@ bool ImPage::Deskew( double max_alpha )
 
 	this->SetMapImage( m_img0 );
 
-    if ( !GetImage( &m_opIm, DESKEW_FACTOR + m_reduction ) )
+    if ( !GetImage( &m_opIm, DESKEW_FACTOR ) )
         return false;
 
     imStats istats;
@@ -519,12 +536,12 @@ bool ImPage::Deskew( double max_alpha )
 
     // approximation par 1 degre ( 5x )
     max = 0;
-    for ( diff = skew3 - 2; diff <= skew3 + 2; diff += 1 )
+    for ( diff = skew3 - 2.0; diff <= skew3 + 2.0; diff += 1 )
     {
         align = GetDeskewAlignement( m_opIm, diff );
         if ( align > max )
         {
-            skew1 = diff;
+            skew2 = diff;
             max = align;
         }
     }
@@ -536,14 +553,14 @@ bool ImPage::Deskew( double max_alpha )
         align = GetDeskewAlignement( m_opIm, diff );
         if ( align > max )
         {
-            skew = diff;
+            skew1 = diff;
             max = align;
         }
     }
 	
-    // approximation par 0.125 degre ( 5x )
+    // approximation par 0.0625 degre ( 5x )
     max = 0;
-    for ( diff = skew1 - 0.25; diff <= skew1 + 0.25; diff += 0.125 )
+    for ( diff = skew1 - 0.125; diff <= skew1 + 0.125; diff += 0.0625 )
     {
         align = GetDeskewAlignement( m_opIm, diff );
         if ( align > max )
@@ -553,7 +570,7 @@ bool ImPage::Deskew( double max_alpha )
         }
     }
 
-    wxLogMessage("Skew %.2f", skew  );
+    wxLogMessage("Skew %.5f", skew  );
     //ImageDestroy( &m_opImAlign );
 
     if ( skew != 0.0 )
@@ -621,8 +638,8 @@ int ImPage::GetDeskewAlignement( _imImage *image, double alpha )
             {
                 offset = (int)(xx + yy * w);
                 if ( reduce )
-                    hist_val += (bufIm[ offset ] + 1) / reduce;
-                else if ( bufIm[ offset ] )
+                    hist_val += -(bufIm[ offset ] - 255) / reduce;
+                else if ( !bufIm[ offset ] )
                     hist_val++;
 
             }
@@ -863,7 +880,7 @@ bool ImPage::FindStaves( int min, int max, bool normalize, bool crop )
 
     double normalization_factor = 100.0 / (double)(4 * this->m_space_width + 6 * this->m_line_width) ; 
         // 6 lines to correct approximation error ( empiric ! )
-    double factor = (double)resize_factor / 2.0; 
+    double factor = (double)resize_factor / (double)RESIZE_FACTOR; 
         // toujours 2 une fois que l'image à ete normalisee
         // EX si 4 avant normalisation, image des staves X2
 	this->m_resize = normalization_factor;

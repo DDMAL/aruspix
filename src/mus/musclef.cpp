@@ -24,7 +24,7 @@
 // WDR: class implementations
 
 /* Calcule l'offset de la cle; doit etre separe de cle_id pour pouvoir
-  etre appele depuis rd_symbole() en cas de changement de definition.
+  etre appele depuis rd_symbol() en cas de changement de definition.
 	La valeur attribuee est un facteur de multiplication d'espaces
   (espace[pTaille]) decrivant l'eloignement de la clef par rapport a
   la ligne du bas.

@@ -21,7 +21,7 @@
 #include "musiomlf.h"
 
 #include "wx/arrimpl.cpp"
-WX_DEFINE_OBJARRAY( ArrayOfWgFonts );
+WX_DEFINE_OBJARRAY( ArrayOfMusFonts );
 
 //----------------------------------------------------------------------------
 // MusFont
@@ -252,7 +252,7 @@ bool MusWWGOutput::WriteFonts(  )
 {
 	char buffer[MAXPOLICENAME + 1];
 	
-    ArrayOfWgFonts fonts;
+    ArrayOfMusFonts fonts;
 	MusFont font;
 
 	font.fonteJeu = 1;
@@ -411,27 +411,28 @@ bool MusWWGOutput::WriteNote( const MusNote *note )
 	return true;
 }
 
-bool MusWWGOutput::WriteSymbole( const MusSymbol *symbole )
+bool MusWWGOutput::WriteSymbole( const MusSymbol *symbol )
 {
-	Write( &symbole->TYPE, 1 );
-	WriteElementAttr( symbole );
-	Write( &symbole->flag , 1 );
-	Write( &symbole->calte , 1 );
-	Write( &symbole->carStyle , 1 );
-	Write( &symbole->carOrient , 1 );
-	Write( &symbole->fonte , 1 );
-	Write( &symbole->s_lie_l , 1 );
-	Write( &symbole->point , 1 );
-	uint16 = wxUINT16_SWAP_ON_BE( symbole->code );
+	Write( &symbol->TYPE, 1 );
+	WriteElementAttr( symbol );
+	Write( &symbol->flag , 1 );
+	Write( &symbol->calte , 1 );
+	Write( &symbol->carStyle , 1 );
+	Write( &symbol->carOrient , 1 );
+	Write( &symbol->fonte , 1 );
+	Write( &symbol->s_lie_l , 1 );
+	Write( &symbol->point , 1 );
+	uint16 = wxUINT16_SWAP_ON_BE( symbol->code );
 	Write( &uint16, 2 );
-	uint16 = wxUINT16_SWAP_ON_BE( symbole->l_ptch );
+	uint16 = wxUINT16_SWAP_ON_BE( symbol->l_ptch );
 	Write( &uint16, 2 );	
-	int32 = wxINT32_SWAP_ON_BE( symbole->dec_y );
+	int32 = wxINT32_SWAP_ON_BE( symbol->dec_y );
 	Write( &int32, 4 );
-	if ( symbole->existDebord ) 
-		WriteDebord( symbole );
-    if ( symbole->flag == LYRIC )
-		WriteLyric( symbole );
+	if ( symbol->existDebord ) 
+		WriteDebord( symbol );
+    // if ( symbol->IsLyric() ) // To be fixed ??
+    if ( (symbol->flag == CHAINE) && (symbol->fonte == LYRIC) )
+		WriteLyric( symbol );
 	
 	return true;
 }
@@ -526,6 +527,7 @@ bool MusWWGOutput::WriteHeaderFooter( const MusHeaderFooter *headerfooter)
 MusWWGInput::MusWWGInput( MusFile *file, wxString filename ) :
 	MusFileInputStream( file, filename )
 {
+    m_lyric = NULL;
 }
 
 MusWWGInput::~MusWWGInput()
@@ -760,7 +762,7 @@ bool MusWWGInput::ReadStaff( MusStaff *staff )
 	Read( &staff->armTyp, 1 );
 	Read( &staff->armNbr, 1 );
 	Read( &staff->notAnc, 1 );
-	staff->notAnc = true;// force notation ancienne
+	//staff->notAnc = true;// force notation ancienne
 	Read( &staff->grise, 1 );
 	Read( &staff->invisible, 1 );
 	Read( &uint16, 2 );
@@ -791,12 +793,26 @@ bool MusWWGInput::ReadStaff( MusStaff *staff )
 		}
 		else
 		{
-			MusSymbol *symbole = new MusSymbol();
-			symbole->no = k;
-			ReadSymbole( symbole );
-			staff->m_elements.Add( symbole );
+			MusSymbol *symbol = new MusSymbol();
+			symbol->no = k;
+			ReadSymbole( symbol );
+            // For the lyrics, we must attach them to the notes
+            // We keep it and
+            if ( (symbol->flag == CHAINE) && (symbol->fonte == LYRIC) ) {
+                if ( m_lyric ) {
+                    wxLogWarning("Lyric element will '%s' be lost", symbol->m_debord_str.c_str() ); 
+                    delete m_lyric;
+                }
+                m_lyric = symbol;
+                symbol->m_debord_str = wxString( (char*)symbol->pdebord,
+                    (int)symbol->debordSize - 4);  // - sizeof( element->debordSize ) - sizeof( element->debordCode );
+                //staff->nblement--; 
+            } else {
+                staff->m_elements.Add( symbol );
+            }
 		}
 	}
+    staff->CheckIntegrity();
 			
 	return true;
 }
@@ -829,42 +845,37 @@ bool MusWWGInput::ReadNote( MusNote *note )
 	Read( &note->typStac, 1 );
 	if ( note->existDebord ) 
 		ReadDebord( note );
-
-	//if ( AxFile::FormatVersion(m_vmaj, m_vmin, m_vrev) < AxFile::FormatVersion(1, 5, 0) )
-		return true; // no lyrics before 1.5.0
-	
-	char count;
-	Read( &count, 1 );
-	
-	for ( int i = 0; i < count; i++ ) {
-		MusSymbol *lyric = new MusSymbol();
-		Read( &lyric->TYPE, 1 );
-		ReadSymbole( lyric );
-		lyric->m_note_ptr = note;				 		
-		note->m_lyrics.Add( lyric );
+        
+    if ( m_lyric) {
+        // default values
+        m_lyric->dec_y = - STAFF_OFFSET;
+        m_lyric->xrel = note->xrel - 20;
+		m_lyric->m_note_ptr = note;	
+		note->m_lyrics.Add( m_lyric );
+        m_lyric = NULL;
 	}
-
-	return true;
+        
+    return true;
 }
 
-bool MusWWGInput::ReadSymbole( MusSymbol *symbole )
+bool MusWWGInput::ReadSymbole( MusSymbol *symbol )
 {
-	ReadElementAttr( symbole );
-	Read( &symbole->flag , 1 );
-	Read( &symbole->calte , 1 );
-	Read( &symbole->carStyle , 1 );
-	Read( &symbole->carOrient , 1 );
-	Read( &symbole->fonte , 1 );
-	Read( &symbole->s_lie_l , 1 );
-	Read( &symbole->point , 1 );
+	ReadElementAttr( symbol );
+	Read( &symbol->flag , 1 );
+	Read( &symbol->calte , 1 );
+	Read( &symbol->carStyle , 1 );
+	Read( &symbol->carOrient , 1 );
+	Read( &symbol->fonte , 1 );
+	Read( &symbol->s_lie_l , 1 );
+	Read( &symbol->point , 1 );
 	Read( &uint16, 2 );
-	symbole->code = wxUINT16_SWAP_ON_BE( uint16 );
+	symbol->code = wxUINT16_SWAP_ON_BE( uint16 );
 	Read( &uint16, 2 );
-	symbole->l_ptch = wxUINT16_SWAP_ON_BE( uint16 );
+	symbol->l_ptch = wxUINT16_SWAP_ON_BE( uint16 );
 	Read( &int32, 4 );
-	symbole->dec_y = wxINT32_SWAP_ON_BE( int32 );
-	if ( symbole->existDebord ) 
-		ReadDebord( symbole );
+	symbol->dec_y = wxINT32_SWAP_ON_BE( int32 );
+	if ( symbol->existDebord ) 
+		ReadDebord( symbol );
      
 	return true;
 }
@@ -915,6 +926,7 @@ bool MusWWGInput::ReadDebord( MusElement *element )
 	int size = element->debordSize - 4; // - sizeof( element->debordSize ) - sizeof( element->debordCode );
 	element->pdebord = malloc( size );
 	Read( element->pdebord, size );
+    wxLogDebug("read debord %d, %s", size, (char*)element->pdebord );
 	return true;
 }
 

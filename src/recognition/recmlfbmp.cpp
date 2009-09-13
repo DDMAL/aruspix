@@ -144,12 +144,12 @@ bool RecMLFBmpTypes::Load( wxString file )
 }
 
 /*
-int RecMLFBmpTypes::GetWidth( MusMLFSymbol *symbole )
+int RecMLFBmpTypes::GetWidth( MusMLFSymbol *symbol )
 {
-	if ( !symbole )
+	if ( !symbol )
 		return 0;
 
-	wxString label = symbole->GetLabelType();
+	wxString label = symbol->GetLabelType();
 	for(int i = 0; i < (int)m_bitmap_types.GetCount(); i++)
 		if (m_bitmap_types[i].m_label == label)
 			return m_bitmap_types[i].m_width;
@@ -158,12 +158,12 @@ int RecMLFBmpTypes::GetWidth( MusMLFSymbol *symbole )
 }
 */
 
-RecMLFBmpType *RecMLFBmpTypes::GetType( MusMLFSymbol *symbole )
+RecMLFBmpType *RecMLFBmpTypes::GetType( MusMLFSymbol *symbol )
 {
-	if ( !symbole )
+	if ( !symbol )
 		return NULL;
 
-	wxString label = symbole->GetLabelType();
+	wxString label = symbol->GetLabelType();
 	for(int i = 0; i < (int)m_types.GetCount(); i++)
 		if (m_types[i].m_label == label)
 			return &m_types[i];
@@ -251,8 +251,8 @@ wxString RecMLFSymbolBmp::GetLabel( )
 // RecMLFBmp
 //----------------------------------------------------------------------------
 
-RecMLFBmp::RecMLFBmp( MusFile *file, wxString filename, wxString model_symbole_name ) :
-    MusMLFOutput( file, filename, NULL, model_symbole_name )
+RecMLFBmp::RecMLFBmp( MusFile *file, wxString filename, wxString model_symbol_name ) :
+    MusMLFOutput( file, filename, NULL, model_symbol_name )
 {
 	m_impage = NULL;
 }
@@ -282,7 +282,7 @@ wxBitmap RecMLFBmp::GenerateBitmap( ImStaff *imstaff, MusStaff *musStaff, int cu
 	}
 	wxBitmap bmp( mx-mn, STAFF_HEIGHT );
 
-	// fill symbole array with musStaff elements
+	// fill symbol array with musStaff elements
 	m_symbols.Clear();
 	MusStaff *ut1_staff = MusMLFOutput::GetUt1( musStaff );
     WriteStaff( ut1_staff, currentElementNo );
@@ -295,7 +295,7 @@ wxBitmap RecMLFBmp::GenerateBitmap( ImStaff *imstaff, MusStaff *musStaff, int cu
     
 	for (int i = 0; i < (int)m_symbols.GetCount(); i++ )
 	{
-		wxString symbole;
+		wxString symbol;
 		int pos = (&m_symbols[i])->GetPosition();
 		MusMLFSymbol *mlf = &m_symbols[i];
 		RecMLFBmpType *tp = m_bitmap_types.GetType( mlf );
@@ -368,7 +368,7 @@ void RecMLFBmp::EndLabel( )
     
 	for (int i = 0; i < (int)m_symbols.GetCount(); i++ )
 	{
-		wxString symbole;
+		wxString symbol;
 		int pos = (&m_symbols[i])->GetPosition();
 		MusMLFSymbol *mlf = &m_symbols[i];
 		RecMLFBmpType *tp = m_bitmap_types.GetType( mlf );

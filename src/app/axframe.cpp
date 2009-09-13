@@ -38,8 +38,8 @@ WX_DEFINE_OBJARRAY(AxEnvArray);
     #include "recognition/rec.h"
 #endif
 
-#ifdef AX_WGVIEWER
-    #include "wgviewer/wgviewer.h"
+#ifdef AX_EDT
+    #include "edt/edt.h"
 #endif
 
 #ifdef AX_SUPERIMPOSITION
@@ -157,12 +157,12 @@ AxFrame::AxFrame( wxWindow *parent, wxWindowID id, const wxString &title,
 	SupEnv::LoadConfig();
 #endif //AX_SUPERIMPOSITION
 
-#ifdef AX_WGVIEWER
-    envRow = new AxEnvRow( "WgvEnv", _("Wolfgang viewer"), menuId++, _("Wolfgang files viewer workspace") );
+#ifdef AX_EDT
+    envRow = new AxEnvRow( "EdtEnv", _("Editor"), menuId++, _("Editor workspace") );
     menuEnv->Insert( menuPos++, envRow->m_menuId, envRow->m_menuItem, envRow->m_helpStr, wxITEM_CHECK );
     m_envArray.Add( envRow );
-	WgvEnv::LoadConfig();
-#endif //AX_WGVIEWER
+	EdtEnv::LoadConfig();
+#endif //AX_EDT
 
 #ifdef AX_COMPARISON
     envRow = new AxEnvRow( "CmpEnv", _("Collation"), menuId++, _("Sources collation workspace") );
@@ -191,9 +191,9 @@ AxFrame::~AxFrame()
 	SupEnv::SaveConfig();
 #endif //AX_SUPERIMPOSITION
 
-#ifdef AX_WGVIEWER
-	WgvEnv::SaveConfig();
-#endif //AX_WGVIEWER
+#ifdef AX_EDT
+	EdtEnv::SaveConfig();
+#endif //AX_EDT
 
 #ifdef AX_COMPARISON
 	CmpEnv::SaveConfig();
@@ -254,14 +254,14 @@ void AxFrame::RealizeToolbar()
     }
 #endif //AX_SUPERIMPOSITION
 
-#ifdef AX_WGVIEWER
-	GetEnvironmentMenuId( "WgvEnv", &pos );
+#ifdef AX_EDT
+	GetEnvironmentMenuId( "EdtEnv", &pos );
 	if ( pos != -1 )
 	{
 		envRow = &m_envArray[pos];
 		m_toolBarPtr->AddTool( envRow->m_menuId, EnvBitmapFunc(4), wxNullBitmap, TRUE, NULL, envRow->m_menuItem, envRow->m_helpStr );
 	}
-#endif //AX_WGVIEWER
+#endif //AX_EDT
 
 	*/
     

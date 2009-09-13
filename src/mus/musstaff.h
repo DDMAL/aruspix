@@ -24,7 +24,7 @@
 #define STAFF_OFFSET 190
 
 class MusElement;
-WX_DECLARE_OBJARRAY( MusElement, ArrayOfWgElements);
+WX_DECLARE_OBJARRAY( MusElement, ArrayOfMusElements);
 
 class MusWindow;
 class MusSymbol;
@@ -94,7 +94,7 @@ public:
     
 public:
     // WDR: member variable declarations for MusStaff
-	ArrayOfWgElements m_elements;
+	ArrayOfMusElements m_elements;
 	/** nombre d'element sur la portee */
 	unsigned int nblement;
 	/** voix de la portee*/

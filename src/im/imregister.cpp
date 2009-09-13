@@ -242,12 +242,12 @@ bool ImRegister::Init( wxString filename1, wxString filename2 )
 
 	m_imPage1Ptr->SetProgressDlg( m_progressDlg );
 	
-	if ( !m_imPage1Ptr->Check( filename1 ) )
+	if ( !m_imPage1Ptr->Check( filename1, 2500, 1200 ) )
 		return false;
 
 	m_imPage2Ptr->SetProgressDlg( m_progressDlg );
 	
-	if ( !m_imPage2Ptr->Check( filename2 ) )
+	if ( !m_imPage2Ptr->Check( filename2, 2500, 1200 ) )
 		return false;
 
 	ImageDestroy( &m_src1 );
@@ -385,11 +385,23 @@ bool ImRegister::DetectPoints( wxPoint *points1, wxPoint *points2)
     if ( !m_src2 )
         return this->Terminate( ERR_MEMORY );
 	imProcessNegative( m_src2, m_src2 );
+    
+    /*
+    wxLogDebug("point1 1 %d %d", points1[0].x, points1[0].y );
+    wxLogDebug("point1 2 %d %d", points1[1].x, points1[1].y );
+    wxLogDebug("point1 3 %d %d", points1[2].x, points1[2].y );
+    wxLogDebug("point1 4 %d %d", points1[3].x, points1[3].y );
+    
+    wxLogDebug("point2 1 %d %d", points2[0].x, points2[0].y );
+    wxLogDebug("point2 2 %d %d", points2[1].x, points2[1].y );
+    wxLogDebug("point2 3 %d %d", points2[2].x, points2[2].y );
+    wxLogDebug("point2 4 %d %d", points2[3].x, points2[3].y );
+    */
 	
 	return this->Terminate( ERR_NONE );	
 }
 
-/*
+
 bool ImRegister::Register( wxPoint *points1, wxPoint *points2)
 {
     wxASSERT_MSG( m_progressDlg, "Progress dialog cannot be NULL");
@@ -451,7 +463,8 @@ bool ImRegister::Register( wxPoint *points1, wxPoint *points2)
     // facteur de redimensionnement, only for image 2 (the one for image 1 is identical to vfactor1
 	float hfactor1 = vfactor1;
     float hfactor2 = hfactor1 * (float)hmean1 / (float)hmean2;
-	wxLogDebug("vmean1 %d, hmean1 %d, vmean2 %d, hmean2 %d", vmean1, hmean1, vmean2, hmean2);
+	
+    wxLogDebug("vmean1 %d, hmean1 %d, vmean2 %d, hmean2 %d", vmean1, hmean1, vmean2, hmean2);
 	wxLogDebug("vfactor1 %f, vfactor2 %f, hfactor1 %f, hfactor2 %f", vfactor1, vfactor2, hfactor1, hfactor2);
 
     if (!m_progressDlg->SetOperation( _("Preparartion of image 1 ...") ))
@@ -615,31 +628,32 @@ bool ImRegister::Register( wxPoint *points1, wxPoint *points2)
     //wxLogDebug("p1 %d %d; p2 %d %d; p3 %d %d", m_reg_points1[0].x, m_reg_points1[0].y, m_reg_points1[1].x , m_reg_points1[1].y , m_reg_points1[2].x , m_reg_points1[2].y);
     //wxLogDebug("p1 %d %d; p2 %d %d; p3 %d %d", m_reg_points2[0].x, m_reg_points2[0].y, m_reg_points2[1].x , m_reg_points2[1].y , m_reg_points2[2].x , m_reg_points2[2].y);
 
+
     // marges x
-    int m1x1 = min( m_reg_points1[0].x, m_reg_points1[1].x );
-    int m1x2 = min( m_reg_points2[0].x, m_reg_points2[1].x );
-    int m2x1 = m_reg_points1[2].x;
-    int m2x2 = m_reg_points2[2].x;
+    int im1_mx1 = min( m_reg_points1[0].x, m_reg_points1[1].x );
+    int im2_mx1 = min( m_reg_points2[0].x, m_reg_points2[1].x );
+    int im1_mx2 = m_reg_points1[2].x;
+    int im2_mx2 = m_reg_points2[2].x;
     // marges y
-    int m1y1 = m_reg_points1[0].y;
-    int m1y2 = m_reg_points2[0].y;
-    int m2y1 = max( m_reg_points1[1].y, m_reg_points1[2].y );
-    int m2y2 = max( m_reg_points2[1].y, m_reg_points2[2].y );
+    int im1_my1 = m_reg_points1[0].y;
+    int im2_my1 = m_reg_points2[0].y;
+    int im1_my2 = max( m_reg_points1[1].y, m_reg_points1[2].y );
+    int im2_my2 = max( m_reg_points2[1].y, m_reg_points2[2].y );
 
     // min de crop des 2 images
-    int minx1 = (m1x1 > m1x2 ) ? m1x1 - m1x2 : 0;
-    int minx2 = (m1x2 > m1x1 ) ? m1x2 - m1x1 : 0;
-    int miny1 = (m1y1 > m1y2 ) ? m1y1 - m1y2 : 0;
-    int miny2 = (m1y2 > m1y1 ) ? m1y2 - m1y1 : 0;
+    int minx1 = (im1_mx1 > im2_mx1 ) ? im1_mx1 - im2_mx1 : 0;
+    int minx2 = (im2_mx1 > im1_mx1 ) ? im2_mx1 - im1_mx1 : 0;
+    int miny1 = (im1_my1 > im2_my1 ) ? im1_my1 - im2_my1 : 0;
+    int miny2 = (im2_my1 > im1_my1 ) ? im2_my1 - im1_my1 : 0;
 
     // largeur et hauteur de la zone de superposition + point d'orgine
-    int width = min( ( m2x1 - m1x1 ), ( m2x2 - m1x2 ) );
-    int height = min( ( m2y1 - m1y1 ), ( m2y2 - m1y2 ) );
-    wxPoint origine( min ( m1x1, m1x2 ), min ( m1y1, m1y2 ) );
+    int width = min( ( im1_mx2 - im1_mx1 ), ( im2_mx2 - im2_mx1 ) );
+    int height = min( ( im1_my2 - im1_my1 ), ( im2_my2 - im2_my1 ) );
+    wxPoint origine( min ( im1_mx1, im2_mx1 ), min ( im1_my1, im2_my1 ) );
 
     // largeur et hauteur des nouvelles images (zone de superposition + marge minimale )
-    int im_width = origine.x + width + min( m_im1->width - m1x1 - width, m_im2->width - m1x2 - width );
-    int im_height = origine.y + height + min( m_im1->height - m1y1 - height, m_im2->height - m1y2 - height );
+    int im_width = origine.x + width + min( m_im1->width - im1_mx1 - width, m_im2->width - im2_mx1 - width );
+    int im_height = origine.y + height + min( m_im1->height - im1_my1 - height, m_im2->height - im2_my1 - height );
     
     m_opImTmp1 = imImageCreate(im_width, im_height, m_im1->color_space, m_im1->data_type);
     if ( !m_opImTmp1 )
@@ -667,406 +681,8 @@ bool ImRegister::Register( wxPoint *points1, wxPoint *points2)
         return this->Terminate( ERR_MEMORY );
 	imProcessNegative( m_im2, m_src2 );
     
-    int x = 0, y = 0, maxCorr;
-    wxSize window(SupEnv::s_corr_x,SupEnv::s_corr_y);
-
-    int s_w = width / SupEnv::s_split_x;
-    int s_h = height / SupEnv::s_split_y;
-
-    m_opImTmp1 = imImageCreate( s_w, s_h, m_im1->color_space, m_im1->data_type );
-    if ( !m_opImTmp1 )
-		return this->Terminate( ERR_MEMORY );
-
-    m_opImTmp2 = imImageCreate( s_w, s_h, m_im2->color_space, m_im2->data_type );
-    if ( !m_opImTmp2 )
-        return this->Terminate( ERR_MEMORY );
-
-    m_opImAlign = imImageCreate( m_im2->width + 2 * window.GetWidth(), m_im2->height + 2 * window.GetHeight(),
-        m_im2->color_space, m_im2->data_type );
-    if ( !m_opImAlign )
-        return this->Terminate( ERR_MEMORY );
-
-    memset( m_opImAlign->data[0], 255, m_opImAlign->size );
-    if (m_im1->size < m_opImAlign->size)
-        imSetData( m_opImAlign, m_im1, window.GetWidth(), window.GetHeight() );
- 
-    //int counter2 = imCounterBegin("Superposition");
-    imCounterTotal( counter, SupEnv::s_split_y * SupEnv::s_split_x, "Superimpose");
-    if (!m_progressDlg->SetOperation( _("Superimposition of the images ...") ) )
-        return this->Terminate( ERR_CANCELED );
- 
-    for ( int s_y = 0; s_y < SupEnv::s_split_y; s_y++ )
-    {
-        for (int s_x = 0; s_x < SupEnv::s_split_x; s_x++ )
-        {
-            if ( !imCounterInc( counter ) || m_progressDlg->GetCanceled() )
-            {
-                m_progressDlg->ReactiveCounter( );
-                return this->Terminate( ERR_CANCELED );
-            }
-            m_progressDlg->SuspendCounter( );
-
-            imProcessCrop( m_im1, m_opImTmp1, origine.x + s_x * s_w, origine.y + s_y * s_h);
-			//imProcessThreshold( m_opImTmp1, m_opImTmp1, 127, 255 );
-            imProcessCrop( m_im2, m_opImTmp2, origine.x + s_x * s_w, origine.y + s_y * s_h);
-			//imProcessThreshold( m_opImTmp2, m_opImTmp2, 127, 255 );
-            
-			DistByCorrelation( m_opImTmp1, m_opImTmp2, window, &x, &y, &maxCorr );
-            wxLogDebug( "Correlation decalage (position %d-%d) %d-%d", s_x, s_y, x, y );
-            int marge_x = origine.x + s_x * s_w;
-            int marge_y = origine.y + s_y * s_h;
-            int selection_w = s_w;
-            int selection_h = s_h;
-            if (s_x == 0)
-            {
-                marge_x = 0;
-                selection_w += origine.x;
-            }
-            if (s_y == 0)
-            {
-                marge_y = 0;
-                selection_h += origine.y;
-            }
-            if (s_x == SupEnv::s_split_x - 1)
-            {
-                selection_w = m_im2->width - marge_x;
-            }
-            if (s_y == SupEnv::s_split_y - 1)
-            {
-                selection_h = m_im2->height - marge_y;
-            }
-            m_opImMask = imImageCreate( selection_w, selection_h, m_im2->color_space, m_im2->data_type );
-            if ( !m_opImMask )
-                return this->Terminate( ERR_MEMORY );
-
-            imProcessCrop( m_im2, m_opImMask, marge_x, marge_y);
-            imSetData( m_opImAlign, m_opImMask, 
-                    window.GetWidth() + marge_x + x,
-                    window.GetHeight() + marge_y + y);
-            ImageDestroy( &m_opImMask );
-            //wxLogDebug("Superposition %d %d", s_y * s_y, tot += wxGetElapsedTime( true ) );
-            m_progressDlg->ReactiveCounter( );
-        }
-    }
-    //imCounterEnd( counter );
-    imProcessCrop( m_opImAlign, m_im2, window.GetWidth(), window.GetHeight() );
-    ImageDestroy( &m_opImAlign );
-    ImageDestroy( &m_opImTmp1 );
-    ImageDestroy( &m_opImTmp2 );
-
-    if (!m_progressDlg->SetOperation( _("Writing image on disk ...") ) )
-        return this->Terminate( ERR_CANCELED );
-
-	// image for negative and bitwise operation
-    m_opImAlign = imImageCreate(im_width, im_height, IM_GRAY, IM_BYTE );
-    if ( !m_opImAlign )
-        return this->Terminate( ERR_MEMORY );
-		
-    // superposition in result imge
-	ImageDestroy( &m_result );
-    m_result = imImageCreate(im_width, im_height, IM_RGB, IM_BYTE );
-    if ( !m_result )
-        return this->Terminate( ERR_MEMORY );
-	
-	imProcessNegative( m_im1, m_opImAlign );
-	memcpy( m_result->data[0], m_opImAlign->data[0], m_opImAlign->size );
-	imProcessNegative( m_im2, m_opImAlign );
-	memcpy( m_result->data[1], m_opImAlign->data[0], m_opImAlign->size );	
-
-    imProcessBitwiseOp( m_im1, m_im2, m_opImAlign, IM_BIT_XOR );
-    //imProcessBitwiseOp( m_im1, m_im2, m_opImAlign, IM_BIT_AND );
-
-    memcpy( m_result->data[2], m_opImAlign->data[0], m_opImAlign->size );
-	
-	if ( m_isModified ) 
-		*m_isModified = true;
-	
-    return this->Terminate( ERR_NONE );	
-}
-*/
-
-
-bool ImRegister::Register( wxPoint *points1, wxPoint *points2)
-{
-    wxASSERT_MSG( m_progressDlg, "Progress dialog cannot be NULL");
-	wxASSERT_MSG( m_src1, "Src1 cannot be NULL");
-	wxASSERT_MSG( m_src2, "Src2 cannot be NULL");
-
-    if (!m_progressDlg->SetOperation( _("Registration ...") ) )
-        return this->Terminate( ERR_CANCELED );
-
-	int counter = m_progressDlg->GetCounter();
-
-	int i;
-    // copy m_reg_points locally for registration
-	for (i = 0; i < 4; i++ )
-	{
-		m_reg_points1[i] = points1[i];
-		m_reg_points2[i] = points2[i];
-	}
-
-    // calculer la hauteur des segments et redimensionner
-    int left1 = (int)sqrt( 
-        pow( (double)(m_reg_points1[0].x - m_reg_points1[1].x) , 2) + 
-        pow( (double)(m_reg_points1[0].y - m_reg_points1[1].y), 2));
-    int right1 = (int)sqrt( 
-        pow( (double)(m_reg_points1[2].x - m_reg_points1[3].x) , 2) + 
-        pow( (double)(m_reg_points1[2].y - m_reg_points1[3].y), 2));
-	int vmean1 = (left1 + right1) / 2; // moyenne des deux cotes
-    //wxLogDebug(" segment 1 %d", segment1 );
-    int left2 = (int)sqrt(
-        pow( (double)(m_reg_points2[0].x - m_reg_points2[1].x), 2) + 
-        pow( (double)(m_reg_points2[0].y - m_reg_points2[1].y), 2));
-    int right2 = (int)sqrt(
-        pow( (double)(m_reg_points2[2].x - m_reg_points2[3].x), 2) + 
-        pow( (double)(m_reg_points2[2].y - m_reg_points2[3].y), 2));
-	int vmean2 = (left2 + right2) / 2; // moyenne des deux cotes
-    // facteur de redimensionnement
-    float vfactor1 = 1.0;
-	//float vfactor1 = (float)SupEnv::s_segmentSize / (float)vmean1;
-	float vfactor2 = vfactor1 *(float)vmean1 / (float)vmean2;
-    //float vfactor2 = (float)SupEnv::s_segmentSize / (float)vmean2;
-	
-	
-    // idem segments horizontaux
-    int top1 = (int)sqrt( 
-        pow( (double)(m_reg_points1[0].x - m_reg_points1[2].x) , 2) + 
-        pow( (double)(m_reg_points1[0].y - m_reg_points1[2].y), 2));
-    int bottom1 = (int)sqrt( 
-        pow( (double)(m_reg_points1[1].x - m_reg_points1[3].x) , 2) + 
-        pow( (double)(m_reg_points1[1].y - m_reg_points1[3].y), 2));
-	int hmean1 = (top1 + bottom1) / 2; // moyenne des deux cotes
-    //wxLogDebug(" segment 1 %d", segment1 );
-    int top2 = (int)sqrt(
-        pow( (double)(m_reg_points2[0].x - m_reg_points2[2].x), 2) + 
-        pow( (double)(m_reg_points2[0].y - m_reg_points2[2].y), 2));
-    int bottom2 = (int)sqrt(
-        pow( (double)(m_reg_points2[1].x - m_reg_points2[3].x), 2) + 
-        pow( (double)(m_reg_points2[1].y - m_reg_points2[3].y), 2));
-	int hmean2 = (top2 + bottom2) / 2; // moyenne des deux cotes
-    // facteur de redimensionnement, only for image 2 (the one for image 1 is identical to vfactor1
-	float hfactor1 = vfactor1;
-    float hfactor2 = hfactor1 * (float)hmean1 / (float)hmean2;
-	wxLogDebug("vmean1 %d, hmean1 %d, vmean2 %d, hmean2 %d", vmean1, hmean1, vmean2, hmean2);
-	wxLogDebug("vfactor1 %f, vfactor2 %f, hfactor1 %f, hfactor2 %f", vfactor1, vfactor2, hfactor1, hfactor2);
-
-    if (!m_progressDlg->SetOperation( _("Preparartion of image 1 ...") ))
-        return this->Terminate( ERR_CANCELED );
-
-    m_im1 = imImageDuplicate( m_src1 );
-    if ( !m_im1 )
-        return this->Terminate( ERR_MEMORY );
-
-    // median filtering
-    if (SupEnv::s_filter1)
-    {
-        if ( !m_progressDlg->SetOperation( _("Filtering image ...") ))
-            return this->Terminate( ERR_CANCELED );
-
-        m_opImTmp1 = imImageClone( m_im1 );
-        if ( !m_opImTmp1 )
-            return this->Terminate( ERR_MEMORY );
-
-        if ( !imProcessMedianConvolve( m_im1 ,m_opImTmp1, 3 ) )
-            return this->Terminate( ERR_CANCELED );
-
-        SwapImages( &m_im1, &m_opImTmp1 );
-
-    }
-    // resize
-    if (!m_progressDlg->SetOperation( _("Resizing image ...") ))
-        return this->Terminate( ERR_CANCELED );
-
-    m_opImTmp1 = imImageCreate(  (int)(m_im1->width  * hfactor1), (int)(m_im1->height  * vfactor1),
-            m_im1->color_space, m_im1->data_type);
-    if ( !m_opImTmp1 )
-        return this->Terminate( ERR_MEMORY );
-
-    if ( !imProcessResize( m_im1 ,m_opImTmp1, SupEnv::s_interpolation) )
-        return this->Terminate( ERR_CANCELED );
-
-    SwapImages( &m_im1, &m_opImTmp1 );
-
-    // ajuster la position des m_reg_points
-    m_reg_points1[0].x = (int)(m_reg_points1[0].x * hfactor1);
-    m_reg_points1[0].y = (int)(m_reg_points1[0].y * vfactor1);
-    m_reg_points1[1].x = (int)(m_reg_points1[1].x * hfactor1);
-    m_reg_points1[1].y = (int)(m_reg_points1[1].y * vfactor1);
-    m_reg_points1[2].x = (int)(m_reg_points1[2].x * hfactor1);
-    m_reg_points1[2].y = (int)(m_reg_points1[2].y * vfactor1);
-	m_reg_points1[3].x = (int)(m_reg_points1[3].x * hfactor1);
-    m_reg_points1[3].y = (int)(m_reg_points1[3].y * vfactor1);
-
-
-    if (!m_progressDlg->SetOperation( _("Preparation of image 2 ...") ))
-        return this->Terminate( ERR_CANCELED );
-
-    m_im2 = imImageDuplicate( m_src2 );
-    if ( !m_im2 )
-        return this->Terminate( ERR_MEMORY );
-
-    // median filtering
-    if (SupEnv::s_filter2)
-    {
-        if (!m_progressDlg->SetOperation( _("Filtering image ...") ))
-            return this->Terminate( ERR_CANCELED );
-
-        m_opImTmp1 = imImageClone(  m_im2 );
-        if ( !m_opImTmp1 )
-            return this->Terminate( ERR_MEMORY );
-   
-        if ( !imProcessMedianConvolve( m_im2 ,m_opImTmp1, 3 ) )
-            return this->Terminate( ERR_CANCELED );
-
-        SwapImages( &m_im2, &m_opImTmp1 );
-    }
-    // resize
-    if (!m_progressDlg->SetOperation( _("Resizing image ...") ))
-        return this->Terminate( ERR_CANCELED );
-
-    m_opImTmp1 = imImageCreate(  (int)(m_im2->width  * hfactor2), (int)(m_im2->height  * vfactor2),
-            m_im2->color_space, m_im2->data_type);
-    if ( !m_opImTmp1 )
-        return this->Terminate( ERR_MEMORY );
-
-    if ( !imProcessResize( m_im2 ,m_opImTmp1, SupEnv::s_interpolation ) )
-        return this->Terminate( ERR_CANCELED );
-
-    SwapImages( &m_im2, &m_opImTmp1 );
-
-    m_reg_points2[0].x = (int)(m_reg_points2[0].x * hfactor2);
-    m_reg_points2[0].y = (int)(m_reg_points2[0].y * vfactor2);
-    m_reg_points2[1].x = (int)(m_reg_points2[1].x * hfactor2);
-    m_reg_points2[1].y = (int)(m_reg_points2[1].y * vfactor2);
-    m_reg_points2[2].x = (int)(m_reg_points2[2].x * hfactor2);
-    m_reg_points2[2].y = (int)(m_reg_points2[2].y * vfactor2);
-	m_reg_points2[3].x = (int)(m_reg_points2[3].x * hfactor2);
-    m_reg_points2[3].y = (int)(m_reg_points2[3].y * vfactor2);
-
-    // calculer les angles et pivoter
-    int new_w, new_h;
-    double cos0, sin0;
-
-    // image 1
-    // calculer l'angle
-    if (!m_progressDlg->SetOperation( _("Rotation of image 1 ...") ))
-        return this->Terminate( ERR_CANCELED );
-
-    float left_alpha1 = float(m_reg_points1[0].x - m_reg_points1[1].x) / float(m_reg_points1[0].y - m_reg_points1[1].y);
-    left_alpha1 = atan(left_alpha1);
-	float right_alpha1 = float(m_reg_points1[2].x - m_reg_points1[3].x) / float(m_reg_points1[2].y - m_reg_points1[3].y);
-    right_alpha1 = atan(right_alpha1);
-	float alpha1 = (left_alpha1 + right_alpha1) / 2;
-
-    sin0 = sin(alpha1);
-    cos0 = cos(alpha1);
-    imProcessCalcRotateSize( m_im1->width, m_im1->height, &new_w, &new_h, cos0, sin0 );
-    // ajuster la position des m_reg_points
-    m_reg_points1[0] = CalcPositionAfterRotation( m_reg_points1[0], alpha1, m_im1->width, m_im1->height, new_w, new_h);
-    m_reg_points1[1] = CalcPositionAfterRotation( m_reg_points1[1], alpha1, m_im1->width, m_im1->height, new_w, new_h);
-    m_reg_points1[2] = CalcPositionAfterRotation( m_reg_points1[2], alpha1, m_im1->width, m_im1->height, new_w, new_h);
-
-    m_opImTmp1 = imImageCreate(new_w, new_h, m_im1->color_space, m_im1->data_type);
-    if ( !m_opImTmp1 )
-        return this->Terminate( ERR_MEMORY );
-
-    imImageCopyAttributes( m_im1, m_opImTmp1);
-    if ( !imProcessRotate( m_im1, m_opImTmp1, cos0, sin0, SupEnv::s_interpolation) )
-        return this->Terminate( ERR_CANCELED );
-
-    SwapImages( &m_im1, &m_opImTmp1 );
-
-
-    // idem image 2
-    if (!m_progressDlg->SetOperation( _("Rotation of image 2 ...") ))
-        return this->Terminate( ERR_CANCELED );
-
-    float left_alpha2 = float(m_reg_points2[0].x - m_reg_points2[1].x) / float(m_reg_points2[0].y - m_reg_points2[1].y);
-    left_alpha2 = atan( left_alpha2 );
-    float right_alpha2 = float(m_reg_points2[2].x - m_reg_points2[3].x) / float(m_reg_points2[2].y - m_reg_points2[3].y);
-    right_alpha2 = atan( right_alpha2 );
-	float alpha2 = (left_alpha2 + right_alpha2) / 2;
-
-    sin0 = sin(alpha2);
-    cos0 = cos(alpha2);
-    imProcessCalcRotateSize( m_im2->width, m_im2->height, &new_w, &new_h, cos0, sin0 );
-    m_reg_points2[0] = CalcPositionAfterRotation( m_reg_points2[0], alpha2, m_im2->width, m_im2->height, new_w, new_h);
-    m_reg_points2[1] = CalcPositionAfterRotation( m_reg_points2[1], alpha2, m_im2->width, m_im2->height, new_w, new_h);
-    m_reg_points2[2] = CalcPositionAfterRotation( m_reg_points2[2], alpha2, m_im2->width, m_im2->height, new_w, new_h);
-
-    m_opImTmp1 = imImageCreate( new_w, new_h, m_im2->color_space, m_im2->data_type );
-    if ( !m_opImTmp1 )
-        return this->Terminate( ERR_MEMORY );
-
-    imImageCopyAttributes( m_im2, m_opImTmp1 );
-    if ( !imProcessRotate( m_im2, m_opImTmp1, cos0, sin0, SupEnv::s_interpolation ) )
-        return this->Terminate( ERR_CANCELED );
-
-    SwapImages( &m_im2, &m_opImTmp1 );
-
-    // deplacer (crop ou marges)
-    if (!m_progressDlg->SetOperation( _("Calculation of margins ...") ) )
-       return this->Terminate( ERR_CANCELED );
-
-    //wxLogDebug("p1 %d %d; p2 %d %d; p3 %d %d", m_reg_points1[0].x, m_reg_points1[0].y, m_reg_points1[1].x , m_reg_points1[1].y , m_reg_points1[2].x , m_reg_points1[2].y);
-    //wxLogDebug("p1 %d %d; p2 %d %d; p3 %d %d", m_reg_points2[0].x, m_reg_points2[0].y, m_reg_points2[1].x , m_reg_points2[1].y , m_reg_points2[2].x , m_reg_points2[2].y);
-
-    // marges x
-    int m1x1 = min( m_reg_points1[0].x, m_reg_points1[1].x );
-    int m1x2 = min( m_reg_points2[0].x, m_reg_points2[1].x );
-    int m2x1 = m_reg_points1[2].x;
-    int m2x2 = m_reg_points2[2].x;
-    // marges y
-    int m1y1 = m_reg_points1[0].y;
-    int m1y2 = m_reg_points2[0].y;
-    int m2y1 = max( m_reg_points1[1].y, m_reg_points1[2].y );
-    int m2y2 = max( m_reg_points2[1].y, m_reg_points2[2].y );
-
-    // min de crop des 2 images
-    int minx1 = (m1x1 > m1x2 ) ? m1x1 - m1x2 : 0;
-    int minx2 = (m1x2 > m1x1 ) ? m1x2 - m1x1 : 0;
-    int miny1 = (m1y1 > m1y2 ) ? m1y1 - m1y2 : 0;
-    int miny2 = (m1y2 > m1y1 ) ? m1y2 - m1y1 : 0;
-
-    // largeur et hauteur de la zone de superposition + point d'orgine
-    int width = min( ( m2x1 - m1x1 ), ( m2x2 - m1x2 ) );
-    int height = min( ( m2y1 - m1y1 ), ( m2y2 - m1y2 ) );
-    wxPoint origine( min ( m1x1, m1x2 ), min ( m1y1, m1y2 ) );
-
-    // largeur et hauteur des nouvelles images (zone de superposition + marge minimale )
-    int im_width = origine.x + width + min( m_im1->width - m1x1 - width, m_im2->width - m1x2 - width );
-    int im_height = origine.y + height + min( m_im1->height - m1y1 - height, m_im2->height - m1y2 - height );
-    
-    m_opImTmp1 = imImageCreate(im_width, im_height, m_im1->color_space, m_im1->data_type);
-    if ( !m_opImTmp1 )
-        return this->Terminate( ERR_MEMORY );
-
-    imProcessCrop( m_im1 , m_opImTmp1, minx1, miny1 );
-    SwapImages( &m_im1, &m_opImTmp1 );
-
-    m_opImTmp1 = imImageCreate(im_width, im_height, m_im2->color_space, m_im2->data_type);
-    if ( !m_opImTmp1 )
-        return this->Terminate( ERR_MEMORY );
-
-    imProcessCrop( m_im2 , m_opImTmp1, minx2, miny2 );
-    SwapImages( &m_im2, &m_opImTmp1 );
-
-    // garder l'image original pour le fichier
-	ImageDestroy( &m_src1 );
-    m_src1 = imImageClone( m_im1 );
-    if ( !m_src1 )
-        return this->Terminate( ERR_MEMORY );
-	imProcessNegative( m_im1, m_src1 );
-	ImageDestroy( &m_src2 );
-    m_src2 = imImageClone( m_im2 );
-    if ( !m_src2 )
-        return this->Terminate( ERR_MEMORY );
-	imProcessNegative( m_im2, m_src2 );
-	
-	
-    //wxSize window( min( 10, width / 25 ), min( 10, height / 25 ) );
-	wxSize window( 50 ,  50 );
-	//wxSize window( width / 25 ,  height / 25 );
+    // we can start with a fairly wide window
+    wxSize window( max( 50, width / 25 ), max( 50, height / 25 ) );
 	wxLogDebug( "Window %d x %d", window.GetWidth(), window.GetHeight() );
 
     m_opImAlign = imImageCreate( m_im2->width + 2 * window.GetWidth(), m_im2->height + 2 * window.GetHeight(),
@@ -1078,7 +694,8 @@ bool ImRegister::Register( wxPoint *points1, wxPoint *points2)
     if (m_im1->size < m_opImAlign->size)
         imSetData( m_opImAlign, m_im1, window.GetWidth(), window.GetHeight() );
 		
-	SubRegister( origine, window, wxSize( width, height ) );
+    wxLogDebug( "Register" );
+	SubRegister( origine, window, wxSize( width, height ), 0, 1, 1 );
  
     //imCounterEnd( counter );
     imProcessCrop( m_opImAlign, m_im2, window.GetWidth(), window.GetHeight() );
@@ -1117,207 +734,120 @@ bool ImRegister::Register( wxPoint *points1, wxPoint *points2)
 }
 
 
-bool ImRegister::SubRegister( wxPoint origine, wxSize window, wxSize size )
+bool ImRegister::SubRegister( wxPoint origine, wxSize window, wxSize size, int level, int row, int column )
 {
-	
-	int x = 0, y = 0, maxCorr;
-	
 
-	if ( (window.GetWidth() <= 30) && (window.GetHeight() <= 30) )
-	{
-		int factor = max( 1, min( window.GetWidth() / 15, window.GetHeight() / 15 ) ); // smallest value, but at least 1
-	
-		m_opImTmp1 = imImageCreate( size.GetWidth(), size.GetHeight(), m_im1->color_space, m_im1->data_type );
-		if ( !m_opImTmp1 )
-			return this->Terminate( ERR_MEMORY );
-
-		m_opImTmp2 = imImageCreate( size.GetWidth(), size.GetHeight(), m_im2->color_space, m_im2->data_type );
-		if ( !m_opImTmp2 )
-			return this->Terminate( ERR_MEMORY );
-			
-		imProcessCrop( m_im1, m_opImTmp1, origine.x, origine.y);
-		imProcessCrop( m_im2, m_opImTmp2, origine.x, origine.y);
-		
-		DistByCorrelation( m_opImTmp1, m_opImTmp2, window / factor, &x, &y, &maxCorr );
-		
-		ImageDestroy( &m_opImTmp1 );
-		ImageDestroy( &m_opImTmp2 );
-	}
-	
-	
-	/*
-	int factor = max( 1, min( window.GetWidth() / 15, window.GetHeight() / 15 ) ); // smallest value, but at least 1
-	
-	m_opImTmp1 = imImageCreate( size.GetWidth() / factor, size.GetHeight()  / factor, m_im1->color_space, m_im1->data_type );
-	if ( !m_opImTmp1 )
-		return this->Terminate( ERR_MEMORY );
-
-	m_opImTmp2 = imImageCreate( size.GetWidth()  / factor, size.GetHeight()  / factor, m_im2->color_space, m_im2->data_type );
-	if ( !m_opImTmp2 )
-		return this->Terminate( ERR_MEMORY );
-	
-	if ( factor == 1 )
-	{
-		imProcessCrop( m_im1, m_opImTmp1, origine.x, origine.y);
-		imProcessCrop( m_im2, m_opImTmp2, origine.x, origine.y);
-	}
-	else
-	{
-		wxLogDebug("Factor %d", factor );
-		m_opImMask = imImageCreate( size.GetWidth(), size.GetHeight(), m_im1->color_space, m_im1->data_type );
-		if ( !m_opImMask )
-			return this->Terminate( ERR_MEMORY );
-		
-		imProcessCrop( m_im1, m_opImMask, origine.x, origine.y);
-		imProcessResize( m_opImMask, m_opImTmp1, 1 );
-		imProcessCrop( m_im2, m_opImMask, origine.x, origine.y);
-		imProcessResize( m_opImMask, m_opImTmp2, 1 );
-		
-		ImageDestroy( &m_opImMask );
-	}	
-	
-	DistByCorrelation( m_opImTmp1, m_opImTmp2, window / factor, &x, &y, &maxCorr );
-		
-	ImageDestroy( &m_opImTmp1 );
-	ImageDestroy( &m_opImTmp2 );
-	
-	x *= factor;
-	y *= factor;
-	*/
-	
 	wxLogDebug("SubRegister origine %d %d, window %d %d, size %d %d",
 		origine.x, origine.y, window.GetWidth(), window.GetHeight(), size.GetWidth(), size.GetHeight() );
-	wxLogDebug( "Correlation decalage %d %d", x, y );
+        	
+	int x = 0, y = 0, maxCorr;
+    
+    wxSize subwindow = window;
+    
+    //if ( level > 0 )
+    {
+        m_opImTmp1 = imImageCreate( size.GetWidth(), size.GetHeight(), m_im1->color_space, m_im1->data_type );
+        if ( !m_opImTmp1 )
+            return this->Terminate( ERR_MEMORY );
+
+        m_opImTmp2 = imImageCreate( size.GetWidth(), size.GetHeight(), m_im2->color_space, m_im2->data_type );
+        if ( !m_opImTmp2 )
+            return this->Terminate( ERR_MEMORY );
+            
+        imProcessCrop( m_im1, m_opImTmp1, origine.x, origine.y);
+        imProcessCrop( m_im2, m_opImTmp2, origine.x, origine.y);
+
+        DistByCorrelation( m_opImTmp1, m_opImTmp2, window, &x, &y, &maxCorr );
+
+        ImageDestroy( &m_opImTmp1 );
+        ImageDestroy( &m_opImTmp2 );
+
+        wxLogDebug( "Correlation decalage %d %d", x, y );
 		
-		
-    //wxSize subwindow( min( 10, size.GetWidth() / 50 ), min(10, size.GetHeight() / 50 ) );
-	wxSize subwindow = window / 2;
-	if ( (subwindow.GetWidth() <= 3 ) && (subwindow.GetHeight() <= 3 ) )
-	{  
+        // use the detected shift to determine the next window size (but at least 5 pixels)
+        subwindow = wxSize( max(abs(3*x), 9), max(abs(3*y), 9) );
+    }
+
+	if ( level > 3 )
+    // end of the recursion
+    {  
 		m_opImMask = imImageCreate( size.GetWidth(), size.GetHeight(), m_im2->color_space, m_im2->data_type );
 		if ( !m_opImMask )
                 return this->Terminate( ERR_MEMORY );
-				
-		imProcessCrop( m_im2, m_opImMask, origine.x, origine.y);
-		imSetData( m_opImAlign, m_opImMask, 
-					(m_opImAlign->width - m_im2->width) / 2 + origine.x + x,
-                    (m_opImAlign->height - m_im2->height) / 2 + origine.y + y);
-		ImageDestroy( &m_opImMask );
+        
+        int plevel = pow( 2, level );
+        //if (( row == 1 ) || ((row / plevel) == 1) || (column == 1) || ((column / plevel) == 1) ) 
+        {
+            imProcessCrop( m_im2, m_opImMask, origine.x, origine.y);
+            imSetData( m_opImAlign, m_opImMask, 
+                        (m_opImAlign->width - m_im2->width) / 2 + origine.x - x,
+                        (m_opImAlign->height - m_im2->height) / 2 + origine.y - y);
+            ImageDestroy( &m_opImMask );
+        }
 	
 		return true;
 	}
 	
-	m_opImMask = imImageCreate( size.GetWidth(), size.GetHeight(), m_im2->color_space, m_im2->data_type );
-	if ( !m_opImMask )
-			return this->Terminate( ERR_MEMORY );
+    // move the content
+    // the problem here is that we have a recusion: we cannot use a m_opXXX image because it would be overriden
+    // we use a local variable which would NOT be destroyed if a Terminate occur deeper in the recursion
+    // => potential memory leak if the program keep failing....
+	imImage *buffer = imImageCreate( size.GetWidth(), size.GetHeight(), m_im2->color_space, m_im2->data_type );
+	if ( !buffer )
+        return this->Terminate( ERR_MEMORY );
 				
-	imProcessCrop( m_im2, m_opImMask, origine.x, origine.y);
-	imSetData( m_im2, m_opImMask, 
-					origine.x + x,
-                    origine.y + y);
-	ImageDestroy( &m_opImMask );
+	imProcessCrop( m_im2, buffer, origine.x, origine.y);
+	imSetData( m_im2, buffer, origine.x - x, origine.y - y);
 	
-	origine.x += x;
-	origine.y += y;
+	origine.x -= x;
+	origine.y -= y;
 
 	// for subsize as we done what to loose pixels because of odd values
 	wxSize subsize1 = size / 2;
 	wxSize subsize2 = size - subsize1;
 	wxSize subsize3( subsize1.GetWidth(), subsize2.GetHeight() ); 
 	wxSize subsize4( subsize2.GetWidth(), subsize1.GetHeight() );
+    
+    wxPoint origine1 = origine;
+    wxPoint origine2 = origine + subsize1;
+    wxPoint origine3 = wxPoint( origine.x, origine.y + subsize1.GetHeight() );
+    wxPoint origine4 = wxPoint( origine.x + subsize1.GetWidth(), origine.y );
+
+    level++;
+    row *= 2;
+    column *= 2;
+    
+	SubRegister( origine1, subwindow, subsize1, level, row - 1, column - 1 );
+        
+    // next level, we need to copy again the mask because the content might have been modified during the previous recursion
+    m_opImTmp1 = imImageCreate( subsize2.GetWidth(), subsize2.GetHeight(), m_im2->color_space, m_im2->data_type );
+	if ( !m_opImTmp1 )
+			return this->Terminate( ERR_MEMORY );
+    imProcessCrop( buffer, m_opImTmp1, origine2.x - origine1.x, origine2.y - origine1.y );
+    imSetData( m_im2, m_opImTmp1, origine2.x, origine2.y );
+	SubRegister( origine2, subwindow, subsize2, level, row, column );
+    ImageDestroy( &m_opImTmp1 );
+        
+    // next
+    m_opImTmp1 = imImageCreate( subsize3.GetWidth(), subsize3.GetHeight(), m_im2->color_space, m_im2->data_type );
+	if ( !m_opImTmp1 )
+			return this->Terminate( ERR_MEMORY );
+    imProcessCrop( buffer, m_opImTmp1, 0, origine3.y - origine1.y );
+    imSetData( m_im2, m_opImTmp1, origine3.x, origine3.y );
+	SubRegister( origine3, subwindow, subsize3, level, row - 1, column );
+    ImageDestroy( &m_opImTmp1 );
+
+    // next
+    m_opImTmp1 = imImageCreate( subsize4.GetWidth(), subsize4.GetHeight(), m_im2->color_space, m_im2->data_type );
+	if ( !m_opImTmp1 )
+			return this->Terminate( ERR_MEMORY );
+    imProcessCrop( buffer, m_opImTmp1, origine4.x - origine1.x, 0 );
+    imSetData( m_im2, m_opImTmp1, origine4.x, origine4.y );
+	SubRegister( origine4, subwindow, subsize4, level, row, column - 1 );
+    ImageDestroy( &m_opImTmp1 );
 	
-	SubRegister( origine, subwindow, 
-		subsize1 );
-	SubRegister( origine + subsize1, subwindow,
-		subsize2 );
-	SubRegister( wxPoint( origine.x, origine.y + subsize1.GetHeight() ), 
-		subwindow, subsize3 );
-	SubRegister( wxPoint( origine.x + subsize1.GetWidth(), origine.y ),
-		subwindow, subsize4 );
-	
-
-	/*
-    wxSize window( width / 50, height / 20);
-	wxLogDebug( "Window %d x %d", window.m_width, window.m_height );
-
-    m_opImTmp1 = imImageCreate( width, height, m_im1->color_space, m_im1->data_type );
-    if ( !m_opImTmp1 )
-		return this->Terminate( ERR_MEMORY );
-
-    m_opImTmp2 = imImageCreate( width, height, m_im2->color_space, m_im2->data_type );
-    if ( !m_opImTmp2 )
-        return this->Terminate( ERR_MEMORY );
-
-    m_opImAlign = imImageCreate( width + 2 * window.GetWidth(), height + 2 * window.GetHeight(),
-        m_im2->color_space, m_im2->data_type );
-    if ( !m_opImAlign )
-        return this->Terminate( ERR_MEMORY );
-
-    memset( m_opImAlign->data[0], 255, m_opImAlign->size );
-    if (m_im1->size < m_opImAlign->size)
-        imSetData( m_opImAlign, m_im1, window.GetWidth(), window.GetHeight() );
-		
-	SubRegister( origine_x, origine_y, m_im1, m_im2, window )
- 
-    //int counter2 = imCounterBegin("Superposition");
-    //imCounterTotal( counter, SupEnv::s_split_y * SupEnv::s_split_x, "Superimpose");
-    //if (!m_progressDlg->SetOperation( _("Superimposition of the images ...") ) )
-    //    return this->Terminate( ERR_CANCELED );
- 
-    for ( int s_y = 0; s_y < SupEnv::s_split_y; s_y++ )
-    {
-        for (int s_x = 0; s_x < SupEnv::s_split_x; s_x++ )
-        {
-            if ( !imCounterInc( counter ) || m_progressDlg->GetCanceled() )
-            {
-                m_progressDlg->ReactiveCounter( );
-                return this->Terminate( ERR_CANCELED );
-            }
-            m_progressDlg->SuspendCounter( );
-
-            imProcessCrop( m_im1, m_opImTmp1, origine.x + s_x * s_w, origine.y + s_y * s_h);
-			//imProcessThreshold( m_opImTmp1, m_opImTmp1, 127, 255 );
-            imProcessCrop( m_im2, m_opImTmp2, origine.x + s_x * s_w, origine.y + s_y * s_h);
-			//imProcessThreshold( m_opImTmp2, m_opImTmp2, 127, 255 );
-            
-			DistByCorrelation( m_opImTmp1, m_opImTmp2, window, &x, &y, &maxCorr );
-            wxLogDebug( "Correlation decalage (position %d-%d) %d-%d", s_x, s_y, x, y );
-            int marge_x = origine.x + s_x * s_w;
-            int marge_y = origine.y + s_y * s_h;
-            int selection_w = s_w;
-            int selection_h = s_h;
-            if (s_x == 0)
-            {
-                marge_x = 0;
-                selection_w += origine.x;
-            }
-            if (s_y == 0)
-            {
-                marge_y = 0;
-                selection_h += origine.y;
-            }
-            if (s_x == SupEnv::s_split_x - 1)
-            {
-                selection_w = m_im2->width - marge_x;
-            }
-            if (s_y == SupEnv::s_split_y - 1)
-            {
-                selection_h = m_im2->height - marge_y;
-            }   
-            m_opImMask = imImageCreate( selection_w, selection_h, m_im2->color_space, m_im2->data_type );
-            if ( !m_opImMask )
-                return this->Terminate( ERR_MEMORY );
-
-            imProcessCrop( m_im2, m_opImMask, marge_x, marge_y);
-            imSetData( m_opImAlign, m_opImMask, 
-                    window.GetWidth() + marge_x + x,
-                    window.GetHeight() + marge_y + y);
-            ImageDestroy( &m_opImMask );
-            //wxLogDebug("Superposition %d %d", s_y * s_y, tot += wxGetElapsedTime( true ) );
-            m_progressDlg->ReactiveCounter( );
-        }
-    }
-	*/
+    imImageDestroy( buffer );
+    
 	return true;
 }
 

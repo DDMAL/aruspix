@@ -45,9 +45,9 @@ public:
         long style = wxDEFAULT_DIALOG_STYLE );
     
     // WDR: method declarations for AxOptionsDlg
-    wxPanel* GetWgPanel()  { return (wxPanel*) FindWindow( ID_PANEL_WINKEY ); }
-    wxSpinCtrl* GetScWgOffset()  { return (wxSpinCtrl*) FindWindow( ID_SC_MUS_OFFSET ); }
-    wxSpinCtrl* GetScWgSize()  { return (wxSpinCtrl*) FindWindow( ID_SC_MUS_SIZE ); }
+    wxPanel* GetMusPanel()  { return (wxPanel*) FindWindow( ID_PANEL_WINKEY ); }
+    wxSpinCtrl* GetScMusOffset()  { return (wxSpinCtrl*) FindWindow( ID_SC_MUS_OFFSET ); }
+    wxSpinCtrl* GetScMusSize()  { return (wxSpinCtrl*) FindWindow( ID_SC_MUS_SIZE ); }
     wxStaticText* GetFontName()  { return (wxStaticText*) FindWindow( ID_FONT_NAME ); }
 	wxStaticText* GetLyricFontName()  { return (wxStaticText*) FindWindow( ID_LYRIC_FONT_NAME ); }
 	wxTextCtrl* GetDocDir()  { return (wxTextCtrl*) FindWindow( ID_DOCUMENTS_DIR ); }

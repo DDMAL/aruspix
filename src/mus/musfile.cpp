@@ -22,7 +22,7 @@
 #include "muspage.h"
 
 #include "wx/arrimpl.cpp"
-WX_DEFINE_OBJARRAY( ArrayOfWgPages );
+WX_DEFINE_OBJARRAY( ArrayOfMusPages );
 
 char *MusFile::sep = "#ώτυώ#";
 
