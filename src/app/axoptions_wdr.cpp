@@ -440,61 +440,61 @@ wxSizer *Sup1DlgFunc( wxWindow *parent, bool call_fit, bool set_sizer )
 
     wxFlexGridSizer *item1 = new wxFlexGridSizer( 2, 0, 0 );
 
-    wxStaticText *item2 = new wxStaticText( parent, IDO_TEXT, _("Vertical size (in pixels)"), wxDefaultPosition, wxDefaultSize, 0 );
+    wxStaticText *item2 = new wxStaticText( parent, IDO_TEXT, _("Initial correlation window height"), wxDefaultPosition, wxDefaultSize, 0 );
     item1->Add( item2, 0, wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
-    wxTextCtrl *item3 = new wxTextCtrl( parent, ID2_TC_SIZE_OPS1, wxT(""), wxDefaultPosition, wxSize(80,-1), 0 );
+    wxSpinCtrl *item3 = new wxSpinCtrl( parent, ID2_SC_CORRY_OPS1, wxT("50"), wxDefaultPosition, wxSize(50,-1), 0, 10, 100, 50 );
     item1->Add( item3, 0, wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxTOP, 5 );
 
-    wxStaticText *item4 = new wxStaticText( parent, IDO_TEXT, _("Interpolation"), wxDefaultPosition, wxDefaultSize, 0 );
+    wxStaticText *item4 = new wxStaticText( parent, IDO_TEXT, _("Initial correlation window width"), wxDefaultPosition, wxDefaultSize, 0 );
     item1->Add( item4, 0, wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
-    wxString strs5[] = 
+    wxSpinCtrl *item5 = new wxSpinCtrl( parent, ID2_SC_CORRX_OPS1, wxT("50"), wxDefaultPosition, wxSize(50,-1), 0, 10, 100, 50 );
+    item1->Add( item5, 0, wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxTOP, 5 );
+
+    wxStaticText *item6 = new wxStaticText( parent, IDO_TEXT, _("Sub-windowing level"), wxDefaultPosition, wxDefaultSize, 0 );
+    item1->Add( item6, 0, wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+
+    wxSpinCtrl *item7 = new wxSpinCtrl( parent, ID2_SC_SUBWINDOW_OPS1, wxT("2"), wxDefaultPosition, wxSize(50,-1), 0, 0, 5, 2 );
+    item1->Add( item7, 0, wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxTOP, 5 );
+
+    wxStaticText *item8 = new wxStaticText( parent, IDO_TEXT, _("Correlation sub-window height"), wxDefaultPosition, wxDefaultSize, 0 );
+    item1->Add( item8, 0, wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+
+    wxSpinCtrl *item9 = new wxSpinCtrl( parent, ID2_SC_SPLITX_OPS1, wxT("9"), wxDefaultPosition, wxSize(50,-1), 0, 3, 99, 9 );
+    item1->Add( item9, 0, wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxTOP, 5 );
+
+    wxStaticText *item10 = new wxStaticText( parent, IDO_TEXT, _("Correlation sub-window width"), wxDefaultPosition, wxDefaultSize, 0 );
+    item1->Add( item10, 0, wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+
+    wxSpinCtrl *item11 = new wxSpinCtrl( parent, ID2_SC_SPLITY_OPS1, wxT("9"), wxDefaultPosition, wxSize(50,-1), 0, 3, 99, 9 );
+    item1->Add( item11, 0, wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxTOP, 5 );
+
+    wxStaticText *item12 = new wxStaticText( parent, IDO_TEXT, _("Filter image 1"), wxDefaultPosition, wxDefaultSize, 0 );
+    item1->Add( item12, 0, wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+
+    wxCheckBox *item13 = new wxCheckBox( parent, ID2_CH_FILTER1_OPS1, wxT(""), wxDefaultPosition, wxDefaultSize, 0 );
+    item13->SetValue( TRUE );
+    item1->Add( item13, 0, wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxTOP, 10 );
+
+    wxStaticText *item14 = new wxStaticText( parent, IDO_TEXT, _("Filter image 2"), wxDefaultPosition, wxDefaultSize, 0 );
+    item1->Add( item14, 0, wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+
+    wxCheckBox *item15 = new wxCheckBox( parent, ID2_CH_FILTER2_OPS1, wxT(""), wxDefaultPosition, wxDefaultSize, 0 );
+    item15->SetValue( TRUE );
+    item1->Add( item15, 0, wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxTOP, 10 );
+
+    wxStaticText *item16 = new wxStaticText( parent, IDO_TEXT, _("Interpolation"), wxDefaultPosition, wxDefaultSize, 0 );
+    item1->Add( item16, 0, wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+
+    wxString strs17[] = 
     {
         _("None"), 
         _("Bi-linear"), 
         _("Bi-cubic")
     };
-    wxChoice *item5 = new wxChoice( parent, ID2_CC_INTERP_OPS1, wxDefaultPosition, wxSize(100,-1), 3, strs5, 0 );
-    item1->Add( item5, 0, wxALIGN_CENTER|wxLEFT|wxRIGHT|wxTOP, 5 );
-
-    wxStaticText *item6 = new wxStaticText( parent, IDO_TEXT, _("Horizontal segmentation"), wxDefaultPosition, wxDefaultSize, 0 );
-    item1->Add( item6, 0, wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL|wxALL, 5 );
-
-    wxSpinCtrl *item7 = new wxSpinCtrl( parent, ID2_SC_SPLITX_OPS1, wxT("3"), wxDefaultPosition, wxSize(50,-1), 0, 1, 10, 3 );
-    item1->Add( item7, 0, wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxTOP, 5 );
-
-    wxStaticText *item8 = new wxStaticText( parent, IDO_TEXT, _("Vertical segmentation"), wxDefaultPosition, wxDefaultSize, 0 );
-    item1->Add( item8, 0, wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL|wxALL, 5 );
-
-    wxSpinCtrl *item9 = new wxSpinCtrl( parent, ID2_SC_SPLITY_OPS1, wxT("8"), wxDefaultPosition, wxSize(50,-1), 0, 1, 20, 8 );
-    item1->Add( item9, 0, wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxTOP, 5 );
-
-    wxStaticText *item10 = new wxStaticText( parent, IDO_TEXT, _("Width of the correlation window"), wxDefaultPosition, wxDefaultSize, 0 );
-    item1->Add( item10, 0, wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL|wxALL, 5 );
-
-    wxSpinCtrl *item11 = new wxSpinCtrl( parent, ID2_SC_CORRX_OPS1, wxT("30"), wxDefaultPosition, wxSize(50,-1), 0, 10, 100, 30 );
-    item1->Add( item11, 0, wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxTOP, 5 );
-
-    wxStaticText *item12 = new wxStaticText( parent, IDO_TEXT, _("Height of the correlation window"), wxDefaultPosition, wxDefaultSize, 0 );
-    item1->Add( item12, 0, wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL|wxALL, 5 );
-
-    wxSpinCtrl *item13 = new wxSpinCtrl( parent, ID2_SC_CORRY_OPS1, wxT("50"), wxDefaultPosition, wxSize(50,-1), 0, 10, 100, 50 );
-    item1->Add( item13, 0, wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxTOP, 5 );
-
-    wxStaticText *item14 = new wxStaticText( parent, IDO_TEXT, _("Filter image 1"), wxDefaultPosition, wxDefaultSize, 0 );
-    item1->Add( item14, 0, wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL|wxALL, 5 );
-
-    wxCheckBox *item15 = new wxCheckBox( parent, ID2_CH_FILTER1_OPS1, wxT(""), wxDefaultPosition, wxDefaultSize, 0 );
-    item15->SetValue( TRUE );
-    item1->Add( item15, 0, wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxTOP, 10 );
-
-    wxStaticText *item16 = new wxStaticText( parent, IDO_TEXT, _("Filter image 2"), wxDefaultPosition, wxDefaultSize, 0 );
-    item1->Add( item16, 0, wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL|wxALL, 5 );
-
-    wxCheckBox *item17 = new wxCheckBox( parent, ID2_CH_FILTER2_OPS1, wxT(""), wxDefaultPosition, wxDefaultSize, 0 );
-    item17->SetValue( TRUE );
-    item1->Add( item17, 0, wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxTOP, 10 );
+    wxChoice *item17 = new wxChoice( parent, ID2_CC_INTERP_OPS1, wxDefaultPosition, wxSize(100,-1), 3, strs17, 0 );
+    item1->Add( item17, 0, wxALIGN_CENTER|wxLEFT|wxRIGHT|wxTOP, 5 );
 
     item0->Add( item1, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 

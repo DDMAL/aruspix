@@ -70,6 +70,8 @@ public:
     
 private:
     // WDR: handler declarations for ImRegister
+    int m_counter;
+    int m_sub_register_total;
 
 };
 

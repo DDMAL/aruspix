@@ -173,9 +173,6 @@ void AxOptionsDlg::OptionsDlgSuperimposition( wxNotebook *notebook )
 	m_min_size.Set( max( m_min_size.GetWidth(), size.GetWidth() ), max( m_min_size.GetHeight(), size.GetHeight() ) );
     notebook->AddPage( item1, _("Superimposition") );
 
-    m_sizeStr = wxString::Format("%d",SupEnv::s_segmentSize);
-    this->GetTcSizeOps1()->SetValidator(
-        wxTextValidator(wxFILTER_NUMERIC,&m_sizeStr));
     switch (SupEnv::s_interpolation)
     {
     case 0: m_interpolation_index = 0; break;
@@ -186,6 +183,8 @@ void AxOptionsDlg::OptionsDlgSuperimposition( wxNotebook *notebook )
     this->GetCcInterpOps1()->SetValidator(
         wxGenericValidator(&m_interpolation_index));
 
+    this->GetScSubWindowOps1()->SetValidator(
+        wxGenericValidator(&SupEnv::s_subWindowLevel));
     this->GetScSplitxOps1()->SetValidator(
         wxGenericValidator(&SupEnv::s_split_x));
     this->GetScSplityOps1()->SetValidator(
@@ -466,7 +465,6 @@ void AxOptionsDlg::OnOk(wxCommandEvent &event)
         case 2: SupEnv::s_interpolation = 3; break;
         default: SupEnv::s_interpolation = 0;
         }
-        SupEnv::s_segmentSize= atoi(m_sizeStr);
 	#endif
 		
 	#ifdef AX_RECOGNITION

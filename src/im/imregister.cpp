@@ -237,13 +237,16 @@ bool ImRegister::Init( wxString filename1, wxString filename2 )
 	wxASSERT_MSG( m_imPage1Ptr, "ImPage1 cannot be NULL" );
 	wxASSERT_MSG( m_imPage2Ptr, "ImPage2 cannot be NULL" );
 	
-    if (!m_progressDlg->SetOperation( _("Checking the images ...") ) )
+    if (!m_progressDlg->SetOperation( _("Checking the image 1 ...") ) )
         return this->Terminate( ERR_CANCELED );
 
 	m_imPage1Ptr->SetProgressDlg( m_progressDlg );
 	
 	if ( !m_imPage1Ptr->Check( filename1, 2500, 1200 ) )
 		return false;
+        
+    if (!m_progressDlg->SetOperation( _("Checking the image 2 ...") ) )
+        return this->Terminate( ERR_CANCELED );
 
 	m_imPage2Ptr->SetProgressDlg( m_progressDlg );
 	
@@ -312,6 +315,9 @@ bool ImRegister::DetectPoints( wxPoint *points1, wxPoint *points2)
 	wxASSERT_MSG( m_imPage2Ptr, "ImPage2 cannot be NULL" );
 	
 	bool failed = false;
+    
+    if (!m_progressDlg->SetOperation( _("Analyzing the image 1 ...") ) )
+        return this->Terminate( ERR_CANCELED );
 	
 	if ( !failed ) 
         failed = !m_imPage1Ptr->Deskew( 10.0 ); // 2 operations max
@@ -319,6 +325,9 @@ bool ImRegister::DetectPoints( wxPoint *points1, wxPoint *points2)
     if ( !failed ) 
         failed = !m_imPage1Ptr->FindStaves(  3, 50, false, false );  // 4 operations max
 	
+    if (!m_progressDlg->SetOperation( _("Analyzing the image 2 ...") ) )
+        return this->Terminate( ERR_CANCELED );
+    
 	if ( !failed ) 
         failed = !m_imPage2Ptr->Deskew( 10.0 ); // 2 operations max
         
@@ -411,8 +420,6 @@ bool ImRegister::Register( wxPoint *points1, wxPoint *points2)
     if (!m_progressDlg->SetOperation( _("Registration ...") ) )
         return this->Terminate( ERR_CANCELED );
 
-	int counter = m_progressDlg->GetCounter();
-
 	int i;
     // copy m_reg_points locally for registration
 	for (i = 0; i < 4; i++ )
@@ -439,9 +446,7 @@ bool ImRegister::Register( wxPoint *points1, wxPoint *points2)
 	int vmean2 = (left2 + right2) / 2; // moyenne des deux cotes
     // facteur de redimensionnement
     float vfactor1 = 1.0;
-	//float vfactor1 = (float)SupEnv::s_segmentSize / (float)vmean1;
 	float vfactor2 = vfactor1 *(float)vmean1 / (float)vmean2;
-    //float vfactor2 = (float)SupEnv::s_segmentSize / (float)vmean2;
 	
 	
     // idem segments horizontaux
@@ -464,8 +469,8 @@ bool ImRegister::Register( wxPoint *points1, wxPoint *points2)
 	float hfactor1 = vfactor1;
     float hfactor2 = hfactor1 * (float)hmean1 / (float)hmean2;
 	
-    wxLogDebug("vmean1 %d, hmean1 %d, vmean2 %d, hmean2 %d", vmean1, hmean1, vmean2, hmean2);
-	wxLogDebug("vfactor1 %f, vfactor2 %f, hfactor1 %f, hfactor2 %f", vfactor1, vfactor2, hfactor1, hfactor2);
+    //wxLogDebug("vmean1 %d, hmean1 %d, vmean2 %d, hmean2 %d", vmean1, hmean1, vmean2, hmean2);
+	//wxLogDebug("vfactor1 %f, vfactor2 %f, hfactor1 %f, hfactor2 %f", vfactor1, vfactor2, hfactor1, hfactor2);
 
     if (!m_progressDlg->SetOperation( _("Preparartion of image 1 ...") ))
         return this->Terminate( ERR_CANCELED );
@@ -477,7 +482,7 @@ bool ImRegister::Register( wxPoint *points1, wxPoint *points2)
     // median filtering
     if (SupEnv::s_filter1)
     {
-        if ( !m_progressDlg->SetOperation( _("Filtering image ...") ))
+        if ( !m_progressDlg->SetOperation( _("Filtering image 1 ...") ))
             return this->Terminate( ERR_CANCELED );
 
         m_opImTmp1 = imImageClone( m_im1 );
@@ -491,6 +496,7 @@ bool ImRegister::Register( wxPoint *points1, wxPoint *points2)
 
     }
     // resize
+    /*
     if (!m_progressDlg->SetOperation( _("Resizing image ...") ))
         return this->Terminate( ERR_CANCELED );
 
@@ -503,6 +509,7 @@ bool ImRegister::Register( wxPoint *points1, wxPoint *points2)
         return this->Terminate( ERR_CANCELED );
 
     SwapImages( &m_im1, &m_opImTmp1 );
+    */
 
     // ajuster la position des m_reg_points
     m_reg_points1[0].x = (int)(m_reg_points1[0].x * hfactor1);
@@ -525,7 +532,7 @@ bool ImRegister::Register( wxPoint *points1, wxPoint *points2)
     // median filtering
     if (SupEnv::s_filter2)
     {
-        if (!m_progressDlg->SetOperation( _("Filtering image ...") ))
+        if (!m_progressDlg->SetOperation( _("Filtering image 2 ...") ))
             return this->Terminate( ERR_CANCELED );
 
         m_opImTmp1 = imImageClone(  m_im2 );
@@ -538,7 +545,7 @@ bool ImRegister::Register( wxPoint *points1, wxPoint *points2)
         SwapImages( &m_im2, &m_opImTmp1 );
     }
     // resize
-    if (!m_progressDlg->SetOperation( _("Resizing image ...") ))
+    if (!m_progressDlg->SetOperation( _("Resizing image 2 ...") ))
         return this->Terminate( ERR_CANCELED );
 
     m_opImTmp1 = imImageCreate(  (int)(m_im2->width  * hfactor2), (int)(m_im2->height  * vfactor2),
@@ -682,7 +689,7 @@ bool ImRegister::Register( wxPoint *points1, wxPoint *points2)
 	imProcessNegative( m_im2, m_src2 );
     
     // we can start with a fairly wide window
-    wxSize window( max( 50, width / 25 ), max( 50, height / 25 ) );
+    wxSize window( max( SupEnv::s_corr_x, width / 25 ), max( SupEnv::s_corr_y, height / 25 ) );
 	wxLogDebug( "Window %d x %d", window.GetWidth(), window.GetHeight() );
 
     m_opImAlign = imImageCreate( m_im2->width + 2 * window.GetWidth(), m_im2->height + 2 * window.GetHeight(),
@@ -693,15 +700,25 @@ bool ImRegister::Register( wxPoint *points1, wxPoint *points2)
     memset( m_opImAlign->data[0], 255, m_opImAlign->size );
     if (m_im1->size < m_opImAlign->size)
         imSetData( m_opImAlign, m_im1, window.GetWidth(), window.GetHeight() );
-		
-    wxLogDebug( "Register" );
-	SubRegister( origine, window, wxSize( width, height ), 0, 1, 1 );
- 
-    //imCounterEnd( counter );
+	
+    int c;
+    m_sub_register_total = 1;
+    for ( c = 0; c <= SupEnv::s_subWindowLevel; c++ ) {
+        m_sub_register_total += pow( pow( 2, c + 1 ), 2 );
+    }
+    
+    if (!m_progressDlg->SetOperation( _("Image registration ..." ) ) )
+       return this->Terminate( ERR_CANCELED );
+    
+	m_counter = imCounterBegin("Image registration");
+	imCounterTotal(m_counter, m_sub_register_total, "Image registration");
+    
+    if ( !SubRegister( origine, window, wxSize( width, height ), 0, 1, 1 ) )
+            return this->Terminate( ERR_CANCELED );
+    
+    imCounterEnd( m_counter );
     imProcessCrop( m_opImAlign, m_im2, window.GetWidth(), window.GetHeight() );
     ImageDestroy( &m_opImAlign );
-    //ImageDestroy( &m_opImTmp1 );
-    //ImageDestroy( &m_opImTmp2 );
 
     if (!m_progressDlg->SetOperation( _("Writing image on disk ...") ) )
         return this->Terminate( ERR_CANCELED );
@@ -736,69 +753,125 @@ bool ImRegister::Register( wxPoint *points1, wxPoint *points2)
 
 bool ImRegister::SubRegister( wxPoint origine, wxSize window, wxSize size, int level, int row, int column )
 {
-
-	wxLogDebug("SubRegister origine %d %d, window %d %d, size %d %d",
-		origine.x, origine.y, window.GetWidth(), window.GetHeight(), size.GetWidth(), size.GetHeight() );
-        	
+    
 	int x = 0, y = 0, maxCorr;
     
     wxSize subwindow = window;
     
-    //if ( level > 0 )
-    {
-        m_opImTmp1 = imImageCreate( size.GetWidth(), size.GetHeight(), m_im1->color_space, m_im1->data_type );
-        if ( !m_opImTmp1 )
-            return this->Terminate( ERR_MEMORY );
+    m_opImTmp1 = imImageCreate( size.GetWidth(), size.GetHeight(), m_im1->color_space, m_im1->data_type );
+    if ( !m_opImTmp1 )
+        return this->Terminate( ERR_MEMORY );
 
-        m_opImTmp2 = imImageCreate( size.GetWidth(), size.GetHeight(), m_im2->color_space, m_im2->data_type );
-        if ( !m_opImTmp2 )
-            return this->Terminate( ERR_MEMORY );
-            
-        imProcessCrop( m_im1, m_opImTmp1, origine.x, origine.y);
-        imProcessCrop( m_im2, m_opImTmp2, origine.x, origine.y);
+    m_opImTmp2 = imImageCreate( size.GetWidth(), size.GetHeight(), m_im2->color_space, m_im2->data_type );
+    if ( !m_opImTmp2 )
+        return this->Terminate( ERR_MEMORY );
+        
+    imProcessCrop( m_im1, m_opImTmp1, origine.x, origine.y);
+    imProcessCrop( m_im2, m_opImTmp2, origine.x, origine.y);
 
-        DistByCorrelation( m_opImTmp1, m_opImTmp2, window, &x, &y, &maxCorr );
+    m_progressDlg->SuspendCounter();
+    DistByCorrelation( m_opImTmp1, m_opImTmp2, window, &x, &y, &maxCorr );
+    m_progressDlg->ReactiveCounter();
 
-        ImageDestroy( &m_opImTmp1 );
-        ImageDestroy( &m_opImTmp2 );
+    if (!imCounterInc(m_counter))
+        return false;
+    
+    ImageDestroy( &m_opImTmp1 );
+    ImageDestroy( &m_opImTmp2 );
 
-        wxLogDebug( "Correlation decalage %d %d", x, y );
-		
-        // use the detected shift to determine the next window size (but at least 5 pixels)
-        subwindow = wxSize( max(abs(3*x), 9), max(abs(3*y), 9) );
-    }
+    //wxLogDebug( "Correlation decalage %d %d", x, y );
+    
+    // use the detected shift to determine the next window size (but at least 5 pixels)
+    subwindow = wxSize( max(abs(3*x), SupEnv::s_split_x), max(abs(3*y), SupEnv::s_split_y) );
 
-	if ( level > 3 )
+	if ( level > SupEnv::s_subWindowLevel )
     // end of the recursion
     {  
-		m_opImMask = imImageCreate( size.GetWidth(), size.GetHeight(), m_im2->color_space, m_im2->data_type );
-		if ( !m_opImMask )
-                return this->Terminate( ERR_MEMORY );
+        int pos_x = origine.x;
+        int pos_y = origine.y;
+        int width = size.GetWidth();
+        int height = size.GetHeight();
         
         int plevel = pow( 2, level );
-        //if (( row == 1 ) || ((row / plevel) == 1) || (column == 1) || ((column / plevel) == 1) ) 
+        
+        if ((column / plevel) == 1)
+            width = 100000; // extreme value, assume to be more than the maximum
+        if ((row / plevel) == 1)
+            height = 100000;
+        if (column == 1) {
+            width += origine.x;
+            pos_x = 0;
+        }
+        if (row == 1)
         {
-            imProcessCrop( m_im2, m_opImMask, origine.x, origine.y);
-            imSetData( m_opImAlign, m_opImMask, 
-                        (m_opImAlign->width - m_im2->width) / 2 + origine.x - x,
-                        (m_opImAlign->height - m_im2->height) / 2 + origine.y - y);
+            height += origine.y;
+            pos_y = 0; 
+        }
+        
+        if (imProcessSafeCrop( m_im2, &width, &height, &pos_x, &pos_y ) )
+        {
+            m_opImMask = imImageCreate( width, height, m_im2->color_space, m_im2->data_type );
+            if ( !m_opImMask )
+                    return this->Terminate( ERR_MEMORY );
+            
+            //if (( row == 1 ) || ((row / plevel) == 1) || (column == 1) || ((column / plevel) == 1) ) // border only, for debug
+            {
+                imProcessCrop( m_im2, m_opImMask, pos_x, pos_y );
+                imSetData( m_opImAlign, m_opImMask, 
+                            (m_opImAlign->width - m_im2->width) / 2 + pos_x - x,
+                            (m_opImAlign->height - m_im2->height) / 2 + pos_y - y);
+                
+            }
             ImageDestroy( &m_opImMask );
         }
 	
 		return true;
 	}
 	
-    // move the content
+    // move the content, including the border if necessary
+    int move_x = origine.x;
+    int move_y = origine.y;
+    int move_width = size.GetWidth();
+    int move_height = size.GetHeight();
+        
+    int plevel = pow( 2, level );
+    if ((column / plevel) == 1)
+        move_width = 100000; // extreme value, assume to be more than the maximum
+    if ((row / plevel) == 1)
+        move_height = 100000; 
+    if (column == 1) {
+        move_width += origine.x;
+        move_x = 0;
+    }
+    if (row == 1)
+    {
+        move_height += origine.y;
+        move_y = 0; 
+    }
+    
+    // this method return the maximum values for croping
+    if (!imProcessSafeCrop( m_im2, &move_width, &move_height, &move_x, &move_y ) ) {
+        return this->Terminate( ERR_UNKNOWN );
+    }
+    m_opImTmp1 = imImageCreate( move_width, move_height, m_im2->color_space, m_im2->data_type );
+	if ( !m_opImTmp1 )
+        return this->Terminate( ERR_MEMORY );
+        
+	imProcessCrop( m_im2, m_opImTmp1, move_x, move_y);
+    // actually move the data
+	imSetData( m_im2, m_opImTmp1, move_x - x, move_y - y);
+    ImageDestroy( &m_opImTmp1 );
+
     // the problem here is that we have a recusion: we cannot use a m_opXXX image because it would be overriden
-    // we use a local variable which would NOT be destroyed if a Terminate occur deeper in the recursion
+    // we use a local variable 'buffer' which would NOT be destroyed if a Terminate occur deeper in the recursion
     // => potential memory leak if the program keep failing....
 	imImage *buffer = imImageCreate( size.GetWidth(), size.GetHeight(), m_im2->color_space, m_im2->data_type );
 	if ( !buffer )
         return this->Terminate( ERR_MEMORY );
 				
-	imProcessCrop( m_im2, buffer, origine.x, origine.y);
-	imSetData( m_im2, buffer, origine.x - x, origine.y - y);
-	
+    imProcessCrop( m_im2, buffer, origine.x - x, origine.y - y);
+    
+    
 	origine.x -= x;
 	origine.y -= y;
 
@@ -817,7 +890,12 @@ bool ImRegister::SubRegister( wxPoint origine, wxSize window, wxSize size, int l
     row *= 2;
     column *= 2;
     
-	SubRegister( origine1, subwindow, subsize1, level, row - 1, column - 1 );
+    if ( !SubRegister( origine1, subwindow, subsize1, level, row - 1, column - 1 ) )
+    {
+        imImageDestroy( buffer );
+        return false;
+    }
+    
         
     // next level, we need to copy again the mask because the content might have been modified during the previous recursion
     m_opImTmp1 = imImageCreate( subsize2.GetWidth(), subsize2.GetHeight(), m_im2->color_space, m_im2->data_type );
@@ -825,8 +903,12 @@ bool ImRegister::SubRegister( wxPoint origine, wxSize window, wxSize size, int l
 			return this->Terminate( ERR_MEMORY );
     imProcessCrop( buffer, m_opImTmp1, origine2.x - origine1.x, origine2.y - origine1.y );
     imSetData( m_im2, m_opImTmp1, origine2.x, origine2.y );
-	SubRegister( origine2, subwindow, subsize2, level, row, column );
-    ImageDestroy( &m_opImTmp1 );
+    ImageDestroy( &m_opImTmp1 );	
+    if ( !SubRegister( origine2, subwindow, subsize2, level, row, column ) )
+    {
+        imImageDestroy( buffer );
+        return false;
+    }
         
     // next
     m_opImTmp1 = imImageCreate( subsize3.GetWidth(), subsize3.GetHeight(), m_im2->color_space, m_im2->data_type );
@@ -834,8 +916,13 @@ bool ImRegister::SubRegister( wxPoint origine, wxSize window, wxSize size, int l
 			return this->Terminate( ERR_MEMORY );
     imProcessCrop( buffer, m_opImTmp1, 0, origine3.y - origine1.y );
     imSetData( m_im2, m_opImTmp1, origine3.x, origine3.y );
-	SubRegister( origine3, subwindow, subsize3, level, row - 1, column );
-    ImageDestroy( &m_opImTmp1 );
+    ImageDestroy( &m_opImTmp1 );	
+    if ( !SubRegister( origine3, subwindow, subsize3, level, row, column - 1 ) )
+    {
+        imImageDestroy( buffer );
+        return false;
+    }
+
 
     // next
     m_opImTmp1 = imImageCreate( subsize4.GetWidth(), subsize4.GetHeight(), m_im2->color_space, m_im2->data_type );
@@ -843,11 +930,14 @@ bool ImRegister::SubRegister( wxPoint origine, wxSize window, wxSize size, int l
 			return this->Terminate( ERR_MEMORY );
     imProcessCrop( buffer, m_opImTmp1, origine4.x - origine1.x, 0 );
     imSetData( m_im2, m_opImTmp1, origine4.x, origine4.y );
-	SubRegister( origine4, subwindow, subsize4, level, row, column - 1 );
-    ImageDestroy( &m_opImTmp1 );
-	
+    ImageDestroy( &m_opImTmp1 );	
+    if ( !SubRegister( origine4, subwindow, subsize4, level, row - 1, column ) )
+    {
+        imImageDestroy( buffer );
+        return false;
+    }
+
     imImageDestroy( buffer );
-    
 	return true;
 }
 

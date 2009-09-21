@@ -197,7 +197,7 @@ private:
     SupBookPanel *m_supBookPanelPtr;
 
 public:
-    static int s_segmentSize;
+    static int s_subWindowLevel;
     static int s_split_x;
     static int s_split_y;
     static int s_corr_x;

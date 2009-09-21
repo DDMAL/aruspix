@@ -75,14 +75,14 @@ const int ID4_REC_LMORDER = 8037;
 const int ID4_LMSCALING = 8038;
 wxSizer *Rec1DlgFunc( wxWindow *parent, bool call_fit = TRUE, bool set_sizer = TRUE );
 
-const int ID2_TC_SIZE_OPS1 = 8039;
-const int ID2_CC_INTERP_OPS1 = 8040;
-const int ID2_SC_SPLITX_OPS1 = 8041;
-const int ID2_SC_SPLITY_OPS1 = 8042;
-const int ID2_SC_CORRX_OPS1 = 8043;
-const int ID2_SC_CORRY_OPS1 = 8044;
-const int ID2_CH_FILTER1_OPS1 = 8045;
-const int ID2_CH_FILTER2_OPS1 = 8046;
+const int ID2_SC_CORRY_OPS1 = 8039;
+const int ID2_SC_CORRX_OPS1 = 8040;
+const int ID2_SC_SUBWINDOW_OPS1 = 8041;
+const int ID2_SC_SPLITX_OPS1 = 8042;
+const int ID2_SC_SPLITY_OPS1 = 8043;
+const int ID2_CH_FILTER1_OPS1 = 8044;
+const int ID2_CH_FILTER2_OPS1 = 8045;
+const int ID2_CC_INTERP_OPS1 = 8046;
 wxSizer *Sup1DlgFunc( wxWindow *parent, bool call_fit = TRUE, bool set_sizer = TRUE );
 
 const int ID0_TEXTPgBin = 8047;

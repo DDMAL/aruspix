@@ -84,9 +84,35 @@ static int DoConvolveRankFunc(T *map, DT* new_map, int width, int height, int kw
 
 void imSetData( _imImage *image, _imImage *selection, int pos_x, int pos_y )
 {
-	if ((pos_x < 0) || (pos_y < 0)) 
+    int w = selection->width;
+    int h = selection->height;
+    int sel_pos_x = 0;
+    int sel_pos_y = 0;
+    
+	if ((pos_x > image->width) || (pos_y > image->height)) // we cannot copy outside the image
 		return;
-	if ((pos_x + selection->width > image->width) || (pos_y + selection->height > image->height))
+        
+    // first adjust the origine
+    if (pos_x < 0) { // move the origine and reduce the width
+        w += pos_x;
+        sel_pos_x = -pos_x;
+        pos_x = 0;
+    }    
+    if (pos_y < 0) { // idem
+        h += pos_y;
+        sel_pos_y = -pos_y;
+        pos_y = 0;
+    }
+    
+    // then adjust the with/height     
+	if (pos_x + w > image->width) {
+        w = image->width - pos_x;
+    } 
+    if (pos_y + h > image->height) {
+		h = image->height - pos_y;
+    }
+    
+	if ((w <= 0) || (h <= 0)) // we cannot copy nothing or less...
 		return;
 
 	int type_size = imDataTypeSize(image->data_type);
@@ -95,14 +121,54 @@ void imSetData( _imImage *image, _imImage *selection, int pos_x, int pos_y )
 		imbyte *im_map = (imbyte*)image->data[i];
 		imbyte *sel_map = (imbyte*)selection->data[i];
 
-		for	(int y = 0; y < selection->height; y++)
+		for	(int y = 0; y < h ; y++)
 		{
 			int im_offset = (y + pos_y) * image->line_size + pos_x * type_size;
-			int sel_offset = y * selection->line_size;
+			int sel_offset = (y + sel_pos_y) * selection->line_size + sel_pos_x * type_size;
 
-			memcpy(&im_map[im_offset], &sel_map[sel_offset], selection->line_size);
+			memcpy(&im_map[im_offset], &sel_map[sel_offset], w * type_size);
 		}
 	}
+}
+
+
+bool imProcessSafeCrop( _imImage *image, int *width, int *height, int *pos_x, int *pos_y )
+{
+    int x = *pos_x;
+    int y = *pos_y;
+    int w = *width;
+    int h = *height;
+
+	if ((x > image->width) || (y > image->height)) // we cannot crop outside the image
+		return false;
+     
+    // first adjust the origine
+    if (x < 0) { // move the origine and reduce the width
+        w += x;
+        x = 0;
+    }    
+    if (y < 0) { // idem
+        h += y;
+        y = 0;
+    }
+    
+    // then adjust the with/height     
+	if (x + w > image->width) {
+        w = image->width - x;
+    } 
+    if (y + h > image->height) {
+		h = image->height - y;
+    }
+    
+	if ((w <= 0) || (h <= 0)) // we cannot nothing or less...
+		return false;
+        
+    // create the image
+    *pos_x = x;
+    *pos_y = y;
+    *width = w;
+    *height = h;
+    return true;
 }
 
 

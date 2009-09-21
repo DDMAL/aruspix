@@ -29,7 +29,7 @@
 #include "app/axframe.h"
 
 // statics
-int SupEnv::s_segmentSize = 1200;
+int SupEnv::s_subWindowLevel = 2;
 int SupEnv::s_split_x = 4;
 int SupEnv::s_split_y = 8;
 int SupEnv::s_corr_x = 30;
@@ -251,11 +251,11 @@ void SupEnv::LoadConfig()
 	SupEnv::s_page_viewer_sash = pConfig->Read("Page Viewer Sash", 0L );
 	SupEnv::s_page_images_sash = pConfig->Read("Page Images Sash", 0L );
     // superimposition
-    SupEnv::s_segmentSize = pConfig->Read("SegmentSize", 1200);
+    SupEnv::s_subWindowLevel = pConfig->Read("SubWindowLevel", 2);
     SupEnv::s_interpolation = pConfig->Read("Interpolation", 0L);
-    SupEnv::s_split_x = pConfig->Read("SplitX", 4);
-    SupEnv::s_split_y = pConfig->Read("SplitY", 8);
-    SupEnv::s_corr_x = pConfig->Read("CorrX", 30);
+    SupEnv::s_split_x = pConfig->Read("SplitX", 9);
+    SupEnv::s_split_y = pConfig->Read("SplitY", 9);
+    SupEnv::s_corr_x = pConfig->Read("CorrX", 50);
     SupEnv::s_corr_y = pConfig->Read("CorrY", 50);
     SupEnv::s_filter1 = (pConfig->Read("Filter1",1)==1);
     SupEnv::s_filter2 = (pConfig->Read("Filter2",1)==1);
@@ -282,7 +282,7 @@ void SupEnv::SaveConfig()
 	pConfig->Write("Page Viewer Sash", SupEnv::s_page_viewer_sash);
 	pConfig->Write("Page Images Sash", SupEnv::s_page_images_sash);
     // superimposition
-    pConfig->Write("SegmentSize", SupEnv::s_segmentSize);
+    pConfig->Write("SubWindowLevel", SupEnv::s_subWindowLevel);
     pConfig->Write("Interpolation", SupEnv::s_interpolation);
     pConfig->Write("SplitX", SupEnv::s_split_x);
     pConfig->Write("SplitY", SupEnv::s_split_y);

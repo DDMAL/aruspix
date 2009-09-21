@@ -272,7 +272,7 @@ bool SupFile::Superimpose( wxArrayPtrVoid params, AxProgressDlg *dlg )
     wxFileName::SplitPath( image_file1, NULL, &shortname1, &ext );
 	wxFileName::SplitPath( image_file2, NULL, &shortname2, &ext );
 
-    dlg->SetMaxJobBar( 17 );
+    dlg->SetMaxJobBar( 32 );
     dlg->SetJob( shortname1 );
     wxYield();
 		
@@ -293,13 +293,13 @@ bool SupFile::Superimpose( wxArrayPtrVoid params, AxProgressDlg *dlg )
 	*/
 	
 	if ( !failed )
-		failed = !m_imRegisterPtr->Init( image_file1, image_file2 );
+		failed = !m_imRegisterPtr->Init( image_file1, image_file2 ); // 4 operations ?
 
 	if ( !failed && !m_hasPoints1 && !m_hasPoints2 )
-		failed = !m_imRegisterPtr->DetectPoints( m_points1, m_points2 );
+		failed = !m_imRegisterPtr->DetectPoints( m_points1, m_points2 ); // 12 ?
 
 	if ( !failed )
-		failed = !m_imRegisterPtr->Register( m_points1, m_points2 );
+		failed = !m_imRegisterPtr->Register( m_points1, m_points2 ); // 10 ?
 	
 	if (!failed)
 		this->m_isSuperimposed = true;

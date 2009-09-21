@@ -67,7 +67,7 @@ public:
     wxSpinCtrl* GetScSplityOps1()  { return (wxSpinCtrl*) FindWindow( ID2_SC_SPLITY_OPS1 ); }
     wxSpinCtrl* GetScSplitxOps1()  { return (wxSpinCtrl*) FindWindow( ID2_SC_SPLITX_OPS1 ); }
     wxChoice* GetCcInterpOps1()  { return (wxChoice*) FindWindow( ID2_CC_INTERP_OPS1 ); }
-    wxTextCtrl* GetTcSizeOps1()  { return (wxTextCtrl*) FindWindow( ID2_TC_SIZE_OPS1 ); }
+    wxSpinCtrl* GetScSubWindowOps1()  { return (wxSpinCtrl*) FindWindow( ID2_SC_SUBWINDOW_OPS1 ); }
 #endif
 	
 #ifdef AX_RECOGNITION	
@@ -106,7 +106,6 @@ private:
 	int m_previousFontSizeCorrection;
 	
 #ifdef AX_SUPERIMPOSITION
-    wxString m_sizeStr;
     int m_interpolation_index;
 #endif
 	

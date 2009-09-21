@@ -33,6 +33,8 @@ void corr( int a[], int b[], int size, int win, int *dec, int *max);
 
 void imSetData( _imImage *image, _imImage *selection, int pos_x, int pos_y );
 
+bool imProcessSafeCrop( _imImage *image, int *width, int *height, int *pos_x, int *pos_y );
+
 void imAnalyzeRuns(const _imImage* image, int *peak_val, int *median_val, int type = 0, bool vertical = true);
 
 void imAnalyzeProjectionH(const _imImage* image, int* hist);
