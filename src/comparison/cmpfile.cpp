@@ -888,7 +888,8 @@ bool CmpFile::LoadBooks( wxArrayPtrVoid params, AxProgressDlg *dlg )
 			m_mlf->Close();
 			delete m_mlf;
 			
-			wxLogMessage( _("Convert data ...") );
+            wxLogMessage( _("Convert data ...") );
+            //wxLogMessage( _("Convert data ... " + m_basename + part->m_id) );
 			CmpMLFInput *m_cmpinput = new CmpMLFInput( NULL, m_basename + part->m_id + ".mlf"  );
 			MusStaff *musStaff = m_cmpinput->ImportFileInStaff( );
 			musStaff->no = 0;

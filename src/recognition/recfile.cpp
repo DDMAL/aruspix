@@ -221,16 +221,18 @@ void RecFile::OpenContent( )
 	
     // binarization variables	
     node = m_xml_root->FirstChild( "binarization" );
-    if ( !node ) return;
-    root = node->ToElement();
-    if ( !root ) return;
-		
-    if ( root->Attribute( "pre_image_binarization_method" ) )
-        RecFile::m_pre_image_binarization_method = atoi( root->Attribute( "pre_image_binarization_method" ) );
-    if ( root->Attribute( "pre_page_binarization_method" ) )
-        RecFile::m_pre_page_binarization_method = atoi( root->Attribute( "pre_page_binarization_method" ) );
-    if ( root->Attribute( "pre_page_binarization_method_size" ) )
-        RecFile::m_pre_page_binarization_method_size = atoi( root->Attribute( "pre_page_binarization_method_size" ) );
+    if ( node )
+    {
+        root = node->ToElement();
+        if ( !root ) return;
+            
+        if ( root->Attribute( "pre_image_binarization_method" ) )
+            RecFile::m_pre_image_binarization_method = atoi( root->Attribute( "pre_image_binarization_method" ) );
+        if ( root->Attribute( "pre_page_binarization_method" ) )
+            RecFile::m_pre_page_binarization_method = atoi( root->Attribute( "pre_page_binarization_method" ) );
+        if ( root->Attribute( "pre_page_binarization_method_size" ) )
+            RecFile::m_pre_page_binarization_method_size = atoi( root->Attribute( "pre_page_binarization_method_size" ) );
+    }
 		
 	if ( wxFileExists( m_basename + "page.bin") )
 	{
@@ -370,7 +372,7 @@ void RecFile::SetBinarization( int image_binarization_method, int page_binarizat
 // static
 bool RecFile::IsRecognized( wxString filename )
 {
-	return AxFile::ContainsFile( filename, "page.bin"  );
+	return AxFile::ContainsFile( filename, "page.bin"  ) || AxFile::ContainsFile( filename, "page.wwg"  ) ; // page.wwg for files before 1.5
 }
 
 void RecFile::GetImage1( AxImage *image )

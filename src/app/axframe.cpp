@@ -39,7 +39,7 @@ WX_DEFINE_OBJARRAY(AxEnvArray);
 #endif
 
 #ifdef AX_EDT
-    #include "edt/edt.h"
+    #include "edition/edt.h"
 #endif
 
 #ifdef AX_SUPERIMPOSITION
@@ -158,7 +158,7 @@ AxFrame::AxFrame( wxWindow *parent, wxWindowID id, const wxString &title,
 #endif //AX_SUPERIMPOSITION
 
 #ifdef AX_EDT
-    envRow = new AxEnvRow( "EdtEnv", _("Editor"), menuId++, _("Editor workspace") );
+    envRow = new AxEnvRow( "EdtEnv", _("Edition"), menuId++, _("Edition workspace") );
     menuEnv->Insert( menuPos++, envRow->m_menuId, envRow->m_menuItem, envRow->m_helpStr, wxITEM_CHECK );
     m_envArray.Add( envRow );
 	EdtEnv::LoadConfig();
