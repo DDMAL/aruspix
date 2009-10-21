@@ -573,7 +573,7 @@ void ImStaff::GetXandPos( int posx, int *x, int *vpos )
 {
 	*vpos = 0;
 	*x = posx - m_x1;
-	if ((posx < m_x2) && (posx >= m_x1 ))
+	if ((posx < m_x2) && (posx >= m_x1 ) && ((posx - m_x1) < (int)m_positions.GetCount()) && ((posx - m_x1) > 0))
 		*vpos = -m_positions[ posx - m_x1 ];
 }
 

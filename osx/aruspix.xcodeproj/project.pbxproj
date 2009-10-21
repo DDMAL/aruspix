@@ -910,7 +910,7 @@
 					"-liconv",
 					"-lim_u",
 					"-lim_process_u",
-					lim_fftw_u,
+					"-lim_fftw_u",
 					"-lwx_mac_html-$(ARUSPIX_WX_VERSION)",
 					"-lwx_mac_adv-$(ARUSPIX_WX_VERSION)",
 					"-lwx_mac_core-$(ARUSPIX_WX_VERSION)",
