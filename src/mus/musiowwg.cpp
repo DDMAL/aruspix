@@ -328,6 +328,8 @@ bool MusWWGOutput::WritePage( const MusPage *page )
 	return true;
 
 }
+
+
 bool MusWWGOutput::WriteStaff( const MusStaff *staff )
 {
 	unsigned int k;
@@ -448,7 +450,7 @@ bool MusWWGOutput::WriteElementAttr( const MusElement *element )
 	Write( &element->frel , 1 );
 	Write( &element->oct , 1 );
 	Write( &element->dimin , 1 );
-	Write( &element->grp , 1 );
+    Write( &element->grp , 1 );
 	Write( &element->_shport , 1 );
 	Write( &element->ligat , 1 );
 	Write( &element->ElemInvisible , 1 );

@@ -88,10 +88,12 @@ private:
     // WDR: handler declarations for EdtEnv
 	void OnSize( wxSizeEvent &event );
     void OnTools( wxCommandEvent &event );
+    void OnVoices( wxCommandEvent &event );
     void OnSave( wxCommandEvent &event );
     void OnOpenMLF( wxCommandEvent &event );
 	void OnSaveMLF( wxCommandEvent &event );
     void OnOpenWWG( wxCommandEvent &event );
+    void OnSaveMEI( wxCommandEvent &event );
     void OnSaveWWG( wxCommandEvent &event );
     void OnSaveSVG( wxCommandEvent &event );
     void OnSaveModel( wxCommandEvent &event );

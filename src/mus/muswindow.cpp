@@ -725,7 +725,7 @@ void MusWindow::UpdatePageValues()
     ledgerLine[0][2] = (int)(w * .66);
     ledgerLine[1][2] = (ledgerLine[0][2] * RapportPortee[0]) /RapportPortee[1];
 
-    largeurBreve[0] = (int)((w * 1.1667) / 2);
+    largeurBreve[0] = (int)((w * 0.8 /*1.1667*/) / 2);
     largeurBreve[1] = (largeurBreve[0] * RapportPortee[0]) /RapportPortee[1];
 
 	dc.GetTextExtent( wxString( (char)sDIESE, 1 ), &w, &h ) ;

@@ -51,6 +51,7 @@ public:
 	//void ClearStaves( wxDC *dc , MusStaff *start = NULL );
 
 	void UpdateStavesPosition();
+    void SetVoices();
 
 	/** musbarmes */
 	void DrawBarres( wxDC *dc ); // mus == barres

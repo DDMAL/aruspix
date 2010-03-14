@@ -30,6 +30,7 @@
 #include "mus/mustoolpanel.h"
 #include "mus/musiowwg.h"
 #include "mus/musiomlf.h"
+#include "mus/musiomei.h"
 
 // WDR: class implementations
 
@@ -91,6 +92,8 @@ BEGIN_EVENT_TABLE(EdtEnv,AxEnv)
     EVT_MENU( ID5_SAVE_WWG, EdtEnv::OnSaveWWG )
     EVT_MENU( ID5_OPEN_WWG, EdtEnv::OnOpenWWG )
     EVT_MENU( ID5_SAVE_SVG, EdtEnv::OnSaveSVG )
+    EVT_MENU( ID5_SAVE_MEI, EdtEnv::OnSaveMEI )
+    EVT_MENU( ID5_VOICES, EdtEnv::OnVoices )
     EVT_MENU_RANGE( ID5_INSERT_MODE, ID5_SYMBOLES, EdtEnv::OnTools )
 	//EVT_SIZE( EdtEnv::OnSize )
 END_EVENT_TABLE()
@@ -281,6 +284,14 @@ void EdtEnv::OnSaveMLF( wxCommandEvent &event )
 }
 
 
+void EdtEnv::OnVoices( wxCommandEvent &event )
+{
+    if ( !m_musViewPtr )
+        return;
+        
+    m_musViewPtr->m_page->SetVoices();   
+}
+
 void EdtEnv::OnZoomOut( wxCommandEvent &event )
 {
     if ( !m_musViewPtr )
@@ -350,6 +361,10 @@ void EdtEnv::OnUpdateUI( wxUpdateUIEvent &event )
         event.Enable( m_musViewPtr != NULL );
     else if ( event.GetId() == ID5_SAVE_SVG )
         event.Enable( m_musViewPtr != NULL );
+    else if ( event.GetId() == ID5_SAVE_MEI )
+        event.Enable( m_musViewPtr != NULL );
+    else if ( event.GetId() == ID5_VOICES )
+        event.Enable( m_musViewPtr != NULL );
 	else if ( event.GetId() == ID5_INSERT_MODE )
 	{
 		event.Enable( true );
@@ -381,13 +396,13 @@ void EdtEnv::OnSaveSVG( wxCommandEvent &event )
     MusSVGFileDC svgDC (filename, m_musViewPtr->ToZoom( m_musViewPtr->pageFormatHor + 30 )  ,
         m_musViewPtr->ToZoom( m_musViewPtr->pageFormatVer + 10 )) ;
         
-    svgDC.SetUserScale( 1, 1);
+    svgDC.SetUserScale( 1, 1 );
     svgDC.SetLogicalScale( 1.0, 1.0 );  
     
-	if ( m_musViewPtr->m_center )
+	/*if ( m_musViewPtr->m_center )
 		svgDC.SetLogicalOrigin( (m_musViewPtr->margeMorteHor - m_musViewPtr->mrgG), m_musViewPtr->margeMorteVer );
-	else
-		svgDC.SetLogicalOrigin( m_musViewPtr->mrgG, 5 );
+	else */
+    svgDC.SetLogicalOrigin( -m_musViewPtr->mrgG, 0 );
     
     // font data
     svgDC.ConcatFile( wxGetApp().m_resourcesPath + "/svg/font.xml" );
@@ -401,8 +416,40 @@ void EdtEnv::OnSaveSVG( wxCommandEvent &event )
 }
 
 void EdtEnv::OnSaveWWG( wxCommandEvent &event )
+{   
+    if (!m_filePtr) {
+        return;
+    };
+
+    wxString filename;
+    filename = wxFileSelector( _("Save"), wxGetApp().m_lastDirAX0_out, m_filePtr->m_fheader.name + ".wwg", "wwg", "Wolfgang WWG|*.wwg", wxSAVE);
+    if (filename.IsEmpty())
+        return;
+        
+    wxGetApp().m_lastDirAX0_out = wxPathOnly( filename );
+    
+    // save
+    MusWWGOutput *wwg_output = new MusWWGOutput( m_filePtr, filename );
+    wwg_output->ExportFile();
+    delete wwg_output;
+}
+
+
+void EdtEnv::OnSaveMEI( wxCommandEvent &event )
 {
-    wxLogMessage("Todo...");
+
+    if (  !m_panelPtr || !m_filePtr )
+        return;
+
+    wxString filename = wxFileSelector( _("Save"), wxGetApp().m_lastDir, _T(""), NULL, "MEI XML|*.xml", wxSAVE);
+    if ( filename.IsEmpty() )
+        return;     
+    wxGetApp().m_lastDirAX0_out = wxPathOnly( filename );
+    
+    // save
+    MusMeiOutput *mei_output = new MusMeiOutput( m_filePtr, filename );
+    mei_output->ExportFile();
+    delete mei_output;
 }
 
 void EdtEnv::OnOpenWWG( wxCommandEvent &event )

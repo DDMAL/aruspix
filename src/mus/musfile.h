@@ -50,7 +50,7 @@ public:
 	void CheckIntegrity();
     // moulinette
     virtual void MusFile::Process(MusPageFunctor *functor, wxArrayPtrVoid params );
-    int MusFile::GetNumberOfVoices();
+    void MusFile::GetNumberOfVoices( int *min_voice, int *max_voice );
     MusStaff *MusFile::GetVoice( int i );
     
 public:

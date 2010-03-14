@@ -41,6 +41,8 @@
 		4DB2D96D0D8383EA003401B0 /* musmlfdic.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4DB2D96B0D8383EA003401B0 /* musmlfdic.cpp */; };
 		4DB9F0530D94A66E00ED8E3E /* imregister.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4DB9F0510D94A66E00ED8E3E /* imregister.cpp */; };
 		4DDE3CDE0EF1B1D6006D4F2C /* musiowwg.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4DDE3CDD0EF1B1D6006D4F2C /* musiowwg.cpp */; };
+		4DE87C3610FE3E82001E9F91 /* musiomei.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4DE87C3210FE3E82001E9F91 /* musiomei.cpp */; };
+		4DE87C3710FE3E82001E9F91 /* musioxml.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4DE87C3410FE3E82001E9F91 /* musioxml.cpp */; };
 		5736CE550C354E4A00254E7B /* cmp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5736CE460C354E4A00254E7B /* cmp.cpp */; };
 		5736CE570C354E4A00254E7B /* cmp_wdr.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5736CE490C354E4A00254E7B /* cmp_wdr.cpp */; };
 		5736CE580C354E4A00254E7B /* cmpctrl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5736CE4B0C354E4A00254E7B /* cmpctrl.cpp */; };
@@ -155,6 +157,10 @@
 		4DB9F0520D94A66E00ED8E3E /* imregister.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = imregister.h; sourceTree = "<group>"; };
 		4DDE3CDD0EF1B1D6006D4F2C /* musiowwg.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = musiowwg.cpp; path = ../src/mus/musiowwg.cpp; sourceTree = SOURCE_ROOT; };
 		4DDE3CDF0EF1B25E006D4F2C /* musiobin.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = musiobin.h; path = ../src/mus/musiobin.h; sourceTree = SOURCE_ROOT; };
+		4DE87C3210FE3E82001E9F91 /* musiomei.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = musiomei.cpp; path = ../src/mus/musiomei.cpp; sourceTree = SOURCE_ROOT; };
+		4DE87C3310FE3E82001E9F91 /* musiomei.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = musiomei.h; path = ../src/mus/musiomei.h; sourceTree = SOURCE_ROOT; };
+		4DE87C3410FE3E82001E9F91 /* musioxml.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = musioxml.cpp; path = ../src/mus/musioxml.cpp; sourceTree = SOURCE_ROOT; };
+		4DE87C3510FE3E82001E9F91 /* musioxml.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = musioxml.h; path = ../src/mus/musioxml.h; sourceTree = SOURCE_ROOT; };
 		5736CE460C354E4A00254E7B /* cmp.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = cmp.cpp; sourceTree = "<group>"; };
 		5736CE470C354E4A00254E7B /* cmp.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = cmp.h; sourceTree = "<group>"; };
 		5736CE490C354E4A00254E7B /* cmp_wdr.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = cmp_wdr.cpp; sourceTree = "<group>"; };
@@ -261,6 +267,10 @@
 		4D3A8FCD0D3585AB00BBC1FB /* mus */ = {
 			isa = PBXGroup;
 			children = (
+				4DE87C3210FE3E82001E9F91 /* musiomei.cpp */,
+				4DE87C3310FE3E82001E9F91 /* musiomei.h */,
+				4DE87C3410FE3E82001E9F91 /* musioxml.cpp */,
+				4DE87C3510FE3E82001E9F91 /* musioxml.h */,
 				4D33DF35103D375C009EE145 /* mussvg.cpp */,
 				4D33DF36103D375C009EE145 /* mussvg.h */,
 				4D832FFE0F2E6E35006E6B5F /* musiocmme.cpp */,
@@ -529,6 +539,9 @@
 /* Begin PBXProject section */
 		A58508B40A001129006E82B1 /* Project object */ = {
 			isa = PBXProject;
+			attributes = {
+				ORGANIZATIONNAME = com.aruspix.www;
+			};
 			buildConfigurationList = A58508B50A001129006E82B1 /* Build configuration list for PBXProject "aruspix" */;
 			compatibilityVersion = "Xcode 2.4";
 			hasScannedForEncodings = 0;
@@ -655,6 +668,8 @@
 				4D33DF37103D375C009EE145 /* mussvg.cpp in Sources */,
 				4D12CE4010748D8E00E65714 /* edt.cpp in Sources */,
 				4D12CE4110748D8E00E65714 /* edt_wdr.cpp in Sources */,
+				4DE87C3610FE3E82001E9F91 /* musiomei.cpp in Sources */,
+				4DE87C3710FE3E82001E9F91 /* musioxml.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -697,7 +712,6 @@
 					"$(ARUSPIX_WX)/osx-debug/lib",
 				);
 				OBJROOT = "$(ARUSPIX)/obj";
-				OPTIMIZATION_CFLAGS = "-O0";
 				OTHER_CFLAGS = (
 					"-D__WXDEBUG__",
 					"-D__WXMAC__",
@@ -784,6 +798,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/Carbon.framework/Headers/Carbon.h";
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_VERSION = 4.0;
 				HEADER_SEARCH_PATHS = (
 					"$(ARUSPIX)/src",
 					"$(ARUSPIX_IMLIB)/include",
@@ -798,7 +813,6 @@
 					"$(ARUSPIX_WX)/osx-static-debug/lib",
 				);
 				OBJROOT = "$(ARUSPIX)/obj";
-				OPTIMIZATION_CFLAGS = "-O0";
 				OTHER_CFLAGS = (
 					"-D__WXDEBUG__",
 					"-D__WXMAC__",
@@ -865,9 +879,11 @@
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
 				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = s;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/Carbon.framework/Headers/Carbon.h";
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_VERSION = 4.0;
 				HEADER_SEARCH_PATHS = (
 					"$(ARUSPIX)/src",
 					"$(ARUSPIX_IMLIB)/include",
@@ -882,7 +898,6 @@
 					"$(ARUSPIX_WX)/osx-static/lib",
 				);
 				OBJROOT = "$(ARUSPIX)/obj";
-				OPTIMIZATION_CFLAGS = "-Os";
 				OTHER_CFLAGS = (
 					"-D__WXMAC__",
 					"-D_FILE_OFFSET_BITS=64",

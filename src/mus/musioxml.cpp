@@ -1,12 +1,12 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        musiocmme.cpp
+// Name:        musioxml.cpp
 // Author:      Laurent Pugin
 // Created:     2008
 // Copyright (c) Laurent Pugin. All rights reserved.
 /////////////////////////////////////////////////////////////////////////////
 
 #ifdef __GNUG__
-    #pragma implementation "musiocmme.h"
+    #pragma implementation "musioxml.h"
 #endif
 
 // For compilers that support precompilation, includes "wx/wx.h".
@@ -17,15 +17,15 @@
 #endif
 #include "wx/filename.h"
 
-#include "musiocmme.h"
+#include "musioxml.h"
 
 #include "app/axapp.h"
 
 //----------------------------------------------------------------------------
-// MusCmmeOutput
+// MusXmlOutput
 //----------------------------------------------------------------------------
 
-MusCmmeOutput::MusCmmeOutput( MusFile *file, wxString filename ) :
+MusXmlOutput::MusXmlOutput( MusFile *file, wxString filename ) :
     // This is pretty bad. We open a bad fileoutputstream as we don't use it
 	MusFileOutputStream( file, -1 )
 {
@@ -38,14 +38,14 @@ MusCmmeOutput::MusCmmeOutput( MusFile *file, wxString filename ) :
 	m_xml_root = new TiXmlElement("Piece"); // new root
 }
 
-MusCmmeOutput::~MusCmmeOutput()
+MusXmlOutput::~MusXmlOutput()
 {
     if (m_xml_root)
         delete m_xml_root;
 
 }
 
-bool MusCmmeOutput::ExportFile( )
+bool MusXmlOutput::ExportFile( )
 {
     int i;
 
@@ -58,11 +58,11 @@ bool MusCmmeOutput::ExportFile( )
     
     int min_voice, max_voice;
     m_file->GetNumberOfVoices( &min_voice, &max_voice );
-    
+        
      // general data
 	TiXmlElement voice_data("VoiceData");
     // num voices
-    TiXmlElement num_voices("NumVoices");
+    TiXmlElement num_voices("NumVoices");    
     num_voices.LinkEndChild( new TiXmlText( wxString::Format("%d", max_voice - min_voice + 1 ).c_str() ) );
     voice_data.InsertEndChild( num_voices );
     // voices
@@ -119,7 +119,7 @@ bool MusCmmeOutput::ExportFile( )
     
 }
 
-bool MusCmmeOutput::WriteFileHeader( const MusFileHeader *header )
+bool MusXmlOutput::WriteFileHeader( const MusFileHeader *header )
 {
     //int i;
 
@@ -153,7 +153,7 @@ bool MusCmmeOutput::WriteFileHeader( const MusFileHeader *header )
 	return true;
 }
 
-bool MusCmmeOutput::WriteStaff( const MusStaff *staff )
+bool MusXmlOutput::WriteStaff( const MusStaff *staff )
 {
 	unsigned int k;
 
@@ -172,7 +172,7 @@ bool MusCmmeOutput::WriteStaff( const MusStaff *staff )
 	return true;
 }
 
-bool MusCmmeOutput::WriteNote( const MusNote *note )
+bool MusXmlOutput::WriteNote( const MusNote *note )
 {
 	int i;
     
@@ -248,7 +248,7 @@ bool MusCmmeOutput::WriteNote( const MusNote *note )
 	return true;
 }
 
-bool MusCmmeOutput::WriteSymbole( const MusSymbol *symbol )
+bool MusXmlOutput::WriteSymbole( const MusSymbol *symbol )
 {
     // if ( symbol->IsLyric() ) // To be fixed ??
     if ( (symbol->flag == CHAINE) && (symbol->fonte == LYRIC) )
@@ -257,36 +257,36 @@ bool MusCmmeOutput::WriteSymbole( const MusSymbol *symbol )
 	return true;
 }
 
-bool MusCmmeOutput::WriteElementAttr( const MusElement *element )
+bool MusXmlOutput::WriteElementAttr( const MusElement *element )
 {
 	
 	return true;
 }
 
-bool MusCmmeOutput::WriteLyric( const MusElement *element )
+bool MusXmlOutput::WriteLyric( const MusElement *element )
 {
     return true;
 }
 
 
-// WDR: handler implementations for MusCmmeOutput
+// WDR: handler implementations for MusXmlOutput
 
 
 //----------------------------------------------------------------------------
-// MusCmmeInput
+// MusXmlInput
 //----------------------------------------------------------------------------
 
-MusCmmeInput::MusCmmeInput( MusFile *file, wxString filename ) :
+MusXmlInput::MusXmlInput( MusFile *file, wxString filename ) :
 	MusFileInputStream( file, filename )
 {
 	m_vmaj = m_vmin = m_vrev = 10000; // arbitrary version, we assume we will never reach version 10000...
 }
 
-MusCmmeInput::~MusCmmeInput()
+MusXmlInput::~MusXmlInput()
 {
 }
 
-bool MusCmmeInput::ImportFile( )
+bool MusXmlInput::ImportFile( )
 {
 	int i;
 
@@ -319,7 +319,7 @@ bool MusCmmeInput::ImportFile( )
 	return true;
 }
 
-bool MusCmmeInput::ReadFileHeader( MusFileHeader *header )
+bool MusXmlInput::ReadFileHeader( MusFileHeader *header )
 {
 	 
 
@@ -327,12 +327,12 @@ bool MusCmmeInput::ReadFileHeader( MusFileHeader *header )
 }
 
 
-bool MusCmmeInput::ReadSeparator( )
+bool MusXmlInput::ReadSeparator( )
 {
     return true;
 }
 
-bool MusCmmeInput::ReadPage( MusPage *page )
+bool MusXmlInput::ReadPage( MusPage *page )
 {
 	int j;
 
@@ -349,7 +349,7 @@ bool MusCmmeInput::ReadPage( MusPage *page )
 	return true;
 
 }
-bool MusCmmeInput::ReadStaff( MusStaff *staff )
+bool MusXmlInput::ReadStaff( MusStaff *staff )
 {
 	unsigned int k;
 
@@ -377,7 +377,7 @@ bool MusCmmeInput::ReadStaff( MusStaff *staff )
 	return true;
 }
 
-bool MusCmmeInput::ReadNote( MusNote *note )
+bool MusXmlInput::ReadNote( MusNote *note )
 {
 	char count;
 	
@@ -392,7 +392,7 @@ bool MusCmmeInput::ReadNote( MusNote *note )
 	return true;
 }
 
-bool MusCmmeInput::ReadSymbole( MusSymbol *symbol )
+bool MusXmlInput::ReadSymbole( MusSymbol *symbol )
 {
 	if ( symbol->IsLyric() )
         ReadLyric( symbol );
@@ -400,28 +400,28 @@ bool MusCmmeInput::ReadSymbole( MusSymbol *symbol )
 	return true;
 }
 
-bool MusCmmeInput::ReadElementAttr( MusElement *element )
+bool MusXmlInput::ReadElementAttr( MusElement *element )
 {
 	return true;
 }
 
-bool MusCmmeInput::ReadLyric( MusElement *element )
+bool MusXmlInput::ReadLyric( MusElement *element )
 {
 
 	return true;
 }
-bool MusCmmeInput::ReadPagination( MusPagination *pagination )
+bool MusXmlInput::ReadPagination( MusPagination *pagination )
 {
 
 	return true;
 }
 
-bool MusCmmeInput::ReadHeaderFooter( MusHeaderFooter *headerfooter)
+bool MusXmlInput::ReadHeaderFooter( MusHeaderFooter *headerfooter)
 {
 	return true;
 }
 
 
-// WDR: handler implementations for MusCmmeInput
+// WDR: handler implementations for MusXmlInput
 
 

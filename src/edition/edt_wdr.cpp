@@ -34,7 +34,7 @@
 
 // Custom source
 #include "mus/mustoolpanel.h"
-#include "edition/edt.h"
+#include "edt.h"
 
 // Implement window functions
 
@@ -76,6 +76,7 @@ wxMenuBar *MenuBarFunc5()
     item1->AppendSeparator();
     item1->Append( ID5_SAVE_MLF, _("Export MLF"), wxT("") );
     item1->Append( ID5_SAVE_WWG, _("Export WWG"), wxT("") );
+    item1->Append( ID5_SAVE_MEI, _("Export MEI"), wxT("") );
     item1->Append( ID5_SAVE_MODEL, _("Export music model"), wxT("") );
     item1->Append( ID5_SAVE_SVG, _("Export SVG (page)"), wxT("") );
     item0->Append( item1, _("commun1") );
@@ -98,6 +99,8 @@ wxMenuBar *MenuBarFunc5()
     item4->Append( ID5_KEYS, _("&Keys"), wxT("") );
     item4->Append( ID5_SIGNS, _("&Propostions"), wxT("") );
     item4->Append( ID5_SYMBOLES, _("&Symboles"), wxT("") );
+    item4->AppendSeparator();
+    item4->Append( ID5_VOICES, _("&Voices"), wxT("") );
     item0->Append( item4, _("&Tools") );
     
     return item0;

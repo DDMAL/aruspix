@@ -115,7 +115,10 @@ public:
 	
 	/** Associated lyric */
 	ArrayOfMusSymbols m_lyrics; 
-
+    
+    // static for ligatures
+    //static int ligat_x[2], ligat_y[2];	// pour garder coord. des ligatures
+    static unsigned int marq_obl;	// marque le 1e passage pour une oblique
 	
 private:
     // WDR: handler declarations for MusNote

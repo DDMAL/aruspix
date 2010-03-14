@@ -41,16 +41,17 @@ MusFile::~MusFile()
 {
 }
 
-int MusFile::GetNumberOfVoices()
+void MusFile::GetNumberOfVoices( int *min_voice, int *max_voice )
 {
 	wxArrayPtrVoid params; // tableau de pointeurs pour parametres
-    
-    int voice_number = 0;
 
-	params.Add( &voice_number );
+    (*max_voice) = 0;
+    (*min_voice) = 100000; // never more than 10000 voices ?
+
+	params.Add( min_voice );
+    params.Add( max_voice );
     MusPageFunctor countVoices( &MusPage::CountVoices );
     this->Process( &countVoices, params );
-    return voice_number + 1;
 }
     
     

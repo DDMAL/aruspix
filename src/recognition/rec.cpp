@@ -42,6 +42,7 @@
 #include "mus/musfile.h"
 #include "mus/musiowwg.h"
 #include "mus/musiocmme.h"
+#include "mus/musiomei.h"
 #include "mus/mustoolpanel.h"
 
 // statics
@@ -1413,7 +1414,7 @@ void RecEnv::OnExportWWG( wxCommandEvent &event )
 		return;
    
     wxString filename;
-    filename = wxFileSelector( _("Save"), wxGetApp().m_lastDirAX0_out, m_recFilePtr->m_shortname + "wwg", "wwg", "Wolfgang WWG|*.wwg", wxSAVE);
+    filename = wxFileSelector( _("Save"), wxGetApp().m_lastDirAX0_out, m_recFilePtr->m_shortname + ".wwg", "wwg", "Wolfgang WWG|*.wwg", wxSAVE);
     if (filename.IsEmpty())
         return;
         

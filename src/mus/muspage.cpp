@@ -16,6 +16,8 @@
     #pragma hdrstop
 #endif
 
+#include "wx/tokenzr.h"
+
 
 #include "muspage.h"
 #include "musstaff.h"
@@ -237,6 +239,27 @@ void MusPage::DrawPage( wxDC *dc, bool background )
 }
 
 
+void MusPage::SetVoices( )
+{
+    int i;
+    wxString voices;
+    for (i = 0; i < nbrePortees; i++) 
+	{
+        voices += wxString::Format("%d;", (&m_staves[i])->voix );		
+	}
+    voices = wxGetTextFromUser( "Enter the voices numbers for the pages", "Voices", voices );
+    if (voices.Length() == 0 ) {
+        return;
+    }
+    wxArrayString voices_arr = wxStringTokenize(voices, ";");
+    for (i = 0; (i < nbrePortees) && (i < (int)voices_arr.GetCount()) ; i++) 
+	{
+        (&m_staves[i])->voix = atoi( voices_arr[i].c_str() );		
+	}
+    
+
+}
+
 // functors for MusPage
 
 void MusPage::ProcessStaves( wxArrayPtrVoid params )
@@ -284,9 +307,11 @@ void MusPage::ProcessVoices( wxArrayPtrVoid params )
 
 void MusPage::CountVoices( wxArrayPtrVoid params )
 {
-    // param 0; int (number of voice number)
+    // param 0; int (min number of voice number)
+    // param 1; int (max number of voice number)
     
-    int *number_of_voice = (int*)params[0];
+    int *min_voice = (int*)params[0];
+    int *max_voice = (int*)params[1];
     
 	int i;
     MusStaff *staff;
@@ -294,8 +319,11 @@ void MusPage::CountVoices( wxArrayPtrVoid params )
     for (i = 0; i < nbrePortees; i++) 
 	{
 		staff = &m_staves[i];
-        if (staff->voix > (*number_of_voice)) {
-           (*number_of_voice) = staff->voix;
+        if (staff->voix > (*max_voice)) {
+           (*max_voice) = staff->voix;
+        }
+        if (staff->voix < (*min_voice)) {
+           (*min_voice) = staff->voix;
         }
 	}
 

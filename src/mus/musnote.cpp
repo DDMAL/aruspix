@@ -899,21 +899,38 @@ void MusNote::pointage ( wxDC *dc, int x1, int y1, int offy, unsigned int d_p, M
 }
 
 
+// should probably become a static method of MusNote
+// in that case, MusWindow wouldn't be necessary anymore
+void lig_x ( MusNote *note, MusStaff *staff, MusWindow *m_w )
+{
+	if (note == NULL)	return;
+    MusElement *next = staff->GetPrevious(note);
+	if (next == NULL || !next->IsNote() || next->fligat) return;
+	if (next->ligat && next->IsNote() && ((MusNote*)next)->val <= RD)
+	{	if (next->fligat && ((MusNote*)next)->lat)
+			note->xrel = next->xrel;
+		else
+			note->xrel = next->xrel + m_w->largeurBreve[staff->pTaille] * 2;
+	}
+    return;
+}
+
+
+static int ligat_x[2], ligat_y[2];	// pour garder coord. des ligatures
+unsigned int MusNote::marq_obl = OFF;	// marque le 1e passage pour une oblique
 
 void MusNote::ligature ( wxDC *dc, int y, MusStaff *staff )
 {	
-	//static int ligat_x[2], ligat_y[2];	// pour garder coord. des ligatures
-	//static unsigned int marq_obl;	// marque le 1e passage pour une oblique
-	int xn, x1, x2, /***yy2***/ y1, y2, y3, y4 /***y5***/;
+	int xn, x1, x2, yy2, y1, y2, y3, y4, y5;
 	int milieu, up, epaisseur;
 
 	epaisseur = max (2, m_p->EpBarreValeur/2);
 	xn = this->xrel;
 	
-	/***if (ligat)
-		lig_x ( this );
+	if (ligat)
+		lig_x ( this, staff, this->m_w );
 	else
-		xn = this->xrel + this->offset;***/
+		xn = this->xrel + this->offset;
 
 
 	// calcul des dimensions du rectangle
@@ -923,7 +940,7 @@ void MusNote::ligature ( wxDC *dc, int y, MusStaff *staff )
 	y3 = (int)(y1 + m_w->v_unit[staff->pTaille]);	// partie d'encadrement qui depasse
 	y4 = (int)(y2 - m_w->v_unit[staff->pTaille]);	
 
-	//***if (!this->oblique && (!marq_obl))	// notes rectangulaires, y c. en ligature
+	if (!this->oblique && (!marq_obl))	// notes rectangulaires, y c. en ligature
 	{
 		if ( !this->inv_val)
 		{				//	double base des carrees
@@ -931,38 +948,38 @@ void MusNote::ligature ( wxDC *dc, int y, MusStaff *staff )
 			m_w->hGrosseligne ( dc, x1,  y2,  x2,  y2, epaisseur );
 		}
 		else
-			m_w->rect_plein2( dc,x1,y1,x2 +  m_p->EpQueueNote,y2);	// dessine val carree pleine // ENZ correction de x2
+			m_w->rect_plein2( dc,x1,y1,x2,y2);	// dessine val carree pleine // ENZ correction de x2
 
 		m_w->v_bline ( dc, y3, y4, x1, m_w->ToZoom(m_p->EpQueueNote) );	// corset lateral
 		m_w->v_bline ( dc, y3, y4, x2, m_w->ToZoom(m_p->EpQueueNote) );
 	}
-	/***else				// traitement des obliques
+	else			// traitement des obliques
 	{
-		if (!marq_obl)	// 1e passage: ligne verticale initiale
+		if (!MusNote::marq_obl)	// 1e passage: ligne verticale initiale
 		{
-			v_bline (hdc,y3,y4,x1,_param.EpQueueNote);
-			marq_obl = ON;
-			oblique = OFF;
+			m_w->v_bline (dc,y3,y4,x1, m_w->ToZoom(m_p->EpQueueNote) );
+			MusNote::marq_obl = ON;
+			//oblique = OFF;
 //			if (val == RD)	// queue gauche haut si RD
 //				queue_lig = ON;
 		}
 		else	// 2e passage: lignes obl. et verticale finale
 		{
-			x1 -=  largeurBreve[pTaille]*2;	// avance auto
+			x1 -=  m_w->largeurBreve[staff->pTaille]*2;	// avance auto
 
-			y1 = *ligat_y - _espace[pTaille];	// ligat_y contient y original
+			y1 = *ligat_y - m_w->_espace[staff->pTaille];	// ligat_y contient y original
 			yy2 = y2;
-			y5 = y1+_interl[pTaille]; y2 += _interl[pTaille];	// on monte d'un INTERL
+			y5 = y1+ m_w->_interl[staff->pTaille]; y2 += m_w->_interl[staff->pTaille];	// on monte d'un INTERL
 
 			if (inv_val)
-				hGrosseligne ( hdc,  x1,  y1,  x2,  yy2, _interl[pTaille], workColor2);
+				m_w->hGrosseligne ( dc,  x1,  y1,  x2,  yy2, m_w->_interl[staff->pTaille]);
 			else
-			{	hGrosseligne ( hdc,  x1,  y1,  x2,  yy2, 5, workColor2);
-				hGrosseligne ( hdc,  x1,  y5,  x2,  y2, -5, workColor2);
+			{	m_w->hGrosseligne ( dc,  x1,  y1,  x2,  yy2, 5);
+				m_w->hGrosseligne ( dc,  x1,  y5,  x2,  y2, -5);
 			}
-			v_bline (hdc,y3,y4,x2,_param.EpQueueNote);	//cloture verticale
+			m_w->v_bline ( dc,y3,y4,x2,m_w->ToZoom(m_p->EpQueueNote));	//cloture verticale
 
-			marq_obl = OFF;
+			MusNote::marq_obl = OFF;
 //			queue_lig = OFF;	//desamorce alg.queue BR
 
 		}
@@ -970,24 +987,24 @@ void MusNote::ligature ( wxDC *dc, int y, MusStaff *staff )
 
 	if (ligat)	// memoriser positions d'une note a l'autre; relier notes par barres
 	{	*(ligat_x+1) = x2; *(ligat_y+1) = y;	// relie notes ligaturees par barres verticales
-		if (in(x1,(*ligat_x)-2,(*ligat_x)+2) || (chk->fligat && chk->obj.not.lat && !marq_obl))
+		if (in(x1,(*ligat_x)-2,(*ligat_x)+2) || (this->fligat && this->lat && !MusNote::marq_obl))
 			// les dernieres conditions pour permettre ligature verticale ancienne
-			v_bline (hdc, *ligat_y, y1, (chk->fligat && chk->obj.not.lat) ? x2: x1, _param.EpQueueNote);
+			m_w->v_bline (dc, *ligat_y, y1, (this->fligat && this->lat) ? x2: x1, m_w->ToZoom(m_p->EpQueueNote));
 		*ligat_x = *(ligat_x + 1);
 		*ligat_y = *(ligat_y + 1);
-	}***/
+	}
 
 	
 	y3 = y2 - m_w->_espace[staff->pTaille]*6;
 
 	if (ligat)
-	{	if (val == BR ) //*** && chk->obj.not.queue_lig)	// queue gauche bas: BR initiale descendante
+	{	if (val == BR  && this->queue_lig)	// queue gauche bas: BR initiale descendante
 			m_w->v_bline ( dc, y2, y3, x1, m_w->ToZoom(m_p->EpQueueNote) );
 
-		/***else if (val == LG && !chk->obj.not.queue_lig) // LG en ligature, queue droite bas
-			v_bline (hdc, y2, y3, x2, _param.EpQueueNote); ***/
+		else if (val == LG && !this->queue_lig) // LG en ligature, queue droite bas
+			m_w->v_bline (dc, y2, y3, x2, m_w->ToZoom(m_p->EpQueueNote) );
 
-		else if (val == RD ) //*** && chk->obj.not.queue_lig )	// queue gauche haut
+		else if (val == RD && this->queue_lig )	// queue gauche haut
 		{	y2 = y1 + m_w->_espace[staff->pTaille]*6;
 			m_w->v_bline ( dc, y1, y2, x1, m_w->ToZoom(m_p->EpQueueNote) );
 		} 
