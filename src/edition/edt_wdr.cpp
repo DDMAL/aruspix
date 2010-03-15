@@ -101,6 +101,7 @@ wxMenuBar *MenuBarFunc5()
     item4->Append( ID5_SYMBOLES, _("&Symboles"), wxT("") );
     item4->AppendSeparator();
     item4->Append( ID5_VOICES, _("&Voices"), wxT("") );
+    item4->Append( ID5_INDENT, _("In&dentation"), wxT("") );
     item0->Append( item4, _("&Tools") );
     
     return item0;

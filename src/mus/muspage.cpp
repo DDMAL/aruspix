@@ -239,25 +239,29 @@ void MusPage::DrawPage( wxDC *dc, bool background )
 }
 
 
-void MusPage::SetVoices( )
+void MusPage::SetValues( int type )
 {
     int i;
-    wxString voices;
+    wxString values;
     for (i = 0; i < nbrePortees; i++) 
 	{
-        voices += wxString::Format("%d;", (&m_staves[i])->voix );		
+        switch ( type ) {
+            case PAGE_VALUES_VOICES: values += wxString::Format("%d;", (&m_staves[i])->voix ); break;
+            case PAGE_VALUES_INDENT: values += wxString::Format("%d;", (&m_staves[i])->indent ); break;
+        }
 	}
-    voices = wxGetTextFromUser( "Enter the voices numbers for the pages", "Voices", voices );
-    if (voices.Length() == 0 ) {
+    values = wxGetTextFromUser( "Enter values for the pages", "", values );
+    if (values.Length() == 0 ) {
         return;
     }
-    wxArrayString voices_arr = wxStringTokenize(voices, ";");
-    for (i = 0; (i < nbrePortees) && (i < (int)voices_arr.GetCount()) ; i++) 
+    wxArrayString values_arr = wxStringTokenize(values, ";");
+    for (i = 0; (i < nbrePortees) && (i < (int)values_arr.GetCount()) ; i++) 
 	{
-        (&m_staves[i])->voix = atoi( voices_arr[i].c_str() );		
+        switch ( type ) {
+            case PAGE_VALUES_VOICES: (&m_staves[i])->voix = atoi( values_arr[i].c_str() ); break;
+            case PAGE_VALUES_INDENT: (&m_staves[i])->indent = atoi( values_arr[i].c_str() ); break;
+        }	
 	}
-    
-
 }
 
 // functors for MusPage

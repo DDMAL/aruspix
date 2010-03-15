@@ -88,7 +88,7 @@ private:
     // WDR: handler declarations for EdtEnv
 	void OnSize( wxSizeEvent &event );
     void OnTools( wxCommandEvent &event );
-    void OnVoices( wxCommandEvent &event );
+    void OnValues( wxCommandEvent &event );
     void OnSave( wxCommandEvent &event );
     void OnOpenMLF( wxCommandEvent &event );
 	void OnSaveMLF( wxCommandEvent &event );

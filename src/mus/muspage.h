@@ -22,6 +22,11 @@
 class MusStaff;
 WX_DECLARE_OBJARRAY( MusStaff, ArrayOfMusStaves);
 
+enum {
+    PAGE_VALUES_VOICES = 0,
+    PAGE_VALUES_INDENT
+};
+
 // WDR: class declarations
 
 //----------------------------------------------------------------------------
@@ -51,7 +56,7 @@ public:
 	//void ClearStaves( wxDC *dc , MusStaff *start = NULL );
 
 	void UpdateStavesPosition();
-    void SetVoices();
+    void SetValues( int type );
 
 	/** musbarmes */
 	void DrawBarres( wxDC *dc ); // mus == barres

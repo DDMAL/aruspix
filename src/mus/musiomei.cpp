@@ -79,7 +79,7 @@ bool MusMeiOutput::ExportFile( )
     TiXmlElement body("body");
     TiXmlElement mdiv("mdiv");
     
-    if ( 0 ) {
+    if ( 1 ) {
         TiXmlElement parts("parts");
         WriteParts( &parts );
         mdiv.InsertEndChild( parts );

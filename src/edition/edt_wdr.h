@@ -60,6 +60,7 @@ const int ID5_KEYS = 15022;
 const int ID5_SIGNS = 15023;
 const int ID5_SYMBOLES = 15024;
 const int ID5_VOICES = 15025;
+const int ID5_INDENT = 15026;
 wxMenuBar *MenuBarFunc5();
 
 // Declare toolbar functions

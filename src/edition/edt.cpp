@@ -93,7 +93,8 @@ BEGIN_EVENT_TABLE(EdtEnv,AxEnv)
     EVT_MENU( ID5_OPEN_WWG, EdtEnv::OnOpenWWG )
     EVT_MENU( ID5_SAVE_SVG, EdtEnv::OnSaveSVG )
     EVT_MENU( ID5_SAVE_MEI, EdtEnv::OnSaveMEI )
-    EVT_MENU( ID5_VOICES, EdtEnv::OnVoices )
+    EVT_MENU( ID5_VOICES, EdtEnv::OnValues )
+    EVT_MENU( ID5_INDENT, EdtEnv::OnValues )
     EVT_MENU_RANGE( ID5_INSERT_MODE, ID5_SYMBOLES, EdtEnv::OnTools )
 	//EVT_SIZE( EdtEnv::OnSize )
 END_EVENT_TABLE()
@@ -284,12 +285,16 @@ void EdtEnv::OnSaveMLF( wxCommandEvent &event )
 }
 
 
-void EdtEnv::OnVoices( wxCommandEvent &event )
+void EdtEnv::OnValues( wxCommandEvent &event )
 {
     if ( !m_musViewPtr )
         return;
-        
-    m_musViewPtr->m_page->SetVoices();   
+    
+    if ( event.GetId() == ID5_VOICES ) {
+        m_musViewPtr->m_page->SetValues( PAGE_VALUES_VOICES );   
+    } else if ( event.GetId() == ID5_INDENT ) {
+        m_musViewPtr->m_page->SetValues( PAGE_VALUES_INDENT );  
+    }
 }
 
 void EdtEnv::OnZoomOut( wxCommandEvent &event )
