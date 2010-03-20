@@ -532,46 +532,92 @@ bool MusMeiOutput::WriteLyric( const MusElement *element )
 //----------------------------------------------------------------------------
 
 MusMeiInput::MusMeiInput( MusFile *file, wxString filename ) :
-	MusFileInputStream( file, filename )
+    // This is pretty bad. We open a bad fileoinputstream as we don't use it
+	MusFileInputStream( file, -1 )
 {
-	m_vmaj = m_vmin = m_vrev = 10000; // arbitrary version, we assume we will never reach version 10000...
+	m_filename = filename;
+    m_xml_root = NULL;
+    m_xml_current = NULL;
 }
 
 MusMeiInput::~MusMeiInput()
 {
 }
 
+TiXmlNode *MusMeiInput::GetFirstChild( TiXmlNode *node, wxString element )
+{
+    if (!node) {
+        return NULL;
+    }
+    TiXmlNode *next_node = node->FirstChild( element );
+    if ( !next_node )
+    {
+        wxLogMessage(_("Missing element '<%s>' in the xml tree") , element.c_str() );
+		return NULL;
+    }
+    return next_node;
+}
+
 bool MusMeiInput::ImportFile( )
 {
 	int i;
-
-	if ( !IsOk() )
+    TiXmlNode *node = NULL;
+    
+	wxASSERT( !m_xml_root );
+    TiXmlDocument dom( (m_filename).c_str() );
+	if ( !dom.LoadFile() )
 	{
 		wxLogMessage(_("Cannot read file '%s'"), m_file->m_fname.c_str() );
 		return false;
 	}
-
+    
+    m_xml_root = dom.RootElement();
+    
     ReadFileHeader( &m_file->m_fheader ); // fileheader
     
-	m_file->m_pages.Clear();		
-    for (i = 0; i < m_file->m_fheader.nbpage; i++ )
-	{
-		MusPage *page = new MusPage();
-		ReadPage( page );
-		m_file->m_pages.Add( page );
-    }
-    if ( !ReadSeparator() ) 
+    // binarization variables	
+    node = GetFirstChild( m_xml_root, "music" );
+    node = GetFirstChild( node, "body" );
+    node = GetFirstChild( node, "mdiv" );
+    if ( !node ) {
 		return false;
-	if ( m_file->m_fheader.param.entetePied & PAGINATION )
-		ReadPagination( &m_file->m_pagination );
-	if ( m_file->m_fheader.param.entetePied & ENTETE )
-		ReadHeaderFooter( &m_file->m_header );
-	if ( m_file->m_fheader.param.entetePied & PIEDDEPAGE )
-		ReadHeaderFooter( &m_file->m_footer );
-
-	//wxLogMessage("OK %d", m_file->m_pages.GetCount() );
+    }
+    
+    if ( node->FirstChild( "parts" ) ) {
+        ReadParts( node->FirstChild( "parts" )->ToElement() );
+    } else if ( node->FirstChild( "score" ) ) {
+        ReadScore( node->FirstChild( "score" )->ToElement() );
+    } else { 
+        wxLogMessage(_("Missing element '<parts>' or '<score>' in the xml tree") );
+        return false;
+    }
+    /*
+        if ( !root ) return;
+            
+        if ( root->Attribute( "pre_image_binarization_method" ) )
+            RecFile::m_pre_image_binarization_method = atoi( root->Attribute( "pre_image_binarization_method" ) );
+        if ( root->Attribute( "pre_page_binarization_method" ) )
+            RecFile::m_pre_page_binarization_method = atoi( root->Attribute( "pre_page_binarization_method" ) );
+        if ( root->Attribute( "pre_page_binarization_method_size" ) )
+            RecFile::m_pre_page_binarization_method_size = atoi( root->Attribute( "pre_page_binarization_method_size" ) );
+    }*/
 
 	return true;
+}
+
+
+void MusMeiInput::ReadParts( TiXmlElement *parts ) {
+
+    MusPage *page = new MusPage();
+    ReadPage( page );
+    m_file->m_pages.Add( page );
+}
+
+void MusMeiInput::ReadScore( TiXmlElement *score ) {
+
+    MusPage *page = new MusPage();
+    ReadPage( page );
+    m_file->m_pages.Add( page );
 }
 
 bool MusMeiInput::ReadFileHeader( MusFileHeader *header )

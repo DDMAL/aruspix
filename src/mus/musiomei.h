@@ -92,11 +92,18 @@ public:
 	virtual bool ReadHeaderFooter( MusHeaderFooter *headerfooter);
     
 private:
+    TiXmlNode *GetFirstChild( TiXmlNode *node, wxString element );
+    void ReadParts( TiXmlElement *parts );
+    void ReadScore( TiXmlElement *score );
+    
+private:
     // WDR: member variable declarations for MusMeiInput
-    int m_vmaj, m_vmin, m_vrev;
 
 private:
 	// WDR: handler declarations for MusMeiInput
+	wxString m_filename;
+    TiXmlElement *m_xml_root;
+    TiXmlElement *m_xml_current;
 };
 
 

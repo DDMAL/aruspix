@@ -123,6 +123,9 @@ void MusStaff::Clear()
 	reserve = 0;
 	yrel = 0;
 	xrel = 0;
+    
+    //
+    beamListPremier = NULL;
 }
 
 void MusStaff::CopyAttributes( MusStaff *nstaff )

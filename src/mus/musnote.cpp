@@ -335,6 +335,11 @@ void MusNote::Draw( wxDC *dc, MusStaff *staff)
 		silence ( dc, staff );
 	}
     
+    // draw the beams
+    if (staff->beamListPremier && this->frel) {
+        staff->beam( dc );
+    }
+    
 
 		wxPen pen( *m_w->m_currentColour, m_p->EpLignesPortee, wxSOLID );
 		dc->SetPen( pen );
@@ -490,10 +495,10 @@ void MusNote::note ( wxDC *dc, MusStaff *staff )
 
 		if (this->chord) /*** && this == testchord)***/
 			ynn_chrd = ynn;
-		/***if (this->rel && formval > NR)
+		if (this->rel && formval > NR)
 		{	if (this->drel)
-				beamListPremier = this;
-		}***/
+				staff->beamListPremier = this;
+		}
 		else if (this->tetenot != SANSQUEUE && (!this->chord || this->fchord))
 		{	if (this->chord)
 			{	

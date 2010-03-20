@@ -73,6 +73,7 @@ wxMenuBar *MenuBarFunc5()
     item1->AppendSeparator();
     item1->Append( ID5_OPEN_MLF, _("Import &MLF"), wxT("") );
     item1->Append( ID5_OPEN_WWG, _("Import &WWG"), wxT("") );
+    item1->Append( ID5_OPEN_MEI, _("Import &MEI"), wxT("") );
     item1->AppendSeparator();
     item1->Append( ID5_SAVE_MLF, _("Export MLF"), wxT("") );
     item1->Append( ID5_SAVE_WWG, _("Export WWG"), wxT("") );

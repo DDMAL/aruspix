@@ -129,8 +129,6 @@ bool MusWWGOutput::WriteFileHeader( const MusFileHeader *header )
     unsigned short maj_ver = 2;
     unsigned short min_ver = 1;
     unsigned int filesize = 0;
-    unsigned char beamPenteMax = 30;
-    unsigned char beamPenteMin = 10;
     unsigned char Epais1 = 1;
     unsigned char Epais2 = 5;
     unsigned char Epais3 = 9;
@@ -171,8 +169,8 @@ bool MusWWGOutput::WriteFileHeader( const MusFileHeader *header )
 	Write( &header->param.EpBarreMesure, 1 ); // param - epBarreMesure
 	Write( &header->param.EpBarreValeur, 1 ); // param - epBarreValeur
 	Write( &header->param.EpBlancBarreValeur, 1 ); // param - epBlancBarreValeur
-	Write( &beamPenteMax, 1 ); // param - beamPenteMax
-	Write( &beamPenteMin, 1 ); // param - beamPenteMin
+	Write( &header->param.beamPenteMax, 1 ); // param - beamPenteMax
+	Write( &header->param.beamPenteMin, 1 ); // param - beamPenteMin
 	int32 = wxINT32_SWAP_ON_BE( header->param.pageFormatHor ); // param - pageFormatHor
 	Write( &int32, 4 );
 	int32 = wxINT32_SWAP_ON_BE( header->param.pageFormatVer ); // param - pageFormatVer
@@ -611,8 +609,8 @@ bool MusWWGInput::ReadFileHeader( MusFileHeader *header )
 	Read( &header->param.EpBarreMesure, 1 ); // param - epBarreMesure
 	Read( &header->param.EpBarreValeur, 1 ); // param - epBarreValeur
 	Read( &header->param.EpBlancBarreValeur, 1 ); // param - epBlancBarreValeur
-	Read( &unused_uc, 1 ); // param - beamPenteMax
-	Read( &unused_uc, 1 ); // param - beamPenteMin
+	Read( &header->param.beamPenteMax, 1 ); // param - beamPenteMax
+	Read( &header->param.beamPenteMin, 1 ); // param - beamPenteMin
 	Read( &int32, 4 );
 	header->param.pageFormatHor = wxINT32_SWAP_ON_BE( int32 ); // param - pageFormatHor
 	Read( &int32, 4 );

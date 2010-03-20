@@ -93,6 +93,7 @@ BEGIN_EVENT_TABLE(EdtEnv,AxEnv)
     EVT_MENU( ID5_OPEN_WWG, EdtEnv::OnOpenWWG )
     EVT_MENU( ID5_SAVE_SVG, EdtEnv::OnSaveSVG )
     EVT_MENU( ID5_SAVE_MEI, EdtEnv::OnSaveMEI )
+    EVT_MENU( ID5_OPEN_MEI, EdtEnv::OnOpenMEI )
     EVT_MENU( ID5_VOICES, EdtEnv::OnValues )
     EVT_MENU( ID5_INDENT, EdtEnv::OnValues )
     EVT_MENU_RANGE( ID5_INSERT_MODE, ID5_SYMBOLES, EdtEnv::OnTools )
@@ -345,6 +346,8 @@ void EdtEnv::OnUpdateUI( wxUpdateUIEvent &event )
         event.Enable( true );
     else if ( event.GetId() == ID5_OPEN_WWG )
         event.Enable( true );
+    else if ( event.GetId() == ID5_OPEN_MEI )
+        event.Enable( true );
 
     else if ( !m_musViewPtr )
         event.Enable(false);
@@ -476,6 +479,44 @@ void EdtEnv::OnOpenWWG( wxCommandEvent &event )
     m_filePtr->m_fname = filename;
     MusWWGInput wwginput( m_filePtr, filename );
 	if ( !wwginput.ImportFile() )
+		return;
+
+    /*
+    MusWWGOutput *wwgoutput = new MusWWGOutput( m_filePtr, filename );
+    wwgoutput->ExportFile();
+    delete wwgoutput;*/
+    
+
+    if ( m_musViewPtr )
+    {
+        m_musViewPtr->Destroy();
+        m_musViewPtr = NULL;
+    }
+    m_musViewPtr = new MusWindow( m_panelPtr, ID5_MUSWINDOW, wxDefaultPosition, wxDefaultSize, wxHSCROLL|wxVSCROLL|wxSIMPLE_BORDER );
+    m_musViewPtr->SetToolPanel( ((EdtPanel*)m_envWindowPtr)->GetMusToolPanel() );
+    m_musViewPtr->SetFile( m_filePtr );
+    m_musViewPtr->Resize( );
+}
+
+void EdtEnv::OnOpenMEI( wxCommandEvent &event )
+{
+    wxASSERT_MSG( m_panelPtr, "Panel cannot be NULL ");
+
+
+    wxString filename = wxFileSelector( _("Open"), wxGetApp().m_lastDir, _T(""), NULL, "XML|*.xml", wxOPEN);
+    if ( filename.IsEmpty() )
+        return;
+    wxGetApp().m_lastDir = wxPathOnly( filename );
+    
+    if ( m_filePtr )
+    {
+        delete m_filePtr;
+        m_filePtr = NULL;
+    }
+    m_filePtr = new MusFile();
+    m_filePtr->m_fname = filename;
+    MusMeiInput meiinput( m_filePtr, filename );
+	if ( !meiinput.ImportFile() )
 		return;
 
     /*

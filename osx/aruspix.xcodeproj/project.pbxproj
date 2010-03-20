@@ -37,6 +37,7 @@
 		4D7362820D35C7D30030DFA6 /* recmus.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D7362800D35C7D30030DFA6 /* recmus.cpp */; };
 		4D7362A40D35CECC0030DFA6 /* cmpmus.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D7362A20D35CECC0030DFA6 /* cmpmus.cpp */; };
 		4D8330000F2E6E35006E6B5F /* musiocmme.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D832FFE0F2E6E35006E6B5F /* musiocmme.cpp */; };
+		4DA6F43411510C7B0005E4A5 /* musbeam.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4DA6F43311510C7B0005E4A5 /* musbeam.cpp */; };
 		4DA9FDDD0D90984E000E7BA6 /* supbookctrl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4DA9FDDB0D90984E000E7BA6 /* supbookctrl.cpp */; };
 		4DB2D96D0D8383EA003401B0 /* musmlfdic.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4DB2D96B0D8383EA003401B0 /* musmlfdic.cpp */; };
 		4DB9F0530D94A66E00ED8E3E /* imregister.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4DB9F0510D94A66E00ED8E3E /* imregister.cpp */; };
@@ -149,6 +150,7 @@
 		4D7362A30D35CECC0030DFA6 /* cmpmus.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = cmpmus.h; sourceTree = "<group>"; };
 		4D832FFE0F2E6E35006E6B5F /* musiocmme.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = musiocmme.cpp; path = ../src/mus/musiocmme.cpp; sourceTree = SOURCE_ROOT; };
 		4D832FFF0F2E6E35006E6B5F /* musiocmme.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = musiocmme.h; path = ../src/mus/musiocmme.h; sourceTree = SOURCE_ROOT; };
+		4DA6F43311510C7B0005E4A5 /* musbeam.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = musbeam.cpp; path = ../src/mus/musbeam.cpp; sourceTree = SOURCE_ROOT; };
 		4DA9FDDB0D90984E000E7BA6 /* supbookctrl.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = supbookctrl.cpp; sourceTree = "<group>"; };
 		4DA9FDDC0D90984E000E7BA6 /* supbookctrl.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = supbookctrl.h; sourceTree = "<group>"; };
 		4DB2D96B0D8383EA003401B0 /* musmlfdic.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = musmlfdic.cpp; path = ../src/mus/musmlfdic.cpp; sourceTree = SOURCE_ROOT; };
@@ -282,6 +284,7 @@
 				4D3A8FD00D35867200BBC1FB /* mus.cpp */,
 				4D3A8FD10D35867200BBC1FB /* mus.h */,
 				4D3A8FD20D35867200BBC1FB /* musbarlines.cpp */,
+				4DA6F43311510C7B0005E4A5 /* musbeam.cpp */,
 				4D3A8FD30D35867200BBC1FB /* musbezier.cpp */,
 				4D3A8FD40D35867200BBC1FB /* musclef.cpp */,
 				4D3A8FD50D35867200BBC1FB /* musdef.h */,
@@ -670,6 +673,7 @@
 				4D12CE4110748D8E00E65714 /* edt_wdr.cpp in Sources */,
 				4DE87C3610FE3E82001E9F91 /* musiomei.cpp in Sources */,
 				4DE87C3710FE3E82001E9F91 /* musioxml.cpp in Sources */,
+				4DA6F43411510C7B0005E4A5 /* musbeam.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

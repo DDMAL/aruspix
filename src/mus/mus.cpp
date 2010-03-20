@@ -32,6 +32,8 @@ MusParameters::MusParameters()
     EpBarreMesure = 3;
     EpBarreValeur = 10;
     EpBlancBarreValeur = 5;
+    beamPenteMax = 30;
+    beamPenteMin = 10;
     pageFormatHor = 210;
     pageFormatVer = 297;
     MargeSOMMET = 0;

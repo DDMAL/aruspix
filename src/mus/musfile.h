@@ -124,6 +124,7 @@ class MusFileInputStream: public wxFileInputStream
 public:
     // constructors and destructors
     MusFileInputStream( MusFile *file, wxString filename );
+    MusFileInputStream( MusFile *file, int fr );
     virtual ~MusFileInputStream();
     
     // WDR: method declarations for MusFileInputStream

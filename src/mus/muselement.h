@@ -42,6 +42,7 @@ public:
 	bool MusElement::IsNote() { return ( TYPE != SYMB ); }
 	bool IsSymbole() { return ( TYPE == SYMB ); }
 	wxClientDC *MusElement::InitAndClear( MusStaff *staff ); // init dc and clear element only if necessary
+    MusElement *GetNext( MusStaff *staff );
 
     // WDR: method declarations for MusElement
 	virtual void MusElement::SetPitch( int code, int oct, MusStaff *staff = NULL ) {};

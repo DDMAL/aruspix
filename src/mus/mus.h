@@ -48,7 +48,7 @@ public:
     /** epaisseur de l'espace entre les barres de valeur */
     unsigned char EpBlancBarreValeur;
     /** pente maximale des barres de valeur */
-    ///unsigned char beamPenteMax;
+    unsigned char beamPenteMax;
     /** pente minimale des barres de valeur */
     unsigned char beamPenteMin;
     /** largueur de la page */

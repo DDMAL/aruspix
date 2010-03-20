@@ -72,6 +72,10 @@ public:
 	int y_note (int code, int dec_clef, int oct);
 	void updat_pscle (int i, MusElement *chk);
 	void DrawSlur( wxDC *dc, int x1, int y1, int x2, int y2, bool up, int height = -1);
+    // in musbeam.cpp
+    unsigned int MusStaff::beam ( wxDC *dc );
+
+    
 	
 	//Lyric related methods
 	int GetLyricPos( MusSymbol *lyric );
@@ -143,6 +147,9 @@ public:
 	unsigned int yrel;
 	/** postion x relative de la portee (non-enregistre dans les fichiers) */
 	unsigned int xrel;
+    
+    // drawing variables
+    MusNote *beamListPremier;
 
 private:
 	// WDR: handler declarations for MusStaff

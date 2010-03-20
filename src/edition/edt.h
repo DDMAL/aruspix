@@ -94,6 +94,7 @@ private:
 	void OnSaveMLF( wxCommandEvent &event );
     void OnOpenWWG( wxCommandEvent &event );
     void OnSaveMEI( wxCommandEvent &event );
+    void OnOpenMEI( wxCommandEvent &event );
     void OnSaveWWG( wxCommandEvent &event );
     void OnSaveSVG( wxCommandEvent &event );
     void OnSaveModel( wxCommandEvent &event );

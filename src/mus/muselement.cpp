@@ -204,6 +204,15 @@ void MusElement::ClearElement( wxDC *dc, MusStaff *staff )
 }
 
 
+MusElement *MusElement::GetNext( MusStaff *staff )
+{
+    if (((int)staff->m_elements.GetCount() <= this->no) || (this->no < 0)) {
+        return NULL;
+    }
+    return &staff->m_elements[this->no+1];
+}
+
+
 /*
 wxClientDC *MusElement::InitAndClear( MusStaff *staff )
 {

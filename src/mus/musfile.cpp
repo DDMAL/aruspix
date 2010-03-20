@@ -146,6 +146,13 @@ MusFileInputStream::MusFileInputStream( MusFile *file, wxString filename  ) :
 	m_file = file;
 }
 
+MusFileInputStream::MusFileInputStream( MusFile *file, int fd ) :
+	wxFileInputStream( fd )
+{
+	//wxASSERT_MSG( file, "File cannot be NULL" );
+	m_file = file;
+}
+
 MusFileInputStream::~MusFileInputStream()
 {
 }

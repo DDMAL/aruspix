@@ -365,12 +365,12 @@ void MusWindow::PaperSize( )
 	}
 	wymax = pageFormatVer-40;
     
-    /*
+    
 	beamPenteMx = m_fh->param.beamPenteMax;
 	beamPenteMin = m_fh->param.beamPenteMin;
 	beamPenteMx /= 100;
 	beamPenteMin /= 100;
-    */
+    
 	return;
 }
 
