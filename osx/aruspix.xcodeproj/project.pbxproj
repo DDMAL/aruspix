@@ -773,19 +773,10 @@
 		A58508B60A001129006E82B1 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_BIT_PRE_XCODE_3_1)";
-				ARCHS_STANDARD_32_BIT_PRE_XCODE_3_1 = "ppc i386";
-				ARUSPIX = /Users/ahankins/Documents/code/aruspix/trunk;
-				ARUSPIX_IMLIB = /Users/ahankins/Documents/code/aruspix/dependencies/im3;
-				ARUSPIX_TORCH = /Users/ahankins/Documents/code/aruspix/dependencies/torch3;
-				ARUSPIX_WX = /Users/ahankins/Documents/code/aruspix/dependencies/wx2.8.7;
-				ARUSPIX_WX_VERSION = 2.8;
 				COPY_PHASE_STRIP = NO;
-				GCC_VERSION = 4.0;
 				OBJROOT = "$(ARUSPIX)/obj";
 				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
 				SYMROOT = "$(ARUSPIX)/bin";
-				VALID_ARCHS = i386;
 			};
 			name = Debug;
 		};
@@ -802,13 +793,6 @@
 		A58508C60A00113C006E82B1 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_BIT_PRE_XCODE_3_1)";
-				ARCHS_STANDARD_32_BIT_PRE_XCODE_3_1 = "ppc i386";
-				ARUSPIX = /Users/ahankins/Documents/code/aruspix/trunk;
-				ARUSPIX_IMLIB = /Users/ahankins/Documents/code/aruspix/dependencies/im3;
-				ARUSPIX_TORCH = /Users/ahankins/Documents/code/aruspix/dependencies/torch3;
-				ARUSPIX_WX = /Users/ahankins/Documents/code/aruspix/dependencies/wx2.8.10;
-				ARUSPIX_WX_VERSION = 2.8;
 				COPY_PHASE_STRIP = YES;
 				GCC_DEBUGGING_SYMBOLS = default;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
@@ -847,8 +831,6 @@
 					"-DNO_GCC_PRAGMA",
 				);
 				OTHER_LDFLAGS = (
-					"-framework",
-					OpenGL,
 					"-lz",
 					"-lpthread",
 					"-framework",
@@ -881,7 +863,6 @@
 				STRIP_INSTALLED_PRODUCT = NO;
 				STRIP_STYLE = debugging;
 				SYMROOT = "$(ARUSPIX)/bin";
-				VALID_ARCHS = "i386 ppc";
 				WARNING_CFLAGS = (
 					"-Wmost",
 					"-Wno-four-char-constants",
