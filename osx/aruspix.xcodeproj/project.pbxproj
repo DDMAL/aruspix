@@ -41,6 +41,9 @@
 		4DA9FDDD0D90984E000E7BA6 /* supbookctrl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4DA9FDDB0D90984E000E7BA6 /* supbookctrl.cpp */; };
 		4DB2D96D0D8383EA003401B0 /* musmlfdic.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4DB2D96B0D8383EA003401B0 /* musmlfdic.cpp */; };
 		4DB9F0530D94A66E00ED8E3E /* imregister.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4DB9F0510D94A66E00ED8E3E /* imregister.cpp */; };
+		4DC24AA9119B718700B2EF98 /* RtMidi.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4DC24AA7119B718700B2EF98 /* RtMidi.cpp */; };
+		4DC24AB7119B72C900B2EF98 /* musneume.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4DC24AB5119B72C900B2EF98 /* musneume.cpp */; };
+		4DC24ABC119B72EF00B2EF98 /* edtfile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4DC24ABA119B72EF00B2EF98 /* edtfile.cpp */; };
 		4DDE3CDE0EF1B1D6006D4F2C /* musiowwg.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4DDE3CDD0EF1B1D6006D4F2C /* musiowwg.cpp */; };
 		4DE87C3610FE3E82001E9F91 /* musiomei.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4DE87C3210FE3E82001E9F91 /* musiomei.cpp */; };
 		4DE87C3710FE3E82001E9F91 /* musioxml.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4DE87C3410FE3E82001E9F91 /* musioxml.cpp */; };
@@ -157,6 +160,13 @@
 		4DB2D96C0D8383EA003401B0 /* musmlfdic.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = musmlfdic.h; path = ../src/mus/musmlfdic.h; sourceTree = SOURCE_ROOT; };
 		4DB9F0510D94A66E00ED8E3E /* imregister.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = imregister.cpp; sourceTree = "<group>"; };
 		4DB9F0520D94A66E00ED8E3E /* imregister.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = imregister.h; sourceTree = "<group>"; };
+		4DC24AA6119B718700B2EF98 /* RtError.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RtError.h; path = ../src/rtmidi/RtError.h; sourceTree = SOURCE_ROOT; };
+		4DC24AA7119B718700B2EF98 /* RtMidi.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = RtMidi.cpp; path = ../src/rtmidi/RtMidi.cpp; sourceTree = SOURCE_ROOT; };
+		4DC24AA8119B718700B2EF98 /* RtMidi.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RtMidi.h; path = ../src/rtmidi/RtMidi.h; sourceTree = SOURCE_ROOT; };
+		4DC24AB5119B72C900B2EF98 /* musneume.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = musneume.cpp; path = ../src/mus/musneume.cpp; sourceTree = SOURCE_ROOT; };
+		4DC24AB6119B72C900B2EF98 /* musneume.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = musneume.h; path = ../src/mus/musneume.h; sourceTree = SOURCE_ROOT; };
+		4DC24ABA119B72EF00B2EF98 /* edtfile.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = edtfile.cpp; path = ../src/edition/edtfile.cpp; sourceTree = SOURCE_ROOT; };
+		4DC24ABB119B72EF00B2EF98 /* edtfile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = edtfile.h; path = ../src/edition/edtfile.h; sourceTree = SOURCE_ROOT; };
 		4DDE3CDD0EF1B1D6006D4F2C /* musiowwg.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = musiowwg.cpp; path = ../src/mus/musiowwg.cpp; sourceTree = SOURCE_ROOT; };
 		4DDE3CDF0EF1B25E006D4F2C /* musiobin.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = musiobin.h; path = ../src/mus/musiobin.h; sourceTree = SOURCE_ROOT; };
 		4DE87C3210FE3E82001E9F91 /* musiomei.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = musiomei.cpp; path = ../src/mus/musiomei.cpp; sourceTree = SOURCE_ROOT; };
@@ -269,6 +279,8 @@
 		4D3A8FCD0D3585AB00BBC1FB /* mus */ = {
 			isa = PBXGroup;
 			children = (
+				4DC24AB5119B72C900B2EF98 /* musneume.cpp */,
+				4DC24AB6119B72C900B2EF98 /* musneume.h */,
 				4DE87C3210FE3E82001E9F91 /* musiomei.cpp */,
 				4DE87C3310FE3E82001E9F91 /* musiomei.h */,
 				4DE87C3410FE3E82001E9F91 /* musioxml.cpp */,
@@ -320,12 +332,24 @@
 		4D47AB771047B128005FB374 /* edition */ = {
 			isa = PBXGroup;
 			children = (
+				4DC24ABA119B72EF00B2EF98 /* edtfile.cpp */,
+				4DC24ABB119B72EF00B2EF98 /* edtfile.h */,
 				4D12CE3C10748D8E00E65714 /* edt.cpp */,
 				4D12CE3D10748D8E00E65714 /* edt.h */,
 				4D12CE3E10748D8E00E65714 /* edt_wdr.cpp */,
 				4D12CE3F10748D8E00E65714 /* edt_wdr.h */,
 			);
 			name = edition;
+			sourceTree = "<group>";
+		};
+		4DC24AA3119B716F00B2EF98 /* rtmidi */ = {
+			isa = PBXGroup;
+			children = (
+				4DC24AA6119B718700B2EF98 /* RtError.h */,
+				4DC24AA7119B718700B2EF98 /* RtMidi.cpp */,
+				4DC24AA8119B718700B2EF98 /* RtMidi.h */,
+			);
+			name = rtmidi;
 			sourceTree = "<group>";
 		};
 		5736CE450C354E4A00254E7B /* comparison */ = {
@@ -361,6 +385,7 @@
 				A58524810A1B9604002D9D8A /* recognition */,
 				5736CE450C354E4A00254E7B /* comparison */,
 				4D47AB771047B128005FB374 /* edition */,
+				4DC24AA3119B716F00B2EF98 /* rtmidi */,
 				A58508C20A00113C006E82B1 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -674,6 +699,9 @@
 				4DE87C3610FE3E82001E9F91 /* musiomei.cpp in Sources */,
 				4DE87C3710FE3E82001E9F91 /* musioxml.cpp in Sources */,
 				4DA6F43411510C7B0005E4A5 /* musbeam.cpp in Sources */,
+				4DC24AA9119B718700B2EF98 /* RtMidi.cpp in Sources */,
+				4DC24AB7119B72C900B2EF98 /* musneume.cpp in Sources */,
+				4DC24ABC119B72EF00B2EF98 /* edtfile.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -818,6 +846,7 @@
 				);
 				OBJROOT = "$(ARUSPIX)/obj";
 				OTHER_CFLAGS = (
+					"-D__MACOSX_CORE__",
 					"-D__WXDEBUG__",
 					"-D__WXMAC__",
 					"-D__AXDEBUG__",
@@ -831,6 +860,12 @@
 					"-DNO_GCC_PRAGMA",
 				);
 				OTHER_LDFLAGS = (
+					"-framework",
+					CoreMidi,
+					"-framework",
+					CoreAudio,
+					"-framework",
+					CoreFoundation,
 					"-lz",
 					"-lpthread",
 					"-framework",
@@ -841,6 +876,8 @@
 					Carbon,
 					"-framework",
 					Cocoa,
+					"-framework",
+					OpenGL,
 					"-framework",
 					System,
 					"-liconv",
@@ -903,6 +940,7 @@
 				);
 				OBJROOT = "$(ARUSPIX)/obj";
 				OTHER_CFLAGS = (
+					"-D__MACOSX_CORE__",
 					"-D__WXMAC__",
 					"-D_FILE_OFFSET_BITS=64",
 					"-D_LARGE_FILES",
@@ -914,6 +952,12 @@
 					"-DNO_GCC_PRAGMA",
 				);
 				OTHER_LDFLAGS = (
+					"-framework",
+					CoreMidi,
+					"-framework",
+					CoreAudio,
+					"-framework",
+					CoreFoundation,
 					"-lz",
 					"-lpthread",
 					"-framework",
@@ -924,6 +968,8 @@
 					Carbon,
 					"-framework",
 					Cocoa,
+					"-framework",
+					OpenGL,
 					"-framework",
 					System,
 					"-liconv",

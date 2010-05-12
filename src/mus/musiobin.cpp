@@ -184,13 +184,17 @@ bool MusBinOutput::WriteStaff( const MusStaff *staff )
 	Write( &uint16, 2 );
 	for (k = 0;k < staff->nblement ; k++ )
 	{
-		if ( staff->m_elements[k].TYPE == NOTE )
+		if ( staff->m_elements[k].IsNote() )
 		{
 			WriteNote( (MusNote*)&staff->m_elements[k] );
 		}
-		else
+		else if ( staff->m_elements[k].IsSymbol() )
 		{
-			WriteSymbole( (MusSymbol*)&staff->m_elements[k] );
+			WriteSymbol( (MusSymbol*)&staff->m_elements[k] );
+		}
+        else if ( staff->m_elements[k].IsNeume() )
+		{
+			WriteNeume( (MusNeume*)&staff->m_elements[k] );
 		}
 		if ( m_flag == MUS_BIN_ARUSPIX_CMP )
 		{		
@@ -250,13 +254,13 @@ bool MusBinOutput::WriteNote( const MusNote *note )
 	for ( i = 0; i < (int)note->m_lyrics.GetCount(); i++ ){
 		MusSymbol *lyric = &note->m_lyrics[i];
 		if ( lyric )
-			WriteSymbole( lyric );
+			WriteSymbol( lyric );
 	}
 	
 	return true;
 }
 
-bool MusBinOutput::WriteSymbole( const MusSymbol *symbol )
+bool MusBinOutput::WriteSymbol( const MusSymbol *symbol )
 {
 	Write( &symbol->TYPE, 1 );
 	WriteElementAttr( symbol );
@@ -276,6 +280,14 @@ bool MusBinOutput::WriteSymbole( const MusSymbol *symbol )
     // if ( symbol->IsLyric() ) // To be fixed ??
     if ( (symbol->flag == CHAINE) && (symbol->fonte == LYRIC) )
 		WriteLyric( symbol );
+	
+	return true;
+}
+
+bool MusBinOutput::WriteNeume( const MusNeume *neume )
+{
+    // Write member values
+    // ...
 	
 	return true;
 }
@@ -571,12 +583,19 @@ bool MusBinInput::ReadStaff( MusStaff *staff )
 				 
 			staff->m_elements.Add( note );
 		}
-		else
+		else if ( c == SYMB )
 		{
 			MusSymbol *symbol = new MusSymbol();
 			symbol->no = k;
-			ReadSymbole( symbol );
+			ReadSymbol( symbol );
 			staff->m_elements.Add( symbol );
+		}
+        else if ( c == NEUME )
+		{
+			MusNeume *neume = new MusNeume();
+			neume->no = k;
+			ReadNeume( neume );
+			staff->m_elements.Add( neume );
 		}
 		if ( m_flag == MUS_BIN_ARUSPIX_CMP )
 		{		
@@ -627,7 +646,7 @@ bool MusBinInput::ReadNote( MusNote *note )
 	for ( int i = 0; i < count; i++ ) {
 		MusSymbol *lyric = new MusSymbol();
 		Read( &lyric->TYPE, 1 );
-		ReadSymbole( lyric );
+		ReadSymbol( lyric );
 		lyric->m_note_ptr = note;				 		
 		note->m_lyrics.Add( lyric );
 	}
@@ -635,7 +654,7 @@ bool MusBinInput::ReadNote( MusNote *note )
 	return true;
 }
 
-bool MusBinInput::ReadSymbole( MusSymbol *symbol )
+bool MusBinInput::ReadSymbol( MusSymbol *symbol )
 {
 	ReadElementAttr( symbol );
 	Read( &symbol->flag , 1 );
@@ -653,6 +672,14 @@ bool MusBinInput::ReadSymbole( MusSymbol *symbol )
 	symbol->dec_y = wxINT32_SWAP_ON_BE( int32 );
 	if ( symbol->IsLyric() )
         ReadLyric( symbol );
+     
+	return true;
+}
+
+bool MusBinInput::ReadNeume( MusNeume *neume )
+{
+    // Read member values
+    // ...
      
 	return true;
 }

@@ -57,6 +57,8 @@ BEGIN_EVENT_TABLE(MusWindow,wxScrolledWindow)
 	EVT_MENU_RANGE( ID_MS_G1, ID_MS_F5, MusWindow::OnPopupMenuSymbole ) // popup menu
 	EVT_MENU_RANGE( ID_MS_MTPP, ID_MS_M2, MusWindow::OnPopupMenuSymbole ) // popup menu
 	EVT_MENU_RANGE( ID_MS_PNT, ID_MS_BAR, MusWindow::OnPopupMenuSymbole ) // popup menu
+    // MIDI
+    EVT_COMMAND  ( ID_MIDI_INPUT, AX_EVT_MIDI, MusWindow::OnMidiInput)
 END_EVENT_TABLE()
 
 MusWindow::MusWindow( wxWindow *parent, wxWindowID id,
@@ -263,7 +265,7 @@ void MusWindow::Store( AxUndoFile *undoPtr )
 		staff = m_currentStaff->no;
     }
 	if ( m_currentElement ) {
-        if ( m_currentElement->IsSymbole() && ((MusSymbol*)m_currentElement)->IsLyric() ) {
+        if ( m_currentElement->IsSymbol() && ((MusSymbol*)m_currentElement)->IsLyric() ) {
             element = ((MusSymbol*)m_currentElement)->m_note_ptr->no;
             lyric_element = m_currentElement->no;
             wxLogDebug("lyric %d", lyric_element );
@@ -816,7 +818,7 @@ int MusWindow::GetToolType()
 
 	if (sync)
 	{
-		if ( sync->TYPE == SYMB )
+		if ( sync->IsSymbol() )
 		{
 			if ( ((MusSymbol*)sync)->flag == CLE )
 				return MUS_TOOLS_CLEFS;
@@ -825,7 +827,7 @@ int MusWindow::GetToolType()
 			else
 				return MUS_TOOLS_OTHER;
 		}
-		else
+		else if (sync->IsNote() )
 		{
 			return MUS_TOOLS_NOTES;
 		}
@@ -856,10 +858,12 @@ void MusWindow::Copy()
 	if ( m_bufferElement )
 		delete m_bufferElement;
 
-	if ( m_currentElement->IsSymbole() )
+	if ( m_currentElement->IsSymbol() )
 		m_bufferElement = new MusSymbol( *(MusSymbol*)m_currentElement );
-	else
+	else if (m_currentElement->IsNote() )
 		m_bufferElement = new MusNote( *(MusNote*)m_currentElement );
+	else if (m_currentElement->IsNeume() )
+		m_bufferElement = new MusNeume( *(MusNeume*)m_currentElement );
 }
 
 void MusWindow::Cut()
@@ -990,7 +994,7 @@ void MusWindow::OnPopupMenuSymbole( wxCommandEvent &event )
 
 	if ( m_editElement )
 	{
-		if ( !m_currentElement || ( m_currentElement->TYPE != SYMB) )
+		if ( !m_currentElement || ( !m_currentElement->IsSymbol()) )
 			return;
 		else
 			 symbol = (MusSymbol*)m_currentElement;
@@ -1137,7 +1141,7 @@ void MusWindow::OnMouseLeftUp(wxMouseEvent &event)
 		}
 	}
 	
-	if ( m_currentElement && m_currentElement->IsSymbole() && ((MusSymbol*)m_currentElement)->IsLyric() ){
+	if ( m_currentElement && m_currentElement->IsSymbol() && ((MusSymbol*)m_currentElement)->IsLyric() ){
 		MusNote *note = ((MusSymbol*)m_currentElement)->m_note_ptr;
 		if (note) {
             note->CheckLyricIntegrity();
@@ -1239,7 +1243,7 @@ void MusWindow::OnMouseLeftDown(wxMouseEvent &event)
 					m_note = *(MusNote*)tmp;
 					m_newElement = &m_note;
 				}
-				else
+				else if ( tmp->IsSymbol() )
 				{
 					m_symbol = *(MusSymbol*)tmp;
 					m_newElement = &m_symbol;
@@ -1296,6 +1300,21 @@ void MusWindow::OnMouseMotion(wxMouseEvent &event)
 	} 
 
 	event.Skip();
+}
+
+// see TakeMidiEvent in WGCLE in Wolfgang
+static int bem [] = {F2, F3, F3, F4, F4, F5, F6, F6, F7, F7, F8, F8};
+static int die [] = {F2, F2, F3, F3, F4, F5, F5, F6, F6, F7, F7, F8};
+
+void MusWindow::OnMidiInput(wxCommandEvent &event)
+{
+    //wxLogDebug("Midi %d", event.GetInt() ) ;
+    int octave = event.GetInt() / 12;
+	int hauteur = event.GetInt() - (octave * 12);
+    if ( m_currentElement && m_currentElement->IsNote() ) {
+        m_currentElement->SetPitch( die[hauteur], octave, m_currentStaff );
+    }
+    
 }
 
 void MusWindow::OnKeyUp(wxKeyEvent &event)
@@ -1356,7 +1375,7 @@ void MusWindow::OnKeyDown(wxKeyEvent &event)
 					m_note = *(MusNote*)m_currentElement;
 					m_newElement = &m_note;
 				}
-				else
+				else if ( m_currentElement->IsSymbol() )
 				{
 					m_symbol = *(MusSymbol*)m_currentElement;
 					m_newElement = &m_symbol;
@@ -1564,7 +1583,7 @@ void MusWindow::OnKeyDown(wxKeyEvent &event)
 			}
          this->Refresh();
 		} 
-		else if ( m_currentElement && m_currentElement->IsSymbole() &&
+		else if ( m_currentElement && m_currentElement->IsSymbol() &&
 				 in( event.m_keyCode, 33, 125) ) // any other keycode on symbol (ascii codes)
 		{
 			PrepareCheckPoint( UNDO_PART, MUS_UNDO_STAFF );
@@ -1643,7 +1662,7 @@ void MusWindow::OnKeyDown(wxKeyEvent &event)
 			m_lyricMode = false;
 			m_inputLyric = false;
 			m_editElement = true;
-			if ( m_currentElement && m_currentElement->IsSymbole() && ((MusSymbol*)m_currentElement)->m_note_ptr )
+			if ( m_currentElement && m_currentElement->IsSymbol() && ((MusSymbol*)m_currentElement)->m_note_ptr )
 				m_currentElement = ((MusSymbol*)m_currentElement)->m_note_ptr;
 			else if ( m_currentElement && m_currentStaff->GetAtPos( m_currentElement->xrel ) )
 				m_currentElement = m_currentStaff->GetAtPos( m_currentElement->xrel );
@@ -1656,7 +1675,7 @@ void MusWindow::OnKeyDown(wxKeyEvent &event)
 				
 			this->Refresh();
 		} 
-		else if ( event.m_keyCode == WXK_RETURN && m_currentElement && m_currentElement->IsSymbole() )		//"Return" event: Enter lyric insertion mode
+		else if ( event.m_keyCode == WXK_RETURN && m_currentElement && m_currentElement->IsSymbol() )		//"Return" event: Enter lyric insertion mode
 		{
 			m_inputLyric = !m_inputLyric;
 			m_lyricCursor = m_currentElement->m_debord_str.Length();
@@ -1665,7 +1684,7 @@ void MusWindow::OnKeyDown(wxKeyEvent &event)
 		else if ( event.m_controlDown && in( event.m_keyCode, WXK_LEFT, WXK_DOWN ) && m_currentElement)		//"Ctr + navigation arrow" event
 		{
 			PrepareCheckPoint( UNDO_PART, MUS_UNDO_STAFF );
-			if ( event.GetKeyCode() == WXK_RIGHT && m_currentElement->IsSymbole() )			//"Right arrow" event: switch lyric association to note to the right 
+			if ( event.GetKeyCode() == WXK_RIGHT && m_currentElement->IsSymbol() )			//"Right arrow" event: switch lyric association to note to the right 
 			{				
 				MusNote *oldNote = ((MusSymbol*)m_currentElement)->m_note_ptr;
 				MusNote *newNote = m_currentStaff->GetNextNote( (MusSymbol*)m_currentElement );
@@ -1673,7 +1692,7 @@ void MusWindow::OnKeyDown(wxKeyEvent &event)
 				oldNote->CheckLyricIntegrity();
 				newNote->CheckLyricIntegrity();
 			}
-			else if ( event.GetKeyCode() == WXK_LEFT && m_currentElement->IsSymbole() )		//"Left arrow" event: switch lyric association to note to the left
+			else if ( event.GetKeyCode() == WXK_LEFT && m_currentElement->IsSymbol() )		//"Left arrow" event: switch lyric association to note to the left
 			{
 				MusNote *oldNote = ((MusSymbol*)m_currentElement)->m_note_ptr;
 				MusNote *newNote = m_currentStaff->GetPreviousNote( (MusSymbol*)m_currentElement );				
@@ -1685,11 +1704,11 @@ void MusWindow::OnKeyDown(wxKeyEvent &event)
                     newNote->CheckLyricIntegrity();
                 }
 			}
-			else if ( event.GetKeyCode() == WXK_UP && m_currentElement->IsSymbole() )		//"Up arrow" event: Move lyric line up 
+			else if ( event.GetKeyCode() == WXK_UP && m_currentElement->IsSymbol() )		//"Up arrow" event: Move lyric line up 
 			{
 				m_currentStaff->AdjustLyricLineHeight( 3 );
 			}
-			else if ( event.GetKeyCode() == WXK_DOWN && m_currentElement->IsSymbole() )		//"Down arrow" event: Move lyric line down 
+			else if ( event.GetKeyCode() == WXK_DOWN && m_currentElement->IsSymbol() )		//"Down arrow" event: Move lyric line down 
 			{
 				m_currentStaff->AdjustLyricLineHeight( -3 );
 			}
@@ -1698,7 +1717,7 @@ void MusWindow::OnKeyDown(wxKeyEvent &event)
 			this->Refresh();
 		}
 		else if ( ( ( event.m_keyCode == WXK_DELETE ) || ( event.m_keyCode == WXK_BACK ) ) && m_currentElement 
-			&& m_currentElement->IsSymbole() )												//"Delete or Backspace" event
+			&& m_currentElement->IsSymbol() )												//"Delete or Backspace" event
 		{
 			
 			PrepareCheckPoint( UNDO_PART, MUS_UNDO_STAFF );
@@ -1752,7 +1771,7 @@ void MusWindow::OnKeyDown(wxKeyEvent &event)
 		}
 		else	// Navigation over lyrics using arrows
 		{
-			if ( event.GetKeyCode() == WXK_RIGHT && m_currentElement && m_currentElement->IsSymbole() )			//"Right arrow" event
+			if ( event.GetKeyCode() == WXK_RIGHT && m_currentElement && m_currentElement->IsSymbol() )			//"Right arrow" event
 			{
 				if ( m_currentStaff->GetNextLyric( (MusSymbol*)m_currentElement ) )
 					m_currentElement = m_currentStaff->GetNextLyric( (MusSymbol*)m_currentElement );
@@ -1763,7 +1782,7 @@ void MusWindow::OnKeyDown(wxKeyEvent &event)
 				}
 				UpdateScroll();
 			}
-			else if ( event.GetKeyCode() == WXK_LEFT && m_currentElement && m_currentElement->IsSymbole() )		//"Left arrow" event
+			else if ( event.GetKeyCode() == WXK_LEFT && m_currentElement && m_currentElement->IsSymbol() )		//"Left arrow" event
 			{
 				if ( m_currentStaff->GetPreviousLyric( (MusSymbol*)m_currentElement ) )
 					m_currentElement = m_currentStaff->GetPreviousLyric( (MusSymbol*)m_currentElement );
@@ -1774,7 +1793,7 @@ void MusWindow::OnKeyDown(wxKeyEvent &event)
 				}
 				UpdateScroll();
 			}
-			else if ( event.GetKeyCode() == WXK_UP && m_currentElement && m_currentElement->IsSymbole() )		//"Up arrow" event
+			else if ( event.GetKeyCode() == WXK_UP && m_currentElement && m_currentElement->IsSymbol() )		//"Up arrow" event
 			{
 				if ( m_page->GetPrevious( m_currentStaff ) )
 				{
@@ -1786,7 +1805,7 @@ void MusWindow::OnKeyDown(wxKeyEvent &event)
 					UpdateScroll();
 				}
 			}
-			else if ( event.GetKeyCode() == WXK_DOWN && m_currentElement && m_currentElement->IsSymbole() )		//"Down arrow" event
+			else if ( event.GetKeyCode() == WXK_DOWN && m_currentElement && m_currentElement->IsSymbol() )		//"Down arrow" event
 			{
 				if ( m_page->GetNext( m_currentStaff ) )
 				{
@@ -1819,7 +1838,7 @@ void MusWindow::OnKeyDown(wxKeyEvent &event)
 		
 		if ( event.m_keyCode == WXK_RETURN )									// "Enter" event: Enter into lyric insertion mode
 		{
-			if ( m_currentElement->IsSymbole() && ((MusSymbol*)m_currentElement)->IsLyric()){
+			if ( m_currentElement->IsSymbol() && ((MusSymbol*)m_currentElement)->IsLyric()){
 				PrepareCheckPoint( UNDO_PART, MUS_UNDO_STAFF );
 				MusSymbol* lyric = (MusSymbol*)m_currentElement;
 				if ( lyric->IsLyricEmpty() ){
@@ -1834,7 +1853,7 @@ void MusWindow::OnKeyDown(wxKeyEvent &event)
 
 			m_inputLyric = !m_inputLyric;
 		}
-		else if ( event.m_keyCode == WXK_BACK && m_currentElement->IsSymbole() )		//"Backspace" event
+		else if ( event.m_keyCode == WXK_BACK && m_currentElement->IsSymbol() )		//"Backspace" event
 		{
 			PrepareCheckPoint( UNDO_PART, MUS_UNDO_STAFF );
 			m_lyricCursor--;
@@ -1852,14 +1871,14 @@ void MusWindow::OnKeyDown(wxKeyEvent &event)
 			CheckPoint( UNDO_PART, MUS_UNDO_STAFF );
 			OnEndEdition(); 
 		}
-		else if ( event.m_keyCode == WXK_DELETE && m_currentElement->IsSymbole() )		//"Delete" event
+		else if ( event.m_keyCode == WXK_DELETE && m_currentElement->IsSymbol() )		//"Delete" event
 		{
 			PrepareCheckPoint( UNDO_PART, MUS_UNDO_STAFF );
 			((MusSymbol*)m_currentElement)->DeleteCharInLyricAt( m_lyricCursor );
 			CheckPoint( UNDO_PART, MUS_UNDO_STAFF );
 			OnEndEdition(); 			
 		}
-		else if ( event.m_keyCode == WXK_SPACE && m_currentElement->IsSymbole() )		//"Space" event
+		else if ( event.m_keyCode == WXK_SPACE && m_currentElement->IsSymbol() )		//"Space" event
 		{
 			if ( m_lyricCursor == (int)((MusSymbol*)m_currentElement)->m_debord_str.Length() ){
 				if ( ((MusSymbol*)m_currentElement)->IsLastLyricElementInNote() ){
@@ -1884,7 +1903,7 @@ void MusWindow::OnKeyDown(wxKeyEvent &event)
 				OnEndEdition();
 			} 
 		}
-		else if ( event.m_keyCode == WXK_TAB && m_currentElement->IsSymbole() )			//"Tab" event
+		else if ( event.m_keyCode == WXK_TAB && m_currentElement->IsSymbol() )			//"Tab" event
 		{
 			if ( m_lyricCursor == (int)((MusSymbol*)m_currentElement)->m_debord_str.Length() ){
 				if ( ((MusSymbol*)m_currentElement)->IsLastLyricElementInNote() ){
@@ -1918,7 +1937,7 @@ void MusWindow::OnKeyDown(wxKeyEvent &event)
 		}
 		else		//Left and right cursor navigation within lyrics
 		{
-			if ( event.m_keyCode == WXK_RIGHT && m_currentElement->IsSymbole() )			//"Right arrow" event
+			if ( event.m_keyCode == WXK_RIGHT && m_currentElement->IsSymbol() )			//"Right arrow" event
 			{
 				if ( m_lyricCursor < (int)((MusSymbol*)m_currentElement)->m_debord_str.Length() )
 					m_lyricCursor++;
@@ -1939,7 +1958,7 @@ void MusWindow::OnKeyDown(wxKeyEvent &event)
 				}  
 					
 			}
-			else if ( event.m_keyCode == WXK_LEFT && m_currentElement->IsSymbole() )		//"Left arrow" event
+			else if ( event.m_keyCode == WXK_LEFT && m_currentElement->IsSymbol() )		//"Left arrow" event
 			{
 				if ( m_lyricCursor > 0 )
 					m_lyricCursor--;
@@ -1992,7 +2011,7 @@ void MusWindow::OnKeyDown(wxKeyEvent &event)
 			m_newElement->ChangeColoration( );
 		else if ( m_newElement && m_newElement->IsNote() && (noteKeyCode == 'A') )
 			m_newElement->ChangeStem( );
-		else if ( m_newElement && m_newElement->IsSymbole() &&
+		else if ( m_newElement && m_newElement->IsSymbol() &&
 			 in( event.m_keyCode, 33, 125) ) // any other keycode on symbol (ascii codes)
 		{
 			int vflag = ( event.m_controlDown ) ? 1 : 0;
@@ -2010,7 +2029,7 @@ void MusWindow::OnChar(wxKeyEvent &event)
     if ( m_lyricMode && m_inputLyric )
 	{
 		if ( ((event.m_keyCode >= 65 && event.m_keyCode <= 90) || (event.m_keyCode >= 97 && event.m_keyCode <= 122 ))
-			&& m_currentElement->IsSymbole() )
+			&& m_currentElement->IsSymbol() )
 		{	
 			PrepareCheckPoint( UNDO_PART, MUS_UNDO_STAFF );
 			((MusSymbol*)m_currentElement)->InsertCharInLyricAt( m_lyricCursor, (char)event.m_keyCode );

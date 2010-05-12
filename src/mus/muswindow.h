@@ -312,6 +312,7 @@ private:
     void OnChar( wxKeyEvent &event );
 	void OnPopupMenuNote( wxCommandEvent &event );
 	void OnPopupMenuSymbole( wxCommandEvent &event );
+    void OnMidiInput( wxCommandEvent &event );
 
 private:
     DECLARE_EVENT_TABLE()

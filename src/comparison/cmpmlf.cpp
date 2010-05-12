@@ -158,7 +158,7 @@ bool CmpMLFOutput::WriteStaff( const MusStaff *staff )
     for (k = 0;k < staff->nblement ; k++ )
     {
 		added = false;
-        if ( staff->m_elements[k].TYPE == NOTE )
+        if ( staff->m_elements[k].IsNote() )
 		{
 			last_is_clef = false;
 
@@ -175,7 +175,7 @@ bool CmpMLFOutput::WriteStaff( const MusStaff *staff )
 			else
 				cur->m_cmp_flag = CMP_MATCH;
         }
-		else
+		else if ( staff->m_elements[k].IsSymbol() )
 		{
 			bool ignore = false;
 			MusSymbol *cur = (MusSymbol*)&staff->m_elements[k];
@@ -196,7 +196,7 @@ bool CmpMLFOutput::WriteStaff( const MusStaff *staff )
 				last_is_clef = false;
 			
 			if (!ignore)
-				added = WriteSymbole( (MusSymbol*)&staff->m_elements[k] );
+				added = WriteSymbol( (MusSymbol*)&staff->m_elements[k] );
 			else
 				cur->m_cmp_flag = CMP_MATCH;
 		}

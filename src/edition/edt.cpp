@@ -21,6 +21,7 @@
 #include "wx/calctrl.h"
 
 #include "edt.h"
+#include "edtfile.h"
 
 #include "app/axframe.h"
 #include "app/axapp.h"
@@ -31,6 +32,7 @@
 #include "mus/musiowwg.h"
 #include "mus/musiomlf.h"
 #include "mus/musiomei.h"
+
 
 // WDR: class implementations
 
@@ -76,8 +78,13 @@ void EdtPanel::OnSize( wxSizeEvent &event )
 // WDR: event table for EdtEnv
 
 BEGIN_EVENT_TABLE(EdtEnv,AxEnv)
-    //EVT_MENU( ID_OPEN, EdtEnv::OnOpen )
+    // file
+    EVT_MENU( ID_CLOSE, EdtEnv::OnClose )
+    EVT_MENU( ID_SAVE_AS, EdtEnv::OnSaveAs )
     EVT_MENU( ID_SAVE, EdtEnv::OnSave )
+    //EVT_MENU( ID_OPEN, EdtEnv::OnOpen )
+    EVT_MENU( ID_NEW, EdtEnv::OnNew ) 
+    //
     EVT_UPDATE_UI_RANGE( wxID_LOWEST, ENV_IDS_MAX, EdtEnv::OnUpdateUI )
 	EVT_MENU( ID_UNDO, EdtEnv::OnUndo )
 	EVT_MENU( ID_REDO, EdtEnv::OnRedo )
@@ -97,6 +104,7 @@ BEGIN_EVENT_TABLE(EdtEnv,AxEnv)
     EVT_MENU( ID5_VOICES, EdtEnv::OnValues )
     EVT_MENU( ID5_INDENT, EdtEnv::OnValues )
     EVT_MENU_RANGE( ID5_INSERT_MODE, ID5_SYMBOLES, EdtEnv::OnTools )
+    EVT_COMMAND( ID_MIDI_INPUT, AX_EVT_MIDI, EdtEnv::OnMidiInput )
 	//EVT_SIZE( EdtEnv::OnSize )
 END_EVENT_TABLE()
 
@@ -106,8 +114,8 @@ EdtEnv::EdtEnv():
     AxEnv()
 {
     m_panelPtr = NULL;
-    m_filePtr = NULL;
-    m_musViewPtr = NULL;
+    m_edtFilePtr = new EdtFile( "edt_env_file", this ); 
+    m_musViewPtr = NULL;   
 
     this->m_envMenuBarFuncPtr = MenuBarFunc5;
 }
@@ -117,8 +125,8 @@ EdtEnv::~EdtEnv()
     if (m_envWindowPtr) m_envWindowPtr->Destroy();
     m_envWindowPtr = NULL;
 
-    if ( m_filePtr )
-        delete m_filePtr;
+    if ( m_edtFilePtr )
+        delete m_edtFilePtr;
 }
 
 void EdtEnv::LoadWindow()
@@ -135,6 +143,8 @@ void EdtEnv::LoadWindow()
         m_panelPtr->SetBackgroundColour( *wxLIGHT_GREY );
     else
         m_panelPtr->SetBackgroundColour( wxSystemSettings::GetColour(wxSYS_COLOUR_APPWORKSPACE) );
+        
+    m_musViewPtr = new MusWindow( m_panelPtr, ID5_MUSWINDOW, wxDefaultPosition, wxDefaultSize, wxHSCROLL|wxVSCROLL|wxSIMPLE_BORDER );
 }
 
 
@@ -154,11 +164,6 @@ void EdtEnv::RealizeToolbar( )
 
 
 // WDR: handler implementations for EdtEnv
-
-void EdtEnv::OnSaveModel( wxCommandEvent &event )
-{
-	wxLogMessage(" doesn't exists anymore.... pfff");
-}
 
 void EdtEnv::OnSize( wxSizeEvent &event )
 {
@@ -183,6 +188,52 @@ void EdtEnv::OnTools( wxCommandEvent &event )
 		m_musViewPtr->SetToolType( MUS_TOOLS_OTHER );
 }
 
+
+bool EdtEnv::ResetFile()
+{
+    wxASSERT_MSG( m_musViewPtr, "WG Window cannot be NULL ");
+    
+    if ( !m_edtFilePtr->Close( true ) )
+        return false;
+
+    m_musViewPtr->Show( false );
+    m_musViewPtr->SetFile( NULL );
+    
+    ((EdtPanel*)m_envWindowPtr)->GetMusToolPanel()->SetMusWindow( NULL );
+    //m_toolpanel->SetMusWindow( NULL ); 
+    UpdateTitle( );
+    
+    return true;
+}
+
+void EdtEnv::UpdateTitle( )
+{
+    wxString msg = wxString::Format("%s", m_edtFilePtr->m_shortname.c_str() );
+
+    SetTitle( "%s", msg.c_str() );
+}
+
+void EdtEnv::UpdateViews( int flags )
+{
+    m_musViewPtr->SetFile( m_edtFilePtr->m_musFilePtr );
+    m_musViewPtr->SetToolPanel( ((EdtPanel*)m_envWindowPtr)->GetMusToolPanel()  );
+    m_musViewPtr->Resize( );
+    //m_musViewPtr->Goto( 1 );
+    //m_musControlPtr->SyncZoom();  
+    
+    /*
+    if ( m_musViewPtr )
+    {
+        m_musViewPtr->Destroy();
+        m_musViewPtr = NULL;
+    }
+    m_musViewPtr = new MusWindow( m_panelPtr, ID5_MUSWINDOW, wxDefaultPosition, wxDefaultSize, wxHSCROLL|wxVSCROLL|wxSIMPLE_BORDER );
+    m_musViewPtr->SetToolPanel( ((EdtPanel*)m_envWindowPtr)->GetMusToolPanel() );
+    m_musViewPtr->SetFile( m_edtFilePtr );
+    m_musViewPtr->Resize( );
+    */
+}
+
 void EdtEnv::OnUndo( wxCommandEvent &event )
 {
     if ( !m_musViewPtr || !m_musViewPtr->CanUndo() )
@@ -200,91 +251,43 @@ void EdtEnv::OnRedo( wxCommandEvent &event )
 }
 
 
+void EdtEnv::Open( wxString filename, int type )
+{
+    if ( !this->ResetFile( ) )
+        return;
+
+    if ( (type == AX_FILE_DEFAULT) && this->m_edtFilePtr->Open( filename ) )
+    {
+        wxGetApp().AxBeginBusyCursor( );
+        UpdateViews( 0 );
+        wxGetApp().AxEndBusyCursor();
+    }
+}
+
+void EdtEnv::OnNew( wxCommandEvent &event )
+{
+    Open( "" , -1 );
+}
+
 void EdtEnv::OnSave( wxCommandEvent &event )
 {
-    if (  !m_panelPtr || !m_filePtr )
-        return;
+    wxASSERT_MSG( m_edtFilePtr, wxT("EdtFile cannot be NULL") );
 
-    wxString wwg = wxFileSelector( _("Save"), wxGetApp().m_lastDir, _T(""), NULL, "WWG|*.wwg", wxSAVE);
-    if ( wwg.IsEmpty() )
-        return;
-    //wxGetApp().m_lastDirWWG_out = wxPathOnly( wwg );   
-    
-    m_filePtr->m_fname = wwg;
-    MusWWGOutput *wwgoutput = new MusWWGOutput( m_filePtr, wwg );
-    wwgoutput->ExportFile();
-    delete wwgoutput;
+    m_edtFilePtr->Save();
 }
 
-void EdtEnv::OnOpenMLF( wxCommandEvent &event )
+void EdtEnv::OnSaveAs( wxCommandEvent &event )
 {
-    wxString mlf = wxFileSelector( _("Open"), wxGetApp().m_lastDir, _T(""), NULL, "MLF|*.mlf", wxOPEN);
-    if ( mlf.IsEmpty() )
-        return;
-    //wxGetApp().m_lastDirMLF_in = wxPathOnly( mlf );
+    wxASSERT_MSG( m_edtFilePtr, wxT("EdtFile cannot be NULL") );
 
-    if ( m_musViewPtr )
-    {
-        m_musViewPtr->Destroy();
-        m_musViewPtr = NULL;
-    }
-
-    if ( m_filePtr )
-    {
-        delete m_filePtr;
-        m_filePtr = NULL;
-    }
-    
-    m_filePtr = new MusFile();
-	//MusPage *page = new MusPage();
-	//MusStaff *staff = new MusStaff();
-	//page->m_staves.Add( staff );
-	//m_filePtr->m_pages.Add( page );
-    MusMLFInput *mlfinput = new MusMLFInput( m_filePtr, mlf );
-    bool import = mlfinput->ImportFile( 12 );
-    delete mlfinput;
-
-    if ( !import )
-    {   
-        wxLogError( _("Importation of file '%s' failed") , mlf.c_str() );
-        return;
-    }
-
-    m_musViewPtr = new MusWindow( m_panelPtr, ID5_MUSWINDOW, wxDefaultPosition, wxDefaultSize, wxHSCROLL|wxVSCROLL|wxSIMPLE_BORDER );
-    m_musViewPtr->SetFile( m_filePtr );
-    m_musViewPtr->Resize( );
+    m_edtFilePtr->SaveAs();
+    UpdateTitle();
 }
 
-void EdtEnv::OnSaveMLF( wxCommandEvent &event )
+void EdtEnv::OnClose( wxCommandEvent &event )
 {
-    wxASSERT_MSG( m_panelPtr, "Panel cannot be NULL ");
-
-	wxFileName fn( m_filePtr->m_fname );
-	fn.SetExt( "mlf" );
-	fn.SetPath( wxGetApp().m_lastDir );
-
-    wxString filename = wxFileSelector( _("Save"), wxGetApp().m_lastDir, fn.GetFullPath() , NULL, "MLF|*.mlf", wxSAVE);
-    if ( filename.IsEmpty() )
-        return;
-    //wxGetApp().m_lastDirMLF_out = wxPathOnly( filename );
-
-    wxString dic = wxFileSelector( _("Open dictionnay"), wxGetApp().m_lastDir, _T(""), NULL, "DIC|*.dic", wxOPEN);
-    if ( dic.IsEmpty() )
-        return;
-    //wxGetApp().m_lastDirDIC_in = wxPathOnly( dic );
-
-    bool positions = ( wxMessageBox("Output symbols positions?", wxGetApp().GetAppName() ,
-                            wxYES | wxNO | wxICON_QUESTION ) == wxYES );
-
-    MusMLFOutput *mlfoutput = new MusMLFOutput( m_filePtr, filename, NULL, "MusMLFSymbol" );
-	//mlfoutput->LoadTypes( dic );
-	mlfoutput->m_pagePosition = positions;
-    mlfoutput->m_addPageNo = true;
-    
-    mlfoutput->ExportFile();
-    delete mlfoutput; 
+    ResetFile();
 }
-
 
 void EdtEnv::OnValues( wxCommandEvent &event )
 {
@@ -351,6 +354,7 @@ void EdtEnv::OnUpdateUI( wxUpdateUIEvent &event )
 
     else if ( !m_musViewPtr )
         event.Enable(false);
+        
     else if ( event.GetId() == ID_UNDO )
         event.Enable( m_musViewPtr->CanUndo() );
     else if ( event.GetId() == ID_REDO )
@@ -365,14 +369,24 @@ void EdtEnv::OnUpdateUI( wxUpdateUIEvent &event )
         event.Enable( m_musViewPtr->CanZoom( false ) );
     else if ( event.GetId() == ID5_ZOOMIN )
         event.Enable( m_musViewPtr->CanZoom( true ) );
-    else if ( event.GetId() == ID5_SAVE_MLF )
-        event.Enable( m_musViewPtr != NULL );
-    else if ( event.GetId() == ID5_SAVE_SVG )
-        event.Enable( m_musViewPtr != NULL );
+    else if ( event.GetId() == ID5_SAVE_MODEL )
+        event.Enable( m_edtFilePtr->IsOpened() );
+    else if ( event.GetId() == ID5_SAVE_WWG )
+        event.Enable( m_edtFilePtr->IsOpened() );
     else if ( event.GetId() == ID5_SAVE_MEI )
-        event.Enable( m_musViewPtr != NULL );
+        event.Enable( m_edtFilePtr->IsOpened() );
+    else if ( event.GetId() == ID5_SAVE_MLF )
+        event.Enable( m_edtFilePtr->IsOpened() );
+    else if ( event.GetId() == ID5_SAVE_SVG )
+        event.Enable( m_edtFilePtr->IsOpened() );
+    else if ( event.GetId() == ID5_SAVE_MEI )
+        event.Enable( m_edtFilePtr->IsOpened() );
     else if ( event.GetId() == ID5_VOICES )
-        event.Enable( m_musViewPtr != NULL );
+        event.Enable( m_edtFilePtr->IsOpened() );
+    else if ( event.GetId() == ID_SAVE )
+        event.Enable( m_edtFilePtr->IsOpened() && !m_edtFilePtr->IsNew() );
+    else if ( event.GetId() == ID_SAVE_AS )
+        event.Enable( m_edtFilePtr->IsOpened() );
 	else if ( event.GetId() == ID5_INSERT_MODE )
 	{
 		event.Enable( true );
@@ -381,6 +395,68 @@ void EdtEnv::OnUpdateUI( wxUpdateUIEvent &event )
     else
         event.Enable(true);
 }
+
+
+// import / export
+
+void EdtEnv::OnOpenMLF( wxCommandEvent &event )
+{
+    if ( !this->ResetFile( ) )
+        return;
+
+    wxString mlf = wxFileSelector( _("Open"), wxGetApp().m_lastDir, _T(""), NULL, "MLF|*.mlf", wxOPEN);
+    if ( mlf.IsEmpty() )
+        return;
+    //wxGetApp().m_lastDirMLF_in = wxPathOnly( mlf );
+    
+    m_edtFilePtr->New();
+	//MusPage *page = new MusPage();
+	//MusStaff *staff = new MusStaff();
+	//page->m_staves.Add( staff );
+	//m_edtFilePtr->m_pages.Add( page );
+    MusMLFInput *mlfinput = new MusMLFInput( m_edtFilePtr->m_musFilePtr, mlf );
+    bool import = mlfinput->ImportFile( 12 );
+    delete mlfinput;
+
+    if ( !import )
+    {   
+        wxLogError( _("Importation of file '%s' failed") , mlf.c_str() );
+        return;
+    }
+    UpdateViews( 0 );
+
+}
+
+void EdtEnv::OnSaveMLF( wxCommandEvent &event )
+{
+    wxASSERT_MSG( m_panelPtr, "Panel cannot be NULL ");
+
+	wxFileName fn( m_edtFilePtr->m_shortname );
+	fn.SetExt( "mlf" );
+	fn.SetPath( wxGetApp().m_lastDir );
+
+    wxString filename = wxFileSelector( _("Save"), wxGetApp().m_lastDir, fn.GetFullPath() , NULL, "MLF|*.mlf", wxSAVE);
+    if ( filename.IsEmpty() )
+        return;
+    //wxGetApp().m_lastDirMLF_out = wxPathOnly( filename );
+
+    wxString dic = wxFileSelector( _("Open dictionnay"), wxGetApp().m_lastDir, _T(""), NULL, "DIC|*.dic", wxOPEN);
+    if ( dic.IsEmpty() )
+        return;
+    //wxGetApp().m_lastDirDIC_in = wxPathOnly( dic );
+
+    bool positions = ( wxMessageBox("Output symbols positions?", wxGetApp().GetAppName() ,
+                            wxYES | wxNO | wxICON_QUESTION ) == wxYES );
+
+    MusMLFOutput *mlfoutput = new MusMLFOutput( m_edtFilePtr->m_musFilePtr, filename, NULL, "MusMLFSymbol" );
+	//mlfoutput->LoadTypes( dic );
+	mlfoutput->m_pagePosition = positions;
+    mlfoutput->m_addPageNo = true;
+    
+    mlfoutput->ExportFile();
+    delete mlfoutput; 
+}
+
 
 /* 
     Methode de travail !!!!!!!!! Pas DU TOUT plombee !!!!
@@ -423,30 +499,73 @@ void EdtEnv::OnSaveSVG( wxCommandEvent &event )
     m_musViewPtr->SetZoom( zoom );
 }
 
+
+void EdtEnv::OnOpenWWG( wxCommandEvent &event )
+{
+    wxASSERT_MSG( m_panelPtr, "Panel cannot be NULL ");
+
+    if ( !this->ResetFile( ) )
+        return;
+
+    wxString filename = wxFileSelector( _("Open"), wxGetApp().m_lastDir, _T(""), NULL, "WWG|*.wwg", wxOPEN);
+    if ( filename.IsEmpty() )
+        return;
+    wxGetApp().m_lastDir = wxPathOnly( filename );
+    
+    m_edtFilePtr->New();
+    
+    MusWWGInput wwginput( m_edtFilePtr->m_musFilePtr, filename );
+	if ( !wwginput.ImportFile() )
+		return;
+
+    UpdateViews( 0 );
+}
+
 void EdtEnv::OnSaveWWG( wxCommandEvent &event )
 {   
-    if (!m_filePtr) {
+    if (!m_edtFilePtr) {
         return;
     };
 
     wxString filename;
-    filename = wxFileSelector( _("Save"), wxGetApp().m_lastDirAX0_out, m_filePtr->m_fheader.name + ".wwg", "wwg", "Wolfgang WWG|*.wwg", wxSAVE);
+    filename = wxFileSelector( _("Save"), wxGetApp().m_lastDirAX0_out, m_edtFilePtr->m_musFilePtr->m_fheader.name + ".wwg", "wwg", "Wolfgang WWG|*.wwg", wxSAVE);
     if (filename.IsEmpty())
         return;
         
     wxGetApp().m_lastDirAX0_out = wxPathOnly( filename );
     
     // save
-    MusWWGOutput *wwg_output = new MusWWGOutput( m_filePtr, filename );
+    MusWWGOutput *wwg_output = new MusWWGOutput( m_edtFilePtr->m_musFilePtr, filename );
     wwg_output->ExportFile();
     delete wwg_output;
 }
 
 
+void EdtEnv::OnOpenMEI( wxCommandEvent &event )
+{
+    wxASSERT_MSG( m_panelPtr, "Panel cannot be NULL ");
+
+    if ( !this->ResetFile( ) )
+        return;
+
+    wxString filename = wxFileSelector( _("Open"), wxGetApp().m_lastDir, _T(""), NULL, "XML|*.xml", wxOPEN);
+    if ( filename.IsEmpty() )
+        return;
+    wxGetApp().m_lastDir = wxPathOnly( filename );
+    
+    m_edtFilePtr->New();
+    
+    MusMeiInput meiinput( m_edtFilePtr->m_musFilePtr, filename );
+	if ( !meiinput.ImportFile() )
+		return;
+
+    UpdateViews( 0 );
+}
+
 void EdtEnv::OnSaveMEI( wxCommandEvent &event )
 {
 
-    if (  !m_panelPtr || !m_filePtr )
+    if (  !m_panelPtr || !m_edtFilePtr )
         return;
 
     wxString filename = wxFileSelector( _("Save"), wxGetApp().m_lastDir, _T(""), NULL, "MEI XML|*.xml", wxSAVE);
@@ -455,85 +574,24 @@ void EdtEnv::OnSaveMEI( wxCommandEvent &event )
     wxGetApp().m_lastDirAX0_out = wxPathOnly( filename );
     
     // save
-    MusMeiOutput *mei_output = new MusMeiOutput( m_filePtr, filename );
+    MusMeiOutput *mei_output = new MusMeiOutput( m_edtFilePtr->m_musFilePtr, filename );
     mei_output->ExportFile();
     delete mei_output;
 }
 
-void EdtEnv::OnOpenWWG( wxCommandEvent &event )
+void EdtEnv::OnSaveModel( wxCommandEvent &event )
 {
-    wxASSERT_MSG( m_panelPtr, "Panel cannot be NULL ");
-
-
-    wxString filename = wxFileSelector( _("Open"), wxGetApp().m_lastDir, _T(""), NULL, "WWG|*.wwg", wxOPEN);
-    if ( filename.IsEmpty() )
-        return;
-    wxGetApp().m_lastDir = wxPathOnly( filename );
-    
-    if ( m_filePtr )
-    {
-        delete m_filePtr;
-        m_filePtr = NULL;
-    }
-    m_filePtr = new MusFile();
-    m_filePtr->m_fname = filename;
-    MusWWGInput wwginput( m_filePtr, filename );
-	if ( !wwginput.ImportFile() )
-		return;
-
-    /*
-    MusWWGOutput *wwgoutput = new MusWWGOutput( m_filePtr, filename );
-    wwgoutput->ExportFile();
-    delete wwgoutput;*/
-    
-
-    if ( m_musViewPtr )
-    {
-        m_musViewPtr->Destroy();
-        m_musViewPtr = NULL;
-    }
-    m_musViewPtr = new MusWindow( m_panelPtr, ID5_MUSWINDOW, wxDefaultPosition, wxDefaultSize, wxHSCROLL|wxVSCROLL|wxSIMPLE_BORDER );
-    m_musViewPtr->SetToolPanel( ((EdtPanel*)m_envWindowPtr)->GetMusToolPanel() );
-    m_musViewPtr->SetFile( m_filePtr );
-    m_musViewPtr->Resize( );
+	//wxLogMessage(" doesn't exists anymore.... pfff");
+    //wxLogDebug("Midi %d", event.GetInt() ) ;
+    event.Skip();
 }
 
-void EdtEnv::OnOpenMEI( wxCommandEvent &event )
+
+void EdtEnv::OnMidiInput( wxCommandEvent &event )
 {
-    wxASSERT_MSG( m_panelPtr, "Panel cannot be NULL ");
-
-
-    wxString filename = wxFileSelector( _("Open"), wxGetApp().m_lastDir, _T(""), NULL, "XML|*.xml", wxOPEN);
-    if ( filename.IsEmpty() )
-        return;
-    wxGetApp().m_lastDir = wxPathOnly( filename );
-    
-    if ( m_filePtr )
-    {
-        delete m_filePtr;
-        m_filePtr = NULL;
+	if ( m_edtFilePtr->IsOpened() ) {
+        m_musViewPtr->ProcessEvent( event );
     }
-    m_filePtr = new MusFile();
-    m_filePtr->m_fname = filename;
-    MusMeiInput meiinput( m_filePtr, filename );
-	if ( !meiinput.ImportFile() )
-		return;
-
-    /*
-    MusWWGOutput *wwgoutput = new MusWWGOutput( m_filePtr, filename );
-    wwgoutput->ExportFile();
-    delete wwgoutput;*/
-    
-
-    if ( m_musViewPtr )
-    {
-        m_musViewPtr->Destroy();
-        m_musViewPtr = NULL;
-    }
-    m_musViewPtr = new MusWindow( m_panelPtr, ID5_MUSWINDOW, wxDefaultPosition, wxDefaultSize, wxHSCROLL|wxVSCROLL|wxSIMPLE_BORDER );
-    m_musViewPtr->SetToolPanel( ((EdtPanel*)m_envWindowPtr)->GetMusToolPanel() );
-    m_musViewPtr->SetFile( m_filePtr );
-    m_musViewPtr->Resize( );
 }
 
 #endif // AX_EDT

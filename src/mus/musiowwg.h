@@ -113,7 +113,7 @@ public:
 	virtual bool WritePage( const MusPage *page );
 	virtual bool WriteStaff( const MusStaff *staff );
 	virtual bool WriteNote( const MusNote *note );
-	virtual bool WriteSymbole( const MusSymbol *symbol );
+	virtual bool WriteSymbol( const MusSymbol *symbol );
 	virtual bool WriteElementAttr( const MusElement *element );
 	virtual bool WriteDebord( const MusElement *element );
 	virtual bool WritePagination( const MusPagination *pagination );
@@ -153,7 +153,7 @@ public:
 	virtual bool ReadPage( MusPage *page );
 	virtual bool ReadStaff( MusStaff *staff );
 	virtual bool ReadNote( MusNote *note );
-	virtual bool ReadSymbole( MusSymbol *symbol );
+	virtual bool ReadSymbol( MusSymbol *symbol );
 	virtual bool ReadElementAttr( MusElement *element );
 	virtual bool ReadDebord( MusElement *element );
 	virtual bool ReadPagination( MusPagination *pagination );

@@ -364,13 +364,13 @@ bool MusWWGOutput::WriteStaff( const MusStaff *staff )
 	Write( &uint16, 2 );
 	for (k = 0;k < staff->nblement ; k++ )
 	{
-		if ( staff->m_elements[k].TYPE == NOTE )
+		if ( staff->m_elements[k].IsNote() )
 		{
 			WriteNote( (MusNote*)&staff->m_elements[k] );
 		}
-		else
+		else if ( staff->m_elements[k].IsSymbol() )
 		{
-			WriteSymbole( (MusSymbol*)&staff->m_elements[k] );
+			WriteSymbol( (MusSymbol*)&staff->m_elements[k] );
 		}
 	}
 
@@ -411,7 +411,7 @@ bool MusWWGOutput::WriteNote( const MusNote *note )
 	return true;
 }
 
-bool MusWWGOutput::WriteSymbole( const MusSymbol *symbol )
+bool MusWWGOutput::WriteSymbol( const MusSymbol *symbol )
 {
 	Write( &symbol->TYPE, 1 );
 	WriteElementAttr( symbol );
@@ -791,11 +791,11 @@ bool MusWWGInput::ReadStaff( MusStaff *staff )
 			ReadNote( note );
 			staff->m_elements.Add( note );
 		}
-		else
+		else if ( c == SYMB )
 		{
 			MusSymbol *symbol = new MusSymbol();
 			symbol->no = k;
-			ReadSymbole( symbol );
+			ReadSymbol( symbol );
             // For the lyrics, we must attach them to the notes
             // We keep it and
             if ( (symbol->flag == CHAINE) && (symbol->fonte == LYRIC) ) {
@@ -858,7 +858,7 @@ bool MusWWGInput::ReadNote( MusNote *note )
     return true;
 }
 
-bool MusWWGInput::ReadSymbole( MusSymbol *symbol )
+bool MusWWGInput::ReadSymbol( MusSymbol *symbol )
 {
 	ReadElementAttr( symbol );
 	Read( &symbol->flag , 1 );

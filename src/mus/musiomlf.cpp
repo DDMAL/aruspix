@@ -398,7 +398,7 @@ MusStaff *MusMLFOutput::SplitSymboles( MusStaff *staff )
 
     for (k = 0;k < staff->nblement ; k++ )
     {
-		if ( staff->m_elements[k].TYPE == NOTE )
+		if ( staff->m_elements[k].IsNote() )
 		{
 			nnote = new MusNote( *(MusNote*)&staff->m_elements[k] );
 			// alteration
@@ -434,7 +434,7 @@ MusStaff *MusMLFOutput::SplitSymboles( MusStaff *staff )
 				nnote->point = 0;
 			}				
 		}
-		else
+		if ( staff->m_elements[k].IsSymbol() )
 		{
 			nsymbol1 = new MusSymbol( *(MusSymbol*)&staff->m_elements[k] );
 			nstaff->m_elements.Add( nsymbol1 );
@@ -596,7 +596,7 @@ MusStaff *MusMLFOutput::GetUt1( MusStaff *staff , bool inPlace )
 	
 	for (int i = 0; i < (int)nstaff->m_elements.GetCount(); i++ )
 	{
-		if ( nstaff->m_elements[i].TYPE == NOTE )
+		if ( nstaff->m_elements[i].IsNote() )
 		{
 			MusNote *note = (MusNote*)&nstaff->m_elements[i];
 			{
@@ -605,7 +605,7 @@ MusStaff *MusMLFOutput::GetUt1( MusStaff *staff , bool inPlace )
 				note->oct = oct;
 			}
 		}
-		else
+		else if ( nstaff->m_elements[i].IsSymbol() )
 		{
 			MusSymbol *symbol = (MusSymbol*)&nstaff->m_elements[i];
 			if ((symbol->flag == ALTER) || (symbol->flag == PNT))
@@ -644,9 +644,9 @@ void MusMLFOutput::GetUt1( MusStaff *staff, MusElement *pelement, int *code, int
 
 	*oct = pelement->oct;
 	*code = 0;
-	if (pelement->TYPE == SYMB)
+	if (pelement->IsSymbol())
 		*code = ((MusSymbol*)pelement)->code + offs;
-	else
+	else if (pelement->IsNote())
 		*code = ((MusNote*)pelement)->code + offs;
 
 	while (*code < 1)
@@ -733,13 +733,13 @@ bool MusMLFOutput::WriteStaff( const MusStaff *staff, int offset,  int end_point
 
     for (k = 0;k < staff->nblement ; k++ )
     {
-        if ( staff->m_elements[k].TYPE == NOTE )
+        if ( staff->m_elements[k].IsNote() )
         {
             WriteNote( (MusNote*)&staff->m_elements[k] );
         }
-        else
+        else if ( staff->m_elements[k].IsSymbol() )
         {
-            WriteSymbole( (MusSymbol*)&staff->m_elements[k] );
+            WriteSymbol( (MusSymbol*)&staff->m_elements[k] );
         }
     }
 	EndLabel( offset, end_point );
@@ -807,7 +807,7 @@ bool MusMLFOutput::WriteNote(  MusNote *note )
   autre
   */
 
-bool MusMLFOutput::WriteSymbole(  MusSymbol *symbol )
+bool MusMLFOutput::WriteSymbol(  MusSymbol *symbol )
 {
 	// gestion des segment de portees (pas actif ?????)
 	if ((symbol->flag == BARRE) && (symbol->code == 'I'))
@@ -1022,7 +1022,7 @@ bool MusMLFOutputNoPitch::WriteNote(  MusNote *note )
   autre
   */
 
-bool MusMLFOutputNoPitch::WriteSymbole(  MusSymbol *symbol )
+bool MusMLFOutputNoPitch::WriteSymbol(  MusSymbol *symbol )
 {
 	// gestion des segment de portees (pas actif ?????)
 	if ((symbol->flag == BARRE) && (symbol->code == 'I'))
@@ -1445,7 +1445,7 @@ MusStaff *MusMLFInput::GetNotUt1( MusStaff *staff , bool inPlace )
 	
 	for (int i = 0; i < (int)nstaff->m_elements.GetCount(); i++ )
 	{
-		if ( nstaff->m_elements[i].TYPE == NOTE )
+		if ( nstaff->m_elements[i].IsNote() )
 		{
 			MusNote *note = (MusNote*)&nstaff->m_elements[i];
 			{
@@ -1454,7 +1454,7 @@ MusStaff *MusMLFInput::GetNotUt1( MusStaff *staff , bool inPlace )
 				note->oct = oct;
 			}
 		}
-		else
+		else if ( nstaff->m_elements[i].IsSymbol() )
 		{
 			MusSymbol *symbol = (MusSymbol*)&nstaff->m_elements[i];
 			if ((symbol->flag == ALTER) || (symbol->flag == PNT))
@@ -1487,9 +1487,9 @@ void MusMLFInput::GetNotUt1( MusStaff *staff, MusElement *pelement, int *code, i
 	*oct = pelement->oct;
 	*code = 0;
 
-	if (pelement->TYPE == SYMB)
+	if (pelement->IsSymbol())
 		*code = ((MusSymbol*)pelement)->code;
-	else
+	else if (pelement->IsNote())
 		*code = ((MusNote*)pelement)->code;
 
 	while ( (*code) - offs < 1 )

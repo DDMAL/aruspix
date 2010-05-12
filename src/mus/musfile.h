@@ -24,6 +24,7 @@
 #include "muselement.h"
 #include "musnote.h"
 #include "mussymbol.h"
+#include "musneume.h"
 #include "mus.h"
 
 WX_DECLARE_OBJARRAY( MusPage, ArrayOfMusPages);
@@ -99,7 +100,7 @@ public:
 	virtual bool WritePage( const MusPage *page ) { return true; }
 	virtual bool WriteStaff( const MusStaff *staff ) { return true; }
 	virtual bool WriteNote( const MusNote *note ) { return true; }
-	virtual bool WriteSymbole( const MusSymbol *symbol ) { return true; }
+	virtual bool WriteSymbol( const MusSymbol *symbol ) { return true; }
 	virtual bool WriteElementAttr( const MusElement *element ) { return true; }
 	virtual bool WriteDebord( const MusElement *element ) { return true; }
 	virtual bool WriteLyric( const MusElement * element ) { return true; }
@@ -138,7 +139,7 @@ public:
 	virtual bool ReadPage( MusPage *page ) { return true; }
 	virtual bool ReadStaff( MusStaff *staff ) { return true; }
 	virtual bool ReadNote( MusNote *note ) { return true; }
-	virtual bool ReadSymbole( MusSymbol *symbol ) { return true; }
+	virtual bool ReadSymbol( MusSymbol *symbol ) { return true; }
 	virtual bool ReadElementAttr( MusElement *element ) { return true; }
 	virtual bool ReadDebord( MusElement *element ) { return true; }
 	virtual bool ReadLyric( MusElement * element ) { return true; }

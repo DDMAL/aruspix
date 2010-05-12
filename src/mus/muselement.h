@@ -37,10 +37,11 @@ public:
     virtual ~MusElement();		
 
 	// common method
-	void MusElement::ClearElement( wxDC *dc, MusStaff *staff );
-	int MusElement::filtrcod( int codElement, int *oct );
-	bool MusElement::IsNote() { return ( TYPE != SYMB ); }
-	bool IsSymbole() { return ( TYPE == SYMB ); }
+	void ClearElement( wxDC *dc, MusStaff *staff );
+	int filtrcod( int codElement, int *oct );
+	bool IsNote() { return ( TYPE == NOTE ); }
+	bool IsSymbol() { return ( TYPE == SYMB ); }
+    bool IsNeume() { return ( TYPE == NEUME ); }
 	wxClientDC *MusElement::InitAndClear( MusStaff *staff ); // init dc and clear element only if necessary
     MusElement *GetNext( MusStaff *staff );
 

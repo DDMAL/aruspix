@@ -181,13 +181,13 @@ bool CmpCollation::Realize( )
 			{
 				if ( (int)full_staff->m_elements[0].xrel > (j + 1) * correct_lrg_lign)
 					break;
-				if ( full_staff->m_elements[0].TYPE == NOTE )
+				if ( full_staff->m_elements[0].IsNote() )
 				{
 					MusNote *nnote = (MusNote*)full_staff->m_elements.Detach( 0 );
 					nnote->xrel -= (j * correct_lrg_lign) - clef_offset;
 					staff->m_elements.Add( nnote );
 				}
-				else
+				else if ( full_staff->m_elements[0].IsSymbol() )
 				{
 					MusSymbol *nsymbol = (MusSymbol*)full_staff->m_elements.Detach( 0 );
 					if ( nsymbol->flag == CLE ) // we keep last clef for next pages
@@ -412,9 +412,9 @@ bool CmpCollation::Align( MusStaff *staff_ref, MusStaff *staff_var, CmpCollation
 				//aligned.m_elements[i] = staff_var->m_elements[j];
 				ii = ((CmpMLFSymb*)&reference->Item(i))->m_index;
 				jj = ((CmpMLFSymb*)&variant->Item(j))->m_index;
-				if ( staff_var->m_elements[jj].TYPE == NOTE )
+				if ( staff_var->m_elements[jj].IsNote() )
 					aligned.m_elements.Insert( new MusNote( *(MusNote*)&staff_var->m_elements[jj] ), ii );
-				else
+				else if ( staff_var->m_elements[jj].IsSymbol() )
 					aligned.m_elements.Insert( new MusSymbol( *(MusSymbol*)&staff_var->m_elements[jj] ), ii );
 				aligned.m_elements[ii].xrel = aligned.m_elements[ii+1].xrel;
 				aligned.m_elements.RemoveAt(ii+1);

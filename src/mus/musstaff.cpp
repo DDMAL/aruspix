@@ -21,6 +21,7 @@
 #include "muselement.h"
 #include "mussymbol.h"
 #include "musnote.h"
+#include "musneume.h"
 #include "muspage.h"
 #include "muswindow.h"
 
@@ -80,15 +81,20 @@ MusStaff::MusStaff( const MusStaff& staff )
 
 	for (int i = 0; i < (int)staff.m_elements.GetCount(); i++)
 	{
-		if ( staff.m_elements[i].TYPE == NOTE )
+		if ( staff.m_elements[i].IsNote() )
 		{
 			MusNote *nnote = new MusNote( *(MusNote*)&staff.m_elements[i] );
 			this->m_elements.Add( nnote );
 		}
-		else
+		else if ( staff.m_elements[i].IsSymbol() )
 		{
 			MusSymbol *nsymbol = new MusSymbol( *(MusSymbol*)&staff.m_elements[i] );
 			this->m_elements.Add( nsymbol );
+		}
+        else if ( staff.m_elements[i].IsNeume() )
+		{
+			MusNeume *nneume = new MusNeume( *(MusNeume*)&staff.m_elements[i] );
+			this->m_elements.Add( nneume );
 		}
 	}
 }
@@ -236,10 +242,12 @@ MusElement *MusStaff::Insert( MusElement *element )
 	if ( !element ) return NULL;
 
 	// copy element
-	if ( element->IsSymbole() )
+	if ( element->IsSymbol() )
 		element = new MusSymbol( *(MusSymbol*)element );
-	else
+	else if ( element->IsNote() )
 		element = new MusNote( *(MusNote*)element );
+	else if ( element->IsNeume() )
+		element = new MusNeume( *(MusNeume*)element );
 
 	int idx = 0;
 	MusElement *tmp = this->GetFirst();
@@ -252,13 +260,13 @@ MusElement *MusStaff::Insert( MusElement *element )
 			break;
 	}
 
-	if ( tmp &&  element->IsSymbole() && (((MusSymbol*)element)->flag == CLE) )
+	if ( tmp &&  element->IsSymbol() && (((MusSymbol*)element)->flag == CLE) )
 		m_w->OnBeginEditionClef();
 
 	m_elements.Insert( element, idx );
 	this->CheckIntegrity();
 	
-	if ( element->IsSymbole() && (((MusSymbol*)element)->flag == CLE) )
+	if ( element->IsSymbol() && (((MusSymbol*)element)->flag == CLE) )
 		m_w->OnEndEditionClef();
 
 	if (m_w)
@@ -274,7 +282,7 @@ void MusStaff::Delete( MusElement *element )
 	
 	if ( m_w ) // effacement
 	{
-		if ( element->IsSymbole() && (((MusSymbol*)element)->flag == CLE) )
+		if ( element->IsSymbol() && (((MusSymbol*)element)->flag == CLE) )
 			m_w->OnBeginEditionClef();
 	}
 	
@@ -283,7 +291,7 @@ void MusStaff::Delete( MusElement *element )
 
 	if ( m_w )
 	{
-		if ( element->IsSymbole() && (((MusSymbol*)element)->flag == CLE) )
+		if ( element->IsSymbol() && (((MusSymbol*)element)->flag == CLE) )
 			m_w->OnEndEditionClef();
 		m_w->Refresh();
 	}
@@ -844,7 +852,7 @@ MusSymbol *MusStaff::GetPreviousLyric( MusSymbol *lyric )
 	// Check previous note in staff for lyric
 	int no = lyric->m_note_ptr->no - 1;
 	while ( no >= 0 ){
-		if ( m_elements[ no ].TYPE == NOTE ){
+		if ( m_elements[ no ].IsNote() ){
 			for ( int i = (int) ((MusNote*)&m_elements[ no ])->m_lyrics.GetCount() - 1; i >= 0 ; i-- ){
 				MusSymbol *previousLyric = &((MusNote*)&m_elements[ no ])->m_lyrics[i];
 				if ( previousLyric ) return previousLyric;
@@ -874,7 +882,7 @@ MusSymbol *MusStaff::GetNextLyric( MusSymbol *lyric )
 	// Check next note in staff for lyric
 	int no = lyric->m_note_ptr->no + 1;
 	while ( no < (int)m_elements.GetCount() ){
-		if ( m_elements[ no ].TYPE == NOTE ){
+		if ( m_elements[ no ].IsNote() ){
 			for ( int i = 0; i < (int) ((MusNote*)&m_elements[ no ])->m_lyrics.GetCount(); i++ ){
 				MusSymbol *nextLyric = &((MusNote*)&m_elements[ no ])->m_lyrics[i];
 				if ( nextLyric )
@@ -892,7 +900,7 @@ MusSymbol *MusStaff::GetFirstLyric( )
 		return NULL;
 	int no = 0;
 	while ( no < (int)m_elements.GetCount() ){
-		if ( m_elements[ no ].TYPE == NOTE ){
+		if ( m_elements[ no ].IsNote() ){
 			for ( int i = 0; i < (int) ((MusNote*)&m_elements[ no ])->m_lyrics.GetCount(); i++ ){
 				MusSymbol *lyric = &((MusNote*)&m_elements[ no ])->m_lyrics[i];
 				if ( lyric )
@@ -910,7 +918,7 @@ MusSymbol *MusStaff::GetLastLyric( )
 		return NULL;
 	int no = (int)m_elements.GetCount() - 1;
 	while ( no >= 0 ){
-		if ( m_elements[ no ].TYPE == NOTE ) {
+		if ( m_elements[ no ].IsNote() ) {
 			for ( int i = (int) ((MusNote*)&m_elements[ no ])->m_lyrics.GetCount() - 1; i >= 0 ; i-- ){
 				MusSymbol *lyric = &((MusNote*)&m_elements[ no ])->m_lyrics[i];
 				if ( lyric )
@@ -947,7 +955,7 @@ void MusStaff::DeleteLyric( MusSymbol *symbol )
 	
 	if ( m_w ) // effacement
 	{
-		if ( symbol->IsSymbole() && (((MusSymbol*)symbol)->IsLyric()) )
+		if ( symbol->IsSymbol() && (((MusSymbol*)symbol)->IsLyric()) )
 			m_w->OnBeginEditionClef();
 	}
 	
@@ -962,7 +970,7 @@ void MusStaff::DeleteLyric( MusSymbol *symbol )
 	
 	if ( m_w )
 	{
-		if ( symbol->IsSymbole() && (((MusSymbol*)symbol)->IsLyric()) )
+		if ( symbol->IsSymbol() && (((MusSymbol*)symbol)->IsLyric()) )
 			m_w->OnEndEditionClef();
 		m_w->Refresh();
 	}
@@ -1050,7 +1058,7 @@ void MusStaff::CopyElements( wxArrayPtrVoid params )
 	int i;
     for (i = 0; i < (int)nblement; i++) 
 	{
-		if ( m_elements[i].TYPE == NOTE )
+		if ( m_elements[i].IsNote() )
 		{
 			MusNote *nnote = new MusNote( *(MusNote*)&m_elements[i] );
             nnote->xrel += x_last;

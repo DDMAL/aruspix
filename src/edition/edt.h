@@ -23,7 +23,7 @@
 
 #include "edt_wdr.h"
 
-class MusFile;
+class EdtFile;
 class MusWindow;
 class MusToolPanel;
 
@@ -77,27 +77,37 @@ public:
     // WDR: method declarations for EdtEnv
     virtual void LoadWindow();
 	virtual void RealizeToolbar( );
+    virtual void UpdateTitle( );
+    virtual void Open( wxString filename, int type );
+    //
+    void UpdateViews( int flags );
+    bool ResetFile(); // must be called when new file is created or opened
 
 private:
     // WDR: member variable declarations for EdtEnv
     wxPanel *m_panelPtr;
     MusWindow *m_musViewPtr;
-    MusFile *m_filePtr;
+    EdtFile *m_edtFilePtr;
     
 private:
     // WDR: handler declarations for EdtEnv
 	void OnSize( wxSizeEvent &event );
     void OnTools( wxCommandEvent &event );
     void OnValues( wxCommandEvent &event );
+    void OnNew( wxCommandEvent &event );
     void OnSave( wxCommandEvent &event );
+    void OnSaveAs( wxCommandEvent &event );
+    void OnClose( wxCommandEvent &event );
+    // import / export
     void OnOpenMLF( wxCommandEvent &event );
 	void OnSaveMLF( wxCommandEvent &event );
     void OnOpenWWG( wxCommandEvent &event );
-    void OnSaveMEI( wxCommandEvent &event );
-    void OnOpenMEI( wxCommandEvent &event );
     void OnSaveWWG( wxCommandEvent &event );
+    void OnOpenMEI( wxCommandEvent &event );
+    void OnSaveMEI( wxCommandEvent &event );
     void OnSaveSVG( wxCommandEvent &event );
     void OnSaveModel( wxCommandEvent &event );
+    //
     void OnZoomOut( wxCommandEvent &event );
     void OnZoomIn( wxCommandEvent &event );
     void OnGoto( wxCommandEvent &event );
@@ -106,6 +116,8 @@ private:
     void OnUpdateUI( wxUpdateUIEvent &event );
 	void OnUndo( wxCommandEvent &event );
 	void OnRedo( wxCommandEvent &event );
+    // forward the midi event to the mus window
+    void OnMidiInput( wxCommandEvent &event );
 
 private:
     DECLARE_DYNAMIC_CLASS(EdtEnv)

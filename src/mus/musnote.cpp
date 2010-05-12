@@ -189,7 +189,7 @@ bool MusNote::BelongsToTheNote( MusElement *element )
 
 void MusNote::SetPitch( int code, int oct, MusStaff *staff )
 {
-	if ( this->TYPE == SYMB )
+	if ( this->TYPE != NOTE )
 		return;
 
 	if ((this->code == code) && (this->oct == oct ))
@@ -207,7 +207,7 @@ void MusNote::SetPitch( int code, int oct, MusStaff *staff )
 
 void MusNote::SetValue( int value, MusStaff *staff, int vflag )
 {	
-	if ( this->TYPE == SYMB )
+	if ( this->TYPE != NOTE )
 		return;
 
 	//if (this->val == value) //

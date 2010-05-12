@@ -282,7 +282,7 @@ bool MusMeiOutput::WriteStaff( const MusStaff *staff )
 
 	for (k = 0;k < staff->nblement ; k++ )
 	{
-		if ( staff->m_elements[k].TYPE == NOTE )
+		if ( staff->m_elements[k].IsNote() )
 		{
             if ((&staff->m_elements[k])->ligat && !ligature) {
                 xml_previous = m_xml_current;
@@ -297,9 +297,9 @@ bool MusMeiOutput::WriteStaff( const MusStaff *staff )
                 ligature = NULL;
             } 
 		}
-		else
+		else if ( staff->m_elements[k].IsSymbol() )
 		{
-			WriteSymbole( (MusSymbol*)&staff->m_elements[k] );
+			WriteSymbol( (MusSymbol*)&staff->m_elements[k] );
 		}
 	}
     
@@ -396,13 +396,13 @@ bool MusMeiOutput::WriteNote( const MusNote *note )
 	for ( i = 0; i < (int)note->m_lyrics.GetCount(); i++ ){
 		MusSymbol *lyric = &note->m_lyrics[i];
 		if ( lyric )
-			WriteSymbole( lyric );
+			WriteSymbol( lyric );
 	}
 	
 	return true;
 }
 
-bool MusMeiOutput::WriteSymbole( const MusSymbol *symbol )
+bool MusMeiOutput::WriteSymbol( const MusSymbol *symbol )
 {
 
 	if (symbol->flag == BARRE) {
@@ -666,11 +666,11 @@ bool MusMeiInput::ReadStaff( MusStaff *staff )
 				 
 			staff->m_elements.Add( note );
 		}
-		else
+		else if ( c == SYMB )
 		{
 			MusSymbol *symbol = new MusSymbol();
 			symbol->no = k;
-			ReadSymbole( symbol );
+			ReadSymbol( symbol );
 			staff->m_elements.Add( symbol );
 		}
 	}
@@ -685,7 +685,7 @@ bool MusMeiInput::ReadNote( MusNote *note )
 	for ( int i = 0; i < count; i++ ) {
 		MusSymbol *lyric = new MusSymbol();
 		Read( &lyric->TYPE, 1 );
-		ReadSymbole( lyric );
+		ReadSymbol( lyric );
 		lyric->m_note_ptr = note;				 		
 		note->m_lyrics.Add( lyric );
 	}
@@ -693,7 +693,7 @@ bool MusMeiInput::ReadNote( MusNote *note )
 	return true;
 }
 
-bool MusMeiInput::ReadSymbole( MusSymbol *symbol )
+bool MusMeiInput::ReadSymbol( MusSymbol *symbol )
 {
 	if ( symbol->IsLyric() )
         ReadLyric( symbol );

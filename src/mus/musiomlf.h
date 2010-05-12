@@ -124,7 +124,7 @@ public:
 											
     virtual bool WriteStaff( const MusStaff *staff, int offset = -1, int end_point = -1 );
     virtual bool WriteNote( MusNote *note );
-    virtual bool WriteSymbole( MusSymbol *symbol );
+    virtual bool WriteSymbol( MusSymbol *symbol );
 	// specific
 	static MusStaff *SplitSymboles( MusStaff *staff );
 	static MusStaff *GetUt1( MusStaff *staff, bool inPlace = false );
@@ -152,7 +152,7 @@ protected:
 	ArrayOfMLFSymbols m_symbols; // symbol list
 	wxString m_mlf_class_name;
 	wxString m_shortname;
-	MusStaff *m_staff; // utilise pour les segments de portee, doit etre accessible dans WriteSymbole
+	MusStaff *m_staff; // utilise pour les segments de portee, doit etre accessible dans WriteSymbol
 	// page, staff index
 	int m_page_i;
 	int m_staff_i;
@@ -188,7 +188,7 @@ public:
     
     // WDR: method declarations for MusMLFOutputNoPitch
     virtual bool WriteNote( MusNote *note );
-    virtual bool WriteSymbole( MusSymbol *symbol );
+    virtual bool WriteSymbol( MusSymbol *symbol );
 	// specific
     
 protected:
