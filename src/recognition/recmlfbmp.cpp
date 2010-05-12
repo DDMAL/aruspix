@@ -450,10 +450,10 @@ bool RecMLFBmp::WriteStaff( const MusStaff *staff, int currentElementNo )
 
     for (k = 0;k < staff->nblement ; k++ )
     {
-        if ( (&staff->m_elements[k])->TYPE == NOTE )
+        if ( (&staff->m_elements[k])->IsNote() )
             ok = WriteNote( (MusNote*)&staff->m_elements[k] );
-        else
-            ok = WriteSymbole( (MusSymbol*)&staff->m_elements[k] );
+        else if ( (&staff->m_elements[k])->IsSymbol() )
+            ok = WriteSymbol( (MusSymbol*)&staff->m_elements[k] );
         if ( ok && ( currentElementNo == (signed int)k ) )
 			((RecMLFSymbolBmp*)&m_symbols.Last())->SetCurrent();
 

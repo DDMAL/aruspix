@@ -484,11 +484,42 @@ void RecEnv::ParseCmd( wxCmdLineParser *parser )
     wxASSERT_MSG( parser, wxT("Parser cannot be NULL") );
     wxASSERT_MSG( m_imControlPtr, wxT("Image controller cannot be NULL") );
 
-    if ( parser->Found("q") &&  (parser->GetParamCount() == 1) )
+    if ( parser->Found("q") &&  (parser->GetParamCount() > 0) )
     {
+        // it might be useful to disable logging
         //wxLogNull logNo;;
-    
+        
+        // first parameter is input file
         wxString file = parser->GetParam( 0 );
+        wxLogDebug( file );
+        
+        if ( parser->Found("p") && (parser->GetParamCount() == 2) )
+        {
+            // with -p, the second parameter is the output filename
+            wxString outfile = parser->GetParam( 1 );
+            wxLogDebug( outfile );
+            
+            // create a new  file
+            m_recFilePtr->New(  );
+            
+            // parameter array with filename as first parameter
+            wxArrayPtrVoid params;
+            params.Add( &file );
+    
+            // fake dialog, we need one even in command line
+            AxProgressDlg dlg( m_framePtr, -1, _("Recognition") );
+    
+            bool failed = false;
+    
+            // do the pre-processing
+            failed = !m_recFilePtr->Preprocess( params, &dlg );
+            
+            // save if succeed
+            if ( !failed )
+                failed = !m_recFilePtr->SaveAs( outfile );
+
+        }
+        
 		                        
         // upgrade file version
         //m_recFilePtr->Open( file );
@@ -503,6 +534,7 @@ void RecEnv::ParseCmd( wxCmdLineParser *parser )
         m_recFilePtr->Save( false );
 		*/
 		// HACK : force MFC generation here
+        /*
 		m_recFilePtr->Open( file );
 		m_recFilePtr->Modify( );
 		wxArrayPtrVoid mfc_params;
@@ -511,6 +543,7 @@ void RecEnv::ParseCmd( wxCmdLineParser *parser )
 		AxProgressDlg dlg( m_framePtr, -1, _("Recognition") );
 		m_recFilePtr->GenerateMFC( mfc_params, &dlg ); // 2 operations
         m_recFilePtr->Save( false );
+        */
         
         /*
         wxString outfile = file;
