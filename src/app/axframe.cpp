@@ -20,6 +20,8 @@
 #include "wx/stdpaths.h"
 #include "wx/gdicmn.h"
 
+#include "RtMidi.h"
+
 #include "axapp.h"
 #include "axfile.h"
 #include "axframe.h"
@@ -50,6 +52,40 @@ WX_DEFINE_OBJARRAY(AxEnvArray);
     #include "comparison/cmp.h"
 #endif
 
+// MIDI
+DEFINE_EVENT_TYPE( AX_EVT_MIDI )
+
+#define MIDI_ON 144
+#define MIDI_OFF 128
+
+// MIDI CALLBACK
+void midi_callback( double deltatime, std::vector< unsigned char > *message, void *userData )
+{
+  /*unsigned int nBytes = message->size();
+  for ( unsigned int i=0; i<nBytes; i++ )
+    std::cout << "Byte " << i << " = " << (int)message->at(i) << ", ";
+  if ( nBytes > 0 )
+    std::cout << "stamp = " << deltatime << std::endl;
+  */
+  
+  // return if no top window to send the message
+  if (!wxGetApp().GetTopWindow()) {
+    return;
+  }
+
+  // we just want the pitch - with is in byte 1 - and only at the beginning of the note
+  if ((message->size() < 1) || ((int)message->at(0) != MIDI_ON)) {
+    return;
+  }
+  
+  // because I did not want to create a new type of event at this stage (maybe later), I just
+  // use a wxCommandEvent an store the midi pitch with SetInt() 
+  wxCommandEvent event( AX_EVT_MIDI, ID_MIDI_INPUT );
+  event.SetInt( (int)message->at(1) );
+  wxPostEvent( wxGetApp().GetTopWindow(), event );
+}
+
+
 // WDR: class implementations
 
 //----------------------------------------------------------------------------
@@ -57,6 +93,8 @@ WX_DEFINE_OBJARRAY(AxEnvArray);
 //----------------------------------------------------------------------------
 
 IMPLEMENT_DYNAMIC_CLASS(AxFrame,wxFrame)
+
+
 
 // WDR: event table for AxFrame
 
@@ -102,6 +140,8 @@ BEGIN_EVENT_TABLE(AxFrame,wxFrame)
     EVT_MENU( ID_SAVE_AS, AxFrame::OnEnvironmentMenu )
     EVT_MENU( ID_CLOSE, AxFrame::OnEnvironmentMenu )
     EVT_MENU( ID_HELP, AxFrame::OnHelp )
+    // MIDI
+    EVT_COMMAND( ID_MIDI_INPUT, AX_EVT_MIDI, AxFrame::OnEnvironmentMenu )
 END_EVENT_TABLE()
 
 
@@ -121,6 +161,8 @@ AxFrame::AxFrame( wxWindow *parent, wxWindowID id, const wxString &title,
         
     m_menuBarPtr = NULL;
     m_toolBarPtr = NULL;
+
+    m_midiIn = NULL;
 
     // set the frame icon
     SetIcon(wxICON(ax));
@@ -180,7 +222,23 @@ AxFrame::AxFrame( wxWindow *parent, wxWindowID id, const wxString &title,
 
     // counter callback
     imCounterSetCallback(NULL, NULL);
-	
+    
+    // midi input
+    m_midiIn = new RtMidiIn();
+
+    // Check available ports.
+    unsigned int nPorts = m_midiIn->getPortCount();
+    if ( nPorts == 0 ) {
+        wxLogDebug("Midi init failed, nPorts == 0");
+        delete m_midiIn;
+        m_midiIn = NULL;
+    } else {
+        m_midiIn->openPort( 0 );
+        // Set our callback function
+        m_midiIn->setCallback( &midi_callback );
+        // Don't ignore sysex, timing, or active sensing messages.
+        m_midiIn->ignoreTypes( false, false, false );        
+    }
 }
 
 AxFrame::~AxFrame()
@@ -543,6 +601,7 @@ int AxFrame::GetEnvironmentMenuId( const wxString className, int *pos )
     for (int i=0; i < (int)m_envArray.GetCount(); i++)
     {
         AxEnvRow *envRow = &m_envArray[i];
+        //wxLogDebug("%s, %s", className.c_str(), envRow->m_className.c_str());
         if ( className.CmpNoCase( envRow->m_className ) == 0 )
 		{
 			*pos = i;

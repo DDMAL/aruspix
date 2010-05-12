@@ -50,7 +50,7 @@ enum
 // Any change of MAX_ENV_TYPES must be reported in axfile.cpp where
 // the enum values are mapped with const *char
 
-#define MAX_ENV_TYPES 2 
+#define MAX_ENV_TYPES 4 
 
 enum
 {
@@ -122,6 +122,7 @@ public:
 	bool AxFile::Check( wxString filename ); // check the version, but also type and envtype ; uses the static version AxFile::Check
 	// status
 	bool AxFile::IsOpened() { return m_isOpened; }
+    bool AxFile::IsNew() { return m_filename.IsEmpty(); }
 	bool AxFile::IsModified() { return m_isModified; }
 	void AxFile::Modify() { m_isModified = true; }
 	// process

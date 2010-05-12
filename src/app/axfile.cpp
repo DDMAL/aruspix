@@ -48,10 +48,13 @@ const char *types[] = {
 	"Zip archive"
 };
 
+
+// don't forget to check MAX_ENV_TYPES in axfile.h
 const char *envtypes[] = { 
 	"Rec", 
 	"Sup",
-	"Cmp"
+	"Cmp",
+    "Edt"
 };
 
 
@@ -134,7 +137,7 @@ AxFile::~AxFile()
 // static method
 wxString AxFile::GetEnvName( int envtype )
 {
-	if ( (envtype < 0) || (envtype > MAX_ENV_TYPES) )
+	if ( (envtype < 0) || (envtype >= MAX_ENV_TYPES) )
 		return "";
 	else
 		return envtypes[ envtype ];

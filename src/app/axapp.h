@@ -62,6 +62,7 @@
 #define ENV_IDS_MIN_CMP 16000
 #define ENV_IDS_MAX_CMP 16999
 
+#define ID_MIDI_INPUT 19999 // Last ID in mus.wdr
 
 #define ENV_IDS_LOCAL 22000
 #define ENV_IDS_LOCAL_SUP ENV_IDS_LOCAL + 200
@@ -71,6 +72,9 @@
 #define ENV_IDS_LOCAL_CMP ENV_IDS_LOCAL + 600
 #define ENV_BASE_ID 30000 // base id for environment menu items
 #define ENV_MAX 50 // max of environments (used for RANGE_ID event)
+
+// customized event type for midi
+DECLARE_EVENT_TYPE( AX_EVT_MIDI, -1 )
 
 class AxFrame;
 

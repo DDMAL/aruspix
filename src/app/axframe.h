@@ -19,6 +19,8 @@
 class AxEnv;
 class AxEnvRow;
 
+class RtMidiIn;
+
 #include "axapp_wdr.h"
 
 WX_DECLARE_OBJARRAY(AxEnvRow, AxEnvArray);
@@ -56,6 +58,8 @@ public:
     void ParseCmd( wxCmdLineParser *parser );
 	void Open( wxString filename );
     wxString GetEnvironmentName( );
+    // Midi Input
+    RtMidiIn *m_midiIn;
     
 private:
     // WDR: member variable declarations for AxFrame

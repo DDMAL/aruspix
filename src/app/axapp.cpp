@@ -317,6 +317,7 @@ bool AxApp::ProcessCmdLine (char** argv, int argc)
         {wxCMD_LINE_OPTION,  "e", "environment", _("environment name"),
             wxCMD_LINE_VAL_STRING },
         {wxCMD_LINE_SWITCH, "q", "quiet", "command line mode, do not show main frame" },
+        {wxCMD_LINE_SWITCH, "p", "preprocess", "preprocessing the image in recognition environment (output file is require)"} ,
         {wxCMD_LINE_NONE}
     };
     wxCmdLineParser parser (cmdLineDesc, argc, argv);
