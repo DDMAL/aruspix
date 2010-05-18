@@ -121,6 +121,7 @@ MusWindow::MusWindow( wxWindow *parent, wxWindowID id,
 	m_toolpanel = NULL;
 
 	m_editElement = true;
+	m_notation_mode = MENSURAL_MODE;
 	m_insertx = 0;
 	m_insertcode = F6;
 	m_insertoct = 4;
@@ -773,6 +774,11 @@ void MusWindow::SetToolPanel( MusToolPanel *toolpanel )
 	SyncToolPanel();
 }
 
+void MusWindow::SetNotationMode( bool mode )
+{
+	m_notation_mode = mode;
+}
+
 void MusWindow::SetInsertMode( bool mode )
 {
 	if ( m_editElement == !mode )
@@ -795,7 +801,10 @@ void MusWindow::SetToolType( int type )
     case (MUS_TOOLS_CLEFS): value = 'K'; break;
     case (MUS_TOOLS_SIGNS): value = 'P'; break;
     case (MUS_TOOLS_OTHER): value = 'S'; break;
-    }
+	case (NEUME_TOOLS_NOTES): value = 'N'; break;
+	case (NEUME_TOOLS_CLEFS): value = 'K'; break;
+	case (NEUME_TOOLS_OTHER): value = 'S'; break;
+	}
         
     wxKeyEvent kevent;
     kevent.SetEventType( wxEVT_KEY_DOWN );
@@ -806,9 +815,18 @@ void MusWindow::SetToolType( int type )
     this->ProcessEvent( kevent );
 }
 
+/* I really don't know why this works... if the ternary operations check against MENSURAL_MODE
+ * then clicking a control while in neume editing mode will change the toolbar back to the mensural one.
+ * Weird and messy code.
+ */
 
 int MusWindow::GetToolType()
 {
+	if (m_notation_mode == MENSURAL_MODE)
+		printf("we're in mensural mode, lol\n");
+	else
+		printf("we're in neumes mode lololol\n");
+	
 	MusElement *sync = NULL;
 
 	if (m_editElement)
@@ -821,15 +839,15 @@ int MusWindow::GetToolType()
 		if ( sync->IsSymbol() )
 		{
 			if ( ((MusSymbol*)sync)->flag == CLE )
-				return MUS_TOOLS_CLEFS;
+				return m_notation_mode == MENSURAL_MODE ? MUS_TOOLS_CLEFS : NEUME_TOOLS_CLEFS;
 			else if ( ((MusSymbol*)sync)->flag == IND_MES )
 				return MUS_TOOLS_SIGNS;
 			else
-				return MUS_TOOLS_OTHER;
+				return m_notation_mode == MENSURAL_MODE ? MUS_TOOLS_OTHER : NEUME_TOOLS_OTHER;
 		}
 		else if (sync->IsNote() )
 		{
-			return MUS_TOOLS_NOTES;
+			return m_notation_mode == MENSURAL_MODE ? MUS_TOOLS_NOTES : NEUME_TOOLS_NOTES;
 		}
 	}
 	else

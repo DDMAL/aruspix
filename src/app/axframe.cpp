@@ -224,21 +224,21 @@ AxFrame::AxFrame( wxWindow *parent, wxWindowID id, const wxString &title,
     imCounterSetCallback(NULL, NULL);
     
     // midi input
-    m_midiIn = new RtMidiIn();
-
-    // Check available ports.
-    unsigned int nPorts = m_midiIn->getPortCount();
-    if ( nPorts == 0 ) {
-        wxLogDebug("Midi init failed, nPorts == 0");
-        delete m_midiIn;
-        m_midiIn = NULL;
-    } else {
-        m_midiIn->openPort( 0 );
-        // Set our callback function
-        m_midiIn->setCallback( &midi_callback );
-        // Don't ignore sysex, timing, or active sensing messages.
-        m_midiIn->ignoreTypes( false, false, false );        
-    }
+//    m_midiIn = new RtMidiIn();
+//
+//    // Check available ports.
+//    unsigned int nPorts = m_midiIn->getPortCount();
+//    if ( nPorts == 0 ) {
+//        wxLogDebug("Midi init failed, nPorts == 0");
+//        delete m_midiIn;
+//        m_midiIn = NULL;
+//    } else {
+//        m_midiIn->openPort( 0 );
+//        // Set our callback function
+//        m_midiIn->setCallback( &midi_callback );
+//        // Don't ignore sysex, timing, or active sensing messages.
+//        m_midiIn->ignoreTypes( false, false, false );        
+//    }
 }
 
 AxFrame::~AxFrame()

@@ -114,6 +114,7 @@ public:
 	// get the current tool
 	int GetToolType( );
 	void SetToolType( int type );
+	void SetNotationMode( bool mode );
 	void SetInsertMode( bool insert );
     
     // WDR: method declarations for MusWindow
@@ -123,7 +124,7 @@ public:
 	  */
 	void Resize( );
 	/**
-     Met à jour la table des fontes en fonction de nTailleFont et du zoom
+     Met â€¡ jour la table des fontes en fonction de nTailleFont et du zoom
 	 Doit etre appelee apres changement de zoom ou de definition de page
      */
 	void UpdateZoomValues();
@@ -275,6 +276,7 @@ public:
 	MusStaff *m_currentStaff;
 	bool efface;
 	bool m_editElement; // edition mode or insertion mode
+	bool m_notation_mode; // neumes or mensural notation mode
 	int m_insertx;
 	int m_insertcode;
 	int m_insertoct;

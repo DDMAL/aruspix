@@ -28,23 +28,29 @@
 //----------------------------------------------------------------------------
 
 // WDR: event table for MusToolRow
-
 MusToolRow::MusToolRow( wxWindow *parent, wxWindowID id, int type ) :
     wxPanel( parent, id, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL )
 {
 	m_type = type;
+	
 	switch (type)
 	{
 	case (MUS_TOOLS_NOTES): NotesPanel( this, true, true ); break;
 	case (MUS_TOOLS_CLEFS): ClefsPanel( this, true, true ); break;
 	case (MUS_TOOLS_SIGNS): SignsPanel( this, true, true ); break;
 	case (MUS_TOOLS_OTHER): SymbolsPanel( this, true, true ); break;
+	case (NEUME_TOOLS_NOTES): NeumeNotesPanel( this, true, true ); break;
+	case (NEUME_TOOLS_CLEFS): NeumeClefsPanel( this, true, true ); break;
+	case (NEUME_TOOLS_OTHER): NeumeSymbolsPanel( this, true, true ); break;
 	}
 
 	m_buttons[MUS_TOOLS_NOTES] = (wxBitmapButton*) FindWindow( ID_MS_BT_NOTES );
 	m_buttons[MUS_TOOLS_CLEFS] = (wxBitmapButton*) FindWindow( ID_MS_BT_KEY );
 	m_buttons[MUS_TOOLS_SIGNS] = (wxBitmapButton*) FindWindow( ID_MS_BT_SIGNS );
 	m_buttons[MUS_TOOLS_OTHER] = (wxBitmapButton*) FindWindow( ID_MS_BT_SYMBOLES );
+	m_buttons[NEUME_TOOLS_NOTES] = (wxBitmapButton*) FindWindow( ID_MS_BT_N_NOTES );
+	m_buttons[NEUME_TOOLS_CLEFS] = (wxBitmapButton*) FindWindow( ID_MS_BT_N_KEY );
+	m_buttons[NEUME_TOOLS_OTHER] = (wxBitmapButton*) FindWindow( ID_MS_BT_N_SYMBOLES );
 	m_buttons[MUS_TOOLS_NUMBER] = (wxBitmapButton*) FindWindow( ID_MS_BT_INSERT );
 }
 
@@ -79,7 +85,9 @@ void MusToolRow::UpdateTools( bool edition )
 
 BEGIN_EVENT_TABLE(MusToolPanel,wxPanel)
 	EVT_COMMAND( ID_MS_BT_INSERT, wxEVT_COMMAND_BUTTON_CLICKED, MusToolPanel::OnChangeMode )
+	EVT_COMMAND( ID_MS_BT_CHMOD, wxEVT_COMMAND_BUTTON_CLICKED, MusToolPanel::OnChangeNotationMode )
     EVT_COMMAND_RANGE( ID_MS_BT_NOTES, ID_MS_BT_SYMBOLES, wxEVT_COMMAND_BUTTON_CLICKED, MusToolPanel::OnChangeTool )
+	EVT_COMMAND_RANGE( ID_MS_BT_N_NOTES, ID_MS_BT_N_SYMBOLES, wxEVT_COMMAND_BUTTON_CLICKED, MusToolPanel::OnChangeTool )
     EVT_COMMAND_RANGE( ID_MS_BT_N0, ID_MS_BT_N7, wxEVT_COMMAND_BUTTON_CLICKED, MusToolPanel::OnNote )
     EVT_COMMAND_RANGE( ID_MS_BT_R0, ID_MS_BT_CT, wxEVT_COMMAND_BUTTON_CLICKED, MusToolPanel::OnNote )
 	EVT_COMMAND_RANGE( ID_MS_BT_LG_D, ID_MS_BT_UPDOWN, wxEVT_COMMAND_BUTTON_CLICKED, MusToolPanel::OnNote )
@@ -97,14 +105,21 @@ MusToolPanel::MusToolPanel( wxWindow *parent, wxWindowID id,
 	m_rows[MUS_TOOLS_CLEFS] = new MusToolRow( this, -1, MUS_TOOLS_CLEFS );
 	m_rows[MUS_TOOLS_SIGNS] = new MusToolRow( this, -1, MUS_TOOLS_SIGNS );
 	m_rows[MUS_TOOLS_OTHER] = new MusToolRow( this, -1, MUS_TOOLS_OTHER );
+	m_rows[NEUME_TOOLS_NOTES] = new MusToolRow( this, -1, NEUME_TOOLS_NOTES );
+	m_rows[NEUME_TOOLS_CLEFS] = new MusToolRow( this, -1, NEUME_TOOLS_CLEFS );
+	m_rows[NEUME_TOOLS_OTHER] = new MusToolRow( this, -1, NEUME_TOOLS_OTHER );
 
 	m_rows[MUS_TOOLS_NOTES]->Show( true );
 	m_rows[MUS_TOOLS_CLEFS]->Show( false );
 	m_rows[MUS_TOOLS_SIGNS]->Show( false );
 	m_rows[MUS_TOOLS_OTHER]->Show( false );
+	m_rows[NEUME_TOOLS_NOTES]->Show( false );
+	m_rows[NEUME_TOOLS_CLEFS]->Show( false );
+	m_rows[NEUME_TOOLS_OTHER]->Show( false );
 
 	m_previous_edition = false;
 	m_previous_tools = MUS_TOOLS_NOTES;
+	m_notation_mode = MENSURAL_MODE;
 
 	SetTools( MUS_TOOLS_NOTES, true );
 
@@ -161,11 +176,35 @@ void MusToolPanel::OnChangeTool( wxCommandEvent &event )
     case (ID_MS_BT_KEY): value = MUS_TOOLS_CLEFS; break;
     case (ID_MS_BT_SIGNS): value = MUS_TOOLS_SIGNS; break;
     case (ID_MS_BT_SYMBOLES): value = MUS_TOOLS_OTHER; break;
+	case (ID_MS_BT_N_NOTES): value = NEUME_TOOLS_NOTES; break;
+	case (ID_MS_BT_N_KEY): value = NEUME_TOOLS_CLEFS; break;
+	case (ID_MS_BT_N_SYMBOLES): value = NEUME_TOOLS_OTHER; break;
     }
 
 	m_w->SetInsertMode( true );
 	m_w->SetToolType( value );
     m_w->SetFocus();   
+}
+
+void MusToolPanel::OnChangeNotationMode( wxCommandEvent &event )
+{
+	//probably do some other stuff here
+	if (!m_w)
+		return;
+	
+	if (m_notation_mode == MENSURAL_MODE)
+	{
+		m_notation_mode = NEUMES_MODE;
+		SetTools(NEUME_TOOLS_NOTES, true);
+	}
+	else
+	{
+		m_notation_mode = MENSURAL_MODE;
+		SetTools(MUS_TOOLS_NOTES, true);
+	}
+	
+	m_w->SetNotationMode( m_notation_mode );
+	
 }
 
 void MusToolPanel::OnChangeMode( wxCommandEvent &event )
