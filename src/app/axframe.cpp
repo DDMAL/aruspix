@@ -61,12 +61,12 @@ DEFINE_EVENT_TYPE( AX_EVT_MIDI )
 // MIDI CALLBACK
 void midi_callback( double deltatime, std::vector< unsigned char > *message, void *userData )
 {
-  /*unsigned int nBytes = message->size();
+  unsigned int nBytes = message->size();
   for ( unsigned int i=0; i<nBytes; i++ )
     std::cout << "Byte " << i << " = " << (int)message->at(i) << ", ";
   if ( nBytes > 0 )
     std::cout << "stamp = " << deltatime << std::endl;
-  */
+  
   
   // return if no top window to send the message
   if (!wxGetApp().GetTopWindow()) {
@@ -224,21 +224,21 @@ AxFrame::AxFrame( wxWindow *parent, wxWindowID id, const wxString &title,
     imCounterSetCallback(NULL, NULL);
     
     // midi input
-//    m_midiIn = new RtMidiIn();
-//
-//    // Check available ports.
-//    unsigned int nPorts = m_midiIn->getPortCount();
-//    if ( nPorts == 0 ) {
-//        wxLogDebug("Midi init failed, nPorts == 0");
-//        delete m_midiIn;
-//        m_midiIn = NULL;
-//    } else {
-//        m_midiIn->openPort( 0 );
-//        // Set our callback function
-//        m_midiIn->setCallback( &midi_callback );
-//        // Don't ignore sysex, timing, or active sensing messages.
-//        m_midiIn->ignoreTypes( false, false, false );        
-//    }
+    m_midiIn = new RtMidiIn();
+
+    // Check available ports.
+    unsigned int nPorts = m_midiIn->getPortCount();
+    if ( nPorts == 0 ) {
+        wxLogDebug("Midi init failed, nPorts == 0");
+        delete m_midiIn;
+        m_midiIn = NULL;
+    } else {
+        m_midiIn->openPort( 0 );
+        // Set our callback function
+        m_midiIn->setCallback( &midi_callback );
+        // Don't ignore sysex, timing, or active sensing messages.
+        m_midiIn->ignoreTypes( false, false, false );        
+    }
 }
 
 AxFrame::~AxFrame()
