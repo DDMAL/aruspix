@@ -733,10 +733,16 @@
 				HEADER_SEARCH_PATHS = (
 					"$(ARUSPIX)/src",
 					"$(ARUSPIX_IMLIB)/include",
+					"$(ARUSPIX_WX)/osx-static-debug/lib/wx/include/mac-ansi-debug-static-2.8",
+					"$(ARUSPIX_WX)/include",
+					"$(ARUSPIX_WX)/contrib/include",
 				);
 				INFOPLIST_FILE = "Aruspix-Info.plist";
 				INSTALL_PATH = "$(USER_APPS_DIR)";
-				LIBRARY_SEARCH_PATHS = "$(ARUSPIX_IMLIB)/lib";
+				LIBRARY_SEARCH_PATHS = (
+					"$(ARUSPIX_IMLIB)/lib",
+					"$(ARUSPIX_WX)/osx-debug/lib",
+				);
 				OBJROOT = "$(ARUSPIX)/obj";
 				OTHER_CFLAGS = (
 					"-D__WXDEBUG__",
@@ -795,8 +801,6 @@
 		A58508B60A001129006E82B1 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_BIT_PRE_XCODE_3_1)";
-				ARCHS_STANDARD_32_BIT_PRE_XCODE_3_1 = "ppc i386";
 				COPY_PHASE_STRIP = NO;
 				OBJROOT = "$(ARUSPIX)/obj";
 				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
@@ -817,7 +821,6 @@
 		A58508C60A00113C006E82B1 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(NATIVE_ARCH)";
 				COPY_PHASE_STRIP = YES;
 				GCC_DEBUGGING_SYMBOLS = default;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
@@ -830,16 +833,16 @@
 				GCC_VERSION = 4.0;
 				HEADER_SEARCH_PATHS = (
 					"$(ARUSPIX)/src",
-					"$(ARUSPIX_WX)/include",
-					"$(ARUSPIX_WX)/osx-static-debug/lib/wx/include/mac-ansi-debug-static-2.8/",
 					"$(ARUSPIX_IMLIB)/include",
+					"$(ARUSPIX_WX)/osx-static-debug/lib/wx/include/mac-ansi-debug-static-2.8",
+					"$(ARUSPIX_WX)/include",
+					"$(ARUSPIX_WX)/contrib/include",
 				);
 				INFOPLIST_FILE = "Aruspix-Info.plist";
 				INSTALL_PATH = "$(USER_APPS_DIR)";
 				LIBRARY_SEARCH_PATHS = (
-					"$(ARUSPIX)/lib",
-					"$(ARUSPIX_WX)/osx-static-debug/lib",
 					"$(ARUSPIX_IMLIB)/lib",
+					"$(ARUSPIX_WX)/osx-static-debug/lib",
 				);
 				OBJROOT = "$(ARUSPIX)/obj";
 				OTHER_CFLAGS = (
@@ -909,7 +912,10 @@
 		A58508C70A00113C006E82B1 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(NATIVE_ARCH)";
+				ARCHS = (
+					ppc,
+					i386,
+				);
 				COPY_PHASE_STRIP = YES;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
@@ -920,17 +926,17 @@
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				GCC_VERSION = 4.0;
 				HEADER_SEARCH_PATHS = (
-					"$(ARUSPIX_WX)/osx-static/lib/wx/include/mac-ansi-release-static-2.8",
-					"$(ARUSPIX_WX)/include",
 					"$(ARUSPIX)/src",
 					"$(ARUSPIX_IMLIB)/include",
+					"$(ARUSPIX_WX)/osx-static/lib/wx/include/mac-ansi-release-static-2.8",
+					"$(ARUSPIX_WX)/include",
+					"$(ARUSPIX_WX)/contrib/include",
 				);
 				INFOPLIST_FILE = "Aruspix-Info.plist";
 				INSTALL_PATH = "$(USER_APPS_DIR)";
 				LIBRARY_SEARCH_PATHS = (
-					"$(ARUSPIX)/lib",
-					"$(ARUSPIX_WX)/lib",
 					"$(ARUSPIX_IMLIB)/lib",
+					"$(ARUSPIX_WX)/osx-static/lib",
 				);
 				OBJROOT = "$(ARUSPIX)/obj";
 				OTHER_CFLAGS = (

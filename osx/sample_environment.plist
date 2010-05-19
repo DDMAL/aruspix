@@ -3,13 +3,13 @@
 <plist version="1.0">
 <dict>
 	<key>ARUSPIX</key>
-	<string>/Network/Servers/borges.mt.lan/Volumes/home/nivenc/aruspix/trunk</string>
+	<string>/Users/nivenc/aruspix/trunk</string>
 	<key>ARUSPIX_IMLIB</key>
-	<string>/Network/Servers/borges.mt.lan/Volumes/home/nivenc/libs/imlib</string>
+	<string>/Users/nivenc/libs/imlib</string>
 	<key>ARUSPIX_TORCH</key>
-	<string>/Network/Servers/borges.mt.lan/Volumes/home/nivenc/libs/Torch3</string>
+	<string>/Users/nivenc/libs/Torch3</string>
 	<key>ARUSPIX_WX</key>
-	<string>/Network/Servers/borges.mt.lan/Volumes/home/nivenc/libs/wx2.8.10</string>
+	<string>/Users/libs/wx2.8.10</string>
 	<key>ARUSPIX_WX_VERSION</key>
 	<string>2.8</string>
 </dict>
