@@ -21,6 +21,9 @@
 #include "musstaff.h"
 #include "muselement.h"
 
+#include "app/axapp.h"
+
+
 // WDR: class implementations
 
 //----------------------------------------------------------------------------
@@ -28,54 +31,86 @@
 //----------------------------------------------------------------------------
 
 // WDR: event table for MusToolRow
-MusToolRow::MusToolRow( wxWindow *parent, wxWindowID id, int type ) :
-    wxPanel( parent, id, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL )
-{
-	m_type = type;
-	
-	switch (type)
-	{
-	case (MUS_TOOLS_NOTES): NotesPanel( this, true, true ); break;
-	case (MUS_TOOLS_CLEFS): ClefsPanel( this, true, true ); break;
-	case (MUS_TOOLS_SIGNS): SignsPanel( this, true, true ); break;
-	case (MUS_TOOLS_OTHER): SymbolsPanel( this, true, true ); break;
-	case (NEUME_TOOLS_NOTES): NeumeNotesPanel( this, true, true ); break;
-	case (NEUME_TOOLS_CLEFS): NeumeClefsPanel( this, true, true ); break;
-	case (NEUME_TOOLS_OTHER): NeumeSymbolsPanel( this, true, true ); break;
-	}
 
-	m_buttons[MUS_TOOLS_NOTES] = (wxBitmapButton*) FindWindow( ID_MS_BT_NOTES );
-	m_buttons[MUS_TOOLS_CLEFS] = (wxBitmapButton*) FindWindow( ID_MS_BT_KEY );
-	m_buttons[MUS_TOOLS_SIGNS] = (wxBitmapButton*) FindWindow( ID_MS_BT_SIGNS );
-	m_buttons[MUS_TOOLS_OTHER] = (wxBitmapButton*) FindWindow( ID_MS_BT_SYMBOLES );
-	m_buttons[NEUME_TOOLS_NOTES] = (wxBitmapButton*) FindWindow( ID_MS_BT_N_NOTES );
-	m_buttons[NEUME_TOOLS_CLEFS] = (wxBitmapButton*) FindWindow( ID_MS_BT_N_KEY );
-	m_buttons[NEUME_TOOLS_OTHER] = (wxBitmapButton*) FindWindow( ID_MS_BT_N_SYMBOLES );
-	m_buttons[MUS_TOOLS_NUMBER] = (wxBitmapButton*) FindWindow( ID_MS_BT_INSERT );
+MusToolRow::MusToolRow( wxWindow *parent, wxWindowID id ) :
+    wxAuiToolBar( parent, id, wxDefaultPosition, wxDefaultSize, wxAUI_TB_HORZ_TEXT)
+{
+
+    SetToolBitmapSize(wxSize(32,32));
+    SetFont(*wxSMALL_FONT);
+
+    AddTool(ID_MS_BT_INSERT, wxT(""), MusToolPanel::GetToolbarBitmap( "tool_insert.png" ), "", wxITEM_CHECK);
+    AddSeparator();   
+    //AddSeparator();       
+    AddTool(ID_MS_BT_NOTES, wxT("Notes"), MusToolPanel::GetToolbarBitmap( "tool_notes.png" ), "", wxITEM_CHECK);
+    AddTool(ID_MS_BT_CLEFS, wxT("Clefs"), MusToolPanel::GetToolbarBitmap( "tool_clefs.png" ), "", wxITEM_CHECK);
+    AddTool(ID_MS_BT_SIGNS, wxT("Prop."), MusToolPanel::GetToolbarBitmap( "tool_mes.png" ), "", wxITEM_CHECK);
+    AddTool(ID_MS_BT_SYMBOLS, wxT("Varia"), MusToolPanel::GetToolbarBitmap( "tool_varia.png" ), "", wxITEM_CHECK);
+    AddTool(ID_MS_BT_TEXT, wxT("Text"), MusToolPanel::GetToolbarBitmap( "tool_text.png" ), "");
+    AddTool(ID_MS_BT_CHMOD, wxT("Neumes"), MusToolPanel::GetToolbarBitmap( "tool_neumes.png" ), "", wxITEM_CHECK);
+    AddSeparator(); 
+    AddStretchSpacer(100);
+
+    Realize();
+
 }
 
 
-void MusToolRow::UpdateTools( bool edition )
+void MusToolRow::UpdateTools( int type )
 {
-	if ( edition == m_previous_edition )
-		return;
+    if (type == m_type) {
+        return;
+    }
+    m_type = type;
+    
+    int tc = GetToolCount();
+    int i;
+    for (i = tc -1; i > MUS_MODES_NUMBER; i--) {
+        DeleteByIndex(i);
+    }
 
-	//int i;
-	if ( edition )
-	{ 
-		//for(i = 0; i < MUS_TOOLS_NUMBER; i++) // only if we want to disable
-		//	m_buttons[i]->Disable();
-		//m_buttons[m_type]->Enable();
-		m_buttons[MUS_TOOLS_NUMBER]->SetBitmapLabel( Btn( MUS_TOOLS_NUMBER ) );
-	}
-	else
-	{ 
-		//for(i = 0; i < MUS_TOOLS_NUMBER; i++)
-		//	m_buttons[i]->Enable();
-		m_buttons[MUS_TOOLS_NUMBER]->SetBitmapLabel( Btn_selected( MUS_TOOLS_NUMBER ) );
-	}
-	m_previous_edition = edition;
+    switch(m_type) 
+    {
+    case (MUS_TOOLS_NOTES): 
+        AddTool(ID_MS_BT_N0, "", MusToolPanel::GetToolbarBitmap( "note_0.png" ));
+        AddTool(ID_MS_BT_N1, "", MusToolPanel::GetToolbarBitmap( "note_1.png" ));
+        AddTool(ID_MS_BT_N2, "", MusToolPanel::GetToolbarBitmap( "note_2.png" ));
+        AddTool(ID_MS_BT_N3, "", MusToolPanel::GetToolbarBitmap( "note_3.png" ));
+        AddTool(ID_MS_BT_N4, "", MusToolPanel::GetToolbarBitmap( "note_4.png" ));
+        AddTool(ID_MS_BT_N5, "", MusToolPanel::GetToolbarBitmap( "note_5.png" ));
+        AddTool(ID_MS_BT_N6, "", MusToolPanel::GetToolbarBitmap( "note_6.png" ));
+        AddTool(ID_MS_BT_N7, "", MusToolPanel::GetToolbarBitmap( "note_7.png" ));
+        // add more...
+        break;
+	case (MUS_TOOLS_CLEFS):
+        AddTool(ID_MS_BT_G1, "", MusToolPanel::GetToolbarBitmap( "clef_g1.png" ));
+        AddTool(ID_MS_BT_G2, "", MusToolPanel::GetToolbarBitmap( "clef_g2.png" ));
+        AddTool(ID_MS_BT_U1, "", MusToolPanel::GetToolbarBitmap( "clef_u1.png" ));
+        AddTool(ID_MS_BT_U2, "", MusToolPanel::GetToolbarBitmap( "clef_u2.png" ));
+        AddTool(ID_MS_BT_U3, "", MusToolPanel::GetToolbarBitmap( "clef_u3.png" ));
+        AddTool(ID_MS_BT_U4, "", MusToolPanel::GetToolbarBitmap( "clef_u4.png" ));
+        AddTool(ID_MS_BT_U5, "", MusToolPanel::GetToolbarBitmap( "clef_u5.png" ));
+        AddTool(ID_MS_BT_F3, "", MusToolPanel::GetToolbarBitmap( "clef_f3.png" ));
+        AddTool(ID_MS_BT_F4, "", MusToolPanel::GetToolbarBitmap( "clef_f4.png" ));
+        AddTool(ID_MS_BT_F5, "", MusToolPanel::GetToolbarBitmap( "clef_f5.png" ));
+        break;
+    case (MUS_TOOLS_SIGNS):
+        AddTool(ID_MS_BT_MTPP, "", MusToolPanel::GetToolbarBitmap( "mes_mtpp.png" ));
+        // add more...
+        break;
+	case (MUS_TOOLS_OTHER):
+        AddTool(ID_MS_BT_PNT, "", MusToolPanel::GetToolbarBitmap( "symb_dot.png" ));
+        // add more...
+        break;
+	case (NEUME_TOOLS_NOTES):
+        AddTool(ID_MS_BT_MTP, "", MusToolPanel::GetToolbarBitmap( "mes_mtp.png" ));
+        // add more...
+        break;
+    }
+    Realize();
+    Fit();
 }
+
 
 //----------------------------------------------------------------------------
 // MusToolPanel
@@ -84,49 +119,35 @@ void MusToolRow::UpdateTools( bool edition )
 // WDR: event table for MusToolPanel
 
 BEGIN_EVENT_TABLE(MusToolPanel,wxPanel)
-	EVT_COMMAND( ID_MS_BT_INSERT, wxEVT_COMMAND_BUTTON_CLICKED, MusToolPanel::OnChangeMode )
-	EVT_COMMAND( ID_MS_BT_CHMOD, wxEVT_COMMAND_BUTTON_CLICKED, MusToolPanel::OnChangeNotationMode )
-    EVT_COMMAND_RANGE( ID_MS_BT_NOTES, ID_MS_BT_SYMBOLES, wxEVT_COMMAND_BUTTON_CLICKED, MusToolPanel::OnChangeTool )
-	EVT_COMMAND_RANGE( ID_MS_BT_N_NOTES, ID_MS_BT_N_SYMBOLES, wxEVT_COMMAND_BUTTON_CLICKED, MusToolPanel::OnChangeTool )
-    EVT_COMMAND_RANGE( ID_MS_BT_N0, ID_MS_BT_N7, wxEVT_COMMAND_BUTTON_CLICKED, MusToolPanel::OnNote )
-    EVT_COMMAND_RANGE( ID_MS_BT_R0, ID_MS_BT_CT, wxEVT_COMMAND_BUTTON_CLICKED, MusToolPanel::OnNote )
-	EVT_COMMAND_RANGE( ID_MS_BT_LG_D, ID_MS_BT_UPDOWN, wxEVT_COMMAND_BUTTON_CLICKED, MusToolPanel::OnNote )
-    EVT_COMMAND_RANGE( ID_MS_BT_G1, ID_MS_BT_F5, wxEVT_COMMAND_BUTTON_CLICKED, MusToolPanel::OnKey )
-    EVT_COMMAND_RANGE( ID_MS_BT_MTPP, ID_MS_BT_M2, wxEVT_COMMAND_BUTTON_CLICKED, MusToolPanel::OnSign )
-    EVT_COMMAND_RANGE( ID_MS_BT_PNT, ID_MS_BT_BAR, wxEVT_COMMAND_BUTTON_CLICKED, MusToolPanel::OnSymbole )
+	EVT_MENU( ID_MS_BT_INSERT, MusToolPanel::OnChangeMode )
+    EVT_MENU_RANGE( ID_MS_BT_NOTES, ID_MS_BT_CHMOD, MusToolPanel::OnChangeTool )
+    EVT_MENU_RANGE( ID_MS_BT_N0, ID_MS_BT_N7, MusToolPanel::OnNote )
+    EVT_MENU_RANGE( ID_MS_BT_R0, ID_MS_BT_CT, MusToolPanel::OnNote )
+	EVT_MENU_RANGE( ID_MS_BT_LG_D, ID_MS_BT_UPDOWN, MusToolPanel::OnNote )
+    EVT_MENU_RANGE( ID_MS_BT_G1, ID_MS_BT_F5, MusToolPanel::OnKey )
+    EVT_MENU_RANGE( ID_MS_BT_MTPP, ID_MS_BT_M2, MusToolPanel::OnSign )
+    EVT_MENU_RANGE( ID_MS_BT_PNT, ID_MS_BT_BAR, MusToolPanel::OnSymbol )
+    EVT_MENU( ID_MS_BT_TEXT, MusToolPanel::OnText )
+    EVT_UPDATE_UI_RANGE(ID_MS_BT_NOTES, ID_MS_BT_INSERT, MusToolPanel::OnUpdateUI)
 END_EVENT_TABLE()
 
 MusToolPanel::MusToolPanel( wxWindow *parent, wxWindowID id,
     const wxPoint &position, const wxSize& size, long style ) :
     wxPanel( parent, id, position, size, style )
 {
-
-	m_rows[MUS_TOOLS_NOTES] = new MusToolRow( this, -1, MUS_TOOLS_NOTES );
-	m_rows[MUS_TOOLS_CLEFS] = new MusToolRow( this, -1, MUS_TOOLS_CLEFS );
-	m_rows[MUS_TOOLS_SIGNS] = new MusToolRow( this, -1, MUS_TOOLS_SIGNS );
-	m_rows[MUS_TOOLS_OTHER] = new MusToolRow( this, -1, MUS_TOOLS_OTHER );
-	m_rows[NEUME_TOOLS_NOTES] = new MusToolRow( this, -1, NEUME_TOOLS_NOTES );
-	m_rows[NEUME_TOOLS_CLEFS] = new MusToolRow( this, -1, NEUME_TOOLS_CLEFS );
-	m_rows[NEUME_TOOLS_OTHER] = new MusToolRow( this, -1, NEUME_TOOLS_OTHER );
-
-	m_rows[MUS_TOOLS_NOTES]->Show( true );
-	m_rows[MUS_TOOLS_CLEFS]->Show( false );
-	m_rows[MUS_TOOLS_SIGNS]->Show( false );
-	m_rows[MUS_TOOLS_OTHER]->Show( false );
-	m_rows[NEUME_TOOLS_NOTES]->Show( false );
-	m_rows[NEUME_TOOLS_CLEFS]->Show( false );
-	m_rows[NEUME_TOOLS_OTHER]->Show( false );
-
-	m_previous_edition = false;
-	m_previous_tools = MUS_TOOLS_NOTES;
-	m_notation_mode = MENSURAL_MODE;
-
-	SetTools( MUS_TOOLS_NOTES, true );
-
-	this->Fit();
-
+    // now just one row, which is actually a tool bar
+    // when calling UpdateTools, the corresponding buttons are loaded
+    m_tools = new MusToolRow( this, -1 );
+    this->Fit();
 
     m_w = NULL;
+}
+
+wxBitmap MusToolPanel::GetToolbarBitmap( wxString name )
+{
+	wxString subdir = wxString::Format("/mus/" );
+	wxBitmap bitmap ( wxGetApp().m_resourcesPath + subdir + name , wxBITMAP_TYPE_PNG );
+	return bitmap;
 }
 
 void MusToolPanel::SetMusWindow( MusWindow *w )
@@ -134,23 +155,40 @@ void MusToolPanel::SetMusWindow( MusWindow *w )
     m_w = w;
 }
 
+void MusToolPanel::OnUpdateUI( wxUpdateUIEvent &event )
+{
+    int id = event.GetId();
+    if (id == ID_MS_BT_INSERT) {
+        event.Check( !m_edition );
+    } else if (id == ID_MS_BT_NOTES) {
+        event.Check( m_current_tools == MUS_TOOLS_NOTES);
+    } else if (id == ID_MS_BT_CLEFS) {
+        event.Check( m_current_tools == MUS_TOOLS_CLEFS);
+    } else if (id == ID_MS_BT_SIGNS) {
+        event.Check( m_current_tools == MUS_TOOLS_SIGNS);
+    } else if (id == ID_MS_BT_SYMBOLS) {
+        event.Check( m_current_tools == MUS_TOOLS_OTHER);
+    } else if (id == ID_MS_BT_CHMOD) {
+        event.Check( m_current_tools == NEUME_TOOLS_NOTES);
+    }
+}
+
 void MusToolPanel::SetTools( int tools, bool edition )
 {
-	if ( tools != m_previous_tools ) // change tools
+	if ( tools != m_current_tools ) // change tools
 	{ 
-		m_rows[m_previous_tools]->Show( false );
-		m_rows[tools]->UpdateTools( edition );
-		m_rows[tools]->Show( true );
+		m_tools->UpdateTools( tools );
+        this->Fit(); // resize
 		this->Refresh();
 	}
-	else if ( m_previous_edition != edition )  // just change mode
+	else if ( m_edition != edition )  // just change mode
 	{
-		m_rows[tools]->UpdateTools( edition );
+		//m_tools->UpdateTools( edition );
 		this->Refresh();
 	}	
 
-	m_previous_tools = tools;
-	m_previous_edition = edition;
+	m_current_tools = tools;
+	m_edition = edition;
 }
 
 void MusToolPanel::SendEvent( wxKeyEvent kevent )
@@ -173,38 +211,15 @@ void MusToolPanel::OnChangeTool( wxCommandEvent &event )
     switch ( event.GetId() )
     {
     case (ID_MS_BT_NOTES): value = MUS_TOOLS_NOTES; break;
-    case (ID_MS_BT_KEY): value = MUS_TOOLS_CLEFS; break;
+    case (ID_MS_BT_CLEFS): value = MUS_TOOLS_CLEFS; break;
     case (ID_MS_BT_SIGNS): value = MUS_TOOLS_SIGNS; break;
-    case (ID_MS_BT_SYMBOLES): value = MUS_TOOLS_OTHER; break;
-	case (ID_MS_BT_N_NOTES): value = NEUME_TOOLS_NOTES; break;
-	case (ID_MS_BT_N_KEY): value = NEUME_TOOLS_CLEFS; break;
-	case (ID_MS_BT_N_SYMBOLES): value = NEUME_TOOLS_OTHER; break;
+    case (ID_MS_BT_SYMBOLS): value = MUS_TOOLS_OTHER; break;
+    case (ID_MS_BT_CHMOD): value = NEUME_TOOLS_NOTES; break;
     }
 
 	m_w->SetInsertMode( true );
 	m_w->SetToolType( value );
     m_w->SetFocus();   
-}
-
-void MusToolPanel::OnChangeNotationMode( wxCommandEvent &event )
-{
-	//probably do some other stuff here
-	if (!m_w)
-		return;
-	
-	if (m_notation_mode == MENSURAL_MODE)
-	{
-		m_notation_mode = NEUMES_MODE;
-		SetTools(NEUME_TOOLS_NOTES, true);
-	}
-	else
-	{
-		m_notation_mode = MENSURAL_MODE;
-		SetTools(MUS_TOOLS_NOTES, true);
-	}
-	
-	m_w->SetNotationMode( m_notation_mode );
-	
 }
 
 void MusToolPanel::OnChangeMode( wxCommandEvent &event )
@@ -217,7 +232,7 @@ void MusToolPanel::OnChangeMode( wxCommandEvent &event )
 }
 
 
-void MusToolPanel::OnSymbole( wxCommandEvent &event )
+void MusToolPanel::OnSymbol( wxCommandEvent &event )
 {
     int value = '0';
     switch ( event.GetId() )
@@ -290,6 +305,14 @@ void MusToolPanel::OnKey( wxCommandEvent &event )
     wxKeyEvent kevent;
     kevent.SetEventType( wxEVT_KEY_DOWN );
     kevent.m_keyCode = value;
+    SendEvent( kevent );    
+}
+
+void MusToolPanel::OnText( wxCommandEvent &event )
+{
+    wxKeyEvent kevent;
+    kevent.SetEventType( wxEVT_KEY_DOWN );
+    kevent.m_keyCode = 'T';
     SendEvent( kevent );    
 }
 

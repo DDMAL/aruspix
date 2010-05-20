@@ -16,7 +16,6 @@
 		4D33DF37103D375C009EE145 /* mussvg.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D33DF35103D375C009EE145 /* mussvg.cpp */; };
 		4D3A8FCB0D35858D00BBC1FB /* recmlfbmp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D3A8FC70D35858D00BBC1FB /* recmlfbmp.cpp */; };
 		4D3A8FCC0D35858D00BBC1FB /* recmodels.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D3A8FC90D35858D00BBC1FB /* recmodels.cpp */; };
-		4D3A8FED0D35867200BBC1FB /* mus_wdr.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D3A8FCE0D35867200BBC1FB /* mus_wdr.cpp */; };
 		4D3A8FEE0D35867200BBC1FB /* mus.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D3A8FD00D35867200BBC1FB /* mus.cpp */; };
 		4D3A8FEF0D35867200BBC1FB /* musbarlines.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D3A8FD20D35867200BBC1FB /* musbarlines.cpp */; };
 		4D3A8FF00D35867200BBC1FB /* musbezier.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D3A8FD30D35867200BBC1FB /* musbezier.cpp */; };
@@ -114,7 +113,6 @@
 		4D3A8FC80D35858D00BBC1FB /* recmlfbmp.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = recmlfbmp.h; sourceTree = "<group>"; };
 		4D3A8FC90D35858D00BBC1FB /* recmodels.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = recmodels.cpp; sourceTree = "<group>"; };
 		4D3A8FCA0D35858D00BBC1FB /* recmodels.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = recmodels.h; sourceTree = "<group>"; };
-		4D3A8FCE0D35867200BBC1FB /* mus_wdr.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = mus_wdr.cpp; path = ../src/mus/mus_wdr.cpp; sourceTree = SOURCE_ROOT; };
 		4D3A8FCF0D35867200BBC1FB /* mus_wdr.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = mus_wdr.h; path = ../src/mus/mus_wdr.h; sourceTree = SOURCE_ROOT; };
 		4D3A8FD00D35867200BBC1FB /* mus.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = mus.cpp; path = ../src/mus/mus.cpp; sourceTree = SOURCE_ROOT; };
 		4D3A8FD10D35867200BBC1FB /* mus.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = mus.h; path = ../src/mus/mus.h; sourceTree = SOURCE_ROOT; };
@@ -291,7 +289,6 @@
 				4D832FFF0F2E6E35006E6B5F /* musiocmme.h */,
 				4DB2D96B0D8383EA003401B0 /* musmlfdic.cpp */,
 				4DB2D96C0D8383EA003401B0 /* musmlfdic.h */,
-				4D3A8FCE0D35867200BBC1FB /* mus_wdr.cpp */,
 				4D3A8FCF0D35867200BBC1FB /* mus_wdr.h */,
 				4D3A8FD00D35867200BBC1FB /* mus.cpp */,
 				4D3A8FD10D35867200BBC1FB /* mus.h */,
@@ -664,7 +661,6 @@
 				57CA54270D34139D001FC334 /* axabout_wdr.cpp in Sources */,
 				4D3A8FCB0D35858D00BBC1FB /* recmlfbmp.cpp in Sources */,
 				4D3A8FCC0D35858D00BBC1FB /* recmodels.cpp in Sources */,
-				4D3A8FED0D35867200BBC1FB /* mus_wdr.cpp in Sources */,
 				4D3A8FEE0D35867200BBC1FB /* mus.cpp in Sources */,
 				4D3A8FEF0D35867200BBC1FB /* musbarlines.cpp in Sources */,
 				4D3A8FF00D35867200BBC1FB /* musbezier.cpp in Sources */,
@@ -889,6 +885,7 @@
 					"-lwx_base_carbond_net-$(ARUSPIX_WX_VERSION)",
 					"-lwx_macd_html-$(ARUSPIX_WX_VERSION)",
 					"-lwx_macd_adv-$(ARUSPIX_WX_VERSION)",
+					"-lwx_macd_aui-$(ARUSPIX_WX_VERSION)",
 					"-lwxpngd-$(ARUSPIX_WX_VERSION)",
 					"-lwxjpegd-$(ARUSPIX_WX_VERSION)",
 				);

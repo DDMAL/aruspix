@@ -25,7 +25,7 @@
 #include "mustoolpanel.h"
 #include "musiobin.h"
 
-#include "mus_wdr.h"
+//#include "mus_wdr.h"
 
 #include "app/axgotodlg.h"
 
@@ -52,11 +52,13 @@ BEGIN_EVENT_TABLE(MusWindow,wxScrolledWindow)
 	EVT_CHAR( MusWindow::OnChar )
     EVT_KEY_DOWN( MusWindow::OnKeyDown )
 	EVT_KEY_UP( MusWindow::OnKeyUp )
+    /*
 	EVT_MENU_RANGE( ID_MS_N0, ID_MS_CT, MusWindow::OnPopupMenuNote ) // popup menu
 	EVT_MENU_RANGE( ID_MS_R0, ID_MS_R7, MusWindow::OnPopupMenuNote ) // popup menu
 	EVT_MENU_RANGE( ID_MS_G1, ID_MS_F5, MusWindow::OnPopupMenuSymbole ) // popup menu
 	EVT_MENU_RANGE( ID_MS_MTPP, ID_MS_M2, MusWindow::OnPopupMenuSymbole ) // popup menu
 	EVT_MENU_RANGE( ID_MS_PNT, ID_MS_BAR, MusWindow::OnPopupMenuSymbole ) // popup menu
+    */
     // MIDI
     EVT_COMMAND  ( ID_MIDI_INPUT, AX_EVT_MIDI, MusWindow::OnMidiInput)
 END_EVENT_TABLE()
@@ -834,24 +836,26 @@ int MusWindow::GetToolType()
 	else
 		sync = m_newElement;
 
-	if (sync)
-	{
-		if ( sync->IsSymbol() )
-		{
-			if ( ((MusSymbol*)sync)->flag == CLE )
-				return m_notation_mode == MENSURAL_MODE ? MUS_TOOLS_CLEFS : NEUME_TOOLS_CLEFS;
-			else if ( ((MusSymbol*)sync)->flag == IND_MES )
-				return MUS_TOOLS_SIGNS;
-			else
-				return m_notation_mode == MENSURAL_MODE ? MUS_TOOLS_OTHER : NEUME_TOOLS_OTHER;
-		}
-		else if (sync->IsNote() )
-		{
-			return m_notation_mode == MENSURAL_MODE ? MUS_TOOLS_NOTES : NEUME_TOOLS_NOTES;
-		}
-	}
-	else
-		return -1;
+	if (!sync) {
+        return -1;
+    }
+    if ( sync->IsSymbol() )
+    {
+        if ( ((MusSymbol*)sync)->flag == CLE )
+            return m_notation_mode == MENSURAL_MODE ? MUS_TOOLS_CLEFS : NEUME_TOOLS_CLEFS;
+        else if ( ((MusSymbol*)sync)->flag == IND_MES )
+            return MUS_TOOLS_SIGNS;
+        else
+            return m_notation_mode == MENSURAL_MODE ? MUS_TOOLS_OTHER : NEUME_TOOLS_OTHER;
+    } 
+    else if (sync->IsNote() ) 
+    {
+        return m_notation_mode == MENSURAL_MODE ? MUS_TOOLS_NOTES : NEUME_TOOLS_NOTES;
+    }
+    else {
+        return -1;
+    }
+
 }
 
 void MusWindow::SyncToolPanel()
@@ -863,7 +867,7 @@ void MusWindow::SyncToolPanel()
 
 	if ( tool == -1 )
 		tool = MUS_TOOLS_NOTES;
-	m_toolpanel->SetTools( tool, this->m_editElement);
+	m_toolpanel->SetTools( tool, this->m_editElement );
 
 	this->SetFocus();
 }
@@ -1005,6 +1009,7 @@ void MusWindow::OnPopupMenuNote( wxCommandEvent &event )
 
 void MusWindow::OnPopupMenuSymbole( wxCommandEvent &event )
 {
+/*
 	if ( !m_page || !m_currentStaff )
 		return;
 
@@ -1067,6 +1072,7 @@ void MusWindow::OnPopupMenuSymbole( wxCommandEvent &event )
 	//	m_currentStaff->Insert( symbol );
 
 	this->Refresh();
+*/
 }
 
 
