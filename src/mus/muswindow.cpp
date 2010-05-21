@@ -1080,6 +1080,12 @@ void MusWindow::OnMouseDClick(wxMouseEvent &event)
 {
 	if ( m_editElement )
 	{
+        // TODO for cursor
+        // Switch to insertion mode, which means that m_newElement will point to something (see OnKeyDown)
+        // Get the x position for the cursor and use it for m_newElement (see m_insertx below in this method)
+        // Also make sure we get a current staff, but this should not be a problem because we get it in OnMouseLeftDown, I think
+        
+    
 		/*
 		if ( event.ButtonDClick( wxMOUSE_BTN_LEFT  ) && m_currentElement )
 		{
@@ -1134,6 +1140,12 @@ void MusWindow::OnMouseDClick(wxMouseEvent &event)
 			}
 			PrepareCheckPoint( UNDO_PART, MUS_UNDO_STAFF );
 			m_lastEditedElement = m_currentStaff->Insert( m_newElement );
+            // TODO for cursor
+            // move the cursor on step forward
+            // we will need to deal with staff and page break when reaching the end
+            // we will probably have a method for this, because we need to do the same when inputing from the keyboard
+            // for now, just increase the xrel in m_newElement
+
 			CheckPoint( UNDO_PART, MUS_UNDO_STAFF );
 			OnEndEdition();
 
@@ -1404,11 +1416,18 @@ void MusWindow::OnKeyDown(wxKeyEvent &event)
 					m_symbol = *(MusSymbol*)m_currentElement;
 					m_newElement = &m_symbol;
 				}
+                // TODO for cursor
+                // increase the xrel of m_newElement. Where it will be tricky is when we are at the end of the staff,
+                // but leave this problem for now
 			}
 			else
 			{
 				m_newElement = &m_note;
 				m_lastEditedElement = NULL;
+                // TODO for cursor
+                // More to do here, because we know nothing about the position:
+                // My suggestion: beginning of the staff (try with xrel = something like 10)
+                // We also have to check that we have a current staff. If not, select the first one
 			}
 			m_currentElement = NULL;
 		}
@@ -2113,6 +2132,11 @@ void MusWindow::OnPaint(wxPaintEvent &event)
 
 	m_page->Init( this );
 	m_page->DrawPage( &dc );
+    // TODO for cursor
+    // Draw the cursor if we are in insertion mode, we have a m_newElement and a m_currentStaff
+    // We can add a DrawCursor method, use the y position of the staff and the x of the element
+    // What shape to draw??
+
 }
 
 void MusWindow::OnSize(wxSizeEvent &event)
