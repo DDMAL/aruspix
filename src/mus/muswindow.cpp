@@ -803,11 +803,13 @@ void MusWindow::SetToolType( int type )
     case (MUS_TOOLS_CLEFS): value = 'K'; break;
     case (MUS_TOOLS_SIGNS): value = 'P'; break;
     case (MUS_TOOLS_OTHER): value = 'S'; break;
-	case (NEUME_TOOLS_NOTES): value = 'N'; break;
+	case (NEUME_TOOLS_NOTES): value = 'N'; printf("AWW YEAH MR KRABS\n"); break;
 	case (NEUME_TOOLS_CLEFS): value = 'K'; break;
 	case (NEUME_TOOLS_OTHER): value = 'S'; break;
 	}
         
+	//we go to the EVT_KEY_DOWN event here... (MusWindow::OnKeyDown)
+	
     wxKeyEvent kevent;
     kevent.SetEventType( wxEVT_KEY_DOWN );
 	kevent.SetId( this->GetId() );
@@ -834,7 +836,7 @@ int MusWindow::GetToolType()
 	if (m_editElement)
 		sync = m_currentElement;
 	else
-		sync = m_newElement;
+		sync = m_newElement;				//need to make a new element!! somehow?
 
 	if (!sync) {
         return -1;
@@ -850,7 +852,10 @@ int MusWindow::GetToolType()
     } 
     else if (sync->IsNote() ) 
     {
-        return m_notation_mode == MENSURAL_MODE ? MUS_TOOLS_NOTES : NEUME_TOOLS_NOTES;
+        //return m_notation_mode == MENSURAL_MODE ? MUS_TOOLS_NOTES : NEUME_TOOLS_NOTES;
+		return NEUME_TOOLS_NOTES;
+		
+		//what should I do here?????
     }
     else {
         return -1;
@@ -1078,6 +1083,18 @@ void MusWindow::OnPopupMenuSymbole( wxCommandEvent &event )
 
 void MusWindow::OnMouseDClick(wxMouseEvent &event)
 {
+	
+	//adding this up here because this happens in both edition and insertion modes
+	if (m_currentStaff && m_newElement) 
+	{
+		wxClientDC dc( this );
+		InitDC( &dc );
+		m_insertx = ToReel( dc.DeviceToLogicalX( event.m_x ) ); //???
+		int y = ToReelY( dc.DeviceToLogicalY( event.m_y ) );
+		m_insertcode = m_currentStaff->trouveCodNote( y, m_insertx, &m_insertoct );
+		m_newElement->xrel = m_insertx;
+		printf("This is our xrel: %d\n", m_insertx);
+	}
 	if ( m_editElement )
 	{
         // TODO for cursor
@@ -1085,7 +1102,8 @@ void MusWindow::OnMouseDClick(wxMouseEvent &event)
         // Get the x position for the cursor and use it for m_newElement (see m_insertx below in this method)
         // Also make sure we get a current staff, but this should not be a problem because we get it in OnMouseLeftDown, I think
         
-    
+		SetInsertMode(true);
+		//get x position (for use later with drawing)
 		/*
 		if ( event.ButtonDClick( wxMOUSE_BTN_LEFT  ) && m_currentElement )
 		{
@@ -1125,13 +1143,14 @@ void MusWindow::OnMouseDClick(wxMouseEvent &event)
 	{
 		if ( event.ButtonDClick( wxMOUSE_BTN_LEFT  ) && m_currentStaff && m_newElement )
 		{
-			wxClientDC dc( this );
-			InitDC( &dc );
-			m_insertx = ToReel( dc.DeviceToLogicalX( event.m_x ) );
-			int y = ToReelY( dc.DeviceToLogicalY( event.m_y ) );
-			m_insertcode = m_currentStaff->trouveCodNote( y, m_insertx, &m_insertoct );
+//			wxClientDC dc( this );
+//			InitDC( &dc );
+//			m_insertx = ToReel( dc.DeviceToLogicalX( event.m_x ) );
+//			int y = ToReelY( dc.DeviceToLogicalY( event.m_y ) );
+//			m_insertcode = m_currentStaff->trouveCodNote( y, m_insertx, &m_insertoct );
 			
-			m_newElement->xrel = m_insertx;
+			
+//			m_newElement->xrel = m_insertx;
 			if ( m_newElement->IsNote() || 
 				(((MusSymbol*)m_newElement)->flag == ALTER) || (((MusSymbol*)m_newElement)->flag == PNT))
 			{
@@ -1140,6 +1159,7 @@ void MusWindow::OnMouseDClick(wxMouseEvent &event)
 			}
 			PrepareCheckPoint( UNDO_PART, MUS_UNDO_STAFF );
 			m_lastEditedElement = m_currentStaff->Insert( m_newElement );
+			
             // TODO for cursor
             // move the cursor on step forward
             // we will need to deal with staff and page break when reaching the end
@@ -1196,10 +1216,19 @@ void MusWindow::OnMouseLeave(wxMouseEvent &event)
 
 void MusWindow::OnMouseLeftDown(wxMouseEvent &event)
 {
+	wxClientDC dc( this );
+	InitDC( &dc );
+	
+	printf("clicked: {%d, %d}\n", ToReel(dc.DeviceToLogicalX(event.m_x)),
+		   ToReelY(dc.DeviceToLogicalY(event.m_y)));
+	
 	if ( m_editElement || m_lyricMode )
 	{
-		wxClientDC dc( this );
-		InitDC( &dc );
+//		wxClientDC dc( this );
+//		InitDC( &dc );
+//		
+//		printf("clicked: {%d, %d}\n", ToReel(dc.DeviceToLogicalX(event.m_x)),
+//			   ToReelY(dc.DeviceToLogicalY(event.m_y)));
 		
 		if ( m_currentElement &&  m_currentStaff ) 
 			m_currentElement->ClearElement( &dc, m_currentStaff );
@@ -1302,13 +1331,16 @@ void MusWindow::OnMouseLeftDown(wxMouseEvent &event)
 
 void MusWindow::OnMouseMotion(wxMouseEvent &event)
 {
+	wxClientDC dc( this );
+	printf("----- x: %d, y: %d -----\n", ToReel( dc.DeviceToLogicalX( event.m_x ) ),
+		   ToReelY( dc.DeviceToLogicalY( event.m_y ) ) );
 
 	if ( event.Dragging() && event.LeftIsDown() && m_dragging_x && m_currentElement )
 	{
 		if ( !m_has_been_dragged )
 			PrepareCheckPoint( UNDO_PART, MUS_UNDO_STAFF );
 		m_has_been_dragged = true;
-		wxClientDC dc( this );
+		//wxClientDC dc( this );
 		InitDC( &dc );
 		m_insertx = ToReel( dc.DeviceToLogicalX( event.m_x ) );
 		int y = ToReelY( dc.DeviceToLogicalY( event.m_y ) ) - m_dragging_y_offset;
@@ -1401,7 +1433,7 @@ void MusWindow::OnKeyDown(wxKeyEvent &event)
 		m_editElement = !m_editElement;
 		if ( !m_editElement ) // edition -> insertion
 		{
-			this->SetCursor( wxCURSOR_PENCIL );
+			this->SetCursor( wxCURSOR_PENCIL );  //these are not the droids you're looking for...
 			if ( m_currentElement )
 			{
 				// keep the last edited element for when we come back to edition mode
@@ -1428,6 +1460,11 @@ void MusWindow::OnKeyDown(wxKeyEvent &event)
                 // More to do here, because we know nothing about the position:
                 // My suggestion: beginning of the staff (try with xrel = something like 10)
                 // We also have to check that we have a current staff. If not, select the first one
+				
+				
+				//testing..
+//				printf("moving xrel to beginning?\n");
+//				m_newElement->xrel = 10;
 			}
 			m_currentElement = NULL;
 		}
@@ -2129,15 +2166,34 @@ void MusWindow::OnPaint(wxPaintEvent &event)
 	dc.SetTextForeground( *wxBLACK );
 	//dc.SetMapMode( wxMM_TEXT );
 	dc.SetAxisOrientation( true, false );
-
+	
+	
+	
+	
 	m_page->Init( this );
 	m_page->DrawPage( &dc );
     // TODO for cursor
     // Draw the cursor if we are in insertion mode, we have a m_newElement and a m_currentStaff
     // We can add a DrawCursor method, use the y position of the staff and the x of the element
     // What shape to draw??
+	
+	if (!m_editElement && m_newElement && m_currentStaff)
+	{
+		wxDC adc( this );
+		printf("the offset is: %d\n", m_newElement->offset);
+		int x = m_newElement->xrel;
+		m_currentColour = wxRED;
+		wxPen pen( *m_currentColour, 1, wxSOLID );
+		adc.SetPen( pen );
+		adc.DrawLine(x, 200, x, 300);		//test coordinates for y
+		printf("drawing line: %d, %d\n", x, x);
+		adc.SetPen( wxNullPen );
+		m_currentColour = wxBLACK;		//or else the staff gets painted red
+	}
+
 
 }
+
 
 void MusWindow::OnSize(wxSizeEvent &event)
 {

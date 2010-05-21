@@ -68,7 +68,7 @@ void MusToolRow::UpdateTools( int type )
     for (i = tc -1; i > MUS_MODES_NUMBER; i--) {
         DeleteByIndex(i);
     }
-
+	
     switch(m_type) 
     {
     case (MUS_TOOLS_NOTES): 
@@ -214,7 +214,7 @@ void MusToolPanel::OnChangeTool( wxCommandEvent &event )
     case (ID_MS_BT_CLEFS): value = MUS_TOOLS_CLEFS; break;
     case (ID_MS_BT_SIGNS): value = MUS_TOOLS_SIGNS; break;
     case (ID_MS_BT_SYMBOLS): value = MUS_TOOLS_OTHER; break;
-    case (ID_MS_BT_CHMOD): value = NEUME_TOOLS_NOTES; break;
+	case (ID_MS_BT_CHMOD): value = NEUME_TOOLS_NOTES; break;
     }
 
 	m_w->SetInsertMode( true );
