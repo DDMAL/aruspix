@@ -623,7 +623,6 @@ void MusStaff::DrawStaff( wxDC *dc, int i )
 		pelement->Init( m_w );
 		pelement->Draw( dc, this );
 	}
-	
 
 }
 

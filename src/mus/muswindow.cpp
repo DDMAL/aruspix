@@ -799,11 +799,11 @@ void MusWindow::SetToolType( int type )
     int value = '0';
     switch ( type )
     {
-    case (MUS_TOOLS_NOTES): value = 'N'; break;
+    case (MUS_TOOLS_NOTES): value = 'M'; break; // I changed this to 'M' so 'N' can be used by neumes
     case (MUS_TOOLS_CLEFS): value = 'K'; break;
     case (MUS_TOOLS_SIGNS): value = 'P'; break;
     case (MUS_TOOLS_OTHER): value = 'S'; break;
-	case (NEUME_TOOLS_NOTES): value = 'N'; printf("AWW YEAH MR KRABS\n"); break;
+	case (NEUME_TOOLS_NOTES): value = 'N'; break;
 	case (NEUME_TOOLS_CLEFS): value = 'K'; break;
 	case (NEUME_TOOLS_OTHER): value = 'S'; break;
 	}
@@ -827,9 +827,9 @@ void MusWindow::SetToolType( int type )
 int MusWindow::GetToolType()
 {
 	if (m_notation_mode == MENSURAL_MODE)
-		printf("we're in mensural mode, lol\n");
+		printf("we're in mensural mode\n");
 	else
-		printf("we're in neumes mode lololol\n");
+		printf("we're in neumes mode\n");
 	
 	MusElement *sync = NULL;
 
@@ -853,10 +853,14 @@ int MusWindow::GetToolType()
     else if (sync->IsNote() ) 
     {
         //return m_notation_mode == MENSURAL_MODE ? MUS_TOOLS_NOTES : NEUME_TOOLS_NOTES;
-		return NEUME_TOOLS_NOTES;
+		return MUS_TOOLS_NOTES;
 		
 		//what should I do here?????
     }
+	else if (sync->IsNeume() )
+	{
+		return NEUME_TOOLS_NOTES;
+	}
     else {
         return -1;
     }
@@ -1093,7 +1097,7 @@ void MusWindow::OnMouseDClick(wxMouseEvent &event)
 		int y = ToReelY( dc.DeviceToLogicalY( event.m_y ) );
 		m_insertcode = m_currentStaff->trouveCodNote( y, m_insertx, &m_insertoct );
 		m_newElement->xrel = m_insertx;
-		printf("This is our xrel: %d\n", m_insertx);
+		printf("This is our xrel: %d\n is it a a note? %d\n", m_insertx, m_newElement->IsNote());
 	}
 	if ( m_editElement )
 	{
@@ -1151,7 +1155,7 @@ void MusWindow::OnMouseDClick(wxMouseEvent &event)
 			
 			
 //			m_newElement->xrel = m_insertx;
-			if ( m_newElement->IsNote() || 
+			if ( m_newElement->IsNote() || m_newElement->IsNeume() ||
 				(((MusSymbol*)m_newElement)->flag == ALTER) || (((MusSymbol*)m_newElement)->flag == PNT))
 			{
 				m_newElement->code = m_insertcode;
@@ -1332,8 +1336,8 @@ void MusWindow::OnMouseLeftDown(wxMouseEvent &event)
 void MusWindow::OnMouseMotion(wxMouseEvent &event)
 {
 	wxClientDC dc( this );
-	printf("----- x: %d, y: %d -----\n", ToReel( dc.DeviceToLogicalX( event.m_x ) ),
-		   ToReelY( dc.DeviceToLogicalY( event.m_y ) ) );
+//	printf("----- x: %d, y: %d -----\n", ToReel( dc.DeviceToLogicalX( event.m_x ) ),
+//		   ToReelY( dc.DeviceToLogicalY( event.m_y ) ) );
 
 	if ( event.Dragging() && event.LeftIsDown() && m_dragging_x && m_currentElement )
 	{
@@ -1433,7 +1437,7 @@ void MusWindow::OnKeyDown(wxKeyEvent &event)
 		m_editElement = !m_editElement;
 		if ( !m_editElement ) // edition -> insertion
 		{
-			this->SetCursor( wxCURSOR_PENCIL );  //these are not the droids you're looking for...
+			this->SetCursor( wxCURSOR_PENCIL );  
 			if ( m_currentElement )
 			{
 				// keep the last edited element for when we come back to edition mode
@@ -1447,6 +1451,11 @@ void MusWindow::OnKeyDown(wxKeyEvent &event)
 				{
 					m_symbol = *(MusSymbol*)m_currentElement;
 					m_newElement = &m_symbol;
+				}
+				else if ( m_currentElement->IsNeume() )
+				{
+					m_neume = *(MusNeume*)m_currentElement;
+					m_newElement = &m_neume;
 				}
                 // TODO for cursor
                 // increase the xrel of m_newElement. Where it will be tricky is when we are at the end of the staff,
@@ -2062,8 +2071,11 @@ void MusWindow::OnKeyDown(wxKeyEvent &event)
 	}
 	else /*** Note insertion mode ***/
 	{
-		if ( event.m_controlDown && (event.m_keyCode == 'N')) // change set (note, rests, key, signs, symbols, ....
+		if ( event.m_controlDown && (event.m_keyCode == 'M')) // change set (note, rests, key, signs, symbols, ....
 			m_newElement = &m_note;	
+		else if ( event.m_controlDown && (event.m_keyCode == 'N')) {
+			m_newElement = &m_neume;
+		}
 		else if ( event.m_controlDown && (event.m_keyCode == 'K')) // keys
 		{	
 			m_symbol.ResetToKey();
@@ -2177,21 +2189,18 @@ void MusWindow::OnPaint(wxPaintEvent &event)
     // We can add a DrawCursor method, use the y position of the staff and the x of the element
     // What shape to draw??
 	
-	if (!m_editElement && m_newElement && m_currentStaff)
-	{
-		wxDC adc( this );
-		printf("the offset is: %d\n", m_newElement->offset);
-		int x = m_newElement->xrel;
+	
+	if (!m_editElement && m_newElement && m_currentStaff) {
 		m_currentColour = wxRED;
-		wxPen pen( *m_currentColour, 1, wxSOLID );
-		adc.SetPen( pen );
-		adc.DrawLine(x, 200, x, 300);		//test coordinates for y
-		printf("drawing line: %d, %d\n", x, x);
-		adc.SetPen( wxNullPen );
-		m_currentColour = wxBLACK;		//or else the staff gets painted red
+		//drawing code here
+		
+		printf("staff y: %d\n", m_currentStaff->yrel);
+		
+		this->rect_plein2(&dc, m_newElement->xrel+35, m_currentStaff->yrel-200, 
+						  m_newElement->xrel+40, m_currentStaff->yrel-40);
+		
+		m_currentColour = wxBLACK;
 	}
-
-
 }
 
 

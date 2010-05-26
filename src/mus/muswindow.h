@@ -28,6 +28,7 @@ class MusStaff;
 class MusToolPanel;
 
 #include "musnote.h"
+#include "musneume.h"
 #include "mussymbol.h"
 
 // kind of operation, maybe used in subclasses 
@@ -272,6 +273,7 @@ public:
 	// keep elements statically - m_newElement will point on them
 	MusNote m_note;
 	MusSymbol m_symbol;
+	MusNeume m_neume;
 
 	MusStaff *m_currentStaff;
 	bool efface;

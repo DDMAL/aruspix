@@ -38,6 +38,7 @@ public:
     virtual ~MusNeume();
     
 	virtual void MusNeume::Draw( wxDC *dc, MusStaff *staff);
+	void MusNeume::note( wxDC *dc, MusStaff *staff );
 
     // WDR: method declarations for MusNeume
 	virtual void MusNeume::SetPitch( int code, int oct, MusStaff *staff = NULL );
@@ -45,6 +46,7 @@ public:
 
 public:
 	// WDR: member variable declarations for MusNeume
+	
 	
 private:
     // WDR: handler declarations for MusNeume

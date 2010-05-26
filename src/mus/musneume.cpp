@@ -88,6 +88,15 @@ void MusNeume::SetPitch( int code, int oct, MusStaff *staff )
     // Change the neume pitch
     // ...
 
+	//copypaste from musnote
+	
+	if ((this->code == code) && (this->oct == oct ))
+		return;
+	
+	this->oct = oct;
+	this->code = code;
+	
+	
 	if (m_w)
 		m_w->Refresh();
 }
@@ -101,6 +110,8 @@ void MusNeume::SetValue( int value, MusStaff *staff, int vflag )
 
     // Change the neume value
     // ...
+	
+	//only a punctum for now, still have to decide the scheme for neume values
 	
 	if (m_w)
 		m_w->Refresh();
@@ -119,7 +130,69 @@ void MusNeume::Draw( wxDC *dc, MusStaff *staff)
     // Draw the neume
     // ...
 	
+	// following the example set by musnote...
+	
+	int oct = this->oct - 4; //?
+	
+	if (!m_w->efface && (this == m_w->m_currentElement))
+		m_w->m_currentColour = wxRED;
+	else if (!m_w->efface && (this->m_cmp_flag == CMP_MATCH))
+		m_w->m_currentColour = wxLIGHT_GREY;
+	else if (!m_w->efface && (this->m_cmp_flag == CMP_DEL))
+		m_w->m_currentColour = wxGREEN;
+	else if (!m_w->efface && (this->m_cmp_flag == CMP_SUBST))
+		m_w->m_currentColour = wxBLUE;	
+	
+	
+	this->dec_y = staff->y_note((int)this->code, staff->testcle( this->xrel ), oct);
+	
+	 
+		
+	//we will have to deal with 'chords' (ligatures) eventually!
+	
+		//if (!this->chord)	// && (!pelement->ElemInvisible || illumine)) 
+		this->note(dc, staff);
+		//else
+		//	this->accord(dc, staff);
+	//{{{{printf("wtf you can do this?\n");}}}}
+	
+	
 	return;
+}
+
+void MusNeume::note( wxDC *dc, MusStaff *staff ) 
+{
+	int pTaille = staff->pTaille;
+	
+	int b = this->dec_y;
+	int up=0, i, valdec, fontNo, ledge, queueCentre;
+	int x1, x2, y2, espac7, decval, vertical;
+	int formval = 0;
+	int rayon, milieu = 0;
+	
+	int xn = this->xrel, xl = this->xrel;
+	int bby = staff->yrel - m_w->_portee[pTaille];  // bby= y sommet portee
+	int ynn = this->dec_y + staff->yrel; 
+	static int ynn_chrd;
+	
+	xn += this->offset;
+	
+	//not sure what this rayon business does
+	
+//	//val=this->val;
+//	formval = (this->inv_val && val > RD) ? (val+1) : val;
+//		queueCentre = 0;
+	
+	//rayon = m_w->rayonNote[pTaille][this->dimin];
+	
+	
+	//we may need ledger lines for neumes!...eventually
+	//leg_line( dc, ynn,bby,xl,ledge, pTaille);	// dessin lignes additionnelles
+	
+	//then drawing of the actual notehead itself
+	
+	m_w->putfont( dc, this->xrel, ynn, sNOIRE, staff, this->dimin); //worry about the font later
+	
 }
 
 // WDR: handler implementations for MusNeume

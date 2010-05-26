@@ -386,13 +386,13 @@ void MusNote::Draw( wxDC *dc, MusStaff *staff)
 		
 		if ( lyric != NULL )
 		{
-			if (!m_w->efface) 
+			if (!m_w->efface)		//erase
 			{
 				if ( lyric == m_w->m_currentElement )
 					m_w->m_currentColour = wxRED;
 				else if ( (this == m_w->m_currentElement) || BelongsToTheNote( m_w->m_currentElement ) )
 					m_w->m_currentColour = wxCYAN;
-			}
+			}	
 			m_w->putlyric(dc, lyric->xrel + staff->xrel, staff->yrel + lyric->dec_y , 
 						  lyric->m_debord_str, staff->pTaille, ( lyric == m_w->m_currentElement && m_w->m_inputLyric ) );
 		}		
@@ -410,6 +410,7 @@ void MusNote::Draw( wxDC *dc, MusStaff *staff)
 // Accords: note doit connaitre le x non modifie par accord(), la fin de 
 // l'accord (ptr_n->fchord), la valeur y extreme opposee au sommet de la
 // queue: le ptr *testchord extern peut garder le x et l'y.
+
 
 void MusNote::note ( wxDC *dc, MusStaff *staff )
 {

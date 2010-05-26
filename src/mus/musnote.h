@@ -55,7 +55,7 @@ public:
     // WDR: method declarations for MusNote
 	virtual void MusNote::SetPitch( int code, int oct, MusStaff *staff = NULL );
 	virtual void MusNote::SetValue( int value, MusStaff *staff = NULL, int vflag = 0 );
-	virtual void MusNote::ChangeColoration(   MusStaff *staff = NULL );
+	virtual void MusNote::ChangeColoration( MusStaff *staff = NULL );
 	virtual void MusNote::ChangeStem( MusStaff *staff = NULL );
 	virtual void MusNote::SetLigature( MusStaff *staff = NULL );
 	
