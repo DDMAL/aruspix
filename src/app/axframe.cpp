@@ -225,9 +225,22 @@ AxFrame::AxFrame( wxWindow *parent, wxWindowID id, const wxString &title,
     
     // midi input
     m_midiIn = new RtMidiIn();
-
-    // Check available ports.
+//	std::string portName;
+	
+//    // Check available ports.
     unsigned int nPorts = m_midiIn->getPortCount();
+//	m_midiIn->openVirtualPort("test");
+//	
+//	for ( unsigned int i=0; i<nPorts; i++ ) {
+//		try {
+//			portName = m_midiIn->getPortName(i);
+//		}
+//		catch ( RtError &error ) {
+//			error.printMessage();
+//		}
+//		std::cout << "  Input Port #" << i+1 << ": " << portName << '\n';
+//	}
+//	
     if ( nPorts == 0 ) {
         wxLogDebug("Midi init failed, nPorts == 0");
         delete m_midiIn;

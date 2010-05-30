@@ -231,6 +231,8 @@ public:
     wxFont m_activeLyricFonts[2];
     /** fonte Leipzig par defaut */
     wxFont m_ftLyrics;
+	
+	
 
 	/** format max utile; en principe, celui de la feuille **/
 	int wymax, wxmax;
@@ -256,7 +258,7 @@ public:
     int zoomDen;
     /** indique si la definition de page poue laquelle fontes actuelles est a jour */
     int m_charDefin;
-	/** indique si la page doit etre centree si elle n'occupe pas toute la fenetre */
+	/** indique si la page doit etre centree asi elle n'occupe pas toute la fenetre */
 	bool m_center;
 
 	wxString m_str;
@@ -289,6 +291,10 @@ public:
 	bool m_lyricMode;
 	bool m_inputLyric;
 	int m_lyricCursor;
+	
+	// I might separate this into a new class, MusKeyboardEntry
+	bool m_keyEntryMode;
+	int m_keyEntryOctave;
     
 private:
 	void SetPage( MusPage *page );
@@ -302,7 +308,8 @@ private:
 	void SyncToolPanel(); // synchronize tool dlg (m_currentElement, mode ... )
 
 
-
+	void KeyboardEntry(wxKeyEvent &event);	//parse key input and send MIDI messages
+	
     // WDR: handler declarations for MusWindow
 	void OnSize( wxSizeEvent &event );
     void OnPaint( wxPaintEvent &event );

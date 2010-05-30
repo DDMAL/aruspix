@@ -25,6 +25,9 @@ class MusStaff;
 
 //----------------------------------------------------------------------------
 // MusNeume
+//
+// A neume by nature is a composite class, it can consist of a single note, or
+// of many notes. 
 //----------------------------------------------------------------------------
 
 class MusNeume: public MusElement
@@ -40,16 +43,26 @@ public:
 	virtual void MusNeume::Draw( wxDC *dc, MusStaff *staff);
 	void MusNeume::note( wxDC *dc, MusStaff *staff );
 
+	void MusNeume::append( wxDC *dc, MusStaff *staff ); //for creating multi-note neumes
+	
+	//should have some sort of 'toggle' or 'redraw' method here for switching between styles
+	
     // WDR: method declarations for MusNeume
 	virtual void MusNeume::SetPitch( int code, int oct, MusStaff *staff = NULL );
 	virtual void MusNeume::SetValue( int value, MusStaff *staff = NULL, int vflag = 0 );
 
+	
+	//helper methods
+	
+	
 public:
 	// WDR: member variable declarations for MusNeume
-	
+	int size;	//how many notes in group
+	wxArrayPtrVoid n_list; //the list of notes in this group
 	
 private:
     // WDR: handler declarations for MusNeume
+	
 };
 
 

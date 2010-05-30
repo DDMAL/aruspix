@@ -60,7 +60,7 @@ public:
     wxString GetEnvironmentName( );
     // Midi Input
     RtMidiIn *m_midiIn;
-    
+
 private:
     // WDR: member variable declarations for AxFrame
     // tmp

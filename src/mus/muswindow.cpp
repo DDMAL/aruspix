@@ -18,6 +18,8 @@
 #include "wx/fontdlg.h"
 #include "wx/fontutil.h"
 
+#include "RtMidi.h"
+
 #include "app/axapp.h"
 #include "muswindow.h"
 #include "muspage.h"
@@ -28,6 +30,9 @@
 //#include "mus_wdr.h"
 
 #include "app/axgotodlg.h"
+
+#include <iostream>
+#include <cstdlib>
 
 // WDR: class implementations
 
@@ -132,6 +137,10 @@ MusWindow::MusWindow( wxWindow *parent, wxWindowID id,
 	m_lyricMode = false;
 	m_inputLyric = false;
 	m_lyricCursor = 0;
+	
+	// keyboard entry
+	m_keyEntryMode = false;
+	m_keyEntryOctave = 0;
 
 	m_str.Alloc(1000);
 
@@ -827,7 +836,7 @@ void MusWindow::SetToolType( int type )
 int MusWindow::GetToolType()
 {
 	if (m_notation_mode == MENSURAL_MODE)
-		printf("we're in mensural mode\n");
+		printf("we're in mensural mode	\n");
 	else
 		printf("we're in neumes mode\n");
 	
@@ -845,7 +854,7 @@ int MusWindow::GetToolType()
     {
         if ( ((MusSymbol*)sync)->flag == CLE )
             return m_notation_mode == MENSURAL_MODE ? MUS_TOOLS_CLEFS : NEUME_TOOLS_CLEFS;
-        else if ( ((MusSymbol*)sync)->flag == IND_MES )
+        else if ( ((MusSymbol*)sync)->flag == IND_MES )	
             return MUS_TOOLS_SIGNS;
         else
             return m_notation_mode == MENSURAL_MODE ? MUS_TOOLS_OTHER : NEUME_TOOLS_OTHER;
@@ -1383,6 +1392,8 @@ void MusWindow::OnMidiInput(wxCommandEvent &event)
     //wxLogDebug("Midi %d", event.GetInt() ) ;
     int octave = event.GetInt() / 12;
 	int hauteur = event.GetInt() - (octave * 12);
+	
+	printf("octave: %d, hauteur: %d\n", octave, hauteur);
     if ( m_currentElement && m_currentElement->IsNote() ) {
         m_currentElement->SetPitch( die[hauteur], octave, m_currentStaff );
     }
@@ -1428,6 +1439,21 @@ void MusWindow::OnKeyDown(wxKeyEvent &event)
 {
 	if ( !m_page || !m_currentStaff )
 		return;
+	
+	//hijack the keyboard
+	if (m_keyEntryMode) 
+	{
+		KeyboardEntry(event);
+		return;
+	}
+	
+	//otherwise, check if command-K is pressed
+	
+	if (event.GetKeyCode() == 'K' && event.CmdDown())
+	{
+		//printf("command K\n");
+		m_keyEntryMode = !m_keyEntryMode;
+	}
 
 	int noteKeyCode = GetNoteValue( event.m_keyCode );
 
@@ -1683,7 +1709,7 @@ void MusWindow::OnKeyDown(wxKeyEvent &event)
 		}		
 		else // navigation avec les fleches
 		{
-			if ( event.GetKeyCode() == WXK_RIGHT ) 
+			if ( event.GetKeyCode() == WXK_RIGHT || event.GetKeyCode() == WXK_SPACE ) 
 			{
 				if ( m_currentStaff->GetNext( m_currentElement ) )
 					m_currentElement = m_currentStaff->GetNext( m_currentElement );
@@ -2201,6 +2227,71 @@ void MusWindow::OnPaint(wxPaintEvent &event)
 		
 		m_currentColour = wxBLACK;
 	}
+}
+
+
+//keyboard entry is based off GarageBand's 'Musical Typing' concept
+//I'm not sure if its very practical to have accidentals other than Bb however...
+
+void MusWindow::KeyboardEntry(wxKeyEvent &event) {
+	
+	if (event.GetKeyCode() == 'K' && event.CmdDown())
+	{
+		
+		//change from edition to insertion mode?
+		
+		m_keyEntryMode = !m_keyEntryMode;
+		return;
+	}
+	
+	
+	switch (event.GetKeyCode()) {
+		case WXK_RETURN: 
+			//toggle neume type, if in neumes mode (possibly apply to mensural as well)
+			printf("testing keyboard hijack\n");
+			break;
+		case WXK_SPACE:
+			//'break' the neume, if in neumes mode
+			printf("breaking group\n");
+			break;
+				case 'Z':
+			//octave down
+			m_keyEntryOctave--;
+			printf("Moving down an octave: %d\n", m_keyEntryOctave);
+			break;
+			//ocave up
+		case 'X':
+			m_keyEntryOctave++;
+			printf("Moving up an octave: %d\n", m_keyEntryOctave);
+			break;
+		
+	}
+	
+	//for changing pitch
+	
+	int pitch;
+	char keyPitches[] = { 'A', 'W', 'S', 'E', 'D', 'F',			//should move this somewhere else
+		'T', 'G', 'Y', 'H', 'U', 'J',
+	'K', 'O', 'L', 'P', ';', '\'' };
+	
+	int octave;
+	int hauteur;
+	
+	for (int i = 0; i < 17; i++) {
+		if (event.GetKeyCode() == keyPitches[i]) {
+			pitch = 60 + i + (12 * m_keyEntryOctave);
+			octave = pitch / 12;
+			hauteur = pitch - (octave * 12);
+			
+			if ( m_currentElement && (m_currentElement->IsNote() || m_currentElement->IsNeume())) {
+				m_currentElement->SetPitch( die[hauteur], octave, m_currentStaff );
+			}
+			
+			break;
+		}
+	}
+	
+	
 }
 
 
