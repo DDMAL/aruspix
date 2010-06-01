@@ -2,30 +2,32 @@ font editing notes
 
 Festa Dies A
 
-39 ''' - Podatus (Epiphonus) *
-46 '.' - Bemole (b flat)
-59 ';' - Virgula (Comma)
-76 'L' - Cephalicus *
-77 'M' - Pes (bottom of podatus)
-84 'T' - Apostrapha *
+39 ''' - Podatus (Epiphonus) *  
+46 '.' - Bemole (b flat) 
+59 ';' - Virgula (Comma) 
+76 'L' - Cephalicus * 
+77 'M' - Pes (bottom of podatus) 
+84 'T' - Apostrapha * 
 93 ']' - Quilisma denticulata (squiggly)
-112 'p' - Porrectus (4 steps down) *
+112 'p' - Porrectus (4 steps down) *    ?? 
 115 's' - Punctum quadratum (square)
 116 't' - Guiones (Next pitch indicator)
-126 '~' - Porrectus (1 step down)
-170 - Porrectus (2 steps down)
-182 - F clef
+126 '~' - Porrectus (1 step down) ??
+170 - Porrectus (2 steps down) ??
+182 - F clef 
 186 - C clef
-194 - Punctum inclinatum parvum (diamond)
-218 - Porrectus (3 steps down)
+194 - Punctum inclinatum parvum (diamond) 
+218 - Porrectus (3 steps down) ??
 227 - Becuadros (natural sign)
 402 - Nota excavata (white punctum)
 894 - Virgula (comma)
 
 * = merged from Festa Dies B
 
-
 If you open the modified fonts with Font Book, there will be some validation
 errors if you already have either of the Festa Dies fonts installed (duplicate 
 error). 
 
+06/01/2010 - Moved each character down slightly, except for the Porrectus 
+characters (which will have to be edited once I know how offset they are after
+insertion). 
