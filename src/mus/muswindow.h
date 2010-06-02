@@ -154,6 +154,7 @@ public:
 	void v_bline ( wxDC *dc, int y1, int y2, int x1, int nbr);
 	void v_bline2 ( wxDC *dc, int y1, int y2, int x1, int nbr);
 	void h_bline ( wxDC *dc, int x1, int x2, int y1, int nbr);
+	void putneume ( wxDC *dc, int x, int y, unsigned char c, MusStaff *staff, int dimin );
 	void putfont ( wxDC *dc, int x, int y, unsigned char c, MusStaff *staff, int dimin );
 	void putfontfast ( wxDC *dc, int x, int y, unsigned char c );
 	void putstring ( wxDC *dc, int x, int y, wxString s, int centrer, int pTaille = 0);
@@ -224,9 +225,13 @@ public:
     /** contient la positions des clefs */
     MusPosKey kPos[MAXPORTNBRE+1];
     /** fontes actuelles mises a jour selon la taille du zoom */
-    wxFont m_activeFonts[2][2];
+    wxFont m_activeFonts[2][2];				
     /** fonte Leipzig par defaut */
     wxFont m_ftLeipzig;
+	
+	wxFont m_activeChantFonts[2][2];
+	/** FestaDiesA for neume notation */
+	wxFont m_ftFestaDies;
     /** fontes actuelles mises a jour selon la taille du zoom */
     wxFont m_activeLyricFonts[2];
     /** fonte Leipzig par defaut */

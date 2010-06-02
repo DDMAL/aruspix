@@ -44,13 +44,13 @@ int SortElements(MusNeume **first, MusNeume **second)
 MusNeume::MusNeume():
 	MusElement()
 {
+	
+	
 	TYPE = NEUME;
-}
+	this->length = 1;
+	this->closed = false; // automatically build up neume clusters
+	this->n_selected = 0; // instantiation of class always creates a single note
 
-MusNeume::MusNeume( char _sil, unsigned char _val, unsigned char _code )
-	: MusElement()
-{
-	TYPE = NEUME;
 }
 
 MusNeume::MusNeume( const MusNeume& neume )
@@ -59,6 +59,10 @@ MusNeume::MusNeume( const MusNeume& neume )
 	TYPE = neume.TYPE;
     // copy each member
     // ...
+	this->length = neume.length;
+	this->closed = neume.closed;
+	this->n_selected = neume.n_selected;
+	
 } 
 
 MusNeume& MusNeume::operator=( const MusNeume& neume )
@@ -70,6 +74,10 @@ MusNeume& MusNeume::operator=( const MusNeume& neume )
 		TYPE = neume.TYPE;
         // copy each member
         // ...
+		this->length = neume.length;
+		this->closed = neume.closed;
+		this->n_selected = neume.n_selected;
+		
 	}
 	return *this;
 }
@@ -78,7 +86,9 @@ MusNeume::~MusNeume()
 {	
 }
 
+//might have to expand on this? probably not though
 
+bool MusNeume::IsClosed() { return this->closed; }
 
 void MusNeume::SetPitch( int code, int oct, MusStaff *staff )
 {
@@ -118,7 +128,7 @@ void MusNeume::SetValue( int value, MusStaff *staff, int vflag )
 }
 
 
-
+//should have some loop for drawing each element in the neume
 
 void MusNeume::Draw( wxDC *dc, MusStaff *staff)
 {
@@ -191,7 +201,12 @@ void MusNeume::note( wxDC *dc, MusStaff *staff )
 	
 	//then drawing of the actual notehead itself
 	
-	m_w->putfont( dc, this->xrel, ynn, sNOIRE, staff, this->dimin); //worry about the font later
+	
+	
+		//kay weird stuff happening here
+	
+	
+	m_w->putneume( dc, this->xrel, ynn + 5, nPUNCTUM, staff, this->dimin); //worry about the font later
 	
 }
 

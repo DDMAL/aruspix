@@ -5,6 +5,17 @@
 // Copyright (c) Laurent Pugin. All rights reserved.
 /////////////////////////////////////////////////////////////////////////////
 
+/** 
+ quick note about fonts: may 31, 2010
+ 
+ I've tried to emulate what you've done with Leipzig and mimic this with Festa
+ Dies throughout. It may not work as this is a very experimental approach.
+ 
+ 
+ */
+
+
+
 #ifdef __GNUG__
     #pragma implementation "muswindow.h"
 #endif
@@ -552,9 +563,15 @@ void MusWindow::UpdateFontValues()
 	wxNativeFontInfo info;
 	info.FromString( wxGetApp().m_musicFontDesc );
 	m_ftLeipzig.SetNativeFontInfo( info );
-
+	
+	info.FromString( wxGetApp().m_neumeFontDesc );
+	m_ftFestaDies.SetNativeFontInfo( info );
+	
+	
 	if ( !m_ftLeipzig.Ok() )
 		wxLogWarning(_("Impossible to load font 'Leipzig'") );
+	if ( !m_ftFestaDies.Ok() )
+		wxLogWarning(_("Impossible to load font 'Festa Dies'") );
 	
 	//wxLogMessage(_("Size %d, Family %d, Style %d, Weight %d, Underline %d, Face %s, Desc %s"),
 	//	m_ftLeipzig.GetPointSize(),
@@ -569,6 +586,12 @@ void MusWindow::UpdateFontValues()
     m_activeFonts[0][1] = m_ftLeipzig;
     m_activeFonts[1][0] = m_ftLeipzig;
     m_activeFonts[1][1] = m_ftLeipzig;
+	
+	m_activeChantFonts[0][0] = m_ftFestaDies;
+    m_activeChantFonts[0][1] = m_ftFestaDies;
+    m_activeChantFonts[1][0] = m_ftFestaDies;
+    m_activeChantFonts[1][1] = m_ftFestaDies;
+	
 	
 	// Lyrics
 	info.FromString( wxGetApp().m_lyricFontDesc );
@@ -592,6 +615,11 @@ void MusWindow::UpdateZoomValues()
     m_activeFonts[1][0].SetPointSize( ToZoom( nTailleFont[1][0] ) );
     m_activeFonts[1][1].SetPointSize( ToZoom( nTailleFont[1][1] ) );
 
+	m_activeChantFonts[0][0].SetPointSize( ToZoom( nTailleFont[0][0] ) );
+    m_activeChantFonts[0][1].SetPointSize( ToZoom( nTailleFont[0][1] ) );
+    m_activeChantFonts[1][0].SetPointSize( ToZoom( nTailleFont[1][0] ) );
+    m_activeChantFonts[1][1].SetPointSize( ToZoom( nTailleFont[1][1] ) );
+	
 	m_activeLyricFonts[0].SetPointSize( ToZoom( nTailleFont[0][0] * m_ftLyrics.GetPointSize() / 50 ) );
     m_activeLyricFonts[1].SetPointSize( ToZoom( nTailleFont[1][0] * m_ftLyrics.GetPointSize() / 50 ) );
 
@@ -641,6 +669,8 @@ void MusWindow::UpdateZoomValues()
 	}*/
 
 	m_charDefin = m_page->defin;
+	
+	printf("Char Defin: %d\n", m_charDefin);
 }
 
 
@@ -690,6 +720,10 @@ void MusWindow::UpdatePageValues()
     DELTABLANC[1] = (DELTABLANC[0] * RapportPortee[0]) / RapportPortee[1];
 
 
+	
+	//do I really have to do all this setup again for Festa Dies? maybe not
+	
+	
 	hautFont = _interl[0] * 8;
 	m_ftLeipzig.SetPointSize( hautFont );
 	wxClientDC dc(this);

@@ -166,6 +166,68 @@ int MusWindow::pointer ( wxDC *dc, int x, int b, int decal, MusStaff *staff )
 	return y;
 }
 
+/** 
+ Adding experimental code for neumes drawing. Right now its just a copy of putfont, but
+ eventually neume-specific functionality will most likely be implemented.
+	super-hack time
+ */
+
+void MusWindow::putneume ( wxDC *dc, int x, int y, unsigned char c, MusStaff *staff, int dimin)
+{
+	int pTaille = staff->pTaille;
+	int fontCorr = this->hautFontCorr[pTaille][dimin];
+	
+	wxASSERT_MSG( dc , "DC cannot be NULL");
+	
+	if (staff->notAnc && (unsigned char)c >= OFFSETNOTinFONT)
+	{	
+		c+= N_FONT;
+		if (dimin && in (c, 227, 229))	// les trois clefs
+		{	
+			c+= 14;	// les cles de tablature
+			dc->SetFont( m_activeChantFonts[ pTaille][0] );
+			fontCorr = this->hautFontCorr[ pTaille][0];
+		}
+	}
+	if (!staff->notAnc || !in (c, 241, 243))	// tout sauf clefs de tablature
+		dc->SetFont( m_activeChantFonts[ pTaille][ dimin] );
+	/*
+	 //if ( !pTaille && !dimin && !illumine)
+	 #if defined (__WXMSW__)
+	 if ( !pTaille && !dimin )
+	 #else
+	 if ( !pTaille && !dimin &&  (*m_currentColour != m_black ) )
+	 #endif
+	 {
+	 putfontfast( dc, x, y, c );
+	 return;
+	 }
+	 */
+	
+	if ( dc)
+	{	
+		dc->SetBackground( *wxBLUE );
+		dc->SetBackgroundMode( wxTRANSPARENT );
+		
+		m_str = (char)c;
+		dc->SetTextForeground( *m_currentColour );
+		wxPen pen( *m_currentColour, 1, wxSOLID );
+		dc->SetPen( pen );
+		wxBrush brush( *m_currentColour, wxSOLID );
+		
+		dc->SetBrush( brush );
+		
+		dc->DrawText( m_str, ToZoom(x), ToZoomY(y + fontCorr) );
+		
+		dc->SetPen( wxNullPen );
+		dc->SetBrush( wxNullBrush );
+	}
+	
+	return;
+}
+
+
+
 
 void MusWindow::putfont ( wxDC *dc, int x, int y, unsigned char c, MusStaff *staff, int dimin)
 {  
@@ -179,9 +241,9 @@ void MusWindow::putfont ( wxDC *dc, int x, int y, unsigned char c, MusStaff *sta
 		c+= N_FONT;
 		if (dimin && in (c, 227, 229))	// les trois clefs
 		{	
-			c+= 14;	// les cles de tablature
-			dc->SetFont( m_activeFonts[ pTaille ][0] );
-			fontCorr = this->hautFontCorr[ pTaille ][0];
+			c+= 14;	// les cles d===e tablature
+			dc->SetFont( m_activeFonts[ pTaille][0] );
+			fontCorr = this->hautFontCorr[ pTaille][0];
 		}
 	}
 	if (!staff->notAnc || !in (c, 241, 243))	// tout sauf clefs de tablature

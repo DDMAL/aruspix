@@ -173,6 +173,7 @@ public:
     wxString m_lastDirTypModel_in;
 
     wxString m_musicFontDesc;
+	wxString m_neumeFontDesc;
     wxString m_lyricFontDesc;
     int m_fontSizeCorrection;
     int m_fontPosCorrection;

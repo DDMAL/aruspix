@@ -305,6 +305,27 @@ VERSION DOS.*/
 #define OPTIONLIBRE 6
 #define SANSQUEUE 7
 
+/* Festa Dies A */
+
+#define nPODATUS 39 // podatus (epiphonus)
+#define nBEMOLE 46	// b flat
+#define nVIRGULA 59 // comma
+#define nCEPHALICUS 76 
+#define nPES 77		// bottom of podatus
+#define nAPOSTROPHE 84
+#define nQUILISMA 93 // squiggly
+#define nPORRECT_4 112 // 4 steps down porrectus
+#define nPUNCTUM 115 // square punctum
+#define nGUIONE 116 // 'next pitch' indicator 
+#define nPORRECT_1 126 // one step down porrectus
+#define nPORRECT_2 170 // two steps down porrectus
+#define nFCLEF 182 // f clef
+#define nCCLEF 186 // c clef
+#define nDIAMOND 194 //punctum inclinatum parvum (diamond)
+#define nPORRECT_3 218 // 3 steps down porrectus
+#define nNATURAL 227 // becuadros (natural sign)
+#define nWHITEPUNCT 402 // nota excavata (white punctum)
+
 
 #define sRONDE_B 201
 #define sRONDE_N 202

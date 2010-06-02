@@ -146,6 +146,19 @@ void AxOptionsDlg::OptionsDlgStandard( wxNotebook *notebook )
 	m_previousFontSizeCorrection = wxGetApp().m_fontSizeCorrection;
 	m_ignoreSpinEvent = false;
 	
+	/** Neumes Font */ 
+	info.FromString( wxGetApp().m_neumeFontDesc );
+	m_font.SetNativeFontInfo( info );
+	this->GetFontName()->SetLabel(wxGetApp().m_neumeFontDesc);
+	m_ignoreSpinEvent = true;
+	this->GetScMusOffset()->SetValidator(
+		wxGenericValidator(&wxGetApp().m_fontPosCorrection));
+    this->GetScMusSize()->SetValidator(
+		wxGenericValidator(&wxGetApp().m_fontSizeCorrection));
+	m_previousFontPosCorrection = wxGetApp().m_fontPosCorrection; // keep if canceled
+	m_previousFontSizeCorrection = wxGetApp().m_fontSizeCorrection;
+	m_ignoreSpinEvent = false;
+	
 	// Lyric Font
 	info.FromString( wxGetApp().m_lyricFontDesc );
 	m_lyric_font.SetNativeFontInfo( info );

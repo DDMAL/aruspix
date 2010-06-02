@@ -19,6 +19,13 @@
 
 #include "muselement.h"
 
+// 'hot corners' defines...
+
+#define UPPER 0
+#define LOWER 1
+#define LEFT_CORNER 0
+#define RIGHT_CORNER 1
+
 class MusStaff;
 
 // WDR: class declarations
@@ -35,7 +42,6 @@ class MusNeume: public MusElement
 public:
     // constructors and destructors
     MusNeume();
-	MusNeume( char _sil, unsigned char _val, unsigned char _code );
 	MusNeume( const MusNeume& neume ); // copy contructor
 	MusNeume& operator=( const MusNeume& neume ); // copy assignement;
     virtual ~MusNeume();
@@ -50,8 +56,27 @@ public:
     // WDR: method declarations for MusNeume
 	virtual void MusNeume::SetPitch( int code, int oct, MusStaff *staff = NULL );
 	virtual void MusNeume::SetValue( int value, MusStaff *staff = NULL, int vflag = 0 );
-
 	
+	bool MusNeume::IsClosed();
+	
+	//when appending notes, do we discard the object?
+	//may need a helper class for composite neumes.
+	void MusNeume::Append();
+
+	//how many notes are in this neume?
+	int length;
+	//which note of the group has been selected?
+	int n_selected;
+	
+	//different single note 'styles' that can be cycled through
+	int modes[3];
+	
+	// possible places for ligatures to 'attach'
+	// hotCorners[upper/lower][left/right]
+	// you cannot have more than one 'vertical attachment' on a single note
+	
+	bool closed; 
+		
 	//helper methods
 	
 	
