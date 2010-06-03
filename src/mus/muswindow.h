@@ -266,6 +266,7 @@ public:
 	/** indique si la page doit etre centree asi elle n'occupe pas toute la fenetre */
 	bool m_center;
 
+	
 	wxString m_str;
 	wxBitmap m_fontBitmaps[256][2][2];
 	wxMemoryDC m_memDC;
@@ -299,6 +300,7 @@ public:
 	
 	// I might separate this into a new class, MusKeyboardEntry
 	bool m_keyEntryMode;
+	int lastKeyEntered;
 	int m_keyEntryOctave;
     
 private:

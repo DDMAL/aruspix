@@ -102,7 +102,7 @@ MusNote::MusNote( char _sil, unsigned char _val, unsigned char _code )
 		this->m_lyrics.Add( lyric );
 	}
 		
-	oct = 4;
+	oct = 4; //?
 }
 
 MusNote::MusNote( const MusNote& note )

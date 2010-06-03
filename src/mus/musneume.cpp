@@ -41,28 +41,36 @@ int SortElements(MusNeume **first, MusNeume **second)
 // MusNeume
 //----------------------------------------------------------------------------
 
+//constructors are only called when brand new neumes are created. 
+// otherwise, pitches are just added to existing neumes through the append() method.
+
+
 MusNeume::MusNeume():
 	MusElement()
 {
 	
 	
 	TYPE = NEUME;
-	this->length = 1;
-	this->closed = false; // automatically build up neume clusters
-	this->n_selected = 0; // instantiation of class always creates a single note
-
+	length = 1;
+	closed = false; // automatically build up neume clusters
+	n_selected = 0; // instantiation of class always creates a single note
+	n_pitches = (NPitch*)malloc(sizeof(NPitch));
+	//set initial pitch, for entire neume as well as the first NPitch element
+	code = n_pitches[0].code = 0;
+	
+	//oct = 4; //? again, following laurent's example
 }
 
 MusNeume::MusNeume( const MusNeume& neume )
 	: MusElement( neume )
 {
 	TYPE = neume.TYPE;
-    // copy each member
-    // ...
 	this->length = neume.length;
 	this->closed = neume.closed;
 	this->n_selected = neume.n_selected;
-	
+	this->n_pitches = neume.n_pitches;
+	this->code = neume.code;
+	//add more...
 } 
 
 MusNeume& MusNeume::operator=( const MusNeume& neume )
@@ -77,18 +85,29 @@ MusNeume& MusNeume::operator=( const MusNeume& neume )
 		this->length = neume.length;
 		this->closed = neume.closed;
 		this->n_selected = neume.n_selected;
-		
+		this->n_pitches = neume.n_pitches;
+		this->code = neume.code;
+		//add more...
 	}
 	return *this;
 }
 
 MusNeume::~MusNeume()
 {	
+	//we need to delete all the NPitch elements
+	for (int i = this->length - 1; i >= 0; i--) 
+	{
+		free(this->n_pitches + i);
+	}
 }
 
 //might have to expand on this? probably not though
 
 bool MusNeume::IsClosed() { return this->closed; }
+
+void MusNeume::Append() {
+
+}
 
 void MusNeume::SetPitch( int code, int oct, MusStaff *staff )
 {

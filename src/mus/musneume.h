@@ -37,6 +37,12 @@ class MusStaff;
 // of many notes. 
 //----------------------------------------------------------------------------
 
+
+typedef struct n_pitch {
+	int code;
+	int oct;
+}NPitch;
+
 class MusNeume: public MusElement
 {
 public:
@@ -65,8 +71,12 @@ public:
 
 	//how many notes are in this neume?
 	int length;
+	
 	//which note of the group has been selected?
 	int n_selected;
+	
+	//the list of actual pitches within the neume
+	NPitch *n_pitches;
 	
 	//different single note 'styles' that can be cycled through
 	int modes[3];
@@ -74,7 +84,7 @@ public:
 	// possible places for ligatures to 'attach'
 	// hotCorners[upper/lower][left/right]
 	// you cannot have more than one 'vertical attachment' on a single note
-	
+		
 	bool closed; 
 		
 	//helper methods

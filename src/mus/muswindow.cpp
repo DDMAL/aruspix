@@ -2279,13 +2279,21 @@ void MusWindow::KeyboardEntry(wxKeyEvent &event) {
 	}
 	
 	
+	// it would be nice if octave switching happened 'instantly'
+	
 	switch (event.GetKeyCode()) {
 		case WXK_RETURN: 
 			//toggle neume type, if in neumes mode (possibly apply to mensural as well)
 			printf("testing keyboard hijack\n");
 			break;
 		case WXK_SPACE:
-			//'break' the neume, if in neumes mode
+			//single space: enter next pitch in compound neume
+			//double space: 'break' the neume
+			if (lastKeyEntered == WXK_SPACE) {
+				
+			} else {
+				
+			}
 			printf("breaking group\n");
 			break;
 				case 'Z':
@@ -2325,6 +2333,7 @@ void MusWindow::KeyboardEntry(wxKeyEvent &event) {
 		}
 	}
 	
+	lastKeyEntered = event.GetKeyCode();
 	
 }
 
