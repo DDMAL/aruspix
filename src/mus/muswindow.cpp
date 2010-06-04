@@ -37,6 +37,7 @@
 #include "musfile.h"
 #include "mustoolpanel.h"
 #include "musiobin.h"
+#include "muskeyboardeditor.h"
 
 //#include "mus_wdr.h"
 
@@ -151,7 +152,6 @@ MusWindow::MusWindow( wxWindow *parent, wxWindowID id,
 	
 	// keyboard entry
 	m_keyEntryMode = false;
-	m_keyEntryOctave = 0;
 
 	m_str.Alloc(1000);
 
@@ -1418,8 +1418,10 @@ void MusWindow::OnMouseMotion(wxMouseEvent &event)
 }
 
 // see TakeMidiEvent in WGCLE in Wolfgang
-static int bem [] = {F2, F3, F3, F4, F4, F5, F6, F6, F7, F7, F8, F8};
-static int die [] = {F2, F2, F3, F3, F4, F5, F5, F6, F6, F7, F7, F8};
+//static int bem [] = {F2, F3, F3, F4, F4, F5, F6, F6, F7, F7, F8, F8};
+//static int die [] = {F2, F2, F3, F3, F4, F5, F5, F6, F6, F7, F7, F8};
+
+// ^ moved this to header file...
 
 void MusWindow::OnMidiInput(wxCommandEvent &event)
 {
@@ -2278,62 +2280,62 @@ void MusWindow::KeyboardEntry(wxKeyEvent &event) {
 		return;
 	}
 	
-	
-	// it would be nice if octave switching happened 'instantly'
-	
-	switch (event.GetKeyCode()) {
-		case WXK_RETURN: 
-			//toggle neume type, if in neumes mode (possibly apply to mensural as well)
-			printf("testing keyboard hijack\n");
-			break;
-		case WXK_SPACE:
-			//single space: enter next pitch in compound neume
-			//double space: 'break' the neume
-			if (lastKeyEntered == WXK_SPACE) {
-				
-			} else {
-				
-			}
-			printf("breaking group\n");
-			break;
-				case 'Z':
-			//octave down
-			m_keyEntryOctave--;
-			printf("Moving down an octave: %d\n", m_keyEntryOctave);
-			break;
-			//ocave up
-		case 'X':
-			m_keyEntryOctave++;
-			printf("Moving up an octave: %d\n", m_keyEntryOctave);
-			break;
-		
-	}
-	
-	//for changing pitch
-	
-	int pitch;
-	char keyPitches[] = { 'A', 'W', 'S', 'E', 'D', 'F',			//should move this somewhere else
-		'T', 'G', 'Y', 'H', 'U', 'J',
-	'K', 'O', 'L', 'P', ';', '\'' };
-	
-	int octave;
-	int hauteur;
-	
-	for (int i = 0; i < 17; i++) {
-		if (event.GetKeyCode() == keyPitches[i]) {
-			pitch = 60 + i + (12 * m_keyEntryOctave);
-			octave = pitch / 12;
-			hauteur = pitch - (octave * 12);
-			
-			if ( m_currentElement && (m_currentElement->IsNote() || m_currentElement->IsNeume())) {
-				m_currentElement->SetPitch( die[hauteur], octave, m_currentStaff );
-			}
-			
-			break;
-		}
-	}
-	
-	lastKeyEntered = event.GetKeyCode();
+//	
+//	// it would be nice if octave switching happened 'instantly'
+//	
+//	switch (event.GetKeyCode()) {
+//		case WXK_RETURN: 
+//			//toggle neume type, if in neumes mode (possibly apply to mensural as well)
+//			printf("testing keyboard hijack\n");
+//			break;
+//		case WXK_SPACE:
+//			//single space: enter next pitch in compound neume
+//			//double space: 'break' the neume
+//			if (lastKeyEntered == WXK_SPACE) {
+//				
+//			} else {
+//				
+//			}
+//			printf("breaking group\n");
+//			break;
+//				case 'Z':
+//			//octave down
+//			m_keyEntryOctave--;
+//			printf("Moving down an octave: %d\n", m_keyEntryOctave);
+//			break;
+//			//ocave up
+//		case 'X':
+//			m_keyEntryOctave++;
+//			printf("Moving up an octave: %d\n", m_keyEntryOctave);
+//			break;
+//		
+//	}
+//	
+//	//for changing pitch
+//	
+//	int pitch;
+//	char keyPitches[] = { 'A', 'W', 'S', 'E', 'D', 'F',			//should move this somewhere else
+//		'T', 'G', 'Y', 'H', 'U', 'J',
+//	'K', 'O', 'L', 'P', ';', '\'' };
+//	
+//	int octave;
+//	int hauteur;
+//	
+//	for (int i = 0; i < 17; i++) {
+//		if (event.GetKeyCode() == keyPitches[i]) {
+//			pitch = 60 + i + (12 * m_keyEntryOctave);
+//			octave = pitch / 12;
+//			hauteur = pitch - (octave * 12);
+//			
+//			if ( m_currentElement && (m_currentElement->IsNote() || m_currentElement->IsNeume())) {
+//				m_currentElement->SetPitch( die[hauteur], octave, m_currentStaff );
+//			}
+//			
+//			break;
+//		}
+//	}
+//	
+//	lastKeyEntered = event.GetKeyCode();
 	
 }
 

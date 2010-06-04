@@ -56,6 +56,9 @@ enum
 	MUS_UNDO_FILE
 };
 
+static int bem [] = {F2, F3, F3, F4, F4, F5, F6, F6, F7, F7, F8, F8};
+static int die [] = {F2, F2, F3, F3, F4, F5, F5, F6, F6, F7, F7, F8};
+
 // WDR: class declarations
 
 //----------------------------------------------------------------------------
@@ -298,10 +301,9 @@ public:
 	bool m_inputLyric;
 	int m_lyricCursor;
 	
-	// I might separate this into a new class, MusKeyboardEntry
+	// keyboard entry mode
 	bool m_keyEntryMode;
-	int lastKeyEntered;
-	int m_keyEntryOctave;
+
     
 private:
 	void SetPage( MusPage *page );
