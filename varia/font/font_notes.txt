@@ -16,7 +16,8 @@ Festa Dies A
 170 - Porrectus (2 steps down) ??
 182 - F clef 
 186 - C clef
-194 - Punctum inclinatum parvum (diamond) 
+194 - Punctum inclinatum parvum (small diamond) 
+** there are issues with this character
 218 - Porrectus (3 steps down) ??
 227 - Becuadros (natural sign)
 402 - Nota excavata (white punctum)

@@ -152,6 +152,8 @@ MusWindow::MusWindow( wxWindow *parent, wxWindowID id,
 	
 	// keyboard entry
 	m_keyEntryMode = false;
+	// lazy loading
+	m_keyEditor = NULL;
 
 	m_str.Alloc(1000);
 
@@ -869,10 +871,10 @@ void MusWindow::SetToolType( int type )
 
 int MusWindow::GetToolType()
 {
-	if (m_notation_mode == MENSURAL_MODE)
-		printf("we're in mensural mode	\n");
-	else
-		printf("we're in neumes mode\n");
+//	if (m_notation_mode == MENSURAL_MODE)
+//		printf("we're in mensural mode	\n");
+//	else
+//		printf("we're in neumes mode\n");
 	
 	MusElement *sync = NULL;
 
@@ -1476,21 +1478,25 @@ void MusWindow::OnKeyDown(wxKeyEvent &event)
 	if ( !m_page || !m_currentStaff )
 		return;
 	
-	//hijack the keyboard
-	if (m_keyEntryMode) 
-	{
-		KeyboardEntry(event);
-		return;
-	}
+//	//hijack the keyboard
+//	if (m_keyEntryMode) 
+//	{
+//		KeyboardEntry(event);
+//		return;
+//	}	
 	
 	//otherwise, check if command-K is pressed
 	
-	if (event.GetKeyCode() == 'K' && event.CmdDown())
-	{
-		//printf("command K\n");
-		m_keyEntryMode = !m_keyEntryMode;
-	}
+//	if (event.GetKeyCode() == 'K' && event.CmdDown())
+//	{
+//		//printf("command K\n");
+//		m_keyEntryMode = !m_keyEntryMode;
+//	}
 
+	
+	// will skip this if not currently in keyboard edit mode
+	if (KeyboardEntry(event)) return;
+	
 	int noteKeyCode = GetNoteValue( event.m_keyCode );
 
 	// change mode edition -- insertion
@@ -2252,6 +2258,8 @@ void MusWindow::OnPaint(wxPaintEvent &event)
     // What shape to draw??
 	
 	
+	// hitting return in keyboard entry mode sends us here for some reason
+	
 	if (!m_editElement && m_newElement && m_currentStaff) {
 		m_currentColour = wxRED;
 		//drawing code here
@@ -2269,73 +2277,31 @@ void MusWindow::OnPaint(wxPaintEvent &event)
 //keyboard entry is based off GarageBand's 'Musical Typing' concept
 //I'm not sure if its very practical to have accidentals other than Bb however...
 
-void MusWindow::KeyboardEntry(wxKeyEvent &event) {
+bool MusWindow::KeyboardEntry(wxKeyEvent &event) {
+	
 	
 	if (event.GetKeyCode() == 'K' && event.CmdDown())
 	{
 		
-		//change from edition to insertion mode?
+		// toggle keyboard mode
 		
 		m_keyEntryMode = !m_keyEntryMode;
-		return;
-	}
+		
+		// wait for next input
+		return false;
+	} else if (!m_keyEntryMode) return false; // not in keyboard mode, return
 	
-//	
-//	// it would be nice if octave switching happened 'instantly'
-//	
-//	switch (event.GetKeyCode()) {
-//		case WXK_RETURN: 
-//			//toggle neume type, if in neumes mode (possibly apply to mensural as well)
-//			printf("testing keyboard hijack\n");
-//			break;
-//		case WXK_SPACE:
-//			//single space: enter next pitch in compound neume
-//			//double space: 'break' the neume
-//			if (lastKeyEntered == WXK_SPACE) {
-//				
-//			} else {
-//				
-//			}
-//			printf("breaking group\n");
-//			break;
-//				case 'Z':
-//			//octave down
-//			m_keyEntryOctave--;
-//			printf("Moving down an octave: %d\n", m_keyEntryOctave);
-//			break;
-//			//ocave up
-//		case 'X':
-//			m_keyEntryOctave++;
-//			printf("Moving up an octave: %d\n", m_keyEntryOctave);
-//			break;
-//		
-//	}
-//	
-//	//for changing pitch
-//	
-//	int pitch;
-//	char keyPitches[] = { 'A', 'W', 'S', 'E', 'D', 'F',			//should move this somewhere else
-//		'T', 'G', 'Y', 'H', 'U', 'J',
-//	'K', 'O', 'L', 'P', ';', '\'' };
-//	
-//	int octave;
-//	int hauteur;
-//	
-//	for (int i = 0; i < 17; i++) {
-//		if (event.GetKeyCode() == keyPitches[i]) {
-//			pitch = 60 + i + (12 * m_keyEntryOctave);
-//			octave = pitch / 12;
-//			hauteur = pitch - (octave * 12);
-//			
-//			if ( m_currentElement && (m_currentElement->IsNote() || m_currentElement->IsNeume())) {
-//				m_currentElement->SetPitch( die[hauteur], octave, m_currentStaff );
-//			}
-//			
-//			break;
-//		}
-//	}
-//	
-//	lastKeyEntered = event.GetKeyCode();
+	// create a keyboard editor object if necessary
+	if (!m_keyEditor) m_keyEditor = new MusKeyboardEditor(this);
+	
+	/* 
+	 * while in keyboard mode:
+	 * if key is supported by keyboard entry, carry out the action
+	 * if not, default (non-keyboard mode) keybind is used.
+	 * this is useful for actions that are already accounted for 
+	 * such as navigation between notes 
+	 */
+	return (m_keyEditor->handleKeyEvent(event));
 	
 }
 

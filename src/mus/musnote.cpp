@@ -693,7 +693,7 @@ void MusNote::note ( wxDC *dc, MusStaff *staff )
 	return;
 }
 
-
+// copying this into MusNeume, should consider refactoring
 void MusNote::leg_line( wxDC *dc, int y_n, int y_p, int xn, unsigned int smaller, int pTaille)
 {
 	int yn, ynt, yh, yb, test, v_decal = m_w->_interl[pTaille];

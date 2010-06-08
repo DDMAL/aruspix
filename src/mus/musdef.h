@@ -312,6 +312,7 @@ VERSION DOS.*/
 #define nVIRGULA 59 // comma
 #define nCEPHALICUS 76 
 #define nPES 77		// bottom of podatus
+#define nDIAMOND 83
 #define nAPOSTROPHE 84
 #define nQUILISMA 93 // squiggly
 #define nPORRECT_4 112 // 4 steps down porrectus
@@ -321,7 +322,7 @@ VERSION DOS.*/
 #define nPORRECT_2 170 // two steps down porrectus
 #define nFCLEF 182 // f clef
 #define nCCLEF 186 // c clef
-#define nDIAMOND 194 //punctum inclinatum parvum (diamond)
+#define nDIAMOND_SMALL 194 //punctum inclinatum parvum (diamond)
 #define nPORRECT_3 218 // 3 steps down porrectus
 #define nNATURAL 227 // becuadros (natural sign)
 #define nWHITEPUNCT 402 // nota excavata (white punctum)

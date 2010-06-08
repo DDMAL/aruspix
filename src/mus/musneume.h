@@ -26,6 +26,8 @@
 #define LEFT_CORNER 0
 #define RIGHT_CORNER 1
 
+#define MAX_LENGTH 1
+
 class MusStaff;
 
 // WDR: class declarations
@@ -41,6 +43,7 @@ class MusStaff;
 typedef struct n_pitch {
 	int code;
 	int oct;
+	unsigned char val; // this will be the same for the first pitch (or null...)
 }NPitch;
 
 class MusNeume: public MusElement
@@ -48,13 +51,15 @@ class MusNeume: public MusElement
 public:
     // constructors and destructors
     MusNeume();
+	MusNeume( unsigned char _val, unsigned char _code );
 	MusNeume( const MusNeume& neume ); // copy contructor
 	MusNeume& operator=( const MusNeume& neume ); // copy assignement;
     virtual ~MusNeume();
     
 	virtual void MusNeume::Draw( wxDC *dc, MusStaff *staff);
 	void MusNeume::note( wxDC *dc, MusStaff *staff );
-
+	void MusNeume::leg_line( wxDC *dc, int y_n, int y_p, int xn, 
+							unsigned int smaller, int pTaille);
 	void MusNeume::append( wxDC *dc, MusStaff *staff ); //for creating multi-note neumes
 	
 	//should have some sort of 'toggle' or 'redraw' method here for switching between styles
@@ -63,20 +68,35 @@ public:
 	virtual void MusNeume::SetPitch( int code, int oct, MusStaff *staff = NULL );
 	virtual void MusNeume::SetValue( int value, MusStaff *staff = NULL, int vflag = 0 );
 	
+	void MusNeume::SetClosed(bool value);
+	
+	bool MusNeume::GetNext();
+	bool MusNeume::GetPrevious();
+	
 	bool MusNeume::IsClosed();
 	
 	//when appending notes, do we discard the object?
 	//may need a helper class for composite neumes.
 	void MusNeume::Append();
 
-	//how many notes are in this neume?
+	//how many pitches are in this neume?
 	int length;
 	
 	//which note of the group has been selected?
 	int n_selected;
 	
-	//the list of actual pitches within the neume
-	NPitch *n_pitches;
+	/**the list of actual pitches within the neume
+	
+	 Pitches for neumes are implemented as follows:
+	 The first pitch of the neume group is the same as the 'code' of the entire neume.
+	 The rest of the pitches (if any) in the neume group are then drawn relative to the
+	 first pitch.	 
+	 
+	 */
+	NPitch *n_pitches;					//dynamically allocate later?
+	
+	//type of neume, usually to get different type of punctum
+	unsigned char val;
 	
 	//different single note 'styles' that can be cycled through
 	int modes[3];

@@ -59,7 +59,7 @@ public:
 	void DrawStaffLines( wxDC *dc, int i = -1);
 	//void ClearElements( wxDC *dc , MusElement *start = NULL );
 	MusElement *GetFirst( );
-	MusElement *GetLast(  );
+	MusElement *GetLast( );
 	MusElement *GetNext( MusElement *element );
 	MusElement *GetPrevious( MusElement *element );
 	MusElement *GetAtPos( int x );

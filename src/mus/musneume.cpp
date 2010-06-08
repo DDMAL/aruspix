@@ -57,8 +57,21 @@ MusNeume::MusNeume():
 	n_pitches = (NPitch*)malloc(sizeof(NPitch));
 	//set initial pitch, for entire neume as well as the first NPitch element
 	code = n_pitches[0].code = 0;
+	val = 0;	//square punctum by default
 	
 	//oct = 4; //? again, following laurent's example
+}
+
+MusNeume::MusNeume( unsigned char _val, unsigned char _code )
+{
+	TYPE = NEUME;
+	length = 1;
+	closed = false;
+	n_selected = 0;
+	n_pitches = (NPitch*)malloc(sizeof(NPitch));
+	
+	code = n_pitches[0].code = _code;
+	val = _val;
 }
 
 MusNeume::MusNeume( const MusNeume& neume )
@@ -71,7 +84,7 @@ MusNeume::MusNeume( const MusNeume& neume )
 	this->n_pitches = neume.n_pitches;
 	this->code = neume.code;
 	//add more...
-} 
+}
 
 MusNeume& MusNeume::operator=( const MusNeume& neume )
 {
@@ -105,9 +118,44 @@ MusNeume::~MusNeume()
 
 bool MusNeume::IsClosed() { return this->closed; }
 
-void MusNeume::Append() {
-
+void MusNeume::SetClosed(bool value) {
+	this->closed = value;
 }
+
+// if open, returns next individual pitch
+// if closed, return false and let musstaff select the next element
+bool MusNeume::GetNext() { 
+	
+	if (closed) return false;
+	else 
+	{
+		if (n_selected < length - 1) 
+		{
+			n_selected++;
+			//refresh window or call drawing code
+		}
+		return true;
+	}
+}
+
+bool MusNeume::GetPrevious() {
+	if (closed) return false;
+	else 
+	{
+		if (n_selected > 0) 
+		{
+			n_selected--;
+			//refresh window or call drawing code
+		} 
+		return true;	//stay in 'individual edit mode' since the neume is open
+	}
+}
+
+void MusNeume::Append() {
+	
+}
+
+// I'm sure this could be optimized
 
 void MusNeume::SetPitch( int code, int oct, MusStaff *staff )
 {
@@ -122,15 +170,23 @@ void MusNeume::SetPitch( int code, int oct, MusStaff *staff )
 	if ((this->code == code) && (this->oct == oct ))
 		return;
 	
-	this->oct = oct;
-	this->code = code;
 	
+	if (this->closed) {
+		this->oct = oct;
+		this->code = code;
+		n_pitches[0].oct = oct;
+		n_pitches[0].code = code;
+	} else {
+		if (n_pitches + n_selected != NULL) {
+			n_pitches[n_selected].oct = oct;
+			n_pitches[n_selected].code = code;
+		}
+	}
+
 	
 	if (m_w)
 		m_w->Refresh();
 }
-
-
 
 void MusNeume::SetValue( int value, MusStaff *staff, int vflag )
 {	
@@ -142,6 +198,12 @@ void MusNeume::SetValue( int value, MusStaff *staff, int vflag )
 	
 	//only a punctum for now, still have to decide the scheme for neume values
 	
+	if ((value < 0 || (value > TC)))
+		 return;
+		
+	this->val = value;
+	
+	//refresh drawing automatically
 	if (m_w)
 		m_w->Refresh();
 }
@@ -161,8 +223,7 @@ void MusNeume::Draw( wxDC *dc, MusStaff *staff)
 	
 	// following the example set by musnote...
 	
-	int oct = this->oct - 4; //?
-	
+	int oct = this->oct - 4; //? 
 	if (!m_w->efface && (this == m_w->m_currentElement))
 		m_w->m_currentColour = wxRED;
 	else if (!m_w->efface && (this->m_cmp_flag == CMP_MATCH))
@@ -172,23 +233,33 @@ void MusNeume::Draw( wxDC *dc, MusStaff *staff)
 	else if (!m_w->efface && (this->m_cmp_flag == CMP_SUBST))
 		m_w->m_currentColour = wxBLUE;	
 	
-	
+	//this stays the same for open and closed mode
 	this->dec_y = staff->y_note((int)this->code, staff->testcle( this->xrel ), oct);
 	
-	 
-		
-	//we will have to deal with 'chords' (ligatures) eventually!
+	
+	
 	
 		//if (!this->chord)	// && (!pelement->ElemInvisible || illumine)) 
 		this->note(dc, staff);
 		//else
 		//	this->accord(dc, staff);
-	//{{{{printf("wtf you can do this?\n");}}}}
+	
+	if (this->IsClosed()) {
+		//neume drawing routine
+	} else {
+		//individual punctum edit mode drawing routine
+	}
+	
+	//just trying a hack here
+	m_w->m_currentColour = wxBLACK;
+	
+	//seems to fix the problem somewhat...
 	
 	
 	return;
 }
 
+//modify this to draw multiple notes in a loop
 void MusNeume::note( wxDC *dc, MusStaff *staff ) 
 {
 	int pTaille = staff->pTaille;
@@ -206,27 +277,97 @@ void MusNeume::note( wxDC *dc, MusStaff *staff )
 	
 	xn += this->offset;
 	
-	//not sure what this rayon business does
 	
-//	//val=this->val;
-//	formval = (this->inv_val && val > RD) ? (val+1) : val;
-//		queueCentre = 0;
-	
+		
 	//rayon = m_w->rayonNote[pTaille][this->dimin];
 	
-	
-	//we may need ledger lines for neumes!...eventually
-	//leg_line( dc, ynn,bby,xl,ledge, pTaille);	// dessin lignes additionnelles
 	
 	//then drawing of the actual notehead itself
 	
 	
+	switch (val) {
+		case 0:
+		fontNo = nPUNCTUM;
+		break;
+		case 1:
+		fontNo = nDIAMOND;
+		break;
+		case 2:
+		fontNo = nCEPHALICUS;
+		break;
+		case 3:
+		fontNo = nPODATUS;
+		break;
+//		case 4:
+//		fontNo = nDIAMOND_SMALL;		//small diamonds don't draw correctly for some reason
+//		break;
+		case 4:
+		fontNo = nQUILISMA;
+		break;
+	}
+		
 	
-		//kay weird stuff happening here
+	// issue with y position — empirically setting y position (for now)
+	// as of 06/04/2010 punctums draw a 7th below the mouse click
+	
+	//more hacks... since neumes dont' have time values (yet)
+	
+	ledge = m_w->ledgerLine[pTaille][2];
+	
+	leg_line( dc, ynn,bby,xl,ledge, pTaille);	// dessin lignes additionnelles	
+	m_w->putneume( dc, this->xrel, ynn + 65, fontNo, staff, this->dimin); //worry about the font later
 	
 	
-	m_w->putneume( dc, this->xrel, ynn + 5, nPUNCTUM, staff, this->dimin); //worry about the font later
+}
+
+void MusNeume::leg_line( wxDC *dc, int y_n, int y_p, int xn, unsigned int smaller, int pTaille)
+{
+	int yn, ynt, yh, yb, test, v_decal = m_w->_interl[pTaille];
+	int dist, xng, xnd;
+	register int i;
 	
+	
+	yh = y_p + m_w->_espace[pTaille]; yb = y_p- m_w->_portee[pTaille]- m_w->_espace[pTaille];
+	
+	if (!in(y_n,yh,yb))                           // note hors-portee?
+	{
+		xng = xn - smaller;
+		xnd = xn + smaller;
+		
+		dist = ((y_n > yh) ? (y_n - y_p) : y_p - m_w->_portee[pTaille] - y_n);
+  		ynt = ((dist % m_w->_interl[pTaille] > 0) ? (dist - m_w->_espace[pTaille]) : dist);
+		test = ynt/ m_w->_interl[pTaille];
+		if (y_n > yh)
+		{	yn = ynt + y_p;
+			v_decal = - m_w->_interl[pTaille];
+		}
+		else
+			yn = y_p - m_w->_portee[pTaille] - ynt;
+		
+		//hPen = (HPEN)SelectObject (hdc, CreatePen (PS_SOLID, _param.EpLignesPORTEE+1, workColor2));
+		//xng = toZoom(xng);
+		//xnd = toZoom(xnd);
+		
+		wxPen pen( *m_w->m_currentColour, m_p->EpLignesPortee, wxSOLID );
+		dc->SetPen( pen );
+		wxBrush brush( *m_w->m_currentColour , wxTRANSPARENT );
+		dc->SetBrush( brush );
+		
+		for (i = 0; i < test; i++)
+		{
+			dc->DrawLine( m_w->ToZoom(xng) , m_w->ToZoomY ( yn ) , m_w->ToZoom(xnd) , m_w->ToZoomY ( yn ) );
+			//m_w->h_line ( dc, xng, xnd, yn, m_w->_param.EpLignesPORTEE);
+			//yh =  toZoom(yn);
+			//MoveToEx (hdc, xng, yh, NULL);
+			//LineTo (hdc, xnd, yh);
+			
+			yn += v_decal;
+		}
+		
+		dc->SetPen( wxNullPen );
+		dc->SetBrush( wxNullBrush );
+	}
+	return;
 }
 
 // WDR: handler implementations for MusNeume

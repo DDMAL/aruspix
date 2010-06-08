@@ -36,24 +36,11 @@ protected:
 	int lastKeyEntered;
 	int m_keyEntryOctave;	
 	MusWindow *w_ptr;
-	virtual void handleMetaKey(int key) {}
+	bool handleMetaKey(int key);
 public:
+	MusKeyboardEditor::MusKeyboardEditor(MusWindow *pwindow);
 	virtual MusKeyboardEditor::~MusKeyboardEditor();
 	
-	void handleKeyEvent(wxKeyEvent &event);
-};
-
-class NeumeKeyEditor : public MusKeyboardEditor 
-{
-	NeumeKeyEditor::NeumeKeyEditor(MusWindow *pwindow);
-protected:
-	void handleMetaKey(int key);
-};
-
-class MensuralKeyEditor : public MusKeyboardEditor 
-{
-	MensuralKeyEditor::MensuralKeyEditor(MusWindow *pwindow);
-protected:
-	void handleMetaKey(int key);
+	bool handleKeyEvent(wxKeyEvent &event);
 };
 

@@ -27,8 +27,67 @@
 
 /** MusKeyboardEditor implementation */
 
-void MusKeyboardEditor::handleKeyEvent(wxKeyEvent &event)
+MusKeyboardEditor::MusKeyboardEditor(MusWindow *pwindow) {
+	lastKeyEntered = NULL;
+	m_keyEntryOctave = 0;
+	w_ptr = pwindow;
+}
+
+MusKeyboardEditor::~MusKeyboardEditor()
+{}
+
+// I should separate this method for neumes and mensural
+
+bool MusKeyboardEditor::handleMetaKey(int key) {
+	//different handling for mensural vs. neumes
+
+	
+	
+	//check for num handling
+	// ascii 0 - 9
+	if (key >= 48 && key <= 57) {
+		if (w_ptr->m_currentElement->IsNote()) {
+			return false;
+		} else if (w_ptr->m_currentElement->IsNeume()) {
+			return true;
+		}
+	}
+	
+	// check for other meta keys
+	if (key == WXK_SPACE) {
+		if (w_ptr->m_currentElement->IsNeume()) {
+			MusNeume *temp = (MusNeume*)w_ptr->m_currentElement;
+			if (temp->IsClosed()) temp->SetClosed(false);
+			else temp->SetClosed(true);
+			
+			
+			printf("Setting closed: %d\n", temp->IsClosed());
+			
+			
+			return true;
+		} else return false;
+	}
+	
+	
+	// M key changes note value (note 'Mode')
+	if (key == 'M') {
+		printf("mode change\n");
+		if (w_ptr->m_currentElement->IsNeume()) {
+			int value = (((MusNeume*)w_ptr->m_currentElement)->val + 1) % 5;
+			w_ptr->m_currentElement->SetValue(value, w_ptr->m_currentStaff, 0);
+		}
+		return true;
+	}
+	
+	return false;
+}
+
+bool MusKeyboardEditor::handleKeyEvent(wxKeyEvent &event)
 {
+	printf("Handling a key event~!\n");
+	
+	bool event_handled = false;
+	
 	int key = event.GetKeyCode();
 	bool oct_switch = false;
 	switch (key)
@@ -41,77 +100,54 @@ void MusKeyboardEditor::handleKeyEvent(wxKeyEvent &event)
 			m_keyEntryOctave++;
 			oct_switch = true;
 			break;
-		case WXK_RETURN:
 		case WXK_SPACE:
-			handleMetaKey(key);
-			break;
+		case 'M': // mode change: toggle value of neume
+		case '1':
+		case '2':
+		case '3':
+		case '4':
+		case '5':
+		case '6':
+		case '7':
+		case '8':
+		case '9':
+		case '0':
+			return handleMetaKey(key);
 	}
 	
 	int pitch, octave, hauteur;
 	
 	MusElement *element = w_ptr->m_currentElement;
 	MusStaff *staff = w_ptr->m_currentStaff;
-	
-	for (int i = 0; i < 17; i++) {
+	int i = 0;
+	for (i; i < 17; i++) {
 		
 		if (event.GetKeyCode() == keyPitches[i] || oct_switch) {
+			//this keybind is supported by MusKeyboardEditor
+			event_handled = true;
+			
+			//printf("key found: %d\n", i);
 			pitch = 60 + i + (12 * m_keyEntryOctave);
 			octave = pitch / 12;
 			hauteur = pitch - (octave * 12);
 			
 			if ( element && 
-				(element->IsNote() || element->IsNeume())) {
+				(element->IsNote() || element->IsNeume())) 
+			{
+				//printf("changing pitch: %d\n", i);
 				element->SetPitch( die[hauteur], octave, staff );
 			}
 			
 			break;
 		}
 		
-	}
+	} 
 	
 	lastKeyEntered = event.GetKeyCode();
+	
+	if (i == 17) event_handled = false;
+	return event_handled;
+	//printf("i: %d\n", i);
+	
+	
 } 
-
-MusKeyboardEditor::~MusKeyboardEditor()
-{}
-
-/** NeumeKeyEditor implementation */
-
-NeumeKeyEditor::NeumeKeyEditor(MusWindow *pwindow)
-{
-	lastKeyEntered = NULL;
-	m_keyEntryOctave = 0;	
-	w_ptr = pwindow;
-}
-
-void NeumeKeyEditor::handleMetaKey(int key) {
-	switch (key)
-	{
-		case WXK_RETURN:
-			break;
-		case WXK_SPACE:
-			break;
-	}
-}
-
-/** MensuralKeyEditor implementation */
-
-MensuralKeyEditor::MensuralKeyEditor(MusWindow *pwindow)
-{
-	lastKeyEntered = NULL;
-	m_keyEntryOctave = 0;
-	w_ptr = pwindow;
-}
-
-void MensuralKeyEditor::handleMetaKey(int key) {
-	switch (key)
-	{
-		case WXK_RETURN:
-			// change note style?
-			break;
-		case WXK_SPACE:
-			// not sure what to do here
-			break;
-	}
-}
-

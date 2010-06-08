@@ -26,6 +26,7 @@ class MusFile;
 class MusElement;
 class MusStaff;
 class MusToolPanel;
+class MusKeyboardEditor;
 
 #include "musnote.h"
 #include "musneume.h"
@@ -303,6 +304,7 @@ public:
 	
 	// keyboard entry mode
 	bool m_keyEntryMode;
+	MusKeyboardEditor *m_keyEditor;
 
     
 private:
@@ -317,7 +319,7 @@ private:
 	void SyncToolPanel(); // synchronize tool dlg (m_currentElement, mode ... )
 
 
-	void KeyboardEntry(wxKeyEvent &event);	//parse key input and send MIDI messages
+	bool KeyboardEntry(wxKeyEvent &event);	//parse key input and send MIDI messages
 	
     // WDR: handler declarations for MusWindow
 	void OnSize( wxSizeEvent &event );
