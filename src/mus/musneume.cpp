@@ -49,39 +49,28 @@ MusNeume::MusNeume():
 	MusElement()
 {
 	
-	
 	TYPE = NEUME;
-	length = 1;
 	closed = false; // automatically build up neume clusters
 	n_selected = 0; // instantiation of class always creates a single note
-	n_pitches = (NPitch*)malloc(sizeof(NPitch));
 	//set initial pitch, for entire neume as well as the first NPitch element
-	code = n_pitches[0].code = 0;
-	val = 0;	//square punctum by default
-	
-	//oct = 4; //? again, following laurent's example
+	//code = n_pitches[0].code = 0;
+
 }
 
 MusNeume::MusNeume( unsigned char _val, unsigned char _code )
 {
 	TYPE = NEUME;
-	length = 1;
 	closed = false;
 	n_selected = 0;
-	n_pitches = (NPitch*)malloc(sizeof(NPitch));
-	
-	code = n_pitches[0].code = _code;
-	val = _val;
+	//code = n_pitches[0].code = _code;
 }
 
 MusNeume::MusNeume( const MusNeume& neume )
 	: MusElement( neume )
 {
 	TYPE = neume.TYPE;
-	this->length = neume.length;
 	this->closed = neume.closed;
 	this->n_selected = neume.n_selected;
-	this->n_pitches = neume.n_pitches;
 	this->code = neume.code;
 	//add more...
 }
@@ -95,10 +84,8 @@ MusNeume& MusNeume::operator=( const MusNeume& neume )
 		TYPE = neume.TYPE;
         // copy each member
         // ...
-		this->length = neume.length;
 		this->closed = neume.closed;
 		this->n_selected = neume.n_selected;
-		this->n_pitches = neume.n_pitches;
 		this->code = neume.code;
 		//add more...
 	}
@@ -108,10 +95,6 @@ MusNeume& MusNeume::operator=( const MusNeume& neume )
 MusNeume::~MusNeume()
 {	
 	//we need to delete all the NPitch elements
-	for (int i = this->length - 1; i >= 0; i--) 
-	{
-		free(this->n_pitches + i);
-	}
 }
 
 //might have to expand on this? probably not though
@@ -125,30 +108,30 @@ void MusNeume::SetClosed(bool value) {
 // if open, returns next individual pitch
 // if closed, return false and let musstaff select the next element
 bool MusNeume::GetNext() { 
-	
-	if (closed) return false;
-	else 
-	{
-		if (n_selected < length - 1) 
-		{
-			n_selected++;
-			//refresh window or call drawing code
-		}
-		return true;
-	}
-}
-
-bool MusNeume::GetPrevious() {
-	if (closed) return false;
-	else 
-	{
-		if (n_selected > 0) 
-		{
-			n_selected--;
-			//refresh window or call drawing code
-		} 
-		return true;	//stay in 'individual edit mode' since the neume is open
-	}
+//	
+//	if (closed) return false;
+//	else 
+//	{
+//		if (n_selected < length - 1) 
+//		{
+//			n_selected++;
+//			//refresh window or call drawing code
+//		}
+//		return true;
+//	}
+//}
+//
+//bool MusNeume::GetPrevious() {
+//	if (closed) return false;
+//	else 
+//	{
+//		if (n_selected > 0) 
+//		{
+//			n_selected--;
+//			//refresh window or call drawing code
+//		} 
+//		return true;	//stay in 'individual edit mode' since the neume is open
+//	}
 }
 
 void MusNeume::Append() {
@@ -159,53 +142,53 @@ void MusNeume::Append() {
 
 void MusNeume::SetPitch( int code, int oct, MusStaff *staff )
 {
-	if ( this->TYPE != NEUME )
-		return;
-
-    // Change the neume pitch
-    // ...
-
-	//copypaste from musnote
-	
-	if ((this->code == code) && (this->oct == oct ))
-		return;
-	
-	
-	if (this->closed) {
-		this->oct = oct;
-		this->code = code;
-		n_pitches[0].oct = oct;
-		n_pitches[0].code = code;
-	} else {
-		if (n_pitches + n_selected != NULL) {
-			n_pitches[n_selected].oct = oct;
-			n_pitches[n_selected].code = code;
-		}
-	}
-
-	
-	if (m_w)
-		m_w->Refresh();
+//	if ( this->TYPE != NEUME )
+//		return;
+//
+//    // Change the neume pitch
+//    // ...
+//
+//	//copypaste from musnote
+//	
+//	if ((this->code == code) && (this->oct == oct ))
+//		return;
+//	
+//	
+//	if (this->closed) {
+//		this->oct = oct;
+//		this->code = code;
+//		n_pitches[0].oct = oct;
+//		n_pitches[0].code = code;
+//	} else {
+//		if (n_pitches + n_selected != NULL) {
+//			n_pitches[n_selected].oct = oct;
+//			n_pitches[n_selected].code = code;
+//		}
+//	}
+//
+//	
+//	if (m_w)
+//		m_w->Refresh();
 }
 
 void MusNeume::SetValue( int value, MusStaff *staff, int vflag )
 {	
-	if ( this->TYPE != NEUME )
-		return;
-
-    // Change the neume value
-    // ...
-	
-	//only a punctum for now, still have to decide the scheme for neume values
-	
-	if ((value < 0 || (value > TC)))
-		 return;
-		
-	this->val = value;
-	
-	//refresh drawing automatically
-	if (m_w)
-		m_w->Refresh();
+//	if ( this->TYPE != NEUME )
+//		return;
+//
+//    // Change the neume value
+//    // ...
+//	
+//	//only a punctum for now, still have to decide the scheme for neume values
+//	
+//	if ((value < 0 || (value > TC)))
+//		 return;
+//		
+//	this->val = value;
+//	
+//	//refresh drawing automatically
+//	if (m_w)
+//		m_w->Refresh();
 }
 
 
@@ -285,26 +268,26 @@ void MusNeume::note( wxDC *dc, MusStaff *staff )
 	//then drawing of the actual notehead itself
 	
 	
-	switch (val) {
-		case 0:
-		fontNo = nPUNCTUM;
-		break;
-		case 1:
-		fontNo = nDIAMOND;
-		break;
-		case 2:
-		fontNo = nCEPHALICUS;
-		break;
-		case 3:
-		fontNo = nPODATUS;
-		break;
-//		case 4:
-//		fontNo = nDIAMOND_SMALL;		//small diamonds don't draw correctly for some reason
+//	switch (val) {
+//		case 0:
+//		fontNo = nPUNCTUM;
 //		break;
-		case 4:
-		fontNo = nQUILISMA;
-		break;
-	}
+//		case 1:
+//		fontNo = nDIAMOND;
+//		break;
+//		case 2:
+//		fontNo = nCEPHALICUS;
+//		break;
+//		case 3:
+//		fontNo = nPODATUS;
+//		break;
+////		case 4:
+////		fontNo = nDIAMOND_SMALL;		//small diamonds don't draw correctly for some reason
+////		break;
+//		case 4:
+//		fontNo = nQUILISMA;
+//		break;
+//	}
 		
 	
 	// issue with y position — empirically setting y position (for now)

@@ -671,8 +671,6 @@ void MusWindow::UpdateZoomValues()
 	}*/
 
 	m_charDefin = m_page->defin;
-	
-	printf("Char Defin: %d\n", m_charDefin);
 }
 
 
@@ -1750,11 +1748,19 @@ void MusWindow::OnKeyDown(wxKeyEvent &event)
 			OnEndEdition();
 		}		
 		else // navigation avec les fleches
-		{
+		{	
 			if ( event.GetKeyCode() == WXK_RIGHT || event.GetKeyCode() == WXK_SPACE ) 
 			{
+				
 				if ( m_currentStaff->GetNext( m_currentElement ) )
-					m_currentElement = m_currentStaff->GetNext( m_currentElement );
+				{
+					if (m_currentElement->IsNote()) { 
+						m_currentElement = m_currentStaff->GetNext( m_currentElement );
+					} else if (m_currentElement->IsNeume()) {
+						MusNeume *temp = (MusNeume *) m_currentElement;
+						temp->GetNext();
+					}
+				}
 				else if ( m_page->GetNext( m_currentStaff ) )
 				{
 					m_currentStaff = m_page->GetNext( m_currentStaff );
@@ -1765,7 +1771,15 @@ void MusWindow::OnKeyDown(wxKeyEvent &event)
 			else if ( event.GetKeyCode() == WXK_LEFT )
 			{
 				if ( m_currentStaff->GetPrevious( m_currentElement ) )
-					m_currentElement = m_currentStaff->GetPrevious( m_currentElement );
+				{
+					if (m_currentElement->IsNote()) { 
+						m_currentElement = m_currentStaff->GetPrevious( m_currentElement );
+					} else if (m_currentElement->IsNeume()) {
+						MusNeume *temp = (MusNeume *) m_currentElement;
+						temp->GetPrevious();
+					}
+
+				}
 				else if ( m_page->GetPrevious( m_currentStaff ) )
 				{
 					m_currentStaff = m_page->GetPrevious( m_currentStaff );

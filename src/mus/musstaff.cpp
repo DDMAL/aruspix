@@ -199,6 +199,8 @@ MusElement *MusStaff::GetNext( MusElement *element )
 	if ( !element || m_elements.IsEmpty() || ( element->no >= (int)m_elements.GetCount() - 1 ) )
 		return NULL;
 
+	
+	
 	//wxASSERT_MSG( m_elements.Index( *element) != wxNOT_FOUND, 
 	//	"\nL'element recherche n'appartient pas à la portee" );
 

@@ -40,11 +40,25 @@ class MusStaff;
 //----------------------------------------------------------------------------
 
 
-typedef struct n_pitch {
-	int code;
-	int oct;
-	unsigned char val; // this will be the same for the first pitch (or null...)
-}NPitch;
+//typedef struct n_pitch {
+//	int code;
+//	int oct;
+//	unsigned char val; // this will be the same for the first pitch (or null...)
+//}NPitch;
+//
+
+class MusNeumePitch
+{
+public:
+	MusNeumePitch();
+	MusNeumePitch(int code, int oct, unsigned char val);
+protected:
+	void MusNeumePitch::SetPitch( int code, int oct );
+	void MusNeumePitch::SetValue( int value );
+	
+	
+	virtual ~MusNeumePitch();
+}; 
 
 class MusNeume: public MusElement
 {
@@ -80,7 +94,7 @@ public:
 	void MusNeume::Append();
 
 	//how many pitches are in this neume?
-	int length;
+	//int length;
 	
 	//which note of the group has been selected?
 	int n_selected;
@@ -93,13 +107,11 @@ public:
 	 first pitch.	 
 	 
 	 */
-	NPitch *n_pitches;					//dynamically allocate later?
+	//NPitch *n_pitches;					//dynamically allocate later?
+
 	
 	//type of neume, usually to get different type of punctum
-	unsigned char val;
-	
-	//different single note 'styles' that can be cycled through
-	int modes[3];
+	//unsigned char val;
 	
 	// possible places for ligatures to 'attach'
 	// hotCorners[upper/lower][left/right]
@@ -113,7 +125,6 @@ public:
 public:
 	// WDR: member variable declarations for MusNeume
 	int size;	//how many notes in group
-	wxArrayPtrVoid n_list; //the list of notes in this group
 	
 private:
     // WDR: handler declarations for MusNeume

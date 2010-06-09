@@ -73,8 +73,8 @@ bool MusKeyboardEditor::handleMetaKey(int key) {
 	if (key == 'M') {
 		printf("mode change\n");
 		if (w_ptr->m_currentElement->IsNeume()) {
-			int value = (((MusNeume*)w_ptr->m_currentElement)->val + 1) % 5;
-			w_ptr->m_currentElement->SetValue(value, w_ptr->m_currentStaff, 0);
+			//int value = (((MusNeume*)w_ptr->m_currentElement)->val + 1) % 5;
+			//w_ptr->m_currentElement->SetValue(value, w_ptr->m_currentStaff, 0);
 		}
 		return true;
 	}
