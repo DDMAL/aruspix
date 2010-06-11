@@ -819,10 +819,36 @@ void MusWindow::SetToolPanel( MusToolPanel *toolpanel )
 	SyncToolPanel();
 }
 
-void MusWindow::SetNotationMode( bool mode )
-{
-	m_notation_mode = mode;
+//void MusWindow::SetNotationMode( bool mode ) { m_notation_mode = mode; }
+
+
+// this method in a sense acts as both a getter and a setter - 
+// The last selected note object (mensural or neume) determines the notation mode
+// This is a convenience method that can be called in situations where the notation
+// mode needs to be determined
+
+bool MusWindow::GetNotationMode() 
+{ 
+	if (m_currentElement->IsNote())
+		m_notation_mode = MENSURAL_MODE;
+	else if (m_currentElement->IsNeume())
+		m_notation_mode = NEUMES_MODE;
+	
+	return m_notation_mode; 
 }
+
+// convenience method to return if the selected element is a note or neume object
+// REFACTORING: eventually these classes should be merged (subclassed from a higher
+// encapsulated note superclass)
+
+bool MusWindow::IsNoteSelected() 
+{ 
+	if (!m_currentElement) 
+		return false;
+	else
+		return m_currentElement->IsNote() || m_currentElement->IsNeume();
+}
+
 
 void MusWindow::SetInsertMode( bool mode )
 {
@@ -1475,22 +1501,6 @@ void MusWindow::OnKeyDown(wxKeyEvent &event)
 {
 	if ( !m_page || !m_currentStaff )
 		return;
-	
-//	//hijack the keyboard
-//	if (m_keyEntryMode) 
-//	{
-//		KeyboardEntry(event);
-//		return;
-//	}	
-	
-	//otherwise, check if command-K is pressed
-	
-//	if (event.GetKeyCode() == 'K' && event.CmdDown())
-//	{
-//		//printf("command K\n");
-//		m_keyEntryMode = !m_keyEntryMode;
-//	}
-
 	
 	// will skip this if not currently in keyboard edit mode
 	if (KeyboardEntry(event)) return;

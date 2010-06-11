@@ -22,6 +22,7 @@
 #include "rec.h"
 #include "recmus.h"
 #include "recfile.h"
+#include "axdefs.h"
 
 #include "app/axapp.h"
 

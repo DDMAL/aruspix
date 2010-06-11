@@ -20,6 +20,7 @@
 #include "muswindow.h"
 #include "musstaff.h"
 #include "muselement.h"
+#include "axdefs.h"
 
 #include "app/axapp.h"
 

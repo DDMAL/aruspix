@@ -20,6 +20,7 @@
 #include "muswindow.h"
 #include "muspage.h"
 #include "musfile.h"
+#include "axdefs.h"
 
 // WDR: class implementations
 

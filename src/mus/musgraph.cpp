@@ -21,6 +21,7 @@
 #include "muswindow.h"
 #include "muspage.h"
 #include "musfile.h"
+#include "axdefs.h"
 
 // WDR: class implementations
 
@@ -204,7 +205,7 @@ void MusWindow::putneume ( wxDC *dc, int x, int y, unsigned char c, MusStaff *st
 	 }
 	 */
 	
-	if ( dc)
+	if ( dc )
 	{	
 		dc->SetBackground( *wxBLUE );
 		dc->SetBackgroundMode( wxTRANSPARENT );

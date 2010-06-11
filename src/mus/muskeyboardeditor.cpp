@@ -36,7 +36,7 @@ MusKeyboardEditor::MusKeyboardEditor(MusWindow *pwindow) {
 MusKeyboardEditor::~MusKeyboardEditor()
 {}
 
-// I should separate this method for neumes and mensural
+// TODO: I should separate this method for neumes and mensural
 
 bool MusKeyboardEditor::handleMetaKey(int key) {
 	//different handling for mensural vs. neumes
@@ -44,8 +44,8 @@ bool MusKeyboardEditor::handleMetaKey(int key) {
 	
 	
 	//check for num handling
-	// ascii 0 - 9
-	if (key >= 48 && key <= 57) {
+
+	if (key >= 48 && key <= 57) {	// ascii 0 - 9
 		if (w_ptr->m_currentElement->IsNote()) {
 			return false;
 		} else if (w_ptr->m_currentElement->IsNeume()) {
@@ -73,10 +73,27 @@ bool MusKeyboardEditor::handleMetaKey(int key) {
 	if (key == 'M') {
 		printf("mode change\n");
 		if (w_ptr->m_currentElement->IsNeume()) {
+			// closed vs. open editing handling
+			MusNeume *temp = (MusNeume*)w_ptr->m_currentElement;
+			int value;
+			if (temp->IsClosed()) {
+				//do stuff
+			} else {
+				temp->SetValue((temp->GetValue() + 1) % 5, w_ptr->m_currentStaff, 0);
+			}
 			//int value = (((MusNeume*)w_ptr->m_currentElement)->val + 1) % 5;
 			//w_ptr->m_currentElement->SetValue(value, w_ptr->m_currentStaff, 0);
 		}
 		return true;
+	}
+	
+	if (key == 'N') {
+		printf("appending pitch\n");
+		if (w_ptr->m_currentElement->IsNeume())
+		{
+			((MusNeume *)w_ptr->m_currentElement)->Append();
+			return true;
+		} 
 	}
 	
 	return false;
@@ -102,6 +119,7 @@ bool MusKeyboardEditor::handleKeyEvent(wxKeyEvent &event)
 			break;
 		case WXK_SPACE:
 		case 'M': // mode change: toggle value of neume
+		case 'N': // append punctum in open mode
 		case '1':
 		case '2':
 		case '3':
@@ -131,8 +149,7 @@ bool MusKeyboardEditor::handleKeyEvent(wxKeyEvent &event)
 			octave = pitch / 12;
 			hauteur = pitch - (octave * 12);
 			
-			if ( element && 
-				(element->IsNote() || element->IsNeume())) 
+			if ( w_ptr->IsNoteSelected() ) 
 			{
 				//printf("changing pitch: %d\n", i);
 				element->SetPitch( die[hauteur], octave, staff );

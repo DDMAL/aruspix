@@ -119,7 +119,14 @@ public:
 	// get the current tool
 	int GetToolType( );
 	void SetToolType( int type );
-	void SetNotationMode( bool mode );
+//	void SetNotationMode( bool mode );
+	
+	// simply returns the value of the last note-type element (mensural or neume)
+	bool GetNotationMode();
+	
+	// convenience method that should be changed after refactoring
+	bool MusWindow::IsNoteSelected();
+	
 	void SetInsertMode( bool insert );
     
     // WDR: method declarations for MusWindow

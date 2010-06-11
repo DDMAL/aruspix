@@ -23,6 +23,7 @@
 #include "musnote.h"
 #include "muspage.h"
 #include "muswindow.h"
+#include "axdefs.h"
 
 #include <math.h>
 

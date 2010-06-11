@@ -18,6 +18,8 @@
 #include "wx/dynarray.h"
 
 #include "muselement.h"
+#include <vector>
+#include "neumedef.h"
 
 // 'hot corners' defines...
 
@@ -47,17 +49,26 @@ class MusStaff;
 //}NPitch;
 //
 
+
 class MusNeumePitch
 {
 public:
 	MusNeumePitch();
-	MusNeumePitch(int code, int oct, unsigned char val);
-protected:
+	MusNeumePitch( int code, int oct, unsigned char val );
+	MusNeumePitch( const MusNeumePitch& pitch );
+	MusNeumePitch& MusNeumePitch::operator=( const MusNeumePitch& pitch );
+	virtual ~MusNeumePitch() {}
 	void MusNeumePitch::SetPitch( int code, int oct );
 	void MusNeumePitch::SetValue( int value );
+	int MusNeumePitch::GetValue( );
+	int MusNeumePitch::getPunctumType( );
 	
+	int MusNeumePitch::Compare(MusNeumePitch *other);
 	
-	virtual ~MusNeumePitch();
+//protected:
+	int code;
+	int oct;
+	unsigned char val;
 }; 
 
 class MusNeume: public MusElement
@@ -71,7 +82,9 @@ public:
     virtual ~MusNeume();
     
 	virtual void MusNeume::Draw( wxDC *dc, MusStaff *staff);
-	void MusNeume::note( wxDC *dc, MusStaff *staff );
+//	void MusNeume::note( wxDC *dc, MusStaff *staff );
+	void MusNeume::DrawNeume( wxDC *dc, MusStaff *staff );
+	void MusNeume::DrawPunctums( wxDC *dc, MusStaff *staff );
 	void MusNeume::leg_line( wxDC *dc, int y_n, int y_p, int xn, 
 							unsigned int smaller, int pTaille);
 	void MusNeume::append( wxDC *dc, MusStaff *staff ); //for creating multi-note neumes
@@ -81,6 +94,12 @@ public:
     // WDR: method declarations for MusNeume
 	virtual void MusNeume::SetPitch( int code, int oct, MusStaff *staff = NULL );
 	virtual void MusNeume::SetValue( int value, MusStaff *staff = NULL, int vflag = 0 );
+	int MusNeume::GetValue();
+	
+	//helper debug method
+	void MusNeume::printNeumeList();
+	
+	int MusNeume::GetPitchRange();
 	
 	void MusNeume::SetClosed(bool value);
 	
@@ -97,7 +116,7 @@ public:
 	//int length;
 	
 	//which note of the group has been selected?
-	int n_selected;
+	unsigned int n_selected;
 	
 	/**the list of actual pitches within the neume
 	
@@ -107,8 +126,8 @@ public:
 	 first pitch.	 
 	 
 	 */
-	//NPitch *n_pitches;					//dynamically allocate later?
-
+	std::vector<MusNeumePitch*> n_pitches;
+	std::vector<MusNeumePitch*>::iterator iter;
 	
 	//type of neume, usually to get different type of punctum
 	//unsigned char val;
