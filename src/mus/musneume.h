@@ -65,7 +65,6 @@ public:
 	
 	int MusNeumePitch::Compare(MusNeumePitch *other);
 	
-//protected:
 	int code;
 	int oct;
 	unsigned char val;
@@ -99,6 +98,10 @@ public:
 	//helper debug method
 	void MusNeume::printNeumeList();
 	
+	int MusNeume::getYPos(int index, MusStaff *staff);
+	
+	int MusNeume::GetMaxPitch();
+	int MusNeume::GetMinPitch();
 	int MusNeume::GetPitchRange();
 	
 	void MusNeume::SetClosed(bool value);
@@ -128,6 +131,10 @@ public:
 	 */
 	std::vector<MusNeumePitch*> n_pitches;
 	std::vector<MusNeumePitch*>::iterator iter;
+	
+	int p_max; //the highest pitch in the neume group, relative to base pitch
+	int p_min; //lowest pitch, relative to base pitch
+	int p_range; // the pitch range, getter acts as setter!
 	
 	//type of neume, usually to get different type of punctum
 	//unsigned char val;

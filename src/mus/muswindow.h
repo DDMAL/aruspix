@@ -170,6 +170,7 @@ public:
 	void putfontfast ( wxDC *dc, int x, int y, unsigned char c );
 	void putstring ( wxDC *dc, int x, int y, wxString s, int centrer, int pTaille = 0);
 	void putlyric ( wxDC *dc, int x, int y, wxString s, int pTaille = 0, bool cursor = false);
+	void box( wxDC *dc, int x1, int y1, int x2, int y2);
 	void rect_plein2( wxDC *dc, int x1, int y1, int x2, int y2);
 	int hGrosseligne ( wxDC *dc, int x1, int y1, int x2, int y2, int decal);
 	int pointer ( wxDC *dc, int x, int b, int decal, MusStaff *staff );

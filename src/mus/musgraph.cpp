@@ -90,6 +90,19 @@ void MusWindow::h_bline ( wxDC *dc, int x1, int x2, int y1, int nbr)
 	return;
 }
 
+//draw a box, lol. It's like a rectangle, but not filled in.
+void MusWindow::box( wxDC *dc, int x1, int y1, int x2, int y2)
+{
+	wxASSERT_MSG( dc, "DC cannot be NULL");
+	
+	wxPen pen( *m_currentColour, 5, wxSOLID);
+	dc->SetPen( pen );
+	
+	dc->DrawRectangle( ToZoom(x1), ToZoomY(y1), ToZoom(x2 - x1), ToZoom(y1 - y2));
+	dc->SetPen( wxNullPen );
+	
+	return;
+}
 
 void MusWindow::rect_plein2( wxDC *dc, int x1, int y1, int x2, int y2)	/* dessine rectangle plein */
 {	
