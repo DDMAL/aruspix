@@ -1766,10 +1766,10 @@ void MusWindow::OnKeyDown(wxKeyEvent &event)
 				{
 					if (m_currentElement->IsNote()) { 
 						m_currentElement = m_currentStaff->GetNext( m_currentElement );
-					} else if (m_currentElement->IsNeume()) {
-						MusNeume *temp = (MusNeume *) m_currentElement;
-						temp->GetNext();
-					}
+					} //else if (m_currentElement->IsNeume()) {
+					//	MusNeume *temp = (MusNeume *) m_currentElement;
+					//	temp->GetNext();
+					//}
 				}
 				else if ( m_page->GetNext( m_currentStaff ) )
 				{
@@ -1784,10 +1784,10 @@ void MusWindow::OnKeyDown(wxKeyEvent &event)
 				{
 					if (m_currentElement->IsNote()) { 
 						m_currentElement = m_currentStaff->GetPrevious( m_currentElement );
-					} else if (m_currentElement->IsNeume()) {
-						MusNeume *temp = (MusNeume *) m_currentElement;
-						temp->GetPrevious();
-					}
+					}// else if (m_currentElement->IsNeume()) {
+					//	MusNeume *temp = (MusNeume *) m_currentElement;
+					//	temp->GetPrevious();
+					//}
 
 				}
 				else if ( m_page->GetPrevious( m_currentStaff ) )

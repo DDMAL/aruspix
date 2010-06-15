@@ -55,17 +55,20 @@ bool MusKeyboardEditor::handleMetaKey(int key) {
 	
 	// check for other meta keys
 	if (key == WXK_SPACE) {
-		if (w_ptr->m_currentElement->IsNeume()) {
-			MusNeume *temp = (MusNeume*)w_ptr->m_currentElement;
-			if (temp->IsClosed()) temp->SetClosed(false);
-			else temp->SetClosed(true);
-			
-			
-			printf("Setting closed: %d\n", temp->IsClosed());
-			
-			
-			return true;
-		} else return false;
+		if (w_ptr->m_currentElement)
+		{
+			if (w_ptr->m_currentElement->IsNeume()) {
+				MusNeume *temp = (MusNeume*)w_ptr->m_currentElement;
+				if (temp->IsClosed()) temp->SetClosed(false);
+				else temp->SetClosed(true);
+				
+				
+				printf("Setting closed: %d\n", temp->IsClosed());
+				
+				
+				return true;
+			} else return false;
+		}
 	}
 	
 	
@@ -88,9 +91,9 @@ bool MusKeyboardEditor::handleMetaKey(int key) {
 	}
 	
 	if (key == 'N') {
-		printf("appending pitch\n");
 		if (w_ptr->m_currentElement->IsNeume())
 		{
+			printf("appending pitch\n");
 			((MusNeume *)w_ptr->m_currentElement)->Append();
 			return true;
 		} 
@@ -101,7 +104,7 @@ bool MusKeyboardEditor::handleMetaKey(int key) {
 
 bool MusKeyboardEditor::handleKeyEvent(wxKeyEvent &event)
 {
-	printf("Handling a key event~!\n");
+//	printf("Handling a key event~!\n");
 	
 	bool event_handled = false;
 	

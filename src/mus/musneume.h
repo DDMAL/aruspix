@@ -21,13 +21,6 @@
 #include <vector>
 #include "neumedef.h"
 
-// 'hot corners' defines...
-
-#define UPPER 0
-#define LOWER 1
-#define LEFT_CORNER 0
-#define RIGHT_CORNER 1
-
 #define MAX_LENGTH 1
 
 class MusStaff;
