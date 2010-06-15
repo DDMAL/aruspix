@@ -95,7 +95,9 @@ void MusWindow::box( wxDC *dc, int x1, int y1, int x2, int y2)
 {
 	wxASSERT_MSG( dc, "DC cannot be NULL");
 	
-	wxPen pen( *m_currentColour, 5, wxSOLID);
+	SwapY( &y1, &y2 );
+
+	wxPen pen( *m_currentColour, 3, wxSOLID);
 	dc->SetPen( pen );
 	
 	dc->DrawRectangle( ToZoom(x1), ToZoomY(y1), ToZoom(x2 - x1), ToZoom(y1 - y2));
@@ -186,83 +188,38 @@ int MusWindow::pointer ( wxDC *dc, int x, int b, int decal, MusStaff *staff )
 	super-hack time
  */
 
-void MusWindow::putneume ( wxDC *dc, int x, int y, unsigned char c, MusStaff *staff, int dimin)
-{
-	int pTaille = staff->pTaille;
-	int fontCorr = this->hautFontCorr[pTaille][dimin];
-	
-	wxASSERT_MSG( dc , "DC cannot be NULL");
-	
-	if (staff->notAnc && (unsigned char)c >= OFFSETNOTinFONT)
-	{	
-		c+= N_FONT;
-		if (dimin && in (c, 227, 229))	// les trois clefs
-		{	
-			c+= 14;	// les cles de tablature
-			dc->SetFont( m_activeChantFonts[ pTaille][0] );
-			fontCorr = this->hautFontCorr[ pTaille][0];
-		}
-	}
-	if (!staff->notAnc || !in (c, 241, 243))	// tout sauf clefs de tablature
-		dc->SetFont( m_activeChantFonts[ pTaille][ dimin] );
-	/*
-	 //if ( !pTaille && !dimin && !illumine)
-	 #if defined (__WXMSW__)
-	 if ( !pTaille && !dimin )
-	 #else
-	 if ( !pTaille && !dimin &&  (*m_currentColour != m_black ) )
-	 #endif
-	 {
-	 putfontfast( dc, x, y, c );
-	 return;
-	 }
-	 */
-	
-	if ( dc )
-	{	
-		dc->SetBackground( *wxBLUE );
-		dc->SetBackgroundMode( wxTRANSPARENT );
-		
-		m_str = (char)c;
-		dc->SetTextForeground( *m_currentColour );
-		wxPen pen( *m_currentColour, 1, wxSOLID );
-		dc->SetPen( pen );
-		wxBrush brush( *m_currentColour, wxSOLID );
-		
-		dc->SetBrush( brush );
-		
-		dc->DrawText( m_str, ToZoom(x), ToZoomY(y + fontCorr) );
-		
-		dc->SetPen( wxNullPen );
-		dc->SetBrush( wxNullBrush );
-	}
-	
-	return;
-}
 
-
-
-
-void MusWindow::putfont ( wxDC *dc, int x, int y, unsigned char c, MusStaff *staff, int dimin)
+void MusWindow::putfont ( wxDC *dc, int x, int y, unsigned char c, 
+						 MusStaff *staff, int dimin, int font_flag)
 {  
 	int pTaille = staff->pTaille;
 	int fontCorr = this->hautFontCorr[pTaille][dimin];
 
 	wxASSERT_MSG( dc , "DC cannot be NULL");
 
+	//need to add handling for festa dies font
+	// m_activeChantFonts
 	if (staff->notAnc && (unsigned char)c >= OFFSETNOTinFONT)
 	{	
 		c+= N_FONT;
 		if (dimin && in (c, 227, 229))	// les trois clefs
 		{	
+			if (font_flag == NEUME)
+			{
+				dc->SetFont( m_activeChantFonts[ pTaille][0] );
+			} else dc->SetFont( m_activeFonts[ pTaille][0] ); 
+			
 			c+= 14;	// les cles d===e tablature
-			dc->SetFont( m_activeFonts[ pTaille][0] );
 			fontCorr = this->hautFontCorr[ pTaille][0];
 		}
 	}
 	if (!staff->notAnc || !in (c, 241, 243))	// tout sauf clefs de tablature
-		dc->SetFont( m_activeFonts[ pTaille ][ dimin ] );
-/*
+	{
+		if (font_flag == NEUME)
+			dc->SetFont( m_activeChantFonts[ pTaille][ dimin ] );
+		else dc->SetFont( m_activeFonts[ pTaille ][ dimin ] );
+	}
+		/*	
 	//if ( !pTaille && !dimin && !illumine)
 #if defined (__WXMSW__)
 	if ( !pTaille && !dimin )
@@ -288,6 +245,8 @@ void MusWindow::putfont ( wxDC *dc, int x, int y, unsigned char c, MusStaff *sta
 
 		dc->SetBrush( brush );
 
+		//printf("Drawing text here, x: %d, y: %d, y (zoomed): %d, y + fontcorr: %d\n"
+		//	   , ToZoom(x), y, ToZoomY(y), ToZoomY(y + fontCorr));
 		dc->DrawText( m_str, ToZoom(x), ToZoomY(y + fontCorr) );
 
 		dc->SetPen( wxNullPen );

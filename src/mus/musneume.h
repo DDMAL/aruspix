@@ -75,6 +75,7 @@ public:
     
 	virtual void MusNeume::Draw( wxDC *dc, MusStaff *staff);
 //	void MusNeume::note( wxDC *dc, MusStaff *staff );
+	void MusNeume::DrawBox( wxDC *dc, MusStaff *staff );
 	void MusNeume::DrawNeume( wxDC *dc, MusStaff *staff );
 	void MusNeume::DrawPunctums( wxDC *dc, MusStaff *staff );
 	void MusNeume::leg_line( wxDC *dc, int y_n, int y_p, int xn, 

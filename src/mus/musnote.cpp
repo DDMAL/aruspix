@@ -321,12 +321,12 @@ void MusNote::Draw( wxDC *dc, MusStaff *staff)
 		this->dec_y = staff->y_note((int)this->code, staff->testcle( this->xrel ), oct);
 
 		//if (!pelement->ElemInvisible || illumine) 
-		{	
-			if (!this->chord)	// && (!pelement->ElemInvisible || illumine))
-				this->note(dc, staff);
+		//{	
+		if (!this->chord)	// && (!pelement->ElemInvisible || illumine))
+			this->note(dc, staff);
 			//else
 			//	this->accord(dc, staff);
-		}
+		//}
 	}
 	else
 	{	//if (!transp_sil)
@@ -474,7 +474,7 @@ void MusNote::note ( wxDC *dc, MusStaff *staff )
 		else
 			fontNo = sRONDE_B;
 
-		m_w->putfont( dc,x1, ynn, fontNo, staff, this->dimin);
+		m_w->putfont( dc,x1, ynn, fontNo, staff, this->dimin, NOTE);
 		decval = ynn;
 	}
 	else
@@ -486,7 +486,7 @@ void MusNote::note ( wxDC *dc, MusStaff *staff )
 		else
 			fontNo = sNOIRE;
 
-		m_w->putfont( dc,x1, ynn, fontNo, staff, this->dimin);
+		m_w->putfont( dc,x1, ynn, fontNo, staff, this->dimin, NOTE);
 
 		milieu = bby - m_w->_interl[pTaille]*2;
 
@@ -564,9 +564,9 @@ void MusNote::note ( wxDC *dc, MusStaff *staff )
 					m_w->v_bline ( dc,y2,(int)(ynn+ m_w->v4_unit[pTaille]),x2, m_w->ToZoom(m_p->EpQueueNote) );//queue en descendant
 				if (formval > NR)
 				{
-					m_w->putfont( dc,x2,y2,sCROCHET_H, staff, this->dimin);
+					m_w->putfont( dc,x2,y2,sCROCHET_H, staff, this->dimin, NOTE);
 					for (i=0; i < valdec; i++)
-						m_w->putfont( dc,x2,y2-=vertical,sCROCHET_H, staff, this->dimin);
+						m_w->putfont( dc,x2,y2-=vertical,sCROCHET_H, staff, this->dimin, NOTE);
 				}
 			}
 			else
@@ -591,9 +591,10 @@ void MusNote::note ( wxDC *dc, MusStaff *staff )
 				int cr_offset = m_w->rayonNote[pTaille][this->dimin];
 				if (formval > NR)
 				{
-					m_w->putfont( dc,x2 - cr_offset,y2,sCROCHET_B , staff, this->dimin);
+					m_w->putfont( dc,x2 - cr_offset,y2,sCROCHET_B , staff, this->dimin, NOTE);
 					for (i=0; i < valdec; i++)
-						m_w->putfont( dc,x2  - cr_offset,y2+=vertical,sCROCHET_B, staff, this->dimin);
+						m_w->putfont( dc,x2  - cr_offset,y2+=vertical,sCROCHET_B, staff, 
+									 this->dimin, NOTE);
 				}
 			}
 		}	// fin de dessin queues et crochets
@@ -879,7 +880,7 @@ void MusNote::s_nr ( wxDC *dc, int a, int b, int valeur, MusStaff *staff)
 {
 	int _intrl = m_w->_interl[staff->pTaille];
 
-	m_w->putfont( dc, a, (b + staff->yrel), sSilNOIRE + (valeur-NR), staff, this->dimin);
+	m_w->putfont( dc, a, (b + staff->yrel), sSilNOIRE + (valeur-NR), staff, this->dimin, NOTE);
 
 	//m_w->putfont( dc, a, (b + staff->yrel - m_w->_espace[staff->pTaille]), '#', staff, this->dimin);
 

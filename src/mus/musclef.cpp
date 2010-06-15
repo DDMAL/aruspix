@@ -117,7 +117,7 @@ void MusSymbol::dess_cle ( wxDC *dc, int i, MusStaff *pportee)
 		a+= m_w->_pas;
 
 	//if ((!this->ElemInvisible || illumine) && (!modMetafile || in (chk->xrel, drawRect.left, drawRect.right) && in (b, drawRect.top, drawRect.bottom)))
-		m_w->putfont ( dc,a,b,(int)sym, pportee, this->dimin );
+		m_w->putfont ( dc,a,b,(int)sym, pportee, this->dimin, SYMB );
 	dimin = dim;
 
 	char dum = 0;

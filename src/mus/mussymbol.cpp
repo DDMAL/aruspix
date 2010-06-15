@@ -322,21 +322,21 @@ void MusSymbol::dess_symb( wxDC *dc, int x, int y, int symc, int symf, MusStaff 
 	{	y += pportee->yrel;
 		switch (symf)
 		{	case BECAR :  symc=sBECARRE; break;
-			case D_DIESE : symc=sDIESE; m_w->putfont ( dc, x, y, symc, pportee, this->dimin);
+			case D_DIESE : symc=sDIESE; m_w->putfont ( dc, x, y, symc, pportee, this->dimin, SYMB);
 						y += 7*m_w->_espace[pportee->pTaille]; // LP
 			case DIESE : symc=sDIESE; break;
-			case D_BEMOL :  symc=sBEMOL; m_w->putfont ( dc, x, y, symc, pportee, this->dimin);
+			case D_BEMOL :  symc=sBEMOL; m_w->putfont ( dc, x, y, symc, pportee, this->dimin, SYMB);
 						y += 7*m_w->_espace[pportee->pTaille]; // LP
 			case BEMOL :  symc=sBEMOL; break;
 			case Q_DIESE : symc=sQDIESE; break;
 			case Q_BEMOL :  symc=sQBEMOL; break;
 		}
-		m_w->putfont ( dc, x, y, symc, pportee, this->dimin);
+		m_w->putfont ( dc, x, y, symc, pportee, this->dimin, SYMB);
 	}
 	else if (symc == AX_VARIANT)
 	{	
 		y += pportee->yrel;
-		m_w->putfont ( dc, x, y, '+', pportee, this->dimin);
+		m_w->putfont ( dc, x, y, '+', pportee, this->dimin, SYMB);
 	}
 	else
 		switch (symf)

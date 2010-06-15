@@ -41,7 +41,7 @@ public:
 	int filtrcod( int codElement, int *oct );
 	bool IsNote() { return ( TYPE == NOTE ); }
 	bool IsSymbol() { return ( TYPE == SYMB ); }
-    bool IsNeume() { return ( TYPE == NEUME ); }
+    bool IsNeume() { return ( TYPE == NEUME ); } // always crash here
 	wxClientDC *MusElement::InitAndClear( MusStaff *staff ); // init dc and clear element only if necessary
     MusElement *GetNext( MusStaff *staff );
 
