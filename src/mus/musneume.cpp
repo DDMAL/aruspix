@@ -289,6 +289,53 @@ void MusNeume::Append() {
 	
 }
 
+void MusNeume::InsertPitchAfterSelected()
+{
+	if (this->IsClosed()) return; //can only insert pitches in open mode
+	// shouldn't need this since we're using n_selected as the index
+	//	if (index <= 0 || index >= n_pitches.size()) return;
+	
+	MusNeumePitch *new_pitch;
+	
+	//insert at front
+	iter = n_pitches.begin();
+//	if (n_selected == n_pitches.size() - 1) { //append pitch at end
+//		iter = n_pitches.back(); 
+//	} else { //insert in middle
+		for (unsigned int i = 0; i < n_selected; i++, iter++); //iterate to selected element
+//	}
+	
+	
+	new_pitch = new MusNeumePitch((*iter)->code, (*iter)->oct, (*iter)->val);
+	n_pitches.insert(iter, new_pitch);
+	n_selected++;
+	
+	this->GetPitchRange();
+	
+	if (m_w)
+		m_w->Refresh();
+	
+}
+
+void MusNeume::RemoveSelectedPitch()
+{
+	if (this->IsClosed()) return; //can only remove pitches in open mode
+	
+	if (n_pitches.size() == 1) return; //removing last node crashes aruspix
+	// cannot remove last node (for now)
+	
+	iter = n_pitches.begin();
+	for (unsigned int i = 0; i < n_selected; i++, iter++);
+	n_pitches.erase(iter);
+	
+	if (n_selected) n_selected--;
+	
+	this->GetPitchRange();
+	if (m_w)
+		m_w->Refresh();
+}
+
+
 // I'm sure this could be optimized
 
 void MusNeume::SetPitch( int code, int oct, MusStaff *staff )
@@ -382,6 +429,8 @@ void MusNeume::printNeumeList()
 		//	   count, (*iter)->code, (*iter)->oct, (*iter)->val);
 	}
 }
+
+int MusNeume::Length() { return (int)this->n_pitches.size(); };
 
 int MusNeume::GetMaxPitch() { return this->p_max; }
 

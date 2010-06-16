@@ -94,9 +94,19 @@ bool MusKeyboardEditor::handleMetaKey(int key) {
 		if (w_ptr->m_currentElement->IsNeume())
 		{
 			printf("appending pitch\n");
-			((MusNeume *)w_ptr->m_currentElement)->Append();
+			((MusNeume *)w_ptr->m_currentElement)->InsertPitchAfterSelected();
 			return true;
 		} 
+	}
+	
+	if (key == WXK_DELETE || WXK_BACK) {
+		if (w_ptr->m_currentElement->IsNeume())
+		{
+			if (((MusNeume *)w_ptr->m_currentElement)->Length() == 1) return false;
+			else
+				((MusNeume *)w_ptr->m_currentElement)->RemoveSelectedPitch();
+			return true;
+		}
 	}
 	
 	return false;
@@ -121,6 +131,8 @@ bool MusKeyboardEditor::handleKeyEvent(wxKeyEvent &event)
 			oct_switch = true;
 			break;
 		case WXK_SPACE:
+		case WXK_DELETE:
+		case WXK_BACK:
 		case 'M': // mode change: toggle value of neume
 		case 'N': // append punctum in open mode
 		case '1':

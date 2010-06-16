@@ -97,6 +97,7 @@ public:
 	int MusNeume::GetMaxPitch();
 	int MusNeume::GetMinPitch();
 	int MusNeume::GetPitchRange();
+	int MusNeume::Length();
 	
 	void MusNeume::SetClosed(bool value);
 	
@@ -107,6 +108,8 @@ public:
 	
 	//when appending notes, do we discard the object?
 	//may need a helper class for composite neumes.
+	void MusNeume::InsertPitchAfterSelected();
+	void MusNeume::RemoveSelectedPitch();
 	void MusNeume::Append();
 
 	//how many pitches are in this neume?
