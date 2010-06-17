@@ -175,14 +175,16 @@ MusNeume::MusNeume( const MusNeume& neume )
 	TYPE = neume.TYPE;
 	this->closed = neume.closed;
 	this->n_selected = neume.n_selected;
-	this->code = neume.code;
-	this->oct = neume.oct;
+	this->n_pitches = neume.n_pitches;
+	this->SetPitch(neume.code, neume.oct);
 	
-	this->n_pitches.push_back(new MusNeumePitch(this->code, this->oct, 0)); 
 	this->p_range = neume.p_range;
 	this->p_max = neume.p_max;
 	this->p_min = neume.p_min;
 }
+
+
+//crash caused by this constructor after inserting second neume element
 
 MusNeume& MusNeume::operator=( const MusNeume& neume )
 {
@@ -193,10 +195,8 @@ MusNeume& MusNeume::operator=( const MusNeume& neume )
 		TYPE = neume.TYPE;
 		this->closed = neume.closed;
 		this->n_selected = neume.n_selected;
-		this->code = neume.code;
-		this->oct = neume.oct;
-		
-		this->n_pitches.push_back(new MusNeumePitch(this->code, this->oct, 0)); 
+		this->n_pitches = neume.n_pitches;
+		this->SetPitch(neume.code, neume.oct);
 		this->p_range = neume.p_range;
 		this->p_max = neume.p_max;
 		this->p_min = neume.p_min;
@@ -304,6 +304,7 @@ void MusNeume::InsertPitchAfterSelected()
 //	} else { //insert in middle
 		for (unsigned int i = 0; i < n_selected; i++, iter++); //iterate to selected element
 //	}
+
 	
 	
 	new_pitch = new MusNeumePitch((*iter)->code, (*iter)->oct, (*iter)->val);
@@ -338,7 +339,7 @@ void MusNeume::RemoveSelectedPitch()
 
 // I'm sure this could be optimized
 
-void MusNeume::SetPitch( int code, int oct, MusStaff *staff )
+void MusNeume::SetPitch( int code, int oct )
 {
 	if ( this->TYPE != NEUME )
 		return;
@@ -440,12 +441,12 @@ int MusNeume::GetPitchRange()
 {
 	int ymin, ymax, abs_pitch, count, range, max_rel, min_rel;
 	count = 0;
-	printf("***********************************************\n");
+	//printf("***********************************************\n");
 	for (iter=n_pitches.begin(); iter != n_pitches.end(); ++iter, count++)
 	{
 		abs_pitch = (*iter)->code + ((*iter)->oct * 7);
 		
-		printf("Pitch %d == %d\n", count, abs_pitch);
+	//	printf("Pitch %d == %d\n", count, abs_pitch);
 		
 		if (!count) ymin = ymax = abs_pitch;
 		
@@ -456,7 +457,7 @@ int MusNeume::GetPitchRange()
 		else if (abs_pitch < ymin)
 			ymin = abs_pitch;
 	}
-	printf("***********************************************\n");			   
+	//printf("***********************************************\n");			   
 	
 	range = ymax - ymin;
 	max_rel = ymax - (this->code + (this->oct * 7));

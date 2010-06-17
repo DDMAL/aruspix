@@ -85,7 +85,7 @@ public:
 	//should have some sort of 'toggle' or 'redraw' method here for switching between styles
 	
     // WDR: method declarations for MusNeume
-	virtual void MusNeume::SetPitch( int code, int oct, MusStaff *staff = NULL );
+	virtual void MusNeume::SetPitch( int code, int oct );
 	virtual void MusNeume::SetValue( int value, MusStaff *staff = NULL, int vflag = 0 );
 	int MusNeume::GetValue();
 	

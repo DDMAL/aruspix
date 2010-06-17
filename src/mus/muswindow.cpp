@@ -852,15 +852,29 @@ bool MusWindow::IsNoteSelected()
 
 void MusWindow::SetInsertMode( bool mode )
 {
+//	if (mode) printf("Insert mode!\n"); else printf("Edit mode!\n");
 	if ( m_editElement == !mode )
 		return; // nothing to change
 
-    wxKeyEvent kevent;
+	if (mode) this->SetKeyboardEntryMode(false); // turn of keyboard entry in insert mode
+	
+	wxKeyEvent kevent;
     kevent.SetEventType( wxEVT_KEY_DOWN );
     kevent.SetId( this->GetId() );
     kevent.SetEventObject( this );
 	kevent.m_keyCode = WXK_RETURN;
     this->ProcessEvent( kevent );
+}
+
+void MusWindow::SetKeyboardEntryMode( bool mode )
+{
+	m_keyEntryMode = mode;
+	if (m_currentElement) {
+		if (m_currentElement->IsNeume())
+		{
+			((MusNeume*)m_currentElement)->SetClosed(true);
+		}
+	}
 }
 
 void MusWindow::SetToolType( int type )
@@ -1513,6 +1527,7 @@ void MusWindow::OnKeyDown(wxKeyEvent &event)
 		m_editElement = !m_editElement;
 		if ( !m_editElement ) // edition -> insertion
 		{
+			if (m_keyEntryMode) this->SetKeyboardEntryMode(false);
 			this->SetCursor( wxCURSOR_PENCIL );  
 			if ( m_currentElement )
 			{
@@ -2309,7 +2324,16 @@ bool MusWindow::KeyboardEntry(wxKeyEvent &event) {
 		
 		// toggle keyboard mode
 		
-		m_keyEntryMode = !m_keyEntryMode;
+		SetKeyboardEntryMode(!m_keyEntryMode);
+		
+		// need to close open neumes before leaving keyboard entry mode
+		if (m_keyEntryMode == false && m_currentElement) {
+			printf("Keyboard mode OFF, we have an element\n");
+			if (m_currentElement->IsNeume())
+			{
+				((MusNeume*)m_currentElement)->SetClosed(true);
+			}
+		} else printf("We DO NOT have an element!\n");
 		
 		// wait for next input
 		return false;

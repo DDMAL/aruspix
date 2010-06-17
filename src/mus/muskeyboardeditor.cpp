@@ -41,8 +41,6 @@ MusKeyboardEditor::~MusKeyboardEditor()
 bool MusKeyboardEditor::handleMetaKey(int key) {
 	//different handling for mensural vs. neumes
 
-	
-	
 	//check for num handling
 
 	if (key >= 48 && key <= 57) {	// ascii 0 - 9
@@ -115,6 +113,8 @@ bool MusKeyboardEditor::handleMetaKey(int key) {
 bool MusKeyboardEditor::handleKeyEvent(wxKeyEvent &event)
 {
 //	printf("Handling a key event~!\n");
+	//no point in being in keyboard edit mode if there's no element to edit 
+	if (!w_ptr->m_currentElement) return false;
 	
 	bool event_handled = false;
 	
@@ -146,6 +146,9 @@ bool MusKeyboardEditor::handleKeyEvent(wxKeyEvent &event)
 		case '9':
 		case '0':
 			return handleMetaKey(key);
+		default:
+			printf("YOU SUCK LOL\n");
+			break;
 	}
 	
 	int pitch, octave, hauteur;

@@ -128,6 +128,8 @@ public:
 	bool MusWindow::IsNoteSelected();
 	
 	void SetInsertMode( bool insert );
+	
+	void SetKeyboardEntryMode( bool mode );
     
     // WDR: method declarations for MusWindow
 	void SetFile( MusFile *file );
