@@ -46,7 +46,8 @@ public:
     MusElement *GetNext( MusStaff *staff );
 
     // WDR: method declarations for MusElement
-	virtual void MusElement::SetPitch( int code, int oct, MusStaff *staff = NULL ) {};
+//	virtual void MusElement::SetPitch( int code, int oct, MusStaff *staff = NULL ) {};
+	virtual void MusElement::SetPitch( int code, int oct ) {};
 	virtual void MusElement::SetValue( int value, MusStaff *staff = NULL, int flag = 0 ) {};
 	virtual void MusElement::ChangeColoration( MusStaff *staff = NULL ) {};
 	virtual void MusElement::ChangeStem( MusStaff *staff = NULL ) {};

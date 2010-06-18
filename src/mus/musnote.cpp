@@ -133,6 +133,8 @@ MusNote::MusNote( const MusNote& note )
 		lyric->m_note_ptr = this;
 		this->m_lyrics.Add( lyric );
 	}	
+	
+//	printf("Hi, this is my address: %d\n", (int)(this));
 } 
 
 MusNote& MusNote::operator=( const MusNote& note )
@@ -168,6 +170,9 @@ MusNote& MusNote::operator=( const MusNote& note )
 			
 		}
 	}
+	
+//	printf("Hi, this is my address: %d\n", (int)(this));
+	
 	return *this;
 }
 
@@ -187,7 +192,7 @@ bool MusNote::BelongsToTheNote( MusElement *element )
 }
 
 
-void MusNote::SetPitch( int code, int oct, MusStaff *staff )
+void MusNote::SetPitch( int code, int oct )
 {
 	if ( this->TYPE != NOTE )
 		return;
@@ -197,7 +202,6 @@ void MusNote::SetPitch( int code, int oct, MusStaff *staff )
 
 	this->oct = oct;
 	this->code = code;
-	
 
 	if (m_w)
 		m_w->Refresh();

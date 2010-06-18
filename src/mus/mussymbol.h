@@ -49,7 +49,8 @@ public:
 	void stroke ( wxDC *dc, int a, int yy, MusStaff *staff );
 	void chiffres ( wxDC *dc, int x, int y, MusStaff *staff);
 	// changement
-	virtual void SetPitch( int code, int oct, MusStaff *staff = NULL );
+//	virtual void SetPitch( int code, int oct, MusStaff *staff = NULL );
+	virtual void SetPitch( int code, int oct );	
 	virtual void SetValue( int code, MusStaff *staff = NULL, int vflag = 0 );
 	//
 	void ResetToKey( );

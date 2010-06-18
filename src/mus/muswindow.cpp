@@ -869,9 +869,11 @@ void MusWindow::SetInsertMode( bool mode )
 void MusWindow::SetKeyboardEntryMode( bool mode )
 {
 	m_keyEntryMode = mode;
+	printf("Setting Keyboard Entry mode %s!\n", mode ? "ON" : "OFF");
 	if (m_currentElement) {
 		if (m_currentElement->IsNeume())
 		{
+			printf("Closing neume\n");
 			((MusNeume*)m_currentElement)->SetClosed(true);
 		}
 	}
@@ -1435,7 +1437,8 @@ void MusWindow::OnMouseMotion(wxMouseEvent &event)
 		if ( m_editElement )
 		{
 			m_insertcode = m_currentStaff->trouveCodNote( y, m_insertx, &m_insertoct );
-			m_currentElement->SetPitch( m_insertcode, m_insertoct, m_currentStaff );
+//			m_currentElement->SetPitch( m_insertcode, m_insertoct, m_currentStaff );
+			m_currentElement->SetPitch( m_insertcode, m_insertoct );
 		} 
 		else if ( m_lyricMode )					// Movement of lyric element on y-axis
 		{
@@ -1471,7 +1474,8 @@ void MusWindow::OnMidiInput(wxCommandEvent &event)
 	
 	printf("octave: %d, hauteur: %d\n", octave, hauteur);
     if ( m_currentElement && m_currentElement->IsNote() ) {
-        m_currentElement->SetPitch( die[hauteur], octave, m_currentStaff );
+//        m_currentElement->SetPitch( die[hauteur], octave, m_currentStaff );
+		m_currentElement->SetPitch( die[hauteur], octave );
     }
     
 }
@@ -1635,7 +1639,8 @@ void MusWindow::OnKeyDown(wxKeyEvent &event)
 		{
 			PrepareCheckPoint( UNDO_PART, MUS_UNDO_STAFF );
 			m_insertcode = m_currentElement->filtrcod( event.m_keyCode - WXK_F1, &m_insertoct );
-			m_currentElement->SetPitch( m_insertcode, m_insertoct, m_currentStaff );
+//			m_currentElement->SetPitch( m_insertcode, m_insertoct, m_currentStaff );
+			m_currentElement->SetPitch( m_insertcode, m_insertoct );
 			CheckPoint( UNDO_PART, MUS_UNDO_STAFF );
 			OnEndEdition();
 		}
@@ -1643,7 +1648,8 @@ void MusWindow::OnKeyDown(wxKeyEvent &event)
 		{
 			PrepareCheckPoint( UNDO_PART, MUS_UNDO_STAFF );
 			m_insertcode = m_currentElement->filtrcod( m_currentElement->code + 1, &m_insertoct );
-			m_currentElement->SetPitch( m_insertcode, m_insertoct, m_currentStaff );
+//			m_currentElement->SetPitch( m_insertcode, m_insertoct, m_currentStaff );
+			m_currentElement->SetPitch( m_insertcode, m_insertoct );
 			CheckPoint( UNDO_PART, MUS_UNDO_STAFF );
 			OnEndEdition();
 		}
@@ -1651,7 +1657,8 @@ void MusWindow::OnKeyDown(wxKeyEvent &event)
 		{
 			PrepareCheckPoint( UNDO_PART, MUS_UNDO_STAFF );
 			m_insertcode = m_currentElement->filtrcod( m_currentElement->code - 1, &m_insertoct );
-			m_currentElement->SetPitch( m_insertcode, m_insertoct, m_currentStaff );
+//			m_currentElement->SetPitch( m_insertcode, m_insertoct, m_currentStaff );
+			m_currentElement->SetPitch( m_insertcode, m_insertoct );
 			CheckPoint( UNDO_PART, MUS_UNDO_STAFF );
 			OnEndEdition();
 		}

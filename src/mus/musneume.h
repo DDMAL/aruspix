@@ -57,6 +57,8 @@ public:
 	int MusNeumePitch::getPunctumType( );
 	
 	int MusNeumePitch::Compare(MusNeumePitch *other);
+	int MusNeumePitch::Pitch_Diff(MusNeumePitch *other);
+	int MusNeumePitch::Pitch_Diff(int code, int oct);
 	
 	int code;
 	int oct;

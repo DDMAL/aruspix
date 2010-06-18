@@ -145,10 +145,7 @@ bool MusKeyboardEditor::handleKeyEvent(wxKeyEvent &event)
 		case '8':
 		case '9':
 		case '0':
-			return handleMetaKey(key);
-		default:
-			printf("YOU SUCK LOL\n");
-			break;
+			return handleMetaKey(key); //hmm
 	}
 	
 	int pitch, octave, hauteur;
@@ -162,15 +159,16 @@ bool MusKeyboardEditor::handleKeyEvent(wxKeyEvent &event)
 			//this keybind is supported by MusKeyboardEditor
 			event_handled = true;
 			
-			//printf("key found: %d\n", i);
+//			printf("key found: %d\n", i);
 			pitch = 60 + i + (12 * m_keyEntryOctave);
 			octave = pitch / 12;
 			hauteur = pitch - (octave * 12);
 			
 			if ( w_ptr->IsNoteSelected() ) 
 			{
-				//printf("changing pitch: %d\n", i);
-				element->SetPitch( die[hauteur], octave, staff );
+//				printf("changing pitch: %d\n", i);
+//				element->SetPitch( die[hauteur], octave, staff );
+				element->SetPitch( die[hauteur], octave );
 			}
 			
 			break;

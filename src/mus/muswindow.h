@@ -68,7 +68,6 @@ static int die [] = {F2, F2, F3, F3, F4, F5, F5, F6, F6, F7, F7, F8};
 
 class MusWindow: public wxScrolledWindow, public AxUndo
 {
-
 public:
     // constructors and destructors
     MusWindow();

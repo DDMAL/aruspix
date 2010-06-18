@@ -82,7 +82,8 @@ MusSymbol::~MusSymbol()
 }
 
 
-void MusSymbol::SetPitch( int code, int oct, MusStaff *staff )
+//void MusSymbol::SetPitch( int code, int oct, MusStaff *staff )
+void MusSymbol::SetPitch( int code, int oct )
 {
 	if ( this->TYPE != SYMB )
 		return;

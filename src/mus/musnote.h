@@ -53,7 +53,8 @@ public:
 	void MusNote::pointage ( wxDC *dc, int x1, int y1, int offy, unsigned int d_p, MusStaff *staff );
 	void MusNote::ligature ( wxDC *dc, int y, MusStaff *staff );
     // WDR: method declarations for MusNote
-	virtual void MusNote::SetPitch( int code, int oct, MusStaff *staff = NULL );
+//	virtual void MusNote::SetPitch( int code, int oct, MusStaff *staff  );
+	virtual void MusNote::SetPitch( int code, int oct );
 	virtual void MusNote::SetValue( int value, MusStaff *staff = NULL, int vflag = 0 );
 	virtual void MusNote::ChangeColoration( MusStaff *staff = NULL );
 	virtual void MusNote::ChangeStem( MusStaff *staff = NULL );

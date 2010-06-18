@@ -9,6 +9,15 @@ VERSION DOS.*/
 #define toReel(x) (((float)(x)*zoomDen)/zoomNum)
 ***/
 
+
+/* pitch arithmetic helper defines (mostly for use in MusNeume) */
+
+#define _OCT 7
+#define abs2code(x) (x % _OCT)
+#define abs2oct(x) (x / _OCT)
+#define abs2pitch(x)  abs2code(x) , abs2oct(x)
+#define abs_pitch(code, oct) (code + (oct * _OCT)) 
+
 #define CMP_MATCH 1
 #define CMP_DEL 2
 #define CMP_SUBST 3
