@@ -113,7 +113,7 @@ MusWindow::MusWindow( wxWindow *parent, wxWindowID id,
 	DELTABAR = 16;
     nTailleFont[0][0] = 160;
     nTailleFont[0][1] = 120;
-    nTailleFont[1][0] = 128;
+    nTailleFont[1][0] = 128; 
     nTailleFont[1][1] = 100;
 	hautFontCorr[0][0] = 0;
 	hautFontCorr[0][1] = 0;
@@ -612,15 +612,18 @@ void MusWindow::UpdateZoomValues()
 	if ( !m_page )
 		return;	
 
-	m_activeFonts[0][0].SetPointSize( ToZoom( nTailleFont[0][0] ) );
-    m_activeFonts[0][1].SetPointSize( ToZoom( nTailleFont[0][1] ) );
-    m_activeFonts[1][0].SetPointSize( ToZoom( nTailleFont[1][0] ) );
-    m_activeFonts[1][1].SetPointSize( ToZoom( nTailleFont[1][1] ) );
+	m_activeFonts[0][0].SetPointSize( ToZoom( nTailleFont[0][0] ) ); //160
+    m_activeFonts[0][1].SetPointSize( ToZoom( nTailleFont[0][1] ) ); //120
+    m_activeFonts[1][0].SetPointSize( ToZoom( nTailleFont[1][0] ) ); //128
+    m_activeFonts[1][1].SetPointSize( ToZoom( nTailleFont[1][1] ) ); //100
 
-	m_activeChantFonts[0][0].SetPointSize( ToZoom( nTailleFont[0][0] ) );
-    m_activeChantFonts[0][1].SetPointSize( ToZoom( nTailleFont[0][1] ) );
-    m_activeChantFonts[1][0].SetPointSize( ToZoom( nTailleFont[1][0] ) );
-    m_activeChantFonts[1][1].SetPointSize( ToZoom( nTailleFont[1][1] ) );
+	//experimental font size for now
+	//they can all be the same size, seeing as the 'grace notes' are built in the font
+	
+	m_activeChantFonts[0][0].SetPointSize( ToZoom( 110 ) );
+    m_activeChantFonts[0][1].SetPointSize( ToZoom( 110 ) );
+    m_activeChantFonts[1][0].SetPointSize( ToZoom( 110 ) );
+    m_activeChantFonts[1][1].SetPointSize( ToZoom( 110 ) );
 	
 	m_activeLyricFonts[0].SetPointSize( ToZoom( nTailleFont[0][0] * m_ftLyrics.GetPointSize() / 50 ) );
     m_activeLyricFonts[1].SetPointSize( ToZoom( nTailleFont[1][0] * m_ftLyrics.GetPointSize() / 50 ) );

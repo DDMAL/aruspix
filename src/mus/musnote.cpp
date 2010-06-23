@@ -437,6 +437,7 @@ void MusNote::note ( wxDC *dc, MusStaff *staff )
 	formval = (this->inv_val && val > RD) ? (val+1) : val;
 	queueCentre = 0;
 
+
 	rayon = m_w->rayonNote[pTaille][this->dimin];
 
 	if (val > RD || (val == RD && staff->notAnc))	// annuler provisoirement la modif. des lignes addit.
@@ -694,6 +695,14 @@ void MusNote::note ( wxDC *dc, MusStaff *staff )
 		}
 	}
 */
+	
+	//temp debug code
+//	m_w->m_currentColour = wxCYAN;
+//	m_w->rect_plein2(dc, this->xrel - 3, ynn - 3, this->xrel + 3, ynn + 3);
+//	printf("\nxrel: %d, ynn: %d\n\n", this->xrel, ynn);
+//	m_w->m_currentColour = wxBLACK;
+	//temp debug code
+	
 
 	return;
 }

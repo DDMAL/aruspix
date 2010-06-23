@@ -144,7 +144,10 @@ public:
 		
 	bool closed; 
 		
-	//helper methods
+	//ligature drawing methods
+	void MusNeume::drawLigature( wxDC *dc, MusStaff *staff );
+	void MusNeume::clivis( wxDC *dc, MusStaff *staff );
+	void MusNeume::podatus( wxDC *dc, MusStaff *staff );
 	
 	
 public:

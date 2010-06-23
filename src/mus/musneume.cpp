@@ -648,13 +648,30 @@ void MusNeume::DrawNeume( wxDC *dc, MusStaff *staff )
 	MusNeumePitch *temp;
 	//for (unsigned int i = 0; i < n_pitches.size(); i++)
 	// for now, only draw the first punctum
-	for (unsigned int i = 0; i < 1; i++)
-	{
-		temp = n_pitches.at(i);
-		leg_line( dc, ynn,bby,xl,ledge, pTaille);
-		//printf("Putting the (closed) neume here: ynn + 65: %d\n", ynn + 65);
-		m_w->putfont( dc, this->xrel, ynn + 65, 
-					  temp->getPunctumType(), staff, this->dimin, NEUME); 
+//	for (unsigned int i = 0; i < 1; i++)
+//	{
+//		temp = n_pitches.at(i);
+//		leg_line( dc, ynn,bby,xn,ledge, pTaille);
+//		//printf("Putting the (closed) neume here: ynn + 65: %d\n", ynn + 65);
+//		
+//		// draw some "debug" graphics
+		m_w->m_currentColour = wxCYAN;
+		m_w->rect_plein2(dc, this->xrel - 3, ynn - 3, this->xrel + 3, ynn + 3);
+		printf("\nxrel: %d, ynn: %d\n\n", this->xrel, ynn);
+		m_w->m_currentColour = wxBLACK;
+//		
+//		m_w->putfont( dc, this->xrel, ynn + 16, 
+//					  temp->getPunctumType(), staff, this->dimin, NEUME); 
+//	}
+	
+	if (this->n_pitches.size() == 1) {
+		temp = n_pitches.at(0);
+		leg_line( dc, ynn,bby,xn,ledge, pTaille);
+		m_w->putfont( dc, this->xrel - 5, ynn + 16, 
+					 temp->getPunctumType(), staff, this->dimin, NEUME); 
+	} else if (this->n_pitches.size() >= 1) {
+		// we need to draw a ligature
+		this->drawLigature(dc, staff);
 	}
 	
 }
@@ -710,16 +727,14 @@ void MusNeume::DrawPunctums( wxDC *dc, MusStaff *staff )
 		temp = n_pitches.at(i);
 		
 		punct_y = staff->y_note((int)temp->code, staff->testcle( this->xrel ), temp->oct - 4);
-		
-		
 		ynn = punct_y + staff->yrel; 
 		
 		leg_line( dc, ynn,bby,xl + (i * PUNCT_PADDING),ledge, pTaille);
 		// colour the selected item red
 		if (i == n_selected) m_w->m_currentColour = wxRED;
 		else m_w->m_currentColour = wxBLACK;
-		//printf("Putting the (open) neume here: ynn + 65: %d\n", ynn + 65);
-		m_w->putfont( dc, this->xrel + (i * PUNCT_PADDING), ynn + 65, 
+		printf("Putting the (open) neume here: ynn + 65: %d\n", ynn + 16);
+		m_w->putfont( dc, this->xrel + (i * PUNCT_PADDING) - 5, ynn + 16, 
 					  temp->getPunctumType(), staff, this->dimin, NEUME);	
 	}
 
