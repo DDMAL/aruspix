@@ -1552,8 +1552,13 @@ void MusWindow::OnKeyDown(wxKeyEvent &event)
 				}
 				else if ( m_currentElement->IsNeume() )
 				{
+					//lets use the copy constructor instead of an assignment operator?
+					
 					m_neume = *(MusNeume*)m_currentElement;
 					m_newElement = &m_neume;
+					
+					
+					
 				}
                 // TODO for cursor
                 // increase the xrel of m_newElement. Where it will be tricky is when we are at the end of the staff,

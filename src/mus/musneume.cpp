@@ -73,11 +73,12 @@ MusNeumePitch& MusNeumePitch::operator=( const MusNeumePitch& pitch )
 {
 	if ( this != &pitch ) 
 	{
+		printf("we're copying properly\n");
 		(MusNeumePitch&)*this = pitch;
 		this->code = pitch.code;
 		this->oct = pitch.oct;
 		this->val = pitch.val;
-	} 
+	} printf("not copying properly :(:(:(:(:(\n");
 	return *this;
 }
 
@@ -85,7 +86,7 @@ void MusNeumePitch::SetPitch( int code, int oct )
 {
 	this->code = code;
 	this->oct = oct;
-	printf("Changing pitch: c: %d, o: %d\n", this->code, this->oct);
+//	printf("Changing pitch: c: %d, o: %d\n", this->code, this->oct);
 }
 
 void MusNeumePitch::SetValue( int value ) { this->val = value; }
@@ -196,18 +197,24 @@ MusNeume::MusNeume( const MusNeume& neume )
 	TYPE = neume.TYPE;
 	this->closed = true;	//all neumes are closed by default
 	this->n_selected = neume.n_selected;
-	this->n_pitches = neume.n_pitches;
-	//super hack-y
-//	std::vector<MusNeumePitch*> temp;
-//	for (iter=n_pitches.begin(); iter != n_pitches.end(); ++iter)
-//	{
-//		printf("Copying pitch code: %d, oct: %d, val: %d\n", 
-//			   (*iter)->code, (*iter)->oct, (*iter)->val);
-//		//printf("Item &: %d\n", &(*iter));
-//		temp.push_back(new MusNeumePitch((*iter)->code, (*iter)->oct, (*iter)->val));
-//	}
-//	this->n_pitches = temp;
-		
+	
+
+//	printf("This is the address of the original pitch list: %d\n", (int)&(this->n_pitches));
+//	printf("This is the address of the new pitch list: %d\n", (int)&(neume.n_pitches));
+//	//this is supposed to deep copy, but it doesn't for some strange reason	
+//	this->n_pitches = neume.n_pitches;
+//	printf("*************************************************\n");
+//	printf("NOW, this is the address of the original pitch list: %d\n", (int)&(this->n_pitches));
+//	printf("This is the address of the new pitch list: %d\n", (int)&(neume.n_pitches));
+//	
+	
+	//pitch list is instantiated — not copied (for now)
+
+	this->n_pitches.empty();
+	
+	MusNeumePitch *firstPitch = new MusNeumePitch();
+	n_pitches.push_back(firstPitch);
+	
 	this->SetPitch(code, oct);
 	
 	this->p_range = neume.p_range;
@@ -225,12 +232,32 @@ MusNeume& MusNeume::operator=( const MusNeume& neume )
 	if ( this != &neume ) // not self assignement
 	{
 		// For base class MusElement copy assignement
-		//(MusElement&)*this = neume;                  //find out if this was here for a reason!!! sa
+		(MusElement&)*this = neume;                  //find out if this was here for a reason!!! sa
 
 		TYPE = neume.TYPE;
 		this->closed = true; //all neumes are closed by default
 		this->n_selected = neume.n_selected;
-		this->n_pitches = neume.n_pitches;
+		//this->n_pitches = neume.n_pitches;
+		
+		//pitch list is instantiated — not copied (for now)
+		this->n_pitches.empty();
+		
+		MusNeumePitch *firstPitch = new MusNeumePitch();
+		n_pitches.push_back(firstPitch);
+		
+		
+//		printf("This is the address of the original pitch list: %d\n", (int)&(this->n_pitches));
+//		printf("This is the address of the new pitch list: %d\n", (int)&(neume.n_pitches));
+//		
+//		this->n_pitches = neume.n_pitches;
+//		printf("*************************************************\n");
+//		printf("NOW, this is the address of the original pitch list: %d\n", (int)&(this->n_pitches));
+//		printf("This is the address of the new pitch list: %d\n", (int)&(neume.n_pitches));
+//		
+		
+//		std::vector<MusNeumePitch*> temp (neume.n_pitches.size());
+//		
+//		printf("^^^^^^^^^^^VECTOR SIZE: %d\n", temp.size());
 		
 //		std::vector<MusNeumePitch*> temp;
 //		//super hack-y
@@ -655,10 +682,10 @@ void MusNeume::DrawNeume( wxDC *dc, MusStaff *staff )
 //		//printf("Putting the (closed) neume here: ynn + 65: %d\n", ynn + 65);
 //		
 //		// draw some "debug" graphics
-		m_w->m_currentColour = wxCYAN;
-		m_w->rect_plein2(dc, this->xrel - 3, ynn - 3, this->xrel + 3, ynn + 3);
-		printf("\nxrel: %d, ynn: %d\n\n", this->xrel, ynn);
-		m_w->m_currentColour = wxBLACK;
+//		m_w->m_currentColour = wxCYAN;
+//		m_w->rect_plein2(dc, this->xrel - 3, ynn - 3, this->xrel + 3, ynn + 3);
+//		//printf("\nxrel: %d, ynn: %d\n\n", this->xrel, ynn);
+//		m_w->m_currentColour = wxBLACK;
 //		
 //		m_w->putfont( dc, this->xrel, ynn + 16, 
 //					  temp->getPunctumType(), staff, this->dimin, NEUME); 

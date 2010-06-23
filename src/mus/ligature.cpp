@@ -33,11 +33,11 @@ void MusNeume::drawLigature( wxDC *dc, MusStaff *staff ) {
 		case 2:
 			int i = n_pitches.at(0)->Compare(n_pitches.at(1));
 			if (i == -1) {
-				printf("2 notes ascending, drawing podatus\n");
+				//printf("2 notes ascending, drawing podatus\n");
 				this->podatus(dc, staff);
 				return;
 			} else if (i == 1) {
-				printf("2 notes descending, drawing clivis\n");
+				//printf("2 notes descending, drawing clivis\n");
 				this->clivis(dc, staff);
 				return;
 			}
@@ -48,7 +48,7 @@ void MusNeume::drawLigature( wxDC *dc, MusStaff *staff ) {
 //need to optimize these drawing methods later
 
 void MusNeume::clivis( wxDC *dc, MusStaff *staff ) {
-	printf("Drawing a clivis\n");
+	//printf("Drawing a clivis\n");
 	int pTaille = staff->pTaille;
 	
 	int oct = this->oct - 4;
