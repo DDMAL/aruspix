@@ -703,12 +703,18 @@ void MusWindow::UpdatePageValues()
     RapportDimin[0] = m_fh->param.rapportDiminNum;
     RapportDimin[1] = m_fh->param.rapportDiminDen;
 
+    // half of the space between two lines
     _espace[0] = defin/2;
+    // same for small staves
     _espace[1] = (_espace[0] * RapportPortee[0]) / RapportPortee[1];
+    // space between two lines
     _interl[0] = _espace[0] * 2;
+    // same for small staves
     _interl[1] = _espace[1] * 2;
+    // staff (with five lines)
     _portee[0] = _interl[0] * 4;
     _portee[1] = _interl[1] * 4;
+    // 
     _octave[0] = _espace[0] * 7;
     _octave[1] = _espace[1] * 7;
 
@@ -716,6 +722,7 @@ void MusWindow::UpdatePageValues()
     _bond = _pas * 6;
     _pas3 = _pas * 3;
 
+    // values for beams
     DELTANbBAR[0] = m_fh->param.EpBarreValeur;
     DELTABLANC[0] = m_fh->param.EpBlancBarreValeur;
     DELTABAR = DELTANbBAR[0] + DELTABLANC[0];

@@ -455,7 +455,8 @@ void AxFrame::LoadConfig()
 #else // OS X	
 	wxGetApp().m_musicFontDesc = pConfig->Read("MusicFontDesc", "0;13;70;90;90;0;Leipzig 4.6;0" ); // on OS X
 	//?? not sure what i'm really doing here but let's try it anyway
-	wxGetApp().m_neumeFontDesc = pConfig->Read("NeumeFontDesc", "0;13;70;90;90;0;FestaDiesA;0" );
+    //wxGetApp().m_neumeFontDesc = pConfig->Read("NeumeFontDesc", "0;13;70;90;90;0;FestaDiesA;0" );
+	wxGetApp().m_neumeFontDesc = pConfig->Read("NeumeFontDesc", "0;53;70;90;90;0;Festa Dies A;0" );
 	wxGetApp().m_lyricFontDesc = pConfig->Read("LyricFontDesc", "0;12;70;93;90;0;Garamond;0" ); // on OS X
 #endif
     pConfig->Read("FontSizeCorrection",&wxGetApp().m_fontSizeCorrection,100);
