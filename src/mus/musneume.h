@@ -148,7 +148,15 @@ public:
 	void MusNeume::drawLigature( wxDC *dc, MusStaff *staff );
 	void MusNeume::clivis( wxDC *dc, MusStaff *staff );
 	void MusNeume::podatus( wxDC *dc, MusStaff *staff );
+	void MusNeume::porrectus( wxDC *dc, MusStaff *staff );
+	void MusNeume::neume_line( wxDC *dc, MusStaff *staff, int start_pitch, 
+							  int end_pitch, int side);
 	
+	int MusNeume::GetOct();
+	int MusNeume::GetCode();
+	
+	void MusNeume::CheckForBreaks();
+	void MusNeume::Split(int pos);
 	
 public:
 	// WDR: member variable declarations for MusNeume

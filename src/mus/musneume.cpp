@@ -136,19 +136,11 @@ int MusNeumePitch::Compare(MusNeumePitch *other)
 //musnote doesn't need to use this, so no need to make a macro
 int MusNeumePitch::Pitch_Diff(MusNeumePitch *other) 
 {
-//	int abs_pitch, ref_pitch;
-//	ref_pitch = abs
-//	abs_pitch = this->code + (this->oct * 7);
-//	return ref_pitch - abs_pitch;
 	return abs_pitch(other->code, other->oct) - abs_pitch(this->code, this->oct);
 }
 
 int MusNeumePitch::Pitch_Diff(int code, int oct)
 {
-//	int abs_pitch, ref_pitch;
-//	ref_pitch = code + (oct * 7);
-//	abs_pitch = this->code + (this->oct * 7);
-//	return ref_pitch - abs_pitch;
 	return abs_pitch(code, oct) - abs_pitch(this->code, this->oct);
 }
 
@@ -293,7 +285,13 @@ void MusNeume::SetClosed(bool value) {
 	this->closed = value;
 	
 	
-	if (this->closed) n_selected = 0;
+	if (this->closed) {
+		n_selected = 0;
+		//break up neumes if there are repeated pitches
+		this->CheckForBreaks();
+		wxClientDC dc(m_w);
+		this->drawLigature(&dc, m_w->m_currentStaff);
+	}
 	
 	if (m_w)
 	{
@@ -301,6 +299,36 @@ void MusNeume::SetClosed(bool value) {
 		m_w->Refresh();
 	}
 	
+}
+
+void MusNeume::CheckForBreaks()
+{
+	iter = n_pitches.begin();
+	for (unsigned int i = 0; i < n_pitches.size() - 1; i++, iter++)
+	{
+		if (!((*iter)->Pitch_Diff(n_pitches.at(i+1))))
+		{
+			this->Split(i+1);
+			return;
+		}
+	}
+}
+
+void MusNeume::Split(int pos) {
+	printf("Splitting Neume\n");
+	MusNeume *split = new MusNeume();
+	split->n_pitches = this->n_pitches;
+	this->n_pitches.resize(pos);
+	
+	split->n_pitches.erase(split->n_pitches.begin(), split->n_pitches.begin()+pos);
+	
+	MusNeumePitch *temp = this->n_pitches.at(pos - 1);
+	split->SetPitch(temp->code, temp->oct);
+	split->xrel = this->xrel + PUNCT_PADDING;
+	
+	
+	if (m_w)
+		m_w->Refresh();
 }
 
 // if open, returns next individual pitch
@@ -413,6 +441,22 @@ void MusNeume::RemoveSelectedPitch()
 		m_w->Refresh();
 }
 
+
+// superhack helper methods 
+
+int MusNeume::GetCode()
+{
+	if (this->IsClosed()) 
+		return this->code; 
+	else return n_pitches.at(n_selected)->code;
+}
+
+int MusNeume::GetOct()
+{
+	if (this->IsClosed())
+		return this->oct;
+	else return n_pitches.at(n_selected)->oct;
+}
 
 // I'm sure this could be optimized
 
@@ -761,7 +805,7 @@ void MusNeume::DrawPunctums( wxDC *dc, MusStaff *staff )
 		if (i == n_selected) m_w->m_currentColour = wxRED;
 		else m_w->m_currentColour = wxBLACK;
 		printf("Putting the (open) neume here: ynn + 65: %d\n", ynn + 16);
-		m_w->putfont( dc, this->xrel + (i * PUNCT_PADDING) - 5, ynn + 16, 
+		m_w->putfont( dc, this->xrel + (i * PUNCT_PADDING), ynn + 16, 
 					  temp->getPunctumType(), staff, this->dimin, NEUME);	
 	}
 
