@@ -145,7 +145,11 @@ void MusNeume::neume_line( wxDC *dc, MusStaff *staff, int start_pitch,
 	if (start_pitch > n_pitches.size() - 1 || end_pitch > n_pitches.size() - 1) 
 		return;
 	
+
 	// line needs to be at least 2 pitches in length always
+	if (abs(((MusNeumePitch*)n_pitches[start_pitch])->
+		Pitch_Diff(n_pitches[end_pitch])) <= 1) return;
+
 	MusNeumePitch *p1 = (MusNeumePitch*)n_pitches.at(start_pitch);
 	MusNeumePitch *p2 = (MusNeumePitch*)n_pitches.at(end_pitch);	
 	

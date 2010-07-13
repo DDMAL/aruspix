@@ -246,7 +246,7 @@
 		A58524920A1B9604002D9D8A /* sup.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = sup.cpp; sourceTree = "<group>"; };
 		A58524930A1B9604002D9D8A /* sup.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = sup.h; sourceTree = "<group>"; };
 		A58524950A1B9604002D9D8A /* sup_wdr.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = sup_wdr.cpp; sourceTree = "<group>"; };
-		A58524960A1B9604002D9D8A /* sup_wdr.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = sup_wdr.h; sourceTree = "<group>"; };
+		A58524960A1B9604002D9D8A /* sup_wdr.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = sup_wdr.h; path = ../src/superimposition/sup_wdr.h; sourceTree = "<group>"; };
 		A58524980A1B9604002D9D8A /* tinystr.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = tinystr.cpp; sourceTree = "<group>"; };
 		A58524990A1B9604002D9D8A /* tinystr.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = tinystr.h; sourceTree = "<group>"; };
 		A585249A0A1B9604002D9D8A /* tinyxml.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = tinyxml.cpp; sourceTree = "<group>"; };
@@ -283,6 +283,7 @@
 		4D3A8FCD0D3585AB00BBC1FB /* mus */ = {
 			isa = PBXGroup;
 			children = (
+				A58524960A1B9604002D9D8A /* sup_wdr.h */,
 				674D75D211CC1257001D2A87 /* ligature.cpp */,
 				4DC24AB5119B72C900B2EF98 /* musneume.cpp */,
 				4DC24AB6119B72C900B2EF98 /* musneume.h */,
@@ -504,7 +505,6 @@
 				A58524920A1B9604002D9D8A /* sup.cpp */,
 				A58524930A1B9604002D9D8A /* sup.h */,
 				A58524950A1B9604002D9D8A /* sup_wdr.cpp */,
-				A58524960A1B9604002D9D8A /* sup_wdr.h */,
 			);
 			name = superimposition;
 			path = ../src/superimposition;

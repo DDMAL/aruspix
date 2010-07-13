@@ -170,6 +170,16 @@ MusNeume::MusNeume():
 	
 }
 
+MusNeume::MusNeume( std::vector<MusNeumePitch*> pitch_list ) 
+{
+	TYPE = NEUME;
+	closed = true;
+	n_selected = 0;
+	n_pitches = pitch_list;
+	code = 0;
+	p_range = p_min = p_max = 0;
+}
+
 MusNeume::MusNeume( unsigned char _val, unsigned char _code )
 {
 	TYPE = NEUME;
@@ -194,7 +204,7 @@ MusNeume::MusNeume( const MusNeume& neume )
 //	printf("This is the address of the original pitch list: %d\n", (int)&(this->n_pitches));
 //	printf("This is the address of the new pitch list: %d\n", (int)&(neume.n_pitches));
 //	//this is supposed to deep copy, but it doesn't for some strange reason	
-//	this->n_pitches = neume.n_pitches;
+	this->n_pitches = neume.n_pitches;
 //	printf("*************************************************\n");
 //	printf("NOW, this is the address of the original pitch list: %d\n", (int)&(this->n_pitches));
 //	printf("This is the address of the new pitch list: %d\n", (int)&(neume.n_pitches));
@@ -202,10 +212,10 @@ MusNeume::MusNeume( const MusNeume& neume )
 	
 	//pitch list is instantiated — not copied (for now)
 
-	this->n_pitches.empty();
+//	this->n_pitches.empty();
 	
-	MusNeumePitch *firstPitch = new MusNeumePitch();
-	n_pitches.push_back(firstPitch);
+//	MusNeumePitch *firstPitch = new MusNeumePitch();
+//	n_pitches.push_back(firstPitch);
 	
 	this->SetPitch(code, oct);
 	
@@ -308,17 +318,20 @@ void MusNeume::CheckForBreaks()
 	{
 		if (!((*iter)->Pitch_Diff(n_pitches.at(i+1))))
 		{
-			this->Split(i+1);
+			this->Break(i+1);
 			return;
 		}
 	}
 }
 
-void MusNeume::Split(int pos) {
-	printf("Splitting Neume\n");
-	MusNeume *split = new MusNeume();
-	split->n_pitches = this->n_pitches;
+void MusNeume::Break(int pos) {
+	printf("Breaking Neume\n");
+	MusNeume *split = new MusNeume(*this);
+//	vector<MusNeumePitch*> end_pitches = this->n_pitches;
+//	printf("End pitches length: %d\n", (int)end_pitches.size());
+//	split->n_pitches = end_pitches;
 	this->n_pitches.resize(pos);
+	printf("Copied pitches length: %d\n", (int)split->n_pitches.size());
 	
 	split->n_pitches.erase(split->n_pitches.begin(), split->n_pitches.begin()+pos);
 	
@@ -326,9 +339,10 @@ void MusNeume::Split(int pos) {
 	split->SetPitch(temp->code, temp->oct);
 	split->xrel = this->xrel + PUNCT_PADDING;
 	
-	
-	if (m_w)
+	if (m_w) {
+		m_w->m_currentStaff->Insert(split);
 		m_w->Refresh();
+	}
 }
 
 // if open, returns next individual pitch

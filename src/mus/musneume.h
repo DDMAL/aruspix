@@ -70,6 +70,7 @@ class MusNeume: public MusElement
 public:
     // constructors and destructors
     MusNeume();
+	MusNeume( std::vector<MusNeumePitch*> pitch_list );
 	MusNeume( unsigned char _val, unsigned char _code );
 	MusNeume( const MusNeume& neume ); // copy contructor
 	MusNeume& operator=( const MusNeume& neume ); // copy assignement;
@@ -156,7 +157,7 @@ public:
 	int MusNeume::GetCode();
 	
 	void MusNeume::CheckForBreaks();
-	void MusNeume::Split(int pos);
+	void MusNeume::Break(int pos);
 	
 public:
 	// WDR: member variable declarations for MusNeume
