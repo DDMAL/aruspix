@@ -1318,8 +1318,8 @@ void MusWindow::OnMouseLeftDown(wxMouseEvent &event)
 	wxClientDC dc( this );
 	InitDC( &dc );
 	
-	printf("clicked: {%d, %d}\n", ToReel(dc.DeviceToLogicalX(event.m_x)),
-		   ToReelY(dc.DeviceToLogicalY(event.m_y)));
+//	printf("clicked: {%d, %d}\n", ToReel(dc.DeviceToLogicalX(event.m_x)),
+//		   ToReelY(dc.DeviceToLogicalY(event.m_y)));
 	
 	if ( m_editElement || m_lyricMode )
 	{

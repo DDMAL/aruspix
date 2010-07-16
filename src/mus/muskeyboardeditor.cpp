@@ -52,7 +52,7 @@ bool MusKeyboardEditor::handleMetaKey(int key) {
 	}
 	
 	// check for other meta keys
-	if (key == WXK_SPACE) {
+	if (key == 'O') {
 		if (w_ptr->m_currentElement)
 		{
 			if (w_ptr->m_currentElement->IsNeume()) {
@@ -61,10 +61,10 @@ bool MusKeyboardEditor::handleMetaKey(int key) {
 				else temp->SetClosed(true);
 				
 				
-				printf("Setting closed: %d\n", temp->IsClosed());
+//				printf("Setting closed: %d\n", temp->IsClosed());
 				
 				
-				return true;
+				return true;	
 			} else return false;
 		}
 	}
@@ -125,6 +125,12 @@ bool MusKeyboardEditor::handleMetaKey(int key) {
 		} 
 	}
 	
+	//break the neume at the selected punctum
+	// this causes a crash due to the copy constructor
+	if (key == WXK_SPACE) {
+		
+	}
+	
 	if (key == WXK_DELETE || WXK_BACK) {
 		if (w_ptr->m_currentElement->IsNeume())
 		{
@@ -158,13 +164,14 @@ bool MusKeyboardEditor::handleKeyEvent(wxKeyEvent &event)
 			m_keyEntryOctave++;
 			oct_switch = true;
 			break;
-		case WXK_SPACE:
+		case WXK_SPACE: // break neumes
 		case WXK_DELETE:
 		case WXK_BACK:
 		case WXK_DOWN:
 		case WXK_UP:
 		case 'M': // mode change: toggle value of neume
 		case 'N': // append punctum in open mode
+		case 'O': // open/closed editing toggle
 		case '1':
 		case '2':
 		case '3':

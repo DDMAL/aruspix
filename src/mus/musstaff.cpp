@@ -264,7 +264,7 @@ MusElement *MusStaff::Insert( MusElement *element )
 	{
 		idx++;
 		if ( this->GetNext( tmp ) )
-			tmp = this->GetNext( tmp ) ;
+			tmp = this->GetNext( tmp );
 		else
 			break;
 	}

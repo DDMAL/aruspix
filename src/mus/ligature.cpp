@@ -24,50 +24,79 @@
 #define LEFT_LINE 0
 #define RIGHT_LINE 10
 
+//----------------------------------------------------------------------------
+// Ligature
+//
+// Interface for custom drawing classes
+//----------------------------------------------------------------------------
+
+
+
+// more helper functions
+
+bool MusNeume::ascending(int p1, int p2) 
+{ 
+	return (this->n_pitches.at(p1)->Compare(this->n_pitches.at(p2)) == 1); 
+}
+
+bool MusNeume::descending(int p1, int p2)
+{ return !ascending(p1, p2); }
+
 // each "basic" type of ligature will have custom drawing code defined here
 
 
 void MusNeume::drawLigature( wxDC *dc, MusStaff *staff ) {
-//	switch (this->n_pitches.size()) {
-//		case 0:
-//		case 1:
-//			//no ligatures drawn
-//			return;
-//		case 2:
-//			int i = n_pitches.at(0)->Compare(n_pitches.at(1));
-//			if (i == -1) {
-//				//printf("2 notes ascending, drawing podatus\n");
-//				this->podatus(dc, staff);
-//				return;
-//			} else if (i == 1) {
-//				//printf("2 notes descending, drawing clivis\n");
-//				this->clivis(dc, staff);
-//				return;
-//			}
-//			break;
-//		case 3:
-//			i = n_pitches.at(0)->Compare(n_pitches.at(1));
-//			int j = n_pitches.at(1)->Compare(n_pitches.at(2));
-//			if (i && !j)  //one note descending, one note ascending
-//			{
-//				this->porrectus(dc, staff);
-//				return;
-//			}
-//	}
 	
-	
+	//TODO: eventually all these filters should be refactored
 	
 	//filter pes
+	int i;
+	for (i = 1, iter = n_pitches.begin()+1; iter < n_pitches.end(); iter++, i++) {
+		if (ascending(i-1, i))
+			break;
 	
+		if (i == n_pitches.size() - 1) {
+		//	printf("We have a pes!\n");
+			this->podatus(dc, staff);
+		}
+	}
 	
 	//filter porrectus
+	for (i = 1, iter = n_pitches.begin()+1; iter < n_pitches.end(); iter++, i++) {
+//		if (n_pitches.size() == 3 && 
+//			n_pitches.at(i-1)->Compare(n_pitches.at(i)) == 1
+	
+	}
+	
 	//filter climacus
+	
+	//TODO: climacus are found even with series of the same pitch, need to fix
+	if (n_pitches.size() >= 3) {
+		for (i = 1, iter = n_pitches.begin()+1; iter < n_pitches.end(); iter++, i++) {
+			if (n_pitches.at(i-1)->Compare(n_pitches.at(i)) == -1)
+				break;
+			if (i == n_pitches.size() - 1) {
+				printf("We have a climacus!\n");
+				//this->climacus(dc, staff);
+			}
+		}
+	}
 	//draw clivis
 	this->clivis(dc, staff);
 }
 
+#pragma mark Neume Filters
+
+//filter pes/podatus
 
 
+//filter porrectus
+
+
+//filter climacus
+
+
+#pragma mark Drawing Code
 
 //need to optimize these drawing methods later
 
@@ -92,8 +121,6 @@ void MusNeume::clivis( wxDC *dc, MusStaff *staff ) {
 		//punctum
 		m_w->putfont(dc, this->xrel + (i * 10), ynn + 16, temp->getPunctumType(), staff,
 					 this->dimin, NEUME);
-
-		
 	}
 	
 	
@@ -111,11 +138,9 @@ void MusNeume::podatus( wxDC *dc, MusStaff *staff ) {
 	int ynn = this->dec_y + staff->yrel; 
 	int ynn2;
 	
-	
 	int ledge = m_w->ledgerLine[pTaille][2];
 	
 	int punct_y;
-	
 	MusNeumePitch *temp = this->n_pitches.at(0);
 	m_w->putfont(dc, this->xrel - 5, ynn + 16, nPES,
 				 staff, this->dimin, NEUME);
@@ -176,6 +201,9 @@ void MusNeume::neume_line( wxDC *dc, MusStaff *staff, int start_pitch,
 
 void MusNeume::porrectus( wxDC *dc, MusStaff *staff )
 {
+	//make sure we're not here by mistake
+	
+	
 	int pTaille = staff->pTaille;
 	
 	int oct = this->oct - 4;

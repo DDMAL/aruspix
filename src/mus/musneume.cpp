@@ -55,18 +55,18 @@ MusNeumePitch::MusNeumePitch()
 	val = 0;
 }
 
-MusNeumePitch::MusNeumePitch(int code, int oct, unsigned char val) 
+MusNeumePitch::MusNeumePitch(int _code, int _oct, unsigned char _val) 
 {
-	this->code = code;
-	this->oct = oct;
-	this->val = val;
+	code = _code;
+	oct = _oct;
+	val = _val;
 }
 
 MusNeumePitch::MusNeumePitch( const MusNeumePitch& pitch ) 
 {
-	this->code = pitch.code;
-	this->oct = pitch.oct;
-	this->val = pitch.val;
+	code = pitch.code;
+	oct = pitch.oct;
+	val = pitch.val;
 }
 
 MusNeumePitch& MusNeumePitch::operator=( const MusNeumePitch& pitch )
@@ -158,37 +158,38 @@ int MusNeumePitch::Pitch_Diff(int code, int oct)
 MusNeume::MusNeume():
 	MusElement()
 {
-	
 	TYPE = NEUME;
-	closed = true; 
+//	closed = true; 
 	n_selected = 0; // instantiation of class always creates a single note
 	//set initial pitch, for entire neume as well as the first NPitch element
 	MusNeumePitch *firstPitch = new MusNeumePitch();
 	n_pitches.push_back(firstPitch);
 	code = 0;
 	p_range = p_min = p_max = 0;
-	
+	this->closed = true;	
 }
 
 MusNeume::MusNeume( std::vector<MusNeumePitch*> pitch_list ) 
 {
 	TYPE = NEUME;
-	closed = true;
+//	closed = true;
 	n_selected = 0;
 	n_pitches = pitch_list;
 	code = 0;
 	p_range = p_min = p_max = 0;
+	this->closed = true;
 }
 
 MusNeume::MusNeume( unsigned char _val, unsigned char _code )
 {
 	TYPE = NEUME;
-	closed = true;
+//	closed = true;
 	n_selected = 0;
 	MusNeumePitch *firstPitch = new MusNeumePitch( _code, 0, _val);
 	n_pitches.push_back(firstPitch);
 	code = _code;	
 	p_range = p_min = p_max = 0;
+	this->closed = true;
 }
 
 // this constructor is called first upon insert
@@ -196,8 +197,9 @@ MusNeume::MusNeume( unsigned char _val, unsigned char _code )
 MusNeume::MusNeume( const MusNeume& neume )
 	: MusElement( neume )
 {
+	printf("************************ Copy constructor addr: %d\n", (int)&neume);
 	TYPE = neume.TYPE;
-	this->closed = true;	//all neumes are closed by default
+//	this->closed = true;	//all neumes are closed by default
 	this->n_selected = neume.n_selected;
 	
 
@@ -223,7 +225,8 @@ MusNeume::MusNeume( const MusNeume& neume )
 	this->p_max = neume.p_max;
 	this->p_min = neume.p_min;
 	
-	this->printNeumeList();
+	this->closed = true;
+//	this->printNeumeList();
 }
 
 
@@ -231,21 +234,22 @@ MusNeume::MusNeume( const MusNeume& neume )
 
 MusNeume& MusNeume::operator=( const MusNeume& neume )
 {
+	printf("Assignment constructor\n");
 	if ( this != &neume ) // not self assignement
 	{
 		// For base class MusElement copy assignement
 		(MusElement&)*this = neume;                  //find out if this was here for a reason!!! sa
 
 		TYPE = neume.TYPE;
-		this->closed = true; //all neumes are closed by default
+//		this->closed = true; //all neumes are closed by default
 		this->n_selected = neume.n_selected;
-		//this->n_pitches = neume.n_pitches;
-		
-		//pitch list is instantiated — not copied (for now)
-		this->n_pitches.empty();
-		
-		MusNeumePitch *firstPitch = new MusNeumePitch();
-		n_pitches.push_back(firstPitch);
+		this->n_pitches = neume.n_pitches;
+		//
+//		//pitch list is instantiated — not copied (for now)
+//		this->n_pitches.empty();
+//		
+//		MusNeumePitch *firstPitch = new MusNeumePitch();
+//		n_pitches.push_back(firstPitch);
 		
 		
 //		printf("This is the address of the original pitch list: %d\n", (int)&(this->n_pitches));
@@ -275,8 +279,9 @@ MusNeume& MusNeume::operator=( const MusNeume& neume )
 		this->p_min = neume.p_min;
 	}
 	
-	this->printNeumeList();
-	
+//	this->printNeumeList();
+	//this->SetClosed(true);	//using this causes stack overflow
+	this->closed = true;
 	return *this;
 }
 
@@ -299,8 +304,10 @@ void MusNeume::SetClosed(bool value) {
 		n_selected = 0;
 		//break up neumes if there are repeated pitches
 		this->CheckForBreaks();
-		wxClientDC dc(m_w);
-		this->drawLigature(&dc, m_w->m_currentStaff);
+		if (m_w) {
+			wxClientDC dc(m_w);
+			this->drawLigature(&dc, m_w->m_currentStaff);
+		}
 	}
 	
 	if (m_w)
@@ -308,18 +315,22 @@ void MusNeume::SetClosed(bool value) {
 	//	printf("Hderp!\n");
 		m_w->Refresh();
 	}
-	
+
 }
 
+
+//recursively split up neumes for repeated pitches
 void MusNeume::CheckForBreaks()
 {
+	printf("ADMIRAL ACKBAR\n");
 	iter = n_pitches.begin();
 	for (unsigned int i = 0; i < n_pitches.size() - 1; i++, iter++)
 	{
-		if (!((*iter)->Pitch_Diff(n_pitches.at(i+1))))
-		{
-			this->Break(i+1);
+		if ((*iter)->Pitch_Diff(n_pitches.at(i+1)) != 0)
 			return;
+		else { 
+			this->Break(i+1);
+//			this->CheckForBreaks();
 		}
 	}
 }
@@ -327,20 +338,21 @@ void MusNeume::CheckForBreaks()
 void MusNeume::Break(int pos) {
 	printf("Breaking Neume\n");
 	MusNeume *split = new MusNeume(*this);
-//	vector<MusNeumePitch*> end_pitches = this->n_pitches;
-//	printf("End pitches length: %d\n", (int)end_pitches.size());
-//	split->n_pitches = end_pitches;
+	printf("Address of new neume: %d\n", (int)&split);
 	this->n_pitches.resize(pos);
 	printf("Copied pitches length: %d\n", (int)split->n_pitches.size());
 	
 	split->n_pitches.erase(split->n_pitches.begin(), split->n_pitches.begin()+pos);
 	
-	MusNeumePitch *temp = this->n_pitches.at(pos - 1);
-	split->SetPitch(temp->code, temp->oct);
-	split->xrel = this->xrel + PUNCT_PADDING;
+	MusNeumePitch *temp = new MusNeumePitch();
+	split->SetPitch(this->code, this->oct);
+	split->xrel = this->xrel + (PUNCT_PADDING * n_pitches.size());
+	//risky
+
 	
 	if (m_w) {
 		m_w->m_currentStaff->Insert(split);
+		//split->CheckForBreaks();
 		m_w->Refresh();
 	}
 }

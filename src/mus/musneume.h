@@ -21,11 +21,13 @@
 #include <vector>
 #include "neumedef.h"
 
-#define MAX_LENGTH 1
+//#define MAX_LENGTH 1
 
 class MusStaff;
 
 // WDR: class declarations
+
+//TODO: EXTREME REFACTORING IN PROGRESS 07/15/2010
 
 //----------------------------------------------------------------------------
 // MusNeume
@@ -47,7 +49,7 @@ class MusNeumePitch
 {
 public:
 	MusNeumePitch();
-	MusNeumePitch( int code, int oct, unsigned char val );
+	MusNeumePitch( int _code, int _oct, unsigned char _val );
 	MusNeumePitch( const MusNeumePitch& pitch );
 	MusNeumePitch& MusNeumePitch::operator=( const MusNeumePitch& pitch );
 	virtual ~MusNeumePitch() {}
@@ -101,6 +103,10 @@ public:
 	int MusNeume::GetMinPitch();
 	int MusNeume::GetPitchRange();
 	int MusNeume::Length();
+	
+	//helpers for filtering ligatures
+	bool MusNeume::ascending(int p1, int p2);
+	bool MusNeume::descending(int p1, int p2);
 	
 	void MusNeume::SetClosed(bool value);
 	
