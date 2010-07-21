@@ -212,7 +212,7 @@
 		57CA54310D3414BB001FC334 /* axdefs.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = axdefs.h; sourceTree = "<group>"; };
 		57EA3DE30C00BDEB00414247 /* recbookctrl.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = recbookctrl.cpp; sourceTree = "<group>"; };
 		57EA3DE40C00BDEB00414247 /* recbookctrl.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = recbookctrl.h; sourceTree = "<group>"; };
-		5875816C11EFF0A600395171 /* musligature.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = musligature.h; sourceTree = "<group>"; };
+		584D9B0211F6712E000710E1 /* musligature.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = musligature.h; path = ../src/mus/musligature.h; sourceTree = SOURCE_ROOT; };
 		6718EA9B11C14AAC00734117 /* neumedef.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = neumedef.h; path = ../src/mus/neumedef.h; sourceTree = SOURCE_ROOT; };
 		674D75D211CC1257001D2A87 /* musligature.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = musligature.cpp; path = ../src/mus/musligature.cpp; sourceTree = SOURCE_ROOT; };
 		675287A411B87AF30037350B /* muskeyboardeditor.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = muskeyboardeditor.cpp; path = ../src/mus/muskeyboardeditor.cpp; sourceTree = SOURCE_ROOT; };
@@ -286,7 +286,7 @@
 			children = (
 				A58524960A1B9604002D9D8A /* sup_wdr.h */,
 				674D75D211CC1257001D2A87 /* musligature.cpp */,
-				5875816C11EFF0A600395171 /* musligature.h */,
+				584D9B0211F6712E000710E1 /* musligature.h */,
 				4DC24AB5119B72C900B2EF98 /* musneume.cpp */,
 				4DC24AB6119B72C900B2EF98 /* musneume.h */,
 				6718EA9B11C14AAC00734117 /* neumedef.h */,
