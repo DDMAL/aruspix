@@ -45,6 +45,8 @@ class MusStaff;
 //
 
 
+class Ligature;
+
 class MusNeumePitch
 {
 public:
@@ -78,6 +80,7 @@ public:
 	MusNeume& operator=( const MusNeume& neume ); // copy assignement;
     virtual ~MusNeume();
     
+	//Drawing code
 	virtual void MusNeume::Draw( wxDC *dc, MusStaff *staff);
 //	void MusNeume::note( wxDC *dc, MusStaff *staff );
 	void MusNeume::DrawBox( wxDC *dc, MusStaff *staff );
@@ -135,6 +138,11 @@ public:
 	 first pitch.	 
 	 
 	 */
+	
+	
+	std::vector<Ligature*> ligatures;
+	
+	//TODO: move to ligature
 	std::vector<MusNeumePitch*> n_pitches;
 	std::vector<MusNeumePitch*>::iterator iter;
 	
@@ -152,6 +160,7 @@ public:
 	bool closed; 
 		
 	//ligature drawing methods
+	//TODO: move to ligature class
 	void MusNeume::drawLigature( wxDC *dc, MusStaff *staff );
 	void MusNeume::clivis( wxDC *dc, MusStaff *staff );
 	void MusNeume::podatus( wxDC *dc, MusStaff *staff );
@@ -159,11 +168,14 @@ public:
 	void MusNeume::neume_line( wxDC *dc, MusStaff *staff, int start_pitch, 
 							  int end_pitch, int side);
 	
-	int MusNeume::GetOct();
+	//pitch and octave of first pitch of the neume
+	int MusNeume::GetOct(); 
 	int MusNeume::GetCode();
 	
 	void MusNeume::CheckForBreaks();
-	void MusNeume::Break(int pos);
+	void MusNeume::Break(int pos); //do we need the int parameter?
+	
+	
 	
 public:
 	// WDR: member variable declarations for MusNeume

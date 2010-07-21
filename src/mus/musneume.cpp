@@ -306,7 +306,8 @@ void MusNeume::SetClosed(bool value) {
 		this->CheckForBreaks();
 		if (m_w) {
 			wxClientDC dc(m_w);
-			this->drawLigature(&dc, m_w->m_currentStaff);
+//			this->drawLigature(&dc, m_w->m_currentStaff);
+			this->Draw(&dc, m_w->m_currentStaff);
 		}
 	}
 	
@@ -834,7 +835,6 @@ void MusNeume::DrawPunctums( wxDC *dc, MusStaff *staff )
 		m_w->putfont( dc, this->xrel + (i * PUNCT_PADDING), ynn + 16, 
 					  temp->getPunctumType(), staff, this->dimin, NEUME);	
 	}
-
 }
 
 /*
