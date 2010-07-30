@@ -24,6 +24,8 @@
 #include "muswindow.h"
 #include "muselement.h"
 
+#define MAX_VALUES 6
+
 
 /** MusKeyboardEditor implementation */
 
@@ -82,18 +84,19 @@ bool MusKeyboardEditor::handleMetaKey(int key) {
 		
 		printf("Got here?\n");
 		int newcode;
-		if (w_ptr->m_currentElement->IsNote())
+//		if (w_ptr->m_currentElement->IsNote())
 			newcode = w_ptr->m_insertcode = 
 			w_ptr->m_currentElement->filtrcod(w_ptr->m_currentElement->code + direction, 
 											  &(w_ptr->m_insertoct));
-		else if (w_ptr->m_currentElement->IsNeume()){
-		
-			newcode = ((MusNeume*)(w_ptr->m_currentElement))->GetCode();
-			newcode = w_ptr->m_currentElement->filtrcod(newcode + direction,
-											  &(w_ptr->m_insertoct));
-		}
-		else return false;
+//		else if (w_ptr->m_currentElement->IsNeume()){
+//		
+//			newcode = ((MusNeume*)(w_ptr->m_currentElement))->GetCode();
+//			newcode = w_ptr->m_currentElement->filtrcod(newcode + direction,
+//											  &(w_ptr->m_insertoct));
+//		}
+//		else return false;
 			
+		printf("Setting pitch to this; %d, %d\n", newcode, w_ptr->m_insertoct);
 		w_ptr->m_currentElement->SetPitch(newcode, w_ptr->m_insertoct);
 		return true;
 	}
@@ -108,7 +111,8 @@ bool MusKeyboardEditor::handleMetaKey(int key) {
 			if (temp->IsClosed()) {
 				//do stuff
 			} else {
-				temp->SetValue((temp->GetValue() + 1) % 5, w_ptr->m_currentStaff, 0);
+				temp->SetValue((temp->GetValue() + 1) % 
+							   MAX_VALUES, w_ptr->m_currentStaff, 0);
 			}
 			//int value = (((MusNeume*)w_ptr->m_currentElement)->val + 1) % 5;
 			//w_ptr->m_currentElement->SetValue(value, w_ptr->m_currentStaff, 0);
@@ -125,10 +129,13 @@ bool MusKeyboardEditor::handleMetaKey(int key) {
 		} 
 	}
 	
-	//break the neume at the selected punctum
-	// this causes a crash due to the copy constructor
 	if (key == WXK_SPACE) {
-		
+		if (w_ptr->m_currentElement->IsNeume())
+		{
+			((MusNeume *)w_ptr->m_currentElement)->
+			Split(((MusNeume *)w_ptr->m_currentElement)->n_selected);
+			return true;
+		}
 	}
 	
 	if (key == WXK_DELETE || WXK_BACK) {
@@ -171,7 +178,7 @@ bool MusKeyboardEditor::handleKeyEvent(wxKeyEvent &event)
 		case WXK_UP:
 		case 'M': // mode change: toggle value of neume
 		case 'N': // append punctum in open mode
-		case 'O': // open/closed editing toggle
+		case 'O': // open-closed mode toggle
 		case '1':
 		case '2':
 		case '3':

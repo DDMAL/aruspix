@@ -202,7 +202,7 @@ MusElement *MusStaff::GetNext( MusElement *element )
 	if ( element->IsNeume() ) {
 		if (((MusNeume*)element)->GetNext()) return element;
 	}
-
+	
 	//wxASSERT_MSG( m_elements.Index( *element) != wxNOT_FOUND, 
 	//	"\nL'element recherche n'appartient pas à la portee" );
 	if ( element->no >= (int)m_elements.GetCount() - 1) return NULL;

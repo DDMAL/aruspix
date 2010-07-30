@@ -45,9 +45,7 @@ class MusStaff;
 //
 
 
-class Ligature;
-
-class MusNeumePitch
+class MusNeumePitch : public MusElement
 {
 public:
 	MusNeumePitch();
@@ -58,14 +56,14 @@ public:
 	void MusNeumePitch::SetPitch( int code, int oct );
 	void MusNeumePitch::SetValue( int value );
 	int MusNeumePitch::GetValue( );
-	int MusNeumePitch::getPunctumType( );
+	char* MusNeumePitch::getPunctumType( );
 	
 	int MusNeumePitch::Compare(MusNeumePitch *other);
 	int MusNeumePitch::Pitch_Diff(MusNeumePitch *other);
 	int MusNeumePitch::Pitch_Diff(int code, int oct);
 	
-	int code;
-	int oct;
+//	int code;
+//	int oct;
 	unsigned char val;
 }; 
 
@@ -107,7 +105,6 @@ public:
 	int MusNeume::GetPitchRange();
 	int MusNeume::Length();
 	
-	//helpers for filtering ligatures
 	bool MusNeume::ascending(int p1, int p2);
 	bool MusNeume::descending(int p1, int p2);
 	
@@ -165,8 +162,10 @@ public:
 	void MusNeume::clivis( wxDC *dc, MusStaff *staff );
 	void MusNeume::podatus( wxDC *dc, MusStaff *staff );
 	void MusNeume::porrectus( wxDC *dc, MusStaff *staff );
-	void MusNeume::neume_line( wxDC *dc, MusStaff *staff, int start_pitch, 
-							  int end_pitch, int side);
+//	void MusNeume::neume_line( wxDC *dc, MusStaff *staff, int start_pitch, 
+//							  int end_pitch, int side);
+	void MusNeume::neume_line( wxDC *dc, MusStaff *staff, int side );
+	void MusNeume::climacus( wxDC *dc, MusStaff *staff );
 	
 	//pitch and octave of first pitch of the neume
 	int MusNeume::GetOct(); 

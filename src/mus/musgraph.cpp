@@ -188,6 +188,48 @@ int MusWindow::pointer ( wxDC *dc, int x, int b, int decal, MusStaff *staff )
 	super-hack time
  */
 
+void MusWindow::festa_string ( wxDC *dc, int x, int y, char *str, 
+							  MusStaff *staff, int dimin ) {
+	int pTaille = staff->pTaille;
+	int fontCorr = this->hautFontCorr[pTaille][dimin];
+	
+	wxASSERT_MSG( dc , "DC cannot be NULL");
+	
+	//need to add handling for festa dies font
+	// m_activeChantFonts
+	if (staff->notAnc)
+	{	
+		dc->SetFont( m_activeChantFonts[ pTaille][0] );			
+		fontCorr = this->hautFontCorr[ pTaille][0];
+	}
+	else
+	{
+		dc->SetFont( m_activeChantFonts[ pTaille][ dimin ] );
+	}
+	
+	if ( dc)
+	{	
+		dc->SetBackground( *wxBLUE );
+		dc->SetBackgroundMode( wxTRANSPARENT );
+		
+		dc->SetTextForeground( *m_currentColour );
+		wxPen pen( *m_currentColour, 1, wxSOLID );
+		dc->SetPen( pen );
+		wxBrush brush( *m_currentColour, wxSOLID );
+		
+		dc->SetBrush( brush );
+		
+		//printf("Drawing text here, x: %d, y: %d, y (zoomed): %d, y + fontcorr: %d\n"
+		//	   , ToZoom(x), y, ToZoomY(y), ToZoomY(y + fontCorr));
+		dc->DrawText( str, ToZoom(x), ToZoomY(y + fontCorr) );
+		
+		dc->SetPen( wxNullPen );
+		dc->SetBrush( wxNullBrush );
+	}
+	
+	return;
+}
+
 
 void MusWindow::putfont ( wxDC *dc, int x, int y, unsigned char c, 
 						 MusStaff *staff, int dimin, int font_flag)
