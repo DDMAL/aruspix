@@ -343,8 +343,9 @@ void MusNeume::CheckForBreaks()
 			//take note of position to split
 			printf("duplicate pitch found at pos %d\n", i+1);
 			pos_list.push_back(i+1);
+		}
 		else { 
-			this->Break(i+1);
+			this->Split(i+1);
 //			this->CheckForBreaks();
 		}
 	}

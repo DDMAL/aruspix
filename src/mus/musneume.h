@@ -137,7 +137,7 @@ public:
 	 */
 	
 	
-	std::vector<Ligature*> ligatures;
+//		std::vector<Ligature*> ligatures;
 	
 	//TODO: move to ligature
 	std::vector<MusNeumePitch*> n_pitches;
@@ -172,7 +172,7 @@ public:
 	int MusNeume::GetCode();
 	
 	void MusNeume::CheckForBreaks();
-	void MusNeume::Break(int pos); //do we need the int parameter?
+	void MusNeume::Split(int pos); //do we need the int parameter?
 	
 	
 	

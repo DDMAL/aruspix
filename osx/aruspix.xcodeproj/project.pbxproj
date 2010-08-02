@@ -67,7 +67,7 @@
 		57CA54260D34139D001FC334 /* axapp_wdr.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 57CA541F0D34139D001FC334 /* axapp_wdr.cpp */; };
 		57CA54270D34139D001FC334 /* axabout_wdr.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 57CA54210D34139D001FC334 /* axabout_wdr.cpp */; };
 		57EA3DE50C00BDEB00414247 /* recbookctrl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 57EA3DE30C00BDEB00414247 /* recbookctrl.cpp */; };
-		674D75D311CC1257001D2A87 /* musligature.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 674D75D211CC1257001D2A87 /* musligature.cpp */; };
+		5842793612074F0000D5BD00 /* ligature.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5842793512074F0000D5BD00 /* ligature.cpp */; };
 		675287A611B87AF30037350B /* muskeyboardeditor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 675287A411B87AF30037350B /* muskeyboardeditor.cpp */; };
 		A58524CE0A1B9604002D9D8A /* axapp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A58524560A1B9604002D9D8A /* axapp.cpp */; };
 		A58524CF0A1B9604002D9D8A /* axenv.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A58524580A1B9604002D9D8A /* axenv.cpp */; };
@@ -212,9 +212,9 @@
 		57CA54310D3414BB001FC334 /* axdefs.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = axdefs.h; sourceTree = "<group>"; };
 		57EA3DE30C00BDEB00414247 /* recbookctrl.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = recbookctrl.cpp; sourceTree = "<group>"; };
 		57EA3DE40C00BDEB00414247 /* recbookctrl.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = recbookctrl.h; sourceTree = "<group>"; };
+		5842793512074F0000D5BD00 /* ligature.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ligature.cpp; path = ../src/mus/ligature.cpp; sourceTree = SOURCE_ROOT; };
 		584D9B0211F6712E000710E1 /* musligature.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = musligature.h; path = ../src/mus/musligature.h; sourceTree = SOURCE_ROOT; };
 		6718EA9B11C14AAC00734117 /* neumedef.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = neumedef.h; path = ../src/mus/neumedef.h; sourceTree = SOURCE_ROOT; };
-		674D75D211CC1257001D2A87 /* musligature.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = musligature.cpp; path = ../src/mus/musligature.cpp; sourceTree = SOURCE_ROOT; };
 		675287A411B87AF30037350B /* muskeyboardeditor.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = muskeyboardeditor.cpp; path = ../src/mus/muskeyboardeditor.cpp; sourceTree = SOURCE_ROOT; };
 		675287A511B87AF30037350B /* muskeyboardeditor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = muskeyboardeditor.h; path = ../src/mus/muskeyboardeditor.h; sourceTree = SOURCE_ROOT; };
 		A50FE1390A6D6E240038D682 /* rec.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = rec.h; sourceTree = "<group>"; };
@@ -285,7 +285,7 @@
 			isa = PBXGroup;
 			children = (
 				A58524960A1B9604002D9D8A /* sup_wdr.h */,
-				674D75D211CC1257001D2A87 /* musligature.cpp */,
+				5842793512074F0000D5BD00 /* ligature.cpp */,
 				584D9B0211F6712E000710E1 /* musligature.h */,
 				4DC24AB5119B72C900B2EF98 /* musneume.cpp */,
 				4DC24AB6119B72C900B2EF98 /* musneume.h */,
@@ -711,7 +711,7 @@
 				4DC24AB7119B72C900B2EF98 /* musneume.cpp in Sources */,
 				4DC24ABC119B72EF00B2EF98 /* edtfile.cpp in Sources */,
 				675287A611B87AF30037350B /* muskeyboardeditor.cpp in Sources */,
-				674D75D311CC1257001D2A87 /* musligature.cpp in Sources */,
+				5842793612074F0000D5BD00 /* ligature.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -812,6 +812,17 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				COPY_PHASE_STRIP = NO;
+				HEADER_SEARCH_PATHS = (
+					"$(ARUSPIX_WX)/osx-static-debug/include",
+					"$(ARUSPIX_IMLIB)/include",
+					"$(ARUSPIX_TORCH)/include",
+				);
+				LIBRARY_SEARCH_PATHS = (
+					"$(ARUSPIX)/libs",
+					"$(ARUSPIX_TORCH)/lib",
+					"$(ARUSPIX_IMLIB)/lib",
+					"$(ARUSPIX_WX)/osx-static-debug/lib",
+				);
 				OBJROOT = "$(ARUSPIX)/obj";
 				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
 				SYMROOT = "$(ARUSPIX)/bin";
