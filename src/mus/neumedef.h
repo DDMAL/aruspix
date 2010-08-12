@@ -9,6 +9,8 @@
 
 /* Festa Dies A */
 
+// individual punctum characters from festa dies
+
 #define nPODATUS "\'" // podatus (epiphonus)
 #define nBEMOLE 46	// b flat
 #define nVIRGULA 59 // comma
@@ -31,6 +33,16 @@
 #define nRIGHTLINE 42
 #define nLEFTLINE 52
 #define nVIRGA "s*" //virga, to be used with festa_string
+
+// MEI-related defs
+
+#define INEUME 0 // 'broken' neume (climacus or scandicus)
+#define UNEUME 1 // 'unbroken' neume (clivis, pes, etc)
+
+// forms
+#define QUIL 1 // "quilismatic"
+#define RHOM 2 // "rhombic"
+#define LIQ1 3 // "liquescent1"
 
 
 #define PUNCT_PADDING 25 // space between punctums in open editing mode

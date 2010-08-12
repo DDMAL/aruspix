@@ -46,7 +46,7 @@ public:
     virtual bool WritePage( const MusPage *page );
 	virtual bool WriteStaff( const MusStaff *staff );
 	virtual bool WriteNote( const MusNote *note );
-	//TODO add WriteNeume
+	virtual	bool WriteNeume( const MusNeume *neume ); 
 	virtual bool WriteSymbol( const MusSymbol *symbol );
     virtual bool WriteLyric( const MusElement *element );
 	virtual bool WriteElementAttr( const MusElement *element );
@@ -86,7 +86,7 @@ public:
 	virtual bool ReadPage( MusPage *page );
 	virtual bool ReadStaff( MusStaff *staff );
 	virtual bool ReadNote( MusNote *note );
-	//TODO add ReadMusNeume
+	virtual	bool ReadNeume( MusNeume *neume );
 	virtual bool ReadSymbol( MusSymbol *symbol );
     virtual bool ReadLyric( MusElement *element );
 	virtual bool ReadElementAttr( MusElement *element );

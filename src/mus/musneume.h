@@ -65,6 +65,8 @@ public:
 //	int code;
 //	int oct;
 	unsigned char val;
+	char name;
+	char form;
 }; 
 
 class MusNeume: public MusElement
@@ -173,6 +175,12 @@ public:
 	
 	void MusNeume::CheckForBreaks();
 	void MusNeume::Split(int pos); //do we need the int parameter?
+	
+	// mei related fields
+	char compound; //INEUME or UNEUME, for use with mei encoding
+	char name; // name of the neume (climacus, pes, etc)
+	char form; // neume form, could be "liquescent1" for example
+	
 	
 	
 	

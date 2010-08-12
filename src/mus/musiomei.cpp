@@ -402,6 +402,9 @@ bool MusMeiOutput::WriteNote( const MusNote *note )
 	return true;
 }
 
+bool MusMeiOutput::WriteNeume( const MusNeume *neume ) 
+{}
+
 bool MusMeiOutput::WriteSymbol( const MusSymbol *symbol )
 {
 
@@ -673,6 +676,14 @@ bool MusMeiInput::ReadStaff( MusStaff *staff )
 			ReadSymbol( symbol );
 			staff->m_elements.Add( symbol );
 		}
+		else if ( c == NEUME ) 
+		{
+			MusNeume *neume = new MusNeume();
+			neume->no = k;
+			ReadNeume( neume );
+			
+			staff->m_elements.Add( neume );
+		}
 	}
 			
 	return true;
@@ -690,6 +701,21 @@ bool MusMeiInput::ReadNote( MusNote *note )
 		note->m_lyrics.Add( lyric );
 	}
 
+	return true;
+}
+
+bool MusMeiInput::ReadNeume( MusNeume *neume )
+{
+	char count;
+	
+	for ( int i = 0; i < count; i++ ) {
+		MusSymbol *lyric = new MusSymbol();
+		Read( &lyric->TYPE, 1 );
+		ReadSymbol( lyric );
+//		lyric->m_neume_ptr = neume;				 		
+//		neume->m_lyrics.Add( lyric );
+	}
+	
 	return true;
 }
 

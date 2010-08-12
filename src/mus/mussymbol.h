@@ -18,6 +18,7 @@
 
 class MusStaff;
 class MusNote;
+class MusNeume;
 #include "muselement.h"
 
 // WDR: class declarations
@@ -91,6 +92,7 @@ public:
     unsigned short l_ptch;
 	
 	MusNote *m_note_ptr;
+	MusNeume *m_neume_ptr; //temporary? --chrisniven
 
 private:
     // WDR: handler declarations for MusSymbol
