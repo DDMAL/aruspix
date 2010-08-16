@@ -148,7 +148,6 @@ int MusNeumePitch::Pitch_Diff(int code, int oct)
 	return abs_pitch(code, oct) - abs_pitch(this->code, this->oct);
 }
 
-
 //----------------------------------------------------------------------------
 // MusNeume
 //----------------------------------------------------------------------------
@@ -170,18 +169,20 @@ MusNeume::MusNeume():
 	n_pitches.push_back(firstPitch);
 	code = 0;
 	p_range = p_min = p_max = 0;
-//	this->SetClosed(true);
+	n_type = name = form = NULL; //this gets set when ligature is drawn
+	//	this->SetClosed(true);
 }
 
-MusNeume::MusNeume( std::vector<MusNeumePitch*> pitch_list ) 
-{
-	TYPE = NEUME;
-	closed = true;
-	n_selected = 0;
-	n_pitches = pitch_list;
-	code = 0;
-	p_range = p_min = p_max = 0;
-}
+//MusNeume::MusNeume( std::vector<MusNeumePitch*> pitch_list ) 
+//{
+//	TYPE = NEUME;
+//	closed = true;
+//	n_selected = 0;
+//	n_pitches = pitch_list;
+//	code = 0;
+//	p_range = p_min = p_max = 0;
+//	n_type = name = form = NULL; //this gets set when ligature is drawn
+//}
 
 MusNeume::MusNeume( unsigned char _val, unsigned char _code )
 {
@@ -192,7 +193,8 @@ MusNeume::MusNeume( unsigned char _val, unsigned char _code )
 	n_pitches.push_back(firstPitch);
 	code = _code;	
 	p_range = p_min = p_max = 0;
-//	this->SetClosed(true);	
+	n_type = name = form = NULL; //this gets set when ligature is drawn
+	//	this->SetClosed(true);	
 }
 
 // this constructor is called first upon insert
@@ -204,30 +206,17 @@ MusNeume::MusNeume( const MusNeume& neume )
 	TYPE = neume.TYPE;
 	closed = true;	//all neumes are closed by default
 	n_selected = neume.n_selected;
-	
-
-//	printf("This is the address of the original pitch list: %d\n", (int)&(this->n_pitches));
-//	printf("This is the address of the new pitch list: %d\n", (int)&(neume.n_pitches));
-//	//this is supposed to deep copy, but it doesn't for some strange reason	
 	n_pitches = neume.n_pitches;
-//	printf("*************************************************\n");
-//	printf("NOW, this is the address of the original pitch list: %d\n", (int)&(this->n_pitches));
-//	printf("This is the address of the new pitch list: %d\n", (int)&(neume.n_pitches));
-//	
-	
-	//pitch list is instantiated — not copied (for now)
 
-//	this->n_pitches.empty();
-//	
-//	MusNeumePitch *firstPitch = new MusNeumePitch();
-//	n_pitches.push_back(firstPitch);
-//	
 	SetPitch(code, oct);
 	
 	p_range = neume.p_range;
 	p_max = neume.p_max;
 	p_min = neume.p_min;
 	
+	n_type = neume.n_type;
+	name = neume.name;
+	form = neume.form;
 //	this->printNeumeList();
 //	this->SetClosed(true);	
 }
@@ -248,39 +237,15 @@ MusNeume& MusNeume::operator=( const MusNeume& neume )
 		closed = true; //all neumes are closed by default
 		n_selected = neume.n_selected;
 		n_pitches = neume.n_pitches;
-		//
-//		//pitch list is instantiated — not copied (for now)
-//		this->n_pitches.empty();
-//		
-//		MusNeumePitch *firstPitch = new MusNeumePitch();
-//		n_pitches.push_back(firstPitch);
-		
-		
-//		printf("This is the address of the original pitch list: %d\n", (int)&(this->n_pitches));
-//		printf("This is the address of the new pitch list: %d\n", (int)&(neume.n_pitches));
-//		
-//		this->n_pitches = neume.n_pitches;
-//		printf("*************************************************\n");
-//		printf("NOW, this is the address of the original pitch list: %d\n", (int)&(this->n_pitches));
-//		printf("This is the address of the new pitch list: %d\n", (int)&(neume.n_pitches));
-//		
-		
-//		std::vector<MusNeumePitch*> temp (neume.n_pitches.size());
-//		
-//		printf("^^^^^^^^^^^VECTOR SIZE: %d\n", temp.size());
-		
-//		std::vector<MusNeumePitch*> temp;
-//		//super hack-y
-//		for (iter=n_pitches.begin(); iter != n_pitches.end(); ++iter)
-//		{
-//			temp.push_back(new MusNeumePitch((*iter)->code, (*iter)->oct, (*iter)->val));
-//		}
-//		this->n_pitches = temp;
 		
 		SetPitch(code, oct);
 		p_range = neume.p_range;
 		p_max = neume.p_max;
 		p_min = neume.p_min;
+		
+		n_type = neume.n_type;
+		name = neume.name;
+		form = neume.form;
 	}
 	
 //	this->printNeumeList();
@@ -481,18 +446,13 @@ void MusNeume::InsertPitchAfterSelected()
 	// shouldn't need this since we're using n_selected as the index
 	//	if (index <= 0 || index >= n_pitches.size()) return;
 	
-	MusNeumePitch *new_pitch;
-	
-	//insert at front
-	iter = n_pitches.begin();
-//	if (n_selected == n_pitches.size() - 1) { //append pitch at end
-//		iter = n_pitches.back(); 
-//	} else { //insert in middle
-		for (unsigned int i = 0; i < n_selected; i++, iter++); //iterate to selected element
-//	}
+	MusNeumePitch *new_pitch = 
+	new MusNeumePitch(this->n_pitches[n_selected]->code, 
+				this->n_pitches[n_selected]->oct, this->n_pitches[n_selected]->val);
 
-	new_pitch = new MusNeumePitch((*iter)->code, (*iter)->oct, (*iter)->val);
-	n_pitches.insert(iter, new_pitch);
+	iter = this->n_pitches.begin();
+	
+	n_pitches.insert(iter + n_selected, new_pitch);
 	n_selected++;
 	
 	this->GetPitchRange();
@@ -509,8 +469,7 @@ void MusNeume::RemoveSelectedPitch()
 	// cannot remove last node (for now)
 	
 	iter = n_pitches.begin();
-	for (unsigned int i = 0; i < n_selected; i++, iter++);
-	n_pitches.erase(iter);
+	n_pitches.erase(iter + n_selected);
 	
 	if (n_selected) n_selected--;
 	
@@ -638,6 +597,7 @@ int MusNeume::GetValue()
 //debug helper method
 void MusNeume::printNeumeList() 
 {
+	printf("Neume Address: %d\n", (int)&(*this));
 	printf("Neume List: (length %d)\n", (int)n_pitches.size());
 	int count = 0;
 	for (iter=n_pitches.begin(); iter != n_pitches.end(); ++iter, count++)
@@ -803,8 +763,8 @@ void MusNeume::DrawNeume( wxDC *dc, MusStaff *staff )
 	
 	if (this->n_pitches.size() == 1) {
 		temp = n_pitches.at(0);
-		leg_line( dc, ynn,bby,xn,ledge, pTaille);
-		m_w->festa_string( dc, this->xrel, ynn + 16, 
+		leg_line( dc, ynn,bby,this->xrel,ledge, pTaille);
+		m_w->festa_string( dc, xn, ynn + 16, 
 					 temp->getPunctumType(), staff, this->dimin); 
 	} else if (this->n_pitches.size() >= 1) {
 		// we need to draw a ligature
@@ -885,8 +845,10 @@ void MusNeume::leg_line( wxDC *dc, int y_n, int y_p, int xn, unsigned int smalle
 	
 	if (!in(y_n,yh,yb))                           // note hors-portee?
 	{
-		xng = xn - smaller;
-		xnd = xn + smaller;
+		xng = xn + 8 - smaller; //xn gauche MAGIC NUMBERS YEAHHH
+		xnd = xn + smaller; //xn droite
+//		printf("xn = %d, xn gauche: %d, xn droigt: %d\n", xn, xng, xnd);
+//		printf("xrel = %d\n", this->xrel);
 		
 		dist = ((y_n > yh) ? (y_n - y_p) : y_p - m_w->_portee[pTaille] - y_n);
   		ynt = ((dist % m_w->_interl[pTaille] > 0) ? (dist - m_w->_espace[pTaille]) : dist);

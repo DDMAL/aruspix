@@ -213,7 +213,6 @@
 		57EA3DE30C00BDEB00414247 /* recbookctrl.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = recbookctrl.cpp; sourceTree = "<group>"; };
 		57EA3DE40C00BDEB00414247 /* recbookctrl.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = recbookctrl.h; sourceTree = "<group>"; };
 		5842793512074F0000D5BD00 /* ligature.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ligature.cpp; path = ../src/mus/ligature.cpp; sourceTree = SOURCE_ROOT; };
-		584D9B0211F6712E000710E1 /* musligature.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = musligature.h; path = ../src/mus/musligature.h; sourceTree = SOURCE_ROOT; };
 		6718EA9B11C14AAC00734117 /* neumedef.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = neumedef.h; path = ../src/mus/neumedef.h; sourceTree = SOURCE_ROOT; };
 		675287A411B87AF30037350B /* muskeyboardeditor.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = muskeyboardeditor.cpp; path = ../src/mus/muskeyboardeditor.cpp; sourceTree = SOURCE_ROOT; };
 		675287A511B87AF30037350B /* muskeyboardeditor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = muskeyboardeditor.h; path = ../src/mus/muskeyboardeditor.h; sourceTree = SOURCE_ROOT; };
@@ -286,7 +285,6 @@
 			children = (
 				A58524960A1B9604002D9D8A /* sup_wdr.h */,
 				5842793512074F0000D5BD00 /* ligature.cpp */,
-				584D9B0211F6712E000710E1 /* musligature.h */,
 				4DC24AB5119B72C900B2EF98 /* musneume.cpp */,
 				4DC24AB6119B72C900B2EF98 /* musneume.h */,
 				6718EA9B11C14AAC00734117 /* neumedef.h */,

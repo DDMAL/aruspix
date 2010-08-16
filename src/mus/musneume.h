@@ -65,8 +65,6 @@ public:
 //	int code;
 //	int oct;
 	unsigned char val;
-	char name;
-	char form;
 }; 
 
 class MusNeume: public MusElement
@@ -74,7 +72,7 @@ class MusNeume: public MusElement
 public:
     // constructors and destructors
     MusNeume();
-	MusNeume( std::vector<MusNeumePitch*> pitch_list );
+//	MusNeume( std::vector<MusNeumePitch*> pitch_list );
 	MusNeume( unsigned char _val, unsigned char _code );
 	MusNeume( const MusNeume& neume ); // copy contructor
 	MusNeume& operator=( const MusNeume& neume ); // copy assignement;
@@ -167,7 +165,7 @@ public:
 //	void MusNeume::neume_line( wxDC *dc, MusStaff *staff, int start_pitch, 
 //							  int end_pitch, int side);
 	void MusNeume::neume_line( wxDC *dc, MusStaff *staff, int side );
-	void MusNeume::climacus( wxDC *dc, MusStaff *staff );
+//	void MusNeume::climacus( wxDC *dc, MusStaff *staff );
 	
 	//pitch and octave of first pitch of the neume
 	int MusNeume::GetOct(); 
@@ -177,12 +175,12 @@ public:
 	void MusNeume::Split(int pos); //do we need the int parameter?
 	
 	// mei related fields
-	char compound; //INEUME or UNEUME, for use with mei encoding
+//	char compound; //INEUME or UNEUME, for use with mei encoding
+	//unnecessary?
+	
+	char n_type; // uneume or ineume, uneume by default
 	char name; // name of the neume (climacus, pes, etc)
 	char form; // neume form, could be "liquescent1" for example
-	
-	
-	
 	
 public:
 	// WDR: member variable declarations for MusNeume

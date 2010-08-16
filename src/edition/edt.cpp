@@ -548,7 +548,8 @@ void EdtEnv::OnOpenMEI( wxCommandEvent &event )
     if ( !this->ResetFile( ) )
         return;
 
-    wxString filename = wxFileSelector( _("Open"), wxGetApp().m_lastDir, _T(""), NULL, "XML|*.xml", wxOPEN);
+    wxString filename = wxFileSelector( _("Import MEI"), wxGetApp().m_lastDir, _T(""), 
+									   NULL, "MEI Files|*.mei|XML Files|*.xml", wxOPEN);
     if ( filename.IsEmpty() )
         return;
     wxGetApp().m_lastDir = wxPathOnly( filename );
@@ -568,7 +569,8 @@ void EdtEnv::OnSaveMEI( wxCommandEvent &event )
     if (  !m_panelPtr || !m_edtFilePtr )
         return;
 
-    wxString filename = wxFileSelector( _("Save"), wxGetApp().m_lastDir, _T(""), NULL, "MEI XML|*.xml", wxSAVE);
+    wxString filename = wxFileSelector( _("Export MEI"), wxGetApp().m_lastDir, _T(""),
+									   NULL, "MEI Files|*.meiMEI|XML Files|*.xml", wxSAVE);
     if ( filename.IsEmpty() )
         return;     
     wxGetApp().m_lastDirAX0_out = wxPathOnly( filename );

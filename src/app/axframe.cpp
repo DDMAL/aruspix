@@ -52,6 +52,7 @@ WX_DEFINE_OBJARRAY(AxEnvArray);
     #include "comparison/cmp.h"
 #endif
 
+
 // MIDI
 DEFINE_EVENT_TYPE( AX_EVT_MIDI )
 

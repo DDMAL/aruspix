@@ -255,12 +255,14 @@ MusElement *MusStaff::Insert( MusElement *element )
 		element = new MusSymbol( *(MusSymbol*)element );
 	else if ( element->IsNote() )
 		element = new MusNote( *(MusNote*)element );
-	else if ( element->IsNeume() ) 
-	{
-	//copying a neume causes issues
+	else if ( element->IsNeume() )
 		element = new MusNeume( *(MusNeume*)element );
-		((MusNeume*)element)->n_pitches.resize(1);
-	}
+//	else if ( element->IsNeume() ) 
+//	{
+//	//copying a neume causes issues
+//		element = new MusNeume( *(MusNeume*)element );
+//		((MusNeume*)element)->n_pitches.resize(1);
+//	}
 
 	int idx = 0;
 	MusElement *tmp = this->GetFirst();

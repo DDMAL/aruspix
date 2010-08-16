@@ -297,6 +297,10 @@ bool MusMeiOutput::WriteStaff( const MusStaff *staff )
                 ligature = NULL;
             } 
 		}
+		else if ( staff->m_elements[k].IsNeume() )
+		{
+			WriteNeume( (MusNeume*)&staff->m_elements[k] );
+		}
 		else if ( staff->m_elements[k].IsSymbol() )
 		{
 			WriteSymbol( (MusSymbol*)&staff->m_elements[k] );
@@ -339,7 +343,7 @@ bool MusMeiOutput::WriteNote( const MusNote *note )
     {
         case LG : note_type = "longa"; break;
         case BR : note_type = "brevis"; break;
-        case RD : note_type = "semibrevis"; break;
+		case RD : note_type = "semibrevis"; break;
         case BL : note_type = "minima"; break;
         case NR : note_type = "semiminima"; break;
         case CR : note_type = "fusa"; break;
@@ -403,7 +407,77 @@ bool MusMeiOutput::WriteNote( const MusNote *note )
 }
 
 bool MusMeiOutput::WriteNeume( const MusNeume *neume ) 
-{}
+{
+    wxASSERT_MSG( m_xml_current, "m_xml_current cannot be NULL");
+	
+	// should start with syllables (eventually)
+	
+	/* punctums all have the same note value, so 
+	   first check if it is a multi-note neume */
+	wxString neume_type;
+	if (neume->n_type == UNEUME) neume_type = "uneume";
+	else if (neume->n_type == INEUME) neume_type = "ineume";
+	
+	wxString neume_form;
+	switch (neume->form) 
+	{
+		case QUIL : neume_form = "quilismatic"; break;
+		case RHOM : neume_form = "rhombic"; break;
+		case LIQ1 : neume_form = "liquescent1"; break;
+		default:
+			//NULL
+			break;
+	}
+	
+	wxString neume_name;
+	switch (neume->name)
+	{
+		case PUNCT : neume_name = "punctum"; break;
+		case VIRGA : neume_name = "virga"; break;
+		case PRECT : neume_name = "porrectus"; break;
+		case PODAT : neume_name = "pes"; break;
+		case CLVIS : neume_name = "clivis"; break;
+	}
+	
+	TiXmlElement neume_element(neume_type);
+	if (neume_name)
+		neume_element.SetAttribute("name", neume_name);
+	if (neume_form)
+		neume_element.SetAttribute("form", neume_form);
+	
+	if (neume->n_pitches.size())
+		printf("we have a working pitch list\n");
+	
+	// pitch list
+//	wxString note_letter;
+//	for (int i = 0; i < neume->n_pitches.size(); i++)
+//	{
+//		TiXmlElement note_element("note");
+//		switch ( neume->n_pitches[i]->code )
+//		{
+//			case F1 : note_letter = "b"; break;
+//			case F2 : note_letter = "c"; break;
+//			case F3 : note_letter = "d"; break;
+//			case F4 : note_letter = "e"; break;
+//			case F5 : note_letter = "f"; break;
+//			case F6 : note_letter = "g"; break;
+//			case F7 : note_letter = "a"; break;
+//			case F8 : note_letter = "b"; break;
+//			case F9 : note_letter = "c"; break;
+//			default :
+//				wxLogWarning("Undefined pitch, note skipped" );
+//				return true;
+//		}
+//        note_element.SetAttribute( "oct", wxString::Format("%d", 
+//					neume->n_pitches[i]->oct ).c_str() );
+//		m_xml_current->InsertEndChild(note_element);
+//	}
+	
+	m_xml_current->InsertEndChild(neume_element);
+
+	
+	return true;
+}
 
 bool MusMeiOutput::WriteSymbol( const MusSymbol *symbol )
 {

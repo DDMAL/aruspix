@@ -41,68 +41,47 @@ bool MusNeume::descending(int p1, int p2)
 
 
 void MusNeume::drawLigature( wxDC *dc, MusStaff *staff ) {
-	switch (this->n_pitches.size()) {
-		case 0:
-		case 1:
-			//no ligatures drawn
-			return;
-		case 2:
-//			int i = n_pitches.at(0)->Compare(n_pitches.at(1));
-//			if (i == -1) {
-			if (ascending(0, 1)) {
-				
-//				printf("2 notes ascending, drawing podatus\n");
-				this->podatus(dc, staff);
-				return;
-			} else { // if (i == 1) {
-//				printf("2 notes descending, drawing clivis\n");
-				this->clivis(dc, staff);
-				return;
-			}
-			break;
-		case 3:
-//			i = n_pitches.at(0)->Compare(n_pitches.at(1));
-			if (descending(0, 1) && ascending(1,2)) 
-			{
-//				printf("we're going to make a porrectus\n");
-				this->porrectus(dc, staff);
-				return;
-			} 
-			
-	}
-	
 	//hacky check for climacus
-	if (this->n_pitches.size() >=3) {
-		int i;
-		for (i = 1; i < n_pitches.size(); i++)
-		{
-			if (ascending(i-1, i)) break;
-		}
-//		if (i >= n_pitches.size()) printf("drawing climacus\n");
-	}
+//	if (this->n_pitches.size() >=3) {
+//		int i;
+//		for (i = 1; i < n_pitches.size(); i++)
+//		{
+//			if (ascending(i-1, i)) break;
+//		}
+////		if (i >= n_pitches.size()) printf("drawing climacus\n");
+//		this->n_type = INEUME;
+//	}
 	
 	//filter pes
 	int i;
-	for (i = 1, iter = n_pitches.begin()+1; iter < n_pitches.end(); iter++, i++) {
-		if (ascending(i-1, i))
-			break;
+//	for (i = 1, iter = n_pitches.begin()+1; iter < n_pitches.end(); iter++, i++) {
+	if (ascending(0, 1) && n_pitches.size() == 2) {
 	
-		if (i == n_pitches.size() - 1) {
+//		if (i == n_pitches.size() - 1) {
 		//	printf("We have a pes!\n");
 			this->podatus(dc, staff);
+			this->n_type = UNEUME;
+			this->name = PODAT;
+			return;
 		}
-	}
+//	}
 	
 	//filter porrectus
 	for (i = 1, iter = n_pitches.begin()+1; iter < n_pitches.end(); iter++, i++) {
-//		if (n_pitches.size() == 3 && 
-//			n_pitches.at(i-1)->Compare(n_pitches.at(i)) == 1
-	
+		if (n_pitches.size() == 3 && descending(0, 1) && ascending(1,2) )
+		{
+			this->porrectus(dc, staff);
+			this->n_type = UNEUME;
+			this->name = PRECT;
+			return;
+		}
 	}
 	
 	//filter climacus
 	//draw clivis by default
 	this->clivis(dc, staff);
+	this->n_type = UNEUME;
+	this->name = CLVIS;
 }
 
 //filter porrectus
@@ -130,7 +109,7 @@ void MusNeume::clivis( wxDC *dc, MusStaff *staff ) {
 		ynn += staff->yrel;
 		//ledger line
 		
-		if (i < n_pitches.size() - 1)
+		if (i < n_pitches.size())
 		m_w->festa_string(dc, this->xrel + (i * 10), ynn + 16, 
 						  "s*", staff, this->dimin);
 	}
@@ -227,20 +206,20 @@ void MusNeume::porrectus( wxDC *dc, MusStaff *staff )
 	n_pitches.at(2)->SetValue(5); //final pitch is a virga
 }
 
-void MusNeume::climacus( wxDC *dc, MusStaff *staff )
-{
-//	int pTaille = staff->pTaille;
-	
-	int oct = this->oct - 4;
-	this->dec_y = staff->y_note((int)this->code, staff->testcle( this->xrel ), oct);
-	int ynn = this->dec_y + staff->yrel; 
-//	int ynn2;
+//void MusNeume::climacus( wxDC *dc, MusStaff *staff )
+//{
+////	int pTaille = staff->pTaille;
 //	
-//	
-//	int ledge = m_w->ledgerLine[pTaille][2];
-//	
-//	int punct_y;
-//	
-	//virga + punct + punct + ...
-
-}
+//	int oct = this->oct - 4;
+//	this->dec_y = staff->y_note((int)this->code, staff->testcle( this->xrel ), oct);
+//	int ynn = this->dec_y + staff->yrel; 
+////	int ynn2;
+////	
+////	
+////	int ledge = m_w->ledgerLine[pTaille][2];
+////	
+////	int punct_y;
+////	
+//	//virga + punct + punct + ...
+//
+//}

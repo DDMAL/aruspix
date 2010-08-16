@@ -44,6 +44,13 @@
 #define RHOM 2 // "rhombic"
 #define LIQ1 3 // "liquescent1"
 
+// names
+
+#define PUNCT 0
+#define VIRGA 1
+#define PRECT 2
+#define PODAT 3
+#define CLVIS 4
 
 #define PUNCT_PADDING 25 // space between punctums in open editing mode
 #define PUNCT_WIDTH 5 // 'guesstimation' of punctum width -- this number is fairly arbitrary
