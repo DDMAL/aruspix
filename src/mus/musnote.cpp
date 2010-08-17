@@ -170,14 +170,12 @@ MusNote& MusNote::operator=( const MusNote& note )
 			
 		}
 	}
-	
-//	printf("Hi, this is my address: %d\n", (int)(this));
-	
+
 	return *this;
 }
 
 MusNote::~MusNote()
-{	
+{
 }
 
 bool MusNote::BelongsToTheNote( MusElement *element )
@@ -206,8 +204,6 @@ void MusNote::SetPitch( int code, int oct )
 	if (m_w)
 		m_w->Refresh();
 }
-
-
 
 void MusNote::SetValue( int value, MusStaff *staff, int vflag )
 {	

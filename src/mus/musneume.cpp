@@ -64,7 +64,7 @@ MusNeumePitch::MusNeumePitch(int _code, int _oct, unsigned char _val)
 
 MusNeumePitch::MusNeumePitch( const MusNeumePitch& pitch ) 
 {
-	printf("**************************** musneumepitch 1\n");
+//	printf("**************************** musneumepitch 1\n");
 	code = pitch.code;
 	oct = pitch.oct;
 	val = pitch.val;
@@ -72,14 +72,14 @@ MusNeumePitch::MusNeumePitch( const MusNeumePitch& pitch )
 
 MusNeumePitch& MusNeumePitch::operator=( const MusNeumePitch& pitch )
 {
-	printf("**************************** musneumepitch 2\n");	
+//	printf("**************************** musneumepitch 2\n");	
 	if ( this != &pitch ) 
 	{
 		printf("we're copying properly\n");
-		(MusNeumePitch&)*this = pitch;
-		this->code = pitch.code;
-		this->oct = pitch.oct;
-		this->val = pitch.val;
+		(MusElement&)*this = pitch;
+		code = pitch.code;
+		oct = pitch.oct;
+		val = pitch.val;
 	} printf("not copying properly :(:(:(:(:(\n");
 	return *this;
 }
@@ -202,17 +202,33 @@ MusNeume::MusNeume( unsigned char _val, unsigned char _code )
 MusNeume::MusNeume( const MusNeume& neume )
 	: MusElement( neume )
 {
-	printf("************************ Copy constructor addr: %d\n", (int)&neume);
+	printf("************************ Copy constructor addr: %d (%x)\n", 		   
+		   (unsigned int)&neume, (unsigned int)&neume);
+	
+	printf("\nBEFORE:\n");
+	
+	printNeumeList();
 	TYPE = neume.TYPE;
 	closed = true;	//all neumes are closed by default
 	n_selected = neume.n_selected;
-	n_pitches = neume.n_pitches;
-
-	SetPitch(code, oct);
+//	n_pitches = neume.n_pitches;
+	printf("\nAFTER:\n");
+	printNeumeList();
 	
-	p_range = neume.p_range;
-	p_max = neume.p_max;
-	p_min = neume.p_min;
+//	SetPitch(neume.code, neume.oct);
+	code = neume.code;
+	oct = neume.oct;
+
+	n_pitches.push_back(new MusNeumePitch(code, oct, 0));
+	
+//	code = n_pitches.at(0)->code;
+//	oct = n_pitches.at(0)->oct;
+	
+//	p_range = neume.p_range;
+//	p_max = neume.p_max;
+//	p_min = neume.p_min;
+
+	this->GetPitchRange();
 	
 	n_type = neume.n_type;
 	name = neume.name;
@@ -236,12 +252,19 @@ MusNeume& MusNeume::operator=( const MusNeume& neume )
 		TYPE = neume.TYPE;
 		closed = true; //all neumes are closed by default
 		n_selected = neume.n_selected;
-		n_pitches = neume.n_pitches;
+//		n_pitches = neume.n_pitches;
 		
-		SetPitch(code, oct);
-		p_range = neume.p_range;
-		p_max = neume.p_max;
-		p_min = neume.p_min;
+//		SetPitch(neume.code, neume.oct);
+		n_pitches.push_back(new MusNeumePitch(code, oct, 0));
+		
+		code = n_pitches.at(0)->code;
+		oct = n_pitches.at(0)->oct;
+		
+//		p_range = neume.p_range;
+//		p_max = neume.p_max;
+//		p_min = neume.p_min;
+
+		this->GetPitchRange();
 		
 		n_type = neume.n_type;
 		name = neume.name;
@@ -256,7 +279,7 @@ MusNeume& MusNeume::operator=( const MusNeume& neume )
 MusNeume::~MusNeume()
 {	
 	//we need to delete all the NPitch elements
-	n_pitches.empty();
+	n_pitches.clear();
 	//not sure if this is all we need
 }
 
@@ -272,7 +295,7 @@ void MusNeume::SetClosed(bool value) {
 		//break up neumes if there are repeated pitches
 		printf("\nINITIAL LIST: **********************\n");	
 		this->printNeumeList();
-		this->CheckForBreaks();
+// 		this->CheckForBreaks(); //causes memory leak?
 //		wxClientDC dc(m_w);
 //		this->drawLigature(&(m_w->dc), m_w->m_currentStaff);
 	//	m_w->m_currentElement = this;
@@ -311,7 +334,7 @@ void MusNeume::CheckForBreaks()
 			printf("duplicate pitch found at pos %d\n", i+1);
 			pos_list.push_back(i+1);
 		}
-		else { 
+		else {
 //			this->Split(i+1);
 //			this->CheckForBreaks();
 		}
@@ -348,6 +371,8 @@ void MusNeume::CheckForBreaks()
 	//		m_w->m_currentStaff->Delete(this);		
 		}
 	}
+	
+	delete temp;
 }
 
 //automatically split neumes where same pitches are found
@@ -503,13 +528,12 @@ void MusNeume::SetPitch( int code, int oct )
 	if ( this->TYPE != NEUME )
 		return;
 	
-//	if (this->code == code && this->oct == oct) {
-	if (abs_pitch(this->code, this->oct) == abs_pitch(code, oct)) {
-		iter = n_pitches.begin();
-		(*iter)->SetPitch(code, oct);	//hack fix for first pitch being set to 0
-		return;
-	}
-	
+//	if (abs_pitch(this->code, this->oct) == abs_pitch(code, oct)) {
+//		iter = n_pitches.begin();
+//		(*iter)->SetPitch(code, oct);	//hack fix for first pitch being set to 0
+//		return;
+//	}
+
 	//if the neume is closed, we pitch shift the entire group
 	//if open, we change a single pitch (punctum) in the group
 	
@@ -530,17 +554,16 @@ void MusNeume::SetPitch( int code, int oct )
 				this->oct = oct;
 			}
 		}
-		
 	} else {
 		printf("Changing pitch for element %d [open mode]\n", n_selected);
+
+		//find the diff between first pitch (reference pitch) and
+		//the selected pitch in open mode
+
 		MusNeumePitch *temp = n_pitches.at(n_selected);
 		newpitch = abs_pitch(temp->code, temp->oct) + diff;
 		temp->SetPitch(abs2pitch(newpitch));
-		
-		//find the diff between first pitch (reference pitch) and
-		//the selected pitch in open mode
-		
-		
+
 		//this->printNeumeList();
 		//shift pitch for entire neume if first punctum is selected
 	    //this may cause problems with multiple punctum neumes!!
@@ -552,9 +575,8 @@ void MusNeume::SetPitch( int code, int oct )
 			this->oct = oct;
 		}
 	}
-	
-	this->GetPitchRange(); //necessary for drawing the box properly in open mode
-	
+		
+	this->GetPitchRange(); //necessary for drawing the box properly in open mode	
 	if (m_w)
 		m_w->Refresh();
 }
@@ -597,13 +619,16 @@ int MusNeume::GetValue()
 //debug helper method
 void MusNeume::printNeumeList() 
 {
-	printf("Neume Address: %d\n", (int)&(*this));
+	printf("Neume Address: %d (%x)\n", (int)&(*this),(unsigned int)&(*this));
+	printf("Vector Address: %d (%x)\n", (long)&(this->n_pitches), 
+		   (int)&(this->n_pitches));
 	printf("Neume List: (length %d)\n", (int)n_pitches.size());
 	int count = 0;
 	for (iter=n_pitches.begin(); iter != n_pitches.end(); ++iter, count++)
 	{
-		printf("no: %d: *** Address: %d code: %d oct: %d val: %d\n", 
-			   count, (int)&(*iter), (*iter)->code, (*iter)->oct, (*iter)->val);
+		printf("no: %d: *** Address: %d (%x) code: %d oct: %d val: %d\n", 
+			   count, (int)&(*iter), (unsigned int)&(*iter), (*iter)->code, 
+			   (*iter)->oct, (*iter)->val);
 	}
 }
 
@@ -727,11 +752,10 @@ void MusNeume::DrawBox( wxDC *dc, MusStaff *staff ) //revise
 	
 	// now get the range
 	//y2 = this->p_range * m_w->_espace[staff->pTaille] + PUNCT_PADDING;
-	
 	//	//printf("Drawing box: x1: %d, y1: %d, x2: %d, y2: %d\n", x1, y1, x2, y2);
-
-	m_w->m_currentColour = new wxColour(0, 255, 255, 100);
-	m_w->rect_plein2( dc, x1, y1, x2, y2);
+	
+	//m_w->m_currentColour = wxWHITE; //??? to fix memory leak
+	//m_w->rect_plein2( dc, x1, y1, x2, y2);
 	m_w->m_currentColour = wxRED;
 	m_w->box( dc, x1, y1, x2, y2 );
 

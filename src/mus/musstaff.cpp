@@ -259,7 +259,7 @@ MusElement *MusStaff::Insert( MusElement *element )
 		element = new MusNeume( *(MusNeume*)element );
 //	else if ( element->IsNeume() ) 
 //	{
-//	//copying a neume causes issues
+	//	//copying a neume causes issues
 //		element = new MusNeume( *(MusNeume*)element );
 //		((MusNeume*)element)->n_pitches.resize(1);
 //	}

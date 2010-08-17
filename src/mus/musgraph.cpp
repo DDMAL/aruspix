@@ -106,13 +106,13 @@ void MusWindow::box( wxDC *dc, int x1, int y1, int x2, int y2)
 	return;
 }
 
-void MusWindow::rect_plein2( wxDC *dc, int x1, int y1, int x2, int y2)	/* dessine rectangle plein */
+void MusWindow::rect_plein2( wxDC *dc, int x1, int y1, int x2, int y2 )	/* dessine rectangle plein */
 {	
 	wxASSERT_MSG( dc , "DC cannot be NULL");
 
 	SwapY( &y1, &y2 );
 
-	wxPen pen( *m_currentColour, 1, wxSOLID );
+	wxPen pen( *m_currentColour, 1, wxSOLID  );
 	dc->SetPen( pen );
 	wxBrush brush( *m_currentColour, wxSOLID );
 	dc->SetBrush( brush );
@@ -123,9 +123,7 @@ void MusWindow::rect_plein2( wxDC *dc, int x1, int y1, int x2, int y2)	/* dessin
 	dc->SetBrush( wxNullBrush );
 
 	return;
-
 }
-
 
 int MusWindow::hGrosseligne ( wxDC *dc, int x1, int y1, int x2, int y2, int decal)
 {	
