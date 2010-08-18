@@ -44,7 +44,6 @@ class MusStaff;
 //}NPitch;
 //
 
-
 class MusNeumePitch : public MusElement
 {
 public:
@@ -121,6 +120,12 @@ public:
 	void MusNeume::RemoveSelectedPitch();
 	void MusNeume::Append();
 
+	
+	// to create compound neumes (ineumes)
+	MusNeume *next;
+	MusNeume *prev;
+	
+	
 	//how many pitches are in this neume?
 	//int length;
 	
@@ -146,14 +151,7 @@ public:
 	int p_max; //the highest pitch in the neume group, relative to base pitch
 	int p_min; //lowest pitch, relative to base pitch
 	int p_range; // the pitch range, getter acts as setter!
-	
-	//type of neume, usually to get different type of punctum
-	//unsigned char val;
-	
-	// possible places for ligatures to 'attach'
-	// hotCorners[upper/lower][left/right]
-	// you cannot have more than one 'vertical attachment' on a single note
-		
+			
 	bool closed; 
 		
 	//ligature drawing methods
@@ -175,16 +173,16 @@ public:
 	void MusNeume::Split(int pos); //do we need the int parameter?
 	
 	// mei related fields
-//	char compound; //INEUME or UNEUME, for use with mei encoding
-	//unnecessary?
 	
 	char n_type; // uneume or ineume, uneume by default
 	char name; // name of the neume (climacus, pes, etc)
 	char form; // neume form, could be "liquescent1" for example
 	
+	
+	
 public:
 	// WDR: member variable declarations for MusNeume
-	int size;	//how many notes in group
+//	int size;	//how many notes in group
 	
 private:
     // WDR: handler declarations for MusNeume

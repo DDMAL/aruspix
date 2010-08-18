@@ -41,16 +41,6 @@ bool MusNeume::descending(int p1, int p2)
 
 
 void MusNeume::drawLigature( wxDC *dc, MusStaff *staff ) {
-	//hacky check for climacus
-//	if (this->n_pitches.size() >=3) {
-//		int i;
-//		for (i = 1; i < n_pitches.size(); i++)
-//		{
-//			if (ascending(i-1, i)) break;
-//		}
-////		if (i >= n_pitches.size()) printf("drawing climacus\n");
-//		this->n_type = INEUME;
-//	}
 	
 	//filter pes
 	int i;
@@ -76,8 +66,7 @@ void MusNeume::drawLigature( wxDC *dc, MusStaff *staff ) {
 			return;
 		}
 	}
-	
-	//filter climacus
+
 	//draw clivis by default
 	this->clivis(dc, staff);
 	this->n_type = UNEUME;
@@ -136,13 +125,10 @@ void MusNeume::podatus( wxDC *dc, MusStaff *staff ) {
 	
 	if (n_pitches.at(0)->Pitch_Diff(n_pitches.at(1)) > 2 )
 		m_w->festa_string(dc, this->xrel, ynn2 + 16, 
-						  "s*", staff, this->dimin );
+						  nVIRGA, staff, this->dimin );
 	else 
 		m_w->festa_string(dc, this->xrel, ynn2 + 16, 
-						  "s", staff, this->dimin );
-	
-//	m_w->festa_string(dc, this->xrel, ynn2 + 16, 
-//					  "*", staff, this->dimin );
+						  nPUNCTUM, staff, this->dimin );
 }
 
 // start_pitch and end_pitch are indexes of pitches inside the n_pitches array
@@ -181,16 +167,16 @@ void MusNeume::porrectus( wxDC *dc, MusStaff *staff )
 	int porrect_type;
 	switch(abs(n_pitches.at(0)->Pitch_Diff(n_pitches.at(1)))) {
 		case 1:
-			porrect_type = nPORRECT_1;
+			porrect_type = nPORRECT_1; //works
 			break;
 		case 2:
-			porrect_type = nPORRECT_2;
+			porrect_type = nPORRECT_2; //doesn't work
 			break;
 		case 3:
-			porrect_type = nPORRECT_3;
+			porrect_type = nPORRECT_3; //doesn't work
 			break;
 		case 4:
-			porrect_type = nPORRECT_4;
+			porrect_type = nPORRECT_4; //works
 			break;
 		default:
 			printf("Invalid pitch range: %d\n", 
@@ -201,25 +187,8 @@ void MusNeume::porrectus( wxDC *dc, MusStaff *staff )
 	//front line, replace this with festa dies
 //	this->neume_line(dc, staff, 0, 2, LEFT_LINE);	
 	this->neume_line(dc, staff, LEFT_LINE);		
-	m_w->putfont(dc, this->xrel, ynn + 16, porrect_type, staff,
-				 this->dimin, NEUME);
-	n_pitches.at(2)->SetValue(5); //final pitch is a virga
+	m_w->festa_string(dc, this->xrel, ynn + 16, porrect_type, staff,
+				 this->dimin);
+//	m_w->festa_string(dc, this->xrel, ynn + 
+//	n_pitches.at(2)->SetValue(5); //final pitch is a virga
 }
-
-//void MusNeume::climacus( wxDC *dc, MusStaff *staff )
-//{
-////	int pTaille = staff->pTaille;
-//	
-//	int oct = this->oct - 4;
-//	this->dec_y = staff->y_note((int)this->code, staff->testcle( this->xrel ), oct);
-//	int ynn = this->dec_y + staff->yrel; 
-////	int ynn2;
-////	
-////	
-////	int ledge = m_w->ledgerLine[pTaille][2];
-////	
-////	int punct_y;
-////	
-//	//virga + punct + punct + ...
-//
-//}

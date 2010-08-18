@@ -115,7 +115,7 @@ public:
     unsigned char typStac;
 	
 	/** Associated lyric */
-	ArrayOfMusSymbols m_lyrics; 
+	ArrayOfMusSymbols m_lyrics;
     
     // static for ligatures
     //static int ligat_x[2], ligat_y[2];	// pour garder coord. des ligatures

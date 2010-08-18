@@ -194,6 +194,7 @@ MusNeume::MusNeume( unsigned char _val, unsigned char _code )
 	code = _code;	
 	p_range = p_min = p_max = 0;
 	n_type = name = form = NULL; //this gets set when ligature is drawn
+	next = prev = NULL;
 	//	this->SetClosed(true);	
 }
 
@@ -220,6 +221,8 @@ MusNeume::MusNeume( const MusNeume& neume )
 	oct = neume.oct;
 
 	n_pitches.push_back(new MusNeumePitch(code, oct, 0));
+	
+	next = prev = NULL;
 	
 //	code = n_pitches.at(0)->code;
 //	oct = n_pitches.at(0)->oct;
@@ -257,8 +260,10 @@ MusNeume& MusNeume::operator=( const MusNeume& neume )
 //		SetPitch(neume.code, neume.oct);
 		n_pitches.push_back(new MusNeumePitch(code, oct, 0));
 		
-		code = n_pitches.at(0)->code;
-		oct = n_pitches.at(0)->oct;
+		code = neume.code;
+		oct = neume.oct;
+		
+		next = prev = NULL;
 		
 //		p_range = neume.p_range;
 //		p_max = neume.p_max;
