@@ -166,7 +166,7 @@ public:
 	void v_bline ( wxDC *dc, int y1, int y2, int x1, int nbr);
 	void v_bline2 ( wxDC *dc, int y1, int y2, int x1, int nbr);
 	void h_bline ( wxDC *dc, int x1, int x2, int y1, int nbr);
-	void festa_string ( wxDC *dc, int x, int y, char *str, 
+	void festa_string ( wxDC *dc, int x, int y, const wxString& str, 
 					   MusStaff *staff, int dimin ); 
 	void putfont ( wxDC *dc, int x, int y, unsigned char c, 
 				  MusStaff *staff, int dimin, int font_flag );
@@ -246,7 +246,7 @@ public:
 	
 	wxFont m_activeChantFonts[2][2];
 	/** FestaDiesA for neume notation */
-	wxFont m_ftFestaDies;
+	wxFont m_ftFestaDiesA;
     /** fontes actuelles mises a jour selon la taille du zoom */
     wxFont m_activeLyricFonts[2];
     /** fonte Leipzig par defaut */

@@ -567,12 +567,12 @@ void MusWindow::UpdateFontValues()
 	m_ftLeipzig.SetNativeFontInfo( info );
 	
 	info.FromString( wxGetApp().m_neumeFontDesc );
-	m_ftFestaDies.SetNativeFontInfo( info );
+	m_ftFestaDiesA.SetNativeFontInfo( info );
 	
 	
 	if ( !m_ftLeipzig.Ok() )
 		wxLogWarning(_("Impossible to load font 'Leipzig'") );
-	if ( !m_ftFestaDies.Ok() )
+	if ( !m_ftFestaDiesA.Ok() )
 		wxLogWarning(_("Impossible to load font 'Festa Dies'") );
 	
 	//wxLogMessage(_("Size %d, Family %d, Style %d, Weight %d, Underline %d, Face %s, Desc %s"),
@@ -589,10 +589,10 @@ void MusWindow::UpdateFontValues()
     m_activeFonts[1][0] = m_ftLeipzig;
     m_activeFonts[1][1] = m_ftLeipzig;
 	
-	m_activeChantFonts[0][0] = m_ftFestaDies;
-    m_activeChantFonts[0][1] = m_ftFestaDies;
-    m_activeChantFonts[1][0] = m_ftFestaDies;
-    m_activeChantFonts[1][1] = m_ftFestaDies;
+	m_activeChantFonts[0][0] = m_ftFestaDiesA;
+    m_activeChantFonts[0][1] = m_ftFestaDiesA;
+    m_activeChantFonts[1][0] = m_ftFestaDiesA;
+    m_activeChantFonts[1][1] = m_ftFestaDiesA;
 	
 	
 	// Lyrics

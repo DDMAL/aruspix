@@ -52,14 +52,14 @@ MusNeumePitch::MusNeumePitch()
 {
 	oct = 0;
 	code = 0;
-	val = 0;
+	this->SetValue(0);
 }
 
 MusNeumePitch::MusNeumePitch(int _code, int _oct, unsigned char _val) 
 {
 	code = _code;
 	oct = _oct;
-	val = _val;
+	this->SetValue(_val);
 }
 
 MusNeumePitch::MusNeumePitch( const MusNeumePitch& pitch ) 
@@ -67,7 +67,7 @@ MusNeumePitch::MusNeumePitch( const MusNeumePitch& pitch )
 //	printf("**************************** musneumepitch 1\n");
 	code = pitch.code;
 	oct = pitch.oct;
-	val = pitch.val;
+	this->SetValue(pitch.val);
 }
 
 MusNeumePitch& MusNeumePitch::operator=( const MusNeumePitch& pitch )
@@ -79,7 +79,7 @@ MusNeumePitch& MusNeumePitch::operator=( const MusNeumePitch& pitch )
 		(MusElement&)*this = pitch;
 		code = pitch.code;
 		oct = pitch.oct;
-		val = pitch.val;
+		this->SetValue(pitch.val);
 	} printf("not copying properly :(:(:(:(:(\n");
 	return *this;
 }
@@ -91,41 +91,58 @@ void MusNeumePitch::SetPitch( int code, int oct )
 //	printf("Changing pitch: c: %d, o: %d\n", this->code, this->oct);
 }
 
-void MusNeumePitch::SetValue( int value ) { this->val = value; }
-
-int MusNeumePitch::GetValue() { return this->val; }
-
-//helper method
-
-char* MusNeumePitch::getPunctumType( ) 
-{
-	switch (this->val) {
+void MusNeumePitch::SetValue( int value ) 
+{ 
+	this->val = value;
+	m_font_str = "";
+	
+	switch (value) {
 		case 0:
-			return nPUNCTUM;
+			m_font_str.Append((char)nPUNCTUM);
 			break;
 		case 1:
-			return nDIAMOND;
+			m_font_str.Append((char)nDIAMOND);
 			break;
 		case 2:
-			return nCEPHALICUS;
+			//			return nCEPHALICUS;
+			// temporary - need to merge Festa Dies B			
+			m_font_str.Append((char)nPUNCTUM);
 			break;
 		case 3:
-			return nPODATUS;
+			//			return nPODATUS;
+			// temporary - need to merge Festa Dies B
+			m_font_str.Append((char)nPUNCTUM);
+			
 			break;
 			//		case 4:
 			//		fontNo = nDIAMOND_SMALL;		//small diamonds don't draw correctly for some reason
 			//		break;
 		case 4:
-			return nQUILISMA;
+			m_font_str.Append((char)nQUILISMA);			
 			break;
 		case 5:
-			return nVIRGA;
-		default:
-			return 0;
+			m_font_str.Append((char)nPUNCTUM);
+//			m_font_str.Append((char)TOP_LEFT);
+			//			m_font_str.Append((char)BOTTOM_LEFT);
+//			m_font_str.Append((char)TOP_RIGHT);
+			//			m_font_str.Append((char)BOTTOM_RIGHT);
+			printf("Attempting to draw virga with string: %s\n", m_font_str.c_str());
+			printf("the character thats not working is: %c\n", (char)BOTTOM_RIGHT);
 			break;
-	}
+		default:
+			m_font_str = "";
+			break;
+	}	
 }
-// compare pitches
+
+int MusNeumePitch::GetValue() { return this->val; }
+
+//helper method
+
+wxString MusNeumePitch::getFestaString( ) 
+{ return m_font_str; }
+
+
 int MusNeumePitch::Compare(MusNeumePitch *other)
 {
 	int a = this->code + (this->oct * 7);
@@ -211,7 +228,7 @@ MusNeume::MusNeume( const MusNeume& neume )
 	printNeumeList();
 	TYPE = neume.TYPE;
 	closed = true;	//all neumes are closed by default
-	n_selected = neume.n_selected;
+//	n_selected = neume.n_selected;
 //	n_pitches = neume.n_pitches;
 	printf("\nAFTER:\n");
 	printNeumeList();
@@ -221,7 +238,7 @@ MusNeume::MusNeume( const MusNeume& neume )
 	oct = neume.oct;
 
 	n_pitches.push_back(new MusNeumePitch(code, oct, 0));
-	
+	n_selected = 0;
 	next = prev = NULL;
 	
 //	code = n_pitches.at(0)->code;
@@ -254,12 +271,12 @@ MusNeume& MusNeume::operator=( const MusNeume& neume )
 
 		TYPE = neume.TYPE;
 		closed = true; //all neumes are closed by default
-		n_selected = neume.n_selected;
+//		n_selected = neume.n_selected;
 //		n_pitches = neume.n_pitches;
 		
 //		SetPitch(neume.code, neume.oct);
 		n_pitches.push_back(new MusNeumePitch(code, oct, 0));
-		
+		n_selected = 0;
 		code = neume.code;
 		oct = neume.oct;
 		
@@ -381,28 +398,31 @@ void MusNeume::CheckForBreaks()
 }
 
 //automatically split neumes where same pitches are found
+// right now, 'pos' doens't do anything...
+// for now a new pitch is just inserted to the right of the current one.
 
 void MusNeume::Split(int pos) {
 	printf("Splitting Neume at pos: %d\n", pos);
 
 	MusNeume *split = new MusNeume(*this);
 
-	this->n_pitches.resize(pos);
-	printf("\nTHIS: **********************\n\n");
-	this->printNeumeList();
-
-	split->n_pitches.erase(split->n_pitches.begin(), split->n_pitches.begin()+pos);
-	printf("\nSPLIT: **********************\n\n");	
-	split->printNeumeList();
-
-//	split->SetPitch(this->code, this->oct);
+//	this->n_pitches.resize(pos);
+//	printf("\nTHIS: **********************\n\n");
+//	this->printNeumeList();
+//
+//	split->n_pitches.erase(split->n_pitches.begin(), split->n_pitches.begin()+pos);
+//	printf("\nSPLIT: **********************\n\n");	
+//	split->printNeumeList();
+//
+////	split->SetPitch(this->code, this->oct);
 	split->xrel = this->xrel + (PUNCT_PADDING * (n_pitches.size()));
-	
-//	split->CheckForBreaks();
-	
+//	
+//
 	
 	if (m_w) {
 		m_w->m_currentStaff->Insert(split);
+		m_w->m_currentElement = split;
+		split->SetClosed(false);
 		m_w->Refresh();
 	}
 }
@@ -794,7 +814,7 @@ void MusNeume::DrawNeume( wxDC *dc, MusStaff *staff )
 		temp = n_pitches.at(0);
 		leg_line( dc, ynn,bby,this->xrel,ledge, pTaille);
 		m_w->festa_string( dc, xn, ynn + 16, 
-					 temp->getPunctumType(), staff, this->dimin); 
+					 temp->getFestaString(), staff, this->dimin); 
 	} else if (this->n_pitches.size() >= 1) {
 		// we need to draw a ligature
 		this->drawLigature(dc, staff);
@@ -859,7 +879,7 @@ void MusNeume::DrawPunctums( wxDC *dc, MusStaff *staff )
 		if (i == n_selected) m_w->m_currentColour = wxRED;
 		else m_w->m_currentColour = wxBLACK;
 		m_w->festa_string( dc, this->xrel + (i * PUNCT_PADDING), ynn + 16, 
-					  temp->getPunctumType(), staff, this->dimin );	
+					  temp->getFestaString(), staff, this->dimin );	
 	}
 }
 

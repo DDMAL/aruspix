@@ -1,5 +1,8 @@
 font editing notes
 
+Creative Commons Liscence
+http://creativecommons.org/licenses/by-nc/2.5/co/deed.en_GB
+
 Festa Dies A
 
 39 ''' - Podatus (Epiphonus) *  
@@ -32,3 +35,4 @@ error).
 06/01/2010 - Moved each character down slightly, except for the Porrectus 
 characters (which will have to be edited once I know how offset they are after
 insertion). 
+

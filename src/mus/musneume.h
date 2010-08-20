@@ -55,11 +55,13 @@ public:
 	void MusNeumePitch::SetPitch( int code, int oct );
 	void MusNeumePitch::SetValue( int value );
 	int MusNeumePitch::GetValue( );
-	char* MusNeumePitch::getPunctumType( );
+	wxString MusNeumePitch::getFestaString( );
 	
 	int MusNeumePitch::Compare(MusNeumePitch *other);
 	int MusNeumePitch::Pitch_Diff(MusNeumePitch *other);
 	int MusNeumePitch::Pitch_Diff(int code, int oct);
+	
+	wxString m_font_str;	//used for font drawing
 	
 //	int code;
 //	int oct;
@@ -162,7 +164,7 @@ public:
 	void MusNeume::porrectus( wxDC *dc, MusStaff *staff );
 //	void MusNeume::neume_line( wxDC *dc, MusStaff *staff, int start_pitch, 
 //							  int end_pitch, int side);
-	void MusNeume::neume_line( wxDC *dc, MusStaff *staff, int side );
+//	void MusNeume::neume_line( wxDC *dc, MusStaff *staff, int side );
 //	void MusNeume::climacus( wxDC *dc, MusStaff *staff );
 	
 	//pitch and octave of first pitch of the neume

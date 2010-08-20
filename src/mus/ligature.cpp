@@ -26,13 +26,11 @@
 
 // more helper functions
 
+// returns true of p1 is lower than p2
 bool MusNeume::ascending(int p1, int p2) 
-{ 
-//	printf("Pitch 1: %d, %d\nPitch 2: %d, %d\n", n_pitches.at(p1)->code, 
-//		   n_pitches.at(p1)->oct, n_pitches.at(p2)->code, n_pitches.at(p2)->oct);
-	return (this->n_pitches.at(p1)->Compare(this->n_pitches.at(p2)) == -1); 
-}
+{ return (this->n_pitches.at(p1)->Compare(this->n_pitches.at(p2)) == -1); }
 
+// returns true if p1 is higher than p2
 bool MusNeume::descending(int p1, int p2)
 { return !ascending(p1, p2); }
 
@@ -57,16 +55,17 @@ void MusNeume::drawLigature( wxDC *dc, MusStaff *staff ) {
 //	}
 	
 	//filter porrectus
-	for (i = 1, iter = n_pitches.begin()+1; iter < n_pitches.end(); iter++, i++) {
+//	for (i = 1, iter = n_pitches.begin()+1; iter < n_pitches.end(); iter++, i++) {
 		if (n_pitches.size() == 3 && descending(0, 1) && ascending(1,2) )
 		{
-			this->porrectus(dc, staff);
-			this->n_type = UNEUME;
-			this->name = PRECT;
-			return;
+			if (n_pitches.at(0)->Pitch_Diff(n_pitches.at(1)) >= -4 ) {
+				this->porrectus(dc, staff);
+				this->n_type = UNEUME;
+				this->name = PRECT;
+				return;
+			}
 		}
-	}
-
+//	}
 	//draw clivis by default
 	this->clivis(dc, staff);
 	this->n_type = UNEUME;
@@ -86,10 +85,9 @@ void MusNeume::drawLigature( wxDC *dc, MusStaff *staff ) {
 void MusNeume::clivis( wxDC *dc, MusStaff *staff ) {
 	int ynn;
 	
-	if (n_pitches.size() >= 2 && 
-		((MusNeumePitch*)n_pitches.at(0))->Pitch_Diff((MusNeumePitch*)n_pitches.at(1)) < 0)
-//		this->neume_line(dc, staff, 0, 1, LEFT_LINE);
-		this->neume_line(dc, staff, LEFT_LINE);	
+	//placeholder for festa dies strings
+	wxString str = "";
+	
 	MusNeumePitch *temp;
 	for (unsigned int i = 0; i < n_pitches.size(); i++)
 	{
@@ -97,10 +95,12 @@ void MusNeume::clivis( wxDC *dc, MusStaff *staff ) {
 		ynn = staff->y_note((int)temp->code, staff->testcle( this->xrel), temp->oct - 4);
 		ynn += staff->yrel;
 		//ledger line
+//		int ledge = m_w->ledgerLine[pTaille][2];
+		
 		
 		if (i < n_pitches.size())
 		m_w->festa_string(dc, this->xrel + (i * 10), ynn + 16, 
-						  "s*", staff, this->dimin);
+						  temp->getFestaString() , staff, this->dimin);
 	}
 }
 
@@ -116,7 +116,7 @@ void MusNeume::podatus( wxDC *dc, MusStaff *staff ) {
 	
 	int punct_y;
 	MusNeumePitch *temp = this->n_pitches.at(0);
-	m_w->festa_string(dc, this->xrel, ynn + 16, nPES,
+	m_w->festa_string(dc, this->xrel, ynn + 16, (char)nPES,
 				 staff, this->dimin );
 	temp = this->n_pitches.at(1);
 	
@@ -128,7 +128,7 @@ void MusNeume::podatus( wxDC *dc, MusStaff *staff ) {
 						  nVIRGA, staff, this->dimin );
 	else 
 		m_w->festa_string(dc, this->xrel, ynn2 + 16, 
-						  nPUNCTUM, staff, this->dimin );
+						  (char)nPUNCTUM, staff, this->dimin );
 }
 
 // start_pitch and end_pitch are indexes of pitches inside the n_pitches array
@@ -136,26 +136,26 @@ void MusNeume::podatus( wxDC *dc, MusStaff *staff ) {
 
 // alternative line method that uses festa dies
 
-void MusNeume::neume_line( wxDC *dc, MusStaff *staff, int side)
-{
-	
-//	if (start_pitch > n_pitches.size() - 1 || end_pitch > n_pitches.size() - 1) 
-//		return;
+//void MusNeume::neume_line( wxDC *dc, MusStaff *staff, int side)
+//{
 //	
-//	//start_pitch and end_pitch determintes the vertical length of the line
+////	if (start_pitch > n_pitches.size() - 1 || end_pitch > n_pitches.size() - 1) 
+////		return;
+////	
+////	//start_pitch and end_pitch determintes the vertical length of the line
+////	
+////	// line needs to be at least 2 pitches in length always
+////	MusNeumePitch *p1 = (MusNeumePitch*)n_pitches.at(start_pitch);
+////	MusNeumePitch *p2 = (MusNeumePitch*)n_pitches.at(end_pitch);	
+////	
+//	int oct = this->oct - 4;
+//	this->dec_y = staff->y_note((int)this->code, staff->testcle( this->xrel ), oct);
+//	int ynn = this->dec_y + staff->yrel; 
 //	
-//	// line needs to be at least 2 pitches in length always
-//	MusNeumePitch *p1 = (MusNeumePitch*)n_pitches.at(start_pitch);
-//	MusNeumePitch *p2 = (MusNeumePitch*)n_pitches.at(end_pitch);	
-//	
-	int oct = this->oct - 4;
-	this->dec_y = staff->y_note((int)this->code, staff->testcle( this->xrel ), oct);
-	int ynn = this->dec_y + staff->yrel; 
-	
-	if (side == LEFT_LINE)
-		m_w->putfont(dc, this->xrel, ynn, nLEFTLINE, staff, this->dimin, NEUME);
-	else m_w->putfont(dc, this->xrel, ynn, nRIGHTLINE, staff, this->dimin, NEUME);
-}
+//	if (side == LEFT_LINE)
+//		m_w->putfont(dc, this->xrel, ynn, nLEFTLINE, staff, this->dimin, NEUME);
+//	else m_w->putfont(dc, this->xrel, ynn, nRIGHTLINE, staff, this->dimin, NEUME);
+//}
 
 
 void MusNeume::porrectus( wxDC *dc, MusStaff *staff )
@@ -164,6 +164,8 @@ void MusNeume::porrectus( wxDC *dc, MusStaff *staff )
 	this->dec_y = staff->y_note((int)this->code, staff->testcle( this->xrel ), oct);
 	int ynn = this->dec_y + staff->yrel; 
 
+	wxString str = "";
+	
 	int porrect_type;
 	switch(abs(n_pitches.at(0)->Pitch_Diff(n_pitches.at(1)))) {
 		case 1:
@@ -175,20 +177,22 @@ void MusNeume::porrectus( wxDC *dc, MusStaff *staff )
 		case 3:
 			porrect_type = nPORRECT_3; //doesn't work
 			break;
-		case 4:
-			porrect_type = nPORRECT_4; //works
-			break;
+//		case 4:
+//			porrect_type = nPORRECT_4; //works
+//			break;
 		default:
 			printf("Invalid pitch range: %d\n", 
 				   abs(n_pitches.at(0)->Pitch_Diff(n_pitches.at(1))));
 			return; 
 	}
+	str.Append("3");
+	str.Append((char)porrect_type);
 	
 	//front line, replace this with festa dies
 //	this->neume_line(dc, staff, 0, 2, LEFT_LINE);	
-	this->neume_line(dc, staff, LEFT_LINE);		
-	m_w->festa_string(dc, this->xrel, ynn + 16, porrect_type, staff,
-				 this->dimin);
+//this->neume_line(dc, staff, LEFT_LINE);		
+		m_w->festa_string(dc, this->xrel, ynn + 16, str, 
+						  staff, this->dimin);
 //	m_w->festa_string(dc, this->xrel, ynn + 
 //	n_pitches.at(2)->SetValue(5); //final pitch is a virga
 }

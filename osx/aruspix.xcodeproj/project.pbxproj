@@ -294,8 +294,8 @@
 				4DE87C3510FE3E82001E9F91 /* musioxml.h */,
 				4D33DF35103D375C009EE145 /* mussvg.cpp */,
 				4D33DF36103D375C009EE145 /* mussvg.h */,
-				4D832FFE0F2E6E35006E6B5F /* musiocmme.cpp */,
 				4D832FFF0F2E6E35006E6B5F /* musiocmme.h */,
+				4D832FFE0F2E6E35006E6B5F /* musiocmme.cpp */,
 				4DB2D96B0D8383EA003401B0 /* musmlfdic.cpp */,
 				4DB2D96C0D8383EA003401B0 /* musmlfdic.h */,
 				4D3A8FCF0D35867200BBC1FB /* mus_wdr.h */,
@@ -811,7 +811,6 @@
 			buildSettings = {
 				COPY_PHASE_STRIP = NO;
 				HEADER_SEARCH_PATHS = (
-					"$(ARUSPIX_WX)/osx-static-debug/include",
 					"$(ARUSPIX_IMLIB)/include",
 					"$(ARUSPIX_TORCH)/include",
 				);

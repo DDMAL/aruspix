@@ -186,7 +186,7 @@ int MusWindow::pointer ( wxDC *dc, int x, int b, int decal, MusStaff *staff )
 	super-hack time
  */
 
-void MusWindow::festa_string ( wxDC *dc, int x, int y, char *str, 
+void MusWindow::festa_string ( wxDC *dc, int x, int y, const wxString& str, 
 							  MusStaff *staff, int dimin ) {
 	int pTaille = staff->pTaille;
 	int fontCorr = this->hautFontCorr[pTaille][dimin];
@@ -219,7 +219,7 @@ void MusWindow::festa_string ( wxDC *dc, int x, int y, char *str,
 		
 		//printf("Drawing text here, x: %d, y: %d, y (zoomed): %d, y + fontcorr: %d\n"
 		//	   , ToZoom(x), y, ToZoomY(y), ToZoomY(y + fontCorr));
-		dc->DrawText( str, ToZoom(x), ToZoomY(y + fontCorr) );
+		dc->DrawText( str, ToZoom(x), ToZoomY(y + fontCorr - 4) );
 		
 		dc->SetPen( wxNullPen );
 		dc->SetBrush( wxNullBrush );
