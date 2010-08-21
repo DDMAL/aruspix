@@ -71,18 +71,43 @@ bool MusKeyboardEditor::handleMetaKey(int key) {
 		}
 	}
 	
+	// left/right movement 
+	
+	if (key == WXK_RIGHT) {
+		if (w_ptr->m_currentElement->IsNeume()) {
+			MusNeume *temp = (MusNeume*)w_ptr->m_currentElement;
+			if (temp->IsClosed()) {
+				w_ptr->m_currentElement = w_ptr->m_currentStaff->
+				GetNext( w_ptr->m_currentElement);
+				return true;
+			} else {
+				temp->GetNextPunctum();
+				return true;
+			}
+		} else return false;
+	}
+	
+	if (key == WXK_LEFT) {
+		if (w_ptr->m_currentElement->IsNeume()) {
+			MusNeume *temp = (MusNeume*)w_ptr->m_currentElement;
+			if (temp->IsClosed()) {
+				w_ptr->m_currentElement = w_ptr->m_currentStaff->
+				GetPrevious( w_ptr->m_currentElement);
+				return true;
+			} else {
+				temp->GetPreviousPunctum();
+				return true;
+			}
+		} else return false;
+	}
+	
 	// up/down for easy pitch changing
 
-	// this doesn't work as intended for open editing mode just yet
-	// fix this later
-	
 	if (key == WXK_DOWN || key == WXK_UP)
 	{
 		int direction;
 		key == WXK_DOWN ? direction = -1 : direction = 1; 
 		
-		
-		printf("Got here?\n");
 		int newcode;
 //		if (w_ptr->m_currentElement->IsNote())
 			newcode = w_ptr->m_insertcode = 
@@ -174,6 +199,8 @@ bool MusKeyboardEditor::handleKeyEvent(wxKeyEvent &event)
 		case WXK_SPACE: // break neumes
 		case WXK_DELETE:
 		case WXK_BACK:
+		case WXK_LEFT:
+		case WXK_RIGHT:
 		case WXK_DOWN:
 		case WXK_UP:
 		case 'M': // mode change: toggle value of neume

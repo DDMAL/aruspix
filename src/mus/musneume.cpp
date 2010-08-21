@@ -422,50 +422,37 @@ void MusNeume::Split(int pos) {
 	if (m_w) {
 		m_w->m_currentStaff->Insert(split);
 		m_w->m_currentElement = split;
-		split->SetClosed(false);
+//		split->SetClosed(false);
+		
+		m_w->SetInsertMode(true); // switch to edition mode
 		m_w->Refresh();
 	}
 }
 
 // if open, returns next individual pitch
 // if closed, return false and let musstaff select the next element
-bool MusNeume::GetNext() { 
-	//printf("n_selected: %d size: %d\n", n_selected, n_pitches.size());
-	if (closed) return false;
-	else 
+void MusNeume::GetNextPunctum() { 
+	if (n_selected < n_pitches.size() - 1) 
 	{
-		if (n_selected < n_pitches.size() - 1) 
-		{
-			n_selected++;
-			//refresh window or call drawing code
-			//printf("Moving to pitch %d.\n", n_selected);
-		} else if (n_selected == n_pitches.size() - 1)
-		{
-			//printf("At end (n_selected: %d). Closing neume.\n", n_selected);
-			this->SetClosed(true);
-			return false;
-		}
-		return true;
+		n_selected++;
+	} else if (n_selected == n_pitches.size() - 1)
+	{
+		this->SetClosed(true);
 	}
+	
+	if (m_w) m_w->Refresh();
 }
-//
-bool MusNeume::GetPrevious() {
-	if (closed) return false;
-	else 
+
+void MusNeume::GetPreviousPunctum() {
+	if (n_selected > 0) 
 	{
-		if (n_selected > 0) 
-		{
-			n_selected--;
-			//refresh window or call drawing code
-			//printf("Moving to pitch %d.\n", n_selected);
-		} else if (!n_selected)
-		{
-			//printf("At beginning (n_selected: %d). Closing neume.\n", n_selected);
-			this->SetClosed(true);
-			return false;
-		}
-		return true;	//stay in 'individual edit mode' since the neume is open
+		n_selected--;
+	} else if (!n_selected)
+	{
+		this->SetClosed(true);
 	}
+	
+	if (m_w) m_w->Refresh();
 }
 
 void MusNeume::Append() {

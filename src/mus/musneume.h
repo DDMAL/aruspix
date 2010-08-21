@@ -111,8 +111,8 @@ public:
 	
 	void MusNeume::SetClosed(bool value);
 	
-	bool MusNeume::GetNext();
-	bool MusNeume::GetPrevious();
+	void MusNeume::GetNextPunctum();
+	void MusNeume::GetPreviousPunctum();
 	
 	bool MusNeume::IsClosed();
 	

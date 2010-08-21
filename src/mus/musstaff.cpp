@@ -198,13 +198,7 @@ MusElement *MusStaff::GetNext( MusElement *element )
 {	
 	if ( !element || m_elements.IsEmpty() )//|| ( element->no >= (int)m_elements.GetCount() - 1 ) )
 		return NULL;
-	
-	if ( element->IsNeume() ) {
-		if (((MusNeume*)element)->GetNext()) return element;
-	}
-	
-	//wxASSERT_MSG( m_elements.Index( *element) != wxNOT_FOUND, 
-	//	"\nL'element recherche n'appartient pas à la portee" );
+
 	if ( element->no >= (int)m_elements.GetCount() - 1) return NULL;
 	else return &m_elements[element->no + 1];
 }
@@ -213,13 +207,6 @@ MusElement *MusStaff::GetPrevious( MusElement *element )
 {
 	if ( !element || m_elements.IsEmpty() ) //|| ( element->no <= 0 ) )
 		return NULL;
-
-
-	//wxASSERT_MSG( m_elements.Index( *element) != wxNOT_FOUND, 
-	//	"\nL'element recherche n'appartient pas à la portee" );
-	if ( element->IsNeume() ) {
-		if (((MusNeume*)element)->GetPrevious()) return element;
-	} else if ( element->no <= 0 ) return NULL;
 	
 	if ( element->no > (int)m_elements.GetCount() - 1) return NULL;
 	else return &m_elements[element->no - 1];
