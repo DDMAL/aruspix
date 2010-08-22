@@ -124,8 +124,13 @@ public:
 
 	
 	// to create compound neumes (ineumes)
+	
 	MusNeume *next;
 	MusNeume *prev;
+	
+	// x coord of the right-most edge of the neume
+	// used for compound neume drawing
+	unsigned int xrel_right; // set during ligature drawing
 	
 	
 	//how many pitches are in this neume?

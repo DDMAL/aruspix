@@ -281,7 +281,6 @@ void MusStaff::Delete( MusElement *element )
 {
 	if ( !element ) return;
 
-	
 	if ( m_w ) // effacement
 	{
 		if ( element->IsSymbol() && (((MusSymbol*)element)->flag == CLE) )

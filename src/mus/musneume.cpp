@@ -417,11 +417,12 @@ void MusNeume::Split(int pos) {
 ////	split->SetPitch(this->code, this->oct);
 	split->xrel = this->xrel + (PUNCT_PADDING * (n_pitches.size()));
 //	
-//
-	
+	this->SetClosed(true);
+
 	if (m_w) {
 		m_w->m_currentStaff->Insert(split);
-		m_w->m_currentElement = split;
+		m_w->m_currentElement = m_w->m_currentStaff->GetNext(this);
+//		m_w->m_currentElement = split;
 //		split->SetClosed(false);
 		
 		m_w->SetInsertMode(true); // switch to edition mode
@@ -752,7 +753,7 @@ void MusNeume::DrawBox( wxDC *dc, MusStaff *staff ) //revise
 	x1 = this->xrel - PUNCT_PADDING + PUNCT_WIDTH;
 	
 	// determine how long the box should be	
-	x2 = (n_pitches.size() + 1) * PUNCT_PADDING;
+	x2 = ((n_pitches.size() + 1) * PUNCT_PADDING) - PUNCT_WIDTH;
 	// now get x2 coordinate relative to x1
 	x2 += x1;
 	
@@ -858,8 +859,8 @@ void MusNeume::DrawPunctums( wxDC *dc, MusStaff *staff )
 	{
 		temp = n_pitches.at(i); 
 		
-		punct_y = staff->y_note((int)temp->code, staff->testcle( this->xrel ), temp->oct - 4);
-		ynn = punct_y + staff->yrel; 
+		ynn = staff->y_note((int)temp->code, staff->testcle( this->xrel ), temp->oct - 4);
+		ynn += staff->yrel; 
 		
 		leg_line( dc, ynn,bby,xl + (i * PUNCT_PADDING),ledge, pTaille);
 		// colour the selected item red

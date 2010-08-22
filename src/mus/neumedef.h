@@ -55,6 +55,6 @@
 #define CLVIS 4
 
 #define PUNCT_PADDING 25 // space between punctums in open editing mode
-#define PUNCT_WIDTH 5 // 'guesstimation' of punctum width -- this number is fairly arbitrary
+#define PUNCT_WIDTH 10 // 'guesstimation' of punctum width -- this number is fairly arbitrary
 
 
