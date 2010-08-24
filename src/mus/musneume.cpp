@@ -104,30 +104,17 @@ void MusNeumePitch::SetValue( int value )
 			m_font_str.Append((char)nDIAMOND);
 			break;
 		case 2:
-			//			return nCEPHALICUS;
-			// temporary - need to merge Festa Dies B			
-			m_font_str.Append((char)nPUNCTUM);
+			m_font_str.Append((char)nCEPHALICUS);
 			break;
 		case 3:
-			//			return nPODATUS;
-			// temporary - need to merge Festa Dies B
-			m_font_str.Append((char)nPUNCTUM);
-			
+			m_font_str.Append((char)nPUNCT_UP);
 			break;
-			//		case 4:
-			//		fontNo = nDIAMOND_SMALL;		//small diamonds don't draw correctly for some reason
-			//		break;
 		case 4:
 			m_font_str.Append((char)nQUILISMA);			
 			break;
-		case 5:
+		case 5: //virga
 			m_font_str.Append((char)nPUNCTUM);
-//			m_font_str.Append((char)TOP_LEFT);
-			//			m_font_str.Append((char)BOTTOM_LEFT);
-//			m_font_str.Append((char)TOP_RIGHT);
-			//			m_font_str.Append((char)BOTTOM_RIGHT);
-			printf("Attempting to draw virga with string: %s\n", m_font_str.c_str());
-			printf("the character thats not working is: %c\n", (char)BOTTOM_RIGHT);
+			m_font_str.Append((char)nSTEM_B_RIGHT);
 			break;
 		default:
 			m_font_str = "";
@@ -187,6 +174,7 @@ MusNeume::MusNeume():
 	code = 0;
 	p_range = p_min = p_max = 0;
 	n_type = name = form = NULL; //this gets set when ligature is drawn
+	next = prev = NULL;
 	//	this->SetClosed(true);
 }
 
@@ -220,18 +208,18 @@ MusNeume::MusNeume( unsigned char _val, unsigned char _code )
 MusNeume::MusNeume( const MusNeume& neume )
 	: MusElement( neume )
 {
-	printf("************************ Copy constructor addr: %d (%x)\n", 		   
-		   (unsigned int)&neume, (unsigned int)&neume);
+//	printf("************************ Copy constructor addr: %d (%x)\n", 		   
+//		   (unsigned int)&neume, (unsigned int)&neume);
 	
-	printf("\nBEFORE:\n");
+//	printf("\nBEFORE:\n");
 	
-	printNeumeList();
+//	printNeumeList();
 	TYPE = neume.TYPE;
 	closed = true;	//all neumes are closed by default
 //	n_selected = neume.n_selected;
 //	n_pitches = neume.n_pitches;
-	printf("\nAFTER:\n");
-	printNeumeList();
+//	printf("\nAFTER:\n");
+//	printNeumeList();
 	
 //	SetPitch(neume.code, neume.oct);
 	code = neume.code;
@@ -316,7 +304,7 @@ void MusNeume::SetClosed(bool value) {
 		n_selected = 0;
 		//break up neumes if there are repeated pitches
 		printf("\nINITIAL LIST: **********************\n");	
-		this->printNeumeList();
+//		this->printNeumeList();
 // 		this->CheckForBreaks(); //causes memory leak?
 //		wxClientDC dc(m_w);
 //		this->drawLigature(&(m_w->dc), m_w->m_currentStaff);
@@ -386,7 +374,7 @@ void MusNeume::CheckForBreaks()
 	//		this = split_list.at(0);
 			for (unsigned int i = 0; i < split_list.size(); i++)
 			{
-				split_list.at(i)->printNeumeList();
+//				split_list.at(i)->printNeumeList();
 				split_list.at(i)->xrel += (i * m_w->ToZoom(25));
 				m_w->m_currentStaff->Insert(split_list.at(i));
 			}

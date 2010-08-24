@@ -1562,8 +1562,8 @@ void MusWindow::OnKeyDown(wxKeyEvent &event)
 					//lets use the copy constructor instead of an assignment operator?
 					
 					m_neume = *(MusNeume*)m_currentElement;
-					printf("\nORIGINAL M_NEUME: *******************\n");
-					m_neume.printNeumeList();
+//					printf("\nORIGINAL M_NEUME: *******************\n");
+//					m_neume.printNeumeList();
 					m_newElement = &m_neume;
 				}
                 // TODO for cursor

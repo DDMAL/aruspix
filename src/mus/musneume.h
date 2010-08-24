@@ -167,7 +167,8 @@ public:
 	void MusNeume::clivis( wxDC *dc, MusStaff *staff );
 	void MusNeume::podatus( wxDC *dc, MusStaff *staff );
 	void MusNeume::porrectus( wxDC *dc, MusStaff *staff );
-//	void MusNeume::neume_line( wxDC *dc, MusStaff *staff, int start_pitch, 
+	void MusNeume::neume_stem( wxDC *dc, MusStaff *staff, int xrel, 
+						  int index, int pitch_range = 0, int side = LEFT_STEM);
 //							  int end_pitch, int side);
 //	void MusNeume::neume_line( wxDC *dc, MusStaff *staff, int side );
 //	void MusNeume::climacus( wxDC *dc, MusStaff *staff );

@@ -430,14 +430,14 @@ bool MusMeiOutput::WriteNeume( const MusNeume *neume )
 	}
 	
 	wxString neume_name;
-	switch (neume->name)
-	{
-		case PUNCT : neume_name = "punctum"; break;
-		case VIRGA : neume_name = "virga"; break;
-		case PRECT : neume_name = "porrectus"; break;
-		case PODAT : neume_name = "pes"; break;
-		case CLVIS : neume_name = "clivis"; break;
-	}
+//	switch (neume->name)
+//	{
+//		case PUNCT : neume_name = "punctum"; break;
+//		case VIRGA : neume_name = "virga"; break;
+//		case PRECT : neume_name = "porrectus"; break;
+//		case PODAT : neume_name = "pes"; break;
+//		case CLVIS : neume_name = "clivis"; break;
+//	}
 	
 	TiXmlElement neume_element(neume_type);
 	if (neume_name)
