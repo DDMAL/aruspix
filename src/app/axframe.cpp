@@ -409,6 +409,9 @@ void AxFrame::LoadConfig()
     ImPage::s_pre_page_binarization_method = pConfig->Read( "Page binarization method", PRE_BINARIZATION_BRINK );
     ImPage::s_pre_page_binarization_method_size = pConfig->Read( "Binarization region size", 15 );
 	ImPage::s_pre_page_binarization_select = ( pConfig->Read( "Binarization selector dialogue", 1L ) == 1 );
+	
+	// Number of lines per staff
+	ImPage::s_num_staff_lines = pConfig->Read("Lines per staff", 5);
 
 #if defined(__WXMSW__)
 	wxString default_workingDir = wxStandardPaths::Get().GetTempDir();		
@@ -526,6 +529,9 @@ void AxFrame::SaveConfig(int lastEnvId)
     pConfig->Write("ImageSizeToReduce", AxImage::s_imageSizeToReduce);
 	pConfig->Write("ImageCheckIfNegative", AxImage::s_checkIfNegative);
 
+	// Number of lines per staff
+	pConfig->Write("Lines per staff", ImPage::s_num_staff_lines);
+	
 	// binarization parameters
 	pConfig->Write("Image binarization method", ImOperator::s_pre_image_binarization_method );
     pConfig->Write("Page binarization method", ImPage::s_pre_page_binarization_method );

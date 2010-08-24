@@ -63,6 +63,7 @@ int SortRLE( ImRLE **first, ImRLE **second )
 int ImPage::s_pre_page_binarization_method = PRE_BINARIZATION_BRINK;
 int ImPage::s_pre_page_binarization_method_size = 15;
 bool ImPage::s_pre_page_binarization_select = true;
+int ImPage::s_num_staff_lines = 5;
 
 // WDR: class implementations
 
@@ -106,6 +107,7 @@ void ImPage::Clear( )
     m_x1 = 0;
     m_x2 = 0;
 	m_staff_height = 0;
+	m_num_staff_lines = ImPage::s_num_staff_lines;
 	
 	ImageDestroy( &m_img0 );
 	ImageDestroy( &m_img1 );
@@ -184,6 +186,10 @@ bool ImPage::Load( TiXmlElement *file_root )
 
     if ( root->Attribute("staff_height"))
         m_staff_height = atoi(root->Attribute("staff_height"));
+	
+	if ( root->Attribute("num_staff_lines")) {
+		m_num_staff_lines = atoi(root->Attribute("num_staff_lines"));
+	}
 
     // staves
     for( node = root->FirstChild( "staff" ); node; node = node->NextSibling( "staff" ) )
@@ -248,6 +254,9 @@ bool ImPage::Save( TiXmlElement *file_root )
 
     tmp = wxString::Format("%d", m_staff_height );
     root.SetAttribute( "staff_height",  tmp.c_str() );
+	
+	tmp = wxString::Format("%d", m_num_staff_lines );
+	root.SetAttribute( "num_staff_lines", tmp.c_str());
 
     for( int i = 0; i < (int)m_staves.GetCount() ; i++)
     {
@@ -878,7 +887,10 @@ bool ImPage::FindStaves( int min, int max, bool normalize, bool crop )
     this->m_line_width = line * resize_factor;
     this->m_space_width = space * resize_factor;
 
-    double normalization_factor = 100.0 / (double)(4 * this->m_space_width + 6 * this->m_line_width) ; 
+	int num_spaces = ImPage::s_num_staff_lines - 1;
+	// We count 1 more line than there actually is
+	int num_lines = ImPage::s_num_staff_lines + 1;
+    double normalization_factor = 100.0 / (double)(num_spaces * this->m_space_width + num_lines * this->m_line_width) ; 
         // 6 lines to correct approximation error ( empiric ! )
     double factor = (double)resize_factor / (double)RESIZE_FACTOR; 
         // toujours 2 une fois que l'image à ete normalisee

@@ -143,11 +143,14 @@ public:
     int m_line_width;
     int m_space_width;
 	int m_staff_height; // taille de la portee (calculee par correlation dans StaffCurvatures())
+	int m_num_staff_lines; // num staff lines on this ImPage
 	
 	// static values not changed
 	static int ImPage::s_pre_page_binarization_method; // used in ImPage, idem
     static int ImPage::s_pre_page_binarization_method_size;
 	static bool ImPage::s_pre_page_binarization_select;
+	// the number of staff lines (4 for chant, or 5)
+	static int ImPage::s_num_staff_lines;
 	
 	int *m_pre_page_binarization_methodPtr;
 	int *m_pre_page_binarization_method_sizePtr;
