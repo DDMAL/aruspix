@@ -26,6 +26,7 @@
 #include "neumedef.h"
 
 #include <math.h>
+
 using namespace std;
 
 // sorting function
@@ -410,10 +411,8 @@ void MusNeume::Split(int pos) {
 	if (m_w) {
 		m_w->m_currentStaff->Insert(split);
 		m_w->m_currentElement = m_w->m_currentStaff->GetNext(this);
-//		m_w->m_currentElement = split;
-//		split->SetClosed(false);
-		
-		m_w->SetInsertMode(true); // switch to edition mode
+
+		m_w->SetInsertMode(false); // switch to edition mode
 		m_w->Refresh();
 	}
 }

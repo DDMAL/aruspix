@@ -77,9 +77,10 @@ bool MusKeyboardEditor::handleMetaKey(int key) {
 		if (w_ptr->m_currentElement->IsNeume()) {
 			MusNeume *temp = (MusNeume*)w_ptr->m_currentElement;
 			if (temp->IsClosed()) {
-				w_ptr->m_currentElement = w_ptr->m_currentStaff->
-				GetNext( w_ptr->m_currentElement);
-				return true;
+//				w_ptr->m_currentElement = w_ptr->m_currentStaff->
+//				GetNext( w_ptr->m_currentElement);
+//				return true;
+				return false;	//use current keybind
 			} else {
 				temp->GetNextPunctum();
 				return true;
@@ -91,9 +92,10 @@ bool MusKeyboardEditor::handleMetaKey(int key) {
 		if (w_ptr->m_currentElement->IsNeume()) {
 			MusNeume *temp = (MusNeume*)w_ptr->m_currentElement;
 			if (temp->IsClosed()) {
-				w_ptr->m_currentElement = w_ptr->m_currentStaff->
-				GetPrevious( w_ptr->m_currentElement);
-				return true;
+//				w_ptr->m_currentElement = w_ptr->m_currentStaff->
+//				GetPrevious( w_ptr->m_currentElement);
+//				return true;
+				return false;	//use current keybind
 			} else {
 				temp->GetPreviousPunctum();
 				return true;
@@ -199,8 +201,8 @@ bool MusKeyboardEditor::handleKeyEvent(wxKeyEvent &event)
 		case WXK_SPACE: // break neumes
 		case WXK_DELETE:
 		case WXK_BACK:
-		case WXK_LEFT:
-		case WXK_RIGHT:
+//		case WXK_LEFT:
+//		case WXK_RIGHT:
 		case WXK_DOWN:
 		case WXK_UP:
 		case 'M': // mode change: toggle value of neume

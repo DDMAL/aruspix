@@ -2341,6 +2341,17 @@ void MusWindow::OnPaint(wxPaintEvent &event)
 }
 
 
+/* UPDATE: 08/24/2010 
+  'Keyboard Entry' mode was a failed concept. For now, it is just an alternative
+ keybind set for the editor Ð optimized for neume entry. 
+
+ TODO: turn on 'keyboard entry' mode as a single flag (menu item?)
+ 
+ results for mensural mode editing not guaranteed...
+ 
+ */
+
+
 //keyboard entry is based off GarageBand's 'Musical Typing' concept
 //I'm not sure if its very practical to have accidentals other than Bb however...
 

@@ -167,7 +167,6 @@ MusNote& MusNote::operator=( const MusNote& note )
 			MusSymbol *lyric = new MusSymbol( note.m_lyrics[i] );
 			lyric->m_note_ptr = this;
 			this->m_lyrics.Add( lyric );
-			
 		}
 	}
 

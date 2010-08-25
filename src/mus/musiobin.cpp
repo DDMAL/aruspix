@@ -214,10 +214,34 @@ bool MusBinOutput::WriteStaff( const MusStaff *staff )
 	return true;
 }
 
+bool MusBinOutput::WriteSymbol( const MusSymbol *symbol )
+{
+	Write( &symbol->TYPE, 1 );
+	WriteElementAttr( symbol );
+	Write( &symbol->flag , 1 );
+	Write( &symbol->calte , 1 );
+	Write( &symbol->carStyle , 1 );
+	Write( &symbol->carOrient , 1 );
+	Write( &symbol->fonte , 1 );
+	Write( &symbol->s_lie_l , 1 );
+	Write( &symbol->point , 1 );
+	uint16 = wxUINT16_SWAP_ON_BE( symbol->code );
+	Write( &uint16, 2 );
+	uint16 = wxUINT16_SWAP_ON_BE( symbol->l_ptch );
+	Write( &uint16, 2 );	
+	int32 = wxINT32_SWAP_ON_BE( symbol->dec_y );
+	Write( &int32, 4 );
+    // if ( symbol->IsLyric() ) // To be fixed ??
+    if ( (symbol->flag == CHAINE) && (symbol->fonte == LYRIC) )
+		WriteLyric( symbol );
+	
+	return true;
+}
+
 bool MusBinOutput::WriteNote( const MusNote *note )
 {
 	int i;
-
+	
 	Write( &note->TYPE, 1 );
 	WriteElementAttr( note );
 	Write( &note->sil, 1 ); 
@@ -260,34 +284,26 @@ bool MusBinOutput::WriteNote( const MusNote *note )
 	return true;
 }
 
-bool MusBinOutput::WriteSymbol( const MusSymbol *symbol )
-{
-	Write( &symbol->TYPE, 1 );
-	WriteElementAttr( symbol );
-	Write( &symbol->flag , 1 );
-	Write( &symbol->calte , 1 );
-	Write( &symbol->carStyle , 1 );
-	Write( &symbol->carOrient , 1 );
-	Write( &symbol->fonte , 1 );
-	Write( &symbol->s_lie_l , 1 );
-	Write( &symbol->point , 1 );
-	uint16 = wxUINT16_SWAP_ON_BE( symbol->code );
-	Write( &uint16, 2 );
-	uint16 = wxUINT16_SWAP_ON_BE( symbol->l_ptch );
-	Write( &uint16, 2 );	
-	int32 = wxINT32_SWAP_ON_BE( symbol->dec_y );
-	Write( &int32, 4 );
-    // if ( symbol->IsLyric() ) // To be fixed ??
-    if ( (symbol->flag == CHAINE) && (symbol->fonte == LYRIC) )
-		WriteLyric( symbol );
-	
-	return true;
-}
-
 bool MusBinOutput::WriteNeume( const MusNeume *neume )
 {
     // Write member values
     // ...
+	Write( &neume->TYPE, 1 );
+	WriteElementAttr( neume );
+	Write( &neume->closed, 1 );
+	Write( &neume->code, 1);
+	Write( &neume->oct, 1);
+//	Write( &neume->val, 1);
+	Write( &neume->next, 1);
+	Write( &neume->prev, 1);
+	
+	// for mei (eventually)
+	Write( &neume->name, sizeof(neume->name));
+	Write( &neume->n_type, sizeof(neume->n_type));
+	Write( &neume->form, sizeof(neume->form));
+    // if ( symbol->IsLyric() ) // To be fixed ??
+	
+	// MusNeumePitch list (n_pitches)
 	
 	return true;
 }
@@ -615,6 +631,28 @@ bool MusBinInput::ReadStaff( MusStaff *staff )
 	return true;
 }
 
+bool MusBinInput::ReadSymbol( MusSymbol *symbol )
+{
+	ReadElementAttr( symbol );
+	Read( &symbol->flag , 1 );
+	Read( &symbol->calte , 1 );
+	Read( &symbol->carStyle , 1 );
+	Read( &symbol->carOrient , 1 );
+	Read( &symbol->fonte , 1 );
+	Read( &symbol->s_lie_l , 1 );
+	Read( &symbol->point , 1 );
+	Read( &uint16, 2 );
+	symbol->code = wxUINT16_SWAP_ON_BE( uint16 );
+	Read( &uint16, 2 );
+	symbol->l_ptch = wxUINT16_SWAP_ON_BE( uint16 );
+	Read( &int32, 4 );
+	symbol->dec_y = wxINT32_SWAP_ON_BE( int32 );
+	if ( symbol->IsLyric() )
+        ReadLyric( symbol );
+     
+	return true;
+}
+
 bool MusBinInput::ReadNote( MusNote *note )
 {
 	ReadElementAttr( note );
@@ -639,7 +677,7 @@ bool MusBinInput::ReadNote( MusNote *note )
 	note->code = (unsigned short)c; // code deplace dans element, unsigned SHORT !!
 	Read( &note->tetenot, 1 );
 	Read( &note->typStac, 1 );
-
+	
 	char count;
 	Read( &count, 1 );
 	
@@ -650,29 +688,7 @@ bool MusBinInput::ReadNote( MusNote *note )
 		lyric->m_note_ptr = note;				 		
 		note->m_lyrics.Add( lyric );
 	}
-
-	return true;
-}
-
-bool MusBinInput::ReadSymbol( MusSymbol *symbol )
-{
-	ReadElementAttr( symbol );
-	Read( &symbol->flag , 1 );
-	Read( &symbol->calte , 1 );
-	Read( &symbol->carStyle , 1 );
-	Read( &symbol->carOrient , 1 );
-	Read( &symbol->fonte , 1 );
-	Read( &symbol->s_lie_l , 1 );
-	Read( &symbol->point , 1 );
-	Read( &uint16, 2 );
-	symbol->code = wxUINT16_SWAP_ON_BE( uint16 );
-	Read( &uint16, 2 );
-	symbol->l_ptch = wxUINT16_SWAP_ON_BE( uint16 );
-	Read( &int32, 4 );
-	symbol->dec_y = wxINT32_SWAP_ON_BE( int32 );
-	if ( symbol->IsLyric() )
-        ReadLyric( symbol );
-     
+	
 	return true;
 }
 
@@ -680,6 +696,23 @@ bool MusBinInput::ReadNeume( MusNeume *neume )
 {
     // Read member values
     // ...
+	Read( &neume->TYPE, 1 );
+	ReadElementAttr( neume );
+	Read( &neume->closed, 1 );
+	Read( &neume->code, 1);
+	Read( &neume->oct, 1);
+//	Read( &neume->val, 1);
+	Read( &neume->next, 1);
+	Read( &neume->prev, 1);
+	
+	// for mei (eventually)
+	Read( &neume->name, sizeof(neume->name));
+	Read( &neume->n_type, sizeof(neume->n_type));
+	Read( &neume->form, sizeof(neume->form));
+    // if ( symbol->IsLyric() ) // To be fixed ??
+	
+	// MusNeumePitch list (n_pitches)
+	
      
 	return true;
 }
