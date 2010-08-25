@@ -27,7 +27,7 @@ class MusStaff;
 
 // WDR: class declarations
 
-//TODO: EXTREME REFACTORING IN PROGRESS 07/15/2010
+//TODO: EXTREME REFACTORING IN PROGRESS 07/15/2010 
 
 //----------------------------------------------------------------------------
 // MusNeume
@@ -52,7 +52,7 @@ public:
 	MusNeumePitch( const MusNeumePitch& pitch );
 	MusNeumePitch& MusNeumePitch::operator=( const MusNeumePitch& pitch );
 	virtual ~MusNeumePitch() {}
-	void MusNeumePitch::SetPitch( int code, int oct );
+//	void MusNeumePitch::SetPitch( int code, int oct );
 	void MusNeumePitch::SetValue( int value );
 	int MusNeumePitch::GetValue( );
 	wxString MusNeumePitch::getFestaString( );
@@ -75,7 +75,7 @@ public:
     MusNeume();
 //	MusNeume( std::vector<MusNeumePitch*> pitch_list );
 	MusNeume( unsigned char _val, unsigned char _code );
-	MusNeume( const MusNeume& neume ); // copy contructor
+	MusNeume( const MusNeume& neume ); // copy constructor
 	MusNeume& operator=( const MusNeume& neume ); // copy assignement;
     virtual ~MusNeume();
     
@@ -120,7 +120,7 @@ public:
 	//may need a helper class for composite neumes.
 	void MusNeume::InsertPitchAfterSelected();
 	void MusNeume::RemoveSelectedPitch();
-	void MusNeume::Append();
+//	void MusNeume::Append();
 
 	
 	// to create compound neumes (ineumes)
@@ -177,7 +177,7 @@ public:
 	int MusNeume::GetOct(); 
 	int MusNeume::GetCode();
 	
-	void MusNeume::CheckForBreaks();
+//	void MusNeume::CheckForBreaks();
 	void MusNeume::Split(int pos); //do we need the int parameter?
 	
 	// mei related fields

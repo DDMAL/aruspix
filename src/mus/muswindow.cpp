@@ -1197,6 +1197,7 @@ void MusWindow::OnMouseDClick(wxMouseEvent &event)
 	if ( m_editElement )
 	{
         // TODO for cursor
+		
         // Switch to insertion mode, which means that m_newElement will point to something (see OnKeyDown)
         // Get the x position for the cursor and use it for m_newElement (see m_insertx below in this method)
         // Also make sure we get a current staff, but this should not be a problem because we get it in OnMouseLeftDown, I think
@@ -1560,6 +1561,7 @@ void MusWindow::OnKeyDown(wxKeyEvent &event)
 				else if ( m_currentElement->IsNeume() )
 				{
 					//lets use the copy constructor instead of an assignment operator?
+					//no, that doesn't make any sense.
 					
 					m_neume = *(MusNeume*)m_currentElement;
 //					printf("\nORIGINAL M_NEUME: *******************\n");

@@ -61,7 +61,7 @@ bool MusKeyboardEditor::handleMetaKey(int key) {
 				MusNeume *temp = (MusNeume*)w_ptr->m_currentElement;
 				if (temp->IsClosed()) temp->SetClosed(false);
 				else temp->SetClosed(true);
-				
+
 				
 //				printf("Setting closed: %d\n", temp->IsClosed());
 				
