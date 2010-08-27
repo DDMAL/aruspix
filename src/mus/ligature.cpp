@@ -12,6 +12,7 @@
 // For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"
 #include <vector>
+#include <string>
 
 #ifdef __BORLANDC__
     #pragma hdrstop
@@ -20,6 +21,8 @@
 #include "musneume.h"
 #include "musstaff.h"
 #include "muswindow.h"
+
+using namespace std;
 
 // more helper functions
 
@@ -88,15 +91,15 @@ void MusNeume::neume_stem( wxDC *dc, MusStaff *staff, int xrel, int index,
 						  int pitch_range, int side ) 
 {
 	int ynn;
-	wxString str = "";
+	string str = "";
 	
 	printf("drawing stems! pitch range: %d\n", pitch_range);
 	
 	// first figure out which line to print
 	if (pitch_range > 0) {
-		str.Append((char)(side == LEFT_STEM ? nSTEM_B_LEFT : nSTEM_B_RIGHT));
+		str.append(sizeof(char),(char)(side == LEFT_STEM ? nSTEM_B_LEFT : nSTEM_B_RIGHT));
 	} else if (pitch_range < 0) {
-		str.Append((char)(side == LEFT_STEM ? nSTEM_T_LEFT : nSTEM_T_RIGHT));
+		str.append(sizeof(char),(char)(side == LEFT_STEM ? nSTEM_T_LEFT : nSTEM_T_RIGHT));
 	} else return; // otherwise, pitch difference is zero. Do nothing.
 
 //	int pitch = abs_pitch((int)temp->code, temp->oct -4);
@@ -133,7 +136,7 @@ void MusNeume::clivis( wxDC *dc, MusStaff *staff ) {
 	
 	int x_spacing = 0;
 	//placeholder for festa dies strings
-	wxString str = "";
+	string str = "";
 
 	int xrel_curr = this->xrel; // keep track of where we are on the x axis
 	MusNeumePitch *temp;
@@ -183,7 +186,7 @@ void MusNeume::podatus( wxDC *dc, MusStaff *staff ) {
 	
 	int punct_y;
 	MusNeumePitch *temp = this->n_pitches.at(0);
-	m_w->festa_string(dc, this->xrel, ynn + 16, (char)nPES,
+	m_w->festa_string(dc, this->xrel, ynn + 16, string(sizeof(char), (char)nPES),
 				 staff, this->dimin );
 	temp = this->n_pitches.at(1);
 	
@@ -211,7 +214,7 @@ void MusNeume::podatus( wxDC *dc, MusStaff *staff ) {
 			break;
 			// not possible; break the neume?
 		default:				//draw above, all cases treated as square punctum
-			m_w->festa_string(dc, xrel_curr, ynn2 + 16, wxString((char)nPUNCTUM),
+			m_w->festa_string(dc, xrel_curr, ynn2 + 16, string(sizeof(char), (char)nPUNCTUM),
 							  staff, this->dimin);
 			break;
 	}
@@ -227,7 +230,7 @@ void MusNeume::porrectus( wxDC *dc, MusStaff *staff )
 	this->dec_y = staff->y_note((int)this->code, staff->testcle( this->xrel ), oct);
 	int ynn = this->dec_y + staff->yrel; 
 
-	wxString str = "";
+	string str = "";
 	
 	int porrect_type;
 	switch(abs(n_pitches.at(0)->Pitch_Diff(n_pitches.at(1)))) {
@@ -248,8 +251,8 @@ void MusNeume::porrectus( wxDC *dc, MusStaff *staff )
 				   abs(n_pitches.at(0)->Pitch_Diff(n_pitches.at(1))));
 			return; 
 	}
-	str.Append("3");
-	str.Append((char)porrect_type);
+	str.append("3");
+	str.append(sizeof(char),(char)porrect_type);
 
 	// ledger lines
 	int pTaille = staff->pTaille;
@@ -260,8 +263,11 @@ void MusNeume::porrectus( wxDC *dc, MusStaff *staff )
 	m_w->festa_string(dc, this->xrel, ynn + 16, str, staff, this->dimin);
 	
 	//the right edge of the porrect character is tricky.. use GetTextExtent
-	wxSize size = dc->GetTextExtent(str);
-	this->xrel_right = this->xrel + size.GetX();
+//	wxSize size = dc->GetTextExtent(str);
+
+// TODO: watch this!!!!!	
+	
+//	this->xrel_right = this->xrel + size.GetX();
 	//debug stem
 //	neume_stem(dc, staff, this->xrel_right, 0, 2, LEFT_STEM);
 	
@@ -295,13 +301,8 @@ void MusNeume::porrectus( wxDC *dc, MusStaff *staff )
 				neume_stem(dc, staff, xrel_curr, 2, n_pitches.at(1)->Pitch_Diff(temp)
 						   , RIGHT_STEM);
 				m_w->festa_string(dc, xrel_curr - PUNCT_WIDTH, ynn + 16, 
-								  wxString((char)nPUNCTUM),staff, this->dimin);
+								  std::string(sizeof(char), (char)nPUNCTUM),staff, this->dimin);
 		}
 	}
 	
-	if (str.IsSameAs(nPUNCTUM, true)) {		
-
-//		m_w->festa_string(dc, m_w->ToZoom(this->xrel_right - 15), 
-//						  ynn + 16, str, staff, this->dimin);
-	}
 }

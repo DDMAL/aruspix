@@ -54,6 +54,7 @@ MusNeumePitch::MusNeumePitch()
 	oct = 0;
 	code = 0;
 	this->SetValue(0);
+	m_font_str.assign("d"); // (char)nPUNCTUM
 }
 
 MusNeumePitch::MusNeumePitch(int _code, int _oct, unsigned char _val) 
@@ -61,12 +62,13 @@ MusNeumePitch::MusNeumePitch(int _code, int _oct, unsigned char _val)
 	code = _code;
 	oct = _oct;
 	this->SetValue(_val);
+	m_font_str.assign("d"); // (char)nPUNCTUM
 }
 
 MusNeumePitch::MusNeumePitch( const MusNeumePitch& pitch ) 
 {
 	val = pitch.val;
-	m_font_str = pitch.m_font_str;
+	m_font_str.assign(pitch.m_font_str);
 }
 
 MusNeumePitch& MusNeumePitch::operator=( const MusNeumePitch& pitch )
@@ -76,6 +78,7 @@ MusNeumePitch& MusNeumePitch::operator=( const MusNeumePitch& pitch )
 		// For base class MusElement copy assignement
 		(MusElement&)*this = pitch;
 		this->SetValue(pitch.val);
+		m_font_str.assign(pitch.m_font_str);
 	} 
 	return *this;
 }
@@ -90,30 +93,28 @@ MusNeumePitch& MusNeumePitch::operator=( const MusNeumePitch& pitch )
 void MusNeumePitch::SetValue( int value ) 
 { 
 	this->val = value;
-	m_font_str = "";
+	m_font_str.assign("");
 	
 	switch (value) {
 		case 0:
-			m_font_str.Append((char)nPUNCTUM);
+		default:
+			m_font_str.append(sizeof(char), (char)nPUNCTUM);
 			break;
 		case 1:
-			m_font_str.Append((char)nDIAMOND);
+			m_font_str.append(sizeof(char), (char)nDIAMOND);
 			break;
 		case 2:
-			m_font_str.Append((char)nCEPHALICUS);
+			m_font_str.append(sizeof(char), (char)nCEPHALICUS);
 			break;
 		case 3:
-			m_font_str.Append((char)nPUNCT_UP);
+			m_font_str.append(sizeof(char), (char)nPUNCT_UP);
 			break;
 		case 4:
-			m_font_str.Append((char)nQUILISMA);			
+			m_font_str.append(sizeof(char), (char)nQUILISMA);			
 			break;
 		case 5: //virga
-			m_font_str.Append((char)nPUNCTUM);
-			m_font_str.Append((char)nSTEM_B_RIGHT);
-			break;
-		default:
-			m_font_str = "";
+			m_font_str.append(sizeof(char), (char)nPUNCTUM);
+			m_font_str.append(sizeof(char), (char)nSTEM_B_RIGHT);
 			break;
 	}	
 }
@@ -122,7 +123,7 @@ int MusNeumePitch::GetValue() { return this->val; }
 
 //helper method
 
-wxString MusNeumePitch::getFestaString( ) 
+string& MusNeumePitch::getFestaString( ) 
 { return m_font_str; }
 
 
@@ -222,12 +223,12 @@ MusNeume::MusNeume( const MusNeume& neume )
 //	oct = neume.oct;
 
 //	n_pitches.push_back(new MusNeumePitch(code, oct, 0));
-//	printf("************************ Copy constructor addr: %d (%x)\n", 		   
-//		   (unsigned int)&neume, (unsigned int)&neume);
+	printf("************************ Copy constructor addr: %d (%x)\n", 		   
+		   (unsigned int)&neume, (unsigned int)&neume);
 	
 //	printf("\nBEFORE:\n");
 	
-//	printNeumeList();
+	printNeumeList();
 	
 	
 }
@@ -270,8 +271,9 @@ MusNeume& MusNeume::operator=( const MusNeume& neume )
 //		p_max = neume.p_max;
 //		p_min = neume.p_min;
 	}
+	printf("**************Assignment constructor\n");
 	
-//	this->printNeumeList();
+	this->printNeumeList();
 //	this->SetClosed(true);		
 	return *this;
 }
@@ -294,7 +296,7 @@ void MusNeume::SetClosed(bool value) {
 		n_selected = 0;
 		//break up neumes if there are repeated pitches
 		printf("\nINITIAL LIST: **********************\n");	
-//		this->printNeumeList();
+		this->printNeumeList();
 // 		this->CheckForBreaks(); //causes memory leak?
 //		wxClientDC dc(m_w);
 //		this->drawLigature(&(m_w->dc), m_w->m_currentStaff);
@@ -390,7 +392,7 @@ void MusNeume::Split(int pos) {
 
 //	this->n_pitches.resize(pos);
 //	printf("\nTHIS: **********************\n\n");
-//	this->printNeumeList();
+	this->printNeumeList();
 //
 //	split->n_pitches.erase(split->n_pitches.begin(), split->n_pitches.begin()+pos);
 //	printf("\nSPLIT: **********************\n\n");	
@@ -474,7 +476,7 @@ void MusNeume::InsertPitchAfterSelected()
 //	new MusNeumePitch(this->n_pitches[n_selected]->code, 
 //				this->n_pitches[n_selected]->oct, this->n_pitches[n_selected]->val);
 	
-	MusNeumePitch *new_pitch = n_pitches[n_selected]; 
+	MusNeumePitch *new_pitch = this->n_pitches.at(this->n_selected);
 
 	//^^need to change this!
 	
@@ -489,6 +491,8 @@ void MusNeume::InsertPitchAfterSelected()
 	
 	if (m_w)
 		m_w->Refresh();	
+	
+
 }
 
 void MusNeume::RemoveSelectedPitch()
@@ -569,7 +573,7 @@ void MusNeume::SetPitch( int code, int oct )
 		newpitch = abs_pitch(temp->code, temp->oct) + diff;
 		temp->SetPitch(abs2pitch(newpitch));
 
-		//this->printNeumeList();
+		this->printNeumeList();
 		//shift pitch for entire neume if first punctum is selected
 	    //this may cause problems with multiple punctum neumes!!
 		
@@ -624,17 +628,20 @@ int MusNeume::GetValue()
 //debug helper method
 void MusNeume::printNeumeList() 
 {
-	printf("Neume Address: %d (%x)\n", (int)&(*this),(unsigned int)&(*this));
-	printf("Vector Address: %d (%x)\n", (long)&(this->n_pitches), 
-		   (int)&(this->n_pitches));
+	printf("Neume Address:\n---------\n");
+	printf("%d [%X]\n---------\n", (int)&(*this),(unsigned int)&(*this));
+	printf("Vector Address:\n---------\n"); 
+    printf("%d [%X]\n", (long)&(this->n_pitches), (int)&(this->n_pitches));
 	printf("Neume List: (length %d)\n", (int)n_pitches.size());
+	printf("***********************\n");
 	int count = 0;
 	for (iter=n_pitches.begin(); iter != n_pitches.end(); ++iter, count++)
 	{
-		printf("no: %d: *** Address: %d (%x) code: %d oct: %d val: %d\n", 
+		printf("%d: %d [%X] code: %d oct: %d val: %d\n", 
 			   count, (int)&(*iter), (unsigned int)&(*iter), (*iter)->code, 
 			   (*iter)->oct, (*iter)->val);
 	}
+	printf("***********************\n");
 }
 
 int MusNeume::Length() { return (int)this->n_pitches.size(); };

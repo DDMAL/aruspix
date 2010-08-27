@@ -23,6 +23,9 @@
 #include "musfile.h"
 #include "axdefs.h"
 
+#include <string>
+using namespace std;
+
 // WDR: class implementations
 
 void MusWindow::v_bline ( wxDC *dc, int y1, int y2, int x1, int nbr)
@@ -186,7 +189,7 @@ int MusWindow::pointer ( wxDC *dc, int x, int b, int decal, MusStaff *staff )
 	super-hack time
  */
 
-void MusWindow::festa_string ( wxDC *dc, int x, int y, const wxString& str, 
+void MusWindow::festa_string ( wxDC *dc, int x, int y, const string &str, 
 							  MusStaff *staff, int dimin ) {
 	int pTaille = staff->pTaille;
 	int fontCorr = this->hautFontCorr[pTaille][dimin];
@@ -219,7 +222,8 @@ void MusWindow::festa_string ( wxDC *dc, int x, int y, const wxString& str,
 		
 		//printf("Drawing text here, x: %d, y: %d, y (zoomed): %d, y + fontcorr: %d\n"
 		//	   , ToZoom(x), y, ToZoomY(y), ToZoomY(y + fontCorr));
-		dc->DrawText( str, ToZoom(x), ToZoomY(y + fontCorr - 4) );
+
+		dc->DrawText( wxString::Format(wxT("%s"), str.c_str()), ToZoom(x), ToZoomY(y + fontCorr - 4) );
 		
 		dc->SetPen( wxNullPen );
 		dc->SetBrush( wxNullBrush );

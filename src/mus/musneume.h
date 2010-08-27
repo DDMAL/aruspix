@@ -19,6 +19,7 @@
 
 #include "muselement.h"
 #include <vector>
+#include <string>
 #include "neumedef.h"
 
 //#define MAX_LENGTH 1
@@ -55,13 +56,13 @@ public:
 //	void MusNeumePitch::SetPitch( int code, int oct );
 	void MusNeumePitch::SetValue( int value );
 	int MusNeumePitch::GetValue( );
-	wxString MusNeumePitch::getFestaString( );
+	std::string& MusNeumePitch::getFestaString( );
 	
 	int MusNeumePitch::Compare(MusNeumePitch *other);
 	int MusNeumePitch::Pitch_Diff(MusNeumePitch *other);
 	int MusNeumePitch::Pitch_Diff(int code, int oct);
 	
-	wxString m_font_str;	//used for font drawing
+	std::string m_font_str;	//used for font drawing
 	
 //	int code;
 //	int oct;
