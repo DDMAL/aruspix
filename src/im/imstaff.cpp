@@ -750,19 +750,31 @@ bool ImStaff::WriteMFC( wxString filename, int samplesCount, int period, int sam
 // height = hauteur de la portee
 // mask a une taille de STAFF_HEIGHT
 // modifier les valeur dans pos si STAFF_HEIGHT change !!!!
-void ImStaff::CalcMask( int height, int mask[] ) 
+void ImStaff::CalcMask( int height, int numstafflines, int mask[] ) 
 {
     int line[5] = {1,1,1,1,1};
-	int pos[5] = {39, 64, 89, 114, 139}; // centre des lignes avec height = 100 px 
+	
+	int numgaps = numstafflines - 1;
+	int distance = (height) / numgaps;
+	int spacing = (STAFF_HEIGHT - height) / 2;
+	int *pos = new int[numstafflines];
+	pos[0] = spacing;
+	for (int i = 1; i < numstafflines; i++) {
+		pos[i] = pos[i-1] + distance;
+	}
+	
+	/*
+	int pos2[5] = {39, 64, 89, 114, 139}; // centre des lignes avec height = 100 px 
 										 // 100 px de hauteur correspond à 104 px avec l'epaisseur des lignes
 	if ( height != 104 ) // adapter les position si different de 100
 	{
 		height -= 4; // supprimer l'epaisseur de ligne;
-		pos[0] = pos[2] - height / 2;
-		pos[1] = pos[2] - height / 4;
-		pos[3] = pos[2] + height / 4;
-		pos[4] = pos[2] + height / 2;
-	}
+		pos2[0] = pos2[2] - height / 2;
+		pos2[1] = pos2[2] - height / 4;
+		pos2[3] = pos2[2] + height / 4;
+		pos2[4] = pos2[2] + height / 2;
+	} */
+	//wxLogMessage("Staff height: %d, num stafflines: %d", height, numstafflines);	
 
     memset(mask, 0, STAFF_HEIGHT * sizeof(int) );
 
@@ -770,6 +782,7 @@ void ImStaff::CalcMask( int height, int mask[] )
 	{
 		memcpy(mask + pos[p] - 2, line, 5 * sizeof(int) );
     }
+	delete[] pos;
 }
 
 
@@ -872,6 +885,7 @@ void ImStaff::CalcCorrelation(const int staff, wxArrayPtrVoid params )
     // params 0: image de la page
 	// params 1: nom de base (ajouter par exemple .x.tif pour sauver l'image)
 	// params 2: hauteur de la portee
+	// params 3: number of staff lines
 
     imImage *page = (imImage*)params[0];    
 	if ( !GetImageFromPage( &m_opIm, page, m_y - ( STAFF_HEIGHT / 2 ) ) )
@@ -895,7 +909,8 @@ void ImStaff::CalcCorrelation(const int staff, wxArrayPtrVoid params )
 
     int mask[STAFF_HEIGHT];
 	int height = *(int*)params[2];
-    CalcMask( height, mask );
+	int numstafflines = *(int*)params[3];
+    CalcMask( height, numstafflines, mask );
 	
 	int peak_val, median_val;
 

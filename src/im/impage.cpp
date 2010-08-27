@@ -2363,6 +2363,7 @@ bool ImPage::StaffCurvatures( )
 	params.Add( m_opImMain );	
 	params.Add( &filename );
 	params.Add( &m_staff_height );
+	params.Add( &m_num_staff_lines );
     ImStaffFunctor staffFunc( &ImStaff::CalcCorrelation );
     this->Process( &staffFunc, params, counter );
 

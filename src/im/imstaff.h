@@ -73,7 +73,7 @@ public:
 protected:
 	// calculate positions (all x) from/to save positions (one x evey POSITION_STEP )
 	void SetValues( wxArrayInt *saved_values, int type );
-	void static CalcMask( int height, int mask[] );
+	void static CalcMask( int height, int numstafflines, int mask[] );
 	// inverse - keep only one x every POSITION_STEP
 	wxArrayInt GetValuesToSave( int type ); 
 	
