@@ -286,24 +286,38 @@ bool MusBinOutput::WriteNote( const MusNote *note )
 
 bool MusBinOutput::WriteNeume( const MusNeume *neume )
 {
-    // Write member values
+	// Write member values
     // ...
 	Write( &neume->TYPE, 1 );
 	WriteElementAttr( neume );
 	Write( &neume->closed, 1 );
 	Write( &neume->code, 1);
-	Write( &neume->oct, 1);
-//	Write( &neume->val, 1);
 	Write( &neume->next, 1);
 	Write( &neume->prev, 1);
 	
-	// for mei (eventually)
-	Write( &neume->name, sizeof(neume->name));
-	Write( &neume->n_type, sizeof(neume->n_type));
-	Write( &neume->form, sizeof(neume->form));
-    // if ( symbol->IsLyric() ) // To be fixed ??
+	Write( &neume->xrel_right, 1);
 	
-	// MusNeumePitch list (n_pitches)
+	// for mei (eventually) (these fields are all char)
+	Write( &neume->name, 1);
+	Write( &neume->n_type, 1);
+	Write( &neume->form, 1);
+    // if ( symbol->IsLyric() ) // no lyrics in MusNeume yet
+	Write( &neume->p_max, 1);
+	Write( &neume->p_min, 1);
+	Write( &neume->p_range, 1);
+	unsigned char code = (unsigned char)neume->code;
+	Write( &code, 1 ); // placed in element, but as unsigned short
+	
+	Write( &neume->n_selected, 1);
+	/** MusNeumePitch list (n_pitches) **/
+	MusNeumePitch *temp;
+	for (unsigned int i = 0; i < neume->n_pitches.size(); i++)
+	{ 
+		temp = neume->n_pitches.at(i);
+		WriteElementAttr( temp );
+		Write( &temp->val, 1);
+		Write( wxString(temp->m_font_str.c_str()), temp->m_font_str.size() );
+	}
 	
 	return true;
 }
@@ -696,22 +710,38 @@ bool MusBinInput::ReadNeume( MusNeume *neume )
 {
     // Read member values
     // ...
-	Read( &neume->TYPE, 1 );
 	ReadElementAttr( neume );
 	Read( &neume->closed, 1 );
 	Read( &neume->code, 1);
-	Read( &neume->oct, 1);
-//	Read( &neume->val, 1);
 	Read( &neume->next, 1);
 	Read( &neume->prev, 1);
 	
-	// for mei (eventually)
-	Read( &neume->name, sizeof(neume->name));
-	Read( &neume->n_type, sizeof(neume->n_type));
-	Read( &neume->form, sizeof(neume->form));
-    // if ( symbol->IsLyric() ) // To be fixed ??
+	Read( &neume->xrel_right, 1);
 	
-	// MusNeumePitch list (n_pitches)
+	// for mei (eventually) (these fields are all char)
+	Read( &neume->name, 1);
+	Read( &neume->n_type, 1);
+	Read( &neume->form, 1);
+    // if ( symbol->IsLyric() ) // no lyrics in MusNeume yet
+	Read( &neume->p_max, 1);
+	Read( &neume->p_min, 1);
+	Read( &neume->p_range, 1);
+	unsigned char code = (unsigned char)neume->code;
+	Read( &code, 1 ); // placed in element, but as unsigned short
+	
+	Read( &neume->n_selected, 1);
+	/** MusNeumePitch list (n_pitches) **/
+	MusNeumePitch *temp;
+	for (unsigned int i = 0; i < neume->n_pitches.size(); i++)
+	{ 
+		temp = neume->n_pitches.at(i);
+		ReadElementAttr(temp);
+		Read( &temp->val, 1);
+		// 'Taking address of temporary'? 
+		Read( &wxString(temp->m_font_str.c_str()), temp->m_font_str.size() );
+	}
+	
+	
 	
      
 	return true;
