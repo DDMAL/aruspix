@@ -205,6 +205,32 @@ MusNeume::MusNeume( unsigned char _val, unsigned char _code )
 	//	this->SetClosed(true);	
 }
 
+
+MusNeume::MusNeume( MusNeume* neume)
+{
+	TYPE = neume->TYPE;
+	closed = true;	//all neumes are closed by default
+	
+//	n_pitches = new std::vector<MusNeumePitch*>;
+	
+	for (unsigned int i = 0; i < neume->n_pitches.size(); i++) {
+		n_pitches.push_back(new MusNeumePitch(neume->n_pitches.at(i)));
+	}
+	
+	n_selected = 0;
+	next = prev = NULL;
+	
+	this->GetPitchRange();
+	
+	n_type = neume->n_type;
+	name = neume->name;
+	form = neume->form;	
+	
+	
+	code = neume->code;
+	oct = neume->oct;
+}
+
 // this constructor is called first upon insert
 
 MusNeume::MusNeume( const MusNeume& neume )
@@ -213,7 +239,11 @@ MusNeume::MusNeume( const MusNeume& neume )
 	TYPE = neume.TYPE;
 	closed = true;	//all neumes are closed by default
 
-	n_pitches = neume.n_pitches;
+	for (unsigned int i = 0; i < neume.n_pitches.size(); i++) {
+		n_pitches.push_back(new MusNeumePitch(neume.n_pitches.at(i)));
+	}
+	
+	
 	n_selected = 0;
 	next = prev = NULL;
 	
@@ -223,29 +253,11 @@ MusNeume::MusNeume( const MusNeume& neume )
 	name = neume.name;
 	form = neume.form;
 	
-	/* OLD */ 
-//	this->printNeumeList();
-//	this->SetClosed(true);	
-//	code = n_pitches.at(0)->code;
-//	oct = n_pitches.at(0)->oct;
-//	p_range = neume.p_range;
-//	p_max = neume.p_max;
-//	p_min = neume.p_min;
-//	printf("\nAFTER:\n");
-//	printNeumeList();
 	
-//	SetPitch(neume.code, neume.oct);
-//	code = neume.code;
-//	oct = neume.oct;
+	code = neume.code;
+	oct = neume.oct;
+	
 
-//	n_pitches.push_back(new MusNeumePitch(code, oct, 0));
-//	printf("************************ Copy constructor addr: %d (%x)\n", 		   
-//		   (unsigned int)&neume, (unsigned int)&neume);
-	
-//	printf("\nBEFORE:\n");
-	
-//	printNeumeList();
-	this->SetInitialPitch();
 	
 }
 
@@ -264,7 +276,10 @@ MusNeume& MusNeume::operator=( const MusNeume& neume )
 		TYPE = neume.TYPE;
 		closed = true; //all neumes are closed by default
 
-		n_pitches = neume.n_pitches;		
+		for (unsigned int i = 0; i < neume.n_pitches.size(); i++) {
+			n_pitches.push_back(new MusNeumePitch(neume.n_pitches.at(i)));
+		}
+
 		n_selected = 0;
 		next = prev = NULL;
 		
@@ -276,20 +291,14 @@ MusNeume& MusNeume::operator=( const MusNeume& neume )
 		n_type = neume.n_type;
 		name = neume.name;
 		form = neume.form;
-
-		/* OLD */
-//		n_selected = neume.n_selected;		
-//		SetPitch(neume.code, neume.oct);
-//		n_pitches.push_back(new MusNeumePitch(code, oct, 0));
-//		code = neume.code;
-//		oct = neume.oct;
-//		p_range = neume.p_range;
-//		p_max = neume.p_max;
-//		p_min = neume.p_min;
+		
+		code = neume.code;
+		oct = neume.oct;
+		
 	}
 	printf("**************Assignment constructor\n");
 	
-	this->SetInitialPitch();
+
 	
 	this->printNeumeList();
 //	this->SetClosed(true);		
@@ -320,7 +329,7 @@ void MusNeume::SetClosed(bool value) {
 //		this->drawLigature(&(m_w->dc), m_w->m_currentStaff);
 	//	m_w->m_currentElement = this;
 	} else { // in case pitch is not set when entering open mode for the first time
-		this->SetInitialPitch();
+
 	}
 	
 	if (m_w)
@@ -400,32 +409,18 @@ void MusNeume::CheckForBreaks()
 }
 */
  
- 
-//automatically split neumes where same pitches are found
-// right now, 'pos' doens't do anything...
-// for now a new pitch is just inserted to the right of the current one.
-//TODO: rename this appropriately
+// create a copy of the currently edited neume
+void MusNeume::Copy() {
+	MusNeume *copy = new MusNeume(this);
 
-void MusNeume::Split(int pos) {
-	printf("Splitting Neume at pos: %d\n", pos);
-
-	MusNeume *split = new MusNeume(*this);
-
-//	this->n_pitches.resize(pos);
-//	printf("\nTHIS: **********************\n\n");
 	this->printNeumeList();
-//
-//	split->n_pitches.erase(split->n_pitches.begin(), split->n_pitches.begin()+pos);
-//	printf("\nSPLIT: **********************\n\n");	
-//	split->printNeumeList();
-//
-////	split->SetPitch(this->code, this->oct);
-	split->xrel = this->xrel + (PUNCT_PADDING * (n_pitches.size()));
-//	
+
+	copy->xrel = this->xrel + (PUNCT_PADDING * (n_pitches.size()));
+	
 	this->SetClosed(true);
 
 	if (m_w) {
-		m_w->m_currentStaff->Insert(split);
+		m_w->m_currentStaff->Insert(copy);
 		m_w->m_currentElement = m_w->m_currentStaff->GetNext(this);
 
 		m_w->SetInsertMode(false); // switch to edition mode
@@ -487,13 +482,8 @@ void MusNeume::Append() {
 }
 */ // redundant because of [below]
 
-	//hack fix for initial pitch not being set properly
 
-void MusNeume::SetInitialPitch() {
-	if (!n_selected && (!n_pitches.at(0)->code && !n_pitches.at(0)->oct)) {
-		n_pitches.at(0)->SetPitch(this->code, this->oct);
-	} /*                    else return;  */
-}
+
 
 void MusNeume::InsertPitchAfterSelected()
 {
@@ -510,7 +500,7 @@ void MusNeume::InsertPitchAfterSelected()
 	MusNeumePitch *new_pitch = new MusNeumePitch(selected);
 	
 	
-	this->SetInitialPitch();
+
 	
 //	if (!new_pitch->code && new_pitch->oct && !n_selected) {
 //		new_pitch->SetPitch(this->code, this->oct);

@@ -77,6 +77,7 @@ public:
     MusNeume();
 //	MusNeume( std::vector<MusNeumePitch*> pitch_list );
 	MusNeume( unsigned char _val, unsigned char _code );
+	MusNeume( MusNeume *neume);
 	MusNeume( const MusNeume& neume ); // copy constructor
 	MusNeume& operator=( const MusNeume& neume ); // copy assignement;
     virtual ~MusNeume();
@@ -112,7 +113,6 @@ public:
 	bool MusNeume::descending(int p1, int p2);
 	
 	void MusNeume::SetClosed(bool value);
-	void MusNeume::SetInitialPitch();
 	void MusNeume::GetNextPunctum();
 	void MusNeume::GetPreviousPunctum();
 	
@@ -180,7 +180,7 @@ public:
 	int MusNeume::GetCode();
 	
 //	void MusNeume::CheckForBreaks();
-	void MusNeume::Split(int pos); //do we need the int parameter?
+	void MusNeume::Copy();
 	
 	// mei related fields
 	

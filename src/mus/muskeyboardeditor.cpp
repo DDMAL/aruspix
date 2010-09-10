@@ -101,12 +101,14 @@ bool MusKeyboardEditor::handleMetaKey(int key) {
 		int direction;
 		key == WXK_DOWN ? direction = -1 : direction = 1; 
 		
+		
+		int newoctave;
 		int	newcode = w_ptr->m_insertcode = 
 			w_ptr->m_currentElement->filtrcod(w_ptr->m_currentElement->code + direction, 
-											  &(w_ptr->m_insertoct));
+											  &newoctave);
 			
-		printf("Setting pitch to this; %d, %d\n", newcode, w_ptr->m_insertoct);
-		w_ptr->m_currentElement->SetPitch(newcode, w_ptr->m_insertoct);
+		printf("Setting pitch to this; %d, %d\n", newcode, newoctave);
+		w_ptr->m_currentElement->SetPitch(newcode, newoctave);
 		return true;
 	}
 	
@@ -141,7 +143,7 @@ bool MusKeyboardEditor::handleMetaKey(int key) {
 		if (w_ptr->m_currentElement->IsNeume())
 		{
 			((MusNeume *)w_ptr->m_currentElement)->
-			Split(((MusNeume *)w_ptr->m_currentElement)->n_selected);
+			Copy();
 			return true;
 		}
 	}
