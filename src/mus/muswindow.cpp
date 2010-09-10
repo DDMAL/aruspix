@@ -1254,8 +1254,7 @@ void MusWindow::OnMouseDClick(wxMouseEvent &event)
 			if ( m_newElement->IsNote() || m_newElement->IsNeume() ||
 				(((MusSymbol*)m_newElement)->flag == ALTER) || (((MusSymbol*)m_newElement)->flag == PNT))
 			{
-				m_newElement->code = m_insertcode;
-				m_newElement->oct = m_insertoct;
+				m_newElement->SetPitch(m_insertcode, m_insertoct);
 			}
 			PrepareCheckPoint( UNDO_PART, MUS_UNDO_STAFF );
 			m_lastEditedElement = m_currentStaff->Insert( m_newElement );
