@@ -39,19 +39,21 @@ MusKeyboardEditor::~MusKeyboardEditor()
 {}
 
 // TODO: I should separate this method for neumes and mensural
+// 08/28/2010 getting rid of redundant keybinds
+
 
 bool MusKeyboardEditor::handleMetaKey(int key) {
 	//different handling for mensural vs. neumes
 
 	//check for num handling
-
-	if (key >= 48 && key <= 57) {	// ascii 0 - 9
-		if (w_ptr->m_currentElement->IsNote()) {
-			return false;
-		} else if (w_ptr->m_currentElement->IsNeume()) {
-			return true;
-		}
-	}
+//
+//	if (key >= 48 && key <= 57) {	// ascii 0 - 9
+//		if (w_ptr->m_currentElement->IsNote()) {
+//			return false;
+//		} else if (w_ptr->m_currentElement->IsNeume()) {
+//			return true;
+//		}
+//	}
 	
 	// check for other meta keys
 	if (key == 'O') {
@@ -59,11 +61,10 @@ bool MusKeyboardEditor::handleMetaKey(int key) {
 		{
 			if (w_ptr->m_currentElement->IsNeume()) {
 				MusNeume *temp = (MusNeume*)w_ptr->m_currentElement;
-				if (temp->IsClosed()) temp->SetClosed(false);
-				else temp->SetClosed(true);
+				temp->SetClosed(!temp->closed);
 
 				
-//				printf("Setting closed: %d\n", temp->IsClosed());
+				printf("Setting closed: %d\n", temp->IsClosed());
 				
 				
 				return true;	
@@ -110,18 +111,9 @@ bool MusKeyboardEditor::handleMetaKey(int key) {
 		int direction;
 		key == WXK_DOWN ? direction = -1 : direction = 1; 
 		
-		int newcode;
-//		if (w_ptr->m_currentElement->IsNote())
-			newcode = w_ptr->m_insertcode = 
+		int	newcode = w_ptr->m_insertcode = 
 			w_ptr->m_currentElement->filtrcod(w_ptr->m_currentElement->code + direction, 
 											  &(w_ptr->m_insertoct));
-//		else if (w_ptr->m_currentElement->IsNeume()){
-//		
-//			newcode = ((MusNeume*)(w_ptr->m_currentElement))->GetCode();
-//			newcode = w_ptr->m_currentElement->filtrcod(newcode + direction,
-//											  &(w_ptr->m_insertoct));
-//		}
-//		else return false;
 			
 		printf("Setting pitch to this; %d, %d\n", newcode, w_ptr->m_insertoct);
 		w_ptr->m_currentElement->SetPitch(newcode, w_ptr->m_insertoct);
@@ -150,7 +142,6 @@ bool MusKeyboardEditor::handleMetaKey(int key) {
 	if (key == 'N') {
 		if (w_ptr->m_currentElement->IsNeume())
 		{
-			printf("appending pitch\n");
 			((MusNeume *)w_ptr->m_currentElement)->InsertPitchAfterSelected();
 			return true;
 		} 
@@ -201,23 +192,23 @@ bool MusKeyboardEditor::handleKeyEvent(wxKeyEvent &event)
 		case WXK_SPACE: // break neumes
 		case WXK_DELETE:
 		case WXK_BACK:
-//		case WXK_LEFT:
-//		case WXK_RIGHT:
+		case WXK_LEFT:
+		case WXK_RIGHT:
 		case WXK_DOWN:
 		case WXK_UP:
 		case 'M': // mode change: toggle value of neume
 		case 'N': // append punctum in open mode
 		case 'O': // open-closed mode toggle
-		case '1':
-		case '2':
-		case '3':
-		case '4':
-		case '5':
-		case '6':
-		case '7':
-		case '8':
-		case '9':
-		case '0':
+//		case '1':
+//		case '2':
+//		case '3':
+//		case '4':
+//		case '5':
+//		case '6':
+//		case '7':
+//		case '8':
+//		case '9':
+//		case '0':
 			return handleMetaKey(key); //hmm
 	}
 	

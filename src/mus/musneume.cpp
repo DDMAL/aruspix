@@ -90,6 +90,11 @@ MusNeumePitch& MusNeumePitch::operator=( const MusNeumePitch& pitch )
 ////	printf("Changing pitch: c: %d, o: %d\n", this->code, this->oct);
 //}
 
+void MusNeumePitch::SetPitch( int code, int oct ) {
+	this->code = code;
+	this->oct = oct;
+}
+
 void MusNeumePitch::SetValue( int value ) 
 { 
 	this->val = value;
@@ -223,13 +228,13 @@ MusNeume::MusNeume( const MusNeume& neume )
 //	oct = neume.oct;
 
 //	n_pitches.push_back(new MusNeumePitch(code, oct, 0));
-	printf("************************ Copy constructor addr: %d (%x)\n", 		   
-		   (unsigned int)&neume, (unsigned int)&neume);
+//	printf("************************ Copy constructor addr: %d (%x)\n", 		   
+//		   (unsigned int)&neume, (unsigned int)&neume);
 	
 //	printf("\nBEFORE:\n");
 	
-	printNeumeList();
-	
+//	printNeumeList();
+	this->SetInitialPitch();
 	
 }
 
@@ -273,6 +278,8 @@ MusNeume& MusNeume::operator=( const MusNeume& neume )
 	}
 	printf("**************Assignment constructor\n");
 	
+	this->SetInitialPitch();
+	
 	this->printNeumeList();
 //	this->SetClosed(true);		
 	return *this;
@@ -295,13 +302,15 @@ void MusNeume::SetClosed(bool value) {
 	if (this->closed) {
 		n_selected = 0;
 		//break up neumes if there are repeated pitches
-		printf("\nINITIAL LIST: **********************\n");	
-		this->printNeumeList();
+//		printf("\nINITIAL LIST: **********************\n");	
+//		this->printNeumeList();
 // 		this->CheckForBreaks(); //causes memory leak?
 //		wxClientDC dc(m_w);
 //		this->drawLigature(&(m_w->dc), m_w->m_currentStaff);
 	//	m_w->m_currentElement = this;
-	} 
+	} else { // in case pitch is not set when entering open mode for the first time
+		this->SetInitialPitch();
+	}
 	
 	if (m_w)
 	{
@@ -309,6 +318,7 @@ void MusNeume::SetClosed(bool value) {
 		m_w->Refresh();
 	}
 
+	this->printNeumeList();
 }
 
 
@@ -466,6 +476,14 @@ void MusNeume::Append() {
 }
 */ // redundant because of [below]
 
+	//hack fix for initial pitch not being set properly
+
+void MusNeume::SetInitialPitch() {
+	if (!n_selected && (!n_pitches.at(0)->code && !n_pitches.at(0)->oct)) {
+		n_pitches.at(0)->SetPitch(this->code, this->oct);
+	} /*                    else return;  */
+}
+
 void MusNeume::InsertPitchAfterSelected()
 {
 	if (this->IsClosed()) return; //can only insert pitches in open mode
@@ -477,12 +495,17 @@ void MusNeume::InsertPitchAfterSelected()
 //				this->n_pitches[n_selected]->oct, this->n_pitches[n_selected]->val);
 	
 	MusNeumePitch *new_pitch = this->n_pitches.at(this->n_selected);
-
-	//^^need to change this!
 	
-	// LOL its really messed up now
+	
+	this->SetInitialPitch();
+	
+//	if (!new_pitch->code && new_pitch->oct && !n_selected) {
+//		new_pitch->SetPitch(this->code, this->oct);
+//	}
 	
 	iter = this->n_pitches.begin();
+	
+	printf("appending pitch\n");
 	
 	n_pitches.insert(iter + n_selected, new_pitch);
 	n_selected++;
@@ -533,58 +556,43 @@ int MusNeume::GetOct()
 
 void MusNeume::SetPitch( int code, int oct )
 {
-	//printf("Setting the pitch woooohoooo\n");
+	//new pitch and oct is already taken care of going in...
+	// the only thing thats sketchy is if we're in open mode and we're switching
+	// octaves...
+	
+	printf("Setting the pitch woooohoooo\n");
+	printf(" TO WHAT????????????????? %d, %d!!!!!!\n", code, oct);
 	if ( this->TYPE != NEUME )
 		return;
-	
-//	if (abs_pitch(this->code, this->oct) == abs_pitch(code, oct)) {
-//		iter = n_pitches.begin();
-//		(*iter)->SetPitch(code, oct);	//hack fix for first pitch being set to 0
-//		return;
-//	}
 
-	//if the neume is closed, we pitch shift the entire group
-	//if open, we change a single pitch (punctum) in the group
+	int diff = n_pitches.at(0)->Pitch_Diff(code, oct);
 	
-	int diff, newpitch;
-	iter = n_pitches.begin();
-	diff = (*iter)->Pitch_Diff(code, oct);
-	
-				
 	if (this->IsClosed()) {
-		for (iter; iter != n_pitches.end(); ++iter)
-		{
-			newpitch = abs_pitch((*iter)->code, (*iter)->oct) + diff;
-			(*iter)->SetPitch(abs2pitch(newpitch));
-			
-			if (iter==n_pitches.begin())
-			{
-				this->code = code;
-				this->oct = oct;
-			}
-		}
-	} else {
-		printf("Changing pitch for element %d [open mode]\n", n_selected);
-
-		//find the diff between first pitch (reference pitch) and
-		//the selected pitch in open mode
-
-		MusNeumePitch *temp = n_pitches.at(n_selected);
-		newpitch = abs_pitch(temp->code, temp->oct) + diff;
-		temp->SetPitch(abs2pitch(newpitch));
-
-		this->printNeumeList();
-		//shift pitch for entire neume if first punctum is selected
-	    //this may cause problems with multiple punctum neumes!!
+		//shift all pitches!
+//		int diff = n_pitches.at(0)->Pitch_Diff(code, oct);
+		printf("diff = %d\n", diff);
+		this->code = code;
+		this->oct = oct;
 		
-		//NOTE: for drawing, make sure that all subsequent pitches are
-		// drawn relative to the 'fundamental' first pitch
-		if (n_selected == 0) {
-			this->code = code;
-			this->oct = oct;
-		}
+		n_pitches.at(0)->SetPitch(code, oct);
+	
+//		for (int i = 1; i < n_pitches.size(); i++) {
+//			//unnecessarily shifted
+//			
+//			code = filtrcod(n_pitches.at(i)->code + diff, &oct);
+//			n_pitches.at(i)->SetPitch(code, oct);
+//		}
+		
+	} else { //ONLY CLOSED MODE FSJKLDFKSJDF
+		int newcode = filtrcod(n_pitches.at(n_selected)->code + diff, &oct);
+		n_pitches.at(n_selected)->SetPitch(newcode, oct);
 	}
-		
+	
+
+	
+
+	this->printNeumeList();
+	
 	this->GetPitchRange(); //necessary for drawing the box properly in open mode	
 	if (m_w)
 		m_w->Refresh();
@@ -653,41 +661,45 @@ int MusNeume::GetMinPitch() { return this->p_min; }
 // getter and simultaneous setter
 int MusNeume::GetPitchRange()
 {
-	int ymin, ymax, abs_pitch, count, range, max_rel, min_rel;
-	count = 0;
-	//printf("***********************************************\n");
-	for (iter=n_pitches.begin(); iter != n_pitches.end(); ++iter, count++)
-	{
-		abs_pitch = (*iter)->code + ((*iter)->oct * 7);
-		
-	//	printf("Pitch %d == %d\n", count, abs_pitch);
-		
-		if (!count) ymin = ymax = abs_pitch;
-		
-		//printf("Absolute pitch for note %d: %d\n", count, abs_pitch);
-		
-		if (abs_pitch > ymax)
-			ymax = abs_pitch;
-		else if (abs_pitch < ymin)
-			ymin = abs_pitch;
-	}
-	//printf("***********************************************\n");			   
 	
-	range = ymax - ymin;
-	max_rel = ymax - (this->code + (this->oct * 7));
-	min_rel = ymin - (this->code + (this->oct * 7));
+	// HAHA NOPE
+	return 0;
 	
-	//printf("The pitch range is %d semitones\n", range);
-	//printf("Max: %d, Min: %d\n", max_rel, min_rel);
-	
-	
-	
-	//do some field setting for convenience, if necessary
-	if (range != this->p_range) this->p_range = range;
-	if (max_rel != this->p_max) this->p_max = max_rel;
-	if (min_rel != this->p_min) this->p_min = min_rel;
-	
-	return range;
+//	int ymin, ymax, abs_pitch, count, range, max_rel, min_rel;
+//	count = 0;
+//	//printf("***********************************************\n");
+//	for (iter=n_pitches.begin(); iter != n_pitches.end(); ++iter, count++)
+//	{
+//		abs_pitch = (*iter)->code + ((*iter)->oct * 7);
+//		
+//	//	printf("Pitch %d == %d\n", count, abs_pitch);
+//		
+//		if (!count) ymin = ymax = abs_pitch;
+//		
+//		//printf("Absolute pitch for note %d: %d\n", count, abs_pitch);
+//		
+//		if (abs_pitch > ymax)
+//			ymax = abs_pitch;
+//		else if (abs_pitch < ymin)
+//			ymin = abs_pitch;
+//	}
+//	//printf("***********************************************\n");			   
+//	
+//	range = ymax - ymin;
+//	max_rel = ymax - (this->code + (this->oct * 7));
+//	min_rel = ymin - (this->code + (this->oct * 7));
+//	
+//	//printf("The pitch range is %d semitones\n", range);
+//	//printf("Max: %d, Min: %d\n", max_rel, min_rel);
+//	
+//	
+//	
+//	//do some field setting for convenience, if necessary
+//	if (range != this->p_range) this->p_range = range;
+//	if (max_rel != this->p_max) this->p_max = max_rel;
+//	if (min_rel != this->p_min) this->p_min = min_rel;
+//	
+//	return range;
 }
 
 //should have some loop for drawing each element in the neume
@@ -722,11 +734,13 @@ void MusNeume::Draw( wxDC *dc, MusStaff *staff)
 	//printf("closed code value: %d\nclosed oct: %d\n", 
 	//	   (int)this->code, oct );
 	
-	if (this->IsClosed()) {
+	if (this->IsClosed() == true) {
 		//neume drawing routine
+		printf("Drawing Neume\n");
 		this->DrawNeume( dc, staff );
 	} else {
 		//individual punctum edit mode drawing routine
+		printf("Drawing Individual Punctums\n");
 		this->DrawPunctums( dc, staff );
 	}
 	

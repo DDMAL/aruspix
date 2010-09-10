@@ -53,7 +53,7 @@ public:
 	MusNeumePitch( const MusNeumePitch& pitch );
 	MusNeumePitch& MusNeumePitch::operator=( const MusNeumePitch& pitch );
 	virtual ~MusNeumePitch() {}
-//	void MusNeumePitch::SetPitch( int code, int oct );
+	void MusNeumePitch::SetPitch( int code, int oct );
 	void MusNeumePitch::SetValue( int value );
 	int MusNeumePitch::GetValue( );
 	std::string& MusNeumePitch::getFestaString( );
@@ -111,7 +111,7 @@ public:
 	bool MusNeume::descending(int p1, int p2);
 	
 	void MusNeume::SetClosed(bool value);
-	
+	void MusNeume::SetInitialPitch();
 	void MusNeume::GetNextPunctum();
 	void MusNeume::GetPreviousPunctum();
 	
