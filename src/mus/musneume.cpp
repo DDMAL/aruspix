@@ -67,8 +67,19 @@ MusNeumePitch::MusNeumePitch(int _code, int _oct, unsigned char _val)
 
 MusNeumePitch::MusNeumePitch( const MusNeumePitch& pitch ) 
 {
+	code = pitch.code;
+	oct = pitch.oct;
 	val = pitch.val;
 	m_font_str.assign(pitch.m_font_str);
+}
+
+
+//super hacks
+MusNeumePitch::MusNeumePitch( MusNeumePitch *pitch) {
+	code = pitch->code;
+	oct = pitch->oct;
+	val = pitch->val;
+	m_font_str.assign(pitch->m_font_str);
 }
 
 MusNeumePitch& MusNeumePitch::operator=( const MusNeumePitch& pitch )
@@ -494,7 +505,9 @@ void MusNeume::InsertPitchAfterSelected()
 //	new MusNeumePitch(this->n_pitches[n_selected]->code, 
 //				this->n_pitches[n_selected]->oct, this->n_pitches[n_selected]->val);
 	
-	MusNeumePitch *new_pitch = this->n_pitches.at(this->n_selected);
+	MusNeumePitch *selected = this->n_pitches.at(this->n_selected);
+	
+	MusNeumePitch *new_pitch = new MusNeumePitch(selected);
 	
 	
 	this->SetInitialPitch();
@@ -576,16 +589,25 @@ void MusNeume::SetPitch( int code, int oct )
 		
 		n_pitches.at(0)->SetPitch(code, oct);
 	
-//		for (int i = 1; i < n_pitches.size(); i++) {
-//			//unnecessarily shifted
-//			
-//			code = filtrcod(n_pitches.at(i)->code + diff, &oct);
-//			n_pitches.at(i)->SetPitch(code, oct);
-//		}
+		for (unsigned int i = 1; i < n_pitches.size(); i++) {
+			//unnecessarily shifted
+			
+			int newoctave;
+			MusNeumePitch *p = n_pitches.at(i);
+			int newcode = p->filtrcod(p->code + diff, &newoctave);
+			n_pitches.at(i)->SetPitch(newcode, newoctave);
+		}
 		
-	} else { //ONLY CLOSED MODE FSJKLDFKSJDF
-		int newcode = filtrcod(n_pitches.at(n_selected)->code + diff, &oct);
-		n_pitches.at(n_selected)->SetPitch(newcode, oct);
+	} else { // open mode
+		int newoctave;
+		MusNeumePitch *p = n_pitches.at(n_selected);
+		int newcode = p->filtrcod(p->code + diff, &newoctave);
+		n_pitches.at(n_selected)->SetPitch(newcode, newoctave);
+
+		if (n_selected == 0) { 
+			this->code = newcode;
+			this->oct = newoctave;
+		}
 	}
 	
 

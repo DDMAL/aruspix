@@ -52,6 +52,7 @@ public:
 	MusNeumePitch( int _code, int _oct, unsigned char _val );
 	MusNeumePitch( const MusNeumePitch& pitch );
 	MusNeumePitch& MusNeumePitch::operator=( const MusNeumePitch& pitch );
+	MusNeumePitch::MusNeumePitch( MusNeumePitch *pitch);
 	virtual ~MusNeumePitch() {}
 	void MusNeumePitch::SetPitch( int code, int oct );
 	void MusNeumePitch::SetValue( int value );
