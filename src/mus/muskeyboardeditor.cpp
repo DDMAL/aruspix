@@ -45,16 +45,6 @@ MusKeyboardEditor::~MusKeyboardEditor()
 bool MusKeyboardEditor::handleMetaKey(int key) {
 	//different handling for mensural vs. neumes
 
-	//check for num handling
-//
-//	if (key >= 48 && key <= 57) {	// ascii 0 - 9
-//		if (w_ptr->m_currentElement->IsNote()) {
-//			return false;
-//		} else if (w_ptr->m_currentElement->IsNeume()) {
-//			return true;
-//		}
-//	}
-	
 	// check for other meta keys
 	if (key == 'O') {
 		if (w_ptr->m_currentElement)
