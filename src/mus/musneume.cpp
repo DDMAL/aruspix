@@ -231,7 +231,7 @@ MusNeume::MusNeume( MusNeume* neume)
 	oct = neume->oct;
 }
 
-// this constructor is called first upon insert
+// this constructor is called first upon insert     
 
 MusNeume::MusNeume( const MusNeume& neume )
 	: MusElement( neume )
@@ -559,12 +559,6 @@ int MusNeume::GetOct()
 
 void MusNeume::SetPitch( int code, int oct )
 {
-	//new pitch and oct is already taken care of going in...
-	// the only thing thats sketchy is if we're in open mode and we're switching
-	// octaves...
-	
-	printf("Setting the pitch woooohoooo\n");
-	printf(" TO WHAT????????????????? %d, %d!!!!!!\n", code, oct);
 	if ( this->TYPE != NEUME )
 		return;
 
@@ -673,45 +667,41 @@ int MusNeume::GetMinPitch() { return this->p_min; }
 // getter and simultaneous setter
 int MusNeume::GetPitchRange()
 {
+	int ymin, ymax, abs_pitch, count, range, max_rel, min_rel;
+	count = 0;
+	//printf("***********************************************\n");
+	for (iter=n_pitches.begin(); iter != n_pitches.end(); ++iter, count++)
+	{
+		abs_pitch = (*iter)->code + ((*iter)->oct * 7);
+		
+	//	printf("Pitch %d == %d\n", count, abs_pitch);
+		
+		if (!count) ymin = ymax = abs_pitch;
+		
+		//printf("Absolute pitch for note %d: %d\n", count, abs_pitch);
+		
+		if (abs_pitch > ymax)
+			ymax = abs_pitch;
+		else if (abs_pitch < ymin)
+			ymin = abs_pitch;
+	}
+	//printf("***********************************************\n");			   
 	
-	// HAHA NOPE
-	return 0;
+	range = ymax - ymin;
+	max_rel = ymax - (this->code + (this->oct * 7));
+	min_rel = ymin - (this->code + (this->oct * 7));
 	
-//	int ymin, ymax, abs_pitch, count, range, max_rel, min_rel;
-//	count = 0;
-//	//printf("***********************************************\n");
-//	for (iter=n_pitches.begin(); iter != n_pitches.end(); ++iter, count++)
-//	{
-//		abs_pitch = (*iter)->code + ((*iter)->oct * 7);
-//		
-//	//	printf("Pitch %d == %d\n", count, abs_pitch);
-//		
-//		if (!count) ymin = ymax = abs_pitch;
-//		
-//		//printf("Absolute pitch for note %d: %d\n", count, abs_pitch);
-//		
-//		if (abs_pitch > ymax)
-//			ymax = abs_pitch;
-//		else if (abs_pitch < ymin)
-//			ymin = abs_pitch;
-//	}
-//	//printf("***********************************************\n");			   
-//	
-//	range = ymax - ymin;
-//	max_rel = ymax - (this->code + (this->oct * 7));
-//	min_rel = ymin - (this->code + (this->oct * 7));
-//	
-//	//printf("The pitch range is %d semitones\n", range);
-//	//printf("Max: %d, Min: %d\n", max_rel, min_rel);
-//	
-//	
-//	
-//	//do some field setting for convenience, if necessary
-//	if (range != this->p_range) this->p_range = range;
-//	if (max_rel != this->p_max) this->p_max = max_rel;
-//	if (min_rel != this->p_min) this->p_min = min_rel;
-//	
-//	return range;
+	//printf("The pitch range is %d semitones\n", range);
+	//printf("Max: %d, Min: %d\n", max_rel, min_rel);
+	
+	
+	
+	//do some field setting for convenience, if necessary
+	if (range != this->p_range) this->p_range = range;
+	if (max_rel != this->p_max) this->p_max = max_rel;
+	if (min_rel != this->p_min) this->p_min = min_rel;
+	
+	return range;
 }
 
 //should have some loop for drawing each element in the neume

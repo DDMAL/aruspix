@@ -294,21 +294,21 @@
 				4DE87C3510FE3E82001E9F91 /* musioxml.h */,
 				4D33DF35103D375C009EE145 /* mussvg.cpp */,
 				4D33DF36103D375C009EE145 /* mussvg.h */,
+				4DB2D96B0D8383EA003401B0 /* musmlfdic.cpp */,
 				4D832FFF0F2E6E35006E6B5F /* musiocmme.h */,
 				4D832FFE0F2E6E35006E6B5F /* musiocmme.cpp */,
-				4DB2D96B0D8383EA003401B0 /* musmlfdic.cpp */,
 				4DB2D96C0D8383EA003401B0 /* musmlfdic.h */,
 				4D3A8FCF0D35867200BBC1FB /* mus_wdr.h */,
 				4D3A8FD00D35867200BBC1FB /* mus.cpp */,
 				4D3A8FD10D35867200BBC1FB /* mus.h */,
 				4D3A8FD20D35867200BBC1FB /* musbarlines.cpp */,
-				4DA6F43311510C7B0005E4A5 /* musbeam.cpp */,
 				4D3A8FD30D35867200BBC1FB /* musbezier.cpp */,
 				4D3A8FD40D35867200BBC1FB /* musclef.cpp */,
 				4D3A8FD50D35867200BBC1FB /* musdef.h */,
 				4D3A8FD60D35867200BBC1FB /* muselement.cpp */,
 				4D3A8FD70D35867200BBC1FB /* muselement.h */,
 				4D3A8FD80D35867200BBC1FB /* musfile.cpp */,
+				4DA6F43311510C7B0005E4A5 /* musbeam.cpp */,
 				4D3A8FD90D35867200BBC1FB /* musfile.h */,
 				4D3A8FDA0D35867200BBC1FB /* musgraph.cpp */,
 				4D3A8FDB0D35867200BBC1FB /* musiomlf.cpp */,
@@ -583,7 +583,7 @@
 			mainGroup = A58508B20A001129006E82B1;
 			productRefGroup = A58508C20A00113C006E82B1 /* Products */;
 			projectDirPath = "";
-			projectRoot = ..;
+			projectRoot = "$(ARUSPIX)/../";
 			targets = (
 				A58508C00A00113C006E82B1 /* Aruspix */,
 			);

@@ -309,6 +309,11 @@ bool MusBinOutput::WriteNeume( const MusNeume *neume )
 	Write( &code, 1 ); // placed in element, but as unsigned short
 	
 	Write( &neume->n_selected, 1);
+	
+	//provided neumes never exceed 255 elements
+	unsigned char size = (unsigned char) neume->n_pitches.size();
+	Write( &size, 1);
+	
 	/** MusNeumePitch list (n_pitches) **/
 	MusNeumePitch *temp;
 	for (unsigned int i = 0; i < neume->n_pitches.size(); i++)
@@ -316,7 +321,9 @@ bool MusBinOutput::WriteNeume( const MusNeume *neume )
 		temp = neume->n_pitches.at(i);
 		WriteElementAttr( temp );
 		Write( &temp->val, 1);
-		Write( wxString(temp->m_font_str.c_str()), temp->m_font_str.size() );
+		unsigned char size = (unsigned char) temp->m_font_str.size();
+		Write( &size, 1);
+		Write( wxString(temp->m_font_str.c_str()), size );
 	}
 	
 	return true;
@@ -732,13 +739,24 @@ bool MusBinInput::ReadNeume( MusNeume *neume )
 	Read( &neume->n_selected, 1);
 	/** MusNeumePitch list (n_pitches) **/
 	MusNeumePitch *temp;
-	for (unsigned int i = 0; i < neume->n_pitches.size(); i++)
+	
+	unsigned char size;	
+	Read( &size, 1);
+ 
+	
+	for (unsigned int i = 0; i < size; i++)
 	{ 
-		temp = neume->n_pitches.at(i);
+		temp = new MusNeumePitch();
 		ReadElementAttr(temp);
+		
 		Read( &temp->val, 1);
-		// 'Taking address of temporary'? 
-		Read( &wxString(temp->m_font_str.c_str()), temp->m_font_str.size() );
+		unsigned char strsize;
+		Read( &strsize, 1);
+		char *str = (char*)malloc(strsize);
+		Read( str, strsize );
+		//str[size] = '\0';
+		temp->m_font_str = std::string(str, strsize);
+		neume->n_pitches.push_back(temp);
 	}
 	
 	

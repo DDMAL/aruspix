@@ -151,10 +151,13 @@ bool MusKeyboardEditor::handleMetaKey(int key) {
 	if (key == WXK_DELETE || WXK_BACK) {
 		if (w_ptr->m_currentElement->IsNeume())
 		{
-			if (((MusNeume *)w_ptr->m_currentElement)->Length() == 1) return false;
-			else
+			MusNeume *p = (MusNeume*)w_ptr->m_currentElement;
+			if (p->IsClosed()) {
+				return false;
+			} else {
 				((MusNeume *)w_ptr->m_currentElement)->RemoveSelectedPitch();
-			return true;
+				return true;
+			}
 		}
 	}
 	
