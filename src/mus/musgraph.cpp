@@ -26,7 +26,6 @@
 #include <string>
 using namespace std;
 
-// WDR: class implementations
 
 void MusWindow::v_bline ( wxDC *dc, int y1, int y2, int x1, int nbr)
 {
@@ -35,9 +34,9 @@ void MusWindow::v_bline ( wxDC *dc, int y1, int y2, int x1, int nbr)
 	if (discontinu)
 		nbr = 1;
 
-	wxPen pen( *m_currentColour, nbr, wxSOLID );
+	wxPen pen( *m_currentColour, max( 1, ToZoom(nbr) ), wxSOLID );
 	dc->SetPen( pen );
-	wxBrush brush( *m_currentColour, wxTRANSPARENT );
+	wxBrush brush( *m_currentColour, wxSOLID );
 	dc->SetBrush( brush );
 
 	dc->DrawLine( ToZoom(x1) , ToZoomY(y1), ToZoom(x1), ToZoomY(y2) );
@@ -81,7 +80,7 @@ void MusWindow::h_bline ( wxDC *dc, int x1, int x2, int y1, int nbr)
 	if (discontinu)
 		nbr = 1;
 
-	wxPen pen( *m_currentColour, nbr, wxSOLID );
+	wxPen pen( *m_currentColour, max( 1, ToZoom(nbr) ), wxSOLID );
 	dc->SetPen( pen );
 	wxBrush brush( *m_currentColour, wxTRANSPARENT );
 	dc->SetBrush( brush );

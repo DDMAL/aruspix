@@ -26,7 +26,8 @@
 
 #include "musfile.h"
 
-// WDR: class declarations
+
+
 
 
 //----------------------------------------------------------------------------
@@ -40,8 +41,7 @@ public:
     MusCmmeOutput( MusFile *file, wxString filename );
     virtual ~MusCmmeOutput();
     
-    // WDR: method declarations for MusCmmeOutput
-	virtual bool ExportFile( );
+    virtual bool ExportFile( );
 	virtual bool WriteFileHeader( const MusFileHeader *header );
 	virtual bool WriteStaff( const MusStaff *staff );
 	virtual bool WriteNote( const MusNote *note );
@@ -50,15 +50,13 @@ public:
 	virtual bool WriteElementAttr( const MusElement *element );
     
 private:
-    // WDR: member variable declarations for MusCmmeOutput
-	wxString m_filename;
+    wxString m_filename;
     TiXmlElement *m_xml_root;
     TiXmlElement *m_xml_current;
 
 
 private:
-	// WDR: handler declarations for MusCmmeOutput
-};
+	};
 
 
 //----------------------------------------------------------------------------
@@ -72,8 +70,7 @@ public:
     MusCmmeInput( MusFile *file, wxString filename );
     virtual ~MusCmmeInput();
     
-    // WDR: method declarations for MusCmmeInput
-	virtual bool ImportFile( );
+    virtual bool ImportFile( );
 	virtual bool ReadFileHeader( MusFileHeader *header );
 	virtual bool ReadSeparator( );
 	virtual bool ReadPage( MusPage *page );
@@ -86,12 +83,10 @@ public:
 	virtual bool ReadHeaderFooter( MusHeaderFooter *headerfooter);
     
 private:
-    // WDR: member variable declarations for MusCmmeInput
-    int m_vmaj, m_vmin, m_vrev;
+        int m_vmaj, m_vmin, m_vrev;
 
 private:
-	// WDR: handler declarations for MusCmmeInput
-};
+	};
 
 
 #endif

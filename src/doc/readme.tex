@@ -64,7 +64,7 @@
 \maketitle
 
 \section{Introduction} 
-Four libraries must be downloaded in order to be able to compile Aruspix. 
+Aruspix uses four libraries that have to be installed on your system for it to compile. 
 They are the following:
 \begin{itemize}
 	\item wxWidgets 2.8.7 (http://www.wxwidgets.org/)
@@ -73,7 +73,9 @@ They are the following:
 	\item TinyXML (http://www.grinninglizard.com/tinyxml/index.html/)
 \end{itemize}
 This document will outline the steps involved in compiling these libraries 
-for Mac OS X and Windows XP operating systems.
+for Windows XP and MacOS X operating systems.
+
+For MacOS X, TinyXML is include in the project and does not need to be installed and compiled separately.
 
 %*****************************************************************************
 \section{Windows XP Set Up (Using Microsoft Visual C++ 6)}
@@ -178,14 +180,14 @@ use with both Mac OS 10.4 and 10.5.
 	\item In the osx-static-debug directory run the following commands to compile for debug mode:
 	\begin{verbatim} ../configure --disable-shared --enable-debug --with-libjpeg=builtin --with-libpng=builtin 
      	--with-macosx-sdk=/Developer/SDKs/MacOSX10.4u.sdk
- 		clean
+ 		make clean (if necessary)
  		make
 	\end{verbatim}
 
 	\item In the osx-static directory run the following commands to compile for release mode:
 	\begin{verbatim} ../configure --disable-shared --enable-universal_binary --with-libjpeg=builtin
 	     --with-libpng=builtin --with-macosx-sdk=/Developer/SDKs/MacOSX10.4u.sdk 
-	 clean
+	 make clean (if necessary)
 	 make
 	\end{verbatim}
 \end{enumerate}
@@ -193,7 +195,7 @@ use with both Mac OS 10.4 and 10.5.
 
 %******************************
 \subsection{Setting Aruspix Environment Variables}
-	In the aruspix/osx directory you will find an XML file named enviroment.plist. This
+	In the aruspix/osx directory you will find an XML file named sample_enviroment.plist. This
 	file is used by Xcode to set the following environment variables for linking purposes:
 	\begin{itemize}
 		\item \begin{verbatim}ARUSPIX: Location of Aruspix project directory.\end{verbatim}

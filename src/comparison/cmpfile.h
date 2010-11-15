@@ -48,7 +48,6 @@ WX_DECLARE_OBJARRAY( CmpCollationPart, ArrayOfCmpCollationParts);
 
 class MusStaff;
 
-// WDR: class declarations
 
 //----------------------------------------------------------------------------
 // CmpCollationPart
@@ -169,7 +168,7 @@ public:
     ~CmpBookItem();
 	
 	// operations
-	bool CmpBookItem::AssembleParts( );
+	bool AssembleParts( );
 
 public:
     wxString m_filename;
@@ -194,14 +193,13 @@ class CmpFile: public AxFile
 {
 public:
     // constructors and destructors
-    CmpFile::CmpFile( wxString name, CmpEnv *env = NULL );
-    virtual CmpFile::~CmpFile();
+    CmpFile( wxString name, CmpEnv *env = NULL );
+    virtual ~CmpFile();
     
-    // WDR: method declarations for RecFile
-    virtual void CmpFile::NewContent(); // Create content for a new file
-    virtual void CmpFile::OpenContent( ); // Open content after archive extraction
-    virtual void CmpFile::SaveContent( ); // Save content before archive creation
-    virtual void CmpFile::CloseContent( ); // Desactivate content before deletion
+        virtual void NewContent(); // Create content for a new file
+    virtual void OpenContent( ); // Open content after archive extraction
+    virtual void SaveContent( ); // Save content before archive creation
+    virtual void CloseContent( ); // Desactivate content before deletion
     
     // operations
     //bool LoadImages( );
@@ -217,27 +215,24 @@ public:
 	//int FilesForAdaptation( wxArrayString *filenames, wxArrayString *paths, bool *isCacheOk );
 	//bool HasToBePreprocessed( wxString imagefile );
 	CmpBookPart *FindBookPart( wxString id );
-	bool CmpFile::LoadBooks( wxArrayPtrVoid params, AxProgressDlg *dlg );
+	bool LoadBooks( wxArrayPtrVoid params, AxProgressDlg *dlg );
     bool Collate( wxArrayPtrVoid params, AxProgressDlg *dlg );
     // static on arrays
     static CmpBookItem *FindFile( ArrayOfCmpBookItems *array, wxString filename, int* index  );
 	// distance
-	void CmpFile::Align( ArrayOfMLFSymbols *obtained, ArrayOfMLFSymbols *desired );
+	void Align( ArrayOfMLFSymbols *obtained, ArrayOfMLFSymbols *desired );
     
 public:
-    // WDR: member variable declarations for CmpFile
-    // files
+        // files
     ArrayOfCmpBookItems m_bookFiles;
 	ArrayOfCmpCollations m_collations;
 
 protected:
-    // WDR: member variable declarations for CmpFile
-    CmpEnv *m_envPtr;
+        CmpEnv *m_envPtr;
 
 
 private:
-    // WDR: handler declarations for CmpFile
-
+    
 };
 
 	#endif //AX_COMPARISON

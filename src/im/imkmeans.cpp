@@ -17,7 +17,7 @@
  *   Based on kmeans.m by:
  *   	Author: Jose Vicente Manjon Herrera
  *   	Email: jmanjon@fis.upv.es
- *    	Date: 27-08-2005
+ *    Date: 27-08-2005
  *************************************************************/
 
 /* Todo: -figure out what's up with mask calculation (although

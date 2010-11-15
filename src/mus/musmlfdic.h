@@ -39,7 +39,6 @@ int SortMLFWords( MusMLFWord **first, MusMLFWord **second );
     #include "tinyxml/tinyxml.h"
 #endif
 
-// WDR: class declarations
 
 //----------------------------------------------------------------------------
 // MusMLFWord

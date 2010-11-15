@@ -88,9 +88,9 @@ class AxUndo
 {
 public:
     // constructors and destructors
-    AxUndo::AxUndo( int undoLevels );
-	AxUndo::AxUndo( ) { m_undoLevels = 5; }
-    virtual AxUndo::~AxUndo();
+    AxUndo( int undoLevels );
+	AxUndo( ) { m_undoLevels = 5; }
+    virtual ~AxUndo();
 	
     // WDR: method declarations for AxUndo
     bool CanUndo();      // Returns TRUE if can Undo

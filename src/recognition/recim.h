@@ -52,7 +52,7 @@ public:
 	void CancelMagicSelection( );
     void SyncSelectionBitmap( ); // genere l'image superposee de la selection
     // selection bitmap	
-    void GetSelectionBitmap( wxBitmap *bmp, int *x, int *y ); // used by RecImWindow::OnPaint
+    void GetSelectionBitmap( wxBitmap *bmp, int *x, int *y ); // used by OnPaint
     
     // WDR: method declarations for RecImController
     virtual void CloseDraggingSelection(wxPoint start, wxPoint end);

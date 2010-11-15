@@ -56,7 +56,6 @@ class AxScrolledWindow;
         "TIFF files|*.tif;*.tiff|" \
         "All files (*.*)|*.*"
 
-// WDR: class declarations
 
 //----------------------------------------------------------------------------
 // AxImageController
@@ -73,8 +72,7 @@ public:
         long style = wxTAB_TRAVERSAL | wxNO_BORDER, int flags = CONTROLLER_ALL );
     virtual ~AxImageController();
     
-    // WDR: method declarations for AxImageController
-	// initialisation
+    // initialisation
 	void Init( AxEnv *env, AxScrolledWindow *window );
 	// virtual
     virtual void CloseDraggingSelection(wxPoint start, wxPoint end) {};
@@ -116,8 +114,7 @@ private:
 public:
 	
 protected:
-    // WDR: member variable declarations for AxImageController
-	AxEnv *m_envPtr;
+    AxEnv *m_envPtr;
     AxScrolledWindow *m_viewPtr;
     wxFlexGridSizer *m_sizerPtr;
 	int m_flags; // controller flags
@@ -133,8 +130,7 @@ protected:
 	wxString m_titleMsg; // contenu pour la barre de titre
     
 private:
-    // WDR: handler declarations for AxImageController
-    void OnUpdateUI( wxUpdateUIEvent &event );
+        void OnUpdateUI( wxUpdateUIEvent &event );
     void OnCommand( wxCommandEvent &event );
 
 private:

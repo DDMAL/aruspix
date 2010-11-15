@@ -57,10 +57,6 @@ enum
 	MUS_UNDO_FILE
 };
 
-static int bem [] = {F2, F3, F3, F4, F4, F5, F6, F6, F7, F7, F8, F8};
-static int die [] = {F2, F2, F3, F3, F4, F5, F5, F6, F6, F7, F7, F8};
-
-// WDR: class declarations
 
 //----------------------------------------------------------------------------
 // MusWindow
@@ -124,14 +120,13 @@ public:
 	bool GetNotationMode();
 	
 	// convenience method that should be changed after refactoring
-	bool MusWindow::IsNoteSelected();
+	bool IsNoteSelected();
 	
 	void SetInsertMode( bool insert );
 	
 	void SetKeyboardEntryMode( bool mode );
     
-    // WDR: method declarations for MusWindow
-	void SetFile( MusFile *file );
+    void SetFile( MusFile *file );
 	/**
 		Redimensionne la fenetre en fonction de la taille du parent et du zoom de la taille de la page
 	  */
@@ -187,8 +182,7 @@ public:
 
     
 public:
-    // WDR: member variable declarations for MusWindow
-    /** Fichier  */
+        /** Fichier  */
     MusFile *m_f;
     /** FileHeader du fichier contenant la page */
     MusFileHeader *m_fh;
@@ -316,6 +310,9 @@ public:
 	// keyboard entry mode
 	bool m_keyEntryMode;
 	MusKeyboardEditor *m_keyEditor;
+    
+    static int s_flats[];
+    static int s_sharps[];
 
     
 private:
@@ -332,8 +329,7 @@ private:
 
 	bool KeyboardEntry(wxKeyEvent &event);	//parse key input and send MIDI messages
 	
-    // WDR: handler declarations for MusWindow
-	void OnSize( wxSizeEvent &event );
+    void OnSize( wxSizeEvent &event );
     void OnPaint( wxPaintEvent &event );
 	void OnMouseMotion( wxMouseEvent &event );
 	void OnMouseLeftDown( wxMouseEvent &event );

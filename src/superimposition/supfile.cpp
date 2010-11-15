@@ -39,7 +39,6 @@
 #include <im_math_op.h>
 
 
-// WDR: class implementations
 
 //----------------------------------------------------------------------------
 // SupFile
@@ -342,7 +341,6 @@ bool SupFile::Superimpose( wxArrayPtrVoid params, AxProgressDlg *dlg )
 }
 
 
-// WDR: handler implementations for SupFile
 
 #endif //AX_SUPERIMPOSITION
 

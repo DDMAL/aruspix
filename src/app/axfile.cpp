@@ -74,7 +74,6 @@ int SortBookFileItems( AxBookFileItem **first, AxBookFileItem **second )
 
 
 
-// WDR: class implementations
 
 //----------------------------------------------------------------------------
 // AxBookFileItem
@@ -132,7 +131,6 @@ AxFile::~AxFile()
 		AxDirTraverser clean( m_basename );	
 }
 
-// WDR: method declarations for AxFile
 
 // static method
 wxString AxFile::GetEnvName( int envtype )
@@ -687,4 +685,3 @@ int AxFileSelector( int type, wxArrayString *filenames, wxArrayString *paths, wx
 }
 
 
-// WDR: handler implementations for AxFile

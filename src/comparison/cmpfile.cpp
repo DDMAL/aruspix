@@ -50,7 +50,6 @@ int SortCmpBookItems( CmpBookItem **first, CmpBookItem **second )
 
 int CmpBookItem::s_index = 0;
 
-// WDR: class implementations
 
 //----------------------------------------------------------------------------
 // CmpCollationPart
@@ -1276,7 +1275,6 @@ bool CmpFile::DesactivateAxfile( wxString filename )
     return true;
 }
 
-// WDR: handler implementations for CmpFile
 
 	#endif //AX_COMPARISON
 #endif //AX_RECOGNITION

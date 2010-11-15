@@ -22,13 +22,11 @@
 #include "axprocess.h"
 #include "axapp.h"
 
-// WDR: class implementations
 
 //----------------------------------------------------------------------------
 // AxProcess
 //----------------------------------------------------------------------------
 
-// WDR: event table for AxProcess
 
 AxProcess::AxProcess( wxString cmd, wxString args, AxProgressDlg *dlg )
 	//:  wxProcess( dlg )
@@ -127,5 +125,4 @@ bool AxProcess::Start( )
 	return true;
 }
 
-// WDR: handler implementations for AxProcess
 

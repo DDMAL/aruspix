@@ -21,7 +21,6 @@ class MusNote;
 class MusNeume;
 #include "muselement.h"
 
-// WDR: class declarations
 
 //----------------------------------------------------------------------------
 // MusSymbol
@@ -36,8 +35,7 @@ public:
 	MusSymbol( const MusSymbol& symbol );
     virtual ~MusSymbol();
     
-    // WDR: method declarations for MusSymbol
-	void Draw( wxDC *dc, MusStaff *staff);
+    void Draw( wxDC *dc, MusStaff *staff);
 	void dess_symb( wxDC *dc, int x, int y, int symc, int symf, MusStaff *pportee);
 	/** muscle **/
 	static void calcoffs (int *offst, int clid);
@@ -65,8 +63,7 @@ public:
     bool IsLyric( );
     
 public:
-    // WDR: member variable declarations for MusSymbol
-    /** type de symbol
+        /** type de symbol
      @see JwgDef#BARRE JwgDef, valeurs de flag de Symbole pour les differents types */
     unsigned char flag;
     /** sous - type de symbol
@@ -95,8 +92,7 @@ public:
 	MusNeume *m_neume_ptr; //temporary? --chrisniven
 
 private:
-    // WDR: handler declarations for MusSymbol
-};
+    };
 
 
 #endif

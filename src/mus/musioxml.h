@@ -26,8 +26,12 @@
 
 #include "musfile.h"
 
-// WDR: class declarations
 
+
+/*
+    Scaffold for MusicXML ouput and input
+    Not implemeneted! Was copied from CMME output
+*/
 
 //----------------------------------------------------------------------------
 // MusXmlOutput
@@ -40,8 +44,7 @@ public:
     MusXmlOutput( MusFile *file, wxString filename );
     virtual ~MusXmlOutput();
     
-    // WDR: method declarations for MusXmlOutput
-	virtual bool ExportFile( );
+    virtual bool ExportFile( );
 	virtual bool WriteFileHeader( const MusFileHeader *header );
 	virtual bool WriteStaff( const MusStaff *staff );
 	virtual bool WriteNote( const MusNote *note );
@@ -50,15 +53,13 @@ public:
 	virtual bool WriteElementAttr( const MusElement *element );
     
 private:
-    // WDR: member variable declarations for MusXmlOutput
-	wxString m_filename;
+    wxString m_filename;
     TiXmlElement *m_xml_root;
     TiXmlElement *m_xml_current;
 
 
 private:
-	// WDR: handler declarations for MusXmlOutput
-};
+	};
 
 
 //----------------------------------------------------------------------------
@@ -72,8 +73,7 @@ public:
     MusXmlInput( MusFile *file, wxString filename );
     virtual ~MusXmlInput();
     
-    // WDR: method declarations for MusXmlInput
-	virtual bool ImportFile( );
+    virtual bool ImportFile( );
 	virtual bool ReadFileHeader( MusFileHeader *header );
 	virtual bool ReadSeparator( );
 	virtual bool ReadPage( MusPage *page );
@@ -86,12 +86,10 @@ public:
 	virtual bool ReadHeaderFooter( MusHeaderFooter *headerfooter);
     
 private:
-    // WDR: member variable declarations for MusXmlInput
-    int m_vmaj, m_vmin, m_vrev;
+        int m_vmaj, m_vmin, m_vrev;
 
 private:
-	// WDR: handler declarations for MusXmlInput
-};
+	};
 
 
 #endif

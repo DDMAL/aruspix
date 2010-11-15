@@ -32,7 +32,6 @@ class CmpCollation;
 class BookFile;
 class AxProgressDlg;
 
-// WDR: class declarations
 
 /*
 //----------------------------------------------------------------------------
@@ -46,8 +45,7 @@ public:
     CmpDataDlg( wxWindow *parent, wxWindowID id, const wxString &title,
         RecBookFile *recBookFile );
     
-    // WDR: method declarations for CmpDataDlg
-    wxTextCtrl* Axfiles()  { return (wxTextCtrl*) FindWindow( ID6_BOOK_AXFILES ); }
+        wxTextCtrl* Axfiles()  { return (wxTextCtrl*) FindWindow( ID6_BOOK_AXFILES ); }
     wxTextCtrl* Images()  { return (wxTextCtrl*) FindWindow( ID6_BOOK_IMAGES ); }
     wxTextCtrl* Library()  { return (wxTextCtrl*) FindWindow( ID6_LIBRARY ); }
     wxTextCtrl* Year()  { return (wxTextCtrl*) FindWindow( ID6_YEAR ); }
@@ -60,14 +58,12 @@ public:
     //virtual bool TransferDataFromWindow();
     
 private:
-    // WDR: member variable declarations for CmpDataDlg
-    RecBookFile *m_recBookFile;
+        RecBookFile *m_recBookFile;
     bool m_loadAxfiles;
     bool m_loadImages;
     
 private:
-    // WDR: handler declarations for CmpDataDlg
-    void OnBrowseAxfiles( wxCommandEvent &event );
+        void OnBrowseAxfiles( wxCommandEvent &event );
     void OnBrowseImages( wxCommandEvent &event );
     void OnOk( wxCommandEvent &event );
     //void OnCancel( wxCommandEvent &event );
@@ -90,8 +86,7 @@ public:
         const wxSize& size = wxDefaultSize,
         long style = wxTAB_TRAVERSAL | wxNO_BORDER );
     
-    // WDR: method declarations for CmpCtrlPanel
-    CmpCtrl* GetTree()  { return (CmpCtrl*) FindWindow( ID6_TREEBOOK ); }
+        CmpCtrl* GetTree()  { return (CmpCtrl*) FindWindow( ID6_TREEBOOK ); }
     wxStaticBitmap* GetPreview()  { return (wxStaticBitmap*) FindWindow( ID6_PREVIEW ); }
     wxCheckBox* GetPreviewCB()  { return (wxCheckBox*) FindWindow( ID6_CB_PREVIEW ); }
     
@@ -99,16 +94,14 @@ public:
 	
 	
 private:
-    // WDR: member variable declarations for CmpCtrlPanel
-	wxString m_filename;
+    wxString m_filename;
 	wxBitmap m_preview, m_nopreview, m_loading;
 	bool m_show_preview;
     
 private:
 	void LoadPreview( );
 	void UpdatePreview( );
-    // WDR: handler declarations for CmpCtrlPanel
-    void OnPreview( wxCommandEvent &event );
+        void OnPreview( wxCommandEvent &event );
 
 private:
     DECLARE_EVENT_TABLE()
@@ -128,8 +121,7 @@ public:
         long style = 0 );
 	virtual ~CmpCtrl();
     
-    // WDR: method declarations for CmpCtrl
-    void SetBookFile( CmpFile *cmpFile ) { m_cmpFilePtr = cmpFile; }
+        void SetBookFile( CmpFile *cmpFile ) { m_cmpFilePtr = cmpFile; }
     void SetEnv( CmpEnv *cmpEnv ) { m_cmpEnvPtr = cmpEnv; }
 	void SetBookPanel( CmpCtrlPanel *cmpCtrlPanel ) { m_cmpCtrlPanelPtr = cmpCtrlPanel; }
     void Build( );
@@ -140,11 +132,10 @@ public:
 	bool Collate( wxArrayPtrVoid params, AxProgressDlg *dlg );
 	//
 	CmpBookItem *GetSelectedBookItem();
-	CmpCollation *CmpCtrl::GetSelectedCollation( );
+	CmpCollation *GetSelectedCollation( );
     
 private:
-    // WDR: member variable declarations for CmpCtrl
-    CmpFile *m_cmpFilePtr;
+        CmpFile *m_cmpFilePtr;
     CmpEnv *m_cmpEnvPtr;
 	CmpCtrlPanel *m_cmpCtrlPanelPtr;
     // id
@@ -153,8 +144,7 @@ private:
 	wxTreeItemId m_booksId;
     
 private:
-    // WDR: handler declarations for CmpCtrl
-    void OnSelection( wxTreeEvent &event );
+        void OnSelection( wxTreeEvent &event );
     void OnActivate( wxTreeEvent &event );
 	void OnAxDesactivate( wxCommandEvent &event );
     //void OnAxRemove( wxCommandEvent &event );

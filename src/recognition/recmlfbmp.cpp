@@ -104,7 +104,7 @@ bool RecMLFBmpTypes::Load( wxString file )
 		bool vflip = false;
      
 		if ( elem->Attribute("label"))
-			tp.m_label = elem->Attribute("label");      		
+			tp.m_label = elem->Attribute("label");      	
 		//if ( elem->Attribute("width"))
 		//	tp.m_width = atoi(elem->Attribute("width"));
 		if ( elem->Attribute("offset"))
@@ -463,7 +463,6 @@ bool RecMLFBmp::WriteStaff( const MusStaff *staff, int currentElementNo )
     return true;
 }
 
-// WDR: handler implementations for RecMLFBmp
 
 #endif //AX_RECOGNITION
 

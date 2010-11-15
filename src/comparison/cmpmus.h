@@ -32,7 +32,6 @@ class CmpFile;
 
 
 
-// WDR: class declarations
 
 //----------------------------------------------------------------------------
 // CmpMusController
@@ -48,15 +47,13 @@ public:
         const wxSize& size = wxDefaultSize,
         long style = wxTAB_TRAVERSAL | wxNO_BORDER );
     
-    // WDR: method declarations for CmpMusController
-	void Init( CmpEnv *env, CmpMusWindow *window );
+    void Init( CmpEnv *env, CmpMusWindow *window );
 	void SetImViewAndController( CmpImWindow *cmpImWindow1, CmpImController *cmpImController1,
 		CmpImWindow *cmpImWindow2, CmpImController *cmpImController2 );
 	void SetCmpFile( CmpFile *cmpFile );
     
 protected:
-    // WDR: member variable declarations for CmpMusController
-	CmpEnv *m_envPtr;
+    CmpEnv *m_envPtr;
     CmpMusWindow *m_viewPtr;
 	// to synchronize view
 	CmpFile *m_cmpFilePtr;
@@ -64,8 +61,7 @@ protected:
 	CmpImController *m_imControlPtr1, *m_imControlPtr2;
 	
 private:
-    // WDR: handler declarations for CmpMusController
-    void OnSize( wxSizeEvent &event );
+        void OnSize( wxSizeEvent &event );
 
 private:
     DECLARE_EVENT_TABLE()
@@ -98,11 +94,9 @@ public:
 	virtual void OnSyncScroll( int x, int y );
 	virtual void OnSize( wxSizeEvent &event );
     
-    // WDR: method declarations for CmpMusWindow
-    
+        
 protected:
-    // WDR: member variable declarations for CmpMusWindow
-    bool m_shiftDown;
+        bool m_shiftDown;
     CmpEnv *m_envPtr;
 	CmpMusController *m_musControlPtr;
     //bool m_edition; // true if OnBeginEdition() has been called -> retranspose current staff
@@ -113,8 +107,7 @@ protected:
 	int m_lastStaff, m_lastController;
     
 private:
-    // WDR: handler declarations for CmpMusWindow
-    void OnMouse( wxMouseEvent &event );
+        void OnMouse( wxMouseEvent &event );
     void OnScroll( wxScrollWinEvent &event );
     void OnKeyUp( wxKeyEvent &event );
     void OnKeyDown( wxKeyEvent &event );

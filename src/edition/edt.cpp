@@ -31,16 +31,16 @@
 #include "mus/mustoolpanel.h"
 #include "mus/musiowwg.h"
 #include "mus/musiomlf.h"
-#include "mus/musiomei.h"
 
+// experimental
+#include "mus/musiomei.h"  
+#include "mus/mussvg.h"
 
-// WDR: class implementations
 
 //----------------------------------------------------------------------------
 // EdtPanel
 //----------------------------------------------------------------------------
 
-// WDR: event table for EdtPanel
 
 BEGIN_EVENT_TABLE(EdtPanel,wxPanel)
     //EVT_TREE_SEL_CHANGED( ID0_DIRECTORIES, EdtPanel::OnTree )
@@ -54,7 +54,6 @@ EdtPanel::EdtPanel( wxWindow *parent, wxWindowID id,
 
 }
 
-// WDR: handler implementations for EdtPanel
 
 void EdtPanel::OnTree( wxTreeEvent &event )
 {
@@ -75,7 +74,6 @@ void EdtPanel::OnSize( wxSizeEvent &event )
 // EdtEnv
 //----------------------------------------------------------------------------
 
-// WDR: event table for EdtEnv
 
 BEGIN_EVENT_TABLE(EdtEnv,AxEnv)
     // file
@@ -163,7 +161,6 @@ void EdtEnv::RealizeToolbar( )
 }
 
 
-// WDR: handler implementations for EdtEnv
 
 void EdtEnv::OnSize( wxSizeEvent &event )
 {
@@ -206,6 +203,64 @@ bool EdtEnv::ResetFile()
     return true;
 }
 
+void EdtEnv::ParseCmd( wxCmdLineParser *parser )
+{
+    wxASSERT_MSG( parser, wxT("Parser cannot be NULL") );
+
+    if ( parser->Found("q") &&  (parser->GetParamCount() > 0) )
+    {
+        // it might be useful to disable logging
+        // uhmm - it is actually necessary because any call a log function (execpt wxLogDebug) will
+        // stop the program (i.e., it will wait for the user to click OK...)
+        wxLogNull logNo;;
+        
+        // first parameter is input file
+        wxString file = parser->GetParam( 0 );
+        wxLogDebug( file );
+        
+        // experiments
+        // convert mei file to svg
+        if ( parser->Found("m") && (parser->GetParamCount() == 2) )
+        {
+        
+            
+            // with -m, the second parameter is the output filename
+            wxString outfile = parser->GetParam( 1 );
+            wxLogDebug( outfile );
+            
+            MusFile *mfile = new MusFile();
+            MusMeiInput meiinput( mfile, file );
+            if ( !meiinput.ImportFile() )
+                return;
+            
+            // draw it
+            MusPage *page = &mfile->m_pages[0];
+            m_musViewPtr->SetFile( mfile );
+            page->Init( m_musViewPtr );
+            m_musViewPtr->SetZoom( 50 ); // this should probably be a parameter...
+            m_musViewPtr->UpdatePageValues();
+            m_musViewPtr->wxmax = page->lrg_lign*10; // !fix it!! in the GUI initialized in OnPaint
+            m_musViewPtr->m_currentElement = NULL; // !fix it!! deselect elemnts
+
+            
+            //MusSVGFileDC svgDC (outfile, mfile->m_fheader.param.pageFormatHor, mfile->m_fheader.param.pageFormatVer );
+            MusSVGFileDC svgDC (outfile, m_musViewPtr->ToZoom( m_musViewPtr->pageFormatHor )  ,
+                m_musViewPtr->ToZoom( m_musViewPtr->pageFormatVer )) ;
+            
+            svgDC.SetUserScale( 1, 1 );
+            svgDC.SetLogicalScale( 1.0, 1.0 );  
+            
+            svgDC.SetLogicalOrigin( -m_musViewPtr->mrgG, 0 );
+    
+            svgDC.SetTextForeground( *wxBLACK );
+	
+            svgDC.SetAxisOrientation( true, false );
+            (&mfile->m_pages[0])->DrawPage( &svgDC, false );
+
+        }
+    }
+}
+    
 void EdtEnv::UpdateTitle( )
 {
     wxString msg = wxString::Format("%s", m_edtFilePtr->m_shortname.c_str() );
@@ -458,12 +513,6 @@ void EdtEnv::OnSaveMLF( wxCommandEvent &event )
 }
 
 
-/* 
-    Methode de travail !!!!!!!!! Pas DU TOUT plombee !!!!
-  */ 
-  
-#include "mus/mussvg.h"
-
 void EdtEnv::OnSaveSVG( wxCommandEvent &event )
 {   
 
@@ -489,9 +538,10 @@ void EdtEnv::OnSaveSVG( wxCommandEvent &event )
     svgDC.SetLogicalOrigin( -m_musViewPtr->mrgG, 0 );
     
     // font data
-    svgDC.ConcatFile( wxGetApp().m_resourcesPath + "/svg/font.xml" );
+    //svgDC.ConcatFile( wxGetApp().m_resourcesPath + "/svg/font.xml" );
 	svgDC.SetTextForeground( *wxBLACK );
 	
+    m_musViewPtr->m_currentElement = NULL;
 	svgDC.SetAxisOrientation( true, false );
     m_musViewPtr->m_page->DrawPage( &svgDC, false );
     

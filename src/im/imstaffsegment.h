@@ -19,7 +19,6 @@
 #include "im/imoperator.h"
 
 
-// WDR: class declarations
 
 //----------------------------------------------------------------------------
 // ImStaffSegment
@@ -32,8 +31,7 @@ public:
 	ImStaffSegment( );
     virtual ~ImStaffSegment();
     
-    // WDR: method declarations for ImStaffSegment
-    // Processing
+        // Processing
     bool AnalyzeSegment();
 
 	int m_x1;
@@ -41,8 +39,7 @@ public:
     float m_compactness;
     
 private:
-    // WDR: member variable declarations for ImStaffSegment
-    
+        
 
 };
 

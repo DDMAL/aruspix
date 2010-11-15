@@ -46,7 +46,6 @@ enum
 };
 
 
-// WDR: class declarations
 
 //----------------------------------------------------------------------------
 // AxCtrl
@@ -62,19 +61,16 @@ public:
         long style = 0 );
 	virtual ~AxCtrl();
     
-    // WDR: method declarations for AxCtrl
-	virtual void SaveDisplay( ) {};
+    virtual void SaveDisplay( ) {};
 	virtual void LoadDisplay( ) {};
     
 private:
-    // WDR: member variable declarations for AxCtrl
-    
+        
 protected:
     void SetTypeImages( wxTreeItemId id, int type );
     bool SelectionIsChildOf( wxTreeItemId id );
     bool ItemIsChildOf( wxTreeItemId id, wxTreeItemId child );
-    // WDR: handler declarations for AxCtrl
-
+    
 private:
     DECLARE_EVENT_TABLE()
 };

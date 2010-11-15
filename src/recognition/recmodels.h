@@ -32,7 +32,6 @@
 #include "mus/musiomlf.h"
 #include "mus/musmlfdic.h"
 
-// WDR: class declarations
 
 
 //----------------------------------------------------------------------------
@@ -43,11 +42,10 @@ class RecModel: public AxFile
 {
 public:
     // constructors and destructors
-    RecModel::RecModel( wxString filename, int type );
-    virtual RecModel::~RecModel();
+    RecModel( wxString filename, int type );
+    virtual ~RecModel();
     
-    // WDR: method declarations for RecModel	
-	virtual void OpenContent( ); // Open content after archive extraction
+    virtual void OpenContent( ); // Open content after archive extraction
 	virtual void SaveContent( ); // Save content before archive creation
 	
 	virtual void OpenModelContent( ) {}; // Open content after archive extraction
@@ -56,11 +54,9 @@ public:
 	virtual bool AddFiles( wxArrayPtrVoid params, AxProgressDlg *dlg );
 
 public:
-    // WDR: member variable declarations for RecModel
-   
+       
 protected:
-    // WDR: handler declarations for RecModel
-	MusMLFOutput *m_mlf;
+    MusMLFOutput *m_mlf;
 	MusMLFDictionary m_mlfDic;
 	int m_nbfiles;
 	wxArrayString m_files;
@@ -75,14 +71,13 @@ class RecTypModel: public RecModel
 {
 public:
     // constructors and destructors
-    RecTypModel::RecTypModel( wxString filename );
-    virtual RecTypModel::~RecTypModel();
+    RecTypModel( wxString filename );
+    virtual ~RecTypModel();
     
-    // WDR: method declarations for RecTypModel
-	virtual void RecTypModel::NewContent(); // Create content for a new file
-	virtual void RecTypModel::OpenModelContent( ); // Open content after archive extraction
-	virtual void RecTypModel::SaveModelContent( ); // Save content before archive creation
-	virtual void RecTypModel::CloseContent( ); // Desactivate content before deletion
+    virtual void NewContent(); // Create content for a new file
+	virtual void OpenModelContent( ); // Open content after archive extraction
+	virtual void SaveModelContent( ); // Save content before archive creation
+	virtual void CloseContent( ); // Desactivate content before deletion
 	
 	virtual bool AddFile( wxArrayPtrVoid params, AxProgressDlg *dlg );
 	bool Adapt( wxArrayPtrVoid params, AxProgressDlg *dlg );
@@ -93,15 +88,12 @@ public:
 	void UpdateInputFiles( );
         
 public:
-    // WDR: member variable declarations for RecTypModel
-	
+    
 protected:
-    // WDR: handler declarations for RecTypModel
-	MusMLFOutput *m_mlf_hmms;
+    MusMLFOutput *m_mlf_hmms;
    
 private:
-    // WDR: handler declarations for RecTypModel
-};
+    };
 
 
 //----------------------------------------------------------------------------
@@ -112,14 +104,13 @@ class RecMusModel: public RecModel
 {
 public:
     // constructors and destructors
-    RecMusModel::RecMusModel( wxString filename );
-    virtual RecMusModel::~RecMusModel();
+    RecMusModel( wxString filename );
+    virtual ~RecMusModel();
     
-    // WDR: method declarations for RecMusModel
-	virtual void RecMusModel::NewContent(); // Create content for a new file
-	virtual void RecMusModel::OpenModelContent( ); // Open content after archive extraction
-	virtual void RecMusModel::SaveModelContent( ); // Save content before archive creation
-	virtual void RecMusModel::CloseContent( ); // Desactivate content before deletion
+    virtual void NewContent(); // Create content for a new file
+	virtual void OpenModelContent( ); // Open content after archive extraction
+	virtual void SaveModelContent( ); // Save content before archive creation
+	virtual void CloseContent( ); // Desactivate content before deletion
 	
 	virtual bool AddFile( wxArrayPtrVoid params, AxProgressDlg *dlg );
 	bool Adapt( wxArrayPtrVoid params, AxProgressDlg *dlg );
@@ -127,11 +118,9 @@ public:
 	bool Commit( AxProgressDlg *dlg );
 
 public:
-    // WDR: member variable declarations for RecMusModel
-   
+       
 private:
-    // WDR: handler declarations for RecMusModel
-	int m_order;
+    int m_order;
 };
 
 #endif //AX_RECOGNITION

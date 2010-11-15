@@ -65,7 +65,6 @@ int ImPage::s_pre_page_binarization_method_size = 15;
 bool ImPage::s_pre_page_binarization_select = true;
 int ImPage::s_num_staff_lines = 5;
 
-// WDR: class implementations
 
 //----------------------------------------------------------------------------
 // ImPage
@@ -2623,5 +2622,4 @@ void ImPage::Process(ImStaffFunctor *functor, wxArrayPtrVoid params, ImStaffSegm
 }
 */
 
-// WDR: handler implementations for ImPage
 

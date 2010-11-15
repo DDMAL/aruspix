@@ -25,13 +25,11 @@
 #include "app/axapp.h"
 
 
-// WDR: class implementations
 
 //----------------------------------------------------------------------------
 // MusToolRow
 //----------------------------------------------------------------------------
 
-// WDR: event table for MusToolRow
 
 MusToolRow::MusToolRow( wxWindow *parent, wxWindowID id ) :
     wxAuiToolBar( parent, id, wxDefaultPosition, wxDefaultSize, wxAUI_TB_HORZ_TEXT)
@@ -81,7 +79,28 @@ void MusToolRow::UpdateTools( int type )
         AddTool(ID_MS_BT_N5, "", MusToolPanel::GetToolbarBitmap( "note_5.png" ));
         AddTool(ID_MS_BT_N6, "", MusToolPanel::GetToolbarBitmap( "note_6.png" ));
         AddTool(ID_MS_BT_N7, "", MusToolPanel::GetToolbarBitmap( "note_7.png" ));
-        // add more...
+        // rests
+        AddSeparator(); 
+        AddTool(ID_MS_BT_R0, "", MusToolPanel::GetToolbarBitmap( "rest_0.png" ));
+        AddTool(ID_MS_BT_R1, "", MusToolPanel::GetToolbarBitmap( "rest_1.png" ));
+        AddTool(ID_MS_BT_R2, "", MusToolPanel::GetToolbarBitmap( "rest_2.png" ));
+        AddTool(ID_MS_BT_R3, "", MusToolPanel::GetToolbarBitmap( "rest_3.png" ));
+        AddTool(ID_MS_BT_R4, "", MusToolPanel::GetToolbarBitmap( "rest_4.png" ));
+        AddTool(ID_MS_BT_R5, "", MusToolPanel::GetToolbarBitmap( "rest_5.png" ));
+        AddTool(ID_MS_BT_R6, "", MusToolPanel::GetToolbarBitmap( "rest_6.png" ));
+        // custos
+        AddSeparator(); 
+        AddTool(ID_MS_BT_CT, "", MusToolPanel::GetToolbarBitmap( "note_c.png" ));
+        // ligatures
+        AddSeparator(); 
+        AddTool(ID_MS_BT_LG_D, "", MusToolPanel::GetToolbarBitmap( "note_lig1.png" ));
+        AddTool(ID_MS_BT_LG_U, "", MusToolPanel::GetToolbarBitmap( "note_lig2.png" ));
+        // coloration
+        AddSeparator(); 
+        AddTool(ID_MS_BT_COLOR, "", MusToolPanel::GetToolbarBitmap( "note_inv.png" ));
+        // stem direction
+        AddSeparator(); 
+        AddTool(ID_MS_BT_UPDOWN, "", MusToolPanel::GetToolbarBitmap( "note_stem.png" ));
         break;
 	case (MUS_TOOLS_CLEFS):
         AddTool(ID_MS_BT_G1, "", MusToolPanel::GetToolbarBitmap( "clef_g1.png" ));
@@ -97,14 +116,45 @@ void MusToolRow::UpdateTools( int type )
         break;
     case (MUS_TOOLS_SIGNS):
         AddTool(ID_MS_BT_MTPP, "", MusToolPanel::GetToolbarBitmap( "mes_mtpp.png" ));
-        // add more...
+        AddTool(ID_MS_BT_MTPDP, "", MusToolPanel::GetToolbarBitmap( "mes_mtpdp.png" ));
+        AddTool(ID_MS_BT_MTP, "", MusToolPanel::GetToolbarBitmap( "mes_mtp.png" ));
+        AddTool(ID_MS_BT_MTPD, "", MusToolPanel::GetToolbarBitmap( "mes_mtpd.png" ));
+        // 
+        AddSeparator();
+        AddTool(ID_MS_BT_MTIP, "", MusToolPanel::GetToolbarBitmap( "mes_mtip.png" ));
+        AddTool(ID_MS_BT_MTIDP, "", MusToolPanel::GetToolbarBitmap( "mes_mtidp.png" ));
+        AddTool(ID_MS_BT_MTI, "", MusToolPanel::GetToolbarBitmap( "mes_mti.png" ));
+        AddTool(ID_MS_BT_MTID, "", MusToolPanel::GetToolbarBitmap( "mes_mtid.png" ));
+        // 
+        AddSeparator();
+        AddTool(ID_MS_BT_MTI2P, "", MusToolPanel::GetToolbarBitmap( "mes_mti2p.png" ));
+        AddTool(ID_MS_BT_MTI2DP, "", MusToolPanel::GetToolbarBitmap( "mes_mti2dp.png" ));
+        AddTool(ID_MS_BT_MTI2, "", MusToolPanel::GetToolbarBitmap( "mes_mti2.png" ));
+        AddTool(ID_MS_BT_MTI2D, "", MusToolPanel::GetToolbarBitmap( "mes_mtid.png" ));
+        // other
+        AddSeparator();
+        AddTool(ID_MS_BT_M32, "", MusToolPanel::GetToolbarBitmap( "mes_m32.png" ));
+        AddTool(ID_MS_BT_M3, "", MusToolPanel::GetToolbarBitmap( "mes_m3.png" ));
+        AddTool(ID_MS_BT_M2, "", MusToolPanel::GetToolbarBitmap( "mes_m2.png" ));   
         break;
 	case (MUS_TOOLS_OTHER):
-        AddTool(ID_MS_BT_PNT, "", MusToolPanel::GetToolbarBitmap( "symb_dot.png" ));
-        // add more...
+        AddTool(ID_MS_BT_DOT, "", MusToolPanel::GetToolbarBitmap( "symb_dot.png" ));
+        // other
+        AddSeparator();
+        AddTool(ID_MS_BT_SHARP, "", MusToolPanel::GetToolbarBitmap( "symb_sharp.png" ));
+        AddTool(ID_MS_BT_NATURAL, "", MusToolPanel::GetToolbarBitmap( "symb_natural.png" ));
+        AddTool(ID_MS_BT_FLAT, "", MusToolPanel::GetToolbarBitmap( "symb_flat.png" ));  
+        // other
+        AddSeparator();
+        AddTool(ID_MS_BT_DSHARP, "", MusToolPanel::GetToolbarBitmap( "symb_2sharp.png" ));
+        AddTool(ID_MS_BT_DFLAT, "", MusToolPanel::GetToolbarBitmap( "symb_2flat.png" ));  
+        // other
+        AddSeparator();
+        AddTool(ID_MS_BT_BAR, "", MusToolPanel::GetToolbarBitmap( "symb_bar.png" ));
+        AddTool(ID_MS_BT_RDOTS, "", MusToolPanel::GetToolbarBitmap( "symb_rdots.png" ));
         break;
 	case (NEUME_TOOLS_NOTES):
-        AddTool(ID_MS_BT_MTP, "", MusToolPanel::GetToolbarBitmap( "mes_mtp.png" ));
+        AddTool(ID_MS_BT_MTP, "", MusToolPanel::GetToolbarBitmap( "symb_mtp.png" ));
         // add more...
         break;
     }
@@ -117,7 +167,6 @@ void MusToolRow::UpdateTools( int type )
 // MusToolPanel
 //----------------------------------------------------------------------------
 
-// WDR: event table for MusToolPanel
 
 BEGIN_EVENT_TABLE(MusToolPanel,wxPanel)
 	EVT_MENU( ID_MS_BT_INSERT, MusToolPanel::OnChangeMode )
@@ -127,7 +176,7 @@ BEGIN_EVENT_TABLE(MusToolPanel,wxPanel)
 	EVT_MENU_RANGE( ID_MS_BT_LG_D, ID_MS_BT_UPDOWN, MusToolPanel::OnNote )
     EVT_MENU_RANGE( ID_MS_BT_G1, ID_MS_BT_F5, MusToolPanel::OnKey )
     EVT_MENU_RANGE( ID_MS_BT_MTPP, ID_MS_BT_M2, MusToolPanel::OnSign )
-    EVT_MENU_RANGE( ID_MS_BT_PNT, ID_MS_BT_BAR, MusToolPanel::OnSymbol )
+    EVT_MENU_RANGE( ID_MS_BT_DOT, ID_MS_BT_BAR, MusToolPanel::OnSymbol )
     EVT_MENU( ID_MS_BT_TEXT, MusToolPanel::OnText )
     EVT_UPDATE_UI_RANGE(ID_MS_BT_NOTES, ID_MS_BT_INSERT, MusToolPanel::OnUpdateUI)
 END_EVENT_TABLE()
@@ -238,13 +287,13 @@ void MusToolPanel::OnSymbol( wxCommandEvent &event )
     int value = '0';
     switch ( event.GetId() )
     {
-    case (ID_MS_BT_DIESE): value = 'D'; break;
-    case (ID_MS_BT_BECAR): value = 'H'; break;
-    case (ID_MS_BT_BEMOL): value = 'B'; break;
-    case (ID_MS_BT_DDIESE): value = 'F'; break;
-    case (ID_MS_BT_DBEMOL): value = 'N'; break;
+    case (ID_MS_BT_SHARP): value = 'D'; break;
+    case (ID_MS_BT_NATURAL): value = 'H'; break;
+    case (ID_MS_BT_FLAT): value = 'B'; break;
+    case (ID_MS_BT_DSHARP): value = 'F'; break;
+    case (ID_MS_BT_DFLAT): value = 'N'; break;
 
-    case (ID_MS_BT_PNT): value = 'P'; break;
+    case (ID_MS_BT_DOT): value = 'P'; break;
     case (ID_MS_BT_BAR): value = '|'; break;
     }
         

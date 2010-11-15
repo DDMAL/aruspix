@@ -28,7 +28,6 @@ class ImStaff;
 class RecMLFBmpType;
 WX_DECLARE_OBJARRAY( RecMLFBmpType, ArrayOfMLFBitmapTypes);
 
-// WDR: class declarations
 
 
 //----------------------------------------------------------------------------
@@ -42,11 +41,9 @@ public:
     RecMLFBmpType( );
     virtual ~RecMLFBmpType() {};
     
-    // WDR: method declarations for RecMLFBmpType
-    
+        
 public:
-    // WDR: member variable declarations for RecMLFBmpType
-	//int m_width;
+    //int m_width;
 	wxString m_label;
 	wxBitmap m_bitmap, m_flip_bitmap;
 	int m_bmpoffset;
@@ -54,8 +51,7 @@ public:
 
 
 private:
-    // WDR: handler declarations for RecMLFBmpType
-};
+    };
 
 
 //----------------------------------------------------------------------------
@@ -69,19 +65,16 @@ public:
     RecMLFBmpTypes();
     virtual ~RecMLFBmpTypes();
     
-    // WDR: method declarations for RecMLFBmpTypes
-    //int GetWidth( MusMLFSymbol *symbol );
+        //int GetWidth( MusMLFSymbol *symbol );
 	RecMLFBmpType *GetType( MusMLFSymbol *symbol );
 	bool Load( wxString file );
 	int GetCount( ) { return (int)m_types.GetCount(); }
     
 private:
-    // WDR: member variable declarations for RecMLFBmpTypes
-	ArrayOfMLFBitmapTypes m_types;
+    ArrayOfMLFBitmapTypes m_types;
 
 private:
-    // WDR: handler declarations for RecMLFBmpTypes
-};
+    };
 
 
 //----------------------------------------------------------------------------
@@ -95,21 +88,18 @@ public:
     RecMLFSymbolBmp();
     virtual ~RecMLFSymbolBmp() {};
     
-    // WDR: method declarations for RecMLFSymbolBmp
-	virtual void SetValue( char type, wxString subtype, int position, int value = 0, char pitch = 0, int oct = 0, int flag = 0);
+    virtual void SetValue( char type, wxString subtype, int position, int value = 0, char pitch = 0, int oct = 0, int flag = 0);
     virtual wxString GetLabel( );
 	int GetVOffset() { return m_voffset; }
 	bool IsCurrent() { return m_isCurrent; }
 	void SetCurrent( bool isCurrent = true ) { m_isCurrent = isCurrent; }
     
 protected:
-    // WDR: member variable declarations for RecMLFSymbolBmp
-	int m_voffset;
+    int m_voffset;
 	bool m_isCurrent;
 
 private:
-    // WDR: handler declarations for RecMLFSymbolBmp
-
+    
 	DECLARE_DYNAMIC_CLASS(RecMLFSymbolBmp)
 };
 
@@ -125,8 +115,7 @@ public:
     RecMLFBmp( MusFile *file, wxString filename, wxString model_symbol_name = "RecMLFSymbolBmp" );
     virtual ~RecMLFBmp();
     
-    // WDR: method declarations for RecMLFBmp
-    //bool GenerateBitmaps( ImPage *impage );
+        //bool GenerateBitmaps( ImPage *impage );
 	wxBitmap GenerateBitmap( ImStaff *imstaff, MusStaff *musStaff, int currentElementNo = -1 );
 	int GetCurrentX() { return m_currentX; }
 	int GetCurrentWidth() { return m_currentWidth; }
@@ -137,8 +126,7 @@ public:
 	//virtual void EndLabel( );
     
 protected:
-    // WDR: member variable declarations for RecMLFBmp
-	// page
+    // page
 	ImPage *m_impage;
 	int m_currentX; // keep x and width of currentElement in staff; used to redraw only this position
 	int m_currentWidth;
@@ -149,8 +137,7 @@ public:
 
 
 private:
-    // WDR: handler declarations for RecMLFBmp
-};
+    };
 
 #endif //AX_RECOGNITION
 

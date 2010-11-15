@@ -19,7 +19,6 @@
 
 #include "musfile.h"
 
-// WDR: class declarations
 
 class MusFont;
 
@@ -36,16 +35,13 @@ public:
     MusFont();
     virtual ~MusFont();
     
-    // WDR: method declarations for MusFont
-    
+        
 public:
-    // WDR: member variable declarations for MusFont
-	signed char fonteJeu;
+    signed char fonteJeu;
 	wxString fonteNom;
     
 private:
-    // WDR: handler declarations for MusFont
-
+    
 };
 
 //----------------------------------------------------------------------------
@@ -59,11 +55,9 @@ public:
     MusParametersMidi();
     virtual ~MusParametersMidi();
     
-    // WDR: method declarations for MusParametersMidi
-    
+        
 public:
-    // WDR: member variable declarations for MusParametersMidi
-    /** tempo */
+        /** tempo */
     long tempo;
     /** ???? */
     unsigned char minVeloc;
@@ -87,8 +81,7 @@ public:
 	unsigned char piste2canal[MAXPORTNBRE+1];
     
 private:
-    // WDR: handler declarations for MusParametersMidi
-
+    
 };
 
 
@@ -103,8 +96,7 @@ public:
     MusWWGOutput( MusFile *file, wxString filename );
     virtual ~MusWWGOutput();
     
-    // WDR: method declarations for MusWWGOutput
-	virtual bool ExportFile( );
+    virtual bool ExportFile( );
 	virtual bool WriteFileHeader( const MusFileHeader *header );
 	virtual bool WriteParametersMidi( );
 	virtual bool WriteParameters2( const MusParameters *param );
@@ -120,16 +112,14 @@ public:
 	virtual bool WriteHeaderFooter( const MusHeaderFooter *headerfooter);
     
 private:
-    // WDR: member variable declarations for MusWWGOutput
-	wxUint16 uint16;
+    wxUint16 uint16;
 	wxInt16 int16;
 	wxUint32 uint32;
 	wxInt32 int32;
 	wxString m_filename;
 
 private:
-	// WDR: handler declarations for MusWWGOutput
-};
+	};
 
 
 //----------------------------------------------------------------------------
@@ -143,8 +133,7 @@ public:
     MusWWGInput( MusFile *file, wxString filename);
     virtual ~MusWWGInput();
     
-    // WDR: method declarations for MusWWGInput
-	virtual bool ImportFile( );
+    virtual bool ImportFile( );
 	virtual bool ReadFileHeader( MusFileHeader *header );
 	virtual bool ReadParametersMidi( );
 	virtual bool ReadParameters2( MusParameters *param );
@@ -160,17 +149,15 @@ public:
 	virtual bool ReadHeaderFooter( MusHeaderFooter *headerfooter);
     
 private:
-    // WDR: member variable declarations for MusWWGInput
-	wxUint16 uint16;
+    wxUint16 uint16;
 	wxInt16 int16;
 	wxUint32 uint32;
 	wxInt32 int32;
     // 
-    MusSymbol *m_lyric;
+    ArrayOfMusSymbols m_lyrics;
 
 private:
-	// WDR: handler declarations for MusWWGInput
-};
+	};
 
 
 #endif

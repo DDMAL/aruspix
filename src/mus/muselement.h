@@ -21,7 +21,6 @@
 
 class MusStaff;
 
-// WDR: class declarations
 
 //----------------------------------------------------------------------------
 // MusElement
@@ -42,22 +41,20 @@ public:
 	bool IsNote() { return ( TYPE == NOTE ); }
 	bool IsSymbol() { return ( TYPE == SYMB ); }
     bool IsNeume() { return ( TYPE == NEUME ); } // always crash here
-	wxClientDC *MusElement::InitAndClear( MusStaff *staff ); // init dc and clear element only if necessary
+	wxClientDC *InitAndClear( MusStaff *staff ); // init dc and clear element only if necessary
     MusElement *GetNext( MusStaff *staff );
 
-    // WDR: method declarations for MusElement
-//	virtual void MusElement::SetPitch( int code, int oct, MusStaff *staff = NULL ) {};
-	virtual void MusElement::SetPitch( int code, int oct ) {};
-	virtual void MusElement::SetValue( int value, MusStaff *staff = NULL, int flag = 0 ) {};
-	virtual void MusElement::ChangeColoration( MusStaff *staff = NULL ) {};
-	virtual void MusElement::ChangeStem( MusStaff *staff = NULL ) {};
-	virtual void MusElement::SetLigature( MusStaff *staff = NULL ) {};
-	virtual void MusElement::Draw( wxDC *dc, MusStaff *staff ) {};
+    //	virtual void SetPitch( int code, int oct, MusStaff *staff = NULL ) {};
+	virtual void SetPitch( int code, int oct ) {};
+	virtual void SetValue( int value, MusStaff *staff = NULL, int flag = 0 ) {};
+	virtual void ChangeColoration( MusStaff *staff = NULL ) {};
+	virtual void ChangeStem( MusStaff *staff = NULL ) {};
+	virtual void SetLigature( MusStaff *staff = NULL ) {};
+	virtual void Draw( wxDC *dc, MusStaff *staff ) {};
 
       
 public:
-    // WDR: member variable declarations for MusElement
-    /** type de l'element. <pre>JwgDef.NOTE = note<br>JwgDef.SYMB = symbol</pre> */
+        /** type de l'element. <pre>JwgDef.NOTE = note<br>JwgDef.SYMB = symbol</pre> */
     char TYPE;
     /** element a l'interieur d'un liaison */
     char liaison;
@@ -132,8 +129,7 @@ public:
 	int no;
 
 private:
-	// WDR: handler declarations for MusElement
-    
+	    
 
 };
 

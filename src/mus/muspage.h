@@ -19,15 +19,17 @@
 
 #include "musobject.h"
 
+
 class MusStaff;
 WX_DECLARE_OBJARRAY( MusStaff, ArrayOfMusStaves);
+
+class MusStaffFunctor;
 
 enum {
     PAGE_VALUES_VOICES = 0,
     PAGE_VALUES_INDENT
 };
 
-// WDR: class declarations
 
 //----------------------------------------------------------------------------
 // MusPage
@@ -40,14 +42,13 @@ public:
     MusPage();
     virtual ~MusPage();
     
-    // WDR: method declarations for MusPage
-	void CheckIntegrity();
+    void CheckIntegrity();
 	
 	MusStaff *GetFirst( );
 	MusStaff *GetLast( );
 	MusStaff *GetNext( MusStaff *staff );
 	MusStaff *GetPrevious( MusStaff *staff );
-	MusStaff *MusPage::GetAtPos( int y );
+	MusStaff *GetAtPos( int y );
 	void Clear( );
 	/**
 		dessine la page en cours = draw_it
@@ -67,19 +68,17 @@ public:
 	void bigbarre( wxDC *dc, int x, char code, int porteeAutonome, MusStaff *pportee);
 	void barMesPartielle ( wxDC *dc, int x, MusStaff *pportee);
     // moulinette
-    //virtual void MusPage::Process(MusStaffFunctor *functor, wxArrayPtrVoid params );
+    virtual void Process(MusStaffFunctor *functor, wxArrayPtrVoid params );
     // functors
-    void MusPage::ProcessStaves( wxArrayPtrVoid params );
-    void MusPage::ProcessVoices( wxArrayPtrVoid params );
-    void MusPage::CountVoices( wxArrayPtrVoid params );
+    void ProcessStaves( wxArrayPtrVoid params );
+    void ProcessVoices( wxArrayPtrVoid params );
+    void CountVoices( wxArrayPtrVoid params );
     
     
 private:
-    // WDR: member variable declarations for MusPage
-
+    
 public:
-    // WDR: member variable declarations for MusPage
-	ArrayOfMusStaves m_staves;
+    ArrayOfMusStaves m_staves;
     /** numero de page */
     int npage;
     /** nombre de portees dans la page */
@@ -100,8 +99,7 @@ public:
     int lrg_lign;
 
 private:
-    // WDR: handler declarations for MusPage
-
+    
 };
 
 
@@ -118,7 +116,7 @@ public:
     // constructor - takes pointer to an object and pointer to a member and stores
     // them in two private variables
     MusPageFunctor( void(MusPage::*_fpt)( wxArrayPtrVoid )) { fpt=_fpt; };
-	virtual MusPageFunctor::~MusPageFunctor() {};
+	virtual ~MusPageFunctor() {};
 
     // override function "Call"
     virtual void Call( MusPage *ptr, wxArrayPtrVoid params )

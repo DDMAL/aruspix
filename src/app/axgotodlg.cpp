@@ -22,13 +22,11 @@
 #include "axdefs.h"
 
 
-// WDR: class implementations
 
 //----------------------------------------------------------------------------
 // AxGotoDlg
 //----------------------------------------------------------------------------
 
-// WDR: event table for AxGotoDlg
 
 BEGIN_EVENT_TABLE(AxGotoDlg,wxDialog)
     EVT_BUTTON( wxID_OK, AxGotoDlg::OnOk )
@@ -50,7 +48,6 @@ AxGotoDlg::AxGotoDlg( wxWindow *parent, wxWindowID id, const wxString &title,
     this->GetScNoGoto()->SetValue( m_pageNo );
 }
 
-// WDR: handler implementations for AxGotoDlg
 
 void AxGotoDlg::OnSpinCtrlText( wxCommandEvent &event )
 {

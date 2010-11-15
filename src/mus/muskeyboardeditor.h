@@ -38,8 +38,8 @@ protected:
 	MusWindow *w_ptr;
 	bool handleMetaKey(int key);
 public:
-	MusKeyboardEditor::MusKeyboardEditor(MusWindow *pwindow);
-	virtual MusKeyboardEditor::~MusKeyboardEditor();
+	MusKeyboardEditor(MusWindow *pwindow);
+	virtual ~MusKeyboardEditor();
 	
 	bool handleKeyEvent(wxKeyEvent &event);
 };

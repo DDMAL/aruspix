@@ -19,7 +19,6 @@
 
 #include "axprogressdlg.h"
 
-// WDR: class declarations
 
 //----------------------------------------------------------------------------
 // AxProcess
@@ -36,8 +35,7 @@ public:
 	virtual void OnTerminate(int pid, int status);
 	virtual bool HasEnded( );
     
-    // WDR: method declarations for AxProcess
-	bool Start( );
+    bool Start( );
 	int GetPid( ) { return m_pid; }
 	void SetLog( wxString log_fname );
 
@@ -45,14 +43,12 @@ public:
 	int m_status;
     
 private:
-    // WDR: member variable declarations for AxProcess
-	wxTextOutputStream *m_log;
+    wxTextOutputStream *m_log;
 	wxFileOutputStream *m_logStream;
 	wxString m_cmd;
     
 private:
-    // WDR: handler declarations for AxProcess
-
+    
 private:
 
 };

@@ -24,7 +24,6 @@ class ImRegister;
 class SupEnv;
 class AxImage;
 
-// WDR: class declarations
 
 
 //----------------------------------------------------------------------------
@@ -35,35 +34,33 @@ class SupFile: public AxFile
 {
 public:
     // constructors and destructors
-    SupFile::SupFile( wxString name, SupEnv *env = NULL );
-    virtual SupFile::~SupFile();
+    SupFile( wxString name, SupEnv *env = NULL );
+    virtual ~SupFile();
     
-    // WDR: method declarations for SupFile
-	virtual void SupFile::NewContent(); // Create content for a new file
-	virtual void SupFile::OpenContent( ); // Open content after archive extraction
-	virtual void SupFile::SaveContent( ); // Save content before archive creation
-	virtual void SupFile::CloseContent( ); // Desactivate content before deletion
+    virtual void NewContent(); // Create content for a new file
+	virtual void OpenContent( ); // Open content after archive extraction
+	virtual void SaveContent( ); // Save content before archive creation
+	virtual void CloseContent( ); // Desactivate content before deletion
 	
 	// functor
-	bool SupFile::Superimpose( wxArrayPtrVoid params, AxProgressDlg *dlg );
-	bool SupFile::DetectPoints( wxArrayPtrVoid params, AxProgressDlg *dlg );
-	bool SupFile::RegisterImages( wxArrayPtrVoid params, AxProgressDlg *dlg ); 
+	bool Superimpose( wxArrayPtrVoid params, AxProgressDlg *dlg );
+	bool DetectPoints( wxArrayPtrVoid params, AxProgressDlg *dlg );
+	bool RegisterImages( wxArrayPtrVoid params, AxProgressDlg *dlg ); 
 	// getters
-	void SupFile::GetSrc1( AxImage *image );
-	void SupFile::GetSrc2( AxImage *image );
-	void SupFile::GetResult( AxImage *image );
+	void GetSrc1( AxImage *image );
+	void GetSrc2( AxImage *image );
+	void GetResult( AxImage *image );
 	
 	// status
-	bool SupFile::IsSuperimposed() { return m_isSuperimposed; }
+	bool IsSuperimposed() { return m_isSuperimposed; }
 	
 	// status
-	static bool SupFile::IsSuperimposed( wxString filename );
+	static bool IsSuperimposed( wxString filename );
 	
 private:
     
 public:
-    // WDR: member variable declarations for SupFile
-	SupEnv *m_envPtr;
+    SupEnv *m_envPtr;
 	ImRegister *m_imRegisterPtr;
 	wxString m_original1, m_original2;
 	bool m_hasNewPoints1, m_hasNewPoints2;
@@ -73,13 +70,11 @@ public:
 	bool m_hasPoints2;
 
 protected:
-    // WDR: member variable declarations for SupFile
-	bool m_isSuperimposed;
+    bool m_isSuperimposed;
 	//AxImage 
    
 private:
-    // WDR: handler declarations for SupFile
-
+    
 };
 
 #endif //AX_SUPERIMPOSITION

@@ -21,7 +21,6 @@
 #include "wx/image.h"
 
 
-// WDR: class declarations
 
 //----------------------------------------------------------------------------
 // wxAxImage
@@ -40,11 +39,9 @@ public:
 	void ShrinkDataInt(unsigned char *pInBuff, int wWidth, int wHeight,
                    unsigned char *pOutBuff, int wNewWidth, int wNewHeight);
 
-    // WDR: method declarations for wxVigraImage
-    
+        
 private:
-    // WDR: member variable declarations for wxImage
-
+    
 public:
 	static bool s_zoomInterpolation;
 	static bool s_reduceBigImages;
@@ -53,8 +50,7 @@ public:
 
 
 private:
-    // WDR: handler declarations for wxVigraImage
-    DECLARE_CLASS(AxImage)
+        DECLARE_CLASS(AxImage)
 	
 };
 

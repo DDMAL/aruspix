@@ -25,7 +25,6 @@
 class SupEnv;
 class SupFile;
 
-// WDR: class declarations
 
 
 //----------------------------------------------------------------------------
@@ -43,19 +42,16 @@ public:
         long style = wxScrolledWindowStyle );
     virtual ~SupImSrcWindow();
     
-    // WDR: method declarations for SupImSrcWindow
-    void SetCirclePen( const wxPen *pen, int width );
+        void SetCirclePen( const wxPen *pen, int width );
     void DrawCircle( );
     void ScrollSource( double x, double y );
     
 private:
-    // WDR: member variable declarations for SupImSrcWindow
-    wxPoint m_circleCenter;
+        wxPoint m_circleCenter;
     wxPen m_pen;
     
 private:
-    // WDR: handler declarations for SupImSrcWindow
-
+    
 private:
     DECLARE_CLASS(SupImSrcWindow)
     DECLARE_EVENT_TABLE()
@@ -77,15 +73,12 @@ public:
         long style = wxScrolledWindowStyle );
     virtual ~SupImWindow();
     
-    // WDR: method declarations for SupImWindow
-    void SynchronizeScroll( int x, int y );
+        void SynchronizeScroll( int x, int y );
     
 private:
-    // WDR: member variable declarations for SupImWindow
-    
+        
 private:
-    // WDR: handler declarations for SupImWindow
-    void OnMouse( wxMouseEvent &event );
+        void OnMouse( wxMouseEvent &event );
 
 private:
     DECLARE_CLASS(SupImWindow)
@@ -107,8 +100,7 @@ public:
         long style = wxTAB_TRAVERSAL | wxNO_BORDER, int flags = CONTROLLER_ALL );
     virtual ~SupImController();
     
-    // WDR: method declarations for SupImController
-    void UpdateBrightness( );
+        void UpdateBrightness( );
     virtual void CloseDraggingSelection(wxPoint start, wxPoint end);
     void SetControllers( AxImageController *controller1, AxImageController *controller2 );
     void SetViews( SupImSrcWindow *view1, SupImSrcWindow *view2 );
@@ -120,8 +112,7 @@ private:
     virtual void OpenPage( bool yield = true );
     
 private:
-    // WDR: member variable declarations for SupImController
-    _imImage *m_greenIm;
+        _imImage *m_greenIm;
     _imImage *m_redIm;
     AxImageController *m_imControl1Ptr;
     AxImageController *m_imControl2Ptr;
@@ -134,14 +125,12 @@ public:
     wxPoint m_points[4]; // for manual point selection
 	
 protected:
-    // WDR: member variable declarations for SupImController
-    //SupEnv *m_envPtr;
+        //SupEnv *m_envPtr;
     // to synchronize view
     //SupFile *m_supFilePtr;
     
 private:
-    // WDR: handler declarations for SupImController
-
+    
 private:
     DECLARE_CLASS(SupImController)
     DECLARE_EVENT_TABLE()

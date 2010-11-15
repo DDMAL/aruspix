@@ -18,7 +18,6 @@
 
 #include "imstaffsegment.h"
 
-// WDR: class implementations
 
 //----------------------------------------------------------------------------
 // ImStaffSegment
@@ -85,4 +84,3 @@ bool ImStaffSegment::AnalyzeSegment()
     return this->Terminate( ERR_NONE );
 }
 
-// WDR: handler implementations for ImStaffSegment

@@ -205,7 +205,6 @@ void MusMLFDictionary::WriteHMMs( wxString filename )
 	stream.Close();
 }
 
-// WDR: handler implementations for MusMLFOutput
 
 
 

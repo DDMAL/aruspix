@@ -20,7 +20,6 @@
 #include "axscrolledwindow.h"
 #include "aximagecontroller.h"
 
-// WDR: class implementations
 
 //----------------------------------------------------------------------------
 // AxScrolledWindow
@@ -28,7 +27,6 @@
 
 IMPLEMENT_CLASS(AxScrolledWindow,wxScrolledWindow)
 
-// WDR: event table for AxScrolledWindow
 
 BEGIN_EVENT_TABLE(AxScrolledWindow,wxScrolledWindow)
     EVT_PAINT( AxScrolledWindow::OnPaint )
@@ -450,7 +448,6 @@ void AxScrolledWindow::GetSelectionPoints(wxPoint *start, wxPoint *end)
 }
 
 
-// WDR: handler implementations for AxScrolledWindow
 
 void AxScrolledWindow::OnKeyUp( wxKeyEvent &event )
 {

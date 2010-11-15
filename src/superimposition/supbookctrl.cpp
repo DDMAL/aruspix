@@ -27,13 +27,11 @@
 #include "sup.h"
 
 
-// WDR: class implementations
 
 //----------------------------------------------------------------------------
 // SupBookDataDlg
 //----------------------------------------------------------------------------
 
-// WDR: event table for SupBookDataDlg
 
 BEGIN_EVENT_TABLE(SupBookDataDlg,wxDialog)
     EVT_BUTTON( wxID_OK, SupBookDataDlg::OnOk )
@@ -47,8 +45,7 @@ SupBookDataDlg::SupBookDataDlg( wxWindow *parent, wxWindowID id, const wxString 
     SupBookFile *supBookFile ) :
     wxDialog( parent, id, title )
 {
-    // WDR: dialog function BookDataFunc4 for SupBookDataDlg
-    SupBookDataFunc2( this, TRUE );
+        SupBookDataFunc2( this, TRUE );
     m_supBookFile = supBookFile;
     m_loadAxfiles = false;
     m_loadImages1 = false;
@@ -96,7 +93,6 @@ bool SupBookDataDlg::TransferDataFromWindow()
 }
 */
 
-// WDR: handler implementations for SupBookDataDlg
 
 void SupBookDataDlg::OnBrowseAxfiles( wxCommandEvent &event )
 {
@@ -170,7 +166,6 @@ void SupBookDataDlg::OnCancel(wxCommandEvent &event)
 #define PREVIEW_WIDTH 200
 #define PREVIEW_HEIGHT 200
 
-// WDR: event table for SupBookPanel
 
 BEGIN_EVENT_TABLE(SupBookPanel,wxPanel)
     EVT_CHECKBOX( ID2_CB_PREVIEW, SupBookPanel::OnPreview )
@@ -180,8 +175,7 @@ SupBookPanel::SupBookPanel( wxWindow *parent, wxWindowID id,
                             const wxPoint &position, const wxSize& size, long style ) :
 wxPanel( parent, id, position, size, style )
 {
-    // WDR: dialog function BookFunc4 for SupBookPanel
-    SupBookFunc2( this, TRUE );
+        SupBookFunc2( this, TRUE );
     this->GetPreviewCB( )->SetValue( true );
 	m_show_preview = true;
 	m_filename = "";
@@ -280,7 +274,6 @@ void SupBookPanel::LoadPreview( )
     dest.DrawRectangle( 0, 0, PREVIEW_WIDTH, PREVIEW_HEIGHT );
 }
 
-// WDR: handler implementations for SupBookPanel
 
 void SupBookPanel::OnPreview( wxCommandEvent &event )
 {
@@ -296,7 +289,6 @@ void SupBookPanel::OnPreview( wxCommandEvent &event )
 // SupBookCtrl
 //----------------------------------------------------------------------------
 
-// WDR: event table for SupBookCtrl
 
 BEGIN_EVENT_TABLE(SupBookCtrl,AxCtrl)
     EVT_TREE_ITEM_MENU( ID2_TREEBOOK, SupBookCtrl::OnMenu )
@@ -452,7 +444,6 @@ void SupBookCtrl::Update( )
     m_supBookFilePtr->Modify();
 }  
 
-// WDR: handler implementations for SupBookCtrl
 
 void SupBookCtrl::OnSelection( wxTreeEvent &event )
 {

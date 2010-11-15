@@ -36,7 +36,6 @@
 
 IMPLEMENT_CLASS(CmpImController,AxImageController)
 
-// WDR: event table for CmpImController
 
 BEGIN_EVENT_TABLE(CmpImController,AxImageController)
     //EVT_MENU_RANGE( ID4_POPUP_MENU_MUSIC, ID4_POPUP_MENU_VOID, CmpImController::OnChangeClassification )
@@ -118,7 +117,6 @@ void CmpImController::LoadRecImage( int colNo, wxString filename, int staff, int
 	//wxLogMessage(" %s, %d, ID %d", full_filename.c_str(), staff, this->GetId() );
 }
 
-// WDR: handler implementations for CmpImController
 
 //----------------------------------------------------------------------------
 // CmpImWindow
@@ -126,7 +124,6 @@ void CmpImController::LoadRecImage( int colNo, wxString filename, int staff, int
 
 IMPLEMENT_CLASS(CmpImWindow, AxScrolledWindow)
 
-// WDR: event table for CmpImWindow
 
 BEGIN_EVENT_TABLE(CmpImWindow,AxScrolledWindow)
     //EVT_MOUSE_EVENTS( CmpImWindow::OnMouse )
@@ -246,7 +243,6 @@ void CmpImWindow::DrawCircle( )
 }
 
 
-// WDR: handler implementations for CmpImWindow
 
 	#endif // AX_COMPARISON
 #endif // AX_RECOGNITION

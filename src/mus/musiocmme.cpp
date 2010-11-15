@@ -269,7 +269,6 @@ bool MusCmmeOutput::WriteLyric( const MusElement *element )
 }
 
 
-// WDR: handler implementations for MusCmmeOutput
 
 
 //----------------------------------------------------------------------------
@@ -422,6 +421,5 @@ bool MusCmmeInput::ReadHeaderFooter( MusHeaderFooter *headerfooter)
 }
 
 
-// WDR: handler implementations for MusCmmeInput
 
 

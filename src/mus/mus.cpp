@@ -18,7 +18,6 @@
 
 #include "mus.h"
 
-// WDR: class implementations
 
 //----------------------------------------------------------------------------
 // MusParameters
@@ -27,7 +26,7 @@
 MusParameters::MusParameters()
 {
     orientation = true;
-    EpLignesPortee = 1;
+    EpLignesPortee = 2;
     EpQueueNote = 3;
     EpBarreMesure = 3;
     EpBarreValeur = 10;
@@ -37,8 +36,8 @@ MusParameters::MusParameters()
     pageFormatHor = 210;
     pageFormatVer = 297;
     MargeSOMMET = 0;
-    MargeGAUCHEIMPAIRE = 9;
-    MargeGAUCHEPAIRE = 9;
+    MargeGAUCHEIMPAIRE = 10;
+    MargeGAUCHEPAIRE = 10;
 
     // originally in MusParameters2
     rapportPorteesNum = 16;
@@ -53,7 +52,6 @@ MusParameters::~MusParameters()
 {
 }
 
-// WDR: handler implementations for MusParameters
 
 
 //----------------------------------------------------------------------------
@@ -68,7 +66,6 @@ MusPosKey::~MusPosKey()
 {
 }
 
-// WDR: handler implementations for MusPosKey
 
 //----------------------------------------------------------------------------
 // MusPagination
@@ -89,7 +86,6 @@ MusPagination::~MusPagination()
 {
 }
 
-// WDR: handler implementations for MusPagination
 
 
 //----------------------------------------------------------------------------
@@ -110,7 +106,6 @@ MusHeaderFooter::~MusHeaderFooter()
 {
 }
 
-// WDR: handler implementations for MusHeaderFooter
 
 
 //----------------------------------------------------------------------------
@@ -131,7 +126,6 @@ MusFileHeader::~MusFileHeader()
 {
 }
 
-// WDR: handler implementations for MusFileHeader
 
 
 

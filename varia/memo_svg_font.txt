@@ -2,3 +2,80 @@ Safari (and IE with Adobe?) works with ttf CSS
 Firefox works with SVG Font included as defs
 TTF Font must be printable (see fontforge, element, font info, os/2, misc, embeddable)
 Encoding is still awkward (apparently unicode font on mac, with weird mapping)
+
+
+# Memo for configuring Apache to use Aruspix (command-line) from a cgi #
+
+For this to work, we need access to the Window server, which means that it has to be run by a
+logged-in user. This not a good option for production but it is OK for experiments.
+For this to be done, we need the suexec module from Apache. It is not included by default in OS X (Snow Leopard)
+
+Steps
+1) Download the source of the installed version of Apache (2.2.14 on Snow Leoapard)
+
+2) Build it with
+
+$./configure --enable-mods-shared=all \
+            --enable-suexec \
+            --with-suexec-bin=/usr/bin/suexec \
+            --with-suexec-caller=_www \
+            --with-suexec-docroot=/Library/WebServer/Documents \
+            --with-suexec-uidmin=500 \
+            --with-suexec-gidmin=20 \
+            --with-suexec-logfile=/var/log/apache2/suexec_log \
+            --with-suexec-safepath=/opt/local/bin:/usr/local/bin:/usr/bin:/bin \
+            --with-suexec-userdir=Sites
+$ make
+
+3) Copy the files needed, i.e.,
+
+$ sudo cp modules/generators/.libs/mod_suexec.so /usr/libexec/apache2/
+$ sudo cp support/suexec /usr/bin/
+
+4) Change owner and  permissions on suexec
+
+$ sudo chown root:www /usr/bin/suexec
+$ sudo chmod 4750 /usr/bin/suexec
+
+5) In the suexec-docroot, create a directory owned by the user with 755 permissions
+
+$ sudo mkdir /Library/WebServer/Documents/501-cgi
+$ sudo chown laurent:laurent /Library/WebServer/Documents/501-cgi
+
+6) Change the httpd.conf:
+
+add: 'LoadModule suexec_module      libexec/apache2/mod_suexec.so'
+add the 'ExecCGI' option for the <Directory "/Library/WebServer/Documents">
+enable the 'AddHandler cgi-script .cgi' in the <IfModule mime_module>
+add: 'SuexecUserGroup laurent laurent'
+
+restart apache (not graceful, but stop start) 
+
+7) add the cgi and access it through for example: 
+
+### START-CGI-EXAMPLE ###
+
+#!/bin/sh
+
+# the Aruspix path
+aruspix_bin=/Users/laurent/projects/aruspix/bin/Debug/Aruspix.app/Contents/MacOS/Aruspix
+
+# read the input and cat it into a file
+data=$(</dev/stdin)
+echo "$data" > /tmp/ax2mei.mei
+
+# run the conversion
+$aruspix_bin -q -e edt -m /tmp/ax2mei.mei /tmp/ax2mei.svg
+
+echo Content-type: text/xml
+echo
+cat /tmp/ax2mei.svg
+
+### START-CGI-EXAMPLE ###
+
+access it through http://localhost/501-cgi/ax2mei.cgi
+
+
+
+
+

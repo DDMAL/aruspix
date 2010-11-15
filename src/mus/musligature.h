@@ -36,11 +36,11 @@ public:
 	MusLigature();
 	MusLigature( const MusLigature& MusLigature );
 	MusLigature( MusNeume* _neume );
-	MusLigature& MusLigature::operator=( const MusLigature& MusLigature );
+	MusLigature& operator=( const MusLigature& MusLigature );
 	virtual ~MusLigature() {}
-	virtual void MusLigature::Attach();
-	virtual void MusLigature::Draw();	// already defined in MusNeume.h, override
-	virtual bool MusLigature::IsPossible(); // filter
+	virtual void Attach();
+	virtual void Draw();	// already defined in MusNeume.h, override
+	virtual bool IsPossible(); // filter
 	
 	// Break() defined in MusNeume.h
 	

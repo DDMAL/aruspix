@@ -934,7 +934,7 @@ int imProcessPuginThreshold(const imImage* image, imImage* dest, bool white_is_2
 	//memset( mask, 0, src->size * sizeof( imbyte ) );
 	src_data = (imbyte*)src->data[0];
 	imbyte* dest_data = (imbyte*)dest->data[0];
-	double *means = kmeans( src_data, src->size, dest_data, 3);
+	//double *means = kmeans( src_data, src->size, dest_data, 3);
 	for( i = 0; i < dest->size; i++ )
 	{
 		if ( !ret ) // aborted or error

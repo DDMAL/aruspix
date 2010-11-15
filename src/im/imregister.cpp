@@ -32,7 +32,6 @@
 #define      PHOTOMETRIC_MINISBLACK      1       /* min value is black */
 #define      PHOTOMETRIC_RGB             2       /* RGB color model */
 
-// WDR: class implementations
 
 //----------------------------------------------------------------------------
 // ImRegister
@@ -943,5 +942,4 @@ bool ImRegister::SubRegister( wxPoint origine, wxSize window, wxSize size, int l
 
 
 
-// WDR: handler implementations for ImRegister
 

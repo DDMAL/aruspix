@@ -69,7 +69,6 @@ enum
 	IM_PRUNE_CLEAR_MIN
 };
 
-// WDR: class declarations
 
 
 //----------------------------------------------------------------------------
@@ -85,15 +84,13 @@ public:
 	ImOperator();
     virtual ~ImOperator();
     
-    // WDR: method declarations for ImOperator
-    int GetError( ) { return m_error; }
+        int GetError( ) { return m_error; }
 	void SetProgressDlg( AxProgressDlg *dlg );
     void SetMapImage( _imImage *image );
     //wxString GetShortName() { return m_shortname; }
     
 protected:
-    // WDR: member variable declarations for ImOperator
-    void MedianFilter( int values[], int size, int filter_size, int *avg_ptr = NULL);
+        void MedianFilter( int values[], int size, int filter_size, int *avg_ptr = NULL);
     void PruneElementsZone( _imImage *image, int min_threshold, int max_threshold, int type = IM_PRUNE_CLEAR_HEIGHT );
     void MoveElements( _imImage *src, _imImage *dest, int bounding_boxes[],
         int count, int margins[4], int factor = 1 );
@@ -118,8 +115,7 @@ protected:
     inline double deg2rad( double deg ) { return deg * AX_PI / 180.0; }
 
 protected:
-    // WDR: handler declarations for ImOperator
-    AxProgressDlg *m_progressDlg;
+        AxProgressDlg *m_progressDlg;
     int m_error;
 
     _imImage *m_opImMap;

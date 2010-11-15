@@ -17,7 +17,6 @@
 #endif
 #include "wx/dynarray.h"
 
-// WDR: class declarations
 
 #include "musobject.h"
 
@@ -47,11 +46,11 @@ public:
     virtual ~MusStaff();
     
     // functors
-    void MusStaff::CopyElements( wxArrayPtrVoid params );
+    void CopyElements( wxArrayPtrVoid params );
+    void GetMaxXY( wxArrayPtrVoid params );
     
     
-    // WDR: method declarations for MusStaff
-	void CheckIntegrity();
+    void CheckIntegrity();
 	void Clear( );
 	void CopyAttributes( MusStaff *staff ); // copy all attributes but none of the elements
 	// draw
@@ -64,7 +63,8 @@ public:
 	MusElement *GetPrevious( MusElement *element );
 	MusElement *GetAtPos( int x );
 	MusElement *Insert( MusElement *element ); // return a pointer on the inserted element
-	void Delete( MusElement *element );
+    void Append( MusElement *element, int step = 35  ); // append to the end AND TAKE OWNERSHIP of the MusElement
+	void Delete( MusElement *element);
 	MusElement *no_note ( MusElement *chk, unsigned int sens, unsigned int flg, int *succ);
 	int trouveCodNote( int y_n, int x_pos, int *octave);
 	int getOctCl ( MusElement *test, char *cle_id, int mlf = 0);
@@ -73,7 +73,7 @@ public:
 	void updat_pscle (int i, MusElement *chk);
 	void DrawSlur( wxDC *dc, int x1, int y1, int x2, int y2, bool up, int height = -1);
     // in musbeam.cpp
-    unsigned int MusStaff::beam ( wxDC *dc );
+    unsigned int beam ( wxDC *dc );
 
     
 	
@@ -97,8 +97,7 @@ public:
 
     
 public:
-    // WDR: member variable declarations for MusStaff
-	ArrayOfMusElements m_elements;
+    ArrayOfMusElements m_elements;
 	/** nombre d'element sur la portee */
 	unsigned int nblement;
 	/** voix de la portee*/
@@ -152,8 +151,7 @@ public:
     MusNote *beamListPremier;
 
 private:
-	// WDR: handler declarations for MusStaff
-
+	
 };
 
 
@@ -170,7 +168,7 @@ public:
     // constructor - takes pointer to an object and pointer to a member and stores
     // them in two private variables
     MusStaffFunctor( void(MusStaff::*_fpt)( wxArrayPtrVoid )) { fpt=_fpt; };
-	virtual MusStaffFunctor::~MusStaffFunctor() {};
+	virtual ~MusStaffFunctor() {};
 
     // override function "Call"
     virtual void Call( MusStaff *ptr, wxArrayPtrVoid params )

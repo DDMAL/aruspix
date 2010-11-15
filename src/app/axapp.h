@@ -78,7 +78,6 @@ DECLARE_EVENT_TYPE( AX_EVT_MIDI, -1 )
 
 class AxFrame;
 
-// WDR: class declarations
 
 //----------------------------------------------------------------------------
 // AxAboutDlg
@@ -93,17 +92,14 @@ public:
         const wxSize& size = wxDefaultSize,
         long style = wxDEFAULT_DIALOG_STYLE );
     
-    // WDR: method declarations for AxAboutDlg
-    wxStaticBitmap* GetLogo()  { return (wxStaticBitmap*) FindWindow( ID0_LOGO ); }
+        wxStaticBitmap* GetLogo()  { return (wxStaticBitmap*) FindWindow( ID0_LOGO ); }
     wxStaticText* GetTxAppVersion()  { return (wxStaticText*) FindWindow( TX_APP_VERSION ); }
     wxStaticText* GetTxAppBuild()  { return (wxStaticText*) FindWindow( TX_APP_BUILD ); }
 
 private:
-    // WDR: member variable declarations for AxAboutDlg
-    
+        
 private:
-    // WDR: handler declarations for AxAboutDlg
-
+    
 private:
     DECLARE_EVENT_TABLE()
 };
@@ -121,8 +117,7 @@ public:
     AxApp();
     virtual ~AxApp();
     
-    // WDR: method declarations for AxApp
-    virtual bool OnInit();
+        virtual bool OnInit();
     virtual int OnExit();
     //static wxString FindAppPath();
     static bool CheckDir( wxString dirname, int permission );
@@ -138,8 +133,7 @@ private:
     bool ProcessRemote (char** argv, int argc = 0);
     
 private:
-    // WDR: member variable declarations for AxApp
-    wxSingleInstanceChecker *m_singleInstance; 
+        wxSingleInstanceChecker *m_singleInstance; 
     wxServerBase *m_serverIPC; //! the wxIPC server
     AxFrame *m_mainFrame;
     int m_busyCursor;
@@ -190,8 +184,7 @@ public:
 
     
 private:
-    // WDR: handler declarations for AxApp
-
+    
 };
 
 DECLARE_APP(AxApp)

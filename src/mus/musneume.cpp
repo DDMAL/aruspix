@@ -40,7 +40,6 @@ int SortElements(MusNeume **first, MusNeume **second)
 		return 0;
 }
 
-// WDR: class implementations
 
 //----------------------------------------------------------------------------
 // MusNeumePitch
@@ -645,7 +644,7 @@ void MusNeume::printNeumeList()
 	printf("Neume Address:\n---------\n");
 	printf("%d [%X]\n---------\n", (int)&(*this),(unsigned int)&(*this));
 	printf("Vector Address:\n---------\n"); 
-    printf("%d [%X]\n", (long)&(this->n_pitches), (int)&(this->n_pitches));
+    printf("%d [%d]\n", (int)&(this->n_pitches), (int)&(this->n_pitches));
 	printf("Neume List: (length %d)\n", (int)n_pitches.size());
 	printf("***********************\n");
 	int count = 0;
@@ -801,7 +800,8 @@ void MusNeume::DrawNeume( wxDC *dc, MusStaff *staff )
 	// magic happens here
 	int pTaille = staff->pTaille;
 	
-	int xn = this->xrel, xl = this->xrel;
+	int xn = this->xrel;
+    //int xl = this->xrel;
 	int bby = staff->yrel - m_w->_portee[pTaille];
 	int ynn = this->dec_y + staff->yrel;
 	//printf("closed ynn value: %d\nclosed dec_y: %d\nclosed yrel: %d\n", 
@@ -865,7 +865,7 @@ void MusNeume::DrawPunctums( wxDC *dc, MusStaff *staff )
 	
 	int ledge = m_w->ledgerLine[pTaille][2];
 	
-	int punct_y;
+	//int punct_y;
 	
 	this->DrawBox( dc, staff );
 	
@@ -938,7 +938,6 @@ void MusNeume::leg_line( wxDC *dc, int y_n, int y_p, int xn, unsigned int smalle
 	return;
 }
 
-// WDR: handler implementations for MusNeume
 
 
 

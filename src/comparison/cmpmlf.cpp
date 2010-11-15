@@ -213,7 +213,6 @@ bool CmpMLFOutput::WriteStaff( const MusStaff *staff )
     return true;
 }
 
-// WDR: handler implementations for CmpMLFOutput
 
 
 //----------------------------------------------------------------------------
@@ -317,7 +316,6 @@ bool CmpMLFInput::ReadLabel( MusStaff *staff )
     return true;
 }
 
-// WDR: handler implementations for CmpMLFInput
 
 		#endif // AX_COMPARISON
 #endif // AX_RECOGNITION

@@ -48,7 +48,6 @@ bool SupEnv::s_expand_img1 = true;
 bool SupEnv::s_expand_img2 = true;   
 bool SupEnv::s_expand_ax = true; 
 
-// WDR: class implementations
 
 DEFINE_EVENT_TYPE(AX_PUT_POINTS_EVT)
 
@@ -56,7 +55,6 @@ DEFINE_EVENT_TYPE(AX_PUT_POINTS_EVT)
 // SupEnv
 //----------------------------------------------------------------------------
 
-// WDR: event table for SupEnv
 
 BEGIN_EVENT_TABLE(SupEnv,AxEnv)
 	// copy paste 
@@ -444,7 +442,6 @@ bool SupEnv::CloseAll( )
 }
 
 
-// WDR: handler implementations for SupEnv
 
 void SupEnv::OnBookEdit( wxCommandEvent &event )
 {

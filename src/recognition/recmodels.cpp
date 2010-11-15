@@ -28,7 +28,6 @@
 #include "app/axapp.h"
 #include "app/axprocess.h"
 
-// WDR: class implementations
 
 
 //----------------------------------------------------------------------------
@@ -118,7 +117,6 @@ bool RecModel::AddFiles( wxArrayPtrVoid params, AxProgressDlg *dlg )
 	return !failed;
 }
 
-// WDR: handler implementations for RecModel
 
 
 
@@ -563,7 +561,6 @@ bool RecTypModel::Adapt( wxArrayPtrVoid params, AxProgressDlg *dlg )
 	return true;
 }
 
-// WDR: handler implementations for RecTypModel
 
 //----------------------------------------------------------------------------
 // RecMusModel
@@ -864,6 +861,5 @@ bool RecMusModel::Adapt( wxArrayPtrVoid params, AxProgressDlg *dlg )
 	return true;
 }
 
-// WDR: handler implementations for RecMusModel
 
 #endif //AX_RECOGNITION

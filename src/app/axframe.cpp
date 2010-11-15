@@ -87,7 +87,6 @@ void midi_callback( double deltatime, std::vector< unsigned char > *message, voi
 }
 
 
-// WDR: class implementations
 
 //----------------------------------------------------------------------------
 // AxFrame
@@ -97,7 +96,6 @@ IMPLEMENT_DYNAMIC_CLASS(AxFrame,wxFrame)
 
 
 
-// WDR: event table for AxFrame
 
 BEGIN_EVENT_TABLE(AxFrame,wxFrame)
     EVT_CLOSE( AxFrame::OnClose)
@@ -223,36 +221,6 @@ AxFrame::AxFrame( wxWindow *parent, wxWindowID id, const wxString &title,
 
     // counter callback
     imCounterSetCallback(NULL, NULL);
-    
-    // midi input
-    m_midiIn = new RtMidiIn();
-//	std::string portName;
-	
-//    // Check available ports.
-    unsigned int nPorts = m_midiIn->getPortCount();
-//	m_midiIn->openVirtualPort("test");
-//	
-//	for ( unsigned int i=0; i<nPorts; i++ ) {
-//		try {
-//			portName = m_midiIn->getPortName(i);
-//		}
-//		catch ( RtError &error ) {
-//			error.printMessage();
-//		}
-//		std::cout << "  Input Port #" << i+1 << ": " << portName << '\n';
-//	}
-//	
-    if ( nPorts == 0 ) {
-        wxLogDebug("Midi init failed, nPorts == 0");
-        delete m_midiIn;
-        m_midiIn = NULL;
-    } else {
-        m_midiIn->openPort( 0 );
-        // Set our callback function
-        m_midiIn->setCallback( &midi_callback );
-        // Don't ignore sysex, timing, or active sensing messages.
-        m_midiIn->ignoreTypes( false, false, false );        
-    }
 }
 
 AxFrame::~AxFrame()
@@ -352,6 +320,41 @@ wxBitmap AxFrame::GetToolbarBitmap( wxString name )
 	wxString subdir = wxString::Format("/icons/%dx%d/", size, size );
 	wxBitmap bitmap ( wxGetApp().m_resourcesPath + subdir + name , wxBITMAP_TYPE_PNG );
 	return bitmap;
+}
+
+
+void AxFrame::InitMidi()
+{
+
+    // midi input
+    m_midiIn = new RtMidiIn();
+//	std::string portName;
+	
+//    // Check available ports.
+    unsigned int nPorts = m_midiIn->getPortCount();
+//	m_midiIn->openVirtualPort("test");
+//	
+//	for ( unsigned int i=0; i<nPorts; i++ ) {
+//		try {
+//			portName = m_midiIn->getPortName(i);
+//		}
+//		catch ( RtError &error ) {
+//			error.printMessage();
+//		}
+//		std::cout << "  Input Port #" << i+1 << ": " << portName << '\n';
+//	}
+//	
+    if ( nPorts == 0 ) {
+        wxLogDebug("Midi init failed, nPorts == 0");
+        delete m_midiIn;
+        m_midiIn = NULL;
+    } else {
+        m_midiIn->openPort( 0 );
+        // Set our callback function
+        m_midiIn->setCallback( &midi_callback );
+        // Don't ignore sysex, timing, or active sensing messages.
+        m_midiIn->ignoreTypes( false, false, false );        
+    }
 }
 
 
@@ -676,7 +679,6 @@ void AxFrame::SetEnvironment( int menuId )
 	}
 }
 
-// WDR: handler implementations for AxFrame
 
 void AxFrame::OnHelp( wxCommandEvent &event )
 {

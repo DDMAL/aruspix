@@ -38,6 +38,7 @@
 		4D8330000F2E6E35006E6B5F /* musiocmme.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D832FFE0F2E6E35006E6B5F /* musiocmme.cpp */; };
 		4DA6F43411510C7B0005E4A5 /* musbeam.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4DA6F43311510C7B0005E4A5 /* musbeam.cpp */; };
 		4DA9FDDD0D90984E000E7BA6 /* supbookctrl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4DA9FDDB0D90984E000E7BA6 /* supbookctrl.cpp */; };
+		4DB1E0DB12903186002B0A2D /* musligature.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4DB1E0DA12903186002B0A2D /* musligature.cpp */; };
 		4DB2D96D0D8383EA003401B0 /* musmlfdic.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4DB2D96B0D8383EA003401B0 /* musmlfdic.cpp */; };
 		4DB9F0530D94A66E00ED8E3E /* imregister.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4DB9F0510D94A66E00ED8E3E /* imregister.cpp */; };
 		4DC24AA9119B718700B2EF98 /* RtMidi.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4DC24AA7119B718700B2EF98 /* RtMidi.cpp */; };
@@ -67,7 +68,6 @@
 		57CA54260D34139D001FC334 /* axapp_wdr.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 57CA541F0D34139D001FC334 /* axapp_wdr.cpp */; };
 		57CA54270D34139D001FC334 /* axabout_wdr.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 57CA54210D34139D001FC334 /* axabout_wdr.cpp */; };
 		57EA3DE50C00BDEB00414247 /* recbookctrl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 57EA3DE30C00BDEB00414247 /* recbookctrl.cpp */; };
-		5842793612074F0000D5BD00 /* ligature.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5842793512074F0000D5BD00 /* ligature.cpp */; };
 		675287A611B87AF30037350B /* muskeyboardeditor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 675287A411B87AF30037350B /* muskeyboardeditor.cpp */; };
 		A58524CE0A1B9604002D9D8A /* axapp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A58524560A1B9604002D9D8A /* axapp.cpp */; };
 		A58524CF0A1B9604002D9D8A /* axenv.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A58524580A1B9604002D9D8A /* axenv.cpp */; };
@@ -115,7 +115,6 @@
 		4D3A8FC80D35858D00BBC1FB /* recmlfbmp.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = recmlfbmp.h; sourceTree = "<group>"; };
 		4D3A8FC90D35858D00BBC1FB /* recmodels.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = recmodels.cpp; sourceTree = "<group>"; };
 		4D3A8FCA0D35858D00BBC1FB /* recmodels.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = recmodels.h; sourceTree = "<group>"; };
-		4D3A8FCF0D35867200BBC1FB /* mus_wdr.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = mus_wdr.h; path = ../src/mus/mus_wdr.h; sourceTree = SOURCE_ROOT; };
 		4D3A8FD00D35867200BBC1FB /* mus.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = mus.cpp; path = ../src/mus/mus.cpp; sourceTree = SOURCE_ROOT; };
 		4D3A8FD10D35867200BBC1FB /* mus.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = mus.h; path = ../src/mus/mus.h; sourceTree = SOURCE_ROOT; };
 		4D3A8FD20D35867200BBC1FB /* musbarlines.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = musbarlines.cpp; path = ../src/mus/musbarlines.cpp; sourceTree = SOURCE_ROOT; };
@@ -156,6 +155,8 @@
 		4DA6F43311510C7B0005E4A5 /* musbeam.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = musbeam.cpp; path = ../src/mus/musbeam.cpp; sourceTree = SOURCE_ROOT; };
 		4DA9FDDB0D90984E000E7BA6 /* supbookctrl.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = supbookctrl.cpp; sourceTree = "<group>"; };
 		4DA9FDDC0D90984E000E7BA6 /* supbookctrl.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = supbookctrl.h; sourceTree = "<group>"; };
+		4DB1E0DA12903186002B0A2D /* musligature.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = musligature.cpp; path = ../src/mus/musligature.cpp; sourceTree = SOURCE_ROOT; };
+		4DB1E0DD1290319A002B0A2D /* musligature.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = musligature.h; path = ../src/mus/musligature.h; sourceTree = SOURCE_ROOT; };
 		4DB2D96B0D8383EA003401B0 /* musmlfdic.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = musmlfdic.cpp; path = ../src/mus/musmlfdic.cpp; sourceTree = SOURCE_ROOT; };
 		4DB2D96C0D8383EA003401B0 /* musmlfdic.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = musmlfdic.h; path = ../src/mus/musmlfdic.h; sourceTree = SOURCE_ROOT; };
 		4DB9F0510D94A66E00ED8E3E /* imregister.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = imregister.cpp; sourceTree = "<group>"; };
@@ -212,7 +213,6 @@
 		57CA54310D3414BB001FC334 /* axdefs.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = axdefs.h; sourceTree = "<group>"; };
 		57EA3DE30C00BDEB00414247 /* recbookctrl.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = recbookctrl.cpp; sourceTree = "<group>"; };
 		57EA3DE40C00BDEB00414247 /* recbookctrl.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = recbookctrl.h; sourceTree = "<group>"; };
-		5842793512074F0000D5BD00 /* ligature.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ligature.cpp; path = ../src/mus/ligature.cpp; sourceTree = SOURCE_ROOT; };
 		6718EA9B11C14AAC00734117 /* neumedef.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = neumedef.h; path = ../src/mus/neumedef.h; sourceTree = SOURCE_ROOT; };
 		675287A411B87AF30037350B /* muskeyboardeditor.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = muskeyboardeditor.cpp; path = ../src/mus/muskeyboardeditor.cpp; sourceTree = SOURCE_ROOT; };
 		675287A511B87AF30037350B /* muskeyboardeditor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = muskeyboardeditor.h; path = ../src/mus/muskeyboardeditor.h; sourceTree = SOURCE_ROOT; };
@@ -246,7 +246,7 @@
 		A58524920A1B9604002D9D8A /* sup.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = sup.cpp; sourceTree = "<group>"; };
 		A58524930A1B9604002D9D8A /* sup.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = sup.h; sourceTree = "<group>"; };
 		A58524950A1B9604002D9D8A /* sup_wdr.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = sup_wdr.cpp; sourceTree = "<group>"; };
-		A58524960A1B9604002D9D8A /* sup_wdr.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = sup_wdr.h; path = ../src/superimposition/sup_wdr.h; sourceTree = "<group>"; };
+		A58524960A1B9604002D9D8A /* sup_wdr.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = sup_wdr.h; sourceTree = "<group>"; };
 		A58524980A1B9604002D9D8A /* tinystr.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = tinystr.cpp; sourceTree = "<group>"; };
 		A58524990A1B9604002D9D8A /* tinystr.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = tinystr.h; sourceTree = "<group>"; };
 		A585249A0A1B9604002D9D8A /* tinyxml.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = tinyxml.cpp; sourceTree = "<group>"; };
@@ -283,8 +283,8 @@
 		4D3A8FCD0D3585AB00BBC1FB /* mus */ = {
 			isa = PBXGroup;
 			children = (
-				A58524960A1B9604002D9D8A /* sup_wdr.h */,
-				5842793512074F0000D5BD00 /* ligature.cpp */,
+				4DB1E0DD1290319A002B0A2D /* musligature.h */,
+				4DB1E0DA12903186002B0A2D /* musligature.cpp */,
 				4DC24AB5119B72C900B2EF98 /* musneume.cpp */,
 				4DC24AB6119B72C900B2EF98 /* musneume.h */,
 				6718EA9B11C14AAC00734117 /* neumedef.h */,
@@ -298,7 +298,6 @@
 				4D832FFF0F2E6E35006E6B5F /* musiocmme.h */,
 				4D832FFE0F2E6E35006E6B5F /* musiocmme.cpp */,
 				4DB2D96C0D8383EA003401B0 /* musmlfdic.h */,
-				4D3A8FCF0D35867200BBC1FB /* mus_wdr.h */,
 				4D3A8FD00D35867200BBC1FB /* mus.cpp */,
 				4D3A8FD10D35867200BBC1FB /* mus.h */,
 				4D3A8FD20D35867200BBC1FB /* musbarlines.cpp */,
@@ -308,8 +307,8 @@
 				4D3A8FD60D35867200BBC1FB /* muselement.cpp */,
 				4D3A8FD70D35867200BBC1FB /* muselement.h */,
 				4D3A8FD80D35867200BBC1FB /* musfile.cpp */,
-				4DA6F43311510C7B0005E4A5 /* musbeam.cpp */,
 				4D3A8FD90D35867200BBC1FB /* musfile.h */,
+				4DA6F43311510C7B0005E4A5 /* musbeam.cpp */,
 				4D3A8FDA0D35867200BBC1FB /* musgraph.cpp */,
 				4D3A8FDB0D35867200BBC1FB /* musiomlf.cpp */,
 				4D3A8FDC0D35867200BBC1FB /* musiomlf.h */,
@@ -494,6 +493,7 @@
 		A58524910A1B9604002D9D8A /* superimposition */ = {
 			isa = PBXGroup;
 			children = (
+				A58524960A1B9604002D9D8A /* sup_wdr.h */,
 				4D64284D0D9344FD00DA3A64 /* supim.cpp */,
 				4D64284E0D9344FD00DA3A64 /* supim.h */,
 				4DA9FDDB0D90984E000E7BA6 /* supbookctrl.cpp */,
@@ -579,7 +579,14 @@
 			};
 			buildConfigurationList = A58508B50A001129006E82B1 /* Build configuration list for PBXProject "aruspix" */;
 			compatibilityVersion = "Xcode 2.4";
+			developmentRegion = English;
 			hasScannedForEncodings = 0;
+			knownRegions = (
+				English,
+				Japanese,
+				French,
+				German,
+			);
 			mainGroup = A58508B20A001129006E82B1;
 			productRefGroup = A58508C20A00113C006E82B1 /* Products */;
 			projectDirPath = "";
@@ -709,7 +716,7 @@
 				4DC24AB7119B72C900B2EF98 /* musneume.cpp in Sources */,
 				4DC24ABC119B72EF00B2EF98 /* edtfile.cpp in Sources */,
 				675287A611B87AF30037350B /* muskeyboardeditor.cpp in Sources */,
-				5842793612074F0000D5BD00 /* ligature.cpp in Sources */,
+				4DB1E0DB12903186002B0A2D /* musligature.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -855,12 +862,16 @@
 					"$(ARUSPIX_WX)/osx-static-debug/lib/wx/include/mac-ansi-debug-static-2.8",
 					"$(ARUSPIX_WX)/include",
 					"$(ARUSPIX_WX)/contrib/include",
+					/usr/include/libxml2,
+					/Users/laurent/libs/wxxml2/include,
 				);
 				INFOPLIST_FILE = "Aruspix-Info.plist";
 				INSTALL_PATH = "$(USER_APPS_DIR)";
 				LIBRARY_SEARCH_PATHS = (
 					"$(ARUSPIX_IMLIB)/lib",
 					"$(ARUSPIX_WX)/osx-static-debug/lib",
+					/Users/laurent/libs/wxxml2/lib,
+					/usr/lib,
 				);
 				OBJROOT = "$(ARUSPIX)/obj";
 				OTHER_CFLAGS = (
@@ -910,6 +921,7 @@
 					"-lwx_macd_aui-$(ARUSPIX_WX_VERSION)",
 					"-lwxpngd-$(ARUSPIX_WX_VERSION)",
 					"-lwxjpegd-$(ARUSPIX_WX_VERSION)",
+					"-lxml2",
 				);
 				OTHER_REZFLAGS = "";
 				PREBINDING = NO;

@@ -21,7 +21,6 @@
 #include "musfile.h"
 #include "axdefs.h"
 
-// WDR: class implementations
 
 void MusPage::braces ( wxDC *dc, int x, int y1, int y2, int cod, int pTaille)
 //	int x, y1, y2;	x, 1e et 2e y de barre vert

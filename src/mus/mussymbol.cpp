@@ -23,7 +23,6 @@
 #include "musdef.h"
 
 
-// WDR: class implementations
 
 //----------------------------------------------------------------------------
 // MusSymbol
@@ -625,7 +624,6 @@ bool MusSymbol::IsLyric( )
     return ((flag == CHAINE) && (fonte == LYRIC)); 
 }
 
-// WDR: handler implementations for MusSymbol
 
 
 

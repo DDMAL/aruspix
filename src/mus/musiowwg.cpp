@@ -35,7 +35,6 @@ MusFont::~MusFont()
 {
 }
 
-// WDR: handler implementations for MusFont
 
 
 //----------------------------------------------------------------------------
@@ -67,7 +66,6 @@ MusParametersMidi::~MusParametersMidi()
 {
 }
 
-// WDR: handler implementations for MusParametersMidi
 
 
 //----------------------------------------------------------------------------
@@ -517,7 +515,6 @@ bool MusWWGOutput::WriteHeaderFooter( const MusHeaderFooter *headerfooter)
 
 
 
-// WDR: handler implementations for MusWWGOutput
 
 
 //----------------------------------------------------------------------------
@@ -527,7 +524,7 @@ bool MusWWGOutput::WriteHeaderFooter( const MusHeaderFooter *headerfooter)
 MusWWGInput::MusWWGInput( MusFile *file, wxString filename ) :
 	MusFileInputStream( file, filename )
 {
-    m_lyric = NULL;
+
 }
 
 MusWWGInput::~MusWWGInput()
@@ -604,8 +601,10 @@ bool MusWWGInput::ReadFileHeader( MusFileHeader *header )
 	Read( &uint32, 4 );
 	header->xpos = wxUINT32_SWAP_ON_BE( uint32 );  // xpso
 	Read( &header->param.orientation, 1 ); // param - orientation
-	Read( &header->param.EpLignesPortee, 1 ); // param - epLignesPortee
-	Read( &header->param.EpQueueNote, 1 ); // param - epQueueNotes
+	Read( &unused_uc, 1 ); // param - epLignesPortee
+    //Read( &header->param.EpLignesPortee, 1 ); // param - epLignesPortee
+	Read( &unused_uc, 1 ); // param - epQueueNotes
+	//Read( &header->param.EpQueueNote, 1 ); // param - epQueueNotes
 	Read( &header->param.EpBarreMesure, 1 ); // param - epBarreMesure
 	Read( &header->param.EpBarreValeur, 1 ); // param - epBarreValeur
 	Read( &header->param.EpBlancBarreValeur, 1 ); // param - epBlancBarreValeur
@@ -671,7 +670,8 @@ bool MusWWGInput::ReadParameters2( MusParameters *param )
 	Read( &unused_c, 1 ); // nbPagesEnContinu
 	Read( &unused_c, 1 ); // vertCorrEcr
 	Read( &unused_c, 1 ); // vertCorrPrn	
-	Read( &param->hampesCorr, 1 ); // hampesCorr	
+	Read( &unused_c, 1 ); // hampesCorr	
+    //Read( &param->hampesCorr, 1 ); // hampesCorr	
 	Read( &unused_c, 1 ); // epaisBezier
 	Read( &uint32, 4 );
 	param->entetePied = wxUINT32_SWAP_ON_BE( uint32 ); // entetePied
@@ -799,14 +799,10 @@ bool MusWWGInput::ReadStaff( MusStaff *staff )
             // For the lyrics, we must attach them to the notes
             // We keep it and
             if ( (symbol->flag == CHAINE) && (symbol->fonte == LYRIC) ) {
-                if ( m_lyric ) {
-                    wxLogWarning("Lyric element will '%s' be lost", symbol->m_debord_str.c_str() ); 
-                    delete m_lyric;
-                }
-                m_lyric = symbol;
                 symbol->m_debord_str = wxString( (char*)symbol->pdebord,
                     (int)symbol->debordSize - 4);  // - sizeof( element->debordSize ) - sizeof( element->debordCode );
                 //staff->nblement--; 
+                m_lyrics.Add( symbol );
             } else {
                 staff->m_elements.Add( symbol );
             }
@@ -846,13 +842,17 @@ bool MusWWGInput::ReadNote( MusNote *note )
 	if ( note->existDebord ) 
 		ReadDebord( note );
         
-    if ( m_lyric) {
-        // default values
-        m_lyric->dec_y = - STAFF_OFFSET;
-        m_lyric->xrel = note->xrel - 20;
-		m_lyric->m_note_ptr = note;	
-		note->m_lyrics.Add( m_lyric );
-        m_lyric = NULL;
+    if ( !m_lyrics.IsEmpty() ) {
+        int i = 0;
+        int nb_lyrics = (int)m_lyrics.GetCount();
+        for (i = 0; i < nb_lyrics; i++) {
+            // default values
+            MusSymbol *lyric = m_lyrics.Detach(0);
+            lyric->dec_y = - STAFF_OFFSET;
+            lyric->xrel = note->xrel - 20;
+            lyric->m_note_ptr = note;	
+            note->m_lyrics.Add( lyric );
+        }
 	}
         
     return true;
@@ -959,6 +959,5 @@ bool MusWWGInput::ReadHeaderFooter( MusHeaderFooter *headerfooter)
 }
 
 
-// WDR: handler implementations for MusWWGInput
 
 

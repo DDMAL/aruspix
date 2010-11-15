@@ -48,8 +48,7 @@ public:
     MusMLFSymbol();
     virtual ~MusMLFSymbol() {};
     
-    // WDR: method declarations for MusMLFSymbol
-	virtual void SetValue( char type, wxString subtype, int position, int value = 0, char pitch = 0, int oct = 0, int flag = 0);
+    virtual void SetValue( char type, wxString subtype, int position, int value = 0, char pitch = 0, int oct = 0, int flag = 0);
     virtual wxString GetLabel( );
 	wxString GetLabelType( );
 	int GetNbOfStates( );
@@ -57,16 +56,14 @@ public:
 	int GetWidth( );
     
 protected:
-    // WDR: member variable declarations for MusMLFSymbol
-	char m_type, m_pitch;
+    char m_type, m_pitch;
 	wxString m_subtype;
 	
 public:
 	int m_value, m_oct, m_flag, m_position;
 
 private:
-    // WDR: handler declarations for MusMLFSymbol
-
+    
 	DECLARE_DYNAMIC_CLASS(MusMLFSymbol)
 };
 
@@ -84,18 +81,15 @@ public:
     MusMLFSymbolNoPitch();
     virtual ~MusMLFSymbolNoPitch() {};
     
-    // WDR: method declarations for MusMLFSymbolNoPitch
-	//virtual void SetValue( char type, wxString subtype, int position, int value = 0, char pitch = 0, int oct = 0, int flag = 0);
+    //virtual void SetValue( char type, wxString subtype, int position, int value = 0, char pitch = 0, int oct = 0, int flag = 0);
     virtual wxString GetLabel( );
     
 protected:
-    // WDR: member variable declarations for MusMLFSymbolNoPitch
-	
+    
 public:
 
 private:
-    // WDR: handler declarations for MusMLFSymbolNoPitch
-
+    
 	DECLARE_DYNAMIC_CLASS(MusMLFSymbolNoPitch)
 };
 
@@ -112,8 +106,7 @@ public:
 	MusMLFOutput( MusFile *file, int fd, wxString filename,  MusMLFDictionary *dict, wxString model_symbol_name = "MusMLFSymbol" );
     virtual ~MusMLFOutput();
     
-    // WDR: method declarations for MusMLFOutput
-	//bool ExportFile( MusFile *file, wxString filename);	// replace  musfile set in the constructor
+    //bool ExportFile( MusFile *file, wxString filename);	// replace  musfile set in the constructor
 														// and export by calling ExportFile
 														// allow exportation of several files in one mlf
     //virtual bool ExportFile( );
@@ -145,8 +138,7 @@ public:
 	ArrayOfMLFSymbols *GetSymbols( ) { return &m_symbols; };
     
 protected:
-    // WDR: member variable declarations for MusMLFOutput
-    wxString m_filename;
+        wxString m_filename;
 	//wxFileOutputStream *m_subfile;
 	// specific
 	ArrayOfMLFSymbols m_symbols; // symbol list
@@ -168,8 +160,7 @@ public:
 
 
 private:
-    // WDR: handler declarations for MusMLFOutput
-};
+    };
 
 
 //----------------------------------------------------------------------------
@@ -186,19 +177,16 @@ public:
 	MusMLFOutputNoPitch( MusFile *file, int fd, wxString filename, MusMLFDictionary *dict, wxString model_symbol_name = "MusMLFSymbolNoPitch" );
     virtual ~MusMLFOutputNoPitch();
     
-    // WDR: method declarations for MusMLFOutputNoPitch
-    virtual bool WriteNote( MusNote *note );
+        virtual bool WriteNote( MusNote *note );
     virtual bool WriteSymbol( MusSymbol *symbol );
 	// specific
     
 protected:
-    // WDR: member variable declarations for MusMLFOutputNoPitch
-
+    
 public:
 
 private:
-    // WDR: handler declarations for MusMLFOutputNoPitch
-};
+    };
 
 
 //----------------------------------------------------------------------------
@@ -212,8 +200,7 @@ public:
     MusMLFInput( MusFile *file, wxString filename );
     virtual ~MusMLFInput();
     
-    // WDR: method declarations for MusMLFInput
-    virtual bool ImportFile( int staff_per_page = -1 );
+        virtual bool ImportFile( int staff_per_page = -1 );
     virtual bool ReadPage( MusPage *page , bool firstLineMLF, ImPage *imPage = NULL );
     virtual bool ReadLabel( MusStaff *staff, int offset = 0 );
 	// specific
@@ -229,13 +216,11 @@ public:
 
     
 protected:
-    // WDR: member variable declarations for MusMLFInput
-	// page, staff index
+    // page, staff index
 	int m_staff_i, m_staff_label;
 
 private:
-    // WDR: handler declarations for MusMLFInput
-};
+    };
 
 
 

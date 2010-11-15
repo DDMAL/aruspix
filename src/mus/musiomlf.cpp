@@ -925,7 +925,6 @@ bool MusMLFOutput::WriteSymbol(  MusSymbol *symbol )
 	return true;
 }
 
-// WDR: handler implementations for MusMLFOutput
 
 
 //----------------------------------------------------------------------------
@@ -1702,6 +1701,5 @@ bool MusMLFInput::ReadLabel( MusStaff *staff, int offset )
     return true;
 }
 
-// WDR: handler implementations for MusMLFInput
 
 

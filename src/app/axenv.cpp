@@ -21,13 +21,11 @@
 #include "axapp.h"
 #include "axframe.h"
 
-// WDR: class implementations
 
 //----------------------------------------------------------------------------
 // AxEnv
 //----------------------------------------------------------------------------
 
-// WDR: event table for AxEnv
 
 BEGIN_EVENT_TABLE(AxEnv,wxEvtHandler)
 	//EVT_UPDATE_UI_RANGE( wxID_LOWEST, ENV_IDS_MAX , AxEnv::OnUpdateUI )
@@ -294,7 +292,6 @@ void AxEnv::SetTitle( const wxChar *pszFormat, ...)
 }
 
 
-// WDR: handler implementations for AxEnv
 
 
 
@@ -329,4 +326,3 @@ AxEnvRow::~AxEnvRow()
         delete m_envPtr;
 }
 
-// WDR: handler implementations for EnvironmentRow

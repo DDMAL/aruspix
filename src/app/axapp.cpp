@@ -52,7 +52,6 @@ IMPLEMENT_APP(AxApp)
 #endif
 */
 
-// WDR: class implementations
 
 //----------------------------------------------------------------------------
 // AxApp
@@ -149,12 +148,14 @@ bool AxApp::OnInit()
     pConfig->Read("ToolbarToolsize", &m_toolbar_toolsize, 16);
     pConfig->Read("Language",&m_language,-1);
     
-	wxSplashScreen* splash = NULL; 
+#ifndef __AXDEBUG__
+	wxSplashScreen* splash = NULL; // we don't want to show the splash screen in Debug mod
+#endif
     if ( m_language == -1 ) // never choosen before, it is the first time the user run aruspix, run setup
     {
 		SetExitOnFrameDelete(FALSE);
 #if defined(__WXMSW__)
-    	AxSetup setup( wxBitmap( m_resourcesPath + "/logo.win.png", wxBITMAP_TYPE_PNG ) );
+    AxSetup setup( wxBitmap( m_resourcesPath + "/logo.win.png", wxBITMAP_TYPE_PNG ) );
 #else // OS X
 		AxSetup setup( wxBitmap( m_resourcesPath + "/logo.png", wxBITMAP_TYPE_PNG ) );
 #endif
@@ -175,12 +176,14 @@ bool AxApp::OnInit()
 		{
 			wxMemoryDC dest;
 			dest.SelectObject( bitmap );
-#if defined(__WXMSW__)
+#ifndef __AXDEBUG__
+    #if defined(__WXMSW__)
 			long splash_style = wxSIMPLE_BORDER | wxSTAY_ON_TOP;
 			dest.SetFont( *wxNORMAL_FONT );
-#else
+    #else
 			long splash_style = wxSIMPLE_BORDER; // stay on top did not work on OS X
 			dest.SetFont( *wxSMALL_FONT );		
+    #endif
 #endif
 			wxString version = wxString::Format( "Version %s", AxApp::s_version.c_str() );
 			wxString build = wxString::Format( "Build %s - %s", AxApp::s_build_date.c_str() , AxApp::s_build_time.c_str() );
@@ -244,15 +247,19 @@ bool AxApp::OnInit()
 
     // main frame
     m_mainFrame = new AxFrame((wxFrame*)NULL,-1,_("Aruspix") );
-    SetTopWindow(m_mainFrame);
+    //SetTopWindow(m_mainFrame);
     // undo
     AxUndo::InitUndos();
     
     // if false, means that option -q (quiet) was used, i.e. command line mode
-    if ( !ProcessCmdLine (argv, argc) )
-        m_mainFrame->Close();
-    else
-        m_mainFrame->Show(TRUE);
+    if ( !ProcessCmdLine (argv, argc) ) {
+        return false;
+        //m_mainFrame->Close();
+    }
+
+    m_mainFrame->InitMidi();
+    m_mainFrame->Show(TRUE);
+ 
 #if !defined(__WXMSW__)
 	m_mainFrame->Lower( ); 	// again, stay on top did not work for OS X	
 #endif
@@ -318,6 +325,7 @@ bool AxApp::ProcessCmdLine (char** argv, int argc)
             wxCMD_LINE_VAL_STRING },
         {wxCMD_LINE_SWITCH, "q", "quiet", "command line mode, do not show main frame" },
         {wxCMD_LINE_SWITCH, "p", "preprocess", "preprocessing the image in recognition environment (output file is require)"} ,
+        {wxCMD_LINE_SWITCH, "m", "mei2svg", "the mei file to be converted to svg (output file is require)"} ,
         {wxCMD_LINE_NONE}
     };
     wxCmdLineParser parser (cmdLineDesc, argc, argv);
@@ -414,7 +422,6 @@ bool AxApp::CheckDir( wxString dirname, int permission )
 }
 
 
-// WDR: handler implementations for AxApp
 
 #ifdef __WXMAC__
 void AxApp::MacOpenFile(const wxString &fileName)
@@ -468,7 +475,6 @@ bool AxIPCConnection::OnExecute(const wxString& WXUNUSED(topic),
 // AxAboutDlg
 //----------------------------------------------------------------------------
 
-// WDR: event table for AxAboutDlg
 
 BEGIN_EVENT_TABLE(AxAboutDlg,wxDialog)
 
@@ -511,7 +517,6 @@ AxAboutDlg::AxAboutDlg( wxWindow *parent, wxWindowID id, const wxString &title,
 	
 }
 
-// WDR: handler implementations for AxAboutDlg
 
 
 //----------------------------------------------------------------------------

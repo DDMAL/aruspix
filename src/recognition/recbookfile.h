@@ -32,7 +32,6 @@ class RecModel;
 
 
 
-// WDR: class declarations
 
 //----------------------------------------------------------------------------
 // RecBookFile
@@ -42,14 +41,13 @@ class RecBookFile: public AxFile
 {
 public:
     // constructors and destructors
-    RecBookFile::RecBookFile( wxString name, RecEnv *env = NULL );
-    virtual RecBookFile::~RecBookFile();
+    RecBookFile( wxString name, RecEnv *env = NULL );
+    virtual ~RecBookFile();
     
-    // WDR: method declarations for RecFile
-    virtual void RecBookFile::NewContent(); // Create content for a new file
-    virtual void RecBookFile::OpenContent( ); // Open content after archive extraction
-    virtual void RecBookFile::SaveContent( ); // Save content before archive creation
-    virtual void RecBookFile::CloseContent( ); // Desactivate content before deletion
+        virtual void NewContent(); // Create content for a new file
+    virtual void OpenContent( ); // Open content after archive extraction
+    virtual void SaveContent( ); // Save content before archive creation
+    virtual void CloseContent( ); // Desactivate content before deletion
     
     // operations
     bool LoadImages( );
@@ -66,18 +64,17 @@ public:
 	int RecognizedFiles( wxArrayString *filenames, wxArrayString *paths );
 	bool HasToBePreprocessed( wxString imagefile );
 	// adaptation
-	bool RecBookFile::ResetAdaptation( bool ask_user );
-	bool RecBookFile::FastAdaptation( wxArrayPtrVoid params, AxProgressDlg *dlg );
-	bool RecBookFile::TypAdaptation( wxArrayPtrVoid params, AxProgressDlg *dlg );
-	bool RecBookFile::MusAdaptation( wxArrayPtrVoid params, AxProgressDlg *dlg );
-	wxString RecBookFile::GetTypFilename( ) { return m_basename + "book.axtyp";}
-	wxString RecBookFile::GetMusFilename( ) { return m_basename + "book.axmus";}
+	bool ResetAdaptation( bool ask_user );
+	bool FastAdaptation( wxArrayPtrVoid params, AxProgressDlg *dlg );
+	bool TypAdaptation( wxArrayPtrVoid params, AxProgressDlg *dlg );
+	bool MusAdaptation( wxArrayPtrVoid params, AxProgressDlg *dlg );
+	wxString GetTypFilename( ) { return m_basename + "book.axtyp";}
+	wxString GetMusFilename( ) { return m_basename + "book.axmus";}
 	wxString GetTypCacheFilename( ) { return m_basename + "cache.axtyp";}
 	wxString GetMusCacheFilename( ) { return m_basename + "cache.axmus";}
     
 public:
-    // WDR: member variable declarations for RecBookFile
-    // infos
+        // infos
     wxString m_RISM;
     wxString m_Composer;
     wxString m_Title;
@@ -101,12 +98,10 @@ public:
 	bool m_pre_page_binarization_select;
 
 protected:
-    // WDR: member variable declarations for RecBookFile
-    RecEnv *m_envPtr;
+        RecEnv *m_envPtr;
 
 private:
-    // WDR: handler declarations for RecBookFile
-
+    
 };
 
 #endif //AX_RECOGNITION

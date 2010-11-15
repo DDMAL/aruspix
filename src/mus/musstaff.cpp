@@ -41,7 +41,6 @@ int SortElements(MusElement **first, MusElement **second)
 		return 0;
 }
 
-// WDR: class implementations
 
 //----------------------------------------------------------------------------
 // MusStaff
@@ -196,7 +195,9 @@ MusElement *MusStaff::GetLast( )
 
 MusElement *MusStaff::GetNext( MusElement *element )
 {	
-	if ( !element || m_elements.IsEmpty() )//|| ( element->no >= (int)m_elements.GetCount() - 1 ) )
+	//if ( !element || m_elements.IsEmpty() )//|| ( element->no >= (int)m_elements.GetCount() - 1 ) )
+    // laurent: the third condition has been comment. Why?
+    if ( !element || m_elements.IsEmpty() || ( element->no >= (int)m_elements.GetCount() - 1 ) )
 		return NULL;
 
 	if ( element->no >= (int)m_elements.GetCount() - 1) return NULL;
@@ -205,7 +206,9 @@ MusElement *MusStaff::GetNext( MusElement *element )
 
 MusElement *MusStaff::GetPrevious( MusElement *element )
 {
-	if ( !element || m_elements.IsEmpty() ) //|| ( element->no <= 0 ) )
+	//if ( !element || m_elements.IsEmpty() ) //|| ( element->no <= 0 ) )
+    // idem - we need the third condition to be false as well
+    if ( !element || m_elements.IsEmpty() || ( element->no <= 0 ) )
 		return NULL;
 	
 	if ( element->no > (int)m_elements.GetCount() - 1) return NULL;
@@ -276,6 +279,23 @@ MusElement *MusStaff::Insert( MusElement *element )
 
 	return element;
 }
+
+void MusStaff::Append( MusElement *element, int step )
+{
+	if ( !element ) return;
+    
+    // insert at the end of the staff with a random step
+    MusElement *last = this->GetLast();
+    if (last) {
+        element->xrel += last->xrel + step;
+    }
+    else {
+        element->xrel += step;
+    }
+	m_elements.Add( element );
+	this->CheckIntegrity();
+}
+
 
 void MusStaff::Delete( MusElement *element )
 {
@@ -555,6 +575,9 @@ void MusStaff::DrawStaffLines( wxDC *dc, int i )
 	wxASSERT_MSG( dc , "DC cannot be NULL");
 	if ( !Check() )
 		return;
+        
+    if (this->invisible)
+        return;
 
 	if ( i == -1 )
 		i = m_w->m_page->m_staves.Index( *this );
@@ -573,9 +596,9 @@ void MusStaff::DrawStaffLines( wxDC *dc, int i )
 	x1 = this->indent ? this->indent*10 : 0;
 	x2 = m_w->wxmax;
 
-	wxPen pen( *m_w->m_currentColour, m_p->EpLignesPortee, wxSOLID );
+	wxPen pen( *m_w->m_currentColour, m_w->ToZoom( m_p->EpLignesPortee ), wxSOLID );
 	dc->SetPen( pen );
-	wxBrush brush( *m_w->m_currentColour , wxTRANSPARENT );
+	wxBrush brush( *m_w->m_currentColour , wxSOLID );
 	dc->SetBrush( brush );
 
 	x1 =  m_w->ToZoom (x1);
@@ -743,7 +766,7 @@ void MusStaff::DrawSlur( wxDC *dc, int x1, int y1, int x2, int y2, bool up, int 
 
 	wxPen pen( *m_w->m_currentColour, 1, wxSOLID );
 	dc->SetPen( pen );
-	wxBrush brush( *m_w->m_currentColour, wxTRANSPARENT );
+	wxBrush brush( *m_w->m_currentColour, wxSOLID );
 	dc->SetBrush( brush );
 
 
@@ -1077,8 +1100,26 @@ void MusStaff::CopyElements( wxArrayPtrVoid params )
 }
 
 
+void MusStaff::GetMaxXY( wxArrayPtrVoid params )
+{
+    // param 0: int
+    int *max_x = (int*)params[0];
+    int *max_y = (int*)params[1]; // !!this is given in term of staff line space
 
-// WDR: handler implementations for MusStaff
+	MusElement *element = this->GetLast();
+    if (element) {
+        int last_max = element->xrel;
+        if (!element->IsSymbol() || (((MusSymbol*)element)->flag != BARRE)) {
+            last_max += 35; // abirtrary margin;
+        }
+        if ((*max_x) < last_max) {
+            *max_x = last_max;
+        }
+    }
+    (*max_y) += this->ecart;
+}
+
+
 
 
 

@@ -24,13 +24,11 @@
 #include "axapp.h"
 
 
-// WDR: class implementations
 
 //----------------------------------------------------------------------------
 // AxCtrl
 //----------------------------------------------------------------------------
 
-// WDR: event table for AxCtrl
 
 BEGIN_EVENT_TABLE(AxCtrl,wxGenericTreeCtrl)
 END_EVENT_TABLE()
@@ -122,5 +120,4 @@ bool AxCtrl::SelectionIsChildOf( wxTreeItemId id )
     return true;
 }
 
-// WDR: handler implementations for AxCtrl
 

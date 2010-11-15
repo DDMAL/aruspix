@@ -19,7 +19,6 @@
 
 #include "musfile.h"
 
-// WDR: class declarations
 
 enum
 {
@@ -39,8 +38,7 @@ public:
     MusBinOutput( MusFile *file, wxString filename, int flag = MUS_BIN_ARUSPIX );
     virtual ~MusBinOutput();
     
-    // WDR: method declarations for MusBinOutput
-	virtual bool ExportFile( );
+    virtual bool ExportFile( );
 	virtual bool WriteFileHeader( const MusFileHeader *header );
 	virtual bool WriteSeparator( );
 	virtual bool WritePage( const MusPage *page );
@@ -54,8 +52,7 @@ public:
 	virtual bool WriteHeaderFooter( const MusHeaderFooter *headerfooter);
     
 private:
-    // WDR: member variable declarations for MusBinOutput
-	wxUint16 uint16;
+    wxUint16 uint16;
 	wxInt16 int16;
 	wxUint32 uint32;
 	wxInt32 int32;
@@ -63,8 +60,7 @@ private:
 	int m_flag;
 
 private:
-	// WDR: handler declarations for MusBinOutput
-};
+	};
 
 
 //----------------------------------------------------------------------------
@@ -78,8 +74,7 @@ public:
     MusBinInput( MusFile *file, wxString filename, int flag = MUS_BIN_ARUSPIX );
     virtual ~MusBinInput();
     
-    // WDR: method declarations for MusBinInput
-	virtual bool ImportFile( );
+    virtual bool ImportFile( );
 	virtual bool ReadFileHeader( MusFileHeader *header );
 	virtual bool ReadSeparator( );
 	virtual bool ReadPage( MusPage *page );
@@ -93,8 +88,7 @@ public:
 	virtual bool ReadHeaderFooter( MusHeaderFooter *headerfooter);
     
 private:
-    // WDR: member variable declarations for MusBinInput
-	wxUint16 uint16;
+    wxUint16 uint16;
 	wxInt16 int16;
 	wxUint32 uint32;
 	wxInt32 int32;
@@ -102,8 +96,7 @@ private:
     int m_vmaj, m_vmin, m_vrev;
 
 private:
-	// WDR: handler declarations for MusBinInput
-};
+	};
 
 
 #endif

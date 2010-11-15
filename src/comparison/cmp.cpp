@@ -41,13 +41,11 @@ bool CmpEnv::s_expand_root = true;
 bool CmpEnv::s_expand_book = true;
 bool CmpEnv::s_expand_cmp = true;  
 
-// WDR: class implementations
 
 //----------------------------------------------------------------------------
 // CmpEnv
 //----------------------------------------------------------------------------
 
-// WDR: event table for CmpEnv
 
 BEGIN_EVENT_TABLE(CmpEnv,AxEnv)
     // copy paste 
@@ -358,7 +356,6 @@ bool CmpEnv::CloseAll( )
     return true;
 }
 
-// WDR: handler implementations for CmpEnv
 
 void CmpEnv::OnCmpEdit( wxCommandEvent &event )
 {

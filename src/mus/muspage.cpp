@@ -31,7 +31,6 @@
 WX_DEFINE_OBJARRAY( ArrayOfMusStaves );
 
 
-// WDR: class implementations
 
 //----------------------------------------------------------------------------
 // MusPage
@@ -266,6 +265,18 @@ void MusPage::SetValues( int type )
 
 // functors for MusPage
 
+
+void MusPage::Process(MusStaffFunctor *functor, wxArrayPtrVoid params )
+{
+    MusStaff *staff;
+	int i;
+    for (i = 0; i < (int)m_staves.GetCount(); i++) 
+	{
+		staff = &m_staves[i];
+        functor->Call( staff, params );
+	}
+}
+
 void MusPage::ProcessStaves( wxArrayPtrVoid params )
 {
     // param 0: MusStaffFunctor
@@ -333,6 +344,5 @@ void MusPage::CountVoices( wxArrayPtrVoid params )
 
 }
 
-// WDR: handler implementations for MusPage
 
 

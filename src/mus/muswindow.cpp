@@ -46,7 +46,9 @@
 #include <iostream>
 #include <cstdlib>
 
-// WDR: class implementations
+int MusWindow::s_flats[] = {F2, F3, F3, F4, F4, F5, F6, F6, F7, F7, F8, F8};
+int MusWindow::s_sharps[] = {F2, F2, F3, F3, F4, F5, F5, F6, F6, F7, F7, F8};
+
 
 //----------------------------------------------------------------------------
 // MusWindow
@@ -54,7 +56,6 @@
 
 IMPLEMENT_DYNAMIC_CLASS(MusWindow,wxScrolledWindow)
 
-// WDR: event table for MusWindow
 
 #include "wx/fontdlg.h"
 
@@ -1057,7 +1058,6 @@ void MusWindow::UpdateScroll()
 	OnSyncScroll( x, y );
 }
 
-// WDR: handler implementations for MusWindow
 
 void MusWindow::OnPopupMenuNote( wxCommandEvent &event )
 {
@@ -1485,7 +1485,7 @@ void MusWindow::OnMidiInput(wxCommandEvent &event)
 	printf("octave: %d, hauteur: %d\n", octave, hauteur);
     if ( m_currentElement && m_currentElement->IsNote() ) {
 //        m_currentElement->SetPitch( die[hauteur], octave, m_currentStaff );
-		m_currentElement->SetPitch( die[hauteur], octave );
+		m_currentElement->SetPitch( MusWindow::s_sharps[hauteur], octave );
     }
     
 }
@@ -1800,7 +1800,7 @@ void MusWindow::OnKeyDown(wxKeyEvent &event)
 			{
 				if ( m_currentStaff->GetNext( m_currentElement ) )
 				{
-					if (m_currentElement->IsNote()) { 
+					if (!m_currentElement->IsNeume()) { 
 						m_currentElement = m_currentStaff->GetNext( m_currentElement );
 					} else if (m_currentElement->IsNeume()) {
 						MusNeume *temp = (MusNeume *) m_currentElement;
@@ -1822,7 +1822,7 @@ void MusWindow::OnKeyDown(wxKeyEvent &event)
 			{
 				if ( m_currentStaff->GetPrevious( m_currentElement ) )
 				{
-					if (m_currentElement->IsNote()) { 
+					if (!m_currentElement->IsNeume()) { 
 						m_currentElement = m_currentStaff->GetPrevious( m_currentElement );
 					} else if (m_currentElement->IsNeume()) {
 						MusNeume *temp = (MusNeume *) m_currentElement;

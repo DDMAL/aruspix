@@ -30,13 +30,11 @@
 
 #include "app/axoptionsdlg.h"
 
-// WDR: class implementations
 
 //----------------------------------------------------------------------------
 // RecBookDataDlg
 //----------------------------------------------------------------------------
 
-// WDR: event table for RecBookDataDlg
 
 BEGIN_EVENT_TABLE(RecBookDataDlg,wxDialog)
     EVT_BUTTON( wxID_OK, RecBookDataDlg::OnOk )
@@ -49,8 +47,7 @@ RecBookDataDlg::RecBookDataDlg( wxWindow *parent, wxWindowID id, const wxString 
     RecBookFile *recBookFile ) :
     wxDialog( parent, id, title )
 {
-    // WDR: dialog function BookDataFunc4 for RecBookDataDlg
-    RecBookDataFunc4( this, TRUE );
+        RecBookDataFunc4( this, TRUE );
     m_recBookFile = recBookFile;
     m_loadAxfiles = false;
     m_loadImages = false;
@@ -104,7 +101,6 @@ bool RecBookDataDlg::TransferDataFromWindow()
 }
 */
 
-// WDR: handler implementations for RecBookDataDlg
 
 void RecBookDataDlg::OnBrowseAxfiles( wxCommandEvent &event )
 {
@@ -164,7 +160,6 @@ void RecBookDataDlg::OnCancel(wxCommandEvent &event)
 #define PREVIEW_WIDTH 200
 #define PREVIEW_HEIGHT 200
 
-// WDR: event table for RecBookPanel
 
 BEGIN_EVENT_TABLE(RecBookPanel,wxPanel)
     EVT_CHECKBOX( ID4_CB_PREVIEW, RecBookPanel::OnPreview )
@@ -174,8 +169,7 @@ RecBookPanel::RecBookPanel( wxWindow *parent, wxWindowID id,
                             const wxPoint &position, const wxSize& size, long style ) :
 wxPanel( parent, id, position, size, style )
 {
-    // WDR: dialog function BookFunc4 for RecBookPanel
-    RecBookFunc4( this, TRUE );
+        RecBookFunc4( this, TRUE );
     this->GetPreviewCB( )->SetValue( true );
 	m_show_preview = true;
 	m_filename = "";
@@ -274,7 +268,6 @@ void RecBookPanel::LoadPreview( )
     dest.DrawRectangle( 0, 0, PREVIEW_WIDTH, PREVIEW_HEIGHT );
 }
 
-// WDR: handler implementations for RecBookPanel
 
 void RecBookPanel::OnPreview( wxCommandEvent &event )
 {
@@ -290,7 +283,6 @@ void RecBookPanel::OnPreview( wxCommandEvent &event )
 // RecBookCtrl
 //----------------------------------------------------------------------------
 
-// WDR: event table for RecBookCtrl
 
 BEGIN_EVENT_TABLE(RecBookCtrl,AxCtrl)
     EVT_TREE_ITEM_MENU( ID4_TREEBOOK, RecBookCtrl::OnMenu )
@@ -447,7 +439,6 @@ void RecBookCtrl::Update( )
     m_recBookFilePtr->Modify();
 }  
 
-// WDR: handler implementations for RecBookCtrl
 
 void RecBookCtrl::OnSelection( wxTreeEvent &event )
 {

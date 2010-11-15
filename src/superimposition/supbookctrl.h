@@ -29,7 +29,6 @@ class SupBookCtrl;
 
 class AxBookFileItem;
 
-// WDR: class declarations
 
 //----------------------------------------------------------------------------
 // SupBookDataDlg
@@ -42,8 +41,7 @@ public:
     SupBookDataDlg( wxWindow *parent, wxWindowID id, const wxString &title,
         SupBookFile *supBookFile );
     
-    // WDR: method declarations for SupBookDataDlg
-    wxTextCtrl* Axfiles()  { return (wxTextCtrl*) FindWindow( ID2_BOOK_AXFILES ); }
+        wxTextCtrl* Axfiles()  { return (wxTextCtrl*) FindWindow( ID2_BOOK_AXFILES ); }
     wxTextCtrl* Images1()  { return (wxTextCtrl*) FindWindow( ID2_BOOK_IMAGES1 ); }
 	wxTextCtrl* Images2()  { return (wxTextCtrl*) FindWindow( ID2_BOOK_IMAGES2 ); }
     wxTextCtrl* Library1()  { return (wxTextCtrl*) FindWindow( ID2_LIBRARY1 ); }
@@ -58,15 +56,13 @@ public:
     //virtual bool TransferDataFromWindow();
     
 private:
-    // WDR: member variable declarations for SupBookDataDlg
-    SupBookFile *m_supBookFile;
+        SupBookFile *m_supBookFile;
     bool m_loadAxfiles;
     bool m_loadImages1;
 	bool m_loadImages2;
     
 private:
-    // WDR: handler declarations for SupBookDataDlg
-    void OnBrowseAxfiles( wxCommandEvent &event );
+        void OnBrowseAxfiles( wxCommandEvent &event );
     void OnBrowseImages1( wxCommandEvent &event );
 	void OnBrowseImages2( wxCommandEvent &event );
     void OnOk( wxCommandEvent &event );
@@ -89,8 +85,7 @@ public:
         const wxSize& size = wxDefaultSize,
         long style = wxTAB_TRAVERSAL | wxNO_BORDER );
     
-    // WDR: method declarations for SupBookPanel
-    SupBookCtrl* GetTree()  { return (SupBookCtrl*) FindWindow( ID2_TREEBOOK ); }
+        SupBookCtrl* GetTree()  { return (SupBookCtrl*) FindWindow( ID2_TREEBOOK ); }
     wxStaticBitmap* GetPreview()  { return (wxStaticBitmap*) FindWindow( ID2_PREVIEW ); }
     wxCheckBox* GetPreviewCB()  { return (wxCheckBox*) FindWindow( ID2_CB_PREVIEW ); }
     
@@ -98,16 +93,14 @@ public:
 	
 	
 private:
-    // WDR: member variable declarations for SupBookPanel
-	wxString m_filename;
+    wxString m_filename;
 	wxBitmap m_preview, m_nopreview, m_loading;
 	bool m_show_preview;
     
 private:
 	void LoadPreview( );
 	void UpdatePreview( );
-    // WDR: handler declarations for SupBookPanel
-    void OnPreview( wxCommandEvent &event );
+        void OnPreview( wxCommandEvent &event );
 
 private:
     DECLARE_EVENT_TABLE()
@@ -127,8 +120,7 @@ public:
         long style = 0 );
 	virtual ~SupBookCtrl();
     
-    // WDR: method declarations for SupBookCtrl
-    void SetBookFile( SupBookFile *bookFile ) { m_supBookFilePtr = bookFile; }
+        void SetBookFile( SupBookFile *bookFile ) { m_supBookFilePtr = bookFile; }
     void SetEnv( SupEnv *supEnv ) { m_supEnvPtr = supEnv; }
 	void SetBookPanel( SupBookPanel *supBookPanel ) { m_supBookPanelPtr = supBookPanel; }
     void Build( );
@@ -137,8 +129,7 @@ public:
 	virtual void LoadDisplay( );
     
 private:
-    // WDR: member variable declarations for SupBookCtrl
-    SupBookFile *m_supBookFilePtr;
+        SupBookFile *m_supBookFilePtr;
     SupEnv *m_supEnvPtr;
 	SupBookPanel *m_supBookPanelPtr;
     // id
@@ -151,8 +142,7 @@ private:
     
     
 private:
-    // WDR: handler declarations for SupBookCtrl
-    void OnSelection( wxTreeEvent &event );
+        void OnSelection( wxTreeEvent &event );
     void OnActivate( wxTreeEvent &event );
 	void OnAxDesactivate( wxCommandEvent &event );
     void OnAxRemove( wxCommandEvent &event );

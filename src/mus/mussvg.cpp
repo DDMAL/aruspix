@@ -19,6 +19,9 @@
 #endif
 
 #include "mussvg.h"
+#include "musdef.h"
+
+#include "app/axapp.h"
 
 #include "wx/image.h"
 
@@ -37,8 +40,8 @@
 // BAD EQUATION TO ADJUST THE FONT SIZE/POSITION IN THE SVG
 // Size factor seems to be OK for music and lyric font
 // Position is not OK; kind of works with default size
-#define SVG_TEXT_DY_X 0.5
-#define SVG_TEXT_DY_Y 10.0
+#define SVG_TEXT_DY_X 0.565
+#define SVG_TEXT_DY_Y 0.0
 #define SVG_TEXT_DX 0
 #define SVG_TEXT_SCALE 0.75
 
@@ -70,7 +73,8 @@ wxString wxBrushString ( wxColour c, int style )
             break ;
 
         default :
-            wxASSERT_MSG(FALSE, wxT("MusSVGFileDC::Requested Brush Style not available")) ;
+            s = s + wxT("fill-opacity:1.0; "); // solid brush as default
+            //wxASSERT_MSG(FALSE, wxT("MusSVGFileDC::Requested Brush Style not available")) ;
 
     }
     s = s + newline ;
@@ -118,25 +122,69 @@ void MusSVGFileDC::Init (wxString f, int Width, int Height, float dpi)
     // no graphic yet
     m_graphic_exists = FALSE;
     
+    m_leipzig_glyphs.clear();
+    
 #if wxMAC_USE_CORE_GRAPHICS
     // the cg context we got when starting the page isn't valid anymore, so replace it
     SetGraphicsContext( wxGraphicsContext::Create() );
 #endif
 
     ////////////////////code here
-
-    m_outfile = new wxFileOutputStream(f) ;
-    m_OK = m_outfile->Ok ();
+    
+    m_flushed = false;
+    m_filename = f ;
+    
+    m_outfile = new wxMemoryOutputStream() ;
+    m_OK = true; //m_outfile->Ok ();
     if (m_OK)
     {
-        m_filename = f ;
         m_sub_images = 0 ;
-        wxString s ;
-        s = wxT("<?xml version=\"1.0\" encoding=\"ISO-8859-1\" standalone=\"no\"?>") ; s = s + newline ;
-        write(s);
-        s.Printf ( wxT("<svg width=\"%dpx\" height=\"%dpx\"  version=\"1.1\" xmlns = 'http://www.w3.org/2000/svg'>\n"), Width, Height );
-        write(s);
     }
+}
+    
+    
+    
+void MusSVGFileDC::Flush() {
+
+    if (m_flushed) {
+        return;
+    }
+
+    wxFileOutputStream outfile(m_filename);
+    if (!outfile.Ok()) {
+        return;
+    }
+    
+    int i;
+    wxString s ;
+    s.Printf ( wxT("<?xml version=\"1.0\" encoding=\"ISO-8859-1\" standalone=\"no\"?>\n<svg width=\"%dpx\" height=\"%dpx\""),  
+            m_width, m_height);
+    s += wxT(" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\"  xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n");
+    const wxWX2MBbuf buf = s.mb_str(wxConvUTF8);
+    outfile.Write(buf, strlen((const char *)buf));
+    
+    if ( m_graphic_exists ) {
+        write("</g>\n");
+    }
+    write("</svg>\n") ;
+    
+    // insert the def for the leipzig glyphes if any
+    if (m_leipzig_glyphs.Count() > 0)
+    {
+        s = "<defs>\n";
+        outfile.Write(s, strlen(s));
+        for (i = 0; i < (int)m_leipzig_glyphs.Count(); i++) {
+            wxTransferFileToStream( wxGetApp().m_resourcesPath + "/svg/" + m_leipzig_glyphs[i] + ".xml", outfile );
+        }
+        s = "</defs>\n";
+        outfile.Write(s, strlen(s));
+    
+    }
+    wxMemoryInputStream input(*m_outfile);
+    input.SeekI(0);
+    //input.Read( *m_outfile );
+    outfile.Write( input );
+    m_flushed = true;
 }
 
 
@@ -159,13 +207,9 @@ MusSVGFileDC::MusSVGFileDC (wxString f, int Width, int Height, float dpi)
 
 MusSVGFileDC::~MusSVGFileDC()
 {
-    wxString s;
-    if ( m_graphic_exists ) {
-        s = wxT("</g>\n");
+    if (!m_flushed) {
+        Flush();
     }
-
-    s += wxT("</svg>\n") ;
-    write(s);
     delete m_outfile ;
 }
 
@@ -264,33 +308,118 @@ void MusSVGFileDC::DoDrawRotatedText(const wxString& sText, wxCoord x, wxCoord y
         write(s);
     }
     
-    //now do the text itself
-    s.Printf (wxT(" <text x=\"%d\" y=\"%d\" dx=\"%d\" dy=\"%d\" "),x,y, SVG_TEXT_DX, (int)((double)m_font.GetPointSize() * SVG_TEXT_DY_X + SVG_TEXT_DY_Y) );
-
     sTmp = m_font.GetFaceName () ;
-    // For some reason, some browser (e.g., Chrome) do not like spaces or dots in font names...
-    sTmp.Replace(" ", "");
-    sTmp.Replace(".", "");
-    if (sTmp.Len () > 0)  s = s + wxT("style=\"font-family: '") + sTmp + wxT("'; ");
-    else s = s + wxT("style=\" ") ;
-
-    wxString fontweights [3] = { wxT("normal"), wxT("lighter"), wxT("bold") };
-    s = s + wxT("font-weight:") + fontweights[m_font.GetWeight() - wxNORMAL] + semicolon + space;
-
-    wxString fontstyles [5] = { wxT("normal"), wxT("style error"), wxT("style error"), wxT("italic"), wxT("oblique") };
-    s = s + wxT("font-style:") + fontstyles[m_font.GetStyle() - wxNORMAL] + semicolon  + space;
-
-    sTmp.Printf (wxT("font-size:%dpt; fill:#"), (int)((double)m_font.GetPointSize() * SVG_TEXT_SCALE) );
-    s = s + sTmp ;
-    s = s + wxColStr (m_textForegroundColour) + wxT("; stroke:#") + wxColStr (m_textForegroundColour) + wxT("; ") ;
-    sTmp.Printf ( wxT("stroke-width:0;\"  transform=\"rotate( %.2g %d %d )  \" >"),  -angle, x,y ) ;
-    s = s + sTmp + sText + wxT("</text> ") + newline ;
-    if (m_OK)
-    {
+    if (sTmp == SVG_LEIPZIG_FONT) {
         write(s);
+        DoDrawLeipzigText( sText, x + SVG_TEXT_DX, y + ((int)((double)m_font.GetPointSize() + SVG_TEXT_DY_Y) * SVG_TEXT_DY_X), angle );
+    }
+    else
+    {    
+        //now do the text itself
+        s.Printf (wxT(" <text x=\"%d\" y=\"%d\" dx=\"%d\" dy=\"%d\" "),x,y, SVG_TEXT_DX, (int)((double)m_font.GetPointSize() * SVG_TEXT_SCALE + SVG_TEXT_DY_Y) );
+
+        // For some reason, some browsers (e.g., Chrome) do not like spaces or dots in font names...
+        sTmp.Replace(" ", "");
+        sTmp.Replace(".", "");
+        if (sTmp.Len () > 0)  s = s + wxT("style=\"font-family: '") + sTmp + wxT("'; ");
+        else s = s + wxT("style=\" ") ;
+
+        wxString fontweights [3] = { wxT("normal"), wxT("lighter"), wxT("bold") };
+        s = s + wxT("font-weight:") + fontweights[m_font.GetWeight() - wxNORMAL] + semicolon + space;
+
+        wxString fontstyles [5] = { wxT("normal"), wxT("style error"), wxT("style error"), wxT("italic"), wxT("oblique") };
+        s = s + wxT("font-style:") + fontstyles[m_font.GetStyle() - wxNORMAL] + semicolon  + space;
+
+        sTmp.Printf (wxT("font-size:%dpt; "), (int)((double)m_font.GetPointSize() * SVG_TEXT_SCALE) );
+        s = s + sTmp ;
+        /* remove the color information because normaly already in the graphic element */
+        //s = s + wxT("fill:#") + wxColStr (m_textForegroundColour) + wxT("; stroke:#") + wxColStr (m_textForegroundColour) + wxT("; ") ;
+        sTmp.Printf ( wxT("stroke-width:0;\"  transform=\"rotate( %.2g %d %d )  \" >"),  -angle, x,y ) ;
+        s = s + sTmp + sText + wxT("</text> ") + newline ;
+        if (m_OK)
+        {
+            write(s);
+        }
     }
     wxASSERT_MSG(!wxSVG_DEBUG, wxT("MusSVGFileDC::DrawRotatedText Call executed")) ;
 
+}
+
+void MusSVGFileDC::DoDrawLeipzigText(const wxString& sText, wxCoord x, wxCoord y, double angle)
+{
+    wxString glyph;
+    char c = (char)sText[0];
+    switch (c) {
+        /* figures */
+        case 48: glyph = "figure_0"; break;
+        case 49: glyph = "figure_1"; break;
+        case 50: glyph = "figure_2"; break;
+        case 51: glyph = "figure_3"; break;
+        case 52: glyph = "figure_4"; break;
+        case 53: glyph = "figure_5"; break;
+        case 54: glyph = "figure_6"; break;
+        case 55: glyph = "figure_7"; break;
+        case 56: glyph = "figure_8"; break;
+        case 57: glyph = "figure_9"; break;
+        /* clef */
+        case sSOL: glyph = "clef_G"; break;
+        case sFA: glyph = "clef_F"; break;
+        case sUT: glyph = "clef_C"; break;
+        case sSOL_OCT: glyph = "clef_G8"; break;
+        case sSOL + N_FONT: glyph = "clef_G_mensural"; break;
+        case sFA + N_FONT: glyph = "clef_F_mensural"; break;
+        case sUT + N_FONT: glyph = "clef_C_mensural"; break;
+        case sSOL_OCT + N_FONT: glyph = "clef_G_chiavette"; break;
+        /* alterations */
+        case sDIESE: glyph = "alt_sharp"; break;
+        case sBECARRE: glyph = "alt_natural"; break;
+        case sBEMOL: glyph = "alt_flat"; break;
+        case sDDIESE: glyph = "alt_double_sharp"; break;
+        case sDIESE + N_FONT: glyph = "alt_sharp_mensural"; break;
+        case sBECARRE + N_FONT: glyph = "alt_natural_mensural"; break;
+        case sBEMOL + N_FONT: glyph = "alt_flat_mensural"; break;
+        case sDDIESE + N_FONT: glyph = "alt_double_sharp_mensural"; break;
+        /* rests */
+        case sSilNOIRE: glyph = "rest_4"; break;
+        case sSilNOIRE + 1: glyph = "rest_8"; break;
+        case sSilNOIRE + 2: glyph = "rest_16"; break;
+        case sSilNOIRE + 3: glyph = "rest_32"; break;
+        case sSilNOIRE + 4: glyph = "rest_64"; break;
+        case sSilNOIRE + 5: glyph = "rest_128"; break;
+        case sSilNOIRE + N_FONT: glyph = "rest_4_mensural"; break;
+        case sSilNOIRE + 1 + N_FONT: glyph = "rest_8_mensural"; break;
+        case sSilNOIRE + 2 + N_FONT: glyph = "rest_16_mensural"; break;
+        case sSilNOIRE + 3 + N_FONT: glyph = "rest_32_mensural"; break;
+        case sSilNOIRE + 4 + N_FONT: glyph = "rest_64_mensural"; break;
+        case sSilNOIRE + 5 + N_FONT: glyph = "rest_128_mensural"; break;
+        /* note heads */
+        case sRONDE_B: glyph = "head_whole"; break;
+        case sRONDE_N: glyph = "head_whole_fill"; break;
+        case sBLANCHE: glyph = "head_half"; break;
+        case sNOIRE: glyph = "head_quarter"; break;
+        case sRONDE_B + N_FONT: glyph = "head_whole_diamond"; break;
+        case sRONDE_N + N_FONT: glyph = "head_whole_filldiamond"; break;
+        case sBLANCHE + N_FONT: glyph = "head_half_diamond"; break;
+        case sNOIRE + N_FONT: glyph = "head_quarter_filldiamond"; break;
+        /* slashes */
+        case sCROCHET_H: glyph = "slash_up"; break;
+        case sCROCHET_B: glyph = "slash_down"; break;
+        case sCROCHET_H + N_FONT: glyph = "slash_up_mensural"; break;
+        case sCROCHET_B + N_FONT: glyph = "slash_down_mensural"; break;
+        /* ornaments */
+        case 35: glyph = "orn_mordent"; break;
+        /* todo */
+        default: glyph = "unknown";
+    }
+    
+    if (m_leipzig_glyphs.Index(glyph) == wxNOT_FOUND) {
+        m_leipzig_glyphs.Add(glyph);
+    }
+    
+    wxString s;
+    s.Printf ( wxT("<use xlink:href=\"#%s\" transform=\"translate(%d, %d) scale(%f, %f)\"/>"),
+               glyph.c_str(), x, y, ((double)(m_font.GetPointSize() / 2)) * 0.001, ((double)(m_font.GetPointSize() / 2)) * -0.001 );
+    write(s);    
 }
 
 
@@ -396,7 +525,7 @@ void MusSVGFileDC::DoDrawArc(wxCoord x1, wxCoord y1, wxCoord x2, wxCoord y2, wxC
     wxASSERT_MSG( (fabs ( r2-r1 ) <= 3), wxT("MusSVGFileDC::DoDrawArc Error in getting radii of circle")) ;
     if ( fabs ( r2-r1 ) > 3 )    //pixels
     {
-        s = wxT("<!--- MusSVGFileDC::DoDrawArc Error in getting radii of circle --> \n") ;
+        s = wxT("/*- MusSVGFileDC::DoDrawArc Error in getting radii of circle */ \n") ;
         write(s);
     }
 
@@ -617,9 +746,9 @@ void MusSVGFileDC::NewGraphics ()
         case  wxTRANSPARENT :
             sPenStyle = wxT("stroke-opacity:0.0; stroke-opacity:0.0; ") ;
             break ;
-        default :
-            wxASSERT_MSG(FALSE, wxT("MusSVGFileDC::SetPen Call called to set a Style which is not available")) ;
-            sWarn = sWarn + wxT("<!--- MusSVGFileDC::SetPen Call called to set a Style which is not available --> \n") ;
+        default : {}
+            //wxASSERT_MSG(FALSE, wxT("MusSVGFileDC::SetPen Call called to set a Style which is not available")) ;
+            //sWarn = sWarn + wxT("/*- MusSVGFileDC::SetPen Call called to set a Style which is not available */ \n") ;
     }
 
     sLast.Printf (   wxT("stroke-width:%d\" \n   transform=\"translate(%.2g %.2g) scale(%.2g %.2g)\">"),
@@ -817,7 +946,7 @@ void MusSVGFileDC::DoDrawBitmap(const class wxBitmap & bmp, wxCoord x, wxCoord y
     {
         write(s);
     }
-    m_OK = m_outfile->Ok () && bPNG_OK;
+    // m_OK = m_outfile->Ok () && bPNG_OK;
     wxASSERT_MSG(!wxSVG_DEBUG, wxT("MusSVGFileDC::DoDrawBitmap Call executed")) ;
 
     return  ;
@@ -879,7 +1008,7 @@ void MusSVGFileDC::write(const wxString &s)
 {
     const wxWX2MBbuf buf = s.mb_str(wxConvUTF8);
     m_outfile->Write(buf, strlen((const char *)buf));
-    m_OK = m_outfile->Ok();
+    //m_OK = m_outfile->Ok();
 }
 
 #ifdef __BORLANDC__

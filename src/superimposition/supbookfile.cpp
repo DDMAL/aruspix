@@ -23,7 +23,6 @@
 #include "supfile.h"
 
 
-// WDR: class implementations
 
 //----------------------------------------------------------------------------
 // SupBookFile
@@ -456,6 +455,5 @@ bool SupBookFile::DeleteAxfile( wxString filename )
 	return true;
 }
 
-// WDR: handler implementations for RecFile
 
 #endif //AX_SUPERIMPOSITION

@@ -51,7 +51,6 @@ class CmpCtrlPanel;
 class CmpEnv;
 class CmpCollation;
 
-// WDR: class declarations
 
 //----------------------------------------------------------------------------
 // CmpEnv
@@ -61,11 +60,10 @@ class CmpEnv: public AxEnv
 {
 public:
     // constructors and destructors
-    CmpEnv::CmpEnv();
-    virtual CmpEnv::~CmpEnv();
+    CmpEnv();
+    virtual ~CmpEnv();
     
-    // WDR: method declarations for CmpEnv
-    virtual void LoadWindow();
+        virtual void LoadWindow();
     static void LoadConfig();
     static void SaveConfig();
     virtual void ParseCmd( wxCmdLineParser *parser );
@@ -82,8 +80,7 @@ public:
 	CmpCollation *GetCollationPtr() { return m_cmpCollationPtr; }
 
 private:
-    // WDR: member variable declarations for CmpEnv
-    wxSplitterWindow *m_bookSplitterPtr;
+        wxSplitterWindow *m_bookSplitterPtr;
     wxSplitterWindow *m_pageSplitterPtr;
 	wxSplitterWindow *m_srcSplitterPtr;
     // im
@@ -112,8 +109,7 @@ public:
     
 private:
 
-    // WDR: handler declarations for CmpEnv
-    void OnCmpEdit( wxCommandEvent &event );
+        void OnCmpEdit( wxCommandEvent &event );
     void OnCmpLoad( wxCommandEvent &event );
     void OnOpen( wxCommandEvent &event );
     void OnTools( wxCommandEvent &event );

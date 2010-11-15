@@ -30,7 +30,6 @@ class AxFrame;
 typedef wxMenuBar *EnvMenuBarFunc_t ( );
 
 
-// WDR: class declarations
 
 //----------------------------------------------------------------------------
 // AxEnv
@@ -43,8 +42,7 @@ public:
     AxEnv();
     virtual ~AxEnv();
     
-    // WDR: method declarations for AxEnv
-    void Load(AxFrame *parent);
+        void Load(AxFrame *parent);
     void Unload();
     void Show();
     void Hide();
@@ -64,8 +62,7 @@ protected:
 	void SetTitle( const wxChar *pszFormat, ... );
     
 private:
-    // WDR: member variable declarations for AxEnv
-
+    
 protected:
     AxFrame *m_framePtr; // pointer to parent frame
     wxWindow *m_envWindowPtr; // pointer to environment window
@@ -81,8 +78,7 @@ public:
     bool m_isShown;
     
 private:
-    // WDR: handler declarations for AxEnv
-	virtual void OnUpdateUI( wxUpdateUIEvent &event );
+    virtual void OnUpdateUI( wxUpdateUIEvent &event );
 
 private:
     DECLARE_DYNAMIC_CLASS(AxEnv)
@@ -102,11 +98,9 @@ public:
     AxEnvRow(wxString className, wxString menuItem, int menuId, wxString helpStr = "" );
     ~AxEnvRow();
     
-    // WDR: method declarations for AxEnvRow
-    
+        
 private:
-    // WDR: member variable declarations for AxEnvRow
-
+    
 public:
     AxEnv *m_envPtr;
     wxString m_menuItem;
@@ -115,8 +109,7 @@ public:
     int m_menuId;
 
 private:
-    // WDR: handler declarations for AxEnvRow
-
+    
 };
 
 #endif

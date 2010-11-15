@@ -23,7 +23,6 @@
 
 int ImOperator::s_pre_image_binarization_method = IM_BINARIZATION_OTSU;
 
-// WDR: class implementations
 
 //----------------------------------------------------------------------------
 // ImOperator
@@ -667,4 +666,3 @@ void ImOperator::MedianFilter( int values[], int size, int filter_size, int *avg
         *avg_ptr = avg;
 }
 
-// WDR: handler implementations for ImOperator

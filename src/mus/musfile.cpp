@@ -27,7 +27,6 @@ WX_DEFINE_OBJARRAY( ArrayOfMusPages );
 
 char *MusFile::sep = "#ώτυώ#";
 
-// WDR: class implementations
 
 //----------------------------------------------------------------------------
 // MusFile
@@ -99,7 +98,6 @@ void MusFile::Process(MusPageFunctor *functor, wxArrayPtrVoid params )
 	}
 }
 
-// WDR: handler implementations for MusFile
 
 
 //----------------------------------------------------------------------------
@@ -133,7 +131,6 @@ MusFileOutputStream::~MusFileOutputStream()
 {
 }
 
-// WDR: handler implementations for MusFileOutputStream
 
 
 //----------------------------------------------------------------------------
@@ -158,7 +155,6 @@ MusFileInputStream::~MusFileInputStream()
 {
 }
 
-// WDR: handler implementations for MusFileInputStream
 
 
 

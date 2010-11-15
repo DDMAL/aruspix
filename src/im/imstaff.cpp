@@ -28,7 +28,6 @@
 #include "wx/arrimpl.cpp"
 WX_DEFINE_OBJARRAY( ArrayOfStaffSegments );
 
-// WDR: class implementations
 
 // hauteur de la zone de correlation pour le calcul de la courbure de staff
 // correspond au decalage maximum
@@ -1333,5 +1332,4 @@ void ImStaff::ExtractLyricImages( const int staff, wxArrayPtrVoid params )
 	this->Terminate( ERR_NONE );
 }					
 					
-// WDR: handler implementations for ImStaff
 

@@ -26,7 +26,10 @@
 
 #include "musfile.h"
 
-// WDR: class declarations
+// Reading is now done with libxml2
+#include <libxml/parser.h>
+#include <libxml/tree.h>
+
 
 
 //----------------------------------------------------------------------------
@@ -40,8 +43,7 @@ public:
     MusMeiOutput( MusFile *file, wxString filename );
     virtual ~MusMeiOutput();
     
-    // WDR: method declarations for MusMeiOutput
-	virtual bool ExportFile( );
+    virtual bool ExportFile( );
 	virtual bool WriteFileHeader( const MusFileHeader *header );
     virtual bool WritePage( const MusPage *page );
 	virtual bool WriteStaff( const MusStaff *staff );
@@ -56,16 +58,14 @@ private:
     void WriteScore( TiXmlElement *score );
     
 private:
-    // WDR: member variable declarations for MusMeiOutput
-	wxString m_filename;
+    wxString m_filename;
     TiXmlElement *m_xml_root;
     TiXmlElement *m_xml_current;
     TiXmlElement **m_xml_staves;
 
 
 private:
-	// WDR: handler declarations for MusMeiOutput
-};
+	};
 
 
 //----------------------------------------------------------------------------
@@ -79,8 +79,11 @@ public:
     MusMeiInput( MusFile *file, wxString filename );
     virtual ~MusMeiInput();
     
-    // WDR: method declarations for MusMeiInput
-	virtual bool ImportFile( );
+/* Because this way of loading MEI do not seem to be adequate, I am trying 
+   another way that matches the MEI element. It is still VERY experimental.
+   A future option could be to use a XML / C++ binding
+    
+    virtual bool ImportFile( );
 	virtual bool ReadFileHeader( MusFileHeader *header );
 	virtual bool ReadSeparator( );
 	virtual bool ReadPage( MusPage *page );
@@ -93,20 +96,67 @@ public:
 	virtual bool ReadPagination( MusPagination *pagination );
 	virtual bool ReadHeaderFooter( MusHeaderFooter *headerfooter);
     
+    
+    
+    
 private:
     TiXmlNode *GetFirstChild( TiXmlNode *node, wxString element );
     void ReadParts( TiXmlElement *parts );
     void ReadScore( TiXmlElement *score );
     
 private:
-    // WDR: member variable declarations for MusMeiInput
-
+    
 private:
-	// WDR: handler declarations for MusMeiInput
-	wxString m_filename;
+		wxString m_filename;
     TiXmlElement *m_xml_root;
     TiXmlElement *m_xml_current;
 };
+
+*/
+
+    // Knonw limitations:
+    // staff @n need to be integers and > 0
+
+
+    virtual bool ImportFile( );
+	virtual bool ReadNote( MusNote *note );
+	virtual	bool ReadNeume( MusNeume *neume );
+	virtual bool ReadSymbol( MusSymbol *symbol );
+    
+    
+    
+    
+private:
+    bool ReadElement( xmlNode *node );
+    bool ReadAttributeBool( xmlNode *node, wxString name, bool *value, bool default_value = false );
+    bool ReadAttributeInt( xmlNode *node, wxString name, int *value, int default_value = -1 );
+    bool ReadAttributeString( xmlNode *node, wxString name, wxString *value, wxString default_value = "" );
+
+    bool mei_accid( xmlNode *node );
+    bool mei_barline( xmlNode *node );
+    bool mei_clefchange( xmlNode *node );
+    bool mei_custos( xmlNode *node ); 
+    bool mei_dot( xmlNode *node );
+    bool mei_layer( xmlNode *node );    
+    bool mei_measure( xmlNode *node );
+    bool mei_mensur( xmlNode *node );
+    bool mei_note( xmlNode *node );
+    bool mei_parts( xmlNode *node );
+    bool mei_rest( xmlNode *node );
+    bool mei_score( xmlNode *node );
+    bool mei_staff( xmlNode *node );
+    
+    void mei_attr_dur( xmlNode *node, unsigned char *val );
+    void mei_attr_pname( xmlNode *, unsigned short *code );
+    
+private:
+    
+private:
+		wxString m_filename;
+    MusPage *m_page; // the page on which we are loading the page (one page)
+    MusStaff *m_currentStaff;
+};
+
 
 
 #endif

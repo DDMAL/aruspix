@@ -27,7 +27,6 @@ class RecTypModel;
 class RecMusModel;
 class AxImage;
 
-// WDR: class declarations
 
 
 //----------------------------------------------------------------------------
@@ -38,50 +37,48 @@ class RecFile: public AxFile
 {
 public:
     // constructors and destructors
-    RecFile::RecFile( wxString name, RecEnv *env = NULL );
-    virtual RecFile::~RecFile();
+    RecFile( wxString name, RecEnv *env = NULL );
+    virtual ~RecFile();
     
-    // WDR: method declarations for RecFile
-	virtual void RecFile::NewContent(); // Create content for a new file
-	virtual void RecFile::OpenContent( ); // Open content after archive extraction
-	virtual void RecFile::SaveContent( ); // Save content before archive creation
-	virtual void RecFile::CloseContent( ); // Desactivate content before deletion
+    virtual void NewContent(); // Create content for a new file
+	virtual void OpenContent( ); // Open content after archive extraction
+	virtual void SaveContent( ); // Save content before archive creation
+	virtual void CloseContent( ); // Desactivate content before deletion
 	
-	void RecFile::SetImage( wxString filename );
-	void RecFile::SetImage( AxImage *image );
-	void RecFile::GetImage0( AxImage *image );
-	void RecFile::GetImage1( AxImage *image );
-	bool RecFile::CancelRecognition( bool ask_user ); // remove all recognition files
-	void RecFile::WriteNoPitchMLF( ); // write MLF Without Pitch using the current page content
+	void SetImage( wxString filename );
+	void SetImage( AxImage *image );
+	void GetImage0( AxImage *image );
+	void GetImage1( AxImage *image );
+	bool CancelRecognition( bool ask_user ); // remove all recognition files
+	void WriteNoPitchMLF( ); // write MLF Without Pitch using the current page content
 	// functor
-	bool RecFile::Preprocess( wxArrayPtrVoid params, AxProgressDlg *dlg );
-	bool RecFile::Recognize( wxArrayPtrVoid params, AxProgressDlg *dlg );
-    bool RecFile::Decode( wxArrayPtrVoid params, AxProgressDlg *dlg );
-	bool RecFile::RealizeFromMLF( wxArrayPtrVoid params, AxProgressDlg *dlg );
-	bool RecFile::GenerateMFC( wxArrayPtrVoid params, AxProgressDlg *dlg );
+	bool Preprocess( wxArrayPtrVoid params, AxProgressDlg *dlg );
+	bool Recognize( wxArrayPtrVoid params, AxProgressDlg *dlg );
+    bool Decode( wxArrayPtrVoid params, AxProgressDlg *dlg );
+	bool RealizeFromMLF( wxArrayPtrVoid params, AxProgressDlg *dlg );
+	bool GenerateMFC( wxArrayPtrVoid params, AxProgressDlg *dlg );
     //int DoCorrelation( ImPage *imPage );
 	// getters
-	MusFile *RecFile::GetMusFile() { return m_musFilePtr; }
-	ImPage *RecFile::GetImPage() { return m_imPagePtr; }
-	//RecTypModel *RecFile::GetTypModel() { return m_typModelPtr; }
+	MusFile *GetMusFile() { return m_musFilePtr; }
+	ImPage *GetImPage() { return m_imPagePtr; }
+	//RecTypModel *GetTypModel() { return m_typModelPtr; }
 	
 	// status
-	bool RecFile::IsPreprocessed() { return m_isPreprocessed; }
-	bool RecFile::IsRecognized() {  return m_isRecognized;  } 
+	bool IsPreprocessed() { return m_isPreprocessed; }
+	bool IsRecognized() {  return m_isRecognized;  } 
 	
 	// backward compatibility to be check when a opening the file
-	void RecFile::UpgradeTo_1_4_0();
-    void RecFile::UpgradeTo_1_5_0();
+	void UpgradeTo_1_4_0();
+    void UpgradeTo_1_5_0();
 	
 	// status
-	static bool RecFile::IsRecognized( wxString filename );
+	static bool IsRecognized( wxString filename );
 	
 	// setter
-	void RecFile::SetBinarization( int image_binarization_method, int page_binarization_method, int page_binarization_size );
+	void SetBinarization( int image_binarization_method, int page_binarization_method, int page_binarization_size );
     
 public:
-    // WDR: member variable declarations for RecFile
-	RecEnv *m_envPtr;
+    RecEnv *m_envPtr;
 	ImPage *m_imPagePtr;
 	MusFile *m_musFilePtr;
 	// filename
@@ -109,13 +106,11 @@ public:
 	int m_pre_page_binarization_method_size;
 
 protected:
-    // WDR: member variable declarations for RecFile
-	bool m_isPreprocessed;
+    bool m_isPreprocessed;
 	bool m_isRecognized;
    
 private:
-    // WDR: handler declarations for RecFile
-
+    
 };
 
 #endif //AX_RECOGNITION

@@ -50,7 +50,6 @@ enum
 #define LYRIC_WIN_WIDTH 2 
 #define LYRIC_WIN_OVERLAP 0
 
-// WDR: class declarations
 
 //----------------------------------------------------------------------------
 // ImRLE
@@ -75,59 +74,56 @@ class ImPage: public ImOperator, public AxUndo
 {
 public:
     // constructors and destructors
-    ImPage::ImPage( wxString path, bool *isModified = NULL );
-    virtual ImPage::~ImPage();
+    ImPage( wxString path, bool *isModified = NULL );
+    virtual ~ImPage();
     
-    // WDR: method declarations for ImPage
-    void ImPage::Clear( );
+        void Clear( );
     // XML access
-    bool ImPage::Load( TiXmlElement *file_root );
-    bool ImPage::Save( TiXmlElement *file_root );
+    bool Load( TiXmlElement *file_root );
+    bool Save( TiXmlElement *file_root );
     // Processing
-    bool ImPage::Check( wxString infile, int max_size = -1, int min_size = -1, int index = 0 );
-    bool ImPage::Deskew( double max_alpha );
-    bool ImPage::FindStaves( int min, int max, bool normalize = true, bool crop = true ); // if normalize, then resize to get a staff height of 100
-	bool ImPage::BinarizeAndClean( );
-    bool ImPage::FindBorders( );
-    bool ImPage::FindOrnateLetters( );
-    bool ImPage::FindText( );
-    bool ImPage::FindTextInStaves( );
-    bool ImPage::ExtractStaves( ); 
-    bool ImPage::StaffCurvatures( );    
-	bool ImPage::GenerateMFC( wxString output_dir = "" );
-	bool ImPage::GenerateLyricMFC( wxString output_dir );
-	bool ImPage::ChangeClassification( int x1, int y1, int x2, int y2, int plane_number  );
-	bool ImPage::ChangeClassification( int plane_number  );
-	bool ImPage::MagicSelection( int x, int y, AxImage *selection, int *xmin, int *ymin );
+    bool Check( wxString infile, int max_size = -1, int min_size = -1, int index = 0 );
+    bool Deskew( double max_alpha );
+    bool FindStaves( int min, int max, bool normalize = true, bool crop = true ); // if normalize, then resize to get a staff height of 100
+	bool BinarizeAndClean( );
+    bool FindBorders( );
+    bool FindOrnateLetters( );
+    bool FindText( );
+    bool FindTextInStaves( );
+    bool ExtractStaves( ); 
+    bool StaffCurvatures( );    
+	bool GenerateMFC( wxString output_dir = "" );
+	bool GenerateLyricMFC( wxString output_dir );
+	bool ChangeClassification( int x1, int y1, int x2, int y2, int plane_number  );
+	bool ChangeClassification( int plane_number  );
+	bool MagicSelection( int x, int y, AxImage *selection, int *xmin, int *ymin );
 	// Working methods
-	bool ImPage::SaveStaffImages(); // enregistre les images de portees dans working dir
+	bool SaveStaffImages(); // enregistre les images de portees dans working dir
     // moulinette
-    virtual void ImPage::Process(ImStaffFunctor *functor, wxArrayPtrVoid params, int counter = -1 );
-	//virtual void ImPage::Process(ImStaffFunctor *functor, wxArrayPtrVoid params, 
+    virtual void Process(ImStaffFunctor *functor, wxArrayPtrVoid params, int counter = -1 );
+	//virtual void Process(ImStaffFunctor *functor, wxArrayPtrVoid params, 
 	//	ImStaffSegmentFunctor *subfunctor = NULL, int counter = -1 );
     // values
-    void ImPage::CalcLeftRight(int *x1, int *x2);
-	int ImPage::GetStaffCount( );
-	//int ImPage::GetStaffSegmentsCount( bool segment_only = false );
-	void ImPage::GetStaffSegmentOffsets( int staff_no, int offsets[],  int split_points[], int end_points[] );
-    int ImPage::ToViewY( int y ) { return m_size.GetHeight() - y;}
+    void CalcLeftRight(int *x1, int *x2);
+	int GetStaffCount( );
+	//int GetStaffSegmentsCount( bool segment_only = false );
+	void GetStaffSegmentOffsets( int staff_no, int offsets[],  int split_points[], int end_points[] );
+    int ToViewY( int y ) { return m_size.GetHeight() - y;}
 	
 	// undo
 	virtual void Load( AxUndoFile *undoPtr );
     virtual void Store( AxUndoFile *undoPtr );
     
 private:
-    // WDR: member variable declarations for ImPage
-    int ImPage::GetMedianStavesSpace( );
-    int ImPage::GetDeskewAlignement( _imImage *image, double alpha );
-    void ImPage::GetHorizontalStavesPosition( int values[], int size, int avg, int *x1, int *x2 );
-    void ImPage::GetVerticalStavesPosition( int values[], int size, int avg, int staves[], int *nb_staves );
-    void ImPage::CleanBorder( int row[], int size, _imImage *border, _imImage *image, int split );
+        int GetMedianStavesSpace( );
+    int GetDeskewAlignement( _imImage *image, double alpha );
+    void GetHorizontalStavesPosition( int values[], int size, int avg, int *x1, int *x2 );
+    void GetVerticalStavesPosition( int values[], int size, int avg, int staves[], int *nb_staves );
+    void CleanBorder( int row[], int size, _imImage *border, _imImage *image, int split );
 
 
 public:
-    // WDR: member variable declarations for ImPage
-	_imImage *m_img0; // processed image, with pre-classification
+    _imImage *m_img0; // processed image, with pre-classification
 	_imImage *m_img1; // processed image, greyscale (alternative)
 	_imImage *m_selection; // buffer used to change classification
 	wxPoint m_selection_pos;
@@ -146,18 +142,17 @@ public:
 	int m_num_staff_lines; // num staff lines on this ImPage
 	
 	// static values not changed
-	static int ImPage::s_pre_page_binarization_method; // used in ImPage, idem
-    static int ImPage::s_pre_page_binarization_method_size;
-	static bool ImPage::s_pre_page_binarization_select;
+	static int s_pre_page_binarization_method; // used in ImPage, idem
+    static int s_pre_page_binarization_method_size;
+	static bool s_pre_page_binarization_select;
 	// the number of staff lines (4 for chant, or 5)
-	static int ImPage::s_num_staff_lines;
+	static int s_num_staff_lines;
 	
 	int *m_pre_page_binarization_methodPtr;
 	int *m_pre_page_binarization_method_sizePtr;
     
 private:
-    // WDR: handler declarations for ImPage
-
+    
 };
 
 #endif

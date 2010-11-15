@@ -28,7 +28,6 @@ class RecBookCtrl;
 
 class AxBookFileItem;
 
-// WDR: class declarations
 
 //----------------------------------------------------------------------------
 // RecBookDataDlg
@@ -41,8 +40,7 @@ public:
     RecBookDataDlg( wxWindow *parent, wxWindowID id, const wxString &title,
         RecBookFile *recBookFile );
     
-    // WDR: method declarations for RecBookDataDlg
-    wxTextCtrl* Axfiles()  { return (wxTextCtrl*) FindWindow( ID4_BOOK_AXFILES ); }
+        wxTextCtrl* Axfiles()  { return (wxTextCtrl*) FindWindow( ID4_BOOK_AXFILES ); }
     wxTextCtrl* Images()  { return (wxTextCtrl*) FindWindow( ID4_BOOK_IMAGES ); }
     wxTextCtrl* Library()  { return (wxTextCtrl*) FindWindow( ID4_LIBRARY ); }
     wxTextCtrl* Year()  { return (wxTextCtrl*) FindWindow( ID4_YEAR ); }
@@ -58,14 +56,12 @@ public:
     //virtual bool TransferDataFromWindow();
     
 private:
-    // WDR: member variable declarations for RecBookDataDlg
-    RecBookFile *m_recBookFile;
+        RecBookFile *m_recBookFile;
     bool m_loadAxfiles;
     bool m_loadImages;
     
 private:
-    // WDR: handler declarations for RecBookDataDlg
-    void OnBrowseAxfiles( wxCommandEvent &event );
+        void OnBrowseAxfiles( wxCommandEvent &event );
     void OnBrowseImages( wxCommandEvent &event );
     void OnOk( wxCommandEvent &event );
     //void OnCancel( wxCommandEvent &event );
@@ -87,8 +83,7 @@ public:
         const wxSize& size = wxDefaultSize,
         long style = wxTAB_TRAVERSAL | wxNO_BORDER );
     
-    // WDR: method declarations for RecBookPanel
-    RecBookCtrl* GetTree()  { return (RecBookCtrl*) FindWindow( ID4_TREEBOOK ); }
+        RecBookCtrl* GetTree()  { return (RecBookCtrl*) FindWindow( ID4_TREEBOOK ); }
     wxStaticBitmap* GetPreview()  { return (wxStaticBitmap*) FindWindow( ID4_PREVIEW ); }
     wxCheckBox* GetPreviewCB()  { return (wxCheckBox*) FindWindow( ID4_CB_PREVIEW ); }
     
@@ -96,16 +91,14 @@ public:
 	
 	
 private:
-    // WDR: member variable declarations for RecBookPanel
-	wxString m_filename;
+    wxString m_filename;
 	wxBitmap m_preview, m_nopreview, m_loading;
 	bool m_show_preview;
     
 private:
 	void LoadPreview( );
 	void UpdatePreview( );
-    // WDR: handler declarations for RecBookPanel
-    void OnPreview( wxCommandEvent &event );
+        void OnPreview( wxCommandEvent &event );
 
 private:
     DECLARE_EVENT_TABLE()
@@ -125,8 +118,7 @@ public:
         long style = 0 );
 	virtual ~RecBookCtrl();
     
-    // WDR: method declarations for RecBookCtrl
-    void SetBookFile( RecBookFile *bookFile ) { m_recBookFilePtr = bookFile; }
+        void SetBookFile( RecBookFile *bookFile ) { m_recBookFilePtr = bookFile; }
     void SetEnv( RecEnv *recEnv ) { m_recEnvPtr = recEnv; }
 	void SetBookPanel( RecBookPanel *recBookPanel ) { m_recBookPanelPtr = recBookPanel; }
     void Build( );
@@ -135,8 +127,7 @@ public:
 	virtual void LoadDisplay( );
     
 private:
-    // WDR: member variable declarations for RecBookCtrl
-    RecBookFile *m_recBookFilePtr;
+        RecBookFile *m_recBookFilePtr;
     RecEnv *m_recEnvPtr;
 	RecBookPanel *m_recBookPanelPtr;
     // id
@@ -149,8 +140,7 @@ private:
     
     
 private:
-    // WDR: handler declarations for RecBookCtrl
-    void OnSelection( wxTreeEvent &event );
+        void OnSelection( wxTreeEvent &event );
     void OnActivate( wxTreeEvent &event );
 	void OnAxDesactivate( wxCommandEvent &event );
     void OnAxRemove( wxCommandEvent &event );

@@ -18,7 +18,6 @@
 
 #include "im/imoperator.h"
 
-// WDR: class declarations
 
 #define SS_FACTOR_1 3
 #define SS_STAFF_ROI_W 120
@@ -88,13 +87,11 @@ public:
 	int m_lyricTopline;		// y-coordinate of topline of lyric
 		    
 public:
-    // WDR: member variable declarations for ImStaff
-    int m_y;
+        int m_y;
     int m_med;
     
 private:
-    // WDR: handler declarations for ImStaff
-
+    
 };
 
 

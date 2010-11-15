@@ -40,7 +40,6 @@
 //#include "ml/mldecoder.h"
 
 
-// WDR: class implementations
 
 //----------------------------------------------------------------------------
 // RecFile
@@ -839,7 +838,7 @@ bool RecFile::Decode( wxArrayPtrVoid params, AxProgressDlg *dlg )
 
     Torch::DecoderBatchTest batch_tester( (char*)input.c_str() , Torch::DST_FEATS_HTK , (char*)m_rec_wrdtrns.c_str()  , &bs_decoder , 
                                    true , true , (char*)m_rec_output.c_str() , false , 10.0 ) ;
-    	
+    
 	batch_tester.run() ;
 
     if ( lang_model != NULL )
@@ -956,7 +955,6 @@ bool RecFile::GenerateMFC( wxArrayPtrVoid params, AxProgressDlg *dlg )
 	return !failed;
 }
 
-// WDR: handler implementations for RecFile
 
 #endif //AX_RECOGNITION
 

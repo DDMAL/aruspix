@@ -32,13 +32,11 @@
 #include "im/impage.h"
 #include "im/imstaff.h"
 
-// WDR: class implementations
 
 //----------------------------------------------------------------------------
 // RecMusController
 //----------------------------------------------------------------------------
 
-// WDR: event table for RecMusController
 
 BEGIN_EVENT_TABLE(RecMusController,wxPanel)
     EVT_SIZE( RecMusController::OnSize )
@@ -256,7 +254,6 @@ void RecMusController::InverseShowStaffBitmap( )
 }
 
 
-// WDR: handler implementations for RecMusController
 
 void RecMusController::OnSize( wxSizeEvent &event )
 {
@@ -279,7 +276,6 @@ void RecMusController::OnSize( wxSizeEvent &event )
 
 IMPLEMENT_CLASS(RecMusWindow, MusWindow)
 
-// WDR: event table for RecMusWindow
 
 BEGIN_EVENT_TABLE(RecMusWindow,MusWindow)
     EVT_MOUSE_EVENTS( RecMusWindow::OnMouse )
@@ -354,7 +350,6 @@ void RecMusWindow::OnEndEdition()
     m_musControlPtr->SyncStaffBitmap();
 }
 
-// WDR: handler implementations for RecMusWindow
 
 
 void RecMusWindow::OnSize( wxSizeEvent &event )

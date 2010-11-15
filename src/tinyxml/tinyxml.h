@@ -438,7 +438,7 @@ public:
 	void SetValue( const std::string& _value )    
 	{	  
 		TiXmlStrBuf buf( _value );
-		SetValue( buf.buffer ? buf.buffer : "" );    	
+		SetValue( buf.buffer ? buf.buffer : "" );    
 	}	
 	#endif
 

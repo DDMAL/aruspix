@@ -406,7 +406,6 @@ bool MusBinOutput::WriteHeaderFooter( const MusHeaderFooter *headerfooter)
 
 
 
-// WDR: handler implementations for MusBinOutput
 
 
 //----------------------------------------------------------------------------
@@ -478,7 +477,9 @@ bool MusBinInput::ReadFileHeader( MusFileHeader *header )
 	header->xpos = wxUINT32_SWAP_ON_BE( uint32 );  // xpso
 	Read( &header->param.orientation, 1 ); // param - orientation
 	Read( &header->param.EpLignesPortee, 1 ); // param - epLignesPortee
+    header->param.EpLignesPortee = 1;	
 	Read( &header->param.EpQueueNote, 1 ); // param - epQueueNotes
+    header->param.EpQueueNote = 2;
 	Read( &header->param.EpBarreMesure, 1 ); // param - epBarreMesure
 	Read( &header->param.EpBarreValeur, 1 ); // param - epBarreValeur
 	Read( &header->param.EpBlancBarreValeur, 1 ); // param - epBlancBarreValeur
@@ -497,7 +498,8 @@ bool MusBinInput::ReadFileHeader( MusFileHeader *header )
 	Read( &header->param.rapportPorteesDen, 1 ); // rpPorteesDen
 	Read( &header->param.rapportDiminNum, 1 ); // rpDiminNum
 	Read( &header->param.rapportDiminDen, 1 ); // rpDiminDen	
-	Read( &header->param.hampesCorr, 1 ); // hampesCorr	 
+	Read( &header->param.hampesCorr, 1 ); // hampesCorr
+    header->param.hampesCorr = 1;	 
 
 	return true;
 }
@@ -567,7 +569,7 @@ bool MusBinInput::ReadStaff( MusStaff *staff )
 	Read( &staff->armTyp, 1 );
 	Read( &staff->armNbr, 1 );
 	Read( &staff->notAnc, 1 );
-	staff->notAnc = true;// force notation ancienne
+	//staff->notAnc = true;// force notation ancienne
 	Read( &staff->grise, 1 );
 	Read( &staff->invisible, 1 );
 	Read( &uint16, 2 );
@@ -836,6 +838,5 @@ bool MusBinInput::ReadHeaderFooter( MusHeaderFooter *headerfooter)
 }
 
 
-// WDR: handler implementations for MusBinInput
 
 

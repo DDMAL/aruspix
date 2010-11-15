@@ -44,7 +44,6 @@ public:
         const wxSize& size = wxDefaultSize,
         long style = wxDEFAULT_DIALOG_STYLE );
     
-    // WDR: method declarations for AxOptionsDlg
     wxPanel* GetMusPanel()  { return (wxPanel*) FindWindow( ID_PANEL_WINKEY ); }
     wxSpinCtrl* GetScMusOffset()  { return (wxSpinCtrl*) FindWindow( ID_SC_MUS_OFFSET ); }
     wxSpinCtrl* GetScMusSize()  { return (wxSpinCtrl*) FindWindow( ID_SC_MUS_SIZE ); }
@@ -94,7 +93,6 @@ private:
 	void UpdateFontCorrections( int eventID );
     
 private:
-    // WDR: member variable declarations for AxOptionsDlg
     wxString m_imageSizeToReduceStr;
     bool m_changeLanguage;
     wxFont m_font;
@@ -114,7 +112,6 @@ private:
 #endif
     
 private:
-    // WDR: handler declarations for AxOptionsDlg
 	void OnSpinCtrl( wxSpinEvent &event );
 	void OnSpinCtrlText( wxCommandEvent &event );
     void OnChooseFont( wxCommandEvent &event );
@@ -126,11 +123,11 @@ private:
     void OnOk( wxCommandEvent &event );
     void OnCancel( wxCommandEvent &event );
 	// Standard tabs
-	void AxOptionsDlg::OptionsDlgStandard( wxNotebook *notebook );
+	void OptionsDlgStandard( wxNotebook *notebook );
 	// Superimposition tabs
-	void AxOptionsDlg::OptionsDlgSuperimposition( wxNotebook *notebook );
+	void OptionsDlgSuperimposition( wxNotebook *notebook );
 	// Recognition tabs
-	void AxOptionsDlg::OptionsDlgRecognition( wxNotebook *notebook );
+	void OptionsDlgRecognition( wxNotebook *notebook );
 	wxSize m_min_size; // keep min size to layout notebook; bug in auto layout ??? can't get it...
 	
 #ifdef AX_SUPERIMPOSITION
@@ -138,7 +135,6 @@ private:
 #endif
 	
 #ifdef AX_RECOGNITION		
-    // WDR: member variable declarations for RecOptionsDlg
     void OnBrowse4( wxCommandEvent &event );
 #endif
 
@@ -165,15 +161,11 @@ public:
         const wxSize& size = wxDefaultSize,
         long style = wxScrolledWindowStyle, bool center = true );
     virtual ~AxOptMusWindow();
-        
-    // WDR: method declarations for AxOptMusWindow
     
 protected:
-    // WDR: member variable declarations for AxOptMusWindow
     MusFile *m_filePtr;
     
 private:
-    // WDR: handler declarations for AxOptMusWindow
     void OnMouse( wxMouseEvent &event );
 
 private:
@@ -193,7 +185,6 @@ public:
 	// constructors and destructors
 	AxBinSelectDlgFunc( wxWindow *parent, wxWindowID id, const wxString &title, RecFile *recfile, RecBookFile *recbookfile );
 	
-	// WDR: method declarations for AxBinSelectDlgFunc
 	wxChoice* GetCPageBin()  { return (wxChoice*) FindWindow( ID0_BIN_CHOICE ); }
 	wxSpinCtrl* GetScBinRgnSize()  { return (wxSpinCtrl*) FindWindow( ID0_RGN_SIZE_SPINCTRL ); }
 	wxCheckBox* GetCbDeactivateDlg()  { return (wxCheckBox*) FindWindow( ID0_DEACTIVATE_DIALOG_CHECKBOX ); }

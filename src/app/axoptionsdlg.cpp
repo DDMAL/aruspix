@@ -41,8 +41,6 @@
 // AxOptionsDlg
 //----------------------------------------------------------------------------
 
-// WDR: event table for AxOptionsDlg
-
 BEGIN_EVENT_TABLE(AxOptionsDlg,wxDialog)
     EVT_BUTTON( wxID_OK, AxOptionsDlg::OnOk )
     EVT_BUTTON( wxID_CANCEL, AxOptionsDlg::OnCancel )
@@ -286,8 +284,6 @@ void AxOptionsDlg::UpdateFontCorrections( int eventID )
     m_musWinPtr->Resize( );
 }
 
-// WDR: handler implementations for AxOptionsDlg
-
 #ifdef AX_RECOGNITION
 void AxOptionsDlg::OnBrowse4( wxCommandEvent &event )
 {
@@ -509,8 +505,6 @@ void AxOptionsDlg::OnCancel(wxCommandEvent &event)
 
 IMPLEMENT_CLASS(AxOptMusWindow, MusWindow)
 
-// WDR: event table for AxOptMusWindow
-
 BEGIN_EVENT_TABLE(AxOptMusWindow,MusWindow)
     EVT_MOUSE_EVENTS( AxOptMusWindow::OnMouse )
 END_EVENT_TABLE()
@@ -561,8 +555,6 @@ AxOptMusWindow::~AxOptMusWindow()
     if (m_filePtr)
         delete m_filePtr;
 }
-
-// WDR: handler implementations for AxOptMusWindow
 
 void AxOptMusWindow::OnMouse(wxMouseEvent &event)
 {

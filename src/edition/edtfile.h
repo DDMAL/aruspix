@@ -23,7 +23,6 @@
 class EdtEnv;
 class MusFile;
 
-// WDR: class declarations
 
 
 //----------------------------------------------------------------------------
@@ -34,28 +33,24 @@ class EdtFile: public AxFile
 {
 public:
     // constructors and destructors
-    EdtFile::EdtFile( wxString name, EdtEnv *env = NULL );
-    virtual EdtFile::~EdtFile();
+    EdtFile( wxString name, EdtEnv *env = NULL );
+    virtual ~EdtFile();
     
-    // WDR: method declarations for EdtFile
-	virtual void EdtFile::NewContent(); // Create content for a new file
-	virtual void EdtFile::OpenContent( ); // Open content after archive extraction
-	virtual void EdtFile::SaveContent( ); // Save content before archive creation
-	virtual void EdtFile::CloseContent( ); // Desactivate content before deletion
+    virtual void NewContent(); // Create content for a new file
+	virtual void OpenContent( ); // Open content after archive extraction
+	virtual void SaveContent( ); // Save content before archive creation
+	virtual void CloseContent( ); // Desactivate content before deletion
 	
 private:
     
 public:
-    // WDR: member variable declarations for EdtFile
-	EdtEnv *m_envPtr;
+    EdtEnv *m_envPtr;
     MusFile *m_musFilePtr;
 
 protected:
-    // WDR: member variable declarations for EdtFile
-   
+       
 private:
-    // WDR: handler declarations for EdtFile
-
+    
 };
 
 #endif //AX_EDT

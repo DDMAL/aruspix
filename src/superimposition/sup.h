@@ -60,7 +60,6 @@ class SupBookFile;
 class SupBookPanel;
 class SupEnv;
 
-// WDR: class declarations
 
 /*
 //----------------------------------------------------------------------------
@@ -74,14 +73,12 @@ public:
     SupOldFile( wxString path = "", wxString shortname = "", AxProgressDlg *dlg  = NULL );
     virtual ~SupOldFile();
     
-    // WDR: method declarations for SupOldFile
-    bool Superimpose(const SupImController *imController1, 
+        bool Superimpose(const SupImController *imController1, 
         const SupImController *imController2, const wxString filename );
     //int GetError( ) { return m_error; }
     
 private:
-    // WDR: member variable declarations for SupOldFile
-    void DistByCorrelation(_imImage *image1, _imImage *image2,
+        void DistByCorrelation(_imImage *image1, _imImage *image2,
                                 wxSize window, int *decalageX, int *decalageY);
     //void DistByCorrelationFFT(const _imImage *image1, const _imImage *image2,
     //                            wxSize window, int *decalageX, int *decalageY);
@@ -92,8 +89,7 @@ private:
     //void ImageDestroy( _imImage **image );
 
 private:
-    // WDR: handler declarations for SupOldFile
-    //AxProgressDlg *m_progressDlg;
+        //AxProgressDlg *m_progressDlg;
     //int m_error;
 
     //_imImage *m_opImTmp1;
@@ -126,19 +122,16 @@ public:
         long style = wxTAB_TRAVERSAL | wxNO_BORDER, int flags = CONTROLLER_ALL );
     virtual ~SupImController();
     
-    // WDR: method declarations for SupImController
-    virtual void CloseDraggingSelection(wxPoint start, wxPoint end);
+        virtual void CloseDraggingSelection(wxPoint start, wxPoint end);
     
 private:
-    // WDR: member variable declarations for SupImController
-    int m_selectCounter;
+        int m_selectCounter;
 
 public:
     wxPoint m_points[4];
     
 private:
-    // WDR: handler declarations for SupImController
-
+    
 private:
     DECLARE_CLASS(SupImController)
     DECLARE_EVENT_TABLE()
@@ -155,11 +148,10 @@ class SupEnv: public AxEnv
 {
 public:
     // constructors and destructors
-    SupEnv::SupEnv();
-    virtual SupEnv::~SupEnv();
+    SupEnv();
+    virtual ~SupEnv();
     
-    // WDR: method declarations for SupEnv
-    virtual void LoadWindow();
+        virtual void LoadWindow();
     static void LoadConfig();
     static void SaveConfig();
     virtual void ParseCmd( wxCmdLineParser *parser );
@@ -175,8 +167,7 @@ public:
     void UpdateViews( int flags );
 	
 private:
-    // WDR: member variable declarations for SupEnv
-    SupImController *m_imControl1Ptr;
+        SupImController *m_imControl1Ptr;
     SupImController *m_imControl2Ptr;	
     SupImWindow *m_imView1Ptr;
     SupImWindow *m_imView2Ptr;
@@ -217,8 +208,7 @@ public:
 	static bool s_expand_ax;
     
 private:
-    // WDR: handler declarations for SupEnv
-    void OnBookEdit( wxCommandEvent &event );
+        void OnBookEdit( wxCommandEvent &event );
     void OnBookOptimize( wxCommandEvent &event );
     void OnBookSuperimpose( wxCommandEvent &event );
     void OnBookLoad( wxCommandEvent &event );

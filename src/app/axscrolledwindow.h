@@ -33,7 +33,6 @@ class AxEnv;
 
 
 
-// WDR: class declarations
 
 //----------------------------------------------------------------------------
 // AxScrolledWindow
@@ -50,8 +49,7 @@ public:
         long style = wxScrolledWindowStyle );
     virtual ~AxScrolledWindow();
     
-    // WDR: method declarations for AxScrolledWindow
-    void BeginSelection(int draggingShape = SHAPE_RECT);
+        void BeginSelection(int draggingShape = SHAPE_RECT);
 	void RedrawBuffer( );
     void EndSelection();
     void SetPen(wxPen pen);
@@ -73,8 +71,7 @@ private:
     void GetSelectionPoints(wxPoint *start, wxPoint *end);
 
 private:
-    // WDR: member variable declarations for AxScrolledWindow
-    int m_adjustMode;
+        int m_adjustMode;
 	int m_orgx, m_orgy;
     double m_zoom;
     double m_zoomMin;
@@ -98,8 +95,7 @@ public:
     wxMenu m_popupMenu;
     
 private:
-    // WDR: handler declarations for AxScrolledWindow
-    void OnKeyUp( wxKeyEvent &event );
+        void OnKeyUp( wxKeyEvent &event );
     void OnKeyDown( wxKeyEvent &event );
     void OnMouseEvent( wxMouseEvent &event );
     void OnRightDown( wxMouseEvent &event );

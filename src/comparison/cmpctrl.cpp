@@ -32,7 +32,6 @@
 #include "recognition/recbookfile.h"
 #include "recognition/recfile.h"
 
-// WDR: class implementations
 
 /*
 
@@ -40,7 +39,6 @@
 // CmpDataDlg
 //----------------------------------------------------------------------------
 
-// WDR: event table for CmpDataDlg
 
 BEGIN_EVENT_TABLE(CmpDataDlg,wxDialog)
     EVT_BUTTON( wxID_OK, CmpDataDlg::OnOk )
@@ -53,8 +51,7 @@ CmpDataDlg::CmpDataDlg( wxWindow *parent, wxWindowID id, const wxString &title,
     RecBookFile *recBookFile ) :
     wxDialog( parent, id, title )
 {
-    // WDR: dialog function BookDataFunc4 for CmpDataDlg
-    BookDataFunc4( this, TRUE );
+        BookDataFunc4( this, TRUE );
     m_recBookFile = recBookFile;
     m_loadAxfiles = false;
     m_loadImages = false;
@@ -97,7 +94,6 @@ bool CmpDataDlg::TransferDataFromWindow()
 }
 * /
 
-// WDR: handler implementations for CmpDataDlg
 
 void CmpDataDlg::OnBrowseAxfiles( wxCommandEvent &event )
 {
@@ -159,7 +155,6 @@ void CmpDataDlg::OnCancel(wxCommandEvent &event)
 #define PREVIEW_WIDTH 200
 #define PREVIEW_HEIGHT 200
 
-// WDR: event table for CmpCtrlPanel
 
 BEGIN_EVENT_TABLE(CmpCtrlPanel,wxPanel)
     EVT_CHECKBOX( ID6_CB_PREVIEW, CmpCtrlPanel::OnPreview )
@@ -169,8 +164,7 @@ CmpCtrlPanel::CmpCtrlPanel( wxWindow *parent, wxWindowID id,
                             const wxPoint &position, const wxSize& size, long style ) :
 wxPanel( parent, id, position, size, style )
 {
-    // WDR: dialog function BookFunc4 for CmpCtrlPanel
-    CmpFunc6( this, TRUE );
+        CmpFunc6( this, TRUE );
     this->GetPreviewCB( )->SetValue( true );
 	m_show_preview = true;
 	m_filename = "";
@@ -269,7 +263,6 @@ void CmpCtrlPanel::LoadPreview( )
     dest.DrawRectangle( 0, 0, PREVIEW_WIDTH, PREVIEW_HEIGHT );
 }
 
-// WDR: handler implementations for CmpCtrlPanel
 
 void CmpCtrlPanel::OnPreview( wxCommandEvent &event )
 {
@@ -286,7 +279,6 @@ void CmpCtrlPanel::OnPreview( wxCommandEvent &event )
 //----------------------------------------------------------------------------
 
 
-// WDR: event table for CmpCtrl
 
 BEGIN_EVENT_TABLE(CmpCtrl,AxCtrl)
     EVT_TREE_ITEM_MENU( ID6_TREEBOOK, CmpCtrl::OnMenu )
@@ -498,7 +490,6 @@ CmpBookItem *CmpCtrl::GetSelectedBookItem()
 	return NULL;
 }
 
-// WDR: handler implementations for CmpCtrl
 
 void CmpCtrl::OnSelection( wxTreeEvent &event )
 {

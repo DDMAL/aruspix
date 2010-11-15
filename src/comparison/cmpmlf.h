@@ -22,7 +22,6 @@
 #include "mus/musiomlf.h"
 
 
-// WDR: class declarations
 
 
 //----------------------------------------------------------------------------
@@ -36,13 +35,11 @@ public:
     CmpMLFSymb();
     virtual ~CmpMLFSymb() {};
     
-    // WDR: method declarations for CmpMLFSymb
-	virtual void SetValue( char type, wxString subtype, int position, int value = 0, char pitch = 0, int oct = 0, int flag = 0);
+    virtual void SetValue( char type, wxString subtype, int position, int value = 0, char pitch = 0, int oct = 0, int flag = 0);
     virtual wxString GetLabel( );
 
 protected:
-    // WDR: member variable declarations for CmpMLFSymb
-	
+    
 public:
 	wxString m_im_filename;
 	int m_im_staff;
@@ -52,8 +49,7 @@ public:
 	wxString m_cache;
 
 private:
-    // WDR: handler declarations for CmpMLFSymb
-
+    
 	DECLARE_DYNAMIC_CLASS(CmpMLFSymb)
 };
 
@@ -71,8 +67,7 @@ public:
 	//CmpMLFOutput( MusFile *file, wxFile *wxfile, wxString filename, wxString model_symbol_name = "CmpSymbol" );
     virtual ~CmpMLFOutput();
     
-    // WDR: method declarations for CmpMLFOutput
-	//bool ExportFile( MusFile *file, wxString filename);	// replace  musfile set in the constructor
+    //bool ExportFile( MusFile *file, wxString filename);	// replace  musfile set in the constructor
 														// and export it
 														// allow exportation of several files in one mlf
 														
@@ -83,16 +78,14 @@ public:
 	virtual void EndLabel( );
     
 protected:
-    // WDR: member variable declarations for CmpMLFOutput
-
+    
 public:
 	bool m_ignore_clefs;
 	bool m_ignore_custos;
 	bool m_ignore_keys;
 
 private:
-    // WDR: handler declarations for CmpMLFOutput
-};
+    };
 
 
 //----------------------------------------------------------------------------
@@ -106,18 +99,15 @@ public:
     CmpMLFInput( MusFile *file, wxString filename );
     virtual ~CmpMLFInput();
     
-    // WDR: method declarations for CmpMLFInput
-    virtual MusStaff *ImportFileInStaff(  );
+        virtual MusStaff *ImportFileInStaff(  );
     virtual bool ReadLabel( MusStaff *staff );
 	// specific
 	bool ReadLabelStr( wxString label );
     
 protected:
-    // WDR: member variable declarations for CmpMLFInput
-
+    
 private:
-    // WDR: handler declarations for CmpMLFInput
-	int m_cmp_pos;
+    int m_cmp_pos;
 	wxString m_cmp_page_label;
 };
 

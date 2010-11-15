@@ -26,7 +26,6 @@
 #include "axapp.h"
 #include "axenv.h"
 
-// WDR: class implementations
 
 //----------------------------------------------------------------------------
 // AxImageController
@@ -36,7 +35,6 @@
 //IMPLEMENT_CLASS2(AxImageController , AxImage, wxPanel )
 IMPLEMENT_CLASS(AxImageController, AxImage )
 
-// WDR: event table for AxImageController
 
 BEGIN_EVENT_TABLE(AxImageController,wxPanel)
     EVT_TOOL_RANGE( CONTROLLER_IDS_MIN, CONTROLLER_IDS_MAX, AxImageController::OnCommand )
@@ -455,7 +453,6 @@ void AxImageController::Goto()
 	dlg->Destroy();
 }
 
-// WDR: handler implementations for AxImageController
 
 void AxImageController::OnUpdateUI( wxUpdateUIEvent &event )
 {

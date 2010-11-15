@@ -40,8 +40,6 @@ class wxConfigBase;
 
 class AxProcess;
 
-// WDR: class declarations
-
 //----------------------------------------------------------------------------
 // AxProgressDlg
 //----------------------------------------------------------------------------
@@ -62,7 +60,6 @@ public:
     static void LoadValues( wxConfigBase *pConfig );
     static void SaveValues( wxConfigBase *pConfig );
     
-    // WDR: method declarations for AxProgressDlg
     wxCheckBox* GetCbCloseAtEnd()  { return (wxCheckBox*) FindWindow( ID_CB_CLOSE_AT_END ); }
     wxButton* GetCancel()  { return (wxButton*) FindWindow( wxID_CANCEL ); }
     wxStaticText* GetTxRestProgress()  { return (wxStaticText*) FindWindow( ID_TX_REST_PROGRESS ); }
@@ -101,7 +98,6 @@ public:
     bool GetCanceled( ) { return m_canceled; }
     
 private:
-    // WDR: member variable declarations for AxProgressDlg
     wxStopWatch m_stopWatch;
     long m_lastWatch;
     wxTimeSpan m_ts, m_old_ts;
@@ -132,7 +128,6 @@ public:
 	static bool s_instance_existing;
     
 private:
-    // WDR: handler declarations for AxProgressDlg
     void OnCancel( wxCommandEvent &event );
 
 private:

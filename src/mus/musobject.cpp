@@ -22,7 +22,6 @@
 #include "mus.h"
 
 
-// WDR: class implementations
 
 //----------------------------------------------------------------------------
 // MusObject
@@ -60,6 +59,5 @@ bool MusObject::Init( MusWindow *win )
 }
 
 
-// WDR: handler implementations for MusObject
 
 

@@ -20,7 +20,6 @@
 #include "muswindow.h"
 #include "musstaff.h"
 
-// WDR: class implementations
 
 //----------------------------------------------------------------------------
 // MusElement
@@ -258,7 +257,6 @@ int MusElement::filtrcod( int codElement, int *oct )
 	return codElement;
 }
 
-// WDR: handler implementations for MusElement
 
 
 

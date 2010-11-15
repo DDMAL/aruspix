@@ -30,7 +30,6 @@
 #include "mus/musiobin.h"
 
 
-// WDR: class implementations
 
 //----------------------------------------------------------------------------
 // EdtFile
@@ -100,7 +99,6 @@ void EdtFile::CloseContent( )
     }
 }
 
-// WDR: handler implementations for EdtFile
 
 #endif //AX_EDT
 

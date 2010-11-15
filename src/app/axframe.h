@@ -25,7 +25,6 @@ class RtMidiIn;
 
 WX_DECLARE_OBJARRAY(AxEnvRow, AxEnvArray);
 
-// WDR: class declarations
 
 //----------------------------------------------------------------------------
 // AxFrame
@@ -42,8 +41,7 @@ public:
         long style = wxDEFAULT_FRAME_STYLE );
     virtual ~AxFrame();
     
-    // WDR: method declarations for AxFrame
-private:
+    private:
 	int GetEnvironmentMenuId( const wxString className, int *pos );
     void SetEnvironment( int menuId );
     void LoadConfig();
@@ -57,13 +55,13 @@ public:
     void SetEnvironment( const wxString className );
     void ParseCmd( wxCmdLineParser *parser );
 	void Open( wxString filename );
+    void InitMidi();
     wxString GetEnvironmentName( );
     // Midi Input
     RtMidiIn *m_midiIn;
 
 private:
-    // WDR: member variable declarations for AxFrame
-    // tmp
+        // tmp
     wxMenuBar *m_menuBarPtr;
     wxToolBar *m_toolBarPtr;
     AxEnvArray m_envArray;
@@ -74,8 +72,7 @@ public:
     wxArrayString m_fnames;
     
 private:
-    // WDR: handler declarations for AxFrame
-    void OnHelp( wxCommandEvent &event );
+        void OnHelp( wxCommandEvent &event );
     void OnOptions( wxCommandEvent &event );
     void OnSize( wxSizeEvent &event );
     void OnClose( wxCloseEvent &event );

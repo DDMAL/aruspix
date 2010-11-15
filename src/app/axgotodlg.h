@@ -18,8 +18,6 @@
 
 #include "axapp_wdr.h"
 
-// WDR: class declarations
-
 //----------------------------------------------------------------------------
 // AxGotoDlg
 //----------------------------------------------------------------------------
@@ -34,7 +32,6 @@ public:
         const wxSize& size = wxDefaultSize,
         long style = wxDEFAULT_DIALOG_STYLE );
     
-    // WDR: method declarations for AxGotoDlg
 	int GetPage() { return m_pageNo -1; }
     wxSpinCtrl* GetScNoGoto()  { return (wxSpinCtrl*) FindWindow( ID_SC_NO_GOTO ); }
     wxRadioButton* GetRbNoGoto()  { return (wxRadioButton*) FindWindow( ID_RB_NO_GOTO ); }
@@ -42,13 +39,11 @@ public:
     wxRadioButton* GetRbFirstGoto()  { return (wxRadioButton*) FindWindow( ID_RB_FIRST_GOTO ); }
     
 private:
-    // WDR: member variable declarations for AxGotoDlg
     int m_nbOfPages;
     int m_pageNo;
     
 private:
-    // WDR: handler declarations for AxGotoDlg
-	void OnSpinCtrl( wxSpinEvent &event );
+    void OnSpinCtrl( wxSpinEvent &event );
 	void OnSpinCtrlText( wxCommandEvent &event );
     void OnOk( wxCommandEvent &event );
     void OnCancel( wxCommandEvent &event );

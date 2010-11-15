@@ -29,7 +29,6 @@ class RecMusController;
 class RecFile;
 
 
-// WDR: class declarations
 
 
 //----------------------------------------------------------------------------
@@ -51,19 +50,16 @@ public:
     RecFile *GetRecFile( ) { return m_recFilePtr; }
 	void LoadRecImage( int colId, wxString filename, int staff, int pos, int flag );
     
-    // WDR: method declarations for CmpImController
-	
+    
 protected:
-    // WDR: member variable declarations for CmpImController
-    //CmpEnv *m_envPtr;
+        //CmpEnv *m_envPtr;
     // to synchronize view
     RecFile *m_recFilePtr;
 
 public:
     
 private:
-    // WDR: handler declarations for CmpImController
-
+    
 private:
     DECLARE_CLASS(CmpImController)
     DECLARE_EVENT_TABLE()
@@ -85,20 +81,17 @@ public:
         long style = wxScrolledWindowStyle );
     virtual ~CmpImWindow();
     
-    // WDR: method declarations for CmpImWindow
-    void SetEnv( CmpEnv *env );
+        void SetEnv( CmpEnv *env );
     void SetCirclePen( const wxPen *pen, int width );
     void DrawCircle( );
     void ScrollSource( double x, double y );
     
 protected:
-    // WDR: member variable declarations for CmpImWindow
-    CmpEnv *m_envPtr;
+        CmpEnv *m_envPtr;
     RecFile *m_recFilePtr;
     
 private:
-    // WDR: handler declarations for CmpImWindow
-    wxPoint m_circleCenter;
+        wxPoint m_circleCenter;
     wxPen m_pen;
 
 private:

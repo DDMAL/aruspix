@@ -37,14 +37,13 @@ class SupBookFile: public AxFile
 {
 public:
     // constructors and destructors
-    SupBookFile::SupBookFile( wxString name, SupEnv *env = NULL );
-    virtual SupBookFile::~SupBookFile();
+    SupBookFile( wxString name, SupEnv *env = NULL );
+    virtual ~SupBookFile();
     
-    // WDR: method declarations for RecFile
-    virtual void SupBookFile::NewContent(); // Create content for a new file
-    virtual void SupBookFile::OpenContent( ); // Open content after archive extraction
-    virtual void SupBookFile::SaveContent( ); // Save content before archive creation
-    virtual void SupBookFile::CloseContent( ); // Desactivate content before deletion
+        virtual void NewContent(); // Create content for a new file
+    virtual void OpenContent( ); // Open content after archive extraction
+    virtual void SaveContent( ); // Save content before archive creation
+    virtual void CloseContent( ); // Desactivate content before deletion
     
     // operations
     bool LoadImages1( );
@@ -61,8 +60,7 @@ public:
 	//bool HasToBeSuperimposed( wxString imagefile );
     
 public:
-    // WDR: member variable declarations for SupBookFile
-    // infos
+        // infos
     wxString m_RISM;
     wxString m_Composer;
     wxString m_Title;
@@ -80,13 +78,11 @@ public:
 	//
 
 protected:
-    // WDR: member variable declarations for SupBookFile
-    SupEnv *m_envPtr;
+        SupEnv *m_envPtr;
 
 
 private:
-    // WDR: handler declarations for SupBookFile
-
+    
 };
 
 #endif //AX_SUPERIMPOSITION

@@ -18,7 +18,6 @@
 
 #include "musdef.h"
 
-// WDR: class declarations
 
 //----------------------------------------------------------------------------
 // MusParameters
@@ -31,11 +30,9 @@ public:
     MusParameters();
     virtual ~MusParameters();
     
-    // WDR: method declarations for MusParameters
-    
+        
 public:
-    // WDR: member variable declarations for MusParameters
-    /** orientation de la page */
+        /** orientation de la page */
     char orientation;
     /** epaisseur des lignes de portees */
     unsigned char EpLignesPortee;
@@ -104,8 +101,7 @@ public:
     //signed char transposition[MAXPORTNBRE+1]; // unused
     
 private:
-    // WDR: handler declarations for MusParameters
-
+    
 };
 
 //----------------------------------------------------------------------------
@@ -119,18 +115,15 @@ public:
     MusPosKey();
     virtual ~MusPosKey();
     
-    // WDR: method declarations for MusPosKey
-    
+        
 public:
-    // WDR: member variable declarations for MusPosKey
-	int posx[MAXCLE]; /* x-position des clefs */
+    int posx[MAXCLE]; /* x-position des clefs */
 	int dec[MAXCLE]; /* decalage y qu'elles entrainent*/
 	int compte;	/* compteur de reperage horizontal */
 	float yp;
     
 private:
-    // WDR: handler declarations for MusPosKey
-
+    
 };
 
 //----------------------------------------------------------------------------
@@ -144,11 +137,9 @@ public:
     MusFileHeader();
     virtual ~MusFileHeader();
     
-    // WDR: method declarations for MusFileHeader
-    
+        
 public:
-    // WDR: member variable declarations for MusFileHeader
-    /** version */
+        /** version */
     unsigned short maj_ver; // unused
     /** sous-version */
     unsigned short min_ver; // unused
@@ -172,8 +163,7 @@ public:
 	//		reserve[1] = augm/dimin nbre de passes liaisons
 
 private:
-    // WDR: handler declarations for MusFileHeader
-
+    
 
 };
 
@@ -188,11 +178,9 @@ public:
     MusPagination();
     virtual ~MusPagination();
     
-    // WDR: method declarations for MusPagination
-    
+        
 public:
-    // WDR: member variable declarations for MusPagination
-	/** premier numero */
+    /** premier numero */
 	short numeroInitial;	
 	char aussiPremierPage;
 	/** 0, pas de pagination; sinon :**/
@@ -216,8 +204,7 @@ public:
 	char offsetDuBord;	
 
 private:
-    // WDR: handler declarations for MusPagination
-
+    
 };
 
 
@@ -232,11 +219,9 @@ public:
     MusHeaderFooter();
     virtual ~MusHeaderFooter();
     
-    // WDR: method declarations for MusHeaderFooter
-    
+        
 public:
-    // WDR: member variable declarations for MusHeaderFooter **/
-	wxString texte;	
+    wxString texte;	
 	// premier num‚ro: 16 bits, 100 BYTES **/
 	char aussiPremierPage;
 	/* Code haut/bas, centrage, etc. comme suit:
@@ -259,8 +244,7 @@ public:
 	char offsetDuBord;
     
 private:
-    // WDR: handler declarations for MusHeaderFooter
-
+    
 };
 
 #endif

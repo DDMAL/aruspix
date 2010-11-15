@@ -107,12 +107,12 @@ enum {
     ID_MS_BT_M2,
 
     // varia
-    ID_MS_BT_PNT,
-    ID_MS_BT_DIESE,
-    ID_MS_BT_BECAR,
-    ID_MS_BT_BEMOL,
-    ID_MS_BT_DDIESE,
-    ID_MS_BT_DBEMOL,
+    ID_MS_BT_DOT,
+    ID_MS_BT_SHARP,
+    ID_MS_BT_NATURAL,
+    ID_MS_BT_FLAT,
+    ID_MS_BT_DSHARP,
+    ID_MS_BT_DFLAT,
     ID_MS_BT_BAR,
     ID_MS_BT_RDOTS,
 
@@ -126,7 +126,6 @@ enum {
 };
 
 
-// WDR: class declarations
 
 
 //----------------------------------------------------------------------------
@@ -141,18 +140,15 @@ public:
 
     void UpdateTools( int type );
     
-    // WDR: method declarations for MusToolRow
-private:
-    // WDR: member variable declarations for MusToolRow
-	int m_type; // row type;
+    private:
+    int m_type; // row type;
 	//bool m_previous_edition;
 	//wxBitmapButton *m_buttons[MUS_TOOLS_NUMBER + 1]; // +1 pour le bouton insert
 
 public:
     
 private:
-    // WDR: handler declarations for MusToolRow
-
+    
 private:
 };
 
@@ -175,14 +171,12 @@ public:
     
     static wxBitmap GetToolbarBitmap( wxString name );
     
-    // WDR: method declarations for MusToolPanel
-
+    
 private:
     void SendEvent( wxKeyEvent event );
     
 private:
-    // WDR: member variable declarations for MusToolPanel
-    MusWindow *m_w;
+        MusWindow *m_w;
 	// panels
     MusToolRow *m_tools;
     // sizers used to vertical / horizontal change
@@ -193,8 +187,7 @@ private:
 public:
     
 private:
-    // WDR: handler declarations for MusToolPanel
-	void OnChangeNotationMode( wxCommandEvent &event );
+    void OnChangeNotationMode( wxCommandEvent &event );
 	void OnChangeMode( wxCommandEvent &event );
 	void OnChangeTool( wxCommandEvent &event );
     void OnSymbol( wxCommandEvent &event );
@@ -203,7 +196,7 @@ private:
     void OnNote( wxCommandEvent &event );
     void OnText( wxCommandEvent &event );
     // toggle buttons handling
-    void MusToolPanel::OnUpdateUI( wxUpdateUIEvent &event );
+    void OnUpdateUI( wxUpdateUIEvent &event );
 
 private:
     DECLARE_EVENT_TABLE()

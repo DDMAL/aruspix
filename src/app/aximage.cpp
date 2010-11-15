@@ -72,7 +72,6 @@ static int *CreateCoeffInt(int nLen, int nNewLen, bool bShrink)
 	return pRes;
 }
 
-// WDR: class implementations
 
 //----------------------------------------------------------------------------
 // AxImage
@@ -497,5 +496,4 @@ void SetImImage(_imImage *im, AxImage *img)
 
 
 
-// WDR: handler implementations for wxVigraImage
 

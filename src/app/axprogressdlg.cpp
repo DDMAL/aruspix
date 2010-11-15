@@ -34,15 +34,11 @@ int AxProgressDlg::s_timer_model_bigram = 5000;
 int AxProgressDlg::s_timer_full_adapting = 20000; // time for staff adapting one unit = on staff
 int AxProgressDlg::s_timer_fast_adapting = 20000; // time for staff adapting one unit = on staff
 
-// WDR: class implementations
-
 //----------------------------------------------------------------------------
 // AxProgressDlg
 //----------------------------------------------------------------------------
 
 IMPLEMENT_DYNAMIC_CLASS( AxProgressDlg, wxDialog )
-
-// WDR: event table for AxProgressDlg
 
 BEGIN_EVENT_TABLE(AxProgressDlg,wxDialog)
     EVT_BUTTON( wxID_CANCEL, AxProgressDlg::OnCancel )
@@ -277,8 +273,6 @@ void AxProgressDlg::SaveValues( wxConfigBase *pConfig )
 	pConfig->Write("Timer_fast_adapting",s_timer_fast_adapting);
 	pConfig->Write("Timer_full_adapting",s_timer_full_adapting);
 }
-
-// WDR: handler implementations for AxProgressDlg
 
 void AxProgressDlg::OnCancel(wxCommandEvent &event )
 {

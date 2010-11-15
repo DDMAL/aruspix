@@ -32,7 +32,6 @@ enum
 	ID5_MUSWINDOW = ENV_IDS_LOCAL_EDT
 };
 
-// WDR: class declarations
 
 //----------------------------------------------------------------------------
 // EdtPanel
@@ -47,16 +46,13 @@ public:
         const wxSize& size = wxDefaultSize,
         long style = wxTAB_TRAVERSAL | wxNO_BORDER );
     
-    // WDR: method declarations for EdtPanel
-    wxPanel* GetMusPanel()  { return (wxPanel*) FindWindow( ID5_MUSPANEL ); }
+        wxPanel* GetMusPanel()  { return (wxPanel*) FindWindow( ID5_MUSPANEL ); }
     MusToolPanel* GetMusToolPanel()  { return (MusToolPanel*) FindWindow( ID5_TOOLPANEL ); }
     
 private:
-    // WDR: member variable declarations for EdtPanel
-    
+        
 private:
-    // WDR: handler declarations for EdtPanel
-    void OnTree( wxTreeEvent &event );
+        void OnTree( wxTreeEvent &event );
     void OnSize( wxSizeEvent &event );
 
 private:
@@ -71,27 +67,25 @@ class EdtEnv: public AxEnv
 {
 public:
     // constructors and destructors
-    EdtEnv::EdtEnv();
-    virtual EdtEnv::~EdtEnv();
+    EdtEnv();
+    virtual ~EdtEnv();
     
-    // WDR: method declarations for EdtEnv
-    virtual void LoadWindow();
+        virtual void LoadWindow();
 	virtual void RealizeToolbar( );
     virtual void UpdateTitle( );
     virtual void Open( wxString filename, int type );
+    virtual void ParseCmd( wxCmdLineParser *parser );
     //
     void UpdateViews( int flags );
     bool ResetFile(); // must be called when new file is created or opened
 
 private:
-    // WDR: member variable declarations for EdtEnv
-    wxPanel *m_panelPtr;
+        wxPanel *m_panelPtr;
     MusWindow *m_musViewPtr;
     EdtFile *m_edtFilePtr;
     
 private:
-    // WDR: handler declarations for EdtEnv
-	void OnSize( wxSizeEvent &event );
+    void OnSize( wxSizeEvent &event );
     void OnTools( wxCommandEvent &event );
     void OnValues( wxCommandEvent &event );
     void OnNew( wxCommandEvent &event );

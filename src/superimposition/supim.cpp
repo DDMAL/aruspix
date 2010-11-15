@@ -35,7 +35,6 @@
 #include <im_math_op.h>
 
 
-// WDR: class implementations
 
 //----------------------------------------------------------------------------
 // SupImSrcWindow
@@ -43,7 +42,6 @@
 
 IMPLEMENT_CLASS(SupImSrcWindow, AxScrolledWindow)
 
-// WDR: event table for SupImSrcWindow
 
 BEGIN_EVENT_TABLE(SupImSrcWindow,AxScrolledWindow)
 END_EVENT_TABLE()
@@ -137,7 +135,6 @@ void SupImSrcWindow::ScrollSource( double x, double y )
     this->Scroll( scrollX, scrollY );
 }
 
-// WDR: handler implementations for SupImSrcWindow
 
 
 //----------------------------------------------------------------------------
@@ -146,7 +143,6 @@ void SupImSrcWindow::ScrollSource( double x, double y )
 
 IMPLEMENT_CLASS(SupImWindow, AxScrolledWindow)
 
-// WDR: event table for SupImWindow
 
 BEGIN_EVENT_TABLE(SupImWindow,AxScrolledWindow)
     EVT_MOUSE_EVENTS( SupImWindow::OnMouse )
@@ -193,7 +189,6 @@ void SupImWindow::SynchronizeScroll( int x, int y )
     this->SetFocus();
 }
 
-// WDR: handler implementations for SupImWindow
 
 void SupImWindow::OnMouse(wxMouseEvent &event)
 {
@@ -274,7 +269,6 @@ void SupImWindow::OnMouse(wxMouseEvent &event)
 
 IMPLEMENT_CLASS(SupImController,AxImageController)
 
-// WDR: event table for SupImController
 
 BEGIN_EVENT_TABLE(SupImController,AxImageController)
 END_EVENT_TABLE()
@@ -516,7 +510,6 @@ void SupImController::CloseDraggingSelection(wxPoint start, wxPoint end)
 
 
 
-// WDR: handler implementations for SupImController
 
 
 

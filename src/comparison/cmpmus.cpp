@@ -31,13 +31,11 @@
 
 #include "mus/musstaff.h"
 
-// WDR: class implementations
 
 //----------------------------------------------------------------------------
 // CmpMusController
 //----------------------------------------------------------------------------
 
-// WDR: event table for CmpMusController
 
 BEGIN_EVENT_TABLE(CmpMusController,wxPanel)
     EVT_SIZE( CmpMusController::OnSize )
@@ -93,7 +91,6 @@ void CmpMusController::SetCmpFile( CmpFile *cmpFile )
 }
 
 
-// WDR: handler implementations for CmpMusController
 
 void CmpMusController::OnSize( wxSizeEvent &event )
 {
@@ -116,7 +113,6 @@ void CmpMusController::OnSize( wxSizeEvent &event )
 
 IMPLEMENT_CLASS(CmpMusWindow, MusWindow)
 
-// WDR: event table for CmpMusWindow
 
 BEGIN_EVENT_TABLE(CmpMusWindow,MusWindow)
     EVT_MOUSE_EVENTS( CmpMusWindow::OnMouse )
@@ -201,7 +197,6 @@ void CmpMusWindow::OnEndEdition()
 }
 */
 
-// WDR: handler implementations for CmpMusWindow
 
 void CmpMusWindow::OnSize( wxSizeEvent &event )
 {

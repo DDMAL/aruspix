@@ -69,7 +69,6 @@ class RecEnv;
 class RecTypModel;
 class RecMusModel;
 
-// WDR: class declarations
 
 //----------------------------------------------------------------------------
 // RecSplitterWindow
@@ -85,15 +84,12 @@ public:
         long style = 0 );
     void SetEnv( RecEnv *env );
     
-    // WDR: method declarations for RecSplitterWindow
-    
+        
 protected:
-    // WDR: member variable declarations for RecSplitterWindow
-    RecEnv *m_envPtr;
+        RecEnv *m_envPtr;
     
 private:
-    // WDR: handler declarations for RecSplitterWindow
-    void OnSashChanged( wxSplitterEvent &event );
+        void OnSashChanged( wxSplitterEvent &event );
 
 private:
     DECLARE_EVENT_TABLE()
@@ -113,16 +109,13 @@ public:
         const wxSize& size = wxDefaultSize,
         long style = wxTAB_TRAVERSAL | wxNO_BORDER );
     
-    // WDR: method declarations for RecPanel
-    RecSplitterWindow* GetSplitter1()  { return (RecSplitterWindow*) FindWindow( ID4_SPLITTER1 ); }
+        RecSplitterWindow* GetSplitter1()  { return (RecSplitterWindow*) FindWindow( ID4_SPLITTER1 ); }
     AxImageController* GetController()  { return (AxImageController*) FindWindow( ID4_CONTROLLER ); }
     
 private:
-    // WDR: member variable declarations for RecPanel
-    
+        
 private:
-    // WDR: handler declarations for RecPanel
-
+    
 private:
     DECLARE_EVENT_TABLE()
 };
@@ -137,11 +130,10 @@ class RecEnv: public AxEnv
 {
 public:
     // constructors and destructors
-    RecEnv::RecEnv();
-    virtual RecEnv::~RecEnv();
+    RecEnv();
+    virtual ~RecEnv();
     
-    // WDR: method declarations for RecEnv
-    virtual void LoadWindow();
+        virtual void LoadWindow();
     static void LoadConfig();
     static void SaveConfig();
     virtual void ParseCmd( wxCmdLineParser *parser );
@@ -161,8 +153,7 @@ public:
     //ImPage *GetImagePage() { return m_pagePtr; }
 
 private:
-    // WDR: member variable declarations for RecEnv
-    RecSplitterWindow *m_pageSplitterPtr;
+        RecSplitterWindow *m_pageSplitterPtr;
     wxSplitterWindow *m_bookSplitterPtr;
     // im
     RecImController *m_imControlPtr;
@@ -231,8 +222,7 @@ private:
     void Recognize( );
     void Preprocess( );
 
-    // WDR: handler declarations for RecEnv
-    void OnResetAdaptation( wxCommandEvent &event );
+        void OnResetAdaptation( wxCommandEvent &event );
     void OnExportAxtyp( wxCommandEvent &event );
     void OnExportAxmus( wxCommandEvent &event );
     void OnBookEdit( wxCommandEvent &event );

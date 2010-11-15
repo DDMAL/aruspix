@@ -30,7 +30,6 @@
 WX_DECLARE_OBJARRAY( MusPage, ArrayOfMusPages);
 
 
-// WDR: class declarations
 
 
 //----------------------------------------------------------------------------
@@ -47,16 +46,14 @@ public:
     MusFile();
     virtual ~MusFile();
     
-    // WDR: method declarations for MusFile
-	void CheckIntegrity();
+    void CheckIntegrity();
     // moulinette
-    virtual void MusFile::Process(MusPageFunctor *functor, wxArrayPtrVoid params );
-    void MusFile::GetNumberOfVoices( int *min_voice, int *max_voice );
-    MusStaff *MusFile::GetVoice( int i );
+    virtual void Process(MusPageFunctor *functor, wxArrayPtrVoid params );
+    void GetNumberOfVoices( int *min_voice, int *max_voice );
+    MusStaff *GetVoice( int i );
     
 public:
-    // WDR: member variable declarations for MusFile
-    /** nom complet du fichier */
+        /** nom complet du fichier */
     wxString m_fname;
     /** FileHeader du fichier - contient Parametres */
     MusFileHeader m_fheader;
@@ -72,8 +69,7 @@ public:
 	static char* sep;
 
 private:
-	// WDR: handler declarations for MusFile
-
+	
 };
 
 
@@ -90,8 +86,7 @@ public:
 	//MusFileOutputStream( MusFile *file, wxFile *wxfile );
     virtual ~MusFileOutputStream();
     
-    // WDR: method declarations for MusFileOutputStream
-	virtual bool ExportFile( ) { return true; }
+    virtual bool ExportFile( ) { return true; }
 	virtual bool WriteFileHeader( const MusFileHeader *header ) { return true; }
 	virtual bool WriteParametersMidi( ) { return true; }
 	virtual bool WriteParameters2( const MusParameters *param ) { return true; }
@@ -108,11 +103,9 @@ public:
 	virtual bool WriteHeaderFooter( const MusHeaderFooter *headerfooter) { return true; }
     
 public:
-    // WDR: member variable declarations for MusFileOutputStream
-
+    
 protected:
-	// WDR: handler declarations for MusFileOutputStream
-	MusFile *m_file;
+		MusFile *m_file;
 
 };
 
@@ -128,8 +121,7 @@ public:
     MusFileInputStream( MusFile *file, int fr );
     virtual ~MusFileInputStream();
     
-    // WDR: method declarations for MusFileInputStream
-	// read
+    // read
 	virtual bool ImportFile( ) { return true; }
 	virtual bool ReadFileHeader( MusFileHeader *header ) { return true; }
 	virtual bool ReadParametersMidi( ) { return true; }
@@ -147,11 +139,9 @@ public:
 	virtual bool ReadHeaderFooter( MusHeaderFooter *headerfooter) { return true; }
     
 public:
-    // WDR: member variable declarations for MusFileInputStream
-
+    
 protected:
-	// WDR: handler declarations for MusFileInputStream
-	MusFile *m_file;
+		MusFile *m_file;
 
 };
 

@@ -39,7 +39,6 @@ int SortElements(MusSymbol **first, MusSymbol **second)
 		return 0;
 }
 
-// WDR: class implementations
 
 //----------------------------------------------------------------------------
 // MusNote
@@ -524,7 +523,7 @@ void MusNote::note ( wxDC *dc, MusStaff *staff )
 				traiteQueue (&espac7, this);***/
 
 			// diminuer le rayon de la moitie de l'epaisseur du trait de queue
-			rayon -= (m_p->EpQueueNote-1) / 2;
+			rayon -= (m_p->EpQueueNote) / 2;
 
 			if (!up)	// si queue vers le bas (a gauche)
 			{	espac7 = -espac7;
@@ -559,11 +558,12 @@ void MusNote::note ( wxDC *dc, MusStaff *staff )
 					y2 -= m_w->_espace[pTaille];
 				decval = y2;
 				if (staff->notAnc)
-					m_w->v_bline ( dc,y2,(int)(ynn+ m_w->_espace[pTaille]),x2, m_w->ToZoom(m_p->EpQueueNote) );//queue en descendant
+					m_w->v_bline ( dc,y2,(int)(ynn + m_w->_espace[pTaille]),x2, m_p->EpQueueNote );//queue en descendant
 				else
-					m_w->v_bline ( dc,y2,(int)(ynn+ m_w->v4_unit[pTaille]),x2, m_w->ToZoom(m_p->EpQueueNote) );//queue en descendant
+					m_w->v_bline ( dc,y2,(int)(ynn+ m_w->v4_unit[pTaille]),x2 - (m_p->EpQueueNote / 2), m_p->EpQueueNote );//queue en descendant
 				if (formval > NR)
 				{
+                    y2 += m_p->EpQueueNote / 2; // ENZO correction empirique...
 					m_w->putfont( dc,x2,y2,sCROCHET_H, staff, this->dimin, NOTE);
 					for (i=0; i < valdec; i++)
 						m_w->putfont( dc,x2,y2-=vertical,sCROCHET_H, staff, this->dimin, NOTE);
@@ -579,18 +579,19 @@ void MusNote::note ( wxDC *dc, MusStaff *staff )
 				decval = y2;
 
 				if (staff->notAnc)
-					m_w->v_bline ( dc,y2,ynn- m_w->_espace[pTaille],x2,m_w->ToZoom(m_p->EpQueueNote) );//queue en descendant
+					m_w->v_bline ( dc,y2,ynn- m_w->_espace[pTaille],x2 - (m_p->EpQueueNote / 2), m_p->EpQueueNote );//queue en descendant
 				else
-					m_w->v_bline ( dc,y2,(int)(ynn- m_w->v4_unit[pTaille]),x2, m_w->ToZoom(m_p->EpQueueNote) );	// queue en montant
+					m_w->v_bline ( dc,y2,(int)(ynn- m_w->v4_unit[pTaille]),x2 - (m_p->EpQueueNote / 2), m_p->EpQueueNote );	// queue en montant
 
 				// ENZ
 				// decalage du crochet vers la gauche
 				// changement dans la fonte Leipzig 4.3 à cause de problemes d'affichage
 				// en deçà de 0 avec la notation ancienne
 				// dans la fonte les crochets ont ete decales de 164 vers la droite
-				int cr_offset = m_w->rayonNote[pTaille][this->dimin];
+				int cr_offset = m_w->rayonNote[pTaille][this->dimin]  + (m_p->EpQueueNote / 2);
 				if (formval > NR)
 				{
+                    y2 -= m_p->EpQueueNote / 2; // ENZO correction empirique...
 					m_w->putfont( dc,x2 - cr_offset,y2,sCROCHET_B , staff, this->dimin, NOTE);
 					for (i=0; i < valdec; i++)
 						m_w->putfont( dc,x2  - cr_offset,y2+=vertical,sCROCHET_B, staff, 
@@ -731,7 +732,7 @@ void MusNote::leg_line( wxDC *dc, int y_n, int y_p, int xn, unsigned int smaller
 		//xng = toZoom(xng);
 		//xnd = toZoom(xnd);
 
-		wxPen pen( *m_w->m_currentColour, m_p->EpLignesPortee, wxSOLID );
+		wxPen pen( *m_w->m_currentColour, m_w->ToZoom( m_p->EpLignesPortee ), wxSOLID );
 		dc->SetPen( pen );
 		wxBrush brush( *m_w->m_currentColour , wxTRANSPARENT );
 		dc->SetBrush( brush );
@@ -965,14 +966,14 @@ void MusNote::ligature ( wxDC *dc, int y, MusStaff *staff )
 		else
 			m_w->rect_plein2( dc,x1,y1,x2,y2);	// dessine val carree pleine // ENZ correction de x2
 
-		m_w->v_bline ( dc, y3, y4, x1, m_w->ToZoom(m_p->EpQueueNote) );	// corset lateral
-		m_w->v_bline ( dc, y3, y4, x2, m_w->ToZoom(m_p->EpQueueNote) );
+		m_w->v_bline ( dc, y3, y4, x1, m_p->EpQueueNote );	// corset lateral
+		m_w->v_bline ( dc, y3, y4, x2, m_p->EpQueueNote );
 	}
 	else			// traitement des obliques
 	{
 		if (!MusNote::marq_obl)	// 1e passage: ligne verticale initiale
 		{
-			m_w->v_bline (dc,y3,y4,x1, m_w->ToZoom(m_p->EpQueueNote) );
+			m_w->v_bline (dc,y3,y4,x1, m_p->EpQueueNote );
 			MusNote::marq_obl = ON;
 			//oblique = OFF;
 //			if (val == RD)	// queue gauche haut si RD
@@ -992,7 +993,7 @@ void MusNote::ligature ( wxDC *dc, int y, MusStaff *staff )
 			{	m_w->hGrosseligne ( dc,  x1,  y1,  x2,  yy2, 5);
 				m_w->hGrosseligne ( dc,  x1,  y5,  x2,  y2, -5);
 			}
-			m_w->v_bline ( dc,y3,y4,x2,m_w->ToZoom(m_p->EpQueueNote));	//cloture verticale
+			m_w->v_bline ( dc,y3,y4,x2,m_p->EpQueueNote);	//cloture verticale
 
 			MusNote::marq_obl = OFF;
 //			queue_lig = OFF;	//desamorce alg.queue BR
@@ -1004,7 +1005,7 @@ void MusNote::ligature ( wxDC *dc, int y, MusStaff *staff )
 	{	*(ligat_x+1) = x2; *(ligat_y+1) = y;	// relie notes ligaturees par barres verticales
 		if (in(x1,(*ligat_x)-2,(*ligat_x)+2) || (this->fligat && this->lat && !MusNote::marq_obl))
 			// les dernieres conditions pour permettre ligature verticale ancienne
-			m_w->v_bline (dc, *ligat_y, y1, (this->fligat && this->lat) ? x2: x1, m_w->ToZoom(m_p->EpQueueNote));
+			m_w->v_bline (dc, *ligat_y, y1, (this->fligat && this->lat) ? x2: x1, m_p->EpQueueNote);
 		*ligat_x = *(ligat_x + 1);
 		*ligat_y = *(ligat_y + 1);
 	}
@@ -1014,14 +1015,14 @@ void MusNote::ligature ( wxDC *dc, int y, MusStaff *staff )
 
 	if (ligat)
 	{	if (val == BR  && this->queue_lig)	// queue gauche bas: BR initiale descendante
-			m_w->v_bline ( dc, y2, y3, x1, m_w->ToZoom(m_p->EpQueueNote) );
+			m_w->v_bline ( dc, y2, y3, x1, m_p->EpQueueNote );
 
 		else if (val == LG && !this->queue_lig) // LG en ligature, queue droite bas
-			m_w->v_bline (dc, y2, y3, x2, m_w->ToZoom(m_p->EpQueueNote) );
+			m_w->v_bline (dc, y2, y3, x2, m_p->EpQueueNote );
 
 		else if (val == RD && this->queue_lig )	// queue gauche haut
 		{	y2 = y1 + m_w->_espace[staff->pTaille]*6;
-			m_w->v_bline ( dc, y1, y2, x1, m_w->ToZoom(m_p->EpQueueNote) );
+			m_w->v_bline ( dc, y1, y2, x1, m_p->EpQueueNote );
 		} 
 	}
 	else if (val == LG)		// LG isolee: queue comme notes normales
@@ -1038,7 +1039,7 @@ void MusNote::ligature ( wxDC *dc, int y, MusStaff *staff )
 		{	y3 = y1 + m_w->_espace[staff->pTaille]*6;
 			y2 = y1;
 		}
-		m_w->v_bline ( dc, y2,y3,x2, m_w->ToZoom(m_p->EpQueueNote) );
+		m_w->v_bline ( dc, y2,y3,x2, m_p->EpQueueNote );
 	}
 
 	return;
@@ -1107,7 +1108,6 @@ MusSymbol *MusNote::GetLyricNo( int no )
 }
 
 
-// WDR: handler implementations for MusNote
 
 
 

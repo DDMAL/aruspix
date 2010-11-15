@@ -26,7 +26,6 @@
 
 class MusStaff;
 
-// WDR: class declarations
 
 //TODO: EXTREME REFACTORING IN PROGRESS 07/15/2010 
 
@@ -51,17 +50,17 @@ public:
 	MusNeumePitch();
 	MusNeumePitch( int _code, int _oct, unsigned char _val );
 	MusNeumePitch( const MusNeumePitch& pitch );
-	MusNeumePitch& MusNeumePitch::operator=( const MusNeumePitch& pitch );
-	MusNeumePitch::MusNeumePitch( MusNeumePitch *pitch);
+	MusNeumePitch& operator=( const MusNeumePitch& pitch );
+	MusNeumePitch( MusNeumePitch *pitch);
 	virtual ~MusNeumePitch() {}
-	void MusNeumePitch::SetPitch( int code, int oct );
-	void MusNeumePitch::SetValue( int value );
-	int MusNeumePitch::GetValue( );
+	void SetPitch( int code, int oct );
+	void SetValue( int value );
+	int GetValue( );
 	std::string& MusNeumePitch::getFestaString( );
 	
-	int MusNeumePitch::Compare(MusNeumePitch *other);
-	int MusNeumePitch::Pitch_Diff(MusNeumePitch *other);
-	int MusNeumePitch::Pitch_Diff(int code, int oct);
+	int Compare(MusNeumePitch *other);
+	int Pitch_Diff(MusNeumePitch *other);
+	int Pitch_Diff(int code, int oct);
 	
 	std::string m_font_str;	//used for font drawing
 	
@@ -83,46 +82,45 @@ public:
     virtual ~MusNeume();
     
 	//Drawing code
-	virtual void MusNeume::Draw( wxDC *dc, MusStaff *staff);
-//	void MusNeume::note( wxDC *dc, MusStaff *staff );
-	void MusNeume::DrawBox( wxDC *dc, MusStaff *staff );
-	void MusNeume::DrawNeume( wxDC *dc, MusStaff *staff );
-	void MusNeume::DrawPunctums( wxDC *dc, MusStaff *staff );
-	void MusNeume::leg_line( wxDC *dc, int y_n, int y_p, int xn, 
+	virtual void Draw( wxDC *dc, MusStaff *staff);
+//	void note( wxDC *dc, MusStaff *staff );
+	void DrawBox( wxDC *dc, MusStaff *staff );
+	void DrawNeume( wxDC *dc, MusStaff *staff );
+	void DrawPunctums( wxDC *dc, MusStaff *staff );
+	void leg_line( wxDC *dc, int y_n, int y_p, int xn, 
 							unsigned int smaller, int pTaille);
-	void MusNeume::append( wxDC *dc, MusStaff *staff ); //for creating multi-note neumes
+	void append( wxDC *dc, MusStaff *staff ); //for creating multi-note neumes
 	
 	//should have some sort of 'toggle' or 'redraw' method here for switching between styles
 	
-    // WDR: method declarations for MusNeume
-	virtual void MusNeume::SetPitch( int code, int oct );
-	virtual void MusNeume::SetValue( int value, MusStaff *staff = NULL, int vflag = 0 );
-	int MusNeume::GetValue();
+    virtual void SetPitch( int code, int oct );
+	virtual void SetValue( int value, MusStaff *staff = NULL, int vflag = 0 );
+	int GetValue();
 	
 	//helper debug method
-	void MusNeume::printNeumeList();
+	void printNeumeList();
 	
-	int MusNeume::getYPos(int index, MusStaff *staff);
+	int getYPos(int index, MusStaff *staff);
 	
-	int MusNeume::GetMaxPitch();
-	int MusNeume::GetMinPitch();
-	int MusNeume::GetPitchRange();
-	int MusNeume::Length();
+	int GetMaxPitch();
+	int GetMinPitch();
+	int GetPitchRange();
+	int Length();
 	
-	bool MusNeume::ascending(int p1, int p2);
-	bool MusNeume::descending(int p1, int p2);
+	bool ascending(int p1, int p2);
+	bool descending(int p1, int p2);
 	
-	void MusNeume::SetClosed(bool value);
-	void MusNeume::GetNextPunctum();
-	void MusNeume::GetPreviousPunctum();
+	void SetClosed(bool value);
+	void GetNextPunctum();
+	void GetPreviousPunctum();
 	
-	bool MusNeume::IsClosed();
+	bool IsClosed();
 	
 	//when appending notes, do we discard the object?
 	//may need a helper class for composite neumes.
-	void MusNeume::InsertPitchAfterSelected();
-	void MusNeume::RemoveSelectedPitch();
-//	void MusNeume::Append();
+	void InsertPitchAfterSelected();
+	void RemoveSelectedPitch();
+//	void Append();
 
 	
 	// to create compound neumes (ineumes)
@@ -165,22 +163,22 @@ public:
 		
 	//ligature drawing methods
 	//TODO: move to ligature class
-	void MusNeume::drawLigature( wxDC *dc, MusStaff *staff );
-	void MusNeume::clivis( wxDC *dc, MusStaff *staff );
-	void MusNeume::podatus( wxDC *dc, MusStaff *staff );
-	void MusNeume::porrectus( wxDC *dc, MusStaff *staff );
-	void MusNeume::neume_stem( wxDC *dc, MusStaff *staff, int xrel, 
+	void drawLigature( wxDC *dc, MusStaff *staff );
+	void clivis( wxDC *dc, MusStaff *staff );
+	void podatus( wxDC *dc, MusStaff *staff );
+	void porrectus( wxDC *dc, MusStaff *staff );
+	void neume_stem( wxDC *dc, MusStaff *staff, int xrel, 
 						  int index, int pitch_range = 0, int side = LEFT_STEM);
 //							  int end_pitch, int side);
-//	void MusNeume::neume_line( wxDC *dc, MusStaff *staff, int side );
-//	void MusNeume::climacus( wxDC *dc, MusStaff *staff );
+//	void neume_line( wxDC *dc, MusStaff *staff, int side );
+//	void climacus( wxDC *dc, MusStaff *staff );
 	
 	//pitch and octave of first pitch of the neume
-	int MusNeume::GetOct(); 
-	int MusNeume::GetCode();
+	int GetOct(); 
+	int GetCode();
 	
-//	void MusNeume::CheckForBreaks();
-	void MusNeume::Copy();
+//	void CheckForBreaks();
+	void Copy();
 	
 	// mei related fields
 	
@@ -191,12 +189,10 @@ public:
 	
 	
 public:
-	// WDR: member variable declarations for MusNeume
-//	int size;	//how many notes in group
+	//	int size;	//how many notes in group
 	
 private:
-    // WDR: handler declarations for MusNeume
-	
+    
 };
 
 

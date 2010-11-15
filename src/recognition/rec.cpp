@@ -89,7 +89,6 @@ bool RecEnv::s_expand_ax = true;
 bool RecEnv::s_expand_opt = true;
 
 
-// WDR: class implementations
 
 
 
@@ -97,7 +96,6 @@ bool RecEnv::s_expand_opt = true;
 // RecSplitterWindow
 //----------------------------------------------------------------------------
 
-// WDR: event table for RecSplitterWindow
 
 BEGIN_EVENT_TABLE(RecSplitterWindow,wxSplitterWindow)
     EVT_SPLITTER_SASH_POS_CHANGED( -1, RecSplitterWindow::OnSashChanged)
@@ -115,7 +113,6 @@ void RecSplitterWindow::SetEnv( RecEnv *env )
     m_envPtr = env;
 }
 
-// WDR: handler implementations for RecSplitterWindow
 
 void RecSplitterWindow::OnSashChanged( wxSplitterEvent &event )
 {
@@ -141,14 +138,11 @@ public:
         const wxSize& size = wxDefaultSize,
         long style = wxTAB_TRAVERSAL | wxNO_BORDER );
     
-    // WDR: method declarations for MusPanel
-    
+        
 private:
-    // WDR: member variable declarations for MusPanel
-    
+        
 private:
-    // WDR: handler declarations for MusPanel
-
+    
 private:
     DECLARE_EVENT_TABLE()
 };
@@ -159,7 +153,6 @@ private:
 // MusPanel
 //----------------------------------------------------------------------------
 
-// WDR: event table for MusPanel
 
 BEGIN_EVENT_TABLE(MusPanel,wxPanel)
 END_EVENT_TABLE()
@@ -183,7 +176,6 @@ MusPanel::MusPanel( wxWindow *parent, wxWindowID id,
 	item0->SetSizeHints( this );
 }
 
-// WDR: handler implementations for RecPanel
 
 
 
@@ -192,7 +184,6 @@ MusPanel::MusPanel( wxWindow *parent, wxWindowID id,
 // RecEnv
 //----------------------------------------------------------------------------
 
-// WDR: event table for RecEnv
 
 BEGIN_EVENT_TABLE(RecEnv,AxEnv)
     // copy paste 
@@ -768,7 +759,6 @@ bool RecEnv::CloseAll( )
     return true;
 }
 
-// WDR: handler implementations for RecEnv
 
 void RecEnv::OnResetAdaptation( wxCommandEvent &event )
 {

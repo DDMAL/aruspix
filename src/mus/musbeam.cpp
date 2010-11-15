@@ -32,7 +32,7 @@
 typedef struct BeamEdit {	short iHauteur;
 					float fPente;
 			}BeamEdit;
-static BeamEdit BeamEd, *ptBeamEd;
+//static BeamEdit BeamEd, *ptBeamEd;
 
 /*
 void traiteQueue (int *hautqueue, Element *chk)
@@ -57,7 +57,7 @@ static struct coord {  float a;
 			unsigned vlr: 8;	/* valeur */
 			unsigned prov: 8;	/* ON si portee sup. */
 			struct MusElement *chk;
-	     	} 	crd[NbREL]; /* garde les coord.d'entree*/
+	     } 	crd[NbREL]; /* garde les coord.d'entree*/
 
 
 int calcBeam = 0;
@@ -118,7 +118,7 @@ unsigned int MusStaff::beam ( wxDC *dc )
 	int _mif, decalage;
 	int valtest;			/* travail */
 	int apax;	 	/* test pour valeur breve isolee en debut  de groupes */
-	int provshp=0;
+	//int provshp=0;
 	int deltabar, deltanbbar, deltablanc;
 
 	if (!calcBeam)	/* eviter side-effect de circuit... */
@@ -382,7 +382,7 @@ unsigned int MusStaff::beam ( wxDC *dc )
 		}
         /***
         if (crd[_ct].chk->existDebord) {
-        	ecart = m_w->_interl[0]*2;
+        ecart = m_w->_interl[0]*2;
             if (!fb.mrq_port) extern_q_auto= 0;
         }
         ***/
@@ -504,7 +504,7 @@ if (fPente)
 		}
 		if (((MusNote*)(crd+i)->chk)->sil == _NOT && ((MusNote*)(crd+i)->chk)->tetenot != SANSQUEUE)
 		{	
-            m_w->v_bline (dc,fy2, fy1, crd[i].a, m_w->ToZoom(m_p->EpQueueNote));
+            m_w->v_bline (dc,fy2, fy1, crd[i].a, m_p->EpQueueNote);
 
 // ICI, bon endroit pour enfiler les STACCATOS - ne sont traités ici que ceux qui sont opposés à la tête (les autres, in wgnote.cpp)
 			if (((MusNote*)(crd+i)->chk)->queue_lig && ((MusNote*)(crd+i)->chk)->stacc
@@ -628,7 +628,7 @@ if (fPente)
 
                 /* Ici, d‚cision si SILENCE doit ou non avoir des barres; si oui, ligne
                     suivante (condition: il doit etre pris aussi dans les crd plus haut):*/
-                    if (((crd+j)->vlr) >= valtest)	
+                    if (((crd+j)->vlr) >= (unsigned int)valtest)	
                 /*	si NON, alors: */
                     // if (((crd+j)->vlr) >= valtest && (crd+j)->chk->sil == _NOT)	
                     {

@@ -118,7 +118,7 @@ bool MusKeyboardEditor::handleMetaKey(int key) {
 		if (w_ptr->m_currentElement->IsNeume()) {
 			// closed vs. open editing handling
 			MusNeume *temp = (MusNeume*)w_ptr->m_currentElement;
-			int value;
+			//int value;
 			if (temp->IsClosed()) {
 				//do stuff
 			} else {
@@ -210,9 +210,9 @@ bool MusKeyboardEditor::handleKeyEvent(wxKeyEvent &event)
 	int pitch, octave, hauteur;
 	
 	MusElement *element = w_ptr->m_currentElement;
-	MusStaff *staff = w_ptr->m_currentStaff;
-	int i = 0;
-	for (i; i < 17; i++) {
+	//MusStaff *staff = w_ptr->m_currentStaff;
+	int i;
+	for (i = 0; i < 17; i++) {
 		
 		if (event.GetKeyCode() == keyPitches[i] || oct_switch) {
 			//this keybind is supported by MusKeyboardEditor
@@ -227,7 +227,7 @@ bool MusKeyboardEditor::handleKeyEvent(wxKeyEvent &event)
 			{
 //				printf("changing pitch: %d\n", i);
 //				element->SetPitch( die[hauteur], octave, staff );
-				element->SetPitch( die[hauteur], octave );
+				element->SetPitch( MusWindow::s_sharps[hauteur], octave );
 			}
 			
 			break;

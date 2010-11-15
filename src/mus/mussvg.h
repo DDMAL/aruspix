@@ -19,6 +19,7 @@
 #endif
 
 #include "wx/wfstream.h"
+#include "wx/mstream.h"
 #include "wx/string.h"
 #include "wx/docview.h"
 
@@ -28,16 +29,28 @@
 #pragma warn -ccc
 #endif
 
+// This is the leipzig font for which we have each glyph as an <path> in the svg resources"
+#define SVG_LEIPZIG_FONT "Leipzig 4.6"
+
 class MusSVGFileDC : public wxDC
 {
 
     private:
-        wxFileOutputStream * m_outfile ;
+        //wxFileOutputStream * m_outfile ;
+        // changed to a memory stream because we want to prepend the <defs> which will know only when we reach the end of the page
+        // some viewer seem to support to have the <defs> at the end, but some do not (pdf2svg, for example)
+        // for this reason, the file is written only from the destructor or when Flush() is called
+        wxMemoryOutputStream * m_outfile ;
+        bool m_flushed; // did we flushed the file?
         wxString m_filename ;
         //holds number of png format images we have
         int m_sub_images ;
         bool m_OK, m_graphics_changed, m_graphic_exists ;
         int m_width, m_height ;
+        
+        // holds the list of glyphs from the leipzig font used so far
+        // they will be added at the end of the file as <defs>
+        wxArrayString m_leipzig_glyphs;
 
         double
             m_logicalScaleX,
@@ -102,9 +115,15 @@ class MusSVGFileDC : public wxDC
         void DoSetClippingRegionAsRegion(const class wxRegion &)
             { wxASSERT_MSG (false, wxT("MusSVGFileDC::DoSetClippingRegionAsRegion Call not yet implemented")); return  ; };
 
-       void Init (wxString f, int Width, int Height, float dpi);
+        void Init (wxString f, int Width, int Height, float dpi);
 
-       void NewGraphics () ;
+        void NewGraphics () ;
+        
+        void Flush();
+       
+        // leipzig glyphes
+               
+        void DoDrawLeipzigText(const wxString& text, wxCoord x, wxCoord y, double angle) ;
 
 #ifdef XDEV2LOG
 #undef XDEV2LOG

@@ -24,7 +24,6 @@ class MusSymbol;
 
 WX_DECLARE_OBJARRAY( MusSymbol, ArrayOfMusSymbols);
 
-// WDR: class declarations
 
 //----------------------------------------------------------------------------
 // MusNote
@@ -40,37 +39,35 @@ public:
 	MusNote& operator=( const MusNote& note ); // copy assignement;
     virtual ~MusNote();
     
-	virtual void MusNote::Draw( wxDC *dc, MusStaff *staff);
-	void MusNote::note ( wxDC *dc, MusStaff *staff);
-	void MusNote::silence ( wxDC *dc, MusStaff *staff);
-	void MusNote::leg_line( wxDC *dc, int y_n, int y_p, int xn, unsigned int smaller, int pTaille);
+	virtual void Draw( wxDC *dc, MusStaff *staff);
+	void note ( wxDC *dc, MusStaff *staff);
+	void silence ( wxDC *dc, MusStaff *staff);
+	void leg_line( wxDC *dc, int y_n, int y_p, int xn, unsigned int smaller, int pTaille);
 
-	void MusNote::s_special ( wxDC *dc, int a, MusStaff *staff);
-	void MusNote::s_lg ( wxDC *dc, int a, int b, MusStaff *staff);
-	void MusNote::s_br ( wxDC *dc, int a, int b, MusStaff *staff);
-	void MusNote::s_rd ( wxDC *dc, int a, int b, int valeur, MusStaff *staff);
-	void MusNote::s_nr ( wxDC *dc, int a, int b, int valeur, MusStaff *staff);
-	void MusNote::pointage ( wxDC *dc, int x1, int y1, int offy, unsigned int d_p, MusStaff *staff );
-	void MusNote::ligature ( wxDC *dc, int y, MusStaff *staff );
-    // WDR: method declarations for MusNote
-//	virtual void MusNote::SetPitch( int code, int oct, MusStaff *staff  );
-	virtual void MusNote::SetPitch( int code, int oct );
-	virtual void MusNote::SetValue( int value, MusStaff *staff = NULL, int vflag = 0 );
-	virtual void MusNote::ChangeColoration( MusStaff *staff = NULL );
-	virtual void MusNote::ChangeStem( MusStaff *staff = NULL );
-	virtual void MusNote::SetLigature( MusStaff *staff = NULL );
+	void s_special ( wxDC *dc, int a, MusStaff *staff);
+	void s_lg ( wxDC *dc, int a, int b, MusStaff *staff);
+	void s_br ( wxDC *dc, int a, int b, MusStaff *staff);
+	void s_rd ( wxDC *dc, int a, int b, int valeur, MusStaff *staff);
+	void s_nr ( wxDC *dc, int a, int b, int valeur, MusStaff *staff);
+	void pointage ( wxDC *dc, int x1, int y1, int offy, unsigned int d_p, MusStaff *staff );
+	void ligature ( wxDC *dc, int y, MusStaff *staff );
+    //	virtual void SetPitch( int code, int oct, MusStaff *staff  );
+	virtual void SetPitch( int code, int oct );
+	virtual void SetValue( int value, MusStaff *staff = NULL, int vflag = 0 );
+	virtual void ChangeColoration( MusStaff *staff = NULL );
+	virtual void ChangeStem( MusStaff *staff = NULL );
+	virtual void SetLigature( MusStaff *staff = NULL );
 	
 	// lyrics
 	void DeleteLyricFromNote( MusSymbol *lyric );
 	bool BelongsToTheNote( MusElement *element ); 
 	void CheckLyricIntegrity( );
-	MusSymbol *MusNote::GetFirstLyric( );
-	MusSymbol *MusNote::GetLastLyric( );
-    MusSymbol *MusNote::GetLyricNo( int no );
+	MusSymbol *GetFirstLyric( );
+	MusSymbol *GetLastLyric( );
+    MusSymbol *GetLyricNo( int no );
 	
 public:
-	// WDR: member variable declarations for MusNote
-    /** silence (true) ou note (false) */
+	    /** silence (true) ou note (false) */
     char sil;
     /** valeur de la note
      @see JwgDef#LG JwgDef, valeurs des notes */
@@ -122,8 +119,7 @@ public:
     static unsigned int marq_obl;	// marque le 1e passage pour une oblique
 	
 private:
-    // WDR: handler declarations for MusNote
-};
+    };
 
 
 #endif

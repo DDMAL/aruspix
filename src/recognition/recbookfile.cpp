@@ -24,7 +24,6 @@
 #include "recmodels.h"
 #include "im/impage.h"
 
-// WDR: class implementations
 
 //----------------------------------------------------------------------------
 // RecBookFile
@@ -649,6 +648,5 @@ bool RecBookFile::DeleteAxfile( wxString filename )
 	return true;
 }
 
-// WDR: handler implementations for RecFile
 
 #endif //AX_RECOGNITION

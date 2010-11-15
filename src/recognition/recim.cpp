@@ -35,7 +35,6 @@
 
 IMPLEMENT_CLASS(RecImController,AxImageController)
 
-// WDR: event table for RecImController
 
 BEGIN_EVENT_TABLE(RecImController,AxImageController)
     EVT_MENU_RANGE( ID4_POPUP_MENU_MUSIC, ID4_POPUP_MENU_VOID, RecImController::OnChangeClassification )
@@ -210,7 +209,6 @@ void RecImController::CancelMagicSelection(  )
 	m_viewPtr->Refresh();
 }
 
-// WDR: handler implementations for RecImController
 
 void RecImController::OnChangeClassification( wxCommandEvent &event )
 {
@@ -247,7 +245,6 @@ void RecImController::OnChangeClassification( wxCommandEvent &event )
 
 IMPLEMENT_CLASS(RecImWindow, AxScrolledWindow)
 
-// WDR: event table for RecImWindow
 
 BEGIN_EVENT_TABLE(RecImWindow,AxScrolledWindow)
     EVT_MOUSE_EVENTS( RecImWindow::OnMouse )
@@ -327,7 +324,6 @@ void RecImWindow::OnScroll( wxScrollWinEvent &event )
         m_musViewPtr->Scroll( scrollX, scrollY);
 }
 
-// WDR: handler implementations for RecImWindow
 
 void RecImWindow::OnPaint( wxPaintEvent &event )
 {
