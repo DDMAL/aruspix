@@ -63,6 +63,108 @@ wxSizer *WindowFunc5( wxWindow *parent, bool call_fit, bool set_sizer )
     return item0;
 }
 
+wxSizer *EdtNewDlgFunc( wxWindow *parent, bool call_fit, bool set_sizer )
+{
+    wxBoxSizer *item0 = new wxBoxSizer( wxVERTICAL );
+
+    wxBoxSizer *item1 = new wxBoxSizer( wxHORIZONTAL );
+
+    wxFlexGridSizer *item2 = new wxFlexGridSizer( 1, 0, 0 );
+
+    wxString strs3[] = 
+    {
+        _("Mensural"), 
+        _("Neumatic"), 
+        _("Common Western")
+    };
+    wxRadioBox *item3 = new wxRadioBox( parent, ID5_NOTATION, _("Notation"), wxDefaultPosition, wxDefaultSize, 3, strs3, 1, wxRA_SPECIFY_COLS );
+    item2->Add( item3, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxBOTTOM, 5 );
+
+    wxBoxSizer *item4 = new wxBoxSizer( wxHORIZONTAL );
+
+    wxStaticText *item5 = new wxStaticText( parent, ID5_TEXT, _("Staff lines"), wxDefaultPosition, wxDefaultSize, 0 );
+    item4->Add( item5, 0, wxALIGN_CENTER|wxALL, 5 );
+
+    wxSpinCtrl *item6 = new wxSpinCtrl( parent, ID5_STAFF_LINES, wxT("5"), wxDefaultPosition, wxDefaultSize, 0, 1, 6, 5 );
+    item4->Add( item6, 0, wxALIGN_CENTER|wxALL, 5 );
+
+    item2->Add( item4, 0, wxGROW|wxALIGN_CENTER_VERTICAL, 5 );
+
+    wxStaticLine *item7 = new wxStaticLine( parent, ID5_LINE, wxDefaultPosition, wxSize(20,-1), wxLI_HORIZONTAL );
+    item2->Add( item7, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT, 5 );
+
+    wxBoxSizer *item8 = new wxBoxSizer( wxHORIZONTAL );
+
+    wxStaticText *item9 = new wxStaticText( parent, ID5_TEXT, _("Number of staves"), wxDefaultPosition, wxDefaultSize, 0 );
+    item8->Add( item9, 0, wxALIGN_CENTER|wxALL, 5 );
+
+    wxSpinCtrl *item10 = new wxSpinCtrl( parent, ID5_NB_STAVES, wxT("8"), wxDefaultPosition, wxDefaultSize, 0, 1, 256, 8 );
+    item8->Add( item10, 0, wxALIGN_CENTER|wxALL, 5 );
+
+    item2->Add( item8, 0, wxGROW|wxALIGN_CENTER_VERTICAL, 5 );
+
+    item1->Add( item2, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+
+    wxStaticBox *item12 = new wxStaticBox( parent, -1, _("Page size") );
+    wxStaticBoxSizer *item11 = new wxStaticBoxSizer( item12, wxVERTICAL );
+
+    wxString strs13[] = 
+    {
+        _("A4"), 
+        _("A5"), 
+        _("Other")
+    };
+    wxRadioBox *item13 = new wxRadioBox( parent, ID5_RB_SIZE, wxT(""), wxDefaultPosition, wxDefaultSize, 3, strs13, 1, wxRA_SPECIFY_COLS );
+    item11->Add( item13, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxTOP, 5 );
+
+    wxGridSizer *item14 = new wxGridSizer( 2, 0, 0 );
+
+    wxStaticText *item15 = new wxStaticText( parent, ID5_TEXT, _("Height"), wxDefaultPosition, wxDefaultSize, 0 );
+    item14->Add( item15, 0, wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxBOTTOM, 5 );
+
+    wxStaticText *item16 = new wxStaticText( parent, ID5_TEXT, _("Width"), wxDefaultPosition, wxDefaultSize, 0 );
+    item14->Add( item16, 0, wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxBOTTOM, 5 );
+
+    wxTextCtrl *item17 = new wxTextCtrl( parent, ID5_TX_HEIGHT, wxT(""), wxDefaultPosition, wxSize(80,-1), 0 );
+    item14->Add( item17, 0, wxALIGN_CENTER|wxLEFT|wxRIGHT|wxBOTTOM, 5 );
+
+    wxTextCtrl *item18 = new wxTextCtrl( parent, ID5_TX_WIDTH, wxT(""), wxDefaultPosition, wxSize(80,-1), 0 );
+    item14->Add( item18, 0, wxALIGN_CENTER|wxLEFT|wxRIGHT|wxBOTTOM, 5 );
+
+    item11->Add( item14, 0, wxALIGN_CENTER, 5 );
+
+    wxString strs19[] = 
+    {
+        _("Portrait"), 
+        _("Landscape")
+    };
+    wxRadioBox *item19 = new wxRadioBox( parent, ID5_RB_ORIENTATION, wxT(""), wxDefaultPosition, wxDefaultSize, 2, strs19, 1, wxNO_BORDER|wxRA_SPECIFY_COLS );
+    item11->Add( item19, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxTOP, 5 );
+
+    item1->Add( item11, 0, wxGROW|wxALIGN_CENTER_HORIZONTAL|wxLEFT|wxRIGHT|wxTOP, 5 );
+
+    item0->Add( item1, 0, wxALIGN_CENTER|wxALL, 5 );
+
+    wxBoxSizer *item20 = new wxBoxSizer( wxHORIZONTAL );
+
+    wxButton *item21 = new wxButton( parent, wxID_OK, _("OK"), wxDefaultPosition, wxDefaultSize, 0 );
+    item20->Add( item21, 0, wxALIGN_CENTER|wxALL, 5 );
+
+    wxButton *item22 = new wxButton( parent, wxID_CANCEL, _("Cancel"), wxDefaultPosition, wxDefaultSize, 0 );
+    item20->Add( item22, 0, wxALIGN_CENTER|wxALL, 5 );
+
+    item0->Add( item20, 0, wxALIGN_CENTER|wxALL, 5 );
+
+    if (set_sizer)
+    {
+        parent->SetSizer( item0 );
+        if (call_fit)
+            item0->SetSizeHints( parent );
+    }
+    
+    return item0;
+}
+
 // Implement menubar functions
 
 wxMenuBar *MenuBarFunc5()
@@ -95,12 +197,6 @@ wxMenuBar *MenuBarFunc5()
     item0->Append( item3, _("&Page") );
     
     wxMenu* item4 = new wxMenu;
-    item4->Append( ID5_INSERT_MODE, _("&Insertion"), wxT(""), wxITEM_CHECK );
-    item4->Append( ID5_NOTES, _("&Notes and rests"), wxT("") );
-    item4->Append( ID5_KEYS, _("&Keys"), wxT("") );
-    item4->Append( ID5_SIGNS, _("&Propostions"), wxT("") );
-    item4->Append( ID5_SYMBOLES, _("&Symboles"), wxT("") );
-    item4->AppendSeparator();
     item4->Append( ID5_VOICES, _("&Voices"), wxT("") );
     item4->Append( ID5_INDENT, _("In&dentation"), wxT("") );
     item0->Append( item4, _("&Tools") );

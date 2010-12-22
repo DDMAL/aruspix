@@ -32,7 +32,7 @@ public:
     
         
 public:
-        /** orientation de la page */
+    /** orientation de la page */
     char orientation;
     /** epaisseur des lignes de portees */
     unsigned char EpLignesPortee;
@@ -100,20 +100,23 @@ public:
     /** table de transpositions de voix */
     //signed char transposition[MAXPORTNBRE+1]; // unused
     
+    // not originally in Wolfgang
+    int notationMode; // since Aruspix 1.6.1
+    
 private:
     
 };
 
 //----------------------------------------------------------------------------
-// MusPosKey
+// MusPosClef
 //----------------------------------------------------------------------------
 
-class MusPosKey
+class MusPosClef
 {
 public:
     // constructors and destructors
-    MusPosKey();
-    virtual ~MusPosKey();
+    MusPosClef();
+    virtual ~MusPosClef();
     
         
 public:

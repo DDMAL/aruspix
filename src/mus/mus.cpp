@@ -46,6 +46,9 @@ MusParameters::MusParameters()
     rapportDiminDen = 4;
 	hampesCorr = 0;
     entetePied = 0;
+    
+    // additional parameters
+    notationMode = MUS_MENSURAL_MODE;
 }
 
 MusParameters::~MusParameters()
@@ -55,14 +58,14 @@ MusParameters::~MusParameters()
 
 
 //----------------------------------------------------------------------------
-// MusPosKey
+// MusPosClef
 //----------------------------------------------------------------------------
 
-MusPosKey::MusPosKey()
+MusPosClef::MusPosClef()
 {
 }
 
-MusPosKey::~MusPosKey()
+MusPosClef::~MusPosClef()
 {
 }
 

@@ -97,6 +97,7 @@ public:
     bool CanRedo();      // Returns TRUE if can Redo
     void Undo();         // Restore next Undo state
     void Redo();         // Restore next Redo state
+    void ResetUndos();        // Reset the Undo and Redo, for example when opening a new file
 	void PrepareCheckPoint( int type, int flags );	// Save state before operation if previous undo is partial
     void CheckPoint( int type, int flags );   // Save current state
 	// initialisation

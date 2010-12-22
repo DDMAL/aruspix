@@ -37,7 +37,7 @@ public:
 
 	// common method
 	void ClearElement( wxDC *dc, MusStaff *staff );
-	int filtrcod( int codElement, int *oct );
+	int  filtrcod( int codElement, int *oct );
 	bool IsNote() { return ( TYPE == NOTE ); }
 	bool IsSymbol() { return ( TYPE == SYMB ); }
     bool IsNeume() { return ( TYPE == NEUME ); } // always crash here
@@ -54,7 +54,7 @@ public:
 
       
 public:
-        /** type de l'element. <pre>JwgDef.NOTE = note<br>JwgDef.SYMB = symbol</pre> */
+        /** type de l'element. JwgDef.NOTE = noteJwgDef.SYMB = symbol */
     char TYPE;
     /** element a l'interieur d'un liaison */
     char liaison;
@@ -88,7 +88,7 @@ public:
     char existDebord;
     /** element fin de ligature */
     char fligat;
-    /** affichage du groupe. <pre>0 = automatique<br>1 = ni chiffre ni barre<br>2 = chiffre seul</pre> */
+    /** affichage du groupe. 0 = automatique1 = ni chiffre ni barre2 = chiffre seul */
     unsigned char notschowgrp;
     /** acceleration des valeurs */
     char cone;

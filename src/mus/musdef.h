@@ -457,4 +457,16 @@ VERSION DOS.*/
 
 #define PTCONTROL 20
 
+#define MUS_MENSURAL_MODE 0
+#define MUS_NEUMATIC_MODE 1
+#define MUS_CMN_MODE 2
+
+/*
+enum {
+    MUS_MENSURAL_MODE = 0,
+    MUS_NEUMATIC_MODE,
+    MUS_CMN_MODE
+};
+*/
+
 

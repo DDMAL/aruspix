@@ -863,7 +863,6 @@
 					"$(ARUSPIX_WX)/include",
 					"$(ARUSPIX_WX)/contrib/include",
 					/usr/include/libxml2,
-					/Users/laurent/libs/wxxml2/include,
 				);
 				INFOPLIST_FILE = "Aruspix-Info.plist";
 				INSTALL_PATH = "$(USER_APPS_DIR)";
@@ -962,12 +961,14 @@
 					"$(ARUSPIX_WX)/osx-static/lib/wx/include/mac-ansi-release-static-2.8",
 					"$(ARUSPIX_WX)/include",
 					"$(ARUSPIX_WX)/contrib/include",
+					/usr/include/libxml2,
 				);
 				INFOPLIST_FILE = "Aruspix-Info.plist";
 				INSTALL_PATH = "$(USER_APPS_DIR)";
 				LIBRARY_SEARCH_PATHS = (
 					"$(ARUSPIX_IMLIB)/lib",
 					"$(ARUSPIX_WX)/osx-static/lib",
+					/usr/lib,
 				);
 				OBJROOT = "$(ARUSPIX)/obj";
 				OTHER_CFLAGS = (
@@ -1012,8 +1013,10 @@
 					"-lwx_mac_core-$(ARUSPIX_WX_VERSION)",
 					"-lwx_base_carbon_net-$(ARUSPIX_WX_VERSION)",
 					"-lwx_base_carbon-$(ARUSPIX_WX_VERSION)",
+					"-lwx_mac_aui-$(ARUSPIX_WX_VERSION)",
 					"-lwxpng-$(ARUSPIX_WX_VERSION)",
 					"-lwxjpeg-$(ARUSPIX_WX_VERSION)",
+					"-lxml2",
 				);
 				OTHER_REZFLAGS = "";
 				PREBINDING = NO;

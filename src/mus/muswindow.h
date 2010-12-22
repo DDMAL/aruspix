@@ -232,7 +232,7 @@ public:
     /** ???? */
     int DELTABAR;
     /** contient la positions des clefs */
-    MusPosKey kPos[MAXPORTNBRE+1];
+    MusPosClef kPos[MAXPORTNBRE+1];
     /** fontes actuelles mises a jour selon la taille du zoom */
     wxFont m_activeFonts[2][2];				
     /** fonte Leipzig par defaut */
@@ -295,7 +295,7 @@ public:
 	MusStaff *m_currentStaff;
 	bool efface;
 	bool m_editElement; // edition mode or insertion mode
-	bool m_notation_mode; // neumes or mensural notation mode
+	int m_notation_mode; // neumes or mensural notation mode
 	int m_insertx;
 	int m_insertcode;
 	int m_insertoct;
@@ -313,7 +313,6 @@ public:
     
     static int s_flats[];
     static int s_sharps[];
-
     
 private:
 	void SetPage( MusPage *page );
@@ -328,7 +327,8 @@ private:
 
 
 	bool KeyboardEntry(wxKeyEvent &event);	//parse key input and send MIDI messages
-	
+    void LyricEntry( wxKeyEvent &event );
+    
     void OnSize( wxSizeEvent &event );
     void OnPaint( wxPaintEvent &event );
 	void OnMouseMotion( wxMouseEvent &event );

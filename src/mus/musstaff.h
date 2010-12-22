@@ -110,7 +110,7 @@ public:
 	unsigned short noLigne;
 	/** numero de portee */
 	unsigned short no;
-	/** type d'armure. <pre>0 = aucune<br>1 = dieses<br>2 = bemols</pre> */
+	/** type d'armure. 0 = aucune1 = dieses2 = bemols */
 	unsigned char armTyp;
 	/** nombre d'alterations a l'armures */
 	unsigned char armNbr;
@@ -122,11 +122,11 @@ public:
 	char invisible;
 	/** ecart jusqu'a la portee, en interlignes */
 	unsigned short ecart;
-	/** barre verticale. <pre>0 = aucun<br>1 = debut<br>2 = fin</pre> */
+	/** barre verticale. 0 = aucun1 = debut2 = fin */
 	unsigned char vertBarre;
-	/** accolade ou bloc. <pre>0 = aucun<br>1 = debut<br>2 = fin</pre> */
+	/** accolade ou bloc. 0 = aucun1 = debut2 = fin */
 	unsigned char brace;
-	/** taille. <pre>0 = normale<br>1 = petite </pre> */
+	/** taille. 0 = normale1 = petite  */
 	unsigned char pTaille;
 	/** portee indentee
 		char dans Wolfgang - ici indentation par portee
@@ -136,7 +136,7 @@ public:
 	char indentDroite;
 	/** type de portee (nombre de lignes) */
 	unsigned char portNbLine;
-	/** type d'accolade. <pre>0 = bloc<br>1 = accolade ronde</pre> */
+	/** type d'accolade. 0 = bloc1 = accolade ronde */
 	unsigned char accol;
 	/** ???? */
 	unsigned char accessoire;

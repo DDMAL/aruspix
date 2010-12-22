@@ -23,6 +23,10 @@
 #include "musdef.h"
 
 
+int MusSymbol::s_durNum = 3;
+int MusSymbol::s_durDen = 2;
+
+
 
 //----------------------------------------------------------------------------
 // MusSymbol
@@ -152,9 +156,9 @@ void MusSymbol::SetValue( int value, MusStaff *staff, int vflag )
 		case ('C'): this->code = 8; break;
 		case ('V'): this->code = 12; break;
 
-		case ('1'): this->code = 1; this->durNum = 3; this->durDen = 2; break;
-		case ('2'): this->code = 64; this->calte = 2; break;
-		case ('3'): this->code = 64; this->calte = 3; break;
+		case ('1'): this->code = 1; this->durNum = MusSymbol::s_durNum; this->durDen = MusSymbol::s_durDen; break;
+		case ('2'): this->code = 64; this->calte = 3; break;
+        case ('3'): this->code = 64; this->calte = 2; break;
 		}
 	}
 	else // ALTER PNT BAR
@@ -188,7 +192,7 @@ void MusSymbol::SetValue( int value, MusStaff *staff, int vflag )
 }
 
 
-void MusSymbol::ResetToKey( )
+void MusSymbol::ResetToClef( )
 {
 	MusSymbol reset;
 	reset.flag = CLE;

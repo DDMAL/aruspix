@@ -74,7 +74,7 @@ public:
     unsigned char val;
     /** couleur inverse */
     char inv_val;
-    /** point. <pre>0 = aucun<br>1 = point<br>2 = double point</pre>
+    /** point. 0 = aucun1 = point2 = double point
      @see JwgDef#POINTAGE JwgDef, valeurs de pointages de notes */
     unsigned char point;
     /** interruption de beaming */

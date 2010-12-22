@@ -63,9 +63,9 @@ public:
     unsigned char minVeloc;
     /** ???? */
     unsigned char maxVeloc;
-    /** style legato de jeu. <pre>0 = aucun<br>1 = beam<br>2 = liaison</pre> */
+    /** style legato de jeu. 0 = aucun1 = beam2 = liaison */
     unsigned char collerBeamLiai;
-    /** valeur de la pedale. <pre>1 = silences<br>2 = pedale</pre> */
+    /** valeur de la pedale. 1 = silences2 = pedale */
     unsigned char pedale;
     /** tolerance horizontale x max pour la simultaneite */
     unsigned char xResolution1;

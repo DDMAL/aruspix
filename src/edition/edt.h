@@ -52,7 +52,7 @@ public:
 private:
         
 private:
-        void OnTree( wxTreeEvent &event );
+    void OnTree( wxTreeEvent &event );
     void OnSize( wxSizeEvent &event );
 
 private:
@@ -70,23 +70,23 @@ public:
     EdtEnv();
     virtual ~EdtEnv();
     
-        virtual void LoadWindow();
+    virtual void LoadWindow();
 	virtual void RealizeToolbar( );
     virtual void UpdateTitle( );
     virtual void Open( wxString filename, int type );
+    virtual bool CloseAll( );
     virtual void ParseCmd( wxCmdLineParser *parser );
     //
     void UpdateViews( int flags );
     bool ResetFile(); // must be called when new file is created or opened
 
 private:
-        wxPanel *m_panelPtr;
+    wxPanel *m_panelPtr;
     MusWindow *m_musViewPtr;
     EdtFile *m_edtFilePtr;
     
 private:
     void OnSize( wxSizeEvent &event );
-    void OnTools( wxCommandEvent &event );
     void OnValues( wxCommandEvent &event );
     void OnNew( wxCommandEvent &event );
     void OnSave( wxCommandEvent &event );

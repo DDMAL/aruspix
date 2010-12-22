@@ -33,7 +33,7 @@ const wxString IPC_START = "StartOther";
 
 int AxApp::s_version_major = 1;
 int AxApp::s_version_minor = 6;
-int AxApp::s_version_revision = 0;
+int AxApp::s_version_revision = 1;
 wxString AxApp::s_version = wxString::Format("%d.%d.%d", AxApp::s_version_major, AxApp::s_version_minor, AxApp::s_version_revision);
 wxString AxApp::s_build_date = __DATE__;
 wxString AxApp::s_build_time = __TIME__;
@@ -190,7 +190,7 @@ bool AxApp::OnInit()
 			int x = 140;
 			dest.DrawText( version , x, 230 );
 			dest.DrawText( build , x, 245 );
-			dest.DrawText( "Laurent Pugin, Copyright 2004-2008" , x, 260 );
+			dest.DrawText( "Laurent Pugin, Copyright 2004-2011" , x, 260 );
 			dest.DrawText( "All Rights Reserved" , x, 275 );
 			dest.SelectObject( wxNullBitmap );
 
@@ -329,7 +329,7 @@ bool AxApp::ProcessCmdLine (char** argv, int argc)
         {wxCMD_LINE_NONE}
     };
     wxCmdLineParser parser (cmdLineDesc, argc, argv);
-    wxString logo = wxString::Format( "Aruspix version %s - Build %s %s\nCopyright 2004-2007 Laurent Pugin, All Rights Reserved",
+    wxString logo = wxString::Format( "Aruspix version %s - Build %s %s\nCopyright 2004-2011 Laurent Pugin, All Rights Reserved",
         AxApp::s_version.c_str(), AxApp::s_build_date.c_str() , AxApp::s_build_time.c_str() );
     parser.SetLogo( logo );
 

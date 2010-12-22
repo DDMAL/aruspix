@@ -22,36 +22,53 @@
 
 #define MUS_TOOLS_NOTES 0
 #define MUS_TOOLS_CLEFS 1
-#define MUS_TOOLS_SIGNS 2
+#define MUS_TOOLS_PROPORTIONS 2
 #define MUS_TOOLS_OTHER 3
+// neumes
 #define NEUME_TOOLS_NOTES 4
 #define NEUME_TOOLS_CLEFS 5
 #define NEUME_TOOLS_OTHER 6
+// cmn
+// TODO
 
 #define MUS_TOOLS_NUMBER 7 // Nombre de type de symbols
 
 #define MUS_MODE_EDIT 0
 #define MUS_MODE_INSERT 1
 
-#define MENSURAL_MODE 0
-#define NEUMES_MODE 1
+// #define MENSURAL_MODE 0 moved to musdef.h as MUS_MENSURAL_MODE, etc.
+// #define NEUMES_MODE 1
 
-#define MUS_MODES_NUMBER 7
+//#define MUS_MODES_NUMBER 7
 
 class MusWindow;
 
 
 enum {
-    // tools
-    ID_MS_BT_NOTES = 20500,
+    ID_MS_BT_CHANGE_TOOL_START = 20500,  // not a button, just used for RANGE EVT IDS
+    // tools for mensural notation
+    ID_MS_BT_NOTES,
     ID_MS_BT_CLEFS,
     ID_MS_BT_SIGNS,
     ID_MS_BT_SYMBOLS,
-    ID_MS_BT_CHMOD,
+    // tools for neumatic notation
+    ID_MS_BT_NEUMES,
+    ID_MS_BT_CLEFS_NEUMES,
+    ID_MS_BT_SYMBOLS_NEUMES,
+    // tools for cmn notation
+    /*
+    ID_MS_BT_NOTES_CMN,
+    ID_MS_BT_CLEFS_CMN,
+    ID_MS_BT_SIGNS_CMN,
+    ID_MS_BT_SYMBOLS_CMN,
+    ID_MS_BT_TEXT_CMN,
+    */
     //
-    ID_MS_BT_TEXT,
+    ID_MS_BT_CHANGE_TOOL_END, // not a button, just used for RANGE EVT IDS
     //
     ID_MS_BT_INSERT,
+    ID_MS_BT_TEXT, 
+    
     
     // note
     ID_MS_BT_N0,
@@ -103,8 +120,10 @@ enum {
     ID_MS_BT_MTI2,
     ID_MS_BT_MTI2D,
     ID_MS_BT_M32,
+    ID_MS_BT_M32_NUM,
+    ID_MS_BT_M32_DEN,
     ID_MS_BT_M3,
-    ID_MS_BT_M2,
+    ID_MS_BT_M2, 
 
     // varia
     ID_MS_BT_DOT,
@@ -116,10 +135,12 @@ enum {
     ID_MS_BT_BAR,
     ID_MS_BT_RDOTS,
 
-    // neumes
+    // neumes  - is it used?
+    /*
     ID_MS_BT_N_NOTES,
     ID_MS_BT_N_KEY,
     ID_MS_BT_N_SYMBOLES,
+    */
     
     //
     ID_MS_BT_LAST // Used for RANGE EVT IDS
@@ -138,18 +159,19 @@ public:
     // constructors and destructors
     MusToolRow( wxWindow *parent, wxWindowID id );
 
-    void UpdateTools( int type );
+    void UpdateTools( int type, int notation_mode );
     
     private:
     int m_type; // row type;
+    int m_notation_mode;
 	//bool m_previous_edition;
 	//wxBitmapButton *m_buttons[MUS_TOOLS_NUMBER + 1]; // +1 pour le bouton insert
 
 public:
     
 private:
+    DECLARE_EVENT_TABLE()
     
-private:
 };
 
 
@@ -173,7 +195,7 @@ public:
     
     
 private:
-    void SendEvent( wxKeyEvent event );
+    void SendEvent( wxKeyEvent event, bool set_focus = true );
     
 private:
         MusWindow *m_w;
@@ -189,6 +211,7 @@ public:
 private:
     void OnChangeNotationMode( wxCommandEvent &event );
 	void OnChangeMode( wxCommandEvent &event );
+    void OnMeasure( wxCommandEvent &event );
 	void OnChangeTool( wxCommandEvent &event );
     void OnSymbol( wxCommandEvent &event );
     void OnSign( wxCommandEvent &event );

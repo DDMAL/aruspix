@@ -241,6 +241,14 @@ void AxUndo::Redo()
 	Load( m_lastRow->m_redoFile );
 }
 
+void AxUndo::ResetUndos()
+{
+	m_undolist.DeleteContents( true );
+	m_undolist.Clear();
+	m_redolist.DeleteContents( true );
+	m_redolist.Clear();
+}
+
 // statics
 
 void AxUndo::InitUndos()

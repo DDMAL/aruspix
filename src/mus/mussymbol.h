@@ -19,6 +19,7 @@
 class MusStaff;
 class MusNote;
 class MusNeume;
+
 #include "muselement.h"
 
 
@@ -52,7 +53,7 @@ public:
 	virtual void SetPitch( int code, int oct );	
 	virtual void SetValue( int code, MusStaff *staff = NULL, int vflag = 0 );
 	//
-	void ResetToKey( );
+	void ResetToClef( );
 	void ResetToSymbol( );
 	void ResetToProportion( );
 	
@@ -71,16 +72,16 @@ public:
      @see JwgDef#SILENCESPECIAL JwgDef, valeurs de calte (fonte = JwgDef.MARQUE_REPERE)
      @see JwgDef#DIESE JwgDef, valeurs de calte (flag = JwgDef.ALTER) */
     unsigned char calte;
-    /** style de caractere. <pre>0 = droit<br>1 = italique<br>2 = gras</pre> */
+    /** style de caractere. 0 = droit1 = italique2 = gras */
     unsigned char carStyle;
-    /** orientation des caracteres. <pre>0 = a gauche<br>1 = a droite<br>2 = haut<br>3 = bas</pre> */
+    /** orientation des caracteres. 0 = a gauche1 = a droite2 = haut3 = bas */
     unsigned char carOrient;
     /** categorie de texte (DYN, LYRIC, ...)
      @see JwgDef#DYN JwgDef, valeurs de fonte de Symbole pour les chaines de caracteres */
     unsigned char fonte;
-    /** symbol de liaison limites. <pre>0 = aucun<br>1 = debut<br>2 = fin</pre> */
+    /** symbol de liaison limites. 0 = aucun1 = debut2 = fin */
     unsigned char s_lie_l;
-    /** type de point. <pre>false = simple point<br>true = double point</pre> */
+    /** type de point. false = simple pointtrue = double point */
     char point;
     /** code du symbol
      @see JwgDef#SOL2 JwgDef, valeurs des codes de clefs */
@@ -90,6 +91,9 @@ public:
 	
 	MusNote *m_note_ptr;
 	MusNeume *m_neume_ptr; //temporary? --chrisniven
+    
+    static int s_durNum; // used in SetValue and can be change from the MusToolPanel (for example)
+    static int s_durDen;
 
 private:
     };

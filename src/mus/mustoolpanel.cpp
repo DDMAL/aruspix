@@ -31,41 +31,77 @@
 //----------------------------------------------------------------------------
 
 
+BEGIN_EVENT_TABLE(MusToolRow,wxAuiToolBar)
+END_EVENT_TABLE()
+
 MusToolRow::MusToolRow( wxWindow *parent, wxWindowID id ) :
-    wxAuiToolBar( parent, id, wxDefaultPosition, wxDefaultSize, wxAUI_TB_HORZ_TEXT)
+    wxAuiToolBar( parent, id, wxDefaultPosition, wxDefaultSize, wxAUI_TB_HORZ_TEXT) //  | wxAUI_TB_PLAIN_BACKGROUND) // we might it add when switching to wx2.9
 {
+    m_notation_mode = MUS_MENSURAL_MODE;
 
     SetToolBitmapSize(wxSize(32,32));
     SetFont(*wxSMALL_FONT);
 
-    AddTool(ID_MS_BT_INSERT, wxT(""), MusToolPanel::GetToolbarBitmap( "tool_insert.png" ), "", wxITEM_CHECK);
-    AddSeparator();   
-    //AddSeparator();       
-    AddTool(ID_MS_BT_NOTES, wxT("Notes"), MusToolPanel::GetToolbarBitmap( "tool_notes.png" ), "", wxITEM_CHECK);
-    AddTool(ID_MS_BT_CLEFS, wxT("Clefs"), MusToolPanel::GetToolbarBitmap( "tool_clefs.png" ), "", wxITEM_CHECK);
-    AddTool(ID_MS_BT_SIGNS, wxT("Prop."), MusToolPanel::GetToolbarBitmap( "tool_mes.png" ), "", wxITEM_CHECK);
-    AddTool(ID_MS_BT_SYMBOLS, wxT("Varia"), MusToolPanel::GetToolbarBitmap( "tool_varia.png" ), "", wxITEM_CHECK);
-    AddTool(ID_MS_BT_TEXT, wxT("Text"), MusToolPanel::GetToolbarBitmap( "tool_text.png" ), "");
-    AddTool(ID_MS_BT_CHMOD, wxT("Neumes"), MusToolPanel::GetToolbarBitmap( "tool_neumes.png" ), "", wxITEM_CHECK);
-    AddSeparator(); 
+    // for some reason, we need to have at least one item to get the right height 
+    AddTool(ID_MS_BT_BAR, "", MusToolPanel::GetToolbarBitmap( "padding.png" ));
+    //AddSpacer(100);
     AddStretchSpacer(100);
-
     Realize();
-
+    Fit();
+    // remove the item
+    //DeleteByIndex(0);
+    Clear();
+    //Fit();
 }
 
 
-void MusToolRow::UpdateTools( int type )
+void MusToolRow::UpdateTools( int type, int notation_mode )
 {
     if (type == m_type) {
         return;
     }
     m_type = type;
     
-    int tc = GetToolCount();
-    int i;
-    for (i = tc -1; i > MUS_MODES_NUMBER; i--) {
-        DeleteByIndex(i);
+    // clear the entire toolbar
+    Clear();
+    DestroyChildren(); // we need to destroy the controls
+    
+    switch(notation_mode) 
+    {
+    case (MUS_MENSURAL_MODE):
+        AddTool(ID_MS_BT_INSERT, wxT(""), MusToolPanel::GetToolbarBitmap( "tool_insert.png" ), "", wxITEM_CHECK);
+        AddSeparator();   
+        //AddSeparator();       
+        AddTool(ID_MS_BT_NOTES, wxT("Notes"), MusToolPanel::GetToolbarBitmap( "tool_notes.png" ), "", wxITEM_CHECK);
+        AddTool(ID_MS_BT_CLEFS, wxT("Clefs"), MusToolPanel::GetToolbarBitmap( "tool_clefs.png" ), "", wxITEM_CHECK);
+        AddTool(ID_MS_BT_SIGNS, wxT("Prop."), MusToolPanel::GetToolbarBitmap( "tool_mes.png" ), "", wxITEM_CHECK);
+        AddTool(ID_MS_BT_SYMBOLS, wxT("Varia"), MusToolPanel::GetToolbarBitmap( "tool_varia.png" ), "", wxITEM_CHECK);
+        AddTool(ID_MS_BT_TEXT, wxT("Text"), MusToolPanel::GetToolbarBitmap( "tool_text.png" ), "", wxITEM_CHECK);
+        AddSeparator(); 
+        break;
+    case (MUS_NEUMATIC_MODE):
+        AddTool(ID_MS_BT_INSERT, wxT(""), MusToolPanel::GetToolbarBitmap( "tool_insert.png" ), "", wxITEM_CHECK);
+        AddSeparator();   
+        //AddSeparator();       
+        AddTool(ID_MS_BT_NEUMES, wxT("Neumes"), MusToolPanel::GetToolbarBitmap( "tool_neumes.png" ), "", wxITEM_CHECK);
+        AddTool(ID_MS_BT_CLEFS_NEUMES, wxT("Clefs"), MusToolPanel::GetToolbarBitmap( "missing.png" ), "", wxITEM_CHECK);
+        AddTool(ID_MS_BT_SYMBOLS_NEUMES, wxT("Varia"), MusToolPanel::GetToolbarBitmap( "missing.png" ), "", wxITEM_CHECK);
+        //AddTool(ID_MS_BT_TEXT, wxT("Text"), MusToolPanel::GetToolbarBitmap( "tool_text.png" ), "", wxITEM_CHECK);
+        AddSeparator(); 
+        break;
+    case (MUS_CMN_MODE):
+    /*
+        AddTool(ID_MS_BT_INSERT, wxT(""), MusToolPanel::GetToolbarBitmap( "tool_insert.png" ), "", wxITEM_CHECK);
+        AddSeparator();   
+        //AddSeparator();       
+        AddTool(ID_MS_BT_NOTES, wxT("Notes"), MusToolPanel::GetToolbarBitmap( "tool_notes.png" ), "", wxITEM_CHECK);
+        AddTool(ID_MS_BT_CLEFS, wxT("Clefs"), MusToolPanel::GetToolbarBitmap( "tool_clefs.png" ), "", wxITEM_CHECK);
+        AddTool(ID_MS_BT_SIGNS, wxT("Prop."), MusToolPanel::GetToolbarBitmap( "tool_mes.png" ), "", wxITEM_CHECK);
+        AddTool(ID_MS_BT_SYMBOLS, wxT("Varia"), MusToolPanel::GetToolbarBitmap( "tool_varia.png" ), "", wxITEM_CHECK);
+        AddTool(ID_MS_BT_TEXT, wxT("Text"), MusToolPanel::GetToolbarBitmap( "tool_text.png" ), "", wxITEM_CHECK);
+        AddSeparator(); 
+    */
+        break;
     }
 	
     switch(m_type) 
@@ -114,7 +150,7 @@ void MusToolRow::UpdateTools( int type )
         AddTool(ID_MS_BT_F4, "", MusToolPanel::GetToolbarBitmap( "clef_f4.png" ));
         AddTool(ID_MS_BT_F5, "", MusToolPanel::GetToolbarBitmap( "clef_f5.png" ));
         break;
-    case (MUS_TOOLS_SIGNS):
+    case (MUS_TOOLS_PROPORTIONS):
         AddTool(ID_MS_BT_MTPP, "", MusToolPanel::GetToolbarBitmap( "mes_mtpp.png" ));
         AddTool(ID_MS_BT_MTPDP, "", MusToolPanel::GetToolbarBitmap( "mes_mtpdp.png" ));
         AddTool(ID_MS_BT_MTP, "", MusToolPanel::GetToolbarBitmap( "mes_mtp.png" ));
@@ -134,8 +170,11 @@ void MusToolRow::UpdateTools( int type )
         // other
         AddSeparator();
         AddTool(ID_MS_BT_M32, "", MusToolPanel::GetToolbarBitmap( "mes_m32.png" ));
+        AddControl( new wxTextCtrl( this, ID_MS_BT_M32_NUM, wxString::Format("%d", MusSymbol::s_durNum), wxDefaultPosition, wxSize( 30, 20 )), "Num" );
+        AddControl( new wxTextCtrl( this, ID_MS_BT_M32_DEN, wxString::Format("%d", MusSymbol::s_durDen), wxDefaultPosition, wxSize( 30, 20 )), "Den" );  
+        AddSeparator();
         AddTool(ID_MS_BT_M3, "", MusToolPanel::GetToolbarBitmap( "mes_m3.png" ));
-        AddTool(ID_MS_BT_M2, "", MusToolPanel::GetToolbarBitmap( "mes_m2.png" ));   
+        AddTool(ID_MS_BT_M2, "", MusToolPanel::GetToolbarBitmap( "mes_m2.png" ));
         break;
 	case (MUS_TOOLS_OTHER):
         AddTool(ID_MS_BT_DOT, "", MusToolPanel::GetToolbarBitmap( "symb_dot.png" ));
@@ -154,10 +193,19 @@ void MusToolRow::UpdateTools( int type )
         AddTool(ID_MS_BT_RDOTS, "", MusToolPanel::GetToolbarBitmap( "symb_rdots.png" ));
         break;
 	case (NEUME_TOOLS_NOTES):
-        AddTool(ID_MS_BT_MTP, "", MusToolPanel::GetToolbarBitmap( "symb_mtp.png" ));
+        //AddTool(ID_MS_BT_MTP, "", MusToolPanel::GetToolbarBitmap( "symb_mtp.png" ));
+        // add more...
+        break;
+	case (NEUME_TOOLS_CLEFS):
+        //AddTool(ID_MS_BT_MTP, "", MusToolPanel::GetToolbarBitmap( "symb_mtp.png" ));
+        // add more...
+        break;
+	case (NEUME_TOOLS_OTHER):
+        //AddTool(ID_MS_BT_MTP, "", MusToolPanel::GetToolbarBitmap( "symb_mtp.png" ));
         // add more...
         break;
     }
+    //AddSpacer(10000); // fill in the space, arbitrary value
     Realize();
     Fit();
 }
@@ -170,7 +218,7 @@ void MusToolRow::UpdateTools( int type )
 
 BEGIN_EVENT_TABLE(MusToolPanel,wxPanel)
 	EVT_MENU( ID_MS_BT_INSERT, MusToolPanel::OnChangeMode )
-    EVT_MENU_RANGE( ID_MS_BT_NOTES, ID_MS_BT_CHMOD, MusToolPanel::OnChangeTool )
+    EVT_MENU_RANGE( ID_MS_BT_CHANGE_TOOL_START, ID_MS_BT_CHANGE_TOOL_END, MusToolPanel::OnChangeTool )
     EVT_MENU_RANGE( ID_MS_BT_N0, ID_MS_BT_N7, MusToolPanel::OnNote )
     EVT_MENU_RANGE( ID_MS_BT_R0, ID_MS_BT_CT, MusToolPanel::OnNote )
 	EVT_MENU_RANGE( ID_MS_BT_LG_D, ID_MS_BT_UPDOWN, MusToolPanel::OnNote )
@@ -178,7 +226,10 @@ BEGIN_EVENT_TABLE(MusToolPanel,wxPanel)
     EVT_MENU_RANGE( ID_MS_BT_MTPP, ID_MS_BT_M2, MusToolPanel::OnSign )
     EVT_MENU_RANGE( ID_MS_BT_DOT, ID_MS_BT_BAR, MusToolPanel::OnSymbol )
     EVT_MENU( ID_MS_BT_TEXT, MusToolPanel::OnText )
-    EVT_UPDATE_UI_RANGE(ID_MS_BT_NOTES, ID_MS_BT_INSERT, MusToolPanel::OnUpdateUI)
+    EVT_UPDATE_UI_RANGE(ID_MS_BT_CHANGE_TOOL_START, ID_MS_BT_TEXT, MusToolPanel::OnUpdateUI)
+    // measure controls
+    EVT_TEXT(ID_MS_BT_M32_NUM, MusToolPanel::OnMeasure)
+    EVT_TEXT(ID_MS_BT_M32_DEN, MusToolPanel::OnMeasure)
 END_EVENT_TABLE()
 
 MusToolPanel::MusToolPanel( wxWindow *parent, wxWindowID id,
@@ -191,6 +242,7 @@ MusToolPanel::MusToolPanel( wxWindow *parent, wxWindowID id,
     this->Fit();
 
     m_w = NULL;
+    m_current_tools = -1;
 }
 
 wxBitmap MusToolPanel::GetToolbarBitmap( wxString name )
@@ -202,7 +254,9 @@ wxBitmap MusToolPanel::GetToolbarBitmap( wxString name )
 
 void MusToolPanel::SetMusWindow( MusWindow *w )
 {
+    m_current_tools = -1; // forces the toolbar to be recreated 
     m_w = w;
+    m_notation_mode = m_w->m_notation_mode;
 }
 
 void MusToolPanel::OnUpdateUI( wxUpdateUIEvent &event )
@@ -215,19 +269,27 @@ void MusToolPanel::OnUpdateUI( wxUpdateUIEvent &event )
     } else if (id == ID_MS_BT_CLEFS) {
         event.Check( m_current_tools == MUS_TOOLS_CLEFS);
     } else if (id == ID_MS_BT_SIGNS) {
-        event.Check( m_current_tools == MUS_TOOLS_SIGNS);
+        event.Check( m_current_tools == MUS_TOOLS_PROPORTIONS);
     } else if (id == ID_MS_BT_SYMBOLS) {
         event.Check( m_current_tools == MUS_TOOLS_OTHER);
-    } else if (id == ID_MS_BT_CHMOD) {
+    } else if (id == ID_MS_BT_TEXT) {
+        event.Check( m_w->m_lyricMode );
+    // neumatic notation
+    } else if (id == ID_MS_BT_NEUMES) {
         event.Check( m_current_tools == NEUME_TOOLS_NOTES);
+    } else if (id == ID_MS_BT_CLEFS_NEUMES) {
+        event.Check( m_current_tools == NEUME_TOOLS_CLEFS);
+    } else if (id == ID_MS_BT_SYMBOLS_NEUMES) {
+        event.Check( m_current_tools == NEUME_TOOLS_OTHER);
     }
 }
 
 void MusToolPanel::SetTools( int tools, bool edition )
 {
-	if ( tools != m_current_tools ) // change tools
+	if ( (tools == -1) || (tools != m_current_tools) ) // change tools
 	{ 
-		m_tools->UpdateTools( tools );
+		m_tools->UpdateTools( tools, m_notation_mode );
+        wxYield( );
         this->Fit(); // resize
 		this->Refresh();
 	}
@@ -241,7 +303,7 @@ void MusToolPanel::SetTools( int tools, bool edition )
 	m_edition = edition;
 }
 
-void MusToolPanel::SendEvent( wxKeyEvent kevent )
+void MusToolPanel::SendEvent( wxKeyEvent kevent, bool set_focus )
 {
     if (!m_w)
         return;
@@ -249,7 +311,8 @@ void MusToolPanel::SendEvent( wxKeyEvent kevent )
     kevent.SetId( m_w->GetId() );
     kevent.SetEventObject( m_w );
     m_w->ProcessEvent( kevent );
-    m_w->SetFocus();
+    if (set_focus)
+        m_w->SetFocus();
 }
 
 void MusToolPanel::OnChangeTool( wxCommandEvent &event )
@@ -262,9 +325,12 @@ void MusToolPanel::OnChangeTool( wxCommandEvent &event )
     {
     case (ID_MS_BT_NOTES): value = MUS_TOOLS_NOTES; break;
     case (ID_MS_BT_CLEFS): value = MUS_TOOLS_CLEFS; break;
-    case (ID_MS_BT_SIGNS): value = MUS_TOOLS_SIGNS; break;
+    case (ID_MS_BT_SIGNS): value = MUS_TOOLS_PROPORTIONS; break;
     case (ID_MS_BT_SYMBOLS): value = MUS_TOOLS_OTHER; break;
-	case (ID_MS_BT_CHMOD): value = NEUME_TOOLS_NOTES; break;
+    // neumes
+	case (ID_MS_BT_NEUMES): value = NEUME_TOOLS_NOTES; break;
+	case (ID_MS_BT_CLEFS_NEUMES): value = NEUME_TOOLS_CLEFS; break;
+	case (ID_MS_BT_SYMBOLS_NEUMES): value = NEUME_TOOLS_OTHER; break;
     }
 
 	m_w->SetInsertMode( true );
@@ -280,7 +346,6 @@ void MusToolPanel::OnChangeMode( wxCommandEvent &event )
 	m_w->SetInsertMode( m_w->m_editElement ); 
 	m_w->SetFocus();
 }
-
 
 void MusToolPanel::OnSymbol( wxCommandEvent &event )
 {
@@ -304,6 +369,17 @@ void MusToolPanel::OnSymbol( wxCommandEvent &event )
 }
 
 
+// pass the value back to the MusSymbol static
+void MusToolPanel::OnMeasure( wxCommandEvent &event )
+{
+    MusSymbol::s_durNum = atoi(((wxTextCtrl*)FindWindow(ID_MS_BT_M32_NUM))->GetValue());
+    MusSymbol::s_durDen = atoi(((wxTextCtrl*)FindWindow(ID_MS_BT_M32_DEN))->GetValue());
+    wxKeyEvent kevent;
+    kevent.SetEventType( wxEVT_KEY_DOWN );
+    kevent.m_keyCode = '1';
+    SendEvent( kevent, false );
+}
+
 void MusToolPanel::OnSign( wxCommandEvent &event )
 {
     int value = '0';
@@ -325,8 +401,8 @@ void MusToolPanel::OnSign( wxCommandEvent &event )
     case (ID_MS_BT_MTI2D): value = 'V'; break;
 
     case (ID_MS_BT_M32): value = '1'; break;
-    case (ID_MS_BT_M2): value = '2'; break;
-    case (ID_MS_BT_M3): value = '3'; break;
+    case (ID_MS_BT_M3): value = '2'; break;
+    case (ID_MS_BT_M2): value = '3'; break;
     }
 
     wxKeyEvent kevent;

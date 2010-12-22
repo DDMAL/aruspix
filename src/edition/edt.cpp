@@ -101,7 +101,6 @@ BEGIN_EVENT_TABLE(EdtEnv,AxEnv)
     EVT_MENU( ID5_OPEN_MEI, EdtEnv::OnOpenMEI )
     EVT_MENU( ID5_VOICES, EdtEnv::OnValues )
     EVT_MENU( ID5_INDENT, EdtEnv::OnValues )
-    EVT_MENU_RANGE( ID5_INSERT_MODE, ID5_SYMBOLES, EdtEnv::OnTools )
     EVT_COMMAND( ID_MIDI_INPUT, AX_EVT_MIDI, EdtEnv::OnMidiInput )
 	//EVT_SIZE( EdtEnv::OnSize )
 END_EVENT_TABLE()
@@ -166,23 +165,6 @@ void EdtEnv::OnSize( wxSizeEvent &event )
 {
 
     event.Skip();
-}
-
-void EdtEnv::OnTools( wxCommandEvent &event )
-{
-	if ( !m_musViewPtr )
-		return;
-
-	if ( event.GetId() == ID5_INSERT_MODE )
-		m_musViewPtr->SetInsertMode( event.IsChecked() );
- 	else if ( event.GetId() == ID5_NOTES )
-		m_musViewPtr->SetToolType( MUS_TOOLS_NOTES );
-	else if ( event.GetId() == ID5_KEYS)
-		m_musViewPtr->SetToolType( MUS_TOOLS_CLEFS );
-	else if ( event.GetId() == ID5_SIGNS )
-		m_musViewPtr->SetToolType( MUS_TOOLS_SIGNS );
-	else if ( event.GetId() == ID5_SYMBOLES )
-		m_musViewPtr->SetToolType( MUS_TOOLS_OTHER );
 }
 
 
@@ -264,7 +246,6 @@ void EdtEnv::ParseCmd( wxCmdLineParser *parser )
 void EdtEnv::UpdateTitle( )
 {
     wxString msg = wxString::Format("%s", m_edtFilePtr->m_shortname.c_str() );
-
     SetTitle( "%s", msg.c_str() );
 }
 
@@ -305,6 +286,14 @@ void EdtEnv::OnRedo( wxCommandEvent &event )
 	m_musViewPtr->Redo();
 }
 
+bool EdtEnv::CloseAll( )
+{
+    if ( !ResetFile() )
+        return false;
+        
+    return true;
+}
+
 
 void EdtEnv::Open( wxString filename, int type )
 {
@@ -315,13 +304,31 @@ void EdtEnv::Open( wxString filename, int type )
     {
         wxGetApp().AxBeginBusyCursor( );
         UpdateViews( 0 );
+        m_edtFilePtr->Modify(); // always flag it as modify. The correct way to do it 
+                                // would be to put this in EndEdition but we would need a 
+                                // child class to override the method
         wxGetApp().AxEndBusyCursor();
     }
 }
 
 void EdtEnv::OnNew( wxCommandEvent &event )
 {
-    Open( "" , -1 );
+    //Open( "" , AX_FILE_DEFAULT );
+
+    if ( !this->ResetFile( ) )
+        return;
+
+    if ( this->m_edtFilePtr->New( ) && m_edtFilePtr->Create( ) )
+    {
+        
+        wxGetApp().AxBeginBusyCursor( );
+        UpdateViews( 0 );
+        m_edtFilePtr->Modify(); // always flag it as modify. The correct way to do it 
+                                // would be to put this in EndEdition but we would need a 
+                                // child class to override the method
+        wxGetApp().AxEndBusyCursor();
+    }    
+
 }
 
 void EdtEnv::OnSave( wxCommandEvent &event )
@@ -442,11 +449,6 @@ void EdtEnv::OnUpdateUI( wxUpdateUIEvent &event )
         event.Enable( m_edtFilePtr->IsOpened() && !m_edtFilePtr->IsNew() );
     else if ( event.GetId() == ID_SAVE_AS )
         event.Enable( m_edtFilePtr->IsOpened() );
-	else if ( event.GetId() == ID5_INSERT_MODE )
-	{
-		event.Enable( true );
-		event.Check( m_musViewPtr && !m_musViewPtr->m_editElement );
-	}
     else
         event.Enable(true);
 }

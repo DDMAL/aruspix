@@ -20,6 +20,7 @@
 #include "musiobin.h"
 
 #include "app/axapp.h"
+#include "app/axfile.h"
 
 //----------------------------------------------------------------------------
 // MusFileOutputStream
@@ -109,6 +110,10 @@ bool MusBinOutput::WriteFileHeader( const MusFileHeader *header )
 	Write( &header->param.rapportDiminNum, 1 ); // rpDiminNum
 	Write( &header->param.rapportDiminDen, 1 ); // rpDiminDen
 	Write( &header->param.hampesCorr, 1 ); // hampesCorr
+    
+	int32 = wxINT32_SWAP_ON_BE( header->param.notationMode ); // param - pageFormatVer
+	Write( &int32, 4 );    
+    
 	return true;
 }
 
@@ -500,6 +505,12 @@ bool MusBinInput::ReadFileHeader( MusFileHeader *header )
 	Read( &header->param.rapportDiminDen, 1 ); // rpDiminDen	
 	Read( &header->param.hampesCorr, 1 ); // hampesCorr
     header->param.hampesCorr = 1;	 
+    
+	if ( AxFile::FormatVersion(m_vmaj, m_vmin, m_vrev) < AxFile::FormatVersion(1, 6, 1) )
+		return true; // following values where added in 1.6.1
+    // 1.6.1
+    Read( &int32, 4 );
+    header->param.notationMode = wxINT32_SWAP_ON_BE( int32 );
 
 	return true;
 }

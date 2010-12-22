@@ -141,7 +141,7 @@ MusWindow::MusWindow( wxWindow *parent, wxWindowID id,
 	m_toolpanel = NULL;
 
 	m_editElement = true;
-	m_notation_mode = MENSURAL_MODE;
+	m_notation_mode = MUS_MENSURAL_MODE;
 	m_insertx = 0;
 	m_insertcode = F6;
 	m_insertoct = 4;
@@ -409,12 +409,17 @@ void MusWindow::SetFile( MusFile *file )
 		m_f = NULL;
 		m_fh = NULL;
 		m_page = NULL;
+        m_currentStaff = NULL;
+        m_currentElement = NULL;
+        m_newElement = NULL;
 		zoomNum = 4;
+        ResetUndos();
 		return;
 	}
 
 	m_f = file;
 	m_fh = &file->m_fheader;
+    m_notation_mode = m_fh->param.notationMode;
 	m_npage = 0;
 	zoomNum = 4;
 	PaperSize();
@@ -838,6 +843,7 @@ void MusWindow::SetToolPanel( MusToolPanel *toolpanel )
 // This is a convenience method that can be called in situations where the notation
 // mode needs to be determined
 
+/*
 bool MusWindow::GetNotationMode() 
 { 
 	if (m_currentElement->IsNote())
@@ -847,6 +853,7 @@ bool MusWindow::GetNotationMode()
 	
 	return m_notation_mode; 
 }
+*/
 
 // convenience method to return if the selected element is a note or neume object
 // REFACTORING: eventually these classes should be merged (subclassed from a higher
@@ -896,11 +903,11 @@ void MusWindow::SetToolType( int type )
     switch ( type )
     {
     case (MUS_TOOLS_NOTES): value = 'M'; break; // I changed this to 'M' so 'N' can be used by neumes
-    case (MUS_TOOLS_CLEFS): value = 'K'; break;
-    case (MUS_TOOLS_SIGNS): value = 'P'; break;
+    case (MUS_TOOLS_CLEFS): value = 'C'; break;
+    case (MUS_TOOLS_PROPORTIONS): value = 'P'; break;
     case (MUS_TOOLS_OTHER): value = 'S'; break;
 	case (NEUME_TOOLS_NOTES): value = 'N'; break;
-	case (NEUME_TOOLS_CLEFS): value = 'K'; break;
+	case (NEUME_TOOLS_CLEFS): value = 'C'; break;
 	case (NEUME_TOOLS_OTHER): value = 'S'; break;
 	}
         
@@ -937,29 +944,38 @@ int MusWindow::GetToolType()
 	if (!sync) {
         return -1;
     }
-    if ( sync->IsSymbol() )
-    {
-        if ( ((MusSymbol*)sync)->flag == CLE )
-            return m_notation_mode == MENSURAL_MODE ? MUS_TOOLS_CLEFS : NEUME_TOOLS_CLEFS;
-        else if ( ((MusSymbol*)sync)->flag == IND_MES )	
-            return MUS_TOOLS_SIGNS;
-        else
-            return m_notation_mode == MENSURAL_MODE ? MUS_TOOLS_OTHER : NEUME_TOOLS_OTHER;
-    } 
-    else if (sync->IsNote() ) 
-    {
-        //return m_notation_mode == MENSURAL_MODE ? MUS_TOOLS_NOTES : NEUME_TOOLS_NOTES;
-		return MUS_TOOLS_NOTES;
-		
-		//what should I do here?????
+    
+    if (m_notation_mode == MUS_MENSURAL_MODE) {
+        if ( sync->IsSymbol() )
+        {
+            if ( ((MusSymbol*)sync)->flag == CLE )
+                return MUS_TOOLS_CLEFS;
+            else if ( ((MusSymbol*)sync)->flag == IND_MES )	
+                return MUS_TOOLS_PROPORTIONS;
+            else
+                return MUS_TOOLS_OTHER;
+        } 
+        else if (sync->IsNote() ) 
+        {
+            //return m_notation_mode == MENSURAL_MODE ? MUS_TOOLS_NOTES : NEUME_TOOLS_NOTES;
+            return MUS_TOOLS_NOTES;
+        }
     }
-	else if (sync->IsNeume() )
-	{
-		return NEUME_TOOLS_NOTES;
-	}
-    else {
-        return -1;
+    else if (m_notation_mode == MUS_NEUMATIC_MODE) {
+        if ( sync->IsSymbol() )
+        {
+            if ( ((MusSymbol*)sync)->flag == CLE )
+                return NEUME_TOOLS_CLEFS;
+            else 
+                return NEUME_TOOLS_OTHER;
+        } 
+        else if (sync->IsNeume() )
+        {
+            return NEUME_TOOLS_NOTES;
+        }
     }
+    // just in case
+    return -1;
 
 }
 
@@ -969,9 +985,10 @@ void MusWindow::SyncToolPanel()
 
 	if ( !m_toolpanel )
 		return;
+        
+    //if ( tool == -1 )
+    //    tool = MUS_TOOLS_NOTES;
 
-	if ( tool == -1 )
-		tool = MUS_TOOLS_NOTES;
 	m_toolpanel->SetTools( tool, this->m_editElement );
 
 	this->SetFocus();
@@ -1534,9 +1551,12 @@ void MusWindow::OnKeyDown(wxKeyEvent &event)
 	if (KeyboardEntry(event)) return;
 	
 	int noteKeyCode = GetNoteValue( event.m_keyCode );
-
+    
+    if ( m_lyricMode ) {
+        LyricEntry( event );
+    }
 	// change mode edition -- insertion
-	if ( !m_lyricMode && event.GetKeyCode() == WXK_RETURN )
+	else if ( event.GetKeyCode() == WXK_RETURN )
 	{
 		m_editElement = !m_editElement;
 		if ( !m_editElement ) // edition -> insertion
@@ -1618,7 +1638,7 @@ void MusWindow::OnKeyDown(wxKeyEvent &event)
 				else
 					m_currentElement = NULL;
 			}
-			else									//"Backspace" event
+			else                                    //"Backspace" event
 			{
 				if ( m_currentStaff->GetPrevious( del ) )
 					m_currentElement = m_currentStaff->GetPrevious( del );
@@ -1654,7 +1674,6 @@ void MusWindow::OnKeyDown(wxKeyEvent &event)
 		{
 			PrepareCheckPoint( UNDO_PART, MUS_UNDO_STAFF );
 			m_insertcode = m_currentElement->filtrcod( event.m_keyCode - WXK_F1, &m_insertoct );
-//			m_currentElement->SetPitch( m_insertcode, m_insertoct, m_currentStaff );
 			m_currentElement->SetPitch( m_insertcode, m_insertoct );
 			CheckPoint( UNDO_PART, MUS_UNDO_STAFF );
 			OnEndEdition();
@@ -1663,7 +1682,6 @@ void MusWindow::OnKeyDown(wxKeyEvent &event)
 		{
 			PrepareCheckPoint( UNDO_PART, MUS_UNDO_STAFF );
 			m_insertcode = m_currentElement->filtrcod( m_currentElement->code + 1, &m_insertoct );
-//			m_currentElement->SetPitch( m_insertcode, m_insertoct, m_currentStaff );
 			m_currentElement->SetPitch( m_insertcode, m_insertoct );
 			CheckPoint( UNDO_PART, MUS_UNDO_STAFF );
 			OnEndEdition();
@@ -1672,7 +1690,6 @@ void MusWindow::OnKeyDown(wxKeyEvent &event)
 		{
 			PrepareCheckPoint( UNDO_PART, MUS_UNDO_STAFF );
 			m_insertcode = m_currentElement->filtrcod( m_currentElement->code - 1, &m_insertoct );
-//			m_currentElement->SetPitch( m_insertcode, m_insertoct, m_currentStaff );
 			m_currentElement->SetPitch( m_insertcode, m_insertoct );
 			CheckPoint( UNDO_PART, MUS_UNDO_STAFF );
 			OnEndEdition();
@@ -1742,7 +1759,7 @@ void MusWindow::OnKeyDown(wxKeyEvent &event)
 			OnEndEdition();
 		}
 		else if ( event.m_controlDown && (( event.m_keyCode == WXK_LEFT ) || (event.m_keyCode == WXK_RIGHT )) && m_currentElement) // moving element
-      {
+        {
 			PrepareCheckPoint( UNDO_PART, MUS_UNDO_STAFF );
 			if ( event.m_keyCode == WXK_LEFT )
 				m_currentElement->xrel -=3;
@@ -1753,7 +1770,7 @@ void MusWindow::OnKeyDown(wxKeyEvent &event)
 			CheckPoint( UNDO_PART, MUS_UNDO_STAFF );
 			OnEndEdition();
 		}
-		else if ( event.m_keyCode == 'T' )
+		else if ( (event.m_keyCode == 'T') && m_currentElement && m_currentElement->IsNote() )
 		{
 			m_editElement = false;
 			m_lyricMode = true;
@@ -1880,7 +1897,55 @@ void MusWindow::OnKeyDown(wxKeyEvent &event)
 			SyncToolPanel();
 		}
 	}
-	else if ( m_lyricMode && !m_inputLyric )	/*** Lyric Editing mode ***/
+	else /*** Note insertion mode ***/
+	{
+		if ( event.m_controlDown && (event.m_keyCode == 'M')) // change set (note, rests, key, signs, symbols, ....
+			m_newElement = &m_note;	
+		else if ( event.m_controlDown && (event.m_keyCode == 'N')) {
+			m_newElement = &m_neume;
+		}
+		else if ( event.m_controlDown && (event.m_keyCode == 'C')) // clefs
+		{	
+			m_symbol.ResetToClef();
+			m_newElement = &m_symbol ;	
+		}	
+		else if ( event.m_controlDown && (event.m_keyCode == 'P')) // proportions
+		{	
+			m_symbol.ResetToProportion() ;
+			m_newElement = &m_symbol ;	
+		}	
+		else if ( event.m_controlDown && (event.m_keyCode == 'S')) // symbols
+		{
+			m_symbol.ResetToSymbol() ;
+			m_newElement = &m_symbol ;	
+		}	
+		else if ( m_newElement && m_newElement->IsNote() &&
+			(in( noteKeyCode, 0, 7 ) || (noteKeyCode == CUSTOS))) // change duree sur une note ou un silence
+		{
+			int vflag = ( event.m_controlDown || (noteKeyCode == CUSTOS)) ? 1 : 0;
+			m_newElement->SetValue( noteKeyCode , NULL, vflag );
+		}
+		else if ( m_newElement && m_newElement->IsNote() && (noteKeyCode == 'L') )
+			m_newElement->SetLigature();
+		else if ( m_newElement && m_newElement->IsNote() && (noteKeyCode == 'I') )
+			m_newElement->ChangeColoration( );
+		else if ( m_newElement && m_newElement->IsNote() && (noteKeyCode == 'A') )
+			m_newElement->ChangeStem( );
+		else if ( m_newElement && m_newElement->IsSymbol() &&
+			 in( event.m_keyCode, 33, 125) ) // any other keycode on symbol (ascii codes)
+		{
+			int vflag = ( event.m_controlDown ) ? 1 : 0;
+			m_newElement->SetValue( event.m_keyCode, NULL, vflag );
+		}
+		OnEndEdition();
+		SyncToolPanel();
+	}
+	
+}
+
+void MusWindow::LyricEntry(wxKeyEvent &event) 
+{
+    if ( !m_inputLyric )	/*** Lyric Editing mode ***/
 	{	
 		if ( event.m_keyCode == 'T' )			//"T" event: Escape lyric navigation mode
 		{
@@ -2057,7 +2122,7 @@ void MusWindow::OnKeyDown(wxKeyEvent &event)
 			SyncToolPanel();
 		}
 	}
-	else if ( m_lyricMode && m_inputLyric )		/*** Lyric insertion mode ***/
+	else		/*** Lyric insertion mode ***/
 	{
 		event.Skip();  //Do further processing on the event in OnChar method
 		
@@ -2204,52 +2269,7 @@ void MusWindow::OnKeyDown(wxKeyEvent &event)
 			UpdateScroll();
 		}
 		this->Refresh();
-	}
-	else /*** Note insertion mode ***/
-	{
-		if ( event.m_controlDown && (event.m_keyCode == 'M')) // change set (note, rests, key, signs, symbols, ....
-			m_newElement = &m_note;	
-		else if ( event.m_controlDown && (event.m_keyCode == 'N')) {
-			m_newElement = &m_neume;
-		}
-		else if ( event.m_controlDown && (event.m_keyCode == 'K')) // keys
-		{	
-			m_symbol.ResetToKey();
-			m_newElement = &m_symbol ;	
-		}	
-		else if ( event.m_controlDown && (event.m_keyCode == 'P')) // proportions
-		{	
-			m_symbol.ResetToProportion() ;
-			m_newElement = &m_symbol ;	
-		}	
-		else if ( event.m_controlDown && (event.m_keyCode == 'S')) // symbols
-		{
-			m_symbol.ResetToSymbol() ;
-			m_newElement = &m_symbol ;	
-		}	
-		else if ( m_newElement && m_newElement->IsNote() &&
-			(in( noteKeyCode, 0, 7 ) || (noteKeyCode == CUSTOS))) // change duree sur une note ou un silence
-		{
-			int vflag = ( event.m_controlDown || (noteKeyCode == CUSTOS)) ? 1 : 0;
-			m_newElement->SetValue( noteKeyCode , NULL, vflag );
-		}
-		else if ( m_newElement && m_newElement->IsNote() && (noteKeyCode == 'L') )
-			m_newElement->SetLigature();
-		else if ( m_newElement && m_newElement->IsNote() && (noteKeyCode == 'I') )
-			m_newElement->ChangeColoration( );
-		else if ( m_newElement && m_newElement->IsNote() && (noteKeyCode == 'A') )
-			m_newElement->ChangeStem( );
-		else if ( m_newElement && m_newElement->IsSymbol() &&
-			 in( event.m_keyCode, 33, 125) ) // any other keycode on symbol (ascii codes)
-		{
-			int vflag = ( event.m_controlDown ) ? 1 : 0;
-			m_newElement->SetValue( event.m_keyCode, NULL, vflag );
-		}
-		OnEndEdition();
-		SyncToolPanel();
-		
-	}
-	
+    }
 }
 
 void MusWindow::OnChar(wxKeyEvent &event)

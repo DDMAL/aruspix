@@ -1351,7 +1351,7 @@ void RecEnv::OnTools( wxCommandEvent &event )
         else if ( event.GetId() == ID4_KEYS)
             m_musViewPtr->SetToolType( MUS_TOOLS_CLEFS );
         else if ( event.GetId() == ID4_SIGNS )
-            m_musViewPtr->SetToolType( MUS_TOOLS_SIGNS );
+            m_musViewPtr->SetToolType( MUS_TOOLS_PROPORTIONS );
         else if ( event.GetId() == ID4_SYMBOLES )
             m_musViewPtr->SetToolType( MUS_TOOLS_OTHER );
     }

@@ -35,33 +35,38 @@ const int ID5_TOOLPANEL = 15001;
 const int ID5_MUSPANEL = 15002;
 wxSizer *WindowFunc5( wxWindow *parent, bool call_fit = TRUE, bool set_sizer = TRUE );
 
+const int ID5_NOTATION = 15003;
+const int ID5_TEXT = 15004;
+const int ID5_STAFF_LINES = 15005;
+const int ID5_NB_STAVES = 15006;
+const int ID5_RB_SIZE = 15007;
+const int ID5_TX_HEIGHT = 15008;
+const int ID5_TX_WIDTH = 15009;
+const int ID5_RB_ORIENTATION = 15010;
+wxSizer *EdtNewDlgFunc( wxWindow *parent, bool call_fit = TRUE, bool set_sizer = TRUE );
+
 // Declare menubar functions
 
-const int ID5_MENU_FILE = 15003;
-const int ID5_MENU = 15004;
-const int ID5_OPEN_MLF = 15005;
-const int ID5_OPEN_WWG = 15006;
-const int ID5_OPEN_MEI = 15007;
-const int ID5_SAVE_MLF = 15008;
-const int ID5_SAVE_WWG = 15009;
-const int ID5_SAVE_MEI = 15010;
-const int ID5_SAVE_MODEL = 15011;
-const int ID5_SAVE_SVG = 15012;
-const int ID5_MENU_EDIT = 15013;
-const int ID5_PAGE = 15014;
-const int ID5_PREVIOUS = 15015;
-const int ID5_NEXT = 15016;
-const int ID5_GOTO = 15017;
-const int ID5_ZOOMOUT = 15018;
-const int ID5_ZOOMIN = 15019;
-const int ID5_TOOLS = 15020;
-const int ID5_INSERT_MODE = 15021;
-const int ID5_NOTES = 15022;
-const int ID5_KEYS = 15023;
-const int ID5_SIGNS = 15024;
-const int ID5_SYMBOLES = 15025;
-const int ID5_VOICES = 15026;
-const int ID5_INDENT = 15027;
+const int ID5_MENU_FILE = 15011;
+const int ID5_MENU = 15012;
+const int ID5_OPEN_MLF = 15013;
+const int ID5_OPEN_WWG = 15014;
+const int ID5_OPEN_MEI = 15015;
+const int ID5_SAVE_MLF = 15016;
+const int ID5_SAVE_WWG = 15017;
+const int ID5_SAVE_MEI = 15018;
+const int ID5_SAVE_MODEL = 15019;
+const int ID5_SAVE_SVG = 15020;
+const int ID5_MENU_EDIT = 15021;
+const int ID5_PAGE = 15022;
+const int ID5_PREVIOUS = 15023;
+const int ID5_NEXT = 15024;
+const int ID5_GOTO = 15025;
+const int ID5_ZOOMOUT = 15026;
+const int ID5_ZOOMIN = 15027;
+const int ID5_TOOLS = 15028;
+const int ID5_VOICES = 15029;
+const int ID5_INDENT = 15030;
 wxMenuBar *MenuBarFunc5();
 
 // Declare toolbar functions

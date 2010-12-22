@@ -57,7 +57,7 @@ int MusStaff::testcle (int a)
 		return 0;	
 
 	int s;
-	MusPosKey *pKey = &m_w->kPos[this->no];
+	MusPosClef *pKey = &m_w->kPos[this->no];
 	s = pKey->compte;
 
 	if (s == 0)
