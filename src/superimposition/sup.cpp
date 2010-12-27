@@ -807,7 +807,7 @@ void SupEnv::OnExportImage( wxCommandEvent &event )
 {
 /*
     wxString filename;
-    filename = wxFileSelector( _("Open"), wxGetApp().m_lastDirTIFF_out, _T(""), NULL, IMAGE_FILES, wxOPEN);
+    filename = wxFileSelector( _("Open"), wxGetApp().m_lastDirTIFF_out, _T(""), _T(""), IMAGE_FILES, wxFD_OPEN);
     if (filename.IsEmpty())
         return;
         

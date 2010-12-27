@@ -132,7 +132,7 @@ void CmpEnv::LoadWindow()
 
 	// viewer: splitter collation / images
     m_pageSplitterPtr = new wxSplitterWindow( m_bookSplitterPtr, -1 );
-    m_pageSplitterPtr->SetWindowStyleFlag( wxSP_FULLSASH );
+    m_pageSplitterPtr->SetWindowStyleFlag( wxSP_NOBORDER );
     m_pageSplitterPtr->SetMinimumPaneSize( 100 );
 		
 	// collation
@@ -144,7 +144,7 @@ void CmpEnv::LoadWindow()
 
 	// images: splitter image / image
 	m_srcSplitterPtr = new wxSplitterWindow( m_pageSplitterPtr, -1 );
-    m_srcSplitterPtr->SetWindowStyleFlag( wxSP_FULLSASH );
+    m_srcSplitterPtr->SetWindowStyleFlag( wxSP_NOBORDER );
     m_srcSplitterPtr->SetMinimumPaneSize( 100 );
 
     m_imControlPtr1 = new CmpImController( m_srcSplitterPtr, ID6_CONTROLLER1, wxDefaultPosition, wxDefaultSize, 0,
@@ -271,7 +271,7 @@ void CmpEnv::UpdateTitle( )
 			m_musViewPtr->m_npage + 1,
 			(int)m_cmpCollationPtr->GetMusFile()->m_pages.GetCount()  );
 
-    SetTitle( "%s", msg.c_str() );
+    SetTitle( _T("%s"), msg.c_str() );
 
 }
 
