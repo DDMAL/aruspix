@@ -25,7 +25,7 @@
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "Allocator.h"
-#include "MlNgramEntry.h"
+#include "mlngramentry.h"
 
 using namespace Torch;
 

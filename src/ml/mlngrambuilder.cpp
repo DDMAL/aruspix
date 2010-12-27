@@ -25,7 +25,7 @@
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 //#include "Allocator.h"
-#include "MlNgramBuilder.h"
+#include "mlngrambuilder.h"
 
 #include <stdlib.h>
 #include <stdio.h>
