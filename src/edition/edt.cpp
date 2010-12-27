@@ -246,7 +246,7 @@ void EdtEnv::ParseCmd( wxCmdLineParser *parser )
 void EdtEnv::UpdateTitle( )
 {
     wxString msg = wxString::Format("%s", m_edtFilePtr->m_shortname.c_str() );
-    SetTitle( "%s", msg.c_str() );
+    SetTitle( _T("%s"), msg.c_str() );
 }
 
 void EdtEnv::UpdateViews( int flags )
@@ -461,7 +461,7 @@ void EdtEnv::OnOpenMLF( wxCommandEvent &event )
     if ( !this->ResetFile( ) )
         return;
 
-    wxString mlf = wxFileSelector( _("Open"), wxGetApp().m_lastDir, _T(""), NULL, "MLF|*.mlf", wxOPEN);
+    wxString mlf = wxFileSelector( _("Open"), wxGetApp().m_lastDir, _T(""), _T(""), "MLF|*.mlf", wxFD_OPEN);
     if ( mlf.IsEmpty() )
         return;
     //wxGetApp().m_lastDirMLF_in = wxPathOnly( mlf );
@@ -492,12 +492,12 @@ void EdtEnv::OnSaveMLF( wxCommandEvent &event )
 	fn.SetExt( "mlf" );
 	fn.SetPath( wxGetApp().m_lastDir );
 
-    wxString filename = wxFileSelector( _("Save"), wxGetApp().m_lastDir, fn.GetFullPath() , NULL, "MLF|*.mlf", wxSAVE);
+    wxString filename = wxFileSelector( _("Save"), wxGetApp().m_lastDir, fn.GetFullPath() , _T(""), "MLF|*.mlf", wxFD_SAVE);
     if ( filename.IsEmpty() )
         return;
     //wxGetApp().m_lastDirMLF_out = wxPathOnly( filename );
 
-    wxString dic = wxFileSelector( _("Open dictionnay"), wxGetApp().m_lastDir, _T(""), NULL, "DIC|*.dic", wxOPEN);
+    wxString dic = wxFileSelector( _("Open dictionnay"), wxGetApp().m_lastDir, _T(""), _T(""), "DIC|*.dic", wxFD_OPEN);
     if ( dic.IsEmpty() )
         return;
     //wxGetApp().m_lastDirDIC_in = wxPathOnly( dic );
@@ -519,7 +519,7 @@ void EdtEnv::OnSaveSVG( wxCommandEvent &event )
 {   
 
     wxString filename;
-    filename = wxFileSelector( _("Save"), wxGetApp().m_lastDirTIFF_out, _T(""), NULL, "SVG|*.svg", wxSAVE);
+    filename = wxFileSelector( _("Save"), wxGetApp().m_lastDirTIFF_out, _T(""), _T(""), "SVG|*.svg", wxFD_SAVE);
     if (filename.IsEmpty())
         return;
         
@@ -559,7 +559,7 @@ void EdtEnv::OnOpenWWG( wxCommandEvent &event )
     if ( !this->ResetFile( ) )
         return;
 
-    wxString filename = wxFileSelector( _("Open"), wxGetApp().m_lastDir, _T(""), NULL, "WWG|*.wwg", wxOPEN);
+    wxString filename = wxFileSelector( _("Open"), wxGetApp().m_lastDir, _T(""), _T(""), "WWG|*.wwg", wxFD_OPEN);
     if ( filename.IsEmpty() )
         return;
     wxGetApp().m_lastDir = wxPathOnly( filename );
@@ -580,7 +580,7 @@ void EdtEnv::OnSaveWWG( wxCommandEvent &event )
     };
 
     wxString filename;
-    filename = wxFileSelector( _("Save"), wxGetApp().m_lastDirAX0_out, m_edtFilePtr->m_musFilePtr->m_fheader.name + ".wwg", "wwg", "Wolfgang WWG|*.wwg", wxSAVE);
+    filename = wxFileSelector( _("Save"), wxGetApp().m_lastDirAX0_out, m_edtFilePtr->m_musFilePtr->m_fheader.name + ".wwg", "wwg", "Wolfgang WWG|*.wwg", wxFD_SAVE);
     if (filename.IsEmpty())
         return;
         
@@ -600,8 +600,7 @@ void EdtEnv::OnOpenMEI( wxCommandEvent &event )
     if ( !this->ResetFile( ) )
         return;
 
-    wxString filename = wxFileSelector( _("Import MEI"), wxGetApp().m_lastDir, _T(""), 
-									   NULL, "MEI Files|*.mei|XML Files|*.xml", wxOPEN);
+    wxString filename = wxFileSelector( _("Import MEI"), wxGetApp().m_lastDir, _T(""), _T(""), "MEI Files|*.mei|XML Files|*.xml", wxFD_OPEN);
     if ( filename.IsEmpty() )
         return;
     wxGetApp().m_lastDir = wxPathOnly( filename );
@@ -621,8 +620,7 @@ void EdtEnv::OnSaveMEI( wxCommandEvent &event )
     if (  !m_panelPtr || !m_edtFilePtr )
         return;
 
-    wxString filename = wxFileSelector( _("Export MEI"), wxGetApp().m_lastDir, _T(""),
-									   NULL, "MEI Files|*.meiMEI|XML Files|*.xml", wxSAVE);
+    wxString filename = wxFileSelector( _("Export MEI"), wxGetApp().m_lastDir, _T(""), _T(""), "MEI Files|*.meiMEI|XML Files|*.xml", wxFD_SAVE);
     if ( filename.IsEmpty() )
         return;     
     wxGetApp().m_lastDirAX0_out = wxPathOnly( filename );
