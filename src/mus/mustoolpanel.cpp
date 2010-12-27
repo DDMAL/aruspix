@@ -9,6 +9,10 @@
     #pragma implementation "mustoolpanel.cpp"
 #endif
 
+#include <algorithm>
+using std::min;
+using std::max;
+
 // For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"
 
@@ -20,7 +24,6 @@
 #include "muswindow.h"
 #include "musstaff.h"
 #include "muselement.h"
-#include "axdefs.h"
 
 #include "app/axapp.h"
 
@@ -483,7 +486,9 @@ void MusToolPanel::OnNote( wxCommandEvent &event )
     }
 
  
-    if ( in ( event.GetId(), ID_MS_BT_R0, ID_MS_BT_R6 ) )
+    int r0 = ID_MS_BT_R0;
+    int r6 = ID_MS_BT_R6;
+    if ( in ( event.GetId(), r0, r6 ) )
         kevent.m_controlDown = true;
     kevent.m_keyCode = value;
     SendEvent( kevent );

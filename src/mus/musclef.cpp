@@ -20,8 +20,6 @@
 #include "muswindow.h"
 #include "muspage.h"
 #include "musfile.h"
-#include "axdefs.h"
-
 
 /* Calcule l'offset de la cle; doit etre separe de cle_id pour pouvoir
   etre appele depuis rd_symbol() en cas de changement de definition.

@@ -11,6 +11,10 @@
     #pragma implementation "muswindow.h"
 #endif
 
+#include <algorithm>
+using std::min;
+using std::max;
+
 // For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"
 
@@ -21,11 +25,8 @@
 #include "muswindow.h"
 #include "muspage.h"
 #include "musfile.h"
-#include "axdefs.h"
 
 #include <string>
-using namespace std;
-
 
 void MusWindow::v_bline ( wxDC *dc, int y1, int y2, int x1, int nbr)
 {
@@ -188,7 +189,7 @@ int MusWindow::pointer ( wxDC *dc, int x, int b, int decal, MusStaff *staff )
 	super-hack time
  */
 
-void MusWindow::festa_string ( wxDC *dc, int x, int y, const string &str, 
+void MusWindow::festa_string ( wxDC *dc, int x, int y, const std::string &str, 
 							  MusStaff *staff, int dimin ) {
 	int pTaille = staff->pTaille;
 	int fontCorr = this->hautFontCorr[pTaille][dimin];

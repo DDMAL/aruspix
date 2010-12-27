@@ -9,6 +9,10 @@
     #pragma implementation "mussymbol.cpp"
 #endif
 
+#include <algorithm>
+using std::max;
+using std::min;
+
 // For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"
 
@@ -417,8 +421,8 @@ void MusSymbol::afficheMesure ( wxDC *dc, MusStaff *staff)
 		if (this->code > 1)
 			x += m_w->_pas*5;
 		chiffres ( dc, x, staff->yrel, staff);
-		mDen = max ( this->durDen, 1);
-		mNum = max ( this->durNum, 1);
+		mDen = max ( this->durDen, (unsigned short)1);
+		mNum = max ( this->durNum, (unsigned short)1);
 	}
 	m_w->MesVal = mNum / mDen;
 	m_w->mesureNum = (int)mNum;

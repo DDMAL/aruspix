@@ -11,6 +11,10 @@
     #pragma implementation "musiomlf.h"
 #endif
 
+#include <algorithm>
+using std::min;
+using std::max;
+
 // For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"
 
@@ -909,7 +913,7 @@ bool MusMLFOutput::WriteSymbol(  MusSymbol *symbol )
 		// chiffres
 		else
 		{
-			wxString subtype = wxString::Format("CH_%d_%d",max (symbol->durNum, 1),max (symbol->durDen, 1));
+			wxString subtype = wxString::Format("CH_%d_%d", max (symbol->durNum, (unsigned short)1), max(symbol->durDen, (unsigned short)1));
 			mlfsb->SetValue( TYPE_MESURE, subtype, symbol->xrel );
 			m_symbols.Add( mlfsb );
 		}
@@ -1123,7 +1127,7 @@ bool MusMLFOutputNoPitch::WriteSymbol(  MusSymbol *symbol )
 		// chiffres
 		else
 		{
-			wxString subtype = wxString::Format("CH_%d_%d",max (symbol->durNum, 1),max (symbol->durDen, 1));
+			wxString subtype = wxString::Format("CH_%d_%d", max (symbol->durNum, (unsigned short)1), max (symbol->durDen, (unsigned short)1));
 			mlfsb->SetValue( TYPE_MESURE, subtype, symbol->xrel );
 			m_symbols.Add( mlfsb );
 		}

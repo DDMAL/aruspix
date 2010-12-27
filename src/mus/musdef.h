@@ -447,12 +447,8 @@ VERSION DOS.*/
 #define HEADER_FOOTER_TEXT 100
 
 
-//#ifndef __WXMSW__
-	#define min(X,Y) ((X) < (Y) ? (X) : (Y))
-	#define max(X,Y) ((X) > (Y) ? (X) : (Y))
-//#endif
-
-#define in(x,a,b) (((x) >= min((a),(b))) && ((x) <= max((a),(b)))) 
+#include <algorithm>
+#define in(x,a,b) (((x) >= std::min((a),(b))) && ((x) <= std::max((a),(b)))) 
 
 
 #define PTCONTROL 20

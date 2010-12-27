@@ -9,6 +9,10 @@
     #pragma implementation "musiomei.h"
 #endif
 
+#include <algorithm>
+using std::min;
+using std::max;
+
 // For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"
 
@@ -554,8 +558,8 @@ bool MusMeiOutput::WriteSymbol( const MusSymbol *symbol )
         }
         // figures
         if ( symbol->code & 1) {
-            mensur.SetAttribute( "num", wxString::Format("%d", max( symbol->durNum, 1 ) ).c_str() );
-            mensur.SetAttribute( "numbase", wxString::Format("%d", max( symbol->durDen, 1 ) ).c_str() );
+            mensur.SetAttribute( "num", wxString::Format("%d", max( symbol->durNum, (unsigned short)1 ) ).c_str() );
+            mensur.SetAttribute( "numbase", wxString::Format("%d", max( symbol->durDen, (unsigned short)1 ) ).c_str() );
         }
         m_xml_current->InsertEndChild( mensur );
 
@@ -960,7 +964,7 @@ bool MusMeiInput::ImportFile( )
     m_page->lrg_lign = max_x / 10;
     // add the space at the bottom - so far in max_y we have the top corner of the last staff
     if (m_page->m_staves.GetCount() > 0 ) {
-        max_y += max((&m_page->m_staves.Last())->portNbLine,(&m_page->m_staves.Last())->ecart);
+        max_y += max((unsigned short)(&m_page->m_staves.Last())->portNbLine,(&m_page->m_staves.Last())->ecart);
     }
     max_y *= m_page->defin; // transform this into coord.
     // update the page size

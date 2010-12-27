@@ -26,8 +26,9 @@
 #include "neumedef.h"
 
 #include <math.h>
+#include <string>
 
-using namespace std;
+using std::string;
 
 // sorting function
 int SortElements(MusNeume **first, MusNeume **second)
@@ -138,8 +139,9 @@ int MusNeumePitch::GetValue() { return this->val; }
 
 //helper method
 
-string& MusNeumePitch::getFestaString( ) 
-{ return m_font_str; }
+string& MusNeumePitch::getFestaString() {
+	return m_font_str;
+}
 
 
 int MusNeumePitch::Compare(MusNeumePitch *other)
@@ -641,18 +643,18 @@ int MusNeume::GetValue()
 //debug helper method
 void MusNeume::printNeumeList() 
 {
-	printf("Neume Address:\n---------\n");
-	printf("%d [%X]\n---------\n", (int)&(*this),(unsigned int)&(*this));
-	printf("Vector Address:\n---------\n"); 
-    printf("%d [%d]\n", (int)&(this->n_pitches), (int)&(this->n_pitches));
+	//printf("Neume Address:\n---------\n");
+	//printf("%d [%X]\n---------\n", (int)&(*this),(unsigned int)&(*this));
+	//printf("Vector Address:\n---------\n"); 
+	//printf("%d [%d]\n", (int)&(this->n_pitches), (int)&(this->n_pitches));
 	printf("Neume List: (length %d)\n", (int)n_pitches.size());
 	printf("***********************\n");
 	int count = 0;
 	for (iter=n_pitches.begin(); iter != n_pitches.end(); ++iter, count++)
 	{
-		printf("%d: %d [%X] code: %d oct: %d val: %d\n", 
-			   count, (int)&(*iter), (unsigned int)&(*iter), (*iter)->code, 
-			   (*iter)->oct, (*iter)->val);
+		//printf("%d: %d [%X] code: %d oct: %d val: %d\n", 
+		//	   count, (int)&(*iter), (unsigned int)&(*iter), (*iter)->code, 
+		//	   (*iter)->oct, (*iter)->val);
 	}
 	printf("***********************\n");
 }

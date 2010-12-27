@@ -9,6 +9,10 @@
     #pragma implementation "muswindow.h"
 #endif
 
+#include <algorithm>
+using std::min;
+using std::max;
+
 // For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"
 
@@ -19,8 +23,6 @@
 #include "muswindow.h"
 #include "muspage.h"
 #include "musfile.h"
-#include "axdefs.h"
-
 
 void MusPage::braces ( wxDC *dc, int x, int y1, int y2, int cod, int pTaille)
 //	int x, y1, y2;	x, 1e et 2e y de barre vert

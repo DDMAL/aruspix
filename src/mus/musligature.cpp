@@ -22,7 +22,7 @@
 #include "musstaff.h"
 #include "muswindow.h"
 
-using namespace std;
+using std::string;
 
 // more helper functions
 

@@ -9,6 +9,10 @@
     #pragma implementation "musstaff.cpp"
 #endif
 
+#include <algorithm>
+using std::min;
+using std::max;
+
 // For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"
 
@@ -23,7 +27,6 @@
 #include "musnote.h"
 #include "muspage.h"
 #include "muswindow.h"
-#include "axdefs.h"
 
 #include <math.h>
 
@@ -270,8 +273,8 @@ unsigned int MusStaff::beam ( wxDC *dc )
 						(crd+i)->b = crd[i].chk->dec_y + _yy[0];
 					}
 		}
-		high= max ((crd+i)->b,high);		/* enregistrement des extremes */
-		low = min ((crd+i)->b,low);
+		high= max ((double)(crd+i)->b,high);		/* enregistrement des extremes */
+		low = min ((double)(crd+i)->b,low);
         /* lie au choix, plus bas, d'introduire l'accelerateur pour sy_up...
         if ((crd+i)->b==high) highIndice = i;
         if ((crd+i)->b==low) lowIndice = i;

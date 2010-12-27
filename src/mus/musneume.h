@@ -56,7 +56,7 @@ public:
 	void SetPitch( int code, int oct );
 	void SetValue( int value );
 	int GetValue( );
-	std::string& MusNeumePitch::getFestaString( );
+	std::string& getFestaString( );
 	
 	int Compare(MusNeumePitch *other);
 	int Pitch_Diff(MusNeumePitch *other);
