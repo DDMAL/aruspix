@@ -7,6 +7,10 @@
 // Extenstion de IM_LIB
 /////////////////////////////////////////////////////////////////////////////
 
+#include <algorithm>
+using std::min;
+using std::max;
+
 #include "imext.h"
 #include "imkmeans.h"
 
@@ -17,10 +21,6 @@
 #include <im_util.h>
 #include <im_binfile.h>
 #include <im_counter.h>
-
-//#define 	min(a, b)   ((a)<(b)?(a):(b))
-//#define 	max(a, b)   ((a)>(b)?(a):(b))
-
 
 // Function taken from im_convolve_rank.cpp in imlib
 template <class T, class DT> 
@@ -1056,7 +1056,7 @@ void imPhotogrammetric( const imImage* image, imImage* dest ){
 	double min = X3[0][0];
 	for ( i = 0; i < height; i++ )
 		for ( j = 0; j < width; j++ )
-			if ( min > X3[i][j] ) min = X3[i][j];					// Find minimum
+			if ( min > X3[i][j] ) min = X3[i][j];  // Find minimum
 			
 	for ( i = 0; i < height; i++ )
 		for ( j = 0; j < width; j++ )

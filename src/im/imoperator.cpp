@@ -9,6 +9,10 @@
     #pragma implementation "imoperator.h"
 #endif
 
+#include <algorithm>
+using std::min;
+using std::max;
+
 // For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"
 
@@ -185,7 +189,7 @@ bool ImOperator::ExtractPlane( _imImage **image, _imImage **extrated_plane, int 
         
     for (int i = 0; i < plane_number; i ++ )
     {
-        imProcessUnArithmeticOp( *extrated_plane, *extrated_plane, IM_UN_INC );
+        imProcessArithmeticOp( *extrated_plane, *extrated_plane, *extrated_plane, IM_BIN_ADD );
     }
     imProcessBitPlane( *image, *image, plane_number, 1); // reset
     imProcessArithmeticOp( *image, *extrated_plane, *image, IM_BIN_ADD );

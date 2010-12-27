@@ -108,7 +108,7 @@ public:
     // constructor - takes pointer to an object and pointer to a member and stores
     // them in two private variables
     ImStaffFunctor( void(ImStaff::*_fpt)(const int, wxArrayPtrVoid )) { fpt=_fpt; };
-	virtual ImStaffFunctor::~ImStaffFunctor() {};
+	virtual ~ImStaffFunctor() {};
 
     // override function "Call"
     virtual void Call( ImStaff *ptr, const int staff, wxArrayPtrVoid params )

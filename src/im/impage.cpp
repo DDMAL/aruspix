@@ -9,6 +9,10 @@
     #pragma implementation "impage.h"
 #endif
 
+#include <algorithm>
+using std::min;
+using std::max;
+
 // For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"
 
@@ -1002,12 +1006,12 @@ bool ImPage::FindStaves( int min, int max, bool normalize, bool crop )
 		if ( !GetImage( &m_opImMain ) )
 			return false;
 
-		x1 = max( 0, this->m_x1  - RecEnv::s_pre_margin_left ); // 30 px en moins = de marge d'erreur
-		x2 = min( m_opImMain->width - 1 , this->m_x2 + RecEnv::s_pre_margin_right ); // 20 px en plus = de marge d'erreur
+		x1 = std::max( 0, this->m_x1  - RecEnv::s_pre_margin_left ); // 30 px en moins = de marge d'erreur
+		x2 = std::min( m_opImMain->width - 1 , this->m_x2 + RecEnv::s_pre_margin_right ); // 20 px en plus = de marge d'erreur
 		this->m_x1 -= x1;
 		this->m_x2 -= x1;
-		y1 = max ( 0, m_opLines1[0] - 50 - RecEnv::s_pre_margin_bottom ); // 120 px en dessous de la derniere portee
-		y2 = min ( m_opImMain->height -1 , m_opLines1[nb_staves - 1] + 50 + RecEnv::s_pre_margin_top ); // 150 px en dessus de la premiere portee
+		y1 = std::max ( 0, m_opLines1[0] - 50 - RecEnv::s_pre_margin_bottom ); // 120 px en dessous de la derniere portee
+		y2 = std::min ( m_opImMain->height -1 , m_opLines1[nb_staves - 1] + 50 + RecEnv::s_pre_margin_top ); // 150 px en dessus de la premiere portee
 
 		m_opImTmp1 = imImageCreate( x2 - x1, y2 - y1, m_opImMain->color_space, m_opImMain->data_type );    
 		imProcessCrop( m_opImMain, m_opImTmp1, x1, y1);
