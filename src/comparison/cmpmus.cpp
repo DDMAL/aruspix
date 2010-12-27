@@ -8,6 +8,9 @@
 #ifdef AX_RECOGNITION
 	#ifdef AX_COMPARISON
 
+#include <algorithm>
+using std::max;
+
 #ifdef __GNUG__
     #pragma implementation "cmpmus.cpp"
 #endif
