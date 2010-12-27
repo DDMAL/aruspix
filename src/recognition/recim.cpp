@@ -11,6 +11,10 @@
     #pragma implementation "recim.cpp"
 #endif
 
+#include <algorithm>
+using std::min;
+using std::max;
+
 // For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"
 
@@ -22,7 +26,6 @@
 #include "rec.h"
 #include "recmus.h"
 #include "recfile.h"
-#include "axdefs.h"
 
 #include "app/axapp.h"
 

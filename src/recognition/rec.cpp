@@ -1373,7 +1373,7 @@ void RecEnv::OnStaffCorrespondence( wxCommandEvent &event )
 void RecEnv::OnExportImage( wxCommandEvent &event )
 {
     wxString filename;
-    filename = wxFileSelector( _("Save"), wxGetApp().m_lastDirTIFF_out, _T(""), NULL, IMAGE_FILES, wxSAVE);
+    filename = wxFileSelector( _("Save"), wxGetApp().m_lastDirTIFF_out, _T(""), NULL, IMAGE_FILES, wxFD_SAVE);
     if (filename.IsEmpty())
         return;
         
@@ -1398,7 +1398,7 @@ void RecEnv::OnExportImage( wxCommandEvent &event )
 void RecEnv::OnExportImage( wxCommandEvent &event )
 {
     wxString filename;
-    filename = wxFileSelector( _("Save"), wxGetApp().m_lastDirTIFF_out, _T(""), NULL, IMAGE_FILES, wxSAVE);
+    filename = wxFileSelector( _("Save"), wxGetApp().m_lastDirTIFF_out, _T(""), NULL, IMAGE_FILES, wxFD_SAVE);
     if (filename.IsEmpty())
         return;
         
@@ -1419,7 +1419,7 @@ void RecEnv::OnExportCmme( wxCommandEvent &event )
 		return;
    
     wxString filename;
-    filename = wxFileSelector( _("Save"), wxGetApp().m_lastDirAX0_out, m_recFilePtr->m_shortname + ".xml", "xml", "CMME XML|*.xml", wxSAVE);
+    filename = wxFileSelector( _("Save"), wxGetApp().m_lastDirAX0_out, m_recFilePtr->m_shortname + ".xml", "xml", "CMME XML|*.xml", wxFD_SAVE);
     if (filename.IsEmpty())
         return;
         
