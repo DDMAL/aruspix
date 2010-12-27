@@ -259,7 +259,7 @@ void AxEnv::Resize()
 
 void AxEnv::UpdateTitle( )
 {
-	this->SetTitle( "" );
+	this->SetTitle(_T(""));
 }
 
 

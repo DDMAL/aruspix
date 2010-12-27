@@ -19,6 +19,7 @@
 #include "axoptions_wdr.h"
 #include "mus/muswindow.h"
 
+// XXX: Doesn't compile if AX_RECOGNITION isn't set
 #ifdef AX_RECOGNITION
 //	#include "recognition/rec_wdr.h"
 	#include "recognition/recfile.h"

@@ -10,6 +10,9 @@
     #pragma implementation "aximage.h"
 #endif
 
+#include <algorithm>
+using std::min;
+using std::max;
 
 // IMLIB
 #include <im.h>

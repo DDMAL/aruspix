@@ -17,6 +17,7 @@
 #endif
 
 #include "wx/file.h"
+#include "wx/filedlg.h"
 
 #include "axfile.h"
 #include "axapp.h"
@@ -158,7 +159,7 @@ wxString AxFile::Open( int file_type )
 	else
 		return "";
 	
-	wxString filename = wxFileSelector( _("Open Aruspix file"), *defaultFile, _T(""), extensions[file_type], filters[file_type], wxOPEN);
+	wxString filename = wxFileSelector( _("Open Aruspix file"), *defaultFile, _T(""), extensions[file_type], filters[file_type], wxFD_OPEN);
 	if ( filename.IsEmpty() )
 		return ""; // canceled
 	
@@ -333,7 +334,7 @@ bool AxFile::SaveAs( wxString filename )
 		else
 			return false;
 	
-		filename = wxFileSelector( _("Save Aruspix file"), *defaultFile, m_shortname + "." + extensions[m_type], extensions[m_type], filters[m_type], wxSAVE | wxOVERWRITE_PROMPT );
+		filename = wxFileSelector( _("Save Aruspix file"), *defaultFile, m_shortname + "." + extensions[m_type], extensions[m_type], filters[m_type], wxFD_SAVE | wxFD_OVERWRITE_PROMPT );
 		if ( filename.IsEmpty() ) // cancel
 			return false;
 		
@@ -657,7 +658,7 @@ int AxFileSelector( int type, wxArrayString *filenames, wxArrayString *paths, wx
 		{
 			// Get the WWG files
 			wxFileDialog dialog( parent, file_message,
-				*defaultFile, "", file_wildcards, wxOPEN | wxMULTIPLE);
+				*defaultFile, "", file_wildcards, wxFD_OPEN | wxFD_MULTIPLE);
 
 			if (dialog.ShowModal() != wxID_OK)
 				break;

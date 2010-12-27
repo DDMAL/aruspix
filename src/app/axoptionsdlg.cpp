@@ -9,6 +9,10 @@
     #pragma implementation "axoptionsdlg.h"
 #endif
 
+#include <algorithm>
+using std::min;
+using std::max;
+
 // For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"
 
@@ -289,7 +293,7 @@ void AxOptionsDlg::OnBrowse4( wxCommandEvent &event )
 {
     if ( event.GetId() == ID4_REC_BT_TYP_MODELS )
 	{
-		wxString filename = wxFileSelector( _("Select a typographic model"), wxGetApp().m_lastDirTypModel_in, this->GetTypModel()->GetValue(), NULL, "Typographic models|*.axtyp", wxOPEN);
+		wxString filename = wxFileSelector( _("Select a typographic model"), wxGetApp().m_lastDirTypModel_in, this->GetTypModel()->GetValue(), _T(""), "Typographic models|*.axtyp", wxFD_OPEN);
 		if ( filename.IsEmpty() )
 			return;
 
@@ -298,7 +302,7 @@ void AxOptionsDlg::OnBrowse4( wxCommandEvent &event )
 	}
     if ( event.GetId() == ID4_REC_BT_MUS_MODELS )
 	{
-		wxString filename = wxFileSelector( _("Select a music model"), wxGetApp().m_lastDirMusModel_in, this->GetMusModel()->GetValue(), NULL, "Music models|*.axmus", wxOPEN);
+		wxString filename = wxFileSelector( _("Select a music model"), wxGetApp().m_lastDirMusModel_in, this->GetMusModel()->GetValue(), _T(""), "Music models|*.axmus", wxFD_OPEN);
 		if ( filename.IsEmpty() )
 			return;
 
@@ -349,6 +353,7 @@ protected:
 
 void AxOptionsDlg::OnChooseFont( wxCommandEvent &event )
 {
+//XXX: Check if condition
 #ifdef __WXMAC__ && !wxCHECK_VERSION(2,8,3)
 
     AxFontEnumerator fontEnumerator;
