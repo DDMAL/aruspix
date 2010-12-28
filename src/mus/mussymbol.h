@@ -16,6 +16,8 @@
     #include "wx/wx.h"
 #endif
 
+class AxDC;
+
 class MusStaff;
 class MusNote;
 class MusNeume;
@@ -36,18 +38,18 @@ public:
 	MusSymbol( const MusSymbol& symbol );
     virtual ~MusSymbol();
     
-    void Draw( wxDC *dc, MusStaff *staff);
-	void dess_symb( wxDC *dc, int x, int y, int symc, int symf, MusStaff *pportee);
+    void Draw( AxDC *dc, MusStaff *staff);
+	void dess_symb( AxDC *dc, int x, int y, int symc, int symf, MusStaff *pportee);
 	/** muscle **/
 	static void calcoffs (int *offst, int clid);
-	void dess_cle ( wxDC *dc, int i, MusStaff *pportee);
-	void afficheMesure ( wxDC *dc, MusStaff *staff);
-	void mesCercle ( wxDC *dc, int x, int yy, MusStaff *staff );
-	void demi_cercle ( wxDC *dc, int x, int yy, MusStaff *staff );
-	void  inv_d_cercle ( wxDC *dc, int x, int yy, MusStaff *staff );
-	void prol ( wxDC *dc, int x, int yy, MusStaff *staff );
-	void stroke ( wxDC *dc, int a, int yy, MusStaff *staff );
-	void chiffres ( wxDC *dc, int x, int y, MusStaff *staff);
+	void dess_cle ( AxDC *dc, int i, MusStaff *pportee);
+	void afficheMesure ( AxDC *dc, MusStaff *staff);
+	void mesCercle ( AxDC *dc, int x, int yy, MusStaff *staff );
+	void demi_cercle ( AxDC *dc, int x, int yy, MusStaff *staff );
+	void  inv_d_cercle ( AxDC *dc, int x, int yy, MusStaff *staff );
+	void prol ( AxDC *dc, int x, int yy, MusStaff *staff );
+	void stroke ( AxDC *dc, int a, int yy, MusStaff *staff );
+	void chiffres ( AxDC *dc, int x, int y, MusStaff *staff);
 	// changement
 //	virtual void SetPitch( int code, int oct, MusStaff *staff = NULL );
 	virtual void SetPitch( int code, int oct );	

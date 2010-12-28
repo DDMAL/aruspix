@@ -17,6 +17,8 @@
 #endif
 #include "wx/dynarray.h"
 
+class AxDC;
+
 #include "muselement.h"
 
 class MusStaff;
@@ -39,18 +41,18 @@ public:
 	MusNote& operator=( const MusNote& note ); // copy assignement;
     virtual ~MusNote();
     
-	virtual void Draw( wxDC *dc, MusStaff *staff);
-	void note ( wxDC *dc, MusStaff *staff);
-	void silence ( wxDC *dc, MusStaff *staff);
-	void leg_line( wxDC *dc, int y_n, int y_p, int xn, unsigned int smaller, int pTaille);
+	virtual void Draw( AxDC *dc, MusStaff *staff);
+	void note ( AxDC *dc, MusStaff *staff);
+	void silence ( AxDC *dc, MusStaff *staff);
+	void leg_line( AxDC *dc, int y_n, int y_p, int xn, unsigned int smaller, int pTaille);
 
-	void s_special ( wxDC *dc, int a, MusStaff *staff);
-	void s_lg ( wxDC *dc, int a, int b, MusStaff *staff);
-	void s_br ( wxDC *dc, int a, int b, MusStaff *staff);
-	void s_rd ( wxDC *dc, int a, int b, int valeur, MusStaff *staff);
-	void s_nr ( wxDC *dc, int a, int b, int valeur, MusStaff *staff);
-	void pointage ( wxDC *dc, int x1, int y1, int offy, unsigned int d_p, MusStaff *staff );
-	void ligature ( wxDC *dc, int y, MusStaff *staff );
+	void s_special ( AxDC *dc, int a, MusStaff *staff);
+	void s_lg ( AxDC *dc, int a, int b, MusStaff *staff);
+	void s_br ( AxDC *dc, int a, int b, MusStaff *staff);
+	void s_rd ( AxDC *dc, int a, int b, int valeur, MusStaff *staff);
+	void s_nr ( AxDC *dc, int a, int b, int valeur, MusStaff *staff);
+	void pointage ( AxDC *dc, int x1, int y1, int offy, unsigned int d_p, MusStaff *staff );
+	void ligature ( AxDC *dc, int y, MusStaff *staff );
     //	virtual void SetPitch( int code, int oct, MusStaff *staff  );
 	virtual void SetPitch( int code, int oct );
 	virtual void SetValue( int value, MusStaff *staff = NULL, int vflag = 0 );

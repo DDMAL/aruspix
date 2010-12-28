@@ -319,7 +319,7 @@ void CmpEnv::UpdateViews( int flags )
         m_musViewPtr->SetFile( m_cmpCollationPtr->GetMusFile() );
         //m_musViewPtr->SetEnv( this );
         //m_musViewPtr->SetToolPanel( m_toolpanel );
-        m_musViewPtr->Goto( 0 );
+        m_musViewPtr->LoadPage( 0 );
         m_musViewPtr->Resize( );  
     }
 	UpdateTitle( );

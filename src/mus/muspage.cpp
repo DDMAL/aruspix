@@ -24,7 +24,7 @@
 #include "muselement.h"
 #include "mussymbol.h"
 #include "musnote.h"
-#include "muswindow.h"
+#include "musrc.h"
 #include "mus.h"
 
 #include "wx/arrimpl.cpp"
@@ -80,7 +80,7 @@ void MusPage::CheckIntegrity()
 }
 
 /*
-void MusPage::ClearStaves( wxDC *dc, MusStaff *start )
+void MusPage::ClearStaves( AxDC *dc, MusStaff *start )
 {
 	wxASSERT_MSG( dc , "DC cannot be NULL");
 	if ( !Check() )
@@ -175,28 +175,28 @@ void MusPage::UpdateStavesPosition( )
 	int i, yy, orgx;
 	MusStaff *staff = NULL;
 
-	yy = m_w->wymax;
+	yy = m_r->wymax;
     for (i = 0; i < nbrePortees; i++) 
 	{
 		staff = &m_staves[i];
-        yy -= staff->ecart * m_w->_interl[ staff->pTaille ];
-        m_w->kPos[i].compte = 0;
+        yy -= staff->ecart * m_r->_interl[ staff->pTaille ];
+        m_r->kPos[i].compte = 0;
 
 		// Calcul du TAB initial, s'il y a lieu 
 		orgx = staff->indent ? staff->indent*10 : 0;
          
 		// calcul du point d'ancrage des curseurs au-dessus de la ligne superieure
-		m_w->kPos[i].yp = yy + m_w->_portee[ staff->pTaille ];
-		staff->yrel = (int)(m_w->kPos[i].yp);
+		m_r->kPos[i].yp = yy + m_r->_portee[ staff->pTaille ];
+		staff->yrel = (int)(m_r->kPos[i].yp);
         // portees à 1 ou 4 lignes
         if (staff->portNbLine == 1)
-			m_w->kPos[i].yp  += m_w->_interl[ staff->pTaille ]*2;
+			m_r->kPos[i].yp  += m_r->_interl[ staff->pTaille ]*2;
         else if (staff->portNbLine == 4)
-			m_w->kPos[i].yp  += m_w->_interl[ staff->pTaille ];		
+			m_r->kPos[i].yp  += m_r->_interl[ staff->pTaille ];		
 	}
 }
 
-void MusPage::DrawPage( wxDC *dc, bool background ) 
+void MusPage::DrawPage( AxDC *dc, bool background ) 
 {
 	wxASSERT_MSG( dc , "DC cannot be NULL");
 
@@ -207,13 +207,13 @@ void MusPage::DrawPage( wxDC *dc, bool background )
     MusStaff *staff;
 
 	if (m_p->orientation)
-		i =  m_w->ToZoom( m_w->pageFormatHor ); //+mrgG; marge comprise dans SetDeviceOrigine
+		i =  m_r->ToZoom( m_r->pageFormatHor ); //+mrgG; marge comprise dans SetDeviceOrigine
 	else
-		i =  m_w->ToZoom( m_w->pageFormatHor + 50); //+mrgG;
+		i =  m_r->ToZoom( m_r->pageFormatHor + 50); //+mrgG;
 
 	if ( background )
-		dc->DrawRectangle( m_w->mrgG, m_w->ToZoomY(( m_w->pageFormatVer-50) + m_p->MargeSOMMET*10), i,
-			m_w->ToZoomY (-50)+m_p->MargeSOMMET*10);
+		dc->DrawRectangle( m_r->mrgG, m_r->ToZoomY(( m_r->pageFormatVer-50) + m_p->MargeSOMMET*10), i,
+			m_r->ToZoomY (-50)+m_p->MargeSOMMET*10);
 
 
 	// position des portees
@@ -224,9 +224,9 @@ void MusPage::DrawPage( wxDC *dc, bool background )
     for (i = 0; i < nbrePortees; i++) 
 	{
 		staff = &m_staves[i];
-		staff->Init( m_w );
+		staff->Init( m_r );
 		//wxLogDebug("staff %d yrel=%d", i, staff->yrel);
-		//if (( m_w->drawRect.y > (int)staff->yrel) && ( m_w->drawRect.GetBottom() < (int)staff->yrel) )
+		//if (( m_r->drawRect.y > (int)staff->yrel) && ( m_r->drawRect.GetBottom() < (int)staff->yrel) )
 			staff->DrawStaffLines( dc , i );		
 	}
 

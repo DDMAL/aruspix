@@ -17,6 +17,7 @@
 #endif
 #include "wx/dynarray.h"
 
+class AxDC;
 
 #include "musobject.h"
 
@@ -25,7 +26,7 @@
 class MusElement;
 WX_DECLARE_OBJARRAY( MusElement, ArrayOfMusElements);
 
-class MusWindow;
+class MusRC;
 class MusSymbol;
 class MusNote;
 
@@ -54,9 +55,9 @@ public:
 	void Clear( );
 	void CopyAttributes( MusStaff *staff ); // copy all attributes but none of the elements
 	// draw
-	void DrawStaff( wxDC *dc, int i = -1 );
-	void DrawStaffLines( wxDC *dc, int i = -1);
-	//void ClearElements( wxDC *dc , MusElement *start = NULL );
+	void DrawStaff( AxDC *dc, int i = -1 );
+	void DrawStaffLines( AxDC *dc, int i = -1);
+	//void ClearElements( AxDC *dc , MusElement *start = NULL );
 	MusElement *GetFirst( );
 	MusElement *GetLast( );
 	MusElement *GetNext( MusElement *element );
@@ -71,9 +72,9 @@ public:
 	void getOctDec (int ft, int _ot, int rupt, int *oct);
 	int y_note (int code, int dec_clef, int oct);
 	void updat_pscle (int i, MusElement *chk);
-	void DrawSlur( wxDC *dc, int x1, int y1, int x2, int y2, bool up, int height = -1);
+	void DrawSlur( AxDC *dc, int x1, int y1, int x2, int y2, bool up, int height = -1);
     // in musbeam.cpp
-    unsigned int beam ( wxDC *dc );
+    unsigned int beam ( AxDC *dc );
 
     
 	
@@ -90,8 +91,8 @@ public:
 	void SwitchLyricNoteAssociation( MusSymbol *lyric, MusNote *oldNote, MusNote* newNote, bool beginning );
 	void AdjustLyricLineHeight( int delta );
 
-	void place_clef( wxDC *dc );
-	int armatDisp ( wxDC *dc );
+	void place_clef( AxDC *dc );
+	int armatDisp ( AxDC *dc );
 	/** muscle **/
 	int testcle (int a);
 

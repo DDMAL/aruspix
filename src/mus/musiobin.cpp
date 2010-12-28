@@ -326,9 +326,9 @@ bool MusBinOutput::WriteNeume( const MusNeume *neume )
 		temp = neume->n_pitches.at(i);
 		WriteElementAttr( temp );
 		Write( &temp->val, 1);
-		unsigned char size = (unsigned char) temp->m_font_str.size();
+		unsigned char size = (unsigned char) temp->m_font_str.size() + 1; // Laurent: added the 0
 		Write( &size, 1);
-		Write( wxString(temp->m_font_str.c_str()), size );
+		Write( temp->m_font_str, size );
 	}
 	
 	return true;
@@ -765,10 +765,12 @@ bool MusBinInput::ReadNeume( MusNeume *neume )
 		Read( &temp->val, 1);
 		unsigned char strsize;
 		Read( &strsize, 1);
-		char *str = (char*)malloc(strsize);
-		Read( str, strsize );
+        Read( temp->m_font_str.GetWriteBuf( strsize ) , strsize );
+        temp->m_font_str.UngetWriteBuf();
+		//char *str = (char*)malloc(strsize);
+		//Read( str, strsize );
 		//str[size] = '\0';
-		temp->m_font_str = std::string(str, strsize);
+		//temp->m_font_str = std::string(str, strsize);
 		neume->n_pitches.push_back(temp);
 	}
 	

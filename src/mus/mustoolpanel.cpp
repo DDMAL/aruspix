@@ -292,7 +292,7 @@ void MusToolPanel::SetTools( int tools, bool edition )
 	if ( (tools == -1) || (tools != m_current_tools) ) // change tools
 	{ 
 		m_tools->UpdateTools( tools, m_notation_mode );
-        wxYield( );
+        //wxYield( );
         this->Fit(); // resize
 		this->Refresh();
 	}

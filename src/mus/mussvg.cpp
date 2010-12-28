@@ -45,6 +45,7 @@
 #define SVG_TEXT_DX 0
 #define SVG_TEXT_SCALE 0.75
 
+
 static inline double DegToRad(double deg) { return (deg * M_PI) / 180.0; } ;
 
 wxString wxColStr ( wxColour c )
@@ -85,7 +86,7 @@ wxString wxBrushString ( wxColour c, int style )
 void MusSVGFileDC::Init (wxString f, int Width, int Height, float dpi)
 
 {
-    //set up things first  wxDCBase does all this?
+    //set up things first  AxDCBase does all this?
     m_width = Width ;
     m_height = Height ;
 
@@ -260,7 +261,7 @@ void MusSVGFileDC::DoDrawPoint (wxCoord x1, wxCoord y1)
 
 void MusSVGFileDC::DoDrawCheckMark(wxCoord x1, wxCoord y1, wxCoord width, wxCoord height)
 {
-    wxDCBase::DoDrawCheckMark (x1,y1,width,height) ;
+    AxDCBase::DoDrawCheckMark (x1,y1,width,height) ;
 }
 
 
@@ -873,7 +874,7 @@ void MusSVGFileDC::SetAxisOrientation( bool xLeftRight, bool yBottomUp )
 
 // export a bitmap as a raster image in png
 bool MusSVGFileDC::DoBlit(wxCoord xdest, wxCoord ydest, wxCoord width, wxCoord height,
-                         wxDC* source, wxCoord xsrc, wxCoord ysrc,
+                         AxDC* source, wxCoord xsrc, wxCoord ysrc,
                          int logicalFunc /*= wxCOPY*/, bool useMask /*= FALSE*/,
                          wxCoord /*xsrcMask = -1*/, wxCoord /*ysrcMask = -1*/)
 {

@@ -16,14 +16,13 @@
     #pragma hdrstop
 #endif
 
-
 #include "musstaff.h"
 #include "muselement.h"
 #include "mussymbol.h"
 #include "musnote.h"
 #include "musneume.h"
 #include "muspage.h"
-#include "muswindow.h"
+#include "musrc.h"
 
 #include <math.h>
 
@@ -266,16 +265,16 @@ MusElement *MusStaff::Insert( MusElement *element )
 	}
 
 	if ( tmp &&  element->IsSymbol() && (((MusSymbol*)element)->flag == CLE) )
-		m_w->OnBeginEditionClef();
+		m_r->OnBeginEditionClef();
 
 	m_elements.Insert( element, idx );
 	this->CheckIntegrity();
 	
 	if ( element->IsSymbol() && (((MusSymbol*)element)->flag == CLE) )
-		m_w->OnEndEditionClef();
+		m_r->OnEndEditionClef();
 
-	if (m_w)
-		m_w->Refresh();
+	if (m_r)
+		m_r->DoRefresh();
 
 	return element;
 }
@@ -301,20 +300,20 @@ void MusStaff::Delete( MusElement *element )
 {
 	if ( !element ) return;
 
-	if ( m_w ) // effacement
+	if ( m_r ) // effacement
 	{
 		if ( element->IsSymbol() && (((MusSymbol*)element)->flag == CLE) )
-			m_w->OnBeginEditionClef();
+			m_r->OnBeginEditionClef();
 	}
 	
 	m_elements.Detach( element->no );
 	this->CheckIntegrity();
 
-	if ( m_w )
+	if ( m_r )
 	{
 		if ( element->IsSymbol() && (((MusSymbol*)element)->flag == CLE) )
-			m_w->OnEndEditionClef();
-		m_w->Refresh();
+			m_r->OnEndEditionClef();
+		m_r->DoRefresh();
 	}
 	
 	delete element;
@@ -429,30 +428,30 @@ void MusStaff::updat_pscle (int i, MusElement *chk)
 
 	//if (!modEfface)		// on n'est pas en train d'effacer
 	{	if (i < MAXCLE)
-		{	m_w->kPos[this->no].posx[i] = chk->xrel;
-			m_w->kPos[this->no].dec[i] = chk->dec_y;
-			m_w->kPos[this->no].compte++;
-			//if (m_w->kPos[this->no].compte > 1)
-			//	bsort ((unsigned int)m_w->kPos[this->no].compte, poscle_comp, poscle_swap);
+		{	m_r->kPos[this->no].posx[i] = chk->xrel;
+			m_r->kPos[this->no].dec[i] = chk->dec_y;
+			m_r->kPos[this->no].compte++;
+			//if (m_r->kPos[this->no].compte > 1)
+			//	bsort ((unsigned int)m_r->kPos[this->no].compte, poscle_comp, poscle_swap);
 			// on passe a shell les pointeurs vers fonctions specifiques
 		}
 	}
 	/*else		// mise a jour de struct poscle
 	{
 		i=0;
-		while(i<m_w->kPos[this->no].compte && m_w->kPos[this->no].posx[i] < chk->xrel)
+		while(i<m_r->kPos[this->no].compte && m_r->kPos[this->no].posx[i] < chk->xrel)
 			i++;
 			// i contient position de cle (index correct)
 		size = MAXCLE - (++i);
-		memmove ((char *)&m_w->kPos[this->no].posx[i-1], (char *)&m_w->kPos[this->no].posx[i], size*sizeof(int));
-		memmove ((char *)&m_w->kPos[this->no].dec[i-1], (char *)&m_w->kPos[this->no].dec[i], size*sizeof(int));
-		m_w->kPos[this->no].compte--;	
+		memmove ((char *)&m_r->kPos[this->no].posx[i-1], (char *)&m_r->kPos[this->no].posx[i], size*sizeof(int));
+		memmove ((char *)&m_r->kPos[this->no].dec[i-1], (char *)&m_r->kPos[this->no].dec[i], size*sizeof(int));
+		m_r->kPos[this->no].compte--;	
 	}*/
 	return;
 }
 
 static char armatKey[] = {F5,F2,F6,F3,F7,F4,F8};
-int MusStaff::armatDisp ( wxDC *dc )
+int MusStaff::armatDisp ( AxDC *dc )
 {
 	wxASSERT_MSG( dc , "DC cannot be NULL");
 
@@ -474,18 +473,18 @@ int MusStaff::armatDisp ( wxDC *dc )
 	int _oct;
 
 
-	step = m_w->_pas*8;
+	step = m_r->_pas*8;
 	xrl = step + (this->indent? this->indent*10 : 0);
 
 	if (this->notAnc)
-		xrl += m_w->_pas;
+		xrl += m_r->_pas;
 
-	step = m_w->largAlter[this->pTaille][0];
+	step = m_r->largAlter[this->pTaille][0];
 
 	dec = this->testcle(xrl);	// clef courante
 
 	chk = this->GetFirst();
-	if (chk && m_w->kPos[ this->no].compte )
+	if (chk && m_r->kPos[ this->no].compte )
 	{
 		chk = this->no_note ( chk,AV, CLE, &pos);
 		if (chk != NULL && chk->xrel < xrl && pos)
@@ -543,7 +542,7 @@ int MusStaff::armatDisp ( wxDC *dc )
 }
 
 
-void MusStaff::place_clef (  wxDC *dc )
+void MusStaff::place_clef (  AxDC *dc )
 {
 	wxASSERT_MSG( dc , "DC cannot be NULL");
 
@@ -560,7 +559,7 @@ void MusStaff::place_clef (  wxDC *dc )
 			|| (((MusSymbol*)pelement)->flag==BARRE && ((MusSymbol*)pelement)->code != CTRL_L))
 			)
 		{
-			pelement->Init( m_w );
+			pelement->Init( m_r );
 			pelement->Draw( dc, this );
 			//((MusSymbol*)pelement)->rd_symb ( dc, this);
 		}
@@ -570,7 +569,7 @@ void MusStaff::place_clef (  wxDC *dc )
 
 
 
-void MusStaff::DrawStaffLines( wxDC *dc, int i )
+void MusStaff::DrawStaffLines( AxDC *dc, int i )
 {
 	wxASSERT_MSG( dc , "DC cannot be NULL");
 	if ( !Check() )
@@ -580,61 +579,60 @@ void MusStaff::DrawStaffLines( wxDC *dc, int i )
         return;
 
 	if ( i == -1 )
-		i = m_w->m_page->m_staves.Index( *this );
+		i = m_r->m_page->m_staves.Index( *this );
 	if ( i == wxNOT_FOUND)
 		return;
 
 	int j, x1, x2, yy;
 
-	yy = (int)m_w->kPos[i].yp;
+	yy = (int)m_r->kPos[i].yp;
     if ( portNbLine == 1 )
-		yy  -= m_w->_interl[ pTaille ]*2;
+		yy  -= m_r->_interl[ pTaille ]*2;
     else if ( portNbLine == 4 )
-		yy  -= m_w->_interl[ pTaille ];
-	yy = this->yrel - m_w->_portee[ pTaille ];
+		yy  -= m_r->_interl[ pTaille ];
+	yy = this->yrel - m_r->_portee[ pTaille ];
 
 	x1 = this->indent ? this->indent*10 : 0;
-	x2 = m_w->wxmax;
+	x2 = m_r->wxmax;
 
-	wxPen pen( *m_w->m_currentColour, m_w->ToZoom( m_p->EpLignesPortee ), wxSOLID );
-	dc->SetPen( pen );
-	wxBrush brush( *m_w->m_currentColour , wxSOLID );
-	dc->SetBrush( brush );
 
-	x1 =  m_w->ToZoom (x1);
-	x2 =  m_w->ToZoom (x2);
+	dc->SetPen( m_r->m_currentColour, m_r->ToZoom( m_p->EpLignesPortee ), wxSOLID );
+    dc->SetBrush( m_r->m_currentColour , wxSOLID );
+
+	x1 =  m_r->ToZoom (x1);
+	x2 =  m_r->ToZoom (x2);
 
 	for(j = 0;j < this->portNbLine; j++)
 	{
-		dc->DrawLine( x1 , m_w->ToZoomY ( yy ) , x2 , m_w->ToZoomY ( yy ) );
-		yy -= m_w->_interl[pTaille];
+		dc->DrawLine( x1 , m_r->ToZoomY ( yy ) , x2 , m_r->ToZoomY ( yy ) );
+		yy -= m_r->_interl[pTaille];
 	}
 
-	dc->SetPen( wxNullPen );
-	dc->SetBrush( wxNullBrush );
+    dc->ResetPen( );
+    dc->ResetBrush( );
 	return;
 }
 
 
 
-void MusStaff::DrawStaff( wxDC *dc, int i )
+void MusStaff::DrawStaff( AxDC *dc, int i )
 {
 	wxASSERT_MSG( dc , "DC cannot be NULL");
 	if ( !Check() )
 		return;
 
 	if ( i == -1 )
-		i = m_w->m_page->m_staves.Index( *this );
+		i = m_r->m_page->m_staves.Index( *this );
 	if ( i == wxNOT_FOUND)
 		return;
 
-	m_w->kPos[i].compte = 0; // mettre à zero le compteur de cles
+	m_r->kPos[i].compte = 0; // mettre à zero le compteur de cles
 	
 	//bool erase = true;
 	//if ( erase )
 	//{
-	//	dc->DrawRectangle( m_w->mrgG, m_w->ToZoomY(( m_w->pageFormatVer-50) + m_p->MargeSOMMET*10), i,
-	//		m_w->ToZoomY (-50)+m_p->MargeSOMMET*10);
+	//	dc->DrawRectangle( m_r->mrgG, m_r->ToZoomY(( m_r->pageFormatVer-50) + m_p->MargeSOMMET*10), i,
+	//		m_r->ToZoomY (-50)+m_p->MargeSOMMET*10);
 	//	DrawStaffLines( dc , i );		
 	//}
 
@@ -644,14 +642,14 @@ void MusStaff::DrawStaff( wxDC *dc, int i )
 	for(j = 0; j < (int)this->nblement; j++)
 	{
 		pelement = &this->m_elements[j];
-		pelement->Init( m_w );
+		pelement->Init( m_r );
 		pelement->Draw( dc, this );
 	}
 
 }
 
 /*
-void MusStaff::ClearElements( wxDC *dc, MusElement *start )
+void MusStaff::ClearElements( AxDC *dc, MusElement *start )
 {
 	wxASSERT_MSG( dc , "DC cannot be NULL");
 	if ( !Check() )
@@ -675,16 +673,16 @@ int MusStaff::y_note (int code, int dec_clef, int oct)
 	int *ptouche, i;
 	ptouche=&touches[0];
 
-	y_int = ((dec_clef + oct*7) - 17 ) *m_w->_espace[pTaille];
+	y_int = ((dec_clef + oct*7) - 17 ) *m_r->_espace[pTaille];
 	if (portNbLine > 5)
-		y_int -= ((portNbLine - 5) * 2) *m_w->_espace[pTaille];
+		y_int -= ((portNbLine - 5) * 2) *m_r->_espace[pTaille];
 
 	/* exprime distance separant yrel de
 	position 1e Si, corrigee par dec_clef et oct. Elle est additionnee
 	ensuite, donc elle doit etre NEGATIVE si plus bas que yrel */
 	for (i=0; i<(signed)sizeof(touches); i++)
 		if (*(ptouche+i)== code)
-			return(y_int += (i*m_w->_espace[pTaille]));
+			return(y_int += (i*m_r->_espace[pTaille]));
 	return 0;
 }
 
@@ -698,16 +696,16 @@ int MusStaff::trouveCodNote (int y_n, int x_pos, int *octave)
 	int degres, octaves, position, code, decalOct;
 	char cle_id=0;
 
-	if ( !m_w )
+	if ( !m_r )
 		return 0;
 
 	// calculer position du do central en fonction clef
-	y_n += (int)m_w->v4_unit[pTaille];
+	y_n += (int)m_r->v4_unit[pTaille];
 
-	yb = this->yrel - m_w->_portee[pTaille]*2; // UT1 default 
-	yb += (testcle (x_pos)) *m_w->_espace[pTaille];	// UT1 reel
+	yb = this->yrel - m_r->_portee[pTaille]*2; // UT1 default 
+	yb += (testcle (x_pos)) *m_r->_espace[pTaille];	// UT1 reel
 
-	plafond = yb + 8 * m_w->_octave[pTaille];
+	plafond = yb + 8 * m_r->_octave[pTaille];
 	if (y_n > plafond)
 		y_n = plafond;
 
@@ -716,14 +714,14 @@ int MusStaff::trouveCodNote (int y_n, int x_pos, int *octave)
 		pelement = this->GetPrevious( pelement );
 
 	decalOct = getOctCl (pelement, &cle_id);
-	yb -= (4 + decalOct) * m_w->_octave[pTaille];	// UT, note la plus grave
+	yb -= (4 + decalOct) * m_r->_octave[pTaille];	// UT, note la plus grave
 
 	y_dec = y_n - yb;	// decalage par rapport a UT le plus grave
 
 	if (y_dec< 0)
 		y_dec = 0;
 
-	degres = y_dec / m_w->_espace[pTaille];	// ecart en degres (F2..F8) par rapport a UT1
+	degres = y_dec / m_r->_espace[pTaille];	// ecart en degres (F2..F8) par rapport a UT1
 	octaves = degres / 7;
 	position = degres % 7;
 
@@ -733,7 +731,7 @@ int MusStaff::trouveCodNote (int y_n, int x_pos, int *octave)
 	return (code);
 }
 
-wxPoint CalcPositionAfterRotation( wxPoint point , float rot_alpha, wxPoint center)
+AxPoint CalcPositionAfterRotation( AxPoint point , float rot_alpha, AxPoint center)
 {
     int distCenterX = (point.x - center.x);
     int distCenterY = (point.y - center.y);
@@ -743,7 +741,7 @@ wxPoint CalcPositionAfterRotation( wxPoint point , float rot_alpha, wxPoint cent
 	// angle d'origine entre l'axe x et la droite passant par le point et le centre
     float alpha = atan ( (float)distCenterX / (float)(distCenterY) );
     
-    wxPoint new_p = center;
+    AxPoint new_p = center;
     int new_distCenterX, new_distCenterY;
 
     new_distCenterX = ( (int)( sin( alpha - rot_alpha ) * distCenter ) );
@@ -761,13 +759,11 @@ wxPoint CalcPositionAfterRotation( wxPoint point , float rot_alpha, wxPoint cent
   up = liaison vers le haut
   heigth = hauteur de la liaison ( à plat )
   **/
-void MusStaff::DrawSlur( wxDC *dc, int x1, int y1, int x2, int y2, bool up, int height )
+void MusStaff::DrawSlur( AxDC *dc, int x1, int y1, int x2, int y2, bool up, int height )
 {
 
-	wxPen pen( *m_w->m_currentColour, 1, wxSOLID );
-	dc->SetPen( pen );
-	wxBrush brush( *m_w->m_currentColour, wxSOLID );
-	dc->SetBrush( brush );
+    dc->SetPen( m_r->m_currentColour, 1, wxSOLID );
+    dc->SetBrush( m_r->m_currentColour, wxSOLID );
 
 
     int distX = x1 - x2;
@@ -778,7 +774,7 @@ void MusStaff::DrawSlur( wxDC *dc, int x1, int y1, int x2, int y2, bool up, int 
 	// angle
     float alpha2 = float( distY ) / float( distX );
     alpha2 = atan( alpha2 );
-	wxPoint orig(0,0);
+	AxPoint orig(0,0);
 
 	int step = dist / 10; // espace entre les points
 	int nbpoints = dist / step;
@@ -792,7 +788,7 @@ void MusStaff::DrawSlur( wxDC *dc, int x1, int y1, int x2, int y2, bool up, int 
 	double a, b;
 	a = dist / 2; // largeur de l'ellipse
 	int nbp2 = nbpoints/2;
-	wxPoint *points = new wxPoint[2*nbpoints]; // buffer double - aller retour
+	AxPoint *points = new AxPoint[2*nbpoints]; // buffer double - aller retour
 
 	// aller
 	b = 100; // hauteur de l'ellipse
@@ -809,8 +805,8 @@ void MusStaff::DrawSlur( wxDC *dc, int x1, int y1, int x2, int y2, bool up, int 
 	for(i = 0; i < nbpoints; i++)
 	{
 		points[i] = CalcPositionAfterRotation( points[i], alpha2, orig ); // rotation		
-		points[i].x = m_w->ToZoom( points[i].x + x1 - 1*step ); // transposition
-		points[i].y = m_w->ToZoomY( points[i].y + y1 - dec_y );
+		points[i].x = m_r->ToZoom( points[i].x + x1 - 1*step ); // transposition
+		points[i].y = m_r->ToZoomY( points[i].y + y1 - dec_y );
 	}
 	dc->DrawSpline( nbpoints, points );
 
@@ -830,15 +826,15 @@ void MusStaff::DrawSlur( wxDC *dc, int x1, int y1, int x2, int y2, bool up, int 
 	for(i = nbpoints; i < 2*nbpoints; i++)
 	{
 		points[i] = CalcPositionAfterRotation( points[i], alpha2, orig );
-		points[i].x = m_w->ToZoom( points[i].x + x1 - 1*step );
-		points[i].y = m_w->ToZoomY( points[i].y + y1 - dec_y );
+		points[i].x = m_r->ToZoom( points[i].x + x1 - 1*step );
+		points[i].y = m_r->ToZoomY( points[i].y + y1 - dec_y );
 	}
 	dc->DrawSpline( nbpoints, points+nbpoints );
 
 	// remplissage ?
 
-	dc->SetPen( wxNullPen );
-	dc->SetBrush( wxNullBrush );
+    dc->ResetPen( );
+    dc->ResetBrush( );
 
 	delete[] points;
 
@@ -978,10 +974,10 @@ void MusStaff::DeleteLyric( MusSymbol *symbol )
 	if ( !symbol ) return;
 	
 	
-	if ( m_w ) // effacement
+	if ( m_r ) // effacement
 	{
 		if ( symbol->IsSymbol() && (((MusSymbol*)symbol)->IsLyric()) )
-			m_w->OnBeginEditionClef();
+			m_r->OnBeginEditionClef();
 	}
 	
 	MusNote *note = symbol->m_note_ptr;
@@ -993,11 +989,11 @@ void MusStaff::DeleteLyric( MusSymbol *symbol )
 	
 	this->CheckIntegrity();
 	
-	if ( m_w )
+	if ( m_r )
 	{
 		if ( symbol->IsSymbol() && (((MusSymbol*)symbol)->IsLyric()) )
-			m_w->OnEndEditionClef();
-		m_w->Refresh();
+			m_r->OnEndEditionClef();
+		m_r->DoRefresh();
 	}
 	
 	delete symbol;

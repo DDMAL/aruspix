@@ -17,7 +17,7 @@
 #endif
 
 #include "muselement.h"
-#include "muswindow.h"
+#include "musrc.h"
 #include "musstaff.h"
 
 
@@ -185,19 +185,19 @@ MusElement::~MusElement()
 }
 
 
-void MusElement::ClearElement( wxDC *dc, MusStaff *staff )
+void MusElement::ClearElement( AxDC *dc, MusStaff *staff )
 {
 	wxASSERT_MSG( dc , "DC cannot be NULL");
 	if ( !Check() )
 		return;
 
-	m_w->m_currentColour = wxWHITE;
-	m_w->efface = true;
+	m_r->m_currentColour = AxWHITE;
+	m_r->m_eraseElement = true;
 
 	this->Draw( dc, staff );
 	
-	m_w->efface = false;
-	m_w->m_currentColour = &m_w->m_black;
+	m_r->m_eraseElement = false;
+	m_r->m_currentColour = m_r->m_black;
 	
 	staff->DrawStaffLines( dc );
 }
@@ -215,10 +215,10 @@ MusElement *MusElement::GetNext( MusStaff *staff )
 /*
 wxClientDC *MusElement::InitAndClear( MusStaff *staff )
 {
-	if ( m_w || staff ) // effacement
+	if ( m_r || staff ) // effacement
 	{
-		wxClientDC *dc = new wxClientDC( m_w );
-		m_w->InitDC( dc );
+		wxClientDC *dc = new wxClientDC( m_r );
+		m_r->InitDC( dc );
 		this->ClearElement( dc, staff );
 		return dc;
 	}
@@ -228,7 +228,7 @@ wxClientDC *MusElement::InitAndClear( MusStaff *staff )
 */
 
 /*
-void MusElement::DrawAndRelease( wxDC *dc, MusStaff *staff )
+void MusElement::DrawAndRelease( AxDC *dc, MusStaff *staff )
 {
 	if ( dc == NULL )
 		return;

@@ -17,7 +17,7 @@
 #endif
 
 #include "musobject.h"
-#include "muswindow.h"
+#include "musrc.h"
 #include "musfile.h"
 #include "mus.h"
 
@@ -30,7 +30,7 @@
 MusObject::MusObject() :
 	wxObject()
 {
-	m_w = NULL;
+	m_r = NULL;
 	m_f = NULL;
 	m_fh = NULL;
 	m_p = NULL;
@@ -41,17 +41,17 @@ MusObject::~MusObject()
 {
 }
 
-bool MusObject::Init( MusWindow *win )
+bool MusObject::Init( MusRC *renderer )
 {
 	if ( m_ok )
 		return true;
 
-	if ( !win  || !win->m_f || !win->m_fh )
+	if ( !renderer  || !renderer->m_f || !renderer->m_fh )
 		return false;
 
-	m_w = win;
-	m_f = win->m_f;
-	m_fh = win->m_fh;
+	m_r = renderer;
+	m_f = renderer->m_f;
+	m_fh = renderer->m_fh;
 	m_p = &m_fh->param;
 
 	m_ok = true;

@@ -21,7 +21,7 @@ using std::min;
 #endif
 
 #include "mussymbol.h"
-#include "muswindow.h"
+#include "musrc.h"
 #include "musstaff.h"
 #include "muspage.h"
 #include "musdef.h"
@@ -103,8 +103,8 @@ void MusSymbol::SetPitch( int code, int oct )
 		this->oct = oct;
 		this->code = code;
 		
-		if (m_w)
-			m_w->Refresh();
+		if (m_r)
+			m_r->DoRefresh();
 	}
 }
 
@@ -116,9 +116,9 @@ void MusSymbol::SetValue( int value, MusStaff *staff, int vflag )
 
 	if ( this->flag == CLE )
 	{
-		if (m_w)
+		if (m_r)
 		{
-			m_w->OnBeginEditionClef();
+			m_r->OnBeginEditionClef();
 		}
 
 		switch (value)
@@ -135,10 +135,10 @@ void MusSymbol::SetValue( int value, MusStaff *staff, int vflag )
 		case ('0'): this->code = FA5; break;
 		}
 
-		if (m_w)
+		if (m_r)
 		{
-			m_w->OnEndEditionClef();
-			m_w->Refresh();
+			m_r->OnEndEditionClef();
+			m_r->DoRefresh();
 		}
 	}
 	else if ( this->flag == IND_MES )
@@ -188,10 +188,10 @@ void MusSymbol::SetValue( int value, MusStaff *staff, int vflag )
 		}
 	}
 	
-	if ( m_w )
+	if ( m_r )
 	{
-		m_w->Refresh();
-		m_w->OnEndEdition();
+		m_r->DoRefresh();
+		m_r->OnEndEdition();
 	}
 }
 
@@ -219,27 +219,27 @@ void MusSymbol::ResetToProportion( )
 	*this = reset;
 }
 
-void MusSymbol::Draw ( wxDC *dc, MusStaff *pportee)
+void MusSymbol::Draw ( AxDC *dc, MusStaff *pportee)
 // touche;	 code relecture input (1) ou coord. du decalage (0) 
 {
 	wxASSERT_MSG( dc , "DC cannot be NULL");
-	wxASSERT_MSG( m_w, "MusWindow cannot be NULL ");
+	wxASSERT_MSG( m_r, "MusRC cannot be NULL ");
 	if ( !Check() )
 		return;	
 
 	if ( this->ElemInvisible )
 		return;
 	
-	if (!m_w->efface && (this == m_w->m_currentElement))
-		m_w->m_currentColour = wxRED;
-	else if (!m_w->efface && (this->m_cmp_flag == CMP_MATCH))
-		m_w->m_currentColour = wxLIGHT_GREY;
-	else if (!m_w->efface && (this->m_cmp_flag == CMP_DEL))
-		m_w->m_currentColour = wxGREEN;
-	else if (!m_w->efface && (this->m_cmp_flag == CMP_SUBST))
-		m_w->m_currentColour = wxBLUE;
-	else if (!m_w->efface && (this->m_cmp_flag == CMP_INS))
-		m_w->m_currentColour = wxRED;
+	if (!m_r->m_eraseElement && (this == m_r->m_currentElement))
+		m_r->m_currentColour = AxRED;
+	else if (!m_r->m_eraseElement && (this->m_cmp_flag == CMP_MATCH))
+		m_r->m_currentColour = AxLIGHT_GREY;
+	else if (!m_r->m_eraseElement && (this->m_cmp_flag == CMP_DEL))
+		m_r->m_currentColour = AxGREEN;
+	else if (!m_r->m_eraseElement && (this->m_cmp_flag == CMP_SUBST))
+		m_r->m_currentColour = AxBLUE;
+	else if (!m_r->m_eraseElement && (this->m_cmp_flag == CMP_INS))
+		m_r->m_currentColour = AxRED;
 
 
 	
@@ -256,17 +256,17 @@ void MusSymbol::Draw ( wxDC *dc, MusStaff *pportee)
 
 	switch (this->flag)
 	{
-		case BARRE : m_w->discontinu = this->l_ptch;	// pour pointilles 
+		case BARRE : m_r->discontinu = this->l_ptch;	// pour pointilles 
 			switch (this->code)
-			{	case '|' : m_w->m_page->bar_mes( dc, x,  m_p->EpBarreMesure, this->carStyle, pportee);
+			{	case '|' : m_r->m_page->bar_mes( dc, x,  m_p->EpBarreMesure, this->carStyle, pportee);
 						break;
-				case CTRL_L: m_w->m_page->barMesPartielle ( dc, x, pportee); break;
+				case CTRL_L: m_r->m_page->barMesPartielle ( dc, x, pportee); break;
 				default:
 //				case 'E' :
 						valeurcod = (char) this->code;
 						if (this->calte == 1)
 							valeurcod = -valeurcod;
-						m_w->m_page->bigbarre( dc, x, valeurcod, this->carStyle, pportee);
+						m_r->m_page->bigbarre( dc, x, valeurcod, this->carStyle, pportee);
 			}
 			break;
 		case ALTER : dess_symb ( dc,x,this->dec_y,this->flag,this->calte, pportee);
@@ -289,7 +289,7 @@ void MusSymbol::Draw ( wxDC *dc, MusStaff *pportee)
 		case CLE :		 
 			calcoffs (&x,(int)this->code);
 			this->dec_y = x;
-			this->dess_cle( dc,m_w->kPos[pportee->no].compte, pportee); 
+			this->dess_cle( dc,m_r->kPos[pportee->no].compte, pportee); 
 			break;
 
 		/*case VECT: pt = (Debord *)this->pdebord; pt++; //SYMBOLCOL;
@@ -309,15 +309,15 @@ void MusSymbol::Draw ( wxDC *dc, MusStaff *pportee)
 	}
 	//discontinu=0;
 
-	if ( !m_w->efface )
-		m_w->m_currentColour = &m_w->m_black;
+	if ( !m_r->m_eraseElement )
+		m_r->m_currentColour = m_r->m_black;
 	
 
 	return;
 }
 
 
-void MusSymbol::dess_symb( wxDC *dc, int x, int y, int symc, int symf, MusStaff *pportee)
+void MusSymbol::dess_symb( AxDC *dc, int x, int y, int symc, int symf, MusStaff *pportee)
 // symc = cat du symb, symf=code d'identite 
 {
 	wxASSERT_MSG( dc , "DC cannot be NULL");
@@ -330,33 +330,33 @@ void MusSymbol::dess_symb( wxDC *dc, int x, int y, int symc, int symf, MusStaff 
 	{	y += pportee->yrel;
 		switch (symf)
 		{	case BECAR :  symc=sBECARRE; break;
-			case D_DIESE : symc=sDIESE; m_w->putfont ( dc, x, y, symc, pportee, this->dimin, SYMB);
-						y += 7*m_w->_espace[pportee->pTaille]; // LP
+			case D_DIESE : symc=sDIESE; m_r->putfont ( dc, x, y, symc, pportee, this->dimin, SYMB);
+						y += 7*m_r->_espace[pportee->pTaille]; // LP
 			case DIESE : symc=sDIESE; break;
-			case D_BEMOL :  symc=sBEMOL; m_w->putfont ( dc, x, y, symc, pportee, this->dimin, SYMB);
-						y += 7*m_w->_espace[pportee->pTaille]; // LP
+			case D_BEMOL :  symc=sBEMOL; m_r->putfont ( dc, x, y, symc, pportee, this->dimin, SYMB);
+						y += 7*m_r->_espace[pportee->pTaille]; // LP
 			case BEMOL :  symc=sBEMOL; break;
 			case Q_DIESE : symc=sQDIESE; break;
 			case Q_BEMOL :  symc=sQBEMOL; break;
 		}
-		m_w->putfont ( dc, x, y, symc, pportee, this->dimin, SYMB);
+		m_r->putfont ( dc, x, y, symc, pportee, this->dimin, SYMB);
 	}
 	else if (symc == AX_VARIANT)
 	{	
 		y += pportee->yrel;
-		m_w->putfont ( dc, x, y, '+', pportee, this->dimin, SYMB);
+		m_r->putfont ( dc, x, y, '+', pportee, this->dimin, SYMB);
 	}
 	else
 		switch (symf)
-		{	case 1 : m_w->pointer( dc,x,y,0,pportee); x += max (6, m_w->_pas);
-			case 0 : m_w->pointer ( dc,x,y,0,pportee);
+		{	case 1 : m_r->pointer( dc,x,y,0,pportee); x += max (6, m_r->_pas);
+			case 0 : m_r->pointer ( dc,x,y,0,pportee);
 		}
 
 
 }
 
 
-void MusSymbol::afficheMesure ( wxDC *dc, MusStaff *staff)
+void MusSymbol::afficheMesure ( AxDC *dc, MusStaff *staff)
 {
 	wxASSERT_MSG( dc , "DC cannot be NULL");
 	if ( !Check() )
@@ -368,7 +368,7 @@ void MusSymbol::afficheMesure ( wxDC *dc, MusStaff *staff)
 
 	if (this->code & 64)
 	{	
-		yp = staff->yrel - (m_w->_portee[ staff->pTaille ]+ m_w->_espace[ staff->pTaille ]*6);
+		yp = staff->yrel - (m_r->_portee[ staff->pTaille ]+ m_r->_espace[ staff->pTaille ]*6);
 		switch (this->calte)
 		{	case 0: caractere = MES_CSimple;
 					mNum = 4; mDen = 4; break;
@@ -387,7 +387,7 @@ void MusSymbol::afficheMesure ( wxDC *dc, MusStaff *staff)
 		{	
 			//wxString s( char(caractere), 1);
 			wxString s = char(caractere);
-			m_w->putstring ( dc, this->xrel, yp, s, 1, staff->pTaille);
+			m_r->putstring ( dc, this->xrel, yp, s, 1, staff->pTaille);
 		}
 	}
 
@@ -419,127 +419,119 @@ void MusSymbol::afficheMesure ( wxDC *dc, MusStaff *staff)
 	if ( this->code & 1)
 	{	x = this->xrel;
 		if (this->code > 1)
-			x += m_w->_pas*5;
+			x += m_r->_pas*5;
 		chiffres ( dc, x, staff->yrel, staff);
 		mDen = max ( this->durDen, (unsigned short)1);
 		mNum = max ( this->durNum, (unsigned short)1);
 	}
-	m_w->MesVal = mNum / mDen;
-	m_w->mesureNum = (int)mNum;
-	m_w->mesureDen = (int)mDen;
+	m_r->MesVal = mNum / mDen;
+	m_r->mesureNum = (int)mNum;
+	m_r->mesureDen = (int)mDen;
 
 	return;
 }
 
 
-void MusSymbol::mesCercle ( wxDC *dc, int x, int yy, MusStaff *staff )
+void MusSymbol::mesCercle ( AxDC *dc, int x, int yy, MusStaff *staff )
 {	
-	int y =  m_w->ToZoomY (yy - m_w->_interl[ staff->pTaille ] * 6);
-	int r = m_w->ToZoom( m_w->_interl[ staff->pTaille ]);
+	int y =  m_r->ToZoomY (yy - m_r->_interl[ staff->pTaille ] * 6);
+	int r = m_r->ToZoom( m_r->_interl[ staff->pTaille ]);
 
-	int w = max( m_w->ToZoom(4), 2 );
+	int w = max( m_r->ToZoom(4), 2 );
 
-	wxPen pen( *m_w->m_currentColour, w, wxSOLID );
-	dc->SetPen( pen );
-	wxBrush brush( *m_w->m_currentColour, wxTRANSPARENT );
-	dc->SetBrush( brush );
+    dc->SetPen( m_r->m_currentColour, w, wxSOLID );
+    dc->SetBrush( m_r->m_currentColour, wxTRANSPARENT );
 
-	dc->DrawCircle( m_w->ToZoom(x), y, r );
-		
-	dc->SetPen( wxNullPen );
-	dc->SetBrush( wxNullBrush );
+	dc->DrawCircle( m_r->ToZoom(x), y, r );
+
+    dc->ResetPen();
+    dc->ResetBrush();
 }	
 
-void MusSymbol::demi_cercle ( wxDC *dc, int x, int yy, MusStaff *staff )
+void MusSymbol::demi_cercle ( AxDC *dc, int x, int yy, MusStaff *staff )
 {
 	wxASSERT_MSG( dc , "DC cannot be NULL");
 	if ( !Check() )
 		return;	
 
-	int w = max( m_w->ToZoom(4), 2 );
-	wxPen pen( *m_w->m_currentColour, w, wxSOLID );
-	dc->SetPen( pen );
-	wxBrush brush( *m_w->m_currentColour, wxTRANSPARENT );
-	dc->SetBrush( brush );
+	int w = max( m_r->ToZoom(4), 2 );
+    dc->SetPen( m_r->m_currentColour, w, wxSOLID );
+    dc->SetBrush( m_r->m_currentColour, wxTRANSPARENT );
 
-	int y =  m_w->ToZoomY (yy - m_w->_interl[ staff->pTaille ] * 5);
-	int r = m_w->ToZoom( m_w->_interl[ staff->pTaille ]);
+	int y =  m_r->ToZoomY (yy - m_r->_interl[ staff->pTaille ] * 5);
+	int r = m_r->ToZoom( m_r->_interl[ staff->pTaille ]);
 
-	x = m_w->ToZoom (x);
+	x = m_r->ToZoom (x);
 	x -= 3*r/3;
 
 	dc->DrawEllipticArc( x, y, 2*r, 2*r, 70, 290 );
 		
-	dc->SetPen( wxNullPen );
-	dc->SetBrush( wxNullBrush );
+    dc->ResetPen();
+    dc->ResetBrush();
 
 	return;
 }	
 
-void  MusSymbol::inv_d_cercle ( wxDC *dc, int x, int yy, MusStaff *staff )
+void  MusSymbol::inv_d_cercle ( AxDC *dc, int x, int yy, MusStaff *staff )
 {	
 	wxASSERT_MSG( dc , "DC cannot be NULL");
 	if ( !Check() )
 		return;	
 
-	int w = max( m_w->ToZoom(4), 2 );
-	wxPen pen( *m_w->m_currentColour, w, wxSOLID );
-	dc->SetPen( pen );
-	wxBrush brush( *m_w->m_currentColour, wxTRANSPARENT );
-	dc->SetBrush( brush );
+	int w = max( m_r->ToZoom(4), 2 );
+    dc->SetPen( m_r->m_currentColour, w, wxSOLID );
+    dc->SetBrush( m_r->m_currentColour, wxTRANSPARENT );
 
-	int y =  m_w->ToZoomY (yy - m_w->_interl[ staff->pTaille ] * 5);
-	int r = m_w->ToZoom( m_w->_interl[ staff->pTaille ] );
+	int y =  m_r->ToZoomY (yy - m_r->_interl[ staff->pTaille ] * 5);
+	int r = m_r->ToZoom( m_r->_interl[ staff->pTaille ] );
 
-	x = m_w->ToZoom (x);
+	x = m_r->ToZoom (x);
 	x -= 4*r/3;
 
 	dc->DrawEllipticArc( x, y, 2*r, 2*r, 250, 110 );
-		
-	dc->SetPen( wxNullPen );
-	dc->SetBrush( wxNullBrush );
+    
+    dc->ResetPen();
+    dc->ResetBrush();
 
 	return;
 }	
 
-void MusSymbol::prol ( wxDC *dc, int x, int yy, MusStaff *staff )
+void MusSymbol::prol ( AxDC *dc, int x, int yy, MusStaff *staff )
 {
 	wxASSERT_MSG( dc , "DC cannot be NULL");
 	if ( !Check() )
 		return;	
 
-	int y =  m_w->ToZoomY (yy - m_w->_interl[ staff->pTaille ] * 6);
-	int r = max( m_w->ToZoom(4), 2 );
+	int y =  m_r->ToZoomY (yy - m_r->_interl[ staff->pTaille ] * 6);
+	int r = max( m_r->ToZoom(4), 2 );
 	
-	wxPen pen( *m_w->m_currentColour, 1, wxSOLID );
-	dc->SetPen( pen );
-	wxBrush brush( *m_w->m_currentColour, wxSOLID );
-	dc->SetBrush( brush );
+    dc->SetPen( m_r->m_currentColour, 1, wxSOLID );
+    dc->SetBrush( m_r->m_currentColour, wxSOLID );
 
-	dc->DrawCircle( m_w->ToZoom(x) -r/2 , y, r );
+	dc->DrawCircle( m_r->ToZoom(x) -r/2 , y, r );
 		
-	dc->SetPen( wxNullPen );
-	dc->SetBrush( wxNullBrush );
+    dc->ResetPen();
+    dc->ResetBrush();
 
 	return;
 }	
 
 
-void MusSymbol::stroke ( wxDC *dc, int a, int yy, MusStaff *staff )
+void MusSymbol::stroke ( AxDC *dc, int a, int yy, MusStaff *staff )
 {	
 	wxASSERT_MSG( dc , "DC cannot be NULL");
 	if ( !Check() )
 		return;	
 	
-	int y1 = yy - m_w->_portee[ staff->pTaille ];
-	int y2 = y1 - m_w->_portee[ staff->pTaille ];
+	int y1 = yy - m_r->_portee[ staff->pTaille ];
+	int y2 = y1 - m_r->_portee[ staff->pTaille ];
 	
-	m_w->v_bline2 ( dc, y1, y2, a, 3);
+	m_r->v_bline2 ( dc, y1, y2, a, 3);
 	return;
 }	
 
 
-void MusSymbol::chiffres ( wxDC *dc, int x, int y, MusStaff *staff)
+void MusSymbol::chiffres ( AxDC *dc, int x, int y, MusStaff *staff)
 {
 	wxASSERT_MSG( dc , "DC cannot be NULL");
 	if ( !Check() )
@@ -550,22 +542,22 @@ void MusSymbol::chiffres ( wxDC *dc, int x, int y, MusStaff *staff)
 
 	if (this->durDen)
 	{	
-		ynum = y - (m_w->_portee[staff->pTaille]+ m_w->_espace[staff->pTaille]*4);
-		yden = ynum - (m_w->_interl[staff->pTaille]*2);
+		ynum = y - (m_r->_portee[staff->pTaille]+ m_r->_espace[staff->pTaille]*4);
+		yden = ynum - (m_r->_interl[staff->pTaille]*2);
 	}
 	else
-		ynum = y - (m_w->_portee[staff->pTaille]+ m_w->_espace[staff->pTaille]*6);
+		ynum = y - (m_r->_portee[staff->pTaille]+ m_r->_espace[staff->pTaille]*6);
 
 	if (this->durDen > 9 || this->durNum > 9)	// avancer
-		x += m_w->_pas*2;
+		x += m_r->_pas*2;
 
 	s = wxString::Format("%u",this->durNum);
-	m_w->putstring ( dc, x, ynum, s, 1, staff->pTaille);	// '1' = centrer
+	m_r->putstring ( dc, x, ynum, s, 1, staff->pTaille);	// '1' = centrer
 
 	if (this->durDen)
 	{
 	s = wxString::Format("%u",this->durDen);
-		m_w->putstring ( dc, x, yden, s, 1, staff->pTaille);	// '1' = centrer
+		m_r->putstring ( dc, x, yden, s, 1, staff->pTaille);	// '1' = centrer
 
 	}
 	return;

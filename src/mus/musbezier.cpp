@@ -6,7 +6,7 @@
 /////////////////////////////////////////////////////////////////////////////
 
 #ifdef __GNUG__
-    #pragma implementation "muswindow.h"
+    #pragma implementation "musrc.h"
 #endif
 
 // For compilers that support precompilation, includes "wx/wx.h".
@@ -16,7 +16,7 @@
     #pragma hdrstop
 #endif
 
-#include "muswindow.h"
+#include "musrc.h"
 
 #define NBInt	40
 
@@ -26,12 +26,12 @@ static long factor2;
 static int	*pCC = NULL;
 
 /** static members **/
-wxPoint MusWindow::point_[];
-wxPoint MusWindow::bcoord[];
-//wxPoint MusWindow::point_[4];
-//wxPoint MusWindow::bcoord[2*(PTCONTROL+1)];
+AxPoint MusRC::point_[];
+AxPoint MusRC::bcoord[];
+//AxPoint MusRC::point_[4];
+//AxPoint MusRC::bcoord[2*(PTCONTROL+1)];
 
-int MusWindow::CC(int n, int i) 
+int MusRC::CC(int n, int i) 
 {
 	register int j;
 	register int a;
@@ -45,7 +45,7 @@ int MusWindow::CC(int n, int i)
 } 
 
 
-long MusWindow::BBlend(int i, int n, long u) 
+long MusRC::BBlend(int i, int n, long u) 
 {
 	register int j;
     long	b;
@@ -60,7 +60,7 @@ long MusWindow::BBlend(int i, int n, long u)
 	return b; 
 }
 
-int MusWindow::InitBezier (register int n)
+int MusRC::InitBezier (register int n)
 {
 	register int i;
 
@@ -77,7 +77,7 @@ int MusWindow::InitBezier (register int n)
 }
 
 
-void MusWindow::Bezier(long *x, long *y, long u, int n ) 
+void MusRC::Bezier(long *x, long *y, long u, int n ) 
 {
 	int        i;
     long       b;
@@ -95,7 +95,7 @@ void MusWindow::Bezier(long *x, long *y, long u, int n )
 }
 
 
-void MusWindow::calcBez ( wxPoint *ptcoord, int _nbint )
+void MusRC::calcBez ( AxPoint *ptcoord, int _nbint )
 {
 	int          i;
    long       x, y;
@@ -114,8 +114,8 @@ void MusWindow::calcBez ( wxPoint *ptcoord, int _nbint )
 	
 }
 
-void MusWindow::pntswap (wxPoint *x1, wxPoint *x2)
-{	wxPoint a;
+void MusRC::pntswap (AxPoint *x1, AxPoint *x2)
+{	AxPoint a;
 	a = *x1;
 	*x1 = *x2;
 	*x2 = a;

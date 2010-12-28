@@ -19,16 +19,13 @@
 
 
 #include "musneume.h"
-#include "muswindow.h"
+#include "musrc.h"
 #include "musstaff.h"
 #include "muspage.h"
 #include "musdef.h"
 #include "neumedef.h"
 
 #include <math.h>
-#include <string>
-
-using std::string;
 
 // sorting function
 int SortElements(MusNeume **first, MusNeume **second)
@@ -139,7 +136,7 @@ int MusNeumePitch::GetValue() { return this->val; }
 
 //helper method
 
-string& MusNeumePitch::getFestaString() {
+wxString MusNeumePitch::getFestaString() {
 	return m_font_str;
 }
 
@@ -326,17 +323,17 @@ void MusNeume::SetClosed(bool value) {
 //		printf("\nINITIAL LIST: **********************\n");	
 //		this->printNeumeList();
 // 		this->CheckForBreaks(); //causes memory leak?
-//		wxClientDC dc(m_w);
-//		this->drawLigature(&(m_w->dc), m_w->m_currentStaff);
-	//	m_w->m_currentElement = this;
+//		wxClientDC dc(m_r);
+//		this->drawLigature(&(m_r->dc), m_r->m_currentStaff);
+	//	m_r->m_currentElement = this;
 	} else { // in case pitch is not set when entering open mode for the first time
 
 	}
 	
-	if (m_w)
+	if (m_r)
 	{
 	//	printf("Hderp!\n");
-		m_w->Refresh();
+		m_r->DoRefresh();
 	}
 
 	this->printNeumeList();
@@ -392,17 +389,17 @@ void MusNeume::CheckForBreaks()
 			}
 		}
 		//now just need to delete original neume
-		if (m_w) {
+		if (m_r) {
 
 			printf("\nSPLIT LIST********************\n");
 	//		this = split_list.at(0);
 			for (unsigned int i = 0; i < split_list.size(); i++)
 			{
 //				split_list.at(i)->printNeumeList();
-				split_list.at(i)->xrel += (i * m_w->ToZoom(25));
-				m_w->m_currentStaff->Insert(split_list.at(i));
+				split_list.at(i)->xrel += (i * m_r->ToZoom(25));
+				m_r->m_currentStaff->Insert(split_list.at(i));
 			}
-	//		m_w->m_currentStaff->Delete(this);		
+	//		m_r->m_currentStaff->Delete(this);		
 		}
 	}
 	
@@ -420,12 +417,13 @@ void MusNeume::Copy() {
 	
 	this->SetClosed(true);
 
-	if (m_w) {
-		m_w->m_currentStaff->Insert(copy);
-		m_w->m_currentElement = m_w->m_currentStaff->GetNext(this);
+	if (m_r) {
+		m_r->m_currentStaff->Insert(copy);
+		m_r->m_currentElement = m_r->m_currentStaff->GetNext(this);
 
-		m_w->SetInsertMode(false); // switch to edition mode
-		m_w->Refresh();
+		// m_r->SetInsertMode(false); // switch to edition mode
+        // Laurent: I commented this because it should be in the MusWindow
+		m_r->DoRefresh();
 	}
 }
 
@@ -440,7 +438,7 @@ void MusNeume::GetNextPunctum() {
 		this->SetClosed(true);
 	}
 	
-	if (m_w) m_w->Refresh();
+	if (m_r) m_r->DoRefresh();
 }
 
 void MusNeume::GetPreviousPunctum() {
@@ -452,7 +450,7 @@ void MusNeume::GetPreviousPunctum() {
 		this->SetClosed(true);
 	}
 	
-	if (m_w) m_w->Refresh();
+	if (m_r) m_r->DoRefresh();
 }
 
 /*
@@ -476,8 +474,8 @@ void MusNeume::Append() {
 	
 	this->GetPitchRange();
 	
-	if (m_w)
-		m_w->Refresh();
+	if (m_r)
+		m_r->DoRefresh();
 	
 //	delete new_pitch;
 }
@@ -516,8 +514,8 @@ void MusNeume::InsertPitchAfterSelected()
 	
 	this->GetPitchRange();
 	
-	if (m_w)
-		m_w->Refresh();	
+	if (m_r)
+		m_r->DoRefresh();	
 	
 
 }
@@ -535,8 +533,8 @@ void MusNeume::RemoveSelectedPitch()
 	if (n_selected) n_selected--;
 	
 	this->GetPitchRange();
-	if (m_w)
-		m_w->Refresh();
+	if (m_r)
+		m_r->DoRefresh();
 }
 
 
@@ -601,8 +599,8 @@ void MusNeume::SetPitch( int code, int oct )
 	this->printNeumeList();
 	
 	this->GetPitchRange(); //necessary for drawing the box properly in open mode	
-	if (m_w)
-		m_w->Refresh();
+	if (m_r)
+		m_r->DoRefresh();
 }
 
 void MusNeume::SetValue( int value, MusStaff *staff, int vflag )
@@ -624,8 +622,8 @@ void MusNeume::SetValue( int value, MusStaff *staff, int vflag )
 	}
 	
 	//refresh drawing automatically
-	if (m_w)
-		m_w->Refresh();
+	if (m_r)
+		m_r->DoRefresh();
 }
 
 int MusNeume::GetValue()
@@ -707,10 +705,10 @@ int MusNeume::GetPitchRange()
 
 //should have some loop for drawing each element in the neume
 
-void MusNeume::Draw( wxDC *dc, MusStaff *staff)
+void MusNeume::Draw( AxDC *dc, MusStaff *staff)
 {
 	wxASSERT_MSG( dc , "DC cannot be NULL");
-	wxASSERT_MSG( m_w, "MusWindow cannot be NULL ");
+	wxASSERT_MSG( m_r, "MusRC cannot be NULL ");
 	if ( !Check() )
 		return;	
 
@@ -720,14 +718,14 @@ void MusNeume::Draw( wxDC *dc, MusStaff *staff)
 	// following the example set by musnote...
 	
 	int oct = this->oct - 4; //? 
-	if (!m_w->efface && (this == m_w->m_currentElement))
-		m_w->m_currentColour = wxRED;
-	else if (!m_w->efface && (this->m_cmp_flag == CMP_MATCH))
-		m_w->m_currentColour = wxLIGHT_GREY;
-	else if (!m_w->efface && (this->m_cmp_flag == CMP_DEL))
-		m_w->m_currentColour = wxGREEN;
-	else if (!m_w->efface && (this->m_cmp_flag == CMP_SUBST))
-		m_w->m_currentColour = wxBLUE;	
+	if (!m_r->m_eraseElement && (this == m_r->m_currentElement))
+		m_r->m_currentColour = AxRED;
+	else if (!m_r->m_eraseElement && (this->m_cmp_flag == CMP_MATCH))
+		m_r->m_currentColour = AxLIGHT_GREY;
+	else if (!m_r->m_eraseElement && (this->m_cmp_flag == CMP_DEL))
+		m_r->m_currentColour = AxGREEN;
+	else if (!m_r->m_eraseElement && (this->m_cmp_flag == CMP_SUBST))
+		m_r->m_currentColour = AxBLUE;	
 	
 	//this stays the same for open and closed mode
 	this->dec_y = staff->y_note((int)this->code, staff->testcle( this->xrel ), oct);
@@ -748,7 +746,7 @@ void MusNeume::Draw( wxDC *dc, MusStaff *staff)
 	}
 	
 	//just trying a hack here
-	m_w->m_currentColour = wxBLACK;
+	m_r->m_currentColour = AxBLACK;
 	
 	//seems to fix the problem somewhat...
 	
@@ -756,12 +754,12 @@ void MusNeume::Draw( wxDC *dc, MusStaff *staff)
 	return;
 }
 
-void MusNeume::DrawBox( wxDC *dc, MusStaff *staff ) //revise
+void MusNeume::DrawBox( AxDC *dc, MusStaff *staff ) //revise
 {
 	// now it would be nice to see a red box around the group just to indicate 
 	// that we're in 'open editing' mode
 	
-	m_w->m_currentColour = wxRED;
+	m_r->m_currentColour = AxRED;
 	
 	int x1, x2, y1, y2;
 	int ynn = this->dec_y + staff->yrel; 
@@ -775,21 +773,21 @@ void MusNeume::DrawBox( wxDC *dc, MusStaff *staff ) //revise
 	
 	// now for y coords
 	// for y1, we need to know the pitch range, specifically the highest pitch
-	y1 = (ynn + PUNCT_PADDING) + (this->p_max * m_w->_espace[staff->pTaille]);
+	y1 = (ynn + PUNCT_PADDING) + (this->p_max * m_r->_espace[staff->pTaille]);
 	// y2 requires lowest pitch
-	y2 = (ynn - PUNCT_PADDING) - abs(this->p_min * m_w->_espace[staff->pTaille]);
+	y2 = (ynn - PUNCT_PADDING) - abs(this->p_min * m_r->_espace[staff->pTaille]);
 	
 	// now get the range
-	//y2 = this->p_range * m_w->_espace[staff->pTaille] + PUNCT_PADDING;
+	//y2 = this->p_range * m_r->_espace[staff->pTaille] + PUNCT_PADDING;
 	//	//printf("Drawing box: x1: %d, y1: %d, x2: %d, y2: %d\n", x1, y1, x2, y2);
 	
-	//m_w->m_currentColour = wxWHITE; //??? to fix memory leak
-	//m_w->rect_plein2( dc, x1, y1, x2, y2);
-	m_w->m_currentColour = wxRED;
-	m_w->box( dc, x1, y1, x2, y2 );
+	//m_r->m_currentColour = wxWHITE; //??? to fix memory leak
+	//m_r->rect_plein2( dc, x1, y1, x2, y2);
+	m_r->m_currentColour = AxRED;
+	m_r->box( dc, x1, y1, x2, y2 );
 
 	
-	m_w->m_currentColour = wxBLACK;
+	m_r->m_currentColour = AxBLACK;
 	
 }
 
@@ -797,28 +795,28 @@ void MusNeume::DrawBox( wxDC *dc, MusStaff *staff ) //revise
 // this method is the same thing as DrawPunctums right now, but once 
 // multi-punctum neumes are supported this method will be very different
 
-void MusNeume::DrawNeume( wxDC *dc, MusStaff *staff ) 
+void MusNeume::DrawNeume( AxDC *dc, MusStaff *staff ) 
 {
 	// magic happens here
 	int pTaille = staff->pTaille;
 	
 	int xn = this->xrel;
     //int xl = this->xrel;
-	int bby = staff->yrel - m_w->_portee[pTaille];
+	int bby = staff->yrel - m_r->_portee[pTaille];
 	int ynn = this->dec_y + staff->yrel;
 	//printf("closed ynn value: %d\nclosed dec_y: %d\nclosed yrel: %d\n", 
 	//	   ynn, this->dec_y, staff->yrel );
 	
 	xn += this->offset;
 	
-	int ledge = m_w->ledgerLine[pTaille][2];
+	int ledge = m_r->ledgerLine[pTaille][2];
 	
 	MusNeumePitch *temp;
 	
 	if (this->n_pitches.size() == 1) {
 		temp = n_pitches.at(0);
 		leg_line( dc, ynn,bby,this->xrel,ledge, pTaille);
-		m_w->festa_string( dc, xn, ynn + 16, 
+		m_r->festa_string( dc, xn, ynn + 16, 
 					 temp->getFestaString(), staff, this->dimin); 
 	} else if (this->n_pitches.size() >= 1) {
 		// we need to draw a ligature
@@ -843,7 +841,7 @@ void MusNeume::DrawNeume( wxDC *dc, MusStaff *staff )
 
 
 
-void MusNeume::DrawPunctums( wxDC *dc, MusStaff *staff )
+void MusNeume::DrawPunctums( AxDC *dc, MusStaff *staff )
 {
 	// draw each individual punctum in the group, side by side for easy editing
 	// draw a rectangular box around this group to indicate open editing mode
@@ -857,7 +855,7 @@ void MusNeume::DrawPunctums( wxDC *dc, MusStaff *staff )
 //	int rayon, milieu = 0;
 	int oct = this->oct - 4; //? 
 	int xn = this->xrel, xl = this->xrel;
-	int bby = staff->yrel - m_w->_portee[pTaille];  // bby= y sommet portee
+	int bby = staff->yrel - m_r->_portee[pTaille];  // bby= y sommet portee
 	this->dec_y = staff->y_note((int)this->code, staff->testcle( this->xrel ), oct);
 	int ynn = this->dec_y + staff->yrel; 
 	//printf("open code value: %d\nopen oct: %d\n", 
@@ -865,7 +863,7 @@ void MusNeume::DrawPunctums( wxDC *dc, MusStaff *staff )
 	
 	xn += this->offset;
 	
-	int ledge = m_w->ledgerLine[pTaille][2];
+	int ledge = m_r->ledgerLine[pTaille][2];
 	
 	//int punct_y;
 	
@@ -881,21 +879,21 @@ void MusNeume::DrawPunctums( wxDC *dc, MusStaff *staff )
 		
 		leg_line( dc, ynn,bby,xl + (i * PUNCT_PADDING),ledge, pTaille);
 		// colour the selected item red
-		if (i == n_selected) m_w->m_currentColour = wxRED;
-		else m_w->m_currentColour = wxBLACK;
-		m_w->festa_string( dc, this->xrel + (i * PUNCT_PADDING), ynn + 16, 
+		if (i == n_selected) m_r->m_currentColour = AxRED;
+		else m_r->m_currentColour = AxBLACK;
+		m_r->festa_string( dc, this->xrel + (i * PUNCT_PADDING), ynn + 16, 
 					  temp->getFestaString(), staff, this->dimin );	
 	}
 }
 
-void MusNeume::leg_line( wxDC *dc, int y_n, int y_p, int xn, unsigned int smaller, int pTaille)
+void MusNeume::leg_line( AxDC *dc, int y_n, int y_p, int xn, unsigned int smaller, int pTaille)
 {
-	int yn, ynt, yh, yb, test, v_decal = m_w->_interl[pTaille];
+	int yn, ynt, yh, yb, test, v_decal = m_r->_interl[pTaille];
 	int dist, xng, xnd;
 	register int i;
 	
 	
-	yh = y_p + m_w->_espace[pTaille]; yb = y_p- m_w->_portee[pTaille]- m_w->_espace[pTaille];
+	yh = y_p + m_r->_espace[pTaille]; yb = y_p- m_r->_portee[pTaille]- m_r->_espace[pTaille];
 	
 	if (!in(y_n,yh,yb))                           // note hors-portee?
 	{
@@ -904,29 +902,27 @@ void MusNeume::leg_line( wxDC *dc, int y_n, int y_p, int xn, unsigned int smalle
 //		printf("xn = %d, xn gauche: %d, xn droigt: %d\n", xn, xng, xnd);
 //		printf("xrel = %d\n", this->xrel);
 		
-		dist = ((y_n > yh) ? (y_n - y_p) : y_p - m_w->_portee[pTaille] - y_n);
-  		ynt = ((dist % m_w->_interl[pTaille] > 0) ? (dist - m_w->_espace[pTaille]) : dist);
-		test = ynt/ m_w->_interl[pTaille];
+		dist = ((y_n > yh) ? (y_n - y_p) : y_p - m_r->_portee[pTaille] - y_n);
+  		ynt = ((dist % m_r->_interl[pTaille] > 0) ? (dist - m_r->_espace[pTaille]) : dist);
+		test = ynt/ m_r->_interl[pTaille];
 		if (y_n > yh)
 		{	yn = ynt + y_p;
-			v_decal = - m_w->_interl[pTaille];
+			v_decal = - m_r->_interl[pTaille];
 		}
 		else
-			yn = y_p - m_w->_portee[pTaille] - ynt;
+			yn = y_p - m_r->_portee[pTaille] - ynt;
 		
 		//hPen = (HPEN)SelectObject (hdc, CreatePen (PS_SOLID, _param.EpLignesPORTEE+1, workColor2));
 		//xng = toZoom(xng);
 		//xnd = toZoom(xnd);
 		
-		wxPen pen( *m_w->m_currentColour, m_p->EpLignesPortee, wxSOLID );
-		dc->SetPen( pen );
-		wxBrush brush( *m_w->m_currentColour , wxTRANSPARENT );
-		dc->SetBrush( brush );
+        dc->SetPen( m_r->m_currentColour, m_p->EpLignesPortee, wxSOLID );
+        dc->SetBrush( m_r->m_currentColour , wxTRANSPARENT );
 		
 		for (i = 0; i < test; i++)
 		{
-			dc->DrawLine( m_w->ToZoom(xng) , m_w->ToZoomY ( yn ) , m_w->ToZoom(xnd) , m_w->ToZoomY ( yn ) );
-			//m_w->h_line ( dc, xng, xnd, yn, m_w->_param.EpLignesPORTEE);
+			dc->DrawLine( m_r->ToZoom(xng) , m_r->ToZoomY ( yn ) , m_r->ToZoom(xnd) , m_r->ToZoomY ( yn ) );
+			//m_r->h_line ( dc, xng, xnd, yn, m_r->_param.EpLignesPORTEE);
 			//yh =  toZoom(yn);
 			//MoveToEx (hdc, xng, yh, NULL);
 			//LineTo (hdc, xnd, yh);
@@ -934,8 +930,8 @@ void MusNeume::leg_line( wxDC *dc, int y_n, int y_p, int xn, unsigned int smalle
 			yn += v_decal;
 		}
 		
-		dc->SetPen( wxNullPen );
-		dc->SetBrush( wxNullBrush );
+        dc->ResetPen();
+        dc->ResetBrush();
 	}
 	return;
 }

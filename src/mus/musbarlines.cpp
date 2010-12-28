@@ -6,7 +6,7 @@
 /////////////////////////////////////////////////////////////////////////////
 
 #ifdef __GNUG__
-    #pragma implementation "muswindow.h"
+    #pragma implementation "musrc.h"
 #endif
 
 #include <algorithm>
@@ -20,11 +20,12 @@ using std::max;
     #pragma hdrstop
 #endif
 
-#include "muswindow.h"
+#include "musrc.h"
 #include "muspage.h"
 #include "musfile.h"
 
-void MusPage::braces ( wxDC *dc, int x, int y1, int y2, int cod, int pTaille)
+
+void MusPage::braces ( AxDC *dc, int x, int y1, int y2, int cod, int pTaille)
 //	int x, y1, y2;	x, 1e et 2e y de barre vert
 //	int cod; si ON, on fait 2e barre vert. mince en position  x
 {
@@ -43,33 +44,31 @@ void MusPage::braces ( wxDC *dc, int x, int y1, int y2, int cod, int pTaille)
 	}
 	//else if (hdc)
 	{
-		wxPen pen( *m_w->m_currentColour , 1, wxSOLID );
-		dc->SetPen( pen );
-		wxBrush brush( *m_w->m_currentColour , wxTRANSPARENT );
-		dc->SetBrush( brush );
+        dc->SetPen( m_r->m_currentColour , 1, wxSOLID );
+        dc->SetBrush( m_r->m_currentColour , wxTRANSPARENT );
 
-		ecart = m_w->DELTABAR;
+		ecart = m_r->DELTABAR;
 		centre = x - ecart;
 		
 		xg = centre - ecart*2;
 		xd = centre + ecart*2;
 		
-		yg = y1 + m_w->_interl[ pTaille ] * 2;
+		yg = y1 + m_r->_interl[ pTaille ] * 2;
 		yd = y1;
-		m_w->SwapY( &yg, &yd );
-		dc->DrawEllipticArc( m_w->ToZoom(xg), m_w->ToZoomY(yg), m_w->ToZoom(xd-xg), m_w->ToZoom(yg-yd),272, 360 );
+		m_r->SwapY( &yg, &yd );
+		dc->DrawEllipticArc( m_r->ToZoom(xg), m_r->ToZoomY(yg), m_r->ToZoom(xd-xg), m_r->ToZoom(yg-yd),272, 360 );
 	
 		yg = y2;
-		yd = y2 - m_w->_interl[ pTaille ] * 2;
-		m_w->SwapY( &yg, &yd );
-		dc->DrawEllipticArc( m_w->ToZoom(xg), m_w->ToZoomY(yg), m_w->ToZoom(xd-xg), m_w->ToZoom(yg-yd), 0, 88 );
+		yd = y2 - m_r->_interl[ pTaille ] * 2;
+		m_r->SwapY( &yg, &yd );
+		dc->DrawEllipticArc( m_r->ToZoom(xg), m_r->ToZoomY(yg), m_r->ToZoom(xd-xg), m_r->ToZoom(yg-yd), 0, 88 );
 		
-		dc->SetPen( wxNullPen );
-		dc->SetBrush( wxNullBrush );
+        dc->ResetPen();
+        dc->ResetBrush();
 
-		xg = x - (m_w->DELTABLANC[0] + 1);
+		xg = x - (m_r->DELTABLANC[0] + 1);
 		// determine le blanc entre barres grosse et mince
-		m_w->v_bline2( dc, y1, y2, xg, m_w->DELTANbBAR[0]);
+		m_r->v_bline2( dc, y1, y2, xg, m_r->DELTANbBAR[0]);
 	}
 	//if (cod)
 		//v_bline(dc, y1, y2, x, m_fh->param.EpBarreMesure);
@@ -78,7 +77,7 @@ void MusPage::braces ( wxDC *dc, int x, int y1, int y2, int cod, int pTaille)
 }
 
 
-void MusPage::DrawBarres( wxDC *dc )
+void MusPage::DrawBarres( AxDC *dc )
 {
 	wxASSERT_MSG( dc , "DC cannot be NULL");
 	if ( !Check() )
@@ -105,38 +104,38 @@ void MusPage::DrawBarres( wxDC *dc )
 		int decPortType_i;
 		staff =  &this->m_staves[i];
 		if (staff->portNbLine == 4) 
-			decPortType_i = m_w->_interl[staff->pTaille]*5;
+			decPortType_i = m_r->_interl[staff->pTaille]*5;
 		else
-			decPortType_i = m_w->_portee[staff->pTaille];
+			decPortType_i = m_r->_portee[staff->pTaille];
 		xx = staff->indent ? staff->indent*10 : 0;
 
 		if (staff->portNbLine == 1 || staff->portNbLine == 4)
-			portee = m_w->_portee[ staff->pTaille ]*2;
+			portee = m_r->_portee[ staff->pTaille ]*2;
 		else
-			portee = m_w->_portee[ staff->pTaille ] + ((staff->portNbLine-1) * m_w->_interl[staff->pTaille]);
+			portee = m_r->_portee[ staff->pTaille ] + ((staff->portNbLine-1) * m_r->_interl[staff->pTaille]);
 
 		if (staff->vertBarre == DEBUT)
-			b_gr = (int)(m_w->kPos[i].yp - decPortType_i);
+			b_gr = (int)(m_r->kPos[i].yp - decPortType_i);
 		// key[i].yp est position du curseur par default _portee (4 interl) au-dessus de ligne superieure
 		// decporttyp est la valeur de remplacement de _portee si on veut autre espace
 		else if (staff->vertBarre == DEB_FIN)
-		{	b_gr = (int)(m_w->kPos[i].yp - decPortType_i);
-			bb_gr = (int)(m_w->kPos[i].yp - portee);//_portee[staff->pTaille]*2;
+		{	b_gr = (int)(m_r->kPos[i].yp - decPortType_i);
+			bb_gr = (int)(m_r->kPos[i].yp - portee);//_portee[staff->pTaille]*2;
 			flLine = 1;
 		}
 		else if (staff->vertBarre == FIN)
-		{	bb_gr = (int)(m_w->kPos[i].yp - portee);//_portee[staff->pTaille]*2;
+		{	bb_gr = (int)(m_r->kPos[i].yp - portee);//_portee[staff->pTaille]*2;
 			flLine = 1;
 		}
 		if (staff->brace == DEBUT)
-			b_acc = (int)(m_w->kPos[i].yp - decPortType_i);
+			b_acc = (int)(m_r->kPos[i].yp - decPortType_i);
 		else if (staff->brace == DEB_FIN)
-		{	b_acc = (int)(m_w->kPos[i].yp - decPortType_i);
-			bb_acc = (int)(m_w->kPos[i].yp - portee);//_portee[staff->pTaille]*2;
+		{	b_acc = (int)(m_r->kPos[i].yp - decPortType_i);
+			bb_acc = (int)(m_r->kPos[i].yp - portee);//_portee[staff->pTaille]*2;
 			flBrace = 1;
 		}
 		else if (staff->brace == FIN)
-		{	bb_acc = (int)(m_w->kPos[i].yp - portee);//_portee[staff->pTaille]*2;
+		{	bb_acc = (int)(m_r->kPos[i].yp - portee);//_portee[staff->pTaille]*2;
 			flBrace = 1;
 		}
 
@@ -145,9 +144,9 @@ void MusPage::DrawBarres( wxDC *dc )
 			if (flLine)
 			{ 	
 				if (m_p->EpBarreMesure > 2)
-					m_w->v_bline2( dc ,b_gr,bb_gr,xx, m_p->EpBarreMesure);
+					m_r->v_bline2( dc ,b_gr,bb_gr,xx, m_p->EpBarreMesure);
 				else
-					m_w->v_bline( dc ,b_gr,bb_gr,xx, m_p->EpBarreMesure);
+					m_r->v_bline( dc ,b_gr,bb_gr,xx, m_p->EpBarreMesure);
 				flLine = 0;
 			}
 
@@ -155,7 +154,7 @@ void MusPage::DrawBarres( wxDC *dc )
 		//			 in (xx, drawRect.left, drawRect.right)))
 		if (flBrace)
 		{		if (staff->accol)
-					braces ( dc, xx- m_w->_pas/2 , b_acc, bb_acc, 2, staff->pTaille);
+					braces ( dc, xx- m_r->_pas/2 , b_acc, bb_acc, 2, staff->pTaille);
 				else
 					braces ( dc, xx,b_acc,bb_acc, 1, staff->pTaille);
 			flBrace = 0;
@@ -170,84 +169,82 @@ void MusPage::DrawBarres( wxDC *dc )
 
 
 
-void MusPage::accolade ( wxDC *dc, int x, int y1, int y2, int pTaille)
+void MusPage::accolade ( AxDC *dc, int x, int y1, int y2, int pTaille)
 {	
 	wxASSERT_MSG( dc , "DC cannot be NULL");
 	if ( !Check() )
 		return;
 
-	m_w->SwapY( &y1, &y2 );
+	m_r->SwapY( &y1, &y2 );
 	
 	int ymed, xdec, fact, nbrInt;
 //	static POINT *bcoord;
-	wxPoint *ptcoord;
+	AxPoint *ptcoord;
 
-	wxPen pen( *m_w->m_currentColour, 1, wxSOLID );
-	dc->SetPen( pen );
-	wxBrush brush( *m_w->m_currentColour, wxSOLID );
-	dc->SetBrush( brush );
+    dc->SetPen( m_r->m_currentColour , 1, wxSOLID );
+    dc->SetBrush( m_r->m_currentColour , wxSOLID );
 
-	x -= m_w->DELTABLANC[ pTaille ];  // distance entre barre et debut accolade
+	x -= m_r->DELTABLANC[ pTaille ];  // distance entre barre et debut accolade
 
 	nbrInt = PTCONTROL;
 
 	ymed = (y1 + y2) / 2;
-	fact = m_w->DELTANbBAR[ pTaille ]-1 + m_fh->param.EpBarreMesure;
-	xdec = m_w->ToZoom(fact);
+	fact = m_r->DELTANbBAR[ pTaille ]-1 + m_fh->param.EpBarreMesure;
+	xdec = m_r->ToZoom(fact);
 
-	m_w->point_[0].x = m_w->ToZoom(x);
-	m_w->point_[0].y = m_w->ToZoomY(y1);
-	m_w->point_[1].x = m_w->ToZoom(x - m_w->_pas3);
-	m_w->point_[1].y = m_w->point_[0].y - m_w->ToZoom( m_w->_interl[ pTaille ]*3);
-	m_w->point_[3].x = m_w->ToZoom(x - m_w->_pas*2);
-	m_w->point_[3].y = m_w->ToZoomY(ymed);
-	m_w->point_[2].x = m_w->ToZoom(x + m_w->_pas);
-	m_w->point_[2].y = m_w->point_[3].y + m_w->ToZoom( m_w->_interl[ pTaille ]);
+	m_r->point_[0].x = m_r->ToZoom(x);
+	m_r->point_[0].y = m_r->ToZoomY(y1);
+	m_r->point_[1].x = m_r->ToZoom(x - m_r->_pas3);
+	m_r->point_[1].y = m_r->point_[0].y - m_r->ToZoom( m_r->_interl[ pTaille ]*3);
+	m_r->point_[3].x = m_r->ToZoom(x - m_r->_pas*2);
+	m_r->point_[3].y = m_r->ToZoomY(ymed);
+	m_r->point_[2].x = m_r->ToZoom(x + m_r->_pas);
+	m_r->point_[2].y = m_r->point_[3].y + m_r->ToZoom( m_r->_interl[ pTaille ]);
 
-	ptcoord = &m_w->bcoord[0];
-	m_w->calcBez ( ptcoord, nbrInt );
+	ptcoord = &m_r->bcoord[0];
+	m_r->calcBez ( ptcoord, nbrInt );
 
-	m_w->pntswap (&m_w->point_[0], &m_w->point_[3]);
-	m_w->pntswap (&m_w->point_[1], &m_w->point_[2]);
+	m_r->pntswap (&m_r->point_[0], &m_r->point_[3]);
+	m_r->pntswap (&m_r->point_[1], &m_r->point_[2]);
 	
-	m_w->point_[1].x += xdec;
-	m_w->point_[2].x += xdec;
-	m_w->point_[1].y = m_w->point_[0].y + m_w->ToZoom( m_w->_interl[ pTaille ]*2);
+	m_r->point_[1].x += xdec;
+	m_r->point_[2].x += xdec;
+	m_r->point_[1].y = m_r->point_[0].y + m_r->ToZoom( m_r->_interl[ pTaille ]*2);
 
 
-	ptcoord = &m_w->bcoord[nbrInt+1];	// suite de la matrice: retour du bezier
-	m_w->calcBez ( ptcoord, nbrInt );
+	ptcoord = &m_r->bcoord[nbrInt+1];	// suite de la matrice: retour du bezier
+	m_r->calcBez ( ptcoord, nbrInt );
 
 	//SetPolyFillMode (hdc, WINDING);
-	dc->DrawPolygon (nbrInt*2,  m_w->bcoord, 0, 0, wxWINDING_RULE ); //(sizeof (bcoord)*2) / sizeof (POINT)); nbrInt*2+ 1;
+	dc->DrawPolygon (nbrInt*2,  m_r->bcoord, 0, 0, wxWINDING_RULE ); //(sizeof (bcoord)*2) / sizeof (POINT)); nbrInt*2+ 1;
 
 	// on produit l'image reflet vers le bas: 0 est identique 
-	m_w->point_[1].y = m_w->point_[0].y - m_w->ToZoom( m_w->_interl[ pTaille ]*2);
-	m_w->point_[3].y = m_w->ToZoomY(y2);
-	m_w->point_[2].y = m_w->point_[3].y + m_w->ToZoom( m_w->_interl[ pTaille ]*3);
+	m_r->point_[1].y = m_r->point_[0].y - m_r->ToZoom( m_r->_interl[ pTaille ]*2);
+	m_r->point_[3].y = m_r->ToZoomY(y2);
+	m_r->point_[2].y = m_r->point_[3].y + m_r->ToZoom( m_r->_interl[ pTaille ]*3);
 
-	ptcoord = &m_w->bcoord[0];
-	m_w->calcBez ( ptcoord, nbrInt );
+	ptcoord = &m_r->bcoord[0];
+	m_r->calcBez ( ptcoord, nbrInt );
 
-	m_w->pntswap (&m_w->point_[0], &m_w->point_[3]);
-	m_w->pntswap (&m_w->point_[1], &m_w->point_[2]);
+	m_r->pntswap (&m_r->point_[0], &m_r->point_[3]);
+	m_r->pntswap (&m_r->point_[1], &m_r->point_[2]);
 	
-	m_w->point_[1].x -= xdec;
-	m_w->point_[2].x -= xdec;
-	m_w->point_[2].y = m_w->point_[3].y - m_w->ToZoom( m_w->_interl[ pTaille ]);
+	m_r->point_[1].x -= xdec;
+	m_r->point_[2].x -= xdec;
+	m_r->point_[2].y = m_r->point_[3].y - m_r->ToZoom( m_r->_interl[ pTaille ]);
 
-	ptcoord = &m_w->bcoord[nbrInt+1];	// suite de la matrice: retour du bezier 
-	m_w->calcBez ( ptcoord, nbrInt );
+	ptcoord = &m_r->bcoord[nbrInt+1];	// suite de la matrice: retour du bezier 
+	m_r->calcBez ( ptcoord, nbrInt );
 
-	dc->DrawPolygon (nbrInt*2,  m_w->bcoord, 0, 0, wxWINDING_RULE  ); //(sizeof (bcoord)*2) / sizeof (POINT)); nbrInt*2+ 1;
+	dc->DrawPolygon (nbrInt*2,  m_r->bcoord, 0, 0, wxWINDING_RULE  ); //(sizeof (bcoord)*2) / sizeof (POINT)); nbrInt*2+ 1;
 	
-	dc->SetBrush( wxNullBrush );
-	dc->SetPen( wxNullPen );
+    dc->ResetPen();
+    dc->ResetBrush();
 
 	return;
 }
 
-void MusPage::bardroit ( wxDC *dc, int x, int y1, int y2, int pTaille)
+void MusPage::bardroit ( AxDC *dc, int x, int y1, int y2, int pTaille)
 {
 	wxASSERT_MSG( dc , "DC cannot be NULL");
 	if ( !Check() )
@@ -256,14 +253,14 @@ void MusPage::bardroit ( wxDC *dc, int x, int y1, int y2, int pTaille)
 	//if (!modMetafile || ( y2 < drawRect.top && y1 > drawRect.bottom && 
 	//				 in (x, drawRect.left, drawRect.right)))
 	{	 	
-		m_w->v_bline( dc, y1, y2, x, m_p->EpBarreMesure);
+		m_r->v_bline( dc, y1, y2, x, m_p->EpBarreMesure);
 		braces ( dc, x, y1, y2, 1, pTaille );
 	}
 	return;
 }
 
 
-void MusPage::bar_mes ( wxDC *dc, int x, int cod, int porteeAutonome, MusStaff *pportee)
+void MusPage::bar_mes ( AxDC *dc, int x, int cod, int porteeAutonome, MusStaff *pportee)
 // cod: 0 = barre d'epaisseur 1 point; 1 = barre d'ep. "epLignesVer"
 // porteeAutonome: indique s'il faut des barres privees sur chaque portee plutôt que traversantes
 {
@@ -310,32 +307,32 @@ void MusPage::bar_mes ( wxDC *dc, int x, int cod, int porteeAutonome, MusStaff *
 
 		int decPortType_i;
 		if (st_i->portNbLine == 4) 
-			decPortType_i = m_w->_interl[st_i->pTaille]*5;
+			decPortType_i = m_r->_interl[st_i->pTaille]*5;
 		else
-			decPortType_i = m_w->_portee[st_i->pTaille];
+			decPortType_i = m_r->_portee[st_i->pTaille];
 		
 		// on calcule l'epaisseur de la portee courante
 		if (st_i->portNbLine == 1 || st_i->portNbLine == 4)
-			portee = m_w->_portee[ st_i->pTaille ]*2;
+			portee = m_r->_portee[ st_i->pTaille ]*2;
 		else
-			portee = m_w->_portee[ st_i->pTaille ] + ((st_i->portNbLine-1) * m_w->_interl[st_i->pTaille]);
+			portee = m_r->_portee[ st_i->pTaille ] + ((st_i->portNbLine-1) * m_r->_interl[st_i->pTaille]);
 		// on place les marqueurs DEB et FIN des barres
 		if (porteeAutonome || st_i->brace == DEB_FIN || st_i->vertBarre == DEB_FIN
 			|| !st_i->brace || !pportee->noGrp)
 		{	if (!accDeb)
-			{	b = m_w->kPos[i].yp - decPortType_i;
-				bb = m_w->kPos[i].yp - portee;//_portee[st_ipTaille]*2;
+			{	b = m_r->kPos[i].yp - decPortType_i;
+				bb = m_r->kPos[i].yp - portee;//_portee[st_ipTaille]*2;
 				flLine = 1;
 			}
 		}
 		else if (st_i->brace == DEBUT || st_i->vertBarre == DEBUT)
-		{	b = m_w->kPos[i].yp - decPortType_i;
-			bb = m_w->kPos[i].yp - portee;//_portee[st_ipTaille]*2;
+		{	b = m_r->kPos[i].yp - decPortType_i;
+			bb = m_r->kPos[i].yp - portee;//_portee[st_ipTaille]*2;
 			if (st_i->brace)
 				accDeb = ON;
 		}
 		else if (st_i->brace == FIN || st_i->vertBarre == FIN)
-		{	bb = m_w->kPos[i].yp - portee;//_portee[st_ipTaille]*2;
+		{	bb = m_r->kPos[i].yp - portee;//_portee[st_ipTaille]*2;
 			flLine = 1;
 			accDeb=0;
 		}
@@ -347,9 +344,9 @@ void MusPage::bar_mes ( wxDC *dc, int x, int cod, int porteeAutonome, MusStaff *
 			//if (!modMetafile || ( bb < drawRect.top && b > drawRect.bottom))
 			{	
 				if (cod > 2)	// barres plus epaisses qu'un 1/2 mm
-					m_w->v_bline2( dc, (int)b, (int)bb, (int)a, cod); 
+					m_r->v_bline2( dc, (int)b, (int)bb, (int)a, cod); 
 				else
-					m_w->v_bline( dc, (int)b, (int)bb, (int)a, cod);
+					m_r->v_bline( dc, (int)b, (int)bb, (int)a, cod);
 			}
 			flLine = 0;
 		}
@@ -360,7 +357,7 @@ void MusPage::bar_mes ( wxDC *dc, int x, int cod, int porteeAutonome, MusStaff *
 }
 
 
-void MusPage::bigbarre( wxDC *dc, int x, char code, int porteeAutonome, MusStaff *pportee)
+void MusPage::bigbarre( AxDC *dc, int x, char code, int porteeAutonome, MusStaff *pportee)
 {
 	wxASSERT_MSG( dc , "DC cannot be NULL");
 	if ( !Check() )
@@ -387,19 +384,19 @@ void MusPage::bigbarre( wxDC *dc, int x, char code, int porteeAutonome, MusStaff
 		}
 		if (code == 0)
 		{	
-			x2 = st->yrel- m_w->_portee[ pportee->pTaille]*2;
+			x2 = st->yrel- m_r->_portee[ pportee->pTaille]*2;
 			if (bardroite)
-				bardroit ( dc, x, pportee->yrel- m_w->_portee[ pportee->pTaille ], x2, pportee->pTaille);
+				bardroit ( dc, x, pportee->yrel- m_r->_portee[ pportee->pTaille ], x2, pportee->pTaille);
 			else 
-				accolade ( dc, x, pportee->yrel - m_w->_portee[pportee->pTaille ], x2, pportee->pTaille);
+				accolade ( dc, x, pportee->yrel - m_r->_portee[pportee->pTaille ], x2, pportee->pTaille);
 		}
 		return;
 	}
 	x1 = x2 = 0;
 
 
-	x1 = x - m_w->DELTABLANC[0] - m_w->DELTANbBAR[0] - m_p->EpBarreMesure;
-	x2 = x + m_w->DELTABLANC[0] + m_w->DELTANbBAR[0] - m_p->EpBarreMesure;
+	x1 = x - m_r->DELTABLANC[0] - m_r->DELTANbBAR[0] - m_p->EpBarreMesure;
+	x2 = x + m_r->DELTABLANC[0] + m_r->DELTANbBAR[0] - m_p->EpBarreMesure;
 
  /* I, barre d'entree..., equivalente a barre de reprise ouvrante */
 
@@ -409,12 +406,12 @@ void MusPage::bigbarre( wxDC *dc, int x, char code, int porteeAutonome, MusStaff
 
 	/* une grosse barre */
 	if (code == 'E' || code == 'R' || code == 'F' || code == 'O' || code == 'I')
-	{	bar_mes ( dc, x, m_w->DELTANbBAR[0], porteeAutonome, pportee);
+	{	bar_mes ( dc, x, m_r->DELTANbBAR[0], porteeAutonome, pportee);
 
 	}
 	if (code == 'D')	/* deux barres minces */
 	{	bar_mes ( dc, x,  m_p->EpBarreMesure, porteeAutonome, pportee);
-		bar_mes ( dc, x1 + m_w->DELTANbBAR[0],  m_p->EpBarreMesure, porteeAutonome, pportee);
+		bar_mes ( dc, x1 + m_r->DELTANbBAR[0],  m_p->EpBarreMesure, porteeAutonome, pportee);
 	}
 	if (code == 'R' || code == 'E' || code == 'F')
 		bar_mes ( dc, x1,  m_p->EpBarreMesure, porteeAutonome, pportee);
@@ -425,16 +422,16 @@ void MusPage::bigbarre( wxDC *dc, int x, char code, int porteeAutonome, MusStaff
 		if (code == 'O')
 			x1 = 0;
 		if (x1)
-			x1 -= (m_w->_pas + (m_p->EpBarreMesure/2));
+			x1 -= (m_r->_pas + (m_p->EpBarreMesure/2));
 		if (x2)
-			x2 += m_w->_pas;
+			x2 += m_r->_pas;
 		//putDeuxpoints ( dc, x1 , x2);
 	}
 
 }
 
 
-void MusPage::barMesPartielle ( wxDC *dc, int x, MusStaff *pportee)
+void MusPage::barMesPartielle ( AxDC *dc, int x, MusStaff *pportee)
 {
 	wxASSERT_MSG( dc , "DC cannot be NULL");
 	if ( !Check() )
@@ -445,13 +442,13 @@ void MusPage::barMesPartielle ( wxDC *dc, int x, MusStaff *pportee)
 	MusStaff *next = this->GetNext( false );	
 	if ( next )
 	{	
-		b = pportee->yrel - m_w->_portee[ pportee->pTaille ]*2;
-		bb = next->yrel - m_w->_portee[ next->pTaille];
+		b = pportee->yrel - m_r->_portee[ pportee->pTaille ]*2;
+		bb = next->yrel - m_r->_portee[ next->pTaille];
 
 		if (m_p->EpBarreMesure > 2)	// barres plus epaisses qu'un 1/2 mm
-			m_w->v_bline2 ( dc, b, bb, x,  m_p->EpBarreMesure);
+			m_r->v_bline2 ( dc, b, bb, x,  m_p->EpBarreMesure);
 		else
-			m_w->v_bline ( dc, b, bb, x,  m_p->EpBarreMesure);
+			m_r->v_bline ( dc, b, bb, x,  m_p->EpBarreMesure);
 		
 	}
 

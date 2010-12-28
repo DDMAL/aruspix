@@ -27,8 +27,9 @@
 #include "musfile.h"
 
 // Reading is now done with libxml2
-#include <libxml/parser.h>
-#include <libxml/tree.h>
+typedef struct _xmlNode xmlNode;
+//#include <libxml/parser.h>
+//#include <libxml/tree.h>
 
 
 

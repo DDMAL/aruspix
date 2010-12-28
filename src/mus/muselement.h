@@ -16,6 +16,8 @@
     #include "wx/wx.h"
 #endif
 
+class AxDC;
+
 #include "musobject.h"
 #include "musdef.h"
 
@@ -36,7 +38,7 @@ public:
     virtual ~MusElement();		
 
 	// common method
-	void ClearElement( wxDC *dc, MusStaff *staff );
+	void ClearElement( AxDC *dc, MusStaff *staff );
 	int  filtrcod( int codElement, int *oct );
 	bool IsNote() { return ( TYPE == NOTE ); }
 	bool IsSymbol() { return ( TYPE == SYMB ); }
@@ -50,7 +52,7 @@ public:
 	virtual void ChangeColoration( MusStaff *staff = NULL ) {};
 	virtual void ChangeStem( MusStaff *staff = NULL ) {};
 	virtual void SetLigature( MusStaff *staff = NULL ) {};
-	virtual void Draw( wxDC *dc, MusStaff *staff ) {};
+	virtual void Draw( AxDC *dc, MusStaff *staff ) {};
 
       
 public:

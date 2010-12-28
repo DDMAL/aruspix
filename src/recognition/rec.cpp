@@ -689,7 +689,7 @@ void RecEnv::UpdateViews( int flags )
         m_musViewPtr->SetFile( m_recFilePtr->GetMusFile() );
         //m_musViewPtr->SetEnv( this );
         m_musViewPtr->SetToolPanel( m_toolpanel );
-        m_musViewPtr->Goto( 1 );
+        m_musViewPtr->LoadPage( 1 );
         m_musControlPtr->SyncZoom();  
     }
     else if ( m_recFilePtr->IsPreprocessed() )
@@ -1367,7 +1367,7 @@ void RecEnv::OnStaffCorrespondence( wxCommandEvent &event )
     Methode de travail !!!!!!!!! Pas DU TOUT plombee !!!!
   */ 
   
-#include "mus/mussvg.h"
+//#include "mus/mussvg.h"
 
 /*
 void RecEnv::OnExportImage( wxCommandEvent &event )
@@ -1404,12 +1404,14 @@ void RecEnv::OnExportImage( wxCommandEvent &event )
         
     wxGetApp().m_lastDirTIFF_out = wxPathOnly( filename );
     
+    /*
     MusSVGFileDC svgDC (filename, m_musViewPtr->ToZoom( m_musViewPtr->pageFormatHor + 30 )  ,
         m_musViewPtr->ToZoom( m_musViewPtr->pageFormatVer + 10 )) ;
 	svgDC.SetTextForeground( *wxBLACK );
 	//dc.SetMapMode( wxMM_TEXT );
 	svgDC.SetAxisOrientation( true, false );
    m_musViewPtr->m_page->DrawPage( &svgDC, false );
+   */
 }
   
 

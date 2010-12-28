@@ -14,7 +14,9 @@ using std::min;
 using std::max;
 
 // For compilers that support precompilation, includes "wx/wx.h".
-#include "wx/wxprec.h"
+#include "wx/wx.h"
+
+#include <libxml/tree.h>
 
 #ifdef __BORLANDC__
     #pragma hdrstop
@@ -25,7 +27,6 @@ using std::max;
 #include "musiomei.h"
 
 #include "app/axapp.h"
-
 
 //----------------------------------------------------------------------------
 // MusMeiOutput

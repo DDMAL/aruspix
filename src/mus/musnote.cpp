@@ -21,7 +21,7 @@ using std::max;
 #endif
 
 #include "musnote.h"
-#include "muswindow.h"
+#include "musrc.h"
 #include "musstaff.h"
 #include "mussymbol.h"
 #include "muspage.h"
@@ -203,8 +203,8 @@ void MusNote::SetPitch( int code, int oct )
 	this->oct = oct;
 	this->code = code;
 
-	if (m_w)
-		m_w->Refresh();
+	if (m_r)
+		m_r->DoRefresh();
 }
 
 void MusNote::SetValue( int value, MusStaff *staff, int vflag )
@@ -241,8 +241,8 @@ void MusNote::SetValue( int value, MusStaff *staff, int vflag )
 	if ( ( this->sil == _SIL ) || (( value > LG ) && ( value < BL )) )
 		this->q_auto = true;
 	
-	if (m_w)
-		m_w->Refresh();
+	if (m_r)
+		m_r->DoRefresh();
 }
 
 
@@ -262,8 +262,8 @@ void MusNote::ChangeColoration( MusStaff *staff )
 	default : this->oblique = !this->oblique;
 	}
 	
-	if (m_w)
-		m_w->Refresh();
+	if (m_r)
+		m_r->DoRefresh();
 
 }
 
@@ -275,8 +275,8 @@ void MusNote::SetLigature( MusStaff *staff )
 	this->q_auto = true;
 	this->ligat = true;
 	
-	if (m_w)
-		m_w->Refresh();
+	if (m_r)
+		m_r->DoRefresh();
 }
 
 void MusNote::ChangeStem( MusStaff *staff )
@@ -286,37 +286,37 @@ void MusNote::ChangeStem( MusStaff *staff )
 		
 	this->q_auto = !this->q_auto;
 	
-	if (m_w)
-		m_w->Refresh();
+	if (m_r)
+		m_r->DoRefresh();
 }
 
 
-void MusNote::Draw( wxDC *dc, MusStaff *staff)
+void MusNote::Draw( AxDC *dc, MusStaff *staff)
 // unsigned touche;	 code relecture input (1) ou coord. du decalage (0) 
 {
 	wxASSERT_MSG( dc , "DC cannot be NULL");
-	wxASSERT_MSG( m_w, "MusWindow cannot be NULL ");
+	wxASSERT_MSG( m_r, "MusRC cannot be NULL ");
 	if ( !Check() )
 		return;	
 
 	int oct = this->oct - 4;
 
-	if (!m_w->efface && (this == m_w->m_currentElement))
-		m_w->m_currentColour = wxRED;
-	else if (!m_w->efface && (this->m_cmp_flag == CMP_MATCH))
-		m_w->m_currentColour = wxLIGHT_GREY;
-	else if (!m_w->efface && (this->m_cmp_flag == CMP_DEL))
-		m_w->m_currentColour = wxGREEN;
-	else if (!m_w->efface && (this->m_cmp_flag == CMP_SUBST))
-		m_w->m_currentColour = wxBLUE;	
+	if (!m_r->m_eraseElement && (this == m_r->m_currentElement))
+		m_r->m_currentColour = AxRED;
+	else if (!m_r->m_eraseElement && (this->m_cmp_flag == CMP_MATCH))
+		m_r->m_currentColour = AxLIGHT_GREY;
+	else if (!m_r->m_eraseElement && (this->m_cmp_flag == CMP_DEL))
+		m_r->m_currentColour = AxGREEN;
+	else if (!m_r->m_eraseElement && (this->m_cmp_flag == CMP_SUBST))
+		m_r->m_currentColour = AxBLUE;	
 	
 	// To Tristan
 	// this is call every single time a note is drawn, so it has to be optimized
-	// First thing : don't do the loop if efface or !lyricMode
+	// First thing : don't do the loop if m_eraseElement or !lyricMode
 	// Second thing : break as soon as you get the element
 	// Third thing : put the access stuff into a method (used below as well)
-	if ( !m_w->efface && m_w->m_lyricMode && BelongsToTheNote( m_w->m_currentElement ) )
-		m_w->m_currentColour = wxCYAN;
+	if ( !m_r->m_eraseElement && m_r->m_lyricMode && BelongsToTheNote( m_r->m_currentElement ) )
+		m_r->m_currentColour = AxCYAN;
 		
 	if ( this->sil == _NOT)
 	{	
@@ -342,66 +342,66 @@ void MusNote::Draw( wxDC *dc, MusStaff *staff)
         staff->beam( dc );
     }
     
-
-		wxPen pen( *m_w->m_currentColour, m_p->EpLignesPortee, wxSOLID );
-		dc->SetPen( pen );
-		wxBrush brush( *m_w->m_currentColour , wxSOLID );
-		dc->SetBrush( brush );
+    /* 
+    wxPen pen( *m_r->m_currentColour, m_p->EpLignesPortee, wxSOLID );
+    dc->SetPen( pen );
+    wxBrush brush( *m_r->m_currentColour , wxSOLID );
+    dc->SetBrush( brush );
 
     
-    /* liaison, testcode 
+    liaison, testcode 
 	int nbrInt;
-	wxPoint *ptcoord;
+	AxPoint *ptcoord;
 	nbrInt = PTCONTROL;
     
-    m_w->point_[0].x = m_w->ToZoom(xrel);
-    m_w->point_[0].y =  m_w->ToZoomY(staff->yrel);
-    m_w->point_[1].x =  m_w->ToZoom(xrel + 100);
-    m_w->point_[1].y = m_w->ToZoomY(staff->yrel + 50);
-    m_w->point_[2].x =  m_w->ToZoom(xrel + 300);
-    m_w->point_[2].y = m_w->ToZoomY(staff->yrel + 50);
-    m_w->point_[3].x =  m_w->ToZoom(xrel + 400);
-    m_w->point_[3].y = m_w->ToZoomY(staff->yrel);
+    m_r->point_[0].x = m_r->ToZoom(xrel);
+    m_r->point_[0].y =  m_r->ToZoomY(staff->yrel);
+    m_r->point_[1].x =  m_r->ToZoom(xrel + 100);
+    m_r->point_[1].y = m_r->ToZoomY(staff->yrel + 50);
+    m_r->point_[2].x =  m_r->ToZoom(xrel + 300);
+    m_r->point_[2].y = m_r->ToZoomY(staff->yrel + 50);
+    m_r->point_[3].x =  m_r->ToZoom(xrel + 400);
+    m_r->point_[3].y = m_r->ToZoomY(staff->yrel);
     //dc->DrawSpline( 4, point );
     
-	ptcoord = &m_w->bcoord[0];
-	m_w->calcBez ( ptcoord, nbrInt );
+	ptcoord = &m_r->bcoord[0];
+	m_r->calcBez ( ptcoord, nbrInt );
 
-	m_w->pntswap (&m_w->point_[0], &m_w->point_[3]);
-	m_w->pntswap (&m_w->point_[1], &m_w->point_[2]);
+	m_r->pntswap (&m_r->point_[0], &m_r->point_[3]);
+	m_r->pntswap (&m_r->point_[1], &m_r->point_[2]);
 	
-	m_w->point_[1].y +=  m_w->ToZoom(5);
-	m_w->point_[2].y +=  m_w->ToZoom(5);
+	m_r->point_[1].y +=  m_r->ToZoom(5);
+	m_r->point_[2].y +=  m_r->ToZoom(5);
 
-	ptcoord = &m_w->bcoord[nbrInt+1];	// suite de la matrice: retour du bezier
-	m_w->calcBez ( ptcoord, nbrInt );
+	ptcoord = &m_r->bcoord[nbrInt+1];	// suite de la matrice: retour du bezier
+	m_r->calcBez ( ptcoord, nbrInt );
 
 	//SetPolyFillMode (hdc, WINDING);
-	dc->DrawPolygon (nbrInt*2,  m_w->bcoord, 0, 0, wxWINDING_RULE ); //(sizeof (bcoord)*2) / sizeof (POINT)); nbrInt*2+ 1;
-    */
+	dc->DrawPolygon (nbrInt*2,  m_r->bcoord, 0, 0, wxWINDING_RULE ); //(sizeof (bcoord)*2) / sizeof (POINT)); nbrInt*2+ 1;
     
-		dc->SetPen( wxNullPen );
-		dc->SetBrush( wxNullBrush );
+    dc->SetPen( wxNullPen );
+    dc->SetBrush( wxNullBrush );
+    */
 	
 	for ( int i = 0; i < (int)m_lyrics.GetCount(); i++ ){
 		MusSymbol *lyric = &m_lyrics[i];
 		
 		if ( lyric != NULL )
 		{
-			if (!m_w->efface)		//erase
+			if (!m_r->m_eraseElement)		//erase
 			{
-				if ( lyric == m_w->m_currentElement )
-					m_w->m_currentColour = wxRED;
-				else if ( (this == m_w->m_currentElement) || BelongsToTheNote( m_w->m_currentElement ) )
-					m_w->m_currentColour = wxCYAN;
+				if ( lyric == m_r->m_currentElement )
+					m_r->m_currentColour = AxRED;
+				else if ( (this == m_r->m_currentElement) || BelongsToTheNote( m_r->m_currentElement ) )
+					m_r->m_currentColour = AxCYAN;
 			}	
-			m_w->putlyric(dc, lyric->xrel + staff->xrel, staff->yrel + lyric->dec_y , 
-						  lyric->m_debord_str, staff->pTaille, ( lyric == m_w->m_currentElement && m_w->m_inputLyric ) );
+			m_r->putlyric(dc, lyric->xrel + staff->xrel, staff->yrel + lyric->dec_y , 
+						  lyric->m_debord_str, staff->pTaille, ( lyric == m_r->m_currentElement && m_r->m_inputLyric ) );
 		}		
 	}
 	
-	if ( !m_w->efface )
-		m_w->m_currentColour = &m_w->m_black;
+	if ( !m_r->m_eraseElement )
+		m_r->m_currentColour = m_r->m_black;
 	
 	return;
 }
@@ -414,7 +414,7 @@ void MusNote::Draw( wxDC *dc, MusStaff *staff)
 // queue: le ptr *testchord extern peut garder le x et l'y.
 
 
-void MusNote::note ( wxDC *dc, MusStaff *staff )
+void MusNote::note ( AxDC *dc, MusStaff *staff )
 {
 	int pTaille = staff->pTaille;
 
@@ -426,7 +426,7 @@ void MusNote::note ( wxDC *dc, MusStaff *staff )
 	int rayon, milieu = 0;
 
 	int xn = this->xrel, xl = this->xrel;
-	int bby = staff->yrel - m_w->_portee[pTaille];  // bby= y sommet portee
+	int bby = staff->yrel - m_r->_portee[pTaille];  // bby= y sommet portee
 	int ynn = this->dec_y + staff->yrel; 
 	static int ynn_chrd;
 
@@ -436,12 +436,12 @@ void MusNote::note ( wxDC *dc, MusStaff *staff )
 	queueCentre = 0;
 
 
-	rayon = m_w->rayonNote[pTaille][this->dimin];
+	rayon = m_r->rayonNote[pTaille][this->dimin];
 
 	if (val > RD || (val == RD && staff->notAnc))	// annuler provisoirement la modif. des lignes addit.
-		ledge = m_w->ledgerLine[pTaille][this->dimin];
+		ledge = m_r->ledgerLine[pTaille][this->dimin];
 	else
-	{	ledge= m_w->ledgerLine[pTaille][2];
+	{	ledge= m_r->ledgerLine[pTaille][2];
 		rayon += rayon/3;
 	}
 
@@ -477,7 +477,7 @@ void MusNote::note ( wxDC *dc, MusStaff *staff )
 		else
 			fontNo = sRONDE_B;
 
-		m_w->putfont( dc,x1, ynn, fontNo, staff, this->dimin, NOTE);
+		m_r->putfont( dc,x1, ynn, fontNo, staff, this->dimin, NOTE);
 		decval = ynn;
 	}
 	else
@@ -489,13 +489,13 @@ void MusNote::note ( wxDC *dc, MusStaff *staff )
 		else
 			fontNo = sNOIRE;
 
-		m_w->putfont( dc,x1, ynn, fontNo, staff, this->dimin, NOTE);
+		m_r->putfont( dc,x1, ynn, fontNo, staff, this->dimin, NOTE);
 
-		milieu = bby - m_w->_interl[pTaille]*2;
+		milieu = bby - m_r->_interl[pTaille]*2;
 
 // test ligne mediane pour direction queues: notation mesuree, milieu queue haut
 		if (staff->notAnc)
-			milieu +=  m_w->_espace[pTaille];
+			milieu +=  m_r->_espace[pTaille];
 
 		if (this->chord) /*** && this == testchord)***/
 			ynn_chrd = ynn;
@@ -519,8 +519,8 @@ void MusNote::note ( wxDC *dc, MusStaff *staff )
 				up = (up == ON) ? OFF : ON;
 				
 
-			espac7 = this->dimin ? ( m_w->_espace[pTaille]*5) : ( m_w->_espace[pTaille]*7);
-			vertical = this->dimin ?  m_w->_espace[pTaille] :  m_w->_interl[pTaille];
+			espac7 = this->dimin ? ( m_r->_espace[pTaille]*5) : ( m_r->_espace[pTaille]*7);
+			vertical = this->dimin ?  m_r->_espace[pTaille] :  m_r->_interl[pTaille];
 			decval = vertical * (valdec = formval-CR);
 			
 			/***if (this->existDebord)	// queue longueur manuelle
@@ -559,18 +559,18 @@ void MusNote::note ( wxDC *dc, MusStaff *staff )
 				if (formval > CR && !queueCentre)
 				// Le 24 Septembre 1993. Correction esthetique pour rapprocher tailles 
 				//   des CR et DC (longeur de queues trop inegales).
-					y2 -= m_w->_espace[pTaille];
+					y2 -= m_r->_espace[pTaille];
 				decval = y2;
 				if (staff->notAnc)
-					m_w->v_bline ( dc,y2,(int)(ynn + m_w->_espace[pTaille]),x2, m_p->EpQueueNote );//queue en descendant
+					m_r->v_bline ( dc,y2,(int)(ynn + m_r->_espace[pTaille]),x2, m_p->EpQueueNote );//queue en descendant
 				else
-					m_w->v_bline ( dc,y2,(int)(ynn+ m_w->v4_unit[pTaille]),x2 - (m_p->EpQueueNote / 2), m_p->EpQueueNote );//queue en descendant
+					m_r->v_bline ( dc,y2,(int)(ynn+ m_r->v4_unit[pTaille]),x2 - (m_p->EpQueueNote / 2), m_p->EpQueueNote );//queue en descendant
 				if (formval > NR)
 				{
                     y2 += m_p->EpQueueNote / 2; // ENZO correction empirique...
-					m_w->putfont( dc,x2,y2,sCROCHET_H, staff, this->dimin, NOTE);
+					m_r->putfont( dc,x2,y2,sCROCHET_H, staff, this->dimin, NOTE);
 					for (i=0; i < valdec; i++)
-						m_w->putfont( dc,x2,y2-=vertical,sCROCHET_H, staff, this->dimin, NOTE);
+						m_r->putfont( dc,x2,y2-=vertical,sCROCHET_H, staff, this->dimin, NOTE);
 				}
 			}
 			else
@@ -579,26 +579,26 @@ void MusNote::note ( wxDC *dc, MusStaff *staff )
 				if (formval > CR && !queueCentre)
 				// Le 24 Septembre 1993. Correction esthetique pour rapprocher tailles 
 				//   des CR et DC (longeur de queues trop inegales).
-					y2 += m_w->_espace[pTaille];
+					y2 += m_r->_espace[pTaille];
 				decval = y2;
 
 				if (staff->notAnc)
-					m_w->v_bline ( dc,y2,ynn- m_w->_espace[pTaille],x2 - (m_p->EpQueueNote / 2), m_p->EpQueueNote );//queue en descendant
+					m_r->v_bline ( dc,y2,ynn- m_r->_espace[pTaille],x2 - (m_p->EpQueueNote / 2), m_p->EpQueueNote );//queue en descendant
 				else
-					m_w->v_bline ( dc,y2,(int)(ynn- m_w->v4_unit[pTaille]),x2 - (m_p->EpQueueNote / 2), m_p->EpQueueNote );	// queue en montant
+					m_r->v_bline ( dc,y2,(int)(ynn- m_r->v4_unit[pTaille]),x2 - (m_p->EpQueueNote / 2), m_p->EpQueueNote );	// queue en montant
 
 				// ENZ
 				// decalage du crochet vers la gauche
 				// changement dans la fonte Leipzig 4.3 à cause de problemes d'affichage
 				// en deçà de 0 avec la notation ancienne
 				// dans la fonte les crochets ont ete decales de 164 vers la droite
-				int cr_offset = m_w->rayonNote[pTaille][this->dimin]  + (m_p->EpQueueNote / 2);
+				int cr_offset = m_r->rayonNote[pTaille][this->dimin]  + (m_p->EpQueueNote / 2);
 				if (formval > NR)
 				{
                     y2 -= m_p->EpQueueNote / 2; // ENZO correction empirique...
-					m_w->putfont( dc,x2 - cr_offset,y2,sCROCHET_B , staff, this->dimin, NOTE);
+					m_r->putfont( dc,x2 - cr_offset,y2,sCROCHET_B , staff, this->dimin, NOTE);
 					for (i=0; i < valdec; i++)
-						m_w->putfont( dc,x2  - cr_offset,y2+=vertical,sCROCHET_B, staff, 
+						m_r->putfont( dc,x2  - cr_offset,y2+=vertical,sCROCHET_B, staff, 
 									 this->dimin, NOTE);
 				}
 			}
@@ -621,9 +621,9 @@ void MusNote::note ( wxDC *dc, MusStaff *staff )
 		if (this->chord)
 		{}/***x1 = x_acc_chrd (this,0);***/
 		else
-			x1 -= m_w->largAlter[pTaille][this->dimin];
+			x1 -= m_r->largAlter[pTaille][this->dimin];
 		MusSymbol symb;
-		symb.Init( m_w );
+		symb.Init( m_r );
 		symb.flag = ALTER;
 		symb.calte = this->acc;
 		symb.dess_symb ( dc, x1, b, ALTER, this->acc, staff);
@@ -641,9 +641,9 @@ void MusNote::note ( wxDC *dc, MusStaff *staff )
 	}
 	else
 	{	if (this->val < BL || (this->val > CR && !this->rel && up))
-			x2 = xn + m_w->_pas*7/2;
+			x2 = xn + m_r->_pas*7/2;
 		else
-			x2 = xn + m_w->_pas*5/2;
+			x2 = xn + m_r->_pas*5/2;
 
 		if (this->lat)
 				x2 += rayon*2;
@@ -697,10 +697,10 @@ void MusNote::note ( wxDC *dc, MusStaff *staff )
 */
 	
 	//temp debug code
-//	m_w->m_currentColour = wxCYAN;
-//	m_w->rect_plein2(dc, this->xrel - 3, ynn - 3, this->xrel + 3, ynn + 3);
+//	m_r->m_currentColour = wxCYAN;
+//	m_r->rect_plein2(dc, this->xrel - 3, ynn - 3, this->xrel + 3, ynn + 3);
 //	printf("\nxrel: %d, ynn: %d\n\n", this->xrel, ynn);
-//	m_w->m_currentColour = wxBLACK;
+//	m_r->m_currentColour = wxBLACK;
 	//temp debug code
 	
 
@@ -708,43 +708,41 @@ void MusNote::note ( wxDC *dc, MusStaff *staff )
 }
 
 // copying this into MusNeume, should consider refactoring
-void MusNote::leg_line( wxDC *dc, int y_n, int y_p, int xn, unsigned int smaller, int pTaille)
+void MusNote::leg_line( AxDC *dc, int y_n, int y_p, int xn, unsigned int smaller, int pTaille)
 {
-	int yn, ynt, yh, yb, test, v_decal = m_w->_interl[pTaille];
+	int yn, ynt, yh, yb, test, v_decal = m_r->_interl[pTaille];
 	int dist, xng, xnd;
 	register int i;
 
 
-	yh = y_p + m_w->_espace[pTaille]; yb = y_p- m_w->_portee[pTaille]- m_w->_espace[pTaille];
+	yh = y_p + m_r->_espace[pTaille]; yb = y_p- m_r->_portee[pTaille]- m_r->_espace[pTaille];
 
 	if (!in(y_n,yh,yb))                           // note hors-portee?
 	{
 		xng = xn - smaller;
 		xnd = xn + smaller;
 
-		dist = ((y_n > yh) ? (y_n - y_p) : y_p - m_w->_portee[pTaille] - y_n);
-  		ynt = ((dist % m_w->_interl[pTaille] > 0) ? (dist - m_w->_espace[pTaille]) : dist);
-		test = ynt/ m_w->_interl[pTaille];
+		dist = ((y_n > yh) ? (y_n - y_p) : y_p - m_r->_portee[pTaille] - y_n);
+  		ynt = ((dist % m_r->_interl[pTaille] > 0) ? (dist - m_r->_espace[pTaille]) : dist);
+		test = ynt/ m_r->_interl[pTaille];
 		if (y_n > yh)
 		{	yn = ynt + y_p;
-			v_decal = - m_w->_interl[pTaille];
+			v_decal = - m_r->_interl[pTaille];
 		}
 		else
-			yn = y_p - m_w->_portee[pTaille] - ynt;
+			yn = y_p - m_r->_portee[pTaille] - ynt;
 
 		//hPen = (HPEN)SelectObject (hdc, CreatePen (PS_SOLID, _param.EpLignesPORTEE+1, workColor2));
 		//xng = toZoom(xng);
 		//xnd = toZoom(xnd);
 
-		wxPen pen( *m_w->m_currentColour, m_w->ToZoom( m_p->EpLignesPortee ), wxSOLID );
-		dc->SetPen( pen );
-		wxBrush brush( *m_w->m_currentColour , wxTRANSPARENT );
-		dc->SetBrush( brush );
+        dc->SetPen( m_r->m_currentColour, m_r->ToZoom( m_p->EpLignesPortee ), wxSOLID );
+        dc->SetBrush(m_r->m_currentColour , wxTRANSPARENT );
 
 		for (i = 0; i < test; i++)
 		{
-			dc->DrawLine( m_w->ToZoom(xng) , m_w->ToZoomY ( yn ) , m_w->ToZoom(xnd) , m_w->ToZoomY ( yn ) );
-			//m_w->h_line ( dc, xng, xnd, yn, m_w->_param.EpLignesPORTEE);
+			dc->DrawLine( m_r->ToZoom(xng) , m_r->ToZoomY ( yn ) , m_r->ToZoom(xnd) , m_r->ToZoomY ( yn ) );
+			//m_r->h_line ( dc, xng, xnd, yn, m_r->_param.EpLignesPORTEE);
 			//yh =  toZoom(yn);
 			//MoveToEx (hdc, xng, yh, NULL);
 			//LineTo (hdc, xnd, yh);
@@ -752,14 +750,14 @@ void MusNote::leg_line( wxDC *dc, int y_n, int y_p, int xn, unsigned int smaller
 			yn += v_decal;
 		}
 
-		dc->SetPen( wxNullPen );
-		dc->SetBrush( wxNullBrush );
+        dc->ResetPen();
+        dc->ResetBrush();
 	}
 	return;
 }
 
 
-void MusNote::silence ( wxDC *dc, MusStaff *staff)
+void MusNote::silence ( AxDC *dc, MusStaff *staff)
 {	
 	int formval = this->val;
 	int a = this->xrel + this->offset, b = this->dec_y;
@@ -771,18 +769,18 @@ void MusNote::silence ( wxDC *dc, MusStaff *staff)
 	if (this->val == 15)
 		formval = RD;
 	else if (formval > BL)
-		a -= m_w->rayonNote[staff->pTaille][dimin];
+		a -= m_r->rayonNote[staff->pTaille][dimin];
 
 	if (formval == BR || formval == BL || this->val == 15)
-		b -= 0; //m_w->_interl[staff->pTaille]; // LP position des silences
+		b -= 0; //m_r->_interl[staff->pTaille]; // LP position des silences
 
 	if (formval == RD)
 	{	if (staff->portNbLine == 1)
 		// silences sur portee a une seule ligne
-			b += m_w->_interl[staff->pTaille];
+			b += m_r->_interl[staff->pTaille];
 		else
-			//b += m_w->_interl[staff->pTaille]*2; 
-			b -= 0; //m_w->_interl[staff->pTaille]*2;// LP positions des silences
+			//b += m_r->_interl[staff->pTaille]*2; 
+			b -= 0; //m_r->_interl[staff->pTaille]*2;// LP positions des silences
 	}
 
 	if (this->val == 15)
@@ -793,7 +791,7 @@ void MusNote::silence ( wxDC *dc, MusStaff *staff)
 			case BR: s_br ( dc, a, b, staff); break;
 			case RD:
 			case BL: s_rd ( dc, a, b, formval, staff); break;
-			case CUSTOS: s_nr ( dc, a, b - m_w->_espace[staff->pTaille] + 1, '#' - sSilNOIRE + NR , staff); break;
+			case CUSTOS: s_nr ( dc, a, b - m_r->_espace[staff->pTaille] + 1, '#' - sSilNOIRE + NR , staff); break;
 			default: s_nr ( dc, a, b, formval, staff);
 		}
 	}
@@ -801,63 +799,63 @@ void MusNote::silence ( wxDC *dc, MusStaff *staff)
 }
 
 
-void MusNote::s_special ( wxDC *dc, int a, MusStaff *staff)
+void MusNote::s_special ( AxDC *dc, int a, MusStaff *staff)
 
 {	int x, x2, y, y2, off;
 
-	off = (m_w->_pas*2)/3;
-	y = staff->yrel - m_w->_interl[staff->pTaille]*6;
-	y2 = y + m_w->_interl[staff->pTaille];
+	off = (m_r->_pas*2)/3;
+	y = staff->yrel - m_r->_interl[staff->pTaille]*6;
+	y2 = y + m_r->_interl[staff->pTaille];
 	x = a-off; x2 = a+off;
-	m_w->rect_plein2( dc,x,y2,x2,y);
+	m_r->rect_plein2( dc,x,y2,x2,y);
 	return;
 }
 
-void MusNote::s_lg ( wxDC *dc, int a, int b, MusStaff *staff)
+void MusNote::s_lg ( AxDC *dc, int a, int b, MusStaff *staff)
 
 {	int x, x2, y = b + staff->yrel, y2;
 
-	x = a; //- m_w->_pas/3; 
-	x2 = a+ (m_w->_pas *2 / 3); // LP
-	if (b % m_w->_interl[staff->pTaille])
-		y -= m_w->_espace[staff->pTaille];
-	y2 = y + m_w->_interl[staff->pTaille]*2;
-	m_w->rect_plein2( dc,x,y2,x2,y);
+	x = a; //- m_r->_pas/3; 
+	x2 = a+ (m_r->_pas *2 / 3); // LP
+	if (b % m_r->_interl[staff->pTaille])
+		y -= m_r->_espace[staff->pTaille];
+	y2 = y + m_r->_interl[staff->pTaille]*2;
+	m_r->rect_plein2( dc,x,y2,x2,y);
 	return;
 }
 
 
-void MusNote::s_br ( wxDC *dc, int a, int b, MusStaff *staff)
+void MusNote::s_br ( AxDC *dc, int a, int b, MusStaff *staff)
 
 {	int x, x2, y = b + staff->yrel, y2;
 
-	x = a; //- m_w->_pas/3; 
-	x2 = a+ (m_w->_pas *2 / 3); // LP
+	x = a; //- m_r->_pas/3; 
+	x2 = a+ (m_r->_pas *2 / 3); // LP
 
-	if (b % m_w->_interl[staff->pTaille])
-		y -= m_w->_espace[staff->pTaille];
-	y2 = y + m_w->_interl[staff->pTaille];
-	m_w->rect_plein2 ( dc,x,y2,x2,y);
-	x = a - m_w->_pas; x2 = a + m_w->_pas;
+	if (b % m_r->_interl[staff->pTaille])
+		y -= m_r->_espace[staff->pTaille];
+	y2 = y + m_r->_interl[staff->pTaille];
+	m_r->rect_plein2 ( dc,x,y2,x2,y);
+	x = a - m_r->_pas; x2 = a + m_r->_pas;
 
-	m_w->h_bline ( dc, x,x2,y2,1);
-	m_w->h_bline ( dc, x,x2,y, 1);
+	m_r->h_bline ( dc, x,x2,y2,1);
+	m_r->h_bline ( dc, x,x2,y, 1);
 	return;
 }
 
-void MusNote::s_rd ( wxDC *dc, int a, int b, int valeur, MusStaff *staff)
+void MusNote::s_rd ( AxDC *dc, int a, int b, int valeur, MusStaff *staff)
 
-{	int x, x2, y = b + staff->yrel, y2, vertic = m_w->_espace[staff->pTaille];
+{	int x, x2, y = b + staff->yrel, y2, vertic = m_r->_espace[staff->pTaille];
 	int off;
 	float foff;
 
 	if (staff->notAnc)
-		foff = (m_w->_pas *1 / 3);
+		foff = (m_r->_pas *1 / 3);
 	else
-		foff = (m_w->ledgerLine[staff->pTaille][2] * 2) / 3; // i.e., la moitie de la ronde
+		foff = (m_r->ledgerLine[staff->pTaille][2] * 2) / 3; // i.e., la moitie de la ronde
 
 	if (dimin)
-		foff *= (int)( (float)m_w->RapportDimin[0] / (float)m_w->RapportDimin[1] );
+		foff *= (int)( (float)m_r->RapportDimin[0] / (float)m_r->RapportDimin[1] );
 	off = (int)foff;
 
 	x = a - off;
@@ -866,7 +864,7 @@ void MusNote::s_rd ( wxDC *dc, int a, int b, int valeur, MusStaff *staff)
 	if (valeur == RD)
 		vertic = -vertic;
 
-	if (b % m_w->_interl[staff->pTaille])
+	if (b % m_r->_interl[staff->pTaille])
 	{
 		if (valeur == BL)
 			y -= vertic;
@@ -875,53 +873,53 @@ void MusNote::s_rd ( wxDC *dc, int a, int b, int valeur, MusStaff *staff)
 	}
 
 	y2 = y + vertic;
-	m_w->rect_plein2 ( dc, x,y,x2,y2);
+	m_r->rect_plein2 ( dc, x,y,x2,y2);
 
 	off /= 2;
 	x -= off;
 	x2 += off;
 
-	if (y > (int)staff->yrel- m_w->_portee[staff->pTaille] || y < (int)staff->yrel-2* m_w->_portee[staff->pTaille])
-		m_w->h_bline ( dc, x, x2, y, m_p->EpLignesPortee);
+	if (y > (int)staff->yrel- m_r->_portee[staff->pTaille] || y < (int)staff->yrel-2* m_r->_portee[staff->pTaille])
+		m_r->h_bline ( dc, x, x2, y, m_p->EpLignesPortee);
 
 	if (this->point)
-		pointage ( dc,(x2 + m_w->_pas), y2, -(int)staff->yrel, this->point, staff);
+		pointage ( dc,(x2 + m_r->_pas), y2, -(int)staff->yrel, this->point, staff);
 }
 
 
-void MusNote::s_nr ( wxDC *dc, int a, int b, int valeur, MusStaff *staff)
+void MusNote::s_nr ( AxDC *dc, int a, int b, int valeur, MusStaff *staff)
 {
-	int _intrl = m_w->_interl[staff->pTaille];
+	int _intrl = m_r->_interl[staff->pTaille];
 
-	m_w->putfont( dc, a, (b + staff->yrel), sSilNOIRE + (valeur-NR), staff, this->dimin, NOTE);
+	m_r->putfont( dc, a, (b + staff->yrel), sSilNOIRE + (valeur-NR), staff, this->dimin, NOTE);
 
-	//m_w->putfont( dc, a, (b + staff->yrel - m_w->_espace[staff->pTaille]), '#', staff, this->dimin);
+	//m_r->putfont( dc, a, (b + staff->yrel - m_r->_espace[staff->pTaille]), '#', staff, this->dimin);
 
 	if (this->point)
 	{	if (valeur >= DC)
 			_intrl = 0;
-		pointage ( dc, (a+ m_w->_pas3), b, _intrl, this->point, staff);
+		pointage ( dc, (a+ m_r->_pas3), b, _intrl, this->point, staff);
 	}
 	return;
 }
 
 
-void MusNote::pointage ( wxDC *dc, int x1, int y1, int offy, unsigned int d_p, MusStaff *staff )
+void MusNote::pointage ( AxDC *dc, int x1, int y1, int offy, unsigned int d_p, MusStaff *staff )
 
 {
 	y1 += offy;
-	m_w->pointer ( dc, x1,y1, 0, staff);
+	m_r->pointer ( dc, x1,y1, 0, staff);
 	if (d_p == D_POINTAGE)
-	{	x1 += max (6, m_w->_pas);
-		m_w->pointer ( dc, x1,y1,0, staff);
+	{	x1 += max (6, m_r->_pas);
+		m_r->pointer ( dc, x1,y1,0, staff);
 	}
 	return;
 }
 
 
 // should probably become a static method of MusNote
-// in that case, MusWindow wouldn't be necessary anymore
-void lig_x ( MusNote *note, MusStaff *staff, MusWindow *m_w )
+// in that case, MusRC wouldn't be necessary anymore
+void lig_x ( MusNote *note, MusStaff *staff, MusRC *m_r )
 {
 	if (note == NULL)	return;
     MusElement *next = staff->GetPrevious(note);
@@ -930,7 +928,7 @@ void lig_x ( MusNote *note, MusStaff *staff, MusWindow *m_w )
 	{	if (next->fligat && ((MusNote*)next)->lat)
 			note->xrel = next->xrel;
 		else
-			note->xrel = next->xrel + m_w->largeurBreve[staff->pTaille] * 2;
+			note->xrel = next->xrel + m_r->largeurBreve[staff->pTaille] * 2;
 	}
     return;
 }
@@ -939,7 +937,7 @@ void lig_x ( MusNote *note, MusStaff *staff, MusWindow *m_w )
 static int ligat_x[2], ligat_y[2];	// pour garder coord. des ligatures
 unsigned int MusNote::marq_obl = OFF;	// marque le 1e passage pour une oblique
 
-void MusNote::ligature ( wxDC *dc, int y, MusStaff *staff )
+void MusNote::ligature ( AxDC *dc, int y, MusStaff *staff )
 {	
 	int xn, x1, x2, yy2, y1, y2, y3, y4, y5;
 	int milieu, up, epaisseur;
@@ -948,36 +946,36 @@ void MusNote::ligature ( wxDC *dc, int y, MusStaff *staff )
 	xn = this->xrel;
 	
 	if (ligat)
-		lig_x ( this, staff, this->m_w );
+		lig_x ( this, staff, this->m_r );
 	else
 		xn = this->xrel + this->offset;
 
 
 	// calcul des dimensions du rectangle
-	x1 = xn -  m_w->largeurBreve[staff->pTaille]; x2 = xn +  m_w->largeurBreve[staff->pTaille];
-	y1 = y + m_w->_espace[staff->pTaille]; 
-	y2 = y - m_w->_espace[staff->pTaille]; 
-	y3 = (int)(y1 + m_w->v_unit[staff->pTaille]);	// partie d'encadrement qui depasse
-	y4 = (int)(y2 - m_w->v_unit[staff->pTaille]);	
+	x1 = xn -  m_r->largeurBreve[staff->pTaille]; x2 = xn +  m_r->largeurBreve[staff->pTaille];
+	y1 = y + m_r->_espace[staff->pTaille]; 
+	y2 = y - m_r->_espace[staff->pTaille]; 
+	y3 = (int)(y1 + m_r->v_unit[staff->pTaille]);	// partie d'encadrement qui depasse
+	y4 = (int)(y2 - m_r->v_unit[staff->pTaille]);	
 
 	if (!this->oblique && (!marq_obl))	// notes rectangulaires, y c. en ligature
 	{
 		if ( !this->inv_val)
 		{				//	double base des carrees
-			m_w->hGrosseligne ( dc, x1,  y1,  x2,  y1, -epaisseur );
-			m_w->hGrosseligne ( dc, x1,  y2,  x2,  y2, epaisseur );
+			m_r->hGrosseligne ( dc, x1,  y1,  x2,  y1, -epaisseur );
+			m_r->hGrosseligne ( dc, x1,  y2,  x2,  y2, epaisseur );
 		}
 		else
-			m_w->rect_plein2( dc,x1,y1,x2,y2);	// dessine val carree pleine // ENZ correction de x2
+			m_r->rect_plein2( dc,x1,y1,x2,y2);	// dessine val carree pleine // ENZ correction de x2
 
-		m_w->v_bline ( dc, y3, y4, x1, m_p->EpQueueNote );	// corset lateral
-		m_w->v_bline ( dc, y3, y4, x2, m_p->EpQueueNote );
+		m_r->v_bline ( dc, y3, y4, x1, m_p->EpQueueNote );	// corset lateral
+		m_r->v_bline ( dc, y3, y4, x2, m_p->EpQueueNote );
 	}
 	else			// traitement des obliques
 	{
 		if (!MusNote::marq_obl)	// 1e passage: ligne verticale initiale
 		{
-			m_w->v_bline (dc,y3,y4,x1, m_p->EpQueueNote );
+			m_r->v_bline (dc,y3,y4,x1, m_p->EpQueueNote );
 			MusNote::marq_obl = ON;
 			//oblique = OFF;
 //			if (val == RD)	// queue gauche haut si RD
@@ -985,19 +983,19 @@ void MusNote::ligature ( wxDC *dc, int y, MusStaff *staff )
 		}
 		else	// 2e passage: lignes obl. et verticale finale
 		{
-			x1 -=  m_w->largeurBreve[staff->pTaille]*2;	// avance auto
+			x1 -=  m_r->largeurBreve[staff->pTaille]*2;	// avance auto
 
-			y1 = *ligat_y - m_w->_espace[staff->pTaille];	// ligat_y contient y original
+			y1 = *ligat_y - m_r->_espace[staff->pTaille];	// ligat_y contient y original
 			yy2 = y2;
-			y5 = y1+ m_w->_interl[staff->pTaille]; y2 += m_w->_interl[staff->pTaille];	// on monte d'un INTERL
+			y5 = y1+ m_r->_interl[staff->pTaille]; y2 += m_r->_interl[staff->pTaille];	// on monte d'un INTERL
 
 			if (inv_val)
-				m_w->hGrosseligne ( dc,  x1,  y1,  x2,  yy2, m_w->_interl[staff->pTaille]);
+				m_r->hGrosseligne ( dc,  x1,  y1,  x2,  yy2, m_r->_interl[staff->pTaille]);
 			else
-			{	m_w->hGrosseligne ( dc,  x1,  y1,  x2,  yy2, 5);
-				m_w->hGrosseligne ( dc,  x1,  y5,  x2,  y2, -5);
+			{	m_r->hGrosseligne ( dc,  x1,  y1,  x2,  yy2, 5);
+				m_r->hGrosseligne ( dc,  x1,  y5,  x2,  y2, -5);
 			}
-			m_w->v_bline ( dc,y3,y4,x2,m_p->EpQueueNote);	//cloture verticale
+			m_r->v_bline ( dc,y3,y4,x2,m_p->EpQueueNote);	//cloture verticale
 
 			MusNote::marq_obl = OFF;
 //			queue_lig = OFF;	//desamorce alg.queue BR
@@ -1009,29 +1007,29 @@ void MusNote::ligature ( wxDC *dc, int y, MusStaff *staff )
 	{	*(ligat_x+1) = x2; *(ligat_y+1) = y;	// relie notes ligaturees par barres verticales
 		if (in(x1,(*ligat_x)-2,(*ligat_x)+2) || (this->fligat && this->lat && !MusNote::marq_obl))
 			// les dernieres conditions pour permettre ligature verticale ancienne
-			m_w->v_bline (dc, *ligat_y, y1, (this->fligat && this->lat) ? x2: x1, m_p->EpQueueNote);
+			m_r->v_bline (dc, *ligat_y, y1, (this->fligat && this->lat) ? x2: x1, m_p->EpQueueNote);
 		*ligat_x = *(ligat_x + 1);
 		*ligat_y = *(ligat_y + 1);
 	}
 
 	
-	y3 = y2 - m_w->_espace[staff->pTaille]*6;
+	y3 = y2 - m_r->_espace[staff->pTaille]*6;
 
 	if (ligat)
 	{	if (val == BR  && this->queue_lig)	// queue gauche bas: BR initiale descendante
-			m_w->v_bline ( dc, y2, y3, x1, m_p->EpQueueNote );
+			m_r->v_bline ( dc, y2, y3, x1, m_p->EpQueueNote );
 
 		else if (val == LG && !this->queue_lig) // LG en ligature, queue droite bas
-			m_w->v_bline (dc, y2, y3, x2, m_p->EpQueueNote );
+			m_r->v_bline (dc, y2, y3, x2, m_p->EpQueueNote );
 
 		else if (val == RD && this->queue_lig )	// queue gauche haut
-		{	y2 = y1 + m_w->_espace[staff->pTaille]*6;
-			m_w->v_bline ( dc, y1, y2, x1, m_p->EpQueueNote );
+		{	y2 = y1 + m_r->_espace[staff->pTaille]*6;
+			m_r->v_bline ( dc, y1, y2, x1, m_p->EpQueueNote );
 		} 
 	}
 	else if (val == LG)		// LG isolee: queue comme notes normales
 	{	
-		milieu = staff->yrel - m_w->_interl[staff->pTaille]*6;
+		milieu = staff->yrel - m_r->_interl[staff->pTaille]*6;
 		//***up = this->q_auto ? ((y < milieu)? ON :OFF):this->queue;
 		// ENZ
 		up = (y < milieu) ? ON : OFF;
@@ -1040,10 +1038,10 @@ void MusNote::ligature ( wxDC *dc, int y, MusStaff *staff )
 			up = (up == ON) ? OFF : ON;
 			
 		if (up)
-		{	y3 = y1 + m_w->_espace[staff->pTaille]*6;
+		{	y3 = y1 + m_r->_espace[staff->pTaille]*6;
 			y2 = y1;
 		}
-		m_w->v_bline ( dc, y2,y3,x2, m_p->EpQueueNote );
+		m_r->v_bline ( dc, y2,y3,x2, m_p->EpQueueNote );
 	}
 
 	return;

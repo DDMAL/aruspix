@@ -6,32 +6,17 @@
 	extension-element-prefixes="redirect"
 	xmlns:svg="http://www.w3.org/2000/svg">
 	<xsl:output method="xml" indent="yes" omit-xml-declaration="yes"/>
-	<!--
-		Licensed to the Apache Software Foundation (ASF) under one or more
-		contributor license agreements.  See the NOTICE file distributed with
-		this work for additional information regarding copyright ownership.
-		The ASF licenses this file to You under the Apache License, Version 2.0
-		(the "License"); you may not use this file except in compliance with
-		the License.  You may obtain a copy of the License at
-		
-		http://www.apache.org/licenses/LICENSE-2.0
-		
-		Unless required by applicable law or agreed to in writing, software
-		distributed under the License is distributed on an "AS IS" BASIS,
-		WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-		See the License for the specific language governing permissions and
-		limitations under the License.
-	-->
 	
 	<!--
 		
-		Sample stylesheet to be used with Ant JUnitReport output.
-		
-		It creates a set of HTML files a la javadoc where you can browse easily
-		through all packages and classes.
+		Stylesheet that extract the glyhps of a font
+		Each glyph is written in a separate file
+		A 'scale(1.0, -1.0)' transform attribute is added to flip the glyph
 		
 	-->
-	<xsl:param name="output.dir" select="'.'"/>
+	
+	<!-- this is the ou
+	<xsl:param name="output.dir" select="'../../data/svg'"/>
 	
 	<xsl:template match="/">
 		<xsl:apply-templates select="*"/>
@@ -110,6 +95,11 @@
 				</xsl:attribute>
 				<xsl:attribute name="d">
 					<xsl:value-of select="@d"/>
+				</xsl:attribute>
+				<!-- we need to flip the glyph because coordinate sytem 
+					in svg fonts is upside-donw --> 
+				<xsl:attribute name="transform">
+					<xsl:text>scale(1.0, -1.0)</xsl:text>
 				</xsl:attribute>
 			</xsl:element>
 		</redirect:write>

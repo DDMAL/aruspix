@@ -50,7 +50,7 @@ public:
 	
 	//pointers for convenience (for drawing code)
 	MusStaff *staff = super->staff;
-	wxDC *dc = super->dc;
+	AxDC *dc = super->dc;
 }
 
 class Clivis: public MusLigature
@@ -79,7 +79,7 @@ public:
 				this->neume_line(dc, staff, i, i+1, RIGHT_LINE);
 			
 			//punctum
-			m_w->putfont(dc, this->xrel + (i * 10), ynn + 16, temp->getPunctumType(), staff,
+			m_r->putfont(dc, this->xrel + (i * 10), ynn + 16, temp->getPunctumType(), staff,
 						 this->dimin, NEUME);
 		}
 	}
@@ -118,7 +118,7 @@ public:
 		int ynn2;
 		
 		
-		int ledge = m_w->ledgerLine[pTaille][2];
+		int ledge = m_r->ledgerLine[pTaille][2];
 		
 		int punct_y;
 		
@@ -143,25 +143,25 @@ public:
 		int ynn = this->dec_y + staff->yrel; 
 		int ynn2;
 		
-		int ledge = m_w->ledgerLine[pTaille][2];
+		int ledge = m_r->ledgerLine[pTaille][2];
 		
 		int punct_y;
 		MusNeumePitch *temp = this->n_pitches.at(0);
-		m_w->putfont(dc, this->xrel - 5, ynn + 16, nPES,
+		m_r->putfont(dc, this->xrel - 5, ynn + 16, nPES,
 					 staff, this->dimin, NEUME);
 		temp = this->n_pitches.at(1);
 		
 		punct_y = staff->y_note((int)temp->code, staff->testcle( this->xrel ), temp->oct - 4);
 		ynn2 = punct_y + staff->yrel; 
 		
-		m_w->putfont(dc, this->xrel - 5, ynn2 + 16, temp->getPunctumType(),
+		m_r->putfont(dc, this->xrel - 5, ynn2 + 16, temp->getPunctumType(),
 					 staff, this->dimin, NEUME);
 		
 		//draw a line connecting the two now
-		wxPen pen( *(m_w->m_currentColour), m_w->ToZoom(2), wxSOLID);
+		wxPen pen( *(m_r->m_currentColour), m_r->ToZoom(2), wxSOLID);
 		dc->SetPen( pen );
-		dc->DrawLine(m_w->ToZoom(this->xrel + 4), m_w->ToZoomY(ynn), 
-					 m_w->ToZoom(this->xrel + 4), m_w->ToZoomY(ynn2));
+		dc->DrawLine(m_r->ToZoom(this->xrel + 4), m_r->ToZoomY(ynn), 
+					 m_r->ToZoom(this->xrel + 4), m_r->ToZoomY(ynn2));
 		dc->SetPen(wxNullPen);
 	}
 	//override attach

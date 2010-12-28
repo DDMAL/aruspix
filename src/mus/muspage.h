@@ -17,6 +17,8 @@
 #endif
 #include "wx/dynarray.h"
 
+class AxDC;
+
 #include "musobject.h"
 
 
@@ -53,20 +55,20 @@ public:
 	/**
 		dessine la page en cours = draw_it
 	  */
-	void DrawPage( wxDC *dc, bool background = true );
-	//void ClearStaves( wxDC *dc , MusStaff *start = NULL );
+	void DrawPage( AxDC *dc, bool background = true );
+	//void ClearStaves( AxDC *dc , MusStaff *start = NULL );
 
 	void UpdateStavesPosition();
     void SetValues( int type );
 
 	/** musbarmes */
-	void DrawBarres( wxDC *dc ); // mus == barres
-	void braces ( wxDC *dc, int x, int y1, int y2, int cod, int pTaille);
-	void accolade ( wxDC *dc, int x, int y1, int y2, int pTaille);
-	void bardroit ( wxDC *dc, int x, int y1, int y2, int pTaille);
-	void bar_mes ( wxDC *dc, int x, int cod, int porteeAutonome, MusStaff *pportee);
-	void bigbarre( wxDC *dc, int x, char code, int porteeAutonome, MusStaff *pportee);
-	void barMesPartielle ( wxDC *dc, int x, MusStaff *pportee);
+	void DrawBarres( AxDC *dc ); // mus == barres
+	void braces ( AxDC *dc, int x, int y1, int y2, int cod, int pTaille);
+	void accolade ( AxDC *dc, int x, int y1, int y2, int pTaille);
+	void bardroit ( AxDC *dc, int x, int y1, int y2, int pTaille);
+	void bar_mes ( AxDC *dc, int x, int cod, int porteeAutonome, MusStaff *pportee);
+	void bigbarre( AxDC *dc, int x, char code, int porteeAutonome, MusStaff *pportee);
+	void barMesPartielle ( AxDC *dc, int x, MusStaff *pportee);
     // moulinette
     virtual void Process(MusStaffFunctor *functor, wxArrayPtrVoid params );
     // functors

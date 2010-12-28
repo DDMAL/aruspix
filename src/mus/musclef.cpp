@@ -17,7 +17,7 @@
 #endif
 
 #include "mussymbol.h"
-#include "muswindow.h"
+#include "musrc.h"
 #include "muspage.h"
 #include "musfile.h"
 
@@ -55,7 +55,7 @@ int MusStaff::testcle (int a)
 		return 0;	
 
 	int s;
-	MusPosClef *pKey = &m_w->kPos[this->no];
+	MusPosClef *pKey = &m_r->kPos[this->no];
 	s = pKey->compte;
 
 	if (s == 0)
@@ -70,14 +70,14 @@ int MusStaff::testcle (int a)
 
 
 
-void MusSymbol::dess_cle ( wxDC *dc, int i, MusStaff *pportee)
+void MusSymbol::dess_cle ( AxDC *dc, int i, MusStaff *pportee)
 // int i;	indice de position clef in poscle
 {
 	wxASSERT_MSG( dc , "DC cannot be NULL");
 	if ( !Check() )
 		return;		
 	
-	int b = (pportee->yrel- m_w->_portee[ pportee->pTaille ]);
+	int b = (pportee->yrel- m_r->_portee[ pportee->pTaille ]);
 	int a = this->xrel;
 	unsigned int dim = dimin,
 			 sym = sSOL;	//sSOL, position d'ordre des cles sol fa ut in fonts
@@ -85,7 +85,7 @@ void MusSymbol::dess_cle ( wxDC *dc, int i, MusStaff *pportee)
 	dimin = this->dimin;
 
 	if (pportee->portNbLine > 5)
-		b -= ((pportee->portNbLine - 5) * 2) *m_w->_espace[ pportee->pTaille ];
+		b -= ((pportee->portNbLine - 5) * 2) *m_r->_espace[ pportee->pTaille ];
 
 /*  poser sym=no de position sSOL dans la fonte
  *	au depart; ne faire operation sur b qu'une fois pour cas semblables,
@@ -94,27 +94,27 @@ void MusSymbol::dess_cle ( wxDC *dc, int i, MusStaff *pportee)
 	switch(this->code)	// cleid
 	{	
 		case UT1 : sym += 2;
-		case SOL1 : b -= m_w->_portee[ pportee->pTaille ]; break;
+		case SOL1 : b -= m_r->_portee[ pportee->pTaille ]; break;
 		case SOLva : sym += 1;
 		case UT2 : sym += 2;
-		case SOL2 : b -= m_w->_interl[ pportee->pTaille ]*3; break;
+		case SOL2 : b -= m_r->_interl[ pportee->pTaille ]*3; break;
 		case FA3 : sym--;
-		case UT3 : b -= m_w->_interl[ pportee->pTaille ]*2; sym += 2; break;
+		case UT3 : b -= m_r->_interl[ pportee->pTaille ]*2; sym += 2; break;
 		case FA5 : sym++; break;
 		case FA4 : sym--;
-		case UT4 : b -= m_w->_interl[ pportee->pTaille ];
+		case UT4 : b -= m_r->_interl[ pportee->pTaille ];
 		case UT5 :  sym += 2; break;
-		case CLEPERC :  b -= m_w->_interl[ pportee->pTaille ]*2;
+		case CLEPERC :  b -= m_r->_interl[ pportee->pTaille ]*2;
 					sym = sPERC; break;
 		default: break;
 	}
 
-	a -= m_w->_pas*2;
+	a -= m_r->_pas*2;
 	if (dimin)	// && ptRul->defin<3)
-		a+= m_w->_pas;
+		a+= m_r->_pas;
 
 	//if ((!this->ElemInvisible || illumine) && (!modMetafile || in (chk->xrel, drawRect.left, drawRect.right) && in (b, drawRect.top, drawRect.bottom)))
-		m_w->putfont ( dc,a,b,(int)sym, pportee, this->dimin, SYMB );
+		m_r->putfont ( dc,a,b,(int)sym, pportee, this->dimin, SYMB );
 	dimin = dim;
 
 	char dum = 0;

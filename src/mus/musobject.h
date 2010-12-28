@@ -16,7 +16,7 @@
     #include "wx/wx.h"
 #endif
 
-class MusWindow;
+class MusRC;
 class MusFile;
 class MusFileHeader;
 class MusParameters;
@@ -34,11 +34,11 @@ public:
     MusObject();
     virtual ~MusObject();
     
-    bool Init( MusWindow *win );
+    bool Init( MusRC *renderer );
 	bool Check() { return m_ok; }
     
 protected:
-    MusWindow *m_w;
+    MusRC *m_r;
 	MusFile *m_f;
 	MusFileHeader *m_fh;
 	MusParameters *m_p;

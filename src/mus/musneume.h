@@ -19,7 +19,6 @@
 
 #include "muselement.h"
 #include <vector>
-#include <string>
 #include "neumedef.h"
 
 //#define MAX_LENGTH 1
@@ -56,13 +55,13 @@ public:
 	void SetPitch( int code, int oct );
 	void SetValue( int value );
 	int GetValue( );
-	std::string& getFestaString( );
+	wxString getFestaString( );
 	
 	int Compare(MusNeumePitch *other);
 	int Pitch_Diff(MusNeumePitch *other);
 	int Pitch_Diff(int code, int oct);
 	
-	std::string m_font_str;	//used for font drawing
+	wxString m_font_str;	//used for font drawing
 	
 //	int code;
 //	int oct;
@@ -82,14 +81,14 @@ public:
     virtual ~MusNeume();
     
 	//Drawing code
-	virtual void Draw( wxDC *dc, MusStaff *staff);
-//	void note( wxDC *dc, MusStaff *staff );
-	void DrawBox( wxDC *dc, MusStaff *staff );
-	void DrawNeume( wxDC *dc, MusStaff *staff );
-	void DrawPunctums( wxDC *dc, MusStaff *staff );
-	void leg_line( wxDC *dc, int y_n, int y_p, int xn, 
+	virtual void Draw( AxDC *dc, MusStaff *staff);
+//	void note( AxDC *dc, MusStaff *staff );
+	void DrawBox( AxDC *dc, MusStaff *staff );
+	void DrawNeume( AxDC *dc, MusStaff *staff );
+	void DrawPunctums( AxDC *dc, MusStaff *staff );
+	void leg_line( AxDC *dc, int y_n, int y_p, int xn, 
 							unsigned int smaller, int pTaille);
-	void append( wxDC *dc, MusStaff *staff ); //for creating multi-note neumes
+	void append( AxDC *dc, MusStaff *staff ); //for creating multi-note neumes
 	
 	//should have some sort of 'toggle' or 'redraw' method here for switching between styles
 	
@@ -163,15 +162,15 @@ public:
 		
 	//ligature drawing methods
 	//TODO: move to ligature class
-	void drawLigature( wxDC *dc, MusStaff *staff );
-	void clivis( wxDC *dc, MusStaff *staff );
-	void podatus( wxDC *dc, MusStaff *staff );
-	void porrectus( wxDC *dc, MusStaff *staff );
-	void neume_stem( wxDC *dc, MusStaff *staff, int xrel, 
+	void drawLigature( AxDC *dc, MusStaff *staff );
+	void clivis( AxDC *dc, MusStaff *staff );
+	void podatus( AxDC *dc, MusStaff *staff );
+	void porrectus( AxDC *dc, MusStaff *staff );
+	void neume_stem( AxDC *dc, MusStaff *staff, int xrel, 
 						  int index, int pitch_range = 0, int side = LEFT_STEM);
 //							  int end_pitch, int side);
-//	void neume_line( wxDC *dc, MusStaff *staff, int side );
-//	void climacus( wxDC *dc, MusStaff *staff );
+//	void neume_line( AxDC *dc, MusStaff *staff, int side );
+//	void climacus( AxDC *dc, MusStaff *staff );
 	
 	//pitch and octave of first pitch of the neume
 	int GetOct(); 

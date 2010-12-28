@@ -34,7 +34,7 @@
 
 // experimental
 #include "mus/musiomei.h"  
-#include "mus/mussvg.h"
+//#include "mus/mussvg.h"
 
 
 //----------------------------------------------------------------------------
@@ -224,7 +224,7 @@ void EdtEnv::ParseCmd( wxCmdLineParser *parser )
             m_musViewPtr->wxmax = page->lrg_lign*10; // !fix it!! in the GUI initialized in OnPaint
             m_musViewPtr->m_currentElement = NULL; // !fix it!! deselect elemnts
 
-            
+            /*
             //MusSVGFileDC svgDC (outfile, mfile->m_fheader.param.pageFormatHor, mfile->m_fheader.param.pageFormatVer );
             MusSVGFileDC svgDC (outfile, m_musViewPtr->ToZoom( m_musViewPtr->pageFormatHor )  ,
                 m_musViewPtr->ToZoom( m_musViewPtr->pageFormatVer )) ;
@@ -238,6 +238,7 @@ void EdtEnv::ParseCmd( wxCmdLineParser *parser )
 	
             svgDC.SetAxisOrientation( true, false );
             (&mfile->m_pages[0])->DrawPage( &svgDC, false );
+            */
 
         }
     }
@@ -528,15 +529,16 @@ void EdtEnv::OnSaveSVG( wxCommandEvent &event )
     int zoom = m_musViewPtr->GetZoom( );
     m_musViewPtr->SetZoom( 100 );
     
+    /*
     MusSVGFileDC svgDC (filename, m_musViewPtr->ToZoom( m_musViewPtr->pageFormatHor + 30 )  ,
         m_musViewPtr->ToZoom( m_musViewPtr->pageFormatVer + 10 )) ;
         
     svgDC.SetUserScale( 1, 1 );
     svgDC.SetLogicalScale( 1.0, 1.0 );  
     
-	/*if ( m_musViewPtr->m_center )
-		svgDC.SetLogicalOrigin( (m_musViewPtr->margeMorteHor - m_musViewPtr->mrgG), m_musViewPtr->margeMorteVer );
-	else */
+	//if ( m_musViewPtr->m_center )
+	//	svgDC.SetLogicalOrigin( (m_musViewPtr->margeMorteHor - m_musViewPtr->mrgG), m_musViewPtr->margeMorteVer );
+	//else 
     svgDC.SetLogicalOrigin( -m_musViewPtr->mrgG, 0 );
     
     // font data
@@ -549,6 +551,7 @@ void EdtEnv::OnSaveSVG( wxCommandEvent &event )
     
     // reset the zoom
     m_musViewPtr->SetZoom( zoom );
+    */
 }
 
 

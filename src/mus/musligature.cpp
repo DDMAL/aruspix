@@ -12,7 +12,6 @@
 // For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"
 #include <vector>
-#include <string>
 
 #ifdef __BORLANDC__
     #pragma hdrstop
@@ -20,7 +19,7 @@
 
 #include "musneume.h"
 #include "musstaff.h"
-#include "muswindow.h"
+#include "musrc.h"
 
 using std::string;
 
@@ -41,7 +40,7 @@ bool MusNeume::descending(int p1, int p2)
 // each "basic" type of ligature will have custom drawing code defined here
 
 
-void MusNeume::drawLigature( wxDC *dc, MusStaff *staff ) {
+void MusNeume::drawLigature( AxDC *dc, MusStaff *staff ) {
 	
 	//filter pes
 	if (ascending(0, 1) && n_pitches.size() == 2) {
@@ -87,11 +86,11 @@ void MusNeume::drawLigature( wxDC *dc, MusStaff *staff ) {
 // was approached from below. 
 // In reality, stems are drawn from the punctum outward (punctum as origin)
 
-void MusNeume::neume_stem( wxDC *dc, MusStaff *staff, int xrel, int index,
+void MusNeume::neume_stem( AxDC *dc, MusStaff *staff, int xrel, int index,
 						  int pitch_range, int side ) 
 {
 	int ynn;
-	string str = "";
+	wxString str = "";
 	
 	printf("drawing stems! pitch range: %d\n", pitch_range);
 	
@@ -120,7 +119,7 @@ void MusNeume::neume_stem( wxDC *dc, MusStaff *staff, int xrel, int index,
 		ynn += staff->yrel;
 
 		printf("||||||||||||||||||||||||||||||||Drawing line\n");
-		m_w->festa_string(dc, xrel, ynn + 16, str, staff, this->dimin);
+		m_r->festa_string(dc, xrel, ynn + 16, str, staff, this->dimin);
 		//update ynn value
 		if (pitch_range > 0) pitch -= 2;
 		else pitch += 2;
@@ -129,14 +128,14 @@ void MusNeume::neume_stem( wxDC *dc, MusStaff *staff, int xrel, int index,
 	delete temp;
 }
 
-void MusNeume::clivis( wxDC *dc, MusStaff *staff ) {
+void MusNeume::clivis( AxDC *dc, MusStaff *staff ) {
 	int ynn;
 	int pTaille = staff->pTaille;
-	int bby = staff->yrel - m_w->_portee[pTaille];  // bby= y sommet portee
+	int bby = staff->yrel - m_r->_portee[pTaille];  // bby= y sommet portee
 	
 	int x_spacing = 0;
 	//placeholder for festa dies strings
-	string str = "";
+	wxString str = "";
 
 	int xrel_curr = this->xrel; // keep track of where we are on the x axis
 	MusNeumePitch *temp;
@@ -146,7 +145,7 @@ void MusNeume::clivis( wxDC *dc, MusStaff *staff ) {
 		ynn = staff->y_note((int)temp->code, staff->testcle( this->xrel), temp->oct - 4);
 		ynn += staff->yrel;
 		//ledger line
-		int ledge = m_w->ledgerLine[pTaille][2];
+		int ledge = m_r->ledgerLine[pTaille][2];
 		
 		//super hack way to get some strophicus/bivirga stuff happening
 		//also take care of 'connecting lines'
@@ -167,7 +166,7 @@ void MusNeume::clivis( wxDC *dc, MusStaff *staff ) {
 		leg_line( dc, ynn,bby,xrel_curr,ledge, pTaille);		
 		
 		if (i < n_pitches.size())
-		m_w->festa_string(dc, xrel_curr, ynn + 16, 
+		m_r->festa_string(dc, xrel_curr, ynn + 16, 
 						  temp->getFestaString() , staff, this->dimin);
 
 	}
@@ -175,18 +174,18 @@ void MusNeume::clivis( wxDC *dc, MusStaff *staff ) {
 	//draw debug line to make sure were in the right spot
 }
 
-void MusNeume::podatus( wxDC *dc, MusStaff *staff ) {
+void MusNeume::podatus( AxDC *dc, MusStaff *staff ) {
 	int pTaille = staff->pTaille;
 	
 	int oct = this->oct - 4;
 	this->dec_y = staff->y_note((int)this->code, staff->testcle( this->xrel ), oct);
 	int ynn = this->dec_y + staff->yrel; 
-	int bby = staff->yrel - m_w->_portee[pTaille];  // bby= y sommet portee
-	int ledge = m_w->ledgerLine[pTaille][2];
+	int bby = staff->yrel - m_r->_portee[pTaille];  // bby= y sommet portee
+	int ledge = m_r->ledgerLine[pTaille][2];
 	
 	int punct_y;
 	MusNeumePitch *temp = this->n_pitches.at(0);
-	m_w->festa_string(dc, this->xrel, ynn + 16, string(sizeof(char), (char)nPES),
+	m_r->festa_string(dc, this->xrel, ynn + 16, wxString((char)nPES),
 				 staff, this->dimin );
 	temp = this->n_pitches.at(1);
 	
@@ -209,12 +208,12 @@ void MusNeume::podatus( wxDC *dc, MusStaff *staff ) {
 		case 2:					//nCEPHALICUS
 		case 3:					//nPUNCT_UP (upwards auctae)
 			xrel_curr += PUNCT_WIDTH;
-			m_w->festa_string(dc, xrel_curr, ynn2 + 16, temp->m_font_str, 
+			m_r->festa_string(dc, xrel_curr, ynn2 + 16, temp->m_font_str, 
 							  staff, this->dimin);
 			break;
 			// not possible; break the neume?
 		default:				//draw above, all cases treated as square punctum
-			m_w->festa_string(dc, xrel_curr, ynn2 + 16, string(sizeof(char), (char)nPUNCTUM),
+			m_r->festa_string(dc, xrel_curr, ynn2 + 16, wxString((char)nPUNCTUM),
 							  staff, this->dimin);
 			break;
 	}
@@ -223,14 +222,14 @@ void MusNeume::podatus( wxDC *dc, MusStaff *staff ) {
 	this->xrel_right = this->xrel + xrel_curr;
 }
 
-void MusNeume::porrectus( wxDC *dc, MusStaff *staff )
+void MusNeume::porrectus( AxDC *dc, MusStaff *staff )
 {
 
 	int oct = this->oct - 4;
 	this->dec_y = staff->y_note((int)this->code, staff->testcle( this->xrel ), oct);
 	int ynn = this->dec_y + staff->yrel; 
 
-	string str = "";
+	wxString str = "";
 	
 	int porrect_type;
 	switch(abs(n_pitches.at(0)->Pitch_Diff(n_pitches.at(1)))) {
@@ -256,11 +255,11 @@ void MusNeume::porrectus( wxDC *dc, MusStaff *staff )
 
 	// ledger lines
 	int pTaille = staff->pTaille;
-	int bby = staff->yrel - m_w->_portee[pTaille];  // bby= y sommet portee
-	int ledge = m_w->ledgerLine[pTaille][2];
+	int bby = staff->yrel - m_r->_portee[pTaille];  // bby= y sommet portee
+	int ledge = m_r->ledgerLine[pTaille][2];
 	
 	leg_line( dc, ynn,bby, this->xrel,ledge, pTaille);		
-	m_w->festa_string(dc, this->xrel, ynn + 16, str, staff, this->dimin);
+	m_r->festa_string(dc, this->xrel, ynn + 16, str, staff, this->dimin);
 	
 	//the right edge of the porrect character is tricky.. use GetTextExtent
 //	wxSize size = dc->GetTextExtent(str);
@@ -293,15 +292,15 @@ void MusNeume::porrectus( wxDC *dc, MusStaff *staff )
 				xrel_curr += PUNCT_PADDING;
 				neume_stem(dc, staff, xrel_curr, 2, n_pitches.at(1)->Pitch_Diff(temp)
 						   , LEFT_STEM);
-				m_w->festa_string(dc, xrel_curr, 
+				m_r->festa_string(dc, xrel_curr, 
 								  ynn + 16, temp->m_font_str, staff, this->dimin);
 				break;
 			default:
 				xrel_curr += PUNCT_PADDING;
 				neume_stem(dc, staff, xrel_curr, 2, n_pitches.at(1)->Pitch_Diff(temp)
 						   , RIGHT_STEM);
-				m_w->festa_string(dc, xrel_curr - PUNCT_WIDTH, ynn + 16, 
-								  std::string(sizeof(char), (char)nPUNCTUM),staff, this->dimin);
+				m_r->festa_string(dc, xrel_curr - PUNCT_WIDTH, ynn + 16, 
+								  wxString((char)nPUNCTUM),staff, this->dimin);
 		}
 	}
 	

@@ -32,7 +32,7 @@
 // This is the leipzig font for which we have each glyph as an <path> in the svg resources"
 #define SVG_LEIPZIG_FONT "Leipzig 4.6"
 
-class MusSVGFileDC : public wxDC
+class MusSVGFileDC : public AxDC
 {
 
     private:
@@ -72,7 +72,7 @@ class MusSVGFileDC : public wxDC
         bool DoGetPixel(wxCoord, wxCoord, class wxColour *) const
             { wxASSERT_MSG (false, wxT("MusSVGFileDC::DoGetPixel Call not implemented")); return true; };
 
-        virtual bool DoBlit(wxCoord, wxCoord, wxCoord, wxCoord, class wxDC *,
+        virtual bool DoBlit(wxCoord, wxCoord, wxCoord, wxCoord, class AxDC *,
             wxCoord, wxCoord, int = wxCOPY, bool = 0, int = -1, int = -1) ;
 
         void DoCrossHair(wxCoord, wxCoord)
@@ -230,7 +230,7 @@ class MusSVGFileDC : public wxDC
 
         void BeginDrawing() { return;};
 
-        bool Blit(wxCoord xdest, wxCoord ydest, wxCoord width, wxCoord height, wxDC* source, wxCoord xsrc, wxCoord ysrc, int logicalFunc = wxCOPY, bool useMask = false)
+        bool Blit(wxCoord xdest, wxCoord ydest, wxCoord width, wxCoord height, AxDC* source, wxCoord xsrc, wxCoord ysrc, int logicalFunc = wxCOPY, bool useMask = false)
             { return DoBlit(xdest, ydest, width, height, source, xsrc, ysrc, logicalFunc, useMask); };
 
         void Clear()

@@ -14,8 +14,6 @@
  
  */
 
-
-
 #ifdef __GNUG__
     #pragma implementation "muswindow.h"
 #endif
@@ -37,8 +35,6 @@ using std::max;
 
 #include "app/axapp.h"
 #include "muswindow.h"
-#include "muspage.h"
-#include "musfile.h"
 #include "mustoolpanel.h"
 #include "musiobin.h"
 #include "muskeyboardeditor.h"
@@ -46,6 +42,7 @@ using std::max;
 //#include "mus_wdr.h"
 
 #include "app/axgotodlg.h"
+#include "app/axwxdc.h"
 
 #include <iostream>
 #include <cstdlib>
@@ -87,72 +84,20 @@ END_EVENT_TABLE()
 
 MusWindow::MusWindow( wxWindow *parent, wxWindowID id,
     const wxPoint &position, const wxSize& size, long style, bool center ) :
-    wxScrolledWindow( parent, id, position, size, style ), AxUndo( 100 )
+    wxScrolledWindow( parent, id, position, size, style ), MusRC( ), AxUndo( 100 )
 {
-	m_f = NULL;
-    m_fh = NULL;
-    m_page = NULL;
-	m_npage = 0;
-	m_center = center;
-
-	_pas = 10;
-    _bond = 60;
-    _pas3 = 3 * _pas;
-    _espace[0] = 10;
-	_espace[1] = 8;
-    _interl[0] = 20;
-    _interl[1] = 16;
-    _portee[0] = 80;
-    _portee[1] = 64;
-    _octave[0] = 70;
-    _octave[1] = 56;
-    hautFont = 100;
-    RapportPortee[0] = 16;
-    RapportPortee[1] = 20;
-    RapportDimin[0] = 3;
-    RapportDimin[1] = 4;
-    DELTANbBAR[0] = 10;
-    DELTANbBAR[1] = 6;
-    DELTABLANC[0] = 6;
-    DELTABLANC[1] = 4;
-	DELTABAR = 16;
-    nTailleFont[0][0] = 160;
-    nTailleFont[0][1] = 120;
-    nTailleFont[1][0] = 128; 
-    nTailleFont[1][1] = 100;
-	hautFontCorr[0][0] = 0;
-	hautFontCorr[0][1] = 0;
-	hautFontCorr[1][0] = 0;
-	hautFontCorr[1][1] = 0;
-
-	discontinu = 0;
-	MesVal=1.0;
-
-    zoomNum = 4;
-    zoomDen = 10;
-    m_charDefin = 0;
-
-	m_black = wxColour( 0, 0, 0 );
-	m_currentColour = &m_black;
-	m_currentElement = NULL;
+    m_newElement = NULL;
 	m_bufferElement = NULL;
-	m_newElement = NULL;
-	m_lastEditedElement = NULL;
-	m_currentStaff = NULL;
-
-	efface = false;
+    m_lastEditedElement = NULL;
 	
 	m_toolpanel = NULL;
+    m_center = true;
 
-	m_editElement = true;
-	m_notation_mode = MUS_MENSURAL_MODE;
 	m_insertx = 0;
 	m_insertcode = F6;
 	m_insertoct = 4;
 	m_dragging_x = 0;
 	m_dragging_y_offset = 0;
-	m_lyricMode = false;
-	m_inputLyric = false;
 	m_lyricCursor = 0;
 	
 	// keyboard entry
@@ -160,15 +105,11 @@ MusWindow::MusWindow( wxWindow *parent, wxWindowID id,
 	// lazy loading
 	m_keyEditor = NULL;
 
-	m_str.Alloc(1000);
-
 	if ( wxSystemSettings::GetColour(wxSYS_COLOUR_APPWORKSPACE) == *wxWHITE )
 		this->SetBackgroundColour( *wxLIGHT_GREY );
 	else
 		this->SetBackgroundColour( wxSystemSettings::GetColour(wxSYS_COLOUR_APPWORKSPACE) );
 	this->SetForegroundColour( *wxBLACK );
-
-	this->UpdateFontValues();
 }
 
 
@@ -337,6 +278,7 @@ void MusWindow::Store( AxUndoFile *undoPtr )
 
 }
 
+
 void MusWindow::InitDC( wxDC *dc )
 {
 	if ( m_center )
@@ -346,6 +288,48 @@ void MusWindow::InitDC( wxDC *dc )
 
 	dc->SetAxisOrientation( true, false );
 	this->DoPrepareDC( *dc );
+}
+
+void MusWindow::DoLyricCursor( int x, int y, AxDC *dc, wxString lyric )
+{
+    int xCursor = x;
+    if ( m_lyricCursor > 0 ){
+        wxArrayInt lyricPos;
+        // TODO dc->GetPartialTextExtents( s, lyricPos );
+        if ( m_lyricCursor <= (int)lyricPos.GetCount() )
+            xCursor += lyricPos[m_lyricCursor-1];			
+    }
+    // the cursor witdh
+    int wCursor = max( 1, ToZoom( 2 ) );
+    
+    // get the bounding box and draw it
+    int wBox, hBox, wBox_empty;
+    dc->GetTextExtent( lyric, &wBox, &hBox );
+    if (lyric.Length() == 0) // we need the height of the BB even if the sting is empty
+    {
+        wxString empty = "d";
+        dc->GetTextExtent( empty, &wBox_empty, &hBox );
+    }
+    dc->SetPen( AxBLACK, 1, wxSHORT_DASH );
+    dc->DrawRectangle( x - 2 * wCursor, ToZoomY( y ) - wCursor, 
+        wBox + 4 * wCursor, hBox + 2 * wCursor  ); 
+    
+    // draw the cursor
+    xCursor -= wCursor / 2;
+    dc->SetPen( AxBLACK, 1, wxSOLID );
+    dc->SetBrush( m_currentColour, wxSOLID );
+    
+    dc->DrawRectangle( xCursor, ToZoomY( y ), wCursor , hBox  );
+
+    // reset the pens
+    dc->ResetPen();
+    dc->ResetBrush();
+}
+
+void MusWindow::DoReset( )
+{
+    ResetUndos();
+    m_newElement = NULL;
 }
 
 void MusWindow::Resize( )
@@ -380,163 +364,6 @@ void MusWindow::Resize( )
 	Show( true );
 }
 
-void MusWindow::PaperSize( )
-{
-	if ( !m_fh ) 
-		return;
-
-	if (m_fh->param.orientation)
-	{	
-		pageFormatHor = m_fh->param.pageFormatHor*10;
-		pageFormatVer = m_fh->param.pageFormatVer*10;
-	}
-	else
-	{	
-		pageFormatVer = m_fh->param.pageFormatHor*10;
-		pageFormatHor = m_fh->param.pageFormatVer*10;
-	}
-	wymax = pageFormatVer-40;
-    
-    
-	beamPenteMx = m_fh->param.beamPenteMax;
-	beamPenteMin = m_fh->param.beamPenteMin;
-	beamPenteMx /= 100;
-	beamPenteMin /= 100;
-    
-	return;
-}
-
-void MusWindow::SetFile( MusFile *file )
-{
-	if ( file == NULL ) // unset file
-	{
-		m_f = NULL;
-		m_fh = NULL;
-		m_page = NULL;
-        m_currentStaff = NULL;
-        m_currentElement = NULL;
-        m_newElement = NULL;
-		zoomNum = 4;
-        ResetUndos();
-		return;
-	}
-
-	m_f = file;
-	m_fh = &file->m_fheader;
-    m_notation_mode = m_fh->param.notationMode;
-	m_npage = 0;
-	zoomNum = 4;
-	PaperSize();
-	SetPage( &file->m_pages[m_npage] );
-	//CheckPoint( UNDO_ALL, MUS_UNDO_FILE );
-}
-
-
-void MusWindow::SetPage( MusPage *page )
-{
-	wxASSERT_MSG( page, "MusPage cannot be NULL ");
-
-	m_page = page;
-    UpdatePageValues();
-	if (m_charDefin == 0)
-		UpdateZoomValues();
-    UpdateStavesPos();
-
-	m_currentElement = NULL;
-	m_currentStaff = NULL;
-
-	// selectionne le premier element
-	if ( m_page->m_staves.GetCount() > 1 )
-	{
-		m_currentStaff = &m_page->m_staves[0];
-		if (m_currentStaff && m_currentStaff->GetFirst())
-			m_currentElement = m_currentStaff->GetFirst();
-	}
-
-
-    Refresh();
-}
-
-bool MusWindow::HasNext( bool forward ) 
-{ 
-	if ( forward )
-		return ( m_f && ((int)m_f->m_pages.GetCount() - 1 > m_npage) );
-	else
-		return ( m_f && (m_npage > 0) );
-		
-}
-
-void MusWindow::Next( bool forward ) 
-{ 
-	if ( !m_f || !m_fh )
-		return;
-
-	if ( forward && this->HasNext( true ) )
-		m_npage++;
-	else if ( !forward && this->HasNext( false ) )
-		m_npage--;
-
-	SetPage( &m_f->m_pages[m_npage] );		
-}
-
-
-
-int MusWindow::ToZoom( int i ) 
-{ 
-	return (i*zoomNum)/zoomDen; 
-}
-
-int MusWindow::ToReel( int i )
-{ 
-	return (i*zoomDen)/zoomNum;
-}
-
-int MusWindow::ToZoomY( int i ) 
-{
-	return ToZoom( wymax - i );
-}
-
-int MusWindow::ToReelY( int i )
-{ 
-	return wymax - ToReel( i ); 
-}
-
-bool MusWindow::CanZoom( bool zoomIn ) 
-{ 
-	if ( zoomIn )
-		return ( m_f && (zoomNum/zoomDen < 1) );
-	else
-		return ( m_f && ((float)zoomNum/(float)zoomDen > 0.1) );
-}
-
-
-void MusWindow::Zoom( bool zoomIn )
-{
-	if ( !m_f || !m_fh )
-		return;
-
-	if ( zoomIn && this->CanZoom( true ) )
-		zoomNum *= 2;
-	else if	( !zoomIn && this->CanZoom( false ) )
-		zoomNum /= 2;
-
-	Resize();
-	UpdateZoomValues();
-	SetPage( &m_f->m_pages[m_npage] );
-}
-
-void MusWindow::SetZoom( int percent )
-{
-	if ( !m_f || !m_fh )
-		return;
-
-	zoomNum = percent;
-	zoomDen = 100;
-	Resize();
-	UpdateZoomValues();
-	SetPage( &m_f->m_pages[m_npage] );
-}
-
 bool MusWindow::CanGoto( )
 {
 	return ( m_fh && ( m_fh->nbpage > 1) );
@@ -557,280 +384,6 @@ void MusWindow::Goto( )
 	dlg->Destroy();
 }
 
-void MusWindow::Goto( int nopage )
-{
-	if ( !m_f || !m_fh )
-		return;
-
-	if ((nopage < 0) || (nopage > m_fh->nbpage - 1))
-		return;
-
-	m_npage = nopage;
-	SetPage( &m_f->m_pages[m_npage] );
-}
-
-
-void MusWindow::UpdateFontValues() 
-{	
-	wxNativeFontInfo info;
-	info.FromString( wxGetApp().m_musicFontDesc );
-	m_ftLeipzig.SetNativeFontInfo( info );
-	
-	info.FromString( wxGetApp().m_neumeFontDesc );
-	m_ftFestaDiesA.SetNativeFontInfo( info );
-	
-	
-	if ( !m_ftLeipzig.Ok() )
-		wxLogWarning(_("Impossible to load font 'Leipzig'") );
-	if ( !m_ftFestaDiesA.Ok() )
-		wxLogWarning(_("Impossible to load font 'Festa Dies'") );
-	
-	//wxLogMessage(_("Size %d, Family %d, Style %d, Weight %d, Underline %d, Face %s, Desc %s"),
-	//	m_ftLeipzig.GetPointSize(),
-	//	m_ftLeipzig.GetFamily(),
-	//	m_ftLeipzig.GetStyle(),
-	//	m_ftLeipzig.GetWeight(),
-	//	m_ftLeipzig.GetUnderlined(),
-	//	m_ftLeipzig.GetFaceName().c_str(),
-	//	m_ftLeipzig.GetNativeFontInfoDesc().c_str());
-
-	m_activeFonts[0][0] = m_ftLeipzig;
-    m_activeFonts[0][1] = m_ftLeipzig;
-    m_activeFonts[1][0] = m_ftLeipzig;
-    m_activeFonts[1][1] = m_ftLeipzig;
-	
-	m_activeChantFonts[0][0] = m_ftFestaDiesA;
-    m_activeChantFonts[0][1] = m_ftFestaDiesA;
-    m_activeChantFonts[1][0] = m_ftFestaDiesA;
-    m_activeChantFonts[1][1] = m_ftFestaDiesA;
-	
-	
-	// Lyrics
-	info.FromString( wxGetApp().m_lyricFontDesc );
-	m_ftLyrics.SetNativeFontInfo( info );
-
-	if ( !m_ftLyrics.Ok() )
-		wxLogWarning(_("Impossible to load font for the lyrics") );
-
-	m_activeLyricFonts[0] = m_ftLyrics;
-    m_activeLyricFonts[1] = m_ftLyrics;
-}
-
-
-void MusWindow::UpdateZoomValues() 
-{
-	if ( !m_page )
-		return;	
-
-	m_activeFonts[0][0].SetPointSize( ToZoom( nTailleFont[0][0] ) ); //160
-    m_activeFonts[0][1].SetPointSize( ToZoom( nTailleFont[0][1] ) ); //120
-    m_activeFonts[1][0].SetPointSize( ToZoom( nTailleFont[1][0] ) ); //128
-    m_activeFonts[1][1].SetPointSize( ToZoom( nTailleFont[1][1] ) ); //100
-
-	//experimental font size for now
-	//they can all be the same size, seeing as the 'grace notes' are built in the font
-	
-	m_activeChantFonts[0][0].SetPointSize( ToZoom( 110 ) );
-    m_activeChantFonts[0][1].SetPointSize( ToZoom( 110 ) );
-    m_activeChantFonts[1][0].SetPointSize( ToZoom( 110 ) );
-    m_activeChantFonts[1][1].SetPointSize( ToZoom( 110 ) );
-	
-	m_activeLyricFonts[0].SetPointSize( ToZoom( nTailleFont[0][0] * m_ftLyrics.GetPointSize() / 50 ) );
-    m_activeLyricFonts[1].SetPointSize( ToZoom( nTailleFont[1][0] * m_ftLyrics.GetPointSize() / 50 ) );
-
-	m_memDC.SetBackgroundMode( wxTRANSPARENT );
-	//wxMask *mask;
-	/*for (i = 0; i < 256; i++)
-	{
-		m_memDC.SetFont( m_activeFonts[0][0] );
-		m_fontBitmaps[i][0][0].Create( ToZoom( nTailleFont[0][0]) ,ToZoom( 2*nTailleFont[0][0]), 1 );
-		m_memDC.SelectObject( m_fontBitmaps[i][0][0] );
-		m_memDC.Clear();
-		m_str = (char)i;
-		m_memDC.DrawText( m_str, 2, 0 );
-		m_memDC.SelectObject( wxNullBitmap );
-		mask = new wxMask( m_fontBitmaps[i][0][0], *wxWHITE );
-		m_fontBitmaps[i][0][0].SetMask( mask );
-
-		m_memDC.SetFont( m_activeFonts[1][0] );
-		m_fontBitmaps[i][1][0].Create( ToZoom( nTailleFont[1][0]) ,ToZoom( 2*nTailleFont[1][0]) , 1 );
-		m_memDC.SelectObject( m_fontBitmaps[i][1][0] );
-		m_memDC.Clear();
-		m_str = (char)i;
-		m_memDC.DrawText( m_str, 2, 0 );
-		m_memDC.SelectObject( wxNullBitmap );
-		mask = new wxMask( m_fontBitmaps[i][1][0], *wxWHITE );
-		m_fontBitmaps[i][1][0].SetMask( mask );
-
-		m_memDC.SetFont( m_activeFonts[0][1] );
-		m_fontBitmaps[i][0][1].Create( ToZoom( nTailleFont[0][1]) ,ToZoom( 2*nTailleFont[0][1]) , 1 );
-		m_memDC.SelectObject( m_fontBitmaps[i][0][1] );
-		m_memDC.Clear();
-		m_str = (char)i;
-		m_memDC.DrawText( m_str, 2, 0 );
-		m_memDC.SelectObject( wxNullBitmap );
-		mask = new wxMask( m_fontBitmaps[i][0][1], *wxWHITE );
-		m_fontBitmaps[i][0][1].SetMask( mask );
-
-		m_memDC.SetFont( m_activeFonts[1][1] );
-		m_fontBitmaps[i][1][1].Create( ToZoom( nTailleFont[1][1]) ,ToZoom( 2*nTailleFont[1][1]) , 1 );
-		m_memDC.SelectObject( m_fontBitmaps[i][1][1] );
-		m_memDC.Clear();
-		m_str = (char)i;
-		m_memDC.DrawText( m_str, 2, 0 );
-		m_memDC.SelectObject( wxNullBitmap );
-		mask = new wxMask( m_fontBitmaps[i][1][1], *wxWHITE );
-		m_fontBitmaps[i][1][1].SetMask( mask );
-	}*/
-
-	m_charDefin = m_page->defin;
-}
-
-
-void MusWindow::UpdatePageValues() 
-{
-	if ( !m_page || !m_fh ) 
-		return;
-
-	// margins
-	int page = m_page->npage;
-	if ( m_fh->param.entetePied & PAGINATION )
-		page += m_f->m_pagination.numeroInitial;
-
-	if (page % 2)	//pages impaires 
-		mrgG = - m_fh->param.MargeGAUCHEIMPAIRE*10;
-	else
-		mrgG = - m_fh->param.MargeGAUCHEPAIRE*10;
-	mrgG = ToZoom (mrgG);
-
-
-	if (m_charDefin != m_page->defin)
-		m_charDefin = 0;
-    int defin = m_page->defin;
-
-    RapportPortee[0] = m_fh->param.rapportPorteesNum;
-    RapportPortee[1] = m_fh->param.rapportPorteesDen;
-    RapportDimin[0] = m_fh->param.rapportDiminNum;
-    RapportDimin[1] = m_fh->param.rapportDiminDen;
-
-    // half of the space between two lines
-    _espace[0] = defin/2;
-    // same for small staves
-    _espace[1] = (_espace[0] * RapportPortee[0]) / RapportPortee[1];
-    // space between two lines
-    _interl[0] = _espace[0] * 2;
-    // same for small staves
-    _interl[1] = _espace[1] * 2;
-    // staff (with five lines)
-    _portee[0] = _interl[0] * 4;
-    _portee[1] = _interl[1] * 4;
-    // 
-    _octave[0] = _espace[0] * 7;
-    _octave[1] = _espace[1] * 7;
-
-    _pas = _espace[0];
-    _bond = _pas * 6;
-    _pas3 = _pas * 3;
-
-    // values for beams
-    DELTANbBAR[0] = m_fh->param.EpBarreValeur;
-    DELTABLANC[0] = m_fh->param.EpBlancBarreValeur;
-    DELTABAR = DELTANbBAR[0] + DELTABLANC[0];
-    DELTANbBAR[1] = (DELTANbBAR[0] * RapportPortee[0]) / RapportPortee[1];
-    DELTABLANC[1] = (DELTABLANC[0] * RapportPortee[0]) / RapportPortee[1];
-
-
-	
-	//do I really have to do all this setup again for Festa Dies? maybe not
-	
-	
-	hautFont = _interl[0] * 8;
-	m_ftLeipzig.SetPointSize( hautFont );
-	wxClientDC dc(this);
-	dc.SetMapMode( wxMM_TEXT );
-	dc.SetFont( m_ftLeipzig );
-	//wxCoord ch = dc.GetCharHeight();
-	//wxCoord cw = dc.GetCharWidth();
-
-	int w, h, d, l;
-	dc.GetTextExtent( wxString((char)sSOL,1), &w, &h , &d, &l);
-
-	hautFont *=  hautFont * wxGetApp().m_fontSizeCorrection;
-	hautFont /= h * 100;
-	
-	hautFontCorr[0][0] = (_interl[0] * 45) / 10; //*/ hautFont * 765 / 1000;
-	hautFontCorr[0][0] +=  wxGetApp().m_fontPosCorrection;
-
-	hautFontCorr[0][1] = (hautFontCorr[0][0] * RapportDimin[0]) / RapportDimin[1];
-	hautFontCorr[1][0] = (hautFontCorr[0][0] * RapportPortee[0]) / RapportPortee[1];
-	hautFontCorr[1][1] = (hautFontCorr[1][0] * RapportDimin[0]) / RapportDimin[1];
-
-	m_ftLeipzig.SetPointSize( hautFont );
-	dc.SetFont( m_ftLeipzig );
-
-    nTailleFont[0][0] = hautFont;
-    nTailleFont[0][1] = (nTailleFont[0][0] * RapportDimin[0]) / RapportDimin[1];
-    nTailleFont[1][0] = (nTailleFont[0][0] * RapportPortee[0]) / RapportPortee[1];
-    nTailleFont[1][1]= (nTailleFont[1][0] * RapportDimin[0])/ RapportDimin[1];
-
-    v_unit[0] = (float)_interl[0]/4;
-    v4_unit[0] = (float)_interl[0]/8;
-    v_unit[1] = (float)_interl[1]/4;
-    v4_unit[1] = (float)_interl[1]/8;
-
-	dc.GetTextExtent( wxString( (char)sBLANCHE, 1 ), &w, &h ) ;
-    rayonNote[0][0] = w / 2;
-    rayonNote[0][1] = (rayonNote[0][0] * RapportDimin[0])/RapportDimin[1];
-    rayonNote[1][0] = (rayonNote[0][0] * RapportPortee[0])/RapportPortee[1];
-    rayonNote[1][1] = (rayonNote[1][0] * RapportDimin[0])/RapportDimin[1];
-
-    ledgerLine[0][0] = (int)(w * .72);
-    ledgerLine[0][1] = (ledgerLine[0][0] * RapportDimin[0])/RapportDimin[1];
-    ledgerLine[1][0] = (ledgerLine[0][0] * RapportPortee[0])/RapportPortee[1];
-    ledgerLine[1][1] = (ledgerLine[1][0] * RapportDimin[0])/RapportDimin[1];
-
-	dc.GetTextExtent( wxString( (char)sRONDE_B, 1 ), &w, &h ) ;
-    ledgerLine[0][2] = (int)(w * .66);
-    ledgerLine[1][2] = (ledgerLine[0][2] * RapportPortee[0]) /RapportPortee[1];
-
-    largeurBreve[0] = (int)((w * 0.8 /*1.1667*/) / 2);
-    largeurBreve[1] = (largeurBreve[0] * RapportPortee[0]) /RapportPortee[1];
-
-	dc.GetTextExtent( wxString( (char)sDIESE, 1 ), &w, &h ) ;
-    largAlter[0][0] = w;
-    largAlter[0][1] = (largAlter[0][0] * RapportDimin[0])/RapportDimin[1];
-    largAlter[1][0] = (largAlter[0][0] * RapportPortee[0]) /RapportPortee[1];
-    largAlter[1][1] = (largAlter[1][0] * RapportDimin[0])/RapportDimin[1];
-}
-
-
-void MusWindow::UpdateStavesPos() 
-{
-	int i,mPortTaille;
-    MusStaff *staff;
-
-	if ( !m_page || !m_fh ) 
-        return;
-       
-	int yy = wymax; //JwgDef.MRGMORTE;    // sommet utile "dessinable" de la page (bord - 5mm)
-    for (i = 0; i < m_page->nbrePortees; i++) 
-	{
-         staff = &m_page->m_staves[i];
-         mPortTaille = staff->pTaille;
-         yy -= staff->ecart * _interl[mPortTaille];
-         kPos[i].compte = 0;
-         // calcul du point d'ancrage des curseurs au-dessus de la ligne superieure
-		 kPos[i].yp = yy + _portee[mPortTaille];
-		 staff->yrel = (int)kPos[i].yp;
-         // portees à 1 ou 4 lignes
-         if (staff->portNbLine == 1)
-            kPos[i].yp  += _interl[mPortTaille]*2;
-         else if (staff->portNbLine == 4)
-			kPos[i].yp  += _interl[mPortTaille];
-         staff->xrel = m_fh->param.MargeGAUCHEIMPAIRE; //+JwgDef.MRGMORTE;
-    }
-}
-
 void MusWindow::SetToolPanel( MusToolPanel *toolpanel )
 {
 	wxASSERT_MSG( toolpanel , "ToolPanel cannot be NULL ");
@@ -838,39 +391,6 @@ void MusWindow::SetToolPanel( MusToolPanel *toolpanel )
 	m_toolpanel->SetMusWindow( this );
 	SyncToolPanel();
 }
-
-//void MusWindow::SetNotationMode( bool mode ) { m_notation_mode = mode; }
-
-
-// this method in a sense acts as both a getter and a setter - 
-// The last selected note object (mensural or neume) determines the notation mode
-// This is a convenience method that can be called in situations where the notation
-// mode needs to be determined
-
-/*
-bool MusWindow::GetNotationMode() 
-{ 
-	if (m_currentElement->IsNote())
-		m_notation_mode = MENSURAL_MODE;
-	else if (m_currentElement->IsNeume())
-		m_notation_mode = NEUMES_MODE;
-	
-	return m_notation_mode; 
-}
-*/
-
-// convenience method to return if the selected element is a note or neume object
-// REFACTORING: eventually these classes should be merged (subclassed from a higher
-// encapsulated note superclass)
-
-bool MusWindow::IsNoteSelected() 
-{ 
-	if (!m_currentElement) 
-		return false;
-	else
-		return m_currentElement->IsNote() || m_currentElement->IsNeume();
-}
-
 
 void MusWindow::SetInsertMode( bool mode )
 {
@@ -1350,8 +870,8 @@ void MusWindow::OnMouseLeftDown(wxMouseEvent &event)
 //		printf("clicked: {%d, %d}\n", ToReel(dc.DeviceToLogicalX(event.m_x)),
 //			   ToReelY(dc.DeviceToLogicalY(event.m_y)));
 		
-		if ( m_currentElement &&  m_currentStaff ) 
-			m_currentElement->ClearElement( &dc, m_currentStaff );
+		// TODO if ( m_currentElement &&  m_currentStaff ) 
+		// TODO 	m_currentElement->ClearElement( &dc, m_currentStaff );
 
 		m_has_been_dragged = false;
 		m_dragging_x  = ToReel( dc.DeviceToLogicalX( event.m_x ) );
@@ -1478,7 +998,7 @@ void MusWindow::OnMouseMotion(wxMouseEvent &event)
 		
 		if ( m_insertx != m_dragging_x  )		// If element has moved in the x-axis
 		{
-			m_currentElement->ClearElement( &dc, m_currentStaff );
+			// TODO m_currentElement->ClearElement( &dc, m_currentStaff );
 			m_currentElement->xrel += ( m_insertx - m_dragging_x );
 			m_dragging_x = m_insertx;
 			if ( m_editElement )
@@ -2293,6 +1813,9 @@ void MusWindow::OnChar(wxKeyEvent &event)
     }
 }
 
+// for the experiments with cairo
+//#include "cairo-quartz.h"
+
 
 void MusWindow::OnPaint(wxPaintEvent &event)
 {
@@ -2336,32 +1859,61 @@ void MusWindow::OnPaint(wxPaintEvent &event)
 
 	this->PrepareDC( dc );
 	dc.SetTextForeground( *wxBLACK );
-	//dc.SetMapMode( wxMM_TEXT );
+	dc.SetMapMode( wxMM_TEXT );
 	dc.SetAxisOrientation( true, false );
 	
-	
-	
-	
 	m_page->Init( this );
-	m_page->DrawPage( &dc );
+    AxWxDC ax_dc( &dc );
+	m_page->DrawPage( &ax_dc );
     // TODO for cursor
     // Draw the cursor if we are in insertion mode, we have a m_newElement and a m_currentStaff
     // We can add a DrawCursor method, use the y position of the staff and the x of the element
     // What shape to draw??
-	
+    
+    /*
+    // Experiment with Cairo on OSX using the native Context
+    
+    drawRect.height = -drawRect.height;
+    
+    CGContextRef context = (CGContextRef) dc.GetGraphicsContext()->GetNativeContext();
+            
+    if(context == 0)
+    {
+        return;
+    }
+            
+    cairo_surface_t* cairo_surface = cairo_quartz_surface_create_for_cg_context(context, drawRect.width, drawRect.height);
+    cairo_t* cairo_image = cairo_create(cairo_surface);
+            
+    //Render(cairo_image, rect.width, rect.height);
+    cairo_set_source_rgb(cairo_image, 1.0, 1.0, 1.0);
+    cairo_rectangle(cairo_image, 0, 0, drawRect.width, drawRect.height);
+    cairo_fill(cairo_image);
+    cairo_set_line_width (cairo_image, 2);
+    cairo_scale (cairo_image, 100, 0.1);
+    cairo_set_source_rgb (cairo_image, 0, 0, 0);
+    cairo_rectangle (cairo_image, 10.5, 10.5, 20, 20);
+    cairo_stroke (cairo_image);
+
+    cairo_surface_flush(cairo_surface);
+            
+    CGContextFlush( context );
+    cairo_surface_destroy(cairo_surface);
+    cairo_destroy(cairo_image);
+    */
 	
 	// hitting return in keyboard entry mode sends us here for some reason
 	
 	if (!m_editElement && m_newElement && m_currentStaff) {
-		m_currentColour = wxRED;
+		m_currentColour = AxRED;
 		//drawing code here
 		
 		printf("staff y: %d\n", m_currentStaff->yrel);
 		
-		this->rect_plein2(&dc, m_newElement->xrel+35, m_currentStaff->yrel-200, 
-						  m_newElement->xrel+40, m_currentStaff->yrel-40);
+	// TODO	this->rect_plein2(&dc, m_newElement->xrel+35, m_currentStaff->yrel-200, 
+	//					  m_newElement->xrel+40, m_currentStaff->yrel-40);
 		
-		m_currentColour = wxBLACK;
+		m_currentColour = AxBLACK;
 	}
 }
 

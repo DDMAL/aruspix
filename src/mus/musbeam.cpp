@@ -26,15 +26,16 @@ using std::max;
 #include "mussymbol.h"
 #include "musnote.h"
 #include "muspage.h"
-#include "muswindow.h"
+#include "musrc.h"
 
 #include <math.h>
 
 
 #define BEAMEDIT 50	// code arbitraire identifiant la structure de debordement pour beams
-typedef struct BeamEdit {	short iHauteur;
-					float fPente;
-			}BeamEdit;
+typedef struct BeamEdit {	
+    short iHauteur;
+    float fPente;
+} BeamEdit;
 //static BeamEdit BeamEd, *ptBeamEd;
 
 /*
@@ -78,7 +79,7 @@ double dA, dB;
 char extern_q_auto = 0;
 char extern_queue = 0;
 
-unsigned int MusStaff::beam ( wxDC *dc )
+unsigned int MusStaff::beam ( AxDC *dc )
 {
 	struct MusElement *chk;
 	static struct fb {
@@ -154,8 +155,8 @@ unsigned int MusStaff::beam ( wxDC *dc )
     } 
     else
     {	
-        dx[0] =  m_w->rayonNote[this->pTaille][0] - ((m_w->rayonNote[this->pTaille][0] * m_p->hampesCorr) / 20);
-        dx[1] =  m_w->rayonNote[this->pTaille][1] - ((m_w->rayonNote[this->pTaille][1] * m_p->hampesCorr) / 20);
+        dx[0] =  m_r->rayonNote[this->pTaille][0] - ((m_r->rayonNote[this->pTaille][0] * m_p->hampesCorr) / 20);
+        dx[1] =  m_r->rayonNote[this->pTaille][1] - ((m_r->rayonNote[this->pTaille][1] * m_p->hampesCorr) / 20);
         dx[0] -= (m_p->EpQueueNote-1)/2;
         dx[1] -= (m_p->EpQueueNote-1)/2;
     }
@@ -296,7 +297,7 @@ unsigned int MusStaff::beam ( wxDC *dc )
 	/* direction queues: auto = moyenne */
 	/* bch.inpt: le flot de donnees a ete envoye par input et non rd_objet */
 	{	
-        milieu = _yy[0] - (m_w->_portee[this->pTaille] + m_w->_interl[this->pTaille] * 2);
+        milieu = _yy[0] - (m_r->_portee[this->pTaille] + m_r->_interl[this->pTaille] * 2);
 		y_moy /= ct;
 		if ( y_moy <  milieu )
 			fb.dir = ON;
@@ -316,12 +317,12 @@ unsigned int MusStaff::beam ( wxDC *dc )
 
     if (crd[_ct].chk->dimin == 0)
     {
-        deltanbbar = m_w->DELTANbBAR[this->pTaille];
-        deltablanc = m_w->DELTABLANC[this->pTaille];
+        deltanbbar = m_r->DELTANbBAR[this->pTaille];
+        deltablanc = m_r->DELTABLANC[this->pTaille];
     }
     else
-    {	deltanbbar = max (2, (m_w->DELTANbBAR[this->pTaille]/2));
-        deltablanc = max (2, (m_w->DELTABLANC[this->pTaille]-1));
+    {	deltanbbar = max (2, (m_r->DELTANbBAR[this->pTaille]/2));
+        deltablanc = max (2, (m_r->DELTABLANC[this->pTaille]-1));
     }
 	deltabar = deltanbbar + deltablanc;
 
@@ -374,10 +375,10 @@ unsigned int MusStaff::beam ( wxDC *dc )
         ecart = ((shortest-CR)*(deltabar));
 
 		if (crd[_ct].chk->dimin)
-			ecart += m_w->_espace[this->pTaille]*5;
+			ecart += m_r->_espace[this->pTaille]*5;
 		else
         //   Le 24 Septembre 1993: obtenir des CR reliees a la hauteur des separees 
-			ecart += (shortest > CR) ? m_w->_interl[this->pTaille]*hauteurBarreMoyenne : m_w->_interl[this->pTaille]*(hauteurBarreMoyenne+0.5);
+			ecart += (shortest > CR) ? m_r->_interl[this->pTaille]*hauteurBarreMoyenne : m_r->_interl[this->pTaille]*(hauteurBarreMoyenne+0.5);
 
 		if (!fb.dir && !this->notAnc)
 		{	dx[0] = - dx[0];
@@ -385,7 +386,7 @@ unsigned int MusStaff::beam ( wxDC *dc )
 		}
         /***
         if (crd[_ct].chk->existDebord) {
-        ecart = m_w->_interl[0]*2;
+        ecart = m_r->_interl[0]*2;
             if (!fb.mrq_port) extern_q_auto= 0;
         }
         ***/
@@ -417,8 +418,8 @@ unsigned int MusStaff::beam ( wxDC *dc )
 	else
 		dB = 0.0;
 	/* Correction esthetique : */
-	if (fabs(dB) < m_w->beamPenteMin ) dB = 0.0;
-	if (fabs(dB) > m_w->beamPenteMx ) dB = (dB>0) ? m_w->beamPenteMx : -m_w->beamPenteMx;
+	if (fabs(dB) < m_r->beamPenteMin ) dB = 0.0;
+	if (fabs(dB) > m_r->beamPenteMx ) dB = (dB>0) ? m_r->beamPenteMx : -m_r->beamPenteMx;
 	/* pente correcte: entre 0 et env 0.4 (0.2 a 0.4) */
 
 if (fPente)
@@ -487,27 +488,27 @@ if (fPente)
 	{
 		if (fb.fl_cond)	/* esth: eviter que queues depassent barres */
 		{	if (crd[i].prov)	/* venant du haut, queue en bas */
-			{	/***fy1 = *(_ybeam+i)+m_w->v_pnt;***/	/* on raccourcit queue */
-				fy2 = crd[i].b-m_w->v4_unit[this->pTaille];
+			{	/***fy1 = *(_ybeam+i)+m_r->v_pnt;***/	/* on raccourcit queue */
+				fy2 = crd[i].b-m_r->v4_unit[this->pTaille];
 			}
 			else
 			{	/***fy1 = *(_ybeam+i)-e_t->v_pnt;***/	/* on allonge queue */
-				fy2 = crd[i].b+m_w->v4_unit[this->pTaille];
+				fy2 = crd[i].b+m_r->v4_unit[this->pTaille];
 			}
 		}
 		else	// on tient compte de l'‚paisseur qui fait des "bosses"
 		{	if (fb.dir)	// queue en haut
 			{	fy1 = *(_ybeam+i) - m_p->EpQueueNote;
-				fy2 = crd[i].b+m_w->v4_unit[this->pTaille];
+				fy2 = crd[i].b+m_r->v4_unit[this->pTaille];
 			}
 			else
 			{	fy1 = *(_ybeam+i) + m_p->EpQueueNote;
-				fy2 = crd[i].b-m_w->v4_unit[this->pTaille];
+				fy2 = crd[i].b-m_r->v4_unit[this->pTaille];
 			}
 		}
 		if (((MusNote*)(crd+i)->chk)->sil == _NOT && ((MusNote*)(crd+i)->chk)->tetenot != SANSQUEUE)
 		{	
-            m_w->v_bline (dc,fy2, fy1, crd[i].a, m_p->EpQueueNote);
+            m_r->v_bline (dc,fy2, fy1, crd[i].a, m_p->EpQueueNote);
 
 // ICI, bon endroit pour enfiler les STACCATOS - ne sont traités ici que ceux qui sont opposés à la tête (les autres, in wgnote.cpp)
 			if (((MusNote*)(crd+i)->chk)->queue_lig && ((MusNote*)(crd+i)->chk)->stacc
@@ -570,7 +571,7 @@ if (fPente)
 
 	for (j=0; j<h ; j++)
 	{
-		decalage = m_w->hGrosseligne (dc,fx1,fy1,fx2,fy2, deltanbbar*delt_y /***, workColor2***/);
+		decalage = m_r->hGrosseligne (dc,fx1,fy1,fx2,fy2, deltanbbar*delt_y /***, workColor2***/);
 		fy1 += decalage; fy2 += decalage;
 
 /* ici, redescendre  de l'epaisseur de la barre s'il y a accele */
@@ -684,18 +685,18 @@ if (fPente)
                     {
                         if (apax == t && k==0 && mx_i[k] != crd[_ct].a)	/* au debut du paquet */
                         {	fy1 = my_i[k] + barre_y;
-                            mx_f[k] = mx_i[k] + m_w->ledgerLine[this->pTaille][0];
+                            mx_f[k] = mx_i[k] + m_r->ledgerLine[this->pTaille][0];
                             fy2 = dA + sy_up + barre_y + dB * mx_f[k];
 
-                            decalage= m_w->hGrosseligne (dc,mx_i[k],fy1,mx_f[k],fy2,deltanbbar*delt_y /***, workColor2***/ );
+                            decalage= m_r->hGrosseligne (dc,mx_i[k],fy1,mx_f[k],fy2,deltanbbar*delt_y /***, workColor2***/ );
                             fy1 += decalage; fy2 += decalage;
 
                         }
                         else		/* corps ou fin de paquet */
                         {	fy2 = my_i[k] + barre_y;
-                            mx_i[k] -= m_w->ledgerLine[this->pTaille][0];
+                            mx_i[k] -= m_r->ledgerLine[this->pTaille][0];
                             fy1 = dA + sy_up + barre_y + dB * mx_i[k];
-                            decalage= m_w->hGrosseligne (dc,mx_i[k],fy1,mx_f[k],fy2,deltanbbar*delt_y /***,workColor2***/);
+                            decalage= m_r->hGrosseligne (dc,mx_i[k],fy1,mx_f[k],fy2,deltanbbar*delt_y /***,workColor2***/);
                             fy1 += decalage; fy2 += decalage;
 
                         }
@@ -703,7 +704,7 @@ if (fPente)
                     else if (mx_i[k])		/* s'il y a un marqueur */
                     {	fy1 = my_i[k] + barre_y;
                         fy2 = my_f[k] + barre_y;
-                        decalage= m_w->hGrosseligne (dc,mx_i[k],fy1,mx_f[k],fy2,deltanbbar*delt_y /***,workColor2***/);
+                        decalage= m_r->hGrosseligne (dc,mx_i[k],fy1,mx_f[k],fy2,deltanbbar*delt_y /***,workColor2***/);
                         fy1 += decalage; fy2 += decalage;
 
                     }				
