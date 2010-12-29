@@ -224,8 +224,6 @@ public:
 
 	//const wxColour *m_currentColour;
     int m_currentColour;
-	//wxColour m_black;
-    int m_black;
 	MusElement *m_currentElement;
 
 	MusStaff *m_currentStaff;

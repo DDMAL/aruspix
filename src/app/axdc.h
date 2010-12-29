@@ -12,8 +12,8 @@
 #include "wx/defs.h"
 
 
-#define AxBLACK  255 << 16 | 255 << 8 | 255
-#define AxWHITE 0
+#define AxWHITE  255 << 16 | 255 << 8 | 255
+#define AxBLACK 0
 #define AxRED  255 << 16
 #define AxBLUE 255
 #define AxGREEN  255 << 8

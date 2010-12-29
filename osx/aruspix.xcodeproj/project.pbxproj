@@ -873,7 +873,6 @@
 					"$(ARUSPIX_WX)/include",
 					"$(ARUSPIX_WX)/contrib/include",
 					"/usr/include/libxml2/**",
-					"/Users/laurent/libs/cairo10.0/include/cairo//**",
 				);
 				INFOPLIST_FILE = "Aruspix-Info.plist";
 				INSTALL_PATH = "$(USER_APPS_DIR)";

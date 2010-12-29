@@ -143,9 +143,9 @@ wxColour AxWxDC::GetColour( int colour )
     case (AxCYAN): return *wxCYAN;
     case (AxLIGHT_GREY): return *wxLIGHT_GREY;
     default:
-        char blue =  (colour & 255);
-        char green = (colour >> 8) & 255;
-        char red = (colour >> 16) & 255;
+        int blue =  (colour & 255);
+        int green = (colour >> 8) & 255;
+        int red = (colour >> 16) & 255;
         wxColour rgb(red, blue, green);
         return wxColour(red, blue, green);
     }

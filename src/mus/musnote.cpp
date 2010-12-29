@@ -401,7 +401,7 @@ void MusNote::Draw( AxDC *dc, MusStaff *staff)
 	}
 	
 	if ( !m_r->m_eraseElement )
-		m_r->m_currentColour = m_r->m_black;
+		m_r->m_currentColour = AxBLACK;
 	
 	return;
 }

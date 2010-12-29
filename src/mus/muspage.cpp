@@ -213,7 +213,7 @@ void MusPage::DrawPage( AxDC *dc, bool background )
 
 	if ( background )
 		dc->DrawRectangle( m_r->mrgG, m_r->ToZoomY(( m_r->pageFormatVer-50) + m_p->MargeSOMMET*10), i,
-			m_r->ToZoomY (-50)+m_p->MargeSOMMET*10);
+        			m_r->ToZoomY (-50)+m_p->MargeSOMMET*10);
 
 
 	// position des portees

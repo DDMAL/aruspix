@@ -90,9 +90,7 @@ MusRC::MusRC( )
     zoomDen = 10;
     m_charDefin = 0;
 
-	//m_black = wxColour( 0, 0, 0 );
-    m_black = AxBLACK;
-	//m_currentColour = &m_black;
+	m_currentColour = AxBLACK;
 	m_currentElement = NULL;
 	m_currentStaff = NULL;
 

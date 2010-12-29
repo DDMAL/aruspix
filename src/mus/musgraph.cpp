@@ -252,7 +252,7 @@ void MusRC::putfont ( AxDC *dc, int x, int y, unsigned char c,
 #if defined (__WXMSW__)
 	if ( !pTaille && !dimin )
 #else
-	if ( !pTaille && !dimin &&  (*m_currentColour != m_black ) )
+	if ( !pTaille && !dimin &&  (*m_currentColour != AxBLACK ) )
 #endif
 	{
 		putfontfast( dc, x, y, c );

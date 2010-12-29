@@ -197,7 +197,7 @@ void MusElement::ClearElement( AxDC *dc, MusStaff *staff )
 	this->Draw( dc, staff );
 	
 	m_r->m_eraseElement = false;
-	m_r->m_currentColour = m_r->m_black;
+	m_r->m_currentColour = AxBLACK;
 	
 	staff->DrawStaffLines( dc );
 }

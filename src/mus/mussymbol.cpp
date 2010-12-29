@@ -310,7 +310,7 @@ void MusSymbol::Draw ( AxDC *dc, MusStaff *pportee)
 	//discontinu=0;
 
 	if ( !m_r->m_eraseElement )
-		m_r->m_currentColour = m_r->m_black;
+		m_r->m_currentColour = AxBLACK;
 	
 
 	return;

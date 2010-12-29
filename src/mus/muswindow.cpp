@@ -43,6 +43,7 @@ using std::max;
 
 #include "app/axgotodlg.h"
 #include "app/axwxdc.h"
+#include "app/axcairodc.h"
 
 #include <iostream>
 #include <cstdlib>
@@ -1813,10 +1814,6 @@ void MusWindow::OnChar(wxKeyEvent &event)
     }
 }
 
-// for the experiments with cairo
-//#include "cairo-quartz.h"
-
-
 void MusWindow::OnPaint(wxPaintEvent &event)
 {
 	if ( !m_page || !m_fh )
@@ -1864,44 +1861,14 @@ void MusWindow::OnPaint(wxPaintEvent &event)
 	
 	m_page->Init( this );
     AxWxDC ax_dc( &dc );
-	m_page->DrawPage( &ax_dc );
+    m_page->DrawPage( &ax_dc );
+
     // TODO for cursor
     // Draw the cursor if we are in insertion mode, we have a m_newElement and a m_currentStaff
     // We can add a DrawCursor method, use the y position of the staff and the x of the element
     // What shape to draw??
     
-    /*
-    // Experiment with Cairo on OSX using the native Context
-    
-    drawRect.height = -drawRect.height;
-    
-    CGContextRef context = (CGContextRef) dc.GetGraphicsContext()->GetNativeContext();
-            
-    if(context == 0)
-    {
-        return;
-    }
-            
-    cairo_surface_t* cairo_surface = cairo_quartz_surface_create_for_cg_context(context, drawRect.width, drawRect.height);
-    cairo_t* cairo_image = cairo_create(cairo_surface);
-            
-    //Render(cairo_image, rect.width, rect.height);
-    cairo_set_source_rgb(cairo_image, 1.0, 1.0, 1.0);
-    cairo_rectangle(cairo_image, 0, 0, drawRect.width, drawRect.height);
-    cairo_fill(cairo_image);
-    cairo_set_line_width (cairo_image, 2);
-    cairo_scale (cairo_image, 100, 0.1);
-    cairo_set_source_rgb (cairo_image, 0, 0, 0);
-    cairo_rectangle (cairo_image, 10.5, 10.5, 20, 20);
-    cairo_stroke (cairo_image);
 
-    cairo_surface_flush(cairo_surface);
-            
-    CGContextFlush( context );
-    cairo_surface_destroy(cairo_surface);
-    cairo_destroy(cairo_image);
-    */
-	
 	// hitting return in keyboard entry mode sends us here for some reason
 	
 	if (!m_editElement && m_newElement && m_currentStaff) {
