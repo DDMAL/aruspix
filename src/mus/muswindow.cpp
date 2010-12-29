@@ -43,7 +43,6 @@ using std::max;
 
 #include "app/axgotodlg.h"
 #include "app/axwxdc.h"
-#include "app/axcairodc.h"
 
 #include <iostream>
 #include <cstdlib>
