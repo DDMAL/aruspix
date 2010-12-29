@@ -1,4 +1,4 @@
-/////////////////////////////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////////////////////////
 // Author:      Laurent Pugin
 //
 // Retrieve the bounding box size of a glyph (glyph code) of a font
@@ -31,7 +31,7 @@ main( int     argc,
 
   if ( argc != 3 )
   {
-    fprintf ( stderr, "usage: %s font-file glyph-code\nexample: %s /path/to/test.ttf 0x002C\n", argv[0], argv[0] );
+    fprintf ( stderr, "usage: %s font-file glyph-code\nexample: %s /path/to/test.ttf 192\n", argv[0], argv[0] );
     exit( 1 );
   }
 
@@ -52,6 +52,7 @@ main( int     argc,
   
   printf("Number of glyphs in the font: %d\n", (int)face->num_glyphs);
   printf("Units per EM: %d\n", (int)face->units_per_EM);
+  printf("Font ascent: %d\nFont descent: %d\n", face->ascender, face->descender);
   
   int glyph_index = FT_Get_Char_Index( face, glyph_code );
   if (glyph_index == 0) {
