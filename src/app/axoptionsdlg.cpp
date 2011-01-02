@@ -353,8 +353,7 @@ protected:
 
 void AxOptionsDlg::OnChooseFont( wxCommandEvent &event )
 {
-//XXX: Check if condition
-#ifdef __WXMAC__ && !wxCHECK_VERSION(2,8,3)
+#if defined(__WXMAC__) && !wxCHECK_VERSION(2,8,3)
 
     AxFontEnumerator fontEnumerator;
 	wxString facename;
