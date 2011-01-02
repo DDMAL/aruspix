@@ -178,7 +178,8 @@ bool EdtEnv::ResetFile()
     m_musViewPtr->Show( false );
     m_musViewPtr->SetFile( NULL );
     
-    ((EdtPanel*)m_envWindowPtr)->GetMusToolPanel()->SetMusWindow( NULL );
+    // XXX: What's this doing?
+    //((EdtPanel*)m_envWindowPtr)->GetMusToolPanel()->SetMusWindow( NULL );
     //m_toolpanel->SetMusWindow( NULL ); 
     UpdateTitle( );
     
