@@ -135,10 +135,23 @@ bool AxApp::OnInit()
 #else // OS X
 	m_resourcesPath = wxStandardPaths::Get().GetResourcesDir();
 #endif
+
+#if defined(__linux__)
+	wxString xdg_cache;
+	if (wxGetEnv("XDG_CACHE_HOME", &xdg_cache)) {
+		m_logDir = xdg_cache + "/aruspix";
+	} else {
+		wxString home_dir;
+		wxGetEnv("HOME", &home_dir);
+		m_logDir = home_dir + "/.cache/aruspix";
+	}
+#else
 	m_logDir = wxStandardPaths::Get().GetUserDataDir();
+#endif
 
     // configuration that has to be loaded before building the frame
     // we need language and toolbar toolsize
+	// TODO: Would be nice to use $XDG_CONFIG_HOME on linux
     wxConfigBase *pConfig = wxConfigBase::Get();
     wxASSERT_MSG( pConfig, wxT("pConfig cannot be NULL") );
     pConfig->SetRecordDefaults();

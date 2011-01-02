@@ -19,6 +19,7 @@
 #include "wx/config.h"
 #include "wx/stdpaths.h"
 #include "wx/gdicmn.h"
+#include "wx/utils.h"
 
 #include "RtMidi.h"
 
@@ -119,7 +120,7 @@ BEGIN_EVENT_TABLE(AxFrame,wxFrame)
     EVT_MENU(wxID_EXIT, AxFrame::OnQuit )
     EVT_MENU_RANGE( ENV_BASE_ID, ENV_BASE_ID + ENV_MAX , AxFrame::OnEnvironments )
     EVT_MENU_RANGE(ENV_IDS_MIN ,ENV_IDS_MAX, AxFrame::OnEnvironmentMenu )
-    // redirection de la mise à jour du changement de sash
+    // redirection de la mise ï¿½ jour du changement de sash
     EVT_CUSTOM_RANGE( wxEVT_COMMAND_SPLITTER_SASH_POS_CHANGED, ENV_IDS_MIN ,ENV_IDS_MAX, AxFrame::OnCustomMenu )
     // redirections des sliders de barre de menu
 #if defined(__WXMSW__) 
@@ -422,8 +423,22 @@ void AxFrame::LoadConfig()
 	wxString default_images = default_docDir + "/Images";
 	wxString default_pages = default_docDir + "/Pages";
 	wxString default_models = default_docDir + "/Models";
-#else // OS X
-	wxString default_workingDir = wxGetHomeDir() + "/.aruspix"; // on OS X		
+#else // OS X / Linux
+	#if defined(__linux__)
+	    // wx still doesn't support XDG directories:
+	    // http://trac.wxwidgets.org/ticket/9300
+		wxString xdg_data;
+		wxString default_workingDir;
+		if (wxGetEnv("XDG_DATA_HOME", &xdg_data)) {
+			default_workingDir = xdg_data + "/aruspix";
+		} else {
+			wxString home_dir;
+			wxGetEnv("HOME", &home_dir);
+			default_workingDir = home_dir + "/.local/share/aruspix";
+		}
+	#else // OSX
+		wxString default_workingDir = wxGetHomeDir() + "/.aruspix"; // on OS X
+	#endif
 	wxString default_docDir = wxGetHomeDir() + "/Documents/Aruspix.localized"; // on OS X
 	wxString default_images = default_docDir + "/Images.localized";
 	wxString default_pages = default_docDir + "/Pages.localized";
@@ -788,7 +803,6 @@ void AxFrame::OnClose( wxCloseEvent &event )
     m_envRow = NULL;
 
     this->SaveConfig(lastEnvId);
-
     event.Skip();
 }
 
