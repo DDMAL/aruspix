@@ -21,50 +21,36 @@
 #include <vector>
 #include "neumedef.h"
 
-//#define MAX_LENGTH 1
-
 class MusStaff;
-
-
-//TODO: EXTREME REFACTORING IN PROGRESS 07/15/2010 
 
 //----------------------------------------------------------------------------
 // MusNeume
 //
-// A neume by nature is a composite class, it can consist of a single note, or
-// of many notes. 
+// A MusNeume contains one or more MusNeumePitches
 //----------------------------------------------------------------------------
 
-
-//typedef struct n_pitch {
-//	int code;
-//	int oct;
-//	unsigned char val; // this will be the same for the first pitch (or null...)
-//}NPitch;
-//
-
-class MusNeumePitch : public MusElement
+class MusNeumePitch
 {
 public:
-	MusNeumePitch();
 	MusNeumePitch( int _code, int _oct, unsigned char _val );
-	MusNeumePitch( const MusNeumePitch& pitch );
-	MusNeumePitch& operator=( const MusNeumePitch& pitch );
 	MusNeumePitch( MusNeumePitch *pitch);
 	virtual ~MusNeumePitch() {}
 	void SetPitch( int code, int oct );
 	void SetValue( int value );
 	int GetValue( );
-	wxString getFestaString( );
+	wxString GetFestaString( );
+	int GetCode();
+	int GetOct();
 	
 	int Compare(MusNeumePitch *other);
 	int Pitch_Diff(MusNeumePitch *other);
 	int Pitch_Diff(int code, int oct);
-	
+
+private:	
 	wxString m_font_str;	//used for font drawing
 	
-//	int code;
-//	int oct;
+	int code;
+	int oct;
 	unsigned char val;
 }; 
 
@@ -72,12 +58,9 @@ class MusNeume: public MusElement
 {
 public:
     // constructors and destructors
-    MusNeume();
-//	MusNeume( std::vector<MusNeumePitch*> pitch_list );
+	MusNeume();
 	MusNeume( unsigned char _val, unsigned char _code );
 	MusNeume( MusNeume *neume);
-	MusNeume( const MusNeume& neume ); // copy constructor
-	MusNeume& operator=( const MusNeume& neume ); // copy assignement;
     virtual ~MusNeume();
     
 	//Drawing code

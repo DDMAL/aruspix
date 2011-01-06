@@ -5,38 +5,43 @@
  *  Created by Chris Niven on 10/06/10.
  *	
  */
+// XXX: neumedeh.h seems to be globally included, can we reduce dependencies?
 
 /* Festa Dies A */
 
-#define nQUILISMA 64		// '@' - quilisma
-#define nWHITEPUNCT 66		// 'B' - nota excavata (white punctum)
-#define nDIAMOND_SMALL 67	// 'C' - Punctum inclinatum parvum 
-#define nDIAMOND 68			// 'D' - diamond punctum
-#define nCEPHALICUS 75		// 'K' - cephalicus (downward punctum)
-#define nPUNCT_UP 76		// 'L' - punctum (upwards)
-#define nPES 77				// 'M' - podatus bottom (normal)
-#define nAPOSTROPHA 88		// 'X' - apostropha
-#define nPODATUS_EP 89		// 'Y' - podatus bottom (epiphonus)
-#define nNATURAL 98			// 'b' - natural sign
-#define nB_FLAT 99			// 'c' - b flat
-#define nPUNCTUM 100		// 'd' - square punctum
-#define nLIQUES_UP 101		// 'e' - liquescent (upward)
-#define nLIQUES_DOWN 102	// 'f' - liquescent (downward)
-#define nPORRECT_1 106		// 'j' - one step down porrectus
-#define nPORRECT_2 107		// 'k' - two steps down porrectus
-#define nPORRECT_3 108		// 'l' - three steps down porrectus
-#define nPORRECT_4 109		// 'm' - four steps down porrectus
-#define nNEXT_PITCH 116		// 't' - end-of-line next pitch marker
+#ifndef NEUMEDEF_H
+#define NEUMEDEF_H
+
+#define nQUILISMA '@'		// quilisma
+#define nWHITEPUNCT 'B'		// nota excavata (white punctum)
+#define nDIAMOND_SMALL 'C'	// Punctum inclinatum parvum 
+#define nDIAMOND 'D'		// diamond punctum
+#define nCEPHALICUS 'K'		// cephalicus (downward punctum)
+#define nPUNCT_UP 'L'		// punctum (upwards)
+#define nPES 'M'			// podatus bottom (normal)
+#define nAPOSTROPHA 'X'		// apostropha
+#define nPODATUS_EP 'Y'		// podatus bottom (epiphonus)
+#define nNATURAL 'b'		// natural sign
+#define nB_FLAT 'c'			// b flat
+#define nPUNCTUM 'd'		// square punctum
+#define nLIQUES_UP 'e'		// liquescent (upward)
+#define nLIQUES_DOWN 'f'	// liquescent (downward)
+#define nPORRECT_1 'j'		// one step down porrectus
+#define nPORRECT_2 'k'		// two steps down porrectus
+#define nPORRECT_3 'l'		// three steps down porrectus
+#define nPORRECT_4 'm'		// four steps down porrectus
+#define nNEXT_PITCH 't'		// end-of-line next pitch marker
 
 
 #define nVIRGA 5	// convenience - for use with SetValue(int) 
 
 // festa dies stems
-//TODO: should put these in an enum
-#define nSTEM_T_LEFT	53	// '5'
-#define nSTEM_B_LEFT	51	// '3'
-#define nSTEM_T_RIGHT	43	// '+' 
-#define nSTEM_B_RIGHT	35	// '#'
+enum NeumeStem {
+	nSTEM_T_LEFT = '5',
+	nSTEM_B_LEFT = '3',
+	nSTEM_T_RIGHT = '+',
+	nSTEM_B_RIGHT = '#'
+};
 // MEI-related defs
 
 #define INEUME 0 // 'broken' neume (climacus or scandicus)
@@ -67,3 +72,4 @@
 #define CLIVIS_X_SAME 15	// spacing between punctums of the same pitch in a clivis
 #define CLIVIS_X_DIFF 9	// distance is tighter between altering pitches in clivis
 
+#endif // NEUMEDEF_H

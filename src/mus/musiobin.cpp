@@ -320,16 +320,19 @@ bool MusBinOutput::WriteNeume( const MusNeume *neume )
 	Write( &size, 1);
 	
 	/** MusNeumePitch list (n_pitches) **/
+	// XXX: Write neumes properly
 	MusNeumePitch *temp;
+	/*
 	for (unsigned int i = 0; i < neume->n_pitches.size(); i++)
 	{ 
 		temp = neume->n_pitches.at(i);
 		WriteElementAttr( temp );
-		Write( &temp->val, 1);
-		unsigned char size = (unsigned char) temp->m_font_str.size() + 1; // Laurent: added the 0
+		Write( &temp->GetValue(), 1);
+		unsigned char size = (unsigned char) temp->GetFestaString().size() + 1; // Laurent: added the 0
 		Write( &size, 1);
-		Write( temp->m_font_str, size );
+		Write( temp->GetFestaString(), size );
 	}
+	 */
 	
 	return true;
 }
@@ -642,8 +645,9 @@ bool MusBinInput::ReadStaff( MusStaff *staff )
 		}
         else if ( c == NEUME )
 		{
-			MusNeume *neume = new MusNeume();
-			neume->no = k;
+			// XXX: Need to create something in this neume
+			MusNeume *neume = new MusNeume(1, 2);
+			//neume->no = k;
 			ReadNeume( neume );
 			staff->m_elements.Add( neume );
 		}
@@ -759,10 +763,12 @@ bool MusBinInput::ReadNeume( MusNeume *neume )
 	
 	for (unsigned int i = 0; i < size; i++)
 	{ 
-		temp = new MusNeumePitch();
+		// XXX: Read Neume Pitches and create objects
+/*		temp = new MusNeumePitch();
 		ReadElementAttr(temp);
 		
 		Read( &temp->val, 1);
+		
 		unsigned char strsize;
 		Read( &strsize, 1);
         Read( temp->m_font_str.GetWriteBuf( strsize ) , strsize );
@@ -772,6 +778,7 @@ bool MusBinInput::ReadNeume( MusNeume *neume )
 		//str[size] = '\0';
 		//temp->m_font_str = std::string(str, strsize);
 		neume->n_pitches.push_back(temp);
+		*/
 	}
 	
 	
