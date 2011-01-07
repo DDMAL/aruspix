@@ -191,6 +191,7 @@ bool EdtFile::Create( )
 
 
 BEGIN_EVENT_TABLE(EdtNewDlg,wxDialog)
+EVT_RADIOBOX(ID5_NOTATION, EdtNewDlg::OnNotationChange)
 END_EVENT_TABLE()
 
 EdtNewDlg::EdtNewDlg( wxWindow *parent, wxWindowID id, const wxString &title,
@@ -215,6 +216,18 @@ EdtNewDlg::EdtNewDlg( wxWindow *parent, wxWindowID id, const wxString &title,
     this->GetTxPaperWidth()->SetValidator(
         wxTextValidator(wxFILTER_NUMERIC, &EdtNewDlg::s_paperWidth)); 
         
+}
+
+void EdtNewDlg::OnNotationChange(wxCommandEvent& event) {
+	int id = event.GetInt();
+	wxSpinCtrl* spin = (wxSpinCtrl*) FindWindow( ID5_STAFF_LINES );
+	if (id == MUS_MENSURAL_MODE) {
+		spin->SetValue(5);
+	} else if (id == MUS_NEUMATIC_MODE) {
+		spin->SetValue(4);
+	} else if (id == MUS_CMN_MODE) {
+		spin->SetValue(5);
+	}
 }
 
 #endif //AX_EDT

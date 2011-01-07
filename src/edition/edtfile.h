@@ -79,6 +79,8 @@ public:
     wxRadioBox* GetRbPaperOrientation()  { return (wxRadioBox*) FindWindow( ID5_RB_ORIENTATION ); }
     wxTextCtrl* GetTxPaperHeight()  { return (wxTextCtrl*) FindWindow( ID5_TX_HEIGHT ); }
     wxTextCtrl* GetTxPaperWidth()  { return (wxTextCtrl*) FindWindow( ID5_TX_WIDTH ); }
+	
+	void OnNotationChange(wxCommandEvent& event);
     
 public:
     static int s_staffLines;
