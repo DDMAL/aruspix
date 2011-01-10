@@ -60,9 +60,9 @@ MusToolRow::MusToolRow( wxWindow *parent, wxWindowID id ) :
 
 void MusToolRow::UpdateTools( int type, int notation_mode )
 {
-    if (type == m_type) {
-        return;
-    }
+//    if (type == m_type) {
+//        return;
+//    }
     m_type = type;
     
     // clear the entire toolbar
