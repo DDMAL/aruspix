@@ -142,13 +142,40 @@ int MusNeumePitch::Pitch_Diff(int code, int oct)
 	return abs_pitch(code, oct) - abs_pitch(this->code, this->oct);
 }
 
+int MusNeumePitch::filtrcod( int codElement, int *oct )
+{	
+	*oct = this->oct;
+	
+	if (codElement == F1)
+	{	
+		if ((*oct) != 0) 
+			(*oct)--; 
+		codElement = F8;
+	}
+	else if (codElement == F9 || codElement == F10)
+	{	
+		if ((*oct) < 7) 
+			(*oct)++;
+		codElement = (codElement == F9) ? F2 : F3;
+	}
+	return codElement;
+}
+
 //----------------------------------------------------------------------------
 // MusNeume
 //----------------------------------------------------------------------------
 
 // XXX: Get rid of this by removing musneume from MusWindow
-MusNeume::MusNeume() {
-	
+MusNeume::MusNeume() : MusElement() {
+	TYPE = NEUME;
+	closed = true;
+	n_selected = 0;
+	MusNeumePitch *firstPitch = new MusNeumePitch( 0, 0, 0);
+	n_pitches.push_back(firstPitch);
+	code = 0;
+	p_range = p_min = p_max = 0;
+	n_type = name = form = NULL; //this gets set when ligature is drawn
+	next = prev = NULL;
 }
 
 MusNeume::MusNeume( unsigned char _val, unsigned char _code )
@@ -168,8 +195,6 @@ MusNeume::MusNeume( unsigned char _val, unsigned char _code )
 MusNeume::MusNeume( MusNeume* neume) {
 	TYPE = neume->TYPE;
 	closed = true;	//all neumes are closed by default
-	
-//	n_pitches = new std::vector<MusNeumePitch*>;
 	
 	for (unsigned int i = 0; i < neume->n_pitches.size(); i++) {
 		n_pitches.push_back(new MusNeumePitch(neume->n_pitches.at(i)));
@@ -191,7 +216,6 @@ MusNeume::MusNeume( MusNeume* neume) {
 
 MusNeume::~MusNeume()
 {	
-	n_pitches.clear();
 }
 
 //might have to expand on this? probably not though
@@ -269,57 +293,13 @@ void MusNeume::GetPreviousPunctum() {
 	if (m_r) m_r->DoRefresh();
 }
 
-/*
-void MusNeume::Append() {
-	// add a new pitch with the same value as the previous
-	
-	if (this->IsClosed()) return; //can only append pitches in open mode
-	
-	////printf("************************************* printing neumelist DEBUG\n");
-	//printNeumeList();
-	
-	//using vector::end() causes this to crash, use vector::back() instead
-	
-	// new without delete!!!!!
-	
-	//MusNeumePitch *new_pitch = new MusNeumePitch(*(n_pitches.back())); 
-	MusNeumePitch *new_pitch = n_pitches.back();
-	n_pitches.push_back(new_pitch);
-	
-	n_selected = n_pitches.size() - 1;
-	
-	this->GetPitchRange();
-	
-	if (m_r)
-		m_r->DoRefresh();
-	
-//	delete new_pitch;
-}
-*/ // redundant because of [below]
-
-
-
-
 void MusNeume::InsertPitchAfterSelected()
 {
 	if (this->IsClosed()) return; //can only insert pitches in open mode
-	// shouldn't need this since we're using n_selected as the index
-	//	if (index <= 0 || index >= n_pitches.size()) return;
-	
-//	MusNeumePitch *new_pitch = 
-//	new MusNeumePitch(this->n_pitches[n_selected]->code, 
-//				this->n_pitches[n_selected]->oct, this->n_pitches[n_selected]->val);
 	
 	MusNeumePitch *selected = this->n_pitches.at(this->n_selected);
 	
 	MusNeumePitch *new_pitch = new MusNeumePitch(selected);
-	
-	
-
-	
-//	if (!new_pitch->code && new_pitch->oct && !n_selected) {
-//		new_pitch->SetPitch(this->code, this->oct);
-//	}
 	
 	iter = this->n_pitches.begin();
 	
@@ -352,9 +332,6 @@ void MusNeume::RemoveSelectedPitch()
 	if (m_r)
 		m_r->DoRefresh();
 }
-
-
-// superhack helper methods 
 
 int MusNeume::GetCode()
 {
@@ -397,21 +374,18 @@ void MusNeume::SetPitch( int code, int oct )
 			
 			int newoctave;
 			MusNeumePitch *p = n_pitches.at(i);
-			// XXX:
-			//int newcode = p->filtrcod(p->GetCode() + diff, &newoctave);
-			//n_pitches.at(i)->SetPitch(newcode, newoctave);
+			int newcode = p->filtrcod(p->GetCode() + diff, &newoctave);
+			n_pitches.at(i)->SetPitch(newcode, newoctave);
 		}
 		
 	} else { // open mode
 		int newoctave;
 		MusNeumePitch *p = n_pitches.at(n_selected);
-		// XXX:
-		//int newcode = p->filtrcod(p->GetCode() + diff, &newoctave);
-		//n_pitches.at(n_selected)->SetPitch(newcode, newoctave);
+		int newcode = p->filtrcod(p->GetCode() + diff, &newoctave);
+		n_pitches.at(n_selected)->SetPitch(newcode, newoctave);
 
 		if (n_selected == 0) { 
-			//this->code = newcode;
-			//this->oct = newoctave;
+			this->SetPitch(newcode, newoctave);
 		}
 	}
 
