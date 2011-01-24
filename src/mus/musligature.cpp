@@ -283,7 +283,6 @@ void MusNeume::porrectus( AxDC *dc, MusStaff *staff )
 	
 	//eventually check for open-closed mode change
 	int xrel_curr = this->xrel + PUNCT_WIDTH;
-	if (this->next == NULL) {
 		switch (temp->GetValue()) {
 				//draw to the right
 			case 2:					//nCEPHALICUS
@@ -302,6 +301,5 @@ void MusNeume::porrectus( AxDC *dc, MusStaff *staff )
 				m_r->festa_string(dc, xrel_curr - PUNCT_WIDTH, ynn + 16, 
 								  wxString((char)nPUNCTUM),staff, this->dimin);
 		}
-	}
 	
 }

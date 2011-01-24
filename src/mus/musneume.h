@@ -45,6 +45,8 @@ public:
 	int Compare(MusNeumePitch *other);
 	int Pitch_Diff(MusNeumePitch *other);
 	int Pitch_Diff(int code, int oct);
+	int filtrcod( int codElement, int *oct );
+
 
 private:	
 	wxString m_font_str;	//used for font drawing
@@ -65,15 +67,13 @@ public:
     
 	//Drawing code
 	virtual void Draw( AxDC *dc, MusStaff *staff);
-//	void note( AxDC *dc, MusStaff *staff );
+
 	void DrawBox( AxDC *dc, MusStaff *staff );
 	void DrawNeume( AxDC *dc, MusStaff *staff );
 	void DrawPunctums( AxDC *dc, MusStaff *staff );
 	void leg_line( AxDC *dc, int y_n, int y_p, int xn, 
 							unsigned int smaller, int pTaille);
 	void append( AxDC *dc, MusStaff *staff ); //for creating multi-note neumes
-	
-	//should have some sort of 'toggle' or 'redraw' method here for switching between styles
 	
     virtual void SetPitch( int code, int oct );
 	virtual void SetValue( int value, MusStaff *staff = NULL, int vflag = 0 );
@@ -102,36 +102,13 @@ public:
 	//may need a helper class for composite neumes.
 	void InsertPitchAfterSelected();
 	void RemoveSelectedPitch();
-//	void Append();
 
-	
-	// to create compound neumes (ineumes)
-	
-	MusNeume *next;
-	MusNeume *prev;
-	
 	// x coord of the right-most edge of the neume
 	// used for compound neume drawing
 	unsigned int xrel_right; // set during ligature drawing
 	
-	
-	//how many pitches are in this neume?
-	//int length;
-	
 	//which note of the group has been selected?
 	unsigned int n_selected;
-	
-	/**the list of actual pitches within the neume
-	
-	 Pitches for neumes are implemented as follows:
-	 The first pitch of the neume group is the same as the 'code' of the entire neume.
-	 The rest of the pitches (if any) in the neume group are then drawn relative to the
-	 first pitch.	 
-	 
-	 */
-	
-	
-//		std::vector<Ligature*> ligatures;
 	
 	//TODO: move to ligature
 	std::vector<MusNeumePitch*> n_pitches;
@@ -151,15 +128,11 @@ public:
 	void porrectus( AxDC *dc, MusStaff *staff );
 	void neume_stem( AxDC *dc, MusStaff *staff, int xrel, 
 						  int index, int pitch_range = 0, int side = LEFT_STEM);
-//							  int end_pitch, int side);
-//	void neume_line( AxDC *dc, MusStaff *staff, int side );
-//	void climacus( AxDC *dc, MusStaff *staff );
 	
 	//pitch and octave of first pitch of the neume
 	int GetOct(); 
 	int GetCode();
 	
-//	void CheckForBreaks();
 	void Copy();
 	
 	// mei related fields
@@ -168,13 +141,8 @@ public:
 	char name; // name of the neume (climacus, pes, etc)
 	char form; // neume form, could be "liquescent1" for example
 	
-	
-	
-public:
-	//	int size;	//how many notes in group
-	
 private:
-    
+    void init(unsigned char val, unsigned char code);
 };
 
 

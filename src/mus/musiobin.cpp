@@ -297,8 +297,6 @@ bool MusBinOutput::WriteNeume( const MusNeume *neume )
 	WriteElementAttr( neume );
 	Write( &neume->closed, 1 );
 	Write( &neume->code, 1);
-	Write( &neume->next, 1);
-	Write( &neume->prev, 1);
 	
 	Write( &neume->xrel_right, 1);
 	
@@ -737,8 +735,6 @@ bool MusBinInput::ReadNeume( MusNeume *neume )
 	ReadElementAttr( neume );
 	Read( &neume->closed, 1 );
 	Read( &neume->code, 1);
-	Read( &neume->next, 1);
-	Read( &neume->prev, 1);
 	
 	Read( &neume->xrel_right, 1);
 	

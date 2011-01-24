@@ -165,30 +165,24 @@ int MusNeumePitch::filtrcod( int codElement, int *oct )
 // MusNeume
 //----------------------------------------------------------------------------
 
-// XXX: Get rid of this by removing musneume from MusWindow
-MusNeume::MusNeume() : MusElement() {
+void MusNeume::init(unsigned char _val, unsigned char _code) {
 	TYPE = NEUME;
 	closed = true;
 	n_selected = 0;
-	MusNeumePitch *firstPitch = new MusNeumePitch( 0, 0, 0);
-	n_pitches.push_back(firstPitch);
-	code = 0;
-	p_range = p_min = p_max = 0;
-	n_type = name = form = NULL; //this gets set when ligature is drawn
-	next = prev = NULL;
-}
-
-MusNeume::MusNeume( unsigned char _val, unsigned char _code )
-{
-	TYPE = NEUME;
-	closed = true;
-	n_selected = 0;
-	MusNeumePitch *firstPitch = new MusNeumePitch( _code, 0, _val);
+	MusNeumePitch *firstPitch = new MusNeumePitch(_code, 0, _val);
 	n_pitches.push_back(firstPitch);
 	code = _code;	
 	p_range = p_min = p_max = 0;
 	n_type = name = form = NULL; //this gets set when ligature is drawn
-	next = prev = NULL;
+}
+
+MusNeume::MusNeume() : MusElement() {
+	init(0, 0);
+}
+
+MusNeume::MusNeume( unsigned char _val, unsigned char _code )
+{
+	init(_val, _code);
 }
 
 // Copy an existing neume
@@ -201,14 +195,10 @@ MusNeume::MusNeume( MusNeume* neume) {
 	}
 	
 	n_selected = 0;
-	next = prev = NULL;
-	
 	this->GetPitchRange();
-	
 	n_type = neume->n_type;
 	name = neume->name;
 	form = neume->form;	
-	
 	
 	code = neume->code;
 	oct = neume->oct;
