@@ -87,7 +87,7 @@ void MusToolRow::UpdateTools( int type, int notation_mode )
         AddSeparator();   
         //AddSeparator();       
         AddTool(ID_MS_BT_NEUMES, wxT("Neumes"), MusToolPanel::GetToolbarBitmap( "tool_neumes.png" ), "", wxITEM_CHECK);
-        AddTool(ID_MS_BT_CLEFS_NEUMES, wxT("Clefs"), MusToolPanel::GetToolbarBitmap( "missing.png" ), "", wxITEM_CHECK);
+        AddTool(ID_MS_BT_CLEFS_NEUMES, wxT("Clefs"), MusToolPanel::GetToolbarBitmap( "clef_neume_c.png" ), "", wxITEM_CHECK);
         AddTool(ID_MS_BT_SYMBOLS_NEUMES, wxT("Varia"), MusToolPanel::GetToolbarBitmap( "missing.png" ), "", wxITEM_CHECK);
         //AddTool(ID_MS_BT_TEXT, wxT("Text"), MusToolPanel::GetToolbarBitmap( "tool_text.png" ), "", wxITEM_CHECK);
         AddSeparator(); 
@@ -204,8 +204,8 @@ void MusToolRow::UpdateTools( int type, int notation_mode )
         AddTool(ID_NU_BT_N5, "", MusToolPanel::GetToolbarBitmap( "neume_virga.png" ));
         break;
 	case (NEUME_TOOLS_CLEFS):
-        //AddTool(ID_MS_BT_MTP, "", MusToolPanel::GetToolbarBitmap( "symb_mtp.png" ));
-        // add more...
+        AddTool(ID_NU_BT_C0, "", MusToolPanel::GetToolbarBitmap( "clef_neume_c.png" ));
+        AddTool(ID_NU_BT_C1, "", MusToolPanel::GetToolbarBitmap( "clef_neume_f.png" ));
         break;
 	case (NEUME_TOOLS_OTHER):
         //AddTool(ID_MS_BT_MTP, "", MusToolPanel::GetToolbarBitmap( "symb_mtp.png" ));
@@ -233,6 +233,7 @@ BEGIN_EVENT_TABLE(MusToolPanel,wxPanel)
     EVT_MENU_RANGE( ID_MS_BT_MTPP, ID_MS_BT_M2, MusToolPanel::OnSign )
     EVT_MENU_RANGE( ID_MS_BT_DOT, ID_MS_BT_BAR, MusToolPanel::OnSymbol )
     EVT_MENU_RANGE( ID_NU_BT_N0, ID_NU_BT_N5, MusToolPanel::OnNeume )
+    EVT_MENU_RANGE( ID_NU_BT_C0, ID_NU_BT_C1, MusToolPanel::OnSquareClef )
     EVT_MENU( ID_MS_BT_TEXT, MusToolPanel::OnText )
     EVT_UPDATE_UI_RANGE(ID_MS_BT_CHANGE_TOOL_START, ID_MS_BT_TEXT, MusToolPanel::OnUpdateUI)
     // measure controls
@@ -521,4 +522,18 @@ void MusToolPanel::OnNeume( wxCommandEvent &event )
     }
     kevent.m_keyCode = value;
     SendEvent(kevent);
+}
+
+void MusToolPanel::OnSquareClef( wxCommandEvent &event ) {
+    int value = '0';
+    switch ( event.GetId() )
+    {
+        case (ID_NU_BT_C0): value = '1'; break;
+        case (ID_NU_BT_C1): value = '2'; break;
+    }
+    
+    wxKeyEvent kevent;
+    kevent.SetEventType( wxEVT_KEY_DOWN );
+    kevent.m_keyCode = value;
+    SendEvent( kevent );    
 }
