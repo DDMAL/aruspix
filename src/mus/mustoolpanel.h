@@ -135,14 +135,14 @@ enum {
     ID_MS_BT_BAR,
     ID_MS_BT_RDOTS,
 
-    // neumes  - is it used?
-    /*
-    ID_MS_BT_N_NOTES,
-    ID_MS_BT_N_KEY,
-    ID_MS_BT_N_SYMBOLES,
-    */
-    
-    //
+    // Neume notes
+    ID_NU_BT_N0,
+    ID_NU_BT_N1,
+    ID_NU_BT_N2,
+    ID_NU_BT_N3,
+    ID_NU_BT_N4,
+    ID_NU_BT_N5,
+
     ID_MS_BT_LAST // Used for RANGE EVT IDS
 };
 
@@ -217,6 +217,7 @@ private:
     void OnSign( wxCommandEvent &event );
     void OnKey( wxCommandEvent &event );
     void OnNote( wxCommandEvent &event );
+    void OnNeume( wxCommandEvent &event );
     void OnText( wxCommandEvent &event );
     // toggle buttons handling
     void OnUpdateUI( wxUpdateUIEvent &event );

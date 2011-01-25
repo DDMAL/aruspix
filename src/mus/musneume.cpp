@@ -388,14 +388,10 @@ void MusNeume::SetPitch( int code, int oct )
 
 void MusNeume::SetValue( int value, MusStaff *staff, int vflag )
 {	
-	if ( this->TYPE != NEUME )
+	if ( this->TYPE != NEUME ) {
 		return;
-//
-//    // Change the neume value
-//    // ...
-//	
-//	//only a punctum for now, still have to decide the scheme for neume values
-//	
+	}
+
 	if (this->IsClosed()) {
 		// change to different neume type (lookup table)
 	} else {
@@ -405,8 +401,9 @@ void MusNeume::SetValue( int value, MusStaff *staff, int vflag )
 	}
 	
 	//refresh drawing automatically
-	if (m_r)
+	if (m_r) {
 		m_r->DoRefresh();
+	}
 }
 
 int MusNeume::GetValue()

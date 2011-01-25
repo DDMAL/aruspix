@@ -1258,6 +1258,15 @@ void MusWindow::OnKeyDown(wxKeyEvent &event)
 			CheckPoint( UNDO_PART, MUS_UNDO_STAFF );
 			OnEndEdition();
 		}
+		else if ( m_currentElement && m_currentElement->IsNeume() &&
+				 (in( noteKeyCode, 0, 5 )))
+		{
+			PrepareCheckPoint( UNDO_PART, MUS_UNDO_STAFF );
+			int vflag = ( event.m_controlDown || (noteKeyCode == CUSTOS)) ? 1 : 0;
+			m_currentElement->SetValue( noteKeyCode , m_currentStaff, vflag );
+			CheckPoint( UNDO_PART, MUS_UNDO_STAFF );
+			OnEndEdition();
+		}
 		else if ( m_currentElement && m_currentElement->IsNote() && 
 			 (event.m_keyCode == 'L')  ) // Ligature 
 		{	
@@ -1445,6 +1454,12 @@ void MusWindow::OnKeyDown(wxKeyEvent &event)
 		}	
 		else if ( m_newElement && m_newElement->IsNote() &&
 			(in( noteKeyCode, 0, 7 ) || (noteKeyCode == CUSTOS))) // change duree sur une note ou un silence
+		{
+			int vflag = ( event.m_controlDown || (noteKeyCode == CUSTOS)) ? 1 : 0;
+			m_newElement->SetValue( noteKeyCode , NULL, vflag );
+		}
+		else if ( m_newElement && m_newElement->IsNeume() &&
+				 (in( noteKeyCode, 0, 5 )))
 		{
 			int vflag = ( event.m_controlDown || (noteKeyCode == CUSTOS)) ? 1 : 0;
 			m_newElement->SetValue( noteKeyCode , NULL, vflag );

@@ -196,8 +196,12 @@ void MusToolRow::UpdateTools( int type, int notation_mode )
         AddTool(ID_MS_BT_RDOTS, "", MusToolPanel::GetToolbarBitmap( "symb_rdots.png" ));
         break;
 	case (NEUME_TOOLS_NOTES):
-        //AddTool(ID_MS_BT_MTP, "", MusToolPanel::GetToolbarBitmap( "symb_mtp.png" ));
-        // add more...
+        AddTool(ID_NU_BT_N0, "", MusToolPanel::GetToolbarBitmap( "neume_punctum.png" ));
+        AddTool(ID_NU_BT_N1, "", MusToolPanel::GetToolbarBitmap( "neume_diamond.png" ));
+        AddTool(ID_NU_BT_N2, "", MusToolPanel::GetToolbarBitmap( "neume_cephalicus.png" ));
+        AddTool(ID_NU_BT_N3, "", MusToolPanel::GetToolbarBitmap( "neume_punctum_up.png" ));
+        AddTool(ID_NU_BT_N4, "", MusToolPanel::GetToolbarBitmap( "neume_quilisma.png" ));
+        AddTool(ID_NU_BT_N5, "", MusToolPanel::GetToolbarBitmap( "neume_virga.png" ));
         break;
 	case (NEUME_TOOLS_CLEFS):
         //AddTool(ID_MS_BT_MTP, "", MusToolPanel::GetToolbarBitmap( "symb_mtp.png" ));
@@ -228,6 +232,7 @@ BEGIN_EVENT_TABLE(MusToolPanel,wxPanel)
     EVT_MENU_RANGE( ID_MS_BT_G1, ID_MS_BT_F5, MusToolPanel::OnKey )
     EVT_MENU_RANGE( ID_MS_BT_MTPP, ID_MS_BT_M2, MusToolPanel::OnSign )
     EVT_MENU_RANGE( ID_MS_BT_DOT, ID_MS_BT_BAR, MusToolPanel::OnSymbol )
+    EVT_MENU_RANGE( ID_NU_BT_N0, ID_NU_BT_N5, MusToolPanel::OnNeume )
     EVT_MENU( ID_MS_BT_TEXT, MusToolPanel::OnText )
     EVT_UPDATE_UI_RANGE(ID_MS_BT_CHANGE_TOOL_START, ID_MS_BT_TEXT, MusToolPanel::OnUpdateUI)
     // measure controls
@@ -494,3 +499,26 @@ void MusToolPanel::OnNote( wxCommandEvent &event )
     SendEvent( kevent );
 }
 
+void MusToolPanel::OnNeume( wxCommandEvent &event )
+{
+    wxKeyEvent kevent;
+    kevent.SetEventType( wxEVT_KEY_DOWN );
+
+    int value = WXK_NUMPAD0;
+    switch ( event.GetId() )
+    {
+        case (ID_NU_BT_N0): value = WXK_NUMPAD0; break;
+        case (ID_NU_BT_N1): value = WXK_NUMPAD1; break;
+        case (ID_NU_BT_N2): value = WXK_NUMPAD2; break;
+        case (ID_NU_BT_N3): value = WXK_NUMPAD3; break;
+        case (ID_NU_BT_N4): value = WXK_NUMPAD4; break;
+        case (ID_NU_BT_N5): value = WXK_NUMPAD5; break;
+    }
+    int n0 = ID_NU_BT_N0;
+    int n5 = ID_NU_BT_N5;
+    if (in(event.GetId(), n0, n5)) {
+        kevent.m_controlDown = true;
+    }
+    kevent.m_keyCode = value;
+    SendEvent(kevent);
+}
