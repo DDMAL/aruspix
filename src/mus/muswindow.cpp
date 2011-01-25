@@ -5,15 +5,6 @@
 // Copyright (c) Laurent Pugin. All rights reserved.
 /////////////////////////////////////////////////////////////////////////////
 
-/** 
- quick note about fonts: may 31, 2010
- 
- I've tried to emulate what you've done with Leipzig and mimic this with Festa
- Dies throughout. It may not work as this is a very experimental approach.
- 
- 
- */
-
 #ifdef __GNUG__
     #pragma implementation "muswindow.h"
 #endif
@@ -446,18 +437,8 @@ void MusWindow::SetToolType( int type )
     this->ProcessEvent( kevent );
 }
 
-/* I really don't know why this works... if the ternary operations check against MENSURAL_MODE
- * then clicking a control while in neume editing mode will change the toolbar back to the mensural one.
- * Weird and messy code.
- */
-
 int MusWindow::GetToolType()
 {
-//	if (m_notation_mode == MENSURAL_MODE)
-//		printf("we're in mensural mode	\n");
-//	else
-//		printf("we're in neumes mode\n");
-	
 	MusElement *sync = NULL;
 
 	if (m_editElement)
@@ -723,8 +704,6 @@ void MusWindow::OnPopupMenuSymbole( wxCommandEvent &event )
 
 void MusWindow::OnMouseDClick(wxMouseEvent &event)
 {
-	
-	//adding this up here because this happens in both edition and insertion modes
 	if (m_currentStaff && m_newElement) 
 	{
 		wxClientDC dc( this );
@@ -733,7 +712,6 @@ void MusWindow::OnMouseDClick(wxMouseEvent &event)
 		int y = ToReelY( dc.DeviceToLogicalY( event.m_y ) );
 		m_insertcode = m_currentStaff->trouveCodNote( y, m_insertx, &m_insertoct );
 		m_newElement->xrel = m_insertx;
-		printf("This is our xrel: %d\n is it a a note? %d\n", m_insertx, m_newElement->IsNote());
 	}
 	if ( m_editElement )
 	{
@@ -784,14 +762,6 @@ void MusWindow::OnMouseDClick(wxMouseEvent &event)
 	{
 		if ( event.ButtonDClick( wxMOUSE_BTN_LEFT  ) && m_currentStaff && m_newElement )
 		{
-//			wxClientDC dc( this );
-//			InitDC( &dc );
-//			m_insertx = ToReel( dc.DeviceToLogicalX( event.m_x ) );
-//			int y = ToReelY( dc.DeviceToLogicalY( event.m_y ) );
-//			m_insertcode = m_currentStaff->trouveCodNote( y, m_insertx, &m_insertoct );
-			
-			
-//			m_newElement->xrel = m_insertx;
 			if ( m_newElement->IsNote() || m_newElement->IsNeume() ||
 				(((MusSymbol*)m_newElement)->flag == ALTER) || (((MusSymbol*)m_newElement)->flag == PNT))
 			{
@@ -856,19 +826,10 @@ void MusWindow::OnMouseLeave(wxMouseEvent &event)
 
 void MusWindow::OnMouseLeftDown(wxMouseEvent &event)
 {
-	wxClientDC dc( this );
-	InitDC( &dc );
-	
-//	printf("clicked: {%d, %d}\n", ToReel(dc.DeviceToLogicalX(event.m_x)),
-//		   ToReelY(dc.DeviceToLogicalY(event.m_y)));
-	
-	if ( m_editElement || m_lyricMode )
+    if ( m_editElement || m_lyricMode )
 	{
-//		wxClientDC dc( this );
-//		InitDC( &dc );
-//		
-//		printf("clicked: {%d, %d}\n", ToReel(dc.DeviceToLogicalX(event.m_x)),
-//			   ToReelY(dc.DeviceToLogicalY(event.m_y)));
+		wxClientDC dc( this );
+		InitDC( &dc );
 		
 		// TODO if ( m_currentElement &&  m_currentStaff ) 
 		// TODO 	m_currentElement->ClearElement( &dc, m_currentStaff );
@@ -971,16 +932,12 @@ void MusWindow::OnMouseLeftDown(wxMouseEvent &event)
 
 void MusWindow::OnMouseMotion(wxMouseEvent &event)
 {
-	wxClientDC dc( this );
-//	printf("----- x: %d, y: %d -----\n", ToReel( dc.DeviceToLogicalX( event.m_x ) ),
-//		   ToReelY( dc.DeviceToLogicalY( event.m_y ) ) );
-
 	if ( event.Dragging() && event.LeftIsDown() && m_dragging_x && m_currentElement )
 	{
 		if ( !m_has_been_dragged )
 			PrepareCheckPoint( UNDO_PART, MUS_UNDO_STAFF );
 		m_has_been_dragged = true;
-		//wxClientDC dc( this );
+		wxClientDC dc( this );
 		InitDC( &dc );
 		m_insertx = ToReel( dc.DeviceToLogicalX( event.m_x ) );
 		int y = ToReelY( dc.DeviceToLogicalY( event.m_y ) ) - m_dragging_y_offset;
@@ -988,7 +945,6 @@ void MusWindow::OnMouseMotion(wxMouseEvent &event)
 		if ( m_editElement )
 		{
 			m_insertcode = m_currentStaff->trouveCodNote( y, m_insertx, &m_insertoct );
-//			m_currentElement->SetPitch( m_insertcode, m_insertoct, m_currentStaff );
 			m_currentElement->SetPitch( m_insertcode, m_insertoct );
 		} 
 		else if ( m_lyricMode )					// Movement of lyric element on y-axis
@@ -1010,12 +966,6 @@ void MusWindow::OnMouseMotion(wxMouseEvent &event)
 
 	event.Skip();
 }
-
-// see TakeMidiEvent in WGCLE in Wolfgang
-//static int bem [] = {F2, F3, F3, F4, F4, F5, F6, F6, F7, F7, F8, F8};
-//static int die [] = {F2, F2, F3, F3, F4, F5, F5, F6, F6, F7, F7, F8};
-
-// ^ moved this to header file...
 
 void MusWindow::OnMidiInput(wxCommandEvent &event)
 {
@@ -1103,12 +1053,7 @@ void MusWindow::OnKeyDown(wxKeyEvent &event)
 				}
 				else if ( m_currentElement->IsNeume() )
 				{
-					//lets use the copy constructor instead of an assignment operator?
-					//no, that doesn't make any sense.
-					
 					m_neume = *(MusNeume*)m_currentElement;
-//					printf("\nORIGINAL M_NEUME: *******************\n");
-//					m_neume.printNeumeList();
 					m_newElement = &m_neume;
 				}
                 // TODO for cursor
@@ -1123,11 +1068,6 @@ void MusWindow::OnKeyDown(wxKeyEvent &event)
                 // More to do here, because we know nothing about the position:
                 // My suggestion: beginning of the staff (try with xrel = something like 10)
                 // We also have to check that we have a current staff. If not, select the first one
-				
-				
-				//testing..
-//				printf("moving xrel to beginning?\n");
-//				m_newElement->xrel = 10;
 			}
 			m_currentElement = NULL;
 		}
@@ -1898,29 +1838,9 @@ void MusWindow::OnPaint(wxPaintEvent &event)
 	}
 }
 
-
-/* UPDATE: 08/24/2010 
-  'Keyboard Entry' mode was a failed concept. For now, it is just an alternative
- keybind set for the editor Ð optimized for neume entry. 
-
- TODO: turn on 'keyboard entry' mode as a single flag (menu item?)
- 
- results for mensural mode editing not guaranteed...
- 
- */
-
-
-//keyboard entry is based off GarageBand's 'Musical Typing' concept
-//I'm not sure if its very practical to have accidentals other than Bb however...
-
 bool MusWindow::KeyboardEntry(wxKeyEvent &event) {
-	
-	
 	if (event.GetKeyCode() == 'K' && event.CmdDown())
 	{
-		
-		// toggle keyboard mode
-		
 		SetKeyboardEntryMode(!m_keyEntryMode);
 		
 		// need to close open neumes before leaving keyboard entry mode
