@@ -1,3 +1,5 @@
+Test commit
+
 Copyright (C) 2004-2010 Laurent Pugin
 
 Aruspix is free software: you can redistribute it and/or modify
