@@ -105,10 +105,14 @@ void ImPage::Clear( )
     m_skew = 0.0;
     m_resize = 1.0;
 	m_resized = 1.0;
+    m_optimization_resize_factor = 1.0;
     m_line_width = 0;
     m_space_width = 0;
     m_x1 = 0;
     m_x2 = 0;
+    m_y1 = 0;
+    m_original_width = 0;
+    m_original_height = 0;
 	m_staff_height = 0;
 	m_num_staff_lines = ImPage::s_num_staff_lines;
 	
@@ -155,25 +159,27 @@ bool ImPage::Load( TiXmlElement *file_root )
 	root = node->ToElement();
     if ( !root ) return false;
 
+    if ( root->Attribute("original_width"))
+        m_original_width = atoi(root->Attribute("original_width"));
+        
+    if ( root->Attribute("original_height"))
+        m_original_height = atoi(root->Attribute("original_height"));
+
     if ( root->Attribute("skew"))
         m_skew = atof(root->Attribute("skew"));
-
-	// needed ???
-    if ( root->Attribute("resize"))
-        m_resize = atof(root->Attribute("resize"));
 	
 	// needed ???
     if ( root->Attribute("resized"))
         m_resized = atof(root->Attribute("resized"));
-
-    if ( root->Attribute("reduction"))
-        m_reduction = atoi(root->Attribute("reduction"));
 
     if ( root->Attribute("x2"))
         m_x2 = atoi(root->Attribute("x2"));
 
     if ( root->Attribute("x1"))
         m_x1 = atoi(root->Attribute("x1"));
+
+    if ( root->Attribute("y1"))
+        m_y1 = atoi(root->Attribute("y1"));
 
     if ( root->Attribute("width"))
         m_size.SetWidth( atoi(root->Attribute("width")) );
@@ -227,9 +233,15 @@ bool ImPage::Save( TiXmlElement *file_root )
     wxString tmp;
 
     TiXmlElement root("impage");
+
+    tmp = wxString::Format("%d", m_original_width );
+    root.SetAttribute( "original_width", tmp.c_str() );
     
-    tmp = wxString::Format("%d", m_reduction );
-    root.SetAttribute( "reduction",  tmp.c_str() );
+    tmp = wxString::Format("%d", m_original_height );
+    root.SetAttribute( "original_height", tmp.c_str() );
+    
+    tmp = wxString::Format("%d", m_x1 );
+    root.SetAttribute( "x1", tmp.c_str() );
 
     tmp = wxString::Format("%f", m_skew );
     root.SetAttribute( "skew", tmp.c_str() );
@@ -243,6 +255,9 @@ bool ImPage::Save( TiXmlElement *file_root )
     tmp = wxString::Format("%d", m_x2 );
     root.SetAttribute( "x2", tmp.c_str() );
 
+    tmp = wxString::Format("%d", m_y1 );
+    root.SetAttribute( "y1", tmp.c_str() );
+    
     tmp = wxString::Format("%d", m_size.GetWidth() );
     root.SetAttribute( "width", tmp.c_str() );
 
@@ -368,6 +383,9 @@ bool ImPage::Check( wxString infile, int max_size, int min_size, int index )
     if ( !Read( infile, &m_opImMain, index ) )
         return false;
         
+    this->m_original_width = m_opImMain->width;
+    this->m_original_height = m_opImMain->height;
+        
     // resize
     // the biggest side of the image is reduced to max_size when bigger than max_size (and max_side != -1)
     // the biggest side of the image is expanded to min_size when smaller 
@@ -376,12 +394,12 @@ bool ImPage::Check( wxString infile, int max_size, int min_size, int index )
     // trick: both reduce and expand are > 1.0 when true because the fraction above is reverse
     if ( (expand > 1 ) || (reduce > 1) )
     {
-        float resize_factor = (expand > reduce) ? 1.0 / expand : reduce;
+        m_optimization_resize_factor = (expand > reduce) ? 1.0 / expand : reduce;
     
         if (!m_progressDlg->SetOperation( _("Resizing image ...") ))
             return this->Terminate( ERR_CANCELED );
 
-        m_opImTmp1 = imImageCreate(  (int)(m_opImMain->width  / resize_factor), (int)(m_opImMain->height  / resize_factor),
+        m_opImTmp1 = imImageCreate(  (int)(m_opImMain->width  / m_optimization_resize_factor), (int)(m_opImMain->height  / m_optimization_resize_factor),
             m_opImMain->color_space, m_opImMain->data_type);
     
         if ( !m_opImTmp1 )
@@ -594,9 +612,10 @@ bool ImPage::Deskew( double max_alpha )
         double cos0, sin0;
         sin0 = sin( deg2rad( skew ) );
         cos0 = cos( deg2rad( skew ) );
-        imProcessCalcRotateSize( m_opImMap->width, m_opImMap->height, 
-                              &new_w, &new_h, cos0, sin0);
-
+        //imProcessCalcRotateSize( m_opImMap->width, m_opImMap->height, 
+        //                      &new_w, &new_h, cos0, sin0);
+        new_w = m_opImMap->width;
+        new_h = m_opImMap->height;
 
         m_opImTmp1 = imImageCreate( new_w, new_h, m_opImMap->color_space, m_opImMap->data_type);
         if ( !m_opImTmp1 )
@@ -920,7 +939,7 @@ bool ImPage::FindStaves( int min, int max, bool normalize, bool crop )
         if (!m_progressDlg->SetOperation( _("Normalize image size ...") ) )
             return this->Terminate( ERR_CANCELED );
 
-		wxLogMessage("Normalization factor %f", normalization_factor );
+		wxLogMessage("Normalization factor %f", normalization_factor / m_optimization_resize_factor );
 
         // resize
         m_opImTmp1 = imImageCreate( (int)(m_opImMap->width * normalization_factor), (int)(m_opImMap->height * normalization_factor), 
@@ -931,7 +950,7 @@ bool ImPage::FindStaves( int min, int max, bool normalize, bool crop )
         imProcessResize( m_opImMap, m_opImTmp1, 1 );
         SwapImages( &m_opImMap, &m_opImTmp1 );
 		
-		this->m_resized = this->m_resize;
+		this->m_resized = this->m_resize / this->m_optimization_resize_factor;
 		this->m_resize = 1.0;
     }
 
@@ -1008,10 +1027,11 @@ bool ImPage::FindStaves( int min, int max, bool normalize, bool crop )
 
 		x1 = std::max( 0, this->m_x1  - RecEnv::s_pre_margin_left ); // 30 px en moins = de marge d'erreur
 		x2 = std::min( m_opImMain->width - 1 , this->m_x2 + RecEnv::s_pre_margin_right ); // 20 px en plus = de marge d'erreur
-		this->m_x1 -= x1;
-		this->m_x2 -= x1;
+		this->m_x1 = x1;
+		this->m_x2 = x2;
 		y1 = std::max ( 0, m_opLines1[0] - 50 - RecEnv::s_pre_margin_bottom ); // 120 px en dessous de la derniere portee
 		y2 = std::min ( m_opImMain->height -1 , m_opLines1[nb_staves - 1] + 50 + RecEnv::s_pre_margin_top ); // 150 px en dessus de la premiere portee
+        this->m_y1 = m_opImMain->height -1 - y2;
 
 		m_opImTmp1 = imImageCreate( x2 - x1, y2 - y1, m_opImMain->color_space, m_opImMain->data_type );    
 		imProcessCrop( m_opImMain, m_opImTmp1, x1, y1);
