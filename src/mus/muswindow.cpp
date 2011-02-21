@@ -28,9 +28,6 @@ using std::max;
 #include "muswindow.h"
 #include "mustoolpanel.h"
 #include "musiobin.h"
-#include "muskeyboardeditor.h"
-
-//#include "mus_wdr.h"
 
 #include "app/axgotodlg.h"
 #include "app/axwxdc.h"
@@ -91,11 +88,6 @@ MusWindow::MusWindow( wxWindow *parent, wxWindowID id,
 	m_dragging_y_offset = 0;
 	m_lyricCursor = 0;
 	
-	// keyboard entry
-	m_keyEntryMode = false;
-	// lazy loading
-	m_keyEditor = NULL;
-
 	if ( wxSystemSettings::GetColour(wxSYS_COLOUR_APPWORKSPACE) == *wxWHITE )
 		this->SetBackgroundColour( *wxLIGHT_GREY );
 	else
@@ -389,27 +381,12 @@ void MusWindow::SetInsertMode( bool mode )
 	if ( m_editElement == !mode )
 		return; // nothing to change
 
-	if (mode) this->SetKeyboardEntryMode(false); // turn of keyboard entry in insert mode
-	
 	wxKeyEvent kevent;
     kevent.SetEventType( wxEVT_KEY_DOWN );
     kevent.SetId( this->GetId() );
     kevent.SetEventObject( this );
 	kevent.m_keyCode = WXK_RETURN;
     this->ProcessEvent( kevent );
-}
-
-void MusWindow::SetKeyboardEntryMode( bool mode )
-{
-	m_keyEntryMode = mode;
-	printf("Setting Keyboard Entry mode %s!\n", mode ? "ON" : "OFF");
-	if (m_currentElement) {
-		if (m_currentElement->IsNeume())
-		{
-			printf("Closing neume\n");
-			((MusNeume*)m_currentElement)->SetClosed(true);
-		}
-	}
 }
 
 void MusWindow::SetToolType( int type )
@@ -1022,7 +999,7 @@ void MusWindow::OnKeyDown(wxKeyEvent &event)
 		return;
 	
 	// will skip this if not currently in keyboard edit mode
-	if (KeyboardEntry(event)) return;
+	//if (KeyboardEntry(event)) return;
 	
 	int noteKeyCode = GetNoteValue( event.m_keyCode );
     
@@ -1035,7 +1012,6 @@ void MusWindow::OnKeyDown(wxKeyEvent &event)
 		m_editElement = !m_editElement;
 		if ( !m_editElement ) // edition -> insertion
 		{
-			if (m_keyEntryMode) this->SetKeyboardEntryMode(false);
 			this->SetCursor( wxCURSOR_PENCIL );  
 			if ( m_currentElement )
 			{
@@ -1158,6 +1134,34 @@ void MusWindow::OnKeyDown(wxKeyEvent &event)
 			CheckPoint( UNDO_PART, MUS_UNDO_STAFF );
 			OnEndEdition();
 		}
+        else if (event.m_keyCode == 'O' && m_currentElement && m_currentElement->IsNeume()) {
+            PrepareCheckPoint( UNDO_PART, MUS_UNDO_STAFF );
+            MusNeume *temp = (MusNeume*)m_currentElement;
+            temp->SetClosed(!temp->closed);
+            printf("Setting closed: %d\n", temp->IsClosed());
+            CheckPoint( UNDO_PART, MUS_UNDO_STAFF );
+            OnEndEdition();
+        }
+        else if (event.m_keyCode == 'M' && m_currentElement && m_currentElement->IsNeume()) {
+            // M key changes note head (note 'Mode')
+            printf("mode change\n");
+             // closed vs. open editing handling
+            PrepareCheckPoint( UNDO_PART, MUS_UNDO_STAFF );
+            MusNeume *temp = (MusNeume*)m_currentElement;
+            if (!temp->IsClosed()) {
+                const int MAX_VALUES = 6; // number of neume heads
+                temp->SetValue((temp->GetValue() + 1) % 
+                               MAX_VALUES, m_currentStaff, 0);
+            }
+            CheckPoint( UNDO_PART, MUS_UNDO_STAFF );
+            OnEndEdition();
+        }
+        else if (event.m_keyCode == 'N' && m_currentElement) {
+            PrepareCheckPoint( UNDO_PART, MUS_UNDO_STAFF );
+            ((MusNeume *)m_currentElement)->InsertPitchAfterSelected();
+            CheckPoint( UNDO_PART, MUS_UNDO_STAFF );
+            OnEndEdition();
+        }
 		else if ( m_currentElement && m_currentElement->IsNote() && 
 			( (event.m_keyCode == 'B') || (event.m_keyCode == 'D' ) ) ) // ajouter un bemol à une note
 		{
@@ -1837,39 +1841,6 @@ void MusWindow::OnPaint(wxPaintEvent &event)
 		m_currentColour = AxBLACK;
 	}
 }
-
-bool MusWindow::KeyboardEntry(wxKeyEvent &event) {
-	if (event.GetKeyCode() == 'K' && event.CmdDown())
-	{
-		SetKeyboardEntryMode(!m_keyEntryMode);
-		
-		// need to close open neumes before leaving keyboard entry mode
-		if (m_keyEntryMode == false && m_currentElement) {
-			printf("Keyboard mode OFF, we have an element\n");
-			if (m_currentElement->IsNeume())
-			{
-				((MusNeume*)m_currentElement)->SetClosed(true);
-			}
-		} else printf("We DO NOT have an element!\n");
-		
-		// wait for next input
-		return false;
-	} else if (!m_keyEntryMode) return false; // not in keyboard mode, return
-	
-	// create a keyboard editor object if necessary
-	if (!m_keyEditor) m_keyEditor = new MusKeyboardEditor(this);
-	
-	/* 
-	 * while in keyboard mode:
-	 * if key is supported by keyboard entry, carry out the action
-	 * if not, default (non-keyboard mode) keybind is used.
-	 * this is useful for actions that are already accounted for 
-	 * such as navigation between notes 
-	 */
-	return (m_keyEditor->handleKeyEvent(event));
-	
-}
-
 
 void MusWindow::OnSize(wxSizeEvent &event)
 {

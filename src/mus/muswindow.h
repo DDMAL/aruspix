@@ -99,8 +99,6 @@ public:
 	void SetToolType( int type );
 			
 	void SetInsertMode( bool insert );
-	
-	void SetKeyboardEntryMode( bool mode );
     
 	/**
 		Redimensionne la fenetre en fonction de la taille du parent et du zoom de la taille de la page
@@ -153,17 +151,13 @@ public:
 	MusToolPanel *m_toolpanel;
 	int m_lyricCursor;
 	
-	// keyboard entry mode
-	bool m_keyEntryMode;
-	MusKeyboardEditor *m_keyEditor;
-    
     static int s_flats[];
     static int s_sharps[];
     
 private:
 	void SyncToolPanel(); // synchronize tool dlg (m_currentElement, mode ... )
 
-	bool KeyboardEntry(wxKeyEvent &event);	//parse key input and send MIDI messages
+	bool KeyboardEntry(wxKeyEvent &event);
     void LyricEntry( wxKeyEvent &event );
     
     void OnSize( wxSizeEvent &event );
