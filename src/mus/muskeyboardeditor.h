@@ -3,12 +3,11 @@
  *  aruspix
  *
  *  Created by Chris Niven on 03/06/10.
- *  Copyright 2010 __MyCompanyName__. All rights reserved.
- *
- *  I could have made the interface/implementation for this class much
- * more elegant. "Make it run."
  *
  */
+
+#ifndef __MUS_KEYBOARD_EDITOR_H__
+#define __MUS_KEYBOARD_EDITOR_H__
 
 #ifdef __GNUG__
 #pragma implementation "muskeyboardeditor.cpp"
@@ -44,3 +43,4 @@ public:
 	bool handleKeyEvent(wxKeyEvent &event);
 };
 
+#endif
