@@ -268,7 +268,7 @@ RecImWindow::RecImWindow( AxImageController *parent, wxWindowID id,
     item->SetBitmap( BitmapsFuncClassification( 0 ) );
     item = m_popupMenuClassification.Append( ID4_POPUP_MENU_TITLE, _("Title elements") );
     item->SetBitmap( BitmapsFuncClassification( 1 ) );
-    item = m_popupMenuClassification.Append( ID4_POPUP_MENU_LYRICS, _("Lyrics of inter staves music symbols") );
+    item = m_popupMenuClassification.Append( ID4_POPUP_MENU_LYRICS, _("Lyrics or inter staves music symbols") );
     item->SetBitmap( BitmapsFuncClassification( 2 ) );
     item = m_popupMenuClassification.Append( ID4_POPUP_MENU_ORNATE_LETTER, _("Ornate letter") );
     item->SetBitmap( BitmapsFuncClassification( 3 ) );
