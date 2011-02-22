@@ -1145,15 +1145,14 @@ void MusWindow::OnKeyDown(wxKeyEvent &event)
         else if (event.m_keyCode == 'M' && m_currentElement && m_currentElement->IsNeume()) {
             // M key changes note head (note 'Mode')
             printf("mode change\n");
-             // closed vs. open editing handling
-            PrepareCheckPoint( UNDO_PART, MUS_UNDO_STAFF );
             MusNeume *temp = (MusNeume*)m_currentElement;
             if (!temp->IsClosed()) {
+                PrepareCheckPoint( UNDO_PART, MUS_UNDO_STAFF );
                 const int MAX_VALUES = 6; // number of neume heads
                 temp->SetValue((temp->GetValue() + 1) % 
                                MAX_VALUES, m_currentStaff, 0);
+                CheckPoint( UNDO_PART, MUS_UNDO_STAFF );
             }
-            CheckPoint( UNDO_PART, MUS_UNDO_STAFF );
             OnEndEdition();
         }
         else if (event.m_keyCode == 'N' && m_currentElement) {
@@ -1833,7 +1832,7 @@ void MusWindow::OnPaint(wxPaintEvent &event)
 		m_currentColour = AxRED;
 		//drawing code here
 		
-		printf("staff y: %d\n", m_currentStaff->yrel);
+		//printf("staff y: %d\n", m_currentStaff->yrel);
 		
 	// TODO	this->rect_plein2(&dc, m_newElement->xrel+35, m_currentStaff->yrel-200, 
 	//					  m_newElement->xrel+40, m_currentStaff->yrel-40);
