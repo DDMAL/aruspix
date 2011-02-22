@@ -57,11 +57,11 @@ MusNeumePitch::MusNeumePitch(int _code, int _oct, unsigned char _val)
 }
 
 // Duplicate an existing pitch
-MusNeumePitch::MusNeumePitch( MusNeumePitch *pitch) {
-	code = pitch->code;
-	oct = pitch->oct;
-	val = pitch->val;
-	m_font_str.assign(pitch->m_font_str);
+MusNeumePitch::MusNeumePitch( const MusNeumePitch &pitch) {
+	code = pitch.code;
+	oct = pitch.oct;
+	val = pitch.val;
+	m_font_str.assign(pitch.m_font_str);
 }
 
 void MusNeumePitch::SetPitch( int code, int oct ) {
@@ -114,10 +114,10 @@ wxString MusNeumePitch::GetFestaString() {
 	return m_font_str;
 }
 
-int MusNeumePitch::Compare(MusNeumePitch *other)
+int MusNeumePitch::Compare(const MusNeumePitch &other)
 {
 	int a = this->code + (this->oct * 7);
-	int b = other->code + (other->oct * 7);
+	int b = other.code + (other.oct * 7);
 
 	if (a < b) {
 		/*printf("ascending\n");*/
@@ -132,9 +132,9 @@ int MusNeumePitch::Compare(MusNeumePitch *other)
 }
 
 // returns an int value of the difference between pitches
-int MusNeumePitch::Pitch_Diff(MusNeumePitch *other) 
+int MusNeumePitch::Pitch_Diff(const MusNeumePitch &other) 
 {
-	return abs_pitch(other->code, other->oct) - abs_pitch(this->code, this->oct);
+	return abs_pitch(other.code, other.oct) - abs_pitch(this->code, this->oct);
 }
 
 int MusNeumePitch::Pitch_Diff(int code, int oct)
@@ -169,7 +169,7 @@ void MusNeume::init(unsigned char _val, unsigned char _code) {
 	TYPE = NEUME;
 	closed = true;
 	n_selected = 0;
-	MusNeumePitch *firstPitch = new MusNeumePitch(_code, 0, _val);
+	MusNeumePitch firstPitch(_code, 0, _val);
 	n_pitches.push_back(firstPitch);
 	code = _code;	
 	p_range = p_min = p_max = 0;
@@ -186,22 +186,23 @@ MusNeume::MusNeume( unsigned char _val, unsigned char _code )
 }
 
 // Copy an existing neume
-MusNeume::MusNeume( MusNeume* neume) {
-	TYPE = neume->TYPE;
+MusNeume::MusNeume( const MusNeume &neume) {
+	TYPE = neume.TYPE;
 	closed = true;	//all neumes are closed by default
 	
-	for (unsigned int i = 0; i < neume->n_pitches.size(); i++) {
-		n_pitches.push_back(new MusNeumePitch(neume->n_pitches.at(i)));
+	for (unsigned int i = 0; i < neume.n_pitches.size(); i++) {
+        MusNeumePitch pitch = neume.n_pitches.at(i);
+		n_pitches.push_back(pitch);
 	}
 	
 	n_selected = 0;
 	this->GetPitchRange();
-	n_type = neume->n_type;
-	name = neume->name;
-	form = neume->form;	
+	n_type = neume.n_type;
+	name = neume.name;
+	form = neume.form;	
 	
-	code = neume->code;
-	oct = neume->oct;
+	code = neume.code;
+	oct = neume.oct;
 }
 
 MusNeume::~MusNeume()
@@ -237,26 +238,6 @@ void MusNeume::SetClosed(bool value) {
 	this->printNeumeList();
 }
 
-// create a copy of the currently edited neume
-void MusNeume::Copy() {
-	MusNeume *copy = new MusNeume(this);
-
-	this->printNeumeList();
-
-	copy->xrel = this->xrel + (PUNCT_PADDING * (n_pitches.size()));
-	
-	this->SetClosed(true);
-
-	if (m_r) {
-		m_r->m_currentStaff->Insert(copy);
-		m_r->m_currentElement = m_r->m_currentStaff->GetNext(this);
-
-		// m_r->SetInsertMode(false); // switch to edition mode
-        // Laurent: I commented this because it should be in the MusWindow
-		m_r->DoRefresh();
-	}
-}
-
 // if open, returns next individual pitch
 // if closed, return false and let musstaff select the next element
 void MusNeume::GetNextPunctum() { 
@@ -287,9 +268,9 @@ void MusNeume::InsertPitchAfterSelected()
 {
 	if (this->IsClosed()) return; //can only insert pitches in open mode
 	
-	MusNeumePitch *selected = this->n_pitches.at(this->n_selected);
+	MusNeumePitch selected = this->n_pitches.at(this->n_selected);
 	
-	MusNeumePitch *new_pitch = new MusNeumePitch(selected);
+	MusNeumePitch new_pitch = selected;
 	
 	iter = this->n_pitches.begin();
 	
@@ -328,7 +309,7 @@ int MusNeume::GetCode()
 	if (this->IsClosed()) {
 		return this->code; 
 	} else {
-		return n_pitches.at(n_selected)->GetCode();
+		return n_pitches.at(n_selected).GetCode();
 	}
 }
 
@@ -337,7 +318,7 @@ int MusNeume::GetOct()
 	if (this->IsClosed()) {
 		return this->oct;
 	} else {
-		return n_pitches.at(n_selected)->GetOct();
+		return n_pitches.at(n_selected).GetOct();
 	}
 }
 
@@ -348,31 +329,31 @@ void MusNeume::SetPitch( int code, int oct )
 	if ( this->TYPE != NEUME )
 		return;
 
-	int diff = n_pitches.at(0)->Pitch_Diff(code, oct);
+	int diff = n_pitches.at(0).Pitch_Diff(code, oct);
 	
 	if (this->IsClosed()) {
 		//shift all pitches!
 //		int diff = n_pitches.at(0)->Pitch_Diff(code, oct);
-		printf("diff = %d\n", diff);
+		//printf("diff = %d\n", diff);
 		this->code = code;
 		this->oct = oct;
 		
-		n_pitches.at(0)->SetPitch(code, oct);
+		n_pitches.at(0).SetPitch(code, oct);
 	
 		for (unsigned int i = 1; i < n_pitches.size(); i++) {
 			//unnecessarily shifted
 			
 			int newoctave;
-			MusNeumePitch *p = n_pitches.at(i);
-			int newcode = p->filtrcod(p->GetCode() + diff, &newoctave);
-			n_pitches.at(i)->SetPitch(newcode, newoctave);
+			MusNeumePitch p = n_pitches.at(i);
+			int newcode = p.filtrcod(p.GetCode() + diff, &newoctave);
+			n_pitches.at(i).SetPitch(newcode, newoctave);
 		}
 		
 	} else { // open mode
 		int newoctave;
-		MusNeumePitch *p = n_pitches.at(n_selected);
-		int newcode = p->filtrcod(p->GetCode() + diff, &newoctave);
-		n_pitches.at(n_selected)->SetPitch(newcode, newoctave);
+		MusNeumePitch p = n_pitches.at(n_selected);
+		int newcode = p.filtrcod(p.GetCode() + diff, &newoctave);
+		n_pitches.at(n_selected).SetPitch(newcode, newoctave);
 
 		if (n_selected == 0) { 
 			this->SetPitch(newcode, newoctave);
@@ -396,8 +377,7 @@ void MusNeume::SetValue( int value, MusStaff *staff, int vflag )
 		// change to different neume type (lookup table)
 	} else {
 		//printf("oh man!\n");
-		MusNeumePitch *temp = n_pitches.at(n_selected);
-		temp->SetValue(value);
+		n_pitches.at(n_selected).SetValue(value);
 	}
 	
 	//refresh drawing automatically
@@ -413,7 +393,7 @@ int MusNeume::GetValue()
 		//do nothing yet
 		return 0;
 	} else {
-		return n_pitches.at(n_selected)->GetValue();
+		return n_pitches.at(n_selected).GetValue();
 	}
 }
 
@@ -425,16 +405,15 @@ void MusNeume::printNeumeList()
 	//printf("%d [%X]\n---------\n", (int)&(*this),(unsigned int)&(*this));
 	//printf("Vector Address:\n---------\n"); 
 	//printf("%d [%d]\n", (int)&(this->n_pitches), (int)&(this->n_pitches));
-	printf("Neume List: (length %d)\n", (int)n_pitches.size());
-	printf("***********************\n");
-	int count = 0;
-	for (iter=n_pitches.begin(); iter != n_pitches.end(); ++iter, count++)
-	{
+	//printf("Neume List: (length %d)\n", (int)n_pitches.size());
+	//printf("***********************\n");
+	//int count = 0;
+	//for (iter=n_pitches.begin(); iter != n_pitches.end(); ++iter, count++) {
 		//printf("%d: %d [%X] code: %d oct: %d val: %d\n", 
 		//	   count, (int)&(*iter), (unsigned int)&(*iter), (*iter)->code, 
 		//	   (*iter)->oct, (*iter)->val);
-	}
-	printf("***********************\n");
+	//}
+	//printf("***********************\n");
 }
 
 int MusNeume::Length() { return (int)this->n_pitches.size(); };
@@ -451,7 +430,7 @@ int MusNeume::GetPitchRange()
 	//printf("***********************************************\n");
 	for (iter=n_pitches.begin(); iter != n_pitches.end(); ++iter, count++)
 	{
-		abs_pitch = (*iter)->GetCode() + ((*iter)->GetOct() * 7);
+		abs_pitch = (*iter).GetCode() + ((*iter).GetOct() * 7);
 		
 	//	printf("Pitch %d == %d\n", count, abs_pitch);
 		
@@ -516,21 +495,12 @@ void MusNeume::Draw( AxDC *dc, MusStaff *staff)
 	//	   (int)this->code, oct );
 	
 	if (this->IsClosed() == true) {
-		//neume drawing routine
-		printf("Drawing Neume\n");
 		this->DrawNeume( dc, staff );
 	} else {
-		//individual punctum edit mode drawing routine
-		printf("Drawing Individual Punctums\n");
 		this->DrawPunctums( dc, staff );
 	}
 	
-	//just trying a hack here
 	m_r->m_currentColour = AxBLACK;
-	
-	//seems to fix the problem somewhat...
-	
-	
 	return;
 }
 
@@ -591,13 +561,11 @@ void MusNeume::DrawNeume( AxDC *dc, MusStaff *staff )
 	
 	int ledge = m_r->ledgerLine[pTaille][2];
 	
-	MusNeumePitch *temp;
-	
 	if (this->n_pitches.size() == 1) {
-		temp = n_pitches.at(0);
+		MusNeumePitch temp = n_pitches.at(0);
 		leg_line( dc, ynn,bby,this->xrel,ledge, pTaille);
 		m_r->festa_string( dc, xn, ynn + 16, 
-					 temp->GetFestaString(), staff, this->dimin); 
+					 temp.GetFestaString(), staff, this->dimin); 
 	} else if (this->n_pitches.size() >= 1) {
 		// we need to draw a ligature
 		this->drawLigature(dc, staff);
@@ -631,13 +599,11 @@ void MusNeume::DrawPunctums( AxDC *dc, MusStaff *staff )
 	//int punct_y;
 	
 	this->DrawBox( dc, staff );
-	
-	MusNeumePitch *temp;
-	for (unsigned int i = 0; i < n_pitches.size(); i++) 
+
+    unsigned int i = 0;
+	for (iter=n_pitches.begin(); iter != n_pitches.end(); iter++) 
 	{
-		temp = n_pitches.at(i); 
-		
-		ynn = staff->y_note(temp->GetCode(), staff->testcle( this->xrel ), temp->GetOct() - 4);
+		ynn = staff->y_note((*iter).GetCode(), staff->testcle( this->xrel ), (*iter).GetOct() - 4);
 		ynn += staff->yrel; 
 		
 		leg_line( dc, ynn,bby,xl + (i * PUNCT_PADDING),ledge, pTaille);
@@ -645,7 +611,8 @@ void MusNeume::DrawPunctums( AxDC *dc, MusStaff *staff )
 		if (i == n_selected) m_r->m_currentColour = AxRED;
 		else m_r->m_currentColour = AxBLACK;
 		m_r->festa_string( dc, this->xrel + (i * PUNCT_PADDING), ynn + 16, 
-					  temp->GetFestaString(), staff, this->dimin );	
+                          (*iter).GetFestaString(), staff, this->dimin );
+        i++;
 	}
 }
 

@@ -33,7 +33,7 @@ class MusNeumePitch
 {
 public:
 	MusNeumePitch( int _code, int _oct, unsigned char _val );
-	MusNeumePitch( MusNeumePitch *pitch);
+	MusNeumePitch( const MusNeumePitch &pitch);
 	virtual ~MusNeumePitch() {}
 	void SetPitch( int code, int oct );
 	void SetValue( int value );
@@ -42,8 +42,8 @@ public:
 	int GetCode();
 	int GetOct();
 	
-	int Compare(MusNeumePitch *other);
-	int Pitch_Diff(MusNeumePitch *other);
+	int Compare(const MusNeumePitch &other);
+	int Pitch_Diff(const MusNeumePitch &other);
 	int Pitch_Diff(int code, int oct);
 	int filtrcod( int codElement, int *oct );
 
@@ -62,7 +62,7 @@ public:
     // constructors and destructors
 	MusNeume();
 	MusNeume( unsigned char _val, unsigned char _code );
-	MusNeume( MusNeume *neume);
+	MusNeume( const MusNeume &neume);
     virtual ~MusNeume();
     
 	//Drawing code
@@ -111,8 +111,8 @@ public:
 	unsigned int n_selected;
 	
 	//TODO: move to ligature
-	std::vector<MusNeumePitch*> n_pitches;
-	std::vector<MusNeumePitch*>::iterator iter;
+	std::vector<MusNeumePitch> n_pitches;
+	std::vector<MusNeumePitch>::iterator iter;
 	
 	int p_max; //the highest pitch in the neume group, relative to base pitch
 	int p_min; //lowest pitch, relative to base pitch
@@ -133,10 +133,7 @@ public:
 	int GetOct(); 
 	int GetCode();
 	
-	void Copy();
-	
 	// mei related fields
-	
 	char n_type; // uneume or ineume, uneume by default
 	char name; // name of the neume (climacus, pes, etc)
 	char form; // neume form, could be "liquescent1" for example

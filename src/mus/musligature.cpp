@@ -27,12 +27,12 @@ using std::string;
 
 // returns true of p1 is lower than p2
 bool MusNeume::ascending(int p1, int p2) 
-{ return (this->n_pitches.at(p1)->Compare(this->n_pitches.at(p2)) == -1); }
+{ return (this->n_pitches.at(p1).Compare(this->n_pitches.at(p2)) == -1); }
 
 // returns true if p1 is higher than p2
 bool MusNeume::descending(int p1, int p2)
 { 
-	if (!n_pitches.at(p1)->Pitch_Diff(n_pitches.at(p2))) return false;
+	if (!n_pitches.at(p1).Pitch_Diff(n_pitches.at(p2))) return false;
 	else return !ascending(p1, p2); 
 }
 
@@ -54,7 +54,7 @@ void MusNeume::drawLigature( AxDC *dc, MusStaff *staff ) {
 	//filter porrectus
 	if (n_pitches.size() == 3 && descending(0, 1) && ascending(1,2) )
 	{
-		if (n_pitches.at(0)->Pitch_Diff(n_pitches.at(1)) >= -2 ) {
+		if (n_pitches.at(0).Pitch_Diff(n_pitches.at(1)) >= -2 ) {
 			this->porrectus(dc, staff);
 			this->n_type = UNEUME;
 //			this->name = PRECT;
@@ -112,10 +112,10 @@ void MusNeume::neume_stem( AxDC *dc, MusStaff *staff, int xrel, int index,
 	// the origin. stems in festa dies will be drawn outwards from the punctum
 
 	// get the pitch we're trying to build a stem for
-	MusNeumePitch *temp = new MusNeumePitch(*(n_pitches.at(index)));
-	int pitch = abs_pitch(temp->GetCode(), temp->GetOct());
+	MusNeumePitch temp = n_pitches.at(index);
+	int pitch = abs_pitch(temp.GetCode(), temp.GetOct());
 	for (int i = 0; i < abs(pitch_range / 2); i++) {
-		ynn = staff->y_note(temp->GetCode(), staff->testcle( this->xrel), temp->GetOct() - 4);
+		ynn = staff->y_note(temp.GetCode(), staff->testcle( this->xrel), temp.GetOct() - 4);
 		ynn += staff->yrel;
 
 		printf("||||||||||||||||||||||||||||||||Drawing line\n");
@@ -123,9 +123,8 @@ void MusNeume::neume_stem( AxDC *dc, MusStaff *staff, int xrel, int index,
 		//update ynn value
 		if (pitch_range > 0) pitch -= 2;
 		else pitch += 2;
-		temp->SetPitch(abs2code(pitch), abs2oct(pitch));
+		temp.SetPitch(abs2code(pitch), abs2oct(pitch));
 	}
-	delete temp;
 }
 
 void MusNeume::clivis( AxDC *dc, MusStaff *staff ) {
@@ -138,11 +137,10 @@ void MusNeume::clivis( AxDC *dc, MusStaff *staff ) {
 	wxString str = "";
 
 	int xrel_curr = this->xrel; // keep track of where we are on the x axis
-	MusNeumePitch *temp;
-	for (unsigned int i = 0; i < n_pitches.size(); i++)
+    unsigned int i = 0;
+	for (iter=n_pitches.begin(); iter != n_pitches.end(); iter++)
 	{
-		temp = n_pitches.at(i);
-		ynn = staff->y_note(temp->GetCode(), staff->testcle( this->xrel), temp->GetOct() - 4);
+		ynn = staff->y_note((*iter).GetCode(), staff->testcle( this->xrel), (*iter).GetOct() - 4);
 		ynn += staff->yrel;
 		//ledger line
 		int ledge = m_r->ledgerLine[pTaille][2];
@@ -151,13 +149,13 @@ void MusNeume::clivis( AxDC *dc, MusStaff *staff ) {
 		//also take care of 'connecting lines'
 		
 		if (i) {
-			if (temp->Pitch_Diff((n_pitches.at(i-1))->GetCode(), 
-								 (n_pitches.at(i-1))->GetOct())) {
+			if ((*iter).Pitch_Diff((n_pitches.at(i-1)).GetCode(), 
+								 (n_pitches.at(i-1)).GetOct())) {
 				x_spacing = CLIVIS_X_DIFF;
 			} else x_spacing = CLIVIS_X_SAME; //same pitch
 			xrel_curr += x_spacing;
 			neume_stem(dc, staff, xrel_curr, i, 
-					   n_pitches.at(i-1)->Pitch_Diff(temp), LEFT_STEM);
+					   n_pitches.at(i-1).Pitch_Diff((*iter)), LEFT_STEM);
 		} else { // first pitch
 			if (descending(0, 1))	
 				neume_stem(dc, staff, xrel_curr, i, 2);
@@ -167,8 +165,8 @@ void MusNeume::clivis( AxDC *dc, MusStaff *staff ) {
 		
 		if (i < n_pitches.size())
 		m_r->festa_string(dc, xrel_curr, ynn + 16, 
-						  temp->GetFestaString() , staff, this->dimin);
-
+						  (*iter).GetFestaString() , staff, this->dimin);
+        i++;
 	}
 	this->xrel_right = xrel_curr + PUNCT_WIDTH;
 	//draw debug line to make sure were in the right spot
@@ -184,12 +182,12 @@ void MusNeume::podatus( AxDC *dc, MusStaff *staff ) {
 	int ledge = m_r->ledgerLine[pTaille][2];
 	
 	int punct_y;
-	MusNeumePitch *temp = this->n_pitches.at(0);
+	MusNeumePitch temp = this->n_pitches.at(0);
 	m_r->festa_string(dc, this->xrel, ynn + 16, wxString((char)nPES),
 				 staff, this->dimin );
 	temp = this->n_pitches.at(1);
 	
-	punct_y = staff->y_note(temp->GetCode(), staff->testcle( this->xrel ), temp->GetOct() - 4);
+	punct_y = staff->y_note(temp.GetCode(), staff->testcle( this->xrel ), temp.GetOct() - 4);
 	int ynn2 = punct_y + staff->yrel; 
 	
 	//ledger lines
@@ -199,16 +197,16 @@ void MusNeume::podatus( AxDC *dc, MusStaff *staff ) {
 	// for the different type of 'upper punctums'...
 	// stem is drawn upwards from the base pitch (pes or punctum)
 	
-	neume_stem(dc, staff, this->xrel + PUNCT_WIDTH, 1, n_pitches.at(0)->Pitch_Diff(n_pitches.at(1)),
+	neume_stem(dc, staff, this->xrel + PUNCT_WIDTH, 1, n_pitches.at(0).Pitch_Diff(n_pitches.at(1)),
 			   RIGHT_STEM);
 		
 	int xrel_curr = this->xrel; // keep track of where we are on the x axis
-	switch (temp->GetValue()) {
+	switch (temp.GetValue()) {
 			//draw to the right
 		case 2:					//nCEPHALICUS
 		case 3:					//nPUNCT_UP (upwards auctae)
 			xrel_curr += PUNCT_WIDTH;
-			m_r->festa_string(dc, xrel_curr, ynn2 + 16, temp->GetFestaString(), 
+			m_r->festa_string(dc, xrel_curr, ynn2 + 16, temp.GetFestaString(), 
 							  staff, this->dimin);
 			break;
 			// not possible; break the neume?
@@ -232,7 +230,7 @@ void MusNeume::porrectus( AxDC *dc, MusStaff *staff )
 	wxString str = "";
 	
 	int porrect_type;
-	switch(abs(n_pitches.at(0)->Pitch_Diff(n_pitches.at(1)))) {
+	switch(abs(n_pitches.at(0).Pitch_Diff(n_pitches.at(1)))) {
 		case 1:
 			porrect_type = nPORRECT_1; //works
 			break;
@@ -247,7 +245,7 @@ void MusNeume::porrectus( AxDC *dc, MusStaff *staff )
 			break;
 		default:
 			printf("Invalid pitch range: %d\n", 
-				   abs(n_pitches.at(0)->Pitch_Diff(n_pitches.at(1))));
+				   abs(n_pitches.at(0).Pitch_Diff(n_pitches.at(1))));
 			return; 
 	}
 	str.append("3");
@@ -272,10 +270,10 @@ void MusNeume::porrectus( AxDC *dc, MusStaff *staff )
 	
 	// PITCH 3
 	//figure out where to draw the last punctum
-	MusNeumePitch *temp = n_pitches.at(2);
-	str = temp->GetFestaString();
+	MusNeumePitch temp = n_pitches.at(2);
+	str = temp.GetFestaString();
 	
-	ynn = staff->y_note(temp->GetCode(), staff->testcle( this->xrel ), temp->GetOct() - 4);
+	ynn = staff->y_note(temp.GetCode(), staff->testcle( this->xrel ), temp.GetOct() - 4);
 	ynn += staff->yrel;
 
 	
@@ -283,20 +281,20 @@ void MusNeume::porrectus( AxDC *dc, MusStaff *staff )
 	
 	//eventually check for open-closed mode change
 	int xrel_curr = this->xrel + PUNCT_WIDTH;
-		switch (temp->GetValue()) {
+		switch (temp.GetValue()) {
 				//draw to the right
 			case 2:					//nCEPHALICUS
 			case 3:					//nPUNCT_UP (upwards auctae)
 	// draw stem if necessary
 				xrel_curr += PUNCT_PADDING;
-				neume_stem(dc, staff, xrel_curr, 2, n_pitches.at(1)->Pitch_Diff(temp)
+				neume_stem(dc, staff, xrel_curr, 2, n_pitches.at(1).Pitch_Diff(temp)
 						   , LEFT_STEM);
 				m_r->festa_string(dc, xrel_curr, 
-								  ynn + 16, temp->GetFestaString(), staff, this->dimin);
+								  ynn + 16, temp.GetFestaString(), staff, this->dimin);
 				break;
 			default:
 				xrel_curr += PUNCT_PADDING;
-				neume_stem(dc, staff, xrel_curr, 2, n_pitches.at(1)->Pitch_Diff(temp)
+				neume_stem(dc, staff, xrel_curr, 2, n_pitches.at(1).Pitch_Diff(temp)
 						   , RIGHT_STEM);
 				m_r->festa_string(dc, xrel_curr - PUNCT_WIDTH, ynn + 16, 
 								  wxString((char)nPUNCTUM),staff, this->dimin);
