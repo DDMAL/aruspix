@@ -45,9 +45,6 @@ int SortElements(MusNeume **first, MusNeume **second)
 // MusNeumePitch
 //----------------------------------------------------------------------------
 
-// we don't want this constructor called, pretty much ever. Need to 
-// get rid of this eventually, (although it is called at app launch by default)
-
 MusNeumePitch::MusNeumePitch(int _code, int _oct, unsigned char _val) 
 {
 	code = _code;
@@ -210,8 +207,6 @@ MusNeume::~MusNeume()
 {	
 }
 
-//might have to expand on this? probably not though
-
 bool MusNeume::IsClosed() { return this->closed; }
 
 void MusNeume::SetClosed(bool value) {
@@ -219,20 +214,9 @@ void MusNeume::SetClosed(bool value) {
 	
 	if (this->closed) {
 		n_selected = 0;
-		//break up neumes if there are repeated pitches
-//		printf("\nINITIAL LIST: **********************\n");	
-//		this->printNeumeList();
-// 		this->CheckForBreaks(); //causes memory leak?
-//		wxClientDC dc(m_r);
-//		this->drawLigature(&(m_r->dc), m_r->m_currentStaff);
-	//	m_r->m_currentElement = this;
-	} else { // in case pitch is not set when entering open mode for the first time
-
 	}
 	
-	if (m_r)
-	{
-	//	printf("Hderp!\n");
+	if (m_r) {
 		m_r->DoRefresh();
 	}
 
@@ -282,10 +266,9 @@ void MusNeume::InsertPitchAfterSelected()
 	
 	this->GetPitchRange();
 	
-	if (m_r)
-		m_r->DoRefresh();	
-	
-
+	if (m_r) {
+		m_r->DoRefresh();
+    }
 }
 
 void MusNeume::RemoveSelectedPitch()
@@ -301,8 +284,9 @@ void MusNeume::RemoveSelectedPitch()
 	if (n_selected) n_selected--;
 	
 	this->GetPitchRange();
-	if (m_r)
+	if (m_r) {
 		m_r->DoRefresh();
+    }
 }
 
 int MusNeume::GetCode()
@@ -323,8 +307,6 @@ int MusNeume::GetOct()
 	}
 }
 
-// I'm sure this could be optimized
-
 void MusNeume::SetPitch( int code, int oct )
 {
 	if ( this->TYPE != NEUME )
@@ -334,8 +316,6 @@ void MusNeume::SetPitch( int code, int oct )
 	
 	if (this->IsClosed()) {
 		//shift all pitches!
-//		int diff = n_pitches.at(0)->Pitch_Diff(code, oct);
-		//printf("diff = %d\n", diff);
 		this->code = code;
 		this->oct = oct;
 		
@@ -428,32 +408,21 @@ int MusNeume::GetPitchRange()
 {
 	int ymin, ymax, abs_pitch, count, range, max_rel, min_rel;
 	count = 0;
-	//printf("***********************************************\n");
 	for (iter=n_pitches.begin(); iter != n_pitches.end(); ++iter, count++)
 	{
 		abs_pitch = (*iter).GetCode() + ((*iter).GetOct() * 7);
 		
-	//	printf("Pitch %d == %d\n", count, abs_pitch);
-		
 		if (!count) ymin = ymax = abs_pitch;
-		
-		//printf("Absolute pitch for note %d: %d\n", count, abs_pitch);
 		
 		if (abs_pitch > ymax)
 			ymax = abs_pitch;
 		else if (abs_pitch < ymin)
 			ymin = abs_pitch;
 	}
-	//printf("***********************************************\n");			   
 	
 	range = ymax - ymin;
 	max_rel = ymax - (this->code + (this->oct * 7));
 	min_rel = ymin - (this->code + (this->oct * 7));
-	
-	//printf("The pitch range is %d semitones\n", range);
-	//printf("Max: %d, Min: %d\n", max_rel, min_rel);
-	
-	
 	
 	//do some field setting for convenience, if necessary
 	if (range != this->p_range) this->p_range = range;
@@ -464,7 +433,6 @@ int MusNeume::GetPitchRange()
 }
 
 //should have some loop for drawing each element in the neume
-
 void MusNeume::Draw( AxDC *dc, MusStaff *staff)
 {
 	wxASSERT_MSG( dc , "DC cannot be NULL");
