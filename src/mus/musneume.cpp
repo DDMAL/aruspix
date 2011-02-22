@@ -186,7 +186,8 @@ MusNeume::MusNeume( unsigned char _val, unsigned char _code )
 }
 
 // Copy an existing neume
-MusNeume::MusNeume( const MusNeume &neume) {
+MusNeume::MusNeume( const MusNeume &neume) :
+    MusElement(neume) {
 	TYPE = neume.TYPE;
 	closed = true;	//all neumes are closed by default
 	
