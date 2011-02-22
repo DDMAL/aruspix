@@ -136,6 +136,7 @@ public:
 	double m_resized;
     double m_optimization_resize_factor;
     int m_original_width, m_original_height;
+    int m_rotated_width, m_rotated_height;
     int m_x1, m_x2, m_y1;
     wxSize m_size; // taille de l'image à reconnaitre
     int m_line_width;

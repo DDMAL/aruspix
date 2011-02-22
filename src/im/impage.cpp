@@ -113,6 +113,8 @@ void ImPage::Clear( )
     m_y1 = 0;
     m_original_width = 0;
     m_original_height = 0;
+    m_rotated_width = 0;
+    m_rotated_height = 0;
 	m_staff_height = 0;
 	m_num_staff_lines = ImPage::s_num_staff_lines;
 	
@@ -164,6 +166,12 @@ bool ImPage::Load( TiXmlElement *file_root )
         
     if ( root->Attribute("original_height"))
         m_original_height = atoi(root->Attribute("original_height"));
+        
+    if ( root->Attribute("rotated_width"))
+        m_rotated_width = atoi(root->Attribute("rotated_width"));
+        
+    if ( root->Attribute("rotated_height"))
+        m_rotated_height = atoi(root->Attribute("rotated_height"));
 
     if ( root->Attribute("skew"))
         m_skew = atof(root->Attribute("skew"));
@@ -239,6 +247,12 @@ bool ImPage::Save( TiXmlElement *file_root )
     
     tmp = wxString::Format("%d", m_original_height );
     root.SetAttribute( "original_height", tmp.c_str() );
+    
+    tmp = wxString::Format("%d", m_rotated_width );
+    root.SetAttribute( "rotated_width", tmp.c_str() );
+    
+    tmp = wxString::Format("%d", m_rotated_height );
+    root.SetAttribute( "rotated_height", tmp.c_str() );
     
     tmp = wxString::Format("%d", m_x1 );
     root.SetAttribute( "x1", tmp.c_str() );
@@ -385,6 +399,8 @@ bool ImPage::Check( wxString infile, int max_size, int min_size, int index )
         
     this->m_original_width = m_opImMain->width;
     this->m_original_height = m_opImMain->height;
+    this->m_rotated_width = m_opImMain->width;
+    this->m_rotated_height = m_opImMain->height;
         
     // resize
     // the biggest side of the image is reduced to max_size when bigger than max_size (and max_side != -1)
@@ -394,6 +410,7 @@ bool ImPage::Check( wxString infile, int max_size, int min_size, int index )
     // trick: both reduce and expand are > 1.0 when true because the fraction above is reverse
     if ( (expand > 1 ) || (reduce > 1) )
     {
+        /* USE THIS FROM 1.6.3 ON
         m_optimization_resize_factor = (expand > reduce) ? 1.0 / expand : reduce;
     
         if (!m_progressDlg->SetOperation( _("Resizing image ...") ))
@@ -409,6 +426,25 @@ bool ImPage::Check( wxString infile, int max_size, int min_size, int index )
             return this->Terminate( ERR_CANCELED );
         
         SwapImages( &m_opImMain, &m_opImTmp1 );
+        */
+        
+        /* THIS FOR 1.6.2 ONLY */
+        float resize_factor = (expand > reduce) ? 1.0 / expand : reduce;
+	   
+        if (!m_progressDlg->SetOperation( _("Resizing image ...") ))
+           return this->Terminate( ERR_CANCELED );
+	
+         m_opImTmp1 = imImageCreate(  (int)(m_opImMain->width  / resize_factor), (int)(m_opImMain->height  / resize_factor),
+	            m_opImMain->color_space, m_opImMain->data_type);
+	   
+        if ( !m_opImTmp1 )
+           return this->Terminate( ERR_MEMORY );
+	
+        if ( !imProcessResize( m_opImMain ,m_opImTmp1, 1) )
+	            return this->Terminate( ERR_CANCELED );
+       
+         SwapImages( &m_opImMain, &m_opImTmp1 );
+        
     }
 
     // verifier que l'image est de type IM_BYTE
@@ -612,10 +648,15 @@ bool ImPage::Deskew( double max_alpha )
         double cos0, sin0;
         sin0 = sin( deg2rad( skew ) );
         cos0 = cos( deg2rad( skew ) );
-        //imProcessCalcRotateSize( m_opImMap->width, m_opImMap->height, 
-        //                      &new_w, &new_h, cos0, sin0);
-        new_w = m_opImMap->width;
-        new_h = m_opImMap->height;
+        
+        imProcessCalcRotateSize( m_opImMap->width, m_opImMap->height, 
+                              &new_w, &new_h, cos0, sin0);
+                              
+        imProcessCalcRotateSize( this->m_original_width, this->m_original_height, 
+                              &this->m_rotated_width, &this->m_rotated_height, cos0, sin0);
+                              
+        //new_w = m_opImMap->width;
+        //new_h = m_opImMap->height;
 
         m_opImTmp1 = imImageCreate( new_w, new_h, m_opImMap->color_space, m_opImMap->data_type);
         if ( !m_opImTmp1 )
