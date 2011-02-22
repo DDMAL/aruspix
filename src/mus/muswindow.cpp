@@ -1029,7 +1029,6 @@ void MusWindow::OnKeyDown(wxKeyEvent &event)
 				}
 				else if ( m_currentElement->IsNeume() )
 				{
-					m_neume = *(MusNeume*)m_currentElement;
 					m_newElement = &m_neume;
 				}
                 // TODO for cursor
