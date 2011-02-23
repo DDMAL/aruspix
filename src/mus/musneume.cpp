@@ -162,8 +162,10 @@ int MusNeumePitch::filtrcod( int codElement, int *oct )
 // MusNeume
 //----------------------------------------------------------------------------
 
-void MusNeume::init(unsigned char _val, unsigned char _code) {
-	TYPE = NEUME;
+MusNeume::MusNeume() : MusElement() {
+    int _code, _val = 0;
+    
+    TYPE = NEUME;
 	closed = true;
 	n_selected = 0;
 	MusNeumePitch firstPitch(_code, 0, _val);
@@ -171,15 +173,6 @@ void MusNeume::init(unsigned char _val, unsigned char _code) {
 	code = _code;	
 	p_range = p_min = p_max = 0;
 	n_type = name = form = NULL; //this gets set when ligature is drawn
-}
-
-MusNeume::MusNeume() : MusElement() {
-	init(0, 0);
-}
-
-MusNeume::MusNeume( unsigned char _val, unsigned char _code )
-{
-	init(_val, _code);
 }
 
 // Copy an existing neume

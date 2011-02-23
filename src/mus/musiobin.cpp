@@ -643,11 +643,9 @@ bool MusBinInput::ReadStaff( MusStaff *staff )
 		}
         else if ( c == NEUME )
 		{
-			// XXX: Need to create something in this neume
-			MusNeume *neume = new MusNeume(1, 2);
-			//neume->no = k;
+			MusNeume *neume = new MusNeume();
 			ReadNeume( neume );
-			staff->m_elements.Add( neume );
+			staff->m_elements.Add(  neume );
 		}
 		if ( m_flag == MUS_BIN_ARUSPIX_CMP )
 		{		

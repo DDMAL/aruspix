@@ -61,7 +61,6 @@ class MusNeume: public MusElement
 public:
     // constructors and destructors
 	MusNeume();
-	MusNeume( unsigned char _val, unsigned char _code );
 	MusNeume( const MusNeume &neume);
     virtual ~MusNeume();
     
@@ -137,9 +136,6 @@ public:
 	char n_type; // uneume or ineume, uneume by default
 	char name; // name of the neume (climacus, pes, etc)
 	char form; // neume form, could be "liquescent1" for example
-	
-private:
-    void init(unsigned char val, unsigned char code);
 };
 
 
