@@ -354,10 +354,10 @@ void MusNeume::SetValue( int value, MusStaff *staff, int vflag )
 		return;
 	}
 
-	if (this->IsClosed()) {
-		// change to different neume type (lookup table)
+	if (this->IsClosed() && Length() == 1) {
+        // If there's just 1 element, change it even if we're closed.
+        n_pitches.at(n_selected).SetValue(value);
 	} else {
-		//printf("oh man!\n");
 		n_pitches.at(n_selected).SetValue(value);
 	}
 	
@@ -369,10 +369,9 @@ void MusNeume::SetValue( int value, MusStaff *staff, int vflag )
 
 int MusNeume::GetValue()
 {
-	if (this->IsClosed())
-	{
-		//do nothing yet
-		return 0;
+	if (this->IsClosed() && Length() == 1) {
+        // If there's just 1, return it even if we're closed
+		return n_pitches.at(n_selected).GetValue();
 	} else {
 		return n_pitches.at(n_selected).GetValue();
 	}

@@ -1145,13 +1145,11 @@ void MusWindow::OnKeyDown(wxKeyEvent &event)
             // M key changes note head (note 'Mode')
             printf("mode change\n");
             MusNeume *temp = (MusNeume*)m_currentElement;
-            if (!temp->IsClosed()) {
-                PrepareCheckPoint( UNDO_PART, MUS_UNDO_STAFF );
-                const int MAX_VALUES = 6; // number of neume heads
-                temp->SetValue((temp->GetValue() + 1) % 
-                               MAX_VALUES, m_currentStaff, 0);
-                CheckPoint( UNDO_PART, MUS_UNDO_STAFF );
-            }
+            PrepareCheckPoint( UNDO_PART, MUS_UNDO_STAFF );
+            const int MAX_VALUES = 6; // number of neume heads
+            temp->SetValue((temp->GetValue() + 1) % 
+                           MAX_VALUES, m_currentStaff, 0);
+            CheckPoint( UNDO_PART, MUS_UNDO_STAFF );
             OnEndEdition();
         }
         else if (event.m_keyCode == 'N' && m_currentElement) {
