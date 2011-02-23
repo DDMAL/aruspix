@@ -823,6 +823,12 @@ void MusWindow::OnMouseLeftDown(wxMouseEvent &event)
 		MusStaff *noteStaff = m_page->GetAtPos( y );
 		MusElement *noteElement = noteStaff->GetAtPos( x );				
 
+		// If we select a new item and the last item was a neume, close it
+		if (m_currentElement && m_currentElement->IsNeume()) {
+			MusNeume *temp = (MusNeume*)m_currentElement;
+			temp->SetClosed(true);
+		}
+        
 		m_lyricMode = false;
 		m_inputLyric = false;
 		m_editElement = true;
@@ -1029,6 +1035,8 @@ void MusWindow::OnKeyDown(wxKeyEvent &event)
 				}
 				else if ( m_currentElement->IsNeume() )
 				{
+					MusNeume *temp = (MusNeume*)m_currentElement;
+					temp->SetClosed(true);
 					m_newElement = &m_neume;
 				}
                 // TODO for cursor
