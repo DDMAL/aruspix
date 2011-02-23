@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		052314551315BC79007A4776 /* musligature.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4DB1E0DA12903186002B0A2D /* musligature.cpp */; };
 		0A5FB27A0DD49D2D001E460E /* imbrink3classes.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0A5FB2790DD49D2D001E460E /* imbrink3classes.cpp */; };
 		4D12CE4010748D8E00E65714 /* edt.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D12CE3C10748D8E00E65714 /* edt.cpp */; };
 		4D12CE4110748D8E00E65714 /* edt_wdr.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D12CE3E10748D8E00E65714 /* edt_wdr.cpp */; };
@@ -40,7 +41,6 @@
 		4DA0004512CA26E300B65740 /* musrc.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4DA0004312CA26E300B65740 /* musrc.cpp */; };
 		4DA6F43411510C7B0005E4A5 /* musbeam.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4DA6F43311510C7B0005E4A5 /* musbeam.cpp */; };
 		4DA9FDDD0D90984E000E7BA6 /* supbookctrl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4DA9FDDB0D90984E000E7BA6 /* supbookctrl.cpp */; };
-		4DB1E0DB12903186002B0A2D /* musligature.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4DB1E0DA12903186002B0A2D /* musligature.cpp */; };
 		4DB2D96D0D8383EA003401B0 /* musmlfdic.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4DB2D96B0D8383EA003401B0 /* musmlfdic.cpp */; };
 		4DB9F0530D94A66E00ED8E3E /* imregister.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4DB9F0510D94A66E00ED8E3E /* imregister.cpp */; };
 		4DC24AA9119B718700B2EF98 /* RtMidi.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4DC24AA7119B718700B2EF98 /* RtMidi.cpp */; };
@@ -71,7 +71,6 @@
 		57CA54260D34139D001FC334 /* axapp_wdr.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 57CA541F0D34139D001FC334 /* axapp_wdr.cpp */; };
 		57CA54270D34139D001FC334 /* axabout_wdr.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 57CA54210D34139D001FC334 /* axabout_wdr.cpp */; };
 		57EA3DE50C00BDEB00414247 /* recbookctrl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 57EA3DE30C00BDEB00414247 /* recbookctrl.cpp */; };
-		675287A611B87AF30037350B /* muskeyboardeditor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 675287A411B87AF30037350B /* muskeyboardeditor.cpp */; };
 		A58524CE0A1B9604002D9D8A /* axapp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A58524560A1B9604002D9D8A /* axapp.cpp */; };
 		A58524CF0A1B9604002D9D8A /* axenv.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A58524580A1B9604002D9D8A /* axenv.cpp */; };
 		A58524D00A1B9604002D9D8A /* axframe.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A585245B0A1B9604002D9D8A /* axframe.cpp */; };
@@ -220,8 +219,6 @@
 		57EA3DE30C00BDEB00414247 /* recbookctrl.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = recbookctrl.cpp; sourceTree = "<group>"; };
 		57EA3DE40C00BDEB00414247 /* recbookctrl.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = recbookctrl.h; sourceTree = "<group>"; };
 		6718EA9B11C14AAC00734117 /* neumedef.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = neumedef.h; path = ../src/mus/neumedef.h; sourceTree = SOURCE_ROOT; };
-		675287A411B87AF30037350B /* muskeyboardeditor.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = muskeyboardeditor.cpp; path = ../src/mus/muskeyboardeditor.cpp; sourceTree = SOURCE_ROOT; };
-		675287A511B87AF30037350B /* muskeyboardeditor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = muskeyboardeditor.h; path = ../src/mus/muskeyboardeditor.h; sourceTree = SOURCE_ROOT; };
 		A50FE1390A6D6E240038D682 /* rec.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = rec.h; sourceTree = "<group>"; };
 		A58523900A1B9504002D9D8A /* Aruspix.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Aruspix.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A58524560A1B9604002D9D8A /* axapp.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = axapp.cpp; sourceTree = "<group>"; };
@@ -335,8 +332,6 @@
 				4D3A8FEA0D35867200BBC1FB /* mustoolpanel.h */,
 				4D3A8FEB0D35867200BBC1FB /* muswindow.cpp */,
 				4D3A8FEC0D35867200BBC1FB /* muswindow.h */,
-				675287A411B87AF30037350B /* muskeyboardeditor.cpp */,
-				675287A511B87AF30037350B /* muskeyboardeditor.h */,
 			);
 			name = mus;
 			sourceTree = "<group>";
@@ -721,12 +716,11 @@
 				4DC24AA9119B718700B2EF98 /* RtMidi.cpp in Sources */,
 				4DC24AB7119B72C900B2EF98 /* musneume.cpp in Sources */,
 				4DC24ABC119B72EF00B2EF98 /* edtfile.cpp in Sources */,
-				675287A611B87AF30037350B /* muskeyboardeditor.cpp in Sources */,
-				4DB1E0DB12903186002B0A2D /* musligature.cpp in Sources */,
 				4D2994D612C7F2B500D0514B /* axfile.cpp in Sources */,
 				4D2995BA12C8006700D0514B /* axwxdc.cpp in Sources */,
 				4DA0004512CA26E300B65740 /* musrc.cpp in Sources */,
 				4DDE13C812CA5FD3008F02AD /* axdc.cpp in Sources */,
+				052314551315BC79007A4776 /* musligature.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
