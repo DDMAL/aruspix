@@ -49,6 +49,7 @@
 bool RecEnv::s_check = true;
 bool RecEnv::s_deskew = true;
 bool RecEnv::s_staves_position = true;
+bool RecEnv::s_crop = true;
 bool RecEnv::s_binarize_and_clean = true;
 bool RecEnv::s_save_images = true;
 //
@@ -385,10 +386,11 @@ void RecEnv::LoadConfig()
     wxASSERT_MSG( pConfig, wxT("pConfig cannot be NULL") );
     pConfig->SetPath("/Recognition");
     
-    // cannot be changed from dialog
+    // cannot be changed from dialog - values are not written by SaveConfig
     RecEnv::s_check = (pConfig->Read("Check",1)==1);
     RecEnv::s_deskew = (pConfig->Read("Deskew",1)==1);
     RecEnv::s_staves_position = (pConfig->Read("Staves position",1)==1);
+    RecEnv::s_crop = (pConfig->Read("Crop",1)==1);
     RecEnv::s_binarize_and_clean = (pConfig->Read("Binarize",1)==1);
     RecEnv::s_save_images = (pConfig->Read("Save images",1)==1);
     // can be changed from dialog
