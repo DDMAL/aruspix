@@ -163,14 +163,13 @@ int MusNeumePitch::filtrcod( int codElement, int *oct )
 //----------------------------------------------------------------------------
 
 MusNeume::MusNeume() : MusElement() {
-    int _code, _val = 0;
+    int val = 0;
     
     TYPE = NEUME;
 	closed = true;
 	n_selected = 0;
-	MusNeumePitch firstPitch(_code, 0, _val);
+	MusNeumePitch firstPitch(code, oct, val);
 	n_pitches.push_back(firstPitch);
-	code = _code;	
 	p_range = p_min = p_max = 0;
 	n_type = name = form = NULL; //this gets set when ligature is drawn
 }
@@ -212,14 +211,14 @@ void MusNeume::SetClosed(bool value) {
 	if (m_r) {
 		m_r->DoRefresh();
 	}
-
-	this->printNeumeList();
 }
 
 void MusNeume::SelectNextPunctum() { 
 	if (n_selected < n_pitches.size() - 1) 
 	{
 		n_selected++;
+		code = n_pitches.at(n_selected).GetCode();
+		oct = n_pitches.at(n_selected).GetOct();
 	}
 	
 	if (m_r) {
@@ -231,6 +230,8 @@ void MusNeume::SelectPreviousPunctum() {
 	if (n_selected > 0) 
 	{
 		n_selected--;
+		code = n_pitches.at(n_selected).GetCode();
+		oct = n_pitches.at(n_selected).GetOct();
 	}
 	
 	if (m_r) {
@@ -298,40 +299,30 @@ int MusNeume::GetOct()
 
 void MusNeume::SetPitch( int code, int oct )
 {
-	if ( this->TYPE != NEUME )
-		return;
+    this->code = code;
+    this->oct = oct;
+    
+    // Hack if this is the first time the 1 inner element
+    // has had its pitch set
+    MusNeumePitch p = n_pitches.at(0);
+    if (p.GetOct() == 0 && p.GetCode() == 0) {
+        n_pitches.at(0).SetPitch(code, oct);
+    }
 
-	int diff = n_pitches.at(0).Pitch_Diff(code, oct);
-	
 	if (this->IsClosed()) {
 		//shift all pitches!
-		this->code = code;
-		this->oct = oct;
+        int diff = n_pitches.at(0).Pitch_Diff(code, oct);
 		
-		n_pitches.at(0).SetPitch(code, oct);
-	
-		for (unsigned int i = 1; i < n_pitches.size(); i++) {
-			//unnecessarily shifted
-			
+        for (iter = n_pitches.begin(); iter != n_pitches.end(); iter++) {
 			int newoctave;
-			MusNeumePitch p = n_pitches.at(i);
-			int newcode = p.filtrcod(p.GetCode() + diff, &newoctave);
-			n_pitches.at(i).SetPitch(newcode, newoctave);
+			int newcode = (*iter).filtrcod((*iter).GetCode() + diff, &newoctave);
+            (*iter).SetPitch(newcode, newoctave);
 		}
 		
 	} else { // open mode
-		int newoctave;
-		MusNeumePitch p = n_pitches.at(n_selected);
-		int newcode = p.filtrcod(p.GetCode() + diff, &newoctave);
-		n_pitches.at(n_selected).SetPitch(newcode, newoctave);
-
-		if (n_selected == 0) { 
-			this->SetPitch(newcode, newoctave);
-		}
+		n_pitches.at(n_selected).SetPitch(code, oct);
 	}
 
-	this->printNeumeList();
-	
 	this->GetPitchRange(); //necessary for drawing the box properly in open mode	
 	if (m_r)
 		m_r->DoRefresh();
@@ -370,19 +361,14 @@ int MusNeume::GetValue()
 //debug helper method
 void MusNeume::printNeumeList() 
 {
-	//printf("Neume Address:\n---------\n");
-	//printf("%d [%X]\n---------\n", (int)&(*this),(unsigned int)&(*this));
-	//printf("Vector Address:\n---------\n"); 
-	//printf("%d [%d]\n", (int)&(this->n_pitches), (int)&(this->n_pitches));
-	//printf("Neume List: (length %d)\n", (int)n_pitches.size());
-	//printf("***********************\n");
-	//int count = 0;
-	//for (iter=n_pitches.begin(); iter != n_pitches.end(); ++iter, count++) {
-		//printf("%d: %d [%X] code: %d oct: %d val: %d\n", 
-		//	   count, (int)&(*iter), (unsigned int)&(*iter), (*iter)->code, 
-		//	   (*iter)->oct, (*iter)->val);
-	//}
-	//printf("***********************\n");
+	printf("Neume:\n");
+	printf("Code: %d, oct: %d\n", code, oct);
+	printf("Elements (len %d)\n", (int)n_pitches.size());
+	int count = 0;
+	for (iter=n_pitches.begin(); iter != n_pitches.end(); ++iter, count++) {
+		printf("%d: code: %d oct: %d val: %d\n", 
+			   count, (*iter).GetCode(), (*iter).GetOct(), (*iter).GetValue());
+	}
 }
 
 int MusNeume::Length() { return (int)this->n_pitches.size(); };
