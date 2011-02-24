@@ -510,7 +510,7 @@ bool RecFile::Preprocess( wxArrayPtrVoid params, AxProgressDlg *dlg )
     //op.m_inputfile = output + "/deskew." + shortname + ".tif";
         
     if ( RecEnv::s_staves_position && !failed ) 
-        failed = !m_imPagePtr->FindStaves( 3, 50 );  // 4 operations max
+        failed = !m_imPagePtr->FindStaves( 3, 50, true, RecEnv::s_crop );  // 4 operations max
     //op.m_inputfile = output + "/resize." + shortname + ".tif";
 
     if ( RecEnv::s_binarize_and_clean  && !failed ) 

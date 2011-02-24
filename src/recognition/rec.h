@@ -179,6 +179,7 @@ public:
     static bool s_check;
     static bool s_deskew;
     static bool s_staves_position;
+	static bool s_crop;
     static bool s_binarize_and_clean;
     static bool s_save_images;
     // batch
