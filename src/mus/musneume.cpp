@@ -216,30 +216,26 @@ void MusNeume::SetClosed(bool value) {
 	this->printNeumeList();
 }
 
-// if open, returns next individual pitch
-// if closed, return false and let musstaff select the next element
-void MusNeume::GetNextPunctum() { 
+void MusNeume::SelectNextPunctum() { 
 	if (n_selected < n_pitches.size() - 1) 
 	{
 		n_selected++;
-	} else if (n_selected == n_pitches.size() - 1)
-	{
-		this->SetClosed(true);
 	}
 	
-	if (m_r) m_r->DoRefresh();
+	if (m_r) {
+        m_r->DoRefresh();
+    }
 }
 
-void MusNeume::GetPreviousPunctum() {
+void MusNeume::SelectPreviousPunctum() {
 	if (n_selected > 0) 
 	{
 		n_selected--;
-	} else if (!n_selected)
-	{
-		this->SetClosed(true);
 	}
 	
-	if (m_r) m_r->DoRefresh();
+	if (m_r) {
+        m_r->DoRefresh();
+    }
 }
 
 void MusNeume::InsertPitchAfterSelected()

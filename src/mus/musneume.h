@@ -92,8 +92,8 @@ public:
 	bool descending(int p1, int p2);
 	
 	void SetClosed(bool value);
-	void GetNextPunctum();
-	void GetPreviousPunctum();
+	void SelectNextPunctum();
+	void SelectPreviousPunctum();
 	
 	bool IsClosed();
 	

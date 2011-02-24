@@ -311,6 +311,7 @@ void MusWindow::DoLyricCursor( int x, int y, AxDC *dc, wxString lyric )
 
 void MusWindow::DoReset( )
 {
+    m_neume = MusNeume();
     ResetUndos();
     m_newElement = NULL;
 }
@@ -1296,18 +1297,10 @@ void MusWindow::OnKeyDown(wxKeyEvent &event)
 		{	
 			if ( event.GetKeyCode() == WXK_RIGHT || event.GetKeyCode() == WXK_SPACE ) 
 			{
-				if ( m_currentStaff->GetNext( m_currentElement ) )
-				{
-					if (!m_currentElement->IsNeume()) { 
-						m_currentElement = m_currentStaff->GetNext( m_currentElement );
-					} else if (m_currentElement->IsNeume()) {
-						MusNeume *temp = (MusNeume *) m_currentElement;
-						if (temp->closed) {
-							m_currentElement = m_currentStaff->GetNext( m_currentElement );
-						} else {
-							temp->GetNextPunctum();
-						}
-					}
+                if (m_currentElement && m_currentElement->IsNeume() && !((MusNeume *)m_currentElement)->IsClosed()) {
+                    ((MusNeume *)m_currentElement)->SelectNextPunctum();
+                } else if ( m_currentStaff->GetNext( m_currentElement )) {
+					m_currentElement = m_currentStaff->GetNext( m_currentElement );
 				}
 				else if ( m_page->GetNext( m_currentStaff ) )
 				{
@@ -1318,19 +1311,10 @@ void MusWindow::OnKeyDown(wxKeyEvent &event)
 			}
 			else if ( event.GetKeyCode() == WXK_LEFT )
 			{
-				if ( m_currentStaff->GetPrevious( m_currentElement ) )
-				{
-					if (!m_currentElement->IsNeume()) { 
-						m_currentElement = m_currentStaff->GetPrevious( m_currentElement );
-					} else if (m_currentElement->IsNeume()) {
-						MusNeume *temp = (MusNeume *) m_currentElement;
-						if (temp->closed) {
-							m_currentElement = m_currentStaff->GetPrevious( m_currentElement );
-						} else {
-							temp->GetPreviousPunctum();
-						}
-					}
-
+                if (m_currentElement && m_currentElement->IsNeume() && !((MusNeume *)m_currentElement)->IsClosed()) {
+                    ((MusNeume *)m_currentElement)->SelectPreviousPunctum();
+                } else if ( m_currentStaff->GetPrevious( m_currentElement )) {
+					m_currentElement = m_currentStaff->GetPrevious( m_currentElement );
 				}
 				else if ( m_page->GetPrevious( m_currentStaff ) )
 				{
@@ -1341,7 +1325,9 @@ void MusWindow::OnKeyDown(wxKeyEvent &event)
 			}
 			else if ( event.GetKeyCode() == WXK_UP )
 			{
-				if ( m_page->GetPrevious( m_currentStaff ) )
+                if (m_currentElement && m_currentElement->IsNeume()) {
+                    ((MusNeume *)m_currentElement)->SetClosed(true);
+                } else if ( m_page->GetPrevious( m_currentStaff ) )
 				{
 					int x = 0;
 					if ( m_currentElement )
@@ -1353,7 +1339,9 @@ void MusWindow::OnKeyDown(wxKeyEvent &event)
 			}
 			else if ( event.GetKeyCode() == WXK_DOWN )
 			{
-				if ( m_page->GetNext( m_currentStaff ) )
+                if (m_currentElement && m_currentElement->IsNeume()) {
+                    ((MusNeume *)m_currentElement)->SetClosed(true);
+                } else if ( m_page->GetNext( m_currentStaff ) )
 				{
 					int x = 0;
 					if ( m_currentElement )
@@ -1365,12 +1353,16 @@ void MusWindow::OnKeyDown(wxKeyEvent &event)
 			}
 			else if ( event.GetKeyCode() == WXK_HOME ) 
 			{
-				if ( m_currentStaff->GetFirst( ) )
+                if (m_currentElement && m_currentElement->IsNeume()) {
+                    ((MusNeume *)m_currentElement)->SetClosed(true);
+                } else if ( m_currentStaff->GetFirst( ) )
 					m_currentElement = m_currentStaff->GetFirst( );
 			}
 			else if ( event.GetKeyCode() == WXK_END ) 
 			{
-				if ( m_currentStaff->GetLast( ) )
+                if (m_currentElement && m_currentElement->IsNeume()) {
+                    ((MusNeume *)m_currentElement)->SetClosed(true);
+                } else if ( m_currentStaff->GetLast( ) )
 					m_currentElement = m_currentStaff->GetLast( );
 			}
 			this->Refresh();
