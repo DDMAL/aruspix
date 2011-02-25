@@ -337,7 +337,7 @@ void MusNeume::SetValue( int value, MusStaff *staff, int vflag )
 	if (this->IsClosed() && Length() == 1) {
         // If there's just 1 element, change it even if we're closed.
         n_pitches.at(n_selected).SetValue(value);
-	} else {
+	} else if (!IsClosed()) {
 		n_pitches.at(n_selected).SetValue(value);
 	}
 	
