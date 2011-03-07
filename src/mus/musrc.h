@@ -51,11 +51,6 @@ public:
     virtual void DoLyricCursor( int x, int y, AxDC *dc, wxString lyric ) {}
     virtual void DoReset() {}
 
-	// zoom
-	void Zoom( bool zoomIn );
-	bool CanZoom( bool zoomIn );
-	void SetZoom( int percent );
-    int GetZoom( ) { return 100 * zoomNum / zoomDen; };
 	// navigation
 	void Next( bool forward );
 	bool HasNext( bool forward );
@@ -69,10 +64,10 @@ public:
 	    
     void SetFile( MusFile *file );
 	/**
-     Met ‡ jour la table des fontes en fonction de nTailleFont et du zoom
-	 Doit etre appelee apres changement de zoom ou de definition de page
+     Met ‡ jour la table des fontes en fonction de la definition de page
+	 Doit etre appelee apres changement de definition de page
      */
-	void UpdateZoomValues();
+	void UpdatePageFontValues();
     /**
      Initialise les donnees de visualisation par page
      */
@@ -81,16 +76,15 @@ public:
      Initialise les donnees de polices (music and lyrics)
      */
 	virtual void UpdateFontValues();
-    /**
-     Retourne la valeur correspondante de i pour le zoom qui a cours
-     */
-	int ToZoom( int i );
-	/** inverse */
-	int ToReel( int i );
-	/** Zoom avec inversion des coordonnees */
-	int ToZoomY( int i );
-	/** inverse  */
-	int ToReelY( int i );
+    
+    /** x value in the Renderer */
+	int ToRendererX( int i ) { return i; }; // the same
+	/** x value in the Logical world */
+	int ToLogicalX( int i )  { return i; };
+	/** y value in the Renderer */
+	int ToRendererY( int i )  { return m_pageMaxY - i; }; // flipped
+	/** y value in the Logical world  */
+	int ToLogicalY( int i )  { return m_pageMaxY - i; }; // flipped
 	
 	static void SwapY( int *y1, int *y2 ) { int tmp = *y1; *y1 = *y2; *y2 = tmp; }
     
@@ -196,14 +190,11 @@ public:
 	
 
 	/** format max utile; en principe, celui de la feuille **/
-	int wymax, wxmax;
-	int wxg, wxd, wyg, wyd;
-	int winwxg, winwyg;
+	int m_pageMaxY, m_pageMaxX;
 	float beamPenteMin, beamPenteMx;
 	int pageFormatHor, pageFormatVer;
-	int margeMorteHor, margeMorteVer;
-	int portNoIndent, portIndent;
-	wxRect drawRect;
+	//int margeMorteHor, margeMorteVer;
+	//int portNoIndent, portIndent;
 	int mrgG;
 	int discontinu;
 	int mesureNum, mesureDen;
@@ -212,11 +203,6 @@ public:
 	static AxPoint point_[4];
 	static AxPoint bcoord[2*(PTCONTROL+1)];
 
-
-    /** valeur du numerateur de zoom */
-    int zoomNum;
-    /** denominateur du zoom */
-    int zoomDen;
     /** indique si la definition de page poue laquelle fontes actuelles est a jour */
     int m_charDefin;
 

@@ -284,7 +284,7 @@ void AxOptionsDlg::UpdateFontCorrections( int eventID )
 	wxGetApp().m_fontSizeCorrection = GetScMusSize()->GetValue();
 	m_musWinPtr->UpdatePageValues();
 	if ( eventID == ID_SC_MUS_SIZE)
-		m_musWinPtr->UpdateZoomValues();
+		m_musWinPtr->UpdatePageFontValues();
     m_musWinPtr->Resize( );
 }
 

@@ -33,10 +33,10 @@ void MusRC::v_bline ( AxDC *dc, int y1, int y2, int x1, int nbr)
 	if (discontinu)
 		nbr = 1;
 
-    dc->SetPen( m_currentColour, max( 1, ToZoom(nbr) ), wxSOLID );
+    dc->SetPen( m_currentColour, max( 1, ToRendererX(nbr) ), wxSOLID );
     dc->SetBrush( m_currentColour, wxSOLID );
 
-	dc->DrawLine( ToZoom(x1) , ToZoomY(y1), ToZoom(x1), ToZoomY(y2) );
+	dc->DrawLine( ToRendererX(x1) , ToRendererY(y1), ToRendererX(x1), ToRendererY(y2) );
 
     dc->ResetPen();
     dc->ResetBrush();
@@ -53,13 +53,13 @@ void MusRC::v_bline2 ( AxDC *dc, int y1, int y2, int x1, int nbr)
 
 	int x2;
   	x2 = x1 - nbr;
-	if (ToZoom(nbr) < 1)
-		nbr = ToReel(1);
+	if (ToRendererX(nbr) < 1)
+		nbr = ToLogicalX(1);
 
     dc->SetPen( m_currentColour, 1, wxSOLID );
     dc->SetBrush( m_currentColour, wxSOLID );
 
-	dc->DrawRectangle( ToZoom( x2 ), ToZoomY(y1), ToZoom(nbr) , ToZoom( y1 - y2 ));
+	dc->DrawRectangle( ToRendererX( x2 ), ToRendererY(y1), ToRendererX(nbr) , ToRendererX( y1 - y2 ));
 
     dc->ResetPen();
     dc->ResetBrush();
@@ -75,10 +75,10 @@ void MusRC::h_bline ( AxDC *dc, int x1, int x2, int y1, int nbr)
 	if (discontinu)
 		nbr = 1;
 
-    dc->SetPen( m_currentColour, max( 1, ToZoom(nbr) ), wxSOLID );
+    dc->SetPen( m_currentColour, max( 1, ToRendererX(nbr) ), wxSOLID );
     dc->SetBrush( m_currentColour, wxTRANSPARENT );
 
-	dc->DrawLine( ToZoom(x1) , ToZoomY(y1), ToZoom(x2), ToZoomY(y1) );
+	dc->DrawLine( ToRendererX(x1) , ToRendererY(y1), ToRendererX(x2), ToRendererY(y1) );
 
     dc->ResetPen();
     dc->ResetBrush();
@@ -94,7 +94,7 @@ void MusRC::box( AxDC *dc, int x1, int y1, int x2, int y2)
 
     dc->SetPen( m_currentColour, 3, wxSOLID);
 	
-	dc->DrawRectangle( ToZoom(x1), ToZoomY(y1), ToZoom(x2 - x1), ToZoom(y1 - y2));
+	dc->DrawRectangle( ToRendererX(x1), ToRendererY(y1), ToRendererX(x2 - x1), ToRendererX(y1 - y2));
 	
     dc->ResetPen();
 	
@@ -110,7 +110,7 @@ void MusRC::rect_plein2( AxDC *dc, int x1, int y1, int x2, int y2 )	/* dessine r
     dc->SetPen( m_currentColour, 1, wxSOLID  );
     dc->SetBrush( m_currentColour, wxSOLID );
 
-	dc->DrawRectangle( ToZoom( x1 ), ToZoomY(y1), ToZoom(x2 - x1) , ToZoom( y1 - y2 ));
+	dc->DrawRectangle( ToRendererX( x1 ), ToRendererY(y1), ToRendererX(x2 - x1) , ToRendererX( y1 - y2 ));
 
     dc->ResetPen();
     dc->ResetBrush();
@@ -126,11 +126,11 @@ int MusRC::hGrosseligne ( AxDC *dc, int x1, int y1, int x2, int y2, int decal)
     dc->SetPen( m_currentColour, 1, wxSOLID );
     dc->SetBrush( m_currentColour, wxSOLID );
 
-	decal = ToZoom(decal);
-	p[0].x = ToZoom(x1);
-	p[0].y =  ToZoomY(y1);
-	p[1].x = ToZoom(x2);
-	p[1].y =  ToZoomY(y2);
+	decal = ToRendererX(decal);
+	p[0].x = ToRendererX(x1);
+	p[0].y =  ToRendererY(y1);
+	p[1].x = ToRendererX(x2);
+	p[1].y =  ToRendererY(y2);
 	p[2].x = p[1].x;
 	p[2].y = p[1].y - decal;
 	p[3].x = p[0].x;
@@ -156,12 +156,12 @@ int MusRC::pointer ( AxDC *dc, int x, int b, int decal, MusStaff *staff )
 				y += decal;
 	}
 
-	int r = max( ToZoom(4), 2 );
+	int r = max( ToRendererX(4), 2 );
 	
     dc->SetPen( m_currentColour, 1, wxSOLID );
     dc->SetBrush( m_currentColour, wxSOLID );
 
-	dc->DrawCircle( ToZoom(x) , ToZoomY(y), r );
+	dc->DrawCircle( ToRendererX(x) , ToRendererY(y), r );
 		
     dc->ResetPen();
     dc->ResetBrush();
@@ -204,9 +204,9 @@ void MusRC::festa_string ( AxDC *dc, int x, int y, const wxString str,
         dc->SetBrush( m_currentColour, wxSOLID );
 		
 		//printf("Drawing text here, x: %d, y: %d, y (zoomed): %d, y + fontcorr: %d\n"
-		//	   , ToZoom(x), y, ToZoomY(y), ToZoomY(y + fontCorr));
+		//	   , ToRendererX(x), y, ToRendererY(y), ToRendererY(y + fontCorr));
 
-		dc->DrawText( wxString::Format(wxT("%s"), str.c_str()), ToZoom(x), ToZoomY(y + fontCorr - 4) );
+		dc->DrawText( wxString::Format(wxT("%s"), str.c_str()), ToRendererX(x), ToRendererY(y + fontCorr - 4) );
 		
         dc->ResetPen();
         dc->ResetBrush();
@@ -220,7 +220,10 @@ void MusRC::putfont ( AxDC *dc, int x, int y, unsigned char c,
 						 MusStaff *staff, int dimin, int font_flag)
 {  
 	int pTaille = staff->pTaille;
-	int fontCorr = this->hautFontAscent[pTaille][dimin];
+	int fontCorr = 0;
+    if (dc->CorrectMusicAscent()) {
+        fontCorr = this->hautFontAscent[pTaille][dimin];
+    }
 
 	wxASSERT_MSG( dc , "DC cannot be NULL");
 
@@ -237,7 +240,9 @@ void MusRC::putfont ( AxDC *dc, int x, int y, unsigned char c,
 			} else dc->SetFont( &m_activeFonts[ pTaille][0] ); 
 			
 			c+= 14;	// les cles d===e tablature
-			fontCorr = this->hautFontAscent[ pTaille][0];
+            if (dc->CorrectMusicAscent()) {
+                fontCorr = this->hautFontAscent[ pTaille][0];
+            }
 		}
 	}
 	if (!staff->notAnc || !in (c, 241, 243))	// tout sauf clefs de tablature
@@ -271,8 +276,9 @@ void MusRC::putfont ( AxDC *dc, int x, int y, unsigned char c,
         dc->SetBrush( m_currentColour, wxSOLID );
 
 		//printf("Drawing text here, x: %d, y: %d, y (zoomed): %d, y + fontcorr: %d\n"
-		//	   , ToZoom(x), y, ToZoomY(y), ToZoomY(y + fontCorr));
-		dc->DrawText( m_str, ToZoom(x), ToZoomY(y + fontCorr) );
+		//	   , ToRendererX(x), y, ToRendererY(y), ToRendererY(y + fontCorr));
+        // DrawMusicText is the same with AxWxDc but different with MusSvgDC
+		dc->DrawMusicText( m_str, ToRendererX(x), ToRendererY(y + fontCorr) );
 
         dc->ResetPen();
         dc->ResetBrush();
@@ -293,7 +299,7 @@ void MusRC::putfontfast ( AxDC *dc, int x, int y, unsigned char c )
 	dc->SetTextForeground( m_currentColour );
 	dc->DrawText("",0,0); // needed to flush current colour
 
-	dc->DrawBitmap( m_fontBitmaps[c][0][0], ToZoom(x) - 2 , ToZoomY(y + this->hautFontAscent[0][0]), true );
+	dc->DrawBitmap( m_fontBitmaps[c][0][0], ToRendererX(x) - 2 , ToRendererY(y + this->hautFontAscent[0][0]), true );
 
 	return;
 }
@@ -305,7 +311,7 @@ void MusRC::putstring ( AxDC *dc, int x, int y, wxString s, int centrer, int pTa
 	wxASSERT_MSG( dc , "DC cannot be NULL");
 
     dc->SetFont( &m_activeFonts[ pTaille ][0] );
-    x = ToZoom(x);
+    x = ToRendererX(x);
 
 	if ( centrer )
 	{
@@ -317,7 +323,7 @@ void MusRC::putstring ( AxDC *dc, int x, int y, wxString s, int centrer, int pTa
         */
 	}
 	dc->SetTextForeground( m_currentColour );
-	dc->DrawText( s, x, ToZoomY(y + this->hautFontAscent[pTaille][0]) );
+	dc->DrawText( s, x, ToRendererY(y + this->hautFontAscent[pTaille][0]) );
 }
 
 void MusRC::putlyric ( AxDC *dc, int x, int y, wxString s, int pTaille, bool cursor)
@@ -325,10 +331,10 @@ void MusRC::putlyric ( AxDC *dc, int x, int y, wxString s, int pTaille, bool cur
 	wxASSERT_MSG( dc , "DC cannot be NULL");
 
     dc->SetFont( &m_activeLyricFonts[ pTaille ] );
-	x = ToZoom(x);
+	x = ToRendererX(x);
 
 	dc->SetTextForeground( m_currentColour );
-	dc->DrawText( s, x, ToZoomY( y ) );
+	dc->DrawText( s, x, ToRendererY( y ) );
     
     if (cursor)
         DoLyricCursor( x, y, dc, s );	

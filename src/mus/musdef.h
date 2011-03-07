@@ -5,8 +5,6 @@ VERSION DOS.*/
 /* TRUE if x is in the closed interval [a,b] */
 /***
 #define in(x,a,b) (((x) >= min((a),(b))) && ((x) <= max((a),(b)))) 
-#define toZoom(x) (((float)(x)*zoomNum)/zoomDen)
-#define toReel(x) (((float)(x)*zoomDen)/zoomNum)
 ***/
 
 

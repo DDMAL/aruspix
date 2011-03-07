@@ -814,8 +814,8 @@ void SupEnv::OnExportImage( wxCommandEvent &event )
     wxGetApp().m_lastDirTIFF_out = wxPathOnly( filename );
 
     wxMemoryDC memDC;
-    wxBitmap bitmap( m_musViewPtr->ToZoom( m_musViewPtr->pageFormatHor + 30 )  ,
-        m_musViewPtr->ToZoom( m_musViewPtr->pageFormatVer + 10 )); // marges bricolees ...
+    wxBitmap bitmap( m_musViewPtr->ToRendererX( m_musViewPtr->pageFormatHor + 30 )  ,
+        m_musViewPtr->ToRendererX( m_musViewPtr->pageFormatVer + 10 )); // marges bricolees ...
     memDC.SelectObject(bitmap);
     memDC.SetBackground(*wxWHITE_BRUSH);
     memDC.Clear();

@@ -44,7 +44,7 @@ class AxDC
 {
 public:
 
-    AxDC () {};
+    AxDC () { m_correctMusicAscent = true; };
     virtual ~AxDC() {};
     
     // Setters
@@ -67,13 +67,21 @@ public:
     
     virtual void ResetPen( ) = 0;
     
-    // Getters
+    virtual void SetLogicalOrigin( int x, int y ) = 0;
+    
+    // Getters 
     
     virtual void GetTextExtent( wxString& string, int *w, int *h ) = 0;
+    
+    virtual AxPoint GetLogicalOrigin( ) = 0;
+    
+    virtual bool CorrectMusicAscent( ) { return m_correctMusicAscent; };
 
     // Drawing methods
     
     virtual void DrawCircle(int x, int y, int radius) = 0;
+    
+    virtual void DrawEllipse(int x, int y, int width, int height) = 0;
     
     virtual void DrawEllipticArc(int x, int y, int width, int height, double start, double end) = 0;
     
@@ -83,13 +91,34 @@ public:
     
     virtual void DrawRectangle(int x, int y, int width, int height) = 0;
     
+    virtual void DrawRotatedText(const wxString& text, int x, int y, double angle) = 0;
+    
+    virtual void DrawRoundedRectangle(int x, int y, int width, int height, double radius) = 0;
+    
     virtual void DrawText(const wxString& text, int x, int y) = 0;
     
+    virtual void DrawMusicText(const wxString& text, int x, int y) = 0;
+    
     virtual void DrawSpline(int n, AxPoint points[]) = 0;
+    
+    // Method for starting and ending a graphic - for example for grouping shapes in <g></g> in SVG
+    
+    virtual void StartGraphic( wxString gClass, wxString gId ) = 0;
+    
+    virtual void EndGraphic() = 0;
+    
+    virtual void StartPage( ) = 0;
+    
+    virtual void EndPage( ) = 0;
     
     // Colour conversion method
     
     static int RGB2Int( char red, char green, char blue ) { return (red << 16 | green << 8 | blue); };
+
+    
+protected:
+    
+    bool m_correctMusicAscent; // specify if the ascent has to be correct when rendering the Leipzig font (true wxDC, false SVG)
 };
 
 // ---------------------------------------------------------------------------

@@ -56,12 +56,12 @@ void MusPage::braces ( AxDC *dc, int x, int y1, int y2, int cod, int pTaille)
 		yg = y1 + m_r->_interl[ pTaille ] * 2;
 		yd = y1;
 		m_r->SwapY( &yg, &yd );
-		dc->DrawEllipticArc( m_r->ToZoom(xg), m_r->ToZoomY(yg), m_r->ToZoom(xd-xg), m_r->ToZoom(yg-yd),272, 360 );
+		dc->DrawEllipticArc( m_r->ToRendererX(xg), m_r->ToRendererY(yg), m_r->ToRendererX(xd-xg), m_r->ToRendererX(yg-yd),272, 360 );
 	
 		yg = y2;
 		yd = y2 - m_r->_interl[ pTaille ] * 2;
 		m_r->SwapY( &yg, &yd );
-		dc->DrawEllipticArc( m_r->ToZoom(xg), m_r->ToZoomY(yg), m_r->ToZoom(xd-xg), m_r->ToZoom(yg-yd), 0, 88 );
+		dc->DrawEllipticArc( m_r->ToRendererX(xg), m_r->ToRendererY(yg), m_r->ToRendererX(xd-xg), m_r->ToRendererX(yg-yd), 0, 88 );
 		
         dc->ResetPen();
         dc->ResetBrush();
@@ -190,16 +190,16 @@ void MusPage::accolade ( AxDC *dc, int x, int y1, int y2, int pTaille)
 
 	ymed = (y1 + y2) / 2;
 	fact = m_r->DELTANbBAR[ pTaille ]-1 + m_fh->param.EpBarreMesure;
-	xdec = m_r->ToZoom(fact);
+	xdec = m_r->ToRendererX(fact);
 
-	m_r->point_[0].x = m_r->ToZoom(x);
-	m_r->point_[0].y = m_r->ToZoomY(y1);
-	m_r->point_[1].x = m_r->ToZoom(x - m_r->_pas3);
-	m_r->point_[1].y = m_r->point_[0].y - m_r->ToZoom( m_r->_interl[ pTaille ]*3);
-	m_r->point_[3].x = m_r->ToZoom(x - m_r->_pas*2);
-	m_r->point_[3].y = m_r->ToZoomY(ymed);
-	m_r->point_[2].x = m_r->ToZoom(x + m_r->_pas);
-	m_r->point_[2].y = m_r->point_[3].y + m_r->ToZoom( m_r->_interl[ pTaille ]);
+	m_r->point_[0].x = m_r->ToRendererX(x);
+	m_r->point_[0].y = m_r->ToRendererY(y1);
+	m_r->point_[1].x = m_r->ToRendererX(x - m_r->_pas3);
+	m_r->point_[1].y = m_r->point_[0].y - m_r->ToRendererX( m_r->_interl[ pTaille ]*3);
+	m_r->point_[3].x = m_r->ToRendererX(x - m_r->_pas*2);
+	m_r->point_[3].y = m_r->ToRendererY(ymed);
+	m_r->point_[2].x = m_r->ToRendererX(x + m_r->_pas);
+	m_r->point_[2].y = m_r->point_[3].y + m_r->ToRendererX( m_r->_interl[ pTaille ]);
 
 	ptcoord = &m_r->bcoord[0];
 	m_r->calcBez ( ptcoord, nbrInt );
@@ -209,7 +209,7 @@ void MusPage::accolade ( AxDC *dc, int x, int y1, int y2, int pTaille)
 	
 	m_r->point_[1].x += xdec;
 	m_r->point_[2].x += xdec;
-	m_r->point_[1].y = m_r->point_[0].y + m_r->ToZoom( m_r->_interl[ pTaille ]*2);
+	m_r->point_[1].y = m_r->point_[0].y + m_r->ToRendererX( m_r->_interl[ pTaille ]*2);
 
 
 	ptcoord = &m_r->bcoord[nbrInt+1];	// suite de la matrice: retour du bezier
@@ -219,9 +219,9 @@ void MusPage::accolade ( AxDC *dc, int x, int y1, int y2, int pTaille)
 	dc->DrawPolygon (nbrInt*2,  m_r->bcoord, 0, 0, wxWINDING_RULE ); //(sizeof (bcoord)*2) / sizeof (POINT)); nbrInt*2+ 1;
 
 	// on produit l'image reflet vers le bas: 0 est identique 
-	m_r->point_[1].y = m_r->point_[0].y - m_r->ToZoom( m_r->_interl[ pTaille ]*2);
-	m_r->point_[3].y = m_r->ToZoomY(y2);
-	m_r->point_[2].y = m_r->point_[3].y + m_r->ToZoom( m_r->_interl[ pTaille ]*3);
+	m_r->point_[1].y = m_r->point_[0].y - m_r->ToRendererX( m_r->_interl[ pTaille ]*2);
+	m_r->point_[3].y = m_r->ToRendererY(y2);
+	m_r->point_[2].y = m_r->point_[3].y + m_r->ToRendererX( m_r->_interl[ pTaille ]*3);
 
 	ptcoord = &m_r->bcoord[0];
 	m_r->calcBez ( ptcoord, nbrInt );
@@ -231,7 +231,7 @@ void MusPage::accolade ( AxDC *dc, int x, int y1, int y2, int pTaille)
 	
 	m_r->point_[1].x -= xdec;
 	m_r->point_[2].x -= xdec;
-	m_r->point_[2].y = m_r->point_[3].y - m_r->ToZoom( m_r->_interl[ pTaille ]);
+	m_r->point_[2].y = m_r->point_[3].y - m_r->ToRendererX( m_r->_interl[ pTaille ]);
 
 	ptcoord = &m_r->bcoord[nbrInt+1];	// suite de la matrice: retour du bezier 
 	m_r->calcBez ( ptcoord, nbrInt );
@@ -272,7 +272,7 @@ void MusPage::bar_mes ( AxDC *dc, int x, int cod, int porteeAutonome, MusStaff *
 	float a;
 	float b, bb;
 /*
-	a = ((x >= wxmax) ? (wxmax - 2*h_pnt) : x);
+	a = ((x >= m_pageMaxX) ? (m_pageMaxX - 2*h_pnt) : x);
 	if (!in (a, wxg,wxd)) return;
 */
 	/***if (modMetafile && !in (x, drawRect.left, drawRect.right) )

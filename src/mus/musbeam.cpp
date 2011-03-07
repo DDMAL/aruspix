@@ -157,8 +157,8 @@ unsigned int MusStaff::beam ( AxDC *dc )
     {	
         dx[0] =  m_r->rayonNote[this->pTaille][0] - ((m_r->rayonNote[this->pTaille][0] * m_p->hampesCorr) / 20);
         dx[1] =  m_r->rayonNote[this->pTaille][1] - ((m_r->rayonNote[this->pTaille][1] * m_p->hampesCorr) / 20);
-        dx[0] -= (m_p->EpQueueNote-1)/2;
-        dx[1] -= (m_p->EpQueueNote-1)/2;
+        dx[0] -= (m_p->EpQueueNote)/2;
+        dx[1] -= (m_p->EpQueueNote)/2;
     }
 	_yy[0] = this->yrel;	
 
@@ -198,7 +198,7 @@ unsigned int MusStaff::beam ( AxDC *dc )
 				fb.mrq_port = chk->_shport;
             }***/
 
-			(crd+ct)->a = chk->xrel + chk->offset;		/* enregistrement des coord. */
+			(crd+ct)->a = chk->xrel + chk->offset - m_p->EpQueueNote / 2;		/* enregistrement des coord. */
 			(crd+ct)->vlr = k;
 			if (((MusNote*)chk)->stop_rel && ct)
 			/* enregistr. des ruptures de beaming; des la 2e note;(autrement idiot)*/

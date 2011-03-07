@@ -35,6 +35,7 @@
 		4D3A8FFC0D35867200BBC1FB /* mustoolpanel.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D3A8FE90D35867200BBC1FB /* mustoolpanel.cpp */; };
 		4D3A8FFD0D35867200BBC1FB /* muswindow.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D3A8FEB0D35867200BBC1FB /* muswindow.cpp */; };
 		4D64284F0D9344FD00DA3A64 /* supim.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D64284D0D9344FD00DA3A64 /* supim.cpp */; };
+		4D72429C132012A00023497A /* mussvgdc.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D72429B132012A00023497A /* mussvgdc.cpp */; };
 		4D7362820D35C7D30030DFA6 /* recmus.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D7362800D35C7D30030DFA6 /* recmus.cpp */; };
 		4D7362A40D35CECC0030DFA6 /* cmpmus.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D7362A20D35CECC0030DFA6 /* cmpmus.cpp */; };
 		4D8330000F2E6E35006E6B5F /* musiocmme.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D832FFE0F2E6E35006E6B5F /* musiocmme.cpp */; };
@@ -110,7 +111,6 @@
 		4D1676620D8B765000F4D912 /* supbookfile.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = supbookfile.h; sourceTree = "<group>"; };
 		4D1676630D8B765000F4D912 /* supfile.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = supfile.cpp; sourceTree = "<group>"; };
 		4D1676640D8B765000F4D912 /* supfile.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = supfile.h; sourceTree = "<group>"; };
-		4D18242712C886D400A1E09D /* axwxdc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = axwxdc.h; sourceTree = "<group>"; };
 		4D2994D512C7F2B500D0514B /* axfile.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = axfile.cpp; sourceTree = "<group>"; };
 		4D2994D712C7F2D600D0514B /* axdc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = axdc.h; sourceTree = "<group>"; };
 		4D2995B912C8006700D0514B /* axwxdc.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = axwxdc.cpp; sourceTree = "<group>"; };
@@ -149,17 +149,20 @@
 		4D3A8FEC0D35867200BBC1FB /* muswindow.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = muswindow.h; path = ../src/mus/muswindow.h; sourceTree = SOURCE_ROOT; };
 		4D64284D0D9344FD00DA3A64 /* supim.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = supim.cpp; sourceTree = "<group>"; };
 		4D64284E0D9344FD00DA3A64 /* supim.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = supim.h; sourceTree = "<group>"; };
+		4D72429B132012A00023497A /* mussvgdc.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = mussvgdc.cpp; path = ../src/mus/mussvgdc.cpp; sourceTree = SOURCE_ROOT; };
 		4D7362800D35C7D30030DFA6 /* recmus.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = recmus.cpp; sourceTree = "<group>"; };
 		4D7362810D35C7D30030DFA6 /* recmus.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = recmus.h; sourceTree = "<group>"; };
 		4D7362A20D35CECC0030DFA6 /* cmpmus.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = cmpmus.cpp; sourceTree = "<group>"; };
 		4D7362A30D35CECC0030DFA6 /* cmpmus.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = cmpmus.h; sourceTree = "<group>"; };
 		4D832FFE0F2E6E35006E6B5F /* musiocmme.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = musiocmme.cpp; path = ../src/mus/musiocmme.cpp; sourceTree = SOURCE_ROOT; };
 		4D832FFF0F2E6E35006E6B5F /* musiocmme.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = musiocmme.h; path = ../src/mus/musiocmme.h; sourceTree = SOURCE_ROOT; };
+		4D88751A132013D500D4CB86 /* mussvgdc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = mussvgdc.h; path = ../src/mus/mussvgdc.h; sourceTree = SOURCE_ROOT; };
 		4DA0004312CA26E300B65740 /* musrc.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = musrc.cpp; path = ../src/mus/musrc.cpp; sourceTree = SOURCE_ROOT; };
 		4DA0004412CA26E300B65740 /* musrc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = musrc.h; path = ../src/mus/musrc.h; sourceTree = SOURCE_ROOT; };
 		4DA6F43311510C7B0005E4A5 /* musbeam.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = musbeam.cpp; path = ../src/mus/musbeam.cpp; sourceTree = SOURCE_ROOT; };
 		4DA9FDDB0D90984E000E7BA6 /* supbookctrl.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = supbookctrl.cpp; sourceTree = "<group>"; };
 		4DA9FDDC0D90984E000E7BA6 /* supbookctrl.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = supbookctrl.h; sourceTree = "<group>"; };
+		4DAB26F5131E3BCE00F08ADA /* axwxdc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = axwxdc.h; sourceTree = "<group>"; };
 		4DB1E0DA12903186002B0A2D /* musligature.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = musligature.cpp; path = ../src/mus/musligature.cpp; sourceTree = SOURCE_ROOT; };
 		4DB1E0DD1290319A002B0A2D /* musligature.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = musligature.h; path = ../src/mus/musligature.h; sourceTree = SOURCE_ROOT; };
 		4DB2D96B0D8383EA003401B0 /* musmlfdic.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = musmlfdic.cpp; path = ../src/mus/musmlfdic.cpp; sourceTree = SOURCE_ROOT; };
@@ -326,6 +329,8 @@
 				4D3A8FE40D35867200BBC1FB /* muspage.h */,
 				4D3A8FE50D35867200BBC1FB /* musstaff.cpp */,
 				4D3A8FE60D35867200BBC1FB /* musstaff.h */,
+				4D72429B132012A00023497A /* mussvgdc.cpp */,
+				4D88751A132013D500D4CB86 /* mussvgdc.h */,
 				4D3A8FE70D35867200BBC1FB /* mussymbol.cpp */,
 				4D3A8FE80D35867200BBC1FB /* mussymbol.h */,
 				4D3A8FE90D35867200BBC1FB /* mustoolpanel.cpp */,
@@ -432,7 +437,7 @@
 				4DDE13C712CA5FD3008F02AD /* axdc.cpp */,
 				4D2994D712C7F2D600D0514B /* axdc.h */,
 				4D2995B912C8006700D0514B /* axwxdc.cpp */,
-				4D18242712C886D400A1E09D /* axwxdc.h */,
+				4DAB26F5131E3BCE00F08ADA /* axwxdc.h */,
 				A58524560A1B9604002D9D8A /* axapp.cpp */,
 				A58524570A1B9604002D9D8A /* axapp.h */,
 				A58524580A1B9604002D9D8A /* axenv.cpp */,
@@ -721,6 +726,7 @@
 				4DA0004512CA26E300B65740 /* musrc.cpp in Sources */,
 				4DDE13C812CA5FD3008F02AD /* axdc.cpp in Sources */,
 				052314551315BC79007A4776 /* musligature.cpp in Sources */,
+				4D72429C132012A00023497A /* mussvgdc.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

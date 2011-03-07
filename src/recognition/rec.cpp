@@ -1382,8 +1382,8 @@ void RecEnv::OnExportImage( wxCommandEvent &event )
     wxGetApp().m_lastDirTIFF_out = wxPathOnly( filename );
 
     wxMemoryDC memDC;
-    wxBitmap bitmap( m_musViewPtr->ToZoom( m_musViewPtr->pageFormatHor + 30 )  ,
-        m_musViewPtr->ToZoom( m_musViewPtr->pageFormatVer + 10 )); // marges bricolees ...
+    wxBitmap bitmap( m_musViewPtr->ToRendererX( m_musViewPtr->pageFormatHor + 30 )  ,
+        m_musViewPtr->ToRendererX( m_musViewPtr->pageFormatVer + 10 )); // marges bricolees ...
     memDC.SelectObject(bitmap);
     memDC.SetBackground(*wxWHITE_BRUSH);
     memDC.Clear();
@@ -1407,8 +1407,8 @@ void RecEnv::OnExportImage( wxCommandEvent &event )
     wxGetApp().m_lastDirTIFF_out = wxPathOnly( filename );
     
     /*
-    MusSVGFileDC svgDC (filename, m_musViewPtr->ToZoom( m_musViewPtr->pageFormatHor + 30 )  ,
-        m_musViewPtr->ToZoom( m_musViewPtr->pageFormatVer + 10 )) ;
+    MusSVGFileDC svgDC (filename, m_musViewPtr->ToRendererX( m_musViewPtr->pageFormatHor + 30 )  ,
+        m_musViewPtr->ToRendererX( m_musViewPtr->pageFormatVer + 10 )) ;
 	svgDC.SetTextForeground( *wxBLACK );
 	//dc.SetMapMode( wxMM_TEXT );
 	svgDC.SetAxisOrientation( true, false );

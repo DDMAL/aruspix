@@ -1,34 +1,33 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        axwxdc.h 
+// Name:        mussvgdc.h 
 // Author:      Laurent Pugin
-// Created:     2010
+// Created:     2011
 // Copyright (c) Laurent Pugin. All rights reserved.   
 /////////////////////////////////////////////////////////////////////////////
 
-#ifndef __AX_WXDC_H__
-#define __AX_WXDC_H__
+#ifndef __MUS_SVG_DC_H__
+#define __MUS_SVG_DC_H__
 
 #if defined(__GNUG__) && ! defined(__APPLE__)
-    #pragma interface "axwxdc.cpp"
+    #pragma interface "mussvgdc.cpp"
 #endif
 
 #ifndef WX_PRECOMP
     #include "wx/wx.h"
 #endif
 
+#include "wx/wfstream.h"
+#include "wx/mstream.h"
 
-#include "axdc.h"
 
-/*
-    This class is a wrapper to wxDCs
-    All functionnalities are not implemented
-*/
-class AxWxDC: public AxDC
+#include "app/axdc.h"
+
+class MusSvgDC: public AxDC
 {
 public:
 
-    AxWxDC ( wxDC *dc );
-    virtual ~AxWxDC();
+    MusSvgDC ( wxString f, int width, int height );
+    virtual ~MusSvgDC();
     
     // Setters
     
@@ -51,6 +50,8 @@ public:
     virtual void ResetPen( );
     
     virtual void SetLogicalOrigin( int x, int y );
+    
+    virtual void SetUserScale( double xScale, double yScale );
     
     // Getters
     
@@ -81,25 +82,48 @@ public:
     virtual void DrawMusicText(const wxString& text, int x, int y);
     
     virtual void DrawSpline(int n, AxPoint points[]);
-   
-    // Method for starting and ending a graphic - for example for grouping shapes in <g></g> in SVG
     
-    virtual void StartGraphic( wxString gClass, wxString gId ) {};
+    // 
+    virtual void StartGraphic( wxString gClass, wxString gId );
     
-    virtual void EndGraphic() {};
+    virtual void EndGraphic();
     
-    virtual void StartPage( ) { m_dc->EndPage(); };
+    virtual void StartPage();
     
-    virtual void EndPage( ) { m_dc->StartPage(); };
+    virtual void EndPage();
+    
     
 private:
-    wxDC *m_dc;
-    wxBrush m_brush;
-    wxPen m_pen;
-    
-    wxColour GetColour( int colour );
+    //wxFileOutputStream * m_outfile ;
+    // changed to a memory stream because we want to prepend the <defs> which will know only when we reach the end of the page
+    // some viewer seem to support to have the <defs> at the end, but some do not (pdf2svg, for example)
+    // for this reason, the file is written only from the destructor or when Flush() is called
+    wxMemoryOutputStream * m_outfile;
+    bool m_committed; // did we flushed the file?
+    wxString m_filename;
+    int m_graphics;
+    int m_indents;
+    int m_width, m_height;
+    int m_originX, m_originY;
+    double m_userScaleX, m_userScaleY;
+      
+    // holds the list of glyphs from the leipzig font used so far
+    // they will be added at the end of the file as <defs>
+    wxArrayString m_leipzig_glyphs;
         
+    void Commit();    
+    
+    void WriteLine( wxString );
+    
+    //
+    wxString m_brushColour;
+    wxString m_brushStyle;
+    wxString m_penColour;
+    wxString m_penWidth;
+    wxString m_penStyle;
+        
+    wxString GetColour( int colour );
         
 };
 
-#endif // __AX_WXDC_H__
+#endif // __MUS_SVG_DC_H__

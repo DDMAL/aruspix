@@ -593,21 +593,23 @@ void MusStaff::DrawStaffLines( AxDC *dc, int i )
 	yy = this->yrel - m_r->_portee[ pTaille ];
 
 	x1 = this->indent ? this->indent*10 : 0;
-	x2 = m_r->wxmax;
+	x2 = m_r->m_pageMaxX;
 
 
-	dc->SetPen( m_r->m_currentColour, m_r->ToZoom( m_p->EpLignesPortee ), wxSOLID );
+	dc->SetPen( m_r->m_currentColour, m_r->ToRendererX( m_p->EpLignesPortee ), wxSOLID );
     dc->SetBrush( m_r->m_currentColour , wxSOLID );
+    dc->StartGraphic( "staff", wxString::Format("s_%d", this->no) );
 
-	x1 =  m_r->ToZoom (x1);
-	x2 =  m_r->ToZoom (x2);
+	x1 =  m_r->ToRendererX (x1);
+	x2 =  m_r->ToRendererX (x2);
 
 	for(j = 0;j < this->portNbLine; j++)
 	{
-		dc->DrawLine( x1 , m_r->ToZoomY ( yy ) , x2 , m_r->ToZoomY ( yy ) );
+		dc->DrawLine( x1 , m_r->ToRendererY ( yy ) , x2 , m_r->ToRendererY ( yy ) );
 		yy -= m_r->_interl[pTaille];
 	}
-
+    
+    dc->EndGraphic();
     dc->ResetPen( );
     dc->ResetBrush( );
 	return;
@@ -627,14 +629,6 @@ void MusStaff::DrawStaff( AxDC *dc, int i )
 		return;
 
 	m_r->kPos[i].compte = 0; // mettre à zero le compteur de cles
-	
-	//bool erase = true;
-	//if ( erase )
-	//{
-	//	dc->DrawRectangle( m_r->mrgG, m_r->ToZoomY(( m_r->pageFormatVer-50) + m_p->MargeSOMMET*10), i,
-	//		m_r->ToZoomY (-50)+m_p->MargeSOMMET*10);
-	//	DrawStaffLines( dc , i );		
-	//}
 
 	MusElement *pelement = NULL;
 	int j;
@@ -805,8 +799,8 @@ void MusStaff::DrawSlur( AxDC *dc, int x1, int y1, int x2, int y2, bool up, int 
 	for(i = 0; i < nbpoints; i++)
 	{
 		points[i] = CalcPositionAfterRotation( points[i], alpha2, orig ); // rotation		
-		points[i].x = m_r->ToZoom( points[i].x + x1 - 1*step ); // transposition
-		points[i].y = m_r->ToZoomY( points[i].y + y1 - dec_y );
+		points[i].x = m_r->ToRendererX( points[i].x + x1 - 1*step ); // transposition
+		points[i].y = m_r->ToRendererY( points[i].y + y1 - dec_y );
 	}
 	dc->DrawSpline( nbpoints, points );
 
@@ -826,8 +820,8 @@ void MusStaff::DrawSlur( AxDC *dc, int x1, int y1, int x2, int y2, bool up, int 
 	for(i = nbpoints; i < 2*nbpoints; i++)
 	{
 		points[i] = CalcPositionAfterRotation( points[i], alpha2, orig );
-		points[i].x = m_r->ToZoom( points[i].x + x1 - 1*step );
-		points[i].y = m_r->ToZoomY( points[i].y + y1 - dec_y );
+		points[i].x = m_r->ToRendererX( points[i].x + x1 - 1*step );
+		points[i].y = m_r->ToRendererY( points[i].y + y1 - dec_y );
 	}
 	dc->DrawSpline( nbpoints, points+nbpoints );
 

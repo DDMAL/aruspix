@@ -34,7 +34,7 @@
 
 // experimental
 #include "mus/musiomei.h"  
-//#include "mus/mussvg.h"
+#include "mus/mussvgdc.h"
 
 
 //----------------------------------------------------------------------------
@@ -222,13 +222,13 @@ void EdtEnv::ParseCmd( wxCmdLineParser *parser )
             page->Init( m_musViewPtr );
             m_musViewPtr->SetZoom( 50 ); // this should probably be a parameter...
             m_musViewPtr->UpdatePageValues();
-            m_musViewPtr->wxmax = page->lrg_lign*10; // !fix it!! in the GUI initialized in OnPaint
+            m_musViewPtr->m_pageMaxX = page->lrg_lign*10; // !fix it!! in the GUI initialized in OnPaint
             m_musViewPtr->m_currentElement = NULL; // !fix it!! deselect elemnts
 
             /*
             //MusSVGFileDC svgDC (outfile, mfile->m_fheader.param.pageFormatHor, mfile->m_fheader.param.pageFormatVer );
-            MusSVGFileDC svgDC (outfile, m_musViewPtr->ToZoom( m_musViewPtr->pageFormatHor )  ,
-                m_musViewPtr->ToZoom( m_musViewPtr->pageFormatVer )) ;
+            MusSVGFileDC svgDC (outfile, m_musViewPtr->ToRendererX( m_musViewPtr->pageFormatHor )  ,
+                m_musViewPtr->ToRendererX( m_musViewPtr->pageFormatVer )) ;
             
             svgDC.SetUserScale( 1, 1 );
             svgDC.SetLogicalScale( 1.0, 1.0 );  
@@ -531,30 +531,62 @@ void EdtEnv::OnSaveSVG( wxCommandEvent &event )
     int zoom = m_musViewPtr->GetZoom( );
     m_musViewPtr->SetZoom( 100 );
     
-    /*
-    MusSVGFileDC svgDC (filename, m_musViewPtr->ToZoom( m_musViewPtr->pageFormatHor + 30 )  ,
-        m_musViewPtr->ToZoom( m_musViewPtr->pageFormatVer + 10 )) ;
+    
+    MusSvgDC svgDC (filename, m_musViewPtr->ToRendererX( m_musViewPtr->pageFormatHor + 30 )  ,
+        m_musViewPtr->ToRendererX( m_musViewPtr->pageFormatVer + 10 )) ;
         
-    svgDC.SetUserScale( 1, 1 );
-    svgDC.SetLogicalScale( 1.0, 1.0 );  
+    //svgDC.SetUserScale( 1, 1 );
+    //svgDC.SetLogicalScale( 1.0, 1.0 );  
     
 	//if ( m_musViewPtr->m_center )
 	//	svgDC.SetLogicalOrigin( (m_musViewPtr->margeMorteHor - m_musViewPtr->mrgG), m_musViewPtr->margeMorteVer );
 	//else 
-    svgDC.SetLogicalOrigin( -m_musViewPtr->mrgG, 0 );
+    //svgDC.SetLogicalOrigin( -m_musViewPtr->mrgG, 0 );
     
     // font data
     //svgDC.ConcatFile( wxGetApp().m_resourcesPath + "/svg/font.xml" );
-	svgDC.SetTextForeground( *wxBLACK );
+	svgDC.SetTextForeground( AxBLACK );
+    
+    //svgDC.SetUserScale( 0.1, 0.2 );
 	
     m_musViewPtr->m_currentElement = NULL;
-	svgDC.SetAxisOrientation( true, false );
+	//svgDC.SetAxisOrientation( true, false );
     m_musViewPtr->m_page->DrawPage( &svgDC, false );
     
     // reset the zoom
     m_musViewPtr->SetZoom( zoom );
-    */
+    
 }
+
+/*
+#include "app/axwxdc.h"
+
+void EdtEnv::OnSaveSVG( wxCommandEvent &event )
+{
+    wxString filename;
+    filename = wxFileSelector( _("Save"), wxGetApp().m_lastDirTIFF_out, _T(""), NULL, "*|*", wxFD_SAVE);
+    if (filename.IsEmpty())
+        return;
+        
+    wxGetApp().m_lastDirTIFF_out = wxPathOnly( filename );
+
+    wxMemoryDC memDC;
+    wxBitmap bitmap( m_musViewPtr->ToRendererX( m_musViewPtr->pageFormatHor + 30 )  ,
+        m_musViewPtr->ToRendererX( m_musViewPtr->pageFormatVer + 10 )); // marges bricolees ...
+    memDC.SelectObject(bitmap);
+    memDC.SetBackground(*wxWHITE_BRUSH);
+    memDC.Clear();
+    memDC.SetLogicalOrigin( m_musViewPtr->mrgG,10 );
+    //memDC.SetPen(*wxRED_PEN);
+    //memDC.SetBrush(*wxTRANSPARENT_BRUSH);
+    AxWxDC ax_dc( &memDC );
+    m_musViewPtr->m_page->DrawPage( &ax_dc, false );
+    memDC.SelectObject(wxNullBitmap);
+    wxImage image = bitmap.ConvertToImage().Scale( bitmap.GetWidth()/10, bitmap.GetHeight()/10, wxIMAGE_QUALITY_HIGH );//.ConvertToMono( 255 ,255 , 255 );
+    image.SaveFile( filename );
+    //bitmap.SaveFile( filename, wxBITMAP_TYPE_BMP );
+}
+*/
 
 
 void EdtEnv::OnOpenWWG( wxCommandEvent &event )

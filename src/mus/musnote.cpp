@@ -317,9 +317,11 @@ void MusNote::Draw( AxDC *dc, MusStaff *staff)
 	// Third thing : put the access stuff into a method (used below as well)
 	if ( !m_r->m_eraseElement && m_r->m_lyricMode && BelongsToTheNote( m_r->m_currentElement ) )
 		m_r->m_currentColour = AxCYAN;
+        
 		
 	if ( this->sil == _NOT)
 	{	
+        dc->StartGraphic( "note", wxString::Format("n_%d_%d", staff->no, this->no) );
 		this->dec_y = staff->y_note((int)this->code, staff->testcle( this->xrel ), oct);
 
 		//if (!pelement->ElemInvisible || illumine) 
@@ -329,17 +331,25 @@ void MusNote::Draw( AxDC *dc, MusStaff *staff)
 			//else
 			//	this->accord(dc, staff);
 		//}
+        
+        dc->EndGraphic();
 	}
 	else
-	{	//if (!transp_sil)
+	{	
+        dc->StartGraphic( "rest", wxString::Format("r_%d_%d", staff->no, this->no) );
+        //if (!transp_sil)
 		//	pnote->code = getSilencePitch (pelement);
 		this->dec_y = staff->y_note((int)this->code, staff->testcle( this->xrel ), oct);
 		silence ( dc, staff );
+        dc->EndGraphic();
 	}
+    
     
     // draw the beams
     if (staff->beamListPremier && this->frel) {
+        dc->StartGraphic( "beam", wxString::Format("b_%d_%d", staff->no, this->no) );
         staff->beam( dc );
+        dc->EndGraphic();
     }
     
     /* 
@@ -354,14 +364,14 @@ void MusNote::Draw( AxDC *dc, MusStaff *staff)
 	AxPoint *ptcoord;
 	nbrInt = PTCONTROL;
     
-    m_r->point_[0].x = m_r->ToZoom(xrel);
-    m_r->point_[0].y =  m_r->ToZoomY(staff->yrel);
-    m_r->point_[1].x =  m_r->ToZoom(xrel + 100);
-    m_r->point_[1].y = m_r->ToZoomY(staff->yrel + 50);
-    m_r->point_[2].x =  m_r->ToZoom(xrel + 300);
-    m_r->point_[2].y = m_r->ToZoomY(staff->yrel + 50);
-    m_r->point_[3].x =  m_r->ToZoom(xrel + 400);
-    m_r->point_[3].y = m_r->ToZoomY(staff->yrel);
+    m_r->point_[0].x = m_r->ToRendererX(xrel);
+    m_r->point_[0].y =  m_r->ToRendererY(staff->yrel);
+    m_r->point_[1].x =  m_r->ToRendererX(xrel + 100);
+    m_r->point_[1].y = m_r->ToRendererY(staff->yrel + 50);
+    m_r->point_[2].x =  m_r->ToRendererX(xrel + 300);
+    m_r->point_[2].y = m_r->ToRendererY(staff->yrel + 50);
+    m_r->point_[3].x =  m_r->ToRendererX(xrel + 400);
+    m_r->point_[3].y = m_r->ToRendererY(staff->yrel);
     //dc->DrawSpline( 4, point );
     
 	ptcoord = &m_r->bcoord[0];
@@ -370,8 +380,8 @@ void MusNote::Draw( AxDC *dc, MusStaff *staff)
 	m_r->pntswap (&m_r->point_[0], &m_r->point_[3]);
 	m_r->pntswap (&m_r->point_[1], &m_r->point_[2]);
 	
-	m_r->point_[1].y +=  m_r->ToZoom(5);
-	m_r->point_[2].y +=  m_r->ToZoom(5);
+	m_r->point_[1].y +=  m_r->ToRendererX(5);
+	m_r->point_[2].y +=  m_r->ToRendererX(5);
 
 	ptcoord = &m_r->bcoord[nbrInt+1];	// suite de la matrice: retour du bezier
 	m_r->calcBez ( ptcoord, nbrInt );
@@ -441,15 +451,16 @@ void MusNote::note ( AxDC *dc, MusStaff *staff )
 	if (val > RD || (val == RD && staff->notAnc))	// annuler provisoirement la modif. des lignes addit.
 		ledge = m_r->ledgerLine[pTaille][this->dimin];
 	else
-	{	ledge= m_r->ledgerLine[pTaille][2];
+	{	
+        ledge= m_r->ledgerLine[pTaille][2];
 		rayon += rayon/3;
 	}
 
 	/*NEW: diminuer le rayon d'une quantit‚ param‚trable*/
-	if (val>RD)
-		rayon -= ((rayon * m_fh->param.hampesCorr) / 20);
+	//if (val>RD)
+	//	rayon -= ((rayon * m_fh->param.hampesCorr) / 20);
 	x1 = xn-rayon;	// position d'appel du caractŠre et de la queue gauche
-	xl = xn;
+    xl = xn;
 
 	// permettre d'inverser le cot‚ de la tete de note avec flag lat
 	if (this->lat && !this->chord)
@@ -646,7 +657,7 @@ void MusNote::note ( AxDC *dc, MusStaff *staff )
 			x2 = xn + m_r->_pas*5/2;
 
 		if (this->lat)
-				x2 += rayon*2;
+            x2 += rayon*2;
 	}
 
 	if (this->point && (!this->pointInvisible))
@@ -736,12 +747,12 @@ void MusNote::leg_line( AxDC *dc, int y_n, int y_p, int xn, unsigned int smaller
 		//xng = toZoom(xng);
 		//xnd = toZoom(xnd);
 
-        dc->SetPen( m_r->m_currentColour, m_r->ToZoom( m_p->EpLignesPortee ), wxSOLID );
+        dc->SetPen( m_r->m_currentColour, m_r->ToRendererX( m_p->EpLignesPortee ), wxSOLID );
         dc->SetBrush(m_r->m_currentColour , wxTRANSPARENT );
 
 		for (i = 0; i < test; i++)
 		{
-			dc->DrawLine( m_r->ToZoom(xng) , m_r->ToZoomY ( yn ) , m_r->ToZoom(xnd) , m_r->ToZoomY ( yn ) );
+			dc->DrawLine( m_r->ToRendererX(xng) , m_r->ToRendererY ( yn ) , m_r->ToRendererX(xnd) , m_r->ToRendererY ( yn ) );
 			//m_r->h_line ( dc, xng, xnd, yn, m_r->_param.EpLignesPORTEE);
 			//yh =  toZoom(yn);
 			//MoveToEx (hdc, xng, yh, NULL);

@@ -175,7 +175,7 @@ void MusPage::UpdateStavesPosition( )
 	int i, yy, orgx;
 	MusStaff *staff = NULL;
 
-	yy = m_r->wymax;
+	yy = m_r->m_pageMaxY;
     for (i = 0; i < nbrePortees; i++) 
 	{
 		staff = &m_staves[i];
@@ -206,15 +206,23 @@ void MusPage::DrawPage( AxDC *dc, bool background )
 	int i;
     MusStaff *staff;
 
+    /**?
 	if (m_p->orientation)
-		i =  m_r->ToZoom( m_r->pageFormatHor ); //+mrgG; marge comprise dans SetDeviceOrigine
+		i =  m_r->ToRendererX( m_r->pageFormatHor ); //+mrgG; marge comprise dans SetDeviceOrigine
 	else
-		i =  m_r->ToZoom( m_r->pageFormatHor + 50); //+mrgG;
+		i =  m_r->ToRendererX( m_r->pageFormatHor + 50); //+mrgG;
 
 	if ( background )
-		dc->DrawRectangle( m_r->mrgG, m_r->ToZoomY(( m_r->pageFormatVer-50) + m_p->MargeSOMMET*10), i,
-        			m_r->ToZoomY (-50)+m_p->MargeSOMMET*10);
+		dc->DrawRectangle( 0, m_r->ToRendererY(( m_r->pageFormatVer-50) + m_p->MargeSOMMET*10), i,
+        			m_r->ToRendererY (-50)+m_p->MargeSOMMET*10);
+    ?**/
+    if ( background )
+        dc->DrawRectangle( 0, 0, m_r->pageFormatHor, m_r->pageFormatVer );
+    
+    AxPoint origin = dc->GetLogicalOrigin();
+    dc->SetLogicalOrigin( origin.x - m_r->mrgG, origin.y );
 
+    dc->StartPage();
 
 	// position des portees
 	UpdateStavesPosition();
@@ -235,6 +243,8 @@ void MusPage::DrawPage( AxDC *dc, bool background )
 		staff = &m_staves[i];
 			staff->DrawStaff( dc , i );	
 	}
+    
+    dc->EndPage();
 }
 
 

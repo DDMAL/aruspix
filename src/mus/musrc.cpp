@@ -86,9 +86,10 @@ MusRC::MusRC( )
 	discontinu = 0;
 	MesVal=1.0;
 
-    zoomNum = 4;
-    zoomDen = 10;
     m_charDefin = 0;
+    
+    m_pageMaxX = 0;
+    m_pageMaxY = 0;
 
 	m_currentColour = AxBLACK;
 	m_currentElement = NULL;
@@ -127,8 +128,7 @@ void MusRC::PaperSize( )
 		pageFormatVer = m_fh->param.pageFormatHor*10;
 		pageFormatHor = m_fh->param.pageFormatVer*10;
 	}
-	wymax = pageFormatVer-40;
-    
+	m_pageMaxY = pageFormatVer-40; // is this a dead margin?
     
 	beamPenteMx = m_fh->param.beamPenteMax;
 	beamPenteMin = m_fh->param.beamPenteMin;
@@ -147,7 +147,6 @@ void MusRC::SetFile( MusFile *file )
 		m_page = NULL;
         m_currentStaff = NULL;
         m_currentElement = NULL;
-		zoomNum = 4;
         DoReset();
 		return;
 	}
@@ -156,7 +155,6 @@ void MusRC::SetFile( MusFile *file )
 	m_fh = &file->m_fheader;
     m_notation_mode = m_fh->param.notationMode;
 	m_npage = 0;
-	zoomNum = 4;
 	PaperSize();
 	SetPage( &file->m_pages[m_npage] );
 	//CheckPoint( UNDO_ALL, MUS_UNDO_FILE );
@@ -170,7 +168,8 @@ void MusRC::SetPage( MusPage *page )
 	m_page = page;
     UpdatePageValues();
 	if (m_charDefin == 0)
-		UpdateZoomValues();
+		UpdatePageFontValues();
+    m_pageMaxX = m_page->lrg_lign*10;
     UpdateStavesPos();
 
 	m_currentElement = NULL;
@@ -207,64 +206,6 @@ void MusRC::Next( bool forward )
 		m_npage--;
 
 	SetPage( &m_f->m_pages[m_npage] );		
-}
-
-
-
-int MusRC::ToZoom( int i ) 
-{ 
-	return (i*zoomNum)/zoomDen; 
-}
-
-int MusRC::ToReel( int i )
-{ 
-	return (i*zoomDen)/zoomNum;
-}
-
-int MusRC::ToZoomY( int i ) 
-{
-	return ToZoom( wymax - i );
-}
-
-int MusRC::ToReelY( int i )
-{ 
-	return wymax - ToReel( i ); 
-}
-
-bool MusRC::CanZoom( bool zoomIn ) 
-{ 
-	if ( zoomIn )
-		return ( m_f && (zoomNum/zoomDen < 1) );
-	else
-        return ( m_f && (zoomNum >= 2) );
-		//return ( m_f && ((float)zoomNum/(float)zoomDen > 0.1) );
-}
-
-void MusRC::Zoom( bool zoomIn )
-{
-	if ( !m_f || !m_fh )
-		return;
-
-	if ( zoomIn && this->CanZoom( true ) )
-		zoomNum *= 2;
-	else if	( !zoomIn && this->CanZoom( false ) )
-		zoomNum /= 2;
-
-	DoResize();
-	UpdateZoomValues();
-	SetPage( &m_f->m_pages[m_npage] );
-}
-
-void MusRC::SetZoom( int percent )
-{
-	if ( !m_f || !m_fh )
-		return;
-
-	zoomNum = percent;
-	zoomDen = 100;
-	DoResize();
-	UpdateZoomValues();
-	SetPage( &m_f->m_pages[m_npage] );
 }
 
 void MusRC::LoadPage( int nopage )
@@ -327,26 +268,26 @@ void MusRC::UpdateFontValues()
 }
 
 
-void MusRC::UpdateZoomValues() 
+void MusRC::UpdatePageFontValues() 
 {
 	if ( !m_page )
 		return;	
 
-	m_activeFonts[0][0].SetPointSize( ToZoom( nTailleFont[0][0] ) ); //160
-    m_activeFonts[0][1].SetPointSize( ToZoom( nTailleFont[0][1] ) ); //120
-    m_activeFonts[1][0].SetPointSize( ToZoom( nTailleFont[1][0] ) ); //128
-    m_activeFonts[1][1].SetPointSize( ToZoom( nTailleFont[1][1] ) ); //100
+	m_activeFonts[0][0].SetPointSize( ToRendererX( nTailleFont[0][0] ) ); //160
+    m_activeFonts[0][1].SetPointSize( ToRendererX( nTailleFont[0][1] ) ); //120
+    m_activeFonts[1][0].SetPointSize( ToRendererX( nTailleFont[1][0] ) ); //128
+    m_activeFonts[1][1].SetPointSize( ToRendererX( nTailleFont[1][1] ) ); //100
 
 	//experimental font size for now
 	//they can all be the same size, seeing as the 'grace notes' are built in the font
 	
-	m_activeChantFonts[0][0].SetPointSize( ToZoom( 110 ) ); // change this following the Leipzig method
-    m_activeChantFonts[0][1].SetPointSize( ToZoom( 110 ) );
-    m_activeChantFonts[1][0].SetPointSize( ToZoom( 110 ) );
-    m_activeChantFonts[1][1].SetPointSize( ToZoom( 110 ) );
+	m_activeChantFonts[0][0].SetPointSize( ToRendererX( 110 ) ); // change this following the Leipzig method
+    m_activeChantFonts[0][1].SetPointSize( ToRendererX( 110 ) );
+    m_activeChantFonts[1][0].SetPointSize( ToRendererX( 110 ) );
+    m_activeChantFonts[1][1].SetPointSize( ToRendererX( 110 ) );
 	
-	m_activeLyricFonts[0].SetPointSize( ToZoom( m_ftLyrics.GetPointSize() ) );
-    m_activeLyricFonts[1].SetPointSize( ToZoom( m_ftLyrics.GetPointSize() ) );
+	m_activeLyricFonts[0].SetPointSize( ToRendererX( m_ftLyrics.GetPointSize() ) );
+    m_activeLyricFonts[1].SetPointSize( ToRendererX( m_ftLyrics.GetPointSize() ) );
 
 	m_charDefin = m_page->defin;
 }
@@ -363,13 +304,13 @@ void MusRC::UpdatePageValues()
 		page += m_f->m_pagination.numeroInitial;
 
 	if (page % 2)	//pages impaires 
-		mrgG = - m_fh->param.MargeGAUCHEIMPAIRE*10;
+		mrgG = m_fh->param.MargeGAUCHEIMPAIRE*10;
 	else
-		mrgG = - m_fh->param.MargeGAUCHEPAIRE*10;
-	mrgG = ToZoom (mrgG);
+		mrgG = m_fh->param.MargeGAUCHEPAIRE*10;
+	mrgG = ToRendererX (mrgG);
 
 	if (m_charDefin != m_page->defin)
-		m_charDefin = 0; // the charDefin changed - reset to 0 to force UpdateZoomValues in SetPage
+		m_charDefin = 0; // the charDefin changed - reset to 0 to force UpdatePageFontValues in SetPage
     int defin = m_page->defin;
 
     RapportPortee[0] = m_fh->param.rapportPorteesNum;
@@ -407,7 +348,7 @@ void MusRC::UpdatePageValues()
     hautFontAscent[0][0] = floor(LEIPZIG_ASCENT * (double)hautFont / LEIPZIG_UNITS_PER_EM);
 	hautFontAscent[0][0] +=  wxGetApp().m_fontPosCorrection;
 	hautFontAscent[0][1] = (hautFontAscent[0][0] * RapportDimin[0]) / RapportDimin[1];
-	hautFontAscent[1][0] = (hautFontAscent[0][0] * RapportPortee[0]) / RapportPortee[1];
+    hautFontAscent[1][0] = (hautFontAscent[0][0] * RapportPortee[0]) / RapportPortee[1];
 	hautFontAscent[1][1] = (hautFontAscent[1][0] * RapportDimin[0]) / RapportDimin[1];    
 
     nTailleFont[0][0] = hautFont;
@@ -454,7 +395,7 @@ void MusRC::UpdateStavesPos()
 	if ( !m_page || !m_fh ) 
         return;
        
-	int yy = wymax; //JwgDef.MRGMORTE;    // sommet utile "dessinable" de la page (bord - 5mm)
+	int yy = m_pageMaxY; //
     for (i = 0; i < m_page->nbrePortees; i++) 
 	{
          staff = &m_page->m_staves[i];
@@ -469,7 +410,7 @@ void MusRC::UpdateStavesPos()
             kPos[i].yp  += _interl[mPortTaille]*2;
          else if (staff->portNbLine == 4)
 			kPos[i].yp  += _interl[mPortTaille];
-         staff->xrel = m_fh->param.MargeGAUCHEIMPAIRE; //+JwgDef.MRGMORTE;
+         staff->xrel = m_fh->param.MargeGAUCHEIMPAIRE;
     }
 }
 

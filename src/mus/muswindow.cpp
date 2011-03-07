@@ -38,6 +38,8 @@ using std::max;
 int MusWindow::s_flats[] = {F2, F3, F3, F4, F4, F5, F6, F6, F7, F7, F8, F8};
 int MusWindow::s_sharps[] = {F2, F2, F3, F3, F4, F5, F5, F6, F6, F7, F7, F8};
 
+#define MUS_BORDER_AROUND_PAGE 40
+
 
 //----------------------------------------------------------------------------
 // MusWindow
@@ -87,6 +89,9 @@ MusWindow::MusWindow( wxWindow *parent, wxWindowID id,
 	m_dragging_x = 0;
 	m_dragging_y_offset = 0;
 	m_lyricCursor = 0;
+    
+    m_zoomNum = 10;
+    m_zoomDen = 10;
 	
 	if ( wxSystemSettings::GetColour(wxSYS_COLOUR_APPWORKSPACE) == *wxWHITE )
 		this->SetBackgroundColour( *wxLIGHT_GREY );
@@ -264,13 +269,16 @@ void MusWindow::Store( AxUndoFile *undoPtr )
 
 void MusWindow::InitDC( wxDC *dc )
 {
-	if ( m_center )
-		dc->SetLogicalOrigin( - (margeMorteHor - mrgG), -margeMorteVer );
-	else
-		dc->SetLogicalOrigin( mrgG, 5 );
-
-	dc->SetAxisOrientation( true, false );
+	//if ( m_center )
+	//	dc->SetLogicalOrigin( - (margeMorteHor - mrgG), -margeMorteVer );
+	//else
+        dc->SetLogicalOrigin( - (MUS_BORDER_AROUND_PAGE / 2) - mrgG,  - (MUS_BORDER_AROUND_PAGE / 2) );
+        
 	this->DoPrepareDC( *dc );
+    
+    dc->SetUserScale( double(GetZoom())/100.0,  double(GetZoom())/100.0 );
+    dc->SetMapMode(wxMM_TEXT);
+	dc->SetAxisOrientation( true, false );
 }
 
 void MusWindow::DoLyricCursor( int x, int y, AxDC *dc, wxString lyric )
@@ -283,7 +291,7 @@ void MusWindow::DoLyricCursor( int x, int y, AxDC *dc, wxString lyric )
             xCursor += lyricPos[m_lyricCursor-1];			
     }
     // the cursor witdh
-    int wCursor = max( 1, ToZoom( 2 ) );
+    int wCursor = max( 1, ToRendererX( 2 ) );
     
     // get the bounding box and draw it
     int wBox, hBox, wBox_empty;
@@ -294,7 +302,7 @@ void MusWindow::DoLyricCursor( int x, int y, AxDC *dc, wxString lyric )
         dc->GetTextExtent( empty, &wBox_empty, &hBox );
     }
     dc->SetPen( AxBLACK, 1, wxSHORT_DASH );
-    dc->DrawRectangle( x - 2 * wCursor, ToZoomY( y ) - wCursor, 
+    dc->DrawRectangle( x - 2 * wCursor, ToRendererY( y ) - wCursor, 
         wBox + 4 * wCursor, hBox + 2 * wCursor  ); 
     
     // draw the cursor
@@ -302,7 +310,7 @@ void MusWindow::DoLyricCursor( int x, int y, AxDC *dc, wxString lyric )
     dc->SetPen( AxBLACK, 1, wxSOLID );
     dc->SetBrush( m_currentColour, wxSOLID );
     
-    dc->DrawRectangle( xCursor, ToZoomY( y ), wCursor , hBox  );
+    dc->DrawRectangle( xCursor, ToRendererY( y ), wCursor , hBox  );
 
     // reset the pens
     dc->ResetPen();
@@ -324,8 +332,8 @@ void MusWindow::Resize( )
 	
 	Show( false );
 	wxSize parent_s = parent->GetClientSize();
-	int page_w = ToZoom(pageFormatHor);
-	int page_h = ToZoom(pageFormatVer) + ToZoom(40); // bord en bas
+	int page_w = (ToRendererX(pageFormatHor) + MUS_BORDER_AROUND_PAGE) * GetZoom() / 100;
+	int page_h = (ToRendererX(pageFormatVer) + MUS_BORDER_AROUND_PAGE) * GetZoom() / 100;
 	int win_w = min( page_w, parent_s.GetWidth() );
 	int win_h = min( page_h, parent_s.GetHeight() );
 
@@ -341,8 +349,8 @@ void MusWindow::Resize( )
 	//this->SetSize(  win_w, win_h );
 	this->SetScrollbars( 20, 20, page_w / 20, page_h / 20 );
 
-	margeMorteHor = max( 0, ( parent_s.GetWidth() - win_w ) / 2 );
-	margeMorteVer = max( 0, ( parent_s.GetHeight() - win_h ) / 2 );
+	//margeMorteHor = max( 0, ( parent_s.GetWidth() - win_w ) / 2 );
+	//margeMorteVer = max( 0, ( parent_s.GetHeight() - win_h ) / 2 );
 	//this->Move( x, y );
 	
 	Show( true );
@@ -366,6 +374,41 @@ void MusWindow::Goto( )
 		SetPage( &m_f->m_pages[m_npage] );
     }
 	dlg->Destroy();
+}
+
+
+bool MusWindow::CanZoom( bool zoomIn ) 
+{ 
+	if ( zoomIn )
+		return ( m_f && (m_zoomNum/m_zoomDen < 1) );
+	else
+        return ( m_f && (m_zoomNum >= 2) );
+		//return ( m_f && ((float)zoomNum/(float)zoomDen > 0.1) );
+}
+
+void MusWindow::Zoom( bool zoomIn )
+{
+	if ( !m_f || !m_fh )
+		return;
+
+	if ( zoomIn && this->CanZoom( true ) )
+		m_zoomNum *= 2;
+	else if	( !zoomIn && this->CanZoom( false ) )
+		m_zoomNum /= 2;
+
+	DoResize();
+	SetPage( &m_f->m_pages[m_npage] );
+}
+
+void MusWindow::SetZoom( int percent )
+{
+	if ( !m_f || !m_fh )
+		return;
+
+	m_zoomNum = percent;
+	m_zoomDen = 100;
+	DoResize();
+	SetPage( &m_f->m_pages[m_npage] );
 }
 
 void MusWindow::SetToolPanel( MusToolPanel *toolpanel )
@@ -529,8 +572,8 @@ void MusWindow::UpdateScroll()
 		
 	int x = 0;
 	if ( m_currentElement )
-		x = ToZoom( m_currentElement->xrel );
-	int y = ToZoomY(  kPos[m_currentStaff->no].yp );
+		x = ToRendererX( m_currentElement->xrel );
+	int y = ToRendererY(  kPos[m_currentStaff->no].yp );
 	// units
 	int xu, yu;
 	this->GetScrollPixelsPerUnit( &xu, &yu );
@@ -549,7 +592,7 @@ void MusWindow::UpdateScroll()
 		x = -1;
 	else
 		x /= xu;
-	if ( (y > ys ) && (y < ys + h - 2 * ToZoom(_portee[0])) )
+	if ( (y > ys ) && (y < ys + h - 2 * ToRendererX(_portee[0])) )
 		y = -1;
 	else
 		y /= yu;
@@ -686,8 +729,8 @@ void MusWindow::OnMouseDClick(wxMouseEvent &event)
 	{
 		wxClientDC dc( this );
 		InitDC( &dc );
-		m_insertx = ToReel( dc.DeviceToLogicalX( event.m_x ) ); //???
-		int y = ToReelY( dc.DeviceToLogicalY( event.m_y ) );
+		m_insertx = ToLogicalX( dc.DeviceToLogicalX( event.m_x ) ); //???
+		int y = ToLogicalY( dc.DeviceToLogicalY( event.m_y ) );
 		m_insertcode = m_currentStaff->trouveCodNote( y, m_insertx, &m_insertoct );
 		m_newElement->xrel = m_insertx;
 	}
@@ -813,9 +856,9 @@ void MusWindow::OnMouseLeftDown(wxMouseEvent &event)
 		// TODO 	m_currentElement->ClearElement( &dc, m_currentStaff );
 
 		m_has_been_dragged = false;
-		m_dragging_x  = ToReel( dc.DeviceToLogicalX( event.m_x ) );
+		m_dragging_x  = ToLogicalX( dc.DeviceToLogicalX( event.m_x ) );
 		int x = m_dragging_x - 3;
-		int y = ToReelY( dc.DeviceToLogicalY( event.m_y ) );
+		int y = ToLogicalY( dc.DeviceToLogicalY( event.m_y ) );
 		//wxLogMessage("x %d : y %d", x, y);
 			
 		/*** Picking element closest to mouse click location ***/
@@ -879,8 +922,8 @@ void MusWindow::OnMouseLeftDown(wxMouseEvent &event)
 			wxClientDC dc( this );
 			InitDC( &dc );
 
-			int y = ToReelY( dc.DeviceToLogicalY( event.m_y ) );
-			int x  = ToReel( dc.DeviceToLogicalX( event.m_x ) );
+			int y = ToLogicalY( dc.DeviceToLogicalY( event.m_y ) );
+			int x  = ToLogicalX( dc.DeviceToLogicalX( event.m_x ) );
 
 			MusElement *tmp = NULL;
 			if ( m_page->GetAtPos( y ) )
@@ -905,7 +948,7 @@ void MusWindow::OnMouseLeftDown(wxMouseEvent &event)
 			wxClientDC dc( this );
 			InitDC( &dc );
 
-			int y = ToReelY( dc.DeviceToLogicalY( event.m_y ) );
+			int y = ToLogicalY( dc.DeviceToLogicalY( event.m_y ) );
 			if ( m_page->GetAtPos( y ) )
 				m_currentStaff = m_page->GetAtPos( y );
 		}
@@ -923,8 +966,8 @@ void MusWindow::OnMouseMotion(wxMouseEvent &event)
 		m_has_been_dragged = true;
 		wxClientDC dc( this );
 		InitDC( &dc );
-		m_insertx = ToReel( dc.DeviceToLogicalX( event.m_x ) );
-		int y = ToReelY( dc.DeviceToLogicalY( event.m_y ) ) - m_dragging_y_offset;
+		m_insertx = ToLogicalX( dc.DeviceToLogicalX( event.m_x ) );
+		int y = ToLogicalY( dc.DeviceToLogicalY( event.m_y ) ) - m_dragging_y_offset;
 		
 		if ( m_editElement )
 		{
@@ -1768,16 +1811,11 @@ void MusWindow::OnChar(wxKeyEvent &event)
     }
 }
 
+
 void MusWindow::OnPaint(wxPaintEvent &event)
 {
 	if ( !m_page || !m_fh )
 		return;
-
-	// marge
-	//UpdateMargins( m_npage );
-
-	// dans fonction ruler
-	wxmax = m_page->lrg_lign*10;
 
 	// calculate scroll position
     int scrollX, scrollY;
@@ -1787,31 +1825,18 @@ void MusWindow::OnPaint(wxPaintEvent &event)
 	wxSize csize = GetClientSize();
     scrollX *= unitX;
     scrollY *= unitY;
-	winwxg = max(0, scrollX - (margeMorteHor - mrgG) );
-	winwyg = max(0, scrollY - margeMorteVer) ;
-	wxg = ToReel(winwxg);
-	wyg = ToReelY(winwyg);
-	wxd = min( ToReel( csize.GetWidth() ), wxmax );
-	wyd = min( ToReel( csize.GetHeight() ), wymax );
-	drawRect.x = wxg;
-	drawRect.width = wxd;
-	drawRect.y = wyg;
-	drawRect.height = - wyd;
-	//wxLogDebug("x=%d y=%d right=%d bottom=%d", drawRect.x, drawRect.y, drawRect.GetRight(), drawRect.GetBottom());
-	//wxLogDebug("x=%d y=%d width=%d height=%d", drawRect.x, drawRect.y, drawRect.width, drawRect.height);
-
-	//mrgG = 0;
+    
 	wxPaintDC dc( this );
-	
-	if ( m_center )
-		dc.SetLogicalOrigin( - (margeMorteHor - mrgG), -margeMorteVer );
-	else
-		dc.SetLogicalOrigin( mrgG, 5 );
-
+    //if ( m_center )
+	//	dc.SetLogicalOrigin( - (margeMorteHor - mrgG), -margeMorteVer );
+	//else
+		dc.SetLogicalOrigin( - MUS_BORDER_AROUND_PAGE / 2, - MUS_BORDER_AROUND_PAGE / 2);
+    
 	this->PrepareDC( dc );
 	dc.SetTextForeground( *wxBLACK );
 	dc.SetMapMode( wxMM_TEXT );
 	dc.SetAxisOrientation( true, false );
+    dc.SetUserScale( double(GetZoom())/100.0,  double(GetZoom())/100.0 );
 	
 	m_page->Init( this );
     AxWxDC ax_dc( &dc );
@@ -1825,8 +1850,8 @@ void MusWindow::OnPaint(wxPaintEvent &event)
 
 	// hitting return in keyboard entry mode sends us here for some reason
 	
-	if (!m_editElement && m_newElement && m_currentStaff) {
-		m_currentColour = AxRED;
+	//if (!m_editElement && m_newElement && m_currentStaff) {
+	//	m_currentColour = AxRED;
 		//drawing code here
 		
 		//printf("staff y: %d\n", m_currentStaff->yrel);
@@ -1834,8 +1859,8 @@ void MusWindow::OnPaint(wxPaintEvent &event)
 	// TODO	this->rect_plein2(&dc, m_newElement->xrel+35, m_currentStaff->yrel-200, 
 	//					  m_newElement->xrel+40, m_currentStaff->yrel-40);
 		
-		m_currentColour = AxBLACK;
-	}
+	//	m_currentColour = AxBLACK;
+	//}
 }
 
 void MusWindow::OnSize(wxSizeEvent &event)

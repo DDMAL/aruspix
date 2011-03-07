@@ -594,7 +594,7 @@ void MusNeume::leg_line( AxDC *dc, int y_n, int y_p, int xn, unsigned int smalle
 		
 		for (i = 0; i < test; i++)
 		{
-			dc->DrawLine( m_r->ToZoom(xng) , m_r->ToZoomY ( yn ) , m_r->ToZoom(xnd) , m_r->ToZoomY ( yn ) );
+			dc->DrawLine( m_r->ToRendererX(xng) , m_r->ToRendererY ( yn ) , m_r->ToRendererX(xnd) , m_r->ToRendererY ( yn ) );
 			//m_r->h_line ( dc, xng, xnd, yn, m_r->_param.EpLignesPORTEE);
 			//yh =  toZoom(yn);
 			//MoveToEx (hdc, xng, yh, NULL);

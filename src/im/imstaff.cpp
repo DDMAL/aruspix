@@ -753,6 +753,7 @@ bool ImStaff::WriteMFC( wxString filename, int samplesCount, int period, int sam
 // height = hauteur de la portee
 // mask a une taille de STAFF_HEIGHT
 // modifier les valeur dans pos si STAFF_HEIGHT change !!!!
+// Crashes with 4 staff lines!
 void ImStaff::CalcMask( int height, int numstafflines, int mask[] ) 
 {
     int line[5] = {1,1,1,1,1};

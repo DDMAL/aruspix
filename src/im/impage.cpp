@@ -410,7 +410,7 @@ bool ImPage::Check( wxString infile, int max_size, int min_size, int index )
     // trick: both reduce and expand are > 1.0 when true because the fraction above is reverse
     if ( (expand > 1 ) || (reduce > 1) )
     {
-        /* USE THIS FROM 1.6.3 ON
+        /* USE THIS FROM 1.6.3 ON */
         m_optimization_resize_factor = (expand > reduce) ? 1.0 / expand : reduce;
     
         if (!m_progressDlg->SetOperation( _("Resizing image ...") ))
@@ -426,9 +426,10 @@ bool ImPage::Check( wxString infile, int max_size, int min_size, int index )
             return this->Terminate( ERR_CANCELED );
         
         SwapImages( &m_opImMain, &m_opImTmp1 );
-        */
+        
         
         /* THIS FOR 1.6.2 ONLY */
+        /*
         float resize_factor = (expand > reduce) ? 1.0 / expand : reduce;
 	   
         if (!m_progressDlg->SetOperation( _("Resizing image ...") ))
@@ -444,6 +445,7 @@ bool ImPage::Check( wxString infile, int max_size, int min_size, int index )
 	            return this->Terminate( ERR_CANCELED );
        
          SwapImages( &m_opImMain, &m_opImTmp1 );
+         */
         
     }
 

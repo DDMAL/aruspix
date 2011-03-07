@@ -158,10 +158,10 @@ public:
 					 staff, this->dimin, NEUME);
 		
 		//draw a line connecting the two now
-		wxPen pen( *(m_r->m_currentColour), m_r->ToZoom(2), wxSOLID);
+		wxPen pen( *(m_r->m_currentColour), m_r->ToRendererX(2), wxSOLID);
 		dc->SetPen( pen );
-		dc->DrawLine(m_r->ToZoom(this->xrel + 4), m_r->ToZoomY(ynn), 
-					 m_r->ToZoom(this->xrel + 4), m_r->ToZoomY(ynn2));
+		dc->DrawLine(m_r->ToRendererX(this->xrel + 4), m_r->ToRendererY(ynn), 
+					 m_r->ToRendererX(this->xrel + 4), m_r->ToRendererY(ynn2));
 		dc->SetPen(wxNullPen);
 	}
 	//override attach

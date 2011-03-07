@@ -77,6 +77,12 @@ public:
 	bool CanCopy() { return (m_currentElement != NULL); }
 	bool CanCut() { return (m_currentElement != NULL); }
 	bool CanPaste() { return (m_bufferElement != NULL); };
+    
+	// zoom
+	void Zoom( bool zoomIn );
+	bool CanZoom( bool zoomIn );
+	void SetZoom( int percent );
+    int GetZoom( ) { return 100 * m_zoomNum / m_zoomDen; };
 	
 	// undo
 	virtual void Load( AxUndoFile *undoPtr );
@@ -110,25 +116,6 @@ public:
      */
     
 public:
- 	
-	/** format max utile; en principe, celui de la feuille **/
-	/*
-    int wymax, wxmax;
-	int wxg, wxd, wyg, wyd;
-	int winwxg, winwyg;
-	float beamPenteMin, beamPenteMx;
-	int pageFormatHor, pageFormatVer;
-	int margeMorteHor, margeMorteVer;
-	int portNoIndent, portIndent;
-	wxRect drawRect;
-	int mrgG;
-	int discontinu;
-	int mesureNum, mesureDen;
-	float MesVal;
-	// static
-	static wxPoint point_[4];
-	static wxPoint bcoord[2*(PTCONTROL+1)];
-    */
 
 	/** indique si la page doit etre centree asi elle n'occupe pas toute la fenetre */
 	bool m_center;
@@ -150,6 +137,10 @@ public:
 	bool m_has_been_dragged;
 	MusToolPanel *m_toolpanel;
 	int m_lyricCursor;
+    
+    // zoom
+    int m_zoomNum;
+    int m_zoomDen;
 	
     static int s_flats[];
     static int s_sharps[];

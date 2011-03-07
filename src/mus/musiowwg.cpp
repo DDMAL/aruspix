@@ -725,6 +725,7 @@ bool MusWWGInput::ReadPage( MusPage *page )
 	Read( &page->noMasqueVar, 1 );
 	Read( &page->reserve, 1 );
 	Read( &page->defin, 1 );
+    page->defin = 16;
 	Read( &int32, 4 );
 	page->indent = wxINT32_SWAP_ON_BE( int32 );	
 	Read( &int32, 4 );

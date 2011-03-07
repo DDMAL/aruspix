@@ -242,6 +242,7 @@ void MusSymbol::Draw ( AxDC *dc, MusStaff *pportee)
 		m_r->m_currentColour = AxRED;
 
 
+    dc->StartGraphic( "symbol", wxString::Format("s_%d_%d", pportee->no, this->no) );
 	
 	int x = this->xrel + this->offset;
 	char valeurcod = 0;
@@ -312,6 +313,7 @@ void MusSymbol::Draw ( AxDC *dc, MusStaff *pportee)
 	if ( !m_r->m_eraseElement )
 		m_r->m_currentColour = AxBLACK;
 	
+    dc->EndGraphic();
 
 	return;
 }
@@ -434,15 +436,15 @@ void MusSymbol::afficheMesure ( AxDC *dc, MusStaff *staff)
 
 void MusSymbol::mesCercle ( AxDC *dc, int x, int yy, MusStaff *staff )
 {	
-	int y =  m_r->ToZoomY (yy - m_r->_interl[ staff->pTaille ] * 6);
-	int r = m_r->ToZoom( m_r->_interl[ staff->pTaille ]);
+	int y =  m_r->ToRendererY (yy - m_r->_interl[ staff->pTaille ] * 6);
+	int r = m_r->ToRendererX( m_r->_interl[ staff->pTaille ]);
 
-	int w = max( m_r->ToZoom(4), 2 );
+	int w = max( m_r->ToRendererX(4), 2 );
 
     dc->SetPen( m_r->m_currentColour, w, wxSOLID );
     dc->SetBrush( m_r->m_currentColour, wxTRANSPARENT );
 
-	dc->DrawCircle( m_r->ToZoom(x), y, r );
+	dc->DrawCircle( m_r->ToRendererX(x), y, r );
 
     dc->ResetPen();
     dc->ResetBrush();
@@ -454,14 +456,14 @@ void MusSymbol::demi_cercle ( AxDC *dc, int x, int yy, MusStaff *staff )
 	if ( !Check() )
 		return;	
 
-	int w = max( m_r->ToZoom(4), 2 );
+	int w = max( m_r->ToRendererX(4), 2 );
     dc->SetPen( m_r->m_currentColour, w, wxSOLID );
     dc->SetBrush( m_r->m_currentColour, wxTRANSPARENT );
 
-	int y =  m_r->ToZoomY (yy - m_r->_interl[ staff->pTaille ] * 5);
-	int r = m_r->ToZoom( m_r->_interl[ staff->pTaille ]);
+	int y =  m_r->ToRendererY (yy - m_r->_interl[ staff->pTaille ] * 5);
+	int r = m_r->ToRendererX( m_r->_interl[ staff->pTaille ]);
 
-	x = m_r->ToZoom (x);
+	x = m_r->ToRendererX (x);
 	x -= 3*r/3;
 
 	dc->DrawEllipticArc( x, y, 2*r, 2*r, 70, 290 );
@@ -478,14 +480,14 @@ void  MusSymbol::inv_d_cercle ( AxDC *dc, int x, int yy, MusStaff *staff )
 	if ( !Check() )
 		return;	
 
-	int w = max( m_r->ToZoom(4), 2 );
+	int w = max( m_r->ToRendererX(4), 2 );
     dc->SetPen( m_r->m_currentColour, w, wxSOLID );
     dc->SetBrush( m_r->m_currentColour, wxTRANSPARENT );
 
-	int y =  m_r->ToZoomY (yy - m_r->_interl[ staff->pTaille ] * 5);
-	int r = m_r->ToZoom( m_r->_interl[ staff->pTaille ] );
+	int y =  m_r->ToRendererY (yy - m_r->_interl[ staff->pTaille ] * 5);
+	int r = m_r->ToRendererX( m_r->_interl[ staff->pTaille ] );
 
-	x = m_r->ToZoom (x);
+	x = m_r->ToRendererX (x);
 	x -= 4*r/3;
 
 	dc->DrawEllipticArc( x, y, 2*r, 2*r, 250, 110 );
@@ -502,13 +504,13 @@ void MusSymbol::prol ( AxDC *dc, int x, int yy, MusStaff *staff )
 	if ( !Check() )
 		return;	
 
-	int y =  m_r->ToZoomY (yy - m_r->_interl[ staff->pTaille ] * 6);
-	int r = max( m_r->ToZoom(4), 2 );
+	int y =  m_r->ToRendererY (yy - m_r->_interl[ staff->pTaille ] * 6);
+	int r = max( m_r->ToRendererX(4), 2 );
 	
     dc->SetPen( m_r->m_currentColour, 1, wxSOLID );
     dc->SetBrush( m_r->m_currentColour, wxSOLID );
 
-	dc->DrawCircle( m_r->ToZoom(x) -r/2 , y, r );
+	dc->DrawCircle( m_r->ToRendererX(x) -r/2 , y, r );
 		
     dc->ResetPen();
     dc->ResetBrush();

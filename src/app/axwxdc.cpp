@@ -86,7 +86,13 @@ void AxWxDC::ResetBrush( )
 void AxWxDC::ResetPen( )
 {
     m_dc->SetPen( wxNullPen );
-}        
+} 
+
+void AxWxDC::SetLogicalOrigin( int x, int y ) 
+{
+    m_dc->SetLogicalOrigin( x, y );
+}
+       
 
 void AxWxDC::GetTextExtent( wxString& string, int *w, int *h )
 {
@@ -94,11 +100,22 @@ void AxWxDC::GetTextExtent( wxString& string, int *w, int *h )
 } 
 
 
+AxPoint AxWxDC::GetLogicalOrigin( ) 
+{
+    wxPoint origin = m_dc->GetLogicalOrigin();
+    return AxPoint(origin.x, origin.y );
+}
+
 // Drawing mething
         
 void AxWxDC::DrawCircle(int x, int y, int radius)
 {
     m_dc->DrawCircle( x, y, radius );
+}
+
+void AxWxDC::DrawEllipse(int x, int y, int width, int height)
+{
+    m_dc->DrawEllipse( x, y, width, height );
 }
         
 void AxWxDC::DrawEllipticArc(int x, int y, int width, int height, double start, double end)
@@ -120,10 +137,25 @@ void AxWxDC::DrawRectangle(int x, int y, int width, int height)
 {
     m_dc->DrawRectangle( x, y, width, height );
 }
+
+void AxWxDC::DrawRoundedRectangle(int x, int y, int width, int height, double radius)
+{
+    m_dc->DrawRoundedRectangle( x, y, width, height, radius );
+}
         
 void AxWxDC::DrawText(const wxString& text, int x, int y)
 {
     m_dc->DrawText( text, x, y );
+}
+
+void AxWxDC::DrawMusicText(const wxString& text, int x, int y)
+{
+    m_dc->DrawText( text, x, y );
+}
+
+void AxWxDC::DrawRotatedText(const wxString& text, int x, int y, double angle)
+{
+    m_dc->DrawRotatedText( text, x, y, angle );
 }
 
 void AxWxDC::DrawSpline(int n, AxPoint points[])
