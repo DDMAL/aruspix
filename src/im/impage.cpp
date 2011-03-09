@@ -1095,6 +1095,16 @@ bool ImPage::FindStaves( int min, int max, bool normalize, bool crop )
 		SwapImages( &m_img0, &m_opImMap );
 		if ( m_isModified ) 
 			*m_isModified = true;
+            
+        this->m_size = wxSize( m_img0->width, m_img0->height );
+        x1 = 0;
+        x2 = m_img0->width - 1;
+        this->m_x1 = x1;
+		this->m_x2 = x2;
+        y1 = 0;
+        y2 = m_img0->height -1;
+        this->m_y1 = m_img0->height -1 - y2;
+
 	}
 	
 	//wxString staves_file = m_path + "staves.tif";
