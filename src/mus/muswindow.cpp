@@ -424,6 +424,8 @@ void MusWindow::SetInsertMode( bool mode )
 //	if (mode) printf("Insert mode!\n"); else printf("Edit mode!\n");
 	if ( m_editElement == !mode )
 		return; // nothing to change
+	
+	
 
 	wxKeyEvent kevent;
     kevent.SetEventType( wxEVT_KEY_DOWN );
@@ -438,7 +440,7 @@ void MusWindow::SetToolType( int type )
     int value = '0';
     switch ( type )
     {
-    case (MUS_TOOLS_NOTES): value = 'M'; break; // I changed this to 'M' so 'N' can be used by neumes
+    case (MUS_TOOLS_NOTES): value = 'N'; break;
     case (MUS_TOOLS_CLEFS): value = 'C'; break;
     case (MUS_TOOLS_PROPORTIONS): value = 'P'; break;
     case (MUS_TOOLS_OTHER): value = 'S'; break;
@@ -456,6 +458,14 @@ void MusWindow::SetToolType( int type )
     kevent.m_keyCode = value;
     kevent.m_controlDown = true;
     this->ProcessEvent( kevent );
+}
+
+void MusWindow::UpdatePen() {
+	if ( m_editElement ) {
+		this->SetCursor( wxCURSOR_ARROW );
+	} else {
+		this->SetCursor( wxCURSOR_PENCIL );
+	}
 }
 
 int MusWindow::GetToolType()
@@ -1415,25 +1425,31 @@ void MusWindow::OnKeyDown(wxKeyEvent &event)
 	}
 	else /*** Note insertion mode ***/
 	{
-		if ( event.m_controlDown && (event.m_keyCode == 'M')) // change set (note, rests, key, signs, symbols, ....
+		bool mensural = (m_notation_mode == MUS_MENSURAL_MODE);
+		if ( event.m_controlDown && (event.m_keyCode == 'N') && mensural) {// change set (note, rests, key, signs, symbols, ....
 			m_newElement = &m_note;	
-		else if ( event.m_controlDown && (event.m_keyCode == 'N')) {
+			UpdatePen();
+		} else if ( event.m_controlDown && (event.m_keyCode == 'N') && !mensural) {
 			m_newElement = &m_neume;
+			UpdatePen();
 		}
 		else if ( event.m_controlDown && (event.m_keyCode == 'C')) // clefs
 		{	
 			m_symbol.ResetToClef();
-			m_newElement = &m_symbol ;	
+			m_newElement = &m_symbol;
+			UpdatePen();
 		}	
 		else if ( event.m_controlDown && (event.m_keyCode == 'P')) // proportions
 		{	
-			m_symbol.ResetToProportion() ;
-			m_newElement = &m_symbol ;	
+			m_symbol.ResetToProportion();
+			m_newElement = &m_symbol;
+			UpdatePen();
 		}	
 		else if ( event.m_controlDown && (event.m_keyCode == 'S')) // symbols
 		{
-			m_symbol.ResetToSymbol() ;
-			m_newElement = &m_symbol ;	
+			m_symbol.ResetToSymbol();
+			m_newElement = &m_symbol;
+			UpdatePen();
 		}	
 		else if ( m_newElement && m_newElement->IsNote() &&
 			(in( noteKeyCode, 0, 7 ) || (noteKeyCode == CUSTOS))) // change duree sur une note ou un silence

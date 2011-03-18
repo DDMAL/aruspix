@@ -103,6 +103,7 @@ public:
 	// get the current tool
 	int GetToolType( );
 	void SetToolType( int type );
+	void UpdatePen();
 			
 	void SetInsertMode( bool insert );
     
