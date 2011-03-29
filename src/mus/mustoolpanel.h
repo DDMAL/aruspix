@@ -26,8 +26,7 @@
 #define MUS_TOOLS_OTHER 3
 // neumes
 #define NEUME_TOOLS_NOTES 4
-#define NEUME_TOOLS_CLEFS 5
-#define NEUME_TOOLS_OTHER 6
+#define NEUME_TOOLS_SYMBOLS 5
 // cmn
 // TODO
 
@@ -53,7 +52,6 @@ enum {
     ID_MS_BT_SYMBOLS,
     // tools for neumatic notation
     ID_MS_BT_NEUMES,
-    ID_MS_BT_CLEFS_NEUMES,
     ID_MS_BT_SYMBOLS_NEUMES,
     // tools for cmn notation
     /*
@@ -142,11 +140,23 @@ enum {
     ID_NU_BT_N3,
     ID_NU_BT_N4,
     ID_NU_BT_N5,
+	// Note symbols
+	ID_NU_BT_N_HE,
+	ID_NU_BT_N_VE,
+	ID_NU_BT_N_DOT,
     
     // Neume clefs
     ID_NU_BT_C0,
     ID_NU_BT_C1,
-
+	ID_NU_BT_COMMA,
+	ID_NU_BT_FLAT,
+	ID_NU_BT_SHARP,
+	ID_NU_BT_CUSTOS,
+	ID_NU_BT_DIV_FINAL,
+	ID_NU_BT_DIV_MAJOR,
+	ID_NU_BT_DIV_MINOR,
+	ID_NU_BT_DIV_SMALL,
+	
     ID_MS_BT_LAST // Used for RANGE EVT IDS
 };
 

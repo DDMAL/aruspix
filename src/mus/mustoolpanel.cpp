@@ -87,9 +87,7 @@ void MusToolRow::UpdateTools( int type, int notation_mode )
         AddSeparator();   
         //AddSeparator();       
         AddTool(ID_MS_BT_NEUMES, wxT("Neumes"), MusToolPanel::GetToolbarBitmap( "tool_neumes.png" ), "", wxITEM_CHECK);
-        AddTool(ID_MS_BT_CLEFS_NEUMES, wxT("Clefs"), MusToolPanel::GetToolbarBitmap( "clef_neume_c.png" ), "", wxITEM_CHECK);
-        AddTool(ID_MS_BT_SYMBOLS_NEUMES, wxT("Varia"), MusToolPanel::GetToolbarBitmap( "missing.png" ), "", wxITEM_CHECK);
-        //AddTool(ID_MS_BT_TEXT, wxT("Text"), MusToolPanel::GetToolbarBitmap( "tool_text.png" ), "", wxITEM_CHECK);
+        AddTool(ID_MS_BT_SYMBOLS_NEUMES, wxT("Symbols"), MusToolPanel::GetToolbarBitmap( "clef_neume_c.png" ), "", wxITEM_CHECK);
         AddSeparator(); 
         break;
     case (MUS_CMN_MODE):
@@ -202,14 +200,22 @@ void MusToolRow::UpdateTools( int type, int notation_mode )
         AddTool(ID_NU_BT_N3, "", MusToolPanel::GetToolbarBitmap( "neume_punctum_up.png" ));
         AddTool(ID_NU_BT_N4, "", MusToolPanel::GetToolbarBitmap( "neume_quilisma.png" ));
         AddTool(ID_NU_BT_N5, "", MusToolPanel::GetToolbarBitmap( "neume_virga.png" ));
+		AddSeparator();
+		AddTool(ID_NU_BT_N_HE, "", MusToolPanel::GetToolbarBitmap( "neume_he.png" ));
+		AddTool(ID_NU_BT_N_VE, "", MusToolPanel::GetToolbarBitmap( "neume_ve.png" ));
+		AddTool(ID_NU_BT_N_DOT, "", MusToolPanel::GetToolbarBitmap( "neume_dot.png" ));
         break;
-	case (NEUME_TOOLS_CLEFS):
+	case (NEUME_TOOLS_SYMBOLS):
         AddTool(ID_NU_BT_C0, "", MusToolPanel::GetToolbarBitmap( "clef_neume_c.png" ));
         AddTool(ID_NU_BT_C1, "", MusToolPanel::GetToolbarBitmap( "clef_neume_f.png" ));
-        break;
-	case (NEUME_TOOLS_OTHER):
-        //AddTool(ID_MS_BT_MTP, "", MusToolPanel::GetToolbarBitmap( "symb_mtp.png" ));
-        // add more...
+		AddTool(ID_NU_BT_COMMA, "", MusToolPanel::GetToolbarBitmap( "symb_neume_comma.png" ));
+		AddTool(ID_NU_BT_FLAT, "", MusToolPanel::GetToolbarBitmap( "symb_neume_flat.png" ));
+		AddTool(ID_NU_BT_SHARP, "", MusToolPanel::GetToolbarBitmap( "symb_neume_sharp.png" ));
+		AddTool(ID_NU_BT_CUSTOS, "", MusToolPanel::GetToolbarBitmap( "symb_neume_custos.png" ));
+		AddTool(ID_NU_BT_DIV_FINAL, "", MusToolPanel::GetToolbarBitmap( "symb_neume_div_final.png" ));
+		AddTool(ID_NU_BT_DIV_MAJOR, "", MusToolPanel::GetToolbarBitmap( "symb_neume_div_major.png" ));
+		AddTool(ID_NU_BT_DIV_MINOR, "", MusToolPanel::GetToolbarBitmap( "symb_neume_div_minor.png" ));
+		AddTool(ID_NU_BT_DIV_SMALL, "", MusToolPanel::GetToolbarBitmap( "symb_neume_div_small.png" ));
         break;
     }
     //AddSpacer(10000); // fill in the space, arbitrary value
@@ -286,10 +292,8 @@ void MusToolPanel::OnUpdateUI( wxUpdateUIEvent &event )
     // neumatic notation
     } else if (id == ID_MS_BT_NEUMES) {
         event.Check( m_current_tools == NEUME_TOOLS_NOTES);
-    } else if (id == ID_MS_BT_CLEFS_NEUMES) {
-        event.Check( m_current_tools == NEUME_TOOLS_CLEFS);
     } else if (id == ID_MS_BT_SYMBOLS_NEUMES) {
-        event.Check( m_current_tools == NEUME_TOOLS_OTHER);
+        event.Check( m_current_tools == NEUME_TOOLS_SYMBOLS);
     }
 }
 
@@ -338,8 +342,7 @@ void MusToolPanel::OnChangeTool( wxCommandEvent &event )
     case (ID_MS_BT_SYMBOLS): value = MUS_TOOLS_OTHER; break;
     // neumes
 	case (ID_MS_BT_NEUMES): value = NEUME_TOOLS_NOTES; break;
-	case (ID_MS_BT_CLEFS_NEUMES): value = NEUME_TOOLS_CLEFS; break;
-	case (ID_MS_BT_SYMBOLS_NEUMES): value = NEUME_TOOLS_OTHER; break;
+	case (ID_MS_BT_SYMBOLS_NEUMES): value = NEUME_TOOLS_SYMBOLS; break;
     }
 
 	m_w->SetInsertMode( true );
