@@ -645,7 +645,7 @@
 			mainGroup = A58508B20A001129006E82B1;
 			productRefGroup = A58508C20A00113C006E82B1 /* Products */;
 			projectDirPath = "";
-			projectRoot = "$(ARUSPIX)/../";
+			projectRoot = ../;
 			targets = (
 				A58508C00A00113C006E82B1 /* Aruspix */,
 				A1A6E17A134254220024A821 /* ax_test */,
@@ -681,7 +681,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "RESOURCES=$BUILT_PRODUCTS_DIR/$TARGET_NAME.app/Contents/Resources/\nif [ ! -d $RESOURCES/en ]; then\n\tcp -rf $ARUSPIX/local/* $BUILT_PRODUCTS_DIR/$TARGET_NAME.app/Contents/Resources/\nfi\nif [ ! -d $RESOURCES/Aruspix.localized ]; then\n\tcp -rf $ARUSPIX/data/* $BUILT_PRODUCTS_DIR/$TARGET_NAME.app/Contents/Resources/\nfi\n\nif [ $BUILD_STYLE = \"Debug\" -o $BUILD_STYLE = \"DebugDyn\" ]\nthen\n\t#echo \"dummy script...\"\n     cp -rf $ARUSPIX/bin/Debug/decoderd $BUILT_PRODUCTS_DIR/$TARGET_NAME.app/Contents/MacOS/;\n\tcp -rf $ARUSPIX/bin/Debug/ngramd $BUILT_PRODUCTS_DIR/$TARGET_NAME.app/Contents/MacOS/;\n\tcp -rf $ARUSPIX/bin/Debug/adaptd $BUILT_PRODUCTS_DIR/$TARGET_NAME.app/Contents/MacOS/;\nelse\n\tcp -rf $ARUSPIX/bin/Release/decoder $BUILT_PRODUCTS_DIR/$TARGET_NAME.app/Contents/MacOS/;\n\tcp -rf $ARUSPIX/bin/Release/ngram $BUILT_PRODUCTS_DIR/$TARGET_NAME.app/Contents/MacOS/;\n\tcp -rf $ARUSPIX/bin/Release/adapt $BUILT_PRODUCTS_DIR/$TARGET_NAME.app/Contents/MacOS/;\n\t# prepare installer\n\t# not sure that this is still required with XCode 3 (apply recommendation for the permission seems to do it)\n\tcp -rf $ARUSPIX/osx/install_root $ARUSPIX/bin;\n\tcp -rf $ARUSPIX/bin/Release/$TARGET_NAME.app $ARUSPIX/bin/install_root/Applications/;\n\tchmod -R g+rwX $ARUSPIX/bin/install_root/\n\tchmod -R o+rX $ARUSPIX/bin/install_root/\n\tchmod 1775 $ARUSPIX/bin/install_root/Library\n\t# chgrp -R admin $ARUSPIX/bin/install_root/\n\t# commented it as it requires sudo password to be typed in the shell before building\n\t# sudo chown -R root $ARUSPIX/bin/install_root/\nfi\n";
+			shellScript = "RESOURCES=$BUILT_PRODUCTS_DIR/$TARGET_NAME.app/Contents/Resources/\nARUSPIX=$PROJECT_DIR/..\n\nif [ ! -d $RESOURCES/en ]; then\n\tcp -rf $ARUSPIX/local/* $BUILT_PRODUCTS_DIR/$TARGET_NAME.app/Contents/Resources/\nfi\nif [ ! -d $RESOURCES/Aruspix.localized ]; then\n\tcp -rf $ARUSPIX/data/* $BUILT_PRODUCTS_DIR/$TARGET_NAME.app/Contents/Resources/\nfi\n\nif [ $BUILD_STYLE = \"Debug\" -o $BUILD_STYLE = \"DebugDyn\" ]\nthen\n    names=\"decoderd ngramd adaptd\"\nelse\n    names=\"decoder ngram adapt\"\nfi\n\nfor n in $names\ndo\n\tcp -rf $BUILT_PRODUCTS_DIR/$n $BUILT_PRODUCTS_DIR/$TARGET_NAME.app/Contents/MacOS/;\ndone\n\n# XXX: Need to re-do this for release build\n# prepare installer\n# not sure that this is still required with XCode 3 (apply recommendation for the permission seems to do it)\n#cp -rf $ARUSPIX/osx/install_root $ARUSPIX/bin;\n#cp -rf $ARUSPIX/bin/Release/$TARGET_NAME.app $ARUSPIX/bin/install_root/Applications/;\n#chmod -R g+rwX $ARUSPIX/bin/install_root/\n#chmod -R o+rX $ARUSPIX/bin/install_root/\n#chmod 1775 $ARUSPIX/bin/install_root/Library\n# chgrp -R admin $ARUSPIX/bin/install_root/\n# commented it as it requires sudo password to be typed in the shell before building\n# sudo chown -R root $ARUSPIX/bin/install_root/";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -798,9 +798,9 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				COPY_PHASE_STRIP = NO;
-				OBJROOT = "$(ARUSPIX)/obj";
+				OBJROOT = "$(PROJECT_DIR)/../obj";
 				SDKROOT = /Developer/SDKs/MacOSX10.5.sdk;
-				SYMROOT = "$(ARUSPIX)/bin";
+				SYMROOT = "$(PROJECT_DIR)/../bin";
 			};
 			name = DebugDyn;
 		};
@@ -822,7 +822,7 @@
 				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/Carbon.framework/Headers/Carbon.h";
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				HEADER_SEARCH_PATHS = (
-					"$(ARUSPIX)/src",
+					../src,
 					"$(ARUSPIX_IMLIB)/include",
 					"$(ARUSPIX_WX)/osx-static-debug/lib/wx/include/mac-ansi-debug-static-2.8",
 					"$(ARUSPIX_WX)/include",
@@ -834,7 +834,7 @@
 					"$(ARUSPIX_IMLIB)/lib",
 					"$(ARUSPIX_WX)/osx-debug/lib",
 				);
-				OBJROOT = "$(ARUSPIX)/obj";
+				OBJROOT = "$(PROJECT_DIR)/../obj";
 				OTHER_CFLAGS = (
 					"-D__WXDEBUG__",
 					"-D__WXMAC__",
@@ -879,7 +879,7 @@
 				SECTORDER_FLAGS = "";
 				STRIP_INSTALLED_PRODUCT = NO;
 				STRIP_STYLE = debugging;
-				SYMROOT = "$(ARUSPIX)/bin";
+				SYMROOT = "$(PROJECT_DIR)/../bin";
 				WARNING_CFLAGS = (
 					"-Wmost",
 					"-Wno-four-char-constants",
@@ -990,14 +990,13 @@
 					"$(ARUSPIX_TORCH)/include",
 				);
 				LIBRARY_SEARCH_PATHS = (
-					"$(ARUSPIX)/libs",
 					"$(ARUSPIX_TORCH)/lib",
 					"$(ARUSPIX_IMLIB)/lib",
 					"$(ARUSPIX_WX)/osx-static-debug/lib",
 				);
-				OBJROOT = "$(ARUSPIX)/obj";
+				OBJROOT = "$(PROJECT_DIR)/../obj";
 				SDKROOT = /Developer/SDKs/MacOSX10.5.sdk;
-				SYMROOT = "$(ARUSPIX)/bin";
+				SYMROOT = "$(PROJECT_DIR)/../bin";
 			};
 			name = Debug;
 		};
@@ -1005,9 +1004,9 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				COPY_PHASE_STRIP = YES;
-				OBJROOT = "$(ARUSPIX)/obj";
+				OBJROOT = "$(PROJECT_DIR)/../obj";
 				SDKROOT = /Developer/SDKs/MacOSX10.5.sdk;
-				SYMROOT = "$(ARUSPIX)/bin";
+				SYMROOT = "$(PROJECT_DIR)/../bin";
 			};
 			name = Release;
 		};
@@ -1030,7 +1029,7 @@
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				GCC_VERSION = 4.0;
 				HEADER_SEARCH_PATHS = (
-					"$(ARUSPIX)/src",
+					../src,
 					"$(ARUSPIX_IMLIB)/include",
 					"$(ARUSPIX_WX)/osx-static-debug/lib/wx/include/mac-ansi-debug-static-2.8",
 					"$(ARUSPIX_WX)/include",
@@ -1044,7 +1043,7 @@
 					"$(ARUSPIX_WX)/osx-static-debug/lib",
 					/usr/lib,
 				);
-				OBJROOT = "$(ARUSPIX)/obj";
+				OBJROOT = "$(PROJECT_DIR)/../obj";
 				OTHER_CFLAGS = (
 					"-D__MACOSX_CORE__",
 					"-D__WXDEBUG__",
@@ -1101,7 +1100,7 @@
 				SECTORDER_FLAGS = "";
 				STRIP_INSTALLED_PRODUCT = NO;
 				STRIP_STYLE = debugging;
-				SYMROOT = "$(ARUSPIX)/bin";
+				SYMROOT = "$(PROJECT_DIR)/../bin";
 				WARNING_CFLAGS = (
 					"-Wmost",
 					"-Wno-four-char-constants",
@@ -1133,7 +1132,7 @@
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				GCC_VERSION = 4.0;
 				HEADER_SEARCH_PATHS = (
-					"$(ARUSPIX)/src",
+					../src,
 					"$(ARUSPIX_IMLIB)/include",
 					"$(ARUSPIX_WX)/osx-static/lib/wx/include/mac-ansi-release-static-2.8",
 					"$(ARUSPIX_WX)/include",
@@ -1147,7 +1146,7 @@
 					"$(ARUSPIX_WX)/osx-static/lib",
 					/usr/lib,
 				);
-				OBJROOT = "$(ARUSPIX)/obj";
+				OBJROOT = "$(PROJECT_DIR)/../obj";
 				OTHER_CFLAGS = (
 					"-D__MACOSX_CORE__",
 					"-D__WXMAC__",
@@ -1200,7 +1199,7 @@
 				PRODUCT_NAME = Aruspix;
 				SDKROOT = /Developer/SDKs/MacOSX10.5.sdk;
 				SECTORDER_FLAGS = "";
-				SYMROOT = "$(ARUSPIX)/bin";
+				SYMROOT = "$(PROJECT_DIR)/../bin";
 				WARNING_CFLAGS = (
 					"-Wmost",
 					"-Wno-four-char-constants",
