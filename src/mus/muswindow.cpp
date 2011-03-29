@@ -445,8 +445,7 @@ void MusWindow::SetToolType( int type )
     case (MUS_TOOLS_PROPORTIONS): value = 'P'; break;
     case (MUS_TOOLS_OTHER): value = 'S'; break;
 	case (NEUME_TOOLS_NOTES): value = 'N'; break;
-	case (NEUME_TOOLS_CLEFS): value = 'C'; break;
-	case (NEUME_TOOLS_OTHER): value = 'S'; break;
+	case (NEUME_TOOLS_SYMBOLS): value = 'S'; break;
 	}
         
 	//we go to the EVT_KEY_DOWN event here... (MusWindow::OnKeyDown)
@@ -500,10 +499,7 @@ int MusWindow::GetToolType()
     else if (m_notation_mode == MUS_NEUMATIC_MODE) {
         if ( sync->IsSymbol() )
         {
-            if ( ((MusSymbol*)sync)->flag == CLE )
-                return NEUME_TOOLS_CLEFS;
-            else 
-                return NEUME_TOOLS_OTHER;
+                return NEUME_TOOLS_SYMBOLS;
         } 
         else if (sync->IsNeume() )
         {
@@ -878,10 +874,10 @@ void MusWindow::OnMouseLeftDown(wxMouseEvent &event)
 		MusElement *noteElement = noteStaff->GetAtPos( x );				
 
 		// If we select a new item and the last item was a neume, close it
-		if (m_currentElement && m_currentElement->IsNeume()) {
-			MusNeume *temp = (MusNeume*)m_currentElement;
-			temp->SetClosed(true);
-		}
+		//if (m_currentElement && m_currentElement->IsNeume()) {
+		//	MusNeume *temp = (MusNeume*)m_currentElement;
+		//	temp->SetClosed(true);
+		//}
         
 		m_lyricMode = false;
 		m_inputLyric = false;
@@ -1090,7 +1086,7 @@ void MusWindow::OnKeyDown(wxKeyEvent &event)
 				else if ( m_currentElement->IsNeume() )
 				{
 					MusNeume *temp = (MusNeume*)m_currentElement;
-					temp->SetClosed(true);
+					//temp->SetClosed(true);
 					m_newElement = &m_neume;
 				}
                 // TODO for cursor
@@ -1198,8 +1194,7 @@ void MusWindow::OnKeyDown(wxKeyEvent &event)
         else if (event.m_keyCode == 'O' && m_currentElement && m_currentElement->IsNeume()) {
             PrepareCheckPoint( UNDO_PART, MUS_UNDO_STAFF );
             MusNeume *temp = (MusNeume*)m_currentElement;
-            temp->SetClosed(!temp->closed);
-            printf("Setting closed: %d\n", temp->IsClosed());
+            //temp->SetClosed(!temp->closed);
             CheckPoint( UNDO_PART, MUS_UNDO_STAFF );
             OnEndEdition();
         }
@@ -1209,14 +1204,14 @@ void MusWindow::OnKeyDown(wxKeyEvent &event)
             MusNeume *temp = (MusNeume*)m_currentElement;
             PrepareCheckPoint( UNDO_PART, MUS_UNDO_STAFF );
             const int MAX_VALUES = 6; // number of neume heads
-            temp->SetValue((temp->GetValue() + 1) % 
-                           MAX_VALUES, m_currentStaff, 0);
+            //temp->SetValue((temp->GetValue() + 1) % 
+            //               MAX_VALUES, m_currentStaff, 0);
             CheckPoint( UNDO_PART, MUS_UNDO_STAFF );
             OnEndEdition();
         }
         else if (event.m_keyCode == 'N' && m_currentElement) {
             PrepareCheckPoint( UNDO_PART, MUS_UNDO_STAFF );
-            ((MusNeume *)m_currentElement)->InsertPitchAfterSelected();
+            //((MusNeume *)m_currentElement)->InsertPitchAfterSelected();
             CheckPoint( UNDO_PART, MUS_UNDO_STAFF );
             OnEndEdition();
         }
@@ -1350,50 +1345,50 @@ void MusWindow::OnKeyDown(wxKeyEvent &event)
 		{	
 			if ( event.GetKeyCode() == WXK_RIGHT || event.GetKeyCode() == WXK_SPACE ) 
 			{
-                if (m_currentElement && m_currentElement->IsNeume() && !((MusNeume *)m_currentElement)->IsClosed()) {
-                    ((MusNeume *)m_currentElement)->SelectNextPunctum();
-                } else if ( m_currentStaff->GetNext( m_currentElement )) {
-					m_currentElement = m_currentStaff->GetNext( m_currentElement );
-				}
-				else if ( m_page->GetNext( m_currentStaff ) )
-				{
-					m_currentStaff = m_page->GetNext( m_currentStaff );
-					m_currentElement = m_currentStaff->GetFirst();
-				}
+                //if (m_currentElement && m_currentElement->IsNeume() && !((MusNeume *)m_currentElement)->IsClosed()) {
+                //    ((MusNeume *)m_currentElement)->SelectNextPunctum();
+                //} else if ( m_currentStaff->GetNext( m_currentElement )) {
+				//	m_currentElement = m_currentStaff->GetNext( m_currentElement );
+				//}
+				//else if ( m_page->GetNext( m_currentStaff ) )
+				//{
+				//	m_currentStaff = m_page->GetNext( m_currentStaff );
+				//	m_currentElement = m_currentStaff->GetFirst();
+				//}
 				UpdateScroll();
 			}
 			else if ( event.GetKeyCode() == WXK_LEFT )
 			{
-                if (m_currentElement && m_currentElement->IsNeume() && !((MusNeume *)m_currentElement)->IsClosed()) {
-                    ((MusNeume *)m_currentElement)->SelectPreviousPunctum();
-                } else if ( m_currentStaff->GetPrevious( m_currentElement )) {
+                //if (m_currentElement && m_currentElement->IsNeume() && !((MusNeume *)m_currentElement)->IsClosed()) {
+                //    ((MusNeume *)m_currentElement)->SelectPreviousPunctum();
+                //} else if ( m_currentStaff->GetPrevious( m_currentElement )) {
 					m_currentElement = m_currentStaff->GetPrevious( m_currentElement );
-				}
-				else if ( m_page->GetPrevious( m_currentStaff ) )
-				{
-					m_currentStaff = m_page->GetPrevious( m_currentStaff );
-					m_currentElement = m_currentStaff->GetLast();
-				}
+				//}
+				//else if ( m_page->GetPrevious( m_currentStaff ) )
+				//{
+				//	m_currentStaff = m_page->GetPrevious( m_currentStaff );
+				//	m_currentElement = m_currentStaff->GetLast();
+				//}
 				UpdateScroll();
 			}
 			else if ( event.GetKeyCode() == WXK_UP )
 			{
-                if (m_currentElement && m_currentElement->IsNeume()) {
-                    ((MusNeume *)m_currentElement)->SetClosed(true);
-                } else if ( m_page->GetPrevious( m_currentStaff ) )
-				{
-					int x = 0;
-					if ( m_currentElement )
-						x = m_currentElement->xrel;
-					m_currentStaff = m_page->GetPrevious( m_currentStaff );
-					m_currentElement = m_currentStaff->GetAtPos(x);
-					UpdateScroll();
-				}
+                //if (m_currentElement && m_currentElement->IsNeume()) {
+                //    ((MusNeume *)m_currentElement)->SetClosed(true);
+                //} else if ( m_page->GetPrevious( m_currentStaff ) )
+				//{
+				//	int x = 0;
+				//	if ( m_currentElement )
+				//		x = m_currentElement->xrel;
+				//	m_currentStaff = m_page->GetPrevious( m_currentStaff );
+				//	m_currentElement = m_currentStaff->GetAtPos(x);
+				//	UpdateScroll();
+				//}
 			}
 			else if ( event.GetKeyCode() == WXK_DOWN )
 			{
                 if (m_currentElement && m_currentElement->IsNeume()) {
-                    ((MusNeume *)m_currentElement)->SetClosed(true);
+                    //((MusNeume *)m_currentElement)->SetClosed(true);
                 } else if ( m_page->GetNext( m_currentStaff ) )
 				{
 					int x = 0;
@@ -1407,14 +1402,14 @@ void MusWindow::OnKeyDown(wxKeyEvent &event)
 			else if ( event.GetKeyCode() == WXK_HOME ) 
 			{
                 if (m_currentElement && m_currentElement->IsNeume()) {
-                    ((MusNeume *)m_currentElement)->SetClosed(true);
+                    //((MusNeume *)m_currentElement)->SetClosed(true);
                 } else if ( m_currentStaff->GetFirst( ) )
 					m_currentElement = m_currentStaff->GetFirst( );
 			}
 			else if ( event.GetKeyCode() == WXK_END ) 
 			{
                 if (m_currentElement && m_currentElement->IsNeume()) {
-                    ((MusNeume *)m_currentElement)->SetClosed(true);
+                    //((MusNeume *)m_currentElement)->SetClosed(true);
                 } else if ( m_currentStaff->GetLast( ) )
 					m_currentElement = m_currentStaff->GetLast( );
 			}

@@ -1,13 +1,3 @@
-/*
- *  neumedef.h
- *  aruspix
- *
- *  Created by Chris Niven on 10/06/10.
- *	
- */
-// XXX: neumedeh.h seems to be globally included, can we reduce dependencies?
-
-/* Festa Dies A */
 
 #ifndef NEUMEDEF_H
 #define NEUMEDEF_H
@@ -31,7 +21,6 @@
 #define nPORRECT_3 'l'		// three steps down porrectus
 #define nPORRECT_4 'm'		// four steps down porrectus
 #define nNEXT_PITCH 't'		// end-of-line next pitch marker
-
 
 #define nVIRGA 5	// convenience - for use with SetValue(int) 
 
