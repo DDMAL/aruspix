@@ -414,11 +414,6 @@ void MusNeume::Draw( AxDC *dc, MusStaff *staff)
 	if ( !Check() )
 		return;	
 
-    // Draw the neume
-    // ...
-	
-	// following the example set by musnote...
-	
 	int oct = this->oct - 4; //? 
 	if (!m_r->m_eraseElement && (this == m_r->m_currentElement))
 		m_r->m_currentColour = AxRED;
@@ -431,13 +426,8 @@ void MusNeume::Draw( AxDC *dc, MusStaff *staff)
 	
 	//this stays the same for open and closed mode
 	this->dec_y = staff->y_note((int)this->code, staff->testcle( this->xrel ), oct);
-	//printf("In %s mode, dec_y is this: %d\n", this->IsClosed() ? "closed" : "open",
-	//	   this->dec_y);
 	
-	//printf("closed code value: %d\nclosed oct: %d\n", 
-	//	   (int)this->code, oct );
-	
-	if (this->IsClosed() == true) {
+	if (this->IsClosed()) {
 		this->DrawNeume( dc, staff );
 	} else {
 		this->DrawPunctums( dc, staff );
@@ -447,11 +437,9 @@ void MusNeume::Draw( AxDC *dc, MusStaff *staff)
 	return;
 }
 
+// Draw a box around the current 'open' neume
 void MusNeume::DrawBox( AxDC *dc, MusStaff *staff ) //revise
 {
-	// now it would be nice to see a red box around the group just to indicate 
-	// that we're in 'open editing' mode
-	
 	m_r->m_currentColour = AxRED;
 	
 	int x1, x2, y1, y2;
@@ -470,24 +458,13 @@ void MusNeume::DrawBox( AxDC *dc, MusStaff *staff ) //revise
 	// y2 requires lowest pitch
 	y2 = (ynn - PUNCT_PADDING) - abs(this->p_min * m_r->_espace[staff->pTaille]);
 	
-	// now get the range
-	//y2 = this->p_range * m_r->_espace[staff->pTaille] + PUNCT_PADDING;
-	//	//printf("Drawing box: x1: %d, y1: %d, x2: %d, y2: %d\n", x1, y1, x2, y2);
-	
-	//m_r->m_currentColour = wxWHITE; //??? to fix memory leak
-	//m_r->rect_plein2( dc, x1, y1, x2, y2);
 	m_r->m_currentColour = AxRED;
 	m_r->box( dc, x1, y1, x2, y2 );
-
 	
 	m_r->m_currentColour = AxBLACK;
-	
 }
 
-
-// this method is the same thing as DrawPunctums right now, but once 
-// multi-punctum neumes are supported this method will be very different
-
+// Draw an uninterrupted neume
 void MusNeume::DrawNeume( AxDC *dc, MusStaff *staff ) 
 {
 	// magic happens here
@@ -515,6 +492,7 @@ void MusNeume::DrawNeume( AxDC *dc, MusStaff *staff )
 	}
 }
 
+// Draw the interrupted neumes that a uneume is made up of
 void MusNeume::DrawPunctums( AxDC *dc, MusStaff *staff )
 {
 	// draw each individual punctum in the group, side by side for easy editing
@@ -522,11 +500,6 @@ void MusNeume::DrawPunctums( AxDC *dc, MusStaff *staff )
 	
 	int pTaille = staff->pTaille;
 	
-//	int b = this->dec_y;
-//	int up=0, i, valdec, fontNo, ledge, queueCentre;
-//	int x1, x2, y2, espac7, decval, vertical;
-//	int formval = 0;
-//	int rayon, milieu = 0;
 	int oct = this->oct - 4; //? 
 	int xn = this->xrel, xl = this->xrel;
 	int bby = staff->yrel - m_r->_portee[pTaille];  // bby= y sommet portee
@@ -565,41 +538,30 @@ void MusNeume::leg_line( AxDC *dc, int y_n, int y_p, int xn, unsigned int smalle
 	int dist, xng, xnd;
 	register int i;
 	
+	yh = y_p + m_r->_espace[pTaille];
+	yb = y_p- m_r->_portee[pTaille]- m_r->_espace[pTaille];
+	// printf("yh: %d, yb: %d, y_n: %d, y_p: %d\n", yh, yb, y_n, y_p);
 	
-	yh = y_p + m_r->_espace[pTaille]; yb = y_p- m_r->_portee[pTaille]- m_r->_espace[pTaille];
-	
-	if (!in(y_n,yh,yb))                           // note hors-portee?
+	if (!in(y_n,yh,yb)) // note hors-portee?
 	{
-		xng = xn + 8 - smaller; //xn gauche MAGIC NUMBERS YEAHHH
+		xng = xn + 8 - smaller; //xn gauche 
 		xnd = xn + smaller; //xn droite
-//		printf("xn = %d, xn gauche: %d, xn droigt: %d\n", xn, xng, xnd);
-//		printf("xrel = %d\n", this->xrel);
 		
 		dist = ((y_n > yh) ? (y_n - y_p) : y_p - m_r->_portee[pTaille] - y_n);
   		ynt = ((dist % m_r->_interl[pTaille] > 0) ? (dist - m_r->_espace[pTaille]) : dist);
 		test = ynt/ m_r->_interl[pTaille];
-		if (y_n > yh)
-		{	yn = ynt + y_p;
+		if (y_n > yh) {
+			yn = ynt + y_p;
 			v_decal = - m_r->_interl[pTaille];
-		}
-		else
+		} else {
 			yn = y_p - m_r->_portee[pTaille] - ynt;
-		
-		//hPen = (HPEN)SelectObject (hdc, CreatePen (PS_SOLID, _param.EpLignesPORTEE+1, workColor2));
-		//xng = toZoom(xng);
-		//xnd = toZoom(xnd);
+		}
 		
         dc->SetPen( m_r->m_currentColour, m_p->EpLignesPortee, wxSOLID );
         dc->SetBrush( m_r->m_currentColour , wxTRANSPARENT );
 		
-		for (i = 0; i < test; i++)
-		{
+		for (i = 0; i < test; i++) {
 			dc->DrawLine( m_r->ToRendererX(xng) , m_r->ToRendererY ( yn ) , m_r->ToRendererX(xnd) , m_r->ToRendererY ( yn ) );
-			//m_r->h_line ( dc, xng, xnd, yn, m_r->_param.EpLignesPORTEE);
-			//yh =  toZoom(yn);
-			//MoveToEx (hdc, xng, yh, NULL);
-			//LineTo (hdc, xnd, yh);
-			
 			yn += v_decal;
 		}
 		
