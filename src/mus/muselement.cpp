@@ -184,25 +184,6 @@ MusElement::~MusElement()
 	}
 }
 
-
-void MusElement::ClearElement( AxDC *dc, MusStaff *staff )
-{
-	wxASSERT_MSG( dc , "DC cannot be NULL");
-	if ( !Check() )
-		return;
-
-	m_r->m_currentColour = AxWHITE;
-	m_r->m_eraseElement = true;
-
-	this->Draw( dc, staff );
-	
-	m_r->m_eraseElement = false;
-	m_r->m_currentColour = AxBLACK;
-	
-	staff->DrawStaffLines( dc );
-}
-
-
 MusElement *MusElement::GetNext( MusStaff *staff )
 {
     if (((int)staff->m_elements.GetCount() <= this->no) || (this->no < 0)) {
@@ -210,33 +191,6 @@ MusElement *MusElement::GetNext( MusStaff *staff )
     }
     return &staff->m_elements[this->no+1];
 }
-
-
-/*
-wxClientDC *MusElement::InitAndClear( MusStaff *staff )
-{
-	if ( m_r || staff ) // effacement
-	{
-		wxClientDC *dc = new wxClientDC( m_r );
-		m_r->InitDC( dc );
-		this->ClearElement( dc, staff );
-		return dc;
-	}
-	else
-		return NULL;
-}
-*/
-
-/*
-void MusElement::DrawAndRelease( AxDC *dc, MusStaff *staff )
-{
-	if ( dc == NULL )
-		return;
-		
-	this->Draw( dc, staff );
-	delete dc;
-}
-*/
 
 int MusElement::filtrcod( int codElement, int *oct )
 {	

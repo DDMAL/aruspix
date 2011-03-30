@@ -38,12 +38,10 @@ public:
     virtual ~MusElement();		
 
 	// common method
-	void ClearElement( AxDC *dc, MusStaff *staff );
 	int  filtrcod( int codElement, int *oct );
 	bool IsNote() { return ( TYPE == NOTE ); }
 	bool IsSymbol() { return ( TYPE == SYMB ); }
-    bool IsNeume() { return ( TYPE == NEUME ); } // always crash here
-	wxClientDC *InitAndClear( MusStaff *staff ); // init dc and clear element only if necessary
+    bool IsNeume() { return ( TYPE == NEUME ); } 
     MusElement *GetNext( MusStaff *staff );
 
     //	virtual void SetPitch( int code, int oct, MusStaff *staff = NULL ) {};

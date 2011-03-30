@@ -857,9 +857,6 @@ void MusWindow::OnMouseLeftDown(wxMouseEvent &event)
 	{
 		wxClientDC dc( this );
 		InitDC( &dc );
-		
-		// TODO if ( m_currentElement &&  m_currentStaff ) 
-		// TODO 	m_currentElement->ClearElement( &dc, m_currentStaff );
 
 		m_has_been_dragged = false;
 		m_dragging_x  = ToLogicalX( dc.DeviceToLogicalX( event.m_x ) );

@@ -642,25 +642,6 @@ void MusStaff::DrawStaff( AxDC *dc, int i )
 
 }
 
-/*
-void MusStaff::ClearElements( AxDC *dc, MusElement *start )
-{
-	wxASSERT_MSG( dc , "DC cannot be NULL");
-	if ( !Check() )
-		return;
-
-	int j;
-	for(j = 0; j < (int)this->nblement; j++)
-	{
-		if (start && (start != &this->m_elements[j]))
-			continue;
-		else
-			start = NULL;
-		(&this->m_elements[j])->ClearElement( dc, this );
-	}
-}
-*/
-
 int MusStaff::y_note (int code, int dec_clef, int oct)
 {	static int touches[] = {F1,F2,F3,F4,F5,F6,F7,F8,F9,F10};
 	int y_int;
