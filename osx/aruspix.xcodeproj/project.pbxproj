@@ -71,14 +71,13 @@
 		57CA54260D34139D001FC334 /* axapp_wdr.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 57CA541F0D34139D001FC334 /* axapp_wdr.cpp */; };
 		57CA54270D34139D001FC334 /* axabout_wdr.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 57CA54210D34139D001FC334 /* axabout_wdr.cpp */; };
 		57EA3DE50C00BDEB00414247 /* recbookctrl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 57EA3DE30C00BDEB00414247 /* recbookctrl.cpp */; };
+		A125A6741342A4B30038F7BC /* musneume.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4DC24AB5119B72C900B2EF98 /* musneume.cpp */; };
+		A1A4B5D41343818B00897C5E /* muselement.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D3A8FD60D35867200BBC1FB /* muselement.cpp */; };
+		A1A4B5DD134381A200897C5E /* musobject.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D3A8FE10D35867200BBC1FB /* musobject.cpp */; };
 		A1A6E0D813422A7D0024A821 /* musneumesymbol.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A1A6E0D713422A7D0024A821 /* musneumesymbol.cpp */; };
 		A1A6E1851342549B0024A821 /* musneume_test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A1A6E1841342549B0024A821 /* musneume_test.cpp */; };
 		A1A6E189134254F00024A821 /* gtest_main.cc in Sources */ = {isa = PBXBuildFile; fileRef = A1A6E188134254F00024A821 /* gtest_main.cc */; };
 		A1A6E1A0134255390024A821 /* gtest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A1A6E174134253F40024A821 /* gtest.framework */; };
-		A1A6E1A1134255630024A821 /* musneume.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4DC24AB5119B72C900B2EF98 /* musneume.cpp */; };
-		A1A6E1EA1342602E0024A821 /* muselement.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D3A8FD60D35867200BBC1FB /* muselement.cpp */; };
-		A1A6E1ED134260410024A821 /* musstaff.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D3A8FE50D35867200BBC1FB /* musstaff.cpp */; };
-		A1A6E1F0134260670024A821 /* musobject.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D3A8FE10D35867200BBC1FB /* musobject.cpp */; };
 		A58524CE0A1B9604002D9D8A /* axapp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A58524560A1B9604002D9D8A /* axapp.cpp */; };
 		A58524CF0A1B9604002D9D8A /* axenv.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A58524580A1B9604002D9D8A /* axenv.cpp */; };
 		A58524D00A1B9604002D9D8A /* axframe.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A585245B0A1B9604002D9D8A /* axframe.cpp */; };
@@ -690,10 +689,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A1A6E1F0134260670024A821 /* musobject.cpp in Sources */,
-				A1A6E1ED134260410024A821 /* musstaff.cpp in Sources */,
-				A1A6E1EA1342602E0024A821 /* muselement.cpp in Sources */,
-				A1A6E1A1134255630024A821 /* musneume.cpp in Sources */,
+				A1A4B5DD134381A200897C5E /* musobject.cpp in Sources */,
+				A1A4B5D41343818B00897C5E /* muselement.cpp in Sources */,
+				A125A6741342A4B30038F7BC /* musneume.cpp in Sources */,
 				A1A6E1851342549B0024A821 /* musneume_test.cpp in Sources */,
 				A1A6E189134254F00024A821 /* gtest_main.cc in Sources */,
 			);
@@ -903,12 +901,15 @@
 				GCC_ENABLE_FIX_AND_CONTINUE = YES;
 				GCC_MODEL_TUNING = G5;
 				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
+				GCC_VERSION = 4.0;
 				HEADER_SEARCH_PATHS = (
 					../src,
 					"$(ARUSPIX_IMLIB)/include",
 					"$(ARUSPIX_WX)/osx-static-debug/lib/wx/include/mac-ansi-debug-static-2.8",
 					"$(ARUSPIX_WX)/include",
 					"$(ARUSPIX_WX)/contrib/include",
+					"/usr/include/libxml2/**",
 				);
 				INSTALL_PATH = /usr/local/bin;
 				LIBRARY_SEARCH_PATHS = (
@@ -928,6 +929,41 @@
 					"-DAX_COMPARISON",
 					"-DAX_RECOGNITION",
 					"-DNO_GCC_PRAGMA",
+				);
+				OTHER_LDFLAGS = (
+					"-framework",
+					CoreMidi,
+					"-framework",
+					CoreAudio,
+					"-framework",
+					CoreFoundation,
+					"-lz",
+					"-lpthread",
+					"-framework",
+					QuickTime,
+					"-framework",
+					IOKit,
+					"-framework",
+					Carbon,
+					"-framework",
+					Cocoa,
+					"-framework",
+					OpenGL,
+					"-framework",
+					System,
+					"-liconv",
+					"-lim_u",
+					"-lim_process_u",
+					"-lim_fftw_u",
+					"-lwx_macd_core-$(ARUSPIX_WX_VERSION)",
+					"-lwx_base_carbond-$(ARUSPIX_WX_VERSION)",
+					"-lwx_base_carbond_net-$(ARUSPIX_WX_VERSION)",
+					"-lwx_macd_html-$(ARUSPIX_WX_VERSION)",
+					"-lwx_macd_adv-$(ARUSPIX_WX_VERSION)",
+					"-lwx_macd_aui-$(ARUSPIX_WX_VERSION)",
+					"-lwxpngd-$(ARUSPIX_WX_VERSION)",
+					"-lwxjpegd-$(ARUSPIX_WX_VERSION)",
+					"-lxml2",
 				);
 				PREBINDING = NO;
 				PRODUCT_NAME = ax_test;
