@@ -742,48 +742,7 @@ void MusWindow::OnMouseDClick(wxMouseEvent &event)
 	}
 	if ( m_editElement )
 	{
-        // TODO for cursor
-		
-        // Switch to insertion mode, which means that m_newElement will point to something (see OnKeyDown)
-        // Get the x position for the cursor and use it for m_newElement (see m_insertx below in this method)
-        // Also make sure we get a current staff, but this should not be a problem because we get it in OnMouseLeftDown, I think
-        
 		SetInsertMode(true);
-		//get x position (for use later with drawing)
-		/*
-		if ( event.ButtonDClick( wxMOUSE_BTN_LEFT  ) && m_currentElement )
-		{
-			wxMenuBar *menubar = MusEditMenuFunc( );
-			wxMenu *menu = menubar->Remove( 0 );
-
-			int submenu_id = 0;
-			if ( m_currentElement->TYPE == SYMB )
-			{
-				MusSymbol *symbol = (MusSymbol*)m_currentElement;
-				if ( symbol->flag == CLE )
-					submenu_id = ID_MS_KEYS;
-				else if ( symbol->flag == IND_MES )
-					submenu_id = ID_MS_SIGNS;
-				else
-					submenu_id = ID_MS_SYMBOLES;
-			}
-			else
-			{
-				MusNote *note = (MusNote*)m_currentElement;
-				if ( note->sil != _SIL )
-					submenu_id = ID_MS_NOTES;
-				else
-					submenu_id = ID_MS_RESTS;
-			}
-			wxMenuItem *submenu = menu->Remove( submenu_id );
-			delete menu;
-			menu = submenu->GetSubMenu();
-
-			this->PopupMenu( menu );
-			delete menu;
-			menubar->Destroy();
-		}
-		*/
 	}
 	else  // insertion
 	{
@@ -796,24 +755,9 @@ void MusWindow::OnMouseDClick(wxMouseEvent &event)
 			}
 			PrepareCheckPoint( UNDO_PART, MUS_UNDO_STAFF );
 			m_lastEditedElement = m_currentStaff->Insert( m_newElement );
-			
-            // TODO for cursor
-            // move the cursor on step forward
-            // we will need to deal with staff and page break when reaching the end
-            // we will probably have a method for this, because we need to do the same when inputing from the keyboard
-            // for now, just increase the xrel in m_newElement
 
 			CheckPoint( UNDO_PART, MUS_UNDO_STAFF );
 			OnEndEdition();
-
-			//wxLogMessage("code %d oct %d", m_insertcode, m_insertoct );
-
-			/*wxMenuBar *menubar = MusEditMenuFunc( );
-			wxMenu *menu = menubar->Remove( 0 );
-
-			this->PopupMenu( menu );
-			delete menu;
-			menubar->Destroy();*/
 		}
 
 	}
@@ -1051,9 +995,6 @@ void MusWindow::OnKeyDown(wxKeyEvent &event)
 	if ( !m_page || !m_currentStaff )
 		return;
 	
-	// will skip this if not currently in keyboard edit mode
-	//if (KeyboardEntry(event)) return;
-	
 	int noteKeyCode = GetNoteValue( event.m_keyCode );
     
     if ( m_lyricMode ) {
@@ -1086,18 +1027,11 @@ void MusWindow::OnKeyDown(wxKeyEvent &event)
 					//temp->SetClosed(true);
 					m_newElement = &m_neume;
 				}
-                // TODO for cursor
-                // increase the xrel of m_newElement. Where it will be tricky is when we are at the end of the staff,
-                // but leave this problem for now
 			}
 			else
 			{
 				m_newElement = &m_note;
 				m_lastEditedElement = NULL;
-                // TODO for cursor
-                // More to do here, because we know nothing about the position:
-                // My suggestion: beginning of the staff (try with xrel = something like 10)
-                // We also have to check that we have a current staff. If not, select the first one
 			}
 			m_currentElement = NULL;
 		}
@@ -1188,30 +1122,6 @@ void MusWindow::OnKeyDown(wxKeyEvent &event)
 			CheckPoint( UNDO_PART, MUS_UNDO_STAFF );
 			OnEndEdition();
 		}
-        else if (event.m_keyCode == 'O' && m_currentElement && m_currentElement->IsNeume()) {
-            PrepareCheckPoint( UNDO_PART, MUS_UNDO_STAFF );
-            MusNeume *temp = (MusNeume*)m_currentElement;
-            //temp->SetClosed(!temp->closed);
-            CheckPoint( UNDO_PART, MUS_UNDO_STAFF );
-            OnEndEdition();
-        }
-        else if (event.m_keyCode == 'M' && m_currentElement && m_currentElement->IsNeume()) {
-            // M key changes note head (note 'Mode')
-            printf("mode change\n");
-            MusNeume *temp = (MusNeume*)m_currentElement;
-            PrepareCheckPoint( UNDO_PART, MUS_UNDO_STAFF );
-            const int MAX_VALUES = 6; // number of neume heads
-            //temp->SetValue((temp->GetValue() + 1) % 
-            //               MAX_VALUES, m_currentStaff, 0);
-            CheckPoint( UNDO_PART, MUS_UNDO_STAFF );
-            OnEndEdition();
-        }
-        else if (event.m_keyCode == 'N' && m_currentElement) {
-            PrepareCheckPoint( UNDO_PART, MUS_UNDO_STAFF );
-            //((MusNeume *)m_currentElement)->InsertPitchAfterSelected();
-            CheckPoint( UNDO_PART, MUS_UNDO_STAFF );
-            OnEndEdition();
-        }
 		else if ( m_currentElement && m_currentElement->IsNote() && 
 			( (event.m_keyCode == 'B') || (event.m_keyCode == 'D' ) ) ) // ajouter un bemol à une note
 		{
@@ -1288,10 +1198,11 @@ void MusWindow::OnKeyDown(wxKeyEvent &event)
 		else if ( event.m_controlDown && (( event.m_keyCode == WXK_LEFT ) || (event.m_keyCode == WXK_RIGHT )) && m_currentElement) // moving element
         {
 			PrepareCheckPoint( UNDO_PART, MUS_UNDO_STAFF );
-			if ( event.m_keyCode == WXK_LEFT )
+			if ( event.m_keyCode == WXK_LEFT ) {
 				m_currentElement->xrel -=3;
-			else
+			} else {
 				m_currentElement->xrel +=3;
+			}
 			this->Refresh();
 			m_currentStaff->CheckIntegrity();
 			CheckPoint( UNDO_PART, MUS_UNDO_STAFF );
@@ -1342,55 +1253,49 @@ void MusWindow::OnKeyDown(wxKeyEvent &event)
 		{	
 			if ( event.GetKeyCode() == WXK_RIGHT || event.GetKeyCode() == WXK_SPACE ) 
 			{
-                //if (m_currentElement && m_currentElement->IsNeume() && !((MusNeume *)m_currentElement)->IsClosed()) {
-                //    ((MusNeume *)m_currentElement)->SelectNextPunctum();
-                //} else if ( m_currentStaff->GetNext( m_currentElement )) {
-				//	m_currentElement = m_currentStaff->GetNext( m_currentElement );
-				//}
-				//else if ( m_page->GetNext( m_currentStaff ) )
-				//{
-				//	m_currentStaff = m_page->GetNext( m_currentStaff );
-				//	m_currentElement = m_currentStaff->GetFirst();
-				//}
+                if ( m_currentStaff->GetNext( m_currentElement )) {
+					m_currentElement = m_currentStaff->GetNext( m_currentElement );
+				}
+				else if ( m_page->GetNext( m_currentStaff ) )
+				{
+					m_currentStaff = m_page->GetNext( m_currentStaff );
+					m_currentElement = m_currentStaff->GetFirst();
+				}
 				UpdateScroll();
 			}
 			else if ( event.GetKeyCode() == WXK_LEFT )
 			{
-                //if (m_currentElement && m_currentElement->IsNeume() && !((MusNeume *)m_currentElement)->IsClosed()) {
-                //    ((MusNeume *)m_currentElement)->SelectPreviousPunctum();
-                //} else if ( m_currentStaff->GetPrevious( m_currentElement )) {
+                if ( m_currentStaff->GetPrevious( m_currentElement )) {
 					m_currentElement = m_currentStaff->GetPrevious( m_currentElement );
-				//}
-				//else if ( m_page->GetPrevious( m_currentStaff ) )
-				//{
-				//	m_currentStaff = m_page->GetPrevious( m_currentStaff );
-				//	m_currentElement = m_currentStaff->GetLast();
-				//}
+				}
+				else if ( m_page->GetPrevious( m_currentStaff ) )
+				{
+					m_currentStaff = m_page->GetPrevious( m_currentStaff );
+					m_currentElement = m_currentStaff->GetLast();
+				}
 				UpdateScroll();
 			}
 			else if ( event.GetKeyCode() == WXK_UP )
 			{
-                //if (m_currentElement && m_currentElement->IsNeume()) {
-                //    ((MusNeume *)m_currentElement)->SetClosed(true);
-                //} else if ( m_page->GetPrevious( m_currentStaff ) )
-				//{
-				//	int x = 0;
-				//	if ( m_currentElement )
-				//		x = m_currentElement->xrel;
-				//	m_currentStaff = m_page->GetPrevious( m_currentStaff );
-				//	m_currentElement = m_currentStaff->GetAtPos(x);
-				//	UpdateScroll();
-				//}
+                if ( m_page->GetPrevious( m_currentStaff ) )
+				{
+					int x = 0;
+					if ( m_currentElement ) {
+						x = m_currentElement->xrel;
+					}
+					m_currentStaff = m_page->GetPrevious( m_currentStaff );
+					m_currentElement = m_currentStaff->GetAtPos(x);
+					UpdateScroll();
+				}
 			}
 			else if ( event.GetKeyCode() == WXK_DOWN )
 			{
-                if (m_currentElement && m_currentElement->IsNeume()) {
-                    //((MusNeume *)m_currentElement)->SetClosed(true);
-                } else if ( m_page->GetNext( m_currentStaff ) )
+                if ( m_page->GetNext( m_currentStaff ) )
 				{
 					int x = 0;
-					if ( m_currentElement )
+					if ( m_currentElement ) {
 						x = m_currentElement->xrel;
+					}
 					m_currentStaff = m_page->GetNext( m_currentStaff );
 					m_currentElement = m_currentStaff->GetAtPos(x);
 					UpdateScroll();
@@ -1398,17 +1303,15 @@ void MusWindow::OnKeyDown(wxKeyEvent &event)
 			}
 			else if ( event.GetKeyCode() == WXK_HOME ) 
 			{
-                if (m_currentElement && m_currentElement->IsNeume()) {
-                    //((MusNeume *)m_currentElement)->SetClosed(true);
-                } else if ( m_currentStaff->GetFirst( ) )
+                if ( m_currentStaff->GetFirst( ) ) {
 					m_currentElement = m_currentStaff->GetFirst( );
+				}
 			}
 			else if ( event.GetKeyCode() == WXK_END ) 
 			{
-                if (m_currentElement && m_currentElement->IsNeume()) {
-                    //((MusNeume *)m_currentElement)->SetClosed(true);
-                } else if ( m_currentStaff->GetLast( ) )
+                if ( m_currentStaff->GetLast( ) ) {
 					m_currentElement = m_currentStaff->GetLast( );
+				}
 			}
 			this->Refresh();
 			OnEndEdition();

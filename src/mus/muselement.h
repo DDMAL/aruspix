@@ -42,7 +42,6 @@ public:
 	bool IsNote() { return ( TYPE == NOTE ); }
 	bool IsSymbol() { return ( TYPE == SYMB ); }
     bool IsNeume() { return ( TYPE == NEUME ); } 
-    MusElement *GetNext( MusStaff *staff );
 
     //	virtual void SetPitch( int code, int oct, MusStaff *staff = NULL ) {};
 	virtual void SetPitch( int code, int oct ) {};

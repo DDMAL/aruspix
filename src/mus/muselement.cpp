@@ -184,14 +184,6 @@ MusElement::~MusElement()
 	}
 }
 
-MusElement *MusElement::GetNext( MusStaff *staff )
-{
-    if (((int)staff->m_elements.GetCount() <= this->no) || (this->no < 0)) {
-        return NULL;
-    }
-    return &staff->m_elements[this->no+1];
-}
-
 int MusElement::filtrcod( int codElement, int *oct )
 {	
 	*oct = this->oct;
