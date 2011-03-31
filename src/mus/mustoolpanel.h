@@ -32,16 +32,7 @@
 
 #define MUS_TOOLS_NUMBER 7 // Nombre de type de symbols
 
-#define MUS_MODE_EDIT 0
-#define MUS_MODE_INSERT 1
-
-// #define MENSURAL_MODE 0 moved to musdef.h as MUS_MENSURAL_MODE, etc.
-// #define NEUMES_MODE 1
-
-//#define MUS_MODES_NUMBER 7
-
 class MusWindow;
-
 
 enum {
     ID_MS_BT_CHANGE_TOOL_START = 20500,  // not a button, just used for RANGE EVT IDS

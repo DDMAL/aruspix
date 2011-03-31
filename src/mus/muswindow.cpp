@@ -421,18 +421,49 @@ void MusWindow::SetToolPanel( MusToolPanel *toolpanel )
 
 void MusWindow::SetInsertMode( bool mode )
 {
-//	if (mode) printf("Insert mode!\n"); else printf("Edit mode!\n");
-	if ( m_editElement == !mode )
+	if ( m_editElement == !mode ) {
 		return; // nothing to change
+	}
 	
-	
-
-	wxKeyEvent kevent;
-    kevent.SetEventType( wxEVT_KEY_DOWN );
-    kevent.SetId( this->GetId() );
-    kevent.SetEventObject( this );
-	kevent.m_keyCode = WXK_RETURN;
-    this->ProcessEvent( kevent );
+	m_editElement = !mode;
+	if ( !m_editElement ) // edition -> insertion
+	{
+		if ( m_currentElement )
+		{
+			// keep the last edited element for when we come back to edition mode
+			m_lastEditedElement = m_currentElement;
+			if ( m_currentElement->IsNote() )
+			{
+				m_note = *(MusNote*)m_currentElement;
+				m_newElement = &m_note;
+			}
+			else if ( m_currentElement->IsSymbol() )
+			{
+				m_symbol = *(MusSymbol*)m_currentElement;
+				m_newElement = &m_symbol;
+			}
+			else if ( m_currentElement->IsNeume() )
+			{
+				m_neume = *(MusNeume*)m_currentElement;
+				m_newElement = &m_neume;
+			}
+		}
+		else
+		{
+			m_newElement = &m_note;
+			m_lastEditedElement = NULL;
+		}
+		m_currentElement = NULL;
+	}
+	else if ( m_newElement ) // insertion -> edition
+	{
+		m_currentElement = m_lastEditedElement;
+		m_newElement = NULL;
+	}
+	UpdatePen();
+	this->Refresh();
+	OnEndEdition();
+	SyncToolPanel();
 }
 
 void MusWindow::SetToolType( int type )
@@ -1003,47 +1034,7 @@ void MusWindow::OnKeyDown(wxKeyEvent &event)
 	// change mode edition -- insertion
 	else if ( event.GetKeyCode() == WXK_RETURN )
 	{
-		m_editElement = !m_editElement;
-		if ( !m_editElement ) // edition -> insertion
-		{
-			this->SetCursor( wxCURSOR_PENCIL );  
-			if ( m_currentElement )
-			{
-				// keep the last edited element for when we come back to edition mode
-				m_lastEditedElement = m_currentElement;
-				if ( m_currentElement->IsNote() )
-				{
-					m_note = *(MusNote*)m_currentElement;
-					m_newElement = &m_note;
-				}
-				else if ( m_currentElement->IsSymbol() )
-				{
-					m_symbol = *(MusSymbol*)m_currentElement;
-					m_newElement = &m_symbol;
-				}
-				else if ( m_currentElement->IsNeume() )
-				{
-					MusNeume *temp = (MusNeume*)m_currentElement;
-					//temp->SetClosed(true);
-					m_newElement = &m_neume;
-				}
-			}
-			else
-			{
-				m_newElement = &m_note;
-				m_lastEditedElement = NULL;
-			}
-			m_currentElement = NULL;
-		}
-		else if ( m_newElement ) // insertion -> edition
-		{
-			m_currentElement = m_lastEditedElement;
-			this->SetCursor( wxCURSOR_ARROW );
-			m_newElement = NULL;
-		}
-		this->Refresh();
-		OnEndEdition();
-		SyncToolPanel();
+		SetInsertMode(m_editElement);
 	}
 	else if ( m_editElement ) // mode edition
 	{
