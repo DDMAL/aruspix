@@ -1,3 +1,6 @@
+#ifndef __MUS_DEF_H__
+#define __MUS_DEF_H__
+
 /* WGDEF.H */
 /* COMMENTAIRES IMPORTANTS. MODIFICATIONS PAR RAPPORT AUX FICHIERS DE
 VERSION DOS.*/
@@ -451,16 +454,17 @@ VERSION DOS.*/
 
 #define PTCONTROL 20
 
-#define MUS_MENSURAL_MODE 0
-#define MUS_NEUMATIC_MODE 1
-#define MUS_CMN_MODE 2
-
-/*
-enum {
+// Is this score for Mensural, neumes, or CMN
+enum MusNotationMode {
     MUS_MENSURAL_MODE = 0,
     MUS_NEUMATIC_MODE,
     MUS_CMN_MODE
 };
-*/
 
+// Is the app in insert mode or edit (drag) mode
+enum MusEditorMode {
+	MUS_EDITOR_EDIT,
+	MUS_EDITOR_INSERT
+};
 
+#endif // __MUS_DEF_H__

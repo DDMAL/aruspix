@@ -216,7 +216,7 @@ public:
 	int m_notation_mode; // neumes or mensural notation mode
 	bool m_lyricMode;
 	bool m_inputLyric;
-	bool m_editElement; // edition mode or insertion mode
+	MusEditorMode m_editorMode; // Edit or insert
 	bool m_eraseElement;
 	    
 private:

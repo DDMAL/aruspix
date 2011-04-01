@@ -355,7 +355,7 @@ void MusToolPanel::OnChangeMode( wxCommandEvent &event )
     if (!m_w)
         return;
 
-	m_w->SetInsertMode( m_w->m_editElement ); 
+	m_w->SetInsertMode( m_w->m_editorMode == MUS_EDITOR_EDIT ); 
 	m_w->SetFocus();
 }
 

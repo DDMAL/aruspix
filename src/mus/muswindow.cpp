@@ -133,7 +133,9 @@ void MusWindow::Load( AxUndoFile *undoPtr )
 	bin_input->Read( &element, sizeof( int ));
     bin_input->Read( &lyric_element, sizeof( int ) );
     // edition state
-    bin_input->Read( &m_editElement, sizeof( bool ) );
+    bool editor;
+    bin_input->Read( &editor, sizeof( bool ) );
+    m_editorMode = editor ? MUS_EDITOR_EDIT : MUS_EDITOR_INSERT;
 	bin_input->Read( &m_lyricMode, sizeof( bool ) );
 	bin_input->Read( &m_inputLyric, sizeof( bool ) );
 	bin_input->Read( &m_lyricCursor, sizeof( int ) );
@@ -240,7 +242,8 @@ void MusWindow::Store( AxUndoFile *undoPtr )
 	bin_output->Write( &element, sizeof( int ) );
     bin_output->Write( &lyric_element, sizeof( int ) );
     // edition state
-    bin_output->Write( &m_editElement, sizeof( bool ) );
+    bool editor = m_editorMode == MUS_EDITOR_EDIT;
+    bin_output->Write( &editor, sizeof( bool ) );
 	bin_output->Write( &m_lyricMode, sizeof( bool ) );
 	bin_output->Write( &m_inputLyric, sizeof( bool ) );
 	bin_output->Write( &m_lyricCursor, sizeof( int ) );
@@ -421,12 +424,12 @@ void MusWindow::SetToolPanel( MusToolPanel *toolpanel )
 
 void MusWindow::SetInsertMode( bool mode )
 {
-	if ( m_editElement == !mode ) {
+	if ( mode && m_editorMode == MUS_EDITOR_INSERT ) {
 		return; // nothing to change
 	}
 	
-	m_editElement = !mode;
-	if ( !m_editElement ) // edition -> insertion
+	m_editorMode = mode ? MUS_EDITOR_INSERT : MUS_EDITOR_EDIT;
+	if ( m_editorMode == MUS_EDITOR_INSERT ) // edition -> insertion
 	{
 		if ( m_currentElement )
 		{
@@ -491,7 +494,7 @@ void MusWindow::SetToolType( int type )
 }
 
 void MusWindow::UpdatePen() {
-	if ( m_editElement ) {
+	if ( m_editorMode == MUS_EDITOR_EDIT ) {
 		this->SetCursor( wxCURSOR_ARROW );
 	} else {
 		this->SetCursor( wxCURSOR_PENCIL );
@@ -502,7 +505,7 @@ int MusWindow::GetToolType()
 {
 	MusElement *sync = NULL;
 
-	if (m_editElement)
+	if (m_editorMode == MUS_EDITOR_EDIT)
 		sync = m_currentElement;
 	else
 		sync = m_newElement;				//need to make a new element!! somehow?
@@ -552,7 +555,7 @@ void MusWindow::SyncToolPanel()
     //if ( tool == -1 )
     //    tool = MUS_TOOLS_NOTES;
 
-	m_toolpanel->SetTools( tool, this->m_editElement );
+	m_toolpanel->SetTools( tool, m_editorMode == MUS_EDITOR_EDIT );
 
 	this->SetFocus();
 }
@@ -592,7 +595,7 @@ void MusWindow::Paste()
 	if ( !m_currentElement || !m_bufferElement)
 		return;
 
-	if ( !m_editElement ) // can paste in edition mode only
+	if ( m_editorMode == MUS_EDITOR_INSERT ) // can paste in edition mode only
 		return;
 			
 	m_bufferElement->xrel = m_currentElement->xrel + this->_pas * 3; // valeur arbitraire
@@ -771,7 +774,7 @@ void MusWindow::OnMouseDClick(wxMouseEvent &event)
 		m_insertcode = m_currentStaff->trouveCodNote( y, m_insertx, &m_insertoct );
 		m_newElement->xrel = m_insertx;
 	}
-	if ( m_editElement )
+	if ( m_editorMode == MUS_EDITOR_EDIT )
 	{
 		SetInsertMode(true);
 	}
@@ -797,7 +800,7 @@ void MusWindow::OnMouseDClick(wxMouseEvent &event)
 
 void MusWindow::OnMouseLeftUp(wxMouseEvent &event)
 {
-	if ( m_editElement || m_lyricMode )
+	if ( m_editorMode == MUS_EDITOR_EDIT || m_lyricMode )
 	{
 		m_dragging_x = 0;
 		m_dragging_y_offset = 0;
@@ -828,7 +831,7 @@ void MusWindow::OnMouseLeave(wxMouseEvent &event)
 
 void MusWindow::OnMouseLeftDown(wxMouseEvent &event)
 {
-    if ( m_editElement || m_lyricMode )
+    if ( m_editorMode == MUS_EDITOR_EDIT || m_lyricMode )
 	{
 		wxClientDC dc( this );
 		InitDC( &dc );
@@ -853,7 +856,7 @@ void MusWindow::OnMouseLeftDown(wxMouseEvent &event)
         
 		m_lyricMode = false;
 		m_inputLyric = false;
-		m_editElement = true;
+		m_editorMode = MUS_EDITOR_EDIT;
 		m_currentStaff = noteStaff;
 		m_currentElement = noteElement;
 		
@@ -875,7 +878,7 @@ void MusWindow::OnMouseLeftDown(wxMouseEvent &event)
 			if ( abs( y_lyric - y ) <= abs( y_note - y ) ){				// Checking if lyric element is closer than note element
 				m_lyricMode = true;
 				m_inputLyric = false;
-				m_editElement = false;
+				m_editorMode = MUS_EDITOR_INSERT;
 				
 				m_currentStaff = lyricStaff;
 				m_currentElement = lyricElement;
@@ -947,7 +950,7 @@ void MusWindow::OnMouseMotion(wxMouseEvent &event)
 		m_insertx = ToLogicalX( dc.DeviceToLogicalX( event.m_x ) );
 		int y = ToLogicalY( dc.DeviceToLogicalY( event.m_y ) ) - m_dragging_y_offset;
 		
-		if ( m_editElement )
+		if ( m_editorMode == MUS_EDITOR_EDIT )
 		{
 			m_insertcode = m_currentStaff->trouveCodNote( y, m_insertx, &m_insertoct );
 			m_currentElement->SetPitch( m_insertcode, m_insertoct );
@@ -962,9 +965,9 @@ void MusWindow::OnMouseMotion(wxMouseEvent &event)
 			// TODO m_currentElement->ClearElement( &dc, m_currentStaff );
 			m_currentElement->xrel += ( m_insertx - m_dragging_x );
 			m_dragging_x = m_insertx;
-			if ( m_editElement )
+			if ( m_editorMode == MUS_EDITOR_EDIT ) {
 				m_currentStaff->CheckIntegrity();
-			//OnEndEdition();
+			}
 		}
 		this->Refresh();	
 	} 
@@ -1034,9 +1037,9 @@ void MusWindow::OnKeyDown(wxKeyEvent &event)
 	// change mode edition -- insertion
 	else if ( event.GetKeyCode() == WXK_RETURN )
 	{
-		SetInsertMode(m_editElement);
+		SetInsertMode(m_editorMode == MUS_EDITOR_EDIT);
 	}
-	else if ( m_editElement ) // mode edition
+	else if ( m_editorMode == MUS_EDITOR_EDIT ) // mode edition
 	{
 		if ( ((event.m_keyCode == WXK_DELETE ) || (event.m_keyCode == WXK_BACK)) && m_currentElement) //"Delete or Backspace" event
 		{
@@ -1201,7 +1204,7 @@ void MusWindow::OnKeyDown(wxKeyEvent &event)
 		}
 		else if ( (event.m_keyCode == 'T') && m_currentElement && m_currentElement->IsNote() )
 		{
-			m_editElement = false;
+			m_editorMode = MUS_EDITOR_INSERT;
 			m_lyricMode = true;
 			
 			if ( m_currentElement && m_currentElement->IsNote() && ((MusNote*)m_currentElement)->m_lyrics.GetCount() > 0 ){
@@ -1226,7 +1229,7 @@ void MusWindow::OnKeyDown(wxKeyEvent &event)
 			else if ( m_currentStaff->GetFirstLyric() )
 				m_currentElement = m_currentStaff->GetFirstLyric();
 			else{
-				m_editElement = true;
+				m_editorMode = MUS_EDITOR_EDIT;
 				m_lyricMode = false;
 			}
          this->Refresh();
@@ -1375,7 +1378,7 @@ void MusWindow::LyricEntry(wxKeyEvent &event)
 		{
 			m_lyricMode = false;
 			m_inputLyric = false;
-			m_editElement = true;
+			m_editorMode = MUS_EDITOR_EDIT;
 			if ( m_currentElement && m_currentElement->IsSymbol() && ((MusSymbol*)m_currentElement)->m_note_ptr )
 				m_currentElement = ((MusSymbol*)m_currentElement)->m_note_ptr;
 			else if ( m_currentElement && m_currentStaff->GetAtPos( m_currentElement->xrel ) )

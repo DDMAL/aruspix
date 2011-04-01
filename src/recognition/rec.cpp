@@ -1843,7 +1843,7 @@ void RecEnv::OnUpdateUI( wxUpdateUIEvent &event )
     else if ( event.GetId() == ID4_INSERT_MODE )
     {
         event.Enable( m_musViewPtr->IsShown() );
-        event.Check( m_musViewPtr && !m_musViewPtr->m_editElement );
+        event.Check( m_musViewPtr && m_musViewPtr->m_editorMode == MUS_EDITOR_INSERT );
     }
     else
         event.Enable(true);
