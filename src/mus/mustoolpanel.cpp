@@ -200,6 +200,7 @@ void MusToolRow::UpdateTools( int type, int notation_mode )
         AddTool(ID_NU_BT_N3, "", MusToolPanel::GetToolbarBitmap( "neume_punctum_up.png" ));
         AddTool(ID_NU_BT_N4, "", MusToolPanel::GetToolbarBitmap( "neume_quilisma.png" ));
         AddTool(ID_NU_BT_N5, "", MusToolPanel::GetToolbarBitmap( "neume_virga.png" ));
+        AddTool(ID_NU_BT_CUSTOS, "", MusToolPanel::GetToolbarBitmap( "neume_custos.png" ));
 		AddSeparator();
 		AddTool(ID_NU_BT_N_HE, "", MusToolPanel::GetToolbarBitmap( "neume_he.png" ));
 		AddTool(ID_NU_BT_N_VE, "", MusToolPanel::GetToolbarBitmap( "neume_ve.png" ));
@@ -211,7 +212,6 @@ void MusToolRow::UpdateTools( int type, int notation_mode )
 		AddTool(ID_NU_BT_COMMA, "", MusToolPanel::GetToolbarBitmap( "symb_neume_comma.png" ));
 		AddTool(ID_NU_BT_FLAT, "", MusToolPanel::GetToolbarBitmap( "symb_neume_flat.png" ));
 		AddTool(ID_NU_BT_SHARP, "", MusToolPanel::GetToolbarBitmap( "symb_neume_sharp.png" ));
-		AddTool(ID_NU_BT_CUSTOS, "", MusToolPanel::GetToolbarBitmap( "symb_neume_custos.png" ));
 		AddTool(ID_NU_BT_DIV_FINAL, "", MusToolPanel::GetToolbarBitmap( "symb_neume_div_final.png" ));
 		AddTool(ID_NU_BT_DIV_MAJOR, "", MusToolPanel::GetToolbarBitmap( "symb_neume_div_major.png" ));
 		AddTool(ID_NU_BT_DIV_MINOR, "", MusToolPanel::GetToolbarBitmap( "symb_neume_div_minor.png" ));
