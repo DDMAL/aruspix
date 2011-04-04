@@ -1344,10 +1344,11 @@ void RecEnv::OnTools( wxCommandEvent &event )
     wxASSERT_MSG( m_musViewPtr, "WG Window cannot be NULL ");
 
     if ( event.GetId() == ID4_INSERT_MODE )
-        m_musViewPtr->SetInsertMode( event.IsChecked() );
+        
+        m_musViewPtr->SetEditorMode( event.IsChecked() ? MUS_EDITOR_INSERT : MUS_EDITOR_EDIT );
     else 
     {
-        m_musViewPtr->SetInsertMode( true );
+        m_musViewPtr->SetEditorMode( MUS_EDITOR_INSERT );
         if ( event.GetId() == ID4_NOTES )
             m_musViewPtr->SetToolType( MUS_TOOLS_NOTES );
         else if ( event.GetId() == ID4_KEYS)

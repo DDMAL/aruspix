@@ -242,7 +242,8 @@ void RecMusController::InverseShowStaffBitmap( )
 
     if ( m_staffbmp_show )
 	{
-		m_viewPtr->SetInsertMode( false );
+        
+		m_viewPtr->SetEditorMode( MUS_EDITOR_EDIT );
         SyncStaffBitmap();
 	}
     else // erase
