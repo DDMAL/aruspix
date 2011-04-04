@@ -422,13 +422,21 @@ void MusWindow::SetToolPanel( MusToolPanel *toolpanel )
 	SyncToolPanel();
 }
 
-void MusWindow::SetInsertMode( bool mode )
+void MusWindow::ToggleEditorMode() {
+    if (m_editorMode == MUS_EDITOR_INSERT) {
+        SetEditorMode(MUS_EDITOR_EDIT);
+    } else {
+        SetEditorMode(MUS_EDITOR_INSERT);
+    }
+}
+
+void MusWindow::SetEditorMode( MusEditorMode mode )
 {
-	if ( mode && m_editorMode == MUS_EDITOR_INSERT ) {
+	if ( mode == m_editorMode ) {
 		return; // nothing to change
 	}
 	
-	m_editorMode = mode ? MUS_EDITOR_INSERT : MUS_EDITOR_EDIT;
+	m_editorMode = mode;
 	if ( m_editorMode == MUS_EDITOR_INSERT ) // edition -> insertion
 	{
 		if ( m_currentElement )
@@ -776,7 +784,7 @@ void MusWindow::OnMouseDClick(wxMouseEvent &event)
 	}
 	if ( m_editorMode == MUS_EDITOR_EDIT )
 	{
-		SetInsertMode(true);
+		SetEditorMode(MUS_EDITOR_INSERT);
 	}
 	else  // insertion
 	{
@@ -1037,7 +1045,7 @@ void MusWindow::OnKeyDown(wxKeyEvent &event)
 	// change mode edition -- insertion
 	else if ( event.GetKeyCode() == WXK_RETURN )
 	{
-		SetInsertMode(m_editorMode == MUS_EDITOR_EDIT);
+		ToggleEditorMode();
 	}
 	else if ( m_editorMode == MUS_EDITOR_EDIT ) // mode edition
 	{

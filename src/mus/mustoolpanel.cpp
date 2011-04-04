@@ -345,7 +345,7 @@ void MusToolPanel::OnChangeTool( wxCommandEvent &event )
 	case (ID_MS_BT_SYMBOLS_NEUMES): value = NEUME_TOOLS_SYMBOLS; break;
     }
 
-	m_w->SetInsertMode( true );
+	m_w->SetEditorMode( MUS_EDITOR_INSERT );
 	m_w->SetToolType( value );
     m_w->SetFocus();   
 }
@@ -354,8 +354,7 @@ void MusToolPanel::OnChangeMode( wxCommandEvent &event )
 {
     if (!m_w)
         return;
-
-	m_w->SetInsertMode( m_w->m_editorMode == MUS_EDITOR_EDIT ); 
+	m_w->ToggleEditorMode();
 	m_w->SetFocus();
 }
 

@@ -103,8 +103,9 @@ public:
 	int GetToolType( );
 	void SetToolType( int type );
 	void UpdatePen();
-			
-	void SetInsertMode( bool insert );
+    
+    void ToggleEditorMode();
+	void SetEditorMode( MusEditorMode insert );
     
 	/**
 		Redimensionne la fenetre en fonction de la taille du parent et du zoom de la taille de la page
