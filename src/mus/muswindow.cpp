@@ -1249,11 +1249,6 @@ void MusWindow::NeumeInsertOnKeyDown(wxKeyEvent &event) {
 
     if ( event.m_controlDown && (event.m_keyCode == 'N')) {
         m_newElement = &m_neume;
-    }
-    else if ( event.m_controlDown && (event.m_keyCode == 'C')) // clefs
-    {	
-        m_symbol.ResetToClef();
-        m_newElement = &m_symbol;
     }	
     else if ( event.m_controlDown && (event.m_keyCode == 'S')) // symbols
     {
@@ -1561,7 +1556,7 @@ void MusWindow::OnKeyDown(wxKeyEvent &event)
         if (m_notation_mode == MUS_MENSURAL_MODE) {
             MensuralInsertOnKeyDown(event);
         } else if (m_notation_mode == MUS_NEUMATIC_MODE) {
-            MensuralEditOnKeyDown(event);
+            NeumeInsertOnKeyDown(event);
         }
 	}
 	
