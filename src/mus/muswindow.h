@@ -116,8 +116,6 @@ public:
 	 Doit etre appelee apres changement de zoom ou de definition de page
      */
     
-public:
-
 	/** indique si la page doit etre centree asi elle n'occupe pas toute la fenetre */
 	bool m_center;
 
@@ -166,7 +164,12 @@ private:
 	void OnPopupMenuSymbole( wxCommandEvent &event );
     void OnMidiInput( wxCommandEvent &event );
 
-private:
+    void SharedEditOnKeyDown(wxKeyEvent &event);
+    void NeumeEditOnKeyDown(wxKeyEvent &event);
+    void NeumeInsertOnKeyDown(wxKeyEvent &event);
+    void MensuralEditOnKeyDown(wxKeyEvent &event);
+    void MensuralInsertOnKeyDown(wxKeyEvent &event);
+    
     DECLARE_EVENT_TABLE()
     DECLARE_DYNAMIC_CLASS(MusWindow)
 };
