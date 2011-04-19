@@ -27,5 +27,5 @@ MusNeumeSymbol::MusNeumeSymbol(const MusNeumeSymbol &symbol) :
 }
 
 void MusNeumeSymbol::SetSymbolType(MusNeumeSymbolType type) {
-    symbolType = typel;
+    symbolType = type;
 }
