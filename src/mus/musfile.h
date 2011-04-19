@@ -18,7 +18,6 @@
 #include "wx/wfstream.h"
 //#include "wx/dynarray.h"
 
-#include "musfile.h"
 #include "muspage.h"
 #include "musstaff.h"
 #include "muselement.h"
