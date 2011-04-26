@@ -449,7 +449,7 @@ void EdtEnv::OnUpdateUI( wxUpdateUIEvent &event )
     else if ( event.GetId() == ID5_VOICES )
         event.Enable( m_edtFilePtr->IsOpened() );
     else if ( event.GetId() == ID_SAVE )
-        event.Enable( m_edtFilePtr->IsOpened() && !m_edtFilePtr->IsNew() );
+           event.Enable( m_edtFilePtr->IsOpened() && m_edtFilePtr->IsModified() );
     else if ( event.GetId() == ID_SAVE_AS )
         event.Enable( m_edtFilePtr->IsOpened() );
     else
