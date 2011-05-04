@@ -25,18 +25,37 @@
 
 #include <math.h>
 
+#include <mei/mei.h>
+#include <exception>
+
 //----------------------------------------------------------------------------
 // MusNeumeElement
 //----------------------------------------------------------------------------
 
-MusNeumeElement::MusNeumeElement(int _pitch, int _oct) {
+MusNeumeElement::MusNeumeElement(int _pitch, int _oct)
+{
 	pitch = _pitch;
 	octave = _oct;
 }
 
-// Duplicate an existing pitch
-MusNeumeElement::MusNeumeElement( const MusNeumeElement &pitch) {
+MusNeumeElement::MusNeumeElement(MeiElement &element) {
+    m_meiref = &element;
+    MeiAttribute *p = m_meiref->getAttribute("pname");
+    if (p) {
+        m_pitch = (p->getValue()).c_str();
+    }
+}
 
+// Duplicate an existing pitch
+MusNeumeElement::MusNeumeElement( const MusNeumeElement &other) {
+    pitch = other.pitch;
+    octave = other.octave;
+    m_meiref = other.m_meiref;
+    m_pitch = other.m_pitch;
+}
+
+wxString MusNeumeElement::getPitch() {
+    return m_pitch;
 }
 
 //----------------------------------------------------------------------------
@@ -51,6 +70,78 @@ MusNeume::MusNeume() : MusElement() {
 MusNeume::MusNeume( const MusNeume &neume) :
     MusElement(neume) {
 	TYPE = neume.TYPE;
+}
+
+/**
+ * Create a neume from an MeiElement.
+ */
+MusNeume::MusNeume(MeiElement &element) {
+    m_meiref = &element;
+    MeiAttribute *nameattr = m_meiref->getAttribute("name");
+    MeiAttribute *variantattr = m_meiref->getAttribute("variant");
+    wxString type = "";
+    wxString variant = "";
+    if (nameattr) {
+        type = (nameattr->getValue()).c_str();
+    }
+    // e.g. punctum inclinatum has a variant of 'inclinatum'
+    if (variantattr) {
+        variant = (variantattr->getValue()).c_str();
+    }
+    setType(type, variant);
+    
+    vector<MeiElement> children = m_meiref->getChildren();
+    for (vector<MeiElement>::iterator i = children.begin(); i != children.end(); i++) {
+        MeiElement e = *i;
+        if (e.getName() == "note") {
+            MusNeumeElement note = MusNeumeElement(e);
+            m_pitches.push_back(note);
+        }
+    }
+}
+
+/**
+ * The type of this neume (from MEI) e.g. 'torculus', 'podatus'
+ */
+void MusNeume::setType(wxString type, wxString variant) {
+    if (type == "punctum" && variant == "") {
+        m_type = NEUME_TYPE_PUNCTUM;
+    } else if (type == "punctum" && variant == "inclinatum") {
+        m_type = NEUME_TYPE_PUNCTUM_INCLINATUM;
+    } else if (type == "virga") {
+        m_type = NEUME_TYPE_VIRGA;
+    } else if (type == "podatus") {
+        m_type = NEUME_TYPE_PODATUS;
+    } else if (type == "clivis") {
+        m_type = NEUME_TYPE_CLIVIS;
+    } else if (type == "porrectus") {
+        m_type = NEUME_TYPE_PORRECTUS;
+    } else if (type == "scandicus") {
+        m_type = NEUME_TYPE_SCANDICUS;
+    } else if (type == "torculus") {
+        m_type = NEUME_TYPE_TORCULUS;
+    } else if (type == "compound") {
+        m_type = NEUME_TYPE_COMPOUND;
+    } else {
+        string t = type.mb_str();
+        throw "unknown neume type " + t;
+    }
+}
+
+void MusNeume::setType(NeumeType type) {
+    m_type = type;
+}
+
+NeumeType MusNeume::getType() {
+    return m_type;
+}
+
+MeiElement &MusNeume::getMeiElement() {
+    return *m_meiref;
+}
+
+vector<MusNeumeElement> MusNeume::getPitches() {
+    return m_pitches;
 }
 
 /*

@@ -17,7 +17,12 @@
 #endif
 #include "wx/dynarray.h"
 
+#include <vector>
+using std::vector;
+
 #include "muselement.h"
+
+#include <mei/mei.h>
 
 class MusStaff;
 
@@ -27,17 +32,37 @@ enum NeumeOrnament {
 	DOT
 };
 
+enum NeumeType {
+    NEUME_TYPE_PUNCTUM,
+    NEUME_TYPE_PUNCTUM_INCLINATUM,
+    NEUME_TYPE_VIRGA,
+    NEUME_TYPE_PODATUS,
+    NEUME_TYPE_CLIVIS,
+    NEUME_TYPE_PORRECTUS,
+    NEUME_TYPE_SCANDICUS,
+    NEUME_TYPE_TORCULUS,
+    NEUME_TYPE_COMPOUND
+};
+
+
+
 class MusNeumeElement
 {
 public:
 	MusNeumeElement( int _pitch, int _oct );
 	MusNeumeElement( const MusNeumeElement &element );
+    MusNeumeElement(MeiElement &meielement);
 	virtual ~MusNeumeElement() {};
+    
+    wxString getPitch();
 
 private:	
 	int pitch;
 	int octave;
+
+    wxString m_pitch;
 	NeumeOrnament ornament;
+    MeiElement *m_meiref;
 }; 
 
 class MusNeume: public MusElement
@@ -46,7 +71,14 @@ public:
     // constructors and destructors
 	MusNeume();
 	MusNeume( const MusNeume &neume);
+    MusNeume(MeiElement &meielement);
     virtual ~MusNeume() {};
+    
+    void setType(wxString type, wxString variant);
+    void setType(NeumeType type);
+    NeumeType getType();
+    MeiElement &getMeiElement();
+    vector<MusNeumeElement> getPitches();
     
 	//Drawing code
 	virtual void Draw( AxDC *dc, MusStaff *staff) {};
@@ -63,8 +95,10 @@ public:
 
 private:
 	NeumeOrnament ornament;
+    NeumeType m_type;
+    MeiElement *m_meiref;
 
-	//std::vector<MusNeumeElement> n_pitches;
+	vector<MusNeumeElement> m_pitches;
 };
 
 #endif // __MUS_NEUME_H__
