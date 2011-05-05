@@ -7,6 +7,11 @@ FIND_PACKAGE(wxWidgets COMPONENTS base core net html adv aui )
 FIND_PACKAGE( LibXml2 )
 FIND_PACKAGE( LibMei )
 
+option(AX_BUILD_TESTS "Build all unit tests" ON)
+
+if(AX_BUILD_TESTS)
+      enable_testing()
+endif(AX_BUILD_TESTS)
 
 SET( aruspixSources ${aruspixSources}
 	../src/app/axabout_wdr.cpp
@@ -159,3 +164,30 @@ TARGET_LINK_LIBRARIES( aruspix
 	${LIBXML2_LIBRARIES}
     ${LIBMEI_LIBRARY}
 )
+
+if( AX_BUILD_TESTS )
+    set( EXECUTABLE_OUTPUT_PATH ${CMAKE_CURRENT_BINARY_DIR} )
+    include_directories( ${CMAKE_CURRENT_BINARY_DIR})
+
+    find_package( GoogleTest )
+
+    macro(add_ax_test _source)
+        get_filename_component(_name ${_source} NAME_WE)
+        add_executable(${_name} ${ARGV} ../test/gtest_main.cc)
+        target_link_libraries(${_name} 
+            ${GTEST_LIBRARIES}
+            pthread
+        	${wxWidgets_LIBRARIES}
+        	${LIBXML2_LIBRARIES}
+            ${LIBMEI_LIBRARY}
+            )
+        # tests depend on the latest version of the library
+        add_test(${_name}-test ${EXECUTABLE_OUTPUT_PATH}/${_name})
+    endmacro(add_ax_test)
+
+    add_ax_test ( ../test/mus/musneume_test.cpp
+                  ../src/mus/musobject.cpp
+                  ../src/mus/muselement.cpp
+                  ../src/mus/musneume.cpp )
+
+endif( AX_BUILD_TESTS )
