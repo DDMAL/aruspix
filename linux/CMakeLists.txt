@@ -1,8 +1,12 @@
 PROJECT( aruspix )
 CMAKE_MINIMUM_REQUIRED( VERSION 2.8 )
 
+SET( CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH}" "${CMAKE_SOURCE_DIR}" )
+
 FIND_PACKAGE(wxWidgets COMPONENTS base core net html adv aui )
 FIND_PACKAGE( LibXml2 )
+FIND_PACKAGE( LibMei )
+
 
 SET( aruspixSources ${aruspixSources}
 	../src/app/axabout_wdr.cpp
@@ -68,8 +72,6 @@ SET( aruspixSources ${aruspixSources}
 	../src/mus/musiomlf.cpp
 	../src/mus/musiowwg.cpp
 	../src/mus/musioxml.cpp
-	../src/mus/muskeyboardeditor.cpp
-	../src/mus/musligature.cpp
 	../src/mus/musmlfdic.cpp
 	../src/mus/musneume.cpp
 	../src/mus/musnote.cpp
@@ -77,7 +79,7 @@ SET( aruspixSources ${aruspixSources}
 	../src/mus/muspage.cpp
 	../src/mus/musrc.cpp
 	../src/mus/musstaff.cpp
-	#../src/mus/mussvg.cpp
+	../src/mus/mussvgdc.cpp
 	../src/mus/mussymbol.cpp
 	../src/mus/mustoolpanel.cpp
 	../src/mus/muswindow.cpp
@@ -122,6 +124,7 @@ INCLUDE_DIRECTORIES(
 
 	/usr/include/im
 	${LIBXML2_INCLUDE_DIR}
+    ${LIBMEI_INCLUDE_DIR}
 	/usr/include/torch
 )
 
@@ -133,6 +136,7 @@ ADD_DEFINITIONS(
 	-DAX_EDT
 	-DWX_PRECOMP
 	-DAX_RECOGNITION
+	-D__AXDEBUG__
 	${LIBXML2_DEFINITIONS}
 	-D__LINUX_ALSASEQ__
 	-g
@@ -150,8 +154,8 @@ TARGET_LINK_LIBRARIES( aruspix
 	-lim
 	-lim_process
 	-lim_fftw
-	-lxml2
 	-ltorch
 	${wxWidgets_LIBRARIES}
 	${LIBXML2_LIBRARIES}
+    ${LIBMEI_LIBRARY}
 )
