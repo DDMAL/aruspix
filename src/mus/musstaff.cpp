@@ -642,6 +642,23 @@ void MusStaff::DrawStaff( AxDC *dc, int i )
 
 }
 
+int MusStaff::y_neume (int note, int dec_clef, int oct)
+{
+	static int notes[] = {1,2,3,4,5,6,7};
+	int y_int;
+	int *pnote, i;
+	pnote = &notes[0] - 1;
+	
+	y_int = ((dec_clef + oct*7) - 17 ) *m_r->_espace[pTaille];
+	if (portNbLine > 4)
+		y_int -= ((portNbLine - 4) * 2) *m_r->_espace[pTaille];
+	
+	for (i=0; i<(signed)sizeof(notes); i++)
+		if (*(pnote+i)==note)
+			return(y_int += (i*m_r->_espace[pTaille]));
+	return 0;
+}
+
 int MusStaff::y_note (int code, int dec_clef, int oct)
 {	static int touches[] = {F1,F2,F3,F4,F5,F6,F7,F8,F9,F10};
 	int y_int;

@@ -67,6 +67,7 @@ MusElement::MusElement() :
 	m_debord_str = "";
 
 	code = 0;
+	pitch = 0;
 }
 
 MusElement::MusElement( const MusElement& element )
@@ -103,6 +104,7 @@ MusElement::MusElement( const MusElement& element )
     debordSize = element.debordSize;
 	no = element.no;
 	code = element.code;
+	pitch = element.pitch;
 	
 	// comparison
 	m_im_filename = element.m_im_filename;
@@ -156,6 +158,7 @@ MusElement& MusElement::operator=( const MusElement& element )
 		debordSize = element.debordSize;
 		no = element.no;
 		code = element.code;
+		pitch = element.pitch;
 		
 		// comparison
 		m_im_filename = element.m_im_filename;
@@ -203,6 +206,25 @@ int MusElement::filtrcod( int codElement, int *oct )
 	return codElement;
 }
 
+int MusElement::filtrpitch( int pitchElement, int *oct)
+{
+	*oct = this->oct;
+	
+	if (pitchElement < 1)
+	{
+		if ((*oct) != 0)
+			(*oct) -= floor((1 - pitchElement)/7) + 1;
+	}
+	else if (pitchElement > 7)
+	{
+		if ((*oct) < 7)
+			(*oct) += floor((pitchElement - 7)/7) + 1;
+	}
+	pitchElement = pitchElement%7;
+	if (pitchElement==0)
+		pitchElement = 7;
+	return pitchElement;
+}
 
 
 

@@ -39,6 +39,7 @@ public:
 
 	// common method
 	int  filtrcod( int codElement, int *oct );
+	int  filtrpitch(int pitchElement, int *oct);
 	bool IsNote() { return ( TYPE == NOTE ); }
 	bool IsSymbol() { return ( TYPE == SYMB ); }
     bool IsNeume() { return ( TYPE == NEUME ); } 
@@ -53,7 +54,7 @@ public:
 
       
 public:
-        /** type de l'element. JwgDef.NOTE = noteJwgDef.SYMB = symbol */
+	/** type de l'element. JwgDef.NOTE = noteJwgDef.SYMB = symbol */
     char TYPE;
     /** element a l'interieur d'un liaison */
     char liaison;
@@ -117,6 +118,7 @@ public:
     unsigned short debordSize;
 	/** from symbol and note !! à l'exporation en wwg unsigned char dans note !! */
 	unsigned short code;
+	unsigned short pitch; //for neumes; this is the pitch of the first note in a neume.
 	
 	// additional information for comparison
 	wxString m_im_filename;

@@ -75,6 +75,8 @@ public:
 	void DrawSlur( AxDC *dc, int x1, int y1, int x2, int y2, bool up, int height = -1);
     // in musbeam.cpp
     unsigned int beam ( AxDC *dc );
+	//methods for neumes
+	int y_neume (int note, int dec_clef, int oct); 
 
     
 	

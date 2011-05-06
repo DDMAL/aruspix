@@ -46,7 +46,7 @@ enum NeumeType {
 
 
 
-class MusNeumeElement
+class MusNeumeElement //what if these were lists? 1 element for pitch, 1 for octave, then maybe 1 for notehead type (punctum, quilisma, etc) and 1 for ornament?
 {
 public:
 	MusNeumeElement( int _pitch, int _oct );
@@ -54,12 +54,13 @@ public:
     MusNeumeElement(MeiElement &meielement);
 	virtual ~MusNeumeElement() {};
     
-    wxString getPitch();
+    int getPitch();
+	int getOctave();
 
-private:	
+private:
 	int pitch;
 	int octave;
-
+	
     wxString m_pitch;
 	NeumeOrnament ornament;
     MeiElement *m_meiref;
@@ -81,11 +82,13 @@ public:
     vector<MusNeumeElement> getPitches();
     
 	//Drawing code
-	virtual void Draw( AxDC *dc, MusStaff *staff) {};
+	virtual void Draw( AxDC *dc, MusStaff *staff);
+	void DrawNeume( AxDC *dc, MusStaff *staff);
+	void leg_line( AxDC *dc, int y_n, int y_p, int xn, unsigned int smaller, int pTaille);
 
 	//void append( AxDC *dc, MusStaff *staff ); //for creating multi-note neumes
 	
-    //virtual void SetPitch( int code, int oct );
+    virtual void SetPitch( int code, int oct );
 	//virtual void SetValue( int value, MusStaff *staff = NULL, int vflag = 0 );
 	//int GetValue();
 	
