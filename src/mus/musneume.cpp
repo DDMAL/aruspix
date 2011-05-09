@@ -77,7 +77,13 @@ int MusNeumeElement::getOctave() {
 
 MusNeume::MusNeume() : MusElement() {
     TYPE = NEUME;
-	m_type = NEUME_TYPE_PODATUS; //note: for all practical purposes, this can always be punctum.
+	m_type = NEUME_TYPE_TORCULUS; //note: for all practical purposes, this can always be punctum.
+	MusNeumeElement first = MusNeumeElement(this->pitch,this->oct);
+	MusNeumeElement next = MusNeumeElement(1,this->oct);
+	MusNeumeElement third = MusNeumeElement(0, this->oct);
+	m_pitches.push_back(first);
+	m_pitches.push_back(next);
+	m_pitches.push_back(third);
 }
 
 // Copy an existing neume
@@ -85,6 +91,7 @@ MusNeume::MusNeume( const MusNeume &neume) :
     MusElement(neume) {
 	TYPE = neume.TYPE;
 	m_type = neume.m_type;
+	m_pitches = neume.m_pitches;
 }
 
 /**
@@ -113,13 +120,13 @@ MusNeume::MusNeume(MeiElement &element) /*: MusElement() ??? */ {
             m_pitches.push_back(note);
         }
     }
-	this->pitch = (this->m_pitches.at(0)).getPitch(); //sets the "pitch" member of MusElement class to the first pitch in this neume.
-	/*
+	this->pitch = (this->m_pitches.at(0)).getPitch(); //sets the "pitch" member of MusElement class to the first pitch in this neume... or at least it should.
+	
 	//need to rename the pitches to their values relative to one another.
-	for (vector<MusNeumeElement>::iterator i = m_pitches.begin(); i < m_pitches.end() - 1; i++) {
-		*(i+1).pitch = *(i+1).pitch - this->pitch; //this assignment should take octave into account!
-		NOTE THIS CODE MAY NOT WORK.
-	}*/
+	for (vector<MusNeumeElement>::iterator i = (this->m_pitches).begin() + 1; i != (this->m_pitches).end(); i++) {
+		MusNeumeElement e = *i;
+		e.pitch = e.pitch - this->pitch; //this assignment should take octave into account!
+	}
 }
 
 /**
@@ -208,6 +215,15 @@ void MusNeume::Draw( AxDC *dc, MusStaff *staff)
 	return;
 }
 
+void MusNeume::NeumeLine( AxDC *dc, MusStaff *staff, int x1, int x2, int y1, int y2)
+{
+	dc->SetPen( m_r->m_currentColour, m_r->ToRendererX( m_p->EpLignesPortee ), wxSOLID );
+	dc->SetBrush(m_r->m_currentColour , wxTRANSPARENT );
+	dc->DrawLine( m_r->ToRendererX(x1) , m_r->ToRendererY (y1) , m_r->ToRendererX(x2) , m_r->ToRendererY (y2) );
+	dc->ResetPen();
+	dc->ResetBrush();
+}
+
 void MusNeume::DrawNeume( AxDC *dc, MusStaff *staff ) 
 {
 	// magic happens here
@@ -227,25 +243,17 @@ void MusNeume::DrawNeume( AxDC *dc, MusStaff *staff )
 	if (this->m_type==NEUME_TYPE_PODATUS) {
 		leg_line( dc, ynn,bby,this->xrel,ledge, pTaille);
 		m_r->festa_string( dc, xn, ynn + 19, nPES, staff, this->dimin);
-		int ynn2 = staff->y_neume((this->filtrpitch(this->pitch + this->m_pitches.at(1)).getPitch(), *this->m_pitches.at(1).getOctave()), staff->testcle( this->xrel ), (this->m_pitches.at(1)).getOctave()) + staff->yrel;
-		leg_line( dc, ynn2,bby,this->xrel,ledge, pTaille);
-		m_r->festa_string( dc, xn, ynn2 + 19, nPUNCTUM, staff, this->dimin);
-		
-		//maybe the connecting line can use the font for stems instead? Maybe n_STEM_B_RIGHT on the punctum at the top?
-		dc->SetPen( m_r->m_currentColour, m_r->ToRendererX( m_p->EpLignesPortee ), wxSOLID );
-        dc->SetBrush(m_r->m_currentColour , wxTRANSPARENT );
-		dc->DrawLine( m_r->ToRendererX(xn + PUNCT_WIDTH) , m_r->ToRendererY ( ynn ) , m_r->ToRendererX(xn + PUNCT_WIDTH) , m_r->ToRendererY ( ynn2 ) ); //redefine the x coord for refactoring?
-        dc->ResetPen();
-        dc->ResetBrush();
+		int ynn2 = ynn + (m_r->_espace[pTaille])*((this->m_pitches.at(1)).pitch);
+		leg_line( dc, ynn,bby,this->xrel,ledge, pTaille);
+		m_r->festa_string( dc, xn, ynn + 19, nPUNCTUM, staff, this->dimin);
+		this->NeumeLine( dc, staff, xn + 9, xn + 9, ynn, ynn2);		
 	}
 	else if (this->m_type==NEUME_TYPE_CLIVIS) {
 		int ynn2, dx;
 		leg_line( dc, ynn,bby,this->xrel,ledge, pTaille);
 		m_r->festa_string( dc, xn, ynn + 19, nPUNCTUM, staff, this->dimin);
-		NeumeStem stem;
-		stem = nSTEM_B_LEFT;
 		m_r->festa_string( dc, xn, ynn + 19, '3', staff, this->dimin);
-		ynn2 = staff->y_neume((this->m_pitches.at(1)).getPitch(), staff->testcle( this->xrel ), (this->m_pitches.at(1)).getOctave()) + staff->yrel;
+		ynn2 = ynn + (m_r->_espace[pTaille])*((this->m_pitches.at(1)).pitch);
 		if (ynn2 == ynn)
 			dx = CLIVIS_X_SAME;
 		else dx = CLIVIS_X_DIFF;
@@ -255,12 +263,37 @@ void MusNeume::DrawNeume( AxDC *dc, MusStaff *staff )
 	else if (this->m_type==NEUME_TYPE_VIRGA) {
 		leg_line( dc, ynn,bby,this->xrel,ledge, pTaille);
 		m_r->festa_string( dc, xn, ynn + 19, nPUNCTUM, staff, this->dimin);
-		m_r->festa_string( dc, xn, ynn + 19, '#', staff, this->dimin); //bottom right stem
+		m_r->festa_string( dc, xn + PUNCT_WIDTH, ynn + 19, '#', staff, this->dimin); //bottom right stem
+	}
+	else if (this->m_type==NEUME_TYPE_TORCULUS) {
+		leg_line( dc, ynn,bby,this->xrel,ledge, pTaille);
+		m_r->festa_string( dc, xn, ynn + 19, nPUNCTUM, staff, this->dimin);
+		int ynn2 = ynn + (m_r->_espace[pTaille])*((this->m_pitches.at(1)).pitch);
+		this->NeumeLine( dc, staff, xn + 9, xn + 9, ynn, ynn2);
+		xn += PUNCT_WIDTH - 2;
+		leg_line( dc, ynn2,bby,xn,ledge, pTaille);
+		m_r->festa_string( dc, xn, ynn2 + 19, nPUNCTUM, staff, this->dimin);
+		int ynn3 = ynn + (m_r->_espace[pTaille])*((this->m_pitches.at(2)).pitch);
+		xn += PUNCT_WIDTH - 2;
+		this->NeumeLine( dc, staff, xn + 1, xn + 1, ynn2, ynn3);
+		leg_line( dc, ynn3,bby,xn,ledge, pTaille);
+		m_r->festa_string( dc, xn, ynn3 + 19, nPUNCTUM, staff, this->dimin);
+		
+	}
+	else if (this->m_type==NEUME_TYPE_PORRECTUS) {
+		leg_line( dc, ynn,bby,this->xrel,ledge, pTaille);
+		m_r->festa_string( dc, xn, ynn + 19, '3', staff, this->dimin);
+		m_r->festa_string( dc, xn, ynn + 19, nPORRECT_(0-(this->m_pitches.at(1)), staff, this->dimin);
+		
+	else if (this->m_type==NEUME_TYPE_PUNCTUM) {
+		leg_line( dc, ynn,bby,this->xrel,ledge, pTaille); //draw ledger lines
+		m_r->festa_string( dc, xn, ynn + 19, nPUNCTUM, staff, this->dimin); //draw punctum
+	}
+	else if (this->m_type==NEUME_TYPE_PUNCTUM_INCLINATUM) {
+		leg_line( dc, ynn,bby,this->xrel,ledge, pTaille); //draw ledger lines
+		m_r->festa_string( dc, xn, ynn + 19, nDIAMOND, staff, this->dimin); //draw punctum inclinatum
 	}
 
-	 
-	leg_line( dc, ynn,bby,this->xrel,ledge, pTaille); //draw ledger lines
-	m_r->festa_string( dc, xn, ynn + 19, nPUNCTUM, staff, this->dimin); //draw punctum
 }
 
 
