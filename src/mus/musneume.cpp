@@ -94,6 +94,7 @@ MusNeume::MusNeume() : MusElement() {
 	m_pitches.push_back(third);
 	m_pitches.push_back(fourth);
 	m_pitches.push_back(fifth);
+	m_meiref = 0; //this is necessary to avoid garbage when things aren't called from MEIs.
 }
 
 // Copy an existing neume
@@ -102,12 +103,13 @@ MusNeume::MusNeume( const MusNeume &neume) :
 	TYPE = neume.TYPE;
 	m_type = neume.m_type;
 	m_pitches = neume.m_pitches;
+	m_meiref = neume.m_meiref;
 }
 
 /**
  * Create a neume from an MeiElement.
  */
-MusNeume::MusNeume(MeiElement &element) /*: MusElement() ??? */ {
+MusNeume::MusNeume(MeiElement &element) {
     m_meiref = &element;
     MeiAttribute *nameattr = m_meiref->getAttribute("name");
     MeiAttribute *variantattr = m_meiref->getAttribute("variant");
@@ -184,7 +186,7 @@ vector<MusNeumeElement> MusNeume::getPitches() {
 }
 
 
-//same as MusNote. Refactor?
+//same as MusNote, except for the MEI stuff.
 void MusNeume::SetPitch( int pitch, int oct )
 {
 	if ( this->TYPE != NEUME )
@@ -198,6 +200,28 @@ void MusNeume::SetPitch( int pitch, int oct )
 	
 	if (m_r)
 		m_r->DoRefresh();
+	if (m_meiref) {
+		vector<MeiElement> children = m_meiref->getChildren();
+		for (vector<MeiElement>::iterator i = children.begin(); i != children.end(); i++) {
+			MeiElement e = *i;
+			if (e.getName() == "note") {
+				int thispitch = ((this->m_pitches.at(distance(children.begin(), i))).pitchDifference + pitch)%7;
+				string value;
+				switch (thispitch) {
+					case 0: value = 'b'; break;
+					case 1: value = 'c'; break;
+					case 2: value = 'd'; break;
+					case 3: value = 'e'; break;
+					case 4: value = 'f'; break;
+					case 5: value = 'g'; break;
+					case 6: value = 'a'; break;
+					default: break;
+				}
+			(e.getAttribute("pname"))->setValue(value);
+			//still need code for updating the octave attribute.
+			}
+		}
+	}
 }
 
 void MusNeume::Draw( AxDC *dc, MusStaff *staff)
@@ -331,7 +355,7 @@ void MusNeume::DrawNeume( AxDC *dc, MusStaff *staff )
 		leg_line( dc, ynn,bby,xn,ledge, pTaille);
 		m_r->festa_string( dc, xn, ynn + 19, nPUNCTUM, staff, this->dimin);
 	}
-	else if (this->m_type==NEUME_TYPE_COMPOUND) {
+	else if (this->m_type==NEUME_TYPE_COMPOUND) { //this is cheating, but should do the job, more or less. Just draws a box around where all the neumes of the compound are, approximately.
 		leg_line( dc, ynn,bby,this->xrel,ledge, pTaille);
 		m_r->festa_string( dc, xn, ynn + 19, nPUNCTUM, staff, this->dimin);
 		int dx = (PUNCT_WIDTH + 1)*(this->m_pitches.size());
@@ -359,7 +383,7 @@ void MusNeume::DrawNeume( AxDC *dc, MusStaff *staff )
 }
 
 
-//Also same as MusNote.
+//Also same as MusNote. Could use an update, since it fails to draw ledger lines immediately below the staff.
 void MusNeume::leg_line( AxDC *dc, int y_n, int y_p, int xn, unsigned int smaller, int pTaille)
 {
 	int yn, ynt, yh, yb, test, v_decal = m_r->_interl[pTaille];
