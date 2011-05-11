@@ -20,6 +20,9 @@
 #include "musrc.h"
 #include "muspage.h"
 #include "musfile.h"
+#include "neumedef.h"
+
+//We could include a method here for creating a clef from an MeiElement, and declare it in MusSymbol.
 
 /* Calcule l'offset de la cle; doit etre separe de cle_id pour pouvoir
   etre appele depuis rd_symbol() en cas de changement de definition.
@@ -42,6 +45,15 @@ void MusSymbol::calcoffs (int *offst, int clid)
 		case UT3 : *offst = 4; break;
 		case UT5 : *offst = 8; break;
 		case UT4 : *offst =  6;
+		case nC1 : *offst = 0; break;
+		case nC2 : *offst = 2; break;
+		case nC3 : *offst = 4; break;
+		case nC4 : *offst = 6; break;
+		case nF1 : *offst = 4; break;
+		case nF2 : *offst = 6; break;
+		case nF3 : *offst = 8; break;
+		case nF4 : *offst = 10; break;
+		
 		default: break;
 	}
 	return;
@@ -91,8 +103,9 @@ void MusSymbol::dess_cle ( AxDC *dc, int i, MusStaff *pportee)
  *	au depart; ne faire operation sur b qu'une fois pour cas semblables,
  *  et au palier commun superieur, incrementer sym, sans break.
  */
+	wxString sym2;
 	switch(this->code)	// cleid
-	{	
+	{	//will include conditions for neumatic mode.
 		case UT1 : sym += 2;
 		case SOL1 : b -= m_r->_portee[ pportee->pTaille ]; break;
 		case SOLva : sym += 1;
@@ -106,6 +119,14 @@ void MusSymbol::dess_cle ( AxDC *dc, int i, MusStaff *pportee)
 		case UT5 :  sym += 2; break;
 		case CLEPERC :  b -= m_r->_interl[ pportee->pTaille ]*2;
 					sym = sPERC; break;
+		case nC1 : sym2 = nC_CLEF; b -= m_r->_interl[ pportee->pTaille ]*3; break;
+		case nF1 : sym2 = nF_CLEF; b -= m_r->_interl[ pportee->pTaille ]*3; break;
+		case nC2 : sym2 = nC_CLEF; b -= m_r->_interl[ pportee->pTaille ]*2; break;
+		case nF2 : sym2 = nF_CLEF; b -= m_r->_interl[ pportee->pTaille ]*2; break;
+		case nC3 : sym2 = nC_CLEF; b -= m_r->_interl[ pportee->pTaille ]; break;
+		case nF3 : sym2 = nF_CLEF; b -= m_r->_interl[ pportee->pTaille ]; break;
+		case nC4 : sym2 = nC_CLEF; break;
+		case nF4 : sym2 = nF_CLEF; break;
 		default: break;
 	}
 
@@ -114,7 +135,8 @@ void MusSymbol::dess_cle ( AxDC *dc, int i, MusStaff *pportee)
 		a+= m_r->_pas;
 
 	//if ((!this->ElemInvisible || illumine) && (!modMetafile || in (chk->xrel, drawRect.left, drawRect.right) && in (b, drawRect.top, drawRect.bottom)))
-		m_r->putfont ( dc,a,b,(int)sym, pportee, this->dimin, SYMB );
+		if (m_r->m_notation_mode==MUS_MENSURAL_MODE) m_r->putfont ( dc,a,b,(int)sym, pportee, this->dimin, SYMB );
+		else if (m_r->m_notation_mode==MUS_NEUMATIC_MODE) m_r->festa_string(dc, a, b, sym2, pportee, this->dimin);
 	dimin = dim;
 
 	char dum = 0;
