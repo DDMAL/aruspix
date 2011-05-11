@@ -138,8 +138,11 @@ enum {
     ID_NU_BT_N_DOT,
 
     // Neume clefs
-    ID_NU_BT_C0,
-    ID_NU_BT_C1,
+    ID_NU_BT_C0, // C
+    ID_NU_BT_C1, 
+    ID_NU_BT_C2,
+    ID_NU_BT_C3, // F
+    ID_NU_BT_C4,
     ID_NU_BT_COMMA,
     ID_NU_BT_FLAT,
     ID_NU_BT_SHARP,
@@ -223,7 +226,7 @@ private:
     void OnKey( wxCommandEvent &event );
     void OnNote( wxCommandEvent &event );
     void OnNeume( wxCommandEvent &event );
-    void OnSquareClef( wxCommandEvent &event );
+    void OnNeumeClef( wxCommandEvent &event );
     void OnText( wxCommandEvent &event );
     // toggle buttons handling
     void OnUpdateUI( wxUpdateUIEvent &event );

@@ -207,8 +207,11 @@ void MusToolRow::UpdateTools( int type, int notation_mode )
 		AddTool(ID_NU_BT_N_DOT, "", MusToolPanel::GetToolbarBitmap( "neume_dot.png" ));
         break;
 	case (NEUME_TOOLS_SYMBOLS):
-        AddTool(ID_NU_BT_C0, "", MusToolPanel::GetToolbarBitmap( "clef_neume_c.png" ));
-        AddTool(ID_NU_BT_C1, "", MusToolPanel::GetToolbarBitmap( "clef_neume_f.png" ));
+        AddTool(ID_NU_BT_C0, "", MusToolPanel::GetToolbarBitmap( "clef_neume_c1.png" ));
+        AddTool(ID_NU_BT_C1, "", MusToolPanel::GetToolbarBitmap( "clef_neume_c2.png" ));
+        AddTool(ID_NU_BT_C2, "", MusToolPanel::GetToolbarBitmap( "clef_neume_c3.png" ));
+        AddTool(ID_NU_BT_C3, "", MusToolPanel::GetToolbarBitmap( "clef_neume_f1.png" ));
+        AddTool(ID_NU_BT_C4, "", MusToolPanel::GetToolbarBitmap( "clef_neume_f2.png" ));
 		AddTool(ID_NU_BT_COMMA, "", MusToolPanel::GetToolbarBitmap( "symb_neume_comma.png" ));
 		AddTool(ID_NU_BT_FLAT, "", MusToolPanel::GetToolbarBitmap( "symb_neume_flat.png" ));
 		AddTool(ID_NU_BT_SHARP, "", MusToolPanel::GetToolbarBitmap( "symb_neume_sharp.png" ));
@@ -239,7 +242,7 @@ BEGIN_EVENT_TABLE(MusToolPanel,wxPanel)
     EVT_MENU_RANGE( ID_MS_BT_MTPP, ID_MS_BT_M2, MusToolPanel::OnSign )
     EVT_MENU_RANGE( ID_MS_BT_DOT, ID_MS_BT_BAR, MusToolPanel::OnSymbol )
     EVT_MENU_RANGE( ID_NU_BT_N0, ID_NU_BT_N5, MusToolPanel::OnNeume )
-    EVT_MENU_RANGE( ID_NU_BT_C0, ID_NU_BT_C1, MusToolPanel::OnSquareClef )
+    EVT_MENU_RANGE( ID_NU_BT_C0, ID_NU_BT_C4, MusToolPanel::OnNeumeClef )
     EVT_MENU( ID_MS_BT_TEXT, MusToolPanel::OnText )
     EVT_UPDATE_UI_RANGE(ID_MS_BT_CHANGE_TOOL_START, ID_MS_BT_TEXT, MusToolPanel::OnUpdateUI)
     // measure controls
@@ -526,12 +529,15 @@ void MusToolPanel::OnNeume( wxCommandEvent &event )
     SendEvent(kevent);
 }
 
-void MusToolPanel::OnSquareClef( wxCommandEvent &event ) {
+void MusToolPanel::OnNeumeClef( wxCommandEvent &event ) {
     int value = '0';
     switch ( event.GetId() )
     {
         case (ID_NU_BT_C0): value = '1'; break;
         case (ID_NU_BT_C1): value = '2'; break;
+        case (ID_NU_BT_C2): value = '2'; break;
+        case (ID_NU_BT_C3): value = '2'; break;
+        case (ID_NU_BT_C4): value = '2'; break;
     }
     
     wxKeyEvent kevent;
