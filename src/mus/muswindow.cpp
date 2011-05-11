@@ -1393,15 +1393,6 @@ void MusWindow::MensuralEditOnKeyDown(wxKeyEvent &event) {
         CheckPoint( UNDO_PART, MUS_UNDO_STAFF );
         OnEndEdition();
     }
-    else if ( m_currentElement && m_currentElement->IsNeume() &&
-             (in( noteKeyCode, 0, 5 )))
-    {
-        PrepareCheckPoint( UNDO_PART, MUS_UNDO_STAFF );
-        int vflag = ( event.m_controlDown || (noteKeyCode == CUSTOS)) ? 1 : 0;
-        m_currentElement->SetValue( noteKeyCode , m_currentStaff, vflag );
-        CheckPoint( UNDO_PART, MUS_UNDO_STAFF );
-        OnEndEdition();
-    }
     else if ( m_currentElement && m_currentElement->IsNote() && 
 			 (event.m_keyCode == 'L')  ) // Ligature 
     {	
