@@ -73,12 +73,14 @@ SET( aruspixSources ${aruspixSources}
 	../src/mus/musgraph.cpp
 	../src/mus/musiobin.cpp
 	../src/mus/musiocmme.cpp
-	../src/mus/musiomei.cpp
+    #../src/mus/musiomei.cpp
+	../src/mus/musiomei2.cpp
 	../src/mus/musiomlf.cpp
 	../src/mus/musiowwg.cpp
 	../src/mus/musioxml.cpp
 	../src/mus/musmlfdic.cpp
 	../src/mus/musneume.cpp
+	../src/mus/musneumesymbol.cpp
 	../src/mus/musnote.cpp
 	../src/mus/musobject.cpp
 	../src/mus/muspage.cpp
@@ -189,5 +191,12 @@ if( AX_BUILD_TESTS )
                   ../src/mus/musobject.cpp
                   ../src/mus/muselement.cpp
                   ../src/mus/musneume.cpp )
+
+#    add_ax_test ( ../test/mus/musiomei2_test.cpp
+#                  ../src/mus/musiomei2.cpp
+#                  ../src/mus/musfile.cpp
+#                  ../src/mus/muspage.cpp
+#                  ../src/mus/mussymbol.cpp
+#                  ../src/mus/musstaff.cpp )
 
 endif( AX_BUILD_TESTS )
