@@ -21,6 +21,8 @@
 #define nPORRECT_3 'l'		// three steps down porrectus
 #define nPORRECT_4 'm'		// four steps down porrectus
 #define nNEXT_PITCH 't'		// end-of-line next pitch marker
+#define nC_CLEF 'y'         // C clef
+#define nF_CLEF 'z'			// F clef
 
 #define nVIRGA 5	// convenience - for use with SetValue(int) 
 

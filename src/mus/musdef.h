@@ -134,6 +134,17 @@ VERSION DOS.*/
 #define FA5 10
 #define UT5 11
 #define CLEPERC 12
+//neumatic clefs
+#define nC1 13
+#define nC2 14
+#define nC3 15
+#define nC4 16
+#define nF1 17
+#define nF2 18
+#define nF3 19
+#define nF4 20
+
+
 
 /* F1...F10-> clavier musical. Dans le fichier ne sont codees que les
    valeurs F2 -- F8 (=1-7). F9 devient F1 a l'octave sup. */
