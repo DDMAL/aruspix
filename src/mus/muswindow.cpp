@@ -453,6 +453,11 @@ void MusWindow::SetEditorMode( MusEditorMode mode )
 				m_symbol = *(MusSymbol*)m_currentElement;
 				m_newElement = &m_symbol;
 			}
+			else if ( m_currentElement->IsNeumeSymbol() )
+			{
+				m_neumesymbol = *(MusNeumeSymbol*)m_currentElement;
+				m_newElement = &m_neumesymbol;
+			}
 			else if ( m_currentElement->IsNeume() )
 			{
 				m_neume = *(MusNeume*)m_currentElement;
@@ -539,9 +544,9 @@ int MusWindow::GetToolType()
         }
     }
     else if (m_notation_mode == MUS_NEUMATIC_MODE) {
-        if ( sync->IsSymbol() )
+        if ( sync->IsNeumeSymbol() )
         {
-                return NEUME_TOOLS_SYMBOLS;
+			return NEUME_TOOLS_SYMBOLS;
         } 
         else if (sync->IsNeume() )
         {
@@ -582,6 +587,8 @@ void MusWindow::Copy()
 		m_bufferElement = new MusNote( *(MusNote*)m_currentElement );
 	else if (m_currentElement->IsNeume() )
 		m_bufferElement = new MusNeume( *(MusNeume*)m_currentElement );
+	else if (m_currentElement->IsNeumeSymbol() )
+		m_bufferElement = new MusNeumeSymbol( *(MusNeumeSymbol*)m_currentElement );
 }
 
 void MusWindow::Cut()
@@ -1229,7 +1236,7 @@ void MusWindow::NeumeEditOnKeyDown(wxKeyEvent &event) {
         m_currentStaff->CheckIntegrity();
         CheckPoint( UNDO_PART, MUS_UNDO_STAFF );
     }
-    else if ( m_currentElement && m_currentElement->IsSymbol() &&
+    else if ( m_currentElement && m_currentElement->IsNeumeSymbol() &&
              in( event.m_keyCode, 33, 125) ) // any other keycode on symbol (ascii codes)
     {
         PrepareCheckPoint( UNDO_PART, MUS_UNDO_STAFF );
@@ -1252,16 +1259,16 @@ void MusWindow::NeumeInsertOnKeyDown(wxKeyEvent &event) {
     }	
     else if ( event.m_controlDown && (event.m_keyCode == 'S')) // symbols
     {
-        m_symbol.ResetToSymbol();
-        m_newElement = &m_symbol;
-    }	
+        m_neumesymbol.ResetToNeumeSymbol();
+        m_newElement = &m_neumesymbol;
+    }
     else if ( m_newElement && m_newElement->IsNeume() &&
              (in( noteKeyCode, 0, 5 )))
     {
         int vflag = ( event.m_controlDown || (noteKeyCode == CUSTOS)) ? 1 : 0;
         m_newElement->SetValue( noteKeyCode , NULL, vflag );
     }
-    else if ( m_newElement && m_newElement->IsSymbol() &&
+    else if ( m_newElement && m_newElement->IsNeumeSymbol() &&
 			 in( event.m_keyCode, 33, 125) ) // any other keycode on symbol (ascii codes)
     {
         int vflag = ( event.m_controlDown ) ? 1 : 0;

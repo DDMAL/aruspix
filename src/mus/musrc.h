@@ -29,6 +29,7 @@ class MusStaff;
 #include "musnote.h"
 #include "musneume.h"
 #include "mussymbol.h"
+#include "musneumesymbol.h"
 
 //----------------------------------------------------------------------------
 // MusRC

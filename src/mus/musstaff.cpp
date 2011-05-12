@@ -21,6 +21,7 @@
 #include "mussymbol.h"
 #include "musnote.h"
 #include "musneume.h"
+#include "musneumesymbol.h"
 #include "muspage.h"
 #include "musrc.h"
 
@@ -93,6 +94,11 @@ MusStaff::MusStaff( const MusStaff& staff )
 		{
 			MusNeume *nneume = new MusNeume( *(MusNeume*)&staff.m_elements[i] );
 			this->m_elements.Add( nneume );
+		}
+		else if ( staff.m_elements[i].IsNeumeSymbol() )
+		{
+			MusNeumeSymbol *nneumesymbol = new MusNeumeSymbol( *(MusNeumeSymbol*)&staff.m_elements[i] );
+			this->m_elements.Add( nneumesymbol );
 		}
 	}
 }
@@ -246,6 +252,8 @@ MusElement *MusStaff::Insert( MusElement *element )
 		element = new MusNote( *(MusNote*)element );
 	else if ( element->IsNeume() )
 		element = new MusNeume( *(MusNeume*)element );
+	else if ( element->IsNeumeSymbol() )
+		element = new MusNeumeSymbol( *(MusNeumeSymbol*)element );
 //	else if ( element->IsNeume() ) 
 //	{
 	//	//copying a neume causes issues

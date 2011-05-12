@@ -42,7 +42,8 @@ public:
 	int  filtrpitch(int pitchElement, int *oct);
 	bool IsNote() { return ( TYPE == NOTE ); }
 	bool IsSymbol() { return ( TYPE == SYMB ); }
-    bool IsNeume() { return ( TYPE == NEUME ); } 
+    bool IsNeume() { return ( TYPE == NEUME ); }
+	bool IsNeumeSymbol() { return (TYPE == NEUME_SYMB ); }
 
     //	virtual void SetPitch( int code, int oct, MusStaff *staff = NULL ) {};
 	virtual void SetPitch( int code, int oct ) {};

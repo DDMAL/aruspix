@@ -15,6 +15,8 @@
 
 #include "muselement.h"
 
+#include <mei/mei.h>
+
 enum MusNeumeSymbolType {
     NEUME_SYMB_COMMA,
     NEUME_SYMB_FLAT,
@@ -31,15 +33,25 @@ enum MusNeumeSymbolType {
 class MusNeumeSymbol : public MusElement {
 public:
 	MusNeumeSymbol();
-    MusNeumeSymbol(MusNeumeSymbolType type);
+	MusNeumeSymbol(MeiElement &meielement);
 	MusNeumeSymbol(const MusNeumeSymbol &symbol);
 	virtual ~MusNeumeSymbol() {}
 	
+	void calcoffs (int *offst, int value);
     void SetSymbolType(MusNeumeSymbolType type);
-    
+	void SetValue(int value, MusStaff *staff, int flag);
+	void ResetToNeumeSymbol();
+	void ResetToClef();
+	unsigned char getValue();
+	
+	//drawing code
+	virtual void Draw(AxDC *dc, MusStaff *staff);
+	void DrawClef(AxDC *dc, MusStaff *staff);
+
 private:
     MusNeumeSymbolType symbolType;
-    
+	unsigned char value;
+	MeiElement *m_meiref;    
 
 };
 

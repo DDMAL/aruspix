@@ -127,6 +127,7 @@ public:
 	MusNote m_note;
 	MusSymbol m_symbol;
 	MusNeume m_neume;
+	MusNeumeSymbol m_neumesymbol;
 
 	int m_insertx;
 	int m_insertcode;

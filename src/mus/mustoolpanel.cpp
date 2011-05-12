@@ -535,9 +535,9 @@ void MusToolPanel::OnNeumeClef( wxCommandEvent &event ) {
     {
         case (ID_NU_BT_C0): value = '1'; break;
         case (ID_NU_BT_C1): value = '2'; break;
-        case (ID_NU_BT_C2): value = '2'; break;
-        case (ID_NU_BT_C3): value = '2'; break;
-        case (ID_NU_BT_C4): value = '2'; break;
+        case (ID_NU_BT_C2): value = '3'; break;
+        case (ID_NU_BT_C3): value = '4'; break;
+        case (ID_NU_BT_C4): value = '5'; break;
     }
     
     wxKeyEvent kevent;

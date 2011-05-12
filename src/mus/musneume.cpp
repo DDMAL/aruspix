@@ -204,13 +204,13 @@ void MusNeume::SetPitch( int pitch, int oct )
 				int thispitch = ((this->m_pitches.at(distance(children.begin(), i))).getPitchDifference() + pitch)%7;
 				string value;
 				switch (thispitch) {
-					case 0: value = 'b'; break;
-					case 1: value = 'c'; break;
-					case 2: value = 'd'; break;
-					case 3: value = 'e'; break;
-					case 4: value = 'f'; break;
-					case 5: value = 'g'; break;
-					case 6: value = 'a'; break;
+					case 0: value = "b"; break;
+					case 1: value = "c"; break;
+					case 2: value = "d"; break;
+					case 3: value = "e"; break;
+					case 4: value = "f"; break;
+					case 5: value = "g"; break;
+					case 6: value = "a"; break;
 					default: break;
 				}
 			(e.getAttribute("pname"))->setValue(value);
