@@ -42,7 +42,7 @@
 #include "mus/musfile.h"
 #include "mus/musiowwg.h"
 #include "mus/musiocmme.h"
-#include "mus/musiomei.h"
+#include "mus/musiomei2.h"
 #include "mus/mustoolpanel.h"
 
 // statics

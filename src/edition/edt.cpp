@@ -33,7 +33,7 @@
 #include "mus/musiomlf.h"
 
 // experimental
-#include "mus/musiomei.h"  
+#include "mus/musiomei2.h"
 #include "mus/mussvgdc.h"
 
 
