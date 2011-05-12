@@ -49,21 +49,15 @@ enum NeumeType {
 class MusNeumeElement
 {
 public:
-	MusNeumeElement( int pitchDiff);
-	MusNeumeElement( int _pitch, int _oct );
-	MusNeumeElement( const MusNeumeElement &element );
-    MusNeumeElement(MeiElement &meielement);
+	MusNeumeElement(const MusNeumeElement &element);
+    MusNeumeElement(MeiElement &meielement, int pitch, int oct);
 	virtual ~MusNeumeElement() {};
     
-    int getPitch();
-	int getOctave();
-	int pitchDifference;
-	int pitch;
-	
+    int getPitchDifference();
+
 private:
-	int octave;
+	int m_pitch_difference;
 	
-    wxString m_pitch;
 	NeumeOrnament ornament;
     MeiElement *m_meiref;
 }; 
