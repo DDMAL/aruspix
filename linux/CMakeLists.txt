@@ -190,7 +190,8 @@ if( AX_BUILD_TESTS )
     add_ax_test ( ../test/mus/musneume_test.cpp
                   ../src/mus/musobject.cpp
                   ../src/mus/muselement.cpp
-                  ../src/mus/musneume.cpp )
+                  ../src/mus/musneume.cpp
+                  ../test/fakemusrc.cpp )
 
 #    add_ax_test ( ../test/mus/musiomei2_test.cpp
 #                  ../src/mus/musiomei2.cpp
