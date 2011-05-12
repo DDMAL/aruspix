@@ -80,7 +80,15 @@ public:
 	//Drawing code
 	virtual void Draw( AxDC *dc, MusStaff *staff);
 	void NeumeLine( AxDC *dc, MusStaff *staff, int x1, int x2, int y1, int y2);
-	void DrawNeume( AxDC *dc, MusStaff *staff);
+	void DrawPunctum( AxDC *dc, MusStaff *staff);
+	void DrawPunctumInclinatum( AxDC *dc, MusStaff *staff);
+	void DrawVirga( AxDC *dc, MusStaff *staff);
+	void DrawPodatus( AxDC *dc, MusStaff *staff);
+	void DrawClivis( AxDC *dc, MusStaff *staff);
+	void DrawPorrectus( AxDC *dc, MusStaff *staff);
+	void DrawScandicus( AxDC *dc, MusStaff *staff);
+	void DrawTorculus( AxDC *dc, MusStaff *staff);
+	void DrawCompound( AxDC *dc, MusStaff *staff);
 	void leg_line( AxDC *dc, int y_n, int y_p, int xn, unsigned int smaller, int pTaille);
 
 	//void append( AxDC *dc, MusStaff *staff ); //for creating multi-note neumes
