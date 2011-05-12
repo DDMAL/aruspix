@@ -78,11 +78,14 @@ TEST(NeumeTest, TestMakeOneNoteElement) {
     MeiElement no1 = MeiElement("note");
     ne.addAttribute(MeiAttribute("name", "punctum"));
     no1.addAttribute(MeiAttribute("pname", "g"));
+    no1.addAttribute(MeiAttribute("oct", "4"));
     ne.addChild(no1);
     
     MusNeume mus = MusNeume(ne);
+    ASSERT_EQ(mus.pitch, 7);
+    ASSERT_EQ(mus.oct, 4);
     ASSERT_EQ(mus.getPitches().size(), 1);
-    ASSERT_EQ(mus.getPitches().at(0).getPitch(), "g");
+    ASSERT_EQ(mus.getPitches().at(0).getPitchDifference(), 0);
 }
 
 TEST(NeumeTest, TestMakeManyNoteElements) {
@@ -92,8 +95,11 @@ TEST(NeumeTest, TestMakeManyNoteElements) {
     MeiElement no3 = MeiElement("note");
     ne.addAttribute(MeiAttribute("name", "torculus"));
     no1.addAttribute(MeiAttribute("pname", "c"));
+    no1.addAttribute(MeiAttribute("oct", "4"));
     no2.addAttribute(MeiAttribute("pname", "d"));
+    no2.addAttribute(MeiAttribute("oct", "4"));
     no3.addAttribute(MeiAttribute("pname", "c"));
+    no3.addAttribute(MeiAttribute("oct", "4"));
     ne.addChild(no1);
     ne.addChild(no2);
     ne.addChild(no3);
@@ -102,15 +108,62 @@ TEST(NeumeTest, TestMakeManyNoteElements) {
 	ASSERT_EQ(mus.getType(), NEUME_TYPE_TORCULUS);
     
     ASSERT_EQ(mus.getPitches().size(), 3);
-    ASSERT_EQ(mus.getPitches().at(0).getPitch(), "c");
-    ASSERT_EQ(mus.getPitches().at(1).getPitch(), "d");
-    ASSERT_EQ(mus.getPitches().at(2).getPitch(), "c");
+    ASSERT_EQ(mus.pitch, 7);
+    ASSERT_EQ(mus.oct, 4);
+    ASSERT_EQ(mus.getPitches().at(0).getPitchDifference(), 0);
+    ASSERT_EQ(mus.getPitches().at(1).getPitchDifference(), 1);
+    ASSERT_EQ(mus.getPitches().at(2).getPitchDifference(), 0);
+}
+
+TEST(NeumeTest, TestSkipOctaveUp) {
+	MeiElement ne = MeiElement("nemume");
+    MeiElement no1 = MeiElement("note");
+    MeiElement no2 = MeiElement("note");
+    ne.addAttribute(MeiAttribute("name", "podatud"));
+    no1.addAttribute(MeiAttribute("pname", "g"));
+    no1.addAttribute(MeiAttribute("oct", "4"));
+    no2.addAttribute(MeiAttribute("pname", "a"));
+    no2.addAttribute(MeiAttribute("oct", "5"));
+    ne.addChild(no1);
+    ne.addChild(no2);
+    
+    MusNeume mus = MusNeume(ne);
+	ASSERT_EQ(mus.getType(), NEUME_TYPE_PODATUS);
+    
+    ASSERT_EQ(mus.getPitches().size(), 2);
+    ASSERT_EQ(mus.pitch, 7);
+    ASSERT_EQ(mus.oct, 4);
+    ASSERT_EQ(mus.getPitches().at(0).getPitchDifference(), 0);
+    ASSERT_EQ(mus.getPitches().at(1).getPitchDifference(), 1);
 }
 
 TEST(NeumeElementTest, TestMakeElement) {
     MeiElement note = MeiElement("note");
     note.addAttribute(MeiAttribute("pname", "c"));
+    note.addAttribute(MeiAttribute("oct", "4"));
     
-    MusNeumeElement mus = MusNeumeElement(note);
-    ASSERT_EQ(mus.getPitch(), "c");
+    MusNeumeElement mus = MusNeumeElement(note, 1, 4);
+    ASSERT_EQ(mus.getPitchDifference(), 0);
+}
+
+TEST(NeumeElementTest, TestMissingPitch) {
+    MeiElement note = MeiElement("note");
+    note.addAttribute(MeiAttribute("oct", "4"));
+    try { 
+        MusNeumeElement mus = MusNeumeElement(note, 1, 4);
+        ASSERT_TRUE(false);
+    } catch (...) {
+        ASSERT_TRUE(true);
+    }
+}
+
+TEST(NeumeElementTest, TestMissingOctave) {
+    MeiElement note = MeiElement("note");
+    note.addAttribute(MeiAttribute("pname", "c"));
+    try {
+        MusNeumeElement mus = MusNeumeElement(note, 1, 4);
+        ASSERT_TRUE(false);
+    } catch (...) {
+        ASSERT_TRUE(true);
+    }
 }
