@@ -73,11 +73,16 @@
 		57CA54270D34139D001FC334 /* axabout_wdr.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 57CA54210D34139D001FC334 /* axabout_wdr.cpp */; };
 		57EA3DE50C00BDEB00414247 /* recbookctrl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 57EA3DE30C00BDEB00414247 /* recbookctrl.cpp */; };
 		A125A6741342A4B30038F7BC /* musneume.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4DC24AB5119B72C900B2EF98 /* musneume.cpp */; };
+		A12B0561137C50AF007D2546 /* gtest_main.cc in Sources */ = {isa = PBXBuildFile; fileRef = A12B055F137C50AF007D2546 /* gtest_main.cc */; };
+		A12B0572137C515B007D2546 /* mei.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 40704FA61371EB2400815A80 /* mei.framework */; };
+		A12B05BD137C53F8007D2546 /* musiomei2.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 40DBC8AC137C43E400EF3099 /* musiomei2.cpp */; };
+		A12B05BE137C53FE007D2546 /* musiomei2_test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A12B0562137C50BC007D2546 /* musiomei2_test.cpp */; };
+		A12B05D3137C57FF007D2546 /* musfile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D3A8FD80D35867200BBC1FB /* musfile.cpp */; };
+		A12B065D137C6AA6007D2546 /* fakemus.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A12B065C137C6AA6007D2546 /* fakemus.cpp */; };
 		A1A4B5D41343818B00897C5E /* muselement.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D3A8FD60D35867200BBC1FB /* muselement.cpp */; };
 		A1A4B5DD134381A200897C5E /* musobject.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D3A8FE10D35867200BBC1FB /* musobject.cpp */; };
 		A1A6E0D813422A7D0024A821 /* musneumesymbol.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A1A6E0D713422A7D0024A821 /* musneumesymbol.cpp */; };
 		A1A6E1851342549B0024A821 /* musneume_test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A1A6E1841342549B0024A821 /* musneume_test.cpp */; };
-		A1A6E189134254F00024A821 /* gtest_main.cc in Sources */ = {isa = PBXBuildFile; fileRef = A1A6E188134254F00024A821 /* gtest_main.cc */; };
 		A1A6E1A0134255390024A821 /* gtest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A1A6E174134253F40024A821 /* gtest.framework */; };
 		A58524CE0A1B9604002D9D8A /* axapp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A58524560A1B9604002D9D8A /* axapp.cpp */; };
 		A58524CF0A1B9604002D9D8A /* axenv.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A58524580A1B9604002D9D8A /* axenv.cpp */; };
@@ -228,12 +233,14 @@
 		57EA3DE30C00BDEB00414247 /* recbookctrl.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = recbookctrl.cpp; sourceTree = "<group>"; };
 		57EA3DE40C00BDEB00414247 /* recbookctrl.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = recbookctrl.h; sourceTree = "<group>"; };
 		6718EA9B11C14AAC00734117 /* neumedef.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = neumedef.h; path = ../src/mus/neumedef.h; sourceTree = SOURCE_ROOT; };
+		A12B055F137C50AF007D2546 /* gtest_main.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = gtest_main.cc; path = ../test/gtest_main.cc; sourceTree = SOURCE_ROOT; };
+		A12B0562137C50BC007D2546 /* musiomei2_test.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = musiomei2_test.cpp; path = ../test/mus/musiomei2_test.cpp; sourceTree = SOURCE_ROOT; };
+		A12B065C137C6AA6007D2546 /* fakemus.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = fakemus.cpp; path = ../test/fakemus.cpp; sourceTree = SOURCE_ROOT; };
 		A1A6E0D613422A7D0024A821 /* musneumesymbol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = musneumesymbol.h; path = ../src/mus/musneumesymbol.h; sourceTree = SOURCE_ROOT; };
 		A1A6E0D713422A7D0024A821 /* musneumesymbol.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = musneumesymbol.cpp; path = ../src/mus/musneumesymbol.cpp; sourceTree = SOURCE_ROOT; };
 		A1A6E174134253F40024A821 /* gtest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = gtest.framework; path = /Users/alastairlocal/code/gtest.framework; sourceTree = "<absolute>"; };
 		A1A6E17B134254220024A821 /* ax_test */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = ax_test; sourceTree = BUILT_PRODUCTS_DIR; };
 		A1A6E1841342549B0024A821 /* musneume_test.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = musneume_test.cpp; path = ../test/mus/musneume_test.cpp; sourceTree = SOURCE_ROOT; };
-		A1A6E188134254F00024A821 /* gtest_main.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = gtest_main.cc; path = ../test/mus/gtest_main.cc; sourceTree = SOURCE_ROOT; };
 		A50FE1390A6D6E240038D682 /* rec.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = rec.h; sourceTree = "<group>"; };
 		A58523900A1B9504002D9D8A /* Aruspix.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Aruspix.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A58524560A1B9604002D9D8A /* axapp.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = axapp.cpp; sourceTree = "<group>"; };
@@ -291,6 +298,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A12B0572137C515B007D2546 /* mei.framework in Frameworks */,
 				A1A6E1A0134255390024A821 /* gtest.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -410,7 +418,9 @@
 		A1A6E183134254650024A821 /* test */ = {
 			isa = PBXGroup;
 			children = (
-				A1A6E188134254F00024A821 /* gtest_main.cc */,
+				A12B065C137C6AA6007D2546 /* fakemus.cpp */,
+				A12B0562137C50BC007D2546 /* musiomei2_test.cpp */,
+				A12B055F137C50AF007D2546 /* gtest_main.cc */,
 				A1A6E1841342549B0024A821 /* musneume_test.cpp */,
 			);
 			name = test;
@@ -693,11 +703,15 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A12B05D3137C57FF007D2546 /* musfile.cpp in Sources */,
+				A12B05BD137C53F8007D2546 /* musiomei2.cpp in Sources */,
 				A1A4B5DD134381A200897C5E /* musobject.cpp in Sources */,
 				A1A4B5D41343818B00897C5E /* muselement.cpp in Sources */,
 				A125A6741342A4B30038F7BC /* musneume.cpp in Sources */,
 				A1A6E1851342549B0024A821 /* musneume_test.cpp in Sources */,
-				A1A6E189134254F00024A821 /* gtest_main.cc in Sources */,
+				A12B05BE137C53FE007D2546 /* musiomei2_test.cpp in Sources */,
+				A12B0561137C50AF007D2546 /* gtest_main.cc in Sources */,
+				A12B065D137C6AA6007D2546 /* fakemus.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -907,10 +921,12 @@
 					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_1)",
 					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_2)",
 					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_3)",
+					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_4)",
 				);
 				FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(SRCROOT)/../..\"";
 				FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_2 = "\"$(SRCROOT)/../../ax-libs/osx\"";
 				FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_3 = "\"$(SRCROOT)/../../..\"";
+				FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_4 = "\"$(SRCROOT)/../../ax-libs/osx\"";
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_ENABLE_FIX_AND_CONTINUE = YES;
 				GCC_MODEL_TUNING = G5;
@@ -993,10 +1009,12 @@
 					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_1)",
 					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_2)",
 					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_3)",
+					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_4)",
 				);
 				FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(SRCROOT)/../..\"";
 				FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_2 = "\"$(SRCROOT)/../../ax-libs/osx\"";
 				FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_3 = "\"$(SRCROOT)/../../..\"";
+				FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_4 = "\"$(SRCROOT)/../../ax-libs/osx\"";
 				GCC_ENABLE_FIX_AND_CONTINUE = YES;
 				GCC_MODEL_TUNING = G5;
 				INSTALL_PATH = /usr/local/bin;
@@ -1016,10 +1034,12 @@
 					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_1)",
 					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_2)",
 					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_3)",
+					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_4)",
 				);
 				FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(SRCROOT)/../..\"";
 				FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_2 = "\"$(SRCROOT)/../../ax-libs/osx\"";
 				FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_3 = "\"$(SRCROOT)/../../..\"";
+				FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_4 = "\"$(SRCROOT)/../../ax-libs/osx\"";
 				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				GCC_MODEL_TUNING = G5;
 				HEADER_SEARCH_PATHS = (

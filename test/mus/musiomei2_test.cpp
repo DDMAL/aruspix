@@ -9,6 +9,6 @@
 
 #include "musiomei2.h"
 
-TEST(NeumeTest, TestMakePunctum) {
+TEST(IoMei2Test, TestOne) {
 //  ASSERT_EQ(mus.getType(), NEUME_TYPE_PUNCTUM_INCLINATUM);
 }

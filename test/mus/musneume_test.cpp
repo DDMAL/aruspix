@@ -18,6 +18,7 @@ TEST(NeumeTest, TestMakePunctum) {
     MeiElement no = MeiElement("note");
     ne.addAttribute(MeiAttribute("name", "punctum"));
     no.addAttribute(MeiAttribute("pname", "c"));
+    no.addAttribute(MeiAttribute("oct", "4"));
     ne.addChild(no);
     
     MusNeume mus = MusNeume(ne);
@@ -119,7 +120,7 @@ TEST(NeumeTest, TestSkipOctaveUp) {
 	MeiElement ne = MeiElement("nemume");
     MeiElement no1 = MeiElement("note");
     MeiElement no2 = MeiElement("note");
-    ne.addAttribute(MeiAttribute("name", "podatud"));
+    ne.addAttribute(MeiAttribute("name", "podatus"));
     no1.addAttribute(MeiAttribute("pname", "g"));
     no1.addAttribute(MeiAttribute("oct", "4"));
     no2.addAttribute(MeiAttribute("pname", "a"));
