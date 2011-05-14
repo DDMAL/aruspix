@@ -22,12 +22,7 @@ TEST(NeumeTest, TestMakePunctum) {
     ne.addChild(no);
     
     MusNeume mus = MusNeume(ne);
-	ASSERT_EQ(mus.getType(), NEUME_TYPE_PUNCTUM);
-    
-    ne.addAttribute(MeiAttribute("variant", "inclinatum"));
-    mus = MusNeume(ne);
-	ASSERT_EQ(mus.getType(), NEUME_TYPE_PUNCTUM_INCLINATUM);
-    
+	ASSERT_EQ(mus.getType(), NEUME_TYPE_PUNCTUM);    
 }
 
 TEST(NeumeTest, TestMakeOtherTypes) {
@@ -124,7 +119,7 @@ TEST(NeumeTest, TestSkipOctaveUp) {
     no1.addAttribute(MeiAttribute("pname", "g"));
     no1.addAttribute(MeiAttribute("oct", "4"));
     no2.addAttribute(MeiAttribute("pname", "a"));
-    no2.addAttribute(MeiAttribute("oct", "5"));
+    no2.addAttribute(MeiAttribute("oct", "5")); 
     ne.addChild(no1);
     ne.addChild(no2);
     

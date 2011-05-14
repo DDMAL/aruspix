@@ -79,6 +79,8 @@
 		A12B05BE137C53FE007D2546 /* musiomei2_test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A12B0562137C50BC007D2546 /* musiomei2_test.cpp */; };
 		A12B05D3137C57FF007D2546 /* musfile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D3A8FD80D35867200BBC1FB /* musfile.cpp */; };
 		A12B065D137C6AA6007D2546 /* fakemus.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A12B065C137C6AA6007D2546 /* fakemus.cpp */; };
+		A12C23DC137F314A0058BD12 /* musneumesymbol_test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A12C23DB137F314A0058BD12 /* musneumesymbol_test.cpp */; };
+		A12C23DE137F316D0058BD12 /* musneumesymbol.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A1A6E0D713422A7D0024A821 /* musneumesymbol.cpp */; };
 		A1A4B5D41343818B00897C5E /* muselement.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D3A8FD60D35867200BBC1FB /* muselement.cpp */; };
 		A1A4B5DD134381A200897C5E /* musobject.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D3A8FE10D35867200BBC1FB /* musobject.cpp */; };
 		A1A6E0D813422A7D0024A821 /* musneumesymbol.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A1A6E0D713422A7D0024A821 /* musneumesymbol.cpp */; };
@@ -236,6 +238,7 @@
 		A12B055F137C50AF007D2546 /* gtest_main.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = gtest_main.cc; path = ../test/gtest_main.cc; sourceTree = SOURCE_ROOT; };
 		A12B0562137C50BC007D2546 /* musiomei2_test.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = musiomei2_test.cpp; path = ../test/mus/musiomei2_test.cpp; sourceTree = SOURCE_ROOT; };
 		A12B065C137C6AA6007D2546 /* fakemus.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = fakemus.cpp; path = ../test/fakemus.cpp; sourceTree = SOURCE_ROOT; };
+		A12C23DB137F314A0058BD12 /* musneumesymbol_test.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = musneumesymbol_test.cpp; path = ../test/mus/musneumesymbol_test.cpp; sourceTree = SOURCE_ROOT; };
 		A1A6E0D613422A7D0024A821 /* musneumesymbol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = musneumesymbol.h; path = ../src/mus/musneumesymbol.h; sourceTree = SOURCE_ROOT; };
 		A1A6E0D713422A7D0024A821 /* musneumesymbol.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = musneumesymbol.cpp; path = ../src/mus/musneumesymbol.cpp; sourceTree = SOURCE_ROOT; };
 		A1A6E174134253F40024A821 /* gtest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = gtest.framework; path = /Users/alastairlocal/code/gtest.framework; sourceTree = "<absolute>"; };
@@ -422,6 +425,7 @@
 				A12B0562137C50BC007D2546 /* musiomei2_test.cpp */,
 				A12B055F137C50AF007D2546 /* gtest_main.cc */,
 				A1A6E1841342549B0024A821 /* musneume_test.cpp */,
+				A12C23DB137F314A0058BD12 /* musneumesymbol_test.cpp */,
 			);
 			name = test;
 			sourceTree = "<group>";
@@ -703,6 +707,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A12C23DE137F316D0058BD12 /* musneumesymbol.cpp in Sources */,
 				A12B05D3137C57FF007D2546 /* musfile.cpp in Sources */,
 				A12B05BD137C53F8007D2546 /* musiomei2.cpp in Sources */,
 				A1A4B5DD134381A200897C5E /* musobject.cpp in Sources */,
@@ -712,6 +717,7 @@
 				A12B05BE137C53FE007D2546 /* musiomei2_test.cpp in Sources */,
 				A12B0561137C50AF007D2546 /* gtest_main.cc in Sources */,
 				A12B065D137C6AA6007D2546 /* fakemus.cpp in Sources */,
+				A12C23DC137F314A0058BD12 /* musneumesymbol_test.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -145,8 +145,6 @@ MusNeume::MusNeume(MeiElement &element) {
 void MusNeume::setType(wxString type, wxString variant) {
     if (type == "punctum" && variant == "") {
         m_type = NEUME_TYPE_PUNCTUM;
-    } else if (type == "punctum" && variant == "inclinatum") {
-        m_type = NEUME_TYPE_PUNCTUM_INCLINATUM;
     } else if (type == "virga") {
         m_type = NEUME_TYPE_VIRGA;
     } else if (type == "podatus") {
@@ -244,7 +242,7 @@ void MusNeume::Draw( AxDC *dc, MusStaff *staff)
 	this->dec_y = staff->y_neume(this->pitch, staff->testcle( this->xrel ), oct);
 	switch (m_type) {
 		case (NEUME_TYPE_PUNCTUM): this->DrawPunctum(dc, staff); break;
-		case (NEUME_TYPE_PUNCTUM_INCLINATUM): this->DrawPunctumInclinatum(dc, staff); break;
+		//case (NEUME_TYPE_PUNCTUM_INCLINATUM): this->DrawPunctumInclinatum(dc, staff); break;
 		case (NEUME_TYPE_VIRGA): this->DrawVirga(dc, staff); break;
 		case (NEUME_TYPE_PODATUS): this->DrawPodatus(dc, staff); break;
 		case (NEUME_TYPE_CLIVIS): this->DrawClivis(dc, staff); break;
