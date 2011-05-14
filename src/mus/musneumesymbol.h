@@ -23,7 +23,6 @@ enum MusNeumeSymbolType {
     NEUME_SYMB_NATURAL,
     NEUME_SYMB_CLEF_C,
     NEUME_SYMB_CLEF_F,
-    NEUME_SYMB_CUSTOS,
     NEUME_SYMB_DIVISION_FINAL,
     NEUME_SYMB_DIVISION_MAJOR,
     NEUME_SYMB_DIVISION_MINOR,
@@ -38,7 +37,7 @@ public:
 	virtual ~MusNeumeSymbol() {}
 	
 	void calcoffs (int *offst, int value);
-    void SetSymbolType(MusNeumeSymbolType type);
+    MusNeumeSymbolType GetSymbolType();
 	void SetValue(int value, MusStaff *staff, int flag);
 	void ResetToNeumeSymbol();
 	void ResetToClef();
@@ -47,11 +46,12 @@ public:
 	//drawing code
 	virtual void Draw(AxDC *dc, MusStaff *staff);
 	void DrawClef(AxDC *dc, MusStaff *staff);
+    MeiElement *getMeiRef();
 
 private:
     MusNeumeSymbolType symbolType;
 	unsigned char value;
-	MeiElement *m_meiref;    
+	MeiElement *m_meiref;
 
 };
 

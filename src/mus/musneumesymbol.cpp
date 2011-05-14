@@ -20,54 +20,71 @@ MusNeumeSymbol::MusNeumeSymbol() :
 }
 
 MusNeumeSymbol::MusNeumeSymbol(const MusNeumeSymbol &symbol) :
-MusElement(symbol)
+    MusElement(symbol)
 {
     symbolType = symbol.symbolType;
 	value = symbol.value;
 }
 
-MusNeumeSymbol::MusNeumeSymbol(MeiElement &meielement)
+MusNeumeSymbol::MusNeumeSymbol(MeiElement &meielement) :
+    MusElement()
 {
 	m_meiref = &meielement;
 	TYPE = NEUME_SYMB;
 	if (m_meiref->getName() == "clef") {
-		if ((m_meiref->getAttribute("shape")) != NULL && (m_meiref->getAttribute("line")) != NULL)
-		{
-			if ((m_meiref->getAttribute("shape"))->getValue() == "C") {
-				if ((m_meiref->getAttribute("line"))->getValue() == "1") {
+        MeiAttribute *shape = m_meiref->getAttribute("shape");
+        MeiAttribute *line = m_meiref->getAttribute("line");
+		if (shape != NULL && line != NULL) {
+			if (shape->getValue() == "C") {
+                symbolType = NEUME_SYMB_CLEF_C;
+				if (line->getValue() == "1") {
 					code = nC1;
-				} else if ((m_meiref->getAttribute("line"))->getValue() == "2") {
+				} else if (line->getValue() == "2") {
 					code = nC2;
-				} else if ((m_meiref->getAttribute("line"))->getValue() == "3") {
+				} else if (line->getValue() == "3") {
 					code = nC3;
-				} else if ((m_meiref->getAttribute("line"))->getValue() == "4") {
+				} else if (line->getValue() == "4") {
 					code = nC4;
-				}
-			} else if ((m_meiref->getAttribute("shape"))->getValue() == "F") {
-				if ((m_meiref->getAttribute("line"))->getValue() == "1")
+				} else {
+                    throw "unknown line for a C clef";
+                }
+			} else if (shape->getValue() == "F") {
+                symbolType = NEUME_SYMB_CLEF_F;
+				if (line->getValue() == "1") {
 					code = nF1;
-				else if ((m_meiref->getAttribute("line"))->getValue() == "2")
+                } else if (line->getValue() == "2") {
 					code = nF2;
-				else if ((m_meiref->getAttribute("line"))->getValue() == "3")
+                } else if (line->getValue() == "3") {
 					code = nF3;
-				else if ((m_meiref->getAttribute("line"))->getValue() == "4")
+                } else if (line->getValue() == "4") {
 					code = nF4;
-			}
+                } else {
+                    throw "unknown line for an F clef";
+                }
+			} else {
+                throw "unknown clef";
+            }
 		} else {
-			throw "missing shape or line attribute";
+			throw "missing shape or line attribute on clef";
 		}
-	}
-	/*else { //not sure if this is necessary.
-		calte = 0;
-		carOrient = 0;
-		carStyle = 0;
-		flag = 0; 
-		fonte = 0;
-		l_ptch = 0;
-		point = 0;
-		s_lie_l = 0;
-		m_note_ptr = NULL;	
-	}*/
+	} else if (m_meiref->getName() == "division") {
+        MeiAttribute *form = m_meiref->getAttribute("form");
+        if (form != NULL) {
+            if (form->getValue() == "final") {
+                symbolType = NEUME_SYMB_DIVISION_FINAL;
+            } else if (form->getValue() == "major") {
+                symbolType = NEUME_SYMB_DIVISION_MAJOR;
+            } else if (form->getValue() == "minor") {
+                symbolType = NEUME_SYMB_DIVISION_MINOR;
+            } else if (form->getValue() == "small") {
+                symbolType = NEUME_SYMB_DIVISION_SMALL;
+            } else if (form->getValue() == "comma") {
+                symbolType = NEUME_SYMB_COMMA;
+            }
+        } else {
+            throw "missing form for division";
+        }
+    }
 }
 
 unsigned char MusNeumeSymbol::getValue()
@@ -234,6 +251,10 @@ void MusNeumeSymbol::ResetToClef()
 	*this = reset;
 }
 
-void MusNeumeSymbol::SetSymbolType(MusNeumeSymbolType type) {
-    symbolType = type;
+MusNeumeSymbolType MusNeumeSymbol::GetSymbolType() {
+    return symbolType;
+}
+
+MeiElement *MusNeumeSymbol::getMeiRef() {
+    return m_meiref;
 }
