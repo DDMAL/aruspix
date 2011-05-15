@@ -184,8 +184,34 @@ TEST(NeumeSymbolTest, TestCalcOffs) {
     int off;
     sym.calcoffs(&off, sym.code);
     ASSERT_EQ(2, off);
+
+    c = MeiElement("clef");
+    c.addAttribute(MeiAttribute("shape", "C"));
+    c.addAttribute(MeiAttribute("line", "3"));
+    sym = MusNeumeSymbol(c);
+    sym.calcoffs(&off, sym.code);
+    ASSERT_EQ(4, off);
     
-    // XXX: More to do here
+    c = MeiElement("clef");
+    c.addAttribute(MeiAttribute("shape", "C"));
+    c.addAttribute(MeiAttribute("line", "4"));
+    sym = MusNeumeSymbol(c);
+    sym.calcoffs(&off, sym.code);
+    ASSERT_EQ(6, off);
+
+    c = MeiElement("clef");
+    c.addAttribute(MeiAttribute("shape", "F"));
+    c.addAttribute(MeiAttribute("line", "3"));
+    sym = MusNeumeSymbol(c);
+    sym.calcoffs(&off, sym.code);
+    ASSERT_EQ(8, off);
+
+    c = MeiElement("clef");
+    c.addAttribute(MeiAttribute("shape", "F"));
+    c.addAttribute(MeiAttribute("line", "4"));
+    sym = MusNeumeSymbol(c);
+    sym.calcoffs(&off, sym.code);
+    ASSERT_EQ(10, off);
 }
 
 TEST(NeumeSymbolTest, TestSetValueClef) {
@@ -196,11 +222,29 @@ TEST(NeumeSymbolTest, TestSetValueClef) {
     
     // Set to C, line 2
     sym.SetValue('1', NULL, 0);
-    ASSERT_EQ(sym.code, nC2);
-    ASSERT_EQ(sym.getMeiRef()->getAttribute("shape")->getValue(), "C");
-    ASSERT_EQ(sym.getMeiRef()->getAttribute("line")->getValue(), "2");
-    
-    // XXX: This currently fails because of SetValue code/value mixups
+    ASSERT_EQ(nC2, sym.code);
+    ASSERT_EQ("C", sym.getMeiRef()->getAttribute("shape")->getValue());
+    ASSERT_EQ("2", sym.getMeiRef()->getAttribute("line")->getValue());
+
+    sym.SetValue('2', NULL, 0);
+    ASSERT_EQ(nC3, sym.code);
+    ASSERT_EQ("C", sym.getMeiRef()->getAttribute("shape")->getValue());
+    ASSERT_EQ("3", sym.getMeiRef()->getAttribute("line")->getValue());
+
+    sym.SetValue('3', NULL, 0);
+    ASSERT_EQ(nC4, sym.code);
+    ASSERT_EQ("C", sym.getMeiRef()->getAttribute("shape")->getValue());
+    ASSERT_EQ("4", sym.getMeiRef()->getAttribute("line")->getValue());
+
+    sym.SetValue('4', NULL, 0);
+    ASSERT_EQ(nF3, sym.code);
+    ASSERT_EQ("F", sym.getMeiRef()->getAttribute("shape")->getValue());
+    ASSERT_EQ("3", sym.getMeiRef()->getAttribute("line")->getValue());
+
+    sym.SetValue('5', NULL, 0);
+    ASSERT_EQ(nF4, sym.code);
+    ASSERT_EQ("F", sym.getMeiRef()->getAttribute("shape")->getValue());
+    ASSERT_EQ("4", sym.getMeiRef()->getAttribute("line")->getValue());
 }
 
 TEST(NeumeSymbolTest, TestSetValueDivision) {

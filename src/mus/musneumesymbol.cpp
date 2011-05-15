@@ -213,16 +213,18 @@ void MusNeumeSymbol::SetValue(int value, MusStaff *staff, int vflag)
 			switch (this->code)
 			{
 				case (nC1): updateMeiRefClef("C", "1"); break;
-				case (nC2): (m_meiref->getAttribute("shape"))->setValue("C"); (m_meiref->getAttribute("line"))->setValue("2"); break;
-				case (nC3): (m_meiref->getAttribute("shape"))->setValue("C"); (m_meiref->getAttribute("line"))->setValue("3"); break;
-				case (nC4): (m_meiref->getAttribute("shape"))->setValue("C"); (m_meiref->getAttribute("line"))->setValue("4"); break;
-				case (nF1): (m_meiref->getAttribute("shape"))->setValue("F"); (m_meiref->getAttribute("line"))->setValue("1"); break;
-				case (nF2): (m_meiref->getAttribute("shape"))->setValue("F"); (m_meiref->getAttribute("line"))->setValue("2"); break;
-				case (nF3): (m_meiref->getAttribute("shape"))->setValue("F"); (m_meiref->getAttribute("line"))->setValue("3"); break;
-				case (nF4): (m_meiref->getAttribute("shape"))->setValue("F"); (m_meiref->getAttribute("line"))->setValue("4"); break;
+				case (nC2): updateMeiRefClef("C", "2"); break;
+				case (nC3): updateMeiRefClef("C", "3"); break;
+				case (nC4): updateMeiRefClef("C", "4"); break;
+				case (nF1): updateMeiRefClef("F", "1"); break;
+				case (nF2): updateMeiRefClef("F", "2"); break;
+				case (nF3): updateMeiRefClef("F", "3"); break;
+				case (nF4): updateMeiRefClef("F", "4"); break;
 			}
 		}
-	}
+	} else if (this->symbolType == NEUME_SYMB_DIVISION_FINAL) {
+        // XXX: All other division types
+    }
 	
 	if ( m_r )
 	{
