@@ -41,7 +41,6 @@ public:
 	void SetValue(int value, MusStaff *staff, int flag);
 	void ResetToNeumeSymbol();
 	void ResetToClef();
-	unsigned char getValue();
 	
 	//drawing code
 	virtual void Draw(AxDC *dc, MusStaff *staff);
@@ -50,9 +49,8 @@ public:
 
 private:
     MusNeumeSymbolType symbolType;
-	unsigned char value;
 	MeiElement *m_meiref;
-
+    void updateMeiRefClef(string shape, string line);
 };
 
 #endif // __MUS_NEUME_SYMBOL_H__

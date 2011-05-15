@@ -13,6 +13,8 @@
 #include "musrc.h"
 #include "musstaff.h"
 
+#include <mei/meiattribute.h>
+
 MusNeumeSymbol::MusNeumeSymbol() :
     MusElement()
 {
@@ -23,7 +25,6 @@ MusNeumeSymbol::MusNeumeSymbol(const MusNeumeSymbol &symbol) :
     MusElement(symbol)
 {
     symbolType = symbol.symbolType;
-	value = symbol.value;
 }
 
 MusNeumeSymbol::MusNeumeSymbol(MeiElement &meielement) :
@@ -87,11 +88,6 @@ MusNeumeSymbol::MusNeumeSymbol(MeiElement &meielement) :
     }
 }
 
-unsigned char MusNeumeSymbol::getValue()
-{
-	return value;
-}
-
 void MusNeumeSymbol::calcoffs (int *offst, int value)
 {	
 	*offst = 0;
@@ -143,7 +139,7 @@ void MusNeumeSymbol::Draw ( AxDC *dc, MusStaff *staff)
 	{
 		case NEUME_SYMB_CLEF_C:
 		case NEUME_SYMB_CLEF_F:
-		calcoffs (&x,(int)this->value);
+		calcoffs (&x,(int)this->code);
 		this->dec_y = x;
 		this->DrawClef( dc, staff); 
 		break;
@@ -169,7 +165,7 @@ void MusNeumeSymbol::DrawClef( AxDC *dc, MusStaff *staff)
 	dimin = this->dimin;
 	wxString shape = nF_CLEF;
 	
-	switch (this->value)
+	switch (this->code)
 	{
 		case nC1: shape = nC_CLEF;
 		case nF1: y -= m_r->_interl[staff->pTaille]*3; break;
@@ -199,11 +195,11 @@ void MusNeumeSymbol::SetValue(int value, MusStaff *staff, int vflag)
 		
 		switch (value)
 		{
-			case ('1'): this->value = nC2; break;
-			case ('2'): this->value = nC3; break;
-			case ('3'): this->value = nC4; break;
-			case ('4'): this->value = nF3; break;
-			case ('5'): this->value = nF4; break;
+			case ('1'): this->code = nC2; break;
+			case ('2'): this->code = nC3; break;
+			case ('3'): this->code = nC4; break;
+			case ('4'): this->code = nF3; break;
+			case ('5'): this->code = nF4; break;
 		}
 		
 		if (m_r)
@@ -216,7 +212,7 @@ void MusNeumeSymbol::SetValue(int value, MusStaff *staff, int vflag)
 		{
 			switch (this->code)
 			{
-				case (nC1): (m_meiref->getAttribute("shape"))->setValue("C"); (m_meiref->getAttribute("line"))->setValue("1"); break;
+				case (nC1): updateMeiRefClef("C", "1"); break;
 				case (nC2): (m_meiref->getAttribute("shape"))->setValue("C"); (m_meiref->getAttribute("line"))->setValue("2"); break;
 				case (nC3): (m_meiref->getAttribute("shape"))->setValue("C"); (m_meiref->getAttribute("line"))->setValue("3"); break;
 				case (nC4): (m_meiref->getAttribute("shape"))->setValue("C"); (m_meiref->getAttribute("line"))->setValue("4"); break;
@@ -235,11 +231,28 @@ void MusNeumeSymbol::SetValue(int value, MusStaff *staff, int vflag)
 	}
 }
 
+void MusNeumeSymbol::updateMeiRefClef(string shape, string line) {
+    if (m_meiref->getName() == "clef") {
+        MeiAttribute *shapeattr = m_meiref->getAttribute("shape");
+        if (shapeattr == NULL) {
+            m_meiref->addAttribute(MeiAttribute("shape", shape));
+        } else {
+            shapeattr->setValue(shape);
+        }
+        MeiAttribute *lineattr = m_meiref->getAttribute("line");
+        if (lineattr == NULL) {
+            m_meiref->addAttribute(MeiAttribute("line", line));
+        } else {
+            lineattr->setValue(line);
+        }
+    }
+}
+
 void MusNeumeSymbol::ResetToNeumeSymbol() //this is incomplete, there is no other default symbol at the moment.
 {
 	MusNeumeSymbol reset;
 	reset.symbolType = NEUME_SYMB_CLEF_C;
-	reset.value = nC2;
+	reset.code = nC2;
 	*this = reset;
 }
 
@@ -247,7 +260,7 @@ void MusNeumeSymbol::ResetToClef()
 {
 	MusNeumeSymbol reset;
 	reset.symbolType = NEUME_SYMB_CLEF_C;
-	reset.value = nC2;
+	reset.code = nC2;
 	*this = reset;
 }
 
