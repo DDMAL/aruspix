@@ -267,6 +267,16 @@ void MusRC::UpdateFontValues()
     m_activeLyricFonts[1] = m_ftLyrics;
 }
 
+int MusRC::ToRendererX( int i ) { return i; }; // the same
+
+/** x value in the Logical world */
+int MusRC::ToLogicalX( int i )  { return i; };
+
+/** y value in the Renderer */
+int MusRC::ToRendererY( int i )  { return m_pageMaxY - i; }; // flipped
+
+/** y value in the Logical world  */
+int MusRC::ToLogicalY( int i )  { return m_pageMaxY - i; }; // flipped
 
 void MusRC::UpdatePageFontValues() 
 {

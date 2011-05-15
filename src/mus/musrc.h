@@ -79,13 +79,13 @@ public:
 	virtual void UpdateFontValues();
     
     /** x value in the Renderer */
-	int ToRendererX( int i ) { return i; }; // the same
+	int ToRendererX( int i );
 	/** x value in the Logical world */
-	int ToLogicalX( int i )  { return i; };
+	int ToLogicalX( int i );
 	/** y value in the Renderer */
-	int ToRendererY( int i )  { return m_pageMaxY - i; }; // flipped
+	int ToRendererY( int i );
 	/** y value in the Logical world  */
-	int ToLogicalY( int i )  { return m_pageMaxY - i; }; // flipped
+	int ToLogicalY( int i );
 	
 	static void SwapY( int *y1, int *y2 ) { int tmp = *y1; *y1 = *y2; *y2 = tmp; }
     

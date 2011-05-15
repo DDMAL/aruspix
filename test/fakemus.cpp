@@ -15,18 +15,22 @@ class AxDC;
 //-------------
 // MusStaff
 //-------------
+
 int MusStaff::testcle(int x) {
     throw "fakemus stub";
 }
 int MusStaff::y_neume(int note, int dec_clef, int oct) {
     throw "fakemus stub";
 }
+
+/*
 MusStaff::MusStaff() { throw "fakemus stub"; }
 void MusStaff::Append(MusElement *element, int i) { throw "fakemus stub"; }
 void MusStaff::GetMaxXY( wxArrayPtrVoid params ) { throw "fakemus stub"; }
 void MusStaff::CheckIntegrity() { throw "fakemus stub"; }
 MusStaff::~MusStaff() { throw "fakemus stub"; }
 void MusStaff::CopyElements(wxArrayPtrVoid p) { throw "fakemus stub"; }
+*/
 
 //-------------
 // MusRC
@@ -34,19 +38,24 @@ void MusStaff::CopyElements(wxArrayPtrVoid p) { throw "fakemus stub"; }
 
 void MusRC::festa_string( AxDC *dc, int x, int y, const wxString str,
                        MusStaff *staff, int dimin ) { throw "fakemus stub"; }
+
 void MusRC::box(AxDC *dc, int x1, int y1, int x2, int y2) { throw "fakemus stub"; }
+
+int MusRC::ToRendererX(int) { throw "fakemus stub"; }
+int MusRC::ToRendererY(int) { throw "fakemus stub"; }
+
+
+/*
 
 //-------------
 // MusPage
 //-------------
-
 MusPage::MusPage() { throw "fakemus stub"; }
 MusPage::~MusPage() { throw "fakemus stub"; }
 void MusPage::CheckIntegrity() { throw "fakemus stub"; }
 void MusPage::Process(MusStaffFunctor *func, wxArrayPtrVoid p) { throw "fakemus stub"; }
 void MusPage::CountVoices( wxArrayPtrVoid params ) { throw "fakemus stub"; }
 void MusPage::ProcessVoices( wxArrayPtrVoid params ) { throw "fakemus stub"; }
-
 //-------------
 // MusSymbol
 //-------------
@@ -91,3 +100,4 @@ MusFileHeader::~MusFileHeader() { throw "fakemus stub"; }
 
 MusParameters::MusParameters() { throw "fakemus stub"; }
 MusParameters::~MusParameters() { throw "fakemus stub"; }
+*/

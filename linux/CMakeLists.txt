@@ -178,7 +178,7 @@ if( AX_BUILD_TESTS )
         add_executable(${_name} ${ARGV} ../test/gtest_main.cc)
         target_link_libraries(${_name} 
             ${GTEST_LIBRARIES}
-            pthread
+            -lpthread
         	${wxWidgets_LIBRARIES}
         	${LIBXML2_LIBRARIES}
             ${LIBMEI_LIBRARY}
@@ -191,13 +191,17 @@ if( AX_BUILD_TESTS )
                   ../src/mus/musobject.cpp
                   ../src/mus/muselement.cpp
                   ../src/mus/musneume.cpp
-                  ../test/fakemusrc.cpp )
+                  ../test/fakemus.cpp )
 
-#    add_ax_test ( ../test/mus/musiomei2_test.cpp
-#                  ../src/mus/musiomei2.cpp
-#                  ../src/mus/musfile.cpp
-#                  ../src/mus/muspage.cpp
-#                  ../src/mus/mussymbol.cpp
-#                  ../src/mus/musstaff.cpp )
+    add_ax_test ( ../test/mus/musiomei2_test.cpp
+                  ../src/mus/musiomei2.cpp
+                  ../src/mus/musfile.cpp
+                  ../test/fakemus.cpp )
+
+    add_ax_test ( ../test/mus/musneumesymbol_test.cpp
+                  ../src/mus/musneumesymbol.cpp
+                  ../src/mus/musobject.cpp
+                  ../src/mus/muselement.cpp 
+                  ../test/fakemus.cpp )
 
 endif( AX_BUILD_TESTS )
