@@ -227,6 +227,7 @@ private:
     void OnNote( wxCommandEvent &event );
     void OnNeume( wxCommandEvent &event );
     void OnNeumeClef( wxCommandEvent &event );
+	void OnNeumeSymbol( wxCommandEvent &event );
     void OnText( wxCommandEvent &event );
     // toggle buttons handling
     void OnUpdateUI( wxUpdateUIEvent &event );

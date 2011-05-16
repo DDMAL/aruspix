@@ -39,18 +39,30 @@ public:
 	void calcoffs (int *offst, int value);
     MusNeumeSymbolType GetSymbolType();
 	void SetValue(int value, MusStaff *staff, int flag);
+	int getValue();
+	void SetPitch(int pitch, int oct);
+	
 	void ResetToNeumeSymbol();
 	void ResetToClef();
+	MusNeumeSymbolType getType();
 	
 	//drawing code
 	virtual void Draw(AxDC *dc, MusStaff *staff);
-	void DrawClef(AxDC *dc, MusStaff *staff);
+	void DrawClef(AxDC *dc, int i, MusStaff *staff);
+	void DrawComma(AxDC *dc, MusStaff *staff);
+	void DrawFlat(AxDC *dc, MusStaff *staff);
+	void DrawNatural(AxDC *dc, MusStaff *staff);
+	void DrawDivFinal(AxDC *dc, MusStaff *staff);
+	void DrawDivMajor(AxDC *dc, MusStaff *staff);
+	void DrawDivMinor(AxDC *dc, MusStaff *staff);
+	void DrawDivSmall(AxDC *dc, MusStaff *staff);
     MeiElement *getMeiRef();
 
 private:
     MusNeumeSymbolType symbolType;
 	MeiElement *m_meiref;
     void updateMeiRefClef(string shape, string line);
+	int value;
 };
 
 #endif // __MUS_NEUME_SYMBOL_H__

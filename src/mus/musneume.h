@@ -66,6 +66,7 @@ class MusNeumeElement
 public:
 	MusNeumeElement(const MusNeumeElement &element);
     MusNeumeElement(MeiElement &meielement, int pitch, int oct);
+	MusNeumeElement(int _pitchDifference);
 	virtual ~MusNeumeElement() {};
     
     int getPitchDifference();

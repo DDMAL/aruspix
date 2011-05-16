@@ -798,7 +798,8 @@ void MusWindow::OnMouseDClick(wxMouseEvent &event)
 		if ( event.ButtonDClick( wxMOUSE_BTN_LEFT  ) && m_currentStaff && m_newElement )
 		{
 			if ( m_newElement->IsNote() || m_newElement->IsNeume() ||
-				(((MusSymbol*)m_newElement)->flag == ALTER) || (((MusSymbol*)m_newElement)->flag == PNT))
+				(((MusSymbol*)m_newElement)->flag == ALTER) || (((MusSymbol*)m_newElement)->flag == PNT)
+				|| (((MusNeumeSymbol*)m_newElement)->getType() == NEUME_SYMB_FLAT) || (((MusNeumeSymbol*)m_newElement)->getType() == NEUME_SYMB_NATURAL) )
 			{
 				m_newElement->SetPitch(m_insertcode, m_insertoct);
 			}
@@ -1176,14 +1177,14 @@ void MusWindow::NeumeEditOnKeyDown(wxKeyEvent &event) {
     else if ( event.m_controlDown && ( event.m_keyCode == WXK_UP ) && m_currentElement) // correction hauteur avec les fleches, up
     {
         PrepareCheckPoint( UNDO_PART, MUS_UNDO_STAFF );
-        m_insertcode = (m_currentElement->TYPE==NEUME) ? (m_currentElement->filtrpitch( m_currentElement->pitch + 1, &m_insertoct )) : (m_currentElement->filtrcod( m_currentElement->code + 1, &m_insertoct ));
+        m_insertcode = ((m_currentElement->TYPE==NEUME) || (m_currentElement->TYPE == NEUME_SYMB)) ? (m_currentElement->filtrpitch( m_currentElement->pitch + 1, &m_insertoct )) : (m_currentElement->filtrcod( m_currentElement->code + 1, &m_insertoct ));
         m_currentElement->SetPitch( m_insertcode, m_insertoct );
         CheckPoint( UNDO_PART, MUS_UNDO_STAFF );
     }
     else if ( event.m_controlDown && ( event.m_keyCode == WXK_DOWN ) && m_currentElement) // correction hauteur avec les fleches, down
     {
         PrepareCheckPoint( UNDO_PART, MUS_UNDO_STAFF );
-        m_insertcode = (m_currentElement->TYPE==NEUME) ? (m_currentElement->filtrpitch( m_currentElement->pitch - 1, &m_insertoct )) : (m_currentElement->filtrcod( m_currentElement->code - 1, &m_insertoct ));
+        m_insertcode = ((m_currentElement->TYPE==NEUME) || (m_currentElement->TYPE == NEUME_SYMB)) ? (m_currentElement->filtrpitch( m_currentElement->pitch - 1, &m_insertoct )) : (m_currentElement->filtrcod( m_currentElement->code - 1, &m_insertoct ));
         m_currentElement->SetPitch( m_insertcode, m_insertoct );
         CheckPoint( UNDO_PART, MUS_UNDO_STAFF );
     }

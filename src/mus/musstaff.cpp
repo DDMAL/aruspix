@@ -272,13 +272,17 @@ MusElement *MusStaff::Insert( MusElement *element )
 			break;
 	}
 
-	if ( tmp &&  element->IsSymbol() && (((MusSymbol*)element)->flag == CLE) )
+	if ( tmp &&  ((element->IsSymbol() && (((MusSymbol*)element)->flag == CLE))
+		|| (element->IsNeumeSymbol() && ((((MusNeumeSymbol*)element)->getValue() == NEUME_SYMB_CLEF_C) || (((MusNeumeSymbol*)element)->getValue() == NEUME_SYMB_CLEF_F)))) )
+		
 		m_r->OnBeginEditionClef();
 
 	m_elements.Insert( element, idx );
 	this->CheckIntegrity();
 	
-	if ( element->IsSymbol() && (((MusSymbol*)element)->flag == CLE) )
+	if ( (element->IsSymbol() && (((MusSymbol*)element)->flag == CLE))
+		|| (element->IsNeumeSymbol() && ((((MusNeumeSymbol*)element)->getValue() == NEUME_SYMB_CLEF_C) || (((MusNeumeSymbol*)element)->getValue() == NEUME_SYMB_CLEF_F))) )
+		
 		m_r->OnEndEditionClef();
 
 	if (m_r)
@@ -310,7 +314,9 @@ void MusStaff::Delete( MusElement *element )
 
 	if ( m_r ) // effacement
 	{
-		if ( element->IsSymbol() && (((MusSymbol*)element)->flag == CLE) )
+		if ( (element->IsSymbol() && (((MusSymbol*)element)->flag == CLE))
+			|| (element->IsNeumeSymbol() && ((((MusNeumeSymbol*)element)->getValue() == NEUME_SYMB_CLEF_C) || (((MusNeumeSymbol*)element)->getValue() == NEUME_SYMB_CLEF_F))) )
+			
 			m_r->OnBeginEditionClef();
 	}
 	
@@ -319,8 +325,10 @@ void MusStaff::Delete( MusElement *element )
 
 	if ( m_r )
 	{
-		if ( element->IsSymbol() && (((MusSymbol*)element)->flag == CLE) )
+		if ( (element->IsSymbol() && (((MusSymbol*)element)->flag == CLE))
+			|| (element->IsNeumeSymbol() && ((((MusNeumeSymbol*)element)->getValue() == NEUME_SYMB_CLEF_C) || (((MusNeumeSymbol*)element)->getValue() == NEUME_SYMB_CLEF_F))) )
 			m_r->OnEndEditionClef();
+		
 		m_r->DoRefresh();
 	}
 	
@@ -348,7 +356,7 @@ MusElement *MusStaff::no_note ( MusElement *chk, unsigned int sens, unsigned int
 	if ( i == wxNOT_FOUND )
 		return (chk);
 
-	while (chk->TYPE != SYMB || ((MusSymbol*)chk)->flag != flg)
+	while ( (chk->TYPE != SYMB || ((MusSymbol*)chk)->flag != flg) && (chk->TYPE != NEUME_SYMB || ((MusNeumeSymbol*)chk)->getValue() != flg) )
 	{
 		if (sens==AR)
 		{	
@@ -366,7 +374,7 @@ MusElement *MusStaff::no_note ( MusElement *chk, unsigned int sens, unsigned int
 
 	if (*succ == 0)
 	{	
-		if (chk->TYPE == SYMB && ((MusSymbol*)chk)->flag == flg)
+		if ( (chk->TYPE == SYMB && ((MusSymbol*)chk)->flag == flg) || (chk->TYPE == NEUME_SYMB && ((MusNeumeSymbol*)chk)->getValue() == flg) )
 			*succ = ON;
 	}
 
@@ -381,15 +389,25 @@ int MusStaff::getOctCl ( MusElement *test, char *cle_id, int mlf )
 	int succ=0;
 
 	if (test)
-	{	if ( test->TYPE == SYMB && ((MusSymbol*)test)->flag == CLE )
+	{	if ( (test->TYPE == SYMB && ((MusSymbol*)test)->flag == CLE) || (test->TYPE == NEUME_SYMB && ((((MusNeumeSymbol*)test)->getType() == NEUME_SYMB_CLEF_C) || ((MusNeumeSymbol*)test)->getType() == NEUME_SYMB_CLEF_F)) )
 			succ = 1;
-		else if ( test->TYPE != SYMB || ((MusSymbol*)test)->flag != CLE )
+		else if ( (test->TYPE != SYMB || ((MusSymbol*)test)->flag != CLE) && (test->TYPE != NEUME_SYMB || ((((MusNeumeSymbol*)test)->getType() != NEUME_SYMB_CLEF_C) && ((MusNeumeSymbol*)test)->getType() != NEUME_SYMB_CLEF_F)) )
 		{	
 			test = no_note(test,AR,CLE,&succ);
 			// LP mlf-> pas de recherche en avant si aucune cle trouvee
 			if ((mlf != 1) && (succ == 0))
 				test = no_note(test,AV,CLE,&succ);
 			// LP
+			if (succ == 0) { //this may need correction --Jamie
+				test = no_note(test,AR,NEUME_SYMB_CLEF_C,&succ);
+				if ((mlf != 1) && (succ == 0))
+					test = no_note(test,AV,NEUME_SYMB_CLEF_C,&succ);
+			}
+			if (succ == 0) {
+				test = no_note(test,AR,NEUME_SYMB_CLEF_F,&succ);
+				if ((mlf != 1) && (succ == 0))
+					test = no_note(test,AR,NEUME_SYMB_CLEF_F,&succ);
+			}
 		}
 	}
 
@@ -402,12 +420,14 @@ int MusStaff::getOctCl ( MusElement *test, char *cle_id, int mlf )
 		{
 			if (((MusSymbol*)test)->code == FA4 || ((MusSymbol*)test)->code == FA3
 			 || ((MusSymbol*)test)->code == FA5 || ((MusSymbol*)test)->code == UT4
-			 || ((MusSymbol*)test)->code == UT5 || ((MusSymbol*)test)->code == SOLva)
+			 || ((MusSymbol*)test)->code == UT5 || ((MusSymbol*)test)->code == SOLva
+			 || ((MusNeumeSymbol*)test)->getValue() == nF1 || ((MusNeumeSymbol*)test)->getValue() == nF2
+			 || ((MusNeumeSymbol*)test)->getValue() == nC1) //what does this represent? do we need neumatic clefs here? --Jamie
 						succ = ON;
 			else succ = OFF;
 		}
 		// LP
-		*cle_id = ((MusSymbol*)test)->code;
+		*cle_id = ((test->TYPE == SYMB) ? (((MusSymbol*)test)->code) : (((MusNeumeSymbol*)test)->getValue()));
 	}
 
 	return (succ);
@@ -563,8 +583,9 @@ void MusStaff::place_clef (  AxDC *dc )
 	for(j = 0; j < (int)this->nblement; j++)
 	{
 		pelement = &this->m_elements[j];
-		if (pelement->TYPE==SYMB && (((MusSymbol*)pelement)->flag==CLE
-			|| (((MusSymbol*)pelement)->flag==BARRE && ((MusSymbol*)pelement)->code != CTRL_L))
+		if ((pelement->TYPE==SYMB && (((MusSymbol*)pelement)->flag==CLE
+			|| (((MusSymbol*)pelement)->flag==BARRE && ((MusSymbol*)pelement)->code != CTRL_L)))
+			|| (pelement->TYPE==NEUME_SYMB && ((((MusNeumeSymbol*)pelement)->getType()==NEUME_SYMB_CLEF_C) || (((MusNeumeSymbol*)pelement)->getType()==NEUME_SYMB_CLEF_F)))
 			)
 		{
 			pelement->Init( m_r );

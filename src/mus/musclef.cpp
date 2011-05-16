@@ -92,7 +92,6 @@ void MusSymbol::dess_cle ( AxDC *dc, int i, MusStaff *pportee)
  *	au depart; ne faire operation sur b qu'une fois pour cas semblables,
  *  et au palier commun superieur, incrementer sym, sans break.
  */
-	wxString sym2;
 	switch(this->code)	// cleid
 	{
 		case UT1 : sym += 2;

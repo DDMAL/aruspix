@@ -60,6 +60,11 @@ MusNeumeElement::MusNeumeElement(MeiElement &element, int pitch, int oct) {
 	//Need to initialize the octave.
 }
 
+MusNeumeElement::MusNeumeElement(int _pitchDifference)
+{
+	m_pitch_difference = _pitchDifference;
+}
+
 // Duplicate an existing pitch
 MusNeumeElement::MusNeumeElement( const MusNeumeElement &other) {
 	m_pitch_difference = other.m_pitch_difference;
@@ -77,9 +82,8 @@ int MusNeumeElement::getPitchDifference() {
 MusNeume::MusNeume() : MusElement() {
     TYPE = NEUME;
 	m_type = NEUME_TYPE_COMPOUND; //note: for all practical purposes, this can always be punctum.
-    /*
     // For testing only
-	MusNeumeElement first = MusNeumeElement(this->pitch,this->oct);
+	MusNeumeElement first = MusNeumeElement(0);
 	MusNeumeElement next = MusNeumeElement(-1);
 	MusNeumeElement third = MusNeumeElement(2);
 	MusNeumeElement fourth = MusNeumeElement(-4);
@@ -89,7 +93,6 @@ MusNeume::MusNeume() : MusElement() {
 	m_pitches.push_back(third);
 	m_pitches.push_back(fourth);
 	m_pitches.push_back(fifth);
-    */
 	m_meiref = 0; //this is necessary to avoid garbage when things aren't called from MEIs.
 }
 

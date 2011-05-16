@@ -243,6 +243,7 @@ BEGIN_EVENT_TABLE(MusToolPanel,wxPanel)
     EVT_MENU_RANGE( ID_MS_BT_DOT, ID_MS_BT_BAR, MusToolPanel::OnSymbol )
     EVT_MENU_RANGE( ID_NU_BT_N0, ID_NU_BT_N5, MusToolPanel::OnNeume )
     EVT_MENU_RANGE( ID_NU_BT_C0, ID_NU_BT_C4, MusToolPanel::OnNeumeClef )
+	EVT_MENU_RANGE( ID_NU_BT_COMMA, ID_NU_BT_DIV_SMALL, MusToolPanel::OnNeumeSymbol )
     EVT_MENU( ID_MS_BT_TEXT, MusToolPanel::OnText )
     EVT_UPDATE_UI_RANGE(ID_MS_BT_CHANGE_TOOL_START, ID_MS_BT_TEXT, MusToolPanel::OnUpdateUI)
     // measure controls
@@ -538,6 +539,25 @@ void MusToolPanel::OnNeumeClef( wxCommandEvent &event ) {
         case (ID_NU_BT_C2): value = '3'; break;
         case (ID_NU_BT_C3): value = '4'; break;
         case (ID_NU_BT_C4): value = '5'; break;
+    }
+    
+    wxKeyEvent kevent;
+    kevent.SetEventType( wxEVT_KEY_DOWN );
+    kevent.m_keyCode = value;
+    SendEvent( kevent );    
+}
+
+void MusToolPanel::OnNeumeSymbol( wxCommandEvent &event ) {
+    int value = '0';
+    switch ( event.GetId() )
+    {
+        case (ID_NU_BT_COMMA): value = '6'; break;
+        case (ID_NU_BT_FLAT): value = 'F'; break;
+        case (ID_NU_BT_SHARP): value = 'N'; break;
+        case (ID_NU_BT_DIV_FINAL): value = '7'; break;
+        case (ID_NU_BT_DIV_MAJOR): value = '8'; break;
+		case (ID_NU_BT_DIV_MINOR): value = '9'; break;
+		case (ID_NU_BT_DIV_SMALL): value = '0'; break;
     }
     
     wxKeyEvent kevent;
