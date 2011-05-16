@@ -38,21 +38,22 @@ MusNeumeElement::MusNeumeElement(MeiElement &element, int pitch, int oct) {
     MeiAttribute *p = m_meiref->getAttribute("pname");
     MeiAttribute *o = m_meiref->getAttribute("oct");
     if (p && o) {
-        string pitch = p->getValue();
-        if (pitch == "c") {
-            m_pitch_difference = 1;
-        } else if (pitch == "d") {
-            m_pitch_difference = 2;
-        } else if (pitch == "e") {
-            m_pitch_difference = 3;
-        } else if (pitch == "f") {
-            m_pitch_difference = 4;
-        } else if (pitch == "g") {
-            m_pitch_difference = 5;
-        } else if (pitch == "a") {
-            m_pitch_difference = 6;
-        } else if (pitch == "b") {
-            m_pitch_difference = 7;
+        string meipitch = p->getValue();
+        int octave = atoi((o->getValue()).c_str()); //this code needs testing
+        if (meipitch == "c") {
+            m_pitch_difference = (octave*7 + 1) -  (oct*7 + pitch);
+        } else if (meipitch == "d") {
+            m_pitch_difference = (octave*7 + 2) -  (oct*7 + pitch);
+        } else if (meipitch == "e") {
+            m_pitch_difference = (octave*7 + 3) -  (oct*7 + pitch);
+        } else if (meipitch == "f") {
+            m_pitch_difference = (octave*7 + 4) -  (oct*7 + pitch);
+        } else if (meipitch == "g") {
+            m_pitch_difference = (octave*7 + 5) -  (oct*7 + pitch);
+        } else if (meipitch == "a") {
+            m_pitch_difference = ((octave - 1)*7 + 6) -  (oct*7 + pitch); // use octave - 1 to correct for standard pitch notation
+        } else if (meipitch == "b") {
+            m_pitch_difference = ((octave - 1)*7 + 7) -  (oct*7 + pitch); //ditto
         }
     } else {
         throw "missing pitch or octave";
@@ -63,16 +64,23 @@ MusNeumeElement::MusNeumeElement(MeiElement &element, int pitch, int oct) {
 /*MusNeumeElement::MusNeumeElement(int _pitchDifference)
 {
     m_pitch_difference = _pitchDifference;
+    m_element_type = NEUME_ELEMENT_PUNCTUM;
 }*/
 
 // Duplicate an existing pitch
 MusNeumeElement::MusNeumeElement( const MusNeumeElement &other) {
     m_pitch_difference = other.m_pitch_difference;
     m_meiref = other.m_meiref;
+    m_element_type = other.m_element_type;
 }
 
 int MusNeumeElement::getPitchDifference() {
     return m_pitch_difference;
+}
+
+NeumeElementType MusNeumeElement::getElementType()
+{
+    return m_element_type;
 }
 
 //----------------------------------------------------------------------------
@@ -123,23 +131,46 @@ MusNeume::MusNeume(MeiElement &element) {
     }
     setType(type, variant);
     
-    //this->pitch = (this->m_pitches.at(0)).getPitch(); //sets the "pitch" member of MusElement class to the first pitch in this neume... or at least it should.
     vector<MeiElement> children = m_meiref->getChildren();
-    for (vector<MeiElement>::iterator i = children.begin(); i != children.end(); i++) {
-        MeiElement e = *i;
-        if (e.getName() == "note") {
-            // XXX: base pitch / octave
-            MusNeumeElement note = MusNeumeElement(e, 0, 0);
-            m_pitches.push_back(note);
+    //something here to ensure there is at least one note?
+    if (&(children.begin()) != NULL) { //this is not good.
+        MeiAttribute *p = children.begin()->getAttribute("pname");
+        MeiAttribute *o = children.begin()->getAttribute("oct");
+        if (p && o) {
+            string meipitch = p->getValue();
+            oct = atoi((o->getValue()).c_str());
+            if (meipitch == "c") {
+                pitch = 1;
+            } else if (meipitch == "d") {
+                pitch = 2;
+            } else if (meipitch == "e") {
+                pitch = 3;
+            } else if (meipitch == "f") {
+                pitch = 4;
+            } else if (meipitch == "g") {
+                pitch = 5;
+            } else if (meipitch == "a") {
+                pitch = 6;
+            } else if (meipitch == "b") {
+                pitch = 7;
+            }
+        } else {
+            throw "missing pitch or octave";
         }
-    }
-    // XXX: Move pitch difference into element constructor
+        if (pitch > 5) { //to correct for standard notation of pitches (where the first pitch of an octave is A)
+            oct--;
+        }
     
-    //need to rename the pitches to their values relative to one another.
-    //for (vector<MusNeumeElement>::iterator i = (this->m_pitches).begin() + 1; i != (this->m_pitches).end(); i++) {
-    //  MusNeumeElement e = *i;
-    //  e.getPitchDifference() = e.pitch - this->pitch; //this assignment should take octave into account!
-    //}
+        for (vector<MeiElement>::iterator i = children.begin(); i != children.end(); i++) {
+            MeiElement e = *i;
+            if (e.getName() == "note") {
+                MusNeumeElement note = MusNeumeElement(e, pitch, oct);
+                m_pitches.push_back(note);
+            }
+        }
+    } else {
+        throw "no pitches for neume";
+    }
 }
 
 /**
@@ -162,6 +193,8 @@ void MusNeume::setType(wxString type, wxString variant) {
         m_type = NEUME_TYPE_TORCULUS;
     } else if (type == "compound") {
         m_type = NEUME_TYPE_COMPOUND;
+    } else if (type == "cephalicus") {
+        m_type = NEUME_TYPE_CEPHALICUS;
     } else {
         string t = type.mb_str();
         throw "unknown neume type " + t;
@@ -214,8 +247,18 @@ void MusNeume::SetPitch( int pitch, int oct )
                     case 6: value = "a"; break;
                     default: break;
                 }
-            (e.getAttribute("pname"))->setValue(value);
-            //still need code for updating the octave attribute.
+                (e.getAttribute("pname"))->setValue(value);
+                
+                int octave = oct;
+                int testpitch = pitch + (this->m_pitches.at(distance(children.begin(), i))).getPitchDifference();
+                if (testpitch > 7) {
+                    octave += floor((testpitch - 7)/7) + 1;
+                } else if (testpitch < 1) {
+                    octave -= floor((1 - testpitch)/7) + 1;
+                }
+                char octstr[1];
+                sprintf(octstr, "%d", octave);
+                (e.getAttribute("octave"))->setValue(octstr); //needs to be tested
             }
         }
     }

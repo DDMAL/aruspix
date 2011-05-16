@@ -24,6 +24,8 @@ using std::vector;
 
 #include <mei/mei.h>
 
+#include "neumedef.h"
+
 class MusStaff;
 
 enum NeumeOrnament {
@@ -56,10 +58,9 @@ enum NeumeElementType {
     NEUME_ELEMENT_PUNCTUM,
     NEUME_ELEMENT_PUNCTUM_WHITE,
     NEUME_ELEMENT_INCLINATUM,
-    NEUME_ELEMENT_QUISLIMA,
+    NEUME_ELEMENT_QUILISMA,
     NEUME_ELEMENT_CUSTOS
 };
-
 
 class MusNeumeElement
 {
@@ -70,10 +71,10 @@ public:
 	virtual ~MusNeumeElement() {};
     
     int getPitchDifference();
+    NeumeElementType getElementType();
 
 private:
 	int m_pitch_difference;
-	
 	NeumeElementType m_element_type;
 	NeumeOrnament ornament;
     MeiElement *m_meiref;
