@@ -66,7 +66,7 @@ class MusNeumeElement
 public:
 	MusNeumeElement(const MusNeumeElement &element);
     MusNeumeElement(MeiElement &meielement, int pitch, int oct);
-	MusNeumeElement(int _pitchDifference);
+	//MusNeumeElement(int _pitchDifference);
 	virtual ~MusNeumeElement() {};
     
     int getPitchDifference();
@@ -74,6 +74,7 @@ public:
 private:
 	int m_pitch_difference;
 	
+	NeumeElementType m_element_type;
 	NeumeOrnament ornament;
     MeiElement *m_meiref;
 }; 
@@ -96,14 +97,23 @@ public:
 	//Drawing code
 	virtual void Draw( AxDC *dc, MusStaff *staff);
 	void NeumeLine( AxDC *dc, MusStaff *staff, int x1, int x2, int y1, int y2);
+	void DrawAncus( AxDC *dc, MusStaff *staff);
+	void DrawCephalicus( AxDC *dc, MusStaff *staff);
 	void DrawPunctum( AxDC *dc, MusStaff *staff);
 	void DrawPunctumInclinatum( AxDC *dc, MusStaff *staff);
 	void DrawVirga( AxDC *dc, MusStaff *staff);
+	void DrawVirgaLiquescent( AxDC *dc, MusStaff *staff);
 	void DrawPodatus( AxDC *dc, MusStaff *staff);
 	void DrawClivis( AxDC *dc, MusStaff *staff);
+	void DrawEpiphonus( AxDC *dc, MusStaff *staff);
 	void DrawPorrectus( AxDC *dc, MusStaff *staff);
+	void DrawPorrectusFlexus( AxDC *dc, MusStaff *staff);
+	void DrawSalicus( AxDC *dc, MusStaff *staff);
 	void DrawScandicus( AxDC *dc, MusStaff *staff);
+	void DrawScandicusFlexus( AxDC *dc, MusStaff *staff);
 	void DrawTorculus( AxDC *dc, MusStaff *staff);
+	void DrawTorculusLiquescent( AxDC *dc, MusStaff *staff);
+	void DrawTorculusResupinus( AxDC *dc, MusStaff *staff);
 	void DrawCompound( AxDC *dc, MusStaff *staff);
 	void leg_line( AxDC *dc, int y_n, int y_p, int xn, unsigned int smaller, int pTaille);
 

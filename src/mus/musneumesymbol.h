@@ -62,7 +62,7 @@ private:
     MusNeumeSymbolType symbolType;
 	MeiElement *m_meiref;
     void updateMeiRefClef(string shape, string line);
-	int value;
+	int value; //this is to denote the line a clef lies on
 };
 
 #endif // __MUS_NEUME_SYMBOL_H__
