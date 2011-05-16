@@ -22,6 +22,13 @@ int MusStaff::testcle(int x) {
 int MusStaff::y_neume(int note, int dec_clef, int oct) {
     throw "fakemus stub";
 }
+int MusStaff::getOctCl ( MusElement *test, char *cle_id, int mlf ) {
+    throw "fakemus stub";
+}
+void MusStaff::updat_pscle (int i, MusElement *chk) {
+    throw "fakemus stub";
+}
+
 
 /*
 MusStaff::MusStaff() { throw "fakemus stub"; }

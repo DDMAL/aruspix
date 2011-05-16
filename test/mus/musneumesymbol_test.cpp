@@ -19,7 +19,7 @@ TEST(NeumeSymbolTest, TestCClef) {
     
     MusNeumeSymbol sym = MusNeumeSymbol(c);
 	ASSERT_EQ(sym.GetSymbolType(), NEUME_SYMB_CLEF_C); 
-    ASSERT_EQ(sym.code, nC1);
+    ASSERT_EQ(sym.getValue(), nC1);
     
     
     c = MeiElement("clef");
@@ -28,7 +28,7 @@ TEST(NeumeSymbolTest, TestCClef) {
     
     sym = MusNeumeSymbol(c);
 	ASSERT_EQ(sym.GetSymbolType(), NEUME_SYMB_CLEF_C); 
-    ASSERT_EQ(sym.code, nC2);
+    ASSERT_EQ(sym.getValue(), nC2);
     
     
     c = MeiElement("clef");
@@ -37,7 +37,7 @@ TEST(NeumeSymbolTest, TestCClef) {
     
     sym = MusNeumeSymbol(c);
 	ASSERT_EQ(sym.GetSymbolType(), NEUME_SYMB_CLEF_C); 
-    ASSERT_EQ(sym.code, nC3);
+    ASSERT_EQ(sym.getValue(), nC3);
     
     
     c = MeiElement("clef");
@@ -46,7 +46,7 @@ TEST(NeumeSymbolTest, TestCClef) {
     
     sym = MusNeumeSymbol(c);
 	ASSERT_EQ(sym.GetSymbolType(), NEUME_SYMB_CLEF_C); 
-    ASSERT_EQ(sym.code, nC4);
+    ASSERT_EQ(sym.getValue(), nC4);
 }
 
 TEST(NeumeSymbolTest, TestFClef) {
@@ -56,7 +56,7 @@ TEST(NeumeSymbolTest, TestFClef) {
     
     MusNeumeSymbol sym = MusNeumeSymbol(c);
 	ASSERT_EQ(sym.GetSymbolType(), NEUME_SYMB_CLEF_F); 
-    ASSERT_EQ(sym.code, nF1);
+    ASSERT_EQ(sym.getValue(), nF1);
     
     
     c = MeiElement("clef");
@@ -65,7 +65,7 @@ TEST(NeumeSymbolTest, TestFClef) {
     
     sym = MusNeumeSymbol(c);
 	ASSERT_EQ(sym.GetSymbolType(), NEUME_SYMB_CLEF_F); 
-    ASSERT_EQ(sym.code, nF2);
+    ASSERT_EQ(sym.getValue(), nF2);
     
     
     c = MeiElement("clef");
@@ -74,7 +74,7 @@ TEST(NeumeSymbolTest, TestFClef) {
     
     sym = MusNeumeSymbol(c);
 	ASSERT_EQ(sym.GetSymbolType(), NEUME_SYMB_CLEF_F); 
-    ASSERT_EQ(sym.code, nF3);
+    ASSERT_EQ(sym.getValue(), nF3);
     
     
     c = MeiElement("clef");
@@ -83,7 +83,7 @@ TEST(NeumeSymbolTest, TestFClef) {
     
     sym = MusNeumeSymbol(c);
 	ASSERT_EQ(sym.GetSymbolType(), NEUME_SYMB_CLEF_F); 
-    ASSERT_EQ(sym.code, nF4);
+    ASSERT_EQ(sym.getValue(), nF4);
 }
 
 TEST(NeumeSymbolTest, TestClefBadShapeLine) {
@@ -182,35 +182,35 @@ TEST(NeumeSymbolTest, TestCalcOffs) {
     MusNeumeSymbol sym = MusNeumeSymbol(c);
     
     int off;
-    sym.calcoffs(&off, sym.code);
+    sym.calcoffs(&off, sym.getValue());
     ASSERT_EQ(2, off);
 
     c = MeiElement("clef");
     c.addAttribute(MeiAttribute("shape", "C"));
     c.addAttribute(MeiAttribute("line", "3"));
     sym = MusNeumeSymbol(c);
-    sym.calcoffs(&off, sym.code);
+    sym.calcoffs(&off, sym.getValue());
     ASSERT_EQ(4, off);
     
     c = MeiElement("clef");
     c.addAttribute(MeiAttribute("shape", "C"));
     c.addAttribute(MeiAttribute("line", "4"));
     sym = MusNeumeSymbol(c);
-    sym.calcoffs(&off, sym.code);
+    sym.calcoffs(&off, sym.getValue());
     ASSERT_EQ(6, off);
 
     c = MeiElement("clef");
     c.addAttribute(MeiAttribute("shape", "F"));
     c.addAttribute(MeiAttribute("line", "3"));
     sym = MusNeumeSymbol(c);
-    sym.calcoffs(&off, sym.code);
+    sym.calcoffs(&off, sym.getValue());
     ASSERT_EQ(8, off);
 
     c = MeiElement("clef");
     c.addAttribute(MeiAttribute("shape", "F"));
     c.addAttribute(MeiAttribute("line", "4"));
     sym = MusNeumeSymbol(c);
-    sym.calcoffs(&off, sym.code);
+    sym.calcoffs(&off, sym.getValue());
     ASSERT_EQ(10, off);
 }
 
@@ -222,27 +222,27 @@ TEST(NeumeSymbolTest, TestSetValueClef) {
     
     // Set to C, line 2
     sym.SetValue('1', NULL, 0);
-    ASSERT_EQ(nC2, sym.code);
+    ASSERT_EQ(nC2, sym.getValue());
     ASSERT_EQ("C", sym.getMeiRef()->getAttribute("shape")->getValue());
     ASSERT_EQ("2", sym.getMeiRef()->getAttribute("line")->getValue());
 
     sym.SetValue('2', NULL, 0);
-    ASSERT_EQ(nC3, sym.code);
+    ASSERT_EQ(nC3, sym.getValue());
     ASSERT_EQ("C", sym.getMeiRef()->getAttribute("shape")->getValue());
     ASSERT_EQ("3", sym.getMeiRef()->getAttribute("line")->getValue());
 
     sym.SetValue('3', NULL, 0);
-    ASSERT_EQ(nC4, sym.code);
+    ASSERT_EQ(nC4, sym.getValue());
     ASSERT_EQ("C", sym.getMeiRef()->getAttribute("shape")->getValue());
     ASSERT_EQ("4", sym.getMeiRef()->getAttribute("line")->getValue());
 
     sym.SetValue('4', NULL, 0);
-    ASSERT_EQ(nF3, sym.code);
+    ASSERT_EQ(nF3, sym.getValue());
     ASSERT_EQ("F", sym.getMeiRef()->getAttribute("shape")->getValue());
     ASSERT_EQ("3", sym.getMeiRef()->getAttribute("line")->getValue());
 
     sym.SetValue('5', NULL, 0);
-    ASSERT_EQ(nF4, sym.code);
+    ASSERT_EQ(nF4, sym.getValue());
     ASSERT_EQ("F", sym.getMeiRef()->getAttribute("shape")->getValue());
     ASSERT_EQ("4", sym.getMeiRef()->getAttribute("line")->getValue());
 }

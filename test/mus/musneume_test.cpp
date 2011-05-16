@@ -78,7 +78,7 @@ TEST(NeumeTest, TestMakeOneNoteElement) {
     ne.addChild(no1);
     
     MusNeume mus = MusNeume(ne);
-    ASSERT_EQ(mus.pitch, 7);
+    ASSERT_EQ(mus.pitch, 5);
     ASSERT_EQ(mus.oct, 4);
     ASSERT_EQ(mus.getPitches().size(), 1);
     ASSERT_EQ(mus.getPitches().at(0).getPitchDifference(), 0);
@@ -104,7 +104,7 @@ TEST(NeumeTest, TestMakeManyNoteElements) {
 	ASSERT_EQ(mus.getType(), NEUME_TYPE_TORCULUS);
     
     ASSERT_EQ(mus.getPitches().size(), 3);
-    ASSERT_EQ(mus.pitch, 7);
+    ASSERT_EQ(mus.pitch, 1);
     ASSERT_EQ(mus.oct, 4);
     ASSERT_EQ(mus.getPitches().at(0).getPitchDifference(), 0);
     ASSERT_EQ(mus.getPitches().at(1).getPitchDifference(), 1);
@@ -127,7 +127,7 @@ TEST(NeumeTest, TestSkipOctaveUp) {
 	ASSERT_EQ(mus.getType(), NEUME_TYPE_PODATUS);
     
     ASSERT_EQ(mus.getPitches().size(), 2);
-    ASSERT_EQ(mus.pitch, 7);
+    ASSERT_EQ(mus.pitch, 5);
     ASSERT_EQ(mus.oct, 4);
     ASSERT_EQ(mus.getPitches().at(0).getPitchDifference(), 0);
     ASSERT_EQ(mus.getPitches().at(1).getPitchDifference(), 1);
