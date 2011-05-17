@@ -14,7 +14,7 @@
 #include "musneume.h"
 
 TEST(NeumeTest, TestMakePunctum) {
-	MeiElement ne = MeiElement("nemume");
+	MeiElement ne = MeiElement("neume");
     MeiElement no = MeiElement("note");
     ne.addAttribute(MeiAttribute("name", "punctum"));
     no.addAttribute(MeiAttribute("pname", "c"));
@@ -22,12 +22,39 @@ TEST(NeumeTest, TestMakePunctum) {
     ne.addChild(no);
     
     MusNeume mus = MusNeume(ne);
-	ASSERT_EQ(mus.getType(), NEUME_TYPE_PUNCTUM);    
+	ASSERT_EQ(mus.getType(), NEUME_TYPE_PUNCTUM);
+    ASSERT_EQ(mus.pitch, 1);
+}
+
+TEST(NeumeTest, TestSetPitch) {
+    MeiElement ne = MeiElement("neume");
+    MeiElement no1 = MeiElement("note");
+    MeiElement no2 = MeiElement("note");
+    MeiElement no3 = MeiElement("note");
+    ne.addAttribute(MeiAttribute("name", "torculus"));
+    no1.addAttribute(MeiAttribute("pname", "c"));
+    no1.addAttribute(MeiAttribute("oct", "4"));
+    no2.addAttribute(MeiAttribute("pname", "d"));
+    no2.addAttribute(MeiAttribute("oct", "4"));
+    no3.addAttribute(MeiAttribute("pname", "c"));
+    no3.addAttribute(MeiAttribute("oct", "4"));
+    ne.addChild(no1);
+    ne.addChild(no2);
+    ne.addChild(no3);
+    MusNeume mus = MusNeume(ne);
+    mus.SetPitch(2,4);
+    ASSERT_EQ(mus.pitch, 2);
+    ASSERT_EQ(mus.getMeiElement().getChildren().at(0).getAttribute("pname")->getValue(), "d");
+    ASSERT_EQ(mus.getMeiElement().getChildren().at(0).getAttribute("oct")->getValue(), "4");
 }
 
 TEST(NeumeTest, TestMakeOtherTypes) {
-	MeiElement ne = MeiElement("nemume");
+	MeiElement ne = MeiElement("neume");
+    MeiElement no = MeiElement("note");
+    no.addAttribute(MeiAttribute("pname", "c"));
+    no.addAttribute(MeiAttribute("oct", "4"));
     ne.addAttribute(MeiAttribute("name", "virga"));
+    ne.addChild(no);
     MusNeume mus = MusNeume(ne);
 	ASSERT_EQ(mus.getType(), NEUME_TYPE_VIRGA);
     
@@ -58,7 +85,7 @@ TEST(NeumeTest, TestMakeOtherTypes) {
 }
 
 TEST(NeumeTest, TestMakeBadNeume) {
-    MeiElement ne = MeiElement("nemume");
+    MeiElement ne = MeiElement("neume");
     ne.addAttribute(MeiAttribute("name", "not-a-type"));
     
     try {
@@ -70,7 +97,7 @@ TEST(NeumeTest, TestMakeBadNeume) {
 }
 
 TEST(NeumeTest, TestMakeOneNoteElement) {
-	MeiElement ne = MeiElement("nemume");
+	MeiElement ne = MeiElement("neume");
     MeiElement no1 = MeiElement("note");
     ne.addAttribute(MeiAttribute("name", "punctum"));
     no1.addAttribute(MeiAttribute("pname", "g"));
@@ -85,7 +112,7 @@ TEST(NeumeTest, TestMakeOneNoteElement) {
 }
 
 TEST(NeumeTest, TestMakeManyNoteElements) {
-	MeiElement ne = MeiElement("nemume");
+	MeiElement ne = MeiElement("neume");
     MeiElement no1 = MeiElement("note");
     MeiElement no2 = MeiElement("note");
     MeiElement no3 = MeiElement("note");
@@ -112,7 +139,7 @@ TEST(NeumeTest, TestMakeManyNoteElements) {
 }
 
 TEST(NeumeTest, TestSkipOctaveUp) {
-	MeiElement ne = MeiElement("nemume");
+	MeiElement ne = MeiElement("neume");
     MeiElement no1 = MeiElement("note");
     MeiElement no2 = MeiElement("note");
     ne.addAttribute(MeiAttribute("name", "podatus"));
