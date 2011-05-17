@@ -40,6 +40,8 @@ public:
 	// common method
 	int  filtrcod( int codElement, int *oct );
 	int  filtrpitch(int pitchElement, int *oct);
+    std::string PitchToStr(int pitch);
+    int StrToPitch(std::string pitch);
 	bool IsNote() { return ( TYPE == NOTE ); }
 	bool IsSymbol() { return ( TYPE == SYMB ); }
     bool IsNeume() { return ( TYPE == NEUME ); }

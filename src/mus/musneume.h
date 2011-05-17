@@ -51,7 +51,8 @@ enum NeumeType {
     NEUME_TYPE_TORCULUS_RESUPINUS,
     NEUME_TYPE_VIRGA,
     NEUME_TYPE_VIRGA_LIQUESCENT,
-    NEUME_TYPE_COMPOUND
+    NEUME_TYPE_COMPOUND,
+    NEUME_TYPE_CUSTOS
 };
 
 enum NeumeElementType {
@@ -59,7 +60,6 @@ enum NeumeElementType {
     NEUME_ELEMENT_PUNCTUM_WHITE,
     NEUME_ELEMENT_INCLINATUM,
     NEUME_ELEMENT_QUILISMA,
-    NEUME_ELEMENT_CUSTOS
 };
 
 class MusNeumeElement
@@ -67,7 +67,7 @@ class MusNeumeElement
 public:
 	MusNeumeElement(const MusNeumeElement &element);
     MusNeumeElement(MeiElement &meielement, int pitch, int oct);
-	//MusNeumeElement(int _pitchDifference);
+	MusNeumeElement(int _pitchDifference);
 	virtual ~MusNeumeElement() {};
     
     int getPitchDifference();
@@ -116,11 +116,12 @@ public:
 	void DrawTorculusLiquescent( AxDC *dc, MusStaff *staff);
 	void DrawTorculusResupinus( AxDC *dc, MusStaff *staff);
 	void DrawCompound( AxDC *dc, MusStaff *staff);
+    void DrawCustos( AxDC *dc, MusStaff *staff);
 	void leg_line( AxDC *dc, int y_n, int y_p, int xn, unsigned int smaller, int pTaille);
 
 	//void append( AxDC *dc, MusStaff *staff ); //for creating multi-note neumes
 	
-    virtual void SetPitch( int code, int oct );
+    virtual void SetPitch( int pitch, int oct );
 	//virtual void SetValue( int value, MusStaff *staff = NULL, int vflag = 0 );
 	//int GetValue();
 	

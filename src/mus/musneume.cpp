@@ -61,11 +61,11 @@ MusNeumeElement::MusNeumeElement(MeiElement &element, int pitch, int oct) {
     //Need to initialize the octave.
 }
 
-/*MusNeumeElement::MusNeumeElement(int _pitchDifference)
+MusNeumeElement::MusNeumeElement(int _pitchDifference)
 {
     m_pitch_difference = _pitchDifference;
     m_element_type = NEUME_ELEMENT_PUNCTUM;
-}*/
+}
 
 // Duplicate an existing pitch
 MusNeumeElement::MusNeumeElement( const MusNeumeElement &other) {
@@ -89,15 +89,15 @@ NeumeElementType MusNeumeElement::getElementType()
 
 MusNeume::MusNeume() : MusElement() {
     TYPE = NEUME;
-    m_type = NEUME_TYPE_TORCULUS_RESUPINUS; //note: for all practical purposes, this can always be punctum.
+    m_type = NEUME_TYPE_CUSTOS; //note: for all practical purposes, this can always be punctum.
     // For testing only
-    /*MusNeumeElement first = MusNeumeElement(0);
-    MusNeumeElement next = MusNeumeElement(1);
+    MusNeumeElement first = MusNeumeElement(0);
+    /*MusNeumeElement next = MusNeumeElement(1);
     MusNeumeElement third = MusNeumeElement(-1);
     MusNeumeElement fourth = MusNeumeElement(1);
-    MusNeumeElement fifth = MusNeumeElement(3);
+    MusNeumeElement fifth = MusNeumeElement(3);*/
     m_pitches.push_back(first);
-    m_pitches.push_back(next);
+    /*m_pitches.push_back(next);
     m_pitches.push_back(third);
     m_pitches.push_back(fourth);
     m_pitches.push_back(fifth);*/
@@ -116,51 +116,51 @@ MusNeume::MusNeume( const MusNeume &neume) :
 /**
  * Create a neume from an MeiElement.
  */
-MusNeume::MusNeume(MeiElement &element) {
-    m_meiref = &element;
-    MeiAttribute *nameattr = m_meiref->getAttribute("name");
-    MeiAttribute *variantattr = m_meiref->getAttribute("variant");
-    wxString type = "";
-    wxString variant = "";
-    if (nameattr) {
-        type = (nameattr->getValue()).c_str();
-    }
-    // e.g. punctum inclinatum has a variant of 'inclinatum'
-    if (variantattr) {
-        variant = (variantattr->getValue()).c_str();
-    }
-    setType(type, variant);
+MusNeume::MusNeume(MeiElement &element) : MusElement() {
+    TYPE = NEUME;
+    MeiAttribute *p, *o;
+    vector<MeiElement> children;
+    if (element.getName() == "neume") {
+        m_meiref = &element;
+        MeiAttribute *nameattr = m_meiref->getAttribute("name");
+        MeiAttribute *variantattr = m_meiref->getAttribute("variant");
+        wxString type = "";
+        wxString variant = "";
+        if (nameattr) {
+            type = (nameattr->getValue()).c_str();
+        }
+        // e.g. punctum inclinatum has a variant of 'inclinatum'
+        if (variantattr) {
+            variant = (variantattr->getValue()).c_str();
+        }
+        setType(type, variant);
     
-    vector<MeiElement> children = m_meiref->getChildren();
-    //something here to ensure there is at least one note?
-    if (&(children.begin()) != NULL) { //this is not good.
-        MeiAttribute *p = children.begin()->getAttribute("pname");
-        MeiAttribute *o = children.begin()->getAttribute("oct");
-        if (p && o) {
-            string meipitch = p->getValue();
-            oct = atoi((o->getValue()).c_str());
-            if (meipitch == "c") {
-                pitch = 1;
-            } else if (meipitch == "d") {
-                pitch = 2;
-            } else if (meipitch == "e") {
-                pitch = 3;
-            } else if (meipitch == "f") {
-                pitch = 4;
-            } else if (meipitch == "g") {
-                pitch = 5;
-            } else if (meipitch == "a") {
-                pitch = 6;
-            } else if (meipitch == "b") {
-                pitch = 7;
-            }
+        children = m_meiref->getChildren(); //needs to change to include NCs.
+        //something here to ensure there is at least one note?
+        if (children.begin()->getAttribute("pname") != NULL) { //this is not good.
+            p = children.begin()->getAttribute("pname");
+            o = children.begin()->getAttribute("oct");
         } else {
-            throw "missing pitch or octave";
+            throw "no pitches for neume";
         }
-        if (pitch > 5) { //to correct for standard notation of pitches (where the first pitch of an octave is A)
-            oct--;
-        }
-    
+    } else if (element.getName() == "custos") {
+        m_meiref = &element;
+        setType("custos", "");
+        p = m_meiref->getAttribute("pname");
+        o = m_meiref->getAttribute("oct");
+    } else {
+        throw "invalid type for a neume";
+    }
+    if (p && o) {
+        oct = atoi((o->getValue()).c_str());
+        pitch = this->StrToPitch(p->getValue());
+    } else {
+        throw "missing pitch or octave";
+    }
+    if (pitch > 5) { //to correct for standard notation of pitches (where the first pitch of an octave is A)
+        oct--;
+    }
+    if (m_meiref->getName() == "neume") {
         for (vector<MeiElement>::iterator i = children.begin(); i != children.end(); i++) {
             MeiElement e = *i;
             if (e.getName() == "note") {
@@ -168,15 +168,14 @@ MusNeume::MusNeume(MeiElement &element) {
                 m_pitches.push_back(note);
             }
         }
-    } else {
-        throw "no pitches for neume";
     }
 }
 
 /**
  * The type of this neume (from MEI) e.g. 'torculus', 'podatus'
  */
-void MusNeume::setType(wxString type, wxString variant) {
+void MusNeume::setType(wxString type, wxString variant)
+{
     if (type == "punctum" && variant == "") {
         m_type = NEUME_TYPE_PUNCTUM;
     } else if (type == "virga") {
@@ -193,8 +192,23 @@ void MusNeume::setType(wxString type, wxString variant) {
         m_type = NEUME_TYPE_TORCULUS;
     } else if (type == "compound") {
         m_type = NEUME_TYPE_COMPOUND;
-    } else if (type == "cephalicus") {
+    } else if (type == "cephalicus") { //maybe liquescent clivis
         m_type = NEUME_TYPE_CEPHALICUS;
+    } else if (type == "custos") {
+        m_type = NEUME_TYPE_CUSTOS;
+    } else if (type == "ancus") { //maybe irrelevant
+        m_type = NEUME_TYPE_ANCUS;
+    } else if (type == "epiphonus") { //maybe podatus liquescent
+        m_type = NEUME_TYPE_EPIPHONUS;
+    } else if (type == "porrectus flexus") { //maybe formatted differently?
+        m_type = NEUME_TYPE_PORRECTUS_FLEXUS;
+    } else if (type == "salicus") { //maybe scandicus?
+        m_type = NEUME_TYPE_SALICUS;
+    } else if (type == "scandicus flexus") {
+        m_type = NEUME_TYPE_SCANDICUS_FLEXUS;
+    } else if (type == "torculus resupinus") {
+        m_type = NEUME_TYPE_TORCULUS_RESUPINUS;
+        //torculus liquescent?
     } else {
         string t = type.mb_str();
         throw "unknown neume type " + t;
@@ -234,31 +248,27 @@ void MusNeume::SetPitch( int pitch, int oct )
         vector<MeiElement> children = m_meiref->getChildren();
         for (vector<MeiElement>::iterator i = children.begin(); i != children.end(); i++) {
             MeiElement e = *i;
+            int index = i - children.begin();
             if (e.getName() == "note") {
-                int thispitch = ((this->m_pitches.at(distance(children.begin(), i))).getPitchDifference() + pitch)%7;
-                string value;
-                switch (thispitch) {
-                    case 0: value = "b"; break;
-                    case 1: value = "c"; break;
-                    case 2: value = "d"; break;
-                    case 3: value = "e"; break;
-                    case 4: value = "f"; break;
-                    case 5: value = "g"; break;
-                    case 6: value = "a"; break;
-                    default: break;
-                }
-                (e.getAttribute("pname"))->setValue(value);
+                int thispitch = ((this->m_pitches.at(index)).getPitchDifference() + pitch)%7;
+                //what if the pitch is bad?
+                (getMeiElement().getChildren().at(index).getAttribute("pname"))->setValue(this->PitchToStr(thispitch));
                 
                 int octave = oct;
-                int testpitch = pitch + (this->m_pitches.at(distance(children.begin(), i))).getPitchDifference();
+                int testpitch = pitch + (this->m_pitches.at(index)).getPitchDifference();
                 if (testpitch > 7) {
                     octave += floor((testpitch - 7)/7) + 1;
                 } else if (testpitch < 1) {
                     octave -= floor((1 - testpitch)/7) + 1;
                 }
-                char octstr[1];
-                sprintf(octstr, "%d", octave);
-                (e.getAttribute("octave"))->setValue(octstr); //needs to be tested
+                if (thispitch == 0 || thispitch == 6) { //to correct for standard pitch notation.
+                    octave++;
+                }
+                char buffer[1];
+                sprintf(buffer, "%d", octave);
+                string octstr;
+                octstr.assign(buffer, 1);
+                (getMeiElement().getChildren().at(index).getAttribute("oct"))->setValue(octstr); //needs to be tested
             }
         }
     }
@@ -305,6 +315,7 @@ void MusNeume::Draw( AxDC *dc, MusStaff *staff)
         case (NEUME_TYPE_CEPHALICUS): this->DrawCephalicus(dc, staff); break;
         case (NEUME_TYPE_EPIPHONUS): this->DrawEpiphonus(dc, staff); break;
         case (NEUME_TYPE_SALICUS): this->DrawSalicus(dc, staff); break;
+        case (NEUME_TYPE_CUSTOS): this->DrawCustos(dc, staff); break;
         default: break;
     }
     
@@ -346,6 +357,26 @@ void MusNeume::DrawAncus( AxDC *dc, MusStaff *staff )
     m_r->festa_string( dc, xn, ynn2 + 19, nCEPHALICUS, staff, this->dimin); //notehead : 'K'
     int ynn3 = ynn + (m_r->_espace[pTaille])*((this->m_pitches.at(2)).getPitchDifference());
     m_r->festa_string( dc, xn, ynn3 + 19, nLIQUES_UP, staff, this->dimin); //liquescent: 'e'
+}
+
+void MusNeume::DrawCustos( AxDC *dc, MusStaff *staff )
+{
+    // magic happens here
+    int pTaille = staff->pTaille;
+    
+    int xn = this->xrel;
+    //int xl = this->xrel;
+    int bby = staff->yrel - m_r->_portee[pTaille];
+    int ynn = this->dec_y + staff->yrel;
+    //printf("closed ynn value: %d\nclosed dec_y: %d\nclosed yrel: %d\n", 
+    //     ynn, this->dec_y, staff->yrel );
+    
+    xn += this->offset;
+    
+    int ledge = m_r->ledgerLine[pTaille][2];
+    
+    leg_line( dc, ynn,bby,this->xrel,ledge, pTaille);
+    m_r->festa_string( dc, xn, ynn + 19, nNEXT_PITCH, staff, this->dimin);
 }
 
 void MusNeume::DrawEpiphonus( AxDC *dc, MusStaff *staff )

@@ -226,5 +226,41 @@ int MusElement::filtrpitch( int pitchElement, int *oct)
 	return pitchElement;
 }
 
+std::string MusElement::PitchToStr(int pitch)
+{
+    string value;
+    switch (pitch) {
+        case 0: value = "b"; break;
+        case 1: value = "c"; break;
+        case 2: value = "d"; break;
+        case 3: value = "e"; break;
+        case 4: value = "f"; break;
+        case 5: value = "g"; break;
+        case 6: value = "a"; break;
+        default: break;
+    }
+    return value;
+}
 
-
+int MusElement::StrToPitch(std::string pitch)
+{
+    int value;
+    if (pitch == "c") {
+        value = 1;
+    } else if (pitch == "d") {
+        value = 2;
+    } else if (pitch == "e") {
+        value = 3;
+    } else if (pitch == "f") {
+        value = 4;
+    } else if (pitch == "g") {
+        value = 5;
+    } else if (pitch == "a") {
+        value = 6;
+    } else if (pitch == "b") {
+        value = 7;
+    } else {
+        value = -1;
+    }
+    return value;
+}

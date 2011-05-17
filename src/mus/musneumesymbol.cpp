@@ -39,7 +39,7 @@ MusNeumeSymbol::MusNeumeSymbol(MeiElement &meielement) :
         MeiAttribute *shape = m_meiref->getAttribute("shape");
         MeiAttribute *line = m_meiref->getAttribute("line");
 		if (shape != NULL && line != NULL) {
-			if (shape->getValue() == "C") {
+			if (shape->getValue() == "c") {
                 symbolType = NEUME_SYMB_CLEF_C;
 				if (line->getValue() == "1") {
 					value = nC1;
@@ -52,7 +52,7 @@ MusNeumeSymbol::MusNeumeSymbol(MeiElement &meielement) :
 				} else {
                     throw "unknown line for a C clef";
                 }
-			} else if (shape->getValue() == "F") {
+			} else if (shape->getValue() == "f") {
                 symbolType = NEUME_SYMB_CLEF_F;
 				if (line->getValue() == "1") {
 					value = nF1;
@@ -88,6 +88,29 @@ MusNeumeSymbol::MusNeumeSymbol(MeiElement &meielement) :
         } else {
             throw "missing form for division";
         }
+    } else if (m_meiref->getName() == "accid") {
+        MeiAttribute *accid = m_meiref->getAttribute("accid");
+        if (accid != NULL) {
+            if (accid->getValue() == "f") {
+                symbolType = NEUME_SYMB_FLAT;
+            } else if (accid->getValue() == "n") {
+                symbolType = NEUME_SYMB_NATURAL;
+            } else {
+                throw "unknown accidental";
+            }
+        } else {
+            throw "missing accid attribute on accidental";
+        }
+        MeiAttribute *pname = m_meiref->getAttribute("pname");
+        MeiAttribute *o = m_meiref->getAttribute("oct");
+        if (pname && o) {
+            oct = atoi((o->getValue()).c_str());
+            pitch = this->StrToPitch(pname->getValue());
+        } else {
+            throw "missing pitch or octave on accidental";
+        }
+    } else {
+        throw "unknown type of symbol";
     }
 }
 
@@ -339,22 +362,6 @@ void MusNeumeSymbol::SetValue(int value, MusStaff *staff, int vflag)
 		case ('9'): this->symbolType = NEUME_SYMB_DIVISION_MINOR; break;
 		case ('0'): this->symbolType = NEUME_SYMB_DIVISION_SMALL; break;
 	}
-	//need to write back to MEI for other symbols... doubt this will be used at all, but still...
-	
-	/*if (m_meiref)
-	{
-		switch (this->value)
-		{
-			case (nC1): (m_meiref->getAttribute("shape"))->setValue("c"); (m_meiref->getAttribute("line"))->setValue("1"); break;
-			case (nC2): (m_meiref->getAttribute("shape"))->setValue("c"); (m_meiref->getAttribute("line"))->setValue("2"); break;
-			case (nC3): (m_meiref->getAttribute("shape"))->setValue("c"); (m_meiref->getAttribute("line"))->setValue("3"); break;
-			case (nC4): (m_meiref->getAttribute("shape"))->setValue("c"); (m_meiref->getAttribute("line"))->setValue("4"); break;
-			case (nF1): (m_meiref->getAttribute("shape"))->setValue("f"); (m_meiref->getAttribute("line"))->setValue("1"); break;
-			case (nF2): (m_meiref->getAttribute("shape"))->setValue("f"); (m_meiref->getAttribute("line"))->setValue("2"); break;
-			case (nF3): (m_meiref->getAttribute("shape"))->setValue("f"); (m_meiref->getAttribute("line"))->setValue("3"); break;
-			case (nF4): (m_meiref->getAttribute("shape"))->setValue("f"); (m_meiref->getAttribute("line"))->setValue("4"); break;
-		}
-	}*/
 	
 	if ( m_r )
 	{
@@ -364,17 +371,42 @@ void MusNeumeSymbol::SetValue(int value, MusStaff *staff, int vflag)
 	
 	if (m_meiref)
 	{
-		switch (this->value)
-		{
-			case (nC1): updateMeiRefClef("C", "1"); break;
-			case (nC2): updateMeiRefClef("C", "2"); break;
-			case (nC3): updateMeiRefClef("C", "3"); break;
-			case (nC4): updateMeiRefClef("C", "4"); break;
-			case (nF1): updateMeiRefClef("F", "1"); break;
-			case (nF2): updateMeiRefClef("F", "2"); break;
-			case (nF3): updateMeiRefClef("F", "3"); break;
-			case (nF4): updateMeiRefClef("F", "4"); break;
-		}
+		switch (this->symbolType)
+        {
+            case (NEUME_SYMB_CLEF_F):
+            case (NEUME_SYMB_CLEF_C):
+                switch (this->value)
+                {
+                    case (nC1): updateMeiRefClef("c", "1"); break;
+                    case (nC2): updateMeiRefClef("c", "2"); break;
+                    case (nC3): updateMeiRefClef("c", "3"); break;
+                    case (nC4): updateMeiRefClef("c", "4"); break;
+                    case (nF1): updateMeiRefClef("f", "1"); break;
+                    case (nF2): updateMeiRefClef("f", "2"); break;
+                    case (nF3): updateMeiRefClef("f", "3"); break;
+                    case (nF4): updateMeiRefClef("f", "4"); break;
+                }
+                break;
+            case (NEUME_SYMB_DIVISION_FINAL):
+                updateMeiRefDiv("final");
+                break;
+            case (NEUME_SYMB_DIVISION_MAJOR):
+                updateMeiRefDiv("major");
+                break;
+            case (NEUME_SYMB_DIVISION_MINOR):
+                updateMeiRefDiv("minor");
+                break;
+            case (NEUME_SYMB_DIVISION_SMALL):
+                updateMeiRefDiv("small");
+                break;
+            case (NEUME_SYMB_FLAT):
+                updateMeiRefAccid("f", this->pitch, this->oct);
+                break;
+            case (NEUME_SYMB_NATURAL):
+                updateMeiRefAccid("n", this->pitch, this->oct);
+                break;
+            default: break;
+        }
 	}
 }
 
@@ -383,6 +415,46 @@ int MusNeumeSymbol::getValue()
 	return value;
 }
 
+void MusNeumeSymbol::updateMeiRefAccid(string accid, int pitch, int octave)
+{
+    if (m_meiref->getName() == "accid") {
+        MeiAttribute *accidattr = m_meiref->getAttribute("accid");
+        if (accidattr == NULL) {
+            m_meiref->addAttribute(MeiAttribute("accid", accid));
+        } else {
+            accidattr->setValue(accid);
+        }
+        MeiAttribute *pnameattr = m_meiref->getAttribute("pname");
+        if (pnameattr == NULL) {
+            m_meiref->addAttribute(MeiAttribute("pname", this->PitchToStr(pitch)));
+        } else {
+            pnameattr->setValue(this->PitchToStr(pitch));
+        }
+        MeiAttribute *octattr = m_meiref->getAttribute("oct");
+        char buffer[1];
+        sprintf(buffer, "%d", octave);
+        string octstr;
+        octstr.assign(buffer, 1);
+        if (octattr == NULL) {
+            m_meiref->addAttribute(MeiAttribute("oct", octstr));
+        } else {
+            octattr->setValue(octstr);
+        }
+    }
+}
+
+void MusNeumeSymbol::updateMeiRefDiv(string form)
+{
+    if (m_meiref->getName() == "division") {
+        MeiAttribute *formattr = m_meiref->getAttribute("form");
+        if (formattr == NULL) {
+            m_meiref->addAttribute(MeiAttribute("form", form));
+        } else {
+            formattr->setValue(form);
+        }
+    }
+}
+                                       
 void MusNeumeSymbol::updateMeiRefClef(string shape, string line) {
     if (m_meiref->getName() == "clef") {
         MeiAttribute *shapeattr = m_meiref->getAttribute("shape");
@@ -415,6 +487,11 @@ void MusNeumeSymbol::SetPitch(int pitch, int oct) //this is incomplete, there is
 		
 		if (m_r)
 			m_r->DoRefresh();
+        
+        if (m_meiref)
+        {
+            updateMeiRefAccid(m_meiref->getAttribute("accid")->getValue(), pitch, oct);
+        }
 	}
 }
 
