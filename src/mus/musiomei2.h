@@ -18,6 +18,7 @@
 #include "wx/wfstream.h"
 
 #include "musfile.h"
+#include <mei/mei.h>
 
 //----------------------------------------------------------------------------
 // MusMeiOutput
@@ -66,14 +67,14 @@ private:
     bool mei_clefchange( xmlNode *node );
     bool mei_custos( xmlNode *node ); 
     bool mei_dot( xmlNode *node );
-    bool mei_layer( xmlNode *node );    
+    bool mei_layer( MeiElement *element );    
     bool mei_measure( xmlNode *node );
     bool mei_mensur( xmlNode *node );
     bool mei_note( xmlNode *node );
     bool mei_parts( xmlNode *node );
     bool mei_rest( xmlNode *node );
     bool mei_score( xmlNode *node );
-    bool mei_staff( xmlNode *node );
+    bool mei_staff( MeiElement *element );
     
     void mei_attr_dur( xmlNode *node, unsigned char *val );
     void mei_attr_pname( xmlNode *, unsigned short *code );

@@ -41,6 +41,11 @@ MusNeumeElement::MusNeumeElement(MeiElement &element, int firstpitch, int firsto
     m_meiref = &element;
     MeiAttribute *p = m_meiref->getAttribute("pname");
     MeiAttribute *o = m_meiref->getAttribute("oct");
+    //fake oct attribute
+    if (o == NULL) {
+        m_meiref->addAttribute(MeiAttribute("oct","4"));
+        o = m_meiref->getAttribute("oct");
+    }
     if (p && o) {
         string meipitch = p->getValue();
         int octave = atoi((o->getValue()).c_str()); //this code needs testing
@@ -64,11 +69,11 @@ MusNeumeElement::MusNeumeElement(MeiElement &element, int firstpitch, int firsto
     }
 }
 
-MusNeumeElement::MusNeumeElement(int _pitchDifference)
+/*MusNeumeElement::MusNeumeElement(int _pitchDifference)
 {
     m_pitch_difference = _pitchDifference;
     m_element_type = NEUME_ELEMENT_PUNCTUM;
-}
+}*/
 
 // Duplicate an existing pitch
 MusNeumeElement::MusNeumeElement( const MusNeumeElement &other) {
@@ -101,13 +106,13 @@ MusNeume::MusNeume() : MusElement() {
     TYPE = NEUME;
     m_type = NEUME_TYPE_CUSTOS; //note: for all practical purposes, this can always be punctum.
     // For testing only
-    MusNeumeElement first = MusNeumeElement(0);
-    /*MusNeumeElement next = MusNeumeElement(1);
+    /*MusNeumeElement first = MusNeumeElement(0);
+    MusNeumeElement next = MusNeumeElement(1);
     MusNeumeElement third = MusNeumeElement(-1);
     MusNeumeElement fourth = MusNeumeElement(1);
-    MusNeumeElement fifth = MusNeumeElement(3);*/
+    MusNeumeElement fifth = MusNeumeElement(3);
     m_pitches.push_back(first);
-    /*m_pitches.push_back(next);
+    m_pitches.push_back(next);
     m_pitches.push_back(third);
     m_pitches.push_back(fourth);
     m_pitches.push_back(fifth);*/
@@ -149,6 +154,11 @@ MusNeume::MusNeume(MeiElement &element) : MusElement() {
                 MeiElement note = firstnotes[0];
                 p = note.getAttribute("pname");
                 o = note.getAttribute("oct");
+                //fake oct attribute
+                if (o == NULL) {
+                    note.addAttribute(MeiAttribute("oct","4"));
+                    o = note.getAttribute("oct");
+                }
                 if (p == NULL || o == NULL) {
                     throw "missing pitch or octave";
                 }
@@ -314,7 +324,7 @@ void MusNeume::Draw( AxDC *dc, MusStaff *staff)
     this->dec_y = staff->y_neume(this->pitch, staff->testcle( this->xrel ), oct);
     switch (m_type) {
         case (NEUME_TYPE_PUNCTUM): this->DrawPunctum(dc, staff); break;
-        //case (NEUME_TYPE_PUNCTUM_INCLINATUM): this->DrawPunctumInclinatum(dc, staff); break;
+        case (NEUME_TYPE_PUNCTUM_INCLINATUM): this->DrawPunctumInclinatum(dc, staff); break;
         case (NEUME_TYPE_VIRGA): this->DrawVirga(dc, staff); break;
         //case (NEUME_TYPE_VIRGA_LIQUESCENT): this->DrawVirgaLiquescent(dc, staff); break;
         case (NEUME_TYPE_PODATUS): this->DrawPodatus(dc, staff); break;

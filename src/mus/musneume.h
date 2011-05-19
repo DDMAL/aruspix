@@ -43,6 +43,7 @@ enum NeumeType {
     NEUME_TYPE_PORRECTUS,
     NEUME_TYPE_PORRECTUS_FLEXUS,
     NEUME_TYPE_PUNCTUM,
+    NEUME_TYPE_PUNCTUM_INCLINATUM,
     NEUME_TYPE_SALICUS,
     NEUME_TYPE_SCANDICUS,
     NEUME_TYPE_SCANDICUS_FLEXUS,
@@ -67,7 +68,7 @@ class MusNeumeElement
 public:
     MusNeumeElement(const MusNeumeElement &element);
     MusNeumeElement(MeiElement &meielement, int pitch, int oct);
-    MusNeumeElement(int _pitchDifference);
+    //MusNeumeElement(int _pitchDifference);
     virtual ~MusNeumeElement() {};
     
     int getPitchDifference();

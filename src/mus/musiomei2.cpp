@@ -24,6 +24,8 @@ using std::max;
 #include "wx/filename.h"
 #include "wx/txtstrm.h"
 
+#include "musneume.h"
+#include "musneumesymbol.h"
 #include "musiomei2.h"
 
 // A Simple MEI input/output that can only read neume documents.
@@ -79,6 +81,40 @@ MusMeiInput::~MusMeiInput()
 
 bool MusMeiInput::ReadElement(MeiElement *element)
 {
+    if (element->getName() == "neume" || element->getName() == "custos") {
+        if (element->getName() == "custos") {
+        MeiAttribute *o = element->getAttribute("oct");
+        //faking the oct attribute for the time being.
+        if (o == NULL) {
+            element->addAttribute(MeiAttribute("oct","4"));
+        }
+        }
+        MusNeume neume = MusNeume(*element);
+        m_currentStaff->Append(&neume);
+    } else if (element->getName() == "division" || element->getName() == "clef" || element->getName() == "accid") {
+        if (element->getName() == "accid") {
+            MeiAttribute *o = element->getAttribute("oct");
+            //faking oct attribute for the time being.
+            if (o == NULL) {
+                element->addAttribute(MeiAttribute("oct","4"));
+            }
+        }
+        MusNeumeSymbol neume_element = MusNeumeSymbol(*element);
+        m_currentStaff->Append(&neume_element);
+    } else if (element->getName() == "sb") {
+        mei_staff(element);
+    } else if (element->getName() == "layer") {
+        mei_layer(element);
+    }
+    vector<MeiElement> children = element->getChildren();
+    for (vector<MeiElement>::iterator i = children.begin(); i != children.end(); i++) {
+        MeiElement e = *i;
+        ReadElement(&e);
+    }
+    return true;
+    //do it for the children if conditions are correct.
+    
+    /* old code
     xmlNode *cur_node = NULL;
     xmlNode *node = NULL;
     for (cur_node = node; cur_node; cur_node = cur_node->next) {
@@ -100,7 +136,7 @@ bool MusMeiInput::ReadElement(MeiElement *element)
         // Was element->children
         if (!ReadElement(element)) return false ;
     }
-    return true;
+    return true;*/
 }
 
 bool MusMeiInput::ImportFile( )
@@ -164,21 +200,8 @@ bool MusMeiInput::ReadAttributeString( xmlNode *node, wxString name, wxString *v
 
 bool MusMeiInput::mei_accid( xmlNode *node ) {
 
-    MusSymbol *symbol = new MusSymbol();
-    symbol->flag = ALTER;
-    symbol->oct = 4; // no pitch information in mei. It is randomly placed. This should be fixed...
-    symbol->code = F4;
-    
-    // accid
-    wxString accid;
-    ReadAttributeString( node, "accid", &accid );
-    if (accid == "n") symbol->calte = BECAR;
-    else if (accid == "f") symbol->calte = BEMOL;
-    else if (accid == "s") symbol->calte = DIESE;
-    else if (accid == "ff") symbol->calte = D_BEMOL;
-    else if (accid == "ss") symbol->calte = D_DIESE;
-
-    m_currentStaff->Append( symbol );
+    //MusNeumeSymbol *symbol = MusNeumeSymbol(node);
+    //m_currentStaff->Append( symbol );
     return true;
 }
 
@@ -255,7 +278,7 @@ bool MusMeiInput::mei_dot( xmlNode *node ) {
     return true;
 }
 
-bool MusMeiInput::mei_layer( xmlNode *node ) {
+bool MusMeiInput::mei_layer(MeiElement *element) {
 
     //wxLogDebug("mei:layer\n");
     if (m_currentStaff == NULL) { 
@@ -391,16 +414,17 @@ bool MusMeiInput::mei_score( xmlNode *node ) {
     return true;
 }
 
-bool MusMeiInput::mei_staff( xmlNode *node ) {
+bool MusMeiInput::mei_staff(MeiElement *element) {
 
     //wxLogDebug("mei:staff\n");
-    int n;
-    if (ReadAttributeInt( node, "n", &n )) {}
+    int n = atoi((element->getAttribute("n")->getValue()).c_str());
+    //if (ReadAttributeInt( element, "n", &n )) {}
     wxLogDebug("mei:staff %d\n", n);
     if (n == (int)m_page->m_staves.Count() + 1) {
         // we tolerate that the staff has not been created in a scoredef
         // n must not be bigger that the previous id + 1;
         MusStaff *staff = new MusStaff();
+        staff->portNbLine = 4; //added as experiment --Jamie
         staff->no = n - 1;
         if (n == 1) {
             staff->ecart = 1; // for the first staff, we decrease the top space
