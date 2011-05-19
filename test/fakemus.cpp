@@ -30,14 +30,14 @@ void MusStaff::updat_pscle (int i, MusElement *chk) {
 }
 
 
-/*
+
 MusStaff::MusStaff() { throw "fakemus stub"; }
 void MusStaff::Append(MusElement *element, int i) { throw "fakemus stub"; }
 void MusStaff::GetMaxXY( wxArrayPtrVoid params ) { throw "fakemus stub"; }
 void MusStaff::CheckIntegrity() { throw "fakemus stub"; }
 MusStaff::~MusStaff() { throw "fakemus stub"; }
 void MusStaff::CopyElements(wxArrayPtrVoid p) { throw "fakemus stub"; }
-*/
+
 
 //-------------
 // MusRC
@@ -51,8 +51,6 @@ void MusRC::box(AxDC *dc, int x1, int y1, int x2, int y2) { throw "fakemus stub"
 int MusRC::ToRendererX(int) { throw "fakemus stub"; }
 int MusRC::ToRendererY(int) { throw "fakemus stub"; }
 
-
-/*
 
 //-------------
 // MusPage
@@ -107,4 +105,4 @@ MusFileHeader::~MusFileHeader() { throw "fakemus stub"; }
 
 MusParameters::MusParameters() { throw "fakemus stub"; }
 MusParameters::~MusParameters() { throw "fakemus stub"; }
-*/
+
