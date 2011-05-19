@@ -72,6 +72,7 @@ public:
     
     int getPitchDifference();
     NeumeElementType getElementType();
+	void updateMeiRef(string pitch, int oct);
 
 private:
 	int m_pitch_difference;
@@ -89,7 +90,7 @@ public:
     MusNeume(MeiElement &meielement);
     virtual ~MusNeume() {};
     
-    void setType(wxString type, wxString variant);
+    void setType(wxString type);
     void setType(NeumeType type);
     NeumeType getType();
     MeiElement &getMeiElement();
@@ -130,6 +131,8 @@ public:
 	
 
 private:
+	void readNoteContainer(MeiElement &nc, int pitch, int oct);
+
 	NeumeOrnament ornament;
     NeumeType m_type;
     MeiElement *m_meiref;

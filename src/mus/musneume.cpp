@@ -33,7 +33,11 @@
 // MusNeumeElement
 //----------------------------------------------------------------------------
 
-MusNeumeElement::MusNeumeElement(MeiElement &element, int pitch, int oct) {
+/**
+ * Take an MEIElement <note> and the pitch and octave of the first note in a <neume>
+ * create an element that is the difference in pitch.
+ */
+MusNeumeElement::MusNeumeElement(MeiElement &element, int firstpitch, int firstoct) {
     m_meiref = &element;
     MeiAttribute *p = m_meiref->getAttribute("pname");
     MeiAttribute *o = m_meiref->getAttribute("oct");
@@ -41,24 +45,23 @@ MusNeumeElement::MusNeumeElement(MeiElement &element, int pitch, int oct) {
         string meipitch = p->getValue();
         int octave = atoi((o->getValue()).c_str()); //this code needs testing
         if (meipitch == "c") {
-            m_pitch_difference = (octave*7 + 1) -  (oct*7 + pitch);
+            m_pitch_difference = (octave*7 + 1) -  (firstoct*7 + firstpitch);
         } else if (meipitch == "d") {
-            m_pitch_difference = (octave*7 + 2) -  (oct*7 + pitch);
+            m_pitch_difference = (octave*7 + 2) -  (firstoct*7 + firstpitch);
         } else if (meipitch == "e") {
-            m_pitch_difference = (octave*7 + 3) -  (oct*7 + pitch);
+            m_pitch_difference = (octave*7 + 3) -  (firstoct*7 + firstpitch);
         } else if (meipitch == "f") {
-            m_pitch_difference = (octave*7 + 4) -  (oct*7 + pitch);
+            m_pitch_difference = (octave*7 + 4) -  (firstoct*7 + firstpitch);
         } else if (meipitch == "g") {
-            m_pitch_difference = (octave*7 + 5) -  (oct*7 + pitch);
+            m_pitch_difference = (octave*7 + 5) -  (firstoct*7 + firstpitch);
         } else if (meipitch == "a") {
-            m_pitch_difference = ((octave - 1)*7 + 6) -  (oct*7 + pitch); // use octave - 1 to correct for standard pitch notation
+            m_pitch_difference = ((octave - 1)*7 + 6) -  (firstoct*7 + firstpitch); // use octave - 1 to correct for standard pitch notation
         } else if (meipitch == "b") {
-            m_pitch_difference = ((octave - 1)*7 + 7) -  (oct*7 + pitch); //ditto
+            m_pitch_difference = ((octave - 1)*7 + 7) -  (firstoct*7 + firstpitch); //ditto
         }
     } else {
         throw "missing pitch or octave";
     }
-    //Need to initialize the octave.
 }
 
 MusNeumeElement::MusNeumeElement(int _pitchDifference)
@@ -81,6 +84,13 @@ int MusNeumeElement::getPitchDifference() {
 NeumeElementType MusNeumeElement::getElementType()
 {
     return m_element_type;
+}
+
+void MusNeumeElement::updateMeiRef(string pitch, int oct) {
+    m_meiref->getAttribute("pname")->setValue(pitch);
+    char buf[8];
+    snprintf(buf, 2, "%d", oct);
+    m_meiref->getAttribute("oct")->setValue(string(buf));
 }
 
 //----------------------------------------------------------------------------
@@ -118,53 +128,74 @@ MusNeume::MusNeume( const MusNeume &neume) :
  */
 MusNeume::MusNeume(MeiElement &element) : MusElement() {
     TYPE = NEUME;
-    MeiAttribute *p, *o;
+    MeiAttribute *p = NULL;
+	MeiAttribute *o = NULL;
     vector<MeiElement> children;
     if (element.getName() == "neume") {
         m_meiref = &element;
         MeiAttribute *nameattr = m_meiref->getAttribute("name");
-        MeiAttribute *variantattr = m_meiref->getAttribute("variant");
         wxString type = "";
-        wxString variant = "";
         if (nameattr) {
             type = (nameattr->getValue()).c_str();
         }
-        // e.g. punctum inclinatum has a variant of 'inclinatum'
-        if (variantattr) {
-            variant = (variantattr->getValue()).c_str();
+        setType(type);
+
+        // Find the first note in the first nc
+        children = m_meiref->getChildren();
+		bool fail = true;
+		if (children.size() > 0 && children[0].getName() == "nc") {
+			vector<MeiElement> firstnotes = children[0].getChildren();
+			if (firstnotes.size() > 0) {
+				MeiElement note = firstnotes[0];
+				p = note.getAttribute("pname");
+				o = note.getAttribute("oct");
+				if (p == NULL || o == NULL) {
+					throw "missing pitch or octave";
+				}
+				pitch = this->StrToPitch(p->getValue());
+				oct = atoi(o->getValue().c_str());
+				fail = false;
+			}
         }
-        setType(type, variant);
-    
-        children = m_meiref->getChildren(); //needs to change to include NCs.
-        //something here to ensure there is at least one note?
-        if (children.begin()->getAttribute("pname") != NULL) { //this is not good.
-            p = children.begin()->getAttribute("pname");
-            o = children.begin()->getAttribute("oct");
-        } else {
-            throw "no pitches for neume";
-        }
+		if (fail) {
+			throw "no pitches for neume";
+		}
     } else if (element.getName() == "custos") {
         m_meiref = &element;
-        setType("custos", "");
+        setType(element.getName().c_str());
         p = m_meiref->getAttribute("pname");
         o = m_meiref->getAttribute("oct");
+		if (p == NULL || o == NULL) {
+			throw "missing pitch or octave";
+		}
+		oct = atoi(o->getValue().c_str());
+        pitch = this->StrToPitch(p->getValue());
     } else {
         throw "invalid type for a neume";
     }
-    if (p && o) {
-        oct = atoi((o->getValue()).c_str());
-        pitch = this->StrToPitch(p->getValue());
-    } else {
-        throw "missing pitch or octave";
-    }
-    if (pitch > 5) { //to correct for standard notation of pitches (where the first pitch of an octave is A)
+	
+	//In standard notation, A is represented as 1 -> G:7, however in aruspix we
+	// start with C:1, B:7. Fiddle with oct for now.
+    if (pitch > 5) {
         oct--;
     }
+    // Now that we have a neume, populate it with each set of notes
     if (m_meiref->getName() == "neume") {
-        for (vector<MeiElement>::iterator i = children.begin(); i != children.end(); i++) {
-            MeiElement e = *i;
-            if (e.getName() == "note") {
-                MusNeumeElement note = MusNeumeElement(e, pitch, oct);
+        for (vector<MeiElement>::iterator i = m_meiref->getChildren().begin(); i != m_meiref->getChildren().end(); i++) {
+            if (i->getName() == "nc") {
+                readNoteContainer(*i, pitch, oct);
+            }
+        }
+    }
+}
+
+void MusNeume::readNoteContainer(MeiElement &element, int pitch, int oct) {
+	if (element.getName() == "nc") {
+        for (vector<MeiElement>::iterator i = element.getChildren().begin(); 
+             i != element.getChildren().end();
+             i++) {
+            if (i->getName() == "note") {
+                MusNeumeElement note = MusNeumeElement(*i, pitch, oct);
                 m_pitches.push_back(note);
             }
         }
@@ -174,9 +205,9 @@ MusNeume::MusNeume(MeiElement &element) : MusElement() {
 /**
  * The type of this neume (from MEI) e.g. 'torculus', 'podatus'
  */
-void MusNeume::setType(wxString type, wxString variant)
+void MusNeume::setType(wxString type)
 {
-    if (type == "punctum" && variant == "") {
+    if (type == "punctum") {
         m_type = NEUME_TYPE_PUNCTUM;
     } else if (type == "virga") {
         m_type = NEUME_TYPE_VIRGA;
@@ -244,33 +275,20 @@ void MusNeume::SetPitch( int pitch, int oct )
     this->oct = oct;
     this->pitch = pitch;
     
-    if (m_meiref) {
-        vector<MeiElement> children = m_meiref->getChildren();
-        for (vector<MeiElement>::iterator i = children.begin(); i != children.end(); i++) {
-            MeiElement e = *i;
-            int index = i - children.begin();
-            if (e.getName() == "note") {
-                int thispitch = ((this->m_pitches.at(index)).getPitchDifference() + pitch)%7;
-                //what if the pitch is bad?
-                (getMeiElement().getChildren().at(index).getAttribute("pname"))->setValue(this->PitchToStr(thispitch));
-                
-                int octave = oct;
-                int testpitch = pitch + (this->m_pitches.at(index)).getPitchDifference();
-                if (testpitch > 7) {
-                    octave += floor((testpitch - 7)/7) + 1;
-                } else if (testpitch < 1) {
-                    octave -= floor((1 - testpitch)/7) + 1;
-                }
-                if (thispitch == 0 || thispitch == 6) { //to correct for standard pitch notation.
-                    octave++;
-                }
-                char buffer[1];
-                sprintf(buffer, "%d", octave);
-                string octstr;
-                octstr.assign(buffer, 1);
-                (getMeiElement().getChildren().at(index).getAttribute("oct"))->setValue(octstr); //needs to be tested
-            }
+    for (vector<MusNeumeElement>::iterator i = m_pitches.begin(); i != m_pitches.end(); i++) {
+        int thispitch = (i->getPitchDifference() + pitch) % 7;
+        
+        int octave = oct;
+        int testpitch = pitch + i->getPitchDifference();
+        if (testpitch > 7) {
+            octave += floor((testpitch - 7)/7) + 1;
+        } else if (testpitch < 1) {
+            octave -= floor((1 - testpitch)/7) + 1;
         }
+        if (thispitch == 0 || thispitch == 6) { //to correct for standard pitch notation.
+            octave++;
+        }
+        i->updateMeiRef(PitchToStr(pitch), octave);
     }
     if (m_r) {
         m_r->DoRefresh();
