@@ -30,6 +30,7 @@ MusNeumeSymbol::MusNeumeSymbol(const MusNeumeSymbol &symbol) :
     symbolType = symbol.symbolType;
 	m_meiref = symbol.m_meiref;
 	value = symbol.value;
+    pitch = symbol.pitch;
 }
 
 MusNeumeSymbol::MusNeumeSymbol(MeiElement &meielement) :

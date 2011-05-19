@@ -643,6 +643,7 @@ void EdtEnv::OnOpenMEI( wxCommandEvent &event )
     wxGetApp().m_lastDir = wxPathOnly( filename );
     
     m_edtFilePtr->New();
+    m_edtFilePtr->m_musFilePtr->m_fheader.param.notationMode = MUS_NEUMATIC_MODE;
     
     MusMeiInput meiinput( m_edtFilePtr->m_musFilePtr, filename );
 	if ( !meiinput.ImportFile() )

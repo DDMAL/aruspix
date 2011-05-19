@@ -73,6 +73,7 @@ public:
     
     int getPitchDifference();
     NeumeElementType getElementType();
+    MeiElement &getMeiElement();
     void updateMeiRef(string pitch, int oct);
 
 private:

@@ -89,8 +89,8 @@ bool MusMeiInput::ReadElement(MeiElement *element)
             element->addAttribute(MeiAttribute("oct","4"));
         }
         }
-        MusNeume neume = MusNeume(*element);
-        m_currentStaff->Append(&neume);
+        MusNeume *neume = new MusNeume(*element);
+        m_currentStaff->Append(neume);
     } else if (element->getName() == "division" || element->getName() == "clef" || element->getName() == "accid") {
         if (element->getName() == "accid") {
             MeiAttribute *o = element->getAttribute("oct");
@@ -99,12 +99,12 @@ bool MusMeiInput::ReadElement(MeiElement *element)
                 element->addAttribute(MeiAttribute("oct","4"));
             }
         }
-        MusNeumeSymbol neume_element = MusNeumeSymbol(*element);
-        m_currentStaff->Append(&neume_element);
+        MusNeumeSymbol *neume_element = new MusNeumeSymbol(*element);
+        m_currentStaff->Append(neume_element);
     } else if (element->getName() == "sb") {
         mei_staff(element);
-    } else if (element->getName() == "layer") {
-        mei_layer(element);
+    //} else if (element->getName() == "layer") {
+    //    mei_layer(element);
     }
     vector<MeiElement> children = element->getChildren();
     for (vector<MeiElement>::iterator i = children.begin(); i != children.end(); i++) {

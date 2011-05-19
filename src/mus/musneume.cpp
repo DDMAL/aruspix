@@ -86,16 +86,20 @@ int MusNeumeElement::getPitchDifference() {
     return m_pitch_difference;
 }
 
+MeiElement &MusNeumeElement::getMeiElement() {
+    return *m_meiref;
+}
+
 NeumeElementType MusNeumeElement::getElementType()
 {
     return m_element_type;
 }
 
 void MusNeumeElement::updateMeiRef(string pitch, int oct) {
-    m_meiref->getAttribute("pname")->setValue(pitch);
+    getMeiElement().getAttribute("pname")->setValue(pitch);
     char buf[8];
     snprintf(buf, 2, "%d", oct);
-    m_meiref->getAttribute("oct")->setValue(string(buf));
+    getMeiElement().getAttribute("oct")->setValue(string(buf));
 }
 
 //----------------------------------------------------------------------------
