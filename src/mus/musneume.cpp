@@ -96,10 +96,10 @@ NeumeElementType MusNeumeElement::getElementType()
 }
 
 void MusNeumeElement::updateMeiRef(string pitch, int oct) {
-    getMeiElement().getAttribute("pname")->setValue(pitch);
+    m_meiref->getAttribute("pname")->setValue(pitch);
     char buf[8];
     snprintf(buf, 2, "%d", oct);
-    getMeiElement().getAttribute("oct")->setValue(string(buf));
+    m_meiref->getAttribute("oct")->setValue(string(buf));
 }
 
 //----------------------------------------------------------------------------
@@ -205,6 +205,9 @@ MusNeume::MusNeume(MeiElement &element) : MusElement() {
 
 void MusNeume::readNoteContainer(MeiElement &element, int pitch, int oct) {
     if (element.getName() == "nc") {
+        if (element.getAttribute("inclinatum") != NULL && element.getAttribute("inclinatum")->getValue() == "true") {
+            this->setType(NEUME_TYPE_PUNCTUM_INCLINATUM);
+        }
         for (vector<MeiElement>::iterator i = element.getChildren().begin(); i != element.getChildren().end(); i++) {
             if (i->getName() == "note") {
                 MusNeumeElement note = MusNeumeElement(*i, pitch, oct);
@@ -300,7 +303,7 @@ void MusNeume::SetPitch( int pitch, int oct )
         if (thispitch == 0 || thispitch == 6) { //to correct for standard pitch notation.
             octave++;
         }
-        i->updateMeiRef(PitchToStr(pitch), octave);
+        i->updateMeiRef(PitchToStr(thispitch), octave);
     }
     if (m_r) {
         m_r->DoRefresh();
@@ -562,8 +565,8 @@ void MusNeume::DrawPodatus( AxDC *dc, MusStaff *staff )
     leg_line( dc, ynn,bby,this->xrel,ledge, pTaille);
     m_r->festa_string( dc, xn, ynn + 19, nPES, staff, this->dimin);
     int ynn2 = ynn + (m_r->_espace[pTaille])*((this->m_pitches.at(1)).getPitchDifference());
-    leg_line( dc, ynn,bby,this->xrel,ledge, pTaille);
-    m_r->festa_string( dc, xn, ynn + 19, nPUNCTUM, staff, this->dimin);
+    leg_line( dc, ynn2,bby,this->xrel,ledge, pTaille);
+    m_r->festa_string( dc, xn, ynn2 + 19, nPUNCTUM, staff, this->dimin);
     this->NeumeLine( dc, staff, xn + 9, xn + 9, ynn, ynn2);
 }
 

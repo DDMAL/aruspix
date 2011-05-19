@@ -129,14 +129,14 @@ void MusNeumeSymbol::calcoffs (int *offst, int value)
 	*offst = 0;
 	switch(value)
 	{	
-		case nC1 : *offst = 0; break;
-		case nC2 : *offst = 2; break;
-		case nC3 : *offst = 4; break;
-		case nC4 : *offst = 6; break;
-		case nF1 : *offst = 4; break;
-		case nF2 : *offst = 6; break;
-		case nF3 : *offst = 8; break;
-		case nF4 : *offst = 10; break;
+		case nC1 : *offst = 2; break;
+		case nC2 : *offst = 4; break;
+		case nC3 : *offst = 6; break;
+		case nC4 : *offst = 8; break;
+		case nF1 : *offst = 6; break;
+		case nF2 : *offst = 8; break;
+		case nF3 : *offst = 10; break;
+		case nF4 : *offst = 12; break;
 		default: break;
 	}
 	return;

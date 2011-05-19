@@ -106,10 +106,8 @@ bool MusMeiInput::ReadElement(MeiElement *element)
     //} else if (element->getName() == "layer") {
     //    mei_layer(element);
     }
-    vector<MeiElement> children = element->getChildren();
-    for (vector<MeiElement>::iterator i = children.begin(); i != children.end(); i++) {
-        MeiElement e = *i;
-        ReadElement(&e);
+    for (vector<MeiElement>::iterator i = element->getChildren().begin(); i != element->getChildren().end(); i++) {
+        ReadElement(&*i);
     }
     return true;
     //do it for the children if conditions are correct.
