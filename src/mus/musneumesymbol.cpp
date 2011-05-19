@@ -15,6 +15,8 @@
 
 #include <mei/meiattribute.h>
 
+#include <algorithm>
+
 MusNeumeSymbol::MusNeumeSymbol() :
     MusElement()
 {
@@ -39,7 +41,9 @@ MusNeumeSymbol::MusNeumeSymbol(MeiElement &meielement) :
         MeiAttribute *shape = m_meiref->getAttribute("shape");
         MeiAttribute *line = m_meiref->getAttribute("line");
 		if (shape != NULL && line != NULL) {
-			if (shape->getValue() == "c") {
+            string shstr = shape->getValue();
+            std::transform(shstr.begin(), shstr.end(), shstr.begin(), ::toupper);
+			if (shstr == "C") {
                 symbolType = NEUME_SYMB_CLEF_C;
 				if (line->getValue() == "1") {
 					value = nC1;
@@ -52,7 +56,7 @@ MusNeumeSymbol::MusNeumeSymbol(MeiElement &meielement) :
 				} else {
                     throw "unknown line for a C clef";
                 }
-			} else if (shape->getValue() == "f") {
+			} else if (shstr == "F") {
                 symbolType = NEUME_SYMB_CLEF_F;
 				if (line->getValue() == "1") {
 					value = nF1;
@@ -399,6 +403,9 @@ void MusNeumeSymbol::SetValue(int value, MusStaff *staff, int vflag)
             case (NEUME_SYMB_DIVISION_SMALL):
                 updateMeiRefDiv("small");
                 break;
+            case (NEUME_SYMB_COMMA):
+                updateMeiRefDiv("comma");
+                break;
             case (NEUME_SYMB_FLAT):
                 updateMeiRefAccid("f", this->pitch, this->oct);
                 break;
@@ -495,6 +502,9 @@ void MusNeumeSymbol::SetPitch(int pitch, int oct) //this is incomplete, there is
 	}
 }
 
+// XXX: We should be careful here - what is the impact of the m_meiref?
+// This is currently only used for creating stuff, which our mei support
+// doesn't handle, so should be fine for now...
 void MusNeumeSymbol::ResetToNeumeSymbol()
 {
 	MusNeumeSymbol reset;
