@@ -129,7 +129,7 @@ MusNeume::MusNeume( const MusNeume &neume) :
 MusNeume::MusNeume(MeiElement &element) : MusElement() {
     TYPE = NEUME;
     MeiAttribute *p = NULL;
-	MeiAttribute *o = NULL;
+    MeiAttribute *o = NULL;
     vector<MeiElement> children;
     if (element.getName() == "neume") {
         m_meiref = &element;
@@ -142,40 +142,40 @@ MusNeume::MusNeume(MeiElement &element) : MusElement() {
 
         // Find the first note in the first nc
         children = m_meiref->getChildren();
-		bool fail = true;
-		if (children.size() > 0 && children[0].getName() == "nc") {
-			vector<MeiElement> firstnotes = children[0].getChildren();
-			if (firstnotes.size() > 0) {
-				MeiElement note = firstnotes[0];
-				p = note.getAttribute("pname");
-				o = note.getAttribute("oct");
-				if (p == NULL || o == NULL) {
-					throw "missing pitch or octave";
-				}
-				pitch = this->StrToPitch(p->getValue());
-				oct = atoi(o->getValue().c_str());
-				fail = false;
-			}
+        bool fail = true;
+        if (children.size() > 0 && children[0].getName() == "nc") {
+            vector<MeiElement> firstnotes = children[0].getChildren();
+            if (firstnotes.size() > 0) {
+                MeiElement note = firstnotes[0];
+                p = note.getAttribute("pname");
+                o = note.getAttribute("oct");
+                if (p == NULL || o == NULL) {
+                    throw "missing pitch or octave";
+                }
+                pitch = this->StrToPitch(p->getValue());
+                oct = atoi(o->getValue().c_str());
+                fail = false;
+            }
         }
-		if (fail) {
-			throw "no pitches for neume";
-		}
+        if (fail) {
+            throw "no pitches for neume";
+        }
     } else if (element.getName() == "custos") {
         m_meiref = &element;
         setType(element.getName().c_str());
         p = m_meiref->getAttribute("pname");
         o = m_meiref->getAttribute("oct");
-		if (p == NULL || o == NULL) {
-			throw "missing pitch or octave";
-		}
-		oct = atoi(o->getValue().c_str());
+        if (p == NULL || o == NULL) {
+            throw "missing pitch or octave";
+        }
+        oct = atoi(o->getValue().c_str());
         pitch = this->StrToPitch(p->getValue());
     } else {
         throw "invalid type for a neume";
     }
-	
-	//In standard notation, A is represented as 1 -> G:7, however in aruspix we
-	// start with C:1, B:7. Fiddle with oct for now.
+    
+    //In standard notation, A is represented as 1 -> G:7, however in aruspix we
+    // start with C:1, B:7. Fiddle with oct for now.
     if (pitch > 5) {
         oct--;
     }
@@ -190,10 +190,8 @@ MusNeume::MusNeume(MeiElement &element) : MusElement() {
 }
 
 void MusNeume::readNoteContainer(MeiElement &element, int pitch, int oct) {
-	if (element.getName() == "nc") {
-        for (vector<MeiElement>::iterator i = element.getChildren().begin(); 
-             i != element.getChildren().end();
-             i++) {
+    if (element.getName() == "nc") {
+        for (vector<MeiElement>::iterator i = element.getChildren().begin(); i != element.getChildren().end(); i++) {
             if (i->getName() == "note") {
                 MusNeumeElement note = MusNeumeElement(*i, pitch, oct);
                 m_pitches.push_back(note);

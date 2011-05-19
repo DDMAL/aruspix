@@ -29,9 +29,9 @@ using std::vector;
 class MusStaff;
 
 enum NeumeOrnament {
-	HE,
-	VE,
-	DOT
+    HE,
+    VE,
+    DOT
 };
 
 enum NeumeType {
@@ -65,19 +65,19 @@ enum NeumeElementType {
 class MusNeumeElement
 {
 public:
-	MusNeumeElement(const MusNeumeElement &element);
+    MusNeumeElement(const MusNeumeElement &element);
     MusNeumeElement(MeiElement &meielement, int pitch, int oct);
-	MusNeumeElement(int _pitchDifference);
-	virtual ~MusNeumeElement() {};
+    MusNeumeElement(int _pitchDifference);
+    virtual ~MusNeumeElement() {};
     
     int getPitchDifference();
     NeumeElementType getElementType();
-	void updateMeiRef(string pitch, int oct);
+    void updateMeiRef(string pitch, int oct);
 
 private:
-	int m_pitch_difference;
-	NeumeElementType m_element_type;
-	NeumeOrnament ornament;
+    int m_pitch_difference;
+    NeumeElementType m_element_type;
+    NeumeOrnament ornament;
     MeiElement *m_meiref;
 }; 
 
@@ -85,8 +85,8 @@ class MusNeume: public MusElement
 {
 public:
     // constructors and destructors
-	MusNeume();
-	MusNeume( const MusNeume &neume);
+    MusNeume();
+    MusNeume( const MusNeume &neume);
     MusNeume(MeiElement &meielement);
     virtual ~MusNeume() {};
     
@@ -96,48 +96,48 @@ public:
     MeiElement &getMeiElement();
     vector<MusNeumeElement> getPitches();
     
-	//Drawing code
-	virtual void Draw( AxDC *dc, MusStaff *staff);
-	void NeumeLine( AxDC *dc, MusStaff *staff, int x1, int x2, int y1, int y2);
-	void DrawAncus( AxDC *dc, MusStaff *staff);
-	void DrawCephalicus( AxDC *dc, MusStaff *staff);
-	void DrawPunctum( AxDC *dc, MusStaff *staff);
-	void DrawPunctumInclinatum( AxDC *dc, MusStaff *staff);
-	void DrawVirga( AxDC *dc, MusStaff *staff);
-	void DrawVirgaLiquescent( AxDC *dc, MusStaff *staff);
-	void DrawPodatus( AxDC *dc, MusStaff *staff);
-	void DrawClivis( AxDC *dc, MusStaff *staff);
-	void DrawEpiphonus( AxDC *dc, MusStaff *staff);
-	void DrawPorrectus( AxDC *dc, MusStaff *staff);
-	void DrawPorrectusFlexus( AxDC *dc, MusStaff *staff);
-	void DrawSalicus( AxDC *dc, MusStaff *staff);
-	void DrawScandicus( AxDC *dc, MusStaff *staff);
-	void DrawScandicusFlexus( AxDC *dc, MusStaff *staff);
-	void DrawTorculus( AxDC *dc, MusStaff *staff);
-	void DrawTorculusLiquescent( AxDC *dc, MusStaff *staff);
-	void DrawTorculusResupinus( AxDC *dc, MusStaff *staff);
-	void DrawCompound( AxDC *dc, MusStaff *staff);
+    //Drawing code
+    virtual void Draw( AxDC *dc, MusStaff *staff);
+    void NeumeLine( AxDC *dc, MusStaff *staff, int x1, int x2, int y1, int y2);
+    void DrawAncus( AxDC *dc, MusStaff *staff);
+    void DrawCephalicus( AxDC *dc, MusStaff *staff);
+    void DrawPunctum( AxDC *dc, MusStaff *staff);
+    void DrawPunctumInclinatum( AxDC *dc, MusStaff *staff);
+    void DrawVirga( AxDC *dc, MusStaff *staff);
+    void DrawVirgaLiquescent( AxDC *dc, MusStaff *staff);
+    void DrawPodatus( AxDC *dc, MusStaff *staff);
+    void DrawClivis( AxDC *dc, MusStaff *staff);
+    void DrawEpiphonus( AxDC *dc, MusStaff *staff);
+    void DrawPorrectus( AxDC *dc, MusStaff *staff);
+    void DrawPorrectusFlexus( AxDC *dc, MusStaff *staff);
+    void DrawSalicus( AxDC *dc, MusStaff *staff);
+    void DrawScandicus( AxDC *dc, MusStaff *staff);
+    void DrawScandicusFlexus( AxDC *dc, MusStaff *staff);
+    void DrawTorculus( AxDC *dc, MusStaff *staff);
+    void DrawTorculusLiquescent( AxDC *dc, MusStaff *staff);
+    void DrawTorculusResupinus( AxDC *dc, MusStaff *staff);
+    void DrawCompound( AxDC *dc, MusStaff *staff);
     void DrawCustos( AxDC *dc, MusStaff *staff);
-	void leg_line( AxDC *dc, int y_n, int y_p, int xn, unsigned int smaller, int pTaille);
+    void leg_line( AxDC *dc, int y_n, int y_p, int xn, unsigned int smaller, int pTaille);
 
-	//void append( AxDC *dc, MusStaff *staff ); //for creating multi-note neumes
-	
+    //void append( AxDC *dc, MusStaff *staff ); //for creating multi-note neumes
+    
     virtual void SetPitch( int pitch, int oct );
-	//virtual void SetValue( int value, MusStaff *staff = NULL, int vflag = 0 );
-	//int GetValue();
-	
-	//helper debug method
-	//void printNeumeList();
-	
+    //virtual void SetValue( int value, MusStaff *staff = NULL, int vflag = 0 );
+    //int GetValue();
+    
+    //helper debug method
+    //void printNeumeList();
+    
 
 private:
-	void readNoteContainer(MeiElement &nc, int pitch, int oct);
+    void readNoteContainer(MeiElement &nc, int pitch, int oct);
 
-	NeumeOrnament ornament;
+    NeumeOrnament ornament;
     NeumeType m_type;
     MeiElement *m_meiref;
 
-	vector<MusNeumeElement> m_pitches;
+    vector<MusNeumeElement> m_pitches;
 };
 
 #endif // __MUS_NEUME_H__
