@@ -425,8 +425,8 @@ bool MusMeiInput::mei_staff(MeiElement *element) {
         staff->portNbLine = 4; //added as experiment --Jamie
         staff->no = n - 1;
         if (n == 1) {
-            staff->ecart = 1; // for the first staff, we decrease the top space
-            m_file->m_fheader.param.MargeGAUCHEIMPAIRE = 2; // and the margin as well
+            staff->ecart = 5; // for the first staff, we decrease the top space
+            m_file->m_fheader.param.MargeGAUCHEIMPAIRE = 8; // and the margin as well
         }
         m_page->m_staves.Add( staff );
     }

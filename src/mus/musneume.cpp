@@ -60,9 +60,9 @@ MusNeumeElement::MusNeumeElement(MeiElement &element, int firstpitch, int firsto
         } else if (meipitch == "g") {
             m_pitch_difference = (octave*7 + 5) -  (firstoct*7 + firstpitch);
         } else if (meipitch == "a") {
-            m_pitch_difference = ((octave - 1)*7 + 6) -  (firstoct*7 + firstpitch); // use octave - 1 to correct for standard pitch notation
+            m_pitch_difference = (octave*7 + 6) -  (firstoct*7 + firstpitch);
         } else if (meipitch == "b") {
-            m_pitch_difference = ((octave - 1)*7 + 7) -  (firstoct*7 + firstpitch); //ditto
+            m_pitch_difference = (octave*7 + 7) -  (firstoct*7 + firstpitch);
         }
     } else {
         throw "missing pitch or octave";
@@ -188,11 +188,6 @@ MusNeume::MusNeume(MeiElement &element) : MusElement() {
         throw "invalid type for a neume";
     }
     
-    //In standard notation, A is represented as 1 -> G:7, however in aruspix we
-    // start with C:1, B:7. Fiddle with oct for now.
-    if (pitch > 5) {
-        oct--;
-    }
     // Now that we have a neume, populate it with each set of notes
     if (m_meiref->getName() == "neume") {
         for (vector<MeiElement>::iterator i = m_meiref->getChildren().begin(); i != m_meiref->getChildren().end(); i++) {
@@ -299,9 +294,6 @@ void MusNeume::SetPitch( int pitch, int oct )
             octave += floor((testpitch - 7)/7) + 1;
         } else if (testpitch < 1) {
             octave -= floor((1 - testpitch)/7) + 1;
-        }
-        if (thispitch == 0 || thispitch == 6) { //to correct for standard pitch notation.
-            octave++;
         }
         i->updateMeiRef(PitchToStr(thispitch), octave);
     }
