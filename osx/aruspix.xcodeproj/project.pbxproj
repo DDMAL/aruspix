@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		0A5FB27A0DD49D2D001E460E /* imbrink3classes.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0A5FB2790DD49D2D001E460E /* imbrink3classes.cpp */; };
-		40704FA71371EB2400815A80 /* mei.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 40704FA61371EB2400815A80 /* mei.framework */; };
 		40DBC8AE137C43E400EF3099 /* musiomei2.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 40DBC8AC137C43E400EF3099 /* musiomei2.cpp */; };
 		4D12CE4010748D8E00E65714 /* edt.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D12CE3C10748D8E00E65714 /* edt.cpp */; };
 		4D12CE4110748D8E00E65714 /* edt_wdr.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D12CE3E10748D8E00E65714 /* edt_wdr.cpp */; };
@@ -72,9 +71,10 @@
 		57CA54260D34139D001FC334 /* axapp_wdr.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 57CA541F0D34139D001FC334 /* axapp_wdr.cpp */; };
 		57CA54270D34139D001FC334 /* axabout_wdr.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 57CA54210D34139D001FC334 /* axabout_wdr.cpp */; };
 		57EA3DE50C00BDEB00414247 /* recbookctrl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 57EA3DE30C00BDEB00414247 /* recbookctrl.cpp */; };
+		7D138A791386D97000BDEB01 /* mei.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D138A781386D97000BDEB01 /* mei.framework */; };
+		7DAB61B3138C2CB900E691FC /* mei.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 7D138A781386D97000BDEB01 /* mei.framework */; };
 		A125A6741342A4B30038F7BC /* musneume.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4DC24AB5119B72C900B2EF98 /* musneume.cpp */; };
 		A12B0561137C50AF007D2546 /* gtest_main.cc in Sources */ = {isa = PBXBuildFile; fileRef = A12B055F137C50AF007D2546 /* gtest_main.cc */; };
-		A12B0572137C515B007D2546 /* mei.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 40704FA61371EB2400815A80 /* mei.framework */; };
 		A12B05BD137C53F8007D2546 /* musiomei2.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 40DBC8AC137C43E400EF3099 /* musiomei2.cpp */; };
 		A12B05BE137C53FE007D2546 /* musiomei2_test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A12B0562137C50BC007D2546 /* musiomei2_test.cpp */; };
 		A12B05D3137C57FF007D2546 /* musfile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D3A8FD80D35867200BBC1FB /* musfile.cpp */; };
@@ -85,7 +85,6 @@
 		A1A4B5DD134381A200897C5E /* musobject.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D3A8FE10D35867200BBC1FB /* musobject.cpp */; };
 		A1A6E0D813422A7D0024A821 /* musneumesymbol.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A1A6E0D713422A7D0024A821 /* musneumesymbol.cpp */; };
 		A1A6E1851342549B0024A821 /* musneume_test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A1A6E1841342549B0024A821 /* musneume_test.cpp */; };
-		A1A6E1A0134255390024A821 /* gtest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A1A6E174134253F40024A821 /* gtest.framework */; };
 		A58524CE0A1B9604002D9D8A /* axapp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A58524560A1B9604002D9D8A /* axapp.cpp */; };
 		A58524CF0A1B9604002D9D8A /* axenv.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A58524580A1B9604002D9D8A /* axenv.cpp */; };
 		A58524D00A1B9604002D9D8A /* axframe.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A585245B0A1B9604002D9D8A /* axframe.cpp */; };
@@ -114,9 +113,21 @@
 		A5EFDB220A278C980019FA6A /* rec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A5EFDB210A278C980019FA6A /* rec.cpp */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXCopyFilesBuildPhase section */
+		7DAB61B0138C2C5F00E691FC /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				7DAB61B3138C2CB900E691FC /* mei.framework in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
 		0A5FB2790DD49D2D001E460E /* imbrink3classes.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = imbrink3classes.cpp; sourceTree = "<group>"; };
-		40704FA61371EB2400815A80 /* mei.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = mei.framework; path = "../../ax-libs/osx/mei.framework"; sourceTree = SOURCE_ROOT; };
 		40DBC8AC137C43E400EF3099 /* musiomei2.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = musiomei2.cpp; path = ../src/mus/musiomei2.cpp; sourceTree = SOURCE_ROOT; };
 		40DBC8AD137C43E400EF3099 /* musiomei2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = musiomei2.h; path = ../src/mus/musiomei2.h; sourceTree = SOURCE_ROOT; };
 		4D12CE3C10748D8E00E65714 /* edt.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = edt.cpp; path = ../src/edition/edt.cpp; sourceTree = SOURCE_ROOT; };
@@ -235,13 +246,14 @@
 		57EA3DE30C00BDEB00414247 /* recbookctrl.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = recbookctrl.cpp; sourceTree = "<group>"; };
 		57EA3DE40C00BDEB00414247 /* recbookctrl.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = recbookctrl.h; sourceTree = "<group>"; };
 		6718EA9B11C14AAC00734117 /* neumedef.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = neumedef.h; path = ../src/mus/neumedef.h; sourceTree = SOURCE_ROOT; };
+		7D138A781386D97000BDEB01 /* mei.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = mei.framework; path = /Users/jamie/libmei/build/Debug/mei.framework; sourceTree = "<absolute>"; };
+		7DDE2E98138AF54700E64572 /* gtest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = gtest.framework; path = "/Users/jamie/ax-libs/osx/gtest.framework"; sourceTree = "<absolute>"; };
 		A12B055F137C50AF007D2546 /* gtest_main.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = gtest_main.cc; path = ../test/gtest_main.cc; sourceTree = SOURCE_ROOT; };
 		A12B0562137C50BC007D2546 /* musiomei2_test.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = musiomei2_test.cpp; path = ../test/mus/musiomei2_test.cpp; sourceTree = SOURCE_ROOT; };
 		A12B065C137C6AA6007D2546 /* fakemus.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = fakemus.cpp; path = ../test/fakemus.cpp; sourceTree = SOURCE_ROOT; };
 		A12C23DB137F314A0058BD12 /* musneumesymbol_test.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = musneumesymbol_test.cpp; path = ../test/mus/musneumesymbol_test.cpp; sourceTree = SOURCE_ROOT; };
 		A1A6E0D613422A7D0024A821 /* musneumesymbol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = musneumesymbol.h; path = ../src/mus/musneumesymbol.h; sourceTree = SOURCE_ROOT; };
 		A1A6E0D713422A7D0024A821 /* musneumesymbol.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = musneumesymbol.cpp; path = ../src/mus/musneumesymbol.cpp; sourceTree = SOURCE_ROOT; };
-		A1A6E174134253F40024A821 /* gtest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = gtest.framework; path = /Users/alastairlocal/code/gtest.framework; sourceTree = "<absolute>"; };
 		A1A6E17B134254220024A821 /* ax_test */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = ax_test; sourceTree = BUILT_PRODUCTS_DIR; };
 		A1A6E1841342549B0024A821 /* musneume_test.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = musneume_test.cpp; path = ../test/mus/musneume_test.cpp; sourceTree = SOURCE_ROOT; };
 		A50FE1390A6D6E240038D682 /* rec.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = rec.h; sourceTree = "<group>"; };
@@ -301,8 +313,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A12B0572137C515B007D2546 /* mei.framework in Frameworks */,
-				A1A6E1A0134255390024A821 /* gtest.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -310,7 +320,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				40704FA71371EB2400815A80 /* mei.framework in Frameworks */,
+				7D138A791386D97000BDEB01 /* mei.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -444,8 +454,8 @@
 				4D47AB771047B128005FB374 /* edition */,
 				4DC24AA3119B716F00B2EF98 /* rtmidi */,
 				A58508C20A00113C006E82B1 /* Products */,
-				A1A6E174134253F40024A821 /* gtest.framework */,
-				40704FA61371EB2400815A80 /* mei.framework */,
+				7D138A781386D97000BDEB01 /* mei.framework */,
+				7DDE2E98138AF54700E64572 /* gtest.framework */,
 			);
 			sourceTree = "<group>";
 		};
@@ -631,6 +641,7 @@
 				A58508BE0A00113C006E82B1 /* Sources */,
 				A58508BF0A00113C006E82B1 /* Frameworks */,
 				A53C6B510A0179E20091B625 /* ShellScript */,
+				7DAB61B0138C2C5F00E691FC /* CopyFiles */,
 			);
 			buildRules = (
 			);
@@ -836,11 +847,17 @@
 					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_2)",
 					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_3)",
 					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_4)",
+					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_5)",
+					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_6)",
+					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_7)",
 				);
 				FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(SRCROOT)/../..\"";
 				FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_2 = "\"$(SRCROOT)/../../ax-libs/osx\"";
 				FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_3 = "\"$(SRCROOT)/../../..\"";
 				FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_4 = "\"$(SRCROOT)/../../ax-libs/osx\"";
+				FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_5 = "\"$(SRCROOT)/../../ax-libs/osx\"";
+				FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_6 = "\"$(SRCROOT)/../../libmei/build/Debug\"";
+				FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_7 = "\"$(SRCROOT)/../../ax-libs/osx\"";
 				GCC_DEBUGGING_SYMBOLS = default;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
@@ -928,11 +945,13 @@
 					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_2)",
 					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_3)",
 					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_4)",
+					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_5)",
 				);
 				FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(SRCROOT)/../..\"";
 				FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_2 = "\"$(SRCROOT)/../../ax-libs/osx\"";
 				FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_3 = "\"$(SRCROOT)/../../..\"";
 				FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_4 = "\"$(SRCROOT)/../../ax-libs/osx\"";
+				FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_5 = "\"$(SRCROOT)/../../ax-libs/osx\"";
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_ENABLE_FIX_AND_CONTINUE = YES;
 				GCC_MODEL_TUNING = G5;
@@ -1016,11 +1035,13 @@
 					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_2)",
 					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_3)",
 					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_4)",
+					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_5)",
 				);
 				FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(SRCROOT)/../..\"";
 				FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_2 = "\"$(SRCROOT)/../../ax-libs/osx\"";
 				FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_3 = "\"$(SRCROOT)/../../..\"";
 				FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_4 = "\"$(SRCROOT)/../../ax-libs/osx\"";
+				FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_5 = "\"$(SRCROOT)/../../ax-libs/osx\"";
 				GCC_ENABLE_FIX_AND_CONTINUE = YES;
 				GCC_MODEL_TUNING = G5;
 				INSTALL_PATH = /usr/local/bin;
@@ -1041,11 +1062,13 @@
 					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_2)",
 					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_3)",
 					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_4)",
+					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_5)",
 				);
 				FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(SRCROOT)/../..\"";
 				FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_2 = "\"$(SRCROOT)/../../ax-libs/osx\"";
 				FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_3 = "\"$(SRCROOT)/../../..\"";
 				FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_4 = "\"$(SRCROOT)/../../ax-libs/osx\"";
+				FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_5 = "\"$(SRCROOT)/../../ax-libs/osx\"";
 				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				GCC_MODEL_TUNING = G5;
 				HEADER_SEARCH_PATHS = (
@@ -1104,11 +1127,17 @@
 					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_2)",
 					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_3)",
 					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_4)",
+					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_5)",
+					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_6)",
+					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_7)",
 				);
 				FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(SRCROOT)/../..\"";
 				FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_2 = "\"$(SRCROOT)/../../ax-libs/osx\"";
 				FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_3 = "\"$(SRCROOT)/../../..\"";
 				FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_4 = "\"$(SRCROOT)/../../ax-libs/osx\"";
+				FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_5 = "\"$(SRCROOT)/../../ax-libs/osx\"";
+				FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_6 = "\"$(SRCROOT)/../../libmei/build/Debug\"";
+				FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_7 = "\"$(SRCROOT)/../../ax-libs/osx\"";
 				GCC_DEBUGGING_SYMBOLS = default;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
@@ -1214,11 +1243,17 @@
 					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_2)",
 					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_3)",
 					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_4)",
+					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_5)",
+					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_6)",
+					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_7)",
 				);
 				FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(SRCROOT)/../..\"";
 				FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_2 = "\"$(SRCROOT)/../../ax-libs/osx\"";
 				FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_3 = "\"$(SRCROOT)/../../..\"";
 				FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_4 = "\"$(SRCROOT)/../../ax-libs/osx\"";
+				FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_5 = "\"$(SRCROOT)/../../ax-libs/osx\"";
+				FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_6 = "\"$(SRCROOT)/../../libmei/build/Debug\"";
+				FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_7 = "\"$(SRCROOT)/../../ax-libs/osx\"";
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
 				GCC_MODEL_TUNING = G5;
