@@ -582,11 +582,14 @@ void MusNeume::DrawClivis( AxDC *dc, MusStaff *staff )
     m_r->festa_string( dc, xn, ynn + 19, nPUNCTUM, staff, this->dimin);
     m_r->festa_string( dc, xn, ynn + 19, '3', staff, this->dimin);
     ynn2 = ynn + (m_r->_espace[pTaille])*((this->m_pitches.at(1)).getPitchDifference());
-    if (ynn2 == ynn)
+    if (ynn2 == ynn) {
         dx = CLIVIS_X_SAME;
-    else dx = CLIVIS_X_DIFF;
-    leg_line( dc, ynn2,bby,this->xrel + dx,ledge, pTaille);
-    m_r->festa_string( dc, xn + dx, ynn2 + 19, nPUNCTUM, staff, this->dimin);
+    } else dx = CLIVIS_X_DIFF;
+    leg_line( dc, ynn2,bby,this->xrel + dx - 1,ledge, pTaille);
+    m_r->festa_string( dc, xn + dx - 1, ynn2 + 19, nPUNCTUM, staff, this->dimin);
+	if (ynn2 != ynn) {
+	NeumeLine(dc, staff, xn+dx, xn+dx, ynn, ynn2);
+	}
 }
 
 void MusNeume::DrawPorrectus( AxDC *dc, MusStaff *staff ) 
@@ -697,13 +700,13 @@ void MusNeume::DrawScandicus( AxDC *dc, MusStaff *staff )
     leg_line( dc, ynn,bby,xn,ledge, pTaille);
     m_r->festa_string( dc, xn, ynn + 19, nPUNCTUM, staff, this->dimin);
     xn += PUNCT_WIDTH;
-    ynn = ynn + (m_r->_espace[pTaille])*((this->m_pitches.at(1)).getPitchDifference());
-    leg_line( dc, ynn,bby,xn,ledge, pTaille);
-    m_r->festa_string( dc, xn, ynn + 19, nPUNCTUM, staff, this->dimin);
+    int ynn2 = ynn + (m_r->_espace[pTaille])*((this->m_pitches.at(1)).getPitchDifference());
+    leg_line( dc, ynn2,bby,xn,ledge, pTaille);
+    m_r->festa_string( dc, xn, ynn2 + 19, nPUNCTUM, staff, this->dimin);
     xn += PUNCT_WIDTH;
-    ynn = ynn + (m_r->_espace[pTaille])*((this->m_pitches.at(2)).getPitchDifference());
-    leg_line( dc, ynn,bby,xn,ledge, pTaille);
-    m_r->festa_string( dc, xn, ynn + 19, nPUNCTUM, staff, this->dimin);
+    int ynn3 = ynn + (m_r->_espace[pTaille])*((this->m_pitches.at(2)).getPitchDifference());
+    leg_line( dc, ynn3,bby,xn,ledge, pTaille);
+    m_r->festa_string( dc, xn, ynn3 + 19, nPUNCTUM, staff, this->dimin);
 }
 
 void MusNeume::DrawScandicusFlexus( AxDC *dc, MusStaff *staff )
