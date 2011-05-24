@@ -149,6 +149,9 @@ void EdtEnv::RealizeToolbar( )
 {
     wxToolBar *toolbar =  m_framePtr->GetToolBar();
     
+    toolbar->InsertTool( 2, ID5_OPEN_MEI, _("Import MEI"), m_framePtr->GetToolbarBitmap( "folder_yellow.png" ) , wxNullBitmap, wxITEM_NORMAL, _("Import MEI"), _("Import an MEI file") );
+    toolbar->InsertTool( 5, ID5_SAVE_MEI, _("Save MEI"), m_framePtr->GetToolbarBitmap( "filesave.png" ) , wxNullBitmap, wxITEM_NORMAL, _("MeiEx"), _("Export an MEI file") );
+    
     toolbar->AddSeparator();
     toolbar->AddTool( ID5_ZOOMOUT, _T("Zoom out"), m_framePtr->GetToolbarBitmap( "viewmag-.png" ), wxNullBitmap, wxITEM_NORMAL, _("Zoom out"), _("Zoom out") );
     toolbar->AddTool( ID5_ZOOMIN, _T("Zoom in"), m_framePtr->GetToolbarBitmap( "viewmag+.png" ), wxNullBitmap, wxITEM_NORMAL, _("Zoom in"), _("Zoom in") );
@@ -659,15 +662,25 @@ void EdtEnv::OnSaveMEI( wxCommandEvent &event )
     if (  !m_panelPtr || !m_edtFilePtr )
         return;
 
-    wxString filename = wxFileSelector( _("Export MEI"), wxGetApp().m_lastDir, _T(""), _T(""), "MEI Files|*.meiMEI|XML Files|*.xml", wxFD_SAVE);
+    string docname = m_edtFilePtr->m_musFilePtr->GetMeiDocument()->getDocName();
+    wxString wxdocname = docname.c_str();
+    wxString name, ext;
+    wxFileName::SplitPath(wxdocname, NULL, &name, &ext);
+    wxString savename = name + "." + ext;
+
+    wxString filename = wxFileSelector( _("Export MEI"), wxGetApp().m_lastDir, savename, _T(""), "MEI Files|*.mei|XML Files|*.xml", wxFD_SAVE);
     if ( filename.IsEmpty() )
-        return;     
+        return;
+    if (wxFileExists(filename)) {
+        wxString message = _("File aldready exists. Overwrite?");
+        wxMessageDialog dialog ( m_musViewPtr, message, _("File exits"), wxYES_NO|wxICON_QUESTION );
+        if ( dialog.ShowModal () == wxID_YES ) {
+            MusMeiOutput *mei_output = new MusMeiOutput( m_edtFilePtr->m_musFilePtr, filename );
+            mei_output->ExportFile();
+            delete mei_output;
+        }
+    }
     wxGetApp().m_lastDirAX0_out = wxPathOnly( filename );
-    
-    // save
-    MusMeiOutput *mei_output = new MusMeiOutput( m_edtFilePtr->m_musFilePtr, filename );
-    mei_output->ExportFile();
-    delete mei_output;
 }
 
 void EdtEnv::OnSaveModel( wxCommandEvent &event )
