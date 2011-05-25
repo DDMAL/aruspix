@@ -71,8 +71,6 @@
 		57CA54260D34139D001FC334 /* axapp_wdr.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 57CA541F0D34139D001FC334 /* axapp_wdr.cpp */; };
 		57CA54270D34139D001FC334 /* axabout_wdr.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 57CA54210D34139D001FC334 /* axabout_wdr.cpp */; };
 		57EA3DE50C00BDEB00414247 /* recbookctrl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 57EA3DE30C00BDEB00414247 /* recbookctrl.cpp */; };
-		7D138A791386D97000BDEB01 /* mei.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D138A781386D97000BDEB01 /* mei.framework */; };
-		7DAB61B3138C2CB900E691FC /* mei.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 7D138A781386D97000BDEB01 /* mei.framework */; };
 		A125A6741342A4B30038F7BC /* musneume.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4DC24AB5119B72C900B2EF98 /* musneume.cpp */; };
 		A12B0561137C50AF007D2546 /* gtest_main.cc in Sources */ = {isa = PBXBuildFile; fileRef = A12B055F137C50AF007D2546 /* gtest_main.cc */; };
 		A12B05BD137C53F8007D2546 /* musiomei2.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 40DBC8AC137C43E400EF3099 /* musiomei2.cpp */; };
@@ -114,13 +112,12 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
-		7DAB61B0138C2C5F00E691FC /* CopyFiles */ = {
+		7DAB622A138C355100E691FC /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				7DAB61B3138C2CB900E691FC /* mei.framework in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -246,8 +243,6 @@
 		57EA3DE30C00BDEB00414247 /* recbookctrl.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = recbookctrl.cpp; sourceTree = "<group>"; };
 		57EA3DE40C00BDEB00414247 /* recbookctrl.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = recbookctrl.h; sourceTree = "<group>"; };
 		6718EA9B11C14AAC00734117 /* neumedef.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = neumedef.h; path = ../src/mus/neumedef.h; sourceTree = SOURCE_ROOT; };
-		7D138A781386D97000BDEB01 /* mei.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = mei.framework; path = /Users/jamie/libmei/build/Debug/mei.framework; sourceTree = "<absolute>"; };
-		7DDE2E98138AF54700E64572 /* gtest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = gtest.framework; path = "/Users/jamie/ax-libs/osx/gtest.framework"; sourceTree = "<absolute>"; };
 		A12B055F137C50AF007D2546 /* gtest_main.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = gtest_main.cc; path = ../test/gtest_main.cc; sourceTree = SOURCE_ROOT; };
 		A12B0562137C50BC007D2546 /* musiomei2_test.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = musiomei2_test.cpp; path = ../test/mus/musiomei2_test.cpp; sourceTree = SOURCE_ROOT; };
 		A12B065C137C6AA6007D2546 /* fakemus.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = fakemus.cpp; path = ../test/fakemus.cpp; sourceTree = SOURCE_ROOT; };
@@ -313,14 +308,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		A58508BF0A00113C006E82B1 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				7D138A791386D97000BDEB01 /* mei.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -454,8 +441,6 @@
 				4D47AB771047B128005FB374 /* edition */,
 				4DC24AA3119B716F00B2EF98 /* rtmidi */,
 				A58508C20A00113C006E82B1 /* Products */,
-				7D138A781386D97000BDEB01 /* mei.framework */,
-				7DDE2E98138AF54700E64572 /* gtest.framework */,
 			);
 			sourceTree = "<group>";
 		};
@@ -623,6 +608,7 @@
 			buildPhases = (
 				A1A6E178134254220024A821 /* Sources */,
 				A1A6E179134254220024A821 /* Frameworks */,
+				7DAB622A138C355100E691FC /* CopyFiles */,
 			);
 			buildRules = (
 			);
@@ -639,9 +625,7 @@
 			buildPhases = (
 				A58508BD0A00113C006E82B1 /* Resources */,
 				A58508BE0A00113C006E82B1 /* Sources */,
-				A58508BF0A00113C006E82B1 /* Frameworks */,
 				A53C6B510A0179E20091B625 /* ShellScript */,
-				7DAB61B0138C2C5F00E691FC /* CopyFiles */,
 			);
 			buildRules = (
 			);
@@ -709,7 +693,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "RESOURCES=$BUILT_PRODUCTS_DIR/$TARGET_NAME.app/Contents/Resources/\nARUSPIX=$PROJECT_DIR/..\n\nif [ ! -d $RESOURCES/en ]; then\n\tcp -rf $ARUSPIX/local/* $BUILT_PRODUCTS_DIR/$TARGET_NAME.app/Contents/Resources/\nfi\nif [ ! -d $RESOURCES/Aruspix.localized ]; then\n\tcp -rf $ARUSPIX/data/* $BUILT_PRODUCTS_DIR/$TARGET_NAME.app/Contents/Resources/\nfi\n\nif [ $BUILD_STYLE = \"Debug\" -o $BUILD_STYLE = \"DebugDyn\" ]\nthen\n    names=\"decoderd ngramd adaptd\"\nelse\n    names=\"decoder ngram adapt\"\nfi\n\nfor n in $names\ndo\n\tcp -rf $BUILT_PRODUCTS_DIR/$n $BUILT_PRODUCTS_DIR/$TARGET_NAME.app/Contents/MacOS/;\ndone\n\n# XXX: Need to re-do this for release build\n# prepare installer\n# not sure that this is still required with XCode 3 (apply recommendation for the permission seems to do it)\n#cp -rf $ARUSPIX/osx/install_root $ARUSPIX/bin;\n#cp -rf $ARUSPIX/bin/Release/$TARGET_NAME.app $ARUSPIX/bin/install_root/Applications/;\n#chmod -R g+rwX $ARUSPIX/bin/install_root/\n#chmod -R o+rX $ARUSPIX/bin/install_root/\n#chmod 1775 $ARUSPIX/bin/install_root/Library\n# chgrp -R admin $ARUSPIX/bin/install_root/\n# commented it as it requires sudo password to be typed in the shell before building\n# sudo chown -R root $ARUSPIX/bin/install_root/";
+			shellScript = "RESOURCES=$BUILT_PRODUCTS_DIR/$TARGET_NAME.app/Contents/Resources/\nARUSPIX=$PROJECT_DIR/..\n\nif [ $BUILD_STYLE == \"Release\" ]; then\n\trsync -r -t -v -C --links ${ARUSPIX_MEI}/mei.framework $BUILD_PRODUCTS_DIR/$TARGET_NAME.app/Contents/Frameworks\nfi\n\nif [ ! -d $RESOURCES/en ]; then\n\tcp -rf $ARUSPIX/local/* $BUILT_PRODUCTS_DIR/$TARGET_NAME.app/Contents/Resources/\nfi\nif [ ! -d $RESOURCES/Aruspix.localized ]; then\n\tcp -rf $ARUSPIX/data/* $BUILT_PRODUCTS_DIR/$TARGET_NAME.app/Contents/Resources/\nfi\n\nif [ $BUILD_STYLE = \"Debug\" -o $BUILD_STYLE = \"DebugDyn\" ]\nthen\n    names=\"decoderd ngramd adaptd\"\nelse\n    names=\"decoder ngram adapt\"\nfi\n\nfor n in $names\ndo\n\tcp -rf $BUILT_PRODUCTS_DIR/$n $BUILT_PRODUCTS_DIR/$TARGET_NAME.app/Contents/MacOS/;\ndone\n\n# XXX: Need to re-do this for release build\n# prepare installer\n# not sure that this is still required with XCode 3 (apply recommendation for the permission seems to do it)\n#cp -rf $ARUSPIX/osx/install_root $ARUSPIX/bin;\n#cp -rf $ARUSPIX/bin/Release/$TARGET_NAME.app $ARUSPIX/bin/install_root/Applications/;\n#chmod -R g+rwX $ARUSPIX/bin/install_root/\n#chmod -R o+rX $ARUSPIX/bin/install_root/\n#chmod 1775 $ARUSPIX/bin/install_root/Library\n# chgrp -R admin $ARUSPIX/bin/install_root/\n# commented it as it requires sudo password to be typed in the shell before building\n# sudo chown -R root $ARUSPIX/bin/install_root/";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -831,6 +815,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				COPY_PHASE_STRIP = NO;
+				HEADER_SEARCH_PATHS = "";
 				OBJROOT = "$(PROJECT_DIR)/../obj";
 				SDKROOT = /Developer/SDKs/MacOSX10.5.sdk;
 				SYMROOT = "$(PROJECT_DIR)/../bin";
@@ -841,16 +826,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				COPY_PHASE_STRIP = YES;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_1)",
-					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_2)",
-					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_3)",
-					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_4)",
-					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_5)",
-					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_6)",
-					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_7)",
-				);
+				FRAMEWORK_SEARCH_PATHS = "$(ARUSPIX_MEI)";
 				FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(SRCROOT)/../..\"";
 				FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_2 = "\"$(SRCROOT)/../../ax-libs/osx\"";
 				FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_3 = "\"$(SRCROOT)/../../..\"";
@@ -858,6 +834,7 @@
 				FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_5 = "\"$(SRCROOT)/../../ax-libs/osx\"";
 				FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_6 = "\"$(SRCROOT)/../../libmei/build/Debug\"";
 				FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_7 = "\"$(SRCROOT)/../../ax-libs/osx\"";
+				FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_8 = "\"$(SRCROOT)/../../ax-libs/osx\"";
 				GCC_DEBUGGING_SYMBOLS = default;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
@@ -894,6 +871,8 @@
 					"-DNO_GCC_PRAGMA",
 				);
 				OTHER_LDFLAGS = (
+					"-framework",
+					mei,
 					"-lz",
 					"-lpthread",
 					"-framework",
@@ -946,12 +925,16 @@
 					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_3)",
 					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_4)",
 					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_5)",
+					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_6)",
+					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_7)",
 				);
 				FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(SRCROOT)/../..\"";
 				FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_2 = "\"$(SRCROOT)/../../ax-libs/osx\"";
 				FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_3 = "\"$(SRCROOT)/../../..\"";
 				FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_4 = "\"$(SRCROOT)/../../ax-libs/osx\"";
 				FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_5 = "\"$(SRCROOT)/../../ax-libs/osx\"";
+				FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_6 = "\"$(SRCROOT)/../../ax-libs/osx\"";
+				FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_7 = "\"$(SRCROOT)/../../libmei/build/Debug\"";
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_ENABLE_FIX_AND_CONTINUE = YES;
 				GCC_MODEL_TUNING = G5;
@@ -1036,12 +1019,16 @@
 					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_3)",
 					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_4)",
 					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_5)",
+					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_6)",
+					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_7)",
 				);
 				FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(SRCROOT)/../..\"";
 				FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_2 = "\"$(SRCROOT)/../../ax-libs/osx\"";
 				FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_3 = "\"$(SRCROOT)/../../..\"";
 				FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_4 = "\"$(SRCROOT)/../../ax-libs/osx\"";
 				FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_5 = "\"$(SRCROOT)/../../ax-libs/osx\"";
+				FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_6 = "\"$(SRCROOT)/../../ax-libs/osx\"";
+				FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_7 = "\"$(SRCROOT)/../../libmei/build/Debug\"";
 				GCC_ENABLE_FIX_AND_CONTINUE = YES;
 				GCC_MODEL_TUNING = G5;
 				INSTALL_PATH = /usr/local/bin;
@@ -1063,12 +1050,16 @@
 					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_3)",
 					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_4)",
 					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_5)",
+					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_6)",
+					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_7)",
 				);
 				FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(SRCROOT)/../..\"";
 				FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_2 = "\"$(SRCROOT)/../../ax-libs/osx\"";
 				FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_3 = "\"$(SRCROOT)/../../..\"";
 				FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_4 = "\"$(SRCROOT)/../../ax-libs/osx\"";
 				FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_5 = "\"$(SRCROOT)/../../ax-libs/osx\"";
+				FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_6 = "\"$(SRCROOT)/../../ax-libs/osx\"";
+				FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_7 = "\"$(SRCROOT)/../../libmei/build/Debug\"";
 				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				GCC_MODEL_TUNING = G5;
 				HEADER_SEARCH_PATHS = (
@@ -1092,16 +1083,23 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				COPY_PHASE_STRIP = NO;
+				FRAMEWORK_SEARCH_PATHS = "";
 				HEADER_SEARCH_PATHS = (
 					"$(ARUSPIX_IMLIB)/include",
 					"$(ARUSPIX_TORCH)/include",
+					"$(ARUSPIX_WX)",
+					"$(ARUSPIX_MEI)/Versions/A/Headers",
+					"$(ARUSPIX_GTEST)/Headers",
 				);
 				LIBRARY_SEARCH_PATHS = (
 					"$(ARUSPIX_TORCH)/lib",
 					"$(ARUSPIX_IMLIB)/lib",
 					"$(ARUSPIX_WX)/osx-static-debug/lib",
+					"$(ARUSPIX_MEI)/..",
+					"$(ARUSPIX_GTEST)/..",
 				);
 				OBJROOT = "$(PROJECT_DIR)/../obj";
+				OTHER_LDFLAGS = "";
 				SDKROOT = /Developer/SDKs/MacOSX10.5.sdk;
 				SYMROOT = "$(PROJECT_DIR)/../bin";
 			};
@@ -1111,6 +1109,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				COPY_PHASE_STRIP = YES;
+				HEADER_SEARCH_PATHS = "";
 				OBJROOT = "$(PROJECT_DIR)/../obj";
 				SDKROOT = /Developer/SDKs/MacOSX10.5.sdk;
 				SYMROOT = "$(PROJECT_DIR)/../bin";
@@ -1121,16 +1120,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				COPY_PHASE_STRIP = YES;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_1)",
-					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_2)",
-					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_3)",
-					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_4)",
-					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_5)",
-					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_6)",
-					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_7)",
-				);
+				FRAMEWORK_SEARCH_PATHS = "$(ARUSPIX_MEI)";
 				FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(SRCROOT)/../..\"";
 				FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_2 = "\"$(SRCROOT)/../../ax-libs/osx\"";
 				FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_3 = "\"$(SRCROOT)/../../..\"";
@@ -1138,6 +1128,7 @@
 				FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_5 = "\"$(SRCROOT)/../../ax-libs/osx\"";
 				FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_6 = "\"$(SRCROOT)/../../libmei/build/Debug\"";
 				FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_7 = "\"$(SRCROOT)/../../ax-libs/osx\"";
+				FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_8 = "\"$(SRCROOT)/../../ax-libs/osx\"";
 				GCC_DEBUGGING_SYMBOLS = default;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
@@ -1178,6 +1169,8 @@
 					"-DNO_GCC_PRAGMA",
 				);
 				OTHER_LDFLAGS = (
+					"-framework",
+					mei,
 					"-framework",
 					CoreMidi,
 					"-framework",
@@ -1238,14 +1231,8 @@
 				);
 				COPY_PHASE_STRIP = YES;
 				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_1)",
-					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_2)",
-					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_3)",
-					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_4)",
-					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_5)",
-					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_6)",
-					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_7)",
+					"$(ARUSPIX_MEI)",
+					Aruspix.app/Contents/Frameworks,
 				);
 				FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(SRCROOT)/../..\"";
 				FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_2 = "\"$(SRCROOT)/../../ax-libs/osx\"";
@@ -1254,6 +1241,7 @@
 				FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_5 = "\"$(SRCROOT)/../../ax-libs/osx\"";
 				FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_6 = "\"$(SRCROOT)/../../libmei/build/Debug\"";
 				FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_7 = "\"$(SRCROOT)/../../ax-libs/osx\"";
+				FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_8 = "\"$(SRCROOT)/../../ax-libs/osx\"";
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
 				GCC_MODEL_TUNING = G5;
@@ -1291,6 +1279,8 @@
 					"-DNO_GCC_PRAGMA",
 				);
 				OTHER_LDFLAGS = (
+					"-framework",
+					mei,
 					"-framework",
 					CoreMidi,
 					"-framework",

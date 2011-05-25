@@ -191,6 +191,8 @@ Debug DLL" for debug versions.
 	\begin{itemize}
 		\item \begin{verbatim}ARUSPIX_IMLIB: Location of IM library.\end{verbatim}
 		\item \begin{verbatim}ARUSPIX_TORCH: Location of Torch library.\end{verbatim}
+		\item \begin{verbatim}ARUSPIX_MEI: Location of libmei framework.\end{verbatim}
+		\item \begin{verbatim}ARUSPIX_GTEST: Location of gtest framework.\end{verbatim}
 		\item \begin{verbatim}ARUSPIX_WX: Location of wxWidgets library.\end{verbatim}
 		\item \begin{verbatim}ARUSPIX_WX_VERSION: wxWidgets library version number.\end{verbatim}
 	\end{itemize}
@@ -205,6 +207,10 @@ Debug DLL" for debug versions.
 		    <string>/Users/puginl/libs/imlib</string>
 		    <key>ARUSPIX_TORCH</key>
 		    <string>/Users/puginl/libs/Torch3</string>
+			<key>ARUSPIX_MEI</key>
+			<string>/Users/jamie/ax-libs/osx</string>
+			<key>ARUSPIX_GTEST</key>
+			<string>/Users/jamie/ax-libs/osx</string>
 		    <key>ARUSPIX_WX</key>
 		    <string>/Users/puginl/libs/wx2.8.7</string>
 		    <key>ARUSPIX_WX_VERSION</key>
@@ -213,7 +219,7 @@ Debug DLL" for debug versions.
 		</plist>
 	\end{verbatim}
 	\begin{enumerate}
-		\item You must modify the paths within this file to match your directory structure.
+		\item You must modify the paths within this file to match your directory structure and rename it environment.plist.
 		\item In your home directory create the following hidden directory: .MacOSX.
 		\item Now copy the modified environment.plist file into the .MacOSX directory.
 		\item You must now log out and log back in.
