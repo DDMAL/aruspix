@@ -22,7 +22,8 @@ using std::vector;
 
 #include "muselement.h"
 
-#include <mei/mei.h>
+
+#import <mei/mei.h>
 
 #include "neumedef.h"
 

@@ -18,7 +18,9 @@
 #include "wx/wfstream.h"
 
 #include "musfile.h"
-#include <mei/mei.h>
+
+#import <mei/mei.h>
+#include <vector>
 
 //----------------------------------------------------------------------------
 // MusMeiOutput
@@ -41,6 +43,16 @@ private:
 // MusMeiInput
 //----------------------------------------------------------------------------
 
+class FacsTable //this should probably be a map and be more of a true hashtable, but it works as we don't deal with too many zones.
+{
+private:
+	vector<std::string> keys;
+	vector<int> values;
+public:
+	int GetX(std::string key);
+	void add(std::string key, int X);
+};
+
 class MusMeiInput: public MusFileInputStream
 {
 public:
@@ -58,6 +70,8 @@ public:
     
 private:
     bool ReadElement( MeiElement *el );
+	void ReadElement( MeiElement *element, FacsTable *table);
+	void ReadFacsTable( MeiElement *el , FacsTable *table);
     bool ReadAttributeBool( xmlNode *node, wxString name, bool *value, bool default_value = false );
     bool ReadAttributeInt( xmlNode *node, wxString name, int *value, int default_value = -1 );
     bool ReadAttributeString( xmlNode *node, wxString name, wxString *value, wxString default_value = "" );

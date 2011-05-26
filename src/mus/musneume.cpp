@@ -26,7 +26,8 @@
 
 #include <math.h>
 
-#include <mei/mei.h>
+
+#import <mei/mei.h>
 #include <exception>
 
 //----------------------------------------------------------------------------

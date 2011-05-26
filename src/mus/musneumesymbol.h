@@ -15,7 +15,8 @@
 
 #include "muselement.h"
 
-#include <mei/mei.h>
+
+#import <mei/mei.h>
 
 enum MusNeumeSymbolType {
     NEUME_SYMB_COMMA,

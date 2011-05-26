@@ -78,19 +78,67 @@ MusMeiInput::~MusMeiInput()
 {
 }
 
-
-bool MusMeiInput::ReadElement(MeiElement *element)
+int FacsTable::GetX(std::string key)
 {
-    if (element->getName() == "neume" || element->getName() == "custos") {
+	int x = -1;
+	for (vector<string>::iterator i = keys.begin(); i != keys.end(); i++) {
+		if (*i == key) {
+			x = values[i - keys.begin()];
+		}
+	}
+	return x;
+}
+
+void FacsTable::add(std::string key, int X)
+{
+	keys.push_back(key);
+	values.push_back(X);
+}
+
+void MusMeiInput::ReadFacsTable(MeiElement *element, FacsTable *table)
+{
+	if (element->getChildren().size() > 0) {
+		for (vector<MeiElement>::iterator i = element->getChildren().begin(); i != element->getChildren().end(); i++) {
+			MeiElement e = *i;
+			if (e.getName() == "zone") {
+				std::string id;
+				if (e.getAttribute("xml:id") != NULL) {
+					id = e.getAttribute("xml:id")->getValue();
+				} else if (e.getAttribute("id") != NULL) {
+					id = e.getAttribute("id")->getValue();
+				} else {
+					throw "missing xml:id attribute on zone element";
+				}
+				int value = atoi(i->getAttribute("ulx")->getValue().c_str());
+				table->add(id, value);
+			}
+			ReadFacsTable(&*i,&*table);
+		}
+	}
+}
+
+void MusMeiInput::ReadElement(MeiElement *element, FacsTable *table)
+{
+	int insertx;
+	if (element->getFacs() != NULL) {
+		if (m_currentStaff) {
+			if (m_currentStaff->GetLast()) {
+				insertx = (table->GetX(element->getFacs()->getValue()))/2 - m_currentStaff->GetLast()->xrel;
+			} else {
+				insertx = (table->GetX(element->getFacs()->getValue()))/2 - m_currentStaff->xrel;
+			}
+		}
+	}
+	if (element->getName() == "neume" || element->getName() == "custos") {
         if (element->getName() == "custos") {
-        MeiAttribute *o = element->getAttribute("oct");
-        //faking the oct attribute for the time being.
-        if (o == NULL) {
-            element->addAttribute(MeiAttribute("oct","4"));
-        }
+			MeiAttribute *o = element->getAttribute("oct");
+			//faking the oct attribute for the time being.
+			if (o == NULL) {
+				element->addAttribute(MeiAttribute("oct","4"));
+			}
         }
         MusNeume *neume = new MusNeume(*element);
-        m_currentStaff->Append(neume);
+        m_currentStaff->Append(neume, insertx);
     } else if (element->getName() == "division" || element->getName() == "clef" || element->getName() == "accid") {
         if (element->getName() == "accid") {
             MeiAttribute *o = element->getAttribute("oct");
@@ -100,41 +148,25 @@ bool MusMeiInput::ReadElement(MeiElement *element)
             }
         }
         MusNeumeSymbol *neume_element = new MusNeumeSymbol(*element);
-        m_currentStaff->Append(neume_element);
+        m_currentStaff->Append(neume_element, insertx);
     } else if (element->getName() == "sb") {
         mei_staff(element);
-    //} else if (element->getName() == "layer") {
-    //    mei_layer(element);
+		//} else if (element->getName() == "layer") {
+		//    mei_layer(element);
     }
     for (vector<MeiElement>::iterator i = element->getChildren().begin(); i != element->getChildren().end(); i++) {
-        ReadElement(&*i);
+        ReadElement(&*i, table);
+    }
+}
+
+bool MusMeiInput::ReadElement(MeiElement *element)
+{
+    FacsTable table;
+	ReadFacsTable(element, &table);
+    for (vector<MeiElement>::iterator i = element->getChildren().begin(); i != element->getChildren().end(); i++) {
+        ReadElement(&*i, &table);
     }
     return true;
-    //do it for the children if conditions are correct.
-    
-    /* old code
-    xmlNode *cur_node = NULL;
-    xmlNode *node = NULL;
-    for (cur_node = node; cur_node; cur_node = cur_node->next) {
-        if (cur_node->type == XML_ELEMENT_NODE) {
-            if (!strcmp((char*)cur_node->name,"accid")) { if (!mei_accid(cur_node)) return false; }
-            else if (!strcmp((char*)cur_node->name,"barline")) { if (!mei_barline(cur_node)) return false; }
-            else if (!strcmp((char*)cur_node->name,"clefchange")) { if (!mei_clefchange(cur_node)) return false; }
-            else if (!strcmp((char*)cur_node->name,"custos")) { if (!mei_custos(cur_node)) return false; }
-            else if (!strcmp((char*)cur_node->name,"dot")) { if (!mei_dot(cur_node)) return false; }
-            else if (!strcmp((char*)cur_node->name,"layer")) { if (!mei_layer(cur_node)) return false; }
-            else if (!strcmp((char*)cur_node->name,"measure")) { if (!mei_measure(cur_node)) return false; }
-            else if (!strcmp((char*)cur_node->name,"mensur")) { if (!mei_mensur(cur_node)) return false; }
-            else if (!strcmp((char*)cur_node->name,"note")) { if (!mei_note(cur_node)) return false; }
-            else if (!strcmp((char*)cur_node->name,"parts")) { if (!mei_parts(cur_node)) return false; }
-            else if (!strcmp((char*)cur_node->name,"rest")) { if (!mei_rest(cur_node)) return false; }
-            else if (!strcmp((char*)cur_node->name,"score")) { if (!mei_score(cur_node)) return false; }
-            else if (!strcmp((char*)cur_node->name,"staff")) { if (!mei_staff(cur_node)) return false; }
-        }
-        // Was element->children
-        if (!ReadElement(element)) return false ;
-    }
-    return true;*/
 }
 
 bool MusMeiInput::ImportFile( )
