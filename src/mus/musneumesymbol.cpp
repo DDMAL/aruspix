@@ -382,14 +382,14 @@ void MusNeumeSymbol::SetValue(int value, MusStaff *staff, int vflag)
             case (NEUME_SYMB_CLEF_C):
                 switch (this->value)
                 {
-                    case (nC1): updateMeiRefClef("c", "1"); break;
-                    case (nC2): updateMeiRefClef("c", "2"); break;
-                    case (nC3): updateMeiRefClef("c", "3"); break;
-                    case (nC4): updateMeiRefClef("c", "4"); break;
-                    case (nF1): updateMeiRefClef("f", "1"); break;
-                    case (nF2): updateMeiRefClef("f", "2"); break;
-                    case (nF3): updateMeiRefClef("f", "3"); break;
-                    case (nF4): updateMeiRefClef("f", "4"); break;
+                    case (nC1): updateMeiRefClef("C", "1"); break;
+                    case (nC2): updateMeiRefClef("C", "2"); break;
+                    case (nC3): updateMeiRefClef("C", "3"); break;
+                    case (nC4): updateMeiRefClef("C", "4"); break;
+                    case (nF1): updateMeiRefClef("F", "1"); break;
+                    case (nF2): updateMeiRefClef("F", "2"); break;
+                    case (nF3): updateMeiRefClef("F", "3"); break;
+                    case (nF4): updateMeiRefClef("F", "4"); break;
                 }
                 break;
             case (NEUME_SYMB_DIVISION_FINAL):

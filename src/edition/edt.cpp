@@ -679,7 +679,11 @@ void EdtEnv::OnSaveMEI( wxCommandEvent &event )
             mei_output->ExportFile();
             delete mei_output;
         }
-    }
+    } else {
+        MusMeiOutput *mei_output = new MusMeiOutput( m_edtFilePtr->m_musFilePtr, filename );
+        mei_output->ExportFile();
+        delete mei_output;
+	}
     wxGetApp().m_lastDirAX0_out = wxPathOnly( filename );
 }
 
