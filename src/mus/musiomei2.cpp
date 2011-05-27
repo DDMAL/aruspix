@@ -81,18 +81,44 @@ MusMeiInput::~MusMeiInput()
 int FacsTable::GetX(std::string key)
 {
 	int x = -1;
-	for (vector<string>::iterator i = keys.begin(); i != keys.end(); i++) {
-		if (*i == key) {
-			x = values[i - keys.begin()];
+	for (vector<FacsEntry>::iterator i = entries.begin(); i != entries.end(); i++) {
+		if (i->key == key) {
+			x = i->ulx;
 		}
 	}
 	return x;
 }
 
-void FacsTable::add(std::string key, int X)
+int FacsTable::GetUY(std::string key)
 {
-	keys.push_back(key);
-	values.push_back(X);
+	int y = -1;
+	for (vector<FacsEntry>::iterator i = entries.begin(); i != entries.end(); i++) {
+		if (i->key == key) {
+			y = i->uly;
+		}
+	}
+	return y;
+}
+
+int FacsTable::GetLY(std::string key)
+{
+	int y = -1;
+	for (vector<FacsEntry>::iterator i = entries.begin(); i != entries.end(); i++) {
+		if (i->key == key) {
+			y = i->lry;
+		}
+	}
+	return y;
+}
+
+void FacsTable::add(std::string key, int X, int Y1, int Y2)
+{
+	FacsEntry entry;
+	entry.key = key;
+	entry.ulx = X;
+	entry.uly = Y1;
+	entry.lry = Y2;
+	entries.push_back(entry);
 }
 
 void MusMeiInput::ReadFacsTable(MeiElement *element, FacsTable *table)
@@ -102,16 +128,33 @@ void MusMeiInput::ReadFacsTable(MeiElement *element, FacsTable *table)
 			MeiElement e = *i;
 			if (e.getName() == "zone") {
 				std::string id;
-				if (e.getAttribute("xml:id") != NULL) {
-					id = e.getAttribute("xml:id")->getValue();
-				} else if (e.getAttribute("id") != NULL) {
-					id = e.getAttribute("id")->getValue();
+				if (e.getId() != "") {
+					id = e.getId();
 				} else {
 					throw "missing xml:id attribute on zone element";
 				}
-				int value = atoi(i->getAttribute("ulx")->getValue().c_str());
-				table->add(id, value);
-			}
+				int ulx = atoi(e.getAttribute("ulx")->getValue().c_str());
+				int uly = atoi(e.getAttribute("uly")->getValue().c_str());
+				int lry = atoi(e.getAttribute("lry")->getValue().c_str());
+				table->add(id, ulx, uly, lry);
+			} else if (e.getName() == "system") {
+				std::string id;
+				if (e.getId() != "") {
+					id = e.getId();
+				} else {
+					throw "missing xml:id attribute on system element";
+				}
+				std::string facs;
+				if (e.getFacs() != NULL) {
+					facs = e.getFacs()->getValue();
+				} else {
+					throw "missing facs attribute on system element";
+				}
+				int ulx = table->GetX(facs); //what if they haven't been stored yet? zones are always defined before systems, as the facs needs to refer to something.
+				int uly = table->GetUY(facs); //"
+				int lry = table->GetLY(facs);
+				table->add(id, ulx, uly, lry);
+			}				
 			ReadFacsTable(&*i,&*table);
 		}
 	}
@@ -150,7 +193,7 @@ void MusMeiInput::ReadElement(MeiElement *element, FacsTable *table)
         MusNeumeSymbol *neume_element = new MusNeumeSymbol(*element);
         m_currentStaff->Append(neume_element, insertx);
     } else if (element->getName() == "sb") {
-        mei_staff(element);
+        mei_staff(element, table);
 		//} else if (element->getName() == "layer") {
 		//    mei_layer(element);
     }
@@ -444,9 +487,9 @@ bool MusMeiInput::mei_score( xmlNode *node ) {
     return true;
 }
 
-bool MusMeiInput::mei_staff(MeiElement *element) {
-
-    //wxLogDebug("mei:staff\n");
+bool MusMeiInput::mei_staff(MeiElement *element, FacsTable *table) {
+	
+	//wxLogDebug("mei:staff\n");
     int n = atoi((element->getAttribute("n")->getValue()).c_str());
     //if (ReadAttributeInt( element, "n", &n )) {}
     wxLogDebug("mei:staff %d\n", n);
@@ -454,12 +497,15 @@ bool MusMeiInput::mei_staff(MeiElement *element) {
         // we tolerate that the staff has not been created in a scoredef
         // n must not be bigger that the previous id + 1;
         MusStaff *staff = new MusStaff();
+		staff->m_meiref = element;
         staff->portNbLine = 4; //added as experiment --Jamie
         staff->no = n - 1;
         if (n == 1) {
-            staff->ecart = 5; // for the first staff, we decrease the top space
+            staff->ecart = table->GetUY(element->getAttribute("systemref")->getValue())/20; // for the first staff, we decrease the top space
             m_file->m_fheader.param.MargeGAUCHEIMPAIRE = 8; // and the margin as well
-        }
+        } else {
+			staff->ecart = (table->GetUY(element->getAttribute("systemref")->getValue()) - table->GetLY(m_page->m_staves[staff->no - 1].m_meiref->getAttribute("systemref")->getValue()))/20; //CONTINUE HERE BOOK_MARK
+		}
         m_page->m_staves.Add( staff );
     }
     else if ((n > (int)m_page->m_staves.Count()) || (n < 1)) {

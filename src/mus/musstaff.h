@@ -20,6 +20,7 @@
 class AxDC;
 
 #include "musobject.h"
+#include "mei/mei.h"
 
 #define STAFF_OFFSET 190
 
@@ -152,9 +153,11 @@ public:
     
     // drawing variables
     MusNote *beamListPremier;
+	
+	//for MEI import only
+	MeiElement *m_meiref;
 
 private:
-	
 };
 
 

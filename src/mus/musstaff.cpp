@@ -77,6 +77,7 @@ MusStaff::MusStaff( const MusStaff& staff )
 	reserve = staff.reserve;
 	yrel = staff.yrel;
 	xrel = staff.xrel;
+	m_meiref = staff.m_meiref;
 
 	for (int i = 0; i < (int)staff.m_elements.GetCount(); i++)
 	{
@@ -136,6 +137,7 @@ void MusStaff::Clear()
     
     //
     beamListPremier = NULL;
+	m_meiref = NULL;
 }
 
 void MusStaff::CopyAttributes( MusStaff *nstaff )
@@ -1135,8 +1137,3 @@ void MusStaff::GetMaxXY( wxArrayPtrVoid params )
     }
     (*max_y) += this->ecart;
 }
-
-
-
-
-

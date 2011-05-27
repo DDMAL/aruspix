@@ -43,14 +43,21 @@ private:
 // MusMeiInput
 //----------------------------------------------------------------------------
 
+struct FacsEntry
+{
+	std::string key;
+	int ulx, uly, lry;
+};
+
 class FacsTable //this should probably be a map and be more of a true hashtable, but it works as we don't deal with too many zones.
 {
 private:
-	vector<std::string> keys;
-	vector<int> values;
+	vector<FacsEntry> entries;
 public:
 	int GetX(std::string key);
-	void add(std::string key, int X);
+	int GetUY(std::string key);
+	int GetLY(std::string key);
+	void add(std::string key, int X, int Y1, int Y2);
 };
 
 class MusMeiInput: public MusFileInputStream
@@ -88,7 +95,7 @@ private:
     bool mei_parts( xmlNode *node );
     bool mei_rest( xmlNode *node );
     bool mei_score( xmlNode *node );
-    bool mei_staff( MeiElement *element );
+    bool mei_staff( MeiElement *element, FacsTable *table );
     
     void mei_attr_dur( xmlNode *node, unsigned char *val );
     void mei_attr_pname( xmlNode *, unsigned short *code );
