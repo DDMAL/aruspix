@@ -16,7 +16,7 @@
 #include "muselement.h"
 
 
-#import <mei/mei.h>
+#include <mei/mei.h>
 
 enum MusNeumeSymbolType {
     NEUME_SYMB_COMMA,
@@ -58,6 +58,7 @@ public:
 	void DrawDivMinor(AxDC *dc, MusStaff *staff);
 	void DrawDivSmall(AxDC *dc, MusStaff *staff);
     MeiElement *getMeiRef();
+	void deleteMeiRef();
 
 private:
     MusNeumeSymbolType symbolType;

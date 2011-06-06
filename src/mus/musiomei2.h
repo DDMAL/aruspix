@@ -19,7 +19,7 @@
 
 #include "musfile.h"
 
-#import <mei/mei.h>
+#include <mei/mei.h>
 #include <vector>
 
 //----------------------------------------------------------------------------
@@ -74,11 +74,11 @@ public:
 	virtual bool ReadNote( MusNote *note );
 	virtual	bool ReadNeume( MusNeume *neume );
 	virtual bool ReadSymbol( MusSymbol *symbol );
-    
+    void ReadFacsTable( MeiElement *el , FacsTable *table);
+	
 private:
     bool ReadElement( MeiElement *el );
 	void ReadElement( MeiElement *element, FacsTable *table);
-	void ReadFacsTable( MeiElement *el , FacsTable *table);
     bool ReadAttributeBool( xmlNode *node, wxString name, bool *value, bool default_value = false );
     bool ReadAttributeInt( xmlNode *node, wxString name, int *value, int default_value = -1 );
     bool ReadAttributeString( xmlNode *node, wxString name, wxString *value, wxString default_value = "" );

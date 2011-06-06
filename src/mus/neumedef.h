@@ -28,6 +28,7 @@
 #define nDIV_FINAL '('		// double barline
 #define nDIV_SMALL '0'		// small barline
 #define nDIV_MAJOR '&'		// full barline
+#define nDOT 'g'			// dot
 
 
 #define nVIRGA 5	// convenience - for use with SetValue(int) 

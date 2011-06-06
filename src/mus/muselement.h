@@ -46,6 +46,7 @@ public:
 	bool IsSymbol() { return ( TYPE == SYMB ); }
     bool IsNeume() { return ( TYPE == NEUME ); }
 	bool IsNeumeSymbol() { return (TYPE == NEUME_SYMB ); }
+	virtual void deleteMeiRef() {};
 
     //	virtual void SetPitch( int code, int oct, MusStaff *staff = NULL ) {};
 	virtual void SetPitch( int code, int oct ) {};

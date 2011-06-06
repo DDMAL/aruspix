@@ -23,7 +23,7 @@ using std::vector;
 #include "muselement.h"
 
 
-#import <mei/mei.h>
+#include <mei/mei.h>
 
 #include "neumedef.h"
 
@@ -32,7 +32,8 @@ class MusStaff;
 enum NeumeOrnament {
     HE,
     VE,
-    DOT
+    DOT,
+	NONE
 };
 
 enum NeumeType {
@@ -64,25 +65,27 @@ enum NeumeElementType {
     NEUME_ELEMENT_QUILISMA,
 };
 
-class MusNeumeElement
+class MusNeumeElement: public MusElement
 {
 public:
     MusNeumeElement(const MusNeumeElement &element);
     MusNeumeElement(MeiElement &meielement, int pitch, int oct);
     //MusNeumeElement(int _pitchDifference);
-    virtual ~MusNeumeElement() {};
+    virtual ~MusNeumeElement() {}
     
     int getPitchDifference();
     NeumeElementType getElementType();
     MeiElement &getMeiElement();
     void updateMeiRef(string pitch, int oct);
-
+	void deleteMeiRef();
+	NeumeOrnament getOrnament();
+	
 private:
     int m_pitch_difference;
     NeumeElementType m_element_type;
     NeumeOrnament ornament;
     MeiElement *m_meiref;
-}; 
+};
 
 class MusNeume: public MusElement
 {
@@ -91,13 +94,14 @@ public:
     MusNeume();
     MusNeume( const MusNeume &neume);
     MusNeume(MeiElement &meielement);
-    virtual ~MusNeume() {};
+    virtual ~MusNeume() {}
     
     void setType(wxString type);
     void setType(NeumeType type);
     NeumeType getType();
     MeiElement &getMeiElement();
     vector<MusNeumeElement> getPitches();
+	void deleteMeiRef();
     
     //Drawing code
     virtual void Draw( AxDC *dc, MusStaff *staff);
@@ -121,6 +125,7 @@ public:
     void DrawTorculusResupinus( AxDC *dc, MusStaff *staff);
     void DrawCompound( AxDC *dc, MusStaff *staff);
     void DrawCustos( AxDC *dc, MusStaff *staff);
+	void DrawDots(AxDC *dc, MusStaff *staff);
     void leg_line( AxDC *dc, int y_n, int y_p, int xn, unsigned int smaller, int pTaille);
 
     //void append( AxDC *dc, MusStaff *staff ); //for creating multi-note neumes

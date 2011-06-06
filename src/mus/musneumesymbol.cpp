@@ -14,6 +14,7 @@
 #include "musstaff.h"
 
 #include <mei/meiattribute.h>
+#include <mei/meielement.h>
 
 #include <algorithm>
 
@@ -478,6 +479,13 @@ void MusNeumeSymbol::updateMeiRefClef(string shape, string line) {
             lineattr->setValue(line);
         }
     }
+}
+
+void MusNeumeSymbol::deleteMeiRef() {
+	if (m_meiref->hasParent()) {
+		m_meiref->getParent().removeChild(m_meiref);
+	}
+	delete m_meiref;
 }
 
 void MusNeumeSymbol::SetPitch(int pitch, int oct) //this is incomplete, there is no other default symbol at the moment.

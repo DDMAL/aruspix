@@ -1149,7 +1149,7 @@ void MusWindow::NeumeEditOnKeyDown(wxKeyEvent &event) {
             else
                 m_currentElement = NULL;
         }
-        
+        del->deleteMeiRef();
         delstaff->Delete( del );
         if ( m_currentStaff != delstaff )
         {

@@ -124,8 +124,8 @@ void FacsTable::add(std::string key, int X, int Y1, int Y2)
 void MusMeiInput::ReadFacsTable(MeiElement *element, FacsTable *table)
 {
 	if (element->getChildren().size() > 0) {
-		for (vector<MeiElement>::iterator i = element->getChildren().begin(); i != element->getChildren().end(); i++) {
-			MeiElement e = *i;
+		for (vector<MeiElement*>::iterator i = element->getChildren().begin(); i != element->getChildren().end(); i++) {
+			MeiElement e = **i;
 			if (e.getName() == "zone") {
 				std::string id;
 				if (e.getId() != "") {
@@ -155,7 +155,7 @@ void MusMeiInput::ReadFacsTable(MeiElement *element, FacsTable *table)
 				int lry = table->GetLY(facs);
 				table->add(id, ulx, uly, lry);
 			}				
-			ReadFacsTable(&*i,&*table);
+			ReadFacsTable(*i,&*table);
 		}
 	}
 }
@@ -197,8 +197,8 @@ void MusMeiInput::ReadElement(MeiElement *element, FacsTable *table)
 		//} else if (element->getName() == "layer") {
 		//    mei_layer(element);
     }
-    for (vector<MeiElement>::iterator i = element->getChildren().begin(); i != element->getChildren().end(); i++) {
-        ReadElement(&*i, table);
+    for (vector<MeiElement*>::iterator i = element->getChildren().begin(); i != element->getChildren().end(); i++) {
+        ReadElement(*i, table);
     }
 }
 
@@ -206,8 +206,8 @@ bool MusMeiInput::ReadElement(MeiElement *element)
 {
     FacsTable table;
 	ReadFacsTable(element, &table);
-    for (vector<MeiElement>::iterator i = element->getChildren().begin(); i != element->getChildren().end(); i++) {
-        ReadElement(&*i, &table);
+    for (vector<MeiElement*>::iterator i = element->getChildren().begin(); i != element->getChildren().end(); i++) {
+        ReadElement(*i, &table);
     }
     return true;
 }
