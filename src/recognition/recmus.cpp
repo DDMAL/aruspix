@@ -80,6 +80,11 @@ void RecMusController::Init( RecEnv *env, RecMusWindow *window )
     m_viewPtr = window;
 }
 
+void RecMusController::SetForMEI()
+{
+	m_staffbmp_show = true;
+}
+
 void RecMusController::SetImViewAndController( RecImWindow *recImWindow, RecImController *recImController )
 {
 	m_imControlPtr = recImController;

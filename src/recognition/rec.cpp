@@ -221,6 +221,8 @@ BEGIN_EVENT_TABLE(RecEnv,AxEnv)
     EVT_MENU( ID4_NEW_BOOK, RecEnv::OnNewBook )
     EVT_MENU( ID4_OPEN_BOOK, RecEnv::OnOpenBook )
     EVT_MENU( ID4_CLOSE_BOOK, RecEnv::OnCloseBook )
+	EVT_MENU( ID4_OPEN_MEI, RecEnv::OnOpenMEI )
+	EVT_MENU( ID4_SAVE_MEI, RecEnv::OnSaveMEI )
     EVT_MENU( ID4_BOOK_LOAD, RecEnv::OnBookLoad )
     EVT_MENU( ID4_BOOK_PRE, RecEnv::OnBookPreprocess )
     EVT_MENU( ID4_BOOK_REC, RecEnv::OnBookRecognize )
@@ -362,6 +364,8 @@ void RecEnv::RealizeToolbar( )
     
     toolbar->InsertTool( 0, ID4_NEW_BOOK, _T("New"), m_framePtr->GetToolbarBitmap( "book_new.png" ), wxNullBitmap, wxITEM_NORMAL, _("New book"), _("New book") );
     toolbar->InsertTool( 1, ID4_OPEN_BOOK, _T("Open"), m_framePtr->GetToolbarBitmap( "book_open.png" ), wxNullBitmap, wxITEM_NORMAL, _("Open book"), _("Open book") );
+	toolbar->InsertTool( 4, ID4_OPEN_MEI, _("Import MEI"), m_framePtr->GetToolbarBitmap( "folder_yellow.png" ) , wxNullBitmap, wxITEM_NORMAL, _("Import MEI"), _("Import an MEI file") );
+    toolbar->InsertTool( 7, ID4_SAVE_MEI, _("Save MEI"), m_framePtr->GetToolbarBitmap( "filesave.png" ) , wxNullBitmap, wxITEM_NORMAL, _("MeiEx"), _("Export an MEI file") );
     toolbar->InsertSeparator( 2 );
     
     toolbar->AddTool( ID4_ZOOM_OUT, _T("Zoom out"), m_framePtr->GetToolbarBitmap( "viewmag-.png" ), wxNullBitmap, wxITEM_NORMAL, _("Zoom out"), _("Zoom out") );
@@ -1721,6 +1725,94 @@ void RecEnv::OnRedo( wxCommandEvent &event )
             UpdateViews( REC_UPDATE_FAST );
         }
     }
+}
+
+void RecEnv::OnOpenMEI( wxCommandEvent &event )
+{
+    wxASSERT_MSG( m_musPanelPtr, "Panel cannot be NULL ");
+	
+    //if ( !this->ResetFile( ) )
+    //    return;
+	m_recFilePtr->New();
+	
+    m_imControlPtr->Open();
+	
+	if ( !m_recFilePtr->IsPreprocessed() ){
+		this->Preprocess();
+	}
+	else if ( !m_recFilePtr->IsRecognized() )
+        this->Recognize();
+	
+	m_musControlPtr->SetForMEI();
+	
+	wxString filename = wxFileSelector( _("Import MEI - Choose MEI"), wxGetApp().m_lastDir, _T(""), _T(""), "MEI Files|*.mei|XML Files|*.xml", wxFD_OPEN);
+    if ( filename.IsEmpty() )
+        return;
+    wxGetApp().m_lastDir = wxPathOnly( filename );
+    
+    //m_recFilePtr->m_musFilePtr->New();
+	//m_recFilePtr->m_musFilePtr->m_pages.Clear();
+	m_recFilePtr->SetforMEI(); //may be unnecessary
+	
+    MusMeiInput meiinput( m_recFilePtr->m_musFilePtr, filename );
+	if ( !meiinput.ImportFile() )
+		return;
+	
+	m_recFilePtr->m_musFilePtr->m_fheader.param.notationMode = MUS_NEUMATIC_MODE; //temporary for liber usualis project
+	
+	m_musViewPtr->SetEditorMode(MUS_EDITOR_EDIT);
+	
+	/*MeiElement *root = m_recFilePtr->m_musFilePtr->GetMeiDocument()->getRootElement();
+	FacsTable table;
+	meiinput.ReadFacsTable(root, &table);
+	
+	m_recFilePtr->m_musFilePtr->m_fheader.param.pageFormatHor = m_recFilePtr->m_imPagePtr->m_size.GetWidth() / 10;
+	m_recFilePtr->m_musFilePtr->m_fheader.param.pageFormatVer = m_recFilePtr->m_imPagePtr->m_size.GetHeight() / 10;
+	
+	for (int i = 0; i < (int)m_recFilePtr->m_musFilePtr->m_pages[0].nbrePortees; i++)
+	{
+		MeiElement *element = m_recFilePtr->m_musFilePtr->m_pages[0].m_staves[i].m_meiref;
+		m_musViewPtr->kPos[i].yp = m_recFilePtr->m_musFilePtr->m_fheader.param.pageFormatVer - table.GetUY(element->getAttribute("systemref")->getValue())/20 + m_musViewPtr->_portee[m_recFilePtr->m_musFilePtr->m_pages[0].m_staves[i].pTaille];
+	}
+	
+    int x1 = 5, x2 = 195;
+    m_recFilePtr->m_imPagePtr->CalcLeftRight( &x1, &x2 ); 
+	//x1 = 0; // force it, indentation will be calculated staff by staff
+    m_recFilePtr->m_musFilePtr->m_fheader.param.MargeGAUCHEIMPAIRE = x1 / 10;
+    m_recFilePtr->m_musFilePtr->m_fheader.param.MargeGAUCHEPAIRE = x1 / 10;
+    m_recFilePtr->m_musFilePtr->m_pages[0].lrg_lign = (x2 - x1) / 10;*/
+	
+    UpdateViews( 0 );
+}
+
+void RecEnv::OnSaveMEI( wxCommandEvent &event )
+{
+	if (  !m_musPanelPtr || !m_recFilePtr )
+        return;
+	
+    string docname = m_recFilePtr->m_musFilePtr->GetMeiDocument()->getDocName();
+    wxString wxdocname = docname.c_str();
+    wxString name, ext;
+    wxFileName::SplitPath(wxdocname, NULL, &name, &ext);
+    wxString savename = name + "." + ext;
+	
+    wxString filename = wxFileSelector( _("Export MEI"), wxGetApp().m_lastDir, savename, _T(""), "MEI Files|*.mei|XML Files|*.xml", wxFD_SAVE);
+    if ( filename.IsEmpty() )
+        return;
+    if (wxFileExists(filename)) {
+        wxString message = _("File aldready exists. Overwrite?");
+        wxMessageDialog dialog ( m_musViewPtr, message, _("File exits"), wxYES_NO|wxICON_QUESTION );
+        if ( dialog.ShowModal () == wxID_YES ) {
+            MusMeiOutput *mei_output = new MusMeiOutput( m_recFilePtr->m_musFilePtr, filename );
+            mei_output->ExportFile();
+            delete mei_output;
+        }
+    } else {
+        MusMeiOutput *mei_output = new MusMeiOutput( m_recFilePtr->m_musFilePtr, filename );
+        mei_output->ExportFile();
+        delete mei_output;
+	}
+    wxGetApp().m_lastDirAX0_out = wxPathOnly( filename );
 }
 
 

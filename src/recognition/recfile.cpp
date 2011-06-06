@@ -67,6 +67,11 @@ RecFile::~RecFile()
 		delete m_imPagePtr;
 }
 
+void RecFile::SetforMEI()
+{
+	m_isPreprocessed = true;
+	m_isRecognized = true;
+}
 
 void RecFile::UpgradeTo_1_4_0()
 {
@@ -242,7 +247,7 @@ void RecFile::OpenContent( )
 			return;
 		else
 			m_isRecognized = true;	
-	}
+	} //else if there's an MEI in there?
 	
 	return;       
 	// Load XML file. Don't know what's necessary yet...
@@ -311,7 +316,8 @@ void RecFile::SaveContent( )
 		return;
 	else
 	{
-		
+		//possibility of MusFile being a .mei not a .bin
+		//MusMeiOutput *mei_output = new MusMeiOutput( m_musFilePtr, m_musFilePtr->m_fname );
 		// save
 		MusBinOutput *bin_output = new MusBinOutput( m_musFilePtr, m_musFilePtr->m_fname );
 		bin_output->ExportFile();

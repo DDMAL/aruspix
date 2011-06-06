@@ -56,6 +56,7 @@ public:
 	void SyncZoom();
     void SyncStaffBitmap( ); // genere l'image superposee de la portee wolfgang	
     // staff bitmap	
+	void SetForMEI();
     void GetStaffBitmap( wxBitmap *bmp, int *x, int *y ); // used by RecImWindow::OnPaint
     void InverseShowStaffBitmap( );
     void CancelShowStaffBitmap( );
