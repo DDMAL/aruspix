@@ -291,47 +291,7 @@ bool MusBinOutput::WriteNote( const MusNote *note )
 
 bool MusBinOutput::WriteNeume( const MusNeume *neume )
 {
-	// Write member values
     // ...
-	Write( &neume->TYPE, 1 );
-	WriteElementAttr( neume );
-	Write( &neume->closed, 1 );
-	Write( &neume->code, 1);
-	
-	Write( &neume->xrel_right, 1);
-	
-	// for mei (eventually) (these fields are all char)
-	Write( &neume->name, 1);
-	Write( &neume->n_type, 1);
-	Write( &neume->form, 1);
-    // if ( symbol->IsLyric() ) // no lyrics in MusNeume yet
-	Write( &neume->p_max, 1);
-	Write( &neume->p_min, 1);
-	Write( &neume->p_range, 1);
-	unsigned char code = (unsigned char)neume->code;
-	Write( &code, 1 ); // placed in element, but as unsigned short
-	
-	Write( &neume->n_selected, 1);
-	
-	//provided neumes never exceed 255 elements
-	unsigned char size = (unsigned char) neume->n_pitches.size();
-	Write( &size, 1);
-	
-	/** MusNeumePitch list (n_pitches) **/
-	// XXX: Write neumes properly
-	MusNeumePitch *temp;
-	/*
-	for (unsigned int i = 0; i < neume->n_pitches.size(); i++)
-	{ 
-		temp = neume->n_pitches.at(i);
-		WriteElementAttr( temp );
-		Write( &temp->GetValue(), 1);
-		unsigned char size = (unsigned char) temp->GetFestaString().size() + 1; // Laurent: added the 0
-		Write( &size, 1);
-		Write( temp->GetFestaString(), size );
-	}
-	 */
-	
 	return true;
 }
 
@@ -728,56 +688,7 @@ bool MusBinInput::ReadNote( MusNote *note )
 
 bool MusBinInput::ReadNeume( MusNeume *neume )
 {
-    // Read member values
     // ...
-	ReadElementAttr( neume );
-	Read( &neume->closed, 1 );
-	Read( &neume->code, 1);
-	
-	Read( &neume->xrel_right, 1);
-	
-	// for mei (eventually) (these fields are all char)
-	Read( &neume->name, 1);
-	Read( &neume->n_type, 1);
-	Read( &neume->form, 1);
-    // if ( symbol->IsLyric() ) // no lyrics in MusNeume yet
-	Read( &neume->p_max, 1);
-	Read( &neume->p_min, 1);
-	Read( &neume->p_range, 1);
-	unsigned char code = (unsigned char)neume->code;
-	Read( &code, 1 ); // placed in element, but as unsigned short
-	
-	Read( &neume->n_selected, 1);
-	/** MusNeumePitch list (n_pitches) **/
-	MusNeumePitch *temp;
-	
-	unsigned char size;	
-	Read( &size, 1);
- 
-	
-	for (unsigned int i = 0; i < size; i++)
-	{ 
-		// XXX: Read Neume Pitches and create objects
-/*		temp = new MusNeumePitch();
-		ReadElementAttr(temp);
-		
-		Read( &temp->val, 1);
-		
-		unsigned char strsize;
-		Read( &strsize, 1);
-        Read( temp->m_font_str.GetWriteBuf( strsize ) , strsize );
-        temp->m_font_str.UngetWriteBuf();
-		//char *str = (char*)malloc(strsize);
-		//Read( str, strsize );
-		//str[size] = '\0';
-		//temp->m_font_str = std::string(str, strsize);
-		neume->n_pitches.push_back(temp);
-		*/
-	}
-	
-	
-	
-     
 	return true;
 }
 

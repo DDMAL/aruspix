@@ -21,6 +21,7 @@
 #include "mussymbol.h"
 #include "musnote.h"
 #include "musneume.h"
+#include "musneumesymbol.h"
 #include "muspage.h"
 #include "musrc.h"
 
@@ -76,6 +77,7 @@ MusStaff::MusStaff( const MusStaff& staff )
 	reserve = staff.reserve;
 	yrel = staff.yrel;
 	xrel = staff.xrel;
+	m_meiref = staff.m_meiref;
 
 	for (int i = 0; i < (int)staff.m_elements.GetCount(); i++)
 	{
@@ -93,6 +95,11 @@ MusStaff::MusStaff( const MusStaff& staff )
 		{
 			MusNeume *nneume = new MusNeume( *(MusNeume*)&staff.m_elements[i] );
 			this->m_elements.Add( nneume );
+		}
+		else if ( staff.m_elements[i].IsNeumeSymbol() )
+		{
+			MusNeumeSymbol *nneumesymbol = new MusNeumeSymbol( *(MusNeumeSymbol*)&staff.m_elements[i] );
+			this->m_elements.Add( nneumesymbol );
 		}
 	}
 }
@@ -130,6 +137,7 @@ void MusStaff::Clear()
     
     //
     beamListPremier = NULL;
+	m_meiref = NULL;
 }
 
 void MusStaff::CopyAttributes( MusStaff *nstaff )
@@ -246,6 +254,8 @@ MusElement *MusStaff::Insert( MusElement *element )
 		element = new MusNote( *(MusNote*)element );
 	else if ( element->IsNeume() )
 		element = new MusNeume( *(MusNeume*)element );
+	else if ( element->IsNeumeSymbol() )
+		element = new MusNeumeSymbol( *(MusNeumeSymbol*)element );
 //	else if ( element->IsNeume() ) 
 //	{
 	//	//copying a neume causes issues
@@ -264,13 +274,17 @@ MusElement *MusStaff::Insert( MusElement *element )
 			break;
 	}
 
-	if ( tmp &&  element->IsSymbol() && (((MusSymbol*)element)->flag == CLE) )
+	if ( tmp &&  ((element->IsSymbol() && (((MusSymbol*)element)->flag == CLE))
+		|| (element->IsNeumeSymbol() && ((((MusNeumeSymbol*)element)->getValue() == NEUME_SYMB_CLEF_C) || (((MusNeumeSymbol*)element)->getValue() == NEUME_SYMB_CLEF_F)))) )
+		
 		m_r->OnBeginEditionClef();
 
 	m_elements.Insert( element, idx );
 	this->CheckIntegrity();
 	
-	if ( element->IsSymbol() && (((MusSymbol*)element)->flag == CLE) )
+	if ( (element->IsSymbol() && (((MusSymbol*)element)->flag == CLE))
+		|| (element->IsNeumeSymbol() && ((((MusNeumeSymbol*)element)->getValue() == NEUME_SYMB_CLEF_C) || (((MusNeumeSymbol*)element)->getValue() == NEUME_SYMB_CLEF_F))) )
+		
 		m_r->OnEndEditionClef();
 
 	if (m_r)
@@ -302,7 +316,9 @@ void MusStaff::Delete( MusElement *element )
 
 	if ( m_r ) // effacement
 	{
-		if ( element->IsSymbol() && (((MusSymbol*)element)->flag == CLE) )
+		if ( (element->IsSymbol() && (((MusSymbol*)element)->flag == CLE))
+			|| (element->IsNeumeSymbol() && ((((MusNeumeSymbol*)element)->getValue() == NEUME_SYMB_CLEF_C) || (((MusNeumeSymbol*)element)->getValue() == NEUME_SYMB_CLEF_F))) )
+			
 			m_r->OnBeginEditionClef();
 	}
 	
@@ -311,8 +327,10 @@ void MusStaff::Delete( MusElement *element )
 
 	if ( m_r )
 	{
-		if ( element->IsSymbol() && (((MusSymbol*)element)->flag == CLE) )
+		if ( (element->IsSymbol() && (((MusSymbol*)element)->flag == CLE))
+			|| (element->IsNeumeSymbol() && ((((MusNeumeSymbol*)element)->getValue() == NEUME_SYMB_CLEF_C) || (((MusNeumeSymbol*)element)->getValue() == NEUME_SYMB_CLEF_F))) )
 			m_r->OnEndEditionClef();
+		
 		m_r->DoRefresh();
 	}
 	
@@ -340,7 +358,7 @@ MusElement *MusStaff::no_note ( MusElement *chk, unsigned int sens, unsigned int
 	if ( i == wxNOT_FOUND )
 		return (chk);
 
-	while (chk->TYPE != SYMB || ((MusSymbol*)chk)->flag != flg)
+	while ( (chk->TYPE != SYMB || ((MusSymbol*)chk)->flag != flg) && (chk->TYPE != NEUME_SYMB || ((MusNeumeSymbol*)chk)->getValue() != flg) )
 	{
 		if (sens==AR)
 		{	
@@ -358,7 +376,7 @@ MusElement *MusStaff::no_note ( MusElement *chk, unsigned int sens, unsigned int
 
 	if (*succ == 0)
 	{	
-		if (chk->TYPE == SYMB && ((MusSymbol*)chk)->flag == flg)
+		if ( (chk->TYPE == SYMB && ((MusSymbol*)chk)->flag == flg) || (chk->TYPE == NEUME_SYMB && ((MusNeumeSymbol*)chk)->getValue() == flg) )
 			*succ = ON;
 	}
 
@@ -373,15 +391,25 @@ int MusStaff::getOctCl ( MusElement *test, char *cle_id, int mlf )
 	int succ=0;
 
 	if (test)
-	{	if ( test->TYPE == SYMB && ((MusSymbol*)test)->flag == CLE )
+	{	if ( (test->TYPE == SYMB && ((MusSymbol*)test)->flag == CLE) || (test->TYPE == NEUME_SYMB && ((((MusNeumeSymbol*)test)->getType() == NEUME_SYMB_CLEF_C) || ((MusNeumeSymbol*)test)->getType() == NEUME_SYMB_CLEF_F)) )
 			succ = 1;
-		else if ( test->TYPE != SYMB || ((MusSymbol*)test)->flag != CLE )
+		else if ( (test->TYPE != SYMB || ((MusSymbol*)test)->flag != CLE) && (test->TYPE != NEUME_SYMB || ((((MusNeumeSymbol*)test)->getType() != NEUME_SYMB_CLEF_C) && ((MusNeumeSymbol*)test)->getType() != NEUME_SYMB_CLEF_F)) )
 		{	
 			test = no_note(test,AR,CLE,&succ);
 			// LP mlf-> pas de recherche en avant si aucune cle trouvee
 			if ((mlf != 1) && (succ == 0))
 				test = no_note(test,AV,CLE,&succ);
 			// LP
+			if (succ == 0) { //this may need correction --Jamie
+				test = no_note(test,AR,NEUME_SYMB_CLEF_C,&succ);
+				if ((mlf != 1) && (succ == 0))
+					test = no_note(test,AV,NEUME_SYMB_CLEF_C,&succ);
+			}
+			if (succ == 0) {
+				test = no_note(test,AR,NEUME_SYMB_CLEF_F,&succ);
+				if ((mlf != 1) && (succ == 0))
+					test = no_note(test,AR,NEUME_SYMB_CLEF_F,&succ);
+			}
 		}
 	}
 
@@ -394,12 +422,14 @@ int MusStaff::getOctCl ( MusElement *test, char *cle_id, int mlf )
 		{
 			if (((MusSymbol*)test)->code == FA4 || ((MusSymbol*)test)->code == FA3
 			 || ((MusSymbol*)test)->code == FA5 || ((MusSymbol*)test)->code == UT4
-			 || ((MusSymbol*)test)->code == UT5 || ((MusSymbol*)test)->code == SOLva)
+			 || ((MusSymbol*)test)->code == UT5 || ((MusSymbol*)test)->code == SOLva
+			 || ((MusNeumeSymbol*)test)->getValue() == nF1 || ((MusNeumeSymbol*)test)->getValue() == nF2
+			 || ((MusNeumeSymbol*)test)->getValue() == nC1) //what does this represent? do we need neumatic clefs here? --Jamie
 						succ = ON;
 			else succ = OFF;
 		}
 		// LP
-		*cle_id = ((MusSymbol*)test)->code;
+		*cle_id = ((test->TYPE == SYMB) ? (((MusSymbol*)test)->code) : (((MusNeumeSymbol*)test)->getValue()));
 	}
 
 	return (succ);
@@ -555,8 +585,9 @@ void MusStaff::place_clef (  AxDC *dc )
 	for(j = 0; j < (int)this->nblement; j++)
 	{
 		pelement = &this->m_elements[j];
-		if (pelement->TYPE==SYMB && (((MusSymbol*)pelement)->flag==CLE
-			|| (((MusSymbol*)pelement)->flag==BARRE && ((MusSymbol*)pelement)->code != CTRL_L))
+		if ((pelement->TYPE==SYMB && (((MusSymbol*)pelement)->flag==CLE
+			|| (((MusSymbol*)pelement)->flag==BARRE && ((MusSymbol*)pelement)->code != CTRL_L)))
+			|| (pelement->TYPE==NEUME_SYMB && ((((MusNeumeSymbol*)pelement)->getType()==NEUME_SYMB_CLEF_C) || (((MusNeumeSymbol*)pelement)->getType()==NEUME_SYMB_CLEF_F)))
 			)
 		{
 			pelement->Init( m_r );
@@ -642,24 +673,22 @@ void MusStaff::DrawStaff( AxDC *dc, int i )
 
 }
 
-/*
-void MusStaff::ClearElements( AxDC *dc, MusElement *start )
+int MusStaff::y_neume (int note, int dec_clef, int oct)
 {
-	wxASSERT_MSG( dc , "DC cannot be NULL");
-	if ( !Check() )
-		return;
-
-	int j;
-	for(j = 0; j < (int)this->nblement; j++)
-	{
-		if (start && (start != &this->m_elements[j]))
-			continue;
-		else
-			start = NULL;
-		(&this->m_elements[j])->ClearElement( dc, this );
-	}
+	static int notes[] = {1,2,3,4,5,6,7};
+	int y_int;
+	int *pnote, i;
+	pnote = &notes[0] - 1;
+	
+	y_int = ((dec_clef + oct*7) - 17 ) *m_r->_espace[pTaille];
+	if (portNbLine > 4)
+		y_int -= ((portNbLine - 4) * 2) *m_r->_espace[pTaille];
+	
+	for (i=0; i<(signed)sizeof(notes); i++)
+		if (*(pnote+i)==note)
+			return(y_int += (i*m_r->_espace[pTaille]));
+	return 0;
 }
-*/
 
 int MusStaff::y_note (int code, int dec_clef, int oct)
 {	static int touches[] = {F1,F2,F3,F4,F5,F6,F7,F8,F9,F10};
@@ -1108,8 +1137,3 @@ void MusStaff::GetMaxXY( wxArrayPtrVoid params )
     }
     (*max_y) += this->ecart;
 }
-
-
-
-
-

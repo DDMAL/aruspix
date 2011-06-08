@@ -17,126 +17,135 @@
 #endif
 #include "wx/dynarray.h"
 
-#include "muselement.h"
 #include <vector>
+using std::vector;
+
+#include "muselement.h"
+
+
+#include <mei/mei.h>
+
 #include "neumedef.h"
 
 class MusStaff;
 
-//----------------------------------------------------------------------------
-// MusNeume
-//
-// A MusNeume contains one or more MusNeumePitches
-//----------------------------------------------------------------------------
+enum NeumeOrnament {
+    HE,
+    VE,
+    DOT,
+	NONE
+};
 
-class MusNeumePitch
+enum NeumeType {
+    NEUME_TYPE_ANCUS, // Like a climacus with a liquescent at the end
+    NEUME_TYPE_CEPHALICUS,
+    NEUME_TYPE_CLIVIS,
+    NEUME_TYPE_EPIPHONUS,
+    NEUME_TYPE_PODATUS,
+    NEUME_TYPE_PORRECTUS,
+    NEUME_TYPE_PORRECTUS_FLEXUS,
+    NEUME_TYPE_PUNCTUM,
+    NEUME_TYPE_PUNCTUM_INCLINATUM,
+    NEUME_TYPE_SALICUS,
+    NEUME_TYPE_SCANDICUS,
+    NEUME_TYPE_SCANDICUS_FLEXUS,
+    NEUME_TYPE_TORCULUS,
+    NEUME_TYPE_TORCULUS_LIQUESCENT,
+    NEUME_TYPE_TORCULUS_RESUPINUS,
+    NEUME_TYPE_VIRGA,
+    NEUME_TYPE_VIRGA_LIQUESCENT,
+    NEUME_TYPE_COMPOUND,
+    NEUME_TYPE_CUSTOS
+};
+
+enum NeumeElementType {
+    NEUME_ELEMENT_PUNCTUM,
+    NEUME_ELEMENT_PUNCTUM_WHITE,
+    NEUME_ELEMENT_INCLINATUM,
+    NEUME_ELEMENT_QUILISMA,
+};
+
+class MusNeumeElement: public MusElement
 {
 public:
-	MusNeumePitch( int _code, int _oct, unsigned char _val );
-	MusNeumePitch( const MusNeumePitch &pitch);
-	virtual ~MusNeumePitch() {}
-	void SetPitch( int code, int oct );
-	void SetValue( int value );
-	int GetValue( );
-	wxString GetFestaString( );
-	int GetCode();
-	int GetOct();
+    MusNeumeElement(const MusNeumeElement &element);
+    MusNeumeElement(MeiElement &meielement, int pitch, int oct);
+    //MusNeumeElement(int _pitchDifference);
+    virtual ~MusNeumeElement() {}
+    
+    int getPitchDifference();
+    NeumeElementType getElementType();
+    MeiElement &getMeiElement();
+    void updateMeiRef(string pitch, int oct);
+	void deleteMeiRef();
+	NeumeOrnament getOrnament();
 	
-	int Compare(const MusNeumePitch &other);
-	int Pitch_Diff(const MusNeumePitch &other);
-	int Pitch_Diff(int code, int oct);
-	int filtrcod( int codElement, int *oct );
-
-
-private:	
-	wxString m_font_str;	//used for font drawing
-	
-	int code;
-	int oct;
-	unsigned char val;
-}; 
+private:
+    int m_pitch_difference;
+    NeumeElementType m_element_type;
+    NeumeOrnament ornament;
+    MeiElement *m_meiref;
+};
 
 class MusNeume: public MusElement
 {
 public:
     // constructors and destructors
-	MusNeume();
-	MusNeume( const MusNeume &neume);
-    virtual ~MusNeume();
+    MusNeume();
+    MusNeume( const MusNeume &neume);
+    MusNeume(MeiElement &meielement);
+    virtual ~MusNeume() {}
     
-	//Drawing code
-	virtual void Draw( AxDC *dc, MusStaff *staff);
+    void setType(wxString type);
+    void setType(NeumeType type);
+    NeumeType getType();
+    MeiElement &getMeiElement();
+    vector<MusNeumeElement> getPitches();
+	void deleteMeiRef();
+    
+    //Drawing code
+    virtual void Draw( AxDC *dc, MusStaff *staff);
+    void NeumeLine( AxDC *dc, MusStaff *staff, int x1, int x2, int y1, int y2);
+    void DrawAncus( AxDC *dc, MusStaff *staff);
+    void DrawCephalicus( AxDC *dc, MusStaff *staff);
+    void DrawPunctum( AxDC *dc, MusStaff *staff);
+    void DrawPunctumInclinatum( AxDC *dc, MusStaff *staff);
+    void DrawVirga( AxDC *dc, MusStaff *staff);
+    void DrawVirgaLiquescent( AxDC *dc, MusStaff *staff);
+    void DrawPodatus( AxDC *dc, MusStaff *staff);
+    void DrawClivis( AxDC *dc, MusStaff *staff);
+    void DrawEpiphonus( AxDC *dc, MusStaff *staff);
+    void DrawPorrectus( AxDC *dc, MusStaff *staff);
+    void DrawPorrectusFlexus( AxDC *dc, MusStaff *staff);
+    void DrawSalicus( AxDC *dc, MusStaff *staff);
+    void DrawScandicus( AxDC *dc, MusStaff *staff);
+    void DrawScandicusFlexus( AxDC *dc, MusStaff *staff);
+    void DrawTorculus( AxDC *dc, MusStaff *staff);
+    void DrawTorculusLiquescent( AxDC *dc, MusStaff *staff);
+    void DrawTorculusResupinus( AxDC *dc, MusStaff *staff);
+    void DrawCompound( AxDC *dc, MusStaff *staff);
+    void DrawCustos( AxDC *dc, MusStaff *staff);
+	void DrawDots(AxDC *dc, MusStaff *staff);
+    void leg_line( AxDC *dc, int y_n, int y_p, int xn, unsigned int smaller, int pTaille);
 
-	void DrawBox( AxDC *dc, MusStaff *staff );
-	void DrawNeume( AxDC *dc, MusStaff *staff );
-	void DrawPunctums( AxDC *dc, MusStaff *staff );
-	void leg_line( AxDC *dc, int y_n, int y_p, int xn, 
-							unsigned int smaller, int pTaille);
-	void append( AxDC *dc, MusStaff *staff ); //for creating multi-note neumes
-	
-    virtual void SetPitch( int code, int oct );
-	virtual void SetValue( int value, MusStaff *staff = NULL, int vflag = 0 );
-	int GetValue();
-	
-	//helper debug method
-	void printNeumeList();
-	
-	int getYPos(int index, MusStaff *staff);
-	
-	int GetMaxPitch();
-	int GetMinPitch();
-	int GetPitchRange();
-	int Length();
-	
-	bool ascending(int p1, int p2);
-	bool descending(int p1, int p2);
-	
-	void SetClosed(bool value);
-	void SelectNextPunctum();
-	void SelectPreviousPunctum();
-	
-	bool IsClosed();
-	
-	//when appending notes, do we discard the object?
-	//may need a helper class for composite neumes.
-	void InsertPitchAfterSelected();
-	void RemoveSelectedPitch();
+    //void append( AxDC *dc, MusStaff *staff ); //for creating multi-note neumes
+    
+    virtual void SetPitch( int pitch, int oct );
+    //virtual void SetValue( int value, MusStaff *staff = NULL, int vflag = 0 );
+    //int GetValue();
+    
+    //helper debug method
+    //void printNeumeList();
+    
 
-	// x coord of the right-most edge of the neume
-	// used for compound neume drawing
-	unsigned int xrel_right; // set during ligature drawing
-	
-	//which note of the group has been selected?
-	unsigned int n_selected;
-	
-	//TODO: move to ligature
-	std::vector<MusNeumePitch> n_pitches;
-	std::vector<MusNeumePitch>::iterator iter;
-	
-	int p_max; //the highest pitch in the neume group, relative to base pitch
-	int p_min; //lowest pitch, relative to base pitch
-	int p_range; // the pitch range, getter acts as setter!
-			
-	bool closed; 
-		
-	//ligature drawing methods
-	//TODO: move to ligature class
-	void drawLigature( AxDC *dc, MusStaff *staff );
-	void clivis( AxDC *dc, MusStaff *staff );
-	void podatus( AxDC *dc, MusStaff *staff );
-	void porrectus( AxDC *dc, MusStaff *staff );
-	void neume_stem( AxDC *dc, MusStaff *staff, int xrel, 
-						  int index, int pitch_range = 0, int side = LEFT_STEM);
-	
-	//pitch and octave of first pitch of the neume
-	int GetOct(); 
-	int GetCode();
-	
-	// mei related fields
-	char n_type; // uneume or ineume, uneume by default
-	char name; // name of the neume (climacus, pes, etc)
-	char form; // neume form, could be "liquescent1" for example
+private:
+    void readNoteContainer(MeiElement &nc, int pitch, int oct);
+
+    NeumeOrnament ornament;
+    NeumeType m_type;
+    MeiElement *m_meiref;
+
+    vector<MusNeumeElement> m_pitches;
 };
 
-
-#endif
+#endif // __MUS_NEUME_H__

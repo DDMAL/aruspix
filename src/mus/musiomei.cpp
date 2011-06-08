@@ -420,6 +420,7 @@ bool MusMeiOutput::WriteNeume( const MusNeume *neume )
 	
 	/* punctums all have the same note value, so 
 	   first check if it is a multi-note neume */
+	/*
 	wxString neume_type;
 	if (neume->n_type == UNEUME) neume_type = "uneume";
 	else if (neume->n_type == INEUME) neume_type = "ineume";
@@ -453,7 +454,8 @@ bool MusMeiOutput::WriteNeume( const MusNeume *neume )
 	
 	if (neume->n_pitches.size())
 		printf("we have a working pitch list\n");
-	
+	*/
+	TiXmlElement neume_element("ineume");
 	// pitch list
 //	wxString note_letter;
 //	for (int i = 0; i < neume->n_pitches.size(); i++)

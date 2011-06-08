@@ -283,7 +283,14 @@
 			isa = PBXProject;
 			buildConfigurationList = A51FEBE30A02C0F500ACE377 /* Build configuration list for PBXProject "torch" */;
 			compatibilityVersion = "Xcode 2.4";
+			developmentRegion = English;
 			hasScannedForEncodings = 0;
+			knownRegions = (
+				English,
+				Japanese,
+				French,
+				German,
+			);
 			mainGroup = A51FEBE00A02C0F500ACE377;
 			productRefGroup = A51FEC010A02C15800ACE377 /* Products */;
 			projectDirPath = "";
@@ -373,14 +380,14 @@
 				HEADER_SEARCH_PATHS = "$(ARUSPIX_TORCH)/include";
 				INSTALL_PATH = "$(HOME)/bin";
 				LIBRARY_SEARCH_PATHS = "$(ARUSPIX_TORCH)/lib";
-				OBJROOT = "$(ARUSPIX)/obj";
+				OBJROOT = "$(PROJECT_DIR)/../obj";
 				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = "-ltorch";
 				OTHER_REZFLAGS = "";
 				PREBINDING = NO;
 				PRODUCT_NAME = evald;
 				SECTORDER_FLAGS = "";
-				SYMROOT = "$(ARUSPIX)/bin";
+				SYMROOT = "$(PROJECT_DIR)/../bin";
 				WARNING_CFLAGS = (
 					"-Wmost",
 					"-Wno-four-char-constants",
@@ -401,14 +408,14 @@
 				HEADER_SEARCH_PATHS = "$(ARUSPIX_TORCH)/include";
 				INSTALL_PATH = "$(HOME)/bin";
 				LIBRARY_SEARCH_PATHS = "$(ARUSPIX_TORCH)/lib";
-				OBJROOT = "$(ARUSPIX)/obj";
+				OBJROOT = "";
 				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = "-ltorch";
 				OTHER_REZFLAGS = "";
 				PREBINDING = NO;
 				PRODUCT_NAME = eval;
 				SECTORDER_FLAGS = "";
-				SYMROOT = "$(ARUSPIX)/bin";
+				SYMROOT = "";
 				WARNING_CFLAGS = (
 					"-Wmost",
 					"-Wno-four-char-constants",
@@ -580,9 +587,9 @@
 				COPY_PHASE_STRIP = NO;
 				GCC_VERSION = 4.0;
 				HEADER_SEARCH_PATHS = "$(ARUSPIX_TORCH)/include";
-				OBJROOT = "$(ARUSPIX)/obj";
+				OBJROOT = "$(PROJECT_DIR)/../obj";
 				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
-				SYMROOT = "$(ARUSPIX)/bin";
+				SYMROOT = "$(PROJECT_DIR)/../bin";
 			};
 			name = Debug;
 		};
@@ -595,9 +602,9 @@
 				);
 				COPY_PHASE_STRIP = YES;
 				GCC_VERSION = 4.0;
-				OBJROOT = "$(ARUSPIX)/obj";
+				OBJROOT = "$(PROJECT_DIR)/../obj";
 				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
-				SYMROOT = "$(ARUSPIX)/bin";
+				SYMROOT = "$(PROJECT_DIR)/../bin";
 			};
 			name = Release;
 		};
@@ -613,14 +620,14 @@
 				HEADER_SEARCH_PATHS = "$(ARUSPIX_TORCH)/include";
 				INSTALL_PATH = "$(HOME)/bin";
 				LIBRARY_SEARCH_PATHS = "$(ARUSPIX_TORCH)/lib";
-				OBJROOT = "$(ARUSPIX)/obj";
+				OBJROOT = "$(PROJECT_DIR)/../obj";
 				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = "-ltorch";
 				OTHER_REZFLAGS = "";
 				PREBINDING = NO;
 				PRODUCT_NAME = decoderd;
 				SECTORDER_FLAGS = "";
-				SYMROOT = "$(ARUSPIX)/bin";
+				SYMROOT = "$(PROJECT_DIR)/../bin";
 				WARNING_CFLAGS = (
 					"-Wmost",
 					"-Wno-four-char-constants",
@@ -641,14 +648,14 @@
 				HEADER_SEARCH_PATHS = "$(ARUSPIX_TORCH)/include";
 				INSTALL_PATH = "$(HOME)/bin";
 				LIBRARY_SEARCH_PATHS = "$(ARUSPIX_TORCH)/lib";
-				OBJROOT = "$(ARUSPIX)/obj";
+				OBJROOT = "$(PROJECT_DIR)/../obj";
 				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = "-ltorch";
 				OTHER_REZFLAGS = "";
 				PREBINDING = NO;
 				PRODUCT_NAME = decoder;
 				SECTORDER_FLAGS = "";
-				SYMROOT = "$(ARUSPIX)/bin";
+				SYMROOT = "$(PROJECT_DIR)/../bin";
 				WARNING_CFLAGS = (
 					"-Wmost",
 					"-Wno-four-char-constants",

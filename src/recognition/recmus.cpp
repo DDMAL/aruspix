@@ -80,6 +80,11 @@ void RecMusController::Init( RecEnv *env, RecMusWindow *window )
     m_viewPtr = window;
 }
 
+void RecMusController::SetForMEI()
+{
+	m_staffbmp_show = true;
+}
+
 void RecMusController::SetImViewAndController( RecImWindow *recImWindow, RecImController *recImController )
 {
 	m_imControlPtr = recImController;
@@ -242,7 +247,8 @@ void RecMusController::InverseShowStaffBitmap( )
 
     if ( m_staffbmp_show )
 	{
-		m_viewPtr->SetInsertMode( false );
+        
+		m_viewPtr->SetEditorMode( MUS_EDITOR_EDIT );
         SyncStaffBitmap();
 	}
     else // erase

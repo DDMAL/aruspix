@@ -35,6 +35,7 @@ char *MusFile::sep = "#ώτυώ#";
 MusFile::MusFile()
 {
     m_pages.Clear();
+    m_meidoc = NULL;
 }
 
 MusFile::~MusFile()
@@ -98,7 +99,13 @@ void MusFile::Process(MusPageFunctor *functor, wxArrayPtrVoid params )
 	}
 }
 
+MeiDocument *MusFile::GetMeiDocument() {
+    return m_meidoc;
+}
 
+void MusFile::SetMeiDocument(MeiDocument *doc) {
+    m_meidoc = doc;
+}
 
 //----------------------------------------------------------------------------
 // MusFileOutputStream

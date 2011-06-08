@@ -26,23 +26,13 @@
 #define MUS_TOOLS_OTHER 3
 // neumes
 #define NEUME_TOOLS_NOTES 4
-#define NEUME_TOOLS_CLEFS 5
-#define NEUME_TOOLS_OTHER 6
+#define NEUME_TOOLS_SYMBOLS 5
 // cmn
 // TODO
 
 #define MUS_TOOLS_NUMBER 7 // Nombre de type de symbols
 
-#define MUS_MODE_EDIT 0
-#define MUS_MODE_INSERT 1
-
-// #define MENSURAL_MODE 0 moved to musdef.h as MUS_MENSURAL_MODE, etc.
-// #define NEUMES_MODE 1
-
-//#define MUS_MODES_NUMBER 7
-
 class MusWindow;
-
 
 enum {
     ID_MS_BT_CHANGE_TOOL_START = 20500,  // not a button, just used for RANGE EVT IDS
@@ -53,7 +43,6 @@ enum {
     ID_MS_BT_SYMBOLS,
     // tools for neumatic notation
     ID_MS_BT_NEUMES,
-    ID_MS_BT_CLEFS_NEUMES,
     ID_MS_BT_SYMBOLS_NEUMES,
     // tools for cmn notation
     /*
@@ -142,10 +131,25 @@ enum {
     ID_NU_BT_N3,
     ID_NU_BT_N4,
     ID_NU_BT_N5,
-    
+    ID_NU_BT_CUSTOS,
+    // Neume symbols (dots, lines, etc)
+    ID_NU_BT_N_HE,
+    ID_NU_BT_N_VE,
+    ID_NU_BT_N_DOT,
+
     // Neume clefs
-    ID_NU_BT_C0,
-    ID_NU_BT_C1,
+    ID_NU_BT_C0, // C
+    ID_NU_BT_C1, 
+    ID_NU_BT_C2,
+    ID_NU_BT_C3, // F
+    ID_NU_BT_C4,
+    ID_NU_BT_COMMA,
+    ID_NU_BT_FLAT,
+    ID_NU_BT_SHARP,
+    ID_NU_BT_DIV_FINAL,
+    ID_NU_BT_DIV_MAJOR,
+    ID_NU_BT_DIV_MINOR,
+    ID_NU_BT_DIV_SMALL,
 
     ID_MS_BT_LAST // Used for RANGE EVT IDS
 };
@@ -222,7 +226,8 @@ private:
     void OnKey( wxCommandEvent &event );
     void OnNote( wxCommandEvent &event );
     void OnNeume( wxCommandEvent &event );
-    void OnSquareClef( wxCommandEvent &event );
+    void OnNeumeClef( wxCommandEvent &event );
+	void OnNeumeSymbol( wxCommandEvent &event );
     void OnText( wxCommandEvent &event );
     // toggle buttons handling
     void OnUpdateUI( wxUpdateUIEvent &event );

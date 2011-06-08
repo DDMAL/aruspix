@@ -20,6 +20,7 @@
 #include "musrc.h"
 #include "muspage.h"
 #include "musfile.h"
+#include "neumedef.h"
 
 /* Calcule l'offset de la cle; doit etre separe de cle_id pour pouvoir
   etre appele depuis rd_symbol() en cas de changement de definition.
@@ -41,7 +42,7 @@ void MusSymbol::calcoffs (int *offst, int clid)
 		case UT2 : *offst = 2; break;
 		case UT3 : *offst = 4; break;
 		case UT5 : *offst = 8; break;
-		case UT4 : *offst =  6;
+		case UT4 : *offst =  6;		
 		default: break;
 	}
 	return;
@@ -92,7 +93,7 @@ void MusSymbol::dess_cle ( AxDC *dc, int i, MusStaff *pportee)
  *  et au palier commun superieur, incrementer sym, sans break.
  */
 	switch(this->code)	// cleid
-	{	
+	{
 		case UT1 : sym += 2;
 		case SOL1 : b -= m_r->_portee[ pportee->pTaille ]; break;
 		case SOLva : sym += 1;
@@ -114,7 +115,7 @@ void MusSymbol::dess_cle ( AxDC *dc, int i, MusStaff *pportee)
 		a+= m_r->_pas;
 
 	//if ((!this->ElemInvisible || illumine) && (!modMetafile || in (chk->xrel, drawRect.left, drawRect.right) && in (b, drawRect.top, drawRect.bottom)))
-		m_r->putfont ( dc,a,b,(int)sym, pportee, this->dimin, SYMB );
+	m_r->putfont ( dc,a,b,(int)sym, pportee, this->dimin, SYMB );
 	dimin = dim;
 
 	char dum = 0;

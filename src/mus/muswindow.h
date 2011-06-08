@@ -48,7 +48,6 @@ enum
 	MUS_UNDO_FILE
 };
 
-
 //----------------------------------------------------------------------------
 // MusWindow
 //----------------------------------------------------------------------------
@@ -104,8 +103,9 @@ public:
 	int GetToolType( );
 	void SetToolType( int type );
 	void UpdatePen();
-			
-	void SetInsertMode( bool insert );
+    
+    void ToggleEditorMode();
+	void SetEditorMode( MusEditorMode insert );
     
 	/**
 		Redimensionne la fenetre en fonction de la taille du parent et du zoom de la taille de la page
@@ -116,8 +116,6 @@ public:
 	 Doit etre appelee apres changement de zoom ou de definition de page
      */
     
-public:
-
 	/** indique si la page doit etre centree asi elle n'occupe pas toute la fenetre */
 	bool m_center;
 
@@ -129,6 +127,7 @@ public:
 	MusNote m_note;
 	MusSymbol m_symbol;
 	MusNeume m_neume;
+	MusNeumeSymbol m_neumesymbol;
 
 	int m_insertx;
 	int m_insertcode;
@@ -166,7 +165,12 @@ private:
 	void OnPopupMenuSymbole( wxCommandEvent &event );
     void OnMidiInput( wxCommandEvent &event );
 
-private:
+    void SharedEditOnKeyDown(wxKeyEvent &event);
+    void NeumeEditOnKeyDown(wxKeyEvent &event);
+    void NeumeInsertOnKeyDown(wxKeyEvent &event);
+    void MensuralEditOnKeyDown(wxKeyEvent &event);
+    void MensuralInsertOnKeyDown(wxKeyEvent &event);
+    
     DECLARE_EVENT_TABLE()
     DECLARE_DYNAMIC_CLASS(MusWindow)
 };

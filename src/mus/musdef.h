@@ -1,3 +1,6 @@
+#ifndef __MUS_DEF_H__
+#define __MUS_DEF_H__
+
 /* WGDEF.H */
 /* COMMENTAIRES IMPORTANTS. MODIFICATIONS PAR RAPPORT AUX FICHIERS DE
 VERSION DOS.*/
@@ -28,6 +31,7 @@ VERSION DOS.*/
 #define NOTE 0	/* pour type (bit) de struct element */
 #define SYMB 1
 #define NEUME 2
+#define NEUME_SYMB 3
 
 #define _NOT 0	/* pour bitflag silence/note de struct note */
 #define _SIL 1
@@ -131,6 +135,17 @@ VERSION DOS.*/
 #define FA5 10
 #define UT5 11
 #define CLEPERC 12
+//neumatic clefs
+#define nC1 13
+#define nC2 14
+#define nC3 15
+#define nC4 16
+#define nF1 17
+#define nF2 18
+#define nF3 19
+#define nF4 20
+
+
 
 /* F1...F10-> clavier musical. Dans le fichier ne sont codees que les
    valeurs F2 -- F8 (=1-7). F9 devient F1 a l'octave sup. */
@@ -451,16 +466,17 @@ VERSION DOS.*/
 
 #define PTCONTROL 20
 
-#define MUS_MENSURAL_MODE 0
-#define MUS_NEUMATIC_MODE 1
-#define MUS_CMN_MODE 2
-
-/*
-enum {
+// Is this score for Mensural, neumes, or CMN
+enum MusNotationMode {
     MUS_MENSURAL_MODE = 0,
     MUS_NEUMATIC_MODE,
     MUS_CMN_MODE
 };
-*/
 
+// Is the app in insert mode or edit (drag) mode
+enum MusEditorMode {
+	MUS_EDITOR_EDIT,
+	MUS_EDITOR_INSERT
+};
 
+#endif // __MUS_DEF_H__

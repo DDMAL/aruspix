@@ -87,9 +87,7 @@ void MusToolRow::UpdateTools( int type, int notation_mode )
         AddSeparator();   
         //AddSeparator();       
         AddTool(ID_MS_BT_NEUMES, wxT("Neumes"), MusToolPanel::GetToolbarBitmap( "tool_neumes.png" ), "", wxITEM_CHECK);
-        AddTool(ID_MS_BT_CLEFS_NEUMES, wxT("Clefs"), MusToolPanel::GetToolbarBitmap( "clef_neume_c.png" ), "", wxITEM_CHECK);
-        AddTool(ID_MS_BT_SYMBOLS_NEUMES, wxT("Varia"), MusToolPanel::GetToolbarBitmap( "missing.png" ), "", wxITEM_CHECK);
-        //AddTool(ID_MS_BT_TEXT, wxT("Text"), MusToolPanel::GetToolbarBitmap( "tool_text.png" ), "", wxITEM_CHECK);
+        AddTool(ID_MS_BT_SYMBOLS_NEUMES, wxT("Symbols"), MusToolPanel::GetToolbarBitmap( "clef_neume_c.png" ), "", wxITEM_CHECK);
         AddSeparator(); 
         break;
     case (MUS_CMN_MODE):
@@ -202,14 +200,25 @@ void MusToolRow::UpdateTools( int type, int notation_mode )
         AddTool(ID_NU_BT_N3, "", MusToolPanel::GetToolbarBitmap( "neume_punctum_up.png" ));
         AddTool(ID_NU_BT_N4, "", MusToolPanel::GetToolbarBitmap( "neume_quilisma.png" ));
         AddTool(ID_NU_BT_N5, "", MusToolPanel::GetToolbarBitmap( "neume_virga.png" ));
+        AddTool(ID_NU_BT_CUSTOS, "", MusToolPanel::GetToolbarBitmap( "neume_custos.png" ));
+		AddSeparator();
+		AddTool(ID_NU_BT_N_HE, "", MusToolPanel::GetToolbarBitmap( "neume_he.png" ));
+		AddTool(ID_NU_BT_N_VE, "", MusToolPanel::GetToolbarBitmap( "neume_ve.png" ));
+		AddTool(ID_NU_BT_N_DOT, "", MusToolPanel::GetToolbarBitmap( "neume_dot.png" ));
         break;
-	case (NEUME_TOOLS_CLEFS):
-        AddTool(ID_NU_BT_C0, "", MusToolPanel::GetToolbarBitmap( "clef_neume_c.png" ));
-        AddTool(ID_NU_BT_C1, "", MusToolPanel::GetToolbarBitmap( "clef_neume_f.png" ));
-        break;
-	case (NEUME_TOOLS_OTHER):
-        //AddTool(ID_MS_BT_MTP, "", MusToolPanel::GetToolbarBitmap( "symb_mtp.png" ));
-        // add more...
+	case (NEUME_TOOLS_SYMBOLS):
+        AddTool(ID_NU_BT_C0, "", MusToolPanel::GetToolbarBitmap( "clef_neume_c1.png" ));
+        AddTool(ID_NU_BT_C1, "", MusToolPanel::GetToolbarBitmap( "clef_neume_c2.png" ));
+        AddTool(ID_NU_BT_C2, "", MusToolPanel::GetToolbarBitmap( "clef_neume_c3.png" ));
+        AddTool(ID_NU_BT_C3, "", MusToolPanel::GetToolbarBitmap( "clef_neume_f1.png" ));
+        AddTool(ID_NU_BT_C4, "", MusToolPanel::GetToolbarBitmap( "clef_neume_f2.png" ));
+		AddTool(ID_NU_BT_COMMA, "", MusToolPanel::GetToolbarBitmap( "symb_neume_comma.png" ));
+		AddTool(ID_NU_BT_FLAT, "", MusToolPanel::GetToolbarBitmap( "symb_neume_flat.png" ));
+		AddTool(ID_NU_BT_SHARP, "", MusToolPanel::GetToolbarBitmap( "symb_neume_sharp.png" ));
+		AddTool(ID_NU_BT_DIV_FINAL, "", MusToolPanel::GetToolbarBitmap( "symb_neume_div_final.png" ));
+		AddTool(ID_NU_BT_DIV_MAJOR, "", MusToolPanel::GetToolbarBitmap( "symb_neume_div_major.png" ));
+		AddTool(ID_NU_BT_DIV_MINOR, "", MusToolPanel::GetToolbarBitmap( "symb_neume_div_minor.png" ));
+		AddTool(ID_NU_BT_DIV_SMALL, "", MusToolPanel::GetToolbarBitmap( "symb_neume_div_small.png" ));
         break;
     }
     //AddSpacer(10000); // fill in the space, arbitrary value
@@ -233,7 +242,8 @@ BEGIN_EVENT_TABLE(MusToolPanel,wxPanel)
     EVT_MENU_RANGE( ID_MS_BT_MTPP, ID_MS_BT_M2, MusToolPanel::OnSign )
     EVT_MENU_RANGE( ID_MS_BT_DOT, ID_MS_BT_BAR, MusToolPanel::OnSymbol )
     EVT_MENU_RANGE( ID_NU_BT_N0, ID_NU_BT_N5, MusToolPanel::OnNeume )
-    EVT_MENU_RANGE( ID_NU_BT_C0, ID_NU_BT_C1, MusToolPanel::OnSquareClef )
+    EVT_MENU_RANGE( ID_NU_BT_C0, ID_NU_BT_C4, MusToolPanel::OnNeumeClef )
+	EVT_MENU_RANGE( ID_NU_BT_COMMA, ID_NU_BT_DIV_SMALL, MusToolPanel::OnNeumeSymbol )
     EVT_MENU( ID_MS_BT_TEXT, MusToolPanel::OnText )
     EVT_UPDATE_UI_RANGE(ID_MS_BT_CHANGE_TOOL_START, ID_MS_BT_TEXT, MusToolPanel::OnUpdateUI)
     // measure controls
@@ -286,10 +296,8 @@ void MusToolPanel::OnUpdateUI( wxUpdateUIEvent &event )
     // neumatic notation
     } else if (id == ID_MS_BT_NEUMES) {
         event.Check( m_current_tools == NEUME_TOOLS_NOTES);
-    } else if (id == ID_MS_BT_CLEFS_NEUMES) {
-        event.Check( m_current_tools == NEUME_TOOLS_CLEFS);
     } else if (id == ID_MS_BT_SYMBOLS_NEUMES) {
-        event.Check( m_current_tools == NEUME_TOOLS_OTHER);
+        event.Check( m_current_tools == NEUME_TOOLS_SYMBOLS);
     }
 }
 
@@ -338,11 +346,10 @@ void MusToolPanel::OnChangeTool( wxCommandEvent &event )
     case (ID_MS_BT_SYMBOLS): value = MUS_TOOLS_OTHER; break;
     // neumes
 	case (ID_MS_BT_NEUMES): value = NEUME_TOOLS_NOTES; break;
-	case (ID_MS_BT_CLEFS_NEUMES): value = NEUME_TOOLS_CLEFS; break;
-	case (ID_MS_BT_SYMBOLS_NEUMES): value = NEUME_TOOLS_OTHER; break;
+	case (ID_MS_BT_SYMBOLS_NEUMES): value = NEUME_TOOLS_SYMBOLS; break;
     }
 
-	m_w->SetInsertMode( true );
+	m_w->SetEditorMode( MUS_EDITOR_INSERT );
 	m_w->SetToolType( value );
     m_w->SetFocus();   
 }
@@ -351,8 +358,7 @@ void MusToolPanel::OnChangeMode( wxCommandEvent &event )
 {
     if (!m_w)
         return;
-
-	m_w->SetInsertMode( m_w->m_editElement ); 
+	m_w->ToggleEditorMode();
 	m_w->SetFocus();
 }
 
@@ -524,12 +530,34 @@ void MusToolPanel::OnNeume( wxCommandEvent &event )
     SendEvent(kevent);
 }
 
-void MusToolPanel::OnSquareClef( wxCommandEvent &event ) {
+void MusToolPanel::OnNeumeClef( wxCommandEvent &event ) {
     int value = '0';
     switch ( event.GetId() )
     {
         case (ID_NU_BT_C0): value = '1'; break;
         case (ID_NU_BT_C1): value = '2'; break;
+        case (ID_NU_BT_C2): value = '3'; break;
+        case (ID_NU_BT_C3): value = '4'; break;
+        case (ID_NU_BT_C4): value = '5'; break;
+    }
+    
+    wxKeyEvent kevent;
+    kevent.SetEventType( wxEVT_KEY_DOWN );
+    kevent.m_keyCode = value;
+    SendEvent( kevent );    
+}
+
+void MusToolPanel::OnNeumeSymbol( wxCommandEvent &event ) {
+    int value = '0';
+    switch ( event.GetId() )
+    {
+        case (ID_NU_BT_COMMA): value = '6'; break;
+        case (ID_NU_BT_FLAT): value = 'F'; break;
+        case (ID_NU_BT_SHARP): value = 'N'; break;
+        case (ID_NU_BT_DIV_FINAL): value = '7'; break;
+        case (ID_NU_BT_DIV_MAJOR): value = '8'; break;
+		case (ID_NU_BT_DIV_MINOR): value = '9'; break;
+		case (ID_NU_BT_DIV_SMALL): value = '0'; break;
     }
     
     wxKeyEvent kevent;

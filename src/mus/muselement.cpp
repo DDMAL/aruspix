@@ -67,6 +67,7 @@ MusElement::MusElement() :
 	m_debord_str = "";
 
 	code = 0;
+	pitch = 0;
 }
 
 MusElement::MusElement( const MusElement& element )
@@ -103,6 +104,7 @@ MusElement::MusElement( const MusElement& element )
     debordSize = element.debordSize;
 	no = element.no;
 	code = element.code;
+	pitch = element.pitch;
 	
 	// comparison
 	m_im_filename = element.m_im_filename;
@@ -156,6 +158,7 @@ MusElement& MusElement::operator=( const MusElement& element )
 		debordSize = element.debordSize;
 		no = element.no;
 		code = element.code;
+		pitch = element.pitch;
 		
 		// comparison
 		m_im_filename = element.m_im_filename;
@@ -184,60 +187,6 @@ MusElement::~MusElement()
 	}
 }
 
-
-void MusElement::ClearElement( AxDC *dc, MusStaff *staff )
-{
-	wxASSERT_MSG( dc , "DC cannot be NULL");
-	if ( !Check() )
-		return;
-
-	m_r->m_currentColour = AxWHITE;
-	m_r->m_eraseElement = true;
-
-	this->Draw( dc, staff );
-	
-	m_r->m_eraseElement = false;
-	m_r->m_currentColour = AxBLACK;
-	
-	staff->DrawStaffLines( dc );
-}
-
-
-MusElement *MusElement::GetNext( MusStaff *staff )
-{
-    if (((int)staff->m_elements.GetCount() <= this->no) || (this->no < 0)) {
-        return NULL;
-    }
-    return &staff->m_elements[this->no+1];
-}
-
-
-/*
-wxClientDC *MusElement::InitAndClear( MusStaff *staff )
-{
-	if ( m_r || staff ) // effacement
-	{
-		wxClientDC *dc = new wxClientDC( m_r );
-		m_r->InitDC( dc );
-		this->ClearElement( dc, staff );
-		return dc;
-	}
-	else
-		return NULL;
-}
-*/
-
-/*
-void MusElement::DrawAndRelease( AxDC *dc, MusStaff *staff )
-{
-	if ( dc == NULL )
-		return;
-		
-	this->Draw( dc, staff );
-	delete dc;
-}
-*/
-
 int MusElement::filtrcod( int codElement, int *oct )
 {	
 	*oct = this->oct;
@@ -257,6 +206,61 @@ int MusElement::filtrcod( int codElement, int *oct )
 	return codElement;
 }
 
+int MusElement::filtrpitch( int pitchElement, int *oct)
+{
+	*oct = this->oct;
+	
+	if (pitchElement < 1)
+	{
+		if ((*oct) != 0)
+			(*oct) -= floor((1 - pitchElement)/7) + 1;
+	}
+	else if (pitchElement > 7)
+	{
+		if ((*oct) < 7)
+			(*oct) += floor((pitchElement - 7)/7) + 1;
+	}
+	pitchElement = pitchElement%7;
+	if (pitchElement==0)
+		pitchElement = 7;
+	return pitchElement;
+}
 
+std::string MusElement::PitchToStr(int pitch)
+{
+    string value;
+    switch (pitch) {
+        case 0: value = "b"; break;
+        case 1: value = "c"; break;
+        case 2: value = "d"; break;
+        case 3: value = "e"; break;
+        case 4: value = "f"; break;
+        case 5: value = "g"; break;
+        case 6: value = "a"; break;
+        default: break;
+    }
+    return value;
+}
 
-
+int MusElement::StrToPitch(std::string pitch)
+{
+    int value;
+    if (pitch == "c") {
+        value = 1;
+    } else if (pitch == "d") {
+        value = 2;
+    } else if (pitch == "e") {
+        value = 3;
+    } else if (pitch == "f") {
+        value = 4;
+    } else if (pitch == "g") {
+        value = 5;
+    } else if (pitch == "a") {
+        value = 6;
+    } else if (pitch == "b") {
+        value = 7;
+    } else {
+        value = -1;
+    }
+    return value;
+}

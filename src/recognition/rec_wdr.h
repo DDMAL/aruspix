@@ -97,6 +97,8 @@ const int ID4_NOTES = 14053;
 const int ID4_KEYS = 14054;
 const int ID4_SIGNS = 14055;
 const int ID4_SYMBOLES = 14056;
+const int ID4_OPEN_MEI = 14057; //may need tweaking for position???
+const int ID4_SAVE_MEI = 14058; //may need tweaking for position???
 wxMenuBar *MenuBarFunc4();
 
 // Declare toolbar functions

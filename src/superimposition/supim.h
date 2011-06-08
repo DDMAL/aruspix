@@ -73,12 +73,13 @@ public:
         long style = wxScrolledWindowStyle );
     virtual ~SupImWindow();
     
-        void SynchronizeScroll( int x, int y );
+    void SynchronizeScroll( int x, int y );
     
 private:
         
 private:
-        void OnMouse( wxMouseEvent &event );
+    void OnMouse( wxMouseEvent &event );
+    void OnPaint( wxPaintEvent &event );
 
 private:
     DECLARE_CLASS(SupImWindow)
@@ -100,7 +101,7 @@ public:
         long style = wxTAB_TRAVERSAL | wxNO_BORDER, int flags = CONTROLLER_ALL );
     virtual ~SupImController();
     
-        void UpdateBrightness( );
+    void UpdateBrightness( );
     virtual void CloseDraggingSelection(wxPoint start, wxPoint end);
     void SetControllers( AxImageController *controller1, AxImageController *controller2 );
     void SetViews( SupImSrcWindow *view1, SupImSrcWindow *view2 );
@@ -112,7 +113,7 @@ private:
     virtual void OpenPage( bool yield = true );
     
 private:
-        _imImage *m_greenIm;
+    _imImage *m_greenIm;
     _imImage *m_redIm;
     AxImageController *m_imControl1Ptr;
     AxImageController *m_imControl2Ptr;
@@ -125,7 +126,7 @@ public:
     wxPoint m_points[4]; // for manual point selection
 	
 protected:
-        //SupEnv *m_envPtr;
+    //SupEnv *m_envPtr;
     // to synchronize view
     //SupFile *m_supFilePtr;
     

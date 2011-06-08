@@ -106,6 +106,7 @@ private:
     int m_width, m_height;
     int m_originX, m_originY;
     double m_userScaleX, m_userScaleY;
+    AxFontInfo m_font;
       
     // holds the list of glyphs from the leipzig font used so far
     // they will be added at the end of the file as <defs>

@@ -539,6 +539,13 @@ bool ImPage::Check( wxString infile, int max_size, int min_size, int index )
 	//imProcessPuginThreshold( m_opImMain, m_opImTmp1, false );
 	//SwapImages( &m_opImMain, &m_opImTmp1 );
 	//////
+    
+    //ImageDestroy( &m_img0 );
+	/*m_img0 = imImageClone( m_opImMain );
+	imPhotogrammetric( m_opImMain, m_img0 );
+    SwapImages( &m_opImMain, &m_img0 );*/
+	//imPhotogrammetric( m_img1, m_img1 );
+	
 
     // save file
 	SwapImages( &m_img0, &m_opImMain );

@@ -2,8 +2,6 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>ARUSPIX</key>
-	<string>/Users/nivenc/aruspix/trunk</string>
 	<key>ARUSPIX_IMLIB</key>
 	<string>/Users/nivenc/libs/imlib</string>
 	<key>ARUSPIX_TORCH</key>

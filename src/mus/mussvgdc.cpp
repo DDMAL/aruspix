@@ -215,6 +215,7 @@ void MusSvgDC::SetPen( int colour, int width, int style )
         
 void MusSvgDC::SetFont( AxFontInfo *font_info )
 {
+    m_font = *font_info;
     //wxFont font( font_info->pointSize, (wxFontFamily)font_info->family, font_info->style,
     //    (wxFontWeight)font_info->weight, font_info->underlined, font_info->faceName,
     //    (wxFontEncoding)font_info->encoding );
@@ -520,7 +521,7 @@ void MusSvgDC::DrawMusicText(const wxString& text, int x, int y)
     
     WriteLine ( wxString::Format("<use xlink:href=\"#%s\" transform=\"translate(%d, %d) scale(%f, %f)\"/>",
                //glyph.c_str(), x, y, ((double)(m_font.GetPointSize() / 2)) * 0.001, ((double)(m_font.GetPointSize() / 2)) * -0.001 ) );
-               glyph.c_str(), x, y, ((double)(154.0 / 2048.0)), ((double)(154.0 / 2048.0)) ) );
+               glyph.c_str(), x, y, ((double)(m_font.GetPointSize() / 2048.0)), ((double)(m_font.GetPointSize() / 2048.0)) ) );
 }
 
 

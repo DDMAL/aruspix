@@ -217,7 +217,7 @@ unsigned int MusStaff::beam ( AxDC *dc )
 			ct++;
 		}
 		if (chk->frel) break;
-		chk = chk->GetNext(this);
+		chk = this->GetNext(chk);
 		if (chk == NULL) { 
             return 0;
         }
@@ -227,7 +227,7 @@ unsigned int MusStaff::beam ( AxDC *dc )
 	if (((MusNote*)chk)->fchord && ((MusNote*)chk)->xrel == beamListPremier->xrel)
 	{	chk = beamListPremier;
 		do {	chk->rel = chk->drel = chk->frel = 0;
-				chk = chk->GetNext(this);
+				chk = this->GetNext(chk);
 			}	while (chk && !((MusNote*)chk)->fchord);
 		beamListPremier = NULL;
 		return 0;

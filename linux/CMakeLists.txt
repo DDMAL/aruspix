@@ -1,8 +1,17 @@
 PROJECT( aruspix )
 CMAKE_MINIMUM_REQUIRED( VERSION 2.8 )
 
+SET( CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH}" "${CMAKE_SOURCE_DIR}" )
+
 FIND_PACKAGE(wxWidgets COMPONENTS base core net html adv aui )
 FIND_PACKAGE( LibXml2 )
+FIND_PACKAGE( LibMei )
+
+option(AX_BUILD_TESTS "Build all unit tests" ON)
+
+if(AX_BUILD_TESTS)
+      enable_testing()
+endif(AX_BUILD_TESTS)
 
 SET( aruspixSources ${aruspixSources}
 	../src/app/axabout_wdr.cpp
@@ -64,20 +73,20 @@ SET( aruspixSources ${aruspixSources}
 	../src/mus/musgraph.cpp
 	../src/mus/musiobin.cpp
 	../src/mus/musiocmme.cpp
-	../src/mus/musiomei.cpp
+    #../src/mus/musiomei.cpp
+	../src/mus/musiomei2.cpp
 	../src/mus/musiomlf.cpp
 	../src/mus/musiowwg.cpp
 	../src/mus/musioxml.cpp
-	../src/mus/muskeyboardeditor.cpp
-	../src/mus/musligature.cpp
 	../src/mus/musmlfdic.cpp
 	../src/mus/musneume.cpp
+	../src/mus/musneumesymbol.cpp
 	../src/mus/musnote.cpp
 	../src/mus/musobject.cpp
 	../src/mus/muspage.cpp
 	../src/mus/musrc.cpp
 	../src/mus/musstaff.cpp
-	#../src/mus/mussvg.cpp
+	../src/mus/mussvgdc.cpp
 	../src/mus/mussymbol.cpp
 	../src/mus/mustoolpanel.cpp
 	../src/mus/muswindow.cpp
@@ -122,6 +131,7 @@ INCLUDE_DIRECTORIES(
 
 	/usr/include/im
 	${LIBXML2_INCLUDE_DIR}
+    ${LIBMEI_INCLUDE_DIR}
 	/usr/include/torch
 )
 
@@ -133,6 +143,7 @@ ADD_DEFINITIONS(
 	-DAX_EDT
 	-DWX_PRECOMP
 	-DAX_RECOGNITION
+	-D__AXDEBUG__
 	${LIBXML2_DEFINITIONS}
 	-D__LINUX_ALSASEQ__
 	-g
@@ -150,8 +161,47 @@ TARGET_LINK_LIBRARIES( aruspix
 	-lim
 	-lim_process
 	-lim_fftw
-	-lxml2
 	-ltorch
 	${wxWidgets_LIBRARIES}
 	${LIBXML2_LIBRARIES}
+    ${LIBMEI_LIBRARY}
 )
+
+if( AX_BUILD_TESTS )
+    set( EXECUTABLE_OUTPUT_PATH ${CMAKE_CURRENT_BINARY_DIR} )
+    include_directories( ${CMAKE_CURRENT_BINARY_DIR})
+
+    find_package( GoogleTest )
+
+    macro(add_ax_test _source)
+        get_filename_component(_name ${_source} NAME_WE)
+        add_executable(${_name} ${ARGV} ../test/gtest_main.cc)
+        target_link_libraries(${_name} 
+            ${GTEST_LIBRARIES}
+            -lpthread
+        	${wxWidgets_LIBRARIES}
+        	${LIBXML2_LIBRARIES}
+            ${LIBMEI_LIBRARY}
+            )
+        # tests depend on the latest version of the library
+        add_test(${_name}-test ${EXECUTABLE_OUTPUT_PATH}/${_name})
+    endmacro(add_ax_test)
+
+    add_ax_test ( ../test/mus/musneume_test.cpp
+                  ../src/mus/musobject.cpp
+                  ../src/mus/muselement.cpp
+                  ../src/mus/musneume.cpp
+                  ../test/fakemus.cpp )
+
+    add_ax_test ( ../test/mus/musiomei2_test.cpp
+                  ../src/mus/musiomei2.cpp
+                  ../src/mus/musfile.cpp
+                  ../test/fakemus.cpp )
+
+    add_ax_test ( ../test/mus/musneumesymbol_test.cpp
+                  ../src/mus/musneumesymbol.cpp
+                  ../src/mus/musobject.cpp
+                  ../src/mus/muselement.cpp 
+                  ../test/fakemus.cpp )
+
+endif( AX_BUILD_TESTS )

@@ -145,6 +145,7 @@ IMPLEMENT_CLASS(SupImWindow, AxScrolledWindow)
 
 
 BEGIN_EVENT_TABLE(SupImWindow,AxScrolledWindow)
+    //EVT_PAINT( SupImWindow::OnPaint )
     EVT_MOUSE_EVENTS( SupImWindow::OnMouse )
 END_EVENT_TABLE()
 
@@ -187,6 +188,14 @@ void SupImWindow::SynchronizeScroll( int x, int y )
         
     controller->ScrollSources( absX, absY );
     this->SetFocus();
+}
+
+void SupImWindow::OnPaint(wxPaintEvent &event)
+{
+    wxPaintDC dc( this );
+    PrepareDC( dc );
+    
+    // draw points
 }
 
 

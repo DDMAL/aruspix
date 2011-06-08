@@ -29,6 +29,7 @@ class MusStaff;
 #include "musnote.h"
 #include "musneume.h"
 #include "mussymbol.h"
+#include "musneumesymbol.h"
 
 //----------------------------------------------------------------------------
 // MusRC
@@ -78,13 +79,13 @@ public:
 	virtual void UpdateFontValues();
     
     /** x value in the Renderer */
-	int ToRendererX( int i ) { return i; }; // the same
+	int ToRendererX( int i );
 	/** x value in the Logical world */
-	int ToLogicalX( int i )  { return i; };
+	int ToLogicalX( int i );
 	/** y value in the Renderer */
-	int ToRendererY( int i )  { return m_pageMaxY - i; }; // flipped
+	int ToRendererY( int i );
 	/** y value in the Logical world  */
-	int ToLogicalY( int i )  { return m_pageMaxY - i; }; // flipped
+	int ToLogicalY( int i );
 	
 	static void SwapY( int *y1, int *y2 ) { int tmp = *y1; *y1 = *y2; *y2 = tmp; }
     
@@ -216,7 +217,7 @@ public:
 	int m_notation_mode; // neumes or mensural notation mode
 	bool m_lyricMode;
 	bool m_inputLyric;
-	bool m_editElement; // edition mode or insertion mode
+	MusEditorMode m_editorMode; // Edit or insert
 	bool m_eraseElement;
 	    
 private:

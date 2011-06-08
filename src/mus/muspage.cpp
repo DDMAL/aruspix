@@ -57,7 +57,6 @@ void MusPage::Clear( )
 	indent = 0;
 	indentDroite = 0;
 	lrg_lign = 190;
-	nbrePortees = 0;
 	npage = 0;
 }
 

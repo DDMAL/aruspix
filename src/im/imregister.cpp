@@ -245,7 +245,7 @@ bool ImRegister::Init( wxString filename1, wxString filename2 )
 
 	m_imPage1Ptr->SetProgressDlg( m_progressDlg );
 	
-	if ( !m_imPage1Ptr->Check( filename1, 2500, 1200 ) )
+	if ( !m_imPage1Ptr->Check( filename1, 5000, 1200 ) )
 		return false;
         
     if (!m_progressDlg->SetOperation( _("Checking the image 2 ...") ) )
@@ -253,7 +253,7 @@ bool ImRegister::Init( wxString filename1, wxString filename2 )
 
 	m_imPage2Ptr->SetProgressDlg( m_progressDlg );
 	
-	if ( !m_imPage2Ptr->Check( filename2, 2500, 1200 ) )
+	if ( !m_imPage2Ptr->Check( filename2, 5000, 1200 ) )
 		return false;
 
 	ImageDestroy( &m_src1 );

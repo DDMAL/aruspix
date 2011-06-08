@@ -45,6 +45,7 @@ public:
 	virtual void SaveContent( ); // Save content before archive creation
 	virtual void CloseContent( ); // Desactivate content before deletion
 	
+	void SetforMEI(); //needs to be fooled into thinking it's been preprocessed and recognized
 	void SetImage( wxString filename );
 	void SetImage( AxImage *image );
 	void GetImage0( AxImage *image );

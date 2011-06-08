@@ -51,6 +51,7 @@ enum
 
 #define REC_UPDATE_DEFAULT 0
 #define REC_UPDATE_FAST 1
+#define REC_UPDATE_MEI 2
 
 class AxImageController;
 class RecImController;
@@ -254,6 +255,8 @@ private:
     void OnUndo( wxCommandEvent &event );
     void OnRedo( wxCommandEvent &event );
     void OnRun( wxCommandEvent &event );
+	void OnOpenMEI( wxCommandEvent &event );
+	void OnSaveMEI( wxCommandEvent &event );
     virtual void OnUpdateUI( wxUpdateUIEvent &event );
 
 private:

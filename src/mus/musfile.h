@@ -18,7 +18,6 @@
 #include "wx/wfstream.h"
 //#include "wx/dynarray.h"
 
-#include "musfile.h"
 #include "muspage.h"
 #include "musstaff.h"
 #include "muselement.h"
@@ -51,6 +50,9 @@ public:
     virtual void Process(MusPageFunctor *functor, wxArrayPtrVoid params );
     void GetNumberOfVoices( int *min_voice, int *max_voice );
     MusStaff *GetVoice( int i );
+
+    MeiDocument *GetMeiDocument();
+    void SetMeiDocument(MeiDocument *doc);
     
 public:
         /** nom complet du fichier */
@@ -69,6 +71,7 @@ public:
 	static char* sep;
 
 private:
+    MeiDocument *m_meidoc;
 	
 };
 

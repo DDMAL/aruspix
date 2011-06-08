@@ -1,8 +1,6 @@
 %
-%  untitled
-%  adding something to test svn
+%  Aruspix Readme
 %  Created by Tristan Himmelman on 2008-06-03.
-%  Copyright (c) 2008 __MyCompanyName__. All rights reserved.
 %
 \documentclass[]{article}
 
@@ -11,19 +9,6 @@
 
 % Setup for fullpage use
 \usepackage{fullpage}
-
-% Uncomment some of the following if you use the features
-%
-% Running Headers and footers
-%\usepackage{fancyhdr}
-
-% Multipart figures
-%\usepackage{subfigure}
-
-% More symbols
-%\usepackage{amsmath}
-%\usepackage{amssymb}
-%\usepackage{latexsym}
 
 % Surround parts of graphics with box
 \usepackage{boxedminipage}
@@ -36,6 +21,7 @@
 
 % This is now the recommended way for checking for PDFLaTeX:
 \usepackage{ifpdf}
+\usepackage{url}
 
 %\newif\ifpdf
 %\ifx\pdfoutput\undefined
@@ -117,7 +103,7 @@ whole project. Now ensure that the file structure matches the following example:
 \tinyxml : Contains the tinyxml source files.
     \Debug : Contains the debug tinyxml lib file.
     \Release : Contains the release tinyxml lib file.
-\end{verbatim}
+\end{verbatim}http://stackoverflow.com/questions/5476840/can-you-explain-theese-disturbing-anomalies-of-md5-and-modulo
 	
 %*****************************
 \subsection{Torch}
@@ -173,34 +159,40 @@ Debug DLL" for debug versions.
 %******************************
 \subsection{wxWidgets Compilation}
 	
-Note: wxWidgets must be compiled using the MaxOSX 10.4u sdk to enable Aruspix
-use with both Mac OS 10.4 and 10.5.
 \begin{enumerate}
 	\item Create two directories within the wxWidgets directory: osx-static, osx-static-debug.
 	\item In the osx-static-debug directory run the following commands to compile for debug mode:
 	\begin{verbatim} ../configure --disable-shared --enable-debug --with-libjpeg=builtin --with-libpng=builtin 
-     	--with-macosx-sdk=/Developer/SDKs/MacOSX10.4u.sdk
+     	--with-macosx-sdk=/Developer/SDKs/MacOSX10.5.sdk
  		make clean (if necessary)
  		make
 	\end{verbatim}
 
 	\item In the osx-static directory run the following commands to compile for release mode:
 	\begin{verbatim} ../configure --disable-shared --enable-universal_binary --with-libjpeg=builtin
-	     --with-libpng=builtin --with-macosx-sdk=/Developer/SDKs/MacOSX10.4u.sdk 
+	     --with-libpng=builtin --with-macosx-sdk=/Developer/SDKs/MacOSX10.5.sdk 
 	 make clean (if necessary)
 	 make
 	\end{verbatim}
+	\item On OSX 10.6 you may need to add beforehand:
+	\begin{verbatim}
+	export arch_flags="-arch i386"
+	../configure CFLAGS="$arch_flags" CXXFLAGS="$arch_flags" \
+             CPPFLAGS="$arch_flags" LDFLAGS="$arch_flags" ...
+	\end{verbatim}
+	if you get an error while compiling Wx.
 \end{enumerate}
 
 
 %******************************
 \subsection{Setting Aruspix Environment Variables}
-	In the aruspix/osx directory you will find an XML file named sample_enviroment.plist. This
+	In the aruspix/osx directory you will find an XML file named sample\_enviroment.plist. This
 	file is used by Xcode to set the following environment variables for linking purposes:
 	\begin{itemize}
-		\item \begin{verbatim}ARUSPIX: Location of Aruspix project directory.\end{verbatim}
 		\item \begin{verbatim}ARUSPIX_IMLIB: Location of IM library.\end{verbatim}
 		\item \begin{verbatim}ARUSPIX_TORCH: Location of Torch library.\end{verbatim}
+		\item \begin{verbatim}ARUSPIX_MEI: Location of libmei framework.\end{verbatim}
+		\item \begin{verbatim}ARUSPIX_GTEST: Location of gtest framework.\end{verbatim}
 		\item \begin{verbatim}ARUSPIX_WX: Location of wxWidgets library.\end{verbatim}
 		\item \begin{verbatim}ARUSPIX_WX_VERSION: wxWidgets library version number.\end{verbatim}
 	\end{itemize}
@@ -211,12 +203,14 @@ use with both Mac OS 10.4 and 10.5.
 		<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 		<plist version="1.0">
 		<dict>
-		    <key>ARUSPIX</key>
-		    <string>/Users/puginl/projects/aruspix</string>
 		    <key>ARUSPIX_IMLIB</key>
 		    <string>/Users/puginl/libs/imlib</string>
 		    <key>ARUSPIX_TORCH</key>
 		    <string>/Users/puginl/libs/Torch3</string>
+			<key>ARUSPIX_MEI</key>
+			<string>/Users/jamie/ax-libs/osx</string>
+			<key>ARUSPIX_GTEST</key>
+			<string>/Users/jamie/ax-libs/osx</string>
 		    <key>ARUSPIX_WX</key>
 		    <string>/Users/puginl/libs/wx2.8.7</string>
 		    <key>ARUSPIX_WX_VERSION</key>
@@ -225,11 +219,25 @@ use with both Mac OS 10.4 and 10.5.
 		</plist>
 	\end{verbatim}
 	\begin{enumerate}
-		\item You must modify the paths within this file to match your directory structure.
-		\item In the home directory create the following hidden directory: .MacOSX.
+		\item You must modify the paths within this file to match your directory structure and rename it environment.plist.
+		\item In your home directory create the following hidden directory: .MacOSX.
 		\item Now copy the modified environment.plist file into the .MacOSX directory.
 		\item You must now log out and log back in.
 	\end{enumerate}
+
+\subsection{Google test framework}
+Unit tests are written using googletest (\url{http://code.google.com/p/googletest/}).
+Download a copy and build it in Xcode (using \verb!xcode/gtest.xcodeproj!. You will end up with a gtest.framework folder in the build directory. Copy this somewhere
+(such as the same directory as your checked out copy of aruspix).
+
+Open up the aruspix project and find gtest.framework entry in the sidebar. Right click on it and choose Add > Existing framework. Then select Add other... and choose the framework folder.
+
+Run tests by compiling the \verb!ax_test! target. Run it from a terminal or the xcode console. If you get a ``Library not loaded`` error, you need to set the framework path
+for the executable. Make `ax\_test' active and choose Project > Edit Active Exectuable. In the arguments tab, set a variable \verb!DYLD_FRAMEWORK_PATH! to \verb!../../..!.
+This is the path from the ax\_test binary (in aruspix/build/Debug) to the gtest.framework folder.
+
+\subsection{libmei}
+Do the same as gtest with libmei (copy the framework somewhere, add existing framework, change DYLD\_FRAMEWORK\_PATH)
 	
 %******************************
 \subsection{Compilation of Machine Learning Executables used by Aruspix}
@@ -246,12 +254,19 @@ Aruspix should be ready to be compiled in both Debug and Release mode.
 \section{Linux Set Up}
 
 \subsection{Dependencies}
- sudo apt-get install libtorch3-dev libwxgtk2.8-dev wx-common libimlib2-dev libxml2-dev cmake
+ \begin{verbatim}
+	sudo apt-get install libtorch3-dev libwxgtk2.8-dev wx-common libimlib2-dev libxml2-dev cmake
+ \end{verbatim}
 
- http://www.tecgraf.puc-rio.br/im/
+ IMlib is available from \url{http://www.tecgraf.puc-rio.br/im/}
 \subsection{Compilation}
 
- mkdir build; cd build; cmake ../linux; make
+ \begin{verbatim}
+	mkdir build
+	cd build
+	cmake ../linux
+	make
+ \end{verbatim}
 
 %*****************************
 \section{Aruspix Source Code Organization}
