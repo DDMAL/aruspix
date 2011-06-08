@@ -1,0 +1,4 @@
+Safari (and IE with Adobe?) works with ttf CSS
+Firefox works with SVG Font included as defs
+TTF Font must be printable (see fontforge, element, font info, os/2, misc, embeddable)
+Encoding is still awkward (apparently unicode font on mac, with weird mapping)

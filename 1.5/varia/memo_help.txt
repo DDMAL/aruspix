@@ -1,0 +1,17 @@
+LATEX2HTML
+latex2html -local_icons -noinfo -split 4 -address '<a href="mailto:help@aruspix.net">help@aruspix.net</a>' aruspix.tex
+
+HHC
+1. copier les fichiers html générés avec latex2html sous linux (help2win.bat)
+2. ouvrir FAR
+3. Authoring - Help Wizard
+4. Help 1.x
+5. Fichier hhp ( ex: fr/aruspix.hhp ) dans le répertoire de l'exe
+6. Importer les fichier html 
+7 virer le index.html (redondant) et sélectionner home et defaut sur aruspix.html (ou environnement.html)
+7. Créer le toc et éditer maintenant - modifier l'arborescence (éventuellement modifier .latex2html.init pour 
+	supprimer un niveau (garder 1 2 3 ...  uniquement)
+8. Supprimer l'entrée par défaut aruspix (ou environnement) SANS les sous items - enregistrer - fermer
+9. Créér l'index et éditer maintenant
+10. Supprimer l'entrée aruspix (ou environnement) - enregistrer - fermer
+11. Spécifier le nom de la fenêtre : Aruspix , ou Environnement xxx (dans la langue de la doc!!)

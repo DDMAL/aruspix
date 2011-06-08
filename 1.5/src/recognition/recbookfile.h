@@ -1,0 +1,114 @@
+/////////////////////////////////////////////////////////////////////////////
+// Name:        recbookfile.h
+// Author:      Laurent Pugin
+// Created:     2004
+// Copyright (c) Laurent Pugin. All rights reserved.   
+/////////////////////////////////////////////////////////////////////////////
+
+#ifndef __recbook_H__
+#define __recbook_H__
+
+#ifdef AX_RECOGNITION
+
+#if defined(__GNUG__) && ! defined(__APPLE__)
+    #pragma interface "recbookfile.cpp"
+#endif
+
+#ifndef WX_PRECOMP
+    #include "wx/wx.h"
+#endif
+
+#include "wx/dynarray.h"
+//#include "wx/treectrl.h"
+
+#include "app/axfile.h"
+
+#include "rec_wdr.h"
+
+class RecEnv;
+class RecBookFile;
+class RecBookCtrl;
+class RecModel;
+
+
+
+// WDR: class declarations
+
+//----------------------------------------------------------------------------
+// RecBookFile
+//----------------------------------------------------------------------------
+
+class RecBookFile: public AxFile 
+{
+public:
+    // constructors and destructors
+    RecBookFile::RecBookFile( wxString name, RecEnv *env = NULL );
+    virtual RecBookFile::~RecBookFile();
+    
+    // WDR: method declarations for RecFile
+    virtual void RecBookFile::NewContent(); // Create content for a new file
+    virtual void RecBookFile::OpenContent( ); // Open content after archive extraction
+    virtual void RecBookFile::SaveContent( ); // Save content before archive creation
+    virtual void RecBookFile::CloseContent( ); // Desactivate content before deletion
+    
+    // operations
+    bool LoadImages( );
+    bool LoadAxfiles( );
+    bool RemoveImage( wxString filename );
+    bool DesactivateImage( wxString filename );
+    bool RemoveAxfile( wxString filename );
+    bool DeleteAxfile( wxString filename );
+	bool DesactivateAxfile( wxString filename );
+	// files
+	int FilesToPreprocess( wxArrayString *filenames, wxArrayString *paths, bool add_axfiles = true );
+	int FilesToRecognize( wxArrayString *filenames, wxArrayString *paths );
+	int FilesForAdaptation( wxArrayString *filenames, wxArrayString *paths, bool *isCacheOk );
+	int RecognizedFiles( wxArrayString *filenames, wxArrayString *paths );
+	bool HasToBePreprocessed( wxString imagefile );
+	// adaptation
+	bool RecBookFile::ResetAdaptation( bool ask_user );
+	bool RecBookFile::FastAdaptation( wxArrayPtrVoid params, AxProgressDlg *dlg );
+	bool RecBookFile::TypAdaptation( wxArrayPtrVoid params, AxProgressDlg *dlg );
+	bool RecBookFile::MusAdaptation( wxArrayPtrVoid params, AxProgressDlg *dlg );
+	wxString RecBookFile::GetTypFilename( ) { return m_basename + "book.axtyp";}
+	wxString RecBookFile::GetMusFilename( ) { return m_basename + "book.axmus";}
+	wxString GetTypCacheFilename( ) { return m_basename + "cache.axtyp";}
+	wxString GetMusCacheFilename( ) { return m_basename + "cache.axmus";}
+    
+public:
+    // WDR: member variable declarations for RecBookFile
+    // infos
+    wxString m_RISM;
+    wxString m_Composer;
+    wxString m_Title;
+    wxString m_Printer;
+    wxString m_Year;
+    wxString m_Library;
+    // files
+    wxString m_axFileDir;
+    wxString m_imgFileDir;
+    ArrayOfBookFileItems m_axFiles;
+    ArrayOfBookFileItems m_imgFiles;
+	//
+	bool m_fullOptimized; // a full Adaptation has been performed, don't use fast adaptation
+	int m_nbFilesOptimization; // number of files used for full Adaptation
+	wxArrayString m_optFiles;
+	
+	// binarization
+	int m_pre_image_binarization_method;
+	int m_pre_page_binarization_method;
+	int m_pre_page_binarization_method_size;
+	bool m_pre_page_binarization_select;
+
+protected:
+    // WDR: member variable declarations for RecBookFile
+    RecEnv *m_envPtr;
+
+private:
+    // WDR: handler declarations for RecBookFile
+
+};
+
+#endif //AX_RECOGNITION
+
+#endif
