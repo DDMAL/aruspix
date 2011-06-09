@@ -260,7 +260,7 @@ int MusElement::StrToPitch(std::string pitch)
     } else if (pitch == "b") {
         value = 7;
     } else {
-        value = -1;
+        throw "bad pitch: " + pitch;
     }
     return value;
 }

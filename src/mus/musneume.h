@@ -46,6 +46,7 @@ enum NeumeType {
     NEUME_TYPE_PORRECTUS_FLEXUS,
     NEUME_TYPE_PUNCTUM,
     NEUME_TYPE_PUNCTUM_INCLINATUM,
+	NEUME_TYPE_PUNCTUM_WHITE,
     NEUME_TYPE_SALICUS,
     NEUME_TYPE_SCANDICUS,
     NEUME_TYPE_SCANDICUS_FLEXUS,
@@ -96,7 +97,7 @@ public:
     MusNeume(MeiElement &meielement);
     virtual ~MusNeume() {}
     
-    void setType(wxString type);
+    void setType(wxString type, wxString variant);
     void setType(NeumeType type);
     NeumeType getType();
     MeiElement &getMeiElement();
@@ -110,6 +111,7 @@ public:
     void DrawCephalicus( AxDC *dc, MusStaff *staff);
     void DrawPunctum( AxDC *dc, MusStaff *staff);
     void DrawPunctumInclinatum( AxDC *dc, MusStaff *staff);
+	void DrawPunctumWhite( AxDC *dc, MusStaff *staff);
     void DrawVirga( AxDC *dc, MusStaff *staff);
     void DrawVirgaLiquescent( AxDC *dc, MusStaff *staff);
     void DrawPodatus( AxDC *dc, MusStaff *staff);

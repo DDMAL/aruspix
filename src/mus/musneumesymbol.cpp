@@ -110,7 +110,12 @@ MusNeumeSymbol::MusNeumeSymbol(MeiElement &meielement) :
         MeiAttribute *pname = m_meiref->getAttribute("pname");
         MeiAttribute *o = m_meiref->getAttribute("oct");
         if (pname && o) {
-            oct = atoi((o->getValue()).c_str());
+            int octave = atoi((o->getValue()).c_str());
+			if ( 0 <= octave <= 7 ) {
+				oct = octave;
+			} else {
+				throw "octave out of range";
+			}
             pitch = this->StrToPitch(pname->getValue());
         } else {
             throw "missing pitch or octave on accidental";
