@@ -36,6 +36,7 @@
 #include "mus/musfile.h"
 #include "mus/musiobin.h"
 #include "mus/musiomlf.h"
+#include "mus/musiomei2.h"
 
 //#include "ml/mldecoder.h"
 
@@ -240,14 +241,25 @@ void RecFile::OpenContent( )
 		
 	if ( wxFileExists( m_basename + "page.bin") )
 	{
-		MusBinInput *bin_input = new MusBinInput( m_musFilePtr, m_musFilePtr->m_fname );
-		failed = !bin_input->ImportFile();
-		delete bin_input;
-		if ( failed )
-			return;
-		else
-			m_isRecognized = true;	
-	} //else if there's an MEI in there?
+		if ( m_musFilePtr->GetMeiDocument() ) {
+			MusMeiInput *mei_input = new MusMeiInput( m_musFilePtr, m_musFilePtr->m_fname );
+			failed = !mei_input->ImportFile();
+			delete mei_input;
+			if ( failed ) {
+				return;
+			} else {
+				m_isRecognized = true;
+			}
+		} else {
+			MusBinInput *bin_input = new MusBinInput( m_musFilePtr, m_musFilePtr->m_fname );
+			failed = !bin_input->ImportFile();
+			delete bin_input;
+			if ( failed )
+				return;
+			else
+				m_isRecognized = true;
+		}
+	}
 	
 	return;       
 	// Load XML file. Don't know what's necessary yet...
@@ -317,16 +329,20 @@ void RecFile::SaveContent( )
 	else
 	{
 		//possibility of MusFile being a .mei not a .bin
-		//MusMeiOutput *mei_output = new MusMeiOutput( m_musFilePtr, m_musFilePtr->m_fname );
-		// save
-		MusBinOutput *bin_output = new MusBinOutput( m_musFilePtr, m_musFilePtr->m_fname );
-		bin_output->ExportFile();
-		delete bin_output;
+		if (m_musFilePtr->GetMeiDocument()) {
+			MusMeiOutput *mei_output = new MusMeiOutput( m_musFilePtr, m_musFilePtr->m_fname );
+			mei_output->ExportFile();
+			delete mei_output;
+		} else {
+			MusBinOutput *bin_output = new MusBinOutput( m_musFilePtr, m_musFilePtr->m_fname );
+			bin_output->ExportFile();
+			delete bin_output;
 		
-		MusMLFOutput *mlfoutput = new MusMLFOutput( m_musFilePtr, m_basename + "page.mlf", NULL );
-		mlfoutput->m_pagePosition = true;
-		mlfoutput->WritePage( &m_musFilePtr->m_pages[0] , "staff", m_imPagePtr );
-		delete mlfoutput;
+			MusMLFOutput *mlfoutput = new MusMLFOutput( m_musFilePtr, m_basename + "page.mlf", NULL );
+			mlfoutput->m_pagePosition = true;
+			mlfoutput->WritePage( &m_musFilePtr->m_pages[0] , "staff", m_imPagePtr );
+			delete mlfoutput;
+		}
 	
 		TiXmlElement root( "recpage" );
     

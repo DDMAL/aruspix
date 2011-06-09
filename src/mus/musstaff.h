@@ -125,7 +125,7 @@ public:
 	/** portee invisible */
 	char invisible;
 	/** ecart jusqu'a la portee, en interlignes */
-	unsigned short ecart;
+	double ecart;
 	/** barre verticale. 0 = aucun1 = debut2 = fin */
 	unsigned char vertBarre;
 	/** accolade ou bloc. 0 = aucun1 = debut2 = fin */

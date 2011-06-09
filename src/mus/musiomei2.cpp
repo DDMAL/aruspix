@@ -78,12 +78,23 @@ MusMeiInput::~MusMeiInput()
 {
 }
 
-int FacsTable::GetX(std::string key)
+int FacsTable::GetUX(std::string key)
 {
 	int x = -1;
 	for (vector<FacsEntry>::iterator i = entries.begin(); i != entries.end(); i++) {
 		if (i->key == key) {
 			x = i->ulx;
+		}
+	}
+	return x;
+}
+
+int FacsTable::GetLX(std::string key)
+{
+	int x = -1;
+	for (vector<FacsEntry>::iterator i = entries.begin(); i != entries.end(); i++) {
+		if (i->key == key) {
+			x = i->lrx;
 		}
 	}
 	return x;
@@ -111,11 +122,12 @@ int FacsTable::GetLY(std::string key)
 	return y;
 }
 
-void FacsTable::add(std::string key, int X, int Y1, int Y2)
+void FacsTable::add(std::string key, int X1, int X2, int Y1, int Y2)
 {
 	FacsEntry entry;
 	entry.key = key;
-	entry.ulx = X;
+	entry.ulx = X1;
+	entry.lrx = X2;
 	entry.uly = Y1;
 	entry.lry = Y2;
 	entries.push_back(entry);
@@ -134,9 +146,10 @@ void MusMeiInput::ReadFacsTable(MeiElement *element, FacsTable *table)
 					throw "missing xml:id attribute on zone element";
 				}
 				int ulx = atoi(e.getAttribute("ulx")->getValue().c_str());
+				int lrx = atoi(e.getAttribute("lrx")->getValue().c_str());
 				int uly = atoi(e.getAttribute("uly")->getValue().c_str());
 				int lry = atoi(e.getAttribute("lry")->getValue().c_str());
-				table->add(id, ulx, uly, lry);
+				table->add(id, ulx, lrx, uly, lry);
 			} else if (e.getName() == "system") {
 				std::string id;
 				if (e.getId() != "") {
@@ -150,10 +163,11 @@ void MusMeiInput::ReadFacsTable(MeiElement *element, FacsTable *table)
 				} else {
 					throw "missing facs attribute on system element";
 				}
-				int ulx = table->GetX(facs); //what if they haven't been stored yet? zones are always defined before systems, as the facs needs to refer to something.
-				int uly = table->GetUY(facs); //"
+				int ulx = table->GetUX(facs);
+				int lrx = table->GetLX(facs);
+				int uly = table->GetUY(facs);
 				int lry = table->GetLY(facs);
-				table->add(id, ulx, uly, lry);
+				table->add(id, ulx, lrx, uly, lry);
 			}				
 			ReadFacsTable(*i,&*table);
 		}
@@ -166,9 +180,9 @@ void MusMeiInput::ReadElement(MeiElement *element, FacsTable *table)
 	if (element->getFacs() != NULL) {
 		if (m_currentStaff) {
 			if (m_currentStaff->GetLast()) {
-				insertx = (table->GetX(element->getFacs()->getValue()))/2 - m_currentStaff->GetLast()->xrel;
+				insertx = (table->GetUX(element->getFacs()->getValue()))/2 - m_currentStaff->GetLast()->xrel;
 			} else {
-				insertx = (table->GetX(element->getFacs()->getValue()))/2 - m_currentStaff->xrel;
+				insertx = (table->GetUX(element->getFacs()->getValue()))/2 - m_currentStaff->xrel;
 			}
 		}
 	}
@@ -241,7 +255,7 @@ bool MusMeiInput::ImportFile( )
     MusStaffFunctor getMaxXY( &MusStaff::GetMaxXY );
     wxArrayPtrVoid staffParams; // idem for staff functor
     int max_x = -1;
-    int max_y = 0;
+    double max_y = 0;
     staffParams.Add( &max_x );
     staffParams.Add( &max_y );
     m_page->Process( &getMaxXY, staffParams );
@@ -249,12 +263,12 @@ bool MusMeiInput::ImportFile( )
     m_page->lrg_lign = max_x / 10;
     // add the space at the bottom - so far in max_y we have the top corner of the last staff
     if (m_page->m_staves.GetCount() > 0 ) {
-        max_y += max((unsigned short)(&m_page->m_staves.Last())->portNbLine,(&m_page->m_staves.Last())->ecart);
+        max_y += max((unsigned short)(&m_page->m_staves.Last())->portNbLine,(unsigned short)(&m_page->m_staves.Last())->ecart);
     }
     max_y *= m_page->defin; // transform this into coord.
     // update the page size
     m_file->m_fheader.param.pageFormatHor = max_x / 10 + (2 * m_file->m_fheader.param.MargeGAUCHEIMPAIRE);
-    m_file->m_fheader.param.pageFormatVer = max_y / 10 + (2 * m_file->m_fheader.param.MargeSOMMET);
+    //m_file->m_fheader.param.pageFormatVer = max_y / 10 + (2 * m_file->m_fheader.param.MargeSOMMET);
 
     return true;
 }
@@ -491,6 +505,7 @@ bool MusMeiInput::mei_staff(MeiElement *element, FacsTable *table) {
 	
 	//wxLogDebug("mei:staff\n");
     int n = atoi((element->getAttribute("n")->getValue()).c_str());
+	int image = m_file->m_fheader.param.pageFormatVer * 10;
     //if (ReadAttributeInt( element, "n", &n )) {}
     wxLogDebug("mei:staff %d\n", n);
     if (n == (int)m_page->m_staves.Count() + 1) {
@@ -500,11 +515,13 @@ bool MusMeiInput::mei_staff(MeiElement *element, FacsTable *table) {
 		staff->m_meiref = element;
         staff->portNbLine = 4; //added as experiment --Jamie
         staff->no = n - 1;
+		double ymid = (table->GetLY(element->getAttribute("systemref")->getValue()) + table->GetUY(element->getAttribute("systemref")->getValue()))/2.0;
         if (n == 1) {
-            staff->ecart = table->GetUY(element->getAttribute("systemref")->getValue())/20; // for the first staff, we decrease the top space
-            m_file->m_fheader.param.MargeGAUCHEIMPAIRE = 8; // and the margin as well
+            staff->ecart = (ymid*(1 + 20.0/image) - 30.0)/20.0 - 1.0; // for the first staff, we decrease the top space to account for the "border" on the MusFile
+            m_file->m_fheader.param.MargeGAUCHEIMPAIRE = (int)((double)(table->GetUX(element->getAttribute("systemref")->getValue()))/10.0); // and the margin as well
         } else {
-			staff->ecart = (table->GetUY(element->getAttribute("systemref")->getValue()) - table->GetLY(m_page->m_staves[staff->no - 1].m_meiref->getAttribute("systemref")->getValue()))/20; //CONTINUE HERE BOOK_MARK
+			double ymid2 = (table->GetLY(m_page->m_staves[staff->no - 1].m_meiref->getAttribute("systemref")->getValue()) + table->GetUY(m_page->m_staves[staff->no - 1].m_meiref->getAttribute("systemref")->getValue()))/2.0;
+			staff->ecart = ((ymid - ymid2)*(1 + 20.0/image) - 60)/20.0;
 		}
         m_page->m_staves.Add( staff );
     }

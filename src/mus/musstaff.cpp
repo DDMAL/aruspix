@@ -617,11 +617,11 @@ void MusStaff::DrawStaffLines( AxDC *dc, int i )
 	int j, x1, x2, yy;
 
 	yy = (int)m_r->kPos[i].yp;
-    if ( portNbLine == 1 )
+	if ( portNbLine == 1 )
 		yy  -= m_r->_interl[ pTaille ]*2;
     else if ( portNbLine == 4 )
 		yy  -= m_r->_interl[ pTaille ];
-	yy = this->yrel - m_r->_portee[ pTaille ];
+	yy = this->yrel - m_r->_interl[ pTaille ]*portNbLine; //looks like yy just gets reassigned here??
 
 	x1 = this->indent ? this->indent*10 : 0;
 	x2 = m_r->m_pageMaxX;
@@ -1123,7 +1123,7 @@ void MusStaff::GetMaxXY( wxArrayPtrVoid params )
 {
     // param 0: int
     int *max_x = (int*)params[0];
-    int *max_y = (int*)params[1]; // !!this is given in term of staff line space
+    double *max_y = (double*)params[1]; // !!this is given in term of staff line space
 
 	MusElement *element = this->GetLast();
     if (element) {

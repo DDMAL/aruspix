@@ -179,14 +179,14 @@ void MusPage::UpdateStavesPosition( )
     for (i = 0; i < nbrePortees; i++) 
 	{
 		staff = &m_staves[i];
-        yy -= staff->ecart * m_r->_interl[ staff->pTaille ];
+        yy -= (int)(staff->ecart * (double)m_r->_interl[ staff->pTaille ]);
         m_r->kPos[i].compte = 0;
 
 		// Calcul du TAB initial, s'il y a lieu 
 		orgx = staff->indent ? staff->indent*10 : 0;
          
 		// calcul du point d'ancrage des curseurs au-dessus de la ligne superieure
-		m_r->kPos[i].yp = yy + m_r->_portee[ staff->pTaille ];
+		m_r->kPos[i].yp = yy + m_r->_interl[ staff->pTaille ]*staff->portNbLine;
 		staff->yrel = (int)(m_r->kPos[i].yp);
         // portees à 1 ou 4 lignes
         if (staff->portNbLine == 1)

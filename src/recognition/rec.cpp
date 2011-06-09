@@ -724,7 +724,7 @@ void RecEnv::Open( wxString filename, int type )
         this->OpenBookFile( filename );
 }
 
-// if type == -1, it is and image
+// if type == -1, it is an image
 void RecEnv::OpenFile( wxString filename, int type )
 {
     if ( !this->ResetFile( ) )
@@ -1733,17 +1733,23 @@ void RecEnv::OnOpenMEI( wxCommandEvent &event )
 	
     //if ( !this->ResetFile( ) )
     //    return;
-	m_recFilePtr->New();
+	if (!m_recFilePtr->m_imPagePtr) {
+		m_recFilePtr->New();
 	
-    m_imControlPtr->Open();
-	
-	if ( !m_recFilePtr->IsPreprocessed() ){
-		this->Preprocess();
+		m_imControlPtr->Open();
 	}
-	else if ( !m_recFilePtr->IsRecognized() )
-        this->Recognize();
 	
-	m_musControlPtr->SetForMEI();
+	m_recFilePtr->m_imPagePtr->m_img0 = GetImImage(m_imControlPtr, IM_RGB, IM_BYTE); //this is total uninformed hackage.
+	imImage* imTmp2 = imImageClone( m_recFilePtr->m_imPagePtr->m_img0 );
+	imProcessFlip(m_recFilePtr->m_imPagePtr->m_img0, imTmp2);
+	imImageDestroy(m_recFilePtr->m_imPagePtr->m_img0);
+	m_recFilePtr->m_imPagePtr->m_img0 = imTmp2;
+	
+	/*if ( !m_recFilePtr->IsPreprocessed() ){
+		this->Preprocess();
+	}*/
+	
+	//m_musControlPtr->SetForMEI();
 	
 	wxString filename = wxFileSelector( _("Import MEI - Choose MEI"), wxGetApp().m_lastDir, _T(""), _T(""), "MEI Files|*.mei|XML Files|*.xml", wxFD_OPEN);
     if ( filename.IsEmpty() )
@@ -1752,7 +1758,11 @@ void RecEnv::OnOpenMEI( wxCommandEvent &event )
     
     //m_recFilePtr->m_musFilePtr->New();
 	//m_recFilePtr->m_musFilePtr->m_pages.Clear();
-	m_recFilePtr->SetforMEI(); //may be unnecessary
+	m_recFilePtr->SetforMEI();
+	
+	m_recFilePtr->m_musFilePtr->m_fheader.param.pageFormatVer = m_imControlPtr->GetHeight() / 10;
+	m_recFilePtr->m_musFilePtr->m_fheader.param.pageFormatHor = m_imControlPtr->GetWidth() / 10;
+	m_recFilePtr->m_musFilePtr->m_fheader.param.MargeSOMMET = 0;
 	
     MusMeiInput meiinput( m_recFilePtr->m_musFilePtr, filename );
 	if ( !meiinput.ImportFile() )
@@ -1761,26 +1771,6 @@ void RecEnv::OnOpenMEI( wxCommandEvent &event )
 	m_recFilePtr->m_musFilePtr->m_fheader.param.notationMode = MUS_NEUMATIC_MODE; //temporary for liber usualis project
 	
 	m_musViewPtr->SetEditorMode(MUS_EDITOR_EDIT);
-	
-	/*MeiElement *root = m_recFilePtr->m_musFilePtr->GetMeiDocument()->getRootElement();
-	FacsTable table;
-	meiinput.ReadFacsTable(root, &table);
-	
-	m_recFilePtr->m_musFilePtr->m_fheader.param.pageFormatHor = m_recFilePtr->m_imPagePtr->m_size.GetWidth() / 10;
-	m_recFilePtr->m_musFilePtr->m_fheader.param.pageFormatVer = m_recFilePtr->m_imPagePtr->m_size.GetHeight() / 10;
-	
-	for (int i = 0; i < (int)m_recFilePtr->m_musFilePtr->m_pages[0].nbrePortees; i++)
-	{
-		MeiElement *element = m_recFilePtr->m_musFilePtr->m_pages[0].m_staves[i].m_meiref;
-		m_musViewPtr->kPos[i].yp = m_recFilePtr->m_musFilePtr->m_fheader.param.pageFormatVer - table.GetUY(element->getAttribute("systemref")->getValue())/20 + m_musViewPtr->_portee[m_recFilePtr->m_musFilePtr->m_pages[0].m_staves[i].pTaille];
-	}
-	
-    int x1 = 5, x2 = 195;
-    m_recFilePtr->m_imPagePtr->CalcLeftRight( &x1, &x2 ); 
-	//x1 = 0; // force it, indentation will be calculated staff by staff
-    m_recFilePtr->m_musFilePtr->m_fheader.param.MargeGAUCHEIMPAIRE = x1 / 10;
-    m_recFilePtr->m_musFilePtr->m_fheader.param.MargeGAUCHEPAIRE = x1 / 10;
-    m_recFilePtr->m_musFilePtr->m_pages[0].lrg_lign = (x2 - x1) / 10;*/
 	
     UpdateViews( 0 );
 }

@@ -46,7 +46,7 @@ private:
 struct FacsEntry
 {
 	std::string key;
-	int ulx, uly, lry;
+	int ulx, lrx, uly, lry;
 };
 
 class FacsTable //this should probably be a map and be more of a true hashtable, but it works as we don't deal with too many zones.
@@ -54,10 +54,11 @@ class FacsTable //this should probably be a map and be more of a true hashtable,
 private:
 	vector<FacsEntry> entries;
 public:
-	int GetX(std::string key);
+	int GetUX(std::string key);
+	int GetLX(std::string key);
 	int GetUY(std::string key);
 	int GetLY(std::string key);
-	void add(std::string key, int X, int Y1, int Y2);
+	void add(std::string key, int X1, int X2, int Y1, int Y2);
 };
 
 class MusMeiInput: public MusFileInputStream

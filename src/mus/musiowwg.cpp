@@ -347,7 +347,7 @@ bool MusWWGOutput::WriteStaff( const MusStaff *staff )
 	Write( &staff->notAnc, 1 );
 	Write( &staff->grise, 1 );
 	Write( &staff->invisible, 1 );
-	uint16 = wxUINT16_SWAP_ON_BE( staff->ecart );
+	uint16 = wxUINT16_SWAP_ON_BE( (unsigned short)staff->ecart );
 	Write( &uint16, 2 );
 	Write( &staff->vertBarre, 1 );
 	Write( &staff->brace, 1 );
