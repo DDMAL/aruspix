@@ -14,6 +14,7 @@
 #include "wx/wx.h"
 
 #include "muselement.h"
+#include "musneume.h"
 
 
 #include <mei/mei.h>
@@ -46,6 +47,7 @@ public:
 	void ResetToNeumeSymbol();
 	void ResetToClef();
 	MusNeumeSymbolType getType();
+	void SwitchType();
 	
 	//drawing code
 	virtual void Draw(AxDC *dc, MusStaff *staff);
@@ -57,7 +59,11 @@ public:
 	void DrawDivMajor(AxDC *dc, MusStaff *staff);
 	void DrawDivMinor(AxDC *dc, MusStaff *staff);
 	void DrawDivSmall(AxDC *dc, MusStaff *staff);
-    MeiElement *getMeiRef();
+    
+	//MEI stuff
+	MeiElement *getMeiRef();
+	void setMeiRef(MeiElement *element);
+	void newMeiRef();
 	void deleteMeiRef();
 
 private:
@@ -67,6 +73,7 @@ private:
     void updateMeiRefDiv(string form);
     void updateMeiRefAccid(string accid, int pitch, int octave);
 	int value; //this is to denote the line a clef lies on
+	bool newmeielement;
 };
 
 #endif // __MUS_NEUME_SYMBOL_H__

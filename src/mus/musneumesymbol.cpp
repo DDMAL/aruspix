@@ -22,7 +22,9 @@ MusNeumeSymbol::MusNeumeSymbol() :
     MusElement()
 {
 	TYPE = NEUME_SYMB;
-	m_meiref = 0;
+	m_meiref = NULL;
+	pitch = 1;
+	oct = 4;
 }
 
 MusNeumeSymbol::MusNeumeSymbol(const MusNeumeSymbol &symbol) :
@@ -40,6 +42,8 @@ MusNeumeSymbol::MusNeumeSymbol(MeiElement &meielement) :
 	m_meiref = &meielement;
 	TYPE = NEUME_SYMB;
 	if (m_meiref->getName() == "clef") {
+		pitch = 1;
+		oct = 4;
         MeiAttribute *shape = m_meiref->getAttribute("shape");
         MeiAttribute *line = m_meiref->getAttribute("line");
 		if (shape != NULL && line != NULL) {
@@ -78,6 +82,8 @@ MusNeumeSymbol::MusNeumeSymbol(MeiElement &meielement) :
 			throw "missing shape or line attribute on clef";
 		}
 	} else if (m_meiref->getName() == "division") {
+		pitch = 1;
+		oct = 4;
         MeiAttribute *form = m_meiref->getAttribute("form");
         if (form != NULL) {
             if (form->getValue() == "final") {
@@ -128,6 +134,59 @@ MusNeumeSymbol::MusNeumeSymbol(MeiElement &meielement) :
 MusNeumeSymbolType MusNeumeSymbol::getType()
 {
 	return symbolType;
+}
+
+void MusNeumeSymbol::SwitchType()
+{
+	MusNeume neume;
+	neume.liaison = this->liaison;
+    neume.dliai = this->dliai;
+    neume.fliai = this->fliai;
+    neume.lie_up = this->lie_up;
+    neume.rel = this->rel;
+    neume.drel = this->drel;
+    neume.frel = this->frel;
+    neume.oct = this->oct;
+    neume.dimin = this->dimin;
+    neume.grp = this->grp;
+    neume._shport = this->_shport;
+    neume.ligat = this->ligat;
+    neume.ElemInvisible = this->ElemInvisible;
+    neume.pointInvisible = this->pointInvisible;
+    neume.existDebord = this->existDebord;
+    neume.fligat = this->fligat;
+    neume.notschowgrp = this->notschowgrp;
+    neume.cone = this->cone;
+    neume.liaisonPointil = this->liaisonPointil;
+    neume.reserve1 = this->reserve1;
+    neume.reserve2 = this->reserve2;
+    neume.ottava = this->ottava;
+    neume.durNum = this->durNum;
+    neume.durDen = this->durDen;
+    neume.offset = this->offset;
+	neume.xrel = this->xrel;
+	neume.dec_y = this->dec_y;
+    neume.debordCode = this->debordCode;
+    neume.debordSize = this->debordSize;
+	neume.no = this->no;
+	neume.code = this->code;
+	neume.pitch = this->pitch;
+	// comparison
+	/*m_im_filename = element.m_im_filename;
+	 m_im_staff = element.m_im_staff;
+	 m_im_pos = element.m_im_pos;
+	 m_cmp_flag = element.m_cmp_flag;
+	 m_debord_str = element.m_debord_str;
+	 
+	 pdebord = NULL;
+	 if ( existDebord )
+	 {
+	 int size = debordSize - sizeof( debordSize ) - sizeof( debordCode );
+	 pdebord = malloc( size );
+	 memcpy( pdebord, element.pdebord, size );
+	 }*/
+	neume.setMeiRef(m_meiref);
+	new (this) MusNeume(neume);
 }
 
 void MusNeumeSymbol::calcoffs (int *offst, int value)
@@ -431,59 +490,95 @@ int MusNeumeSymbol::getValue()
 
 void MusNeumeSymbol::updateMeiRefAccid(string accid, int pitch, int octave)
 {
-    if (m_meiref->getName() == "accid") {
-        MeiAttribute *accidattr = m_meiref->getAttribute("accid");
-        if (accidattr == NULL) {
-            m_meiref->addAttribute(MeiAttribute("accid", accid));
-        } else {
-            accidattr->setValue(accid);
-        }
-        MeiAttribute *pnameattr = m_meiref->getAttribute("pname");
-        if (pnameattr == NULL) {
-            m_meiref->addAttribute(MeiAttribute("pname", this->PitchToStr(pitch)));
-        } else {
-            pnameattr->setValue(this->PitchToStr(pitch));
-        }
-        MeiAttribute *octattr = m_meiref->getAttribute("oct");
-        char buffer[1];
-        sprintf(buffer, "%d", octave);
-        string octstr;
-        octstr.assign(buffer, 1);
-        if (octattr == NULL) {
-            m_meiref->addAttribute(MeiAttribute("oct", octstr));
-        } else {
-            octattr->setValue(octstr);
-        }
-    }
+    if (m_meiref->getName() != "accid") {
+		m_meiref->setName("accid");
+		if (m_meiref->getAttributes().size() > 0) {
+			for (vector<MeiAttribute>::iterator i = m_meiref->getAttributes().begin(); i != m_meiref->getAttributes().end(); i++) {
+				std::string name = i->getName();
+				if (name != "xml:id" && name != "facs") {
+					m_meiref->getAttributes().erase(i);
+				}
+			}
+		}
+		if (m_meiref->getChildren().size() > 0) {
+			m_meiref->getChildren().clear();
+		}
+	}
+	MeiAttribute *accidattr = m_meiref->getAttribute("accid");
+	if (accidattr == NULL) {
+		m_meiref->addAttribute(MeiAttribute("accid", accid));
+	} else {
+		accidattr->setValue(accid);
+	}
+	MeiAttribute *pnameattr = m_meiref->getAttribute("pname");
+	if (pnameattr == NULL) {
+		m_meiref->addAttribute(MeiAttribute("pname", this->PitchToStr(pitch)));
+	} else {
+		pnameattr->setValue(this->PitchToStr(pitch));
+	}
+	MeiAttribute *octattr = m_meiref->getAttribute("oct");
+	char buffer[1];
+	sprintf(buffer, "%d", octave);
+	string octstr;
+	octstr.assign(buffer, 1);
+	if (octattr == NULL) {
+		m_meiref->addAttribute(MeiAttribute("oct", octstr));
+	} else {
+		octattr->setValue(octstr);
+	}
 }
 
 void MusNeumeSymbol::updateMeiRefDiv(string form)
 {
-    if (m_meiref->getName() == "division") {
-        MeiAttribute *formattr = m_meiref->getAttribute("form");
-        if (formattr == NULL) {
-            m_meiref->addAttribute(MeiAttribute("form", form));
-        } else {
-            formattr->setValue(form);
-        }
-    }
+    if (m_meiref->getName() != "division") {
+		m_meiref->setName("division");
+		if (m_meiref->getAttributes().size() > 0) {
+			for (vector<MeiAttribute>::iterator i = m_meiref->getAttributes().begin(); i != m_meiref->getAttributes().end(); i++) {
+				std::string name = i->getName();
+				if (name != "xml:id" && name != "facs") {
+					m_meiref->getAttributes().erase(i);
+				}
+			}
+		}
+		if (m_meiref->getChildren().size() > 0) {
+			m_meiref->getChildren().clear();
+		}
+	}
+	MeiAttribute *formattr = m_meiref->getAttribute("form");
+	if (formattr == NULL) {
+		m_meiref->addAttribute(MeiAttribute("form", form));
+	} else {
+		formattr->setValue(form);
+	}
 }
                                        
 void MusNeumeSymbol::updateMeiRefClef(string shape, string line) {
-    if (m_meiref->getName() == "clef") {
-        MeiAttribute *shapeattr = m_meiref->getAttribute("shape");
-        if (shapeattr == NULL) {
-            m_meiref->addAttribute(MeiAttribute("shape", shape));
-        } else {
-            shapeattr->setValue(shape);
-        }
-        MeiAttribute *lineattr = m_meiref->getAttribute("line");
-        if (lineattr == NULL) {
-            m_meiref->addAttribute(MeiAttribute("line", line));
-        } else {
-            lineattr->setValue(line);
-        }
-    }
+    if (m_meiref->getName() != "clef") {
+		m_meiref->setName("clef");
+		if (m_meiref->getAttributes().size() > 0) {
+			for (vector<MeiAttribute>::iterator i = m_meiref->getAttributes().begin(); i != m_meiref->getAttributes().end(); i++) {
+				std::string name = i->getName();
+				if (name != "xml:id" && name != "facs") {
+					m_meiref->getAttributes().erase(i);
+				}
+			}
+		}
+		if (m_meiref->getChildren().size() > 0) {
+			m_meiref->getChildren().clear();
+		}
+	}
+	MeiAttribute *shapeattr = m_meiref->getAttribute("shape");
+	if (shapeattr == NULL) {
+		m_meiref->addAttribute(MeiAttribute("shape", shape));
+	} else {
+		shapeattr->setValue(shape);
+	}
+	MeiAttribute *lineattr = m_meiref->getAttribute("line");
+	if (lineattr == NULL) {
+		m_meiref->addAttribute(MeiAttribute("line", line));
+	} else {
+		lineattr->setValue(line);
+	}
 }
 
 void MusNeumeSymbol::deleteMeiRef() {
@@ -541,4 +636,12 @@ MusNeumeSymbolType MusNeumeSymbol::GetSymbolType() {
 
 MeiElement *MusNeumeSymbol::getMeiRef() {
     return m_meiref;
+}
+
+void MusNeumeSymbol::setMeiRef(MeiElement *element) {
+	m_meiref = element;
+}
+
+void MusNeumeSymbol::newMeiRef() {
+	SetValue(this->value, NULL, 0);
 }

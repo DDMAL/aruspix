@@ -35,6 +35,10 @@ using std::max;
 #include <iostream>
 #include <cstdlib>
 
+#include <uuid/uuid.h>
+#include <mei/mei.h>
+#include <algorithm>
+
 int MusWindow::s_flats[] = {F2, F3, F3, F4, F4, F5, F6, F6, F7, F7, F8, F8};
 int MusWindow::s_sharps[] = {F2, F2, F3, F3, F4, F5, F5, F6, F6, F7, F7, F8};
 
@@ -804,7 +808,75 @@ void MusWindow::OnMouseDClick(wxMouseEvent &event)
 				m_newElement->SetPitch(m_insertcode, m_insertoct);
 			}
 			PrepareCheckPoint( UNDO_PART, MUS_UNDO_STAFF );
-			m_lastEditedElement = m_currentStaff->Insert( m_newElement );
+			
+			//make a new MeiElement with its own zone!
+			if (m_f->GetMeiDocument()) {
+				MusElement *newelement = NULL;
+				MusNeume neume;
+				MusNeumeSymbol neume_symbol;
+				if (m_newElement->IsNeume()) {
+					neume = MusNeume(*(MusNeume*)m_newElement);
+					newelement = &neume;
+				} else if (m_newElement->IsNeumeSymbol()) {
+					neume_symbol = MusNeumeSymbol(*(MusNeumeSymbol*)m_newElement);
+					newelement = &neume_symbol;
+				} else {
+					throw "MEI support only for neumatic notation!";
+				}
+				MusElement *tmp = m_currentStaff->GetFirst();
+				while ( tmp && (tmp->xrel < newelement->xrel) )
+				{
+					if ( m_currentStaff->GetNext( tmp ) )
+						tmp = m_currentStaff->GetNext( tmp );
+					else
+						break;
+				}
+				MeiElement* element = tmp->getMeiRef();
+				MeiElement* zone = new MeiElement("zone", element->getNs());
+				std::string facs;
+				char uuidbuff[36];
+				uuid_t uuidGenerated;
+				uuid_generate(uuidGenerated);
+				uuid_unparse(uuidGenerated, uuidbuff);
+				facs = string(uuidbuff);
+				std::transform(facs.begin(), facs.end(), facs.begin(), ::tolower);
+				facs = "m-" + facs;
+				zone->setId(facs);
+				vector<MeiElement*>::iterator i = element->getZone().getParent().getChildren().begin();
+				while (i != element->getZone().getParent().getChildren().end()) {
+					if (**i == element->getZone()) {
+						element->getZone().getParent().getChildren().insert(i, zone);
+						zone->setParent(element->getZone().getParent());
+						break;
+					} else {
+						i++;
+					}
+				}
+				MeiElement *meiref = new MeiElement("");
+				meiref->setFacs(facs);
+				meiref->setZone(*zone);
+				uuid_generate(uuidGenerated);
+				uuid_unparse(uuidGenerated, uuidbuff);
+				facs = string(uuidbuff);
+				std::transform(facs.begin(), facs.end(), facs.begin(), ::tolower);
+				facs = "m-" + facs;
+				meiref->setId(facs);
+				newelement->setMeiRef(meiref);
+				newelement->newMeiRef();
+				vector<MeiElement*>::iterator it = element->getParent().getChildren().begin();
+				while (it != element->getParent().getChildren().end()) {
+					if ((*it)->getId() == element->getId()) {
+						element->getParent().getChildren().insert(it, meiref);
+						meiref->setParent(element->getParent());
+						break;
+					} else {
+						it++;
+					}
+				}
+				m_lastEditedElement = m_currentStaff->Insert( newelement );
+			} else {
+				m_lastEditedElement = m_currentStaff->Insert( m_newElement );
+			}
 
 			CheckPoint( UNDO_PART, MUS_UNDO_STAFF );
 			OnEndEdition();
@@ -1237,6 +1309,13 @@ void MusWindow::NeumeEditOnKeyDown(wxKeyEvent &event) {
         m_currentStaff->CheckIntegrity();
         CheckPoint( UNDO_PART, MUS_UNDO_STAFF );
     }
+	else if ( event.m_keyCode == WXK_SHIFT )
+	{
+		PrepareCheckPoint( UNDO_PART, MUS_UNDO_STAFF );
+		m_currentElement->SwitchType();
+		m_currentStaff->CheckIntegrity();
+		CheckPoint( UNDO_PART, MUS_UNDO_STAFF );
+	}
     else if ( m_currentElement && m_currentElement->IsNeumeSymbol() &&
              in( event.m_keyCode, 33, 125) ) // any other keycode on symbol (ascii codes)
     {
@@ -1260,7 +1339,7 @@ void MusWindow::NeumeInsertOnKeyDown(wxKeyEvent &event) {
     }	
     else if ( event.m_controlDown && (event.m_keyCode == 'S')) // symbols
     {
-        m_neumesymbol.ResetToNeumeSymbol();
+		m_neumesymbol.ResetToNeumeSymbol();
         m_newElement = &m_neumesymbol;
     }
     else if ( m_newElement && m_newElement->IsNeume() &&

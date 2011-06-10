@@ -1731,15 +1731,18 @@ void RecEnv::OnOpenMEI( wxCommandEvent &event )
 {
     wxASSERT_MSG( m_musPanelPtr, "Panel cannot be NULL ");
 	
-    //if ( !this->ResetFile( ) )
-    //    return;
-	if (!m_recFilePtr->m_imPagePtr) {
-		m_recFilePtr->New();
+    if ( !this->ResetFile( ) )
+        return;
 	
-		m_imControlPtr->Open();
-	}
+	wxString fname = wxFileSelector( "Import MEI - Choose TIFF", wxGetApp().m_lastDirTIFF_in, _T(""), _T(""), IMAGE_FILES, wxFD_OPEN);
+	if (fname.IsEmpty())
+		return;
 	
-	m_recFilePtr->m_imPagePtr->m_img0 = GetImImage(m_imControlPtr, IM_RGB, IM_BYTE); //this is total uninformed hackage.
+	m_recFilePtr->New();
+	
+	m_imControlPtr->Open(fname);
+	
+	m_recFilePtr->m_imPagePtr->m_img0 = GetImImage(m_imControlPtr, IM_RGB, IM_BYTE); //the default settings for GetImImage make the image invert vertically, so we have to invert it back.
 	imImage* imTmp2 = imImageClone( m_recFilePtr->m_imPagePtr->m_img0 );
 	imProcessFlip(m_recFilePtr->m_imPagePtr->m_img0, imTmp2);
 	imImageDestroy(m_recFilePtr->m_imPagePtr->m_img0);

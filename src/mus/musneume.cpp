@@ -28,6 +28,7 @@
 
 
 #include <mei/mei.h>
+#include <uuid/uuid.h>
 #include <exception>
 
 //----------------------------------------------------------------------------
@@ -38,6 +39,13 @@
  * Take an MEIElement <note> and the pitch and octave of the first note in a <neume>
  * create an element that is the difference in pitch.
  */
+MusNeumeElement::MusNeumeElement() : MusElement() {
+	m_meiref = NULL;
+	m_pitch_difference = 0;
+	ornament = NONE;
+	m_element_type = NEUME_ELEMENT_PUNCTUM;
+}
+
 MusNeumeElement::MusNeumeElement(MeiElement &element, int firstpitch, int firstoct) : MusElement() {
     m_meiref = &element;
     MeiAttribute *p = m_meiref->getAttribute("pname");
@@ -83,8 +91,8 @@ int MusNeumeElement::getPitchDifference() {
     return m_pitch_difference;
 }
 
-MeiElement &MusNeumeElement::getMeiElement() {
-    return *m_meiref;
+MeiElement* MusNeumeElement::getMeiElement() {
+    return m_meiref;
 }
 
 NeumeElementType MusNeumeElement::getElementType()
@@ -93,10 +101,31 @@ NeumeElementType MusNeumeElement::getElementType()
 }
 
 void MusNeumeElement::updateMeiRef(string pitch, int oct) {
-    m_meiref->getAttribute("pname")->setValue(pitch);
-    char buf[8];
-    snprintf(buf, 2, "%d", oct);
-    m_meiref->getAttribute("oct")->setValue(string(buf));
+    if (m_meiref->getAttributes().size() > 0) {
+		MeiAttribute *pitchattr = m_meiref->getAttribute("pname");
+		if (pitchattr == NULL) {
+			m_meiref->addAttribute(MeiAttribute("pname",pitch));
+		} else {
+			pitchattr->setValue(pitch);
+		}
+		MeiAttribute *octattr = m_meiref->getAttribute("oct");
+		char buf[8];
+		snprintf(buf, 2, "%d", oct);
+		if (octattr == NULL) {
+			m_meiref->addAttribute(MeiAttribute("oct",string(buf)));
+		} else {
+		octattr->setValue(string(buf));
+		}
+	} else {
+		m_meiref->addAttribute(MeiAttribute("pname",pitch));
+		char buf[8];
+		snprintf(buf, 2, "%d", oct);
+		m_meiref->addAttribute(MeiAttribute("oct",string(buf)));
+	}
+}
+
+void MusNeumeElement::setMeiRef(MeiElement *element) {
+	this->m_meiref = element;
 }
 
 void MusNeumeElement::deleteMeiRef() {
@@ -116,7 +145,7 @@ NeumeOrnament MusNeumeElement::getOrnament() {
 
 MusNeume::MusNeume() : MusElement() {
     TYPE = NEUME;
-    m_type = NEUME_TYPE_CUSTOS; //note: for all practical purposes, this can always be punctum.
+    m_type = NEUME_TYPE_PUNCTUM; //note: for all practical purposes, this can always be punctum.
     // For testing only
     /*MusNeumeElement first = MusNeumeElement(0);
     MusNeumeElement next = MusNeumeElement(1);
@@ -128,7 +157,8 @@ MusNeume::MusNeume() : MusElement() {
     m_pitches.push_back(third);
     m_pitches.push_back(fourth);
     m_pitches.push_back(fifth);*/
-    m_meiref = 0; //this is necessary to avoid garbage when things aren't called from MEIs.
+	m_pitches.push_back(MusNeumeElement());
+    m_meiref = NULL; //this is necessary to avoid garbage when things aren't called from MEIs.
 	ornament = NONE;
 }
 
@@ -180,7 +210,7 @@ MusNeume::MusNeume(MeiElement &element) : MusElement() {
                 if (p == NULL || o == NULL) {
                     throw "missing pitch or octave";
                 }
-                pitch = this->StrToPitch(p->getValue());
+                pitch = StrToPitch(p->getValue());
                 int octave = atoi(o->getValue().c_str());
 				if ( 0 <= octave <= 7 ) {
 					oct = octave;
@@ -250,16 +280,30 @@ void MusNeume::setType(wxString type, wxString variant)
     } else if (type == "clivis") {
         m_type = NEUME_TYPE_CLIVIS;
     } else if (type == "porrectus") {
-        m_type = NEUME_TYPE_PORRECTUS;
+		if (variant == "flexus") {
+			m_type = NEUME_TYPE_PORRECTUS_FLEXUS;
+		} else if (variant == "") {
+			m_type = NEUME_TYPE_PORRECTUS;
+		} else {
+			string t = variant.mb_str();
+			throw "unknown variant on a neume: " + t;
+		}
     } else if (type == "scandicus") {
-        m_type = NEUME_TYPE_SCANDICUS;
+		if (variant == "flexus") {
+			m_type = NEUME_TYPE_SCANDICUS_FLEXUS;
+		} else if (variant == "") {
+			m_type = NEUME_TYPE_SCANDICUS;
+		} else {
+			string t = variant.mb_str();
+			throw "unknown variant on a neume: " + t;
+		}
     } else if (type == "torculus") {
 		if (variant == "resupinus") {
 			m_type = NEUME_TYPE_TORCULUS_RESUPINUS;
 		} else if (variant == "") {
 			m_type = NEUME_TYPE_TORCULUS;
 		} else {
-			string t = type.mb_str();
+			string t = variant.mb_str();
 			throw "unknown variant on a neume: " + t;
 		}
     } else if (type == "compound") {
@@ -272,12 +316,8 @@ void MusNeume::setType(wxString type, wxString variant)
         m_type = NEUME_TYPE_ANCUS;
     } else if (type == "epiphonus" || (type == "podatus" && variant == "liquescent")) { //liquescent isn't represented yet
         m_type = NEUME_TYPE_EPIPHONUS;
-    } else if (type == "porrectus flexus") { //maybe formatted differently?
-        m_type = NEUME_TYPE_PORRECTUS_FLEXUS;
     } else if (type == "salicus") { //maybe scandicus?
         m_type = NEUME_TYPE_SALICUS;
-    } else if (type == "scandicus flexus") {
-        m_type = NEUME_TYPE_SCANDICUS_FLEXUS;
     } else if (type == "cavum") {
 		m_type = NEUME_TYPE_PUNCTUM_WHITE;
 	}else {
@@ -294,8 +334,58 @@ NeumeType MusNeume::getType() {
     return m_type;
 }
 
-MeiElement &MusNeume::getMeiElement() {
-    return *m_meiref;
+MeiElement* MusNeume::getMeiRef() {
+    return m_meiref;
+}
+
+void MusNeume::setMeiRef(MeiElement *element) {
+	this->m_meiref = element;
+}
+
+void MusNeume::newMeiRef() {
+	if (m_type != NEUME_TYPE_CUSTOS) {
+		m_meiref->setName("neume");
+		m_meiref->addChild(new MeiElement("nc"));
+		for (vector<MusNeumeElement>::iterator i = m_pitches.begin(); i != m_pitches.end(); i++) {
+			MeiElement *child = new MeiElement("note");
+			std::string id;
+			char uuidbuff[36];
+			uuid_t uuidGenerated;
+			uuid_generate(uuidGenerated);
+			uuid_unparse(uuidGenerated, uuidbuff);
+			id = string(uuidbuff);
+			std::transform(id.begin(), id.end(), id.begin(), ::tolower);
+			id = "m-" + id;
+			child->setId(id);
+			i->setMeiRef(child);
+			i->updateMeiRef(PitchToStr(this->pitch), this->oct);
+			m_meiref->getChildren()[0]->addChild(child);
+		}
+	}
+	this->SetPitch(this->pitch, this->oct);
+	switch (m_type) {
+		case NEUME_TYPE_ANCUS: m_meiref->addAttribute(MeiAttribute("name","ancus")); break;
+		case NEUME_TYPE_CEPHALICUS: m_meiref->addAttribute(MeiAttribute("name","cephalicus")); break;
+		case NEUME_TYPE_CLIVIS: m_meiref->addAttribute(MeiAttribute("name","clivis")); break;
+		case NEUME_TYPE_EPIPHONUS: m_meiref->addAttribute(MeiAttribute("name","epiphonus")); break;
+		case NEUME_TYPE_PODATUS: m_meiref->addAttribute(MeiAttribute("name","podatus")); break;
+		case NEUME_TYPE_PORRECTUS_FLEXUS: m_meiref->addAttribute(MeiAttribute("variant","flexus"));
+		case NEUME_TYPE_PORRECTUS: m_meiref->addAttribute(MeiAttribute("name","porrectus")); break;
+		case NEUME_TYPE_PUNCTUM_INCLINATUM: m_meiref->getChildren()[0]->addAttribute(MeiAttribute("inclinatum","true"));
+		case NEUME_TYPE_PUNCTUM: m_meiref->addAttribute(MeiAttribute("name","punctum")); break;
+		case NEUME_TYPE_PUNCTUM_WHITE: m_meiref->addAttribute(MeiAttribute("name","cavum")); break;
+		case NEUME_TYPE_SALICUS: m_meiref->addAttribute(MeiAttribute("name","salicus")); break;
+		case NEUME_TYPE_SCANDICUS_FLEXUS: m_meiref->addAttribute(MeiAttribute("variant","flexus"));
+		case NEUME_TYPE_SCANDICUS: m_meiref->addAttribute(MeiAttribute("name","scandicus")); break;
+		case NEUME_TYPE_TORCULUS_RESUPINUS: m_meiref->addAttribute(MeiAttribute("variant","resupinus"));
+		case NEUME_TYPE_TORCULUS_LIQUESCENT: //no implementation yet
+		case NEUME_TYPE_TORCULUS: m_meiref->addAttribute(MeiAttribute("name","torculus")); break;
+		case NEUME_TYPE_VIRGA_LIQUESCENT: //no implementation, probably deprecated
+		case NEUME_TYPE_VIRGA: m_meiref->addAttribute(MeiAttribute("name","virga")); break;
+		case NEUME_TYPE_COMPOUND: m_meiref->addAttribute(MeiAttribute("name","compound")); break;
+		case NEUME_TYPE_CUSTOS: m_meiref->setName("custos"); break;
+		default: break;
+	}
 }
 
 void MusNeume::deleteMeiRef() {
@@ -303,6 +393,59 @@ void MusNeume::deleteMeiRef() {
 		m_meiref->getParent().removeChild(m_meiref);
 	}
 	delete m_meiref;
+}
+
+void MusNeume::SwitchType() {
+	MusNeumeSymbol neume_symb;
+	neume_symb.liaison = this->liaison;
+    neume_symb.dliai = this->dliai;
+    neume_symb.fliai = this->fliai;
+    neume_symb.lie_up = this->lie_up;
+    neume_symb.rel = this->rel;
+    neume_symb.drel = this->drel;
+    neume_symb.frel = this->frel;
+    neume_symb.oct = this->oct;
+    neume_symb.dimin = this->dimin;
+    neume_symb.grp = this->grp;
+    neume_symb._shport = this->_shport;
+    neume_symb.ligat = this->ligat;
+    neume_symb.ElemInvisible = this->ElemInvisible;
+    neume_symb.pointInvisible = this->pointInvisible;
+    neume_symb.existDebord = this->existDebord;
+    neume_symb.fligat = this->fligat;
+    neume_symb.notschowgrp = this->notschowgrp;
+    neume_symb.cone = this->cone;
+    neume_symb.liaisonPointil = this->liaisonPointil;
+    neume_symb.reserve1 = this->reserve1;
+    neume_symb.reserve2 = this->reserve2;
+    neume_symb.ottava = this->ottava;
+    neume_symb.durNum = this->durNum;
+    neume_symb.durDen = this->durDen;
+    neume_symb.offset = this->offset;
+	neume_symb.xrel = this->xrel;
+	neume_symb.dec_y = this->dec_y;
+    neume_symb.debordCode = this->debordCode;
+    neume_symb.debordSize = this->debordSize;
+	neume_symb.no = this->no;
+	neume_symb.code = this->code;
+	neume_symb.pitch = this->pitch;
+	
+	// comparison
+	/*m_im_filename = element.m_im_filename;
+	m_im_staff = element.m_im_staff;
+	m_im_pos = element.m_im_pos;
+	m_cmp_flag = element.m_cmp_flag;
+	m_debord_str = element.m_debord_str;
+	
+	pdebord = NULL;
+	if ( existDebord )
+	{
+		int size = debordSize - sizeof( debordSize ) - sizeof( debordCode );
+		pdebord = malloc( size );
+		memcpy( pdebord, element.pdebord, size );
+	}*/
+	neume_symb.setMeiRef(m_meiref);
+	new (this) MusNeumeSymbol(neume_symb);
 }
 
 vector<MusNeumeElement> MusNeume::getPitches() {
@@ -332,7 +475,9 @@ void MusNeume::SetPitch( int pitch, int oct )
         } else if (testpitch < 1) {
             octave -= floor((1 - testpitch)/7) + 1;
         }
-        i->updateMeiRef(PitchToStr(thispitch), octave);
+		if (i->getMeiElement() != NULL) {
+			i->updateMeiRef(PitchToStr(thispitch), octave);
+		}
     }
     if (m_r) {
         m_r->DoRefresh();
@@ -606,14 +751,14 @@ void MusNeume::DrawSalicus( AxDC *dc, MusStaff *staff )
     leg_line( dc, ynn,bby,this->xrel,ledge, pTaille);
     m_r->festa_string( dc, xn, ynn + 19, nPUNCTUM, staff, this->dimin);
 	m_pitches.at(0).xrel = xn;
-	for (int i = 0; i < m_pitches.size() - 2; i++) {
+	for (unsigned int i = 0; i < m_pitches.size() - 2; i++) {
 		int ynn2 = ynn + (m_r->_espace[pTaille])*((this->m_pitches.at(i)).getPitchDifference());
 		leg_line( dc, ynn,bby,this->xrel,ledge, pTaille);
-		m_r->festa_string( dc, xn, ynn + 19, nPUNCTUM, staff, this->dimin);
+		m_r->festa_string( dc, xn, ynn2 + 19, nPUNCTUM, staff, this->dimin);
 		m_pitches.at(i).xrel = xn;
 		xn += CLIVIS_X_SAME;
 	}
-    int ynn2 = ynn + (m_r->_espace[pTaille])*((this->m_pitches.at(m_pitches.size() - 1)).getPitchDifference());
+    int ynn2 = ynn + (m_r->_espace[pTaille])*((this->m_pitches.at(m_pitches.size() - 2)).getPitchDifference());
     leg_line( dc, ynn2,bby,this->xrel,ledge, pTaille);
     m_r->festa_string( dc, xn, ynn2 + 19, nPES, staff, this->dimin);
 	m_pitches.at(m_pitches.size() - 1).xrel = xn;

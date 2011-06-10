@@ -20,6 +20,7 @@ class AxDC;
 
 #include "musobject.h"
 #include "musdef.h"
+#include "mei/mei.h"
 
 class MusStaff;
 
@@ -46,6 +47,10 @@ public:
 	bool IsSymbol() { return ( TYPE == SYMB ); }
     bool IsNeume() { return ( TYPE == NEUME ); }
 	bool IsNeumeSymbol() { return (TYPE == NEUME_SYMB ); }
+	virtual void SwitchType() {};
+	virtual MeiElement* getMeiRef() { return NULL; };
+	virtual void newMeiRef() {};
+	virtual void setMeiRef(MeiElement *element) {};
 	virtual void deleteMeiRef() {};
 
     //	virtual void SetPitch( int code, int oct, MusStaff *staff = NULL ) {};

@@ -21,6 +21,7 @@
 using std::vector;
 
 #include "muselement.h"
+#include "musneumesymbol.h"
 
 
 #include <mei/mei.h>
@@ -69,6 +70,7 @@ enum NeumeElementType {
 class MusNeumeElement: public MusElement
 {
 public:
+	MusNeumeElement();
     MusNeumeElement(const MusNeumeElement &element);
     MusNeumeElement(MeiElement &meielement, int pitch, int oct);
     //MusNeumeElement(int _pitchDifference);
@@ -76,8 +78,9 @@ public:
     
     int getPitchDifference();
     NeumeElementType getElementType();
-    MeiElement &getMeiElement();
+    MeiElement* getMeiElement();
     void updateMeiRef(string pitch, int oct);
+	void setMeiRef(MeiElement *element);
 	void deleteMeiRef();
 	NeumeOrnament getOrnament();
 	
@@ -100,9 +103,14 @@ public:
     void setType(wxString type, wxString variant);
     void setType(NeumeType type);
     NeumeType getType();
-    MeiElement &getMeiElement();
-    vector<MusNeumeElement> getPitches();
+	void SwitchType();
+	vector<MusNeumeElement> getPitches();
+	
+	//MEI stuff
+    MeiElement* getMeiRef();
 	void deleteMeiRef();
+	void newMeiRef();
+	void setMeiRef(MeiElement *element);
     
     //Drawing code
     virtual void Draw( AxDC *dc, MusStaff *staff);
@@ -134,11 +142,7 @@ public:
     
     virtual void SetPitch( int pitch, int oct );
     //virtual void SetValue( int value, MusStaff *staff = NULL, int vflag = 0 );
-    //int GetValue();
-    
-    //helper debug method
-    //void printNeumeList();
-    
+    //int GetValue();    
 
 private:
     void readNoteContainer(MeiElement &nc, int pitch, int oct);
@@ -146,6 +150,7 @@ private:
     NeumeOrnament ornament;
     NeumeType m_type;
     MeiElement *m_meiref;
+	
 
     vector<MusNeumeElement> m_pitches;
 };

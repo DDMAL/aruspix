@@ -78,97 +78,71 @@ MusMeiInput::~MusMeiInput()
 {
 }
 
-int FacsTable::GetUX(std::string key)
+MeiElement* FacsTable::GetZone(std::string key)
 {
-	int x = -1;
+	MeiElement* result = NULL;
 	for (vector<FacsEntry>::iterator i = entries.begin(); i != entries.end(); i++) {
 		if (i->key == key) {
-			x = i->ulx;
+			result = i->zone;
 		}
 	}
-	return x;
+	return result;
 }
 
-int FacsTable::GetLX(std::string key)
-{
-	int x = -1;
-	for (vector<FacsEntry>::iterator i = entries.begin(); i != entries.end(); i++) {
-		if (i->key == key) {
-			x = i->lrx;
-		}
-	}
-	return x;
-}
-
-int FacsTable::GetUY(std::string key)
-{
-	int y = -1;
-	for (vector<FacsEntry>::iterator i = entries.begin(); i != entries.end(); i++) {
-		if (i->key == key) {
-			y = i->uly;
-		}
-	}
-	return y;
-}
-
-int FacsTable::GetLY(std::string key)
-{
-	int y = -1;
-	for (vector<FacsEntry>::iterator i = entries.begin(); i != entries.end(); i++) {
-		if (i->key == key) {
-			y = i->lry;
-		}
-	}
-	return y;
-}
-
-void FacsTable::add(std::string key, int X1, int X2, int Y1, int Y2)
+void FacsTable::add(std::string key, MeiElement *zone)
 {
 	FacsEntry entry;
 	entry.key = key;
-	entry.ulx = X1;
-	entry.lrx = X2;
-	entry.uly = Y1;
-	entry.lry = Y2;
+	entry.zone = zone;
 	entries.push_back(entry);
+}
+
+void FacsTable::replace(std::string key, MeiElement *zone)
+{
+	vector<FacsEntry>::iterator i = entries.begin();
+	while (i != entries.end()) {
+		if (i->zone == zone) {
+			i->key = key;
+			break;
+		} else {
+			i++;
+		}
+	}
 }
 
 void MusMeiInput::ReadFacsTable(MeiElement *element, FacsTable *table)
 {
 	if (element->getChildren().size() > 0) {
 		for (vector<MeiElement*>::iterator i = element->getChildren().begin(); i != element->getChildren().end(); i++) {
-			MeiElement e = **i;
-			if (e.getName() == "zone") {
+			MeiElement* e = *i;
+			if (e->getName() == "zone") {
 				std::string id;
-				if (e.getId() != "") {
-					id = e.getId();
+				if (e->getId() != "") {
+					id = e->getId();
 				} else {
 					throw "missing xml:id attribute on zone element";
 				}
-				int ulx = atoi(e.getAttribute("ulx")->getValue().c_str());
-				int lrx = atoi(e.getAttribute("lrx")->getValue().c_str());
-				int uly = atoi(e.getAttribute("uly")->getValue().c_str());
-				int lry = atoi(e.getAttribute("lry")->getValue().c_str());
-				table->add(id, ulx, lrx, uly, lry);
-			} else if (e.getName() == "system") {
-				std::string id;
-				if (e.getId() != "") {
-					id = e.getId();
-				} else {
-					throw "missing xml:id attribute on system element";
-				}
+				table->add(id, e);
+			} else if (e->getName() == "system") {
 				std::string facs;
-				if (e.getFacs() != NULL) {
-					facs = e.getFacs()->getValue();
+				if (e->getFacs() != NULL) {
+					facs = e->getFacs()->getValue();
 				} else {
-					throw "missing facs attribute on system element";
+					throw "missing facs on a system element";
 				}
-				int ulx = table->GetUX(facs);
-				int lrx = table->GetLX(facs);
-				int uly = table->GetUY(facs);
-				int lry = table->GetLY(facs);
-				table->add(id, ulx, lrx, uly, lry);
-			}				
+				std::string id;
+				if (e->getId() != "") {
+					id = e->getId();
+				} else {
+					throw "missing xml:id on a system element";
+				}
+				MeiElement* zone = table->GetZone(facs); //this will have already been assigned by now.
+				if (zone != NULL) {
+					table->replace(id,zone);
+				} else {
+					throw "zone not found in FacsTable";
+				}
+			}
 			ReadFacsTable(*i,&*table);
 		}
 	}
@@ -177,12 +151,14 @@ void MusMeiInput::ReadFacsTable(MeiElement *element, FacsTable *table)
 void MusMeiInput::ReadElement(MeiElement *element, FacsTable *table)
 {
 	int insertx;
-	if (element->getFacs() != NULL) {
+	if (element->getFacs() != NULL) { //if it has a facs, there must be a corresponding zone for the MEI to validate...?
+		MeiElement *zone = table->GetZone(element->getFacs()->getValue());
+		element->setZone(*zone);
 		if (m_currentStaff) {
 			if (m_currentStaff->GetLast()) {
-				insertx = (table->GetUX(element->getFacs()->getValue()))/2 - m_currentStaff->GetLast()->xrel;
+				insertx = atoi(zone->getAttribute("ulx")->getValue().c_str())/2 - m_currentStaff->GetLast()->xrel;
 			} else {
-				insertx = (table->GetUX(element->getFacs()->getValue()))/2 - m_currentStaff->xrel;
+				insertx = atoi(zone->getAttribute("ulx")->getValue().c_str())/2 - m_currentStaff->xrel;
 			}
 		}
 	}
@@ -515,12 +491,14 @@ bool MusMeiInput::mei_staff(MeiElement *element, FacsTable *table) {
 		staff->m_meiref = element;
         staff->portNbLine = 4; //added as experiment --Jamie
         staff->no = n - 1;
-		double ymid = (table->GetLY(element->getAttribute("systemref")->getValue()) + table->GetUY(element->getAttribute("systemref")->getValue()))/2.0;
+		MeiElement* zone = table->GetZone(element->getAttribute("systemref")->getValue());
+		double ymid = (atoi(zone->getAttribute("lry")->getValue().c_str()) + atoi(zone->getAttribute("uly")->getValue().c_str()))/2.0;
         if (n == 1) {
             staff->ecart = (ymid*(1 + 20.0/image) - 30.0)/20.0 - 1.0; // for the first staff, we decrease the top space to account for the "border" on the MusFile
-            m_file->m_fheader.param.MargeGAUCHEIMPAIRE = (int)((double)(table->GetUX(element->getAttribute("systemref")->getValue()))/10.0); // and the margin as well
+            m_file->m_fheader.param.MargeGAUCHEIMPAIRE = (int)((double)(atoi(zone->getAttribute("ulx")->getValue().c_str()))/10.0); // and the margin as well
         } else {
-			double ymid2 = (table->GetLY(m_page->m_staves[staff->no - 1].m_meiref->getAttribute("systemref")->getValue()) + table->GetUY(m_page->m_staves[staff->no - 1].m_meiref->getAttribute("systemref")->getValue()))/2.0;
+			MeiElement* zone2 = table->GetZone(m_page->m_staves[staff->no - 1].m_meiref->getAttribute("systemref")->getValue());
+			double ymid2 = (atoi(zone2->getAttribute("lry")->getValue().c_str()) + atoi(zone2->getAttribute("uly")->getValue().c_str()))/2.0;
 			staff->ecart = ((ymid - ymid2)*(1 + 20.0/image) - 60)/20.0;
 		}
         m_page->m_staves.Add( staff );
