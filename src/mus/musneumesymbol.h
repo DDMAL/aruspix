@@ -63,7 +63,7 @@ public:
 	//MEI stuff
 	MeiElement *getMeiRef();
 	void setMeiRef(MeiElement *element);
-	void newMeiRef();
+	void setNewMeiRef();
 	void deleteMeiRef();
 
 private:

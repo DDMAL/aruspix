@@ -109,7 +109,7 @@ public:
 	//MEI stuff
     MeiElement* getMeiRef();
 	void deleteMeiRef();
-	void newMeiRef();
+	void setNewMeiRef();
 	void setMeiRef(MeiElement *element);
     
     //Drawing code

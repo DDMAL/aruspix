@@ -342,7 +342,7 @@ void MusNeume::setMeiRef(MeiElement *element) {
 	this->m_meiref = element;
 }
 
-void MusNeume::newMeiRef() {
+void MusNeume::setNewMeiRef() {
 	if (m_type != NEUME_TYPE_CUSTOS) {
 		m_meiref->setName("neume");
 		m_meiref->addChild(new MeiElement("nc"));
@@ -444,7 +444,7 @@ void MusNeume::SwitchType() {
 		pdebord = malloc( size );
 		memcpy( pdebord, element.pdebord, size );
 	}*/
-	neume_symb.setMeiRef(m_meiref);
+	neume_symb.setMeiRef(this->m_meiref);
 	new (this) MusNeumeSymbol(neume_symb);
 }
 

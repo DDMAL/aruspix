@@ -496,7 +496,8 @@ void MusNeumeSymbol::updateMeiRefAccid(string accid, int pitch, int octave)
 			for (vector<MeiAttribute>::iterator i = m_meiref->getAttributes().begin(); i != m_meiref->getAttributes().end(); i++) {
 				std::string name = i->getName();
 				if (name != "xml:id" && name != "facs") {
-					m_meiref->getAttributes().erase(i);
+					i = m_meiref->getAttributes().erase(i);
+					i--;
 				}
 			}
 		}
@@ -536,7 +537,8 @@ void MusNeumeSymbol::updateMeiRefDiv(string form)
 			for (vector<MeiAttribute>::iterator i = m_meiref->getAttributes().begin(); i != m_meiref->getAttributes().end(); i++) {
 				std::string name = i->getName();
 				if (name != "xml:id" && name != "facs") {
-					m_meiref->getAttributes().erase(i);
+					i = m_meiref->getAttributes().erase(i);
+					i--;
 				}
 			}
 		}
@@ -559,7 +561,8 @@ void MusNeumeSymbol::updateMeiRefClef(string shape, string line) {
 			for (vector<MeiAttribute>::iterator i = m_meiref->getAttributes().begin(); i != m_meiref->getAttributes().end(); i++) {
 				std::string name = i->getName();
 				if (name != "xml:id" && name != "facs") {
-					m_meiref->getAttributes().erase(i);
+					i = m_meiref->getAttributes().erase(i);
+					i--;
 				}
 			}
 		}
@@ -642,6 +645,6 @@ void MusNeumeSymbol::setMeiRef(MeiElement *element) {
 	m_meiref = element;
 }
 
-void MusNeumeSymbol::newMeiRef() {
+void MusNeumeSymbol::setNewMeiRef() {
 	SetValue(this->value, NULL, 0);
 }
