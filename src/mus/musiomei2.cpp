@@ -143,7 +143,7 @@ void MusMeiInput::ReadFacsTable(MeiElement *element, FacsTable *table)
 					throw "zone not found in FacsTable";
 				}
 			}
-			ReadFacsTable(*i,&*table);
+			ReadFacsTable(*i,table);
 		}
 	}
 }
@@ -151,9 +151,14 @@ void MusMeiInput::ReadFacsTable(MeiElement *element, FacsTable *table)
 void MusMeiInput::ReadElement(MeiElement *element, FacsTable *table)
 {
 	int insertx;
-	if (element->getFacs() != NULL) { //if it has a facs, there must be a corresponding zone for the MEI to validate...?
-		MeiElement *zone = table->GetZone(element->getFacs()->getValue());
-		element->setZone(*zone);
+	if (element->getFacs() != NULL && element->getName() != "system") { //if it has a facs, there must be a corresponding zone for the MEI to validate...?
+		std::string facs = element->getFacs()->getValue();
+		MeiElement *zone = table->GetZone(facs);
+		if (zone != NULL) {
+			element->setZone(zone);
+		} else {
+			throw "no zone for facs!";
+		}
 		if (m_currentStaff) {
 			if (m_currentStaff->GetLast()) {
 				insertx = atoi(zone->getAttribute("ulx")->getValue().c_str())/2 - m_currentStaff->GetLast()->xrel;
@@ -171,6 +176,7 @@ void MusMeiInput::ReadElement(MeiElement *element, FacsTable *table)
 			}
         }
         MusNeume *neume = new MusNeume(*element);
+		neume->setMeiStaffZone(m_currentStaff->m_meiref->getZone());
         m_currentStaff->Append(neume, insertx);
     } else if (element->getName() == "division" || element->getName() == "clef" || element->getName() == "accid") {
         if (element->getName() == "accid") {
@@ -180,9 +186,13 @@ void MusMeiInput::ReadElement(MeiElement *element, FacsTable *table)
                 element->addAttribute(MeiAttribute("oct","4"));
             }
         }
-        MusNeumeSymbol *neume_element = new MusNeumeSymbol(*element);
-        m_currentStaff->Append(neume_element, insertx);
+        MusNeumeSymbol *neume_symbol = new MusNeumeSymbol(*element);
+		neume_symbol->setMeiStaffZone(m_currentStaff->m_meiref->getZone());
+        m_currentStaff->Append(neume_symbol, insertx);
     } else if (element->getName() == "sb") {
+		std::string systemref = element->getAttribute("systemref")->getValue();
+		MeiElement* zone = table->GetZone(systemref);
+		element->setZone(zone);
         mei_staff(element, table);
 		//} else if (element->getName() == "layer") {
 		//    mei_layer(element);
@@ -488,10 +498,10 @@ bool MusMeiInput::mei_staff(MeiElement *element, FacsTable *table) {
         // we tolerate that the staff has not been created in a scoredef
         // n must not be bigger that the previous id + 1;
         MusStaff *staff = new MusStaff();
-		staff->m_meiref = element;
         staff->portNbLine = 4; //added as experiment --Jamie
         staff->no = n - 1;
-		MeiElement* zone = table->GetZone(element->getAttribute("systemref")->getValue());
+		staff->m_meiref = element;
+		MeiElement *zone = staff->m_meiref->getZone();
 		double ymid = (atoi(zone->getAttribute("lry")->getValue().c_str()) + atoi(zone->getAttribute("uly")->getValue().c_str()))/2.0;
         if (n == 1) {
             staff->ecart = (ymid*(1 + 20.0/image) - 30.0)/20.0 - 1.0; // for the first staff, we decrease the top space to account for the "border" on the MusFile

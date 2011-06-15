@@ -21,6 +21,7 @@ using std::max;
 #endif
 #include "wx/fontdlg.h"
 #include "wx/fontutil.h"
+#include "wx/valgen.h"
 
 #include "RtMidi.h"
 
@@ -41,6 +42,35 @@ int MusWindow::s_flats[] = {F2, F3, F3, F4, F4, F5, F6, F6, F7, F7, F8, F8};
 int MusWindow::s_sharps[] = {F2, F2, F3, F3, F4, F5, F5, F6, F6, F7, F7, F8};
 
 #define MUS_BORDER_AROUND_PAGE 40
+
+enum {
+	NEW_NEUME_ANCUS = 0,
+	NEW_NEUME_CAVUM,
+	NEW_NEUME_CEPHALICUS,
+	NEW_NEUME_CLIVIS,
+	NEW_NEUME_COMPOUND,
+	NEW_NEUME_CUSTOS,
+	NEW_NEUME_EPIPHONUS,
+	NEW_NEUME_PODATUS,
+	NEW_NEUME_PORRECTUS,
+	NEW_NEUME_PUNCTUM,
+	NEW_NEUME_SALICUS,
+	NEW_NEUME_SCANDICUS,
+	NEW_NEUME_TORCULUS,
+	NEW_NEUME_VIRGA
+};
+
+enum {
+	NEW_NEUME_NONE = 0,
+	NEW_NEUME_FLEXUS,
+	NEW_NEUME_RESUPINUS
+};
+
+int NewNeumeDlg::s_neumetype = NEW_NEUME_PUNCTUM;
+int NewNeumeDlg::s_variant = NEW_NEUME_NONE;
+int NewNeumeDlg::s_nbpitches = 1;
+bool NewNeumeDlg::s_inclinatum = false;
+bool NewNeumeDlg::s_quilisma = false;
 
 
 //----------------------------------------------------------------------------
@@ -78,7 +108,8 @@ MusWindow::MusWindow( wxWindow *parent, wxWindowID id,
     const wxPoint &position, const wxSize& size, long style, bool center ) :
     wxScrolledWindow( parent, id, position, size, style ), MusRC( ), AxUndo( 100 )
 {
-    m_newElement = NULL;
+    parentwindow = parent;
+	m_newElement = NULL;
 	m_bufferElement = NULL;
     m_lastEditedElement = NULL;
 	
@@ -809,38 +840,108 @@ void MusWindow::OnMouseDClick(wxMouseEvent &event)
 			
 			//make a new MeiElement with its own zone!
 			if (m_f->GetMeiDocument()) {
-				MusElement *newelement = NULL;
-				MusNeume neume;
-				MusNeumeSymbol neume_symbol;
-				if (m_newElement->IsNeume()) {
-					neume = MusNeume(*(MusNeume*)m_newElement);
-					newelement = &neume;
-				} else if (m_newElement->IsNeumeSymbol()) {
-					neume_symbol = MusNeumeSymbol(*(MusNeumeSymbol*)m_newElement);
-					newelement = &neume_symbol;
-				} else {
-					throw "MEI support only for neumatic notation!";
-				}
-				MusElement *tmp = m_currentStaff->GetFirst();
-				while ( tmp && (tmp->xrel < newelement->xrel) )
-				{
-					if ( m_currentStaff->GetNext( tmp ) )
-						tmp = m_currentStaff->GetNext( tmp );
-					else
-						break;
-				}
-				newelement->newMeiRef(tmp);
-				m_lastEditedElement = m_currentStaff->Insert( newelement );
+				NewMeiNeumeElement();
 			} else {
 				m_lastEditedElement = m_currentStaff->Insert( m_newElement );
 			}
-
 			CheckPoint( UNDO_PART, MUS_UNDO_STAFF );
 			OnEndEdition();
 		}
 
 	}
 	event.Skip();
+}
+
+void MusWindow::NewMeiNeumeElement()
+{
+	MusElement *newelement = NULL;
+	MusNeume neume;
+	MusNeumeSymbol neume_symbol;
+	if (m_newElement->IsNeume()) {
+		neume = MusNeume(*(MusNeume*)m_newElement);
+		NewNeumeDlg dlg( parentwindow, -1, "Create a new neume" );
+		dlg.Center(wxBOTH);
+		if (dlg.ShowModal() != wxID_OK)
+			return;
+		
+		NeumeType n_type;
+		const short n = dlg.s_nbpitches;
+		vector<int> pdiffs (n,0);
+		//for (int i = 0; i < sizeof(pdiffs)/sizeof(int); i++) {
+		//	pdiffs[i] = 0;
+		//}
+		
+		//do something if they enter the wrong number of pitches
+		
+		switch(NewNeumeDlg::s_neumetype) {
+			case NEW_NEUME_ANCUS: n_type = NEUME_TYPE_ANCUS; break;
+			case NEW_NEUME_CAVUM: n_type = NEUME_TYPE_PUNCTUM_WHITE; break;
+			case NEW_NEUME_CEPHALICUS: n_type = NEUME_TYPE_CEPHALICUS; pdiffs[1] = -1; break;
+			case NEW_NEUME_CLIVIS: n_type = NEUME_TYPE_CLIVIS; pdiffs[1] = -1; break;
+			case NEW_NEUME_COMPOUND: n_type = NEUME_TYPE_COMPOUND; break;
+			case NEW_NEUME_CUSTOS: n_type = NEUME_TYPE_CUSTOS; break;
+			case NEW_NEUME_EPIPHONUS: n_type = NEUME_TYPE_EPIPHONUS; pdiffs[1] = 1; break;
+			case NEW_NEUME_PODATUS: n_type = NEUME_TYPE_PODATUS; pdiffs[1] = 2; break;
+			case NEW_NEUME_PORRECTUS:
+				switch (NewNeumeDlg::s_variant) {
+					default:
+					case NEW_NEUME_RESUPINUS:
+					case NEW_NEUME_NONE: n_type = NEUME_TYPE_PORRECTUS; pdiffs[1] = -2; pdiffs[2] = 0; break;
+					case NEW_NEUME_FLEXUS: n_type = NEUME_TYPE_PORRECTUS_FLEXUS; pdiffs[1] = -2; pdiffs[2] = -1; pdiffs[3] = -3; break;
+				} break;
+			case NEW_NEUME_PUNCTUM:
+				if (NewNeumeDlg::s_inclinatum) {
+					n_type = NEUME_TYPE_PUNCTUM_INCLINATUM;
+				} else {
+					n_type = NEUME_TYPE_PUNCTUM;
+				} break;
+			case NEW_NEUME_SALICUS: n_type = NEUME_TYPE_SALICUS; pdiffs[1] = 1; pdiffs[2] = 3; break;
+			case NEW_NEUME_SCANDICUS:
+				switch (NewNeumeDlg::s_variant) {
+					default:
+					case NEW_NEUME_RESUPINUS:
+					case NEW_NEUME_NONE: n_type = NEUME_TYPE_SCANDICUS; break;
+					case NEW_NEUME_FLEXUS: n_type = NEUME_TYPE_SCANDICUS_FLEXUS; break;
+				} break;
+			case NEW_NEUME_TORCULUS:
+				switch (NewNeumeDlg::s_variant) {
+					default:
+					case NEW_NEUME_NONE:
+					case NEW_NEUME_FLEXUS: n_type = NEUME_TYPE_TORCULUS; pdiffs[1] = 1; pdiffs[2] = 0; break;
+					case NEW_NEUME_RESUPINUS: n_type = NEUME_TYPE_TORCULUS_RESUPINUS; pdiffs[1] = 1; pdiffs[2] = 0; pdiffs[3] = 1; break;
+				} break;
+			case NEW_NEUME_VIRGA: n_type = NEUME_TYPE_VIRGA; break;
+		}
+		neume.setType(n_type);
+		for (int i = 0; i < NewNeumeDlg::s_nbpitches; i++) {
+			MusNeumeElement note = MusNeumeElement(pdiffs[i]);
+			neume.m_pitches.push_back(note);
+		}
+		if (NewNeumeDlg::s_inclinatum) {
+			neume.inclinatum = true;
+		}
+		if (NewNeumeDlg::s_quilisma) {
+			neume.quilisma = true;
+		}
+		newelement = &neume;
+	} else if (m_newElement->IsNeumeSymbol()) {
+		neume_symbol = MusNeumeSymbol(*(MusNeumeSymbol*)m_newElement);
+		newelement = &neume_symbol;
+	} else {
+		throw "MEI support only for neumatic notation!";
+	}
+	newelement->newmeielement = true;
+	newelement->setMeiStaffZone(m_currentStaff->m_meiref->getZone());
+	MusElement *tmp = m_currentStaff->GetFirst();
+	while ( tmp && (tmp->xrel < newelement->xrel) )
+	{
+		if ( m_currentStaff->GetNext( tmp ) )
+			tmp = m_currentStaff->GetNext( tmp );
+		else
+			break;
+	}
+	newelement->newMeiRef(tmp);
+	m_lastEditedElement = m_currentStaff->Insert( newelement );
 }
 
 void MusWindow::OnMouseLeftUp(wxMouseEvent &event)
@@ -1009,6 +1110,9 @@ void MusWindow::OnMouseMotion(wxMouseEvent &event)
 		{
 			// TODO m_currentElement->ClearElement( &dc, m_currentStaff );
 			m_currentElement->xrel += ( m_insertx - m_dragging_x );
+			if (m_currentElement->newmeielement) {
+				m_currentElement->updateMeiRef();
+			}
 			m_dragging_x = m_insertx;
 			if ( m_editorMode == MUS_EDITOR_EDIT ) {
 				m_currentStaff->CheckIntegrity();
@@ -1262,6 +1366,9 @@ void MusWindow::NeumeEditOnKeyDown(wxKeyEvent &event) {
         } else {
             m_currentElement->xrel +=3;
         }
+		if (m_currentElement->newmeielement) {
+			m_currentElement->updateMeiRef();
+		}
         this->Refresh();
         m_currentStaff->CheckIntegrity();
         CheckPoint( UNDO_PART, MUS_UNDO_STAFF );
@@ -1269,7 +1376,54 @@ void MusWindow::NeumeEditOnKeyDown(wxKeyEvent &event) {
 	else if ( event.m_keyCode == WXK_SHIFT )
 	{
 		PrepareCheckPoint( UNDO_PART, MUS_UNDO_STAFF );
-		m_currentElement->SwitchType();
+		MusElement *newelement;
+		MusNeumeSymbol neumesymb = MusNeumeSymbol();
+		MusNeume neume = MusNeume();
+		if (m_currentElement->IsNeume())  {
+			newelement = new MusNeumeSymbol();
+		} else if (m_currentElement->IsNeumeSymbol()) {
+			newelement = new MusNeume();
+		}
+		newelement->liaison = m_currentElement->liaison;
+		newelement->dliai = m_currentElement->dliai;
+		newelement->fliai = m_currentElement->fliai;
+		newelement->lie_up = m_currentElement->lie_up;
+		newelement->rel = m_currentElement->rel;
+		newelement->drel = m_currentElement->drel;
+		newelement->frel = m_currentElement->frel;
+		newelement->oct = m_currentElement->oct;
+		newelement->dimin = m_currentElement->dimin;
+		newelement->grp = m_currentElement->grp;
+		newelement->_shport = m_currentElement->_shport;
+		newelement->ligat = m_currentElement->ligat;
+		newelement->ElemInvisible = m_currentElement->ElemInvisible;
+		newelement->pointInvisible = m_currentElement->pointInvisible;
+		newelement->existDebord = m_currentElement->existDebord;
+		newelement->fligat = m_currentElement->fligat;
+		newelement->notschowgrp = m_currentElement->notschowgrp;
+		newelement->cone = m_currentElement->cone;
+		newelement->liaisonPointil = m_currentElement->liaisonPointil;
+		newelement->reserve1 = m_currentElement->reserve1;
+		newelement->reserve2 = m_currentElement->reserve2;
+		newelement->ottava = m_currentElement->ottava;
+		newelement->durNum = m_currentElement->durNum;
+		newelement->durDen = m_currentElement->durDen;
+		newelement->offset = m_currentElement->offset;
+		newelement->xrel = m_currentElement->xrel;
+		newelement->dec_y = m_currentElement->dec_y;
+		newelement->debordCode = m_currentElement->debordCode;
+		newelement->debordSize = m_currentElement->debordSize;
+		newelement->no = m_currentElement->no;
+		newelement->code = m_currentElement->code;
+		newelement->pitch = m_currentElement->pitch;
+		if (m_f->GetMeiDocument()) {
+			newelement->newmeielement = true;
+			newelement->setMeiRef(m_currentElement->getMeiRef());
+			newelement->setMeiStaffZone(m_currentStaff->m_meiref->getZone());
+			newelement->updateMeiRef();
+		}
+		m_currentStaff->Delete(m_currentElement);
+		m_currentElement = m_currentStaff->Insert(newelement);
 		m_currentStaff->CheckIntegrity();
 		CheckPoint( UNDO_PART, MUS_UNDO_STAFF );
 	}
@@ -2000,4 +2154,23 @@ void MusWindow::OnSize(wxSizeEvent &event)
 	Resize();
 }
 
+//----------------------------------------------------------------------------
+// NewNeumeDlg
+//----------------------------------------------------------------------------
 
+BEGIN_EVENT_TABLE(NewNeumeDlg,wxDialog)
+//EVT_RADIOBOX(ID5_NOTATION, EdtNewDlg::OnNotationChange)
+END_EVENT_TABLE()
+
+NewNeumeDlg::NewNeumeDlg( wxWindow *parent, wxWindowID id, const wxString &title,
+					 const wxPoint &position, const wxSize& size, long style ) :
+wxDialog( parent, id, title, position, size, style )
+{
+    NewNeumeDlgFunc( this, TRUE );
+    
+    this->GetCbNeumeType()->SetValidator(wxGenericValidator(&NewNeumeDlg::s_neumetype));
+	this->GetRbVariant()->SetValidator(wxGenericValidator(&NewNeumeDlg::s_variant));
+    this->GetScNbPitches()->SetValidator(wxGenericValidator(&NewNeumeDlg::s_nbpitches));
+    this->GetCxInclinatum()->SetValidator(wxGenericValidator(&NewNeumeDlg::s_inclinatum));
+    this->GetCxQuilisma()->SetValidator(wxGenericValidator(&NewNeumeDlg::s_quilisma)); 
+}

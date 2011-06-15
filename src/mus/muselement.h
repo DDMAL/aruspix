@@ -47,12 +47,15 @@ public:
 	bool IsSymbol() { return ( TYPE == SYMB ); }
     bool IsNeume() { return ( TYPE == NEUME ); }
 	bool IsNeumeSymbol() { return (TYPE == NEUME_SYMB ); }
-	virtual void SwitchType() {};
+	bool IsNeumeElement() { return (TYPE == NEUME_ELMT); }
+	
+	//MEI stuff
 	virtual MeiElement* getMeiRef() { return NULL; };
-	void newMeiRef(MusElement *previous);
-	virtual void setNewMeiRef() {};
+	virtual void updateMeiRef() {};
 	virtual void setMeiRef(MeiElement *element) {};
+	virtual void setMeiStaffZone(MeiElement *element) {};
 	virtual void deleteMeiRef() {};
+	void newMeiRef(MusElement* previous);
 
     //	virtual void SetPitch( int code, int oct, MusStaff *staff = NULL ) {};
 	virtual void SetPitch( int code, int oct ) {};
@@ -129,6 +132,7 @@ public:
 	/** from symbol and note !! à l'exporation en wwg unsigned char dans note !! */
 	unsigned short code;
 	unsigned short pitch; //for neumes; this is the pitch of the first note in a neume.
+	bool newmeielement;
 	
 	// additional information for comparison
 	wxString m_im_filename;

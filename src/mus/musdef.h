@@ -32,6 +32,7 @@ VERSION DOS.*/
 #define SYMB 1
 #define NEUME 2
 #define NEUME_SYMB 3
+#define NEUME_ELMT 4
 
 #define _NOT 0	/* pour bitflag silence/note de struct note */
 #define _SIL 1

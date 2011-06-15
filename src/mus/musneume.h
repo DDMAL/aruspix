@@ -21,8 +21,6 @@
 using std::vector;
 
 #include "muselement.h"
-#include "musneumesymbol.h"
-
 
 #include <mei/mei.h>
 
@@ -73,14 +71,15 @@ public:
 	MusNeumeElement();
     MusNeumeElement(const MusNeumeElement &element);
     MusNeumeElement(MeiElement &meielement, int pitch, int oct);
-    //MusNeumeElement(int _pitchDifference);
+    MusNeumeElement(int _pitchDifference);
     virtual ~MusNeumeElement() {}
     
     int getPitchDifference();
     NeumeElementType getElementType();
     MeiElement* getMeiElement();
-    void updateMeiRef(string pitch, int oct);
-	void setMeiRef(MeiElement *element);
+    void updateMeiElement(string pitch, int oct);
+	void updateMeiZone();
+	void setMeiElement(MeiElement *element);
 	void deleteMeiRef();
 	NeumeOrnament getOrnament();
 	
@@ -103,13 +102,14 @@ public:
     void setType(wxString type, wxString variant);
     void setType(NeumeType type);
     NeumeType getType();
-	void SwitchType();
 	vector<MusNeumeElement> getPitches();
 	
 	//MEI stuff
     MeiElement* getMeiRef();
 	void deleteMeiRef();
-	void setNewMeiRef();
+	void updateMeiRef();
+	void updateMeiZone();
+	void setMeiStaffZone(MeiElement *element);
 	void setMeiRef(MeiElement *element);
     
     //Drawing code
@@ -142,7 +142,13 @@ public:
     
     virtual void SetPitch( int pitch, int oct );
     //virtual void SetValue( int value, MusStaff *staff = NULL, int vflag = 0 );
-    //int GetValue();    
+    //int GetValue(); 
+	
+	
+	//this is mostly for MEI
+	bool inclinatum;
+	bool quilisma;
+	vector<MusNeumeElement> m_pitches;
 
 private:
     void readNoteContainer(MeiElement &nc, int pitch, int oct);
@@ -150,9 +156,7 @@ private:
     NeumeOrnament ornament;
     NeumeType m_type;
     MeiElement *m_meiref;
-	
-
-    vector<MusNeumeElement> m_pitches;
+	MeiElement *m_meistaffzone;
 };
 
 #endif // __MUS_NEUME_H__

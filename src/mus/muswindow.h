@@ -18,6 +18,7 @@
 
 #include "musrc.h"
 
+#include "mus_wdr.h"
 #include "app/axundo.h"
 
 class MusToolPanel;
@@ -170,9 +171,45 @@ private:
     void NeumeInsertOnKeyDown(wxKeyEvent &event);
     void MensuralEditOnKeyDown(wxKeyEvent &event);
     void MensuralInsertOnKeyDown(wxKeyEvent &event);
+	void NewMeiNeumeElement();
     
+	wxWindow* parentwindow;
+	
     DECLARE_EVENT_TABLE()
     DECLARE_DYNAMIC_CLASS(MusWindow)
+};
+
+//----------------------------------------------------------------------------
+// NewNeumeDlg
+//----------------------------------------------------------------------------
+
+class NewNeumeDlg: public wxDialog
+{
+public:
+    // constructors and destructors
+    NewNeumeDlg( wxWindow *parent, wxWindowID id, const wxString &title,
+			  const wxPoint& pos = wxDefaultPosition,
+			  const wxSize& size = wxDefaultSize,
+			  long style = wxDEFAULT_DIALOG_STYLE );
+	
+    wxComboBox* GetCbNeumeType() { return (wxComboBox*) FindWindow( ID7_NEUME_TYPE ); }
+	wxRadioBox* GetRbVariant()  { return (wxRadioBox*) FindWindow( ID7_NEUME_VARIANT ); }
+	wxSpinCtrl* GetScNbPitches()  { return (wxSpinCtrl*) FindWindow( ID7_NB_PITCHES ); }
+	wxCheckBox* GetCxInclinatum() { return (wxCheckBox*) FindWindow( ID7_INCLINATUM ); }
+	wxCheckBox* GetCxQuilisma() { return (wxCheckBox*) FindWindow( ID7_QUILISMA ); }
+    
+public:
+	static int s_neumetype;
+	static int s_variant;
+	static int s_nbpitches;
+	static bool s_inclinatum;
+	static bool s_quilisma;
+    
+private:
+	
+	
+private:
+    DECLARE_EVENT_TABLE()
 };
 
 

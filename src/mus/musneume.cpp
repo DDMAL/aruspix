@@ -40,6 +40,7 @@
  * create an element that is the difference in pitch.
  */
 MusNeumeElement::MusNeumeElement() : MusElement() {
+	TYPE = NEUME_ELMT;
 	m_meiref = NULL;
 	m_pitch_difference = 0;
 	ornament = NONE;
@@ -47,7 +48,8 @@ MusNeumeElement::MusNeumeElement() : MusElement() {
 }
 
 MusNeumeElement::MusNeumeElement(MeiElement &element, int firstpitch, int firstoct) : MusElement() {
-    m_meiref = &element;
+    TYPE = NEUME_ELMT;
+	m_meiref = &element;
     MeiAttribute *p = m_meiref->getAttribute("pname");
     MeiAttribute *o = m_meiref->getAttribute("oct");
     //fake oct attribute
@@ -73,11 +75,14 @@ MusNeumeElement::MusNeumeElement(MeiElement &element, int firstpitch, int firsto
 	}
 }
 
-/*MusNeumeElement::MusNeumeElement(int _pitchDifference)
+MusNeumeElement::MusNeumeElement(int _pitchDifference)
 {
-    m_pitch_difference = _pitchDifference;
+    TYPE = NEUME_ELMT;
+	m_pitch_difference = _pitchDifference;
+	ornament = NONE;
+	m_meiref = NULL;
     m_element_type = NEUME_ELEMENT_PUNCTUM;
-}*/
+}
 
 // Duplicate an existing pitch
 MusNeumeElement::MusNeumeElement( const MusNeumeElement &other) : MusElement(other) {
@@ -100,13 +105,12 @@ NeumeElementType MusNeumeElement::getElementType()
     return m_element_type;
 }
 
-void MusNeumeElement::updateMeiRef(string pitch, int oct) {
+void MusNeumeElement::updateMeiElement(string pitch, int oct) {
     if (m_meiref->getAttributes().size() > 0) {
-		MeiAttribute *pitchattr = m_meiref->getAttribute("pname");
-		if (pitchattr == NULL) {
-			m_meiref->addAttribute(MeiAttribute("pname",pitch));
+		if (m_meiref->hasAttribute("pname")) {
+			m_meiref->getAttribute("pname")->setValue(pitch);
 		} else {
-			pitchattr->setValue(pitch);
+			m_meiref->addAttribute(MeiAttribute("pname",pitch));
 		}
 		MeiAttribute *octattr = m_meiref->getAttribute("oct");
 		char buf[8];
@@ -124,15 +128,19 @@ void MusNeumeElement::updateMeiRef(string pitch, int oct) {
 	}
 }
 
-void MusNeumeElement::setMeiRef(MeiElement *element) {
+void MusNeumeElement::setMeiElement(MeiElement *element) {
 	this->m_meiref = element;
 }
 
 void MusNeumeElement::deleteMeiRef() {
 	if (m_meiref->hasParent()) {
 		m_meiref->getParent().removeChild(m_meiref);
-		delete m_meiref;
 	}
+	if (m_meiref->getZone()->hasParent()) {
+		m_meiref->getZone()->getParent().removeChild(m_meiref->getZone());
+	}
+	delete m_meiref->getZone();
+	delete m_meiref;
 }
 
 NeumeOrnament MusNeumeElement::getOrnament() {
@@ -157,9 +165,11 @@ MusNeume::MusNeume() : MusElement() {
     m_pitches.push_back(third);
     m_pitches.push_back(fourth);
     m_pitches.push_back(fifth);*/
-	m_pitches.push_back(MusNeumeElement());
     m_meiref = NULL; //this is necessary to avoid garbage when things aren't called from MEIs.
 	ornament = NONE;
+	newmeielement = false;
+	inclinatum = false;
+	quilisma = false;
 }
 
 // Copy an existing neume
@@ -169,7 +179,11 @@ MusNeume::MusNeume( const MusNeume &neume) :
     m_type = neume.m_type;
     m_pitches = neume.m_pitches;
     m_meiref = neume.m_meiref;
+	m_meistaffzone = neume.m_meistaffzone;
 	ornament = neume.ornament;
+	newmeielement = neume.newmeielement;
+	inclinatum = neume.inclinatum;
+	quilisma = neume.quilisma;	
 }
 
 /**
@@ -177,6 +191,7 @@ MusNeume::MusNeume( const MusNeume &neume) :
  */
 MusNeume::MusNeume(MeiElement &element) : MusElement() {
     TYPE = NEUME;
+	newmeielement = false;
     MeiAttribute *p = NULL;
     MeiAttribute *o = NULL;
     vector<MeiElement*> children;
@@ -342,12 +357,13 @@ void MusNeume::setMeiRef(MeiElement *element) {
 	this->m_meiref = element;
 }
 
-void MusNeume::setNewMeiRef() {
+void MusNeume::updateMeiRef() {
 	if (m_type != NEUME_TYPE_CUSTOS) {
-		m_meiref->setName("neume");
-		m_meiref->addChild(new MeiElement("nc"));
-		for (vector<MusNeumeElement>::iterator i = m_pitches.begin(); i != m_pitches.end(); i++) {
-			MeiElement *child = new MeiElement("note");
+		if (m_meiref->getName() != "neume") {
+			m_meiref->setName("neume");
+		}
+		if (!m_meiref->hasChild("nc")) {
+			MeiElement *nc = new MeiElement("nc");
 			std::string id;
 			char uuidbuff[36];
 			uuid_t uuidGenerated;
@@ -356,13 +372,45 @@ void MusNeume::setNewMeiRef() {
 			id = string(uuidbuff);
 			std::transform(id.begin(), id.end(), id.begin(), ::tolower);
 			id = "m-" + id;
-			child->setId(id);
-			i->setMeiRef(child);
-			i->updateMeiRef(PitchToStr(this->pitch), this->oct);
-			m_meiref->getChildren()[0]->addChild(child);
+			nc->setId(id);
+			m_meiref->addChild(nc);
+			for (vector<MusNeumeElement>::iterator i = m_pitches.begin(); i != m_pitches.end(); i++) {
+				MeiElement *child = new MeiElement("note");
+				std::string id;
+				char uuidbuff[36];
+				uuid_t uuidGenerated;
+				uuid_generate(uuidGenerated);
+				uuid_unparse(uuidGenerated, uuidbuff);
+				id = string(uuidbuff);
+				std::transform(id.begin(), id.end(), id.begin(), ::tolower);
+				id = "m-" + id;
+				child->setId(id);
+				nc->addChild(child);
+				i->setMeiElement(child);
+				i->updateMeiElement(PitchToStr(this->pitch), this->oct);
+			}
+		} else {
+			if (this->newmeielement) { //not sure if this creates a memory leak, since the children were initially created with "new"?
+				for (vector<MeiElement*>::iterator i = m_meiref->getChildren().begin(); i != m_meiref->getChildren().end(); i++) {
+					for (vector<MeiElement*>::iterator it = (*i)->getChildren().begin(); it != (*i)->getChildren().end(); it++) {
+						delete (*it);
+					}
+					(*i)->getChildren().clear();
+					delete (*i);
+				}
+				m_meiref->getChildren().clear();
+				updateMeiRef();
+			}
 		}
 	}
 	this->SetPitch(this->pitch, this->oct);
+	for (vector<MeiAttribute>::iterator i = m_meiref->getAttributes().begin(); i != m_meiref->getAttributes().end(); i++) {
+		std::string name = i->getName();
+		if (name != "facs") {
+			i = m_meiref->getAttributes().erase(i);
+			i--;
+		}
+	}
 	switch (m_type) {
 		case NEUME_TYPE_ANCUS: m_meiref->addAttribute(MeiAttribute("name","ancus")); break;
 		case NEUME_TYPE_CEPHALICUS: m_meiref->addAttribute(MeiAttribute("name","cephalicus")); break;
@@ -388,64 +436,99 @@ void MusNeume::setNewMeiRef() {
 	}
 }
 
+void MusNeume::updateMeiZone() {
+	MeiElement *zone = m_meiref->getZone();
+	int width = 0, height = 0;
+	int yoffs = 19; //all neumes are drawn 19px higher than their dec_y
+	switch (this->m_type) { //here is where we figure out width, height and yoffs
+		case NEUME_TYPE_ANCUS: break;
+		case NEUME_TYPE_CEPHALICUS: height = m_pitches[0].dec_y - m_pitches[1].dec_y + 9; width = 20; break;
+		case NEUME_TYPE_CLIVIS: height = m_pitches[0].dec_y - m_pitches[1].dec_y + 19; width = (m_pitches[1].xrel - m_pitches[0].xrel + PUNCT_WIDTH)*2; break;
+		case NEUME_TYPE_EPIPHONUS: height = m_pitches[1].dec_y - m_pitches[0].dec_y + 19; width = PUNCT_WIDTH*2; break;
+		case NEUME_TYPE_PODATUS: height = m_pitches[1].dec_y - m_pitches[0].dec_y + 19; width = PUNCT_WIDTH*2; break;
+		case NEUME_TYPE_PORRECTUS: height = m_pitches[0].dec_y - m_pitches[m_pitches.size() - 2].dec_y + 19; width = (m_pitches.back().xrel - m_pitches[0].xrel + PUNCT_WIDTH)*2; break;
+		case NEUME_TYPE_PUNCTUM_INCLINATUM: height = 25; width = PUNCT_WIDTH; break;
+		case NEUME_TYPE_PUNCTUM_WHITE:
+		case NEUME_TYPE_PUNCTUM: height = 18; width = 19; break;
+		case NEUME_TYPE_SALICUS: height = m_pitches.back().dec_y - m_pitches[0].dec_y + 19; width = (m_pitches.back().xrel - m_pitches[0].xrel)*2; break;
+		case NEUME_TYPE_SCANDICUS: height = m_pitches.back().dec_y - m_pitches[0].dec_y + 19; width = (m_pitches.back().xrel - m_pitches[0].xrel + PUNCT_WIDTH)*2; break;
+		case NEUME_TYPE_SCANDICUS_FLEXUS:
+		case NEUME_TYPE_PORRECTUS_FLEXUS:
+		case NEUME_TYPE_TORCULUS_RESUPINUS: 
+			int lowest = m_pitches[0].dec_y, highest = m_pitches[0].dec_y;
+			for (vector<MusNeumeElement>::iterator i = m_pitches.begin(); i != m_pitches.end(); i++) {
+				if (i->dec_y > highest) {
+					highest = i->dec_y;
+				}
+				if (i->dec_y < lowest) {
+					lowest = i->dec_y;
+				}
+			}
+			height = highest - lowest + 19; width = (m_pitches.back().xrel - m_pitches[0].xrel + PUNCT_WIDTH)*2;
+			break;
+		case NEUME_TYPE_TORCULUS_LIQUESCENT: break; //no implementation yet
+		case NEUME_TYPE_TORCULUS:
+			lowest = (m_pitches[0].dec_y > m_pitches[1].dec_y) ? m_pitches[0].dec_y : m_pitches[2].dec_y;
+			height = m_pitches[1].dec_y - lowest + 19; break;
+		case NEUME_TYPE_VIRGA_LIQUESCENT: break; //no implementation, probably deprecated
+		case NEUME_TYPE_VIRGA: height = 35; width = PUNCT_WIDTH*2; break;
+		case NEUME_TYPE_COMPOUND: break;
+		case NEUME_TYPE_CUSTOS: width = 11; height = 48; break;
+		default: break;
+	}
+	int ymid = (atoi(this->m_meistaffzone->getAttribute("uly")->getValue().c_str()) + atoi(this->m_meistaffzone->getAttribute("lry")->getValue().c_str()))/2;
+	int uly = ymid - double(this->dec_y + 100 /* <--this is the dec_y of a note on the middle space */ + yoffs)*(5.0/3.0); //5/3 is the ratio of an aruspix staff to an MEI staff height.
+	char buf[16];
+	
+	MeiAttribute *lryattr = zone->getAttribute("lry");
+	int lry = uly + height;
+	snprintf(buf, 16, "%d", lry);
+	if (lryattr != NULL) {
+		lryattr->setValue(string(buf));
+	} else {
+		zone->addAttribute(MeiAttribute("lry",string(buf)));
+	}
+	
+	MeiAttribute *ulxattr = zone->getAttribute("ulx");
+	int ulx = (this->xrel + this->offset)*2; //the horizontal scale of aruspix is approximately 1/2 that of the images we're dealing with
+	snprintf(buf, 16, "%d", ulx);
+	if (ulxattr != NULL) {
+		ulxattr->setValue(string(buf));
+	} else {
+		zone->addAttribute(MeiAttribute("ulx",string(buf)));
+	}
+	
+	MeiAttribute *ulyattr = zone->getAttribute("uly");
+	snprintf(buf, 16, "%d", uly);
+	if (ulyattr != NULL) {
+		ulyattr->setValue(string(buf));
+	} else {
+		zone->addAttribute(MeiAttribute("uly",string(buf)));
+	}
+	
+	MeiAttribute *lrxattr = zone->getAttribute("lrx");
+	int lrx = ulx + width;
+	snprintf(buf, 16, "%d", lrx);
+	if (lrxattr != NULL) {
+		lrxattr->setValue(string(buf));
+	} else {
+		zone->addAttribute(MeiAttribute("lrx",string(buf)));
+	}
+}
+
+void MusNeume::setMeiStaffZone(MeiElement *element) {
+	this->m_meistaffzone = element;
+}
+
 void MusNeume::deleteMeiRef() {
 	if (m_meiref->hasParent()) {
 		m_meiref->getParent().removeChild(m_meiref);
 	}
+	if (m_meiref->getZone()->hasParent()) {
+		m_meiref->getZone()->getParent().removeChild(m_meiref->getZone());
+	}
+	delete m_meiref->getZone();
 	delete m_meiref;
-}
-
-void MusNeume::SwitchType() {
-	MusNeumeSymbol neume_symb;
-	neume_symb.liaison = this->liaison;
-    neume_symb.dliai = this->dliai;
-    neume_symb.fliai = this->fliai;
-    neume_symb.lie_up = this->lie_up;
-    neume_symb.rel = this->rel;
-    neume_symb.drel = this->drel;
-    neume_symb.frel = this->frel;
-    neume_symb.oct = this->oct;
-    neume_symb.dimin = this->dimin;
-    neume_symb.grp = this->grp;
-    neume_symb._shport = this->_shport;
-    neume_symb.ligat = this->ligat;
-    neume_symb.ElemInvisible = this->ElemInvisible;
-    neume_symb.pointInvisible = this->pointInvisible;
-    neume_symb.existDebord = this->existDebord;
-    neume_symb.fligat = this->fligat;
-    neume_symb.notschowgrp = this->notschowgrp;
-    neume_symb.cone = this->cone;
-    neume_symb.liaisonPointil = this->liaisonPointil;
-    neume_symb.reserve1 = this->reserve1;
-    neume_symb.reserve2 = this->reserve2;
-    neume_symb.ottava = this->ottava;
-    neume_symb.durNum = this->durNum;
-    neume_symb.durDen = this->durDen;
-    neume_symb.offset = this->offset;
-	neume_symb.xrel = this->xrel;
-	neume_symb.dec_y = this->dec_y;
-    neume_symb.debordCode = this->debordCode;
-    neume_symb.debordSize = this->debordSize;
-	neume_symb.no = this->no;
-	neume_symb.code = this->code;
-	neume_symb.pitch = this->pitch;
-	
-	// comparison
-	/*m_im_filename = element.m_im_filename;
-	m_im_staff = element.m_im_staff;
-	m_im_pos = element.m_im_pos;
-	m_cmp_flag = element.m_cmp_flag;
-	m_debord_str = element.m_debord_str;
-	
-	pdebord = NULL;
-	if ( existDebord )
-	{
-		int size = debordSize - sizeof( debordSize ) - sizeof( debordCode );
-		pdebord = malloc( size );
-		memcpy( pdebord, element.pdebord, size );
-	}*/
-	neume_symb.setMeiRef(this->m_meiref);
-	new (this) MusNeumeSymbol(neume_symb);
 }
 
 vector<MusNeumeElement> MusNeume::getPitches() {
@@ -476,7 +559,7 @@ void MusNeume::SetPitch( int pitch, int oct )
             octave -= floor((1 - testpitch)/7) + 1;
         }
 		if (i->getMeiElement() != NULL) {
-			i->updateMeiRef(PitchToStr(thispitch), octave);
+			i->updateMeiElement(PitchToStr(thispitch), octave);
 		}
     }
     if (m_r) {
@@ -532,6 +615,10 @@ void MusNeume::Draw( AxDC *dc, MusStaff *staff)
         case (NEUME_TYPE_CUSTOS): this->DrawCustos(dc, staff); break;
         default: break;
     }
+	
+	if (this->newmeielement) {
+		updateMeiZone();
+	}
 	
 	DrawDots(dc, staff);
     

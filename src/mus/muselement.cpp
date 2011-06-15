@@ -269,6 +269,7 @@ int MusElement::StrToPitch(std::string pitch)
 
 void MusElement::newMeiRef(MusElement* previous)
 {
+	newmeielement = true;
 	MeiElement* element = previous->getMeiRef();
 	MeiElement* zone = new MeiElement("zone", element->getNs());
 	std::string facs;
@@ -280,11 +281,11 @@ void MusElement::newMeiRef(MusElement* previous)
 	std::transform(facs.begin(), facs.end(), facs.begin(), ::tolower);
 	facs = "m-" + facs;
 	zone->setId(facs);
-	vector<MeiElement*>::iterator i = element->getZone().getParent().getChildren().begin();
-	while (i != element->getZone().getParent().getChildren().end()) {
-		if (**i == element->getZone()) {
-			element->getZone().getParent().getChildren().insert(i, zone);
-			zone->setParent(element->getZone().getParent());
+	vector<MeiElement*>::iterator i = element->getZone()->getParent().getChildren().begin();
+	while (i != element->getZone()->getParent().getChildren().end()) {
+		if (*i == element->getZone()) {
+			element->getZone()->getParent().getChildren().insert(i, zone);
+			zone->setParent(element->getZone()->getParent());
 			break;
 		} else {
 			i++;
@@ -292,7 +293,7 @@ void MusElement::newMeiRef(MusElement* previous)
 	}
 	MeiElement *meiref = new MeiElement("");
 	meiref->setFacs(facs);
-	meiref->setZone(*zone);
+	meiref->setZone(zone);
 	uuid_generate(uuidGenerated);
 	uuid_unparse(uuidGenerated, uuidbuff);
 	facs = string(uuidbuff);
@@ -300,7 +301,7 @@ void MusElement::newMeiRef(MusElement* previous)
 	facs = "m-" + facs;
 	meiref->setId(facs);
 	setMeiRef(meiref);
-	setNewMeiRef();
+	this->updateMeiRef();
 	vector<MeiElement*>::iterator it = element->getParent().getChildren().begin();
 	while (it != element->getParent().getChildren().end()) {
 		if ((*it)->getId() == element->getId()) {

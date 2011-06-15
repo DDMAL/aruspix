@@ -25,6 +25,7 @@ MusNeumeSymbol::MusNeumeSymbol() :
 	m_meiref = NULL;
 	pitch = 1;
 	oct = 4;
+	newmeielement = false;
 }
 
 MusNeumeSymbol::MusNeumeSymbol(const MusNeumeSymbol &symbol) :
@@ -32,8 +33,10 @@ MusNeumeSymbol::MusNeumeSymbol(const MusNeumeSymbol &symbol) :
 {
     symbolType = symbol.symbolType;
 	m_meiref = symbol.m_meiref;
+	m_meistaffzone = symbol.m_meistaffzone;
 	value = symbol.value;
     pitch = symbol.pitch;
+	newmeielement = symbol.newmeielement;
 }
 
 MusNeumeSymbol::MusNeumeSymbol(MeiElement &meielement) :
@@ -41,6 +44,7 @@ MusNeumeSymbol::MusNeumeSymbol(MeiElement &meielement) :
 {
 	m_meiref = &meielement;
 	TYPE = NEUME_SYMB;
+	newmeielement = false;
 	if (m_meiref->getName() == "clef") {
 		pitch = 1;
 		oct = 4;
@@ -134,59 +138,6 @@ MusNeumeSymbol::MusNeumeSymbol(MeiElement &meielement) :
 MusNeumeSymbolType MusNeumeSymbol::getType()
 {
 	return symbolType;
-}
-
-void MusNeumeSymbol::SwitchType()
-{
-	MusNeume neume;
-	neume.liaison = this->liaison;
-    neume.dliai = this->dliai;
-    neume.fliai = this->fliai;
-    neume.lie_up = this->lie_up;
-    neume.rel = this->rel;
-    neume.drel = this->drel;
-    neume.frel = this->frel;
-    neume.oct = this->oct;
-    neume.dimin = this->dimin;
-    neume.grp = this->grp;
-    neume._shport = this->_shport;
-    neume.ligat = this->ligat;
-    neume.ElemInvisible = this->ElemInvisible;
-    neume.pointInvisible = this->pointInvisible;
-    neume.existDebord = this->existDebord;
-    neume.fligat = this->fligat;
-    neume.notschowgrp = this->notschowgrp;
-    neume.cone = this->cone;
-    neume.liaisonPointil = this->liaisonPointil;
-    neume.reserve1 = this->reserve1;
-    neume.reserve2 = this->reserve2;
-    neume.ottava = this->ottava;
-    neume.durNum = this->durNum;
-    neume.durDen = this->durDen;
-    neume.offset = this->offset;
-	neume.xrel = this->xrel;
-	neume.dec_y = this->dec_y;
-    neume.debordCode = this->debordCode;
-    neume.debordSize = this->debordSize;
-	neume.no = this->no;
-	neume.code = this->code;
-	neume.pitch = this->pitch;
-	// comparison
-	/*m_im_filename = element.m_im_filename;
-	 m_im_staff = element.m_im_staff;
-	 m_im_pos = element.m_im_pos;
-	 m_cmp_flag = element.m_cmp_flag;
-	 m_debord_str = element.m_debord_str;
-	 
-	 pdebord = NULL;
-	 if ( existDebord )
-	 {
-	 int size = debordSize - sizeof( debordSize ) - sizeof( debordCode );
-	 pdebord = malloc( size );
-	 memcpy( pdebord, element.pdebord, size );
-	 }*/
-	neume.setMeiRef(m_meiref);
-	new (this) MusNeume(neume);
 }
 
 void MusNeumeSymbol::calcoffs (int *offst, int value)
@@ -358,7 +309,6 @@ void MusNeumeSymbol::SetValue(int value, MusStaff *staff, int vflag)
 	
 	switch (value)
 	{
-			
 		case ('1'):
 			this->symbolType = NEUME_SYMB_CLEF_C;
 			if (m_r)
@@ -480,6 +430,9 @@ void MusNeumeSymbol::SetValue(int value, MusStaff *staff, int vflag)
                 break;
             default: break;
         }
+		if (this->newmeielement) {
+			updateMeiZone();
+		}
 	}
 }
 
@@ -588,6 +541,10 @@ void MusNeumeSymbol::deleteMeiRef() {
 	if (m_meiref->hasParent()) {
 		m_meiref->getParent().removeChild(m_meiref);
 	}
+	if (m_meiref->getZone()->hasParent()) {
+		m_meiref->getZone()->getParent().removeChild(m_meiref->getZone());
+	}
+	delete m_meiref->getZone();
 	delete m_meiref;
 }
 
@@ -610,6 +567,9 @@ void MusNeumeSymbol::SetPitch(int pitch, int oct) //this is incomplete, there is
         if (m_meiref)
         {
             updateMeiRefAccid(m_meiref->getAttribute("accid")->getValue(), pitch, oct);
+			if (this->newmeielement) {
+				updateMeiZone();
+			}
         }
 	}
 }
@@ -645,6 +605,13 @@ void MusNeumeSymbol::setMeiRef(MeiElement *element) {
 	m_meiref = element;
 }
 
-void MusNeumeSymbol::setNewMeiRef() {
+void MusNeumeSymbol::updateMeiRef() {
 	SetValue(this->value, NULL, 0);
+}
+
+void MusNeumeSymbol::updateMeiZone() {
+}
+
+void MusNeumeSymbol::setMeiStaffZone(MeiElement *element) {
+	m_meistaffzone = element;
 }

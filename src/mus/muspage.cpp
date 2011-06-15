@@ -241,7 +241,7 @@ void MusPage::DrawPage( AxDC *dc, bool background )
     for (i = 0; i < nbrePortees; i++) 
 	{
 		staff = &m_staves[i];
-			staff->DrawStaff( dc , i );	
+			staff->DrawStaff( dc , i );
 	}
     
     dc->EndPage();
