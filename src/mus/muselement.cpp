@@ -212,19 +212,16 @@ int MusElement::filtrpitch( int pitchElement, int *oct)
 {
 	*oct = this->oct;
 	
-	if (pitchElement < 1)
-	{
-		if ((*oct) != 0)
-			(*oct) -= floor((1 - pitchElement)/7) + 1;
+	if (0 < (*oct) < 7) {
+		while (pitchElement > 7) {
+			(*oct)++;
+			pitchElement -= 7;
+		}
+		while (pitchElement < 1) {
+			(*oct)--;
+			pitchElement += 7;
+		}
 	}
-	else if (pitchElement > 7)
-	{
-		if ((*oct) < 7)
-			(*oct) += floor((pitchElement - 7)/7) + 1;
-	}
-	pitchElement = pitchElement%7;
-	if (pitchElement==0)
-		pitchElement = 7;
 	return pitchElement;
 }
 

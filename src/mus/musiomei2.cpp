@@ -509,7 +509,7 @@ bool MusMeiInput::mei_staff(MeiElement *element, FacsTable *table) {
         } else {
 			MeiElement* zone2 = table->GetZone(m_page->m_staves[staff->no - 1].m_meiref->getAttribute("systemref")->getValue());
 			double ymid2 = (atoi(zone2->getAttribute("lry")->getValue().c_str()) + atoi(zone2->getAttribute("uly")->getValue().c_str()))/2.0;
-			staff->ecart = ((ymid - ymid2)*(1 + 20.0/image) - 60)/20.0;
+			staff->ecart = ((ymid - ymid2)*(1 + 20.0/image) - 60)/20.0 + 3.0;
 		}
         m_page->m_staves.Add( staff );
     }

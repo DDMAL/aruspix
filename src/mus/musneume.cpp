@@ -26,6 +26,7 @@
 
 #include <math.h>
 
+using std::vector;
 
 #include <mei/mei.h>
 #include <uuid/uuid.h>
@@ -42,6 +43,7 @@
 MusNeumeElement::MusNeumeElement() : MusElement() {
 	TYPE = NEUME_ELMT;
 	m_meiref = NULL;
+	parent = NULL;
 	m_pitch_difference = 0;
 	ornament = NONE;
 	m_element_type = NEUME_ELEMENT_PUNCTUM;
@@ -60,8 +62,10 @@ MusNeumeElement::MusNeumeElement(MeiElement &element, int firstpitch, int firsto
     if (p && o) {
         string meipitch = p->getValue();
         int octave = atoi((o->getValue()).c_str());
+		this->pitch = StrToPitch(meipitch);
+		this->oct = octave;
 		if (0 <= octave <= 7) {
-			m_pitch_difference = (StrToPitch(meipitch) + octave*7) - (firstoct*7 + firstpitch);
+			this->m_pitch_difference = (this->pitch + this->oct*7) - (firstoct*7 + firstpitch);
 		} else {
 			throw "octave out of range";
 		}
@@ -75,21 +79,27 @@ MusNeumeElement::MusNeumeElement(MeiElement &element, int firstpitch, int firsto
 	}
 }
 
-MusNeumeElement::MusNeumeElement(int _pitchDifference)
+MusNeumeElement::MusNeumeElement(int _pitchDifference) : MusElement()
 {
     TYPE = NEUME_ELMT;
 	m_pitch_difference = _pitchDifference;
 	ornament = NONE;
 	m_meiref = NULL;
+	parent = NULL;
     m_element_type = NEUME_ELEMENT_PUNCTUM;
 }
 
 // Duplicate an existing pitch
 MusNeumeElement::MusNeumeElement( const MusNeumeElement &other) : MusElement(other) {
-    m_pitch_difference = other.m_pitch_difference;
     m_meiref = other.m_meiref;
     m_element_type = other.m_element_type;
 	ornament = other.ornament;
+	parent = other.parent;
+	SetPitch(this->pitch,this->oct);
+}
+
+MusNeume *MusNeumeElement::getParent() {
+	return parent;
 }
 
 int MusNeumeElement::getPitchDifference() {
@@ -105,7 +115,11 @@ NeumeElementType MusNeumeElement::getElementType()
     return m_element_type;
 }
 
-void MusNeumeElement::updateMeiElement(string pitch, int oct) {
+void MusNeumeElement::setElementType(NeumeElementType type) {
+	m_element_type = type;
+}
+
+void MusNeumeElement::updateMeiElement(string pitch, int oct) { //still need to handle dots
     if (m_meiref->getAttributes().size() > 0) {
 		if (m_meiref->hasAttribute("pname")) {
 			m_meiref->getAttribute("pname")->setValue(pitch);
@@ -147,6 +161,65 @@ NeumeOrnament MusNeumeElement::getOrnament() {
 	return ornament;
 }
 
+void MusNeumeElement::Draw(AxDC *dc, MusStaff *staff) {
+	wxASSERT_MSG( dc , "DC cannot be NULL");
+    wxASSERT_MSG( m_r, "MusRC cannot be NULL ");
+    if ( !Check() )
+        return;
+    
+    if (!m_r->m_eraseElement && (this == m_r->m_currentElement))
+        m_r->m_currentColour = AxRED;
+	
+    int pTaille = staff->pTaille;
+    int xn = this->xrel + this->offset;
+    int bby = staff->yrel - /*m_r->_interl[pTaille]*(staff->portNbLine - 1)*/ m_r->_portee[pTaille];
+    int ynn = this->dec_y + staff->yrel;
+    int ledge = m_r->ledgerLine[pTaille][2];
+    
+	parent->Init(m_r);
+	parent->leg_line(dc, ynn, bby, xn, ledge, pTaille); //draw ledger lines
+	
+	char symb;
+	switch (m_element_type) {
+		case NEUME_ELEMENT_PUNCTUM: symb = nPUNCTUM; break;
+		case NEUME_ELEMENT_PUNCTUM_WHITE: symb = nWHITEPUNCT; break;
+		case NEUME_ELEMENT_INCLINATUM: symb = nDIAMOND; break;
+		case NEUME_ELEMENT_QUILISMA: symb = nQUILISMA; break;
+		case NEUME_ELEMENT_PES: symb = nPES; break;
+		case NEUME_ELEMENT_CEPHALICUS: symb = nCEPHALICUS; break;
+		case NEUME_ELEMENT_CUSTOS: symb = nNEXT_PITCH; break;
+		case NEUME_ELEMENT_LIQUESCENT_UP: symb = nLIQUES_UP; break;
+		case NEUME_ELEMENT_LIQUESCENT_DOWN: symb = nLIQUES_DOWN; break;
+		case NEUME_ELEMENT_EPIPHONUS: symb = nPODATUS_EP; break;
+	}
+    
+	m_r->festa_string( dc, xn, ynn + 19, symb, staff, this->dimin); //draw element
+	
+	m_r->m_currentColour = AxBLACK;
+    return;
+}
+
+void MusNeumeElement::SetPitch(int pitch, int oct) {
+	if ( this->TYPE != NEUME_ELMT )
+        return;
+    
+    if ( this->m_pitch_difference == (pitch + oct*7) - (parent->oct*7 + parent->pitch) ) {
+		return;
+	}
+    
+	this->m_pitch_difference = (pitch + oct*7) - (parent->oct*7 + parent->pitch);
+	
+    parent->SetPitch(parent->pitch, parent->oct);
+	
+    if (m_r) {
+        m_r->DoRefresh();
+    }
+}
+
+void MusNeumeElement::setParent(MusNeume *_parent) {
+	parent = _parent;
+}
+
 //----------------------------------------------------------------------------
 // MusNeume
 //----------------------------------------------------------------------------
@@ -154,18 +227,9 @@ NeumeOrnament MusNeumeElement::getOrnament() {
 MusNeume::MusNeume() : MusElement() {
     TYPE = NEUME;
     m_type = NEUME_TYPE_PUNCTUM; //note: for all practical purposes, this can always be punctum.
-    // For testing only
-    /*MusNeumeElement first = MusNeumeElement(0);
-    MusNeumeElement next = MusNeumeElement(1);
-    MusNeumeElement third = MusNeumeElement(-1);
-    MusNeumeElement fourth = MusNeumeElement(1);
-    MusNeumeElement fifth = MusNeumeElement(3);
-    m_pitches.push_back(first);
-    m_pitches.push_back(next);
-    m_pitches.push_back(third);
-    m_pitches.push_back(fourth);
-    m_pitches.push_back(fifth);*/
     m_meiref = NULL; //this is necessary to avoid garbage when things aren't called from MEIs.
+	m_meistaffzone = NULL;
+	m_meifirstpitch = NULL;
 	ornament = NONE;
 	newmeielement = false;
 	inclinatum = false;
@@ -180,10 +244,29 @@ MusNeume::MusNeume( const MusNeume &neume) :
     m_pitches = neume.m_pitches;
     m_meiref = neume.m_meiref;
 	m_meistaffzone = neume.m_meistaffzone;
+	m_meifirstpitch = neume.m_meifirstpitch;
 	ornament = neume.ornament;
 	newmeielement = neume.newmeielement;
 	inclinatum = neume.inclinatum;
 	quilisma = neume.quilisma;	
+}
+
+MusNeume& MusNeume::operator=(const MusNeume &neume)
+{
+	if (this != neume) {
+		(MusElement&)*this = note;
+		TYPE = neume.TYPE;
+		m_type = neume.m_type;
+		m_pitches = neume.m_pitches;
+		m_meiref = neume.m_meiref;
+		m_meistaffzone = neume.m_meistaffzone;
+		m_meifirstpitch = neume.m_meifirstpitch;
+		ornament = neume.ornament;
+		newmeielement = neume.newmeielement;
+		inclinatum = neume.inclinatum;
+		quilisma = neume.quilisma;
+	}
+	return *this;
 }
 
 /**
@@ -191,6 +274,8 @@ MusNeume::MusNeume( const MusNeume &neume) :
  */
 MusNeume::MusNeume(MeiElement &element) : MusElement() {
     TYPE = NEUME;
+	inclinatum = false;
+	quilisma = false;
 	newmeielement = false;
     MeiAttribute *p = NULL;
     MeiAttribute *o = NULL;
@@ -225,10 +310,10 @@ MusNeume::MusNeume(MeiElement &element) : MusElement() {
                 if (p == NULL || o == NULL) {
                     throw "missing pitch or octave";
                 }
-                pitch = StrToPitch(p->getValue());
+                this->pitch = StrToPitch(p->getValue());
                 int octave = atoi(o->getValue().c_str());
 				if ( 0 <= octave <= 7 ) {
-					oct = octave;
+					this->oct = octave;
 				} else {
 					throw "octave out of range";
 				}
@@ -240,6 +325,7 @@ MusNeume::MusNeume(MeiElement &element) : MusElement() {
         }
     } else if (element.getName() == "custos") {
         m_meiref = &element;
+		m_meifirstpitch = &element;
         setType(NEUME_TYPE_CUSTOS);
         p = m_meiref->getAttribute("pname");
         o = m_meiref->getAttribute("oct");
@@ -248,11 +334,11 @@ MusNeume::MusNeume(MeiElement &element) : MusElement() {
         }
         int octave = atoi(o->getValue().c_str());
 		if ( 0 <= octave <= 7 ) {
-			oct = octave;
+			this->oct = octave;
 		} else {
 			throw "octave out of range";
 		}
-        pitch = this->StrToPitch(p->getValue());
+        this->pitch = StrToPitch(p->getValue());
     } else {
         throw "invalid type for a neume";
     }
@@ -269,13 +355,17 @@ MusNeume::MusNeume(MeiElement &element) : MusElement() {
 
 void MusNeume::readNoteContainer(MeiElement &element, int pitch, int oct) {
     if (element.getName() == "nc") {
-        if (element.getAttribute("inclinatum") != NULL && element.getAttribute("inclinatum")->getValue() == "true") {
+        if (element.getAttribute("inclinatum") != NULL && element.getAttribute("inclinatum")->getValue() == "true") { //this is not true in general, but works for liber purposes.
             this->setType(NEUME_TYPE_PUNCTUM_INCLINATUM);
         }
         for (vector<MeiElement*>::iterator i = element.getChildren().begin(); i != element.getChildren().end(); i++) {
             if ((*i)->getName() == "note") {
-                MusNeumeElement note = MusNeumeElement(**i, pitch, oct);
-                m_pitches.push_back(note);
+				if ( i == element.getChildren().begin() ) {
+					setMeiFirstPitch(*i);
+				} else {
+					MusNeumeElement *note = new MusNeumeElement(**i, pitch, oct);
+					AppendNote(note);
+				}
             }
         }
     }
@@ -357,12 +447,17 @@ void MusNeume::setMeiRef(MeiElement *element) {
 	this->m_meiref = element;
 }
 
-void MusNeume::updateMeiRef() {
+void MusNeume::setMeiFirstPitch(MeiElement *element) {
+	this->m_meifirstpitch = element;
+}
+
+void MusNeume::updateMeiRef() { //still need to handle dots
 	if (m_type != NEUME_TYPE_CUSTOS) {
 		if (m_meiref->getName() != "neume") {
 			m_meiref->setName("neume");
 		}
 		if (!m_meiref->hasChild("nc")) {
+			//ad the note container
 			MeiElement *nc = new MeiElement("nc");
 			std::string id;
 			char uuidbuff[36];
@@ -374,7 +469,39 @@ void MusNeume::updateMeiRef() {
 			id = "m-" + id;
 			nc->setId(id);
 			m_meiref->addChild(nc);
-			for (vector<MusNeumeElement>::iterator i = m_pitches.begin(); i != m_pitches.end(); i++) {
+			
+			//add the first pitch
+			MeiElement *firstpitch = new MeiElement("note");
+			uuid_generate(uuidGenerated);
+			uuid_unparse(uuidGenerated, uuidbuff);
+			id = string(uuidbuff);
+			std::transform(id.begin(), id.end(), id.begin(), ::tolower);
+			id = "m-" + id;
+			firstpitch->setId(id);
+			nc->addChild(firstpitch);
+			if (firstpitch->getAttributes().size() > 0) {
+				if (firstpitch->hasAttribute("pname")) {
+					firstpitch->getAttribute("pname")->setValue(PitchToStr(this->pitch%7));
+				} else {
+					firstpitch->addAttribute(MeiAttribute("pname",PitchToStr(this->pitch%7)));
+				}
+				MeiAttribute *octattr = firstpitch->getAttribute("oct");
+				char buf[8];
+				snprintf(buf, 2, "%d", this->oct);
+				if (octattr == NULL) {
+					firstpitch->addAttribute(MeiAttribute("oct",string(buf)));
+				} else {
+					octattr->setValue(string(buf));
+				}
+			} else {
+				firstpitch->addAttribute(MeiAttribute("pname",PitchToStr(this->pitch%7)));
+				char buf[8];
+				snprintf(buf, 2, "%d", this->oct);
+				firstpitch->addAttribute(MeiAttribute("oct",string(buf)));
+			}
+			
+			//add the remaining pitches
+			for (vector<MusNeumeElement*>::iterator i = m_pitches.begin(); i != m_pitches.end(); i++) {
 				MeiElement *child = new MeiElement("note");
 				std::string id;
 				char uuidbuff[36];
@@ -386,11 +513,11 @@ void MusNeume::updateMeiRef() {
 				id = "m-" + id;
 				child->setId(id);
 				nc->addChild(child);
-				i->setMeiElement(child);
-				i->updateMeiElement(PitchToStr(this->pitch), this->oct);
+				(*i)->setMeiElement(child);
+				(*i)->updateMeiElement(PitchToStr((*i)->pitch%7), (*i)->oct);
 			}
 		} else {
-			if (this->newmeielement) { //not sure if this creates a memory leak, since the children were initially created with "new"?
+			if (this->newmeielement) {
 				for (vector<MeiElement*>::iterator i = m_meiref->getChildren().begin(); i != m_meiref->getChildren().end(); i++) {
 					for (vector<MeiElement*>::iterator it = (*i)->getChildren().begin(); it != (*i)->getChildren().end(); it++) {
 						delete (*it);
@@ -403,7 +530,10 @@ void MusNeume::updateMeiRef() {
 			}
 		}
 	}
+	
 	this->SetPitch(this->pitch, this->oct);
+	
+	//erase all attributes
 	for (vector<MeiAttribute>::iterator i = m_meiref->getAttributes().begin(); i != m_meiref->getAttributes().end(); i++) {
 		std::string name = i->getName();
 		if (name != "facs") {
@@ -411,6 +541,8 @@ void MusNeume::updateMeiRef() {
 			i--;
 		}
 	}
+	
+	//add the correct attributes
 	switch (m_type) {
 		case NEUME_TYPE_ANCUS: m_meiref->addAttribute(MeiAttribute("name","ancus")); break;
 		case NEUME_TYPE_CEPHALICUS: m_meiref->addAttribute(MeiAttribute("name","cephalicus")); break;
@@ -440,44 +572,46 @@ void MusNeume::updateMeiZone() {
 	MeiElement *zone = m_meiref->getZone();
 	int width = 0, height = 0;
 	int yoffs = 19; //all neumes are drawn 19px higher than their dec_y
+	
+	int lowest = this->dec_y, highest = this->dec_y;
+	for (vector<MusNeumeElement*>::iterator i = m_pitches.begin(); i != m_pitches.end(); i++) {
+		if ((*i)->dec_y > highest) {
+			highest = (*i)->dec_y;
+		}
+		if ((*i)->dec_y < lowest) {
+			lowest = (*i)->dec_y;
+		}
+	}
+	
 	switch (this->m_type) { //here is where we figure out width, height and yoffs
 		case NEUME_TYPE_ANCUS: break;
-		case NEUME_TYPE_CEPHALICUS: height = m_pitches[0].dec_y - m_pitches[1].dec_y + 9; width = 20; break;
-		case NEUME_TYPE_CLIVIS: height = m_pitches[0].dec_y - m_pitches[1].dec_y + 19; width = (m_pitches[1].xrel - m_pitches[0].xrel + PUNCT_WIDTH)*2; break;
-		case NEUME_TYPE_EPIPHONUS: height = m_pitches[1].dec_y - m_pitches[0].dec_y + 19; width = PUNCT_WIDTH*2; break;
-		case NEUME_TYPE_PODATUS: height = m_pitches[1].dec_y - m_pitches[0].dec_y + 19; width = PUNCT_WIDTH*2; break;
-		case NEUME_TYPE_PORRECTUS: height = m_pitches[0].dec_y - m_pitches[m_pitches.size() - 2].dec_y + 19; width = (m_pitches.back().xrel - m_pitches[0].xrel + PUNCT_WIDTH)*2; break;
+		case NEUME_TYPE_CEPHALICUS: height = this->dec_y - m_pitches[0]->dec_y + 9; width = 20; break;
+		case NEUME_TYPE_CLIVIS: height = this->dec_y - m_pitches[0]->dec_y + 19; width = (m_pitches[0]->xrel - this->xrel + PUNCT_WIDTH)*2; break;
+		case NEUME_TYPE_EPIPHONUS: height = m_pitches[0]->dec_y - this->dec_y + 19; width = PUNCT_WIDTH*2; break;
+		case NEUME_TYPE_PODATUS: height = m_pitches[0]->dec_y - this->dec_y + 19; width = PUNCT_WIDTH*2; break;
+		case NEUME_TYPE_PORRECTUS: height = this->dec_y - m_pitches[m_pitches.size() - 2]->dec_y + 19; width = (m_pitches.back()->xrel - this->xrel + PUNCT_WIDTH)*2; break;
 		case NEUME_TYPE_PUNCTUM_INCLINATUM: height = 25; width = PUNCT_WIDTH; break;
 		case NEUME_TYPE_PUNCTUM_WHITE:
 		case NEUME_TYPE_PUNCTUM: height = 18; width = 19; break;
-		case NEUME_TYPE_SALICUS: height = m_pitches.back().dec_y - m_pitches[0].dec_y + 19; width = (m_pitches.back().xrel - m_pitches[0].xrel)*2; break;
-		case NEUME_TYPE_SCANDICUS: height = m_pitches.back().dec_y - m_pitches[0].dec_y + 19; width = (m_pitches.back().xrel - m_pitches[0].xrel + PUNCT_WIDTH)*2; break;
+		case NEUME_TYPE_SALICUS: height = m_pitches.back()->dec_y - this->dec_y + 19; width = (m_pitches.back()->xrel - this->xrel)*2; break;
+		case NEUME_TYPE_SCANDICUS: height = m_pitches.back()->dec_y - this->dec_y + 19; width = (m_pitches.back()->xrel - this->rel + PUNCT_WIDTH)*2; break;
 		case NEUME_TYPE_SCANDICUS_FLEXUS:
 		case NEUME_TYPE_PORRECTUS_FLEXUS:
-		case NEUME_TYPE_TORCULUS_RESUPINUS: 
-			int lowest = m_pitches[0].dec_y, highest = m_pitches[0].dec_y;
-			for (vector<MusNeumeElement>::iterator i = m_pitches.begin(); i != m_pitches.end(); i++) {
-				if (i->dec_y > highest) {
-					highest = i->dec_y;
-				}
-				if (i->dec_y < lowest) {
-					lowest = i->dec_y;
-				}
-			}
-			height = highest - lowest + 19; width = (m_pitches.back().xrel - m_pitches[0].xrel + PUNCT_WIDTH)*2;
+		case NEUME_TYPE_TORCULUS_RESUPINUS:
+		case NEUME_TYPE_COMPOUND:
+			height = highest - lowest + 19; width = (m_pitches.back()->xrel - this->xrel + PUNCT_WIDTH)*2;
 			break;
 		case NEUME_TYPE_TORCULUS_LIQUESCENT: break; //no implementation yet
 		case NEUME_TYPE_TORCULUS:
-			lowest = (m_pitches[0].dec_y > m_pitches[1].dec_y) ? m_pitches[0].dec_y : m_pitches[2].dec_y;
-			height = m_pitches[1].dec_y - lowest + 19; break;
+			lowest = (this->dec_y > m_pitches[1]->dec_y) ? this->dec_y : m_pitches[1]->dec_y;
+			height = m_pitches[0]->dec_y - lowest + 19; break;
 		case NEUME_TYPE_VIRGA_LIQUESCENT: break; //no implementation, probably deprecated
 		case NEUME_TYPE_VIRGA: height = 35; width = PUNCT_WIDTH*2; break;
-		case NEUME_TYPE_COMPOUND: break;
 		case NEUME_TYPE_CUSTOS: width = 11; height = 48; break;
 		default: break;
 	}
 	int ymid = (atoi(this->m_meistaffzone->getAttribute("uly")->getValue().c_str()) + atoi(this->m_meistaffzone->getAttribute("lry")->getValue().c_str()))/2;
-	int uly = ymid - double(this->dec_y + 100 /* <--this is the dec_y of a note on the middle space */ + yoffs)*(5.0/3.0); //5/3 is the ratio of an aruspix staff to an MEI staff height.
+	int uly = ymid - double(highest + 100 /* <--this is the dec_y of a note on the middle space */ + yoffs)*(5.0/3.0); // 5/3 is the ratio of an aruspix staff to an MEI staff height.
 	char buf[16];
 	
 	MeiAttribute *lryattr = zone->getAttribute("lry");
@@ -531,7 +665,7 @@ void MusNeume::deleteMeiRef() {
 	delete m_meiref;
 }
 
-vector<MusNeumeElement> MusNeume::getPitches() {
+vector<MusNeumeElement*>& MusNeume::getPitches() {
     return m_pitches;
 }
 
@@ -542,29 +676,211 @@ void MusNeume::SetPitch( int pitch, int oct )
     if ( this->TYPE != NEUME )
         return;
     
-    if ((this->pitch == pitch) && (this->oct == oct ))
-        return;
-    
     this->oct = oct;
     this->pitch = pitch;
     
-    for (vector<MusNeumeElement>::iterator i = m_pitches.begin(); i != m_pitches.end(); i++) {
-        int thispitch = (i->getPitchDifference() + pitch) % 7;
-        
-        int octave = oct;
-        int testpitch = pitch + i->getPitchDifference();
-        if (testpitch > 7) {
-            octave += floor((testpitch - 7)/7) + 1;
-        } else if (testpitch < 1) {
-            octave -= floor((1 - testpitch)/7) + 1;
-        }
-		if (i->getMeiElement() != NULL) {
-			i->updateMeiElement(PitchToStr(thispitch), octave);
+	if (m_meifirstpitch) { //this subroutine takes place a lot; maybe it should be refactored as SetPitch(MeiElement *element, string, int) or something of the sort
+		if (m_meifirstpitch->getAttributes().size() > 0) {
+			if (m_meifirstpitch->hasAttribute("pname")) {
+				m_meifirstpitch->getAttribute("pname")->setValue(PitchToStr(this->pitch%7));
+			} else {
+				m_meifirstpitch->addAttribute(MeiAttribute("pname",PitchToStr(this->pitch%7)));
+			}
+			MeiAttribute *octattr = m_meifirstpitch->getAttribute("oct");
+			char buf[8];
+			snprintf(buf, 2, "%d", this->oct);
+			if (octattr == NULL) {
+				m_meifirstpitch->addAttribute(MeiAttribute("oct",string(buf)));
+			} else {
+				octattr->setValue(string(buf));
+			}
+		} else {
+			m_meifirstpitch->addAttribute(MeiAttribute("pname",PitchToStr(this->pitch%7)));
+			char buf[8];
+			snprintf(buf, 2, "%d", this->oct);
+			m_meifirstpitch->addAttribute(MeiAttribute("oct",string(buf)));
+		}
+	}
+	
+    for (vector<MusNeumeElement*>::iterator i = m_pitches.begin(); i != m_pitches.end(); i++) {
+        int octave = this->oct;
+		int insertpitch = filtrpitch(this->pitch + (*i)->getPitchDifference(), &octave);
+		(*i)->pitch = insertpitch;
+		(*i)->oct = octave;
+		if ((*i)->getMeiElement() != NULL) {
+			(*i)->updateMeiElement(PitchToStr((*i)->pitch%7), (*i)->oct);
 		}
     }
     if (m_r) {
         m_r->DoRefresh();
     }
+}
+
+void MusNeume::AppendNote(MusNeumeElement* note) {
+	note->setParent(this);
+	m_pitches.push_back(note);
+}
+
+void MusNeume::CalcPitches(MusStaff *staff) //this is the method that determines the logical structure of a neume! Should be split into a Validate() method and a CalcPitches method
+{
+	int oct = this->oct - 4; //for some reason, notes are automatically drawn 4 octaves too high?
+	this->dec_y = staff->y_neume(this->pitch, staff->testcle( this->xrel ), oct);
+	
+	for (vector<MusNeumeElement*>::iterator i = m_pitches.begin(); i != m_pitches.end(); i++) {
+		(*i)->Init(m_r);
+	}
+	
+	//set x-positions for each note of the neume and make sure they have the right number of notes.
+	switch (m_type) { //figure out some way to tidy this up -- do three-note (torculus, ancus, torculus liquescent, porrectus), then four-note (torculus resupinus, porrectus flexus, scandicus flexus) then multi-note (salicus, compound, scandicus)
+		case (NEUME_TYPE_CUSTOS): //1-note neumes. If they have any MusNeumeElements, delete them.
+		case (NEUME_TYPE_VIRGA):
+		case (NEUME_TYPE_PUNCTUM):
+		case (NEUME_TYPE_PUNCTUM_INCLINATUM):
+		case (NEUME_TYPE_PUNCTUM_WHITE):
+			for (vector<MusNeumeElement*>::iterator i = m_pitches.begin(); i != m_pitches.end(); i++) {
+				if ( (*i)->getMeiElement() ) { //maybe refactor as RemoveNote(MeiElement *note) method?
+					(*i)->deleteMeiRef();
+				}
+				delete (*i);
+				m_pitches.erase(i);
+			} break;
+		case (NEUME_TYPE_VIRGA_LIQUESCENT): break; //no implementation
+        case (NEUME_TYPE_PODATUS): //2-note neumes: If they have more than one MusNeumeElement, delete it, if they have less than one, add one, and make sure it's the right kind.
+		case (NEUME_TYPE_CLIVIS):
+		case (NEUME_TYPE_CEPHALICUS):
+        case (NEUME_TYPE_EPIPHONUS):
+			if (m_pitches.size() < 1) {
+				for (unsigned i = 0; i < 1 - m_pitches.size(); i++) {
+					AppendNote(new MusNeumeElement());
+				}
+			}
+			for (vector<MusNeumeElement*>::iterator i = m_pitches.begin(); i != m_pitches.end(); i++) {
+				int index = i - m_pitches.begin();
+				if (index > 0) {
+					if ( (*i)->getMeiElement() ) { //maybe refactor as RemoveNote(MeiElement *note) method?
+						(*i)->deleteMeiRef();
+					}
+					delete (*i);
+					m_pitches.erase(i);
+				} else {
+					//this subroutine happens pretty often too, maybe it could be refactored?
+					(*i)->offset = this->offset;
+					(*i)->xrel = 0;
+					switch (m_type) {
+						case NEUME_TYPE_CLIVIS: (*i)->xrel += ( (*i)->getPitchDifference() == 0 ) ? CLIVIS_X_SAME : CLIVIS_X_DIFF;
+						case NEUME_TYPE_CEPHALICUS:
+						case NEUME_TYPE_EPIPHONUS:
+						case NEUME_TYPE_PODATUS: (*i)->xrel += this->xrel; break;
+					}
+					switch (m_type) {
+						case NEUME_TYPE_CLIVIS:
+						case NEUME_TYPE_PODATUS: (*i)->setElementType(NEUME_ELEMENT_PUNCTUM); break;
+						case NEUME_TYPE_EPIPHONUS: (*i)->setElementType(NEUME_ELEMENT_LIQUESCENT_DOWN); break;
+						case NEUME_TYPE_CEPHALICUS: (*i)->setElementType(NEUME_ELEMENT_LIQUESCENT_UP); break;
+					}
+					
+				}
+			} break;
+		case (NEUME_TYPE_TORCULUS):
+        case (NEUME_TYPE_TORCULUS_LIQUESCENT):
+		case (NEUME_TYPE_ANCUS):
+			if (m_pitches.size() < 2) {
+				for (unsigned i = 0; i < 2 - m_pitches.size(); i++) {
+					AppendNote(new MusNeumeElement());
+				}
+			}
+			for (vector<MusNeumeElement*>::iterator i = m_pitches.begin(); i != m_pitches.end(); i++) {
+				int index = i - m_pitches.begin();
+				if (index > 1) {
+					if ( (*i)->getMeiElement() ) { //maybe refactor as RemoveNote(MeiElement *note) method?
+						(*i)->deleteMeiRef();
+					}
+					delete (*i);
+					m_pitches.erase(i);
+				} else {
+					(*i)->xrel = (m_type == NEUME_TYPE_TORCULUS) ? this->xrel + (index + 1)*CLIVIS_X_DIFF : this->xrel + CLIVIS_X_DIFF;
+					(*i)->offset = this->offset;
+					NeumeElementType netype;
+					if (m_type == NEUME_TYPE_TORCULUS) {
+						netype = NEUME_ELEMENT_PUNCTUM;
+					} else {
+						switch (index) {
+							case 0: netype = NEUME_ELEMENT_CEPHALICUS; break;
+							case 1: netype = NEUME_ELEMENT_LIQUESCENT_UP; break;
+							default: break;
+						}
+					}
+					(*i)->setElementType(netype);
+				}
+			} break;
+		case (NEUME_TYPE_PORRECTUS_FLEXUS):
+		case (NEUME_TYPE_TORCULUS_RESUPINUS):
+        case (NEUME_TYPE_PORRECTUS): {
+			int max = (m_type == NEUME_TYPE_PORRECTUS) ? 3 : 4;
+			if (m_pitches.size() < max) {
+				for (unsigned i = 0; i < max - m_pitches.size(); i++) {
+					AppendNote(new MusNeumeElement());
+				}
+			}
+			int diff = 3*PUNCT_WIDTH;
+			MusNeumeElement* sloper = (m_type == NEUME_TYPE_TORCULUS_RESUPINUS) ? m_pitches[1] : m_pitches[0];
+			switch ( sloper->getPitchDifference() ) {
+				case -1: diff += -5; break;
+				case -2: diff += -2; break;
+				case -3: diff += 3; break;
+				case -4: diff += 3; break;
+				default: break;
+			}
+			for (vector<MusNeumeElement*>::iterator i = m_pitches.begin(); i != m_pitches.end(); i++) {
+				int index = i - m_pitches.begin();
+				if (index > max - 1) {
+					if ( (*i)->getMeiElement() ) { //maybe refactor as RemoveNote(MeiElement *note) method?
+						(*i)->deleteMeiRef();
+					}
+					delete (*i);
+					m_pitches.erase(i);
+				} else {
+					(*i)->offset = this->offset;
+					switch (index) {
+						case 0: (*i)->xrel = (m_type == NEUME_TYPE_TORCULUS_RESUPINUS) ? this->xrel + CLIVIS_X_DIFF : this->xrel + diff + PUNCT_WIDTH; break;
+						case 1: (*i)->xrel = (m_type == NEUME_TYPE_TORCULUS_RESUPINUS) ? this->xrel + diff + PUNCT_WIDTH : this->xrel + diff; (*i)->setElementType(NEUME_ELEMENT_PUNCTUM); break;
+						case 2: (*i)->xrel = (m_type == NEUME_TYPE_TORCULUS_RESUPINUS) ? this->xrel + diff : this->xrel + diff + PUNCT_WIDTH + CLIVIS_X_DIFF; (*i)->setElementType(NEUME_ELEMENT_PUNCTUM); break;
+						default: break;
+					}
+				}
+			} break; }
+		case (NEUME_TYPE_COMPOUND):
+        case (NEUME_TYPE_SCANDICUS_FLEXUS):
+		case (NEUME_TYPE_SCANDICUS):
+		case (NEUME_TYPE_SALICUS):
+			for (vector<MusNeumeElement*>::iterator i = m_pitches.begin(); i != m_pitches.end(); i++) {
+				int index = i - m_pitches.begin();
+				(*i)->offset = this->offset;
+				if (m_type == NEUME_TYPE_SALICUS && index == m_pitches.size() - 1) {
+					(*i)->xrel = this->xrel + CLIVIS_X_DIFF*index; //last note of a salicus is always directly above the previous note
+					(*i)->setElementType(NEUME_ELEMENT_PUNCTUM);
+				} else {
+					(*i)->xrel = this->xrel + CLIVIS_X_DIFF*(index + 1);
+					if (m_type == NEUME_TYPE_SALICUS && index == m_pitches.size() - 2) {
+						(*i)->setElementType(NEUME_ELEMENT_PES); //second last note of a salicus is always a pes
+					} else {
+						(*i)->setElementType(NEUME_ELEMENT_PUNCTUM);
+					}
+				}
+			} break;
+	}
+}
+
+void MusNeume::SetColour()
+{
+	if (!m_r->m_eraseElement && (this == m_r->m_currentElement))
+        m_r->m_currentColour = AxRED;
+    else if (!m_r->m_eraseElement && (this->m_cmp_flag == CMP_MATCH))
+        m_r->m_currentColour = AxLIGHT_GREY;
+    else if (!m_r->m_eraseElement && (this->m_cmp_flag == CMP_DEL))
+        m_r->m_currentColour = AxGREEN;
+    else if (!m_r->m_eraseElement && (this->m_cmp_flag == CMP_SUBST))
+        m_r->m_currentColour = AxBLUE;
 }
 
 void MusNeume::Draw( AxDC *dc, MusStaff *staff)
@@ -574,24 +890,14 @@ void MusNeume::Draw( AxDC *dc, MusStaff *staff)
     if ( !Check() )
         return;
     
-    int oct = this->oct - 4; //for some reason, notes are automatically drawn 4 octaves too high?
-    
-    if (!m_r->m_eraseElement && (this == m_r->m_currentElement))
-        m_r->m_currentColour = AxRED;
-    else if (!m_r->m_eraseElement && (this->m_cmp_flag == CMP_MATCH))
-        m_r->m_currentColour = AxLIGHT_GREY;
-    else if (!m_r->m_eraseElement && (this->m_cmp_flag == CMP_DEL))
-        m_r->m_currentColour = AxGREEN;
-    else if (!m_r->m_eraseElement && (this->m_cmp_flag == CMP_SUBST))
-        m_r->m_currentColour = AxBLUE;
-    
-	//set y-positions for each note of the neume
-    this->dec_y = staff->y_neume(this->pitch, staff->testcle( this->xrel ), oct);
-	for (vector<MusNeumeElement>::iterator i = m_pitches.begin(); i != m_pitches.end(); i++) {
-		int oct2 = oct;
-		i->dec_y = staff->y_neume(filtrpitch(this->pitch + i->getPitchDifference(), &oct2), staff->testcle(this->xrel), oct2);
-	}
+    SetColour();
 	
+	CalcPitches(staff);
+	
+	for (vector<MusNeumeElement*>::iterator i = m_pitches.begin(); i != m_pitches.end(); i++) {
+		(*i)->dec_y = staff->y_neume((*i)->pitch, staff->testcle(this->xrel), (*i)->oct - 4);
+	}
+
     switch (m_type) {
         case (NEUME_TYPE_PUNCTUM): this->DrawPunctum(dc, staff); break;
         case (NEUME_TYPE_PUNCTUM_INCLINATUM): this->DrawPunctumInclinatum(dc, staff); break;
@@ -628,7 +934,8 @@ void MusNeume::Draw( AxDC *dc, MusStaff *staff)
 
 void MusNeume::NeumeLine( AxDC *dc, MusStaff *staff, int x1, int x2, int y1, int y2)
 {
-    dc->SetPen( m_r->m_currentColour, m_r->ToRendererX( m_p->EpLignesPortee ), wxSOLID );
+    SetColour();
+	dc->SetPen( m_r->m_currentColour, m_r->ToRendererX( m_p->EpLignesPortee ), wxSOLID );
     dc->SetBrush(m_r->m_currentColour , wxTRANSPARENT );
     dc->DrawLine( m_r->ToRendererX(x1) , m_r->ToRendererY (y1) , m_r->ToRendererX(x2) , m_r->ToRendererY (y2) );
     dc->ResetPen();
@@ -637,474 +944,334 @@ void MusNeume::NeumeLine( AxDC *dc, MusStaff *staff, int x1, int x2, int y1, int
 
 void MusNeume::DrawAncus( AxDC *dc, MusStaff *staff )
 {
-    // magic happens here
     int pTaille = staff->pTaille;
-    
-    int xn = this->xrel;
-    //int xl = this->xrel;
+    int xn = this->xrel + this->offset;
     int bby = staff->yrel - m_r->_portee[pTaille];
     int ynn = this->dec_y + staff->yrel;
-    //printf("closed ynn value: %d\nclosed dec_y: %d\nclosed yrel: %d\n", 
-    //     ynn, this->dec_y, staff->yrel );
-    
-    xn += this->offset;
-    
     int ledge = m_r->ledgerLine[pTaille][2];
     
-    leg_line( dc, ynn,bby,this->xrel,ledge, pTaille);
-    m_r->festa_string( dc, xn, ynn + 19, '3', staff, this->dimin);
-    m_r->festa_string( dc, xn, ynn + 19, nPUNCTUM, staff, this->dimin);
-	m_pitches.at(0).xrel = xn;
-    xn += CLIVIS_X_DIFF;
-	m_pitches.at(1).xrel = xn;
-    int ynn2 = ynn + (m_r->_espace[pTaille])*((this->m_pitches.at(1)).getPitchDifference());
-    leg_line( dc, ynn2,bby,this->xrel,ledge, pTaille);
-    m_r->festa_string( dc, xn, ynn2 + 19, nCEPHALICUS, staff, this->dimin); //notehead : 'K'
-    int ynn3 = ynn + (m_r->_espace[pTaille])*((this->m_pitches.at(2)).getPitchDifference());
-	m_pitches.at(2).xrel = xn;
-    m_r->festa_string( dc, xn, ynn3 + 19, nLIQUES_UP, staff, this->dimin); //liquescent: 'e'
+	leg_line(dc, ynn, bby, xn, ledge, pTaille);
+	m_r->festa_string( dc, xn, ynn + 19, nPUNCTUM, staff, this->dimin);
+	m_r->festa_string( dc, xn, ynn + 19, '3', staff, this->dimin);
+	
+    for (vector<MusNeumeElement*>::iterator i = m_pitches.begin(); i != m_pitches.end(); i++) {
+		SetColour();
+		(*i)->Init(m_r);
+		(*i)->Draw(dc,staff);
+	}
 }
 
 void MusNeume::DrawCustos( AxDC *dc, MusStaff *staff )
 {
-    // magic happens here
     int pTaille = staff->pTaille;
-    
-    int xn = this->xrel;
-    //int xl = this->xrel;
+    int xn = this->xrel + this->offset;
     int bby = staff->yrel - m_r->_portee[pTaille];
     int ynn = this->dec_y + staff->yrel;
-    //printf("closed ynn value: %d\nclosed dec_y: %d\nclosed yrel: %d\n", 
-    //     ynn, this->dec_y, staff->yrel );
-    
-    xn += this->offset;
-    
     int ledge = m_r->ledgerLine[pTaille][2];
     
-    leg_line( dc, ynn,bby,this->xrel,ledge, pTaille);
-    m_r->festa_string( dc, xn, ynn + 19, nNEXT_PITCH, staff, this->dimin);
+	leg_line(dc, ynn, bby, xn, ledge, pTaille);
+	m_r->festa_string( dc, xn, ynn + 19, nNEXT_PITCH, staff, this->dimin);
 }
 
 void MusNeume::DrawEpiphonus( AxDC *dc, MusStaff *staff )
 {
-    //podatus_ep for first note
-    //liques_down for second
-    
-    // magic happens here
-    int pTaille = staff->pTaille;
-    
-    int xn = this->xrel;
-    //int xl = this->xrel;
-    int bby = staff->yrel - m_r->_portee[pTaille];
+	int pTaille = staff->pTaille;
+    int xn = this->xrel + this->offset;
+	int bby = staff->yrel - m_r->_portee[pTaille];
     int ynn = this->dec_y + staff->yrel;
-    //printf("closed ynn value: %d\nclosed dec_y: %d\nclosed yrel: %d\n", 
-    //     ynn, this->dec_y, staff->yrel );
+	int ledge = m_r->ledgerLine[pTaille][2];
     
-    xn += this->offset;
+	leg_line(dc, ynn, bby, xn, ledge, pTaille);
+	m_r->festa_string( dc, xn, ynn + 19, nPODATUS_EP, staff, this->dimin);
+	
+    for (vector<MusNeumeElement*>::iterator i = m_pitches.begin(); i != m_pitches.end(); i++) {
+		SetColour();
+		(*i)->Init(m_r);
+		(*i)->Draw(dc,staff);
+	}
     
-    int ledge = m_r->ledgerLine[pTaille][2];
-    
-    leg_line( dc, ynn,bby,this->xrel,ledge, pTaille);
-    m_r->festa_string( dc, xn, ynn + 19, nPODATUS_EP, staff, this->dimin);
-	m_pitches.at(0).xrel = xn;
-    int ynn2 = ynn + (m_r->_espace[pTaille])*((this->m_pitches.at(1)).getPitchDifference());
-	m_pitches.at(1).xrel = xn;
-    m_r->festa_string( dc, xn, ynn2 + 19, nLIQUES_DOWN, staff, this->dimin);
+	int ynn2 = m_pitches[0]->dec_y + staff->yrel;
+	xn += 9;
+	NeumeLine(dc, staff, xn, xn, ynn, ynn2);
 }
 
 void MusNeume::DrawCephalicus( AxDC *dc, MusStaff *staff )
 {
-    // magic happens here
     int pTaille = staff->pTaille;
-    
-    int xn = this->xrel;
-    //int xl = this->xrel;
-    int bby = staff->yrel - m_r->_portee[pTaille];
+    int xn = this->xrel + this->offset;
+	int bby = staff->yrel - m_r->_portee[pTaille];
     int ynn = this->dec_y + staff->yrel;
-    //printf("closed ynn value: %d\nclosed dec_y: %d\nclosed yrel: %d\n", 
-    //     ynn, this->dec_y, staff->yrel );
+	int ledge = m_r->ledgerLine[pTaille][2];
     
-    xn += this->offset;
-    
-    int ledge = m_r->ledgerLine[pTaille][2];
-    
-    //stem: '3'
-    leg_line( dc, ynn,bby,this->xrel,ledge, pTaille);
-    m_r->festa_string( dc, xn, ynn + 19, '3', staff, this->dimin);
-    m_r->festa_string( dc, xn, ynn + 19, nCEPHALICUS, staff, this->dimin); //notehead : 'K'
-	m_pitches.at(0).xrel = xn;
-    int ynn2 = ynn + (m_r->_espace[pTaille])*((this->m_pitches.at(1)).getPitchDifference());
-	m_pitches.at(1).xrel = xn;
-    m_r->festa_string( dc, xn, ynn2 + 19, nLIQUES_UP, staff, this->dimin); //liquescent: 'e'
+	leg_line(dc, ynn, bby, xn, ledge, pTaille);
+	m_r->festa_string( dc, xn, ynn + 19, nCEPHALICUS, staff, this->dimin);
+	m_r->festa_string( dc, xn, ynn + 19, '3', staff, this->dimin); //stem
+	
+	for (vector<MusNeumeElement*>::iterator i = m_pitches.begin(); i != m_pitches.end(); i++) {
+		SetColour();
+		(*i)->Init(m_r);
+		(*i)->Draw(dc,staff);
+	}
+	
+	int ynn2 = m_pitches[0]->dec_y + staff->yrel;
+	xn += 9;
+	NeumeLine(dc, staff, xn, xn, ynn, ynn2);
 }
 
 void MusNeume::DrawPunctum( AxDC *dc, MusStaff *staff ) 
 {
-    // magic happens here
     int pTaille = staff->pTaille;
-    
-    int xn = this->xrel;
-    //int xl = this->xrel;
+    int xn = this->xrel + this->offset;
     int bby = staff->yrel - m_r->_portee[pTaille];
     int ynn = this->dec_y + staff->yrel;
-    //printf("closed ynn value: %d\nclosed dec_y: %d\nclosed yrel: %d\n", 
-    //     ynn, this->dec_y, staff->yrel );
-    
-    xn += this->offset;
-    
     int ledge = m_r->ledgerLine[pTaille][2];
-    leg_line( dc, ynn,bby,this->xrel,ledge, pTaille); //draw ledger lines
-    m_r->festa_string( dc, xn, ynn + 19, nPUNCTUM, staff, this->dimin); //draw punctum
-	m_pitches.at(0).xrel = xn;
+    
+	leg_line(dc, ynn, bby, xn, ledge, pTaille);
+	m_r->festa_string( dc, xn, ynn + 19, nPUNCTUM, staff, this->dimin);
 }
 
 void MusNeume::DrawPunctumInclinatum( AxDC *dc, MusStaff *staff ) 
 {
-    // magic happens here
-    int pTaille = staff->pTaille;
-    
-    int xn = this->xrel;
-    //int xl = this->xrel;
+	int pTaille = staff->pTaille;
+    int xn = this->xrel + this->offset;
     int bby = staff->yrel - m_r->_portee[pTaille];
     int ynn = this->dec_y + staff->yrel;
-    //printf("closed ynn value: %d\nclosed dec_y: %d\nclosed yrel: %d\n", 
-    //     ynn, this->dec_y, staff->yrel );
-    
-    xn += this->offset;
-    
     int ledge = m_r->ledgerLine[pTaille][2];
-    leg_line( dc, ynn,bby,this->xrel,ledge, pTaille); //draw ledger lines
-    m_r->festa_string( dc, xn, ynn + 19, nDIAMOND, staff, this->dimin); //draw punctum inclinatum
-	m_pitches.at(0).xrel = xn;
+    
+	leg_line(dc, ynn, bby, xn, ledge, pTaille);
+	m_r->festa_string( dc, xn, ynn + 19, nDIAMOND, staff, this->dimin);
 }
 
 void MusNeume::DrawPunctumWhite( AxDC *dc, MusStaff *staff ) 
 {
-    // magic happens here
-    int pTaille = staff->pTaille;
-    
-    int xn = this->xrel;
-    //int xl = this->xrel;
+	int pTaille = staff->pTaille;
+    int xn = this->xrel + this->offset;
     int bby = staff->yrel - m_r->_portee[pTaille];
     int ynn = this->dec_y + staff->yrel;
-    //printf("closed ynn value: %d\nclosed dec_y: %d\nclosed yrel: %d\n", 
-    //     ynn, this->dec_y, staff->yrel );
-    
-    xn += this->offset;
-    
     int ledge = m_r->ledgerLine[pTaille][2];
-    leg_line( dc, ynn,bby,this->xrel,ledge, pTaille); //draw ledger lines
-    m_r->festa_string( dc, xn, ynn + 19, nWHITEPUNCT, staff, this->dimin); //draw cavum
-	m_pitches.at(0).xrel = xn;
+    
+	leg_line(dc, ynn, bby, xn, ledge, pTaille);
+	m_r->festa_string( dc, xn, ynn + 19, nWHITEPUNCT, staff, this->dimin);
 }
 
-void MusNeume::DrawVirga( AxDC *dc, MusStaff *staff ) 
+void MusNeume::DrawVirga( AxDC *dc, MusStaff *staff )
 {
-    // magic happens here
     int pTaille = staff->pTaille;
-    
-    int xn = this->xrel;
-    //int xl = this->xrel;
+    int xn = this->xrel + this->offset;
     int bby = staff->yrel - m_r->_portee[pTaille];
     int ynn = this->dec_y + staff->yrel;
-    //printf("closed ynn value: %d\nclosed dec_y: %d\nclosed yrel: %d\n", 
-    //     ynn, this->dec_y, staff->yrel );
-    
-    xn += this->offset;
-    
     int ledge = m_r->ledgerLine[pTaille][2];
-    leg_line( dc, ynn,bby,this->xrel,ledge, pTaille);
-    m_r->festa_string( dc, xn, ynn + 19, nPUNCTUM, staff, this->dimin);
-	m_pitches.at(0).xrel = xn;
-    m_r->festa_string( dc, xn + PUNCT_WIDTH, ynn + 19, '#', staff, this->dimin); //bottom right stem
+    
+	leg_line(dc, ynn, bby, xn, ledge, pTaille);
+	m_r->festa_string( dc, xn, ynn + 19, nPUNCTUM, staff, this->dimin);
+	
+	xn += PUNCT_WIDTH;
+	
+	m_r->festa_string( dc, xn, ynn + 19, '#', staff, this->dimin); //stem
 }
 
 void MusNeume::DrawSalicus( AxDC *dc, MusStaff *staff )
 {
-    // magic happens here
     int pTaille = staff->pTaille;
-    
-    int xn = this->xrel;
-    //int xl = this->xrel;
+    int xn = this->xrel + this->offset;
     int bby = staff->yrel - m_r->_portee[pTaille];
     int ynn = this->dec_y + staff->yrel;
-    //printf("closed ynn value: %d\nclosed dec_y: %d\nclosed yrel: %d\n", 
-    //     ynn, this->dec_y, staff->yrel );
-    
-    xn += this->offset;
-    
     int ledge = m_r->ledgerLine[pTaille][2];
     
-    leg_line( dc, ynn,bby,this->xrel,ledge, pTaille);
-    m_r->festa_string( dc, xn, ynn + 19, nPUNCTUM, staff, this->dimin);
-	m_pitches.at(0).xrel = xn;
-	for (unsigned int i = 0; i < m_pitches.size() - 2; i++) {
-		int ynn2 = ynn + (m_r->_espace[pTaille])*((this->m_pitches.at(i)).getPitchDifference());
-		leg_line( dc, ynn,bby,this->xrel,ledge, pTaille);
-		m_r->festa_string( dc, xn, ynn2 + 19, nPUNCTUM, staff, this->dimin);
-		m_pitches.at(i).xrel = xn;
-		xn += CLIVIS_X_SAME;
+	leg_line(dc, ynn, bby, xn, ledge, pTaille);
+	m_r->festa_string( dc, xn, ynn + 19, nPUNCTUM, staff, this->dimin);
+    
+	for (vector<MusNeumeElement*>::iterator i = m_pitches.begin(); i != m_pitches.end(); i++) {
+		SetColour();
+		(*i)->Init(m_r);
+		(*i)->Draw(dc,staff);
 	}
-    int ynn2 = ynn + (m_r->_espace[pTaille])*((this->m_pitches.at(m_pitches.size() - 2)).getPitchDifference());
-    leg_line( dc, ynn2,bby,this->xrel,ledge, pTaille);
-    m_r->festa_string( dc, xn, ynn2 + 19, nPES, staff, this->dimin);
-	m_pitches.at(m_pitches.size() - 1).xrel = xn;
-    int ynn3 = ynn + (m_r->_espace[pTaille])*((this->m_pitches.back()).getPitchDifference());
-    leg_line( dc, ynn3,bby,this->xrel,ledge, pTaille);
-    m_r->festa_string( dc, xn, ynn3 + 19, nPUNCTUM, staff, this->dimin);
-	m_pitches.back().xrel = xn;
-    this->NeumeLine( dc, staff, xn + 9, xn + 9, ynn2, ynn3);
+    
+	int xn1 = m_pitches.back()->xrel + m_pitches.back()->offset + 9;
+    int ynn1 = m_pitches[m_pitches.size() - 2]->dec_y + staff->yrel;
+	int ynn2 = m_pitches.back()->dec_y + staff->yrel;
+    NeumeLine( dc, staff, xn1, xn1, ynn1, ynn2);
 }
 
 void MusNeume::DrawPodatus( AxDC *dc, MusStaff *staff ) 
 {
-    // magic happens here
-    int pTaille = staff->pTaille;
-    
-    int xn = this->xrel;
-    //int xl = this->xrel;
+	//first is pes, second is punctum
+	
+	int pTaille = staff->pTaille;
+    int xn = this->xrel + this->offset;
     int bby = staff->yrel - m_r->_portee[pTaille];
     int ynn = this->dec_y + staff->yrel;
-    //printf("closed ynn value: %d\nclosed dec_y: %d\nclosed yrel: %d\n", 
-    //     ynn, this->dec_y, staff->yrel );
-    
-    xn += this->offset;
-    
     int ledge = m_r->ledgerLine[pTaille][2];
-    leg_line( dc, ynn,bby,this->xrel,ledge, pTaille);
-    m_r->festa_string( dc, xn, ynn + 19, nPES, staff, this->dimin);
-	m_pitches.at(0).xrel = xn;
-    int ynn2 = ynn + (m_r->_espace[pTaille])*((this->m_pitches.at(1)).getPitchDifference());
-    leg_line( dc, ynn2,bby,this->xrel,ledge, pTaille);
-    m_r->festa_string( dc, xn, ynn2 + 19, nPUNCTUM, staff, this->dimin);
-	m_pitches.at(1).xrel = xn;
-    this->NeumeLine( dc, staff, xn + 9, xn + 9, ynn, ynn2);
+    
+	leg_line(dc, ynn, bby, xn, ledge, pTaille);
+	m_r->festa_string( dc, xn, ynn + 19, nPES, staff, this->dimin);
+	
+	for (vector<MusNeumeElement*>::iterator i = m_pitches.begin(); i != m_pitches.end(); i++) {
+		SetColour();
+		(*i)->Init(m_r);
+		(*i)->Draw(dc,staff);
+	}
+	
+    xn += 9;
+	int ynn2 = m_pitches[0]->dec_y + staff->yrel;
+	
+    NeumeLine( dc, staff, xn, xn, ynn, ynn2);
 }
 
 void MusNeume::DrawClivis( AxDC *dc, MusStaff *staff ) 
 {
-    // magic happens here
-    int pTaille = staff->pTaille;
+	int xn1 = this->xrel + this->offset;
+	int xn2 = m_pitches[0]->xrel + m_pitches[0]->offset + 1;
+    int ynn1 = this->dec_y + staff->yrel;
+	int ynn2 = m_pitches[0]->dec_y + staff->yrel;
+	
+	m_r->festa_string( dc, xn1, ynn1 + 19, nPUNCTUM, staff, this->dimin);
+	m_r->festa_string( dc, xn1, ynn1 + 19, '3', staff, this->dimin);
     
-    int xn = this->xrel;
-    //int xl = this->xrel;
-    int bby = staff->yrel - m_r->_portee[pTaille];
-    int ynn = this->dec_y + staff->yrel;
-    //printf("closed ynn value: %d\nclosed dec_y: %d\nclosed yrel: %d\n", 
-    //     ynn, this->dec_y, staff->yrel );
-    
-    xn += this->offset;
-    
-    int ledge = m_r->ledgerLine[pTaille][2];
-    int ynn2, dx;
-    leg_line( dc, ynn,bby,this->xrel,ledge, pTaille);
-    m_r->festa_string( dc, xn, ynn + 19, nPUNCTUM, staff, this->dimin);
-	m_pitches.at(0).xrel = xn;
-    m_r->festa_string( dc, xn, ynn + 19, '3', staff, this->dimin);
-    ynn2 = ynn + (m_r->_espace[pTaille])*((this->m_pitches.at(1)).getPitchDifference());
-    if (ynn2 == ynn) {
-        dx = CLIVIS_X_SAME;
-    } else dx = CLIVIS_X_DIFF;
-    leg_line( dc, ynn2,bby,this->xrel + dx - 1,ledge, pTaille);
-    m_r->festa_string( dc, xn + dx - 1, ynn2 + 19, nPUNCTUM, staff, this->dimin);
-	m_pitches.at(1).xrel = xn + dx - 1;
-	if (ynn2 != ynn) {
-	NeumeLine(dc, staff, xn+dx, xn+dx, ynn, ynn2);
+	for (vector<MusNeumeElement*>::iterator i = m_pitches.begin(); i != m_pitches.end(); i++) {
+		SetColour();
+		(*i)->Init(m_r);
+		(*i)->Draw(dc,staff);
 	}
+    
+    NeumeLine( dc, staff, xn2, xn2, ynn1, ynn2);
 }
 
 void MusNeume::DrawPorrectus( AxDC *dc, MusStaff *staff ) 
 {
-    // magic happens here
-    int pTaille = staff->pTaille;
-    
-    int xn = this->xrel;
-    //int xl = this->xrel;
+	int pTaille = staff->pTaille;
+    int xn = this->xrel + this->offset;
+	int xn2 = m_pitches[0]->xrel + m_pitches[0]->offset;
     int bby = staff->yrel - m_r->_portee[pTaille];
     int ynn = this->dec_y + staff->yrel;
-    //printf("closed ynn value: %d\nclosed dec_y: %d\nclosed yrel: %d\n", 
-    //     ynn, this->dec_y, staff->yrel );
-    
-    xn += this->offset;
-    
     int ledge = m_r->ledgerLine[pTaille][2];
-    leg_line( dc, ynn,bby,this->xrel,ledge, pTaille);
-    m_r->festa_string( dc, xn, ynn + 19, '3', staff, this->dimin);
-	m_pitches.at(0).xrel = xn;
-    wxString slope; int dx;
-    if ((this->m_pitches.at(1)).getPitchDifference()==-1) {
-        slope = nPORRECT_1;
-        dx = -5;
-    }
-    else if ((this->m_pitches.at(1)).getPitchDifference()==-2) {
-        slope = nPORRECT_2;
-        dx = -2;
-    }
-    else if ((this->m_pitches.at(1)).getPitchDifference()==-3) {
-        slope = nPORRECT_3;
-        dx = 3;
-    }
-    else if ((this->m_pitches.at(1)).getPitchDifference()==-4) {
-        slope = nPORRECT_4;
-        dx = 3;
-    }
-    m_r->festa_string( dc, xn, ynn + 19, slope, staff, this->dimin);
-    xn += 3*PUNCT_WIDTH + dx;
-    int ynn2 = ynn + (m_r->_espace[pTaille])*((this->m_pitches.at(2)).getPitchDifference());
-	m_pitches.at(2).xrel = xn;
+	
     leg_line( dc, ynn,bby,xn,ledge, pTaille);
-    m_r->festa_string( dc, xn, ynn2 + 19, nPUNCTUM, staff, this->dimin);
-    xn += PUNCT_WIDTH - 1;
-	//no assignment of xrel to the second pitch as the bottom of a porrectus never has a dot.
-    int ynn3 = ynn + (m_r->_espace[pTaille])*((this->m_pitches.at(1)).getPitchDifference());
-    this->NeumeLine( dc, staff, xn, xn, ynn2, ynn3);
+    m_r->festa_string( dc, xn, ynn + 19, '3', staff, this->dimin);
+    
+	wxString slope;
+	switch ( m_pitches[0]->getPitchDifference() ) {
+		case -1: slope = nPORRECT_1; break;
+		case -2: slope = nPORRECT_2; break;
+		case -3: slope = nPORRECT_3; break;
+		case -4: slope = nPORRECT_4; break;
+		default: break;
+	}
+    
+    m_r->festa_string( dc, xn, ynn + 19, slope, staff, this->dimin);
+    
+	int ynn2 = m_pitches[0]->dec_y + staff->yrel;
+	int ynn3 = m_pitches[1]->dec_y + staff->yrel;
+	
+    NeumeLine( dc, staff, xn2, xn2, ynn2, ynn3);
+	
+	m_pitches[1]->Draw(dc,staff);
 }
 
 void MusNeume::DrawPorrectusFlexus( AxDC *dc, MusStaff *staff)
 {
-    // magic happens here
-    int pTaille = staff->pTaille;    
-    
-    int xn = this->xrel;
-    //int xl = this->xrel;
+	//in fact, maybe call DrawPorrectus and then just draw the extra note and line at the end? Will test it.
+	int pTaille = staff->pTaille;
+    int xn = this->xrel + this->offset;
+	int xn2 = m_pitches[0]->xrel + m_pitches[0]->offset;
+	int xn3 = m_pitches[1]->xrel + m_pitches[1]->offset;
     int bby = staff->yrel - m_r->_portee[pTaille];
     int ynn = this->dec_y + staff->yrel;
-    //printf("closed ynn value: %d\nclosed dec_y: %d\nclosed yrel: %d\n", 
-    //     ynn, this->dec_y, staff->yrel );
-    
-    xn += this->offset;
-    
     int ledge = m_r->ledgerLine[pTaille][2];
-    leg_line( dc, ynn,bby,this->xrel,ledge, pTaille);
-	m_pitches.at(0).xrel = xn;
+	
+    leg_line( dc, ynn,bby,xn,ledge, pTaille);
     m_r->festa_string( dc, xn, ynn + 19, '3', staff, this->dimin);
-    wxString slope; int dx;
-    if ((this->m_pitches.at(1)).getPitchDifference()==-1) {
-        slope = nPORRECT_1;
-        dx = -5;
-    }
-    else if ((this->m_pitches.at(1)).getPitchDifference()==-2) {
-        slope = nPORRECT_2;
-        dx = -2;
-    }
-    else if ((this->m_pitches.at(1)).getPitchDifference()==-3) {
-        slope = nPORRECT_3;
-        dx = 3;
-    }
-    else if ((this->m_pitches.at(1)).getPitchDifference()==-4) {
-        slope = nPORRECT_4;
-        dx = 3;
-    }
+    
+	wxString slope;
+	switch ( m_pitches[1]->getPitchDifference() ) {
+		case -1: slope = nPORRECT_1; break;
+		case -2: slope = nPORRECT_2; break;
+		case -3: slope = nPORRECT_3; break;
+		case -4: slope = nPORRECT_4; break;
+		default: break;
+	}
+    
     m_r->festa_string( dc, xn, ynn + 19, slope, staff, this->dimin);
-    xn += 4*PUNCT_WIDTH + dx;
-    int ynn2 = ynn + (m_r->_espace[pTaille])*((this->m_pitches.at(2)).getPitchDifference());
-    leg_line( dc, ynn2,bby,xn,ledge, pTaille);
-    m_r->festa_string( dc, xn, ynn2 + 19, nPUNCTUM, staff, this->dimin);
-	m_pitches.at(2).xrel = xn;
-    xn += PUNCT_WIDTH - 1;
-    int ynn3 = ynn + (m_r->_espace[pTaille])*((this->m_pitches.at(3)).getPitchDifference());
-    leg_line( dc, ynn3,bby,xn,ledge, pTaille);
-    m_r->festa_string( dc, xn, ynn3 + 19, nPUNCTUM, staff, this->dimin);
-	m_pitches.at(3).xrel = xn;
-    this->NeumeLine( dc, staff, xn + 1, xn, ynn2, ynn3);
+    
+	int ynn2 = m_pitches[1]->dec_y + staff->yrel;
+	int ynn3 = m_pitches[2]->dec_y + staff->yrel;
+	
+    NeumeLine( dc, staff, xn2, xn2, ynn2, ynn3 );
+	
+	m_pitches[1]->Draw(dc,staff);
+	
+	SetColour();	
+	m_pitches[2]->Draw(dc,staff);
+	
+	int ynn4 = m_pitches[2]->dec_y + staff->yrel;	
+	NeumeLine( dc, staff, xn3, xn3, ynn3, ynn4 );
 }
 
 void MusNeume::DrawScandicus( AxDC *dc, MusStaff *staff ) 
 {
-    // magic happens here
-    int pTaille = staff->pTaille;
-    
-    int xn = this->xrel;
-    //int xl = this->xrel;
+	int pTaille = staff->pTaille;
+    int xn = this->xrel + this->offset;
     int bby = staff->yrel - m_r->_portee[pTaille];
     int ynn = this->dec_y + staff->yrel;
-    //printf("closed ynn value: %d\nclosed dec_y: %d\nclosed yrel: %d\n", 
-    //     ynn, this->dec_y, staff->yrel );
-    
-    xn += this->offset;
     int ledge = m_r->ledgerLine[pTaille][2];
+    
+	leg_line(dc, ynn, bby, xn, ledge, pTaille);
+	m_r->festa_string( dc, xn, ynn + 19, nPUNCTUM, staff, this->dimin);
 	
-    for (vector<MusNeumeElement>::iterator i = m_pitches.begin(); i != m_pitches.end(); i++) {
-		int ynn2 = ynn + (m_r->_espace[pTaille])*(i->getPitchDifference());
-		leg_line( dc, ynn2,bby,xn,ledge, pTaille);
-		m_r->festa_string( dc, xn, ynn2 + 19, nPUNCTUM, staff, this->dimin);
-		i->xrel = xn;
-		xn += PUNCT_WIDTH;
+	for (vector<MusNeumeElement*>::iterator i = m_pitches.begin(); i != m_pitches.end(); i++) {
+		SetColour();
+		(*i)->Init(m_r);
+		(*i)->Draw(dc,staff);
 	}
 }
 
 void MusNeume::DrawScandicusFlexus( AxDC *dc, MusStaff *staff )
 {
-    // magic happens here
-    int pTaille = staff->pTaille;
-    
-    int xn = this->xrel;
-    //int xl = this->xrel;
+	int pTaille = staff->pTaille;
+    int xn = this->xrel + this->offset;
     int bby = staff->yrel - m_r->_portee[pTaille];
     int ynn = this->dec_y + staff->yrel;
-    //printf("closed ynn value: %d\nclosed dec_y: %d\nclosed yrel: %d\n", 
-    //     ynn, this->dec_y, staff->yrel );
-    
-    xn += this->offset;
-    
     int ledge = m_r->ledgerLine[pTaille][2];
-    leg_line( dc, ynn,bby,this->xrel,ledge, pTaille);
-    m_r->festa_string( dc, xn, ynn + 19, nPES, staff, this->dimin);
-	m_pitches.at(0).xrel = xn;
-    int ynn2 = ynn + (m_r->_espace[pTaille])*((this->m_pitches.at(1)).getPitchDifference());
-    leg_line( dc, ynn2,bby,this->xrel,ledge, pTaille);
-    m_r->festa_string( dc, xn, ynn2 + 19, nPUNCTUM, staff, this->dimin);
-	m_pitches.at(1).xrel = xn;
-    this->NeumeLine( dc, staff, xn + 9, xn + 9, ynn, ynn2);
-    xn += CLIVIS_X_SAME;
-    int ynn3 = ynn + (m_r->_espace[pTaille])*((this->m_pitches.at(2)).getPitchDifference());
-    leg_line( dc, ynn3,bby,xn,ledge, pTaille);
-    m_r->festa_string( dc, xn, ynn3 + 19, '3', staff, this->dimin);
-    m_r->festa_string( dc, xn, ynn3 + 19, nPUNCTUM, staff, this->dimin);
-	m_pitches.at(2).xrel = xn;
-    xn += PUNCT_WIDTH - 2;
-    int ynn4 = ynn + (m_r->_espace[pTaille])*((this->m_pitches.at(3)).getPitchDifference());
-    leg_line( dc, ynn4,bby,xn,ledge, pTaille);
-    m_r->festa_string( dc, xn, ynn4 + 19, nPUNCTUM, staff, this->dimin);
-	m_pitches.at(3).xrel = xn;
-    this->NeumeLine( dc, staff, xn + 1, xn + 1, ynn3, ynn4);
+    
+	leg_line(dc, ynn, bby, xn, ledge, pTaille);
+	m_r->festa_string( dc, xn, ynn + 19, nPUNCTUM, staff, this->dimin);
+	
+	for (vector<MusNeumeElement*>::iterator i = m_pitches.begin(); i != m_pitches.end(); i++) {
+		SetColour();
+		(*i)->Init(m_r);
+		(*i)->Draw(dc,staff);
+	}
 }
 
 void MusNeume::DrawTorculus( AxDC *dc, MusStaff *staff ) 
 {
-    // magic happens here
     int pTaille = staff->pTaille;
-    
-    int xn = this->xrel;
-    //int xl = this->xrel;
+    int xn = this->xrel + this->offset;
     int bby = staff->yrel - m_r->_portee[pTaille];
     int ynn = this->dec_y + staff->yrel;
-    //printf("closed ynn value: %d\nclosed dec_y: %d\nclosed yrel: %d\n", 
-    //     ynn, this->dec_y, staff->yrel );
-    
-    xn += this->offset;
-    
     int ledge = m_r->ledgerLine[pTaille][2];
-    leg_line( dc, ynn,bby,this->xrel,ledge, pTaille);
-    m_r->festa_string( dc, xn, ynn + 19, nPUNCTUM, staff, this->dimin);
-	m_pitches.at(0).xrel = xn;
-    int ynn2 = ynn + (m_r->_espace[pTaille])*((this->m_pitches.at(1)).getPitchDifference());
-    this->NeumeLine( dc, staff, xn + 9, xn + 9, ynn, ynn2);
-    xn += PUNCT_WIDTH - 2;
-    leg_line( dc, ynn2,bby,xn,ledge, pTaille);
-    m_r->festa_string( dc, xn, ynn2 + 19, nPUNCTUM, staff, this->dimin);
-	m_pitches.at(1).xrel = xn;
-    int ynn3 = ynn + (m_r->_espace[pTaille])*((this->m_pitches.at(2)).getPitchDifference());
-    xn += PUNCT_WIDTH - 2;
-    this->NeumeLine( dc, staff, xn + 1, xn + 1, ynn2, ynn3);
-    leg_line( dc, ynn3,bby,xn,ledge, pTaille);
-    m_r->festa_string( dc, xn, ynn3 + 19, nPUNCTUM, staff, this->dimin);
-	m_pitches.at(2).xrel = xn;
+    
+	leg_line(dc, ynn, bby, xn, ledge, pTaille);
+	m_r->festa_string( dc, xn, ynn + 19, nPUNCTUM, staff, this->dimin);
+	
+	m_pitches[0]->Init(m_r);
+	m_pitches[0]->Draw(dc,staff);
+    
+	int ynn2 = m_pitches[0]->dec_y + staff->yrel;
+	xn += CLIVIS_X_DIFF;	
+	NeumeLine( dc, staff, xn, xn, ynn, ynn2);
+	
+	m_pitches[1]->Init(m_r);
+	m_pitches[1]->Draw(dc,staff);
+	
+	int ynn3 = m_pitches[1]->dec_y + staff->yrel;
+	xn += CLIVIS_X_DIFF;
+    NeumeLine( dc, staff, xn, xn, ynn2, ynn3);
 }
 
 void MusNeume::DrawTorculusLiquescent( AxDC *dc, MusStaff *staff )
 {
-    // magic happens here
+    /*// magic happens here
     int pTaille = staff->pTaille;
     
     int xn = this->xrel;
@@ -1128,12 +1295,12 @@ void MusNeume::DrawTorculusLiquescent( AxDC *dc, MusStaff *staff )
 	m_pitches.at(1).xrel = xn;
     int ynn3 = ynn + (m_r->_espace[pTaille])*((this->m_pitches.at(2)).getPitchDifference());
     m_r->festa_string( dc, xn, ynn3 + 19, nLIQUES_UP, staff, this->dimin); //liquescent: 'e'
-	m_pitches.at(2).xrel = xn;
+	m_pitches.at(2).xrel = xn;*/
 }
 
 void MusNeume::DrawTorculusResupinus( AxDC *dc, MusStaff *staff )
 {
-    // magic happens here
+    /*// magic happens here
     int pTaille = staff->pTaille;
     
     int xn = this->xrel;
@@ -1181,42 +1348,29 @@ void MusNeume::DrawTorculusResupinus( AxDC *dc, MusStaff *staff )
 	m_pitches.at(2).xrel = xn;
     xn += PUNCT_WIDTH - 1;
     int ynn4 = ynn + (m_r->_espace[pTaille])*((this->m_pitches.at(2)).getPitchDifference());
-    this->NeumeLine( dc, staff, xn, xn, ynn3, ynn4);
+    this->NeumeLine( dc, staff, xn, xn, ynn3, ynn4);*/
 }
 
 void MusNeume::DrawCompound( AxDC *dc, MusStaff *staff ) 
 {
-    // magic happens here
-    int pTaille = staff->pTaille;
-    
-    int xn = this->xrel;
-    //int xl = this->xrel;
+	int pTaille = staff->pTaille;
+    int xn = this->xrel + this->offset;
     int bby = staff->yrel - m_r->_portee[pTaille];
     int ynn = this->dec_y + staff->yrel;
-    //printf("closed ynn value: %d\nclosed dec_y: %d\nclosed yrel: %d\n", 
-    //     ynn, this->dec_y, staff->yrel );
-    
-    xn += this->offset;
-    
     int ledge = m_r->ledgerLine[pTaille][2];
-    leg_line( dc, ynn,bby,this->xrel,ledge, pTaille);
-    m_r->festa_string( dc, xn, ynn + 19, nPUNCTUM, staff, this->dimin);
-    int dx = (PUNCT_WIDTH + 1)*(this->m_pitches.size());
-    int y1 = 0, y2 = 0;
-    for (vector<MusNeumeElement>::iterator i = this->m_pitches.begin() + 1; i != this->m_pitches.end(); i++) {
-        MusNeumeElement e = *i;
-        if (e.getPitchDifference() > y1)
-            y1 = e.getPitchDifference();
-        if (e.getPitchDifference() < y2)
-            y2 = e.getPitchDifference();
-    }
-    y1 = ynn + (m_r->_espace[pTaille])*y1;
-    y2 = ynn + (m_r->_espace[pTaille])*y2;
-    m_r->box( dc, xn, y1, xn + dx, y2 );
+    
+	leg_line(dc, ynn, bby, xn, ledge, pTaille);
+	m_r->festa_string( dc, xn, ynn + 19, nPUNCTUM, staff, this->dimin);
+	
+	for (vector<MusNeumeElement*>::iterator i = m_pitches.begin(); i != m_pitches.end(); i++) {
+		SetColour();
+		(*i)->Init(m_r);
+		(*i)->Draw(dc,staff);
+	}
 }
 
 void MusNeume::DrawDots(AxDC *dc, MusStaff *staff) {
-	for (vector<MusNeumeElement>::iterator i = m_pitches.begin(); i != m_pitches.end(); i++) {
+	/*for (vector<MusNeumeElement>::iterator i = m_pitches.begin(); i != m_pitches.end(); i++) {
 		if (i->getOrnament() == DOT) {
 			bool onspace = (i->dec_y/(m_r->_espace[staff->pTaille]))%2;
 			int y = staff->yrel + i->dec_y + m_r->_interl[staff->pTaille];
@@ -1230,7 +1384,7 @@ void MusNeume::DrawDots(AxDC *dc, MusStaff *staff) {
 			y -= (noteabove) ? (m_r->_interl[staff->pTaille]) : 0;
 			m_r->festa_string( dc, m_pitches.back().xrel + PUNCT_WIDTH, y + 19, nDOT, staff, this->dimin);
 		}
-	}
+	}*/
 }
 
 //Also same as MusNote. Could use an update, since it fails to draw ledger lines immediately below the staff.

@@ -129,6 +129,7 @@ public:
 	MusSymbol m_symbol;
 	MusNeume m_neume;
 	MusNeumeSymbol m_neumesymbol;
+	MusNeumeElement m_neumeeelement;
 
 	int m_insertx;
 	int m_insertcode;
@@ -171,7 +172,7 @@ private:
     void NeumeInsertOnKeyDown(wxKeyEvent &event);
     void MensuralEditOnKeyDown(wxKeyEvent &event);
     void MensuralInsertOnKeyDown(wxKeyEvent &event);
-	void NewMeiNeumeElement();
+	void NewMeiNeumeElement(MusElement *element);
     
 	wxWindow* parentwindow;
 	

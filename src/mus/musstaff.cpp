@@ -101,6 +101,11 @@ MusStaff::MusStaff( const MusStaff& staff )
 			MusNeumeSymbol *nneumesymbol = new MusNeumeSymbol( *(MusNeumeSymbol*)&staff.m_elements[i] );
 			this->m_elements.Add( nneumesymbol );
 		}
+		else if ( staff.m_elements[i].IsNeumeElement() )
+		{
+			MusNeumeElement *nneumeelement = new MusNeumeElement( *(MusNeumeElement*)&staff.m_elements[i] );
+			this->m_elements.Add( nneumeelement );
+		}
 	}
 }
 
@@ -252,8 +257,13 @@ MusElement *MusStaff::Insert( MusElement *element )
 		element = new MusSymbol( *(MusSymbol*)element );
 	else if ( element->IsNote() )
 		element = new MusNote( *(MusNote*)element );
-	else if ( element->IsNeume() )
+	else if ( element->IsNeume() ) {
 		element = new MusNeume( *(MusNeume*)element );
+		MusNeume *neume = (MusNeume*)element;
+		for (vector<MusNeumeElement*>::iterator i = neume->getPitches().begin(); i != neume->getPitches().end(); i++) {
+			(*i)->setParent(neume);
+		}
+	}
 	else if ( element->IsNeumeSymbol() )
 		element = new MusNeumeSymbol( *(MusNeumeSymbol*)element );
 //	else if ( element->IsNeume() ) 
@@ -280,6 +290,16 @@ MusElement *MusStaff::Insert( MusElement *element )
 		m_r->OnBeginEditionClef();
 
 	m_elements.Insert( element, idx );
+	if (element->IsNeume()) {
+		if (((MusNeume*)element)->getPitches().size() > 0) {
+			((MusNeume*)element)->CalcPitches(this);
+			((MusNeume*)element)->SetPitch(((MusNeume*)element)->pitch, ((MusNeume*)element)->oct);
+			for (vector<MusNeumeElement*>::iterator i = ((MusNeume*)element)->getPitches().begin(); i != ((MusNeume*)element)->getPitches().end(); i++) {
+				(*i)->xrel = ((MusNeume*)element)->xrel + (i - ((MusNeume*)element)->getPitches().begin() + 1);
+				m_elements.Insert(*i,idx);
+			}
+		}
+	}
 	this->CheckIntegrity();
 	
 	if ( (element->IsSymbol() && (((MusSymbol*)element)->flag == CLE))
@@ -306,6 +326,15 @@ void MusStaff::Append( MusElement *element, int step )
         element->xrel += step;
     }
 	m_elements.Add( element );
+	if (element->IsNeume()) {
+		MusNeume *neume = (MusNeume*)element;
+		if (neume->getPitches().size() > 0) {
+			for (vector<MusNeumeElement*>::iterator i = neume->getPitches().begin(); i != neume->getPitches().end(); i++) {
+				(*i)->xrel = neume->xrel + (i - neume->getPitches().begin() + 1);
+				m_elements.Add( *i );
+			}
+		}
+	}
 	this->CheckIntegrity();
 }
 
@@ -322,7 +351,16 @@ void MusStaff::Delete( MusElement *element )
 			m_r->OnBeginEditionClef();
 	}
 	
+	if ( element->IsNeume() ) {
+		MusNeume *neume = (MusNeume*)element;
+		for (vector<MusNeumeElement*>::iterator i = neume->getPitches().begin(); i != neume->getPitches().end(); i++) {
+			m_elements.Detach( (*i)->no );
+			this->CheckIntegrity();
+			delete (*i);
+		}
+	}
 	m_elements.Detach( element->no );
+	
 	this->CheckIntegrity();
 
 	if ( m_r )
@@ -667,8 +705,10 @@ void MusStaff::DrawStaff( AxDC *dc, int i )
 	for(j = 0; j < (int)this->nblement; j++)
 	{
 		pelement = &this->m_elements[j];
-		pelement->Init( m_r );
-		pelement->Draw( dc, this );
+		if (!pelement->IsNeumeElement() || pelement == m_r->m_currentElement) {
+			pelement->Init( m_r );
+			pelement->Draw( dc, this );
+		}
 	}
 
 }

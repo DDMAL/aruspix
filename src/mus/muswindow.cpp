@@ -499,7 +499,11 @@ void MusWindow::SetEditorMode( MusEditorMode mode )
 		}
 		else
 		{
-			m_newElement = &m_note;
+			switch (m_notation_mode) {
+				case MUS_MENSURAL_MODE: m_newElement = &m_note; break;
+				case MUS_NEUMATIC_MODE: m_newElement = &m_neume; break;
+				default: break;
+			}
 			m_lastEditedElement = NULL;
 		}
 		m_currentElement = NULL;
@@ -581,7 +585,7 @@ int MusWindow::GetToolType()
         {
 			return NEUME_TOOLS_SYMBOLS;
         } 
-        else if (sync->IsNeume() )
+        else if (sync->IsNeume() || sync->IsNeumeElement() )
         {
             return NEUME_TOOLS_NOTES;
         }
@@ -830,7 +834,7 @@ void MusWindow::OnMouseDClick(wxMouseEvent &event)
 	{
 		if ( event.ButtonDClick( wxMOUSE_BTN_LEFT  ) && m_currentStaff && m_newElement )
 		{
-			if ( m_newElement->IsNote() || m_newElement->IsNeume() ||
+			if ( m_newElement->IsNote() || m_newElement->IsNeume() || m_newElement->IsNeumeElement() ||
 				(((MusSymbol*)m_newElement)->flag == ALTER) || (((MusSymbol*)m_newElement)->flag == PNT)
 				|| (((MusNeumeSymbol*)m_newElement)->getType() == NEUME_SYMB_FLAT) || (((MusNeumeSymbol*)m_newElement)->getType() == NEUME_SYMB_NATURAL) )
 			{
@@ -840,7 +844,7 @@ void MusWindow::OnMouseDClick(wxMouseEvent &event)
 			
 			//make a new MeiElement with its own zone!
 			if (m_f->GetMeiDocument()) {
-				NewMeiNeumeElement();
+				NewMeiNeumeElement(m_newElement);
 			} else {
 				m_lastEditedElement = m_currentStaff->Insert( m_newElement );
 			}
@@ -852,13 +856,15 @@ void MusWindow::OnMouseDClick(wxMouseEvent &event)
 	event.Skip();
 }
 
-void MusWindow::NewMeiNeumeElement()
+void MusWindow::NewMeiNeumeElement(MusElement *element)
 {
 	MusElement *newelement = NULL;
 	MusNeume neume;
 	MusNeumeSymbol neume_symbol;
-	if (m_newElement->IsNeume()) {
-		neume = MusNeume(*(MusNeume*)m_newElement);
+	if (element->IsNeume()) {
+		neume = MusNeume(*(MusNeume*)element);
+		neume.getPitches().clear();
+		
 		NewNeumeDlg dlg( parentwindow, -1, "Create a new neume" );
 		dlg.Center(wxBOTH);
 		if (dlg.ShowModal() != wxID_OK)
@@ -867,11 +873,9 @@ void MusWindow::NewMeiNeumeElement()
 		NeumeType n_type;
 		const short n = dlg.s_nbpitches;
 		vector<int> pdiffs (n,0);
-		//for (int i = 0; i < sizeof(pdiffs)/sizeof(int); i++) {
-		//	pdiffs[i] = 0;
-		//}
 		
 		//do something if they enter the wrong number of pitches
+		//this will be handled by the CalcPitches() method
 		
 		switch(NewNeumeDlg::s_neumetype) {
 			case NEW_NEUME_ANCUS: n_type = NEUME_TYPE_ANCUS; break;
@@ -913,9 +917,9 @@ void MusWindow::NewMeiNeumeElement()
 			case NEW_NEUME_VIRGA: n_type = NEUME_TYPE_VIRGA; break;
 		}
 		neume.setType(n_type);
-		for (int i = 0; i < NewNeumeDlg::s_nbpitches; i++) {
-			MusNeumeElement note = MusNeumeElement(pdiffs[i]);
-			neume.m_pitches.push_back(note);
+		for (int i = 1; i < NewNeumeDlg::s_nbpitches; i++) {
+			MusNeumeElement* note = new MusNeumeElement(pdiffs[i]);
+			neume.AppendNote(note);
 		}
 		if (NewNeumeDlg::s_inclinatum) {
 			neume.inclinatum = true;
@@ -923,6 +927,10 @@ void MusWindow::NewMeiNeumeElement()
 		if (NewNeumeDlg::s_quilisma) {
 			neume.quilisma = true;
 		}
+		
+		neume.CalcPitches(m_currentStaff);
+		neume.SetPitch(neume.pitch, neume.oct);
+		
 		newelement = &neume;
 	} else if (m_newElement->IsNeumeSymbol()) {
 		neume_symbol = MusNeumeSymbol(*(MusNeumeSymbol*)m_newElement);
@@ -942,6 +950,12 @@ void MusWindow::NewMeiNeumeElement()
 	}
 	newelement->newMeiRef(tmp);
 	m_lastEditedElement = m_currentStaff->Insert( newelement );
+	/*if ( newelement->IsNeume() ) {
+		for (vector<MusNeumeElement*>::iterator i = neume.getPitches().begin(); i != neume.getPitches().end(); i++) {
+			(*i)->xrel = neume.xrel + (i - neume.getPitches().begin() + 1);
+			m_currentStaff->Insert( *i );
+		}
+	}*/
 }
 
 void MusWindow::OnMouseLeftUp(wxMouseEvent &event)
@@ -1106,7 +1120,7 @@ void MusWindow::OnMouseMotion(wxMouseEvent &event)
 			m_currentElement->dec_y = y - m_currentStaff->yrel;
 		} 
 		
-		if ( m_insertx != m_dragging_x  )		// If element has moved in the x-axis
+		if ( m_insertx != m_dragging_x && m_currentElement->TYPE != NEUME_ELMT )		// If element has moved in the x-axis
 		{
 			// TODO m_currentElement->ClearElement( &dc, m_currentStaff );
 			m_currentElement->xrel += ( m_insertx - m_dragging_x );
@@ -1282,8 +1296,14 @@ void MusWindow::NeumeEditOnKeyDown(wxKeyEvent &event) {
             else
                 m_currentElement = NULL;
         }
-        del->deleteMeiRef();
-        delstaff->Delete( del );
+		if ( del->IsNeumeElement() ) { //since you can't just delete one note of a neume (for the time being, you must replace it with a new one of the correct type)
+			MusNeumeElement *delel = (MusNeumeElement*)del;
+			delel->getParent()->deleteMeiRef();
+			delstaff->Delete(delel->getParent());
+		} else {
+			del->deleteMeiRef();
+			delstaff->Delete( del );
+		}
         if ( m_currentStaff != delstaff )
         {
             // reset previous staff with no element before checkpoint and then swap again
@@ -1310,14 +1330,14 @@ void MusWindow::NeumeEditOnKeyDown(wxKeyEvent &event) {
     else if ( event.m_controlDown && ( event.m_keyCode == WXK_UP ) && m_currentElement) // correction hauteur avec les fleches, up
     {
         PrepareCheckPoint( UNDO_PART, MUS_UNDO_STAFF );
-        m_insertcode = ((m_currentElement->TYPE==NEUME) || (m_currentElement->TYPE == NEUME_SYMB)) ? (m_currentElement->filtrpitch( m_currentElement->pitch + 1, &m_insertoct )) : (m_currentElement->filtrcod( m_currentElement->code + 1, &m_insertoct ));
+        m_insertcode = (m_currentElement->TYPE==NEUME || m_currentElement->TYPE == NEUME_SYMB || m_currentElement->TYPE == NEUME_ELMT) ? (m_currentElement->filtrpitch( m_currentElement->pitch + 1, &m_insertoct )) : (m_currentElement->filtrcod( m_currentElement->code + 1, &m_insertoct ));
         m_currentElement->SetPitch( m_insertcode, m_insertoct );
         CheckPoint( UNDO_PART, MUS_UNDO_STAFF );
     }
     else if ( event.m_controlDown && ( event.m_keyCode == WXK_DOWN ) && m_currentElement) // correction hauteur avec les fleches, down
     {
         PrepareCheckPoint( UNDO_PART, MUS_UNDO_STAFF );
-        m_insertcode = ((m_currentElement->TYPE==NEUME) || (m_currentElement->TYPE == NEUME_SYMB)) ? (m_currentElement->filtrpitch( m_currentElement->pitch - 1, &m_insertoct )) : (m_currentElement->filtrcod( m_currentElement->code - 1, &m_insertoct ));
+        m_insertcode = (m_currentElement->TYPE==NEUME || m_currentElement->TYPE == NEUME_SYMB || m_currentElement->TYPE == NEUME_ELMT) ? (m_currentElement->filtrpitch( m_currentElement->pitch - 1, &m_insertoct )) : (m_currentElement->filtrcod( m_currentElement->code - 1, &m_insertoct ));
         m_currentElement->SetPitch( m_insertcode, m_insertoct );
         CheckPoint( UNDO_PART, MUS_UNDO_STAFF );
     }
@@ -1361,11 +1381,13 @@ void MusWindow::NeumeEditOnKeyDown(wxKeyEvent &event) {
     else if ( event.m_controlDown && (( event.m_keyCode == WXK_LEFT ) || (event.m_keyCode == WXK_RIGHT )) && m_currentElement) // moving element
     {
         PrepareCheckPoint( UNDO_PART, MUS_UNDO_STAFF );
-        if ( event.m_keyCode == WXK_LEFT ) {
-            m_currentElement->xrel -=3;
-        } else {
-            m_currentElement->xrel +=3;
-        }
+        if (m_currentElement->TYPE != NEUME_ELMT ) {
+			if ( event.m_keyCode == WXK_LEFT ) {
+				m_currentElement->xrel -=3;
+			} else {
+				m_currentElement->xrel +=3;
+			}
+		}
 		if (m_currentElement->newmeielement) {
 			m_currentElement->updateMeiRef();
 		}
@@ -1380,9 +1402,9 @@ void MusWindow::NeumeEditOnKeyDown(wxKeyEvent &event) {
 		MusNeumeSymbol neumesymb = MusNeumeSymbol();
 		MusNeume neume = MusNeume();
 		if (m_currentElement->IsNeume())  {
-			newelement = new MusNeumeSymbol();
+			newelement = &neumesymb;
 		} else if (m_currentElement->IsNeumeSymbol()) {
-			newelement = new MusNeume();
+			newelement = &neume;
 		}
 		newelement->liaison = m_currentElement->liaison;
 		newelement->dliai = m_currentElement->dliai;
@@ -1423,7 +1445,12 @@ void MusWindow::NeumeEditOnKeyDown(wxKeyEvent &event) {
 			newelement->updateMeiRef();
 		}
 		m_currentStaff->Delete(m_currentElement);
-		m_currentElement = m_currentStaff->Insert(newelement);
+		m_currentElement = newelement;
+		if (m_f->GetMeiDocument()) {
+			NewMeiNeumeElement(m_currentElement);
+		} else {
+			m_currentElement = m_currentStaff->Insert(newelement);
+		}
 		m_currentStaff->CheckIntegrity();
 		CheckPoint( UNDO_PART, MUS_UNDO_STAFF );
 	}
@@ -1435,6 +1462,17 @@ void MusWindow::NeumeEditOnKeyDown(wxKeyEvent &event) {
         m_currentElement->SetValue( event.m_keyCode, m_currentStaff, vflag );
         CheckPoint( UNDO_PART, MUS_UNDO_STAFF );	
     }
+	else if ( event.m_controlDown && event.m_keyCode == 'C' )
+	{
+		for (int i = 0; i < m_f->m_pages.GetCount(); i++) {
+			for (int j = 0; j < m_f->m_pages[i].m_staves.GetCount(); j++) {
+				for (int k = 0; k < m_f->m_pages[i].m_staves[j].m_elements.GetCount(); k++) {
+					if ( m_f->m_pages[i].m_staves[j].m_elements[k].IsNeume() && ((MusNeume*)&(m_f->m_pages[i].m_staves[j].m_elements[k]))->getType() == NEUME_TYPE_CUSTOS )
+						m_f->m_pages[i].m_staves[j].m_elements[k].SetPitch(m_f->m_pages[i].m_staves[j].m_elements[k].pitch, m_f->m_pages[i].m_staves[j].m_elements[k].oct - 1);
+				}
+			}
+		}
+	}
     OnEndEdition();
     SyncToolPanel();
 }

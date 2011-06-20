@@ -63,32 +63,16 @@ enum NeumeElementType {
     NEUME_ELEMENT_PUNCTUM_WHITE,
     NEUME_ELEMENT_INCLINATUM,
     NEUME_ELEMENT_QUILISMA,
+	NEUME_ELEMENT_PES,
+	NEUME_ELEMENT_CEPHALICUS,
+	NEUME_ELEMENT_CUSTOS,
+	NEUME_ELEMENT_LIQUESCENT_UP,
+	NEUME_ELEMENT_LIQUESCENT_DOWN,
+	NEUME_ELEMENT_EPIPHONUS
 };
 
-class MusNeumeElement: public MusElement
-{
-public:
-	MusNeumeElement();
-    MusNeumeElement(const MusNeumeElement &element);
-    MusNeumeElement(MeiElement &meielement, int pitch, int oct);
-    MusNeumeElement(int _pitchDifference);
-    virtual ~MusNeumeElement() {}
-    
-    int getPitchDifference();
-    NeumeElementType getElementType();
-    MeiElement* getMeiElement();
-    void updateMeiElement(string pitch, int oct);
-	void updateMeiZone();
-	void setMeiElement(MeiElement *element);
-	void deleteMeiRef();
-	NeumeOrnament getOrnament();
-	
-private:
-    int m_pitch_difference;
-    NeumeElementType m_element_type;
-    NeumeOrnament ornament;
-    MeiElement *m_meiref;
-};
+
+class MusNeumeElement;
 
 class MusNeume: public MusElement
 {
@@ -102,7 +86,9 @@ public:
     void setType(wxString type, wxString variant);
     void setType(NeumeType type);
     NeumeType getType();
-	vector<MusNeumeElement> getPitches();
+	vector<MusNeumeElement*>& getPitches();
+	void CalcPitches(MusStaff *staff);
+	void AppendNote(MusNeumeElement* note);
 	
 	//MEI stuff
     MeiElement* getMeiRef();
@@ -111,6 +97,7 @@ public:
 	void updateMeiZone();
 	void setMeiStaffZone(MeiElement *element);
 	void setMeiRef(MeiElement *element);
+	void setMeiFirstPitch(MeiElement *element);
     
     //Drawing code
     virtual void Draw( AxDC *dc, MusStaff *staff);
@@ -137,6 +124,7 @@ public:
     void DrawCustos( AxDC *dc, MusStaff *staff);
 	void DrawDots(AxDC *dc, MusStaff *staff);
     void leg_line( AxDC *dc, int y_n, int y_p, int xn, unsigned int smaller, int pTaille);
+	void SetColour();
 
     //void append( AxDC *dc, MusStaff *staff ); //for creating multi-note neumes
     
@@ -148,7 +136,7 @@ public:
 	//this is mostly for MEI
 	bool inclinatum;
 	bool quilisma;
-	vector<MusNeumeElement> m_pitches;
+	vector<MusNeumeElement*> m_pitches;
 
 private:
     void readNoteContainer(MeiElement &nc, int pitch, int oct);
@@ -156,7 +144,43 @@ private:
     NeumeOrnament ornament;
     NeumeType m_type;
     MeiElement *m_meiref;
+	MeiElement *m_meifirstpitch;
 	MeiElement *m_meistaffzone;
+};
+
+class MusNeumeElement: public MusElement
+{
+public:
+	friend class MusNeume;
+	MusNeumeElement();
+    MusNeumeElement(const MusNeumeElement &other);
+	MusNeume& operator=(const MusNeume &neume);
+    MusNeumeElement(MeiElement &meielement, int pitch, int oct);
+    MusNeumeElement(int _pitchDifference);
+    virtual ~MusNeumeElement() {}
+    
+	void Draw( AxDC *dc, MusStaff *staff );
+	virtual void SetPitch( int pitch, int oct );
+	void setParent(MusNeume *_parent);
+	void leg_line( AxDC *dc, int y_n, int y_p, int xn, unsigned int smaller, int pTaille);
+	
+	MusNeume* getParent();
+    int getPitchDifference();
+    NeumeElementType getElementType();
+	void setElementType(NeumeElementType type);
+    MeiElement* getMeiElement();
+    void updateMeiElement(string pitch, int oct);
+	void updateMeiZone();
+	void setMeiElement(MeiElement *element);
+	void deleteMeiRef();
+	NeumeOrnament getOrnament();
+	
+private:
+    int m_pitch_difference;
+    NeumeElementType m_element_type;
+    NeumeOrnament ornament;
+    MeiElement *m_meiref;
+	MusNeume *parent;
 };
 
 #endif // __MUS_NEUME_H__

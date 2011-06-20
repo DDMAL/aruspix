@@ -84,7 +84,7 @@ public:
     /** element fin d'un beaming */
     char frel;
     /** octave de l'element */
-    unsigned char oct;
+    int oct;
     /** element diminue */
     unsigned char dimin;
     /** groupe de valeurs */
