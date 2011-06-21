@@ -1734,13 +1734,35 @@ void RecEnv::OnOpenMEI( wxCommandEvent &event )
     if ( !this->ResetFile( ) )
         return;
 	
-	wxString fname = wxFileSelector( "Import MEI - Choose TIFF", wxGetApp().m_lastDirTIFF_in, _T(""), _T(""), IMAGE_FILES, wxFD_OPEN);
+	wxString fname = wxFileSelector( _("Import MEI - Choose MEI"), wxGetApp().m_lastDir, _T(""), _T(""), "MEI Files|*.mei|XML Files|*.xml", wxFD_OPEN);
 	if (fname.IsEmpty())
 		return;
+	wxGetApp().m_lastDir = wxPathOnly( fname );
 	
+	wxString filename = fname;
+	if ( filename.Contains("uncorr") ) {
+		filename.Replace("uncorr","original_image");
+	} else if ( filename.Contains("corr") ) {
+		filename.Replace("corr","original_image");
+	} else {
+		wxLogMessage( "Filename doesn't match the requirements of the liber usualis project!" );
+		return;
+	}
+	filename.Replace(filename.AfterLast('.'),"tiff");
+	if ( !wxFileExists(filename) ) {
+		filename.Replace(filename.AfterLast('.'),"tif");
+	}
+	if ( !wxFileExists(filename) ) {
+		filename = wxFileSelector( "Import MEI - Choose TIFF", wxGetApp().m_lastDir, _T(""), _T(""), IMAGE_FILES, wxFD_OPEN);
+		if ( filename.IsEmpty() )
+			return;
+		wxGetApp().m_lastDir = wxPathOnly( filename );
+    }
+    //m_recFilePtr->m_musFilePtr->New();
+	//m_recFilePtr->m_musFilePtr->m_pages.Clear();
 	m_recFilePtr->New();
 	
-	m_imControlPtr->Open(fname);
+	m_imControlPtr->Open(filename);
 	
 	m_recFilePtr->m_imPagePtr->m_img0 = GetImImage(m_imControlPtr, IM_RGB, IM_BYTE); //the default settings for GetImImage make the image invert vertically, so we have to invert it back.
 	imImage* imTmp2 = imImageClone( m_recFilePtr->m_imPagePtr->m_img0 );
@@ -1748,26 +1770,13 @@ void RecEnv::OnOpenMEI( wxCommandEvent &event )
 	imImageDestroy(m_recFilePtr->m_imPagePtr->m_img0);
 	m_recFilePtr->m_imPagePtr->m_img0 = imTmp2;
 	
-	/*if ( !m_recFilePtr->IsPreprocessed() ){
-		this->Preprocess();
-	}*/
-	
-	//m_musControlPtr->SetForMEI();
-	
-	wxString filename = wxFileSelector( _("Import MEI - Choose MEI"), wxGetApp().m_lastDir, _T(""), _T(""), "MEI Files|*.mei|XML Files|*.xml", wxFD_OPEN);
-    if ( filename.IsEmpty() )
-        return;
-    wxGetApp().m_lastDir = wxPathOnly( filename );
-    
-    //m_recFilePtr->m_musFilePtr->New();
-	//m_recFilePtr->m_musFilePtr->m_pages.Clear();
 	m_recFilePtr->SetforMEI();
 	
 	m_recFilePtr->m_musFilePtr->m_fheader.param.pageFormatVer = m_imControlPtr->GetHeight() / 10;
 	m_recFilePtr->m_musFilePtr->m_fheader.param.pageFormatHor = m_imControlPtr->GetWidth() / 10;
 	m_recFilePtr->m_musFilePtr->m_fheader.param.MargeSOMMET = 0;
 	
-    MusMeiInput meiinput( m_recFilePtr->m_musFilePtr, filename );
+    MusMeiInput meiinput( m_recFilePtr->m_musFilePtr, fname );
 	if ( !meiinput.ImportFile() )
 		return;
 	
