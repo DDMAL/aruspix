@@ -610,6 +610,59 @@ void MusNeumeSymbol::updateMeiRef() {
 }
 
 void MusNeumeSymbol::updateMeiZone() {
+	MeiElement *zone = m_meiref->getZone();
+	int height = 0, width = 0, y = 0, yoffs = 19;
+	switch (symbolType) {
+		case NEUME_SYMB_COMMA: width = 20; height = 20; break;
+		case NEUME_SYMB_FLAT: width = 15; break;
+		case NEUME_SYMB_NATURAL: width = 15; break;
+		case NEUME_SYMB_CLEF_C: width = 15; break;
+		case NEUME_SYMB_CLEF_F: width = 20; break;
+		case NEUME_SYMB_DIVISION_FINAL: width = 20; break;
+		case NEUME_SYMB_DIVISION_MAJOR: width = 7; break;
+		case NEUME_SYMB_DIVISION_MINOR: width = 7; break;
+		case NEUME_SYMB_DIVISION_SMALL: width = 10; break;
+		default: break;
+	}
+	
+	int ymid = (atoi(this->m_meistaffzone->getAttribute("uly")->getValue().c_str()) + atoi(this->m_meistaffzone->getAttribute("lry")->getValue().c_str()))/2;
+	int uly = ymid - double(y + yoffs)*(5.0/3.0); // 5/3 is the ratio of an aruspix staff to an MEI staff height.
+	char buf[16];
+	
+	MeiAttribute *lryattr = zone->getAttribute("lry");
+	int lry = uly + height;
+	snprintf(buf, 16, "%d", lry);
+	if (lryattr != NULL) {
+		lryattr->setValue(string(buf));
+	} else {
+		zone->addAttribute(MeiAttribute("lry",string(buf)));
+	}
+	
+	MeiAttribute *ulxattr = zone->getAttribute("ulx");
+	int ulx = (this->xrel + this->offset)*2; //the horizontal scale of aruspix is approximately 1/2 that of the images we're dealing with
+	snprintf(buf, 16, "%d", ulx);
+	if (ulxattr != NULL) {
+		ulxattr->setValue(string(buf));
+	} else {
+		zone->addAttribute(MeiAttribute("ulx",string(buf)));
+	}
+	
+	MeiAttribute *ulyattr = zone->getAttribute("uly");
+	snprintf(buf, 16, "%d", uly);
+	if (ulyattr != NULL) {
+		ulyattr->setValue(string(buf));
+	} else {
+		zone->addAttribute(MeiAttribute("uly",string(buf)));
+	}
+	
+	MeiAttribute *lrxattr = zone->getAttribute("lrx");
+	int lrx = ulx + width;
+	snprintf(buf, 16, "%d", lrx);
+	if (lrxattr != NULL) {
+		lrxattr->setValue(string(buf));
+	} else {
+		zone->addAttribute(MeiAttribute("lrx",string(buf)));
+	}
 }
 
 void MusNeumeSymbol::setMeiStaffZone(MeiElement *element) {

@@ -163,7 +163,7 @@ void MusMeiInput::ReadElement(MeiElement *element, FacsTable *table)
 			if (m_currentStaff->GetLast()) {
 				insertx = atoi(zone->getAttribute("ulx")->getValue().c_str())/2 - m_currentStaff->GetLast()->xrel;
 			} else {
-				insertx = atoi(zone->getAttribute("ulx")->getValue().c_str())/2 - m_currentStaff->xrel;
+				insertx = atoi(zone->getAttribute("ulx")->getValue().c_str())/2;
 			}
 		}
 	}

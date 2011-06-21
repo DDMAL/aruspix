@@ -658,14 +658,14 @@ void MusWindow::Paste()
 }
 
 void MusWindow::UpdateScroll()
-{
+{	
 	if (!m_currentStaff)
 		return;
 		
 	int x = 0;
 	if ( m_currentElement )
 		x = ToRendererX( m_currentElement->xrel );
-	int y = ToRendererY(  kPos[m_currentStaff->no].yp );
+	int y = ToRendererY( kPos[m_currentStaff->no].yp );
 	// units
 	int xu, yu;
 	this->GetScrollPixelsPerUnit( &xu, &yu );
@@ -674,6 +674,7 @@ void MusWindow::UpdateScroll()
 	this->GetViewStart( &xs, &ys );
 	xs *= xu;
 	ys *= yu;
+	ys += m_currentStaff->portNbLine + 2;
 	// size
 	int w, h;
 	this->GetClientSize( &w, &h );
@@ -686,8 +687,10 @@ void MusWindow::UpdateScroll()
 		x /= xu;
 	if ( (y > ys ) && (y < ys + h - 2 * ToRendererX(_portee[0])) )
 		y = -1;
-	else
+	else {
 		y /= yu;
+		y -= m_currentStaff->portNbLine + 2 + m_currentStaff->no*2;
+	}
 
 	Scroll( x, y );
 	OnSyncScroll( x, y );
@@ -874,9 +877,6 @@ void MusWindow::NewMeiNeumeElement(MusElement *element)
 		const short n = dlg.s_nbpitches;
 		vector<int> pdiffs (n,0);
 		
-		//do something if they enter the wrong number of pitches
-		//this will be handled by the CalcPitches() method
-		
 		switch(NewNeumeDlg::s_neumetype) {
 			case NEW_NEUME_ANCUS: n_type = NEUME_TYPE_ANCUS; break;
 			case NEW_NEUME_CAVUM: n_type = NEUME_TYPE_PUNCTUM_WHITE; break;
@@ -932,8 +932,8 @@ void MusWindow::NewMeiNeumeElement(MusElement *element)
 		neume.SetPitch(neume.pitch, neume.oct);
 		
 		newelement = &neume;
-	} else if (m_newElement->IsNeumeSymbol()) {
-		neume_symbol = MusNeumeSymbol(*(MusNeumeSymbol*)m_newElement);
+	} else if (element->IsNeumeSymbol()) {
+		neume_symbol = MusNeumeSymbol(*(MusNeumeSymbol*)element);
 		newelement = &neume_symbol;
 	} else {
 		throw "MEI support only for neumatic notation!";
@@ -950,12 +950,6 @@ void MusWindow::NewMeiNeumeElement(MusElement *element)
 	}
 	newelement->newMeiRef(tmp);
 	m_lastEditedElement = m_currentStaff->Insert( newelement );
-	/*if ( newelement->IsNeume() ) {
-		for (vector<MusNeumeElement*>::iterator i = neume.getPitches().begin(); i != neume.getPitches().end(); i++) {
-			(*i)->xrel = neume.xrel + (i - neume.getPitches().begin() + 1);
-			m_currentStaff->Insert( *i );
-		}
-	}*/
 }
 
 void MusWindow::OnMouseLeftUp(wxMouseEvent &event)
@@ -1273,6 +1267,13 @@ void MusWindow::NeumeEditOnKeyDown(wxKeyEvent &event) {
         
         if (event.m_keyCode == WXK_DELETE )		//"Delete" event
         {
+			if ( m_currentElement->IsNeume() ) {
+				if (((MusNeume*)m_currentElement)->getPitches().size() > 0) {
+					del = ((MusNeume*)m_currentElement)->getPitches().back();
+				}
+			} else if ( m_currentElement->IsNeumeElement() ) {
+				del = ((MusNeumeElement*)m_currentElement)->getParent()->getPitches().back();
+			}
             if ( m_currentStaff->GetNext( del ) )
                 m_currentElement = m_currentStaff->GetNext( del );
             else if ( m_page->GetNext( m_currentStaff ) )
@@ -1280,18 +1281,23 @@ void MusWindow::NeumeEditOnKeyDown(wxKeyEvent &event) {
                 
                 m_currentStaff = m_page->GetNext( m_currentStaff );
                 m_currentElement = m_currentStaff->GetFirst();
+				UpdateScroll();
             }
             else
                 m_currentElement = NULL;
         }
         else                                    //"Backspace" event
         {
+			if ( m_currentElement->IsNeumeElement() ) {
+				del = ((MusNeumeElement*)m_currentElement)->getParent();
+			}
             if ( m_currentStaff->GetPrevious( del ) )
                 m_currentElement = m_currentStaff->GetPrevious( del );
             else if ( m_page->GetPrevious( m_currentStaff ) )
             {
                 m_currentStaff = m_page->GetPrevious( m_currentStaff );
                 m_currentElement = m_currentStaff->GetLast();
+				UpdateScroll();
             }
             else
                 m_currentElement = NULL;
@@ -1405,6 +1411,9 @@ void MusWindow::NeumeEditOnKeyDown(wxKeyEvent &event) {
 			newelement = &neumesymb;
 		} else if (m_currentElement->IsNeumeSymbol()) {
 			newelement = &neume;
+		} else if (m_currentElement->IsNeumeElement()) {
+			m_currentElement = ((MusNeumeElement*)m_currentElement)->getParent();
+			newelement = &neumesymb;
 		}
 		newelement->liaison = m_currentElement->liaison;
 		newelement->dliai = m_currentElement->dliai;

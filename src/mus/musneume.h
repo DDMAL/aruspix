@@ -154,7 +154,6 @@ public:
 	friend class MusNeume;
 	MusNeumeElement();
     MusNeumeElement(const MusNeumeElement &other);
-	MusNeume& operator=(const MusNeume &neume);
     MusNeumeElement(MeiElement &meielement, int pitch, int oct);
     MusNeumeElement(int _pitchDifference);
     virtual ~MusNeumeElement() {}
@@ -168,7 +167,7 @@ public:
     int getPitchDifference();
     NeumeElementType getElementType();
 	void setElementType(NeumeElementType type);
-    MeiElement* getMeiElement();
+    MeiElement* getMeiRef();
     void updateMeiElement(string pitch, int oct);
 	void updateMeiZone();
 	void setMeiElement(MeiElement *element);
