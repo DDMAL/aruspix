@@ -264,6 +264,54 @@ int MusElement::StrToPitch(std::string pitch)
     return value;
 }
 
+void MusElement::newMeiRef(MusStaff* currentstaff)
+{
+	newmeielement = true;
+	MeiElement* element = currentstaff->m_meiref;
+	MeiElement* zone = new MeiElement("zone", element->getNs());
+	std::string facs;
+	char uuidbuff[36];
+	uuid_t uuidGenerated;
+	uuid_generate(uuidGenerated);
+	uuid_unparse(uuidGenerated, uuidbuff);
+	facs = string(uuidbuff);
+	std::transform(facs.begin(), facs.end(), facs.begin(), ::tolower);
+	facs = "m-" + facs;
+	zone->setId(facs);
+	vector<MeiElement*>::iterator i = element->getZone()->getParent().getChildren().begin();
+	while (i != element->getZone()->getParent().getChildren().end()) {
+		if (*i == element->getZone()) {
+			element->getZone()->getParent().getChildren().insert(i, zone);
+			zone->setParent(element->getZone()->getParent());
+			break;
+		} else {
+			i++;
+		}
+	}
+	MeiElement *meiref = new MeiElement("");
+	meiref->setFacs(facs);
+	meiref->setZone(zone);
+	uuid_generate(uuidGenerated);
+	uuid_unparse(uuidGenerated, uuidbuff);
+	facs = string(uuidbuff);
+	std::transform(facs.begin(), facs.end(), facs.begin(), ::tolower);
+	facs = "m-" + facs;
+	meiref->setId(facs);
+	setMeiRef(meiref);
+	this->updateMeiRef();
+	vector<MeiElement*>::iterator it = element->getParent().getChildren().begin();
+	while (it != element->getParent().getChildren().end()) {
+		if ((*it)->getId() == element->getId()) {
+			it++;
+			element->getParent().getChildren().insert(it, meiref);
+			meiref->setParent(element->getParent());
+			break;
+		} else {
+			it++;
+		}
+	}
+}
+
 void MusElement::newMeiRef(MusElement* previous)
 {
 	newmeielement = true;

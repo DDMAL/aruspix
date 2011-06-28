@@ -63,9 +63,15 @@ MusNeumeSymbol::MusNeumeSymbol(MeiElement &meielement) :
 					value = nC3;
 				} else if (line->getValue() == "4") {
 					value = nC4;
+				} else if (atoi(line->getValue().c_str()) > 4) { //tired of correcting this all the time.
+                    line->setValue("4");
+					value = nC4;
+                } else if (atoi(line->getValue().c_str()) < 1) {
+					line->setValue("1");
+					value = nC1;
 				} else {
-                    throw "unknown line for a C clef";
-                }
+					throw "bad line for a C clef";
+				}
 			} else if (shstr == "F") {
                 symbolType = NEUME_SYMB_CLEF_F;
 				if (line->getValue() == "1") {
@@ -76,9 +82,15 @@ MusNeumeSymbol::MusNeumeSymbol(MeiElement &meielement) :
 					value = nF3;
                 } else if (line->getValue() == "4") {
 					value = nF4;
-                } else {
-                    throw "unknown line for an F clef";
-                }
+                } else if (atoi(line->getValue().c_str()) > 4) { //tired of correcting this all the time.
+                    line->setValue("4");
+					value = nF4;
+                } else if (atoi(line->getValue().c_str()) < 1) {
+					line->setValue("1");
+					value = nF1;
+				} else {
+					throw "bad line for an F clef";
+				}
 			} else {
                 throw "unknown clef";
             }

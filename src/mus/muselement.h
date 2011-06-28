@@ -56,6 +56,7 @@ public:
 	virtual void setMeiStaffZone(MeiElement *element) {};
 	virtual void deleteMeiRef() {};
 	void newMeiRef(MusElement* previous);
+	void newMeiRef(MusStaff* currentstaff);
 
     //	virtual void SetPitch( int code, int oct, MusStaff *staff = NULL ) {};
 	virtual void SetPitch( int code, int oct ) {};

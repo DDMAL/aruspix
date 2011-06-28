@@ -491,9 +491,9 @@ void MusWindow::SetEditorMode( MusEditorMode mode )
 				m_neumesymbol = *(MusNeumeSymbol*)m_currentElement;
 				m_newElement = &m_neumesymbol;
 			}
-			else if ( m_currentElement->IsNeume() )
+			else if ( m_currentElement->IsNeume() || m_currentElement->IsNeumeElement() )
 			{
-				m_neume = *(MusNeume*)m_currentElement;
+				m_neume = MusNeume();
 				m_newElement = &m_neume;
 			}
 		}
@@ -665,7 +665,7 @@ void MusWindow::UpdateScroll()
 	int x = 0;
 	if ( m_currentElement )
 		x = ToRendererX( m_currentElement->xrel );
-	int y = ToRendererY( kPos[m_currentStaff->no].yp );
+	int y = ToRendererY( kPos[m_currentStaff->no].yp + (m_currentStaff->portNbLine + 2)*_interl[m_currentStaff->pTaille]);
 	// units
 	int xu, yu;
 	this->GetScrollPixelsPerUnit( &xu, &yu );
@@ -928,6 +928,7 @@ void MusWindow::NewMeiNeumeElement(MusElement *element)
 			neume.quilisma = true;
 		}
 		
+		neume.newmeielement = true;
 		neume.CalcPitches(m_currentStaff);
 		neume.SetPitch(neume.pitch, neume.oct);
 		
@@ -948,8 +949,21 @@ void MusWindow::NewMeiNeumeElement(MusElement *element)
 		else
 			break;
 	}
-	newelement->newMeiRef(tmp);
+	while ( tmp && tmp->IsNeumeElement() ) {
+		if ( m_currentStaff->GetPrevious( tmp ) ) {
+			tmp = m_currentStaff->GetPrevious( tmp );
+		}
+	}
+	if (!tmp) {
+		newelement->newMeiRef(m_currentStaff);
+	}
+	else {
+		newelement->newMeiRef(tmp);
+	}
 	m_lastEditedElement = m_currentStaff->Insert( newelement );
+	if (element->IsNeume() ) {
+		((MusNeume*)element)->getPitches().clear();
+	}
 }
 
 void MusWindow::OnMouseLeftUp(wxMouseEvent &event)
@@ -1197,7 +1211,7 @@ void MusWindow::SharedEditOnKeyDown(wxKeyEvent &event) {
             m_currentStaff = m_page->GetNext( m_currentStaff );
             m_currentElement = m_currentStaff->GetFirst();
         }
-        UpdateScroll();
+        //UpdateScroll();
     }
     else if ( event.GetKeyCode() == WXK_LEFT )
     {
@@ -1209,7 +1223,7 @@ void MusWindow::SharedEditOnKeyDown(wxKeyEvent &event) {
             m_currentStaff = m_page->GetPrevious( m_currentStaff );
             m_currentElement = m_currentStaff->GetLast();
         }
-        UpdateScroll();
+        //UpdateScroll();
     }
     else if ( event.GetKeyCode() == WXK_UP )
     {
@@ -1221,7 +1235,7 @@ void MusWindow::SharedEditOnKeyDown(wxKeyEvent &event) {
             }
             m_currentStaff = m_page->GetPrevious( m_currentStaff );
             m_currentElement = m_currentStaff->GetAtPos(x);
-            UpdateScroll();
+            //UpdateScroll();
         }
     }
     else if ( event.GetKeyCode() == WXK_DOWN )
@@ -1234,7 +1248,7 @@ void MusWindow::SharedEditOnKeyDown(wxKeyEvent &event) {
             }
             m_currentStaff = m_page->GetNext( m_currentStaff );
             m_currentElement = m_currentStaff->GetAtPos(x);
-            UpdateScroll();
+            //UpdateScroll();
         }
     }
     else if ( event.GetKeyCode() == WXK_HOME ) 
@@ -1264,15 +1278,27 @@ void MusWindow::NeumeEditOnKeyDown(wxKeyEvent &event) {
         PrepareCheckPoint( UNDO_PART, MUS_UNDO_STAFF );
         MusElement *del = m_currentElement;
         MusStaff *delstaff = m_currentStaff;
+		delstaff->CheckIntegrity();
         
         if (event.m_keyCode == WXK_DELETE )		//"Delete" event
         {
 			if ( m_currentElement->IsNeume() ) {
-				if (((MusNeume*)m_currentElement)->getPitches().size() > 0) {
-					del = ((MusNeume*)m_currentElement)->getPitches().back();
+				int maxx = m_currentElement->no;
+				for (vector<MusNeumeElement*>::iterator i = ((MusNeume*)m_currentElement)->getPitches().begin(); i != ((MusNeume*)m_currentElement)->getPitches().end(); i++) {
+					if ( (*i)->no > maxx ) {
+						maxx = (*i)->no;
+						del = (*i);
+					}
 				}
 			} else if ( m_currentElement->IsNeumeElement() ) {
-				del = ((MusNeumeElement*)m_currentElement)->getParent()->getPitches().back();
+				MusNeume *parent = ((MusNeumeElement*)m_currentElement)->getParent();
+				int maxx = m_currentElement->no;
+				for (vector<MusNeumeElement*>::iterator i = parent->getPitches().begin(); i != parent->getPitches().end(); i++) {
+					if ( (*i)->no > maxx ) {
+						maxx = (*i)->no;
+						del = (*i);
+					}
+				}
 			}
             if ( m_currentStaff->GetNext( del ) )
                 m_currentElement = m_currentStaff->GetNext( del );
@@ -1281,7 +1307,7 @@ void MusWindow::NeumeEditOnKeyDown(wxKeyEvent &event) {
                 
                 m_currentStaff = m_page->GetNext( m_currentStaff );
                 m_currentElement = m_currentStaff->GetFirst();
-				UpdateScroll();
+				//UpdateScroll();
             }
             else
                 m_currentElement = NULL;
@@ -1289,7 +1315,22 @@ void MusWindow::NeumeEditOnKeyDown(wxKeyEvent &event) {
         else                                    //"Backspace" event
         {
 			if ( m_currentElement->IsNeumeElement() ) {
-				del = ((MusNeumeElement*)m_currentElement)->getParent();
+				MusNeume *parent = ((MusNeumeElement*)m_currentElement)->getParent();
+				int minx = parent->no;
+				for (vector<MusNeumeElement*>::iterator i = parent->getPitches().begin(); i != parent->getPitches().end(); i++) {
+					if ( (*i)->no < minx ) {
+						minx = (*i)->no;
+						del = (*i);
+					}
+				}
+			} else if ( m_currentElement->IsNeume() ) {
+				int minx = m_currentElement->no;
+				for (vector<MusNeumeElement*>::iterator i = ((MusNeume*)m_currentElement)->getPitches().begin(); i != ((MusNeume*)m_currentElement)->getPitches().end(); i++) {
+					if ( (*i)->no < minx ) {
+						minx = (*i)->no;
+						del = (*i);
+					}
+				}
 			}
             if ( m_currentStaff->GetPrevious( del ) )
                 m_currentElement = m_currentStaff->GetPrevious( del );
@@ -1401,7 +1442,7 @@ void MusWindow::NeumeEditOnKeyDown(wxKeyEvent &event) {
         m_currentStaff->CheckIntegrity();
         CheckPoint( UNDO_PART, MUS_UNDO_STAFF );
     }
-	else if ( event.m_keyCode == WXK_SHIFT )
+	/*else if ( event.m_keyCode == WXK_SHIFT )
 	{
 		PrepareCheckPoint( UNDO_PART, MUS_UNDO_STAFF );
 		MusElement *newelement;
@@ -1462,7 +1503,7 @@ void MusWindow::NeumeEditOnKeyDown(wxKeyEvent &event) {
 		}
 		m_currentStaff->CheckIntegrity();
 		CheckPoint( UNDO_PART, MUS_UNDO_STAFF );
-	}
+	}*/
     else if ( m_currentElement && m_currentElement->IsNeumeSymbol() &&
              in( event.m_keyCode, 33, 125) ) // any other keycode on symbol (ascii codes)
     {
