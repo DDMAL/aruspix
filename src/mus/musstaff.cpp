@@ -662,7 +662,7 @@ void MusStaff::DrawStaffLines( AxDC *dc, int i )
 	yy = this->yrel - m_r->_interl[ pTaille ]*portNbLine; //looks like yy just gets reassigned here??
 
 	x1 = this->indent ? this->indent*10 : 0;
-	x2 = m_r->m_pageMaxX;
+	x2 = m_r->m_fh->param.pageFormatHor*10 - this->indentDroite*10 - m_r->m_fh->param.MargeGAUCHEIMPAIRE*10 + 5;
 
 
 	dc->SetPen( m_r->m_currentColour, m_r->ToRendererX( m_p->EpLignesPortee ), wxSOLID );

@@ -198,6 +198,8 @@ public:
 	wxSpinCtrl* GetScNbPitches()  { return (wxSpinCtrl*) FindWindow( ID7_NB_PITCHES ); }
 	wxCheckBox* GetCxInclinatum() { return (wxCheckBox*) FindWindow( ID7_INCLINATUM ); }
 	wxCheckBox* GetCxQuilisma() { return (wxCheckBox*) FindWindow( ID7_QUILISMA ); }
+	
+	void OnNeumeTypeChange(wxCommandEvent& event);
     
 public:
 	static int s_neumetype;

@@ -50,7 +50,7 @@ public:
 	MusStaff *GetLast( );
 	MusStaff *GetNext( MusStaff *staff );
 	MusStaff *GetPrevious( MusStaff *staff );
-	MusStaff *GetAtPos( int y );
+	MusStaff *GetAtPos( int x, int y );
 	void Clear( );
 	/**
 		dessine la page en cours = draw_it

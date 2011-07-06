@@ -136,15 +136,44 @@ MusStaff *MusPage::GetPrevious( MusStaff *staff  )
 }
 
 
-MusStaff *MusPage::GetAtPos( int y )
+MusStaff *MusPage::GetAtPos( int x, int y )
 {
-	y += ( STAFF_OFFSET / 2 );
-	MusStaff *staff = this->GetFirst();
-	if ( !staff )
+	//y += ( STAFF_OFFSET / 8 );
+	//y += 100;
+	y += 75;
+	MusStaff *returnstaff = this->GetFirst();
+	if ( !returnstaff )
 		return NULL;
 	
-	int dif =  abs( staff->yrel - y );
-	while ( this->GetNext(staff) )
+	int min = 200000;
+	for (int i = 0; i < nbrePortees; i++) {
+		MusStaff *staff = &m_staves[i];
+		int dist = 2000;
+		if ( (staff->indent*10 <= x) && (x <= m_r->m_fh->param.pageFormatHor*10 - staff->indentDroite*10) ) {
+			if ( (staff->yrel - m_r->_interl[staff->pTaille]*(staff->portNbLine - 1) <= y) && (y <= staff->yrel) ) {
+				return staff;
+			} else {
+				dist = abs(y - staff->yrel) < abs(y - staff->yrel + m_r->_interl[staff->pTaille]*(staff->portNbLine - 1)) ? abs(y - staff->yrel) : abs(y - staff->yrel + m_r->_interl[staff->pTaille]*(staff->portNbLine - 1));
+			}
+		} else if ( (staff->yrel - m_r->_interl[staff->pTaille]*(staff->portNbLine - 1) <= y) && (y <= staff->yrel) ) {
+			if ( (staff->indent*10 <= x) && (x <= m_r->m_fh->param.pageFormatHor*10 - staff->indentDroite*10) ) {
+				return staff;
+			} else {
+				dist = abs(x - staff->indent*10) < abs(x - m_r->m_fh->param.pageFormatHor*10 + staff->indentDroite*10) ? abs(x - staff->indent*10) : abs(x - m_r->m_fh->param.pageFormatHor*10 + staff->indentDroite*10);
+			}
+		} else {
+			int minx = abs(x - staff->indent*10) < abs(x - m_r->m_fh->param.pageFormatHor*10 + staff->indentDroite*10) ? abs(x - staff->indent*10) : abs(x - m_r->m_fh->param.pageFormatHor*10 + staff->indentDroite*10);
+			int miny = abs(y - staff->yrel) < abs(y - staff->yrel + m_r->_interl[staff->pTaille]*(staff->portNbLine - 1)) ? abs(y - staff->yrel) : abs(y - staff->yrel + m_r->_interl[staff->pTaille]*(staff->portNbLine - 1));
+			dist = sqrt(minx*minx+miny*miny);
+		}
+		if ( dist < min ) {
+			returnstaff = staff	;
+			min = dist;
+		}
+	}
+	return returnstaff;
+	
+	/*while ( this->GetNext(staff) )
 	{
 		if ( (int)staff->yrel < y )
 		{
@@ -164,7 +193,7 @@ MusStaff *MusPage::GetAtPos( int y )
 	if ( ( (int)staff->yrel < y )  && this->GetPrevious( staff ) )
 		staff = this->GetPrevious( staff );
 
-	return staff;
+	return staff;*/
 }
 
 void MusPage::UpdateStavesPosition( ) 

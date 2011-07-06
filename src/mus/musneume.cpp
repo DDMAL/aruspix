@@ -299,6 +299,11 @@ MusNeume::MusNeume(MeiElement &element) : MusElement() {
 				} else {
 					throw "octave out of range";
 				}
+				for (vector<MeiElement*>::iterator i = note.getChildren().begin(); i != note.getChildren().end(); i++) {
+					if ( (*i)->getName() == "dot" ) {
+						this->ornament = DOT;
+					}
+				}
                 fail = false;
             }
         }
@@ -1365,21 +1370,71 @@ void MusNeume::DrawCompound( AxDC *dc, MusStaff *staff )
 }
 
 void MusNeume::DrawDots(AxDC *dc, MusStaff *staff) {
-	/*for (vector<MusNeumeElement*>::iterator i = m_pitches.begin(); i != m_pitches.end(); i++) {
-		if ((*i)->getOrnament() == DOT) {
-			bool onspace = ((*i)->dec_y/(m_r->_espace[staff->pTaille]))%2;
-			int y = staff->yrel + (*i)->dec_y + m_r->_interl[staff->pTaille];
-			y += (!onspace) ? (m_r->_espace[staff->pTaille]) : 0;
-			bool noteabove = false;
-			for (vector<MusNeumeElement*>::iterator it = m_pitches.begin(); it != m_pitches.end(); it++) {
-				if (!onspace && ((*it)->getPitchDifference() - (*i)->getPitchDifference() == 1)) {
-					noteabove = true;
+	int xn = (m_pitches.size() > 0) ? m_pitches.back()->xrel + PUNCT_WIDTH : this->xrel + PUNCT_WIDTH;
+	vector< vector<int> > pitchoct;
+	for (int i = -1; i < m_pitches.size(); i++) {
+		if(i == -1) {
+			int onspace = (this->dec_y/(m_r->_espace[staff->pTaille]))%2;
+			int dot = (this->ornament == DOT) ? 1 : 0;
+			vector<int> array;
+			array.push_back(this->pitch);
+			array.push_back(this->oct);
+			array.push_back(dot);
+			array.push_back(onspace);
+			pitchoct.push_back(array);
+		} else {
+			int onspace = (m_pitches[i]->dec_y/(m_r->_espace[staff->pTaille]))%2;
+			int dot = (m_pitches[i]->getOrnament() == DOT) ? 1 : 0;
+			vector<int> array;
+			array.push_back(m_pitches[i]->pitch);
+			array.push_back(m_pitches[i]->oct);
+			array.push_back(dot);
+			array.push_back(onspace);
+			pitchoct.push_back(array);
+		}
+	}
+	for (int j = 0; j < pitchoct.size(); j++) {
+		if (pitchoct[j][2] == 1) {
+			if (pitchoct[j][3] == 1) {
+				int ynn = staff->y_neume(pitchoct[j][0], staff->testcle(this->xrel), pitchoct[j][1]);
+				m_r->festa_string( dc, xn, ynn + 19, nDOT, staff, this->dimin);
+			} else {
+				bool noteabove = false;
+				int pitchElement = pitchoct[j][0] + 1;
+				int octElement = pitchoct[j][1];
+				while (pitchElement > 7) {
+					octElement++;
+					pitchElement -= 7;
+				}
+				for (int k = 0; k < pitchoct.size(); k++) {
+					if (pitchoct[k][0] == pitchElement && pitchoct[k][1] == octElement) {
+						noteabove = true;
+					}
+				}
+				if (!noteabove) {
+					int ynn = staff->y_neume(pitchElement, staff->testcle(this->xrel), octElement);
+					m_r->festa_string( dc, xn, ynn + 19, nDOT, staff, this->dimin);
+				} else {
+					bool notebelow = false;
+					pitchElement = pitchoct[j][0] - 1;
+					octElement = pitchoct[j][1];
+					while (pitchElement < 1) {
+						octElement--;
+						pitchElement += 7;
+					}
+					for (int l = 0; l < pitchoct.size(); l++) {
+						if (pitchoct[l][0] == pitchElement && pitchoct[l][1] == octElement) {
+							notebelow = true;
+						}
+					}
+					if (!notebelow) {
+						int ynn = staff->y_neume(pitchElement, staff->testcle(this->xrel), octElement);
+						m_r->festa_string( dc, xn, ynn + 19, nDOT, staff, this->dimin);
+					}
 				}
 			}
-			y -= (noteabove) ? (m_r->_interl[staff->pTaille]) : 0;
-			m_r->festa_string( dc, m_pitches.back()->xrel + PUNCT_WIDTH, y + 19, nDOT, staff, this->dimin);
 		}
-	}*/
+	}
 }
 
 //Also same as MusNote. Could use an update, since it fails to draw ledger lines immediately below the staff.

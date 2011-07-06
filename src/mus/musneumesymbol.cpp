@@ -139,7 +139,9 @@ MusNeumeSymbol::MusNeumeSymbol(MeiElement &meielement) :
 				throw "octave out of range";
 			}
             pitch = this->StrToPitch(pname->getValue());
-        } else {
+        } else if (!pname) {
+			pitch = 1;
+		} else {
             throw "missing pitch or octave on accidental";
         }
     } else {
@@ -476,7 +478,7 @@ void MusNeumeSymbol::updateMeiRefAccid(string accid, int pitch, int octave)
 	} else {
 		accidattr->setValue(accid);
 	}
-	MeiAttribute *pnameattr = m_meiref->getAttribute("pname");
+	/*MeiAttribute *pnameattr = m_meiref->getAttribute("pname");
 	if (pnameattr == NULL) {
 		m_meiref->addAttribute(MeiAttribute("pname", this->PitchToStr(pitch)));
 	} else {
@@ -491,7 +493,7 @@ void MusNeumeSymbol::updateMeiRefAccid(string accid, int pitch, int octave)
 		m_meiref->addAttribute(MeiAttribute("oct", octstr));
 	} else {
 		octattr->setValue(octstr);
-	}
+	}*/
 }
 
 void MusNeumeSymbol::updateMeiRefDiv(string form)

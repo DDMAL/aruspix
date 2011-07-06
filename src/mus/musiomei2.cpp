@@ -193,7 +193,7 @@ void MusMeiInput::ReadElement(MeiElement *element, FacsTable *table)
 		std::string systemref = element->getAttribute("systemref")->getValue();
 		MeiElement* zone = table->GetZone(systemref);
 		element->setZone(zone);
-        mei_staff(element, table);
+		mei_staff(element, table);
 		//} else if (element->getName() == "layer") {
 		//    mei_layer(element);
     }
@@ -232,7 +232,7 @@ bool MusMeiInput::ImportFile( )
         wxLogError(_("An error occurred while importing '%s'"), m_file->m_fname.c_str() );
     }
     
-    m_file->CheckIntegrity();
+	m_file->CheckIntegrity();
 
     // adjust the page size - this is very temporary, we need something better
     // we also have to see what to do if we have a scoredef
@@ -252,8 +252,9 @@ bool MusMeiInput::ImportFile( )
         max_y += max((unsigned short)(&m_page->m_staves.Last())->portNbLine,(unsigned short)(&m_page->m_staves.Last())->ecart);
     }
     max_y *= m_page->defin; // transform this into coord.
+	m_file->m_fheader.param.MargeGAUCHEIMPAIRE = 0;
     // update the page size
-    m_file->m_fheader.param.pageFormatHor = max_x / 10 + (2 * m_file->m_fheader.param.MargeGAUCHEIMPAIRE);
+    //m_file->m_fheader.param.pageFormatHor = max_x / 10 + (2 * m_file->m_fheader.param.MargeGAUCHEIMPAIRE);
     //m_file->m_fheader.param.pageFormatVer = max_y / 10 + (2 * m_file->m_fheader.param.MargeSOMMET);
 
     return true;
@@ -505,12 +506,15 @@ bool MusMeiInput::mei_staff(MeiElement *element, FacsTable *table) {
 		double ymid = (atoi(zone->getAttribute("lry")->getValue().c_str()) + atoi(zone->getAttribute("uly")->getValue().c_str()))/2.0;
         if (n == 1) {
             staff->ecart = (ymid*(1 + 20.0/image) - 30.0)/20.0 - 1.0; // for the first staff, we decrease the top space to account for the "border" on the MusFile
-            m_file->m_fheader.param.MargeGAUCHEIMPAIRE = (int)((double)(atoi(zone->getAttribute("ulx")->getValue().c_str()))/10.0); // and the margin as well
+            //m_file->m_fheader.param.MargeGAUCHEIMPAIRE = (int)((double)(atoi(zone->getAttribute("ulx")->getValue().c_str()))/10.0); // and the margin as well
         } else {
 			MeiElement* zone2 = table->GetZone(m_page->m_staves[staff->no - 1].m_meiref->getAttribute("systemref")->getValue());
 			double ymid2 = (atoi(zone2->getAttribute("lry")->getValue().c_str()) + atoi(zone2->getAttribute("uly")->getValue().c_str()))/2.0;
 			staff->ecart = ((ymid - ymid2)*(1 + 20.0/image) - 60)/20.0 + 3.0;
 		}
+		staff->xrel = atoi(zone->getAttribute("ulx")->getValue().c_str())/2;
+		staff->indent = atoi(zone->getAttribute("ulx")->getValue().c_str())/20;// - m_file->m_fheader.param.MargeGAUCHEIMPAIRE;
+		staff->indentDroite = m_file->m_fheader.param.pageFormatHor - int((double)atoi(zone->getAttribute("lrx")->getValue().c_str())/20.0);
         m_page->m_staves.Add( staff );
     }
     else if ((n > (int)m_page->m_staves.Count()) || (n < 1)) {

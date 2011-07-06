@@ -137,7 +137,7 @@ public:
 	*/
 	int indent; 
 	/** portee indentee a droite */
-	char indentDroite;
+	int indentDroite;
 	/** type de portee (nombre de lignes) */
 	unsigned char portNbLine;
 	/** type d'accolade. 0 = bloc1 = accolade ronde */

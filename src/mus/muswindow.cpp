@@ -1013,7 +1013,7 @@ void MusWindow::OnMouseLeftDown(wxMouseEvent &event)
 		/*** Picking element closest to mouse click location ***/
 		
 		// Default selection of closest note
-		MusStaff *noteStaff = m_page->GetAtPos( y );
+		MusStaff *noteStaff = m_page->GetAtPos( x,y );
 		MusElement *noteElement = noteStaff->GetAtPos( x );				
 
 		// If we select a new item and the last item was a neume, close it
@@ -1075,8 +1075,8 @@ void MusWindow::OnMouseLeftDown(wxMouseEvent &event)
 			int x  = ToLogicalX( dc.DeviceToLogicalX( event.m_x ) );
 
 			MusElement *tmp = NULL;
-			if ( m_page->GetAtPos( y ) )
-				tmp = m_page->GetAtPos( y )->GetAtPos( x );
+			if ( m_page->GetAtPos( x,y ) )
+				tmp = m_page->GetAtPos( x,y )->GetAtPos( x );
 
 			if ( tmp )
 			{
@@ -1098,8 +1098,9 @@ void MusWindow::OnMouseLeftDown(wxMouseEvent &event)
 			InitDC( &dc );
 
 			int y = ToLogicalY( dc.DeviceToLogicalY( event.m_y ) );
-			if ( m_page->GetAtPos( y ) )
-				m_currentStaff = m_page->GetAtPos( y );
+			int x  = ToLogicalX( dc.DeviceToLogicalX( event.m_x ) );
+			if ( m_page->GetAtPos( x,y ) )
+				m_currentStaff = m_page->GetAtPos( x,y );
 		}
 	}
 
@@ -2247,7 +2248,7 @@ void MusWindow::OnSize(wxSizeEvent &event)
 //----------------------------------------------------------------------------
 
 BEGIN_EVENT_TABLE(NewNeumeDlg,wxDialog)
-//EVT_RADIOBOX(ID5_NOTATION, EdtNewDlg::OnNotationChange)
+EVT_COMBOBOX(ID7_NEUME_TYPE, NewNeumeDlg::OnNeumeTypeChange)
 END_EVENT_TABLE()
 
 NewNeumeDlg::NewNeumeDlg( wxWindow *parent, wxWindowID id, const wxString &title,
@@ -2261,4 +2262,27 @@ wxDialog( parent, id, title, position, size, style )
     this->GetScNbPitches()->SetValidator(wxGenericValidator(&NewNeumeDlg::s_nbpitches));
     this->GetCxInclinatum()->SetValidator(wxGenericValidator(&NewNeumeDlg::s_inclinatum));
     this->GetCxQuilisma()->SetValidator(wxGenericValidator(&NewNeumeDlg::s_quilisma)); 
+}
+
+void NewNeumeDlg::OnNeumeTypeChange(wxCommandEvent& event)
+{
+	int id = event.GetInt();
+	wxSpinCtrl* spin = (wxSpinCtrl*) FindWindow( ID7_NB_PITCHES );
+	switch (id) {
+		case NEW_NEUME_ANCUS: spin->SetValue(1); break;
+		case NEW_NEUME_CAVUM: spin->SetValue(1); break;
+		case NEW_NEUME_CEPHALICUS: spin->SetValue(2); break;
+		case NEW_NEUME_CLIVIS: spin->SetValue(2); break;
+		case NEW_NEUME_COMPOUND: spin->SetValue(4); break;
+		case NEW_NEUME_CUSTOS: spin->SetValue(1); break;
+		case NEW_NEUME_EPIPHONUS: spin->SetValue(2); break;
+		case NEW_NEUME_PODATUS: spin->SetValue(2); break;
+		case NEW_NEUME_PORRECTUS: spin->SetValue(3); break;
+		case NEW_NEUME_PUNCTUM: spin->SetValue(1); break;
+		case NEW_NEUME_SALICUS: spin->SetValue(3); break;
+		case NEW_NEUME_SCANDICUS: spin->SetValue(3); break;
+		case NEW_NEUME_TORCULUS: spin->SetValue(3); break;
+		case NEW_NEUME_VIRGA: spin->SetValue(1); break;
+		default: break;
+	}
 }
