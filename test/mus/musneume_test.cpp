@@ -9,6 +9,7 @@
 
 
 #include <gtest/gtest.h>
+
 #include <mei/mei.h>
 
 #include "musneume.h"
@@ -28,6 +29,20 @@ TEST(NeumeTest, TestMakePunctum) {
     ASSERT_EQ(1, mus.pitch);
     ASSERT_EQ(1, mus.getPitches().size());
     ASSERT_EQ(0, mus.getPitches()[0].getPitchDifference());
+}
+
+TEST(NeumeTest, TestMeiRef) {
+    MeiElement ne = MeiElement("neume");
+    MeiElement nc = MeiElement("nc");
+    MeiElement no = MeiElement("note");
+    ne.addAttribute(MeiAttribute("name", "punctum"));
+    no.addAttribute(MeiAttribute("pname", "c"));
+    no.addAttribute(MeiAttribute("oct", "4"));
+    nc.addChild(no);
+    ne.addChild(nc);
+    
+    MusNeume mus = MusNeume(ne);
+    ASSERT_EQ(mus.getMeiRef().getAttribute("name")->getValue(), "punctum");
 }
 
 TEST(NeumeTest, TestSetPitch) {
@@ -51,8 +66,9 @@ TEST(NeumeTest, TestSetPitch) {
 
     mus.SetPitch(2, 4);
     ASSERT_EQ(2, mus.pitch);
-    ASSERT_EQ("d", mus.getMeiElement().getChildren().at(0).getChildren().at(0).getAttribute("pname")->getValue());
-    ASSERT_EQ("4", mus.getMeiElement().getChildren().at(0).getChildren().at(0).getAttribute("oct")->getValue());
+    ASSERT_EQ("d", mus.getMeiRef().getChildren().at(0).getChildren().at(0).getAttribute("pname")->getValue());
+    ASSERT_EQ("4", mus.getMeiRef().getChildren().at(0).getChildren().at(0).getAttribute("oct")->getValue());
+    ASSERT_EQ("e", mus.getMeiRef().getChildren().at(0).getChildren().at(1).getAttribute("pname")->getValue());
 }
 
 TEST(NeumeTest, TestMakeOtherTypes) {
@@ -186,7 +202,7 @@ TEST(NeumeTest, TestSkipOctaveUp) {
     ASSERT_EQ(mus.pitch, 5);
     ASSERT_EQ(mus.oct, 4);
     ASSERT_EQ(mus.getPitches().at(0).getPitchDifference(), 0);
-    ASSERT_EQ(mus.getPitches().at(1).getPitchDifference(), 1);
+    ASSERT_EQ(mus.getPitches().at(1).getPitchDifference(), 8);
 }
 
 TEST(NeumeElementTest, TestMakeElement) {

@@ -28,6 +28,9 @@ int MusStaff::getOctCl ( MusElement *test, char *cle_id, int mlf ) {
 void MusStaff::updat_pscle (int i, MusElement *chk) {
     throw "fakemus stub";
 }
+MusElement* MusStaff::GetLast() {
+	return NULL;
+}
 
 
 
