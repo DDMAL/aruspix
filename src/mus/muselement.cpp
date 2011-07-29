@@ -268,7 +268,7 @@ void MusElement::newMeiRef(MusStaff* currentstaff)
 {
 	newmeielement = true;
 	MeiElement* element = currentstaff->m_meiref;
-	MeiElement* zone = new MeiElement("zone", element->getNs());
+    mei::Zone* zone = new MeiElement("zone", element->getNs());
 	std::string facs;
 	char uuidbuff[36];
 	uuid_t uuidGenerated;

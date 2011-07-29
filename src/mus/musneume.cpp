@@ -603,8 +603,8 @@ void MusNeume::updateMeiZone() {
 		case NEUME_TYPE_PUNCTUM_INCLINATUM: height = 25; width = PUNCT_WIDTH; break;
 		case NEUME_TYPE_PUNCTUM_WHITE:
 		case NEUME_TYPE_PUNCTUM: height = 18; width = 19; break;
-		case NEUME_TYPE_SALICUS: height = m_pitches.back()->dec_y - this->dec_y + 19; width = (m_pitches.back()->xrel - this->xrel)*2; break;
-		case NEUME_TYPE_SCANDICUS: height = m_pitches.back()->dec_y - this->dec_y + 19; width = (m_pitches.back()->xrel - this->rel + PUNCT_WIDTH)*2; break;
+		case NEUME_TYPE_SALICUS: height = (m_pitches.back()->dec_y - this->dec_y + 19)*(5.0/3.0); width = (m_pitches.back()->xrel - this->xrel)*2; break;
+		case NEUME_TYPE_SCANDICUS: height = (m_pitches.back()->dec_y - this->dec_y + 19)*(5.0/3.0); width = (m_pitches.back()->xrel - this->xrel + PUNCT_WIDTH)*2; break;
 		case NEUME_TYPE_SCANDICUS_FLEXUS:
 		case NEUME_TYPE_PORRECTUS_FLEXUS:
 		case NEUME_TYPE_TORCULUS_RESUPINUS:

@@ -1773,7 +1773,7 @@ void RecEnv::OnOpenMEI( wxCommandEvent &event )
 	m_recFilePtr->SetforMEI();
 	
 	m_recFilePtr->m_musFilePtr->m_fheader.param.pageFormatVer = m_imControlPtr->GetHeight() / 10;
-	m_recFilePtr->m_musFilePtr->m_fheader.param.pageFormatHor = m_imControlPtr->GetWidth() / 10;
+	m_recFilePtr->m_musFilePtr->m_fheader.param.pageFormatHor = m_imControlPtr->GetWidth() / 20;
 	m_recFilePtr->m_musFilePtr->m_fheader.param.MargeSOMMET = 0;
 	
     MusMeiInput meiinput( m_recFilePtr->m_musFilePtr, fname );

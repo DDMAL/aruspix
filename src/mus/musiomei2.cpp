@@ -56,7 +56,8 @@ bool MusMeiOutput::ExportFile( )
     MeiDocument *doc = m_file->GetMeiDocument();
     string fname = m_filename.mb_str();
     doc->setDocName(fname);
-    doc->WriteToXml(doc);
+    MeiXmlOutputStream o;
+    o.WriteToXml(doc);
 	return true;
 }
 

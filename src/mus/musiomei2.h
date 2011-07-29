@@ -19,7 +19,7 @@
 
 #include "musfile.h"
 
-#include <mei/mei.h>
+#include <mei/iomeixml.h>
 #include <vector>
 
 //----------------------------------------------------------------------------
