@@ -2,7 +2,7 @@
 // Name:        recmlfbmp.cpp
 // Author:      Laurent Pugin
 // Created:     2005
-// Copyright (c) Laurent Pugin. All rights reserved.   
+// Copyright (c) Authors and others. All rights reserved.   
 /////////////////////////////////////////////////////////////////////////////
 
 #ifdef AX_RECOGNITION
@@ -25,6 +25,11 @@
 
 #include "im/impage.h"
 #include "im/imstaff.h"
+
+#include "musstaff.h"
+//#include "musnote.h"
+////#include "mussymbol.h"
+
 
 #include "wx/arrimpl.cpp"
 WX_DEFINE_OBJARRAY( ArrayOfMLFBitmapTypes );
@@ -221,9 +226,9 @@ void RecMLFSymbolBmp::SetValue( char type, wxString subtype, int position, int v
 		if (key == "S2") m_voffset = 2;
 		else if (key == "S1") m_voffset = 0;
 		else if (key == "S8") m_voffset = 2;
-		else if (key == "F5") m_voffset = 8;
-		else if (key == "F4") m_voffset = 6;
-		else if (key == "F3") m_voffset = 4;
+		else if (key == "PITCH_F") m_voffset = 8;
+		else if (key == "PITCH_E") m_voffset = 6;
+		else if (key == "PITCH_D") m_voffset = 4;
 		else if (key == "U1") m_voffset = 0;
 		else if (key == "U2") m_voffset = 2;
 		else if (key == "U3") m_voffset = 4;
@@ -251,7 +256,7 @@ wxString RecMLFSymbolBmp::GetLabel( )
 // RecMLFBmp
 //----------------------------------------------------------------------------
 
-RecMLFBmp::RecMLFBmp( MusFile *file, wxString filename, wxString model_symbol_name ) :
+RecMLFBmp::RecMLFBmp( MusDoc *file, wxString filename, wxString model_symbol_name ) :
     MusMLFOutput( file, filename, NULL, model_symbol_name )
 {
 	m_impage = NULL;
@@ -270,7 +275,7 @@ void RecMLFBmp::StartLabel( )
 	m_currentWidth = -1;
 }
 
-wxBitmap RecMLFBmp::GenerateBitmap( ImStaff *imstaff, MusStaff *musStaff, int currentElementNo )
+wxBitmap RecMLFBmp::GenerateBitmap( ImStaff *imstaff, MusLaidOutStaff *musStaff, int currentElementNo )
 {
 	int mn, mx;
 	int bx, by;
@@ -284,7 +289,7 @@ wxBitmap RecMLFBmp::GenerateBitmap( ImStaff *imstaff, MusStaff *musStaff, int cu
 
 	// fill symbol array with musStaff elements
 	m_symbols.Clear();
-	MusStaff *ut1_staff = MusMLFOutput::GetUt1( musStaff );
+	MusLaidOutStaff *ut1_staff = MusMLFOutput::GetUt1( musStaff );
     WriteStaff( ut1_staff, currentElementNo );
 	delete ut1_staff;
 
@@ -412,7 +417,7 @@ bool RecMLFBmp::GenerateBitmaps( ImPage *impage )
 
     MusPage *page = NULL;
 
-    for (m_page_i = 0; m_page_i < m_file->m_fheader.nbpage; m_page_i++ )
+    for (m_page_i = 0; m_page_i < m_file->m_parameters.nbpage; m_page_i++ )
     {
         page = &m_file->m_pages.Item(m_page_i);
         WritePage( page );
@@ -426,10 +431,10 @@ bool RecMLFBmp::GenerateBitmaps( ImPage *impage )
 bool RecMLFBmp::WritePage( const MusPage *page )
 {
     m_staff = NULL;
-    for (m_staff_i = 0; m_staff_i < page->nbrePortees; m_staff_i++) 
+    for (m_staff_i = 0; m_staff_i < page->GetStaffCount(); m_staff_i++) 
     {
-        MusStaff *staff = &page->m_staves[m_staff_i];
-		MusStaff *ut1_staff = MusMLFOutput::GetUt1( staff );
+        MusLaidOutStaff *staff = &page->m_staves[m_staff_i];
+		MusLaidOutStaff *ut1_staff = MusMLFOutput::GetUt1( staff );
         WriteStaff( ut1_staff );
 		delete ut1_staff;
     }
@@ -438,9 +443,10 @@ bool RecMLFBmp::WritePage( const MusPage *page )
 }
 */
 
-bool RecMLFBmp::WriteStaff( const MusStaff *staff, int currentElementNo )
+bool RecMLFBmp::WriteStaff( const MusLaidOutStaff *staff, int currentElementNo )
 {
-	if (staff->nblement == 0)
+/*
+	if (staff->GetElementCount() == 0)
 		return true;
 
     unsigned int k;
@@ -451,15 +457,16 @@ bool RecMLFBmp::WriteStaff( const MusStaff *staff, int currentElementNo )
     for (k = 0;k < staff->nblement ; k++ )
     {
         if ( (&staff->m_elements[k])->IsNote() )
-            ok = WriteNote( (MusNote*)&staff->m_elements[k] );
+            ok = WriteNote( (MusNote1*)&staff->m_elements[k] );
         else if ( (&staff->m_elements[k])->IsSymbol() )
-            ok = WriteSymbol( (MusSymbol*)&staff->m_elements[k] );
+            ok = WriteSymbol( (MusSymbol1*)&staff->m_elements[k] );
         if ( ok && ( currentElementNo == (signed int)k ) )
 			((RecMLFSymbolBmp*)&m_symbols.Last())->SetCurrent();
 
     }
 	//EndLabel();
-
+*/
+    wxLogError( "WriteStaff method missing in ax2") ;
     return true;
 }
 

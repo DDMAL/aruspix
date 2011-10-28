@@ -1,0 +1,47 @@
+/////////////////////////////////////////////////////////////////////////////
+// Name:        muspitchinterface.h
+// Author:      Laurent Pugin
+// Created:     2011
+// Copyright (c) Authors and others. All rights reserved.
+/////////////////////////////////////////////////////////////////////////////
+
+
+#ifndef __MUS_PITCH_INTERFACE_H__
+#define __MUS_PITCH_INTERFACE_H__
+
+#ifndef WX_PRECOMP
+    #include "wx/wx.h"
+#endif
+
+
+//----------------------------------------------------------------------------
+// MusPitchInterface
+//----------------------------------------------------------------------------
+
+/** 
+ * This class is an interface for elements with pitch, such as notes and neumes.
+ * It is not an abstract class but should not be instanciate directly.
+ */
+class MusPitchInterface
+{
+public:
+    // constructors and destructors
+    MusPitchInterface();
+    virtual ~MusPitchInterface();
+    
+private:
+    
+public:
+    /** Indicates the accidental */
+    unsigned char m_accid;
+    /** Provides the octave information */
+    char m_oct;
+    /** Indicates the pitch name */
+    unsigned char m_pname;
+
+private:
+    
+};
+
+
+#endif

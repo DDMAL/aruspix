@@ -2,7 +2,7 @@
 // Name:        axapp.cpp
 // Author:      Laurent Pugin
 // Created:     2004
-// Copyright (c) Laurent Pugin. All rights reserved.   
+// Copyright (c) Authors and others. All rights reserved.   
 /////////////////////////////////////////////////////////////////////////////
 
 #if defined(__GNUG__) && ! defined(__APPLE__)
@@ -31,9 +31,9 @@
 
 const wxString IPC_START = "StartOther";
 
-int AxApp::s_version_major = 1;
-int AxApp::s_version_minor = 6;
-int AxApp::s_version_revision = 4;
+int AxApp::s_version_major = 2;
+int AxApp::s_version_minor = 0;
+int AxApp::s_version_revision = 0;
 wxString AxApp::s_version = wxString::Format("%d.%d.%d", AxApp::s_version_major, AxApp::s_version_minor, AxApp::s_version_revision);
 wxString AxApp::s_build_date = __DATE__;
 wxString AxApp::s_build_time = __TIME__;

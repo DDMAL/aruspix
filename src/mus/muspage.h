@@ -2,29 +2,24 @@
 // Name:        muspage.h
 // Author:      Laurent Pugin
 // Created:     2005
-// Copyright (c) Laurent Pugin. All rights reserved.
+// Copyright (c) Authors and others. All rights reserved.
 /////////////////////////////////////////////////////////////////////////////
+
 
 #ifndef __MUS_PAGE_H__
 #define __MUS_PAGE_H__
 
-#ifdef __GNUG__
-	#pragma interface "muspage.cpp"
-#endif
-
 #ifndef WX_PRECOMP
     #include "wx/wx.h"
 #endif
-#include "wx/dynarray.h"
 
-class AxDC;
+class MusDC;
 
-#include "musobject.h"
+#include "muslayout.h"
 
-
-class MusStaff;
-WX_DECLARE_OBJARRAY( MusStaff, ArrayOfMusStaves);
-
+class MusSystem;
+class MusLaidOutStaff;
+class MusSystemFunctor;
 class MusStaffFunctor;
 
 enum {
@@ -37,54 +32,61 @@ enum {
 // MusPage
 //----------------------------------------------------------------------------
 
-class MusPage: public MusObject
+/**
+ * This class represents a page in a laid-out score (MusLayout).
+ * A MusPage is contained in a MusLayout.
+ * It contains MusSystem objects.
+*/
+class MusPage: public MusLayoutObject
 {
 public:
     // constructors and destructors
     MusPage();
     virtual ~MusPage();
     
+    void Clear();
     void CheckIntegrity();
+    
+    /** The parent MusLayout setter */
+    void SetLayout( MusLayout *layout ) { m_layout = layout; };
 	
-	MusStaff *GetFirst( );
-	MusStaff *GetLast( );
-	MusStaff *GetNext( MusStaff *staff );
-	MusStaff *GetPrevious( MusStaff *staff );
-	MusStaff *GetAtPos( int y );
-	void Clear( );
-	/**
-		dessine la page en cours = draw_it
-	  */
-	void DrawPage( AxDC *dc, bool background = true );
-	//void ClearStaves( AxDC *dc , MusStaff *start = NULL );
+	void AddSystem( MusSystem *system );
+    
+	MusSystem *GetFirst( );
+	MusSystem *GetLast( );
+	MusSystem *GetNext( MusSystem *system );
+	MusSystem *GetPrevious( MusSystem *system );
+	MusSystem *GetAtPos( int y );
 
-	void UpdateStavesPosition();
     void SetValues( int type );
+	
+	int GetSystemCount() const { return (int)m_systems.GetCount(); };
+    
+    int GetPageNo() const;
 
-	/** musbarmes */
-	void DrawBarres( AxDC *dc ); // mus == barres
-	void braces ( AxDC *dc, int x, int y1, int y2, int cod, int pTaille);
-	void accolade ( AxDC *dc, int x, int y1, int y2, int pTaille);
-	void bardroit ( AxDC *dc, int x, int y1, int y2, int pTaille);
-	void bar_mes ( AxDC *dc, int x, int cod, int porteeAutonome, MusStaff *pportee);
-	void bigbarre( AxDC *dc, int x, char code, int porteeAutonome, MusStaff *pportee);
-	void barMesPartielle ( AxDC *dc, int x, MusStaff *pportee);
     // moulinette
-    virtual void Process(MusStaffFunctor *functor, wxArrayPtrVoid params );
+    virtual void Process(MusLayoutFunctor *functor, wxArrayPtrVoid params );
     // functors
     void ProcessStaves( wxArrayPtrVoid params );
     void ProcessVoices( wxArrayPtrVoid params );
     void CountVoices( wxArrayPtrVoid params );
     
+    /**
+     * Calculates the system positions for the page.
+     */
+    virtual void UpdateSystemPositions( );
+    
     
 private:
     
 public:
-    ArrayOfMusStaves m_staves;
+    /** The MusSystem objects of the page */
+    ArrayOfMusSystems m_systems;
+    /** The parent MusLayout */
+    MusLayout *m_layout;    
+    
     /** numero de page */
     int npage;
-    /** nombre de portees dans la page */
-    short nbrePortees;
     /** contient un masque fixe */
     char noMasqueFixe;
     /** contient un masque variable */
@@ -94,11 +96,11 @@ public:
     /** definition en mm des portees de la page */
     unsigned char defin;
     /** longueur en mm de l'indentation des portees de la page */
-    int indent;
+    //int indent; // ax2
     /** longueur en mm de l'indentation droite des portees de la page */
-    int indentDroite;
+    //int indentDroite; // ax2
     /** longueur en mm des lignes de la pages */
-    int lrg_lign;
+    //int lrg_lign; // ax2
 
 private:
     
@@ -107,8 +109,13 @@ private:
 
 //----------------------------------------------------------------------------
 // abstract base class MusPageFunctor
-//------------------------------------------------------------------------- ---
-class MusPageFunctor
+//----------------------------------------------------------------------------
+
+/**
+ * This class is a Functor that processes MusPage objects.
+ * Needs testing.
+*/
+class MusPageFunctor: public MusLayoutFunctor
 {
 private:
     void (MusPage::*fpt)( wxArrayPtrVoid params );   // pointer to member function
@@ -122,7 +129,7 @@ public:
 
     // override function "Call"
     virtual void Call( MusPage *ptr, wxArrayPtrVoid params )
-        { (*ptr.*fpt)( params);};          // execute member function
+        { (*ptr.*fpt)( params );};          // execute member function
 };
 
 

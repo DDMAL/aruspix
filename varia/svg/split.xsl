@@ -15,11 +15,28 @@
 		
 	-->
 	
-	<!-- this is the ou
+	<!-- this is the out directory -->
 	<xsl:param name="output.dir" select="'../../data/svg'"/>
+
+	<!-- this is the out directory for the bounding  box svg -->
+	<xsl:param name="output.bb.dir" select="'.'"/>
 	
-	<xsl:template match="/">
+
+	<xsl:template match="/">	
+		
+		<redirect:write file="{$output.bb.dir}/boundingbox.svg">
+			<xsl:text disable-output-escaping="yes"><![CDATA[<?xml version="1.0" encoding="utf-8"?>
+<svg viewBox="-60 2.0 699.1 189.5" version="1.1" xmlns="http://www.w3.org/2000/svg"  xmlns:xlink="http://www.w3.org/1999/xlink">]]></xsl:text>
+		</redirect:write>
+		
 		<xsl:apply-templates select="*"/>
+		
+		<redirect:write file="{$output.bb.dir}/boundingbox.svg" append="true">
+			<xsl:text disable-output-escaping="yes"><![CDATA[	  <script xlink:href="showbboxdims.js"/>
+				</svg>]]></xsl:text>
+		</redirect:write>
+		
+		
 	</xsl:template>
 	
 	<xsl:template match="svg:glyph">
@@ -88,21 +105,39 @@
 			</xsl:choose>
 		</xsl:variable>
 		
-		<redirect:write file="{$output.dir}/{$glyph}.xml">
-			<xsl:element name="path">
-				<xsl:attribute name="id">
-					<xsl:value-of select="$glyph"/>
-				</xsl:attribute>
-				<xsl:attribute name="d">
-					<xsl:value-of select="@d"/>
-				</xsl:attribute>
-				<!-- we need to flip the glyph because coordinate sytem 
-					in svg fonts is upside-donw --> 
-				<xsl:attribute name="transform">
-					<xsl:text>scale(1.0, -1.0)</xsl:text>
-				</xsl:attribute>
-			</xsl:element>
+		<xsl:if test="$glyph != 'unknown'">
+			<redirect:write file="{$output.dir}/{$glyph}.xml">
+				<xsl:element name="path">
+					<xsl:attribute name="id">
+						<xsl:value-of select="$glyph"/>
+					</xsl:attribute>
+					<xsl:attribute name="d">
+						<xsl:value-of select="@d"/>
+					</xsl:attribute>
+					<!-- we need to flip the glyph because coordinate sytem 
+						in svg fonts is upside-donw --> 
+					<xsl:attribute name="transform">
+						<xsl:text>scale(1.0, -1.0)</xsl:text>
+					</xsl:attribute>
+				</xsl:element>
+			</redirect:write>
+
+			<redirect:write file="{$output.bb.dir}/boundingbox.svg" append="true">
+				<xsl:element name="path">
+					<xsl:attribute name="id">
+						<xsl:value-of select="$glyph"/>
+					</xsl:attribute>
+					<xsl:attribute name="d">
+						<xsl:value-of select="@d"/>
+					</xsl:attribute>
+					<!-- we need to flip the glyph because coordinate sytem 
+						in svg fonts is upside-donw --> 
+					<xsl:attribute name="transform">
+						<xsl:text>scale(1.0, -1.0)</xsl:text>
+					</xsl:attribute>
+				</xsl:element>				
 		</redirect:write>
+		</xsl:if>
 	</xsl:template>
 	
 </xsl:stylesheet>

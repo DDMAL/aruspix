@@ -2,7 +2,7 @@
 // Name:        musiowwg.h
 // Author:      Laurent Pugin
 // Created:     2005
-// Copyright (c) Laurent Pugin. All rights reserved.
+// Copyright (c) Authors and others. All rights reserved.
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef __MUS_IOWWG_H__
@@ -17,136 +17,171 @@
 #endif
 #include "wx/wfstream.h"
 
-#include "musfile.h"
+#include "musdoc.h"
 
-
-class MusFont;
-
-WX_DECLARE_OBJARRAY( MusFont, ArrayOfMusFonts);
+class MusSection;
+class MusStaff;
+class MusLayer;
 
 //----------------------------------------------------------------------------
-// MusFont
+// MusWWGElement
 //----------------------------------------------------------------------------
 
-class MusFont
+/**
+ * This class represents the original Wolfgang element structures.
+ * It is a parent class of the MusWWGInput and MusWWGOutput classes.
+ * It is used to read/write original Wolfgang elements (notes or symbols).
+*/
+class MusWWGElement
 {
 public:
     // constructors and destructors
-    MusFont();
-    virtual ~MusFont();
+    MusWWGElement() {};
+    virtual ~MusWWGElement() {};
     
-        
-public:
-    signed char fonteJeu;
-	wxString fonteNom;
+    void WWGInitElement();
     
-private:
+protected:
+    // WWG Note members
+    char sil;
+    unsigned char val;
+    char inv_val;
+    unsigned char note_point;
+    char stop_rel;
+    unsigned char acc;
+    char accInvis;
+    char q_auto;
+    char queue;
+    char stacc;
+    char oblique;
+    char queue_lig;
+    char chord;
+    char fchord;
+    char lat;
+    char haste;
+    unsigned char tetenot;
+    unsigned char typStac;
     
+    // WWG Symbol members
+    unsigned char flag;
+    unsigned char calte;
+    unsigned char carStyle;
+    unsigned char carOrient;
+    unsigned char fonte;
+    unsigned char s_lie_l;
+    char symbol_point;
+    unsigned short l_ptch;
+    
+    // WWG Element members
+    char TYPE;
+    char liaison;
+    char dliai;
+    char fliai;
+    char lie_up;
+    char rel;
+    char drel;
+    char frel;
+    unsigned char oct;
+    unsigned char dimin;
+    unsigned char grp;
+    unsigned char _shport;
+    char ligat;
+    char ElemInvisible;
+    char pointInvisible;
+    char existDebord;
+    char fligat;
+    unsigned char notschowgrp;
+    char cone;
+    unsigned char liaisonPointil;
+    unsigned char reserve1;
+    unsigned char reserve2;
+    unsigned char ottava;
+    unsigned short durNum;
+    unsigned short durDen;
+    unsigned short offset;
+    unsigned int xrel;
+    int dec_y;
+    void* pdebord;
+    unsigned short debordCode;
+    unsigned short debordSize;
+	unsigned short code;
 };
-
-//----------------------------------------------------------------------------
-// MusParametersMidi
-//----------------------------------------------------------------------------
-
-class MusParametersMidi
-{
-public:
-    // constructors and destructors
-    MusParametersMidi();
-    virtual ~MusParametersMidi();
-    
-        
-public:
-        /** tempo */
-    long tempo;
-    /** ???? */
-    unsigned char minVeloc;
-    /** ???? */
-    unsigned char maxVeloc;
-    /** style legato de jeu. 0 = aucun1 = beam2 = liaison */
-    unsigned char collerBeamLiai;
-    /** valeur de la pedale. 1 = silences2 = pedale */
-    unsigned char pedale;
-    /** tolerance horizontale x max pour la simultaneite */
-    unsigned char xResolution1;
-    /** tolerance horizontale x max en alignement verticale pour la simultaneite */
-    unsigned char xResolution2;
-    /** traiter les notes ornementales comme des appogiatures */
-    unsigned char appogg;
-    /** traiter les mesures commes de proportions temporelles */
-    unsigned char mes_proportion;
-    /** table des numeros de canal pour chaque instrument */
-	unsigned char canal2patch[MAXMIDICANAL];	// contient le no d'instr pour chaque canal
-	unsigned char volume[MAXMIDICANAL];	// 64, volume, entre 0 et 128
-	unsigned char piste2canal[MAXPORTNBRE+1];
-    
-private:
-    
-};
-
 
 //----------------------------------------------------------------------------
 // MusWWGOutput
 //----------------------------------------------------------------------------
 
-class MusWWGOutput: public MusFileOutputStream
+/**
+ * This class is a file output stream for writing Wolfgang WWG files.
+*/
+class MusWWGOutput: public MusFileOutputStream, public MusWWGElement
 {
 public:
     // constructors and destructors
-    MusWWGOutput( MusFile *file, wxString filename );
+    MusWWGOutput( MusDoc *doc, wxString filename );
     virtual ~MusWWGOutput();
     
-    virtual bool ExportFile( );
-	virtual bool WriteFileHeader( const MusFileHeader *header );
-	virtual bool WriteParametersMidi( );
-	virtual bool WriteParameters2( const MusParameters *param );
-	virtual bool WriteFonts( );
-	virtual bool WriteSeparator( );
-	virtual bool WritePage( const MusPage *page );
-	virtual bool WriteStaff( const MusStaff *staff );
-	virtual bool WriteNote( const MusNote *note );
-	virtual bool WriteSymbol( const MusSymbol *symbol );
-	virtual bool WriteElementAttr( const MusElement *element );
-	virtual bool WriteDebord( const MusElement *element );
-	virtual bool WritePagination( const MusPagination *pagination );
-	virtual bool WriteHeaderFooter( const MusHeaderFooter *headerfooter);
+    bool ExportFile( );
+	bool WriteFileHeader( const MusWWGData *header );
+	bool WriteParametersMidi( const MusWWGData *midi );
+	bool WriteParameters2( const MusWWGData *param );
+	bool WriteFonts( const MusWWGData *fonts );
+	bool WriteSeparator( );
+	bool WritePage( const MusPage *page );
+	bool WriteLayer( const MusLaidOutLayer *layer );
+
+	bool WritePagination( const MusWWGData *pagination );
+	bool WriteHeader( const MusWWGData *header);
+	bool WriteFooter( const MusWWGData *footer);
     
 private:
+
+    bool WriteNote( );
+    bool WriteSymbol( );
+    bool WriteElementAttr( );
+    bool WriteDebord( );
+
     wxUint16 uint16;
 	wxInt16 int16;
 	wxUint32 uint32;
 	wxInt32 int32;
 	wxString m_filename;
+    MusSystem *m_current_system; // the current system we are writing
+    MusLaidOutStaff *m_current_staff; // the current staff we are writing
 
 private:
-	};
+};
 
 
 //----------------------------------------------------------------------------
 // MusWWGInput
 //----------------------------------------------------------------------------
 
-class MusWWGInput: public MusFileInputStream
+/**
+ * This class is a file input stream for reading Wolfgang WWG files.
+*/
+class MusWWGInput: public MusFileInputStream, public MusWWGElement
 {
 public:
     // constructors and destructors
-    MusWWGInput( MusFile *file, wxString filename);
+    MusWWGInput( MusDoc *doc, wxString filename);
     virtual ~MusWWGInput();
     
-    virtual bool ImportFile( );
-	virtual bool ReadFileHeader( MusFileHeader *header );
-	virtual bool ReadParametersMidi( );
-	virtual bool ReadParameters2( MusParameters *param );
-	virtual bool ReadFonts( );
-	virtual bool ReadSeparator( );
-	virtual bool ReadPage( MusPage *page );
-	virtual bool ReadStaff( MusStaff *staff );
-	virtual bool ReadNote( MusNote *note );
-	virtual bool ReadSymbol( MusSymbol *symbol );
-	virtual bool ReadElementAttr( MusElement *element );
-	virtual bool ReadDebord( MusElement *element );
-	virtual bool ReadPagination( MusPagination *pagination );
-	virtual bool ReadHeaderFooter( MusHeaderFooter *headerfooter);
+    bool ImportFile( );
+	bool ReadFileHeader( MusWWGData *header );
+	bool ReadParametersMidi( MusWWGData *midi );
+	bool ReadParameters2( MusWWGData *param );
+	bool ReadFonts( MusWWGData *fonts );
+	bool ReadSeparator( );
+	bool ReadPage( MusPage *page );
+	bool ReadStaff( MusLaidOutStaff *staff, MusLaidOutLayer *layer );
+	bool ReadNote( MusLaidOutLayer *layer );
+	bool ReadSymbol( MusLaidOutLayer *layer );
+	bool ReadElementAttr( );
+	bool ReadDebord( );
+	bool ReadPagination( MusWWGData *pagination );
+	bool ReadHeader( MusWWGData *header);
+	bool ReadFooter( MusWWGData *footer);
     
 private:
     wxUint16 uint16;
@@ -154,10 +189,18 @@ private:
 	wxUint32 uint32;
 	wxInt32 int32;
     // 
-    ArrayOfMusSymbols m_lyrics;
-
+    //ArrayOfMusSymbols m_lyrics;
+    // for reading system from 2.0.0
+    unsigned short m_noLigne;
+    char m_indent;
+    char m_indentDroite;
+	// logical tree
+	MusSection *m_section;
+	MusStaff *m_staff;
+    MusLayer *m_layer;
+	
 private:
-	};
+};
 
 
 #endif

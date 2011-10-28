@@ -2,7 +2,7 @@
 // Name:        recmus.cpp
 // Author:      Laurent Pugin
 // Created:     2004
-// Copyright (c) Laurent Pugin. All rights reserved.
+// Copyright (c) Authors and others. All rights reserved.
 /////////////////////////////////////////////////////////////////////////////
 
 #ifdef AX_RECOGNITION
@@ -32,6 +32,7 @@ using std::max;
 #include "app/axapp.h"
 
 #include "mus/mustoolpanel.h"
+#include "mus/musstaff.h"
 
 #include "im/impage.h"
 #include "im/imstaff.h"
@@ -114,7 +115,7 @@ void RecMusController::LoadBitmapsForFont( )
 	wxString tmp = wxGetApp().m_workingDir + "/.bitmaps"; // ouvre un descripteur de fichier inutile,
 														  // pas terrible .....
 	
-	MusFile mustmp;																									
+	MusDoc mustmp;																									
 	m_mlfBmp = new RecMLFBmp( &mustmp, tmp );
 	m_mlfBmp->m_bitmap_types.Load( builtin_font );
 }
@@ -131,6 +132,7 @@ void RecMusController::SyncZoom()
 
 void RecMusController::SyncStaffBitmap( )
 {
+/*
 	wxASSERT_MSG( m_viewPtr, "WG Window cannot be NULL ");
 	wxASSERT_MSG( m_imViewPtr, "RecImWindow cannot be NULL ");
 	wxASSERT_MSG( m_recFilePtr, "RecFile cannot be NULL ");
@@ -224,6 +226,8 @@ void RecMusController::SyncStaffBitmap( )
         m_lastX = m_mlfBmp->GetCurrentX();
         m_lastWidth = m_mlfBmp->GetCurrentWidth();
     }
+*/
+    wxLogError( "SyncStaffBitmap method missing in ax2") ;
 }
 
 void RecMusController::GetStaffBitmap( wxBitmap *bmp, int *x, int *y )

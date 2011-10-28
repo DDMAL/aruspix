@@ -2,7 +2,7 @@
 // Name:        musneume.h
 // Author:      Laurent Pugin
 // Created:     2005
-// Copyright (c) Laurent Pugin. All rights reserved.
+// Copyright (c) Authors and others. All rights reserved.
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef __MUS_NEUME_H__
@@ -19,15 +19,20 @@
 
 #include <vector>
 using std::vector;
+using std::string;
 
-#include "muselement.h"
+#include "muslayer.h"
+#include "muspitchinterface.h"
 
+#include <mei/meielement.h>
+#include <mei/exceptions.h>
 
-#include <mei/mei.h>
+using mei::MeiElement;
+using mei::MeiAttribute;
 
-#include "neumedef.h"
+#include "musdef.h"
 
-class MusStaff;
+class MusLaidOutStaff;
 
 enum NeumeOrnament {
     HE,
@@ -65,7 +70,14 @@ enum NeumeElementType {
     NEUME_ELEMENT_QUILISMA,
 };
 
-class MusNeumeElement: public MusElement
+//----------------------------------------------------------------------------
+// MusNeumeElement
+//----------------------------------------------------------------------------
+
+/** 
+ * This class models the MEI <?> element. 
+ */
+class MusNeumeElement: public MusLayerElement, public MusPitchInterface
 {
 public:
     MusNeumeElement(const MusNeumeElement &element);
@@ -79,6 +91,12 @@ public:
     void updateMeiRef(string pitch, int oct);
 	void deleteMeiRef();
 	NeumeOrnament getOrnament();
+    
+    // ax2 - member previously in MusElement
+    // LP: I don't think when need to keep them as member - it would be better to have the a local variables in the MusRC methods
+    int xrel; // used for storing the x position while drawing
+    int dec_y; // idem for y position
+    
 	
 private:
     int m_pitch_difference;
@@ -87,7 +105,15 @@ private:
     MeiElement *m_meiref;
 };
 
-class MusNeume: public MusElement
+
+//----------------------------------------------------------------------------
+// MusNeume
+//----------------------------------------------------------------------------
+
+/** 
+ * This class models the MEI <neume> element. 
+ */
+class MusNeume: public MusLayerElement, public MusPitchInterface
 {
 public:
     // constructors and destructors
@@ -102,41 +128,19 @@ public:
     MeiElement &getMeiElement();
     vector<MusNeumeElement> getPitches();
 	void deleteMeiRef();
-    
-    //Drawing code
-    virtual void Draw( AxDC *dc, MusStaff *staff);
-    void NeumeLine( AxDC *dc, MusStaff *staff, int x1, int x2, int y1, int y2);
-    void DrawAncus( AxDC *dc, MusStaff *staff);
-    void DrawCephalicus( AxDC *dc, MusStaff *staff);
-    void DrawPunctum( AxDC *dc, MusStaff *staff);
-    void DrawPunctumInclinatum( AxDC *dc, MusStaff *staff);
-    void DrawVirga( AxDC *dc, MusStaff *staff);
-    void DrawVirgaLiquescent( AxDC *dc, MusStaff *staff);
-    void DrawPodatus( AxDC *dc, MusStaff *staff);
-    void DrawClivis( AxDC *dc, MusStaff *staff);
-    void DrawEpiphonus( AxDC *dc, MusStaff *staff);
-    void DrawPorrectus( AxDC *dc, MusStaff *staff);
-    void DrawPorrectusFlexus( AxDC *dc, MusStaff *staff);
-    void DrawSalicus( AxDC *dc, MusStaff *staff);
-    void DrawScandicus( AxDC *dc, MusStaff *staff);
-    void DrawScandicusFlexus( AxDC *dc, MusStaff *staff);
-    void DrawTorculus( AxDC *dc, MusStaff *staff);
-    void DrawTorculusLiquescent( AxDC *dc, MusStaff *staff);
-    void DrawTorculusResupinus( AxDC *dc, MusStaff *staff);
-    void DrawCompound( AxDC *dc, MusStaff *staff);
-    void DrawCustos( AxDC *dc, MusStaff *staff);
-	void DrawDots(AxDC *dc, MusStaff *staff);
-    void leg_line( AxDC *dc, int y_n, int y_p, int xn, unsigned int smaller, int pTaille);
 
-    //void append( AxDC *dc, MusStaff *staff ); //for creating multi-note neumes
+    //void append( MusDC *dc, MusLaidOutStaff *staff ); //for creating multi-note neumes
     
     virtual void SetPitch( int pitch, int oct );
-    //virtual void SetValue( int value, MusStaff *staff = NULL, int vflag = 0 );
+    //virtual void SetValue( int value, MusLaidOutStaff *staff = NULL, int vflag = 0 );
     //int GetValue();
     
     //helper debug method
     //void printNeumeList();
     
+    // ax2 - member previously in MusElement
+    std::string PitchToStr(int pitch);
+    int StrToPitch(std::string pitch);
 
 private:
     void readNoteContainer(MeiElement &nc, int pitch, int oct);
@@ -145,7 +149,8 @@ private:
     NeumeType m_type;
     MeiElement *m_meiref;
 
-    vector<MusNeumeElement> m_pitches;
+public:
+    vector<MusNeumeElement> m_pitches; // LP: made it public for drawing from MusRC
 };
 
 #endif // __MUS_NEUME_H__

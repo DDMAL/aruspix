@@ -2,7 +2,7 @@
 // Name:        recmlfbmp.h
 // Author:      Laurent Pugin
 // Created:     2005
-// Copyright (c) Laurent Pugin. All rights reserved.   
+// Copyright (c) Authors and others. All rights reserved.   
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef __MUS_IOMLFBMP_H__
@@ -112,15 +112,15 @@ class RecMLFBmp: public MusMLFOutput
 {
 public:
     // constructors and destructors
-    RecMLFBmp( MusFile *file, wxString filename, wxString model_symbol_name = "RecMLFSymbolBmp" );
+    RecMLFBmp( MusDoc *file, wxString filename, wxString model_symbol_name = "RecMLFSymbolBmp" );
     virtual ~RecMLFBmp();
     
         //bool GenerateBitmaps( ImPage *impage );
-	wxBitmap GenerateBitmap( ImStaff *imstaff, MusStaff *musStaff, int currentElementNo = -1 );
+	wxBitmap GenerateBitmap( ImStaff *imstaff, MusLaidOutStaff *musStaff, int currentElementNo = -1 );
 	int GetCurrentX() { return m_currentX; }
 	int GetCurrentWidth() { return m_currentWidth; }
     //virtual bool WritePage( const MusPage *page );
-    virtual bool WriteStaff( const MusStaff *staff, int currentElementNo = -1 );
+    virtual bool WriteStaff( const MusLaidOutStaff *staff, int currentElementNo = -1 );
 	// specific
 	virtual void StartLabel( );
 	//virtual void EndLabel( );

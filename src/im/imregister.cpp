@@ -2,7 +2,7 @@
 // Name:        imregister.cpp
 // Author:      Laurent Pugin
 // Created:     2004
-// Copyright (c) Laurent Pugin. All rights reserved.   
+// Copyright (c) Authors and others. All rights reserved.   
 /////////////////////////////////////////////////////////////////////////////
 
 #if defined(__GNUG__) && ! defined(__APPLE__)

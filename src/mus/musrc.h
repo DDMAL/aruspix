@@ -2,7 +2,7 @@
 // Name:        musrc.h
 // Author:      Laurent Pugin
 // Created:     2010
-// Copyright (c) Laurent Pugin. All rights reserved.
+// Copyright (c) Authors and others. All rights reserved.
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef __MUS_RENDERER_H__
@@ -17,24 +17,29 @@
 #endif
 #include "wx/dynarray.h"
 
-#include "mus.h"
+#include "musdef.h"
+#include "musdc.h"
 
-#include "app/axdc.h"
-
+class MusDoc;
 class MusPage;
-class MusFile;
-class MusElement;
-class MusStaff;
+class MusSystem;
+class MusLaidOutStaff;
+class MusLaidOutLayer;
+class MusLaidOutLayerElement;
 
-#include "musnote.h"
-#include "musneume.h"
-#include "mussymbol.h"
-#include "musneumesymbol.h"
+//#include "musnote.h"
+//#include "musneume.h"
+////#include "mussymbol.h"
+//#include "musneumesymbol.h"
+#include "musbarline.h" // not optimal - because of BarlineType
 
 //----------------------------------------------------------------------------
 // MusRC
 //----------------------------------------------------------------------------
 
+/** 
+ * This class is a rendering context and corresponds to the view of a MVC design pattern.
+ */
 class MusRC
 {
 public:
@@ -49,7 +54,7 @@ public:
     virtual void OnEndEditionClef() {}
     virtual void DoRefresh() {}
     virtual void DoResize() {}
-    virtual void DoLyricCursor( int x, int y, AxDC *dc, wxString lyric ) {}
+    virtual void DoLyricCursor( int x, int y, MusDC *dc, wxString lyric ) {}
     virtual void DoReset() {}
 
 	// navigation
@@ -63,20 +68,7 @@ public:
 	// convenience method that should be changed after refactoring
 	bool IsNoteSelected();
 	    
-    void SetFile( MusFile *file );
-	/**
-     Met ‡ jour la table des fontes en fonction de la definition de page
-	 Doit etre appelee apres changement de definition de page
-     */
-	void UpdatePageFontValues();
-    /**
-     Initialise les donnees de visualisation par page
-     */
-	virtual void UpdatePageValues();
-    /**
-     Initialise les donnees de polices (music and lyrics)
-     */
-	virtual void UpdateFontValues();
+    void SetDoc( MusDoc *doc );
     
     /** x value in the Renderer */
 	int ToRendererX( int i );
@@ -90,140 +82,147 @@ public:
 	static void SwapY( int *y1, int *y2 ) { int tmp = *y1; *y1 = *y2; *y2 = tmp; }
     
 	void SetPage( MusPage *page );
-	/*
-     Calcul la taille de la page = calculFormatPapier()
-     */
-	void PaperSize( );
 
-
-	/** musgraph */
-	void v_bline ( AxDC *dc, int y1, int y2, int x1, int nbr);
-	void v_bline2 ( AxDC *dc, int y1, int y2, int x1, int nbr);
-	void h_bline ( AxDC *dc, int x1, int x2, int y1, int nbr);
-	void festa_string ( AxDC *dc, int x, int y, const wxString str, 
-					   MusStaff *staff, int dimin ); 
-	void putfont ( AxDC *dc, int x, int y, unsigned char c, 
-				  MusStaff *staff, int dimin, int font_flag );
-	//void putfontfast ( AxDC *dc, int x, int y, unsigned char c );
-	void putstring ( AxDC *dc, int x, int y, wxString s, int centrer, int pTaille = 0);
-	void putlyric ( AxDC *dc, int x, int y, wxString s, int pTaille = 0, bool cursor = false);
-	void box( AxDC *dc, int x1, int y1, int x2, int y2);
-	void rect_plein2( AxDC *dc, int x1, int y1, int x2, int y2);
-	int hGrosseligne ( AxDC *dc, int x1, int y1, int x2, int y2, int decal);
-	int pointer ( AxDC *dc, int x, int b, int decal, MusStaff *staff );
-	/** musbezier */
+	/* musrc_graph.cpp */
+	void v_bline ( MusDC *dc, int y1, int y2, int x1, int nbr);
+	void v_bline2 ( MusDC *dc, int y1, int y2, int x1, int nbr);
+	void h_bline ( MusDC *dc, int x1, int x2, int y1, int nbr);
+	void festa_string ( MusDC *dc, int x, int y, const wxString str, 
+					   MusLaidOutStaff *staff, int dimin ); 
+	void DrawLeipzigFont ( MusDC *dc, int x, int y, unsigned char c, 
+				  MusLaidOutStaff *staff, bool dimin );
+	//void putfontfast ( MusDC *dc, int x, int y, unsigned char c );
+	void putstring ( MusDC *dc, int x, int y, wxString s, int centrer, int staffSize = 0);
+	void putlyric ( MusDC *dc, int x, int y, wxString s, int staffSize = 0, bool cursor = false);
+	void box( MusDC *dc, int x1, int y1, int x2, int y2);
+	void rect_plein2( MusDC *dc, int x1, int y1, int x2, int y2);
+	int hGrosseligne ( MusDC *dc, int x1, int y1, int x2, int y2, int decal);
+	int DrawDot ( MusDC *dc, int x, int b, int decal, MusLaidOutStaff *staff );
+	/* musrc_bezier.cpp */
 	static int CC(int ,int );
 	static long BBlend(int ,int ,long );
 	static int InitBezier(int );
 	static void Bezier(long *,long *,long ,int );
-	static void calcBez ( AxPoint *ptcoord, int _nbint );
-	static void pntswap (AxPoint *x1, AxPoint *x2);
+	static void calcBez ( MusPoint *ptcoord, int _nbint );
+	static void pntswap (MusPoint *x1, MusPoint *x2);
     
-    // method calculating the font size
-    int CalcMusicFontSize( );
-    int CalcNeumesFontSize( );
+    /* musrc_page.cpp */
+	void DrawPage( MusDC *dc, MusPage *page, bool background = true );
+    void DrawSystem( MusDC *dc, MusSystem *system );
+	void DrawGroups( MusDC *dc, MusSystem *system );
+	void DrawBracket ( MusDC *dc, MusSystem *system, int x, int y1, int y2, int cod, int staffSize);
+	void DrawBrace ( MusDC *dc, MusSystem *system, int x, int y1, int y2, int staffSize);
+	void DrawBarline ( MusDC *dc, MusSystem *system, int x, int cod, bool porteeAutonome, MusLaidOutStaff *pportee);
+	void DrawSpecialBarline( MusDC *dc, MusSystem *system, int x, BarlineType code, bool porteeAutonome, MusLaidOutStaff *pportee);
+	void DrawPartialBarline ( MusDC *dc, MusSystem *system, int x, MusLaidOutStaff *pportee);
+	void DrawStaff( MusDC *dc, MusLaidOutStaff *staff );
+	void DrawStaffLines( MusDC *dc, MusLaidOutStaff *staff, MusSystem *system );
+    int CalculatePitchPosY ( MusLaidOutStaff *staff, char pname, int dec_clef, int oct);
+	int CalculateNeumePosY ( MusLaidOutStaff *staff, char note, int dec_clef, int oct); 
+	void DrawLayer( MusDC *dc, MusLaidOutLayer *layer, MusLaidOutStaff *staff );
+	void DrawSlur( MusDC *dc, MusLaidOutLayer *layer, int x1, int y1, int x2, int y2, bool up, int height = -1);
+    int CalculatePitchCode ( MusLaidOutLayer *layer, int y_n, int x_pos, int *octave );
+    /* musrc_element.cpp */
+    void DrawElement( MusDC *dc, MusLaidOutLayerElement *element, MusLaidOutLayer *layer, MusLaidOutStaff *staff );
+    void DrawDurationElement( MusDC *dc, MusLaidOutLayerElement *element, MusLaidOutLayer *layer, MusLaidOutStaff *staff ); 
+    void DrawBarline( MusDC *dc, MusLaidOutLayerElement *element, MusLaidOutLayer *layer, MusLaidOutStaff *staff );  
+    void DrawClef( MusDC *dc, MusLaidOutLayerElement *element, MusLaidOutLayer *layer, MusLaidOutStaff *staff );
+    void DrawMensur( MusDC *dc, MusLaidOutLayerElement *element, MusLaidOutLayer *layer, MusLaidOutStaff *staff );
+    void DrawMensurCircle( MusDC *dc, int x, int yy, MusLaidOutStaff *staff );
+    void DrawMensurDot( MusDC *dc, int x, int yy, MusLaidOutStaff *staff ); 
+    void DrawMensurFigures( MusDC *dc, int x, int y, int num, int numBase, MusLaidOutStaff *staff); 
+    void DrawMensurHalfCircle( MusDC *dc, int x, int yy, MusLaidOutStaff *staff );
+    void DrawMensurReversedHalfCircle( MusDC *dc, int x, int yy, MusLaidOutStaff *staff ); 
+    void DrawMensurSlash( MusDC *dc, int x, int yy, MusLaidOutStaff *staff );  
+    void DrawNote( MusDC *dc, MusLaidOutLayerElement *element, MusLaidOutLayer *layer, MusLaidOutStaff *staff );  
+    void DrawRest( MusDC *dc, MusLaidOutLayerElement *element, MusLaidOutLayer *layer, MusLaidOutStaff *staff );
+    void DrawSymbol( MusDC *dc, MusLaidOutLayerElement *element, MusLaidOutLayer *layer, MusLaidOutStaff *staff );
+    void DrawSymbolAccid( MusDC *dc, MusLaidOutLayerElement *element, MusLaidOutLayer *layer, MusLaidOutStaff *staff );
+    void DrawSymbolCustos( MusDC *dc, MusLaidOutLayerElement *element, MusLaidOutLayer *layer, MusLaidOutStaff *staff );
+    void DrawSymbolDot( MusDC *dc, MusLaidOutLayerElement *element, MusLaidOutLayer *layer, MusLaidOutStaff *staff );                
+    void DrawLigature( MusDC *dc, int y, MusLaidOutLayerElement *element, MusLaidOutLayer *layer, MusLaidOutStaff *staff );  
+    void DrawLedgerLines( MusDC *dc, int y_n, int y_p, int xn, unsigned int smaller, int staffSize);
+    void DrawSpecialRest ( MusDC *dc, int a, MusLaidOutStaff *staff);
+    void DrawLongRest ( MusDC *dc, int a, int b, MusLaidOutStaff *staff);
+    void DrawBreveRest ( MusDC *dc, int a, int b, MusLaidOutStaff *staff);
+    void DrawWholeRest ( MusDC *dc, int a, int b, int valeur, unsigned char dots, unsigned int smaller, MusLaidOutStaff *staff);
+    void DrawQuarterRest ( MusDC *dc, int a, int b, int valeur, unsigned char dots, unsigned int smaller, MusLaidOutStaff *staff);
+    void DrawDots ( MusDC *dc, int x1, int y1, int offy, unsigned char dots, MusLaidOutStaff *staff );
+    void CalculateLigaturePosX ( MusLaidOutLayerElement *element, MusLaidOutLayer *layer, MusLaidOutStaff *staff);
+    /* musrc_beam.cpp */
+    void DrawBeam(  MusDC *dc, MusLaidOutLayer *layer, MusLaidOutStaff *staff );
+    
+    /* musrc_neumes.cpp - musneume */
+    void DrawNeume( MusDC *dc, MusLaidOutLayerElement *element, MusLaidOutLayer *layer, MusLaidOutStaff *staff);
+    void NeumeLine( MusDC *dc, MusLaidOutLayerElement *element, MusLaidOutLayer *layer, MusLaidOutStaff *staff, int x1, int x2, int y1, int y2);
+    void DrawAncus( MusDC *dc, MusLaidOutLayerElement *element, MusLaidOutLayer *layer, MusLaidOutStaff *staff);
+    void DrawCephalicus( MusDC *dc, MusLaidOutLayerElement *element, MusLaidOutLayer *layer, MusLaidOutStaff *staff);
+    void DrawPunctum( MusDC *dc, MusLaidOutLayerElement *element, MusLaidOutLayer *layer, MusLaidOutStaff *staff);
+    void DrawPunctumInclinatum( MusDC *dc, MusLaidOutLayerElement *element, MusLaidOutLayer *layer, MusLaidOutStaff *staff);
+    void DrawVirga( MusDC *dc, MusLaidOutLayerElement *element, MusLaidOutLayer *layer, MusLaidOutStaff *staff);
+    void DrawVirgaLiquescent( MusDC *dc, MusLaidOutLayerElement *element, MusLaidOutLayer *layer, MusLaidOutStaff *staff);
+    void DrawPodatus( MusDC *dc, MusLaidOutLayerElement *element, MusLaidOutLayer *layer, MusLaidOutStaff *staff);
+    void DrawClivis( MusDC *dc, MusLaidOutLayerElement *element, MusLaidOutLayer *layer, MusLaidOutStaff *staff);
+    void DrawEpiphonus( MusDC *dc, MusLaidOutLayerElement *element, MusLaidOutLayer *layer, MusLaidOutStaff *staff);
+    void DrawPorrectus( MusDC *dc, MusLaidOutLayerElement *element, MusLaidOutLayer *layer, MusLaidOutStaff *staff);
+    void DrawPorrectusFlexus( MusDC *dc, MusLaidOutLayerElement *element, MusLaidOutLayer *layer, MusLaidOutStaff *staff);
+    void DrawSalicus( MusDC *dc, MusLaidOutLayerElement *element, MusLaidOutLayer *layer, MusLaidOutStaff *staff);
+    void DrawScandicus( MusDC *dc, MusLaidOutLayerElement *element, MusLaidOutLayer *layer, MusLaidOutStaff *staff);
+    void DrawScandicusFlexus( MusDC *dc, MusLaidOutLayerElement *element, MusLaidOutLayer *layer, MusLaidOutStaff *staff);
+    void DrawTorculus( MusDC *dc, MusLaidOutLayerElement *element, MusLaidOutLayer *layer, MusLaidOutStaff *staff);
+    void DrawTorculusLiquescent( MusDC *dc, MusLaidOutLayerElement *element, MusLaidOutLayer *layer, MusLaidOutStaff *staff);
+    void DrawTorculusResupinus( MusDC *dc, MusLaidOutLayerElement *element, MusLaidOutLayer *layer, MusLaidOutStaff *staff);
+    void DrawCompound( MusDC *dc, MusLaidOutLayerElement *element, MusLaidOutLayer *layer, MusLaidOutStaff *staff);
+    void DrawCustos( MusDC *dc, MusLaidOutLayerElement *element, MusLaidOutLayer *layer, MusLaidOutStaff *staff);
+	void DrawNeumeDots(MusDC *dc, MusLaidOutLayerElement *element, MusLaidOutLayer *layer, MusLaidOutStaff *staff);
+    void DrawNeumeLedgerLines( MusDC *dc, int y_n, int y_p, int xn, unsigned int smaller, int staffSize);
+	/* musrc_neumes.cpp - musneumesymbol */
+    void DrawNeumeSymbol(MusDC *dc, MusLaidOutLayerElement *element, MusLaidOutLayer *layer, MusLaidOutStaff *staff);
+	void DrawNeumeClef(MusDC *dc, MusLaidOutLayerElement *element, MusLaidOutLayer *layer, MusLaidOutStaff *staff);
+	void DrawComma(MusDC *dc, MusLaidOutLayerElement *element, MusLaidOutStaff *staff, bool cueSize);
+	void DrawFlat(MusDC *dc, MusLaidOutLayerElement *element, MusLaidOutStaff *staff, bool cueSize);
+	void DrawNatural(MusDC *dc, MusLaidOutLayerElement *element, MusLaidOutStaff *staff, bool cueSize);
+	void DrawDivFinal(MusDC *dc, MusLaidOutLayerElement *element, MusLaidOutStaff *staff, bool cueSize);
+	void DrawDivMajor(MusDC *dc, MusLaidOutLayerElement *element, MusLaidOutStaff *staff, bool cueSize);
+	void DrawDivMinor(MusDC *dc, MusLaidOutLayerElement *element, MusLaidOutStaff *staff, bool cueSize);
+	void DrawDivSmall(MusDC *dc, MusLaidOutLayerElement *element, MusLaidOutStaff *staff, bool cueSize);
     
 public:
-        /** Fichier  */
-    MusFile *m_f;
-    /** FileHeader du fichier contenant la page */
-    MusFileHeader *m_fh;
+    /** Document  */
+    MusDoc *m_doc;
     /** Page affichee */
     MusPage *m_page;
     /** No Page affichee */
     int m_npage;
-    /** valeur du pas (10 par defaut) */
-    int _pas;
-    /** valeur du bond (60 par defaut) */
-    int _bond;
-    /** valeur du pas3 (3 * pas par defaut) */
-    int _pas3;
-    /** valeurs d'un espace (demi-note) grand et petit (10 et 8 par defaut)*/
-    int _espace[2];
-    /** valeurs d'un interligne grand et petit (20 et 16 par defaut)*/
-    int _interl[2];
-    /** valeurs d'une portee grande et petite (80 et 64 par defaut)*/
-    int _portee[2];
-    /** valeurs d'une octave grand et petit (70 et 56 par defaut)*/
-    int _octave[2];
-    /** hauteur de la fonte (100 par defaut) */
-    int hautFont;
-	int hautFontAscent[2][2]; // avec correction par platforme
-    /** rapport entre grande et petite portees (16 / 20 par defaut) */
-    int RapportPortee[2];
-    /** rapport en element normal et element diminue (3 / 4 par defaut)*/
-    int RapportDimin[2];
-    /** valeurs d'une barre de valeur grande et petite (10 et 6 par defaut)*/
-    int DELTANbBAR[2];
-    /** valeurs d'un espace blanc entre les barres de valeur grand et petit (6 et 4 par defaut)*/
-    int DELTABLANC[2];
-    /** tailles des fontes normales et diminues sur des portees grandes et petites */
-    int nTailleFont[2][2];
-    /** tailles des notes normales et diminues sur des portees grandes et petites */
-    int rayonNote[2][2];
-    /** tailles des lignes aditionnelles normales et diminues sur des portees grandes et petites */
-    int ledgerLine[2][3];
-    /** tailles des fontes normales et diminues sur des portees grandes et petites */
-    int largeurBreve[2];
-    /** tailles des alterations normales et diminues sur des portees grandes et petites */
-    int largAlter[2][2];
-    /** ???? */
-    float v_unit[2];
-    /** ???? */
-    float v4_unit[2];
-    /** ???? */
-    int DELTABAR;
-    /** contient la positions des clefs */
-    MusPosClef kPos[MAXPORTNBRE+1];
-    /** fontes actuelles mises a jour selon la taille du zoom */
-    AxFontInfo m_activeFonts[2][2];				
-    /** fonte Leipzig par defaut */
-    AxFontInfo m_ftLeipzig;
-	
-	AxFontInfo m_activeChantFonts[2][2];
-	/** FestaDiesA for neume notation */
-	AxFontInfo m_ftFestaDiesA;
-    /** fontes actuelles mises a jour selon la taille du zoom */
-    AxFontInfo m_activeLyricFonts[2];
-    /** fonte Leipzig par defaut */
-    AxFontInfo m_ftLyrics;
-	
-	
-
 	/** format max utile; en principe, celui de la feuille **/
 	int m_pageMaxY, m_pageMaxX;
-	float beamPenteMin, beamPenteMx;
-	int pageFormatHor, pageFormatVer;
-	//int margeMorteHor, margeMorteVer;
-	//int portNoIndent, portIndent;
-	int mrgG;
-	int discontinu;
-	int mesureNum, mesureDen;
-	float MesVal;
-	// static
-	static AxPoint point_[4];
-	static AxPoint bcoord[2*(PTCONTROL+1)];
-
-    /** indique si la definition de page poue laquelle fontes actuelles est a jour */
-    int m_charDefin;
 
 	wxString m_str;
+    
+	// static
+	static MusPoint point_[4];
+	static MusPoint bcoord[2*(BEZIER_NB_POINTS+1)];
+    
+	int discontinu;
 
 	//const wxColour *m_currentColour;
     int m_currentColour;
-	MusElement *m_currentElement;
+	MusLaidOutLayerElement *m_currentElement;
 
-	MusStaff *m_currentStaff;
+	MusLaidOutStaff *m_currentStaff;
 	int m_notation_mode; // neumes or mensural notation mode
 	bool m_lyricMode;
 	bool m_inputLyric;
 	MusEditorMode m_editorMode; // Edit or insert
-	bool m_eraseElement;
 	    
 private:
 	void UpdateStavesPos();
 
 private:
+
+    // static for ligatures
+    static int s_drawingLigX[2], s_drawingLigY[2];	// pour garder coord. des ligatures    
+    static bool s_drawingLigObliqua;	// marque le 1e passage pour une oblique
 
 };
 

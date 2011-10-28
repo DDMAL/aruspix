@@ -2,7 +2,7 @@
 // Name:        axoptionsdlg.h
 // Author:      Laurent Pugin
 // Created:     2004
-// Copyright (c) Laurent Pugin. All rights reserved.   
+// Copyright (c) Authors and others. All rights reserved.   
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef __axoptionsdlg_H__
@@ -164,7 +164,7 @@ public:
     virtual ~AxOptMusWindow();
     
 protected:
-    MusFile *m_filePtr;
+    MusDoc *m_docPtr;
     
 private:
     void OnMouse( wxMouseEvent &event );

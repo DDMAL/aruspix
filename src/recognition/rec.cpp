@@ -2,7 +2,7 @@
 // Name:        rec.cpp
 // Author:      Laurent Pugin
 // Created:     2004
-// Copyright (c) Laurent Pugin. All rights reserved.
+// Copyright (c) Authors and others. All rights reserved.
 /////////////////////////////////////////////////////////////////////////////
 
 #ifdef AX_RECOGNITION
@@ -39,10 +39,10 @@
 
 #include "im/impage.h"
 
-#include "mus/musfile.h"
+#include "mus/musdoc.h"
 #include "mus/musiowwg.h"
-#include "mus/musiocmme.h"
-#include "mus/musiomei2.h"
+//#include "mus/musiocmme.h" // ax2
+//#include "mus/musiomei2.h" // ax2
 #include "mus/mustoolpanel.h"
 
 // statics
@@ -523,13 +523,6 @@ void RecEnv::ParseCmd( wxCmdLineParser *parser )
         //m_recFilePtr->Modify( );
         //m_recFilePtr->Save( false );
 		
-		// generate special ground-truth
-		/*
-		m_recFilePtr->Open( file );
-		m_recFilePtr->Modify( );
-		m_recFilePtr->WriteNoPitchMLF( );
-        m_recFilePtr->Save( false );
-		*/
 		// HACK : force MFC generation here
         /*
 		m_recFilePtr->Open( file );
@@ -625,7 +618,7 @@ bool RecEnv::ResetFile()
         return false;
 
     m_musViewPtr->Show( false );
-    m_musViewPtr->SetFile( NULL );
+    m_musViewPtr->SetDoc( NULL );
     
     if ( m_imControlPtr->Ok() )
     {
@@ -692,7 +685,7 @@ void RecEnv::UpdateViews( int flags )
         m_recFilePtr->GetImage1( &img );
         m_imControlPtr->ResetImage( img );
 
-        m_musViewPtr->SetFile( m_recFilePtr->GetMusFile() );
+        m_musViewPtr->SetDoc( m_recFilePtr->GetMusFile() );
         //m_musViewPtr->SetEnv( this );
         m_musViewPtr->SetToolPanel( m_toolpanel );
         m_musViewPtr->LoadPage( 1 );
@@ -1424,6 +1417,7 @@ void RecEnv::OnExportImage( wxCommandEvent &event )
 
 void RecEnv::OnExportCmme( wxCommandEvent &event )
 {
+    /*
    	if ( !m_recFilePtr->IsRecognized() )
 		return;
    
@@ -1435,9 +1429,11 @@ void RecEnv::OnExportCmme( wxCommandEvent &event )
     wxGetApp().m_lastDirAX0_out = wxPathOnly( filename );
     
     // save
-    MusCmmeOutput *cmme_output = new MusCmmeOutput( m_recFilePtr->m_musFilePtr, filename );
+    MusCmmeOutput *cmme_output = new MusCmmeOutput( m_recFilePtr->m_musDocPtr, filename );
     cmme_output->ExportFile();
     delete cmme_output;
+    */
+    wxLogWarning( "Not implemented"); // ax2
 }
 
 void RecEnv::OnExportWWG( wxCommandEvent &event )
@@ -1453,7 +1449,7 @@ void RecEnv::OnExportWWG( wxCommandEvent &event )
     wxGetApp().m_lastDirAX0_out = wxPathOnly( filename );
     
     // save
-    MusWWGOutput *wwg_output = new MusWWGOutput( m_recFilePtr->m_musFilePtr, filename );
+    MusWWGOutput *wwg_output = new MusWWGOutput( m_recFilePtr->m_musDocPtr, filename );
     wwg_output->ExportFile();
     delete wwg_output;
 }
@@ -1729,6 +1725,7 @@ void RecEnv::OnRedo( wxCommandEvent &event )
 
 void RecEnv::OnOpenMEI( wxCommandEvent &event )
 {
+/*
     wxASSERT_MSG( m_musPanelPtr, "Panel cannot be NULL ");
 	
     //if ( !this->ResetFile( ) )
@@ -1750,47 +1747,51 @@ void RecEnv::OnOpenMEI( wxCommandEvent &event )
         return;
     wxGetApp().m_lastDir = wxPathOnly( filename );
     
-    //m_recFilePtr->m_musFilePtr->New();
-	//m_recFilePtr->m_musFilePtr->m_pages.Clear();
+    //m_recFilePtr->m_musDocPtr->New();
+	//m_recFilePtr->m_musDocPtr->m_pages.Clear();
 	m_recFilePtr->SetforMEI(); //may be unnecessary
 	
-    MusMeiInput meiinput( m_recFilePtr->m_musFilePtr, filename );
+    MusMeiInput meiinput( m_recFilePtr->m_musDocPtr, filename );
 	if ( !meiinput.ImportFile() )
 		return;
 	
-	m_recFilePtr->m_musFilePtr->m_fheader.param.notationMode = MUS_NEUMATIC_MODE; //temporary for liber usualis project
+	m_recFilePtr->m_musDocPtr->m_parameters.notationMode = MUS_NEUMATIC_MODE; //temporary for liber usualis project
 	
 	m_musViewPtr->SetEditorMode(MUS_EDITOR_EDIT);
+    
+    */
+    wxLogMessage("Fix me"); // ax2
 	
-	/*MeiElement *root = m_recFilePtr->m_musFilePtr->GetMeiDocument()->getRootElement();
+	/*MeiElement *root = m_recFilePtr->m_musDocPtr->GetMeiDocument()->getRootElement();
 	FacsTable table;
 	meiinput.ReadFacsTable(root, &table);
 	
-	m_recFilePtr->m_musFilePtr->m_fheader.param.pageFormatHor = m_recFilePtr->m_imPagePtr->m_size.GetWidth() / 10;
-	m_recFilePtr->m_musFilePtr->m_fheader.param.pageFormatVer = m_recFilePtr->m_imPagePtr->m_size.GetHeight() / 10;
+	m_recFilePtr->m_musDocPtr->m_parameters.param.pageFormatHor = m_recFilePtr->m_imPagePtr->m_size.GetWidth() / 10;
+	m_recFilePtr->m_musDocPtr->m_parameters.param.pageFormatVer = m_recFilePtr->m_imPagePtr->m_size.GetHeight() / 10;
 	
-	for (int i = 0; i < (int)m_recFilePtr->m_musFilePtr->m_pages[0].nbrePortees; i++)
+	for (int i = 0; i < (int)m_recFilePtr->m_musDocPtr->m_pages[0].GetStaffCount(); i++)
 	{
-		MeiElement *element = m_recFilePtr->m_musFilePtr->m_pages[0].m_staves[i].m_meiref;
-		m_musViewPtr->kPos[i].yp = m_recFilePtr->m_musFilePtr->m_fheader.param.pageFormatVer - table.GetUY(element->getAttribute("systemref")->getValue())/20 + m_musViewPtr->_portee[m_recFilePtr->m_musFilePtr->m_pages[0].m_staves[i].pTaille];
+		MeiElement *element = m_recFilePtr->m_musDocPtr->m_pages[0].m_staves[i].m_meiref;
+		m_musViewPtr->kPos[i].yp = m_recFilePtr->m_musDocPtr->m_parameters.param.pageFormatVer - table.GetUY(element->getAttribute("systemref")->getValue())/20 + m_musViewPtr->_portee[m_recFilePtr->m_musDocPtr->m_pages[0].m_staves[i].staffSize];
 	}
 	
     int x1 = 5, x2 = 195;
     m_recFilePtr->m_imPagePtr->CalcLeftRight( &x1, &x2 ); 
 	//x1 = 0; // force it, indentation will be calculated staff by staff
-    m_recFilePtr->m_musFilePtr->m_fheader.param.MargeGAUCHEIMPAIRE = x1 / 10;
-    m_recFilePtr->m_musFilePtr->m_fheader.param.MargeGAUCHEPAIRE = x1 / 10;
-    m_recFilePtr->m_musFilePtr->m_pages[0].lrg_lign = (x2 - x1) / 10;*/
+    m_recFilePtr->m_musDocPtr->m_parameters.param.MargeGAUCHEIMPAIRE = x1 / 10;
+    m_recFilePtr->m_musDocPtr->m_parameters.param.MargeGAUCHEPAIRE = x1 / 10;
+    m_recFilePtr->m_musDocPtr->m_pages[0].lrg_lign = (x2 - x1) / 10;*/
 	
     UpdateViews( 0 );
 }
 
 void RecEnv::OnSaveMEI( wxCommandEvent &event )
 {
+/*
 	if (  !m_musPanelPtr || !m_recFilePtr )
         return;
 	
-    string docname = m_recFilePtr->m_musFilePtr->GetMeiDocument()->getDocName();
+    string docname = m_recFilePtr->m_musDocPtr->GetMeiDocument()->getDocName();
     wxString wxdocname = docname.c_str();
     wxString name, ext;
     wxFileName::SplitPath(wxdocname, NULL, &name, &ext);
@@ -1803,16 +1804,18 @@ void RecEnv::OnSaveMEI( wxCommandEvent &event )
         wxString message = _("File aldready exists. Overwrite?");
         wxMessageDialog dialog ( m_musViewPtr, message, _("File exits"), wxYES_NO|wxICON_QUESTION );
         if ( dialog.ShowModal () == wxID_YES ) {
-            MusMeiOutput *mei_output = new MusMeiOutput( m_recFilePtr->m_musFilePtr, filename );
+            MusMeiOutput *mei_output = new MusMeiOutput( m_recFilePtr->m_musDocPtr, filename );
             mei_output->ExportFile();
             delete mei_output;
         }
     } else {
-        MusMeiOutput *mei_output = new MusMeiOutput( m_recFilePtr->m_musFilePtr, filename );
+        MusMeiOutput *mei_output = new MusMeiOutput( m_recFilePtr->m_musDocPtr, filename );
         mei_output->ExportFile();
         delete mei_output;
 	}
     wxGetApp().m_lastDirAX0_out = wxPathOnly( filename );
+*/
+  wxLogMessage("Fix me"); // ax2
 }
 
 

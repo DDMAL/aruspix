@@ -9,36 +9,29 @@
 
 #include "musneumesymbol.h"
 #include "musdef.h"
-#include "neumedef.h"
-#include "musrc.h"
-#include "musstaff.h"
-
-#include <mei/meiattribute.h>
-#include <mei/meielement.h>
+#include "musclef.h" // included for the ids - we should either use musclef for neume clef or move the neume clef ids in musneumesymbol
 
 #include <algorithm>
 
 MusNeumeSymbol::MusNeumeSymbol() :
-    MusElement()
+    MusLayerElement(), MusPositionInterface()
 {
-	TYPE = NEUME_SYMB;
 	m_meiref = 0;
 }
 
 MusNeumeSymbol::MusNeumeSymbol(const MusNeumeSymbol &symbol) :
-    MusElement(symbol)
+    MusLayerElement(symbol), MusPositionInterface(symbol)
 {
     symbolType = symbol.symbolType;
 	m_meiref = symbol.m_meiref;
 	value = symbol.value;
-    pitch = symbol.pitch;
+    m_pname = symbol.m_pname;
 }
 
 MusNeumeSymbol::MusNeumeSymbol(MeiElement &meielement) :
-    MusElement()
+    MusLayerElement(), MusPositionInterface()
 {
 	m_meiref = &meielement;
-	TYPE = NEUME_SYMB;
 	if (m_meiref->getName() == "clef") {
         MeiAttribute *shape = m_meiref->getAttribute("shape");
         MeiAttribute *line = m_meiref->getAttribute("line");
@@ -110,8 +103,8 @@ MusNeumeSymbol::MusNeumeSymbol(MeiElement &meielement) :
         MeiAttribute *pname = m_meiref->getAttribute("pname");
         MeiAttribute *o = m_meiref->getAttribute("oct");
         if (pname && o) {
-            oct = atoi((o->getValue()).c_str());
-            pitch = this->StrToPitch(pname->getValue());
+            m_oct = atoi((o->getValue()).c_str());
+            m_pname = this->StrToPitch(pname->getValue());
         } else {
             throw "missing pitch or octave on accidental";
         }
@@ -143,222 +136,95 @@ void MusNeumeSymbol::calcoffs (int *offst, int value)
 	return;
 }
 
-void MusNeumeSymbol::Draw ( AxDC *dc, MusStaff *staff)
-{
-	wxASSERT_MSG( dc , "DC cannot be NULL");
-	wxASSERT_MSG( m_r, "MusRC cannot be NULL ");
-	if ( !Check() )
-		return;	
-	
-	if ( this->ElemInvisible )
-		return;
-	
-	if (!m_r->m_eraseElement && (this == m_r->m_currentElement))
-		m_r->m_currentColour = AxRED;
-	else if (!m_r->m_eraseElement && (this->m_cmp_flag == CMP_MATCH))
-		m_r->m_currentColour = AxLIGHT_GREY;
-	else if (!m_r->m_eraseElement && (this->m_cmp_flag == CMP_DEL))
-		m_r->m_currentColour = AxGREEN;
-	else if (!m_r->m_eraseElement && (this->m_cmp_flag == CMP_SUBST))
-		m_r->m_currentColour = AxBLUE;
-	else if (!m_r->m_eraseElement && (this->m_cmp_flag == CMP_INS))
-		m_r->m_currentColour = AxRED;
-	
-	
-    dc->StartGraphic( "symbol", wxString::Format("s_%d_%d", staff->no, this->no) );
-	
-	int x = this->xrel + this->offset;
-	
-	int oct = this->oct - 4;
-	
-	if ((this->symbolType == NEUME_SYMB_FLAT) || (this->symbolType == NEUME_SYMB_NATURAL)) {
-		this->dec_y = staff->y_neume(this->pitch, staff->testcle(x), oct) + m_r->_interl[staff->pTaille];
-	}
-	else if ((this->symbolType == NEUME_SYMB_COMMA) || (this->symbolType == NEUME_SYMB_DIVISION_FINAL) || (this->symbolType == NEUME_SYMB_DIVISION_MAJOR)
-			 || (this->symbolType == NEUME_SYMB_DIVISION_MINOR) || (this->symbolType == NEUME_SYMB_DIVISION_SMALL))
-	{
-		this->dec_y = -m_r->_portee[staff->pTaille] - m_r->_interl[staff->pTaille]*2;
-	}
-	switch (this->symbolType)
-	{
-		case NEUME_SYMB_CLEF_C:
-		case NEUME_SYMB_CLEF_F:
-		calcoffs (&x,(int)this->value);
-		this->dec_y = x;
-		this->DrawClef( dc, m_r->kPos[staff->no].compte, staff); 
-		break;
-		case NEUME_SYMB_COMMA: this->DrawComma(dc, staff); break;
-		case NEUME_SYMB_FLAT: this->DrawFlat(dc, staff); break;
-		case NEUME_SYMB_NATURAL: this->DrawNatural(dc, staff); break;
-		case NEUME_SYMB_DIVISION_FINAL: this->DrawDivFinal(dc, staff); break;
-		case NEUME_SYMB_DIVISION_MAJOR: this->DrawDivMajor(dc, staff); break;
-		case NEUME_SYMB_DIVISION_MINOR: this->DrawDivMinor(dc, staff); break;
-		case NEUME_SYMB_DIVISION_SMALL: this->DrawDivSmall(dc, staff); break;
-	}
-	
-	if ( !m_r->m_eraseElement )
-		m_r->m_currentColour = AxBLACK;
-	
-    dc->EndGraphic();
-	
-	return;
-}
-
-void MusNeumeSymbol::DrawClef( AxDC *dc, int i, MusStaff *staff)
-{
-	wxASSERT_MSG( dc , "DC cannot be NULL");
-	if ( !Check() ) {
-		return;
-	}
-	
-	int x = this->xrel;
-	int y = staff->yrel - m_r->_portee[staff->pTaille] - this->dec_y + m_r->_espace[staff->pTaille]; //with a fudge factor?
-	dimin = this->dimin;
-	wxString shape = nF_CLEF;
-	
-	switch (this->value)
-	{
-		case nC1: shape = nC_CLEF;
-		case nF1: y -= m_r->_interl[staff->pTaille]*3; break;
-		case nC2: shape = nC_CLEF;
-		case nF2: y -= m_r->_interl[staff->pTaille]*2; break;
-		case nC3: shape = nC_CLEF; y -= m_r->_interl[staff->pTaille] - 1; break; 
-		case nF3: y -= m_r->_interl[staff->pTaille] - 6; break;
-		case nC4: shape = nC_CLEF; y += 4; break;
-		case nF4: y += 8; break;
-		default: break;
-	}
-	
-	m_r->festa_string(dc, x, y, shape, staff, dimin);
-	
-	char dum = 0;
-	oct = -staff->getOctCl (this, &dum);
-	
-	// on met a jour struct poscle 
-	staff->updat_pscle (i,this);
-}
-
-void MusNeumeSymbol::DrawComma(AxDC *dc, MusStaff *staff)
-{
-	int x = this->xrel;
-	int y = staff->yrel + this->dec_y;
-	m_r->festa_string(dc, x, y, nCOMMA, staff, this->dimin);
-}
-
-void MusNeumeSymbol::DrawFlat(AxDC *dc, MusStaff *staff)
-{
-	int x = this->xrel;
-	int y = staff->yrel + this->dec_y;
-	m_r->festa_string(dc, x, y, nB_FLAT, staff, this->dimin);
-}
-
-void MusNeumeSymbol::DrawNatural(AxDC *dc, MusStaff *staff)
-{
-	int x = this->xrel;
-	int y = staff->yrel + this->dec_y - m_r->_espace[staff->pTaille]/2;
-	m_r->festa_string(dc, x, y, nNATURAL, staff, this->dimin);
-}
-
-void MusNeumeSymbol::DrawDivMinor(AxDC *dc, MusStaff *staff)
-{
-	int x = this->xrel;
-	int y = staff->yrel + this->dec_y + m_r->_espace[staff->pTaille] - 3;
-	m_r->festa_string(dc, x, y, nDIV_MINOR, staff, this->dimin);
-}
-
-void MusNeumeSymbol::DrawDivMajor(AxDC *dc, MusStaff *staff)
-{
-	int x = this->xrel;
-	int y = staff->yrel + this->dec_y + 6;
-	m_r->festa_string(dc, x, y, nDIV_MAJOR, staff, this->dimin);
-}
-
-void MusNeumeSymbol::DrawDivFinal(AxDC *dc, MusStaff *staff)
-{
-	int x = this->xrel;
-	int y = staff->yrel + this->dec_y + m_r->_espace[staff->pTaille] - 2;
-	m_r->festa_string(dc, x, y, nDIV_FINAL, staff, this->dimin);
-}
-
-void MusNeumeSymbol::DrawDivSmall(AxDC *dc, MusStaff *staff)
-{
-	int x = this->xrel;
-	int y = staff->yrel + this->dec_y;
-	m_r->festa_string(dc, x, y, nDIV_SMALL, staff, this->dimin);
-}
-
-void MusNeumeSymbol::SetValue(int value, MusStaff *staff, int vflag)
-{	
-	if ( this->TYPE != NEUME_SYMB )
-		return;
-	
+void MusNeumeSymbol::SetValue(int value, MusLaidOutStaff *staff, int vflag)
+{		
 	switch (value)
 	{
 			
 		case ('1'):
 			this->symbolType = NEUME_SYMB_CLEF_C;
-			if (m_r)
+			/* - no more MusRC access in ax2
+            if (m_r)
 			{
 				m_r->OnBeginEditionClef();
 			}
+            */
 			this->value = nC2;
+            /* - no more MusRC access in ax2
 			if (m_r)
 			{
 				m_r->OnEndEditionClef();
 				m_r->DoRefresh();
 			}
+            */
 			break;
 		case ('2'):
 			this->symbolType = NEUME_SYMB_CLEF_C;
+            /* - no more MusRC access in ax2
 			if (m_r)
 			{
 				m_r->OnBeginEditionClef();
 			}
+            */
 			this->value = nC3;
+            /* - no more MusRC access in ax2
 			if (m_r)
 			{
 				m_r->OnEndEditionClef();
 				m_r->DoRefresh();
 			}
+            */
 			break;
 		case ('3'):
 			this->symbolType = NEUME_SYMB_CLEF_C;
+            /* - no more MusRC access in ax2
 			if (m_r)
 			{
 				m_r->OnBeginEditionClef();
 			}
+            */
 			this->value = nC4;
+            /* - no more MusRC access in ax2
 			if (m_r)
 			{
 				m_r->OnEndEditionClef();
 				m_r->DoRefresh();
 			}
+            */
 			break;
 		case ('4'):
 			this->symbolType = NEUME_SYMB_CLEF_F;
+            /* - no more MusRC access in ax2
 			if (m_r)
 			{
 				m_r->OnBeginEditionClef();
 			}
+            */
 			this->value = nF3;
+            /* - no more MusRC access in ax2
 			if (m_r)
 			{
 				m_r->OnEndEditionClef();
 				m_r->DoRefresh();
 			}
+            */
 			break;
 		case ('5'):
 			this->symbolType = NEUME_SYMB_CLEF_F;
+            /* - no more MusRC access in ax2
 			if (m_r)
 			{
 				m_r->OnBeginEditionClef();
 			}
+            */
 			this->value = nF4;
+            /* - no more MusRC access in ax2
 			if (m_r)
 			{
 				m_r->OnEndEditionClef();
 				m_r->DoRefresh();
 			}
+            */
 			break;
 		case ('6'): this->symbolType = NEUME_SYMB_COMMA; break;
 		case ('F'): this->symbolType = NEUME_SYMB_FLAT; break;
@@ -368,12 +234,13 @@ void MusNeumeSymbol::SetValue(int value, MusStaff *staff, int vflag)
 		case ('9'): this->symbolType = NEUME_SYMB_DIVISION_MINOR; break;
 		case ('0'): this->symbolType = NEUME_SYMB_DIVISION_SMALL; break;
 	}
-	
+	/* - no more MusRC access in ax2
 	if ( m_r )
 	{
 		m_r->DoRefresh();
 		m_r->OnEndEdition();
 	}
+    */
 	
 	if (m_meiref)
 	{
@@ -409,10 +276,10 @@ void MusNeumeSymbol::SetValue(int value, MusStaff *staff, int vflag)
                 updateMeiRefDiv("comma");
                 break;
             case (NEUME_SYMB_FLAT):
-                updateMeiRefAccid("f", this->pitch, this->oct);
+                updateMeiRefAccid("f", this->m_pname, this->m_oct);
                 break;
             case (NEUME_SYMB_NATURAL):
-                updateMeiRefAccid("n", this->pitch, this->oct);
+                updateMeiRefAccid("n", this->m_pname, this->m_oct);
                 break;
             default: break;
         }
@@ -429,15 +296,15 @@ void MusNeumeSymbol::updateMeiRefAccid(string accid, int pitch, int octave)
     if (m_meiref->getName() == "accid") {
         MeiAttribute *accidattr = m_meiref->getAttribute("accid");
         if (accidattr == NULL) {
-            m_meiref->addAttribute(MeiAttribute("accid", accid));
+            //m_meiref->addAttribute(MeiAttribute("accid", accid)); // BROKEN!!! ax2  - Commented by LP - does not work with the new version of libmei
         } else {
             accidattr->setValue(accid);
         }
         MeiAttribute *pnameattr = m_meiref->getAttribute("pname");
         if (pnameattr == NULL) {
-            m_meiref->addAttribute(MeiAttribute("pname", this->PitchToStr(pitch)));
+            //m_meiref->addAttribute(MeiAttribute("pname", this->PitchToStr(m_pname))); // BROKEN!!! ax2  - Commented by LP - does not work with the new version of libmei
         } else {
-            pnameattr->setValue(this->PitchToStr(pitch));
+            pnameattr->setValue(this->PitchToStr(m_pname));
         }
         MeiAttribute *octattr = m_meiref->getAttribute("oct");
         char buffer[1];
@@ -445,7 +312,7 @@ void MusNeumeSymbol::updateMeiRefAccid(string accid, int pitch, int octave)
         string octstr;
         octstr.assign(buffer, 1);
         if (octattr == NULL) {
-            m_meiref->addAttribute(MeiAttribute("oct", octstr));
+            //m_meiref->addAttribute(MeiAttribute("oct", octstr)); // BROKEN!!! ax2  - Commented by LP - does not work with the new version of libmei
         } else {
             octattr->setValue(octstr);
         }
@@ -457,7 +324,7 @@ void MusNeumeSymbol::updateMeiRefDiv(string form)
     if (m_meiref->getName() == "division") {
         MeiAttribute *formattr = m_meiref->getAttribute("form");
         if (formattr == NULL) {
-            m_meiref->addAttribute(MeiAttribute("form", form));
+            //m_meiref->addAttribute(MeiAttribute("form", form)); // BROKEN!!! ax2  - Commented by LP - does not work with the new version of libmei
         } else {
             formattr->setValue(form);
         }
@@ -468,13 +335,13 @@ void MusNeumeSymbol::updateMeiRefClef(string shape, string line) {
     if (m_meiref->getName() == "clef") {
         MeiAttribute *shapeattr = m_meiref->getAttribute("shape");
         if (shapeattr == NULL) {
-            m_meiref->addAttribute(MeiAttribute("shape", shape));
+            //m_meiref->addAttribute(MeiAttribute("shape", shape)); // BROKEN!!! ax2  - Commented by LP - does not work with the new version of libmei
         } else {
             shapeattr->setValue(shape);
         }
         MeiAttribute *lineattr = m_meiref->getAttribute("line");
         if (lineattr == NULL) {
-            m_meiref->addAttribute(MeiAttribute("line", line));
+            //m_meiref->addAttribute(MeiAttribute("line", line)); // BROKEN!!! ax2  - Commented by LP - does not work with the new version of libmei
         } else {
             lineattr->setValue(line);
         }
@@ -483,26 +350,25 @@ void MusNeumeSymbol::updateMeiRefClef(string shape, string line) {
 
 void MusNeumeSymbol::deleteMeiRef() {
 	if (m_meiref->hasParent()) {
-		m_meiref->getParent().removeChild(m_meiref);
+		//m_meiref->getParent().removeChild(m_meiref); // BROKEN!!! ax2  - Commented by LP - does not work with the new version of libmei
 	}
 	delete m_meiref;
 }
 
 void MusNeumeSymbol::SetPitch(int pitch, int oct) //this is incomplete, there is no other default symbol at the moment.
-{
-	if ( this->TYPE != NEUME_SYMB )
-		return;
-	
+{	
 	if ((this->getType() == NEUME_SYMB_FLAT) || (this->getType() == NEUME_SYMB_NATURAL))
 	{
-		if ((this->pitch == pitch) && (this->oct == oct ))
+		if ((this->m_pname == pitch) && (this->m_oct == oct ))
 			return;
 		
-		this->oct = oct;
-		this->pitch = pitch;
+		this->m_oct = oct;
+		this->m_pname = pitch;
 		
+        /* - no more MusRC access in ax2
 		if (m_r)
 			m_r->DoRefresh();
+        */
         
         if (m_meiref)
         {
@@ -537,3 +403,44 @@ MusNeumeSymbolType MusNeumeSymbol::GetSymbolType() {
 MeiElement *MusNeumeSymbol::getMeiRef() {
     return m_meiref;
 }
+
+std::string MusNeumeSymbol::PitchToStr(int pitch)
+{
+    string value;
+    switch (pitch) {
+        case 0: value = "b"; break;
+        case 1: value = "c"; break;
+        case 2: value = "d"; break;
+        case 3: value = "e"; break;
+        case 4: value = "f"; break;
+        case 5: value = "g"; break;
+        case 6: value = "a"; break;
+        default: break;
+    }
+    return value;
+}
+
+int MusNeumeSymbol::StrToPitch(std::string pitch)
+{
+    int value;
+    if (pitch == "c") {
+        value = 1;
+    } else if (pitch == "d") {
+        value = 2;
+    } else if (pitch == "e") {
+        value = 3;
+    } else if (pitch == "f") {
+        value = 4;
+    } else if (pitch == "g") {
+        value = 5;
+    } else if (pitch == "a") {
+        value = 6;
+    } else if (pitch == "b") {
+        value = 7;
+    } else {
+        value = -1;
+    }
+    return value;
+}
+
+

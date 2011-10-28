@@ -1,163 +1,118 @@
 /////////////////////////////////////////////////////////////////////////////
 // Name:        musiomei.h
 // Author:      Laurent Pugin
-// Created:     2005
-// Copyright (c) Laurent Pugin. All rights reserved.
+// Created:     2011
+// Copyright (c) Authors and others. All rights reserved.
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef __MUS_IOMEI_H__
 #define __MUS_IOMEI_H__
-
-#ifdef __GNUG__
-    #pragma interface "musiomei.cpp"
-#endif
 
 #ifndef WX_PRECOMP
     #include "wx/wx.h"
 #endif
 #include "wx/wfstream.h"
 
-// TINYXML
-#if defined (__WXMSW__)
-    #include "tinyxml.h"
-#else
-    #include "tinyxml/tinyxml.h"
-#endif
+#include "musdoc.h"
+#include "muslayer.h"
 
-#include "musfile.h"
+#include <mei/meielement.h>
+#include <mei/exceptions.h>
+#include <mei/meidocument.h>
+#include <mei/xmlimport.h>
 
-// Reading is now done with libxml2
-typedef struct _xmlNode xmlNode;
-//#include <libxml/parser.h>
-//#include <libxml/tree.h>
+#include <mei/header.h> 
+#include <mei/cmn.h>
+#include <mei/shared.h>
+#include <mei/mensural.h>
 
-
+using namespace mei;
 
 //----------------------------------------------------------------------------
 // MusMeiOutput
 //----------------------------------------------------------------------------
 
+/**
+ * This class is a file output stream for writing MEI files.
+ * It uses the libmei C++ library.
+ * Not implemented.
+*/
 class MusMeiOutput: public MusFileOutputStream
 {
 public:
     // constructors and destructors
-    MusMeiOutput( MusFile *file, wxString filename );
+    MusMeiOutput( MusDoc *doc, wxString filename );
     virtual ~MusMeiOutput();
     
     virtual bool ExportFile( );
-	virtual bool WriteFileHeader( const MusFileHeader *header );
-    virtual bool WritePage( const MusPage *page );
-	virtual bool WriteStaff( const MusStaff *staff );
-	virtual bool WriteNote( const MusNote *note );
-	virtual	bool WriteNeume( const MusNeume *neume ); 
-	virtual bool WriteSymbol( const MusSymbol *symbol );
-    virtual bool WriteLyric( const MusElement *element );
-	virtual bool WriteElementAttr( const MusElement *element );
-    
+
 private:
-    void WriteParts( TiXmlElement *parts );
-    void WriteScore( TiXmlElement *score );
+	//
+	std::string DurToStr(int dur);
+	std::string OctToStr(int oct);
+	std::string PitchToStr(int pitch);
+
     
-private:
-    wxString m_filename;
-    TiXmlElement *m_xml_root;
-    TiXmlElement *m_xml_current;
-    TiXmlElement **m_xml_staves;
+public:
 
 
 private:
-	};
+};
 
 
 //----------------------------------------------------------------------------
 // MusMeiInput
 //----------------------------------------------------------------------------
 
+/**
+ * This class is a file input stream for reading MEI files.
+ * It uses the libmei C++ library.
+ * Under development.
+*/
 class MusMeiInput: public MusFileInputStream
 {
 public:
     // constructors and destructors
-    MusMeiInput( MusFile *file, wxString filename );
+    MusMeiInput( MusDoc *doc, wxString filename );
     virtual ~MusMeiInput();
     
-/* Because this way of loading MEI do not seem to be adequate, I am trying 
-   another way that matches the MEI element. It is still VERY experimental.
-   A future option could be to use a XML / C++ binding
     
-    virtual bool ImportFile( );
-	virtual bool ReadFileHeader( MusFileHeader *header );
-	virtual bool ReadSeparator( );
-	virtual bool ReadPage( MusPage *page );
-	virtual bool ReadStaff( MusStaff *staff );
-	virtual bool ReadNote( MusNote *note );
-	virtual	bool ReadNeume( MusNeume *neume );
-	virtual bool ReadSymbol( MusSymbol *symbol );
-    virtual bool ReadLyric( MusElement *element );
-	virtual bool ReadElementAttr( MusElement *element );
-	virtual bool ReadPagination( MusPagination *pagination );
-	virtual bool ReadHeaderFooter( MusHeaderFooter *headerfooter);
-    
-    
-    
+    bool ImportFile( );    
     
 private:
-    TiXmlNode *GetFirstChild( TiXmlNode *node, wxString element );
-    void ReadParts( TiXmlElement *parts );
-    void ReadScore( TiXmlElement *score );
+    bool ReadHeader( MeiHead *meihead );
+    bool ReadDiv( Mdiv *mdiv );
+    bool ReadScore( Score *score );
+    bool ReadParts( Parts * parts );
+    bool ReadPart( Part *part );
+    bool ReadSection( Section *section );
+    bool ReadMeasure( Measure *measure );
+    bool ReadStaff( Staff *staff );
+    bool ReadLayer( Layer *layer );
+    bool ReadBarline( BarLine *barline );
+    bool ReadClef( Clef *clef );
+    bool ReadMensur( Mensur *mensur );
+    bool ReadNote( Note *note );
+    bool ReadRest( Rest *rest );
+    bool ReadSymbol( MeiElement *symbol );
+	//
+	int StrToDur(std::string dur);
+	int StrToOct(std::string oct);
+	int StrToPitch( std::string pitch ); 
+    
+public:
     
 private:
-    
-private:
-		wxString m_filename;
-    TiXmlElement *m_xml_root;
-    TiXmlElement *m_xml_current;
+    wxString m_filename;
+	MusDiv *m_div;
+	MusScore *m_score;
+	MusPartSet *m_parts;
+	MusPart *m_part;
+	MusSection *m_section;
+	MusMeasure *m_measure;
+	MusStaff *m_staff;
+	MusLayer *m_layer;
 };
-
-*/
-
-    // Knonw limitations:
-    // staff @n need to be integers and > 0
-
-
-    virtual bool ImportFile( );
-	virtual bool ReadNote( MusNote *note );
-	virtual	bool ReadNeume( MusNeume *neume );
-	virtual bool ReadSymbol( MusSymbol *symbol );
-    
-    
-    
-    
-private:
-    bool ReadElement( xmlNode *node );
-    bool ReadAttributeBool( xmlNode *node, wxString name, bool *value, bool default_value = false );
-    bool ReadAttributeInt( xmlNode *node, wxString name, int *value, int default_value = -1 );
-    bool ReadAttributeString( xmlNode *node, wxString name, wxString *value, wxString default_value = "" );
-
-    bool mei_accid( xmlNode *node );
-    bool mei_barline( xmlNode *node );
-    bool mei_clefchange( xmlNode *node );
-    bool mei_custos( xmlNode *node ); 
-    bool mei_dot( xmlNode *node );
-    bool mei_layer( xmlNode *node );    
-    bool mei_measure( xmlNode *node );
-    bool mei_mensur( xmlNode *node );
-    bool mei_note( xmlNode *node );
-    bool mei_parts( xmlNode *node );
-    bool mei_rest( xmlNode *node );
-    bool mei_score( xmlNode *node );
-    bool mei_staff( xmlNode *node );
-    
-    void mei_attr_dur( xmlNode *node, unsigned char *val );
-    void mei_attr_pname( xmlNode *, unsigned short *code );
-    
-private:
-    
-private:
-		wxString m_filename;
-    MusPage *m_page; // the page on which we are loading the page (one page)
-    MusStaff *m_currentStaff;
-};
-
 
 
 #endif

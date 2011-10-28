@@ -2,7 +2,7 @@
 // Name:        musiomlf.h
 // Author:      Laurent Pugin
 // Created:     2005
-// Copyright (c) Laurent Pugin. All rights reserved.   
+// Copyright (c) Authors and others. All rights reserved.   
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef __MUS_IOMLF_H__
@@ -17,7 +17,7 @@
 #endif
 #include "wx/wfstream.h"
 
-#include "musfile.h"
+#include "musdoc.h"
 #include "musmlfdic.h"
 
 class ImPage;
@@ -41,6 +41,9 @@ class AxProgressDlg;
 // MusMLFSymbol
 //----------------------------------------------------------------------------
 
+/**
+ * This class represents an HTK Master Label File symbol.
+*/
 class MusMLFSymbol: public wxObject
 {
 public:
@@ -69,44 +72,22 @@ private:
 
 
 //----------------------------------------------------------------------------
-// MusMLFSymbolNoPitch
-//----------------------------------------------------------------------------
-
-// Idem MusMLFSymbol but without pitch
-
-class MusMLFSymbolNoPitch: public MusMLFSymbol
-{
-public:
-    // constructors and destructors
-    MusMLFSymbolNoPitch();
-    virtual ~MusMLFSymbolNoPitch() {};
-    
-    //virtual void SetValue( char type, wxString subtype, int position, int value = 0, char pitch = 0, int oct = 0, int flag = 0);
-    virtual wxString GetLabel( );
-    
-protected:
-    
-public:
-
-private:
-    
-	DECLARE_DYNAMIC_CLASS(MusMLFSymbolNoPitch)
-};
-
-
-//----------------------------------------------------------------------------
 // MusMLFOutput
 //----------------------------------------------------------------------------
 
+/**
+ * This class is a file output stream for writing HTK Master Label Files (MLF).
+ * Broken in Aruspix 2.0
+*/
 class MusMLFOutput: public MusFileOutputStream
 {
 public:
     // constructors and destructors
-    MusMLFOutput( MusFile *file, wxString filename, MusMLFDictionary *dict, wxString model_symbol_name = "MusMLFSymbol" );
-	MusMLFOutput( MusFile *file, int fd, wxString filename,  MusMLFDictionary *dict, wxString model_symbol_name = "MusMLFSymbol" );
+    MusMLFOutput( MusDoc *doc, wxString filename, MusMLFDictionary *dict, wxString model_symbol_name = "MusMLFSymbol" );
+	MusMLFOutput( MusDoc *doc, int fd, wxString filename,  MusMLFDictionary *dict, wxString model_symbol_name = "MusMLFSymbol" );
     virtual ~MusMLFOutput();
     
-    //bool ExportFile( MusFile *file, wxString filename);	// replace  musfile set in the constructor
+    //bool ExportFile( MusDoc *file, wxString filename);	// replace  musfile set in the constructor
 														// and export by calling ExportFile
 														// allow exportation of several files in one mlf
     //virtual bool ExportFile( );
@@ -115,13 +96,13 @@ public:
 		wxArrayInt *staff_numbers = NULL ); // manage staves throuhg staff_numbers
 											// write all staves if staff_numbers == NULL
 											
-    virtual bool WriteStaff( const MusStaff *staff, int offset = -1, int end_point = -1 );
-    virtual bool WriteNote( MusNote *note );
-    virtual bool WriteSymbol( MusSymbol *symbol );
+    bool WriteStaff( const MusLaidOutStaff *staff, int offset = -1, int end_point = -1 );
+    //bool WriteNote( MusNote1 *note ); // ax2
+    //bool WriteSymbol( MusSymbol1 *symbol ); // ax2
 	// specific
-	static MusStaff *SplitSymboles( MusStaff *staff );
-	static MusStaff *GetUt1( MusStaff *staff, bool inPlace = false );
-	static void GetUt1( MusStaff *staff, MusElement *pelement, int *code, int *oct);
+	static MusLaidOutStaff *SplitSymboles( MusLaidOutStaff *staff );
+	static MusLaidOutStaff *GetUt1( MusLaidOutStaff *staff, bool inPlace = false );
+	static void GetUt1( MusLaidOutStaff *staff, MusLaidOutLayerElement *pelement, int *code, int *oct);
 	// charge le dictionnaire ( .dic )
 	//void LoadSymbolDictionary( wxString filename );
 	//void WriteSymbolDictionary( wxString filename );
@@ -132,19 +113,19 @@ public:
 	//void WriteDictionary( wxString filename );
 	//void WriteStatesPerSymbol( wxString filename );
 	//void WriteHMMSymbols( wxString filename );
-	virtual void StartLabel( );
-	virtual void EndLabel( int offset = -1, int end_point = -1 );
+	void StartLabel( );
+	void EndLabel( int offset = -1, int end_point = -1 );
 	// access
 	ArrayOfMLFSymbols *GetSymbols( ) { return &m_symbols; };
     
 protected:
-        wxString m_filename;
+    wxString m_filename;
 	//wxFileOutputStream *m_subfile;
 	// specific
 	ArrayOfMLFSymbols m_symbols; // symbol list
 	wxString m_mlf_class_name;
 	wxString m_shortname;
-	MusStaff *m_staff; // utilise pour les segments de portee, doit etre accessible dans WriteSymbol
+	MusLaidOutStaff *m_staff; // utilise pour les segments de portee, doit etre accessible dans WriteSymbol
 	// page, staff index
 	int m_page_i;
 	int m_staff_i;
@@ -164,51 +145,29 @@ private:
 
 
 //----------------------------------------------------------------------------
-// MusMLFOutputNoPitch
-//----------------------------------------------------------------------------
-
-// Idem MusMLFOutput but without pitch
-
-class MusMLFOutputNoPitch: public MusMLFOutput
-{
-public:
-    // constructors and destructors
-    MusMLFOutputNoPitch( MusFile *file, wxString filename, MusMLFDictionary *dict, wxString model_symbol_name = "MusMLFSymbolNoPitch" );
-	MusMLFOutputNoPitch( MusFile *file, int fd, wxString filename, MusMLFDictionary *dict, wxString model_symbol_name = "MusMLFSymbolNoPitch" );
-    virtual ~MusMLFOutputNoPitch();
-    
-        virtual bool WriteNote( MusNote *note );
-    virtual bool WriteSymbol( MusSymbol *symbol );
-	// specific
-    
-protected:
-    
-public:
-
-private:
-    };
-
-
-//----------------------------------------------------------------------------
 // MusMLFInput
 //----------------------------------------------------------------------------
 
+/**
+ * This class is a file input stream for reading HTK Master Label Files (MLF).
+ * Broken in Aruspix 2.0
+*/
 class MusMLFInput: public MusFileInputStream
 {
 public:
     // constructors and destructors
-    MusMLFInput( MusFile *file, wxString filename );
+    MusMLFInput( MusDoc *file, wxString filename );
     virtual ~MusMLFInput();
     
         virtual bool ImportFile( int staff_per_page = -1 );
-    virtual bool ReadPage( MusPage *page , bool firstLineMLF, ImPage *imPage = NULL );
-    virtual bool ReadLabel( MusStaff *staff, int offset = 0 );
+    bool ReadPage( MusPage *page , bool firstLineMLF, ImPage *imPage = NULL );
+    bool ReadLabel( MusLaidOutStaff *staff, int offset = 0 );
 	// specific
 	static bool IsElement( bool *note, wxString *line, int *pos );
-	static MusSymbol *ConvertSymbole( wxString line );
-	static MusNote *ConvertNote( wxString line  );
-	static MusStaff *GetNotUt1( MusStaff *staff, bool inPlace = false );
-	static void GetNotUt1( MusStaff *staff, MusElement *pelement, int *code, int *oct);
+	//static MusSymbol1 *ConvertSymbole( wxString line ); // ax2
+	//static MusNote1 *ConvertNote( wxString line  ); // ax2
+	static MusLaidOutStaff *GetNotUt1( MusLaidOutStaff *staff, bool inPlace = false );
+	static void GetNotUt1( MusLaidOutStaff *staff, MusLaidOutLayerElement *pelement, int *code, int *oct);
 	static void GetPitchWWG( char code, int *code1);
 	bool ReadLine( wxString *line );
 	bool ReadLabelStr( wxString label );

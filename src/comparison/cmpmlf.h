@@ -2,7 +2,7 @@
 // Name:        cmpmlf.h
 // Author:      Laurent Pugin
 // Created:     2005
-// Copyright (c) Laurent Pugin. All rights reserved.   
+// Copyright (c) Authors and others. All rights reserved.   
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef __MUS_CMPMLF_H__
@@ -62,17 +62,17 @@ class CmpMLFOutput: public MusMLFOutput
 {
 public:
     // constructors and destructors
-    CmpMLFOutput( MusFile *file, wxString filename, wxString model_symbol_name = "CmpSymbol" );
-	CmpMLFOutput( MusFile *file, int fd, wxString filename, wxString model_symbol_name = "CmpSymbol" );
-	//CmpMLFOutput( MusFile *file, wxFile *wxfile, wxString filename, wxString model_symbol_name = "CmpSymbol" );
+    CmpMLFOutput( MusDoc *file, wxString filename, wxString model_symbol_name = "CmpSymbol" );
+	CmpMLFOutput( MusDoc *file, int fd, wxString filename, wxString model_symbol_name = "CmpSymbol" );
+	//CmpMLFOutput( MusDoc *file, wxFile *wxfile, wxString filename, wxString model_symbol_name = "CmpSymbol" );
     virtual ~CmpMLFOutput();
     
-    //bool ExportFile( MusFile *file, wxString filename);	// replace  musfile set in the constructor
+    //bool ExportFile( MusDoc *file, wxString filename);	// replace  musfile set in the constructor
 														// and export it
 														// allow exportation of several files in one mlf
 														
     //virtual bool WritePage( const MusPage *page, bool write_header = false );
-    virtual bool WriteStaff( const MusStaff *staff );
+    virtual bool WriteStaff( const MusLaidOutStaff *staff );
 	// output methods
 	virtual void StartLabel( );
 	virtual void EndLabel( );
@@ -96,11 +96,11 @@ class CmpMLFInput: public MusMLFInput
 {
 public:
     // constructors and destructors
-    CmpMLFInput( MusFile *file, wxString filename );
+    CmpMLFInput( MusDoc *file, wxString filename );
     virtual ~CmpMLFInput();
     
-        virtual MusStaff *ImportFileInStaff(  );
-    virtual bool ReadLabel( MusStaff *staff );
+        virtual MusLaidOutStaff *ImportFileInStaff(  );
+    virtual bool ReadLabel( MusLaidOutStaff *staff );
 	// specific
 	bool ReadLabelStr( wxString label );
     

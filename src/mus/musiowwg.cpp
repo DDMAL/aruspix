@@ -2,7 +2,7 @@
 // Name:        musiowwg.cpp
 // Author:      Laurent Pugin
 // Created:     2005
-// Copyright (c) Laurent Pugin. All rights reserved.
+// Copyright (c) Authors and others. All rights reserved.
 /////////////////////////////////////////////////////////////////////////////
 
 #ifdef __GNUG__
@@ -18,64 +18,178 @@
 #include "wx/filename.h"
 
 #include "musiowwg.h"
+
+#include "muspage.h"
+#include "mussystem.h"
+#include "muslaidoutstaff.h"
+#include "muslaidoutlayer.h"
+#include "muslaidoutlayerelement.h"
+#include "musbarline.h"
+#include "musclef.h"
+#include "musmensur.h"
+#include "musnote.h"
+#include "mussymbol.h"
+#include "musrest.h"
+#include "musneume.h"
 #include "musiomlf.h"
 
-#include "wx/arrimpl.cpp"
-WX_DEFINE_OBJARRAY( ArrayOfMusFonts );
+#include "musstaff.h"
+#include "muslayer.h"
 
-//----------------------------------------------------------------------------
-// MusFont
-//----------------------------------------------------------------------------
+#define WWG_SEPARATOR "#\376\364\365\376#"  // "#˛Ùı˛#"
 
-MusFont::MusFont()
+/* pour analyse de var. _param2.entetePied, et lecture/ecriture eventuelle 
+ a la fin du fichier (offset: mx_byte_off + sizeof(sep)). Faire par ex: 
+ entetePied & ENTETE */
+#define PAGINATION 1
+#define ENTETE 2
+#define PIEDDEPAGE 4
+#define MARQUEDECOUPE 8
+#define MASQUEFIXE 16
+#define MASQUEVARIABLE 32
+#define FILEINFO	64
+#define MAXFILEINFO	2048
+
+#define CUSTOS 12 // ax2 double check in 1.6
+
+#define BARRE 0	/* pour flag (3 bits) de struct symbol */
+#define ALTER 1
+#define PNT	2
+#define LIAI 3
+#define CHAINE 4
+#define IND_MES 5
+#define CLE 6
+#define VECT 7
+#define BEZIER 8
+#define DYNAMIC 9
+#define CROCHET 10
+#define VALBARRES 11
+#define METAFILE_W 12
+#define AX_VARIANT 13
+
+/* groupe stocke in fonte, 3 bits in structure symbol */
+#define DYN 0	/* indication pp, ff, mf etc. */
+#define LYRIC 1	/* paroles de chant: plusieurs couches possibles */
+#define INSTRUM 2	/* nom, identification de l'instr. */
+#define MARQ_REPERE 3	/* reperes pour orchestre, etc. */
+#define SYMB_ORN 4	/* trilles, etc. */
+#define TEMPO 5
+#define TITRE_DIV 6
+
+/* groupe stocke in calte, 3 bits in structure symbol, si MARQ_REPERE */
+#define SILENCESPECIAL 0	// jusqu'Ö v. 5.3, VARIA
+#define NUMMES 1
+#define CHIFFRAGE 2
+#define MARQUEGLOBALE 3
+#define VARIA 4
+
+/* define windows */
+#define WIN_MAX_FNAME 256
+#define WIN_MAX_EXT 256
+
+/* ajout */
+#define HEADER_FOOTER_TEXT 100
+
+/* note types */
+#define NOTE 0	/* pour type (bit) de struct element */
+#define SYMB 1
+#define NEUME 2
+#define NEUME_SYMB 3
+
+/* pour bitflag silence/note de struct note */
+#define _NOT 0
+#define _SIL 1
+
+/* pointages */
+#define POINTAGE 1
+#define D_POINTAGE 2
+
+/* decalage en 3 bits de code in struct et val -4+3 */
+#define OCTBIT 4
+
+
+/* fichier */
+#define MAJ_VERS_FICH	2
+#define MIN_VERS_FICH	1
+
+
+
+void MusWWGElement::WWGInitElement() 
 {
+    // WWG Note
+    sil = false;
+    val = 0;
+    inv_val = false;
+    note_point = 0;
+    stop_rel = 0;
+    acc = 0;
+    accInvis = false;
+    q_auto = true;
+    queue = false;
+    stacc = false;
+    oblique = false;
+    queue_lig = false;
+    chord = false;
+    fchord = false;
+    lat = false;
+    haste = false;
+    code = 0;
+    tetenot = 0;
+    typStac = 0;
+
+    // WWG Symbol
+    calte = 0;
+    carOrient = 0;
+    carStyle = 0;
+    flag = 0; 
+    fonte = 0;
+    l_ptch = 0;
+    symbol_point = 0;
+    s_lie_l = 0;
+    
+    // WWG Element
+    liaison = false;
+    dliai = false;
+    fliai = false;
+    lie_up = false;
+    rel = false;
+    drel = false;
+    frel = false;
+    oct = 0;
+    dimin = 0;
+    grp = 0;
+    _shport = 0;
+    ligat = false;
+    ElemInvisible = false;
+    pointInvisible = false;
+    existDebord = false;
+    fligat = false;
+    notschowgrp = 0;
+    cone = false;
+    liaisonPointil = 0;
+    reserve1 = 0;
+    reserve2 = 0;
+    ottava = 0;
+    durNum = 1;
+    durDen = 1;
+    offset = 0;
+    pdebord = NULL;
+    debordCode = 0;
+    debordSize = 0;
+    xrel = 0;
+    dec_y = 0;
 }
-
-MusFont::~MusFont()
-{
-}
-
-
-
-//----------------------------------------------------------------------------
-// MusParametersMidi
-//----------------------------------------------------------------------------
-
-MusParametersMidi::MusParametersMidi()
-{
-    tempo = 500000;
-    minVeloc = 30;
-    maxVeloc = 110;
-    collerBeamLiai = 1;
-    pedale = 1;
-    xResolution1 = 20;
-    xResolution2 = 15;
-    appogg = 0;
-    mes_proportion = 0;
-
-	int i;
-	for (i = 0; i < MAXMIDICANAL; i++) // canal2patch
-		canal2patch[i] = 0;
-	for (i = 0; i < MAXMIDICANAL; i++) // volume
-		volume[i] = 64;
-	for (i = 0; i < MAXPORTNBRE + 1; i++) // piste2canal
-		piste2canal[i] = 0;
-}
-
-MusParametersMidi::~MusParametersMidi()
-{
-}
-
-
 
 //----------------------------------------------------------------------------
 // MusFileOutputStream
 //----------------------------------------------------------------------------
 
-MusWWGOutput::MusWWGOutput( MusFile *file, wxString filename ) :
-	MusFileOutputStream( file, filename )
+MusWWGOutput::MusWWGOutput( MusDoc *doc, wxString filename ) :
+	MusFileOutputStream( doc, filename )
 {
 	m_filename = filename;
+    m_current_system = NULL;
+    m_current_staff = NULL;
 }
 
 MusWWGOutput::~MusWWGOutput()
@@ -84,6 +198,8 @@ MusWWGOutput::~MusWWGOutput()
 
 bool MusWWGOutput::ExportFile( )
 {
+    wxASSERT_MSG( m_doc->m_layouts.GetCount() > 0, "At least one layout is required" );
+
 	int i;
 
 	if ( !IsOk() )
@@ -92,48 +208,43 @@ bool MusWWGOutput::ExportFile( )
 		return false;
 	}
 
-    WriteFileHeader( &m_file->m_fheader ); // fileheader
-    WriteParametersMidi( ); // parametres midi
-    WriteParameters2( &m_file->m_fheader.param ); // param2
-	WriteFonts( );
-	MusPage *page = NULL;
-    for (i = 0; i < m_file->m_fheader.nbpage; i++ )
-	{
-		page = &m_file->m_pages.Item(i);
+    WriteFileHeader( &m_doc->m_wwgData ); // fileheader
+    WriteParametersMidi( &m_doc->m_wwgData ); // parametres midi
+    WriteParameters2( &m_doc->m_wwgData ); // param2
+	WriteFonts( &m_doc->m_wwgData );
+	
+    MusPage *page = NULL;
+    MusLayout *layout = &m_doc->m_layouts[0];
+    for (i = 0; i < (int)layout->m_pages.GetCount(); i++)
+    {
+		page = &layout->m_pages[i];
 		WritePage( page );
     }
+    
+    MusStaff staff;
+    //staff.m_id = 0;
+    
     if (!WriteSeparator() ) 
 		return false;
-	if ( m_file->m_fheader.param.entetePied & PAGINATION )
-		WritePagination( &m_file->m_pagination );
-	if ( m_file->m_fheader.param.entetePied & ENTETE )
-		WriteHeaderFooter( &m_file->m_header );
-	if ( m_file->m_fheader.param.entetePied & PIEDDEPAGE )
-		WriteHeaderFooter( &m_file->m_footer );
-	//if ( m_file->m_param2.entetePied & MASQUEFIXE )
-	//	WritePage( &m_file->m_masqueFixe );
-	//if ( m_file->m_param2.entetePied & MASQUEVARIABLE )
-	//	WritePage( &m_file->m_masqueVariable );
+	if (  m_doc->m_parameters.entetePied & PAGINATION )
+		WritePagination( & m_doc->m_wwgData );
+	if (  m_doc->m_parameters.entetePied & ENTETE )
+		WriteHeader( & m_doc->m_wwgData );
+	if (  m_doc->m_parameters.entetePied & PIEDDEPAGE )
+		WriteFooter( & m_doc->m_wwgData );
+	//if (  m_doc->m_param2.entetePied & MASQUEFIXE )
+	//	WritePage( & m_doc->m_masqueFixe );
+	//if (  m_doc->m_param2.entetePied & MASQUEVARIABLE )
+	//	WritePage( & m_doc->m_masqueVariable );
 
 	//wxMessageBox("stop");
-	//wxLogMessage("OK %d", m_file->m_pages.GetCount() );
+	//wxLogMessage("OK %d",  m_doc->m_pages.GetCount() );
 
 	return true;
 }
 
-bool MusWWGOutput::WriteFileHeader( const MusFileHeader *header )
+bool MusWWGOutput::WriteFileHeader( const MusWWGData *wwgData )
 {
-    // unused
-    unsigned short maj_ver = 2;
-    unsigned short min_ver = 1;
-    unsigned int filesize = 0;
-    unsigned char Epais1 = 1;
-    unsigned char Epais2 = 5;
-    unsigned char Epais3 = 9;
-    signed char reserve[2];
-    reserve[0] = 0;
-    reserve[1] = 0;
-    
     wxString shortname;
     wxFileName::SplitPath( m_filename, NULL, &shortname, NULL );
     shortname += ".wwg";
@@ -142,136 +253,103 @@ bool MusWWGOutput::WriteFileHeader( const MusFileHeader *header )
 	memset( buffer, 0, WIN_MAX_FNAME + WIN_MAX_EXT + 1 );
 
     Write( "Wolfgang", 9); // (version 6)
-	uint16 = wxUINT16_SWAP_ON_BE( maj_ver );
+	uint16 = wxUINT16_SWAP_ON_BE( wwgData->maj_ver );
 	Write( &uint16, 2 );
-	uint16 = wxUINT16_SWAP_ON_BE( min_ver );
+	uint16 = wxUINT16_SWAP_ON_BE( wwgData->min_ver );
 	Write( &uint16, 2 );
 	//if ( header->name.Length() > WIN_MAX_FNAME + WIN_MAX_EXT )
 	//	return false;
 	//memcpy( buffer, header->name.c_str(), header->name.Length() );
     memcpy( buffer, shortname.c_str(), shortname.Length() );
 	Write( buffer, WIN_MAX_FNAME + WIN_MAX_EXT ); // name, unused
-    uint32 = wxUINT32_SWAP_ON_BE( filesize ); // filesize
+    uint32 = wxUINT32_SWAP_ON_BE( wwgData->filesize ); // filesize
 	Write( &uint32, 4 );
-	uint16 = wxUINT16_SWAP_ON_BE( header->nbpage ); // nbpage
+	uint16 = wxUINT16_SWAP_ON_BE( wwgData->nbpage ); // nbpage
 	Write( &uint16, 2 ); 
-	uint16 = wxUINT16_SWAP_ON_BE( header->nopage ); // nopage
+	uint16 = wxUINT16_SWAP_ON_BE( wwgData->nopage ); // nopage
 	Write( &uint16, 2 ); 
-	uint16 = wxUINT16_SWAP_ON_BE( header->noligne ); // noligne
+	uint16 = wxUINT16_SWAP_ON_BE( wwgData->noligne ); // noligne
 	Write( &uint16, 2 ); 
-	uint32 = wxUINT32_SWAP_ON_BE( header->xpos ); // xpos
+	uint32 = wxUINT32_SWAP_ON_BE( wwgData->xpos ); // xpos
 	Write( &uint32, 4 );
-	Write( &header->param.orientation, 1 ); // param - orientation
-	Write( &header->param.EpLignesPortee, 1 ); // param - epLignesPortee
-	Write( &header->param.EpQueueNote, 1 ); // param - epQueueNotes
-	Write( &header->param.EpBarreMesure, 1 ); // param - epBarreMesure
-	Write( &header->param.EpBarreValeur, 1 ); // param - epBarreValeur
-	Write( &header->param.EpBlancBarreValeur, 1 ); // param - epBlancBarreValeur
-	Write( &header->param.beamPenteMax, 1 ); // param - beamPenteMax
-	Write( &header->param.beamPenteMin, 1 ); // param - beamPenteMin
-	int32 = wxINT32_SWAP_ON_BE( header->param.pageFormatHor ); // param - pageFormatHor
+	Write( &m_doc->m_parameters.orientation, 1 ); // param - orientation
+	Write( &m_doc->m_parameters.EpLignesPortee, 1 ); // param - epLignesPortee
+	Write( &m_doc->m_parameters.EpQueueNote, 1 ); // param - epQueueNotes
+	Write( &m_doc->m_parameters.EpBarreMesure, 1 ); // param - epBarreMesure
+	Write( &m_doc->m_parameters.EpBarreValeur, 1 ); // param - epBarreValeur
+	Write( &m_doc->m_parameters.EpBlancBarreValeur, 1 ); // param - epBlancBarreValeur
+	Write( &m_doc->m_parameters.beamPenteMax, 1 ); // param - beamPenteMax
+	Write( &m_doc->m_parameters.beamPenteMin, 1 ); // param - beamPenteMin
+	int32 = wxINT32_SWAP_ON_BE( m_doc->m_parameters.pageFormatHor ); // param - pageFormatHor
 	Write( &int32, 4 );
-	int32 = wxINT32_SWAP_ON_BE( header->param.pageFormatVer ); // param - pageFormatVer
+	int32 = wxINT32_SWAP_ON_BE( m_doc->m_parameters.pageFormatVer ); // param - pageFormatVer
 	Write( &int32, 4 );
-	int16 = wxINT16_SWAP_ON_BE( header->param.MargeSOMMET ); // param - margeSommet
+	int16 = wxINT16_SWAP_ON_BE( m_doc->m_parameters.MargeSOMMET ); // param - margeSommet
 	Write( &int16, 2 );
-	int16 = wxINT16_SWAP_ON_BE( header->param.MargeGAUCHEIMPAIRE ); // param - margeGaucheImpaire
+	int16 = wxINT16_SWAP_ON_BE( m_doc->m_parameters.MargeGAUCHEIMPAIRE ); // param - margeGaucheImpaire
 	Write( &int16, 2 );
-	int16 = wxINT16_SWAP_ON_BE( header->param.MargeGAUCHEPAIRE ); // param - margeGauchePaire
+	int16 = wxINT16_SWAP_ON_BE( m_doc->m_parameters.MargeGAUCHEPAIRE ); // param - margeGauchePaire
 	Write( &int16, 2 );
-	Write( &Epais1, 1 ); // param - epais1
-	Write( &Epais2, 1 ); // param - epais2
-	Write( &Epais3, 1 ); // param - epais3
-	Write( &reserve[0], 1 ); // reserve_0
-	Write( &reserve[1], 1 ); // reserve_1
+	Write( &wwgData->Epais1, 1 ); // param - epais1
+	Write( &wwgData->Epais2, 1 ); // param - epais2
+	Write( &wwgData->Epais3, 1 ); // param - epais3
+	Write( &wwgData->reserve[0], 1 ); // reserve_0
+	Write( &wwgData->reserve[1], 1 ); // reserve_1
 	return true;
 }
 
-bool MusWWGOutput::WriteParametersMidi( )
+bool MusWWGOutput::WriteParametersMidi( const MusWWGData *wwgData )
 {
     int i;
-    
-    MusParametersMidi midi;
 
-	int32 = wxINT32_SWAP_ON_BE( midi.tempo ); // tempo
+	int32 = wxINT32_SWAP_ON_BE( wwgData->tempo ); // tempo
 	Write( &int32, 4 );
-	Write( &midi.minVeloc, 1 ); // minVeloc
-	Write( &midi.maxVeloc, 1 );  // maxVeloc
-	Write( &midi.collerBeamLiai, 1 ); // collerBeamLs
-	Write( &midi.pedale, 1 ); // pedale
-	Write( &midi.xResolution1, 1 ); // xResolution1
-	Write( &midi.xResolution2, 1 ); // xResolution2
-	Write( &midi.appogg, 1 );  // appogg
-	Write( &midi.mes_proportion, 1 ); // mesProportion
+	Write( &wwgData->minVeloc, 1 ); // minVeloc
+	Write( &wwgData->maxVeloc, 1 );  // maxVeloc
+	Write( &wwgData->collerBeamLiai, 1 ); // collerBeamLs
+	Write( &wwgData->pedale, 1 ); // pedale
+	Write( &wwgData->xResolution1, 1 ); // xResolution1
+	Write( &wwgData->xResolution2, 1 ); // xResolution2
+	Write( &wwgData->appogg, 1 );  // appogg
+	Write( &wwgData->mes_proportion, 1 ); // mesProportion
     for (i = 0; i < MAXMIDICANAL; i++) // canal2patch
-		Write( &midi.canal2patch[i], 1 );
+		Write( &wwgData->canal2patch[i], 1 );
 	for (i = 0; i < MAXMIDICANAL; i++) // volume
-		Write( &midi.volume[i], 1 );
+		Write( &wwgData->volume[i], 1 );
     for (i = 0; i < MAXPORTNBRE + 1; i++) // piste2canal
-		Write( &midi.piste2canal[i], 1 ); 
+		Write( &wwgData->piste2canal[i], 1 ); 
     return true;
 }
 
-bool MusWWGOutput::WriteParameters2( const MusParameters *param )
+bool MusWWGOutput::WriteParameters2( const MusWWGData *param )
 {
-    unsigned char transp_sil = 0;
-    unsigned char autoval_sil = 1;
-    unsigned char nbPagesEncontinu = 3;
-    signed char vertCorrEcr = 2;
-    signed char vertCorrPrn = 0;
-    signed char epaisBezier = 0;
-    signed char transposition[MAXPORTNBRE+1];
-	int i;
-	for (i = 0; i < MAXPORTNBRE+1; i++) // transposition
-		transposition[i] = 0;
-
-	Write( &transp_sil, 1 );// transpSil
-	Write( &param->rapportPorteesNum, 1 ); // rpPorteesNum
-	Write( &param->rapportPorteesDen, 1 ); // rpPorteesDen
-	Write( &param->rapportDiminNum, 1 ); // rpDiminNum
-	Write( &param->rapportDiminDen, 1 ); // rpDiminDen
-	Write( &autoval_sil, 1 ); // autoValSil
-	Write( &nbPagesEncontinu, 1 ); // nbPagesEnContinu
-	Write( &vertCorrEcr, 1 ); // vertCorrEcr
-	Write( &vertCorrPrn, 1 ); // vertCorrPrn
-	Write( &param->hampesCorr, 1 ); // hampesCorr
-	Write( &epaisBezier, 1 ); // epaisBezier
-	uint32 = wxUINT32_SWAP_ON_BE( param->entetePied ); // entetePied
+	Write( &param->transp_sil, 1 );// transpSil
+	Write( &m_doc->m_parameters.rapportPorteesNum, 1 ); // rpPorteesNum
+	Write( &m_doc->m_parameters.rapportPorteesDen, 1 ); // rpPorteesDen
+	Write( &m_doc->m_parameters.rapportDiminNum, 1 ); // rpDiminNum
+	Write( &m_doc->m_parameters.rapportDiminDen, 1 ); // rpDiminDen
+	Write( &param->autoval_sil, 1 ); // autoValSil
+	Write( &param->nbPagesEncontinu, 1 ); // nbPagesEnContinu
+	Write( &param->vertCorrEcr, 1 ); // vertCorrEcr
+	Write( &param->vertCorrPrn, 1 ); // vertCorrPrn
+	Write( &m_doc->m_parameters.hampesCorr, 1 ); // hampesCorr
+	Write( &param->epaisBezier, 1 ); // epaisBezier
+	uint32 = wxUINT32_SWAP_ON_BE( m_doc->m_parameters.entetePied ); // entetePied
 	Write( &uint32, 4 );
+    int i;
     for (i = 0; i < MAXPORTNBRE+1; i++) // transposition
-		Write( &transposition[i], 1 );
+		Write( &param->transposition[i], 1 );
 
 	return true;
 }
 
-bool MusWWGOutput::WriteFonts(  )
-{
-	char buffer[MAXPOLICENAME + 1];
-	
-    ArrayOfMusFonts fonts;
-	MusFont font;
-
-	font.fonteJeu = 1;
-	font.fonteNom = "Leipzig 4.2";
-	fonts.Add( font );
-
-	int i;
-    for (i = 0; i < MAXPOLICES - 1; i++) // chargement des polices vides
-	{
-		font.fonteJeu = 0;
-		font.fonteNom = "";
-		fonts.Add( font );
-	}
-    
+bool MusWWGOutput::WriteFonts( const MusWWGData *fonts  )
+{   
+    int i;
     for (i = 0; i < MAXPOLICES; i++) // ecriture des polices
 	{
-		memset( buffer, 0, MAXPOLICENAME + 1 );
-		font = fonts.Item( i );
-		Write( &font.fonteJeu, 1 );
-		if ( font.fonteNom.Length() > MAXPOLICENAME )
-			return false;
-		memcpy( buffer, font.fonteNom.c_str(), font.fonteNom.Length() );
-		Write( buffer, MAXPOLICENAME );
+		Write( &fonts->fonts[i].fonteJeu, 1 );
+		Write( &fonts->fonts[i].fonteNom, MAXPOLICENAME );
 	}
 
 	return true;
@@ -279,240 +357,287 @@ bool MusWWGOutput::WriteFonts(  )
 
 bool MusWWGOutput::WriteSeparator( )
 {
-	Write( MusFile::sep, 7 );
+	Write( WWG_SEPARATOR, 7 );
 	return true;
 }
 
 bool MusWWGOutput::WritePage( const MusPage *page )
 {
-	int j;
+	int i, j, k;
 
     if ( !WriteSeparator() )
 		return false;
 	int32 = wxINT32_SWAP_ON_BE( page->npage );
 	Write( &int32, 4 );
-	int16 = wxINT16_SWAP_ON_BE( page->nbrePortees );
+	short nbStaves = 0;
+	for (i = 0; i < page->GetSystemCount(); i++) {
+		nbStaves += (&page->m_systems[i])->GetStaffCount();
+	}
+	int16 = wxINT16_SWAP_ON_BE( nbStaves );
 	Write( &int16, 2 );
     Write( &page->noMasqueFixe, 1 );    
 	Write( &page->noMasqueVar, 1 );
 	Write( &page->reserve, 1 );
 	Write( &page->defin, 1 );
-	int32 = wxINT32_SWAP_ON_BE( page->indent );
+    // get the first system for indent information
+    MusSystem *system = NULL;
+    if (page->GetSystemCount() > 0) {
+        system = &page->m_systems[0];
+    }
+    int32 = system ? wxINT32_SWAP_ON_BE( system->indent ) : 0;
 	Write( &int32, 4 );
-	int32 = wxINT32_SWAP_ON_BE( page->indentDroite );
+    int32 = system ? wxINT32_SWAP_ON_BE( system->indentDroite ) : 0;
 	Write( &int32, 4 );
-	int32 = wxINT32_SWAP_ON_BE( page->lrg_lign );
+	int32 = system ? wxINT32_SWAP_ON_BE( system->lrg_lign ) : wxINT32_SWAP_ON_BE( 190 );
 	Write( &int32, 4 );
-	/*MusStaff *staff = NULL;
-    for (j = 0; j < page->nbrePortees; j++) 
-	{
-		staff = &page->m_staves[j];
-		WriteStaff( staff );
-    }*/
-
-
-    MusStaff *staff = NULL;
-	for (j = 0; j < page->nbrePortees; j++) 
-    {
-        MusStaff *cstaff = &page->m_staves[j];
-		staff = MusMLFOutput::SplitSymboles( cstaff );
-        WriteStaff( staff );
-		delete staff;
-		staff = NULL;
+    
+    for (i = 0; i < page->GetSystemCount(); i++) {
+        m_current_system = &page->m_systems[i];
+        for (j = 0; j < system->GetStaffCount(); j++) 
+        {
+            //MusLaidOutStaff *cstaff
+            //staff = MusMLFOutput::SplitSymboles( cstaff ); // split the symbols (sharp, dots, etc. - this should probably be optional)
+            m_current_staff = &system->m_staves[j];
+            for (k = 0; k < m_current_staff->GetLayerCount(); k ++)
+            {
+                MusLaidOutLayer *layer = &m_current_staff->m_layers[k];
+                WriteLayer( layer );
+            }
+        }
     }
 
 	return true;
 
 }
 
-
-bool MusWWGOutput::WriteStaff( const MusStaff *staff )
+bool MusWWGOutput::WriteLayer( const MusLaidOutLayer *layer )
 {
-	unsigned int k;
+	int k;
 
-	uint32 = wxUINT32_SWAP_ON_BE( staff->nblement );
+	uint32 = wxUINT32_SWAP_ON_BE( layer->GetElementCount() );
 	Write( &uint32, 4 );
-	uint16 = wxUINT16_SWAP_ON_BE( staff->voix );
+	uint16 = wxUINT16_SWAP_ON_BE( layer->voix );
 	Write( &uint16, 2 );
-	uint16 = wxUINT16_SWAP_ON_BE( staff->noGrp );
+	uint16 = wxUINT16_SWAP_ON_BE( m_current_staff->noGrp );
 	Write( &uint16, 2 );
-	uint16 = wxUINT16_SWAP_ON_BE( staff->totGrp );
+	uint16 = wxUINT16_SWAP_ON_BE( m_current_staff->totGrp );
 	Write( &uint16, 2 );
-	uint16 = wxUINT16_SWAP_ON_BE( staff->noLigne );
+	uint16 = wxUINT16_SWAP_ON_BE( m_current_system->GetSystemNo() ); // we don't have noLigne anymore - given by the current system being written
 	Write( &uint16, 2 );
-	uint16 = wxUINT16_SWAP_ON_BE( staff->no );
+	uint16 = wxUINT16_SWAP_ON_BE( m_current_staff->GetStaffNo() );
 	Write( &uint16, 2 );
-	Write( &staff->armTyp, 1 );
-	Write( &staff->armNbr, 1 );
-	Write( &staff->notAnc, 1 );
-	Write( &staff->grise, 1 );
-	Write( &staff->invisible, 1 );
-	uint16 = wxUINT16_SWAP_ON_BE( staff->ecart );
+	Write( &m_current_staff->armTyp, 1 );
+	Write( &m_current_staff->armNbr, 1 );
+	Write( &m_current_staff->notAnc, 1 );
+	Write( &m_current_staff->grise, 1 );
+	Write( &m_current_staff->invisible, 1 );
+	uint16 = wxUINT16_SWAP_ON_BE( m_current_staff->ecart );
 	Write( &uint16, 2 );
-	Write( &staff->vertBarre, 1 );
-	Write( &staff->brace, 1 );
-	Write( &staff->pTaille, 1 );
-    char indent = ( staff->indent > 0);
+	Write( &m_current_staff->vertBarre, 1 );
+	Write( &m_current_staff->brace, 1 );
+	Write( &m_current_staff->staffSize, 1 );
+    char indent = ( m_current_system->indent > 0 );
     Write( &indent, 1 );
-	Write( &staff->indentDroite, 1 );
-	Write( &staff->portNbLine, 1 );
-	Write( &staff->accol, 1 );
-	Write( &staff->accessoire, 1 );
-	uint16 = wxUINT16_SWAP_ON_BE( staff->reserve );
+	Write( &m_current_system->indentDroite, 1 );
+	Write( &m_current_staff->portNbLine, 1 );
+	Write( &m_current_staff->accol, 1 );
+	Write( &m_current_staff->accessoire, 1 );
+	uint16 = wxUINT16_SWAP_ON_BE( m_current_staff->reserve );
 	Write( &uint16, 2 );
-	for (k = 0;k < staff->nblement ; k++ )
+	for (k = 0;k < layer->GetElementCount() ; k++ )
 	{
-		if ( staff->m_elements[k].IsNote() )
-		{
-			WriteNote( (MusNote*)&staff->m_elements[k] );
-		}
-		else if ( staff->m_elements[k].IsSymbol() )
-		{
-			WriteSymbol( (MusSymbol*)&staff->m_elements[k] );
-		}
+        WWGInitElement();
+    
+        MusLaidOutLayerElement *element = &layer->m_elements[k];
+        // position x for all elmements
+        xrel = element->m_xrel;
+        if (dynamic_cast<MusBarline*>(element)) {
+            TYPE = SYMB;
+            WriteSymbol();
+        }
+        if (dynamic_cast<MusClef*>(element)) {
+            TYPE = SYMB;
+            WriteSymbol();
+        }
+        if (dynamic_cast<MusMensur*>(element)) {
+            TYPE = SYMB;
+            WriteSymbol();
+        }
+        else if (dynamic_cast<MusNeume*>(element)) {
+            // nothing?
+        }
+        if (dynamic_cast<MusNote*>(element)) {
+            TYPE = NOTE;
+            WriteNote( );
+        }
+        else if (dynamic_cast<MusRest*>(element)) {
+            TYPE = NOTE;
+            WriteNote( );
+        }
+        else if (dynamic_cast<MusSymbol*>(element)) {
+            TYPE = SYMB;
+            WriteSymbol( );
+        }
 	}
 
 	return true;
 }
 
-bool MusWWGOutput::WriteNote( const MusNote *note )
+bool MusWWGOutput::WriteNote( )
 {
-	Write( &note->TYPE, 1 );
-	WriteElementAttr( note );
-	Write( &note->sil, 1 );
-	unsigned char val = note->val; 
-	if ( ( note->sil == _SIL ) && ( note->val == CUSTOS ) )
-		val = Q6C;
+	Write( &TYPE, 1 );
+	WriteElementAttr( );
+	Write( &sil, 1 );
+	unsigned char val = val; 
+	if ( ( sil == _SIL ) && ( val == CUSTOS ) ) // do we still want this? Should be an option somewhere
+		val = DUR_256;
 	Write( &val, 1 );
-	Write( &note->inv_val, 1 );
-	Write( &note->point, 1 );
-	Write( &note->stop_rel, 1 );
-	Write( &note->acc, 1 );
-	Write( &note->accInvis, 1 );
-	Write( &note->q_auto, 1 );
-	Write( &note->queue, 1 );
-	Write( &note->stacc, 1 );
-	Write( &note->oblique, 1 );
-	Write( &note->queue_lig, 1 );
-	Write( &note->chord, 1 );
-	Write( &note->fchord, 1 );
-	Write( &note->lat, 1 );
-	Write( &note->haste, 1 );
-	//Write( &note->code, sizeof( note->code ) );
-	unsigned char code = (unsigned char)note->code;
+	Write( &inv_val, 1 );
+	Write( &note_point, 1 );
+	Write( &stop_rel, 1 );
+	Write( &acc, 1 );
+	Write( &accInvis, 1 );
+	Write( &q_auto, 1 );
+	Write( &queue, 1 );
+	Write( &stacc, 1 );
+	Write( &oblique, 1 );
+	Write( &queue_lig, 1 );
+	Write( &chord, 1 );
+	Write( &fchord, 1 );
+	Write( &lat, 1 );
+	Write( &haste, 1 );
+	//Write( &code, sizeof( code ) );
+	unsigned char code = (unsigned char)code;
 	Write( &code, 1 ); // deplace dans element, mais unsigned short
-	Write( &note->tetenot, 1 );
-	Write( &note->typStac, 1 );
-	if ( note->existDebord ) 
-		WriteDebord( note );
+	Write( &tetenot, 1 );
+	Write( &typStac, 1 );
+	if ( existDebord ) 
+		WriteDebord( );
 	
 	return true;
 }
 
-bool MusWWGOutput::WriteSymbol( const MusSymbol *symbol )
+bool MusWWGOutput::WriteSymbol( )
 {
-	Write( &symbol->TYPE, 1 );
-	WriteElementAttr( symbol );
-	Write( &symbol->flag , 1 );
-	Write( &symbol->calte , 1 );
-	Write( &symbol->carStyle , 1 );
-	Write( &symbol->carOrient , 1 );
-	Write( &symbol->fonte , 1 );
-	Write( &symbol->s_lie_l , 1 );
-	Write( &symbol->point , 1 );
-	uint16 = wxUINT16_SWAP_ON_BE( symbol->code );
+	Write( &TYPE, 1 );
+	WriteElementAttr( );
+	Write( &flag , 1 );
+	Write( &calte , 1 );
+	Write( &carStyle , 1 );
+	Write( &carOrient , 1 );
+	Write( &fonte , 1 );
+	Write( &s_lie_l , 1 );
+	Write( &symbol_point , 1 );
+	uint16 = wxUINT16_SWAP_ON_BE( code );
 	Write( &uint16, 2 );
-	uint16 = wxUINT16_SWAP_ON_BE( symbol->l_ptch );
+	uint16 = wxUINT16_SWAP_ON_BE( l_ptch );
 	Write( &uint16, 2 );	
-	int32 = wxINT32_SWAP_ON_BE( symbol->dec_y );
+	int32 = wxINT32_SWAP_ON_BE( dec_y );
 	Write( &int32, 4 );
-	if ( symbol->existDebord ) 
-		WriteDebord( symbol );
-    // if ( symbol->IsLyric() ) // To be fixed ??
-    if ( (symbol->flag == CHAINE) && (symbol->fonte == LYRIC) )
-		WriteLyric( symbol );
+	if ( existDebord ) 
+		WriteDebord( );
+    // if ( IsLyric() ) // To be fixed ??
+    if ( (flag == CHAINE) && (fonte == LYRIC) ) {
+		//WriteLyric( symbol );
+    }
 	
 	return true;
 }
 
-bool MusWWGOutput::WriteElementAttr( const MusElement *element )
+bool MusWWGOutput::WriteElementAttr( )
 {
-	Write( &element->liaison , 1 );
-	Write( &element->dliai , 1 );
-	Write( &element->fliai , 1 );
-	Write( &element->lie_up , 1 );
-	Write( &element->rel , 1 );
-	Write( &element->drel , 1 );
-	Write( &element->frel , 1 );
-	Write( &element->oct , 1 );
-	Write( &element->dimin , 1 );
-    Write( &element->grp , 1 );
-	Write( &element->_shport , 1 );
-	Write( &element->ligat , 1 );
-	Write( &element->ElemInvisible , 1 );
-	Write( &element->pointInvisible , 1 );
-	Write( &element->existDebord , 1 );
-	Write( &element->fligat , 1 );
-	Write( &element->notschowgrp , 1 );
-	Write( &element->cone , 1 );
-	Write( &element->liaisonPointil , 1 );
-	Write( &element->reserve1 , 1 );
-	Write( &element->reserve2 , 1 );
-	Write( &element->ottava , 1 );
-	uint16 = wxUINT16_SWAP_ON_BE( element->durNum );
+	Write( &liaison , 1 );
+	Write( &dliai , 1 );
+	Write( &fliai , 1 );
+	Write( &lie_up , 1 );
+	Write( &rel , 1 );
+	Write( &drel , 1 );
+	Write( &frel , 1 );
+	Write( &oct , 1 );
+	Write( &dimin , 1 );
+    Write( &grp , 1 );
+	Write( &_shport , 1 );
+	Write( &ligat , 1 );
+	Write( &ElemInvisible , 1 );
+	Write( &pointInvisible , 1 );
+	Write( &existDebord , 1 );
+	Write( &fligat , 1 );
+	Write( &notschowgrp , 1 );
+	Write( &cone , 1 );
+	Write( &liaisonPointil , 1 );
+	Write( &reserve1 , 1 );
+	Write( &reserve2 , 1 );
+	Write( &ottava , 1 );
+	uint16 = wxUINT16_SWAP_ON_BE( durNum );
 	Write( &uint16, 2 );
-	uint16 = wxUINT16_SWAP_ON_BE( element->durDen );
+	uint16 = wxUINT16_SWAP_ON_BE( durDen );
 	Write( &uint16, 2 );
-	uint16 = wxUINT16_SWAP_ON_BE( element->offset );
+	uint16 = wxUINT16_SWAP_ON_BE( offset );
 	Write( &uint16, 2 );
-	int32 = wxINT32_SWAP_ON_BE( element->xrel );
+	int32 = wxINT32_SWAP_ON_BE( xrel );
 	Write( &int32, 4 );
 	
 	return true;
 }
 
-bool MusWWGOutput::WriteDebord( const MusElement *element )
+bool MusWWGOutput::WriteDebord( )
 {
-	uint16 = wxUINT16_SWAP_ON_BE( element->debordSize );
+	uint16 = wxUINT16_SWAP_ON_BE( debordSize );
 	Write( &uint16, 2 );
-	uint16 = wxUINT16_SWAP_ON_BE( element->debordCode );
+	uint16 = wxUINT16_SWAP_ON_BE( debordCode );
 	Write( &uint16, 2 );
 
-	int size = element->debordSize - 4; // - sizeof( element->debordSize ) - sizeof( element->debordCode );
-	Write( element->pdebord, size );
+	int size = debordSize - 4; // - sizeof( debordSize ) - sizeof( debordCode );
+	Write( pdebord, size );
 	return true;
 }
 
-bool MusWWGOutput::WritePagination( const MusPagination *pagination )
+bool MusWWGOutput::WritePagination( const MusWWGData *pagination )
 {
-	int16 = wxINT16_SWAP_ON_BE( pagination->numeroInitial );
+	int16 = wxINT16_SWAP_ON_BE( pagination->p_numeroInitial );
 	Write( &int16, 2 );
-	Write( &pagination->aussiPremierPage, 1 );
-	Write( &pagination->position, 1 );
-	Write( &pagination->numeroFonte, 1 );
-	Write( &pagination->carStyle, 1 );
-	Write( &pagination->taille, 1 );
-	Write( &pagination->offsetDuBord, 1 );
+	Write( &pagination->p_aussiPremierPage, 1 );
+	Write( &pagination->p_position, 1 );
+	Write( &pagination->p_numeroFonte, 1 );
+	Write( &pagination->p_carStyle, 1 );
+	Write( &pagination->p_taille, 1 );
+	Write( &pagination->p_offsetDuBord, 1 );
 	return true;
 }
 
-bool MusWWGOutput::WriteHeaderFooter( const MusHeaderFooter *headerfooter)
+bool MusWWGOutput::WriteHeader( const MusWWGData *header )
 {
 	char buffer[HEADER_FOOTER_TEXT + 1];
 	memset( buffer, 0, HEADER_FOOTER_TEXT + 1);
-	if ( headerfooter->texte.Length() > HEADER_FOOTER_TEXT + 1 )
+	if ( header->h_texte.Length() > HEADER_FOOTER_TEXT + 1 )
 		return false;
-	memcpy( buffer, headerfooter->texte.c_str(), headerfooter->texte.Length() );
+	memcpy( buffer, header->h_texte.c_str(), header->h_texte.Length() );
 	Write( buffer, HEADER_FOOTER_TEXT );
-	Write( &headerfooter->aussiPremierPage, 1 );
-	Write( &headerfooter->position, 1 );
-	Write( &headerfooter->numeroFonte, 1 );
-	Write( &headerfooter->carStyle, 1 );
-	Write( &headerfooter->taille, 1 );
-	Write( &headerfooter->offsetDuBord, 1 );
+	Write( &header->h_aussiPremierPage, 1 );
+	Write( &header->h_position, 1 );
+	Write( &header->h_numeroFonte, 1 );
+	Write( &header->h_carStyle, 1 );
+	Write( &header->h_taille, 1 );
+	Write( &header->h_offsetDuBord, 1 );
 	return true;
 }
 
+bool MusWWGOutput::WriteFooter( const MusWWGData *footer )
+{
+	char buffer[HEADER_FOOTER_TEXT + 1];
+	memset( buffer, 0, HEADER_FOOTER_TEXT + 1);
+	if ( footer->f_texte.Length() > HEADER_FOOTER_TEXT + 1 )
+		return false;
+	memcpy( buffer, footer->f_texte.c_str(), footer->f_texte.Length() );
+	Write( buffer, HEADER_FOOTER_TEXT );
+	Write( &footer->f_aussiPremierPage, 1 );
+	Write( &footer->f_position, 1 );
+	Write( &footer->f_numeroFonte, 1 );
+	Write( &footer->f_carStyle, 1 );
+	Write( &footer->f_taille, 1 );
+	Write( &footer->f_offsetDuBord, 1 );
+	return true;
+}
 
 
 
@@ -521,10 +646,12 @@ bool MusWWGOutput::WriteHeaderFooter( const MusHeaderFooter *headerfooter)
 // MusWWGInput
 //----------------------------------------------------------------------------
 
-MusWWGInput::MusWWGInput( MusFile *file, wxString filename ) :
-	MusFileInputStream( file, filename )
+MusWWGInput::MusWWGInput( MusDoc *doc, wxString filename ) :
+	MusFileInputStream( doc, filename )
 {
-
+	m_section = NULL;
+	m_staff = NULL;
+	m_layer = NULL;
 }
 
 MusWWGInput::~MusWWGInput()
@@ -537,161 +664,160 @@ bool MusWWGInput::ImportFile( )
 
 	if ( !IsOk() )
 	{
-		wxLogMessage(_("Cannot read file '%s'"), m_file->m_fname.c_str() );
+		wxLogMessage(_("Cannot read file '%s'"),  m_doc->m_fname.c_str() );
 		return false;
 	}
+    
+    // reset the MusDoc and read the WWG header
+    m_doc->Reset();	
+    ReadFileHeader( &m_doc->m_wwgData ); // fileheader
+    ReadParametersMidi( &m_doc->m_wwgData  ); // parametres midi
+    ReadParameters2( &m_doc->m_wwgData  ); // param2
+	ReadFonts( &m_doc->m_wwgData  );
 
-    ReadFileHeader( &m_file->m_fheader ); // fileheader
-    ReadParametersMidi( ); // parametres midi
-    ReadParameters2( &m_file->m_fheader.param ); // param2
-	ReadFonts( );
-	m_file->m_pages.Clear();		
-    for (i = 0; i < m_file->m_fheader.nbpage; i++ )
+    // create a new layout and a new mdiv (we will get only one of them in a WWG)
+    MusDiv *div = new MusDiv( );
+    MusScore *score = new MusScore( );
+    m_section = new MusSection( );
+    
+    MusLayout *layout = new MusLayout();
+    
+    for (i = 0; i <  m_doc->m_wwgData.nbpage; i++ )
 	{
 		MusPage *page = new MusPage();
 		ReadPage( page );
-		m_file->m_pages.Add( page );
+        layout->AddPage( page );
     }
+
     if ( !ReadSeparator() ) 
 		return false;
-	if ( m_file->m_fheader.param.entetePied & PAGINATION )
-		ReadPagination( &m_file->m_pagination );
-	if ( m_file->m_fheader.param.entetePied & ENTETE )
-		ReadHeaderFooter( &m_file->m_header );
-	if ( m_file->m_fheader.param.entetePied & PIEDDEPAGE )
-		ReadHeaderFooter( &m_file->m_footer );
-	//if ( &m_file->m_fheader.param.entetePied & MASQUEFIXE )
-	//	ReadPage( &m_file->m_masqueFixe );
-	//if ( &m_file->m_fheader.param.entetePied & MASQUEVARIABLE )
-	//	ReadPage( &m_file->m_masqueVariable );
+	if (  m_doc->m_parameters.entetePied & PAGINATION )
+		ReadPagination( &m_doc->m_wwgData  );
+	if (  m_doc->m_parameters.entetePied & ENTETE )
+		ReadHeader( &m_doc->m_wwgData );
+	if (  m_doc->m_parameters.entetePied & PIEDDEPAGE )
+		ReadFooter( &m_doc->m_wwgData );
+	//if ( & m_doc->m_parameters.param.entetePied & MASQUEFIXE )
+	//	ReadPage( & m_doc->m_masqueFixe );
+	//if ( & m_doc->m_parameters.param.entetePied & MASQUEVARIABLE )
+	//	ReadPage( & m_doc->m_masqueVariable );
 
-	//wxLogMessage("OK %d", m_file->m_pages.GetCount() );
+	//wxLogMessage("OK %d",  m_doc->m_pages.GetCount() );
+    
+    m_doc->AddLayout( layout );	
 
 	return true;
 }
 
-bool MusWWGInput::ReadFileHeader( MusFileHeader *header )
+bool MusWWGInput::ReadFileHeader( MusWWGData *wwgData )
 {
 
 	char buffer[WIN_MAX_FNAME + WIN_MAX_EXT + 1];
 	Read( buffer, 9 ); // (version 6)
-    
-    unsigned char unused_uc;
-    signed char unused_sc;    
 
-    unsigned short majVO; // maj_ver
-    unsigned short minVO;
 	Read( &uint16, 2 );
-	majVO = wxUINT16_SWAP_ON_BE( uint16 );
+	wwgData->maj_ver = wxUINT16_SWAP_ON_BE( uint16 );
 	Read( &uint16, 2 );
-	minVO = wxUINT16_SWAP_ON_BE( uint16 );
-    if ((majVO != 2) && (minVO < 1)) 
+	wwgData->min_ver= wxUINT16_SWAP_ON_BE( uint16 );
+    if ((wwgData->maj_ver != 2) && (wwgData->min_ver < 1)) 
 	{
-		wxLogWarning(_("Invalid version (%d.%d"), majVO, minVO );
+		wxLogWarning(_("Invalid version (%d.%d"), wwgData->maj_ver, wwgData->min_ver );
         return false;
 	}
     Read( buffer, WIN_MAX_FNAME + WIN_MAX_EXT); // name (version 6) - unused
 	Read( &uint32, 4 ); // filesize - unused
+    wwgData->filesize= wxUINT32_SWAP_ON_BE( uint32 );
 	Read( &uint16, 2 ); 
-	header->nbpage = wxUINT16_SWAP_ON_BE( uint16 ); // nbpage
+	wwgData->nbpage = wxUINT16_SWAP_ON_BE( uint16 ); // nbpage
 	Read( &uint16, 2 ); 
-	header->nopage = wxUINT16_SWAP_ON_BE( uint16 ); // nopage
+	wwgData->nopage = wxUINT16_SWAP_ON_BE( uint16 ); // nopage
 	Read( &uint16, 2 ); 
-	header->noligne = wxUINT16_SWAP_ON_BE( uint16 ); // noligne
+	wwgData->noligne = wxUINT16_SWAP_ON_BE( uint16 ); // noligne
 	Read( &uint32, 4 );
-	header->xpos = wxUINT32_SWAP_ON_BE( uint32 );  // xpso
-	Read( &header->param.orientation, 1 ); // param - orientation
-	Read( &unused_uc, 1 ); // param - epLignesPortee
-    //Read( &header->param.EpLignesPortee, 1 ); // param - epLignesPortee
-	Read( &unused_uc, 1 ); // param - epQueueNotes
-	//Read( &header->param.EpQueueNote, 1 ); // param - epQueueNotes
-	Read( &header->param.EpBarreMesure, 1 ); // param - epBarreMesure
-	Read( &header->param.EpBarreValeur, 1 ); // param - epBarreValeur
-	Read( &header->param.EpBlancBarreValeur, 1 ); // param - epBlancBarreValeur
-	Read( &header->param.beamPenteMax, 1 ); // param - beamPenteMax
-	Read( &header->param.beamPenteMin, 1 ); // param - beamPenteMin
+	wwgData->xpos = wxUINT32_SWAP_ON_BE( uint32 );  // xpso
+	Read( &m_doc->m_parameters.orientation, 1 ); // param - orientation
+    Read( &m_doc->m_parameters.EpLignesPortee, 1 ); // param - epLignesPortee
+	Read( &m_doc->m_parameters.EpQueueNote, 1 ); // param - epQueueNotes
+	Read( &m_doc->m_parameters.EpBarreMesure, 1 ); // param - epBarreMesure
+	Read( &m_doc->m_parameters.EpBarreValeur, 1 ); // param - epBarreValeur
+	Read( &m_doc->m_parameters.EpBlancBarreValeur, 1 ); // param - epBlancBarreValeur
+	Read( &m_doc->m_parameters.beamPenteMax, 1 ); // param - beamPenteMax
+	Read( &m_doc->m_parameters.beamPenteMin, 1 ); // param - beamPenteMin
 	Read( &int32, 4 );
-	header->param.pageFormatHor = wxINT32_SWAP_ON_BE( int32 ); // param - pageFormatHor
+	m_doc->m_parameters.pageFormatHor = wxINT32_SWAP_ON_BE( int32 ); // param - pageFormatHor
 	Read( &int32, 4 );
-	header->param.pageFormatVer = wxINT32_SWAP_ON_BE( int32 ); // param - pageFormatVer
+	m_doc->m_parameters.pageFormatVer = wxINT32_SWAP_ON_BE( int32 ); // param - pageFormatVer
 	Read( &int16, 2 );
-	header->param.MargeSOMMET = wxINT16_SWAP_ON_BE( int16 ); // param - margeSommet
+	m_doc->m_parameters.MargeSOMMET = wxINT16_SWAP_ON_BE( int16 ); // param - margeSommet
 	Read( &int16, 2 );
-	header->param.MargeGAUCHEIMPAIRE = wxINT16_SWAP_ON_BE( int16 ); // param - margeGaucheImpaire
+	m_doc->m_parameters.MargeGAUCHEIMPAIRE = wxINT16_SWAP_ON_BE( int16 ); // param - margeGaucheImpaire
 	Read( &int16, 2 );
-	header->param.MargeGAUCHEPAIRE = wxINT16_SWAP_ON_BE( int16 ); // param - margeGauchePaire
-	Read( &unused_uc, 1 ); // param - epais1
-	Read( &unused_uc, 1 ); // param - epais2
-	Read( &unused_uc, 1 ); // param - epais3
-	Read( &unused_sc, 1 ); // reserve_0
-	Read( &unused_sc, 1 ); // reserve_1
+	m_doc->m_parameters.MargeGAUCHEPAIRE = wxINT16_SWAP_ON_BE( int16 ); // param - margeGauchePaire
+	Read( &wwgData->Epais1, 1 ); // param - epais1
+	Read( &wwgData->Epais2, 1 ); // param - epais2
+	Read( &wwgData->Epais3, 1 ); // param - epais3
+	Read( &wwgData->reserve[0], 1 ); // reserve_0
+	Read( &wwgData->reserve[1], 1 ); // reserve_1
 
 	return true;
 }
 
-bool MusWWGInput::ReadParametersMidi( )
+bool MusWWGInput::ReadParametersMidi( MusWWGData *midi )
 {
     int i;
-    
-    MusParametersMidi midi; 
 
 	Read( &int32, 4 );
-	midi.tempo = wxINT32_SWAP_ON_BE( int32 ); // tempo
-	Read( &midi.minVeloc, 1 ); // minVeloc
-	Read( &midi.maxVeloc, 1 );  // maxVeloc
-	Read( &midi.collerBeamLiai, 1 ); // collerBeamLs
-	Read( &midi.pedale, 1 ); // pedale
-	Read( &midi.xResolution1, 1 ); // xResolution1
-	Read( &midi.xResolution2, 1 ); // xResolution2
-	Read( &midi.appogg, 1 );  // appogg
-	Read( &midi.mes_proportion, 1 ); // mesProportion
+	midi->tempo = wxINT32_SWAP_ON_BE( int32 ); // tempo
+	Read( &midi->minVeloc, 1 ); // minVeloc
+	Read( &midi->maxVeloc, 1 );  // maxVeloc
+	Read( &midi->collerBeamLiai, 1 ); // collerBeamLs
+	Read( &midi->pedale, 1 ); // pedale
+	Read( &midi->xResolution1, 1 ); // xResolution1
+	Read( &midi->xResolution2, 1 ); // xResolution2
+	Read( &midi->appogg, 1 );  // appogg
+	Read( &midi->mes_proportion, 1 ); // mesProportion
 	for (i = 0; i < MAXMIDICANAL; i++) // canal2patch
-		Read( &midi.canal2patch[i], 1 );
+		Read( &midi->canal2patch[i], 1 );
 	for (i = 0; i < MAXMIDICANAL; i++) // volume
-		Read( &midi.volume[i], 1 );
+		Read( &midi->volume[i], 1 );
 	for (i = 0; i < MAXPORTNBRE + 1; i++) // piste2canal
-		Read( &midi.piste2canal[i], 1 ); 
+		Read( &midi->piste2canal[i], 1 ); 
     
 	return true;
 }
 
-bool MusWWGInput::ReadParameters2( MusParameters *param )
+bool MusWWGInput::ReadParameters2( MusWWGData *param )
 {
 	int i;
     
-    char unused_c;
-
-	Read( &unused_c, 1 );// transpSil
-	Read( &param->rapportPorteesNum, 1 ); // rpPorteesNum
-	Read( &param->rapportPorteesDen, 1 ); // rpPorteesDen
-	Read( &param->rapportDiminNum, 1 ); // rpDiminNum
-	Read( &param->rapportDiminDen, 1 ); // rpDiminDen
-	Read( &unused_c, 1 ); // autoValSil
-	Read( &unused_c, 1 ); // nbPagesEnContinu
-	Read( &unused_c, 1 ); // vertCorrEcr
-	Read( &unused_c, 1 ); // vertCorrPrn	
-	Read( &unused_c, 1 ); // hampesCorr	
-    //Read( &param->hampesCorr, 1 ); // hampesCorr	
-	Read( &unused_c, 1 ); // epaisBezier
+	Read( &param->transp_sil, 1 );// transpSil
+	Read( &m_doc->m_parameters.rapportPorteesNum, 1 ); // rpPorteesNum
+	Read( &m_doc->m_parameters.rapportPorteesDen, 1 ); // rpPorteesDen
+	Read( &m_doc->m_parameters.rapportDiminNum, 1 ); // rpDiminNum
+	Read( &m_doc->m_parameters.rapportDiminDen, 1 ); // rpDiminDen
+	Read( &param->autoval_sil, 1 ); // autoValSil
+	Read( &param->nbPagesEncontinu, 1 ); // nbPagesEnContinu
+	Read( &param->vertCorrEcr, 1 ); // vertCorrEcr
+	Read( &param->vertCorrPrn, 1 ); // vertCorrPrn	
+	Read( &m_doc->m_parameters.hampesCorr, 1 ); // hampesCorr	
+	Read( &param->epaisBezier, 1 ); // epaisBezier
 	Read( &uint32, 4 );
-	param->entetePied = wxUINT32_SWAP_ON_BE( uint32 ); // entetePied
-	param->entetePied &= (~FILEINFO); // ignore FILEINFO  
+	m_doc->m_parameters.entetePied = wxUINT32_SWAP_ON_BE( uint32 ); // entetePied
+	m_doc->m_parameters.entetePied &= (~FILEINFO); // ignore FILEINFO  
 	for (i = 0; i < MAXPORTNBRE+1; i++) // transposition
-		Read( &unused_c, 1 );
+		Read( &param->transposition[i], 1 );
 
 	return true;
 }
 
-bool MusWWGInput::ReadFonts( )
+bool MusWWGInput::ReadFonts( MusWWGData *fonts )
 {
 	int i;
-	char buffer[MAXPOLICENAME + 1];
 
-	MusFont font;
     for (i = 0; i < MAXPOLICES; i++) // lecture des polices
 	{
-		Read( &font.fonteJeu, 1 );
-		Read( buffer, MAXPOLICENAME );
+		Read( &fonts->fonts[i].fonteJeu, 1 );
+		Read( &fonts->fonts[i], MAXPOLICENAME );
 	}
 
 	return true;
@@ -703,16 +829,22 @@ bool MusWWGInput::ReadSeparator( )
 
 	Read( buffer, 7 );
 	wxString str1( buffer, 0, 6 );
-	wxString str2( MusFile::sep );
-	if ( str1 != str2 )
-		return false;
-	else
+	wxString str2( WWG_SEPARATOR );
+	if ( str1 != str2 ) {
+		wxLogDebug("'%s' - '%s' - Error while reading separator", str1.c_str(), str2.c_str() );
+        return false;
+	}
+    else
 		return true;
 }
 
 bool MusWWGInput::ReadPage( MusPage *page )
-{
+{	
 	int j;
+    
+    int indent;
+    int indentDroite;
+    int lrg_lign;   
 
     if ( !ReadSeparator() )
 		return false;
@@ -720,46 +852,71 @@ bool MusWWGInput::ReadPage( MusPage *page )
 	Read( &int32, 4 );
 	page->npage = wxINT32_SWAP_ON_BE( int32 );
 	Read( &int16, 2 );
-	page->nbrePortees = wxINT16_SWAP_ON_BE( int16 );
+	short nbrePortees = wxINT16_SWAP_ON_BE( int16 );
     Read( &page->noMasqueFixe, 1 );	
 	Read( &page->noMasqueVar, 1 );
 	Read( &page->reserve, 1 );
 	Read( &page->defin, 1 );
     page->defin = 16;
 	Read( &int32, 4 );
-	page->indent = wxINT32_SWAP_ON_BE( int32 );	
+	indent = wxINT32_SWAP_ON_BE( int32 );	// page value in wwg
 	Read( &int32, 4 );
-	page->indentDroite = wxINT32_SWAP_ON_BE( int32 ); 
+	indentDroite = wxINT32_SWAP_ON_BE( int32 ); // page value in wwg
 	Read( &int32, 4 );
-	page->lrg_lign = wxINT32_SWAP_ON_BE( int32 );
-    for (j = 0; j < page->nbrePortees; j++) 
+	lrg_lign = wxINT32_SWAP_ON_BE( int32 ); // page value in wwg
+
+    MusSystem *system = new MusSystem(); // first system of the page 
+    system->indent = indent;
+    system->indentDroite = indentDroite;
+    system->lrg_lign = lrg_lign;  
+    int system_no = 0; // we don't have no members in system anymore 
+    
+    for (j = 0; j < nbrePortees; j++) 
 	{
-		MusStaff *staff = new MusStaff();
-		ReadStaff( staff );
-		if ( staff->indent )
-			staff->indent = page->indent;
-		page->m_staves.Add( staff );
+		MusLaidOutStaff *staff = new MusLaidOutStaff();
+        MusLaidOutLayer *layer = new MusLaidOutLayer();
+		ReadStaff( staff, layer );
+        if ( m_noLigne > system_no + 1 ) { // we have a new system
+            page->AddSystem( system ); // add the current one
+            system = new MusSystem(); // create the next one
+            system_no = m_noLigne - 1; 
+            system->indentDroite = indentDroite;
+            system->lrg_lign = lrg_lign;
+        }
+        if ( m_indent ) {
+			system->indent = indent;
+        }
+        if ( m_indentDroite ) {      
+            system->indentDroite = m_indentDroite;
+        }
+        staff->AddLayer( layer );
+        system->AddStaff( staff );
 	}
+    // add the last system
+    page->AddSystem( system );
 
 	return true;
 
 }
-bool MusWWGInput::ReadStaff( MusStaff *staff )
+bool MusWWGInput::ReadStaff( MusLaidOutStaff *staff, MusLaidOutLayer *layer )
 {
+	wxASSERT_MSG( m_section, "MusSection cannot be NULL");
+	
 	unsigned int k;
 
 	Read( &uint32, 4 );
-	staff->nblement = wxUINT32_SWAP_ON_BE( uint32 );
+	unsigned int nblement = wxUINT32_SWAP_ON_BE( uint32 );
 	Read( &uint16, 2 );
-	staff->voix = wxUINT16_SWAP_ON_BE( uint16 );
+	layer->voix = wxUINT16_SWAP_ON_BE( uint16 );
+	wxLogDebug("voix: %d", layer->voix);
 	Read( &uint16, 2 );
 	staff->noGrp = wxUINT16_SWAP_ON_BE( uint16 );
 	Read( &uint16, 2 );
 	staff->totGrp = wxUINT16_SWAP_ON_BE( uint16 );
 	Read( &uint16, 2 );
-	staff->noLigne = wxUINT16_SWAP_ON_BE( uint16 );
+	m_noLigne = wxUINT16_SWAP_ON_BE( uint16 );
 	Read( &uint16, 2 );
-	staff->no = wxUINT16_SWAP_ON_BE( uint16 );
+	//staff->no = wxUINT16_SWAP_ON_BE( uint16 );
 	Read( &staff->armTyp, 1 );
 	Read( &staff->armNbr, 1 );
 	Read( &staff->notAnc, 1 );
@@ -770,195 +927,283 @@ bool MusWWGInput::ReadStaff( MusStaff *staff )
 	staff->ecart = wxUINT16_SWAP_ON_BE( uint16 );
 	Read( &staff->vertBarre, 1 );
 	Read( &staff->brace, 1 );
-	Read( &staff->pTaille, 1 );
-    char indent;
-    Read( &indent, 1 );
-    if ( indent )
-        staff->indent = 1;
-	Read( &staff->indentDroite, 1 );
+	Read( &staff->staffSize, 1 );
+    Read( &m_indent, 1 );
+	Read( &m_indentDroite, 1 );
 	Read( &staff->portNbLine, 1 );
 	Read( &staff->accol, 1 );
 	Read( &staff->accessoire, 1 );
 	Read( &uint16, 2 );
 	staff->reserve = wxUINT16_SWAP_ON_BE( uint16 );
+	
+	// create or get the current MusStaff in the logical tree;
+	if (layer->voix - 1 >= (int)m_section->m_sectionElements.GetCount()) {
+		// Carefull: this is not safe - we assume that voice number are continous
+		MusStaff *staff = new MusStaff();
+		MusLayer *layer = new MusLayer();
+		staff->AddStaffElement( layer );
+		m_section->AddSectionElement( staff );
+	}
+	m_staff = dynamic_cast<MusStaff*> (&m_section->m_sectionElements[layer->voix - 1]);
+	wxASSERT_MSG( m_staff, "MusStaff cannot be NULL" );
+	m_layer = dynamic_cast<MusLayer*> (&m_staff->m_staffElements[0]);
+	wxASSERT_MSG( m_layer, "MusLayer cannot be NULL" );
+	
 	unsigned char c;
-	for ( k = 0; k < staff->nblement; k++ )
+	for ( k = 0; k < nblement; k++ )
 	{
 		Read( &c, 1 );
 		if ( c == NOTE )
 		{
-			MusNote *note = new MusNote();
-			note->no = k;
-			ReadNote( note );
-			staff->m_elements.Add( note );
+			ReadNote( layer );
 		}
 		else if ( c == SYMB )
 		{
-			MusSymbol *symbol = new MusSymbol();
-			symbol->no = k;
-			ReadSymbol( symbol );
+			ReadSymbol( layer );
             // For the lyrics, we must attach them to the notes
             // We keep it and
-            if ( (symbol->flag == CHAINE) && (symbol->fonte == LYRIC) ) {
-                symbol->m_debord_str = wxString( (char*)symbol->pdebord,
-                    (int)symbol->debordSize - 4);  // - sizeof( element->debordSize ) - sizeof( element->debordCode );
-                //staff->nblement--; 
+            /*
+            if ( (flag == CHAINE) && (fonte == LYRIC) ) {
+                m_debord_str = wxString( (char*)pdebord,
+                    (int)debordSize - 4);  // - sizeof( debordSize ) - sizeof( debordCode );
                 m_lyrics.Add( symbol );
-            } else {
-                staff->m_elements.Add( symbol );
             }
+            */ // ax2
 		}
 	}
-    staff->CheckIntegrity();
 			
 	return true;
 }
 
-bool MusWWGInput::ReadNote( MusNote *note )
+bool MusWWGInput::ReadNote( MusLaidOutLayer *layer )
 {
-	ReadElementAttr( note );
-	Read( &note->sil, 1 );
-	Read( &note->val, 1 );
-	if ( ( note->sil == _SIL ) && ( note->val == Q6C ) )
-		note->val = CUSTOS;
-	Read( &note->inv_val, 1 );
-	Read( &note->point, 1 );
-	Read( &note->stop_rel, 1 );
-	Read( &note->acc, 1 );
-	Read( &note->accInvis, 1 );
-	Read( &note->q_auto, 1 );
-	Read( &note->queue, 1 );
-	Read( &note->stacc, 1 );
-	Read( &note->oblique, 1 );
-	Read( &note->queue_lig, 1 );
-	Read( &note->chord, 1 );
-	Read( &note->fchord, 1 );
-	Read( &note->lat, 1 );
-	Read( &note->haste, 1 );
+	
+	ReadElementAttr( );
+	Read( &sil, 1 );
+	Read( &val, 1 );
+	if ( ( sil == _SIL ) && ( val == DUR_256 ) ) // do we still want this? Should be an option somewhere
+		val = CUSTOS;
+	Read( &inv_val, 1 );
+	Read( &note_point, 1 );
+	Read( &stop_rel, 1 );
+	Read( &acc, 1 );
+	Read( &accInvis, 1 );
+	Read( &q_auto, 1 );
+	Read( &queue, 1 );
+	Read( &stacc, 1 );
+	Read( &oblique, 1 );
+	Read( &queue_lig, 1 );
+	Read( &chord, 1 );
+	Read( &fchord, 1 );
+	Read( &lat, 1 );
+	Read( &haste, 1 );
 	unsigned char c;
 	Read( &c, 1 );
-	note->code = (unsigned short)c; // code deplace dans element, unsigned SHORT !!
-	Read( &note->tetenot, 1 );
-	Read( &note->typStac, 1 );
-	if ( note->existDebord ) 
-		ReadDebord( note );
-        
+	code = (unsigned short)c; // code deplace dans element, unsigned SHORT !!
+	Read( &tetenot, 1 );
+	Read( &typStac, 1 );
+	if ( existDebord ) 
+		ReadDebord( );
+
+    MusLayerElement *layer_element = NULL;
+    if ( !sil ) { // note
+        MusNote *note = new MusNote( );
+        note->m_dur = val;
+        note->m_oct = oct;
+        note->m_pname = code;
+        if ( drel ) {
+            note->m_beam[0] |= BEAM_INITIAL;
+        }
+        if ( rel ) {
+            note->m_beam[0] |= BEAM_MEDIAL;
+        }
+        if ( frel ) {
+            note->m_beam[0] |= BEAM_TERMINAL;
+        }
+        layer_element = note;
+    }
+    else if (val == CUSTOS) {
+        MusSymbol *custos = new MusSymbol( SYMBOL_CUSTOS );
+        custos->m_oct = oct;
+        custos->m_pname = code;
+        layer_element = custos;
+    }
+    else { // rest
+        MusRest *rest = new MusRest();
+        rest->m_dur = val;
+        rest->m_oct = oct;
+        rest->m_pname = code;
+        layer_element = rest;
+    }
+    
+    // if we got something, add it to the LaidOutLayer
+    if ( layer_element ) {
+		m_layer->AddLayerElement( layer_element );
+        MusLaidOutLayerElement *element = new MusLaidOutLayerElement( layer_element ); // memory leak! - layer_element will not be deleted
+        element->m_xrel = xrel;
+        layer->AddElement( element );
+    }
+       
+    /*
     if ( !m_lyrics.IsEmpty() ) {
         int i = 0;
         int nb_lyrics = (int)m_lyrics.GetCount();
         for (i = 0; i < nb_lyrics; i++) {
             // default values
-            MusSymbol *lyric = m_lyrics.Detach(0);
+            MusSymbol1 *lyric = m_lyrics.Detach(0);
             lyric->dec_y = - STAFF_OFFSET;
-            lyric->xrel = note->xrel - 20;
+            lyric->xrel = xrel - 20;
             lyric->m_note_ptr = note;	
-            note->m_lyrics.Add( lyric );
+            m_lyrics.Add( lyric );
         }
 	}
+    */ // ax2
         
     return true;
 }
 
-bool MusWWGInput::ReadSymbol( MusSymbol *symbol )
+bool MusWWGInput::ReadSymbol( MusLaidOutLayer *layer )
 {
-	ReadElementAttr( symbol );
-	Read( &symbol->flag , 1 );
-	Read( &symbol->calte , 1 );
-	Read( &symbol->carStyle , 1 );
-	Read( &symbol->carOrient , 1 );
-	Read( &symbol->fonte , 1 );
-	Read( &symbol->s_lie_l , 1 );
-	Read( &symbol->point , 1 );
+	wxASSERT_MSG( m_staff, "MusStaff cannot be NULL" );	
+	
+	ReadElementAttr( );
+	Read( &flag , 1 );
+	Read( &calte , 1 );
+	Read( &carStyle , 1 );
+	Read( &carOrient , 1 );
+	Read( &fonte , 1 );
+	Read( &s_lie_l , 1 );
+	Read( &symbol_point , 1 );
 	Read( &uint16, 2 );
-	symbol->code = wxUINT16_SWAP_ON_BE( uint16 );
+	code = wxUINT16_SWAP_ON_BE( uint16 );
 	Read( &uint16, 2 );
-	symbol->l_ptch = wxUINT16_SWAP_ON_BE( uint16 );
+	l_ptch = wxUINT16_SWAP_ON_BE( uint16 );
 	Read( &int32, 4 );
-	symbol->dec_y = wxINT32_SWAP_ON_BE( int32 );
-	if ( symbol->existDebord ) 
-		ReadDebord( symbol );
-     
+	dec_y = wxINT32_SWAP_ON_BE( int32 );
+	if ( existDebord ) 
+		ReadDebord( );
+    
+    MusLayerElement *layer_element = NULL;        
+    if ( flag == CLE ) {
+        MusClef *clef = new MusClef();
+        clef->m_clefId = (ClefId)code;
+        layer_element = clef;
+
+    } 
+    else if ( flag == ALTER ) {
+        MusSymbol *alter = new MusSymbol( SYMBOL_ACCID );
+        alter->m_oct = oct;
+        alter->m_pname = code;
+        alter->m_accid = calte;
+        layer_element = alter;
+    }
+    else if ( flag == IND_MES ) {
+        MusMensur *mensur = new MusMensur( );
+        mensur->m_meterSymb = METER_SYMB_CUT; // just for testing, we need to load the actual indication
+		// we also need to convert LEIPZIG_METER_SYMB_CUT into METER_SYMB_CUT ?
+        layer_element = mensur;
+    }
+    
+    if ( layer_element ) {
+        MusLaidOutLayerElement *element = new MusLaidOutLayerElement( layer_element ); // memory leak! - layer_element will not be deleted
+        element->m_xrel = xrel;
+        layer->AddElement( element );
+    }
+
 	return true;
 }
 
-bool MusWWGInput::ReadElementAttr( MusElement *element )
+bool MusWWGInput::ReadElementAttr( )
 {
-	Read( &element->liaison , 1 );
-	Read( &element->dliai , 1 );
-	Read( &element->fliai , 1 );
-	Read( &element->lie_up , 1 );
-	Read( &element->rel , 1 );
-	Read( &element->drel , 1 );
-	Read( &element->frel , 1 );
-	Read( &element->oct , 1 );
-	Read( &element->dimin , 1 );
-	Read( &element->grp , 1 );
-	Read( &element->_shport , 1 );
-	Read( &element->ligat , 1 );
-	Read( &element->ElemInvisible , 1 );
-	Read( &element->pointInvisible , 1 );
-	Read( &element->existDebord , 1 );
-	Read( &element->fligat , 1 );
-	Read( &element->notschowgrp , 1 );
-	Read( &element->cone , 1 );
-	Read( &element->liaisonPointil , 1 );
-	Read( &element->reserve1 , 1 );
-	Read( &element->reserve2 , 1 );
-	Read( &element->ottava , 1 );
+	Read( &liaison , 1 );
+	Read( &dliai , 1 );
+	Read( &fliai , 1 );
+	Read( &lie_up , 1 );
+	Read( &rel , 1 );
+	Read( &drel , 1 );
+	Read( &frel , 1 );
+	Read( &oct , 1 );
+	Read( &dimin , 1 );
+	Read( &grp , 1 );
+	Read( &_shport , 1 );
+	Read( &ligat , 1 );
+	Read( &ElemInvisible , 1 );
+	Read( &pointInvisible , 1 );
+	Read( &existDebord , 1 );
+	Read( &fligat , 1 );
+	Read( &notschowgrp , 1 );
+	Read( &cone , 1 );
+	Read( &liaisonPointil , 1 );
+	Read( &reserve1 , 1 );
+	Read( &reserve2 , 1 );
+	Read( &ottava , 1 );
 	Read( &uint16, 2 );
-	element->durNum = wxUINT16_SWAP_ON_BE( uint16 );
+	durNum = wxUINT16_SWAP_ON_BE( uint16 );
 	Read( &uint16, 2 );
-	element->durDen = wxUINT16_SWAP_ON_BE( uint16 );
+	durDen = wxUINT16_SWAP_ON_BE( uint16 );
 	Read( &uint16, 2 );
-	element->offset = wxUINT16_SWAP_ON_BE( uint16 );
+	offset = wxUINT16_SWAP_ON_BE( uint16 );
 	Read( &int32, 4 );
-	element->xrel = wxINT32_SWAP_ON_BE( int32 );
+	xrel = wxINT32_SWAP_ON_BE( int32 );
 	
 	return true;
 }
 
-bool MusWWGInput::ReadDebord( MusElement *element )
+bool MusWWGInput::ReadDebord( )
 {
 	Read( &uint16, 2 );
-	element->debordSize = wxUINT16_SWAP_ON_BE( uint16 );
+	debordSize = wxUINT16_SWAP_ON_BE( uint16 );
 	Read( &uint16, 2 );
-	element->debordCode = wxUINT16_SWAP_ON_BE( uint16 );
+	debordCode = wxUINT16_SWAP_ON_BE( uint16 );
 
-	int size = element->debordSize - 4; // - sizeof( element->debordSize ) - sizeof( element->debordCode );
-	element->pdebord = malloc( size );
-	Read( element->pdebord, size );
-    wxLogDebug("read debord %d, %s", size, (char*)element->pdebord );
+	int size = debordSize - 4; // - sizeof( debordSize ) - sizeof( debordCode );
+	pdebord = malloc( size );
+	Read( pdebord, size );
+    wxLogDebug("read debord %d, %s", size, (char*)pdebord );
 	return true;
 }
 
 
-bool MusWWGInput::ReadPagination( MusPagination *pagination )
+bool MusWWGInput::ReadPagination( MusWWGData *pagination )
 {
 	Read( &int16, 2 );
-	pagination->numeroInitial = wxINT16_SWAP_ON_BE( int16 );
-	Read( &pagination->aussiPremierPage, 1 );
-	Read( &pagination->position, 1 );
-	Read( &pagination->numeroFonte, 1 );
-	Read( &pagination->carStyle, 1 );
-	Read( &pagination->taille, 1 );
-	Read( &pagination->offsetDuBord, 1 );
+	pagination->p_numeroInitial = wxINT16_SWAP_ON_BE( int16 );
+	Read( &pagination->p_aussiPremierPage, 1 );
+	Read( &pagination->p_position, 1 );
+	Read( &pagination->p_numeroFonte, 1 );
+	Read( &pagination->p_carStyle, 1 );
+	Read( &pagination->p_taille, 1 );
+	Read( &pagination->p_offsetDuBord, 1 );
 	return true;
 }
 
-bool MusWWGInput::ReadHeaderFooter( MusHeaderFooter *headerfooter)
+bool MusWWGInput::ReadHeader( MusWWGData *header )
 {
 	char buffer[HEADER_FOOTER_TEXT + 1];
 	Read( buffer, HEADER_FOOTER_TEXT );
-	headerfooter->texte = buffer;
-	Read( &headerfooter->aussiPremierPage, 1 );
-	Read( &headerfooter->position, 1 );
-	Read( &headerfooter->numeroFonte, 1 );
-	Read( &headerfooter->carStyle, 1 );
-	Read( &headerfooter->taille, 1 );
-	Read(&headerfooter->offsetDuBord, 1 );
+	header->h_texte = buffer;
+	Read( &header->h_aussiPremierPage, 1 );
+	Read( &header->h_position, 1 );
+	Read( &header->h_numeroFonte, 1 );
+	Read( &header->h_carStyle, 1 );
+	Read( &header->h_taille, 1 );
+	Read(&header->h_offsetDuBord, 1 );
 	return true;
 }
 
+bool MusWWGInput::ReadFooter( MusWWGData *footer )
+{
+	char buffer[HEADER_FOOTER_TEXT + 1];
+	Read( buffer, HEADER_FOOTER_TEXT );
+	footer->f_texte = buffer;
+	Read( &footer->f_aussiPremierPage, 1 );
+	Read( &footer->f_position, 1 );
+	Read( &footer->f_numeroFonte, 1 );
+	Read( &footer->f_carStyle, 1 );
+	Read( &footer->f_taille, 1 );
+	Read(&footer->f_offsetDuBord, 1 );
+	return true;
+}
 
 
 

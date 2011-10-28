@@ -2,7 +2,7 @@
 // Name:        edtfile.h
 // Author:      Laurent Pugin
 // Created:     2004
-// Copyright (c) Laurent Pugin. All rights reserved.   
+// Copyright (c) Authors and others. All rights reserved.   
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef __edtfile_H__
@@ -23,7 +23,7 @@
 #include "edt_wdr.h"
 
 class EdtEnv;
-class MusFile;
+class MusDoc;
 
 
 //----------------------------------------------------------------------------
@@ -48,7 +48,7 @@ private:
     
 public:
     EdtEnv *m_envPtr;
-    MusFile *m_musFilePtr;
+    MusDoc *m_musDocPtr;
 
 protected:
        

@@ -2,7 +2,7 @@
 // Name:        cmpmlf.cpp
 // Author:      Laurent Pugin
 // Created:     2005
-// Copyright (c) Laurent Pugin. All rights reserved.   
+// Copyright (c) Authors and others. All rights reserved.   
 /////////////////////////////////////////////////////////////////////////////
 
 #ifdef AX_RECOGNITION
@@ -27,6 +27,10 @@
 
 #include "im/impage.h"
 #include "im/imstaff.h"
+
+#include "musstaff.h"
+//#include "musnote.h"
+//#include "mussymbol.h"
 
 //----------------------------------------------------------------------------
 // CmpMLFSymb
@@ -94,7 +98,7 @@ wxString CmpMLFSymb::GetLabel( )
 // CmpMLFOutput
 //----------------------------------------------------------------------------
 
-CmpMLFOutput::CmpMLFOutput( MusFile *file, wxString filename, wxString model_symbol_name ) :
+CmpMLFOutput::CmpMLFOutput( MusDoc *file, wxString filename, wxString model_symbol_name ) :
     MusMLFOutput(  file, filename, NULL, model_symbol_name  )
 {
 	// temporary, cannot be modified, but should be...
@@ -103,9 +107,9 @@ CmpMLFOutput::CmpMLFOutput( MusFile *file, wxString filename, wxString model_sym
 	m_ignore_keys = true;
 }
 
-//CmpMLFOutput::CmpMLFOutput( MusFile *file, wxFile *wxfile, wxString filename, wxString model_symbol_name ) :
+//CmpMLFOutput::CmpMLFOutput( MusDoc *file, wxFile *wxfile, wxString filename, wxString model_symbol_name ) :
 //    MusFileOutputStream( file, wxfile )
-CmpMLFOutput::CmpMLFOutput( MusFile *file, int fd, wxString filename, wxString model_symbol_name ) :
+CmpMLFOutput::CmpMLFOutput( MusDoc *file, int fd, wxString filename, wxString model_symbol_name ) :
 	MusMLFOutput( file, fd, filename, NULL, model_symbol_name )
 {
 	// idem previous constructor
@@ -142,9 +146,9 @@ void CmpMLFOutput::EndLabel( )
 	//m_symbols.Clear();	
 }
 
-bool CmpMLFOutput::WriteStaff( const MusStaff *staff )
+bool CmpMLFOutput::WriteStaff( const MusLaidOutStaff *staff )
 {
-	if (staff->nblement == 0)
+	if (staff->GetElementCount() == 0)
 		return true;
 
     unsigned int k;
@@ -152,10 +156,10 @@ bool CmpMLFOutput::WriteStaff( const MusStaff *staff )
 
 	StartLabel();
 	
-	MusSymbol *clef = NULL;
+	MusSymbol1 *clef = NULL;
 	bool last_is_clef = false;
 
-    for (k = 0;k < staff->nblement ; k++ )
+    for (k = 0;k < staff->GetElementCount() ; k++ )
     {
 		added = false;
         if ( staff->m_elements[k].IsNote() )
@@ -163,22 +167,24 @@ bool CmpMLFOutput::WriteStaff( const MusStaff *staff )
 			last_is_clef = false;
 
 			bool ignore = false;
-			MusNote *cur = (MusNote*)&staff->m_elements[k];
+			MusNote1 *cur = (MusNote1*)&staff->m_elements[k];
+			/*
 			if (cur->val == CUSTOS)			
 			{
 				if ( m_ignore_custos ) // not safe because will ignore any alteration after a clef, even if not part of a key ...
 					ignore = true;
 			}
+			*/ // ax2
 			
 			if (!ignore)
-				added = WriteNote( (MusNote*)&staff->m_elements[k] );
+				added = WriteNote( (MusNote1*)&staff->m_elements[k] );
 			else
 				cur->m_cmp_flag = CMP_MATCH;
         }
 		else if ( staff->m_elements[k].IsSymbol() )
 		{
 			bool ignore = false;
-			MusSymbol *cur = (MusSymbol*)&staff->m_elements[k];
+			MusSymbol1 *cur = (MusSymbol1*)&staff->m_elements[k];
 			if (cur->flag == CLE)
 			{
 				last_is_clef = true;
@@ -196,7 +202,7 @@ bool CmpMLFOutput::WriteStaff( const MusStaff *staff )
 				last_is_clef = false;
 			
 			if (!ignore)
-				added = WriteSymbol( (MusSymbol*)&staff->m_elements[k] );
+				added = WriteSymbol( (MusSymbol1*)&staff->m_elements[k] );
 			else
 				cur->m_cmp_flag = CMP_MATCH;
 		}
@@ -219,7 +225,7 @@ bool CmpMLFOutput::WriteStaff( const MusStaff *staff )
 // CmpMLFInput
 //----------------------------------------------------------------------------
 
-CmpMLFInput::CmpMLFInput( MusFile *file, wxString filename ) :
+CmpMLFInput::CmpMLFInput( MusDoc *file, wxString filename ) :
     MusMLFInput( file, filename )
 {
 }
@@ -252,7 +258,7 @@ bool CmpMLFInput::ReadLabelStr( wxString label )
 }
 
 
-MusStaff* CmpMLFInput::ImportFileInStaff( )
+MusLaidOutStaff* CmpMLFInput::ImportFileInStaff( )
 {
 	wxString line;
 	if ( !ReadLine( &line )  || (line != "#!MLF!#" ))
@@ -260,12 +266,12 @@ MusStaff* CmpMLFInput::ImportFileInStaff( )
 		
 	m_cmp_pos = 50;
 
-	MusStaff *staff = new MusStaff();
+	MusLaidOutStaff *staff = new MusLaidOutStaff();
 	while ( ReadLine( &line ) && ReadLabelStr( line ) )
 	{
 		ReadLabel( staff );
 	}
-	MusStaff *staff_ut1 = GetNotUt1( staff );
+	MusLaidOutStaff *staff_ut1 = GetNotUt1( staff );
 	delete staff;
 	staff_ut1->CheckIntegrity();
 	return staff_ut1;
@@ -275,7 +281,7 @@ MusStaff* CmpMLFInput::ImportFileInStaff( )
 // offset est la position x relative du label
 // normalement donne par imPage si present
 
-bool CmpMLFInput::ReadLabel( MusStaff *staff )
+bool CmpMLFInput::ReadLabel( MusLaidOutStaff *staff )
 {
 	bool is_note;
 	int pos = 0;
@@ -286,7 +292,7 @@ bool CmpMLFInput::ReadLabel( MusStaff *staff )
 		MusElement *e = NULL;
 		if ( !is_note )
 		{
-			MusSymbol *s = CmpMLFInput::ConvertSymbole( line );
+			MusSymbol1 *s = CmpMLFInput::ConvertSymbole( line );
 			if ( s )
 			{
 				e = s;
@@ -296,7 +302,7 @@ bool CmpMLFInput::ReadLabel( MusStaff *staff )
 		}
 		else
 		{
-			MusNote *n = CmpMLFInput::ConvertNote( line );
+			MusNote1 *n = CmpMLFInput::ConvertNote( line );
 			if ( n )
 			{
 				e = n;

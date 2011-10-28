@@ -2,7 +2,7 @@
 // Name:        cmpfile.cpp
 // Author:      Laurent Pugin
 // Created:     2004
-// Copyright (c) Laurent Pugin. All rights reserved.   
+// Copyright (c) Authors and others. All rights reserved.   
 /////////////////////////////////////////////////////////////////////////////
 
 #ifdef AX_RECOGNITION
@@ -26,6 +26,11 @@
 #include "recognition/recfile.h"
 
 #include "mus/musiobin.h"
+#include "musstaff.h"
+#include "muselement.h"
+//#include "musnote.h"
+//#include "mussymbol.h"
+
 
 #include "wx/arrimpl.cpp"
 WX_DEFINE_OBJARRAY( ArrayOfCmpBookItems );
@@ -86,15 +91,15 @@ CmpCollation::CmpCollation( wxString id, wxString name, wxString basename  )
 	
 	m_insStaff = NULL;
 
-	// new MusFile
-    m_musFilePtr = new MusFile();
-    m_musFilePtr->m_fname = m_basename + m_id + ".wwg";
+	// new MusDoc
+    m_musDocPtr = new MusDoc();
+    m_musDocPtr->m_fname = m_basename + m_id + ".wwg";
 }
 
 CmpCollation::~CmpCollation( )
 {
-	if ( m_musFilePtr )
-		delete m_musFilePtr;
+	if ( m_musDocPtr )
+		delete m_musDocPtr;
 }
 
 bool CmpCollation::IsCollationLoaded( )
@@ -102,11 +107,11 @@ bool CmpCollation::IsCollationLoaded( )
 	if ( m_isColLoaded )
 		return true;
 
-	if ( !wxFileExists( m_musFilePtr->m_fname ) )
+	if ( !wxFileExists( m_musDocPtr->m_fname ) )
 		return false;
 		
 	bool failed = false;
-	MusBinInput *bin_input = new MusBinInput( m_musFilePtr, m_musFilePtr->m_fname, MUS_BIN_ARUSPIX_CMP  );
+	MusBinInput *bin_input = new MusBinInput( m_musDocPtr, m_musDocPtr->m_fname, MUS_BIN_ARUSPIX_CMP  );
 	failed = !bin_input->ImportFile();
 	delete bin_input;
 	if ( failed )
@@ -118,10 +123,11 @@ bool CmpCollation::IsCollationLoaded( )
 
 bool CmpCollation::Realize( )
 {
+    /*
 	int i;
 
-	wxASSERT( m_musFilePtr );
-	m_musFilePtr->m_pages.Clear();
+	wxASSERT( m_musDocPtr );
+	m_musDocPtr->m_pages.Clear();
 	m_isColLoaded = false;
 	int nstaff = (int)m_collationParts.GetCount();
 	 
@@ -141,22 +147,22 @@ bool CmpCollation::Realize( )
 		page->lrg_lign = lrg_lign;
 		for( int j = 0; j < nstaff; j++ )
 		{
-			MusStaff *staff = new MusStaff();
+			MusLaidOutStaff *staff = new MusLaidOutStaff();
 			staff->no = j;
 			if ( j == 0 )
-				staff->vertBarre = DEBUT;
+				staff->vertBarre = START;
 			else if ( j == nstaff - 1 ) 
-				staff->vertBarre = FIN;
-			//staff->vertBarre = DEB_FIN;
+				staff->vertBarre = END;
+			//staff->vertBarre = START_END;
 			page->m_staves.Add( staff );
 		}
-		m_musFilePtr->m_pages.Add( page );
+		m_musDocPtr->m_pages.Add( page );
 	}
 	
 	// fill the pages
 	for( i = 0; i < nstaff; i++ )
 	{
-		MusStaff *full_staff = new MusStaff();
+		MusLaidOutStaff *full_staff = new MusLaidOutStaff();
 		CmpCollationPart *part = &m_collationParts[i];
 		wxString staffname = m_basename + m_id + "." + part->m_bookPart->m_id + ".swwg";
 		if ( part->m_flags & PART_REFERENCE )
@@ -165,14 +171,14 @@ bool CmpCollation::Realize( )
 		}
 		MusBinInput bin_input( NULL, staffname, MUS_BIN_ARUSPIX_CMP );
 		bin_input.ReadStaff( full_staff );
-		MusSymbol *clef = NULL; // we keep last clef for next page
+		MusSymbol1 *clef = NULL; // we keep last clef for next page
 		for( int j = 0; j < npages; j++ )
 		{	
 			int clef_offset = 0;
-			MusStaff *staff = &m_musFilePtr->m_pages[j].m_staves[i];
+			MusLaidOutStaff *staff = &m_musDocPtr->m_pages[j].m_staves[i];
 			if ( clef )
 			{
-				staff->m_elements.Add( new MusSymbol( *clef ) );
+				staff->m_elements.Add( new MusSymbol1( *clef ) );
 				clef_offset += 45;
 			}
 			//FillStaff( staff, full_staff, j, correct_lrg_lign );
@@ -182,18 +188,18 @@ bool CmpCollation::Realize( )
 					break;
 				if ( full_staff->m_elements[0].IsNote() )
 				{
-					MusNote *nnote = (MusNote*)full_staff->m_elements.Detach( 0 );
+					MusNote1 *nnote = (MusNote1*)full_staff->m_elements.Detach( 0 );
 					nnote->xrel -= (j * correct_lrg_lign) - clef_offset;
 					staff->m_elements.Add( nnote );
 				}
 				else if ( full_staff->m_elements[0].IsSymbol() )
 				{
-					MusSymbol *nsymbol = (MusSymbol*)full_staff->m_elements.Detach( 0 );
+					MusSymbol1 *nsymbol = (MusSymbol1*)full_staff->m_elements.Detach( 0 );
 					if ( nsymbol->flag == CLE ) // we keep last clef for next pages
 					{
 						if ( clef )
 							delete clef;
-						clef = new MusSymbol( *nsymbol );
+						clef = new MusSymbol1( *nsymbol );
 						clef->m_im_filename = "";
 						clef->xrel = 0;
 						clef->m_cmp_flag = 0;
@@ -207,18 +213,22 @@ bool CmpCollation::Realize( )
 			delete clef;
 	}
 
-    m_musFilePtr->CheckIntegrity();
-	MusBinOutput *bin_output = new MusBinOutput( m_musFilePtr, m_musFilePtr->m_fname, MUS_BIN_ARUSPIX_CMP );
+    m_musDocPtr->CheckIntegrity();
+	MusBinOutput *bin_output = new MusBinOutput( m_musDocPtr, m_musDocPtr->m_fname, MUS_BIN_ARUSPIX_CMP );
 	bin_output->ExportFile();
 	delete bin_output;
 	
 	m_isColLoaded = true;
 	
 	return true;
+    */
+    wxLogError( "CmpCollation::Realize method missing in ax2") ;
+    return true;
 }
 
 bool CmpCollation::Collate( )
 {
+    /*
 	int i;
 	// !!! THERE IS NO CHECK THAT THE FILES HAVE BEEN LOADED
 	// IF NOT, THE READING STAFF WILL CRASH...
@@ -228,8 +238,8 @@ bool CmpCollation::Collate( )
 	if ( nstaff == 0 )
 		return false;
 	
-	MusStaff *staves = new MusStaff[ nstaff ];
-	MusStaff *reference = NULL;
+	MusLaidOutStaff *staves = new MusLaidOutStaff[ nstaff ];
+	MusLaidOutStaff *reference = NULL;
 	for( i = 0; i < (int)m_collationParts.GetCount(); i++ )
 	{
 		CmpCollationPart *part = &m_collationParts[i];
@@ -266,6 +276,8 @@ bool CmpCollation::Collate( )
 	
 	delete[] staves;
 	return true;
+    */
+    wxLogError( "CmpCollation::Collate missing in ax2" );
 	
 }
 
@@ -298,8 +310,9 @@ int minimum(int a,int b,int c)
 }
 
 	
-bool CmpCollation::Align( MusStaff *staff_ref, MusStaff *staff_var, CmpCollationPart *part_var )
+bool CmpCollation::Align( MusLaidOutStaff *staff_ref, MusLaidOutStaff *staff_var, CmpCollationPart *part_var )
 {
+    /*
 	CmpMLFOutput m_cmpoutput1( NULL, wxGetApp().m_workingDir + "/cmp_staff1", "CmpMLFSymb"  );
 	m_cmpoutput1.WriteStaff( staff_ref );
 		
@@ -310,7 +323,7 @@ bool CmpCollation::Align( MusStaff *staff_ref, MusStaff *staff_var, CmpCollation
 	ArrayOfMLFSymbols *variant = m_cmpoutput2.GetSymbols();
 	
 	
-	// We may eventually avoid the use of CmpMLFOuputs working directy on MusStaff
+	// We may eventually avoid the use of CmpMLFOuputs working directy on MusLaidOutStaff
 	// A comparison method for MusElement would have to be provided though
 
 	//Step 1
@@ -329,14 +342,12 @@ bool CmpCollation::Align( MusStaff *staff_ref, MusStaff *staff_var, CmpCollation
 	}
 	
 	// print sequences
-	/*		
-	for(k=0;k<n;k++)
-		printf("%s\n", reference->Item(k).GetLabel().c_str() );
-	printf("\n");
-	for(k=0;k<m;k++)
-		printf("%s\n", variant->Item(k).GetLabel().c_str() );
-	printf("\n");
-	*/
+	//for(k=0;k<n;k++)
+	//	printf("%s\n", reference->Item(k).GetLabel().c_str() );
+	//printf("\n");
+	//for(k=0;k<m;k++)
+	//	printf("%s\n", variant->Item(k).GetLabel().c_str() );
+	//printf("\n");
 	
 	d=(int*)malloc((sizeof(int))*(m+1)*(n+1));
 	if (d == NULL)
@@ -380,7 +391,7 @@ bool CmpCollation::Align( MusStaff *staff_ref, MusStaff *staff_var, CmpCollation
 	// AddInsertion add the element to the current insertion staff
 	// if needed, AddInsertion create the insertion staff and add an element into the aligned staff (before position i)
 	// EndInsertion write the current insertion staff if it exists
-	MusStaff aligned = *staff_ref;
+	MusLaidOutStaff aligned = *staff_ref;
 	wxASSERT( !m_insStaff );
 	m_insStaff = NULL;
 	int ii, jj;
@@ -412,9 +423,9 @@ bool CmpCollation::Align( MusStaff *staff_ref, MusStaff *staff_var, CmpCollation
 				ii = ((CmpMLFSymb*)&reference->Item(i))->m_index;
 				jj = ((CmpMLFSymb*)&variant->Item(j))->m_index;
 				if ( staff_var->m_elements[jj].IsNote() )
-					aligned.m_elements.Insert( new MusNote( *(MusNote*)&staff_var->m_elements[jj] ), ii );
+					aligned.m_elements.Insert( new MusNote1( *(MusNote1*)&staff_var->m_elements[jj] ), ii );
 				else if ( staff_var->m_elements[jj].IsSymbol() )
-					aligned.m_elements.Insert( new MusSymbol( *(MusSymbol*)&staff_var->m_elements[jj] ), ii );
+					aligned.m_elements.Insert( new MusSymbol1( *(MusSymbol1*)&staff_var->m_elements[jj] ), ii );
 				aligned.m_elements[ii].xrel = aligned.m_elements[ii+1].xrel;
 				aligned.m_elements.RemoveAt(ii+1);
 				SetCmpValues( &aligned.m_elements[ii], &staff_var->m_elements[jj], CMP_SUBST );
@@ -481,29 +492,29 @@ bool CmpCollation::Align( MusStaff *staff_ref, MusStaff *staff_var, CmpCollation
 	part_var->m_recall = (n - n_delete - n_subst) * 100. / (double)n;
 	part_var->m_precision = (n - n_delete - n_subst) * 100. / (double)(n - n_delete + n_insert);
 	
-	/*
-	printf("Recall %5.2f | Precision %5.2f || N %d | I %d | D %d | S %d\n",
-		(n - n_delete - n_subst) * 100. / (double)n,
-		(n - n_delete - n_subst) * 100. / (double)(n - n_delete + n_insert),
-		n, n_insert, n_delete, n_subst);
-	*/
+	
+	//printf("Recall %5.2f | Precision %5.2f || N %d | I %d | D %d | S %d\n",
+	//	(n - n_delete - n_subst) * 100. / (double)n,
+	//	(n - n_delete - n_subst) * 100. / (double)(n - n_delete + n_insert),
+	//	n, n_insert, n_delete, n_subst);
+	
 	
 	// print matrice
-	/*
-	for(i=0;i<n;i++)
-	{
-		for(j=0;j<m;j++)
-		{
-			printf("%d\t", d[j*n+i] );
-		}
-		printf("\n");
-	}
-	*/
+	//for(i=0;i<n;i++)
+	//{
+	//	for(j=0;j<m;j++)
+	//	{
+	//		printf("%d\t", d[j*n+i] );
+	//	}
+	//	printf("\n");
+	//}
 	
 	distance=d[n*m-1];
 	free(d);
+    */
+    wxLogError( "CmpCollation::Align missing in ax2" );
 	
-	return new MusStaff();
+	return new MusLaidOutStaff();
 }
 
 void  CmpCollation::EndInsertion( CmpCollationPart *part_var  )
@@ -516,12 +527,12 @@ void  CmpCollation::EndInsertion( CmpCollationPart *part_var  )
 	m_insStaff = NULL;
 }
 
-void  CmpCollation::AddInsertion( MusElement *elem, MusStaff *aligned, int i )
+void  CmpCollation::AddInsertion( MusElement *elem, MusLaidOutStaff *aligned, int i )
 {
 	if ( !m_insStaff )
 	{
-		m_insStaff = new MusStaff();
-	    MusSymbol *asterix = new MusSymbol();
+		m_insStaff = new MusLaidOutStaff();
+	    MusSymbol1 *asterix = new MusSymbol1();
 		asterix->flag = AX_VARIANT;
 		//asterix->oct = 5;
 		//SetCmpValues( asterix, NULL, CMP_INS );
@@ -704,7 +715,7 @@ void CmpFile::OpenContent( )
 	if ( wxFileExists( m_basename + "collation.wwg") )
 	{
 		bool failed = false;
-		MusBinInput *bin_input = new MusBinInput( m_musFilePtr, m_musFilePtr->m_fname, MUS_BIN_ARUSPIX_CMP  );
+		MusBinInput *bin_input = new MusBinInput( m_musDocPtr, m_musDocPtr->m_fname, MUS_BIN_ARUSPIX_CMP  );
 		failed = !bin_input->ImportFile();
 		delete bin_input;
 		if ( failed )
@@ -785,7 +796,7 @@ void CmpFile::SaveContent( )
 	else
 	{
 		// save
-		MusBinOutput *bin_output = new MusBinOutput( m_musFilePtr, m_musFilePtr->m_fname, MUS_BIN_ARUSPIX_CMP );
+		MusBinOutput *bin_output = new MusBinOutput( m_musDocPtr, m_musDocPtr->m_fname, MUS_BIN_ARUSPIX_CMP );
 		bin_output->ExportFile();
 		delete bin_output;
 	}*/
@@ -816,15 +827,18 @@ bool CmpFile::LoadBooks( wxArrayPtrVoid params, AxProgressDlg *dlg )
 {
 	wxASSERT_MSG( dlg, "AxProgressDlg cannot be NULL" );
 
+
     wxArrayString paths, filenames;
     int nbooks, nparts, nfiles;
     
 	nbooks = (int)m_bookFiles.GetCount();
     if ( nbooks == 0 )
         return false;  
-    
+  
+      
     bool failed = false;
 
+    /*
     for ( int i = 0; i < nbooks; i++ )
     {
         if ( dlg->GetCanceled() ) // PROBLEM, canceled is true but don't know why ...
@@ -876,9 +890,9 @@ bool CmpFile::LoadBooks( wxArrayPtrVoid params, AxProgressDlg *dlg )
 				if ( !failed && !dlg->GetCanceled() )
 				{
 					if ( part->m_partpages[k].m_staves.IsEmpty() ) // all staves
-						failed = !m_mlf->WritePage( &recFile.m_musFilePtr->m_pages[0], wxFileName( part->m_partpages[k].m_axfile ).GetName(), recFile.m_imPagePtr );
+						failed = !m_mlf->WritePage( &recFile.m_musDocPtr->m_pages[0], wxFileName( part->m_partpages[k].m_axfile ).GetName(), recFile.m_imPagePtr );
 					else
-						failed = !m_mlf->WritePage( &recFile.m_musFilePtr->m_pages[0], wxFileName( part->m_partpages[k].m_axfile ).GetName(), 
+						failed = !m_mlf->WritePage( &recFile.m_musDocPtr->m_pages[0], wxFileName( part->m_partpages[k].m_axfile ).GetName(), 
 							recFile.m_imPagePtr, &part->m_partpages[k].m_staves );
 				
 				}
@@ -890,9 +904,9 @@ bool CmpFile::LoadBooks( wxArrayPtrVoid params, AxProgressDlg *dlg )
             wxLogMessage( _("Convert data ...") );
             //wxLogMessage( _("Convert data ... " + m_basename + part->m_id) );
 			CmpMLFInput *m_cmpinput = new CmpMLFInput( NULL, m_basename + part->m_id + ".mlf"  );
-			MusStaff *musStaff = m_cmpinput->ImportFileInStaff( );
+			MusLaidOutStaff *musStaff = m_cmpinput->ImportFileInStaff( );
 			musStaff->no = 0;
-			musStaff->vertBarre = DEB_FIN;
+			musStaff->vertBarre = START_END;
 			delete m_cmpinput;
 			imCounterInc( dlg->GetCounter() );
 			
@@ -910,8 +924,12 @@ bool CmpFile::LoadBooks( wxArrayPtrVoid params, AxProgressDlg *dlg )
 	
 	if (!failed)	
 		this->Modify();
-	
+	*/
+    
+    wxLogError( "CmpCollation::LoadBooks missing in ax2" );
 	return !failed;
+
+
 }
 
 /*
@@ -1079,7 +1097,7 @@ bool CmpFile::Collate( wxArrayPtrVoid params, AxProgressDlg *dlg )
 			//imCounterTotal( counter, count , operation.c_str() );
 
 			if ( !failed && !dlg->GetCanceled() )
-				failed = !m_mlf->WritePage( &recFile.m_musFilePtr->m_pages[0], wxFileName( filenames[j] ).GetName(), recFile.m_imPagePtr );
+				failed = !m_mlf->WritePage( &recFile.m_musDocPtr->m_pages[0], wxFileName( filenames[j] ).GetName(), recFile.m_imPagePtr );
 			//imCounterInc( dlg->GetCounter() );	
 		}
 		m_mlf->Close();
@@ -1119,11 +1137,11 @@ bool CmpFile::Collate( wxArrayPtrVoid params, AxProgressDlg *dlg )
 		/ *
 		CmpMLFInput *m_cmpinput = new CmpMLFInput( NULL, m_basename + book->m_shortname + ".mlf"  );
 		
-		MusStaff *musStaff = m_cmpinput->ImportFileInStaff( );
+		MusLaidOutStaff *musStaff = m_cmpinput->ImportFileInStaff( );
         musStaff->no = 0;
         //musStaff->indent = imStaff->CalcIndentation( x1 );
         //musStaff->ecart = (m_imPagePtr->ToViewY( imStaff->m_y ) -  previous ) / musPage->defin;
-        musStaff->vertBarre = DEB_FIN;
+        musStaff->vertBarre = START_END;
         //previous += musStaff->ecart * musPage->defin;
         //musPage->m_staves.Add( musStaff );
 
@@ -1136,7 +1154,7 @@ bool CmpFile::Collate( wxArrayPtrVoid params, AxProgressDlg *dlg )
 		* /
 		
 		MusBinInput *bin_input = new MusBinInput( NULL, m_basename + book->m_shortname + ".swwg", MUS_BIN_ARUSPIX_CMP );
-		MusStaff musStaff_loaded;
+		MusLaidOutStaff musStaff_loaded;
 		bin_input->ReadStaff( &musStaff_loaded );
 		delete bin_input;
 		

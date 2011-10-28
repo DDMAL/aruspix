@@ -2,7 +2,7 @@
 // Name:        cmpfile.h
 // Author:      Laurent Pugin
 // Created:     2004
-// Copyright (c) Laurent Pugin. All rights reserved.   
+// Copyright (c) Authors and others. All rights reserved.   
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef __cmpfile_H__
@@ -46,7 +46,7 @@ WX_DECLARE_OBJARRAY( CmpPartPage, ArrayOfCmpPartPages);
 class CmpCollationPart;
 WX_DECLARE_OBJARRAY( CmpCollationPart, ArrayOfCmpCollationParts);
 
-class MusStaff;
+class MusLaidOutStaff;
 
 
 //----------------------------------------------------------------------------
@@ -85,13 +85,13 @@ public:
 	bool Collate( );
 	bool Realize( );
 	bool IsCollationLoaded();
-	MusFile *GetMusFile() { return m_musFilePtr; }
+	MusDoc *GetMusFile() { return m_musDocPtr; }
 	
 	
 protected:
-	bool Align( MusStaff *staff_ref, MusStaff *staff_var, CmpCollationPart *part_var );
+	bool Align( MusLaidOutStaff *staff_ref, MusLaidOutStaff *staff_var, CmpCollationPart *part_var );
 	void EndInsertion( CmpCollationPart *part_var  );
-	void AddInsertion( MusElement *elem, MusStaff *aligned_staff, int i ); // Add elem into an insertion Staff
+	void AddInsertion( MusElement *elem, MusLaidOutStaff *aligned_staff, int i ); // Add elem into an insertion Staff
 			// If this staff has to be created, a symbol is added into the aligned staff before element i 
 	void SetCmpValues( MusElement *dest, MusElement *src, int flag );
 	
@@ -108,10 +108,10 @@ public:
 	
 private:
 	wxString m_basename; // the basename of the CmpFile, used to read/write file from this class
-	MusFile *m_musFilePtr;
+	MusDoc *m_musDocPtr;
 	bool m_isColLoaded;
 	
-	MusStaff *m_insStaff;
+	MusLaidOutStaff *m_insStaff;
 };
 
 //----------------------------------------------------------------------------

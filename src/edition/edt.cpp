@@ -2,7 +2,7 @@
 // Name:        edt.cpp
 // Author:      Laurent Pugin
 // Created:     2004
-// Copyright (c) Laurent Pugin. All rights reserved.
+// Copyright (c) Authors and others. All rights reserved.
 /////////////////////////////////////////////////////////////////////////////
 
 #ifdef AX_EDT
@@ -27,13 +27,14 @@
 #include "app/axapp.h"
 
 #include "mus/muswindow.h"
-#include "mus/musfile.h"
+#include "mus/musdoc.h"
+#include "mus/muspage.h"
 #include "mus/mustoolpanel.h"
 #include "mus/musiowwg.h"
 #include "mus/musiomlf.h"
 
 // experimental
-#include "mus/musiomei2.h"
+#include "mus/musiomei.h"
 #include "mus/mussvgdc.h"
 
 
@@ -179,7 +180,7 @@ bool EdtEnv::ResetFile()
         return false;
 
     m_musViewPtr->Show( false );
-    m_musViewPtr->SetFile( NULL );
+    m_musViewPtr->SetDoc( NULL );
     
     // XXX: What's this doing?
     //((EdtPanel*)m_envWindowPtr)->GetMusToolPanel()->SetMusWindow( NULL );
@@ -214,22 +215,23 @@ void EdtEnv::ParseCmd( wxCmdLineParser *parser )
             wxString outfile = parser->GetParam( 1 );
             wxLogDebug( outfile );
             
-            MusFile *mfile = new MusFile();
-            MusMeiInput meiinput( mfile, file );
+            /*
+            MusDoc *mfile = new MusDoc();
+            //MusMeiInput meiinput( mfile, file );
             if ( !meiinput.ImportFile() )
                 return;
             
             // draw it
+            /*
             MusPage *page = &mfile->m_pages[0];
-            m_musViewPtr->SetFile( mfile );
+            m_musViewPtr->SetDoc( mfile );
             page->Init( m_musViewPtr );
             m_musViewPtr->SetZoom( 50 ); // this should probably be a parameter...
             m_musViewPtr->UpdatePageValues();
-            m_musViewPtr->m_pageMaxX = page->lrg_lign*10; // !fix it!! in the GUI initialized in OnPaint
+            //m_musViewPtr->m_pageMaxX = page->lrg_lign*10; // !fix it!! in the GUI initialized in OnPaint // ax2
             m_musViewPtr->m_currentElement = NULL; // !fix it!! deselect elemnts
 
-            /*
-            //MusSVGFileDC svgDC (outfile, mfile->m_fheader.param.pageFormatHor, mfile->m_fheader.param.pageFormatVer );
+            //MusSVGFileDC svgDC (outfile, mfile->m_parameters.param.pageFormatHor, mfile->m_parameters.param.pageFormatVer );
             MusSVGFileDC svgDC (outfile, m_musViewPtr->ToRendererX( m_musViewPtr->pageFormatHor )  ,
                 m_musViewPtr->ToRendererX( m_musViewPtr->pageFormatVer )) ;
             
@@ -242,7 +244,7 @@ void EdtEnv::ParseCmd( wxCmdLineParser *parser )
 	
             svgDC.SetAxisOrientation( true, false );
             (&mfile->m_pages[0])->DrawPage( &svgDC, false );
-            */
+            */ // ax2
 
         }
     }
@@ -256,24 +258,12 @@ void EdtEnv::UpdateTitle( )
 
 void EdtEnv::UpdateViews( int flags )
 {
-    m_musViewPtr->SetFile( m_edtFilePtr->m_musFilePtr );
+    m_musViewPtr->SetDoc( m_edtFilePtr->m_musDocPtr );
     m_musViewPtr->SetToolPanel( ((EdtPanel*)m_envWindowPtr)->GetMusToolPanel()  );
     m_musViewPtr->Resize( );
     wxYield();
     //m_musViewPtr->Goto( 1 );
     //m_musControlPtr->SyncZoom();  
-    
-    /*
-    if ( m_musViewPtr )
-    {
-        m_musViewPtr->Destroy();
-        m_musViewPtr = NULL;
-    }
-    m_musViewPtr = new MusWindow( m_panelPtr, ID5_MUSWINDOW, wxDefaultPosition, wxDefaultSize, wxHSCROLL|wxVSCROLL|wxSIMPLE_BORDER );
-    m_musViewPtr->SetToolPanel( ((EdtPanel*)m_envWindowPtr)->GetMusToolPanel() );
-    m_musViewPtr->SetFile( m_edtFilePtr );
-    m_musViewPtr->Resize( );
-    */
 }
 
 void EdtEnv::OnUndo( wxCommandEvent &event )
@@ -474,10 +464,10 @@ void EdtEnv::OnOpenMLF( wxCommandEvent &event )
     
     m_edtFilePtr->New();
 	//MusPage *page = new MusPage();
-	//MusStaff *staff = new MusStaff();
+	//MusLaidOutStaff *staff = new MusLaidOutStaff();
 	//page->m_staves.Add( staff );
 	//m_edtFilePtr->m_pages.Add( page );
-    MusMLFInput *mlfinput = new MusMLFInput( m_edtFilePtr->m_musFilePtr, mlf );
+    MusMLFInput *mlfinput = new MusMLFInput( m_edtFilePtr->m_musDocPtr, mlf );
     bool import = mlfinput->ImportFile( 12 );
     delete mlfinput;
 
@@ -511,7 +501,7 @@ void EdtEnv::OnSaveMLF( wxCommandEvent &event )
     bool positions = ( wxMessageBox("Output symbols positions?", wxGetApp().GetAppName() ,
                             wxYES | wxNO | wxICON_QUESTION ) == wxYES );
 
-    MusMLFOutput *mlfoutput = new MusMLFOutput( m_edtFilePtr->m_musFilePtr, filename, NULL, "MusMLFSymbol" );
+    MusMLFOutput *mlfoutput = new MusMLFOutput( m_edtFilePtr->m_musDocPtr, filename, NULL, "MusMLFSymbol" );
 	//mlfoutput->LoadTypes( dic );
 	mlfoutput->m_pagePosition = positions;
     mlfoutput->m_addPageNo = true;
@@ -535,8 +525,8 @@ void EdtEnv::OnSaveSVG( wxCommandEvent &event )
     m_musViewPtr->SetZoom( 100 );
     
     
-    MusSvgDC svgDC (filename, m_musViewPtr->ToRendererX( m_musViewPtr->pageFormatHor + 30 )  ,
-        m_musViewPtr->ToRendererX( m_musViewPtr->pageFormatVer + 10 )) ;
+    MusSvgDC svgDC (filename, m_musViewPtr->ToRendererX( m_musViewPtr->m_doc->pageFormatHor + 30 )  ,
+        m_musViewPtr->ToRendererX( m_musViewPtr->m_doc->pageFormatVer + 10 )) ;
         
     //svgDC.SetUserScale( 1, 1 );
     //svgDC.SetLogicalScale( 1.0, 1.0 );  
@@ -554,7 +544,9 @@ void EdtEnv::OnSaveSVG( wxCommandEvent &event )
 	
     m_musViewPtr->m_currentElement = NULL;
 	//svgDC.SetAxisOrientation( true, false );
-    m_musViewPtr->m_page->DrawPage( &svgDC, false );
+    MusRC rc;
+    rc.SetDoc(m_musViewPtr->m_doc);
+    rc.DrawPage(  &svgDC, m_musViewPtr->m_page, false ); // ax2 - needs testing
     
     // reset the zoom
     m_musViewPtr->SetZoom( zoom );
@@ -582,7 +574,7 @@ void EdtEnv::OnSaveSVG( wxCommandEvent &event )
     memDC.SetLogicalOrigin( m_musViewPtr->mrgG,10 );
     //memDC.SetPen(*wxRED_PEN);
     //memDC.SetBrush(*wxTRANSPARENT_BRUSH);
-    AxWxDC ax_dc( &memDC );
+    MusWxDC ax_dc( &memDC );
     m_musViewPtr->m_page->DrawPage( &ax_dc, false );
     memDC.SelectObject(wxNullBitmap);
     wxImage image = bitmap.ConvertToImage().Scale( bitmap.GetWidth()/10, bitmap.GetHeight()/10, wxIMAGE_QUALITY_HIGH );//.ConvertToMono( 255 ,255 , 255 );
@@ -606,7 +598,7 @@ void EdtEnv::OnOpenWWG( wxCommandEvent &event )
     
     m_edtFilePtr->New();
     
-    MusWWGInput wwginput( m_edtFilePtr->m_musFilePtr, filename );
+    MusWWGInput wwginput( m_edtFilePtr->m_musDocPtr, filename );
 	if ( !wwginput.ImportFile() )
 		return;
 
@@ -620,14 +612,14 @@ void EdtEnv::OnSaveWWG( wxCommandEvent &event )
     };
 
     wxString filename;
-    filename = wxFileSelector( _("Save"), wxGetApp().m_lastDirAX0_out, m_edtFilePtr->m_musFilePtr->m_fheader.name + ".wwg", "wwg", "Wolfgang WWG|*.wwg", wxFD_SAVE);
+    filename = wxFileSelector( _("Save"), wxGetApp().m_lastDirAX0_out, m_edtFilePtr->m_musDocPtr->m_wwgData.name + ".wwg", "wwg", "Wolfgang WWG|*.wwg", wxFD_SAVE);
     if (filename.IsEmpty())
         return;
         
     wxGetApp().m_lastDirAX0_out = wxPathOnly( filename );
     
     // save
-    MusWWGOutput *wwg_output = new MusWWGOutput( m_edtFilePtr->m_musFilePtr, filename );
+    MusWWGOutput *wwg_output = new MusWWGOutput( m_edtFilePtr->m_musDocPtr, filename );
     wwg_output->ExportFile();
     delete wwg_output;
 }
@@ -635,6 +627,7 @@ void EdtEnv::OnSaveWWG( wxCommandEvent &event )
 
 void EdtEnv::OnOpenMEI( wxCommandEvent &event )
 {
+
     wxASSERT_MSG( m_panelPtr, "Panel cannot be NULL ");
 
     if ( !this->ResetFile( ) )
@@ -646,23 +639,30 @@ void EdtEnv::OnOpenMEI( wxCommandEvent &event )
     wxGetApp().m_lastDir = wxPathOnly( filename );
     
     m_edtFilePtr->New();
-    m_edtFilePtr->m_musFilePtr->m_fheader.param.notationMode = MUS_NEUMATIC_MODE; //temporary for liber usualis project
+    m_edtFilePtr->m_musDocPtr->m_parameters.notationMode = MUS_NEUMATIC_MODE; //temporary for liber usualis project
     
-    MusMeiInput meiinput( m_edtFilePtr->m_musFilePtr, filename );
+    MusMeiInput meiinput( m_edtFilePtr->m_musDocPtr, filename );
 	if ( !meiinput.ImportFile() )
 		return;
 	
+	MusLayout *layout = new MusLayout();
+	layout->Realize(m_edtFilePtr->m_musDocPtr->m_divs[0].m_score);
+	m_edtFilePtr->m_musDocPtr->m_layouts.Add(layout);
+	
 	m_musViewPtr->SetEditorMode(MUS_EDITOR_EDIT);
     UpdateViews( 0 );
+
+    //wxLogMessage("Fix me!"); // ax2
 }
 
 void EdtEnv::OnSaveMEI( wxCommandEvent &event )
 {
+/*
 
     if (  !m_panelPtr || !m_edtFilePtr )
         return;
 
-    string docname = m_edtFilePtr->m_musFilePtr->GetMeiDocument()->getDocName();
+    string docname = m_edtFilePtr->m_musDocPtr->GetMeiDocument()->getDocName();
     wxString wxdocname = docname.c_str();
     wxString name, ext;
     wxFileName::SplitPath(wxdocname, NULL, &name, &ext);
@@ -675,16 +675,18 @@ void EdtEnv::OnSaveMEI( wxCommandEvent &event )
         wxString message = _("File aldready exists. Overwrite?");
         wxMessageDialog dialog ( m_musViewPtr, message, _("File exits"), wxYES_NO|wxICON_QUESTION );
         if ( dialog.ShowModal () == wxID_YES ) {
-            MusMeiOutput *mei_output = new MusMeiOutput( m_edtFilePtr->m_musFilePtr, filename );
+            MusMeiOutput *mei_output = new MusMeiOutput( m_edtFilePtr->m_musDocPtr, filename );
             mei_output->ExportFile();
             delete mei_output;
         }
     } else {
-        MusMeiOutput *mei_output = new MusMeiOutput( m_edtFilePtr->m_musFilePtr, filename );
+        MusMeiOutput *mei_output = new MusMeiOutput( m_edtFilePtr->m_musDocPtr, filename );
         mei_output->ExportFile();
         delete mei_output;
 	}
     wxGetApp().m_lastDirAX0_out = wxPathOnly( filename );
+*/
+    wxLogMessage("Fix me!"); // ax2
 }
 
 void EdtEnv::OnSaveModel( wxCommandEvent &event )

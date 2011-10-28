@@ -2,7 +2,7 @@
 // Name:        recmodels.cpp
 // Author:      Laurent Pugin
 // Created:     2004
-// Copyright (c) Laurent Pugin. All rights reserved.   
+// Copyright (c) Authors and others. All rights reserved.   
 /////////////////////////////////////////////////////////////////////////////
 
 #ifdef AX_RECOGNITION
@@ -232,6 +232,7 @@ void RecTypModel::UpdateInputFiles( )
 
 bool RecTypModel::AddFile( wxArrayPtrVoid params, AxProgressDlg *dlg )
 {
+    /*
 	wxASSERT_MSG( dlg, "AxProgressDlg cannot be NULL" );
 	wxASSERT( m_mlf );
 	wxASSERT( m_mlf_hmms );
@@ -275,9 +276,9 @@ bool RecTypModel::AddFile( wxArrayPtrVoid params, AxProgressDlg *dlg )
     int count = names.GetCount() + 2;
     imCounterTotal( counter, count , operation.c_str() );
 	
-	m_mlf->WritePage( &recFile.m_musFilePtr->m_pages[0], shortname, recFile.m_imPagePtr );
+	m_mlf->WritePage( &recFile.m_musDocPtr->m_pages[0], shortname, recFile.m_imPagePtr );
 	imCounterInc( dlg->GetCounter() );
-	m_mlf_hmms->WritePage( &recFile.m_musFilePtr->m_pages[0], shortname, recFile.m_imPagePtr );
+	m_mlf_hmms->WritePage( &recFile.m_musDocPtr->m_pages[0], shortname, recFile.m_imPagePtr );
 	imCounterInc( dlg->GetCounter() );
 	
 	for( int i = 0; i < (int)names.GetCount(); i++ )
@@ -286,7 +287,9 @@ bool RecTypModel::AddFile( wxArrayPtrVoid params, AxProgressDlg *dlg )
 		wxString out = m_basename + shortname + "_" + names[i].AfterLast( '_' );
 		wxCopyFile( names[i], out );
 		imCounterInc( dlg->GetCounter() );
-	}	
+	}
+    */
+    wxLogError( "RecTypeModel::AddFile missing in ax2" );	
 	
 	return true;
 }
@@ -620,6 +623,7 @@ void RecMusModel::SaveModelContent( )
 
 bool RecMusModel::AddFile( wxArrayPtrVoid params, AxProgressDlg *dlg )
 {
+    /*
 	wxASSERT_MSG( dlg, "AxProgressDlg cannot be NULL" );
 	wxASSERT( m_mlf );
 	
@@ -656,11 +660,12 @@ bool RecMusModel::AddFile( wxArrayPtrVoid params, AxProgressDlg *dlg )
 	bool failed = false;
 
 	if ( !failed && !dlg->GetCanceled() )
-		failed = !m_mlf->WritePage( &recFile.m_musFilePtr->m_pages[0], true );
+		failed = !m_mlf->WritePage( &recFile.m_musDocPtr->m_pages[0], true );
 	imCounterInc( dlg->GetCounter() );	
 	
 	m_nbfiles++;
-		
+    */
+    wxLogError( "RecMusModel::AddFile missing in ax2" );
 	return true;
 }
 

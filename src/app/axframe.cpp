@@ -2,7 +2,7 @@
 // Name:        axframe.cpp
 // Author:      Laurent Pugin
 // Created:     2004
-// Copyright (c) Laurent Pugin. All rights reserved.
+// Copyright (c) Authors and others. All rights reserved.
 /////////////////////////////////////////////////////////////////////////////
 
 #if defined(__GNUG__) && ! defined(__APPLE__)
@@ -10,7 +10,8 @@
 #endif
 
 // For compilers that support precompilation, includes "wx/wx.h".
-#include "wx/wxprec.h"
+//#include "wx/wxprec.h"
+#include "wx/wx.h"
 
 #ifdef __BORLANDC__
     #pragma hdrstop

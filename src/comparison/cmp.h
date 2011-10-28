@@ -2,7 +2,7 @@
 // Name:        cmp.h
 // Author:      Laurent Pugin
 // Created:     2004
-// Copyright (c) Laurent Pugin. All rights reserved.
+// Copyright (c) Authors and others. All rights reserved.
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef __CMP_H__
@@ -51,6 +51,10 @@ class CmpCtrlPanel;
 class CmpEnv;
 class CmpCollation;
 
+#define CMP_MATCH 1
+#define CMP_DEL 2
+#define CMP_SUBST 3
+#define CMP_INS 4
 
 //----------------------------------------------------------------------------
 // CmpEnv

@@ -2,7 +2,7 @@
 // Name:        edtfile.cpp
 // Author:      Laurent Pugin
 // Created:     2004
-// Copyright (c) Laurent Pugin. All rights reserved.   
+// Copyright (c) Authors and others. All rights reserved.   
 /////////////////////////////////////////////////////////////////////////////
 
 #ifdef AX_EDT
@@ -27,8 +27,11 @@
 
 #include "app/axapp.h"
 
-#include "mus/musfile.h"
-#include "mus/musiobin.h"
+#include "musdoc.h"
+#include "muspage.h"
+#include "mussystem.h"
+#include "muslaidoutstaff.h"
+#include "musiobin.h"
 
 enum
 {
@@ -60,25 +63,25 @@ EdtFile::EdtFile( wxString name, EdtEnv *env )
 	: AxFile( name, AX_FILE_DEFAULT, AX_FILE_EDITION )
 {
 	m_envPtr = env;
-    m_musFilePtr = NULL;
+    m_musDocPtr = NULL;
 }
 
 
 
 EdtFile::~EdtFile()
 {
-	if ( m_musFilePtr )
-		delete m_musFilePtr;
+	if ( m_musDocPtr )
+		delete m_musDocPtr;
 }
 
 
 void EdtFile::NewContent( )
 {
-	wxASSERT_MSG( !m_musFilePtr, "MusFile should be NULL" );
+	wxASSERT_MSG( !m_musDocPtr, "MusDoc should be NULL" );
 
-	// new MusFile
-    m_musFilePtr = new MusFile();
-    m_musFilePtr->m_fname = m_basename + "page.bin";
+	// new MusDoc
+    m_musDocPtr = new MusDoc();
+    m_musDocPtr->m_fname = m_basename + "page.bin";
 }
 
 
@@ -90,7 +93,7 @@ void EdtFile::OpenContent( )
         return;
     }
     
-    MusBinInput *bin_input = new MusBinInput( m_musFilePtr, m_musFilePtr->m_fname );
+    MusBinInput *bin_input = new MusBinInput( m_musDocPtr, m_musDocPtr->m_fname );
     bin_input->ImportFile();
     delete bin_input;
 	
@@ -100,11 +103,11 @@ void EdtFile::OpenContent( )
 
 void EdtFile::SaveContent( )
 {
-	wxASSERT_MSG( m_musFilePtr, "MusFile should not be NULL" );
+	wxASSERT_MSG( m_musDocPtr, "MusDoc should not be NULL" );
 	wxASSERT( m_xml_root );
 	
     // save
-    MusBinOutput *bin_output = new MusBinOutput( m_musFilePtr, m_musFilePtr->m_fname );
+    MusBinOutput *bin_output = new MusBinOutput( m_musDocPtr, m_musDocPtr->m_fname );
     bin_output->ExportFile();
     delete bin_output;
 
@@ -113,10 +116,10 @@ void EdtFile::SaveContent( )
 void EdtFile::CloseContent( )
 {
 	// nouveau fichier ?
-    if ( m_musFilePtr )
+    if ( m_musDocPtr )
     {
-        delete m_musFilePtr;
-        m_musFilePtr = NULL;
+        delete m_musDocPtr;
+        m_musDocPtr = NULL;
     }
 }
 
@@ -131,7 +134,7 @@ bool EdtFile::Create( )
         wxLogMessage("This is not implemented");
         return false;
     }
-    m_musFilePtr->m_fheader.param.notationMode = EdtNewDlg::s_notationMode;
+    m_musDocPtr->m_parameters.notationMode = EdtNewDlg::s_notationMode;
         
     int height, width;
     switch (EdtNewDlg::s_paperSize) {
@@ -154,32 +157,53 @@ bool EdtFile::Create( )
         width = tmp;
     }
 
-    MusPage *musPage = new MusPage();
-	m_musFilePtr->m_pages.Clear();
-	m_musFilePtr->m_fheader.param.pageFormatHor = width;
-	m_musFilePtr->m_fheader.param.pageFormatVer = height;
+    MusPage *page = new MusPage();
+	//m_musDocPtr->m_pages.Clear(); // ax2
+	m_musDocPtr->m_parameters.pageFormatHor = width;
+	m_musDocPtr->m_parameters.pageFormatVer = height;
     
-    /*
-    int x1 = 5, x2 = 195;
-    m_imPagePtr->CalcLeftRight( &x1, &x2 ); 
-	x1 = 0; // force it, indentation will be calculated staff by staff
-    m_musFilePtr->m_fheader.param.MargeGAUCHEIMPAIRE = x1 / 10;
-    m_musFilePtr->m_fheader.param.MargeGAUCHEPAIRE = x1 / 10;
-    */
-    musPage->lrg_lign = width - 20;
+    // provisory util we change the dialog box
+    int nb_systems;
+    int nb_staves_per_system = 1;
+    if ((EdtNewDlg::s_nbStaves % 4)==0) {
+        nb_staves_per_system = 4;
+    } 
+    else if ((EdtNewDlg::s_nbStaves % 3)==0) {
+        nb_staves_per_system = 3;
+    }
+    else if ((EdtNewDlg::s_nbStaves % 2)==0) {
+        nb_staves_per_system = 2;
+    }
+    nb_systems = EdtNewDlg::s_nbStaves / nb_staves_per_system;
+    
+    int i, j;
   
-    for (int i = 0; i < EdtNewDlg::s_nbStaves; i++)
-    {
-        MusStaff *musStaff = new MusStaff();
-        musStaff->no = i;
-        musStaff->portNbLine = EdtNewDlg::s_staffLines;
-        if (EdtNewDlg::s_notationMode == MUS_MENSURAL_MODE)
-            musStaff->notAnc = true;
-        musStaff->vertBarre = DEB_FIN;
-        musPage->m_staves.Add( musStaff );
-    }   
-    m_musFilePtr->m_pages.Add( musPage );
-    m_musFilePtr->CheckIntegrity();
+    for (i = 0; i < nb_systems; i++) {
+        MusSystem *system = new MusSystem();
+        system->lrg_lign = width - 20;       
+        for (j = 0; j < nb_staves_per_system; j++)
+        {
+            MusLaidOutStaff *staff = new MusLaidOutStaff();
+            staff->portNbLine = EdtNewDlg::s_staffLines;
+            if (EdtNewDlg::s_notationMode == MUS_MENSURAL_MODE)
+                staff->notAnc = true;
+            if (nb_staves_per_system == 1) {
+                staff->vertBarre = START_END;
+            }
+            else if (j == 0) {
+                staff->vertBarre = START;
+                staff->brace = START;
+            }
+            else if (j == nb_staves_per_system - 1) {
+                staff->vertBarre = END;
+                staff->brace = END;
+            }
+            system->m_staves.Add( staff );
+        }
+        page->m_systems.Add( system );
+    }
+    //m_musDocPtr->m_pages.Add( page ); // ax2
+    m_musDocPtr->CheckIntegrity();
 
     return true;
 }

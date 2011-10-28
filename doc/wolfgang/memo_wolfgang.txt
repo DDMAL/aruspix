@@ -1,0 +1,8 @@
+
+2011 - March
+wxg, wxd, wyg, wyd; // removed, used to optimize redrawing
+winwxg, winwyg; // idem
+drawRect; // removed, used to optimize redrawing
+wxmax, wymax; // renamed m_pageMaxX and m_pageMaxY
+
+getOctCl renamed GetClef - now return MusClef

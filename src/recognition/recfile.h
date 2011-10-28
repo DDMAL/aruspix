@@ -2,7 +2,7 @@
 // Name:        recfile.h
 // Author:      Laurent Pugin
 // Created:     2004
-// Copyright (c) Laurent Pugin. All rights reserved.   
+// Copyright (c) Authors and others. All rights reserved.   
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef __recfile_H__
@@ -21,7 +21,7 @@
 #include "app/axfile.h"
 
 class ImPage;
-class MusFile;
+class MusDoc;
 class RecEnv;
 class RecTypModel;
 class RecMusModel;
@@ -51,7 +51,6 @@ public:
 	void GetImage0( AxImage *image );
 	void GetImage1( AxImage *image );
 	bool CancelRecognition( bool ask_user ); // remove all recognition files
-	void WriteNoPitchMLF( ); // write MLF Without Pitch using the current page content
 	// functor
 	bool Preprocess( wxArrayPtrVoid params, AxProgressDlg *dlg );
 	bool Recognize( wxArrayPtrVoid params, AxProgressDlg *dlg );
@@ -60,7 +59,7 @@ public:
 	bool GenerateMFC( wxArrayPtrVoid params, AxProgressDlg *dlg );
     //int DoCorrelation( ImPage *imPage );
 	// getters
-	MusFile *GetMusFile() { return m_musFilePtr; }
+	MusDoc *GetMusFile() { return m_musDocPtr; }
 	ImPage *GetImPage() { return m_imPagePtr; }
 	//RecTypModel *GetTypModel() { return m_typModelPtr; }
 	
@@ -81,7 +80,7 @@ public:
 public:
     RecEnv *m_envPtr;
 	ImPage *m_imPagePtr;
-	MusFile *m_musFilePtr;
+	MusDoc *m_musDocPtr;
 	// filename
 	// models
 	//RecTypModel *m_typModelPtr; // not used yet

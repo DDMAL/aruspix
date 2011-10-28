@@ -2,7 +2,7 @@
 // Name:        mustoolpanel.h
 // Author:      Laurent Pugin
 // Created:     2005
-// Copyright (c) Laurent Pugin. All rights reserved.
+// Copyright (c) Authors and others. All rights reserved.
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef __MUS_TOOLPANEL_H__
@@ -161,6 +161,9 @@ enum {
 // MusToolRow
 //----------------------------------------------------------------------------
 
+/** 
+ * This class is a toolbar for the MusToolPanel.
+ */
 class MusToolRow: public wxAuiToolBar
 {
 public:
@@ -187,6 +190,9 @@ private:
 // MusToolPanel
 //----------------------------------------------------------------------------
 
+/** 
+ * This class contains the MusToolRow objects.
+ */
 class MusToolPanel: public wxPanel
 {
 public:

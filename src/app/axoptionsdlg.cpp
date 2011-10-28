@@ -2,7 +2,7 @@
 // Name:        optionsdlg.cpp
 // Author:      Laurent Pugin
 // Created:     2004
-// Copyright (c) Laurent Pugin. All rights reserved.   
+// Copyright (c) Authors and others. All rights reserved.   
 /////////////////////////////////////////////////////////////////////////////
 
 #if defined(__GNUG__) && ! defined(__APPLE__)
@@ -29,7 +29,7 @@ using std::max;
 #include "axoptionsdlg.h"
 #include "aximage.h"
 #include "axapp.h"
-#include "mus/musfile.h"
+#include "mus/musdoc.h"
 #include "mus/musiowwg.h"
 #include "im/impage.h"
 
@@ -282,9 +282,9 @@ void AxOptionsDlg::UpdateFontCorrections( int eventID )
 
 	wxGetApp().m_fontPosCorrection = GetScMusOffset()->GetValue();
 	wxGetApp().m_fontSizeCorrection = GetScMusSize()->GetValue();
-	m_musWinPtr->UpdatePageValues();
+	m_musWinPtr->m_doc->UpdatePageValues();
 	if ( eventID == ID_SC_MUS_SIZE)
-		m_musWinPtr->UpdatePageFontValues();
+		m_musWinPtr->m_doc->UpdatePageFontValues();
     m_musWinPtr->Resize( );
 }
 
@@ -517,21 +517,22 @@ AxOptMusWindow::AxOptMusWindow( wxWindow *parent, wxWindowID id,
     const wxPoint &position, const wxSize& size, long style, bool center ) :
     MusWindow( parent, id, position, size, style, center )
 {
+    /*
     m_filePtr = NULL;
-    m_filePtr = new MusFile();
-    m_filePtr->m_fheader.param.pageFormatHor = 20;
-    m_filePtr->m_fheader.param.pageFormatVer = 20;
-    m_filePtr->m_fheader.param.MargeGAUCHEIMPAIRE = 0;
-    m_filePtr->m_fheader.param.MargeGAUCHEPAIRE = 0;
+    m_filePtr = new MusDoc();
+    m_filePtr->m_parameters.param.pageFormatHor = 20;
+    m_filePtr->m_parameters.param.pageFormatVer = 20;
+    m_filePtr->m_parameters.param.MargeGAUCHEIMPAIRE = 0;
+    m_filePtr->m_parameters.param.MargeGAUCHEPAIRE = 0;
 
     MusPage *page = new MusPage();
     page->defin = 20;
     page->lrg_lign = 20;
     
-    MusStaff *staff = new MusStaff();
+    MusLaidOutStaff *staff = new MusLaidOutStaff();
     staff->ecart = 4;
     
-    MusSymbol *clef = new MusSymbol();
+    MusSymbol1 *clef = new MusSymbol1();
     clef->flag = CLE;
     clef->code = UT3;
     clef->xrel = 95;
@@ -541,13 +542,15 @@ AxOptMusWindow::AxOptMusWindow( wxWindow *parent, wxWindowID id,
     m_filePtr->m_pages.Add( page );
     m_filePtr->CheckIntegrity();
 
-    /*
-    MusBinOutput *bin_output = new MusBinOutput( m_filePtr, "D:/test.wwg" );
-    bin_output->ExportFile();
-    delete bin_output;*/
+    
+    //MusBinOutput *bin_output = new MusBinOutput( m_filePtr, "D:/test.wwg" );
+    //bin_output->ExportFile();
+    //delete bin_output;
 
-	this->SetFile( m_filePtr );
+	this->SetDoc( m_docPtr );
 	//this->Resize();
+    */
+    wxLogError( "AxOptMusWindow::AxOptMusWindow missing in ax2" );
 }
 
 AxOptMusWindow::AxOptMusWindow()
@@ -556,8 +559,8 @@ AxOptMusWindow::AxOptMusWindow()
 
 AxOptMusWindow::~AxOptMusWindow()
 {
-    if (m_filePtr)
-        delete m_filePtr;
+    if (m_docPtr)
+        delete m_docPtr;
 }
 
 void AxOptMusWindow::OnMouse(wxMouseEvent &event)

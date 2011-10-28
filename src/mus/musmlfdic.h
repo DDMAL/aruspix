@@ -2,7 +2,7 @@
 // Name:        musmlfdic.h
 // Author:      Laurent Pugin
 // Created:     2005
-// Copyright (c) Laurent Pugin. All rights reserved.   
+// Copyright (c) Authors and others. All rights reserved.   
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef __MUS_MLFDIC_H__
@@ -44,6 +44,9 @@ int SortMLFWords( MusMLFWord **first, MusMLFWord **second );
 // MusMLFWord
 //----------------------------------------------------------------------------
 
+/**
+ * This class represent a word in an HTK Master Label File (MLF).
+*/
 class MusMLFWord: public wxObject
 {
 public:
@@ -62,6 +65,9 @@ public:
 // MusMLFDictionary
 //----------------------------------------------------------------------------
 
+/**
+ * This class represent a dictionary for an HTK Master Label File (MLF).
+*/
 class MusMLFDictionary: public wxObject
 {
 public:

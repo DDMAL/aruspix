@@ -13,10 +13,17 @@
 
 #include "wx/wx.h"
 
-#include "muselement.h"
+#include "muslayer.h"
+#include "muspositioninterface.h"
 
+#include <string>
+using std::string;
 
-#include <mei/mei.h>
+#include <mei/meielement.h>
+#include <mei/exceptions.h>
+
+using mei::MeiElement;
+using mei::MeiAttribute;
 
 enum MusNeumeSymbolType {
     NEUME_SYMB_COMMA,
@@ -30,7 +37,15 @@ enum MusNeumeSymbolType {
     NEUME_SYMB_DIVISION_SMALL
 };
 
-class MusNeumeSymbol : public MusElement {
+
+//----------------------------------------------------------------------------
+// MusNeumeSymbol
+//----------------------------------------------------------------------------
+
+/** 
+ * This class models the MEI <?> element. 
+ */
+class MusNeumeSymbol : public MusLayerElement, public MusPositionInterface {
 public:
 	MusNeumeSymbol();
 	MusNeumeSymbol(MeiElement &meielement);
@@ -39,7 +54,7 @@ public:
 	
 	void calcoffs (int *offst, int value);
     MusNeumeSymbolType GetSymbolType();
-	void SetValue(int value, MusStaff *staff, int flag);
+	void SetValue(int value, MusLaidOutStaff *staff, int flag);
 	int getValue();
 	void SetPitch(int pitch, int oct);
 	
@@ -47,18 +62,13 @@ public:
 	void ResetToClef();
 	MusNeumeSymbolType getType();
 	
-	//drawing code
-	virtual void Draw(AxDC *dc, MusStaff *staff);
-	void DrawClef(AxDC *dc, int i, MusStaff *staff);
-	void DrawComma(AxDC *dc, MusStaff *staff);
-	void DrawFlat(AxDC *dc, MusStaff *staff);
-	void DrawNatural(AxDC *dc, MusStaff *staff);
-	void DrawDivFinal(AxDC *dc, MusStaff *staff);
-	void DrawDivMajor(AxDC *dc, MusStaff *staff);
-	void DrawDivMinor(AxDC *dc, MusStaff *staff);
-	void DrawDivSmall(AxDC *dc, MusStaff *staff);
     MeiElement *getMeiRef();
 	void deleteMeiRef();
+    
+    // ax2 - member previously in MusElement (duplicated in MusNeume
+    std::string PitchToStr(int pitch);
+    int StrToPitch(std::string pitch);
+
 
 private:
     MusNeumeSymbolType symbolType;

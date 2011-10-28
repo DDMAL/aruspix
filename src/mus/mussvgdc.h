@@ -2,7 +2,7 @@
 // Name:        mussvgdc.h 
 // Author:      Laurent Pugin
 // Created:     2011
-// Copyright (c) Laurent Pugin. All rights reserved.   
+// Copyright (c) Authors and others. All rights reserved.   
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef __MUS_SVG_DC_H__
@@ -19,10 +19,18 @@
 #include "wx/wfstream.h"
 #include "wx/mstream.h"
 
+#include "musdc.h"
 
-#include "app/axdc.h"
+//----------------------------------------------------------------------------
+// MusBBoxDC
+//----------------------------------------------------------------------------
 
-class MusSvgDC: public AxDC
+/** 
+ * This class implements a drawing context for generating SVG files.
+ * The Leipzig font is embedded by incorporating ./data/svg/*.xml glyphs within
+ * the SVG file.
+ */
+class MusSvgDC: public MusDC
 {
 public:
 
@@ -39,7 +47,7 @@ public:
     
     virtual void SetPen( int colour, int width = 1, int style = wxSOLID );
     
-    virtual void SetFont( AxFontInfo *font_info );
+    virtual void SetFont( MusFontInfo *font_info );
         
     virtual void SetTextForeground( int colour );
     
@@ -57,7 +65,7 @@ public:
     
     virtual void GetTextExtent( wxString& string, int *w, int *h );
     
-    virtual AxPoint GetLogicalOrigin( );
+    virtual MusPoint GetLogicalOrigin( );
 
     // Drawing methods
     
@@ -69,7 +77,7 @@ public:
     
     virtual void DrawLine(int x1, int y1, int x2, int y2);
     
-    virtual void DrawPolygon(int n, AxPoint points[], int xoffset, int yoffset, int fill_style = wxODDEVEN_RULE);
+    virtual void DrawPolygon(int n, MusPoint points[], int xoffset, int yoffset, int fill_style = wxODDEVEN_RULE);
     
     virtual void DrawRectangle(int x, int y, int width, int height);
     
@@ -81,7 +89,7 @@ public:
     
     virtual void DrawMusicText(const wxString& text, int x, int y);
     
-    virtual void DrawSpline(int n, AxPoint points[]);
+    virtual void DrawSpline(int n, MusPoint points[]);
     
     // 
     virtual void StartGraphic( wxString gClass, wxString gId );
@@ -106,7 +114,7 @@ private:
     int m_width, m_height;
     int m_originX, m_originY;
     double m_userScaleX, m_userScaleY;
-    AxFontInfo m_font;
+    MusFontInfo m_font;
       
     // holds the list of glyphs from the leipzig font used so far
     // they will be added at the end of the file as <defs>

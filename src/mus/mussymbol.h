@@ -1,104 +1,64 @@
 /////////////////////////////////////////////////////////////////////////////
 // Name:        mussymbol.h
 // Author:      Laurent Pugin
-// Created:     2005
-// Copyright (c) Laurent Pugin. All rights reserved.
+// Created:     2011
+// Copyright (c) Authors and others. All rights reserved.
 /////////////////////////////////////////////////////////////////////////////
+
 
 #ifndef __MUS_SYMBOL_H__
 #define __MUS_SYMBOL_H__
-
-#ifdef __GNUG__
-    #pragma interface "mussymbol.cpp"    
-#endif
 
 #ifndef WX_PRECOMP
     #include "wx/wx.h"
 #endif
 
-class AxDC;
+#include "muslayer.h"
+#include "muspositioninterface.h"
 
-class MusStaff;
-class MusNote;
-class MusNeume;
-
-#include "muselement.h"
-
+enum SymbolType {
+    SYMBOL_UNDEFINED = 0, // needed for default constructor
+    SYMBOL_DOT = 1, 
+    SYMBOL_ACCID = 2,
+    SYMBOL_CUSTOS = 3
+};
+    
 
 //----------------------------------------------------------------------------
 // MusSymbol
 //----------------------------------------------------------------------------
 
-class MusSymbol: public MusElement
+/** 
+ * This class models various MEI that do not have their own class yet.
+ * The element name is given by the m_type member.
+ * The DOT type models the MEI <dot> element.
+ * The ACCID type models the MEI <accid> element.
+ */
+class MusSymbol: public MusLayerElement, public MusPositionInterface
 {
 public:
     // constructors and destructors
     MusSymbol();
-	MusSymbol( unsigned char _flag, unsigned char _calte, unsigned short _code );
-	MusSymbol( const MusSymbol& symbol );
+    MusSymbol( SymbolType type );
     virtual ~MusSymbol();
     
-    void Draw( AxDC *dc, MusStaff *staff);
-	void dess_symb( AxDC *dc, int x, int y, int symc, int symf, MusStaff *pportee);
-	/** muscle **/
-	static void calcoffs (int *offst, int clid);
-	void dess_cle ( AxDC *dc, int i, MusStaff *pportee);
-	void afficheMesure ( AxDC *dc, MusStaff *staff);
-	void mesCercle ( AxDC *dc, int x, int yy, MusStaff *staff );
-	void demi_cercle ( AxDC *dc, int x, int yy, MusStaff *staff );
-	void  inv_d_cercle ( AxDC *dc, int x, int yy, MusStaff *staff );
-	void prol ( AxDC *dc, int x, int yy, MusStaff *staff );
-	void stroke ( AxDC *dc, int a, int yy, MusStaff *staff );
-	void chiffres ( AxDC *dc, int x, int y, MusStaff *staff);
-	// changement
-//	virtual void SetPitch( int code, int oct, MusStaff *staff = NULL );
-	virtual void SetPitch( int code, int oct );	
-	virtual void SetValue( int code, MusStaff *staff = NULL, int vflag = 0 );
-	//
-	void ResetToClef( );
-	void ResetToSymbol( );
-	void ResetToProportion( );
-	
-	void InsertCharInLyricAt( int x, char letter );
-	bool DeleteCharInLyricAt( int x );
-	bool IsLastLyricElementInNote( );
-	bool IsLyricEmpty( );
-    bool IsLyric( );
+    void Init();
+    
+private:
     
 public:
-        /** type de symbol
-     @see JwgDef#BARRE JwgDef, valeurs de flag de Symbole pour les differents types */
-    unsigned char flag;
-    /** sous - type de symbol
-     @see JwgDef#SOUSCATEG_1 JwgDef, valeurs de calte
-     @see JwgDef#SILENCESPECIAL JwgDef, valeurs de calte (fonte = JwgDef.MARQUE_REPERE)
-     @see JwgDef#DIESE JwgDef, valeurs de calte (flag = JwgDef.ALTER) */
-    unsigned char calte;
-    /** style de caractere. 0 = droit1 = italique2 = gras */
-    unsigned char carStyle;
-    /** orientation des caracteres. 0 = a gauche1 = a droite2 = haut3 = bas */
-    unsigned char carOrient;
-    /** categorie de texte (DYN, LYRIC, ...)
-     @see JwgDef#DYN JwgDef, valeurs de fonte de Symbole pour les chaines de caracteres */
-    unsigned char fonte;
-    /** symbol de liaison limites. 0 = aucun1 = debut2 = fin */
-    unsigned char s_lie_l;
-    /** type de point. false = simple pointtrue = double point */
-    char point;
-    /** code du symbol
-     @see JwgDef#SOL2 JwgDef, valeurs des codes de clefs */
-    //unsigned short code; // moved in element
-    /** longueur de la chaine de caracteres */
-    unsigned short l_ptch;
-	
-	MusNote *m_note_ptr;
-	MusNeume *m_neume_ptr; //temporary? --chrisniven
+    /** Indicates the type of the symbole */
+    SymbolType m_type;
     
-    static int s_durNum; // used in SetValue and can be change from the MusToolPanel (for example)
-    static int s_durDen;
+    /** For DOT, indicates the number of dots */
+    unsigned char m_dot;
+    
+    /** For ACCID, indicates the accidental */
+    unsigned char m_accid;
 
 private:
-    };
+    
+};
 
 
 #endif

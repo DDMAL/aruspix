@@ -2,7 +2,7 @@
 // Name:        musiobin.h
 // Author:      Laurent Pugin
 // Created:     2005
-// Copyright (c) Laurent Pugin. All rights reserved.
+// Copyright (c) Authors and others. All rights reserved.
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef __MUS_IOBIN_H__
@@ -17,7 +17,7 @@
 #endif
 #include "wx/wfstream.h"
 
-#include "musfile.h"
+#include "musdoc.h"
 
 
 enum
@@ -31,25 +31,31 @@ enum
 // MusBinOutput
 //----------------------------------------------------------------------------
 
+/**
+ * This class is a file output stream for binary object serialization.
+ * Broken in Aruspix 2.0 (musiobin.cpp has been removed from the xcode project).
+*/
 class MusBinOutput: public MusFileOutputStream
 {
 public:
     // constructors and destructors
-    MusBinOutput( MusFile *file, wxString filename, int flag = MUS_BIN_ARUSPIX );
-    virtual ~MusBinOutput();
+    MusBinOutput( MusDoc *file, wxString filename, int flag = MUS_BIN_ARUSPIX ) {};
+    virtual ~MusBinOutput() {};
     
-    virtual bool ExportFile( );
-	virtual bool WriteFileHeader( const MusFileHeader *header );
-	virtual bool WriteSeparator( );
-	virtual bool WritePage( const MusPage *page );
-	virtual bool WriteStaff( const MusStaff *staff );
-	virtual bool WriteNote( const MusNote *note );
-	virtual bool WriteSymbol( const MusSymbol *symbol );
-    virtual bool WriteNeume( const MusNeume *neume );
-    virtual bool WriteLyric( const MusElement *element );
-	virtual bool WriteElementAttr( const MusElement *element );
-	virtual bool WritePagination( const MusPagination *pagination );
-	virtual bool WriteHeaderFooter( const MusHeaderFooter *headerfooter);
+    bool ExportFile( ) { return false; };
+    /*
+	bool WriteFileHeader( const MusFileHeader *header ) {};
+	bool WriteSeparator( ) {};
+	bool WritePage( const MusPage *page ) {};
+	bool WriteStaff( const MusLaidOutStaff *staff ) {};
+	bool WriteNote( const MusNote1 *note ) {};
+	bool WriteSymbol( const MusSymbol1 *symbol ) {};
+    bool WriteNeume( const MusNeume *neume ) {};
+    bool WriteLyric( const MusElement *element ) {};
+	bool WriteElementAttr( const MusElement *element ) {};
+	bool WritePagination( const MusPagination *pagination ) {};
+	bool WriteHeaderFooter( const MusWWGData *headerfooter) {};
+    */
     
 private:
     wxUint16 uint16;
@@ -67,25 +73,31 @@ private:
 // MusBinInput
 //----------------------------------------------------------------------------
 
+/**
+ * This class is a file input stream for binary object serialization.
+ * Broken in Aruspix 2.0 (musiobin.cpp has been removed from the xcode project).
+*/
 class MusBinInput: public MusFileInputStream
 {
 public:
     // constructors and destructors
-    MusBinInput( MusFile *file, wxString filename, int flag = MUS_BIN_ARUSPIX );
-    virtual ~MusBinInput();
+    MusBinInput( MusDoc *file, wxString filename, int flag = MUS_BIN_ARUSPIX ) {};
+    virtual ~MusBinInput() {};
     
-    virtual bool ImportFile( );
-	virtual bool ReadFileHeader( MusFileHeader *header );
-	virtual bool ReadSeparator( );
-	virtual bool ReadPage( MusPage *page );
-	virtual bool ReadStaff( MusStaff *staff );
-	virtual bool ReadNote( MusNote *note );
-	virtual bool ReadSymbol( MusSymbol *symbol );
-    virtual bool ReadNeume( MusNeume *neume );
-    virtual bool ReadLyric( MusElement *element );
-	virtual bool ReadElementAttr( MusElement *element );
-	virtual bool ReadPagination( MusPagination *pagination );
-	virtual bool ReadHeaderFooter( MusHeaderFooter *headerfooter);
+    bool ImportFile( ) { return false; };
+    /*
+	bool ReadFileHeader( MusFileHeader *header ) {};
+	bool ReadSeparator( ) {};
+	bool ReadPage( MusPage *page ) {};
+	bool ReadStaff( MusLaidOutStaff *staff ) {};
+	bool ReadNote( MusNote1 *note ) {};
+	bool ReadSymbol( MusSymbol1 *symbol ) {};
+    bool ReadNeume( MusNeume *neume ) {};
+    bool ReadLyric( MusElement *element ) {};
+	bool ReadElementAttr( MusElement *element ) {};
+	bool ReadPagination( MusPagination *pagination ) {};
+	bool ReadHeaderFooter( MusWWGData *headerfooter) {};
+    */
     
 private:
     wxUint16 uint16;

@@ -2,7 +2,7 @@
 // Name:        mussvgdc.cpp
 // Author:      Laurent Pugin
 // Created:     2011
-// Copyright (c) Laurent Pugin. All rights reserved.
+// Copyright (c) Authors and others. All rights reserved.
 /////////////////////////////////////////////////////////////////////////////
 
 #if defined(__GNUG__) && ! defined(__APPLE__)
@@ -25,6 +25,281 @@
 #define space " "
 #define semicolon ";"
 
+#define LEIPZIG_BBOX_ORN_MORDENT 0
+#define LEIPZIG_BBOX_FIGURE_0 1
+#define LEIPZIG_BBOX_FIGURE_1 2
+#define LEIPZIG_BBOX_FIGURE_2 3
+#define LEIPZIG_BBOX_FIGURE_3 4
+#define LEIPZIG_BBOX_FIGURE_4 5
+#define LEIPZIG_BBOX_FIGURE_5 6
+#define LEIPZIG_BBOX_FIGURE_6 7
+#define LEIPZIG_BBOX_FIGURE_7 8
+#define LEIPZIG_BBOX_FIGURE_8 9
+#define LEIPZIG_BBOX_FIGURE_9 10
+#define LEIPZIG_BBOX_HEAD_WHOLE 11
+#define LEIPZIG_BBOX_HEAD_WHOLE_FILL 12
+#define LEIPZIG_BBOX_HEAD_HALF 13
+#define LEIPZIG_BBOX_HEAD_QUARTER 14
+#define LEIPZIG_BBOX_SLASH_UP 15
+#define LEIPZIG_BBOX_SLASH_DOWN 16
+#define LEIPZIG_BBOX_CLEF_G 17
+#define LEIPZIG_BBOX_CLEF_F 18
+#define LEIPZIG_BBOX_CLEF_C 19
+#define LEIPZIG_BBOX_CLEF_G8 20
+#define LEIPZIG_BBOX_ALT_SHARP 21
+#define LEIPZIG_BBOX_ALT_NATURAL 22
+#define LEIPZIG_BBOX_ALT_FLAT 23
+#define LEIPZIG_BBOX_ALT_DOUBLE_SHARP 24
+#define LEIPZIG_BBOX_REST_4 25
+#define LEIPZIG_BBOX_REST_8 26
+#define LEIPZIG_BBOX_REST_16 27
+#define LEIPZIG_BBOX_REST_32 28
+#define LEIPZIG_BBOX_REST_64 29
+#define LEIPZIG_BBOX_REST_128 30
+#define LEIPZIG_BBOX_HEAD_WHOLE_DIAMOND 31
+#define LEIPZIG_BBOX_HEAD_WHOLE_FILLDIAMOND 32
+#define LEIPZIG_BBOX_HEAD_HALF_DIAMOND 33
+#define LEIPZIG_BBOX_HEAD_QUARTER_FILLDIAMOND 34
+#define LEIPZIG_BBOX_SLASH_UP_MENSURAL 35
+#define LEIPZIG_BBOX_SLASH_DOWN_MENSURAL 36
+#define LEIPZIG_BBOX_CLEF_G_MENSURAL 37
+#define LEIPZIG_BBOX_CLEF_F_MENSURAL 38
+#define LEIPZIG_BBOX_CLEF_C_MENSURAL 39
+#define LEIPZIG_BBOX_CLEF_G_CHIAVETTE 40
+#define LEIPZIG_BBOX_ALT_SHARP_MENSURAL 41
+#define LEIPZIG_BBOX_ALT_NATURAL_MENSURAL 42
+#define LEIPZIG_BBOX_ALT_FLAT_MENSURAL 43
+#define LEIPZIG_BBOX_ALT_DOUBLE_SHARP_MENSURAL 44
+#define LEIPZIG_BBOX_REST_4_MENSURAL 45
+#define LEIPZIG_BBOX_REST_8_MENSURAL 46
+#define LEIPZIG_BBOX_REST_16_MENSURAL 47
+#define LEIPZIG_BBOX_REST_32_MENSURAL 48
+#define LEIPZIG_BBOX_REST_64_MENSURAL 49
+#define LEIPZIG_BBOX_REST_128_MENSURAL 50
+
+
+class MusLeipzigBBox
+{
+public:
+	MusLeipzigBBox() {
+		m_bBox[LEIPZIG_BBOX_ORN_MORDENT].m_x = 0.0;
+		m_bBox[LEIPZIG_BBOX_ORN_MORDENT].m_y = -2.0;
+		m_bBox[LEIPZIG_BBOX_ORN_MORDENT].m_width = 605.0;
+		m_bBox[LEIPZIG_BBOX_ORN_MORDENT].m_height = 242.0;
+		m_bBox[LEIPZIG_BBOX_FIGURE_0].m_x = 0.0;
+		m_bBox[LEIPZIG_BBOX_FIGURE_0].m_y = 0.0;
+		m_bBox[LEIPZIG_BBOX_FIGURE_0].m_width = 427.7;
+		m_bBox[LEIPZIG_BBOX_FIGURE_0].m_height = 516.0;
+		m_bBox[LEIPZIG_BBOX_FIGURE_1].m_x = 0.0;
+		m_bBox[LEIPZIG_BBOX_FIGURE_1].m_y = 0.0;
+		m_bBox[LEIPZIG_BBOX_FIGURE_1].m_width = 296.0;
+		m_bBox[LEIPZIG_BBOX_FIGURE_1].m_height = 496.0;
+		m_bBox[LEIPZIG_BBOX_FIGURE_2].m_x = 0.0;
+		m_bBox[LEIPZIG_BBOX_FIGURE_2].m_y = -15.0;
+		m_bBox[LEIPZIG_BBOX_FIGURE_2].m_width = 402.0;
+		m_bBox[LEIPZIG_BBOX_FIGURE_2].m_height = 513.0;
+		m_bBox[LEIPZIG_BBOX_FIGURE_3].m_x = 0.0;
+		m_bBox[LEIPZIG_BBOX_FIGURE_3].m_y = 0.0;
+		m_bBox[LEIPZIG_BBOX_FIGURE_3].m_width = 383.0;
+		m_bBox[LEIPZIG_BBOX_FIGURE_3].m_height = 515.0;
+		m_bBox[LEIPZIG_BBOX_FIGURE_4].m_x = 0.0;
+		m_bBox[LEIPZIG_BBOX_FIGURE_4].m_y = 0.0;
+		m_bBox[LEIPZIG_BBOX_FIGURE_4].m_width = 387.0;
+		m_bBox[LEIPZIG_BBOX_FIGURE_4].m_height = 494.0;
+		m_bBox[LEIPZIG_BBOX_FIGURE_5].m_x = 0.0;
+		m_bBox[LEIPZIG_BBOX_FIGURE_5].m_y = 0.0;
+		m_bBox[LEIPZIG_BBOX_FIGURE_5].m_width = 357.7;
+		m_bBox[LEIPZIG_BBOX_FIGURE_5].m_height = 494.0;
+		m_bBox[LEIPZIG_BBOX_FIGURE_6].m_x = -1.3;
+		m_bBox[LEIPZIG_BBOX_FIGURE_6].m_y = 0.0;
+		m_bBox[LEIPZIG_BBOX_FIGURE_6].m_width = 395.3;
+		m_bBox[LEIPZIG_BBOX_FIGURE_6].m_height = 516.0;
+		m_bBox[LEIPZIG_BBOX_FIGURE_7].m_x = 0.0;
+		m_bBox[LEIPZIG_BBOX_FIGURE_7].m_y = 0.0;
+		m_bBox[LEIPZIG_BBOX_FIGURE_7].m_width = 404.0;
+		m_bBox[LEIPZIG_BBOX_FIGURE_7].m_height = 511.0;
+		m_bBox[LEIPZIG_BBOX_FIGURE_8].m_x = 0.0;
+		m_bBox[LEIPZIG_BBOX_FIGURE_8].m_y = 0.0;
+		m_bBox[LEIPZIG_BBOX_FIGURE_8].m_width = 386.0;
+		m_bBox[LEIPZIG_BBOX_FIGURE_8].m_height = 515.0;
+		m_bBox[LEIPZIG_BBOX_FIGURE_9].m_x = 0.0;
+		m_bBox[LEIPZIG_BBOX_FIGURE_9].m_y = 0.0;
+		m_bBox[LEIPZIG_BBOX_FIGURE_9].m_width = 397.0;
+		m_bBox[LEIPZIG_BBOX_FIGURE_9].m_height = 513.0;
+		m_bBox[LEIPZIG_BBOX_HEAD_WHOLE].m_x = 0.0;
+		m_bBox[LEIPZIG_BBOX_HEAD_WHOLE].m_y = -133.0;
+		m_bBox[LEIPZIG_BBOX_HEAD_WHOLE].m_width = 405.0;
+		m_bBox[LEIPZIG_BBOX_HEAD_WHOLE].m_height = 266.0;
+		m_bBox[LEIPZIG_BBOX_HEAD_WHOLE_FILL].m_x = 0.0;
+		m_bBox[LEIPZIG_BBOX_HEAD_WHOLE_FILL].m_y = -133.0;
+		m_bBox[LEIPZIG_BBOX_HEAD_WHOLE_FILL].m_width = 405.0;
+		m_bBox[LEIPZIG_BBOX_HEAD_WHOLE_FILL].m_height = 266.0;
+		m_bBox[LEIPZIG_BBOX_HEAD_HALF].m_x = -15.0;
+		m_bBox[LEIPZIG_BBOX_HEAD_HALF].m_y = -135.0;
+		m_bBox[LEIPZIG_BBOX_HEAD_HALF].m_width = 314.0;
+		m_bBox[LEIPZIG_BBOX_HEAD_HALF].m_height = 270.0;
+		m_bBox[LEIPZIG_BBOX_HEAD_QUARTER].m_x = -15.0;
+		m_bBox[LEIPZIG_BBOX_HEAD_QUARTER].m_y = -135.0;
+		m_bBox[LEIPZIG_BBOX_HEAD_QUARTER].m_width = 314.0;
+		m_bBox[LEIPZIG_BBOX_HEAD_QUARTER].m_height = 270.0;
+		m_bBox[LEIPZIG_BBOX_SLASH_UP].m_x = 0.0;
+		m_bBox[LEIPZIG_BBOX_SLASH_UP].m_y = -597.0;
+		m_bBox[LEIPZIG_BBOX_SLASH_UP].m_width = 276.0;
+		m_bBox[LEIPZIG_BBOX_SLASH_UP].m_height = 577.0;
+		m_bBox[LEIPZIG_BBOX_SLASH_DOWN].m_x = 164.0;
+		m_bBox[LEIPZIG_BBOX_SLASH_DOWN].m_y = 20.0;
+		m_bBox[LEIPZIG_BBOX_SLASH_DOWN].m_width = 276.0;
+		m_bBox[LEIPZIG_BBOX_SLASH_DOWN].m_height = 577.0;
+		m_bBox[LEIPZIG_BBOX_CLEF_G].m_x = 0.0;
+		m_bBox[LEIPZIG_BBOX_CLEF_G].m_y = -655.0;
+		m_bBox[LEIPZIG_BBOX_CLEF_G].m_width = 679.0;
+		m_bBox[LEIPZIG_BBOX_CLEF_G].m_height = 1809.0;
+		m_bBox[LEIPZIG_BBOX_CLEF_F].m_x = 4.0;
+		m_bBox[LEIPZIG_BBOX_CLEF_F].m_y = -566.0;
+		m_bBox[LEIPZIG_BBOX_CLEF_F].m_width = 694.0;
+		m_bBox[LEIPZIG_BBOX_CLEF_F].m_height = 832.0;
+		m_bBox[LEIPZIG_BBOX_CLEF_C].m_x = 0.0;
+		m_bBox[LEIPZIG_BBOX_CLEF_C].m_y = -536.0;
+		m_bBox[LEIPZIG_BBOX_CLEF_C].m_width = 659.0;
+		m_bBox[LEIPZIG_BBOX_CLEF_C].m_height = 1082.0;
+		m_bBox[LEIPZIG_BBOX_CLEF_G8].m_x = 0.0;
+		m_bBox[LEIPZIG_BBOX_CLEF_G8].m_y = -844.0;
+		m_bBox[LEIPZIG_BBOX_CLEF_G8].m_width = 679.0;
+		m_bBox[LEIPZIG_BBOX_CLEF_G8].m_height = 1998.0;
+		m_bBox[LEIPZIG_BBOX_ALT_SHARP].m_x = 0.0;
+		m_bBox[LEIPZIG_BBOX_ALT_SHARP].m_y = -364.0;
+		m_bBox[LEIPZIG_BBOX_ALT_SHARP].m_width = 197.0;
+		m_bBox[LEIPZIG_BBOX_ALT_SHARP].m_height = 746.0;
+		m_bBox[LEIPZIG_BBOX_ALT_NATURAL].m_x = 20.0;
+		m_bBox[LEIPZIG_BBOX_ALT_NATURAL].m_y = -377.0;
+		m_bBox[LEIPZIG_BBOX_ALT_NATURAL].m_width = 157.0;
+		m_bBox[LEIPZIG_BBOX_ALT_NATURAL].m_height = 754.0;
+		m_bBox[LEIPZIG_BBOX_ALT_FLAT].m_x = 22.0;
+		m_bBox[LEIPZIG_BBOX_ALT_FLAT].m_y = -184.0;
+		m_bBox[LEIPZIG_BBOX_ALT_FLAT].m_width = 198.0;
+		m_bBox[LEIPZIG_BBOX_ALT_FLAT].m_height = 678.0;
+		m_bBox[LEIPZIG_BBOX_ALT_DOUBLE_SHARP].m_x = -20.0;
+		m_bBox[LEIPZIG_BBOX_ALT_DOUBLE_SHARP].m_y = -114.0;
+		m_bBox[LEIPZIG_BBOX_ALT_DOUBLE_SHARP].m_width = 271.0;
+		m_bBox[LEIPZIG_BBOX_ALT_DOUBLE_SHARP].m_height = 228.0;
+		m_bBox[LEIPZIG_BBOX_REST_4].m_x = 0.0;
+		m_bBox[LEIPZIG_BBOX_REST_4].m_y = -146.0;
+		m_bBox[LEIPZIG_BBOX_REST_4].m_width = 324.0;
+		m_bBox[LEIPZIG_BBOX_REST_4].m_height = 808.0;
+		m_bBox[LEIPZIG_BBOX_REST_8].m_x = 0.0;
+		m_bBox[LEIPZIG_BBOX_REST_8].m_y = 0.0;
+		m_bBox[LEIPZIG_BBOX_REST_8].m_width = 290.0;
+		m_bBox[LEIPZIG_BBOX_REST_8].m_height = 455.0;
+		m_bBox[LEIPZIG_BBOX_REST_16].m_x = 0.0;
+		m_bBox[LEIPZIG_BBOX_REST_16].m_y = -249.0;
+		m_bBox[LEIPZIG_BBOX_REST_16].m_width = 341.0;
+		m_bBox[LEIPZIG_BBOX_REST_16].m_height = 702.0;
+		m_bBox[LEIPZIG_BBOX_REST_32].m_x = 1.0;
+		m_bBox[LEIPZIG_BBOX_REST_32].m_y = -248.0;
+		m_bBox[LEIPZIG_BBOX_REST_32].m_width = 419.0;
+		m_bBox[LEIPZIG_BBOX_REST_32].m_height = 946.0;
+		m_bBox[LEIPZIG_BBOX_REST_64].m_x = 0.0;
+		m_bBox[LEIPZIG_BBOX_REST_64].m_y = -248.0;
+		m_bBox[LEIPZIG_BBOX_REST_64].m_width = 503.0;
+		m_bBox[LEIPZIG_BBOX_REST_64].m_height = 1191.0;
+		m_bBox[LEIPZIG_BBOX_REST_128].m_x = -1.0;
+		m_bBox[LEIPZIG_BBOX_REST_128].m_y = -510.0;
+		m_bBox[LEIPZIG_BBOX_REST_128].m_width = 602.0;
+		m_bBox[LEIPZIG_BBOX_REST_128].m_height = 1485.0;
+		m_bBox[LEIPZIG_BBOX_HEAD_WHOLE_DIAMOND].m_x = 0.0;
+		m_bBox[LEIPZIG_BBOX_HEAD_WHOLE_DIAMOND].m_y = -211.0;
+		m_bBox[LEIPZIG_BBOX_HEAD_WHOLE_DIAMOND].m_width = 359.0;
+		m_bBox[LEIPZIG_BBOX_HEAD_WHOLE_DIAMOND].m_height = 445.0;
+		m_bBox[LEIPZIG_BBOX_HEAD_WHOLE_FILLDIAMOND].m_x = 0.0;
+		m_bBox[LEIPZIG_BBOX_HEAD_WHOLE_FILLDIAMOND].m_y = -211.0;
+		m_bBox[LEIPZIG_BBOX_HEAD_WHOLE_FILLDIAMOND].m_width = 359.0;
+		m_bBox[LEIPZIG_BBOX_HEAD_WHOLE_FILLDIAMOND].m_height = 445.0;
+		m_bBox[LEIPZIG_BBOX_HEAD_HALF_DIAMOND].m_x = -34.0;
+		m_bBox[LEIPZIG_BBOX_HEAD_HALF_DIAMOND].m_y = -211.0;
+		m_bBox[LEIPZIG_BBOX_HEAD_HALF_DIAMOND].m_width = 358.0;
+		m_bBox[LEIPZIG_BBOX_HEAD_HALF_DIAMOND].m_height = 445.0;
+		m_bBox[LEIPZIG_BBOX_HEAD_QUARTER_FILLDIAMOND].m_x = -34.0;
+		m_bBox[LEIPZIG_BBOX_HEAD_QUARTER_FILLDIAMOND].m_y = -211.0;
+		m_bBox[LEIPZIG_BBOX_HEAD_QUARTER_FILLDIAMOND].m_width = 358.0;
+		m_bBox[LEIPZIG_BBOX_HEAD_QUARTER_FILLDIAMOND].m_height = 445.0;
+		m_bBox[LEIPZIG_BBOX_SLASH_UP_MENSURAL].m_x = 0.0;
+		m_bBox[LEIPZIG_BBOX_SLASH_UP_MENSURAL].m_y = -237.0;
+		m_bBox[LEIPZIG_BBOX_SLASH_UP_MENSURAL].m_width = 162.0;
+		m_bBox[LEIPZIG_BBOX_SLASH_UP_MENSURAL].m_height = 237.0;
+		m_bBox[LEIPZIG_BBOX_SLASH_DOWN_MENSURAL].m_x = 2.0;
+		m_bBox[LEIPZIG_BBOX_SLASH_DOWN_MENSURAL].m_y = 6.0;
+		m_bBox[LEIPZIG_BBOX_SLASH_DOWN_MENSURAL].m_width = 162.0;
+		m_bBox[LEIPZIG_BBOX_SLASH_DOWN_MENSURAL].m_height = 237.0;
+		m_bBox[LEIPZIG_BBOX_CLEF_G_MENSURAL].m_x = 145.3;
+		m_bBox[LEIPZIG_BBOX_CLEF_G_MENSURAL].m_y = -180.7;
+		m_bBox[LEIPZIG_BBOX_CLEF_G_MENSURAL].m_width = 461.7;
+		m_bBox[LEIPZIG_BBOX_CLEF_G_MENSURAL].m_height = 936.3;
+		m_bBox[LEIPZIG_BBOX_CLEF_F_MENSURAL].m_x = 109.0;
+		m_bBox[LEIPZIG_BBOX_CLEF_F_MENSURAL].m_y = -753.0;
+		m_bBox[LEIPZIG_BBOX_CLEF_F_MENSURAL].m_width = 286.0;
+		m_bBox[LEIPZIG_BBOX_CLEF_F_MENSURAL].m_height = 1108.0;
+		m_bBox[LEIPZIG_BBOX_CLEF_C_MENSURAL].m_x = 0.0;
+		m_bBox[LEIPZIG_BBOX_CLEF_C_MENSURAL].m_y = -602.0;
+		m_bBox[LEIPZIG_BBOX_CLEF_C_MENSURAL].m_width = 349.0;
+		m_bBox[LEIPZIG_BBOX_CLEF_C_MENSURAL].m_height = 1197.0;
+		m_bBox[LEIPZIG_BBOX_CLEF_G_CHIAVETTE].m_x = 13.0;
+		m_bBox[LEIPZIG_BBOX_CLEF_G_CHIAVETTE].m_y = -273.0;
+		m_bBox[LEIPZIG_BBOX_CLEF_G_CHIAVETTE].m_width = 619.0;
+		m_bBox[LEIPZIG_BBOX_CLEF_G_CHIAVETTE].m_height = 1031.0;
+		m_bBox[LEIPZIG_BBOX_ALT_SHARP_MENSURAL].m_x = 0.0;
+		m_bBox[LEIPZIG_BBOX_ALT_SHARP_MENSURAL].m_y = -130.0;
+		m_bBox[LEIPZIG_BBOX_ALT_SHARP_MENSURAL].m_width = 240.0;
+		m_bBox[LEIPZIG_BBOX_ALT_SHARP_MENSURAL].m_height = 260.0;
+		m_bBox[LEIPZIG_BBOX_ALT_NATURAL_MENSURAL].m_x = 30.0;
+		m_bBox[LEIPZIG_BBOX_ALT_NATURAL_MENSURAL].m_y = -334.0;
+		m_bBox[LEIPZIG_BBOX_ALT_NATURAL_MENSURAL].m_width = 134.0;
+		m_bBox[LEIPZIG_BBOX_ALT_NATURAL_MENSURAL].m_height = 713.0;
+		m_bBox[LEIPZIG_BBOX_ALT_FLAT_MENSURAL].m_x = 30.0;
+		m_bBox[LEIPZIG_BBOX_ALT_FLAT_MENSURAL].m_y = -112.0;
+		m_bBox[LEIPZIG_BBOX_ALT_FLAT_MENSURAL].m_width = 177.0;
+		m_bBox[LEIPZIG_BBOX_ALT_FLAT_MENSURAL].m_height = 641.0;
+		m_bBox[LEIPZIG_BBOX_ALT_DOUBLE_SHARP_MENSURAL].m_x = 0.0;
+		m_bBox[LEIPZIG_BBOX_ALT_DOUBLE_SHARP_MENSURAL].m_y = -114.0;
+		m_bBox[LEIPZIG_BBOX_ALT_DOUBLE_SHARP_MENSURAL].m_width = 271.0;
+		m_bBox[LEIPZIG_BBOX_ALT_DOUBLE_SHARP_MENSURAL].m_height = 228.0;
+		m_bBox[LEIPZIG_BBOX_REST_4_MENSURAL].m_x = 80.0;
+		m_bBox[LEIPZIG_BBOX_REST_4_MENSURAL].m_y = 0.0;
+		m_bBox[LEIPZIG_BBOX_REST_4_MENSURAL].m_width = 170.0;
+		m_bBox[LEIPZIG_BBOX_REST_4_MENSURAL].m_height = 170.0;
+		m_bBox[LEIPZIG_BBOX_REST_8_MENSURAL].m_x = 80.0;
+		m_bBox[LEIPZIG_BBOX_REST_8_MENSURAL].m_y = 0.0;
+		m_bBox[LEIPZIG_BBOX_REST_8_MENSURAL].m_width = 170.0;
+		m_bBox[LEIPZIG_BBOX_REST_8_MENSURAL].m_height = 170.0;
+		m_bBox[LEIPZIG_BBOX_REST_16_MENSURAL].m_x = 80.0;
+		m_bBox[LEIPZIG_BBOX_REST_16_MENSURAL].m_y = 0.0;
+		m_bBox[LEIPZIG_BBOX_REST_16_MENSURAL].m_width = 162.0;
+		m_bBox[LEIPZIG_BBOX_REST_16_MENSURAL].m_height = 262.0;
+		m_bBox[LEIPZIG_BBOX_REST_32_MENSURAL].m_x = 80.0;
+		m_bBox[LEIPZIG_BBOX_REST_32_MENSURAL].m_y = 0.0;
+		m_bBox[LEIPZIG_BBOX_REST_32_MENSURAL].m_width = 162.0;
+		m_bBox[LEIPZIG_BBOX_REST_32_MENSURAL].m_height = 362.0;
+		m_bBox[LEIPZIG_BBOX_REST_64_MENSURAL].m_x = 80.0;
+		m_bBox[LEIPZIG_BBOX_REST_64_MENSURAL].m_y = 0.0;
+		m_bBox[LEIPZIG_BBOX_REST_64_MENSURAL].m_width = 162.0;
+		m_bBox[LEIPZIG_BBOX_REST_64_MENSURAL].m_height = 461.0;
+		m_bBox[LEIPZIG_BBOX_REST_128_MENSURAL].m_x = 80.0;
+		m_bBox[LEIPZIG_BBOX_REST_128_MENSURAL].m_y = 0.0;
+		m_bBox[LEIPZIG_BBOX_REST_128_MENSURAL].m_width = 162.0;
+		m_bBox[LEIPZIG_BBOX_REST_128_MENSURAL].m_height = 558.0;
+		
+	};
+	
+	struct BoundingBox
+	{
+		double m_x;
+		double m_y;
+		double m_width;
+		double m_height;
+	} m_bBox[51];
+};
+
+
+ 
 #include "app/axapp.h"
 
 static inline double DegToRad(double deg) { return (deg * M_PI) / 180.0; }
@@ -36,8 +311,9 @@ static inline double RadToDeg(double deg) { return (deg * 180.0) / M_PI; }
 
 
 MusSvgDC::MusSvgDC (wxString f, int width, int height):
-    AxDC()
-{
+    MusDC()
+{	
+	
     m_correctMusicAscent = false; // do not correct the ascent in the Leipzig font
 
     m_width = width;
@@ -213,7 +489,7 @@ void MusSvgDC::SetPen( int colour, int width, int style )
     }
 }
         
-void MusSvgDC::SetFont( AxFontInfo *font_info )
+void MusSvgDC::SetFont( MusFontInfo *font_info )
 {
     m_font = *font_info;
     //wxFont font( font_info->pointSize, (wxFontFamily)font_info->family, font_info->style,
@@ -261,9 +537,9 @@ void MusSvgDC::GetTextExtent( wxString& string, int *w, int *h )
 }
        
 
-AxPoint MusSvgDC::GetLogicalOrigin( ) 
+MusPoint MusSvgDC::GetLogicalOrigin( ) 
 {
-    return AxPoint( m_originX, m_originY );
+    return MusPoint( m_originX, m_originY );
 }
 
 
@@ -348,7 +624,7 @@ void MusSvgDC::DrawLine(int x1, int y1, int x2, int y2)
 }
  
                
-void MusSvgDC::DrawPolygon(int n, AxPoint points[], int xoffset, int yoffset, int fill_style)
+void MusSvgDC::DrawPolygon(int n, MusPoint points[], int xoffset, int yoffset, int fill_style)
 {
 
     wxString s ;
@@ -465,50 +741,50 @@ void MusSvgDC::DrawMusicText(const wxString& text, int x, int y)
         case 56: glyph = "figure_8"; break;
         case 57: glyph = "figure_9"; break;
         /* clef */
-        case sSOL: glyph = "clef_G"; break;
-        case sFA: glyph = "clef_F"; break;
-        case sUT: glyph = "clef_C"; break;
-        case sSOL_OCT: glyph = "clef_G8"; break;
-        case sSOL + N_FONT: glyph = "clef_G_mensural"; break;
-        case sFA + N_FONT: glyph = "clef_F_mensural"; break;
-        case sUT + N_FONT: glyph = "clef_C_mensural"; break;
-        case sSOL_OCT + N_FONT: glyph = "clef_G_chiavette"; break;
+        case LEIPZIG_CLEF_G: glyph = "clef_G"; break;
+        case LEIPZIG_CLEF_F: glyph = "clef_F"; break;
+        case LEIPZIG_CLEF_C: glyph = "clef_C"; break;
+        case LEIPZIG_CLEF_8va: glyph = "clef_G8"; break;
+        case LEIPZIG_CLEF_G + LEIPZIG_OFFSET_MENSURAL: glyph = "clef_G_mensural"; break;
+        case LEIPZIG_CLEF_F + LEIPZIG_OFFSET_MENSURAL: glyph = "clef_F_mensural"; break;
+        case LEIPZIG_CLEF_C + LEIPZIG_OFFSET_MENSURAL: glyph = "clef_C_mensural"; break;
+        case LEIPZIG_CLEF_8va + LEIPZIG_OFFSET_MENSURAL: glyph = "clef_G_chiavette"; break;
         /* alterations */
-        case sDIESE: glyph = "alt_sharp"; break;
-        case sBECARRE: glyph = "alt_natural"; break;
-        case sBEMOL: glyph = "alt_flat"; break;
-        case sDDIESE: glyph = "alt_double_sharp"; break;
-        case sDIESE + N_FONT: glyph = "alt_sharp_mensural"; break;
-        case sBECARRE + N_FONT: glyph = "alt_natural_mensural"; break;
-        case sBEMOL + N_FONT: glyph = "alt_flat_mensural"; break;
-        case sDDIESE + N_FONT: glyph = "alt_double_sharp_mensural"; break;
+        case LEIPZIG_ACCID_SHARP: glyph = "alt_sharp"; break;
+        case LEIPZIG_ACCID_NATURAL: glyph = "alt_natural"; break;
+        case LEIPZIG_ACCID_FLAT: glyph = "alt_flat"; break;
+        case LEIPZIG_ACCID_DOUBLE_SHARP: glyph = "alt_double_sharp"; break;
+        case LEIPZIG_ACCID_SHARP + LEIPZIG_OFFSET_MENSURAL: glyph = "alt_sharp_mensural"; break;
+        case LEIPZIG_ACCID_NATURAL + LEIPZIG_OFFSET_MENSURAL: glyph = "alt_natural_mensural"; break;
+        case LEIPZIG_ACCID_FLAT + LEIPZIG_OFFSET_MENSURAL: glyph = "alt_flat_mensural"; break;
+        case LEIPZIG_ACCID_DOUBLE_SHARP + LEIPZIG_OFFSET_MENSURAL: glyph = "alt_double_sharp_mensural"; break;
         /* rests */
-        case sSilNOIRE: glyph = "rest_4"; break;
-        case sSilNOIRE + 1: glyph = "rest_8"; break;
-        case sSilNOIRE + 2: glyph = "rest_16"; break;
-        case sSilNOIRE + 3: glyph = "rest_32"; break;
-        case sSilNOIRE + 4: glyph = "rest_64"; break;
-        case sSilNOIRE + 5: glyph = "rest_128"; break;
-        case sSilNOIRE + N_FONT: glyph = "rest_4_mensural"; break;
-        case sSilNOIRE + 1 + N_FONT: glyph = "rest_8_mensural"; break;
-        case sSilNOIRE + 2 + N_FONT: glyph = "rest_16_mensural"; break;
-        case sSilNOIRE + 3 + N_FONT: glyph = "rest_32_mensural"; break;
-        case sSilNOIRE + 4 + N_FONT: glyph = "rest_64_mensural"; break;
-        case sSilNOIRE + 5 + N_FONT: glyph = "rest_128_mensural"; break;
+        case LEIPZIG_REST_QUARTER: glyph = "rest_4"; break;
+        case LEIPZIG_REST_QUARTER + 1: glyph = "rest_8"; break;
+        case LEIPZIG_REST_QUARTER + 2: glyph = "rest_16"; break;
+        case LEIPZIG_REST_QUARTER + 3: glyph = "rest_32"; break;
+        case LEIPZIG_REST_QUARTER + 4: glyph = "rest_64"; break;
+        case LEIPZIG_REST_QUARTER + 5: glyph = "rest_128"; break;
+        case LEIPZIG_REST_QUARTER + LEIPZIG_OFFSET_MENSURAL: glyph = "rest_4_mensural"; break;
+        case LEIPZIG_REST_QUARTER + 1 + LEIPZIG_OFFSET_MENSURAL: glyph = "rest_8_mensural"; break;
+        case LEIPZIG_REST_QUARTER + 2 + LEIPZIG_OFFSET_MENSURAL: glyph = "rest_16_mensural"; break;
+        case LEIPZIG_REST_QUARTER + 3 + LEIPZIG_OFFSET_MENSURAL: glyph = "rest_32_mensural"; break;
+        case LEIPZIG_REST_QUARTER + 4 + LEIPZIG_OFFSET_MENSURAL: glyph = "rest_64_mensural"; break;
+        case LEIPZIG_REST_QUARTER + 5 + LEIPZIG_OFFSET_MENSURAL: glyph = "rest_128_mensural"; break;
         /* note heads */
-        case sRONDE_B: glyph = "head_whole"; break;
-        case sRONDE_N: glyph = "head_whole_fill"; break;
-        case sBLANCHE: glyph = "head_half"; break;
-        case sNOIRE: glyph = "head_quarter"; break;
-        case sRONDE_B + N_FONT: glyph = "head_whole_diamond"; break;
-        case sRONDE_N + N_FONT: glyph = "head_whole_filldiamond"; break;
-        case sBLANCHE + N_FONT: glyph = "head_half_diamond"; break;
-        case sNOIRE + N_FONT: glyph = "head_quarter_filldiamond"; break;
+        case LEIPZIG_HEAD_WHOLE: glyph = "head_whole"; break;
+        case LEIPZIG_HEAD_WHOLE_FILLED: glyph = "head_whole_fill"; break;
+        case LEIPZIG_HEAD_HALF: glyph = "head_half"; break;
+        case LEIPZIG_HEAD_QUARTER: glyph = "head_quarter"; break;
+        case LEIPZIG_HEAD_WHOLE + LEIPZIG_OFFSET_MENSURAL: glyph = "head_whole_diamond"; break;
+        case LEIPZIG_HEAD_WHOLE_FILLED + LEIPZIG_OFFSET_MENSURAL: glyph = "head_whole_filldiamond"; break;
+        case LEIPZIG_HEAD_HALF + LEIPZIG_OFFSET_MENSURAL: glyph = "head_half_diamond"; break;
+        case LEIPZIG_HEAD_QUARTER + LEIPZIG_OFFSET_MENSURAL: glyph = "head_quarter_filldiamond"; break;
         /* slashes */
-        case sCROCHET_H: glyph = "slash_up"; break;
-        case sCROCHET_B: glyph = "slash_down"; break;
-        case sCROCHET_H + N_FONT: glyph = "slash_up_mensural"; break;
-        case sCROCHET_B + N_FONT: glyph = "slash_down_mensural"; break;
+        case LEIPZIG_STEM_FLAG_UP: glyph = "slash_up"; break;
+        case LEIPZIG_STEM_FLAG_DOWN: glyph = "slash_down"; break;
+        case LEIPZIG_STEM_FLAG_UP + LEIPZIG_OFFSET_MENSURAL: glyph = "slash_up_mensural"; break;
+        case LEIPZIG_STEM_FLAG_DOWN + LEIPZIG_OFFSET_MENSURAL: glyph = "slash_down_mensural"; break;
         /* ornaments */
         case 35: glyph = "orn_mordent"; break;
         /* todo */
@@ -525,7 +801,7 @@ void MusSvgDC::DrawMusicText(const wxString& text, int x, int y)
 }
 
 
-void MusSvgDC::DrawSpline(int n, AxPoint points[])
+void MusSvgDC::DrawSpline(int n, MusPoint points[])
 {
     //m_dc->DrawSpline( n, (wxPoint*)points );
 }

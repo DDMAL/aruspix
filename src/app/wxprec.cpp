@@ -5,7 +5,7 @@
 // Modified by: 
 // Created:     
 // RCS-ID:      
-// Copyright (c) Laurent Pugin. All rights reserved.   (C)2003 
+// Copyright (c) Authors and others. All rights reserved.   (C)2003 
 // Licence:     wxWindows
 /////////////////////////////////////////////////////////////////////////////
 

@@ -2,7 +2,7 @@
 // Name:        muswindow.h
 // Author:      Laurent Pugin
 // Created:     2005
-// Copyright (c) Laurent Pugin. All rights reserved.
+// Copyright (c) Authors and others. All rights reserved.
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef __MUS_WINDOW_H__
@@ -52,6 +52,11 @@ enum
 // MusWindow
 //----------------------------------------------------------------------------
 
+/** 
+ * This class is a application window and corresponds to the controller of a MVC design pattern.
+ * It also implements the view (MusRC) because the application window is used both for interacting
+ * with the user and for rendering the model.
+ */
 class MusWindow: public wxScrolledWindow, public MusRC, public AxUndo
 {
 public:
@@ -66,7 +71,7 @@ public:
     // edition
     virtual void DoRefresh() { Refresh(); }
     virtual void DoResize() { Resize(); }
-    virtual void DoLyricCursor( int x, int y, AxDC *dc, wxString lyric );
+    virtual void DoLyricCursor( int x, int y, MusDC *dc, wxString lyric );
     virtual void DoReset();
 
 	// copy paste
@@ -119,15 +124,15 @@ public:
 	/** indique si la page doit etre centree asi elle n'occupe pas toute la fenetre */
 	bool m_center;
 
-	MusElement *m_newElement;
-	MusElement *m_bufferElement;
-	MusElement *m_lastEditedElement;
+	MusLaidOutLayerElement *m_newElement;
+	MusLaidOutLayerElement *m_bufferElement;
+	MusLaidOutLayerElement *m_lastEditedElement;
 
 	// keep elements statically - m_newElement will point on them
-	MusNote m_note;
+	/*MusNote m_note;
 	MusSymbol m_symbol;
 	MusNeume m_neume;
-	MusNeumeSymbol m_neumesymbol;
+	MusNeumeSymbol m_neumesymbol;*/ // ax2
 
 	int m_insertx;
 	int m_insertcode;

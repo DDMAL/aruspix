@@ -2,7 +2,7 @@
 // Name:        mustoolpanel.cpp
 // Author:      Laurent Pugin
 // Created:     2005
-// Copyright (c) Laurent Pugin. All rights reserved.
+// Copyright (c) Authors and others. All rights reserved.
 /////////////////////////////////////////////////////////////////////////////
 
 #if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
@@ -23,7 +23,7 @@ using std::max;
 #include "mustoolpanel.h"
 #include "muswindow.h"
 #include "musstaff.h"
-#include "muselement.h"
+//#include "muselement.h"
 
 #include "app/axapp.h"
 
@@ -171,8 +171,8 @@ void MusToolRow::UpdateTools( int type, int notation_mode )
         // other
         AddSeparator();
         AddTool(ID_MS_BT_M32, "", MusToolPanel::GetToolbarBitmap( "mes_m32.png" ));
-        AddControl( new wxTextCtrl( this, ID_MS_BT_M32_NUM, wxString::Format("%d", MusSymbol::s_durNum), wxDefaultPosition, wxSize( 30, 20 )), "Num" );
-        AddControl( new wxTextCtrl( this, ID_MS_BT_M32_DEN, wxString::Format("%d", MusSymbol::s_durDen), wxDefaultPosition, wxSize( 30, 20 )), "Den" );  
+        //AddControl( new wxTextCtrl( this, ID_MS_BT_M32_NUM, wxString::Format("%d", MusSymbol1::s_durNum), wxDefaultPosition, wxSize( 30, 20 )), "Num" ); // ax2
+        //AddControl( new wxTextCtrl( this, ID_MS_BT_M32_DEN, wxString::Format("%d", MusSymbol1::s_durDen), wxDefaultPosition, wxSize( 30, 20 )), "Den" ); // ax2  
         AddSeparator();
         AddTool(ID_MS_BT_M3, "", MusToolPanel::GetToolbarBitmap( "mes_m3.png" ));
         AddTool(ID_MS_BT_M2, "", MusToolPanel::GetToolbarBitmap( "mes_m2.png" ));
@@ -275,7 +275,9 @@ void MusToolPanel::SetMusWindow( MusWindow *w )
 {
     m_current_tools = -1; // forces the toolbar to be recreated 
     m_w = w;
-    m_notation_mode = m_w->m_notation_mode;
+	if (m_w) {
+		m_notation_mode = m_w->m_notation_mode;
+	}
 }
 
 void MusToolPanel::OnUpdateUI( wxUpdateUIEvent &event )
@@ -384,11 +386,11 @@ void MusToolPanel::OnSymbol( wxCommandEvent &event )
 }
 
 
-// pass the value back to the MusSymbol static
+// pass the value back to the MusSymbol1 static
 void MusToolPanel::OnMeasure( wxCommandEvent &event )
 {
-    MusSymbol::s_durNum = atoi(((wxTextCtrl*)FindWindow(ID_MS_BT_M32_NUM))->GetValue());
-    MusSymbol::s_durDen = atoi(((wxTextCtrl*)FindWindow(ID_MS_BT_M32_DEN))->GetValue());
+    //MusSymbol1::s_durNum = atoi(((wxTextCtrl*)FindWindow(ID_MS_BT_M32_NUM))->GetValue()); // ax2
+    //MusSymbol1::s_durDen = atoi(((wxTextCtrl*)FindWindow(ID_MS_BT_M32_DEN))->GetValue()); // ax2
     wxKeyEvent kevent;
     kevent.SetEventType( wxEVT_KEY_DOWN );
     kevent.m_keyCode = '1';
