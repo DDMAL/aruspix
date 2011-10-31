@@ -65,8 +65,8 @@ bool ImStaffSegment::AnalyzeSegment()
     float* perim = (float*)malloc( region_count * sizeof(float) );
     memset(perim, 0, region_count * sizeof(float) );
 
-    imAnalyzeMeasureArea( m_opIm, area );
-    imAnalyzeMeasurePerimeter( m_opIm, perim );
+    imAnalyzeMeasureArea( m_opIm, area, 1 );
+    imAnalyzeMeasurePerimeter( m_opIm, perim, 1 );
 
     float c = 0;
     for (i = 0; i < region_count; i++ )

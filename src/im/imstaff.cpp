@@ -164,7 +164,7 @@ void CalcWinFeatures(const imImage* image, float *features, int position_v, int 
 	// area (without lines)
 	int* area = (int*)malloc(region_count*sizeof(int));
 	memset( area, 0, region_count*sizeof(int));
-	imAnalyzeMeasureArea( imRegions, area );
+	imAnalyzeMeasureArea( imRegions, area, 1 );
 	
 	int tot_area = 0;
 	int max_area = 0;
@@ -213,7 +213,7 @@ void CalcWinFeatures(const imImage* image, float *features, int position_v, int 
 	{
 		int* forground = (int*)malloc(region_count*sizeof(int));
 		memset( forground, 0, region_count*sizeof(int));
-		imAnalyzeMeasureArea( imRegions, forground );
+		imAnalyzeMeasureArea( imRegions, forground , 1);
 
 		int max_forground = 0;
 		for (i = 0; i < region_count; i++)
@@ -236,7 +236,7 @@ void CalcWinFeatures(const imImage* image, float *features, int position_v, int 
 	{	
 		int* background = (int*)malloc(region_count*sizeof(int));
 		memset( background, 0, region_count*sizeof(int));
-		imAnalyzeMeasureArea( imRegions, background );
+		imAnalyzeMeasureArea( imRegions, background, 1 );
 
 		int min_background = image->width * image->height;
 		for (i = 0; i < region_count; i++)
