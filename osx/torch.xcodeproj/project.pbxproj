@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 42;
+	objectVersion = 46;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -281,8 +281,11 @@
 /* Begin PBXProject section */
 		A51FEBE20A02C0F500ACE377 /* Project object */ = {
 			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0420;
+			};
 			buildConfigurationList = A51FEBE30A02C0F500ACE377 /* Build configuration list for PBXProject "torch" */;
-			compatibilityVersion = "Xcode 2.4";
+			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -377,6 +380,7 @@
 				GCC_MODEL_TUNING = G5;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				HEADER_SEARCH_PATHS = "$(ARUSPIX_TORCH)/include";
 				INSTALL_PATH = "$(HOME)/bin";
 				LIBRARY_SEARCH_PATHS = "$(ARUSPIX_TORCH)/lib";
@@ -384,7 +388,6 @@
 				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = "-ltorch";
 				OTHER_REZFLAGS = "";
-				PREBINDING = NO;
 				PRODUCT_NAME = evald;
 				SECTORDER_FLAGS = "";
 				SYMROOT = "$(PROJECT_DIR)/../bin";
@@ -405,6 +408,7 @@
 				GCC_MODEL_TUNING = G5;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				HEADER_SEARCH_PATHS = "$(ARUSPIX_TORCH)/include";
 				INSTALL_PATH = "$(HOME)/bin";
 				LIBRARY_SEARCH_PATHS = "$(ARUSPIX_TORCH)/lib";
@@ -412,7 +416,6 @@
 				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = "-ltorch";
 				OTHER_REZFLAGS = "";
-				PREBINDING = NO;
 				PRODUCT_NAME = eval;
 				SECTORDER_FLAGS = "";
 				SYMROOT = "";
@@ -433,13 +436,13 @@
 				GCC_MODEL_TUNING = G5;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				HEADER_SEARCH_PATHS = "$(ARUSPIX_TORCH)/include";
 				INSTALL_PATH = "$(HOME)/bin";
 				LIBRARY_SEARCH_PATHS = "$(ARUSPIX_TORCH)/lib";
 				OTHER_CFLAGS = "-D__AXDEBUG__";
 				OTHER_LDFLAGS = "-ltorch";
 				OTHER_REZFLAGS = "";
-				PREBINDING = NO;
 				PRODUCT_NAME = adaptd;
 				SECTORDER_FLAGS = "";
 				WARNING_CFLAGS = (
@@ -459,13 +462,13 @@
 				GCC_MODEL_TUNING = G5;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				HEADER_SEARCH_PATHS = "$(ARUSPIX_TORCH)/include";
 				INSTALL_PATH = "$(HOME)/bin";
 				LIBRARY_SEARCH_PATHS = "$(ARUSPIX_TORCH)/lib";
 				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = "-ltorch";
 				OTHER_REZFLAGS = "";
-				PREBINDING = NO;
 				PRODUCT_NAME = adapt;
 				SECTORDER_FLAGS = "";
 				WARNING_CFLAGS = (
@@ -485,13 +488,13 @@
 				GCC_MODEL_TUNING = G5;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				HEADER_SEARCH_PATHS = "$(ARUSPIX_TORCH)/include";
 				INSTALL_PATH = "$(HOME)/bin";
 				LIBRARY_SEARCH_PATHS = "$(ARUSPIX_TORCH)/lib";
 				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = "-ltorch";
 				OTHER_REZFLAGS = "";
-				PREBINDING = NO;
 				PRODUCT_NAME = initd;
 				SECTORDER_FLAGS = "";
 				WARNING_CFLAGS = (
@@ -511,13 +514,13 @@
 				GCC_MODEL_TUNING = G5;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				HEADER_SEARCH_PATHS = "$(ARUSPIX_TORCH)/include";
 				INSTALL_PATH = "$(HOME)/bin";
 				LIBRARY_SEARCH_PATHS = "$(ARUSPIX_TORCH)/lib";
 				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = "-ltorch";
 				OTHER_REZFLAGS = "";
-				PREBINDING = NO;
 				PRODUCT_NAME = init;
 				SECTORDER_FLAGS = "";
 				WARNING_CFLAGS = (
@@ -537,13 +540,13 @@
 				GCC_MODEL_TUNING = G5;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				HEADER_SEARCH_PATHS = "$(ARUSPIX_TORCH)/include";
 				INSTALL_PATH = "$(HOME)/bin";
 				LIBRARY_SEARCH_PATHS = "$(ARUSPIX_TORCH)/lib";
 				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = "-ltorch";
 				OTHER_REZFLAGS = "";
-				PREBINDING = NO;
 				PRODUCT_NAME = trainerd;
 				SECTORDER_FLAGS = "";
 				WARNING_CFLAGS = (
@@ -564,13 +567,13 @@
 				GCC_MODEL_TUNING = G5;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				HEADER_SEARCH_PATHS = "$(ARUSPIX_TORCH)/include";
 				INSTALL_PATH = "$(HOME)/bin";
 				LIBRARY_SEARCH_PATHS = "$(ARUSPIX_TORCH)/lib";
 				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = "-ltorch";
 				OTHER_REZFLAGS = "";
-				PREBINDING = NO;
 				PRODUCT_NAME = trainer;
 				SECTORDER_FLAGS = "";
 				WARNING_CFLAGS = (
@@ -584,11 +587,11 @@
 		A51FEBE40A02C0F500ACE377 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
 				COPY_PHASE_STRIP = NO;
-				GCC_VERSION = 4.0;
-				HEADER_SEARCH_PATHS = "$(ARUSPIX_TORCH)/include";
+				GCC_VERSION = com.apple.compilers.llvmgcc42;
 				OBJROOT = "$(PROJECT_DIR)/../obj";
-				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
+				SDKROOT = macosx10.6;
 				SYMROOT = "$(PROJECT_DIR)/../bin";
 			};
 			name = Debug;
@@ -596,14 +599,11 @@
 		A51FEBE50A02C0F500ACE377 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = (
-					ppc,
-					i386,
-				);
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
 				COPY_PHASE_STRIP = YES;
-				GCC_VERSION = 4.0;
+				GCC_VERSION = com.apple.compilers.llvmgcc42;
 				OBJROOT = "$(PROJECT_DIR)/../obj";
-				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
+				SDKROOT = macosx10.6;
 				SYMROOT = "$(PROJECT_DIR)/../bin";
 			};
 			name = Release;
@@ -617,6 +617,7 @@
 				GCC_MODEL_TUNING = G5;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				HEADER_SEARCH_PATHS = "$(ARUSPIX_TORCH)/include";
 				INSTALL_PATH = "$(HOME)/bin";
 				LIBRARY_SEARCH_PATHS = "$(ARUSPIX_TORCH)/lib";
@@ -624,7 +625,6 @@
 				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = "-ltorch";
 				OTHER_REZFLAGS = "";
-				PREBINDING = NO;
 				PRODUCT_NAME = decoderd;
 				SECTORDER_FLAGS = "";
 				SYMROOT = "$(PROJECT_DIR)/../bin";
@@ -645,6 +645,7 @@
 				GCC_MODEL_TUNING = G5;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				HEADER_SEARCH_PATHS = "$(ARUSPIX_TORCH)/include";
 				INSTALL_PATH = "$(HOME)/bin";
 				LIBRARY_SEARCH_PATHS = "$(ARUSPIX_TORCH)/lib";
@@ -652,7 +653,6 @@
 				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = "-ltorch";
 				OTHER_REZFLAGS = "";
-				PREBINDING = NO;
 				PRODUCT_NAME = decoder;
 				SECTORDER_FLAGS = "";
 				SYMROOT = "$(PROJECT_DIR)/../bin";
@@ -673,13 +673,13 @@
 				GCC_MODEL_TUNING = G5;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				HEADER_SEARCH_PATHS = "$(ARUSPIX_TORCH)/include";
 				INSTALL_PATH = "$(HOME)/bin";
 				LIBRARY_SEARCH_PATHS = "$(ARUSPIX_TORCH)/lib";
 				OTHER_CFLAGS = "-DDEBUG";
 				OTHER_LDFLAGS = "-ltorch";
 				OTHER_REZFLAGS = "";
-				PREBINDING = NO;
 				PRODUCT_NAME = ngramd;
 				SECTORDER_FLAGS = "";
 				WARNING_CFLAGS = (
@@ -699,13 +699,13 @@
 				GCC_MODEL_TUNING = G5;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				HEADER_SEARCH_PATHS = "$(ARUSPIX_TORCH)/include";
 				INSTALL_PATH = "$(HOME)/bin";
 				LIBRARY_SEARCH_PATHS = "$(ARUSPIX_TORCH)/lib";
 				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = "-ltorch";
 				OTHER_REZFLAGS = "";
-				PREBINDING = NO;
 				PRODUCT_NAME = ngram;
 				SECTORDER_FLAGS = "";
 				WARNING_CFLAGS = (
