@@ -61,6 +61,8 @@
 		4DC24AA9119B718700B2EF98 /* RtMidi.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4DC24AA7119B718700B2EF98 /* RtMidi.cpp */; };
 		4DC24AB7119B72C900B2EF98 /* musneume.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4DC24AB5119B72C900B2EF98 /* musneume.cpp */; };
 		4DC24ABC119B72EF00B2EF98 /* edtfile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4DC24ABA119B72EF00B2EF98 /* edtfile.cpp */; };
+		4DC6A82D1473F80D00D73769 /* musrc_graph.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4DC6A82C1473F80D00D73769 /* musrc_graph.cpp */; };
+		4DC6A82F1473F83900D73769 /* musrc_bezier.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4DC6A82E1473F83900D73769 /* musrc_bezier.cpp */; };
 		4DDE3CDE0EF1B1D6006D4F2C /* musiowwg.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4DDE3CDD0EF1B1D6006D4F2C /* musiowwg.cpp */; };
 		5736CE550C354E4A00254E7B /* cmp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5736CE460C354E4A00254E7B /* cmp.cpp */; };
 		5736CE580C354E4A00254E7B /* cmpctrl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5736CE4B0C354E4A00254E7B /* cmpctrl.cpp */; };
@@ -178,8 +180,6 @@
 		4D2F7EA8145AD82600EF930B /* musrc_element.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = musrc_element.cpp; path = ../src/mus/musrc_element.cpp; sourceTree = SOURCE_ROOT; };
 		4D2F7EAA145AD82600EF930B /* musrc_neume.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = musrc_neume.cpp; path = ../src/mus/musrc_neume.cpp; sourceTree = SOURCE_ROOT; };
 		4D2F7EAB145AD82600EF930B /* musrc_page.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = musrc_page.cpp; path = ../src/mus/musrc_page.cpp; sourceTree = SOURCE_ROOT; };
-		4D2F7EDE145ADB6800EF930B /* musrc_bezier.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = musrc_bezier.cpp; path = ../src/mus/musrc_bezier.cpp; sourceTree = SOURCE_ROOT; };
-		4D2F7EE0145ADBBA00EF930B /* musrc_graph.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = musrc_graph.cpp; path = ../src/mus/musrc_graph.cpp; sourceTree = SOURCE_ROOT; };
 		4D2F7EE9145AE14D00EF930B /* musdc.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = musdc.cpp; path = ../src/mus/musdc.cpp; sourceTree = SOURCE_ROOT; };
 		4D2F7EEA145AE14D00EF930B /* musdc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = musdc.h; path = ../src/mus/musdc.h; sourceTree = SOURCE_ROOT; };
 		4D2F7EEB145AE14D00EF930B /* muswxdc.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = muswxdc.cpp; path = ../src/mus/muswxdc.cpp; sourceTree = SOURCE_ROOT; };
@@ -238,6 +238,8 @@
 		4DC24AB6119B72C900B2EF98 /* musneume.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = musneume.h; path = ../src/mus/musneume.h; sourceTree = SOURCE_ROOT; };
 		4DC24ABA119B72EF00B2EF98 /* edtfile.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = edtfile.cpp; path = ../src/edition/edtfile.cpp; sourceTree = SOURCE_ROOT; };
 		4DC24ABB119B72EF00B2EF98 /* edtfile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = edtfile.h; path = ../src/edition/edtfile.h; sourceTree = SOURCE_ROOT; };
+		4DC6A82C1473F80D00D73769 /* musrc_graph.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = musrc_graph.cpp; path = ../src/mus/musrc_graph.cpp; sourceTree = "<group>"; };
+		4DC6A82E1473F83900D73769 /* musrc_bezier.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = musrc_bezier.cpp; path = ../src/mus/musrc_bezier.cpp; sourceTree = "<group>"; };
 		4DDE3CDD0EF1B1D6006D4F2C /* musiowwg.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = musiowwg.cpp; path = ../src/mus/musiowwg.cpp; sourceTree = SOURCE_ROOT; };
 		4DDE3CDF0EF1B25E006D4F2C /* musiobin.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = musiobin.h; path = ../src/mus/musiobin.h; sourceTree = SOURCE_ROOT; };
 		5736CE460C354E4A00254E7B /* cmp.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = cmp.cpp; sourceTree = "<group>"; };
@@ -426,9 +428,9 @@
 			isa = PBXGroup;
 			children = (
 				4D2F7EA7145AD82600EF930B /* musrc_beam.cpp */,
-				4D2F7EDE145ADB6800EF930B /* musrc_bezier.cpp */,
+				4DC6A82E1473F83900D73769 /* musrc_bezier.cpp */,
 				4D2F7EA8145AD82600EF930B /* musrc_element.cpp */,
-				4D2F7EE0145ADBBA00EF930B /* musrc_graph.cpp */,
+				4DC6A82C1473F80D00D73769 /* musrc_graph.cpp */,
 				4D2F7EAA145AD82600EF930B /* musrc_neume.cpp */,
 				4D2F7EAB145AD82600EF930B /* musrc_page.cpp */,
 				4DA0004312CA26E300B65740 /* musrc.cpp */,
@@ -914,6 +916,8 @@
 				4D2F7EEE145AE14D00EF930B /* muswxdc.cpp in Sources */,
 				4D2F7F42145AE7CA00EF930B /* muswwg.cpp in Sources */,
 				4D2F7F78145AEBF700EF930B /* musclef.cpp in Sources */,
+				4DC6A82D1473F80D00D73769 /* musrc_graph.cpp in Sources */,
+				4DC6A82F1473F83900D73769 /* musrc_bezier.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -923,6 +927,7 @@
 		5785F1360CEA53940083A6E1 /* DebugDyn */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				COPY_PHASE_STRIP = NO;
 				GCC_VERSION = com.apple.compilers.llvmgcc42;
 				HEADER_SEARCH_PATHS = "";
@@ -936,12 +941,12 @@
 		5785F1370CEA53940083A6E1 /* DebugDyn */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				COPY_PHASE_STRIP = YES;
 				FRAMEWORK_SEARCH_PATHS = "$(ARUSPIX_MEI)";
 				GCC_DEBUGGING_SYMBOLS = default;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
-				GCC_INLINES_ARE_PRIVATE_EXTERN = YES;
+				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/Carbon.framework/Headers/Carbon.h";
@@ -1179,8 +1184,10 @@
 		A58508B60A001129006E82B1 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				COPY_PHASE_STRIP = NO;
 				FRAMEWORK_SEARCH_PATHS = "$(BUILD_PRODUCTS_DIR)/$(TARGET_NAME).app/Contents/Frameworks";
+				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_VERSION = com.apple.compilers.llvmgcc42;
 				HEADER_SEARCH_PATHS = (
 					"$(ARUSPIX_IMLIB)/include",
@@ -1207,6 +1214,7 @@
 		A58508B70A001129006E82B1 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				COPY_PHASE_STRIP = YES;
 				GCC_VERSION = com.apple.compilers.llvmgcc42;
 				HEADER_SEARCH_PATHS = "";
@@ -1221,12 +1229,12 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = YES;
-				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				COPY_PHASE_STRIP = YES;
 				FRAMEWORK_SEARCH_PATHS = "$(ARUSPIX_MEI)";
 				GCC_DEBUGGING_SYMBOLS = default;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
-				GCC_INLINES_ARE_PRIVATE_EXTERN = YES;
+				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/Carbon.framework/Headers/Carbon.h";
@@ -1316,11 +1324,11 @@
 		A58508C70A00113C006E82B1 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				COPY_PHASE_STRIP = YES;
 				FRAMEWORK_SEARCH_PATHS = /Aruspix.app/Contents/Frameworks;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
-				GCC_INLINES_ARE_PRIVATE_EXTERN = YES;
+				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
 				GCC_OPTIMIZATION_LEVEL = s;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/Carbon.framework/Headers/Carbon.h";
