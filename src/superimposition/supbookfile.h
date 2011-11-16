@@ -10,10 +10,6 @@
 
 #ifdef AX_SUPERIMPOSITION
 
-#if defined(__GNUG__) && ! defined(__APPLE__)
-    #pragma interface "supbookfile.cpp"
-#endif
-
 #ifndef WX_PRECOMP
     #include "wx/wx.h"
 #endif

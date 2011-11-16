@@ -10,10 +10,6 @@
 
 #ifdef AX_EDT
 
-#ifdef __GNUG__
-    #pragma interface "edt.cpp"
-#endif
-
 #ifndef WX_PRECOMP
     #include "wx/wx.h"
 #endif

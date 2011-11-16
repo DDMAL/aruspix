@@ -10,10 +10,6 @@
 
 #ifdef AX_RECOGNITION
 
-#ifdef __GNUG__
-    #pragma interface "recmus.cpp"
-#endif
-
 #ifndef WX_PRECOMP
     #include "wx/wx.h"
 #endif

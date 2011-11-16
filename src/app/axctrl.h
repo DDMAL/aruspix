@@ -8,10 +8,6 @@
 #ifndef __axctrl_H__
 #define __axctrl_H__
 
-#if defined(__GNUG__) && ! defined(__APPLE__)
-    #pragma interface "axctrl.cpp"
-#endif
-
 #ifndef WX_PRECOMP
     #include "wx/wx.h"
 #endif

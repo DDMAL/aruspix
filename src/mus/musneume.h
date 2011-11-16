@@ -8,10 +8,6 @@
 #ifndef __MUS_NEUME_H__
 #define __MUS_NEUME_H__
 
-#ifdef __GNUG__
-    #pragma interface "musneume.cpp"    
-#endif
-
 #ifndef WX_PRECOMP
     #include "wx/wx.h"
 #endif

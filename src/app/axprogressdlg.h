@@ -8,10 +8,6 @@
 #ifndef __axprogressdlg_H__
 #define __axprogressdlg_H__
 
-#if defined(__GNUG__) && ! defined(__APPLE__)
-    #pragma interface "axprogressdlg.h"
-#endif
-
 #ifndef WX_PRECOMP
     #include "wx/wx.h"
 #endif

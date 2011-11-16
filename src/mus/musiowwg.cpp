@@ -5,16 +5,9 @@
 // Copyright (c) Authors and others. All rights reserved.
 /////////////////////////////////////////////////////////////////////////////
 
-#ifdef __GNUG__
-    #pragma implementation "musiowwg.h"
-#endif
-
 // For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"
 
-#ifdef __BORLANDC__
-    #pragma hdrstop
-#endif
 #include "wx/filename.h"
 
 #include "musiowwg.h"

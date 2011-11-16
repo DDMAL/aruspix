@@ -8,10 +8,6 @@
 #ifndef __axgotodlg_H__
 #define __axgotodlg_H__
 
-#if defined(__GNUG__) && ! defined(__APPLE__)
-    #pragma interface "axgotodlg.h"
-#endif
-
 #ifndef WX_PRECOMP
     #include "wx/wx.h"
 #endif

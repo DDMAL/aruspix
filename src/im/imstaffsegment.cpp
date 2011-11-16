@@ -5,16 +5,8 @@
 // Copyright (c) Authors and others. All rights reserved.   
 /////////////////////////////////////////////////////////////////////////////
 
-#if defined(__GNUG__) && ! defined(__APPLE__)
-    #pragma implementation "imstaffsegment.h"
-#endif
-
 // For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"
-
-#ifdef __BORLANDC__
-    #pragma hdrstop
-#endif
 
 #include "imstaffsegment.h"
 

@@ -8,10 +8,6 @@
 #ifndef __MUS_OBJECT_H__
 #define __MUS_OBJECT_H__
 
-#ifdef __GNUG__
-	#pragma interface "musobject.cpp"
-#endif
-
 #include <wx/wxprec.h>
 
 #ifndef WX_PRECOMP

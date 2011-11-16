@@ -10,10 +10,6 @@
 
 #ifdef AX_SUPERIMPOSITION
 
-#ifdef __GNUG__
-    #pragma interface "sup.cpp"
-#endif
-
 #ifndef WX_PRECOMP
     #include "wx/wx.h"
 #endif

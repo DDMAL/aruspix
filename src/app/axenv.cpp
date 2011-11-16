@@ -5,17 +5,9 @@
 // Copyright (c) Authors and others. All rights reserved.   
 /////////////////////////////////////////////////////////////////////////////
 
-#if defined(__GNUG__) && ! defined(__APPLE__)
-    #pragma implementation "axenv.h"
-#endif
-
 // For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"
 //#include "wx/wx.h"
-
-#ifdef __BORLANDC__
-    #pragma hdrstop
-#endif
 
 #include "axenv.h"
 #include "axapp.h"

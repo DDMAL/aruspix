@@ -7,20 +7,12 @@
 
 #ifdef AX_RECOGNITION
 
-#ifdef __GNUG__
-    #pragma implementation "recmus.cpp"
-#endif
-
 #include <algorithm>
 using std::min;
 using std::max;
 
 // For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"
-
-#ifdef __BORLANDC__
-    #pragma hdrstop
-#endif
 
 #include "recmus.h"
 #include "rec.h"

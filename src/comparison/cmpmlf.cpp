@@ -8,16 +8,9 @@
 #ifdef AX_RECOGNITION
 		#ifdef AX_COMPARISON
 
-#ifdef __GNUG__
-    #pragma implementation "cmpmlf.h"
-#endif
-
 // For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"
 
-#ifdef __BORLANDC__
-    #pragma hdrstop
-#endif
 #include "wx/filename.h"
 #include "wx/textfile.h"
 #include "wx/tokenzr.h"

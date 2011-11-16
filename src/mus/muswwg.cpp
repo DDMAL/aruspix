@@ -5,16 +5,8 @@
 // Copyright (c) Authors and others. All rights reserved.
 /////////////////////////////////////////////////////////////////////////////
 
-#ifdef __GNUG__
-    #pragma implementation "mus.cpp"
-#endif
-
 // For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"
-
-#ifdef __BORLANDC__
-    #pragma hdrstop
-#endif
 
 #include "muswwg.h"
 #include "musdef.h"

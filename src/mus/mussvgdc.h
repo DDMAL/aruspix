@@ -8,10 +8,6 @@
 #ifndef __MUS_SVG_DC_H__
 #define __MUS_SVG_DC_H__
 
-#if defined(__GNUG__) && ! defined(__APPLE__)
-    #pragma interface "mussvgdc.cpp"
-#endif
-
 #ifndef WX_PRECOMP
     #include "wx/wx.h"
 #endif

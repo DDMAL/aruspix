@@ -7,16 +7,8 @@
 
 #ifdef AX_SUPERIMPOSITION
 
-#if defined(__GNUG__) && ! defined(__APPLE__)
-    #pragma implementation "supfile.h"
-#endif
-
 // For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"
-
-#ifdef __BORLANDC__
-    #pragma hdrstop
-#endif
 
 #include "wx/file.h"
 #include "wx/filename.h"

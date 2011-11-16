@@ -10,10 +10,6 @@
 
 #ifdef AX_EDT
 
-#if defined(__GNUG__) && ! defined(__APPLE__)
-    #pragma interface "edtfile.cpp"
-#endif
-
 #ifndef WX_PRECOMP
     #include "wx/wx.h"
 #endif
