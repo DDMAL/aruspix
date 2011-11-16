@@ -11,10 +11,6 @@
 #ifdef AX_RECOGNITION
 	#ifdef AX_COMPARISON
 
-#if defined(__GNUG__) && ! defined(__APPLE__)
-    #pragma interface "cmpfile.cpp"
-#endif
-
 #ifndef WX_PRECOMP
     #include "wx/wx.h"
 #endif

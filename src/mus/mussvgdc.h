@@ -8,10 +8,6 @@
 #ifndef __MUS_SVG_DC_H__
 #define __MUS_SVG_DC_H__
 
-#if defined(__GNUG__) && ! defined(__APPLE__)
-    #pragma interface "mussvgdc.cpp"
-#endif
-
 #ifndef WX_PRECOMP
     #include "wx/wx.h"
 #endif
@@ -27,7 +23,7 @@
 
 /** 
  * This class implements a drawing context for generating SVG files.
- * The Leipzig font is embedded by incorporating ./data/svg/*.xml glyphs within
+ * The Leipzig font is embedded by incorporating ./data/svg/xxx.xml glyphs within
  * the SVG file.
  */
 class MusSvgDC: public MusDC

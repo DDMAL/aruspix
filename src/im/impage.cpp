@@ -5,20 +5,12 @@
 // Copyright (c) Authors and others. All rights reserved.   
 /////////////////////////////////////////////////////////////////////////////
 
-#if defined(__GNUG__) && ! defined(__APPLE__)
-    #pragma implementation "impage.h"
-#endif
-
 #include <algorithm>
 using std::min;
 using std::max;
 
 // For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"
-
-#ifdef __BORLANDC__
-    #pragma hdrstop
-#endif
 
 #include "wx/file.h"
 
@@ -1366,7 +1358,7 @@ bool ImPage::BinarizeAndClean( )
     m_opImTmp1 = imImageClone( m_opImMain );
     if ( !m_opImTmp1 )
         return this->Terminate( ERR_MEMORY );
-    imProcessPrune( m_opImMain, m_opImTmp1, 8, threshold, 0 );
+    imProcessRemoveByArea( m_opImMain, m_opImTmp1, 8, threshold, 0 , 0);
     SwapImages( &m_opImMain, &m_opImTmp1 );
     
     m_opImTmp1 = imImageCreate( m_opImMain->width - 2, m_opImMain->height - 2, 
@@ -1442,7 +1434,7 @@ bool ImPage::FindOrnateLetters( )
     m_opImTmp1 = imImageClone( m_opIm );
     if ( !m_opImTmp1 )
         return this->Terminate( ERR_MEMORY );
-    imProcessPrune( m_opIm, m_opImTmp1, 4, (int)(pow( 100 / TIP_FACTOR_1, 2 )), 0);
+    imProcessRemoveByArea( m_opIm, m_opImTmp1, 4, (int)(pow( 100 / TIP_FACTOR_1, 2 )), 0, 0);
     SwapImages( &m_opIm, &m_opImTmp1 );
 
     // close

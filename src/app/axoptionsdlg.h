@@ -8,10 +8,6 @@
 #ifndef __axoptionsdlg_H__
 #define __axoptionsdlg_H__
 
-#if defined(__GNUG__) && ! defined(__APPLE__)
-    #pragma interface "axoptionsdlg.h"
-#endif
-
 #ifndef WX_PRECOMP
     #include "wx/wx.h"
 #endif

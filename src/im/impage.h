@@ -8,10 +8,6 @@
 #ifndef __impage_H__
 #define __impage_H__
 
-#if defined(__GNUG__) && ! defined(__APPLE__)
-    #pragma interface "impage.cpp"
-#endif
-
 #ifndef WX_PRECOMP
     #include "wx/wx.h"
 #endif

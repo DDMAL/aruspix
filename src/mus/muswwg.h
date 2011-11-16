@@ -8,10 +8,6 @@
 #ifndef __MUS_WWG_H__
 #define __MUS_WWG_H__
 
-#ifdef __GNUG__
-    #pragma interface "mus.cpp"
-#endif
-
 #ifndef WX_PRECOMP
     #include "wx/wx.h"
 #endif

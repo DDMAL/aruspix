@@ -8,10 +8,6 @@
 #ifndef __imstaff_H__
 #define __imstaff_H__
 
-#if defined(__GNUG__) && ! defined(__APPLE__)
-    #pragma interface "imstaff.h"
-#endif
-
 #ifndef WX_PRECOMP
     #include "wx/wx.h"
 #endif

@@ -5,20 +5,12 @@
 // Copyright (c) Authors and others. All rights reserved.
 /////////////////////////////////////////////////////////////////////////////
 
-#if defined(__GNUG__) && ! defined(__APPLE__)
-    #pragma implementation "imoperator.h"
-#endif
-
 #include <algorithm>
 using std::min;
 using std::max;
 
 // For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"
-
-#ifdef __BORLANDC__
-    #pragma hdrstop
-#endif
 
 #include "wx/ffile.h"
 #include "wx/file.h"
@@ -493,7 +485,7 @@ void ImOperator::MoveElements( _imImage *src, _imImage *dest, int boxes[], int c
         imProcessAddMargins( box_m1, box_mm1, 1, 1);
         // effacement des pixels non connects -> zones plus petites que le box
         // attention si les marges sont larges !! eventuellement verifier le centroide ?
-        imProcessPrune( box_mm1, box_mm1, 4, box->height * box->width , 0 ); 
+        imProcessRemoveByArea( box_mm1, box_mm1, 4, box->height * box->width , 0, 0 );
 
         // suppression des marges d'un pixel supplementaire
         imProcessCrop( box_mm1, box_m1, 1, 1);

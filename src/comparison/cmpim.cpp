@@ -8,16 +8,8 @@
 #ifdef AX_RECOGNITION
 	#ifdef AX_COMPARISON
 
-#ifdef __GNUG__
-    #pragma implementation "cmpim.cpp"
-#endif
-
 // For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"
-
-#ifdef __BORLANDC__
-    #pragma hdrstop
-#endif
 
 #include "cmpim.h"
 #include "cmp.h"

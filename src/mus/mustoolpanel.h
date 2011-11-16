@@ -8,9 +8,6 @@
 #ifndef __MUS_TOOLPANEL_H__
 #define __MUS_TOOLPANEL_H__
 
-#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-    #pragma interface "mustoolpanel.cpp"
-#endif
 
 #ifndef WX_PRECOMP
     #include "wx/wx.h"

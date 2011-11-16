@@ -8,10 +8,6 @@
 #ifndef __axenv_H__
 #define __axenv_H__
 
-#if defined(__GNUG__) && ! defined(__APPLE__)
-    #pragma interface "axenv.h"
-#endif
-
 #ifndef WX_PRECOMP
     #include "wx/wx.h"
 #endif

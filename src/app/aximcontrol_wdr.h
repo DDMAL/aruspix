@@ -6,10 +6,6 @@
 #ifndef __WDR_aximcontrol_H__
 #define __WDR_aximcontrol_H__
 
-#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-    #pragma interface "aximcontrol_wdr.h"
-#endif
-
 // Include wxWidgets' headers
 
 #ifndef WX_PRECOMP

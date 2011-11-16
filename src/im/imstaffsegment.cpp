@@ -5,16 +5,8 @@
 // Copyright (c) Authors and others. All rights reserved.   
 /////////////////////////////////////////////////////////////////////////////
 
-#if defined(__GNUG__) && ! defined(__APPLE__)
-    #pragma implementation "imstaffsegment.h"
-#endif
-
 // For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"
-
-#ifdef __BORLANDC__
-    #pragma hdrstop
-#endif
 
 #include "imstaffsegment.h"
 
@@ -65,8 +57,8 @@ bool ImStaffSegment::AnalyzeSegment()
     float* perim = (float*)malloc( region_count * sizeof(float) );
     memset(perim, 0, region_count * sizeof(float) );
 
-    imAnalyzeMeasureArea( m_opIm, area );
-    imAnalyzeMeasurePerimeter( m_opIm, perim );
+    imAnalyzeMeasureArea( m_opIm, area, 1 );
+    imAnalyzeMeasurePerimeter( m_opIm, perim, 1 );
 
     float c = 0;
     for (i = 0; i < region_count; i++ )

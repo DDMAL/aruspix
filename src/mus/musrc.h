@@ -8,10 +8,6 @@
 #ifndef __MUS_RENDERER_H__
 #define __MUS_RENDERER_H__
 
-#ifdef __GNUG__
-    #pragma interface "musrc.cpp"
-#endif
-
 #ifndef WX_PRECOMP
     #include "wx/wx.h"
 #endif

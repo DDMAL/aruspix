@@ -11,16 +11,8 @@
 #include <algorithm>
 using std::max;
 
-#ifdef __GNUG__
-    #pragma implementation "cmpmus.cpp"
-#endif
-
 // For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"
-
-#ifdef __BORLANDC__
-    #pragma hdrstop
-#endif
 
 #include "cmpmus.h"
 #include "cmp.h"

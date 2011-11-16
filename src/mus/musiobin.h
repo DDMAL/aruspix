@@ -8,10 +8,6 @@
 #ifndef __MUS_IOBIN_H__
 #define __MUS_IOBIN_H__
 
-#ifdef __GNUG__
-    #pragma interface "musiobin.cpp"
-#endif
-
 #ifndef WX_PRECOMP
     #include "wx/wx.h"
 #endif

@@ -8,10 +8,6 @@
 #ifndef __axframe_H__
 #define __axframe_H__
 
-#if defined(__GNUG__) && ! defined(__APPLE__)
-    #pragma interface "axframe.h"
-#endif
-
 #ifndef WX_PRECOMP
     #include "wx/wx.h"
 #endif

@@ -7,16 +7,9 @@
 
 #ifdef AX_EDT
 
-#ifdef __GNUG__
-    #pragma implementation "edt.cpp"
-#endif
-
 // For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"
 
-#ifdef __BORLANDC__
-    #pragma hdrstop
-#endif
 #include "wx/dirctrl.h"
 #include "wx/calctrl.h"
 
@@ -222,7 +215,6 @@ void EdtEnv::ParseCmd( wxCmdLineParser *parser )
                 return;
             
             // draw it
-            /*
             MusPage *page = &mfile->m_pages[0];
             m_musViewPtr->SetDoc( mfile );
             page->Init( m_musViewPtr );

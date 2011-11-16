@@ -14,10 +14,6 @@ using std::max;
 // For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wx.h"
 
-
-#ifdef __BORLANDC__
-    #pragma hdrstop
-#endif
 #include "wx/filename.h"
 #include "wx/txtstrm.h"
 

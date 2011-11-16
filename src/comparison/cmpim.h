@@ -11,10 +11,6 @@
 #ifdef AX_RECOGNITION
 	#ifdef AX_COMPARISON
 
-#ifdef __GNUG__
-    #pragma interface "cmpim.cpp"
-#endif
-
 #ifndef WX_PRECOMP
     #include "wx/wx.h"
 #endif

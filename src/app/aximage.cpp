@@ -5,11 +5,6 @@
 // Copyright (c) Authors and others. All rights reserved.   
 /////////////////////////////////////////////////////////////////////////////
 
-
-#if defined(__GNUG__) && ! defined(__APPLE__)
-    #pragma implementation "aximage.h"
-#endif
-
 #include <algorithm>
 using std::min;
 using std::max;
@@ -25,10 +20,6 @@ using std::max;
 
 // For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"
-
-#ifdef __BORLANDC__
-    #pragma hdrstop
-#endif
 
 #include "aximage.h"
 
@@ -360,7 +351,7 @@ _imImage* GetImImage(const AxImage *img, const int color_space, const int data_t
 	if (!imColorModeIsPacked(color_space))
 	{
 		imImage* imTmp2 = imImageCreate(imTmp1->width, imTmp1->height,( IM_RGB ), IM_BYTE);
-		imConvertPacking(imTmp1->data[0],imTmp2->data[0],imTmp1->width,imTmp1->height,imTmp1->depth,imTmp1->data_type,1);
+		imConvertPacking(imTmp1->data[0],imTmp2->data[0],imTmp1->width,imTmp1->height,imTmp1->depth,imTmp2->depth,imTmp1->data_type,1);
 		imImageDestroy(imTmp1);
 		imTmp1 = imTmp2;
 	}
@@ -486,7 +477,7 @@ void SetImImage(_imImage *im, AxImage *img)
 	{
 		//imImage* imTmp2 = imImageCreate(imTmp1->width, imTmp1->height, (IM_RGB | IM_PACKED ), IM_INT);
 		imImage* imTmp2 = imImageCreate(imTmp1->width, imTmp1->height, ( IM_RGB ), IM_INT);
-		imConvertPacking(imTmp1->data[0],imTmp2->data[0],imTmp1->width,imTmp1->height,imTmp1->depth,imTmp1->data_type,0);
+		imConvertPacking(imTmp1->data[0],imTmp2->data[0],imTmp1->width,imTmp1->height,imTmp1->depth,imTmp2->depth,imTmp1->data_type,0);
 		imImageDestroy(imTmp1);
 		imTmp1 = imTmp2;
 	}

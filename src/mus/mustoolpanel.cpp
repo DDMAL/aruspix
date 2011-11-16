@@ -5,9 +5,6 @@
 // Copyright (c) Authors and others. All rights reserved.
 /////////////////////////////////////////////////////////////////////////////
 
-#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-    #pragma implementation "mustoolpanel.cpp"
-#endif
 
 #include <algorithm>
 using std::min;
@@ -15,10 +12,6 @@ using std::max;
 
 // For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"
-
-#ifdef __BORLANDC__
-    #pragma hdrstop
-#endif
 
 #include "mustoolpanel.h"
 #include "muswindow.h"

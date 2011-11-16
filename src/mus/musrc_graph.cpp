@@ -5,26 +5,16 @@
 // Copyright (c) Authors and others. All rights reserved.
 /////////////////////////////////////////////////////////////////////////////
 
-
-
-#ifdef __GNUG__
-    #pragma implementation "musrc.h"
-#endif
-
-#include <algorithm>
-using std::min;
-using std::max;
-
 // For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"
-
-#ifdef __BORLANDC__
-    #pragma hdrstop
-#endif
 
 #include "musrc.h"
 #include "muslaidoutstaff.h"
 #include "musdoc.h"
+
+#include <algorithm>
+using std::min;
+using std::max;
 
 void MusRC::v_bline ( MusDC *dc, int y1, int y2, int x1, int nbr)
 {

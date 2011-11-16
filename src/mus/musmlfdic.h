@@ -8,10 +8,6 @@
 #ifndef __MUS_MLFDIC_H__
 #define __MUS_MLFDIC_H__
 
-#ifdef __GNUG__
-    #pragma interface "musmlfdic.cpp"
-#endif
-
 #ifndef WX_PRECOMP
     #include "wx/wx.h"
 #endif

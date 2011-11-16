@@ -8,10 +8,6 @@
 #ifndef __imoperator_H__
 #define __imoperator_H__
 
-#if defined(__GNUG__) && ! defined(__APPLE__)
-    #pragma interface "imoperator.h"
-#endif
-
 #ifndef WX_PRECOMP
     #include "wx/wx.h"
 #endif

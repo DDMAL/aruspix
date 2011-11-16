@@ -8,10 +8,6 @@
 #ifndef __MUS_IOWWG_H__
 #define __MUS_IOWWG_H__
 
-#ifdef __GNUG__
-    #pragma interface "musiowwg.cpp"
-#endif
-
 #ifndef WX_PRECOMP
     #include "wx/wx.h"
 #endif

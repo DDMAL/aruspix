@@ -15,7 +15,7 @@
 #endif
 #endif
 
-#if !defined(__WXMSW__)
+#if !defined(__WXMSW__) &&  !defined(__APPLE__)
 	#include "res/ax.xpm"
 	//#include "bitmaps/wizard.xpm"
 #endif
