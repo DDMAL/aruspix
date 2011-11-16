@@ -215,7 +215,6 @@ void EdtEnv::ParseCmd( wxCmdLineParser *parser )
                 return;
             
             // draw it
-            /*
             MusPage *page = &mfile->m_pages[0];
             m_musViewPtr->SetDoc( mfile );
             page->Init( m_musViewPtr );

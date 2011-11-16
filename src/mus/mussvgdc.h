@@ -23,7 +23,7 @@
 
 /** 
  * This class implements a drawing context for generating SVG files.
- * The Leipzig font is embedded by incorporating ./data/svg/*.xml glyphs within
+ * The Leipzig font is embedded by incorporating ./data/svg/xxx.xml glyphs within
  * the SVG file.
  */
 class MusSvgDC: public MusDC

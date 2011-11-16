@@ -411,8 +411,8 @@ void MusBBoxDC::DrawCircle(int x, int y, int radius)
 
 void MusBBoxDC::DrawEllipse(int x, int y, int width, int height)
 {
-    int rh = height / 2;
-    int rw = width  / 2;
+    //int rh = height / 2;
+    //int rw = width  / 2;
 
     //WriteLine(wxString::Format("<ellipse cx=\"%d\" cy=\"%d\" rx=\"%d\" ry=\"%d\" />", x+rw,y+rh, rw, rh ));
 }

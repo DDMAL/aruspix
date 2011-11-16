@@ -147,6 +147,9 @@ AxFrame::AxFrame( wxWindow *parent, wxWindowID id, const wxString &title,
 	wxApp::s_macAboutMenuItemId = ID_ABOUT;
 	wxApp::s_macPreferencesMenuItemId = ID_MENU_OPTIONS;
 	wxApp::s_macHelpMenuTitleName = _("&Help");
+#else
+    // set the frame icon
+    SetIcon(wxICON(ax));
 #endif
 
     m_env = NULL;
@@ -156,9 +159,6 @@ AxFrame::AxFrame( wxWindow *parent, wxWindowID id, const wxString &title,
     m_toolBarPtr = NULL;
 
     m_midiIn = NULL;
-
-    // set the frame icon
-    SetIcon(wxICON(ax));
 
     // create a status bar just for fun (by default with 1 pane only)
     CreateStatusBar();

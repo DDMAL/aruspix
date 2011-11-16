@@ -937,7 +937,8 @@ bool MusWWGInput::ReadStaff( MusLaidOutStaff *staff, MusLaidOutLayer *layer )
 		staff->AddStaffElement( layer );
 		m_section->AddSectionElement( staff );
 	}
-	m_staff = dynamic_cast<MusStaff*> (&m_section->m_sectionElements[layer->voix - 1]);
+    // this is not safe because we rely on voix number too much
+	m_staff = dynamic_cast<MusStaff*> (&m_section->m_sectionElements[(layer->voix - 1)]);
 	wxASSERT_MSG( m_staff, "MusStaff cannot be NULL" );
 	m_layer = dynamic_cast<MusLayer*> (&m_staff->m_staffElements[0]);
 	wxASSERT_MSG( m_layer, "MusLayer cannot be NULL" );
