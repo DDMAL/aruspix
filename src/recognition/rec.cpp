@@ -11,7 +11,7 @@
 #include "wx/wxprec.h"
 
 //#include "wx/config.h"
-//#include "wx/valgen.h"
+#include "wx/valgen.h"
 //#include "wx/file.h"
 //#include "wx/filename.h"
 //#include "wx/dir.h"
@@ -53,10 +53,6 @@ bool RecEnv::s_find_borders = true;
 bool RecEnv::s_find_ornate_letters = true;
 bool RecEnv::s_find_text = true;
 bool RecEnv::s_find_text_in_staves = true;
-int RecEnv::s_pre_margin_top = 150;
-int RecEnv::s_pre_margin_bottom = 120;
-int RecEnv::s_pre_margin_left = 30;
-int RecEnv::s_pre_margin_right = 20;
 
 wxString RecEnv::s_rec_typ_model = "";
 wxString RecEnv::s_rec_mus_model = "";
@@ -214,8 +210,8 @@ BEGIN_EVENT_TABLE(RecEnv,AxEnv)
     EVT_MENU( ID4_NEW_BOOK, RecEnv::OnNewBook )
     EVT_MENU( ID4_OPEN_BOOK, RecEnv::OnOpenBook )
     EVT_MENU( ID4_CLOSE_BOOK, RecEnv::OnCloseBook )
-	EVT_MENU( ID4_OPEN_MEI, RecEnv::OnOpenMEI )
-	EVT_MENU( ID4_SAVE_MEI, RecEnv::OnSaveMEI )
+	EVT_MENU( ID4_IMPORT_MEI, RecEnv::OnOpenMEI )
+    EVT_MENU( ID4_EXPORT_MEI, RecEnv::OnSaveMEI )
     EVT_MENU( ID4_BOOK_LOAD, RecEnv::OnBookLoad )
     EVT_MENU( ID4_BOOK_PRE, RecEnv::OnBookPreprocess )
     EVT_MENU( ID4_BOOK_REC, RecEnv::OnBookRecognize )
@@ -357,8 +353,8 @@ void RecEnv::RealizeToolbar( )
     
     toolbar->InsertTool( 0, ID4_NEW_BOOK, _T("New"), m_framePtr->GetToolbarBitmap( "book_new.png" ), wxNullBitmap, wxITEM_NORMAL, _("New book"), _("New book") );
     toolbar->InsertTool( 1, ID4_OPEN_BOOK, _T("Open"), m_framePtr->GetToolbarBitmap( "book_open.png" ), wxNullBitmap, wxITEM_NORMAL, _("Open book"), _("Open book") );
-	toolbar->InsertTool( 4, ID4_OPEN_MEI, _("Import MEI"), m_framePtr->GetToolbarBitmap( "folder_yellow.png" ) , wxNullBitmap, wxITEM_NORMAL, _("Import MEI"), _("Import an MEI file") );
-    toolbar->InsertTool( 7, ID4_SAVE_MEI, _("Save MEI"), m_framePtr->GetToolbarBitmap( "filesave.png" ) , wxNullBitmap, wxITEM_NORMAL, _("MeiEx"), _("Export an MEI file") );
+	//toolbar->InsertTool( 4, ID4_IMPORT_MEI, _("Import MEI"), m_framePtr->GetToolbarBitmap( "folder_yellow_mei.png" ) , wxNullBitmap, wxITEM_NORMAL, _("Import MEI"), _("Import an MEI file") );
+    //toolbar->InsertTool( 7, ID4_EXPORT_MEI, _("Export MEI"), m_framePtr->GetToolbarBitmap( "filesave_mei.png" ) , wxNullBitmap, wxITEM_NORMAL, _("MeiEx"), _("Export an MEI file") );
     toolbar->InsertSeparator( 2 );
     
     toolbar->AddTool( ID4_ZOOM_OUT, _T("Zoom out"), m_framePtr->GetToolbarBitmap( "viewmag-.png" ), wxNullBitmap, wxITEM_NORMAL, _("Zoom out"), _("Zoom out") );
@@ -395,10 +391,11 @@ void RecEnv::LoadConfig()
     RecEnv::s_find_ornate_letters = (pConfig->Read("Text initials",1)==1);
     RecEnv::s_find_text = (pConfig->Read("Text",1)==1);
     RecEnv::s_find_text_in_staves = (pConfig->Read("Text in staves",1)==1);
-    RecEnv::s_pre_margin_top = pConfig->Read("Pre margin top", 150);
-    RecEnv::s_pre_margin_bottom = pConfig->Read("Pre margin bottom", 120);
-    RecEnv::s_pre_margin_left = pConfig->Read("Pre margin left", 30);
-    RecEnv::s_pre_margin_right = pConfig->Read("Pre margin right", 20);
+    // impage statics - not great
+    ImPage::s_pre_margin_top = pConfig->Read("Pre margin top", 150);
+    ImPage::s_pre_margin_bottom = pConfig->Read("Pre margin bottom", 120);
+    ImPage::s_pre_margin_left = pConfig->Read("Pre margin left", 30);
+    ImPage::s_pre_margin_right = pConfig->Read("Pre margin right", 20);
     
     RecEnv::s_last_batch = pConfig->Read("Last Batch", 0L );
     RecEnv::s_book_sash = pConfig->Read("Book Sash", 200 );
@@ -439,10 +436,10 @@ void RecEnv::SaveConfig()
     pConfig->Write("Text initials", RecEnv::s_find_ornate_letters);
     pConfig->Write("Text", RecEnv::s_find_text );
     pConfig->Write("Text in staves", RecEnv::s_find_text_in_staves );
-    pConfig->Write("Pre margin top", RecEnv::s_pre_margin_top);
-    pConfig->Write("Pre margin bottom",RecEnv::s_pre_margin_bottom);
-    pConfig->Write("Pre margin left", RecEnv::s_pre_margin_left);
-    pConfig->Write("Pre margin right", RecEnv::s_pre_margin_right );
+    pConfig->Write("Pre margin top", ImPage::s_pre_margin_top);
+    pConfig->Write("Pre margin bottom", ImPage::s_pre_margin_bottom);
+    pConfig->Write("Pre margin left", ImPage::s_pre_margin_left);
+    pConfig->Write("Pre margin right", ImPage::s_pre_margin_right );
         
     pConfig->Write("Last Batch", RecEnv::s_last_batch );
     pConfig->Write("Book Sash", RecEnv::s_book_sash);
@@ -1592,12 +1589,12 @@ void RecEnv::Preprocess( )
 	
 	// if a book is opened, use the book binarization parameters
 	if ( m_recBookFilePtr->IsOpened() && m_recBookFilePtr->m_pre_page_binarization_select == true ){
-		AxBinSelectDlgFunc *bindlg = new AxBinSelectDlgFunc( m_framePtr, -1, _("Binarization Selection"), m_recFilePtr, m_recBookFilePtr );
+		RecBinSelectDlg *bindlg = new RecBinSelectDlg( m_framePtr, -1, _("Binarization Selection"), m_recFilePtr, m_recBookFilePtr );
 		bindlg->Center( wxBOTH );
 		bindlg->ShowModal();
 		bindlg->Destroy();
 	} else if ( !m_recBookFilePtr->IsOpened() && ImPage::s_pre_page_binarization_select == true ){
-		AxBinSelectDlgFunc *bindlg = new AxBinSelectDlgFunc( m_framePtr, -1, _("Binarization Selection"), m_recFilePtr, NULL );
+		RecBinSelectDlg *bindlg = new RecBinSelectDlg( m_framePtr, -1, _("Binarization Selection"), m_recFilePtr, NULL );
 		bindlg->Center( wxBOTH );
 		bindlg->ShowModal();
 		bindlg->Destroy();
@@ -1937,6 +1934,31 @@ void RecEnv::OnUpdateUI( wxUpdateUIEvent &event )
     else
         event.Enable(true);
 }
+
+
+
+//----------------------------------------------------------------------------
+// RecBinSelectDlg
+//----------------------------------------------------------------------------
+
+
+RecBinSelectDlg::RecBinSelectDlg(wxWindow *parent, wxWindowID id, const wxString &title, RecFile *recfile, RecBookFile *recbookfile ) : 
+wxDialog( parent, id, title )
+{
+	RecBinSelectDlgFunc( this, TRUE );
+
+	GetCPageBin()->SetString(0, BRINK_2CLASSES_DESCRIPTION);
+	GetCPageBin()->SetString(1, SAUVOLA_DESCRIPTION);
+	GetCPageBin()->SetString(2, BRINK_3CLASSES_DESCRIPTION);
+	
+	this->GetCPageBin()->SetValidator( wxGenericValidator( &recfile->m_pre_page_binarization_method ) );
+	this->GetScBinRgnSize()->SetValidator( wxGenericValidator( &recfile->m_pre_page_binarization_method_size ) );
+	if ( recbookfile == NULL )
+		this->GetCbDeactivateDlg()->SetValidator( wxGenericValidator( &ImPage::s_pre_page_binarization_select ) );
+	else 
+		this->GetCbDeactivateDlg()->SetValidator( wxGenericValidator( &recbookfile->m_pre_page_binarization_select ) );
+}
+
 
 #endif // AX_RECOGNITION
 

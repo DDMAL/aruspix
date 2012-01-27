@@ -34,7 +34,7 @@ WX_DEFINE_OBJARRAY(AxEnvArray);
     #include "recognition/rec.h"
 #endif
 
-#ifdef AX_EDT
+#ifdef AX_EDITION
     #include "edition/edt.h"
 #endif
 
@@ -200,12 +200,12 @@ AxFrame::AxFrame( wxWindow *parent, wxWindowID id, const wxString &title,
 	CmpEnv::LoadConfig();
 #endif
 
-#ifdef AX_EDT
+#ifdef AX_EDITION
     envRow = new AxEnvRow( "EdtEnv", _("Edition"), menuId++, _("Edition workspace") );
     menuEnv->Insert( menuPos++, envRow->m_menuId, envRow->m_menuItem, envRow->m_helpStr, wxITEM_CHECK );
     m_envArray.Add( envRow );
 	EdtEnv::LoadConfig();
-#endif //AX_EDT
+#endif //AX_EDITION
 
 
     RealizeToolbar();
@@ -227,9 +227,9 @@ AxFrame::~AxFrame()
 	SupEnv::SaveConfig();
 #endif //AX_SUPERIMPOSITION
 
-#ifdef AX_EDT
+#ifdef AX_EDITION
 	EdtEnv::SaveConfig();
-#endif //AX_EDT
+#endif //AX_EDITION
 
 #ifdef AX_COMPARISON
 	CmpEnv::SaveConfig();
@@ -250,10 +250,6 @@ void AxFrame::RealizeToolbar()
 #endif
 		m_toolBarPtr->SetToolBitmapSize( wxSize( size, size ) );
 	}
-   
-	//MainToolBarFunc( m_toolBarPtr );
-
-	//m_toolBarPtr->SetMargins( 2, 2 );
     
     m_toolBarPtr->AddTool( ID_NEW, _("New"), GetToolbarBitmap( "filenew.png" ) , wxNullBitmap, wxITEM_NORMAL, _("New"), _("Create a new file") );
     m_toolBarPtr->AddTool( ID_OPEN, _("Open"), GetToolbarBitmap( "folder_yellow.png" ) , wxNullBitmap, wxITEM_NORMAL, _("Open"), _("Open a file") );
@@ -290,14 +286,14 @@ void AxFrame::RealizeToolbar()
     }
 #endif //AX_SUPERIMPOSITION
 
-#ifdef AX_EDT
+#ifdef AX_EDITION
 	GetEnvironmentMenuId( "EdtEnv", &pos );
 	if ( pos != -1 )
 	{
 		envRow = &m_envArray[pos];
 		m_toolBarPtr->AddTool( envRow->m_menuId, EnvBitmapFunc(4), wxNullBitmap, TRUE, NULL, envRow->m_menuItem, envRow->m_helpStr );
 	}
-#endif //AX_EDT
+#endif //AX_EDITION
 
 	*/
     

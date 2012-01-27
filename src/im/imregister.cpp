@@ -341,13 +341,6 @@ bool ImRegister::DetectPoints( wxPoint *points1, wxPoint *points2)
 	int top_staff1 = staff_nb - 1 + bottom_staff1;
 	int top_staff2 = staff_nb - 1 + bottom_staff2;
 	
-	if ( (int)m_imPage1Ptr->m_staves.GetCount() != (int)m_imPage2Ptr->m_staves.GetCount() )
-	{
-		wxLogWarning( "Staff detection did not retrieve the same number of staves of both images" );
-		wxLogDebug("Page1, staves %d %d; Page2, staves %d %d", top_staff1, bottom_staff1, top_staff2, bottom_staff2 );
-	}
-	
-	
 	int top_y1 = m_imPage1Ptr->m_staves[top_staff1].m_y;
 	int top_y2 = m_imPage2Ptr->m_staves[top_staff2].m_y;
 	int bottom_y1 = m_imPage1Ptr->m_staves[bottom_staff1].m_y;
@@ -384,11 +377,19 @@ bool ImRegister::DetectPoints( wxPoint *points1, wxPoint *points2)
     if ( !m_src1 )
         return this->Terminate( ERR_MEMORY );
 	imProcessNegative( m_src1, m_src1 );
-	ImageDestroy( &m_src2 );
+	
+    ImageDestroy( &m_src2 );
     m_src2 = imImageDuplicate( m_imPage2Ptr->m_img1 );
     if ( !m_src2 )
         return this->Terminate( ERR_MEMORY );
 	imProcessNegative( m_src2, m_src2 );
+    
+    if ( (int)m_imPage1Ptr->m_staves.GetCount() != (int)m_imPage2Ptr->m_staves.GetCount() )
+	{
+		wxLogError( "Staff detection did not retrieve the same number of staves of both images" );
+		wxLogDebug("Page1, staves %d %d; Page2, staves %d %d", top_staff1, bottom_staff1, top_staff2, bottom_staff2 );
+        return this->Terminate( ERR_UNKNOWN );
+	}
     
     /*
     wxLogDebug("point1 1 %d %d", points1[0].x, points1[0].y );
@@ -405,9 +406,23 @@ bool ImRegister::DetectPoints( wxPoint *points1, wxPoint *points2)
 	return this->Terminate( ERR_NONE );	
 }
 
-
+#ifdef AX_SUPERIMPOSITION
 bool ImRegister::Register( wxPoint *points1, wxPoint *points2)
 {
+    
+    /*
+    wxLogDebug("point1 1 %d %d", points1[0].x, points1[0].y );
+    wxLogDebug("point1 2 %d %d", points1[1].x, points1[1].y );
+    wxLogDebug("point1 3 %d %d", points1[2].x, points1[2].y );
+    wxLogDebug("point1 4 %d %d", points1[3].x, points1[3].y );
+     
+    wxLogDebug("point2 1 %d %d", points2[0].x, points2[0].y );
+    wxLogDebug("point2 2 %d %d", points2[1].x, points2[1].y );
+    wxLogDebug("point2 3 %d %d", points2[2].x, points2[2].y );
+    wxLogDebug("point2 4 %d %d", points2[3].x, points2[3].y );
+    */
+     
+    
     wxASSERT_MSG( m_progressDlg, "Progress dialog cannot be NULL");
 	wxASSERT_MSG( m_src1, "Src1 cannot be NULL");
 	wxASSERT_MSG( m_src2, "Src2 cannot be NULL");
@@ -744,8 +759,9 @@ bool ImRegister::Register( wxPoint *points1, wxPoint *points2)
 	
     return this->Terminate( ERR_NONE );	
 }
+#endif
 
-
+#ifdef AX_SUPERIMPOSITION
 bool ImRegister::SubRegister( wxPoint origine, wxSize window, wxSize size, int level, int row, int column )
 {
     
@@ -753,6 +769,9 @@ bool ImRegister::SubRegister( wxPoint origine, wxSize window, wxSize size, int l
     
     wxSize subwindow = window;
     
+    if (!imProcessSafeCrop(m_im1, &size.x, &size.y, &origine.x, &origine.y))
+        return this->Terminate( ERR_UNKNOWN );
+            
     m_opImTmp1 = imImageCreate( size.GetWidth(), size.GetHeight(), m_im1->color_space, m_im1->data_type );
     if ( !m_opImTmp1 )
         return this->Terminate( ERR_MEMORY );
@@ -807,7 +826,7 @@ bool ImRegister::SubRegister( wxPoint origine, wxSize window, wxSize size, int l
         {
             m_opImMask = imImageCreate( width, height, m_im2->color_space, m_im2->data_type );
             if ( !m_opImMask )
-                    return this->Terminate( ERR_MEMORY );
+                return this->Terminate( ERR_MEMORY );
             
             //if (( row == 1 ) || ((row / plevel) == 1) || (column == 1) || ((column / plevel) == 1) ) // border only, for debug
             {
@@ -859,7 +878,7 @@ bool ImRegister::SubRegister( wxPoint origine, wxSize window, wxSize size, int l
 
     // the problem here is that we have a recusion: we cannot use a m_opXXX image because it would be overriden
     // we use a local variable 'buffer' which would NOT be destroyed if a Terminate occur deeper in the recursion
-    // => potential memory leak if the program keep failing....
+    // => potential memory leak if the program keeps failing....
 	imImage *buffer = imImageCreate( size.GetWidth(), size.GetHeight(), m_im2->color_space, m_im2->data_type );
 	if ( !buffer )
         return this->Terminate( ERR_MEMORY );
@@ -935,6 +954,7 @@ bool ImRegister::SubRegister( wxPoint origine, wxSize window, wxSize size, int l
     imImageDestroy( buffer );
 	return true;
 }
+#endif
 
 
 

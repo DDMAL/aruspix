@@ -259,6 +259,56 @@ wxSizer *RecBookDataFunc4( wxWindow *parent, bool call_fit, bool set_sizer )
     return item0;
 }
 
+wxSizer *RecBinSelectDlgFunc( wxWindow *parent, bool call_fit, bool set_sizer )
+{
+    wxBoxSizer *item0 = new wxBoxSizer( wxVERTICAL );
+
+    wxFlexGridSizer *item1 = new wxFlexGridSizer( 2, 0, 0 );
+
+    wxStaticText *item2 = new wxStaticText( parent, ID4_TEXTPgBin, _("Document condition"), wxDefaultPosition, wxDefaultSize, 0 );
+    item1->Add( item2, 0, wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+
+    wxString strs3[] = 
+    {
+        _("Brink (2 Classes)"), 
+        _("Sauvola"), 
+        _("Brink (3 Classes)")
+    };
+    wxChoice *item3 = new wxChoice( parent, ID4_BIN_CHOICE, wxDefaultPosition, wxSize(140,-1), 3, strs3, 0 );
+    item1->Add( item3, 0, wxALIGN_CENTER|wxALL, 5 );
+
+    item0->Add( item1, 0, wxLEFT|wxRIGHT, 5 );
+
+    wxBoxSizer *item4 = new wxBoxSizer( wxHORIZONTAL );
+
+    wxStaticText *item5 = new wxStaticText( parent, ID4_TEXTRgnSize, _("Region Size (uneven lighting)"), wxDefaultPosition, wxDefaultSize, wxALIGN_RIGHT );
+    item4->Add( item5, 0, wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+
+    wxSpinCtrl *item6 = new wxSpinCtrl( parent, ID4_RGN_SIZE_SPINCTRL, wxT("15"), wxDefaultPosition, wxSize(55,-1), 0, 3, 50, 15 );
+    item4->Add( item6, 0, wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT, 5 );
+
+    item0->Add( item4, 0, wxALIGN_CENTER|wxLEFT|wxRIGHT, 5 );
+
+    wxStaticLine *item7 = new wxStaticLine( parent, ID4_LINE1, wxDefaultPosition, wxSize(300,-1), wxLI_HORIZONTAL );
+    item0->Add( item7, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+
+    wxCheckBox *item8 = new wxCheckBox( parent, ID4_DEACTIVATE_DIALOG_CHECKBOX, _("Deactivate this dialog"), wxDefaultPosition, wxDefaultSize, 0 );
+    item0->Add( item8, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+
+    wxButton *item9 = new wxButton( parent, wxID_OK, _("OK"), wxDefaultPosition, wxDefaultSize, 0 );
+    item9->SetDefault();
+    item0->Add( item9, 0, wxALIGN_CENTER|wxALL, 5 );
+
+    if (set_sizer)
+    {
+        parent->SetSizer( item0 );
+        if (call_fit)
+            item0->SetSizeHints( parent );
+    }
+    
+    return item0;
+}
+
 // Implement menubar functions
 
 wxMenuBar *MenuBarFunc4()
@@ -273,6 +323,9 @@ wxMenuBar *MenuBarFunc4()
     item1->Append( ID4_SAVE_BOOK, _("Sa&ve book"), _("Close the book") );
     item1->Append( ID4_SAVE_AS_BOOK, _("Save boo&k as"), _("Close the book") );
     item1->AppendSeparator();
+    item1->Append( ID4_IMPORT_MEI, _("Import MEI"), _("Import MEI file") );
+    item1->AppendSeparator();
+    item1->Append( ID4_EXPORT_MEI, _("Export to MEI"), _("Export file as a MEI file") );
     item1->Append( ID4_EXPORT_WWG, _("Export to WWG"), _("Save music part as a Wolfgang WWG file") );
     item1->Append( ID4_EXPORT_CMME, _("Export to CMME"), _("Save music part as a CMME XML file") );
     item1->Append( ID4_EXPORT_IMAGE, _("Export as image (beta)"), _("Save music part in an image file") );

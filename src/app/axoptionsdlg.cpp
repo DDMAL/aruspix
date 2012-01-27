@@ -230,13 +230,13 @@ void AxOptionsDlg::OptionsDlgRecognition( wxNotebook *notebook )
         wxGenericValidator(&RecEnv::s_find_text_in_staves));
 	// margins
 	this->GetScMarginTopOps3()->SetValidator(
-        wxGenericValidator(&RecEnv::s_pre_margin_top));
+        wxGenericValidator(&ImPage::s_pre_margin_top));
 	this->GetScMarginBottomOps3()->SetValidator(
-        wxGenericValidator(&RecEnv::s_pre_margin_bottom));
+        wxGenericValidator(&ImPage::s_pre_margin_bottom));
 	this->GetScMarginLeftOps3()->SetValidator(
-        wxGenericValidator(&RecEnv::s_pre_margin_left));
+        wxGenericValidator(&ImPage::s_pre_margin_left));
 	this->GetScMarginRightOps3()->SetValidator(
-        wxGenericValidator(&RecEnv::s_pre_margin_right));
+        wxGenericValidator(&ImPage::s_pre_margin_right));
 	// binarization
 	this->GetCBinOps3()->SetValidator(
         wxGenericValidator(&ImPage::s_pre_page_binarization_method));
@@ -542,7 +542,7 @@ AxOptMusWindow::AxOptMusWindow( wxWindow *parent, wxWindowID id,
 	this->SetDoc( m_docPtr );
 	//this->Resize();
     */
-    wxLogError( "AxOptMusWindow::AxOptMusWindow missing in ax2" );
+    wxLogDebug( "AxOptMusWindow::AxOptMusWindow missing in ax2" );
 }
 
 AxOptMusWindow::AxOptMusWindow()
@@ -557,25 +557,4 @@ AxOptMusWindow::~AxOptMusWindow()
 
 void AxOptMusWindow::OnMouse(wxMouseEvent &event)
 {
-}
-
-//----------------------------------------------------------------------------
-// AxBinSelectDlgFunc
-//----------------------------------------------------------------------------
-
-AxBinSelectDlgFunc::AxBinSelectDlgFunc(wxWindow *parent, wxWindowID id, const wxString &title, RecFile *recfile, RecBookFile *recbookfile ) : 
-					wxDialog( parent, id, title )
-{
-	BinSelectDlgFunc( this, TRUE );
-	
-	GetCPageBin()->SetString(0, BRINK_2CLASSES_DESCRIPTION);
-	GetCPageBin()->SetString(1, SAUVOLA_DESCRIPTION);
-	GetCPageBin()->SetString(2, BRINK_3CLASSES_DESCRIPTION);
-	
-	this->GetCPageBin()->SetValidator( wxGenericValidator( &recfile->m_pre_page_binarization_method ) );
-	this->GetScBinRgnSize()->SetValidator( wxGenericValidator( &recfile->m_pre_page_binarization_method_size ) );
-	if ( recbookfile == NULL )
-		this->GetCbDeactivateDlg()->SetValidator( wxGenericValidator( &ImPage::s_pre_page_binarization_select ) );
-	else 
-		this->GetCbDeactivateDlg()->SetValidator( wxGenericValidator( &recbookfile->m_pre_page_binarization_select ) );
 }

@@ -304,6 +304,16 @@ int AxScrolledWindow::GetAdjustMode()
     return m_adjustMode;    
 }
 
+int AxScrolledWindow::ToZoomedRender( int i )
+{
+    return i * 1.0 * m_scale;
+}
+
+wxPoint AxScrolledWindow::ToZoomedRender( wxPoint p )
+{
+    return wxPoint( ToZoomedRender( p.x ), ToZoomedRender( p.y ) );
+}
+
 void AxScrolledWindow::BeginSelection(int draggingShape)
 {
     m_draggingShape = draggingShape;

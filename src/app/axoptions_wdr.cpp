@@ -508,56 +508,6 @@ wxSizer *Sup1DlgFunc( wxWindow *parent, bool call_fit, bool set_sizer )
     return item0;
 }
 
-wxSizer *BinSelectDlgFunc( wxWindow *parent, bool call_fit, bool set_sizer )
-{
-    wxBoxSizer *item0 = new wxBoxSizer( wxVERTICAL );
-
-    wxFlexGridSizer *item1 = new wxFlexGridSizer( 2, 0, 0 );
-
-    wxStaticText *item2 = new wxStaticText( parent, ID0_TEXTPgBin, _("Document condition"), wxDefaultPosition, wxDefaultSize, 0 );
-    item1->Add( item2, 0, wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL|wxALL, 5 );
-
-    wxString strs3[] = 
-    {
-        _("Brink (2 Classes)"), 
-        _("Sauvola"), 
-        _("Brink (3 Classes)")
-    };
-    wxChoice *item3 = new wxChoice( parent, ID0_BIN_CHOICE, wxDefaultPosition, wxSize(140,-1), 3, strs3, 0 );
-    item1->Add( item3, 0, wxALIGN_CENTER|wxALL, 5 );
-
-    item0->Add( item1, 0, wxLEFT|wxRIGHT, 5 );
-
-    wxBoxSizer *item4 = new wxBoxSizer( wxHORIZONTAL );
-
-    wxStaticText *item5 = new wxStaticText( parent, ID0_TEXTRgnSize, _("Region Size (uneven lighting)"), wxDefaultPosition, wxDefaultSize, wxALIGN_RIGHT );
-    item4->Add( item5, 0, wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL|wxALL, 5 );
-
-    wxSpinCtrl *item6 = new wxSpinCtrl( parent, ID0_RGN_SIZE_SPINCTRL, wxT("15"), wxDefaultPosition, wxSize(55,-1), 0, 3, 50, 15 );
-    item4->Add( item6, 0, wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT, 5 );
-
-    item0->Add( item4, 0, wxALIGN_CENTER|wxLEFT|wxRIGHT, 5 );
-
-    wxStaticLine *item7 = new wxStaticLine( parent, ID0_LINE1, wxDefaultPosition, wxSize(300,-1), wxLI_HORIZONTAL );
-    item0->Add( item7, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL, 5 );
-
-    wxCheckBox *item8 = new wxCheckBox( parent, ID0_DEACTIVATE_DIALOG_CHECKBOX, _("Deactivate this dialog"), wxDefaultPosition, wxDefaultSize, 0 );
-    item0->Add( item8, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
-
-    wxButton *item9 = new wxButton( parent, wxID_OK, _("OK"), wxDefaultPosition, wxDefaultSize, 0 );
-    item9->SetDefault();
-    item0->Add( item9, 0, wxALIGN_CENTER|wxALL, 5 );
-
-    if (set_sizer)
-    {
-        parent->SetSizer( item0 );
-        if (call_fit)
-            item0->SetSizeHints( parent );
-    }
-    
-    return item0;
-}
-
 // Implement menubar functions
 
 // Implement toolbar functions

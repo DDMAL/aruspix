@@ -45,7 +45,7 @@ public:
         long style = wxScrolledWindowStyle );
     virtual ~AxScrolledWindow();
     
-        void BeginSelection(int draggingShape = SHAPE_RECT);
+    void BeginSelection(int draggingShape = SHAPE_RECT);
 	void RedrawBuffer( );
     void EndSelection();
     void SetPen(wxPen pen);
@@ -61,13 +61,15 @@ public:
     bool CanZoomIn( );
     void ZoomOut( );
     bool CanZoomOut( );
+    int ToZoomedRender( int i );
+    wxPoint ToZoomedRender( wxPoint p );
 
 private:
     void RedrawDraggingArea(wxPoint newPosition, bool drawShape);
     void GetSelectionPoints(wxPoint *start, wxPoint *end);
 
 private:
-        int m_adjustMode;
+    int m_adjustMode;
 	int m_orgx, m_orgy;
     double m_zoom;
     double m_zoomMin;

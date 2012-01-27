@@ -60,7 +60,10 @@ int ImPage::s_pre_page_binarization_method = PRE_BINARIZATION_BRINK;
 int ImPage::s_pre_page_binarization_method_size = 15;
 bool ImPage::s_pre_page_binarization_select = true;
 int ImPage::s_num_staff_lines = 5;
-
+int ImPage::s_pre_margin_top = 150;
+int ImPage::s_pre_margin_bottom = 120;
+int ImPage::s_pre_margin_left = 30;
+int ImPage::s_pre_margin_right = 20;
 
 //----------------------------------------------------------------------------
 // ImPage
@@ -741,6 +744,7 @@ bool ImPage::FindStaves( int min, int max, bool normalize, bool crop )
     wxASSERT_MSG( m_progressDlg, "Progress dialog cannot be NULL");
 	wxASSERT_MSG( m_img0, "Img0 cannot be NULL");
 
+
     int resize_factor = RESIZE_FACTOR;
     if ( this->m_reduction == 1 )
         resize_factor = 1;
@@ -752,8 +756,16 @@ bool ImPage::FindStaves( int min, int max, bool normalize, bool crop )
 
     if ( !GetImage( &m_opIm, resize_factor, *m_pre_image_binarization_methodPtr, true ) )
         return false;
-
+    
+    // no leak until here?  
+    //return this->Terminate( ERR_UNKNOWN );    
+    
+    wxASSERT(!m_opImTmp1);
     m_opImTmp1 = imImageClone( m_opIm );
+  
+    // leak ??    
+    //return this->Terminate( ERR_UNKNOWN );     
+    
     if ( !m_opImTmp1 )
         return this->Terminate( ERR_MEMORY );
 
@@ -763,7 +775,6 @@ bool ImPage::FindStaves( int min, int max, bool normalize, bool crop )
     ImRLE_spaces.Alloc( m_opIm->height * m_opIm->width / 10 ); // 10% de l'image
     ArrayOfRLE ImRLE_lines; // run length des lignes
     ImRLE_lines.Alloc( m_opIm->height * m_opIm->width / 20 ); // 5% de l'image
-
 
     imbyte *bufIm = (imbyte*)m_opIm->data[0];
     imbyte *bufImTmp = (imbyte*)m_opImTmp1->data[0];
@@ -893,7 +904,7 @@ bool ImPage::FindStaves( int min, int max, bool normalize, bool crop )
     if ( !m_progressDlg->SetOperation( _("Detecting staff line width ...") ) )
         return this->Terminate( ERR_CANCELED );
     imCounterTotal( counter, count , "Detecting staff line width ..." );
-
+    
     // lines
     maxRLE = new int[space];
     memset( maxRLE, 0, space * sizeof(int) );
@@ -944,8 +955,7 @@ bool ImPage::FindStaves( int min, int max, bool normalize, bool crop )
         }
     }
     int line = max_val;
-    delete[] maxRLE;
-
+    delete[] maxRLE;  
 
     // garder les valeurs
     this->m_line_width = line * resize_factor;
@@ -1067,12 +1077,12 @@ bool ImPage::FindStaves( int min, int max, bool normalize, bool crop )
 		if ( !GetImage( &m_opImMain ) )
 			return false;
 
-		x1 = std::max( 0, this->m_x1  - RecEnv::s_pre_margin_left ); // 30 px en moins = de marge d'erreur
-		x2 = std::min( m_opImMain->width - 1 , this->m_x2 + RecEnv::s_pre_margin_right ); // 20 px en plus = de marge d'erreur
+		x1 = std::max( 0, this->m_x1  - ImPage::s_pre_margin_left ); // 30 px en moins = de marge d'erreur
+		x2 = std::min( m_opImMain->width - 1 , this->m_x2 + ImPage::s_pre_margin_right ); // 20 px en plus = de marge d'erreur
 		this->m_x1 = x1;
 		this->m_x2 = x2;
-		y1 = std::max ( 0, m_opLines1[0] - 50 - RecEnv::s_pre_margin_bottom ); // 120 px en dessous de la derniere portee
-		y2 = std::min ( m_opImMain->height -1 , m_opLines1[nb_staves - 1] + 50 + RecEnv::s_pre_margin_top ); // 150 px en dessus de la premiere portee
+		y1 = std::max ( 0, m_opLines1[0] - 50 - ImPage::s_pre_margin_bottom ); // 120 px en dessous de la derniere portee
+		y2 = std::min ( m_opImMain->height -1 , m_opLines1[nb_staves - 1] + 50 + ImPage::s_pre_margin_top ); // 150 px en dessus de la premiere portee
         this->m_y1 = m_opImMain->height -1 - y2;
 
 		m_opImTmp1 = imImageCreate( x2 - x1, y2 - y1, m_opImMain->color_space, m_opImMain->data_type );    
@@ -1096,10 +1106,10 @@ bool ImPage::FindStaves( int min, int max, bool normalize, bool crop )
 			*m_isModified = true;
             
         this->m_size = wxSize( m_img0->width, m_img0->height );
-        x1 = 0;
-        x2 = m_img0->width - 1;
-        this->m_x1 = x1;
-		this->m_x2 = x2;
+        //x1 = 0;
+        //x2 = m_img0->width - 1;
+        //this->m_x1 = x1;
+		//this->m_x2 = x2;
         y1 = 0;
         y2 = m_img0->height -1;
         this->m_y1 = m_img0->height -1 - y2;

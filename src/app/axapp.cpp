@@ -27,7 +27,7 @@ const wxString IPC_START = "StartOther";
 int AxApp::s_version_major = 2;
 int AxApp::s_version_minor = 0;
 int AxApp::s_version_revision = 0;
-wxString AxApp::s_version = wxString::Format("%d.%d.%d", AxApp::s_version_major, AxApp::s_version_minor, AxApp::s_version_revision);
+wxString AxApp::s_version = wxString::Format("%d.%d.%d beta", AxApp::s_version_major, AxApp::s_version_minor, AxApp::s_version_revision);
 wxString AxApp::s_build_date = __DATE__;
 wxString AxApp::s_build_time = __TIME__;
 
@@ -239,11 +239,11 @@ bool AxApp::OnInit()
         m_help->Initialize ( m_resourcesPath + "/en/recognition" );
 #endif //AX_RECOGNITION
 
-#ifdef AX_EDT
+#ifdef AX_EDITION
     m_locale.AddCatalog( "edt" );
     if (!m_help->Initialize ( m_resourcesPath + "/" + lang + "/edt") )
         m_help->Initialize ( m_resourcesPath + "/en/edt" );
-#endif //AX_EDT
+#endif //AX_EDITION
 
 #ifdef AX_COMPARISON
     m_locale.AddCatalog( "comparison" );

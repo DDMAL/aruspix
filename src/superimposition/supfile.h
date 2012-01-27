@@ -37,6 +37,8 @@ public:
 	virtual void OpenContent( ); // Open content after archive extraction
 	virtual void SaveContent( ); // Save content before archive creation
 	virtual void CloseContent( ); // Desactivate content before deletion
+    
+    bool CancelSuperimposition( bool ask_user );
 	
 	// functor
 	bool Superimpose( wxArrayPtrVoid params, AxProgressDlg *dlg );
@@ -62,8 +64,8 @@ public:
 	bool m_hasNewPoints1, m_hasNewPoints2;
 	wxPoint m_points1[4];
     wxPoint m_points2[4];
-	bool m_hasPoints1;
-	bool m_hasPoints2;
+	bool m_hasManualPoints1;
+	bool m_hasManualPoints2;
 
 protected:
     bool m_isSuperimposed;

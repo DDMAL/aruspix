@@ -38,12 +38,12 @@ public:
         long style = wxScrolledWindowStyle );
     virtual ~SupImSrcWindow();
     
-        void SetCirclePen( const wxPen *pen, int width );
+    void SetCirclePen( const wxPen *pen, int width );
     void DrawCircle( );
     void ScrollSource( double x, double y );
     
 private:
-        wxPoint m_circleCenter;
+    wxPoint m_circleCenter;
     wxPen m_pen;
     
 private:
@@ -103,7 +103,10 @@ public:
     void SetViews( SupImSrcWindow *view1, SupImSrcWindow *view2 );
     void ScrollSources( double x, double y );
     void DrawCircles( bool clear = false );
-	//SupFile *GetSupFile( ) { return m_supFilePtr; }
+	void SetSupFile( SupFile *supFile ) { m_supFilePtr = supFile; }
+    void SetInitialPoints( );
+    wxPoint ToLogical( wxPoint p );
+    wxPoint ToRender( wxPoint p );
 
 private:
     virtual void OpenPage( bool yield = true );
@@ -115,16 +118,14 @@ private:
     AxImageController *m_imControl2Ptr;
     SupImSrcWindow *m_viewSrc1Ptr;
     SupImSrcWindow *m_viewSrc2Ptr;
-    int m_selectCounter; // for manual point selection
 
 public:
     int m_red, m_green;
-    wxPoint m_points[4]; // for manual point selection
+    SupFile *m_supFilePtr;
 	
 protected:
     //SupEnv *m_envPtr;
     // to synchronize view
-    //SupFile *m_supFilePtr;
     
 private:
     

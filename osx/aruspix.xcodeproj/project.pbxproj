@@ -9,10 +9,13 @@
 /* Begin PBXBuildFile section */
 		0A5FB27A0DD49D2D001E460E /* imbrink3classes.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0A5FB2790DD49D2D001E460E /* imbrink3classes.cpp */; };
 		4D12CE4010748D8E00E65714 /* edt.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D12CE3C10748D8E00E65714 /* edt.cpp */; };
-		4D12CE4110748D8E00E65714 /* edt_wdr.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D12CE3E10748D8E00E65714 /* edt_wdr.cpp */; };
 		4D1675E70D8B628900F4D912 /* imkmeans.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D1675E60D8B628900F4D912 /* imkmeans.cpp */; };
 		4D1676650D8B765000F4D912 /* supbookfile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D1676610D8B765000F4D912 /* supbookfile.cpp */; };
 		4D1676660D8B765000F4D912 /* supfile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D1676630D8B765000F4D912 /* supfile.cpp */; };
+		4D25BF5914A3BBB500596392 /* cmp_wdr_inc.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D25BF5814A3BBB500596392 /* cmp_wdr_inc.cpp */; };
+		4D25BF5C14A3BCB600596392 /* sup_wdr_inc.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D25BF5B14A3BCB600596392 /* sup_wdr_inc.cpp */; };
+		4D25BF5E14A3BD0300596392 /* edt_wdr_inc.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D25BF5D14A3BD0300596392 /* edt_wdr_inc.cpp */; };
+		4D25BF6014A3BD3600596392 /* rec_wdr_inc.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D25BF5F14A3BD3600596392 /* rec_wdr_inc.cpp */; };
 		4D2994D612C7F2B500D0514B /* axfile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D2994D512C7F2B500D0514B /* axfile.cpp */; };
 		4D2E465913FBE9F200023B02 /* muslaidoutstaff.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D2E465613FBE9F200023B02 /* muslaidoutstaff.cpp */; };
 		4D2E465A13FBE9F200023B02 /* muslayout.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D2E465713FBE9F200023B02 /* muslayout.cpp */; };
@@ -104,10 +107,8 @@
 		A58524D70A1B9604002D9D8A /* axscrolledwindow.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A58524680A1B9604002D9D8A /* axscrolledwindow.cpp */; };
 		A58524DF0A1B9604002D9D8A /* ax.xpm in Resources */ = {isa = PBXBuildFile; fileRef = A58524780A1B9604002D9D8A /* ax.xpm */; };
 		A58524E00A1B9604002D9D8A /* wxprec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A585247A0A1B9604002D9D8A /* wxprec.cpp */; };
-		A58524EA0A1B9604002D9D8A /* rec_wdr.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A585248D0A1B9604002D9D8A /* rec_wdr.cpp */; };
 		A58524EB0A1B9604002D9D8A /* recfile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A585248F0A1B9604002D9D8A /* recfile.cpp */; };
 		A58524EC0A1B9604002D9D8A /* sup.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A58524920A1B9604002D9D8A /* sup.cpp */; };
-		A58524EE0A1B9604002D9D8A /* sup_wdr.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A58524950A1B9604002D9D8A /* sup_wdr.cpp */; };
 		A58524EF0A1B9604002D9D8A /* tinystr.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A58524980A1B9604002D9D8A /* tinystr.cpp */; };
 		A58524F00A1B9604002D9D8A /* tinyxml.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A585249A0A1B9604002D9D8A /* tinyxml.cpp */; };
 		A58524F10A1B9604002D9D8A /* tinyxmlerror.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A585249C0A1B9604002D9D8A /* tinyxmlerror.cpp */; };
@@ -137,13 +138,16 @@
 		0A5FB2790DD49D2D001E460E /* imbrink3classes.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = imbrink3classes.cpp; sourceTree = "<group>"; };
 		4D12CE3C10748D8E00E65714 /* edt.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = edt.cpp; path = ../src/edition/edt.cpp; sourceTree = SOURCE_ROOT; };
 		4D12CE3D10748D8E00E65714 /* edt.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = edt.h; path = ../src/edition/edt.h; sourceTree = SOURCE_ROOT; };
-		4D12CE3E10748D8E00E65714 /* edt_wdr.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = edt_wdr.cpp; path = ../src/edition/edt_wdr.cpp; sourceTree = SOURCE_ROOT; };
 		4D12CE3F10748D8E00E65714 /* edt_wdr.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = edt_wdr.h; path = ../src/edition/edt_wdr.h; sourceTree = SOURCE_ROOT; };
 		4D1675E60D8B628900F4D912 /* imkmeans.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = imkmeans.cpp; sourceTree = "<group>"; };
 		4D1676610D8B765000F4D912 /* supbookfile.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = supbookfile.cpp; sourceTree = "<group>"; };
 		4D1676620D8B765000F4D912 /* supbookfile.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = supbookfile.h; sourceTree = "<group>"; };
 		4D1676630D8B765000F4D912 /* supfile.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = supfile.cpp; sourceTree = "<group>"; };
 		4D1676640D8B765000F4D912 /* supfile.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = supfile.h; sourceTree = "<group>"; };
+		4D25BF5814A3BBB500596392 /* cmp_wdr_inc.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = cmp_wdr_inc.cpp; sourceTree = "<group>"; };
+		4D25BF5B14A3BCB600596392 /* sup_wdr_inc.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = sup_wdr_inc.cpp; sourceTree = "<group>"; };
+		4D25BF5D14A3BD0300596392 /* edt_wdr_inc.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = edt_wdr_inc.cpp; path = ../src/edition/edt_wdr_inc.cpp; sourceTree = "<group>"; };
+		4D25BF5F14A3BD3600596392 /* rec_wdr_inc.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = rec_wdr_inc.cpp; sourceTree = "<group>"; };
 		4D2994D512C7F2B500D0514B /* axfile.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = axfile.cpp; sourceTree = "<group>"; };
 		4D2E465513FBE9F200023B02 /* muslaidoutstaff.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = muslaidoutstaff.h; path = ../src/mus/muslaidoutstaff.h; sourceTree = SOURCE_ROOT; };
 		4D2E465613FBE9F200023B02 /* muslaidoutstaff.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = muslaidoutstaff.cpp; path = ../src/mus/muslaidoutstaff.cpp; sourceTree = SOURCE_ROOT; };
@@ -310,13 +314,11 @@
 		A58524780A1B9604002D9D8A /* ax.xpm */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = ax.xpm; sourceTree = "<group>"; };
 		A58524790A1B9604002D9D8A /* resource.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = resource.h; sourceTree = "<group>"; };
 		A585247A0A1B9604002D9D8A /* wxprec.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = wxprec.cpp; sourceTree = "<group>"; };
-		A585248D0A1B9604002D9D8A /* rec_wdr.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = rec_wdr.cpp; sourceTree = "<group>"; };
 		A585248E0A1B9604002D9D8A /* rec_wdr.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = rec_wdr.h; sourceTree = "<group>"; };
 		A585248F0A1B9604002D9D8A /* recfile.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = recfile.cpp; sourceTree = "<group>"; };
 		A58524900A1B9604002D9D8A /* recfile.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = recfile.h; sourceTree = "<group>"; };
 		A58524920A1B9604002D9D8A /* sup.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = sup.cpp; sourceTree = "<group>"; };
 		A58524930A1B9604002D9D8A /* sup.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = sup.h; sourceTree = "<group>"; };
-		A58524950A1B9604002D9D8A /* sup_wdr.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = sup_wdr.cpp; sourceTree = "<group>"; };
 		A58524960A1B9604002D9D8A /* sup_wdr.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = sup_wdr.h; sourceTree = "<group>"; };
 		A58524980A1B9604002D9D8A /* tinystr.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = tinystr.cpp; sourceTree = "<group>"; };
 		A58524990A1B9604002D9D8A /* tinystr.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = tinystr.h; sourceTree = "<group>"; };
@@ -469,8 +471,8 @@
 				4DC24ABB119B72EF00B2EF98 /* edtfile.h */,
 				4D12CE3C10748D8E00E65714 /* edt.cpp */,
 				4D12CE3D10748D8E00E65714 /* edt.h */,
-				4D12CE3E10748D8E00E65714 /* edt_wdr.cpp */,
 				4D12CE3F10748D8E00E65714 /* edt_wdr.h */,
+				4D25BF5D14A3BD0300596392 /* edt_wdr_inc.cpp */,
 			);
 			name = edition;
 			sourceTree = "<group>";
@@ -508,6 +510,7 @@
 				5736CE460C354E4A00254E7B /* cmp.cpp */,
 				5736CE470C354E4A00254E7B /* cmp.h */,
 				5736CE4A0C354E4A00254E7B /* cmp_wdr.h */,
+				4D25BF5814A3BBB500596392 /* cmp_wdr_inc.cpp */,
 				5736CE4B0C354E4A00254E7B /* cmpctrl.cpp */,
 				5736CE4C0C354E4A00254E7B /* cmpctrl.h */,
 				5736CE4D0C354E4A00254E7B /* cmpfile.cpp */,
@@ -634,8 +637,8 @@
 				A5D0D4F70A6576B500A4B1CA /* recim.h */,
 				A5EFDB210A278C980019FA6A /* rec.cpp */,
 				A50FE1390A6D6E240038D682 /* rec.h */,
-				A585248D0A1B9604002D9D8A /* rec_wdr.cpp */,
 				A585248E0A1B9604002D9D8A /* rec_wdr.h */,
+				4D25BF5F14A3BD3600596392 /* rec_wdr_inc.cpp */,
 				A585248F0A1B9604002D9D8A /* recfile.cpp */,
 				A58524900A1B9604002D9D8A /* recfile.h */,
 			);
@@ -647,6 +650,7 @@
 			isa = PBXGroup;
 			children = (
 				A58524960A1B9604002D9D8A /* sup_wdr.h */,
+				4D25BF5B14A3BCB600596392 /* sup_wdr_inc.cpp */,
 				4D64284D0D9344FD00DA3A64 /* supim.cpp */,
 				4D64284E0D9344FD00DA3A64 /* supim.h */,
 				4DA9FDDB0D90984E000E7BA6 /* supbookctrl.cpp */,
@@ -657,7 +661,6 @@
 				4D1676640D8B765000F4D912 /* supfile.h */,
 				A58524920A1B9604002D9D8A /* sup.cpp */,
 				A58524930A1B9604002D9D8A /* sup.h */,
-				A58524950A1B9604002D9D8A /* sup_wdr.cpp */,
 			);
 			name = superimposition;
 			path = ../src/superimposition;
@@ -830,10 +833,8 @@
 				A58524D60A1B9604002D9D8A /* axprocess.cpp in Sources */,
 				A58524D70A1B9604002D9D8A /* axscrolledwindow.cpp in Sources */,
 				A58524E00A1B9604002D9D8A /* wxprec.cpp in Sources */,
-				A58524EA0A1B9604002D9D8A /* rec_wdr.cpp in Sources */,
 				A58524EB0A1B9604002D9D8A /* recfile.cpp in Sources */,
 				A58524EC0A1B9604002D9D8A /* sup.cpp in Sources */,
-				A58524EE0A1B9604002D9D8A /* sup_wdr.cpp in Sources */,
 				A58524EF0A1B9604002D9D8A /* tinystr.cpp in Sources */,
 				A58524F00A1B9604002D9D8A /* tinyxml.cpp in Sources */,
 				A58524F10A1B9604002D9D8A /* tinyxmlerror.cpp in Sources */,
@@ -880,7 +881,6 @@
 				0A5FB27A0DD49D2D001E460E /* imbrink3classes.cpp in Sources */,
 				4DDE3CDE0EF1B1D6006D4F2C /* musiowwg.cpp in Sources */,
 				4D12CE4010748D8E00E65714 /* edt.cpp in Sources */,
-				4D12CE4110748D8E00E65714 /* edt_wdr.cpp in Sources */,
 				4DC24AA9119B718700B2EF98 /* RtMidi.cpp in Sources */,
 				4DC24AB7119B72C900B2EF98 /* musneume.cpp in Sources */,
 				4DC24ABC119B72EF00B2EF98 /* edtfile.cpp in Sources */,
@@ -918,17 +918,21 @@
 				4D2F7F78145AEBF700EF930B /* musclef.cpp in Sources */,
 				4DC6A82D1473F80D00D73769 /* musrc_graph.cpp in Sources */,
 				4DC6A82F1473F83900D73769 /* musrc_bezier.cpp in Sources */,
+				4D25BF5914A3BBB500596392 /* cmp_wdr_inc.cpp in Sources */,
+				4D25BF5C14A3BCB600596392 /* sup_wdr_inc.cpp in Sources */,
+				4D25BF5E14A3BD0300596392 /* edt_wdr_inc.cpp in Sources */,
+				4D25BF6014A3BD3600596392 /* rec_wdr_inc.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin XCBuildConfiguration section */
-		5785F1360CEA53940083A6E1 /* DebugDyn */ = {
+		4D4AE33014BD6FBC00DD352A /* ReleaseSuperimposition */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
-				COPY_PHASE_STRIP = NO;
+				COPY_PHASE_STRIP = YES;
 				GCC_VERSION = com.apple.compilers.llvmgcc42;
 				GCC_WARN_TYPECHECK_CALLS_TO_PRINTF = NO;
 				HEADER_SEARCH_PATHS = "";
@@ -937,18 +941,17 @@
 				SYMROOT = "$(PROJECT_DIR)/../bin";
 				VALID_ARCHS = i386;
 			};
-			name = DebugDyn;
+			name = ReleaseSuperimposition;
 		};
-		5785F1370CEA53940083A6E1 /* DebugDyn */ = {
+		4D4AE33114BD6FBC00DD352A /* ReleaseSuperimposition */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				COPY_PHASE_STRIP = YES;
-				FRAMEWORK_SEARCH_PATHS = "$(ARUSPIX_MEI)";
-				GCC_DEBUGGING_SYMBOLS = default;
-				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				FRAMEWORK_SEARCH_PATHS = /Aruspix.app/Contents/Frameworks;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
-				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_OPTIMIZATION_LEVEL = s;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/Carbon.framework/Headers/Carbon.h";
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
@@ -956,33 +959,37 @@
 				HEADER_SEARCH_PATHS = (
 					../src,
 					"$(ARUSPIX_IMLIB)/include",
-					"$(ARUSPIX_WX)/osx-static-debug/lib/wx/include/mac-ansi-debug-static-2.8",
+					"$(ARUSPIX_WX)/osx-static/lib/wx/include/mac-ansi-release-static-2.8",
 					"$(ARUSPIX_WX)/include",
 					"$(ARUSPIX_WX)/contrib/include",
+					/usr/include/libxml2,
 				);
 				INFOPLIST_FILE = "Aruspix-Info.plist";
 				INSTALL_PATH = "$(USER_APPS_DIR)";
 				LIBRARY_SEARCH_PATHS = (
 					"$(ARUSPIX_IMLIB)/lib",
-					"$(ARUSPIX_WX)/osx-debug/lib",
+					"$(ARUSPIX_WX)/osx-static/lib",
+					/usr/lib,
 				);
 				OBJROOT = "$(PROJECT_DIR)/../obj";
 				OTHER_CFLAGS = (
-					"-D__WXDEBUG__",
+					"-D__MACOSX_CORE__",
 					"-D__WXMAC__",
-					"-D__AXDEBUG__",
 					"-D_FILE_OFFSET_BITS=64",
 					"-D_LARGE_FILES",
-					"-DAX_COMPARISON",
-					"-DAX_SUPERIMPOSITION",
-					"-DAX_EDT",
 					"-DWX_PRECOMP",
-					"-DAX_RECOGNITION",
 					"-DNO_GCC_PRAGMA",
+					"-DAX_SUPERIMPOSITION",
 				);
 				OTHER_LDFLAGS = (
 					"-framework",
 					mei,
+					"-framework",
+					CoreMidi,
+					"-framework",
+					CoreAudio,
+					"-framework",
+					CoreFoundation,
 					"-lz",
 					"-lpthread",
 					"-framework",
@@ -994,23 +1001,26 @@
 					"-framework",
 					Cocoa,
 					"-framework",
+					OpenGL,
+					"-framework",
 					System,
 					"-liconv",
-					"-lim_u",
-					"-lim_process_u",
-					"-lwx_macd_core-$(ARUSPIX_WX_VERSION)",
-					"-lwx_base_carbond-$(ARUSPIX_WX_VERSION)",
-					"-lwx_base_carbond_net-$(ARUSPIX_WX_VERSION)",
-					"-lwx_macd_html-$(ARUSPIX_WX_VERSION)",
-					"-lwx_macd_adv-$(ARUSPIX_WX_VERSION)",
-					"-lwxpngd-$(ARUSPIX_WX_VERSION)",
-					"-lwxjpegd-$(ARUSPIX_WX_VERSION)",
+					"-lim",
+					"-lim_process",
+					"-lim_fftw",
+					"-lwx_mac_html-$(ARUSPIX_WX_VERSION)",
+					"-lwx_mac_adv-$(ARUSPIX_WX_VERSION)",
+					"-lwx_mac_core-$(ARUSPIX_WX_VERSION)",
+					"-lwx_base_carbon_net-$(ARUSPIX_WX_VERSION)",
+					"-lwx_base_carbon-$(ARUSPIX_WX_VERSION)",
+					"-lwx_mac_aui-$(ARUSPIX_WX_VERSION)",
+					"-lwxpng-$(ARUSPIX_WX_VERSION)",
+					"-lwxjpeg-$(ARUSPIX_WX_VERSION)",
+					"-lxml2",
 				);
 				PRODUCT_NAME = Aruspix;
 				SDKROOT = macosx10.6;
 				SECTORDER_FLAGS = "";
-				STRIP_INSTALLED_PRODUCT = NO;
-				STRIP_STYLE = debugging;
 				SYMROOT = "$(PROJECT_DIR)/../bin";
 				WARNING_CFLAGS = (
 					"-Wmost",
@@ -1018,7 +1028,48 @@
 					"-Wno-unknown-pragmas",
 				);
 			};
-			name = DebugDyn;
+			name = ReleaseSuperimposition;
+		};
+		4D4AE33214BD6FBC00DD352A /* ReleaseSuperimposition */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_1)",
+					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_2)",
+					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_3)",
+					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_4)",
+					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_5)",
+					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_6)",
+					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_7)",
+				);
+				FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(SRCROOT)/../..\"";
+				FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_2 = "\"$(SRCROOT)/../../ax-libs/osx\"";
+				FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_3 = "\"$(SRCROOT)/../../..\"";
+				FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_4 = "\"$(SRCROOT)/../../ax-libs/osx\"";
+				FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_5 = "\"$(SRCROOT)/../../ax-libs/osx\"";
+				FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_6 = "\"$(SRCROOT)/../../ax-libs/osx\"";
+				FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_7 = "\"$(SRCROOT)/../../libmei/build/Debug\"";
+				GCC_MODEL_TUNING = G5;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				HEADER_SEARCH_PATHS = (
+					"$(ARUSPIX_IMLIB)/include",
+					"$(ARUSPIX_WX)/osx-static-debug/lib/wx/include/mac-ansi-debug-static-2.8",
+					"$(ARUSPIX_WX)/include",
+					"$(ARUSPIX_WX)/contrib/include",
+				);
+				INSTALL_PATH = /usr/local/bin;
+				LIBRARY_SEARCH_PATHS = (
+					"$(ARUSPIX_WX)/osx-static-debug/lib",
+					"$(ARUSPIX_IMLIB)/lib",
+				);
+				PRODUCT_NAME = ax_test;
+				ZERO_LINK = NO;
+			};
+			name = ReleaseSuperimposition;
 		};
 		A1A6E17D134254230024A821 /* Debug */ = {
 			isa = XCBuildConfiguration;
@@ -1112,34 +1163,6 @@
 				PRODUCT_NAME = ax_test;
 			};
 			name = Debug;
-		};
-		A1A6E17E134254230024A821 /* DebugDyn */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_1)",
-					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_2)",
-					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_3)",
-					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_4)",
-					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_5)",
-					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_6)",
-					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_7)",
-				);
-				FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(SRCROOT)/../..\"";
-				FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_2 = "\"$(SRCROOT)/../../ax-libs/osx\"";
-				FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_3 = "\"$(SRCROOT)/../../..\"";
-				FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_4 = "\"$(SRCROOT)/../../ax-libs/osx\"";
-				FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_5 = "\"$(SRCROOT)/../../ax-libs/osx\"";
-				FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_6 = "\"$(SRCROOT)/../../ax-libs/osx\"";
-				FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_7 = "\"$(SRCROOT)/../../libmei/build/Debug\"";
-				GCC_MODEL_TUNING = G5;
-				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
-				INSTALL_PATH = /usr/local/bin;
-				PRODUCT_NAME = ax_test;
-			};
-			name = DebugDyn;
 		};
 		A1A6E17F134254230024A821 /* Release */ = {
 			isa = XCBuildConfiguration;
@@ -1268,10 +1291,10 @@
 					"-D_FILE_OFFSET_BITS=64",
 					"-D_LARGE_FILES",
 					"-DWX_PRECOMP",
-					"-DAX_SUPERIMPOSITION",
-					"-DAX_EDT",
-					"-DAX_RECOGNITION",
 					"-DNO_GCC_PRAGMA",
+					"-DAX_SUPERIMPOSITION",
+					"-DAX_RECOGNITION",
+					"-DAX_EDITION",
 				);
 				OTHER_LDFLAGS = (
 					"-framework",
@@ -1357,13 +1380,12 @@
 					"-D__MACOSX_CORE__",
 					"-D__WXMAC__",
 					"-D_FILE_OFFSET_BITS=64",
-					"-D_LARGE_FILES",
-					"-DAX_SUPERIMPOSITION",
-					"-DAX_COMPARISON",
-					"-DAX_EDT",
-					"-DWX_PRECOMP",
-					"-DAX_RECOGNITION",
 					"-DNO_GCC_PRAGMA",
+					"-D_LARGE_FILES",
+					"-DWX_PRECOMP",
+					"-DAX_SUPERIMPOSITION",
+					"-DAX_RECOGNITION",
+					"-DAX_EDITION",
 				);
 				OTHER_LDFLAGS = (
 					"-framework",
@@ -1389,9 +1411,9 @@
 					"-framework",
 					System,
 					"-liconv",
-					"-lim_u",
-					"-lim_process_u",
-					"-lim_fftw_u",
+					"-lim",
+					"-lim_process",
+					"-lim_fftw",
 					"-lwx_mac_html-$(ARUSPIX_WX_VERSION)",
 					"-lwx_mac_adv-$(ARUSPIX_WX_VERSION)",
 					"-lwx_mac_core-$(ARUSPIX_WX_VERSION)",
@@ -1421,31 +1443,31 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				A1A6E17D134254230024A821 /* Debug */,
-				A1A6E17E134254230024A821 /* DebugDyn */,
 				A1A6E17F134254230024A821 /* Release */,
+				4D4AE33214BD6FBC00DD352A /* ReleaseSuperimposition */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
+			defaultConfigurationName = Debug;
 		};
 		A58508B50A001129006E82B1 /* Build configuration list for PBXProject "aruspix" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				A58508B60A001129006E82B1 /* Debug */,
-				5785F1360CEA53940083A6E1 /* DebugDyn */,
 				A58508B70A001129006E82B1 /* Release */,
+				4D4AE33014BD6FBC00DD352A /* ReleaseSuperimposition */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
+			defaultConfigurationName = Debug;
 		};
 		A58508C50A00113C006E82B1 /* Build configuration list for PBXNativeTarget "Aruspix" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				A58508C60A00113C006E82B1 /* Debug */,
-				5785F1370CEA53940083A6E1 /* DebugDyn */,
 				A58508C70A00113C006E82B1 /* Release */,
+				4D4AE33114BD6FBC00DD352A /* ReleaseSuperimposition */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
+			defaultConfigurationName = Debug;
 		};
 /* End XCConfigurationList section */
 	};

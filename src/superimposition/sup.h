@@ -147,7 +147,7 @@ public:
     SupEnv();
     virtual ~SupEnv();
     
-        virtual void LoadWindow();
+    virtual void LoadWindow();
     static void LoadConfig();
     static void SaveConfig();
     virtual void ParseCmd( wxCmdLineParser *parser );
@@ -163,7 +163,7 @@ public:
     void UpdateViews( int flags );
 	
 private:
-        SupImController *m_imControl1Ptr;
+    SupImController *m_imControl1Ptr;
     SupImController *m_imControl2Ptr;	
     SupImWindow *m_imView1Ptr;
     SupImWindow *m_imView2Ptr;
@@ -172,6 +172,8 @@ private:
     AxImageController *m_srcControl2Ptr;
     SupImSrcWindow *m_srcView1Ptr;
     SupImSrcWindow *m_srcView2Ptr;
+    // 
+    int m_toolCount;
 	
     wxSplitterWindow *m_bookSplitterPtr;
 	wxSplitterWindow *m_pageSplitterPtr;
@@ -204,7 +206,9 @@ public:
 	static bool s_expand_ax;
     
 private:
-        void OnBookEdit( wxCommandEvent &event );
+    void RealizeSupToolbar( bool superimposed );
+    //
+    void OnBookEdit( wxCommandEvent &event );
     void OnBookOptimize( wxCommandEvent &event );
     void OnBookSuperimpose( wxCommandEvent &event );
     void OnBookLoad( wxCommandEvent &event );
@@ -218,21 +222,14 @@ private:
     void OnSaveAs( wxCommandEvent &event );
     void OnClose( wxCommandEvent &event );
     void OnExportImage( wxCommandEvent &event );
-    void OnAdjust( wxCommandEvent &event );
     void OnZoom( wxCommandEvent &event );
-    void OnPrevious( wxCommandEvent &event );
-    void OnNext( wxCommandEvent &event );
-    void OnGoto( wxCommandEvent &event );
-    void OnNextBoth( wxCommandEvent &event );
-    void OnPreviousBoth( wxCommandEvent &event );
     void OnPaste( wxCommandEvent &event );
     void OnCopy( wxCommandEvent &event );
     void OnCut( wxCommandEvent &event );
     void OnPutPoints( wxCommandEvent &event );
     void OnRun( wxCommandEvent &event );
+    void OnCancelSuperimposition( wxCommandEvent &event );
     void OnUpdateUI( wxUpdateUIEvent &event );
-	// custom event
-	void OnEndPutPoints( wxCommandEvent &event );
 
 private:
     DECLARE_DYNAMIC_CLASS(SupEnv)

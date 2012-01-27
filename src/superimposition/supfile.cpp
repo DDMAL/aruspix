@@ -44,8 +44,8 @@ SupFile::SupFile( wxString name, SupEnv *env )
 	m_imRegisterPtr = NULL;
 	
 	m_isSuperimposed = false;
-	m_hasPoints1 = false;
-	m_hasPoints2 = false;
+	m_hasManualPoints1 = false;
+    m_points1[0] = wxPoint(-1,-1);
 }
 
 
@@ -65,8 +65,8 @@ void SupFile::NewContent( )
     m_imRegisterPtr = new ImRegister( m_basename, &m_isModified );
 	
 	m_isSuperimposed = false;
-	m_hasPoints1 = false;
-	m_hasPoints2 = false;
+	m_hasManualPoints1 = false;
+    m_points1[0] = wxPoint(-1,-1);
 }
 
 
@@ -113,8 +113,6 @@ void SupFile::OpenContent( )
 	
 	
     // points
-	m_hasPoints1 = false;
-	m_hasPoints2 = false;
     node = m_xml_root->FirstChild( "points" );
     if ( node )
 	{
@@ -138,10 +136,14 @@ void SupFile::OpenContent( )
 				continue;
 			m_points2[i] = wxPoint( atoi( elem->Attribute( "x" ) ), atoi( elem->Attribute( "y" ) ) );
 		}
-		// we assume that, if there is a 'points' element all points are present
-		m_hasPoints1 = true;
-		m_hasPoints2 = true;
 	}
+    // points
+    node = m_xml_root->FirstChild( "manual_points" );
+    if ( node )
+	{
+        m_hasManualPoints1 = true;
+    }
+    
 	
 	failed = !m_imRegisterPtr->Load( m_xml_root );
 	if ( failed )
@@ -174,25 +176,27 @@ void SupFile::SaveContent( )
 	image2.SetAttribute( "filename" , orig2.GetFullPath().c_str() );
     m_xml_root->InsertEndChild( image2 );
 	
-	if ( m_hasPoints1 && m_hasPoints2 )
+    TiXmlElement points("points");
+    for (i = 0; i < 4; i++ )
+    {
+        TiXmlElement point( "point1" );
+        point.SetAttribute( "x", m_points1[i].x );
+        point.SetAttribute( "y", m_points1[i].y );
+        points.InsertEndChild( point );
+    }
+    for (i = 0; i < 4; i++ )
+    {
+        TiXmlElement point( "point2" );
+        point.SetAttribute( "x", m_points2[i].x );
+        point.SetAttribute( "y", m_points2[i].y );
+        points.InsertEndChild( point );
+    }
+    m_xml_root->InsertEndChild( points );
+    if ( m_hasManualPoints1 )
 	{
-		TiXmlElement points("points");
-		for (i = 0; i < 4; i++ )
-		{
-			TiXmlElement point( "point1" );
-			point.SetAttribute( "x", m_points1[i].x );
-			point.SetAttribute( "y", m_points1[i].y );
-			points.InsertEndChild( point );
-		}
-		for (i = 0; i < 4; i++ )
-		{
-			TiXmlElement point( "point2" );
-			point.SetAttribute( "x", m_points2[i].x );
-			point.SetAttribute( "y", m_points2[i].y );
-			points.InsertEndChild( point );
-		}
-		m_xml_root->InsertEndChild( points );
-	}
+        TiXmlElement points("manual_points");
+        m_xml_root->InsertEndChild( points );
+    }
 		
 	if ( m_isSuperimposed )
 		m_imRegisterPtr->Save( m_xml_root );
@@ -208,8 +212,7 @@ void SupFile::CloseContent( )
     }
 	
 	m_isSuperimposed = false;
-	m_hasPoints1 = false;
-	m_hasPoints2 = false;
+	m_hasManualPoints1 = false;
 }
 
 
@@ -238,6 +241,23 @@ void SupFile::GetResult( AxImage *image )
 	wxASSERT_MSG( m_imRegisterPtr->m_result, "Result image cannot be NULL" );
 	
 	SetImImage( m_imRegisterPtr->m_result, image );
+}
+
+bool SupFile::CancelSuperimposition(bool ask_user)
+{
+    if ( ask_user )
+    {	
+        wxString msg = wxString::Format(_("This will erase previous superimposition results. Do you want to continue ?") );
+        int res = wxMessageBox( msg, wxGetApp().GetAppName() , wxYES_NO | wxICON_QUESTION );
+        if ( res != wxYES )
+            return false;
+    }
+    
+    wxRemoveFile( m_basename + "result.tif" );
+    
+    m_isSuperimposed = false;
+    m_isModified = true;
+    return true;
 }
 
 // static
@@ -286,7 +306,7 @@ bool SupFile::Superimpose( wxArrayPtrVoid params, AxProgressDlg *dlg )
 	if ( !failed )
 		failed = !m_imRegisterPtr->Init( image_file1, image_file2 ); // 4 operations ?
 
-	if ( !failed && !m_hasPoints1 && !m_hasPoints2 )
+	if ( !failed && !m_hasManualPoints1 )
 		failed = !m_imRegisterPtr->DetectPoints( m_points1, m_points2 ); // 12 ?
 
 	if ( !failed )

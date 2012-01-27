@@ -17,7 +17,6 @@
 
 // XXX: Doesn't compile if AX_RECOGNITION isn't set
 #ifdef AX_RECOGNITION
-//	#include "recognition/rec_wdr.h"
 	#include "recognition/recfile.h"
 	#include "recognition/recbookfile.h"
 #endif
@@ -66,7 +65,7 @@ public:
     wxSpinCtrl* GetScSubWindowOps1()  { return (wxSpinCtrl*) FindWindow( ID2_SC_SUBWINDOW_OPS1 ); }
 #endif
 	
-#ifdef AX_RECOGNITION	
+//#ifdef AX_RECOGNITION	
     wxTextCtrl* GetLMScaling()  { return (wxTextCtrl*) FindWindow( ID4_LMSCALING ); }
     wxSpinCtrl* GetLMOrder()  { return (wxSpinCtrl*) FindWindow( ID4_REC_LMORDER ); }
     wxCheckBox* GetDelayed()  { return (wxCheckBox*) FindWindow( ID4_REC_DELAYED ); }
@@ -83,8 +82,7 @@ public:
 	wxSpinCtrl* GetScBinSizeOps3()  { return (wxSpinCtrl*) FindWindow( ID4_BIN_REGION_SIZE ); }
 	wxChoice* GetCBinOps3()  { return (wxChoice*) FindWindow( ID4_BINARIZATION ); }
 	wxCheckBox* GetCbBinSelect() { return (wxCheckBox*) FindWindow( ID4_BINARIZATION_SELECT ); }
-
-#endif
+//#endif
 
 private:
 	void UpdateFontCorrections( int eventID );
@@ -172,17 +170,3 @@ private:
 
 #endif
 
-//-------------------------------------------------------------------------------
-// AxBinSelectDlgFunc
-//-------------------------------------------------------------------------------
-
-class AxBinSelectDlgFunc: public wxDialog
-{
-public:
-	// constructors and destructors
-	AxBinSelectDlgFunc( wxWindow *parent, wxWindowID id, const wxString &title, RecFile *recfile, RecBookFile *recbookfile );
-	
-	wxChoice* GetCPageBin()  { return (wxChoice*) FindWindow( ID0_BIN_CHOICE ); }
-	wxSpinCtrl* GetScBinRgnSize()  { return (wxSpinCtrl*) FindWindow( ID0_RGN_SIZE_SPINCTRL ); }
-	wxCheckBox* GetCbDeactivateDlg()  { return (wxCheckBox*) FindWindow( ID0_DEACTIVATE_DIALOG_CHECKBOX ); }
-};

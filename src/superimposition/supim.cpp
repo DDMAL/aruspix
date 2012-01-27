@@ -10,6 +10,10 @@
 // For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"
 
+#include <algorithm>
+using std::min;
+using std::max;
+
 #include "supim.h"
 #include "sup.h"
 #include "supfile.h"
@@ -137,7 +141,7 @@ IMPLEMENT_CLASS(SupImWindow, AxScrolledWindow)
 
 
 BEGIN_EVENT_TABLE(SupImWindow,AxScrolledWindow)
-    //EVT_PAINT( SupImWindow::OnPaint )
+    EVT_PAINT( SupImWindow::OnPaint )
     EVT_MOUSE_EVENTS( SupImWindow::OnMouse )
 END_EVENT_TABLE()
 
@@ -184,10 +188,45 @@ void SupImWindow::SynchronizeScroll( int x, int y )
 
 void SupImWindow::OnPaint(wxPaintEvent &event)
 {
-    wxPaintDC dc( this );
-    PrepareDC( dc );
+    if (m_bitmap && m_bitmap->IsOk() ) {
+        wxMemoryDC dc;
+        dc.SelectObject(*m_bitmap);
+        
+        // draw points
+        SupImController *controller = (SupImController*)m_imControlPtr;
+        
+        if ( controller->m_supFilePtr->m_hasManualPoints1  && !controller->m_supFilePtr->IsSuperimposed() ) {
+            
+            wxPen pen;
+            pen.SetWidth( max( ToZoomedRender( 4 ), 1 ) );
+            wxPoint *points;
+            if ( controller->GetId() == ID2_CONTROLLER1) {
+                points = controller->m_supFilePtr->m_points1;
+                pen.SetColour( *wxGREEN );
+            }
+            else {
+                points = controller->m_supFilePtr->m_points2; 
+                pen.SetColour( *wxRED );
+            }
+            
+            int radius = ToZoomedRender( 10 );
+            dc.SetBrush( *wxTRANSPARENT_BRUSH );
+            dc.SetPen( pen  );
+            dc.DrawCircle( ToZoomedRender( controller->ToRender( points[0] ) ), radius );
+            dc.DrawCircle( ToZoomedRender( controller->ToRender( points[1] ) ), radius );
+            dc.DrawCircle( ToZoomedRender( controller->ToRender( points[2] ) ), radius );
+            dc.DrawCircle( ToZoomedRender( controller->ToRender( points[3] ) ), radius );
+            dc.DrawLine( ToZoomedRender( controller->ToRender( points[0] ) ), ToZoomedRender( controller->ToRender( points[1] ) ) );
+            dc.DrawLine( ToZoomedRender( controller->ToRender( points[1] ) ), ToZoomedRender( controller->ToRender( points[3] ) ) );
+            dc.DrawLine( ToZoomedRender( controller->ToRender( points[3] ) ), ToZoomedRender( controller->ToRender( points[2] ) ) );  
+            dc.DrawLine( ToZoomedRender( controller->ToRender( points[2] ) ), ToZoomedRender( controller->ToRender( points[0] ) ) );
+            dc.SetBackground( wxNullBrush );
+            //dc.DrawPolygon( 4, controller->m_supFilePtr->m_points1 );
+            
+        }
+    }
+    event.Skip();
     
-    // draw points
 }
 
 
@@ -284,11 +323,10 @@ SupImController::SupImController( wxWindow *parent, wxWindowID id,
     m_imControl2Ptr = NULL;
     m_viewSrc1Ptr = NULL;
     m_viewSrc2Ptr = NULL;
+    m_supFilePtr = NULL;
 
     m_red = 0;
     m_green = 0;
-	
-    m_selectCounter = 0;
 }
 
 SupImController::SupImController()
@@ -473,42 +511,75 @@ void SupImController::DrawCircles( bool clear )
     }
 }
 
+wxPoint SupImController::ToLogical( wxPoint p )
+{
+    wxASSERT( this->IsOk() );
+    
+    return wxPoint( p.x, this->GetHeight() - p.y );
+}
+
+wxPoint SupImController::ToRender( wxPoint p )
+{
+    return ToLogical(p);
+}
 
 
 void SupImController::CloseDraggingSelection(wxPoint start, wxPoint end)
 {
-	wxPoint flipped_end = end;
-	flipped_end.y = this->GetHeight() - end.y;
-    m_points[m_selectCounter] = flipped_end;
+    wxASSERT( m_supFilePtr );
+    
+    if ( m_supFilePtr->IsSuperimposed() ) {
+        return;
+    }
+    
+    wxPoint *points;
+    if ( this->GetId() == ID2_CONTROLLER1) {
+        points = m_supFilePtr->m_points1;
+    }
+    else {
+        points = m_supFilePtr->m_points2; 
+    }
 
-    if (m_selectCounter == 0)
-    {
-        m_selectCounter++;
-		//wxLogDebug("point 1");
+    if (( end.x < this->GetWidth() / 2) && ( end.y < this->GetHeight() / 2 )) {
+        //wxLogDebug("top left");
+        points[1] = ToLogical(end);
     }
-    else if (m_selectCounter == 1)
-    {
-        m_selectCounter++;
-		//wxLogDebug("point 2");
+    else if (( end.x > this->GetWidth() / 2) && ( end.y < this->GetHeight() / 2 )) {
+        //wxLogDebug("top right");
+        points[3] = ToLogical(end);
     }
-    else if (m_selectCounter == 2)
-    {
-        m_selectCounter++;
-		//wxLogDebug("point 3");
+    else if (( end.x < this->GetWidth() / 2) && ( end.y > this->GetHeight() / 2 )) {
+        //wxLogDebug("bottom left");
+        points[0] = ToLogical(end);
     }
-    else if (m_selectCounter == 3)
-    {
-        m_selectCounter = 0;
-		//wxLogDebug("point 4");
-        this->m_viewPtr->EndSelection();
-		
-		wxCommandEvent event( AX_PUT_POINTS_EVT, GetId() );
-		event.SetEventObject( m_envPtr );
-		m_envPtr->ProcessEvent( event );
+    else if (( end.x > this->GetWidth() / 2) && ( end.y > this->GetHeight() / 2 )) {
+        //wxLogDebug("bottom right");
+        points[2] = ToLogical(end);
     }
+    m_viewPtr->UpdateViewFast();
 }
 
+void SupImController::SetInitialPoints()
+{
+    wxASSERT( m_supFilePtr );
 
+    wxPoint *points;
+    if ( this->GetId() == ID2_CONTROLLER1) {
+        points = m_supFilePtr->m_points1;
+    }
+    else {
+        points = m_supFilePtr->m_points2; 
+    }
+    
+    if ( !this->Ok() || !this->HasFilename() )
+        return;
+    
+    int margin = 40;
+    points[0] = wxPoint( margin, margin );    
+    points[1] = wxPoint( margin, this->GetHeight() - margin );
+    points[2] = wxPoint( GetWidth() - margin, margin );
+    points[3] = wxPoint( GetWidth() - margin, this->GetHeight() - margin );
+}
 
 
 

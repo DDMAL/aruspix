@@ -144,9 +144,16 @@ public:
 	static int s_pre_page_binarization_method; // used in ImPage, idem
     static int s_pre_page_binarization_method_size;
 	static bool s_pre_page_binarization_select;
+    
 	// the number of staff lines (4 for chant, or 5)
 	static int s_num_staff_lines;
 	
+    // static values that can be changed in the recognition options (if available)
+    static int s_pre_margin_top;
+    static int s_pre_margin_bottom;
+    static int s_pre_margin_left;
+    static int s_pre_margin_right;
+    
 	int *m_pre_page_binarization_methodPtr;
 	int *m_pre_page_binarization_method_sizePtr;
     

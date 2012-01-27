@@ -238,6 +238,8 @@ wxMenuBar *MenuBarFunc2()
     
     wxMenu* item2 = new wxMenu;
     item2->AppendSeparator();
+    item2->Append( ID2_MANUAL_POINTS, _("Set points manually"), _("Set the superimposition points manually"), wxITEM_CHECK );
+    item2->Append( ID2_CANCEL_SUP, _("Cancel superimposition"), _("Undo the superimposition of the sources"), wxITEM_CHECK );
     item2->Append( ID2_PROCESS, _("&Run"), _("Process current page") );
     item0->Append( item2, _("commun2") );
     
@@ -249,25 +251,14 @@ wxMenuBar *MenuBarFunc2()
     item0->Append( item3, _("&Book") );
     
     wxMenu* item4 = new wxMenu;
-    item4->Append( ID2_PREVIOUS, _("&Previous page"), _("Go to the previous page in both files or directories") );
-    item4->Append( ID2_PREVIOUS1, _("P&revious page (source 1)"), _("Go to the previous page in the file or directory of source 1") );
-    item4->Append( ID2_PREVIOUS2, _("Pr&evious page (source 2)"), _("Go to the previous page in the file or directory of source 2") );
+    item4->Append( ID2_ZOOM_OUT, _("Zoom out\t-"), _("Zoom out") );
+    item4->Append( ID2_ZOOM_IN, _("Zoom in\t+"), _("Zoom in") );
     item4->AppendSeparator();
-    item4->Append( ID2_NEXT, _("&Next page"), _("Go to the next page in both files or directories") );
-    item4->Append( ID2_NEXT1, _("Ne&xt page (source 1)"), _("Go to the next page in the file or directory of source 1") );
-    item4->Append( ID2_NEXT2, _("Nex&t page (source 2)"), _("Go to the next page in the file or directory of source 2") );
-    item4->AppendSeparator();
-    item4->Append( ID2_GOTO1, _("&Go to page ... (source 1)"), _("Select a page in the file or directory of source 1") );
-    item4->Append( ID2_GOTO2, _("G&o to page ... (source 2)"), _("Select a page in the file or directory of source 2") );
-    item0->Append( item4, _("&Page old") );
-    
-    wxMenu* item5 = new wxMenu;
-    item5->Append( ID2_ZOOM_OUT, _("Zoom out\t-"), _("Zoom out") );
-    item5->Append( ID2_ZOOM_IN, _("Zoom in\t+"), _("Zoom in") );
-    item5->Append( ID2_ADJUST, _("Adjust"), _("Adjust to fit the window"), wxITEM_CHECK );
-    item5->Append( ID2_ADJUST_V, _("Adjust vertically"), _("Adjust to fit the window vertically"), wxITEM_CHECK );
-    item5->Append( ID2_ADJUST_H, _("Adjust horizontally"), _("Adjust to fit the window horizontally"), wxITEM_CHECK );
-    item0->Append( item5, _("&Page") );
+    item4->Append( ID2_ZOOM_OUT1, _("Zoom out source 1"), _("Zoom out source 1") );
+    item4->Append( ID2_ZOOM_IN1, _("Zoom in source 1"), _("Zoom in source 1") );
+    item4->Append( ID2_ZOOM_OUT2, _("Zoom out source 2"), _("Zoom out source 2") );
+    item4->Append( ID2_ZOOM_IN2, _("Zoom in source 2"), _("Zoom in source 2") );
+    item0->Append( item4, _("&Page") );
     
     return item0;
 }

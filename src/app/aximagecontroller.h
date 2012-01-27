@@ -126,7 +126,7 @@ protected:
 	wxString m_titleMsg; // contenu pour la barre de titre
     
 private:
-        void OnUpdateUI( wxUpdateUIEvent &event );
+    void OnUpdateUI( wxUpdateUIEvent &event );
     void OnCommand( wxCommandEvent &event );
 
 private:

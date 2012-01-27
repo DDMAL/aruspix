@@ -8,7 +8,7 @@
 #ifndef __EDT_H__
 #define __EDT_H__
 
-#ifdef AX_EDT
+#ifdef AX_EDITION
 
 #ifndef WX_PRECOMP
     #include "wx/wx.h"
@@ -115,7 +115,7 @@ private:
     DECLARE_EVENT_TABLE()
 };
 
-#endif //AX_EDT
+#endif //AX_EDITION
 
 #endif
 

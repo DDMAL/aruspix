@@ -85,14 +85,6 @@ const int ID2_CH_FILTER2_OPS1 = 8045;
 const int ID2_CC_INTERP_OPS1 = 8046;
 wxSizer *Sup1DlgFunc( wxWindow *parent, bool call_fit = TRUE, bool set_sizer = TRUE );
 
-const int ID0_TEXTPgBin = 8047;
-const int ID0_BIN_CHOICE = 8048;
-const int ID0_TEXTRgnSize = 8049;
-const int ID0_RGN_SIZE_SPINCTRL = 8050;
-const int ID0_LINE1 = 8051;
-const int ID0_DEACTIVATE_DIALOG_CHECKBOX = 8052;
-wxSizer *BinSelectDlgFunc( wxWindow *parent, bool call_fit = TRUE, bool set_sizer = TRUE );
-
 // Declare menubar functions
 
 // Declare toolbar functions

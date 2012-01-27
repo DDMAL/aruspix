@@ -187,10 +187,6 @@ public:
     static bool s_find_text;
     static bool s_find_ornate_letters;
     static bool s_find_text_in_staves;
-    static int s_pre_margin_top;
-    static int s_pre_margin_bottom;
-    static int s_pre_margin_left;
-    static int s_pre_margin_right;
     // decoder
     static wxString s_rec_typ_model;
     static wxString s_rec_mus_model;    
@@ -259,6 +255,23 @@ private:
     DECLARE_DYNAMIC_CLASS(RecEnv)
 
     DECLARE_EVENT_TABLE( )
+};
+
+
+
+//-------------------------------------------------------------------------------
+// RecBinSelectDlg
+//-------------------------------------------------------------------------------
+
+class RecBinSelectDlg: public wxDialog
+{
+public:
+	// constructors and destructors
+	RecBinSelectDlg( wxWindow *parent, wxWindowID id, const wxString &title, RecFile *recfile, RecBookFile *recbookfile );
+	
+	wxChoice* GetCPageBin()  { return (wxChoice*) FindWindow( ID4_BIN_CHOICE ); }
+	wxSpinCtrl* GetScBinRgnSize()  { return (wxSpinCtrl*) FindWindow( ID4_RGN_SIZE_SPINCTRL ); }
+	wxCheckBox* GetCbDeactivateDlg()  { return (wxCheckBox*) FindWindow( ID4_DEACTIVATE_DIALOG_CHECKBOX ); }
 };
 
 #endif //AX_RECOGNITION
