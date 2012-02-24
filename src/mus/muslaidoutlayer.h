@@ -9,6 +9,8 @@
 #ifndef __MUS_LAID_OUT_LAYER_H__
 #define __MUS_LAID_OUT_LAYER_H__
 
+#include <typeinfo>
+
 class MusDC;
 
 #include "muslaidoutstaff.h"
@@ -31,11 +33,10 @@ class MusLaidOutLayer: public MusLayoutObject
 {
 public:
     // constructors and destructors
-    MusLaidOutLayer();
+    MusLaidOutLayer( MusLayer *logLayer );
     virtual ~MusLaidOutLayer();
     
     void Clear();
-    void CheckIntegrity();
     
     /** The parent MusLaidOutStaff setter */
     void SetStaff( MusLaidOutStaff *staff ) { m_staff = staff; };
@@ -97,6 +98,8 @@ public:
     ArrayOfMusLaidOutLayerElements m_elements;
     /** The parent MusLaidOutStaff */
     MusLaidOutStaff *m_staff;
+    /** The logical layer (this works only with non measured music) */
+    MusLayer *m_logLayer;
     
 	/** voix de la portee*/
 	unsigned short voix;    
@@ -117,7 +120,7 @@ private:
  * This class is a Functor that processes MusLaidOutLayer objects.
  * Needs testing.
 */
-class MusLaidOutLayerFunctor
+class MusLaidOutLayerFunctor: public MusLayoutFunctor
 {
 private:
     void (MusLaidOutLayer::*fpt)( wxArrayPtrVoid params );   // pointer to member function

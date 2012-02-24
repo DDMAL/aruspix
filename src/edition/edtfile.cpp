@@ -40,7 +40,7 @@ enum
 
 int EdtNewDlg::s_staffLines = 5;
 int EdtNewDlg::s_nbStaves = 12;
-int EdtNewDlg::s_notationMode = MUS_MENSURAL_MODE;
+int EdtNewDlg::s_m_notationMode = MUS_MENSURAL_MODE;
 int EdtNewDlg::s_paperSize = MUS_PAPER_A4;
 wxString EdtNewDlg::s_paperHeight = "297";
 wxString EdtNewDlg::s_paperWidth = "210";
@@ -99,9 +99,12 @@ void EdtFile::SaveContent( )
 	wxASSERT( m_xml_root );
 	
     // save
+    /*
     MusBinOutput *bin_output = new MusBinOutput( m_musDocPtr, m_musDocPtr->m_fname );
     bin_output->ExportFile();
     delete bin_output;
+    */
+    wxLogError("Nothing will be saved, broken in 2.0.0"); // ax2
 
 }
 
@@ -122,11 +125,11 @@ bool EdtFile::Create( )
     if (dlg.ShowModal() != wxID_OK) 
         return false;
         
-    if (EdtNewDlg::s_notationMode == MUS_CMN_MODE) {
+    if (EdtNewDlg::s_m_notationMode == MUS_CMN_MODE) {
         wxLogMessage("This is not implemented");
         return false;
     }
-    m_musDocPtr->m_parameters.notationMode = EdtNewDlg::s_notationMode;
+    m_musDocPtr->m_env.m_notationMode = EdtNewDlg::s_m_notationMode;
         
     int height, width;
     switch (EdtNewDlg::s_paperSize) {
@@ -148,11 +151,6 @@ bool EdtFile::Create( )
         height = width;
         width = tmp;
     }
-
-    MusPage *page = new MusPage();
-	//m_musDocPtr->m_pages.Clear(); // ax2
-	m_musDocPtr->m_parameters.pageFormatHor = width;
-	m_musDocPtr->m_parameters.pageFormatVer = height;
     
     // provisory util we change the dialog box
     int nb_systems;
@@ -169,15 +167,38 @@ bool EdtFile::Create( )
     nb_systems = EdtNewDlg::s_nbStaves / nb_staves_per_system;
     
     int i, j;
+    
+    // reset the MusDoc and create the logical tree
+    m_musDocPtr->Reset();	
+    MusDiv *div = new MusDiv( );
+    MusScore *score = new MusScore( );
+    MusSection *section = new MusSection( );
+    MusStaff *logStaff = NULL;
+    MusLayer *logLayer = NULL;
+    for (j = 0; j < nb_staves_per_system; j++) {
+        logStaff = new MusStaff();
+        logLayer = new MusLayer();
+        logStaff->AddStaffElement( logLayer );
+        section->AddSectionElement( logStaff );
+    }
+    
+    // create a new layout and the page
+    MusLayout *layout = new MusLayout( Facsimile );
+    MusPage *page = new MusPage();
+    
+	m_musDocPtr->m_env.m_paperWidth = width;
+	m_musDocPtr->m_env.m_paperHeight = height;
   
     for (i = 0; i < nb_systems; i++) {
         MusSystem *system = new MusSystem();
         system->lrg_lign = width - 20;       
         for (j = 0; j < nb_staves_per_system; j++)
         {
-            MusLaidOutStaff *staff = new MusLaidOutStaff();
+            logStaff = dynamic_cast<MusStaff*> (&section->m_sectionElements[j]);
+            wxASSERT_MSG( logStaff, "MusStaff cannot be NULL" );
+            MusLaidOutStaff *staff = new MusLaidOutStaff( logStaff );
             staff->portNbLine = EdtNewDlg::s_staffLines;
-            if (EdtNewDlg::s_notationMode == MUS_MENSURAL_MODE)
+            if (EdtNewDlg::s_m_notationMode == MUS_MENSURAL_MODE)
                 staff->notAnc = true;
             if (nb_staves_per_system == 1) {
                 staff->vertBarre = START_END;
@@ -190,12 +211,17 @@ bool EdtFile::Create( )
                 staff->vertBarre = END;
                 staff->brace = END;
             }
+            // We also need to create the layers!
+            // ...
             system->m_staves.Add( staff );
         }
         page->m_systems.Add( system );
     }
-    //m_musDocPtr->m_pages.Add( page ); // ax2
-    m_musDocPtr->CheckIntegrity();
+    layout->AddPage( page );    
+    m_musDocPtr->AddLayout( layout );
+    score->AddSection( section );
+    div->AddScore( score );
+    m_musDocPtr->AddDiv( div );
 
     return true;
 }
@@ -221,7 +247,7 @@ EdtNewDlg::EdtNewDlg( wxWindow *parent, wxWindowID id, const wxString &title,
     this->GetScNbStaves()->SetValidator(
         wxGenericValidator(&EdtNewDlg::s_nbStaves));
     this->GetRbNotationMode()->SetValidator(
-        wxGenericValidator(&EdtNewDlg::s_notationMode));
+        wxGenericValidator(&EdtNewDlg::s_m_notationMode));
     // paper
     this->GetRbPaperSize()->SetValidator(
         wxGenericValidator(&EdtNewDlg::s_paperSize)); 

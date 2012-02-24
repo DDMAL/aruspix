@@ -49,19 +49,6 @@ void MusPage::AddSystem( MusSystem *system )
 	m_systems.Add( system );
 }
 
-void MusPage::CheckIntegrity()
-{
-	wxASSERT_MSG( m_layout, "MusLayout parent cannot be NULL");
-	
-	MusSystem *system;
-	int i;
-    for (i = 0; i < this->GetSystemCount(); i++) 
-	{
-		system = &m_systems[i];
-        system->CheckIntegrity();
-	}
-}
-
 int MusPage::GetPageNo() const
 {
     wxASSERT_MSG( m_layout, "Layout cannot be NULL");
@@ -187,7 +174,7 @@ void MusPage::Process(MusLayoutFunctor *functor, wxArrayPtrVoid params )
 	{
         system = &m_systems[i];
         if (sysFunctor) { // is is a MusSystemFunctor, call it
-            functor->Call( system, params );
+            sysFunctor->Call( system, params );
         }
         else { // process it further
             system->Process( functor, params );
@@ -276,7 +263,7 @@ void MusPage::UpdateSystemPositions( )
 	int i;
 	MusSystem *system = NULL;
     
-    int yy =  m_doc->pageFormatHor-40;
+    int yy =  m_layout->m_pageHeight;
     for (i = 0; i < this->GetSystemCount(); i++) 
 	{
 		system = &this->m_systems[i];

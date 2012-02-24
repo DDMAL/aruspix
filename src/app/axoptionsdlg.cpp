@@ -21,7 +21,7 @@ using std::max;
 #include "axoptionsdlg.h"
 #include "aximage.h"
 #include "axapp.h"
-#include "mus/musdoc.h"
+#include "mus/muslayout.h"
 #include "mus/musiowwg.h"
 #include "im/impage.h"
 
@@ -274,9 +274,9 @@ void AxOptionsDlg::UpdateFontCorrections( int eventID )
 
 	wxGetApp().m_fontPosCorrection = GetScMusOffset()->GetValue();
 	wxGetApp().m_fontSizeCorrection = GetScMusSize()->GetValue();
-	m_musWinPtr->m_doc->UpdatePageValues();
+	m_musWinPtr->m_layout->UpdatePageValues();
 	if ( eventID == ID_SC_MUS_SIZE)
-		m_musWinPtr->m_doc->UpdatePageFontValues();
+		m_musWinPtr->m_layout->UpdateFontValues();
     m_musWinPtr->Resize( );
 }
 
@@ -512,10 +512,10 @@ AxOptMusWindow::AxOptMusWindow( wxWindow *parent, wxWindowID id,
     /*
     m_filePtr = NULL;
     m_filePtr = new MusDoc();
-    m_filePtr->m_parameters.param.pageFormatHor = 20;
-    m_filePtr->m_parameters.param.pageFormatVer = 20;
-    m_filePtr->m_parameters.param.MargeGAUCHEIMPAIRE = 0;
-    m_filePtr->m_parameters.param.MargeGAUCHEPAIRE = 0;
+    m_filePtr->m_parameters.param.m_paperWidth = 20;
+    m_filePtr->m_parameters.param.m_paperHeight = 20;
+    m_filePtr->m_parameters.param.m_leftMarginOddPage = 0;
+    m_filePtr->m_parameters.param.m_leftMarginEvenPage = 0;
 
     MusPage *page = new MusPage();
     page->defin = 20;

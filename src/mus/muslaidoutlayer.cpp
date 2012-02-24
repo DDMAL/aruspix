@@ -35,10 +35,11 @@ WX_DEFINE_OBJARRAY( ArrayOfMusLaidOutLayers );
 // MusLaidOutLayer
 //----------------------------------------------------------------------------
 
-MusLaidOutLayer::MusLaidOutLayer():
+MusLaidOutLayer::MusLaidOutLayer( MusLayer *logLayer ):
 	MusLayoutObject()
 {
 	Clear( );
+    m_logLayer = logLayer;
 }
 
 MusLaidOutLayer::~MusLaidOutLayer()
@@ -59,6 +60,9 @@ void MusLaidOutLayer::AddElement( MusLaidOutLayerElement *element )
 {
 	element->SetLayer( this );
 	m_elements.Add( element );
+    // also add it to the logical layer - how do we manage the position?
+    wxASSERT_MSG( element->m_layerElement, "Pointer to LayerElement cannot be NULL" );
+    m_logLayer->m_layerElements.Add( element->m_layerElement );
 }
 
 void MusLaidOutLayer::CopyAttributes( MusLaidOutLayer *nlayer )
@@ -69,22 +73,6 @@ void MusLaidOutLayer::CopyAttributes( MusLaidOutLayer *nlayer )
 	nlayer->Clear();
 	nlayer->voix = voix;
 }
-
-void MusLaidOutLayer::CheckIntegrity()
-{
-	wxASSERT_MSG( m_staff, "MusLaidOutStaff parent cannot be NULL");
-	
-	this->m_elements.Sort( SortElements );
-	
-	MusLaidOutLayerElement *element;
-	int i;
-    for (i = 0; i < this->GetElementCount(); i++) 
-	{
-		element = &m_elements[i];
-        element->CheckIntegrity();
-	}
-}
-
 
 int MusLaidOutLayer::GetLayerNo() const
 {
@@ -195,7 +183,6 @@ MusLaidOutLayerElement *MusLaidOutLayer::Insert( MusLaidOutLayerElement *element
 		m_r->OnBeginEditionClef();
 
 	m_elements.Insert( element, idx );
-	this->CheckIntegrity();
 	
 	if ( (element->IsSymbol() && (((MusSymbol1*)element)->flag == CLE))
 		|| (element->IsNeumeSymbol() && ((((MusNeumeSymbol*)element)->getValue() == NEUME_SYMB_CLEF_C) || (((MusNeumeSymbol*)element)->getValue() == NEUME_SYMB_CLEF_F))) )
@@ -223,7 +210,6 @@ void MusLaidOutLayer::Append( MusLaidOutLayerElement *element, int step )
         element->m_xrel += step;
     }
 	AddElement( element );
-	this->CheckIntegrity();
 }
 
 
@@ -241,7 +227,6 @@ void MusLaidOutLayer::Delete( MusLaidOutLayerElement *element )
 	}
 	
 	m_elements.Detach( element->no );
-	this->CheckIntegrity();
 
 	if ( m_r )
 	{
@@ -260,7 +245,7 @@ void MusLaidOutLayer::Delete( MusLaidOutLayerElement *element )
 
 // Dans la direction indiquee (direction), cavale sur tout element qui n'est pas un
 // symbol, de la nature indiquee (flg). Retourne le ptr si succes, ou 
-// l'element de depart; le ptr succ est vrai si symb trouve. 
+// l'element de depart; le ptr succ est vrai si symb trouve.
 
 MusLaidOutLayerElement *MusLaidOutLayer::GetFirst( MusLaidOutLayerElement *element, unsigned int direction, const std::type_info *elementType, bool *succ)
 {	
@@ -366,15 +351,15 @@ int MusLaidOutLayer::armatDisp ( MusDC *dc )
 	int _oct;
 
 
-	step = m_r->_pas*8;
+	step = m_r->m_step1*8;
 	//xrl = step + (this->indent? this->indent*10 : 0);
     // ax2 : we don't have staff->indent anymore. this is stored at the system level
     xrl = step;
 
 	if (this->notAnc)
-		xrl += m_r->_pas;
+		xrl += m_r->m_step1;
 
-	step = m_r->largAlter[this->staffSize][0];
+	step = m_r->m_accidWidth[this->staffSize][0];
 
 	dec = this->GetClefOffset(xrl);	// clef courante
 
@@ -429,7 +414,7 @@ int MusLaidOutLayer::armatDisp ( MusDC *dc )
 		if (rupture==i)
 		{	this->getOctDec (fact,_oct,rupture, &oct); rupture = i+1;	}
 
-		//if (!modMetafile || in (xrl, drawRect.left, drawRect.right) && in (this->yrel, drawRect.top, drawRect.bottom+_portee[staffSize]))
+		//if (!modMetafile || in (xrl, drawRect.left, drawRect.right) && in (this->yrel, drawRect.top, drawRect.bottom+m_staffSize[staffSize]))
 			((MusSymbol1*)element)->dess_symb ( dc,xrl,this->CalculatePitchPosY(c,dec, oct),ALTER,this->armTyp , this);
 	}
 	return xrl;
@@ -585,8 +570,6 @@ void MusLaidOutLayer::DeleteLyric( MusSymbol1 *symbol )
 			note->m_lyrics.Detach(i);
 	}
 	
-	this->CheckIntegrity();
-	
 	if ( m_r )
 	{
 		if ( symbol->IsSymbol() && (((MusSymbol1*)symbol)->IsLyric()) )
@@ -710,7 +693,6 @@ void MusLaidOutLayer::CopyElements( wxArrayPtrVoid params )
 		}
         */
 	}
-    staff->CheckIntegrity();
 }
 
 

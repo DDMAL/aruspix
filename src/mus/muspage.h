@@ -45,10 +45,9 @@ public:
     virtual ~MusPage();
     
     void Clear();
-    void CheckIntegrity();
     
     /** The parent MusLayout setter */
-    void SetLayout( MusLayout *layout ) { m_layout = layout; };
+    //void SetLayout( MusLayout *layout ) { m_layout = layout; };
 	
 	void AddSystem( MusSystem *system );
     
@@ -81,9 +80,7 @@ private:
     
 public:
     /** The MusSystem objects of the page */
-    ArrayOfMusSystems m_systems;
-    /** The parent MusLayout */
-    MusLayout *m_layout;    
+    ArrayOfMusSystems m_systems;    
     
     /** numero de page */
     int npage;
@@ -124,11 +121,11 @@ public:
 
     // constructor - takes pointer to an object and pointer to a member and stores
     // them in two private variables
-    MusPageFunctor( void(MusPage::*_fpt)( wxArrayPtrVoid )) { fpt=_fpt; };
+    MusPageFunctor( void(MusPage::*_fpt)( wxArrayPtrVoid ) ) { fpt=_fpt; };
 	virtual ~MusPageFunctor() {};
 
     // override function "Call"
-    virtual void Call( MusPage *ptr, wxArrayPtrVoid params )
+    void Call( MusPage *ptr, wxArrayPtrVoid params )
         { (*ptr.*fpt)( params );};          // execute member function
 };
 

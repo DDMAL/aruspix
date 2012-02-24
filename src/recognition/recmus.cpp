@@ -219,7 +219,7 @@ void RecMusController::SyncStaffBitmap( )
         m_lastWidth = m_mlfBmp->GetCurrentWidth();
     }
 */
-    wxLogError( "SyncStaffBitmap method missing in ax2") ;
+    wxLogDebug( "SyncStaffBitmap method missing in ax2") ;
 }
 
 void RecMusController::GetStaffBitmap( wxBitmap *bmp, int *x, int *y )
@@ -334,8 +334,8 @@ void RecMusWindow::OnBeginEditionClef()
         return;
 
     m_edition = true;
-    if ( m_currentStaff )
-        MusMLFOutput::GetUt1( m_currentStaff, true );
+    /*if ( m_currentStaff )
+        MusMLFOutput::GetUt1( m_currentStaff, true );*/ // ax2
 }
 
 void RecMusWindow::OnEndEditionClef()
@@ -343,8 +343,8 @@ void RecMusWindow::OnEndEditionClef()
     if ( !m_envPtr )
         return;
 
-    if ( m_edition && m_currentStaff )
-        MusMLFInput::GetNotUt1( m_currentStaff, true );
+    /*if ( m_edition && m_currentStaff )
+        MusMLFInput::GetNotUt1( m_currentStaff, true );*/ // ax2
 
     m_edition = false;
 }

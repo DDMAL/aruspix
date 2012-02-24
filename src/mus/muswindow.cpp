@@ -119,14 +119,14 @@ MusWindow::~MusWindow()
 void MusWindow::Load( AxUndoFile *undoPtr )
 {
     /*
-	wxASSERT_MSG( m_doc, "MusDoc should not be NULL in UNDO");
+	wxASSERT_MSG( m_layout, "MusDoc should not be NULL in UNDO");
 
-	if ( !m_doc )
+	if ( !m_layout )
 		return;
 	
 	int page, staff, element, lyric_element;
 		
-	MusBinInput *bin_input = new MusBinInput( m_doc, undoPtr->GetFilename() );
+	MusBinInput *bin_input = new MusBinInput( m_layout, undoPtr->GetFilename() );
 
 	// keep current page, staff and element
 	bin_input->Read( &page, sizeof( int ));
@@ -150,8 +150,8 @@ void MusWindow::Load( AxUndoFile *undoPtr )
 	{	
 		MusPage *musPage = new MusPage();
 		bin_input->ReadPage( musPage );
-		m_doc->m_pages.RemoveAt( page );
-		m_doc->m_pages.Insert( musPage, page );
+		m_layout->m_pages.RemoveAt( page );
+		m_layout->m_pages.Insert( musPage, page );
 	}
 	
 	if ((page < 0) || (page > m_fh->nbpage - 1))
@@ -161,7 +161,7 @@ void MusWindow::Load( AxUndoFile *undoPtr )
 	}
 	
 	if ( (m_npage != page) || (undoPtr->m_flags != MUS_UNDO_STAFF) )
-		SetPage( &m_doc->m_pages[page] );
+		SetPage( &m_layout->m_pages[page] );
 	m_npage = page;
 
 	MusLaidOutStaff *previous = NULL;
@@ -211,9 +211,9 @@ void MusWindow::Load( AxUndoFile *undoPtr )
 
 void MusWindow::Store( AxUndoFile *undoPtr )
 {
-	wxASSERT_MSG( m_doc, "MusDoc should not be NULL in UNDO");
+	wxASSERT_MSG( m_layout, "MusLayout should not be NULL in UNDO");
 
-	if ( !m_doc )
+	if ( !m_layout )
 		return;
     /*
 	// keep current page, staff and element and lyric
@@ -238,7 +238,7 @@ void MusWindow::Store( AxUndoFile *undoPtr )
         }
     }
 		
-    MusBinOutput *bin_output = new MusBinOutput( m_doc, undoPtr->GetFilename() );
+    MusBinOutput *bin_output = new MusBinOutput( m_layout, undoPtr->GetFilename() );
 	
 	bin_output->Write( &page, sizeof( int ) );
 	bin_output->Write( &staff, sizeof( int ) );
@@ -278,9 +278,9 @@ void MusWindow::Store( AxUndoFile *undoPtr )
 void MusWindow::InitDC( wxDC *dc )
 {
 	//if ( m_center )
-	//	dc->SetLogicalOrigin( - (margeMorteHor - mrgG), -margeMorteVer );
+	//	dc->SetLogicalOrigin( - (margeMorteHor - m_leftMargin), -margeMorteVer );
 	//else
-        dc->SetLogicalOrigin( - (MUS_BORDER_AROUND_PAGE / 2) - m_doc->mrgG,  - (MUS_BORDER_AROUND_PAGE / 2) );
+        dc->SetLogicalOrigin( - (MUS_BORDER_AROUND_PAGE / 2) - m_layout->m_leftMargin,  - (MUS_BORDER_AROUND_PAGE / 2) );
         
 	this->DoPrepareDC( *dc );
     
@@ -335,13 +335,13 @@ void MusWindow::DoReset( )
 void MusWindow::Resize( )
 {
 	wxWindow *parent = this->GetParent();
-	if (!parent || !m_doc) 
+	if (!parent || !m_layout) 
 		return;
 	
 	Show( false );
 	wxSize parent_s = parent->GetClientSize();
-	int page_w = (ToRendererX(m_doc->pageFormatHor) + MUS_BORDER_AROUND_PAGE) * GetZoom() / 100;
-	int page_h = (ToRendererX(m_doc->pageFormatVer) + MUS_BORDER_AROUND_PAGE) * GetZoom() / 100;
+	int page_w = (ToRendererX(m_layout->m_pageWidth) + MUS_BORDER_AROUND_PAGE) * GetZoom() / 100;
+	int page_h = (ToRendererX(m_layout->m_pageHeight) + MUS_BORDER_AROUND_PAGE) * GetZoom() / 100;
 	int win_w = min( page_w, parent_s.GetWidth() );
 	int win_h = min( page_h, parent_s.GetHeight() );
 
@@ -372,18 +372,16 @@ bool MusWindow::CanGoto( )
 
 void MusWindow::Goto( )
 {
-	if ( !m_doc )
+	if ( !m_layout )
 		return;
-    /*
-    AxGotoDlg *dlg = new AxGotoDlg(this, -1, _("Go to page ..."), m_fh->nbpage, m_npage );
+    AxGotoDlg *dlg = new AxGotoDlg(this, -1, _("Go to page ..."), m_layout->m_pages.GetCount(), m_npage );
     dlg->Center(wxBOTH);
     if ( dlg->ShowModal() == wxID_OK )
 	{
 		m_npage = dlg->GetPage();
-		SetPage( &m_doc->m_pages[m_npage] );
+		SetPage( &m_layout->m_pages[m_npage] );
     }
 	dlg->Destroy();
-    */
     wxLogError( "MusWindow::Goto missing in ax2" );
 }
 
@@ -391,16 +389,15 @@ void MusWindow::Goto( )
 bool MusWindow::CanZoom( bool zoomIn ) 
 { 
 	if ( zoomIn )
-		return ( m_doc && (m_zoomNum/m_zoomDen < 1) );
+		return ( m_layout && (m_zoomNum/m_zoomDen < 1) );
 	else
-        return ( m_doc && (m_zoomNum >= 2) );
-		//return ( m_doc && ((float)zoomNum/(float)zoomDen > 0.1) );
+        return ( m_layout && (m_zoomNum >= 2) );
+		//return ( m_layout && ((float)zoomNum/(float)zoomDen > 0.1) );
 }
 
 void MusWindow::Zoom( bool zoomIn )
 {
-    /*
-	if ( !m_doc )
+	if ( !m_layout )
 		return;
 
 	if ( zoomIn && this->CanZoom( true ) )
@@ -409,23 +406,16 @@ void MusWindow::Zoom( bool zoomIn )
 		m_zoomNum /= 2;
 
 	DoResize();
-	SetPage( &m_doc->m_pages[m_npage] );
-    */
-    wxLogError( "MusWindow::Zoom missing in ax2" );
 }
 
 void MusWindow::SetZoom( int percent )
 {
-    /*
-	if ( !m_doc )
+	if ( !m_layout )
 		return;
 
 	m_zoomNum = percent;
 	m_zoomDen = 100;
 	DoResize();
-	SetPage( &m_doc->m_pages[m_npage] );
-    */
-    wxLogError( "MusWindow::SetZoom missing in ax2" );
 }
 
 void MusWindow::SetToolPanel( MusToolPanel *toolpanel )
@@ -634,7 +624,7 @@ void MusWindow::Paste()
 	if ( m_editorMode == MUS_EDITOR_INSERT ) // can paste in edition mode only
 		return;
 			
-	m_bufferElement->xrel = m_currentElement->xrel + this->_pas * 3; // valeur arbitraire
+	m_bufferElement->xrel = m_currentElement->xrel + this->m_step1 * 3; // valeur arbitraire
 	m_currentElement = m_currentStaff->Insert( m_bufferElement );
 
 	this->Refresh();
@@ -669,7 +659,7 @@ void MusWindow::UpdateScroll()
 		x = -1;
 	else
 		x /= xu;
-	if ( (y > ys ) && (y < ys + h - 2 * ToRendererX(m_doc->_portee[0])) )
+	if ( (y > ys ) && (y < ys + h - 2 * ToRendererX(m_layout->m_staffSize[0])) )
 		y = -1;
 	else
 		y /= yu;
@@ -1012,7 +1002,7 @@ void MusWindow::OnMouseMotion(wxMouseEvent &event)
 			m_currentElement->xrel += ( m_insertx - m_dragging_x );
 			m_dragging_x = m_insertx;
 			if ( m_editorMode == MUS_EDITOR_EDIT ) {
-				m_currentStaff->CheckIntegrity();
+				//m_currentStaff->CheckIntegrity();
 			}
 		}
 		this->Refresh();	
@@ -1237,7 +1227,7 @@ void MusWindow::NeumeEditOnKeyDown(wxKeyEvent &event) {
             alteration.calte = ACCID_FLAT;
         else
             alteration.calte = ACCID_SHARP;
-        alteration.xrel = m_currentElement->xrel - _pas * 3;
+        alteration.xrel = m_currentElement->xrel - m_step1 * 3;
         m_currentStaff->Insert( &alteration );
         CheckPoint( UNDO_PART, MUS_UNDO_STAFF );
     }
@@ -1249,7 +1239,7 @@ void MusWindow::NeumeEditOnKeyDown(wxKeyEvent &event) {
         point.flag = PNT;
         point.code = m_currentElement->code;
         point.oct = m_currentElement->oct;
-        point.xrel = m_currentElement->xrel + _pas * 3;
+        point.xrel = m_currentElement->xrel + m_step1 * 3;
         // special case where we move forward
         m_currentElement = m_currentStaff->Insert( &point );
         CheckPoint( UNDO_PART, MUS_UNDO_STAFF );
@@ -1271,7 +1261,6 @@ void MusWindow::NeumeEditOnKeyDown(wxKeyEvent &event) {
             m_currentElement->xrel +=3;
         }
         this->Refresh();
-        m_currentStaff->CheckIntegrity();
         CheckPoint( UNDO_PART, MUS_UNDO_STAFF );
     }
     else if ( m_currentElement && m_currentElement->IsNeumeSymbol() &&
@@ -1415,7 +1404,7 @@ void MusWindow::MensuralEditOnKeyDown(wxKeyEvent &event) {
             alteration.calte = ACCID_FLAT;
         else
             alteration.calte = ACCID_SHARP;
-        alteration.xrel = m_currentElement->xrel - _pas * 3;
+        alteration.xrel = m_currentElement->xrel - m_step1 * 3;
         m_currentStaff->Insert( &alteration );
         CheckPoint( UNDO_PART, MUS_UNDO_STAFF );
         OnEndEdition();
@@ -1428,7 +1417,7 @@ void MusWindow::MensuralEditOnKeyDown(wxKeyEvent &event) {
         point.flag = PNT;
         point.code = m_currentElement->code;
         point.oct = m_currentElement->oct;
-        point.xrel = m_currentElement->xrel + _pas * 3;
+        point.xrel = m_currentElement->xrel + m_step1 * 3;
         // special case where we move forward
         m_currentElement = m_currentStaff->Insert( &point );
         CheckPoint( UNDO_PART, MUS_UNDO_STAFF );
@@ -1476,7 +1465,6 @@ void MusWindow::MensuralEditOnKeyDown(wxKeyEvent &event) {
             m_currentElement->xrel +=3;
         }
         this->Refresh();
-        m_currentStaff->CheckIntegrity();
         CheckPoint( UNDO_PART, MUS_UNDO_STAFF );
         OnEndEdition();
     }
@@ -1975,7 +1963,7 @@ void MusWindow::OnPaint(wxPaintEvent &event)
     
 	wxPaintDC dc( this );
     //if ( m_center )
-	//	dc.SetLogicalOrigin( - (margeMorteHor - mrgG), -margeMorteVer );
+	//	dc.SetLogicalOrigin( - (margeMorteHor - m_leftMargin), -margeMorteVer );
 	//else
 		dc.SetLogicalOrigin( - MUS_BORDER_AROUND_PAGE / 2, - MUS_BORDER_AROUND_PAGE / 2);
     
@@ -1985,7 +1973,7 @@ void MusWindow::OnPaint(wxPaintEvent &event)
 	dc.SetAxisOrientation( true, false );
     dc.SetUserScale( double(GetZoom())/100.0,  double(GetZoom())/100.0 );
 	
-	m_page->Init( this );
+	//m_page->Init( this );
     MusWxDC ax_dc( &dc );
     DrawPage( &ax_dc, m_page );
 

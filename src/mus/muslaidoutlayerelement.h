@@ -13,6 +13,7 @@ class MusDC;
 class MusLayerElement;
 
 #include "muslaidoutlayer.h"
+#include "mussymbol.h"
 
 //----------------------------------------------------------------------------
 // MusLaidOutLayerElement
@@ -39,9 +40,15 @@ public:
     
     int GetElementNo() const;
     
+    bool IsBarline();
     bool IsClef();
+    bool IsMensur();
     bool IsNeume();
     bool IsNote();
+    bool IsPitchInterface();
+    bool IsPositionInterface();
+    bool IsRest();
+    bool IsSymbol( SymbolType type );
     
         
 private:

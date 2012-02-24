@@ -81,7 +81,7 @@ public:
 public:
     static int s_staffLines;
     static int s_nbStaves;
-    static int s_notationMode;
+    static int s_m_notationMode;
     static int s_paperSize;
     static wxString s_paperWidth;
     static wxString s_paperHeight;

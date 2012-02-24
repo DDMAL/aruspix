@@ -1,8 +1,82 @@
 
-2011 - March
-wxg, wxd, wyg, wyd; // removed, used to optimize redrawing
-winwxg, winwyg; // idem
-drawRect; // removed, used to optimize redrawing
-wxmax, wymax; // renamed m_pageMaxX and m_pageMaxY
+*** 2012 - Ferbruary ***
+
+orientation // renamed m_landscape
+EpLignesPortee // renamed m_staffLineWidth
+EpQueueNote // renamed m_stemWidth
+EpBarreMesure // renamed m_barlineWidth
+EpBarreValeur // renamed m_beamWidth
+EpBlancBarreValeur // renamed m_beamWhiteWidth
+beamPenteMax // renamed m_beamMaxSlope
+beamPenteMin // renamed m_beamMinSlope
+pageFormatHor // renamed m_paperWidth
+pageFormatVer // renamed m_paperHeight
+MargeSOMMET // renamed m_topMargin
+MargeGAUCHEIMPAIRE // renamed m_leftMarginOddPage
+MargeGAUCHEPAIRE // renamed m_leftMarginEvenPage
+rapportPorteesNum // renamed m_smallStaffNum
+rapportPorteesDen // renamed m_smallStaffDen
+rapportDiminNum // renamed m_graceNum
+rapportDiminDen // renamed m_graceDen
+hampesCorr // renamed m_stemCorrection
+entetePied // renamed m_headerType
+
+_pas // renamed m_step1
+_bond // renamed m_step3
+_pas3 // renamed m_step2
+_espace // renamed m_halfInterl
+_interl // renamed m_interl
+_portee // renamed m_staffSize
+_octave // renamed m_octaveSize
+hautFont // renamed m_fontHeight
+hautFontAscent // renamed m_fontHeightAscent
+RapportPortee // renamed m_smallStaffRatio
+RapportDimin // renamed m_graceRatio
+DELTANbBAR // renamed m_beamWidth
+DELTABLANC // renamed m_beamWhiteWidth
+nTailleFont // renamed m_fontSize
+rayonNote // renamed m_noteRadius
+ledgerLine // renamed m_ledgerLine
+largeurBreve // renamed m_brevisWidth
+largAlter // renamed m_accidWidth
+v_unit // renamed m_verticalUnit1
+v4_unit // renamed m_verticalUnit2
+DELTABAR // renamed m_barlineSpacing
+mrgG // renamed m_leftMargin
+
+
+*** 2011 - August ***
 
 getOctCl renamed GetClef - now return MusClef
+MusPosClef moved into MusStaff and rename MusClefIndex
+No more use of MusPosClef.yp (uses MusStaff->yrel only)
+brace() // renamed DrawBracket
+accolade() // renamed DrawBrace
+no_note() // renamed GetFirst
+AV // renamed FORWARD
+AR // renamed BACKWARD
+y_note // renamed CalculatePitchPosY
+trouveCodNote // renamed CalculatePitchCode
+note() // renamed DrawNote
+silence() // renamed DrawRest
+leg_line() // renamed DrawLedgerLines
+
+barlines
+Finale= 'E'; end
+RepriseDouble= 'R'; rptboth
+RepriseDeb= 'F'; rptend
+RepriseSuite= 'O'; rptstart
+DoubleBarre= 'D'; dbl
+Entree= 'I'; start (?)
+InitialeStand= -1; 
+Accolade= 1;
+BarreIndividuelle:
+ 
+ 
+*** 2011 - March ***
+
+wxg, wxd, wyg, wyd // removed, used to optimize redrawing
+winwxg, winwyg // idem
+drawRect // removed, used to optimize redrawing
+wxmax, wymax // renamed m_pageMaxX and m_pageMaxY
+

@@ -192,8 +192,8 @@ private:
     char m_indentDroite;
 	// logical tree
 	MusSection *m_section;
-	MusStaff *m_staff;
-    MusLayer *m_layer;
+	MusStaff *m_logStaff;
+    MusLayer *m_logLayer;
 	
 private:
 };

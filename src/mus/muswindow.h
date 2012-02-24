@@ -113,7 +113,7 @@ public:
 	  */
 	void Resize( );
 	/**
-     Met a jour la table des fontes en fonction de nTailleFont et du zoom
+     Met a jour la table des fontes en fonction de m_fontSize et du zoom
 	 Doit etre appelee apres changement de zoom ou de definition de page
      */
     

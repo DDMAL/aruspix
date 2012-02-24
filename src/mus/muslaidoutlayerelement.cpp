@@ -43,11 +43,6 @@ MusLaidOutLayerElement::~MusLaidOutLayerElement()
 {
 }
 
-void MusLaidOutLayerElement::CheckIntegrity()
-{
-	wxASSERT_MSG( m_layer, "MusLaidOutLayer parent cannot be NULL");
-}
-
 int MusLaidOutLayerElement::GetElementNo() const
 {
     wxASSERT_MSG( m_layer, "LaidOutLayer cannot be NULL");
@@ -55,13 +50,25 @@ int MusLaidOutLayerElement::GetElementNo() const
     return m_layer->m_elements.Index( *this );
 }
 
+bool MusLaidOutLayerElement::IsBarline() 
+{  
+    return (dynamic_cast<MusBarline*>(m_layerElement));
+}
+
 bool MusLaidOutLayerElement::IsClef() 
 {  
-    //return (typeid(*m_layerElement) == typeid(MusClef));
-    if (!m_layerElement) {
-        return false;
-    }
     return (dynamic_cast<MusClef*>(m_layerElement));
+}
+
+bool MusLaidOutLayerElement::IsSymbol( SymbolType type ) 
+{  
+    MusSymbol *symbol = dynamic_cast<MusSymbol*>(m_layerElement);
+    return (symbol && (symbol->m_type == type));
+}
+
+bool MusLaidOutLayerElement::IsMensur() 
+{  
+    return (dynamic_cast<MusMensur*>(m_layerElement));
 }
 
 bool MusLaidOutLayerElement::IsNeume() 
@@ -71,9 +78,20 @@ bool MusLaidOutLayerElement::IsNeume()
 
 bool MusLaidOutLayerElement::IsNote() 
 {  
-    //return (typeid(*m_layerElement) == typeid(MusNote)); 
-    if (!m_layerElement) {
-        return false;
-    }
     return (dynamic_cast<MusNote*>(m_layerElement));
+}
+
+bool MusLaidOutLayerElement::IsPitchInterface() 
+{  
+    return (dynamic_cast<MusPitchInterface*>(m_layerElement));
+}
+
+bool MusLaidOutLayerElement::IsPositionInterface() 
+{  
+    return (dynamic_cast<MusPositionInterface*>(m_layerElement));
+}
+
+bool MusLaidOutLayerElement::IsRest() 
+{  
+    return (dynamic_cast<MusRest*>(m_layerElement));
 }

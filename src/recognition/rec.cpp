@@ -608,7 +608,7 @@ bool RecEnv::ResetFile()
         return false;
 
     m_musViewPtr->Show( false );
-    m_musViewPtr->SetDoc( NULL );
+    m_musViewPtr->SetLayout( NULL );
     
     if ( m_imControlPtr->Ok() )
     {
@@ -675,8 +675,8 @@ void RecEnv::UpdateViews( int flags )
         m_recFilePtr->GetImage1( &img );
         m_imControlPtr->ResetImage( img );
 
-        m_musViewPtr->SetDoc( m_recFilePtr->GetMusFile() );
-        //m_musViewPtr->SetEnv( this );
+        m_musViewPtr->SetLayout( &m_recFilePtr->m_musDocPtr->m_layouts[0] ); // ax2
+        m_musViewPtr->SetEnv( this );
         m_musViewPtr->SetToolPanel( m_toolpanel );
         m_musViewPtr->LoadPage( 1 );
         m_musControlPtr->SyncZoom();  
@@ -1370,12 +1370,12 @@ void RecEnv::OnExportImage( wxCommandEvent &event )
     wxGetApp().m_lastDirTIFF_out = wxPathOnly( filename );
 
     wxMemoryDC memDC;
-    wxBitmap bitmap( m_musViewPtr->ToRendererX( m_musViewPtr->pageFormatHor + 30 )  ,
-        m_musViewPtr->ToRendererX( m_musViewPtr->pageFormatVer + 10 )); // marges bricolees ...
+    wxBitmap bitmap( m_musViewPtr->ToRendererX( m_musViewPtr->m_pageWidth + 30 )  ,
+        m_musViewPtr->ToRendererX( m_musViewPtr->m_paperHeight + 10 )); // marges bricolees ...
     memDC.SelectObject(bitmap);
     memDC.SetBackground(*wxWHITE_BRUSH);
     memDC.Clear();
-    memDC.SetLogicalOrigin( m_musViewPtr->mrgG,10 );
+    memDC.SetLogicalOrigin( m_musViewPtr->m_leftMargin,10 );
     //memDC.SetPen(*wxRED_PEN);
     //memDC.SetBrush(*wxTRANSPARENT_BRUSH);
     m_musViewPtr->m_page->DrawPage( &memDC, false );
@@ -1395,8 +1395,8 @@ void RecEnv::OnExportImage( wxCommandEvent &event )
     wxGetApp().m_lastDirTIFF_out = wxPathOnly( filename );
     
     /*
-    MusSVGFileDC svgDC (filename, m_musViewPtr->ToRendererX( m_musViewPtr->pageFormatHor + 30 )  ,
-        m_musViewPtr->ToRendererX( m_musViewPtr->pageFormatVer + 10 )) ;
+    MusSVGFileDC svgDC (filename, m_musViewPtr->ToRendererX( m_musViewPtr->m_pageWidth + 30 )  ,
+        m_musViewPtr->ToRendererX( m_musViewPtr->m_paperHeight + 10 )) ;
 	svgDC.SetTextForeground( *wxBLACK );
 	//dc.SetMapMode( wxMM_TEXT );
 	svgDC.SetAxisOrientation( true, false );
@@ -1745,7 +1745,7 @@ void RecEnv::OnOpenMEI( wxCommandEvent &event )
 	if ( !meiinput.ImportFile() )
 		return;
 	
-	m_recFilePtr->m_musDocPtr->m_parameters.notationMode = MUS_NEUMATIC_MODE; //temporary for liber usualis project
+	m_recFilePtr->m_musDocPtr->m_parameters.m_notationMode = MUS_NEUMATIC_MODE; //temporary for liber usualis project
 	
 	m_musViewPtr->SetEditorMode(MUS_EDITOR_EDIT);
     
@@ -1756,20 +1756,20 @@ void RecEnv::OnOpenMEI( wxCommandEvent &event )
 	FacsTable table;
 	meiinput.ReadFacsTable(root, &table);
 	
-	m_recFilePtr->m_musDocPtr->m_parameters.param.pageFormatHor = m_recFilePtr->m_imPagePtr->m_size.GetWidth() / 10;
-	m_recFilePtr->m_musDocPtr->m_parameters.param.pageFormatVer = m_recFilePtr->m_imPagePtr->m_size.GetHeight() / 10;
+	m_recFilePtr->m_musDocPtr->m_parameters.param.m_paperWidth = m_recFilePtr->m_imPagePtr->m_size.GetWidth() / 10;
+	m_recFilePtr->m_musDocPtr->m_parameters.param.m_paperHeight = m_recFilePtr->m_imPagePtr->m_size.GetHeight() / 10;
 	
 	for (int i = 0; i < (int)m_recFilePtr->m_musDocPtr->m_pages[0].GetStaffCount(); i++)
 	{
 		MeiElement *element = m_recFilePtr->m_musDocPtr->m_pages[0].m_staves[i].m_meiref;
-		m_musViewPtr->kPos[i].yp = m_recFilePtr->m_musDocPtr->m_parameters.param.pageFormatVer - table.GetUY(element->getAttribute("systemref")->getValue())/20 + m_musViewPtr->_portee[m_recFilePtr->m_musDocPtr->m_pages[0].m_staves[i].staffSize];
+		m_musViewPtr->kPos[i].yp = m_recFilePtr->m_musDocPtr->m_parameters.param.m_paperHeight - table.GetUY(element->getAttribute("systemref")->getValue())/20 + m_musViewPtr->m_staffSize[m_recFilePtr->m_musDocPtr->m_pages[0].m_staves[i].staffSize];
 	}
 	
     int x1 = 5, x2 = 195;
     m_recFilePtr->m_imPagePtr->CalcLeftRight( &x1, &x2 ); 
 	//x1 = 0; // force it, indentation will be calculated staff by staff
-    m_recFilePtr->m_musDocPtr->m_parameters.param.MargeGAUCHEIMPAIRE = x1 / 10;
-    m_recFilePtr->m_musDocPtr->m_parameters.param.MargeGAUCHEPAIRE = x1 / 10;
+    m_recFilePtr->m_musDocPtr->m_parameters.param.m_leftMarginOddPage = x1 / 10;
+    m_recFilePtr->m_musDocPtr->m_parameters.param.m_leftMarginEvenPage = x1 / 10;
     m_recFilePtr->m_musDocPtr->m_pages[0].lrg_lign = (x2 - x1) / 10;*/
 	
     UpdateViews( 0 );

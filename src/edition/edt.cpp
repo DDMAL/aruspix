@@ -173,7 +173,7 @@ bool EdtEnv::ResetFile()
         return false;
 
     m_musViewPtr->Show( false );
-    m_musViewPtr->SetDoc( NULL );
+    m_musViewPtr->SetLayout( NULL );
     
     // XXX: What's this doing?
     //((EdtPanel*)m_envWindowPtr)->GetMusToolPanel()->SetMusWindow( NULL );
@@ -223,14 +223,14 @@ void EdtEnv::ParseCmd( wxCmdLineParser *parser )
             //m_musViewPtr->m_pageMaxX = page->lrg_lign*10; // !fix it!! in the GUI initialized in OnPaint // ax2
             m_musViewPtr->m_currentElement = NULL; // !fix it!! deselect elemnts
 
-            //MusSVGFileDC svgDC (outfile, mfile->m_parameters.param.pageFormatHor, mfile->m_parameters.param.pageFormatVer );
-            MusSVGFileDC svgDC (outfile, m_musViewPtr->ToRendererX( m_musViewPtr->pageFormatHor )  ,
-                m_musViewPtr->ToRendererX( m_musViewPtr->pageFormatVer )) ;
+            //MusSVGFileDC svgDC (outfile, mfile->m_parameters.param.m_paperWidth, mfile->m_parameters.param.m_paperHeight );
+            MusSVGFileDC svgDC (outfile, m_musViewPtr->ToRendererX( m_musViewPtr->m_pageWidth )  ,
+                m_musViewPtr->ToRendererX( m_musViewPtr->m_paperHeight )) ;
             
             svgDC.SetUserScale( 1, 1 );
             svgDC.SetLogicalScale( 1.0, 1.0 );  
             
-            svgDC.SetLogicalOrigin( -m_musViewPtr->mrgG, 0 );
+            svgDC.SetLogicalOrigin( -m_musViewPtr->m_leftMargin, 0 );
     
             svgDC.SetTextForeground( *wxBLACK );
 	
@@ -250,7 +250,7 @@ void EdtEnv::UpdateTitle( )
 
 void EdtEnv::UpdateViews( int flags )
 {
-    m_musViewPtr->SetDoc( m_edtFilePtr->m_musDocPtr );
+    m_musViewPtr->SetLayout( &m_edtFilePtr->m_musDocPtr->m_layouts[0] );
     m_musViewPtr->SetToolPanel( ((EdtPanel*)m_envWindowPtr)->GetMusToolPanel()  );
     m_musViewPtr->Resize( );
     wxYield();
@@ -446,6 +446,7 @@ void EdtEnv::OnUpdateUI( wxUpdateUIEvent &event )
 
 void EdtEnv::OnOpenMLF( wxCommandEvent &event )
 {
+    /*
     if ( !this->ResetFile( ) )
         return;
 
@@ -469,11 +470,13 @@ void EdtEnv::OnOpenMLF( wxCommandEvent &event )
         return;
     }
     UpdateViews( 0 );
+    */ // ax2
 
 }
 
 void EdtEnv::OnSaveMLF( wxCommandEvent &event )
 {
+    /*
     wxASSERT_MSG( m_panelPtr, "Panel cannot be NULL ");
 
 	wxFileName fn( m_edtFilePtr->m_shortname );
@@ -500,6 +503,7 @@ void EdtEnv::OnSaveMLF( wxCommandEvent &event )
     
     mlfoutput->ExportFile();
     delete mlfoutput; 
+    */
 }
 
 
@@ -517,16 +521,16 @@ void EdtEnv::OnSaveSVG( wxCommandEvent &event )
     m_musViewPtr->SetZoom( 100 );
     
     
-    MusSvgDC svgDC (filename, m_musViewPtr->ToRendererX( m_musViewPtr->m_doc->pageFormatHor + 30 )  ,
-        m_musViewPtr->ToRendererX( m_musViewPtr->m_doc->pageFormatVer + 10 )) ;
+    MusSvgDC svgDC (filename, m_musViewPtr->ToRendererX( m_musViewPtr->m_layout->m_pageWidth + 30 )  ,
+        m_musViewPtr->ToRendererX( m_musViewPtr->m_layout->m_pageHeight + 10 )) ;
         
     //svgDC.SetUserScale( 1, 1 );
     //svgDC.SetLogicalScale( 1.0, 1.0 );  
     
 	//if ( m_musViewPtr->m_center )
-	//	svgDC.SetLogicalOrigin( (m_musViewPtr->margeMorteHor - m_musViewPtr->mrgG), m_musViewPtr->margeMorteVer );
+	//	svgDC.SetLogicalOrigin( (m_musViewPtr->margeMorteHor - m_musViewPtr->m_leftMargin), m_musViewPtr->margeMorteVer );
 	//else 
-    //svgDC.SetLogicalOrigin( -m_musViewPtr->mrgG, 0 );
+    //svgDC.SetLogicalOrigin( -m_musViewPtr->m_leftMargin, 0 );
     
     // font data
     //svgDC.ConcatFile( wxGetApp().m_resourcesPath + "/svg/font.xml" );
@@ -537,7 +541,7 @@ void EdtEnv::OnSaveSVG( wxCommandEvent &event )
     m_musViewPtr->m_currentElement = NULL;
 	//svgDC.SetAxisOrientation( true, false );
     MusRC rc;
-    rc.SetDoc(m_musViewPtr->m_doc);
+    rc.SetLayout(m_musViewPtr->m_layout);
     rc.DrawPage(  &svgDC, m_musViewPtr->m_page, false ); // ax2 - needs testing
     
     // reset the zoom
@@ -558,12 +562,12 @@ void EdtEnv::OnSaveSVG( wxCommandEvent &event )
     wxGetApp().m_lastDirTIFF_out = wxPathOnly( filename );
 
     wxMemoryDC memDC;
-    wxBitmap bitmap( m_musViewPtr->ToRendererX( m_musViewPtr->pageFormatHor + 30 )  ,
-        m_musViewPtr->ToRendererX( m_musViewPtr->pageFormatVer + 10 )); // marges bricolees ...
+    wxBitmap bitmap( m_musViewPtr->ToRendererX( m_musViewPtr->m_pageWidth + 30 )  ,
+        m_musViewPtr->ToRendererX( m_musViewPtr->m_paperHeight + 10 )); // marges bricolees ...
     memDC.SelectObject(bitmap);
     memDC.SetBackground(*wxWHITE_BRUSH);
     memDC.Clear();
-    memDC.SetLogicalOrigin( m_musViewPtr->mrgG,10 );
+    memDC.SetLogicalOrigin( m_musViewPtr->m_leftMargin,10 );
     //memDC.SetPen(*wxRED_PEN);
     //memDC.SetBrush(*wxTRANSPARENT_BRUSH);
     MusWxDC ax_dc( &memDC );
@@ -631,13 +635,13 @@ void EdtEnv::OnOpenMEI( wxCommandEvent &event )
     wxGetApp().m_lastDir = wxPathOnly( filename );
     
     m_edtFilePtr->New();
-    m_edtFilePtr->m_musDocPtr->m_parameters.notationMode = MUS_NEUMATIC_MODE; //temporary for liber usualis project
+    m_edtFilePtr->m_musDocPtr->m_env.m_notationMode = MUS_NEUMATIC_MODE; //temporary for liber usualis project
     
     MusMeiInput meiinput( m_edtFilePtr->m_musDocPtr, filename );
 	if ( !meiinput.ImportFile() )
 		return;
 	
-	MusLayout *layout = new MusLayout();
+	MusLayout *layout = new MusLayout( Raw );
 	layout->Realize(m_edtFilePtr->m_musDocPtr->m_divs[0].m_score);
 	m_edtFilePtr->m_musDocPtr->m_layouts.Add(layout);
 	
