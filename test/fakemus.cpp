@@ -34,7 +34,6 @@ void MusLaidOutStaff::updat_pscle (int i, MusElement *chk) {
 MusLaidOutStaff::MusLaidOutStaff() { throw "fakemus stub"; }
 void MusLaidOutStaff::Append(MusElement *element, int i) { throw "fakemus stub"; }
 void MusLaidOutStaff::GetMaxXY( wxArrayPtrVoid params ) { throw "fakemus stub"; }
-void MusLaidOutStaff::CheckIntegrity() { throw "fakemus stub"; }
 MusLaidOutStaff::~MusStaff() { throw "fakemus stub"; }
 void MusLaidOutStaff::CopyElements(wxArrayPtrVoid p) { throw "fakemus stub"; }
 
@@ -57,7 +56,6 @@ int MusRC::ToRendererY(int) { throw "fakemus stub"; }
 //-------------
 MusPage::MusPage() { throw "fakemus stub"; }
 MusPage::~MusPage() { throw "fakemus stub"; }
-void MusPage::CheckIntegrity() { throw "fakemus stub"; }
 void MusPage::Process(MusStaffFunctor *func, wxArrayPtrVoid p) { throw "fakemus stub"; }
 void MusPage::CountVoices( wxArrayPtrVoid params ) { throw "fakemus stub"; }
 void MusPage::ProcessVoices( wxArrayPtrVoid params ) { throw "fakemus stub"; }
@@ -103,6 +101,6 @@ MusPagination::~MusPagination() { throw "fakemus stub"; }
 MusFileHeader::MusFileHeader() { throw "fakemus stub"; }
 MusFileHeader::~MusFileHeader() { throw "fakemus stub"; }
 
-MusParameters::MusParameters() { throw "fakemus stub"; }
-MusParameters::~MusParameters() { throw "fakemus stub"; }
+MusEnv::MusEnv() { throw "fakemus stub"; }
+MusEnv::~MusEnv() { throw "fakemus stub"; }
 
