@@ -9,7 +9,7 @@
 #include "wx/wxprec.h"
 
 #include "musrc.h"
-#include "muslayout.h"
+#include "musdoc.h"
 #include "muspage.h"
 #include "mussystem.h"
 #include "muslaidoutstaff.h"
@@ -27,17 +27,15 @@ void MusRC::DrawPage( MusDC *dc, MusPage *page, bool background )
 
 	if ( !page->Check() )
 		return;
-    
-    page->UpdateSystemPositions();
 
 	int i;
 	MusSystem *system = NULL;
 
     if ( background )
-        dc->DrawRectangle( 0, 0, m_layout->m_pageWidth, m_layout->m_pageHeight );
+        dc->DrawRectangle( 0, 0, m_doc->pageFormatHor, m_doc->pageFormatVer );
     
     MusPoint origin = dc->GetLogicalOrigin();
-    dc->SetLogicalOrigin( origin.x - m_layout->m_leftMargin, origin.y );
+    dc->SetLogicalOrigin( origin.x - m_doc->mrgG, origin.y );
 
     dc->StartPage();
 
@@ -72,21 +70,20 @@ int MusSystem::UpdateStaffPositions( )
     for (i = 0; i < this->GetStaffCount(); i++) 
 	{
 		staff = &this->m_staves[i];
-        yy -= staff->ecart * m_layout->m_interl[ staff->staffSize ];
+        yy -= staff->ecart * m_doc->_interl[ staff->staffSize ];
         //staff->clefIndex.compte = 0;
 
 		// Calcul du TAB initial, s'il y a lieu 
 		//orgx = staff->indent ? staff->indent*10 : 0;
          
 		// calcul du point d'ancrage des curseurs au-dessus de la ligne superieure
-		staff->yrel = yy + m_layout->m_staffSize[ staff->staffSize ];
-        //wxLogMessage("staff %d, %d", i, staff->yrel ); 
+		staff->yrel = yy + m_doc->_portee[ staff->staffSize ];
 		//kPos[i].yp = staff->yrel
         // portees ‡ 1 ou 4 lignes
         //if (staff->portNbLine == 1)
-		//	kPos[i].yp  += m_interl[ staff->staffSize ]*2;
+		//	kPos[i].yp  += _interl[ staff->staffSize ]*2;
         //else if (staff->portNbLine == 4)
-		//	kPos[i].yp  += m_interl[ staff->staffSize ];		
+		//	kPos[i].yp  += _interl[ staff->staffSize ];		
 	}
     return yy;
 }
@@ -147,31 +144,31 @@ void MusRC::DrawBracket ( MusDC *dc, MusSystem *system, int x, int y1, int y2, i
         dc->SetPen( m_currentColour , 1, wxSOLID );
         dc->SetBrush( m_currentColour , wxTRANSPARENT );
 
-		ecart = m_layout->m_barlineSpacing;
+		ecart = m_doc->DELTABAR;
 		centre = x - ecart;
 		
 		xg = centre - ecart*2;
 		xd = centre + ecart*2;
 		
-		yg = y1 + m_layout->m_interl[ staffSize ] * 2;
+		yg = y1 + m_doc->_interl[ staffSize ] * 2;
 		yd = y1;
 		SwapY( &yg, &yd );
 		dc->DrawEllipticArc( ToRendererX(xg), ToRendererY(yg), ToRendererX(xd-xg), ToRendererX(yg-yd), 88, 0 );
 	
 		yg = y2;
-		yd = y2 - m_layout->m_interl[ staffSize ] * 2;
+		yd = y2 - m_doc->_interl[ staffSize ] * 2;
 		SwapY( &yg, &yd );
 		dc->DrawEllipticArc( ToRendererX(xg), ToRendererY(yg), ToRendererX(xd-xg), ToRendererX(yg-yd), 360, 272 );
 		
         dc->ResetPen();
         dc->ResetBrush();
 
-		xg = x - (m_layout->m_beamWhiteWidth[0] + 1);
+		xg = x - (m_doc->DELTABLANC[0] + 1);
 		// determine le blanc entre barres grosse et mince
-		v_bline2( dc, y1, y2, xg, m_layout->m_beamWidth[0]);
+		v_bline2( dc, y1, y2, xg, m_doc->DELTANbBAR[0]);
 	}
 	//if (cod)
-		//v_bline(dc, y1, y2, x, m_layout->m_parameters.m_barlineWidth);
+		//v_bline(dc, y1, y2, x, m_doc->m_parameters.EpBarreMesure);
 
 	return;
 }
@@ -204,38 +201,38 @@ void MusRC::DrawGroups( MusDC *dc, MusSystem *system )
 		int decPortType_i;
 		staff =  &system->m_staves[i];
 		//if (staff->portNbLine == 4) 
-		//	decPortType_i = m_interl[staff->staffSize]*5;
+		//	decPortType_i = _interl[staff->staffSize]*5;
 		//else
-			decPortType_i = m_layout->m_staffSize[staff->staffSize];
+			decPortType_i = m_doc->_portee[staff->staffSize];
 		xx = system->indent ? system->indent*10 : 0;
 
 		//if (staff->portNbLine == 1 || staff->portNbLine == 4)
-		//	portee = m_staffSize[ staff->staffSize ]*2;
+		//	portee = _portee[ staff->staffSize ]*2;
 		//else
-        portee = m_layout->m_staffSize[ staff->staffSize ] + ((staff->portNbLine-1) * m_layout->m_interl[staff->staffSize]);
+        portee = m_doc->_portee[ staff->staffSize ] + ((staff->portNbLine-1) * m_doc->_interl[staff->staffSize]);
 
 		if (staff->vertBarre == START)
 			b_gr = (int)(staff->yrel - decPortType_i);
-		// key[i].yp est position du curseur par default m_staffSize (4 interl) au-dessus de ligne superieure
-		// decporttyp est la valeur de remplacement de m_staffSize si on veut autre espace
+		// key[i].yp est position du curseur par default _portee (4 interl) au-dessus de ligne superieure
+		// decporttyp est la valeur de remplacement de _portee si on veut autre espace
 		else if (staff->vertBarre == START_END)
 		{	b_gr = (int)(staff->yrel - decPortType_i);
-			bb_gr = (int)(staff->yrel - portee);//m_staffSize[staff->staffSize]*2;
+			bb_gr = (int)(staff->yrel - portee);//_portee[staff->staffSize]*2;
 			flLine = 1;
 		}
 		else if (staff->vertBarre == END)
-		{	bb_gr = (int)(staff->yrel - portee);//m_staffSize[staff->staffSize]*2;
+		{	bb_gr = (int)(staff->yrel - portee);//_portee[staff->staffSize]*2;
 			flLine = 1;
 		}
 		if (staff->brace == START)
 			b_acc = (int)(staff->yrel - decPortType_i);
 		else if (staff->brace == START_END)
 		{	b_acc = (int)(staff->yrel - decPortType_i);
-			bb_acc = (int)(staff->yrel - portee);//m_staffSize[staff->staffSize]*2;
+			bb_acc = (int)(staff->yrel - portee);//_portee[staff->staffSize]*2;
 			flBrace = 1;
 		}
 		else if (staff->brace == END)
-		{	bb_acc = (int)(staff->yrel - portee);//m_staffSize[staff->staffSize]*2;
+		{	bb_acc = (int)(staff->yrel - portee);//_portee[staff->staffSize]*2;
 			flBrace = 1;
 		}
 
@@ -243,10 +240,10 @@ void MusRC::DrawGroups( MusDC *dc, MusSystem *system )
 		//			 in (xx, drawRect.left, drawRect.right)))
 			if (flLine)
 			{ 	      
-                if (m_layout->m_env.m_barlineWidth > 2)
-					v_bline2( dc ,b_gr,bb_gr,xx, m_layout->m_env.m_barlineWidth);
+                if (m_doc->m_parameters.EpBarreMesure > 2)
+					v_bline2( dc ,b_gr,bb_gr,xx, m_doc->m_parameters.EpBarreMesure);
 				else
-					v_bline( dc ,b_gr,bb_gr,xx, m_layout->m_env.m_barlineWidth);
+					v_bline( dc ,b_gr,bb_gr,xx, m_doc->m_parameters.EpBarreMesure);
 				flLine = 0;
 			}
 
@@ -254,7 +251,7 @@ void MusRC::DrawGroups( MusDC *dc, MusSystem *system )
 		//			 in (xx, drawRect.left, drawRect.right)))
 		if (flBrace)
 		{		if (staff->accol)
-					DrawBracket ( dc, system, xx- m_layout->m_step1/2 , b_acc, bb_acc, 2, staff->staffSize);
+					DrawBracket ( dc, system, xx- m_doc->_pas/2 , b_acc, bb_acc, 2, staff->staffSize);
 				else
 					DrawBracket ( dc, system, xx,b_acc,bb_acc, 1, staff->staffSize);
 			flBrace = 0;
@@ -284,22 +281,22 @@ void MusRC::DrawBrace ( MusDC *dc, MusSystem *system, int x, int y1, int y2, int
     dc->SetPen( m_currentColour , 1, wxSOLID );
     dc->SetBrush( m_currentColour , wxSOLID );
 
-	x -= m_layout->m_beamWhiteWidth[ staffSize ];  // distance entre barre et debut accolade
+	x -= m_doc->DELTABLANC[ staffSize ];  // distance entre barre et debut accolade
 
 	nbrInt = BEZIER_NB_POINTS;
 
 	ymed = (y1 + y2) / 2;
-	fact = m_layout->m_beamWidth[ staffSize ]-1 + m_layout->m_env.m_barlineWidth;
+	fact = m_doc->DELTANbBAR[ staffSize ]-1 + m_doc->m_parameters.EpBarreMesure;
 	xdec = ToRendererX(fact);
 
 	point_[0].x = ToRendererX(x);
 	point_[0].y = ToRendererY(y1);
-	point_[1].x = ToRendererX(x - m_layout->m_step2);
-	point_[1].y = point_[0].y - ToRendererX( m_layout->m_interl[ staffSize ]*3);
-	point_[3].x = ToRendererX(x - m_layout->m_step1*2);
+	point_[1].x = ToRendererX(x - m_doc->_pas3);
+	point_[1].y = point_[0].y - ToRendererX( m_doc->_interl[ staffSize ]*3);
+	point_[3].x = ToRendererX(x - m_doc->_pas*2);
 	point_[3].y = ToRendererY(ymed);
-	point_[2].x = ToRendererX(x + m_layout->m_step1);
-	point_[2].y = point_[3].y + ToRendererX( m_layout->m_interl[ staffSize ]);
+	point_[2].x = ToRendererX(x + m_doc->_pas);
+	point_[2].y = point_[3].y + ToRendererX( m_doc->_interl[ staffSize ]);
 
 	ptcoord = &bcoord[0];
 	calcBez ( ptcoord, nbrInt );
@@ -309,7 +306,7 @@ void MusRC::DrawBrace ( MusDC *dc, MusSystem *system, int x, int y1, int y2, int
 	
 	point_[1].x += xdec;
 	point_[2].x += xdec;
-	point_[1].y = point_[0].y + ToRendererX( m_layout->m_interl[ staffSize ]*2);
+	point_[1].y = point_[0].y + ToRendererX( m_doc->_interl[ staffSize ]*2);
 
 
 	ptcoord = &bcoord[nbrInt+1];	// suite de la matrice: retour du bezier
@@ -319,9 +316,9 @@ void MusRC::DrawBrace ( MusDC *dc, MusSystem *system, int x, int y1, int y2, int
 	dc->DrawPolygon (nbrInt*2,  bcoord, 0, 0, wxWINDING_RULE ); //(sizeof (bcoord)*2) / sizeof (POINT)); nbrInt*2+ 1;
 
 	// on produit l'image reflet vers le bas: 0 est identique 
-	point_[1].y = point_[0].y - ToRendererX( m_layout->m_interl[ staffSize ]*2);
+	point_[1].y = point_[0].y - ToRendererX( m_doc->_interl[ staffSize ]*2);
 	point_[3].y = ToRendererY(y2);
-	point_[2].y = point_[3].y + ToRendererX( m_layout->m_interl[ staffSize ]*3);
+	point_[2].y = point_[3].y + ToRendererX( m_doc->_interl[ staffSize ]*3);
 
 	ptcoord = &bcoord[0];
 	calcBez ( ptcoord, nbrInt );
@@ -331,7 +328,7 @@ void MusRC::DrawBrace ( MusDC *dc, MusSystem *system, int x, int y1, int y2, int
 	
 	point_[1].x -= xdec;
 	point_[2].x -= xdec;
-	point_[2].y = point_[3].y - ToRendererX( m_layout->m_interl[ staffSize ]);
+	point_[2].y = point_[3].y - ToRendererX( m_doc->_interl[ staffSize ]);
 
 	ptcoord = &bcoord[nbrInt+1];	// suite de la matrice: retour du bezier 
 	calcBez ( ptcoord, nbrInt );
@@ -388,32 +385,32 @@ void MusRC::DrawBarline ( MusDC *dc, MusSystem *system, int x, int cod, bool por
 
 		int decPortType_i;
 		if (st_i->portNbLine == 4) 
-			decPortType_i = m_layout->m_interl[st_i->staffSize]*5;
+			decPortType_i = m_doc->_interl[st_i->staffSize]*5;
 		else
-			decPortType_i = m_layout->m_staffSize[st_i->staffSize];
+			decPortType_i = m_doc->_portee[st_i->staffSize];
 		
 		// on calcule l'epaisseur de la portee courante
 		if (st_i->portNbLine == 1 || st_i->portNbLine == 4)
-			portee = m_layout->m_staffSize[ st_i->staffSize ]*2;
+			portee = m_doc->_portee[ st_i->staffSize ]*2;
 		else
-			portee = m_layout->m_staffSize[ st_i->staffSize ] + ((st_i->portNbLine-1) * m_layout->m_interl[st_i->staffSize]);
+			portee = m_doc->_portee[ st_i->staffSize ] + ((st_i->portNbLine-1) * m_doc->_interl[st_i->staffSize]);
 		// on place les marqueurs DEB et END des barres
 		if (porteeAutonome || st_i->brace == START_END || st_i->vertBarre == START_END
 			|| !st_i->brace || !pportee->noGrp)
 		{	if (!accDeb)
 			{	b = st_i->yrel - decPortType_i;
-				bb = st_i->yrel - portee;//m_staffSize[st_ipTaille]*2;
+				bb = st_i->yrel - portee;//_portee[st_ipTaille]*2;
 				flLine = 1;
 			}
 		}
 		else if (st_i->brace == START || st_i->vertBarre == START)
 		{	b = st_i->yrel - decPortType_i;
-			bb = st_i->yrel - portee;//m_staffSize[st_ipTaille]*2;
+			bb = st_i->yrel - portee;//_portee[st_ipTaille]*2;
 			if (st_i->brace)
 				accDeb = ON;
 		}
 		else if (st_i->brace == END || st_i->vertBarre == END)
-		{	bb = st_i->yrel - portee;//m_staffSize[st_ipTaille]*2;
+		{	bb = st_i->yrel - portee;//_portee[st_ipTaille]*2;
 			flLine = 1;
 			accDeb=0;
 		}
@@ -469,10 +466,10 @@ void MusRC::DrawSpecialBarline( MusDC *dc, MusSystem *system, int x, BarlineType
 		}
 		if (code == 0)
 		{	
-			int y1 =  pportee->yrel- m_staffSize[ pportee->staffSize ];
-            int y2 = st->yrel- m_staffSize[ pportee->staffSize]*2;
+			int y1 =  pportee->yrel- _portee[ pportee->staffSize ];
+            int y2 = st->yrel- _portee[ pportee->staffSize]*2;
 			if (bardroite) {
-                v_bline( dc, y1, y2, x, m_layout->m_parameters.m_barlineWidth);
+                v_bline( dc, y1, y2, x, m_doc->m_parameters.EpBarreMesure);
                 DrawBracket ( dc, system, x, y1, y2, 1, pportee->staffSize );
             }
 			else {
@@ -485,26 +482,26 @@ void MusRC::DrawSpecialBarline( MusDC *dc, MusSystem *system, int x, BarlineType
 	x1 = x2 = 0;
 
 
-	x1 = x - m_layout->m_beamWhiteWidth[0] - m_layout->m_beamWidth[0] - m_layout->m_env.m_barlineWidth;
-	x2 = x + m_layout->m_beamWhiteWidth[0] + m_layout->m_beamWidth[0] - m_layout->m_env.m_barlineWidth;
+	x1 = x - m_doc->DELTABLANC[0] - m_doc->DELTANbBAR[0] - m_doc->m_parameters.EpBarreMesure;
+	x2 = x + m_doc->DELTABLANC[0] + m_doc->DELTANbBAR[0] - m_doc->m_parameters.EpBarreMesure;
 
  /* I, barre d'entree..., equivalente a barre de reprise ouvrante */
 
 	if (code == BARLINE_RPTBOTH || code == BARLINE_RPTSTART || code == BARLINE_START)
 	/* une grosse barre entre deux minces ou une grosse+mince qui "Ouvre" */
-		DrawBarline ( dc, system, x2, m_layout->m_env.m_barlineWidth, porteeAutonome, pportee);
+		DrawBarline ( dc, system, x2, m_doc->m_parameters.EpBarreMesure, porteeAutonome, pportee);
 
 	/* une grosse barre */
 	if (code == BARLINE_END || code == BARLINE_RPTBOTH || code == BARLINE_RPTEND || code == BARLINE_RPTSTART || code == BARLINE_START)
-	{	DrawBarline ( dc, system, x, m_layout->m_beamWidth[0], porteeAutonome, pportee);
+	{	DrawBarline ( dc, system, x, m_doc->DELTANbBAR[0], porteeAutonome, pportee);
 
 	}
 	if (code == BARLINE_DBL)	/* deux barres minces */
-	{	DrawBarline ( dc, system, x,  m_layout->m_env.m_barlineWidth, porteeAutonome, pportee);
-		DrawBarline ( dc, system, x1 + m_layout->m_beamWidth[0],  m_layout->m_env.m_barlineWidth, porteeAutonome, pportee);
+	{	DrawBarline ( dc, system, x,  m_doc->m_parameters.EpBarreMesure, porteeAutonome, pportee);
+		DrawBarline ( dc, system, x1 + m_doc->DELTANbBAR[0],  m_doc->m_parameters.EpBarreMesure, porteeAutonome, pportee);
 	}
 	if (code == BARLINE_RPTBOTH || code == BARLINE_END || code == BARLINE_RPTEND)
-		DrawBarline ( dc, system, x1,  m_layout->m_env.m_barlineWidth, porteeAutonome, pportee);
+		DrawBarline ( dc, system, x1,  m_doc->m_parameters.EpBarreMesure, porteeAutonome, pportee);
 
 	if (code == BARLINE_RPTBOTH || code == BARLINE_RPTEND || code == BARLINE_RPTSTART)
 	{	if (code == BARLINE_RPTEND)
@@ -512,9 +509,9 @@ void MusRC::DrawSpecialBarline( MusDC *dc, MusSystem *system, int x, BarlineType
 		if (code == BARLINE_RPTSTART)
 			x1 = 0;
 		if (x1)
-			x1 -= (m_layout->m_step1 + (m_layout->m_env.m_barlineWidth/2));
+			x1 -= (m_doc->_pas + (m_doc->m_parameters.EpBarreMesure/2));
 		if (x2)
-			x2 += m_layout->m_step1;
+			x2 += m_doc->_pas;
 		//putDeuxpoints ( dc, x1 , x2);
 	}
 
@@ -532,13 +529,13 @@ void MusRC::DrawPartialBarline ( MusDC *dc, MusSystem *system, int x, MusLaidOut
 	MusLaidOutStaff *next = system->GetNext( false );	
 	if ( next )
 	{	
-		b = pportee->yrel - m_layout->m_staffSize[ pportee->staffSize ]*2;
-		bb = next->yrel - m_layout->m_staffSize[ next->staffSize];
+		b = pportee->yrel - m_doc->_portee[ pportee->staffSize ]*2;
+		bb = next->yrel - m_doc->_portee[ next->staffSize];
 
-		if (m_layout->m_env.m_barlineWidth > 2)	// barres plus epaisses qu'un 1/2 mm
-			v_bline2 ( dc, b, bb, x,  m_layout->m_env.m_barlineWidth);
+		if (m_doc->m_parameters.EpBarreMesure > 2)	// barres plus epaisses qu'un 1/2 mm
+			v_bline2 ( dc, b, bb, x,  m_doc->m_parameters.EpBarreMesure);
 		else
-			v_bline ( dc, b, bb, x,  m_layout->m_env.m_barlineWidth);
+			v_bline ( dc, b, bb, x,  m_doc->m_parameters.EpBarreMesure);
 		
 	}
 
@@ -558,13 +555,13 @@ int MusRC::CalculateNeumePosY ( MusLaidOutStaff *staff, char note, int dec_clef,
 	char *pnote, i;
 	pnote = &notes[0] - 1;
 	
-	y_int = ((dec_clef + oct*7) - 17 ) * m_layout->m_halfInterl[staff->staffSize];
+	y_int = ((dec_clef + oct*7) - 17 ) * m_doc->_espace[staff->staffSize];
 	if (staff->portNbLine > 4)
-		y_int -= ((staff->portNbLine - 4) * 2) * m_layout->m_halfInterl[staff->staffSize];
+		y_int -= ((staff->portNbLine - 4) * 2) * m_doc->_espace[staff->staffSize];
 	
 	for (i=0; i<(signed)sizeof(notes); i++)
 		if (*(pnote+i) == note)
-			return(y_int += (i*m_layout->m_halfInterl[staff->staffSize]));
+			return(y_int += (i*m_doc->_espace[staff->staffSize]));
 	return 0;
 }
 
@@ -577,16 +574,16 @@ int MusRC::CalculatePitchPosY ( MusLaidOutStaff *staff, char pname, int dec_clef
 	char *ptouche, i;
 	ptouche=&touches[0];
 
-	y_int = ((dec_clef + oct*7) - 17 ) * m_layout->m_halfInterl[staff->staffSize];
+	y_int = ((dec_clef + oct*7) - 17 ) * m_doc->_espace[staff->staffSize];
 	if (staff->portNbLine > 5)
-		y_int -= ((staff->portNbLine - 5) * 2) * m_layout->m_halfInterl[staff->staffSize];
+		y_int -= ((staff->portNbLine - 5) * 2) * m_doc->_espace[staff->staffSize];
 
 	/* exprime distance separant yrel de
 	position 1e Si, corrigee par dec_clef et oct. Elle est additionnee
 	ensuite, donc elle doit etre NEGATIVE si plus bas que yrel */
 	for (i=0; i<(signed)sizeof(touches); i++)
 		if (*(ptouche+i) == pname)
-			return(y_int += ((i+1)*m_layout->m_halfInterl[staff->staffSize]));
+			return(y_int += ((i+1)*m_doc->_espace[staff->staffSize]));
 	return 0;
 }
 
@@ -603,16 +600,16 @@ void MusRC::DrawStaffLines( MusDC *dc, MusLaidOutStaff *staff, MusSystem *system
 
 	yy = staff->yrel;
     if ( staff->portNbLine == 1 )
-		yy  -= m_layout->m_interl[ staff->staffSize ]*2;
+		yy  -= m_doc->_interl[ staff->staffSize ]*2;
     else if ( staff->portNbLine == 4 )
-		yy  -= m_layout->m_interl[ staff->staffSize ];
-	yy = staff->yrel - m_layout->m_staffSize[ staff->staffSize ];
+		yy  -= m_doc->_interl[ staff->staffSize ];
+	yy = staff->yrel - m_doc->_portee[ staff->staffSize ];
 
 	x1 = system->indent ? system->indent*10 : 0;
 	x2 = system->lrg_lign * 10;
 
 
-	dc->SetPen( m_currentColour, ToRendererX( m_layout->m_env.m_staffLineWidth ), wxSOLID );
+	dc->SetPen( m_currentColour, ToRendererX( m_doc->m_parameters.EpLignesPortee ), wxSOLID );
     dc->SetBrush( m_currentColour , wxSOLID );
     dc->StartGraphic( "staff", wxString::Format("s_%d", staff->GetId()) );
 
@@ -622,7 +619,7 @@ void MusRC::DrawStaffLines( MusDC *dc, MusLaidOutStaff *staff, MusSystem *system
 	for(j = 0;j < staff->portNbLine; j++)
 	{
 		dc->DrawLine( x1 , ToRendererY ( yy ) , x2 , ToRendererY ( yy ) );
-		yy -= m_layout->m_interl[staff->staffSize];
+		yy -= m_doc->_interl[staff->staffSize];
 	}
     
     dc->EndGraphic();
@@ -672,13 +669,12 @@ int MusRC::CalculatePitchCode ( MusLaidOutLayer *layer, int y_n, int x_pos, int 
 	int degres, octaves, position, code;
 	char clefId=0;
 
-    int staffSize = layer->m_staff->staffSize;
 	// calculer position du do central en fonction clef
-	y_n += (int) m_layout->m_verticalUnit2[staffSize];
-	yb = layer->m_staff->yrel -  m_layout->m_staffSize[layer->m_staff->staffSize]*2; // UT1 default 
+	y_n += (int) m_doc->v4_unit[layer->m_staff->staffSize];
+	yb = layer->m_staff->yrel -  m_doc->_portee[layer->m_staff->staffSize]*2; // UT1 default 
 	
 
-	plafond = yb + 8 *  m_layout->m_octaveSize[staffSize];
+	plafond = yb + 8 *  m_doc->_octave[layer->m_staff->staffSize];
 	if (y_n > plafond)
 		y_n = plafond;
 
@@ -689,16 +685,16 @@ int MusRC::CalculatePitchCode ( MusLaidOutLayer *layer, int y_n, int x_pos, int 
 	MusClef *clef = layer->GetClef (pelement);
     if (clef) {
         clefId = clef->m_clefId;
-        yb += (clef->GetClefOffset()) * m_layout->m_halfInterl[staffSize];	// UT1 reel
+        yb += (clef->GetClefOffset()) * m_doc->_espace[layer->m_staff->staffSize];	// UT1 reel
     }
-	yb -= 4 *  m_layout->m_octaveSize[staffSize];	// UT, note la plus grave
+	yb -= 4 *  m_doc->_octave[layer->m_staff->staffSize];	// UT, note la plus grave
 
 	y_dec = y_n - yb;	// decalage par rapport a UT le plus grave
 
 	if (y_dec< 0)
 		y_dec = 0;
 
-	degres = y_dec /  m_layout->m_halfInterl[staffSize];	// ecart en degres (PITCH_C..PITCH_B) par rapport a UT1
+	degres = y_dec /  m_doc->_espace[layer->m_staff->staffSize];	// ecart en degres (PITCH_C..PITCH_B) par rapport a UT1
 	octaves = degres / 7;
 	position = degres % 7;
 

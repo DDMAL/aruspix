@@ -23,7 +23,7 @@
 
 MusRC::MusRC( )
 {
-	m_layout = NULL;
+	m_doc = NULL;
     m_page = NULL;
 	m_npage = 0;
 
@@ -37,6 +37,9 @@ MusRC::MusRC( )
 	
 	m_notation_mode = MUS_MENSURAL_MODE;
     
+    m_pageMaxX = 0;
+    m_pageMaxY = 0;
+    
 	discontinu = 0;
 	
 	m_str.Alloc(1000);
@@ -47,11 +50,11 @@ MusRC::~MusRC()
 {
 }
 
-void MusRC::SetLayout( MusLayout *layout )
+void MusRC::SetDoc( MusDoc *doc )
 {
-	if ( layout == NULL ) // unset file
+	if ( doc == NULL ) // unset file
 	{
-		m_layout = NULL;
+		m_doc = NULL;
 		m_page = NULL;
         m_currentStaff = NULL;
         m_currentElement = NULL;
@@ -59,14 +62,13 @@ void MusRC::SetLayout( MusLayout *layout )
 		return;
 	}
     else {
-        m_layout = layout;
-        m_notation_mode = m_layout->m_env.m_notationMode;
+        m_doc = doc;
+        m_notation_mode = m_doc->m_parameters.notationMode;
         m_npage = 0;
-        m_layout->PaperSize();
-        m_layout->UpdateFontValues();
-        m_layout->UpdatePageValues();
-        // for now we just get the first page
-        SetPage( &m_layout->m_pages[m_npage] );
+        m_doc->PaperSize();
+        m_doc->UpdateFontValues();
+        // for now we just get the first layout
+        SetPage( &doc->m_layouts[0].m_pages[m_npage] );
         //CheckPoint( UNDO_ALL, MUS_UNDO_FILE ); // ax2
     }
 }
@@ -84,8 +86,8 @@ void MusRC::SetPage( MusPage *page )
     //m_pageMaxX = m_page->lrg_lign*10; // ax2 set in PaperSize
     UpdateStavesPos();
     */
-    //m_pageMaxY = m_doc->m_pageHeight-40; // is this a dead margin?
-    //m_pageMaxX = m_doc->m_pageWidth-40; // is this a dead margin?
+    m_pageMaxY = m_doc->pageFormatVer-40; // is this a dead margin?
+    m_pageMaxX = m_doc->pageFormatHor-40; // is this a dead margin?
 
 	m_currentElement = NULL;
 	m_currentStaff = NULL;
@@ -106,25 +108,28 @@ void MusRC::SetPage( MusPage *page )
 
 bool MusRC::HasNext( bool forward ) 
 { 
+    /*
 	if ( forward )
-		return ( m_layout && ((int)m_layout->m_pages.GetCount() - 1 > m_npage) );
+		return ( m_doc && ((int)m_doc->m_pages.GetCount() - 1 > m_npage) );
 	else
-		return ( m_layout && (m_npage > 0) );
+		return ( m_doc && (m_npage > 0) );
+    */
+    //wxLogDebug( "MusRC::HasNext missing in ax2" );
     return false;
 		
 }
 
 void MusRC::Next( bool forward ) 
 { 
-	if ( !m_layout )
-        return;
+	if ( !m_doc )
+		return;
 
 	if ( forward && this->HasNext( true ) )
 		m_npage++;
 	else if ( !forward && this->HasNext( false ) )
 		m_npage--;
 
-	SetPage( &m_layout->m_pages[m_npage] );
+	//SetPage( &m_doc->m_pages[m_npage] );	 // ax2	
 }
 
 void MusRC::LoadPage( int nopage )
@@ -148,28 +153,11 @@ int MusRC::ToRendererX( int i ) { return i; }; // the same
 int MusRC::ToLogicalX( int i )  { return i; };
 
 /** y value in the Renderer */
-int MusRC::ToRendererY( int i )  
-{ 
-    if (!m_layout) {
-        return 0;
-    }
-    
-    return m_layout->m_pageHeight - i; // flipped
-}
+int MusRC::ToRendererY( int i )  { return m_pageMaxY - i; }; // flipped
 
 /** y value in the Logical world  */
-int MusRC::ToLogicalY( int i )  
-{ 
-    { 
-        if (!m_layout) {
-            return 0;
-        }
-        
-        return m_layout->m_pageHeight - i; // flipped
-    }
-}
+int MusRC::ToLogicalY( int i )  { return m_pageMaxY - i; }; // flipped
 
-/*
 void MusRC::UpdateStavesPos() 
 {
 	int i, j, mPortTaille;
@@ -185,21 +173,20 @@ void MusRC::UpdateStavesPos()
         for (j = 0; j < system->GetStaffCount(); j++) {
              staff = &system->m_staves[j];
              mPortTaille = staff->staffSize;
-             yy -= staff->ecart * m_doc->m_interl[mPortTaille];
+             yy -= staff->ecart * m_doc->_interl[mPortTaille];
              //staff->clefIndex.compte = 0;
              // calcul du point d'ancrage des curseurs au-dessus de la ligne superieure
-             staff->yrel = yy + m_doc->m_staffSize[mPortTaille];
+             staff->yrel = yy + m_doc->_portee[mPortTaille];
              //kPos[j].yp = staff->yrel;
              // portees à 1 ou 4 lignes // LP why ??
              //if (staff->portNbLine == 1)
-             //   kPos[j].yp  += m_interl[mPortTaille]*2;
+             //   kPos[j].yp  += _interl[mPortTaille]*2;
              //else if (staff->portNbLine == 4)
-             //   kPos[j].yp  += m_interl[mPortTaille];
-             staff->xrel = m_doc->m_parameters.m_leftMarginOddPage;
+             //   kPos[j].yp  += _interl[mPortTaille];
+             staff->xrel = m_doc->m_parameters.MargeGAUCHEIMPAIRE;
         }
     }
 }
-*/
 
 
 bool MusRC::IsNoteSelected() 

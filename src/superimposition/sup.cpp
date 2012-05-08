@@ -774,12 +774,12 @@ void SupEnv::OnExportImage( wxCommandEvent &event )
     wxGetApp().m_lastDirTIFF_out = wxPathOnly( filename );
 
     wxMemoryDC memDC;
-    wxBitmap bitmap( m_musViewPtr->ToRendererX( m_musViewPtr->m_pageWidth + 30 )  ,
-        m_musViewPtr->ToRendererX( m_musViewPtr->m_paperHeight + 10 )); // marges bricolees ...
+    wxBitmap bitmap( m_musViewPtr->ToRendererX( m_musViewPtr->pageFormatHor + 30 )  ,
+        m_musViewPtr->ToRendererX( m_musViewPtr->pageFormatVer + 10 )); // marges bricolees ...
     memDC.SelectObject(bitmap);
     memDC.SetBackground(*wxWHITE_BRUSH);
     memDC.Clear();
-    memDC.SetLogicalOrigin( m_musViewPtr->m_leftMargin,10 );
+    memDC.SetLogicalOrigin( m_musViewPtr->mrgG,10 );
     //memDC.SetPen(*wxRED_PEN);
     //memDC.SetBrush(*wxTRANSPARENT_BRUSH);
     m_musViewPtr->m_page->DrawPage( &memDC, false );

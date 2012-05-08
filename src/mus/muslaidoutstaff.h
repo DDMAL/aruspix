@@ -39,11 +39,12 @@ class MusLaidOutStaff: public MusLayoutObject
     
 public:
     // constructors and destructors
-    MusLaidOutStaff( MusStaff *logStaff );
+    MusLaidOutStaff();
 	MusLaidOutStaff( const MusLaidOutStaff& staff ); // copy contructor
     virtual ~MusLaidOutStaff();
     
     void Clear();
+    void CheckIntegrity();
     
     /** The parent MusSystem setter */
     void SetSystem( MusSystem *system ) { m_system = system; }; 
@@ -71,8 +72,6 @@ public:
     ArrayOfMusLaidOutLayers m_layers;
     /** The MusSystem parent */
     MusSystem *m_system;
-    /** The logical staff (this works only with non measured music *) */
-    MusStaff *m_logStaff;
     
     
 	/** numero dans le groupe auquel appartient la portee */
@@ -115,9 +114,9 @@ public:
 	/** reserve */
 	unsigned short reserve;
 	/** position y relative de la portee (non-enregistre dans les fichiers) */
-    int yrel;
+	unsigned int yrel;
 	/** postion x relative de la portee (non-enregistre dans les fichiers) */
-    int xrel;
+	unsigned int xrel;
 
 private:
 };

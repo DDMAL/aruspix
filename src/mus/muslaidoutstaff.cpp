@@ -19,11 +19,10 @@ WX_DEFINE_OBJARRAY( ArrayOfMusLaidOutStaves );
 // MusLaidOutStaff
 //----------------------------------------------------------------------------
 
-MusLaidOutStaff::MusLaidOutStaff( MusStaff *logStaff ):
+MusLaidOutStaff::MusLaidOutStaff():
 	MusLayoutObject()
 {
 	Clear( );
-    m_logStaff = logStaff;
 }
 
 MusLaidOutStaff::MusLaidOutStaff( const MusLaidOutStaff& staff )
@@ -124,6 +123,19 @@ void MusLaidOutStaff::CopyAttributes( MusLaidOutStaff *nstaff )
 	nstaff->reserve = reserve;
 	nstaff->yrel = yrel;
 	nstaff->xrel = xrel;
+}
+
+void MusLaidOutStaff::CheckIntegrity()
+{
+	wxASSERT_MSG( m_system, "MusSystem parent cannot be NULL");
+	
+	MusLaidOutLayer *layer;
+	int i;
+    for (i = 0; i < this->GetLayerCount(); i++) 
+	{
+		layer = &m_layers[i];
+        layer->CheckIntegrity();
+	}
 }
 
 int MusLaidOutStaff::GetStaffNo() const

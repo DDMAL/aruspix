@@ -82,19 +82,33 @@ public:
     MusMLFOutput( MusDoc *doc, wxString filename, MusMLFDictionary *dict, wxString model_symbol_name = "MusMLFSymbol" );
 	MusMLFOutput( MusDoc *doc, int fd, wxString filename,  MusMLFDictionary *dict, wxString model_symbol_name = "MusMLFSymbol" );
     virtual ~MusMLFOutput();
-
+    
+    //bool ExportFile( MusDoc *file, wxString filename);	// replace  musfile set in the constructor
+														// and export by calling ExportFile
+														// allow exportation of several files in one mlf
+    //virtual bool ExportFile( );
     virtual bool WritePage( const MusPage *page, bool write_header = false );
 	bool WritePage( const MusPage *page, wxString filename, ImPage *imPage,
 		wxArrayInt *staff_numbers = NULL ); // manage staves throuhg staff_numbers
 											// write all staves if staff_numbers == NULL
 											
-    bool WriteLayer( const MusLaidOutLayer *layer, int offset = -1, int end_point = -1 );
-    bool WriteNote( MusLaidOutLayerElement *element );
-    bool WriteSymbol( MusLaidOutLayerElement *element );
+    bool WriteStaff( const MusLaidOutStaff *staff, int offset = -1, int end_point = -1 );
+    //bool WriteNote( MusNote1 *note ); // ax2
+    //bool WriteSymbol( MusSymbol1 *symbol ); // ax2
 	// specific
-	//static MusLaidOutStaff *SplitSymboles( MusLaidOutStaff *staff );
-	static MusLaidOutLayer *GetUt1( MusLaidOutLayer *layer );
-	static void GetUt1( MusLaidOutLayer *layer, MusLaidOutLayerElement *pelement, int *code, int *oct);
+	static MusLaidOutStaff *SplitSymboles( MusLaidOutStaff *staff );
+	static MusLaidOutStaff *GetUt1( MusLaidOutStaff *staff, bool inPlace = false );
+	static void GetUt1( MusLaidOutStaff *staff, MusLaidOutLayerElement *pelement, int *code, int *oct);
+	// charge le dictionnaire ( .dic )
+	//void LoadSymbolDictionary( wxString filename );
+	//void WriteSymbolDictionary( wxString filename );
+	// si writePosition, charge .xml et calcul la largeur
+	//void CreateSubFile(); // open a subfile xxxp to write subsymbols with position
+	//void LoadSubFile(); // idem but with cache
+	// output methods
+	//void WriteDictionary( wxString filename );
+	//void WriteStatesPerSymbol( wxString filename );
+	//void WriteHMMSymbols( wxString filename );
 	void StartLabel( );
 	void EndLabel( int offset = -1, int end_point = -1 );
 	// access
@@ -102,16 +116,21 @@ public:
     
 protected:
     wxString m_filename;
+	//wxFileOutputStream *m_subfile;
 	// specific
 	ArrayOfMLFSymbols m_symbols; // symbol list
 	wxString m_mlf_class_name;
 	wxString m_shortname;
-	MusLaidOutLayer *m_layer; // utilise pour les segments de portee, doit etre accessible dans WriteSymbol
+	MusLaidOutStaff *m_staff; // utilise pour les segments de portee, doit etre accessible dans WriteSymbol
 	// page, staff index
+	int m_page_i;
 	int m_staff_i;
 	bool m_addHeader; // used to know if #MLF# header must be added (first file or not)
 
 public:
+	bool m_addPageNo;
+	//wxArrayString m_loadedDict; // symbols charge avec LoadDictionnary
+	//wxArrayString m_dict; // symbols de l'exportation
 	MusMLFDictionary *m_dict; // symbols de l'exportation, version complete avec phone et position. m_dict allows fast access
 	bool m_pagePosition; // ecrit les position dans MLF, avec MusMLFSymbol
 	bool m_hmmLevel; // write symbols rather the words in EndLabel; basic for now, do not handle several symbols per word
@@ -136,20 +155,15 @@ public:
     MusMLFInput( MusDoc *file, wxString filename );
     virtual ~MusMLFInput();
     
+        virtual bool ImportFile( int staff_per_page = -1 );
     bool ReadPage( MusPage *page , bool firstLineMLF, ImPage *imPage = NULL );
-    bool ReadLabel( MusLaidOutLayer *layer, int offset = 0 );
+    bool ReadLabel( MusLaidOutStaff *staff, int offset = 0 );
 	// specific
-    /**
-     * Parse a MLF line. Format is "[BEGIN END] LABEL". 
-     * The first letter of LABEL is the elementType (e.g., N for note) and set in elementType
-     * LABEL is set in elementLine
-     * BEGIN (if any) is set in pos
-     */
-    static bool ParseLine( wxString line, char *elementType, wxString *elementLine, int *pos );
-	static MusLayerElement *ConvertSymbol( wxString line );
-	static MusLayerElement *ConvertNote( wxString line  );
-	static void GetNotUt1( MusLaidOutLayer *layer );
-	static void GetNotUt1( MusLaidOutLayer *layer, MusLaidOutLayerElement *pelement, int *code, int *oct);
+	static bool IsElement( bool *note, wxString *line, int *pos );
+	//static MusSymbol1 *ConvertSymbole( wxString line ); // ax2
+	//static MusNote1 *ConvertNote( wxString line  ); // ax2
+	static MusLaidOutStaff *GetNotUt1( MusLaidOutStaff *staff, bool inPlace = false );
+	static void GetNotUt1( MusLaidOutStaff *staff, MusLaidOutLayerElement *pelement, int *code, int *oct);
 	static void GetPitchWWG( char code, int *code1);
 	bool ReadLine( wxString *line );
 	bool ReadLabelStr( wxString label );

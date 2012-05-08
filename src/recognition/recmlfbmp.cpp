@@ -282,9 +282,9 @@ wxBitmap RecMLFBmp::GenerateBitmap( ImStaff *imstaff, MusLaidOutStaff *musStaff,
 
 	// fill symbol array with musStaff elements
 	m_symbols.Clear();
-	/*MusLaidOutStaff *ut1_staff = MusMLFOutput::GetUt1( musStaff );
+	MusLaidOutStaff *ut1_staff = MusMLFOutput::GetUt1( musStaff );
     WriteStaff( ut1_staff, currentElementNo );
-	delete ut1_staff;*/ // ax2
+	delete ut1_staff;
 
 	wxMemoryDC memDC;
 	memDC.SelectObject(bmp);

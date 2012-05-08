@@ -38,11 +38,10 @@ public:
     virtual ~MusSystem();
     
     void Clear();
+    void CheckIntegrity();
     
     /** The parent MusPage setter */
     void SetPage( MusPage *page ) { m_page = page; };
-    
-    //void SetDoc( wxArrayPtrVoid params );
 	
 	void AddStaff( MusLaidOutStaff *staff );
 	
@@ -83,9 +82,9 @@ public:
     /** longueur en mm des lignes de la pages */
     int lrg_lign;
 	/** position y relative du system (non-enregistre dans les fichiers) */
-    int m_yrel;
+	unsigned int m_yrel;
 	/** postion x relative du system (non-enregistre dans les fichiers) */
-    int m_xrel;
+	unsigned int m_xrel;
 
 private:
     
@@ -100,7 +99,7 @@ private:
  * This class is a Functor that processes MusSystem objects.
  * Needs testing.
 */
-class MusSystemFunctor: public MusLayoutFunctor
+class MusSystemFunctor
 {
 private:
     void (MusSystem::*fpt)( wxArrayPtrVoid params );   // pointer to member function
@@ -114,7 +113,7 @@ public:
 
     // override function "Call"
     virtual void Call( MusSystem *ptr, wxArrayPtrVoid params )
-        { (*ptr.*fpt )( params ) ; };          // execute member function
+        { (*ptr.*fpt)( params);};          // execute member function
 };
 
 

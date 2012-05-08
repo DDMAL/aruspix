@@ -65,19 +65,25 @@ void MusSystem::AddStaff( MusLaidOutStaff *staff )
 	m_staves.Add( staff );
 }
 
+void MusSystem::CheckIntegrity()
+{
+	wxASSERT_MSG( m_page, "MusPage parent cannot be NULL");
+	
+	MusLaidOutStaff *staff;
+	int i;
+    for (i = 0; i < this->GetStaffCount(); i++) 
+	{
+		staff = &m_staves[i];
+        staff->CheckIntegrity();
+	}
+}
+
 int MusSystem::GetSystemNo() const
 {
     wxASSERT_MSG( m_page, "Page cannot be NULL");
     
     return m_page->m_systems.Index( *this );
 }
-
-/*
-void MusSystem::SetDoc( wxArrayPtrVoid params )
-{
-    wxLogDebug("PROUT");    
-}
-*/
 
 /*
 void MusSystem::ClearStaves( MusDC *dc, MusLaidOutStaff *start )
