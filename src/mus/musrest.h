@@ -32,6 +32,8 @@ public:
     MusRest();
     virtual ~MusRest();
     
+    virtual wxString MusClassName( ) { return "MusRest"; };
+    
 private:
     
 public:

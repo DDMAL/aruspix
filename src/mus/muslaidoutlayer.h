@@ -9,6 +9,8 @@
 #ifndef __MUS_LAID_OUT_LAYER_H__
 #define __MUS_LAID_OUT_LAYER_H__
 
+#include <typeinfo>
+
 class MusDC;
 
 #include "muslaidoutstaff.h"
@@ -31,27 +33,29 @@ class MusLaidOutLayer: public MusLayoutObject
 {
 public:
     // constructors and destructors
-    MusLaidOutLayer();
+    MusLaidOutLayer( MusLayer *logLayer = NULL );
     virtual ~MusLaidOutLayer();
     
+    virtual wxString MusClassName( ) { return "MusLaidOutLayer"; };	
+    
     void Clear();
-    void CheckIntegrity();
     
     /** The parent MusLaidOutStaff setter */
     void SetStaff( MusLaidOutStaff *staff ) { m_staff = staff; };
 	
 	void AddElement( MusLaidOutLayerElement *element );
-    
-     // moulinette
-    virtual void Process(MusLayoutFunctor *functor, wxArrayPtrVoid params );
-	
+    	
 	int GetElementCount() const { return (int)m_elements.GetCount(); };
     
     int GetLayerNo() const;
-   
+
+    // moulinette
+    virtual void Process(MusFunctor *functor, wxArrayPtrVoid params );
     // functors
     void CopyElements( wxArrayPtrVoid params );
     void GetMaxXY( wxArrayPtrVoid params );
+    void Save( wxArrayPtrVoid params );
+    void Load( wxArrayPtrVoid params );
     
 	void CopyAttributes( MusLaidOutLayer *layer ); // copy all attributes but none of the elements
     
@@ -97,6 +101,8 @@ public:
     ArrayOfMusLaidOutLayerElements m_elements;
     /** The parent MusLaidOutStaff */
     MusLaidOutStaff *m_staff;
+    /** The logical layer (this works only with non measured music) */
+    MusLayer *m_logLayer;
     
 	/** voix de la portee*/
 	unsigned short voix;    
@@ -110,14 +116,14 @@ private:
 
 
 //----------------------------------------------------------------------------
-// abstract base class MusLaidOutLayerFunctor
+// MusLaidOutLayerFunctor
 //----------------------------------------------------------------------------
 
 /**
  * This class is a Functor that processes MusLaidOutLayer objects.
  * Needs testing.
 */
-class MusLaidOutLayerFunctor
+class MusLaidOutLayerFunctor: public MusFunctor
 {
 private:
     void (MusLaidOutLayer::*fpt)( wxArrayPtrVoid params );   // pointer to member function

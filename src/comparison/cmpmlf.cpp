@@ -285,7 +285,7 @@ bool CmpMLFInput::ReadLabel( MusLaidOutStaff *staff )
 		MusElement *e = NULL;
 		if ( !is_note )
 		{
-			MusSymbol1 *s = CmpMLFInput::ConvertSymbole( line );
+			MusSymbol1 *s = CmpMLFInput::ConvertSymbol( line );
 			if ( s )
 			{
 				e = s;

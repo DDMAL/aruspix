@@ -38,6 +38,11 @@ public:
     void WWGInitElement();
     
 protected:
+    // WWG Page members
+    char noMasqueFixe;
+    char noMasqueVar;
+    unsigned char reserve;
+    
     // WWG Note members
     char sil;
     unsigned char val;
@@ -192,8 +197,8 @@ private:
     char m_indentDroite;
 	// logical tree
 	MusSection *m_section;
-	MusStaff *m_staff;
-    MusLayer *m_layer;
+	MusStaff *m_logStaff;
+    MusLayer *m_logLayer;
 	
 private:
 };

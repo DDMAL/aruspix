@@ -9,6 +9,7 @@
 // For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"
 
+#include "musio.h"
 #include "muslaidoutlayerelement.h"
 
 #include "musbarline.h"
@@ -43,9 +44,17 @@ MusLaidOutLayerElement::~MusLaidOutLayerElement()
 {
 }
 
-void MusLaidOutLayerElement::CheckIntegrity()
+void MusLaidOutLayerElement::Save( wxArrayPtrVoid params )
 {
-	wxASSERT_MSG( m_layer, "MusLaidOutLayer parent cannot be NULL");
+    // param 0: output stream
+    MusFileOutputStream *output = (MusFileOutputStream*)params[0];         
+    output->WriteLaidOutLayerElement( this );
+}
+
+void MusLaidOutLayerElement::Load( wxArrayPtrVoid params )
+{
+    // param 0: output stream
+    MusFileInputStream *input = (MusFileInputStream*)params[0];       
 }
 
 int MusLaidOutLayerElement::GetElementNo() const
@@ -55,13 +64,25 @@ int MusLaidOutLayerElement::GetElementNo() const
     return m_layer->m_elements.Index( *this );
 }
 
+bool MusLaidOutLayerElement::IsBarline() 
+{  
+    return (dynamic_cast<MusBarline*>(m_layerElement));
+}
+
 bool MusLaidOutLayerElement::IsClef() 
 {  
-    //return (typeid(*m_layerElement) == typeid(MusClef));
-    if (!m_layerElement) {
-        return false;
-    }
     return (dynamic_cast<MusClef*>(m_layerElement));
+}
+
+bool MusLaidOutLayerElement::IsSymbol( SymbolType type ) 
+{  
+    MusSymbol *symbol = dynamic_cast<MusSymbol*>(m_layerElement);
+    return (symbol && (symbol->m_type == type));
+}
+
+bool MusLaidOutLayerElement::IsMensur() 
+{  
+    return (dynamic_cast<MusMensur*>(m_layerElement));
 }
 
 bool MusLaidOutLayerElement::IsNeume() 
@@ -71,9 +92,20 @@ bool MusLaidOutLayerElement::IsNeume()
 
 bool MusLaidOutLayerElement::IsNote() 
 {  
-    //return (typeid(*m_layerElement) == typeid(MusNote)); 
-    if (!m_layerElement) {
-        return false;
-    }
     return (dynamic_cast<MusNote*>(m_layerElement));
+}
+
+bool MusLaidOutLayerElement::IsPitchInterface() 
+{  
+    return (dynamic_cast<MusPitchInterface*>(m_layerElement));
+}
+
+bool MusLaidOutLayerElement::IsPositionInterface() 
+{  
+    return (dynamic_cast<MusPositionInterface*>(m_layerElement));
+}
+
+bool MusLaidOutLayerElement::IsRest() 
+{  
+    return (dynamic_cast<MusRest*>(m_layerElement));
 }

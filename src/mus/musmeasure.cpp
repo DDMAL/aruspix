@@ -9,10 +9,12 @@
 // For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"
 
+#include "musio.h"
 #include "musmeasure.h"
+#include "musstaff.h"
 
 #include "wx/arrimpl.cpp"
-WX_DEFINE_OBJARRAY( ArrayOfMusMeasureElements );
+WX_DEFINE_OBJARRAY( ArrayOfMusMeasures );
 
 
 //----------------------------------------------------------------------------
@@ -20,8 +22,9 @@ WX_DEFINE_OBJARRAY( ArrayOfMusMeasureElements );
 //----------------------------------------------------------------------------
 
 MusMeasure::MusMeasure():
-    MusLogicalObject(), MusSectionInterface()
+    MusLogicalObject()
 {
+    m_section = NULL;
 }
 
 MusMeasure::~MusMeasure()
@@ -29,23 +32,55 @@ MusMeasure::~MusMeasure()
 }
 
 
-void MusMeasure::AddMeasureElement( MusMeasureInterface *measureElement )
+void MusMeasure::AddStaff( MusStaff *staff )
 {
-	measureElement->SetMeasure( this );
-	m_measureElements.Add( measureElement );
+	staff->SetMeasure( this );
+	m_staves.Add( staff );
 }
 
-
-//----------------------------------------------------------------------------
-// MusMeasureInterface
-//----------------------------------------------------------------------------
-
-MusMeasureInterface::MusMeasureInterface()
+void MusMeasure::Save( wxArrayPtrVoid params )
 {
-    m_measure = NULL;
+    // param 0: output stream
+    MusFileOutputStream *output = (MusFileOutputStream*)params[0];       
+    output->WriteMeasure( this );
+    
+    // save staves
+    MusStaffFunctor staff( &MusStaff::Save );
+    this->Process( &staff, params );
 }
 
-
-MusMeasureInterface::~MusMeasureInterface()
+void MusMeasure::Load( wxArrayPtrVoid params )
 {
+    // param 0: output stream
+    MusFileInputStream *input = (MusFileInputStream*)params[0];       
+    
+    // load staves
+    MusStaff *staff;
+    while ( (staff = input->ReadStaff()) ) {
+        staff->Load( params );
+        this->AddStaff( staff );
+    }
+}
+
+// functors for MusMeasure
+
+void MusMeasure::Process(MusFunctor *functor, wxArrayPtrVoid params )
+{
+    if (functor->m_success) {
+        return;
+    }
+    
+    MusStaffFunctor *staffFunctor = dynamic_cast<MusStaffFunctor*>(functor);
+    MusStaff *staff;
+    int i;
+    for (i = 0; i < (int)m_staves.GetCount(); i++) 
+	{
+        staff = &m_staves[i];
+        if (staffFunctor) { // is is a MusStaffFunctor, call it
+            staffFunctor->Call( staff, params );
+        }
+        else { // process it further
+            staff->Process( functor, params );
+        }
+	}
 }

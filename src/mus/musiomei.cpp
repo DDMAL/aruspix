@@ -260,7 +260,7 @@ bool MusMeiInput::ReadSection( Section *section )
 			MeiElement *e = *iter;
 			m_measure = new MusMeasure( );
 			if (ReadMeasure(dynamic_cast<Measure*>(e))) {
-				m_section->AddSectionElement( m_measure );
+				m_section->AddMeasure( m_measure );
 			}
 			else {
 				delete m_measure;
@@ -268,14 +268,14 @@ bool MusMeiInput::ReadSection( Section *section )
 			m_measure = NULL;
 		}
 		// success only if at least one measure was added to the section
-		return (m_section->m_sectionElements.GetCount() > 0);
+		return (m_section->m_measures.GetCount() > 0);
 	} else if ( section && section->hasChildren("staff") ) {
 		vector<MeiElement*> children = section->getChildrenByName("staff");
 		for (vector<MeiElement*>::iterator iter = children.begin(); iter != children.end(); ++iter) {
 			MeiElement *e = *iter;
 			m_staff= new MusStaff( );
 			if (ReadStaff(dynamic_cast<Staff*>(e))) {
-				m_section->AddSectionElement( m_staff );
+				m_section->AddStaff( m_staff );
 			}
 			else {
 				delete m_staff;
@@ -283,7 +283,7 @@ bool MusMeiInput::ReadSection( Section *section )
 			m_staff = NULL;
 		}
 		// success only if at least one staff was added to the section
-		return (m_section->m_sectionElements.GetCount() > 0);
+		return (m_section->m_staves.GetCount() > 0);
 	}
     return false;
 }
@@ -296,7 +296,7 @@ bool MusMeiInput::ReadMeasure( Measure *measure )
 			MeiElement *e = *iter;
 			m_staff = new MusStaff( );
 			if (ReadStaff(dynamic_cast<Staff*>(e))) {
-				m_measure->AddMeasureElement( m_staff );
+				m_measure->AddStaff( m_staff );
 			}
 			else {
 				delete m_staff;
@@ -304,7 +304,7 @@ bool MusMeiInput::ReadMeasure( Measure *measure )
 			m_staff = NULL;
 		}
 		// success only if at least one staff was added to the measure
-		return (m_measure->m_measureElements.GetCount() > 0);
+		return (m_measure->m_staves.GetCount() > 0);
 	}
     return false;
 }
@@ -317,7 +317,7 @@ bool MusMeiInput::ReadStaff( Staff *staff )
 			MeiElement *e = *iter;
 			m_layer = new MusLayer( );
 			if (ReadLayer(dynamic_cast<Layer*>(e))) {
-				m_staff->AddStaffElement( m_layer );
+				m_staff->AddLayer( m_layer );
 			}
 			else {
 				delete m_layer;
@@ -325,7 +325,7 @@ bool MusMeiInput::ReadStaff( Staff *staff )
 			m_layer = NULL;
 		}
 		// success only if at least one layer was added to the staff
-		return (m_staff->m_staffElements.GetCount() > 0);
+		return (m_staff->m_layers.GetCount() > 0);
 	}
     return false;
 }

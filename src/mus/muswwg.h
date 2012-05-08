@@ -12,6 +12,8 @@
     #include "wx/wx.h"
 #endif
 
+#include "muswwg.h"
+
 /* dans wgmidi.h */
 #define MAXMIDICANAL 16
 

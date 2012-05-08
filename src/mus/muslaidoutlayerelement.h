@@ -13,6 +13,7 @@ class MusDC;
 class MusLayerElement;
 
 #include "muslaidoutlayer.h"
+#include "mussymbol.h"
 
 //----------------------------------------------------------------------------
 // MusLaidOutLayerElement
@@ -31,6 +32,8 @@ public:
     MusLaidOutLayerElement( MusLayerElement *element );
     virtual ~MusLaidOutLayerElement();
     
+    virtual wxString MusClassName( ) { return "MusLaidOutLayerElement"; };	    
+    
     void Clear();
     void CheckIntegrity();
     
@@ -39,10 +42,19 @@ public:
     
     int GetElementNo() const;
     
+    bool IsBarline();
     bool IsClef();
+    bool IsMensur();
     bool IsNeume();
     bool IsNote();
+    bool IsPitchInterface();
+    bool IsPositionInterface();
+    bool IsRest();
+    bool IsSymbol( SymbolType type );
     
+    // functors
+    void Save( wxArrayPtrVoid params );
+    void Load( wxArrayPtrVoid params );
         
 private:
     
@@ -64,14 +76,14 @@ private:
 
 
 //----------------------------------------------------------------------------
-// abstract base class MusLaidOutLayerElementFunctor
+// MusLaidOutLayerElementFunctor
 //----------------------------------------------------------------------------
 
 /**
  * This class is a Functor that processes MusLaidOutLayerElement objects.
  * Needs testing.
 */
-class MusLaidOutLayerElementFunctor: public MusLayoutFunctor
+class MusLaidOutLayerElementFunctor: public MusFunctor
 {
 private:
     void (MusLaidOutLayerElement::*fpt)( wxArrayPtrVoid params );   // pointer to member function

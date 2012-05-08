@@ -15,61 +15,69 @@
 
 #include "mussection.h"
 
-class MusMeasureInterface;
-
 //----------------------------------------------------------------------------
 // MusMeasure
 //----------------------------------------------------------------------------
 
 /** 
- * This class models the MEI <measure> element.
- * A MusMeasure is a MusSectionInterface 
+ * This class models the MEI <measure> element. 
  */
-class MusMeasure: public MusLogicalObject, public MusSectionInterface
+class MusMeasure: public MusLogicalObject
 {
 public:
     // constructors and destructors
     MusMeasure();
     virtual ~MusMeasure();
+    
+    virtual wxString MusClassName( ) { return "MusMeasure"; };
+    
+    /** the parent MusSection setter (for unmeasured music) */
+    void SetSection( MusSection *section ) { m_section = section; };
 	
-	void AddMeasureElement( MusMeasureInterface *measureElement );
+	void AddStaff( MusStaff *staff );
+    
+    // moulinette
+    virtual void Process(MusFunctor *functor, wxArrayPtrVoid params );
+    // functors
+    void Save( wxArrayPtrVoid params );
+    void Load( wxArrayPtrVoid params );
     
 private:
     
 public:
-    /** The children MusMeasureInterface objects */
-    ArrayOfMusMeasureElements m_measureElements;
+    /** The children MusStaff objects */
+    ArrayOfMusStaves m_staves;
+    /** The parent MusSection (for unmeasured music) */
+    MusSection *m_section;
 
 private:
     
 };
 
+
 //----------------------------------------------------------------------------
-// MusMeasureInterface
+// MusMeasureFunctor
 //----------------------------------------------------------------------------
 
-/** 
- * This class is an interface for the MusMeasure (<measure>) content.
- * It is not an abstract class but should not be instanciate directly.
+/**
+ This class is a Functor that processes MusMeasure objects.
+ Needs testing.
  */
-class MusMeasureInterface
+class MusMeasureFunctor: public MusFunctor
 {
-public:
-    // constructors and destructors
-    MusMeasureInterface();
-    virtual ~MusMeasureInterface();
-    
-    /** The parent MusMeasure setter */
-    void SetMeasure( MusMeasure *measure ) { m_measure = measure; };
-        
 private:
+    void (MusMeasure::*fpt)( wxArrayPtrVoid params );   // pointer to member function
     
 public:
-    /** The parent MusMeasure */
-    MusMeasure *m_measure;
-
-private:
     
+    // constructor - takes pointer to an object and pointer to a member and stores
+    // them in two private variables
+    MusMeasureFunctor( void(MusMeasure::*_fpt)( wxArrayPtrVoid )) { fpt=_fpt; };
+	virtual ~MusMeasureFunctor() {};
+    
+    // override function "Call"
+    virtual void Call( MusMeasure *ptr, wxArrayPtrVoid params )
+    { (*ptr.*fpt)( params);};          // execute member function
 };
 
 #endif

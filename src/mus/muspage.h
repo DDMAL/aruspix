@@ -44,11 +44,12 @@ public:
     MusPage();
     virtual ~MusPage();
     
+    virtual wxString MusClassName( ) { return "MusPage"; };	    
+    
     void Clear();
-    void CheckIntegrity();
     
     /** The parent MusLayout setter */
-    void SetLayout( MusLayout *layout ) { m_layout = layout; };
+    //void SetLayout( MusLayout *layout ) { m_layout = layout; };
 	
 	void AddSystem( MusSystem *system );
     
@@ -65,8 +66,10 @@ public:
     int GetPageNo() const;
 
     // moulinette
-    virtual void Process(MusLayoutFunctor *functor, wxArrayPtrVoid params );
+    virtual void Process(MusFunctor *functor, wxArrayPtrVoid params );
     // functors
+    void Save( wxArrayPtrVoid params );
+    void Load( wxArrayPtrVoid params );
     void ProcessStaves( wxArrayPtrVoid params );
     void ProcessVoices( wxArrayPtrVoid params );
     void CountVoices( wxArrayPtrVoid params );
@@ -81,18 +84,8 @@ private:
     
 public:
     /** The MusSystem objects of the page */
-    ArrayOfMusSystems m_systems;
-    /** The parent MusLayout */
-    MusLayout *m_layout;    
+    ArrayOfMusSystems m_systems;    
     
-    /** numero de page */
-    int npage;
-    /** contient un masque fixe */
-    char noMasqueFixe;
-    /** contient un masque variable */
-    char noMasqueVar;
-    /** reserve */
-    unsigned char reserve;
     /** definition en mm des portees de la page */
     unsigned char defin;
     /** longueur en mm de l'indentation des portees de la page */
@@ -108,14 +101,14 @@ private:
 
 
 //----------------------------------------------------------------------------
-// abstract base class MusPageFunctor
+// MusPageFunctor
 //----------------------------------------------------------------------------
 
 /**
  * This class is a Functor that processes MusPage objects.
  * Needs testing.
 */
-class MusPageFunctor: public MusLayoutFunctor
+class MusPageFunctor: public MusFunctor
 {
 private:
     void (MusPage::*fpt)( wxArrayPtrVoid params );   // pointer to member function
@@ -124,11 +117,11 @@ public:
 
     // constructor - takes pointer to an object and pointer to a member and stores
     // them in two private variables
-    MusPageFunctor( void(MusPage::*_fpt)( wxArrayPtrVoid )) { fpt=_fpt; };
+    MusPageFunctor( void(MusPage::*_fpt)( wxArrayPtrVoid ) ) { fpt=_fpt; };
 	virtual ~MusPageFunctor() {};
 
     // override function "Call"
-    virtual void Call( MusPage *ptr, wxArrayPtrVoid params )
+    void Call( MusPage *ptr, wxArrayPtrVoid params )
         { (*ptr.*fpt)( params );};          // execute member function
 };
 

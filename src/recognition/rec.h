@@ -130,7 +130,7 @@ public:
     RecEnv();
     virtual ~RecEnv();
     
-        virtual void LoadWindow();
+    virtual void LoadWindow();
     static void LoadConfig();
     static void SaveConfig();
     virtual void ParseCmd( wxCmdLineParser *parser );

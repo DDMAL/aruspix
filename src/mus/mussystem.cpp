@@ -8,6 +8,7 @@
 // For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"
 
+#include "musio.h"
 #include "mussystem.h"
 #include "muslaidoutstaff.h"
 
@@ -58,24 +59,35 @@ void MusSystem::Clear( )
 }
 
 
+void MusSystem::Save( wxArrayPtrVoid params )
+{
+    // param 0: output stream
+    MusFileOutputStream *output = (MusFileOutputStream*)params[0];       
+    output->WriteSystem( this );
+    
+    // save staves
+    MusLaidOutStaffFunctor staff( &MusLaidOutStaff::Save );
+    this->Process( &staff, params );
+}
+
+void MusSystem::Load( wxArrayPtrVoid params )
+{
+    // param 0: output stream
+    MusFileInputStream *input = (MusFileInputStream*)params[0];       
+    
+    // load staves
+    MusLaidOutStaff *staff;
+    while ( (staff = input->ReadLaidOutStaff()) ) {
+        staff->Load( params );
+        this->AddStaff( staff );
+    }
+}
+
 
 void MusSystem::AddStaff( MusLaidOutStaff *staff )
 {
 	staff->SetSystem( this );
 	m_staves.Add( staff );
-}
-
-void MusSystem::CheckIntegrity()
-{
-	wxASSERT_MSG( m_page, "MusPage parent cannot be NULL");
-	
-	MusLaidOutStaff *staff;
-	int i;
-    for (i = 0; i < this->GetStaffCount(); i++) 
-	{
-		staff = &m_staves[i];
-        staff->CheckIntegrity();
-	}
 }
 
 int MusSystem::GetSystemNo() const
@@ -84,6 +96,13 @@ int MusSystem::GetSystemNo() const
     
     return m_page->m_systems.Index( *this );
 }
+
+/*
+void MusSystem::SetDoc( wxArrayPtrVoid params )
+{
+    wxLogDebug("PROUT");    
+}
+*/
 
 /*
 void MusSystem::ClearStaves( MusDC *dc, MusLaidOutStaff *start )
@@ -209,8 +228,12 @@ void MusSystem::SetValues( int type )
 
 // functors for MusSystem
 
-void MusSystem::Process(MusLayoutFunctor *functor, wxArrayPtrVoid params )
+void MusSystem::Process(MusFunctor *functor, wxArrayPtrVoid params )
 {
+    if (functor->m_success) {
+        return;
+    }
+    
     MusLaidOutStaffFunctor *staffFunctor = dynamic_cast<MusLaidOutStaffFunctor*>(functor);
     MusLaidOutStaff *staff;
 	int i;

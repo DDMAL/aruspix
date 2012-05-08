@@ -23,9 +23,10 @@
 #include "app/axapp.h"
 #include "app/axprocess.h"
 
-#include "mus/muspage.h"
-#include "mus/musstaff.h"
 #include "mus/musdoc.h"
+#include "mus/musstaff.h"
+#include "muslaidoutlayerelement.h"
+
 #include "mus/musiobin.h"
 #include "mus/musiomlf.h"
 
@@ -170,6 +171,30 @@ void RecFile::UpgradeTo_1_5_0()
     wxRemoveFile( m_basename + "page.wwg" );
 }
 
+
+void RecFile::UpgradeTo_2_0_0()
+{
+    if ( AxFile::FormatVersion(m_vmaj, m_vmin, m_vrev) >= AxFile::FormatVersion(2, 0, 0) )
+		return; // when do not need to upgrade the file
+    if ( AxFile::FormatVersion(m_vmaj, m_vmin, m_vrev) < AxFile::FormatVersion(1, 5, 0) )
+        return; // the file has been upgraded by Upgrade_1_5_0
+    
+    if ( !wxFileExists( m_basename + "page.bin") )
+        return; // file is missing
+    // backup old binary file
+    wxString backup = wxString::Format( "page.1.%d.%d.bin", m_vmin, m_vrev );
+    if ( !wxCopyFile( m_basename + "page.bin", m_basename + backup ) )  
+        return;
+        
+    MusBinInput_1_X bin_input( m_musDocPtr, m_musDocPtr->m_fname );
+    bin_input.ImportFile();
+    
+    // output the new binary file
+    MusBinOutput bin_output( m_musDocPtr, m_musDocPtr->m_fname );
+    bin_output.ExportFile();    
+}
+
+
 void RecFile::NewContent( )
 {
 	wxASSERT_MSG( !m_imPagePtr, "ImPage should be NULL" );
@@ -214,6 +239,8 @@ void RecFile::OpenContent( )
 		m_isPreprocessed = true;
         
     UpgradeTo_1_5_0();
+    
+    UpgradeTo_2_0_0();
 	
     // binarization variables	
     node = m_xml_root->FirstChild( "binarization" );
@@ -232,9 +259,10 @@ void RecFile::OpenContent( )
 		
 	if ( wxFileExists( m_basename + "page.bin") )
 	{
-		MusBinInput *bin_input = new MusBinInput( m_musDocPtr, m_musDocPtr->m_fname );
-		failed = !bin_input->ImportFile();
-		delete bin_input;
+
+        MusBinInput *bin_input = new MusBinInput( m_musDocPtr, m_musDocPtr->m_fname );
+        failed = !bin_input->ImportFile();
+        delete bin_input;           
 		if ( failed )
 			return;
 		else
@@ -291,7 +319,6 @@ void RecFile::SaveContent( )
 	wxASSERT_MSG( m_musDocPtr, "MusDoc should not be NULL" );
 	wxASSERT( m_xml_root );
     
-    /*
 		
 	if ( !m_isPreprocessed )
 		return;
@@ -319,7 +346,8 @@ void RecFile::SaveContent( )
 		
 		MusMLFOutput *mlfoutput = new MusMLFOutput( m_musDocPtr, m_basename + "page.mlf", NULL );
 		mlfoutput->m_pagePosition = true;
-		mlfoutput->WritePage( &m_musDocPtr->m_pages[0] , "staff", m_imPagePtr );
+        // !!! No check if layout and page exist!
+		mlfoutput->WritePage( &m_musDocPtr->m_layouts[0].m_pages[0] , "staff", m_imPagePtr );
 		delete mlfoutput;
 		TiXmlElement root( "recpage" );
     
@@ -339,9 +367,6 @@ void RecFile::SaveContent( )
 			
 		m_xml_root->InsertEndChild( root );
 	}
-    */
-    wxLogError( "RecFile::SaveContent missing in ax2" ); // ax2
-
 }
 
 void RecFile::CloseContent( )
@@ -810,7 +835,6 @@ bool RecFile::Decode( wxArrayPtrVoid params, AxProgressDlg *dlg )
 
 bool RecFile::RealizeFromMLF( wxArrayPtrVoid params, AxProgressDlg *dlg )
 {
-    /*
     wxASSERT_MSG( m_imPagePtr , "Page cannot be NULL");
     wxASSERT_MSG( m_musDocPtr , "MusDoc cannot be NULL");
 	//wxASSERT_MSG( dlg, "AxProgressDlg cannot be NULL" );
@@ -818,52 +842,77 @@ bool RecFile::RealizeFromMLF( wxArrayPtrVoid params, AxProgressDlg *dlg )
 	if (dlg && !dlg->SetOperation( _("Load results...") ) )
 		return this->Terminate( ERR_CANCELED );
 
+    
+    m_musDocPtr->Reset();
+    MusDiv *div = new MusDiv( );
+    MusScore *score = new MusScore( );
+    MusSection *section = new MusSection( );
+    MusStaff *logStaff = new MusStaff();
+    MusLayer *logLayer = new MusLayer();
+    // here we need to create the logical tree
+    MusLayout *musLayout = new MusLayout( Facsimile );  
     MusPage *musPage = new MusPage();
-
-	m_musDocPtr->m_pages.Clear();
-	m_musDocPtr->m_parameters.param.pageFormatHor = m_imPagePtr->m_size.GetWidth() / 10;
-	m_musDocPtr->m_parameters.param.pageFormatVer = m_imPagePtr->m_size.GetHeight() / 10;
+    
+    // dimensions
+	m_musDocPtr->m_env.m_paperWidth = m_imPagePtr->m_size.GetWidth() / 10;
+	m_musDocPtr->m_env.m_paperHeight = m_imPagePtr->m_size.GetHeight() / 10;
 
     int x1 = 5, x2 = 195;
     m_imPagePtr->CalcLeftRight( &x1, &x2 ); 
 	x1 = 0; // force it, indentation will be calculated staff by staff
-    m_musDocPtr->m_parameters.param.MargeGAUCHEIMPAIRE = x1 / 10;
-    m_musDocPtr->m_parameters.param.MargeGAUCHEPAIRE = x1 / 10;
-    musPage->lrg_lign = (x2 - x1) / 10;
+    m_musDocPtr->m_env.m_leftMarginOddPage = x1 / 10;
+    m_musDocPtr->m_env.m_leftMarginEvenPage = x1 / 10;
 
     int nb = (int)m_imPagePtr->m_staves.GetCount();
     int previous = 0;
     ImStaff *imStaff;   
+    // currently creates one system/staff/layer per staff in imPage
     for (int i = 0; i < nb; i++)
     {
         imStaff = &m_imPagePtr->m_staves[i];
-        MusLaidOutStaff *musStaff = new MusLaidOutStaff();
-        musStaff->no = nb;
-        musStaff->indent = imStaff->CalcIndentation( x1 );
+        MusSystem *musSystem = new MusSystem();
+        musSystem->lrg_lign = (x2 - x1) / 10;
+        MusLaidOutStaff *musStaff = new MusLaidOutStaff( logStaff );
+        MusLaidOutLayer *musLayer = new MusLaidOutLayer( logLayer );
+        //musLayer->no = nb; ?? // ax2
+        musSystem->indent = imStaff->CalcIndentation( x1 );
         musStaff->ecart = (m_imPagePtr->ToViewY( imStaff->m_y ) -  previous ) / musPage->defin;
             //imStaff->CalcEcart( previous ) / musPage->defin;
         musStaff->vertBarre = START_END;
         //musStaff->brace = START_END;
         previous += musStaff->ecart * musPage->defin;
-        musPage->m_staves.Add( musStaff );
-    }   
-    m_musDocPtr->m_pages.Add( musPage );
-    m_musDocPtr->CheckIntegrity();
+        
+        musStaff->AddLayer( musLayer );
+        musSystem->AddStaff( musStaff );
+        musPage->AddSystem( musSystem );
+    } 
+    
+    logStaff->AddLayer( logLayer );
+    section->AddStaff( logStaff );
+    score->AddSection( section );
+    div->AddScore( score );
+    m_musDocPtr->AddDiv( div );
+    //
+    musLayout->AddPage( musPage );
+    m_musDocPtr->AddLayout( musLayout );
 	
-	///// FAKE JUST FOR COMPILATION
 	wxString m_rec_output = m_basename + "rec.mlf";
 	
     MusMLFInput *mlfinput = new MusMLFInput( m_musDocPtr, m_rec_output );
-    mlfinput->ReadPage( musPage, true, m_imPagePtr );
+    mlfinput->ReadPage( musPage, logLayer, true, m_imPagePtr );
     delete mlfinput;
+    
+	wxString m_rec2_output = m_basename + "rec2.mlf";
+	
+    MusMLFOutput *mlfoutput = new MusMLFOutput( m_musDocPtr, m_rec2_output, NULL, "MusMLFSymbol" );
+    mlfoutput->WritePage( musPage, true );
+    delete mlfoutput;
 	
 	// save ????
     // MusBinOutput *bin_output = new MusBinOutput( m_musDocPtr, m_musDocPtr->m_fname );
-    //bin_output->ExportFile();
-    //delete bin_output;
+    // bin_output->ExportFile();
+    // delete bin_output;
 
-    */
-    wxLogError( "RealizeFromMLF method missing in ax2") ;
     return true;
 }
 

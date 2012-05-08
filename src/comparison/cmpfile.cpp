@@ -103,7 +103,7 @@ bool CmpCollation::IsCollationLoaded( )
 		return false;
 		
 	bool failed = false;
-	MusBinInput *bin_input = new MusBinInput( m_musDocPtr, m_musDocPtr->m_fname, MUS_BIN_ARUSPIX_CMP  );
+	MusBinInput_1_X *bin_input = new MusBinInput_1_X( m_musDocPtr, m_musDocPtr->m_fname, MUS_BIN_ARUSPIX_CMP  );
 	failed = !bin_input->ImportFile();
 	delete bin_input;
 	if ( failed )
@@ -161,7 +161,7 @@ bool CmpCollation::Realize( )
 		{
 			staffname = m_basename + m_id + ".swwg";
 		}
-		MusBinInput bin_input( NULL, staffname, MUS_BIN_ARUSPIX_CMP );
+		MusBinInput_1_X bin_input( NULL, staffname, MUS_BIN_ARUSPIX_CMP );
 		bin_input.ReadStaff( full_staff );
 		MusSymbol1 *clef = NULL; // we keep last clef for next page
 		for( int j = 0; j < npages; j++ )
@@ -235,7 +235,7 @@ bool CmpCollation::Collate( )
 	for( i = 0; i < (int)m_collationParts.GetCount(); i++ )
 	{
 		CmpCollationPart *part = &m_collationParts[i];
-		MusBinInput bin_input( NULL, m_basename + part->m_bookPart->m_id + ".swwg", MUS_BIN_ARUSPIX_CMP );
+		MusBinInput_1_X bin_input( NULL, m_basename + part->m_bookPart->m_id + ".swwg", MUS_BIN_ARUSPIX_CMP );
 		bin_input.ReadStaff( &staves[i] );
 		if ( part->m_flags & PART_REFERENCE )
 		{
@@ -707,7 +707,7 @@ void CmpFile::OpenContent( )
 	if ( wxFileExists( m_basename + "collation.wwg") )
 	{
 		bool failed = false;
-		MusBinInput *bin_input = new MusBinInput( m_musDocPtr, m_musDocPtr->m_fname, MUS_BIN_ARUSPIX_CMP  );
+		MusBinInput_1_X *bin_input = new MusBinInput_1_X( m_musDocPtr, m_musDocPtr->m_fname, MUS_BIN_ARUSPIX_CMP  );
 		failed = !bin_input->ImportFile();
 		delete bin_input;
 		if ( failed )
@@ -1145,7 +1145,7 @@ bool CmpFile::Collate( wxArrayPtrVoid params, AxProgressDlg *dlg )
 		delete bin_output;
 		* /
 		
-		MusBinInput *bin_input = new MusBinInput( NULL, m_basename + book->m_shortname + ".swwg", MUS_BIN_ARUSPIX_CMP );
+		MusBinInput_1_X *bin_input = new MusBinInput_1_X( NULL, m_basename + book->m_shortname + ".swwg", MUS_BIN_ARUSPIX_CMP );
 		MusLaidOutStaff musStaff_loaded;
 		bin_input->ReadStaff( &musStaff_loaded );
 		delete bin_input;

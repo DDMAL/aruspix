@@ -34,32 +34,39 @@ MusPage::~MusPage()
 void MusPage::Clear( )
 {
 	m_systems.Clear( );
-	noMasqueFixe = false;
-	noMasqueVar = false;
-	reserve = 0;
 	defin = 20;
-	npage = 0;
 }
 
+
+void MusPage::Save( wxArrayPtrVoid params )
+{
+    // param 0: output stream
+    MusFileOutputStream *output = (MusFileOutputStream*)params[0];       
+    output->WritePage( this );
+    
+    // save system
+    MusSystemFunctor system( &MusSystem::Save );
+    this->Process( &system, params );
+}
+
+void MusPage::Load( wxArrayPtrVoid params )
+{
+    // param 0: output stream
+    MusFileInputStream *input = (MusFileInputStream*)params[0];       
+    
+    // load systems
+    MusSystem *system;
+    while ( (system = input->ReadSystem()) ) {
+        system->Load( params );
+        this->AddSystem( system );
+    }
+}
 
 
 void MusPage::AddSystem( MusSystem *system )
 {
 	system->SetPage( this );
 	m_systems.Add( system );
-}
-
-void MusPage::CheckIntegrity()
-{
-	wxASSERT_MSG( m_layout, "MusLayout parent cannot be NULL");
-	
-	MusSystem *system;
-	int i;
-    for (i = 0; i < this->GetSystemCount(); i++) 
-	{
-		system = &m_systems[i];
-        system->CheckIntegrity();
-	}
 }
 
 int MusPage::GetPageNo() const
@@ -178,8 +185,12 @@ void MusPage::SetValues( int type )
 
 // functors for MusPage
 
-void MusPage::Process(MusLayoutFunctor *functor, wxArrayPtrVoid params )
+void MusPage::Process(MusFunctor *functor, wxArrayPtrVoid params )
 {
+    if (functor->m_success) {
+        return;
+    }
+    
     MusSystemFunctor *sysFunctor = dynamic_cast<MusSystemFunctor*>(functor);
     MusSystem *system;
 	int i;
@@ -187,7 +198,7 @@ void MusPage::Process(MusLayoutFunctor *functor, wxArrayPtrVoid params )
 	{
         system = &m_systems[i];
         if (sysFunctor) { // is is a MusSystemFunctor, call it
-            functor->Call( system, params );
+            sysFunctor->Call( system, params );
         }
         else { // process it further
             system->Process( functor, params );
@@ -276,7 +287,7 @@ void MusPage::UpdateSystemPositions( )
 	int i;
 	MusSystem *system = NULL;
     
-    int yy =  m_doc->pageFormatHor-40;
+    int yy =  m_layout->m_pageHeight;
     for (i = 0; i < this->GetSystemCount(); i++) 
 	{
 		system = &this->m_systems[i];

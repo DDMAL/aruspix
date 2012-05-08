@@ -15,7 +15,6 @@
 
 #include "musstaff.h"
 
-
 //----------------------------------------------------------------------------
 // MusLayer
 //----------------------------------------------------------------------------
@@ -24,20 +23,32 @@
  * This class models the MEI <layer> element.
  * A MusLayer is a MusStaffInterface
  */
-class MusLayer: public MusLogicalObject, public MusStaffInterface
+class MusLayer: public MusLogicalObject
 {
 public:
     // constructors and destructors
     MusLayer();
     virtual ~MusLayer();	
+    
+    virtual wxString MusClassName( ) { return "MusLayer"; };
 	
 	void AddLayerElement( MusLayerElement *element );
+    
+    void SetStaff( MusStaff *staff ) { m_staff = staff; };
+    
+    // moulinette
+    virtual void Process(MusFunctor *functor, wxArrayPtrVoid params );
+    // functors
+    void Save( wxArrayPtrVoid params );
+    void Load( wxArrayPtrVoid params );
         
 private:
     
 public:
     /** The children MusLayerElement objects */
     ArrayOfMusLayerElements m_layerElements;
+    /** the parent MusStaff */
+    MusStaff *m_staff;
 
 private:
     
@@ -45,14 +56,14 @@ private:
 
 
 //----------------------------------------------------------------------------
-// abstract base class MusLayerFunctor
+// MusLayerFunctor
 //----------------------------------------------------------------------------
 
 /**
     This class is a Functor that processes MusLayer objects.
     Needs testing.
 */
-class MusLayerFunctor
+class MusLayerFunctor: public MusFunctor
 {
 private:
     void (MusLayer::*fpt)( wxArrayPtrVoid params );   // pointer to member function
@@ -89,6 +100,10 @@ public:
     /** The parent MusLayer setter */
     void SetLayer( MusLayer *layer ) { m_layer = layer; };
     
+    // functors
+    void Save( wxArrayPtrVoid params );
+    bool FindWithUuid( wxArrayPtrVoid params );
+    
 private:
     
 public:
@@ -109,6 +124,31 @@ private:
 };
 
 
+//----------------------------------------------------------------------------
+// MusLayerElementFunctor
+//----------------------------------------------------------------------------
+
+/**
+ * This class is a Functor that processes MusLayerElement objects.
+ * Needs testing.
+ */
+class MusLayerElementFunctor: public MusFunctor
+{
+private:
+    void (MusLayerElement::*fpt)( wxArrayPtrVoid params );   // pointer to member function
+    bool (MusLayerElement::*fpt_bool)( wxArrayPtrVoid params );   // pointer to member function
+    
+public:
+    
+    // constructor - takes pointer to an object and pointer to a member and stores
+    // them in two private variables
+    MusLayerElementFunctor( void(MusLayerElement::*_fpt)( wxArrayPtrVoid ));
+    MusLayerElementFunctor( bool(MusLayerElement::*_fpt_bool)( wxArrayPtrVoid ));
+	virtual ~MusLayerElementFunctor() {};
+    
+    // override function "Call"
+    virtual void Call( MusLayerElement *ptr, wxArrayPtrVoid params );
+};
 
 
 

@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		0A5FB27A0DD49D2D001E460E /* imbrink3classes.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0A5FB2790DD49D2D001E460E /* imbrink3classes.cpp */; };
+		4D0C8DB51557E155003F487C /* musio.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D0C8DB31557E154003F487C /* musio.cpp */; };
 		4D12CE4010748D8E00E65714 /* edt.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D12CE3C10748D8E00E65714 /* edt.cpp */; };
 		4D1675E70D8B628900F4D912 /* imkmeans.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D1675E60D8B628900F4D912 /* imkmeans.cpp */; };
 		4D1676650D8B765000F4D912 /* supbookfile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D1676610D8B765000F4D912 /* supbookfile.cpp */; };
@@ -40,6 +41,7 @@
 		4D2F7EEE145AE14D00EF930B /* muswxdc.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D2F7EEB145AE14D00EF930B /* muswxdc.cpp */; };
 		4D2F7F42145AE7CA00EF930B /* muswwg.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D2F7F40145AE7CA00EF930B /* muswwg.cpp */; };
 		4D2F7F78145AEBF700EF930B /* musclef.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D2F7F77145AEBF700EF930B /* musclef.cpp */; };
+		4D38196914F534410002A4DA /* musiobin.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D38196814F534410002A4DA /* musiobin.cpp */; };
 		4D3A8FCB0D35858D00BBC1FB /* recmlfbmp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D3A8FC70D35858D00BBC1FB /* recmlfbmp.cpp */; };
 		4D3A8FCC0D35858D00BBC1FB /* recmodels.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D3A8FC90D35858D00BBC1FB /* recmodels.cpp */; };
 		4D3A8FF50D35867200BBC1FB /* musiomlf.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D3A8FDB0D35867200BBC1FB /* musiomlf.cpp */; };
@@ -136,6 +138,8 @@
 
 /* Begin PBXFileReference section */
 		0A5FB2790DD49D2D001E460E /* imbrink3classes.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = imbrink3classes.cpp; sourceTree = "<group>"; };
+		4D0C8DB31557E154003F487C /* musio.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = musio.cpp; path = ../src/mus/musio.cpp; sourceTree = "<group>"; };
+		4D0C8DB41557E154003F487C /* musio.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = musio.h; path = ../src/mus/musio.h; sourceTree = "<group>"; };
 		4D12CE3C10748D8E00E65714 /* edt.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = edt.cpp; path = ../src/edition/edt.cpp; sourceTree = SOURCE_ROOT; };
 		4D12CE3D10748D8E00E65714 /* edt.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = edt.h; path = ../src/edition/edt.h; sourceTree = SOURCE_ROOT; };
 		4D12CE3F10748D8E00E65714 /* edt_wdr.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = edt_wdr.h; path = ../src/edition/edt_wdr.h; sourceTree = SOURCE_ROOT; };
@@ -191,6 +195,7 @@
 		4D2F7F40145AE7CA00EF930B /* muswwg.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = muswwg.cpp; path = ../src/mus/muswwg.cpp; sourceTree = SOURCE_ROOT; };
 		4D2F7F41145AE7CA00EF930B /* muswwg.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = muswwg.h; path = ../src/mus/muswwg.h; sourceTree = SOURCE_ROOT; };
 		4D2F7F77145AEBF700EF930B /* musclef.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = musclef.cpp; path = ../src/mus/musclef.cpp; sourceTree = SOURCE_ROOT; };
+		4D38196814F534410002A4DA /* musiobin.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = musiobin.cpp; path = ../src/mus/musiobin.cpp; sourceTree = "<group>"; };
 		4D3A8FC70D35858D00BBC1FB /* recmlfbmp.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = recmlfbmp.cpp; sourceTree = "<group>"; };
 		4D3A8FC80D35858D00BBC1FB /* recmlfbmp.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = recmlfbmp.h; sourceTree = "<group>"; };
 		4D3A8FC90D35858D00BBC1FB /* recmodels.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = recmodels.cpp; sourceTree = "<group>"; };
@@ -413,8 +418,11 @@
 		4D2F7EE2145ADBD000EF930B /* io */ = {
 			isa = PBXGroup;
 			children = (
+				4D0C8DB31557E154003F487C /* musio.cpp */,
+				4D0C8DB41557E154003F487C /* musio.h */,
 				4DB2D96B0D8383EA003401B0 /* musmlfdic.cpp */,
 				4DB2D96C0D8383EA003401B0 /* musmlfdic.h */,
+				4D38196814F534410002A4DA /* musiobin.cpp */,
 				4DDE3CDF0EF1B25E006D4F2C /* musiobin.h */,
 				4DB4F219143F3D3200BCB254 /* musiomei.cpp */,
 				4DB4F21A143F3D3200BCB254 /* musiomei.h */,
@@ -922,6 +930,8 @@
 				4D25BF5C14A3BCB600596392 /* sup_wdr_inc.cpp in Sources */,
 				4D25BF5E14A3BD0300596392 /* edt_wdr_inc.cpp in Sources */,
 				4D25BF6014A3BD3600596392 /* rec_wdr_inc.cpp in Sources */,
+				4D38196914F534410002A4DA /* musiobin.cpp in Sources */,
+				4D0C8DB51557E155003F487C /* musio.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

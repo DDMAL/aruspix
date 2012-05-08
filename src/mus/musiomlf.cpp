@@ -21,11 +21,17 @@ using std::max;
 
 #include "muspage.h"
 #include "mussystem.h"
+#include "muslaidoutstaff.h"
+#include "muslaidoutlayer.h"
+#include "muslaidoutlayerelement.h"
 #include "musstaff.h"
-//#include "muselement.h"
-//#include "musnote.h"
-//#include "mussymbol.h"
+
+#include "musclef.h"
+#include "musmensur.h"
+#include "musnote.h"
 #include "musneume.h"
+#include "musrest.h"
+#include "mussymbol.h"
 
 #include "musmlfdic.h"
 
@@ -311,11 +317,10 @@ MusMLFOutput::MusMLFOutput( MusDoc *doc, wxString filename, MusMLFDictionary *di
 {
     m_filename = filename;
     wxFileName::SplitPath( m_filename, NULL, &m_shortname, NULL );
-	m_addPageNo = false;
 	m_addHeader = true;
 	m_pagePosition = false;
 	m_hmmLevel = false;
-	m_staff = NULL;
+	m_layer = NULL;
 	m_mlf_class_name = model_symbol_name;
 	m_dict = dict;
 }
@@ -326,11 +331,10 @@ MusMLFOutput::MusMLFOutput( MusDoc *doc, int fd, wxString filename, MusMLFDictio
 {
     m_filename = filename;
     wxFileName::SplitPath( m_filename, NULL, &m_shortname, NULL );
-	m_addPageNo = false;
 	m_addHeader = false;
 	m_pagePosition = false;
 	m_hmmLevel = false;
-	m_staff = NULL;
+	m_layer = NULL;
 	m_mlf_class_name = model_symbol_name;
 	m_dict = dict;
 }
@@ -340,10 +344,11 @@ MusMLFOutput::~MusMLFOutput()
 }
 
 // specific
-
+/*
+ Removed in version 2.0.0
+ 
 MusLaidOutStaff *MusMLFOutput::SplitSymboles( MusLaidOutStaff *staff )
 {
-/*
 	unsigned int k;
 
 	MusLaidOutStaff *nstaff = new MusLaidOutStaff();
@@ -422,19 +427,13 @@ MusLaidOutStaff *MusMLFOutput::SplitSymboles( MusLaidOutStaff *staff )
     }
 	nstaff->CheckIntegrity( );
 	return nstaff;
-    */
-    wxLogDebug( "SplitSymboles missing in ax2" );
 }
+*/
 
 void MusMLFOutput::StartLabel( )
 {
-	wxString label;
-	if ( !m_addPageNo )
-		label = wxString::Format("\"*/%s_%d.0.lab\"\n", m_shortname.c_str(), m_staff_i );
-	else
-		label = wxString::Format("\"*/%s_%03d.%d.0.lab\"\n", m_shortname.c_str(), m_page_i + 1, m_staff_i );
-	Write( label, label.Length() );
-	
+	wxString label = wxString::Format("\"*/%s_%d.0.lab\"\n", m_shortname.c_str(), m_staff_i );
+	Write( label, label.Length() );	
 	m_symbols.Clear();
 
 }
@@ -541,47 +540,37 @@ void MusMLFOutput::EndLabel( int offset, int end_point )
 // copie le portee en convertissant les symbols de la clef courante vers Ut1
 // si inPlace, directment dans staff
 
-MusLaidOutStaff *MusMLFOutput::GetUt1( MusLaidOutStaff *staff , bool inPlace )
+MusLaidOutLayer *MusMLFOutput::GetUt1( MusLaidOutLayer *layer )
 {
-/*
-	if ( !staff )
+
+	if ( !layer )
 		return NULL;
 
 	int code, oct;
-
-	MusLaidOutStaff *nstaff = staff;
-	if ( !inPlace )
-		nstaff = new MusLaidOutStaff( *staff );
 	
-	for (int i = 0; i < (int)nstaff->m_elements.GetCount(); i++ )
+	for (int i = 0; i < (int)layer->m_elements.GetCount(); i++ )
 	{
-		if ( nstaff->m_elements[i].IsNote() )
+		if ( layer->m_elements[i].IsPitchInterface() )
 		{
-			MusNote1 *note = (MusNote1*)&nstaff->m_elements[i];
+			MusLaidOutLayerElement *element = &layer->m_elements[i];
 			{
-				GetUt1( nstaff, note, &code, &oct );
-				note->code = code;
-				note->oct = oct;
+				GetUt1( layer, element, &code, &oct );
+                MusPitchInterface *pitchElement = dynamic_cast<MusPitchInterface*>(element->m_layerElement);
+				pitchElement->m_pname = code;
+				pitchElement->m_oct = oct;
 			}
 		}
-		else if ( nstaff->m_elements[i].IsSymbol() )
+		else if ( layer->m_elements[i].IsPositionInterface() )
 		{
-			MusSymbol1 *symbol = (MusSymbol1*)&nstaff->m_elements[i];
-			if ((symbol->flag == ALTER) || (symbol->flag == PNT))
+			MusLaidOutLayerElement *element = &layer->m_elements[i];
 			{
-				GetUt1( nstaff, symbol, &code, &oct );
-				symbol->code = code;
-				symbol->oct = oct;
+				GetUt1( layer, element, &code, &oct );
+                MusPositionInterface *positionElement = dynamic_cast<MusPositionInterface*>(element->m_layerElement);
+				positionElement->m_pname = code;
+				positionElement->m_oct = oct;
 			}
 		}
 	}
-
-	if ( inPlace )
-		return NULL;
-	else
-		return nstaff;
-*/
-    wxLogDebug( "GetUt1 missing in ax2" );
     return NULL;
 }
 
@@ -593,24 +582,26 @@ MusLaidOutStaff *MusMLFOutput::GetUt1( MusLaidOutStaff *staff , bool inPlace )
   la ligne du bas.
 */
 
-void MusMLFOutput::GetUt1( MusLaidOutStaff *staff, MusLaidOutLayerElement *pelement, int *code, int *oct)
+void MusMLFOutput::GetUt1( MusLaidOutLayer *layer, MusLaidOutLayerElement *pelement, int *code, int *oct)
 {
-/*
+
 	if (!pelement || !code || !oct) return;
 
-	char valeur = 0;
-	int offs;
-
-	if (!staff || (staff->GetClef(pelement,&valeur, 1 )==0))
-		valeur = 5;
-	MusSymbol1::calcoffs(&offs, valeur);
-
-	*oct = pelement->oct;
-	*code = 0;
-	if (pelement->IsSymbol())
-		*code = ((MusSymbol1*)pelement)->code + offs;
-	else if (pelement->IsNote())
-		*code = ((MusNote1*)pelement)->code + offs;
+    int offs = layer->GetClefOffset( pelement );
+    
+	if (dynamic_cast<MusPitchInterface*>(pelement->m_layerElement)) {
+        MusPitchInterface *pitchInterface = dynamic_cast<MusPitchInterface*>(pelement->m_layerElement);
+		*code = pitchInterface->m_pname + offs;
+        *oct = pitchInterface->m_oct;
+    }
+	else if (dynamic_cast<MusPositionInterface*>(pelement->m_layerElement)) {
+        MusPositionInterface *positionInterface = dynamic_cast<MusPositionInterface*>(pelement->m_layerElement);
+		*code = positionInterface->m_pname + offs;
+        *oct = positionInterface->m_oct;
+    }
+    else {
+        return;
+    }
 
 	while (*code < 1)
 	{
@@ -622,8 +613,6 @@ void MusMLFOutput::GetUt1( MusLaidOutStaff *staff, MusLaidOutLayerElement *pelem
 		*code -= 7;
 		(*oct)++;
 	};
-*/
-    wxLogDebug( "GetUt1 missing in ax2" );
 }
 
 bool MusMLFOutput::WritePage( const MusPage *page, bool write_header )
@@ -633,21 +622,14 @@ bool MusMLFOutput::WritePage( const MusPage *page, bool write_header )
 		Write("#!MLF!#\n",8);
 		m_addHeader = false;
 	}
-    
-    /*
 
-    m_staff = NULL;
-    for (m_staff_i = 0; m_staff_i < page->GetStaffCount(); m_staff_i++) 
+    m_layer = NULL;
+    for (m_staff_i = 0; m_staff_i < page->m_systems.GetCount(); m_staff_i++) 
     {
-        MusLaidOutStaff *staff = &page->m_staves[m_staff_i];
-		m_staff = MusMLFOutput::SplitSymboles( staff );
-        WriteStaff( m_staff );
-		delete m_staff;
-		m_staff = NULL;
+        m_layer = &page->m_systems[m_staff_i].m_staves[0].m_layers[0];
+        WriteLayer( m_layer );
+		m_layer = NULL;
     }
-
-    */
-    wxLogError( "MusMLFOutput::WritePage missing in ax2" );
     return true;
 
 }
@@ -655,7 +637,6 @@ bool MusMLFOutput::WritePage( const MusPage *page, bool write_header )
 // idem ExportFile() puis WritePage(), mais gere la position des portee de imPage et les portee selon staff numbers
 bool MusMLFOutput::WritePage( const MusPage *page, wxString filename, ImPage *imPage, wxArrayInt *staff_numbers )
 {
-    /*
 	wxASSERT_MSG( page, "MusPage cannot be NULL" );
 	wxASSERT_MSG( imPage, "ImPage cannot be NULL" );
 	
@@ -672,67 +653,63 @@ bool MusMLFOutput::WritePage( const MusPage *page, wxString filename, ImPage *im
 	int offset;
 	int end_point;
 
-    m_staff = NULL;
-    for (m_staff_i = 0; m_staff_i < page->GetStaffCount(); m_staff_i++) 
+    m_layer = NULL;
+    for (m_staff_i = 0; m_staff_i < page->m_systems.GetCount(); m_staff_i++) 
     {
 		if ( staff_numbers && ( staff_numbers->Index( m_staff_i ) == wxNOT_FOUND ) )
 			continue;
 
-        MusLaidOutStaff *staff = &page->m_staves[m_staff_i];
+        m_layer = &page->m_systems[m_staff_i].m_staves[0].m_layers[0];
 		imPage->m_staves[m_staff_i].GetMinMax( &offset, &end_point );
-		m_staff = MusMLFOutput::SplitSymboles( staff );
-        WriteStaff( m_staff, offset, end_point );
-		delete m_staff;
-		m_staff = NULL;
+        WriteLayer( m_layer, offset, end_point );
+		m_layer = NULL;
     }
-    */
-    wxLogError( "MusMLFOutput::WritePage missing in ax2" );
     return true;
 
 }
 
 
-bool MusMLFOutput::WriteStaff( const MusLaidOutStaff *staff, int offset,  int end_point )
+bool MusMLFOutput::WriteLayer( const MusLaidOutLayer *layer, int offset,  int end_point )
 {
-/*
-	if (staff->GetElementCount() == 0)
+
+	if (layer->m_elements.GetCount() == 0)
 		return true;
 
     unsigned int k;
 
 	StartLabel();
 
-    for (k = 0;k < staff->GetElementCount() ; k++ )
+    for (k = 0;k < layer->m_elements.GetCount() ; k++ )
     {
-        if ( staff->m_elements[k].IsNote() )
+        MusLaidOutLayerElement *element = &layer->m_elements[k];
+        // we could write all of the in one method, left over from version < 2.0.0
+        if ( element->IsNote() || element->IsRest() || element->IsSymbol( SYMBOL_CUSTOS) )
         {
-            WriteNote( (MusNote1*)&staff->m_elements[k] );
+            WriteNote( element );
         }
-        else if ( staff->m_elements[k].IsSymbol() )
+        else
         {
-            WriteSymbol( (MusSymbol1*)&staff->m_elements[k] );
+            WriteSymbol( element );
         }
     }
 	EndLabel( offset, end_point );
-*/
-    wxLogDebug( "WriteStaff missing in ax2" );
 
     return true;
 }
 
-/*
-bool MusMLFOutput::WriteNote(  MusNote1 *note )
+
+bool MusMLFOutput::WriteNote( MusLaidOutLayerElement *element )
 {
 	int  code, oct;
-	GetUt1( m_staff, note, &code, &oct);
+	GetUt1( m_layer, element, &code, &oct);
 
 	MusMLFSymbol *mlfsb = NULL;
 
 	// custos 
-	if (note->val == CUSTOS)
+	if (element->IsSymbol( SYMBOL_CUSTOS ))
 	{
 		mlfsb = (MusMLFSymbol*)wxCreateDynamicObject( m_mlf_class_name );
-		mlfsb->SetValue( TYPE_CUSTOS, "", note->xrel, 0, _note[code],oct);
+		mlfsb->SetValue( TYPE_CUSTOS, "", element->m_xrel, 0, _note[code], oct);
 		m_symbols.Add( mlfsb );
 
 	}
@@ -741,35 +718,40 @@ bool MusMLFOutput::WriteNote(  MusNote1 *note )
 	{
 		mlfsb = (MusMLFSymbol*)wxCreateDynamicObject( m_mlf_class_name );
 		int flag = 0;
-		// hampe
-		if ((note->q_auto == false) && (note->sil != _SIL) && ((note->val ==  DUR_LG) || (note->val > DUR_1 )))
-			flag += NOTE_STEM;
-		
-		// ligature
-		if ((note->ligat == true) && (note->sil != _SIL) && (note->val >  DUR_LG) && (note->val < DUR_2 ))
-			flag += NOTE_LIGATURE;
-			
-		// coloration
-		if ((note->inv_val == true) && (note->sil != _SIL) && (note->val < DUR_2 ))
-			flag += NOTE_COLORATION;
-		else if ((note->oblique == true) && (note->sil != _SIL) && (note->val > DUR_4 ))
-			flag += NOTE_COLORATION;
+        if ( element->IsNote() ) {
+            MusNote *note = dynamic_cast<MusNote*>(element->m_layerElement);
+            // hampe
+            if ((note->m_stemDir != 0) && ((note->m_dur ==  DUR_LG) || (note->m_dur > DUR_1 )))
+                flag += NOTE_STEM; // ?? // ax2
+            
+            // ligature
+            if ((note->m_lig == LIG_INITIAL) && (note->m_dur >  DUR_LG) && (note->m_dur < DUR_2 ))
+                flag += NOTE_LIGATURE;
+                
+            // coloration
+            if ((note->m_colored == true) && (note->m_dur < DUR_2 ))
+                flag += NOTE_COLORATION;
+            else if ((note->m_ligObliqua == true) && (note->m_dur > DUR_4 ))
+                flag += NOTE_COLORATION;
+            
+            mlfsb->SetValue( TYPE_NOTE, "", element->m_xrel, note->m_dur, _note[code],oct, flag);
+        }
 
 		//silence
-		if (note->sil == _SIL)
+		if (element->IsRest())
 		{
+            MusRest *rest = dynamic_cast<MusRest*>(element->m_layerElement);
 			if ( oct % 2 )
-				mlfsb->SetValue( TYPE_REST, "", note->xrel, note->val, _sil0[code],oct + _oct0[code]);	
+				mlfsb->SetValue( TYPE_REST, "", element->m_xrel, rest->m_dur, _sil0[code],oct + _oct0[code]);	
 			else
-				mlfsb->SetValue( TYPE_REST, "", note->xrel, note->val, _sil1[code],oct + _oct1[code]);
+				mlfsb->SetValue( TYPE_REST, "", element->m_xrel, rest->m_dur, _sil1[code],oct + _oct1[code]);
 		}
-		else
-			mlfsb->SetValue( TYPE_NOTE, "", note->xrel, note->val, _note[code],oct, flag);
+
 		m_symbols.Add( mlfsb );
 	}
 	return true;
 }
-*/
+
 
 /*
   flag
@@ -781,111 +763,106 @@ bool MusMLFOutput::WriteNote(  MusNote1 *note )
   autre
   */
 
-/*
-bool MusMLFOutput::WriteSymbol(  MusSymbol1 *symbol )
+bool MusMLFOutput::WriteSymbol( MusLaidOutLayerElement *element )
 {
-	// gestion des segment de portees (pas actif ?????)
-	if ((symbol->flag == BARRE) && (symbol->code == 'I'))
-	{	
-		wxASSERT_MSG( false, "Should not happen..." );
-		EndLabel();
-		StartLabel();
-		return true;
-	}
-
 	MusMLFSymbol *mlfsb = (MusMLFSymbol*)wxCreateDynamicObject( m_mlf_class_name );
 
-	if (symbol->flag == BARRE)
+	if (element->IsBarline())
 	{
-		mlfsb->SetValue( TYPE_SYMBOLE, "B", symbol->xrel );
+		mlfsb->SetValue( TYPE_SYMBOLE, "B", element->m_xrel );
 		m_symbols.Add( mlfsb );
 	}
-	else if (symbol->flag == CLE)
+	else if (element->IsClef())
 	{
-		switch(symbol->code)
-		{	case SOL2 : mlfsb->SetValue( TYPE_KEY, "S",  symbol->xrel, 2 ); break;
-			case SOL1 : mlfsb->SetValue( TYPE_KEY, "S",  symbol->xrel, 1 ); break;
-			case SOLva : mlfsb->SetValue( TYPE_KEY, "S",  symbol->xrel, 8 ); break;
-			case FA5 : mlfsb->SetValue( TYPE_KEY, "F",  symbol->xrel, 5 ); break;
-			case FA4 : mlfsb->SetValue( TYPE_KEY, "F",  symbol->xrel, 4 ); break;
-			case FA3 : mlfsb->SetValue( TYPE_KEY, "F",  symbol->xrel, 3 ); break;
-			case UT1 : mlfsb->SetValue( TYPE_KEY, "U",  symbol->xrel, 1 ); break;
-			case UT2 : mlfsb->SetValue( TYPE_KEY, "U",  symbol->xrel, 2 ); break;
-			case UT3 : mlfsb->SetValue( TYPE_KEY, "U",  symbol->xrel, 3 ); break;
-			case UT5 : mlfsb->SetValue( TYPE_KEY, "U",  symbol->xrel, 5); break;
-			case UT4 : mlfsb->SetValue( TYPE_KEY, "U",  symbol->xrel, 4 ); break;
+        MusClef *clef = dynamic_cast<MusClef*>(element->m_layerElement);
+		switch(clef->m_clefId)
+		{	case SOL2 : mlfsb->SetValue( TYPE_KEY, "S",  element->m_xrel, 2 ); break;
+			case SOL1 : mlfsb->SetValue( TYPE_KEY, "S",  element->m_xrel, 1 ); break;
+			case SOLva : mlfsb->SetValue( TYPE_KEY, "S",  element->m_xrel, 8 ); break;
+			case FA5 : mlfsb->SetValue( TYPE_KEY, "F",  element->m_xrel, 5 ); break;
+			case FA4 : mlfsb->SetValue( TYPE_KEY, "F",  element->m_xrel, 4 ); break;
+			case FA3 : mlfsb->SetValue( TYPE_KEY, "F",  element->m_xrel, 3 ); break;
+			case UT1 : mlfsb->SetValue( TYPE_KEY, "U",  element->m_xrel, 1 ); break;
+			case UT2 : mlfsb->SetValue( TYPE_KEY, "U",  element->m_xrel, 2 ); break;
+			case UT3 : mlfsb->SetValue( TYPE_KEY, "U",  element->m_xrel, 3 ); break;
+			case UT5 : mlfsb->SetValue( TYPE_KEY, "U",  element->m_xrel, 5); break;
+			case UT4 : mlfsb->SetValue( TYPE_KEY, "U",  element->m_xrel, 4 ); break;
 			default: break;
 		}
 		m_symbols.Add( mlfsb );
 	}
-	else if (symbol->flag == ALTER)
+	else if (element->IsSymbol( SYMBOL_ACCID ))
 	{
+        MusSymbol *symbol = dynamic_cast<MusSymbol*>(element->m_layerElement);
 		int  code = 0, oct = 0;
-		GetUt1( m_staff, symbol, &code, &oct);
-		if (symbol->calte == ACCID_SHARP)
-			mlfsb->SetValue( TYPE_ALTERATION, "D",  symbol->xrel, 0, _note[code], oct );
-		else if (symbol->calte == ACCID_FLAT)
-			mlfsb->SetValue( TYPE_ALTERATION, "B",  symbol->xrel, 0, _note[code], oct );
-		else if (symbol->calte == ACCID_NATURAL)
-			mlfsb->SetValue( TYPE_ALTERATION, "H",  symbol->xrel, 0, _note[code], oct );
-		else if (symbol->calte == ACCID_DOUBLE_SHARP)
-			mlfsb->SetValue( TYPE_ALTERATION, "D",  symbol->xrel, 1, _note[code], oct );
-		else if (symbol->calte == ACCID_DOUBLE_FLAT)
-			mlfsb->SetValue( TYPE_ALTERATION, "B",  symbol->xrel, 1, _note[code], oct );
+		GetUt1( m_layer, element, &code, &oct);
+		if (symbol->m_accid == ACCID_SHARP)
+			mlfsb->SetValue( TYPE_ALTERATION, "D",  element->m_xrel, 0, _note[code], oct );
+		else if (symbol->m_accid == ACCID_FLAT)
+			mlfsb->SetValue( TYPE_ALTERATION, "B",  element->m_xrel, 0, _note[code], oct );
+		else if (symbol->m_accid == ACCID_NATURAL)
+			mlfsb->SetValue( TYPE_ALTERATION, "H",  element->m_xrel, 0, _note[code], oct );
+		else if (symbol->m_accid == ACCID_DOUBLE_SHARP)
+			mlfsb->SetValue( TYPE_ALTERATION, "D",  element->m_xrel, 1, _note[code], oct );
+		else if (symbol->m_accid == ACCID_DOUBLE_FLAT)
+			mlfsb->SetValue( TYPE_ALTERATION, "B",  element->m_xrel, 1, _note[code], oct );
 		m_symbols.Add( mlfsb );
 	}
-	else if (symbol->flag == PNT)
+	else if (element->IsSymbol( SYMBOL_DOT ))
 	{
 		int  code = 0, oct = 0;
-		GetUt1( m_staff, symbol, &code, &oct);
-		mlfsb->SetValue( TYPE_POINT, "", symbol->xrel, 0, _note[code + ((code+oct) % 2)], ((code + ((code+oct) % 2)) == 8) ? (oct+1) : oct );
+		GetUt1( m_layer, element, &code, &oct);
+		mlfsb->SetValue( TYPE_POINT, "", element->m_xrel, 0, _note[code + ((code+oct) % 2)], ((code + ((code+oct) % 2)) == 8) ? (oct+1) : oct );
 		//str += wxString::Format("P_%s_%d\n",
 		//	_note[code + ((code+oct) % 2)],((code + ((code+oct) % 2)) == 8) ? (oct+1) : oct,symbol->code,code,oct);
 		m_symbols.Add( mlfsb );
 	}
-	else if (symbol->flag == IND_MES)
+	else if (element->IsMensur())
 	{
+        MusMensur *mensur = dynamic_cast<MusMensur*>(element->m_layerElement);
 		// signes standard
-		if ((int)symbol->code & 64)
+		//if ((int)symbol->code & 64) // ax2 ??
+        if (mensur->m_meterSymb)
 		{
-			switch (symbol->calte)
+			switch (mensur->m_meterSymb)
 			{	
-				case 0: mlfsb->SetValue( TYPE_MESURE, "S_C", symbol->xrel ); break;
-				case 1: mlfsb->SetValue( TYPE_MESURE, "S_CB", symbol->xrel ); break;
-				case 2: mlfsb->SetValue( TYPE_MESURE, "S_2", symbol->xrel ); break;
-				case 3: mlfsb->SetValue( TYPE_MESURE, "S_3", symbol->xrel ); break;
-				case 4: mlfsb->SetValue( TYPE_MESURE, "S_2B", symbol->xrel ); break;
-				case 5: mlfsb->SetValue( TYPE_MESURE, "S_3B", symbol->xrel ); break;
+				case METER_SYMB_COMMON: mlfsb->SetValue( TYPE_MESURE, "S_C", element->m_xrel ); break;
+				case METER_SYMB_CUT: mlfsb->SetValue( TYPE_MESURE, "S_CB", element->m_xrel ); break;
+				case METER_SYMB_2: mlfsb->SetValue( TYPE_MESURE, "S_2", element->m_xrel ); break;
+				case METER_SYMB_3: mlfsb->SetValue( TYPE_MESURE, "S_3", element->m_xrel ); break;
+				case METER_SYMB_2_CUT: mlfsb->SetValue( TYPE_MESURE, "S_2B", element->m_xrel ); break;
+				case METER_SYMB_3_CUT: mlfsb->SetValue( TYPE_MESURE, "S_3B", element->m_xrel ); break;
+                default: {};
 			}
 			m_symbols.Add( mlfsb );
 		}
-		else if (symbol->code != 1)
+		else if (mensur->m_sign)
 		{
 			wxString subtype;
 			// temps parfait
-			if ((int)symbol->code & 32)
+			if (mensur->m_sign == MENSUR_SIGN_O)
 				subtype += wxString::Format("TP");
 			// temps imparfait	
-			else if ((int)symbol->code & 16)
+			else if (mensur->m_sign == MENSUR_SIGN_C)
 				subtype += wxString::Format("TI");
 			// temps imparfait double
-			else if ((int)symbol->code & 8)
+			else if ((mensur->m_sign == MENSUR_SIGN_C) && mensur->m_reversed)
 				subtype += wxString::Format("TID");
 			// barre
-			if ((int)symbol->code & 4)
+			if (mensur->m_slash)
 				subtype += wxString::Format("_B");
 			// prolation parfaite
-			if ((int)symbol->code & 2)
+			if (mensur->m_dot)
 				subtype += wxString::Format("_P");
 
-			mlfsb->SetValue( TYPE_MESURE, subtype, symbol->xrel );
+			mlfsb->SetValue( TYPE_MESURE, subtype, element->m_xrel );
 			m_symbols.Add( mlfsb );
 		}
 		// chiffres
 		else
 		{
-			wxString subtype = wxString::Format("CH_%d_%d", max (symbol->durNum, (unsigned short)1), max(symbol->durDen, (unsigned short)1));
-			mlfsb->SetValue( TYPE_MESURE, subtype, symbol->xrel );
+			wxString subtype = wxString::Format("CH_%d_%d", max (mensur->m_num, 1), max(mensur->m_numBase, 1));
+			mlfsb->SetValue( TYPE_MESURE, subtype, element->m_xrel );
 			m_symbols.Add( mlfsb );
 		}
 	}
@@ -899,13 +876,14 @@ bool MusMLFOutput::WriteSymbol(  MusSymbol1 *symbol )
 
 	return true;
 }
-*/
 
 //----------------------------------------------------------------------------
 // MusMLFInput
 //----------------------------------------------------------------------------
 
 
+// in 2.0.0, redesigned as ParseLine
+/*
 bool MusMLFInput::IsElement( bool *note, wxString *line, int *pos )
 {
 	if (!note || !line || !pos)
@@ -940,10 +918,43 @@ bool MusMLFInput::IsElement( bool *note, wxString *line, int *pos )
 
 	return true;
 }
+*/
+
+bool MusMLFInput::ParseLine( wxString line, char *element, wxString *elementLine, int *pos )
+{
+	if (!element || !elementLine || !pos)
+		return false;
+    
+	if (line.IsEmpty() || (line.GetChar(0) == '"') || (line.GetChar(0) =='.'))
+		return false;
+    
+	wxString str;
+	wxStringTokenizer tkz( line , " ");
+	if ( !tkz.HasMoreTokens() )
+		return false;
+    
+	str = tkz.GetNextToken();
+	if ( !tkz.HasMoreTokens() ) // no position
+	{
+		*elementLine = str;
+		(*pos) += 45; // defaut step
+	}
+	else // position is given
+	{
+		*pos = atoi( str.c_str() );
+		str = tkz.GetNextToken(); // skip end position
+		if ( !tkz.HasMoreTokens() )
+			return false;
+		*elementLine = tkz.GetNextToken();
+	}
+    *element = elementLine->GetChar(0);
+    
+	return true;
+}
 
 
-/*
-MusNote1 *MusMLFInput::ConvertNote( wxString line )
+
+MusLayerElement *MusMLFInput::ConvertNote( wxString line )
 {
 	wxStringTokenizer tkz( line , "_");
 	if ( !tkz.HasMoreTokens() )
@@ -963,9 +974,13 @@ MusNote1 *MusMLFInput::ConvertNote( wxString line )
 			return NULL;
 		str2 = tkz.GetNextToken();
 		
-		val = CUSTOS;
+        MusSymbol *custos = new MusSymbol( SYMBOL_CUSTOS );
+        GetPitchWWG( str1.GetChar(0), &code );
+        custos->m_pname = code;
+        custos->m_oct = atoi( str2.c_str() );
+        return custos;
 	}
-	else
+    else
 	{
 		if ( !tkz.HasMoreTokens() )
 			return NULL;
@@ -983,36 +998,42 @@ MusNote1 *MusMLFInput::ConvertNote( wxString line )
 			flag = atoi (tkz.GetNextToken().c_str() );
 	}
 
-	MusNote1 *note = new MusNote1();
-	note->val = val;
-	GetPitchWWG( str1.GetChar(0), &code );
-	note->code = code;
-	note->oct = atoi( str2.c_str() );
-	if ( str != "N" ) // silence AND CUSTOS
-		note->sil = _SIL;
-	if ( flag != 0 )
-	{
-		// hampe
-		if ( (flag & NOTE_STEM) && (note->sil != _SIL) && ((note->val ==  DUR_LG) || (note->val > DUR_1 )) )
-			note->q_auto = false;
-		
-		// ligature
-		if ( (flag & NOTE_LIGATURE)  && (note->sil != _SIL) && (note->val >  DUR_LG) && (note->val < DUR_2 ) )
-			note->ligat = true;
+    if ( str == 'N') {
+        MusNote *note = new MusNote();
+        note->m_dur = val;
+        GetPitchWWG( str1.GetChar(0), &code );
+        note->m_pname = code;
+        note->m_oct = atoi( str2.c_str() );
+        if ( flag != 0 )
+        {
+            // hampe
+            if ( (flag & NOTE_STEM) && ((note->m_dur ==  DUR_LG) || (note->m_dur > DUR_1 )) )
+                note->m_stemDir = 1; // ?? // ax2
+            
+            // ligature
+            if ( (flag & NOTE_LIGATURE) && (note->m_dur >  DUR_LG) && (note->m_dur < DUR_2 ) )
+                note->m_lig = LIG_INITIAL;
 			
-		// coloration
-		if (  (flag & NOTE_COLORATION) && (note->sil != _SIL) && (note->val < DUR_2 ) )
-			note->inv_val = true;
-		else if ( (flag & NOTE_COLORATION) && (note->sil != _SIL) && (note->val > DUR_4 ) )
-			note->oblique = true;
-	}
-	
-	return note;
+            // coloration
+            if ( (flag & NOTE_COLORATION) && (note->m_dur < DUR_2 ) )
+                note->m_colored = true;
+            else if ( (flag & NOTE_COLORATION) && (note->m_dur > DUR_4 ) )
+                note->m_ligObliqua = true;
+        }
+        return note;
+    }
+    else { // rests
+        MusRest *rest = new MusRest();
+        rest->m_dur = val;
+        GetPitchWWG( str1.GetChar(0), &code );
+        rest->m_pname = code;
+        rest->m_oct = atoi( str2.c_str() );
+        return rest;
+    }
 }
-*/
 
-/*
-MusSymbol1 *MusMLFInput::ConvertSymbole( wxString line )
+
+MusLayerElement *MusMLFInput::ConvertSymbol( wxString line )
 {
 	wxStringTokenizer tkz( line , "_");
 	if ( !tkz.HasMoreTokens() )
@@ -1028,11 +1049,8 @@ MusSymbol1 *MusMLFInput::ConvertSymbole( wxString line )
 		str = tkz.GetNextToken();
 		if ( str == "B" )
 		{
-			MusSymbol1 *symbol = new MusSymbol1();
-			symbol->flag = BARRE;
-			symbol->code = '|';
-
-			return symbol;
+			MusBarline *barline = new MusBarline();
+			return barline;
 		}
 	}
 	else if ( str == "K" )
@@ -1040,32 +1058,31 @@ MusSymbol1 *MusMLFInput::ConvertSymbole( wxString line )
 		if ( ! tkz.HasMoreTokens() )
 			return NULL;
 		str = tkz.GetNextToken(); 
-		MusSymbol1 *symbol = new MusSymbol1();
-		symbol->flag = CLE;
+		MusClef *clef = new MusClef();
 		if ( str == "S2" )
-			symbol->code = SOL2;
+			clef->m_clefId = SOL2;
 		else if ( str == "S1" )
-			symbol->code = SOL1;
+			clef->m_clefId = SOL1;
 		else if ( str == "S8" )
-			symbol->code = SOLva;
+			clef->m_clefId = SOLva;
 		else if ( str == "PITCH_E" )
-			symbol->code = FA4;
+			clef->m_clefId = FA4;
 		else if ( str == "PITCH_D" )
-			symbol->code = FA3;
+			clef->m_clefId = FA3;
 		else if ( str == "U1" )
-			symbol->code = UT1;
+			clef->m_clefId = UT1;
 		else if ( str == "U2" )
-			symbol->code = UT2;
+			clef->m_clefId = UT2;
 		else if ( str == "U3" )
-			symbol->code = UT3;
+			clef->m_clefId = UT3;
 		else if ( str == "U5" )
-			symbol->code = UT5;
+			clef->m_clefId = UT5;
 		else if ( str == "U4" )
-			symbol->code = UT4;
+			clef->m_clefId = UT4;
 		else
 			wxLogWarning( _("Unkown key") );
 
-		return symbol;
+		return clef;
 	}
 	else if ( str == "A" )
 	{
@@ -1078,21 +1095,20 @@ MusSymbol1 *MusMLFInput::ConvertSymbole( wxString line )
 		if ( ! tkz.HasMoreTokens() )
 			return NULL;
 		wxString str2 = tkz.GetNextToken(); 
-		MusSymbol1 *symbol = new MusSymbol1();
-		symbol->flag = ALTER;
+		MusSymbol *symbol = new MusSymbol( SYMBOL_ACCID );
 		GetPitchWWG( str1.GetChar(0), &code );
-		symbol->code = code;
-		symbol->oct = atoi( str2.c_str() );
+		symbol->m_pname = code;
+		symbol->m_oct = atoi( str2.c_str() );
 		if ( str == "D0" )
-			symbol->calte = ACCID_SHARP;
+			symbol->m_accid = ACCID_SHARP;
 		else if ( str == "B0" )
-			symbol->calte = ACCID_FLAT;
+			symbol->m_accid = ACCID_FLAT;
 		else if ( str == "H0" )
-			symbol->calte = ACCID_NATURAL;
+			symbol->m_accid = ACCID_NATURAL;
 		else if ( str == "D1" )
-			symbol->calte = ACCID_DOUBLE_SHARP;
+			symbol->m_accid = ACCID_DOUBLE_SHARP;
 		else if ( str == "B1" )
-			symbol->calte = ACCID_DOUBLE_FLAT;
+			symbol->m_accid = ACCID_DOUBLE_FLAT;
 		else
 			wxLogWarning( _("Unkown alteration") );
 
@@ -1106,11 +1122,10 @@ MusSymbol1 *MusMLFInput::ConvertSymbole( wxString line )
 		if ( ! tkz.HasMoreTokens() )
 			return NULL;
 		wxString str2 = tkz.GetNextToken();
-		MusSymbol1 *symbol = new MusSymbol1();
-		symbol->flag = PNT;
+		MusSymbol *symbol = new MusSymbol( SYMBOL_DOT );
 		GetPitchWWG( str1.GetChar(0), &code );
-		symbol->code = code;
-		symbol->oct = atoi( str2.c_str() );
+		symbol->m_pname = code;
+		symbol->m_oct = atoi( str2.c_str() );
 
 		return symbol;
 	}
@@ -1119,8 +1134,7 @@ MusSymbol1 *MusMLFInput::ConvertSymbole( wxString line )
 		if ( ! tkz.HasMoreTokens() )
 			return NULL;
 
-		MusSymbol1 *symbol = new MusSymbol1();
-		symbol->flag = IND_MES;
+		MusMensur *mensur = new MusMensur();
 
 		wxString str = tkz.GetNextToken();
 		wxString option1;
@@ -1132,54 +1146,53 @@ MusSymbol1 *MusMLFInput::ConvertSymbole( wxString line )
 
 		if ( str == "S" )
 		{
-			symbol->code = 64;
+			//symbol->code = 64; ?? // ax2
 			if ( option1 == "C" )
-				symbol->calte = 0;
+				mensur->m_meterSymb = METER_SYMB_COMMON;
 			else if ( option1 == "CB" )
-				symbol->calte = 1;
+				mensur->m_meterSymb = METER_SYMB_CUT;
 			else if ( option1 == "2" )
-				symbol->calte = 2;
+				mensur->m_meterSymb = METER_SYMB_2;
 			else if ( option1 == "3" )
-				symbol->calte = 3;
+				mensur->m_meterSymb = METER_SYMB_3;
 			else if ( option1 == "2B" )
-				symbol->calte = 4;
+				mensur->m_meterSymb = METER_SYMB_2_CUT;
 			else if ( option1 == "3B" )
-				symbol->calte = 5;
-			else if ( option1 == "C" )
-				symbol->calte = 0;
+				mensur->m_meterSymb = METER_SYMB_3_CUT;
 			else
 				wxLogWarning( _("Unkown mesure signe indication") );
 		}
 		else if ( str == "CH" )
 		{
-			symbol->code = 1;
-			symbol->durNum = atoi( option1.c_str() );
-			symbol->durDen = atoi( option2.c_str() );
+			//symbol->code = 1; ?? // ax2
+			mensur->m_num = atoi( option1.c_str() );
+			mensur->m_numBase = atoi( option2.c_str() );
 		}
 		else 
 		{
 			if ( str == "TP" )
-				symbol->code = 32;
+                mensur->m_sign = MENSUR_SIGN_O;
 			else if ( str == "TI" )
-				symbol->code = 16;
-			else if ( str == "TID" )
-				symbol->code = 8;
+				mensur->m_sign = MENSUR_SIGN_C;
+            else if ( str == "TID" ) {
+				mensur->m_sign = MENSUR_SIGN_C;
+                mensur->m_reversed = true;
+            }
 			else
 				wxLogWarning( _("Unkown mesure indication") );
 			if ( option1 == "B" )
-				symbol->code += 4;
+				mensur->m_slash = true;
 			if (( option1 == "P" ) || ( option2 == "P" ))
-				symbol->code += 2;
+				mensur->m_dot = true;
 		}
 
-		return symbol;
+		return mensur;
 	}
 	else if ( str != "SP" )
 		wxLogWarning( _("Unknown symbol '%s'"), str.c_str() );
 
 	return NULL;
 }
-*/
 
 MusMLFInput::MusMLFInput( MusDoc *file, wxString filename ) :
     MusFileInputStream( file, filename )
@@ -1195,70 +1208,60 @@ MusMLFInput::~MusMLFInput()
 // copie le portee en convertissant les symbols de Ut vers Clef courrant
 // si inPlace, directment dans staff
 
-MusLaidOutStaff *MusMLFInput::GetNotUt1( MusLaidOutStaff *staff , bool inPlace )
+void MusMLFInput::GetNotUt1( MusLaidOutLayer *layer )
 {
-/*
-	if ( !staff )
-		return NULL;
+	if ( !layer )
+		return;
 
 	int code, oct;
-
-	MusLaidOutStaff *nstaff = staff;
-	if ( !inPlace )
-		nstaff = new MusLaidOutStaff( *staff );
 	
-	for (int i = 0; i < (int)nstaff->m_elements.GetCount(); i++ )
+	for (int i = 0; i < (int)layer->m_elements.GetCount(); i++ )
 	{
-		if ( nstaff->m_elements[i].IsNote() )
+		if ( layer->m_elements[i].IsPitchInterface() )
 		{
-			MusNote1 *note = (MusNote1*)&nstaff->m_elements[i];
+			MusLaidOutLayerElement *element = &layer->m_elements[i];
 			{
-				GetNotUt1( nstaff, note, &code, &oct );
-				note->code = code;
-				note->oct = oct;
+				GetNotUt1( layer, element, &code, &oct );
+                MusPitchInterface *pitchElement = dynamic_cast<MusPitchInterface*>(element->m_layerElement);
+				pitchElement->m_pname = code;
+				pitchElement->m_oct = oct;
 			}
 		}
-		else if ( nstaff->m_elements[i].IsSymbol() )
+		else if ( layer->m_elements[i].IsPositionInterface() )
 		{
-			MusSymbol1 *symbol = (MusSymbol1*)&nstaff->m_elements[i];
-			if ((symbol->flag == ALTER) || (symbol->flag == PNT))
+			MusLaidOutLayerElement *element = &layer->m_elements[i];
 			{
-				GetNotUt1( nstaff, symbol, &code, &oct );
-				symbol->code = code;
-				symbol->oct = oct;
+				GetNotUt1( layer, element, &code, &oct );
+                MusPositionInterface *positionElement = dynamic_cast<MusPositionInterface*>(element->m_layerElement);
+				positionElement->m_pname = code;
+				positionElement->m_oct = oct;
 			}
 		}
 	}
-
-	if ( inPlace )
-		return NULL;
-	else
-		return nstaff;
-    */
-    wxLogDebug( "GetNotUt1 missing in ax2" );
-    return NULL;
 }
 
 
-void MusMLFInput::GetNotUt1( MusLaidOutStaff *staff, MusLaidOutLayerElement *pelement, int *code, int *oct)
+void MusMLFInput::GetNotUt1( MusLaidOutLayer *layer, MusLaidOutLayerElement *pelement, int *code, int *oct)
 {
-/*
-	if (!pelement || !code || !oct) return;
-
-	char valeur = 0;
+	if (!layer || !pelement || !code || !oct) return;
+    
 	int offs;
+    
+    offs = layer->GetClefOffset( pelement );
 
-	if ( !staff || ( staff->GetClef( pelement, &valeur, 1 ) == 0 ) )
-		valeur = 5;
-	MusSymbol1::calcoffs( &offs, valeur );
-
-	*oct = pelement->oct;
-	*code = 0;
-
-	if (pelement->IsSymbol())
-		*code = ((MusSymbol1*)pelement)->code;
-	else if (pelement->IsNote())
-		*code = ((MusNote1*)pelement)->code;
+	if (dynamic_cast<MusPitchInterface*>(pelement->m_layerElement)) {
+        MusPitchInterface *pitchInterface = dynamic_cast<MusPitchInterface*>(pelement->m_layerElement);
+		*code = pitchInterface->m_pname;
+        *oct = pitchInterface->m_oct;
+    }
+	else if (dynamic_cast<MusPositionInterface*>(pelement->m_layerElement)) {
+        MusPositionInterface *positionInterface = dynamic_cast<MusPositionInterface*>(pelement->m_layerElement);
+		*code = positionInterface->m_pname;
+        *oct = positionInterface->m_oct;
+    }
+    else {
+        return;
+    }
 
 	while ( (*code) - offs < 1 )
 	{
@@ -1271,9 +1274,6 @@ void MusMLFInput::GetNotUt1( MusLaidOutStaff *staff, MusLaidOutLayerElement *pel
 		(*oct)++;
 	}
 	(*code) -= offs;
-    */
-    wxLogDebug( "GetNotUt1 missing in ax2" );
-    
 }
 
 void MusMLFInput::GetPitchWWG( char code , int *code1 )
@@ -1332,149 +1332,80 @@ bool MusMLFInput::ReadLabelStr( wxString label )
 	return true;
 }
 
-
-bool MusMLFInput::ImportFile( int staff_per_page )
-{
-    /*
-	m_doc->m_pages.Clear();
-
-	wxString line;
-	if ( !ReadLine( &line )  || (line != "#!MLF!#" ))
-		return false;
-
-	MusPage *page = NULL;
-	MusLaidOutStaff *staff = NULL;
-	int offset;
-
-	if ( staff_per_page != -1 ) 
-	// staff per page is given
-	// just fill page one after the othe
-	{
-		int n_staff = 0;
-		while ( ReadLine( &line ) && ReadLabelStr( line ) )
-		{
-			if ( !page ) // new page
-			{
-				page = new MusPage();
-				n_staff = 0;
-				offset = 0;
-			}
-			staff = new MusLaidOutStaff();
-			ReadLabel( staff, offset );
-			MusLaidOutStaff *staff2 = GetNotUt1( staff );
-			delete staff;
-			staff = staff2;
-			page->m_staves.Add( staff );
-			staff = NULL;
-			n_staff++;
-			if ( n_staff == staff_per_page )
-			{
-				m_doc->m_pages.Add( page );
-				m_doc->m_parameters.nbpage++;
-				page = NULL;
-			}
-		}
-
-	}
-	else
-	{
-		wxASSERT_MSG( false, "Staff per page should be specified in MFLInput ImportFile" );
-	}
-
-	if ( page && staff )
-	{
-		GetNotUt1( staff, true );
-		page->m_staves.Add( staff );
-	}
-	if ( page )
-		m_doc->m_pages.Add( page );
-	m_doc->CheckIntegrity();
-
-    */
-    wxLogError( "MusMLFInput::ImportFile missing in ax2" );
-    return true;
-}
-
-
 // permet d'importer un fichier par page
 // dans ce cas la premiere ligne == #!MLF!#
 // Si imPage, ajustera les position en fonction des position x dans imPage (staff)
 
-bool MusMLFInput::ReadPage( MusPage *page , bool firstLineMLF, ImPage *imPage )
+bool MusMLFInput::ReadPage( MusPage *page, MusLayer *logLayer, bool firstLineMLF, ImPage *imPage )
 {
-    /*
+    m_logLayer = logLayer;
+    
 	wxString line;
 	if ( firstLineMLF  && ( !ReadLine( &line )  || ( line != "#!MLF!#" )))
 		return false;
 
-	MusLaidOutStaff *staff = NULL;
+	MusLaidOutLayer *layer = NULL;
 	int offset;
 
 	while ( ReadLine( &line ) && ReadLabelStr( line ) )
 	{
 		if ( m_staff_i < m_staff_label ) // new staff
 		{
-			if ( staff )
-				GetNotUt1( staff, true ); // convert pitches
+			if ( layer )
+				GetNotUt1( layer ); // convert pitches
 
-			if ( m_staff_label < (int)page->m_staves.GetCount() )
+            // we have a list of staves in the MLF
+            // each staff is a system (so far, needs to be redigned)
+            if ( m_staff_label < (int)page->m_systems.GetCount() )
 			{
-				staff = &page->m_staves[ m_staff_label ];
+                // first layer of the first staff of the system
+				layer = &page->m_systems[ m_staff_label ].m_staves[0].m_layers[0];
 				m_staff_i = m_staff_label; //m_staff_i++;
 			}
 			offset = 0;
 		}
 
-		if ( staff )
+		if ( layer )
 		{
 			if ( imPage )
 				offset = imPage->m_staves[m_staff_i].m_x1;
-			ReadLabel( staff, offset );
+			ReadLabel( layer, offset );
 		}
 	}
 
-	if ( staff )
-		GetNotUt1( staff, true ); // convert pitches
+	if ( layer )
+		GetNotUt1( layer ); // convert pitches
 
-	page->CheckIntegrity();
-    */
-    wxLogError( "MusMLFInput::ReadPage missing in ax2" );
     return true;
 }
 
 // offset est la position x relative du label
 // normalement donne par imPage si present
 
-bool MusMLFInput::ReadLabel( MusLaidOutStaff *staff, int offset )
+bool MusMLFInput::ReadLabel( MusLaidOutLayer *layer, int offset )
 {
-/*
-	bool is_note;
+	char elementType;
 	int pos = 0;
 	wxString line;
+    wxString element_line;
 
-	while ( ReadLine( &line ) &&  MusMLFInput::IsElement( &is_note, &line, &pos ) )
+	while ( ReadLine( &line ) &&  MusMLFInput::ParseLine( line, &elementType, &element_line, &pos ) )
 	{
-		if ( !is_note )
-		{
-			MusSymbol1 *s = MusMLFInput::ConvertSymbole( line );
-			if ( s )
-			{
-				s->xrel = pos + offset;
-				staff->m_elements.Add( s );
-			}
+        MusLayerElement *layer_element = NULL;
+        // we could convert all of the in one method, left over from version < 2.0.0
+        if ((elementType == 'N') || (elementType =='R')  || (elementType =='C')) {
+			layer_element = MusMLFInput::ConvertNote( element_line );
 		}
-		else
-		{
-			MusNote1 *n = MusMLFInput::ConvertNote( line );
-			if ( n )
-			{
-				n->xrel = pos + offset;
-				staff->m_elements.Add( n );
-			}
+        else {
+			layer_element = MusMLFInput::ConvertSymbol( element_line );
 		}
+        if ( layer_element ) {
+            m_logLayer->AddLayerElement( layer_element );
+            MusLaidOutLayerElement *element = new MusLaidOutLayerElement( layer_element );
+            element->m_xrel = pos + offset;
+            layer->AddElement( element );
+        }
 	} 
-*/
-    wxLogDebug( "ReadLabel missing in ax2" );
     return true;
 }
 

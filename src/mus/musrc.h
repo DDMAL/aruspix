@@ -16,18 +16,12 @@
 #include "musdef.h"
 #include "musdc.h"
 
-class MusDoc;
+class MusLayout;
 class MusPage;
 class MusSystem;
 class MusLaidOutStaff;
 class MusLaidOutLayer;
 class MusLaidOutLayerElement;
-
-//#include "musnote.h"
-//#include "musneume.h"
-////#include "mussymbol.h"
-//#include "musneumesymbol.h"
-#include "musbarline.h" // not optimal - because of BarlineType
 
 //----------------------------------------------------------------------------
 // MusRC
@@ -64,7 +58,7 @@ public:
 	// convenience method that should be changed after refactoring
 	bool IsNoteSelected();
 	    
-    void SetDoc( MusDoc *doc );
+    void SetLayout( MusLayout *layout );
     
     /** x value in the Renderer */
 	int ToRendererX( int i );
@@ -184,14 +178,14 @@ public:
 	void DrawDivSmall(MusDC *dc, MusLaidOutLayerElement *element, MusLaidOutStaff *staff, bool cueSize);
     
 public:
-    /** Document  */
-    MusDoc *m_doc;
+    /** Layout */
+    MusLayout *m_layout;
     /** Page affichee */
     MusPage *m_page;
     /** No Page affichee */
     int m_npage;
 	/** format max utile; en principe, celui de la feuille **/
-	int m_pageMaxY, m_pageMaxX;
+	//int m_pageMaxY, m_pageMaxX;
 
 	wxString m_str;
     
