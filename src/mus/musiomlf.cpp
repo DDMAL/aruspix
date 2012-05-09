@@ -624,7 +624,7 @@ bool MusMLFOutput::WritePage( const MusPage *page, bool write_header )
 	}
 
     m_layer = NULL;
-    for (m_staff_i = 0; m_staff_i < page->m_systems.GetCount(); m_staff_i++) 
+    for (m_staff_i = 0; m_staff_i < (int)page->m_systems.GetCount(); m_staff_i++) 
     {
         m_layer = &page->m_systems[m_staff_i].m_staves[0].m_layers[0];
         WriteLayer( m_layer );
@@ -654,7 +654,7 @@ bool MusMLFOutput::WritePage( const MusPage *page, wxString filename, ImPage *im
 	int end_point;
 
     m_layer = NULL;
-    for (m_staff_i = 0; m_staff_i < page->m_systems.GetCount(); m_staff_i++) 
+    for (m_staff_i = 0; m_staff_i < (int)page->m_systems.GetCount(); m_staff_i++) 
     {
 		if ( staff_numbers && ( staff_numbers->Index( m_staff_i ) == wxNOT_FOUND ) )
 			continue;

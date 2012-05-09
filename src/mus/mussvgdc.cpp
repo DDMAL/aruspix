@@ -682,7 +682,7 @@ void MusSvgDC::DrawRotatedText(const wxString& text, int x, int y, double angle)
     //DoGetTextExtent(sText, &w, &h, &desc);
     w = h = desc = 0;
 
-    double rad = DegToRad(angle);
+    //double rad = DegToRad(angle);
 
     
     //if (m_backgroundMode == wxSOLID)

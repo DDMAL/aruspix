@@ -427,14 +427,11 @@ MusBinInput::~MusBinInput()
 
 bool MusBinInput::ImportFile( )
 {
-	int i;
-    
 	if ( !IsOk() )
 	{
 		wxLogMessage(_("Cannot read file '%s'"), m_filename.c_str() );
 		return false;
 	}
-    
     m_doc->Load( this );
     
 	return true;
