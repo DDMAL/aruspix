@@ -51,14 +51,14 @@ MusFileOutputStream::~MusFileOutputStream()
 MusFileInputStream::MusFileInputStream( MusDoc *doc, wxString filename  ) :
 wxFileInputStream( filename )
 {
-	wxASSERT_MSG( doc, "Document cannot be NULL" );
+	//wxASSERT_MSG( doc, "Document cannot be NULL" );
 	m_doc = doc;
 }
 
 MusFileInputStream::MusFileInputStream( MusDoc *doc, int fd ) :
 wxFileInputStream( fd )
 {
-	wxASSERT_MSG( doc, "Document cannot be NULL" );
+	//wxASSERT_MSG( doc, "Document cannot be NULL" );
 	m_doc = doc;
 }
 
