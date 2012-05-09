@@ -34,7 +34,7 @@ class MusPositionInterface;
 // MusBinOutput
 //----------------------------------------------------------------------------
 
-/*
+/**
  * This class is a file output stream for binary object serialization.
  * Broken in Aruspix 2.0 (musiobin.cpp has been removed from the xcode project).
 */
@@ -86,7 +86,7 @@ private:
 // MusBinInput
 //----------------------------------------------------------------------------
 
-/*
+/**
  * This class is a file input stream for binary object serialization for files
  */
 class MusBinInput: public MusFileInputStream
@@ -162,7 +162,7 @@ private:
 // MusBinInput_1_X
 //----------------------------------------------------------------------------
 
-/*
+/**
  * This class is a file input stream for binary object serialization for files
  * before version 2.0
 */
