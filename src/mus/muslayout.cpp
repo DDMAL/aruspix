@@ -33,7 +33,7 @@ WX_DEFINE_OBJARRAY( ArrayOfMusLayouts );
 //----------------------------------------------------------------------------
 
 MusLayout::MusLayout( LayoutType type ) :
-	MusObject()
+	MusLayoutObject()
 {
     Clear();
     m_type = type;

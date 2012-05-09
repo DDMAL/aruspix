@@ -35,7 +35,7 @@ enum LayoutType {
  * A MusLayout is contained in a MusDoc.
  * It contains MusPage objects.
 */
-class MusLayout: public MusObject
+class MusLayout: public MusLayoutObject
 {
 public:
     // constructors and destructors
