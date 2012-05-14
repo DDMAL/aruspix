@@ -148,7 +148,9 @@ enum SymbolType {
     SYMBOL_UNDEFINED = 0, // needed for default constructor
     SYMBOL_DOT = 1, 
     SYMBOL_ACCID = 2,
-    SYMBOL_CUSTOS = 3
+    SYMBOL_CUSTOS = 3,
+    SYMBOL_SB = 4,
+    SYMBOL_PB = 5
 };
 
 

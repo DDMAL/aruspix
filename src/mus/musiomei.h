@@ -19,12 +19,19 @@
 #include <mei/meielement.h>
 #include <mei/exceptions.h>
 #include <mei/meidocument.h>
-#include <mei/xmlimport.h>
 
 #include <mei/header.h> 
 #include <mei/cmn.h>
 #include <mei/shared.h>
 #include <mei/mensural.h>
+#include <mei/layout.h>
+
+class MusBarline;
+class MusClef;
+class MusMensur;
+class MusNote;
+class MusRest;
+class MusSymbol;
 
 using namespace mei;
 
@@ -45,18 +52,81 @@ public:
     virtual ~MusMeiOutput();
     
     virtual bool ExportFile( );
+    
+    virtual bool WriteDoc( MusDoc *doc );
+    // logical
+    virtual bool WriteDiv( MusDiv *div ); 
+    virtual bool WriteScore( MusScore *score ); 
+    virtual bool WritePartSet( MusPartSet *parts );
+    virtual bool WritePart( MusPart *part );
+    virtual bool WriteSection( MusSection *section );
+    virtual bool WriteMeasure( MusMeasure *measure );
+    virtual bool WriteStaff( MusStaff *staff );
+    virtual bool WriteLayer( MusLayer *layer );
+    virtual bool WriteLayerElement( MusLayerElement *element );
+    // layout
+    virtual bool WriteLayout( MusLayout *layout );
+    virtual bool WritePage( MusPage *page );
+    virtual bool WriteSystem( MusSystem *system );
+    virtual bool WriteLaidOutStaff( MusLaidOutStaff *laidOutStaff );
+    virtual bool WriteLaidOutLayer( MusLaidOutLayer *laidOutLayer );
+    virtual bool WriteLaidOutLayerElement( MusLaidOutLayerElement *laidOutLayerElement );
 
 private:
+    /*bool WriteMeiHeader( MeiHead *meiHead );
+    bool WriteMeiDiv( Mdiv *meiDiv, MusDiv *div );
+    bool WriteMeiScore( Score *meiScore, MusScore *score );
+    bool WriteMeiParts( Parts * meiParts, MusPartSet *partSet );
+    bool WriteMeiPart( Part *meiPart, MusPart *part );
+    bool WriteMeiSection( Section *meiSection, MusSection *section );
+    bool WriteMeiMeasure( Measure *meiMeasure, MusMeasure *measure );
+    bool WriteMeiStaff( Staff *meiStaff, MusStaff *staff );
+    bool WriteMeiLayer( Layer *meiLayer, MusLayer *layer );*/
+    void WriteMeiBarline( BarLine *meiBarline, MusBarline *barline );
+    void WriteMeiClef( Clef *meiClef, MusClef *clef );
+    void WriteMeiMensur( Mensur *meiMensur, MusMensur *mensur );
+    void WriteMeiNote( Note *meiNote, MusNote *note );
+    void WriteMeiRest( Rest *meiRest, MusRest *rest );
+    /**
+     * Write a MusSymbol. The appropriate MeiElement is created by the method
+     * and returned.
+     */
+    MeiElement *WriteMeiSymbol( MusSymbol *symbol );    
 	//
+    std::string GetMeiUuid( MusObject *element );
 	std::string DurToStr(int dur);
 	std::string OctToStr(int oct);
 	std::string PitchToStr(int pitch);
+    std::string AccidToStr(unsigned char accid);
+    std::string ClefLineToStr(ClefId clefId);
+    std::string ClefShapeToStr(ClefId clefId);
+    std::string MensurSignToStr(MensurSign sign);
 
     
 public:
 
 
 private:
+    wxString m_filename;
+    MeiElement *m_mei;
+    // logical
+    Music *m_music;
+    Body *m_body;
+    Mdiv *m_div;
+    Score *m_score;
+    Parts *m_parts;
+    Part *m_part;
+    Section *m_section;
+    Measure *m_measure;
+    Staff *m_staff;
+    Layer *m_layer;
+    // layout
+    Layouts *m_layouts;
+    Layout *m_layout;
+    Page *m_page;
+    System *m_system;
+    LaidOutStaff *m_laidOutStaff;
+    LaidOutLayer *m_laidOutLayer;
 };
 
 
@@ -80,21 +150,21 @@ public:
     bool ImportFile( );    
     
 private:
-    bool ReadHeader( MeiHead *meihead );
-    bool ReadDiv( Mdiv *mdiv );
-    bool ReadScore( Score *score );
-    bool ReadParts( Parts * parts );
-    bool ReadPart( Part *part );
-    bool ReadSection( Section *section );
-    bool ReadMeasure( Measure *measure );
-    bool ReadStaff( Staff *staff );
-    bool ReadLayer( Layer *layer );
-    bool ReadBarline( BarLine *barline );
-    bool ReadClef( Clef *clef );
-    bool ReadMensur( Mensur *mensur );
-    bool ReadNote( Note *note );
-    bool ReadRest( Rest *rest );
-    bool ReadSymbol( MeiElement *symbol );
+    bool ReadMeiHeader( MeiHead *meihead );
+    bool ReadMeiDiv( Mdiv *mdiv );
+    bool ReadMeiScore( Score *score );
+    bool ReadMeiParts( Parts * parts );
+    bool ReadMeiPart( Part *part );
+    bool ReadMeiSection( Section *section );
+    bool ReadMeiMeasure( Measure *measure );
+    bool ReadMeiStaff( Staff *staff );
+    bool ReadMeiLayer( Layer *layer );
+    bool ReadMeiBarline( BarLine *barline );
+    bool ReadMeiClef( Clef *clef );
+    bool ReadMeiMensur( Mensur *mensur );
+    bool ReadMeiNote( Note *note );
+    bool ReadMeiRest( Rest *rest );
+    bool ReadMeiSymbol( MeiElement *symbol );
 	//
 	int StrToDur(std::string dur);
 	int StrToOct(std::string oct);

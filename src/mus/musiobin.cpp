@@ -1072,6 +1072,8 @@ bool MusBinInput_1_X::ReadPage( MusPage *page )
     for (j = 0; j < nbrePortees; j++) 
 	{
         // create or get the current MusStaff in the logical tree;
+        /*
+        // this creates one staff in the logical tree per staff on the page
         if (j >= (int)m_section->m_staves.GetCount()) {
             MusStaff *staff = new MusStaff();
             MusLayer *layer = new MusLayer();
@@ -1080,6 +1082,18 @@ bool MusBinInput_1_X::ReadPage( MusPage *page )
         }
         // we ignore voice numbers here
         m_logStaff = dynamic_cast<MusStaff*> (&m_section->m_staves[j]);
+        wxASSERT_MSG( m_logStaff, "MusStaff cannot be NULL" );
+        m_logLayer = dynamic_cast<MusLayer*> (&m_logStaff->m_layers[0]);
+        wxASSERT_MSG( m_logLayer, "MusLayer cannot be NULL" );
+        */
+        // the alternate option is to create one single staff in the logical tree
+        if ((int)m_section->m_staves.GetCount() == 0) {
+            MusStaff *staff = new MusStaff();
+            MusLayer *layer = new MusLayer();
+            staff->AddLayer( layer );
+            m_section->AddStaff( staff );
+        }
+        m_logStaff = dynamic_cast<MusStaff*> (&m_section->m_staves[0]);
         wxASSERT_MSG( m_logStaff, "MusStaff cannot be NULL" );
         m_logLayer = dynamic_cast<MusLayer*> (&m_logStaff->m_layers[0]);
         wxASSERT_MSG( m_logLayer, "MusLayer cannot be NULL" );
@@ -1117,7 +1131,7 @@ bool MusBinInput_1_X::ReadStaff( MusLaidOutStaff *staff, MusLaidOutLayer *layer 
 	unsigned int nblement  = wxUINT32_SWAP_ON_BE( uint32 );
 	Read( &uint16, 2 );
 	layer->voix = wxUINT16_SWAP_ON_BE( uint16 );
-	wxLogDebug("voix: %d", layer->voix);
+	//wxLogDebug("voix: %d", layer->voix);
 	Read( &uint16, 2 );
 	staff->noGrp = wxUINT16_SWAP_ON_BE( uint16 );
 	Read( &uint16, 2 );

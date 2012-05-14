@@ -50,7 +50,7 @@ public:
 	//MusFileOutputStream( MusDoc *file, wxFile *wxfile );
     virtual ~MusFileOutputStream();
     
-    bool ExportFile( ) { return true; }
+    virtual bool ExportFile( ) { return true; }
     
     virtual bool WriteDoc( MusDoc *doc ) { return true; };
     // logical

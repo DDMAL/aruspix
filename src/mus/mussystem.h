@@ -79,6 +79,8 @@ public:
     ArrayOfMusLaidOutStaves m_staves;
     /** The parent MusPage */
     MusPage *m_page;
+    /** The array of system breaks MusSymbols */
+    ArrayOfMusLayerElements m_systemBreaks;
 
     /** longueur en mm de l'indentation des portees de la page */
     int indent;

@@ -27,14 +27,14 @@
 MusFileOutputStream::MusFileOutputStream( MusDoc *doc, wxString filename ) :
 wxFileOutputStream( filename )
 {
-	wxASSERT_MSG( doc, "Document cannot be NULL" );
+	//wxASSERT_MSG( doc, "Document cannot be NULL" );
 	m_doc = doc;
 }
 
 MusFileOutputStream::MusFileOutputStream( MusDoc *doc, int fd ) :
 wxFileOutputStream( fd )
 {
-	wxASSERT_MSG( doc, "Document cannot be NULL" );
+	//wxASSERT_MSG( doc, "Document cannot be NULL" );
 	m_doc = doc;
 }
 

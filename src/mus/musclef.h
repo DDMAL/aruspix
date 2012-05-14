@@ -41,7 +41,7 @@ private:
     
 public:
     /** Indicates the shape and the line of the clef using clef ids  */
-    unsigned char m_clefId;
+    ClefId m_clefId;
 
 private:
     

@@ -45,7 +45,7 @@ public:
     MusBinOutput( MusDoc *doc, wxString filename );
     virtual ~MusBinOutput();
     
-    bool ExportFile( );
+    virtual bool ExportFile( );
     virtual bool WriteDoc( MusDoc *doc );
     // logical
     virtual bool WriteDiv( MusDiv *div ); 

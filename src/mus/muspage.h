@@ -84,7 +84,9 @@ private:
     
 public:
     /** The MusSystem objects of the page */
-    ArrayOfMusSystems m_systems;    
+    ArrayOfMusSystems m_systems;  
+    /** The array of system breaks MusSymbols */
+    ArrayOfMusLayerElements m_systemBreaks;
     
     /** definition en mm des portees de la page */
     unsigned char defin;
