@@ -381,6 +381,9 @@ bool MusMeiOutput::WritePage( MusPage *page )
     wxASSERT( m_layout );
     m_page = new Page();
     m_page->setId( GetMeiUuid( page ));
+    MeiCommentNode *comment = new MeiCommentNode();
+    comment->setValue("Coordinates needs to be corrected");
+    m_layout->addChild( comment );
     m_layout->addChild( m_page );
     return true;
 }
