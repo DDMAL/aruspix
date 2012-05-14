@@ -105,13 +105,11 @@
          continueAfterRunningActions = "No"
          isPathRelative = "0"
          filePath = "../src/mus/musiobin.cpp"
-         timestampString = "358202665.724474"
+         timestampString = "358381231.055733"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "1379"
-         endingLineNumber = "1379"
-         landmarkName = "MusBinInput_1_X::ReadNeume( )"
-         landmarkType = "5">
+         startingLineNumber = "1393"
+         endingLineNumber = "1393">
       </FileBreakpoint>
       <FileBreakpoint
          shouldBeEnabled = "No"
