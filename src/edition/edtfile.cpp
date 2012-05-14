@@ -164,6 +164,9 @@ bool EdtFile::Create( )
     
     int i, j;
     
+    // the way the doc is created need to be rethought
+    // especially handling pageBreaks and systemBreaks
+    
     // reset the MusDoc and create the logical tree
     m_musDocPtr->Reset();	
     MusDiv *div = new MusDiv( );
@@ -209,6 +212,7 @@ bool EdtFile::Create( )
             }
             // We also need to create the layers!
             // ...
+            // We also need to add pageBreaks and systemBreak to the layers
             system->m_staves.Add( staff );
         }
         page->m_systems.Add( system );
