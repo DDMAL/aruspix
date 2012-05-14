@@ -315,7 +315,7 @@ void MusPaeInput::convertPlainAndEasyToKern(std::istream &infile, std::ostream &
     
     wxLogError(_("Bonga"));
     
-    m_section->AddSectionElement(m_measure);
+    m_section->AddMeasure(m_measure);
     m_score->AddSection(m_section);
     m_div->AddScore(m_score);
     m_doc->AddDiv(m_div);
@@ -1239,8 +1239,8 @@ void MusPaeInput::printMeasure(std::ostream& out, MeasureObject *measure ) {
         out << measure->barline << "\n";
     }
     
-    m_staff->AddStaffElement(m_layer);
-    m_measure->AddMeasureElement(m_staff);
+    m_staff->AddLayer(m_layer);
+    m_measure->AddStaff(m_staff);
 }
 
 
