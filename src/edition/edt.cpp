@@ -620,7 +620,6 @@ void EdtEnv::OnSaveWWG( wxCommandEvent &event )
     delete wwg_output;
 }
 
-
 void EdtEnv::OnOpenMEI( wxCommandEvent &event )
 {
 

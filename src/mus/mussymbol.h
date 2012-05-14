@@ -15,14 +15,7 @@
 
 #include "muslayer.h"
 #include "muspositioninterface.h"
-
-enum SymbolType {
-    SYMBOL_UNDEFINED = 0, // needed for default constructor
-    SYMBOL_DOT = 1, 
-    SYMBOL_ACCID = 2,
-    SYMBOL_CUSTOS = 3
-};
-    
+#include "musdef.h"
 
 //----------------------------------------------------------------------------
 // MusSymbol
@@ -41,6 +34,8 @@ public:
     MusSymbol();
     MusSymbol( SymbolType type );
     virtual ~MusSymbol();
+    
+    virtual wxString MusClassName( ) { return "MusSymbol"; };
     
     void Init();
     

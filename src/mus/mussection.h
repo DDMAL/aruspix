@@ -31,17 +31,29 @@ public:
     // constructors and destructors
     MusSection();
     virtual ~MusSection();
+    
+    virtual wxString MusClassName( ) { return "MusSection"; };
 	
-	void AddSectionElement( MusSectionInterface *sectionElement );
+	void AddMeasure( MusMeasure *measure );
+    
+    void AddStaff( MusStaff *staff );
     
     /** The parent MusScore setter */
     void SetScore( MusScore *score );
     /** The parent MusPart setter */
     void SetPart( MusPart *part );
     
+    // moulinette
+    virtual void Process(MusFunctor *functor, wxArrayPtrVoid params );
+    // functors
+    void Save( wxArrayPtrVoid params );
+    void Load( wxArrayPtrVoid params );    
+    
 public:
-    /** The children MusSectionInterface objects */
-    ArrayOfMusSectionElements m_sectionElements;
+    /** The children MusMeasure objects */
+    ArrayOfMusMeasures m_measures;
+    /** The children MusStff objects */
+    ArrayOfMusStaves m_staves;    
     /** The parent MusPart */
     MusPart *m_part;
     /** The parent MusScore */
@@ -52,13 +64,13 @@ private:
 
 
 //----------------------------------------------------------------------------
-// abstract base class MusSectionFunctor
+// MusSectionFunctor
 //----------------------------------------------------------------------------
 
 /** 
  * This class is a functor for processing MusSection objects.
  */
-class MusSectionFunctor
+class MusSectionFunctor: public MusFunctor
 {
 private:
     void (MusSection::*fpt)( wxArrayPtrVoid params );   // pointer to member function
@@ -74,36 +86,5 @@ public:
     virtual void Call( MusSection *ptr, wxArrayPtrVoid params )
         { (*ptr.*fpt)( params);};          // execute member function
 };
-
-
-
-//----------------------------------------------------------------------------
-// MusSectionInterface
-//----------------------------------------------------------------------------
-
-/** 
- * This class is an interface for the MusSection (<section>) content.
- * It is not an abstract class but should not be instanciate directly.
- */
-class MusSectionInterface
-{
-public:
-    // constructors and destructors
-    MusSectionInterface();
-    virtual ~MusSectionInterface();
-    
-    /** the parent MusSection setter */
-    void SetSection( MusSection *section ) { m_section = section; };
-    
-private:
-    
-public:
-    /** The parent MusSection */
-    MusSection *m_section;
-
-private:
-    
-};
-
 
 #endif

@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		0A5FB27A0DD49D2D001E460E /* imbrink3classes.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0A5FB2790DD49D2D001E460E /* imbrink3classes.cpp */; };
+		4D0C8DB51557E155003F487C /* musio.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D0C8DB31557E154003F487C /* musio.cpp */; };
 		4D12CE4010748D8E00E65714 /* edt.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D12CE3C10748D8E00E65714 /* edt.cpp */; };
 		4D1675E70D8B628900F4D912 /* imkmeans.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D1675E60D8B628900F4D912 /* imkmeans.cpp */; };
 		4D1676650D8B765000F4D912 /* supbookfile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D1676610D8B765000F4D912 /* supbookfile.cpp */; };
@@ -137,6 +138,8 @@
 
 /* Begin PBXFileReference section */
 		0A5FB2790DD49D2D001E460E /* imbrink3classes.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = imbrink3classes.cpp; sourceTree = "<group>"; };
+		4D0C8DB31557E154003F487C /* musio.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = musio.cpp; path = ../src/mus/musio.cpp; sourceTree = "<group>"; };
+		4D0C8DB41557E154003F487C /* musio.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = musio.h; path = ../src/mus/musio.h; sourceTree = "<group>"; };
 		4D12CE3C10748D8E00E65714 /* edt.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = edt.cpp; path = ../src/edition/edt.cpp; sourceTree = SOURCE_ROOT; };
 		4D12CE3D10748D8E00E65714 /* edt.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = edt.h; path = ../src/edition/edt.h; sourceTree = SOURCE_ROOT; };
 		4D12CE3F10748D8E00E65714 /* edt_wdr.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = edt_wdr.h; path = ../src/edition/edt_wdr.h; sourceTree = SOURCE_ROOT; };
@@ -415,6 +418,8 @@
 		4D2F7EE2145ADBD000EF930B /* io */ = {
 			isa = PBXGroup;
 			children = (
+				4D0C8DB31557E154003F487C /* musio.cpp */,
+				4D0C8DB41557E154003F487C /* musio.h */,
 				4DB2D96B0D8383EA003401B0 /* musmlfdic.cpp */,
 				4DB2D96C0D8383EA003401B0 /* musmlfdic.h */,
 				4D38196814F534410002A4DA /* musiobin.cpp */,
@@ -750,7 +755,7 @@
 		A58508B40A001129006E82B1 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0420;
+				LastUpgradeCheck = 0430;
 				ORGANIZATIONNAME = com.aruspix.www;
 			};
 			buildConfigurationList = A58508B50A001129006E82B1 /* Build configuration list for PBXProject "aruspix" */;
@@ -926,6 +931,7 @@
 				4D25BF5E14A3BD0300596392 /* edt_wdr_inc.cpp in Sources */,
 				4D25BF6014A3BD3600596392 /* rec_wdr_inc.cpp in Sources */,
 				4D38196914F534410002A4DA /* musiobin.cpp in Sources */,
+				4D0C8DB51557E155003F487C /* musio.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -14,18 +14,7 @@
 #endif
 
 #include "muslayer.h"
-
-enum BarlineType {
-    BARLINE_SINGLE = 0,
-    BARLINE_END,
-    BARLINE_START, // no MEI equivalent
-    BARLINE_RPTBOTH,
-    BARLINE_RPTSTART,
-    BARLINE_RPTEND,
-    BARLINE_DBL,
-    BARLINE_BRACE, // no MEI equivalent
-    BARLINE_BRACKET
-};
+#include "musdef.h"
 
 //----------------------------------------------------------------------------
 // MusBarline
@@ -40,6 +29,8 @@ public:
     // constructors and destructors
     MusBarline();
     virtual ~MusBarline();
+    
+    virtual wxString MusClassName( ) { return "MusBarline"; };	 
     
 private:
     

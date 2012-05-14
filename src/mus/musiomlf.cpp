@@ -624,7 +624,7 @@ bool MusMLFOutput::WritePage( const MusPage *page, bool write_header )
 	}
 
     m_layer = NULL;
-    for (m_staff_i = 0; m_staff_i < page->m_systems.GetCount(); m_staff_i++) 
+    for (m_staff_i = 0; m_staff_i < (int)page->m_systems.GetCount(); m_staff_i++) 
     {
         m_layer = &page->m_systems[m_staff_i].m_staves[0].m_layers[0];
         WriteLayer( m_layer );
@@ -654,7 +654,7 @@ bool MusMLFOutput::WritePage( const MusPage *page, wxString filename, ImPage *im
 	int end_point;
 
     m_layer = NULL;
-    for (m_staff_i = 0; m_staff_i < page->m_systems.GetCount(); m_staff_i++) 
+    for (m_staff_i = 0; m_staff_i < (int)page->m_systems.GetCount(); m_staff_i++) 
     {
 		if ( staff_numbers && ( staff_numbers->Index( m_staff_i ) == wxNOT_FOUND ) )
 			continue;
@@ -1336,8 +1336,10 @@ bool MusMLFInput::ReadLabelStr( wxString label )
 // dans ce cas la premiere ligne == #!MLF!#
 // Si imPage, ajustera les position en fonction des position x dans imPage (staff)
 
-bool MusMLFInput::ReadPage( MusPage *page , bool firstLineMLF, ImPage *imPage )
+bool MusMLFInput::ReadPage( MusPage *page, MusLayer *logLayer, bool firstLineMLF, ImPage *imPage )
 {
+    m_logLayer = logLayer;
+    
 	wxString line;
 	if ( firstLineMLF  && ( !ReadLine( &line )  || ( line != "#!MLF!#" )))
 		return false;
@@ -1398,6 +1400,7 @@ bool MusMLFInput::ReadLabel( MusLaidOutLayer *layer, int offset )
 			layer_element = MusMLFInput::ConvertSymbol( element_line );
 		}
         if ( layer_element ) {
+            m_logLayer->AddLayerElement( layer_element );
             MusLaidOutLayerElement *element = new MusLaidOutLayerElement( layer_element );
             element->m_xrel = pos + offset;
             layer->AddElement( element );

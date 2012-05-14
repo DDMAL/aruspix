@@ -34,13 +34,33 @@ MusPage::~MusPage()
 void MusPage::Clear( )
 {
 	m_systems.Clear( );
-	noMasqueFixe = false;
-	noMasqueVar = false;
-	reserve = 0;
 	defin = 20;
-	npage = 0;
 }
 
+
+void MusPage::Save( wxArrayPtrVoid params )
+{
+    // param 0: output stream
+    MusFileOutputStream *output = (MusFileOutputStream*)params[0];       
+    output->WritePage( this );
+    
+    // save system
+    MusSystemFunctor system( &MusSystem::Save );
+    this->Process( &system, params );
+}
+
+void MusPage::Load( wxArrayPtrVoid params )
+{
+    // param 0: output stream
+    MusFileInputStream *input = (MusFileInputStream*)params[0];       
+    
+    // load systems
+    MusSystem *system;
+    while ( (system = input->ReadSystem()) ) {
+        system->Load( params );
+        this->AddSystem( system );
+    }
+}
 
 
 void MusPage::AddSystem( MusSystem *system )
@@ -165,8 +185,12 @@ void MusPage::SetValues( int type )
 
 // functors for MusPage
 
-void MusPage::Process(MusLayoutFunctor *functor, wxArrayPtrVoid params )
+void MusPage::Process(MusFunctor *functor, wxArrayPtrVoid params )
 {
+    if (functor->m_success) {
+        return;
+    }
+    
     MusSystemFunctor *sysFunctor = dynamic_cast<MusSystemFunctor*>(functor);
     MusSystem *system;
 	int i;

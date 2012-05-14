@@ -8,6 +8,7 @@
 // For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"
 
+#include "musio.h"
 #include "mussystem.h"
 #include "muslaidoutstaff.h"
 
@@ -57,6 +58,30 @@ void MusSystem::Clear( )
 	m_xrel = 0;
 }
 
+
+void MusSystem::Save( wxArrayPtrVoid params )
+{
+    // param 0: output stream
+    MusFileOutputStream *output = (MusFileOutputStream*)params[0];       
+    output->WriteSystem( this );
+    
+    // save staves
+    MusLaidOutStaffFunctor staff( &MusLaidOutStaff::Save );
+    this->Process( &staff, params );
+}
+
+void MusSystem::Load( wxArrayPtrVoid params )
+{
+    // param 0: output stream
+    MusFileInputStream *input = (MusFileInputStream*)params[0];       
+    
+    // load staves
+    MusLaidOutStaff *staff;
+    while ( (staff = input->ReadLaidOutStaff()) ) {
+        staff->Load( params );
+        this->AddStaff( staff );
+    }
+}
 
 
 void MusSystem::AddStaff( MusLaidOutStaff *staff )
@@ -203,8 +228,12 @@ void MusSystem::SetValues( int type )
 
 // functors for MusSystem
 
-void MusSystem::Process(MusLayoutFunctor *functor, wxArrayPtrVoid params )
+void MusSystem::Process(MusFunctor *functor, wxArrayPtrVoid params )
 {
+    if (functor->m_success) {
+        return;
+    }
+    
     MusLaidOutStaffFunctor *staffFunctor = dynamic_cast<MusLaidOutStaffFunctor*>(functor);
     MusLaidOutStaff *staff;
 	int i;

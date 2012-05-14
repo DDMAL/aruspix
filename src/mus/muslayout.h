@@ -35,12 +35,14 @@ enum LayoutType {
  * A MusLayout is contained in a MusDoc.
  * It contains MusPage objects.
 */
-class MusLayout: public MusObject
+class MusLayout: public MusLayoutObject
 {
 public:
     // constructors and destructors
     MusLayout( LayoutType type );
     virtual ~MusLayout();
+    
+    virtual wxString MusClassName( ) { return "MusLayout"; };	    
 	
 	void AddPage( MusPage *page );
     
@@ -67,8 +69,10 @@ public:
 	int GetPageCount() const { return (int)m_pages.GetCount(); };
     
     // moulinette
-    virtual void Process(MusLayoutFunctor *functor, wxArrayPtrVoid params );
+    virtual void Process(MusFunctor *functor, wxArrayPtrVoid params );
     // functors
+    void Save( wxArrayPtrVoid params );
+    void Load( wxArrayPtrVoid params );
     
 private:
     // method calculating the font size
@@ -153,6 +157,32 @@ public:
 private:
     LayoutType m_type;
     
+};
+
+
+//----------------------------------------------------------------------------
+// MusLayoutFunctor
+//----------------------------------------------------------------------------
+
+/**
+ * This class is a Functor that processes MusLayout objects.
+ * Needs testing.
+ */
+class MusLayoutFunctor: public MusFunctor
+{
+private:
+    void (MusLayout::*fpt)( wxArrayPtrVoid params );   // pointer to member function
+    
+public:
+    
+    // constructor - takes pointer to an object and pointer to a member and stores
+    // them in two private variables
+    MusLayoutFunctor( void(MusLayout::*_fpt)( wxArrayPtrVoid ) ) { fpt=_fpt; };
+	virtual ~MusLayoutFunctor() {};
+    
+    // override function "Call"
+    void Call( MusLayout *ptr, wxArrayPtrVoid params )
+    { (*ptr.*fpt)( params );};          // execute member function
 };
 
 

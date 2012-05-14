@@ -39,9 +39,11 @@ class MusLaidOutStaff: public MusLayoutObject
     
 public:
     // constructors and destructors
-    MusLaidOutStaff( MusStaff *logStaff );
+    MusLaidOutStaff( MusStaff *logStaff = NULL );
 	MusLaidOutStaff( const MusLaidOutStaff& staff ); // copy contructor
     virtual ~MusLaidOutStaff();
+    
+    virtual wxString MusClassName( ) { return "MusLaidOutStaff"; };	    
     
     void Clear();
     
@@ -56,7 +58,10 @@ public:
 
     
     // moulinette
-    virtual void Process(MusLayoutFunctor *functor, wxArrayPtrVoid params );
+    virtual void Process(MusFunctor *functor, wxArrayPtrVoid params );
+    // functors
+    void Save( wxArrayPtrVoid params );
+    void Load( wxArrayPtrVoid params );
     
 	void CopyAttributes( MusLaidOutStaff *staff ); // copy all attributes but none of the elements
 	//void ClearElements( MusDC *dc , MusElement *start = NULL );
@@ -71,7 +76,7 @@ public:
     ArrayOfMusLaidOutLayers m_layers;
     /** The MusSystem parent */
     MusSystem *m_system;
-    /** The logical staff (this works only with non measured music *) */
+    /** The logical staff (this works only with non measured music) */
     MusStaff *m_logStaff;
     
     
@@ -112,8 +117,6 @@ public:
 	unsigned char accol;
 	/** ???? */
 	unsigned char accessoire;
-	/** reserve */
-	unsigned short reserve;
 	/** position y relative de la portee (non-enregistre dans les fichiers) */
     int yrel;
 	/** postion x relative de la portee (non-enregistre dans les fichiers) */
@@ -124,14 +127,14 @@ private:
 
 
 //----------------------------------------------------------------------------
-// abstract base class MusLaidOutStaffFunctor
+// MusLaidOutStaffFunctor
 //----------------------------------------------------------------------------
 
 /**
  * This class is a Functor that processes MusLaidOutStaff objects.
  * Needs testing.
 */
-class MusLaidOutStaffFunctor: public MusLayoutFunctor
+class MusLaidOutStaffFunctor: public MusFunctor
 {
 private:
     void (MusLaidOutStaff::*fpt)( wxArrayPtrVoid params );   // pointer to member function

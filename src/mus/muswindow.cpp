@@ -126,7 +126,7 @@ void MusWindow::Load( AxUndoFile *undoPtr )
 	
 	int page, staff, element, lyric_element;
 		
-	MusBinInput *bin_input = new MusBinInput( m_layout, undoPtr->GetFilename() );
+	MusBinInput_1_X *bin_input = new MusBinInput_1_X( m_layout, undoPtr->GetFilename() );
 
 	// keep current page, staff and element
 	bin_input->Read( &page, sizeof( int ));

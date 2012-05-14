@@ -109,6 +109,11 @@
 
 void MusWWGElement::WWGInitElement() 
 {
+    // WWG Page
+    noMasqueFixe = 0;
+    noMasqueVar = 0;
+    reserve = 0;
+    
     // WWG Note
     sil = false;
     val = 0;
@@ -360,7 +365,7 @@ bool MusWWGOutput::WritePage( const MusPage *page )
 
     if ( !WriteSeparator() )
 		return false;
-	int32 = wxINT32_SWAP_ON_BE( page->npage );
+	int32 = wxINT32_SWAP_ON_BE( 0 );
 	Write( &int32, 4 );
 	short nbStaves = 0;
 	for (i = 0; i < page->GetSystemCount(); i++) {
@@ -368,9 +373,9 @@ bool MusWWGOutput::WritePage( const MusPage *page )
 	}
 	int16 = wxINT16_SWAP_ON_BE( nbStaves );
 	Write( &int16, 2 );
-    Write( &page->noMasqueFixe, 1 );    
-	Write( &page->noMasqueVar, 1 );
-	Write( &page->reserve, 1 );
+    Write( &noMasqueFixe, 1 );    
+	Write( &noMasqueVar, 1 );
+	Write( &reserve, 1 );
 	Write( &page->defin, 1 );
     // get the first system for indent information
     MusSystem *system = NULL;
@@ -435,7 +440,7 @@ bool MusWWGOutput::WriteLayer( const MusLaidOutLayer *layer )
 	Write( &m_current_staff->portNbLine, 1 );
 	Write( &m_current_staff->accol, 1 );
 	Write( &m_current_staff->accessoire, 1 );
-	uint16 = wxUINT16_SWAP_ON_BE( m_current_staff->reserve );
+	uint16 = wxUINT16_SWAP_ON_BE( 0 ); // reserve
 	Write( &uint16, 2 );
 	for (k = 0;k < layer->GetElementCount() ; k++ )
 	{
@@ -845,12 +850,12 @@ bool MusWWGInput::ReadPage( MusPage *page )
 		return false;
 
 	Read( &int32, 4 );
-	page->npage = wxINT32_SWAP_ON_BE( int32 );
+	//page->npage = wxINT32_SWAP_ON_BE( int32 );
 	Read( &int16, 2 );
 	short nbrePortees = wxINT16_SWAP_ON_BE( int16 );
-    Read( &page->noMasqueFixe, 1 );	
-	Read( &page->noMasqueVar, 1 );
-	Read( &page->reserve, 1 );
+    Read( &noMasqueFixe, 1 );	
+	Read( &noMasqueVar, 1 );
+	Read( &reserve, 1 );
 	Read( &page->defin, 1 );
     page->defin = 16;
 	Read( &int32, 4 );
@@ -869,16 +874,16 @@ bool MusWWGInput::ReadPage( MusPage *page )
     for (j = 0; j < nbrePortees; j++) 
 	{
         // create or get the current MusStaff in the logical tree;
-        if (j >= (int)m_section->m_sectionElements.GetCount()) {
+        if (j >= (int)m_section->m_staves.GetCount()) {
             MusStaff *staff = new MusStaff();
             MusLayer *layer = new MusLayer();
-            staff->AddStaffElement( layer );
-            m_section->AddSectionElement( staff );
+            staff->AddLayer( layer );
+            m_section->AddStaff( staff );
         }
         // we ignore voice numbers here
-        m_logStaff = dynamic_cast<MusStaff*> (&m_section->m_sectionElements[j]);
+        m_logStaff = dynamic_cast<MusStaff*> (&m_section->m_staves[j]);
         wxASSERT_MSG( m_logStaff, "MusStaff cannot be NULL" );
-        m_logLayer = dynamic_cast<MusLayer*> (&m_logStaff->m_staffElements[0]);
+        m_logLayer = dynamic_cast<MusLayer*> (&m_logStaff->m_layers[0]);
         wxASSERT_MSG( m_logLayer, "MusLayer cannot be NULL" );
         
 		MusLaidOutStaff *staff = new MusLaidOutStaff( m_logStaff );
@@ -942,7 +947,7 @@ bool MusWWGInput::ReadStaff( MusLaidOutStaff *staff, MusLaidOutLayer *layer )
 	Read( &staff->accol, 1 );
 	Read( &staff->accessoire, 1 );
 	Read( &uint16, 2 );
-	staff->reserve = wxUINT16_SWAP_ON_BE( uint16 );
+	//staff->reserve = wxUINT16_SWAP_ON_BE( uint16 );
 	
 	unsigned char c;
 	for ( k = 0; k < nblement; k++ )
@@ -1053,6 +1058,7 @@ bool MusWWGInput::ReadNote( MusLaidOutLayer *layer )
     
     // if we got something, add it to the LaidOutLayer
     if ( layer_element ) {
+        m_logLayer->AddLayerElement( layer_element );
         MusLaidOutLayerElement *element = new MusLaidOutLayerElement( layer_element );
         element->m_xrel = xrel;
         layer->AddElement( element );
@@ -1157,7 +1163,8 @@ bool MusWWGInput::ReadSymbol( MusLaidOutLayer *layer )
     }
     
     if ( layer_element ) {
-        MusLaidOutLayerElement *element = new MusLaidOutLayerElement( layer_element ); // memory leak! - layer_element will not be deleted
+        m_logLayer->AddLayerElement( layer_element );
+        MusLaidOutLayerElement *element = new MusLaidOutLayerElement( layer_element );
         element->m_xrel = xrel;
         layer->AddElement( element );
     }

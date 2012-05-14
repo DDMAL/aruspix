@@ -38,12 +38,20 @@ public:
     // constructors and destructors
     MusDiv();
     virtual ~MusDiv();
+    
+    virtual wxString MusClassName( ) { return "MusDiv"; };
 	
 	void AddScore( MusScore *score );
 	void AddPartSet( MusPartSet *partSet );
     
     /** The partent MusDoc setter */
     void SetDoc( MusDoc *doc ) { m_doc = doc; };
+    
+    // moulinette
+    virtual void Process(MusFunctor *functor, wxArrayPtrVoid params );
+    // functors
+    void Save( wxArrayPtrVoid params );
+    void Load( wxArrayPtrVoid params );
     
 private:
     
@@ -57,6 +65,30 @@ public:
 
 private:
     
+};
+
+//----------------------------------------------------------------------------
+// MusDivFunctor
+//----------------------------------------------------------------------------
+
+/** 
+ * This class is a functor for processing MusDiv objects.
+ */
+class MusDivFunctor: public MusFunctor
+{
+private:
+    void (MusDiv::*fpt)( wxArrayPtrVoid params );   // pointer to member function
+    
+public:
+    
+    // constructor - takes pointer to an object and pointer to a member and stores
+    // them in two private variables
+    MusDivFunctor( void(MusDiv::*_fpt)( wxArrayPtrVoid )) { fpt=_fpt; };
+	virtual ~MusDivFunctor() {};
+    
+    // override function "Call"
+    virtual void Call( MusDiv *ptr, wxArrayPtrVoid params )
+    { (*ptr.*fpt)( params);};          // execute member function
 };
 
 
@@ -74,11 +106,19 @@ public:
     // constructors and destructors
     MusScore();
     virtual ~MusScore();
+    
+    virtual wxString MusClassName( ) { return "MusScore"; };
 	
 	void AddSection( MusSection *section );
     
     /** The partent MusDiv setter */
     void SetDiv( MusDiv *div ) { m_div = div; };
+
+    // moulinette
+    virtual void Process(MusFunctor *functor, wxArrayPtrVoid params );
+    // functors
+    void Save( wxArrayPtrVoid params );
+    void Load( wxArrayPtrVoid params );
     
 private:
     
@@ -90,6 +130,31 @@ public:
 
 private:
     
+};
+
+
+//----------------------------------------------------------------------------
+// MusScoreFunctor
+//----------------------------------------------------------------------------
+
+/** 
+ * This class is a functor for processing MusScore objects.
+ */
+class MusScoreFunctor: public MusFunctor
+{
+private:
+    void (MusScore::*fpt)( wxArrayPtrVoid params );   // pointer to member function
+    
+public:
+    
+    // constructor - takes pointer to an object and pointer to a member and stores
+    // them in two private variables
+    MusScoreFunctor( void(MusScore::*_fpt)( wxArrayPtrVoid )) { fpt=_fpt; };
+	virtual ~MusScoreFunctor() {};
+    
+    // override function "Call"
+    virtual void Call( MusScore *ptr, wxArrayPtrVoid params )
+    { (*ptr.*fpt)( params);};          // execute member function
 };
 
 
@@ -106,11 +171,19 @@ public:
     // constructors and destructors
     MusPartSet();
     virtual ~MusPartSet();
+    
+    virtual wxString MusClassName( ) { return "MusPartSet"; };
 	
 	void AddPart( MusPart *part );
     
     /** The partent MusDiv setter */
     void SetDiv( MusDiv *div ) { m_div = div; };
+    
+    // moulinette
+    virtual void Process(MusFunctor *functor, wxArrayPtrVoid params );
+    // functors
+    void Save( wxArrayPtrVoid params );
+    void Load( wxArrayPtrVoid params );
         
 private:
     
@@ -123,6 +196,31 @@ public:
 
 private:
     
+};
+
+
+//----------------------------------------------------------------------------
+// MusPartSetFunctor
+//----------------------------------------------------------------------------
+
+/** 
+ * This class is a functor for processing MusPartSet objects.
+ */
+class MusPartSetFunctor: public MusFunctor
+{
+private:
+    void (MusPartSet::*fpt)( wxArrayPtrVoid params );   // pointer to member function
+    
+public:
+    
+    // constructor - takes pointer to an object and pointer to a member and stores
+    // them in two private variables
+    MusPartSetFunctor( void(MusPartSet::*_fpt)( wxArrayPtrVoid )) { fpt=_fpt; };
+	virtual ~MusPartSetFunctor() {};
+    
+    // override function "Call"
+    virtual void Call( MusPartSet *ptr, wxArrayPtrVoid params )
+    { (*ptr.*fpt)( params);};          // execute member function
 };
 
 
@@ -140,10 +238,18 @@ public:
     MusPart();
     virtual ~MusPart();
 	
-	void AddSection( MusSection *section );
+    virtual wxString MusClassName( ) { return "MusPart"; };	
+    
+    void AddSection( MusSection *section );
 
     /** The partent MusPartSet setter */    
     void SetPartSet( MusPartSet *partSet ) { m_partSet = partSet; };
+    
+    // moulinette
+    virtual void Process(MusFunctor *functor, wxArrayPtrVoid params );
+    // functors
+    void Save( wxArrayPtrVoid params );
+    void Load( wxArrayPtrVoid params );
     
 private:
     
@@ -155,6 +261,31 @@ public:
 
 private:
     
+};
+
+
+//----------------------------------------------------------------------------
+// MusPartFunctor
+//----------------------------------------------------------------------------
+
+/** 
+ * This class is a functor for processing MusPart objects.
+ */
+class MusPartFunctor: public MusFunctor
+{
+private:
+    void (MusPart::*fpt)( wxArrayPtrVoid params );   // pointer to member function
+    
+public:
+    
+    // constructor - takes pointer to an object and pointer to a member and stores
+    // them in two private variables
+    MusPartFunctor( void(MusPart::*_fpt)( wxArrayPtrVoid )) { fpt=_fpt; };
+	virtual ~MusPartFunctor() {};
+    
+    // override function "Call"
+    virtual void Call( MusPart *ptr, wxArrayPtrVoid params )
+    { (*ptr.*fpt)( params);};          // execute member function
 };
 
 

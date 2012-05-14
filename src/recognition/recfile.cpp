@@ -164,15 +164,36 @@ void RecFile::UpgradeTo_1_5_0()
         return;
         
     // output the new binary file
-    /*
     MusBinOutput bin_output( m_musDocPtr, m_musDocPtr->m_fname );
     bin_output.ExportFile();
-     */
-    wxLogError("The file cannot be upgraded to 2.0.0"); // ax2
         
     wxRemoveFile( m_basename + "rec.old.mlf" );        
     wxRemoveFile( m_basename + "page.wwg" );
 }
+
+
+void RecFile::UpgradeTo_2_0_0()
+{
+    if ( AxFile::FormatVersion(m_vmaj, m_vmin, m_vrev) >= AxFile::FormatVersion(2, 0, 0) )
+		return; // when do not need to upgrade the file
+    if ( AxFile::FormatVersion(m_vmaj, m_vmin, m_vrev) < AxFile::FormatVersion(1, 5, 0) )
+        return; // the file has been upgraded by Upgrade_1_5_0
+    
+    if ( !wxFileExists( m_basename + "page.bin") )
+        return; // file is missing
+    // backup old binary file
+    wxString backup = wxString::Format( "page.1.%d.%d.bin", m_vmin, m_vrev );
+    if ( !wxCopyFile( m_basename + "page.bin", m_basename + backup ) )  
+        return;
+        
+    MusBinInput_1_X bin_input( m_musDocPtr, m_musDocPtr->m_fname );
+    bin_input.ImportFile();
+    
+    // output the new binary file
+    MusBinOutput bin_output( m_musDocPtr, m_musDocPtr->m_fname );
+    bin_output.ExportFile();    
+}
+
 
 void RecFile::NewContent( )
 {
@@ -218,6 +239,8 @@ void RecFile::OpenContent( )
 		m_isPreprocessed = true;
         
     UpgradeTo_1_5_0();
+    
+    UpgradeTo_2_0_0();
 	
     // binarization variables	
     node = m_xml_root->FirstChild( "binarization" );
@@ -236,9 +259,10 @@ void RecFile::OpenContent( )
 		
 	if ( wxFileExists( m_basename + "page.bin") )
 	{
-		MusBinInput *bin_input = new MusBinInput( m_musDocPtr, m_musDocPtr->m_fname );
-		failed = !bin_input->ImportFile();
-		delete bin_input;
+
+        MusBinInput *bin_input = new MusBinInput( m_musDocPtr, m_musDocPtr->m_fname );
+        failed = !bin_input->ImportFile();
+        delete bin_input;           
 		if ( failed )
 			return;
 		else
@@ -295,7 +319,6 @@ void RecFile::SaveContent( )
 	wxASSERT_MSG( m_musDocPtr, "MusDoc should not be NULL" );
 	wxASSERT( m_xml_root );
     
-    /*
 		
 	if ( !m_isPreprocessed )
 		return;
@@ -323,7 +346,8 @@ void RecFile::SaveContent( )
 		
 		MusMLFOutput *mlfoutput = new MusMLFOutput( m_musDocPtr, m_basename + "page.mlf", NULL );
 		mlfoutput->m_pagePosition = true;
-		mlfoutput->WritePage( &m_musDocPtr->m_pages[0] , "staff", m_imPagePtr );
+        // !!! No check if layout and page exist!
+		mlfoutput->WritePage( &m_musDocPtr->m_layouts[0].m_pages[0] , "staff", m_imPagePtr );
 		delete mlfoutput;
 		TiXmlElement root( "recpage" );
     
@@ -343,9 +367,6 @@ void RecFile::SaveContent( )
 			
 		m_xml_root->InsertEndChild( root );
 	}
-    */
-    wxLogError( "RecFile::SaveContent missing in ax2" ); // ax2
-
 }
 
 void RecFile::CloseContent( )
@@ -866,10 +887,11 @@ bool RecFile::RealizeFromMLF( wxArrayPtrVoid params, AxProgressDlg *dlg )
         musPage->AddSystem( musSystem );
     } 
     
-    logStaff->AddStaffElement( logLayer );
-    section->AddSectionElement( logStaff );
+    logStaff->AddLayer( logLayer );
+    section->AddStaff( logStaff );
     score->AddSection( section );
     div->AddScore( score );
+    m_musDocPtr->AddDiv( div );
     //
     musLayout->AddPage( musPage );
     m_musDocPtr->AddLayout( musLayout );
@@ -877,7 +899,7 @@ bool RecFile::RealizeFromMLF( wxArrayPtrVoid params, AxProgressDlg *dlg )
 	wxString m_rec_output = m_basename + "rec.mlf";
 	
     MusMLFInput *mlfinput = new MusMLFInput( m_musDocPtr, m_rec_output );
-    mlfinput->ReadPage( musPage, true, m_imPagePtr );
+    mlfinput->ReadPage( musPage, logLayer, true, m_imPagePtr );
     delete mlfinput;
     
 	wxString m_rec2_output = m_basename + "rec2.mlf";
@@ -888,8 +910,8 @@ bool RecFile::RealizeFromMLF( wxArrayPtrVoid params, AxProgressDlg *dlg )
 	
 	// save ????
     // MusBinOutput *bin_output = new MusBinOutput( m_musDocPtr, m_musDocPtr->m_fname );
-    //bin_output->ExportFile();
-    //delete bin_output;
+    // bin_output->ExportFile();
+    // delete bin_output;
 
     return true;
 }

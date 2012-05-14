@@ -23,12 +23,6 @@ class MusLaidOutStaff;
 class MusLaidOutLayer;
 class MusLaidOutLayerElement;
 
-//#include "musnote.h"
-//#include "musneume.h"
-////#include "mussymbol.h"
-//#include "musneumesymbol.h"
-#include "musbarline.h" // not optimal - because of BarlineType
-
 //----------------------------------------------------------------------------
 // MusRC
 //----------------------------------------------------------------------------

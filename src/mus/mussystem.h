@@ -37,6 +37,8 @@ public:
 	MusSystem( const MusSystem& system ); // copy contructor
     virtual ~MusSystem();
     
+    virtual wxString MusClassName( ) { return "MusSystem"; };	    
+    
     void Clear();
     
     /** The parent MusPage setter */
@@ -59,8 +61,10 @@ public:
     int GetSystemNo() const;
     
     // moulinette
-    virtual void Process(MusLayoutFunctor *functor, wxArrayPtrVoid params );
+    virtual void Process(MusFunctor *functor, wxArrayPtrVoid params );
     // functors
+    void Save( wxArrayPtrVoid params );
+    void Load( wxArrayPtrVoid params );
     //void ProcessStaves( wxArrayPtrVoid params );
     //void ProcessVoices( wxArrayPtrVoid params );
     //void CountVoices( wxArrayPtrVoid params );
@@ -75,6 +79,8 @@ public:
     ArrayOfMusLaidOutStaves m_staves;
     /** The parent MusPage */
     MusPage *m_page;
+    /** The array of system breaks MusSymbols */
+    ArrayOfMusLayerElements m_systemBreaks;
 
     /** longueur en mm de l'indentation des portees de la page */
     int indent;
@@ -93,14 +99,14 @@ private:
 
 
 //----------------------------------------------------------------------------
-// abstract base class MusSystemFunctor
+// MusSystemFunctor
 //----------------------------------------------------------------------------
 
 /**
  * This class is a Functor that processes MusSystem objects.
  * Needs testing.
 */
-class MusSystemFunctor: public MusLayoutFunctor
+class MusSystemFunctor: public MusFunctor
 {
 private:
     void (MusSystem::*fpt)( wxArrayPtrVoid params );   // pointer to member function

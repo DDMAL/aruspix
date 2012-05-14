@@ -25,63 +25,153 @@ enum
 class MusStaff;
 class MusLayer;
 
+class MusDurationInterface;
+class MusPitchInterface;
+class MusPositionInterface;
+
 
 //----------------------------------------------------------------------------
 // MusBinOutput
 //----------------------------------------------------------------------------
 
-/*
+/**
  * This class is a file output stream for binary object serialization.
  * Broken in Aruspix 2.0 (musiobin.cpp has been removed from the xcode project).
 */
-class MusBinOutpuht: public MusFileOutputStream
+class MusBinOutput: public MusFileOutputStream
 {
 public:
     // constructors and destructors
-    MusBinOutpuht( MusDoc *doc, wxString filename, int flag = MUS_BIN_ARUSPIX ) {};
-    virtual ~MusBinOutpuht() {};
+    MusBinOutput( MusDoc *doc, wxString filename );
+    virtual ~MusBinOutput();
     
-    bool ExportFile( ) { return false; };
-    /*
-	bool WriteFileHeader( const MusFileHeader *header ) {};
-	bool WriteSeparator( ) {};
-	bool WritePage( const MusPage *page ) {};
-	bool WriteStaff( const MusLaidOutStaff *staff ) {};
-	bool WriteNote( const MusNote1 *note ) {};
-	bool WriteSymbol( const MusSymbol1 *symbol ) {};
-    bool WriteNeume( const MusNeume *neume ) {};
-    bool WriteLyric( const MusElement *element ) {};
-	bool WriteElementAttr( const MusElement *element ) {};
-	bool WritePagination( const MusPagination *pagination ) {};
-	bool WriteHeaderFooter( const MusWWGData *headerfooter) {};
-    */
+    virtual bool ExportFile( );
+    virtual bool WriteDoc( MusDoc *doc );
+    // logical
+    virtual bool WriteDiv( MusDiv *div ); 
+    virtual bool WriteScore( MusScore *score ); 
+    virtual bool WritePartSet( MusPartSet *parts );
+    virtual bool WritePart( MusPart *part );
+    virtual bool WriteSection( MusSection *section );
+    virtual bool WriteMeasure( MusMeasure *measure );
+    virtual bool WriteStaff( MusStaff *staff );
+    virtual bool WriteLayer( MusLayer *layer );
+    virtual bool WriteLayerElement( MusLayerElement *element );
+    // layout
+    virtual bool WriteLayout( MusLayout *layout );
+    virtual bool WritePage( MusPage *page );
+    virtual bool WriteSystem( MusSystem *system );
+    virtual bool WriteLaidOutStaff( MusLaidOutStaff *laidOutStaff );
+    virtual bool WriteLaidOutLayer( MusLaidOutLayer *laidOutLayer );
+    virtual bool WriteLaidOutLayerElement( MusLaidOutLayerElement *laidOutLayerElement );  
     
 private:
+    unsigned char uc;
     wxUint16 uint16;
 	wxInt16 int16;
 	wxUint32 uint32;
 	wxInt32 int32;
 	wxString m_filename;
-	int m_flag;
 
 private:
-	};
+    void WriteObject( MusObject *object );  
+    void WriteDurationInterface( MusDurationInterface *element );
+    void WritePitchInterface( MusPitchInterface *element );
+    void WritePositionInterface( MusPositionInterface *element );
+    
+};
 
 
 //----------------------------------------------------------------------------
 // MusBinInput
 //----------------------------------------------------------------------------
 
-/*
- * This class is a file input stream for binary object serialization.
- * Broken in Aruspix 2.0 (musiobin.cpp has been removed from the xcode project).
-*/
+/**
+ * This class is a file input stream for binary object serialization for files
+ */
 class MusBinInput: public MusFileInputStream
 {
 public:
     // constructors and destructors
-    MusBinInput( MusDoc *file, wxString filename, int flag = MUS_BIN_ARUSPIX );
+    MusBinInput( MusDoc *file, wxString filename );
     virtual ~MusBinInput();
+    
+    bool ImportFile( );
+    
+    virtual bool ReadDoc( MusDoc *doc );
+    // logical
+    virtual MusDiv* ReadDiv( ); 
+    virtual MusScore* ReadScore( ); 
+    virtual MusPartSet* ReadPartSet( );
+    virtual MusPart* ReadPart( );
+    virtual MusSection* ReadSection( );
+    virtual MusMeasure* ReadMeasure( );
+    virtual MusStaff* ReadStaff(  );
+    virtual MusLayer* ReadLayer( );
+    virtual MusLayerElement *ReadLayerElement( );
+    // layout
+    virtual MusLayout* ReadLayout( );
+    virtual MusPage* ReadPage( );
+    virtual MusSystem* ReadSystem( );
+    virtual MusLaidOutStaff* ReadLaidOutStaff( );
+    virtual MusLaidOutLayer* ReadLaidOutLayer(  );
+    virtual MusLaidOutLayerElement* ReadLaidOutLayerElement( );  
+    
+private:
+    unsigned char uc;
+    wxUint16 uint16;
+	wxInt16 int16;
+	wxUint32 uint32;
+	wxInt32 int32;    
+	wxString m_filename;
+    int m_vmaj, m_vmin, m_vrev;
+    // used for reading only
+    uuid_t m_uuid;
+    wxString m_className;
+    int m_nbDivs;
+    int m_nbScores;
+    int m_nbPartSets;
+    int m_nbParts;
+    int m_nbSections;
+    int m_nbMeasures;
+    int m_nbStaves;
+    int m_nbLayers;
+    int m_nbElements;
+    int m_nbLayouts;
+    int m_nbPages;
+    int m_nbSystems;
+    int m_nbLaidOutStaves;
+    int m_nbLaidOutLayers;
+    int m_nbLaidOutLayerElements;
+ 
+private:
+    /**
+     * Read the class name and the uuid
+     * If a MusObject is passed, the uuid is replaced
+     */
+    void ReadObject( MusObject *object = NULL );
+    void ReadDurationInterface( MusDurationInterface *element );
+    void ReadPitchInterface( MusPitchInterface *element );
+    void ReadPositionInterface( MusPositionInterface *element );
+
+};
+
+
+
+//----------------------------------------------------------------------------
+// MusBinInput_1_X
+//----------------------------------------------------------------------------
+
+/**
+ * This class is a file input stream for binary object serialization for files
+ * before version 2.0
+*/
+class MusBinInput_1_X: public MusFileInputStream
+{
+public:
+    // constructors and destructors
+    MusBinInput_1_X( MusDoc *file, wxString filename, int flag = MUS_BIN_ARUSPIX );
+    virtual ~MusBinInput_1_X();
     
     bool ImportFile( );
 	bool ReadFileHeader( unsigned short *nbpage );
@@ -236,7 +326,8 @@ private:
     unsigned short l_ptch;
 
 private:
-	};
+	
+};
 
 
 #endif

@@ -235,7 +235,9 @@ bool ImOperator::WriteAsMAP( wxString file, _imImage **image )
         imFileSetInfo( ifile, "RLE" ); // LZW Unisys par defaut
         imImageSetAttribute( *image, "Software", IM_BYTE, 8, "Aruspix" );
         imImageSetAttribute( *image, "Author", IM_BYTE, 14, "Laurent Pugin" );
-        //imImageSetAttribute( *image, "Photometric", IM_BYTE,1,"1");
+        // for some reason since version 2.0 and imlib 3.6, we have an error on tags
+        // we just ignore it since the file written looks OK
+        wxLogNull logNo;
         error = imFileSaveImage( ifile, *image );
         imFileClose(ifile);
         //wxLogMessage("Fichier '%s' ecrit - erreur %d", file.c_str(), error );
@@ -269,14 +271,17 @@ bool ImOperator::Write( wxString file, _imImage **image )
         imImageSetAttribute( *image, "Software", IM_BYTE, 8, "Aruspix" );
         imImageSetAttribute( *image, "Author", IM_BYTE, 14, "Laurent Pugin" );
         imImageSetAttribute( *image, "Photometric", IM_BYTE,1,"1");
+        // for some reason since version 2.0 and imlib 3.6, we have an error on tags
+        // we just ignore it since the file written looks OK
+        wxLogNull *logNo = new wxLogNull();
         error = imFileSaveImage( ifile, *image );
 		imFileClose(ifile);
+        delete logNo;
         //wxLogMessage("Fichier '%s - erreur %d' ecrit", file.c_str(), error );
         if (error == IM_ERR_NONE)
             return true;
         else
             return this->Terminate( ERR_WRITING , file.c_str());
-        
     }
     else
         return this->Terminate( ERR_WRITING , file.c_str());

@@ -85,7 +85,7 @@ void EdtFile::OpenContent( )
         return;
     }
     
-    MusBinInput *bin_input = new MusBinInput( m_musDocPtr, m_musDocPtr->m_fname );
+    MusBinInput_1_X *bin_input = new MusBinInput_1_X( m_musDocPtr, m_musDocPtr->m_fname );
     bin_input->ImportFile();
     delete bin_input;
 	
@@ -99,13 +99,9 @@ void EdtFile::SaveContent( )
 	wxASSERT( m_xml_root );
 	
     // save
-    /*
     MusBinOutput *bin_output = new MusBinOutput( m_musDocPtr, m_musDocPtr->m_fname );
     bin_output->ExportFile();
-    delete bin_output;
-    */
-    wxLogError("Nothing will be saved, broken in 2.0.0"); // ax2
-
+    delete bin_output; 
 }
 
 void EdtFile::CloseContent( )
@@ -168,6 +164,9 @@ bool EdtFile::Create( )
     
     int i, j;
     
+    // the way the doc is created need to be rethought
+    // especially handling pageBreaks and systemBreaks
+    
     // reset the MusDoc and create the logical tree
     m_musDocPtr->Reset();	
     MusDiv *div = new MusDiv( );
@@ -178,8 +177,8 @@ bool EdtFile::Create( )
     for (j = 0; j < nb_staves_per_system; j++) {
         logStaff = new MusStaff();
         logLayer = new MusLayer();
-        logStaff->AddStaffElement( logLayer );
-        section->AddSectionElement( logStaff );
+        logStaff->AddLayer( logLayer );
+        section->AddStaff( logStaff );
     }
     
     // create a new layout and the page
@@ -194,7 +193,7 @@ bool EdtFile::Create( )
         system->lrg_lign = width - 20;       
         for (j = 0; j < nb_staves_per_system; j++)
         {
-            logStaff = dynamic_cast<MusStaff*> (&section->m_sectionElements[j]);
+            logStaff = dynamic_cast<MusStaff*> (&section->m_staves[j]);
             wxASSERT_MSG( logStaff, "MusStaff cannot be NULL" );
             MusLaidOutStaff *staff = new MusLaidOutStaff( logStaff );
             staff->portNbLine = EdtNewDlg::s_staffLines;
@@ -213,6 +212,7 @@ bool EdtFile::Create( )
             }
             // We also need to create the layers!
             // ...
+            // We also need to add pageBreaks and systemBreak to the layers
             system->m_staves.Add( staff );
         }
         page->m_systems.Add( system );

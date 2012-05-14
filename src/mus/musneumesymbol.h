@@ -51,6 +51,8 @@ public:
 	MusNeumeSymbol(MeiElement &meielement);
 	MusNeumeSymbol(const MusNeumeSymbol &symbol);
 	virtual ~MusNeumeSymbol() {}
+    
+    virtual wxString MusClassName( ) { return "MusNeumeSymbol"; };
 	
 	void calcoffs (int *offst, int value);
     MusNeumeSymbolType GetSymbolType();

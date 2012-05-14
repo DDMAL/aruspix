@@ -20,11 +20,17 @@ MusObject::MusObject() :
 	wxObject()
 {
     m_id = 0;
+    uuid_generate( m_uuid );
 }
 
 MusObject::~MusObject()
 {
 }
+
+void MusObject::SetUuid( uuid_t uuid )
+{ 
+    uuid_copy( m_uuid, uuid );
+};
 
 
 //----------------------------------------------------------------------------

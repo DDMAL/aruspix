@@ -51,6 +51,49 @@ void MusDoc::AddLayout( MusLayout *layout )
 	m_layouts.Add( layout );
 }
 
+bool MusDoc::Save( MusFileOutputStream *output )
+{
+    output->WriteDoc( this );
+    
+    wxArrayPtrVoid params;
+	params.Add( output );
+    
+    // logical
+    MusDivFunctor div( &MusDiv::Save );
+    this->ProcessLogical( &div, params );
+    
+    // layout
+    MusLayoutFunctor layout( &MusLayout::Save );
+    this->ProcessLayout( &layout, params );    
+    
+    return true;
+}
+
+bool MusDoc::Load( MusFileInputStream *input )
+{
+    Reset();
+    input->ReadDoc( this );
+    
+    wxArrayPtrVoid params;
+	params.Add( input );
+    
+    // logical
+    MusDiv *div;
+    while( (div = input->ReadDiv()) ) {
+        div->Load( params );
+        this->AddDiv( div );
+    }
+    
+    // layout
+    MusLayout *layout;
+    while( (layout = input->ReadLayout()) ) {
+        layout->Load( params );
+        this->AddLayout( layout );
+    }   
+    
+    return true;
+}
+
 void MusDoc::GetNumberOfVoices( int *min_voice, int *max_voice )
 {
 	wxArrayPtrVoid params; // tableau de pointeurs pour parametres
@@ -86,23 +129,6 @@ MusLaidOutStaff *MusDoc::GetVoice( int i )
     return NULL;
 }
 
-/*
-void MusDoc::Process(MusPageFunctor *functor, wxArrayPtrVoid params )
-{
-    
-    MusPage *page;
-	int i;
-    for (i = 0; i < m_parameters.nbpage; i++) 
-	{
-		page = &m_pages[i];
-        functor->Call( page, params );
-	}
-    
-    wxLogDebug( "MusDoc::Process missing in ax2");
-}
-*/
-// ax2
-
 MeiDocument *MusDoc::GetMeiDocument() {
     return m_meidoc;
 }
@@ -112,62 +138,46 @@ void MusDoc::SetMeiDocument(MeiDocument *doc) {
 }
 
 
-//----------------------------------------------------------------------------
-// MusFileOutputStream
-//----------------------------------------------------------------------------
+// functors for MusLayout
 
-MusFileOutputStream::MusFileOutputStream( MusDoc *doc, wxString filename ) :
-	wxFileOutputStream( filename )
+void MusDoc::ProcessLayout(MusFunctor *functor, wxArrayPtrVoid params )
 {
-	//wxASSERT_MSG( file, "File cannot be NULL" );
-	m_doc = doc;
+    if (functor->m_success) {
+        return;
+    }
+    
+    MusLayoutFunctor *layoutFunctor = dynamic_cast<MusLayoutFunctor*>(functor);
+    MusLayout *layout;
+	int i;
+    for (i = 0; i < (int)m_layouts.GetCount(); i++) 
+	{
+        layout = &m_layouts[i];
+        if (layoutFunctor) { // is is a MusSystemFunctor, call it
+            layoutFunctor->Call( layout, params );
+        }
+        else { // process it further
+            layout->Process( functor, params );
+        }
+	}
 }
 
-MusFileOutputStream::MusFileOutputStream( MusDoc *doc, int fd ) :
-	wxFileOutputStream( fd )
+void MusDoc::ProcessLogical(MusFunctor *functor, wxArrayPtrVoid params )
 {
-	//wxASSERT_MSG( file, "File cannot be NULL" );
-	m_doc = doc;
+    if (functor->m_success) {
+        return;
+    }
+    
+    MusDivFunctor *divFunctor = dynamic_cast<MusDivFunctor*>(functor);
+    MusDiv *div;
+	int i;
+    for (i = 0; i < (int)m_divs.GetCount(); i++) 
+	{
+        div = &m_divs[i];
+        if (divFunctor) { // is is a MusSystemFunctor, call it
+            divFunctor->Call( div, params );
+        }
+        else { // process it further
+            div->Process( functor, params );
+        }
+	}
 }
-
-/*
-MusFileOutputStream::MusFileOutputStream( MusDoc *doc, wxFile *wxfile ) :
-	wxFileOutputStream( *wxfile )
-{
-	//wxASSERT_MSG( file, "File cannot be NULL" );
-	m_doc = doc;
-}
-*/
-
-MusFileOutputStream::~MusFileOutputStream()
-{
-}
-
-
-
-//----------------------------------------------------------------------------
-// MusFileInputStream
-//----------------------------------------------------------------------------
-
-MusFileInputStream::MusFileInputStream( MusDoc *doc, wxString filename  ) :
-	wxFileInputStream( filename )
-{
-	//wxASSERT_MSG( file, "File cannot be NULL" );
-	m_doc = doc;
-}
-
-MusFileInputStream::MusFileInputStream( MusDoc *doc, int fd ) :
-	wxFileInputStream( fd )
-{
-	//wxASSERT_MSG( file, "File cannot be NULL" );
-	m_doc = doc;
-}
-
-MusFileInputStream::~MusFileInputStream()
-{
-}
-
-
-
-
-

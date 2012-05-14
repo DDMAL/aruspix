@@ -14,22 +14,7 @@
 #endif
 
 #include "muslayer.h"
-
-enum MeterSymb {
-    METER_SYMB_NONE = 0,
-    METER_SYMB_COMMON,
-    METER_SYMB_CUT,
-    METER_SYMB_2, // no MEI equivalent
-    METER_SYMB_3, // no MEI equivalent
-    METER_SYMB_2_CUT, // no MEI equivalent
-    METER_SYMB_3_CUT // no MEI equivalent
-};
-
-enum MensurSign {
-    MENSUR_SIGN_NONE = 0,
-    MENSUR_SIGN_C,
-    MENSUR_SIGN_O
-};
+#include "musdef.h"
 
 //----------------------------------------------------------------------------
 // MusMensur
@@ -44,6 +29,8 @@ public:
     // constructors and destructors
     MusMensur();
     virtual ~MusMensur();
+    
+    virtual wxString MusClassName( ) { return "MusMensur"; };
     
 private:
     

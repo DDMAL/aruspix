@@ -33,8 +33,10 @@ class MusLaidOutLayer: public MusLayoutObject
 {
 public:
     // constructors and destructors
-    MusLaidOutLayer( MusLayer *logLayer );
+    MusLaidOutLayer( MusLayer *logLayer = NULL );
     virtual ~MusLaidOutLayer();
+    
+    virtual wxString MusClassName( ) { return "MusLaidOutLayer"; };	
     
     void Clear();
     
@@ -42,17 +44,18 @@ public:
     void SetStaff( MusLaidOutStaff *staff ) { m_staff = staff; };
 	
 	void AddElement( MusLaidOutLayerElement *element );
-    
-     // moulinette
-    virtual void Process(MusLayoutFunctor *functor, wxArrayPtrVoid params );
-	
+    	
 	int GetElementCount() const { return (int)m_elements.GetCount(); };
     
     int GetLayerNo() const;
-   
+
+    // moulinette
+    virtual void Process(MusFunctor *functor, wxArrayPtrVoid params );
     // functors
     void CopyElements( wxArrayPtrVoid params );
     void GetMaxXY( wxArrayPtrVoid params );
+    void Save( wxArrayPtrVoid params );
+    void Load( wxArrayPtrVoid params );
     
 	void CopyAttributes( MusLaidOutLayer *layer ); // copy all attributes but none of the elements
     
@@ -113,14 +116,14 @@ private:
 
 
 //----------------------------------------------------------------------------
-// abstract base class MusLaidOutLayerFunctor
+// MusLaidOutLayerFunctor
 //----------------------------------------------------------------------------
 
 /**
  * This class is a Functor that processes MusLaidOutLayer objects.
  * Needs testing.
 */
-class MusLaidOutLayerFunctor: public MusLayoutFunctor
+class MusLaidOutLayerFunctor: public MusFunctor
 {
 private:
     void (MusLaidOutLayer::*fpt)( wxArrayPtrVoid params );   // pointer to member function

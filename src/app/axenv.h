@@ -38,7 +38,7 @@ public:
     AxEnv();
     virtual ~AxEnv();
     
-        void Load(AxFrame *parent);
+    void Load(AxFrame *parent);
     void Unload();
     void Show();
     void Hide();

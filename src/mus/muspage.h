@@ -44,6 +44,8 @@ public:
     MusPage();
     virtual ~MusPage();
     
+    virtual wxString MusClassName( ) { return "MusPage"; };	    
+    
     void Clear();
     
     /** The parent MusLayout setter */
@@ -64,8 +66,10 @@ public:
     int GetPageNo() const;
 
     // moulinette
-    virtual void Process(MusLayoutFunctor *functor, wxArrayPtrVoid params );
+    virtual void Process(MusFunctor *functor, wxArrayPtrVoid params );
     // functors
+    void Save( wxArrayPtrVoid params );
+    void Load( wxArrayPtrVoid params );
     void ProcessStaves( wxArrayPtrVoid params );
     void ProcessVoices( wxArrayPtrVoid params );
     void CountVoices( wxArrayPtrVoid params );
@@ -80,16 +84,10 @@ private:
     
 public:
     /** The MusSystem objects of the page */
-    ArrayOfMusSystems m_systems;    
+    ArrayOfMusSystems m_systems;  
+    /** The array of system breaks MusSymbols */
+    ArrayOfMusLayerElements m_systemBreaks;
     
-    /** numero de page */
-    int npage;
-    /** contient un masque fixe */
-    char noMasqueFixe;
-    /** contient un masque variable */
-    char noMasqueVar;
-    /** reserve */
-    unsigned char reserve;
     /** definition en mm des portees de la page */
     unsigned char defin;
     /** longueur en mm de l'indentation des portees de la page */
@@ -105,14 +103,14 @@ private:
 
 
 //----------------------------------------------------------------------------
-// abstract base class MusPageFunctor
+// MusPageFunctor
 //----------------------------------------------------------------------------
 
 /**
  * This class is a Functor that processes MusPage objects.
  * Needs testing.
 */
-class MusPageFunctor: public MusLayoutFunctor
+class MusPageFunctor: public MusFunctor
 {
 private:
     void (MusPage::*fpt)( wxArrayPtrVoid params );   // pointer to member function

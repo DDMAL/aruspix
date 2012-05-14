@@ -9,14 +9,13 @@
 // For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"
 
+#include "musio.h"
 #include "mussection.h"
 #include "musmeasure.h"
 #include "musstaff.h"
 
 #include "wx/arrimpl.cpp"
 WX_DEFINE_OBJARRAY( ArrayOfMusSections );
-WX_DEFINE_OBJARRAY( ArrayOfMusSectionElements );
-
 
 //----------------------------------------------------------------------------
 // MusSection
@@ -34,13 +33,20 @@ MusSection::~MusSection()
 {
 }
 
-
-void MusSection::AddSectionElement( MusSectionInterface *sectionElement )
+void MusSection::AddMeasure( MusMeasure *measure )
 {
-	sectionElement->SetSection( this );
-	m_sectionElements.Add( sectionElement );
+    wxASSERT_MSG( m_staves.IsEmpty(), "A section cannot contain measures and staves at the same time" );    
+	measure->SetSection( this );
+	m_measures.Add( measure );
 }
 
+
+void MusSection::AddStaff( MusStaff *staff )
+{
+    wxASSERT_MSG( m_measures.IsEmpty(), "A section cannot contain measures and staves at the same time" );    
+	staff->SetSection( this );
+	m_staves.Add( staff );
+}
 
 void MusSection::SetScore( MusScore *score )
 {
@@ -55,16 +61,72 @@ void MusSection::SetPart( MusPart *part )
     m_part = part;
 }
 
-//----------------------------------------------------------------------------
-// MusSectionInterface
-//----------------------------------------------------------------------------
-
-MusSectionInterface::MusSectionInterface()
+void MusSection::Save( wxArrayPtrVoid params )
 {
-    m_section = NULL;
+    // param 0: output stream
+    MusFileOutputStream *output = (MusFileOutputStream*)params[0];       
+    output->WriteSection( this );
+    
+    // save measures ( measured music )
+    MusMeasureFunctor measure( &MusMeasure::Save );
+    this->Process( &measure, params );
+    // save staves ( unmeasured music )
+    MusStaffFunctor staff( &MusStaff::Save );
+    this->Process( &staff, params );
 }
 
-
-MusSectionInterface::~MusSectionInterface()
+void MusSection::Load( wxArrayPtrVoid params )
 {
+    // param 0: output stream
+    MusFileInputStream *input = (MusFileInputStream*)params[0];       
+    
+    // load measures ( measured music )
+    MusMeasure *measure;
+    while ( (measure = input->ReadMeasure()) ) {
+        measure->Load( params );
+        this->AddMeasure( measure );
+    }
+    // load staves ( unmeasured music )
+    MusStaff *staff;
+    while ( (staff = input->ReadStaff()) ) {
+        staff->Load( params );
+        this->AddStaff( staff );
+    }
+}
+
+// functors for MusSection
+
+void MusSection::Process(MusFunctor *functor, wxArrayPtrVoid params )
+{
+    if (functor->m_success) {
+        return;
+    }
+    
+    // measure music
+    MusMeasureFunctor *measureFunctor = dynamic_cast<MusMeasureFunctor*>(functor);
+    MusMeasure *measure;
+	int i;
+    for (i = 0; i < (int)m_measures.GetCount(); i++) 
+	{
+        measure = &m_measures[i];
+        if (measureFunctor) { // is is a MusMeasureFunctor, call it
+            measureFunctor->Call( measure, params );
+        }
+        else { // process it further
+            measure->Process( functor, params );
+        }
+	}
+    // unmeasured music
+    MusStaffFunctor *staffFunctor = dynamic_cast<MusStaffFunctor*>(functor);
+    MusStaff *staff;
+    for (i = 0; i < (int)m_staves.GetCount(); i++) 
+	{
+        staff = &m_staves[i];
+        if (staffFunctor) { // is is a MusStaffFunctor, call it
+            staffFunctor->Call( staff, params );
+        }
+        else { // process it further
+            staff->Process( functor, params );
+        }
+	}
 }

@@ -9,6 +9,7 @@
 // For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"
 
+#include "musio.h"
 #include "muslaidoutlayerelement.h"
 
 #include "musbarline.h"
@@ -41,6 +42,20 @@ MusLaidOutLayerElement::MusLaidOutLayerElement( MusLayerElement *element ):
 
 MusLaidOutLayerElement::~MusLaidOutLayerElement()
 {
+}
+
+void MusLaidOutLayerElement::Save( wxArrayPtrVoid params )
+{
+    // param 0: output stream
+    MusFileOutputStream *output = (MusFileOutputStream*)params[0];         
+    output->WriteLaidOutLayerElement( this );
+}
+
+void MusLaidOutLayerElement::Load( wxArrayPtrVoid params )
+{
+    // param 0: output stream
+    // MusFileInputStream *input = (MusFileInputStream*)params[0]; 
+    // For now nothing to do here
 }
 
 int MusLaidOutLayerElement::GetElementNo() const

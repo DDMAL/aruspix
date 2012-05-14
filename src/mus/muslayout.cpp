@@ -17,6 +17,7 @@
 #include "muslaidoutlayer.h"
 #include "muslaidoutlayerelement.h"
 
+#include "musio.h"
 #include "musdoc.h"
 #include "musdiv.h"
 #include "mussection.h"
@@ -32,7 +33,7 @@ WX_DEFINE_OBJARRAY( ArrayOfMusLayouts );
 //----------------------------------------------------------------------------
 
 MusLayout::MusLayout( LayoutType type ) :
-	MusObject()
+	MusLayoutObject()
 {
     Clear();
     m_type = type;
@@ -107,6 +108,30 @@ void MusLayout::SetDoc( MusDoc *doc )
     m_env = doc->m_env;
 }
 
+void MusLayout::Save( wxArrayPtrVoid params )
+{
+    // param 0: output stream
+    MusFileOutputStream *output = (MusFileOutputStream*)params[0];       
+    output->WriteLayout( this );
+
+    // save pages
+    MusPageFunctor page( &MusPage::Save );
+    this->Process( &page, params );
+}
+
+void MusLayout::Load( wxArrayPtrVoid params )
+{
+    // param 0: output stream
+    MusFileInputStream *input = (MusFileInputStream*)params[0];       
+    
+    // load pages
+    MusPage *page;
+    while ( (page = input->ReadPage()) ) {
+        page->Load( params );
+        this->AddPage( page );
+    }
+}
+
 
 void MusLayout::AddPage( MusPage *page )
 {
@@ -122,6 +147,7 @@ void MusLayout::Realize( MusScore *score )
 	
 	MusPage *page = new MusPage( );
 	MusSystem *system = new MusSystem();
+    /*
 	
 	int i, j, k, l, m;
 	for (i = 0; i < (int)score->m_sections.GetCount(); i++) {
@@ -157,6 +183,7 @@ void MusLayout::Realize( MusScore *score )
 			}
 		}
 	}
+    */
 
 	page->AddSystem( system );
 	this->AddPage( page );
@@ -336,8 +363,12 @@ void MusLayout::UpdatePageValues()
 
 // functors for MusLayout
 
-void MusLayout::Process(MusLayoutFunctor *functor, wxArrayPtrVoid params )
+void MusLayout::Process(MusFunctor *functor, wxArrayPtrVoid params )
 {
+    if (functor->m_success) {
+        return;
+    }
+    
     MusPageFunctor *pageFunctor = dynamic_cast<MusPageFunctor*>(functor);
     MusPage *page;
 	int i;

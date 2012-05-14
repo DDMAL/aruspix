@@ -87,6 +87,73 @@ enum MusEditorMode {
 #define ACCENT_VERT_PNT 7
 
 
+// the maximum is 255 (unsigned char)
+enum BarlineType {
+    BARLINE_SINGLE,
+    BARLINE_END,
+    BARLINE_START, // no MEI equivalent
+    BARLINE_RPTBOTH,
+    BARLINE_RPTSTART,
+    BARLINE_RPTEND,
+    BARLINE_DBL,
+    BARLINE_BRACE, // no MEI equivalent
+    BARLINE_BRACKET
+};
+
+// the maximum is 255 (unsigned char)
+enum ClefId {
+    SOL2 = 1,
+    SOL1,
+    FA4,
+    FA3,
+    UT1,
+    UT2,
+    UT3,
+    UT4,
+    SOLva,
+    FA5,
+    UT5,
+    CLEPERC,
+    //neumatic clefs
+    nC1,
+    nC2,
+    nC3,
+    nC4,
+    nF1,
+    nF2,
+    nF3,
+    nF4
+};
+
+// the maximum is 255 (unsigned char)
+enum MeterSymb {
+    METER_SYMB_NONE = 0,
+    METER_SYMB_COMMON,
+    METER_SYMB_CUT,
+    METER_SYMB_2, // no MEI equivalent
+    METER_SYMB_3, // no MEI equivalent
+    METER_SYMB_2_CUT, // no MEI equivalent
+    METER_SYMB_3_CUT // no MEI equivalent
+};
+
+// the maximum is 255 (unsigned char)
+enum MensurSign {
+    MENSUR_SIGN_NONE = 0,
+    MENSUR_SIGN_C,
+    MENSUR_SIGN_O
+};
+
+// the maximum is 255 (unsigned char)
+enum SymbolType {
+    SYMBOL_UNDEFINED = 0, // needed for default constructor
+    SYMBOL_DOT = 1, 
+    SYMBOL_ACCID = 2,
+    SYMBOL_CUSTOS = 3,
+    SYMBOL_SB = 4,
+    SYMBOL_PB = 5
+};
+
+
 //----------------------------------------------------------------------------
 // Neumes - Festa Dies font
 //----------------------------------------------------------------------------

@@ -14,32 +14,7 @@
 #endif
 
 #include "muslayer.h"
-
-
-enum ClefId {
-    SOL2 = 1,
-    SOL1,
-    FA4,
-    FA3,
-    UT1,
-    UT2,
-    UT3,
-    UT4,
-    SOLva,
-    FA5,
-    UT5,
-    CLEPERC,
-    //neumatic clefs
-    nC1,
-    nC2,
-    nC3,
-    nC4,
-    nF1,
-    nF2,
-    nF3,
-    nF4
-};
-
+#include "musdef.h"
 
 //----------------------------------------------------------------------------
 // MusClef
@@ -54,6 +29,8 @@ public:
     // constructors and destructors
     MusClef();
     virtual ~MusClef();
+    
+    virtual wxString MusClassName( ) { return "MusClef"; };	
     
     /**
      * Return the offset of the clef

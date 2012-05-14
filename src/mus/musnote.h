@@ -44,11 +44,13 @@ public:
     MusNote();
     virtual ~MusNote();
     
+    virtual wxString MusClassName( ) { return "MusNote"; };
+    
 private:
     
 public:
     /** Indicates the articulation (0 == none) */
-    int m_artic;
+    unsigned char m_artic;
     /** Indicates if initial, medial or terminal part of a chord */
     unsigned char m_chord;
     /** Indicates if colored (inversed) */

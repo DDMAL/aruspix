@@ -23,6 +23,7 @@ using std::max;
 
 #include "app/axapp.h"
 
+#include "mus/musdoc.h"
 #include "mus/mustoolpanel.h"
 #include "mus/musstaff.h"
 

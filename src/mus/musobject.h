@@ -9,6 +9,7 @@
 #define __MUS_OBJECT_H__
 
 #include <wx/wxprec.h>
+#include <uuid/uuid.h>
 
 #ifndef WX_PRECOMP
     #include "wx/wx.h"
@@ -17,6 +18,7 @@
 class MusRC;
 class MusDoc;
 class MusEnv;
+
 
 
 // Logical classes
@@ -29,14 +31,14 @@ WX_DECLARE_OBJARRAY( MusPart, ArrayOfMusParts );
 class MusSection;
 WX_DECLARE_OBJARRAY( MusSection, ArrayOfMusSections );
 
-class MusSectionInterface;
-WX_DECLARE_OBJARRAY( MusSectionInterface, ArrayOfMusSectionElements );
+class MusMeasure;
+WX_DECLARE_OBJARRAY( MusMeasure, ArrayOfMusMeasures );
 
-class MusMeasureInterface;
-WX_DECLARE_OBJARRAY( MusMeasureInterface, ArrayOfMusMeasureElements );
+class MusStaff;
+WX_DECLARE_OBJARRAY( MusStaff, ArrayOfMusStaves );
 
-class MusStaffInterface;
-WX_DECLARE_OBJARRAY( MusStaffInterface, ArrayOfMusStaffElements );
+class MusLayer;
+WX_DECLARE_OBJARRAY( MusLayer, ArrayOfMusLayers );
 
 class MusLayerElement;
 WX_DECLARE_OBJARRAY( MusLayerElement, ArrayOfMusLayerElements );
@@ -76,6 +78,10 @@ public:
     virtual ~MusObject();
     
     int GetId() { return m_id; };
+    uuid_t* GetUuid() { return &m_uuid; };
+    void SetUuid( uuid_t uuid );
+    
+    virtual wxString MusClassName( ) { return "[MISSING]"; };
 
 private:
 
@@ -83,6 +89,7 @@ public:
     
 protected:
     int m_id;
+    uuid_t m_uuid;
 
 private:
     
@@ -102,7 +109,6 @@ public:
     // constructors and destructors
     MusLogicalObject();
     virtual ~MusLogicalObject();
-    
 
 private:
 
@@ -143,46 +149,26 @@ public:
 
 
 //----------------------------------------------------------------------------
-// abstract base class MusLogicalFunctor
-//----------------------------------------------------------------------------
-
-/** 
- * This class is an abstact Functor for the logical domain.
- * Needs testing.
- */
-class MusLogicalFunctor
-{
-public:
-	
-    MusLogicalFunctor( ) {};
-	virtual ~MusLogicalFunctor() {};
-    
-    // override function "Call"
-    virtual void Call( MusLogicalObject *ptr, wxArrayPtrVoid params ) {};
-	
-private:
-	
-};
-
-
-//----------------------------------------------------------------------------
-// abstract base class MusLayoutFunctor
+// abstract base class MusFunctor
 //----------------------------------------------------------------------------
 
 /** 
  * This class is an abstact Functor for the layout domain.
  * Needs testing.
  */
-class MusLayoutFunctor
+class MusFunctor
 {
 public:
 
-    MusLayoutFunctor( ) {};
-	virtual ~MusLayoutFunctor() {};
+    MusFunctor( ) { m_success = false; };
+	virtual ~MusFunctor() {};
     
     // override function "Call"
     virtual void Call( MusLayoutObject *ptr, wxArrayPtrVoid params ) {};
+    virtual void Call( MusLayoutObject *ptr, wxArrayPtrVoid params, bool *success ) {};
         
+    bool m_success;
+    
 private:
        
 };

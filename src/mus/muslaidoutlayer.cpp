@@ -9,6 +9,7 @@
 // For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"
 
+#include "musio.h"
 #include "muslaidoutlayer.h"
 #include "muslaidoutlayerelement.h"
 
@@ -56,13 +57,39 @@ void MusLaidOutLayer::Clear()
     beamListPremier = NULL;
 }
 
+
+void MusLaidOutLayer::Save( wxArrayPtrVoid params )
+{
+    // param 0: output stream
+    MusFileOutputStream *output = (MusFileOutputStream*)params[0];       
+    output->WriteLaidOutLayer( this );
+    
+    // save elements
+    MusLaidOutLayerElementFunctor element( &MusLaidOutLayerElement::Save );
+    this->Process( &element, params );
+}
+
+void MusLaidOutLayer::Load( wxArrayPtrVoid params )
+{
+    // param 0: output stream
+    MusFileInputStream *input = (MusFileInputStream*)params[0];       
+    
+    // load elements
+    MusLaidOutLayerElement *element;
+    while ( (element = input->ReadLaidOutLayerElement()) ) {
+        element->Load( params );
+        this->AddElement( element );
+    }
+}
+
+
 void MusLaidOutLayer::AddElement( MusLaidOutLayerElement *element )
 {
 	element->SetLayer( this );
 	m_elements.Add( element );
-    // also add it to the logical layer - how do we manage the position?
     wxASSERT_MSG( element->m_layerElement, "Pointer to LayerElement cannot be NULL" );
-    m_logLayer->m_layerElements.Add( element->m_layerElement );
+    // also add it to the logical layer - how do we manage the position?
+    // m_logLayer->m_layerElements.Add( element->m_layerElement );
 }
 
 void MusLaidOutLayer::CopyAttributes( MusLaidOutLayer *nlayer )
@@ -646,17 +673,21 @@ void MusLaidOutLayer::AdjustLyricLineHeight( int delta )
 }
 */
 
-// functors for MusLaidOutStaff
+// functors for MusLaidOutLayer
 
-void MusLaidOutLayer::Process(MusLayoutFunctor *functor, wxArrayPtrVoid params )
+void MusLaidOutLayer::Process(MusFunctor *functor, wxArrayPtrVoid params )
 {
+    if (functor->m_success) {
+        return;
+    }
+    
     MusLaidOutLayerElementFunctor *elementFunctor = dynamic_cast<MusLaidOutLayerElementFunctor*>(functor);
     MusLaidOutLayerElement *element;
 	int i;
     for (i = 0; i < (int)m_elements.GetCount(); i++) 
 	{
         element = &m_elements[i];
-        if (elementFunctor) { // is is a MusSystemFunctor, call it
+        if (elementFunctor) { // is is a MusLaidOutLayerElementFunctor, call it
             elementFunctor->Call( element, params );
         }
         else { // process it further

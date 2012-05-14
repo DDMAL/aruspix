@@ -38,6 +38,11 @@ public:
     void WWGInitElement();
     
 protected:
+    // WWG Page members
+    char noMasqueFixe;
+    char noMasqueVar;
+    unsigned char reserve;
+    
     // WWG Note members
     char sil;
     unsigned char val;

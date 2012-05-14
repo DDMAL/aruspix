@@ -19,7 +19,6 @@
 
 #include "musiobin.h"
 
-
 #include "muspage.h"
 #include "mussystem.h"
 #include "muslaidoutstaff.h"
@@ -32,6 +31,7 @@
 #include "mussymbol.h"
 #include "musrest.h"
 #include "musneume.h"
+#include "musneumesymbol.h"
 
 #include "musstaff.h"
 #include "muslayer.h"
@@ -39,6 +39,854 @@
 
 #include "app/axapp.h"
 #include "app/axfile.h"
+
+//----------------------------------------------------------------------------
+// MusBinOutput
+//----------------------------------------------------------------------------
+
+MusBinOutput::MusBinOutput( MusDoc *doc, wxString filename ) :
+    MusFileOutputStream( doc, filename )
+{
+	m_filename = filename;
+}
+
+MusBinOutput::~MusBinOutput()
+{
+}
+
+bool MusBinOutput::ExportFile( )
+{    
+	if ( !IsOk() )
+	{
+		wxLogMessage(_("Cannot write file '%s'"), m_filename.c_str() );
+		return false;
+	}
+    
+    m_doc->Save( this );
+	return true;
+}
+
+void MusBinOutput::WriteObject( MusObject *object )
+{
+    //uuid_string_t uuidStr;
+    //uuid_unparse( *object->GetUuid(), uuidStr );
+    //wxLogDebug("Writing %s %s", object->MusClassName().c_str(), uuidStr );	
+    //
+    Write( *object->GetUuid(), 16 );
+	int32 = wxINT32_SWAP_ON_BE( object->MusClassName().Length() );
+	Write( &int32, 4 );
+    Write( object->MusClassName().c_str(), object->MusClassName().Length() + 1 );
+}
+
+bool MusBinOutput::WriteDoc( MusDoc *doc )
+{
+    Write( &doc->m_env.m_landscape, 1);
+    Write( &doc->m_env.m_staffLineWidth, 1);
+    Write( &doc->m_env.m_stemWidth, 1);
+    Write( &doc->m_env.m_barlineWidth, 1);
+    Write( &doc->m_env.m_beamWidth, 1);
+    Write( &doc->m_env.m_beamWhiteWidth, 1);
+    Write( &doc->m_env.m_beamMaxSlope, 1);
+    Write( &doc->m_env.m_beamMinSlope, 1);
+    int32 = wxINT32_SWAP_ON_BE( doc->m_env.m_paperWidth );
+    Write( &int32, 4);
+    int32 = wxINT32_SWAP_ON_BE( doc->m_env.m_paperHeight );
+    Write( &int32, 4);
+    int16 = wxINT16_SWAP_ON_BE( doc->m_env.m_topMargin );
+    Write( &int16, 2);
+    int16 = wxINT16_SWAP_ON_BE( doc->m_env.m_leftMarginOddPage );
+    Write( &int16, 2);
+    int16 = wxINT16_SWAP_ON_BE( doc->m_env.m_leftMarginEvenPage );
+    Write( &int16, 2);     
+    Write( &doc->m_env.m_smallStaffNum, 1);
+    Write( &doc->m_env.m_smallStaffDen, 1);
+    Write( &doc->m_env.m_graceNum, 1);
+    Write( &doc->m_env.m_graceDen, 1);
+    Write( &doc->m_env.m_stemCorrection, 1);
+    uint32 = wxINT32_SWAP_ON_BE( doc->m_env.m_headerType );
+    Write( &uint32, 4);
+    int32 = wxINT32_SWAP_ON_BE( doc->m_env.m_notationMode );
+    Write( &int32, 4); 
+    // also write the number of divs and layouts
+    int32 = wxINT32_SWAP_ON_BE( (int)doc->m_divs.GetCount() );
+    Write( &int32, 4 );
+    int32 = wxINT32_SWAP_ON_BE( (int)doc->m_layouts.GetCount() );
+    Write( &int32, 4 );
+    
+    return true;
+}
+
+bool MusBinOutput::WriteDiv( MusDiv *div )
+{
+    WriteObject( div );
+    // also write that we have one score or one partset
+    int32 = wxINT32_SWAP_ON_BE( (div->m_score) ? 1 : 0 );
+    Write( &int32, 4 );
+    int32 = wxINT32_SWAP_ON_BE( (div->m_partSet) ? 1 : 0 );
+    Write( &int32, 4 );
+    
+    return true;    
+}
+
+bool MusBinOutput::WriteScore( MusScore *score )
+{
+    WriteObject( score );
+    // also write the number of sections
+    int32 = wxINT32_SWAP_ON_BE( (int)score->m_sections.GetCount() );
+    Write( &int32, 4 );    
+    
+    return true;    
+}
+
+bool MusBinOutput::WritePartSet( MusPartSet *parts )
+{
+    WriteObject( parts );
+    // also write the number of parts
+    int32 = wxINT32_SWAP_ON_BE( (int)parts->m_parts.GetCount() );
+    Write( &int32, 4 );
+    
+    return true;    
+}
+
+bool MusBinOutput::WritePart( MusPart *part )
+{
+    WriteObject( part  );
+    // also write the number of sections
+    int32 = wxINT32_SWAP_ON_BE( (int)part->m_sections.GetCount() );
+    Write( &int32, 4 );
+    
+    return true;    
+}
+
+bool MusBinOutput::WriteSection( MusSection *section )
+{
+    WriteObject( section );
+    // also write the number of measures or staves
+    int measures = (int)section->m_measures.GetCount();
+    Write( &measures, 4 );
+    int staves = (int)section->m_staves.GetCount();
+    Write( &staves, 4 ); 
+    
+    return true;    
+}
+
+bool MusBinOutput::WriteMeasure( MusMeasure *measure )
+{
+    WriteObject( measure );
+    // also write the number of staves
+    int32 = wxINT32_SWAP_ON_BE( (int)measure->m_staves.GetCount() );
+    Write( &int32, 4 ); 
+    
+    return true;    
+}
+
+bool MusBinOutput::WriteStaff( MusStaff *staff )
+{
+    WriteObject( staff );
+    // also write the number of layers
+    int32 = wxINT32_SWAP_ON_BE( (int)staff->m_layers.GetCount() );
+    Write( &int32, 4 );    
+    
+    return true;    
+}
+
+bool MusBinOutput::WriteLayer( MusLayer *layer )
+{
+    WriteObject( layer );
+    // also write the number of elements
+    int32 = wxINT32_SWAP_ON_BE( (int)layer->m_layerElements.GetCount() );
+    Write( &int32, 4 );
+    
+    return true;    
+}
+
+bool MusBinOutput::WriteLayerElement( MusLayerElement *element )
+{
+    WriteObject( element );
+    
+    if ( element->MusClassName() == "MusBarline") {
+        MusBarline *barline = dynamic_cast<MusBarline*>(element);
+        wxASSERT( barline );
+        uc = barline->m_barlineType;
+        Write( &uc, 1 );
+        Write( &barline->m_partialBarline, 1);
+        Write( &barline->m_onStaffOnly, 1 );
+    }
+    else if ( element->MusClassName() == "MusClef") {
+        MusClef *clef = dynamic_cast<MusClef*>(element);
+        wxASSERT( clef );
+        uc = clef->m_clefId;
+        Write( &uc, 1 );
+    }
+    else if ( element->MusClassName() == "MusMensur") {
+        MusMensur *mensur = dynamic_cast<MusMensur*>(element);
+        wxASSERT( mensur );
+        Write( &mensur->m_dot, 1 );
+        uc = mensur->m_meterSymb;
+        Write( &uc, 1 );
+        int32 = wxINT32_SWAP_ON_BE( mensur->m_num );
+        Write( &int32, 4 );
+        int32 = wxINT32_SWAP_ON_BE( mensur->m_numBase );
+        Write( &int32, 4 );
+        Write( &mensur->m_reversed, 1 );
+        uc = mensur->m_sign;
+        Write( &uc, 1 );   
+        Write( &mensur->m_slash, 1);
+
+    }
+    else if ( element->MusClassName() == "MusNeume") {
+        wxLogWarning( "Neumes are not saved in binary files" );
+    }
+    else if ( element->MusClassName() == "MusNeumeSymbol") {
+        wxLogWarning( "NeumeSymbols are not saved in binary files" );
+    }
+    else if ( element->MusClassName() == "MusNote") {
+        WriteDurationInterface( dynamic_cast<MusDurationInterface*>(element) );
+        WritePitchInterface( dynamic_cast<MusPitchInterface*>(element) );
+        MusNote *note = dynamic_cast<MusNote*>(element);
+        wxASSERT( note );        
+        Write( &note->m_artic, 1 );
+        Write( &note->m_chord, 1 );
+        Write( &note->m_colored, 1 );
+        Write( &note->m_lig, 1 );
+        Write( &note->m_headshape, 1 );
+        Write( &note->m_ligObliqua, 1 );
+        Write( note->m_slur, 6 );
+        Write( &note->m_stemDir, 1 );
+        Write( &note->m_stemLen, 1 );
+    }
+    else if ( element->MusClassName() == "MusRest") {
+        WriteDurationInterface( dynamic_cast<MusDurationInterface*>(element) );
+        WritePositionInterface( dynamic_cast<MusPositionInterface*>(element) );
+    }
+    else if ( element->MusClassName() == "MusSymbol") {
+        WritePositionInterface( dynamic_cast<MusPositionInterface*>(element) );
+        MusSymbol *symbol = dynamic_cast<MusSymbol*>(element);
+        wxASSERT( symbol );  
+        uc = symbol->m_type;
+        Write( &uc, 1 );
+        Write( &symbol->m_dot, 1 );
+        Write( &symbol->m_accid, 1 );
+    } 
+    
+    Write( &element->m_cueSize, 1);
+    int32 = wxINT32_SWAP_ON_BE( element->m_hOffset );
+    Write( &int32, 4 );
+    Write( &element->m_staffShift, 1 );
+    Write( &element->m_visible, 1 );
+    
+    return true;    
+}
+
+void MusBinOutput::WriteDurationInterface( MusDurationInterface *element )
+{
+    wxASSERT( element );
+    Write( element->m_beam, 6 );
+    Write( &element->m_breakSec, 1 );
+    Write( &element->m_dots, 1);
+    int32 = wxINT32_SWAP_ON_BE( element->m_dur );
+    Write( &int32, 4 );
+    int32 = wxINT32_SWAP_ON_BE( element->m_num );
+    Write( &int32, 4 );
+    int32 = wxINT32_SWAP_ON_BE( element->m_numBase );
+    Write( &int32, 4 );
+    Write( element->m_tuplet, 6 );   
+}
+
+void MusBinOutput::WritePitchInterface( MusPitchInterface *element )
+{
+    wxASSERT( element );
+    Write( &element->m_oct, 1 );
+    Write( &element->m_pname, 1 );    
+}
+
+void MusBinOutput::WritePositionInterface( MusPositionInterface *element )
+{
+    wxASSERT( element );
+    Write( &element->m_oct, 1 );
+    Write( &element->m_pname, 1 );   
+}
+
+bool MusBinOutput::WriteLayout( MusLayout *layout )
+{
+    WriteObject( layout );
+    // also write the number of pages
+    int32 = wxINT32_SWAP_ON_BE( (int)layout->m_pages.GetCount());
+    Write( &int32, 4 );    
+    
+    return true;
+}
+
+bool MusBinOutput::WritePage( MusPage *page )
+{
+    WriteObject( page );
+    Write( &page->defin, 1 );
+    // also write the number of systems
+    int32 = wxINT32_SWAP_ON_BE( (int)page->m_systems.GetCount());
+    Write( &int32, 4 );
+    
+    return true;
+}
+
+bool MusBinOutput::WriteSystem( MusSystem *system )
+{
+    WriteObject( system );
+	int32 = wxINT32_SWAP_ON_BE( system->indent );	
+	Write( &int32, 4 );
+	int32 = wxINT32_SWAP_ON_BE( system->indentDroite ); 
+	Write( &int32, 4 );
+	int32 = wxINT32_SWAP_ON_BE( system->lrg_lign );
+    Write( &int32, 4 );
+    // also write the number of staves
+    int32 = wxINT32_SWAP_ON_BE( (int)system->m_staves.GetCount());
+    Write( &int32, 4 );    
+    
+    return true;
+}
+
+bool MusBinOutput::WriteLaidOutStaff( MusLaidOutStaff *laidOutStaff )
+{
+    WriteObject( laidOutStaff );
+	uint16 = wxUINT16_SWAP_ON_BE( laidOutStaff->noGrp );
+	Write( &uint16, 2 );
+	uint16 = wxUINT16_SWAP_ON_BE( laidOutStaff->totGrp );
+	Write( &uint16, 2 );
+	Write( &laidOutStaff->armTyp, 1 );
+	Write( &laidOutStaff->armNbr, 1 );
+	Write( &laidOutStaff->notAnc, 1 );
+	Write( &laidOutStaff->grise, 1 );
+	Write( &laidOutStaff->invisible, 1 );
+	uint16 = wxUINT16_SWAP_ON_BE( laidOutStaff->ecart );
+	Write( &uint16, 2 );
+	Write( &laidOutStaff->vertBarre, 1 );
+	Write( &laidOutStaff->brace, 1 );
+	Write( &laidOutStaff->staffSize, 1 );
+	Write( &laidOutStaff->portNbLine, 1 );
+	Write( &laidOutStaff->accol, 1 );
+	Write( &laidOutStaff->accessoire, 1 );
+    // also write the number of layers
+    int32 = wxINT32_SWAP_ON_BE( (int)laidOutStaff->m_layers.GetCount());
+    Write( &int32, 4 );    
+    
+    return true;
+}
+
+bool MusBinOutput::WriteLaidOutLayer( MusLaidOutLayer *laidOutLayer )
+{
+    WriteObject( laidOutLayer );
+	uint16 = wxUINT16_SWAP_ON_BE( laidOutLayer->voix ); 
+    Write( &uint16, 2 );
+    // also write the number of elements
+    int32 = wxINT32_SWAP_ON_BE( (int)laidOutLayer->m_elements.GetCount());
+    Write( &int32, 4 );    
+    
+    return true;
+}
+
+bool MusBinOutput::WriteLaidOutLayerElement( MusLaidOutLayerElement *laidOutLayerElement )
+{
+    WriteObject( laidOutLayerElement );
+	int32 = wxINT32_SWAP_ON_BE( laidOutLayerElement->m_yrel );
+	Write( &int32, 4 );
+	int32 = wxINT32_SWAP_ON_BE( laidOutLayerElement->m_xrel );
+    Write( &int32, 4 );
+    Write( laidOutLayerElement->m_layerElement->GetUuid(), 16 );
+    return true;
+}
+
+
+
+//----------------------------------------------------------------------------
+// MusBinInput
+//----------------------------------------------------------------------------
+
+MusBinInput::MusBinInput( MusDoc *doc, wxString filename ) :
+    MusFileInputStream( doc, filename )
+{
+	m_filename = filename;
+    m_nbDivs = 0;
+    m_nbScores = 0;
+    m_nbPartSets = 0;
+    m_nbParts = 0;
+    m_nbSections = 0;
+    m_nbMeasures = 0;
+    m_nbStaves = 0;
+    m_nbLayers = 0;
+    m_nbElements = 0;
+    m_nbLayouts = 0;
+    m_nbPages = 0;
+    m_nbSystems = 0;
+    m_nbLaidOutStaves = 0;
+    m_nbLaidOutLayers = 0;
+    m_nbLaidOutLayerElements = 0;
+}
+
+MusBinInput::~MusBinInput()
+{
+}
+
+bool MusBinInput::ImportFile( )
+{
+	if ( !IsOk() )
+	{
+		wxLogMessage(_("Cannot read file '%s'"), m_filename.c_str() );
+		return false;
+	}
+    m_doc->Load( this );
+    
+	return true;
+}
+
+void MusBinInput::ReadObject( MusObject *object )
+{  
+    Read( &m_uuid, 16 );
+	Read( &int32, 4 );
+	Read( m_className.GetWriteBuf( wxINT32_SWAP_ON_BE( int32 ) + 1 ) , wxINT32_SWAP_ON_BE( int32 ) + 1 );
+	m_className.UngetWriteBuf();  
+    
+    if ( object ) {
+        object->SetUuid( m_uuid );
+    }
+    
+    //uuid_string_t uuidStr;
+    //uuid_unparse( m_uuid, uuidStr );
+    //wxLogDebug("Reading %s %s", m_className.c_str(), uuidStr ); 
+    
+}
+
+bool MusBinInput::ReadDoc( MusDoc *doc )
+{
+    Read( &doc->m_env.m_landscape, 1);
+    Read( &doc->m_env.m_staffLineWidth, 1);
+    Read( &doc->m_env.m_stemWidth, 1);
+    Read( &doc->m_env.m_barlineWidth, 1);
+    Read( &doc->m_env.m_beamWidth, 1);
+    Read( &doc->m_env.m_beamWhiteWidth, 1);
+    Read( &doc->m_env.m_beamMaxSlope, 1);
+    Read( &doc->m_env.m_beamMinSlope, 1);
+    Read( &int32, 4 );
+    doc->m_env.m_paperWidth = wxINT32_SWAP_ON_BE( int32 );
+    Read( &int32, 4 );
+    doc->m_env.m_paperHeight = wxINT32_SWAP_ON_BE( int32 );
+    Read( &int16, 2 );
+    doc->m_env.m_topMargin = wxINT32_SWAP_ON_BE( int16 );
+    Read( &int16, 2 );
+    doc->m_env.m_leftMarginOddPage = wxINT32_SWAP_ON_BE( int16 );
+    Read( &int16, 2 );
+    doc->m_env.m_leftMarginEvenPage = wxINT32_SWAP_ON_BE( int16 );       
+    Read( &doc->m_env.m_smallStaffNum, 1);
+    Read( &doc->m_env.m_smallStaffDen, 1);
+    Read( &doc->m_env.m_graceNum, 1);
+    Read( &doc->m_env.m_graceDen, 1);
+    Read( &doc->m_env.m_stemCorrection, 1);
+    Read( &uint32, 4 );
+    doc->m_env.m_headerType = wxINT32_SWAP_ON_BE( uint32 );
+    Read( &int32, 4 );
+    doc->m_env.m_notationMode = wxINT32_SWAP_ON_BE( int32 );
+    // also read the number of divs and layouts
+    Read( &int32, 4 );
+    m_nbDivs = wxINT32_SWAP_ON_BE( int32 );
+    Read( &int32, 4 );
+    m_nbLayouts= wxINT32_SWAP_ON_BE( int32 );
+    
+    return true;
+}
+
+MusDiv* MusBinInput::ReadDiv( )
+{
+    if ( !m_nbDivs ) {
+        return NULL;
+    }
+    m_nbDivs--;     
+    
+    MusDiv *div = new MusDiv();
+    ReadObject( div );
+    // also read the number of scores and partSets
+    Read( &int32, 4 );
+    m_nbScores = wxINT32_SWAP_ON_BE( int32 );
+    Read( &int32, 4 );
+    m_nbPartSets= wxINT32_SWAP_ON_BE( int32 ); 
+    
+    return div;    
+}
+
+MusScore* MusBinInput::ReadScore( )
+{
+    if ( !m_nbScores ) {
+        return NULL;
+    }
+    m_nbScores--; 
+    
+    MusScore *score = new MusScore();
+    ReadObject( score );
+    // also read the number of sections
+    Read( &int32, 4 );
+    m_nbSections = wxINT32_SWAP_ON_BE( int32 );   
+    
+    return score;    
+}
+
+MusPartSet* MusBinInput::ReadPartSet( )
+{
+    if ( !m_nbPartSets ) {
+        return NULL;
+    }
+    m_nbPartSets--; 
+    
+    MusPartSet *parts = new MusPartSet();
+    ReadObject( parts );
+    // also read the number of parts
+    Read( &int32, 4 );
+    m_nbParts = wxINT32_SWAP_ON_BE( int32 );    
+    
+    return parts;    
+}
+
+MusPart* MusBinInput::ReadPart( )
+{
+    if ( !m_nbParts ) {
+        return NULL;
+    }
+    m_nbParts--;     
+    
+    MusPart *part = new MusPart();
+    ReadObject( part  );
+    // also read the number of sections
+    Read( &int32, 4 );
+    m_nbSections = wxINT32_SWAP_ON_BE( int32 );     
+    
+    return part;    
+}
+
+MusSection* MusBinInput::ReadSection( )
+{
+    if ( !m_nbSections ) {
+        return NULL;
+    }
+    m_nbSections--;   
+    
+    MusSection *section = new MusSection();
+    ReadObject( section );
+    // also read the number of measures and staves
+    Read( &int32, 4 );
+    m_nbMeasures = wxINT32_SWAP_ON_BE( int32 );  
+    Read( &int32, 4 );
+    m_nbStaves = wxINT32_SWAP_ON_BE( int32 );    
+    
+    return section;    
+}
+
+MusMeasure* MusBinInput::ReadMeasure( )
+{
+    if ( !m_nbMeasures ) {
+        return NULL;
+    }
+    m_nbMeasures--;  
+    
+    MusMeasure *measure = new MusMeasure();
+    ReadObject( measure );
+    // also read the number of staves
+    Read( &int32, 4 );
+    m_nbStaves = wxINT32_SWAP_ON_BE( int32 );     
+    
+    return measure;    
+}
+
+MusStaff* MusBinInput::ReadStaff( )
+{
+    if ( !m_nbStaves ) {
+        return NULL;
+    }
+    m_nbStaves--;  
+    
+    MusStaff *staff = new MusStaff();
+    ReadObject( staff );
+    // also read the number of layers
+    Read( &int32, 4 );
+    m_nbLayers = wxINT32_SWAP_ON_BE( int32 );     
+    
+    return staff;    
+}
+
+MusLayer* MusBinInput::ReadLayer( )
+{
+    if ( !m_nbLayers ) {
+        return NULL;
+    }
+    m_nbLayers--;   
+    
+    MusLayer *layer = new MusLayer();
+    ReadObject( layer );
+    // also read the number of elements
+    Read( &int32, 4 );
+    m_nbElements = wxINT32_SWAP_ON_BE( int32 );    
+    
+    return layer;    
+}
+
+MusLayerElement *MusBinInput::ReadLayerElement( )
+{
+    if ( !m_nbElements ) {
+        return NULL;
+    }
+    m_nbElements--;   
+    
+    MusLayerElement *element = NULL;
+    ReadObject( );
+    
+    if ( m_className == "MusBarline") {
+        MusBarline *barline = new MusBarline();
+        Read( &uc, 1 );
+        barline->m_barlineType = (BarlineType)uc;
+        Read( &barline->m_partialBarline, 1);
+        Read( &barline->m_onStaffOnly, 1 );
+        element = barline;
+    }
+    else if ( m_className == "MusClef") {
+        MusClef *clef = new MusClef();
+        Read( &uc, 1 );
+        clef->m_clefId = (ClefId)uc;
+        element = clef;
+    }
+    else if ( m_className == "MusMensur") {
+        MusMensur *mensur = new MusMensur();
+        Read( &mensur->m_dot, 1 );
+        Read( &uc, 1 );
+        mensur->m_meterSymb = (MeterSymb)uc;
+        Read( &int32, 4 );
+        mensur->m_num  = wxINT32_SWAP_ON_BE( int32 );
+        Read( &int32, 4 );
+        mensur->m_numBase  = wxINT32_SWAP_ON_BE( int32 );
+        Read( &mensur->m_reversed, 1 );
+        Read( &uc, 1 );
+        mensur->m_sign = (MensurSign)uc;  
+        Read( &mensur->m_slash, 1);
+        element = mensur;
+    }
+    else if ( m_className == "MusNeume") {
+        wxLogWarning( "Neumes are not saved in binary files" );
+        MusNeume *neume = new MusNeume();
+        element = neume;
+    }
+    else if ( m_className == "MusNeumeSymbol") {
+        wxLogWarning( "NeumeSymbols are not saved in binary files" );
+        MusNeumeSymbol *neumeSymbol = new MusNeumeSymbol();
+        element = neumeSymbol;
+    }
+    else if ( m_className == "MusNote") {
+        MusNote *note = new MusNote();
+        ReadDurationInterface( note );
+        ReadPitchInterface( note );
+        Read( &note->m_artic, 1 );
+        Read( &note->m_chord, 1 );
+        Read( &note->m_colored, 1 );
+        Read( &note->m_lig, 1 );
+        Read( &note->m_headshape, 1 );
+        Read( &note->m_ligObliqua, 1 );
+        Read( note->m_slur, 6 );
+        Read( &note->m_stemDir, 1 );
+        Read( &note->m_stemLen, 1 );
+        element = note;
+    }
+    else if ( m_className == "MusRest") {
+        MusRest *rest = new MusRest();
+        ReadDurationInterface( rest );
+        ReadPositionInterface( rest );
+        element = rest;
+    }
+    else if ( m_className == "MusSymbol") {
+        MusSymbol *symbol = new MusSymbol();
+        ReadPositionInterface( symbol );
+        Read( &uc, 1 );
+        symbol->m_type = (SymbolType)uc;
+        Read( &symbol->m_dot, 1 );
+        Read( &symbol->m_accid, 1 );
+        element = symbol;
+    }
+    // we have it, set the uuid we read
+    if ( element ) {
+        Read( &element->m_cueSize, 1);
+        Read( &int32, 4 );
+        element->m_hOffset = wxINT32_SWAP_ON_BE( int32 );
+        Read( &element->m_staffShift, 1 );
+        Read( &element->m_visible, 1 );
+        element->SetUuid( m_uuid );
+    }
+    else {
+        wxLogWarning( "Element class %s not found", m_className.c_str() );
+    }
+    return element;    
+}
+
+void MusBinInput::ReadDurationInterface( MusDurationInterface *element )
+{
+    Read( element->m_beam, 6 );
+    Read( &element->m_breakSec, 1 );
+    Read( &element->m_dots, 1);
+    Read( &int32, 4 );
+    element->m_dur = wxINT16_SWAP_ON_BE( int32 );
+    Read( &int32, 4 );
+    element->m_num = wxINT16_SWAP_ON_BE( int32 );
+    Read( &int32, 4 );
+    element->m_numBase = wxINT16_SWAP_ON_BE( int32 );
+    Read( element->m_tuplet, 6 );    
+}
+
+void MusBinInput::ReadPitchInterface( MusPitchInterface *element )
+{
+    Read( &element->m_oct, 1 );
+    Read( &element->m_pname, 1 );    
+}
+
+void MusBinInput::ReadPositionInterface( MusPositionInterface *element )
+{
+    Read( &element->m_oct, 1 );
+    Read( &element->m_pname, 1 );        
+}
+
+MusLayout* MusBinInput::ReadLayout( )
+{
+    if ( !m_nbLayouts ) {
+        return NULL;
+    }
+    m_nbLayouts--;   
+    
+    MusLayout *layout = new MusLayout( Raw );
+    ReadObject( layout );
+    // also read the number of pages
+    Read( &int32, 4 );
+    m_nbPages = wxINT32_SWAP_ON_BE( int32 );     
+    
+    return layout;
+}
+
+MusPage* MusBinInput::ReadPage( )
+{
+    if ( !m_nbPages ) {
+        return NULL;
+    }
+    m_nbPages--;   
+    
+    MusPage *page = new MusPage();
+    ReadObject( page );
+    Read( &page->defin, 1 );
+    // also read the number of systems
+    Read( &int32, 4 );
+    m_nbSystems = wxINT32_SWAP_ON_BE( int32 );   
+    
+    return page;
+}
+
+MusSystem* MusBinInput::ReadSystem( )
+{
+    if ( !m_nbSystems ) {
+        return NULL;
+    }
+    m_nbSystems--;     
+    
+    MusSystem *system = new MusSystem();
+    ReadObject( system );
+    Read( &int32, 4 );
+	system->indent = wxINT32_SWAP_ON_BE( int32 );	
+	Read( &int32, 4 );
+	system->indentDroite = wxINT32_SWAP_ON_BE( int32 ); 
+	Read( &int32, 4 );
+	system->lrg_lign = wxINT32_SWAP_ON_BE( int32 );
+    // also read the number of staves
+    Read( &int32, 4 );
+    m_nbLaidOutStaves = wxINT32_SWAP_ON_BE( int32 );    
+    
+    return system;
+}
+
+MusLaidOutStaff* MusBinInput::ReadLaidOutStaff( )
+{
+    if ( !m_nbLaidOutStaves ) {
+        return NULL;
+    }
+    m_nbLaidOutStaves--;   
+    
+    MusLaidOutStaff *laidOutStaff = new MusLaidOutStaff();
+    ReadObject( laidOutStaff );
+	Read( &uint16, 2 );
+	laidOutStaff->noGrp = wxUINT16_SWAP_ON_BE( uint16 );
+	Read( &uint16, 2 );
+	laidOutStaff->totGrp = wxUINT16_SWAP_ON_BE( uint16 );
+	Read( &laidOutStaff->armTyp, 1 );
+	Read( &laidOutStaff->armNbr, 1 );
+	Read( &laidOutStaff->notAnc, 1 );
+	Read( &laidOutStaff->grise, 1 );
+	Read( &laidOutStaff->invisible, 1 );
+	Read( &uint16, 2 );
+	laidOutStaff->ecart = wxUINT16_SWAP_ON_BE( uint16 );
+	Read( &laidOutStaff->vertBarre, 1 );
+	Read( &laidOutStaff->brace, 1 );
+	Read( &laidOutStaff->staffSize, 1 );
+	Read( &laidOutStaff->portNbLine, 1 );
+	Read( &laidOutStaff->accol, 1 );
+	Read( &laidOutStaff->accessoire, 1 );     
+    // also read the number of layers
+    Read( &int32, 4 );
+    m_nbLaidOutLayers = wxINT32_SWAP_ON_BE( int32 );    
+    
+    return laidOutStaff;
+}
+
+MusLaidOutLayer* MusBinInput::ReadLaidOutLayer( )
+{
+    if ( !m_nbLaidOutLayers ) {
+        return NULL;
+    }
+    m_nbLaidOutLayers--;   
+    
+    MusLaidOutLayer *laidOutLayer = new MusLaidOutLayer();
+    ReadObject( laidOutLayer );    
+	Read( &uint16, 2 );
+	laidOutLayer->voix = wxUINT16_SWAP_ON_BE( uint16 );        
+    // also read the number of elements
+    Read( &int32, 4 );
+    m_nbLaidOutLayerElements = wxINT32_SWAP_ON_BE( int32 );     
+    
+    return laidOutLayer;
+}
+
+MusLaidOutLayerElement* MusBinInput::ReadLaidOutLayerElement( )
+{
+    if ( !m_nbLaidOutLayerElements ) {
+        return NULL;
+    }
+    m_nbLaidOutLayerElements--;  
+    
+    MusLaidOutLayerElement *laidOutLayerElement = new MusLaidOutLayerElement();
+    ReadObject( laidOutLayerElement );
+	Read( &int32, 4 );
+	laidOutLayerElement->m_yrel = wxINT32_SWAP_ON_BE( int32 );
+	Read( &int32, 4 );
+	laidOutLayerElement->m_xrel = wxINT32_SWAP_ON_BE( int32 );
+    Read( &m_uuid, 16 ); // this is the uuid of the layerElement
+    // we need to find the layerElement it points to based on the uuid
+    MusLayerElement *element = NULL;
+    wxArrayPtrVoid params;
+	params.Add( m_uuid );
+    params.Add( &element );
+    MusLayerElementFunctor findUuid( &MusLayerElement::FindWithUuid );
+    m_doc->ProcessLogical( &findUuid, params );
+    
+    if (!element) {
+        uuid_string_t uuidStr;
+        uuid_unparse( m_uuid, uuidStr ); 
+        wxLogWarning( "Element %s %s not found in the logical tree", m_className.c_str(), uuidStr );
+        delete laidOutLayerElement;
+        return NULL;
+    }
+    laidOutLayerElement->m_layerElement = element;
+    
+    return laidOutLayerElement;
+}
+
+//----------------------------------------------------------------------------
+// MusBinInput_1_X
+//----------------------------------------------------------------------------
 
 #define BIN_SEPARATOR "#\376\364\365\376#"  // "#˛Ùı˛#"
 
@@ -55,11 +903,8 @@
 
 #define CUSTOS 11 // ax2 double check in 1.6
 
-//----------------------------------------------------------------------------
-// MusBinInput
-//----------------------------------------------------------------------------
 
-MusBinInput::MusBinInput( MusDoc *doc, wxString filename, int flag ) :
+MusBinInput_1_X::MusBinInput_1_X( MusDoc *doc, wxString filename, int flag ) :
 	MusFileInputStream( doc, filename )
 {
 	m_flag = flag;
@@ -70,11 +915,11 @@ MusBinInput::MusBinInput( MusDoc *doc, wxString filename, int flag ) :
 	m_logLayer = NULL;
 }
 
-MusBinInput::~MusBinInput()
+MusBinInput_1_X::~MusBinInput_1_X()
 {
 }
 
-bool MusBinInput::ImportFile( )
+bool MusBinInput_1_X::ImportFile( )
 {
 	int i;
 
@@ -111,7 +956,7 @@ bool MusBinInput::ImportFile( )
 	return true;
 }
 
-bool MusBinInput::ReadFileHeader( unsigned short *nbpage )
+bool MusBinInput_1_X::ReadFileHeader( unsigned short *nbpage )
 {
 	Read( &int32, 4 ); 
 	m_flag = wxINT32_SWAP_ON_BE( int32 ); 
@@ -166,7 +1011,7 @@ bool MusBinInput::ReadFileHeader( unsigned short *nbpage )
 }
 
 
-bool MusBinInput::ReadSeparator( )
+bool MusBinInput_1_X::ReadSeparator( )
 {
 	char buffer[7];
 
@@ -181,24 +1026,25 @@ bool MusBinInput::ReadSeparator( )
 		return true;
 }
 
-bool MusBinInput::ReadPage( MusPage *page )
+bool MusBinInput_1_X::ReadPage( MusPage *page )
 {
 	int j;
     
     int indent;
     int indentDroite;
-    int lrg_lign;   
+    int lrg_lign; 
+    char unused;
 
     if ( !ReadSeparator() )
 		return false;
 
 	Read( &int32, 4 );
-	page->npage = wxINT32_SWAP_ON_BE( int32 );
+	//page->npage = wxINT32_SWAP_ON_BE( int32 );
 	Read( &int16, 2 );
 	short nbrePortees = wxINT16_SWAP_ON_BE( int16 );
-    Read( &page->noMasqueFixe, 1 );	
-	Read( &page->noMasqueVar, 1 );
-	Read( &page->reserve, 1 );
+    Read( &unused, 1 );	
+	Read( &unused, 1 );
+	Read( &unused, 1 );
 	Read( &page->defin, 1 );
 	Read( &int32, 4 );
 	indent = wxINT32_SWAP_ON_BE( int32 );	
@@ -226,16 +1072,30 @@ bool MusBinInput::ReadPage( MusPage *page )
     for (j = 0; j < nbrePortees; j++) 
 	{
         // create or get the current MusStaff in the logical tree;
-        if (j >= (int)m_section->m_sectionElements.GetCount()) {
+        /*
+        // this creates one staff in the logical tree per staff on the page
+        if (j >= (int)m_section->m_staves.GetCount()) {
             MusStaff *staff = new MusStaff();
             MusLayer *layer = new MusLayer();
-            staff->AddStaffElement( layer );
-            m_section->AddSectionElement( staff );
+            staff->AddLayer( layer );
+            m_section->AddStaff( staff );
         }
         // we ignore voice numbers here
-        m_logStaff = dynamic_cast<MusStaff*> (&m_section->m_sectionElements[j]);
+        m_logStaff = dynamic_cast<MusStaff*> (&m_section->m_staves[j]);
         wxASSERT_MSG( m_logStaff, "MusStaff cannot be NULL" );
-        m_logLayer = dynamic_cast<MusLayer*> (&m_logStaff->m_staffElements[0]);
+        m_logLayer = dynamic_cast<MusLayer*> (&m_logStaff->m_layers[0]);
+        wxASSERT_MSG( m_logLayer, "MusLayer cannot be NULL" );
+        */
+        // the alternate option is to create one single staff in the logical tree
+        if ((int)m_section->m_staves.GetCount() == 0) {
+            MusStaff *staff = new MusStaff();
+            MusLayer *layer = new MusLayer();
+            staff->AddLayer( layer );
+            m_section->AddStaff( staff );
+        }
+        m_logStaff = dynamic_cast<MusStaff*> (&m_section->m_staves[0]);
+        wxASSERT_MSG( m_logStaff, "MusStaff cannot be NULL" );
+        m_logLayer = dynamic_cast<MusLayer*> (&m_logStaff->m_layers[0]);
         wxASSERT_MSG( m_logLayer, "MusLayer cannot be NULL" );
         
 		MusLaidOutStaff *staff = new MusLaidOutStaff( m_logStaff );
@@ -263,7 +1123,7 @@ bool MusBinInput::ReadPage( MusPage *page )
 	return true;
 
 }
-bool MusBinInput::ReadStaff( MusLaidOutStaff *staff, MusLaidOutLayer *layer )
+bool MusBinInput_1_X::ReadStaff( MusLaidOutStaff *staff, MusLaidOutLayer *layer )
 {
 	unsigned int k;
 
@@ -271,7 +1131,7 @@ bool MusBinInput::ReadStaff( MusLaidOutStaff *staff, MusLaidOutLayer *layer )
 	unsigned int nblement  = wxUINT32_SWAP_ON_BE( uint32 );
 	Read( &uint16, 2 );
 	layer->voix = wxUINT16_SWAP_ON_BE( uint16 );
-	wxLogDebug("voix: %d", layer->voix);
+	//wxLogDebug("voix: %d", layer->voix);
 	Read( &uint16, 2 );
 	staff->noGrp = wxUINT16_SWAP_ON_BE( uint16 );
 	Read( &uint16, 2 );
@@ -298,7 +1158,7 @@ bool MusBinInput::ReadStaff( MusLaidOutStaff *staff, MusLaidOutLayer *layer )
 	Read( &staff->accol, 1 );
 	Read( &staff->accessoire, 1 );
 	Read( &uint16, 2 );
-	staff->reserve = wxUINT16_SWAP_ON_BE( uint16 );
+	//staff->reserve = wxUINT16_SWAP_ON_BE( uint16 ); // ignored
 	
 	unsigned char c;
 	for ( k = 0; k < nblement; k++ )
@@ -341,7 +1201,7 @@ bool MusBinInput::ReadStaff( MusLaidOutStaff *staff, MusLaidOutLayer *layer )
 }
 
 
-bool MusBinInput::ReadSymbol( MusLaidOutLayer *layer, bool isLyric )
+bool MusBinInput_1_X::ReadSymbol( MusLaidOutLayer *layer, bool isLyric )
 {
 	ReadElementAttr(  );
 	Read( &flag , 1 );
@@ -428,7 +1288,8 @@ bool MusBinInput::ReadSymbol( MusLaidOutLayer *layer, bool isLyric )
     }
     
     if ( layer_element ) {
-        MusLaidOutLayerElement *element = new MusLaidOutLayerElement( layer_element ); // memory leak! - layer_element will not be deleted
+        m_logLayer->AddLayerElement( layer_element );
+        MusLaidOutLayerElement *element = new MusLaidOutLayerElement( layer_element );
         element->m_xrel = xrel;
         layer->AddElement( element );
     }
@@ -441,7 +1302,7 @@ bool MusBinInput::ReadSymbol( MusLaidOutLayer *layer, bool isLyric )
 	return true;
 }
 
-bool MusBinInput::ReadNote( MusLaidOutLayer *layer )
+bool MusBinInput_1_X::ReadNote( MusLaidOutLayer *layer )
 {
 	ReadElementAttr( );
 	Read( &sil, 1 );
@@ -505,6 +1366,7 @@ bool MusBinInput::ReadNote( MusLaidOutLayer *layer )
     
     // if we got something, add it to the LaidOutLayer
     if ( layer_element ) {
+        m_logLayer->AddLayerElement( layer_element );
         MusLaidOutLayerElement *element = new MusLaidOutLayerElement( layer_element );
         element->m_xrel = xrel;
         layer->AddElement( element );
@@ -522,13 +1384,13 @@ bool MusBinInput::ReadNote( MusLaidOutLayer *layer )
 	return true;
 }
 
-bool MusBinInput::ReadNeume( )
+bool MusBinInput_1_X::ReadNeume( )
 {
     // ...
 	return true;
 }
 
-bool MusBinInput::ReadElementAttr( )
+bool MusBinInput_1_X::ReadElementAttr( )
 {
 	Read( &liaison , 1 );
 	Read( &dliai , 1 );
@@ -565,7 +1427,7 @@ bool MusBinInput::ReadElementAttr( )
 }
 
 
-bool MusBinInput::ReadLyric( )
+bool MusBinInput_1_X::ReadLyric( )
 {
 	Read( &int32, 4 );
     wxString to_be_ignored;
@@ -575,7 +1437,7 @@ bool MusBinInput::ReadLyric( )
 }
 
 /*
-bool MusBinInput::ReadPagination( MusPagination *pagination )
+bool MusBinInput_1_X::ReadPagination( MusPagination *pagination )
 {
 	Read( &int16, 2 );
 	pagination->numeroInitial = wxINT16_SWAP_ON_BE( int16 );
@@ -588,7 +1450,7 @@ bool MusBinInput::ReadPagination( MusPagination *pagination )
 	return true;
 }
 
-bool MusBinInput::ReadHeaderFooter( MusHeaderFooter *headerfooter)
+bool MusBinInput_1_X::ReadHeaderFooter( MusHeaderFooter *headerfooter)
 {
 	char buffer[HEADER_FOOTER_TEXT + 1];
 	Read( buffer, HEADER_FOOTER_TEXT );

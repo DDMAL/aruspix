@@ -9,6 +9,7 @@
 // For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"
 
+#include "musio.h"
 #include "muslaidoutstaff.h"
 #include "muslaidoutlayer.h"
 
@@ -45,7 +46,6 @@ MusLaidOutStaff::MusLaidOutStaff( const MusLaidOutStaff& staff )
 	portNbLine = staff.portNbLine;
 	accol = staff.accol;
 	accessoire = staff.accessoire;
-	reserve = staff.reserve;
 	yrel = staff.yrel;
 	xrel = staff.xrel;
 
@@ -83,7 +83,6 @@ void MusLaidOutStaff::Clear()
 	portNbLine = 5;
 	accol = 0;
 	accessoire = 0;
-	reserve = 0;
 	yrel = 0;
 	xrel = 0;
     
@@ -91,6 +90,29 @@ void MusLaidOutStaff::Clear()
     //beamListPremier = NULL;
 }
 
+void MusLaidOutStaff::Save( wxArrayPtrVoid params )
+{
+    // param 0: output stream
+    MusFileOutputStream *output = (MusFileOutputStream*)params[0];         
+    output->WriteLaidOutStaff( this );
+    
+    // save layers
+    MusLaidOutLayerFunctor layer( &MusLaidOutLayer::Save );
+    this->Process( &layer, params );
+}
+
+void MusLaidOutStaff::Load( wxArrayPtrVoid params )
+{
+    // param 0: output stream
+    MusFileInputStream *input = (MusFileInputStream*)params[0];       
+    
+    // load layers
+    MusLaidOutLayer *layer;
+    while ( (layer = input->ReadLaidOutLayer()) ) {
+        layer->Load( params );
+        this->AddLayer( layer );
+    }
+}
 
 void MusLaidOutStaff::AddLayer( MusLaidOutLayer *layer )
 {
@@ -121,7 +143,6 @@ void MusLaidOutStaff::CopyAttributes( MusLaidOutStaff *nstaff )
 	nstaff->portNbLine = portNbLine;
 	nstaff->accol = accol;
 	nstaff->accessoire = accessoire;
-	nstaff->reserve = reserve;
 	nstaff->yrel = yrel;
 	nstaff->xrel = xrel;
 }
@@ -176,8 +197,12 @@ MusLaidOutLayer *MusLaidOutStaff::GetPrevious( MusLaidOutLayer *layer )
 
 // functors for MusLaidOutStaff
 
-void MusLaidOutStaff::Process(MusLayoutFunctor *functor, wxArrayPtrVoid params )
+void MusLaidOutStaff::Process(MusFunctor *functor, wxArrayPtrVoid params )
 {
+    if (functor->m_success) {
+        return;
+    }
+    
     MusLaidOutLayerFunctor *layerFunctor = dynamic_cast<MusLaidOutLayerFunctor*>(functor);
     MusLaidOutLayer *layer;
 	int i;

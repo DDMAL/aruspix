@@ -118,6 +118,8 @@ public:
     MusNeume(MeiElement &meielement);
     virtual ~MusNeume() {}
     
+    virtual wxString MusClassName( ) { return "MusNeume"; };
+    
     void setType(wxString type);
     void setType(NeumeType type);
     NeumeType getType();
@@ -143,7 +145,11 @@ private:
 
     NeumeOrnament ornament;
     NeumeType m_type;
+    /**
+     * A member reamaining from before 2.0
+     */
     MeiElement *m_meiref;
+    
 
 public:
     vector<MusNeumeElement> m_pitches; // LP: made it public for drawing from MusRC

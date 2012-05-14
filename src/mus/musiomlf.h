@@ -13,8 +13,9 @@
 #endif
 #include "wx/wfstream.h"
 
-#include "musdoc.h"
+#include "musio.h"
 #include "musmlfdic.h"
+#include "muslayer.h"
 
 class ImPage;
 class AxProgressDlg;
@@ -136,7 +137,7 @@ public:
     MusMLFInput( MusDoc *file, wxString filename );
     virtual ~MusMLFInput();
     
-    bool ReadPage( MusPage *page , bool firstLineMLF, ImPage *imPage = NULL );
+    bool ReadPage( MusPage *page, MusLayer *logLayer, bool firstLineMLF, ImPage *imPage = NULL );
     bool ReadLabel( MusLaidOutLayer *layer, int offset = 0 );
 	// specific
     /**
@@ -159,6 +160,7 @@ public:
 protected:
     // page, staff index
 	int m_staff_i, m_staff_label;
+    MusLayer *m_logLayer; // the layer to which logical elements will be added. Currently only one
 
 private:
     };
