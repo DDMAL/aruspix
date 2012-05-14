@@ -27,6 +27,7 @@
 #include "mus/musiomlf.h"
 
 // experimental
+#include "mus/musiopae.h"
 #include "mus/musiomei.h"
 #include "mus/mussvgdc.h"
 
@@ -627,21 +628,24 @@ void EdtEnv::OnOpenMEI( wxCommandEvent &event )
 
     if ( !this->ResetFile( ) )
         return;
-
-    wxString filename = wxFileSelector( _("Import MEI"), wxGetApp().m_lastDir, _T(""), _T(""), "MEI Files|*.mei|XML Files|*.xml", wxFD_OPEN);
+    
+    //wxString filename = wxFileSelector( _("Import MEI"), wxGetApp().m_lastDir, _T(""), _T(""), "MEI Files|*.mei|XML Files|*.xml", wxFD_OPEN);
+    wxString filename = wxFileSelector( _("Import MEI"), wxGetApp().m_lastDir, _T(""), _T(""), "PAE Files|*.pae|All Files|*.*", wxFD_OPEN);
     if ( filename.IsEmpty() )
         return;
     wxGetApp().m_lastDir = wxPathOnly( filename );
     
     m_edtFilePtr->New();
-    m_edtFilePtr->m_musDocPtr->m_env.m_notationMode = MUS_NEUMATIC_MODE; //temporary for liber usualis project
-    
-    MusMeiInput meiinput( m_edtFilePtr->m_musDocPtr, filename );
+    //m_edtFilePtr->m_musDocPtr->m_env.m_notationMode = MUS_NEUMATIC_MODE; //temporary for liber usualis project
+
+    //MusMeiInput meiinput( m_edtFilePtr->m_musDocPtr, filename );
+    MusPaeInput meiinput( m_edtFilePtr->m_musDocPtr, filename );
 	if ( !meiinput.ImportFile() )
 		return;
 	
 	MusLayout *layout = new MusLayout( Raw );
 	layout->Realize(m_edtFilePtr->m_musDocPtr->m_divs[0].m_score);
+    layout->SetDoc( m_edtFilePtr->m_musDocPtr );
 	m_edtFilePtr->m_musDocPtr->m_layouts.Add(layout);
 	
 	m_musViewPtr->SetEditorMode(MUS_EDITOR_EDIT);

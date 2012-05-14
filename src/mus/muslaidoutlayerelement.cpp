@@ -32,6 +32,8 @@ MusLaidOutLayerElement::MusLaidOutLayerElement():
 {
     m_layerElement = NULL;
     m_layer = NULL;
+    m_xrel = 0;
+    m_yrel = 0;
 }
 
 MusLaidOutLayerElement::MusLaidOutLayerElement( MusLayerElement *element ):

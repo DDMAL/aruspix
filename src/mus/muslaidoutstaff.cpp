@@ -71,7 +71,7 @@ void MusLaidOutStaff::Clear()
 	//noLigne = 0; // ax2
 	armTyp = 0;
 	armNbr = 0;
-	notAnc = true;
+	notAnc = false;
 	grise = false;
 	invisible = false;
 	ecart = 10;

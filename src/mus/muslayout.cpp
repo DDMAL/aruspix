@@ -147,43 +147,40 @@ void MusLayout::Realize( MusScore *score )
 	
 	MusPage *page = new MusPage( );
 	MusSystem *system = new MusSystem();
-    /*
+    
 	
 	int i, j, k, l, m;
 	for (i = 0; i < (int)score->m_sections.GetCount(); i++) {
 		MusSection *section = &score->m_sections[i];
-		for (j = 0; j < (int)section->m_sectionElements.GetCount(); j++) {
-			MusSectionInterface *sectionElement = &section->m_sectionElements[j];
-			if (dynamic_cast<MusMeasure*> (sectionElement)) {
-				MusMeasure* measure = dynamic_cast<MusMeasure*>(sectionElement);
-				for (k = 0; k < (int)measure->m_measureElements.GetCount(); k++) {
-					if (dynamic_cast<MusStaff*> (&measure->m_measureElements[k])) {
-						MusStaff *staff = dynamic_cast<MusStaff*> (&measure->m_measureElements[k]);
-						MusLaidOutStaff *laidOutStaff;
-						if (k >= (int)system->m_staves.GetCount()) {
-							system->AddStaff( new MusLaidOutStaff( staff ));
-						}
-						laidOutStaff = &system->m_staves[k];
-						for (l = 0; l < (int)staff->m_staffElements.GetCount(); l++) {
-							if (dynamic_cast<MusLayer*> (&staff->m_staffElements[l])) {
-								MusLayer *layer = dynamic_cast<MusLayer*> (&staff->m_staffElements[l]);
-								MusLaidOutLayer *laidOutLayer;
-								if (l >= laidOutStaff->GetLayerCount()) {
-									laidOutStaff->AddLayer( new MusLaidOutLayer( layer ));
-								}
-								laidOutLayer = &laidOutStaff->m_layers[l];
-								for (m = 0; m < (int)layer->m_layerElements.GetCount(); m++) {
-									MusLaidOutLayerElement *element = new MusLaidOutLayerElement( &layer->m_layerElements[m]);
-									laidOutLayer->AddElement( element );
-								}
-							}	
-						}			
-					}
+        // measured music
+		for (j = 0; j < (int)section->m_measures.GetCount(); j++) {
+			MusMeasure *measure = &section->m_measures[j];
+            for (k = 0; k < (int)measure->m_staves.GetCount(); k++) {
+                MusStaff *staff = &measure->m_staves[k];
+                MusLaidOutStaff *laidOutStaff;
+                if (k >= (int)system->m_staves.GetCount()) {
+                    system->AddStaff( new MusLaidOutStaff( staff ));
+                }
+                laidOutStaff = &system->m_staves[k];
+                for (l = 0; l < (int)staff->m_layers.GetCount(); l++) {
+                    MusLayer *layer = &staff->m_layers[l];
+                    MusLaidOutLayer *laidOutLayer;
+                    int x = 0;
+                    if (l >= laidOutStaff->GetLayerCount()) {
+                        laidOutStaff->AddLayer( new MusLaidOutLayer( layer ));
+                    }
+                    laidOutLayer = &laidOutStaff->m_layers[l];
+                    for (m = 0; m < (int)layer->m_layerElements.GetCount(); m++) {
+                        MusLaidOutLayerElement *element = new MusLaidOutLayerElement( &layer->m_layerElements[m] );
+                        element->m_xrel = x;
+                        x += 40;
+                        laidOutLayer->AddElement( element );
+                        wxLogDebug("element %d added", m);
+                    }			
 				}
 			}
 		}
-	}
-    */
+    }
 
 	page->AddSystem( system );
 	this->AddPage( page );
