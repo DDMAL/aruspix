@@ -35,7 +35,7 @@
 #include "mus/musdoc.h"
 #include "mus/musiowwg.h"
 //#include "mus/musiocmme.h" // ax2
-//#include "mus/musiomei2.h" // ax2
+#include "mus/musiomei.h" // ax2
 #include "mus/mustoolpanel.h"
 
 // statics
@@ -1778,35 +1778,18 @@ void RecEnv::OnOpenMEI( wxCommandEvent &event )
 
 void RecEnv::OnSaveMEI( wxCommandEvent &event )
 {
-/*
+
 	if (  !m_musPanelPtr || !m_recFilePtr )
         return;
-	
-    string docname = m_recFilePtr->m_musDocPtr->GetMeiDocument()->getDocName();
-    wxString wxdocname = docname.c_str();
-    wxString name, ext;
-    wxFileName::SplitPath(wxdocname, NULL, &name, &ext);
-    wxString savename = name + "." + ext;
-	
-    wxString filename = wxFileSelector( _("Export MEI"), wxGetApp().m_lastDir, savename, _T(""), "MEI Files|*.mei|XML Files|*.xml", wxFD_SAVE);
-    if ( filename.IsEmpty() )
+    
+    wxString filename;
+    filename = wxFileSelector( _("Save"), wxGetApp().m_lastDirAX0_out, m_recFilePtr->m_shortname + ".mei", "wwg", "MEI Files|*.mei|XML Files|*.xml", wxFD_SAVE);
+    if (filename.IsEmpty())
         return;
-    if (wxFileExists(filename)) {
-        wxString message = _("File aldready exists. Overwrite?");
-        wxMessageDialog dialog ( m_musViewPtr, message, _("File exits"), wxYES_NO|wxICON_QUESTION );
-        if ( dialog.ShowModal () == wxID_YES ) {
-            MusMeiOutput *mei_output = new MusMeiOutput( m_recFilePtr->m_musDocPtr, filename );
-            mei_output->ExportFile();
-            delete mei_output;
-        }
-    } else {
-        MusMeiOutput *mei_output = new MusMeiOutput( m_recFilePtr->m_musDocPtr, filename );
-        mei_output->ExportFile();
-        delete mei_output;
-	}
-    wxGetApp().m_lastDirAX0_out = wxPathOnly( filename );
-*/
-  wxLogMessage("Fix me"); // ax2
+    
+    MusMeiOutput *mei_output = new MusMeiOutput( m_recFilePtr->m_musDocPtr, filename );
+    mei_output->ExportFile();
+    delete mei_output;
 }
 
 
