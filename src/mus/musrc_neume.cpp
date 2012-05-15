@@ -802,7 +802,7 @@ void MusRC::DrawNeumeSymbol( MusDC *dc, MusLaidOutLayerElement *element, MusLaid
 	
     m_currentColour = AxBLACK;
 	
-    dc->EndGraphic();
+    dc->EndGraphic(staff);//RZ
 	
 	return;
 }

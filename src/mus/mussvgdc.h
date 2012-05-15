@@ -90,7 +90,7 @@ public:
     // 
     virtual void StartGraphic( MusLayoutObject *object, wxString gClass, wxString gId );
     
-    virtual void EndGraphic();
+    virtual void EndGraphic( MusLayoutObject *object );
     
     virtual void StartPage();
     

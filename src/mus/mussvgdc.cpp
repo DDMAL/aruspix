@@ -413,7 +413,7 @@ void MusSvgDC::StartGraphic( MusLayoutObject *object, wxString gClass, wxString 
 }
   
       
-void MusSvgDC::EndGraphic() 
+void MusSvgDC::EndGraphic(MusLayoutObject *object) 
 {
     m_graphics--;
     m_indents--;
