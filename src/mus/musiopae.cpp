@@ -312,8 +312,7 @@ void MusPaeInput::convertPlainAndEasyToKern(std::istream &infile, std::ostream &
     if (strlen(hum2abc)) {
         out << "!!!hum2abc:" << hum2abc << "\n";
     }
-        
-    
+
     m_score->AddSection(m_section);
     m_div->AddScore(m_score);
     m_doc->AddDiv(m_div);
@@ -325,20 +324,20 @@ void MusPaeInput::convertPlainAndEasyToKern(std::istream &infile, std::ostream &
 //
 // getOctave --
 //
-
+#define BASE_OCT 4
 int MusPaeInput::getOctave (const char* incipit, char *octave, int index ) {
     
     int i = index;
     int length = strlen(incipit);
     if (incipit[i] == '\'') {
-        *octave = 1;
+        *octave = BASE_OCT;
         while ((i+1 < length) && (incipit[i+1] == '\'')) {
             (*octave)++;
             i++;
         }
     } else if (incipit[i] == ',') {
         //negative octave
-        *octave = -1;
+        *octave = -BASE_OCT;
         while ((i+1 < length) && (incipit[i+1] == ',')) {
             (*octave)--;
             i++;
@@ -362,8 +361,8 @@ int MusPaeInput::getOctave (const char* incipit, char *octave, int index ) {
         default:  *octave = 4;
     }
     */
-    *octave = 4;
-    
+
+    std::cout << "Occtave " << (int)*octave << std::endl;
     return i - index;
 }
 
