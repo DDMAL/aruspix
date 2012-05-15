@@ -12,6 +12,9 @@
 #include "musrc.h"
 #include "muslayout.h"
 
+#include "wx/arrimpl.cpp"
+WX_DEFINE_OBJARRAY( ArrayOfMusLayoutObjects );
+
 //----------------------------------------------------------------------------
 // MusObject
 //----------------------------------------------------------------------------

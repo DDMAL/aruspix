@@ -88,7 +88,7 @@ public:
     virtual void DrawSpline(int n, MusPoint points[]);
     
     // 
-    virtual void StartGraphic( wxString gClass, wxString gId );
+    virtual void StartGraphic( MusLayoutObject *object, wxString gClass, wxString gId );
     
     virtual void EndGraphic();
     

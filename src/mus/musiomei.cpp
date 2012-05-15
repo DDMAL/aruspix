@@ -307,7 +307,7 @@ void MusMeiOutput::WriteMeiMensur( Mensur *meiMensur, MusMensur *mensur )
         meiMensur->m_MensurVis.setSign( MensurSignToStr( mensur->m_sign ));
     }
     if ( mensur->m_dot ) {
-        meiMensur->m_MensurVis.setSign("true");
+        meiMensur->m_MensurVis.setDot("true");
     }
     if ( mensur->m_slash ) {
         meiMensur->m_Slashcount.setSlash("1"); // only one slash for now

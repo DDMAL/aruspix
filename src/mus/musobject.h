@@ -62,6 +62,10 @@ WX_DECLARE_OBJARRAY( MusLaidOutLayer, ArrayOfMusLaidOutLayers );
 class MusLaidOutLayerElement;
 WX_DECLARE_OBJARRAY( MusLaidOutLayerElement, ArrayOfMusLaidOutLayerElements );
 
+// Generic
+class MusLayoutObject;
+WX_DECLARE_OBJARRAY( MusLayoutObject, ArrayOfMusLayoutObjects );
+
 
 //----------------------------------------------------------------------------
 // MusObject
@@ -135,11 +139,16 @@ public:
     
     void SetLayout( wxArrayPtrVoid params );
 	bool Check() { return true; }; // { return m_ok; };
+    void UpdateContentBB( /*params*/ ) {}; // to implement
+    void UpdateOwnBB( /*params*/ ) {}; // idem
+    
 
 private:
     
 protected:
 	MusLayout *m_layout;
+    // int m_contentBB_x, ... add and initialize
+    // int m_ownBB_x, ... add and initialize                              
 
 public:
     

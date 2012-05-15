@@ -86,7 +86,7 @@ void MusRC::DrawDurationElement( MusDC *dc, MusLaidOutLayerElement *element, Mus
         //if ( !m_lyricMode && BelongsToTheNote( m_currentElement ) ) // the current element is a lyric that belongs to the note we are drawing
         //    m_currentColour = AxCYAN;
             
-        dc->StartGraphic( "note", wxString::Format("s_%d_%d_%d", staff->GetId(), layer->voix, element->GetId() ) );
+        dc->StartGraphic( element, "note", wxString::Format("s_%d_%d_%d", staff->GetId(), layer->voix, element->GetId() ) );
         element->m_yrel = CalculatePitchPosY( staff, note->m_pname, layer->GetClefOffset( element ), oct );
         
         if (!note->m_chord) // && (!pelement->ElemInvisible || illumine))
@@ -102,7 +102,7 @@ void MusRC::DrawDurationElement( MusDC *dc, MusLaidOutLayerElement *element, Mus
         MusRest *rest = dynamic_cast<MusRest*>(element->m_layerElement);
         int oct = rest->m_oct - 4;
 
-        dc->StartGraphic( "rest", wxString::Format("s_%d_%d_%d", staff->GetId(), layer->voix, element->GetId()) );
+        dc->StartGraphic( element, "rest", wxString::Format("s_%d_%d_%d", staff->GetId(), layer->voix, element->GetId()) );
         //if (!transp_sil)
 		//	pnote->code = getSilencePitch (pelement);
         element->m_yrel = CalculatePitchPosY( staff, rest->m_pname, layer->GetClefOffset( element ), oct);
@@ -114,8 +114,9 @@ void MusRC::DrawDurationElement( MusDC *dc, MusLaidOutLayerElement *element, Mus
     
     // draw the beams
     if (layer->beamListPremier && durElement->m_beam[0] & BEAM_TERMINAL) // only one beam ([0] for now
-    {
-        dc->StartGraphic( "beam", wxString::Format("s_%d_%d_%d", staff->GetId(), layer->voix, element->GetId()) );
+    {   
+        // we will need to change the to a MusBeam object once we have one 
+        dc->StartGraphic( element, "beam", wxString::Format("s_%d_%d_%d", staff->GetId(), layer->voix, element->GetId()) );
         DrawBeam( dc, layer, staff );
         dc->EndGraphic();
     }
@@ -848,7 +849,7 @@ void MusRC::DrawBarline( MusDC *dc, MusLaidOutLayerElement *element, MusLaidOutL
     MusBarline *barline = dynamic_cast<MusBarline*>(element->m_layerElement);
     int x = element->m_xrel + barline->m_hOffset;
 
-    dc->StartGraphic( "barline", wxString::Format("s_%d_%d_%d", staff->GetId(), layer->voix, element->GetId()) );
+    dc->StartGraphic( element, "barline", wxString::Format("s_%d_%d_%d", staff->GetId(), layer->voix, element->GetId()) );
     
     if (barline->m_barlineType==BARLINE_SINGLE)			
     {	
@@ -874,7 +875,7 @@ void MusRC::DrawClef( MusDC *dc, MusLaidOutLayerElement *element, MusLaidOutLaye
     
     MusClef *clef = dynamic_cast<MusClef*>(element->m_layerElement);
 
-    dc->StartGraphic( "clef", wxString::Format("s_%d_%d_%d", staff->GetId(), layer->voix, element->GetId()) );
+    dc->StartGraphic( element, "clef", wxString::Format("s_%d_%d_%d", staff->GetId(), layer->voix, element->GetId()) );
 	
 	int b = (staff->yrel- m_layout->m_staffSize[ staff->staffSize ]);
 	int a = element->m_xrel;
@@ -942,7 +943,7 @@ void MusRC::DrawMensur( MusDC *dc, MusLaidOutLayerElement *element, MusLaidOutLa
     
     MusMensur *mensur = dynamic_cast<MusMensur*>(element->m_layerElement);
  
-    dc->StartGraphic( "mensur", wxString::Format("s_%d_%d_%d", staff->GetId(), layer->voix, element->GetId()) );
+    dc->StartGraphic( element, "mensur", wxString::Format("s_%d_%d_%d", staff->GetId(), layer->voix, element->GetId()) );
 	
 	int x, yp;
 	float mDen=1.0, mNum=1.0;
@@ -1186,7 +1187,7 @@ void MusRC::DrawSymbolAccid( MusDC *dc, MusLaidOutLayerElement *element, MusLaid
     wxASSERT_MSG( dynamic_cast<MusSymbol*>(element->m_layerElement), "Element must be a MusSymbol" );
     
     MusSymbol *accid = dynamic_cast<MusSymbol*>(element->m_layerElement);
-    dc->StartGraphic( "accid", wxString::Format("accid_%d_%d_%d", staff->GetId(), layer->voix, element->GetId()) );
+    dc->StartGraphic( element, "accid", wxString::Format("accid_%d_%d_%d", staff->GetId(), layer->voix, element->GetId()) );
     
     int x = element->m_xrel + accid->m_hOffset;
     int y = element->m_yrel + staff->yrel;
@@ -1220,7 +1221,7 @@ void MusRC::DrawSymbolCustos( MusDC *dc, MusLaidOutLayerElement *element, MusLai
     wxASSERT_MSG( dynamic_cast<MusSymbol*>(element->m_layerElement), "Element must be a MusSymbol" );
     
     MusSymbol *custos = dynamic_cast<MusSymbol*>(element->m_layerElement);
-    dc->StartGraphic( "custos", wxString::Format("custos_%d_%d_%d", staff->GetId(), layer->voix, element->GetId()) );
+    dc->StartGraphic( element, "custos", wxString::Format("custos_%d_%d_%d", staff->GetId(), layer->voix, element->GetId()) );
 
     int x = element->m_xrel + custos->m_hOffset;
     int y = element->m_yrel + staff->yrel;
@@ -1239,7 +1240,7 @@ void MusRC::DrawSymbolDot( MusDC *dc, MusLaidOutLayerElement *element, MusLaidOu
     wxASSERT_MSG( dynamic_cast<MusSymbol*>(element->m_layerElement), "Element must be a MusSymbol" );
     
     MusSymbol *dot = dynamic_cast<MusSymbol*>(element->m_layerElement);
-    dc->StartGraphic( "dot", wxString::Format("dot_%d_%d_%d", staff->GetId(), layer->voix, element->GetId()) );
+    dc->StartGraphic( element, "dot", wxString::Format("dot_%d_%d_%d", staff->GetId(), layer->voix, element->GetId()) );
     
     int x = element->m_xrel + dot->m_hOffset;
     int y = element->m_yrel;

@@ -769,7 +769,7 @@ void MusRC::DrawNeumeSymbol( MusDC *dc, MusLaidOutLayerElement *element, MusLaid
     wxASSERT_MSG( dynamic_cast<MusNeumeSymbol*>(element->m_layerElement), "Element must be a MusNeumeSymbol" );	
     MusNeumeSymbol *symbol = dynamic_cast<MusNeumeSymbol*>(element->m_layerElement);   
 	
-    dc->StartGraphic( "neumeSymbol", wxString::Format("neumeSymbol_%d_%d_%d", staff->GetId(), layer->voix, element->GetId() ) );
+    dc->StartGraphic( element, "neumeSymbol", wxString::Format("neumeSymbol_%d_%d_%d", staff->GetId(), layer->voix, element->GetId() ) );
 	
 	int x = element->m_xrel + symbol->m_hOffset;
 	

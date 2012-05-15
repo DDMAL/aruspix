@@ -14,6 +14,7 @@
 #endif
 
 #include "musdc.h"
+#include "musobject.h"
 
 //----------------------------------------------------------------------------
 // MusBBoxDC
@@ -22,7 +23,11 @@
 /** 
  * This class calculates the bouding box of the object that are drawn.
  * It can be used when doing the layout of the object in order to manage object spacing.
- * Under devlopment
+ * The drawing primitives do not draw anything but update the bounding box values of the 
+ * layout objects currently drawn. The layout objects store their own bounding box and a
+ * bounding box of their content. The own bouding box is updated only for the object being
+ * drawn (the top one on the stack). The content bounding box is updated for all objects
+ * the stack
  */
 class MusBBoxDC: public MusDC
 {
@@ -86,7 +91,7 @@ public:
     virtual void DrawSpline(int n, MusPoint points[]);
     
     // 
-    virtual void StartGraphic( wxString gClass, wxString gId );
+    virtual void StartGraphic( MusLayoutObject *object, wxString gClass, wxString gId );
     
     virtual void EndGraphic();
     
@@ -99,6 +104,11 @@ private:
     int m_width, m_height;
     int m_originX, m_originY;
     double m_userScaleX, m_userScaleY;
+    
+    /**
+     * The array containing the object for which the bounding box needs to be updated
+     */ 
+    ArrayOfMusLayoutObjects m_objects;
    
     //
     int m_penWidth;
