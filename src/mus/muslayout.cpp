@@ -148,6 +148,7 @@ void MusLayout::Realize( MusScore *score )
 	MusPage *page = new MusPage( );
 	MusSystem *system = new MusSystem();
     
+    int x = 0; // hardcoded spacing
 	
 	int i, j, k, l, m;
 	for (i = 0; i < (int)score->m_sections.GetCount(); i++) {
@@ -165,7 +166,6 @@ void MusLayout::Realize( MusScore *score )
                 for (l = 0; l < (int)staff->m_layers.GetCount(); l++) {
                     MusLayer *layer = &staff->m_layers[l];
                     MusLaidOutLayer *laidOutLayer;
-                    int x = 0;
                     if (l >= laidOutStaff->GetLayerCount()) {
                         laidOutStaff->AddLayer( new MusLaidOutLayer( layer ));
                     }

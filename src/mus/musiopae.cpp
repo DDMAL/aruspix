@@ -312,10 +312,8 @@ void MusPaeInput::convertPlainAndEasyToKern(std::istream &infile, std::ostream &
     if (strlen(hum2abc)) {
         out << "!!!hum2abc:" << hum2abc << "\n";
     }
+        
     
-    wxLogError(_("Bonga"));
-    
-    m_section->AddMeasure(m_measure);
     m_score->AddSection(m_section);
     m_div->AddScore(m_score);
     m_doc->AddDiv(m_div);
@@ -348,6 +346,7 @@ int MusPaeInput::getOctave (const char* incipit, char *octave, int index ) {
     }
     
     // humdrum octave
+    /*
     switch (*octave) {
         case  0:  *octave = 4;  break;
         case  1:  *octave = 4;  break;
@@ -362,6 +361,8 @@ int MusPaeInput::getOctave (const char* incipit, char *octave, int index ) {
         case -4:  *octave = 0;  break;
         default:  *octave = 4;
     }
+    */
+    *octave = 4;
     
     return i - index;
 }
@@ -1045,12 +1046,12 @@ int MusPaeInput::getKeyInfo(const char *incipit, Array<int>& key, string *output
 int MusPaeInput::getNote( const char* incipit, NoteObject *note, MeasureObject *measure, int index ) {
     
     regex_t re;
-    
+    int oct;
     int i = index;
     
     note->mnote->m_dur = measure->durations[measure->durations_offset];
-#warning "Removed dot and turplet info"
-    //note->dot = measure->dots[measure->durations_offset];
+
+    note->mnote->m_dots = measure->dots[measure->durations_offset];
     //if ( note->tuplet != 1.0 ) {
     //    note->duration /= note->tuplet;
         //std::cout << durations[0] << ":" << note->tuplet << std::endl;
@@ -1086,7 +1087,13 @@ int MusPaeInput::getNote( const char* incipit, NoteObject *note, MeasureObject *
         note->tie = 1; // 1 for the first note, 2 for the second one
     }
     
+    oct = note->mnote->m_oct;
     measure->notes.append( *note );
+    
+    // Create a brave new Mus Note
+    // The first is created in the NoteObject constructor
+    note->mnote = new MusNote;
+    note->mnote->m_oct = oct;
     
     // reset values
     // beam
@@ -1207,6 +1214,10 @@ void MusPaeInput::printMeasure(std::ostream& out, MeasureObject *measure ) {
             
             m_layer->AddLayerElement(measure->notes[i].mnote);
             
+            //MusClef *clef = new MusClef();
+            //clef->m_clefId = SOL2;
+            //m_layer->AddLayerElement(clef);
+            
             if (measure->notes[i].acciaccatura) {
                 out << "q";
             } else if (measure->notes[i].appoggiatura > 0) {
@@ -1241,6 +1252,7 @@ void MusPaeInput::printMeasure(std::ostream& out, MeasureObject *measure ) {
     
     m_staff->AddLayer(m_layer);
     m_measure->AddStaff(m_staff);
+    m_section->AddMeasure(m_measure);
 }
 
 
