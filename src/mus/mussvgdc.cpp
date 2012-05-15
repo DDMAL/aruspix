@@ -404,7 +404,7 @@ void MusSvgDC::WriteLine( wxString string )
 }
 
 
-void MusSvgDC::StartGraphic( wxString gClass, wxString gId )
+void MusSvgDC::StartGraphic( MusLayoutObject *object, wxString gClass, wxString gId )
 {
     WriteLine(wxString::Format("<g class=\"%s\" id=\"%s\" style=\"%s %s %s %s\">", gClass.c_str(), gId.c_str(), m_penColour.c_str(), m_penStyle.c_str(),
         m_brushColour.c_str(), m_brushStyle.c_str() ) );

@@ -102,7 +102,7 @@ void MusRC::DrawSystem( MusDC *dc, MusSystem *system )
 	int i;
     MusLaidOutStaff *staff;
     
-    dc->StartGraphic( "system", wxString::Format("system_%d", system->GetId() ) );
+    dc->StartGraphic( system, "system", wxString::Format("system_%d", system->GetId() ) );
     
     DrawGroups( dc, system );
 
@@ -614,7 +614,7 @@ void MusRC::DrawStaffLines( MusDC *dc, MusLaidOutStaff *staff, MusSystem *system
 
 	dc->SetPen( m_currentColour, ToRendererX( m_layout->m_env.m_staffLineWidth ), wxSOLID );
     dc->SetBrush( m_currentColour , wxSOLID );
-    dc->StartGraphic( "staff", wxString::Format("s_%d", staff->GetId()) );
+    dc->StartGraphic( staff, "staff", wxString::Format("s_%d", staff->GetId()) );
 
 	x1 = ToRendererX (x1);
 	x2 = ToRendererX (x2);

@@ -319,12 +319,14 @@ MusBBoxDC::~MusBBoxDC ( )
 {
 }
 
-void MusBBoxDC::StartGraphic( wxString gClass, wxString gId )
+void MusBBoxDC::StartGraphic( MusLayoutObject *object, wxString gClass, wxString gId )
 {
+    // add object
 }
       
 void MusBBoxDC::EndGraphic() 
 {
+    // remove object
 }
 
 void MusBBoxDC::StartPage( )
@@ -379,19 +381,21 @@ void MusBBoxDC::ResetPen( )
 
 void MusBBoxDC::SetLogicalOrigin( int x, int y ) 
 {
+    //// no idea how to handle this with the BB
     m_originX = -x;
     m_originY = -y;
 } 
 
 void MusBBoxDC::SetUserScale( double xScale, double yScale ) 
 {
+    //// no idea how to handle this with the BB
     m_userScaleX = xScale;
     m_userScaleY = yScale;
 }       
 
 void MusBBoxDC::GetTextExtent( wxString& string, int *w, int *h )
 {
-    // cannot be done...
+    //// cannot be done easily
 }
        
 
@@ -411,6 +415,11 @@ void MusBBoxDC::DrawCircle(int x, int y, int radius)
 
 void MusBBoxDC::DrawEllipse(int x, int y, int width, int height)
 {
+    //// Example : 
+    //// call UpdateContentBB for all objects
+    //// call UpdateOwnBB for top one only
+    
+    
     //int rh = height / 2;
     //int rw = width  / 2;
 
@@ -554,6 +563,8 @@ void MusBBoxDC::DrawRotatedText(const wxString& text, int x, int y, double angle
 
 void MusBBoxDC::DrawMusicText(const wxString& text, int x, int y)
 {
+    //// Use the MusLeipzigBBox class above
+    
     wxString glyph;
     char c = (char)text[0];
     switch (c) {
