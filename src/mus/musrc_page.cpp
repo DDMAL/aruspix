@@ -112,7 +112,7 @@ void MusRC::DrawSystem( MusDC *dc, MusSystem *system )
         DrawStaff( dc , staff, system );		
 	}
     
-    dc->EndGraphic(staff); //RZ
+    dc->EndGraphic(system); //RZ
 
 }
 

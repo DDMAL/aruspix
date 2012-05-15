@@ -96,7 +96,7 @@ void MusRC::DrawDurationElement( MusDC *dc, MusLaidOutLayerElement *element, Mus
         //{
             //	note->accord(dc, staff);
         }
-        dc->EndGraphic(staff); //RZ
+        dc->EndGraphic(element); //RZ
 	} 
     else if (dynamic_cast<MusRest*>(element->m_layerElement)) {
         MusRest *rest = dynamic_cast<MusRest*>(element->m_layerElement);
@@ -108,7 +108,7 @@ void MusRC::DrawDurationElement( MusDC *dc, MusLaidOutLayerElement *element, Mus
         element->m_yrel = CalculatePitchPosY( staff, rest->m_pname, layer->GetClefOffset( element ), oct);
 		
         DrawRest( dc, element, layer, staff );
-        dc->EndGraphic(staff); //RZ
+        dc->EndGraphic(element); //RZ
 	}
     
     
@@ -118,7 +118,7 @@ void MusRC::DrawDurationElement( MusDC *dc, MusLaidOutLayerElement *element, Mus
         // we will need to change the to a MusBeam object once we have one 
         dc->StartGraphic( element, "beam", wxString::Format("s_%d_%d_%d", staff->GetId(), layer->voix, element->GetId()) );
         DrawBeam( dc, layer, staff );
-        dc->EndGraphic(staff); //RZ
+        dc->EndGraphic(element); //RZ
     }
 
 	/* 
@@ -864,7 +864,7 @@ void MusRC::DrawBarline( MusDC *dc, MusLaidOutLayerElement *element, MusLaidOutL
         DrawSpecialBarline( dc, staff->m_system, x, barline->m_barlineType, barline->m_onStaffOnly, staff);
     }
     
-    dc->EndGraphic(staff); //RZ
+    dc->EndGraphic(element); //RZ
 }
 
 void MusRC::DrawClef( MusDC *dc, MusLaidOutLayerElement *element, MusLaidOutLayer *layer, MusLaidOutStaff *staff )
@@ -932,7 +932,7 @@ void MusRC::DrawClef( MusDC *dc, MusLaidOutLayerElement *element, MusLaidOutLaye
 
 	DrawLeipzigFont ( dc, a, b, sym, staff, clef->m_cueSize  );
    
-    dc->EndGraphic(staff); //RZ
+    dc->EndGraphic(element); //RZ
 }
 
 void MusRC::DrawMensur( MusDC *dc, MusLaidOutLayerElement *element, MusLaidOutLayer *layer, MusLaidOutStaff *staff )
@@ -1028,7 +1028,7 @@ void MusRC::DrawMensur( MusDC *dc, MusLaidOutLayerElement *element, MusLaidOutLa
 	mesureDen = (int)mDen;
     */ // ax2 
     
-    dc->EndGraphic(staff); //RZ
+    dc->EndGraphic(element); //RZ
 
 }
 
@@ -1209,7 +1209,7 @@ void MusRC::DrawSymbolAccid( MusDC *dc, MusLaidOutLayerElement *element, MusLaid
     DrawLeipzigFont ( dc, x, y, symc, staff, accid->m_cueSize );
 
     
-    dc->EndGraphic(staff); //RZ
+    dc->EndGraphic(element); //RZ
 
 }
 
@@ -1229,7 +1229,7 @@ void MusRC::DrawSymbolCustos( MusDC *dc, MusLaidOutLayerElement *element, MusLai
     
     DrawLeipzigFont( dc, x, y, 35, staff, custos->m_cueSize );
     
-    dc->EndGraphic(staff); //RZ
+    dc->EndGraphic(element); //RZ
 
 }
 
@@ -1251,7 +1251,7 @@ void MusRC::DrawSymbolDot( MusDC *dc, MusLaidOutLayerElement *element, MusLaidOu
         case 0 : DrawDot ( dc,x,y,0,staff);
     }
     
-    dc->EndGraphic(staff); //RZ
+    dc->EndGraphic(element); //RZ
 
 }
 
