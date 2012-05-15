@@ -109,16 +109,7 @@ void MusRC::DrawSystem( MusDC *dc, MusSystem *system )
     for (i = 0; i < (int)system->m_staves.GetCount(); i++) 
 	{
 		staff = &system->m_staves[i];
-		//staff->Init( m_r );
-		//wxLogDebug("staff %d yrel=%d", i, staff->yrel);
-		//if (( drawRect.y > (int)staff->yrel) && ( drawRect.GetBottom() < (int)staff->yrel) )
-        DrawStaffLines( dc , staff, system );		
-	}
-
-    for (i = 0; i < (int)system->m_staves.GetCount(); i++) 
-	{
-		staff = &system->m_staves[i];
-			DrawStaff( dc, staff );	
+        DrawStaff( dc , staff, system );		
 	}
     
     dc->EndGraphic();
@@ -614,7 +605,6 @@ void MusRC::DrawStaffLines( MusDC *dc, MusLaidOutStaff *staff, MusSystem *system
 
 	dc->SetPen( m_currentColour, ToRendererX( m_layout->m_env.m_staffLineWidth ), wxSOLID );
     dc->SetBrush( m_currentColour , wxSOLID );
-    dc->StartGraphic( staff, "staff", wxString::Format("s_%d", staff->GetId()) );
 
 	x1 = ToRendererX (x1);
 	x2 = ToRendererX (x2);
@@ -625,19 +615,23 @@ void MusRC::DrawStaffLines( MusDC *dc, MusLaidOutStaff *staff, MusSystem *system
 		yy -= m_layout->m_interl[staff->staffSize];
 	}
     
-    dc->EndGraphic();
     dc->ResetPen( );
     dc->ResetBrush( );
+    
 	return;
 }
 
 
 
-void MusRC::DrawStaff( MusDC *dc, MusLaidOutStaff *staff )
+void MusRC::DrawStaff( MusDC *dc, MusLaidOutStaff *staff, MusSystem *system )
 {
 	wxASSERT_MSG( dc , "DC cannot be NULL");
 	if ( !staff->Check() )
 		return;
+    
+    dc->StartGraphic( staff, "staff", wxString::Format("s_%d", staff->GetId()) );
+    
+    DrawStaffLines( dc, staff, system );
         
 	MusLaidOutLayer *layer = NULL;
 	int j;
@@ -648,6 +642,8 @@ void MusRC::DrawStaff( MusDC *dc, MusLaidOutStaff *staff )
 		//layer->Init( m_r );
 		DrawLayer( dc, layer, staff );
 	}
+    
+    dc->EndGraphic();
 
 }
 

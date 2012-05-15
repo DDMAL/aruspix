@@ -105,7 +105,7 @@ public:
 	void DrawBarline ( MusDC *dc, MusSystem *system, int x, int cod, bool porteeAutonome, MusLaidOutStaff *pportee);
 	void DrawSpecialBarline( MusDC *dc, MusSystem *system, int x, BarlineType code, bool porteeAutonome, MusLaidOutStaff *pportee);
 	void DrawPartialBarline ( MusDC *dc, MusSystem *system, int x, MusLaidOutStaff *pportee);
-	void DrawStaff( MusDC *dc, MusLaidOutStaff *staff );
+	void DrawStaff( MusDC *dc, MusLaidOutStaff *staff, MusSystem *system );
 	void DrawStaffLines( MusDC *dc, MusLaidOutStaff *staff, MusSystem *system );
     int CalculatePitchPosY ( MusLaidOutStaff *staff, char pname, int dec_clef, int oct);
 	int CalculateNeumePosY ( MusLaidOutStaff *staff, char note, int dec_clef, int oct); 
