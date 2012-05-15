@@ -322,11 +322,13 @@ MusBBoxDC::~MusBBoxDC ( )
 void MusBBoxDC::StartGraphic( MusLayoutObject *object, wxString gClass, wxString gId )
 {
     // add object
+    m_objects.Add( object );
 }
       
 void MusBBoxDC::EndGraphic() 
 {
     // remove object
+    //m_objects.Remove;
 }
 
 void MusBBoxDC::StartPage( )

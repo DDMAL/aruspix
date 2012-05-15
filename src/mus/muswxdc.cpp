@@ -155,6 +155,13 @@ void MusWxDC::DrawSpline(int n, MusPoint points[])
     m_dc->DrawSpline( n, (wxPoint*)points );
 }
 
+void MusWxDC::EndGraphic( MusLayoutObject *object )
+{
+    // actually draw the two bounding boxes
+    //m_dc->DrawRectangle( object->m_ownBB_x, <#int y#>, <#int width#>, <#int height#>)
+    //m_dc->DrawRectangle( object->m_contentBB_x, <#int y#>, <#int width#>, <#int height#>)
+}
+
 wxColour MusWxDC::GetColour( int colour )
 { 
     switch ( colour )

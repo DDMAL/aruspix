@@ -643,7 +643,7 @@ void MusRC::DrawStaff( MusDC *dc, MusLaidOutStaff *staff, MusSystem *system )
 		DrawLayer( dc, layer, staff );
 	}
     
-    dc->EndGraphic();
+    dc->EndGraphic( );
 
 }
 

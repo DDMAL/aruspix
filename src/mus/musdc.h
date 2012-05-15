@@ -106,7 +106,7 @@ public:
     
     virtual void StartGraphic( MusLayoutObject *object, wxString gClass, wxString gId ) = 0;
     
-    virtual void EndGraphic() = 0;
+    virtual void EndGraphic( MusLayoutObject *object ) = 0;
     
     virtual void StartPage( ) = 0;
     
