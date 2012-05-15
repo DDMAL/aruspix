@@ -33,7 +33,7 @@ class MusBBoxDC: public MusDC
 {
 public:
 
-    MusBBoxDC ( wxString f, int width, int height );
+    MusBBoxDC ( int width, int height );
     virtual ~MusBBoxDC();
     
     // Setters

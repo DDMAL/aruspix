@@ -299,7 +299,7 @@ static inline double RadToDeg(double deg) { return (deg * 180.0) / M_PI; }
 //----------------------------------------------------------------------------
 
 
-MusBBoxDC::MusBBoxDC (wxString f, int width, int height):
+MusBBoxDC::MusBBoxDC (int width, int height):
     MusDC()
 {	
     m_width = width;
