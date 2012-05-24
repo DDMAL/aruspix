@@ -13,6 +13,7 @@
 //#include <sstream>
 
 #include <string>
+#include <vector>
 
 #ifndef WX_PRECOMP
 #include "wx/wx.h"
@@ -828,11 +829,13 @@ public:
     NoteObject(void) { clear(); };
     void   clear(void) {
         //pitch = octave = accident = dot = tie = 
-        beam = appoggiatura = 0;
+        //beam = 
+        appoggiatura = 0;
         acciaccatura = appoggiatura_multiple = fermata = trill = false;
         //duration = 0.0;
         tuplet = 1.0;
         mnote = new MusNote();
+        mrest = NULL;
     };
     //int    pitch;
     //int    octave;
@@ -841,10 +844,11 @@ public:
     //int    dot;
     
     MusNote *mnote;
+    MusRest *mrest; // this is not too nice
     
     double tuplet;
     int    tie;
-    int    beam;
+    //int    beam; use the one in mnote
     bool   acciaccatura;
     int    appoggiatura;
     bool   appoggiatura_multiple;
@@ -857,10 +861,10 @@ class MeasureObject {
 public:
     MeasureObject(void) { clear(); };
     void   clear(void) {
-        a_timeinfo.setSize(2);
-        a_key.setSize(7);
-        a_timeinfo.setAll(0);
-        a_key.setAll(0);
+        //a_timeinfo.setSize(2);
+        //a_key.setSize(7);
+        //a_timeinfo.setAll(0);
+        //a_key.setAll(0);
         durations.setSize(1);
         dots.setSize(1);
         durations.setAll(1.0);
@@ -870,18 +874,26 @@ public:
     };
     void   reset(void) {
         notes.setSize(0);
-        clef = s_key = s_timeinfo = barline = "";
+        clef = NULL;
+        time = NULL;
+        key.clear();
+        barline = "";
         wholerest = 0; 
-        measure_duration = 0.0;
         abbreviation_offset = -1;
     };
-    std::string    clef;
-    double measure_duration;
+    MusClef *clef;
+    MusMensur *time;
+    //double measure_duration;
     Array<NoteObject> notes;
-    Array<int> a_key;
-    std::string s_key;
-    Array<double> a_timeinfo;   
-    std::string s_timeinfo; 
+    //Array<int> a_key;
+    //std::string s_key;
+    
+    //Array<double> a_timeinfo;   
+    //std::string s_timeinfo;
+    
+    vector<int> key;
+    char key_alteration;
+    
     Array<int> durations;
     Array<int> dots; // use the same offset as durations, they are used in parallel
     int durations_offset;
@@ -921,9 +933,9 @@ private:
      void      convertPlainAndEasyToKern( std::istream &infile, std::ostream &outfile);
      
      // parsing functions
-     int       getKeyInfo          (const char* incipit, Array<int>& key, std::string *output, int index = 0);
-     int       getTimeInfo         (const char* incipit, Array<double>& timeinfo, std::string *output, int index = 0);
-     int       getClefInfo         (const char* incipit, std::string *output, int index = 0 );
+     int       getKeyInfo          (const char* incipit, MeasureObject *measure, int index = 0);
+     int       getTimeInfo         (const char* incipit, MeasureObject *measure, int index = 0);
+     int       getClefInfo         (const char* incipit, MeasureObject *measure, int index = 0 );
      int       getBarline          (const char* incipit, std::string *output, int index = 0 );
      int       getAccidental       (const char* incipit, unsigned char *accident, int index = 0);
      int       getOctave           (const char* incipit, char *octave, int index = 0 );
@@ -938,7 +950,6 @@ private:
      
      int       getPitch            (char c_note );
      double    getDurationWithDot  (double duration, int dot);
-     double    getMeasureDur       (Array<double>& timeinfo);
      void      getKey              (const char* key_str, std::string *output);
      int       getLineIndex        (Array<ArrayChar>& pieces, const char* string);
      
@@ -961,6 +972,9 @@ private:
 	MusMeasure *m_measure;
 	MusStaff *m_staff;
 	MusLayer *m_layer;
+    
+    unsigned char m_rest_position;
+    unsigned int m_rest_octave;
 };
 
 #endif

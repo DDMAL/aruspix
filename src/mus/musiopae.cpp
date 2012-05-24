@@ -68,6 +68,7 @@ MusFileInputStream( doc, -1 )
 	m_measure = NULL;
 	m_staff = NULL;
 	m_layer = NULL;
+    m_rest_position = PITCH_B; // set it to 3 line in G2 clef
 }
 
 MusPaeInput::~MusPaeInput()
@@ -94,7 +95,6 @@ bool MusPaeInput::ImportFile()
 //
 
 void MusPaeInput::convertPlainAndEasyToKern(std::istream &infile, std::ostream &out) {
-    
     // buffers
     char c_clef[1024] = {0};
     char c_key[1024] = {0};
@@ -102,16 +102,23 @@ void MusPaeInput::convertPlainAndEasyToKern(std::istream &infile, std::ostream &
     char c_timesig[1024] = {0};
     char c_alttimesig[1024] = {0};
     char incipit[10001] = {0};
+    bool in_beam = false;
     
     string s_key;
     MeasureObject current_measure;
     NoteObject current_note;
-    Array<int> current_key; // not the measure one, which will be altered by temporary alterations
-    current_key.setSize(7);
-    current_key.setAll(0);
+    NoteObject prev_note;
+    //Array<int> current_key; // not the measure one, which will be altered by temporary alterations
+    //current_key.setSize(7);
+    //current_key.setAll(0);
     
     Array<MeasureObject> staff;
     staff.setSize(0);
+    
+    // Aruspux styff
+    m_div = new MusDiv();
+    m_score = new MusScore( );
+    m_section = new MusSection( );
     
     // read values
     while (!infile.eof()) {
@@ -153,18 +160,16 @@ void MusPaeInput::convertPlainAndEasyToKern(std::istream &infile, std::ostream &
      */
     
     if (strlen(c_clef)) {
-        getClefInfo(c_clef, &current_measure.clef );    // do we need to put a default clef?
+        getClefInfo(c_clef, &current_measure );    // do we need to put a default clef?
     }
     if (strlen(c_key)) {
         getKey(c_key, &s_key); // key is not stored in the measure, only for the entire piece
     }
     if (strlen(c_keysig)) {
-        getKeyInfo( c_keysig, current_measure.a_key, &current_measure.s_key);
-        current_key = current_measure.a_key;
+        getKeyInfo( c_keysig, &current_measure);
     }
     if (strlen(c_timesig)) {
-        getTimeInfo( c_timesig, current_measure.a_timeinfo, &current_measure.s_timeinfo);
-        current_measure.measure_duration = getMeasureDur(current_measure.a_timeinfo);
+        getTimeInfo( c_timesig, &current_measure);
     }   
     
     // read the incipit string
@@ -195,12 +200,17 @@ void MusPaeInput::convertPlainAndEasyToKern(std::istream &infile, std::ostream &
         
         // beaming starts
 		else if (incipit[i] == '{') {
-			current_note.beam = 1;
+			//current_note.beam = 1;
+            current_note.mnote->m_beam[0] |= BEAM_INITIAL;
+            in_beam = true;
         }
         
         // beaming ends
 		else if (incipit[i] == '}') {
-			current_note.beam = 0; // should not have to be done, but just in case
+			//current_note.beam = 0; // should not have to be done, but just in case
+            prev_note.mnote->m_beam[0] |= BEAM_TERMINAL;
+            current_note.mnote->m_beam[0] = 0;
+            in_beam = false;
 		}
 		
         // slurs are read when adding the note
@@ -233,7 +243,9 @@ void MusPaeInput::convertPlainAndEasyToKern(std::istream &infile, std::ostream &
 		}
         
         //note and rest
+        // getNote also creates a new note object
         else if (((incipit[i]-'A'>=0) && (incipit[i]-'A'<7)) || (incipit[i]=='-')) {
+            prev_note = current_note; // save the old note for beaming, etc
             i += getNote( incipit, &current_note, &current_measure, i );
         }
         
@@ -251,9 +263,7 @@ void MusPaeInput::convertPlainAndEasyToKern(std::istream &infile, std::ostream &
         else if ((incipit[i] == 'i') && staff.getSize()) {
             MeasureObject last_measure = staff[staff.getSize()-1];
             current_measure.notes = last_measure.notes;
-            current_measure.a_timeinfo = last_measure.a_timeinfo;
-            current_measure.measure_duration = getMeasureDur(last_measure.a_timeinfo);
-            current_measure.a_key = current_key;
+            current_measure.time = last_measure.time;
         }
         
         //barline
@@ -262,27 +272,27 @@ void MusPaeInput::convertPlainAndEasyToKern(std::istream &infile, std::ostream &
             current_measure.abbreviation_offset = 0; // just in case...
             staff.append( current_measure );
             current_measure.reset();
-            current_measure.a_key = current_key;
-            current_measure.measure_duration = getMeasureDur(current_measure.a_timeinfo);
         }
         
 		//clef change
 		else if ((incipit[i] == '%') && (i+1 < length)) {
-            i += getClefInfo(incipit, &current_measure.clef, i + 1);
+            i += getClefInfo(incipit, &current_measure, i + 1);
         }
         
 		//time signature change
 		else if ((incipit[i] == '@') && (i+1 < length)) {
-            i += getTimeInfo( incipit, current_measure.a_timeinfo, &current_measure.s_timeinfo, i + 1);
-            current_measure.measure_duration = getMeasureDur(current_measure.a_timeinfo);
+            i += getTimeInfo( incipit, &current_measure, i + 1);
         } 
         
   		//key signature change
 		else if ((incipit[i] == '$') && (i+1 < length)) {
-            i += getKeyInfo( incipit, current_measure.a_key, &current_measure.s_key, i + 1);
-            current_key = current_measure.a_key;
+            i += getKeyInfo( incipit, &current_measure, i + 1);
 		} 
         
+        if (in_beam && (current_note.mnote->m_beam[0] & BEAM_INITIAL) == 0 && (current_note.mnote->m_beam[0] & BEAM_TERMINAL) == 0) {
+            current_note.mnote->m_beam[0] |= BEAM_MEDIAL;
+        }
+            
         i++;
     }
     
@@ -292,11 +302,7 @@ void MusPaeInput::convertPlainAndEasyToKern(std::istream &infile, std::ostream &
         staff.append( current_measure );
     }
     
-    
-    m_div = new MusDiv();
-    m_score = new MusScore( );
-    m_section = new MusSection( );
-    
+        
     // output
     out << "**kern\n";
     out << "*MM120\n";
@@ -718,8 +724,8 @@ int MusPaeInput::getPitch( char c_note ) {
         case 'G': 
             pitch = PITCH_G;
             break;
-#warning "What is this?"
-        //case '-': pitch = -1000; break;
+#warning "What is this? this is the rest"
+        case '-': pitch = 255; break;
         default:
             break;
     }
@@ -743,28 +749,16 @@ double MusPaeInput::getDurationWithDot(double duration, int dot) {
     return duration_with_dot;
 }
 
-
-
-//////////////////////////////
-//
-// getMeasureDur -- return the duration of the full measure
-//
-
-double MusPaeInput::getMeasureDur(Array<double>& timeinfo) {
-    return timeinfo[0] * timeinfo[1];
-}
-
-
-
 //////////////////////////////
 //
 // getTimeInfo -- read the key signature.
 //
 
-int MusPaeInput::getTimeInfo( const char* incipit, Array<double>& timeinfo, string *output, int index) {
+int MusPaeInput::getTimeInfo( const char* incipit, MeasureObject *measure, int index) {
     
     int i = index;
     int length = strlen(incipit);
+    MusMensur *meter = new MusMensur;
     
     if (!isdigit(incipit[i]) && (incipit[i] != 'c') && (incipit[i] != 'o'))
         return 0;
@@ -777,9 +771,7 @@ int MusPaeInput::getTimeInfo( const char* incipit, Array<double>& timeinfo, stri
         }
         i++;
     }
-    
-    timeinfo.setAll(0);
-    
+        
     // use a substring for the time signature 
     char timesig_str[1024];
     memset( timesig_str, 0, 1024 );
@@ -802,36 +794,42 @@ int MusPaeInput::getTimeInfo( const char* incipit, Array<double>& timeinfo, stri
         strcpy(buf_str, timesig_str);
         int beats = atoi(strtok(buf_str, "/"));
         int note_value = atoi(strtok(NULL, "/")); 
-        timeinfo[0] = (double)beats; timeinfo[1] = 4.0/(double)note_value;
-        sout << "*M" << beats << "/" << note_value;
-        //std::cout << output << std::endl;
+        //timeinfo[0] = (double)beats; timeinfo[1] = 4.0/(double)note_value;
+        //sout << "*M" << beats << "/" << note_value;
+        meter->m_num = beats;
+        meter->m_numBase = note_value;
     } else if ( is_one_number == 0) {
         int beats = atoi(timesig_str);
-        timeinfo[0] = (double)beats; timeinfo[1] = 4.0/1.0;
-        sout << "*M" << beats << "/1\n*met(" << beats << ")";
+        meter->m_num = beats;
+        meter->m_numBase = 1;
+        //timeinfo[0] = (double)beats; timeinfo[1] = 4.0/1.0;
+        //sout << "*M" << beats << "/1\n*met(" << beats << ")";
         //std::cout << output << std::endl;
     } else if (strcmp(timesig_str, "c") == 0) {
         // C
-        timeinfo[0] = 4.0; timeinfo[1] = 4.0/4.0;
-        sout << "*M4/4\n*met(C)"; 
+        ////imeinfo[0] = 4.0; timeinfo[1] = 4.0/4.0;
+        meter->m_meterSymb = METER_SYMB_COMMON;
     } else if (strcmp(timesig_str, "c/") == 0) {
         // C|
-        timeinfo[0] = 2.0; timeinfo[1] = 4.0/2.0;
-        sout << "*M2/2\n*met(C|)";
+        //timeinfo[0] = 2.0; timeinfo[1] = 4.0/2.0;
+        meter->m_meterSymb = METER_SYMB_CUT;
     } else if (strcmp(timesig_str, "c3") == 0) {
         // C3
-        timeinfo[0] = 3.0; timeinfo[1] = 4.0/1.0;
-        sout << "*M3/1\n*met(c3)";
+        //timeinfo[0] = 3.0; timeinfo[1] = 4.0/1.0;
+        meter->m_meterSymb = METER_SYMB_3;
     } else if (strcmp(timesig_str, "c3/2") == 0) {
         // C3/2
-        timeinfo[0] = 3.0; timeinfo[1] = 4.0/2.0;
-        sout << "*M3/2\n*met(c3/2)";
+        //timeinfo[0] = 3.0; timeinfo[1] = 4.0/2.0;
+        meter->m_meterSymb = METER_SYMB_3_CUT; // ??
     } else {
-        timeinfo[0] = 4.0; timeinfo[1] = 4.0/4.0;
-        sout << "*M4/4\n!! unknown time signature";
+        //timeinfo[0] = 4.0; timeinfo[1] = 4.0/4.0;
+        //sout << "*M4/4\n!! unknown time signature";
         std::cout << "Warning: unknown time signature: " << timesig_str << std::endl;
+        
     }
-    *output = sout.str();
+
+    measure->time = meter;
+    
     return i - index;
 }
 
@@ -842,7 +840,7 @@ int MusPaeInput::getTimeInfo( const char* incipit, Array<double>& timeinfo, stri
 // getClefInfo -- read the key signature.
 //
 
-int MusPaeInput::getClefInfo( const char *incipit, string *output, int index ) {
+int MusPaeInput::getClefInfo( const char *incipit, MeasureObject *measure, int index ) {
     
     // a clef is maximum 3 character length
     // go through the 3 character and retrieve the letter (clef) and the line
@@ -862,10 +860,33 @@ int MusPaeInput::getClefInfo( const char *incipit, string *output, int index ) {
         index++;
     }
     
-    std::ostringstream sout;   
-    sout << "*clef" << clef << line;
-    *output = sout.str();
-    //std::cout << output << std::endl;
+    MusClef *mclef = new MusClef();
+    
+    if (clef == 'C') {
+        switch (line) {
+            case '1': mclef->m_clefId = UT1; m_rest_position = PITCH_E; m_rest_octave = 4; break;
+            case '2': mclef->m_clefId = UT2; m_rest_position = PITCH_C; m_rest_octave = 4; break;
+            case '3': mclef->m_clefId = UT3; m_rest_position = PITCH_A; m_rest_octave = 3; break;
+            case '4': mclef->m_clefId = UT4; m_rest_position = PITCH_F; m_rest_octave = 3; break;
+        }
+    } else if (clef == 'G') {
+        switch (line) {
+            case '1': mclef->m_clefId = SOL1; m_rest_position = PITCH_B; m_rest_octave = 4; break;
+            case '2': mclef->m_clefId = SOL2; m_rest_position = PITCH_G; m_rest_octave = 4; break;
+        }
+    } else if (clef == 'F') {
+        switch (line) {
+            case '3': mclef->m_clefId = FA3; m_rest_position = PITCH_D; m_rest_octave = 3; break;
+            case '4': mclef->m_clefId = FA4; m_rest_position = PITCH_B; m_rest_octave = 2; break;
+            case '5': mclef->m_clefId = FA5; m_rest_position = PITCH_G; m_rest_octave = 2; break;
+        }
+    } else {
+        // what the...
+        assert("Clef is ??");
+    }
+    
+    measure->clef = mclef;
+    
     return i;
 }
 
@@ -971,32 +992,25 @@ int MusPaeInput::getAbbreviation(const char* incipit, MeasureObject *measure, in
 // getKeyInfo -- read the key signature.
 //
 
-int MusPaeInput::getKeyInfo(const char *incipit, Array<int>& key, string *output, int index ) {
-    
-    //const char* keyline = getField("112D", hfile, incipitnum);
-    
-    key.setAll(0);
-    
+int MusPaeInput::getKeyInfo(const char *incipit, MeasureObject *measure, int index ) {
+            
     // at the key information line, extract data
-    int type  = 1;  		 // 1 = sharps, -1 = flats
-    int paren = 1;  		 // 1 = normal, 2 = inside of square brackets
-    // currently ignored. Don't know what it means
     int length = strlen(incipit);
     int i = index;
     bool end_of_keysig = false;
     while ((i < length) && (!end_of_keysig)) {
         switch (incipit[i]) {
-            case 'b': type  = -1; break;
-            case 'x': type  =  1; break;
-            case '[': paren =  1; break; // change to 2 to enable paren. Meaning is unclear, though
-            case ']': paren =  1; break;
-            case 'F': key[0] = type * paren; break;
-            case 'C': key[1] = type * paren; break;
-            case 'G': key[2] = type * paren; break;
-            case 'D': key[3] = type * paren; break;
-            case 'A': key[4] = type * paren; break;
-            case 'E': key[5] = type * paren; break;
-            case 'B': key[6] = type * paren; break;
+            case 'b': measure->key_alteration = ACCID_FLAT; break;
+            case 'x': measure->key_alteration = ACCID_SHARP; break;
+            //case '[': paren =  1; break;
+            //case ']': paren =  1; break;
+            case 'F': measure->key.push_back(PITCH_F); break;
+            case 'C': measure->key.push_back(PITCH_C); break;
+            case 'G': measure->key.push_back(PITCH_G); break;
+            case 'D': measure->key.push_back(PITCH_D); break;
+            case 'A': measure->key.push_back(PITCH_A); break;
+            case 'E': measure->key.push_back(PITCH_E); break;
+            case 'B': measure->key.push_back(PITCH_B); break;
             default:
                 end_of_keysig = true;
                 //if (debugQ) {
@@ -1009,28 +1023,6 @@ int MusPaeInput::getKeyInfo(const char *incipit, Array<int>& key, string *output
         if (!end_of_keysig)
             i++;
     }
-    
-    std::ostringstream sout;
-    sout << "*k[";
-    if (key[0] > 0) {
-        if (key[0] > 0) sout << "f#"; else if (key[0] < 0) sout << "f-";
-        if (key[1] > 0) sout << "c#"; else if (key[0] < 0) sout << "c-";
-        if (key[2] > 0) sout << "g#"; else if (key[0] < 0) sout << "g-";
-        if (key[3] > 0) sout << "d#"; else if (key[0] < 0) sout << "d-";
-        if (key[4] > 0) sout << "a#"; else if (key[0] < 0) sout << "a-";
-        if (key[5] > 0) sout << "e#"; else if (key[0] < 0) sout << "e-";
-        if (key[6] > 0) sout << "b#"; else if (key[0] < 0) sout << "b-";
-    } else {
-        if (key[6] < 0) sout << "b-"; else if (key[0] > 0) sout << "b#";
-        if (key[5] < 0) sout << "e-"; else if (key[0] > 0) sout << "e#";
-        if (key[4] < 0) sout << "a-"; else if (key[0] > 0) sout << "a#";
-        if (key[3] < 0) sout << "d-"; else if (key[0] > 0) sout << "d#";
-        if (key[2] < 0) sout << "g-"; else if (key[0] > 0) sout << "g#";
-        if (key[1] < 0) sout << "c-"; else if (key[0] > 0) sout << "c#";
-        if (key[0] < 0) sout << "f-"; else if (key[0] > 0) sout << "g#";
-    }
-    sout << "]";
-    *output = sout.str();
     
     return i - index;
 }
@@ -1057,15 +1049,25 @@ int MusPaeInput::getNote( const char* incipit, NoteObject *note, MeasureObject *
     //}
     note->mnote->m_pname = getPitch( incipit[i] );
     
+    // lookout, hack. If it is a rest (255 val) then create the rest object.
+    // it will be added instead of the note
+    if (note->mnote->m_pname == 255) {
+        note->mrest = new MusRest();
+        note->mrest->m_dur = note->mnote->m_dur;
+        note->mrest->m_oct = m_rest_octave;
+        note->mrest->m_pname = m_rest_position;
+    }
+    
     // beaming
     // detect if it is a fermata or a tuplet
-    if (note->beam > 0) {
+    if (note->mnote->m_beam[0] > 0) {
         regcomp(&re, "^[^}/]*[ABCDEFG-].*", REG_EXTENDED);
         int is_not_last_note = regexec(&re, incipit + i + 1, 0, NULL, 0);
         regfree(&re);
         //std::cout << "regexp " << is_not_last_note << std::endl;
         if ( is_not_last_note != 0 ) {
-            note->beam = -1; // close the beam
+            //note->beam = -1; // close the beam
+            note->mnote->m_beam[0] |= BEAM_TERMINAL;
         }
     }
     
@@ -1092,15 +1094,16 @@ int MusPaeInput::getNote( const char* incipit, NoteObject *note, MeasureObject *
     // Create a brave new Mus Note
     // The first is created in the NoteObject constructor
     note->mnote = new MusNote;
+    note->mrest = NULL;
     note->mnote->m_oct = oct;
     
     // reset values
     // beam
-    if (note->beam > 0) {
-        note->beam++;
-    } else if (note->beam == -1) {
-        note->beam = 0;
-    }
+    //if (note->beam > 0) {
+    //    note->beam++;
+    //} else if (note->beam == -1) {
+    //    note->beam = 0;
+    //}
     // tie
     if (note->tie == 1) {
         note->tie++;
@@ -1140,14 +1143,23 @@ void MusPaeInput::printMeasure(std::ostream& out, MeasureObject *measure ) {
     m_staff = new MusStaff();
     m_layer = new MusLayer();
     
-    if ( measure->clef.length() ) {
-        out << measure->clef << "\n";
+    if ( measure->clef != NULL ) {
+        m_layer->AddLayerElement(measure->clef);
     }
-    if ( measure->s_key.length() ) {
-        out << measure->s_key << "\n";
-    }   
-    if ( measure->s_timeinfo.length() ) {
-        out << measure->s_timeinfo << "\n";
+    
+    if ( measure->key.size() > 0 ) {
+        vector<int>::iterator it;
+        for ( it = measure->key.begin() ; it < measure->key.end(); it++ ) {
+            MusSymbol *alter = new MusSymbol( SYMBOL_ACCID );
+            alter->m_oct = 4;
+            alter->m_pname = *it;
+            alter->m_accid = measure->key_alteration;
+            m_layer->AddLayerElement(alter);
+        }
+    }
+    
+    if ( measure->time != NULL ) {
+        m_layer->AddLayerElement(measure->time);
     }
     
 
@@ -1164,6 +1176,12 @@ void MusPaeInput::printMeasure(std::ostream& out, MeasureObject *measure ) {
             //out << Convert::durationToKernRhythm(buffer, measure->measure_duration);
             out << "rr\n";
         }
+        
+        MusRest *r = new MusRest();
+        r->m_dur = VALSilSpec; // surely this is NOT a multimeasure rest
+        r->m_pname = PITCH_G;
+        r->m_oct = 4;
+        m_layer->AddLayerElement(r);
         
         //if (measure->notes[i].fermata) {
         //      out << ";";
@@ -1186,11 +1204,11 @@ void MusPaeInput::printMeasure(std::ostream& out, MeasureObject *measure ) {
                 out << ";";
             } 
             
-            if (measure->notes[i].beam == 1) {
-                out << "L";
-            } else if (measure->notes[i].beam == -1) {
-                out << "J";
-            }
+            //if (measure->notes[i].beam == 1) {
+            ////    out << "L";
+            //} else if (measure->notes[i].beam == -1) {
+            //    out << "J";
+            //}
             
             if (measure->notes[i].tie == 2) {
                 out << "]";
@@ -1209,9 +1227,11 @@ void MusPaeInput::printMeasure(std::ostream& out, MeasureObject *measure ) {
             }
             //This does the trick
             //out << Convert::base40ToKern(buffer, measure->notes[i].pitch);
-            
-            
-            m_layer->AddLayerElement(measure->notes[i].mnote);
+                        
+            if (measure->notes[i].mrest)
+                m_layer->AddLayerElement(measure->notes[i].mrest); // create a rest
+            else
+                m_layer->AddLayerElement(measure->notes[i].mnote); // create a note
             
             //MusClef *clef = new MusClef();
             //clef->m_clefId = SOL2;
@@ -1233,11 +1253,11 @@ void MusPaeInput::printMeasure(std::ostream& out, MeasureObject *measure ) {
                 //   out << "_";
             }
             
-            if (measure->notes[i].beam == 1) {
-                out << "L";
-            } else if (measure->notes[i].beam == -1) {
-                out << "J";
-            }
+            //if (measure->notes[i].beam == 1) {
+            //    out << "L";
+            //} else if (measure->notes[i].beam == -1) {
+            //    out << "J";
+            //}
             
             if (measure->notes[i].trill == true) {
                 out << "t";
@@ -1247,6 +1267,8 @@ void MusPaeInput::printMeasure(std::ostream& out, MeasureObject *measure ) {
     }
     if ( measure->barline.length() ) {
         out << measure->barline << "\n";
+        MusBarline *bline = new MusBarline;
+        m_layer->AddLayerElement(bline);
     }
     
     m_staff->AddLayer(m_layer);
