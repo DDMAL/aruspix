@@ -44,8 +44,9 @@ int       quiet2Q = 0;               // used with -Q option
 
 // Global variables:
 char data_line[10001] = {0};
-Array<char> data_key;
-Array<char> data_value;
+#define MAX_DATA_LEN 1024 // One line of the pae file whould not be this long!
+char data_key[MAX_DATA_LEN]; 
+char data_value[MAX_DATA_LEN]; //ditto as above
 
 
 //////////////////////////////////////////////////////////////////////////
@@ -127,20 +128,20 @@ void MusPaeInput::convertPlainAndEasyToKern(std::istream &infile, std::ostream &
             //exit(1);
         }
         getAtRecordKeyValue(data_key, data_value, data_line);
-        if (strcmp(data_key.getBase(),"end")==0) {   
+        if (strcmp(data_key,"end")==0) {   
             break;
-        } else if (strcmp(data_key.getBase(),"clef")==0) { 
-            strcpy( c_clef, data_value.getBase() );
-        } else if (strcmp(data_key.getBase(),"key")==0) { 
-            strcpy( c_key, data_value.getBase() );
-        } else if (strcmp(data_key.getBase(),"keysig")==0) { 
-            strcpy( c_keysig, data_value.getBase() );
-        } else if (strcmp(data_key.getBase(),"timesig")==0) { 
-            strcpy( c_timesig, data_value.getBase() );
-        } else if (strcmp(data_key.getBase(),"alttimesig")==0) { 
-            strcpy( c_alttimesig, data_value.getBase() );
-        } else if (strcmp(data_key.getBase(),"data")==0) { 
-            strcpy( incipit, data_value.getBase() );
+        } else if (strcmp(data_key,"clef")==0) { 
+            strcpy( c_clef, data_value );
+        } else if (strcmp(data_key,"key")==0) { 
+            strcpy( c_key, data_value );
+        } else if (strcmp(data_key,"keysig")==0) { 
+            strcpy( c_keysig, data_value );
+        } else if (strcmp(data_key,"timesig")==0) { 
+            strcpy( c_timesig, data_value );
+        } else if (strcmp(data_key,"alttimesig")==0) { 
+            strcpy( c_alttimesig, data_value );
+        } else if (strcmp(data_key,"data")==0) { 
+            strcpy( incipit, data_value );
         } else if (strncmp(data_line,"!!", 2) == 0) { 
             out << data_line << "\n";
         }
@@ -282,9 +283,10 @@ void MusPaeInput::convertPlainAndEasyToKern(std::istream &infile, std::ostream &
     }
     
     // we need to add the last measure if it has no barline at the end
-    if (current_measure.notes.getSize() != 0) {
+    if (current_measure.notes.size() != 0) {
         //current_measure.barline = "=-";
         staff.push_back( current_measure );
+        current_measure.notes.clear();
     }
     
             
@@ -294,10 +296,6 @@ void MusPaeInput::convertPlainAndEasyToKern(std::istream &infile, std::ostream &
         printMeasure( out, &obj );
     }
     
-    if (strlen(hum2abc)) {
-        out << "!!!hum2abc:" << hum2abc << "\n";
-    }
-
     m_score->AddSection(m_section);
     m_div->AddScore(m_score);
     m_doc->AddDiv(m_div);
@@ -854,13 +852,13 @@ int MusPaeInput::getAbbreviation(const char* incipit, MeasureObject *measure, in
     int j;
     
     if (measure->abbreviation_offset == -1) { // start
-        measure->abbreviation_offset = measure->notes.getSize();
+        measure->abbreviation_offset = measure->notes.size();
     } else { //
-        int abbreviation_stop = measure->notes.getSize();
+        int abbreviation_stop = measure->notes.size();
         while ((i+1 < length) && (incipit[i+1]=='f')) {
             i++;
             for(j=measure->abbreviation_offset; j<abbreviation_stop; j++) {
-                measure->notes.append( measure->notes[j] );
+                measure->notes.push_back( measure->notes[j] );
             }
         }
         measure->abbreviation_offset = -1;   
@@ -973,7 +971,7 @@ int MusPaeInput::getNote( const char* incipit, NoteObject *note, MeasureObject *
     }
     
     oct = note->mnote->m_oct;
-    measure->notes.append( *note );
+    measure->notes.push_back( *note );
     
     // Create a brave new Mus Note
     // The first is created in the NoteObject constructor
@@ -1067,8 +1065,8 @@ void MusPaeInput::printMeasure(std::ostream& out, MeasureObject *measure ) {
         //}
     }
     
-    for (int i=0; i<measure->notes.getSize(); i++) {
-        if (measure->notes[i].mnote->m_pname == 111110) {
+    for (unsigned int i=0; i<measure->notes.size(); i++) {
+        if ( 0 == 1) { //measure->notes[i].mnote->m_pname == 111110) {
             //if (measure->notes[i].tie == 1) {
             //    out << "[";
             //}
@@ -1168,7 +1166,7 @@ void MusPaeInput::printMeasure(std::ostream& out, MeasureObject *measure ) {
 //   only one per line
 //
 
-void MusPaeInput::getAtRecordKeyValue(Array<char>& key, Array<char>& value,
+void MusPaeInput::getAtRecordKeyValue(char *key, char* value,
                                       const char* input) {
     
 #define SKIPSPACE while((index<length)&&isspace(input[index])){index++;}
@@ -1178,24 +1176,15 @@ void MusPaeInput::getAtRecordKeyValue(Array<char>& key, Array<char>& value,
     char EMPTY     = '\0';
     
     int length = strlen(input);
+    int count = 0;
     
+    // zero out strings
+    memset(key, EMPTY, MAX_DATA_LEN);
+    memset(value, EMPTY, MAX_DATA_LEN);
+
     
-    if (length == 0) {
-        key.setSize(1);
-        value.setSize(1);
-        key[0] = EMPTY;
-        value[0] = EMPTY;
+    if (length == 0)
         return;
-    }
-    
-    // pre-allocate storage space in character arrays to avoid
-    // additional allocation will appending data:
-    key.setSize(length);
-    value.setSize(length);
-    key[0] = EMPTY;
-    value[0] = EMPTY;
-    key.setSize(0);
-    value.setSize(0);
     
     char ch;
     int index = 0;
@@ -1215,51 +1204,38 @@ void MusPaeInput::getAtRecordKeyValue(Array<char>& key, Array<char>& value,
             continue;
             index++;
         }
-        ch = input[index]; key.append(ch);
+        ch = input[index]; 
+        
+        // Should never happen
+        if (count >= MAX_DATA_LEN)
+            return;
+        
+        key[count] = ch;
+        count++;
         index++;
     }
     // check to see if valid format: (:) must be the current character
     if (input[index] != SEPARATOR) {
         key[0] = EMPTY;
-        key.setSize(0);
         return;
     }
-    key.append(EMPTY); // terminate the string for regular C use of char*
     index++;
     SKIPSPACE
-    value.setSize(length - index + 1);
-    strcpy(value.getBase(), &input[index]);
-    int i;
-    for (i=value.getSize()-2; i>0; i--) {
+    
+    // Also should never happen
+    if (strlen(&input[index]) > MAX_DATA_LEN)
+        return;
+    strcpy(value, &input[index]);
+    
+    // Thruncate string to first space
+    for (int i = strlen(value) - 2; i > 0; i--) {
         if (isspace(value[i])) {
             value[i] = EMPTY;
-            value.setSize(value.getSize()-1);
             continue;
         }
         break;
     }
 }
-
-
-
-//////////////////////////////
-//
-// getLineIndex -- get the index location of the given string.
-//
-
-int MusPaeInput::getLineIndex(Array<ArrayChar>& pieces, const char* string) {
-    int index = -1;
-    int i;
-    for (i=0; i<pieces.getSize(); i++) {
-        if (strstr(pieces[i].getBase(), string) != NULL) {
-            index = i;
-            break;
-        }
-    }
-    return index;
-}
-
-
 
 // md5sum: 00d5e9dedeb47c815390eac97f8c9f42 pae2kern.cpp [20050403]
 
