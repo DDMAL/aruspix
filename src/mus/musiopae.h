@@ -31,6 +31,7 @@
 #include "musrest.h"
 #include "mussymbol.h"
 
+#define exit(x) wxLogDebug("cazz")
 
 //////////////////////////////////////////////////////////////////////////
 template<class type>
@@ -205,7 +206,7 @@ template<class type>
 void SigCollection<type>::grow(long growamt) {
     this->allocSize += growamt > 0 ? growamt : this->growthAmount;
     if (this->maxSize != 0 && this->getAllocSize() > this->maxSize) {
-        //std::cerr << "Error: Maximum size allowed for array exceeded." << std::endl;
+        wxLogDebug("Error: Maximum size allowed for array exceeded.");
         exit(1);
     }
     
@@ -287,7 +288,7 @@ type& SigCollection<type>::last(int index) {
 template<class type>
 void SigCollection<type>::setAllocSize(long aSize) {
     if (aSize < this->getSize()) {
-        //std::cerr << "Error: cannot set allocated size smaller than actual size." 
+        wxLogDebug("Error: cannot set allocated size smaller than actual size.") ;
         //<< std::endl;
         exit(1);
     }
@@ -352,7 +353,7 @@ type& SigCollection<type>::operator[](int elementIndex) {
         }
         this->size++;
     } else if ((elementIndex >= this->size) || (elementIndex < 0)) {
-        //std::cerr << "Error: accessing invalid array location " 
+        wxLogDebug ("Error: accessing invalid array location A" );
         //<< elementIndex 
         //<< " Maximum is " << this->size-1 << std::endl;
         exit(1);
@@ -369,7 +370,7 @@ type& SigCollection<type>::operator[](int elementIndex) {
 template<class type>
 type SigCollection<type>::operator[](int elementIndex) const {
     if ((elementIndex >= this->size) || (elementIndex < 0)) {
-        //std::cerr << "Error: accessing invalid array location " 
+        wxLogDebug ("Error: accessing invalid array location B") ;
         //<< elementIndex 
         //<< " Maximum is " << this->size-1 << std::endl;
         exit(1);
@@ -543,7 +544,7 @@ void Array<type>::zero(int minIndex, int maxIndex) {
     
     if (minIndex < 0 || maxIndex < 0 || minIndex > maxIndex ||
         maxIndex >= this->size) {
-        //cerr << "Error in zero function: min = " << minIndex
+        wxLogDebug ("Error in zero function: min = ");
         //<< " max = " << maxIndex << " size = " << this->size << endl;
         exit(1);
     }
@@ -622,7 +623,7 @@ Array<type>& Array<type>::operator=(const Array<type>& anArray) {
 template<class type>
 Array<type>& Array<type>::operator+=(const Array<type>& anArray) {
     if (this->size != anArray.size) {
-        //cerr << "Error: different size arrays " << this->size << " and " 
+        wxLogDebug ("Error: different size arrays " << this->size << " and " );
         //<< anArray.size << endl;
         exit(1);
     }
@@ -644,7 +645,7 @@ Array<type>& Array<type>::operator+=(const Array<type>& anArray) {
 template<class type>
 Array<type> Array<type>::operator+(const Array<type>& anArray) const {
     if (this->size != anArray.size) {
-        //cerr << "Error: different size arrays " << this->size << " and " 
+        wxLogDebug ("Error: different size arrays " << this->size << " and " );
         //<< anArray.size << endl;
         exit(1);
     }
@@ -674,7 +675,7 @@ Array<type> Array<type>::operator+(type aNumber) const {
 template<class type>
 Array<type>& Array<type>::operator-=(const Array<type>& anArray) {
     if (this->size != anArray.size) {
-        //cerr << "Error: different size arrays " << this->size << " and " 
+        wxLogDebug ("Error: different size arrays " << this->size << " and " );
         //<< anArray.size << endl;
         exit(1);
     }
@@ -696,7 +697,7 @@ Array<type>& Array<type>::operator-=(const Array<type>& anArray) {
 template<class type>
 Array<type> Array<type>::operator-(const Array<type>& anArray) const {
     if (this->size != anArray.size) {
-        //cerr << "Error: different size arrays " << this->size << " and " 
+        wxLogDebug ("Error: different size arrays " << this->size << " and ") ;
         //<< anArray.size << endl;
         exit(1);
     }
@@ -735,7 +736,7 @@ Array<type> Array<type>::operator-(type aNumber) const {
 template<class type>
 Array<type>& Array<type>::operator*=(const Array<type>& anArray) {
     if (this->size != anArray.size) {
-        //cerr << "Error: different size arrays " << this->size << " and " 
+        wxLogDebug ("Error: different size arrays " << this->size << " and " );
         //<< anArray.size << endl;
         exit(1);
     }
@@ -757,7 +758,7 @@ Array<type>& Array<type>::operator*=(const Array<type>& anArray) {
 template<class type>
 Array<type> Array<type>::operator*(const Array<type>& anArray) const {
     if (this->size != anArray.size) {
-        //cerr << "Error: different size arrays " << this->size << " and " 
+        wxLogDebug ( "Error: different size arrays " << this->size << " and ") ;
         //<< anArray.size << endl;
         exit(1);
     }
@@ -787,7 +788,7 @@ Array<type> Array<type>::operator*(type aNumber) const {
 template<class type>
 Array<type>& Array<type>::operator/=(const Array<type>& anArray) {
     if (this->size != anArray.size) {
-        //cerr << "Error: different size arrays " << this->size << " and " 
+        wxLogDebug ( "Error: different size arrays " << this->size << " and " );
         //<< anArray.size << endl;
         exit(1);
     }
@@ -809,7 +810,7 @@ Array<type>& Array<type>::operator/=(const Array<type>& anArray) {
 template<class type>
 Array<type> Array<type>::operator/(const Array<type>& anArray) const {
     if (this->size != anArray.size) {
-        //cerr << "Error: different size arrays " << this->size << " and " 
+        wxLogDebug ("Error: different size arrays " << this->size << " and " );
         //<< anArray.size << endl;
         exit(1);
     }
@@ -859,16 +860,48 @@ public:
 
 class MeasureObject {
 public:
+    
+    MeasureObject(const MeasureObject& d){ // for STL vector
+        clef = d.clef;
+        time = d.time;
+        notes = d.notes;
+        
+        key = d.key;
+        key_alteration = d.key_alteration;
+        
+        durations = d.durations;
+        dots = d.dots; 
+        durations_offset = d.durations_offset;
+        barline = d.barline;
+        abbreviation_offset = d.abbreviation_offset;  
+        wholerest = d.wholerest;
+    } 
     MeasureObject(void) { clear(); };
+    
+    MeasureObject& operator=(const MeasureObject& d){ // for STL vector
+        clef = d.clef;
+        time = d.time;
+        notes = d.notes;
+        
+        key = d.key;
+        key_alteration = d.key_alteration;
+        
+        durations = d.durations;
+        dots = d.dots; 
+        durations_offset = d.durations_offset;
+        barline = d.barline;
+        abbreviation_offset = d.abbreviation_offset;  
+        wholerest = d.wholerest;   
+        return *this;
+    } 
+     
     void   clear(void) {
-        //a_timeinfo.setSize(2);
-        //a_key.setSize(7);
-        //a_timeinfo.setAll(0);
-        //a_key.setAll(0);
-        durations.setSize(1);
-        dots.setSize(1);
-        durations.setAll(1.0);
-        dots.setAll(0);
+        durations.clear();
+        dots.clear();
+        //durations.setSize(1);
+        //dots.setSize(1);
+        //durations.setAll(1.0);
+        //dots.setAll(0);
         durations_offset = 0;
         reset();
     };
@@ -883,20 +916,14 @@ public:
     };
     MusClef *clef;
     MusMensur *time;
-    //double measure_duration;
     Array<NoteObject> notes;
-    //Array<int> a_key;
-    //std::string s_key;
-    
-    //Array<double> a_timeinfo;   
-    //std::string s_timeinfo;
-    
+
     vector<int> key;
     char key_alteration;
     
-    Array<int> durations;
-    Array<int> dots; // use the same offset as durations, they are used in parallel
-    int durations_offset;
+    vector<int> durations;
+    vector<int> dots; // use the same offset as durations, they are used in parallel
+    unsigned int durations_offset;
     std::string barline;
     int    abbreviation_offset;  
     int    wholerest;   // number of whole rests to process
@@ -950,7 +977,6 @@ private:
      
      int       getPitch            (char c_note );
      double    getDurationWithDot  (double duration, int dot);
-     void      getKey              (const char* key_str, std::string *output);
      int       getLineIndex        (Array<ArrayChar>& pieces, const char* string);
      
      // output functions

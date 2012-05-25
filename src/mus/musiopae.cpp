@@ -112,8 +112,7 @@ void MusPaeInput::convertPlainAndEasyToKern(std::istream &infile, std::ostream &
     //current_key.setSize(7);
     //current_key.setAll(0);
     
-    Array<MeasureObject> staff;
-    staff.setSize(0);
+    vector<MeasureObject> staff;
     
     // Aruspux styff
     m_div = new MusDiv();
@@ -125,7 +124,7 @@ void MusPaeInput::convertPlainAndEasyToKern(std::istream &infile, std::ostream &
         infile.getline(data_line, 10000, '\n');
         if (infile.eof()) {
             //std::cerr << "Truncated file or ending tag missing" << std::endl;
-            exit(1);
+            //exit(1);
         }
         getAtRecordKeyValue(data_key, data_value, data_line);
         if (strcmp(data_key.getBase(),"end")==0) {   
@@ -147,24 +146,10 @@ void MusPaeInput::convertPlainAndEasyToKern(std::istream &infile, std::ostream &
         }
     }
     
-    // write as comment in the output
-    /*
-     if (!quietQ) {
-     out << "!!!clef:" << c_clef << "\n";
-     out << "!!!key:" << c_key << "\n";
-     out << "!!!keysig:" << c_keysig << "\n";
-     out << "!!!timesig:" << c_timesig << "\n";
-     out << "!!!alttimesig:" << c_alttimesig << "\n";
-     out << "!!!incipit:" << incipit << "\n";
-     }
-     */
-    
     if (strlen(c_clef)) {
         getClefInfo(c_clef, &current_measure );    // do we need to put a default clef?
     }
-    if (strlen(c_key)) {
-        getKey(c_key, &s_key); // key is not stored in the measure, only for the entire piece
-    }
+
     if (strlen(c_keysig)) {
         getKeyInfo( c_keysig, &current_measure);
     }
@@ -260,8 +245,8 @@ void MusPaeInput::convertPlainAndEasyToKern(std::istream &infile, std::ostream &
         }
         
         // measure repetition
-        else if ((incipit[i] == 'i') && staff.getSize()) {
-            MeasureObject last_measure = staff[staff.getSize()-1];
+        else if ((incipit[i] == 'i') && staff.size() > 0) {
+            MeasureObject last_measure = staff[staff.size() - 1];
             current_measure.notes = last_measure.notes;
             current_measure.time = last_measure.time;
         }
@@ -270,7 +255,7 @@ void MusPaeInput::convertPlainAndEasyToKern(std::istream &infile, std::ostream &
         else if ((incipit[i] == ':') || (incipit[i] == '/')) {
             i += getBarline(incipit, &current_measure.barline, i);
             current_measure.abbreviation_offset = 0; // just in case...
-            staff.append( current_measure );
+            staff.push_back( current_measure );
             current_measure.reset();
         }
         
@@ -299,21 +284,15 @@ void MusPaeInput::convertPlainAndEasyToKern(std::istream &infile, std::ostream &
     // we need to add the last measure if it has no barline at the end
     if (current_measure.notes.getSize() != 0) {
         //current_measure.barline = "=-";
-        staff.append( current_measure );
+        staff.push_back( current_measure );
     }
     
-        
-    // output
-    out << "**kern\n";
-    out << "*MM120\n";
-    if ( s_key.length() ) {
-        out << s_key << "\n";
+            
+    vector<MeasureObject>::iterator it;
+    for ( it = staff.begin() ; it < staff.end(); it++ ) {
+        MeasureObject obj = *it;
+        printMeasure( out, &obj );
     }
-    int j = 0;
-    for (j = 0; j < staff.getSize(); j++) {
-        printMeasure( out, &staff[j] );
-    }
-    out << "*-\n\n";
     
     if (strlen(hum2abc)) {
         out << "!!!hum2abc:" << hum2abc << "\n";
@@ -350,25 +329,6 @@ int MusPaeInput::getOctave (const char* incipit, char *octave, int index ) {
         }
     }
     
-    // humdrum octave
-    /*
-    switch (*octave) {
-        case  0:  *octave = 4;  break;
-        case  1:  *octave = 4;  break;
-        case  2:  *octave = 5;  break;
-        case  3:  *octave = 6;  break;
-        case  4:  *octave = 7;  break;
-        case  5:  *octave = 8;  break;
-        case  6:  *octave = 9;  break;
-        case -1:  *octave = 3;  break;
-        case -2:  *octave = 2;  break;
-        case -3:  *octave = 1;  break;
-        case -4:  *octave = 0;  break;
-        default:  *octave = 4;
-    }
-    */
-
-    std::cout << "Occtave " << (int)*octave << std::endl;
     return i - index;
 }
 
@@ -432,20 +392,23 @@ int MusPaeInput::getDurations(const char* incipit, MeasureObject* measure, int i
     int length = strlen(incipit);
     
     measure->durations_offset = 0;
+    measure->durations.clear();
+    measure->dots.clear();
     
-    int j = 0;
+    //int j = 0;
     do {
-        measure->durations.setSize(j+1);
-        measure->dots.setSize(j+1);
-        i += getDuration(incipit, &measure->durations[j], &measure->dots[j], i );
-        j++;
+        int dur, dot;
+        //measure->dots.setSize(j+1);
+        i += getDuration(incipit, &dur, &dot, i );
+        measure->durations.push_back(dur);
+        measure->dots.push_back(dot);
+        //j++;
         if ((i+1 < length) && isdigit(incipit[i+1])) {
             i++;
         } else {
             break;
         }
     } while ( 1 );
-    //std::cout << "duration count:" << j << std::std::endl;
     
     return i - index;
 }
@@ -616,84 +579,6 @@ int MusPaeInput::getGraceNote(const char* incipit, NoteObject *note, int index )
 }
 
 
-
-//////////////////////////////
-//
-// getKey --
-//
-
-void MusPaeInput::getKey(const char* key_str, string *output) {
-    
-    std::ostringstream sout;  
-    
-    if (strcmp(key_str, "G") == 0) {
-        sout << "*G:";
-    } else if (strcmp(key_str, "C") == 0) {
-        sout << "*C:";
-    } else if (strcmp(key_str, "D") == 0) {
-        sout << "*D:";
-    } else if (strcmp(key_str, "F") == 0) {
-        sout << "*F:";
-    } else if (strcmp(key_str, "Bb") == 0) {
-        sout << "*B-:";
-    } else if (strcmp(key_str, "A") == 0) {
-        sout << "*A:";
-    } else if (strcmp(key_str, "Eb") == 0) {
-        sout << "*E-:";
-    } else if (strcmp(key_str, "g") == 0) {
-        sout << "*g:";
-    } else if (strcmp(key_str, "d") == 0) {
-        sout << "*d:";
-    } else if (strcmp(key_str, "a") == 0) {
-        sout << "*a:";
-    } else if (strcmp(key_str, "c") == 0) {
-        sout << "*c:";
-    } else if (strcmp(key_str, "e") == 0) {
-        sout << "*e:";
-    } else if (strcmp(key_str, "E") == 0) {
-        sout << "*E:";
-    } else if (strcmp(key_str, "f") == 0) {
-        sout << "*f:";
-    } else if (strcmp(key_str, "b") == 0) {
-        sout << "*b:";
-    } else if (strcmp(key_str, "Ab") == 0) {
-        sout << "*A-:";
-    } else if (strcmp(key_str, "f#") == 0) {
-        sout << "*f#:";
-    } else if (strcmp(key_str, "B") == 0) {
-        sout << "*B:";
-    } else if (strcmp(key_str, "c#") == 0) {
-        sout << "*c#:";
-    } else if (strcmp(key_str, "Bb") == 0) {
-        sout << "*B-:";
-    } else if (strcmp(key_str, "Eb") == 0) {
-        sout << "*E-:";
-    } else if (strcmp(key_str, "D>") == 0) {
-        sout << "*D-:";
-    } else if (strcmp(key_str, "F#") == 0) {
-        sout << "*F#:";
-    } else if (strcmp(key_str, "eb") == 0) {
-        sout << "*e-:";
-    } else if (strcmp(key_str, "bb") == 0) {
-        sout << "*b-:";
-    } else if (strcmp(key_str, "g#") == 0) {
-        sout << "*g#:";
-    } else if (strcmp(key_str, "G#") == 0) {
-        sout << "*G#:";
-    } else if (strcmp(key_str, "Gb") == 0) {
-        sout << "*G-:";
-    }  else {
-        sout << "!! unknown key";
-        std::cout << "Warning: unknown key: " << key_str << std::endl;
-    }
-    
-    *output = sout.str();
-    
-}
-
-
-
-
 //////////////////////////////
 //
 // getPitch --
@@ -724,7 +609,6 @@ int MusPaeInput::getPitch( char c_note ) {
         case 'G': 
             pitch = PITCH_G;
             break;
-#warning "What is this? this is the rest"
         case '-': pitch = 255; break;
         default:
             break;
@@ -1118,9 +1002,9 @@ int MusPaeInput::getNote( const char* incipit, NoteObject *note, MeasureObject *
         note->appoggiatura_multiple = false;
     }
     // durations
-    if (measure->durations.getSize()) {
+    if (measure->durations.size() > 0) {
         measure->durations_offset++;
-        if (measure->durations_offset >= measure->durations.getSize()) {
+        if (measure->durations_offset >= measure->durations.size()) {
             measure->durations_offset = 0;
         }
     }
@@ -1162,16 +1046,11 @@ void MusPaeInput::printMeasure(std::ostream& out, MeasureObject *measure ) {
         m_layer->AddLayerElement(measure->time);
     }
     
-
-    char buffer[1024] = {0};
-    int i,j;
-
-    
     // RZ ignore whole rest forn now
     if ( measure->wholerest > 0 ) {
         //out << Convert::durationToKernRhythm(buffer, measure->measure_duration);
         out << "rr\n";
-        for (i=1; i<measure->wholerest; i++) {
+        for (int i=1; i<measure->wholerest; i++) {
             out << "=\n";
             //out << Convert::durationToKernRhythm(buffer, measure->measure_duration);
             out << "rr\n";
@@ -1188,7 +1067,7 @@ void MusPaeInput::printMeasure(std::ostream& out, MeasureObject *measure ) {
         //}
     }
     
-    for (i=0; i<measure->notes.getSize(); i++) {
+    for (int i=0; i<measure->notes.getSize(); i++) {
         if (measure->notes[i].mnote->m_pname == 111110) {
             //if (measure->notes[i].tie == 1) {
             //    out << "[";
