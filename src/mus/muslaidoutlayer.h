@@ -15,7 +15,7 @@ class MusDC;
 
 #include "muslaidoutstaff.h"
 
-#define STAFF_OFFSET 190
+//#define STAFF_OFFSET 190
 
 class MusNote;
 class MusLaidOutLayerElement;

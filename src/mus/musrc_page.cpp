@@ -57,39 +57,7 @@ void MusRC::DrawPage( MusDC *dc, MusPage *page, bool background )
 //----------------------------------------------------------------------------
 
 
-// drawing 
-
-
-int MusSystem::UpdateStaffPositions( ) 
-{
-	if ( !this->Check() )
-		return this->m_yrel;
-
-	int i, yy;
-	MusLaidOutStaff *staff = NULL;
-
-	yy = this->m_yrel;
-    for (i = 0; i < this->GetStaffCount(); i++) 
-	{
-		staff = &this->m_staves[i];
-        yy -= staff->ecart * m_layout->m_interl[ staff->staffSize ];
-        //staff->clefIndex.compte = 0;
-
-		// Calcul du TAB initial, s'il y a lieu 
-		//orgx = staff->indent ? staff->indent*10 : 0;
-         
-		// calcul du point d'ancrage des curseurs au-dessus de la ligne superieure
-		staff->yrel = yy + m_layout->m_staffSize[ staff->staffSize ];
-        //wxLogMessage("staff %d, %d", i, staff->yrel ); 
-		//kPos[i].yp = staff->yrel
-        // portees ‡ 1 ou 4 lignes
-        //if (staff->portNbLine == 1)
-		//	kPos[i].yp  += m_interl[ staff->staffSize ]*2;
-        //else if (staff->portNbLine == 4)
-		//	kPos[i].yp  += m_interl[ staff->staffSize ];		
-	}
-    return yy;
-}
+// drawing
 
 
 void MusRC::DrawSystem( MusDC *dc, MusSystem *system ) 
@@ -101,6 +69,12 @@ void MusRC::DrawSystem( MusDC *dc, MusSystem *system )
 
 	int i;
     MusLaidOutStaff *staff;
+    
+    /*
+    dc->SetPen( AxRED );
+    dc->DrawLine( system->m_xrel, ToRendererY(system->m_yrel), system->m_xrel + 10, ToRendererY(system->m_yrel) );
+    dc->ResetPen();
+    */
     
     dc->StartGraphic( system, "system", wxString::Format("system_%d", system->GetId() ) );
     
@@ -593,6 +567,13 @@ void MusRC::DrawStaffLines( MusDC *dc, MusLaidOutStaff *staff, MusSystem *system
 	int j, x1, x2, yy;
 
 	yy = staff->yrel;
+    
+    /*
+    dc->SetPen( AxRED );
+    dc->DrawLine( system->m_xrel, ToRendererY(staff->yrel), system->m_xrel + 10, ToRendererY(staff->yrel) );
+    dc->ResetPen();
+    */
+    
     if ( staff->portNbLine == 1 )
 		yy  -= m_layout->m_interl[ staff->staffSize ]*2;
     else if ( staff->portNbLine == 4 )

@@ -636,6 +636,8 @@ void MusWindow::UpdateScroll()
 {
 	if (!m_currentStaff)
 		return;
+    
+    // Needs to be fixed - zoom is not taken into account
 		
 	int x = 0;
 	if ( m_currentElement )
@@ -862,9 +864,15 @@ void MusWindow::OnMouseLeave(wxMouseEvent &event)
 
 void MusWindow::OnMouseLeftDown(wxMouseEvent &event)
 {
-    /*
+
     if ( m_editorMode == MUS_EDITOR_EDIT || m_lyricMode )
 	{
+        // If we select a new item and the last item was a neume, close it
+		//if (m_currentElement && m_currentElement->IsNeume()) {
+		//	MusNeume *temp = (MusNeume*)m_currentElement;
+		//	temp->SetClosed(true);
+		//}
+        
 		wxClientDC dc( this );
 		InitDC( &dc );
 
@@ -877,21 +885,17 @@ void MusWindow::OnMouseLeftDown(wxMouseEvent &event)
 		// Picking element closest to mouse click location
 		
 		// Default selection of closest note
-		MusLaidOutStaff *noteStaff = m_page->GetAtPos( y );
-		MusElement *noteElement = noteStaff->GetAtPos( x );				
-
-		// If we select a new item and the last item was a neume, close it
-		//if (m_currentElement && m_currentElement->IsNeume()) {
-		//	MusNeume *temp = (MusNeume*)m_currentElement;
-		//	temp->SetClosed(true);
-		//}
+        m_currentSystem = m_page->GetAtPos( y );
+        // we certainly need to check pointers here!
+        m_currentStaff = m_currentSystem->GetAtPos( y );
+        m_currentLayer = m_currentStaff->GetFirst();
+		m_currentElement = m_currentLayer->GetAtPos( x );				
         
 		m_lyricMode = false;
 		m_inputLyric = false;
 		m_editorMode = MUS_EDITOR_EDIT;
-		m_currentStaff = noteStaff;
-		m_currentElement = noteElement;
 		
+        /* ax2
 		// Checking if there is a Lyric element closer to click location then default note
 		MusLaidOutStaff *lyricStaff;
 		if ( noteStaff->yrel <= (uint)(y + 80)){
@@ -916,10 +920,11 @@ void MusWindow::OnMouseLeftDown(wxMouseEvent &event)
 				m_currentElement = lyricElement;
 			}
 		}
+        */
 		
 		// Track motion on y-axis
 		if ( m_currentElement )
-			m_dragging_y_offset = y - m_currentStaff->yrel - m_currentElement->dec_y;
+			m_dragging_y_offset = y - m_currentStaff->yrel - m_currentElement->m_yrel;
 		else
 			m_dragging_y_offset = 0;
 
@@ -930,6 +935,9 @@ void MusWindow::OnMouseLeftDown(wxMouseEvent &event)
 	}
 	else  // not edit
 	{
+     
+        wxLogDebug( "MusWindow::OnMouseLeftDown missing in insert mode in ax2" );
+        /*
 		if ( event.RightIsDown() ) // copier l'element à la position du click 
 		{
 			wxClientDC dc( this );
@@ -965,12 +973,9 @@ void MusWindow::OnMouseLeftDown(wxMouseEvent &event)
 			if ( m_page->GetAtPos( y ) )
 				m_currentStaff = m_page->GetAtPos( y );
 		}
+        */
 	}
-
-	event.Skip();
-    */
-    wxLogDebug( "MusWindow::OnMouseLeftDown missing in ax2" );
-    
+	event.Skip();    
 }
 
 void MusWindow::OnMouseMotion(wxMouseEvent &event)
@@ -1066,77 +1071,111 @@ int GetNoteValue( int keycode )
  * Movement keys that are shared between all notation modes (next/prev/home/end/etc)
  */
 void MusWindow::SharedEditOnKeyDown(wxKeyEvent &event) {
-    /*
+
     if (event.m_controlDown) {
         return;
     }
     if ( event.GetKeyCode() == WXK_RIGHT || event.GetKeyCode() == WXK_SPACE ) 
     {
-        if ( m_currentStaff->GetNext( m_currentElement )) {
-            m_currentElement = m_currentStaff->GetNext( m_currentElement );
+        if ( m_currentLayer->GetNext( m_currentElement )) {
+            m_currentElement = m_currentLayer->GetNext( m_currentElement );
         }
-        else if ( m_page->GetNext( m_currentStaff ) )
+        else if ( m_page->GetNext( m_currentSystem ) )
         {
-            m_currentStaff = m_page->GetNext( m_currentStaff );
-            m_currentElement = m_currentStaff->GetFirst();
+            // we keep the staffNo in order to get the same one in the next system
+            // have no sense of "voice" and will not work with systems with different content
+            int currentStaffNo = m_currentStaff->GetStaffNo();
+            m_currentSystem = m_page->GetNext( m_currentSystem );
+            // we should check that the staff and layer pointers are valid!
+            m_currentStaff = m_currentSystem->GetStaff( currentStaffNo );
+            m_currentLayer = m_currentStaff->GetFirst();
+            m_currentElement = m_currentLayer->GetFirst();
         }
         UpdateScroll();
     }
     else if ( event.GetKeyCode() == WXK_LEFT )
     {
-        if ( m_currentStaff->GetPrevious( m_currentElement )) {
-            m_currentElement = m_currentStaff->GetPrevious( m_currentElement );
+        if ( m_currentLayer->GetPrevious( m_currentElement )) {
+            m_currentElement = m_currentLayer->GetPrevious( m_currentElement );
         }
-        else if ( m_page->GetPrevious( m_currentStaff ) )
+        else if ( m_page->GetPrevious( m_currentSystem ) )
         {
-            m_currentStaff = m_page->GetPrevious( m_currentStaff );
-            m_currentElement = m_currentStaff->GetLast();
+            int currentStaffNo = m_currentStaff->GetStaffNo();
+            m_currentSystem = m_page->GetPrevious( m_currentSystem );
+            // we should check that the staff and layer pointers are valid!
+            m_currentStaff = m_currentSystem->GetStaff( currentStaffNo );
+            m_currentLayer = m_currentStaff->GetFirst();
+            m_currentElement = m_currentLayer->GetLast();
         }
         UpdateScroll();
     }
     else if ( event.GetKeyCode() == WXK_UP )
     {
-        if ( m_page->GetPrevious( m_currentStaff ) )
+        int x = 0;
+        if ( m_currentElement ) {
+            x = m_currentElement->m_xrel;
+        }
+        // staff up in the system
+        if ( m_currentSystem->GetPrevious( m_currentStaff ) )
         {
-            int x = 0;
-            if ( m_currentElement ) {
-                x = m_currentElement->xrel;
-            }
-            m_currentStaff = m_page->GetPrevious( m_currentStaff );
-            m_currentElement = m_currentStaff->GetAtPos(x);
+            m_currentStaff = m_currentSystem->GetPrevious( m_currentStaff );
+             // we should check that the layer pointer is valid!
+            m_currentLayer = m_currentStaff->GetFirst();
+            m_currentElement = m_currentLayer->GetAtPos(x);
+            UpdateScroll();
+        }
+        // previous system
+        else if ( m_page->GetPrevious( m_currentSystem ) )
+        {
+            m_currentSystem = m_page->GetPrevious( m_currentSystem );
+            // we should check that the staff and layer pointers are valid!
+            m_currentStaff = m_currentSystem->GetLast();
+            m_currentLayer = m_currentStaff->GetFirst();
+            m_currentElement = m_currentLayer->GetAtPos(x);
             UpdateScroll();
         }
     }
     else if ( event.GetKeyCode() == WXK_DOWN )
     {
-        if ( m_page->GetNext( m_currentStaff ) )
+        int x = 0;
+        if ( m_currentElement ) {
+            x = m_currentElement->m_xrel;
+        }
+        // staff down in the system
+        if ( m_currentSystem->GetNext( m_currentStaff ) )
         {
-            int x = 0;
-            if ( m_currentElement ) {
-                x = m_currentElement->xrel;
-            }
-            m_currentStaff = m_page->GetNext( m_currentStaff );
-            m_currentElement = m_currentStaff->GetAtPos(x);
+            m_currentStaff = m_currentSystem->GetNext( m_currentStaff );
+            // we should check that the layer pointer is valid!
+            m_currentLayer = m_currentStaff->GetFirst();
+            m_currentElement = m_currentLayer->GetAtPos(x);
+            UpdateScroll();
+        }
+        // next system
+        else if ( m_page->GetNext( m_currentSystem ) )
+        {
+            m_currentSystem = m_page->GetNext( m_currentSystem );
+            // we should check that the staff and layer pointers are valid!
+            m_currentStaff = m_currentSystem->GetFirst();
+            m_currentLayer = m_currentStaff->GetFirst();
+            m_currentElement = m_currentLayer->GetAtPos(x);
             UpdateScroll();
         }
     }
     else if ( event.GetKeyCode() == WXK_HOME ) 
     {
-        if ( m_currentStaff->GetFirst( ) ) {
-            m_currentElement = m_currentStaff->GetFirst( );
+        if ( m_currentLayer->GetFirst( ) ) {
+            m_currentElement = m_currentLayer->GetFirst( );
         }
     }
     else if ( event.GetKeyCode() == WXK_END ) 
     {
-        if ( m_currentStaff->GetLast( ) ) {
-            m_currentElement = m_currentStaff->GetLast( );
+        if ( m_currentLayer->GetLast( ) ) {
+            m_currentElement = m_currentLayer->GetLast( );
         }
     }
     this->Refresh();
     OnEndEdition();
     SyncToolPanel();
-    */
-    wxLogDebug( "MusWindow::ShareEditOnKey missing in ax2" );
 }
 
 /**
@@ -1563,7 +1602,7 @@ void MusWindow::MensuralInsertOnKeyDown(wxKeyEvent &event) {
 
 void MusWindow::OnKeyDown(wxKeyEvent &event)
 {
-	if ( !m_page || !m_currentStaff ) {
+	if ( !m_page || !m_currentSystem || !m_currentStaff || !m_currentLayer ) {
 		return;
     }
 

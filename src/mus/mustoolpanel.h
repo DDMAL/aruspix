@@ -209,7 +209,7 @@ private:
     void SendEvent( wxKeyEvent event, bool set_focus = true );
     
 private:
-        MusWindow *m_w;
+    MusWindow *m_w;
 	// panels
     MusToolRow *m_tools;
     // sizers used to vertical / horizontal change

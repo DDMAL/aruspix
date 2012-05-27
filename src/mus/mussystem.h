@@ -18,6 +18,8 @@ class MusDC;
 #include "muspage.h"
 #include "musbarline.h"
 
+#define SYSTEM_OFFSET 190
+
 class MusStaff;
 
 //----------------------------------------------------------------------------
@@ -52,6 +54,7 @@ public:
 	MusLaidOutStaff *GetLast( );
 	MusLaidOutStaff *GetNext( MusLaidOutStaff *staff );
 	MusLaidOutStaff *GetPrevious( MusLaidOutStaff *staff );
+    MusLaidOutStaff *GetStaff( int StaffNo );
 	MusLaidOutStaff *GetAtPos( int y );
 
     void SetValues( int type );
@@ -69,7 +72,7 @@ public:
     //void ProcessVoices( wxArrayPtrVoid params );
     //void CountVoices( wxArrayPtrVoid params );
     
-    int UpdateStaffPositions();
+    int UpdateStaffPositions( int last_staff );
     
     
 private:

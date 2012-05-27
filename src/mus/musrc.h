@@ -197,9 +197,13 @@ public:
 
 	//const wxColour *m_currentColour;
     int m_currentColour;
+    
+    // element currently selected
 	MusLaidOutLayerElement *m_currentElement;
-
+    MusLaidOutLayer *m_currentLayer;
 	MusLaidOutStaff *m_currentStaff;
+    MusSystem *m_currentSystem;
+    
 	int m_notation_mode; // neumes or mensural notation mode
 	bool m_lyricMode;
 	bool m_inputLyric;

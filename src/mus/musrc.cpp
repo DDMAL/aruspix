@@ -29,11 +29,14 @@ MusRC::MusRC( )
 
 	m_currentColour = AxBLACK;
 	m_currentElement = NULL;
+    m_currentLayer = NULL;
 	m_currentStaff = NULL;
+    m_currentSystem = NULL;
 
 	m_lyricMode = false;
 	m_inputLyric = false;
-	m_editorMode = MUS_EDITOR_INSERT;
+    m_editorMode = MUS_EDITOR_EDIT;
+	//m_editorMode = MUS_EDITOR_INSERT;
 	
 	//m_notation_mode = MUS_MENSURAL_MODE;
     m_notation_mode = MUS_CMN_MODE;
@@ -54,8 +57,10 @@ void MusRC::SetLayout( MusLayout *layout )
 	{
 		m_layout = NULL;
 		m_page = NULL;
-        m_currentStaff = NULL;
         m_currentElement = NULL;
+        m_currentLayer = NULL;
+        m_currentStaff = NULL;
+        m_currentSystem = NULL;
         DoReset();
 		return;
 	}
@@ -92,15 +97,23 @@ void MusRC::SetPage( MusPage *page )
 	m_currentStaff = NULL;
 
 	// selectionne le premier element
-    /*
-	if ( m_page->m_staves.GetCount() > 1 )
-	{
-		m_currentStaff = &m_page->m_staves[0];
-		if (m_currentStaff && m_currentStaff->GetFirst())
-			m_currentElement = m_currentStaff->GetFirst();
+	if ( m_page->GetSystemCount() > 0 ) 
+    {
+		m_currentSystem = m_page->GetFirst();
+    	if ( m_currentSystem->GetStaffCount() > 0 ) 
+        {
+            m_currentStaff = m_currentSystem->GetFirst();
+            if (m_currentStaff->GetLayerCount() > 0 ) 
+            {
+                m_currentLayer = m_currentStaff->GetFirst();
+                if ( m_currentLayer->GetElementCount() > 0 ) 
+                {
+                    m_currentElement = m_currentLayer->GetFirst();
+                }
+            }
+        }
 	}
-    */
-    // ax2
+
 
     DoRefresh();
 }
@@ -169,39 +182,6 @@ int MusRC::ToLogicalY( int i )
         return m_layout->m_pageHeight - i; // flipped
     }
 }
-
-/*
-void MusRC::UpdateStavesPos() 
-{
-	int i, j, mPortTaille;
-    MusSystem *system;
-    MusLaidOutStaff *staff;
-
-	if ( !m_page ) 
-        return;
-       
-	int yy = m_pageMaxY; //
-    for (i = 0; i < m_page->GetSystemCount(); i++) {
-        system = &m_page->m_systems[i];
-        for (j = 0; j < system->GetStaffCount(); j++) {
-             staff = &system->m_staves[j];
-             mPortTaille = staff->staffSize;
-             yy -= staff->ecart * m_doc->m_interl[mPortTaille];
-             //staff->clefIndex.compte = 0;
-             // calcul du point d'ancrage des curseurs au-dessus de la ligne superieure
-             staff->yrel = yy + m_doc->m_staffSize[mPortTaille];
-             //kPos[j].yp = staff->yrel;
-             // portees à 1 ou 4 lignes // LP why ??
-             //if (staff->portNbLine == 1)
-             //   kPos[j].yp  += m_interl[mPortTaille]*2;
-             //else if (staff->portNbLine == 4)
-             //   kPos[j].yp  += m_interl[mPortTaille];
-             staff->xrel = m_doc->m_parameters.m_leftMarginOddPage;
-        }
-    }
-}
-*/
-
 
 bool MusRC::IsNoteSelected() 
 { 

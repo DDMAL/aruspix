@@ -121,37 +121,34 @@ MusSystem *MusPage::GetPrevious( MusSystem *system  )
 
 MusSystem *MusPage::GetAtPos( int y )
 {
-/*
-	y += ( STAFF_OFFSET / 2 );
-	MusLaidOutStaff *staff = this->GetFirst();
-	if ( !staff )
+
+	y += ( SYSTEM_OFFSET / 2 );
+    MusSystem *system = this->GetFirst();
+	if ( !system )
 		return NULL;
 	
-	int dif =  abs( staff->yrel - y );
-	while ( this->GetNext(staff) )
+	int dif =  abs( system->m_yrel - y );
+	while ( this->GetNext(system) )
 	{
-		if ( (int)staff->yrel < y )
+		if ( (int)system->m_yrel < y )
 		{
 			// one too much
-			if ( this->GetPrevious( staff ) ){
-				staff = this->GetPrevious( staff );
-				if ( dif < abs( staff->yrel - y ) )
-					staff = this->GetNext( staff );
+			if ( this->GetPrevious( system ) ){
+				system = this->GetPrevious( system );
+				if ( dif < abs( system->m_yrel - y ) )
+					system = this->GetNext( system );
 			}
 				
-			return staff;
+			return system;
 		}
-		staff = this->GetNext( staff );
-		dif = abs( staff->yrel - y );
+		system = this->GetNext( system );
+		dif = abs( system->m_yrel - y );
 	}
 
-	if ( ( (int)staff->yrel < y )  && this->GetPrevious( staff ) )
-		staff = this->GetPrevious( staff );
+	if ( ( (int)system->m_yrel < y )  && this->GetPrevious( system ) )
+		system = this->GetPrevious( system );
 
-	return staff;
-*/
-    wxLogDebug("TODO");
-    return NULL;
+	return system;
 }
 
 void MusPage::SetValues( int type )
@@ -291,9 +288,7 @@ void MusPage::UpdateSystemPositions( )
     for (i = 0; i < this->GetSystemCount(); i++) 
 	{
 		system = &this->m_systems[i];
-        //system->Init( m_r );
-        system->m_yrel = yy;
-        yy = system->UpdateStaffPositions( );
+        yy = system->UpdateStaffPositions( yy );
     }
 }
 
