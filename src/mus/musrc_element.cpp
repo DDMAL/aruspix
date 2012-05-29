@@ -374,6 +374,8 @@ void MusRC::DrawNote ( MusDC *dc, MusLaidOutLayerElement *element, MusLaidOutLay
 			x1 -= m_layout->m_accidWidth[staffSize][note->m_cueSize];
 		MusSymbol accid( SYMBOL_ACCID );
 		//symb.Init( m_r );
+        accid.m_oct = note->m_oct;
+        accid.m_pname = note->m_pname;
 		accid.m_accid = note->m_accid;
         MusLaidOutLayerElement accidElement( &accid );
         accidElement.m_xrel = x1;
@@ -940,7 +942,7 @@ void MusRC::DrawMensur( MusDC *dc, MusLaidOutLayerElement *element, MusLaidOutLa
     wxASSERT_MSG( layer, "Pointer to layer cannot be NULL" );
     wxASSERT_MSG( staff, "Pointer to staff cannot be NULL" );
     wxASSERT_MSG( dynamic_cast<MusMensur*>(element->m_layerElement), "Element must be a MusMensur" );
-    
+
     MusMensur *mensur = dynamic_cast<MusMensur*>(element->m_layerElement);
  
     dc->StartGraphic( element, "mensur", wxString::Format("s_%d_%d_%d", staff->GetId(), layer->voix, element->GetId()) );

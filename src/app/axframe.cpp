@@ -463,8 +463,9 @@ void AxFrame::LoadConfig()
 #if defined(__WXMSW__)
 	wxGetApp().m_musicFontDesc = pConfig->Read("MusicFontDesc", "0;-13;0;0;0;400;0;0;0;2;3;2;1;2;Leipzig 4.3" );
 	wxGetApp().m_lyricFontDesc = pConfig->Read("LyricFontDesc", "0;-13;0;0;0;400;0;0;0;2;3;2;1;2;Leipzig 4.3" );
-#else // OS X	
-	wxGetApp().m_musicFontDesc = pConfig->Read("MusicFontDesc", "0;13;70;90;90;0;Leipzig 4.6;0" ); // on OS X
+#else // OS X
+    // Get version 4.7, with windows encoding (33, should be wxFONTENCODING_CP1252, WinLatin1)
+	wxGetApp().m_musicFontDesc = pConfig->Read("MusicFontDesc", "0;13;70;90;90;0;Leipzig 4.7;33" ); // on OS X
 	//?? not sure what i'm really doing here but let's try it anyway
     //wxGetApp().m_neumeFontDesc = pConfig->Read("NeumeFontDesc", "0;13;70;90;90;0;FestaDiesA;0" );
 	wxGetApp().m_neumeFontDesc = pConfig->Read("NeumeFontDesc", "0;53;70;90;90;0;Festa Dies A;0" );

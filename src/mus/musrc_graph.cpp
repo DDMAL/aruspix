@@ -238,7 +238,7 @@ void MusRC::DrawLeipzigFont ( MusDC *dc, int x, int y, unsigned char c,
 	{	
 		dc->SetBackground( AxBLUE );
 		dc->SetBackgroundMode( wxTRANSPARENT );
-	
+
 		m_str = (char)c;
 		dc->SetTextForeground( m_currentColour );
         dc->SetPen( m_currentColour, 1, wxSOLID );
