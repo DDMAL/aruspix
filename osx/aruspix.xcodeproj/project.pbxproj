@@ -89,7 +89,6 @@
 		57CA54260D34139D001FC334 /* axapp_wdr.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 57CA541F0D34139D001FC334 /* axapp_wdr.cpp */; };
 		57CA54270D34139D001FC334 /* axabout_wdr.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 57CA54210D34139D001FC334 /* axabout_wdr.cpp */; };
 		57EA3DE50C00BDEB00414247 /* recbookctrl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 57EA3DE30C00BDEB00414247 /* recbookctrl.cpp */; };
-		8F96842E156E204B00772EA4 /* libmei_lib.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8F96842C156E1CDE00772EA4 /* libmei_lib.a */; };
 		8F9F1A17156143A200C7D6F9 /* musiopae.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8F9F1A15156143A200C7D6F9 /* musiopae.cpp */; };
 		A125A6741342A4B30038F7BC /* musneume.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4DC24AB5119B72C900B2EF98 /* musneume.cpp */; };
 		A12B0561137C50AF007D2546 /* gtest_main.cc in Sources */ = {isa = PBXBuildFile; fileRef = A12B055F137C50AF007D2546 /* gtest_main.cc */; };
@@ -290,7 +289,6 @@
 		57CA54210D34139D001FC334 /* axabout_wdr.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = axabout_wdr.cpp; sourceTree = "<group>"; };
 		57EA3DE30C00BDEB00414247 /* recbookctrl.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = recbookctrl.cpp; sourceTree = "<group>"; };
 		57EA3DE40C00BDEB00414247 /* recbookctrl.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = recbookctrl.h; sourceTree = "<group>"; };
-		8F96842C156E1CDE00772EA4 /* libmei_lib.a */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.objfile"; path = libmei_lib.a; sourceTree = "<group>"; };
 		8F9F1A15156143A200C7D6F9 /* musiopae.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = musiopae.cpp; path = ../src/mus/musiopae.cpp; sourceTree = "<group>"; };
 		8F9F1A16156143A200C7D6F9 /* musiopae.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = musiopae.h; path = ../src/mus/musiopae.h; sourceTree = "<group>"; };
 		A12B055F137C50AF007D2546 /* gtest_main.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = gtest_main.cc; path = ../test/gtest_main.cc; sourceTree = SOURCE_ROOT; };
@@ -352,14 +350,6 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		8F96842D156E203200772EA4 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				8F96842E156E204B00772EA4 /* libmei_lib.a in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		A1A6E179134254220024A821 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -573,7 +563,6 @@
 				4D47AB771047B128005FB374 /* edition */,
 				4DC24AA3119B716F00B2EF98 /* rtmidi */,
 				A58508C20A00113C006E82B1 /* Products */,
-				8F96842C156E1CDE00772EA4 /* libmei_lib.a */,
 			);
 			sourceTree = "<group>";
 		};
@@ -755,7 +744,6 @@
 				A58508BD0A00113C006E82B1 /* Resources */,
 				A58508BE0A00113C006E82B1 /* Sources */,
 				A53C6B510A0179E20091B625 /* ShellScript */,
-				8F96842D156E203200772EA4 /* Frameworks */,
 			);
 			buildRules = (
 			);
@@ -998,7 +986,6 @@
 					"$(ARUSPIX_IMLIB)/lib",
 					"$(ARUSPIX_WX)/osx-static/lib",
 					/usr/lib,
-					"\"$(SRCROOT)\"",
 				);
 				OBJROOT = "$(PROJECT_DIR)/../obj";
 				OTHER_CFLAGS = (
@@ -1011,6 +998,8 @@
 					"-DAX_SUPERIMPOSITION",
 				);
 				OTHER_LDFLAGS = (
+					"-framework",
+					mei,
 					"-framework",
 					CoreMidi,
 					"-framework",
@@ -1053,42 +1042,6 @@
 					"-Wmost",
 					"-Wno-four-char-constants",
 					"-Wno-unknown-pragmas",
-				);
-				WARNING_LDFLAGS = (
-					"-framework",
-					CoreMidi,
-					"-framework",
-					CoreAudio,
-					"-framework",
-					CoreFoundation,
-					"-lz",
-					"-lpthread",
-					"-framework",
-					QuickTime,
-					"-framework",
-					IOKit,
-					"-framework",
-					Carbon,
-					"-framework",
-					Cocoa,
-					"-framework",
-					OpenGL,
-					"-framework",
-					System,
-					"-liconv",
-					"-lim",
-					"-lim_process",
-					"-lim_fftw",
-					"-lwx_macd_core-$(ARUSPIX_WX_VERSION)",
-					"-lwx_base_carbond-$(ARUSPIX_WX_VERSION)",
-					"-lwx_base_carbond_net-$(ARUSPIX_WX_VERSION)",
-					"-lwx_macd_html-$(ARUSPIX_WX_VERSION)",
-					"-lwx_macd_adv-$(ARUSPIX_WX_VERSION)",
-					"-lwx_macd_aui-$(ARUSPIX_WX_VERSION)",
-					"-lwxpngd-$(ARUSPIX_WX_VERSION)",
-					"-lwxjpegd-$(ARUSPIX_WX_VERSION)",
-					"-lxml2",
-					"-lmeil_lib",
 				);
 			};
 			name = ReleaseSuperimposition;
@@ -1320,7 +1273,7 @@
 				ALWAYS_SEARCH_USER_PATHS = YES;
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				COPY_PHASE_STRIP = YES;
-				FRAMEWORK_SEARCH_PATHS = "";
+				FRAMEWORK_SEARCH_PATHS = "$(ARUSPIX_MEI)";
 				GCC_DEBUGGING_SYMBOLS = default;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
@@ -1336,7 +1289,6 @@
 					"$(ARUSPIX_WX)/include",
 					"$(ARUSPIX_WX)/contrib/include",
 					"/usr/include/libxml2/**",
-					"$(ARUSPIX_MEI)/build/Debug/include/**",
 				);
 				INFOPLIST_FILE = "Aruspix-Info.plist";
 				INSTALL_PATH = "$(USER_APPS_DIR)";
@@ -1345,8 +1297,6 @@
 					"$(ARUSPIX_IMLIB)/lib",
 					"$(ARUSPIX_WX)/osx-static-debug/lib",
 					/usr/lib,
-					"$(ARUSPIX_MEI)/build/Debug/**",
-					"\"$(SRCROOT)\"",
 				);
 				OBJROOT = "$(PROJECT_DIR)/../obj";
 				OTHER_CFLAGS = (
@@ -1363,6 +1313,8 @@
 					"-DAX_EDITION",
 				);
 				OTHER_LDFLAGS = (
+					"-framework",
+					mei,
 					"-framework",
 					CoreMidi,
 					"-framework",
@@ -1408,42 +1360,6 @@
 					"-Wno-four-char-constants",
 					"-Wno-unknown-pragmas",
 				);
-				WARNING_LDFLAGS = (
-					"-framework",
-					CoreMidi,
-					"-framework",
-					CoreAudio,
-					"-framework",
-					CoreFoundation,
-					"-lz",
-					"-lpthread",
-					"-framework",
-					QuickTime,
-					"-framework",
-					IOKit,
-					"-framework",
-					Carbon,
-					"-framework",
-					Cocoa,
-					"-framework",
-					OpenGL,
-					"-framework",
-					System,
-					"-liconv",
-					"-lim",
-					"-lim_process",
-					"-lim_fftw",
-					"-lwx_macd_core-$(ARUSPIX_WX_VERSION)",
-					"-lwx_base_carbond-$(ARUSPIX_WX_VERSION)",
-					"-lwx_base_carbond_net-$(ARUSPIX_WX_VERSION)",
-					"-lwx_macd_html-$(ARUSPIX_WX_VERSION)",
-					"-lwx_macd_adv-$(ARUSPIX_WX_VERSION)",
-					"-lwx_macd_aui-$(ARUSPIX_WX_VERSION)",
-					"-lwxpngd-$(ARUSPIX_WX_VERSION)",
-					"-lwxjpegd-$(ARUSPIX_WX_VERSION)",
-					"-lxml2",
-					"-lmeil_lib",
-				);
 			};
 			name = Debug;
 		};
@@ -1474,7 +1390,6 @@
 					"$(ARUSPIX_IMLIB)/lib",
 					"$(ARUSPIX_WX)/osx-static/lib",
 					/usr/lib,
-					"\"$(SRCROOT)\"",
 				);
 				OBJROOT = "$(PROJECT_DIR)/../obj";
 				OTHER_CFLAGS = (
@@ -1489,6 +1404,8 @@
 					"-DAX_EDITION",
 				);
 				OTHER_LDFLAGS = (
+					"-framework",
+					mei,
 					"-framework",
 					CoreMidi,
 					"-framework",
@@ -1531,42 +1448,6 @@
 					"-Wmost",
 					"-Wno-four-char-constants",
 					"-Wno-unknown-pragmas",
-				);
-				WARNING_LDFLAGS = (
-					"-framework",
-					CoreMidi,
-					"-framework",
-					CoreAudio,
-					"-framework",
-					CoreFoundation,
-					"-lz",
-					"-lpthread",
-					"-framework",
-					QuickTime,
-					"-framework",
-					IOKit,
-					"-framework",
-					Carbon,
-					"-framework",
-					Cocoa,
-					"-framework",
-					OpenGL,
-					"-framework",
-					System,
-					"-liconv",
-					"-lim",
-					"-lim_process",
-					"-lim_fftw",
-					"-lwx_macd_core-$(ARUSPIX_WX_VERSION)",
-					"-lwx_base_carbond-$(ARUSPIX_WX_VERSION)",
-					"-lwx_base_carbond_net-$(ARUSPIX_WX_VERSION)",
-					"-lwx_macd_html-$(ARUSPIX_WX_VERSION)",
-					"-lwx_macd_adv-$(ARUSPIX_WX_VERSION)",
-					"-lwx_macd_aui-$(ARUSPIX_WX_VERSION)",
-					"-lwxpngd-$(ARUSPIX_WX_VERSION)",
-					"-lwxjpegd-$(ARUSPIX_WX_VERSION)",
-					"-lxml2",
-					"-lmeil_lib",
 				);
 			};
 			name = Release;
