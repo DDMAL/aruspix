@@ -13,6 +13,13 @@
 #endif
 
 #include "musrc.h"
+// elements
+#include "musbarline.h"
+#include "musclef.h"
+#include "musmensur.h"
+#include "musnote.h"
+#include "musrest.h"
+#include "mussymbol.h"
 
 #include "app/axundo.h"
 
@@ -39,9 +46,7 @@ enum
 // save either staff, page or file depending on operation
 enum
 {
-	MUS_UNDO_STAFF = 0,
-	MUS_UNDO_PAGE,
-	MUS_UNDO_FILE
+	MUS_UNDO_FILE = 0
 };
 
 //----------------------------------------------------------------------------
@@ -120,19 +125,22 @@ public:
 	/** indique si la page doit etre centree asi elle n'occupe pas toute la fenetre */
 	bool m_center;
 
-	MusLaidOutLayerElement *m_newElement;
-	MusLaidOutLayerElement *m_bufferElement;
+	MusLayerElement *m_newElement;
+	MusLayerElement *m_bufferElement;
 	MusLaidOutLayerElement *m_lastEditedElement;
 
 	// keep elements statically - m_newElement will point on them
-	/*MusNote m_note;
+    MusBarline m_barline;
+	MusClef m_clef;
+    MusMensur m_mensur;
+    MusNote m_note;
+    MusRest m_rest;
 	MusSymbol m_symbol;
-	MusNeume m_neume;
-	MusNeumeSymbol m_neumesymbol;*/ // ax2
 
-	int m_insertx;
-	int m_insertcode;
-	int m_insertoct;
+
+	int m_insert_x;
+	int m_insert_pname;
+	int m_insert_oct;
 	int m_dragging_x;
 	int m_dragging_y_offset;
 	bool m_has_been_dragged;

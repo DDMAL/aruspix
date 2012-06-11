@@ -394,8 +394,8 @@ bool MusMeiOutput::WriteSystem( MusSystem *system )
     m_system = new System();
     m_system->setId( GetMeiUuid( system ));
     // x - y positions (to be corrected)
-    m_system->m_Coordinated.setUlx( wxString::Format( "%d", system->m_xrel ).c_str() );
-    m_system->m_Coordinated.setUly( wxString::Format( "%d", system->m_yrel ).c_str() );
+    m_system->m_Coordinated.setUlx( wxString::Format( "%d", system->m_x_abs ).c_str() );
+    m_system->m_Coordinated.setUly( wxString::Format( "%d", system->m_y_abs ).c_str() );
     m_page->addChild( m_system );
     return true;
 }
@@ -406,8 +406,8 @@ bool MusMeiOutput::WriteLaidOutStaff( MusLaidOutStaff *laidOutStaff )
     m_laidOutStaff = new LaidOutStaff();
     m_laidOutStaff->setId( GetMeiUuid( laidOutStaff ));
     // x - y positions (to be corrected)
-    m_laidOutStaff->m_Coordinated.setUlx( wxString::Format( "%d", laidOutStaff->xrel ).c_str() );
-    m_laidOutStaff->m_Coordinated.setUly( wxString::Format( "%d", laidOutStaff->yrel ).c_str() );
+    m_laidOutStaff->m_Coordinated.setUlx( wxString::Format( "%d", laidOutStaff->m_x_abs ).c_str() );
+    m_laidOutStaff->m_Coordinated.setUly( wxString::Format( "%d", laidOutStaff->m_y_abs ).c_str() );
     m_system->addChild( m_laidOutStaff );
     return true;
 }
@@ -427,8 +427,8 @@ bool MusMeiOutput::WriteLaidOutLayerElement( MusLaidOutLayerElement *laidOutLaye
     LaidOutElement *element = new LaidOutElement();
     element->setId( GetMeiUuid( laidOutLayerElement ));
     // x - y position (to be corrected)
-    element->m_Coordinated.setUlx( wxString::Format( "%d", laidOutLayerElement->m_xrel ).c_str() );
-    //element->m_Coordinated.setUly( wxString::Format( "%d", laidOutLayerElement->m_yrel ).c_str() );
+    element->m_Coordinated.setUlx( wxString::Format( "%d", laidOutLayerElement->m_x_abs ).c_str() );
+    //element->m_Coordinated.setUly( wxString::Format( "%d", laidOutLayerElement->m_y_abs ).c_str() );
     // pointer to the logical element
     element->m_Pointing.setTarget(GetMeiUuid( laidOutLayerElement->m_layerElement ) );
     m_laidOutLayer->addChild( element );

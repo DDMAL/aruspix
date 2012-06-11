@@ -872,8 +872,8 @@ bool RecFile::RealizeFromMLF( wxArrayPtrVoid params, AxProgressDlg *dlg )
         imStaff = &m_imPagePtr->m_staves[i];
         MusSystem *musSystem = new MusSystem();
         musSystem->lrg_lign = (x2 - x1) / 10;
-        MusLaidOutStaff *musStaff = new MusLaidOutStaff( logStaff );
-        MusLaidOutLayer *musLayer = new MusLaidOutLayer( logLayer );
+        MusLaidOutStaff *musStaff = new MusLaidOutStaff( 0 );
+        MusLaidOutLayer *musLayer = new MusLaidOutLayer( 0 ); // only one layer per staff
         //musLayer->no = nb; ?? // ax2
         musSystem->indent = imStaff->CalcIndentation( x1 );
         musStaff->ecart = (m_imPagePtr->ToViewY( imStaff->m_y ) -  previous ) / musPage->defin;

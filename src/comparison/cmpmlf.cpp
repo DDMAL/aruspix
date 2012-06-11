@@ -289,7 +289,7 @@ bool CmpMLFInput::ReadLabel( MusLaidOutStaff *staff )
 			if ( s )
 			{
 				e = s;
-				s->xrel = m_cmp_pos;
+				s->m_x_abs = m_cmp_pos;
 				staff->m_elements.Add( s );
 			}
 		}
@@ -299,7 +299,7 @@ bool CmpMLFInput::ReadLabel( MusLaidOutStaff *staff )
 			if ( n )
 			{
 				e = n;
-				n->xrel = m_cmp_pos;
+				n->m_x_abs = m_cmp_pos;
 				staff->m_elements.Add( n );
 			}
 		}

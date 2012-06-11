@@ -137,7 +137,7 @@ void MusRC::DrawBeam(  MusDC *dc, MusLaidOutLayer *layer, MusLaidOutStaff *staff
 	/***if (e_t->_shport) { provshp = e_t->_shport; shportee (0);}***/
 		/* retablir a la fin si provshp existe */
 
-	low = chk->m_yrel + staff->yrel;	/* initialiser */
+	low = chk->m_y_abs + staff->m_y_abs;	/* initialiser */
     k = ((MusNote*)chk->m_layerElement)->m_colored ? ((MusNote*)chk->m_layerElement)->m_dur+1 : ((MusNote*)chk->m_layerElement)->m_dur;
 	valref = k;		/* m_dur test conservee */
     //	valref = chk->m_dur;		/* m_dur test conservee */
@@ -153,7 +153,7 @@ void MusRC::DrawBeam(  MusDC *dc, MusLaidOutLayer *layer, MusLaidOutStaff *staff
         dx[0] -= (m_layout->m_env.m_stemWidth)/2;
         dx[1] -= (m_layout->m_env.m_stemWidth)/2;
     }
-	_yy[0] = staff->yrel;	
+	_yy[0] = staff->m_y_abs;	
 
     /***
 	if (calcBeam)	// eviter side-effect de circuit...
@@ -191,7 +191,7 @@ void MusRC::DrawBeam(  MusDC *dc, MusLaidOutLayer *layer, MusLaidOutStaff *staff
 				fb.mrq_port = chk->_shport;
             }***/
 
-			(crd+ct)->a = chk->m_xrel + chk->m_layerElement->m_hOffset - m_layout->m_env.m_stemWidth / 2;		/* enregistrement des coord. */
+			(crd+ct)->a = chk->m_x_abs + chk->m_layerElement->m_hOffset - m_layout->m_env.m_stemWidth / 2;		/* enregistrement des coord. */
 			(crd+ct)->vlr = k;
 			if (((MusNote*)chk->m_layerElement)->m_breakSec && ct)
 			/* enregistr. des ruptures de beaming; des la 2e note;(autrement idiot)*/
@@ -219,7 +219,7 @@ void MusRC::DrawBeam(  MusDC *dc, MusLaidOutLayer *layer, MusLaidOutStaff *staff
 	}	while (ct < NbREL);
 
     // SECURITE : EVITER DE BARRER UN ACCORD ISOLE...
-	if (chk->IsNote() && (((MusNote*)chk->m_layerElement)->m_chord & CHORD_TERMINAL)  && (chk->m_xrel == layer->beamListPremier->m_xrel))
+	if (chk->IsNote() && (((MusNote*)chk->m_layerElement)->m_chord & CHORD_TERMINAL)  && (chk->m_x_abs == layer->beamListPremier->m_x_abs))
 	{	chk = layer->beamListPremier;
 		do {	
                 ((MusNote*)chk->m_layerElement)->m_beam[0] = 0;
@@ -239,36 +239,36 @@ void MusRC::DrawBeam(  MusDC *dc, MusLaidOutLayer *layer, MusLaidOutStaff *staff
 	if (fb.mrq_port)
 	// le y le plus haut est dans _yy[0] 
 	{	if (fb.mrq_port==1)
-		{	_yy[0] = (this != phead) ? staff->ptr_pp->m_yrel : staff->yrel; 
-			_yy[1] = staff->yrel;
+		{	_yy[0] = (this != phead) ? staff->ptr_pp->m_y_abs : staff->m_y_abs; 
+			_yy[1] = staff->m_y_abs;
 		}
 		else
-		{	_yy[1] = (this != ptail) ? staff->ptr_fp->m_yrel : staff->yrel; 
-			_yy[0] = staff->yrel;
+		{	_yy[1] = (this != ptail) ? staff->ptr_fp->m_y_abs : staff->m_y_abs; 
+			_yy[0] = staff->m_y_abs;
 		}
 	}
     ***/
 	for (i = 0; i < ct; i++)
 	{	switch (fb.mrq_port)
 		{	case 0: crd[i].prov = OFF;
-					(crd+i)->b = crd[i].chk->m_yrel+staff->yrel;
+					(crd+i)->b = crd[i].chk->m_y_abs+staff->m_y_abs;
 					break;
 			case 1: if (crd[i].chk->m_layerElement->m_staffShift)
 					{	crd[i].prov = ON;
-						(crd+i)->b = crd[i].chk->m_yrel + _yy[0];
+						(crd+i)->b = crd[i].chk->m_y_abs + _yy[0];
 					}
 					else
 					{	crd[i].prov = OFF;
-						(crd+i)->b = crd[i].chk->m_yrel + _yy[1];
+						(crd+i)->b = crd[i].chk->m_y_abs + _yy[1];
 					}
 					break;
 			case 2: if (crd[i].chk->m_layerElement->m_staffShift)
 					{	crd[i].prov = OFF;
-						(crd+i)->b = crd[i].chk->m_yrel + _yy[1];
+						(crd+i)->b = crd[i].chk->m_y_abs + _yy[1];
 					}
 					else
 					{	crd[i].prov = ON;
-						(crd+i)->b = crd[i].chk->m_yrel + _yy[0];
+						(crd+i)->b = crd[i].chk->m_y_abs + _yy[0];
 					}
 		}
 		high= max ((double)(crd+i)->b,high);		/* enregistrement des extremes */
@@ -516,22 +516,22 @@ if (fPente)
 				 && (!((MusNote*)(crd+i)->chk)->m_chord || (((MusNote*)(crd+i)->chk)->m_chord & CHORD_TERMINAL)))
 			// les cas non traités par note()
 /*			{	if (fb.dir || (fb.mrq_port && m_stemLen && !crd[i].prov))
-					putStacc (dc,crd[i].a-dx[crd[i].chk->dimin],fy1+e_t->m_layout->m_interl[staff->staffSize]-staff->yrel, 0,crd[i].chk->typStac);
+					putStacc (dc,crd[i].a-dx[crd[i].chk->dimin],fy1+e_t->m_layout->m_interl[staff->staffSize]-staff->m_y_abs, 0,crd[i].chk->typStac);
 				else
-					putStacc (dc,crd[i].a-dx[crd[i].chk->dimin],fy1-e_t->m_layout->m_interl[staff->staffSize]-staff->yrel, -1,crd[i].chk->typStac);
+					putStacc (dc,crd[i].a-dx[crd[i].chk->dimin],fy1-e_t->m_layout->m_interl[staff->staffSize]-staff->m_y_abs, -1,crd[i].chk->typStac);
 			}
 */
 			{	
                 /***if (fb.mrq_port && extern_q_auto)
 				{	if (crd[i].prov)
-						putStacc (dc,crd[i].a+dx[crd[i].chk->dimin],fy1-e_t->m_layout->m_interl[staff->staffSize]-staff->yrel, -1,crd[i].chk->typStac);
+						putStacc (dc,crd[i].a+dx[crd[i].chk->dimin],fy1-e_t->m_layout->m_interl[staff->staffSize]-staff->m_y_abs, -1,crd[i].chk->typStac);
 					else
-						putStacc (dc,crd[i].a-dx[crd[i].chk->dimin],fy1+e_t->m_layout->m_interl[staff->staffSize]-staff->yrel, 0,crd[i].chk->typStac);
+						putStacc (dc,crd[i].a-dx[crd[i].chk->dimin],fy1+e_t->m_layout->m_interl[staff->staffSize]-staff->m_y_abs, 0,crd[i].chk->typStac);
 				}
 				else if (fb.dir)
-					putStacc (dc,crd[i].a-dx[crd[i].chk->dimin],fy1+e_t->m_layout->m_interl[staff->staffSize]-staff->yrel, 0,crd[i].chk->typStac);
+					putStacc (dc,crd[i].a-dx[crd[i].chk->dimin],fy1+e_t->m_layout->m_interl[staff->staffSize]-staff->m_y_abs, 0,crd[i].chk->typStac);
 				else
-					putStacc (dc,crd[i].a-dx[crd[i].chk->dimin],fy1-e_t->m_layout->m_interl[staff->staffSize]-staff->yrel, -1,crd[i].chk->typStac);
+					putStacc (dc,crd[i].a-dx[crd[i].chk->dimin],fy1-e_t->m_layout->m_interl[staff->staffSize]-staff->m_y_abs, -1,crd[i].chk->typStac);
                 ***/
 			}
 

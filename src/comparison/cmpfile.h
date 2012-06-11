@@ -96,7 +96,7 @@ public:
     wxString m_id;
 	wxString m_name;
 	ArrayOfCmpCollationParts m_collationParts; // to be modified to an extended object with position for refinement
-	int m_length; // xrel of the last element of the reference staff + 50 (used to build the file)
+	int m_length; // x_abs of the last element of the reference staff + 50 (used to build the file)
 	// for dislpay in the tree
 	wxTreeItemId m_colId;
 	

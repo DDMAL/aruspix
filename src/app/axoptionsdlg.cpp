@@ -527,7 +527,7 @@ AxOptMusWindow::AxOptMusWindow( wxWindow *parent, wxWindowID id,
     MusSymbol1 *clef = new MusSymbol1();
     clef->flag = CLE;
     clef->code = UT3;
-    clef->xrel = 95;
+    clef->m_x_abs = 95;
     
     staff->m_elements.Add( clef );
     page->m_staves.Add( staff );

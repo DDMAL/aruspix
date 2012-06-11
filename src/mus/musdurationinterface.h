@@ -21,6 +21,8 @@
 #define TUPLET_MEDIAL  (1<<2) 
 #define TUPLET_TERMINAL  (1<<3)
 
+#define DURATION_MAX_BEAMS 6
+#define DURATION_MAX_TUPLETS 6
 
 //----------------------------------------------------------------------------
 // MusDurationInterface
@@ -41,7 +43,7 @@ private:
     
 public:
     /** Indicates if intial, medial or termial part of a beam for up to 6 nesting/overlaping beams */
-    unsigned char m_beam[6];
+    unsigned char m_beam[DURATION_MAX_BEAMS];
     /** Indicates a break in the beaming */
     unsigned char m_breakSec;
     /** Indicates the number of augmentation dots */
@@ -53,7 +55,7 @@ public:
     /** Indicates the denominator of the duration ratio */
     int m_numBase;
     /** Indicates if intial, medial or termial part of a tuplet for up to 6 nesting/overlaping tuplets */
-    unsigned char m_tuplet[6];
+    unsigned char m_tuplet[DURATION_MAX_TUPLETS];
 
     
 

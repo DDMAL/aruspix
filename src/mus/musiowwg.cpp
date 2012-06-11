@@ -448,7 +448,7 @@ bool MusWWGOutput::WriteLayer( const MusLaidOutLayer *layer )
     
         MusLaidOutLayerElement *element = &layer->m_elements[k];
         // position x for all elmements
-        xrel = element->m_xrel;
+        xrel = element->m_x_abs;
         if (dynamic_cast<MusBarline*>(element)) {
             TYPE = SYMB;
             WriteSymbol();
@@ -886,8 +886,8 @@ bool MusWWGInput::ReadPage( MusPage *page )
         m_logLayer = dynamic_cast<MusLayer*> (&m_logStaff->m_layers[0]);
         wxASSERT_MSG( m_logLayer, "MusLayer cannot be NULL" );
         
-		MusLaidOutStaff *staff = new MusLaidOutStaff( m_logStaff );
-        MusLaidOutLayer *layer = new MusLaidOutLayer( m_logLayer );
+		MusLaidOutStaff *staff = new MusLaidOutStaff( j );
+        MusLaidOutLayer *layer = new MusLaidOutLayer( 0 ); // only one layer per staff
 		ReadStaff( staff, layer );
         if ( m_noLigne > system_no + 1 ) { // we have a new system
             page->AddSystem( system ); // add the current one
@@ -1060,7 +1060,7 @@ bool MusWWGInput::ReadNote( MusLaidOutLayer *layer )
     if ( layer_element ) {
         m_logLayer->AddLayerElement( layer_element );
         MusLaidOutLayerElement *element = new MusLaidOutLayerElement( layer_element );
-        element->m_xrel = xrel;
+        element->m_x_abs = xrel;
         layer->AddElement( element );
     }
        
@@ -1072,7 +1072,7 @@ bool MusWWGInput::ReadNote( MusLaidOutLayer *layer )
             // default values
             MusSymbol1 *lyric = m_lyrics.Detach(0);
             lyric->dec_y = - STAFF_OFFSET;
-            lyric->xrel = xrel - 20;
+            lyric->m_x_abs = x_abs - 20;
             lyric->m_note_ptr = note;	
             m_lyrics.Add( lyric );
         }
@@ -1165,7 +1165,7 @@ bool MusWWGInput::ReadSymbol( MusLaidOutLayer *layer )
     if ( layer_element ) {
         m_logLayer->AddLayerElement( layer_element );
         MusLaidOutLayerElement *element = new MusLaidOutLayerElement( layer_element );
-        element->m_xrel = xrel;
+        element->m_x_abs = xrel;
         layer->AddElement( element );
     }
 

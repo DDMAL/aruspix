@@ -32,8 +32,8 @@ MusLaidOutLayerElement::MusLaidOutLayerElement():
 {
     m_layerElement = NULL;
     m_layer = NULL;
-    m_xrel = 0;
-    m_yrel = 0;
+    m_x_abs = 0;
+    m_y_abs = 0;
 }
 
 MusLaidOutLayerElement::MusLaidOutLayerElement( MusLayerElement *element ):
@@ -67,6 +67,20 @@ int MusLaidOutLayerElement::GetElementNo() const
     return m_layer->m_elements.Index( *this );
 }
 
+void MusLaidOutLayerElement::SetPitchOrPosition(int pname, int oct) 
+{
+    if ( this->IsPitchInterface() ){
+        MusPitchInterface *pitch = dynamic_cast<MusPitchInterface*>(this->m_layerElement);
+        pitch->m_oct = oct;
+        pitch->m_pname = pname;
+    }
+    else if ( this->IsPositionInterface() ) {
+        MusPositionInterface *position = dynamic_cast<MusPositionInterface*>(this->m_layerElement);
+        position->m_oct = oct;
+        position->m_pname = pname;
+    }
+}
+
 bool MusLaidOutLayerElement::IsBarline() 
 {  
     return (dynamic_cast<MusBarline*>(m_layerElement));
@@ -83,12 +97,22 @@ bool MusLaidOutLayerElement::IsSymbol( SymbolType type )
     return (symbol && (symbol->m_type == type));
 }
 
+bool MusLaidOutLayerElement::IsSymbol( ) 
+{  
+    return (dynamic_cast<MusSymbol*>(m_layerElement));
+}
+
 bool MusLaidOutLayerElement::IsMensur() 
 {  
     return (dynamic_cast<MusMensur*>(m_layerElement));
 }
 
 bool MusLaidOutLayerElement::IsNeume() 
+{  
+    return false; //return (typeid(*m_layerElement) == typeid(MusNeume)); 
+}
+
+bool MusLaidOutLayerElement::IsNeumeSymbol() 
 {  
     return false; //return (typeid(*m_layerElement) == typeid(MusNeume)); 
 }

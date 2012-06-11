@@ -32,8 +32,8 @@ MusSystem::MusSystem( const MusSystem& system )
 	indent = system.indent;
 	indentDroite = system.indentDroite;
 	lrg_lign = system.lrg_lign;
-	m_yrel = system.m_xrel;
-	m_xrel = system.m_yrel;
+	m_x_abs = system.m_x_abs;
+	m_y_abs = system.m_y_abs;
 
 	for (i = 0; i < (int)system.m_staves.GetCount(); i++)
 	{
@@ -54,8 +54,8 @@ void MusSystem::Clear( )
 	indent = 0;
 	indentDroite = 0;
 	lrg_lign = 190;
-	m_yrel = 0;
-	m_xrel = 0;
+	m_y_abs = 0;
+	m_x_abs = 0;
 }
 
 
@@ -182,25 +182,25 @@ MusLaidOutStaff *MusSystem::GetAtPos( int y )
 	if ( !staff )
 		return NULL;
 	
-	int dif =  abs( staff->yrel - y );
+	int dif =  abs( staff->m_y_abs - y );
 	while ( this->GetNext(staff) )
 	{
-		if ( (int)staff->yrel < y )
+		if ( (int)staff->m_y_abs < y )
 		{
 			// one too much
 			if ( this->GetPrevious( staff ) ){
 				staff = this->GetPrevious( staff );
-				if ( dif < abs( staff->yrel - y ) )
+				if ( dif < abs( staff->m_y_abs - y ) )
 					staff = this->GetNext( staff );
 			}
 				
 			return staff;
 		}
 		staff = this->GetNext( staff );
-		dif = abs( staff->yrel - y );
+		dif = abs( staff->m_y_abs - y );
 	}
 
-	if ( ( (int)staff->yrel < y )  && this->GetPrevious( staff ) )
+	if ( ( (int)staff->m_y_abs < y )  && this->GetPrevious( staff ) )
 		staff = this->GetPrevious( staff );
 
 	return staff;
@@ -239,7 +239,7 @@ void MusSystem::SetValues( int type )
 int MusSystem::UpdateStaffPositions( int last_staff ) 
 {
 	if ( !this->Check() )
-		return this->m_yrel;
+		return this->m_y_abs;
     
 	int i, yy;
 	MusLaidOutStaff *staff = NULL;
@@ -255,11 +255,11 @@ int MusSystem::UpdateStaffPositions( int last_staff )
 		//orgx = staff->indent ? staff->indent*10 : 0;
         
 		// calcul du point d'ancrage des curseurs au-dessus de la ligne superieure
-		staff->yrel = yy + m_layout->m_staffSize[ staff->staffSize ];
+		staff->m_y_abs = yy + m_layout->m_staffSize[ staff->staffSize ];
         
         // we are handling the first staff - update the position of the system as well
         if ( i == 0 ) { 
-            this->m_yrel = yy;
+            this->m_y_abs = yy;
         }
 	}
     return yy;

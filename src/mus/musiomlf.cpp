@@ -368,7 +368,7 @@ MusLaidOutStaff *MusMLFOutput::SplitSymboles( MusLaidOutStaff *staff )
 				nsymbol2 = new MusSymbol1();
 				nsymbol2->flag = ALTER;
 				nsymbol2->calte = nnote->acc;
-				nsymbol2->xrel = nnote->xrel - 10*4; // 10 = pas par defaut
+				nsymbol2->m_x_abs = nnote->m_x_abs - 10*4; // 10 = pas par defaut
 				nsymbol2->dec_y = nnote->dec_y;
 				nsymbol2->oct = nnote->oct;
 				nsymbol2->code = nnote->code;
@@ -386,7 +386,7 @@ MusLaidOutStaff *MusMLFOutput::SplitSymboles( MusLaidOutStaff *staff )
 					nsymbol2 = new MusSymbol1();
 					nsymbol2->flag = PNT;
 					nsymbol2->point = 0;
-					nsymbol2->xrel = nnote->xrel + 30;
+					nsymbol2->m_x_abs = nnote->m_x_abs + 30;
 					nsymbol2->dec_y = nnote->dec_y;
 					nsymbol2->oct = nnote->oct;
 					nsymbol2->code = nnote->code;
@@ -406,7 +406,7 @@ MusLaidOutStaff *MusMLFOutput::SplitSymboles( MusLaidOutStaff *staff )
 				{
 					nsymbol2 = new MusSymbol1( *nsymbol1 );
 					nsymbol2->code = '|';
-					nsymbol2->xrel += 10;
+					nsymbol2->m_x_abs += 10;
 					nstaff->m_elements.Add( nsymbol2 );
 					nsymbol1->code = '|';
 				}
@@ -418,7 +418,7 @@ MusLaidOutStaff *MusMLFOutput::SplitSymboles( MusLaidOutStaff *staff )
 				{
 					nsymbol2 = new MusSymbol1( *nsymbol1 );
 					nsymbol2->code = 1;
-					nsymbol2->xrel += 10*5; // 10 = pas par defaut
+					nsymbol2->m_x_abs += 10*5; // 10 = pas par defaut
 					nstaff->m_elements.Add( nsymbol2 );
 					nsymbol1->code -= 1;
 				}
@@ -709,7 +709,7 @@ bool MusMLFOutput::WriteNote( MusLaidOutLayerElement *element )
 	if (element->IsSymbol( SYMBOL_CUSTOS ))
 	{
 		mlfsb = (MusMLFSymbol*)wxCreateDynamicObject( m_mlf_class_name );
-		mlfsb->SetValue( TYPE_CUSTOS, "", element->m_xrel, 0, _note[code], oct);
+		mlfsb->SetValue( TYPE_CUSTOS, "", element->m_x_abs, 0, _note[code], oct);
 		m_symbols.Add( mlfsb );
 
 	}
@@ -734,7 +734,7 @@ bool MusMLFOutput::WriteNote( MusLaidOutLayerElement *element )
             else if ((note->m_ligObliqua == true) && (note->m_dur > DUR_4 ))
                 flag += NOTE_COLORATION;
             
-            mlfsb->SetValue( TYPE_NOTE, "", element->m_xrel, note->m_dur, _note[code],oct, flag);
+            mlfsb->SetValue( TYPE_NOTE, "", element->m_x_abs, note->m_dur, _note[code],oct, flag);
         }
 
 		//silence
@@ -742,9 +742,9 @@ bool MusMLFOutput::WriteNote( MusLaidOutLayerElement *element )
 		{
             MusRest *rest = dynamic_cast<MusRest*>(element->m_layerElement);
 			if ( oct % 2 )
-				mlfsb->SetValue( TYPE_REST, "", element->m_xrel, rest->m_dur, _sil0[code],oct + _oct0[code]);	
+				mlfsb->SetValue( TYPE_REST, "", element->m_x_abs, rest->m_dur, _sil0[code],oct + _oct0[code]);	
 			else
-				mlfsb->SetValue( TYPE_REST, "", element->m_xrel, rest->m_dur, _sil1[code],oct + _oct1[code]);
+				mlfsb->SetValue( TYPE_REST, "", element->m_x_abs, rest->m_dur, _sil1[code],oct + _oct1[code]);
 		}
 
 		m_symbols.Add( mlfsb );
@@ -769,24 +769,24 @@ bool MusMLFOutput::WriteSymbol( MusLaidOutLayerElement *element )
 
 	if (element->IsBarline())
 	{
-		mlfsb->SetValue( TYPE_SYMBOLE, "B", element->m_xrel );
+		mlfsb->SetValue( TYPE_SYMBOLE, "B", element->m_x_abs );
 		m_symbols.Add( mlfsb );
 	}
 	else if (element->IsClef())
 	{
         MusClef *clef = dynamic_cast<MusClef*>(element->m_layerElement);
 		switch(clef->m_clefId)
-		{	case SOL2 : mlfsb->SetValue( TYPE_KEY, "S",  element->m_xrel, 2 ); break;
-			case SOL1 : mlfsb->SetValue( TYPE_KEY, "S",  element->m_xrel, 1 ); break;
-			case SOLva : mlfsb->SetValue( TYPE_KEY, "S",  element->m_xrel, 8 ); break;
-			case FA5 : mlfsb->SetValue( TYPE_KEY, "F",  element->m_xrel, 5 ); break;
-			case FA4 : mlfsb->SetValue( TYPE_KEY, "F",  element->m_xrel, 4 ); break;
-			case FA3 : mlfsb->SetValue( TYPE_KEY, "F",  element->m_xrel, 3 ); break;
-			case UT1 : mlfsb->SetValue( TYPE_KEY, "U",  element->m_xrel, 1 ); break;
-			case UT2 : mlfsb->SetValue( TYPE_KEY, "U",  element->m_xrel, 2 ); break;
-			case UT3 : mlfsb->SetValue( TYPE_KEY, "U",  element->m_xrel, 3 ); break;
-			case UT5 : mlfsb->SetValue( TYPE_KEY, "U",  element->m_xrel, 5); break;
-			case UT4 : mlfsb->SetValue( TYPE_KEY, "U",  element->m_xrel, 4 ); break;
+		{	case SOL2 : mlfsb->SetValue( TYPE_KEY, "S",  element->m_x_abs, 2 ); break;
+			case SOL1 : mlfsb->SetValue( TYPE_KEY, "S",  element->m_x_abs, 1 ); break;
+			case SOLva : mlfsb->SetValue( TYPE_KEY, "S",  element->m_x_abs, 8 ); break;
+			case FA5 : mlfsb->SetValue( TYPE_KEY, "F",  element->m_x_abs, 5 ); break;
+			case FA4 : mlfsb->SetValue( TYPE_KEY, "F",  element->m_x_abs, 4 ); break;
+			case FA3 : mlfsb->SetValue( TYPE_KEY, "F",  element->m_x_abs, 3 ); break;
+			case UT1 : mlfsb->SetValue( TYPE_KEY, "U",  element->m_x_abs, 1 ); break;
+			case UT2 : mlfsb->SetValue( TYPE_KEY, "U",  element->m_x_abs, 2 ); break;
+			case UT3 : mlfsb->SetValue( TYPE_KEY, "U",  element->m_x_abs, 3 ); break;
+			case UT5 : mlfsb->SetValue( TYPE_KEY, "U",  element->m_x_abs, 5); break;
+			case UT4 : mlfsb->SetValue( TYPE_KEY, "U",  element->m_x_abs, 4 ); break;
 			default: break;
 		}
 		m_symbols.Add( mlfsb );
@@ -797,22 +797,22 @@ bool MusMLFOutput::WriteSymbol( MusLaidOutLayerElement *element )
 		int  code = 0, oct = 0;
 		GetUt1( m_layer, element, &code, &oct);
 		if (symbol->m_accid == ACCID_SHARP)
-			mlfsb->SetValue( TYPE_ALTERATION, "D",  element->m_xrel, 0, _note[code], oct );
+			mlfsb->SetValue( TYPE_ALTERATION, "D",  element->m_x_abs, 0, _note[code], oct );
 		else if (symbol->m_accid == ACCID_FLAT)
-			mlfsb->SetValue( TYPE_ALTERATION, "B",  element->m_xrel, 0, _note[code], oct );
+			mlfsb->SetValue( TYPE_ALTERATION, "B",  element->m_x_abs, 0, _note[code], oct );
 		else if (symbol->m_accid == ACCID_NATURAL)
-			mlfsb->SetValue( TYPE_ALTERATION, "H",  element->m_xrel, 0, _note[code], oct );
+			mlfsb->SetValue( TYPE_ALTERATION, "H",  element->m_x_abs, 0, _note[code], oct );
 		else if (symbol->m_accid == ACCID_DOUBLE_SHARP)
-			mlfsb->SetValue( TYPE_ALTERATION, "D",  element->m_xrel, 1, _note[code], oct );
+			mlfsb->SetValue( TYPE_ALTERATION, "D",  element->m_x_abs, 1, _note[code], oct );
 		else if (symbol->m_accid == ACCID_DOUBLE_FLAT)
-			mlfsb->SetValue( TYPE_ALTERATION, "B",  element->m_xrel, 1, _note[code], oct );
+			mlfsb->SetValue( TYPE_ALTERATION, "B",  element->m_x_abs, 1, _note[code], oct );
 		m_symbols.Add( mlfsb );
 	}
 	else if (element->IsSymbol( SYMBOL_DOT ))
 	{
 		int  code = 0, oct = 0;
 		GetUt1( m_layer, element, &code, &oct);
-		mlfsb->SetValue( TYPE_POINT, "", element->m_xrel, 0, _note[code + ((code+oct) % 2)], ((code + ((code+oct) % 2)) == 8) ? (oct+1) : oct );
+		mlfsb->SetValue( TYPE_POINT, "", element->m_x_abs, 0, _note[code + ((code+oct) % 2)], ((code + ((code+oct) % 2)) == 8) ? (oct+1) : oct );
 		//str += wxString::Format("P_%s_%d\n",
 		//	_note[code + ((code+oct) % 2)],((code + ((code+oct) % 2)) == 8) ? (oct+1) : oct,symbol->code,code,oct);
 		m_symbols.Add( mlfsb );
@@ -826,12 +826,12 @@ bool MusMLFOutput::WriteSymbol( MusLaidOutLayerElement *element )
 		{
 			switch (mensur->m_meterSymb)
 			{	
-				case METER_SYMB_COMMON: mlfsb->SetValue( TYPE_MESURE, "S_C", element->m_xrel ); break;
-				case METER_SYMB_CUT: mlfsb->SetValue( TYPE_MESURE, "S_CB", element->m_xrel ); break;
-				case METER_SYMB_2: mlfsb->SetValue( TYPE_MESURE, "S_2", element->m_xrel ); break;
-				case METER_SYMB_3: mlfsb->SetValue( TYPE_MESURE, "S_3", element->m_xrel ); break;
-				case METER_SYMB_2_CUT: mlfsb->SetValue( TYPE_MESURE, "S_2B", element->m_xrel ); break;
-				case METER_SYMB_3_CUT: mlfsb->SetValue( TYPE_MESURE, "S_3B", element->m_xrel ); break;
+				case METER_SYMB_COMMON: mlfsb->SetValue( TYPE_MESURE, "S_C", element->m_x_abs ); break;
+				case METER_SYMB_CUT: mlfsb->SetValue( TYPE_MESURE, "S_CB", element->m_x_abs ); break;
+				case METER_SYMB_2: mlfsb->SetValue( TYPE_MESURE, "S_2", element->m_x_abs ); break;
+				case METER_SYMB_3: mlfsb->SetValue( TYPE_MESURE, "S_3", element->m_x_abs ); break;
+				case METER_SYMB_2_CUT: mlfsb->SetValue( TYPE_MESURE, "S_2B", element->m_x_abs ); break;
+				case METER_SYMB_3_CUT: mlfsb->SetValue( TYPE_MESURE, "S_3B", element->m_x_abs ); break;
                 default: {};
 			}
 			m_symbols.Add( mlfsb );
@@ -855,14 +855,14 @@ bool MusMLFOutput::WriteSymbol( MusLaidOutLayerElement *element )
 			if (mensur->m_dot)
 				subtype += wxString::Format("_P");
 
-			mlfsb->SetValue( TYPE_MESURE, subtype, element->m_xrel );
+			mlfsb->SetValue( TYPE_MESURE, subtype, element->m_x_abs );
 			m_symbols.Add( mlfsb );
 		}
 		// chiffres
 		else
 		{
 			wxString subtype = wxString::Format("CH_%d_%d", max (mensur->m_num, 1), max(mensur->m_numBase, 1));
-			mlfsb->SetValue( TYPE_MESURE, subtype, element->m_xrel );
+			mlfsb->SetValue( TYPE_MESURE, subtype, element->m_x_abs );
 			m_symbols.Add( mlfsb );
 		}
 	}
@@ -1402,7 +1402,7 @@ bool MusMLFInput::ReadLabel( MusLaidOutLayer *layer, int offset )
         if ( layer_element ) {
             m_logLayer->AddLayerElement( layer_element );
             MusLaidOutLayerElement *element = new MusLaidOutLayerElement( layer_element );
-            element->m_xrel = pos + offset;
+            element->m_x_abs = pos + offset;
             layer->AddElement( element );
         }
 	} 

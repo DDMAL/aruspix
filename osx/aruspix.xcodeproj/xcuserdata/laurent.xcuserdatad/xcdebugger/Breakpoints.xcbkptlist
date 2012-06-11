@@ -60,18 +60,6 @@
          landmarkType = "5">
       </FileBreakpoint>
       <FileBreakpoint
-         shouldBeEnabled = "Yes"
-         ignoreCount = "0"
-         continueAfterRunningActions = "No"
-         isPathRelative = "0"
-         filePath = "../src/mus/mussystem.cpp"
-         timestampString = "358152769.921097"
-         startingColumnNumber = "9223372036854775807"
-         endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "103"
-         endingLineNumber = "103">
-      </FileBreakpoint>
-      <FileBreakpoint
          shouldBeEnabled = "No"
          ignoreCount = "0"
          continueAfterRunningActions = "No"
@@ -148,6 +136,19 @@
          startingLineNumber = "119"
          endingLineNumber = "119"
          landmarkName = "MusLayerElement::FindWithUuid( wxArrayPtrVoid params )"
+         landmarkType = "5">
+      </FileBreakpoint>
+      <FileBreakpoint
+         shouldBeEnabled = "Yes"
+         ignoreCount = "0"
+         continueAfterRunningActions = "No"
+         filePath = "../src/mus/muswindow.cpp"
+         timestampString = "361099978.856622"
+         startingColumnNumber = "9223372036854775807"
+         endingColumnNumber = "9223372036854775807"
+         startingLineNumber = "792"
+         endingLineNumber = "792"
+         landmarkName = "MusWindow::OnMouseDClick(wxMouseEvent &amp;event)"
          landmarkType = "5">
       </FileBreakpoint>
    </FileBreakpoints>

@@ -38,8 +38,8 @@ MusRC::MusRC( )
     m_editorMode = MUS_EDITOR_EDIT;
 	//m_editorMode = MUS_EDITOR_INSERT;
 	
-	//m_notation_mode = MUS_MENSURAL_MODE;
-    m_notation_mode = MUS_CMN_MODE;
+	m_notation_mode = MUS_MENSURAL_MODE;
+    //m_notation_mode = MUS_CMN_MODE;
     
 	discontinu = 0;
 	

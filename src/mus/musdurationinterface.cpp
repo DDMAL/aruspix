@@ -18,13 +18,13 @@
 
 MusDurationInterface::MusDurationInterface()
 {
-    memset(m_beam, 0, 6 * sizeof(unsigned char));
+    memset(m_beam, 0, DURATION_MAX_BEAMS * sizeof(unsigned char));
     m_breakSec = 0;
     m_dots = 0;
     m_dur = 0;
     m_num = 1;
     m_numBase = 1;
-    memset(m_tuplet, 0, 6 * sizeof(unsigned char));
+    memset(m_tuplet, 0, DURATION_MAX_TUPLETS * sizeof(unsigned char));
 }
 
 

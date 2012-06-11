@@ -21,9 +21,9 @@
 // sorting function
 int SortElements(MusLaidOutLayerElement **first, MusLaidOutLayerElement **second)
 {
-	if ( (*first)->m_xrel < (*second)->m_xrel )
+	if ( (*first)->m_x_abs < (*second)->m_x_abs )
 		return -1;
-	else if ( (*first)->m_xrel > (*second)->m_xrel )
+	else if ( (*first)->m_x_abs > (*second)->m_x_abs )
 		return 1;
 	else 
 		return 0;
@@ -36,11 +36,12 @@ WX_DEFINE_OBJARRAY( ArrayOfMusLaidOutLayers );
 // MusLaidOutLayer
 //----------------------------------------------------------------------------
 
-MusLaidOutLayer::MusLaidOutLayer( MusLayer *logLayer ):
+MusLaidOutLayer::MusLaidOutLayer( int logLayerNb ):
 	MusLayoutObject()
 {
 	Clear( );
-    m_logLayer = logLayer;
+    m_logStaffNb = -1;
+    m_logLayerNb = logLayerNb;
 }
 
 MusLaidOutLayer::~MusLaidOutLayer()
@@ -158,21 +159,21 @@ MusLaidOutLayerElement *MusLaidOutLayer::GetAtPos( int x )
 		return NULL;
 
 	//int xx = 0;
-//	while (this->GetNext(element) && ((int)element->m_xrel < x) )
+//	while (this->GetNext(element) && ((int)element->m_x_abs < x) )
 //		element = this->GetNext( element );
 
-	int dif = x - element->m_xrel;
-	while ( this->GetNext( element ) && (int)element->m_xrel < x ){
+	int dif = x - element->m_x_abs;
+	while ( this->GetNext( element ) && (int)element->m_x_abs < x ){
 		element = this->GetNext( element );
-		if ( (int)element->m_xrel > x && dif < (int)element->m_xrel - x )
+		if ( (int)element->m_x_abs > x && dif < (int)element->m_x_abs - x )
 			return this->GetPrevious( element );
-		dif = x - element->m_xrel;
+		dif = x - element->m_x_abs;
 	}
 	
 	return element;
 }
 
-MusLaidOutLayerElement *MusLaidOutLayer::Insert( MusLaidOutLayerElement *element )
+MusLaidOutLayerElement *MusLaidOutLayer::Insert( MusLayerElement *element, int x )
 {
     /*
 	if ( !element ) return NULL;
@@ -195,7 +196,7 @@ MusLaidOutLayerElement *MusLaidOutLayer::Insert( MusLaidOutLayerElement *element
 
 	int idx = 0;
 	MusLaidOutLayerElement *tmp = this->GetFirst();
-	while ( tmp && (tmp->m_xrel < element->m_xrel) )
+	while ( tmp && (tmp->m_x_abs < element->m_x_abs) )
 	{
 		idx++;
 		if ( this->GetNext( tmp ) )
@@ -221,7 +222,8 @@ MusLaidOutLayerElement *MusLaidOutLayer::Insert( MusLaidOutLayerElement *element
     */
     
     wxLogError( "MusLaidOutLayer::Insert missing in ax2" );
-	return element;
+    
+	return new MusLaidOutLayerElement( element );
 }
 
 void MusLaidOutLayer::Append( MusLaidOutLayerElement *element, int step )
@@ -231,10 +233,10 @@ void MusLaidOutLayer::Append( MusLaidOutLayerElement *element, int step )
     // insert at the end of the staff with a random step
     MusLaidOutLayerElement *last = this->GetLast();
     if (last) {
-        element->m_xrel += last->m_xrel + step;
+        element->m_x_abs += last->m_x_abs + step;
     }
     else {
-        element->m_xrel += step;
+        element->m_x_abs += step;
     }
 	AddElement( element );
 }
@@ -363,7 +365,7 @@ int MusLaidOutLayer::armatDisp ( MusDC *dc )
 	if ( !Check() )
 		return 0;
 
-	// calculer m_xrel, c et oct
+	// calculer x_abs, c et oct
     // y_note calcule le decalage en fonction du code de hauteur c et du
     // decalage eventuel implique par l'oct courante et la clef. Ce
     // decalage est retourne par testcle() qui presuppose l'existence de
@@ -394,7 +396,7 @@ int MusLaidOutLayer::armatDisp ( MusDC *dc )
 	if (element && clefIndex.compte )
 	{
 		element = this->no_note ( element,FORWARD, CLE, &pos);
-		if (element != NULL && element->m_xrel < xrl && pos)
+		if (element != NULL && element->m_x_abs < xrl && pos)
 			this->GetClef (element,(char *)&clid);
 	}
 
@@ -441,7 +443,7 @@ int MusLaidOutLayer::armatDisp ( MusDC *dc )
 		if (rupture==i)
 		{	this->getOctDec (fact,_oct,rupture, &oct); rupture = i+1;	}
 
-		//if (!modMetafile || in (xrl, drawRect.left, drawRect.right) && in (this->yrel, drawRect.top, drawRect.bottom+m_staffSize[staffSize]))
+		//if (!modMetafile || in (xrl, drawRect.left, drawRect.right) && in (this->m_y_abs, drawRect.top, drawRect.bottom+m_staffSize[staffSize]))
 			((MusSymbol1*)element)->dess_symb ( dc,xrl,this->CalculatePitchPosY(c,dec, oct),ALTER,this->armTyp , this);
 	}
 	return xrl;
@@ -568,12 +570,12 @@ MusSymbol1 *MusLaidOutLayer::GetLyricAtPos( int x )
 		return NULL;
 	
 	//int xx = 0;
-	int dif = x - lyric->m_xrel;
-	while ( this->GetNextLyric( lyric ) && (int)lyric->m_xrel < x ){
+	int dif = x - lyric->m_x_abs;
+	while ( this->GetNextLyric( lyric ) && (int)lyric->m_x_abs < x ){
 		lyric = this->GetNextLyric( lyric );
-		if ( (int)lyric->m_xrel > x && dif < (int)lyric->m_xrel - x )
+		if ( (int)lyric->m_x_abs > x && dif < (int)lyric->m_x_abs - x )
 			return this->GetPreviousLyric( lyric );
-		dif = x - lyric->m_xrel;
+		dif = x - lyric->m_x_abs;
 	}
 		
 	return lyric;
@@ -704,7 +706,7 @@ void MusLaidOutLayer::CopyElements( wxArrayPtrVoid params )
 	MusLaidOutLayerElement *element = staff->GetLast();
     int x_last = 0;
     if (element) {
-        x_last = element->m_xrel;
+        x_last = element->m_x_abs;
     }
 	int i;
     for (i = 0; i < this->GetElementCount(); i++) 
@@ -713,13 +715,13 @@ void MusLaidOutLayer::CopyElements( wxArrayPtrVoid params )
 		if ( m_elements[i].IsNote() )
 		{
 			MusNote1 *nnote = new MusNote1( *(MusNote1*)&m_elements[i] );
-            nnote->m_xrel += x_last;
+            nnote->m_x_abs += x_last;
 			staff->m_elements.Add( nnote );
 		}
 		else
 		{
 			MusSymbol1 *nsymbol = new MusSymbol1( *(MusSymbol1*)&m_elements[i] );
-            nsymbol->m_xrel += x_last;
+            nsymbol->m_x_abs += x_last;
 			staff->m_elements.Add( nsymbol );
 		}
         */
@@ -737,7 +739,7 @@ void MusLaidOutLayer::GetMaxXY( wxArrayPtrVoid params )
 
 	MusLaidOutLayerElement *element = this->GetLast();
     if (element) {
-        int last_max = element->m_xrel;
+        int last_max = element->m_x_abs;
         //if (!element->IsSymbol() || (((MusSymbol1*)element)->flag != BARRE)) {
         //    last_max += 35; // abirtrary margin;
         //}

@@ -90,8 +90,8 @@ public:
     
     // ax2 - member previously in MusElement
     // LP: I don't think when need to keep them as member - it would be better to have the a local variables in the MusRC methods
-    int xrel; // used for storing the x position while drawing
-    int dec_y; // idem for y position
+    int m_x_abs; // used for storing the x position while drawing
+    int m_y_abs; // idem for y position
     
 	
 private:

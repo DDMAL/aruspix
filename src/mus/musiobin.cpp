@@ -386,9 +386,9 @@ bool MusBinOutput::WriteLaidOutLayer( MusLaidOutLayer *laidOutLayer )
 bool MusBinOutput::WriteLaidOutLayerElement( MusLaidOutLayerElement *laidOutLayerElement )
 {
     WriteObject( laidOutLayerElement );
-	int32 = wxINT32_SWAP_ON_BE( laidOutLayerElement->m_yrel );
+	int32 = wxINT32_SWAP_ON_BE( laidOutLayerElement->m_y_abs );
 	Write( &int32, 4 );
-	int32 = wxINT32_SWAP_ON_BE( laidOutLayerElement->m_xrel );
+	int32 = wxINT32_SWAP_ON_BE( laidOutLayerElement->m_x_abs );
     Write( &int32, 4 );
     Write( laidOutLayerElement->m_layerElement->GetUuid(), 16 );
     return true;
@@ -860,9 +860,9 @@ MusLaidOutLayerElement* MusBinInput::ReadLaidOutLayerElement( )
     MusLaidOutLayerElement *laidOutLayerElement = new MusLaidOutLayerElement();
     ReadObject( laidOutLayerElement );
 	Read( &int32, 4 );
-	laidOutLayerElement->m_yrel = wxINT32_SWAP_ON_BE( int32 );
+	laidOutLayerElement->m_y_abs = wxINT32_SWAP_ON_BE( int32 );
 	Read( &int32, 4 );
-	laidOutLayerElement->m_xrel = wxINT32_SWAP_ON_BE( int32 );
+	laidOutLayerElement->m_x_abs = wxINT32_SWAP_ON_BE( int32 );
     Read( &m_uuid, 16 ); // this is the uuid of the layerElement
     // we need to find the layerElement it points to based on the uuid
     MusLayerElement *element = NULL;
@@ -1098,8 +1098,8 @@ bool MusBinInput_1_X::ReadPage( MusPage *page )
         m_logLayer = dynamic_cast<MusLayer*> (&m_logStaff->m_layers[0]);
         wxASSERT_MSG( m_logLayer, "MusLayer cannot be NULL" );
         
-		MusLaidOutStaff *staff = new MusLaidOutStaff( m_logStaff );
-        MusLaidOutLayer *layer = new MusLaidOutLayer( m_logLayer );
+		MusLaidOutStaff *staff = new MusLaidOutStaff( j );
+        MusLaidOutLayer *layer = new MusLaidOutLayer( 0 ); // we have always on layer per staff
 		ReadStaff( staff, layer );
         if ( m_noLigne > system_no + 1 ) { // we have a new system
             page->AddSystem( system ); // add the current one
@@ -1290,7 +1290,7 @@ bool MusBinInput_1_X::ReadSymbol( MusLaidOutLayer *layer, bool isLyric )
     if ( layer_element ) {
         m_logLayer->AddLayerElement( layer_element );
         MusLaidOutLayerElement *element = new MusLaidOutLayerElement( layer_element );
-        element->m_xrel = xrel;
+        element->m_x_abs = x_abs;
         layer->AddElement( element );
     }
     
@@ -1368,7 +1368,7 @@ bool MusBinInput_1_X::ReadNote( MusLaidOutLayer *layer )
     if ( layer_element ) {
         m_logLayer->AddLayerElement( layer_element );
         MusLaidOutLayerElement *element = new MusLaidOutLayerElement( layer_element );
-        element->m_xrel = xrel;
+        element->m_x_abs = x_abs;
         layer->AddElement( element );
     }
     
@@ -1421,7 +1421,7 @@ bool MusBinInput_1_X::ReadElementAttr( )
 	Read( &uint16, 2 );
 	offset = wxUINT16_SWAP_ON_BE( uint16 );
 	Read( &int32, 4 );
-	xrel = wxINT32_SWAP_ON_BE( int32 );
+	x_abs = wxINT32_SWAP_ON_BE( int32 );
 	
 	return true;
 }

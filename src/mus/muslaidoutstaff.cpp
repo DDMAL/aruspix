@@ -20,11 +20,11 @@ WX_DEFINE_OBJARRAY( ArrayOfMusLaidOutStaves );
 // MusLaidOutStaff
 //----------------------------------------------------------------------------
 
-MusLaidOutStaff::MusLaidOutStaff( MusStaff *logStaff ):
+MusLaidOutStaff::MusLaidOutStaff( int logStaffNb ):
 	MusLayoutObject()
 {
 	Clear( );
-    m_logStaff = logStaff;
+    m_logStaffNb = logStaffNb;
 }
 
 MusLaidOutStaff::MusLaidOutStaff( const MusLaidOutStaff& staff )
@@ -46,8 +46,8 @@ MusLaidOutStaff::MusLaidOutStaff( const MusLaidOutStaff& staff )
 	portNbLine = staff.portNbLine;
 	accol = staff.accol;
 	accessoire = staff.accessoire;
-	yrel = staff.yrel;
-	xrel = staff.xrel;
+	m_y_abs = staff.m_y_abs;
+	m_x_abs = staff.m_x_abs;
 
     int i;
 	for (i = 0; i < staff.GetLayerCount(); i++)
@@ -71,7 +71,7 @@ void MusLaidOutStaff::Clear()
 	//noLigne = 0; // ax2
 	armTyp = 0;
 	armNbr = 0;
-	notAnc = false; // RZ we want modern notation :)
+	notAnc = true; // LP we want modern notation :))
 	grise = false;
 	invisible = false;
 	ecart = 10;
@@ -83,8 +83,8 @@ void MusLaidOutStaff::Clear()
 	portNbLine = 5;
 	accol = 0;
 	accessoire = 0;
-	yrel = 0;
-	xrel = 0;
+	m_y_abs = 0;
+	m_x_abs = 0;
     
     //
     //beamListPremier = NULL;
@@ -143,8 +143,8 @@ void MusLaidOutStaff::CopyAttributes( MusLaidOutStaff *nstaff )
 	nstaff->portNbLine = portNbLine;
 	nstaff->accol = accol;
 	nstaff->accessoire = accessoire;
-	nstaff->yrel = yrel;
-	nstaff->xrel = xrel;
+	nstaff->m_y_abs = m_y_abs;
+	nstaff->m_x_abs = m_x_abs;
 }
 
 int MusLaidOutStaff::GetStaffNo() const

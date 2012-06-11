@@ -195,7 +195,7 @@ bool EdtFile::Create( )
         {
             logStaff = dynamic_cast<MusStaff*> (&section->m_staves[j]);
             wxASSERT_MSG( logStaff, "MusStaff cannot be NULL" );
-            MusLaidOutStaff *staff = new MusLaidOutStaff( logStaff );
+            MusLaidOutStaff *staff = new MusLaidOutStaff( j );
             staff->portNbLine = EdtNewDlg::s_staffLines;
             if (EdtNewDlg::s_m_notationMode == MUS_MENSURAL_MODE)
                 staff->notAnc = true;

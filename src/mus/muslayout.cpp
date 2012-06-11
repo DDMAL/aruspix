@@ -160,19 +160,19 @@ void MusLayout::Realize( MusScore *score )
                 MusStaff *staff = &measure->m_staves[k];
                 MusLaidOutStaff *laidOutStaff;
                 if (k >= (int)system->m_staves.GetCount()) {
-                    system->AddStaff( new MusLaidOutStaff( staff ));
+                    system->AddStaff( new MusLaidOutStaff( k ));
                 }
                 laidOutStaff = &system->m_staves[k];
                 for (l = 0; l < (int)staff->m_layers.GetCount(); l++) {
                     MusLayer *layer = &staff->m_layers[l];
                     MusLaidOutLayer *laidOutLayer;
                     if (l >= laidOutStaff->GetLayerCount()) {
-                        laidOutStaff->AddLayer( new MusLaidOutLayer( layer ));
+                        laidOutStaff->AddLayer( new MusLaidOutLayer( l ));
                     }
                     laidOutLayer = &laidOutStaff->m_layers[l];
                     for (m = 0; m < (int)layer->m_layerElements.GetCount(); m++) {
                         MusLaidOutLayerElement *element = new MusLaidOutLayerElement( &layer->m_layerElements[m] );
-                        element->m_xrel = x;
+                        element->m_x_abs = x;
                         x += 40;
                         laidOutLayer->AddElement( element );
                         wxLogDebug("element %d added", m);

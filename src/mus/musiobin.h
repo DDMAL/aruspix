@@ -115,7 +115,9 @@ public:
     virtual MusSystem* ReadSystem( );
     virtual MusLaidOutStaff* ReadLaidOutStaff( );
     virtual MusLaidOutLayer* ReadLaidOutLayer(  );
-    virtual MusLaidOutLayerElement* ReadLaidOutLayerElement( );  
+    virtual MusLaidOutLayerElement* ReadLaidOutLayerElement( ); 
+    // setter
+    void SetPagesToRead( int nb ) { m_nbPages = nb; };
     
 private:
     unsigned char uc;
@@ -257,7 +259,7 @@ private:
     /* offset de l'element par rapport a sa position x*/
     unsigned short offset;
     /* position x de l'element */
-    unsigned int xrel;
+    unsigned int x_abs;
     /* decalage y de l'element */
     int dec_y;
     /* chars de debordement de l'element */

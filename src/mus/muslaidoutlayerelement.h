@@ -40,17 +40,22 @@ public:
     /** The parent MusLaidOutLayer setter */
     void SetLayer( MusLaidOutLayer *layer ) { m_layer = layer; }; 
     
+    /** Set the pitch or position for MusPitchInterface or MusPositionInterface elements */
+    void SetPitchOrPosition( int pname, int oct );
+    
     int GetElementNo() const;
     
     bool IsBarline();
     bool IsClef();
     bool IsMensur();
     bool IsNeume();
+    bool IsNeumeSymbol();
     bool IsNote();
     bool IsPitchInterface();
     bool IsPositionInterface();
     bool IsRest();
     bool IsSymbol( SymbolType type );
+    bool IsSymbol( );
     
     // functors
     void Save( wxArrayPtrVoid params );
@@ -63,9 +68,9 @@ public:
     MusLaidOutLayer *m_layer;
 
 	/** Position X */
-    int m_xrel;
+    int m_x_abs;
 	/** Position Y */
-	int m_yrel ; 
+	int m_y_abs ; 
     /** Pointer to the MusLayerElement */
     MusLayerElement *m_layerElement;
 

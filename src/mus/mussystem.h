@@ -92,9 +92,9 @@ public:
     /** longueur en mm des lignes de la pages */
     int lrg_lign;
 	/** position y relative du system (non-enregistre dans les fichiers) */
-    int m_yrel;
+    int m_y_abs;
 	/** postion x relative du system (non-enregistre dans les fichiers) */
-    int m_xrel;
+    int m_x_abs;
 
 private:
     

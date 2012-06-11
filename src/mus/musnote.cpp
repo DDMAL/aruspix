@@ -25,7 +25,7 @@ MusNote::MusNote():
     m_headshape = 0;
     m_lig = 0;
     m_ligObliqua = false;
-    memset(m_slur, 0, sizeof(unsigned char));
+    memset(m_slur, 0, sizeof(unsigned char) * NOTE_MAX_SLURS);
     m_stemDir = 0;
     m_stemLen = 0;
 }

@@ -102,8 +102,8 @@ MusEnv::MusEnv()
     m_headerType = 0;
     
     // additional parameters
-    //m_notationMode = MUS_MENSURAL_MODE;
-    m_notationMode = MUS_CMN_MODE;
+    m_notationMode = MUS_MENSURAL_MODE;
+    //m_notationMode = MUS_CMN_MODE;
 }
 
 MusEnv::~MusEnv()

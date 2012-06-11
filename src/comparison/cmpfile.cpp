@@ -77,7 +77,7 @@ CmpCollation::CmpCollation( wxString id, wxString name, wxString basename  )
 {
 	m_id = id;
 	m_name = name;
-	m_length = 0; // xrel of the last element + 50
+	m_length = 0; // x_abs of the last element + 50
 	m_basename = basename;
 	m_isColLoaded = false;
 	
@@ -176,12 +176,12 @@ bool CmpCollation::Realize( )
 			//FillStaff( staff, full_staff, j, correct_lrg_lign );
 			while( !full_staff->m_elements.IsEmpty() )
 			{
-				if ( (int)full_staff->m_elements[0].xrel > (j + 1) * correct_lrg_lign)
+				if ( (int)full_staff->m_elements[0]m_x_abs > (j + 1) * correct_lrg_lign)
 					break;
 				if ( full_staff->m_elements[0].IsNote() )
 				{
 					MusNote1 *nnote = (MusNote1*)full_staff->m_elements.Detach( 0 );
-					nnote->xrel -= (j * correct_lrg_lign) - clef_offset;
+					nnote->m_x_abs -= (j * correct_lrg_lign) - clef_offset;
 					staff->m_elements.Add( nnote );
 				}
 				else if ( full_staff->m_elements[0].IsSymbol() )
@@ -193,10 +193,10 @@ bool CmpCollation::Realize( )
 							delete clef;
 						clef = new MusSymbol1( *nsymbol );
 						clef->m_im_filename = "";
-						clef->xrel = 0;
+						clef->m_x_abs = 0;
 						clef->m_cmp_flag = 0;
 					}
-					nsymbol->xrel -= (j * correct_lrg_lign) - clef_offset;
+					nsymbol->m_x_abs -= (j * correct_lrg_lign) - clef_offset;
 					staff->m_elements.Add( nsymbol );
 				}
 			}
@@ -240,7 +240,7 @@ bool CmpCollation::Collate( )
 		if ( part->m_flags & PART_REFERENCE )
 		{
 			reference = &staves[i];
-			m_length = (&reference->m_elements.Last())->xrel + 50;
+			m_length = (&reference->m_elements.Last())->m_x_abs + 50;
 		}
 	}
 	
@@ -418,7 +418,7 @@ bool CmpCollation::Align( MusLaidOutStaff *staff_ref, MusLaidOutStaff *staff_var
 					aligned.m_elements.Insert( new MusNote1( *(MusNote1*)&staff_var->m_elements[jj] ), ii );
 				else if ( staff_var->m_elements[jj].IsSymbol() )
 					aligned.m_elements.Insert( new MusSymbol1( *(MusSymbol1*)&staff_var->m_elements[jj] ), ii );
-				aligned.m_elements[ii].xrel = aligned.m_elements[ii+1].xrel;
+				aligned.m_elements[ii]m_x_abs = aligned.m_elements[ii+1]m_x_abs;
 				aligned.m_elements.RemoveAt(ii+1);
 				SetCmpValues( &aligned.m_elements[ii], &staff_var->m_elements[jj], CMP_SUBST );
 				match = true;
@@ -531,12 +531,12 @@ void  CmpCollation::AddInsertion( MusElement *elem, MusLaidOutStaff *aligned, in
 		SetCmpValues( asterix, elem, CMP_INS );
 		if ( i >= (int)aligned->m_elements.GetCount() )
 		{
-			asterix->xrel = aligned->m_elements.Last().xrel + 20;
+			asterix->m_x_abs = aligned->m_elements.Last()m_x_abs + 20;
 			aligned->m_elements.Add( asterix );
 		}
 		else
 		{
-			asterix->xrel = aligned->m_elements[i].xrel - 10;
+			asterix->m_x_abs = aligned->m_elements[i]m_x_abs - 10;
 			aligned->m_elements.Insert( asterix, i );
 		}
 		aligned->CheckIntegrity( );

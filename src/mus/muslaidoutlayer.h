@@ -33,7 +33,7 @@ class MusLaidOutLayer: public MusLayoutObject
 {
 public:
     // constructors and destructors
-    MusLaidOutLayer( MusLayer *logLayer = NULL );
+    MusLaidOutLayer( int logLayerNb = -1 );
     virtual ~MusLaidOutLayer();
     
     virtual wxString MusClassName( ) { return "MusLaidOutLayer"; };	
@@ -64,9 +64,9 @@ public:
 	MusLaidOutLayerElement *GetNext( MusLaidOutLayerElement *element );
 	MusLaidOutLayerElement *GetPrevious( MusLaidOutLayerElement *element );
 	MusLaidOutLayerElement *GetAtPos( int x );
-	MusLaidOutLayerElement *Insert( MusLaidOutLayerElement *element ); // return a pointer on the inserted element
+	MusLaidOutLayerElement *Insert( MusLayerElement *element, int x ); // return a pointer on the inserted element
     void Append( MusLaidOutLayerElement *element, int step = 35  ); // append to the end AND TAKE OWNERSHIP of the MusLaidOutLayerElement
-	void Delete( MusLaidOutLayerElement *element);
+	void Delete( MusLaidOutLayerElement *element );
 	/** 
      * Looks for the first MusLaidOutLayerElement with an LayoutElement of type elementType.
      * Looks FORWARD of BACKWARD depending on the direction parameter.
@@ -101,8 +101,10 @@ public:
     ArrayOfMusLaidOutLayerElements m_elements;
     /** The parent MusLaidOutStaff */
     MusLaidOutStaff *m_staff;
-    /** The logical layer (this works only with non measured music) */
-    MusLayer *m_logLayer;
+    /** The logical layer */
+    int m_logLayerNb;
+    /** The logical staff - used to overwrite the parent staff */
+    int m_logStaffNb;
     
 	/** voix de la portee*/
 	unsigned short voix;    

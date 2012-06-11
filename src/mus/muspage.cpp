@@ -127,25 +127,25 @@ MusSystem *MusPage::GetAtPos( int y )
 	if ( !system )
 		return NULL;
 	
-	int dif =  abs( system->m_yrel - y );
+	int dif =  abs( system->m_y_abs - y );
 	while ( this->GetNext(system) )
 	{
-		if ( (int)system->m_yrel < y )
+		if ( (int)system->m_y_abs < y )
 		{
 			// one too much
 			if ( this->GetPrevious( system ) ){
 				system = this->GetPrevious( system );
-				if ( dif < abs( system->m_yrel - y ) )
+				if ( dif < abs( system->m_y_abs - y ) )
 					system = this->GetNext( system );
 			}
 				
 			return system;
 		}
 		system = this->GetNext( system );
-		dif = abs( system->m_yrel - y );
+		dif = abs( system->m_y_abs - y );
 	}
 
-	if ( ( (int)system->m_yrel < y )  && this->GetPrevious( system ) )
+	if ( ( (int)system->m_y_abs < y )  && this->GetPrevious( system ) )
 		system = this->GetPrevious( system );
 
 	return system;

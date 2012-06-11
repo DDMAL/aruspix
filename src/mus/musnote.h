@@ -29,6 +29,8 @@
 #define CHORD_MEDIAL  (1<<2) 
 #define CHORD_TERMINAL  (1<<3) 
 
+#define NOTE_MAX_SLURS 6
+
 
 //----------------------------------------------------------------------------
 // MusNote
@@ -62,7 +64,7 @@ public:
     /** Indicates if the ligature is obliqua (recta otherwise) */
     bool m_ligObliqua;
     /** Indicates if intial, medial or terminal part of a slur for up to 6 nesting/overlaping slur */
-    unsigned char m_slur[6];
+    unsigned char m_slur[NOTE_MAX_SLURS];
     /** Indicates the stem direction (0 == auto, -1 down, 1 up) */
     char m_stemDir;
     /** Indicates the stem length (0 == auto) */
