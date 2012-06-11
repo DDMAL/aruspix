@@ -1782,13 +1782,14 @@ bool ImPage::FindBorders( )
     ImageDestroy( &m_opImMask );
     ImageDestroy( &m_opImTmp2 );
 
-
-    //imProcessBitwiseNot( m_opImMain, m_opImMain );
+    // m_opImMain contain the image with the border
+    imProcessBitwiseNot( m_opImMain, m_opImMain ); // necessary in ax2 
     if ( !GetImagePlane( &m_opImTmp1 ) )
         return false;
+    
     imProcessBitwiseNot( m_opImTmp1, m_opImTmp1 );
     imProcessArithmeticOp( m_opImTmp1, m_opImMain, m_opImTmp1, IM_BIT_OR );
-    imProcessBitwiseNot( m_opImTmp1, m_opImTmp1 );
+    //imProcessBitwiseNot( m_opImTmp1, m_opImTmp1 ); // removed in ax2 - not clear why needed
 
     if ( !ExtractPlane( &m_opImMap, &m_opImTmp1, IMAGE_BLANK ) )
         return false;
@@ -2225,8 +2226,8 @@ bool ImPage::ChangeClassification( int _x1, int _y1, int _x2, int _y2, int plane
 
 	PrepareCheckPoint( UNDO_PART, IM_UNDO_CLASSIFICATION );	
 
-	imImageSetBinary( m_opImTmp2 );
 	imImageMakeBinary( m_opImTmp2 );
+	imImageSetBinary( m_opImTmp2 );
 	
 	imProcessArithmeticConstOp( m_opImTmp2, pow(2, plane_number), m_opImTmp2, IM_BIN_MUL );
 	imProcessInsert( m_opImMap, m_opImTmp2, m_opImMap, m_selection_pos.x, m_selection_pos.y ); 
