@@ -70,6 +70,7 @@ public:
 	MusLaidOutLayer *GetLast( );
 	MusLaidOutLayer *GetNext( MusLaidOutLayer *staff );
 	MusLaidOutLayer *GetPrevious( MusLaidOutLayer *staff );
+    MusLaidOutLayer *GetLayer( int LayerNo );
     
 public:
     /** The MusLaidOutLayer objects of the staff */

@@ -1019,6 +1019,154 @@ void MusWindow::OnMidiInput(wxCommandEvent &event)
     
 }
 
+bool MusWindow::MoveUpDown( bool up )
+{
+	if ( !m_page || !m_currentSystem || !m_currentStaff || !m_currentLayer ) {
+		return false;
+    } 
+    
+    MusPage *page = m_page;
+    MusSystem *system = m_currentSystem;
+    MusLaidOutStaff *staff = m_currentStaff;
+    MusLaidOutLayer *layer = m_currentLayer;
+    
+    int x = 0;
+    if ( m_currentElement ) {
+        x = m_currentElement->m_x_abs;
+    }
+    
+    if ( up ) {
+        // layer up in the staff
+        if ( m_currentStaff->GetPrevious( m_currentLayer ) )
+        {
+            layer = m_currentStaff->GetPrevious( m_currentLayer );
+        }
+        // staff up in the system
+        else if ( m_currentSystem->GetPrevious( m_currentStaff ) )
+        {
+            staff = m_currentSystem->GetPrevious( m_currentStaff );
+            layer = staff->GetLast();
+        }
+        // previous system
+        else if ( m_page->GetPrevious( m_currentSystem ) )
+        {
+            system = m_page->GetPrevious( m_currentSystem );
+            staff = system->GetLast();
+            if ( staff ) {
+                layer = staff->GetLast();
+            }
+        }
+        // previous page
+        // TODO - we would also to set the page in the MusWindow
+    }
+    else {
+        // layer up in the staff
+        if ( m_currentStaff->GetNext( m_currentLayer ) )
+        {
+            layer = m_currentStaff->GetNext( m_currentLayer );
+        }
+        // staff up in the system
+        else if ( m_currentSystem->GetNext( m_currentStaff ) )
+        {
+            staff = m_currentSystem->GetNext( m_currentStaff );
+            layer = staff->GetFirst();
+        }
+        // previous system
+        else if ( m_page->GetNext( m_currentSystem ) )
+        {
+            system = m_page->GetNext( m_currentSystem );
+            staff = system->GetFirst();
+            if ( staff ) {
+                layer = staff->GetFirst();
+            }
+        }
+        // previous page
+        // TODO - we would also to set the page in the MusWindow
+    }
+    
+    if ( !layer || !staff || !system || !page ) {
+        return false;
+    }
+    
+    m_currentLayer = layer;
+    m_currentStaff = staff;
+    m_currentSystem = system;
+    m_page = page;
+    
+    // now try to get the element - still success if no element at all
+    m_currentElement = m_currentLayer->GetAtPos(x);
+    return true;
+}
+
+bool MusWindow::MoveLeftRight( bool left )
+{
+	if ( !m_page || !m_currentSystem || !m_currentStaff || !m_currentLayer ) {
+		return false;
+    } 
+    
+    MusPage *page = m_page;
+    MusSystem *system = m_currentSystem;
+    MusLaidOutStaff *staff = m_currentStaff;
+    MusLaidOutLayer *layer = m_currentLayer;
+    
+    if ( left ) {
+        // previous element
+        if ( m_currentLayer->GetPrevious( m_currentElement )) {
+            m_currentElement = m_currentLayer->GetPrevious( m_currentElement );
+        }
+        // previous system
+        else if ( m_page->GetPrevious( m_currentSystem ) )
+        {
+            int currentStaffNo = m_currentStaff->GetStaffNo();
+            int currentLayerNo = m_currentLayer->GetLayerNo();
+            system = m_page->GetPrevious( m_currentSystem );
+            staff = system->GetStaff( currentStaffNo );
+            if ( staff ) {
+                layer = staff->GetLayer( currentLayerNo );
+                if ( layer ) {
+                    m_currentElement = layer->GetLast();
+                }
+            }
+        }
+        // previous page
+        // TODO - we would also to set the page in the MusWindow
+    }
+    else {
+        // next element
+        if ( m_currentLayer->GetNext( m_currentElement )) {
+            m_currentElement = m_currentLayer->GetNext( m_currentElement );
+        }
+        // next system
+        else if ( m_page->GetNext( m_currentSystem ) )
+        {
+            int currentStaffNo = m_currentStaff->GetStaffNo();
+            int currentLayerNo = m_currentLayer->GetLayerNo();
+            system = m_page->GetNext( m_currentSystem );
+            staff = system->GetStaff( currentStaffNo );
+            if ( staff ) {
+                layer = staff->GetLayer( currentLayerNo );
+                if ( layer ) {
+                    m_currentElement = layer->GetFirst();
+                }
+            }
+        }
+        // next page
+        // TODO - we would also to set the page in the MusWindow
+    }
+    
+    if ( !layer || !staff || !system || !page ) {
+        return false;
+    }
+    
+    m_currentLayer = layer;
+    m_currentStaff = staff;
+    m_currentSystem = system;
+    m_page = page;
+    
+    return true;
+}
+
+
 void MusWindow::OnKeyUp(wxKeyEvent &event)
 {
     //if ( event.GetKeyCode() == WXK_CONTROL )
@@ -1063,89 +1211,23 @@ void MusWindow::SharedEditOnKeyDown(wxKeyEvent &event) {
     }
     if ( event.GetKeyCode() == WXK_RIGHT || event.GetKeyCode() == WXK_SPACE ) 
     {
-        if ( m_currentLayer->GetNext( m_currentElement )) {
-            m_currentElement = m_currentLayer->GetNext( m_currentElement );
-        }
-        else if ( m_page->GetNext( m_currentSystem ) )
-        {
-            // we keep the staffNo in order to get the same one in the next system
-            // have no sense of "voice" and will not work with systems with different content
-            int currentStaffNo = m_currentStaff->GetStaffNo();
-            m_currentSystem = m_page->GetNext( m_currentSystem );
-            // we should check that the staff and layer pointers are valid!
-            m_currentStaff = m_currentSystem->GetStaff( currentStaffNo );
-            m_currentLayer = m_currentStaff->GetFirst();
-            m_currentElement = m_currentLayer->GetFirst();
-        }
+        MoveLeftRight( false );
         UpdateScroll();
     }
     else if ( event.GetKeyCode() == WXK_LEFT )
     {
-        if ( m_currentLayer->GetPrevious( m_currentElement )) {
-            m_currentElement = m_currentLayer->GetPrevious( m_currentElement );
-        }
-        else if ( m_page->GetPrevious( m_currentSystem ) )
-        {
-            int currentStaffNo = m_currentStaff->GetStaffNo();
-            m_currentSystem = m_page->GetPrevious( m_currentSystem );
-            // we should check that the staff and layer pointers are valid!
-            m_currentStaff = m_currentSystem->GetStaff( currentStaffNo );
-            m_currentLayer = m_currentStaff->GetFirst();
-            m_currentElement = m_currentLayer->GetLast();
-        }
+        MoveLeftRight( true );
         UpdateScroll();
     }
     else if ( event.GetKeyCode() == WXK_UP )
     {
-        int x = 0;
-        if ( m_currentElement ) {
-            x = m_currentElement->m_x_abs;
-        }
-        // staff up in the system
-        if ( m_currentSystem->GetPrevious( m_currentStaff ) )
-        {
-            m_currentStaff = m_currentSystem->GetPrevious( m_currentStaff );
-             // we should check that the layer pointer is valid!
-            m_currentLayer = m_currentStaff->GetFirst();
-            m_currentElement = m_currentLayer->GetAtPos(x);
-            UpdateScroll();
-        }
-        // previous system
-        else if ( m_page->GetPrevious( m_currentSystem ) )
-        {
-            m_currentSystem = m_page->GetPrevious( m_currentSystem );
-            // we should check that the staff and layer pointers are valid!
-            m_currentStaff = m_currentSystem->GetLast();
-            m_currentLayer = m_currentStaff->GetFirst();
-            m_currentElement = m_currentLayer->GetAtPos(x);
-            UpdateScroll();
-        }
+        MoveUpDown( true );
+        UpdateScroll();
     }
     else if ( event.GetKeyCode() == WXK_DOWN )
     {
-        int x = 0;
-        if ( m_currentElement ) {
-            x = m_currentElement->m_x_abs;
-        }
-        // staff down in the system
-        if ( m_currentSystem->GetNext( m_currentStaff ) )
-        {
-            m_currentStaff = m_currentSystem->GetNext( m_currentStaff );
-            // we should check that the layer pointer is valid!
-            m_currentLayer = m_currentStaff->GetFirst();
-            m_currentElement = m_currentLayer->GetAtPos(x);
-            UpdateScroll();
-        }
-        // next system
-        else if ( m_page->GetNext( m_currentSystem ) )
-        {
-            m_currentSystem = m_page->GetNext( m_currentSystem );
-            // we should check that the staff and layer pointers are valid!
-            m_currentStaff = m_currentSystem->GetFirst();
-            m_currentLayer = m_currentStaff->GetFirst();
-            m_currentElement = m_currentLayer->GetAtPos(x);
-            UpdateScroll();
-        }
+        MoveUpDown( false );
+        UpdateScroll();
     }
     else if ( event.GetKeyCode() == WXK_HOME ) 
     {
@@ -1339,60 +1421,33 @@ void MusWindow::NeumeInsertOnKeyDown(wxKeyEvent &event) {
  * Key handler for Mensural editor / edit mode
  */
 void MusWindow::MensuralEditOnKeyDown(wxKeyEvent &event) {
-    /*
+    
+    // the pointers validity is checked in OnKeyDown
     int noteKeyCode = GetNoteValue( event.m_keyCode );
     if ( ((event.m_keyCode == WXK_DELETE ) || (event.m_keyCode == WXK_BACK)) && m_currentElement) //"Delete or Backspace" event
     {
         PrepareCheckPoint( UNDO_PART, MUS_UNDO_FILE );
-        MusElement *del = m_currentElement;
-        MusLaidOutStaff *delstaff = m_currentStaff;
+        MusLaidOutLayerElement *del = m_currentElement;
+        MusLaidOutLayer *delLayer = m_currentLayer;
         
         if (event.m_keyCode == WXK_DELETE )		//"Delete" event
         {
-            if ( m_currentStaff->GetNext( del ) )
-                m_currentElement = m_currentStaff->GetNext( del );
-            else if ( m_page->GetNext( m_currentStaff ) )
-            {
-                
-                m_currentStaff = m_page->GetNext( m_currentStaff );
-                m_currentElement = m_currentStaff->GetFirst();
-            }
-            else
-                m_currentElement = NULL;
+            MoveLeftRight( false );
         }
         else                                    //"Backspace" event
         {
-            if ( m_currentStaff->GetPrevious( del ) )
-                m_currentElement = m_currentStaff->GetPrevious( del );
-            else if ( m_page->GetPrevious( m_currentStaff ) )
-            {
-                m_currentStaff = m_page->GetPrevious( m_currentStaff );
-                m_currentElement = m_currentStaff->GetLast();
-            }
-            else
-                m_currentElement = NULL;
+            MoveLeftRight( true );
         }
         
-        delstaff->Delete( del );
-        if ( m_currentStaff != delstaff )
-        {
-            // reset previous staff with no element before checkpoint and then swap again
-            MusLaidOutStaff *tmp = m_currentStaff;
-            m_currentStaff = delstaff;
-            del = m_currentElement;
-            m_currentElement = NULL;
-            CheckPoint( UNDO_PART, MUS_UNDO_FILE );
-            m_currentStaff = tmp;
-            m_currentElement = del;
-        }
-        else {
-            CheckPoint( UNDO_PART, MUS_UNDO_FILE );
-        }
+        delLayer->Delete( del );
+        
+        CheckPoint( UNDO_PART, MUS_UNDO_FILE );
         
         this->Refresh();
         OnEndEdition();
         SyncToolPanel();
     }
+    /*
     else if ( in ( event.m_keyCode, WXK_F2, WXK_F8 ) && m_currentElement) // Change hauteur
     {
         PrepareCheckPoint( UNDO_PART, MUS_UNDO_FILE );

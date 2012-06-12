@@ -195,6 +195,15 @@ MusLaidOutLayer *MusLaidOutStaff::GetPrevious( MusLaidOutLayer *layer )
     return &m_layers[i - 1];
 }
 
+
+MusLaidOutLayer *MusLaidOutStaff::GetLayer( int LayerNo )
+{
+    if ( LayerNo > (int)m_layers.GetCount() - 1 )
+        return NULL;
+	
+	return &m_layers[LayerNo];
+}
+
 // functors for MusLaidOutStaff
 
 void MusLaidOutStaff::Process(MusFunctor *functor, wxArrayPtrVoid params )

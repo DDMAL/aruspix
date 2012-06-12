@@ -100,6 +100,8 @@ public:
 
     bool CanGoto();
 	void Goto( );
+    bool MoveUpDown( bool up );
+    bool MoveLeftRight( bool left );
 	// scroll
 	void UpdateScroll(); // update scroll position if moving keys
 
