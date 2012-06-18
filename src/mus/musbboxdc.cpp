@@ -325,10 +325,10 @@ void MusBBoxDC::StartGraphic( MusLayoutObject *object, wxString gClass, wxString
     m_objects.Add( object );
 }
       
-void MusBBoxDC::EndGraphic() 
+void MusBBoxDC::EndGraphic(MusLayoutObject *object) 
 {
     // remove object
-    //m_objects.Remove;
+    m_objects.RemoveAt(m_objects.Index(*object), 1);
 }
 
 void MusBBoxDC::StartPage( )

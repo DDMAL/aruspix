@@ -139,16 +139,16 @@ public:
     
     void SetLayout( wxArrayPtrVoid params );
 	bool Check() { return true; }; // { return m_ok; };
-    void UpdateContentBB( /*params*/ ) {}; // to implement
-    void UpdateOwnBB( /*params*/ ) {}; // idem
-    
+    void UpdateContentBB( int x1, int y1, int x2, int y2);
+    void UpdateOwnBB( int x1, int y1, int x2, int y2 );
+    void ResetBB();
 
 private:
     
 protected:
 	MusLayout *m_layout;
-    // int m_contentBB_x, ... add and initialize
-    // int m_ownBB_x, ... add and initialize                              
+    int m_contentBB_x1, m_contentBB_y1, m_contentBB_x2, m_contentBB_y2;
+    int m_selfBB_x1, m_selfBB_y1, m_selfBB_x2, m_selfBB_y2;                              
 
 public:
     
