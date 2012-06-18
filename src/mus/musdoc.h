@@ -62,6 +62,8 @@ public:
     MeiDocument *GetMeiDocument();
     void SetMeiDocument(MeiDocument *doc);
     
+    MusObject *FindLogicalObject( MusFunctor *functor, uuid_t uuid );
+    
     // moulinette
     virtual void ProcessLayout(MusFunctor *functor, wxArrayPtrVoid params );
     virtual void ProcessLogical(MusFunctor *functor, wxArrayPtrVoid params );

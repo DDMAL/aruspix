@@ -33,7 +33,7 @@ class MusLaidOutLayer: public MusLayoutObject
 {
 public:
     // constructors and destructors
-    MusLaidOutLayer( int logLayerNb = -1 );
+    MusLaidOutLayer( int logLayerNb, int logStaffNb, MusSection *section, MusMeasure *measure );
     virtual ~MusLaidOutLayer();
     
     virtual wxString MusClassName( ) { return "MusLaidOutLayer"; };	
@@ -105,6 +105,10 @@ public:
     int m_logLayerNb;
     /** The logical staff - used to overwrite the parent staff */
     int m_logStaffNb;
+    /** The section in the logical tree */
+    MusSection *m_section;
+    /** The measure in the logical tree (for measure music only) */
+    MusMeasure *m_measure;
     
 	/** voix de la portee*/
 	unsigned short voix;    

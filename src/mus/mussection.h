@@ -52,7 +52,7 @@ public:
 public:
     /** The children MusMeasure objects */
     ArrayOfMusMeasures m_measures;
-    /** The children MusStff objects */
+    /** The children MusStaff objects */
     ArrayOfMusStaves m_staves;    
     /** The parent MusPart */
     MusPart *m_part;
@@ -74,17 +74,17 @@ class MusSectionFunctor: public MusFunctor
 {
 private:
     void (MusSection::*fpt)( wxArrayPtrVoid params );   // pointer to member function
-
+    
 public:
 
     // constructor - takes pointer to an object and pointer to a member and stores
     // them in two private variables
-    MusSectionFunctor( void(MusSection::*_fpt)( wxArrayPtrVoid )) { fpt=_fpt; };
+    MusSectionFunctor( void(MusSection::*_fpt)( wxArrayPtrVoid ))  { fpt=_fpt; };
 	virtual ~MusSectionFunctor() {};
 
     // override function "Call"
     virtual void Call( MusSection *ptr, wxArrayPtrVoid params )
-        { (*ptr.*fpt)( params);};          // execute member function
+    { (*ptr.*fpt)( params);};          // execute member function
 };
 
 #endif

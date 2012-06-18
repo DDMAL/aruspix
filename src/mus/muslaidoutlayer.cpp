@@ -36,12 +36,16 @@ WX_DEFINE_OBJARRAY( ArrayOfMusLaidOutLayers );
 // MusLaidOutLayer
 //----------------------------------------------------------------------------
 
-MusLaidOutLayer::MusLaidOutLayer( int logLayerNb ):
+MusLaidOutLayer::MusLaidOutLayer( int logLayerNb, int logStaffNb, MusSection *section, MusMeasure *measure ):
 	MusLayoutObject()
 {
+    wxASSERT_MSG( section, "MusSection pointer cannot be NULL when creating a MusLaidOutLayer");
+    
 	Clear( );
-    m_logStaffNb = -1;
     m_logLayerNb = logLayerNb;
+    m_logStaffNb = logStaffNb;
+    m_section = section;
+    m_measure = measure;
 }
 
 MusLaidOutLayer::~MusLaidOutLayer()
@@ -689,6 +693,7 @@ void MusLaidOutLayer::Process(MusFunctor *functor, wxArrayPtrVoid params )
     for (i = 0; i < (int)m_elements.GetCount(); i++) 
 	{
         element = &m_elements[i];
+        functor->Call( element, params );
         if (elementFunctor) { // is is a MusLaidOutLayerElementFunctor, call it
             elementFunctor->Call( element, params );
         }

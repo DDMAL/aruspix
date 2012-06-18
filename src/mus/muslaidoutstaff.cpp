@@ -218,6 +218,7 @@ void MusLaidOutStaff::Process(MusFunctor *functor, wxArrayPtrVoid params )
     for (i = 0; i < GetLayerCount(); i++) 
 	{
         layer = &m_layers[i];
+        functor->Call( layer, params );
         if (layerFunctor) { // is is a MusLaidOutLayerFunctor, call it
             layerFunctor->Call( layer, params );
         }

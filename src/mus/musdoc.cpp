@@ -138,6 +138,29 @@ void MusDoc::SetMeiDocument(MeiDocument *doc) {
 }
 
 
+
+MusObject *MusDoc::FindLogicalObject( MusFunctor *functor, uuid_t uuid )
+{
+    if ( uuid_is_null( uuid ) ) {
+        return NULL;
+    }
+    
+    MusObject *element = NULL;
+    wxArrayPtrVoid params;
+	params.Add( uuid );
+    params.Add( &element );
+    this->ProcessLogical( functor, params );
+    
+    if (!element) {
+        uuid_string_t uuidStr;
+        uuid_unparse( uuid, uuidStr ); 
+        // this should be a fatal error
+        wxLogError( "Element %s not found in the logical tree", uuidStr );
+    }
+    return element;
+    
+}
+
 // functors for MusLayout
 
 void MusDoc::ProcessLayout(MusFunctor *functor, wxArrayPtrVoid params )

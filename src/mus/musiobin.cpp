@@ -373,6 +373,22 @@ bool MusBinOutput::WriteLaidOutStaff( MusLaidOutStaff *laidOutStaff )
 
 bool MusBinOutput::WriteLaidOutLayer( MusLaidOutLayer *laidOutLayer )
 {
+    int32 = wxINT32_SWAP_ON_BE( laidOutLayer->m_logLayerNb );   
+    Write( &int32, 4 );
+    int32 = wxINT32_SWAP_ON_BE( laidOutLayer->m_logStaffNb );  
+    Write( &int32, 4 );
+    
+    Write( laidOutLayer->m_section->GetUuid(), 16 );
+    // for the measure, we write a NULL uuid for un-measured music
+    if ( laidOutLayer->m_measure ) { // measured music
+        Write( laidOutLayer->m_measure->GetUuid(), 16 );    
+    }
+    else {
+        uuid_t uuid;
+        uuid_clear(uuid);
+        Write( &uuid, 16 );         
+    }
+    
     WriteObject( laidOutLayer );
 	uint16 = wxUINT16_SWAP_ON_BE( laidOutLayer->voix ); 
     Write( &uint16, 2 );
@@ -837,9 +853,26 @@ MusLaidOutLayer* MusBinInput::ReadLaidOutLayer( )
     if ( !m_nbLaidOutLayers ) {
         return NULL;
     }
-    m_nbLaidOutLayers--;   
+    m_nbLaidOutLayers--;  
+        
+    Read( &int32, 4 );
+    int logLayerNb = wxINT32_SWAP_ON_BE( int32 ); 
+    Read( &int32, 4 );
+    int logStaffNb = wxINT32_SWAP_ON_BE( int32 ); 
+
+    Read( &m_uuid, 16 ); // this is the uuid of the Section element
+    // we need to find the section it points to based on the uuid    
+    MusFunctor findSectionUuid( &MusObject::FindWithUuid );
+    MusObject *o = m_doc->FindLogicalObject( &findSectionUuid, m_uuid );
+    MusSection *section = dynamic_cast<MusSection*>( o  );
+
+    Read( &m_uuid, 16 ); // this is the uuid of the Measure element
+    // we need to find the measure (if any?) it points to based on the uuid    
+    MusFunctor findMeasureUuid( &MusObject::FindWithUuid );
+    // measure will be NULL if uuid is NULL (for un measured music)
+    MusMeasure *measure = dynamic_cast<MusMeasure*>( m_doc->FindLogicalObject( &findMeasureUuid, m_uuid ) );
     
-    MusLaidOutLayer *laidOutLayer = new MusLaidOutLayer();
+    MusLaidOutLayer *laidOutLayer = new MusLaidOutLayer(logLayerNb, logStaffNb, section, measure);
     ReadObject( laidOutLayer );    
 	Read( &uint16, 2 );
 	laidOutLayer->voix = wxUINT16_SWAP_ON_BE( uint16 );        
@@ -865,21 +898,21 @@ MusLaidOutLayerElement* MusBinInput::ReadLaidOutLayerElement( )
 	laidOutLayerElement->m_x_abs = wxINT32_SWAP_ON_BE( int32 );
     Read( &m_uuid, 16 ); // this is the uuid of the layerElement
     // we need to find the layerElement it points to based on the uuid
-    MusLayerElement *element = NULL;
+    MusObject *element = NULL;
     wxArrayPtrVoid params;
 	params.Add( m_uuid );
     params.Add( &element );
-    MusLayerElementFunctor findUuid( &MusLayerElement::FindWithUuid );
+    MusFunctor findUuid( &MusObject::FindWithUuid );
     m_doc->ProcessLogical( &findUuid, params );
     
-    if (!element) {
+    if (!element || !dynamic_cast<MusLayerElement*>(element)) {
         uuid_string_t uuidStr;
         uuid_unparse( m_uuid, uuidStr ); 
         wxLogWarning( "Element %s %s not found in the logical tree", m_className.c_str(), uuidStr );
         delete laidOutLayerElement;
         return NULL;
     }
-    laidOutLayerElement->m_layerElement = element;
+    laidOutLayerElement->m_layerElement = dynamic_cast<MusLayerElement*>(element);
     
     return laidOutLayerElement;
 }
@@ -1099,7 +1132,7 @@ bool MusBinInput_1_X::ReadPage( MusPage *page )
         wxASSERT_MSG( m_logLayer, "MusLayer cannot be NULL" );
         
 		MusLaidOutStaff *staff = new MusLaidOutStaff( j );
-        MusLaidOutLayer *layer = new MusLaidOutLayer( 0 ); // we have always on layer per staff
+        MusLaidOutLayer *layer = new MusLaidOutLayer( 0, j, m_section, NULL ); // we have always on layer per staff
 		ReadStaff( staff, layer );
         if ( m_noLigne > system_no + 1 ) { // we have a new system
             page->AddSystem( system ); // add the current one

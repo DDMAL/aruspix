@@ -193,8 +193,10 @@ void MusPage::Process(MusFunctor *functor, wxArrayPtrVoid params )
 	int i;
     for (i = 0; i < GetSystemCount(); i++) 
 	{
+        
         system = &m_systems[i];
-        if (sysFunctor) { // is is a MusSystemFunctor, call it
+        functor->Call( system, params );
+        if (sysFunctor) { // is is a MusSystemFunctor, call it and stop
             sysFunctor->Call( system, params );
         }
         else { // process it further

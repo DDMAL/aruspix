@@ -76,6 +76,7 @@ void MusMeasure::Process(MusFunctor *functor, wxArrayPtrVoid params )
     for (i = 0; i < (int)m_staves.GetCount(); i++) 
 	{
         staff = &m_staves[i];
+        functor->Call( staff, params );
         if (staffFunctor) { // is is a MusStaffFunctor, call it
             staffFunctor->Call( staff, params );
         }

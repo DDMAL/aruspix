@@ -35,6 +35,63 @@ void MusObject::SetUuid( uuid_t uuid )
     uuid_copy( m_uuid, uuid );
 };
 
+bool MusObject::FindWithUuid( wxArrayPtrVoid params )
+{
+    // param 0: the uuid we are looking for
+    // parma 1: the pointer to the element
+    uuid_t *uuid = (uuid_t*)params[0];  
+    MusObject **element = (MusObject**)params[1];  
+    
+    if ( (*element) ) {
+        return true;
+    }
+    
+    if ( uuid_compare( *uuid, *this->GetUuid() ) == 0 ) {
+        (*element) = this;
+        wxLogDebug("Found it!");
+        return true;
+    }
+    //wxLogDebug("Still looking for uuid...");
+    return false;
+}
+
+
+//----------------------------------------------------------------------------
+// MusFunctor
+//----------------------------------------------------------------------------
+
+MusFunctor::MusFunctor( )
+{ 
+    m_success=false;
+    obj_fpt=NULL; 
+    obj_fpt_bool=NULL; 
+}
+
+MusFunctor::MusFunctor( void(MusObject::*_obj_fpt)( wxArrayPtrVoid ))
+{ 
+    m_success=false;
+    obj_fpt=_obj_fpt; 
+    obj_fpt_bool=NULL; 
+}
+
+MusFunctor::MusFunctor( bool(MusObject::*_obj_fpt_bool)( wxArrayPtrVoid ))
+{ 
+    m_success=false;
+    obj_fpt_bool=_obj_fpt_bool; 
+    obj_fpt=NULL;
+}
+
+
+void MusFunctor::Call( MusObject *ptr, wxArrayPtrVoid params )
+{ 
+    if (obj_fpt) {
+        (*ptr.*obj_fpt)( params );
+    }
+    else if (obj_fpt_bool)
+    {
+        m_success = (*ptr.*obj_fpt_bool)( params );
+    }
+}
 
 //----------------------------------------------------------------------------
 // MusLogicalObject

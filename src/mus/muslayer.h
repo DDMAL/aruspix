@@ -102,7 +102,6 @@ public:
     
     // functors
     void Save( wxArrayPtrVoid params );
-    bool FindWithUuid( wxArrayPtrVoid params );
     
 private:
     
@@ -136,18 +135,18 @@ class MusLayerElementFunctor: public MusFunctor
 {
 private:
     void (MusLayerElement::*fpt)( wxArrayPtrVoid params );   // pointer to member function
-    bool (MusLayerElement::*fpt_bool)( wxArrayPtrVoid params );   // pointer to member function
     
 public:
     
     // constructor - takes pointer to an object and pointer to a member and stores
     // them in two private variables
-    MusLayerElementFunctor( void(MusLayerElement::*_fpt)( wxArrayPtrVoid ));
+    MusLayerElementFunctor( void(MusLayerElement::*_fpt)( wxArrayPtrVoid ))  { fpt=_fpt; };
     MusLayerElementFunctor( bool(MusLayerElement::*_fpt_bool)( wxArrayPtrVoid ));
 	virtual ~MusLayerElementFunctor() {};
     
     // override function "Call"
-    virtual void Call( MusLayerElement *ptr, wxArrayPtrVoid params );
+    virtual void Call( MusLayerElement *ptr, wxArrayPtrVoid params )
+    { (*ptr.*fpt)( params);};          // execute member function
 };
 
 

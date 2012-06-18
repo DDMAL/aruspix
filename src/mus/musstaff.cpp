@@ -89,6 +89,7 @@ void MusStaff::Process(MusFunctor *functor, wxArrayPtrVoid params )
     for (i = 0; i < (int)m_layers.GetCount(); i++) 
 	{
         layer = &m_layers[i];
+        functor->Call( layer, params );
         if (layerFunctor) { // is is a MusLayerFunctor, call it
             layerFunctor->Call( layer, params );
         }

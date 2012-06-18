@@ -86,6 +86,8 @@ public:
     void SetUuid( uuid_t uuid );
     
     virtual wxString MusClassName( ) { return "[MISSING]"; };
+    
+    bool FindWithUuid( wxArrayPtrVoid params );
 
 private:
 
@@ -165,6 +167,41 @@ public:
  * This class is an abstact Functor for the layout domain.
  * Needs testing.
  */
+
+//----------------------------------------------------------------------------
+// abstract base class MusFunctor
+//----------------------------------------------------------------------------
+
+/** 
+ * This class is an abstact Functor for the layout domain.
+ * Needs testing.
+ */
+class MusFunctor
+{
+private:
+    void (MusObject::*obj_fpt)( wxArrayPtrVoid params );   // pointer to member function
+    bool (MusObject::*obj_fpt_bool)( wxArrayPtrVoid params );   // pointer to member function
+    
+public:
+    
+    // constructor - takes pointer to an object and pointer to a member and stores
+    // them in two private variables
+    MusFunctor( );
+    MusFunctor( void(MusObject::*_obj_fpt)( wxArrayPtrVoid ));
+    MusFunctor( bool(MusObject::*_ojb_fpt_bool)( wxArrayPtrVoid ));
+	virtual ~MusFunctor() {};
+    
+    // override function "Call"
+    virtual void Call( MusObject *ptr, wxArrayPtrVoid params );
+    //virtual void Call( MusObject *ptr, wxArrayPtrVoid params, bool *success );
+    
+    bool m_success;
+    
+private:
+    
+};
+
+/*
 class MusFunctor
 {
 public:
@@ -181,6 +218,7 @@ public:
 private:
        
 };
+*/
 
 
 //----------------------------------------------------------------------------

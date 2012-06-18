@@ -95,6 +95,7 @@ void MusDiv::Process(MusFunctor *functor, wxArrayPtrVoid params )
     MusScoreFunctor *scoreFunctor = dynamic_cast<MusScoreFunctor*>(functor);
     MusPartSetFunctor *partSetFunctor = dynamic_cast<MusPartSetFunctor*>(functor);
     if (m_score) {
+        functor->Call( m_score, params );
         if (scoreFunctor) { // is is a MusMeasureFunctor, call it
             scoreFunctor->Call( m_score, params );
         }
@@ -103,6 +104,7 @@ void MusDiv::Process(MusFunctor *functor, wxArrayPtrVoid params )
         }
 	}
     if (m_partSet) {
+        functor->Call( m_partSet, params );
         if (partSetFunctor) { // is is a MusMeasureFunctor, call it
             partSetFunctor->Call( m_partSet, params );
         }
@@ -171,6 +173,7 @@ void MusScore::Process(MusFunctor *functor, wxArrayPtrVoid params )
     for (i = 0; i < (int)m_sections.GetCount(); i++) 
 	{
         section = &m_sections[i];
+        functor->Call( section, params );
         if (sectionFunctor) { // is is a MusSectionFunctor, call it
             sectionFunctor->Call( section, params );
         }
@@ -239,6 +242,7 @@ void MusPartSet::Process(MusFunctor *functor, wxArrayPtrVoid params )
     for (i = 0; i < (int)m_parts.GetCount(); i++) 
 	{
         part = &m_parts[i];
+        functor->Call( part, params );
         if (partFunctor) { // is is a MusPartFunctor, call it
             partFunctor->Call( part, params );
         }
@@ -308,6 +312,7 @@ void MusPart::Process(MusFunctor *functor, wxArrayPtrVoid params )
     for (i = 0; i < (int)m_sections.GetCount(); i++) 
 	{
         section = &m_sections[i];
+        functor->Call( section, params );
         if (sectionFunctor) { // is is a MusSectionFunctor, call it
             sectionFunctor->Call( section, params );
         }
