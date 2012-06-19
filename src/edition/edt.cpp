@@ -643,11 +643,16 @@ void EdtEnv::OnOpenMEI( wxCommandEvent &event )
     MusPaeInput meiinput( m_edtFilePtr->m_musDocPtr, filename );
 	if ( !meiinput.ImportFile() )
 		return;
-	
+    
 	MusLayout *layout = new MusLayout( Raw );
 	layout->Realize(m_edtFilePtr->m_musDocPtr->m_divs[0].m_score);
     layout->SetDoc( m_edtFilePtr->m_musDocPtr );
 	m_edtFilePtr->m_musDocPtr->m_layouts.Add(layout);
+    
+    MusBBoxDC bb_dc( 0, 0 );
+    MusRC rc;
+    rc.SetLayout(layout);
+    rc.DrawPage(  &bb_dc, &layout->m_pages[0] , false );
     
 	m_musViewPtr->SetEditorMode(MUS_EDITOR_EDIT);
     UpdateViews( 0 );
