@@ -1424,6 +1424,7 @@ void MusWindow::MensuralEditOnKeyDown(wxKeyEvent &event) {
     
     // the pointers validity is checked in OnKeyDown
     int noteKeyCode = GetNoteValue( event.m_keyCode );
+    
     if ( ((event.m_keyCode == WXK_DELETE ) || (event.m_keyCode == WXK_BACK)) && m_currentElement) //"Delete or Backspace" event
     {
         PrepareCheckPoint( UNDO_PART, MUS_UNDO_FILE );
@@ -1443,35 +1444,40 @@ void MusWindow::MensuralEditOnKeyDown(wxKeyEvent &event) {
         
         CheckPoint( UNDO_PART, MUS_UNDO_FILE );
         
-        this->Refresh();
         OnEndEdition();
         SyncToolPanel();
     }
-    /*
-    else if ( in ( event.m_keyCode, WXK_F2, WXK_F8 ) && m_currentElement) // Change hauteur
+    else if ( in ( event.m_keyCode, WXK_F2, WXK_F8 ) && m_currentElement ) // Change hauteur
     {
         PrepareCheckPoint( UNDO_PART, MUS_UNDO_FILE );
-        m_insert_pname = m_currentElement->filtrcod( event.m_keyCode - WXK_F1, &m_insert_oct );
-        m_currentElement->SetPitch( m_insert_pname, m_insert_oct );
+        m_currentElement->GetPitchOrPosition( &m_insert_pname, &m_insert_oct);
+        m_insert_pname = event.m_keyCode - WXK_F1;
+        MusLayerElement::AdjustPname( &m_insert_pname, &m_insert_oct );
+        m_currentElement->SetPitchOrPosition( m_insert_pname, m_insert_oct );
         CheckPoint( UNDO_PART, MUS_UNDO_FILE );
         OnEndEdition();
     }
     else if ( event.m_controlDown && ( event.m_keyCode == WXK_UP ) && m_currentElement) // correction hauteur avec les fleches, up
     {
         PrepareCheckPoint( UNDO_PART, MUS_UNDO_FILE );
-        m_insert_pname = m_currentElement->filtrcod( m_currentElement->code + 1, &m_insert_oct );
-        m_currentElement->SetPitch( m_insert_pname, m_insert_oct );
+        m_currentElement->GetPitchOrPosition( &m_insert_pname, &m_insert_oct);
+        m_insert_pname++;
+        MusLayerElement::AdjustPname( &m_insert_pname, &m_insert_oct );
+        m_currentElement->SetPitchOrPosition( m_insert_pname, m_insert_oct );
         CheckPoint( UNDO_PART, MUS_UNDO_FILE );
         OnEndEdition();
     }
     else if ( event.m_controlDown && ( event.m_keyCode == WXK_DOWN ) && m_currentElement) // correction hauteur avec les fleches, down
     {
         PrepareCheckPoint( UNDO_PART, MUS_UNDO_FILE );
-        m_insert_pname = m_currentElement->filtrcod( m_currentElement->code - 1, &m_insert_oct );
-        m_currentElement->SetPitch( m_insert_pname, m_insert_oct );
+        m_currentElement->GetPitchOrPosition( &m_insert_pname, &m_insert_oct);
+        m_insert_pname--;
+        MusLayerElement::AdjustPname( &m_insert_pname, &m_insert_oct );
+        m_currentElement->SetPitchOrPosition( m_insert_pname, m_insert_oct );
         CheckPoint( UNDO_PART, MUS_UNDO_FILE );
         OnEndEdition();
     }
+    /*
     else if ( m_currentElement && m_currentElement->IsNote() && 
              ( (event.m_keyCode == 'B') || (event.m_keyCode == 'D' ) ) ) // ajouter un bemol à une note
     {
@@ -1590,6 +1596,7 @@ void MusWindow::MensuralEditOnKeyDown(wxKeyEvent &event) {
         OnEndEdition();
     }
     */
+    this->Refresh();
     wxLogDebug( "MusWindow::MensuralEditOnKeyDown missing in ax2" );
 }
 

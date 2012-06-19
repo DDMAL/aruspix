@@ -44,7 +44,7 @@
 			<key>LSTypeIsPackage</key>
 			<false/>
 			<key>NSPersistentStoreTypeKey</key>
-			<string>Binary</string>
+			<string></string>
 		</dict>
 		<dict>
 			<key>CFBundleTypeExtensions</key>

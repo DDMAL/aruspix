@@ -11,6 +11,7 @@
 
 #include "musio.h"
 #include "muslayer.h"
+#include "musdef.h"
 
 #include "wx/arrimpl.cpp"
 WX_DEFINE_OBJARRAY( ArrayOfMusLayers );
@@ -110,5 +111,22 @@ void MusLayerElement::Save( wxArrayPtrVoid params )
     // param 0: output stream
     MusFileOutputStream *output = (MusFileOutputStream*)params[0];         
     output->WriteLayerElement( this );
+}
+
+void MusLayerElement::AdjustPname( int *pname, int *oct )
+{
+	if ((*pname) < PITCH_C)
+	{
+		if ((*oct) > 0)
+			(*oct)-- ;
+        (*pname) = PITCH_B;
+        
+	}
+	else if ((*pname) > PITCH_B)
+	{
+		if ((*oct) < 7)
+			(*oct)++;
+        (*pname) = PITCH_C;
+	}
 }
 

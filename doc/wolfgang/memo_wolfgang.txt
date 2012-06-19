@@ -1,4 +1,7 @@
 
+*** 2012 - June ***
+filtrcod // renamed AdjustPname
+
 *** 2012 - Ferbruary ***
 
 orientation // renamed m_landscape

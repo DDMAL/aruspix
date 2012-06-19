@@ -43,6 +43,9 @@ public:
     /** Set the pitch or position for MusPitchInterface or MusPositionInterface elements */
     void SetPitchOrPosition( int pname, int oct );
     
+    /** Get the pitch or position for MusPitchInterface or MusPositionInterface elements */
+    bool GetPitchOrPosition( int *pname, int *oct );
+    
     int GetElementNo() const;
     
     bool IsBarline();

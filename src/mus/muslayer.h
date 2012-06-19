@@ -100,6 +100,9 @@ public:
     /** The parent MusLayer setter */
     void SetLayer( MusLayer *layer ) { m_layer = layer; };
     
+    /** Adjust the pname and the octave for values outside the range */
+    static void AdjustPname( int *pname, int *oct );
+    
     // functors
     void Save( wxArrayPtrVoid params );
     

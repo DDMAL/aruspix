@@ -81,6 +81,23 @@ void MusLaidOutLayerElement::SetPitchOrPosition(int pname, int oct)
     }
 }
 
+bool MusLaidOutLayerElement::GetPitchOrPosition(int *pname, int *oct) 
+{
+    if ( this->IsPitchInterface() ){
+        MusPitchInterface *pitch = dynamic_cast<MusPitchInterface*>(this->m_layerElement);
+        *oct = pitch->m_oct;
+        *pname = pitch->m_pname;
+        return true;
+    }
+    else if ( this->IsPositionInterface() ) {
+        MusPositionInterface *position = dynamic_cast<MusPositionInterface*>(this->m_layerElement);
+        *oct = position->m_oct;
+        *pname = position->m_pname;
+        return true;
+    }
+    return false;
+}
+
 bool MusLaidOutLayerElement::IsBarline() 
 {  
     return (dynamic_cast<MusBarline*>(m_layerElement));

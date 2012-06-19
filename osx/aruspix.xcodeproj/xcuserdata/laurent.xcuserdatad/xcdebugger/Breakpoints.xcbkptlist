@@ -79,11 +79,11 @@
          continueAfterRunningActions = "No"
          isPathRelative = "0"
          filePath = "../src/mus/musobject.cpp"
-         timestampString = "358150771.844022"
+         timestampString = "361695300.422997"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "69"
-         endingLineNumber = "69"
+         startingLineNumber = "126"
+         endingLineNumber = "126"
          landmarkName = "MusLayoutObject::SetLayout( wxArrayPtrVoid params )"
          landmarkType = "5">
       </FileBreakpoint>
@@ -93,11 +93,11 @@
          continueAfterRunningActions = "No"
          isPathRelative = "0"
          filePath = "../src/mus/musiobin.cpp"
-         timestampString = "358381231.055733"
+         timestampString = "361723103.973652"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "1393"
-         endingLineNumber = "1393">
+         startingLineNumber = "1426"
+         endingLineNumber = "1426">
       </FileBreakpoint>
       <FileBreakpoint
          shouldBeEnabled = "No"
@@ -117,25 +117,12 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "../src/mus/muslayer.cpp"
-         timestampString = "358152507.836291"
+         timestampString = "361727835.809426"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "59"
-         endingLineNumber = "59"
+         startingLineNumber = "60"
+         endingLineNumber = "60"
          landmarkName = "MusLayer::Load( wxArrayPtrVoid params )"
-         landmarkType = "5">
-      </FileBreakpoint>
-      <FileBreakpoint
-         shouldBeEnabled = "No"
-         ignoreCount = "0"
-         continueAfterRunningActions = "No"
-         filePath = "../src/mus/muslayer.cpp"
-         timestampString = "358163187.436439"
-         startingColumnNumber = "9223372036854775807"
-         endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "119"
-         endingLineNumber = "119"
-         landmarkName = "MusLayerElement::FindWithUuid( wxArrayPtrVoid params )"
          landmarkType = "5">
       </FileBreakpoint>
       <FileBreakpoint
