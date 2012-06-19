@@ -30,6 +30,7 @@
 #include "mus/musiopae.h"
 #include "mus/musiomei.h"
 #include "mus/mussvgdc.h"
+#include "mus/musbboxdc.h"
 
 
 //----------------------------------------------------------------------------
@@ -647,7 +648,7 @@ void EdtEnv::OnOpenMEI( wxCommandEvent &event )
 	layout->Realize(m_edtFilePtr->m_musDocPtr->m_divs[0].m_score);
     layout->SetDoc( m_edtFilePtr->m_musDocPtr );
 	m_edtFilePtr->m_musDocPtr->m_layouts.Add(layout);
-	
+    
 	m_musViewPtr->SetEditorMode(MUS_EDITOR_EDIT);
     UpdateViews( 0 );
 

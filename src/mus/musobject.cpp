@@ -127,8 +127,26 @@ void MusLayoutObject::SetLayout( wxArrayPtrVoid params )
     wxASSERT( dynamic_cast<MusLayout*>((MusLayout*)params[0]) ); 
     
     m_layout = (MusLayout*)params[0];  
+    ResetBB();
 }
 
+void MusLayoutObject::UpdateContentBB( int x1, int y1, int x2, int y2) {
+}
+
+void MusLayoutObject::UpdateOwnBB( int x1, int y1, int x2, int y2 ) {
+    
+}
+
+void MusLayoutObject::ResetBB() {
+    m_contentBB_x1 = 0;
+    m_contentBB_y1 = 0;
+    m_contentBB_x2 = 10000;
+    m_contentBB_y2 = 10000;
+    m_selfBB_x1 = 0;
+    m_selfBB_y1 = 0; 
+    m_selfBB_x2 = 10000;
+    m_selfBB_y2 = 10000;
+}
 
 //----------------------------------------------------------------------------
 // MusEnv
