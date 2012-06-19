@@ -160,6 +160,12 @@ void MusWxDC::EndGraphic( MusLayoutObject *object )
     // actually draw the two bounding boxes
     //m_dc->DrawRectangle( object->m_ownBB_x, <#int y#>, <#int width#>, <#int height#>)
     //m_dc->DrawRectangle( object->m_contentBB_x, <#int y#>, <#int width#>, <#int height#>)
+    
+    SetPen( AxBLACK, 1, wxDOT );
+    SetBrush( AxBLACK, wxDOT );
+    
+    if (object->m_selfBB_x1 > 0)
+        m_dc->DrawRectangle(object->m_selfBB_x1, object->m_selfBB_y1, object->m_selfBB_x1 + object->m_selfBB_x2, object->m_selfBB_y1 + object->m_selfBB_y2);
 }
 
 wxColour MusWxDC::GetColour( int colour )

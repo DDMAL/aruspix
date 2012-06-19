@@ -145,12 +145,14 @@ public:
     void UpdateOwnBB( int x1, int y1, int x2, int y2 );
     void ResetBB();
 
+    int m_contentBB_x1, m_contentBB_y1, m_contentBB_x2, m_contentBB_y2;
+    int m_selfBB_x1, m_selfBB_y1, m_selfBB_x2, m_selfBB_y2; 
+    
 private:
     
 protected:
 	MusLayout *m_layout;
-    int m_contentBB_x1, m_contentBB_y1, m_contentBB_x2, m_contentBB_y2;
-    int m_selfBB_x1, m_selfBB_y1, m_selfBB_x2, m_selfBB_y2;                              
+
 
 public:
     

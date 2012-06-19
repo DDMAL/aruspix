@@ -323,13 +323,14 @@ void MusBBoxDC::StartGraphic( MusLayoutObject *object, wxString gClass, wxString
 {
     // add object
     m_objects.Add( object );
+    printf("PUSH, array has items: %lu\n", m_objects.Count());
 }
       
 void MusBBoxDC::EndGraphic(MusLayoutObject *object) 
 {
     // detach the object
     m_objects.Detach(m_objects.Index(*object));
-    //m_objects.RemoveAt(m_objects.Index(*object), 1);
+    printf("POP, array has items: %lu\n", m_objects.Count());
 }
 
 void MusBBoxDC::StartPage( )
@@ -484,7 +485,9 @@ void MusBBoxDC::DrawEllipticArc(int x, int y, int width, int height, double star
               
 void MusBBoxDC::DrawLine(int x1, int y1, int x2, int y2)
 {
-    //WriteLine( wxString::Format("<path d=\"M%d %d L%d %d\" style=\"%s\" />", x1,y1,x2,y2, m_penWidth.c_str()) );
+    
+    m_objects[m_objects.Count() - 1].UpdateOwnBB(x1, y1, x2, y2);
+
 }
  
                
