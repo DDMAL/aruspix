@@ -164,8 +164,8 @@ void MusWxDC::EndGraphic( MusLayoutObject *object )
     SetPen( AxBLACK, 1, wxDOT );
     SetBrush( AxBLACK, wxDOT );
     
-    if (object->m_selfBB_x1 > 0)
-        m_dc->DrawRectangle(object->m_selfBB_x1, object->m_selfBB_y1, object->m_selfBB_x1 + object->m_selfBB_x2, object->m_selfBB_y1 + object->m_selfBB_y2);
+    if (object->m_selfBB_x2 != 0xFFFF && object->m_selfBB_y2 != 0xFFFF)
+       m_dc->DrawRectangle(object->m_selfBB_x1, object->m_selfBB_y1, object->m_selfBB_x2 - object->m_selfBB_x1, object->m_selfBB_y2 - object->m_selfBB_y1);
 }
 
 wxColour MusWxDC::GetColour( int colour )
