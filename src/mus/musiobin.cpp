@@ -401,12 +401,14 @@ bool MusBinOutput::WriteLaidOutLayer( MusLaidOutLayer *laidOutLayer )
 
 bool MusBinOutput::WriteLaidOutLayerElement( MusLaidOutLayerElement *laidOutLayerElement )
 {
+    // first write the uuid of the layerElement
+    Write( laidOutLayerElement->m_layerElement->GetUuid(), 16 );
+    
     WriteObject( laidOutLayerElement );
 	int32 = wxINT32_SWAP_ON_BE( laidOutLayerElement->m_y_abs );
 	Write( &int32, 4 );
 	int32 = wxINT32_SWAP_ON_BE( laidOutLayerElement->m_x_abs );
     Write( &int32, 4 );
-    Write( laidOutLayerElement->m_layerElement->GetUuid(), 16 );
     return true;
 }
 
@@ -890,29 +892,17 @@ MusLaidOutLayerElement* MusBinInput::ReadLaidOutLayerElement( )
     }
     m_nbLaidOutLayerElements--;  
     
-    MusLaidOutLayerElement *laidOutLayerElement = new MusLaidOutLayerElement();
+    Read( &m_uuid, 16 ); // this is the uuid of the layer element element
+    // we need to find the it in the logical tree 
+    MusFunctor findElementUuid( &MusObject::FindWithUuid );
+    MusLayerElement *element = dynamic_cast<MusLayerElement*>( m_doc->FindLogicalObject( &findElementUuid, m_uuid ) );
+    
+    MusLaidOutLayerElement *laidOutLayerElement = new MusLaidOutLayerElement( element );
     ReadObject( laidOutLayerElement );
 	Read( &int32, 4 );
 	laidOutLayerElement->m_y_abs = wxINT32_SWAP_ON_BE( int32 );
 	Read( &int32, 4 );
 	laidOutLayerElement->m_x_abs = wxINT32_SWAP_ON_BE( int32 );
-    Read( &m_uuid, 16 ); // this is the uuid of the layerElement
-    // we need to find the layerElement it points to based on the uuid
-    MusObject *element = NULL;
-    wxArrayPtrVoid params;
-	params.Add( m_uuid );
-    params.Add( &element );
-    MusFunctor findUuid( &MusObject::FindWithUuid );
-    m_doc->ProcessLogical( &findUuid, params );
-    
-    if (!element || !dynamic_cast<MusLayerElement*>(element)) {
-        uuid_string_t uuidStr;
-        uuid_unparse( m_uuid, uuidStr ); 
-        wxLogWarning( "Element %s %s not found in the logical tree", m_className.c_str(), uuidStr );
-        delete laidOutLayerElement;
-        return NULL;
-    }
-    laidOutLayerElement->m_layerElement = dynamic_cast<MusLayerElement*>(element);
     
     return laidOutLayerElement;
 }

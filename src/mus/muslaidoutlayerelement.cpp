@@ -27,19 +27,13 @@ WX_DEFINE_OBJARRAY( ArrayOfMusLaidOutLayerElements );
 // MusLaidOutLayerElement
 //----------------------------------------------------------------------------
 
-MusLaidOutLayerElement::MusLaidOutLayerElement():
-	MusLayoutObject()
-{
-    m_layerElement = NULL;
-    m_layer = NULL;
-    m_x_abs = 0;
-    m_y_abs = 0;
-}
-
 MusLaidOutLayerElement::MusLaidOutLayerElement( MusLayerElement *element ):
 	MusLayoutObject()
 {
     m_layerElement = element;
+    m_layer = NULL;
+    m_x_abs = 0;
+    m_y_abs = 0;
 }
 
 MusLaidOutLayerElement::~MusLaidOutLayerElement()
