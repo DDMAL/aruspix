@@ -135,17 +135,34 @@ void MusLayoutObject::UpdateContentBB( int x1, int y1, int x2, int y2) {
 
 void MusLayoutObject::UpdateOwnBB( int x1, int y1, int x2, int y2 ) {
     
+    printf("Was: %i %i %i %i\n", m_selfBB_x1,m_selfBB_y1, m_selfBB_x2 ,m_selfBB_y2);
+    
+    if (m_selfBB_x1 == 0 && m_selfBB_y1 == 0 && m_selfBB_x2 == 0xFFFF && m_selfBB_y2 == 0xFFFF) {
+        m_selfBB_x1 = x1;
+        m_selfBB_y1 = y1;
+        m_selfBB_x2 = x2;
+        m_selfBB_y2 = y2;
+    }
+    else {
+        if (m_selfBB_x1 > x1) m_selfBB_x1 = x1;
+        if (m_selfBB_y1 > y1) m_selfBB_y1 = y1;
+        if (m_selfBB_x2 < x2) m_selfBB_x2 = x2;
+        if (m_selfBB_y2 < y2) m_selfBB_y2 = y2;
+    }
+    
+    printf("Is:  %i %i %i %i\n", m_selfBB_x1,m_selfBB_y1, m_selfBB_x2 ,m_selfBB_y2);
+    
 }
 
 void MusLayoutObject::ResetBB() {
     m_contentBB_x1 = 0;
     m_contentBB_y1 = 0;
-    m_contentBB_x2 = 10000;
-    m_contentBB_y2 = 10000;
+    m_contentBB_x2 = 0xFFFF;
+    m_contentBB_y2 = 0xFFFF;
     m_selfBB_x1 = 0;
     m_selfBB_y1 = 0; 
-    m_selfBB_x2 = 10000;
-    m_selfBB_y2 = 10000;
+    m_selfBB_x2 = 0xFFFF;
+    m_selfBB_y2 = 0xFFFF;
 }
 
 //----------------------------------------------------------------------------
