@@ -12,6 +12,14 @@
 #include "musio.h"
 #include "muslaidoutlayerelement.h"
 
+#include "musbarline.h"
+#include "musclef.h"
+#include "musmensur.h"
+#include "musneume.h"
+#include "musnote.h"
+#include "musrest.h"
+#include "mussymbol.h"
+
 #include "wx/arrimpl.cpp"
 WX_DEFINE_OBJARRAY( ArrayOfMusLaidOutLayerElements );
 
