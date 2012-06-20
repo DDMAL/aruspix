@@ -1477,38 +1477,37 @@ void MusWindow::MensuralEditOnKeyDown(wxKeyEvent &event) {
         CheckPoint( UNDO_PART, MUS_UNDO_FILE );
         OnEndEdition();
     }
-    /*
     else if ( m_currentElement && m_currentElement->IsNote() && 
-             ( (event.m_keyCode == 'B') || (event.m_keyCode == 'D' ) ) ) // ajouter un bemol à une note
+             ( (event.m_keyCode == 'F') || (event.m_keyCode == 'S' ) ) ) // ajouter un bemol à une note
     {
+        MusNote *note = dynamic_cast<MusNote*>(m_currentElement->m_layerElement);
         PrepareCheckPoint( UNDO_PART, MUS_UNDO_FILE );
-        MusSymbol1 alteration;
-        alteration.flag = ALTER;
-        alteration.code = m_currentElement->code;
-        alteration.oct = m_currentElement->oct;
-        if ( event.m_keyCode == 'B') 
-            alteration.calte = ACCID_FLAT;
-        else
-            alteration.calte = ACCID_SHARP;
-        alterationm_x_abs = m_currentElement->m_x_abs - m_step1 * 3;
-        m_currentStaff->Insert( &alteration );
+        MusSymbol alteration( SYMBOL_ACCID );
+        alteration.m_pname = note->m_pname;
+        alteration.m_oct = note->m_oct;
+        if ( event.m_keyCode == 'F') {
+            alteration.m_accid = ACCID_FLAT;
+        }
+        else {
+            alteration.m_accid = ACCID_SHARP;
+        }
+        m_currentLayer->Insert( &alteration, m_currentElement->m_x_abs - m_layout->m_step1 * 3 );
         CheckPoint( UNDO_PART, MUS_UNDO_FILE );
         OnEndEdition();
     }
     else if ( m_currentElement && m_currentElement->IsNote() && 
 			 (event.m_keyCode == '.')  ) // ajouter un point
     {
+        MusNote *note = dynamic_cast<MusNote*>(m_currentElement->m_layerElement);
         PrepareCheckPoint( UNDO_PART, MUS_UNDO_FILE );
-        MusSymbol1 point;
-        point.flag = PNT;
-        point.code = m_currentElement->code;
-        point.oct = m_currentElement->oct;
-        pointm_x_abs = m_currentElement->m_x_abs + m_step1 * 3;
-        // special case where we move forward
-        m_currentElement = m_currentStaff->Insert( &point );
+        MusSymbol dot( SYMBOL_DOT );
+        dot.m_pname = note->m_pname;
+        dot.m_oct = note->m_oct;
+        m_currentLayer->Insert( &dot, m_currentElement->m_x_abs - m_layout->m_step1 * 3 );
         CheckPoint( UNDO_PART, MUS_UNDO_FILE );
         OnEndEdition();
     }
+    /*
     else if ( m_currentElement && m_currentElement->IsNote() &&
              (in( noteKeyCode, 0, 7 ) || (noteKeyCode == CUSTOS))) // change duree sur une note ou un silence
     {
