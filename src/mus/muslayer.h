@@ -14,6 +14,7 @@
 #endif
 
 #include "musstaff.h"
+#include "musdef.h"
 
 //----------------------------------------------------------------------------
 // MusLayer
@@ -102,6 +103,18 @@ public:
     
     /** Adjust the pname and the octave for values outside the range */
     static void AdjustPname( int *pname, int *oct );
+    
+    bool IsBarline();
+    bool IsClef();
+    bool IsMensur();
+    bool IsNeume();
+    bool IsNeumeSymbol();
+    bool IsNote();
+    bool IsPitchInterface();
+    bool IsPositionInterface();
+    bool IsRest();
+    bool IsSymbol( SymbolType type );
+    bool IsSymbol( );
     
     // functors
     void Save( wxArrayPtrVoid params );

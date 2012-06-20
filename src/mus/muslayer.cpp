@@ -13,6 +13,15 @@
 #include "muslayer.h"
 #include "musdef.h"
 
+#include "musbarline.h"
+#include "musclef.h"
+#include "musmensur.h"
+#include "musneume.h"
+#include "musnote.h"
+#include "musrest.h"
+#include "mussymbol.h"
+
+
 #include "wx/arrimpl.cpp"
 WX_DEFINE_OBJARRAY( ArrayOfMusLayers );
 WX_DEFINE_OBJARRAY( ArrayOfMusLayerElements );
@@ -103,6 +112,63 @@ MusLayerElement::MusLayerElement():
 
 MusLayerElement::~MusLayerElement()
 {
+}
+
+
+bool MusLayerElement::IsBarline() 
+{  
+    return (dynamic_cast<MusBarline*>(this));
+}
+
+bool MusLayerElement::IsClef() 
+{  
+    return (dynamic_cast<MusClef*>(this));
+}
+
+bool MusLayerElement::IsSymbol( SymbolType type ) 
+{  
+    MusSymbol *symbol = dynamic_cast<MusSymbol*>(this);
+    return (symbol && (symbol->m_type == type));
+}
+
+bool MusLayerElement::IsSymbol( ) 
+{  
+    return (dynamic_cast<MusSymbol*>(this));
+}
+
+bool MusLayerElement::IsMensur() 
+{  
+    return (dynamic_cast<MusMensur*>(this));
+}
+
+bool MusLayerElement::IsNeume() 
+{  
+    return false; //return (typeid(*m_layerElement) == typeid(MusNeume)); 
+}
+
+bool MusLayerElement::IsNeumeSymbol() 
+{  
+    return false; //return (typeid(*m_layerElement) == typeid(MusNeume)); 
+}
+
+bool MusLayerElement::IsNote() 
+{  
+    return (dynamic_cast<MusNote*>(this));
+}
+
+bool MusLayerElement::IsPitchInterface() 
+{  
+    return (dynamic_cast<MusPitchInterface*>(this));
+}
+
+bool MusLayerElement::IsPositionInterface() 
+{  
+    return (dynamic_cast<MusPositionInterface*>(this));
+}
+
+bool MusLayerElement::IsRest() 
+{  
+    return (dynamic_cast<MusRest*>(this));
 }
 
 
