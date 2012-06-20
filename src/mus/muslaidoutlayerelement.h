@@ -13,7 +13,6 @@ class MusDC;
 class MusLayerElement;
 
 #include "muslaidoutlayer.h"
-#include "mussymbol.h"
 
 //----------------------------------------------------------------------------
 // MusLaidOutLayerElement
@@ -28,7 +27,6 @@ class MusLaidOutLayerElement: public MusLayoutObject
 {
 public:
     // constructors and destructors
-    MusLaidOutLayerElement();
     MusLaidOutLayerElement( MusLayerElement *element );
     virtual ~MusLaidOutLayerElement();
     
@@ -48,17 +46,17 @@ public:
     
     int GetElementNo() const;
     
-    bool IsBarline();
-    bool IsClef();
-    bool IsMensur();
-    bool IsNeume();
-    bool IsNeumeSymbol();
-    bool IsNote();
-    bool IsPitchInterface();
-    bool IsPositionInterface();
-    bool IsRest();
-    bool IsSymbol( SymbolType type );
-    bool IsSymbol( );
+    bool IsBarline() { return m_layerElement->IsBarline(); };
+    bool IsClef() { return m_layerElement->IsClef(); };
+    bool IsMensur() { return m_layerElement->IsMensur(); };
+    bool IsNeume() { return m_layerElement->IsNeume(); };
+    bool IsNeumeSymbol() { return m_layerElement->IsNeumeSymbol(); };
+    bool IsNote() { return m_layerElement->IsNote(); };
+    bool IsPitchInterface() { return m_layerElement->IsPitchInterface(); };
+    bool IsPositionInterface() { return m_layerElement->IsPositionInterface(); };
+    bool IsRest() { return m_layerElement->IsRest(); };
+    bool IsSymbol( SymbolType type ) { return m_layerElement->IsSymbol( type ); };
+    bool IsSymbol( ) { return m_layerElement->IsSymbol(); };
     
     // functors
     void Save( wxArrayPtrVoid params );
