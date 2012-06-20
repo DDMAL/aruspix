@@ -52,6 +52,8 @@ public:
     void SetDoc( MusDoc *doc );
 	/** Realize the layout */
 	void Realize( MusScore *score );
+    
+    void RefreshViews( ) {};
 	
 	/*
      Calcul la taille de la page = calculFormatPapier()
