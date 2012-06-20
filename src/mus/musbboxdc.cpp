@@ -9,6 +9,7 @@
 #include "wx/wxprec.h"
 
 #include "musbboxdc.h"
+#include "musrc.h"
 #include "musdef.h"
 
 #define LEIPZIG_BBOX_ORN_MORDENT 0
@@ -299,9 +300,12 @@ static inline double RadToDeg(double deg) { return (deg * 180.0) / M_PI; }
 //----------------------------------------------------------------------------
 
 
-MusBBoxDC::MusBBoxDC (int width, int height):
+MusBBoxDC::MusBBoxDC ( MusRC *rc, int width, int height):
     MusDC()
 {	
+    m_correctMusicAscent = false; // do not correct the ascent in the Leipzig font    
+    
+    m_rc = rc;
     m_width = width;
     m_height = height;
     
@@ -326,7 +330,7 @@ void MusBBoxDC::StartGraphic( MusLayoutObject *object, wxString gClass, wxString
     printf("PUSH, array has items: %lu\n", m_objects.Count());
 }
       
-void MusBBoxDC::EndGraphic(MusLayoutObject *object) 
+void MusBBoxDC::EndGraphic(MusLayoutObject *object, MusRC *rc ) 
 {
     // detach the object
     m_objects.Detach(m_objects.Index(*object));
@@ -362,6 +366,7 @@ void MusBBoxDC::SetPen( int colour, int width, int style )
         
 void MusBBoxDC::SetFont( MusFontInfo *font_info )
 {
+    m_font = *font_info;
 }
             
 
@@ -419,15 +424,7 @@ void MusBBoxDC::DrawCircle(int x, int y, int radius)
 
 void MusBBoxDC::DrawEllipse(int x, int y, int width, int height)
 {
-    //// Example : 
-    //// call UpdateContentBB for all objects
-    //// call UpdateOwnBB for top one only
-    
-    
-    //int rh = height / 2;
-    //int rw = width  / 2;
-
-    //WriteLine(wxString::Format("<ellipse cx=\"%d\" cy=\"%d\" rx=\"%d\" ry=\"%d\" />", x+rw,y+rh, rw, rh ));
+    UpdateBB(x, y, x + width, y + height);
 }
 
         
@@ -491,23 +488,23 @@ void MusBBoxDC::DrawLine(int x1, int y1, int x2, int y2)
                
 void MusBBoxDC::DrawPolygon(int n, MusPoint points[], int xoffset, int yoffset, int fill_style)
 {
-
-    wxString s ;
-    s = "<polygon style=\"";
-    //if ( fillStyle == wxODDEVEN_RULE )
-    //    s = s + wxT("fill-rule:evenodd; ");
-    //else
-    s += "fill-rule:nonzero; ";
-
-    s += "\" points=\"" ;
+    if ( n == 0 ) {
+        return;
+    }
+    int x1 = points[0].x + xoffset;
+    int x2 = x1;
+    int y1 = points[0].y + yoffset;
+    int y2 = y1;
 
     for (int i = 0; i < n;  i++)
     {
-        s += wxString::Format("%d,%d ", points [i].x+xoffset, points[i].y+yoffset );
-        //CalcBoundingBox ( points [i].x+xoffset, points[i].y+yoffset);
+        if ( points[i].x + xoffset < x1 ) x1 = points[i].x + xoffset;
+        if ( points[i].x + xoffset > x2 ) x2 = points[i].x + xoffset;
+        if ( points[i].y + yoffset < y1 ) y1 = points[i].y + yoffset;
+        if ( points[i].y + yoffset > y2 ) y2 = points[i].y + yoffset;
+
     }
-    s += wxT("\" /> ") ;
-    //WriteLine(s);
+    UpdateBB(x1, y1, x2, y2);
 }
     
             
@@ -519,21 +516,7 @@ void MusBBoxDC::DrawRectangle(int x, int y, int width, int height)
 
 void MusBBoxDC::DrawRoundedRectangle(int x, int y, int width, int height, double radius)
 {
-
-    wxString s ;
-    
-    // negative heights or widths are not allowed in SVG
-    if ( height < 0 ) {
-        height = -height;
-        y -= height;
-    }
-     if ( width < 0 ) {
-        width = -width;
-        x -= width;
-    }   
-
-    //WriteLine ( wxString::Format(" <rect x=\"%d\" y=\"%d\" width=\"%d\" height=\"%d\" rx=\"%.2g\" />", x, y, width, height, radius ) );
-
+    UpdateBB(x, y, x + width, y + height);
 }
 
         
@@ -638,10 +621,14 @@ void MusBBoxDC::DrawMusicText(const wxString& text, int x, int y)
     }
 
     
-    int x_off = x + (bbox->m_bBox[glyph].m_x/10);
-    int y_off = y + (bbox->m_bBox[glyph].m_y/10);
+    int x_off = x + (bbox->m_bBox[glyph].m_x * ((double)(m_font.GetPointSize() / LEIPZIG_UNITS_PER_EM)) );
+    // because we are in the rendering context, y position are already flipped
+    int y_off = y - (bbox->m_bBox[glyph].m_y * ((double)(m_font.GetPointSize() / LEIPZIG_UNITS_PER_EM)) );
     
-    UpdateBB(x_off, y_off, (bbox->m_bBox[glyph].m_width/10) + x_off, (bbox->m_bBox[glyph].m_height/10) + y_off);
+    UpdateBB(x_off, y_off, 
+        x_off + (bbox->m_bBox[glyph].m_width * ((double)(m_font.GetPointSize() / LEIPZIG_UNITS_PER_EM)) ),
+        // idem, y position are flipped
+        y_off - (bbox->m_bBox[glyph].m_height * ((double)(m_font.GetPointSize() / LEIPZIG_UNITS_PER_EM)) ));
     
 }
 
@@ -651,7 +638,9 @@ void MusBBoxDC::DrawSpline(int n, MusPoint points[])
     //m_dc->DrawSpline( n, (wxPoint*)points );
 }
 
-void MusBBoxDC::UpdateBB(int x1, int y1, int x2, int y2) {
+void MusBBoxDC::UpdateBB(int x1, int y1, int x2, int y2) 
+{
+    /*
     MusLayoutObject *first = &m_objects[m_objects.Count() - 1];
     
     first->UpdateOwnBB(x1, y1, x2, y2);
@@ -668,5 +657,19 @@ void MusBBoxDC::UpdateBB(int x1, int y1, int x2, int y2) {
             MusLayoutObject *precedent = &m_objects[i + 1];
             m_objects[i].UpdateContentBB(precedent->m_contentBB_x1, precedent->m_contentBB_y1, precedent->m_contentBB_x2, precedent->m_contentBB_y2);
         }
+    }
+    */
+    
+    // simpler version 
+    
+    // the array should not be empty
+    wxASSERT_MSG( !m_objects.IsEmpty(), "Array cannot be empty" ) ;
+    
+    // we need to store logical coordinates in the objects, we need to convert them back (this is why we need a MusRC object)
+    (&m_objects.Last())->UpdateSelfBB( m_rc->ToLogicalX(x1), m_rc->ToLogicalY(y1), m_rc->ToLogicalX(x2), m_rc->ToLogicalY(y2) );
+    
+    int i;
+    for (i = 0; i < (int)m_objects.GetCount(); i++) {
+        (&m_objects[i])->UpdateContentBB( m_rc->ToLogicalX(x1), m_rc->ToLogicalY(y1), m_rc->ToLogicalX(x2), m_rc->ToLogicalY(y2) );
     }
 }

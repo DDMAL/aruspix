@@ -66,7 +66,7 @@ void MusRC::SetLayout( MusLayout *layout )
 	}
     else {
         m_layout = layout;
-        m_notation_mode = m_layout->m_env.m_notationMode;
+        //m_notation_mode = m_layout->m_env.m_notationMode;
         m_npage = 0;
         m_layout->PaperSize();
         m_layout->UpdateFontValues();

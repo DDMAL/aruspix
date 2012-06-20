@@ -86,7 +86,7 @@ void MusRC::DrawSystem( MusDC *dc, MusSystem *system )
         DrawStaff( dc , staff, system );		
 	}
     
-    dc->EndGraphic(system); //RZ
+    dc->EndGraphic(system, this ); //RZ
 
 }
 
@@ -624,7 +624,7 @@ void MusRC::DrawStaff( MusDC *dc, MusLaidOutStaff *staff, MusSystem *system )
 		DrawLayer( dc, layer, staff );
 	}
     
-    dc->EndGraphic(staff); //RZ
+    dc->EndGraphic(staff, this ); //RZ
 
 }
 

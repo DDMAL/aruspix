@@ -33,7 +33,7 @@ class MusBBoxDC: public MusDC
 {
 public:
 
-    MusBBoxDC ( int width, int height );
+    MusBBoxDC ( MusRC *rc, int width, int height );
     virtual ~MusBBoxDC();
     
     // Setters
@@ -93,7 +93,7 @@ public:
     // 
     virtual void StartGraphic( MusLayoutObject *object, wxString gClass, wxString gId );
     
-    virtual void EndGraphic(MusLayoutObject *object);
+    virtual void EndGraphic(MusLayoutObject *object, MusRC *rc );
     
     virtual void StartPage();
     
@@ -109,6 +109,13 @@ private:
      * The array containing the object for which the bounding box needs to be updated
      */ 
     ArrayOfMusLayoutObjects m_objects;
+    
+    MusFontInfo m_font;
+    
+    /**
+     * The rendering context we are calling from - used to flip back the Y coordinates
+     */
+    MusRC *m_rc;
    
     //
     int m_penWidth;

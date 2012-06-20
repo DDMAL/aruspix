@@ -142,7 +142,9 @@ public:
     void SetLayout( wxArrayPtrVoid params );
 	bool Check() { return true; }; // { return m_ok; };
     void UpdateContentBB( int x1, int y1, int x2, int y2);
-    void UpdateOwnBB( int x1, int y1, int x2, int y2 );
+    void UpdateSelfBB( int x1, int y1, int x2, int y2 );
+    bool HasContentBB();
+    bool HasSelfBB();
     void ResetBB();
 
     int m_contentBB_x1, m_contentBB_y1, m_contentBB_x2, m_contentBB_y2;
