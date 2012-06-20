@@ -486,7 +486,23 @@ void MusBBoxDC::DrawEllipticArc(int x, int y, int width, int height, double star
 void MusBBoxDC::DrawLine(int x1, int y1, int x2, int y2)
 {
     
-    m_objects[m_objects.Count() - 1].UpdateOwnBB(x1, y1, x2, y2);
+    MusLayoutObject *first = &m_objects[m_objects.Count() - 1];
+    
+    first->UpdateOwnBB(x1, y1, x2, y2);
+    
+    // Stretch the content BB of the other objects
+    // Check that we are not the only elem in the list
+    if (m_objects.Count() > 1) {
+        
+        // The second element in the list stretches in base of the new BBox of the first
+        m_objects[m_objects.Count() - 2].UpdateContentBB(first->m_selfBB_x1, first->m_selfBB_y1, first->m_selfBB_x2, first->m_selfBB_y2);
+        
+        // All the next ones, stretch using contentBB
+        for (int i = m_objects.Count() - 3; i >= 0; i--) {
+            MusLayoutObject *precedent = &m_objects[i + 1];
+            m_objects[i].UpdateContentBB(precedent->m_contentBB_x1, precedent->m_contentBB_y1, precedent->m_contentBB_x2, precedent->m_contentBB_y2);
+        }
+    }
 
 }
  
