@@ -112,6 +112,8 @@ private:
    
     //
     int m_penWidth;
+    
+    void UpdateBB(int x1, int y1, int x2, int y2);
         
 };
 

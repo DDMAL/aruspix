@@ -485,25 +485,7 @@ void MusBBoxDC::DrawEllipticArc(int x, int y, int width, int height, double star
               
 void MusBBoxDC::DrawLine(int x1, int y1, int x2, int y2)
 {
-    
-    MusLayoutObject *first = &m_objects[m_objects.Count() - 1];
-    
-    first->UpdateOwnBB(x1, y1, x2, y2);
-    
-    // Stretch the content BB of the other objects
-    // Check that we are not the only elem in the list
-    if (m_objects.Count() > 1) {
-        
-        // The second element in the list stretches in base of the new BBox of the first
-        m_objects[m_objects.Count() - 2].UpdateContentBB(first->m_selfBB_x1, first->m_selfBB_y1, first->m_selfBB_x2, first->m_selfBB_y2);
-        
-        // All the next ones, stretch using contentBB
-        for (int i = m_objects.Count() - 3; i >= 0; i--) {
-            MusLayoutObject *precedent = &m_objects[i + 1];
-            m_objects[i].UpdateContentBB(precedent->m_contentBB_x1, precedent->m_contentBB_y1, precedent->m_contentBB_x2, precedent->m_contentBB_y2);
-        }
-    }
-
+    UpdateBB(x1, y1, x2, y2);
 }
  
                
@@ -585,75 +567,82 @@ void MusBBoxDC::DrawRotatedText(const wxString& text, int x, int y, double angle
 
 void MusBBoxDC::DrawMusicText(const wxString& text, int x, int y)
 {
-    //// Use the MusLeipzigBBox class above
+    unsigned int glyph;
     
-    wxString glyph;
-    char c = (char)text[0];
+    //// Use the MusLeipzigBBox class above    
+    unsigned char c = (unsigned char)text[0];
+    MusLeipzigBBox *bbox = new MusLeipzigBBox();
+    
+    
     switch (c) {
-        /* figures */
-        case 48: glyph = "figure_0"; break;
-        case 49: glyph = "figure_1"; break;
-        case 50: glyph = "figure_2"; break;
-        case 51: glyph = "figure_3"; break;
-        case 52: glyph = "figure_4"; break;
-        case 53: glyph = "figure_5"; break;
-        case 54: glyph = "figure_6"; break;
-        case 55: glyph = "figure_7"; break;
-        case 56: glyph = "figure_8"; break;
-        case 57: glyph = "figure_9"; break;
-        /* clef */
-        case LEIPZIG_CLEF_G: glyph = "clef_G"; break;
-        case LEIPZIG_CLEF_F: glyph = "clef_F"; break;
-        case LEIPZIG_CLEF_C: glyph = "clef_C"; break;
-        case LEIPZIG_CLEF_8va: glyph = "clef_G8"; break;
-        case LEIPZIG_CLEF_G + LEIPZIG_OFFSET_MENSURAL: glyph = "clef_G_mensural"; break;
-        case LEIPZIG_CLEF_F + LEIPZIG_OFFSET_MENSURAL: glyph = "clef_F_mensural"; break;
-        case LEIPZIG_CLEF_C + LEIPZIG_OFFSET_MENSURAL: glyph = "clef_C_mensural"; break;
-        case LEIPZIG_CLEF_8va + LEIPZIG_OFFSET_MENSURAL: glyph = "clef_G_chiavette"; break;
-        /* alterations */
-        case LEIPZIG_ACCID_SHARP: glyph = "alt_sharp"; break;
-        case LEIPZIG_ACCID_NATURAL: glyph = "alt_natural"; break;
-        case LEIPZIG_ACCID_FLAT: glyph = "alt_flat"; break;
-        case LEIPZIG_ACCID_DOUBLE_SHARP: glyph = "alt_double_sharp"; break;
-        case LEIPZIG_ACCID_SHARP + LEIPZIG_OFFSET_MENSURAL: glyph = "alt_sharp_mensural"; break;
-        case LEIPZIG_ACCID_NATURAL + LEIPZIG_OFFSET_MENSURAL: glyph = "alt_natural_mensural"; break;
-        case LEIPZIG_ACCID_FLAT + LEIPZIG_OFFSET_MENSURAL: glyph = "alt_flat_mensural"; break;
-        case LEIPZIG_ACCID_DOUBLE_SHARP + LEIPZIG_OFFSET_MENSURAL: glyph = "alt_double_sharp_mensural"; break;
-        /* rests */
-        case LEIPZIG_REST_QUARTER: glyph = "rest_4"; break;
-        case LEIPZIG_REST_QUARTER + 1: glyph = "rest_8"; break;
-        case LEIPZIG_REST_QUARTER + 2: glyph = "rest_16"; break;
-        case LEIPZIG_REST_QUARTER + 3: glyph = "rest_32"; break;
-        case LEIPZIG_REST_QUARTER + 4: glyph = "rest_64"; break;
-        case LEIPZIG_REST_QUARTER + 5: glyph = "rest_128"; break;
-        case LEIPZIG_REST_QUARTER + LEIPZIG_OFFSET_MENSURAL: glyph = "rest_4_mensural"; break;
-        case LEIPZIG_REST_QUARTER + 1 + LEIPZIG_OFFSET_MENSURAL: glyph = "rest_8_mensural"; break;
-        case LEIPZIG_REST_QUARTER + 2 + LEIPZIG_OFFSET_MENSURAL: glyph = "rest_16_mensural"; break;
-        case LEIPZIG_REST_QUARTER + 3 + LEIPZIG_OFFSET_MENSURAL: glyph = "rest_32_mensural"; break;
-        case LEIPZIG_REST_QUARTER + 4 + LEIPZIG_OFFSET_MENSURAL: glyph = "rest_64_mensural"; break;
-        case LEIPZIG_REST_QUARTER + 5 + LEIPZIG_OFFSET_MENSURAL: glyph = "rest_128_mensural"; break;
-        /* note heads */
-        case LEIPZIG_HEAD_WHOLE: glyph = "head_whole"; break;
-        case LEIPZIG_HEAD_WHOLE_FILLED: glyph = "head_whole_fill"; break;
-        case LEIPZIG_HEAD_HALF: glyph = "head_half"; break;
-        case LEIPZIG_HEAD_QUARTER: glyph = "head_quarter"; break;
-        case LEIPZIG_HEAD_WHOLE + LEIPZIG_OFFSET_MENSURAL: glyph = "head_whole_diamond"; break;
-        case LEIPZIG_HEAD_WHOLE_FILLED + LEIPZIG_OFFSET_MENSURAL: glyph = "head_whole_filldiamond"; break;
-        case LEIPZIG_HEAD_HALF + LEIPZIG_OFFSET_MENSURAL: glyph = "head_half_diamond"; break;
-        case LEIPZIG_HEAD_QUARTER + LEIPZIG_OFFSET_MENSURAL: glyph = "head_quarter_filldiamond"; break;
-        /* slashes */
-        case LEIPZIG_STEM_FLAG_UP: glyph = "slash_up"; break;
-        case LEIPZIG_STEM_FLAG_DOWN: glyph = "slash_down"; break;
-        case LEIPZIG_STEM_FLAG_UP + LEIPZIG_OFFSET_MENSURAL: glyph = "slash_up_mensural"; break;
-        case LEIPZIG_STEM_FLAG_DOWN + LEIPZIG_OFFSET_MENSURAL: glyph = "slash_down_mensural"; break;
-        /* ornaments */
-        case 35: glyph = "orn_mordent"; break;
-        /* todo */
-        default: glyph = "unknown";
+            /* figures */
+        case 48: glyph = LEIPZIG_BBOX_FIGURE_0; break;
+        case 49: glyph = LEIPZIG_BBOX_FIGURE_1; break;
+        case 50: glyph = LEIPZIG_BBOX_FIGURE_2; break;
+        case 51: glyph = LEIPZIG_BBOX_FIGURE_3; break;
+        case 52: glyph = LEIPZIG_BBOX_FIGURE_4; break;
+        case 53: glyph = LEIPZIG_BBOX_FIGURE_5; break;
+        case 54: glyph = LEIPZIG_BBOX_FIGURE_6; break;
+        case 55: glyph = LEIPZIG_BBOX_FIGURE_7; break;
+        case 56: glyph = LEIPZIG_BBOX_FIGURE_8; break;
+        case 57: glyph = LEIPZIG_BBOX_FIGURE_9; break;
+            /* clef */
+        case LEIPZIG_CLEF_G: glyph = LEIPZIG_BBOX_CLEF_G; break;
+        case LEIPZIG_CLEF_F: glyph = LEIPZIG_BBOX_CLEF_F; break;
+        case LEIPZIG_CLEF_C: glyph = LEIPZIG_BBOX_CLEF_C; break;
+        case LEIPZIG_CLEF_8va: glyph = LEIPZIG_BBOX_CLEF_G8; break;
+        case LEIPZIG_CLEF_G + LEIPZIG_OFFSET_MENSURAL: glyph = LEIPZIG_BBOX_CLEF_G_MENSURAL; break;
+        case LEIPZIG_CLEF_F + LEIPZIG_OFFSET_MENSURAL: glyph = LEIPZIG_BBOX_CLEF_F_MENSURAL; break;
+        case LEIPZIG_CLEF_C + LEIPZIG_OFFSET_MENSURAL: glyph = LEIPZIG_BBOX_CLEF_C_MENSURAL; break;
+        case LEIPZIG_CLEF_8va + LEIPZIG_OFFSET_MENSURAL: glyph = LEIPZIG_BBOX_CLEF_G_MENSURAL; break; // ??
+            /* alterations */
+        case LEIPZIG_ACCID_SHARP: glyph = LEIPZIG_BBOX_ALT_SHARP; break;
+        case LEIPZIG_ACCID_NATURAL: glyph = LEIPZIG_BBOX_ALT_NATURAL; break;
+        case LEIPZIG_ACCID_FLAT: glyph = LEIPZIG_BBOX_ALT_FLAT; break;
+        case LEIPZIG_ACCID_DOUBLE_SHARP: glyph = LEIPZIG_BBOX_ALT_DOUBLE_SHARP; break;
+        case LEIPZIG_ACCID_SHARP + LEIPZIG_OFFSET_MENSURAL: glyph = LEIPZIG_BBOX_ALT_SHARP_MENSURAL; break;
+        case LEIPZIG_ACCID_NATURAL + LEIPZIG_OFFSET_MENSURAL: glyph = LEIPZIG_BBOX_ALT_NATURAL_MENSURAL; break;
+        case LEIPZIG_ACCID_FLAT + LEIPZIG_OFFSET_MENSURAL: glyph = LEIPZIG_BBOX_ALT_FLAT_MENSURAL; break;
+        case LEIPZIG_ACCID_DOUBLE_SHARP + LEIPZIG_OFFSET_MENSURAL: glyph = LEIPZIG_BBOX_ALT_DOUBLE_SHARP_MENSURAL; break;
+            /* rests */
+        case LEIPZIG_REST_QUARTER: glyph = LEIPZIG_BBOX_REST_4; break;
+        case LEIPZIG_REST_QUARTER + 1: glyph = LEIPZIG_BBOX_REST_8; break;
+        case LEIPZIG_REST_QUARTER + 2: glyph = LEIPZIG_BBOX_REST_16; break;
+        case LEIPZIG_REST_QUARTER + 3: glyph = LEIPZIG_BBOX_REST_32; break;
+        case LEIPZIG_REST_QUARTER + 4: glyph = LEIPZIG_BBOX_REST_64; break;
+        case LEIPZIG_REST_QUARTER + 5: glyph = LEIPZIG_BBOX_REST_128; break;
+        case LEIPZIG_REST_QUARTER + LEIPZIG_OFFSET_MENSURAL: glyph = LEIPZIG_BBOX_REST_4_MENSURAL; break;
+        case LEIPZIG_REST_QUARTER + 1 + LEIPZIG_OFFSET_MENSURAL: glyph = LEIPZIG_BBOX_REST_8_MENSURAL; break;
+        case LEIPZIG_REST_QUARTER + 2 + LEIPZIG_OFFSET_MENSURAL: glyph = LEIPZIG_BBOX_REST_16_MENSURAL; break;
+        case LEIPZIG_REST_QUARTER + 3 + LEIPZIG_OFFSET_MENSURAL: glyph = LEIPZIG_BBOX_REST_32_MENSURAL; break;
+        case LEIPZIG_REST_QUARTER + 4 + LEIPZIG_OFFSET_MENSURAL: glyph = LEIPZIG_BBOX_REST_64_MENSURAL; break;
+        case LEIPZIG_REST_QUARTER + 5 + LEIPZIG_OFFSET_MENSURAL: glyph = LEIPZIG_BBOX_REST_128_MENSURAL; break;
+            /* note heads */
+        case LEIPZIG_HEAD_WHOLE: glyph = LEIPZIG_BBOX_HEAD_WHOLE; break;
+        case LEIPZIG_HEAD_WHOLE_FILLED: glyph = LEIPZIG_BBOX_HEAD_WHOLE_FILL; break;
+        case LEIPZIG_HEAD_HALF: glyph = LEIPZIG_BBOX_HEAD_HALF; break;
+        case LEIPZIG_HEAD_QUARTER: glyph = LEIPZIG_BBOX_HEAD_QUARTER; break;
+        case LEIPZIG_HEAD_WHOLE + LEIPZIG_OFFSET_MENSURAL: glyph = LEIPZIG_BBOX_HEAD_WHOLE_DIAMOND; break;
+        case LEIPZIG_HEAD_WHOLE_FILLED + LEIPZIG_OFFSET_MENSURAL: glyph = LEIPZIG_BBOX_HEAD_WHOLE_FILLDIAMOND; break;
+        case LEIPZIG_HEAD_HALF + LEIPZIG_OFFSET_MENSURAL: glyph = LEIPZIG_BBOX_HEAD_HALF_DIAMOND; break;
+        case LEIPZIG_HEAD_QUARTER + LEIPZIG_OFFSET_MENSURAL: glyph = LEIPZIG_BBOX_HEAD_QUARTER_FILLDIAMOND; break;
+            /* slashes */
+        case LEIPZIG_STEM_FLAG_UP: glyph = LEIPZIG_BBOX_SLASH_UP; break;
+        case LEIPZIG_STEM_FLAG_DOWN: glyph = LEIPZIG_BBOX_SLASH_DOWN; break;
+        case LEIPZIG_STEM_FLAG_UP + LEIPZIG_OFFSET_MENSURAL: glyph = LEIPZIG_BBOX_SLASH_UP_MENSURAL; break;
+        case LEIPZIG_STEM_FLAG_DOWN + LEIPZIG_OFFSET_MENSURAL: glyph = LEIPZIG_BBOX_SLASH_DOWN_MENSURAL; break;
+            /* ornaments */
+        case 35: glyph = LEIPZIG_BBOX_ORN_MORDENT; break;
+            /* todo */
+        default: glyph = LEIPZIG_BBOX_ALT_DOUBLE_SHARP; // ??
     }
-        
-    //WriteLine ( wxString::Format("<use xlink:href=\"#%s\" transform=\"translate(%d, %d) scale(%f, %f)\"/>",
-		//glyph.c_str(), x, y, ((double)(m_font.GetPointSize() / 2048.0)), ((double)(m_font.GetPointSize() / 2048.0)) ) );
+
+    
+    int x_off = x + (bbox->m_bBox[glyph].m_x/10);
+    int y_off = y + (bbox->m_bBox[glyph].m_y/10);
+    
+    UpdateBB(x_off, y_off, (bbox->m_bBox[glyph].m_width/10) + x_off, (bbox->m_bBox[glyph].m_height/10) + y_off);
+    
 }
 
 
@@ -662,4 +651,22 @@ void MusBBoxDC::DrawSpline(int n, MusPoint points[])
     //m_dc->DrawSpline( n, (wxPoint*)points );
 }
 
-
+void MusBBoxDC::UpdateBB(int x1, int y1, int x2, int y2) {
+    MusLayoutObject *first = &m_objects[m_objects.Count() - 1];
+    
+    first->UpdateOwnBB(x1, y1, x2, y2);
+    
+    // Stretch the content BB of the other objects
+    // Check that we are not the only elem in the list
+    if (m_objects.Count() > 1) {
+        
+        // The second element in the list stretches in base of the new BBox of the first
+        m_objects[m_objects.Count() - 2].UpdateContentBB(first->m_selfBB_x1, first->m_selfBB_y1, first->m_selfBB_x2, first->m_selfBB_y2);
+        
+        // All the next ones, stretch using contentBB
+        for (int i = m_objects.Count() - 3; i >= 0; i--) {
+            MusLayoutObject *precedent = &m_objects[i + 1];
+            m_objects[i].UpdateContentBB(precedent->m_contentBB_x1, precedent->m_contentBB_y1, precedent->m_contentBB_x2, precedent->m_contentBB_y2);
+        }
+    }
+}
