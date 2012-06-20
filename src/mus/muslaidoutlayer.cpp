@@ -179,8 +179,10 @@ MusLaidOutLayerElement *MusLaidOutLayer::GetAtPos( int x )
 
 MusLaidOutLayerElement *MusLaidOutLayer::Insert( MusLayerElement *element, int x )
 {
+	if ( !element ) { 
+        return NULL;
+    }
     /*
-	if ( !element ) return NULL;
 
 	// copy element
 	if ( element->IsSymbol() )
@@ -248,31 +250,36 @@ void MusLaidOutLayer::Append( MusLaidOutLayerElement *element, int step )
 
 void MusLaidOutLayer::Delete( MusLaidOutLayerElement *element )
 {
-    /*
-	if ( !element ) return;
-
-	if ( m_r ) // effacement
-	{
-		if ( (element->IsSymbol() && (((MusSymbol1*)element)->flag == CLE))
-			|| (element->IsNeumeSymbol() && ((((MusNeumeSymbol*)element)->getValue() == NEUME_SYMB_CLEF_C) || (((MusNeumeSymbol*)element)->getValue() == NEUME_SYMB_CLEF_F))) )
-			
-			m_r->OnBeginEditionClef();
-	}
+    wxASSERT_MSG( m_layout, "MusLayout cannot be NULL when deleting a MusLaidOutLayerElement" );
+    
+	if ( !element ) {
+        return;
+    }
+    
+    bool is_clef = false;
+        
+    if ( element->IsClef() ) {
+        is_clef = true;
+        //m_r->OnBeginEditionClef();
+    }
 	
-	m_elements.Detach( element->no );
+    // This is temporary and is OK because we have only one single layout for now.
+    // Deleting elements should be done from the logical tree and then update the layout
+    // Ultimately, this method should be used for deleting element in the layout only?
+                 
+    // This is the logical element we need to delete
+    MusLayerElement *logElement = element->m_layerElement;
+    // Remove it from its layer (and delete it) - we should check pointers!
+    logElement->m_layer->m_layerElements.RemoveAt(  logElement->m_layer->m_layerElements.Index( *logElement ) );
+    // Remove the LaidOutLayerElement
+	m_elements.RemoveAt( m_elements.Index( *element ) );
 
-	if ( m_r )
+	if ( is_clef )
 	{
-		if ( (element->IsSymbol() && (((MusSymbol1*)element)->flag == CLE))
-			|| (element->IsNeumeSymbol() && ((((MusNeumeSymbol*)element)->getValue() == NEUME_SYMB_CLEF_C) || (((MusNeumeSymbol*)element)->getValue() == NEUME_SYMB_CLEF_F))) )
-			m_r->OnEndEditionClef();
-		
-		m_r->DoRefresh();
+        //m_r->OnEndEditionClef();
 	}
-	
-	delete element;
-    */
-    wxLogError( "MusLaidOutLayer::Delete missing in ax2" );
+    
+    m_layout->RefreshViews();
 }
 
 

@@ -48,7 +48,7 @@ bool MusObject::FindWithUuid( wxArrayPtrVoid params )
     
     if ( uuid_compare( *uuid, *this->GetUuid() ) == 0 ) {
         (*element) = this;
-        wxLogDebug("Found it!");
+        //wxLogDebug("Found it!");
         return true;
     }
     //wxLogDebug("Still looking for uuid...");
