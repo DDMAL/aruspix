@@ -98,6 +98,8 @@ public:
     MusLayerElement();
     virtual ~MusLayerElement();
     
+    MusLayerElement *GetChildCopy( );
+    
     /** The parent MusLayer setter */
     void SetLayer( MusLayer *layer ) { m_layer = layer; };
     

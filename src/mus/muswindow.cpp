@@ -581,20 +581,8 @@ void MusWindow::Copy()
 
 	if ( m_bufferElement )
 		delete m_bufferElement;
-
-	if ( m_currentElement->IsBarline() )
-		m_bufferElement = new MusBarline( *(MusBarline*)m_currentElement->m_layerElement );
-	else if (m_currentElement->IsClef() )
-		m_bufferElement = new MusClef( *(MusClef*)m_currentElement->m_layerElement );
-	else if (m_currentElement->IsMensur() )
-		m_bufferElement = new MusMensur( *(MusMensur*)m_currentElement->m_layerElement );
-	else if (m_currentElement->IsNote() )
-		m_bufferElement = new MusNote( *(MusNote*)m_currentElement->m_layerElement );
-	else if (m_currentElement->IsRest() )
-		m_bufferElement = new MusRest( *(MusRest*)m_currentElement->m_layerElement );
-	else if (m_currentElement->IsSymbol() )
-		m_bufferElement = new MusSymbol( *(MusSymbol*)m_currentElement->m_layerElement );
     
+    m_bufferElement = m_currentElement->m_layerElement->GetChildCopy();
 }
 
 void MusWindow::Cut()

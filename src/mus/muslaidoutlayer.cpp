@@ -182,27 +182,12 @@ MusLaidOutLayerElement *MusLaidOutLayer::Insert( MusLayerElement *element, int x
 	if ( !element ) { 
         return NULL;
     }
-    /*
-
-	// copy element
-	if ( element->IsSymbol() )
-		element = new MusSymbol1( *(MusSymbol1*)element );
-	else if ( element->IsNote() )
-		element = new MusNote1( *(MusNote1*)element );
-	else if ( element->IsNeume() )
-		element = new MusNeume( *(MusNeume*)element );
-	else if ( element->IsNeumeSymbol() )
-		element = new MusNeumeSymbol( *(MusNeumeSymbol*)element );
-//	else if ( element->IsNeume() ) 
-//	{
-	//	//copying a neume causes issues
-//		element = new MusNeume( *(MusNeume*)element );
-//		((MusNeume*)element)->n_pitches.resize(1);
-//	}
+    
+    MusLayerElement *insertElement = element->GetChildCopy();
 
 	int idx = 0;
 	MusLaidOutLayerElement *tmp = this->GetFirst();
-	while ( tmp && (tmp->m_x_abs < element->m_x_abs) )
+	while ( tmp && (tmp->m_x_abs < x) )
 	{
 		idx++;
 		if ( this->GetNext( tmp ) )
@@ -211,40 +196,20 @@ MusLaidOutLayerElement *MusLaidOutLayer::Insert( MusLayerElement *element, int x
 			break;
 	}
 
-	if ( tmp &&  ((element->IsSymbol() && (((MusSymbol1*)element)->flag == CLE))
-		|| (element->IsNeumeSymbol() && ((((MusNeumeSymbol*)element)->getValue() == NEUME_SYMB_CLEF_C) || (((MusNeumeSymbol*)element)->getValue() == NEUME_SYMB_CLEF_F)))) )
-		
-		m_r->OnBeginEditionClef();
+	if ( tmp && element->IsClef() ) {		
+		//m_r->OnBeginEditionClef();
+    }
 
 	m_elements.Insert( element, idx );
 	
-	if ( (element->IsSymbol() && (((MusSymbol1*)element)->flag == CLE))
-		|| (element->IsNeumeSymbol() && ((((MusNeumeSymbol*)element)->getValue() == NEUME_SYMB_CLEF_C) || (((MusNeumeSymbol*)element)->getValue() == NEUME_SYMB_CLEF_F))) )
-		
-		m_r->OnEndEditionClef();
-
-	if (m_r)
-		m_r->DoRefresh();
-    */
-    
-    wxLogError( "MusLaidOutLayer::Insert missing in ax2" );
-    
-	return new MusLaidOutLayerElement( element );
-}
-
-void MusLaidOutLayer::Append( MusLaidOutLayerElement *element, int step )
-{
-	if ( !element ) return;
-    
-    // insert at the end of the staff with a random step
-    MusLaidOutLayerElement *last = this->GetLast();
-    if (last) {
-        element->m_x_abs += last->m_x_abs + step;
+	if ( tmp && element->IsClef() ) {		
+		//m_r->OnEndEditionClef();
     }
-    else {
-        element->m_x_abs += step;
-    }
-	AddElement( element );
+
+	m_layout->RefreshViews();
+    //
+    return NULL;
+	//return insertElement;
 }
 
 

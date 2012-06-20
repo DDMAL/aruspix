@@ -65,7 +65,6 @@ public:
 	MusLaidOutLayerElement *GetPrevious( MusLaidOutLayerElement *element );
 	MusLaidOutLayerElement *GetAtPos( int x );
 	MusLaidOutLayerElement *Insert( MusLayerElement *element, int x ); // return a pointer on the inserted element
-    void Append( MusLaidOutLayerElement *element, int step = 35  ); // append to the end AND TAKE OWNERSHIP of the MusLaidOutLayerElement
 	void Delete( MusLaidOutLayerElement *element );
 	/** 
      * Looks for the first MusLaidOutLayerElement with an LayoutElement of type elementType.

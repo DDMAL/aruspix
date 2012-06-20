@@ -114,6 +114,29 @@ MusLayerElement::~MusLayerElement()
 {
 }
 
+MusLayerElement *MusLayerElement::GetChildCopy() 
+{
+    
+    // Is there another way to do this in C++ ?
+
+    if ( this->IsBarline() )
+        return new MusBarline( *(MusBarline*)this );
+    else if (this->IsClef() )
+        return new MusClef( *(MusClef*)this );
+    else if (this->IsMensur() )
+        return new MusMensur( *(MusMensur*)this );
+    else if (this->IsNote() )
+        return new MusNote( *(MusNote*)this );
+    else if (this->IsRest() )
+        return new MusRest( *(MusRest*)this );
+    else if (this->IsSymbol() )
+        return new MusSymbol( *(MusSymbol*)this );
+    else {
+        wxASSERT_MSG( false , "Copy of this type unimplemented" );
+        return NULL;
+    }
+}
+
 
 bool MusLayerElement::IsBarline() 
 {  
