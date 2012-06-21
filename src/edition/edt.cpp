@@ -647,10 +647,10 @@ void EdtEnv::OnOpenMEI( wxCommandEvent &event )
 	MusLayout *layout = new MusLayout( Raw );
 	layout->Realize(m_edtFilePtr->m_musDocPtr->m_divs[0].m_score);
     layout->SetDoc( m_edtFilePtr->m_musDocPtr );
-	m_edtFilePtr->m_musDocPtr->m_layouts.Add(layout);
+	m_edtFilePtr->m_musDocPtr->AddLayout( layout );
     
-    MusBBoxDC bb_dc( 0, 0 );
     MusRC rc;
+    MusBBoxDC bb_dc( &rc, 0, 0 );
     rc.SetLayout(layout);
     rc.DrawPage(  &bb_dc, &layout->m_pages[0] , false );
     
