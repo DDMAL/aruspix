@@ -43,6 +43,8 @@ public:
 	MusLaidOutStaff( const MusLaidOutStaff& staff ); // copy contructor
     virtual ~MusLaidOutStaff();
     
+    virtual bool Check();
+    
     virtual wxString MusClassName( ) { return "MusLaidOutStaff"; };	    
     
     void Clear();

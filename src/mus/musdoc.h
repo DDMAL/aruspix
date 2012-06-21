@@ -51,6 +51,13 @@ public:
      */ 
     void Reset();
     
+    /**
+     * Check the validity of the document.
+     * Verify that all element have a valid pointer to their parent.
+     * This is more of a debugging method.
+     */ 
+    void Check();
+    
     bool Save( MusFileOutputStream *output );
     
     bool Load( MusFileInputStream *input );

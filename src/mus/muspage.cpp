@@ -31,6 +31,12 @@ MusPage::~MusPage()
 {
 }
 
+bool MusPage::Check()
+{
+    wxASSERT( m_layout );
+    return (m_layout);
+}
+
 void MusPage::Clear( )
 {
 	m_systems.Clear( );

@@ -30,10 +30,11 @@ public:
     MusLaidOutLayerElement( MusLayerElement *element );
     virtual ~MusLaidOutLayerElement();
     
+    virtual bool Check();
+    
     virtual wxString MusClassName( ) { return "MusLaidOutLayerElement"; };	    
     
     void Clear();
-    void CheckIntegrity();
     
     /** The parent MusLaidOutLayer setter */
     void SetLayer( MusLaidOutLayer *layer ) { m_layer = layer; }; 

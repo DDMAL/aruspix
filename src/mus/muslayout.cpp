@@ -44,6 +44,12 @@ MusLayout::~MusLayout()
 {
 }
 
+bool MusLayout::Check()
+{
+    wxASSERT( m_doc );
+    return ( m_doc && MusLayoutObject::Check());
+}
+
 void MusLayout::Clear( )
 {
 	m_pages.Clear( );
@@ -103,7 +109,7 @@ void MusLayout::SetDoc( MusDoc *doc )
     // set doc for elements
     MusLaidOutLayerElementFunctor element( &MusLaidOutLayer::SetLayout );
     this->Process( &element, params );
-
+    
     m_doc = doc;
     m_env = doc->m_env;
 }
@@ -372,6 +378,7 @@ void MusLayout::Process(MusFunctor *functor, wxArrayPtrVoid params )
     for (i = 0; i < (int)m_pages.GetCount(); i++) 
 	{
         page = &m_pages[i];
+        functor->Call( page, params );
         functor->Call( page, params );
         if (pageFunctor) { // is is a MusSystemFunctor, call it
             pageFunctor->Call( page, params );

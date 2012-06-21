@@ -27,6 +27,12 @@ MusLaidOutStaff::MusLaidOutStaff( int logStaffNb ):
     m_logStaffNb = logStaffNb;
 }
 
+bool MusLaidOutStaff::Check()
+{
+    wxASSERT( m_system );
+    return ( m_system && MusLayoutObject::Check());
+}
+
 MusLaidOutStaff::MusLaidOutStaff( const MusLaidOutStaff& staff )
 {
     m_system = NULL;

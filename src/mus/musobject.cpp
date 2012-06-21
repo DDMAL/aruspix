@@ -39,6 +39,21 @@ void MusObject::SetUuid( uuid_t uuid )
     uuid_copy( m_uuid, uuid );
 };
 
+/*
+void MusObject::SetLayout( wxArrayPtrVoid params )
+{
+    // param 0: MusLayout
+    wxASSERT( dynamic_cast<MusLayout*>((MusLayout*)params[0]) ); 
+    
+    if ( dynamic_cast<MusLayout*>(this) ) {
+        MusLayout *layout = dynamic_cast<MusLayout*>(this);
+        layout->SetLayout( (MusLayout*)params[0] ); 
+        layout->ResetBB();
+    }
+}
+*/
+
+
 bool MusObject::FindWithUuid( wxArrayPtrVoid params )
 {
     // param 0: the uuid we are looking for
@@ -56,6 +71,12 @@ bool MusObject::FindWithUuid( wxArrayPtrVoid params )
         return true;
     }
     //wxLogDebug("Still looking for uuid...");
+    return false;
+}
+
+bool MusObject::CheckFunctor( wxArrayPtrVoid params )
+{
+    this->Check();
     return false;
 }
 
@@ -126,6 +147,7 @@ MusLayoutObject::~MusLayoutObject()
 {
 }
 
+
 void MusLayoutObject::SetLayout( wxArrayPtrVoid params )
 {
     // param 0: MusLayout
@@ -134,6 +156,7 @@ void MusLayoutObject::SetLayout( wxArrayPtrVoid params )
     m_layout = (MusLayout*)params[0];  
     ResetBB();
 }
+
 
 void MusLayoutObject::UpdateContentBB( int x1, int y1, int x2, int y2) 
 {

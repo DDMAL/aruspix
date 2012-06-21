@@ -40,6 +40,12 @@ MusLaidOutLayerElement::~MusLaidOutLayerElement()
 {
 }
 
+bool MusLaidOutLayerElement::Check()
+{
+    wxASSERT( m_layer && m_layerElement );
+    return ( m_layer && m_layerElement && MusLayoutObject::Check());
+}
+
 void MusLaidOutLayerElement::Save( wxArrayPtrVoid params )
 {
     // param 0: output stream

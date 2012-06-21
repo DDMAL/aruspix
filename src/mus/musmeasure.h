@@ -29,6 +29,8 @@ public:
     MusMeasure();
     virtual ~MusMeasure();
     
+    virtual bool Check();
+    
     virtual wxString MusClassName( ) { return "MusMeasure"; };
     
     /** the parent MusSection setter (for unmeasured music) */

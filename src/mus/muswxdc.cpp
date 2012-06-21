@@ -172,7 +172,7 @@ void MusWxDC::EndGraphic( MusLayoutObject *object, MusRC *rc )
     if ( object->HasContentBB() ) {
         m_dc->DrawRectangle( rc->ToRendererX( object->m_contentBB_x1 ), rc->ToRendererY( object->m_contentBB_y1 ), 
             rc->ToRendererX( object->m_contentBB_x2 ) - rc->ToRendererX( object->m_contentBB_x1 ), 
-            rc->ToRendererY( object->m_contentBB_y2 ) - rc->ToRendererY( object->m_contentBB_y1 ));
+            rc->ToRendererY( object->m_contentBB_y2 ) - rc->ToRendererY( object->m_contentBB_y1 )); 
     }
 }
 

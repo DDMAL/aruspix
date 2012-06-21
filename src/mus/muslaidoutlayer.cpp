@@ -52,6 +52,12 @@ MusLaidOutLayer::~MusLaidOutLayer()
 {
 }
 
+bool MusLaidOutLayer::Check()
+{
+    wxASSERT( m_staff && m_section );
+    return ( m_staff && m_section && MusLayoutObject::Check());
+}
+
 void MusLaidOutLayer::Clear()
 {
     m_staff = NULL;
@@ -183,6 +189,9 @@ MusLaidOutLayerElement *MusLaidOutLayer::Insert( MusLayerElement *element, int x
         return NULL;
     }
     
+    // This is temporary and is OK because we have only one single layout for now.
+    // Inserting elements should be done from the logical tree and then update the layout
+    
     MusLayerElement *insertElement = element->GetChildCopy();
 
 	int idx = 0;
@@ -195,15 +204,19 @@ MusLaidOutLayerElement *MusLaidOutLayer::Insert( MusLayerElement *element, int x
 		else
 			break;
 	}
+    
+    // there is already something in the staff
+    if ( tmp ) {
 
-	if ( tmp && element->IsClef() ) {		
-		//m_r->OnBeginEditionClef();
-    }
+        if ( tmp && element->IsClef() ) {		
+            //m_r->OnBeginEditionClef();
+        }
 
-	m_elements.Insert( element, idx );
-	
-	if ( tmp && element->IsClef() ) {		
-		//m_r->OnEndEditionClef();
+        m_elements.Insert( element, idx );
+        
+        if ( tmp && element->IsClef() ) {		
+            //m_r->OnEndEditionClef();
+        }
     }
 
 	m_layout->RefreshViews();

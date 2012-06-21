@@ -47,6 +47,12 @@ MusSystem::~MusSystem()
 {
 }
 
+bool MusSystem::Check()
+{
+    wxASSERT( m_page );
+    return (m_page && MusLayoutObject::Check());
+}
+
 void MusSystem::Clear( )
 {
 	m_staves.Clear( );

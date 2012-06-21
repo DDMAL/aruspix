@@ -34,6 +34,12 @@ MusDiv::~MusDiv()
 {
 }
 
+bool MusDiv::Check()
+{
+    wxASSERT( m_doc );
+    return ( m_doc );
+}
+
 void MusDiv::AddScore( MusScore *score )
 {
 	wxASSERT_MSG( !m_partSet, "MusPartSet has to be NULL");
@@ -129,6 +135,12 @@ MusScore::~MusScore()
 {
 }
 
+bool MusScore::Check()
+{
+    wxASSERT( m_div );
+    return ( m_div );
+}
+
 void MusScore::AddSection( MusSection *section )
 {
 	section->SetScore( this );
@@ -197,6 +209,14 @@ MusPartSet::MusPartSet():
 MusPartSet::~MusPartSet()
 {
 }
+
+bool MusPartSet::Check()
+{
+    wxASSERT( m_div );
+    return ( m_div );
+}
+
+
 
 void MusPartSet::AddPart( MusPart *part )
 {
@@ -267,6 +287,11 @@ MusPart::~MusPart()
 {
 }
 
+bool MusPart::Check()
+{
+    wxASSERT( m_partSet);
+    return ( m_partSet );
+}
 
 void MusPart::AddSection( MusSection *section )
 {

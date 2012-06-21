@@ -32,6 +32,8 @@ public:
     MusStaff();
     virtual ~MusStaff();
     
+    virtual bool Check();
+    
     virtual wxString MusClassName( ) { return "MusStaff"; };
     
     /** the parent MusSection setter (for unmeasured music) */

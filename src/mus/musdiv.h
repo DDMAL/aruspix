@@ -39,6 +39,8 @@ public:
     MusDiv();
     virtual ~MusDiv();
     
+    virtual bool Check();
+    
     virtual wxString MusClassName( ) { return "MusDiv"; };
 	
 	void AddScore( MusScore *score );
@@ -107,6 +109,8 @@ public:
     MusScore();
     virtual ~MusScore();
     
+    virtual bool Check();
+    
     virtual wxString MusClassName( ) { return "MusScore"; };
 	
 	void AddSection( MusSection *section );
@@ -171,6 +175,8 @@ public:
     // constructors and destructors
     MusPartSet();
     virtual ~MusPartSet();
+    
+    virtual bool Check();
     
     virtual wxString MusClassName( ) { return "MusPartSet"; };
 	
@@ -237,6 +243,8 @@ public:
     // constructors and destructors
     MusPart();
     virtual ~MusPart();
+    
+    virtual bool Check();
 	
     virtual wxString MusClassName( ) { return "MusPart"; };	
     

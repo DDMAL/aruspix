@@ -81,13 +81,19 @@ public:
     MusObject();
     virtual ~MusObject();
     
+    virtual bool Check() = 0;
+    
     int GetId() { return m_id; };
     uuid_t* GetUuid() { return &m_uuid; };
     void SetUuid( uuid_t uuid );
     
+    
+    
     virtual wxString MusClassName( ) { return "[MISSING]"; };
     
+    // functors
     bool FindWithUuid( wxArrayPtrVoid params );
+    bool CheckFunctor( wxArrayPtrVoid params );
 
 private:
 
@@ -139,13 +145,15 @@ public:
     MusLayoutObject();
     virtual ~MusLayoutObject();
     
-    void SetLayout( wxArrayPtrVoid params );
-	bool Check() { return true; }; // { return m_ok; };
+    //void SetLayout( wxArrayPtrVoid params );
+	virtual bool Check() { return m_layout; }; // { return m_ok; };
     void UpdateContentBB( int x1, int y1, int x2, int y2);
     void UpdateSelfBB( int x1, int y1, int x2, int y2 );
     bool HasContentBB();
     bool HasSelfBB();
     void ResetBB();
+    void SetLayout( MusLayout *layout ) { m_layout = layout; };
+    void SetLayout( wxArrayPtrVoid params );
 
     int m_contentBB_x1, m_contentBB_y1, m_contentBB_x2, m_contentBB_y2;
     int m_selfBB_x1, m_selfBB_y1, m_selfBB_x2, m_selfBB_y2; 

@@ -42,6 +42,14 @@ MusLayer::~MusLayer()
 {
 }
 
+bool MusLayer::Check()
+{
+    wxASSERT( m_staff );
+    return ( m_staff );
+}
+
+
+
 void MusLayer::AddLayerElement( MusLayerElement *layerElement )
 {
 	layerElement->SetLayer( this );
@@ -113,6 +121,14 @@ MusLayerElement::MusLayerElement():
 MusLayerElement::~MusLayerElement()
 {
 }
+
+bool MusLayerElement::Check()
+{
+    wxASSERT( m_layer );
+    return ( m_layer );
+}
+
+
 
 MusLayerElement *MusLayerElement::GetChildCopy() 
 {
