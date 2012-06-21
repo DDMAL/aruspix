@@ -150,8 +150,6 @@ void MusWindow::Load( AxUndoFile *undoPtr )
     {
         bin_input->ImportFile();
         SetLayout( &doc->m_layouts[0] ); // only one layout for now
-        m_layout->SetDoc( doc );
-
 	}
 
 	if (page < 0)  //|| (page > m_fh->nbpage - 1))

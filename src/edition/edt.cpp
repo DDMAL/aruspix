@@ -646,7 +646,6 @@ void EdtEnv::OnOpenMEI( wxCommandEvent &event )
     
 	MusLayout *layout = new MusLayout( Raw );
 	layout->Realize(m_edtFilePtr->m_musDocPtr->m_divs[0].m_score);
-    layout->SetDoc( m_edtFilePtr->m_musDocPtr );
 	m_edtFilePtr->m_musDocPtr->AddLayout( layout );
     
     MusRC rc;

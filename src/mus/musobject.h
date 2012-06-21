@@ -83,7 +83,10 @@ public:
     
     virtual bool Check() = 0;
     
-    int GetId() { return m_id; };
+    bool IsActive() { return m_active; };
+    void Deactivate() { m_active = false; };
+    
+    int GetId() { return 0; }; // used in SVG - TODO
     uuid_t* GetUuid() { return &m_uuid; };
     void SetUuid( uuid_t uuid );
     
@@ -94,13 +97,23 @@ public:
     // functors
     bool FindWithUuid( wxArrayPtrVoid params );
     bool CheckFunctor( wxArrayPtrVoid params );
+    /**
+     * Set the layout pointer in all a layout tree.
+     * Virtual method redefined in MusLayoutObject and call from MusLayout::SetDoc.
+     */
+    virtual void SetLayout( wxArrayPtrVoid params ) {};
+    /**
+     * Set the div pointer in all a div tree.
+     * Virtual method redefined in MusLogicalObject and call from MusDiv::SetDoc.
+     */
+    virtual void SetDiv( wxArrayPtrVoid params ) {};
 
 private:
+    bool m_active;
 
 public:
     
 protected:
-    int m_id;
     uuid_t m_uuid;
 
 private:
@@ -121,12 +134,18 @@ public:
     // constructors and destructors
     MusLogicalObject();
     virtual ~MusLogicalObject();
-
-private:
-
-public:
     
+	virtual bool Check();
+    
+    // functors
+    virtual void SetDiv( wxArrayPtrVoid params );
+
 private:
+
+protected:
+    MusDiv *m_div;
+    
+public:
     
 };
 
@@ -145,27 +164,26 @@ public:
     MusLayoutObject();
     virtual ~MusLayoutObject();
     
-    //void SetLayout( wxArrayPtrVoid params );
-	virtual bool Check() { return m_layout; }; // { return m_ok; };
+	virtual bool Check();
+    
     void UpdateContentBB( int x1, int y1, int x2, int y2);
     void UpdateSelfBB( int x1, int y1, int x2, int y2 );
     bool HasContentBB();
     bool HasSelfBB();
     void ResetBB();
-    void SetLayout( MusLayout *layout ) { m_layout = layout; };
-    void SetLayout( wxArrayPtrVoid params );
 
     int m_contentBB_x1, m_contentBB_y1, m_contentBB_x2, m_contentBB_y2;
     int m_selfBB_x1, m_selfBB_y1, m_selfBB_x2, m_selfBB_y2; 
+    
+    // functors
+    virtual void SetLayout( wxArrayPtrVoid params );
     
 private:
     
 protected:
 	MusLayout *m_layout;
 
-
 public:
-    
     
 };
 

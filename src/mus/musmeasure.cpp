@@ -34,7 +34,7 @@ MusMeasure::~MusMeasure()
 bool MusMeasure::Check()
 {
     wxASSERT( m_section );
-    return ( m_section );
+    return ( m_section && MusLogicalObject::Check()  );
 }
 
 

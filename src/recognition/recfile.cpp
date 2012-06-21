@@ -892,15 +892,15 @@ bool RecFile::RealizeFromMLF( wxArrayPtrVoid params, AxProgressDlg *dlg )
     score->AddSection( section );
     div->AddScore( score );
     m_musDocPtr->AddDiv( div );
-    //
-    musLayout->AddPage( musPage );
-    m_musDocPtr->AddLayout( musLayout );
 	
 	wxString m_rec_output = m_basename + "rec.mlf";
 	
     MusMLFInput *mlfinput = new MusMLFInput( m_musDocPtr, m_rec_output );
     mlfinput->ReadPage( musPage, logLayer, true, m_imPagePtr );
     delete mlfinput;
+    
+    musLayout->AddPage( musPage );
+    m_musDocPtr->AddLayout( musLayout );
     
 	wxString m_rec2_output = m_basename + "rec2.mlf";
 	

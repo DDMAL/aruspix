@@ -49,7 +49,7 @@ private:
     
 public:
     /** The children MusLayerElement objects */
-    ArrayOfMusLayerElements m_layerElements;
+    ArrayOfMusLayerElements m_elements;
     /** the parent MusStaff */
     MusStaff *m_staff;
 

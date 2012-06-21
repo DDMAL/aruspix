@@ -36,7 +36,7 @@ MusSection::~MusSection()
 bool MusSection::Check()
 {
     wxASSERT( ( m_score || m_part ) );
-    return ( ( m_score || m_part ) );
+    return ( ( m_score || m_part )  && MusLogicalObject::Check() );
 }
 
 

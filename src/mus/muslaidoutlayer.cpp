@@ -50,6 +50,7 @@ MusLaidOutLayer::MusLaidOutLayer( int logLayerNb, int logStaffNb, MusSection *se
 
 MusLaidOutLayer::~MusLaidOutLayer()
 {
+    Deactivate();
 }
 
 bool MusLaidOutLayer::Check()
@@ -100,7 +101,7 @@ void MusLaidOutLayer::AddElement( MusLaidOutLayerElement *element )
 	m_elements.Add( element );
     wxASSERT_MSG( element->m_layerElement, "Pointer to LayerElement cannot be NULL" );
     // also add it to the logical layer - how do we manage the position?
-    // m_logLayer->m_layerElements.Add( element->m_layerElement );
+    // m_logLayer->m_elements.Add( element->m_layerElement );
 }
 
 void MusLaidOutLayer::CopyAttributes( MusLaidOutLayer *nlayer )
@@ -245,12 +246,11 @@ void MusLaidOutLayer::Delete( MusLaidOutLayerElement *element )
     // Deleting elements should be done from the logical tree and then update the layout
     // Ultimately, this method should be used for deleting element in the layout only?
                  
-    // This is the logical element we need to delete
-    MusLayerElement *logElement = element->m_layerElement;
-    // Remove it from its layer (and delete it) - we should check pointers!
-    logElement->m_layer->m_layerElements.RemoveAt(  logElement->m_layer->m_layerElements.Index( *logElement ) );
-    // Remove the LaidOutLayerElement
-	m_elements.RemoveAt( m_elements.Index( *element ) );
+    // This is the logical element we need to delete - delete it handles everything!
+    // - The LaidOutLayerElement is removed from its parent list
+    // - The LaidOutLayerElement is delete
+    // - The LayerElement is removed from its parent list (and deleted)
+    delete element->m_layerElement;
 
 	if ( is_clef )
 	{

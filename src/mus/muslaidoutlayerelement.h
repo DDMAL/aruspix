@@ -62,6 +62,7 @@ public:
     // functors
     void Save( wxArrayPtrVoid params );
     void Load( wxArrayPtrVoid params );
+    void Delete( wxArrayPtrVoid params );
         
 private:
     

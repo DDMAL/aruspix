@@ -35,7 +35,7 @@ MusStaff::~MusStaff()
 bool MusStaff::Check()
 {
     wxASSERT( ( m_measure || m_section ) );
-    return ( ( m_measure || m_section ) );
+    return ( ( m_measure || m_section ) && MusLogicalObject::Check() );
 }
 
 
