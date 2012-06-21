@@ -33,6 +33,7 @@ MusSection::~MusSection()
 {
 }
 
+
 bool MusSection::Check()
 {
     wxASSERT( ( m_score || m_part ) );
@@ -54,6 +55,14 @@ void MusSection::AddStaff( MusStaff *staff )
     wxASSERT_MSG( m_measures.IsEmpty(), "A section cannot contain measures and staves at the same time" );    
 	staff->SetSection( this );
 	m_staves.Add( staff );
+}
+
+MusStaff *MusSection::GetStaff( int staffNo )
+{
+    if ( staffNo >= (int)m_staves.GetCount() ) {
+        return NULL;
+    }
+    return &m_staves[staffNo];
 }
 
 void MusSection::SetScore( MusScore *score )

@@ -40,6 +40,8 @@ public:
     
     void AddStaff( MusStaff *staff );
     
+    MusStaff *GetStaff( int staffNo );
+    
     /** The parent MusScore setter */
     void SetScore( MusScore *score );
     /** The parent MusPart setter */

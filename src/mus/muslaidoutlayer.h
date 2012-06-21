@@ -45,7 +45,7 @@ public:
     /** The parent MusLaidOutStaff setter */
     void SetStaff( MusLaidOutStaff *staff ) { m_staff = staff; };
 	
-	void AddElement( MusLaidOutLayerElement *element );
+	void AddElement( MusLaidOutLayerElement *element, int idx = -1 );
     	
 	int GetElementCount() const { return (int)m_elements.GetCount(); };
     

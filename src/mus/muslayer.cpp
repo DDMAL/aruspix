@@ -53,10 +53,26 @@ bool MusLayer::Check()
 
 
 
-void MusLayer::AddLayerElement( MusLayerElement *layerElement )
+void MusLayer::AddLayerElement( MusLayerElement *layerElement, int idx )
 {
 	layerElement->SetLayer( this );
-	m_elements.Add( layerElement );
+    layerElement->SetDiv( m_div );
+    
+    if ( idx == -1 ) {
+        m_elements.Add( layerElement );
+    }
+    else {
+        m_elements.Insert(layerElement , idx );
+    }
+}
+
+void MusLayer::Insert( MusLayerElement *layerElement, MusLayerElement *after )
+{
+    int idx = 0;
+    if ( after ) {
+        idx = m_elements.Index( *after );
+    }
+    AddLayerElement( layerElement , idx );
 }
 
 void MusLayer::Save( wxArrayPtrVoid params )
@@ -151,23 +167,29 @@ MusLayerElement *MusLayerElement::GetChildCopy()
 {
     
     // Is there another way to do this in C++ ?
+    MusLayerElement *element = NULL;
 
     if ( this->IsBarline() )
-        return new MusBarline( *(MusBarline*)this );
+        element = new MusBarline( *(MusBarline*)this );
     else if (this->IsClef() )
-        return new MusClef( *(MusClef*)this );
+        element = new MusClef( *(MusClef*)this );
     else if (this->IsMensur() )
-        return new MusMensur( *(MusMensur*)this );
+        element = new MusMensur( *(MusMensur*)this );
     else if (this->IsNote() )
-        return new MusNote( *(MusNote*)this );
+        element = new MusNote( *(MusNote*)this );
     else if (this->IsRest() )
-        return new MusRest( *(MusRest*)this );
+        element = new MusRest( *(MusRest*)this );
     else if (this->IsSymbol() )
-        return new MusSymbol( *(MusSymbol*)this );
+        element = new MusSymbol( *(MusSymbol*)this );
     else {
         wxASSERT_MSG( false , "Copy of this type unimplemented" );
         return NULL;
     }
+        
+    element->m_layer = NULL;
+    element->m_div = NULL;
+    
+    return element;
 }
 
 

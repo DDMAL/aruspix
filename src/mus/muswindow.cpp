@@ -977,6 +977,7 @@ void MusWindow::OnMouseMotion(wxMouseEvent &event)
 		if ( m_insert_x != m_dragging_x  )		// If element has moved in the x-axis
 		{
 			// TODO m_currentElement->ClearElement( &dc, m_currentStaff );
+            wxLogDebug("End dragging m_dragging_x %d; m_insert_x %d", m_dragging_x, m_insert_x );
 			m_currentElement->m_x_abs += ( m_insert_x - m_dragging_x );
 			m_dragging_x = m_insert_x;
 			if ( m_editorMode == MUS_EDITOR_EDIT ) {
