@@ -226,7 +226,7 @@ void MusDoc::ProcessLogical(MusFunctor *functor, wxArrayPtrVoid params )
 
 wxString MusDoc::GetAxVersion() {
 #ifdef HEADLESS
-    return *new wxString("Headless 1");
+    return wxString("Headless 1");
 #else
     return AxApp::s_version;
 #endif
@@ -234,7 +234,7 @@ wxString MusDoc::GetAxVersion() {
 
 wxString MusDoc::GetResourcesPath() {
 #ifdef HEADLESS
-    return *new wxString("hardcodedstring");
+    return wxString("hardcodedstring");
 #else
     return wxGetApp().m_resourcesPath;
 #endif
@@ -242,7 +242,7 @@ wxString MusDoc::GetResourcesPath() {
     
 wxString MusDoc::GetMusicFontDescStr() {
 #ifdef HEADLESS
-    return *new wxString("0;13;70;90;90;0;Leipzig 4.7;33");
+    return wxString("0;13;70;90;90;0;Leipzig 4.7;33");
 #else
     return wxGetApp().m_musicFontDesc;
 #endif
@@ -250,7 +250,7 @@ wxString MusDoc::GetMusicFontDescStr() {
     
 wxString MusDoc::GetNeumeFontDescStr() {
 #ifdef HEADLESS
-    return *new wxString("0;53;70;90;90;0;Festa Dies A;0");
+    return wxString("0;53;70;90;90;0;Festa Dies A;0");
 #else
     return wxGetApp().m_neumeFontDesc;
 #endif
@@ -258,7 +258,7 @@ wxString MusDoc::GetNeumeFontDescStr() {
         
 wxString MusDoc::GetLyricFontDescStr() {
 #ifdef HEADLESS
-    return *new wxString("0;12;70;93;90;0;Garamond;0");
+    return wxString("0;12;70;93;90;0;Garamond;0");
 #else
     return wxGetApp().m_lyricFontDesc;
 #endif
