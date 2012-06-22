@@ -9,14 +9,24 @@
 			<key>orderHint</key>
 			<integer>0</integer>
 		</dict>
-		<key>ax_test.xcscheme</key>
+		<key>aruspix_headless.xcscheme</key>
 		<dict>
 			<key>orderHint</key>
 			<integer>2</integer>
 		</dict>
+		<key>ax_test.xcscheme</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>1</integer>
+		</dict>
 	</dict>
 	<key>SuppressBuildableAutocreation</key>
 	<dict>
+		<key>8F23816A159462AF00C04D47</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
 		<key>A1A6E17A134254220024A821</key>
 		<dict>
 			<key>primary</key>
