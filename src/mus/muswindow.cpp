@@ -88,6 +88,7 @@ MusWindow::MusWindow( wxWindow *parent, wxWindowID id,
 	m_insert_oct = 4;
 	m_dragging_x = 0;
 	m_dragging_y_offset = 0;
+    m_has_been_dragged = false;
 	m_lyricCursor = 0;
     
     m_zoomNum = 10;
@@ -977,6 +978,7 @@ void MusWindow::OnMouseMotion(wxMouseEvent &event)
 		if ( m_insert_x != m_dragging_x  )		// If element has moved in the x-axis
 		{
 			// TODO m_currentElement->ClearElement( &dc, m_currentStaff );
+            wxLogDebug("End dragging m_dragging_x %d; m_insert_x %d", m_dragging_x, m_insert_x );
 			m_currentElement->m_x_abs += ( m_insert_x - m_dragging_x );
 			m_dragging_x = m_insert_x;
 			if ( m_editorMode == MUS_EDITOR_EDIT ) {

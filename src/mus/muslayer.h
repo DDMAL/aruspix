@@ -35,9 +35,11 @@ public:
     
     virtual wxString MusClassName( ) { return "MusLayer"; };
 	
-	void AddLayerElement( MusLayerElement *element );
+	void AddLayerElement( MusLayerElement *element, int idx = -1 );
     
     void SetStaff( MusStaff *staff ) { m_staff = staff; };
+    
+    void Insert( MusLayerElement *element, MusLayerElement *before );
     
     // moulinette
     virtual void Process(MusFunctor *functor, wxArrayPtrVoid params );
@@ -99,6 +101,8 @@ public:
     // constructors and destructors
     MusLayerElement();
     virtual ~MusLayerElement();
+    
+    MusLayerElement& operator=( const MusLayerElement& element); // copy assignement;
     
     virtual bool Check();
     

@@ -887,7 +887,7 @@ bool MusWWGInput::ReadPage( MusPage *page )
         wxASSERT_MSG( m_logLayer, "MusLayer cannot be NULL" );
         
 		MusLaidOutStaff *staff = new MusLaidOutStaff( j );
-        MusLaidOutLayer *layer = new MusLaidOutLayer( 0, -1, m_section, NULL ); // only one layer per staff
+        MusLaidOutLayer *layer = new MusLaidOutLayer( 0, j, m_section, NULL ); // only one layer per staff
 		ReadStaff( staff, layer );
         if ( m_noLigne > system_no + 1 ) { // we have a new system
             page->AddSystem( system ); // add the current one

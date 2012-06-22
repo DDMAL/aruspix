@@ -38,6 +38,8 @@ public:
 	
 	void AddStaff( MusStaff *staff );
     
+    MusStaff *GetStaff( int staffNo );
+    
     // moulinette
     virtual void Process(MusFunctor *functor, wxArrayPtrVoid params );
     // functors

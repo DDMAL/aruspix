@@ -161,7 +161,7 @@ void MusLayout::Realize( MusScore *score )
                     MusLayer *layer = &staff->m_layers[l];
                     MusLaidOutLayer *laidOutLayer;
                     if (l >= laidOutStaff->GetLayerCount()) {
-                        laidOutStaff->AddLayer( new MusLaidOutLayer( l, -1, section, measure ));
+                        laidOutStaff->AddLayer( new MusLaidOutLayer( l, k, section, measure ));
                     }
                     laidOutLayer = &laidOutStaff->m_layers[l];
                     for (m = 0; m < (int)layer->m_elements.GetCount(); m++) {

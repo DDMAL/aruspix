@@ -45,6 +45,14 @@ void MusMeasure::AddStaff( MusStaff *staff )
 	m_staves.Add( staff );
 }
 
+MusStaff *MusMeasure::GetStaff( int staffNo )
+{
+    if ( staffNo >= (int)m_staves.GetCount() ) {
+        return NULL;
+    }
+    return &m_staves[staffNo];
+}
+
 void MusMeasure::Save( wxArrayPtrVoid params )
 {
     // param 0: output stream

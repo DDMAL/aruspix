@@ -137,6 +137,8 @@ public:
     
 	virtual bool Check();
     
+    void SetDiv( MusDiv *div ) { m_div = div; };
+    
     // functors
     virtual void SetDiv( wxArrayPtrVoid params );
 
@@ -174,6 +176,8 @@ public:
 
     int m_contentBB_x1, m_contentBB_y1, m_contentBB_x2, m_contentBB_y2;
     int m_selfBB_x1, m_selfBB_y1, m_selfBB_x2, m_selfBB_y2; 
+    
+    void SetLayout( MusLayout *layout ) { m_layout = layout; };
     
     // functors
     virtual void SetLayout( wxArrayPtrVoid params );

@@ -44,6 +44,8 @@ public:
 	
 	void AddLayer( MusLayer *layer );
     
+    MusLayer *GetLayer( int layerNo );
+    
     // moulinette
     virtual void Process(MusFunctor *functor, wxArrayPtrVoid params );
     // functors

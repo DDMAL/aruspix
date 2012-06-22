@@ -46,6 +46,14 @@ void MusStaff::AddLayer( MusLayer *layer )
 	m_layers.Add( layer );	
 }
 
+MusLayer *MusStaff::GetLayer( int layerNo )
+{
+    if ( layerNo >= (int)m_layers.GetCount() ) {
+        return NULL;
+    }
+    return &m_layers[layerNo];
+}
+
 void MusStaff::SetMeasure( MusMeasure *measure )
 {
     wxASSERT_MSG( !m_measure, "A staff cannot be child of a section and a measure at the same time" );   

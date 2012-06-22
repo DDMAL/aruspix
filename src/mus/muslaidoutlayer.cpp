@@ -95,10 +95,16 @@ void MusLaidOutLayer::Load( wxArrayPtrVoid params )
 }
 
 
-void MusLaidOutLayer::AddElement( MusLaidOutLayerElement *element )
+void MusLaidOutLayer::AddElement( MusLaidOutLayerElement *element, int idx )
 {
 	element->SetLayer( this );
-	m_elements.Add( element );
+    element->SetLayout( m_layout );
+    if ( idx == -1 ) {
+        m_elements.Add( element );
+    }
+    else {
+        m_elements.Insert( element, idx );
+    }
     wxASSERT_MSG( element->m_layerElement, "Pointer to LayerElement cannot be NULL" );
     // also add it to the logical layer - how do we manage the position?
     // m_logLayer->m_elements.Add( element->m_layerElement );
@@ -194,36 +200,63 @@ MusLaidOutLayerElement *MusLaidOutLayer::Insert( MusLayerElement *element, int x
     // Inserting elements should be done from the logical tree and then update the layout
     
     MusLayerElement *insertElement = element->GetChildCopy();
+    
+    MusSection *section = m_section;
+    MusMeasure *measure = m_measure;
 
-	int idx = 0;
-	MusLaidOutLayerElement *tmp = this->GetFirst();
-	while ( tmp && (tmp->m_x_abs < x) )
+    // First we find the element after which we are inserting the element
+    // If not, it will be NULL
+    // We are also updating the section and measure ( TODO, not necessary for now )
+    int idx = 0;
+	MusLaidOutLayerElement *next = this->GetFirst();
+	while ( next && (next->m_x_abs < x) )
 	{
-		idx++;
-		if ( this->GetNext( tmp ) )
-			tmp = this->GetNext( tmp );
+        idx++;
+        // update section and measure if necessary (no section breaks and measure breaks for now)
+		if ( this->GetNext( next ) )
+			next = this->GetNext( next );
 		else
 			break;
 	}
     
-    // there is already something in the staff
-    if ( tmp ) {
-
-        if ( tmp && element->IsClef() ) {		
-            //m_r->OnBeginEditionClef();
-        }
-
-        m_elements.Insert( element, idx );
-        
-        if ( tmp && element->IsClef() ) {		
-            //m_r->OnEndEditionClef();
-        }
+    // The we need to find the staff and layer in the logical tree where to insert the element
+    MusStaff *staff = NULL;
+    if ( measure ) {
+        staff = measure->GetStaff( m_logStaffNb );
     }
-
+    else if ( section ) { // it should be the case, but just to make sure
+        staff = section->GetStaff( m_logStaffNb );
+    }
+    MusLayer * layer = NULL;
+    if ( staff ) {
+        layer = staff->GetLayer( m_logLayerNb );
+    }
+    
+    if ( !layer ) {
+        wxLogError( "Cannot insert element" );
+        delete insertElement;
+        return NULL;
+    }
+   
+    if ( next && element->IsClef() ) {		
+        //m_r->OnBeginEditionClef();
+    }    
+    
+    // Insert in the logical tree
+    layer->Insert( insertElement, next->m_layerElement );
+    
+    // Insert in the layout tree
+    MusLaidOutLayerElement *laidOutElement = new MusLaidOutLayerElement( insertElement );
+    laidOutElement->m_x_abs = x;
+    AddElement( laidOutElement, idx );
+        
+    if ( next && element->IsClef() ) {		
+        //m_r->OnEndEditionClef();
+    }
+    
 	m_layout->RefreshViews();
     //
-    return NULL;
-	//return insertElement;
+	return laidOutElement;
 }
 
 
