@@ -1244,10 +1244,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = YES;
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(BUILD_PRODUCTS_DIR)/$(TARGET_NAME).app/Contents/Frameworks",
-					"$(ARUSPIX_MEI)",
-				);
+				FRAMEWORK_SEARCH_PATHS = "$(BUILD_PRODUCTS_DIR)/$(TARGET_NAME).app/Contents/Frameworks";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
@@ -1264,14 +1261,14 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = (
 					"$(ARUSPIX_WX)/include",
-					"$(ARUSPIX_MEI)/Versions/A/Headers",
+					"$(ARUSPIX_MEI)/include",
 					"$(ARUSPIX_WX)/contrib/include",
 					"$(ARUSPIX_WX)/osx-static-debug/lib/wx/include/mac-ansi-debug-static-2.8",
 					../src,
 				);
 				LIBRARY_SEARCH_PATHS = (
 					"$(ARUSPIX_WX)/osx-static-debug/lib",
-					"$(ARUSPIX_MEI)/..",
+					"$(ARUSPIX_MEI)",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.6;
 				ONLY_ACTIVE_ARCH = NO;
@@ -1282,12 +1279,12 @@
 				);
 				OTHER_LDFLAGS = (
 					"-lwx_base_carbond-$(ARUSPIX_WX_VERSION)",
-					"-framework",
-					mei,
+					"-lmei",
 					"-framework",
 					carbon,
 					"-liconv",
 					"-lwx_base_carbond_net-$(ARUSPIX_WX_VERSION)",
+					"-lxml2",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx10.6;

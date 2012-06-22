@@ -234,7 +234,8 @@ wxString MusDoc::GetAxVersion() {
 
 wxString MusDoc::GetResourcesPath() {
 #ifdef HEADLESS
-    return wxString("hardcodedstring");
+    //hardcode galore
+    return wxString("/Users/xhero/devel/ARUSPIX/aruspix-git/data");
 #else
     return wxGetApp().m_resourcesPath;
 #endif
