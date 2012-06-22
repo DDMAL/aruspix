@@ -155,6 +155,21 @@ MusLayerElement::~MusLayerElement()
     }
 }
 
+MusLayerElement& MusLayerElement::operator=( const MusLayerElement& element )
+{
+	if ( this != &element ) // not self assignement
+	{
+        m_cueSize = element.m_cueSize;
+        m_hOffset = element.m_hOffset;
+        m_staffShift = element.m_staffShift;
+        m_visible = element.m_visible;
+        // pointers have to be NULL
+        m_div = NULL;
+        m_layer = NULL;
+	}
+	return *this;
+}
+
 bool MusLayerElement::Check()
 {
     wxASSERT( m_layer );

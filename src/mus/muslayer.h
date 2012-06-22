@@ -102,6 +102,8 @@ public:
     MusLayerElement();
     virtual ~MusLayerElement();
     
+    MusLayerElement& operator=( const MusLayerElement& element); // copy assignement;
+    
     virtual bool Check();
     
     MusLayerElement *GetChildCopy( );
