@@ -208,13 +208,13 @@ MusLaidOutLayerElement *MusLaidOutLayer::Insert( MusLayerElement *element, int x
     // If not, it will be NULL
     // We are also updating the section and measure ( TODO, not necessary for now )
     int idx = 0;
-	MusLaidOutLayerElement *after = this->GetFirst();
-	while ( after && (after->m_x_abs < x) )
+	MusLaidOutLayerElement *next = this->GetFirst();
+	while ( next && (next->m_x_abs < x) )
 	{
         idx++;
         // update section and measure if necessary (no section breaks and measure breaks for now)
-		if ( this->GetNext( after ) )
-			after = this->GetNext( after );
+		if ( this->GetNext( next ) )
+			next = this->GetNext( next );
 		else
 			break;
 	}
@@ -237,31 +237,23 @@ MusLaidOutLayerElement *MusLaidOutLayer::Insert( MusLayerElement *element, int x
         delete insertElement;
         return NULL;
     }
+   
+    if ( next && element->IsClef() ) {		
+        //m_r->OnBeginEditionClef();
+    }    
     
     // Insert in the logical tree
-    layer->Insert( insertElement, after->m_layerElement );
+    layer->Insert( insertElement, next->m_layerElement );
     
     // Insert in the layout tree
     MusLaidOutLayerElement *laidOutElement = new MusLaidOutLayerElement( insertElement );
     laidOutElement->m_x_abs = x;
     AddElement( laidOutElement, idx );
-    
-    /*
-    // there is already something in the staff
-    if ( tmp ) {
-
-        if ( tmp && element->IsClef() ) {		
-            //m_r->OnBeginEditionClef();
-        }
-
-        m_elements.Insert( element, idx );
         
-        if ( tmp && element->IsClef() ) {		
-            //m_r->OnEndEditionClef();
-        }
+    if ( next && element->IsClef() ) {		
+        //m_r->OnEndEditionClef();
     }
-    */
-
+    
 	m_layout->RefreshViews();
     //
 	return laidOutElement;

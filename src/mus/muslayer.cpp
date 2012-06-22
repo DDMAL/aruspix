@@ -66,11 +66,11 @@ void MusLayer::AddLayerElement( MusLayerElement *layerElement, int idx )
     }
 }
 
-void MusLayer::Insert( MusLayerElement *layerElement, MusLayerElement *after )
+void MusLayer::Insert( MusLayerElement *layerElement, MusLayerElement *before )
 {
     int idx = 0;
-    if ( after ) {
-        idx = m_elements.Index( *after );
+    if ( before ) {
+        idx = m_elements.Index( *before );
     }
     AddLayerElement( layerElement , idx );
 }

@@ -39,7 +39,7 @@ public:
     
     void SetStaff( MusStaff *staff ) { m_staff = staff; };
     
-    void Insert( MusLayerElement *element, MusLayerElement *after );
+    void Insert( MusLayerElement *element, MusLayerElement *before );
     
     // moulinette
     virtual void Process(MusFunctor *functor, wxArrayPtrVoid params );
