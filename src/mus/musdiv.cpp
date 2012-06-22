@@ -34,19 +34,37 @@ MusDiv::~MusDiv()
 {
 }
 
+bool MusDiv::Check()
+{
+    wxASSERT( m_doc );
+    return ( m_doc && MusLogicalObject::Check() );
+}
+
 void MusDiv::AddScore( MusScore *score )
 {
 	wxASSERT_MSG( !m_partSet, "MusPartSet has to be NULL");
 	
-	score->SetDiv( this );	
+	//score->SetDiv( this );	
     m_score = score;
+}
+
+void MusDiv::SetDoc( MusDoc *doc )
+{
+    wxArrayPtrVoid params;
+	params.Add( this );
+    
+    MusFunctor div( &MusObject::SetDiv );
+    this->Process( &div, params );
+    
+    m_div = this; // just for integrity
+    m_doc = doc;
 }
 
 void MusDiv::AddPartSet( MusPartSet *partSet )
 {
 	wxASSERT_MSG( !m_score, "MusScore has to be NULL");
 	
-	partSet->SetDiv( this );	
+	//partSet->SetDiv( this );	
     m_partSet = partSet;
 }
 
@@ -129,6 +147,12 @@ MusScore::~MusScore()
 {
 }
 
+bool MusScore::Check()
+{
+    // The m_div pointer is in MusLogicalObject
+    return ( MusLogicalObject::Check() );
+}
+
 void MusScore::AddSection( MusSection *section )
 {
 	section->SetScore( this );
@@ -197,6 +221,14 @@ MusPartSet::MusPartSet():
 MusPartSet::~MusPartSet()
 {
 }
+
+bool MusPartSet::Check()
+{
+    // The m_div pointer is in MusLogicalObject
+    return ( MusLogicalObject::Check()  );
+}
+
+
 
 void MusPartSet::AddPart( MusPart *part )
 {
@@ -267,6 +299,11 @@ MusPart::~MusPart()
 {
 }
 
+bool MusPart::Check()
+{
+    wxASSERT( m_partSet);
+    return ( m_partSet && MusLogicalObject::Check()  );
+}
 
 void MusPart::AddSection( MusSection *section )
 {

@@ -194,7 +194,7 @@ bool MusBinOutput::WriteLayer( MusLayer *layer )
 {
     WriteObject( layer );
     // also write the number of elements
-    int32 = wxINT32_SWAP_ON_BE( (int)layer->m_layerElements.GetCount() );
+    int32 = wxINT32_SWAP_ON_BE( (int)layer->m_elements.GetCount() );
     Write( &int32, 4 );
     
     return true;    

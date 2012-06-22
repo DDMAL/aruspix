@@ -44,12 +44,11 @@ public:
     MusPage();
     virtual ~MusPage();
     
+    virtual bool Check( );
+    
     virtual wxString MusClassName( ) { return "MusPage"; };	    
     
     void Clear();
-    
-    /** The parent MusLayout setter */
-    //void SetLayout( MusLayout *layout ) { m_layout = layout; };
 	
 	void AddSystem( MusSystem *system );
     

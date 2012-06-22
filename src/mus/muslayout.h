@@ -42,6 +42,8 @@ public:
     MusLayout( LayoutType type );
     virtual ~MusLayout();
     
+    virtual bool Check();
+    
     virtual wxString MusClassName( ) { return "MusLayout"; };	    
 	
 	void AddPage( MusPage *page );

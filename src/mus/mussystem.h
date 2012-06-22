@@ -39,6 +39,8 @@ public:
 	MusSystem( const MusSystem& system ); // copy contructor
     virtual ~MusSystem();
     
+    virtual bool Check();
+    
     virtual wxString MusClassName( ) { return "MusSystem"; };	    
     
     void Clear();

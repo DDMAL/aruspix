@@ -21,6 +21,8 @@
 #include "musrest.h"
 #include "mussymbol.h"
 
+#include "musdoc.h"
+#include "muslaidoutlayerelement.h"
 
 #include "wx/arrimpl.cpp"
 WX_DEFINE_OBJARRAY( ArrayOfMusLayers );
@@ -40,12 +42,21 @@ MusLayer::MusLayer():
 
 MusLayer::~MusLayer()
 {
+    Deactivate();
 }
+
+bool MusLayer::Check()
+{
+    wxASSERT( m_staff );
+    return ( m_staff && MusLogicalObject::Check() );
+}
+
+
 
 void MusLayer::AddLayerElement( MusLayerElement *layerElement )
 {
 	layerElement->SetLayer( this );
-	m_layerElements.Add( layerElement );
+	m_elements.Add( layerElement );
 }
 
 void MusLayer::Save( wxArrayPtrVoid params )
@@ -82,9 +93,9 @@ void MusLayer::Process(MusFunctor *functor, wxArrayPtrVoid params )
     MusLayerElementFunctor *elementFunctor = dynamic_cast<MusLayerElementFunctor*>(functor);
     MusLayerElement *element;
 	int i;
-    for (i = 0; i < (int)m_layerElements.GetCount(); i++) 
+    for (i = 0; i < (int)m_elements.GetCount(); i++) 
 	{
-        element = &m_layerElements[i];
+        element = &m_elements[i];
         functor->Call( element, params );
         if (elementFunctor) { // is is a MusSystemFunctor, call it
             elementFunctor->Call( element, params );
@@ -112,7 +123,29 @@ MusLayerElement::MusLayerElement():
 
 MusLayerElement::~MusLayerElement()
 {
+    // If there is a div, access the document are delete all LaidOutLayerElements pointing to it
+    if ( m_div ) {
+        wxArrayPtrVoid params;
+        params.Add( this );
+        MusLaidOutLayerElementFunctor del( &MusLaidOutLayerElement::Delete );
+        m_div->m_doc->ProcessLayout( &del, params );
+    }
+    
+    // If the is a parent layer and it is still active (the layer is not being deleted)
+    // we remove the element from its list
+    if ( m_layer && m_layer->IsActive() ) {
+        wxLogDebug("Removing the LayerElement from its parent" );
+        m_layer->m_elements.Detach( m_layer->m_elements.Index( *this ) );
+    }
 }
+
+bool MusLayerElement::Check()
+{
+    wxASSERT( m_layer );
+    return ( m_layer && MusLogicalObject::Check() );
+}
+
+
 
 MusLayerElement *MusLayerElement::GetChildCopy() 
 {

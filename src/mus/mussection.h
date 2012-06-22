@@ -32,6 +32,8 @@ public:
     MusSection();
     virtual ~MusSection();
     
+    virtual bool Check();
+    
     virtual wxString MusClassName( ) { return "MusSection"; };
 	
 	void AddMeasure( MusMeasure *measure );

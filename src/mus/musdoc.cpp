@@ -29,6 +29,10 @@ MusDoc::MusDoc()
 
 MusDoc::~MusDoc()
 {
+    // We do this because we want the layout to be deleted first.
+    // This avoid all MusLayerElement to be searched in the layouts
+    // when deleted in the logical tree.
+    this->Reset();
 }
 
 void MusDoc::Reset()
@@ -89,9 +93,18 @@ bool MusDoc::Load( MusFileInputStream *input )
     while( (layout = input->ReadLayout()) ) {
         layout->Load( params );
         this->AddLayout( layout );
-    }   
+    }
     
+    this->Check();
     return true;
+}
+
+void MusDoc::Check()
+{
+    wxArrayPtrVoid params;
+    MusFunctor checkObjects( &MusObject::CheckFunctor );
+    this->ProcessLogical( &checkObjects, params );
+    this->ProcessLayout( &checkObjects, params );
 }
 
 void MusDoc::GetNumberOfVoices( int *min_voice, int *max_voice )
@@ -175,6 +188,7 @@ void MusDoc::ProcessLayout(MusFunctor *functor, wxArrayPtrVoid params )
     for (i = 0; i < (int)m_layouts.GetCount(); i++) 
 	{
         layout = &m_layouts[i];
+        functor->Call( layout, params );
         if (layoutFunctor) { // is is a MusSystemFunctor, call it
             layoutFunctor->Call( layout, params );
         }
@@ -196,6 +210,7 @@ void MusDoc::ProcessLogical(MusFunctor *functor, wxArrayPtrVoid params )
     for (i = 0; i < (int)m_divs.GetCount(); i++) 
 	{
         div = &m_divs[i];
+        functor->Call( div, params );
         if (divFunctor) { // is is a MusSystemFunctor, call it
             divFunctor->Call( div, params );
         }

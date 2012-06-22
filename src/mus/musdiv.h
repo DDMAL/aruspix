@@ -39,13 +39,15 @@ public:
     MusDiv();
     virtual ~MusDiv();
     
+    virtual bool Check();
+    
     virtual wxString MusClassName( ) { return "MusDiv"; };
 	
 	void AddScore( MusScore *score );
 	void AddPartSet( MusPartSet *partSet );
     
     /** The partent MusDoc setter */
-    void SetDoc( MusDoc *doc ) { m_doc = doc; };
+    void SetDoc( MusDoc *doc );
     
     // moulinette
     virtual void Process(MusFunctor *functor, wxArrayPtrVoid params );
@@ -107,12 +109,11 @@ public:
     MusScore();
     virtual ~MusScore();
     
+    virtual bool Check();
+    
     virtual wxString MusClassName( ) { return "MusScore"; };
 	
 	void AddSection( MusSection *section );
-    
-    /** The partent MusDiv setter */
-    void SetDiv( MusDiv *div ) { m_div = div; };
 
     // moulinette
     virtual void Process(MusFunctor *functor, wxArrayPtrVoid params );
@@ -125,8 +126,6 @@ private:
 public:
     /** The children MusSection (<section>) objects */
     ArrayOfMusSections m_sections;
-    /** The parent MusDiv */
-    MusDiv *m_div;
 
 private:
     
@@ -172,12 +171,11 @@ public:
     MusPartSet();
     virtual ~MusPartSet();
     
+    virtual bool Check();
+    
     virtual wxString MusClassName( ) { return "MusPartSet"; };
 	
 	void AddPart( MusPart *part );
-    
-    /** The partent MusDiv setter */
-    void SetDiv( MusDiv *div ) { m_div = div; };
     
     // moulinette
     virtual void Process(MusFunctor *functor, wxArrayPtrVoid params );
@@ -190,9 +188,6 @@ private:
 public:
     /** The children MusPart (<part>) objects  */
     ArrayOfMusParts m_parts;
-    /* The parent MusDiv */
-    MusDiv *m_div;
-
 
 private:
     
@@ -237,6 +232,8 @@ public:
     // constructors and destructors
     MusPart();
     virtual ~MusPart();
+    
+    virtual bool Check();
 	
     virtual wxString MusClassName( ) { return "MusPart"; };	
     

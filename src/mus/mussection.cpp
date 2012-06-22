@@ -33,6 +33,14 @@ MusSection::~MusSection()
 {
 }
 
+bool MusSection::Check()
+{
+    wxASSERT( ( m_score || m_part ) );
+    return ( ( m_score || m_part )  && MusLogicalObject::Check() );
+}
+
+
+
 void MusSection::AddMeasure( MusMeasure *measure )
 {
     wxASSERT_MSG( m_staves.IsEmpty(), "A section cannot contain measures and staves at the same time" );    

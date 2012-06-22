@@ -31,6 +31,8 @@ public:
     MusLayer();
     virtual ~MusLayer();	
     
+    virtual bool Check();
+    
     virtual wxString MusClassName( ) { return "MusLayer"; };
 	
 	void AddLayerElement( MusLayerElement *element );
@@ -47,7 +49,7 @@ private:
     
 public:
     /** The children MusLayerElement objects */
-    ArrayOfMusLayerElements m_layerElements;
+    ArrayOfMusLayerElements m_elements;
     /** the parent MusStaff */
     MusStaff *m_staff;
 
@@ -97,6 +99,8 @@ public:
     // constructors and destructors
     MusLayerElement();
     virtual ~MusLayerElement();
+    
+    virtual bool Check();
     
     MusLayerElement *GetChildCopy( );
     

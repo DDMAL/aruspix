@@ -38,6 +38,18 @@ MusLaidOutLayerElement::MusLaidOutLayerElement( MusLayerElement *element ):
 
 MusLaidOutLayerElement::~MusLaidOutLayerElement()
 {
+    // If the is a parent layer and it is still active (that is not being deleted)
+    // we remove the element from its list
+    if ( m_layer && m_layer->IsActive() ) {
+        wxLogDebug("Removing the LaidOutLayerElement from its parent" );
+        m_layer->m_elements.Detach( m_layer->m_elements.Index( *this ) );
+    }
+}
+
+bool MusLaidOutLayerElement::Check()
+{
+    wxASSERT( m_layer && m_layerElement );
+    return ( m_layer && m_layerElement && MusLayoutObject::Check());
 }
 
 void MusLaidOutLayerElement::Save( wxArrayPtrVoid params )
@@ -52,6 +64,17 @@ void MusLaidOutLayerElement::Load( wxArrayPtrVoid params )
     // param 0: output stream
     // MusFileInputStream *input = (MusFileInputStream*)params[0]; 
     // For now nothing to do here
+}
+
+void MusLaidOutLayerElement::Delete( wxArrayPtrVoid params )
+{
+    // param 0: the MusLayerElement we point to
+    MusLayerElement *element = (MusLayerElement*)params[0];   
+
+    if ( m_layerElement == element ) {
+        //wxLogMessage( "YES" );
+        delete this;
+    }
 }
 
 int MusLaidOutLayerElement::GetElementNo() const

@@ -44,6 +44,12 @@ MusLayout::~MusLayout()
 {
 }
 
+bool MusLayout::Check()
+{
+    wxASSERT( m_doc );
+    return ( m_doc && MusLayoutObject::Check());
+}
+
 void MusLayout::Clear( )
 {
 	m_pages.Clear( );
@@ -88,22 +94,10 @@ void MusLayout::SetDoc( MusDoc *doc )
     wxArrayPtrVoid params;
 	params.Add( this );
     
-    // set doc for pages
-    MusPageFunctor page( &MusPage::SetLayout );
-    this->Process( &page, params );
-    // set doc for systems
-    MusSystemFunctor system( &MusSystem::SetLayout );
-    this->Process( &system, params );
-    // set doc for staves
-    MusLaidOutStaffFunctor staff( &MusLaidOutStaff::SetLayout );
-    this->Process( &staff, params );
-    // set doc for layer
-    MusLaidOutLayerFunctor layer( &MusLaidOutLayer::SetLayout );
-    this->Process( &layer, params );
-    // set doc for elements
-    MusLaidOutLayerElementFunctor element( &MusLaidOutLayer::SetLayout );
-    this->Process( &element, params );
-
+    MusFunctor layout( &MusObject::SetLayout );
+    this->Process( &layout, params ); 
+    
+    m_layout = this; // just for integrity
     m_doc = doc;
     m_env = doc->m_env;
 }
@@ -170,8 +164,8 @@ void MusLayout::Realize( MusScore *score )
                         laidOutStaff->AddLayer( new MusLaidOutLayer( l, -1, section, measure ));
                     }
                     laidOutLayer = &laidOutStaff->m_layers[l];
-                    for (m = 0; m < (int)layer->m_layerElements.GetCount(); m++) {
-                        MusLaidOutLayerElement *element = new MusLaidOutLayerElement( &layer->m_layerElements[m] );
+                    for (m = 0; m < (int)layer->m_elements.GetCount(); m++) {
+                        MusLaidOutLayerElement *element = new MusLaidOutLayerElement( &layer->m_elements[m] );
                         element->m_x_abs = x;
                         x += 40;
                         laidOutLayer->AddElement( element );
@@ -372,6 +366,7 @@ void MusLayout::Process(MusFunctor *functor, wxArrayPtrVoid params )
     for (i = 0; i < (int)m_pages.GetCount(); i++) 
 	{
         page = &m_pages[i];
+        functor->Call( page, params );
         functor->Call( page, params );
         if (pageFunctor) { // is is a MusSystemFunctor, call it
             pageFunctor->Call( page, params );

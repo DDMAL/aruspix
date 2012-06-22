@@ -36,6 +36,8 @@ public:
     MusLaidOutLayer( int logLayerNb, int logStaffNb, MusSection *section, MusMeasure *measure );
     virtual ~MusLaidOutLayer();
     
+    virtual bool Check();
+    
     virtual wxString MusClassName( ) { return "MusLaidOutLayer"; };	
     
     void Clear();

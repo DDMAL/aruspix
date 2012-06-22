@@ -10,6 +10,7 @@
 
 #include "musobject.h"
 #include "musrc.h"
+#include "musdiv.h"
 #include "muslayout.h"
 
 #include "wx/arrimpl.cpp"
@@ -26,7 +27,7 @@ using std::max;
 MusObject::MusObject() :
 	wxObject()
 {
-    m_id = 0;
+    m_active = true;
     uuid_generate( m_uuid );
 }
 
@@ -56,6 +57,12 @@ bool MusObject::FindWithUuid( wxArrayPtrVoid params )
         return true;
     }
     //wxLogDebug("Still looking for uuid...");
+    return false;
+}
+
+bool MusObject::CheckFunctor( wxArrayPtrVoid params )
+{
+    this->Check();
     return false;
 }
 
@@ -104,10 +111,27 @@ void MusFunctor::Call( MusObject *ptr, wxArrayPtrVoid params )
 MusLogicalObject::MusLogicalObject() :
 	MusObject()
 {
+    m_div = NULL;
 }
 
 MusLogicalObject::~MusLogicalObject()
 {
+}
+
+
+bool MusLogicalObject::Check()
+{
+    wxASSERT( m_div );
+    return m_div;
+}
+
+
+void MusLogicalObject::SetDiv( wxArrayPtrVoid params )
+{
+    // param 0: MusDiv
+    wxASSERT( dynamic_cast<MusDiv*>((MusDiv*)params[0]) ); 
+    
+    m_div = (MusDiv*)params[0];  
 }
 
 
@@ -126,6 +150,12 @@ MusLayoutObject::~MusLayoutObject()
 {
 }
 
+bool MusLayoutObject::Check()
+{
+    wxASSERT( m_layout );
+    return m_layout;
+}
+
 void MusLayoutObject::SetLayout( wxArrayPtrVoid params )
 {
     // param 0: MusLayout
@@ -134,6 +164,7 @@ void MusLayoutObject::SetLayout( wxArrayPtrVoid params )
     m_layout = (MusLayout*)params[0];  
     ResetBB();
 }
+
 
 void MusLayoutObject::UpdateContentBB( int x1, int y1, int x2, int y2) 
 {
