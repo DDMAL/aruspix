@@ -5,19 +5,24 @@
 // Copyright (c) Authors and others. All rights reserved.
 /////////////////////////////////////////////////////////////////////////////
 
+//#include <iostream>
+
 // For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"
 
-#include "wx/docview.h"
-#include "wx/timer.h"
+#include "wx/filefn.h"
+
+//#include "wx/docview.h"
+//#include "wx/timer.h"
 
 #include "mussvgdc.h"
 #include "musdef.h"
+#include "musdoc.h"
 
 #define space " "
 #define semicolon ";"
  
-#include "app/axapp.h"
+//#include "app/axapp.h"
 
 static inline double DegToRad(double deg) { return (deg * M_PI) / 180.0; }
 static inline double RadToDeg(double deg) { return (deg * 180.0) / M_PI; }
@@ -67,6 +72,30 @@ MusSvgDC::~MusSvgDC ( )
 }
 
 
+bool MusSvgDC::copy_wxTransferFileToStream(const wxString& filename, wxFileOutputStream& stream)
+{
+    wxFFile file(filename, _T("rb"));
+    if ( !file.IsOpened() )
+        return false;
+    
+    char buf[4096];
+    
+    size_t nRead;
+    do
+    {
+        nRead = file.Read(buf, WXSIZEOF(buf));
+        if ( file.Error() )
+            return false;
+        
+        stream.Write(buf, nRead);
+        if ( !stream )
+            return false;
+    }
+    while ( !file.Eof() );
+    
+    return true;
+}
+
 void MusSvgDC::Commit() {
 
     if (m_committed) {
@@ -105,7 +134,7 @@ void MusSvgDC::Commit() {
         for (i = 0; i < (int)m_leipzig_glyphs.Count(); i++) {
             s = "\t\t";
             outfile.Write(s, strlen(s));
-            wxTransferFileToStream( wxGetApp().m_resourcesPath + "/svg/" + m_leipzig_glyphs[i] + ".xml", outfile );
+            copy_wxTransferFileToStream( MusDoc::GetResourcesPath() + "/svg/" + m_leipzig_glyphs[i] + ".xml", outfile );
         }
         s = "\t</defs>\n";
         outfile.Write(s, strlen(s));

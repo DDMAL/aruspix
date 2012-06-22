@@ -17,6 +17,10 @@
 #include "muslaidoutlayer.h"
 
 
+#ifndef HEADLESS
+#include "app/axapp.h"
+#endif
+
 //----------------------------------------------------------------------------
 // MusDoc
 //----------------------------------------------------------------------------
@@ -218,4 +222,57 @@ void MusDoc::ProcessLogical(MusFunctor *functor, wxArrayPtrVoid params )
             div->Process( functor, params );
         }
 	}
+}
+
+wxString MusDoc::GetAxVersion() {
+#ifdef HEADLESS
+    return *new wxString("Headless 1");
+#else
+    return AxApp::s_version;
+#endif
+}
+
+wxString MusDoc::GetResourcesPath() {
+#ifdef HEADLESS
+    return *new wxString("hardcodedstring");
+#else
+    return wxGetApp().m_resourcesPath;
+#endif
+}    
+    
+wxString MusDoc::GetMusicFontDescStr() {
+#ifdef HEADLESS
+    return *new wxString("0;13;70;90;90;0;Leipzig 4.7;33");
+#else
+    return wxGetApp().m_musicFontDesc;
+#endif
+}
+    
+wxString MusDoc::GetNeumeFontDescStr() {
+#ifdef HEADLESS
+    return *new wxString("0;53;70;90;90;0;Festa Dies A;0");
+#else
+    return wxGetApp().m_neumeFontDesc;
+#endif
+}
+        
+wxString MusDoc::GetLyricFontDescStr() {
+#ifdef HEADLESS
+    return *new wxString("0;12;70;93;90;0;Garamond;0");
+#else
+    return wxGetApp().m_lyricFontDesc;
+#endif
+}
+
+
+int MusDoc::GetFontPosCorrection(){
+#ifdef HEADLESS
+    return 0;
+#else
+    return wxGetApp().m_fontPosCorrection;
+#endif
+}
+
+wxString MusDoc::GetFileVersion(int vmaj, int vmin, int vrev) {
+    return wxString::Format("%04d.%04d.%04d", vmaj, vmin, vrev );
 }

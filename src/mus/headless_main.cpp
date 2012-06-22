@@ -10,6 +10,14 @@
 
 #include <wx/string.h>
 
+// I think this is not good...
+//#define wxUSE_GUI 0
+
+#ifndef WX_PRECOMP
+//#include "wx/wx.h"
+#endif
+#include "wx/wx.h"
+
 int main(int argc, char** argv) {
     
     

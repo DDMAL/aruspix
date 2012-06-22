@@ -37,8 +37,8 @@
 #include "muslayer.h"
 
 
-#include "app/axapp.h"
-#include "app/axfile.h"
+//#include "app/axapp.h"
+//#include "app/axfile.h"
 
 //----------------------------------------------------------------------------
 // MusBinOutput
@@ -1023,8 +1023,8 @@ bool MusBinInput_1_X::ReadFileHeader( unsigned short *nbpage )
 	Read( &m_doc->m_env.m_graceDen, 1 ); // rpDiminDen	
 	Read( &m_doc->m_env.m_stemCorrection, 1 ); // hampesCorr
     m_doc->m_env.m_stemCorrection = 1;	// force it 
-    
-	if ( AxFile::FormatVersion(m_vmaj, m_vmin, m_vrev) < AxFile::FormatVersion(1, 6, 1) )
+
+	if ( MusDoc::GetFileVersion(m_vmaj, m_vmin, m_vrev) < MusDoc::GetFileVersion(1, 6, 1) )
 		return true; // following values where added in 1.6.1
     // 1.6.1
     Read( &int32, 4 );

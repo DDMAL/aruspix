@@ -33,7 +33,7 @@ using std::max;
 
 #include "muslaidoutlayerelement.h"
 
-#include "app/axapp.h"
+//#include "app/axapp.h"
 
 #include <vector>
 using std::vector;
@@ -126,7 +126,7 @@ bool MusMeiOutput::WriteDoc( MusDoc *doc )
     MeiElement *p1 = new MeiElement("p");
     projectDesc->addChild(p1);
     
-    p1->setValue( wxString::Format( "Encoded with Aruspix version %s",  AxApp::s_version.c_str() ).c_str() );
+    p1->setValue( wxString::Format( "Encoded with Aruspix version %s",  MusDoc::GetAxVersion().c_str() ).c_str() );
     date->setValue( wxNow().c_str() );
     
     meiHead->addChild(fileDesc);
