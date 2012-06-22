@@ -34,3 +34,22 @@ MusNote::MusNote():
 MusNote::~MusNote()
 {
 }
+
+void MusNote::SetValue( int value, int flag )
+{
+    MusDurationInterface::SetDuration( value ); 
+    
+	// remove ligature flag for  inadequate values	
+	if ( ( value < DUR_BR ) || ( value > DUR_1 ) ) {
+        this->m_lig = 0;
+    }
+
+	this->m_colored = false;
+	this->m_ligObliqua = false;
+    
+	// remove qauto flag for silences and inadequate values	
+	if ( ( value > DUR_LG ) && ( value < DUR_2 ) ) {
+		this->m_stemDir = 0;
+        this->m_stemLen = 0;
+    }    
+}

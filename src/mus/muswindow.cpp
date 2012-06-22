@@ -1493,16 +1493,16 @@ void MusWindow::MensuralEditOnKeyDown(wxKeyEvent &event) {
         CheckPoint( UNDO_PART, MUS_UNDO_FILE );
         OnEndEdition();
     }
-    /*
-    else if ( m_currentElement && m_currentElement->IsNote() &&
-             (in( noteKeyCode, 0, 7 ) || (noteKeyCode == CUSTOS))) // change duree sur une note ou un silence
+    else if ( m_currentElement && (m_currentElement->IsNote() || m_currentElement->IsRest()) &&
+             ( in( noteKeyCode, 0, 7 ) ) ) // change duration on a note or a rest
     {
         PrepareCheckPoint( UNDO_PART, MUS_UNDO_FILE );
-        int vflag = ( event.m_controlDown || (noteKeyCode == CUSTOS)) ? 1 : 0;
-        m_currentElement->SetValue( noteKeyCode , m_currentStaff, vflag );
+        //int vflag = ( event.m_controlDown || (noteKeyCode == CUSTOS)) ? 1 : 0;
+        m_currentElement->m_layerElement->SetValue( noteKeyCode );
         CheckPoint( UNDO_PART, MUS_UNDO_FILE );
         OnEndEdition();
     }
+    /*
     else if ( m_currentElement && m_currentElement->IsNote() && 
 			 (event.m_keyCode == 'L')  ) // Ligature 
     {	

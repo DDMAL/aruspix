@@ -31,3 +31,8 @@ MusDurationInterface::MusDurationInterface()
 MusDurationInterface::~MusDurationInterface()
 {
 }
+
+void MusDurationInterface::SetDuration( int value )
+{
+    this->m_dur = value;
+}

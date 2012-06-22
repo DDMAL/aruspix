@@ -28,6 +28,12 @@ public:
     // constructors and destructors
     MusPitchInterface();
     virtual ~MusPitchInterface();
+ 
+    /** Set the pitch */
+    virtual void SetPitch( int pname, int oct );
+    
+    /** Get the pitch */
+    virtual bool GetPitch( int *pname, int *oct );
     
 private:
     

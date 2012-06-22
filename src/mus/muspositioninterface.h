@@ -30,6 +30,12 @@ public:
     MusPositionInterface();
     virtual ~MusPositionInterface();
     
+    /** Set the position */
+    virtual void SetPosition( int pname, int oct );
+    
+    /** Get the position */
+    virtual bool GetPosition( int *pname, int *oct );
+    
 private:
     
 public:

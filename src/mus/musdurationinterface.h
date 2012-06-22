@@ -39,6 +39,8 @@ public:
     MusDurationInterface();
     virtual ~MusDurationInterface();
     
+    virtual void SetDuration( int value );
+    
 private:
     
 public:

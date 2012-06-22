@@ -37,6 +37,13 @@ public:
     
     virtual wxString MusClassName( ) { return "MusSymbol"; };
     
+    /** Set the position */
+    //virtual void SetPitchOrPosition( int pname, int oct ) { MusPositionInterface::SetPosition( pname, oct ); };
+    
+    /** Get the position */
+    //virtual bool GetPitchOrPosition( int *pname, int *oct ) { return MusPositionInterface::GetPosition( pname, oct ); };
+
+    
     void Init();
     
 private:

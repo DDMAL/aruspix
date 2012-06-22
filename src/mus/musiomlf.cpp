@@ -550,7 +550,7 @@ MusLaidOutLayer *MusMLFOutput::GetUt1( MusLaidOutLayer *layer )
 	
 	for (int i = 0; i < (int)layer->m_elements.GetCount(); i++ )
 	{
-		if ( layer->m_elements[i].IsPitchInterface() )
+		if ( layer->m_elements[i].HasPitchInterface() )
 		{
 			MusLaidOutLayerElement *element = &layer->m_elements[i];
 			{
@@ -560,7 +560,7 @@ MusLaidOutLayer *MusMLFOutput::GetUt1( MusLaidOutLayer *layer )
 				pitchElement->m_oct = oct;
 			}
 		}
-		else if ( layer->m_elements[i].IsPositionInterface() )
+		else if ( layer->m_elements[i].HasPositionInterface() )
 		{
 			MusLaidOutLayerElement *element = &layer->m_elements[i];
 			{
@@ -1217,7 +1217,7 @@ void MusMLFInput::GetNotUt1( MusLaidOutLayer *layer )
 	
 	for (int i = 0; i < (int)layer->m_elements.GetCount(); i++ )
 	{
-		if ( layer->m_elements[i].IsPitchInterface() )
+		if ( layer->m_elements[i].HasPitchInterface() )
 		{
 			MusLaidOutLayerElement *element = &layer->m_elements[i];
 			{
@@ -1227,7 +1227,7 @@ void MusMLFInput::GetNotUt1( MusLaidOutLayer *layer )
 				pitchElement->m_oct = oct;
 			}
 		}
-		else if ( layer->m_elements[i].IsPositionInterface() )
+		else if ( layer->m_elements[i].HasPositionInterface() )
 		{
 			MusLaidOutLayerElement *element = &layer->m_elements[i];
 			{

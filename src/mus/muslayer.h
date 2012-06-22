@@ -114,20 +114,50 @@ public:
     /** Adjust the pname and the octave for values outside the range */
     static void AdjustPname( int *pname, int *oct );
     
-    /** Set the pitch or position for MusPitchInterface or MusPositionInterface elements */
-    void SetPitchOrPosition( int pname, int oct );
+    /** 
+     * Set the pitch or position for MusPitchInterface or MusPositionInterface elements.
+     * Because MusPitchInterface and PositionInterface are not child classes of MusLayerElement,
+     * the call had to be done explicitly from this method. The method can still be overriden.
+     */
+    virtual void SetPitchOrPosition( int pname, int oct );
     
-    /** Get the pitch or position for MusPitchInterface or MusPositionInterface elements */
-    bool GetPitchOrPosition( int *pname, int *oct );
+    /**
+     * Get the pitch or position for MusPitchInterface or MusPositionInterface elements.
+     * See MusLayerElement::SetPitchOrPosition for more comments.
+     */
+    virtual bool GetPitchOrPosition( int *pname, int *oct );
+    
+    /**
+     * Set the value for child element of MusLayerElement.
+     * For example, set the duration for MusDurationInterface elements (call explicitly) 
+     */
+	virtual void SetValue( int value, int flag = 0 );
+    
+    /**
+     * Change the coloration for MusNote elements.
+     */ 
+	virtual void ChangeColoration( ) {};
+    
+    /**
+     * Change the stem direction for MusNote elements.
+     */
+	virtual void ChangeStem( ) {};
+    
+    /**
+     * Set the ligature flag for MusNote elements.
+     */
+	virtual void SetLigature( ) {};
+
     
     bool IsBarline();
     bool IsClef();
+    bool HasDurationInterface();
     bool IsMensur();
     bool IsNeume();
     bool IsNeumeSymbol();
     bool IsNote();
-    bool IsPitchInterface();
-    bool IsPositionInterface();
+    bool HasPitchInterface();
+    bool HasPositionInterface();
     bool IsRest();
     bool IsSymbol( SymbolType type );
     bool IsSymbol( );

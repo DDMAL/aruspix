@@ -26,3 +26,16 @@ MusPositionInterface::MusPositionInterface()
 MusPositionInterface::~MusPositionInterface()
 {
 }
+
+void MusPositionInterface::SetPosition(int pname, int oct) 
+{
+    m_oct = oct;
+    m_pname = pname;
+}
+
+bool MusPositionInterface::GetPosition(int *pname, int *oct) 
+{
+    *oct = m_oct;
+    *pname = m_pname;
+    return true;
+}

@@ -48,6 +48,14 @@ public:
     
     virtual wxString MusClassName( ) { return "MusNote"; };
     
+     /** 
+      * Set the duration.
+      * Because we need to perform additonal check, this method override the MusLayerElement::SetValue method.
+      * The MusDurationInterface::SetDuration method has to be called explicitly.
+      */
+    virtual void SetValue( int value, int flag = 0 );
+
+    
 private:
     
 public:

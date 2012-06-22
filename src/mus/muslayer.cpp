@@ -207,37 +207,37 @@ MusLayerElement *MusLayerElement::GetChildCopy()
     return element;
 }
 
-
-
 void MusLayerElement::SetPitchOrPosition(int pname, int oct) 
 {
-    if ( this->IsPitchInterface() ){
+    if ( this->HasPitchInterface() ){
         MusPitchInterface *pitch = dynamic_cast<MusPitchInterface*>(this);
-        pitch->m_oct = oct;
-        pitch->m_pname = pname;
+        pitch->SetPitch( pname, oct );
     }
-    else if ( this->IsPositionInterface() ) {
+    else if ( this->HasPositionInterface() ) {
         MusPositionInterface *position = dynamic_cast<MusPositionInterface*>(this);
-        position->m_oct = oct;
-        position->m_pname = pname;
+        position->SetPosition( pname, oct );
     }
 }
 
 bool MusLayerElement::GetPitchOrPosition(int *pname, int *oct) 
 {
-    if ( this->IsPitchInterface() ){
+    if ( this->HasPitchInterface() ){
         MusPitchInterface *pitch = dynamic_cast<MusPitchInterface*>(this);
-        *oct = pitch->m_oct;
-        *pname = pitch->m_pname;
-        return true;
+        return pitch->GetPitch( pname, oct );
     }
-    else if ( this->IsPositionInterface() ) {
+    else if ( this->HasPositionInterface() ) {
         MusPositionInterface *position = dynamic_cast<MusPositionInterface*>(this);
-        *oct = position->m_oct;
-        *pname = position->m_pname;
-        return true;
+        return position->GetPosition( pname, oct );
     }
     return false;
+}
+
+void MusLayerElement::SetValue( int value, int flag )
+{
+    if ( this->HasDurationInterface() ){
+        MusDurationInterface *duration = dynamic_cast<MusDurationInterface*>(this);
+        duration->SetDuration( value );
+    }
 }
 
 
@@ -249,6 +249,12 @@ bool MusLayerElement::IsBarline()
 bool MusLayerElement::IsClef() 
 {  
     return (dynamic_cast<MusClef*>(this));
+}
+
+
+bool MusLayerElement::HasDurationInterface() 
+{  
+    return (dynamic_cast<MusDurationInterface*>(this));
 }
 
 bool MusLayerElement::IsSymbol( SymbolType type ) 
@@ -282,12 +288,12 @@ bool MusLayerElement::IsNote()
     return (dynamic_cast<MusNote*>(this));
 }
 
-bool MusLayerElement::IsPitchInterface() 
+bool MusLayerElement::HasPitchInterface() 
 {  
     return (dynamic_cast<MusPitchInterface*>(this));
 }
 
-bool MusLayerElement::IsPositionInterface() 
+bool MusLayerElement::HasPositionInterface() 
 {  
     return (dynamic_cast<MusPositionInterface*>(this));
 }

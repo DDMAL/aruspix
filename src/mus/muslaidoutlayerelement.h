@@ -47,11 +47,13 @@ public:
     bool IsNeume() { return m_layerElement->IsNeume(); };
     bool IsNeumeSymbol() { return m_layerElement->IsNeumeSymbol(); };
     bool IsNote() { return m_layerElement->IsNote(); };
-    bool IsPitchInterface() { return m_layerElement->IsPitchInterface(); };
-    bool IsPositionInterface() { return m_layerElement->IsPositionInterface(); };
     bool IsRest() { return m_layerElement->IsRest(); };
     bool IsSymbol( SymbolType type ) { return m_layerElement->IsSymbol( type ); };
     bool IsSymbol( ) { return m_layerElement->IsSymbol(); };
+
+    bool HasDurationInterface() { return m_layerElement->HasDurationInterface(); };
+    bool HasPitchInterface() { return m_layerElement->HasPitchInterface(); };
+    bool HasPositionInterface() { return m_layerElement->HasPositionInterface(); };
     
     // functors
     void Save( wxArrayPtrVoid params );
