@@ -88,6 +88,7 @@ MusWindow::MusWindow( wxWindow *parent, wxWindowID id,
 	m_insert_oct = 4;
 	m_dragging_x = 0;
 	m_dragging_y_offset = 0;
+    m_has_been_dragged = false;
 	m_lyricCursor = 0;
     
     m_zoomNum = 10;
