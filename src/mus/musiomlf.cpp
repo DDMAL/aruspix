@@ -36,7 +36,7 @@ using std::max;
 #include "musmlfdic.h"
 
 #include "im/impage.h"
-//#include "im/imstaff.h"
+#include "im/imstaff.h"
 
 //#include "app/axprocess.h"
 //#include "app/axprogressdlg.h"

@@ -232,11 +232,11 @@ wxString MusDoc::GetAxVersion() {
 #endif
 }
 
-wxString MusDoc::GetSVGDir() {
+wxString MusDoc::GetResourcesPath() {
 #ifdef HEADLESS
     return *new wxString("hardcodedstring");
 #else
-    return wxGetApp().m_resourcesPath + "/svg/" + m_leipzig_glyphs[i] + ".xml";
+    return wxGetApp().m_resourcesPath;
 #endif
 }    
     

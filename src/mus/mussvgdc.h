@@ -8,7 +8,7 @@
 #ifndef __MUS_SVG_DC_H__
 #define __MUS_SVG_DC_H__
 
-#include <iostream>
+//#include <iostream>
 
 #ifndef WX_PRECOMP
     #include "wx/wx.h"
@@ -101,7 +101,7 @@ public:
     
 private:
     
-    bool brutal_wxTransferFileToStream(const wxString& filename, wxFileOutputStream& stream);
+    bool copy_wxTransferFileToStream(const wxString& filename, wxFileOutputStream& stream);
     
     //wxFileOutputStream * m_outfile ;
     // changed to a memory stream because we want to prepend the <defs> which will know only when we reach the end of the page

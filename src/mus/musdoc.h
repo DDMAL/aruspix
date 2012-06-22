@@ -78,7 +78,7 @@ public:
     
     // Some statis utiliry functions
     static wxString GetAxVersion();
-    static wxString GetSVGDir();
+    static wxString GetResourcesPath();
     static wxString GetMusicFontDescStr();
     static wxString GetNeumeFontDescStr();
     static wxString GetLyricFontDescStr();

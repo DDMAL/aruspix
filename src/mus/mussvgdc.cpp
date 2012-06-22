@@ -5,7 +5,7 @@
 // Copyright (c) Authors and others. All rights reserved.
 /////////////////////////////////////////////////////////////////////////////
 
-#include <iostream>
+//#include <iostream>
 
 // For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"
@@ -72,7 +72,7 @@ MusSvgDC::~MusSvgDC ( )
 }
 
 
-bool MusSvgDC::brutal_wxTransferFileToStream(const wxString& filename, wxFileOutputStream& stream)
+bool MusSvgDC::copy_wxTransferFileToStream(const wxString& filename, wxFileOutputStream& stream)
 {
     wxFFile file(filename, _T("rb"));
     if ( !file.IsOpened() )
@@ -134,8 +134,7 @@ void MusSvgDC::Commit() {
         for (i = 0; i < (int)m_leipzig_glyphs.Count(); i++) {
             s = "\t\t";
             outfile.Write(s, strlen(s));
-#warning FIXME
-            brutal_wxTransferFileToStream( MusDoc::GetSVGDir(), outfile );
+            copy_wxTransferFileToStream( MusDoc::GetResourcesPath() + "/svg/" + m_leipzig_glyphs[i] + ".xml", outfile );
         }
         s = "\t</defs>\n";
         outfile.Write(s, strlen(s));
