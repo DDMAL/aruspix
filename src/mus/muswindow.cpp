@@ -794,9 +794,7 @@ void MusWindow::OnMouseDClick(wxMouseEvent &event)
 		{
 			PrepareCheckPoint( UNDO_PART, MUS_UNDO_FILE );
 			m_lastEditedElement = m_currentLayer->Insert( m_newElement, m_insert_x );
-            m_lastEditedElement->SetPitchOrPosition( m_insert_pname, m_insert_oct );
-
-
+            m_lastEditedElement->m_layerElement->SetPitchOrPosition( m_insert_pname, m_insert_oct );
 			CheckPoint( UNDO_PART, MUS_UNDO_FILE );
 			OnEndEdition();
 		}
@@ -968,7 +966,7 @@ void MusWindow::OnMouseMotion(wxMouseEvent &event)
 		if ( m_editorMode == MUS_EDITOR_EDIT )
 		{
 			m_insert_pname = CalculatePitchCode( m_currentLayer, y, m_insert_x, &m_insert_oct );
-			m_currentElement->SetPitchOrPosition( m_insert_pname, m_insert_oct );
+			m_currentElement->m_layerElement->SetPitchOrPosition( m_insert_pname, m_insert_oct );
 		} 
 		else if ( m_lyricMode )					// Movement of lyric element on y-axis
 		{
@@ -1438,30 +1436,30 @@ void MusWindow::MensuralEditOnKeyDown(wxKeyEvent &event) {
     else if ( in ( event.m_keyCode, WXK_F2, WXK_F8 ) && m_currentElement ) // Change hauteur
     {
         PrepareCheckPoint( UNDO_PART, MUS_UNDO_FILE );
-        m_currentElement->GetPitchOrPosition( &m_insert_pname, &m_insert_oct);
+        m_currentElement->m_layerElement->GetPitchOrPosition( &m_insert_pname, &m_insert_oct);
         m_insert_pname = event.m_keyCode - WXK_F1;
         MusLayerElement::AdjustPname( &m_insert_pname, &m_insert_oct );
-        m_currentElement->SetPitchOrPosition( m_insert_pname, m_insert_oct );
+        m_currentElement->m_layerElement->SetPitchOrPosition( m_insert_pname, m_insert_oct );
         CheckPoint( UNDO_PART, MUS_UNDO_FILE );
         OnEndEdition();
     }
     else if ( event.m_controlDown && ( event.m_keyCode == WXK_UP ) && m_currentElement) // correction hauteur avec les fleches, up
     {
         PrepareCheckPoint( UNDO_PART, MUS_UNDO_FILE );
-        m_currentElement->GetPitchOrPosition( &m_insert_pname, &m_insert_oct);
+        m_currentElement->m_layerElement->GetPitchOrPosition( &m_insert_pname, &m_insert_oct);
         m_insert_pname++;
         MusLayerElement::AdjustPname( &m_insert_pname, &m_insert_oct );
-        m_currentElement->SetPitchOrPosition( m_insert_pname, m_insert_oct );
+        m_currentElement->m_layerElement->SetPitchOrPosition( m_insert_pname, m_insert_oct );
         CheckPoint( UNDO_PART, MUS_UNDO_FILE );
         OnEndEdition();
     }
     else if ( event.m_controlDown && ( event.m_keyCode == WXK_DOWN ) && m_currentElement) // correction hauteur avec les fleches, down
     {
         PrepareCheckPoint( UNDO_PART, MUS_UNDO_FILE );
-        m_currentElement->GetPitchOrPosition( &m_insert_pname, &m_insert_oct);
+        m_currentElement->m_layerElement->GetPitchOrPosition( &m_insert_pname, &m_insert_oct);
         m_insert_pname--;
         MusLayerElement::AdjustPname( &m_insert_pname, &m_insert_oct );
-        m_currentElement->SetPitchOrPosition( m_insert_pname, m_insert_oct );
+        m_currentElement->m_layerElement->SetPitchOrPosition( m_insert_pname, m_insert_oct );
         CheckPoint( UNDO_PART, MUS_UNDO_FILE );
         OnEndEdition();
     }

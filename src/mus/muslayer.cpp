@@ -208,6 +208,39 @@ MusLayerElement *MusLayerElement::GetChildCopy()
 }
 
 
+
+void MusLayerElement::SetPitchOrPosition(int pname, int oct) 
+{
+    if ( this->IsPitchInterface() ){
+        MusPitchInterface *pitch = dynamic_cast<MusPitchInterface*>(this);
+        pitch->m_oct = oct;
+        pitch->m_pname = pname;
+    }
+    else if ( this->IsPositionInterface() ) {
+        MusPositionInterface *position = dynamic_cast<MusPositionInterface*>(this);
+        position->m_oct = oct;
+        position->m_pname = pname;
+    }
+}
+
+bool MusLayerElement::GetPitchOrPosition(int *pname, int *oct) 
+{
+    if ( this->IsPitchInterface() ){
+        MusPitchInterface *pitch = dynamic_cast<MusPitchInterface*>(this);
+        *oct = pitch->m_oct;
+        *pname = pitch->m_pname;
+        return true;
+    }
+    else if ( this->IsPositionInterface() ) {
+        MusPositionInterface *position = dynamic_cast<MusPositionInterface*>(this);
+        *oct = position->m_oct;
+        *pname = position->m_pname;
+        return true;
+    }
+    return false;
+}
+
+
 bool MusLayerElement::IsBarline() 
 {  
     return (dynamic_cast<MusBarline*>(this));

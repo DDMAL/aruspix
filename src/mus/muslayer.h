@@ -114,6 +114,12 @@ public:
     /** Adjust the pname and the octave for values outside the range */
     static void AdjustPname( int *pname, int *oct );
     
+    /** Set the pitch or position for MusPitchInterface or MusPositionInterface elements */
+    void SetPitchOrPosition( int pname, int oct );
+    
+    /** Get the pitch or position for MusPitchInterface or MusPositionInterface elements */
+    bool GetPitchOrPosition( int *pname, int *oct );
+    
     bool IsBarline();
     bool IsClef();
     bool IsMensur();

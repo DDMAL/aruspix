@@ -13,8 +13,6 @@
 #include "musnote.h"
 #include "musiobin.h"
 
-#include "app/axapp.h"
-
 #include <typeinfo>
 
 //----------------------------------------------------------------------------

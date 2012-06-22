@@ -84,33 +84,3 @@ int MusLaidOutLayerElement::GetElementNo() const
     return m_layer->m_elements.Index( *this );
 }
 
-void MusLaidOutLayerElement::SetPitchOrPosition(int pname, int oct) 
-{
-    if ( this->IsPitchInterface() ){
-        MusPitchInterface *pitch = dynamic_cast<MusPitchInterface*>(this->m_layerElement);
-        pitch->m_oct = oct;
-        pitch->m_pname = pname;
-    }
-    else if ( this->IsPositionInterface() ) {
-        MusPositionInterface *position = dynamic_cast<MusPositionInterface*>(this->m_layerElement);
-        position->m_oct = oct;
-        position->m_pname = pname;
-    }
-}
-
-bool MusLaidOutLayerElement::GetPitchOrPosition(int *pname, int *oct) 
-{
-    if ( this->IsPitchInterface() ){
-        MusPitchInterface *pitch = dynamic_cast<MusPitchInterface*>(this->m_layerElement);
-        *oct = pitch->m_oct;
-        *pname = pitch->m_pname;
-        return true;
-    }
-    else if ( this->IsPositionInterface() ) {
-        MusPositionInterface *position = dynamic_cast<MusPositionInterface*>(this->m_layerElement);
-        *oct = position->m_oct;
-        *pname = position->m_pname;
-        return true;
-    }
-    return false;
-}
