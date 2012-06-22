@@ -649,8 +649,8 @@ void EdtEnv::OnOpenMEI( wxCommandEvent &event )
     layout->SetDoc( m_edtFilePtr->m_musDocPtr );
 	m_edtFilePtr->m_musDocPtr->m_layouts.Add(layout);
     
-    MusBBoxDC bb_dc( 0, 0 );
     MusRC rc;
+    MusBBoxDC bb_dc( &rc, 0, 0 );
     rc.SetLayout(layout);
     rc.DrawPage(  &bb_dc, &layout->m_pages[0] , false );
     
