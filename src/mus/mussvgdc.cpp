@@ -473,7 +473,7 @@ void MusSvgDC::DrawRotatedText(const wxString& text, int x, int y, double angle)
 void MusSvgDC::DrawMusicText(const wxString& text, int x, int y)
 {
     wxString glyph;
-    char c = (char)text[0];
+    unsigned char c = (unsigned char)text[0];
     switch (c) {
         /* figures */
         case 48: glyph = "figure_0"; break;
