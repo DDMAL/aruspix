@@ -8,6 +8,8 @@
 #ifndef __MUS_SVG_DC_H__
 #define __MUS_SVG_DC_H__
 
+#include <iostream>
+
 #ifndef WX_PRECOMP
     #include "wx/wx.h"
 #endif
@@ -98,6 +100,9 @@ public:
     
     
 private:
+    
+    bool brutal_wxTransferFileToStream(const wxString& filename, wxFileOutputStream& stream);
+    
     //wxFileOutputStream * m_outfile ;
     // changed to a memory stream because we want to prepend the <defs> which will know only when we reach the end of the page
     // some viewer seem to support to have the <defs> at the end, but some do not (pdf2svg, for example)

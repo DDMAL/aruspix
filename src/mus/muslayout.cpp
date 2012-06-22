@@ -8,7 +8,7 @@
 // For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"
 
-#include "app/axapp.h" // in order to get wxGetApp - to be modified
+//#include "app/axapp.h" // in order to get wxGetApp - to be modified
 
 #include "muslayout.h"
 #include "muspage.h"
@@ -215,10 +215,10 @@ int MusLayout::CalcNeumesFontSize( )
 
 void MusLayout::UpdateFontValues() 
 {	
-	if ( !m_ftLeipzig.FromString( wxGetApp().m_musicFontDesc ) )
+	if ( !m_ftLeipzig.FromString( MusDoc::GetMusicFontDescStr() ) )
         wxLogWarning(_("Impossible to load font 'Leipzig'") );
 	
-	if ( !m_ftFestaDiesA.FromString( wxGetApp().m_neumeFontDesc ) )
+	if ( !m_ftFestaDiesA.FromString( MusDoc::GetNeumeFontDescStr() ) )
 		wxLogWarning(_("Impossible to load font 'Festa Dies'") );
 	
 	//wxLogMessage(_("Size %d, Family %d, Style %d, Weight %d, Underline %d, Face %s, Desc %s"),
@@ -241,7 +241,7 @@ void MusLayout::UpdateFontValues()
     m_activeChantFonts[1][1] = m_ftFestaDiesA;
 	
 	// Lyrics
-	if ( !m_ftLyrics.FromString( wxGetApp().m_lyricFontDesc ) )
+	if ( !m_ftLyrics.FromString( MusDoc::GetLyricFontDescStr() ) )
 		wxLogWarning(_("Impossible to load font for the lyrics") );
     
 	m_activeLyricFonts[0] = m_ftLyrics;
@@ -295,7 +295,7 @@ void MusLayout::UpdatePageValues()
     
     m_fontHeight = CalcMusicFontSize();
     m_fontHeightAscent[0][0] = floor(LEIPZIG_ASCENT * (double)m_fontHeight / LEIPZIG_UNITS_PER_EM);
-	m_fontHeightAscent[0][0] +=  wxGetApp().m_fontPosCorrection;
+	m_fontHeightAscent[0][0] +=  MusDoc::GetFontPosCorrection();
 	m_fontHeightAscent[0][1] = (m_fontHeightAscent[0][0] * m_graceRatio[0]) / m_graceRatio[1];
     m_fontHeightAscent[1][0] = (m_fontHeightAscent[0][0] * m_smallStaffRatio[0]) / m_smallStaffRatio[1];
 	m_fontHeightAscent[1][1] = (m_fontHeightAscent[1][0] * m_graceRatio[0]) / m_graceRatio[1];    

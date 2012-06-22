@@ -76,6 +76,15 @@ public:
     virtual void ProcessLogical(MusFunctor *functor, wxArrayPtrVoid params );
     // functors    
     
+    // Some statis utiliry functions
+    static wxString GetAxVersion();
+    static wxString GetSVGDir();
+    static wxString GetMusicFontDescStr();
+    static wxString GetNeumeFontDescStr();
+    static wxString GetLyricFontDescStr();
+    static int GetFontPosCorrection();
+    static wxString GetFileVersion(int vmaj, int vmin, int vrev);
+    
 private:
     
 public:

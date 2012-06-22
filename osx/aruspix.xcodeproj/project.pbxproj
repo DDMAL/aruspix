@@ -91,49 +91,52 @@
 		57EA3DE50C00BDEB00414247 /* recbookctrl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 57EA3DE30C00BDEB00414247 /* recbookctrl.cpp */; };
 		8F238171159462AF00C04D47 /* aruspix_headless.1 in CopyFiles */ = {isa = PBXBuildFile; fileRef = 8F238170159462AF00C04D47 /* aruspix_headless.1 */; };
 		8F23817A1594632C00C04D47 /* headless_main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8F2381791594632C00C04D47 /* headless_main.cpp */; };
-		8F23817B15946C2600C04D47 /* musbboxdc.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D862ED8144DF72700483E57 /* musbboxdc.cpp */; };
-		8F23817C15946C2600C04D47 /* mussvgdc.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D72429B132012A00023497A /* mussvgdc.cpp */; };
-		8F23817D15946C2600C04D47 /* musdc.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D2F7EE9145AE14D00EF930B /* musdc.cpp */; };
-		8F23817E15946C2600C04D47 /* musiopae.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8F9F1A15156143A200C7D6F9 /* musiopae.cpp */; };
-		8F23817F15946C2600C04D47 /* musio.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D0C8DB31557E154003F487C /* musio.cpp */; };
-		8F23818015946C2600C04D47 /* musmlfdic.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4DB2D96B0D8383EA003401B0 /* musmlfdic.cpp */; };
-		8F23818115946C2600C04D47 /* musiobin.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D38196814F534410002A4DA /* musiobin.cpp */; };
-		8F23818215946C2600C04D47 /* musiomei.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4DB4F219143F3D3200BCB254 /* musiomei.cpp */; };
-		8F23818315946C2600C04D47 /* musiomlf.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D3A8FDB0D35867200BBC1FB /* musiomlf.cpp */; };
-		8F23818415946C2600C04D47 /* musiowwg.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4DDE3CDD0EF1B1D6006D4F2C /* musiowwg.cpp */; };
-		8F23818515946C2600C04D47 /* muslaidoutlayer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D2E4A0613FE992A00023B02 /* muslaidoutlayer.cpp */; };
-		8F23818615946C2600C04D47 /* muslaidoutlayerelement.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D93C31F14067CB600256E2A /* muslaidoutlayerelement.cpp */; };
-		8F23818715946C2600C04D47 /* muslaidoutstaff.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D2E465613FBE9F200023B02 /* muslaidoutstaff.cpp */; };
-		8F23818815946C2600C04D47 /* muslayout.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D2E465713FBE9F200023B02 /* muslayout.cpp */; };
-		8F23818915946C2600C04D47 /* muspage.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D3A8FE30D35867200BBC1FB /* muspage.cpp */; };
-		8F23818A15946C2600C04D47 /* mussystem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D6E917713E9DA0A003B00D4 /* mussystem.cpp */; };
-		8F23818B15946C2600C04D47 /* musbarline.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D2E48D013FE5FDA00023B02 /* musbarline.cpp */; };
-		8F23818C15946C2600C04D47 /* musclef.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D2F7F77145AEBF700EF930B /* musclef.cpp */; };
-		8F23818D15946C2600C04D47 /* musdiv.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D2E46A913FBF4B700023B02 /* musdiv.cpp */; };
-		8F23818E15946C2600C04D47 /* musdurationinterface.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D2E46F713FC3DC400023B02 /* musdurationinterface.cpp */; };
-		8F23818F15946C2600C04D47 /* muslayer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D3A8FE50D35867200BBC1FB /* muslayer.cpp */; };
-		8F23819015946C2600C04D47 /* musmeasure.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D2E46CF13FBF79100023B02 /* musmeasure.cpp */; };
-		8F23819115946C2600C04D47 /* musmensur.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D2E48D413FE5FDA00023B02 /* musmensur.cpp */; };
-		8F23819215946C2600C04D47 /* musneume.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4DC24AB5119B72C900B2EF98 /* musneume.cpp */; };
-		8F23819315946C2600C04D47 /* musneumesymbol.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A1A6E0D713422A7D0024A821 /* musneumesymbol.cpp */; };
-		8F23819415946C2600C04D47 /* musnote.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D2E47B713FD4BEF00023B02 /* musnote.cpp */; };
-		8F23819515946C2600C04D47 /* muspitchinterface.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D2E470813FC436500023B02 /* muspitchinterface.cpp */; };
-		8F23819615946C2600C04D47 /* muspositioninterface.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D2E471713FD052300023B02 /* muspositioninterface.cpp */; };
-		8F23819715946C2600C04D47 /* musrest.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D2E470A13FC436500023B02 /* musrest.cpp */; };
-		8F23819815946C2600C04D47 /* mussection.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D2E46A313FBF2C800023B02 /* mussection.cpp */; };
-		8F23819915946C2600C04D47 /* musstaff.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D2E46A113FBF21800023B02 /* musstaff.cpp */; };
-		8F23819A15946C2600C04D47 /* mussymbol.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D2F7E78145AD66900EF930B /* mussymbol.cpp */; };
-		8F23819B15946C2600C04D47 /* musrc_beam.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D2F7EA7145AD82600EF930B /* musrc_beam.cpp */; };
-		8F23819C15946C2600C04D47 /* musrc_bezier.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4DC6A82E1473F83900D73769 /* musrc_bezier.cpp */; };
-		8F23819D15946C2600C04D47 /* musrc_element.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D2F7EA8145AD82600EF930B /* musrc_element.cpp */; };
-		8F23819E15946C2600C04D47 /* musrc_graph.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4DC6A82C1473F80D00D73769 /* musrc_graph.cpp */; };
-		8F23819F15946C2600C04D47 /* musrc_neume.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D2F7EAA145AD82600EF930B /* musrc_neume.cpp */; };
-		8F2381A015946C2600C04D47 /* musrc_page.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D2F7EAB145AD82600EF930B /* musrc_page.cpp */; };
-		8F2381A115946C2600C04D47 /* musrc.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4DA0004312CA26E300B65740 /* musrc.cpp */; };
-		8F2381A215946C2600C04D47 /* musdoc.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D6E911513E88A7B003B00D4 /* musdoc.cpp */; };
-		8F2381A315946C2600C04D47 /* musobject.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D3A8FE10D35867200BBC1FB /* musobject.cpp */; };
-		8F2381A415946C2600C04D47 /* muswwg.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D2F7F40145AE7CA00EF930B /* muswwg.cpp */; };
 		8F9F1A17156143A200C7D6F9 /* musiopae.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8F9F1A15156143A200C7D6F9 /* musiopae.cpp */; };
+		8FE5FDDE1594943600B44674 /* musbboxdc.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D862ED8144DF72700483E57 /* musbboxdc.cpp */; };
+		8FE5FDDF1594943600B44674 /* mussvgdc.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D72429B132012A00023497A /* mussvgdc.cpp */; };
+		8FE5FDE01594943600B44674 /* musdc.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D2F7EE9145AE14D00EF930B /* musdc.cpp */; };
+		8FE5FDE21594943600B44674 /* musiopae.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8F9F1A15156143A200C7D6F9 /* musiopae.cpp */; };
+		8FE5FDE31594943600B44674 /* musio.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D0C8DB31557E154003F487C /* musio.cpp */; };
+		8FE5FDE41594943600B44674 /* musmlfdic.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4DB2D96B0D8383EA003401B0 /* musmlfdic.cpp */; };
+		8FE5FDE51594943600B44674 /* musiobin.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D38196814F534410002A4DA /* musiobin.cpp */; };
+		8FE5FDE61594943600B44674 /* musiomei.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4DB4F219143F3D3200BCB254 /* musiomei.cpp */; };
+		8FE5FDE71594943600B44674 /* musiowwg.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4DDE3CDD0EF1B1D6006D4F2C /* musiowwg.cpp */; };
+		8FE5FDE81594943600B44674 /* muslaidoutlayer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D2E4A0613FE992A00023B02 /* muslaidoutlayer.cpp */; };
+		8FE5FDE91594943600B44674 /* muslaidoutlayerelement.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D93C31F14067CB600256E2A /* muslaidoutlayerelement.cpp */; };
+		8FE5FDEA1594943600B44674 /* muslaidoutstaff.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D2E465613FBE9F200023B02 /* muslaidoutstaff.cpp */; };
+		8FE5FDEB1594943600B44674 /* muslayout.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D2E465713FBE9F200023B02 /* muslayout.cpp */; };
+		8FE5FDEC1594943600B44674 /* muspage.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D3A8FE30D35867200BBC1FB /* muspage.cpp */; };
+		8FE5FDED1594943600B44674 /* mussystem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D6E917713E9DA0A003B00D4 /* mussystem.cpp */; };
+		8FE5FDEE1594943600B44674 /* musbarline.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D2E48D013FE5FDA00023B02 /* musbarline.cpp */; };
+		8FE5FDEF1594943600B44674 /* musclef.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D2F7F77145AEBF700EF930B /* musclef.cpp */; };
+		8FE5FDF01594943600B44674 /* musdiv.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D2E46A913FBF4B700023B02 /* musdiv.cpp */; };
+		8FE5FDF11594943600B44674 /* musdurationinterface.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D2E46F713FC3DC400023B02 /* musdurationinterface.cpp */; };
+		8FE5FDF21594943600B44674 /* muslayer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D3A8FE50D35867200BBC1FB /* muslayer.cpp */; };
+		8FE5FDF31594943600B44674 /* musmeasure.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D2E46CF13FBF79100023B02 /* musmeasure.cpp */; };
+		8FE5FDF41594943600B44674 /* musmensur.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D2E48D413FE5FDA00023B02 /* musmensur.cpp */; };
+		8FE5FDF51594943600B44674 /* musneume.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4DC24AB5119B72C900B2EF98 /* musneume.cpp */; };
+		8FE5FDF61594943600B44674 /* musneumesymbol.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A1A6E0D713422A7D0024A821 /* musneumesymbol.cpp */; };
+		8FE5FDF71594943600B44674 /* musnote.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D2E47B713FD4BEF00023B02 /* musnote.cpp */; };
+		8FE5FDF81594943600B44674 /* muspitchinterface.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D2E470813FC436500023B02 /* muspitchinterface.cpp */; };
+		8FE5FDF91594943600B44674 /* muspositioninterface.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D2E471713FD052300023B02 /* muspositioninterface.cpp */; };
+		8FE5FDFA1594943600B44674 /* musrest.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D2E470A13FC436500023B02 /* musrest.cpp */; };
+		8FE5FDFB1594943600B44674 /* mussection.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D2E46A313FBF2C800023B02 /* mussection.cpp */; };
+		8FE5FDFC1594943600B44674 /* musstaff.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D2E46A113FBF21800023B02 /* musstaff.cpp */; };
+		8FE5FDFD1594943600B44674 /* mussymbol.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D2F7E78145AD66900EF930B /* mussymbol.cpp */; };
+		8FE5FDFE1594943600B44674 /* musrc_beam.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D2F7EA7145AD82600EF930B /* musrc_beam.cpp */; };
+		8FE5FDFF1594943600B44674 /* musrc_bezier.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4DC6A82E1473F83900D73769 /* musrc_bezier.cpp */; };
+		8FE5FE001594943600B44674 /* musrc_element.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D2F7EA8145AD82600EF930B /* musrc_element.cpp */; };
+		8FE5FE011594943600B44674 /* musrc_graph.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4DC6A82C1473F80D00D73769 /* musrc_graph.cpp */; };
+		8FE5FE021594943600B44674 /* musrc_neume.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D2F7EAA145AD82600EF930B /* musrc_neume.cpp */; };
+		8FE5FE031594943600B44674 /* musrc_page.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D2F7EAB145AD82600EF930B /* musrc_page.cpp */; };
+		8FE5FE041594943600B44674 /* musrc.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4DA0004312CA26E300B65740 /* musrc.cpp */; };
+		8FE5FE051594943600B44674 /* musdoc.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D6E911513E88A7B003B00D4 /* musdoc.cpp */; };
+		8FE5FE061594943600B44674 /* musobject.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D3A8FE10D35867200BBC1FB /* musobject.cpp */; };
+		8FE5FE071594943600B44674 /* muswwg.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D2F7F40145AE7CA00EF930B /* muswwg.cpp */; };
+		8FE5FE0E1594952400B44674 /* tinystr.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A58524980A1B9604002D9D8A /* tinystr.cpp */; };
+		8FE5FE0F1594952400B44674 /* tinyxml.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A585249A0A1B9604002D9D8A /* tinyxml.cpp */; };
+		8FE5FE101594952400B44674 /* tinyxmlerror.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A585249C0A1B9604002D9D8A /* tinyxmlerror.cpp */; };
+		8FE5FE111594952400B44674 /* tinyxmlparser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A585249D0A1B9604002D9D8A /* tinyxmlparser.cpp */; };
 		A125A6741342A4B30038F7BC /* musneume.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4DC24AB5119B72C900B2EF98 /* musneume.cpp */; };
 		A12B0561137C50AF007D2546 /* gtest_main.cc in Sources */ = {isa = PBXBuildFile; fileRef = A12B055F137C50AF007D2546 /* gtest_main.cc */; };
 		A12B05BE137C53FE007D2546 /* musiomei2_test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A12B0562137C50BC007D2546 /* musiomei2_test.cpp */; };
@@ -916,48 +919,51 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8F23817B15946C2600C04D47 /* musbboxdc.cpp in Sources */,
-				8F23817C15946C2600C04D47 /* mussvgdc.cpp in Sources */,
-				8F23817D15946C2600C04D47 /* musdc.cpp in Sources */,
-				8F23817E15946C2600C04D47 /* musiopae.cpp in Sources */,
-				8F23817F15946C2600C04D47 /* musio.cpp in Sources */,
-				8F23818015946C2600C04D47 /* musmlfdic.cpp in Sources */,
-				8F23818115946C2600C04D47 /* musiobin.cpp in Sources */,
-				8F23818215946C2600C04D47 /* musiomei.cpp in Sources */,
-				8F23818315946C2600C04D47 /* musiomlf.cpp in Sources */,
-				8F23818415946C2600C04D47 /* musiowwg.cpp in Sources */,
-				8F23818515946C2600C04D47 /* muslaidoutlayer.cpp in Sources */,
-				8F23818615946C2600C04D47 /* muslaidoutlayerelement.cpp in Sources */,
-				8F23818715946C2600C04D47 /* muslaidoutstaff.cpp in Sources */,
-				8F23818815946C2600C04D47 /* muslayout.cpp in Sources */,
-				8F23818915946C2600C04D47 /* muspage.cpp in Sources */,
-				8F23818A15946C2600C04D47 /* mussystem.cpp in Sources */,
-				8F23818B15946C2600C04D47 /* musbarline.cpp in Sources */,
-				8F23818C15946C2600C04D47 /* musclef.cpp in Sources */,
-				8F23818D15946C2600C04D47 /* musdiv.cpp in Sources */,
-				8F23818E15946C2600C04D47 /* musdurationinterface.cpp in Sources */,
-				8F23818F15946C2600C04D47 /* muslayer.cpp in Sources */,
-				8F23819015946C2600C04D47 /* musmeasure.cpp in Sources */,
-				8F23819115946C2600C04D47 /* musmensur.cpp in Sources */,
-				8F23819215946C2600C04D47 /* musneume.cpp in Sources */,
-				8F23819315946C2600C04D47 /* musneumesymbol.cpp in Sources */,
-				8F23819415946C2600C04D47 /* musnote.cpp in Sources */,
-				8F23819515946C2600C04D47 /* muspitchinterface.cpp in Sources */,
-				8F23819615946C2600C04D47 /* muspositioninterface.cpp in Sources */,
-				8F23819715946C2600C04D47 /* musrest.cpp in Sources */,
-				8F23819815946C2600C04D47 /* mussection.cpp in Sources */,
-				8F23819915946C2600C04D47 /* musstaff.cpp in Sources */,
-				8F23819A15946C2600C04D47 /* mussymbol.cpp in Sources */,
-				8F23819B15946C2600C04D47 /* musrc_beam.cpp in Sources */,
-				8F23819C15946C2600C04D47 /* musrc_bezier.cpp in Sources */,
-				8F23819D15946C2600C04D47 /* musrc_element.cpp in Sources */,
-				8F23819E15946C2600C04D47 /* musrc_graph.cpp in Sources */,
-				8F23819F15946C2600C04D47 /* musrc_neume.cpp in Sources */,
-				8F2381A015946C2600C04D47 /* musrc_page.cpp in Sources */,
-				8F2381A115946C2600C04D47 /* musrc.cpp in Sources */,
-				8F2381A215946C2600C04D47 /* musdoc.cpp in Sources */,
-				8F2381A315946C2600C04D47 /* musobject.cpp in Sources */,
-				8F2381A415946C2600C04D47 /* muswwg.cpp in Sources */,
+				8FE5FE0E1594952400B44674 /* tinystr.cpp in Sources */,
+				8FE5FE0F1594952400B44674 /* tinyxml.cpp in Sources */,
+				8FE5FE101594952400B44674 /* tinyxmlerror.cpp in Sources */,
+				8FE5FE111594952400B44674 /* tinyxmlparser.cpp in Sources */,
+				8FE5FDDE1594943600B44674 /* musbboxdc.cpp in Sources */,
+				8FE5FDDF1594943600B44674 /* mussvgdc.cpp in Sources */,
+				8FE5FDE01594943600B44674 /* musdc.cpp in Sources */,
+				8FE5FDE21594943600B44674 /* musiopae.cpp in Sources */,
+				8FE5FDE31594943600B44674 /* musio.cpp in Sources */,
+				8FE5FDE41594943600B44674 /* musmlfdic.cpp in Sources */,
+				8FE5FDE51594943600B44674 /* musiobin.cpp in Sources */,
+				8FE5FDE61594943600B44674 /* musiomei.cpp in Sources */,
+				8FE5FDE71594943600B44674 /* musiowwg.cpp in Sources */,
+				8FE5FDE81594943600B44674 /* muslaidoutlayer.cpp in Sources */,
+				8FE5FDE91594943600B44674 /* muslaidoutlayerelement.cpp in Sources */,
+				8FE5FDEA1594943600B44674 /* muslaidoutstaff.cpp in Sources */,
+				8FE5FDEB1594943600B44674 /* muslayout.cpp in Sources */,
+				8FE5FDEC1594943600B44674 /* muspage.cpp in Sources */,
+				8FE5FDED1594943600B44674 /* mussystem.cpp in Sources */,
+				8FE5FDEE1594943600B44674 /* musbarline.cpp in Sources */,
+				8FE5FDEF1594943600B44674 /* musclef.cpp in Sources */,
+				8FE5FDF01594943600B44674 /* musdiv.cpp in Sources */,
+				8FE5FDF11594943600B44674 /* musdurationinterface.cpp in Sources */,
+				8FE5FDF21594943600B44674 /* muslayer.cpp in Sources */,
+				8FE5FDF31594943600B44674 /* musmeasure.cpp in Sources */,
+				8FE5FDF41594943600B44674 /* musmensur.cpp in Sources */,
+				8FE5FDF51594943600B44674 /* musneume.cpp in Sources */,
+				8FE5FDF61594943600B44674 /* musneumesymbol.cpp in Sources */,
+				8FE5FDF71594943600B44674 /* musnote.cpp in Sources */,
+				8FE5FDF81594943600B44674 /* muspitchinterface.cpp in Sources */,
+				8FE5FDF91594943600B44674 /* muspositioninterface.cpp in Sources */,
+				8FE5FDFA1594943600B44674 /* musrest.cpp in Sources */,
+				8FE5FDFB1594943600B44674 /* mussection.cpp in Sources */,
+				8FE5FDFC1594943600B44674 /* musstaff.cpp in Sources */,
+				8FE5FDFD1594943600B44674 /* mussymbol.cpp in Sources */,
+				8FE5FDFE1594943600B44674 /* musrc_beam.cpp in Sources */,
+				8FE5FDFF1594943600B44674 /* musrc_bezier.cpp in Sources */,
+				8FE5FE001594943600B44674 /* musrc_element.cpp in Sources */,
+				8FE5FE011594943600B44674 /* musrc_graph.cpp in Sources */,
+				8FE5FE021594943600B44674 /* musrc_neume.cpp in Sources */,
+				8FE5FE031594943600B44674 /* musrc_page.cpp in Sources */,
+				8FE5FE041594943600B44674 /* musrc.cpp in Sources */,
+				8FE5FE051594943600B44674 /* musdoc.cpp in Sources */,
+				8FE5FE061594943600B44674 /* musobject.cpp in Sources */,
+				8FE5FE071594943600B44674 /* muswwg.cpp in Sources */,
 				8F23817A1594632C00C04D47 /* headless_main.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1248,6 +1254,7 @@
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
 					"$(inherited)",
+					"wxUSE_GUI=0",
 				);
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
@@ -1269,8 +1276,9 @@
 				MACOSX_DEPLOYMENT_TARGET = 10.6;
 				ONLY_ACTIVE_ARCH = NO;
 				OTHER_CFLAGS = (
-					"-D__WXMAC__",
 					"-DHEADLESS",
+					"-D__WXBASE__",
+					"-d",
 				);
 				OTHER_LDFLAGS = (
 					"-lwx_base_carbond-$(ARUSPIX_WX_VERSION)",
@@ -1279,6 +1287,7 @@
 					"-framework",
 					carbon,
 					"-liconv",
+					"-lwx_base_carbond_net-$(ARUSPIX_WX_VERSION)",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx10.6;
@@ -1302,8 +1311,9 @@
 				MACOSX_DEPLOYMENT_TARGET = 10.6;
 				ONLY_ACTIVE_ARCH = NO;
 				OTHER_CFLAGS = (
-					"-D__WXMAC__",
 					"-DHEADLESS",
+					"-D__WXBASE__",
+					"-d",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx10.6;
@@ -1327,8 +1337,9 @@
 				MACOSX_DEPLOYMENT_TARGET = 10.6;
 				ONLY_ACTIVE_ARCH = NO;
 				OTHER_CFLAGS = (
-					"-D__WXMAC__",
 					"-DHEADLESS",
+					"-D__WXBASE__",
+					"-d",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx10.6;
@@ -1714,6 +1725,7 @@
 				8F238174159462AF00C04D47 /* ReleaseSuperimposition */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
 		};
 		A1A6E182134254410024A821 /* Build configuration list for PBXNativeTarget "ax_test" */ = {
 			isa = XCConfigurationList;
