@@ -169,7 +169,10 @@ MusObject *MusDoc::FindLogicalObject( MusFunctor *functor, uuid_t uuid )
     this->ProcessLogical( functor, params );
     
     if (!element) {
-        uuid_string_t uuidStr;
+        // RZ uuid_string_t does not exist on freebsd   
+        //but typedef       char    __darwin_uuid_string_t[37];
+        //and typedef __darwin_uuid_string_t        uuid_string_t;
+        char uuidStr[37]; // bad fix
         uuid_unparse( uuid, uuidStr ); 
         // this should be a fatal error
         wxLogError( "Element %s not found in the logical tree", uuidStr );

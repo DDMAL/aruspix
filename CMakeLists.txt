@@ -4,15 +4,17 @@ project(Aruspix)
 
 add_definitions(-D__WXBASE__ -DHEADLESS -D"wxUSE_GUI=0")
 
-include_directories(/Users/xhero/devel/ARUSPIX/wxMac-2.8.12/include 
-	/Users/xhero/devel/ARUSPIX/wxMac-2.8.12/contrib/include 
-	/Users/xhero/devel/ARUSPIX/wxMac-2.8.12/osx-static-debug/lib/wx/include/mac-ansi-debug-static-2.8 
-	/Users/xhero/devel/ARUSPIX/libmei-fork/build/Release/include)
+find_package(wxWidgets)
 
-link_directories(/Users/xhero/devel/ARUSPIX/wxMac-2.8.12/osx-static-debug/lib
-		/Users/xhero/devel/ARUSPIX/libmei-fork/build/Release/)
+FIND_PACKAGE(wxWidgets REQUIRED base)
+INCLUDE(${wxWidgets_USE_FILE})
 
-link_libraries(iconv xml2 mei -lwx_base_carbond-2.8)
+include_directories(/usr/local/include)
+
+#link_directories(/Users/xhero/devel/ARUSPIX/wxMac-2.8.12/osx-static-debug/lib
+#		/Users/xhero/devel/ARUSPIX/libmei-fork/build/Release/)
+
+link_libraries(iconv xml2 mei ${wxWidgets_LIBRARIES})
 
 include_directories(src/mus src/)
 

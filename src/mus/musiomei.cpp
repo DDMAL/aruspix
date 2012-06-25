@@ -94,7 +94,10 @@ bool MusMeiOutput::ExportFile( )
 
 std::string MusMeiOutput::GetMeiUuid( MusObject *element )
 {
-    uuid_string_t uuidStr;
+    // RZ uuid_string_t does not exist on freebsd
+    //but typedef	char	__darwin_uuid_string_t[37];
+    //and typedef __darwin_uuid_string_t	uuid_string_t;
+    char uuidStr[37];
     uuid_unparse( *element->GetUuid(), uuidStr );
     string out;    
     // xml IDs can't start with a number, so we prepend "m-" to every ID.
