@@ -594,6 +594,11 @@ void MusBBoxDC::DrawMusicText(const wxString& text, int x, int y)
         case LEIPZIG_CLEF_F + LEIPZIG_OFFSET_MENSURAL: glyph = LEIPZIG_BBOX_CLEF_F_MENSURAL; break;
         case LEIPZIG_CLEF_C + LEIPZIG_OFFSET_MENSURAL: glyph = LEIPZIG_BBOX_CLEF_C_MENSURAL; break;
         case LEIPZIG_CLEF_8va + LEIPZIG_OFFSET_MENSURAL: glyph = LEIPZIG_BBOX_CLEF_G_MENSURAL; break; // ??
+            /* meter */
+        case LEIPZIG_METER_SYMB_2_CUT: glyph = LEIPZIG_BBOX_METER_SYMB_2_CUT; break;
+        case LEIPZIG_METER_SYMB_3_CUT: glyph = LEIPZIG_BBOX_METER_SYMB_3_CUT; break;
+        case LEIPZIG_METER_SYMB_CUT: glyph = LEIPZIG_BBOX_METER_SYMB_CUT; break;
+        case LEIPZIG_METER_SYMB_COMMON: glyph = LEIPZIG_BBOX_METER_SYMB_COMMON; break;        
             /* alterations */
         case LEIPZIG_ACCID_SHARP: glyph = LEIPZIG_BBOX_ALT_SHARP; break;
         case LEIPZIG_ACCID_NATURAL: glyph = LEIPZIG_BBOX_ALT_NATURAL; break;
