@@ -495,6 +495,11 @@ void MusSvgDC::DrawMusicText(const wxString& text, int x, int y)
         case LEIPZIG_CLEF_F + LEIPZIG_OFFSET_MENSURAL: glyph = "clef_F_mensural"; break;
         case LEIPZIG_CLEF_C + LEIPZIG_OFFSET_MENSURAL: glyph = "clef_C_mensural"; break;
         case LEIPZIG_CLEF_8va + LEIPZIG_OFFSET_MENSURAL: glyph = "clef_G_chiavette"; break;
+        /* meter */
+        case LEIPZIG_METER_SYMB_COMMON: glyph = "meter_symb_common"; break;
+        case LEIPZIG_METER_SYMB_CUT: glyph = "meter_symb_cut"; break;
+        case LEIPZIG_METER_SYMB_2_CUT: glyph = "meter_symb_2_cut"; break;
+        case LEIPZIG_METER_SYMB_3_CUT: glyph = "meter_symb_3_cut"; break;
         /* alterations */
         case LEIPZIG_ACCID_SHARP: glyph = "alt_sharp"; break;
         case LEIPZIG_ACCID_NATURAL: glyph = "alt_natural"; break;
@@ -534,7 +539,7 @@ void MusSvgDC::DrawMusicText(const wxString& text, int x, int y)
         /* ornaments */
         case 35: glyph = "orn_mordent"; break;
         /* todo */
-        default: glyph = "unknown";
+        default: glyph = "clef_G_chiavette";
     }
     
     if (m_leipzig_glyphs.Index(glyph) == wxNOT_FOUND) {

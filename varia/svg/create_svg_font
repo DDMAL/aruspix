@@ -1,0 +1,21 @@
+1) check that java works
+
+2) get xalan: http://mirror.switch.ch/mirror/apache/dist/xml/xalan-j/xalan-j_2_7_1-bin.zip
+   (http://xml.apache.org/xalan-j/downloads.html)
+
+3) Convert font to svg (using included batik-1.7.zip)
+   cd batik-1.7
+   java -jar batik-ttf2svg.jar ../Leipzig-4.7.ttf -l 0 -h 512 -o ../Leipzig-4.7.svg
+   (update font names as needed)
+
+4) Split font
+   Copy Leipzig-4.7.svg to xalan dir
+   Copy split.xsl to xalan dir
+   java -classpath xalan.jar:serializer.jar:xml-apis.jar:xercesImpl.jar org.apache.xalan.xslt.Process -IN Leipzig-4.7.svg  -XSL split.xsl -OUT split.foo
+   will create dir ../../data/svg with split files, copy to data/svg
+
+5) Create C dimensions:
+   copy newly generated boundingbox.svg from xalan dir into varia/svg
+   open boundingbox.svg with a browser (works with safari), will open popup window so unblock them. It runs showbboxdims.js
+   copy & paste where needed:
+	musbboxdc.c
