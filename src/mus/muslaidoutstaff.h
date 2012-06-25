@@ -121,9 +121,9 @@ public:
 	/** ???? */
 	unsigned char accessoire;
 	/** position y relative de la portee (non-enregistre dans les fichiers) */
-    int m_y_abs;
+    int m_y_drawing;
 	/** postion x relative de la portee (non-enregistre dans les fichiers) */
-    int m_x_abs;
+    //int m_x_abs;
 
 private:
 };

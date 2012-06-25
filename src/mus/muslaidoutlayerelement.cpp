@@ -33,7 +33,7 @@ MusLaidOutLayerElement::MusLaidOutLayerElement( MusLayerElement *element ):
     m_layerElement = element;
     m_layer = NULL;
     m_x_abs = 0;
-    m_y_abs = 0;
+    m_y_drawing = 0;
 }
 
 MusLaidOutLayerElement::~MusLaidOutLayerElement()

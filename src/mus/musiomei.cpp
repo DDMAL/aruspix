@@ -409,8 +409,7 @@ bool MusMeiOutput::WriteLaidOutStaff( MusLaidOutStaff *laidOutStaff )
     m_laidOutStaff = new LaidOutStaff();
     m_laidOutStaff->setId( GetMeiUuid( laidOutStaff ));
     // x - y positions (to be corrected)
-    m_laidOutStaff->m_Coordinated.setUlx( wxString::Format( "%d", laidOutStaff->m_x_abs ).c_str() );
-    m_laidOutStaff->m_Coordinated.setUly( wxString::Format( "%d", laidOutStaff->m_y_abs ).c_str() );
+    m_laidOutStaff->m_Coordinated.setUly( wxString::Format( "%d", laidOutStaff->m_y_drawing ).c_str() );
     m_system->addChild( m_laidOutStaff );
     return true;
 }
@@ -431,7 +430,7 @@ bool MusMeiOutput::WriteLaidOutLayerElement( MusLaidOutLayerElement *laidOutLaye
     element->setId( GetMeiUuid( laidOutLayerElement ));
     // x - y position (to be corrected)
     element->m_Coordinated.setUlx( wxString::Format( "%d", laidOutLayerElement->m_x_abs ).c_str() );
-    //element->m_Coordinated.setUly( wxString::Format( "%d", laidOutLayerElement->m_y_abs ).c_str() );
+    //element->m_Coordinated.setUly( wxString::Format( "%d", laidOutLayerElement->m_y_drawing ).c_str() );
     // pointer to the logical element
     element->m_Pointing.setTarget(GetMeiUuid( laidOutLayerElement->m_layerElement ) );
     m_laidOutLayer->addChild( element );

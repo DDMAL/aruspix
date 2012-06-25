@@ -188,25 +188,25 @@ MusLaidOutStaff *MusSystem::GetAtPos( int y )
 	if ( !staff )
 		return NULL;
 	
-	int dif =  abs( staff->m_y_abs - y );
+	int dif =  abs( staff->m_y_drawing - y );
 	while ( this->GetNext(staff) )
 	{
-		if ( (int)staff->m_y_abs < y )
+		if ( (int)staff->m_y_drawing < y )
 		{
 			// one too much
 			if ( this->GetPrevious( staff ) ){
 				staff = this->GetPrevious( staff );
-				if ( dif < abs( staff->m_y_abs - y ) )
+				if ( dif < abs( staff->m_y_drawing - y ) )
 					staff = this->GetNext( staff );
 			}
 				
 			return staff;
 		}
 		staff = this->GetNext( staff );
-		dif = abs( staff->m_y_abs - y );
+		dif = abs( staff->m_y_drawing - y );
 	}
 
-	if ( ( (int)staff->m_y_abs < y )  && this->GetPrevious( staff ) )
+	if ( ( (int)staff->m_y_drawing < y )  && this->GetPrevious( staff ) )
 		staff = this->GetPrevious( staff );
 
 	return staff;
@@ -261,7 +261,7 @@ int MusSystem::UpdateStaffPositions( int last_staff )
 		//orgx = staff->indent ? staff->indent*10 : 0;
         
 		// calcul du point d'ancrage des curseurs au-dessus de la ligne superieure
-		staff->m_y_abs = yy + m_layout->m_staffSize[ staff->staffSize ];
+		staff->m_y_drawing = yy + m_layout->m_staffSize[ staff->staffSize ];
         
         // we are handling the first staff - update the position of the system as well
         if ( i == 0 ) { 

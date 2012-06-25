@@ -52,8 +52,7 @@ MusLaidOutStaff::MusLaidOutStaff( const MusLaidOutStaff& staff )
 	portNbLine = staff.portNbLine;
 	accol = staff.accol;
 	accessoire = staff.accessoire;
-	m_y_abs = staff.m_y_abs;
-	m_x_abs = staff.m_x_abs;
+	m_y_drawing = staff.m_y_drawing;
 
     int i;
 	for (i = 0; i < staff.GetLayerCount(); i++)
@@ -89,8 +88,7 @@ void MusLaidOutStaff::Clear()
 	portNbLine = 5;
 	accol = 0;
 	accessoire = 0;
-	m_y_abs = 0;
-	m_x_abs = 0;
+	m_y_drawing = 0;
     
     //
     //beamListPremier = NULL;
@@ -149,8 +147,7 @@ void MusLaidOutStaff::CopyAttributes( MusLaidOutStaff *nstaff )
 	nstaff->portNbLine = portNbLine;
 	nstaff->accol = accol;
 	nstaff->accessoire = accessoire;
-	nstaff->m_y_abs = m_y_abs;
-	nstaff->m_x_abs = m_x_abs;
+	nstaff->m_y_drawing = m_y_drawing;
 }
 
 int MusLaidOutStaff::GetStaffNo() const

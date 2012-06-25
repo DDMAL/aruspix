@@ -465,7 +465,7 @@ int MusLaidOutLayer::armatDisp ( MusDC *dc )
 		if (rupture==i)
 		{	this->getOctDec (fact,_oct,rupture, &oct); rupture = i+1;	}
 
-		//if (!modMetafile || in (xrl, drawRect.left, drawRect.right) && in (this->m_y_abs, drawRect.top, drawRect.bottom+m_staffSize[staffSize]))
+		//if (!modMetafile || in (xrl, drawRect.left, drawRect.right) && in (this->m_y_drawing, drawRect.top, drawRect.bottom+m_staffSize[staffSize]))
 			((MusSymbol1*)element)->dess_symb ( dc,xrl,this->CalculatePitchPosY(c,dec, oct),ALTER,this->armTyp , this);
 	}
 	return xrl;

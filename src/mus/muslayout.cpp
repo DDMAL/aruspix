@@ -367,7 +367,6 @@ void MusLayout::Process(MusFunctor *functor, wxArrayPtrVoid params )
 	{
         page = &m_pages[i];
         functor->Call( page, params );
-        functor->Call( page, params );
         if (pageFunctor) { // is is a MusSystemFunctor, call it
             pageFunctor->Call( page, params );
         }

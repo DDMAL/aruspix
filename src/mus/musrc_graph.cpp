@@ -135,10 +135,10 @@ int MusRC::hGrosseligne ( MusDC *dc, int x1, int y1, int x2, int y2, int decal)
 
 
 int MusRC::DrawDot ( MusDC *dc, int x, int b, int decal, MusLaidOutStaff *staff )
-{	int y = b + staff->m_y_abs;
+{	int y = b + staff->m_y_drawing;
 
-	if (decal > 600 || in (y, (int)staff->m_y_abs - m_layout->m_staffSize[staff->staffSize], 
-		(int)staff->m_y_abs - m_layout->m_staffSize[staff->staffSize]*2))
+	if (decal > 600 || in (y, (int)staff->m_y_drawing - m_layout->m_staffSize[staff->staffSize], 
+		(int)staff->m_y_drawing - m_layout->m_staffSize[staff->staffSize]*2))
 	{	decal += m_layout->m_halfInterl[staff->staffSize];
 		if (decal > 600)
 			decal -= 1000;

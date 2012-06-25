@@ -30,9 +30,9 @@ void MusRC::DrawNeume( MusDC *dc, MusLaidOutLayerElement *element, MusLaidOutLay
     
     int oct = neume->m_oct - 4; //for some reason, notes are automatically drawn 4 octaves too high?
     
-    element->m_y_abs = CalculateNeumePosY(staff, neume->m_pname, layer->GetClefOffset( element ), oct);
+    element->m_y_drawing = CalculateNeumePosY(staff, neume->m_pname, layer->GetClefOffset( element ), oct);
 	for (vector<MusNeumeElement>::iterator i = neume->m_pitches.begin(); i != neume->m_pitches.end(); i++) {
-		i->m_y_abs = CalculateNeumePosY(staff, neume->m_pname + i->getPitchDifference(), layer->GetClefOffset(element), oct);
+		i->m_y_drawing = CalculateNeumePosY(staff, neume->m_pname + i->getPitchDifference(), layer->GetClefOffset(element), oct);
 	}
     switch (neume->getType()) {
         case (NEUME_TYPE_PUNCTUM): DrawPunctum(dc, element, layer, staff); break;
@@ -82,10 +82,10 @@ void MusRC::DrawAncus( MusDC *dc, MusLaidOutLayerElement *element, MusLaidOutLay
     
     int xn = element->m_x_abs;
     //int xl = element->m_x_abs;
-    int bby = staff->m_y_abs - m_layout->m_staffSize[staffSize];
-    int ynn = element->m_y_abs + staff->m_y_abs;
-    //printf("closed ynn value: %d\nclosed m_y_abs: %d\nclosed m_y_abs: %d\n", 
-    //     ynn, element->m_y_abs, staff->m_y_abs );
+    int bby = staff->m_y_drawing - m_layout->m_staffSize[staffSize];
+    int ynn = element->m_y_drawing + staff->m_y_drawing;
+    //printf("closed ynn value: %d\nclosed m_y_drawing: %d\nclosed m_y_drawing: %d\n", 
+    //     ynn, element->m_y_drawing, staff->m_y_drawing );
     
     xn += neume->m_hOffset;
     
@@ -115,10 +115,10 @@ void MusRC::DrawCustos( MusDC *dc, MusLaidOutLayerElement *element, MusLaidOutLa
     
     int xn = element->m_x_abs;
     //int xl = element->m_x_abs;
-    int bby = staff->m_y_abs - m_layout->m_staffSize[staffSize];
-    int ynn = element->m_y_abs + staff->m_y_abs;
-    //printf("closed ynn value: %d\nclosed m_y_abs: %d\nclosed m_y_abs: %d\n", 
-    //     ynn, element->m_y_abs, staff->m_y_abs );
+    int bby = staff->m_y_drawing - m_layout->m_staffSize[staffSize];
+    int ynn = element->m_y_drawing + staff->m_y_drawing;
+    //printf("closed ynn value: %d\nclosed m_y_drawing: %d\nclosed m_y_drawing: %d\n", 
+    //     ynn, element->m_y_drawing, staff->m_y_drawing );
     
     xn += neume->m_hOffset;
     
@@ -141,10 +141,10 @@ void MusRC::DrawEpiphonus( MusDC *dc, MusLaidOutLayerElement *element, MusLaidOu
     
     int xn = element->m_x_abs;
     //int xl = element->m_x_abs;
-    int bby = staff->m_y_abs - m_layout->m_staffSize[staffSize];
-    int ynn = element->m_y_abs + staff->m_y_abs;
-    //printf("closed ynn value: %d\nclosed m_y_abs: %d\nclosed m_y_abs: %d\n", 
-    //     ynn, element->m_y_abs, staff->m_y_abs );
+    int bby = staff->m_y_drawing - m_layout->m_staffSize[staffSize];
+    int ynn = element->m_y_drawing + staff->m_y_drawing;
+    //printf("closed ynn value: %d\nclosed m_y_drawing: %d\nclosed m_y_drawing: %d\n", 
+    //     ynn, element->m_y_drawing, staff->m_y_drawing );
     
     xn += neume->m_hOffset;
     
@@ -168,10 +168,10 @@ void MusRC::DrawCephalicus( MusDC *dc, MusLaidOutLayerElement *element, MusLaidO
     
     int xn = element->m_x_abs;
     //int xl = element->m_x_abs;
-    int bby = staff->m_y_abs - m_layout->m_staffSize[staffSize];
-    int ynn = element->m_y_abs + staff->m_y_abs;
-    //printf("closed ynn value: %d\nclosed m_y_abs: %d\nclosed m_y_abs: %d\n", 
-    //     ynn, element->m_y_abs, staff->m_y_abs );
+    int bby = staff->m_y_drawing - m_layout->m_staffSize[staffSize];
+    int ynn = element->m_y_drawing + staff->m_y_drawing;
+    //printf("closed ynn value: %d\nclosed m_y_drawing: %d\nclosed m_y_drawing: %d\n", 
+    //     ynn, element->m_y_drawing, staff->m_y_drawing );
     
     xn += neume->m_hOffset;
     
@@ -197,10 +197,10 @@ void MusRC::DrawPunctum( MusDC *dc, MusLaidOutLayerElement *element, MusLaidOutL
     
     int xn = element->m_x_abs;
     //int xl = element->m_x_abs;
-    int bby = staff->m_y_abs - m_layout->m_staffSize[staffSize];
-    int ynn = element->m_y_abs + staff->m_y_abs;
-    //printf("closed ynn value: %d\nclosed m_y_abs: %d\nclosed m_y_abs: %d\n", 
-    //     ynn, element->m_y_abs, staff->m_y_abs );
+    int bby = staff->m_y_drawing - m_layout->m_staffSize[staffSize];
+    int ynn = element->m_y_drawing + staff->m_y_drawing;
+    //printf("closed ynn value: %d\nclosed m_y_drawing: %d\nclosed m_y_drawing: %d\n", 
+    //     ynn, element->m_y_drawing, staff->m_y_drawing );
     
     xn += neume->m_hOffset;
     
@@ -220,10 +220,10 @@ void MusRC::DrawPunctumInclinatum( MusDC *dc, MusLaidOutLayerElement *element, M
     
     int xn = element->m_x_abs;
     //int xl = element->m_x_abs;
-    int bby = staff->m_y_abs - m_layout->m_staffSize[staffSize];
-    int ynn = element->m_y_abs + staff->m_y_abs;
-    //printf("closed ynn value: %d\nclosed m_y_abs: %d\nclosed m_y_abs: %d\n", 
-    //     ynn, element->m_y_abs, staff->m_y_abs );
+    int bby = staff->m_y_drawing - m_layout->m_staffSize[staffSize];
+    int ynn = element->m_y_drawing + staff->m_y_drawing;
+    //printf("closed ynn value: %d\nclosed m_y_drawing: %d\nclosed m_y_drawing: %d\n", 
+    //     ynn, element->m_y_drawing, staff->m_y_drawing );
     
     xn += neume->m_hOffset;
     
@@ -243,10 +243,10 @@ void MusRC::DrawVirga( MusDC *dc, MusLaidOutLayerElement *element, MusLaidOutLay
     
     int xn = element->m_x_abs;
     //int xl = element->m_x_abs;
-    int bby = staff->m_y_abs - m_layout->m_staffSize[staffSize];
-    int ynn = element->m_y_abs + staff->m_y_abs;
-    //printf("closed ynn value: %d\nclosed m_y_abs: %d\nclosed m_y_abs: %d\n", 
-    //     ynn, element->m_y_abs, staff->m_y_abs );
+    int bby = staff->m_y_drawing - m_layout->m_staffSize[staffSize];
+    int ynn = element->m_y_drawing + staff->m_y_drawing;
+    //printf("closed ynn value: %d\nclosed m_y_drawing: %d\nclosed m_y_drawing: %d\n", 
+    //     ynn, element->m_y_drawing, staff->m_y_drawing );
     
     xn += neume->m_hOffset;
     
@@ -267,10 +267,10 @@ void MusRC::DrawSalicus( MusDC *dc, MusLaidOutLayerElement *element, MusLaidOutL
     
     int xn = element->m_x_abs;
     //int xl = element->m_x_abs;
-    int bby = staff->m_y_abs - m_layout->m_staffSize[staffSize];
-    int ynn = element->m_y_abs + staff->m_y_abs;
-    //printf("closed ynn value: %d\nclosed m_y_abs: %d\nclosed m_y_abs: %d\n", 
-    //     ynn, element->m_y_abs, staff->m_y_abs );
+    int bby = staff->m_y_drawing - m_layout->m_staffSize[staffSize];
+    int ynn = element->m_y_drawing + staff->m_y_drawing;
+    //printf("closed ynn value: %d\nclosed m_y_drawing: %d\nclosed m_y_drawing: %d\n", 
+    //     ynn, element->m_y_drawing, staff->m_y_drawing );
     
     xn += neume->m_hOffset;
     
@@ -301,10 +301,10 @@ void MusRC::DrawPodatus( MusDC *dc, MusLaidOutLayerElement *element, MusLaidOutL
     
     int xn = element->m_x_abs;
     //int xl = element->m_x_abs;
-    int bby = staff->m_y_abs - m_layout->m_staffSize[staffSize];
-    int ynn = element->m_y_abs + staff->m_y_abs;
-    //printf("closed ynn value: %d\nclosed m_y_abs: %d\nclosed m_y_abs: %d\n", 
-    //     ynn, element->m_y_abs, staff->m_y_abs );
+    int bby = staff->m_y_drawing - m_layout->m_staffSize[staffSize];
+    int ynn = element->m_y_drawing + staff->m_y_drawing;
+    //printf("closed ynn value: %d\nclosed m_y_drawing: %d\nclosed m_y_drawing: %d\n", 
+    //     ynn, element->m_y_drawing, staff->m_y_drawing );
     
     xn += neume->m_hOffset;
     
@@ -329,10 +329,10 @@ void MusRC::DrawClivis( MusDC *dc, MusLaidOutLayerElement *element, MusLaidOutLa
     
     int xn = element->m_x_abs;
     //int xl = element->m_x_abs;
-    int bby = staff->m_y_abs - m_layout->m_staffSize[staffSize];
-    int ynn = element->m_y_abs + staff->m_y_abs;
-    //printf("closed ynn value: %d\nclosed m_y_abs: %d\nclosed m_y_abs: %d\n", 
-    //     ynn, element->m_y_abs, staff->m_y_abs );
+    int bby = staff->m_y_drawing - m_layout->m_staffSize[staffSize];
+    int ynn = element->m_y_drawing + staff->m_y_drawing;
+    //printf("closed ynn value: %d\nclosed m_y_drawing: %d\nclosed m_y_drawing: %d\n", 
+    //     ynn, element->m_y_drawing, staff->m_y_drawing );
     
     xn += neume->m_hOffset;
     
@@ -364,10 +364,10 @@ void MusRC::DrawPorrectus( MusDC *dc, MusLaidOutLayerElement *element, MusLaidOu
     
     int xn = element->m_x_abs;
     //int xl = element->m_x_abs;
-    int bby = staff->m_y_abs - m_layout->m_staffSize[staffSize];
-    int ynn = element->m_y_abs + staff->m_y_abs;
-    //printf("closed ynn value: %d\nclosed m_y_abs: %d\nclosed m_y_abs: %d\n", 
-    //     ynn, element->m_y_abs, staff->m_y_abs );
+    int bby = staff->m_y_drawing - m_layout->m_staffSize[staffSize];
+    int ynn = element->m_y_drawing + staff->m_y_drawing;
+    //printf("closed ynn value: %d\nclosed m_y_drawing: %d\nclosed m_y_drawing: %d\n", 
+    //     ynn, element->m_y_drawing, staff->m_y_drawing );
     
     xn += neume->m_hOffset;
     
@@ -414,10 +414,10 @@ void MusRC::DrawPorrectusFlexus( MusDC *dc, MusLaidOutLayerElement *element, Mus
     
     int xn = element->m_x_abs;
     //int xl = element->m_x_abs;
-    int bby = staff->m_y_abs - m_layout->m_staffSize[staffSize];
-    int ynn = element->m_y_abs + staff->m_y_abs;
-    //printf("closed ynn value: %d\nclosed m_y_abs: %d\nclosed m_y_abs: %d\n", 
-    //     ynn, element->m_y_abs, staff->m_y_abs );
+    int bby = staff->m_y_drawing - m_layout->m_staffSize[staffSize];
+    int ynn = element->m_y_drawing + staff->m_y_drawing;
+    //printf("closed ynn value: %d\nclosed m_y_drawing: %d\nclosed m_y_drawing: %d\n", 
+    //     ynn, element->m_y_drawing, staff->m_y_drawing );
     
     xn += neume->m_hOffset;
     
@@ -466,10 +466,10 @@ void MusRC::DrawScandicus( MusDC *dc, MusLaidOutLayerElement *element, MusLaidOu
     
     int xn = element->m_x_abs;
     //int xl = element->m_x_abs;
-    int bby = staff->m_y_abs - m_layout->m_staffSize[staffSize];
-    int ynn = element->m_y_abs + staff->m_y_abs;
-    //printf("closed ynn value: %d\nclosed m_y_abs: %d\nclosed m_y_abs: %d\n", 
-    //     ynn, element->m_y_abs, staff->m_y_abs );
+    int bby = staff->m_y_drawing - m_layout->m_staffSize[staffSize];
+    int ynn = element->m_y_drawing + staff->m_y_drawing;
+    //printf("closed ynn value: %d\nclosed m_y_drawing: %d\nclosed m_y_drawing: %d\n", 
+    //     ynn, element->m_y_drawing, staff->m_y_drawing );
     
     xn += neume->m_hOffset;
     
@@ -499,10 +499,10 @@ void MusRC::DrawScandicusFlexus( MusDC *dc, MusLaidOutLayerElement *element, Mus
     
     int xn = element->m_x_abs;
     //int xl = element->m_x_abs;
-    int bby = staff->m_y_abs - m_layout->m_staffSize[staffSize];
-    int ynn = element->m_y_abs + staff->m_y_abs;
-    //printf("closed ynn value: %d\nclosed m_y_abs: %d\nclosed m_y_abs: %d\n", 
-    //     ynn, element->m_y_abs, staff->m_y_abs );
+    int bby = staff->m_y_drawing - m_layout->m_staffSize[staffSize];
+    int ynn = element->m_y_drawing + staff->m_y_drawing;
+    //printf("closed ynn value: %d\nclosed m_y_drawing: %d\nclosed m_y_drawing: %d\n", 
+    //     ynn, element->m_y_drawing, staff->m_y_drawing );
     
     xn += neume->m_hOffset;
     
@@ -539,10 +539,10 @@ void MusRC::DrawTorculus( MusDC *dc, MusLaidOutLayerElement *element, MusLaidOut
     
     int xn = element->m_x_abs;
     //int xl = element->m_x_abs;
-    int bby = staff->m_y_abs - m_layout->m_staffSize[staffSize];
-    int ynn = element->m_y_abs + staff->m_y_abs;
-    //printf("closed ynn value: %d\nclosed m_y_abs: %d\nclosed m_y_abs: %d\n", 
-    //     ynn, element->m_y_abs, staff->m_y_abs );
+    int bby = staff->m_y_drawing - m_layout->m_staffSize[staffSize];
+    int ynn = element->m_y_drawing + staff->m_y_drawing;
+    //printf("closed ynn value: %d\nclosed m_y_drawing: %d\nclosed m_y_drawing: %d\n", 
+    //     ynn, element->m_y_drawing, staff->m_y_drawing );
     
     xn += neume->m_hOffset;
     
@@ -574,10 +574,10 @@ void MusRC::DrawTorculusLiquescent( MusDC *dc, MusLaidOutLayerElement *element, 
     
     int xn = element->m_x_abs;
     //int xl = element->m_x_abs;
-    int bby = staff->m_y_abs - m_layout->m_staffSize[staffSize];
-    int ynn = element->m_y_abs + staff->m_y_abs;
-    //printf("closed ynn value: %d\nclosed m_y_abs: %d\nclosed m_y_abs: %d\n", 
-    //     ynn, element->m_y_abs, staff->m_y_abs );
+    int bby = staff->m_y_drawing - m_layout->m_staffSize[staffSize];
+    int ynn = element->m_y_drawing + staff->m_y_drawing;
+    //printf("closed ynn value: %d\nclosed m_y_drawing: %d\nclosed m_y_drawing: %d\n", 
+    //     ynn, element->m_y_drawing, staff->m_y_drawing );
     
     xn += neume->m_hOffset;
     
@@ -606,10 +606,10 @@ void MusRC::DrawTorculusResupinus( MusDC *dc, MusLaidOutLayerElement *element, M
     
     int xn = element->m_x_abs;
     //int xl = element->m_x_abs;
-    int bby = staff->m_y_abs - m_layout->m_staffSize[staffSize];
-    int ynn = element->m_y_abs + staff->m_y_abs;
-    //printf("closed ynn value: %d\nclosed m_y_abs: %d\nclosed m_y_abs: %d\n", 
-    //     ynn, element->m_y_abs, staff->m_y_abs );
+    int bby = staff->m_y_drawing - m_layout->m_staffSize[staffSize];
+    int ynn = element->m_y_drawing + staff->m_y_drawing;
+    //printf("closed ynn value: %d\nclosed m_y_drawing: %d\nclosed m_y_drawing: %d\n", 
+    //     ynn, element->m_y_drawing, staff->m_y_drawing );
     
     xn += neume->m_hOffset;
     
@@ -662,10 +662,10 @@ void MusRC::DrawCompound( MusDC *dc, MusLaidOutLayerElement *element, MusLaidOut
     
     int xn = element->m_x_abs;
     //int xl = element->m_x_abs;
-    int bby = staff->m_y_abs - m_layout->m_staffSize[staffSize];
-    int ynn = element->m_y_abs + staff->m_y_abs;
-    //printf("closed ynn value: %d\nclosed m_y_abs: %d\nclosed m_y_abs: %d\n", 
-    //     ynn, element->m_y_abs, staff->m_y_abs );
+    int bby = staff->m_y_drawing - m_layout->m_staffSize[staffSize];
+    int ynn = element->m_y_drawing + staff->m_y_drawing;
+    //printf("closed ynn value: %d\nclosed m_y_drawing: %d\nclosed m_y_drawing: %d\n", 
+    //     ynn, element->m_y_drawing, staff->m_y_drawing );
     
     xn += neume->m_hOffset;
     
@@ -693,8 +693,8 @@ void MusRC::DrawNeumeDots(MusDC *dc, MusLaidOutLayerElement *element, MusLaidOut
     
 	for (vector<MusNeumeElement>::iterator i = neume->m_pitches.begin(); i != neume->m_pitches.end(); i++) {
 		if (i->getOrnament() == DOT) {
-			bool onspace = (i->m_y_abs/(m_layout->m_halfInterl[staff->staffSize]))%2;
-			int y = staff->m_y_abs + i->m_y_abs + m_layout->m_interl[staff->staffSize];
+			bool onspace = (i->m_y_drawing/(m_layout->m_halfInterl[staff->staffSize]))%2;
+			int y = staff->m_y_drawing + i->m_y_drawing + m_layout->m_interl[staff->staffSize];
 			y += (!onspace) ? (m_layout->m_halfInterl[staff->staffSize]) : 0;
 			bool noteabove = false;
 			for (vector<MusNeumeElement>::iterator it = neume->m_pitches.begin(); it != neume->m_pitches.end(); it++) {
@@ -776,19 +776,19 @@ void MusRC::DrawNeumeSymbol( MusDC *dc, MusLaidOutLayerElement *element, MusLaid
 	int oct = symbol->m_oct - 4;
 	
 	if ((symbol->getType() == NEUME_SYMB_FLAT) || (symbol->getType() == NEUME_SYMB_NATURAL)) {
-		element->m_y_abs = CalculateNeumePosY(staff, symbol->m_pname, layer->GetClefOffset(element), oct) + m_layout->m_interl[staff->staffSize];
+		element->m_y_drawing = CalculateNeumePosY(staff, symbol->m_pname, layer->GetClefOffset(element), oct) + m_layout->m_interl[staff->staffSize];
 	}
 	else if ((symbol->getType() == NEUME_SYMB_COMMA) || (symbol->getType() == NEUME_SYMB_DIVISION_FINAL) || (symbol->getType() == NEUME_SYMB_DIVISION_MAJOR)
 			 || (symbol->getType() == NEUME_SYMB_DIVISION_MINOR) || (symbol->getType() == NEUME_SYMB_DIVISION_SMALL))
 	{
-		element->m_y_abs = -m_layout->m_staffSize[staff->staffSize] - m_layout->m_interl[staff->staffSize]*2;
+		element->m_y_drawing = -m_layout->m_staffSize[staff->staffSize] - m_layout->m_interl[staff->staffSize]*2;
 	}
 	switch (symbol->getType())
 	{
 		case NEUME_SYMB_CLEF_C:
 		case NEUME_SYMB_CLEF_F:
 		symbol->calcoffs (&x,(int)symbol->getValue());
-		element->m_y_abs = x;
+		element->m_y_drawing = x;
 		DrawNeumeClef( dc, element, layer, staff); 
 		break;
 		case NEUME_SYMB_COMMA: DrawComma(dc, element, staff, symbol->m_cueSize); break;
@@ -813,7 +813,7 @@ void MusRC::DrawNeumeClef( MusDC *dc, MusLaidOutLayerElement *element, MusLaidOu
     MusNeumeSymbol *clef = dynamic_cast<MusNeumeSymbol*>(element->m_layerElement);   
 	
 	int x = element->m_x_abs;
-	int y = staff->m_y_abs - m_layout->m_staffSize[staff->staffSize] - element->m_y_abs + m_layout->m_halfInterl[staff->staffSize]; //with a fudge factor?
+	int y = staff->m_y_drawing - m_layout->m_staffSize[staff->staffSize] - element->m_y_drawing + m_layout->m_halfInterl[staff->staffSize]; //with a fudge factor?
 	wxString shape = nF_CLEF;
 	
 	switch (clef->getValue())
@@ -835,48 +835,48 @@ void MusRC::DrawNeumeClef( MusDC *dc, MusLaidOutLayerElement *element, MusLaidOu
 void MusRC::DrawComma(MusDC *dc, MusLaidOutLayerElement *element, MusLaidOutStaff *staff, bool cueSize )
 {
 	int x = element->m_x_abs;
-	int y = staff->m_y_abs + element->m_y_abs;
+	int y = staff->m_y_drawing + element->m_y_drawing;
 	festa_string(dc, x, y, nCOMMA, staff, cueSize);
 }
 
 void MusRC::DrawFlat(MusDC *dc, MusLaidOutLayerElement *element, MusLaidOutStaff *staff, bool cueSize )
 {
 	int x = element->m_x_abs;
-	int y = staff->m_y_abs + element->m_y_abs;
+	int y = staff->m_y_drawing + element->m_y_drawing;
 	festa_string(dc, x, y, nB_FLAT, staff, cueSize);
 }
 
 void MusRC::DrawNatural(MusDC *dc, MusLaidOutLayerElement *element, MusLaidOutStaff *staff, bool cueSize )
 {
 	int x = element->m_x_abs;
-	int y = staff->m_y_abs + element->m_y_abs - m_layout->m_halfInterl[staff->staffSize]/2;
+	int y = staff->m_y_drawing + element->m_y_drawing - m_layout->m_halfInterl[staff->staffSize]/2;
 	festa_string(dc, x, y, nNATURAL, staff, cueSize);
 }
 
 void MusRC::DrawDivMinor(MusDC *dc, MusLaidOutLayerElement *element, MusLaidOutStaff *staff, bool cueSize )
 {
 	int x = element->m_x_abs;
-	int y = staff->m_y_abs + element->m_y_abs + m_layout->m_halfInterl[staff->staffSize] - 3;
+	int y = staff->m_y_drawing + element->m_y_drawing + m_layout->m_halfInterl[staff->staffSize] - 3;
 	festa_string(dc, x, y, nDIV_MINOR, staff, cueSize);
 }
 
 void MusRC::DrawDivMajor(MusDC *dc, MusLaidOutLayerElement *element, MusLaidOutStaff *staff, bool cueSize)
 {
 	int x = element->m_x_abs;
-	int y = staff->m_y_abs + element->m_y_abs + 6;
+	int y = staff->m_y_drawing + element->m_y_drawing + 6;
 	festa_string(dc, x, y, nDIV_MAJOR, staff, cueSize);
 }
 
 void MusRC::DrawDivFinal(MusDC *dc, MusLaidOutLayerElement *element, MusLaidOutStaff *staff, bool cueSize )
 {
 	int x = element->m_x_abs;
-	int y = staff->m_y_abs + element->m_y_abs + m_layout->m_halfInterl[staff->staffSize] - 2;
+	int y = staff->m_y_drawing + element->m_y_drawing + m_layout->m_halfInterl[staff->staffSize] - 2;
 	festa_string(dc, x, y, nDIV_FINAL, staff, cueSize);
 }
 
 void MusRC::DrawDivSmall(MusDC *dc, MusLaidOutLayerElement *element, MusLaidOutStaff *staff, bool cueSize )
 {
 	int x = element->m_x_abs;
-	int y = staff->m_y_abs + element->m_y_abs;
+	int y = staff->m_y_drawing + element->m_y_drawing;
 	festa_string(dc, x, y, nDIV_SMALL, staff, cueSize);
 }

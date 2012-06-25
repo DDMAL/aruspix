@@ -623,7 +623,7 @@ void MusWindow::UpdateScroll()
 	int x = 0;
 	if ( m_currentElement )
 		x = ToRendererX( m_currentElement->m_x_abs );
-	int y = ToRendererY(  m_currentStaff->m_y_abs );
+	int y = ToRendererY(  m_currentStaff->m_y_drawing );
 	// units
 	int xu, yu;
 	this->GetScrollPixelsPerUnit( &xu, &yu );
@@ -871,19 +871,19 @@ void MusWindow::OnMouseLeftDown(wxMouseEvent &event)
         /* ax2
 		// Checking if there is a Lyric element closer to click location then default note
 		MusLaidOutStaff *lyricStaff;
-		if ( noteStaff->m_y_abs <= (uint)(y + 80)){
+		if ( noteStaff->m_y_drawing <= (uint)(y + 80)){
 			if ((lyricStaff = m_page->GetPrevious( noteStaff )) == NULL) lyricStaff = noteStaff;
 		} else {
 			if ((lyricStaff = m_page->GetNext( noteStaff )) == NULL) lyricStaff = noteStaff;
 		}		
-		int y_note = noteStaff->m_y_abs;
+		int y_note = noteStaff->m_y_drawing;
         if (noteElement) {
             y_note += noteElement->dec_y;
         }
 		MusElement *lyricElement = lyricStaff->GetLyricAtPos( x );		// Lyric element closest to mouse click
 		
 		if ( lyricElement != NULL){
-			int y_lyric = lyricElement->dec_y + lyricStaff->m_y_abs;
+			int y_lyric = lyricElement->dec_y + lyricStaff->m_y_drawing;
 			if ( abs( y_lyric - y ) <= abs( y_note - y ) ){				// Checking if lyric element is closer than note element
 				m_lyricMode = true;
 				m_inputLyric = false;
@@ -897,7 +897,7 @@ void MusWindow::OnMouseLeftDown(wxMouseEvent &event)
 		
 		// Track motion on y-axis
 		if ( m_currentElement )
-			m_dragging_y_offset = y - m_currentStaff->m_y_abs - m_currentElement->m_y_abs;
+			m_dragging_y_offset = y - m_currentStaff->m_y_drawing - m_currentElement->m_y_drawing;
 		else
 			m_dragging_y_offset = 0;
 
@@ -970,7 +970,7 @@ void MusWindow::OnMouseMotion(wxMouseEvent &event)
 		} 
 		else if ( m_lyricMode )					// Movement of lyric element on y-axis
 		{
-			m_currentElement->m_y_abs = y - m_currentStaff->m_y_abs;
+			m_currentElement->m_y_drawing = y - m_currentStaff->m_y_drawing;
 		} 
 		
 		if ( m_insert_x != m_dragging_x  )		// If element has moved in the x-axis
@@ -2061,10 +2061,10 @@ void MusWindow::OnPaint(wxPaintEvent &event)
 	//	m_currentColour = AxRED;
 		//drawing code here
 		
-		//printf("staff y: %d\n", m_currentStaff->m_y_abs);
+		//printf("staff y: %d\n", m_currentStaff->m_y_drawing);
 		
-	// TODO	this->rect_plein2(&dc, m_newElement->m_x_abs+35, m_currentStaff->m_y_abs-200, 
-	//					  m_newElement->m_x_abs+40, m_currentStaff->m_y_abs-40);
+	// TODO	this->rect_plein2(&dc, m_newElement->m_x_abs+35, m_currentStaff->m_y_drawing-200, 
+	//					  m_newElement->m_x_abs+40, m_currentStaff->m_y_drawing-40);
 		
 	//	m_currentColour = AxBLACK;
 	//}

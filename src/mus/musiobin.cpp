@@ -405,8 +405,6 @@ bool MusBinOutput::WriteLaidOutLayerElement( MusLaidOutLayerElement *laidOutLaye
     Write( laidOutLayerElement->m_layerElement->GetUuid(), 16 );
     
     WriteObject( laidOutLayerElement );
-	int32 = wxINT32_SWAP_ON_BE( laidOutLayerElement->m_y_abs );
-	Write( &int32, 4 );
 	int32 = wxINT32_SWAP_ON_BE( laidOutLayerElement->m_x_abs );
     Write( &int32, 4 );
     return true;
@@ -899,8 +897,6 @@ MusLaidOutLayerElement* MusBinInput::ReadLaidOutLayerElement( )
     
     MusLaidOutLayerElement *laidOutLayerElement = new MusLaidOutLayerElement( element );
     ReadObject( laidOutLayerElement );
-	Read( &int32, 4 );
-	laidOutLayerElement->m_y_abs = wxINT32_SWAP_ON_BE( int32 );
 	Read( &int32, 4 );
 	laidOutLayerElement->m_x_abs = wxINT32_SWAP_ON_BE( int32 );
     

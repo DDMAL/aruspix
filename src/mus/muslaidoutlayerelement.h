@@ -69,7 +69,7 @@ public:
 	/** Position X */
     int m_x_abs;
 	/** Position Y */
-	int m_y_abs ; 
+	int m_y_drawing ; 
     /** Pointer to the MusLayerElement */
     MusLayerElement *m_layerElement;
 
