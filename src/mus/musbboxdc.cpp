@@ -327,14 +327,12 @@ void MusBBoxDC::StartGraphic( MusLayoutObject *object, wxString gClass, wxString
 {
     // add object
     m_objects.Add( object );
-    printf("PUSH, array has items: %lu\n", m_objects.Count());
 }
       
 void MusBBoxDC::EndGraphic(MusLayoutObject *object, MusRC *rc ) 
 {
     // detach the object
     m_objects.Detach(m_objects.Index(*object));
-    printf("POP, array has items: %lu\n", m_objects.Count());
 }
 
 void MusBBoxDC::StartPage( )

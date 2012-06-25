@@ -25,6 +25,9 @@
 // MusDoc
 //----------------------------------------------------------------------------
 
+// Initialize static respource path
+wxString MusDoc::m_respath = "/usr/local/share/aruspix";
+
 MusDoc::MusDoc()
 {
     Reset();
@@ -238,7 +241,7 @@ wxString MusDoc::GetAxVersion() {
 wxString MusDoc::GetResourcesPath() {
 #ifdef HEADLESS
     //hardcode galore
-    return wxString("/Users/xhero/devel/ARUSPIX/aruspix-git/data");
+    return m_respath;
 #else
     return wxGetApp().m_resourcesPath;
 #endif
