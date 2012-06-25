@@ -91,12 +91,13 @@ int main(int argc, char** argv) {
         opt = getopt( argc, argv, cmdlineopts );
     }
     
-    if (optind) {
+    if (optind <= argc - 1) {
         m_infile = *new string(argv[optind]);
     }
     else {
         cout << "Incorrect number of options: expecting one input file." << endl << endl;
         display_usage();
+	exit(1);
     }
     
     // create outfile

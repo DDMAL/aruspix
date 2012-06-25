@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 2.8)
 
 project(Aruspix)
 
-add_definitions(-D__WXBASE__ -DHEADLESS -D"wxUSE_GUI=0")
+add_definitions(-g -D__WXBASE__ -DHEADLESS -D"wxUSE_GUI=0")
 
 find_package(wxWidgets)
 
