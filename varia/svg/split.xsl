@@ -55,8 +55,8 @@
 				<xsl:when test="@unicode='9'"><xsl:value-of select="'figure_9'"/></xsl:when>
 				<!-- meter signs -->
 				<xsl:when test="@unicode='&#x7f;'"><xsl:value-of select="'meter_symb_2_cut'"/></xsl:when>
-				<xsl:when test="@unicode='&#x80;'"><xsl:value-of select="'meter_symb_3_cut'"/></xsl:when>
-				<xsl:when test="@unicode='&#x81;'"><xsl:value-of select="'meter_symb_cut'"/></xsl:when>
+				<xsl:when test="@unicode='&#xf9;'"><xsl:value-of select="'meter_symb_3_cut'"/></xsl:when>
+				<xsl:when test="@unicode='&#xb7;'"><xsl:value-of select="'meter_symb_cut'"/></xsl:when>
 				<xsl:when test="@unicode='&#x152;'"><xsl:value-of select="'meter_symb_common'"/></xsl:when>
 				<!-- clef -->
 				<xsl:when test="@unicode='&#xcf;'"><xsl:value-of select="'clef_G'"/></xsl:when>
