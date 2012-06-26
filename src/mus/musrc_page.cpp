@@ -164,41 +164,37 @@ void MusRC::DrawGroups( MusDC *dc, MusSystem *system )
 
     for (i = 0; i < system->GetStaffCount(); i++) 
 	{
-		int decPortType_i;
 		staff =  &system->m_staves[i];
-		//if (staff->portNbLine == 4) 
-		//	decPortType_i = m_interl[staff->staffSize]*5;
-		//else
-			decPortType_i = m_layout->m_staffSize[staff->staffSize];
+
 		xx = system->indent ? system->indent*10 : 0;
 
-		//if (staff->portNbLine == 1 || staff->portNbLine == 4)
-		//	portee = m_staffSize[ staff->staffSize ]*2;
-		//else
-        portee = m_layout->m_staffSize[ staff->staffSize ] + ((staff->portNbLine-1) * m_layout->m_interl[staff->staffSize]);
+		if (staff->portNbLine == 1 || staff->portNbLine == 4)
+			portee = m_layout->m_staffSize[ staff->staffSize ]*2;
+		else
+            portee = ((staff->portNbLine-1) * m_layout->m_interl[staff->staffSize]);
 
 		if (staff->vertBarre == START)
-			b_gr = (int)(staff->m_y_drawing - decPortType_i);
+			b_gr = (int)(staff->m_y_abs);
 		// key[i].yp est position du curseur par default m_staffSize (4 interl) au-dessus de ligne superieure
 		// decporttyp est la valeur de remplacement de m_staffSize si on veut autre espace
 		else if (staff->vertBarre == START_END)
-		{	b_gr = (int)(staff->m_y_drawing - decPortType_i);
-			bb_gr = (int)(staff->m_y_drawing - portee);//m_staffSize[staff->staffSize]*2;
+		{	b_gr = (int)(staff->m_y_abs);
+			bb_gr = (int)(staff->m_y_abs - portee);//m_staffSize[staff->staffSize]*2;
 			flLine = 1;
 		}
 		else if (staff->vertBarre == END)
-		{	bb_gr = (int)(staff->m_y_drawing - portee);//m_staffSize[staff->staffSize]*2;
+		{	bb_gr = (int)(staff->m_y_abs - portee);//m_staffSize[staff->staffSize]*2;
 			flLine = 1;
 		}
 		if (staff->brace == START)
-			b_acc = (int)(staff->m_y_drawing - decPortType_i);
+			b_acc = (int)(staff->m_y_abs);
 		else if (staff->brace == START_END)
-		{	b_acc = (int)(staff->m_y_drawing - decPortType_i);
-			bb_acc = (int)(staff->m_y_drawing - portee);//m_staffSize[staff->staffSize]*2;
+		{	b_acc = (int)(staff->m_y_abs);
+			bb_acc = (int)(staff->m_y_abs - portee);//m_staffSize[staff->staffSize]*2;
 			flBrace = 1;
 		}
 		else if (staff->brace == END)
-		{	bb_acc = (int)(staff->m_y_drawing - portee);//m_staffSize[staff->staffSize]*2;
+		{	bb_acc = (int)(staff->m_y_abs - portee);//m_staffSize[staff->staffSize]*2;
 			flBrace = 1;
 		}
 
@@ -348,35 +344,29 @@ void MusRC::DrawBarline ( MusDC *dc, MusSystem *system, int x, int cod, bool por
 	for (; i <= j; i++)	// parcours du groupe de portees concernees 
 	{
 		st_i = &system->m_staves[i];
-
-		int decPortType_i;
-		if (st_i->portNbLine == 4) 
-			decPortType_i = m_layout->m_interl[st_i->staffSize]*5;
-		else
-			decPortType_i = m_layout->m_staffSize[st_i->staffSize];
 		
 		// on calcule l'epaisseur de la portee courante
 		if (st_i->portNbLine == 1 || st_i->portNbLine == 4)
 			portee = m_layout->m_staffSize[ st_i->staffSize ]*2;
 		else
-			portee = m_layout->m_staffSize[ st_i->staffSize ] + ((st_i->portNbLine-1) * m_layout->m_interl[st_i->staffSize]);
+			portee = ((st_i->portNbLine-1) * m_layout->m_interl[st_i->staffSize]);
 		// on place les marqueurs DEB et END des barres
 		if (porteeAutonome || st_i->brace == START_END || st_i->vertBarre == START_END
 			|| !st_i->brace || !pportee->noGrp)
 		{	if (!accDeb)
-			{	b = st_i->m_y_drawing - decPortType_i;
-				bb = st_i->m_y_drawing - portee;//m_staffSize[st_ipTaille]*2;
+			{	b = st_i->m_y_abs;
+				bb = st_i->m_y_abs - portee;//m_staffSize[st_ipTaille]*2;
 				flLine = 1;
 			}
 		}
 		else if (st_i->brace == START || st_i->vertBarre == START)
-		{	b = st_i->m_y_drawing - decPortType_i;
-			bb = st_i->m_y_drawing - portee;//m_staffSize[st_ipTaille]*2;
+		{	b = st_i->m_y_abs;
+			bb = st_i->m_y_abs - portee; //m_staffSize[st_ipTaille]*2;
 			if (st_i->brace)
 				accDeb = ON;
 		}
 		else if (st_i->brace == END || st_i->vertBarre == END)
-		{	bb = st_i->m_y_drawing - portee;//m_staffSize[st_ipTaille]*2;
+		{	bb = st_i->m_y_abs - portee;//m_staffSize[st_ipTaille]*2;
 			flLine = 1;
 			accDeb=0;
 		}
