@@ -183,12 +183,12 @@ MusLaidOutStaff *MusSystem::GetPrevious( MusLaidOutStaff *staff  )
 
 MusLaidOutStaff *MusSystem::GetAtPos( int y )
 {
-	y += ( STAFF_OFFSET / 2 );
+	//y += ( STAFF_OFFSET / 2 );
 	MusLaidOutStaff *staff = this->GetFirst();
 	if ( !staff )
 		return NULL;
 	
-	int dif =  abs( staff->m_y_drawing - y );
+	//int dif =  abs( staff->m_y_drawing - y );
 	while ( this->GetNext(staff) )
 	{
 		if ( (int)staff->m_y_drawing < y )
@@ -196,14 +196,14 @@ MusLaidOutStaff *MusSystem::GetAtPos( int y )
 			// one too much
 			if ( this->GetPrevious( staff ) ){
 				staff = this->GetPrevious( staff );
-				if ( dif < abs( staff->m_y_drawing - y ) )
-					staff = this->GetNext( staff );
+				//if ( dif < abs( staff->m_y_drawing - y ) )
+				//	staff = this->GetNext( staff );
 			}
 				
 			return staff;
 		}
 		staff = this->GetNext( staff );
-		dif = abs( staff->m_y_drawing - y );
+		//dif = abs( staff->m_y_drawing - y );
 	}
 
 	if ( ( (int)staff->m_y_drawing < y )  && this->GetPrevious( staff ) )

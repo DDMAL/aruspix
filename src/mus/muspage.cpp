@@ -128,12 +128,11 @@ MusSystem *MusPage::GetPrevious( MusSystem *system  )
 MusSystem *MusPage::GetAtPos( int y )
 {
 
-	y += ( SYSTEM_OFFSET / 2 );
+	y -= ( SYSTEM_OFFSET / 2 );
     MusSystem *system = this->GetFirst();
 	if ( !system )
 		return NULL;
 	
-	int dif =  abs( system->m_y_abs - y );
 	while ( this->GetNext(system) )
 	{
 		if ( (int)system->m_y_abs < y )
@@ -141,14 +140,13 @@ MusSystem *MusPage::GetAtPos( int y )
 			// one too much
 			if ( this->GetPrevious( system ) ){
 				system = this->GetPrevious( system );
-				if ( dif < abs( system->m_y_abs - y ) )
-					system = this->GetNext( system );
+				//if ( dif < abs( system->m_y_abs - y ) )
+				//	system = this->GetNext( system );
 			}
 				
 			return system;
 		}
 		system = this->GetNext( system );
-		dif = abs( system->m_y_abs - y );
 	}
 
 	if ( ( (int)system->m_y_abs < y )  && this->GetPrevious( system ) )
