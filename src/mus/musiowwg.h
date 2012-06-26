@@ -106,6 +106,9 @@ protected:
     unsigned short debordCode;
     unsigned short debordSize;
 	unsigned short code;
+    
+    // WWG staff
+    unsigned short ecarts[1024];
 };
 
 //----------------------------------------------------------------------------
@@ -129,7 +132,7 @@ public:
 	bool WriteFonts( const MusWWGData *fonts );
 	bool WriteSeparator( );
 	bool WritePage( const MusPage *page );
-	bool WriteLayer( const MusLaidOutLayer *layer );
+	bool WriteLayer( const MusLaidOutLayer *layer, int staffNo );
 
 	bool WritePagination( const MusWWGData *pagination );
 	bool WriteHeader( const MusWWGData *header);
@@ -175,7 +178,7 @@ public:
 	bool ReadFonts( MusWWGData *fonts );
 	bool ReadSeparator( );
 	bool ReadPage( MusPage *page );
-	bool ReadStaff( MusLaidOutStaff *staff, MusLaidOutLayer *layer );
+	bool ReadStaff( MusLaidOutStaff *staff, MusLaidOutLayer *layer, int staffNo );
 	bool ReadNote( MusLaidOutLayer *layer );
 	bool ReadSymbol( MusLaidOutLayer *layer );
 	bool ReadElementAttr( );

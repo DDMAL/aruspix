@@ -286,6 +286,7 @@ void MusPage::CountVoices( wxArrayPtrVoid params )
 
 void MusPage::UpdateSystemPositions( ) 
 {
+    /*
 	if ( !this->Check() )
 		return;
 
@@ -298,5 +299,6 @@ void MusPage::UpdateSystemPositions( )
 		system = &this->m_systems[i];
         yy = system->UpdateStaffPositions( yy );
     }
+    */
 }
 

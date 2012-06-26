@@ -86,7 +86,7 @@ void MusRC::DrawSystem( MusDC *dc, MusSystem *system )
         DrawStaff( dc , staff, system );		
 	}
     
-    dc->EndGraphic(system, this ); //RZ
+    dc->EndGraphic(system, this );
 
 }
 
@@ -611,6 +611,10 @@ void MusRC::DrawStaff( MusDC *dc, MusLaidOutStaff *staff, MusSystem *system )
 		return;
     
     dc->StartGraphic( staff, "staff", wxString::Format("s_%d", staff->GetId()) );
+    
+    // Set the drawing y for the staff, which is one staff lize above its y position.
+    // This is used as a reference point for drawing its content.
+    staff->m_y_drawing = staff->m_y_abs + m_layout->m_staffSize[ staff->staffSize ];
     
     DrawStaffLines( dc, staff, system );
         

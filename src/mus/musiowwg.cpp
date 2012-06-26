@@ -361,7 +361,7 @@ bool MusWWGOutput::WriteSeparator( )
 
 bool MusWWGOutput::WritePage( const MusPage *page )
 {
-	int i, j, k;
+	int i, j, k, l;
 
     if ( !WriteSeparator() )
 		return false;
@@ -389,8 +389,12 @@ bool MusWWGOutput::WritePage( const MusPage *page )
 	int32 = system ? wxINT32_SWAP_ON_BE( system->lrg_lign ) : wxINT32_SWAP_ON_BE( 190 );
 	Write( &int32, 4 );
     
+    l = 0; // staff number on the page
     for (i = 0; i < page->GetSystemCount(); i++) {
         m_current_system = &page->m_systems[i];
+        
+        // TODO - We need to fill the ecarts[] array here because we now have m_y_abs positions for the staves
+        
         for (j = 0; j < system->GetStaffCount(); j++) 
         {
             //MusLaidOutStaff *cstaff
@@ -399,8 +403,9 @@ bool MusWWGOutput::WritePage( const MusPage *page )
             for (k = 0; k < m_current_staff->GetLayerCount(); k ++)
             {
                 MusLaidOutLayer *layer = &m_current_staff->m_layers[k];
-                WriteLayer( layer );
+                WriteLayer( layer, l );
             }
+            l++;
         }
     }
 
@@ -408,7 +413,7 @@ bool MusWWGOutput::WritePage( const MusPage *page )
 
 }
 
-bool MusWWGOutput::WriteLayer( const MusLaidOutLayer *layer )
+bool MusWWGOutput::WriteLayer( const MusLaidOutLayer *layer, int staffNo )
 {
 	int k;
 
@@ -429,7 +434,7 @@ bool MusWWGOutput::WriteLayer( const MusLaidOutLayer *layer )
 	Write( &m_current_staff->notAnc, 1 );
 	Write( &m_current_staff->grise, 1 );
 	Write( &m_current_staff->invisible, 1 );
-	uint16 = wxUINT16_SWAP_ON_BE( m_current_staff->ecart );
+	uint16 = wxUINT16_SWAP_ON_BE( ecarts[staffNo] );
 	Write( &uint16, 2 );
 	Write( &m_current_staff->vertBarre, 1 );
 	Write( &m_current_staff->brace, 1 );
@@ -706,6 +711,34 @@ bool MusWWGInput::ImportFile( )
     div->AddScore( score );
     m_doc->AddDiv( div );
     
+    // update the system and staff y positions
+    layout->PaperSize();
+    int j, k, l, m;
+    for (j = 0; j < layout->GetPageCount(); j++)
+    {
+        MusPage *page = &layout->m_pages[j];
+        m = 0; // staff number on the page
+        int yy =  layout->m_pageHeight;
+        for (k = 0; k < page->GetSystemCount(); k++) 
+        {
+            MusSystem *system = &page->m_systems[k];
+            MusLaidOutStaff *staff = NULL;
+            
+            for (l = 0; l < system->GetStaffCount(); l++) 
+            {
+                staff = &system->m_staves[l];
+                yy -= ecarts[m] * layout->m_interl[ staff->staffSize ];
+                staff->m_y_abs = yy;
+                m++;
+                
+                // we are handling the first staff - update the position of the system as well
+                if ( i == 0 ) { 
+                    system->m_y_abs = yy;
+                }
+            }
+        }
+    }
+    
 	return true;
 }
 
@@ -888,7 +921,7 @@ bool MusWWGInput::ReadPage( MusPage *page )
         
 		MusLaidOutStaff *staff = new MusLaidOutStaff( j );
         MusLaidOutLayer *layer = new MusLaidOutLayer( 0, j, m_section, NULL ); // only one layer per staff
-		ReadStaff( staff, layer );
+		ReadStaff( staff, layer, j );
         if ( m_noLigne > system_no + 1 ) { // we have a new system
             page->AddSystem( system ); // add the current one
             system = new MusSystem(); // create the next one
@@ -911,7 +944,7 @@ bool MusWWGInput::ReadPage( MusPage *page )
 	return true;
 
 }
-bool MusWWGInput::ReadStaff( MusLaidOutStaff *staff, MusLaidOutLayer *layer )
+bool MusWWGInput::ReadStaff( MusLaidOutStaff *staff, MusLaidOutLayer *layer, int staffNo )
 {
 	wxASSERT_MSG( m_section, "MusSection cannot be NULL");
 	
@@ -937,7 +970,7 @@ bool MusWWGInput::ReadStaff( MusLaidOutStaff *staff, MusLaidOutLayer *layer )
 	Read( &staff->grise, 1 );
 	Read( &staff->invisible, 1 );
 	Read( &uint16, 2 );
-	staff->ecart = wxUINT16_SWAP_ON_BE( uint16 );
+	ecarts[staffNo] = wxUINT16_SWAP_ON_BE( uint16 );
 	Read( &staff->vertBarre, 1 );
 	Read( &staff->brace, 1 );
 	Read( &staff->staffSize, 1 );

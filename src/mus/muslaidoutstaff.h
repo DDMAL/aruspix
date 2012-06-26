@@ -99,8 +99,6 @@ public:
 	char grise;
 	/** portee invisible */
 	char invisible;
-	/** ecart jusqu'a la portee, en interlignes */
-	unsigned short ecart;
 	/** barre verticale. 0 = aucun1 = debut2 = fin */
 	unsigned char vertBarre;
 	/** accolade ou bloc. 0 = aucun1 = debut2 = fin */
@@ -120,10 +118,17 @@ public:
 	unsigned char accol;
 	/** ???? */
 	unsigned char accessoire;
-	/** position y relative de la portee (non-enregistre dans les fichiers) */
+	/** 
+     * The y absolute position of the staff for facsimile layouts.
+     * This is the top left corner of the staff (the x position is the position of the system).
+     */
+    int m_y_abs;
+	/** 
+     * The y drawing position of the staff.
+     * This position is staff size above the m_y_abs position and is the reference point for drawing elements.
+     * It is re-computed everytime the staff is drawn and it is not stored in the file.
+     */
     int m_y_drawing;
-	/** postion x relative de la portee (non-enregistre dans les fichiers) */
-    //int m_x_abs;
 
 private:
 };

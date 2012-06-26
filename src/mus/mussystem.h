@@ -93,9 +93,15 @@ public:
     int indentDroite;
     /** longueur en mm des lignes de la pages */
     int lrg_lign;
-	/** position y relative du system (non-enregistre dans les fichiers) */
+	/** 
+     * The y absolute position of the system for facsimile layouts.
+     * This is the top left corner of the system.
+     */
     int m_y_abs;
-	/** postion x relative du system (non-enregistre dans les fichiers) */
+	/** 
+     * The x absolute position of the  system for facsimile layouts.
+     * This is the top left corner of the system.
+     */
     int m_x_abs;
 
 private:

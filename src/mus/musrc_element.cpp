@@ -471,7 +471,7 @@ void MusRC::DrawRest ( MusDC *dc, MusLaidOutLayerElement *element, MusLaidOutLay
     MusRest *rest = dynamic_cast<MusRest*>(element->m_layerElement);
 
 	int formval = rest->m_dur;
-	int a = element->m_y_drawing + rest->m_hOffset, b = element->m_y_drawing;
+	int a = element->m_x_abs + rest->m_hOffset, b = element->m_y_drawing;
 
 	//unsigned char dot = this->point;
 	/*if (inv_val && (!this->oblique && formval > DUR_1 || this->oblique && formval > DUR_2))

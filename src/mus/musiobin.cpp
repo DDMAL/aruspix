@@ -337,6 +337,10 @@ bool MusBinOutput::WriteSystem( MusSystem *system )
 	Write( &int32, 4 );
 	int32 = wxINT32_SWAP_ON_BE( system->lrg_lign );
     Write( &int32, 4 );
+	int32 = wxINT32_SWAP_ON_BE( system->m_x_abs );
+    Write( &int32, 4 );
+	int32 = wxINT32_SWAP_ON_BE( system->m_y_abs );
+    Write( &int32, 4 );
     // also write the number of staves
     int32 = wxINT32_SWAP_ON_BE( (int)system->m_staves.GetCount());
     Write( &int32, 4 );    
@@ -356,14 +360,14 @@ bool MusBinOutput::WriteLaidOutStaff( MusLaidOutStaff *laidOutStaff )
 	Write( &laidOutStaff->notAnc, 1 );
 	Write( &laidOutStaff->grise, 1 );
 	Write( &laidOutStaff->invisible, 1 );
-	uint16 = wxUINT16_SWAP_ON_BE( laidOutStaff->ecart );
-	Write( &uint16, 2 );
 	Write( &laidOutStaff->vertBarre, 1 );
 	Write( &laidOutStaff->brace, 1 );
 	Write( &laidOutStaff->staffSize, 1 );
 	Write( &laidOutStaff->portNbLine, 1 );
 	Write( &laidOutStaff->accol, 1 );
 	Write( &laidOutStaff->accessoire, 1 );
+	int32 = wxINT32_SWAP_ON_BE( laidOutStaff->m_y_abs );
+    Write( &int32, 4 );
     // also write the number of layers
     int32 = wxINT32_SWAP_ON_BE( (int)laidOutStaff->m_layers.GetCount());
     Write( &int32, 4 );    
@@ -808,6 +812,10 @@ MusSystem* MusBinInput::ReadSystem( )
 	system->indentDroite = wxINT32_SWAP_ON_BE( int32 ); 
 	Read( &int32, 4 );
 	system->lrg_lign = wxINT32_SWAP_ON_BE( int32 );
+	Read( &int32, 4 );
+	system->m_x_abs = wxINT32_SWAP_ON_BE( int32 );
+	Read( &int32, 4 );
+	system->m_y_abs = wxINT32_SWAP_ON_BE( int32 );
     // also read the number of staves
     Read( &int32, 4 );
     m_nbLaidOutStaves = wxINT32_SWAP_ON_BE( int32 );    
@@ -833,14 +841,14 @@ MusLaidOutStaff* MusBinInput::ReadLaidOutStaff( )
 	Read( &laidOutStaff->notAnc, 1 );
 	Read( &laidOutStaff->grise, 1 );
 	Read( &laidOutStaff->invisible, 1 );
-	Read( &uint16, 2 );
-	laidOutStaff->ecart = wxUINT16_SWAP_ON_BE( uint16 );
 	Read( &laidOutStaff->vertBarre, 1 );
 	Read( &laidOutStaff->brace, 1 );
 	Read( &laidOutStaff->staffSize, 1 );
 	Read( &laidOutStaff->portNbLine, 1 );
 	Read( &laidOutStaff->accol, 1 );
-	Read( &laidOutStaff->accessoire, 1 );     
+	Read( &laidOutStaff->accessoire, 1 ); 
+	Read( &int32, 4 );
+	laidOutStaff->m_y_abs = wxINT32_SWAP_ON_BE( int32 );
     // also read the number of layers
     Read( &int32, 4 );
     m_nbLaidOutLayers = wxINT32_SWAP_ON_BE( int32 );    
@@ -971,6 +979,35 @@ bool MusBinInput_1_X::ImportFile( )
     score->AddSection( m_section );
     div->AddScore( score );
     m_doc->AddDiv( div );
+    
+    
+    // update the system and staff y positions
+    layout->PaperSize();
+    int j, k, l, m;
+    for (j = 0; j < layout->GetPageCount(); j++)
+    {
+        MusPage *page = &layout->m_pages[j];
+        m = 0; // staff number on the page
+        int yy =  layout->m_pageHeight;
+        for (k = 0; k < page->GetSystemCount(); k++) 
+        {
+            MusSystem *system = &page->m_systems[k];
+            MusLaidOutStaff *staff = NULL;
+            
+            for (l = 0; l < system->GetStaffCount(); l++) 
+            {
+                staff = &system->m_staves[l];
+                yy -= ecarts[m] * layout->m_interl[ staff->staffSize ];
+                staff->m_y_abs = yy;
+                m++;
+                
+                // we are handling the first staff - update the position of the system as well
+                if ( i == 0 ) { 
+                    system->m_y_abs = yy;
+                }
+            }
+        }
+    }
     
 	return true;
 }
@@ -1119,7 +1156,7 @@ bool MusBinInput_1_X::ReadPage( MusPage *page )
         
 		MusLaidOutStaff *staff = new MusLaidOutStaff( j );
         MusLaidOutLayer *layer = new MusLaidOutLayer( 0, j, m_section, NULL ); // we have always on layer per staff
-		ReadStaff( staff, layer );
+		ReadStaff( staff, layer, j );
         if ( m_noLigne > system_no + 1 ) { // we have a new system
             page->AddSystem( system ); // add the current one
             system = new MusSystem(); // create the next one
@@ -1137,12 +1174,12 @@ bool MusBinInput_1_X::ReadPage( MusPage *page )
         system->AddStaff( staff );
 	}
     // add the last system
-    page->AddSystem( system );
+    page->AddSystem( system );    
 
 	return true;
 
 }
-bool MusBinInput_1_X::ReadStaff( MusLaidOutStaff *staff, MusLaidOutLayer *layer )
+bool MusBinInput_1_X::ReadStaff( MusLaidOutStaff *staff, MusLaidOutLayer *layer, int staffNo )
 {
 	unsigned int k;
 
@@ -1166,7 +1203,7 @@ bool MusBinInput_1_X::ReadStaff( MusLaidOutStaff *staff, MusLaidOutLayer *layer 
 	Read( &staff->grise, 1 );
 	Read( &staff->invisible, 1 );
 	Read( &uint16, 2 );
-	staff->ecart = wxUINT16_SWAP_ON_BE( uint16 );
+	ecarts[staffNo] = wxUINT16_SWAP_ON_BE( uint16 );
 	Read( &staff->vertBarre, 1 );
 	Read( &staff->brace, 1 );
 	Read( &staff->staffSize, 1 );

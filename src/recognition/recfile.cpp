@@ -864,7 +864,6 @@ bool RecFile::RealizeFromMLF( wxArrayPtrVoid params, AxProgressDlg *dlg )
     m_musDocPtr->m_env.m_leftMarginEvenPage = x1 / 10;
 
     int nb = (int)m_imPagePtr->m_staves.GetCount();
-    int previous = 0;
     ImStaff *imStaff;   
     // currently creates one system/staff/layer per staff in imPage
     for (int i = 0; i < nb; i++)
@@ -876,11 +875,12 @@ bool RecFile::RealizeFromMLF( wxArrayPtrVoid params, AxProgressDlg *dlg )
         MusLaidOutLayer *musLayer = new MusLaidOutLayer( 0, 0, section, NULL ); // only one layer per staff
         //musLayer->no = nb; ?? // ax2
         musSystem->indent = imStaff->CalcIndentation( x1 );
-        musStaff->ecart = (m_imPagePtr->ToViewY( imStaff->m_y ) -  previous ) / musPage->defin;
-            //imStaff->CalcEcart( previous ) / musPage->defin;
+        musSystem->m_y_abs =  imStaff->m_y;
+        musStaff->m_y_abs =  imStaff->m_y;
+        //musStaff->ecart = (m_imPagePtr->ToViewY( imStaff->m_y ) -  previous ) / musPage->defin;
+        //imStaff->CalcEcart( previous ) / musPage->defin;
         musStaff->vertBarre = START_END;
         //musStaff->brace = START_END;
-        previous += musStaff->ecart * musPage->defin;
         
         musStaff->AddLayer( musLayer );
         musSystem->AddStaff( musStaff );

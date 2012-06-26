@@ -754,6 +754,7 @@ void MusLaidOutLayer::CopyElements( wxArrayPtrVoid params )
 
 void MusLaidOutLayer::GetMaxXY( wxArrayPtrVoid params )
 {
+    /*
     wxASSERT_MSG( m_staff, "Pointer to staff cannot be NULL" );
 
     // param 0: int
@@ -771,4 +772,5 @@ void MusLaidOutLayer::GetMaxXY( wxArrayPtrVoid params )
         }
     }
     (*max_y) += m_staff->ecart;
+    */ // ax2
 }

@@ -179,7 +179,7 @@ public:
 	bool ReadFileHeader( unsigned short *nbpage );
 	bool ReadSeparator( );
 	bool ReadPage( MusPage *page );
-	bool ReadStaff( MusLaidOutStaff *staff, MusLaidOutLayer *layer );
+	bool ReadStaff( MusLaidOutStaff *staff, MusLaidOutLayer *layer, int staffNo );
 	bool ReadNote( MusLaidOutLayer *layer );
 	bool ReadSymbol( MusLaidOutLayer *layer, bool isLyric = false );
     bool ReadNeume( );
@@ -206,6 +206,7 @@ private:
     unsigned short m_noLigne;
     char m_indent;
     char m_indentDroite;
+    unsigned short ecarts[1024];
     
     /* old MusElement members */
     /* element a l'interieur d'un liaison */
