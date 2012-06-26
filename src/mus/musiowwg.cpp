@@ -732,7 +732,7 @@ bool MusWWGInput::ImportFile( )
                 m++;
                 
                 // we are handling the first staff - update the position of the system as well
-                if ( i == 0 ) { 
+                if ( l == 0 ) { 
                     system->m_y_abs = yy;
                 }
             }
