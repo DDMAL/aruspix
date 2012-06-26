@@ -30,7 +30,6 @@
 #include "mus/musiopae.h"
 #include "mus/musiomei.h"
 #include "mus/mussvgdc.h"
-#include "mus/musbboxdc.h"
 
 
 //----------------------------------------------------------------------------
@@ -648,10 +647,7 @@ void EdtEnv::OnOpenMEI( wxCommandEvent &event )
 	layout->Realize(m_edtFilePtr->m_musDocPtr->m_divs[0].m_score);
 	m_edtFilePtr->m_musDocPtr->AddLayout( layout );
     
-    MusRC rc;
-    MusBBoxDC bb_dc( &rc, 0, 0 );
-    rc.SetLayout(layout);
-    rc.DrawPage(  &bb_dc, &layout->m_pages[0] , false );
+    layout->SpaceMusic();
     
 	m_musViewPtr->SetEditorMode(MUS_EDITOR_EDIT);
     UpdateViews( 0 );
