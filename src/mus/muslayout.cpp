@@ -24,6 +24,8 @@
 #include "musmeasure.h"
 #include "musstaff.h"
 #include "muslayer.h"
+#include "musrc.h"
+#include "musbboxdc.h"
 
 #include "wx/arrimpl.cpp"
 WX_DEFINE_OBJARRAY( ArrayOfMusLayouts );
@@ -178,6 +180,16 @@ void MusLayout::Realize( MusScore *score )
 
 	page->AddSystem( system );
 	this->AddPage( page );
+}
+
+void MusLayout::SpaceMusic() {
+    
+    // Calculate bounding boxes
+    MusRC rc;
+    MusBBoxDC bb_dc( &rc, 0, 0 );
+    rc.SetLayout(this);
+    rc.DrawPage(  &bb_dc, &m_pages[0], false );
+    
 }
 
 void MusLayout::PaperSize( )

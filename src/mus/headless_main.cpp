@@ -78,13 +78,12 @@ int main(int argc, char** argv) {
                 m_outfile = *new string(optarg);
                 break;
                 
-            case 'h':   /* fall-through is intentional */
+            case 'h':
                 display_usage();
                 exit(0);
                 break;
                 
             default:
-                /* You won't actually get here. */
                 break;
         }
         
@@ -117,15 +116,13 @@ int main(int argc, char** argv) {
 	MusLayout *layout = new MusLayout( Raw );
 	layout->Realize(doc->m_divs[0].m_score);
 	doc->AddLayout( layout );
-    
-    MusRC rc;
-    MusBBoxDC bb_dc( &rc, 0, 0 );
-    rc.SetLayout(layout);
-    rc.DrawPage(  &bb_dc, &layout->m_pages[0] , false );
+    layout->SpaceMusic();
         
     MusPage *page = &layout->m_pages[0];
     MusSystem *system = &page->m_systems[0];
-        
+    
+    MusRC rc;
+    rc.SetLayout(layout);
     MusSvgDC *svg = new MusSvgDC(m_outfile.c_str(), system->m_contentBB_x2 - system->m_contentBB_x1 + 20, (system->m_contentBB_y2 - system->m_contentBB_y1) * 3);
     rc.DrawPage(svg, &layout->m_pages[0] , false);
     

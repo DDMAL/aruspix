@@ -54,6 +54,8 @@ public:
     void SetDoc( MusDoc *doc );
 	/** Realize the layout */
 	void Realize( MusScore *score );
+    /* Claculate spacing in the music */
+    void SpaceMusic();
     
     void RefreshViews( ) {};
 	
