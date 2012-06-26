@@ -1244,7 +1244,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = YES;
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
-				FRAMEWORK_SEARCH_PATHS = "$(BUILD_PRODUCTS_DIR)/$(TARGET_NAME).app/Contents/Frameworks";
+				FRAMEWORK_SEARCH_PATHS = "";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
@@ -1300,17 +1300,42 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=0",
+					"$(inherited)",
+					"wxUSE_GUI=0",
+				);
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = (
+					"$(ARUSPIX_WX)/include",
+					"$(ARUSPIX_MEI)/include",
+					"$(ARUSPIX_WX)/contrib/include",
+					"$(ARUSPIX_WX)/osx-static-debug/lib/wx/include/mac-ansi-debug-static-2.8",
+					../src,
+				);
+				LIBRARY_SEARCH_PATHS = (
+					"$(ARUSPIX_WX)/osx-static/lib",
+					"$(ARUSPIX_MEI)",
+				);
 				MACOSX_DEPLOYMENT_TARGET = 10.6;
 				ONLY_ACTIVE_ARCH = NO;
 				OTHER_CFLAGS = (
 					"-DHEADLESS",
 					"-D__WXBASE__",
 					"-d",
+				);
+				OTHER_LDFLAGS = (
+					"-lwx_base_carbon-$(ARUSPIX_WX_VERSION)",
+					"-lmei",
+					"-framework",
+					carbon,
+					"-liconv",
+					"-lwx_base_carbon_net-$(ARUSPIX_WX_VERSION)",
+					"-lxml2",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx10.6;
