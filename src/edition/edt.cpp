@@ -1,4 +1,4 @@
-/////////////////////////////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////////////////////////
 // Name:        edt.cpp
 // Author:      Laurent Pugin
 // Created:     2004
@@ -638,8 +638,8 @@ void EdtEnv::OnOpenMEI( wxCommandEvent &event )
     m_edtFilePtr->New();
     //m_edtFilePtr->m_musDocPtr->m_env.m_notationMode = MUS_NEUMATIC_MODE; //temporary for liber usualis project
 
-    //MusMeiInput meiinput( m_edtFilePtr->m_musDocPtr, filename );
-    MusPaeInput meiinput( m_edtFilePtr->m_musDocPtr, filename );
+    MusMeiInput meiinput( m_edtFilePtr->m_musDocPtr, filename );
+    //MusPaeInput meiinput( m_edtFilePtr->m_musDocPtr, filename );
 	if ( !meiinput.ImportFile() )
 		return;
     
