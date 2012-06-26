@@ -1506,12 +1506,11 @@ void MusWindow::MensuralEditOnKeyDown(wxKeyEvent &event) {
         CheckPoint( UNDO_PART, MUS_UNDO_FILE );
         OnEndEdition();
     }
-    /*
     else if ( m_currentElement && m_currentElement->IsNote() && 
 			 (event.m_keyCode == 'L')  ) // Ligature 
     {	
         PrepareCheckPoint( UNDO_PART, MUS_UNDO_FILE );
-        m_currentElement->SetLigature( m_currentStaff );
+        m_currentElement->m_layerElement->SetLigature( );
         CheckPoint( UNDO_PART, MUS_UNDO_FILE );
         OnEndEdition();
     }
@@ -1519,7 +1518,7 @@ void MusWindow::MensuralEditOnKeyDown(wxKeyEvent &event) {
 			 (event.m_keyCode == 'I')  ) // Change coloration
     {
         PrepareCheckPoint( UNDO_PART, MUS_UNDO_FILE );
-        m_currentElement->ChangeColoration( m_currentStaff );
+        m_currentElement->m_layerElement->ChangeColoration( );
         CheckPoint( UNDO_PART, MUS_UNDO_FILE );	
         OnEndEdition();
     }
@@ -1527,10 +1526,11 @@ void MusWindow::MensuralEditOnKeyDown(wxKeyEvent &event) {
 			 (event.m_keyCode == 'A')  ) // Change stem direction
     {
         PrepareCheckPoint( UNDO_PART, MUS_UNDO_FILE );
-        m_currentElement->ChangeStem( m_currentStaff );
+        m_currentElement->m_layerElement->ChangeStem(  );
         CheckPoint( UNDO_PART, MUS_UNDO_FILE );
         OnEndEdition();
     }
+    /*
     else if ( event.m_controlDown && (( event.m_keyCode == WXK_LEFT ) || (event.m_keyCode == WXK_RIGHT )) && m_currentElement) // moving element
     {
         PrepareCheckPoint( UNDO_PART, MUS_UNDO_FILE );

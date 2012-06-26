@@ -54,6 +54,21 @@ public:
       * The MusDurationInterface::SetDuration method has to be called explicitly.
       */
     virtual void SetValue( int value, int flag = 0 );
+    
+    /**
+     * Change the coloration.
+     */ 
+	virtual void ChangeColoration( );
+    
+    /**
+     * Change the stem direction.
+     */
+	virtual void ChangeStem( );
+    
+    /**
+     * Set the note into a ligature.
+     */
+    virtual void SetLigature( );
 
     
 private:

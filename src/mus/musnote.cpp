@@ -53,3 +53,27 @@ void MusNote::SetValue( int value, int flag )
         this->m_stemLen = 0;
     }    
 }
+
+void MusNote::ChangeColoration( )
+{
+    this->m_colored = !this->m_colored;
+}
+
+
+void MusNote::ChangeStem( )
+{
+	if ( ( this->m_dur > DUR_LG ) && ( this->m_dur < DUR_2 ) )
+		return;
+    
+	this->m_stemDir = !this->m_stemDir;
+}
+
+
+void MusNote::SetLigature( )
+{
+	if ( ( this->m_dur == DUR_LG ) || ( this->m_dur > DUR_1 ) ) {
+		return;
+    }
+	
+	this->m_lig = true;
+}
