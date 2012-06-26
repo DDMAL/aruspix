@@ -622,7 +622,7 @@ void MusWindow::UpdateScroll()
 	int x = 0;
 	if ( m_currentElement )
 		x = ToRendererX( m_currentElement->m_x_abs );
-	int y = ToRendererY(  m_currentStaff->m_y_drawing );
+	int y = ToRendererY(  m_currentStaff->m_y_abs );
 	// units
 	int xu, yu;
 	this->GetScrollPixelsPerUnit( &xu, &yu );
@@ -1423,6 +1423,11 @@ void MusWindow::MensuralEditOnKeyDown(wxKeyEvent &event) {
         else                                    //"Backspace" event
         {
             MoveLeftRight( true );
+        }
+        
+        // in case we failed moving
+        if ( del == m_currentElement ) {
+            m_currentElement = NULL;
         }
         
         delLayer->Delete( del );
