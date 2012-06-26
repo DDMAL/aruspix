@@ -93,6 +93,9 @@ public:
     /** Indicates the stem length (0 == auto) */
     unsigned char m_stemLen;
 
+    // is this right here? should go in the duration interface?
+    bool in_beam;
+    
 private:
     
 };
