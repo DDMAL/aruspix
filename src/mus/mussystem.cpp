@@ -242,37 +242,6 @@ void MusSystem::SetValues( int type )
 }
 
 
-int MusSystem::UpdateStaffPositions( int last_staff ) 
-{
-    /*
-	if ( !this->Check() )
-		return this->m_y_abs;
-    
-	int i, yy;
-	MusLaidOutStaff *staff = NULL;
-    
-	yy = last_staff;
-    for (i = 0; i < this->GetStaffCount(); i++) 
-	{
-		staff = &this->m_staves[i];
-        yy -= staff->ecart * m_layout->m_interl[ staff->staffSize ];
-        //staff->clefIndex.compte = 0;
-        
-		// Calcul du TAB initial, s'il y a lieu 
-		//orgx = staff->indent ? staff->indent*10 : 0;
-        
-		// calcul du point d'ancrage des curseurs au-dessus de la ligne superieure
-		staff->m_y_abs = yy; /// + m_layout->m_staffSize[ staff->staffSize ];
-        
-        // we are handling the first staff - update the position of the system as well
-        if ( i == 0 ) { 
-            this->m_y_abs = yy;
-        }
-	}
-    return yy;
-    */
-}
-
 // functors for MusSystem
 
 void MusSystem::Process(MusFunctor *functor, wxArrayPtrVoid params )

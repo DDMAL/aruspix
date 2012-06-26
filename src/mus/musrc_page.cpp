@@ -28,9 +28,7 @@ void MusRC::DrawPage( MusDC *dc, MusPage *page, bool background )
 	if ( !page->Check() )
 		return;
     
-    page->UpdateSystemPositions();
-
-	int i;
+    int i;
 	MusSystem *system = NULL;
 
     if ( background )

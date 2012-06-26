@@ -282,23 +282,3 @@ void MusPage::CountVoices( wxArrayPtrVoid params )
     wxLogDebug("TODO");
     return;
 }
-
-
-void MusPage::UpdateSystemPositions( ) 
-{
-    /*
-	if ( !this->Check() )
-		return;
-
-	int i;
-	MusSystem *system = NULL;
-    
-    int yy =  m_layout->m_pageHeight;
-    for (i = 0; i < this->GetSystemCount(); i++) 
-	{
-		system = &this->m_systems[i];
-        yy = system->UpdateStaffPositions( yy );
-    }
-    */
-}
-

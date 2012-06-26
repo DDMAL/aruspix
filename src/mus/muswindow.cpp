@@ -191,8 +191,7 @@ void MusWindow::Load( AxUndoFile *undoPtr )
         m_currentElement = &m_currentLayer->m_elements[element];
 
 	}
-		
-    m_page->UpdateSystemPositions();
+
 	UpdateScroll();
 	this->Refresh();
 	OnEndEdition();

@@ -73,11 +73,6 @@ public:
     void ProcessVoices( wxArrayPtrVoid params );
     void CountVoices( wxArrayPtrVoid params );
     
-    /**
-     * Calculates the system positions for the page.
-     */
-    virtual void UpdateSystemPositions( );
-    
     
 private:
     

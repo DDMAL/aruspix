@@ -74,9 +74,6 @@ public:
     //void ProcessVoices( wxArrayPtrVoid params );
     //void CountVoices( wxArrayPtrVoid params );
     
-    int UpdateStaffPositions( int last_staff );
-    
-    
 private:
     
 public:
