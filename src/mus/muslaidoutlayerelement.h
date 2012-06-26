@@ -59,6 +59,7 @@ public:
     void Save( wxArrayPtrVoid params );
     void Load( wxArrayPtrVoid params );
     void Delete( wxArrayPtrVoid params );
+    void UpdateXPosition( wxArrayPtrVoid params );
         
 private:
     

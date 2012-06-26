@@ -190,6 +190,19 @@ void MusLayout::SpaceMusic() {
     rc.SetLayout(this);
     rc.DrawPage(  &bb_dc, &m_pages[0], false );
     
+    wxArrayPtrVoid params;
+    int shift = 0;
+    params.Add( &shift );
+    MusLaidOutLayerElementFunctor updateXPosition( &MusLaidOutLayerElement::UpdateXPosition );
+    m_doc->ProcessLayout( &updateXPosition, params );
+    
+    params.Clear();
+    shift = m_pageHeight;
+    params.Add( &shift );
+    MusLaidOutStaffFunctor updateYPosition( &MusLaidOutStaff::UpdateYPosition );
+    m_doc->ProcessLayout( &updateYPosition, params );
+    
+    rc.DrawPage(  &bb_dc, &m_pages[0] , false );
 }
 
 void MusLayout::PaperSize( )

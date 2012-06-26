@@ -207,6 +207,16 @@ MusLaidOutLayer *MusLaidOutStaff::GetLayer( int LayerNo )
 	return &m_layers[LayerNo];
 }
 
+void MusLaidOutStaff::UpdateYPosition( wxArrayPtrVoid params )
+{
+    // param 0: the MusLayerElement we point to
+	int *current_y_shift = (int*)params[0];  
+    
+    int negative_offset = this->m_y_abs - this->m_contentBB_y2;
+    this->m_y_abs = (*current_y_shift) + negative_offset;
+    (*current_y_shift) -= (this->m_contentBB_y2 - this->m_contentBB_y1);
+}
+
 // functors for MusLaidOutStaff
 
 void MusLaidOutStaff::Process(MusFunctor *functor, wxArrayPtrVoid params )

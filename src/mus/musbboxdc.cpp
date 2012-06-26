@@ -344,6 +344,7 @@ MusBBoxDC::~MusBBoxDC ( )
 void MusBBoxDC::StartGraphic( MusLayoutObject *object, wxString gClass, wxString gId )
 {
     // add object
+    object->ResetBB();
     m_objects.Add( object );
 }
       

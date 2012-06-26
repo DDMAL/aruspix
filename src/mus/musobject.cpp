@@ -162,7 +162,7 @@ void MusLayoutObject::SetLayout( wxArrayPtrVoid params )
     wxASSERT( dynamic_cast<MusLayout*>((MusLayout*)params[0]) ); 
     
     m_layout = (MusLayout*)params[0];  
-    ResetBB();
+    //ResetBB();
 }
 
 

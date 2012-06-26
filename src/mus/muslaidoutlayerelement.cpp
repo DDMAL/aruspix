@@ -77,6 +77,16 @@ void MusLaidOutLayerElement::Delete( wxArrayPtrVoid params )
     }
 }
 
+void MusLaidOutLayerElement::UpdateXPosition( wxArrayPtrVoid params )
+{
+    // param 0: the MusLayerElement we point to
+	int *current_x_shift = (int*)params[0];  
+    
+    int negative_offset = this->m_x_abs - this->m_contentBB_x1;
+    this->m_x_abs = (*current_x_shift) + negative_offset;
+    (*current_x_shift) += (this->m_contentBB_x2 - this->m_contentBB_x1);
+}
+
 int MusLaidOutLayerElement::GetElementNo() const
 {
     wxASSERT_MSG( m_layer, "LaidOutLayer cannot be NULL");
