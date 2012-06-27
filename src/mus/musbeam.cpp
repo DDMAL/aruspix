@@ -18,18 +18,26 @@
 //----------------------------------------------------------------------------
 
 MusBeam::MusBeam():
-MusLayerElement()
+    MusLayerElement()
 {
 }
 
 
 MusBeam::~MusBeam()
 {
+    // we need to detach all notes because it is not to the beam object to delete them
+    int i;
+    for (i = (int)m_notes.GetCount(); i > 0; i--) {
+        m_notes.Detach(i - 1);
+    }
 }
 
-void MusBeam::AddNote(MusNote *note) {
+void MusBeam::AddNote(MusLayerElement *element) {
    
-    note->in_beam = true;
-    m_notes.Add(note);
-    
+    if (!element->HasDurationInterface()) {
+        return;
+    }
+    MusDurationInterface *note = dynamic_cast<MusDurationInterface*>(note);
+    note->m_beam[0] = true;
+    m_notes.Add(element);
 }

@@ -42,6 +42,7 @@ public:
     int GetElementNo() const;
     
     bool IsBarline() { return m_layerElement->IsBarline(); };
+    bool IsBeam() { return m_layerElement->IsBeam(); };
     bool IsClef() { return m_layerElement->IsClef(); };
     bool IsMensur() { return m_layerElement->IsMensur(); };
     bool IsNeume() { return m_layerElement->IsNeume(); };

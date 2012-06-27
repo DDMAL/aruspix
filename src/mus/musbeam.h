@@ -30,9 +30,17 @@ public:
     
     virtual wxString MusClassName( ) { return "MusBeam"; };
     
-    void AddNote(MusNote *note);
+    /**
+     * Add an element (a note or a rest) to a beam.
+     * Only MusNote or MusRest element will be actually added to the beam.
+     */
+    void AddNote(MusLayerElement *element);
     
 private:
+    /**
+     * The array of notes or rests.
+     * The beam object do not own the notes.
+     */
     ArrayOfMusLayerElements m_notes;
     
 public:

@@ -80,11 +80,16 @@ void MusLaidOutLayerElement::Delete( wxArrayPtrVoid params )
 void MusLaidOutLayerElement::UpdateXPosition( wxArrayPtrVoid params )
 {
     // param 0: the MusLayerElement we point to
-	int *current_x_shift = (int*)params[0];  
+	int *current_x_shift = (int*)params[0];
+    
+    // reset the x position if we are starting a new layer
+    if ( this->m_layer->m_elements.Index( *this ) == 0 ) {
+        (*current_x_shift) = 0;
+    }
     
     int negative_offset = this->m_x_abs - this->m_contentBB_x1;
     this->m_x_abs = (*current_x_shift) + negative_offset;
-    (*current_x_shift) += (this->m_contentBB_x2 - this->m_contentBB_x1);
+    (*current_x_shift) += (this->m_contentBB_x2 - this->m_contentBB_x1) + this->m_layerElement->GetVerticalSpacing();
 }
 
 int MusLaidOutLayerElement::GetElementNo() const

@@ -111,6 +111,12 @@ public:
     /** The parent MusLayer setter */
     void SetLayer( MusLayer *layer ) { m_layer = layer; };
     
+    /**
+     * Return the default vertical spacing of elements.
+     * This method should be redefined whenever necessary in the child classes.
+     */
+    virtual int GetVerticalSpacing( );
+    
     /** Adjust the pname and the octave for values outside the range */
     static void AdjustPname( int *pname, int *oct );
     
@@ -150,6 +156,7 @@ public:
 
     
     bool IsBarline();
+    bool IsBeam();
     bool IsClef();
     bool HasDurationInterface();
     bool IsMensur();

@@ -14,6 +14,7 @@
 #include "musdef.h"
 
 #include "musbarline.h"
+#include "musbeam.h"
 #include "musclef.h"
 #include "musmensur.h"
 #include "musneume.h"
@@ -207,6 +208,12 @@ MusLayerElement *MusLayerElement::GetChildCopy()
     return element;
 }
 
+
+int MusLayerElement::GetVerticalSpacing()
+{
+    return 5;
+}
+
 void MusLayerElement::SetPitchOrPosition(int pname, int oct) 
 {
     if ( this->HasPitchInterface() ){
@@ -244,6 +251,11 @@ void MusLayerElement::SetValue( int value, int flag )
 bool MusLayerElement::IsBarline() 
 {  
     return (dynamic_cast<MusBarline*>(this));
+}
+
+bool MusLayerElement::IsBeam() 
+{  
+    return (dynamic_cast<MusBeam*>(this));
 }
 
 bool MusLayerElement::IsClef() 
