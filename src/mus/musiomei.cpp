@@ -23,6 +23,7 @@ using std::max;
 #include <mei/xmlexport.h>
 
 #include "musbarline.h"
+#include "musbeam.h"
 #include "musclef.h"
 #include "musmensur.h"
 #include "musneume.h"
@@ -248,6 +249,11 @@ bool MusMeiOutput::WriteLayerElement( MusLayerElement *element )
         WriteMeiBarline( barline, dynamic_cast<MusBarline*>(element) );
         meiElement = barline;
     }
+    else if (dynamic_cast<MusBeam*>(element)) {
+        Beam *beam = new Beam();
+        WriteMeiBeam( beam, dynamic_cast<MusBeam*>(element) );
+        meiElement = beam;
+    }
     else if (dynamic_cast<MusClef*>(element)) {
         Clef *clef = new Clef();
         WriteMeiClef( clef, dynamic_cast<MusClef*>(element) );
@@ -296,6 +302,12 @@ void MusMeiOutput::WriteMeiBarline( BarLine *meiBarline, MusBarline *barline )
 }
 
 
+void MusMeiOutput::WriteMeiBeam( Beam *meiBeam, MusBeam *beam )
+{
+    return;
+}
+
+
 void MusMeiOutput::WriteMeiClef( Clef *meiClef, MusClef *clef )
 {
     meiClef->m_Lineloc.setLine( ClefLineToStr( clef->m_clefId ) );
@@ -334,6 +346,12 @@ void MusMeiOutput::WriteMeiNote( Note *meiNote, MusNote *note )
     meiNote->m_Pitch.setPname( PitchToStr( note->m_pname ));
     meiNote->m_Octave.setOct( OctToStr( note->m_oct ));
     meiNote->m_DurationMusical.setDur( DurToStr( note->m_dur ));
+    if ( note->m_dots ) {
+        meiNote->m_Augmentdots.setDots( wxString::Format("%d", note->m_dots).c_str() );
+    }
+    if ( note->m_accid ) {
+        meiNote->m_Accidental.setAccid( AccidToStr( note->m_accid ));
+    }
     // missing m_artic, m_chord, m_colored, m_lig, m_headShape, m_ligObliqua, m_slur, m_stemDir, m_stemLen
     return;
 }
@@ -341,6 +359,9 @@ void MusMeiOutput::WriteMeiNote( Note *meiNote, MusNote *note )
 void MusMeiOutput::WriteMeiRest( Rest *meiRest, MusRest *rest )
 {    
     meiRest->m_DurationMusical.setDur( DurToStr( rest->m_dur ));
+    if ( rest->m_dots ) {
+        meiRest->m_Augmentdots.setDots( wxString::Format("%d", rest->m_dots).c_str() );
+    }
     // missing position
     return;
 }
@@ -827,11 +848,53 @@ bool MusMeiInput::ReadMeiLayer( Layer *layer )
 		vector<MeiElement*> children = layer->getChildren();
 		for (vector<MeiElement*>::iterator iter = children.begin(); iter != children.end(); ++iter) {
 			MeiElement *e = *iter;
-			if (e->getName()=="note") {
+            if (e->getName()=="barline") {
+				if (!ReadMeiBarline(dynamic_cast<BarLine*>(e))) {
+					return false;
+				}
+			}
+            else if (e->getName()=="beam") {
+				if (!ReadMeiBeam(dynamic_cast<Beam*>(e))) {
+					return false;
+				}
+			}
+            else if (e->getName()=="clef") {
+				if (!ReadMeiClef(dynamic_cast<Clef*>(e))) {
+					return false;
+				}
+			}
+            else if (e->getName()=="mensur") {
+				if (!ReadMeiMensur(dynamic_cast<Mensur*>(e))) {
+					return false;
+				}
+			}
+            else if (e->getName()=="note") {
 				if (!ReadMeiNote(dynamic_cast<Note*>(e))) {
 					return false;
 				}
 			}
+            else if (e->getName()=="rest") {
+				if (!ReadMeiRest(dynamic_cast<Rest*>(e))) {
+					return false;
+				}
+			}
+            // symbols
+            else if (e->getName()=="accid") {
+				if (!ReadMeiSymbol(dynamic_cast<Accid*>(e))) {
+					return false;
+				}
+			}
+            else if (e->getName()=="custos") {
+				if (!ReadMeiSymbol(dynamic_cast<Custos*>(e))) {
+					return false;
+				}
+			}
+            else if (e->getName()=="dot") {
+				if (!ReadMeiSymbol(dynamic_cast<Dot*>(e))) {
+					return false;
+				}
+			}
+            // unkown            
 			else {
 				wxLogDebug("LayerElement %s ignored", e->getName().c_str() );
 			}
@@ -848,6 +911,11 @@ bool MusMeiInput::ReadMeiBarline( BarLine *barline )
     return true;
 }
 
+bool MusMeiInput::ReadMeiBeam( Beam *beam )
+{
+    return true;
+}
+
 bool MusMeiInput::ReadMeiClef( Clef *clef )
 {
     return true;
@@ -855,6 +923,28 @@ bool MusMeiInput::ReadMeiClef( Clef *clef )
 
 bool MusMeiInput::ReadMeiMensur( Mensur *mensur )
 {
+    MusMensur *musMensur = new MusMensur();
+    if ( mensur->m_MensurVis.hasSign( ) ) {
+        musMensur->m_sign = StrToMensurSign( mensur->m_MensurVis.getSign()->getValue() );
+    }
+    if ( mensur->m_MensurVis.hasDot( ) ) {
+        musMensur->m_dot = ( mensur->m_MensurVis.getDot()->getValue() == "true" );
+    }
+    if ( mensur->m_Slashcount.hasSlash( ) ) {
+        musMensur->m_slash =  1; //atoi( mensur->m_Slashcount.getSlash()->getValue() );
+    }
+    if ( mensur->m_MensurVis.hasOrient( ) ) {
+        musMensur->m_reversed = ( mensur->m_MensurVis.getOrient()->getValue() == "reversed" );
+    }
+    if ( mensur->m_DurationRatio.getNum( ) ) {
+        musMensur->m_num = atoi ( mensur->m_DurationRatio.getNum()->getValue().c_str() );
+    }
+    if ( mensur->m_DurationRatio.getNumbase( ) ) {
+        musMensur->m_numBase = atoi ( mensur->m_DurationRatio.getNumbase()->getValue().c_str() );
+    }
+    // missing m_meterSymb
+    
+    m_layer->AddLayerElement( musMensur );
     return true;
 }
 
@@ -870,6 +960,17 @@ bool MusMeiInput::ReadMeiNote( Note *note )
 		musNote->m_oct = StrToOct( note->m_Octave.getOct()->getValue() );
 	}
 	// duration
+	if ( note->m_DurationMusical.hasDur() ) {
+		musNote->m_dur = StrToDur( note->m_DurationMusical.getDur()->getValue() );
+	}
+    // dots
+    if ( note->m_Augmentdots.hasDots() ) {
+		musNote->m_dots = atoi( note->m_Augmentdots.getDots()->getValue().c_str() );
+	}
+    // accid
+    if ( note->m_Accidental.hasAccid() ) {
+		musNote->m_accid = StrToAccid( note->m_Accidental.getAccid()->getValue() );
+	}
 	
 	m_layer->AddLayerElement( musNote );
     return true;
@@ -877,14 +978,59 @@ bool MusMeiInput::ReadMeiNote( Note *note )
 
 bool MusMeiInput::ReadMeiRest( Rest *rest )
 {
+    MusRest *musRest = new MusRest();
+    
+	// duration
+	if ( rest->m_DurationMusical.hasDur() ) {
+		musRest->m_dur = StrToDur( rest->m_DurationMusical.getDur()->getValue() );
+	}
+    if ( rest->m_Augmentdots.hasDots() ) {
+		musRest->m_dots = atoi( rest->m_Augmentdots.getDots()->getValue().c_str() );
+	}
+    // missing position
+	
+	m_layer->AddLayerElement( musRest );
     return true;
 }
 
-bool MusMeiInput::ReadMeiSymbol( MeiElement *symbol )
+bool MusMeiInput::ReadMeiSymbol( Accid *accid )
 {
+    MusSymbol *musAccid = new MusSymbol( SYMBOL_ACCID );
+    if ( accid->m_Accidental.hasAccid() ) {
+        musAccid->m_accid = StrToAccid( accid->m_Accidental.getAccid()->getValue() );
+    }
+    // missing position
+	
+	m_layer->AddLayerElement( musAccid );
     return true;
 }
 
+bool MusMeiInput::ReadMeiSymbol( Custos *custos )
+{
+    MusSymbol *musCustos = new MusSymbol( SYMBOL_CUSTOS );
+	// position (pitch)
+	if ( custos->m_Pitch.hasPname() ) {
+		musCustos->m_pname = StrToPitch( custos->m_Pitch.getPname()->getValue() );
+	}
+	// oct
+	if ( custos->m_Octave.hasOct() ) {
+		musCustos->m_oct = StrToOct( custos->m_Octave.getOct()->getValue() );
+	}
+	
+	m_layer->AddLayerElement( musCustos );    
+    return true;
+}
+
+bool MusMeiInput::ReadMeiSymbol( Dot *dot )
+{
+    MusSymbol *musDot = new MusSymbol( SYMBOL_DOT );
+    musDot->m_dot = 1;
+    // missing m_dots
+    // missing position
+	
+	m_layer->AddLayerElement( musDot );
+    return true;
+}
 
 int MusMeiInput::StrToDur(std::string dur)
 {
@@ -930,6 +1076,34 @@ int MusMeiInput::StrToPitch(std::string pitch)
         value = PITCH_C;
     }
     return value;
+}
+
+
+unsigned char MusMeiInput::StrToAccid(std::string accid)
+{
+    unsigned char value;
+    if ( accid == "s" ) value = ACCID_SHARP;
+    else if ( accid == "f" ) value = ACCID_FLAT;
+    else if ( accid == "n" ) value = ACCID_NATURAL;
+    else if ( accid == "x" ) value = ACCID_DOUBLE_SHARP;
+    else if ( accid == "ff" ) value = ACCID_DOUBLE_FLAT;
+    else if ( accid == "ns" ) value = ACCID_QUARTER_SHARP;
+    else if ( accid == "nf" ) value = ACCID_QUARTER_FLAT;
+    else {
+        wxLogWarning("Unknown accid '%s'", accid.c_str() );
+    }
+	return value;
+}
+
+
+ClefId MusMeiInput::StrToClef(std::string line, std::string shape)
+{
+    
+}
+
+MensurSign MusMeiInput::StrToMensurSign(std::string sign)
+{
+    
 }
 
 

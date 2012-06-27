@@ -27,6 +27,7 @@
 #include <mei/layout.h>
 
 class MusBarline;
+class MusBeam;
 class MusClef;
 class MusMensur;
 class MusNote;
@@ -83,6 +84,7 @@ private:
     bool WriteMeiStaff( Staff *meiStaff, MusStaff *staff );
     bool WriteMeiLayer( Layer *meiLayer, MusLayer *layer );*/
     void WriteMeiBarline( BarLine *meiBarline, MusBarline *barline );
+    void WriteMeiBeam( Beam *meiBeam, MusBeam *beam );
     void WriteMeiClef( Clef *meiClef, MusClef *clef );
     void WriteMeiMensur( Mensur *meiMensur, MusMensur *mensur );
     void WriteMeiNote( Note *meiNote, MusNote *note );
@@ -160,15 +162,22 @@ private:
     bool ReadMeiStaff( Staff *staff );
     bool ReadMeiLayer( Layer *layer );
     bool ReadMeiBarline( BarLine *barline );
+    bool ReadMeiBeam( Beam *beam );
     bool ReadMeiClef( Clef *clef );
     bool ReadMeiMensur( Mensur *mensur );
     bool ReadMeiNote( Note *note );
     bool ReadMeiRest( Rest *rest );
-    bool ReadMeiSymbol( MeiElement *symbol );
+    bool ReadMeiSymbol( Accid *accid );
+    bool ReadMeiSymbol( Custos *custos );
+    bool ReadMeiSymbol( Dot *dot );
 	//
 	int StrToDur(std::string dur);
 	int StrToOct(std::string oct);
-	int StrToPitch( std::string pitch ); 
+	int StrToPitch(std::string pitch ); 
+    unsigned char StrToAccid(std::string accid);
+    ClefId StrToClef(std::string line, std::string shape);
+    MensurSign StrToMensurSign(std::string sign);
+
     
 public:
     

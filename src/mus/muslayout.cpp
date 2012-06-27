@@ -171,7 +171,7 @@ void MusLayout::Realize( MusScore *score )
                         element->m_x_abs = x;
                         x += 40;
                         laidOutLayer->AddElement( element );
-                        wxLogDebug("element %d added", m);
+                        //wxLogDebug("element %d added", m);
                     }			
 				}
 			}
