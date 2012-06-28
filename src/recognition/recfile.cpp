@@ -877,6 +877,7 @@ bool RecFile::RealizeFromMLF( wxArrayPtrVoid params, AxProgressDlg *dlg )
         musSystem->indent = imStaff->CalcIndentation( x1 );
         musSystem->m_y_abs =  imStaff->m_y;
         musStaff->m_y_abs =  imStaff->m_y;
+        musStaff->notAnc = true;
         //musStaff->ecart = (m_imPagePtr->ToViewY( imStaff->m_y ) -  previous ) / musPage->defin;
         //imStaff->CalcEcart( previous ) / musPage->defin;
         musStaff->vertBarre = START_END;

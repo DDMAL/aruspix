@@ -176,6 +176,30 @@ void MusLayout::Realize( MusScore *score )
 				}
 			}
 		}
+        // unmeasured music
+        for (k = 0; k < (int)section->m_staves.GetCount(); k++) {
+            MusStaff *staff = &section->m_staves[k];
+            MusLaidOutStaff *laidOutStaff;
+            if (k >= (int)system->m_staves.GetCount()) {
+                system->AddStaff( new MusLaidOutStaff( k ));
+            }
+            laidOutStaff = &system->m_staves[k];
+            for (l = 0; l < (int)staff->m_layers.GetCount(); l++) {
+                MusLayer *layer = &staff->m_layers[l];
+                MusLaidOutLayer *laidOutLayer;
+                if (l >= laidOutStaff->GetLayerCount()) {
+                    laidOutStaff->AddLayer( new MusLaidOutLayer( l, k, section, NULL ));
+                }
+                laidOutLayer = &laidOutStaff->m_layers[l];
+                for (m = 0; m < (int)layer->m_elements.GetCount(); m++) {
+                    MusLaidOutLayerElement *element = new MusLaidOutLayerElement( &layer->m_elements[m] );
+                    element->m_x_abs = x;
+                    x += 40;
+                    laidOutLayer->AddElement( element );
+                    //wxLogDebug("element %d added", m);
+                }			
+			}
+		}
     }
 
 	page->AddSystem( system );

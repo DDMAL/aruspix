@@ -32,7 +32,7 @@ public:
     
     /**
      * Add an element (a note or a rest) to a beam.
-     * Only MusNote or MusRest element will be actually added to the beam.
+     * Only MusNote or MusRest elements will be actually added to the beam.
      */
     void AddNote(MusLayerElement *element);
     

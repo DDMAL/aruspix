@@ -76,7 +76,7 @@ void MusLaidOutStaff::Clear()
 	//noLigne = 0; // ax2
 	armTyp = 0;
 	armNbr = 0;
-	notAnc = true; // LP we want modern notation :))
+	notAnc = false; // LP we want modern notation :))
 	grise = false;
 	invisible = false;
 	vertBarre = 0;

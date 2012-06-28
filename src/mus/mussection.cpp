@@ -84,12 +84,19 @@ void MusSection::Save( wxArrayPtrVoid params )
     MusFileOutputStream *output = (MusFileOutputStream*)params[0];       
     output->WriteSection( this );
     
+    // we need to check if thre is content because just calling the functor will make the staves, layers and their content
+    // be written twice with measure music (one with the measure functor and once with the staff functor that will by pass the measures
+    
     // save measures ( measured music )
-    MusMeasureFunctor measure( &MusMeasure::Save );
-    this->Process( &measure, params );
+    if ( !m_measures.IsEmpty() ) {
+        MusMeasureFunctor measure( &MusMeasure::Save );
+        this->Process( &measure, params );
+    }
     // save staves ( unmeasured music )
-    MusStaffFunctor staff( &MusStaff::Save );
-    this->Process( &staff, params );
+    else if ( !m_staves.IsEmpty() ) {
+        MusStaffFunctor staff( &MusStaff::Save );
+        this->Process( &staff, params );
+    }
 }
 
 void MusSection::Load( wxArrayPtrVoid params )
