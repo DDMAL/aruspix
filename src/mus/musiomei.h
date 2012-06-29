@@ -26,6 +26,8 @@
 #include <mei/mensural.h>
 #include <mei/layout.h>
 
+#include <uuid/uuid.h>
+
 class MusBarline;
 class MusBeam;
 class MusClef;
@@ -171,6 +173,7 @@ private:
     bool ReadMeiSymbol( Custos *custos );
     bool ReadMeiSymbol( Dot *dot );
 	//
+    void SetMeiUuid( MeiElement *element, MusObject *object );
 	int StrToDur(std::string dur);
 	int StrToOct(std::string oct);
 	int StrToPitch(std::string pitch ); 

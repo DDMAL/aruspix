@@ -39,8 +39,6 @@ using std::max;
 #include <vector>
 using std::vector;
 
-#include <uuid/uuid.h>
-
 //----------------------------------------------------------------------------
 // MusMeiOutput
 //----------------------------------------------------------------------------
@@ -96,8 +94,6 @@ bool MusMeiOutput::ExportFile( )
 std::string MusMeiOutput::GetMeiUuid( MusObject *element )
 {
     // RZ uuid_string_t does not exist on freebsd
-    //but typedef	char	__darwin_uuid_string_t[37];
-    //and typedef __darwin_uuid_string_t	uuid_string_t;
     char uuidStr[37];
     uuid_unparse( *element->GetUuid(), uuidStr );
     string out;    
@@ -459,6 +455,8 @@ bool MusMeiOutput::WriteLaidOutLayerElement( MusLaidOutLayerElement *laidOutLaye
 }
 
 
+
+
 std::string MusMeiOutput::OctToStr(int oct)
 {
 	char buf[3];
@@ -647,6 +645,7 @@ bool MusMeiInput::ImportFile( )
 			for (vector<MeiElement*>::iterator iter = children.begin(); iter != children.end(); ++iter) {
 				MeiElement *e = *iter;
 				m_div = new MusDiv( );
+                SetMeiUuid( e, m_div );
 				if (ReadMeiDiv(dynamic_cast<Mdiv*>(e))) {
 					m_doc->AddDiv( m_div );
 				}
@@ -675,6 +674,7 @@ bool MusMeiInput::ReadMeiDiv( Mdiv *mdiv )
 		vector<MeiElement*> children = mdiv->getChildrenByName("score");
 		if ( dynamic_cast<Score*> (children[0]) ) {
 			m_score = new MusScore( );
+            SetMeiUuid( children[0], m_score );
 			if (ReadMeiScore(dynamic_cast<Score*> (children[0]))) {
 				m_div->AddScore(m_score);
 				return true;
@@ -688,6 +688,7 @@ bool MusMeiInput::ReadMeiDiv( Mdiv *mdiv )
 		vector<MeiElement*> children = mdiv->getChildrenByName("parts");
 		if ( dynamic_cast<Parts*> (children[0]) ) {
 			m_parts = new MusPartSet( );
+            SetMeiUuid( children[0], m_parts );
 			if (ReadMeiParts(dynamic_cast<Parts*> (children[0]))) {
 				m_div->AddPartSet( m_parts );
 				return true;
@@ -708,6 +709,7 @@ bool MusMeiInput::ReadMeiScore( Score *score )
 		for (vector<MeiElement*>::iterator iter = children.begin(); iter != children.end(); ++iter) {
 			MeiElement *e = *iter;
 			m_section = new MusSection( );
+            SetMeiUuid( e, m_section );
 			if (ReadMeiSection(dynamic_cast<Section*>(e))) {
 				m_score->AddSection( m_section );
 			}
@@ -729,6 +731,7 @@ bool MusMeiInput::ReadMeiParts( Parts * parts )
 		for (vector<MeiElement*>::iterator iter = children.begin(); iter != children.end(); ++iter) {
 			MeiElement *e = *iter;
 			m_part = new MusPart(  );
+            SetMeiUuid( e, m_part );
 			if (ReadMeiPart(dynamic_cast<Part*>(e))) {
 				m_parts->AddPart( m_part );
 			}
@@ -750,6 +753,7 @@ bool MusMeiInput::ReadMeiPart( Part *part )
 		for (vector<MeiElement*>::iterator iter = children.begin(); iter != children.end(); ++iter) {
 			MeiElement *e = *iter;
 			m_section = new MusSection( );
+            SetMeiUuid( e, m_section );
 			if (ReadMeiSection(dynamic_cast<Section*>(e))) {
 				m_part->AddSection( m_section );
 			}
@@ -771,6 +775,7 @@ bool MusMeiInput::ReadMeiSection( Section *section )
 		for (vector<MeiElement*>::iterator iter = children.begin(); iter != children.end(); ++iter) {
 			MeiElement *e = *iter;
 			m_measure = new MusMeasure( );
+            SetMeiUuid( e, m_measure );
 			if (ReadMeiMeasure(dynamic_cast<Measure*>(e))) {
 				m_section->AddMeasure( m_measure );
 			}
@@ -786,6 +791,7 @@ bool MusMeiInput::ReadMeiSection( Section *section )
 		for (vector<MeiElement*>::iterator iter = children.begin(); iter != children.end(); ++iter) {
 			MeiElement *e = *iter;
 			m_staff= new MusStaff( );
+            SetMeiUuid( e, m_staff );
 			if (ReadMeiStaff(dynamic_cast<Staff*>(e))) {
 				m_section->AddStaff( m_staff );
 			}
@@ -807,6 +813,7 @@ bool MusMeiInput::ReadMeiMeasure( Measure *measure )
 		for (vector<MeiElement*>::iterator iter = children.begin(); iter != children.end(); ++iter) {
 			MeiElement *e = *iter;
 			m_staff = new MusStaff( );
+            SetMeiUuid( e, m_staff );
 			if (ReadMeiStaff(dynamic_cast<Staff*>(e))) {
 				m_measure->AddStaff( m_staff );
 			}
@@ -828,6 +835,7 @@ bool MusMeiInput::ReadMeiStaff( Staff *staff )
 		for (vector<MeiElement*>::iterator iter = children.begin(); iter != children.end(); ++iter) {
 			MeiElement *e = *iter;
 			m_layer = new MusLayer( );
+            SetMeiUuid( e, m_layer );
 			if (ReadMeiLayer(dynamic_cast<Layer*>(e))) {
 				m_staff->AddLayer( m_layer );
 			}
@@ -924,6 +932,7 @@ bool MusMeiInput::ReadMeiClef( Clef *clef )
 bool MusMeiInput::ReadMeiMensur( Mensur *mensur )
 {
     MusMensur *musMensur = new MusMensur();
+    SetMeiUuid( mensur, musMensur );
     if ( mensur->m_MensurVis.hasSign( ) ) {
         musMensur->m_sign = StrToMensurSign( mensur->m_MensurVis.getSign()->getValue() );
     }
@@ -936,10 +945,10 @@ bool MusMeiInput::ReadMeiMensur( Mensur *mensur )
     if ( mensur->m_MensurVis.hasOrient( ) ) {
         musMensur->m_reversed = ( mensur->m_MensurVis.getOrient()->getValue() == "reversed" );
     }
-    if ( mensur->m_DurationRatio.getNum( ) ) {
+    if ( mensur->m_DurationRatio.hasNum( ) ) {
         musMensur->m_num = atoi ( mensur->m_DurationRatio.getNum()->getValue().c_str() );
     }
-    if ( mensur->m_DurationRatio.getNumbase( ) ) {
+    if ( mensur->m_DurationRatio.hasNumbase( ) ) {
         musMensur->m_numBase = atoi ( mensur->m_DurationRatio.getNumbase()->getValue().c_str() );
     }
     // missing m_meterSymb
@@ -951,6 +960,7 @@ bool MusMeiInput::ReadMeiMensur( Mensur *mensur )
 bool MusMeiInput::ReadMeiNote( Note *note )
 {
 	MusNote *musNote = new MusNote();
+    SetMeiUuid( note, musNote );
 	// pitch
 	if ( note->m_Pitch.hasPname() ) {
 		musNote->m_pname = StrToPitch( note->m_Pitch.getPname()->getValue() );
@@ -979,7 +989,7 @@ bool MusMeiInput::ReadMeiNote( Note *note )
 bool MusMeiInput::ReadMeiRest( Rest *rest )
 {
     MusRest *musRest = new MusRest();
-    
+    SetMeiUuid( rest, musRest );
 	// duration
 	if ( rest->m_DurationMusical.hasDur() ) {
 		musRest->m_dur = StrToDur( rest->m_DurationMusical.getDur()->getValue() );
@@ -996,6 +1006,7 @@ bool MusMeiInput::ReadMeiRest( Rest *rest )
 bool MusMeiInput::ReadMeiSymbol( Accid *accid )
 {
     MusSymbol *musAccid = new MusSymbol( SYMBOL_ACCID );
+    SetMeiUuid( accid, musAccid );
     if ( accid->m_Accidental.hasAccid() ) {
         musAccid->m_accid = StrToAccid( accid->m_Accidental.getAccid()->getValue() );
     }
@@ -1008,6 +1019,7 @@ bool MusMeiInput::ReadMeiSymbol( Accid *accid )
 bool MusMeiInput::ReadMeiSymbol( Custos *custos )
 {
     MusSymbol *musCustos = new MusSymbol( SYMBOL_CUSTOS );
+    SetMeiUuid( custos, musCustos );
 	// position (pitch)
 	if ( custos->m_Pitch.hasPname() ) {
 		musCustos->m_pname = StrToPitch( custos->m_Pitch.getPname()->getValue() );
@@ -1024,12 +1036,33 @@ bool MusMeiInput::ReadMeiSymbol( Custos *custos )
 bool MusMeiInput::ReadMeiSymbol( Dot *dot )
 {
     MusSymbol *musDot = new MusSymbol( SYMBOL_DOT );
+    SetMeiUuid( dot, musDot );
     musDot->m_dot = 1;
     // missing m_dots
     // missing position
 	
 	m_layer->AddLayerElement( musDot );
     return true;
+}
+
+
+void MusMeiInput::SetMeiUuid( MeiElement *element, MusObject *object )
+{
+    if ( !element->hasId() ) {
+        return;
+    }
+    
+    std::string id = element->getId();
+    if ( id.length() != 38 ) {
+        return;
+    }
+    if ( id.compare( 0, 2, "m-" ) != 0 ) {
+        return;
+    }
+    id.erase( 0, 2 );
+    uuid_t uuid;
+    uuid_parse( id.c_str(), uuid );
+    object->SetUuid( uuid );
 }
 
 int MusMeiInput::StrToDur(std::string dur)
