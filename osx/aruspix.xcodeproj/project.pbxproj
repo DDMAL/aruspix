@@ -1146,7 +1146,6 @@
 					"$(ARUSPIX_IMLIB)/lib",
 					"$(ARUSPIX_WX)/osx-static/lib",
 					/usr/lib,
-					"$(ARUSPIX_MEI)",
 				);
 				OBJROOT = "$(PROJECT_DIR)/../obj";
 				OTHER_CFLAGS = (
@@ -1159,7 +1158,8 @@
 					"-DAX_SUPERIMPOSITION",
 				);
 				OTHER_LDFLAGS = (
-					"-lmei",
+					"-force_load",
+					"$(ARUSPIX_MEI)/libmei.a",
 					"-framework",
 					CoreMidi,
 					"-framework",
@@ -1274,25 +1274,24 @@
 					"$(ARUSPIX_WX)/osx-static-debug/lib/wx/include/mac-ansi-debug-static-2.8",
 					../src,
 				);
-				LIBRARY_SEARCH_PATHS = (
-					"$(ARUSPIX_WX)/osx-static-debug/lib",
-					"$(ARUSPIX_MEI)",
-				);
+				KEEP_PRIVATE_EXTERNS = YES;
+				LIBRARY_SEARCH_PATHS = "$(ARUSPIX_WX)/osx-static-debug/lib";
 				MACOSX_DEPLOYMENT_TARGET = 10.6;
 				ONLY_ACTIVE_ARCH = NO;
 				OTHER_CFLAGS = (
 					"-DHEADLESS",
 					"-D__WXBASE__",
-					"-d",
+					"-fexceptions",
 				);
 				OTHER_LDFLAGS = (
 					"-lwx_base_carbond-$(ARUSPIX_WX_VERSION)",
-					"-lmei",
 					"-framework",
 					carbon,
 					"-liconv",
 					"-lwx_base_carbond_net-$(ARUSPIX_WX_VERSION)",
 					"-lxml2",
+					"-force_load",
+					"$(ARUSPIX_MEI)/libmei.a",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx10.6;
@@ -1325,16 +1324,14 @@
 					"$(ARUSPIX_WX)/osx-static-debug/lib/wx/include/mac-ansi-debug-static-2.8",
 					../src,
 				);
-				LIBRARY_SEARCH_PATHS = (
-					"$(ARUSPIX_WX)/osx-static/lib",
-					"$(ARUSPIX_MEI)",
-				);
+				KEEP_PRIVATE_EXTERNS = YES;
+				LIBRARY_SEARCH_PATHS = "$(ARUSPIX_WX)/osx-static/lib";
 				MACOSX_DEPLOYMENT_TARGET = 10.6;
 				ONLY_ACTIVE_ARCH = NO;
 				OTHER_CFLAGS = (
 					"-DHEADLESS",
 					"-D__WXBASE__",
-					"-d",
+					"-fexceptions",
 				);
 				OTHER_LDFLAGS = (
 					"-lwx_base_carbon-$(ARUSPIX_WX_VERSION)",
@@ -1364,12 +1361,13 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				KEEP_PRIVATE_EXTERNS = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.6;
 				ONLY_ACTIVE_ARCH = NO;
 				OTHER_CFLAGS = (
 					"-DHEADLESS",
 					"-D__WXBASE__",
-					"-d",
+					"-fexceptions",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx10.6;
@@ -1579,7 +1577,6 @@
 					"$(ARUSPIX_WX)/include",
 					"$(ARUSPIX_WX)/contrib/include",
 					/usr/include/libxml2,
-					"$(ARUSPIX_MEI)/include",
 				);
 				INFOPLIST_FILE = "Aruspix-Info.plist";
 				INSTALL_PATH = "$(USER_APPS_DIR)";
@@ -1588,7 +1585,6 @@
 					"$(ARUSPIX_IMLIB)/lib",
 					"$(ARUSPIX_WX)/osx-static-debug/lib",
 					/usr/lib,
-					"$(ARUSPIX_MEI)",
 				);
 				OBJROOT = "$(PROJECT_DIR)/../obj";
 				OTHER_CFLAGS = (
@@ -1605,7 +1601,6 @@
 					"-DAX_EDITION",
 				);
 				OTHER_LDFLAGS = (
-					"-lmei",
 					"-framework",
 					CoreMidi,
 					"-framework",
@@ -1638,6 +1633,8 @@
 					"-lwx_macd_aui-$(ARUSPIX_WX_VERSION)",
 					"-lwxpngd-$(ARUSPIX_WX_VERSION)",
 					"-lwxjpegd-$(ARUSPIX_WX_VERSION)",
+					"-force_load",
+					"$(ARUSPIX_MEI)/libmei.a",
 					"-lxml2",
 				);
 				PRODUCT_NAME = Aruspix;
@@ -1682,7 +1679,6 @@
 					"$(ARUSPIX_IMLIB)/lib",
 					"$(ARUSPIX_WX)/osx-static/lib",
 					/usr/lib,
-					"$(ARUSPIX_MEI)",
 				);
 				OBJROOT = "$(PROJECT_DIR)/../obj";
 				OTHER_CFLAGS = (
@@ -1697,7 +1693,6 @@
 					"-DAX_EDITION",
 				);
 				OTHER_LDFLAGS = (
-					"-lmei",
 					"-framework",
 					CoreMidi,
 					"-framework",
@@ -1730,6 +1725,8 @@
 					"-lwx_mac_aui-$(ARUSPIX_WX_VERSION)",
 					"-lwxpng-$(ARUSPIX_WX_VERSION)",
 					"-lwxjpeg-$(ARUSPIX_WX_VERSION)",
+					"-force_load",
+					"$(ARUSPIX_MEI)/libmei.a",
 					"-lxml2",
 				);
 				PRODUCT_NAME = Aruspix;
