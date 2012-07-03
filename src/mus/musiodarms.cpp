@@ -28,6 +28,18 @@
 
 #include "musiodarms.h"
 
+// Ok, this is ugly, but since this is static data, why not?
+pitchmap MusDarmsInput::PitchMap[] = {
+    /* 00 */ {1, PITCH_C}, {1, PITCH_D}, {1, PITCH_E}, {1, PITCH_F}, {1, PITCH_G}, {1, PITCH_A}, {1, PITCH_B},
+    /* 07 */ {2, PITCH_C}, {2, PITCH_D}, {2, PITCH_E}, {2, PITCH_F}, {2, PITCH_G}, {2, PITCH_A}, {2, PITCH_B},
+    /* 14 */ {3, PITCH_C}, {3, PITCH_D}, {3, PITCH_E}, {3, PITCH_F}, {3, PITCH_G}, {3, PITCH_A}, {3, PITCH_B},
+    /* 21 */ {4, PITCH_C}, {4, PITCH_D}, {4, PITCH_E}, {4, PITCH_F}, {4, PITCH_G}, {4, PITCH_A}, {4, PITCH_B},
+    /* 28 */ {5, PITCH_C}, {5, PITCH_D}, {5, PITCH_E}, {5, PITCH_F}, {5, PITCH_G}, {5, PITCH_A}, {5, PITCH_B},
+    /* 35 */ {6, PITCH_C}, {6, PITCH_D}, {6, PITCH_E}, {6, PITCH_F}, {6, PITCH_G}, {6, PITCH_A}, {6, PITCH_B},
+    /* 42 */ {7, PITCH_C}, {7, PITCH_D}, {7, PITCH_E}, {7, PITCH_F}, {7, PITCH_G}, {7, PITCH_A}, {7, PITCH_B},
+    /* 49 */ {8, PITCH_C}, {8, PITCH_D}, {8, PITCH_E}, {8, PITCH_F}, {8, PITCH_G}, {8, PITCH_A}, {8, PITCH_B},
+};
+
 MusDarmsInput::MusDarmsInput( MusDoc *doc, wxString filename ) :
 MusFileInputStream( doc, -1 )
 {	
@@ -75,6 +87,50 @@ void MusDarmsInput::UnrollKeysig(int quantity, char alter) {
 }
 
 /*
+ Read the meter
+ */
+int MusDarmsInput::parseMeter(int pos, const char* data) {
+ 
+    MusMensur *meter = new MusMensur;
+    
+    pos++;
+    if (data[pos] == 'C') {
+        if (data[pos + 1] == '/') {
+            pos++;
+            meter->m_meterSymb = METER_SYMB_CUT;
+        } else {
+            meter->m_meterSymb = METER_SYMB_COMMON;
+        }
+    } else if (isnumber(data[pos])) { // Coupound meter
+        int n1, n2;
+        n1 = data[pos] - 0x30; // old school conversion to int
+        if (isnumber(data[pos + 1])) {
+            n2 = data[++pos] - 0x30; // idem
+            n1 = (n1 * 10) + n2;
+        }
+        meter->m_num = n1;
+        
+        //we expect the next char a ':', or make a single digit meter
+        if (data[++pos] != ':') {
+            meter->m_numBase = 1;
+        } else {
+            // same as above, get one or two nums
+            n1 = data[++pos] - 0x30; // old school conversion to int
+            if (isnumber(data[pos + 1])) {
+                n2 = data[++pos] - 0x30; // idem
+                n1 = (n1 * 10) + n2;
+            }
+            
+            meter->m_numBase = n1;
+        }
+        printf("Meter is: %i %i\n", meter->m_num, meter->m_numBase);
+    }
+    
+    m_layer->AddLayerElement(meter);
+    return pos;
+}
+
+/*
  Process the various headings: !I, !K, !N, !M
 */
 int MusDarmsInput::do_globalSpec(int pos, const char* data) {
@@ -104,6 +160,7 @@ int MusDarmsInput::do_globalSpec(int pos, const char* data) {
             break;
             
         case 'M': // meter
+            pos = parseMeter(pos, data);
             break;
             
         case 'N': // note type, ignore for the moment
@@ -134,12 +191,14 @@ int MusDarmsInput::do_Clef(int pos, const char* data) {
             case 7: mclef->m_clefId = UT4; m_rest_position = PITCH_F; m_rest_octave = 3; break;
             default: printf("Invalid C clef on line %i\n", position); break;
         }
+        m_clef_offset = 21 - position; // 21 is the position in the array, position is of the clef
     } else if (data[pos] == 'G') {
         switch (position) {
             case 1: mclef->m_clefId = SOL1; m_rest_position = PITCH_B; m_rest_octave = 4; break;
             case 3: mclef->m_clefId = SOL2; m_rest_position = PITCH_G; m_rest_octave = 4; break;
             default: printf("Invalid G clef on line %i\n", position); break;
         }
+        m_clef_offset = 25 - position;
     } else if (data[pos] == 'F') {
         switch (position) {
             case 3: mclef->m_clefId = FA3; m_rest_position = PITCH_D; m_rest_octave = 3; break;
@@ -147,9 +206,11 @@ int MusDarmsInput::do_Clef(int pos, const char* data) {
             case 7: mclef->m_clefId = FA5; m_rest_position = PITCH_G; m_rest_octave = 2; break;
             default: printf("Invalid F clef on line %i\n", position); break;
         }
+        m_clef_offset = 15 - position;
     } else {
         // what the...
         printf("Invalid clef specification: %c\n", data[pos]);
+        return 0; // fail
     }
     
     m_layer->AddLayerElement(mclef);
@@ -157,10 +218,11 @@ int MusDarmsInput::do_Clef(int pos, const char* data) {
 }
 
 int MusDarmsInput::do_Note(int pos, const char* data, bool rest) {
-    char digit;
+    int position;
     int accidental = 0;
     int duration;
     
+    position = data[pos] - 0x30;
     
     if (data[pos + 1] == '-') {
         accidental = ACCID_FLAT;
@@ -170,8 +232,7 @@ int MusDarmsInput::do_Note(int pos, const char* data, bool rest) {
         pos++;
     }
     
-    digit = data[++pos];
-    switch (digit) {
+    switch (data[++pos]) {
         case 'W':
             duration = DUR_1;
             // wholes can be repeated, yes this way is not nice
@@ -194,7 +255,7 @@ int MusDarmsInput::do_Note(int pos, const char* data, bool rest) {
         case 'Z': duration = DUR_256; break;
             
         default:
-            printf("Unkown note duration: %c\n", digit);
+            printf("Unkown note duration: %c\n", data[pos]);
             return 0;
             break;
     }
@@ -209,8 +270,8 @@ int MusDarmsInput::do_Note(int pos, const char* data, bool rest) {
         MusNote *note = new MusNote;
         note->m_dur = duration;
         note->m_accid = accidental;
-        note->m_oct = 4;
-        note->m_pname = PITCH_A;
+        note->m_oct = PitchMap[position + m_clef_offset].oct;
+        note->m_pname = PitchMap[position + m_clef_offset].pitch;
         m_layer->AddLayerElement(note);
     }
     

@@ -32,6 +32,10 @@
 // MusPaeInput
 //----------------------------------------------------------------------------
 
+typedef struct _pitchmap {
+    unsigned int oct;
+    unsigned int pitch; 
+} pitchmap;
 
 class MusDarmsInput: public MusFileInputStream
 {
@@ -46,6 +50,7 @@ private:
     int do_Note(int pos, const char* data, bool rest);
     int do_globalSpec(int pos, const char* data);
     int do_Clef(int pos, const char* data);
+    int parseMeter(int pos, const char* data);
     void UnrollKeysig(int quantity, char alter);
     
 public:
@@ -64,6 +69,10 @@ private:
     
     unsigned char m_rest_position;
     unsigned int m_rest_octave;
+    
+    unsigned int m_clef_offset;
+    
+    static pitchmap PitchMap[];
 };
 
 
