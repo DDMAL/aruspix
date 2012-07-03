@@ -221,6 +221,7 @@ int MusDarmsInput::do_Note(int pos, const char* data, bool rest) {
     int position;
     int accidental = 0;
     int duration;
+    int dot = 0;
     
     position = data[pos] - 0x30;
     
@@ -260,11 +261,17 @@ int MusDarmsInput::do_Note(int pos, const char* data, bool rest) {
             break;
     }
     
+    if (data[pos + 1] =='.') {
+        pos++;
+        dot = 1;
+    }
+    
     if (rest) {
         MusRest *rest =  new MusRest;
         rest->m_dur = duration;
         rest->m_oct = m_rest_octave;
         rest->m_pname = m_rest_position;
+        rest->m_dots = dot;
         m_layer->AddLayerElement(rest);
     } else {
         MusNote *note = new MusNote;
@@ -272,6 +279,7 @@ int MusDarmsInput::do_Note(int pos, const char* data, bool rest) {
         note->m_accid = accidental;
         note->m_oct = PitchMap[position + m_clef_offset].oct;
         note->m_pname = PitchMap[position + m_clef_offset].pitch;
+        note->m_dots = dot;
         m_layer->AddLayerElement(note);
     }
     
