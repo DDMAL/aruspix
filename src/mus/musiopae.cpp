@@ -764,7 +764,7 @@ int MusPaeInput::getClefInfo( const char *incipit, MeasureObject *measure, int i
         }
     } else {
         // what the...
-        assert("Clef is ??");
+        printf("Clef is ??\n");
     }
     
     measure->clef = mclef;

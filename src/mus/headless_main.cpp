@@ -21,6 +21,8 @@
 #include "musbboxdc.h"
 #include "muspage.h"
 #include "mussystem.h"
+#include "musiomei.h"
+#include "musiodarms.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -32,7 +34,7 @@ string m_infile;
 string m_svgdir;
 string m_outfile;
 
-char *cmdlineopts = "r:o:h";
+const char *cmdlineopts = "r:o:h";
 
 // Some handy string split functions
 std::vector<std::string> &split(const std::string &s, char delim, std::vector<std::string> &elems) {
@@ -109,7 +111,7 @@ int main(int argc, char** argv) {
     
     MusDoc *doc =  new MusDoc();
 
-    MusPaeInput meiinput( doc, m_infile.c_str() );
+    MusDarmsInput meiinput( doc, m_infile.c_str() );
 	if ( !meiinput.ImportFile() )
 		return -1;
     
