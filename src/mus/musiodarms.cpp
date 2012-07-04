@@ -249,6 +249,9 @@ int MusDarmsInput::do_Note(int pos, const char* data, bool rest) {
     } else if (data[pos + 1] == '#') {
         accidental = ACCID_SHARP;
         pos++;
+    } else if (data[pos + 1] == '*') {
+        accidental = ACCID_NATURAL;
+        pos++;
     }
     
     switch (data[++pos]) {
