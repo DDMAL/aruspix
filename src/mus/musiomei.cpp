@@ -21,6 +21,7 @@ using std::max;
 
 #include <mei/xmlimport.h>
 #include <mei/xmlexport.h>
+#include <mei/cmnornaments.h>
 
 #include "musbarline.h"
 #include "musbeam.h"
@@ -271,9 +272,9 @@ bool MusMeiOutput::WriteLayerElement( MusLayerElement *element )
         wxLogWarning( "NeumeSymbol are not saved in MEI files" );
     }
     else if (dynamic_cast<MusNote*>(element)) {
-        Note *note = new Note();
-        WriteMeiNote( note, dynamic_cast<MusNote*>(element) );
-        meiElement = note;
+        //Note *note = new Note();
+        //WriteMeiNote( note, dynamic_cast<MusNote*>(element) );
+        //meiElement = note;
     }
     else if (dynamic_cast<MusRest*>(element)) {
         Rest *rest = new Rest();
@@ -448,6 +449,9 @@ bool MusMeiOutput::WriteLaidOutLayerElement( MusLaidOutLayerElement *laidOutLaye
 {
     wxASSERT( m_laidOutLayer );
     LaidOutElement *element = new LaidOutElement();
+    
+//    Mordent *mor = new Mordent;
+    
     element->setId( GetMeiUuid( laidOutLayerElement ));
     // x - y position (to be corrected)
     element->m_Coordinated.setUlx( wxString::Format( "%d", laidOutLayerElement->m_x_abs ).c_str() );
@@ -620,8 +624,10 @@ MusMeiInput::~MusMeiInput()
 
 bool MusMeiInput::ImportFile( )
 {
+    
+    printf("ROOD %s\n", m_filename.c_str());
     try {
-        mei::MeiDocument *doc = XmlImport::documentFromFile( m_filename.c_str() );
+        mei::MeiDocument *doc = XmlImport::documentFromFile( *new string( m_filename.c_str()) );
         if ( !doc ) {
             return false;
         }

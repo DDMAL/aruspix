@@ -233,7 +233,7 @@ int MusDarmsInput::do_Note(int pos, const char* data, bool rest) {
         position = -(data[++pos] - 0x30);
     } else {
         // as above
-        if (!isnumber(data[pos])) return 0; // this should not happen, as it is checked in the caller
+        if (!isnumber(data[pos]) && data[pos] != 'R') return 0; // this should not happen, as it is checked in the caller
         // positive number
         position = data[pos] - 0x30;
         //check for second digit
@@ -323,7 +323,7 @@ bool MusDarmsInput::ImportFile() {
     infile.getline(data, sizeof(data), '\n');
     len = strlen(data);
     infile.close();
-    printf("len: %i\n", len);
+    printf("len: %i, %s\n", len, data);
     
     // Prepare the aruspix document
     m_div = new MusDiv();
