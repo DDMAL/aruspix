@@ -223,7 +223,25 @@ int MusDarmsInput::do_Note(int pos, const char* data, bool rest) {
     int duration;
     int dot = 0;
     
-    position = data[pos] - 0x30;
+    //pos points to the first digit of the note
+    // it cn be 5W, 12W, -1W
+    
+    // Negative number, only '-' and one digit
+    if (data[pos] == '-') {
+        // be sure following char is a number
+        if (!isnumber(data[pos + 1])) return 0;
+        position = -(data[++pos] - 0x30);
+    } else {
+        // as above
+        if (!isnumber(data[pos])) return 0; // this should not happen, as it is checked in the caller
+        // positive number
+        position = data[pos] - 0x30;
+        //check for second digit
+        if (isnumber(data[pos + 1])) {
+            pos++;
+            position = (position * 10) + (data[pos] - 0x30);
+        }
+    }
     
     if (data[pos + 1] == '-') {
         accidental = ACCID_FLAT;
@@ -327,7 +345,7 @@ bool MusDarmsInput::ImportFile() {
             printf("Global spec. at %i\n", pos);
             res = do_globalSpec(pos, data);
             if (res) pos = res;
-        } else if (isnumber(c)) {
+        } else if (isnumber(c) || c == '-' ) { // check for '-' too as note positions can be negative
             //is number followed by '!' ? it is a clef
             if (data[pos + 1] == '!') {
                 res = do_Clef(pos, data);
@@ -340,8 +358,8 @@ bool MusDarmsInput::ImportFile() {
             res = do_Note(pos, data, true);
             if (res) pos = res;
         } else {
-            if (!isspace(c))
-                printf("Other %c\n", c);
+            //if (!isspace(c))
+                //printf("Other %c\n", c);
         }
  
         pos++;
