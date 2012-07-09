@@ -378,6 +378,10 @@ void MusRC::DrawNote ( MusDC *dc, MusLaidOutLayerElement *element, MusLaidOutLay
         accid.m_pname = note->m_pname;
 		accid.m_accid = note->m_accid;
         MusLaidOutLayerElement accidElement( &accid );
+        // RZ to calculate the offset with respect to the clef
+        // the element has to be into tle layer
+        // is this ok here?
+        layer->AddElement(&accidElement); //RZ
         accidElement.m_x_abs = x1;
         DrawSymbol( dc, &accidElement, layer, staff ); // ax2
 	}

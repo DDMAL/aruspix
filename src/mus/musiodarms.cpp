@@ -65,7 +65,7 @@ void MusDarmsInput::UnrollKeysig(int quantity, char alter) {
     int sharps[] = {PITCH_F, PITCH_C, PITCH_G, PITCH_D, PITCH_A, PITCH_E, PITCH_B};
     int *alteration_set;
     unsigned char accid;
-        
+    
     if (quantity == 0) quantity++;
     
     if (alter == '-') {
@@ -101,7 +101,10 @@ int MusDarmsInput::parseMeter(int pos, const char* data) {
         } else {
             meter->m_meterSymb = METER_SYMB_COMMON;
         }
-    } else if (isnumber(data[pos])) { // Coupound meter
+        pos++;
+    }
+    // See if followed by numerical meter
+    if (isnumber(data[pos])) { // Coupound meter
         int n1, n2;
         n1 = data[pos] - 0x30; // old school conversion to int
         if (isnumber(data[pos + 1])) {
@@ -125,7 +128,7 @@ int MusDarmsInput::parseMeter(int pos, const char* data) {
         }
         printf("Meter is: %i %i\n", meter->m_num, meter->m_numBase);
     }
-    
+    meter->m_meterSymb = METER_SYMB_COMMON;
     m_layer->AddLayerElement(meter);
     return pos;
 }
@@ -185,25 +188,25 @@ int MusDarmsInput::do_Clef(int pos, const char* data) {
     
     if (data[pos] == 'C') {
         switch (position) {
-            case 1: mclef->m_clefId = UT1; m_rest_position = PITCH_E; m_rest_octave = 4; break;
-            case 3: mclef->m_clefId = UT2; m_rest_position = PITCH_C; m_rest_octave = 4; break;
-            case 5: mclef->m_clefId = UT3; m_rest_position = PITCH_A; m_rest_octave = 3; break;
-            case 7: mclef->m_clefId = UT4; m_rest_position = PITCH_F; m_rest_octave = 3; break;
+            case 1: mclef->m_clefId = UT1; m_rest_position = PITCH_G; m_rest_octave = 4; break;
+            case 3: mclef->m_clefId = UT2; m_rest_position = PITCH_E; m_rest_octave = 4; break;
+            case 5: mclef->m_clefId = UT3; m_rest_position = PITCH_C; m_rest_octave = 4; break;
+            case 7: mclef->m_clefId = UT4; m_rest_position = PITCH_A; m_rest_octave = 3; break;
             default: printf("Invalid C clef on line %i\n", position); break;
         }
         m_clef_offset = 21 - position; // 21 is the position in the array, position is of the clef
     } else if (data[pos] == 'G') {
         switch (position) {
-            case 1: mclef->m_clefId = SOL1; m_rest_position = PITCH_B; m_rest_octave = 4; break;
-            case 3: mclef->m_clefId = SOL2; m_rest_position = PITCH_G; m_rest_octave = 4; break;
+            case 1: mclef->m_clefId = SOL1; m_rest_position = PITCH_D; m_rest_octave = 5; break;
+            case 3: mclef->m_clefId = SOL2; m_rest_position = PITCH_B; m_rest_octave = 4; break;
             default: printf("Invalid G clef on line %i\n", position); break;
         }
         m_clef_offset = 25 - position;
     } else if (data[pos] == 'F') {
         switch (position) {
-            case 3: mclef->m_clefId = FA3; m_rest_position = PITCH_D; m_rest_octave = 3; break;
-            case 5: mclef->m_clefId = FA4; m_rest_position = PITCH_B; m_rest_octave = 2; break;
-            case 7: mclef->m_clefId = FA5; m_rest_position = PITCH_G; m_rest_octave = 2; break;
+            case 3: mclef->m_clefId = FA3; m_rest_position = PITCH_F; m_rest_octave = 3; break;
+            case 5: mclef->m_clefId = FA4; m_rest_position = PITCH_D; m_rest_octave = 3; break;
+            case 7: mclef->m_clefId = FA5; m_rest_position = PITCH_B; m_rest_octave = 2; break;
             default: printf("Invalid F clef on line %i\n", position); break;
         }
         m_clef_offset = 15 - position;
