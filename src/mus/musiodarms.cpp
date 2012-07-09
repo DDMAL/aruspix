@@ -102,7 +102,15 @@ int MusDarmsInput::parseMeter(int pos, const char* data) {
             meter->m_meterSymb = METER_SYMB_COMMON;
         }
         pos++;
+    } else if (data[pos] == 'O') {
+        if (data[pos + 1] == '/') {
+            pos++;
+            printf("O/ not supported\n");
+        }
+        meter->m_sign = MENSUR_SIGN_O;
+        pos++;
     }
+    
     // See if followed by numerical meter
     if (isnumber(data[pos])) { // Coupound meter
         int n1, n2;
@@ -113,10 +121,14 @@ int MusDarmsInput::parseMeter(int pos, const char* data) {
         }
         meter->m_num = n1;
         
-        //we expect the next char a ':', or make a single digit meter
-        if (data[++pos] != ':') {
+        // we expect the next char a ':', or make a single digit meter
+        // mini-hack in some cases it is a '-'...
+        if (data[pos + 1] != ':' && data[pos + 1] != '-') {
+            pos++;
             meter->m_numBase = 1;
         } else {
+            pos++;
+            if (data[pos] == '-') printf("Time sig numbers should be divided with ':'.\n");
             // same as above, get one or two nums
             n1 = data[++pos] - ASCII_NUMBER_OFFSET; // old school conversion to int
             if (isnumber(data[pos + 1])) {
@@ -128,7 +140,7 @@ int MusDarmsInput::parseMeter(int pos, const char* data) {
         }
         printf("Meter is: %i %i\n", meter->m_num, meter->m_numBase);
     }
-    meter->m_meterSymb = METER_SYMB_COMMON;
+    
     m_layer->AddLayerElement(meter);
     return pos;
 }
