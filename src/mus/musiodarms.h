@@ -29,8 +29,10 @@
 #include "mussymbol.h"
 
 //----------------------------------------------------------------------------
-// MusPaeInput
+// MusDarmsInput
 //----------------------------------------------------------------------------
+
+#define ASCII_NUMBER_OFFSET 0x30 // for homebrewed char to int
 
 typedef struct _pitchmap {
     unsigned int oct;

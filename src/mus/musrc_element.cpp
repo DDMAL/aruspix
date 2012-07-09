@@ -105,7 +105,12 @@ void MusRC::DrawDurationElement( MusDC *dc, MusLaidOutLayerElement *element, Mus
         dc->StartGraphic( element, "rest", wxString::Format("s_%d_%d_%d", staff->GetId(), layer->voix, element->GetId()) );
         //if (!transp_sil)
 		//	pnote->code = getSilencePitch (pelement);
-        element->m_y_drawing = CalculatePitchPosY( staff, rest->m_pname, layer->GetClefOffset( element ), oct);
+        
+        // Automatically calculate rest position, if so requested
+        if (rest->m_pname == REST_AUTO)
+            element->m_y_drawing = CalculateRestPosY( staff, rest->m_dur);
+        else
+            element->m_y_drawing = CalculatePitchPosY( staff, rest->m_pname, layer->GetClefOffset( element ), oct);
 		
         DrawRest( dc, element, layer, staff );
         dc->EndGraphic(element, this ); //RZ

@@ -106,9 +106,9 @@ int MusDarmsInput::parseMeter(int pos, const char* data) {
     // See if followed by numerical meter
     if (isnumber(data[pos])) { // Coupound meter
         int n1, n2;
-        n1 = data[pos] - 0x30; // old school conversion to int
+        n1 = data[pos] - ASCII_NUMBER_OFFSET; // old school conversion to int
         if (isnumber(data[pos + 1])) {
-            n2 = data[++pos] - 0x30; // idem
+            n2 = data[++pos] - ASCII_NUMBER_OFFSET; // idem
             n1 = (n1 * 10) + n2;
         }
         meter->m_num = n1;
@@ -118,9 +118,9 @@ int MusDarmsInput::parseMeter(int pos, const char* data) {
             meter->m_numBase = 1;
         } else {
             // same as above, get one or two nums
-            n1 = data[++pos] - 0x30; // old school conversion to int
+            n1 = data[++pos] - ASCII_NUMBER_OFFSET; // old school conversion to int
             if (isnumber(data[pos + 1])) {
-                n2 = data[++pos] - 0x30; // idem
+                n2 = data[++pos] - ASCII_NUMBER_OFFSET; // idem
                 n1 = (n1 * 10) + n2;
             }
             
@@ -151,7 +151,7 @@ int MusDarmsInput::do_globalSpec(int pos, const char* data) {
         case 'K': // key sig, !K2- = two flats
             if (isnumber(data[pos + 1])) { // is followed by number?
                 pos++; // move forward
-                quantity = data[pos] - 0x30; // get number from ascii char
+                quantity = data[pos] - ASCII_NUMBER_OFFSET; // get number from ascii char
             }
             // next we expect a flat or sharp, - or #
             pos++;
@@ -180,7 +180,7 @@ int MusDarmsInput::do_globalSpec(int pos, const char* data) {
 }
 
 int MusDarmsInput::do_Clef(int pos, const char* data) {
-    int position = data[pos] - 0x30; // manual conversion from ASCII to int
+    int position = data[pos] - ASCII_NUMBER_OFFSET; // manual conversion from ASCII to int
     
     pos = pos + 2; // skip the '!' 3!F
     
@@ -233,16 +233,16 @@ int MusDarmsInput::do_Note(int pos, const char* data, bool rest) {
     if (data[pos] == '-') {
         // be sure following char is a number
         if (!isnumber(data[pos + 1])) return 0;
-        position = -(data[++pos] - 0x30);
+        position = -(data[++pos] - ASCII_NUMBER_OFFSET);
     } else {
         // as above
         if (!isnumber(data[pos]) && data[pos] != 'R') return 0; // this should not happen, as it is checked in the caller
         // positive number
-        position = data[pos] - 0x30;
+        position = data[pos] - ASCII_NUMBER_OFFSET;
         //check for second digit
         if (isnumber(data[pos + 1])) {
             pos++;
-            position = (position * 10) + (data[pos] - 0x30);
+            position = (position * 10) + (data[pos] - ASCII_NUMBER_OFFSET);
         }
     }
     
@@ -294,7 +294,7 @@ int MusDarmsInput::do_Note(int pos, const char* data, bool rest) {
         MusRest *rest =  new MusRest;
         rest->m_dur = duration;
         rest->m_oct = m_rest_octave;
-        rest->m_pname = m_rest_position;
+        rest->m_pname = REST_AUTO;//m_rest_position;
         rest->m_dots = dot;
         m_layer->AddLayerElement(rest);
     } else {
