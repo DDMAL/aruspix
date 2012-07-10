@@ -13,6 +13,7 @@
 #include "muslaidoutlayerelement.h"
 
 #include "musbarline.h"
+#include "musbeam.h"
 #include "musclef.h"
 #include "musmensur.h"
 #include "musneume.h"
@@ -86,6 +87,9 @@ void MusLaidOutLayerElement::UpdateXPosition( wxArrayPtrVoid params )
     if ( this->m_layer->m_elements.Index( *this ) == 0 ) {
         (*current_x_shift) = 0;
     }
+    
+    if (dynamic_cast<MusBeam*>(this->m_layerElement))
+        return;
     
     int negative_offset = this->m_x_abs - this->m_contentBB_x1;
     this->m_x_abs = (*current_x_shift) + negative_offset;

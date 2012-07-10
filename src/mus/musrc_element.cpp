@@ -175,14 +175,19 @@ void MusRC::DrawBeamElement(MusDC *dc, MusLaidOutLayerElement *element, MusLaidO
         //    m_currentColour = AxCYAN;
         
         MusLaidOutLayerElement *lelem = layer->GetFromMusLayerElement(note);
-        //dc->StartGraphic( lelem, "note", wxString::Format("s_%d_%d_%d", staff->GetId(), layer->voix, lelem->GetId() ) );
+        dc->StartGraphic( lelem, "note", wxString::Format("s_%d_%d_%d", staff->GetId(), layer->voix, lelem->GetId() ) );
         
         lelem->m_y_drawing = CalculatePitchPosY( staff, note->m_pname, layer->GetClefOffset( lelem ), oct );
         
         DrawNote(dc, lelem, layer, staff);
         
-        //dc->EndGraphic(lelem, this );
+        printf("N %x\n", note->m_beam[0]);
+        
+        dc->EndGraphic(lelem, this );
     }
+    
+    // BEAM!
+    DrawBeam( dc, layer, staff );
     
     dc->EndGraphic(element, this ); //RZ
 }
