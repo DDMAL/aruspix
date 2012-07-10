@@ -66,6 +66,7 @@ public:
 	MusLaidOutLayerElement *GetNext( MusLaidOutLayerElement *element );
 	MusLaidOutLayerElement *GetPrevious( MusLaidOutLayerElement *element );
 	MusLaidOutLayerElement *GetAtPos( int x );
+    MusLaidOutLayerElement *GetFromMusLayerElement( MusLayerElement *element);
 	MusLaidOutLayerElement *Insert( MusLayerElement *element, int x ); // return a pointer on the inserted element
 	void Delete( MusLaidOutLayerElement *element );
 	/** 

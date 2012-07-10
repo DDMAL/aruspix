@@ -36,13 +36,14 @@ public:
      */
     void AddNote(MusLayerElement *element);
     
-private:
     /**
      * The array of notes or rests.
      * The beam object do not own the notes.
      */
-    ArrayOfMusLayerElements m_notes;
+    ArrayOfMusLayerElements m_notes; // should remain private?
     
+private:
+
 public:
     
 private:

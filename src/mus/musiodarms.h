@@ -69,6 +69,8 @@ private:
 	MusStaff *m_staff;
 	MusLayer *m_layer;
     
+    MusBeam *m_beam;
+    
     unsigned char m_rest_position;
     unsigned int m_rest_octave;
     

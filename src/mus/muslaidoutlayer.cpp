@@ -335,6 +335,16 @@ MusLaidOutLayerElement *MusLaidOutLayer::GetFirst( MusLaidOutLayerElement *eleme
 	return (*succ ? element : original);
 }
 
+MusLaidOutLayerElement *MusLaidOutLayer::GetFromMusLayerElement( MusLayerElement *element) {
+    
+    for (unsigned int i = 0; i < m_elements.Count(); i++) {
+        
+        if (m_elements[i].m_layerElement == element)
+            return &m_elements[i];
+    }
+    
+    return NULL;
+}
 
 MusClef* MusLaidOutLayer::GetClef( MusLaidOutLayerElement *test )
 {

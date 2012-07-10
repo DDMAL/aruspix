@@ -115,7 +115,8 @@ public:
     int CalculatePitchCode ( MusLaidOutLayer *layer, int y_n, int x_pos, int *octave );
     /* musrc_element.cpp */
     void DrawElement( MusDC *dc, MusLaidOutLayerElement *element, MusLaidOutLayer *layer, MusLaidOutStaff *staff );
-    void DrawDurationElement( MusDC *dc, MusLaidOutLayerElement *element, MusLaidOutLayer *layer, MusLaidOutStaff *staff ); 
+    void DrawDurationElement( MusDC *dc, MusLaidOutLayerElement *element, MusLaidOutLayer *layer, MusLaidOutStaff *staff );
+    void DrawBeamElement(MusDC *dc, MusLaidOutLayerElement *element, MusLaidOutLayer *layer, MusLaidOutStaff *staff);
     void DrawBarline( MusDC *dc, MusLaidOutLayerElement *element, MusLaidOutLayer *layer, MusLaidOutStaff *staff );  
     void DrawClef( MusDC *dc, MusLaidOutLayerElement *element, MusLaidOutLayer *layer, MusLaidOutStaff *staff );
     void DrawMensur( MusDC *dc, MusLaidOutLayerElement *element, MusLaidOutLayer *layer, MusLaidOutStaff *staff );
@@ -125,7 +126,7 @@ public:
     void DrawMensurHalfCircle( MusDC *dc, int x, int yy, MusLaidOutStaff *staff );
     void DrawMensurReversedHalfCircle( MusDC *dc, int x, int yy, MusLaidOutStaff *staff ); 
     void DrawMensurSlash( MusDC *dc, int x, int yy, MusLaidOutStaff *staff );  
-    void DrawNote( MusDC *dc, MusLaidOutLayerElement *element, MusLaidOutLayer *layer, MusLaidOutStaff *staff );  
+    void DrawNote( MusDC *dc, MusLaidOutLayerElement *element, MusLaidOutLayer *layer, MusLaidOutStaff *staff, bool inBeam = false );  
     void DrawRest( MusDC *dc, MusLaidOutLayerElement *element, MusLaidOutLayer *layer, MusLaidOutStaff *staff );
     void DrawSymbol( MusDC *dc, MusLaidOutLayerElement *element, MusLaidOutLayer *layer, MusLaidOutStaff *staff );
     void DrawSymbolAccid( MusDC *dc, MusLaidOutLayerElement *element, MusLaidOutLayer *layer, MusLaidOutStaff *staff );
