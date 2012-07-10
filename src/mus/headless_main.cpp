@@ -125,7 +125,8 @@ int main(int argc, char** argv) {
     
     MusRC rc;
     rc.SetLayout(layout);
-    MusSvgDC *svg = new MusSvgDC(m_outfile.c_str(), system->m_contentBB_x2 - system->m_contentBB_x1 + 20, (system->m_contentBB_y2 - system->m_contentBB_y1) * 3);
+    layout->m_leftMargin = 0; // good done here?
+    MusSvgDC *svg = new MusSvgDC(m_outfile.c_str(), system->m_contentBB_x2 - system->m_contentBB_x1, (system->m_contentBB_y2 - system->m_contentBB_y1));
     rc.DrawPage(svg, &layout->m_pages[0] , false);
     
     delete svg;

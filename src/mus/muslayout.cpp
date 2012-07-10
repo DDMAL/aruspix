@@ -143,7 +143,7 @@ void MusLayout::Realize( MusScore *score )
 	
 	MusPage *page = new MusPage( );
 	MusSystem *system = new MusSystem();
-    
+
     int x = 0; // hardcoded spacing
 	
 	int i, j, k, l, m;
