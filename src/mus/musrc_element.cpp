@@ -20,6 +20,7 @@
 #include "musrest.h"
 #include "mussymbol.h"
 #include "muskeysig.h"
+#include "musbeam.h"
 
 #include <typeinfo>
 using std::min;
@@ -45,8 +46,14 @@ void MusRC::DrawElement( MusDC *dc, MusLaidOutLayerElement *element, MusLaidOutL
     if (dynamic_cast<MusBarline*>(element->m_layerElement)) {
         DrawBarline(dc, element, layer, staff);
     }
+    else if (dynamic_cast<MusBeam*>(element->m_layerElement)) {
+        DrawBeamElement(dc, element, layer, staff);
+    }
     else if (dynamic_cast<MusClef*>(element->m_layerElement)) {
         DrawClef(dc, element, layer, staff);
+    }
+    else if (dynamic_cast<MusKeySig*>(element->m_layerElement)) {
+        DrawKeySig(dc, element, layer, staff);
     }
     else if (dynamic_cast<MusMensur*>(element->m_layerElement)) {
         DrawMensur(dc, element, layer, staff);
@@ -63,9 +70,7 @@ void MusRC::DrawElement( MusDC *dc, MusLaidOutLayerElement *element, MusLaidOutL
     else if (dynamic_cast<MusSymbol*>(element->m_layerElement)) {
         DrawSymbol(dc, element, layer, staff);
     }
-    else if (dynamic_cast<MusKeySig*>(element->m_layerElement)) {
-        DrawKeySig(dc, element, layer, staff);
-    }
+
     
     m_currentColour = AxBLACK;
 
@@ -87,6 +92,9 @@ void MusRC::DrawDurationElement( MusDC *dc, MusLaidOutLayerElement *element, Mus
         MusNote *note = dynamic_cast<MusNote*>(element->m_layerElement);
         int oct = note->m_oct - 4;
 
+        if (note->m_beam[0])
+            return;
+        
         //if ( !m_lyricMode && BelongsToTheNote( m_currentElement ) ) // the current element is a lyric that belongs to the note we are drawing
         //    m_currentColour = AxCYAN;
             
@@ -150,6 +158,34 @@ void MusRC::DrawDurationElement( MusDC *dc, MusLaidOutLayerElement *element, Mus
 	return;
 }
 
+void MusRC::DrawBeamElement(MusDC *dc, MusLaidOutLayerElement *element, MusLaidOutLayer *layer, MusLaidOutStaff *staff) {
+    wxASSERT_MSG( layer, "Pointer to layer cannot be NULL" );
+    wxASSERT_MSG( staff, "Pointer to staff cannot be NULL" );
+    
+    MusBeam *beam = dynamic_cast<MusBeam*>(element->m_layerElement);
+
+    dc->StartGraphic( element, "beam", wxString::Format("s_%d_%d_%d", staff->GetId(), layer->voix, element->GetId() ) );
+    
+    for (unsigned int i = 0; i < beam->m_notes.Count(); i++) {
+
+        MusNote *note = dynamic_cast<MusNote*>(&beam->m_notes[i]);
+        int oct = note->m_oct - 4;
+        
+        //if ( !m_lyricMode && BelongsToTheNote( m_currentElement ) ) // the current element is a lyric that belongs to the note we are drawing
+        //    m_currentColour = AxCYAN;
+        
+        MusLaidOutLayerElement *lelem = layer->GetFromMusLayerElement(note);
+        //dc->StartGraphic( lelem, "note", wxString::Format("s_%d_%d_%d", staff->GetId(), layer->voix, lelem->GetId() ) );
+        
+        lelem->m_y_drawing = CalculatePitchPosY( staff, note->m_pname, layer->GetClefOffset( lelem ), oct );
+        
+        DrawNote(dc, lelem, layer, staff);
+        
+        //dc->EndGraphic(lelem, this );
+    }
+    
+    dc->EndGraphic(element, this ); //RZ
+}
 
 // dessine la note en a,b+by. Calcule et dessine lignes addit. avec by=m_y_drawing
 // b = decalage en fonction oct., clef, a partir du curseur; by = pos. curs.
@@ -158,7 +194,7 @@ void MusRC::DrawDurationElement( MusDC *dc, MusLaidOutLayerElement *element, Mus
 // queue: le ptr *testchord extern peut garder le x et l'y.
 
 
-void MusRC::DrawNote ( MusDC *dc, MusLaidOutLayerElement *element, MusLaidOutLayer *layer, MusLaidOutStaff *staff )
+void MusRC::DrawNote ( MusDC *dc, MusLaidOutLayerElement *element, MusLaidOutLayer *layer, MusLaidOutStaff *staff, bool inBeam)
 {
     wxASSERT_MSG( layer, "Pointer to layer cannot be NULL" );
     wxASSERT_MSG( staff, "Pointer to staff cannot be NULL" );

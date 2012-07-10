@@ -26,6 +26,7 @@
 #include "musrest.h"
 #include "mussymbol.h"
 #include "muskeysig.h"
+#include "musbeam.h"
 
 #include "musiodarms.h"
 
@@ -315,6 +316,12 @@ int MusDarmsInput::do_Note(int pos, const char* data, bool rest) {
         rest->m_dots = dot;
         m_layer->AddLayerElement(rest);
     } else {
+        
+        if (!m_beam) {
+            m_beam = new MusBeam();
+            m_layer->AddLayerElement(m_beam);
+        }
+        
         MusNote *note = new MusNote;
         note->m_dur = duration;
         note->m_accid = accidental;
@@ -322,6 +329,8 @@ int MusDarmsInput::do_Note(int pos, const char* data, bool rest) {
         note->m_pname = PitchMap[position + m_clef_offset].pitch;
         note->m_dots = dot;
         m_layer->AddLayerElement(note);
+        
+        m_beam->AddNote(note);
     }
     
     return pos;
@@ -359,6 +368,8 @@ bool MusDarmsInput::ImportFile() {
     m_staff->AddLayer(m_layer);
     m_measure->AddStaff(m_staff);
     m_section->AddMeasure(m_measure);
+    
+    m_beam = NULL;
     
     // do this the C style, char by char
     while (pos < len) {
