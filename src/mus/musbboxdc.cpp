@@ -540,7 +540,7 @@ void MusBBoxDC::DrawRoundedRectangle(int x, int y, int width, int height, double
         
 void MusBBoxDC::DrawText(const wxString& text, int x, int y)
 {
-    //DrawRotatedText( text, x, y, 0.0 );
+    DrawMusicText( text, x, y);
 }
 
 
@@ -573,7 +573,6 @@ void MusBBoxDC::DrawMusicText(const wxString& text, int x, int y)
     //// Use the MusLeipzigBBox class above    
     unsigned char c = (unsigned char)text[0];
     MusLeipzigBBox *bbox = new MusLeipzigBBox();
-    
     
     switch (c) {
             /* figures */

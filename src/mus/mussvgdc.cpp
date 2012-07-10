@@ -18,6 +18,7 @@
 #include "mussvgdc.h"
 #include "musdef.h"
 #include "musdoc.h"
+#include "musrc.h"
 
 #define space " "
 #define semicolon ";"
@@ -420,7 +421,8 @@ void MusSvgDC::DrawRoundedRectangle(int x, int y, int width, int height, double 
         
 void MusSvgDC::DrawText(const wxString& text, int x, int y)
 {
-    DrawRotatedText( text, x, y, 0.0 );
+    //DrawRotatedText( text, x, y, 0.0 );
+    DrawMusicText(text, x, y);
 }
 
 

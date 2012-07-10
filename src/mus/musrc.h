@@ -108,7 +108,8 @@ public:
 	void DrawStaff( MusDC *dc, MusLaidOutStaff *staff, MusSystem *system );
 	void DrawStaffLines( MusDC *dc, MusLaidOutStaff *staff, MusSystem *system );
     int CalculatePitchPosY ( MusLaidOutStaff *staff, char pname, int dec_clef, int oct);
-	int CalculateNeumePosY ( MusLaidOutStaff *staff, char note, int dec_clef, int oct); 
+	int CalculateNeumePosY ( MusLaidOutStaff *staff, char note, int dec_clef, int oct);
+    int CalculateRestPosY ( MusLaidOutStaff *staff, char duration);
 	void DrawLayer( MusDC *dc, MusLaidOutLayer *layer, MusLaidOutStaff *staff );
 	void DrawSlur( MusDC *dc, MusLaidOutLayer *layer, int x1, int y1, int x2, int y2, bool up, int height = -1);
     int CalculatePitchCode ( MusLaidOutLayer *layer, int y_n, int x_pos, int *octave );
@@ -139,6 +140,7 @@ public:
     void DrawQuarterRest ( MusDC *dc, int a, int b, int valeur, unsigned char dots, unsigned int smaller, MusLaidOutStaff *staff);
     void DrawDots ( MusDC *dc, int x1, int y1, int offy, unsigned char dots, MusLaidOutStaff *staff );
     void CalculateLigaturePosX ( MusLaidOutLayerElement *element, MusLaidOutLayer *layer, MusLaidOutStaff *staff);
+    void DrawKeySig( MusDC *dc, MusLaidOutLayerElement *element, MusLaidOutLayer *layer, MusLaidOutStaff *staff );
     /* musrc_beam.cpp */
     void DrawBeam(  MusDC *dc, MusLaidOutLayer *layer, MusLaidOutStaff *staff );
     

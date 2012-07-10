@@ -543,6 +543,32 @@ int MusRC::CalculatePitchPosY ( MusLaidOutStaff *staff, char pname, int dec_clef
 	return 0;
 }
 
+int MusRC::CalculateRestPosY ( MusLaidOutStaff *staff, char duration)
+{
+    wxASSERT_MSG( staff, "Pointer to staff cannot be NULL" );
+
+	int staff_space = m_layout->m_halfInterl[staff->staffSize];
+    int base = -17 * staff_space; // -17 is a magic number copied from above
+    int offset;
+    
+    switch (duration) {
+        case DUR_LG: offset = 4; break;
+        case DUR_BR: offset = 5; break;
+        case DUR_1: offset = 7; break;
+        case DUR_2: offset = 5; break;
+        case DUR_4: offset = 3; break;
+        case DUR_8: offset = 3; break;    
+        case DUR_16: offset = 3; break;
+        case DUR_32: offset = 3; break;
+        case DUR_64: offset = 2; break;
+        case DUR_128: offset = 2; break;
+        case DUR_256: offset = 1; break;
+            
+        default: offset = 12; break; // Signal an error, put the clef up high
+    }
+    return base + staff_space * offset;
+}
+
 void MusRC::DrawStaffLines( MusDC *dc, MusLaidOutStaff *staff, MusSystem *system )
 {
 	wxASSERT_MSG( dc , "DC cannot be NULL");

@@ -19,6 +19,7 @@
 #include "musnote.h"
 #include "musrest.h"
 #include "mussymbol.h"
+#include "muskeysig.h"
 
 #include <typeinfo>
 using std::min;
@@ -62,7 +63,10 @@ void MusRC::DrawElement( MusDC *dc, MusLaidOutLayerElement *element, MusLaidOutL
     else if (dynamic_cast<MusSymbol*>(element->m_layerElement)) {
         DrawSymbol(dc, element, layer, staff);
     }
-
+    else if (dynamic_cast<MusKeySig*>(element->m_layerElement)) {
+        DrawKeySig(dc, element, layer, staff);
+    }
+    
     m_currentColour = AxBLACK;
 
 
@@ -105,7 +109,12 @@ void MusRC::DrawDurationElement( MusDC *dc, MusLaidOutLayerElement *element, Mus
         dc->StartGraphic( element, "rest", wxString::Format("s_%d_%d_%d", staff->GetId(), layer->voix, element->GetId()) );
         //if (!transp_sil)
 		//	pnote->code = getSilencePitch (pelement);
-        element->m_y_drawing = CalculatePitchPosY( staff, rest->m_pname, layer->GetClefOffset( element ), oct);
+        
+        // Automatically calculate rest position, if so requested
+        if (rest->m_pname == REST_AUTO)
+            element->m_y_drawing = CalculateRestPosY( staff, rest->m_dur);
+        else
+            element->m_y_drawing = CalculatePitchPosY( staff, rest->m_pname, layer->GetClefOffset( element ), oct);
 		
         DrawRest( dc, element, layer, staff );
         dc->EndGraphic(element, this ); //RZ
@@ -378,6 +387,10 @@ void MusRC::DrawNote ( MusDC *dc, MusLaidOutLayerElement *element, MusLaidOutLay
         accid.m_pname = note->m_pname;
 		accid.m_accid = note->m_accid;
         MusLaidOutLayerElement accidElement( &accid );
+        // RZ to calculate the offset with respect to the clef
+        // the element has to be into tle layer
+        // is this ok here?
+        layer->AddElement(&accidElement); //RZ
         accidElement.m_x_abs = x1;
         DrawSymbol( dc, &accidElement, layer, staff ); // ax2
 	}
@@ -1255,6 +1268,36 @@ void MusRC::DrawSymbolDot( MusDC *dc, MusLaidOutLayerElement *element, MusLaidOu
     
     dc->EndGraphic(element, this ); //RZ
 
+}
+
+void MusRC::DrawKeySig( MusDC *dc, MusLaidOutLayerElement *element, MusLaidOutLayer *layer, MusLaidOutStaff *staff )
+{
+    wxASSERT_MSG( layer, "Pointer to layer cannot be NULL" );
+    wxASSERT_MSG( staff, "Pointer to staff cannot be NULL" );
+
+    MusKeySig *ks = dynamic_cast<MusKeySig*>(element->m_layerElement);
+    int oct, symb;
+    int x, y;
+    
+    dc->StartGraphic( element, "keysig", wxString::Format("keysig_%d_%d_%d", staff->GetId(), layer->voix, element->GetId()) );
+    
+    for (int i = 0; i < ks->m_num_alter; i++) {
+    
+        element->m_y_drawing = CalculatePitchPosY( staff, ks->GetAlterationAt(i), layer->GetClefOffset( element ), ks->GetOctave(ks->GetAlterationAt(i)));
+        
+        x = element->m_x_abs + (m_layout->m_accidWidth[staff->staffSize][0] * i);
+        y = element->m_y_drawing + staff->m_y_drawing;
+        
+        if (ks->m_alteration == ACCID_FLAT)
+            symb = LEIPZIG_ACCID_FLAT;
+        else
+            symb = LEIPZIG_ACCID_SHARP;
+        
+        DrawLeipzigFont ( dc, x, y, symb, staff, false );
+                
+    }
+    dc->EndGraphic(element, this ); //RZ
+    
 }
 
 /*

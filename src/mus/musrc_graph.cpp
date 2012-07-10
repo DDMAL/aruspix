@@ -279,9 +279,15 @@ void MusRC::putstring ( MusDC *dc, int x, int y, wxString s, int centrer, int st
 { 
 	wxASSERT_MSG( dc , "DC cannot be NULL");
 
+    int fontCorr = 0;
+    
     dc->SetFont( &m_layout->m_activeFonts[ staffSize ][0] );
     x = ToRendererX(x);
-
+    if (dc->CorrectMusicAscent()) {
+        fontCorr = m_layout->m_fontHeightAscent[staffSize][0];
+    }
+    
+    
 	if ( centrer )
 	{
         wxLogDebug("Centering string not implemented with MusDC");
@@ -292,7 +298,7 @@ void MusRC::putstring ( MusDC *dc, int x, int y, wxString s, int centrer, int st
         */
 	}
 	dc->SetTextForeground( m_currentColour );
-	dc->DrawText( s, x, ToRendererY(y + m_layout->m_fontHeightAscent[staffSize][0]) );
+	dc->DrawText( s, x, ToRendererY(y + fontCorr ));
 }
 
 void MusRC::putlyric ( MusDC *dc, int x, int y, wxString s, int staffSize, bool cursor)

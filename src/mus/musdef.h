@@ -29,6 +29,8 @@ enum MusEditorMode {
 #define PITCH_G 5
 #define PITCH_A 6
 #define PITCH_B 7
+// used for automatic rest positions
+#define REST_AUTO 255
 
 // DURATION
 #define DUR_LG 0  // longa

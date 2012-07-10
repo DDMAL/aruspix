@@ -143,7 +143,7 @@ void MusLayout::Realize( MusScore *score )
 	
 	MusPage *page = new MusPage( );
 	MusSystem *system = new MusSystem();
-    
+
     int x = 0; // hardcoded spacing
 	
 	int i, j, k, l, m;
@@ -225,6 +225,13 @@ void MusLayout::SpaceMusic() {
     params.Add( &shift );
     MusLaidOutStaffFunctor updateYPosition( &MusLaidOutStaff::UpdateYPosition );
     m_doc->ProcessLayout( &updateYPosition, params );
+    
+    rc.DrawPage(  &bb_dc, &m_pages[0] , false );
+    
+    // Trim the system to the needed position
+    params.Clear();
+    MusSystemFunctor trimSystem(&MusSystem::Trim);
+    m_doc->ProcessLayout( &trimSystem, params );
     
     rc.DrawPage(  &bb_dc, &m_pages[0] , false );
 }

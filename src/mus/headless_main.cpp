@@ -21,6 +21,8 @@
 #include "musbboxdc.h"
 #include "muspage.h"
 #include "mussystem.h"
+#include "musiomei.h"
+#include "musiodarms.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -32,7 +34,7 @@ string m_infile;
 string m_svgdir;
 string m_outfile;
 
-char *cmdlineopts = "r:o:h";
+const char *cmdlineopts = "r:o:h";
 
 // Some handy string split functions
 std::vector<std::string> &split(const std::string &s, char delim, std::vector<std::string> &elems) {
@@ -109,7 +111,7 @@ int main(int argc, char** argv) {
     
     MusDoc *doc =  new MusDoc();
 
-    MusPaeInput meiinput( doc, m_infile.c_str() );
+    MusDarmsInput meiinput( doc, m_infile.c_str() );
 	if ( !meiinput.ImportFile() )
 		return -1;
     
@@ -123,7 +125,8 @@ int main(int argc, char** argv) {
     
     MusRC rc;
     rc.SetLayout(layout);
-    MusSvgDC *svg = new MusSvgDC(m_outfile.c_str(), system->m_contentBB_x2 - system->m_contentBB_x1 + 20, (system->m_contentBB_y2 - system->m_contentBB_y1) * 3);
+    layout->m_leftMargin = 0; // good done here?
+    MusSvgDC *svg = new MusSvgDC(m_outfile.c_str(), system->m_contentBB_x2 - system->m_contentBB_x1, (system->m_contentBB_y2 - system->m_contentBB_y1));
     rc.DrawPage(svg, &layout->m_pages[0] , false);
     
     delete svg;

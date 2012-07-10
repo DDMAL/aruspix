@@ -91,6 +91,10 @@
 		57EA3DE50C00BDEB00414247 /* recbookctrl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 57EA3DE30C00BDEB00414247 /* recbookctrl.cpp */; };
 		8F238171159462AF00C04D47 /* aruspix_headless.1 in CopyFiles */ = {isa = PBXBuildFile; fileRef = 8F238170159462AF00C04D47 /* aruspix_headless.1 */; };
 		8F23817A1594632C00C04D47 /* headless_main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8F2381791594632C00C04D47 /* headless_main.cpp */; };
+		8F3367F215A1E42F009AAB69 /* musiodarms.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8F3367F115A1E42F009AAB69 /* musiodarms.cpp */; };
+		8F3367F315A1E42F009AAB69 /* musiodarms.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8F3367F115A1E42F009AAB69 /* musiodarms.cpp */; };
+		8F4FA6E015AC0C4000CF9FD8 /* muskeysig.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8F4FA6DF15AC0C4000CF9FD8 /* muskeysig.cpp */; };
+		8F4FA6E115AC0C4000CF9FD8 /* muskeysig.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8F4FA6DF15AC0C4000CF9FD8 /* muskeysig.cpp */; };
 		8F9F1A17156143A200C7D6F9 /* musiopae.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8F9F1A15156143A200C7D6F9 /* musiopae.cpp */; };
 		8FE5FDDE1594943600B44674 /* musbboxdc.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D862ED8144DF72700483E57 /* musbboxdc.cpp */; };
 		8FE5FDDF1594943600B44674 /* mussvgdc.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D72429B132012A00023497A /* mussvgdc.cpp */; };
@@ -352,6 +356,10 @@
 		8F23816E159462AF00C04D47 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		8F238170159462AF00C04D47 /* aruspix_headless.1 */ = {isa = PBXFileReference; lastKnownFileType = text.man; path = aruspix_headless.1; sourceTree = "<group>"; };
 		8F2381791594632C00C04D47 /* headless_main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = headless_main.cpp; path = ../src/mus/headless_main.cpp; sourceTree = "<group>"; };
+		8F3367F015A1E417009AAB69 /* musiodarms.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = musiodarms.h; path = ../src/mus/musiodarms.h; sourceTree = "<group>"; };
+		8F3367F115A1E42F009AAB69 /* musiodarms.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = musiodarms.cpp; path = ../src/mus/musiodarms.cpp; sourceTree = "<group>"; };
+		8F4FA6DF15AC0C4000CF9FD8 /* muskeysig.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = muskeysig.cpp; path = ../src/mus/muskeysig.cpp; sourceTree = "<group>"; };
+		8F4FA6E315AC0C5700CF9FD8 /* muskeysig.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = muskeysig.h; path = ../src/mus/muskeysig.h; sourceTree = "<group>"; };
 		8F9F1A15156143A200C7D6F9 /* musiopae.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = musiopae.cpp; path = ../src/mus/musiopae.cpp; sourceTree = "<group>"; };
 		8F9F1A16156143A200C7D6F9 /* musiopae.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = musiopae.h; path = ../src/mus/musiopae.h; sourceTree = "<group>"; };
 		8FE5FE261599FA0500B44674 /* musbeam.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = musbeam.cpp; path = ../src/mus/musbeam.cpp; sourceTree = "<group>"; };
@@ -469,6 +477,8 @@
 				4D2F7E79145AD66900EF930B /* mussymbol.h */,
 				8FE5FE261599FA0500B44674 /* musbeam.cpp */,
 				8FE5FE2A1599FA1B00B44674 /* musbeam.h */,
+				8F4FA6DF15AC0C4000CF9FD8 /* muskeysig.cpp */,
+				8F4FA6E315AC0C5700CF9FD8 /* muskeysig.h */,
 			);
 			name = logical;
 			sourceTree = "<group>";
@@ -509,6 +519,8 @@
 				4D3A8FDC0D35867200BBC1FB /* musiomlf.h */,
 				4DDE3CDD0EF1B1D6006D4F2C /* musiowwg.cpp */,
 				4D3A8FDE0D35867200BBC1FB /* musiowwg.h */,
+				8F3367F015A1E417009AAB69 /* musiodarms.h */,
+				8F3367F115A1E42F009AAB69 /* musiodarms.cpp */,
 			);
 			name = io;
 			sourceTree = "<group>";
@@ -972,6 +984,8 @@
 				8FE5FE071594943600B44674 /* muswwg.cpp in Sources */,
 				8F23817A1594632C00C04D47 /* headless_main.cpp in Sources */,
 				8FE5FE281599FA0600B44674 /* musbeam.cpp in Sources */,
+				8F3367F315A1E42F009AAB69 /* musiodarms.cpp in Sources */,
+				8F4FA6E115AC0C4000CF9FD8 /* muskeysig.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1097,6 +1111,8 @@
 				4D0C8DB51557E155003F487C /* musio.cpp in Sources */,
 				8F9F1A17156143A200C7D6F9 /* musiopae.cpp in Sources */,
 				8FE5FE271599FA0600B44674 /* musbeam.cpp in Sources */,
+				8F3367F215A1E42F009AAB69 /* musiodarms.cpp in Sources */,
+				8F4FA6E015AC0C4000CF9FD8 /* muskeysig.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1146,7 +1162,6 @@
 					"$(ARUSPIX_IMLIB)/lib",
 					"$(ARUSPIX_WX)/osx-static/lib",
 					/usr/lib,
-					"$(ARUSPIX_MEI)",
 				);
 				OBJROOT = "$(PROJECT_DIR)/../obj";
 				OTHER_CFLAGS = (
@@ -1159,7 +1174,8 @@
 					"-DAX_SUPERIMPOSITION",
 				);
 				OTHER_LDFLAGS = (
-					"-lmei",
+					"-force_load",
+					"$(ARUSPIX_MEI)/libmei.a",
 					"-framework",
 					CoreMidi,
 					"-framework",
@@ -1274,25 +1290,24 @@
 					"$(ARUSPIX_WX)/osx-static-debug/lib/wx/include/mac-ansi-debug-static-2.8",
 					../src,
 				);
-				LIBRARY_SEARCH_PATHS = (
-					"$(ARUSPIX_WX)/osx-static-debug/lib",
-					"$(ARUSPIX_MEI)",
-				);
+				KEEP_PRIVATE_EXTERNS = YES;
+				LIBRARY_SEARCH_PATHS = "$(ARUSPIX_WX)/osx-static-debug/lib";
 				MACOSX_DEPLOYMENT_TARGET = 10.6;
 				ONLY_ACTIVE_ARCH = NO;
 				OTHER_CFLAGS = (
 					"-DHEADLESS",
 					"-D__WXBASE__",
-					"-d",
+					"-fexceptions",
 				);
 				OTHER_LDFLAGS = (
 					"-lwx_base_carbond-$(ARUSPIX_WX_VERSION)",
-					"-lmei",
 					"-framework",
 					carbon,
 					"-liconv",
 					"-lwx_base_carbond_net-$(ARUSPIX_WX_VERSION)",
 					"-lxml2",
+					"-force_load",
+					"$(ARUSPIX_MEI)/libmei.a",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx10.6;
@@ -1325,16 +1340,14 @@
 					"$(ARUSPIX_WX)/osx-static-debug/lib/wx/include/mac-ansi-debug-static-2.8",
 					../src,
 				);
-				LIBRARY_SEARCH_PATHS = (
-					"$(ARUSPIX_WX)/osx-static/lib",
-					"$(ARUSPIX_MEI)",
-				);
+				KEEP_PRIVATE_EXTERNS = YES;
+				LIBRARY_SEARCH_PATHS = "$(ARUSPIX_WX)/osx-static/lib";
 				MACOSX_DEPLOYMENT_TARGET = 10.6;
 				ONLY_ACTIVE_ARCH = NO;
 				OTHER_CFLAGS = (
 					"-DHEADLESS",
 					"-D__WXBASE__",
-					"-d",
+					"-fexceptions",
 				);
 				OTHER_LDFLAGS = (
 					"-lwx_base_carbon-$(ARUSPIX_WX_VERSION)",
@@ -1364,12 +1377,13 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				KEEP_PRIVATE_EXTERNS = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.6;
 				ONLY_ACTIVE_ARCH = NO;
 				OTHER_CFLAGS = (
 					"-DHEADLESS",
 					"-D__WXBASE__",
-					"-d",
+					"-fexceptions",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx10.6;
@@ -1579,7 +1593,6 @@
 					"$(ARUSPIX_WX)/include",
 					"$(ARUSPIX_WX)/contrib/include",
 					/usr/include/libxml2,
-					"$(ARUSPIX_MEI)/include",
 				);
 				INFOPLIST_FILE = "Aruspix-Info.plist";
 				INSTALL_PATH = "$(USER_APPS_DIR)";
@@ -1588,7 +1601,6 @@
 					"$(ARUSPIX_IMLIB)/lib",
 					"$(ARUSPIX_WX)/osx-static-debug/lib",
 					/usr/lib,
-					"$(ARUSPIX_MEI)",
 				);
 				OBJROOT = "$(PROJECT_DIR)/../obj";
 				OTHER_CFLAGS = (
@@ -1605,7 +1617,6 @@
 					"-DAX_EDITION",
 				);
 				OTHER_LDFLAGS = (
-					"-lmei",
 					"-framework",
 					CoreMidi,
 					"-framework",
@@ -1638,6 +1649,8 @@
 					"-lwx_macd_aui-$(ARUSPIX_WX_VERSION)",
 					"-lwxpngd-$(ARUSPIX_WX_VERSION)",
 					"-lwxjpegd-$(ARUSPIX_WX_VERSION)",
+					"-force_load",
+					"$(ARUSPIX_MEI)/libmei.a",
 					"-lxml2",
 				);
 				PRODUCT_NAME = Aruspix;
@@ -1682,7 +1695,6 @@
 					"$(ARUSPIX_IMLIB)/lib",
 					"$(ARUSPIX_WX)/osx-static/lib",
 					/usr/lib,
-					"$(ARUSPIX_MEI)",
 				);
 				OBJROOT = "$(PROJECT_DIR)/../obj";
 				OTHER_CFLAGS = (
@@ -1697,7 +1709,6 @@
 					"-DAX_EDITION",
 				);
 				OTHER_LDFLAGS = (
-					"-lmei",
 					"-framework",
 					CoreMidi,
 					"-framework",
@@ -1730,6 +1741,8 @@
 					"-lwx_mac_aui-$(ARUSPIX_WX_VERSION)",
 					"-lwxpng-$(ARUSPIX_WX_VERSION)",
 					"-lwxjpeg-$(ARUSPIX_WX_VERSION)",
+					"-force_load",
+					"$(ARUSPIX_MEI)/libmei.a",
 					"-lxml2",
 				);
 				PRODUCT_NAME = Aruspix;
