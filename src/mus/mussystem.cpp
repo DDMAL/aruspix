@@ -59,7 +59,7 @@ void MusSystem::Clear( )
     m_page = NULL;
 	indent = 0;
 	indentDroite = 0;
-	lrg_lign = 190;
+	lrg_lign = 19;
 	m_y_abs = 0;
 	m_x_abs = 0;
 }
@@ -89,6 +89,10 @@ void MusSystem::Load( wxArrayPtrVoid params )
     }
 }
 
+void MusSystem::Trim( wxArrayPtrVoid params )
+{
+    lrg_lign = (m_contentBB_x2 - m_contentBB_x1 + 10) / 10; // In the DrawStaff it is multiplied by 10
+}
 
 void MusSystem::AddStaff( MusLaidOutStaff *staff )
 {

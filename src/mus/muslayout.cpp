@@ -227,6 +227,13 @@ void MusLayout::SpaceMusic() {
     m_doc->ProcessLayout( &updateYPosition, params );
     
     rc.DrawPage(  &bb_dc, &m_pages[0] , false );
+    
+    // Trim the system to the needed position
+    params.Clear();
+    MusSystemFunctor trimSystem(&MusSystem::Trim);
+    m_doc->ProcessLayout( &trimSystem, params );
+    
+    rc.DrawPage(  &bb_dc, &m_pages[0] , false );
 }
 
 void MusLayout::PaperSize( )

@@ -25,6 +25,7 @@
 #include "musnote.h"
 #include "musrest.h"
 #include "mussymbol.h"
+#include "muskeysig.h"
 
 #include "musiodarms.h"
 
@@ -64,7 +65,7 @@ void MusDarmsInput::UnrollKeysig(int quantity, char alter) {
     int flats[] = {PITCH_B, PITCH_E, PITCH_A, PITCH_D, PITCH_G, PITCH_C, PITCH_F};
     int sharps[] = {PITCH_F, PITCH_C, PITCH_G, PITCH_D, PITCH_A, PITCH_E, PITCH_B};
     int *alteration_set;
-    unsigned char accid;
+    unsigned char accid = ACCID_FLAT;
     
     if (quantity == 0) quantity++;
     
@@ -76,6 +77,10 @@ void MusDarmsInput::UnrollKeysig(int quantity, char alter) {
         accid = ACCID_SHARP;
     }
     
+    MusKeySig *k = new MusKeySig(quantity, accid);
+    m_layer->AddLayerElement(k);
+    return;
+    //////
     for (int i = 0; i < quantity; i++) {
         MusSymbol *alter = new MusSymbol( SYMBOL_ACCID );
         alter->m_oct = 4;

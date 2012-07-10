@@ -140,6 +140,7 @@ public:
     void DrawQuarterRest ( MusDC *dc, int a, int b, int valeur, unsigned char dots, unsigned int smaller, MusLaidOutStaff *staff);
     void DrawDots ( MusDC *dc, int x1, int y1, int offy, unsigned char dots, MusLaidOutStaff *staff );
     void CalculateLigaturePosX ( MusLaidOutLayerElement *element, MusLaidOutLayer *layer, MusLaidOutStaff *staff);
+    void DrawKeySig( MusDC *dc, MusLaidOutLayerElement *element, MusLaidOutLayer *layer, MusLaidOutStaff *staff );
     /* musrc_beam.cpp */
     void DrawBeam(  MusDC *dc, MusLaidOutLayer *layer, MusLaidOutStaff *staff );
     
