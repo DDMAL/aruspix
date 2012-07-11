@@ -1592,6 +1592,7 @@
 					"$(ARUSPIX_WX)/osx-static-debug/lib/wx/include/mac-ansi-debug-static-2.8",
 					"$(ARUSPIX_WX)/include",
 					"$(ARUSPIX_WX)/contrib/include",
+					"$(ARUSPIX_MEI)/include",
 					/usr/include/libxml2,
 				);
 				INFOPLIST_FILE = "Aruspix-Info.plist";
@@ -1686,8 +1687,8 @@
 					"$(ARUSPIX_WX)/osx-static/lib/wx/include/mac-ansi-release-static-2.8",
 					"$(ARUSPIX_WX)/include",
 					"$(ARUSPIX_WX)/contrib/include",
-					/usr/include/libxml2,
 					"$(ARUSPIX_MEI)/include",
+					/usr/include/libxml2,
 				);
 				INFOPLIST_FILE = "Aruspix-Info.plist";
 				INSTALL_PATH = "$(USER_APPS_DIR)";
