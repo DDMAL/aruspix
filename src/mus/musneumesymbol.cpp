@@ -143,88 +143,23 @@ void MusNeumeSymbol::SetValue(int value, MusLaidOutStaff *staff, int vflag)
 			
 		case ('1'):
 			this->symbolType = NEUME_SYMB_CLEF_C;
-			/* - no more MusRC access in ax2
-            if (m_r)
-			{
-				m_r->OnBeginEditionClef();
-			}
-            */
 			this->value = nC2;
-            /* - no more MusRC access in ax2
-			if (m_r)
-			{
-				m_r->OnEndEditionClef();
-				m_r->DoRefresh();
-			}
-            */
 			break;
 		case ('2'):
 			this->symbolType = NEUME_SYMB_CLEF_C;
-            /* - no more MusRC access in ax2
-			if (m_r)
-			{
-				m_r->OnBeginEditionClef();
-			}
-            */
 			this->value = nC3;
-            /* - no more MusRC access in ax2
-			if (m_r)
-			{
-				m_r->OnEndEditionClef();
-				m_r->DoRefresh();
-			}
-            */
 			break;
 		case ('3'):
 			this->symbolType = NEUME_SYMB_CLEF_C;
-            /* - no more MusRC access in ax2
-			if (m_r)
-			{
-				m_r->OnBeginEditionClef();
-			}
-            */
 			this->value = nC4;
-            /* - no more MusRC access in ax2
-			if (m_r)
-			{
-				m_r->OnEndEditionClef();
-				m_r->DoRefresh();
-			}
-            */
 			break;
 		case ('4'):
 			this->symbolType = NEUME_SYMB_CLEF_F;
-            /* - no more MusRC access in ax2
-			if (m_r)
-			{
-				m_r->OnBeginEditionClef();
-			}
-            */
 			this->value = nF3;
-            /* - no more MusRC access in ax2
-			if (m_r)
-			{
-				m_r->OnEndEditionClef();
-				m_r->DoRefresh();
-			}
-            */
 			break;
 		case ('5'):
 			this->symbolType = NEUME_SYMB_CLEF_F;
-            /* - no more MusRC access in ax2
-			if (m_r)
-			{
-				m_r->OnBeginEditionClef();
-			}
-            */
 			this->value = nF4;
-            /* - no more MusRC access in ax2
-			if (m_r)
-			{
-				m_r->OnEndEditionClef();
-				m_r->DoRefresh();
-			}
-            */
 			break;
 		case ('6'): this->symbolType = NEUME_SYMB_COMMA; break;
 		case ('F'): this->symbolType = NEUME_SYMB_FLAT; break;
@@ -234,13 +169,6 @@ void MusNeumeSymbol::SetValue(int value, MusLaidOutStaff *staff, int vflag)
 		case ('9'): this->symbolType = NEUME_SYMB_DIVISION_MINOR; break;
 		case ('0'): this->symbolType = NEUME_SYMB_DIVISION_SMALL; break;
 	}
-	/* - no more MusRC access in ax2
-	if ( m_r )
-	{
-		m_r->DoRefresh();
-		m_r->OnEndEdition();
-	}
-    */
 	
 	if (m_meiref)
 	{

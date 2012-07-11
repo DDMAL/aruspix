@@ -105,7 +105,13 @@ public:
 	void SetRecFile( RecFile *recFile );
 
     // edition
-    virtual void OnBeginEditionClef(); // 
+    /**
+     * Transposes the content of the current layer to UT1 before editing a clef
+     */
+    virtual void OnBeginEditionClef();
+    /**
+     * Transposes the content of the current layer its the actual value
+     */
     virtual void OnEndEditionClef(); //
     virtual void OnEndEdition();
 	virtual void OnSyncScroll( int x, int y );

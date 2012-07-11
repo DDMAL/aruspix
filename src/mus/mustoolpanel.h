@@ -73,7 +73,6 @@ enum {
     ID_MS_BT_R4,
     ID_MS_BT_R5,
     ID_MS_BT_R6,
-    ID_MS_BT_CT,
     // note - flags
     ID_MS_BT_LG_D,
     ID_MS_BT_LG_U,
@@ -120,6 +119,7 @@ enum {
     ID_MS_BT_DFLAT,
     ID_MS_BT_BAR,
     ID_MS_BT_RDOTS,
+    ID_MS_BT_CT,
 
     // Neume notes
     ID_NU_BT_N0,

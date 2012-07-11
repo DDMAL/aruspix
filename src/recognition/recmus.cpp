@@ -335,8 +335,8 @@ void RecMusWindow::OnBeginEditionClef()
         return;
 
     m_edition = true;
-    /*if ( m_currentStaff )
-        MusMLFOutput::GetUt1( m_currentStaff, true );*/ // ax2
+    if ( m_currentLayer )
+        MusMLFOutput::GetUt1( m_currentLayer );
 }
 
 void RecMusWindow::OnEndEditionClef()
@@ -344,8 +344,8 @@ void RecMusWindow::OnEndEditionClef()
     if ( !m_envPtr )
         return;
 
-    /*if ( m_edition && m_currentStaff )
-        MusMLFInput::GetNotUt1( m_currentStaff, true );*/ // ax2
+    if ( m_edition && m_currentLayer )
+        MusMLFInput::GetNotUt1( m_currentLayer );
 
     m_edition = false;
 }
