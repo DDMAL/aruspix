@@ -824,6 +824,8 @@ bool MusMLFOutput::WriteSymbol( MusLaidOutLayerElement *element )
 		//if ((int)symbol->code & 64) // ax2 ??
         if (mensur->m_meterSymb)
 		{
+            wxLogWarning( _("Meter symbols not supported") );
+            // We should use only figures (CH) and mensur signs - see below
 			switch (mensur->m_meterSymb)
 			{	
 				case METER_SYMB_COMMON: mlfsb->SetValue( TYPE_MESURE, "S_C", element->m_x_abs ); break;
@@ -1065,9 +1067,9 @@ MusLayerElement *MusMLFInput::ConvertSymbol( wxString line )
 			clef->m_clefId = SOL1;
 		else if ( str == "S8" )
 			clef->m_clefId = SOLva;
-		else if ( str == "PITCH_E" )
+		else if ( str == "F4" )
 			clef->m_clefId = FA4;
-		else if ( str == "PITCH_D" )
+		else if ( str == "F3" )
 			clef->m_clefId = FA3;
 		else if ( str == "U1" )
 			clef->m_clefId = UT1;
@@ -1080,7 +1082,7 @@ MusLayerElement *MusMLFInput::ConvertSymbol( wxString line )
 		else if ( str == "U4" )
 			clef->m_clefId = UT4;
 		else
-			wxLogWarning( _("Unkown key") );
+			wxLogWarning( _("Unkown key '%s'"), str.c_str() );
 
 		return clef;
 	}
@@ -1146,21 +1148,30 @@ MusLayerElement *MusMLFInput::ConvertSymbol( wxString line )
 
 		if ( str == "S" )
 		{
-			//symbol->code = 64; ?? // ax2
-			if ( option1 == "C" )
-				mensur->m_meterSymb = METER_SYMB_COMMON;
-			else if ( option1 == "CB" )
-				mensur->m_meterSymb = METER_SYMB_CUT;
-			else if ( option1 == "2" )
-				mensur->m_meterSymb = METER_SYMB_2;
-			else if ( option1 == "3" )
-				mensur->m_meterSymb = METER_SYMB_3;
-			else if ( option1 == "2B" )
-				mensur->m_meterSymb = METER_SYMB_2_CUT;
-			else if ( option1 == "3B" )
-				mensur->m_meterSymb = METER_SYMB_3_CUT;
-			else
-				wxLogWarning( _("Unkown mesure signe indication") );
+            if ( option1 == "2" ) {
+                // use 2 / 0 for 2 only
+                mensur->m_num = 2;
+                mensur->m_numBase = 0;
+            }
+			else if ( option1 == "3" ) {
+                mensur->m_num = 3;
+                mensur->m_numBase = 0;
+            }
+            else {
+                wxLogWarning( _("Meter symbols not supported") );
+                // We should use only figures (CH) and mensur signs - see below
+                //symbol->code = 64; ?? // ax2
+                if ( option1 == "C" ) 
+                    mensur->m_meterSymb = METER_SYMB_COMMON;
+                else if ( option1 == "CB" )
+                    mensur->m_meterSymb = METER_SYMB_CUT;
+                else if ( option1 == "2B" )
+                    mensur->m_meterSymb = METER_SYMB_2_CUT;
+                else if ( option1 == "3B" )
+                    mensur->m_meterSymb = METER_SYMB_3_CUT;
+                else
+                    wxLogWarning( _("Unkown mesure signe indication") );
+            }
 		}
 		else if ( str == "CH" )
 		{
@@ -1178,8 +1189,9 @@ MusLayerElement *MusMLFInput::ConvertSymbol( wxString line )
 				mensur->m_sign = MENSUR_SIGN_C;
                 mensur->m_reversed = true;
             }
-			else
-				wxLogWarning( _("Unkown mesure indication") );
+			else {
+				wxLogWarning( _("Unkown mesure indication '%s'") , str.c_str() );
+            }
 			if ( option1 == "B" )
 				mensur->m_slash = true;
 			if (( option1 == "P" ) || ( option2 == "P" ))

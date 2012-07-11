@@ -32,6 +32,11 @@ public:
     
     virtual wxString MusClassName( ) { return "MusMensur"; };
     
+    /**
+     * Set the value for the mensur.
+     */
+	virtual void SetValue( int value, int flag = 0 );
+    
 private:
     
 public:
@@ -52,6 +57,17 @@ public:
     MensurSign m_sign;    
     /** Indicates the number of slashes with the sign (max 1 for now). */
     unsigned char m_slash;
+    
+    /** 
+     * Static member for setting a value from a controller.
+     * Used for example in SetValue
+     */
+    static int s_num;
+    /** 
+     * Static member for setting a value from a controller.
+     * Used for examle in SetValue.
+     */
+    static int s_numBase;
 
 private:
     

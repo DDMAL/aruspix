@@ -1575,18 +1575,20 @@ void MusWindow::MensuralEditOnKeyDown(wxKeyEvent &event) {
         }
         this->Refresh();
     } 
-    else if ( m_currentElement && m_currentElement->IsSymbol() &&
+    */
+    else if ( m_currentElement && m_currentElement->IsMensur() &&
              in( event.m_keyCode, 33, 125) ) // any other keycode on symbol (ascii codes)
     {
         PrepareCheckPoint( UNDO_PART, MUS_UNDO_FILE );
         int vflag = ( event.m_controlDown ) ? 1 : 0;
-        m_currentElement->SetValue( event.m_keyCode, m_currentStaff, vflag );
+        m_currentElement->m_layerElement->SetValue( event.m_keyCode, vflag );
         CheckPoint( UNDO_PART, MUS_UNDO_FILE );	
         OnEndEdition();
     }
-    */
+    else {
+        return;
+    }
     this->Refresh();
-    wxLogDebug( "MusWindow::MensuralEditOnKeyDown missing in ax2" );
 }
 
 /**
