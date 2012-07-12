@@ -144,6 +144,8 @@ public:
     void DrawKeySig( MusDC *dc, MusLaidOutLayerElement *element, MusLaidOutLayer *layer, MusLaidOutStaff *staff );
     /* musrc_beam.cpp */
     void DrawBeam(  MusDC *dc, MusLaidOutLayer *layer, MusLaidOutStaff *staff );
+    /* musrc_beam_original.cpp */
+    void DrawBeamOriginal(  MusDC *dc, MusLaidOutLayer *layer, MusLaidOutStaff *staff );
     
     /* musrc_neumes.cpp - musneume */
     void DrawNeume( MusDC *dc, MusLaidOutLayerElement *element, MusLaidOutLayer *layer, MusLaidOutStaff *staff);

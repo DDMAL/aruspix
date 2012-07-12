@@ -109,6 +109,7 @@ void MusPaeInput::convertPlainAndEasyToKern(std::istream &infile, std::ostream &
     MeasureObject current_measure;
     NoteObject current_note;
     NoteObject prev_note;
+    
     //Array<int> current_key; // not the measure one, which will be altered by temporary alterations
     //current_key.setSize(7);
     //current_key.setAll(0);
@@ -171,7 +172,7 @@ void MusPaeInput::convertPlainAndEasyToKern(std::istream &infile, std::ostream &
         
         // octaves
         if ((incipit[i] == '\'') || (incipit[i] == ',')) {
-            i += getOctave( incipit, &current_note.mnote->m_oct, i );
+            i += getOctave( incipit, &current_note.octave, i );
         }
         
         // rhythmic values
@@ -181,21 +182,21 @@ void MusPaeInput::convertPlainAndEasyToKern(std::istream &infile, std::ostream &
         
         //accidentals (1 = n; 2 = x; 3 = xx; 4 = b; 5 = bb)    
         else if (incipit[i] == 'n' || incipit[i] == 'x' || incipit[i] == 'b') {
-            i += getAccidental( incipit, &current_note.mnote->m_accid, i );
+            i += getAccidental( incipit, &current_note.accidental, i );
         }
         
         // beaming starts
 		else if (incipit[i] == '{') {
 			//current_note.beam = 1;
-            current_note.mnote->m_beam[0] |= BEAM_INITIAL;
+            current_note.beam |= BEAM_INITIAL;
             in_beam = true;
         }
         
         // beaming ends
 		else if (incipit[i] == '}') {
 			//current_note.beam = 0; // should not have to be done, but just in case
-            prev_note.mnote->m_beam[0] |= BEAM_TERMINAL;
-            current_note.mnote->m_beam[0] = 0;
+            prev_note.beam |= BEAM_TERMINAL;
+            current_note.beam = 0;
             in_beam = false;
 		}
 		
@@ -275,8 +276,8 @@ void MusPaeInput::convertPlainAndEasyToKern(std::istream &infile, std::ostream &
             i += getKeyInfo( incipit, &current_measure, i + 1);
 		} 
         
-        if (in_beam && (current_note.mnote->m_beam[0] & BEAM_INITIAL) == 0 && (current_note.mnote->m_beam[0] & BEAM_TERMINAL) == 0) {
-            current_note.mnote->m_beam[0] |= BEAM_MEDIAL;
+        if (in_beam && (current_note.beam & BEAM_INITIAL) == 0 && (current_note.beam & BEAM_TERMINAL) == 0) {
+            current_note.beam |= BEAM_MEDIAL;
         }
             
         i++;
@@ -289,7 +290,6 @@ void MusPaeInput::convertPlainAndEasyToKern(std::istream &infile, std::ostream &
         current_measure.notes.clear();
     }
     
-            
     vector<MeasureObject>::iterator it;
     for ( it = staff.begin() ; it < staff.end(); it++ ) {
         MeasureObject obj = *it;
@@ -308,7 +308,7 @@ void MusPaeInput::convertPlainAndEasyToKern(std::istream &infile, std::ostream &
 // getOctave --
 //
 #define BASE_OCT 4
-int MusPaeInput::getOctave (const char* incipit, char *octave, int index ) {
+int MusPaeInput::getOctave (const char* incipit, unsigned char *octave, int index ) {
     
     int i = index;
     int length = strlen(incipit);
@@ -922,34 +922,30 @@ int MusPaeInput::getNote( const char* incipit, NoteObject *note, MeasureObject *
     int oct;
     int i = index;
     
-    note->mnote->m_dur = measure->durations[measure->durations_offset];
+    note->duration = measure->durations[measure->durations_offset];
 
-    note->mnote->m_dots = measure->dots[measure->durations_offset];
+    note->dots = measure->dots[measure->durations_offset];
     //if ( note->tuplet != 1.0 ) {
     //    note->duration /= note->tuplet;
         //std::cout << durations[0] << ":" << note->tuplet << std::endl;
     //}
-    note->mnote->m_pname = getPitch( incipit[i] );
+    note->pitch = getPitch( incipit[i] );
     
     // lookout, hack. If it is a rest (255 val) then create the rest object.
     // it will be added instead of the note
-    if (note->mnote->m_pname == 255) {
-        note->mrest = new MusRest();
-        note->mrest->m_dur = note->mnote->m_dur;
-        note->mrest->m_oct = m_rest_octave;
-        note->mrest->m_pname = m_rest_position;
-    }
+    if (note->pitch == 255)
+        note->rest = true;
     
     // beaming
     // detect if it is a fermata or a tuplet
-    if (note->mnote->m_beam[0] > 0) {
+    if (note->beam > 0) {
         regcomp(&re, "^[^}/]*[ABCDEFG-].*", REG_EXTENDED);
         int is_not_last_note = regexec(&re, incipit + i + 1, 0, NULL, 0);
         regfree(&re);
         //std::cout << "regexp " << is_not_last_note << std::endl;
         if ( is_not_last_note != 0 ) {
             //note->beam = -1; // close the beam
-            note->mnote->m_beam[0] |= BEAM_TERMINAL;
+            note->beam |= BEAM_TERMINAL;
         }
     }
     
@@ -970,15 +966,13 @@ int MusPaeInput::getNote( const char* incipit, NoteObject *note, MeasureObject *
         note->tie = 1; // 1 for the first note, 2 for the second one
     }
     
-    oct = note->mnote->m_oct;
+    oct = note->octave;
     measure->notes.push_back( *note );
     
-    // Create a brave new Mus Note
-    // The first is created in the NoteObject constructor
-    note->mnote = new MusNote;
-    note->mrest = NULL;
-    note->mnote->m_oct = oct;
-    
+    // Reset octave
+    note->clear();
+    note->octave = oct;
+        
     // reset values
     // beam
     //if (note->beam > 0) {
@@ -1021,9 +1015,12 @@ int MusPaeInput::getNote( const char* incipit, NoteObject *note, MeasureObject *
 //
 
 void MusPaeInput::printMeasure(std::ostream& out, MeasureObject *measure ) {
+    MusBeam *beam = NULL;
+    
     m_measure =  new MusMeasure;
     m_staff = new MusStaff();
     m_layer = new MusLayer();
+    
     
     if ( measure->clef != NULL ) {
         m_layer->AddLayerElement(measure->clef);
@@ -1065,7 +1062,7 @@ void MusPaeInput::printMeasure(std::ostream& out, MeasureObject *measure ) {
         //}
     }
     
-    for (unsigned int i=0; i<measure->notes.size(); i++) {
+    for (unsigned int i=0; i<measure->notes.size(); i++) {         
         if ( 0 == 1) { //measure->notes[i].mnote->m_pname == 111110) {
             //if (measure->notes[i].tie == 1) {
             //    out << "[";
@@ -1105,10 +1102,34 @@ void MusPaeInput::printMeasure(std::ostream& out, MeasureObject *measure ) {
             //This does the trick
             //out << Convert::base40ToKern(buffer, measure->notes[i].pitch);
                         
-            if (measure->notes[i].mrest)
-                m_layer->AddLayerElement(measure->notes[i].mrest); // create a rest
-            else
-                m_layer->AddLayerElement(measure->notes[i].mnote); // create a note
+            if (measure->notes[i].rest) {
+                MusRest *r = new MusRest();
+                r->m_dur = measure->notes[i].duration;
+                r->m_pname = REST_AUTO;
+                m_layer->AddLayerElement(r); // create a rest
+            }
+            else {
+                MusNote *n = new MusNote();
+                n->m_pname = measure->notes[i].pitch;
+                n->m_oct = measure->notes[i].octave;
+                n->m_dur = measure->notes[i].duration;
+                n->m_dots = measure->notes[i].dots;
+                n->m_accid = measure->notes[i].accidental;
+                
+                if (measure->notes[i].beam & BEAM_INITIAL) {
+                    beam = new MusBeam;
+                    beam->AddNote(n);
+                    m_layer->AddLayerElement(beam);
+                } else if (measure->notes[i].beam & BEAM_MEDIAL) {
+                    if (beam)
+                        beam->AddNote(n);
+                    
+                } else if (measure->notes[i].beam & BEAM_TERMINAL) {
+                    beam = NULL;
+                }
+                
+                m_layer->AddLayerElement(n); // create a note
+            }
             
             //MusClef *clef = new MusClef();
             //clef->m_clefId = SOL2;

@@ -638,7 +638,7 @@ void EdtEnv::OnOpenMEI( wxCommandEvent &event )
     m_edtFilePtr->New();
     //m_edtFilePtr->m_musDocPtr->m_env.m_notationMode = MUS_NEUMATIC_MODE; //temporary for liber usualis project
 
-    MusDarmsInput meiinput( m_edtFilePtr->m_musDocPtr, filename );
+    MusPaeInput meiinput( m_edtFilePtr->m_musDocPtr, filename );
     //MusPaeInput meiinput( m_edtFilePtr->m_musDocPtr, filename );
 	if ( !meiinput.ImportFile() )
 		return;

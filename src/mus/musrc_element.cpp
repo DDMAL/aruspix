@@ -130,6 +130,7 @@ void MusRC::DrawDurationElement( MusDC *dc, MusLaidOutLayerElement *element, Mus
     
     
     // draw the beams
+    /*
     if (layer->beamListPremier && durElement->m_beam[0] & BEAM_TERMINAL) // only one beam ([0] for now
     {   
         // we will need to change the to a MusBeam object once we have one 
@@ -137,7 +138,8 @@ void MusRC::DrawDurationElement( MusDC *dc, MusLaidOutLayerElement *element, Mus
         DrawBeam( dc, layer, staff );
         dc->EndGraphic(element, this ); //RZ
     }
-
+    */
+    
 	/* 
 	for ( int i = 0; i < (int)m_lyrics.GetCount(); i++ ){
 		MusSymbol1 *lyric = &m_lyrics[i];
@@ -179,9 +181,7 @@ void MusRC::DrawBeamElement(MusDC *dc, MusLaidOutLayerElement *element, MusLaidO
         
         lelem->m_y_drawing = CalculatePitchPosY( staff, note->m_pname, layer->GetClefOffset( lelem ), oct );
         
-        DrawNote(dc, lelem, layer, staff);
-        
-        printf("N %x\n", note->m_beam[0]);
+        DrawNote(dc, lelem, layer, staff, true);
         
         dc->EndGraphic(lelem, this );
     }
@@ -294,8 +294,9 @@ void MusRC::DrawNote ( MusDC *dc, MusLaidOutLayerElement *element, MusLaidOutLay
 		if (note->m_chord) { /*** && this == testchord)***/
 			ynn_chrd = ynn;
         }
-		if (((note->m_beam[0] & BEAM_INITIAL) || (note->m_beam[0] & BEAM_MEDIAL)) && formval > DUR_4)
-		{
+		//if (((note->m_beam[0] & BEAM_INITIAL) || (note->m_beam[0] & BEAM_MEDIAL)) && formval > DUR_4)
+		if (inBeam && formval > DUR_4)
+        {
             if (note->m_beam[0] & BEAM_INITIAL) {
                 layer->beamListPremier = element;
             }

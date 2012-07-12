@@ -30,12 +30,13 @@
 #include "musnote.h"
 #include "musrest.h"
 #include "mussymbol.h"
+#include "musbeam.h"
 
 class NoteObject {
 public:
     NoteObject(const NoteObject &old) { // for STL vector
-        mnote = old.mnote;
-        mrest = old.mrest;         
+        //mnote = old.mnote;
+        //mrest = old.mrest;         
         tuplet = old.tuplet;
         tie = old.tie;
         acciaccatura = old.acciaccatura;
@@ -43,17 +44,55 @@ public:
         appoggiatura_multiple = old.appoggiatura_multiple;
         fermata = old.fermata;
         trill = old.trill;
+        
+        octave = old.octave;
+        beam = old.beam;
+        pitch = old.pitch;
+        duration = old.duration;
+        accidental = old.accidental;
+        dots = old.dots;
+        rest = old.rest;
     }
     NoteObject(void) { clear(); };
     void   clear(void) {
         appoggiatura = 0;
         acciaccatura = appoggiatura_multiple = fermata = trill = false;
         tuplet = 1.0;
-        mnote = new MusNote();
-        mrest = NULL;
-    };    
-    MusNote *mnote;
-    MusRest *mrest; // this is not too nice
+        
+        octave = 4;
+        beam = 0;
+        pitch = 0;
+        duration = 0;
+        accidental = 0;
+        dots = 0;
+        rest = false;
+        
+    };
+    
+    NoteObject& operator=(const NoteObject& d){ // for STL vector
+        //mnote = d.mnote;
+        //mrest = d.mrest;         
+        tuplet = d.tuplet;
+        tie = d.tie;
+        acciaccatura = d.acciaccatura;
+        appoggiatura = d.appoggiatura;
+        appoggiatura_multiple = d.appoggiatura_multiple;
+        fermata = d.fermata;
+        trill = d.trill;
+        
+        octave = d.octave;
+        beam = d.beam;
+        pitch = d.pitch;
+        duration = d.duration;
+        accidental = d.accidental;
+        dots = d.dots;
+        rest = d.rest;
+        
+        return *this;
+    }
+    
+    //MusNote *mnote;
+    //MusRest *mrest; // this is not too nice
     
     double tuplet;
     int    tie;
@@ -62,6 +101,14 @@ public:
     bool   appoggiatura_multiple;
     bool   fermata;
     bool   trill;
+    
+    unsigned char octave;
+    unsigned char beam;
+    unsigned char pitch;
+    unsigned char duration;
+    unsigned char accidental;
+    unsigned int dots;
+    bool rest;
 };
 
 
@@ -169,7 +216,7 @@ private:
      int       getClefInfo         (const char* incipit, MeasureObject *measure, int index = 0 );
      int       getBarline          (const char* incipit, std::string *output, int index = 0 );
      int       getAccidental       (const char* incipit, unsigned char *accident, int index = 0);
-     int       getOctave           (const char* incipit, char *octave, int index = 0 );
+     int       getOctave           (const char* incipit, unsigned char *octave, int index = 0 );
      int       getDurations        (const char* incipit, MeasureObject *measure, int index = 0);
      int       getDuration         (const char* incipit, int *duration, int *dot, int index );
      int       getTupletFermata    (const char* incipit, double current_duration, NoteObject *note, int index = 0);
