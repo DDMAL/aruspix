@@ -43,12 +43,12 @@ void MusBeam::AddNote(MusLayerElement *element) {
     if (m_notes.Count() == 0)
         note->m_beam[0] = BEAM_INITIAL;
     else
-        note->m_beam[0] = BEAM_MEDIAL;
+        note->m_beam[0] = BEAM_TERMINAL;
     m_notes.Add(element);
     
     // Set the last note to median if we have more than one note in the array
-    if (m_notes.Count() > 1) {
-        MusDurationInterface *last_note = dynamic_cast<MusDurationInterface*>(&m_notes[m_notes.Count() - 1]);
+    if (m_notes.Count() > 2) {
+        MusDurationInterface *last_note = dynamic_cast<MusDurationInterface*>(&m_notes[m_notes.Count() - 2]);
         last_note->m_beam[0] = BEAM_MEDIAL;
     }
 }
