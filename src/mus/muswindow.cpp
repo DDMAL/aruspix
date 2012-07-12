@@ -517,13 +517,15 @@ void MusWindow::UpdatePen() {
 
 int MusWindow::GetToolType()
 {
-	MusLaidOutLayerElement *sync = NULL;
+	MusLayerElement *sync = NULL;
 
 	if (m_editorMode == MUS_EDITOR_EDIT) {
-		sync = m_currentElement;
+        if (m_currentElement) {
+            sync = m_currentElement->m_layerElement;
+        }
     }
-	//else // Do we need this?
-	//	sync = m_newElement;				//need to make a new element!! somehow?
+	else
+		sync = m_newElement;				//need to make a new element!! somehow?
 
 	if (!sync) {
         return -1;
@@ -536,11 +538,11 @@ int MusWindow::GetToolType()
         else if ( sync->IsMensur() ) {
             return MUS_TOOLS_PROPORTIONS;
         }
-        else if ( sync->IsNote() || sync->IsRest() || sync->IsSymbol( SYMBOL_CUSTOS ) ) {
+        else if ( sync->IsNote() || sync->IsRest() ) {
             return MUS_TOOLS_NOTES;
         }
         else {
-                return MUS_TOOLS_OTHER;
+            return MUS_TOOLS_OTHER;
         } 
     }
     else if (m_notation_mode == MUS_NEUMATIC_MODE) {
@@ -792,13 +794,16 @@ void MusWindow::OnMouseDClick(wxMouseEvent &event)
 		if ( event.ButtonDClick( wxMOUSE_BTN_LEFT  ) && m_currentLayer && m_newElement )
 		{
 			PrepareCheckPoint( UNDO_PART, MUS_UNDO_FILE );
+            OnBeginEditionClef();
 			m_lastEditedElement = m_currentLayer->Insert( m_newElement, m_insert_x );
+            OnEndEditionClef();
             m_lastEditedElement->m_layerElement->SetPitchOrPosition( m_insert_pname, m_insert_oct );
 			CheckPoint( UNDO_PART, MUS_UNDO_FILE );
 			OnEndEdition();
 		}
 
 	}
+    this->Refresh();
 	event.Skip();
 }
 
@@ -907,11 +912,11 @@ void MusWindow::OnMouseLeftDown(wxMouseEvent &event)
 	}
 	else  // not edit
 	{
-        // Do we need this?
-        wxLogDebug( "MusWindow::OnMouseLeftDown missing in insert mode in ax2" );
-        /*
 		if ( event.RightIsDown() ) // copier l'element à la position du click 
 		{
+            wxLogDebug( "MusWindow::OnMouseLeftDown missing in insert mode in ax2" );
+            // Do we need this?
+            /*
 			wxClientDC dc( this );
 			InitDC( &dc );
 
@@ -935,6 +940,7 @@ void MusWindow::OnMouseLeftDown(wxMouseEvent &event)
 					m_newElement = &m_symbol;
 				}
 			}
+            */
 		}
 		else // update current staff
 		{
@@ -942,11 +948,13 @@ void MusWindow::OnMouseLeftDown(wxMouseEvent &event)
 			InitDC( &dc );
 
 			int y = ToLogicalY( dc.DeviceToLogicalY( event.m_y ) );
-			if ( m_page->GetAtPos( y ) )
-				m_currentStaff = m_page->GetAtPos( y );
+            // Default selection of closest note
+            m_currentSystem = m_page->GetAtPos( y );
+            // we certainly need to check pointers here!
+            m_currentStaff = m_currentSystem->GetAtPos( y );
+            m_currentLayer = m_currentStaff->GetFirst();
 		}
-        */
-	}
+    }
 	event.Skip();    
 }
 
@@ -1425,13 +1433,20 @@ void MusWindow::MensuralEditOnKeyDown(wxKeyEvent &event) {
             MoveLeftRight( true );
         }
         
+        // we have moved, currentLayer is now the layer we will be after deletion
+        MusLaidOutLayer *nextLayer = m_currentLayer;
+        m_currentLayer = delLayer; // we swap it to do the deletion
+        
         // in case we failed moving
         if ( del == m_currentElement ) {
             m_currentElement = NULL;
         }
         
-        delLayer->Delete( del );
+        OnBeginEditionClef();
+        m_currentLayer->Delete( del );
+        OnEndEditionClef();
         
+        m_currentLayer = nextLayer;
         CheckPoint( UNDO_PART, MUS_UNDO_FILE );
         
         OnEndEdition();
@@ -1493,7 +1508,7 @@ void MusWindow::MensuralEditOnKeyDown(wxKeyEvent &event) {
         MusSymbol dot( SYMBOL_DOT );
         dot.m_pname = note->m_pname;
         dot.m_oct = note->m_oct;
-        m_currentLayer->Insert( &dot, m_currentElement->m_x_abs - m_layout->m_step1 * 3 );
+        m_currentLayer->Insert( &dot, m_currentElement->m_x_abs + m_layout->m_step1 * 3 );
         CheckPoint( UNDO_PART, MUS_UNDO_FILE );
         OnEndEdition();
     }
@@ -1575,49 +1590,59 @@ void MusWindow::MensuralEditOnKeyDown(wxKeyEvent &event) {
         }
         this->Refresh();
     } 
-    else if ( m_currentElement && m_currentElement->IsSymbol() &&
-             in( event.m_keyCode, 33, 125) ) // any other keycode on symbol (ascii codes)
+    */
+    else if ( m_currentElement && (m_currentElement->IsMensur() || m_currentElement->IsClef() || m_currentElement->IsSymbol())
+        && in( event.m_keyCode, 33, 125) ) // any other keycode on symbol (ascii codes)
     {
         PrepareCheckPoint( UNDO_PART, MUS_UNDO_FILE );
+        // we might be editing a clef - see method for doc
+        OnBeginEditionClef();
         int vflag = ( event.m_controlDown ) ? 1 : 0;
-        m_currentElement->SetValue( event.m_keyCode, m_currentStaff, vflag );
+        m_currentElement->m_layerElement->SetValue( event.m_keyCode, vflag );
+        OnEndEditionClef();
         CheckPoint( UNDO_PART, MUS_UNDO_FILE );	
         OnEndEdition();
     }
-    */
+    else {
+        return;
+    }
     this->Refresh();
-    wxLogDebug( "MusWindow::MensuralEditOnKeyDown missing in ax2" );
 }
 
 /**
  * Key handler for Mensural editor / insert mode
  */
 void MusWindow::MensuralInsertOnKeyDown(wxKeyEvent &event) {
-    /*
+    
     int noteKeyCode = GetNoteValue( event.m_keyCode );
+    // changing category
     if ( event.m_controlDown && (event.m_keyCode == 'N')) {// change set (note, rests, key, signs, symbols, ....
         m_newElement = &m_note;
     }
     else if ( event.m_controlDown && (event.m_keyCode == 'C')) // clefs
     {	
-        m_symbol.ResetToClef();
-        m_newElement = &m_symbol;
+        m_newElement = &m_clef;
     }	
     else if ( event.m_controlDown && (event.m_keyCode == 'P')) // proportions
     {	
-        m_symbol.ResetToProportion();
-        m_newElement = &m_symbol;
+        m_newElement = &m_mensur;
     }	
     else if ( event.m_controlDown && (event.m_keyCode == 'S')) // symbols
     {
-        m_symbol.ResetToSymbol();
         m_newElement = &m_symbol;
-    }	
-    else if ( m_newElement && m_newElement->IsNote() &&
-             (in( noteKeyCode, 0, 7 ) || (noteKeyCode == CUSTOS))) // change duree sur une note ou un silence
+    }
+    // changing values within a category
+    else if ( m_newElement && (m_newElement->IsNote() || m_newElement->IsRest()) ) 
+    // change duree sur une note ou un silence
     {
-        int vflag = ( event.m_controlDown || (noteKeyCode == CUSTOS)) ? 1 : 0;
-        m_newElement->SetValue( noteKeyCode , NULL, vflag );
+        if ( event.m_controlDown && in( noteKeyCode, 0, 6 ) ) {
+            m_newElement = &m_rest;
+            m_newElement->SetValue( noteKeyCode , 0 );
+        }
+        else if ( in( noteKeyCode, 0, 7 ) ){
+            m_newElement = &m_note;
+            m_newElement->SetValue( noteKeyCode , 0 );
+        }
     }
     else if ( m_newElement && m_newElement->IsNote() && (noteKeyCode == 'L') )
         m_newElement->SetLigature();
@@ -1625,16 +1650,26 @@ void MusWindow::MensuralInsertOnKeyDown(wxKeyEvent &event) {
         m_newElement->ChangeColoration( );
     else if ( m_newElement && m_newElement->IsNote() && (noteKeyCode == 'A') )
         m_newElement->ChangeStem( );
-    else if ( m_newElement && m_newElement->IsSymbol() &&
-			 in( event.m_keyCode, 33, 125) ) // any other keycode on symbol (ascii codes)
+    else if ( m_newElement && (m_newElement->IsClef() || m_newElement->IsMensur()) &&
+        in( event.m_keyCode, 33, 125) ) // any other keycode on clef and mensur (ascii codes)
     {
-        int vflag = ( event.m_controlDown ) ? 1 : 0;
-        m_newElement->SetValue( event.m_keyCode, NULL, vflag );
+        m_newElement->SetValue( event.m_keyCode, 0 );
+    }
+    else if ( m_newElement && (m_newElement->IsSymbol() || m_newElement->IsBarline()) &&
+             in( event.m_keyCode, 33, 125) ) // any other keycode on symbol (ascii codes)
+    {
+        if (noteKeyCode == '|') {
+            m_newElement = &m_barline;
+        }
+        else {
+            m_newElement = &m_symbol;
+            int vflag = ( event.m_controlDown ) ? 1 : 0;
+            m_newElement->SetValue( event.m_keyCode, vflag );
+        }
     }
     UpdatePen();
     OnEndEdition();
     SyncToolPanel();
-    */ // ax2
 }
 
 void MusWindow::OnKeyDown(wxKeyEvent &event)

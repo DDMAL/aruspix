@@ -237,10 +237,6 @@ MusLaidOutLayerElement *MusLaidOutLayer::Insert( MusLayerElement *element, int x
         delete insertElement;
         return NULL;
     }
-   
-    if ( next && element->IsClef() ) {		
-        //m_r->OnBeginEditionClef();
-    }    
     
     // Insert in the logical tree
     layer->Insert( insertElement, next->m_layerElement );
@@ -249,10 +245,6 @@ MusLaidOutLayerElement *MusLaidOutLayer::Insert( MusLayerElement *element, int x
     MusLaidOutLayerElement *laidOutElement = new MusLaidOutLayerElement( insertElement );
     laidOutElement->m_x_abs = x;
     AddElement( laidOutElement, idx );
-        
-    if ( next && element->IsClef() ) {		
-        //m_r->OnEndEditionClef();
-    }
     
 	m_layout->RefreshViews();
     //
@@ -617,25 +609,11 @@ void MusLaidOutLayer::DeleteLyric( MusSymbol1 *symbol )
 {
 	if ( !symbol ) return;
 	
-	
-	if ( m_r ) // effacement
-	{
-		if ( symbol->IsSymbol() && (((MusSymbol1*)symbol)->IsLyric()) )
-			m_r->OnBeginEditionClef();
-	}
-	
 	MusNote1 *note = symbol->m_note_ptr;
 	for ( int i = 0; i < (int)note->m_lyrics.GetCount(); i++ ){
 		MusSymbol1 *lyric = &note->m_lyrics[i];
 		if ( symbol == lyric )
 			note->m_lyrics.Detach(i);
-	}
-	
-	if ( m_r )
-	{
-		if ( symbol->IsSymbol() && (((MusSymbol1*)symbol)->IsLyric()) )
-			m_r->OnEndEditionClef();
-		m_r->DoRefresh();
 	}
 	
 	delete symbol;

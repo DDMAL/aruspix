@@ -30,7 +30,7 @@
 #include "mus/musiopae.h"
 #include "mus/musiomei.h"
 #include "mus/mussvgdc.h"
-#include "musiodarms.h"
+#include "mus/musiodarms.h"
 
 //----------------------------------------------------------------------------
 // EdtPanel
@@ -86,14 +86,15 @@ BEGIN_EVENT_TABLE(EdtEnv,AxEnv)
     EVT_MENU( ID5_GOTO, EdtEnv::OnGoto )
     EVT_MENU( ID5_ZOOMOUT, EdtEnv::OnZoomOut )
     EVT_MENU( ID5_ZOOMIN, EdtEnv::OnZoomIn )
-	EVT_MENU( ID5_SAVE_MODEL, EdtEnv::OnSaveModel )
-    EVT_MENU( ID5_SAVE_MLF, EdtEnv::OnSaveMLF )
-    EVT_MENU( ID5_OPEN_MLF, EdtEnv::OnOpenMLF )
-    EVT_MENU( ID5_SAVE_WWG, EdtEnv::OnSaveWWG )
+    EVT_MENU( ID5_OPEN_DARMS, EdtEnv::OnOpenDARMS )
+    EVT_MENU( ID5_OPEN_PAE, EdtEnv::OnOpenPAE )
     EVT_MENU( ID5_OPEN_WWG, EdtEnv::OnOpenWWG )
+    EVT_MENU( ID5_OPEN_MEI, EdtEnv::OnOpenMEI )
     EVT_MENU( ID5_SAVE_SVG, EdtEnv::OnSaveSVG )
     EVT_MENU( ID5_SAVE_MEI, EdtEnv::OnSaveMEI )
-    EVT_MENU( ID5_OPEN_MEI, EdtEnv::OnOpenMEI )
+    EVT_MENU( ID5_SAVE_MODEL, EdtEnv::OnSaveModel )
+    EVT_MENU( ID5_SAVE_MLF, EdtEnv::OnSaveMLF )
+    EVT_MENU( ID5_SAVE_WWG, EdtEnv::OnSaveWWG )
     EVT_MENU( ID5_VOICES, EdtEnv::OnValues )
     EVT_MENU( ID5_INDENT, EdtEnv::OnValues )
     EVT_COMMAND( ID_MIDI_INPUT, AX_EVT_MIDI, EdtEnv::OnMidiInput )
@@ -396,7 +397,9 @@ void EdtEnv::OnUpdateUI( wxUpdateUIEvent &event )
 {
     if ( event.GetId() == ID_OPEN )
         event.Enable(true);
-    else if ( event.GetId() == ID5_OPEN_MLF )
+    else if ( event.GetId() == ID5_OPEN_DARMS )
+        event.Enable( true );
+    else if ( event.GetId() == ID5_OPEN_PAE )
         event.Enable( true );
     else if ( event.GetId() == ID5_OPEN_WWG )
         event.Enable( true );
@@ -445,9 +448,71 @@ void EdtEnv::OnUpdateUI( wxUpdateUIEvent &event )
 
 // import / export
 
+
+void EdtEnv::OnOpenPAE( wxCommandEvent &event )
+{
+    
+    wxASSERT_MSG( m_panelPtr, "Panel cannot be NULL ");
+    
+    if ( !this->ResetFile( ) )
+        return;
+    
+    
+    wxString filename = wxFileSelector( _("Import PAE"), wxGetApp().m_lastDir, _T(""), _T(""), "PAE Files|*.pae|All Files|*.*", wxFD_OPEN);
+    if ( filename.IsEmpty() )
+        return;
+    wxGetApp().m_lastDir = wxPathOnly( filename );
+    
+    m_edtFilePtr->New();
+
+    MusPaeInput paeInput( m_edtFilePtr->m_musDocPtr, filename );
+	if ( !paeInput.ImportFile() )
+		return;
+    
+	MusLayout *layout = new MusLayout( Raw );
+	layout->Realize(m_edtFilePtr->m_musDocPtr->m_divs[0].m_score);
+	m_edtFilePtr->m_musDocPtr->AddLayout( layout );
+    
+    layout->SpaceMusic();
+    
+	m_musViewPtr->SetEditorMode(MUS_EDITOR_EDIT);
+    UpdateViews( 0 );
+}
+
+
+void EdtEnv::OnOpenDARMS( wxCommandEvent &event )
+{
+    
+    wxASSERT_MSG( m_panelPtr, "Panel cannot be NULL ");
+    
+    if ( !this->ResetFile( ) )
+        return;
+
+    wxString filename = wxFileSelector( _("Import DARMS"), wxGetApp().m_lastDir, _T(""), _T(""), "DARMS Files|*.darms|All Files|*.*", wxFD_OPEN);
+    if ( filename.IsEmpty() )
+        return;
+    wxGetApp().m_lastDir = wxPathOnly( filename );
+    
+    m_edtFilePtr->New();
+    
+    MusDarmsInput darmsInput( m_edtFilePtr->m_musDocPtr, filename );
+	if ( !darmsInput.ImportFile() )
+		return;
+    
+	MusLayout *layout = new MusLayout( Raw );
+	layout->Realize(m_edtFilePtr->m_musDocPtr->m_divs[0].m_score);
+	m_edtFilePtr->m_musDocPtr->AddLayout( layout );
+    
+    layout->SpaceMusic();
+    
+	m_musViewPtr->SetEditorMode(MUS_EDITOR_EDIT);
+    UpdateViews( 0 );
+}
+
+/*
 void EdtEnv::OnOpenMLF( wxCommandEvent &event )
 {
-    /*
+
     if ( !this->ResetFile( ) )
         return;
 
@@ -471,9 +536,8 @@ void EdtEnv::OnOpenMLF( wxCommandEvent &event )
         return;
     }
     UpdateViews( 0 );
-    */ // ax2
-
 }
+*/ // ax2
 
 void EdtEnv::OnSaveMLF( wxCommandEvent &event )
 {
@@ -550,37 +614,6 @@ void EdtEnv::OnSaveSVG( wxCommandEvent &event )
     
 }
 
-/*
-#include "app/axwxdc.h"
-
-void EdtEnv::OnSaveSVG( wxCommandEvent &event )
-{
-    wxString filename;
-    filename = wxFileSelector( _("Save"), wxGetApp().m_lastDirTIFF_out, _T(""), NULL, "*|*", wxFD_SAVE);
-    if (filename.IsEmpty())
-        return;
-        
-    wxGetApp().m_lastDirTIFF_out = wxPathOnly( filename );
-
-    wxMemoryDC memDC;
-    wxBitmap bitmap( m_musViewPtr->ToRendererX( m_musViewPtr->m_pageWidth + 30 )  ,
-        m_musViewPtr->ToRendererX( m_musViewPtr->m_paperHeight + 10 )); // marges bricolees ...
-    memDC.SelectObject(bitmap);
-    memDC.SetBackground(*wxWHITE_BRUSH);
-    memDC.Clear();
-    memDC.SetLogicalOrigin( m_musViewPtr->m_leftMargin,10 );
-    //memDC.SetPen(*wxRED_PEN);
-    //memDC.SetBrush(*wxTRANSPARENT_BRUSH);
-    MusWxDC ax_dc( &memDC );
-    m_musViewPtr->m_page->DrawPage( &ax_dc, false );
-    memDC.SelectObject(wxNullBitmap);
-    wxImage image = bitmap.ConvertToImage().Scale( bitmap.GetWidth()/10, bitmap.GetHeight()/10, wxIMAGE_QUALITY_HIGH );//.ConvertToMono( 255 ,255 , 255 );
-    image.SaveFile( filename );
-    //bitmap.SaveFile( filename, wxBITMAP_TYPE_BMP );
-}
-*/
-
-
 void EdtEnv::OnOpenWWG( wxCommandEvent &event )
 {
     wxASSERT_MSG( m_panelPtr, "Panel cannot be NULL ");
@@ -629,18 +662,15 @@ void EdtEnv::OnOpenMEI( wxCommandEvent &event )
     if ( !this->ResetFile( ) )
         return;
     
-    //wxString filename = wxFileSelector( _("Import MEI"), wxGetApp().m_lastDir, _T(""), _T(""), "MEI Files|*.mei|XML Files|*.xml", wxFD_OPEN);
-    wxString filename = wxFileSelector( _("Import MEI"), wxGetApp().m_lastDir, _T(""), _T(""), "PAE Files|*.pae|All Files|*.*", wxFD_OPEN);
+    wxString filename = wxFileSelector( _("Import MEI"), wxGetApp().m_lastDir, _T(""), _T(""), "MEI Files|*.mei|XML Files|*.xml", wxFD_OPEN);
     if ( filename.IsEmpty() )
         return;
     wxGetApp().m_lastDir = wxPathOnly( filename );
     
     m_edtFilePtr->New();
-    //m_edtFilePtr->m_musDocPtr->m_env.m_notationMode = MUS_NEUMATIC_MODE; //temporary for liber usualis project
 
-    MusPaeInput meiinput( m_edtFilePtr->m_musDocPtr, filename );
-    //MusPaeInput meiinput( m_edtFilePtr->m_musDocPtr, filename );
-	if ( !meiinput.ImportFile() )
+    MusMeiInput meiInput( m_edtFilePtr->m_musDocPtr, filename );
+	if ( !meiInput.ImportFile() )
 		return;
     
 	MusLayout *layout = new MusLayout( Raw );
@@ -651,8 +681,6 @@ void EdtEnv::OnOpenMEI( wxCommandEvent &event )
     
 	m_musViewPtr->SetEditorMode(MUS_EDITOR_EDIT);
     UpdateViews( 0 );
-
-    //wxLogMessage("Fix me!"); // ax2
 }
 
 void EdtEnv::OnSaveMEI( wxCommandEvent &event )

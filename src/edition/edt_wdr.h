@@ -49,24 +49,25 @@ wxSizer *EdtNewDlgFunc( wxWindow *parent, bool call_fit = TRUE, bool set_sizer =
 
 const int ID5_MENU_FILE = 15011;
 const int ID5_MENU = 15012;
-const int ID5_OPEN_MLF = 15013;
-const int ID5_OPEN_WWG = 15014;
-const int ID5_OPEN_MEI = 15015;
-const int ID5_SAVE_MLF = 15016;
-const int ID5_SAVE_WWG = 15017;
-const int ID5_SAVE_MEI = 15018;
-const int ID5_SAVE_MODEL = 15019;
-const int ID5_SAVE_SVG = 15020;
-const int ID5_MENU_EDIT = 15021;
-const int ID5_PAGE = 15022;
-const int ID5_PREVIOUS = 15023;
-const int ID5_NEXT = 15024;
-const int ID5_GOTO = 15025;
-const int ID5_ZOOMOUT = 15026;
-const int ID5_ZOOMIN = 15027;
-const int ID5_TOOLS = 15028;
-const int ID5_VOICES = 15029;
-const int ID5_INDENT = 15030;
+const int ID5_OPEN_WWG = 15013;
+const int ID5_OPEN_MEI = 15014;
+const int ID5_OPEN_PAE = 15015;
+const int ID5_OPEN_DARMS = 15016;
+const int ID5_SAVE_MLF = 15017;
+const int ID5_SAVE_WWG = 15018;
+const int ID5_SAVE_MEI = 15019;
+const int ID5_SAVE_MODEL = 15020;
+const int ID5_SAVE_SVG = 15021;
+const int ID5_MENU_EDIT = 15022;
+const int ID5_PAGE = 15023;
+const int ID5_PREVIOUS = 15024;
+const int ID5_NEXT = 15025;
+const int ID5_GOTO = 15026;
+const int ID5_ZOOMOUT = 15027;
+const int ID5_ZOOMIN = 15028;
+const int ID5_TOOLS = 15029;
+const int ID5_VOICES = 15030;
+const int ID5_INDENT = 15031;
 wxMenuBar *MenuBarFunc5();
 
 // Declare toolbar functions

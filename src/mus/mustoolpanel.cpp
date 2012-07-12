@@ -118,9 +118,6 @@ void MusToolRow::UpdateTools( int type, int notation_mode )
         AddTool(ID_MS_BT_R4, "", MusToolPanel::GetToolbarBitmap( "rest_4.png" ));
         AddTool(ID_MS_BT_R5, "", MusToolPanel::GetToolbarBitmap( "rest_5.png" ));
         AddTool(ID_MS_BT_R6, "", MusToolPanel::GetToolbarBitmap( "rest_6.png" ));
-        // custos
-        AddSeparator(); 
-        AddTool(ID_MS_BT_CT, "", MusToolPanel::GetToolbarBitmap( "note_c.png" ));
         // ligatures
         AddSeparator(); 
         AddTool(ID_MS_BT_LG_D, "", MusToolPanel::GetToolbarBitmap( "note_lig1.png" ));
@@ -164,11 +161,11 @@ void MusToolRow::UpdateTools( int type, int notation_mode )
         // other
         AddSeparator();
         AddTool(ID_MS_BT_M32, "", MusToolPanel::GetToolbarBitmap( "mes_m32.png" ));
-        //AddControl( new wxTextCtrl( this, ID_MS_BT_M32_NUM, wxString::Format("%d", MusSymbol1::s_durNum), wxDefaultPosition, wxSize( 30, 20 )), "Num" ); // ax2
-        //AddControl( new wxTextCtrl( this, ID_MS_BT_M32_DEN, wxString::Format("%d", MusSymbol1::s_durDen), wxDefaultPosition, wxSize( 30, 20 )), "Den" ); // ax2  
-        AddSeparator();
-        AddTool(ID_MS_BT_M3, "", MusToolPanel::GetToolbarBitmap( "mes_m3.png" ));
-        AddTool(ID_MS_BT_M2, "", MusToolPanel::GetToolbarBitmap( "mes_m2.png" ));
+        AddControl( new wxTextCtrl( this, ID_MS_BT_M32_NUM, wxString::Format("%d", MusMensur::s_num), wxDefaultPosition, wxSize( 30, 20 )), "Num" );
+        AddControl( new wxTextCtrl( this, ID_MS_BT_M32_DEN, wxString::Format("%d", MusMensur::s_numBase), wxDefaultPosition, wxSize( 30, 20 )), "Den" );  
+        //AddSeparator();
+        //AddTool(ID_MS_BT_M3, "", MusToolPanel::GetToolbarBitmap( "mes_m3.png" ));
+        //AddTool(ID_MS_BT_M2, "", MusToolPanel::GetToolbarBitmap( "mes_m2.png" ));
         break;
 	case (MUS_TOOLS_OTHER):
         AddTool(ID_MS_BT_DOT, "", MusToolPanel::GetToolbarBitmap( "symb_dot.png" ));
@@ -185,6 +182,9 @@ void MusToolRow::UpdateTools( int type, int notation_mode )
         AddSeparator();
         AddTool(ID_MS_BT_BAR, "", MusToolPanel::GetToolbarBitmap( "symb_bar.png" ));
         AddTool(ID_MS_BT_RDOTS, "", MusToolPanel::GetToolbarBitmap( "symb_rdots.png" ));
+        // custos
+        AddSeparator(); 
+        AddTool(ID_MS_BT_CT, "", MusToolPanel::GetToolbarBitmap( "note_c.png" ));
         break;
 	case (NEUME_TOOLS_NOTES):
         AddTool(ID_NU_BT_N0, "", MusToolPanel::GetToolbarBitmap( "neume_punctum.png" ));
@@ -229,11 +229,11 @@ BEGIN_EVENT_TABLE(MusToolPanel,wxPanel)
 	EVT_MENU( ID_MS_BT_INSERT, MusToolPanel::OnChangeMode )
     EVT_MENU_RANGE( ID_MS_BT_CHANGE_TOOL_START, ID_MS_BT_CHANGE_TOOL_END, MusToolPanel::OnChangeTool )
     EVT_MENU_RANGE( ID_MS_BT_N0, ID_MS_BT_N7, MusToolPanel::OnNote )
-    EVT_MENU_RANGE( ID_MS_BT_R0, ID_MS_BT_CT, MusToolPanel::OnNote )
+    EVT_MENU_RANGE( ID_MS_BT_R0, ID_MS_BT_R6, MusToolPanel::OnNote )
 	EVT_MENU_RANGE( ID_MS_BT_LG_D, ID_MS_BT_UPDOWN, MusToolPanel::OnNote )
     EVT_MENU_RANGE( ID_MS_BT_G1, ID_MS_BT_F5, MusToolPanel::OnKey )
     EVT_MENU_RANGE( ID_MS_BT_MTPP, ID_MS_BT_M2, MusToolPanel::OnSign )
-    EVT_MENU_RANGE( ID_MS_BT_DOT, ID_MS_BT_BAR, MusToolPanel::OnSymbol )
+    EVT_MENU_RANGE( ID_MS_BT_DOT, ID_MS_BT_CT, MusToolPanel::OnSymbol )
     EVT_MENU_RANGE( ID_NU_BT_N0, ID_NU_BT_N5, MusToolPanel::OnNeume )
     EVT_MENU_RANGE( ID_NU_BT_C0, ID_NU_BT_C4, MusToolPanel::OnNeumeClef )
 	EVT_MENU_RANGE( ID_NU_BT_COMMA, ID_NU_BT_DIV_SMALL, MusToolPanel::OnNeumeSymbol )
@@ -362,14 +362,16 @@ void MusToolPanel::OnSymbol( wxCommandEvent &event )
     int value = '0';
     switch ( event.GetId() )
     {
-    case (ID_MS_BT_SHARP): value = 'D'; break;
-    case (ID_MS_BT_NATURAL): value = 'H'; break;
-    case (ID_MS_BT_FLAT): value = 'B'; break;
-    case (ID_MS_BT_DSHARP): value = 'F'; break;
-    case (ID_MS_BT_DFLAT): value = 'N'; break;
+    case (ID_MS_BT_SHARP): value = 'S'; break;
+    case (ID_MS_BT_NATURAL): value = 'N'; break;
+    case (ID_MS_BT_FLAT): value = 'F'; break;
+    case (ID_MS_BT_DSHARP): value = 'X'; break;
+    case (ID_MS_BT_DFLAT): value = 'D'; break;
 
-    case (ID_MS_BT_DOT): value = 'P'; break;
+    case (ID_MS_BT_DOT): value = '.'; break;
     case (ID_MS_BT_BAR): value = '|'; break;
+            
+    case (ID_MS_BT_CT): value = 'C'; break;
     }
         
     wxKeyEvent kevent;
@@ -382,8 +384,8 @@ void MusToolPanel::OnSymbol( wxCommandEvent &event )
 // pass the value back to the MusSymbol1 static
 void MusToolPanel::OnMeasure( wxCommandEvent &event )
 {
-    //MusSymbol1::s_durNum = atoi(((wxTextCtrl*)FindWindow(ID_MS_BT_M32_NUM))->GetValue()); // ax2
-    //MusSymbol1::s_durDen = atoi(((wxTextCtrl*)FindWindow(ID_MS_BT_M32_DEN))->GetValue()); // ax2
+    MusMensur::s_num = atoi(((wxTextCtrl*)FindWindow(ID_MS_BT_M32_NUM))->GetValue());
+    MusMensur::s_numBase = atoi(((wxTextCtrl*)FindWindow(ID_MS_BT_M32_DEN))->GetValue());
     wxKeyEvent kevent;
     kevent.SetEventType( wxEVT_KEY_DOWN );
     kevent.m_keyCode = '1';

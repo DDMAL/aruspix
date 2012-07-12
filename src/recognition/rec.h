@@ -216,7 +216,7 @@ private:
     void Recognize( );
     void Preprocess( );
 
-        void OnResetAdaptation( wxCommandEvent &event );
+    void OnResetAdaptation( wxCommandEvent &event );
     void OnExportAxtyp( wxCommandEvent &event );
     void OnExportAxmus( wxCommandEvent &event );
     void OnBookEdit( wxCommandEvent &event );

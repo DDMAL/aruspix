@@ -88,8 +88,9 @@ void MusLaidOutLayerElement::UpdateXPosition( wxArrayPtrVoid params )
         (*current_x_shift) = 0;
     }
     
-    if (dynamic_cast<MusBeam*>(this->m_layerElement))
+    if ( dynamic_cast<MusBeam*>(this->m_layerElement) ) {
         return;
+    }
     
     int negative_offset = this->m_x_abs - this->m_contentBB_x1;
     this->m_x_abs = (*current_x_shift) + negative_offset;

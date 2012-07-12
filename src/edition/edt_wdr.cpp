@@ -173,15 +173,16 @@ wxMenuBar *MenuBarFunc5()
     
     wxMenu* item1 = new wxMenu;
     item1->AppendSeparator();
-    item1->Append( ID5_OPEN_MLF, _("Import &MLF"), wxT("") );
-    item1->Append( ID5_OPEN_WWG, _("Import &WWG"), wxT("") );
-    item1->Append( ID5_OPEN_MEI, _("Import &MEI"), wxT("") );
+    item1->Append( ID5_OPEN_WWG, _("Import &WWG"), _("Import Wolfgang files") );
+    item1->Append( ID5_OPEN_MEI, _("Import &MEI"), _("Import MEI files") );
+    item1->Append( ID5_OPEN_PAE, _("Import &PAE"), _("Import Plain and Easy files") );
+    item1->Append( ID5_OPEN_DARMS, _("Import &DARMS"), _("Import DARMS files") );
     item1->AppendSeparator();
     item1->Append( ID5_SAVE_MLF, _("Export MLF"), wxT("") );
     item1->Append( ID5_SAVE_WWG, _("Export WWG"), wxT("") );
     item1->Append( ID5_SAVE_MEI, _("Export MEI"), wxT("") );
     item1->Append( ID5_SAVE_MODEL, _("Export music model"), wxT("") );
-    item1->Append( ID5_SAVE_SVG, _("Export SVG (page)"), wxT("") );
+    item1->Append( ID5_SAVE_SVG, _("Export page as SVG"), _("Export the current page as SVG") );
     item0->Append( item1, _("commun1") );
     
     wxMenu* item2 = new wxMenu;

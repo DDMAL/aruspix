@@ -37,6 +37,11 @@ public:
      */
     int GetClefOffset();
     
+    /**
+     * Set the value for the clef.
+     */
+	virtual void SetValue( int value, int flag = 0 );
+    
 private:
     
 public:

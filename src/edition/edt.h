@@ -89,11 +89,12 @@ private:
     void OnSaveAs( wxCommandEvent &event );
     void OnClose( wxCommandEvent &event );
     // import / export
-    void OnOpenMLF( wxCommandEvent &event );
-	void OnSaveMLF( wxCommandEvent &event );
+    void OnOpenDARMS( wxCommandEvent &event );
+    void OnOpenPAE( wxCommandEvent &event );
     void OnOpenWWG( wxCommandEvent &event );
-    void OnSaveWWG( wxCommandEvent &event );
     void OnOpenMEI( wxCommandEvent &event );
+    void OnSaveWWG( wxCommandEvent &event );
+    void OnSaveMLF( wxCommandEvent &event );
     void OnSaveMEI( wxCommandEvent &event );
     void OnSaveSVG( wxCommandEvent &event );
     void OnSaveModel( wxCommandEvent &event );

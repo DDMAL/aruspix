@@ -45,3 +45,20 @@ int MusClef::GetClefOffset ()
 	}
 	return offset;
 }
+
+void MusClef::SetValue( int value, int flag ) 
+{
+   switch ( value )
+   {
+       case ('1'): this->m_clefId = SOL1; break;
+       case ('2'): this->m_clefId = SOL2; break;
+       case ('3'): this->m_clefId = UT1; break;
+       case ('4'): this->m_clefId = UT2; break;
+       case ('5'): this->m_clefId = UT3; break;
+       case ('6'): this->m_clefId = UT4; break;
+       case ('7'): this->m_clefId = UT5; break;
+       case ('8'): this->m_clefId = FA3; break;
+       case ('9'): this->m_clefId = FA4; break;
+       case ('0'): this->m_clefId = FA5; break;
+   }
+}
