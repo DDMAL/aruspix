@@ -429,12 +429,8 @@ void MusRC::DrawNote ( MusDC *dc, MusLaidOutLayerElement *element, MusLaidOutLay
         accid.m_pname = note->m_pname;
 		accid.m_accid = note->m_accid;
         MusLaidOutLayerElement accidElement( &accid );
-        // RZ to calculate the offset with respect to the clef
-        // the element has to be into tle layer
-        // is this ok here?
-        layer->AddElement(&accidElement); //RZ
         accidElement.m_x_abs = x1;
-        DrawSymbol( dc, &accidElement, layer, staff ); // ax2
+        DrawSymbol( dc, &accidElement, layer, staff, element ); // ax2
 	}
 	if (note->m_chord)
 	{	
@@ -1214,15 +1210,20 @@ void MusRC::DrawMensurFigures( MusDC *dc, int x, int y, int num, int numBase, Mu
 }
 
 
-void MusRC::DrawSymbol( MusDC *dc, MusLaidOutLayerElement *element, MusLaidOutLayer *layer, MusLaidOutStaff *staff )
+void MusRC::DrawSymbol( MusDC *dc, MusLaidOutLayerElement *element, MusLaidOutLayer *layer, MusLaidOutStaff *staff, MusLaidOutLayerElement *parent )
 {
     wxASSERT_MSG( layer, "Pointer to layer cannot be NULL" );
     wxASSERT_MSG( staff, "Pointer to staff cannot be NULL" );
     wxASSERT_MSG( dynamic_cast<MusSymbol*>(element->m_layerElement), "Element must be a MusSymbol" );
     
+    // This is used when we add dynamically an element (eg. accidentals before notes)
+    // So we can get the clef without adding the new elem in the list
+    MusLaidOutLayerElement *list_elem = element;
+    if (parent) list_elem = parent;
+    
     MusSymbol *symbol = dynamic_cast<MusSymbol*>(element->m_layerElement);
     int oct = symbol->m_oct - 4;
-    element->m_y_drawing = CalculatePitchPosY( staff, symbol->m_pname, layer->GetClefOffset( element ), oct);
+    element->m_y_drawing = CalculatePitchPosY( staff, symbol->m_pname, layer->GetClefOffset( list_elem ), oct);
     
     if (symbol->m_type==SYMBOL_ACCID) {
         DrawSymbolAccid(dc, element, layer, staff);
