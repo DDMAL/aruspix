@@ -143,15 +143,7 @@
 		8FE5FE111594952400B44674 /* tinyxmlparser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A585249D0A1B9604002D9D8A /* tinyxmlparser.cpp */; };
 		8FE5FE271599FA0600B44674 /* musbeam.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8FE5FE261599FA0500B44674 /* musbeam.cpp */; };
 		8FE5FE281599FA0600B44674 /* musbeam.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8FE5FE261599FA0500B44674 /* musbeam.cpp */; };
-		A125A6741342A4B30038F7BC /* musneume.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4DC24AB5119B72C900B2EF98 /* musneume.cpp */; };
-		A12B0561137C50AF007D2546 /* gtest_main.cc in Sources */ = {isa = PBXBuildFile; fileRef = A12B055F137C50AF007D2546 /* gtest_main.cc */; };
-		A12B05BE137C53FE007D2546 /* musiomei2_test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A12B0562137C50BC007D2546 /* musiomei2_test.cpp */; };
-		A12B065D137C6AA6007D2546 /* fakemus.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A12B065C137C6AA6007D2546 /* fakemus.cpp */; };
-		A12C23DC137F314A0058BD12 /* musneumesymbol_test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A12C23DB137F314A0058BD12 /* musneumesymbol_test.cpp */; };
-		A12C23DE137F316D0058BD12 /* musneumesymbol.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A1A6E0D713422A7D0024A821 /* musneumesymbol.cpp */; };
-		A1A4B5DD134381A200897C5E /* musobject.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D3A8FE10D35867200BBC1FB /* musobject.cpp */; };
 		A1A6E0D813422A7D0024A821 /* musneumesymbol.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A1A6E0D713422A7D0024A821 /* musneumesymbol.cpp */; };
-		A1A6E1851342549B0024A821 /* musneume_test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A1A6E1841342549B0024A821 /* musneume_test.cpp */; };
 		A58524CE0A1B9604002D9D8A /* axapp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A58524560A1B9604002D9D8A /* axapp.cpp */; };
 		A58524CF0A1B9604002D9D8A /* axenv.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A58524580A1B9604002D9D8A /* axenv.cpp */; };
 		A58524D00A1B9604002D9D8A /* axframe.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A585245B0A1B9604002D9D8A /* axframe.cpp */; };
@@ -179,15 +171,6 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
-		7DAB622A138C355100E691FC /* CopyFiles */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "";
-			dstSubfolderSpec = 10;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		8F238169159462AF00C04D47 /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
@@ -365,14 +348,8 @@
 		8F9F1A16156143A200C7D6F9 /* musiopae.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = musiopae.h; path = ../src/mus/musiopae.h; sourceTree = "<group>"; };
 		8FE5FE261599FA0500B44674 /* musbeam.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = musbeam.cpp; path = ../src/mus/musbeam.cpp; sourceTree = "<group>"; };
 		8FE5FE2A1599FA1B00B44674 /* musbeam.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = musbeam.h; path = ../src/mus/musbeam.h; sourceTree = "<group>"; };
-		A12B055F137C50AF007D2546 /* gtest_main.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = gtest_main.cc; path = ../test/gtest_main.cc; sourceTree = SOURCE_ROOT; };
-		A12B0562137C50BC007D2546 /* musiomei2_test.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = musiomei2_test.cpp; path = ../test/mus/musiomei2_test.cpp; sourceTree = SOURCE_ROOT; };
-		A12B065C137C6AA6007D2546 /* fakemus.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = fakemus.cpp; path = ../test/fakemus.cpp; sourceTree = SOURCE_ROOT; };
-		A12C23DB137F314A0058BD12 /* musneumesymbol_test.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = musneumesymbol_test.cpp; path = ../test/mus/musneumesymbol_test.cpp; sourceTree = SOURCE_ROOT; };
 		A1A6E0D613422A7D0024A821 /* musneumesymbol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = musneumesymbol.h; path = ../src/mus/musneumesymbol.h; sourceTree = SOURCE_ROOT; };
 		A1A6E0D713422A7D0024A821 /* musneumesymbol.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = musneumesymbol.cpp; path = ../src/mus/musneumesymbol.cpp; sourceTree = SOURCE_ROOT; };
-		A1A6E17B134254220024A821 /* ax_test */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = ax_test; sourceTree = BUILT_PRODUCTS_DIR; };
-		A1A6E1841342549B0024A821 /* musneume_test.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = musneume_test.cpp; path = ../test/mus/musneume_test.cpp; sourceTree = SOURCE_ROOT; };
 		A50FE1390A6D6E240038D682 /* rec.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = rec.h; sourceTree = "<group>"; };
 		A58523900A1B9504002D9D8A /* Aruspix.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Aruspix.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A58524560A1B9604002D9D8A /* axapp.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = axapp.cpp; sourceTree = "<group>"; };
@@ -425,13 +402,6 @@
 
 /* Begin PBXFrameworksBuildPhase section */
 		8F238168159462AF00C04D47 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		A1A6E179134254220024A821 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -635,22 +605,9 @@
 			path = aruspix_headless;
 			sourceTree = "<group>";
 		};
-		A1A6E183134254650024A821 /* test */ = {
-			isa = PBXGroup;
-			children = (
-				A12B065C137C6AA6007D2546 /* fakemus.cpp */,
-				A12B0562137C50BC007D2546 /* musiomei2_test.cpp */,
-				A12B055F137C50AF007D2546 /* gtest_main.cc */,
-				A1A6E1841342549B0024A821 /* musneume_test.cpp */,
-				A12C23DB137F314A0058BD12 /* musneumesymbol_test.cpp */,
-			);
-			name = test;
-			sourceTree = "<group>";
-		};
 		A58508B20A001129006E82B1 = {
 			isa = PBXGroup;
 			children = (
-				A1A6E183134254650024A821 /* test */,
 				A585244E0A1B9603002D9D8A /* application */,
 				A5D0D4AB0A65628800A4B1CA /* im */,
 				4D3A8FCD0D3585AB00BBC1FB /* mus */,
@@ -674,7 +631,6 @@
 				5769E11B0BF25A1D007772A6 /* axz.icns */,
 				A585251B0A1B983B002D9D8A /* ax.icns */,
 				A58523900A1B9504002D9D8A /* Aruspix.app */,
-				A1A6E17B134254220024A821 /* ax_test */,
 				8F23816B159462AF00C04D47 /* aruspix_headless */,
 			);
 			name = Products;
@@ -837,23 +793,6 @@
 			productReference = 8F23816B159462AF00C04D47 /* aruspix_headless */;
 			productType = "com.apple.product-type.tool";
 		};
-		A1A6E17A134254220024A821 /* ax_test */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = A1A6E182134254410024A821 /* Build configuration list for PBXNativeTarget "ax_test" */;
-			buildPhases = (
-				A1A6E178134254220024A821 /* Sources */,
-				A1A6E179134254220024A821 /* Frameworks */,
-				7DAB622A138C355100E691FC /* CopyFiles */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-			);
-			name = ax_test;
-			productName = ax_test;
-			productReference = A1A6E17B134254220024A821 /* ax_test */;
-			productType = "com.apple.product-type.tool";
-		};
 		A58508C00A00113C006E82B1 /* Aruspix */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = A58508C50A00113C006E82B1 /* Build configuration list for PBXNativeTarget "Aruspix" */;
@@ -896,7 +835,6 @@
 			projectRoot = ../;
 			targets = (
 				A58508C00A00113C006E82B1 /* Aruspix */,
-				A1A6E17A134254220024A821 /* ax_test */,
 				8F23816A159462AF00C04D47 /* aruspix_headless */,
 			);
 		};
@@ -988,21 +926,6 @@
 				8FE5FE281599FA0600B44674 /* musbeam.cpp in Sources */,
 				8F3367F315A1E42F009AAB69 /* musiodarms.cpp in Sources */,
 				8F4FA6E115AC0C4000CF9FD8 /* muskeysig.cpp in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		A1A6E178134254220024A821 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				A12C23DE137F316D0058BD12 /* musneumesymbol.cpp in Sources */,
-				A1A4B5DD134381A200897C5E /* musobject.cpp in Sources */,
-				A125A6741342A4B30038F7BC /* musneume.cpp in Sources */,
-				A1A6E1851342549B0024A821 /* musneume_test.cpp in Sources */,
-				A12B05BE137C53FE007D2546 /* musiomei2_test.cpp in Sources */,
-				A12B0561137C50AF007D2546 /* gtest_main.cc in Sources */,
-				A12B065D137C6AA6007D2546 /* fakemus.cpp in Sources */,
-				A12C23DC137F314A0058BD12 /* musneumesymbol_test.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1219,140 +1142,6 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx10.6;
 				USER_HEADER_SEARCH_PATHS = "$(ARUSPIX_WX)/osx-static-debug/lib $(ARUSPIX_MEI)/..";
-			};
-			name = Release;
-		};
-		A1A6E17D134254230024A821 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				COPY_PHASE_STRIP = NO;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_1)",
-					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_2)",
-					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_3)",
-					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_4)",
-					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_5)",
-					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_6)",
-					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_7)",
-				);
-				FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(SRCROOT)/../..\"";
-				FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_2 = "\"$(SRCROOT)/../../ax-libs/osx\"";
-				FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_3 = "\"$(SRCROOT)/../../..\"";
-				FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_4 = "\"$(SRCROOT)/../../ax-libs/osx\"";
-				FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_5 = "\"$(SRCROOT)/../../ax-libs/osx\"";
-				FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_6 = "\"$(SRCROOT)/../../ax-libs/osx\"";
-				FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_7 = "\"$(SRCROOT)/../../libmei/build/Debug\"";
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_MODEL_TUNING = G5;
-				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
-				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
-				HEADER_SEARCH_PATHS = (
-					/usr/include/libxml2,
-					../src,
-					"$(ARUSPIX_IMLIB)/include",
-					"$(ARUSPIX_WX)/osx-static-debug/lib/wx/include/mac-ansi-debug-static-2.8",
-					"$(ARUSPIX_WX)/include",
-					"$(ARUSPIX_WX)/contrib/include",
-				);
-				INSTALL_PATH = /usr/local/bin;
-				LIBRARY_SEARCH_PATHS = (
-					"$(ARUSPIX_TORCH)/lib",
-					"$(ARUSPIX_IMLIB)/lib",
-					"$(ARUSPIX_WX)/osx-static-debug/lib",
-				);
-				OTHER_CFLAGS = (
-					"-D__MACOSX_CORE__",
-					"-D__WXDEBUG__",
-					"-D__WXMAC__",
-					"-D__AXDEBUG__",
-					"-D_FILE_OFFSET_BITS=64",
-					"-D_LARGE_FILES",
-					"-DAX_SUPERIMPOSITION",
-					"-DAX_EDT",
-					"-DAX_COMPARISON",
-					"-DAX_RECOGNITION",
-					"-DNO_GCC_PRAGMA",
-				);
-				OTHER_LDFLAGS = (
-					"-framework",
-					CoreMidi,
-					"-framework",
-					CoreAudio,
-					"-framework",
-					CoreFoundation,
-					"-lz",
-					"-lpthread",
-					"-framework",
-					QuickTime,
-					"-framework",
-					IOKit,
-					"-framework",
-					Carbon,
-					"-framework",
-					Cocoa,
-					"-framework",
-					OpenGL,
-					"-framework",
-					System,
-					"-liconv",
-					"-lim_u",
-					"-lim_process_u",
-					"-lim_fftw_u",
-					"-lwx_macd_core-$(ARUSPIX_WX_VERSION)",
-					"-lwx_base_carbond-$(ARUSPIX_WX_VERSION)",
-					"-lwx_base_carbond_net-$(ARUSPIX_WX_VERSION)",
-					"-lwx_macd_html-$(ARUSPIX_WX_VERSION)",
-					"-lwx_macd_adv-$(ARUSPIX_WX_VERSION)",
-					"-lwx_macd_aui-$(ARUSPIX_WX_VERSION)",
-					"-lwxpngd-$(ARUSPIX_WX_VERSION)",
-					"-lxml2",
-					"-lwxjpegd-$(ARUSPIX_WX_VERSION)",
-				);
-				PRODUCT_NAME = ax_test;
-			};
-			name = Debug;
-		};
-		A1A6E17F134254230024A821 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				COPY_PHASE_STRIP = YES;
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_1)",
-					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_2)",
-					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_3)",
-					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_4)",
-					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_5)",
-					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_6)",
-					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_7)",
-				);
-				FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(SRCROOT)/../..\"";
-				FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_2 = "\"$(SRCROOT)/../../ax-libs/osx\"";
-				FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_3 = "\"$(SRCROOT)/../../..\"";
-				FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_4 = "\"$(SRCROOT)/../../ax-libs/osx\"";
-				FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_5 = "\"$(SRCROOT)/../../ax-libs/osx\"";
-				FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_6 = "\"$(SRCROOT)/../../ax-libs/osx\"";
-				FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_7 = "\"$(SRCROOT)/../../libmei/build/Debug\"";
-				GCC_MODEL_TUNING = G5;
-				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
-				HEADER_SEARCH_PATHS = (
-					"$(ARUSPIX_IMLIB)/include",
-					"$(ARUSPIX_WX)/osx-static-debug/lib/wx/include/mac-ansi-debug-static-2.8",
-					"$(ARUSPIX_WX)/include",
-					"$(ARUSPIX_WX)/contrib/include",
-				);
-				INSTALL_PATH = /usr/local/bin;
-				LIBRARY_SEARCH_PATHS = (
-					"$(ARUSPIX_WX)/osx-static-debug/lib",
-					"$(ARUSPIX_IMLIB)/lib",
-				);
-				PRODUCT_NAME = ax_test;
-				ZERO_LINK = NO;
 			};
 			name = Release;
 		};
@@ -1597,15 +1386,6 @@
 			buildConfigurations = (
 				8F238172159462AF00C04D47 /* Debug */,
 				8F238173159462AF00C04D47 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Debug;
-		};
-		A1A6E182134254410024A821 /* Build configuration list for PBXNativeTarget "ax_test" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				A1A6E17D134254230024A821 /* Debug */,
-				A1A6E17F134254230024A821 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;
