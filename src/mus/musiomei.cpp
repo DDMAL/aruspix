@@ -284,11 +284,19 @@ bool MusMeiOutput::WriteLayerElement( MusLayerElement *element )
         wxLogWarning( "NeumeSymbol are not saved in MEI files" );
     }
     else if (dynamic_cast<MusNote*>(element)) {
+        if ( dynamic_cast<MusNote*>(element)->m_beam[0] ) {
+            // the note will be saved from the beam element;
+            return true;
+        }
         Note *note = new Note();
         WriteMeiNote( note, dynamic_cast<MusNote*>(element) );
         meiElement = note;
     }
     else if (dynamic_cast<MusRest*>(element)) {
+        if ( dynamic_cast<MusRest*>(element)->m_beam[0] ) {
+            // the rest will be saved from the beam element;
+            return true;
+        }
         Rest *rest = new Rest();
         WriteMeiRest( rest, dynamic_cast<MusRest*>(element) );
         meiElement = rest;
@@ -317,6 +325,23 @@ void MusMeiOutput::WriteMeiBarline( BarLine *meiBarline, MusBarline *barline )
 
 void MusMeiOutput::WriteMeiBeam( Beam *meiBeam, MusBeam *beam )
 {
+    int i = 0;
+    for (i = 0; i < beam->m_notes.Count(); i++) {
+        if ( dynamic_cast<MusNote*>(&beam->m_notes[i]) ) {
+            MusNote *musNote = dynamic_cast<MusNote*>( &beam->m_notes[i] );
+            Note *note = new Note();
+            WriteMeiNote( note, musNote );
+            note->setId( GetMeiUuid( musNote ));
+            meiBeam->addChild( note );
+        }
+        else if (dynamic_cast<MusRest*>(&beam->m_notes[i]) ) {
+            MusRest *musRest = dynamic_cast<MusRest*>( &beam->m_notes[i] );
+            Rest *rest = new Rest();
+            WriteMeiRest( rest, musRest );
+            rest->setId( GetMeiUuid( musRest ));
+            meiBeam->addChild( rest );
+        }
+    }
     return;
 }
 
