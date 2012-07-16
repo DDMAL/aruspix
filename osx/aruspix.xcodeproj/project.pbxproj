@@ -930,7 +930,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "RESOURCES=$BUILT_PRODUCTS_DIR/$TARGET_NAME.app/Contents/Resources/\nARUSPIX=$PROJECT_DIR/..\n\nif [ ! -d $RESOURCES/en ]; then\n\tcp -rf $ARUSPIX/local/* $BUILT_PRODUCTS_DIR/$TARGET_NAME.app/Contents/Resources/\nfi\nif [ ! -d $RESOURCES/Aruspix.localized ]; then\n\tcp -rf $ARUSPIX/data/* $BUILT_PRODUCTS_DIR/$TARGET_NAME.app/Contents/Resources/\nfi\n\nif [ $CONFIGURATION = \"Debug\" -o $CONFIGURATION = \"DebugDyn\" ]\nthen\n    names=\"decoderd ngramd adaptd\"\nelse\n    names=\"decoder ngram adapt\"\nfi\n\nfor n in $names\ndo\n\tcp -rf $BUILT_PRODUCTS_DIR/$n $BUILT_PRODUCTS_DIR/$TARGET_NAME.app/Contents/MacOS/;\ndone\n\n# XXX: Need to re-do this for release build\n# prepare installer, that is copy everything we need into ./bin/install_root\nif [ $CONFIGURATION = \"Release\" ]\nthen\n\tcp -rf $ARUSPIX/osx/install_root $ARUSPIX/bin;\n\tcp -rf $ARUSPIX/bin/Release/$TARGET_NAME.app $ARUSPIX/bin/install_root/Applications/; # copy the application bundle\n\t# rsync -r -t -u -v -C --links ${ARUSPIX_MEI}/mei.framework $ARUSPIX/bin/install_root/Library/Frameworks; # copy the mei.framework\nfi";
+			shellScript = "RESOURCES=$BUILT_PRODUCTS_DIR/$TARGET_NAME.app/Contents/Resources/\nARUSPIX=$PROJECT_DIR/..\n\nif [ ! -d $RESOURCES/en ]; then\n\tcp -rf $ARUSPIX/local/* $BUILT_PRODUCTS_DIR/$TARGET_NAME.app/Contents/Resources/\nfi\nif [ ! -d $RESOURCES/Aruspix.localized ]; then\n\tcp -rf $ARUSPIX/data/* $BUILT_PRODUCTS_DIR/$TARGET_NAME.app/Contents/Resources/\nfi\n\nif [ $CONFIGURATION = \"Debug\" -o $CONFIGURATION = \"DebugDyn\" ]\nthen\n    names=\"decoderd ngramd adaptd\"\nelse\n    names=\"decoder ngram adapt\"\nfi\n\nfor n in $names\ndo\n\tcp -rf $BUILT_PRODUCTS_DIR/$n $BUILT_PRODUCTS_DIR/$TARGET_NAME.app/Contents/MacOS/;\ndone\n\n# XXX: Need to re-do this for release build\n# prepare installer, that is copy everything we need into ./bin/install_root\nif [ $CONFIGURATION = \"Release\" ]\nthen\n\tcp -rf $ARUSPIX/osx/install_root $ARUSPIX/bin;\n\tcp -rf $ARUSPIX/bin/Release/Aruspix.app $ARUSPIX/bin/install_root/Applications/; # copy the application bundle\n\t# rsync -r -t -u -v -C --links ${ARUSPIX_MEI}/mei.framework $ARUSPIX/bin/install_root/Library/Frameworks; # copy the mei.framework\nfi";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -1121,150 +1121,6 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin XCBuildConfiguration section */
-		4D4AE33014BD6FBC00DD352A /* ReleaseSuperimposition */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
-				COPY_PHASE_STRIP = YES;
-				GCC_VERSION = com.apple.compilers.llvmgcc42;
-				GCC_WARN_TYPECHECK_CALLS_TO_PRINTF = NO;
-				HEADER_SEARCH_PATHS = "";
-				OBJROOT = "$(PROJECT_DIR)/../obj";
-				SDKROOT = macosx10.6;
-				SYMROOT = "$(PROJECT_DIR)/../bin";
-				VALID_ARCHS = i386;
-			};
-			name = ReleaseSuperimposition;
-		};
-		4D4AE33114BD6FBC00DD352A /* ReleaseSuperimposition */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
-				COPY_PHASE_STRIP = YES;
-				FRAMEWORK_SEARCH_PATHS = "";
-				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
-				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
-				GCC_OPTIMIZATION_LEVEL = s;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/Carbon.framework/Headers/Carbon.h";
-				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
-				GCC_VERSION = com.apple.compilers.llvmgcc42;
-				HEADER_SEARCH_PATHS = (
-					../src,
-					"$(ARUSPIX_IMLIB)/include",
-					"$(ARUSPIX_WX)/osx-static/lib/wx/include/mac-ansi-release-static-2.8",
-					"$(ARUSPIX_WX)/include",
-					"$(ARUSPIX_WX)/contrib/include",
-					/usr/include/libxml2,
-					"$(ARUSPIX_MEI)/include",
-				);
-				INFOPLIST_FILE = "Aruspix-Info.plist";
-				INSTALL_PATH = "$(USER_APPS_DIR)";
-				LIBRARY_SEARCH_PATHS = (
-					"$(ARUSPIX_IMLIB)/lib",
-					"$(ARUSPIX_WX)/osx-static/lib",
-					/usr/lib,
-				);
-				OBJROOT = "$(PROJECT_DIR)/../obj";
-				OTHER_CFLAGS = (
-					"-D__MACOSX_CORE__",
-					"-D__WXMAC__",
-					"-D_FILE_OFFSET_BITS=64",
-					"-D_LARGE_FILES",
-					"-DWX_PRECOMP",
-					"-DNO_GCC_PRAGMA",
-					"-DAX_SUPERIMPOSITION",
-				);
-				OTHER_LDFLAGS = (
-					"-force_load",
-					"$(ARUSPIX_MEI)/libmei.a",
-					"-framework",
-					CoreMidi,
-					"-framework",
-					CoreAudio,
-					"-framework",
-					CoreFoundation,
-					"-lz",
-					"-lpthread",
-					"-framework",
-					QuickTime,
-					"-framework",
-					IOKit,
-					"-framework",
-					Carbon,
-					"-framework",
-					Cocoa,
-					"-framework",
-					OpenGL,
-					"-framework",
-					System,
-					"-liconv",
-					"-lim",
-					"-lim_process",
-					"-lim_fftw",
-					"-lwx_mac_html-$(ARUSPIX_WX_VERSION)",
-					"-lwx_mac_adv-$(ARUSPIX_WX_VERSION)",
-					"-lwx_mac_core-$(ARUSPIX_WX_VERSION)",
-					"-lwx_base_carbon_net-$(ARUSPIX_WX_VERSION)",
-					"-lwx_base_carbon-$(ARUSPIX_WX_VERSION)",
-					"-lwx_mac_aui-$(ARUSPIX_WX_VERSION)",
-					"-lwxpng-$(ARUSPIX_WX_VERSION)",
-					"-lwxjpeg-$(ARUSPIX_WX_VERSION)",
-					"-lxml2",
-				);
-				PRODUCT_NAME = Aruspix;
-				SDKROOT = macosx10.6;
-				SECTORDER_FLAGS = "";
-				SYMROOT = "$(PROJECT_DIR)/../bin";
-				WARNING_CFLAGS = (
-					"-Wmost",
-					"-Wno-four-char-constants",
-					"-Wno-unknown-pragmas",
-				);
-			};
-			name = ReleaseSuperimposition;
-		};
-		4D4AE33214BD6FBC00DD352A /* ReleaseSuperimposition */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				COPY_PHASE_STRIP = YES;
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_1)",
-					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_2)",
-					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_3)",
-					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_4)",
-					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_5)",
-					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_6)",
-					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_7)",
-				);
-				FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(SRCROOT)/../..\"";
-				FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_2 = "\"$(SRCROOT)/../../ax-libs/osx\"";
-				FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_3 = "\"$(SRCROOT)/../../..\"";
-				FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_4 = "\"$(SRCROOT)/../../ax-libs/osx\"";
-				FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_5 = "\"$(SRCROOT)/../../ax-libs/osx\"";
-				FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_6 = "\"$(SRCROOT)/../../ax-libs/osx\"";
-				FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_7 = "\"$(SRCROOT)/../../libmei/build/Debug\"";
-				GCC_MODEL_TUNING = G5;
-				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
-				HEADER_SEARCH_PATHS = (
-					"$(ARUSPIX_IMLIB)/include",
-					"$(ARUSPIX_WX)/osx-static-debug/lib/wx/include/mac-ansi-debug-static-2.8",
-					"$(ARUSPIX_WX)/include",
-					"$(ARUSPIX_WX)/contrib/include",
-				);
-				INSTALL_PATH = /usr/local/bin;
-				LIBRARY_SEARCH_PATHS = (
-					"$(ARUSPIX_WX)/osx-static-debug/lib",
-					"$(ARUSPIX_IMLIB)/lib",
-				);
-				PRODUCT_NAME = ax_test;
-				ZERO_LINK = NO;
-			};
-			name = ReleaseSuperimposition;
-		};
 		8F238172159462AF00C04D47 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -1365,33 +1221,6 @@
 				USER_HEADER_SEARCH_PATHS = "$(ARUSPIX_WX)/osx-static-debug/lib $(ARUSPIX_MEI)/..";
 			};
 			name = Release;
-		};
-		8F238174159462AF00C04D47 /* ReleaseSuperimposition */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = YES;
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				GCC_C_LANGUAGE_STANDARD = gnu99;
-				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
-				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
-				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES;
-				GCC_WARN_UNINITIALIZED_AUTOS = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
-				KEEP_PRIVATE_EXTERNS = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.6;
-				ONLY_ACTIVE_ARCH = NO;
-				OTHER_CFLAGS = (
-					"-DHEADLESS",
-					"-D__WXBASE__",
-					"-fexceptions",
-				);
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = macosx10.6;
-				USER_HEADER_SEARCH_PATHS = "$(ARUSPIX_WX)/osx-static-debug/lib $(ARUSPIX_MEI)/..";
-			};
-			name = ReleaseSuperimposition;
 		};
 		A1A6E17D134254230024A821 /* Debug */ = {
 			isa = XCBuildConfiguration;
@@ -1768,7 +1597,6 @@
 			buildConfigurations = (
 				8F238172159462AF00C04D47 /* Debug */,
 				8F238173159462AF00C04D47 /* Release */,
-				8F238174159462AF00C04D47 /* ReleaseSuperimposition */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;
@@ -1778,7 +1606,6 @@
 			buildConfigurations = (
 				A1A6E17D134254230024A821 /* Debug */,
 				A1A6E17F134254230024A821 /* Release */,
-				4D4AE33214BD6FBC00DD352A /* ReleaseSuperimposition */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;
@@ -1788,7 +1615,6 @@
 			buildConfigurations = (
 				A58508B60A001129006E82B1 /* Debug */,
 				A58508B70A001129006E82B1 /* Release */,
-				4D4AE33014BD6FBC00DD352A /* ReleaseSuperimposition */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;
@@ -1798,7 +1624,6 @@
 			buildConfigurations = (
 				A58508C60A00113C006E82B1 /* Debug */,
 				A58508C70A00113C006E82B1 /* Release */,
-				4D4AE33114BD6FBC00DD352A /* ReleaseSuperimposition */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;
