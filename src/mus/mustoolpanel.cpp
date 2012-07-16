@@ -287,7 +287,7 @@ void MusToolPanel::OnUpdateUI( wxUpdateUIEvent &event )
     } else if (id == ID_MS_BT_SYMBOLS) {
         event.Check( m_current_tools == MUS_TOOLS_OTHER);
     } else if (id == ID_MS_BT_TEXT) {
-        event.Check( m_w->m_lyricMode );
+        event.Check( m_w && m_w->m_lyricMode );
     // neumatic notation
     } else if (id == ID_MS_BT_NEUMES) {
         event.Check( m_current_tools == NEUME_TOOLS_NOTES);

@@ -75,6 +75,22 @@ MusMeiOutput::~MusMeiOutput()
 bool MusMeiOutput::ExportFile( )
 {
     try {
+        
+        
+        XmlInstructions procinst;
+        
+        //std::string name1 = "xml-model";
+        //std::string value1 = "href=\"mei-2012.rng\" type=\"application/xml\" schematypens=\"http://purl.oclc.org/dsdl/schematron\"";
+        
+        std::string name2 = "xml-model";
+        std::string value2 = "href=\"http://www.aruspix.net/mei-layout-2012-06-22.rng\" type=\"application/xml\" schematypens=\"http://relaxng.org/ns/structure/1.0\"";
+        
+        //XmlProcessingInstruction *xpi1 = new XmlProcessingInstruction(name1, value1);
+        XmlProcessingInstruction *xpi2 = new XmlProcessingInstruction(name2, value2);
+        
+        //procinst.push_back(xpi1);
+        procinst.push_back(xpi2);
+        
         mei::MeiDocument *meiDoc = new mei::MeiDocument();
         
         m_mei = new MeiElement("mei");
@@ -83,7 +99,7 @@ bool MusMeiOutput::ExportFile( )
         m_doc->Save( this );
 
         meiDoc->setRootElement(m_mei);
-        XmlExport::meiDocumentToFile( meiDoc, m_filename.c_str() );
+        XmlExport::meiDocumentToFile( meiDoc, m_filename.c_str(), procinst );
     }
     catch( char * str ) {
         wxLogError("%s", str );
@@ -268,9 +284,9 @@ bool MusMeiOutput::WriteLayerElement( MusLayerElement *element )
         wxLogWarning( "NeumeSymbol are not saved in MEI files" );
     }
     else if (dynamic_cast<MusNote*>(element)) {
-        //Note *note = new Note();
-        //WriteMeiNote( note, dynamic_cast<MusNote*>(element) );
-        //meiElement = note;
+        Note *note = new Note();
+        WriteMeiNote( note, dynamic_cast<MusNote*>(element) );
+        meiElement = note;
     }
     else if (dynamic_cast<MusRest*>(element)) {
         Rest *rest = new Rest();
@@ -517,16 +533,18 @@ std::string MusMeiOutput::ClefLineToStr( ClefId clefId )
 {	
 	string value; 
 	switch(clefId)
-	{	case SOL2 : value = "2"; break;
+	{	
+        case SOL2 : value = "2"; break;
 		case SOL1 : value = "1"; break; 
 		case SOLva : value = "2"; break;
 		case FA5 : value = "5"; break;
 		case FA4 : value = "4"; break;
 		case FA3 : value = "3"; break;
-		case UT2 : value = "2"; break;
+		case UT1 : value = "1"; break;
+        case UT2 : value = "2"; break;
 		case UT3 : value = "3"; break;
+		case UT4 : value = "4"; break;
 		case UT5 : value = "5"; break;
-		case UT4 : value = "4"; break;		
         default: 
             wxLogWarning("Unknown clef '%d'", clefId);
             value = "";
@@ -539,16 +557,18 @@ std::string MusMeiOutput::ClefShapeToStr( ClefId clefId )
 {	
 	string value; 
 	switch(clefId)
-	{	case SOL2 : 
+	{	
+        case SOL2 : 
 		case SOL1 : 
 		case SOLva : value = "G"; break;
 		case FA5 : 
 		case FA4 :
 		case FA3 : value = "F"; break;
+        case UT1 :
 		case UT2 : 
 		case UT3 : 
-		case UT5 : 
-		case UT4 : value = "C"; break;		
+		case UT4 : 
+		case UT5 : value = "C"; break;		
         default: 
             wxLogWarning("Unknown clef '%d'", clefId);
             value = "";
