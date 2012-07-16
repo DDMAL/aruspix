@@ -24,6 +24,7 @@
 #include "musnote.h"
 #include "musrest.h"
 #include "mussymbol.h"
+#include "muskeysig.h"
 
 //#include "app/axapp.h"
 
@@ -69,7 +70,6 @@ MusFileInputStream( doc, -1 )
 	m_measure = NULL;
 	m_staff = NULL;
 	m_layer = NULL;
-    m_rest_position = PITCH_B; // set it to 3 line in G2 clef
 }
 
 MusPaeInput::~MusPaeInput()
@@ -746,21 +746,21 @@ int MusPaeInput::getClefInfo( const char *incipit, MeasureObject *measure, int i
     
     if (clef == 'C') {
         switch (line) {
-            case '1': mclef->m_clefId = UT1; m_rest_position = PITCH_E; m_rest_octave = 4; break;
-            case '2': mclef->m_clefId = UT2; m_rest_position = PITCH_C; m_rest_octave = 4; break;
-            case '3': mclef->m_clefId = UT3; m_rest_position = PITCH_A; m_rest_octave = 3; break;
-            case '4': mclef->m_clefId = UT4; m_rest_position = PITCH_F; m_rest_octave = 3; break;
+            case '1': mclef->m_clefId = UT1; break;
+            case '2': mclef->m_clefId = UT2; break;
+            case '3': mclef->m_clefId = UT3; break;
+            case '4': mclef->m_clefId = UT4; break;
         }
     } else if (clef == 'G') {
         switch (line) {
-            case '1': mclef->m_clefId = SOL1; m_rest_position = PITCH_B; m_rest_octave = 4; break;
-            case '2': mclef->m_clefId = SOL2; m_rest_position = PITCH_G; m_rest_octave = 4; break;
+            case '1': mclef->m_clefId = SOL1; break;
+            case '2': mclef->m_clefId = SOL2; break;
         }
     } else if (clef == 'F') {
         switch (line) {
-            case '3': mclef->m_clefId = FA3; m_rest_position = PITCH_D; m_rest_octave = 3; break;
-            case '4': mclef->m_clefId = FA4; m_rest_position = PITCH_B; m_rest_octave = 2; break;
-            case '5': mclef->m_clefId = FA5; m_rest_position = PITCH_G; m_rest_octave = 2; break;
+            case '3': mclef->m_clefId = FA3; break;
+            case '4': mclef->m_clefId = FA4; break;
+            case '5': mclef->m_clefId = FA5; break;
         }
     } else {
         // what the...
@@ -1027,14 +1027,8 @@ void MusPaeInput::printMeasure(std::ostream& out, MeasureObject *measure ) {
     }
     
     if ( measure->key.size() > 0 ) {
-        vector<int>::iterator it;
-        for ( it = measure->key.begin() ; it < measure->key.end(); it++ ) {
-            MusSymbol *alter = new MusSymbol( SYMBOL_ACCID );
-            alter->m_oct = 4;
-            alter->m_pname = *it;
-            alter->m_accid = measure->key_alteration;
-            m_layer->AddLayerElement(alter);
-        }
+        MusKeySig *key = new MusKeySig(measure->key.size(), measure->key_alteration);
+        m_layer->AddLayerElement(key);
     }
     
     if ( measure->time != NULL ) {

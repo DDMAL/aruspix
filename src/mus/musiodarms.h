@@ -71,9 +71,6 @@ private:
     
     MusBeam *m_beam;
     
-    unsigned char m_rest_position;
-    unsigned int m_rest_octave;
-    
     unsigned int m_clef_offset;
     
     static pitchmap PitchMap[];

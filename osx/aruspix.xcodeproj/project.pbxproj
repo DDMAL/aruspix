@@ -520,8 +520,8 @@
 				4D3A8FDC0D35867200BBC1FB /* musiomlf.h */,
 				4DDE3CDD0EF1B1D6006D4F2C /* musiowwg.cpp */,
 				4D3A8FDE0D35867200BBC1FB /* musiowwg.h */,
-				8F3367F015A1E417009AAB69 /* musiodarms.h */,
 				8F3367F115A1E42F009AAB69 /* musiodarms.cpp */,
+				8F3367F015A1E417009AAB69 /* musiodarms.h */,
 			);
 			name = io;
 			sourceTree = "<group>";

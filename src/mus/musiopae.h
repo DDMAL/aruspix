@@ -249,8 +249,8 @@ private:
 	MusStaff *m_staff;
 	MusLayer *m_layer;
     
-    unsigned char m_rest_position;
-    unsigned int m_rest_octave;
+    //unsigned char m_rest_position;
+    //unsigned int m_rest_octave;
 };
 
 #endif
