@@ -33,12 +33,13 @@ using namespace std;
 string m_infile;
 string m_svgdir;
 string m_outfile;
+string m_outformat = "svg";
 
 bool m_pae = false;
 bool m_darms = false;
 bool m_mei = false;
 
-const char *cmdlineopts = "dmpr:o:h";
+const char *cmdlineopts = "dmpr:o:t:h";
 
 // Some handy string split functions
 std::vector<std::string> &split(const std::string &s, char delim, std::vector<std::string> &elems) {
@@ -58,11 +59,12 @@ std::vector<std::string> split(const std::string &s, char delim) {
 
 void display_usage() {
     cerr << "Aruspix headless usage:" << endl;
-    cerr << "aruspix [-d -p -m] [-o outfile -r resources -h] infile" << endl << endl;
+    cerr << "aruspix [-d -p -m] [-t mei, svg] [-o outfile -r resources -h] infile" << endl << endl;
 
-    cerr <<"-d read DARMS file [default if no option is given]" << endl;
-    cerr <<"-p read PAE file." << endl;
-    cerr <<"-m read MEI file." << endl;
+    cerr << "-d read DARMS file [default if no option is given]" << endl;
+    cerr << "-p read PAE file." << endl;
+    cerr << "-m read MEI file." << endl;
+    cerr << "-t select output format: mei, svg (default)";
     
     cerr << "Resources default dir: " << MusDoc::GetResourcesPath() << endl;
 }
@@ -90,6 +92,10 @@ int main(int argc, char** argv) {
                 
             case 'o':
                 m_outfile = *new string(optarg);
+                break;
+            
+            case 't':
+                m_outformat = *new string(optarg);
                 break;
                 
             case 'h':
@@ -122,10 +128,15 @@ int main(int argc, char** argv) {
     if (!m_pae && !m_darms && !m_mei)
         m_darms = true;
     
-    // create outfile
-    if (m_outfile.length() == 0) {
-        std::vector<std::string> v = split(m_infile, '/');
-        m_outfile = v[v.capacity() - 1] + ".svg";
+    
+    if (m_outformat != "svg" && m_outformat != "mei") {
+        cerr << "Output format can only be: mei svg" << endl;
+        exit(1);
+    }
+    
+    if (m_outformat == "mei" && m_mei) {
+        cerr << "Cannot convert from mei to mei (do not specify -m and -t mei)." << endl;
+        exit(1);
     }
     
     cerr << "Reading " << m_infile << "..." << endl;
@@ -157,22 +168,38 @@ int main(int argc, char** argv) {
         exit(1); 
     }
     
-	MusLayout *layout = new MusLayout( Raw );
-	layout->Realize(doc->m_divs[0].m_score);
-	doc->AddLayout( layout );
-    layout->SpaceMusic();
+    // create outfile
+    if (m_outfile.length() == 0) {
+        std::vector<std::string> v = split(m_infile, '/');
+        m_outfile = v[v.capacity() - 1] + "." + m_outformat; // can be only mei or svg
+    }
+    
+    // Create SVG or mei
+    if (m_outformat == "svg") {
+
+        MusLayout *layout = new MusLayout( Raw );
+        layout->Realize(doc->m_divs[0].m_score);
+        doc->AddLayout( layout );
+        layout->SpaceMusic();
+            
+        MusPage *page = &layout->m_pages[0];
+        MusSystem *system = &page->m_systems[0];
         
-    MusPage *page = &layout->m_pages[0];
-    MusSystem *system = &page->m_systems[0];
-    
-    MusRC rc;
-    rc.SetLayout(layout);
-    layout->m_leftMargin = 0; // good done here?
-    MusSvgDC *svg = new MusSvgDC(m_outfile.c_str(), system->m_contentBB_x2 - system->m_contentBB_x1, (system->m_contentBB_y2 - system->m_contentBB_y1));
-    rc.DrawPage(svg, &layout->m_pages[0] , false);
-    
-    delete svg;
-    
+        MusRC rc;
+        rc.SetLayout(layout);
+        layout->m_leftMargin = 0; // good done here?
+        MusSvgDC *svg = new MusSvgDC(m_outfile.c_str(), system->m_contentBB_x2 - system->m_contentBB_x1, (system->m_contentBB_y2 - system->m_contentBB_y1));
+        rc.DrawPage(svg, &layout->m_pages[0] , false);
+        
+        delete svg;
+    } else {
+        MusMeiOutput meioutput(doc, m_outfile.c_str());
+        if (!meioutput.ExportFile()) {
+            cerr << "Unable to write MEI to " << m_outfile << "." << endl;
+            exit(1);
+        }
+        
+    }
     cerr << "Output written to " << m_outfile << endl;
     
     return 0;
