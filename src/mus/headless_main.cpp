@@ -38,8 +38,9 @@ string m_outformat = "svg";
 bool m_pae = false;
 bool m_darms = false;
 bool m_mei = false;
+bool m_no_mei_hdr = false;
 
-const char *cmdlineopts = "dmpr:o:t:h";
+const char *cmdlineopts = "ndmpr:o:t:h";
 
 // Some handy string split functions
 std::vector<std::string> &split(const std::string &s, char delim, std::vector<std::string> &elems) {
@@ -85,6 +86,7 @@ int main(int argc, char** argv) {
             case 'p': m_pae = true; break;
             case 'd': m_darms = true; break;
             case 'm': m_mei = true; break;
+            case 'n': m_no_mei_hdr = true; break;
                 
             case 'r':
                 MusDoc::SetResourcesPath(optarg);
