@@ -88,6 +88,12 @@ void MusLaidOutLayerElement::UpdateXPosition( wxArrayPtrVoid params )
         (*current_x_shift) = 0;
     }
     
+    if ( !this->HasUpdatedBB() ) {
+        // this is all we need for empty elements
+        m_x_abs = (*current_x_shift);
+        return;
+    }
+    
     if ( dynamic_cast<MusBeam*>(this->m_layerElement) ) {
         return;
     }

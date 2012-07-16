@@ -179,10 +179,17 @@ public:
     
     void SetLayout( MusLayout *layout ) { m_layout = layout; };
     
+    /**
+     * Is true if the bounding box (self or content) has been updated at least once.
+     * We need this to avoid not updating bounding boxes to screw up the layout with their intial values.
+     */
+    bool HasUpdatedBB( ) { return m_updatedBB; };
+    
     // functors
     virtual void SetLayout( wxArrayPtrVoid params );
     
 private:
+    bool m_updatedBB;
     
 protected:
 	MusLayout *m_layout;

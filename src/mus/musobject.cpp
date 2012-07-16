@@ -180,12 +180,12 @@ void MusLayoutObject::UpdateContentBB( int x1, int y1, int x2, int y2)
     if (m_contentBB_x2 < max_x) m_contentBB_x2 = max_x;
     if (m_contentBB_y2 < max_y) m_contentBB_y2 = max_y;
     
+    m_updatedBB = true;
     //printf("CB Is:  %i %i %i %i\n", m_contentBB_x1,m_contentBB_y1, m_contentBB_x2, m_contentBB_y2);
 }
 
 void MusLayoutObject::UpdateSelfBB( int x1, int y1, int x2, int y2 ) 
 {
-    
     //printf("SB Was: %i %i %i %i\n", m_selfBB_x1,m_selfBB_y1, m_selfBB_x2 ,m_selfBB_y2);
     
     int min_x = min( x1, x2 );
@@ -197,6 +197,8 @@ void MusLayoutObject::UpdateSelfBB( int x1, int y1, int x2, int y2 )
     if (m_selfBB_y1 > min_y) m_selfBB_y1 = min_y;
     if (m_selfBB_x2 < max_x) m_selfBB_x2 = max_x;
     if (m_selfBB_y2 < max_y) m_selfBB_y2 = max_y;
+    
+    m_updatedBB = true;
     
     //printf("SB Is:  %i %i %i %i\n", m_selfBB_x1,m_selfBB_y1, m_selfBB_x2 ,m_selfBB_y2);
     
@@ -212,6 +214,8 @@ void MusLayoutObject::ResetBB()
     m_selfBB_y1 = 0xFFFF; 
     m_selfBB_x2 = -0xFFFF;
     m_selfBB_y2 = -0xFFFF;
+    
+    m_updatedBB = false;
 }
 
 bool MusLayoutObject::HasContentBB() 
