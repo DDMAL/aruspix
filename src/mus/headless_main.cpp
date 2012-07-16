@@ -34,7 +34,11 @@ string m_infile;
 string m_svgdir;
 string m_outfile;
 
-const char *cmdlineopts = "r:o:h";
+bool m_pae = false;
+bool m_darms = false;
+bool m_mei = false;
+
+const char *cmdlineopts = "dmpr:o:h";
 
 // Some handy string split functions
 std::vector<std::string> &split(const std::string &s, char delim, std::vector<std::string> &elems) {
@@ -53,10 +57,14 @@ std::vector<std::string> split(const std::string &s, char delim) {
 
 
 void display_usage() {
-    cout << "Aruspix headless usage:" << endl;
-    cout << "aruspix [-o outfile -r resources -h] infile" << endl << endl;
+    cerr << "Aruspix headless usage:" << endl;
+    cerr << "aruspix [-d -p -m] [-o outfile -r resources -h] infile" << endl << endl;
 
-    cout << "Resources default dir: " << MusDoc::GetResourcesPath() << endl;
+    cerr <<"-d read DARMS file [default if no option is given]" << endl;
+    cerr <<"-p read PAE file." << endl;
+    cerr <<"-m read MEI file." << endl;
+    
+    cerr << "Resources default dir: " << MusDoc::GetResourcesPath() << endl;
 }
 
 int main(int argc, char** argv) {
@@ -64,7 +72,7 @@ int main(int argc, char** argv) {
     int opt;
     
     if (argc < 2) {
-        cout << "Expecting one input file." << endl << endl;
+        cerr << "Expecting one input file." << endl << endl;
         display_usage();
         exit(1);
     }
@@ -72,6 +80,10 @@ int main(int argc, char** argv) {
     opt = getopt( argc, argv, cmdlineopts );
     while( opt != -1 ) {
         switch( opt ) {
+            case 'p': m_pae = true; break;
+            case 'd': m_darms = true; break;
+            case 'm': m_mei = true; break;
+                
             case 'r':
                 MusDoc::SetResourcesPath(optarg);
                 break;
@@ -96,10 +108,19 @@ int main(int argc, char** argv) {
         m_infile = *new string(argv[optind]);
     }
     else {
-        cout << "Incorrect number of options: expecting one input file." << endl << endl;
+        cerr << "Incorrect number of options: expecting one input file." << endl << endl;
         display_usage();
-	exit(1);
+        exit(1);
     }
+    
+    if ((m_pae && m_mei) || (m_pae && m_darms) || (m_darms && m_mei) || (m_pae && m_darms && m_mei)) {
+        cerr << "Please select only one output option: -d -m -p." << endl;
+        exit(1);
+    }
+    
+    // If no input type is specified, set darms as default
+    if (!m_pae && !m_darms && !m_mei)
+        m_darms = true;
     
     // create outfile
     if (m_outfile.length() == 0) {
@@ -107,13 +128,34 @@ int main(int argc, char** argv) {
         m_outfile = v[v.capacity() - 1] + ".svg";
     }
     
-    cout << "Reading " << m_infile << "..." << endl;
+    cerr << "Reading " << m_infile << "..." << endl;
     
     MusDoc *doc =  new MusDoc();
 
-    MusDarmsInput meiinput( doc, m_infile.c_str() );
-	if ( !meiinput.ImportFile() )
-		return -1;
+    MusFileInputStream import;
+    
+    if (m_pae) {
+        MusPaeInput mpae( doc, m_infile.c_str() );
+        if ( !mpae.ImportFile()) {
+            cerr << "Error importing " << m_outfile << "." << endl;
+            exit(1);
+        }
+    } else if (m_darms) {
+        MusDarmsInput mdarms( doc, m_infile.c_str() );
+        if ( !mdarms.ImportFile()) {
+           cerr << "Error importing " << m_outfile << "." << endl;
+            exit(1);
+        }
+    } else if (m_mei){
+        MusMeiInput meiinput( doc, m_infile.c_str() );
+        if ( !meiinput.ImportFile()) {
+            cerr << "Error importing " << m_outfile << "." << endl;
+            exit(1);
+        }
+    } else {
+        cerr << "No input type selected! Should never get here, default is DARMS" << endl;
+        exit(1); 
+    }
     
 	MusLayout *layout = new MusLayout( Raw );
 	layout->Realize(doc->m_divs[0].m_score);
@@ -131,7 +173,7 @@ int main(int argc, char** argv) {
     
     delete svg;
     
-    cout << "Output written to " << m_outfile << endl;
+    cerr << "Output written to " << m_outfile << endl;
     
     return 0;
 }

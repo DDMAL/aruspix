@@ -446,12 +446,16 @@
 			children = (
 				4D2E48D013FE5FDA00023B02 /* musbarline.cpp */,
 				4D2E48D113FE5FDA00023B02 /* musbarline.h */,
+				8FE5FE261599FA0500B44674 /* musbeam.cpp */,
+				8FE5FE2A1599FA1B00B44674 /* musbeam.h */,
 				4D2F7F77145AEBF700EF930B /* musclef.cpp */,
 				4D2E48D313FE5FDA00023B02 /* musclef.h */,
 				4D2E46A913FBF4B700023B02 /* musdiv.cpp */,
 				4D2E467913FBEE1D00023B02 /* musdiv.h */,
 				4D2E46F713FC3DC400023B02 /* musdurationinterface.cpp */,
 				4D2E46F813FC3DC400023B02 /* musdurationinterface.h */,
+				8F4FA6DF15AC0C4000CF9FD8 /* muskeysig.cpp */,
+				8F4FA6E315AC0C5700CF9FD8 /* muskeysig.h */,
 				4D3A8FE50D35867200BBC1FB /* muslayer.cpp */,
 				4D2E465F13FBEC9800023B02 /* muslayer.h */,
 				4D2E46CF13FBF79100023B02 /* musmeasure.cpp */,
@@ -476,10 +480,6 @@
 				4D2E465B13FBEA5D00023B02 /* musstaff.h */,
 				4D2F7E78145AD66900EF930B /* mussymbol.cpp */,
 				4D2F7E79145AD66900EF930B /* mussymbol.h */,
-				8FE5FE261599FA0500B44674 /* musbeam.cpp */,
-				8FE5FE2A1599FA1B00B44674 /* musbeam.h */,
-				8F4FA6DF15AC0C4000CF9FD8 /* muskeysig.cpp */,
-				8F4FA6E315AC0C5700CF9FD8 /* muskeysig.h */,
 			);
 			name = logical;
 			sourceTree = "<group>";

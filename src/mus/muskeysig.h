@@ -29,7 +29,7 @@ public:
     virtual wxString MusClassName( ) { return "MusKeySig"; };
     
     unsigned char GetAlterationAt(int pos);
-    int GetOctave(unsigned char pitch);
+    int GetOctave(unsigned char pitch, char clef);
     
 private:
     
@@ -40,7 +40,7 @@ public:
 private:
     static unsigned char flats[];
     static unsigned char sharps[];
-    static unsigned int octave_map[][7];
+    static int octave_map[2][9][7];
     
 };
 

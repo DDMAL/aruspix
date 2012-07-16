@@ -1319,14 +1319,19 @@ void MusRC::DrawKeySig( MusDC *dc, MusLaidOutLayerElement *element, MusLaidOutLa
     wxASSERT_MSG( staff, "Pointer to staff cannot be NULL" );
 
     MusKeySig *ks = dynamic_cast<MusKeySig*>(element->m_layerElement);
-    int oct, symb;
+    int symb;
     int x, y;
+    
+    MusClef *c = layer->GetClef(element);
+    if (!c) {
+        return;
+    }
     
     dc->StartGraphic( element, "keysig", wxString::Format("keysig_%d_%d_%d", staff->GetId(), layer->voix, element->GetId()) );
     
     for (int i = 0; i < ks->m_num_alter; i++) {
-    
-        element->m_y_drawing = CalculatePitchPosY( staff, ks->GetAlterationAt(i), layer->GetClefOffset( element ), ks->GetOctave(ks->GetAlterationAt(i)));
+        
+        element->m_y_drawing = CalculatePitchPosY( staff, ks->GetAlterationAt(i), layer->GetClefOffset( element ), ks->GetOctave(ks->GetAlterationAt(i), c->m_clefId));
         
         x = element->m_x_abs + (m_layout->m_accidWidth[staff->staffSize][0] * i);
         y = element->m_y_drawing + staff->m_y_drawing;
