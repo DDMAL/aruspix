@@ -21,6 +21,9 @@ include_directories(src/mus src/)
 add_executable (aruspix 
 	src/mus/headless_main.cpp 
 	src/mus/musiopae.cpp 
+	src/mus/musiodarms.cpp
+	src/mus/musbeam.cpp
+	src/mus/muskeysig.cpp
 	src/mus/musnote.cpp 
 	src/mus/musrest.cpp 
 	src/mus/musbarline.cpp 
