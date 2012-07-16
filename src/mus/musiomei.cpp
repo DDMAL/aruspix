@@ -233,11 +233,13 @@ bool MusMeiOutput::WriteStaff( MusStaff *staff )
     wxASSERT( m_section || m_measure );
     m_staff = new Staff();
     m_staff->setId( GetMeiUuid( staff ));
-    if ( m_section ) {
-        m_section->addChild( m_staff );
-    }
-    else {
+    // measured music, we have a measure object
+    if ( m_measure ) {
         m_measure->addChild( m_staff );
+    }
+    // unmeasured music
+    else {
+        m_section->addChild( m_staff );
     }
     return true;
 }
@@ -326,7 +328,7 @@ void MusMeiOutput::WriteMeiBarline( BarLine *meiBarline, MusBarline *barline )
 void MusMeiOutput::WriteMeiBeam( Beam *meiBeam, MusBeam *beam )
 {
     int i = 0;
-    for (i = 0; i < beam->m_notes.Count(); i++) {
+    for (i = 0; i < (int)beam->m_notes.Count(); i++) {
         if ( dynamic_cast<MusNote*>(&beam->m_notes[i]) ) {
             MusNote *musNote = dynamic_cast<MusNote*>( &beam->m_notes[i] );
             Note *note = new Note();
