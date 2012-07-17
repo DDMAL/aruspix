@@ -320,7 +320,7 @@ int MusPaeInput::getOctave (const char* incipit, unsigned char *octave, int inde
         }
     } else if (incipit[i] == ',') {
         //negative octave
-        *octave = -BASE_OCT;
+        *octave = BASE_OCT - 1;
         while ((i+1 < length) && (incipit[i+1] == ',')) {
             (*octave)--;
             i++;
