@@ -974,6 +974,44 @@ bool MusMeiInput::ReadMeiBarline( BarLine *barline )
 
 bool MusMeiInput::ReadMeiBeam( Beam *beam )
 {
+    MusBeam *musBeam = new MusBeam();
+    SetMeiUuid( beam, musBeam );
+    // we add it before the notes
+    m_layer->AddLayerElement( musBeam );
+    
+	if ( beam && beam->hasChildren() ) {
+		vector<MeiElement*> children = beam->getChildren();
+		for (vector<MeiElement*>::iterator iter = children.begin(); iter != children.end(); ++iter) {
+			MeiElement *e = *iter;
+            if (e->getName()=="note") {
+				if (!ReadMeiNote(dynamic_cast<Note*>(e))) {
+					return false;
+				}
+                musBeam->AddNote( &m_layer->m_elements.Last() );
+			}
+            else if (e->getName()=="rest") {
+				if (!ReadMeiRest(dynamic_cast<Rest*>(e))) {
+					return false;
+				}
+                musBeam->AddNote( &m_layer->m_elements.Last() );
+			}
+            // unkown            
+			else {
+				wxLogDebug("LayerElement %s ignored", e->getName().c_str() );
+			}
+        }
+    }
+    
+    if ( musBeam->m_notes.Count() < 2 ) {
+        // this does everything we need, that is:
+        // - removing the MusBeam from the m_layer
+        // - detaching the note
+        // - changing the flag of the note
+        // - delete the MusBeam
+        delete musBeam;
+        wxLogWarning("Beam element with only zero or one note");
+    }
+    
     return true;
 }
 
