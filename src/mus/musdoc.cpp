@@ -232,7 +232,7 @@ void MusDoc::ProcessLogical(MusFunctor *functor, wxArrayPtrVoid params )
 
 wxString MusDoc::GetAxVersion() {
 #ifdef HEADLESS
-    return wxString("Headless 1");
+    return wxString("command line"); // we need to add versioning
 #else
     return AxApp::s_version;
 #endif
