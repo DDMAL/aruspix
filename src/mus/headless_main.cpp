@@ -66,8 +66,8 @@ void display_usage() {
     cerr << "-d read DARMS file [default if no option is given]" << endl;
     cerr << "-p read PAE file." << endl;
     cerr << "-m read MEI file." << endl;
-    cerr << "-t select output format: mei, svg (default)";
-    cerr << "-s scale percent (100 default, max 1000)";
+    cerr << "-t select output format: mei, svg (default)"<< endl;
+    cerr << "-s scale percent (100 default, max 1000)" << endl<< endl;
     
     cerr << "Resources default dir: " << MusDoc::GetResourcesPath() << endl;
 }
