@@ -100,7 +100,7 @@ void MusLaidOutLayerElement::UpdateXPosition( wxArrayPtrVoid params )
     
     int negative_offset = this->m_x_abs - this->m_contentBB_x1;
     this->m_x_abs = (*current_x_shift) + negative_offset;
-    (*current_x_shift) += (this->m_contentBB_x2 - this->m_contentBB_x1) + this->m_layerElement->GetVerticalSpacing();
+    (*current_x_shift) += (this->m_contentBB_x2 - this->m_contentBB_x1) + this->m_layerElement->GetHorizontalSpacing();
 }
 
 int MusLaidOutLayerElement::GetElementNo() const

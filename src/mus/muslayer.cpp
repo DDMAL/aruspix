@@ -209,9 +209,9 @@ MusLayerElement *MusLayerElement::GetChildCopy()
 }
 
 
-int MusLayerElement::GetVerticalSpacing()
+int MusLayerElement::GetHorizontalSpacing()
 {
-    return 5;
+    return 20; // arbitrary generic value
 }
 
 void MusLayerElement::SetPitchOrPosition(int pname, int oct) 
