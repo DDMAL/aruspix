@@ -35,12 +35,14 @@ string m_svgdir;
 string m_outfile;
 string m_outformat = "svg";
 
+int m_scale = 100;
+
 bool m_pae = false;
 bool m_darms = false;
 bool m_mei = false;
 bool m_no_mei_hdr = false;
 
-const char *cmdlineopts = "ndmpr:o:t:h";
+const char *cmdlineopts = "ndmpr:o:t:s:h";
 
 // Some handy string split functions
 std::vector<std::string> &split(const std::string &s, char delim, std::vector<std::string> &elems) {
@@ -60,11 +62,12 @@ std::vector<std::string> split(const std::string &s, char delim) {
 
 void display_usage() {
     cerr << "Aruspix headless usage:" << endl;
-    cerr << "aruspix [-d -p -m] [-t mei, svg] [-o outfile -r resources -h] infile" << endl << endl;
+    cerr << "aruspix [-d -p -m] [-t mei, svg] [-s scale] [-o outfile -r resources -h] infile" << endl << endl;
 
     cerr << "-d read DARMS file [default if no option is given]" << endl;
-    cerr << "-p read PAE file." << endl;
-    cerr << "-m read MEI file." << endl;
+    cerr << "-p read PAE file" << endl;
+    cerr << "-m read MEI file" << endl;
+    cerr << "-s scale the SVG (as precentage)" << endl;
     cerr << "-t select output format: mei, svg (default)";
     
     cerr << "Resources default dir: " << MusDoc::GetResourcesPath() << endl;
@@ -98,6 +101,10 @@ int main(int argc, char** argv) {
             
             case 't':
                 m_outformat = *new string(optarg);
+                break;
+                
+            case 's':
+                m_scale = atoi(optarg);
                 break;
                 
             case 'h':
@@ -191,6 +198,7 @@ int main(int argc, char** argv) {
         rc.SetLayout(layout);
         layout->m_leftMargin = 0; // good done here?
         MusSvgDC *svg = new MusSvgDC(m_outfile.c_str(), system->m_contentBB_x2 - system->m_contentBB_x1, (system->m_contentBB_y2 - system->m_contentBB_y1));
+        svg->SetUserScale( (double)m_scale/100.0, (double)m_scale/100.0 );
         rc.DrawPage(svg, &layout->m_pages[0] , false);
         
         delete svg;
