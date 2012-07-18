@@ -197,7 +197,8 @@ int main(int argc, char** argv) {
         MusRC rc;
         rc.SetLayout(layout);
         layout->m_leftMargin = 0; // good done here?
-        MusSvgDC *svg = new MusSvgDC(m_outfile.c_str(), system->m_contentBB_x2 - system->m_contentBB_x1, (system->m_contentBB_y2 - system->m_contentBB_y1));
+        int svg_margin = 2;
+        MusSvgDC *svg = new MusSvgDC(m_outfile.c_str(), system->m_contentBB_x2 - system->m_contentBB_x1 + svg_margin, system->m_contentBB_y2 - system->m_contentBB_y1 + svg_margin );
         svg->SetUserScale( (double)m_scale/100.0, (double)m_scale/100.0 );
         rc.DrawPage(svg, &layout->m_pages[0] , false);
         

@@ -500,7 +500,22 @@ void MusBBoxDC::DrawEllipticArc(int x, int y, int width, int height, double star
               
 void MusBBoxDC::DrawLine(int x1, int y1, int x2, int y2)
 {
-    UpdateBB(x1, y1, x2, y2);
+    if ( x1 > x2 ) {
+        int tmp = x1;
+        x1 = x2;
+        x2 = tmp;
+    }
+    if ( y1 > y2 ) {
+        int tmp = y1;
+        y1 = y2;
+        y2 = tmp;
+    }
+    int penWidth = m_penWidth;
+    if ( penWidth % 2 ) {
+        penWidth += 1;
+    }
+    
+    UpdateBB( x1 - penWidth / 2, y1 - penWidth / 2, x2 + penWidth / 2, y2 + penWidth / 2);
 }
  
                
@@ -534,7 +549,21 @@ void MusBBoxDC::DrawRectangle(int x, int y, int width, int height)
 
 void MusBBoxDC::DrawRoundedRectangle(int x, int y, int width, int height, double radius)
 {
-    UpdateBB(x, y, x + width, y + height);
+    // avoid negative heights or widths
+    if ( height < 0 ) {
+        height = -height;
+        y -= height;
+    }
+    if ( width < 0 ) {
+        width = -width;
+        x -= width;
+    }
+    int penWidth = m_penWidth;
+    if ( penWidth % 2 ) {
+        penWidth += 1;
+    }
+    
+    UpdateBB( x - penWidth / 2, y - m_penWidth / 2, x + width + m_penWidth / 2, y + height + m_penWidth / 2);
 }
 
         
