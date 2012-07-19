@@ -169,21 +169,41 @@ void MusRC::DrawBeamElement(MusDC *dc, MusLaidOutLayerElement *element, MusLaidO
     dc->StartGraphic( element, "beam", wxString::Format("s_%d_%d_%d", staff->GetId(), layer->voix, element->GetId() ) );
     
     for (unsigned int i = 0; i < beam->m_notes.Count(); i++) {
+        
+        // the code below looks pretty repetitive. Should be improved, using MusDurationInterface cast?
+        if ( dynamic_cast<MusNote*>(&beam->m_notes[i]) ) {
 
-        MusNote *note = dynamic_cast<MusNote*>(&beam->m_notes[i]);
-        int oct = note->m_oct - 4;
-        
-        //if ( !m_lyricMode && BelongsToTheNote( m_currentElement ) ) // the current element is a lyric that belongs to the note we are drawing
-        //    m_currentColour = AxCYAN;
-        
-        MusLaidOutLayerElement *lelem = layer->GetFromMusLayerElement(note);
-        dc->StartGraphic( lelem, "note", wxString::Format("s_%d_%d_%d", staff->GetId(), layer->voix, lelem->GetId() ) );
-        
-        lelem->m_y_drawing = CalculatePitchPosY( staff, note->m_pname, layer->GetClefOffset( lelem ), oct );
-        
-        DrawNote(dc, lelem, layer, staff, true);
-        
-        dc->EndGraphic(lelem, this );
+            MusNote *note = dynamic_cast<MusNote*>(&beam->m_notes[i]);
+            int oct = note->m_oct - 4;
+            
+            //if ( !m_lyricMode && BelongsToTheNote( m_currentElement ) ) // the current element is a lyric that belongs to the note we are drawing
+            //    m_currentColour = AxCYAN;
+            
+            MusLaidOutLayerElement *lelem = layer->GetFromMusLayerElement(note);
+            dc->StartGraphic( lelem, "note", wxString::Format("s_%d_%d_%d", staff->GetId(), layer->voix, lelem->GetId() ) );
+            
+            lelem->m_y_drawing = CalculatePitchPosY( staff, note->m_pname, layer->GetClefOffset( lelem ), oct );
+            
+            DrawNote(dc, lelem, layer, staff, true);
+            
+            dc->EndGraphic(lelem, this );
+        }
+        else if ( dynamic_cast<MusRest*>(&beam->m_notes[i]) ) {
+            
+            MusRest *rest = dynamic_cast<MusRest*>(&beam->m_notes[i]);
+            int oct = rest->m_oct - 4;
+            
+            MusLaidOutLayerElement *lelem = layer->GetFromMusLayerElement(rest);
+            dc->StartGraphic( lelem, "rest", wxString::Format("s_%d_%d_%d", staff->GetId(), layer->voix, lelem->GetId() ) );
+            
+            lelem->m_y_drawing = CalculatePitchPosY( staff, rest->m_pname, layer->GetClefOffset( lelem ), oct );
+            
+            // We have no inBeam parameter here. It would be necessary for beams starting with a rest. Do we need this?
+            DrawRest(dc, lelem, layer, staff );
+            
+            dc->EndGraphic(lelem, this );
+            
+        }
     }
     
     // BEAM!
@@ -422,7 +442,7 @@ void MusRC::DrawNote ( MusDC *dc, MusLaidOutLayerElement *element, MusLaidOutLay
 		if (note->m_chord)
             {}/***x1 = x_acc_chrd (this,0);***/
 		else
-			x1 -= m_layout->m_accidWidth[staffSize][note->m_cueSize];
+			x1 -= 1.5 * m_layout->m_accidWidth[staffSize][note->m_cueSize];
 		MusSymbol accid( SYMBOL_ACCID );
 		//symb.Init( m_r );
         accid.m_oct = note->m_oct;
