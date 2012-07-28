@@ -433,7 +433,16 @@ MusPoint MusBBoxDC::GetLogicalOrigin( )
 
 
 // Drawing mething
-        
+
+void MusBBoxDC::DrawCQBezier(int x, int y, int x1, int height, int width, bool direction)
+{
+    if (direction) // true = up
+        UpdateBB(x, y, x1, y + height);
+    else {
+        UpdateBB(x, y, x1, y - height);
+    }
+}
+
 void MusBBoxDC::DrawCircle(int x, int y, int radius)
 {
     DrawEllipse(x - radius, y - radius, 2*radius, 2*radius);
@@ -529,6 +538,8 @@ void MusBBoxDC::DrawPolygon(int n, MusPoint points[], int xoffset, int yoffset, 
     int y1 = points[0].y + yoffset;
     int y2 = y1;
 
+    printf("%i %i %i %i ORCA\n", x1, y1, x2, y2);
+    
     for (int i = 0; i < n;  i++)
     {
         if ( points[i].x + xoffset < x1 ) x1 = points[i].x + xoffset;
@@ -537,6 +548,7 @@ void MusBBoxDC::DrawPolygon(int n, MusPoint points[], int xoffset, int yoffset, 
         if ( points[i].y + yoffset > y2 ) y2 = points[i].y + yoffset;
 
     }
+    printf("%i %i %i %i ORCA\n", x1, y1, x2, y2);
     UpdateBB(x1, y1, x2, y2);
 }
     

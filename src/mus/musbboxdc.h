@@ -68,6 +68,8 @@ public:
 
     // Drawing methods
     
+    virtual void DrawCQBezier(int x, int y, int x1, int height, int width, bool direction);
+    
     virtual void DrawCircle(int x, int y, int radius);
     
     virtual void DrawEllipse(int x, int y, int width, int height);

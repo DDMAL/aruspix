@@ -251,6 +251,11 @@ void MusPaeInput::convertPlainAndEasyToKern(std::istream &infile, std::ostream &
             MeasureObject last_measure = staff[staff.size() - 1];
             current_measure.notes = last_measure.notes;
             current_measure.time = last_measure.time;
+            // if ols measure does not end with a tie
+            // force the first note of the newly copied measure to be without tie
+            // this is to prevent copying tie closes which are invalid
+            if (last_measure.notes[last_measure.notes.capacity() - 1].tie == 0)
+                current_measure.notes[0].tie = 0;
         }
         
         //barline
@@ -919,7 +924,7 @@ int MusPaeInput::getKeyInfo(const char *incipit, MeasureObject *measure, int ind
 int MusPaeInput::getNote( const char* incipit, NoteObject *note, MeasureObject *measure, int index ) {
     
     regex_t re;
-    int oct;
+    int oct, tie;
     int i = index;
     
     note->duration = measure->durations[measure->durations_offset];
@@ -962,16 +967,27 @@ int MusPaeInput::getNote( const char* incipit, NoteObject *note, MeasureObject *
     int has_tie = regexec(&re, incipit + i + 1, 0, NULL, 0);
     regfree(&re);
     //std::cout << "regexp " << has_tie << std::endl;
-    if ( has_tie == 0 ) {
-        note->tie = 1; // 1 for the first note, 2 for the second one
+    if ( has_tie == 0) {
+        if (note->tie == 0)
+            note->tie = 1; // reset 1 for the first note, >1 for next ones is incremented under
     }
+    
+    tie = note->tie;
+    // last note in tie
+    if (has_tie != 0 && tie > 0)
+        tie = 0;
     
     oct = note->octave;
     measure->notes.push_back( *note );
     
-    // Reset octave
+    // Reset note to defaults
     note->clear();
+    
     note->octave = oct;
+    
+    // If prevous note has tie, increment tie count
+    if (tie > 0)
+        note->tie = ++tie;
         
     // reset values
     // beam
@@ -981,11 +997,12 @@ int MusPaeInput::getNote( const char* incipit, NoteObject *note, MeasureObject *
     //    note->beam = 0;
     //}
     // tie
-    if (note->tie == 1) {
-        note->tie++;
-    } else if (note->tie == 2) {
-        note->tie = 0;
-    }
+    //if (note->tie == 1) {
+    //    note->tie++;
+    //} else if (note->tie == 2) {
+    //    note->tie = 0;
+    //}
+    
     // grace notes
     note->acciaccatura = false;
     if (note->appoggiatura > 0) {
@@ -1057,105 +1074,84 @@ void MusPaeInput::printMeasure(std::ostream& out, MeasureObject *measure ) {
     }
     
     for (unsigned int i=0; i<measure->notes.size(); i++) {         
-        if ( 0 == 1) { //measure->notes[i].mnote->m_pname == 111110) {
-            //if (measure->notes[i].tie == 1) {
-            //    out << "[";
-            //}
-    
+        if (measure->notes[i].tie == 1) {
+            out << "[";
+        }
+        if (!measure->notes[i].acciaccatura) {
             //out << Convert::durationToKernRhythm(buffer, measure->notes[i].duration);
             //for(j=0; j<measure->notes[i].dot; j++) {
             //    out << ".";
             //}
-            //out << "r";
-            
-            if (measure->notes[i].fermata) {
-                out << ";";
-            } 
-            
-            //if (measure->notes[i].beam == 1) {
-            ////    out << "L";
-            //} else if (measure->notes[i].beam == -1) {
-            //    out << "J";
-            //}
-            
-            if (measure->notes[i].tie == 2) {
-                out << "]";
-                //} else if (measure->notes[i].tie == 3) {
-                //   out << "_";
-            }
-        } else {
-            if (measure->notes[i].tie == 1) {
-                out << "[";
-            }
-            if (!measure->notes[i].acciaccatura) {
-                //out << Convert::durationToKernRhythm(buffer, measure->notes[i].duration);
-                //for(j=0; j<measure->notes[i].dot; j++) {
-                //    out << ".";
-                //}
-            }
-            //This does the trick
-            //out << Convert::base40ToKern(buffer, measure->notes[i].pitch);
-                        
-            if (measure->notes[i].rest) {
-                MusRest *r = new MusRest();
-                r->m_dur = measure->notes[i].duration;
-                r->m_pname = REST_AUTO;
-                m_layer->AddLayerElement(r); // create a rest
-            }
-            else {
-                MusNote *n = new MusNote();
-                n->m_pname = measure->notes[i].pitch;
-                n->m_oct = measure->notes[i].octave;
-                n->m_dur = measure->notes[i].duration;
-                n->m_dots = measure->notes[i].dots;
-                n->m_accid = measure->notes[i].accidental;
-                
-                if (measure->notes[i].beam & BEAM_INITIAL) {
-                    beam = new MusBeam;
-                    beam->AddNote(n);
-                    m_layer->AddLayerElement(beam);
-                } else if (measure->notes[i].beam & BEAM_MEDIAL) {
-                    if (beam)
-                        beam->AddNote(n);
-                    
-                } else if (measure->notes[i].beam & BEAM_TERMINAL) {
-                    beam = NULL;
-                }
-                
-                m_layer->AddLayerElement(n); // create a note
-            }
-            
-            //MusClef *clef = new MusClef();
-            //clef->m_clefId = SOL2;
-            //m_layer->AddLayerElement(clef);
-            
-            if (measure->notes[i].acciaccatura) {
-                out << "q";
-            } else if (measure->notes[i].appoggiatura > 0) {
-                out << "Q";
-            }
-            
-            if (measure->notes[i].fermata) {
-                out << ";";
-            } 
-            
-            if (measure->notes[i].tie == 2) {
-                out << "]";
-                //} else if (measure->notes[i].tie == 3) {
-                //   out << "_";
-            }
-            
-            //if (measure->notes[i].beam == 1) {
-            //    out << "L";
-            //} else if (measure->notes[i].beam == -1) {
-            //    out << "J";
-            //}
-            
-            if (measure->notes[i].trill == true) {
-                out << "t";
-            }
         }
-        out << "\n";
+        //This does the trick
+        //out << Convert::base40ToKern(buffer, measure->notes[i].pitch);
+                    
+        if (measure->notes[i].rest) {
+            MusRest *r = new MusRest();
+            r->m_dur = measure->notes[i].duration;
+            r->m_pname = REST_AUTO;
+            m_layer->AddLayerElement(r); // create a rest
+        } else {
+            MusNote *n = new MusNote();
+            n->m_pname = measure->notes[i].pitch;
+            n->m_oct = measure->notes[i].octave;
+            n->m_dur = measure->notes[i].duration;
+            n->m_dots = measure->notes[i].dots;
+            n->m_accid = measure->notes[i].accidental;
+            
+            if (measure->notes[i].beam & BEAM_INITIAL) {
+                beam = new MusBeam;
+                beam->AddNote(n);
+                m_layer->AddLayerElement(beam);
+            } else if (measure->notes[i].beam & BEAM_MEDIAL) {
+                if (beam)
+                    beam->AddNote(n);
+                
+            } else if (measure->notes[i].beam & BEAM_TERMINAL) {
+                beam = NULL;
+            }
+            
+            m_layer->AddLayerElement(n); // create a note
+            
+            // FOR THE MOMENT WORKS ONLY WITH TWO NOTES
+            // FIXME
+            // if tie is 1, we are the first note in a tie.
+            // Create it and add it to the layer
+            if (measure->notes[i].tie == 1) {
+                MusTie *tie = new MusTie;
+                tie->m_first = n;
+                m_layer->AddLayerElement(tie);
+                m_current_tie = tie;
+            } else if (measure->notes[i].tie == 2) {
+                if (m_current_tie)
+                    m_current_tie->m_second = n;
+                // If a measure is duplicated, it is possible
+                // that the first note still bears a tie
+                // so we make this ref null and avoid duplicate ties
+                // I added a chech when copying measure
+                // but nevertheless we check two times
+                m_current_tie = NULL;
+            }
+        } // note or rest
+        
+        if (measure->notes[i].acciaccatura) {
+            out << "q";
+        } else if (measure->notes[i].appoggiatura > 0) {
+            out << "Q";
+        }
+        
+        if (measure->notes[i].fermata) {
+            out << ";";
+        } 
+        
+        if (measure->notes[i].tie == 2) {
+            out << "]";
+        }
+        
+        if (measure->notes[i].trill == true) {
+            out << "t";
+        }
+
     }
     if ( measure->barline.length() ) {
         out << measure->barline << "\n";

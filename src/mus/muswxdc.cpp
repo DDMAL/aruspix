@@ -125,7 +125,42 @@ void MusWxDC::DrawPolygon(int n, MusPoint points[], int xoffset, int yoffset, in
 {
     m_dc->DrawPolygon( n, (wxPoint*)points, xoffset, yoffset, fill_style );
 }
+
+void MusWxDC::DrawCQBezier(int x, int y, int x1, int height, int width, bool direction)
+{
+    
+    int center;
+    int top_y, top_y_fill;
+    
+    wxGraphicsContext* gc = m_dc->GetGraphicsContext(); 
+    wxGraphicsPath gp;
+    gp = gc->CreatePath();
+    
+    gp.MoveToPoint(x, y);
+    
+    center = (x1 - x) / 2;
+    
+    if (direction) {
+        top_y = y + height;
+        top_y_fill = top_y - width;
+    } else {
+        top_y = y - height;
+        top_y_fill = top_y + width;
+    }
         
+    gp.AddQuadCurveToPoint(x + center, top_y, x1, y);
+    if (width > 0)
+       gp.AddQuadCurveToPoint(x + center, top_y_fill, x, y);
+    
+    gc->SetPen(wxPen("black", 1)); 
+    gc->SetBrush(wxBrush("black"));
+    
+    gc->FillPath(gp);
+    
+    gc->SetPen(wxNullPen); 
+    gc->SetBrush(wxNullBrush);
+}
+
 void MusWxDC::DrawRectangle(int x, int y, int width, int height)
 {
     m_dc->DrawRectangle( x, y, width, height );
@@ -195,5 +230,3 @@ wxColour MusWxDC::GetColour( int colour )
         return wxColour(red, blue, green);
     }
 }
-
-

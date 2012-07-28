@@ -292,7 +292,28 @@ MusPoint MusSvgDC::GetLogicalOrigin( )
 
 
 // Drawing mething
-        
+
+void MusSvgDC::DrawCQBezier(int x, int y, int x1, int height, int width, bool direction)
+{
+    
+    int center = x + (x1 -x) / 2;
+    int top_y, top_y_fill;
+    
+    if (direction) {
+        top_y = y + height;
+        top_y_fill = top_y - width;
+    } else {
+        top_y = y - height;
+        top_y_fill = top_y + width;
+    }
+    
+    WriteLine( wxString::Format("<path d=\"M%d,%d Q%d,%d %d,%d Q%d,%d %d,%d\" style=\"fill:#000; fill-opacity:1.0; stroke:#000000; stroke-linecap:round; stroke-linejoin:round; stroke-opacity:1.0; stroke-opacity:1.0; stroke-width:1\" />", 
+                                x, y, // M command
+                                center, top_y, x1, y, // First bezier
+                                center, top_y_fill, x, y // Second Bezier
+                                ) );
+}
+
 void MusSvgDC::DrawCircle(int x, int y, int radius)
 {
     DrawEllipse(x - radius, y - radius, 2*radius, 2*radius);

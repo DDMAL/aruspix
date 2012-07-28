@@ -27,6 +27,7 @@
 #include "musnote.h"
 #include "musrest.h"
 #include "mussymbol.h"
+#include "mustie.h"
 
 //----------------------------------------------------------------------------
 // MusDarmsInput
@@ -69,7 +70,7 @@ private:
 	MusStaff *m_staff;
 	MusLayer *m_layer;
     
-    MusBeam *m_beam;
+    MusTie *m_current_tie;
     
     unsigned int m_clef_offset;
     

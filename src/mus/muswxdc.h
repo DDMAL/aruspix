@@ -12,12 +12,14 @@
     #include "wx/wx.h"
 #endif
 
+#include "musdef.h"
 #include "musdc.h"
 #include "musobject.h"
 
 // ---------------------------------------------------------------------------
 // MusDC
 // ---------------------------------------------------------------------------
+
 
 /**
  * This class is a wrapper to wxDCs.
@@ -60,6 +62,9 @@ public:
 
     // Drawing methods
     
+    // Short-hand to draw a quadratic bezier with a central point on a horizontal plane
+    virtual void DrawCQBezier(int x, int y, int x1, int height, int width, bool direction);
+    
     virtual void DrawCircle(int x, int y, int radius);
     
     virtual void DrawEllipse(int x, int y, int width, int height);
@@ -98,8 +103,6 @@ private:
     wxPen m_pen;
     
     wxColour GetColour( int colour );
-        
-        
 };
 
 #endif // __AX_WXDC_H__

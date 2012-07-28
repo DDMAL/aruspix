@@ -21,6 +21,7 @@
 #include "mussymbol.h"
 #include "muskeysig.h"
 #include "musbeam.h"
+#include "mustie.h"
 
 #include <typeinfo>
 using std::min;
@@ -69,6 +70,9 @@ void MusRC::DrawElement( MusDC *dc, MusLaidOutLayerElement *element, MusLaidOutL
     }
     else if (dynamic_cast<MusSymbol*>(element->m_layerElement)) {
         DrawSymbol(dc, element, layer, staff);
+    }
+    else if (dynamic_cast<MusTie*>(element->m_layerElement)) {
+        DrawTie(dc, element, layer, staff);
     }
 
     
@@ -207,7 +211,7 @@ void MusRC::DrawBeamElement(MusDC *dc, MusLaidOutLayerElement *element, MusLaidO
     }
     
     // BEAM!
-    DrawBeam( dc, layer, staff );
+    DrawBeam( dc, layer, beam, staff );
     
     dc->EndGraphic(element, this ); //RZ
 }
@@ -317,9 +321,9 @@ void MusRC::DrawNote ( MusDC *dc, MusLaidOutLayerElement *element, MusLaidOutLay
 		//if (((note->m_beam[0] & BEAM_INITIAL) || (note->m_beam[0] & BEAM_MEDIAL)) && formval > DUR_4)
 		if (inBeam && formval > DUR_4)
         {
-            if (note->m_beam[0] & BEAM_INITIAL) {
-                layer->beamListPremier = element;
-            }
+            //if (note->m_beam[0] & BEAM_INITIAL) { RZ COMMENTED
+            //    layer->beamListPremier = element;
+            //}
 		}
 		else if (note->m_headshape != SANSQUEUE && (!note->m_chord || (note->m_chord==CHORD_TERMINAL))) {	
             if (note->m_chord==CHORD_TERMINAL) {	
@@ -336,7 +340,8 @@ void MusRC::DrawNote ( MusDC *dc, MusLaidOutLayerElement *element, MusLaidOutLay
 			if ( note->m_stemDir != 0 ) {
 				up = (up == ON) ? OFF : ON;
             }
-				
+			
+            note->m_stemDir = up;
 
 			espac7 = note->m_cueSize ? ( m_layout->m_halfInterl[staffSize]*5) : ( m_layout->m_halfInterl[staffSize]*7);
 			vertical = note->m_cueSize ?  m_layout->m_halfInterl[staffSize] :  m_layout->m_interl[staffSize];
@@ -375,7 +380,9 @@ void MusRC::DrawNote ( MusDC *dc, MusLaidOutLayerElement *element, MusLaidOutLay
 
 			if (up)
 			{
-
+                
+                //note->m_stemDir = 1;
+                
 				if (formval > DUR_8 && !queueCentre)
 				// Le 24 Septembre 1993. Correction esthetique pour rapprocher tailles 
 				//   des DUR_8 et DUR_16 (longeur de queues trop inegales).
@@ -395,7 +402,8 @@ void MusRC::DrawNote ( MusDC *dc, MusLaidOutLayerElement *element, MusLaidOutLay
 			}
 			else
 			{
-
+                //note->m_stemDir = 0;
+                
 				if (formval > DUR_8 && !queueCentre)
 				// Le 24 Septembre 1993. Correction esthetique pour rapprocher tailles 
 				//   des DUR_8 et DUR_16 (longeur de queues trop inegales).
@@ -436,7 +444,7 @@ void MusRC::DrawNote ( MusDC *dc, MusLaidOutLayerElement *element, MusLaidOutLay
 		}
 		/***if (this->dliai && !attente)	premierLie = this;***/
 	}
-
+    
 	if (note->m_accid) // && !this->accInvis) // ax2 no support invisible accidental yet
 	{
 		if (note->m_chord)
@@ -1362,8 +1370,44 @@ void MusRC::DrawKeySig( MusDC *dc, MusLaidOutLayerElement *element, MusLaidOutLa
             symb = LEIPZIG_ACCID_SHARP;
         
         DrawLeipzigFont ( dc, x, y, symb, staff, false );
-                
     }
+    
+    dc->EndGraphic(element, this ); //RZ
+    
+}
+
+void MusRC::DrawTie( MusDC *dc, MusLaidOutLayerElement *element, MusLaidOutLayer *layer, MusLaidOutStaff *staff)
+{
+    wxASSERT_MSG( layer, "Pointer to layer cannot be NULL" );
+    wxASSERT_MSG( staff, "Pointer to staff cannot be NULL" );
+    
+    bool up = false;
+    
+    MusTie *t = dynamic_cast<MusTie*>(element->m_layerElement);
+    MusLaidOutLayerElement *note1 = layer->GetFromMusLayerElement(t->m_first);
+    MusLaidOutLayerElement *note2 = layer->GetFromMusLayerElement(t->m_second);
+    
+    if (note1 == NULL || note2 == NULL)
+        return;
+    
+    // Copied from DrawNote
+    // We could use the stamDir information
+    // but then we have to take in account (1) beams (2) stemmed and non stemmed notes tied together
+    int ynn = note1->m_y_drawing + staff->m_y_drawing;
+    int bby = staff->m_y_drawing - m_layout->m_staffSize[staff->staffSize];
+    int milieu = bby - m_layout->m_interl[staff->staffSize] * 2;
+    
+    up = (ynn < milieu) ? true : false;
+    
+    dc->StartGraphic( element, "tie", wxString::Format("tie_%d_%d_%d", staff->GetId(), layer->voix, element->GetId()) );
+    
+    // FIXME, take in account elements that can be netween notes, eg keys time etc
+    
+    if (up)
+        dc->DrawCQBezier(ToRendererX(note1->m_x_abs), ToRendererY(note1->m_y_drawing + staff->m_y_drawing - 14), ToRendererX(note2->m_x_abs), 20, 6, true);
+    else
+        dc->DrawCQBezier(ToRendererX(note1->m_x_abs), ToRendererY(note1->m_y_drawing + staff->m_y_drawing + 14), ToRendererX(note2->m_x_abs), 20, 6, false);
+
     dc->EndGraphic(element, this ); //RZ
     
 }

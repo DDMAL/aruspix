@@ -31,6 +31,7 @@
 #include "musrest.h"
 #include "mussymbol.h"
 #include "musbeam.h"
+#include "mustie.h"
 
 class NoteObject {
 public:
@@ -58,6 +59,7 @@ public:
         appoggiatura = 0;
         acciaccatura = appoggiatura_multiple = fermata = trill = false;
         tuplet = 1.0;
+        tie = 0;
         
         octave = 4;
         beam = 0;
@@ -248,6 +250,7 @@ private:
 	MusMeasure *m_measure;
 	MusStaff *m_staff;
 	MusLayer *m_layer;
+    MusTie *m_current_tie;
     
     //unsigned char m_rest_position;
     //unsigned int m_rest_octave;

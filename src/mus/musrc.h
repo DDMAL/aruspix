@@ -13,6 +13,7 @@
 #endif
 #include "wx/dynarray.h"
 
+#include "musbeam.h"
 #include "musdef.h"
 #include "musdc.h"
 
@@ -131,7 +132,8 @@ public:
     void DrawSymbol( MusDC *dc, MusLaidOutLayerElement *element, MusLaidOutLayer *layer, MusLaidOutStaff *staff, MusLaidOutLayerElement *parent = NULL );
     void DrawSymbolAccid( MusDC *dc, MusLaidOutLayerElement *element, MusLaidOutLayer *layer, MusLaidOutStaff *staff );
     void DrawSymbolCustos( MusDC *dc, MusLaidOutLayerElement *element, MusLaidOutLayer *layer, MusLaidOutStaff *staff );
-    void DrawSymbolDot( MusDC *dc, MusLaidOutLayerElement *element, MusLaidOutLayer *layer, MusLaidOutStaff *staff );                
+    void DrawSymbolDot( MusDC *dc, MusLaidOutLayerElement *element, MusLaidOutLayer *layer, MusLaidOutStaff *staff );
+    void DrawTie( MusDC *dc, MusLaidOutLayerElement *element, MusLaidOutLayer *layer, MusLaidOutStaff *staff );
     void DrawLigature( MusDC *dc, int y, MusLaidOutLayerElement *element, MusLaidOutLayer *layer, MusLaidOutStaff *staff );  
     void DrawLedgerLines( MusDC *dc, int y_n, int y_p, int xn, unsigned int smaller, int staffSize);
     void DrawSpecialRest ( MusDC *dc, int a, MusLaidOutStaff *staff);
@@ -143,7 +145,7 @@ public:
     void CalculateLigaturePosX ( MusLaidOutLayerElement *element, MusLaidOutLayer *layer, MusLaidOutStaff *staff);
     void DrawKeySig( MusDC *dc, MusLaidOutLayerElement *element, MusLaidOutLayer *layer, MusLaidOutStaff *staff );
     /* musrc_beam.cpp */
-    void DrawBeam(  MusDC *dc, MusLaidOutLayer *layer, MusLaidOutStaff *staff );
+    void DrawBeam(  MusDC *dc, MusLaidOutLayer *layer, MusBeam *beam, MusLaidOutStaff *staff );
     /* musrc_beam_original.cpp */
     void DrawBeamOriginal(  MusDC *dc, MusLaidOutLayer *layer, MusLaidOutStaff *staff );
     

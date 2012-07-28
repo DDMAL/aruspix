@@ -10,7 +10,7 @@
 
 #include "musrc.h"
 
-#define NBInt	40
+//#define NBInt	40
 
 static int factor = 100;
 static long factor2;
@@ -112,6 +112,4 @@ void MusRC::pntswap (MusPoint *x1, MusPoint *x2)
 	*x1 = *x2;
 	*x2 = a;
 }
-
-
 

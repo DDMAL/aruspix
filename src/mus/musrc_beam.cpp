@@ -12,6 +12,7 @@
 using std::min;
 using std::max;
 
+#include "musbeam.h"
 #include "musrc.h"
 #include "muslayout.h"
 #include "musnote.h"
@@ -73,9 +74,9 @@ char extern_queue = 0;
 
 /* This need to be put into a beam class */
 
-void MusRC::DrawBeam(  MusDC *dc, MusLaidOutLayer *layer, MusLaidOutStaff *staff )
+void MusRC::DrawBeam(  MusDC *dc, MusLaidOutLayer *layer, MusBeam *beam, MusLaidOutStaff *staff )
 {
-	struct MusLaidOutLayerElement *chk;
+    struct MusLaidOutLayerElement *chk;
 	static struct fb {
 		unsigned _liaison : 1;	/* temoin pour liaison: si ON, il y a
 							   de la liaison dans l'air et beam doit
@@ -123,8 +124,14 @@ void MusRC::DrawBeam(  MusDC *dc, MusLaidOutLayer *layer, MusLaidOutStaff *staff
 	{	fb._liaison = OFF;
 		fb._grp = OFF;			/* reinitialisation du test (static) */
 	}
-	if (layer->beamListPremier == NULL) return;
-	chk = layer->beamListPremier;
+	
+    // Should we assert this at the beginning?
+    if (beam->m_notes.IsEmpty())
+        return;
+    
+    // chk point to the first Note in the layed out layer
+    chk = layer->GetFromMusLayerElement(&beam->m_notes[0]);
+    
     //	bch.markchrd = shortest = fb.mq_val = valref = ct = cpte_stop = fb.mrq_port = OFF;
 	bch.markchrd = 0;
 	shortest = 0;
@@ -139,6 +146,7 @@ void MusRC::DrawBeam(  MusDC *dc, MusLaidOutLayer *layer, MusLaidOutStaff *staff
 
 	low = chk->m_y_drawing + staff->m_y_drawing;	/* initialiser */
     k = ((MusNote*)chk->m_layerElement)->m_colored ? ((MusNote*)chk->m_layerElement)->m_dur+1 : ((MusNote*)chk->m_layerElement)->m_dur;
+    
 	valref = k;		/* m_dur test conservee */
     //	valref = chk->m_dur;		/* m_dur test conservee */
 	fb.flsht = 0;
@@ -211,15 +219,24 @@ void MusRC::DrawBeam(  MusDC *dc, MusLaidOutLayer *layer, MusLaidOutStaff *staff
 		}
 		if (((MusNote*)chk->m_layerElement)->m_beam[0] & BEAM_TERMINAL) 
             break;
-		chk = layer->GetNext(chk);
-		if (chk == NULL) { 
-            layer->beamListPremier = NULL;
+        
+        // This should mean we have no BEAM TERMINAL
+        if (ct >= beam->m_notes.Count()) {
             return;
         }
+        
+        chk = layer->GetFromMusLayerElement(&beam->m_notes[ct]);
+        
+		//chk = layer->GetNext(chk);
+		//if (chk == NULL) { 
+        //    layer->beamListPremier = NULL;
+        //    return;
+        //}
+        
 	}	while (ct < NbREL);
 
     // SECURITE : EVITER DE BARRER UN ACCORD ISOLE...
-	if (chk->IsNote() && (((MusNote*)chk->m_layerElement)->m_chord & CHORD_TERMINAL)  && (chk->m_x_abs == layer->beamListPremier->m_x_abs))
+/*	if (chk->IsNote() && (((MusNote*)chk->m_layerElement)->m_chord & CHORD_TERMINAL)  && (chk->m_x_abs == layer->beamListPremier->m_x_abs))
 	{	chk = layer->beamListPremier;
 		do {	
                 ((MusNote*)chk->m_layerElement)->m_beam[0] = 0;
@@ -228,6 +245,7 @@ void MusRC::DrawBeam(  MusDC *dc, MusLaidOutLayer *layer, MusLaidOutStaff *staff
 		layer->beamListPremier = NULL;
 		return;
 	}
+*/
     
     wxLogDebug("ct %d", ct );
 
@@ -285,7 +303,7 @@ void MusRC::DrawBeam(  MusDC *dc, MusLaidOutLayer *layer, MusLaidOutStaff *staff
     ***/
     
 	if (ct<2) {
-        layer->beamListPremier = NULL;
+        //layer->beamListPremier = NULL;
 		return;		/* test erreur input */
     }
 
@@ -729,7 +747,7 @@ if (fPente)
     }				/*fermeture de la deuxieme partie du test */
 
 	/***beamPremier = layer->beamListPremier;***/
-	layer->beamListPremier = NULL;
+	//layer->beamListPremier = NULL; RZ COMMENTED
 
     /***
 	if (fb._grp)	// group.fin)

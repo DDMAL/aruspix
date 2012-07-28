@@ -116,7 +116,7 @@ public:
 	unsigned short voix;    
     
     // drawing variables
-    MusLaidOutLayerElement *beamListPremier; // we need to replace this with a proper beam class that handles a list of notes/rests
+    //MusLaidOutLayerElement *beamListPremier; // we need to replace this with a proper beam class that handles a list of notes/rests
 
 private:
     

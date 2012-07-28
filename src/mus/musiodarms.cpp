@@ -243,9 +243,10 @@ int MusDarmsInput::do_Note(int pos, const char* data, bool rest) {
     int accidental = 0;
     int duration;
     int dot = 0;
+    int tie = 0;
     
     //pos points to the first digit of the note
-    // it cn be 5W, 12W, -1W
+    // it can be 5W, 12W, -1W
     
     // Negative number, only '-' and one digit
     if (data[pos] == '-') {
@@ -308,6 +309,12 @@ int MusDarmsInput::do_Note(int pos, const char* data, bool rest) {
         dot = 1;
     }
     
+    // tie with following note
+    if (data[pos + 1] =='L' || data[pos + 1] =='J') {
+        pos++;
+        tie = 1;
+    }
+    
     if (rest) {
         MusRest *rest =  new MusRest;
         rest->m_dur = duration;
@@ -315,11 +322,6 @@ int MusDarmsInput::do_Note(int pos, const char* data, bool rest) {
         rest->m_dots = dot;
         m_layer->AddLayerElement(rest);
     } else {
-        
-        if (!m_beam) {
-            m_beam = new MusBeam();
-            m_layer->AddLayerElement(m_beam);
-        }
         
         if ((position + m_clef_offset) > sizeof(PitchMap))
             position = 0;
@@ -332,7 +334,31 @@ int MusDarmsInput::do_Note(int pos, const char* data, bool rest) {
         note->m_dots = dot;
         m_layer->AddLayerElement(note);
         
-        m_beam->AddNote(note);
+        // Ties are between two notes and have a reference to the two notes
+        // if more than two notes are ties, the m_second note of the first
+        // tie will containn the same note as the m_first in the second tie:
+        // NOTE1 tie1 NOTE2 tie2 NOTE3
+        // tie1->m_first = NOTE1, tie1->m_second = NOTE2
+        // tie2->m_first = NOTE2, tie2->m_second = NOTE3
+        if (tie) {
+            // cur tie !NULL, so we add this note as second note there
+            if (m_current_tie) {
+                m_current_tie->m_second = note;
+            }
+            // create a new mus tie with this note
+            m_current_tie = new MusTie;
+            m_current_tie->m_first = note;
+            m_layer->AddLayerElement(m_current_tie);
+        } else {
+            // no tie (L or J) specified for not
+            // but if cur tie !NULL we need to close the tie
+            // and set cur tie to NULL
+            if (m_current_tie) {
+                m_current_tie->m_second = note;
+                m_current_tie = NULL;
+            }
+        }
+        
     }
     
     return pos;
@@ -366,12 +392,11 @@ bool MusDarmsInput::ImportFile() {
     m_staff = new MusStaff;
     m_layer = new MusLayer;
     
+    m_current_tie = NULL;
     
     m_staff->AddLayer(m_layer);
     m_measure->AddStaff(m_staff);
     m_section->AddMeasure(m_measure);
-    
-    m_beam = NULL;
     
     // do this the C style, char by char
     while (pos < len) {

@@ -81,6 +81,9 @@ public:
 
     // Drawing methods
     
+    // shorthand for simple bezier curves, useful for ties
+    virtual void DrawCQBezier(int x, int y, int x1, int height, int width, bool direction) = 0;
+    
     virtual void DrawCircle(int x, int y, int radius) = 0;
     
     virtual void DrawEllipse(int x, int y, int width, int height) = 0;

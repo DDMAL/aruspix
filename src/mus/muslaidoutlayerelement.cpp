@@ -20,6 +20,7 @@
 #include "musnote.h"
 #include "musrest.h"
 #include "mussymbol.h"
+#include "mustie.h"
 
 #include "wx/arrimpl.cpp"
 WX_DEFINE_OBJARRAY( ArrayOfMusLaidOutLayerElements );
@@ -95,6 +96,10 @@ void MusLaidOutLayerElement::UpdateXPosition( wxArrayPtrVoid params )
     }
     
     if ( dynamic_cast<MusBeam*>(this->m_layerElement) ) {
+        return;
+    }
+    
+    if ( dynamic_cast<MusTie*>(this->m_layerElement) ) {
         return;
     }
     

@@ -66,7 +66,7 @@ void MusLaidOutLayer::Clear()
 	voix = 0;
     
     //
-    beamListPremier = NULL;
+    //beamListPremier = NULL;
 }
 
 

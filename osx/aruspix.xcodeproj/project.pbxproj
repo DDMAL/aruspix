@@ -89,6 +89,8 @@
 		57CA54260D34139D001FC334 /* axapp_wdr.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 57CA541F0D34139D001FC334 /* axapp_wdr.cpp */; };
 		57CA54270D34139D001FC334 /* axabout_wdr.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 57CA54210D34139D001FC334 /* axabout_wdr.cpp */; };
 		57EA3DE50C00BDEB00414247 /* recbookctrl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 57EA3DE30C00BDEB00414247 /* recbookctrl.cpp */; };
+		8F0576A515C43053002F761C /* mustie.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8F0576A415C43053002F761C /* mustie.cpp */; };
+		8F0576A615C43053002F761C /* mustie.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8F0576A415C43053002F761C /* mustie.cpp */; };
 		8F23817A1594632C00C04D47 /* headless_main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8F2381791594632C00C04D47 /* headless_main.cpp */; };
 		8F3367F215A1E42F009AAB69 /* musiodarms.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8F3367F115A1E42F009AAB69 /* musiodarms.cpp */; };
 		8F3367F315A1E42F009AAB69 /* musiodarms.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8F3367F115A1E42F009AAB69 /* musiodarms.cpp */; };
@@ -333,6 +335,8 @@
 		57CA54210D34139D001FC334 /* axabout_wdr.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = axabout_wdr.cpp; sourceTree = "<group>"; };
 		57EA3DE30C00BDEB00414247 /* recbookctrl.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = recbookctrl.cpp; sourceTree = "<group>"; };
 		57EA3DE40C00BDEB00414247 /* recbookctrl.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = recbookctrl.h; sourceTree = "<group>"; };
+		8F0576A415C43053002F761C /* mustie.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = mustie.cpp; path = ../src/mus/mustie.cpp; sourceTree = "<group>"; };
+		8F0576A715C43064002F761C /* mustie.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = mustie.h; path = ../src/mus/mustie.h; sourceTree = "<group>"; };
 		8F23816B159462AF00C04D47 /* aruspix_headless */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = aruspix_headless; sourceTree = BUILT_PRODUCTS_DIR; };
 		8F2381791594632C00C04D47 /* headless_main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = headless_main.cpp; path = ../src/mus/headless_main.cpp; sourceTree = "<group>"; };
 		8F3367F015A1E417009AAB69 /* musiodarms.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = musiodarms.h; path = ../src/mus/musiodarms.h; sourceTree = "<group>"; };
@@ -446,6 +450,8 @@
 				4D2E465B13FBEA5D00023B02 /* musstaff.h */,
 				4D2F7E78145AD66900EF930B /* mussymbol.cpp */,
 				4D2F7E79145AD66900EF930B /* mussymbol.h */,
+				8F0576A415C43053002F761C /* mustie.cpp */,
+				8F0576A715C43064002F761C /* mustie.h */,
 			);
 			name = logical;
 			sourceTree = "<group>";
@@ -912,6 +918,7 @@
 				8FE5FE281599FA0600B44674 /* musbeam.cpp in Sources */,
 				8F3367F315A1E42F009AAB69 /* musiodarms.cpp in Sources */,
 				8F4FA6E115AC0C4000CF9FD8 /* muskeysig.cpp in Sources */,
+				8F0576A615C43053002F761C /* mustie.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1024,6 +1031,7 @@
 				8FE5FE271599FA0600B44674 /* musbeam.cpp in Sources */,
 				8F3367F215A1E42F009AAB69 /* musiodarms.cpp in Sources */,
 				8F4FA6E015AC0C4000CF9FD8 /* muskeysig.cpp in Sources */,
+				8F0576A515C43053002F761C /* mustie.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
