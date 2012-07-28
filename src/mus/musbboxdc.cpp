@@ -537,8 +537,6 @@ void MusBBoxDC::DrawPolygon(int n, MusPoint points[], int xoffset, int yoffset, 
     int x2 = x1;
     int y1 = points[0].y + yoffset;
     int y2 = y1;
-
-    printf("%i %i %i %i ORCA\n", x1, y1, x2, y2);
     
     for (int i = 0; i < n;  i++)
     {
@@ -548,7 +546,6 @@ void MusBBoxDC::DrawPolygon(int n, MusPoint points[], int xoffset, int yoffset, 
         if ( points[i].y + yoffset > y2 ) y2 = points[i].y + yoffset;
 
     }
-    printf("%i %i %i %i ORCA\n", x1, y1, x2, y2);
     UpdateBB(x1, y1, x2, y2);
 }
     

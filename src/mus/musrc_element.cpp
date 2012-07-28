@@ -341,8 +341,6 @@ void MusRC::DrawNote ( MusDC *dc, MusLaidOutLayerElement *element, MusLaidOutLay
 				up = (up == ON) ? OFF : ON;
             }
 			
-            note->m_stemDir = up;
-
 			espac7 = note->m_cueSize ? ( m_layout->m_halfInterl[staffSize]*5) : ( m_layout->m_halfInterl[staffSize]*7);
 			vertical = note->m_cueSize ?  m_layout->m_halfInterl[staffSize] :  m_layout->m_interl[staffSize];
 			decval = vertical * (valdec = formval-DUR_8);
