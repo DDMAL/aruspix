@@ -20,6 +20,7 @@ include_directories(src/mus src/)
 
 add_executable (aruspix 
 	src/mus/headless_main.cpp 
+	src/mus/musleipzigbbox.cpp
 	src/mus/musiopae.cpp 
 	src/mus/musiodarms.cpp
 	src/mus/musbeam.cpp
@@ -64,6 +65,7 @@ add_executable (aruspix
 	src/mus/musrc_neume.cpp 
 	src/mus/musneumesymbol.cpp 
 	src/mus/musrc_page.cpp
+	src/mus/mustie.cpp
 	src/tinyxml/tinystr.cpp
 	src/tinyxml/tinyxml.cpp
 	src/tinyxml/tinyxmlerror.cpp
