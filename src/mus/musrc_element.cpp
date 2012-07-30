@@ -379,9 +379,6 @@ void MusRC::DrawNote ( MusDC *dc, MusLaidOutLayerElement *element, MusLaidOutLay
 
 			if (up)
 			{
-                
-                //note->m_stemDir = 1;
-                
 				if (formval > DUR_8 && !queueCentre)
 				// Le 24 Septembre 1993. Correction esthetique pour rapprocher tailles 
 				//   des DUR_8 et DUR_16 (longeur de queues trop inegales).
@@ -400,9 +397,7 @@ void MusRC::DrawNote ( MusDC *dc, MusLaidOutLayerElement *element, MusLaidOutLay
 				}
 			}
 			else
-			{
-                //note->m_stemDir = 0;
-                
+			{                
 				if (formval > DUR_8 && !queueCentre)
 				// Le 24 Septembre 1993. Correction esthetique pour rapprocher tailles 
 				//   des DUR_8 et DUR_16 (longeur de queues trop inegales).
