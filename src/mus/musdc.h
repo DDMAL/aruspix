@@ -84,7 +84,7 @@ public:
     // shorthand for simple bezier curves, useful for ties
     virtual void DrawCQBezier(int x, int y, int x1, int height, int width, bool direction) = 0;
     
-    virtual void ComplexBezierPath(int x, int y, int bezier1_coord[6], int bezier2_coord[6]) = 0;
+    virtual void DrawComplexBezierPath(int x, int y, int bezier1_coord[6], int bezier2_coord[6]) = 0;
     
     virtual void DrawCircle(int x, int y, int radius) = 0;
     

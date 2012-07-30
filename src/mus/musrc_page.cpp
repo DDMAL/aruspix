@@ -357,7 +357,7 @@ void MusRC::DrawBrace ( MusDC *dc, MusSystem *system, int x, int y1, int y2, int
     new_coords[1][4] = point_[3].x;
     new_coords[1][5] = point_[3].y;
     
-    dc->ComplexBezierPath(ToRendererX(x), ToRendererY(y1), new_coords[0], new_coords[1]);
+    dc->DrawComplexBezierPath(ToRendererX(x), ToRendererY(y1), new_coords[0], new_coords[1]);
     
 	// on produit l'image reflet vers le bas: 0 est identique 
 	point_[1].y = point_[0].y - ToRendererX( m_layout->m_interl[ staffSize ]*2);
@@ -385,7 +385,7 @@ void MusRC::DrawBrace ( MusDC *dc, MusSystem *system, int x, int y1, int y2, int
     new_coords[1][4] = point_[3].x;
     new_coords[1][5] = point_[3].y;
     
-    dc->ComplexBezierPath(point_[3].x, point_[3].y, new_coords[0], new_coords[1]);
+    dc->DrawComplexBezierPath(point_[3].x, point_[3].y, new_coords[0], new_coords[1]);
     
     //dc->SetPen( m_currentColour , 1, wxSOLID );
     //dc->SetBrush( m_currentColour , wxSOLID );

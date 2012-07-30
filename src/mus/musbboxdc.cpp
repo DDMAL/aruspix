@@ -147,7 +147,7 @@ void MusBBoxDC::DrawCQBezier(int x, int y, int x1, int height, int width, bool d
 }
 
 // claculated better
-void MusBBoxDC::ComplexBezierPath(int x, int y, int bezier1_coord[6], int bezier2_coord[6])
+void MusBBoxDC::DrawComplexBezierPath(int x, int y, int bezier1_coord[6], int bezier2_coord[6])
 {
     int vals[4];
     FindPointsForBounds(*new MusPoint(x, y), 

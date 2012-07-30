@@ -161,7 +161,7 @@ void MusWxDC::DrawCQBezier(int x, int y, int x1, int height, int width, bool dir
     gc->SetBrush(wxNullBrush);
 }
 
-void MusWxDC::ComplexBezierPath(int x, int y, int bezier1_coord[6], int bezier2_coord[6])
+void MusWxDC::DrawComplexBezierPath(int x, int y, int bezier1_coord[6], int bezier2_coord[6])
 {
     wxGraphicsContext* gc = m_dc->GetGraphicsContext(); 
     wxGraphicsPath gp;
