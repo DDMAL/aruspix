@@ -70,6 +70,8 @@ public:
     
     virtual void DrawCQBezier(int x, int y, int x1, int height, int width, bool direction);
     
+    virtual void ComplexBezierPath(int x, int y, int bezier1_coord[6], int bezier2_coord[6]);
+    
     virtual void DrawCircle(int x, int y, int radius);
     
     virtual void DrawEllipse(int x, int y, int width, int height);
@@ -123,7 +125,8 @@ private:
     int m_penWidth;
     
     void UpdateBB(int x1, int y1, int x2, int y2);
-        
+    
+    void FindPointsForBounds(MusPoint P0, MusPoint P1, MusPoint P2, MusPoint P3, int *ret);
 };
 
 #endif // __MUS_BBOX_DC_H__

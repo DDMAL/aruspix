@@ -65,6 +65,8 @@ public:
     // Short-hand to draw a quadratic bezier with a central point on a horizontal plane
     virtual void DrawCQBezier(int x, int y, int x1, int height, int width, bool direction);
     
+    virtual void ComplexBezierPath(int x, int y, int bezier1_coord[6], int bezier2_coord[6]);
+    
     virtual void DrawCircle(int x, int y, int radius);
     
     virtual void DrawEllipse(int x, int y, int width, int height);

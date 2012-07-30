@@ -170,7 +170,7 @@ void MusRC::DrawBeam(  MusDC *dc, MusLaidOutLayer *layer, MusBeam *beam, MusLaid
 	}
     ***/
     
-    extern_q_auto = 1; //((MusNote*)chk->m_layerElement)->m_stemLen;
+    extern_q_auto = 1; //RZ was ((MusNote*)chk->m_layerElement)->m_stemLen; bit it is always 0!
     extern_queue =  ((MusNote*)chk->m_layerElement)->m_stemDir;
 
 	do

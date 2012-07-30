@@ -314,6 +314,11 @@ void MusSvgDC::DrawCQBezier(int x, int y, int x1, int height, int width, bool di
                                 ) );
 }
 
+void MusSvgDC::ComplexBezierPath(int x, int y, int bezier1_coord[6], int bezier2_coord[6])
+{
+    
+}
+
 void MusSvgDC::DrawCircle(int x, int y, int radius)
 {
     DrawEllipse(x - radius, y - radius, 2*radius, 2*radius);

@@ -226,31 +226,30 @@ void MusRC::DrawGroups( MusDC *dc, MusSystem *system )
 	return;
 }
 
-
-
-void MusRC::DrawBrace ( MusDC *dc, MusSystem *system, int x, int y1, int y2, int staffSize)
+/*
+void MusRC::DrawBraceOlde ( MusDC *dc, MusSystem *system, int x, int y1, int y2, int staffSize)
 {	
 	wxASSERT_MSG( dc , "DC cannot be NULL");
 	if ( !system->Check() )
 		return;
-
+    
 	SwapY( &y1, &y2 );
 	
 	int ymed, xdec, fact, nbrInt;
-//	static POINT *bcoord;
+    //	static POINT *bcoord;
 	MusPoint *ptcoord;
-
+    
     dc->SetPen( m_currentColour , 1, wxSOLID );
     dc->SetBrush( m_currentColour , wxSOLID );
-
+    
 	x -= m_layout->m_beamWhiteWidth[ staffSize ];  // distance entre barre et debut accolade
-
+    
 	nbrInt = BEZIER_NB_POINTS;
-
+    
 	ymed = (y1 + y2) / 2;
 	fact = m_layout->m_beamWidth[ staffSize ]-1 + m_layout->m_env.m_barlineWidth;
 	xdec = ToRendererX(fact);
-
+    
 	point_[0].x = ToRendererX(x);
 	point_[0].y = ToRendererY(y1);
 	point_[1].x = ToRendererX(x - m_layout->m_step2);
@@ -259,50 +258,149 @@ void MusRC::DrawBrace ( MusDC *dc, MusSystem *system, int x, int y1, int y2, int
 	point_[3].y = ToRendererY(ymed);
 	point_[2].x = ToRendererX(x + m_layout->m_step1);
 	point_[2].y = point_[3].y + ToRendererX( m_layout->m_interl[ staffSize ]);
-
+    
 	ptcoord = &bcoord[0];
 	calcBez ( ptcoord, nbrInt );
-
+    
 	pntswap (&point_[0], &point_[3]);
 	pntswap (&point_[1], &point_[2]);
 	
 	point_[1].x += xdec;
 	point_[2].x += xdec;
 	point_[1].y = point_[0].y + ToRendererX( m_layout->m_interl[ staffSize ]*2);
-
-
+    
 	ptcoord = &bcoord[nbrInt+1];	// suite de la matrice: retour du bezier
 	calcBez ( ptcoord, nbrInt );
-
+    
 	//SetPolyFillMode (hdc, WINDING);
 	dc->DrawPolygon (nbrInt*2,  bcoord, 0, 0, wxWINDING_RULE ); //(sizeof (bcoord)*2) / sizeof (POINT)); nbrInt*2+ 1;
-
+    
 	// on produit l'image reflet vers le bas: 0 est identique 
 	point_[1].y = point_[0].y - ToRendererX( m_layout->m_interl[ staffSize ]*2);
 	point_[3].y = ToRendererY(y2);
 	point_[2].y = point_[3].y + ToRendererX( m_layout->m_interl[ staffSize ]*3);
-
+    
 	ptcoord = &bcoord[0];
 	calcBez ( ptcoord, nbrInt );
-
+    
 	pntswap (&point_[0], &point_[3]);
 	pntswap (&point_[1], &point_[2]);
 	
 	point_[1].x -= xdec;
 	point_[2].x -= xdec;
 	point_[2].y = point_[3].y - ToRendererX( m_layout->m_interl[ staffSize ]);
-
+    
 	ptcoord = &bcoord[nbrInt+1];	// suite de la matrice: retour du bezier 
 	calcBez ( ptcoord, nbrInt );
-
+    
 	dc->DrawPolygon (nbrInt*2,  bcoord, 0, 0, wxWINDING_RULE  ); //(sizeof (bcoord)*2) / sizeof (POINT)); nbrInt*2+ 1;
 	
     dc->ResetPen();
     dc->ResetBrush();
+    
+	return;
+}
+*/
 
+void MusRC::DrawBrace ( MusDC *dc, MusSystem *system, int x, int y1, int y2, int staffSize)
+{	
+    int new_coords[2][6];
+    
+	wxASSERT_MSG( dc , "DC cannot be NULL");
+	if ( !system->Check() )
+		return;
+    
+	SwapY( &y1, &y2 );
+	
+	int ymed, xdec, fact, nbrInt;
+    //	static POINT *bcoord;
+	MusPoint *ptcoord;
+    
+    dc->SetPen( m_currentColour , 1, wxSOLID );
+    dc->SetBrush( m_currentColour , wxSOLID );
+    
+	x -= m_layout->m_beamWhiteWidth[ staffSize ];  // distance entre barre et debut accolade
+    
+	nbrInt = BEZIER_NB_POINTS;
+    
+	ymed = (y1 + y2) / 2;
+	fact = m_layout->m_beamWidth[ staffSize ]-1 + m_layout->m_env.m_barlineWidth;
+	xdec = ToRendererX(fact);
+    
+	point_[0].x = ToRendererX(x);
+	point_[0].y = ToRendererY(y1);
+	point_[1].x = ToRendererX(x - m_layout->m_step2);
+	point_[1].y = point_[0].y - ToRendererX( m_layout->m_interl[ staffSize ]*3);
+	point_[3].x = ToRendererX(x - m_layout->m_step1*2);
+	point_[3].y = ToRendererY(ymed);
+	point_[2].x = ToRendererX(x + m_layout->m_step1);
+	point_[2].y = point_[3].y + ToRendererX( m_layout->m_interl[ staffSize ]);
+    
+    new_coords[0][0] = point_[1].x;
+    new_coords[0][1] = point_[1].y;
+    new_coords[0][2] = point_[2].x;
+    new_coords[0][3] = point_[2].y;
+    new_coords[0][4] = point_[3].x;
+    new_coords[0][5] = point_[3].y;
+    
+	pntswap (&point_[0], &point_[3]);
+	pntswap (&point_[1], &point_[2]);
+	
+	point_[1].x += xdec;
+	point_[2].x += xdec;
+	point_[1].y = point_[0].y + ToRendererX( m_layout->m_interl[ staffSize ]*2);
+    
+    new_coords[1][0] = point_[1].x;
+    new_coords[1][1] = point_[1].y;
+    new_coords[1][2] = point_[2].x;
+    new_coords[1][3] = point_[2].y;
+    new_coords[1][4] = point_[3].x;
+    new_coords[1][5] = point_[3].y;
+    
+    dc->ComplexBezierPath(ToRendererX(x), ToRendererY(y1), new_coords[0], new_coords[1]);
+    
+	// on produit l'image reflet vers le bas: 0 est identique 
+	point_[1].y = point_[0].y - ToRendererX( m_layout->m_interl[ staffSize ]*2);
+	point_[3].y = ToRendererY(y2);
+	point_[2].y = point_[3].y + ToRendererX( m_layout->m_interl[ staffSize ]*3);
+    
+    new_coords[0][0] = point_[1].x;
+    new_coords[0][1] = point_[1].y;
+    new_coords[0][2] = point_[2].x;
+    new_coords[0][3] = point_[2].y;
+    new_coords[0][4] = point_[3].x;
+    new_coords[0][5] = point_[3].y;
+    
+	pntswap (&point_[0], &point_[3]);
+	pntswap (&point_[1], &point_[2]);
+	
+	point_[1].x -= xdec;
+	point_[2].x -= xdec;
+	point_[2].y = point_[3].y - ToRendererX( m_layout->m_interl[ staffSize ]);
+    
+    new_coords[1][0] = point_[1].x;
+    new_coords[1][1] = point_[1].y;
+    new_coords[1][2] = point_[2].x;
+    new_coords[1][3] = point_[2].y;
+    new_coords[1][4] = point_[3].x;
+    new_coords[1][5] = point_[3].y;
+    
+    dc->ComplexBezierPath(point_[3].x, point_[3].y, new_coords[0], new_coords[1]);
+    
+    //dc->SetPen( m_currentColour , 1, wxSOLID );
+    //dc->SetBrush( m_currentColour , wxSOLID );
+	//dc->DrawPolygon (nbrInt*2,  bcoord, 0, 0, wxWINDING_RULE  ); //(sizeof (bcoord)*2) / sizeof (POINT)); nbrInt*2+ 1;
+	
+    dc->ResetPen();
+    dc->ResetBrush();
+        
 	return;
 }
 
+
+
+
+ 
 void MusRC::DrawBarline ( MusDC *dc, MusSystem *system, int x, int cod, bool porteeAutonome, MusLaidOutStaff *pportee)
 // cod: 0 = barre d'epaisseur 1 point; 1 = barre d'ep. "epLignesVer"
 // porteeAutonome: indique s'il faut des barres privees sur chaque portee plutÙt que traversantes

@@ -396,6 +396,7 @@ bool MusDarmsInput::ImportFile() {
     
     m_staff->AddLayer(m_layer);
     m_measure->AddStaff(m_staff);
+    //m_measure->AddStaff(new MusStaff);
     m_section->AddMeasure(m_measure);
     
     // do this the C style, char by char

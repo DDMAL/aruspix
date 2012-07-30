@@ -159,6 +159,14 @@ void MusLayout::Realize( MusScore *score )
                     system->AddStaff( new MusLaidOutStaff( k ));
                 }
                 laidOutStaff = &system->m_staves[k];
+                
+                /* experimental brace
+                if (k == 0) laidOutStaff->brace = START;
+                if (k == (int)measure->m_staves.GetCount() - 1) laidOutStaff->brace = END;
+                
+                laidOutStaff->accol = true;
+                */
+                 
                 for (l = 0; l < (int)staff->m_layers.GetCount(); l++) {
                     MusLayer *layer = &staff->m_layers[l];
                     MusLaidOutLayer *laidOutLayer;

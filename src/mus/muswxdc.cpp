@@ -161,6 +161,27 @@ void MusWxDC::DrawCQBezier(int x, int y, int x1, int height, int width, bool dir
     gc->SetBrush(wxNullBrush);
 }
 
+void MusWxDC::ComplexBezierPath(int x, int y, int bezier1_coord[6], int bezier2_coord[6])
+{
+    wxGraphicsContext* gc = m_dc->GetGraphicsContext(); 
+    wxGraphicsPath gp;
+    gp = gc->CreatePath();
+    
+    gp.MoveToPoint(x, y);
+    
+    
+    gp.AddCurveToPoint(bezier1_coord[0], bezier1_coord[1], bezier1_coord[2], bezier1_coord[3], bezier1_coord[4], bezier1_coord[5]);
+    gp.AddCurveToPoint(bezier2_coord[0], bezier2_coord[1], bezier2_coord[2], bezier2_coord[3], bezier2_coord[4], bezier2_coord[5]);
+    
+    gc->SetPen(wxPen("black", 1)); 
+    gc->SetBrush(wxBrush("black"));
+    
+    gc->FillPath(gp);
+    
+    //gc->SetPen(wxNullPen); 
+    //gc->SetBrush(wxNullBrush);  
+}
+
 void MusWxDC::DrawRectangle(int x, int y, int width, int height)
 {
     m_dc->DrawRectangle( x, y, width, height );

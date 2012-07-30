@@ -23,6 +23,7 @@ MusPoint MusRC::bcoord[];
 //MusPoint MusRC::point_[4];
 //MusPoint MusRC::bcoord[2*(BEZIER_NB_POINTS+1)];
 
+/** DEPRECATED
 int MusRC::CC(int n, int i) 
 {
 	register int j;
@@ -95,7 +96,7 @@ void MusRC::calcBez ( MusPoint *ptcoord, int _nbint )
 	if (!InitBezier(3))
 		return;
 
-/*	for (i = 0; i < _nbint; i++)*/
+//	for (i = 0; i < _nbint; i++)
 	for (i = 0; i <= _nbint; i++)
 	{
 		Bezier(&x, &y, (long)(i * 100) / (long)_nbint, 3);
@@ -105,7 +106,8 @@ void MusRC::calcBez ( MusPoint *ptcoord, int _nbint )
 	}
 	
 }
-
+end deprecated */
+ 
 void MusRC::pntswap (MusPoint *x1, MusPoint *x2)
 {	MusPoint a;
 	a = *x1;

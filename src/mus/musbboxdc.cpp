@@ -136,6 +136,7 @@ MusPoint MusBBoxDC::GetLogicalOrigin( )
 
 // Drawing mething
 
+// this BB is a row approximation
 void MusBBoxDC::DrawCQBezier(int x, int y, int x1, int height, int width, bool direction)
 {
     if (direction) // true = up
@@ -143,6 +144,19 @@ void MusBBoxDC::DrawCQBezier(int x, int y, int x1, int height, int width, bool d
     else {
         UpdateBB(x, y, x1, y - height);
     }
+}
+
+// claculated better
+void MusBBoxDC::ComplexBezierPath(int x, int y, int bezier1_coord[6], int bezier2_coord[6])
+{
+    int vals[4];
+    FindPointsForBounds(*new MusPoint(x, y), 
+                        *new MusPoint(bezier1_coord[0], bezier1_coord[1]), 
+                        *new MusPoint(bezier1_coord[2], bezier1_coord[3]),
+                        *new MusPoint(bezier1_coord[4], bezier1_coord[5]), 
+                        vals);
+    
+    UpdateBB(x, y, vals[0], vals[1]);
 }
 
 void MusBBoxDC::DrawCircle(int x, int y, int radius)
@@ -434,4 +448,45 @@ void MusBBoxDC::UpdateBB(int x1, int y1, int x2, int y2)
     for (i = 0; i < (int)m_objects.GetCount(); i++) {
         (&m_objects[i])->UpdateContentBB( m_rc->ToLogicalX(x1), m_rc->ToLogicalY(y1), m_rc->ToLogicalX(x2), m_rc->ToLogicalY(y2) );
     }
+}
+
+// Ok, shame on me, found off the internet and modified, but for now it works
+void MusBBoxDC::FindPointsForBounds(MusPoint P0, MusPoint P1, MusPoint P2, MusPoint P3, int *ret)
+{
+    
+    int A = P3.x - 3 * P2.x + 3 * P1.x - P0.x;
+    int B = 3 * P2.x - 6 * P1.x + 3 * P0.x;
+    int C = 3 * P1.x - 3 * P0.x;
+    int D = P0.x;
+    
+    int E = P3.y - 3 * P2.y + 3 * P1.y - P0.y;
+    int F = 3 * P2.y - 6 * P1.y + 3 * P0.y;
+    int G = 3 * P1.y - 3 * P0.y;
+    int H = P0.y;
+    
+    float x, y;
+    float xMin = 0xFFFF;
+    float yMin = 0xFFFF;
+    float xMax = 0;
+    float yMax = 0;
+    
+    for (float t = 0.0f; t <= 1.0f; t += 0.01f)
+    {
+        x = A * t * t * t + B * t * t + C * t + D;
+        if (x < xMin)
+            xMin = x;
+        if (x > xMax)
+            xMax = x;
+        y = E * t * t * t + F * t * t + G * t + H;
+        if (y < yMin)
+            yMin = y;
+        if (y > yMax)
+            yMax = y; 
+    }
+    
+    ret[0] = (int)xMin;
+    ret[1] = (int)yMin;
+    
+    ret[2] = (int)xMax;
+    ret[3] = (int)yMax;
 }
