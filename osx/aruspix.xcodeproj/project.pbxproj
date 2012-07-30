@@ -96,6 +96,8 @@
 		8F3367F315A1E42F009AAB69 /* musiodarms.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8F3367F115A1E42F009AAB69 /* musiodarms.cpp */; };
 		8F4FA6E015AC0C4000CF9FD8 /* muskeysig.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8F4FA6DF15AC0C4000CF9FD8 /* muskeysig.cpp */; };
 		8F4FA6E115AC0C4000CF9FD8 /* muskeysig.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8F4FA6DF15AC0C4000CF9FD8 /* muskeysig.cpp */; };
+		8F89005B15C6C641006C88A4 /* musleipzigbbox.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8F89005A15C6C641006C88A4 /* musleipzigbbox.cpp */; };
+		8F89005C15C6C641006C88A4 /* musleipzigbbox.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8F89005A15C6C641006C88A4 /* musleipzigbbox.cpp */; };
 		8F9F1A17156143A200C7D6F9 /* musiopae.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8F9F1A15156143A200C7D6F9 /* musiopae.cpp */; };
 		8FE5FDDE1594943600B44674 /* musbboxdc.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D862ED8144DF72700483E57 /* musbboxdc.cpp */; };
 		8FE5FDDF1594943600B44674 /* mussvgdc.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D72429B132012A00023497A /* mussvgdc.cpp */; };
@@ -344,6 +346,8 @@
 		8F4FA6DF15AC0C4000CF9FD8 /* muskeysig.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = muskeysig.cpp; path = ../src/mus/muskeysig.cpp; sourceTree = "<group>"; };
 		8F4FA6E315AC0C5700CF9FD8 /* muskeysig.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = muskeysig.h; path = ../src/mus/muskeysig.h; sourceTree = "<group>"; };
 		8F4FA6EB15AEFE6500CF9FD8 /* musrc_beam_original.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = musrc_beam_original.cpp; path = ../src/mus/musrc_beam_original.cpp; sourceTree = "<group>"; };
+		8F89005A15C6C641006C88A4 /* musleipzigbbox.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = musleipzigbbox.cpp; path = ../src/mus/musleipzigbbox.cpp; sourceTree = "<group>"; };
+		8F89005D15C6C659006C88A4 /* musleipzigbbox.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = musleipzigbbox.h; path = ../src/mus/musleipzigbbox.h; sourceTree = "<group>"; };
 		8F9F1A15156143A200C7D6F9 /* musiopae.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = musiopae.cpp; path = ../src/mus/musiopae.cpp; sourceTree = "<group>"; };
 		8F9F1A16156143A200C7D6F9 /* musiopae.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = musiopae.h; path = ../src/mus/musiopae.h; sourceTree = "<group>"; };
 		8FE5FE261599FA0500B44674 /* musbeam.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = musbeam.cpp; path = ../src/mus/musbeam.cpp; sourceTree = "<group>"; };
@@ -510,6 +514,8 @@
 				4D2F7EAB145AD82600EF930B /* musrc_page.cpp */,
 				4DA0004312CA26E300B65740 /* musrc.cpp */,
 				4DA0004412CA26E300B65740 /* musrc.h */,
+				8F89005A15C6C641006C88A4 /* musleipzigbbox.cpp */,
+				8F89005D15C6C659006C88A4 /* musleipzigbbox.h */,
 			);
 			name = view;
 			sourceTree = "<group>";
@@ -919,6 +925,7 @@
 				8F3367F315A1E42F009AAB69 /* musiodarms.cpp in Sources */,
 				8F4FA6E115AC0C4000CF9FD8 /* muskeysig.cpp in Sources */,
 				8F0576A615C43053002F761C /* mustie.cpp in Sources */,
+				8F89005C15C6C641006C88A4 /* musleipzigbbox.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1032,6 +1039,7 @@
 				8F3367F215A1E42F009AAB69 /* musiodarms.cpp in Sources */,
 				8F4FA6E015AC0C4000CF9FD8 /* muskeysig.cpp in Sources */,
 				8F0576A515C43053002F761C /* mustie.cpp in Sources */,
+				8F89005B15C6C641006C88A4 /* musleipzigbbox.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

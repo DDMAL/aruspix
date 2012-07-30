@@ -136,7 +136,7 @@ public:
     void DrawTie( MusDC *dc, MusLaidOutLayerElement *element, MusLaidOutLayer *layer, MusLaidOutStaff *staff );
     void DrawLigature( MusDC *dc, int y, MusLaidOutLayerElement *element, MusLaidOutLayer *layer, MusLaidOutStaff *staff );  
     void DrawLedgerLines( MusDC *dc, int y_n, int y_p, int xn, unsigned int smaller, int staffSize);
-    void DrawSpecialRest ( MusDC *dc, int a, MusLaidOutStaff *staff);
+    void DrawSpecialRest ( MusDC *dc, int a, MusLaidOutLayerElement *element, MusLaidOutStaff *staff);
     void DrawLongRest ( MusDC *dc, int a, int b, MusLaidOutStaff *staff);
     void DrawBreveRest ( MusDC *dc, int a, int b, MusLaidOutStaff *staff);
     void DrawWholeRest ( MusDC *dc, int a, int b, int valeur, unsigned char dots, unsigned int smaller, MusLaidOutStaff *staff);

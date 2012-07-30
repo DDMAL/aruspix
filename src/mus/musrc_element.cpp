@@ -13,6 +13,7 @@
 #include "muslaidoutlayerelement.h"
 
 #include "musbarline.h"
+#include "musleipzigbbox.h"
 #include "musclef.h"
 #include "musmensur.h"
 #include "musneume.h"
@@ -583,7 +584,7 @@ void MusRC::DrawRest ( MusDC *dc, MusLaidOutLayerElement *element, MusLaidOutLay
 
 	if (rest->m_dur == VALSilSpec) // LP: not sure what is actually does...
     {
-		DrawSpecialRest( dc, a, staff);
+		DrawSpecialRest( dc, a, element, staff);
     }
 	else
 	{	
@@ -649,16 +650,73 @@ void MusRC::DrawLedgerLines( MusDC *dc, int y_n, int y_p, int xn, unsigned int s
 	return;
 }
 
+/** This function draws multi-measure rests
+ **/
+#define NUMBER_REDUCTION 5
+void MusRC::DrawSpecialRest ( MusDC *dc, int a, MusLaidOutLayerElement *element, MusLaidOutStaff *staff)
+{	
+    MusLeipzigBBox *bbox = new MusLeipzigBBox();
+    int x, x2, y, y2, lenght;
 
-void MusRC::DrawSpecialRest ( MusDC *dc, int a, MusLaidOutStaff *staff)
-
-{	int x, x2, y, y2, off;
-
-	off = (m_layout->m_step1*2)/3;
-	y = staff->m_y_drawing - m_layout->m_interl[staff->staffSize]*6;
-	y2 = y + m_layout->m_interl[staff->staffSize];
-	x = a-off; x2 = a+off;
-	rect_plein2( dc,x,y2,x2,y);
+    MusRest *rest = dynamic_cast<MusRest*>(element->m_layerElement);
+    
+    // We do not support more than three chars
+    if (rest->m_multimeasure_dur > 999)
+        rest->m_multimeasure_dur = 999;
+    
+    // This is 1/2 the lenght of th black rectangle
+	lenght = (m_layout->m_step1 * 5);
+    
+    // Position centered in third line
+    // it would be m_interl * 6.5, or m_interl / 2 * 13
+	y = staff->m_y_drawing - (m_layout->m_interl[staff->staffSize] / 2) * 13;
+    y2 = y + m_layout->m_interl[staff->staffSize];
+	
+    // a is the central point, claculate x and x2
+    x = a - lenght; 
+    x2 = a + lenght;
+    
+    // Draw the base rect
+    // make it 8 pixels smaller than the interline space
+    // these are the two 4 substracted and added
+	rect_plein2(dc, x, y2 - 4, x2, y + 4);
+    
+    //Draw the to lines at beginning and end
+    // make it 8 pixesl longers, and 4 pixels width
+    v_bline(dc, y - 4, y2 + 4, x, 4);
+    v_bline(dc, y - 4, y2 + 4, x2, 4);
+    
+    // Draw the text above
+    char txt[15];
+    unsigned int start_offset = 0; // offset from x to center text
+    unsigned int txt_lenght = 0; // total lenght of the text
+    
+    // convert m_multimeasure_dur to a string
+    sprintf(txt, "%i", rest->m_multimeasure_dur);
+    
+    // Calculate the total txt lenght first
+    for (unsigned int i = 0; i < strlen(txt); i++) {
+        // Char '0' is at poisition 48 in ASCII, in the BBOX array it is at position 1
+        // so subtract 47 from char to get the correct position into the bbox array
+        unsigned int char_position = txt[i] - 47;
+        // Get the width of the char, relative to current fontSize, we add 1 pixel padding between chars
+        txt_lenght += bbox->m_bBox[char_position].m_width * ((double)(m_layout->m_fontSize[0][0]) / LEIPZIG_UNITS_PER_EM) + 1;
+    }
+    
+    // Now that we have the lenght, calculate the offset to have it centered
+    start_offset = (x2 - x - txt_lenght) / 2;
+    
+    // Go through all chars and print them
+    for (unsigned int i = 0; i < strlen(txt); i++) {
+        // get char width, as above, plus 1 px padding
+        unsigned int char_position = txt[i] - 47;
+        txt_lenght = bbox->m_bBox[char_position].m_width * ((double)(m_layout->m_fontSize[0][0]) / LEIPZIG_UNITS_PER_EM) + 1;
+        // Draw the char 5 pixels above staff line
+        DrawLeipzigFont ( dc, x + start_offset, staff->m_y_drawing - m_layout->m_staffSize[staff->staffSize] + 5, txt[i], staff, false);
+        //move offset to start of next char
+        start_offset += txt_lenght;
+    }
+    
 	return;
 }
 

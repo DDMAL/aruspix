@@ -37,6 +37,8 @@ public:
 private:
     
 public:
+    /* Indicates the value to print above multi-measure rests */
+    int m_multimeasure_dur;
 
 private:
     

@@ -1064,8 +1064,7 @@ void MusPaeInput::printMeasure(std::ostream& out, MeasureObject *measure ) {
         
         MusRest *r = new MusRest();
         r->m_dur = VALSilSpec; // surely this is NOT a multimeasure rest
-        r->m_pname = PITCH_G;
-        r->m_oct = 4;
+        r->m_multimeasure_dur = measure->wholerest;
         m_layer->AddLayerElement(r);
         
         //if (measure->notes[i].fermata) {
