@@ -146,6 +146,10 @@
 		8FE5FE111594952400B44674 /* tinyxmlparser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A585249D0A1B9604002D9D8A /* tinyxmlparser.cpp */; };
 		8FE5FE271599FA0600B44674 /* musbeam.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8FE5FE261599FA0500B44674 /* musbeam.cpp */; };
 		8FE5FE281599FA0600B44674 /* musbeam.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8FE5FE261599FA0500B44674 /* musbeam.cpp */; };
+		8FF3AA8A15C80D1200B9D9B0 /* musslur.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8FF3AA8915C80D1200B9D9B0 /* musslur.cpp */; };
+		8FF3AA8B15C80D1200B9D9B0 /* musslur.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8FF3AA8915C80D1200B9D9B0 /* musslur.cpp */; };
+		8FF3AA8D15C81EDE00B9D9B0 /* mustuplet.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8FF3AA8C15C81EDD00B9D9B0 /* mustuplet.cpp */; };
+		8FF3AA8E15C81EDE00B9D9B0 /* mustuplet.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8FF3AA8C15C81EDD00B9D9B0 /* mustuplet.cpp */; };
 		A1A6E0D813422A7D0024A821 /* musneumesymbol.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A1A6E0D713422A7D0024A821 /* musneumesymbol.cpp */; };
 		A58524CE0A1B9604002D9D8A /* axapp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A58524560A1B9604002D9D8A /* axapp.cpp */; };
 		A58524CF0A1B9604002D9D8A /* axenv.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A58524580A1B9604002D9D8A /* axenv.cpp */; };
@@ -352,6 +356,10 @@
 		8F9F1A16156143A200C7D6F9 /* musiopae.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = musiopae.h; path = ../src/mus/musiopae.h; sourceTree = "<group>"; };
 		8FE5FE261599FA0500B44674 /* musbeam.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = musbeam.cpp; path = ../src/mus/musbeam.cpp; sourceTree = "<group>"; };
 		8FE5FE2A1599FA1B00B44674 /* musbeam.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = musbeam.h; path = ../src/mus/musbeam.h; sourceTree = "<group>"; };
+		8FF3AA8715C80D0200B9D9B0 /* musslur.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = musslur.h; path = ../src/mus/musslur.h; sourceTree = "<group>"; };
+		8FF3AA8915C80D1200B9D9B0 /* musslur.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = musslur.cpp; path = ../src/mus/musslur.cpp; sourceTree = "<group>"; };
+		8FF3AA8C15C81EDD00B9D9B0 /* mustuplet.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = mustuplet.cpp; path = ../src/mus/mustuplet.cpp; sourceTree = "<group>"; };
+		8FF3AA8F15C81EF200B9D9B0 /* mustuplet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = mustuplet.h; path = ../src/mus/mustuplet.h; sourceTree = "<group>"; };
 		A1A6E0D613422A7D0024A821 /* musneumesymbol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = musneumesymbol.h; path = ../src/mus/musneumesymbol.h; sourceTree = SOURCE_ROOT; };
 		A1A6E0D713422A7D0024A821 /* musneumesymbol.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = musneumesymbol.cpp; path = ../src/mus/musneumesymbol.cpp; sourceTree = SOURCE_ROOT; };
 		A50FE1390A6D6E240038D682 /* rec.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = rec.h; sourceTree = "<group>"; };
@@ -448,6 +456,8 @@
 				4D2E471813FD052300023B02 /* muspositioninterface.h */,
 				4D2E470A13FC436500023B02 /* musrest.cpp */,
 				4D2E470B13FC436500023B02 /* musrest.h */,
+				8FF3AA8915C80D1200B9D9B0 /* musslur.cpp */,
+				8FF3AA8715C80D0200B9D9B0 /* musslur.h */,
 				4D2E46A313FBF2C800023B02 /* mussection.cpp */,
 				4D3A8FE60D35867200BBC1FB /* mussection.h */,
 				4D2E46A113FBF21800023B02 /* musstaff.cpp */,
@@ -456,6 +466,8 @@
 				4D2F7E79145AD66900EF930B /* mussymbol.h */,
 				8F0576A415C43053002F761C /* mustie.cpp */,
 				8F0576A715C43064002F761C /* mustie.h */,
+				8FF3AA8C15C81EDD00B9D9B0 /* mustuplet.cpp */,
+				8FF3AA8F15C81EF200B9D9B0 /* mustuplet.h */,
 			);
 			name = logical;
 			sourceTree = "<group>";
@@ -926,6 +938,8 @@
 				8F4FA6E115AC0C4000CF9FD8 /* muskeysig.cpp in Sources */,
 				8F0576A615C43053002F761C /* mustie.cpp in Sources */,
 				8F89005C15C6C641006C88A4 /* musleipzigbbox.cpp in Sources */,
+				8FF3AA8B15C80D1200B9D9B0 /* musslur.cpp in Sources */,
+				8FF3AA8E15C81EDE00B9D9B0 /* mustuplet.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1040,6 +1054,8 @@
 				8F4FA6E015AC0C4000CF9FD8 /* muskeysig.cpp in Sources */,
 				8F0576A515C43053002F761C /* mustie.cpp in Sources */,
 				8F89005B15C6C641006C88A4 /* musleipzigbbox.cpp in Sources */,
+				8FF3AA8A15C80D1200B9D9B0 /* musslur.cpp in Sources */,
+				8FF3AA8D15C81EDE00B9D9B0 /* mustuplet.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
