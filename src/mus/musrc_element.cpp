@@ -1455,9 +1455,9 @@ void MusRC::DrawTie( MusDC *dc, MusLaidOutLayerElement *element, MusLaidOutLayer
     // FIXME, take in account elements that can be netween notes, eg keys time etc
     
     if (up)
-        dc->DrawCQBezier(ToRendererX(note1->m_x_abs), ToRendererY(note1->m_y_drawing + staff->m_y_drawing - 14), ToRendererX(note2->m_x_abs), 20, 6, true);
+        DrawTieBezier(dc, ToRendererX(note1->m_x_abs), ToRendererY(note1->m_y_drawing + staff->m_y_drawing - 14), ToRendererX(note2->m_x_abs), 20, 6, true);
     else
-        dc->DrawCQBezier(ToRendererX(note1->m_x_abs), ToRendererY(note1->m_y_drawing + staff->m_y_drawing + 14), ToRendererX(note2->m_x_abs), 20, 6, false);
+        DrawTieBezier(dc, ToRendererX(note1->m_x_abs), ToRendererY(note1->m_y_drawing + staff->m_y_drawing + 14), ToRendererX(note2->m_x_abs), 20, 6, false);
 
     dc->EndGraphic(element, this ); //RZ
     

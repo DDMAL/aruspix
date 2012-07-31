@@ -315,5 +315,39 @@ void MusRC::putlyric ( MusDC *dc, int x, int y, wxString s, int staffSize, bool 
         DoLyricCursor( x, y, dc, s );	
 }
 
-
+void MusRC::DrawTieBezier(MusDC *dc, int x, int y, int x1, int height, int width, bool direction)
+{
+    int one, two; // control points at 1/4 and 3/4 of total lenght
+    int bez1[6], bez2[6]; // filled array with control points and end point
+    
+    int top_y, top_y_fill; // Y for control points in both beziers
+    
+    one = (x1 - x) / 4; // point at 1/4
+    two = (x1 - x) / 4 * 3; // point at 3/4
+    
+    if (direction) {
+        // tie goes up
+        top_y = y + height;
+        // the second bezier in internal
+        top_y_fill = top_y - width;
+    } else {
+        //tie goes down
+        top_y = y - height;
+        // second bezier is internal as above
+        top_y_fill = top_y + width;
+    }
+    
+    // Points for first bez, they go from xy to x1y1
+    bez1[0] = x + one; bez1[1] = top_y;
+    bez1[2] = x + two; bez1[3] = top_y;
+    bez1[4] = x1; bez1[5] = y;
+    
+    // second bez. goes back
+    bez2[0] = x + two; bez2[1] = top_y_fill;
+    bez2[2] = x + one; bez2[3] = top_y_fill;
+    bez2[4] = x; bez2[5] = y;
+    
+    // Actually draw it
+    dc->DrawComplexBezierPath(x, y, bez1, bez2);
+}
 

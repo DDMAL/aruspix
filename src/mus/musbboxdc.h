@@ -67,9 +67,7 @@ public:
     virtual MusPoint GetLogicalOrigin( );
 
     // Drawing methods
-    
-    virtual void DrawCQBezier(int x, int y, int x1, int height, int width, bool direction);
-    
+        
     virtual void DrawComplexBezierPath(int x, int y, int bezier1_coord[6], int bezier2_coord[6]);
     
     virtual void DrawCircle(int x, int y, int radius);

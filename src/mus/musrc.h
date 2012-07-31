@@ -82,6 +82,7 @@ public:
 					   MusLaidOutStaff *staff, int dimin ); 
 	void DrawLeipzigFont ( MusDC *dc, int x, int y, unsigned char c, 
 				  MusLaidOutStaff *staff, bool dimin );
+    void DrawTieBezier(MusDC *dc, int x, int y, int x1, int height, int width, bool direction);
 	//void putfontfast ( MusDC *dc, int x, int y, unsigned char c );
 	void putstring ( MusDC *dc, int x, int y, wxString s, int centrer, int staffSize = 0);
 	void putlyric ( MusDC *dc, int x, int y, wxString s, int staffSize = 0, bool cursor = false);

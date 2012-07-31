@@ -133,19 +133,6 @@ MusPoint MusBBoxDC::GetLogicalOrigin( )
     return MusPoint( m_originX, m_originY );
 }
 
-
-// Drawing mething
-
-// this BB is a row approximation
-void MusBBoxDC::DrawCQBezier(int x, int y, int x1, int height, int width, bool direction)
-{
-    if (direction) // true = up
-        UpdateBB(x, y, x1, y + height);
-    else {
-        UpdateBB(x, y, x1, y - height);
-    }
-}
-
 // claculated better
 void MusBBoxDC::DrawComplexBezierPath(int x, int y, int bezier1_coord[6], int bezier2_coord[6])
 {
@@ -156,7 +143,7 @@ void MusBBoxDC::DrawComplexBezierPath(int x, int y, int bezier1_coord[6], int be
                         *new MusPoint(bezier1_coord[4], bezier1_coord[5]), 
                         vals);
     
-    UpdateBB(x, y, vals[0], vals[1]);
+    UpdateBB(vals[0], vals[1], vals[2], vals[3]);
 }
 
 void MusBBoxDC::DrawCircle(int x, int y, int radius)
