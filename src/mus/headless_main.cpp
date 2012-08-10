@@ -24,6 +24,8 @@
 #include "musiomei.h"
 #include "musiodarms.h"
 
+#include "musiomusxml.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -207,7 +209,7 @@ int main(int argc, char** argv) {
         
         delete svg;
     } else {
-        MusMeiOutput meioutput(doc, m_outfile.c_str());
+        MusXMLOutput meioutput(doc, m_outfile.c_str());
         if (!meioutput.ExportFile()) {
             cerr << "Unable to write MEI to " << m_outfile << "." << endl;
             exit(1);
