@@ -618,13 +618,15 @@ void MusWindow::UpdateScroll()
 {
 	if (!m_currentStaff)
 		return;
-    
-    // Needs to be fixed - zoom is not taken into account
 		
 	int x = 0;
 	if ( m_currentElement )
 		x = ToRendererX( m_currentElement->m_x_abs );
-	int y = ToRendererY(  m_currentStaff->m_y_abs );
+	int y = ToRendererY(  m_currentStaff->m_y_drawing );
+    
+    x *= (double)m_zoomNum / m_zoomDen;
+    y *= (double)m_zoomNum / m_zoomDen;
+    
 	// units
 	int xu, yu;
 	this->GetScrollPixelsPerUnit( &xu, &yu );
@@ -636,7 +638,7 @@ void MusWindow::UpdateScroll()
 	// size
 	int w, h;
 	this->GetClientSize( &w, &h );
-	//wxLogMessage("x %d y %d xs %d ys %d, w %d h %d", x, y, xs, ys, w, h );
+	wxLogMessage("x %d y %d xs %d ys %d, w %d h %d", x, y, xs, ys, w, h );
 
 	// check if necessary
 	if ( (x > xs) && (x < xs + w) )
