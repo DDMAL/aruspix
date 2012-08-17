@@ -64,6 +64,7 @@ public:
     // functors
     void Save( wxArrayPtrVoid params );
     void Load( wxArrayPtrVoid params );
+    void GetPosOnPage( wxArrayPtrVoid params );
     void UpdateYPosition( wxArrayPtrVoid params );
     
 	void CopyAttributes( MusLaidOutStaff *staff ); // copy all attributes but none of the elements

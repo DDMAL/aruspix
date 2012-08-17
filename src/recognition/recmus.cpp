@@ -25,7 +25,9 @@ using std::max;
 
 #include "mus/musdoc.h"
 #include "mus/mustoolpanel.h"
-#include "mus/musstaff.h"
+//#include "mus/musstaff.h"
+#include "mus/muspage.h"
+#include "mus/muslaidoutlayerelement.h"
 
 #include "im/impage.h"
 #include "im/imstaff.h"
@@ -125,10 +127,11 @@ void RecMusController::SyncZoom()
 
 void RecMusController::SyncStaffBitmap( )
 {
-/*
+
 	wxASSERT_MSG( m_viewPtr, "WG Window cannot be NULL ");
 	wxASSERT_MSG( m_imViewPtr, "RecImWindow cannot be NULL ");
 	wxASSERT_MSG( m_recFilePtr, "RecFile cannot be NULL ");
+    
 
     if ( !m_staffbmp_show )
         return;
@@ -137,20 +140,21 @@ void RecMusController::SyncStaffBitmap( )
 	if ( !m_recFilePtr->GetImPage() || !m_recFilePtr->GetMusFile() )
         return;
 
-    if ( !m_viewPtr->m_currentStaff )
+    if ( !m_viewPtr->m_currentStaff || !m_viewPtr->m_currentLayer )
         return;
 
-    if ( m_viewPtr->m_currentStaff->no > m_recFilePtr->GetImPage()->m_staves.GetCount() - 1 )
+    int staff_pos = m_viewPtr->m_page->GetStaffPosOnPage( m_viewPtr->m_currentStaff );
+    if ( (staff_pos < 0) || (staff_pos > (int)m_recFilePtr->GetImPage()->m_staves.GetCount() - 1) )
         return;
 
-    ImStaff *imstaff = &m_recFilePtr->GetImPage()->m_staves[m_viewPtr->m_currentStaff->no];
+    ImStaff *imstaff = &m_recFilePtr->GetImPage()->m_staves[staff_pos];
 
     int currentElementNo = -1;
     if ( m_viewPtr->m_currentElement )
-        currentElementNo = m_viewPtr->m_currentElement->no;
+        currentElementNo = m_viewPtr->m_currentElement->GetElementNo();
     
     m_staffbmp = wxBitmap(); // clear bitmap;
-    m_staffbmp = m_mlfBmp->GenerateBitmap( imstaff, m_viewPtr->m_currentStaff, currentElementNo );
+    m_staffbmp = m_mlfBmp->GenerateBitmap( imstaff, m_viewPtr->m_currentLayer, currentElementNo );
     if ( !m_staffbmp.Ok() )
         return;
 
@@ -219,8 +223,8 @@ void RecMusController::SyncStaffBitmap( )
         m_lastX = m_mlfBmp->GetCurrentX();
         m_lastWidth = m_mlfBmp->GetCurrentWidth();
     }
-*/
-    wxLogDebug( "SyncStaffBitmap method missing in ax2") ;
+
+    //wxLogDebug( "SyncStaffBitmap method missing in ax2") ;
 }
 
 void RecMusController::GetStaffBitmap( wxBitmap *bmp, int *x, int *y )

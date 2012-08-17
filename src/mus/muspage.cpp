@@ -13,6 +13,7 @@
 #include "muspage.h"
 #include "musdoc.h"
 #include "mussystem.h"
+#include "muslaidoutstaff.h"
 
 #include "wx/arrimpl.cpp"
 WX_DEFINE_OBJARRAY( ArrayOfMusPages );
@@ -80,6 +81,19 @@ int MusPage::GetPageNo() const
     wxASSERT_MSG( m_layout, "Layout cannot be NULL");
     
     return m_layout->m_pages.Index( *this );
+}
+
+int MusPage::GetStaffPosOnPage( MusLaidOutStaff *staff )
+{
+    int position = -1;
+    bool success = false;
+    wxArrayPtrVoid params;
+    params.Add( staff );
+    params.Add( &position );
+    params.Add( &success );
+    MusLaidOutStaffFunctor getStaffPosOnPage( &MusLaidOutStaff::GetPosOnPage );
+    Process( &getStaffPosOnPage, params );    
+    return position;
 }
 
 

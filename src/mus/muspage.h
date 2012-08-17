@@ -63,6 +63,11 @@ public:
 	int GetSystemCount() const { return (int)m_systems.GetCount(); };
     
     int GetPageNo() const;
+    
+    /**
+     * Return the position of the staff on the page, from top to bottom
+     */
+    int GetStaffPosOnPage( MusLaidOutStaff *staff );
 
     // moulinette
     virtual void Process(MusFunctor *functor, wxArrayPtrVoid params );

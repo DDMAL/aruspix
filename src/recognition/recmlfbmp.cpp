@@ -19,9 +19,8 @@
 #include "im/impage.h"
 #include "im/imstaff.h"
 
-#include "musstaff.h"
-//#include "musnote.h"
-////#include "mussymbol.h"
+#include "mus/muslaidoutlayer.h"
+#include "mus/muslaidoutlayerelement.h"
 
 
 #include "wx/arrimpl.cpp"
@@ -268,7 +267,7 @@ void RecMLFBmp::StartLabel( )
 	m_currentWidth = -1;
 }
 
-wxBitmap RecMLFBmp::GenerateBitmap( ImStaff *imstaff, MusLaidOutStaff *musStaff, int currentElementNo )
+wxBitmap RecMLFBmp::GenerateBitmap( ImStaff *imstaff, MusLaidOutLayer *musLayer, int currentElementNo )
 {
 	int mn, mx;
 	int bx, by;
@@ -282,9 +281,10 @@ wxBitmap RecMLFBmp::GenerateBitmap( ImStaff *imstaff, MusLaidOutStaff *musStaff,
 
 	// fill symbol array with musStaff elements
 	m_symbols.Clear();
-	/*MusLaidOutStaff *ut1_staff = MusMLFOutput::GetUt1( musStaff );
-    WriteStaff( ut1_staff, currentElementNo );
-	delete ut1_staff;*/ // ax2
+    //MusMLFOutput::GetUt1( musLayer );
+    m_layer = musLayer;
+    WriteLayer( musLayer, currentElementNo );
+    //MusMLFInput::GetNotUt1( musLayer );
 
 	wxMemoryDC memDC;
 	memDC.SelectObject(bmp);
@@ -436,30 +436,34 @@ bool RecMLFBmp::WritePage( const MusPage *page )
 }
 */
 
-bool RecMLFBmp::WriteStaff( const MusLaidOutStaff *staff, int currentElementNo )
+bool RecMLFBmp::WriteLayer( const MusLaidOutLayer *layer, int currentElementNo )
 {
-/*
-	if (staff->GetElementCount() == 0)
-		return true;
 
+	if (layer->GetElementCount() == 0)
+		return true;
+    
     unsigned int k;
 
 	StartLabel();
 	bool ok;
 
-    for (k = 0;k < staff->nblement ; k++ )
+    for (k = 0;k < layer->m_elements.GetCount(); k++ )
     {
-        if ( (&staff->m_elements[k])->IsNote() )
-            ok = WriteNote( (MusNote1*)&staff->m_elements[k] );
-        else if ( (&staff->m_elements[k])->IsSymbol() )
-            ok = WriteSymbol( (MusSymbol1*)&staff->m_elements[k] );
+        MusLaidOutLayerElement *element = &layer->m_elements[k];
+        // we could write all of the in one method, left over from version < 2.0.0
+        if ( element->IsNote() || element->IsRest() || element->IsSymbol( SYMBOL_CUSTOS) )
+        {
+            ok = WriteNote( element );
+        }
+        else
+        {
+            ok = WriteSymbol( element );
+        }
         if ( ok && ( currentElementNo == (signed int)k ) )
 			((RecMLFSymbolBmp*)&m_symbols.Last())->SetCurrent();
 
     }
 	//EndLabel();
-*/
-    wxLogError( "WriteStaff method missing in ax2") ;
     return true;
 }
 

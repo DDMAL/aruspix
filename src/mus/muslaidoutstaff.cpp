@@ -207,6 +207,25 @@ MusLaidOutLayer *MusLaidOutStaff::GetLayer( int LayerNo )
 	return &m_layers[LayerNo];
 }
 
+void MusLaidOutStaff::GetPosOnPage( wxArrayPtrVoid params )
+{
+    // param 0: the MusLaidOutStaff we are looking for
+    // param 1: the position on the page (int)
+    // param 2; the success flag (bool)
+    MusLaidOutStaff *staff = (MusLaidOutStaff*)params[0];
+	int *position = (int*)params[1];
+    bool *success = (bool*)params[2];
+    
+    if ( (*success) ) {
+        return;
+    } 
+    (*position)++;
+    if ( this == staff ) {
+        (*success) = true;
+        return;
+    }
+}
+
 void MusLaidOutStaff::UpdateYPosition( wxArrayPtrVoid params )
 {
     // param 0: the MusLayerElement we point to
