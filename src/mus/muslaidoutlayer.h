@@ -80,6 +80,11 @@ public:
 	void getOctDec (int ft, int _ot, int rupt, int *oct);
     /** Return the clef offset for the position x (retrieve the first clef before it) */
     int GetClefOffset( MusLaidOutLayerElement *test  );
+    
+    /**
+     * Checks that the X position of the currentElement is not before the previous element or after the next one.
+     */ 
+    void CheckXPosition( MusLaidOutLayerElement *currentElement );
 
     //Lyric related methods
     /*

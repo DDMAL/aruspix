@@ -338,6 +338,23 @@ MusLaidOutLayerElement *MusLaidOutLayer::GetFromMusLayerElement( MusLayerElement
     return NULL;
 }
 
+void MusLaidOutLayer::CheckXPosition( MusLaidOutLayerElement *currentElement )
+{
+    if (!currentElement) {
+        return;
+    }
+    
+    MusLaidOutLayerElement *previous = GetPrevious( currentElement );
+    MusLaidOutLayerElement *next = GetNext( currentElement );
+    
+    if ( previous && previous->m_x_abs >= currentElement->m_x_abs ) {
+        currentElement->m_x_abs = previous->m_x_abs + 2;
+    }
+    if ( next && next->m_x_abs <= currentElement->m_x_abs ) {
+        currentElement->m_x_abs = next->m_x_abs - 2;
+    }
+}
+
 MusClef* MusLaidOutLayer::GetClef( MusLaidOutLayerElement *test )
 {
 	bool succ=false;

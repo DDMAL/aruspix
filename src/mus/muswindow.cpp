@@ -638,7 +638,7 @@ void MusWindow::UpdateScroll()
 	// size
 	int w, h;
 	this->GetClientSize( &w, &h );
-	wxLogMessage("x %d y %d xs %d ys %d, w %d h %d", x, y, xs, ys, w, h );
+	//wxLogMessage("x %d y %d xs %d ys %d, w %d h %d", x, y, xs, ys, w, h );
 
 	// check if necessary
 	if ( (x > xs) && (x < xs + w) )
@@ -987,6 +987,7 @@ void MusWindow::OnMouseMotion(wxMouseEvent &event)
 			// TODO m_currentElement->ClearElement( &dc, m_currentStaff );
             wxLogDebug("End dragging m_dragging_x %d; m_insert_x %d", m_dragging_x, m_insert_x );
 			m_currentElement->m_x_abs += ( m_insert_x - m_dragging_x );
+            m_currentLayer->CheckXPosition( m_currentElement );
 			m_dragging_x = m_insert_x;
 			if ( m_editorMode == MUS_EDITOR_EDIT ) {
 				//m_currentStaff->CheckIntegrity();
@@ -1547,7 +1548,6 @@ void MusWindow::MensuralEditOnKeyDown(wxKeyEvent &event) {
         CheckPoint( UNDO_PART, MUS_UNDO_FILE );
         OnEndEdition();
     }
-    /*
     else if ( event.m_controlDown && (( event.m_keyCode == WXK_LEFT ) || (event.m_keyCode == WXK_RIGHT )) && m_currentElement) // moving element
     {
         PrepareCheckPoint( UNDO_PART, MUS_UNDO_FILE );
@@ -1556,10 +1556,12 @@ void MusWindow::MensuralEditOnKeyDown(wxKeyEvent &event) {
         } else {
             m_currentElement->m_x_abs +=3;
         }
+        m_currentLayer->CheckXPosition( m_currentElement );
         this->Refresh();
         CheckPoint( UNDO_PART, MUS_UNDO_FILE );
         OnEndEdition();
     }
+    /*
     else if ( (event.m_keyCode == 'T') && m_currentElement && m_currentElement->IsNote() )
     {
         m_editorMode = MUS_EDITOR_INSERT;
