@@ -393,6 +393,12 @@ void MusRC::DrawNote ( MusDC *dc, MusLaidOutLayerElement *element, MusLaidOutLay
 					v_bline ( dc,y2,(int)(ynn + m_layout->m_halfInterl[staffSize]),x2, m_layout->m_env.m_stemWidth );//queue en descendant
 				else
 					v_bline ( dc,y2,(int)(ynn+ m_layout->m_verticalUnit2[staffSize]),x2 - (m_layout->m_env.m_stemWidth / 2), m_layout->m_env.m_stemWidth );//queue en descendant
+                
+                element->m_stem_start.x = element->m_stem_end.x = x2 - (m_layout->m_env.m_stemWidth / 2);
+                element->m_stem_end.y = y2;
+                element->m_stem_start.y = (int)(ynn+ m_layout->m_verticalUnit2[staffSize]);
+                element->m_drawn_stem_dir = true;
+                
 				if (formval > DUR_4)
 				{
                     y2 += m_layout->m_env.m_stemWidth / 2; // ENZO correction empirique...
@@ -414,6 +420,11 @@ void MusRC::DrawNote ( MusDC *dc, MusLaidOutLayerElement *element, MusLaidOutLay
 				else
 					v_bline ( dc,y2,(int)(ynn- m_layout->m_verticalUnit2[staffSize]),x2 - (m_layout->m_env.m_stemWidth / 2), m_layout->m_env.m_stemWidth );	// queue en montant
 
+                element->m_stem_start.x = element->m_stem_end.x = x2 - (m_layout->m_env.m_stemWidth / 2);
+                element->m_stem_start.y = (int)(ynn- m_layout->m_verticalUnit2[staffSize]);
+                element->m_stem_end.y = y2;
+                element->m_drawn_stem_dir = false;
+                
 				// ENZ
 				// decalage du crochet vers la gauche
 				// changement dans la fonte Leipzig 4.3 ‡ cause de problemes d'affichage
@@ -1466,36 +1477,6 @@ void MusRC::DrawTie( MusDC *dc, MusLaidOutLayerElement *element, MusLaidOutLayer
 
     dc->EndGraphic(element, this ); //RZ
     
-}
-
-void MusRC::DrawTuplet( MusDC *dc, MusLaidOutLayerElement *element, MusLaidOutLayer *layer, MusLaidOutStaff *staff)
-{
-    wxASSERT_MSG( layer, "Pointer to layer cannot be NULL" );
-    wxASSERT_MSG( staff, "Pointer to staff cannot be NULL" );
-    
-    int txt_lenght, char_position;
-    int x, y;
-    MusLeipzigBBox *bbox = new MusLeipzigBBox;
-    
-    MusTuplet *tuplet = dynamic_cast<MusTuplet*>(element->m_layerElement);
-    char notes = tuplet->m_notes.GetCount();
-    
-    // WORKS ONLY FOR ONE CHAR!
-    char_position = notes + 1; // in the bbox array, '0' char is at pos 1
-    
-    txt_lenght = bbox->m_bBox[char_position].m_width * ((double)(m_layout->m_fontSize[0][0]) / LEIPZIG_UNITS_PER_EM) + 1;
-    
-    MusLaidOutLayerElement *note1 = layer->GetFromMusLayerElement(&tuplet->m_notes[0]); // first note in group
-    MusLaidOutLayerElement *note2 = layer->GetFromMusLayerElement(&tuplet->m_notes[tuplet->m_notes.GetCount() - 1]); //last note
-    
-    x = note1->m_x_abs + (note2->m_x_abs - note1->m_x_abs - txt_lenght) / 2;
-    
-    dc->StartGraphic( element, "tuplet", wxString::Format("tuplet_%d_%d_%d", staff->GetId(), layer->voix, element->GetId()) );
-    
-    // THIS IS HARDCODED! how do we get dimensions for beams and unbramed/beamed things?
-    DrawLeipzigFont ( dc, x, staff->m_y_drawing - m_layout->m_staffSize[staff->staffSize] + 50, notes + 0x82, staff, false);
-    
-    dc->EndGraphic(element, this );
 }
 
 /*

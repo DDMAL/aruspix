@@ -519,16 +519,24 @@ if (fPente)
 		{	if (fb.dir)	// m_stemDir en haut
 			{	fy1 = *(_ybeam+i) - m_layout->m_env.m_stemWidth;
 				fy2 = crd[i].b+m_layout->m_verticalUnit2[staff->staffSize];
+                crd[i].chk->m_stem_start.x = crd[i].chk->m_stem_end.x = crd[i].a;
+                crd[i].chk->m_stem_start.y = fy2;
+                crd[i].chk->m_stem_end.y = fy1;
+                crd[i].chk->m_drawn_stem_dir = true;
 			}
 			else
 			{	fy1 = *(_ybeam+i) + m_layout->m_env.m_stemWidth;
 				fy2 = crd[i].b-m_layout->m_verticalUnit2[staff->staffSize];
+                crd[i].chk->m_stem_start.x = crd[i].chk->m_stem_end.x = crd[i].a;
+                crd[i].chk->m_stem_start.y = fy2;
+                crd[i].chk->m_stem_end.y = fy1;
+                crd[i].chk->m_drawn_stem_dir = false;
 			}
 		}
 		if ((crd+i)->chk->IsNote() && ((MusNote*)(crd+i)->chk)->m_headshape != SANSQUEUE)
 		{	
             v_bline (dc,fy2, fy1, crd[i].a, m_layout->m_env.m_stemWidth);
-
+            
 // ICI, bon endroit pour enfiler les STACCATOS - ne sont traités ici que ceux qui sont opposés à la tête (les autres, in wgnote.cpp)
 			if (((MusNote*)(crd+i)->chk)->m_artic
 				 && (!((MusNote*)(crd+i)->chk)->m_chord || (((MusNote*)(crd+i)->chk)->m_chord & CHORD_TERMINAL)))

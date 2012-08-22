@@ -6,6 +6,8 @@
 /////////////////////////////////////////////////////////////////////////////
 
 
+
+
 #ifndef __MUS_NOTE_H__
 #define __MUS_NOTE_H__
 
@@ -13,6 +15,7 @@
     #include "wx/wx.h"
 #endif
 
+#include "musbeam.h"
 #include "muslayer.h"
 #include "musdurationinterface.h"
 #include "muspitchinterface.h"

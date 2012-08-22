@@ -72,9 +72,14 @@ public:
     int m_x_abs;
 	/** Position Y */
 	int m_y_drawing ; 
+    /** If this is a note, store here the stem coordinates (useful for ex. tuplets) */
+    MusPoint m_stem_start; // beginning point, the one near the note
+    MusPoint m_stem_end; // end point (!), near beam or stem
+    /** stem direction as drawn, true = up, false = down */
+    bool m_drawn_stem_dir;
     /** Pointer to the MusLayerElement */
     MusLayerElement *m_layerElement;
-
+    
 private:
     
 };

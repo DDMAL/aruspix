@@ -6,6 +6,8 @@
 //  Copyright (c) 2012 com.aruspix.www. All rights reserved.
 //
 
+
+
 #ifndef __MUS_BEAM_H__
 #define __MUS_BEAM_H__
 

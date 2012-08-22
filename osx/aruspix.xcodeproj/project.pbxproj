@@ -99,6 +99,8 @@
 		8F89005B15C6C641006C88A4 /* musleipzigbbox.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8F89005A15C6C641006C88A4 /* musleipzigbbox.cpp */; };
 		8F89005C15C6C641006C88A4 /* musleipzigbbox.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8F89005A15C6C641006C88A4 /* musleipzigbbox.cpp */; };
 		8F9F1A17156143A200C7D6F9 /* musiopae.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8F9F1A15156143A200C7D6F9 /* musiopae.cpp */; };
+		8FAB8B1015E3A54F0061532C /* musrc_tuplet.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8FAB8B0F15E3A54F0061532C /* musrc_tuplet.cpp */; };
+		8FAB8B1115E3A54F0061532C /* musrc_tuplet.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8FAB8B0F15E3A54F0061532C /* musrc_tuplet.cpp */; };
 		8FD2847C15D4F14F0038D07D /* musiomusxml.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8FD2847B15D4F14F0038D07D /* musiomusxml.cpp */; };
 		8FD2847D15D4F14F0038D07D /* musiomusxml.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8FD2847B15D4F14F0038D07D /* musiomusxml.cpp */; };
 		8FE5FDDE1594943600B44674 /* musbboxdc.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D862ED8144DF72700483E57 /* musbboxdc.cpp */; };
@@ -356,6 +358,7 @@
 		8F89005D15C6C659006C88A4 /* musleipzigbbox.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = musleipzigbbox.h; path = ../src/mus/musleipzigbbox.h; sourceTree = "<group>"; };
 		8F9F1A15156143A200C7D6F9 /* musiopae.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = musiopae.cpp; path = ../src/mus/musiopae.cpp; sourceTree = "<group>"; };
 		8F9F1A16156143A200C7D6F9 /* musiopae.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = musiopae.h; path = ../src/mus/musiopae.h; sourceTree = "<group>"; };
+		8FAB8B0F15E3A54F0061532C /* musrc_tuplet.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = musrc_tuplet.cpp; path = ../src/mus/musrc_tuplet.cpp; sourceTree = "<group>"; };
 		8FD2847915D4F13F0038D07D /* musiomusxml.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = musiomusxml.h; path = ../src/mus/musiomusxml.h; sourceTree = "<group>"; };
 		8FD2847B15D4F14F0038D07D /* musiomusxml.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = musiomusxml.cpp; path = ../src/mus/musiomusxml.cpp; sourceTree = "<group>"; };
 		8FE5FE261599FA0500B44674 /* musbeam.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = musbeam.cpp; path = ../src/mus/musbeam.cpp; sourceTree = "<group>"; };
@@ -530,6 +533,7 @@
 				4DC6A82C1473F80D00D73769 /* musrc_graph.cpp */,
 				4D2F7EAA145AD82600EF930B /* musrc_neume.cpp */,
 				4D2F7EAB145AD82600EF930B /* musrc_page.cpp */,
+				8FAB8B0F15E3A54F0061532C /* musrc_tuplet.cpp */,
 				4DA0004312CA26E300B65740 /* musrc.cpp */,
 				4DA0004412CA26E300B65740 /* musrc.h */,
 				8F89005A15C6C641006C88A4 /* musleipzigbbox.cpp */,
@@ -947,6 +951,7 @@
 				8FF3AA8B15C80D1200B9D9B0 /* musslur.cpp in Sources */,
 				8FF3AA8E15C81EDE00B9D9B0 /* mustuplet.cpp in Sources */,
 				8FD2847D15D4F14F0038D07D /* musiomusxml.cpp in Sources */,
+				8FAB8B1115E3A54F0061532C /* musrc_tuplet.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1064,6 +1069,7 @@
 				8FF3AA8A15C80D1200B9D9B0 /* musslur.cpp in Sources */,
 				8FF3AA8D15C81EDE00B9D9B0 /* mustuplet.cpp in Sources */,
 				8FD2847C15D4F14F0038D07D /* musiomusxml.cpp in Sources */,
+				8FAB8B1015E3A54F0061532C /* musrc_tuplet.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
