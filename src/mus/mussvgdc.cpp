@@ -496,6 +496,17 @@ void MusSvgDC::DrawMusicText(const wxString& text, int x, int y)
         case 55: glyph = "figure_7"; break;
         case 56: glyph = "figure_8"; break;
         case 57: glyph = "figure_9"; break;
+        /* oblique figures */
+        case 0x82: glyph = "oblique_figure_0"; break;
+        case 0x83: glyph = "oblique_figure_1"; break;
+        case 0x84: glyph = "oblique_figure_2"; break;
+        case 0x85: glyph = "oblique_figure_3"; break;
+        case 0x86: glyph = "oblique_figure_4"; break;
+        case 0x87: glyph = "oblique_figure_5"; break;
+        case 0x88: glyph = "oblique_figure_6"; break;
+        case 0x89: glyph = "oblique_figure_7"; break;
+        case 0x8A: glyph = "oblique_figure_8"; break;
+        case 0x8B: glyph = "oblique_figure_9"; break;
         /* clef */
         case LEIPZIG_CLEF_G: glyph = "clef_G"; break;
         case LEIPZIG_CLEF_F: glyph = "clef_F"; break;

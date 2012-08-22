@@ -243,8 +243,23 @@ void MusRC::DrawTuplet( MusDC *dc, MusLaidOutLayerElement *element, MusLaidOutLa
     MusTuplet *tuplet = dynamic_cast<MusTuplet*>(element->m_layerElement);
     char notes = tuplet->m_notes.GetCount();
     
+    
     // WORKS ONLY FOR ONE CHAR!
-    char_position = notes + 1; // in the bbox array, '0' char is at pos 1
+    //char_position = notes + 1; // in the bbox array, '0' char is at pos 1
+    
+    switch (notes) {
+        case 0: char_position = LEIPZIG_BBOX_OBLIQUE_FIGURE_0; break;
+        case 1: char_position = LEIPZIG_BBOX_OBLIQUE_FIGURE_1; break;
+        case 2: char_position = LEIPZIG_BBOX_OBLIQUE_FIGURE_2; break;
+        case 3: char_position = LEIPZIG_BBOX_OBLIQUE_FIGURE_3; break;
+        case 4: char_position = LEIPZIG_BBOX_OBLIQUE_FIGURE_4; break;
+        case 5: char_position = LEIPZIG_BBOX_OBLIQUE_FIGURE_5; break;
+        case 6: char_position = LEIPZIG_BBOX_OBLIQUE_FIGURE_6; break;
+        case 7: char_position = LEIPZIG_BBOX_OBLIQUE_FIGURE_7; break;
+        case 8: char_position = LEIPZIG_BBOX_OBLIQUE_FIGURE_8; break;
+        case 9: char_position = LEIPZIG_BBOX_OBLIQUE_FIGURE_9; break;
+        default: char_position = LEIPZIG_BBOX_OBLIQUE_FIGURE_0; break;
+    }
     
     txt_lenght = bbox->m_bBox[char_position].m_width * ((double)(m_layout->m_fontSize[0][0]) / LEIPZIG_UNITS_PER_EM) + 1;
     
@@ -253,9 +268,11 @@ void MusRC::DrawTuplet( MusDC *dc, MusLaidOutLayerElement *element, MusLaidOutLa
     
     dc->StartGraphic( element, "tuplet", wxString::Format("tuplet_%d_%d_%d", staff->GetId(), layer->voix, element->GetId()) );
     
-    // Calculate position for number
+    // Calculate position for number 0x82
     int txt_x = center.x - (txt_lenght / 2);
     DrawLeipzigFont ( dc, txt_x,  center.y, notes + 0x82, staff, false);
+    
+    //putstring(dc, txt_x, center.y, notes, 0);
     
     dc->SetPen(AxBLACK);
     

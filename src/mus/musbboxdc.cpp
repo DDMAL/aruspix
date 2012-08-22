@@ -327,6 +327,17 @@ void MusBBoxDC::DrawMusicText(const wxString& text, int x, int y)
         case 55: glyph = LEIPZIG_BBOX_FIGURE_7; break;
         case 56: glyph = LEIPZIG_BBOX_FIGURE_8; break;
         case 57: glyph = LEIPZIG_BBOX_FIGURE_9; break;
+            /* oblique figures */
+        case 0x82: glyph = LEIPZIG_BBOX_OBLIQUE_FIGURE_0; break;
+        case 0x83: glyph = LEIPZIG_BBOX_OBLIQUE_FIGURE_1; break;
+        case 0x84: glyph = LEIPZIG_BBOX_OBLIQUE_FIGURE_2; break;
+        case 0x85: glyph = LEIPZIG_BBOX_OBLIQUE_FIGURE_3; break;
+        case 0x86: glyph = LEIPZIG_BBOX_OBLIQUE_FIGURE_4; break;
+        case 0x87: glyph = LEIPZIG_BBOX_OBLIQUE_FIGURE_5; break;
+        case 0x88: glyph = LEIPZIG_BBOX_OBLIQUE_FIGURE_6; break;
+        case 0x89: glyph = LEIPZIG_BBOX_OBLIQUE_FIGURE_7; break;
+        case 0x8A: glyph = LEIPZIG_BBOX_OBLIQUE_FIGURE_8; break;
+        case 0x8B: glyph = LEIPZIG_BBOX_OBLIQUE_FIGURE_9; break;
             /* clef */
         case LEIPZIG_CLEF_G: glyph = LEIPZIG_BBOX_CLEF_G; break;
         case LEIPZIG_CLEF_F: glyph = LEIPZIG_BBOX_CLEF_F; break;
