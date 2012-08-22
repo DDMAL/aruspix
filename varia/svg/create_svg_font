@@ -5,7 +5,7 @@
 
 3) Convert font to svg (using included batik-1.7.zip)
    cd batik-1.7
-   java -jar batik-ttf2svg.jar ../Leipzig-4.7.ttf -l 0 -h 512 -o ../Leipzig-4.7.svg
+   java -jar batik-ttf2svg.jar ../Leipzig-4.7.ttf -l 0 -h 20000 -o ../Leipzig-4.7.svg
    (update font names as needed)
 
 4) Split font

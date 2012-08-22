@@ -58,6 +58,17 @@
 				<xsl:when test="@unicode='&#xf9;'"><xsl:value-of select="'meter_symb_3_cut'"/></xsl:when>
 				<xsl:when test="@unicode='&#xb7;'"><xsl:value-of select="'meter_symb_cut'"/></xsl:when>
 				<xsl:when test="@unicode='&#x152;'"><xsl:value-of select="'meter_symb_common'"/></xsl:when>
+				<!-- oblique figures -->
+				<xsl:when test="@unicode='&#x201a;'"><xsl:value-of select="'oblique_figure_0'"/></xsl:when>
+				<xsl:when test="@unicode='&#x192;'"><xsl:value-of select="'oblique_figure_1'"/></xsl:when>
+				<xsl:when test="@unicode='&#x201e;'"><xsl:value-of select="'oblique_figure_2'"/></xsl:when>
+				<xsl:when test="@unicode='&#x2026;'"><xsl:value-of select="'oblique_figure_3'"/></xsl:when>
+				<xsl:when test="@unicode='&#x2020;'"><xsl:value-of select="'oblique_figure_4'"/></xsl:when>
+				<xsl:when test="@unicode='&#x2021;'"><xsl:value-of select="'oblique_figure_5'"/></xsl:when>
+				<xsl:when test="@unicode='&#x2c6;'"><xsl:value-of select="'oblique_figure_6'"/></xsl:when>
+				<xsl:when test="@unicode='&#x2030;'"><xsl:value-of select="'oblique_figure_7'"/></xsl:when>
+				<xsl:when test="@unicode='&#x160;'"><xsl:value-of select="'oblique_figure_8'"/></xsl:when>
+				<xsl:when test="@unicode='&#x2039;'"><xsl:value-of select="'oblique_figure_9'"/></xsl:when>
 				<!-- clef -->
 				<xsl:when test="@unicode='&#xcf;'"><xsl:value-of select="'clef_G'"/></xsl:when>
 				<xsl:when test="@unicode='&#xd0;'"><xsl:value-of select="'clef_F'"/></xsl:when>
