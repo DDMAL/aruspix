@@ -261,10 +261,26 @@ void MusRC::DrawTuplet( MusDC *dc, MusLaidOutLayerElement *element, MusLaidOutLa
     
     // Start is 0 when no line is necessary (i.e. beamed notes)
     if (start.x > 0) {
-        //dc->DrawLine(start.x, ToRendererY(start.y), txt_x, ToRendererY(center.y));
-        //dc->DrawLine(txt_x + txt_lenght, ToRendererY(center.y), end.x, ToRendererY(end.y));
-        dc->DrawLine(start.x, ToRendererY(start.y), end.x, ToRendererY(end.y));
+        // Draw the bracket, interrupt where the number is
         
+        // get the slope
+        double m = (double)(start.y - end.y) / (double)(start.x - end.x);
+        
+        // x = 10 pixels before the number
+        double x = txt_x - 10;
+        // xa = just after, the number is abundant so I do not add anything
+        double xa = txt_x + txt_lenght;
+        
+        // calculate the y coords in the slope
+        double y1 = (double)start.y + m * (x - (double)start.x);
+        double y2 = (double)start.y + m * (xa - (double)start.x);
+        
+        // first line
+        dc->DrawLine(start.x, ToRendererY(start.y), (int)x, ToRendererY((int)y1));
+        // second line after gap
+        dc->DrawLine((int)xa, ToRendererY((int)y2), end.x, ToRendererY(end.y));
+        
+        // vertical bracket lines
         if (direction) {
             dc->DrawLine(start.x, ToRendererY(start.y), start.x, ToRendererY(start.y - 10));
             dc->DrawLine(end.x, ToRendererY(end.y), end.x, ToRendererY(end.y - 10));
