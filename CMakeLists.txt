@@ -68,6 +68,7 @@ add_executable (aruspix
 	src/mus/musneumesymbol.cpp 
 	src/mus/musrc_page.cpp
 	src/mus/mustie.cpp
+	src/mus/musiomusxml.cpp
 	src/tinyxml/tinystr.cpp
 	src/tinyxml/tinyxml.cpp
 	src/tinyxml/tinyxmlerror.cpp
