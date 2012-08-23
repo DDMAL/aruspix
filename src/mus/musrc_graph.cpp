@@ -291,11 +291,11 @@ void MusRC::putstring ( MusDC *dc, int x, int y, wxString s, int centrer, int st
 	if ( centrer )
 	{
         wxLogDebug("Centering string not implemented with MusDC");
-		/*
+		
         int w, h;
 		dc->GetTextExtent( s, &w, &h );
 		x -= w / 2;
-        */
+        
 	}
 	dc->SetTextForeground( m_currentColour );
 	dc->DrawText( s, x, ToRendererY(y + fontCorr ));

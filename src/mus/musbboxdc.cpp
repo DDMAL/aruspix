@@ -333,10 +333,10 @@ void MusBBoxDC::DrawMusicText(const wxString& text, int x, int y)
         
         MusLeipzigBBox::GetCharBounds(c, &g_x, &g_y, &g_w, &g_h);
     
-        int x_off = x + (g_x * ((double)(m_font.GetPointSize() / LEIPZIG_UNITS_PER_EM)) );
+        int x_off = x + (g_x * ((double)(m_font.GetPointSize() / LEIPZIG_UNITS_PER_EM)) ) - 2;
         // because we are in the rendering context, y position are already flipped
         int y_off = y - (g_y * ((double)(m_font.GetPointSize() / LEIPZIG_UNITS_PER_EM)) ) + 2;
-        // the + 2 is to compesate a couple pixels down the figure (rounding error?)
+        // the +/- 2 is to compesate a couple pixels down the figure (rounding error?)
          
         UpdateBB(x_off, y_off, 
                   x_off + (g_w * ((double)(m_font.GetPointSize() / LEIPZIG_UNITS_PER_EM)) ),
