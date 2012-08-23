@@ -15,6 +15,7 @@
 //#include "wx/docview.h"
 //#include "wx/timer.h"
 
+#include "musleipzigbbox.h"
 #include "mussvgdc.h"
 #include "musdef.h"
 #include "musdoc.h"
@@ -278,9 +279,24 @@ void MusSvgDC::SetUserScale( double xScale, double yScale )
     m_userScaleY = yScale;
 }       
 
+// Copied from bBoxDc, TODO find another more generic solution
 void MusSvgDC::GetTextExtent( wxString& string, int *w, int *h )
 {
-    // cannot be done...
+    int x, y, partial_w, partial_h;
+    
+    *w = 0;
+    *h = 0;
+    
+    for (unsigned int i = 0; i < string.Len(); i++) {
+        
+        MusLeipzigBBox::GetCharBounds(string.c_str()[i], &x, &y, &partial_w, &partial_h);
+        
+        partial_w *= ((m_font.GetPointSize() / LEIPZIG_UNITS_PER_EM));
+        partial_h *= ((m_font.GetPointSize() / LEIPZIG_UNITS_PER_EM));
+        
+        *w += partial_w;
+        *h += partial_h;
+    }
 }
        
 
@@ -479,13 +495,10 @@ void MusSvgDC::DrawRotatedText(const wxString& text, int x, int y, double angle)
     */
 }
 
-
-void MusSvgDC::DrawMusicText(const wxString& text, int x, int y)
-{
+wxString FilenameLookup(unsigned char c) {
     wxString glyph;
-    unsigned char c = (unsigned char)text[0];
     switch (c) {
-        /* figures */
+            /* figures */
         case 48: glyph = "figure_0"; break;
         case 49: glyph = "figure_1"; break;
         case 50: glyph = "figure_2"; break;
@@ -496,7 +509,7 @@ void MusSvgDC::DrawMusicText(const wxString& text, int x, int y)
         case 55: glyph = "figure_7"; break;
         case 56: glyph = "figure_8"; break;
         case 57: glyph = "figure_9"; break;
-        /* oblique figures */
+            /* oblique figures */
         case 0x82: glyph = "oblique_figure_0"; break;
         case 0x83: glyph = "oblique_figure_1"; break;
         case 0x84: glyph = "oblique_figure_2"; break;
@@ -507,7 +520,7 @@ void MusSvgDC::DrawMusicText(const wxString& text, int x, int y)
         case 0x89: glyph = "oblique_figure_7"; break;
         case 0x8A: glyph = "oblique_figure_8"; break;
         case 0x8B: glyph = "oblique_figure_9"; break;
-        /* clef */
+            /* clef */
         case LEIPZIG_CLEF_G: glyph = "clef_G"; break;
         case LEIPZIG_CLEF_F: glyph = "clef_F"; break;
         case LEIPZIG_CLEF_C: glyph = "clef_C"; break;
@@ -516,12 +529,12 @@ void MusSvgDC::DrawMusicText(const wxString& text, int x, int y)
         case LEIPZIG_CLEF_F + LEIPZIG_OFFSET_MENSURAL: glyph = "clef_F_mensural"; break;
         case LEIPZIG_CLEF_C + LEIPZIG_OFFSET_MENSURAL: glyph = "clef_C_mensural"; break;
         case LEIPZIG_CLEF_8va + LEIPZIG_OFFSET_MENSURAL: glyph = "clef_G_chiavette"; break;
-        /* meter */
+            /* meter */
         case LEIPZIG_METER_SYMB_COMMON: glyph = "meter_symb_common"; break;
         case LEIPZIG_METER_SYMB_CUT: glyph = "meter_symb_cut"; break;
         case LEIPZIG_METER_SYMB_2_CUT: glyph = "meter_symb_2_cut"; break;
         case LEIPZIG_METER_SYMB_3_CUT: glyph = "meter_symb_3_cut"; break;
-        /* alterations */
+            /* alterations */
         case LEIPZIG_ACCID_SHARP: glyph = "alt_sharp"; break;
         case LEIPZIG_ACCID_NATURAL: glyph = "alt_natural"; break;
         case LEIPZIG_ACCID_FLAT: glyph = "alt_flat"; break;
@@ -530,7 +543,7 @@ void MusSvgDC::DrawMusicText(const wxString& text, int x, int y)
         case LEIPZIG_ACCID_NATURAL + LEIPZIG_OFFSET_MENSURAL: glyph = "alt_natural_mensural"; break;
         case LEIPZIG_ACCID_FLAT + LEIPZIG_OFFSET_MENSURAL: glyph = "alt_flat_mensural"; break;
         case LEIPZIG_ACCID_DOUBLE_SHARP + LEIPZIG_OFFSET_MENSURAL: glyph = "alt_double_sharp_mensural"; break;
-        /* rests */
+            /* rests */
         case LEIPZIG_REST_QUARTER: glyph = "rest_4"; break;
         case LEIPZIG_REST_QUARTER + 1: glyph = "rest_8"; break;
         case LEIPZIG_REST_QUARTER + 2: glyph = "rest_16"; break;
@@ -543,7 +556,7 @@ void MusSvgDC::DrawMusicText(const wxString& text, int x, int y)
         case LEIPZIG_REST_QUARTER + 3 + LEIPZIG_OFFSET_MENSURAL: glyph = "rest_32_mensural"; break;
         case LEIPZIG_REST_QUARTER + 4 + LEIPZIG_OFFSET_MENSURAL: glyph = "rest_64_mensural"; break;
         case LEIPZIG_REST_QUARTER + 5 + LEIPZIG_OFFSET_MENSURAL: glyph = "rest_128_mensural"; break;
-        /* note heads */
+            /* note heads */
         case LEIPZIG_HEAD_WHOLE: glyph = "head_whole"; break;
         case LEIPZIG_HEAD_WHOLE_FILLED: glyph = "head_whole_fill"; break;
         case LEIPZIG_HEAD_HALF: glyph = "head_half"; break;
@@ -552,24 +565,50 @@ void MusSvgDC::DrawMusicText(const wxString& text, int x, int y)
         case LEIPZIG_HEAD_WHOLE_FILLED + LEIPZIG_OFFSET_MENSURAL: glyph = "head_whole_filldiamond"; break;
         case LEIPZIG_HEAD_HALF + LEIPZIG_OFFSET_MENSURAL: glyph = "head_half_diamond"; break;
         case LEIPZIG_HEAD_QUARTER + LEIPZIG_OFFSET_MENSURAL: glyph = "head_quarter_filldiamond"; break;
-        /* slashes */
+            /* slashes */
         case LEIPZIG_STEM_FLAG_UP: glyph = "slash_up"; break;
         case LEIPZIG_STEM_FLAG_DOWN: glyph = "slash_down"; break;
         case LEIPZIG_STEM_FLAG_UP + LEIPZIG_OFFSET_MENSURAL: glyph = "slash_up_mensural"; break;
         case LEIPZIG_STEM_FLAG_DOWN + LEIPZIG_OFFSET_MENSURAL: glyph = "slash_down_mensural"; break;
-        /* ornaments */
+            /* ornaments */
         case 35: glyph = "orn_mordent"; break;
-        /* todo */
+            /* todo */
         default: glyph = "clef_G_chiavette";
     }
-    
-    if (m_leipzig_glyphs.Index(glyph) == wxNOT_FOUND) {
-        m_leipzig_glyphs.Add(glyph);
+
+    return glyph;
+}
+
+void MusSvgDC::DrawMusicText(const wxString& text, int x, int y)
+{
+
+    int w, h, gx, gy;
+        
+    // print chars one by one
+    for (unsigned int i = 0; i < text.Len(); i++) {
+        unsigned char c = (unsigned char)text[0];
+        
+        wxString glyph = FilenameLookup(c);
+        
+        // Add the glyph to the array for the <defs>
+        if (m_leipzig_glyphs.Index(glyph) == wxNOT_FOUND) {
+            m_leipzig_glyphs.Add(glyph);
+        }
+        
+        // Write the char in the SVG
+        WriteLine ( wxString::Format("<use xlink:href=\"#%s\" transform=\"translate(%d, %d) scale(%f, %f)\"/>",
+                                     glyph.c_str(), x, y, ((double)(m_font.GetPointSize() / LEIPZIG_UNITS_PER_EM)),
+                                     ((double)(m_font.GetPointSize() / LEIPZIG_UNITS_PER_EM)) ) );
+        
+        // Get the bounds of the char
+        MusLeipzigBBox::GetCharBounds(c, &gx, &gy, &w, &h);
+        // Sum it to x so we move it to the start of the next char
+        x += (w * ((double)(m_font.GetPointSize() / LEIPZIG_UNITS_PER_EM)));
     }
     
-    WriteLine ( wxString::Format("<use xlink:href=\"#%s\" transform=\"translate(%d, %d) scale(%f, %f)\"/>",
-        glyph.c_str(), x, y, ((double)(m_font.GetPointSize() / LEIPZIG_UNITS_PER_EM)),
-            ((double)(m_font.GetPointSize() / LEIPZIG_UNITS_PER_EM)) ) );
+
+    
+
 }
 
 

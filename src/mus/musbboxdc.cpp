@@ -124,7 +124,22 @@ void MusBBoxDC::SetUserScale( double xScale, double yScale )
 
 void MusBBoxDC::GetTextExtent( wxString& string, int *w, int *h )
 {
-    //// cannot be done easily
+    int x, y, partial_w, partial_h;
+    
+    *w = 0;
+    *h = 0;
+    
+    for (unsigned int i = 0; i < string.Len(); i++) {
+        
+        MusLeipzigBBox::GetCharBounds(string.c_str()[i], &x, &y, &partial_w, &partial_h);
+        
+        partial_w *= ((m_font.GetPointSize() / LEIPZIG_UNITS_PER_EM));
+        partial_h *= ((m_font.GetPointSize() / LEIPZIG_UNITS_PER_EM));
+        
+        *w += partial_w;
+        *h += partial_h;
+    }
+    
 }
        
 
@@ -308,93 +323,32 @@ void MusBBoxDC::DrawRotatedText(const wxString& text, int x, int y, double angle
 
 
 void MusBBoxDC::DrawMusicText(const wxString& text, int x, int y)
-{
-    unsigned int glyph;
+{  
     
-    //// Use the MusLeipzigBBox class above    
-    unsigned char c = (unsigned char)text[0];
-    MusLeipzigBBox *bbox = new MusLeipzigBBox();
+    int g_x, g_y, g_w, g_h;
+    int lastCharWidth = 0;
     
-    switch (c) {
-            /* figures */
-        case 48: glyph = LEIPZIG_BBOX_FIGURE_0; break;
-        case 49: glyph = LEIPZIG_BBOX_FIGURE_1; break;
-        case 50: glyph = LEIPZIG_BBOX_FIGURE_2; break;
-        case 51: glyph = LEIPZIG_BBOX_FIGURE_3; break;
-        case 52: glyph = LEIPZIG_BBOX_FIGURE_4; break;
-        case 53: glyph = LEIPZIG_BBOX_FIGURE_5; break;
-        case 54: glyph = LEIPZIG_BBOX_FIGURE_6; break;
-        case 55: glyph = LEIPZIG_BBOX_FIGURE_7; break;
-        case 56: glyph = LEIPZIG_BBOX_FIGURE_8; break;
-        case 57: glyph = LEIPZIG_BBOX_FIGURE_9; break;
-            /* oblique figures */
-        case 0x82: glyph = LEIPZIG_BBOX_OBLIQUE_FIGURE_0; break;
-        case 0x83: glyph = LEIPZIG_BBOX_OBLIQUE_FIGURE_1; break;
-        case 0x84: glyph = LEIPZIG_BBOX_OBLIQUE_FIGURE_2; break;
-        case 0x85: glyph = LEIPZIG_BBOX_OBLIQUE_FIGURE_3; break;
-        case 0x86: glyph = LEIPZIG_BBOX_OBLIQUE_FIGURE_4; break;
-        case 0x87: glyph = LEIPZIG_BBOX_OBLIQUE_FIGURE_5; break;
-        case 0x88: glyph = LEIPZIG_BBOX_OBLIQUE_FIGURE_6; break;
-        case 0x89: glyph = LEIPZIG_BBOX_OBLIQUE_FIGURE_7; break;
-        case 0x8A: glyph = LEIPZIG_BBOX_OBLIQUE_FIGURE_8; break;
-        case 0x8B: glyph = LEIPZIG_BBOX_OBLIQUE_FIGURE_9; break;
-            /* clef */
-        case LEIPZIG_CLEF_G: glyph = LEIPZIG_BBOX_CLEF_G; break;
-        case LEIPZIG_CLEF_F: glyph = LEIPZIG_BBOX_CLEF_F; break;
-        case LEIPZIG_CLEF_C: glyph = LEIPZIG_BBOX_CLEF_C; break;
-        case LEIPZIG_CLEF_8va: glyph = LEIPZIG_BBOX_CLEF_G8; break;
-        case LEIPZIG_CLEF_G + LEIPZIG_OFFSET_MENSURAL: glyph = LEIPZIG_BBOX_CLEF_G_MENSURAL; break;
-        case LEIPZIG_CLEF_F + LEIPZIG_OFFSET_MENSURAL: glyph = LEIPZIG_BBOX_CLEF_F_MENSURAL; break;
-        case LEIPZIG_CLEF_C + LEIPZIG_OFFSET_MENSURAL: glyph = LEIPZIG_BBOX_CLEF_C_MENSURAL; break;
-        case LEIPZIG_CLEF_8va + LEIPZIG_OFFSET_MENSURAL: glyph = LEIPZIG_BBOX_CLEF_G_MENSURAL; break; // ??
-            /* meter */
-        case LEIPZIG_METER_SYMB_2_CUT: glyph = LEIPZIG_BBOX_METER_SYMB_2_CUT; break;
-        case LEIPZIG_METER_SYMB_3_CUT: glyph = LEIPZIG_BBOX_METER_SYMB_3_CUT; break;
-        case LEIPZIG_METER_SYMB_CUT: glyph = LEIPZIG_BBOX_METER_SYMB_CUT; break;
-        case LEIPZIG_METER_SYMB_COMMON: glyph = LEIPZIG_BBOX_METER_SYMB_COMMON; break;        
-            /* alterations */
-        case LEIPZIG_ACCID_SHARP: glyph = LEIPZIG_BBOX_ALT_SHARP; break;
-        case LEIPZIG_ACCID_NATURAL: glyph = LEIPZIG_BBOX_ALT_NATURAL; break;
-        case LEIPZIG_ACCID_FLAT: glyph = LEIPZIG_BBOX_ALT_FLAT; break;
-        case LEIPZIG_ACCID_DOUBLE_SHARP: glyph = LEIPZIG_BBOX_ALT_DOUBLE_SHARP; break;
-        case LEIPZIG_ACCID_SHARP + LEIPZIG_OFFSET_MENSURAL: glyph = LEIPZIG_BBOX_ALT_SHARP_MENSURAL; break;
-        case LEIPZIG_ACCID_NATURAL + LEIPZIG_OFFSET_MENSURAL: glyph = LEIPZIG_BBOX_ALT_NATURAL_MENSURAL; break;
-        case LEIPZIG_ACCID_FLAT + LEIPZIG_OFFSET_MENSURAL: glyph = LEIPZIG_BBOX_ALT_FLAT_MENSURAL; break;
-        case LEIPZIG_ACCID_DOUBLE_SHARP + LEIPZIG_OFFSET_MENSURAL: glyph = LEIPZIG_BBOX_ALT_DOUBLE_SHARP_MENSURAL; break;
-            /* rests */
-        case LEIPZIG_REST_QUARTER: glyph = LEIPZIG_BBOX_REST_4; break;
-        case LEIPZIG_REST_QUARTER + 1: glyph = LEIPZIG_BBOX_REST_8; break;
-        case LEIPZIG_REST_QUARTER + 2: glyph = LEIPZIG_BBOX_REST_16; break;
-        case LEIPZIG_REST_QUARTER + 3: glyph = LEIPZIG_BBOX_REST_32; break;
-        case LEIPZIG_REST_QUARTER + 4: glyph = LEIPZIG_BBOX_REST_64; break;
-        case LEIPZIG_REST_QUARTER + 5: glyph = LEIPZIG_BBOX_REST_128; break;
-        case LEIPZIG_REST_QUARTER + LEIPZIG_OFFSET_MENSURAL: glyph = LEIPZIG_BBOX_REST_4_MENSURAL; break;
-        case LEIPZIG_REST_QUARTER + 1 + LEIPZIG_OFFSET_MENSURAL: glyph = LEIPZIG_BBOX_REST_8_MENSURAL; break;
-        case LEIPZIG_REST_QUARTER + 2 + LEIPZIG_OFFSET_MENSURAL: glyph = LEIPZIG_BBOX_REST_16_MENSURAL; break;
-        case LEIPZIG_REST_QUARTER + 3 + LEIPZIG_OFFSET_MENSURAL: glyph = LEIPZIG_BBOX_REST_32_MENSURAL; break;
-        case LEIPZIG_REST_QUARTER + 4 + LEIPZIG_OFFSET_MENSURAL: glyph = LEIPZIG_BBOX_REST_64_MENSURAL; break;
-        case LEIPZIG_REST_QUARTER + 5 + LEIPZIG_OFFSET_MENSURAL: glyph = LEIPZIG_BBOX_REST_128_MENSURAL; break;
-            /* note heads */
-        case LEIPZIG_HEAD_WHOLE: glyph = LEIPZIG_BBOX_HEAD_WHOLE; break;
-        case LEIPZIG_HEAD_WHOLE_FILLED: glyph = LEIPZIG_BBOX_HEAD_WHOLE_FILL; break;
-        case LEIPZIG_HEAD_HALF: glyph = LEIPZIG_BBOX_HEAD_HALF; break;
-        case LEIPZIG_HEAD_QUARTER: glyph = LEIPZIG_BBOX_HEAD_QUARTER; break;
-        case LEIPZIG_HEAD_WHOLE + LEIPZIG_OFFSET_MENSURAL: glyph = LEIPZIG_BBOX_HEAD_WHOLE_DIAMOND; break;
-        case LEIPZIG_HEAD_WHOLE_FILLED + LEIPZIG_OFFSET_MENSURAL: glyph = LEIPZIG_BBOX_HEAD_WHOLE_FILLDIAMOND; break;
-        case LEIPZIG_HEAD_HALF + LEIPZIG_OFFSET_MENSURAL: glyph = LEIPZIG_BBOX_HEAD_HALF_DIAMOND; break;
-        case LEIPZIG_HEAD_QUARTER + LEIPZIG_OFFSET_MENSURAL: glyph = LEIPZIG_BBOX_HEAD_QUARTER_FILLDIAMOND; break;
-            /* slashes */
-        case LEIPZIG_STEM_FLAG_UP: glyph = LEIPZIG_BBOX_SLASH_UP; break;
-        case LEIPZIG_STEM_FLAG_DOWN: glyph = LEIPZIG_BBOX_SLASH_DOWN; break;
-        case LEIPZIG_STEM_FLAG_UP + LEIPZIG_OFFSET_MENSURAL: glyph = LEIPZIG_BBOX_SLASH_UP_MENSURAL; break;
-        case LEIPZIG_STEM_FLAG_DOWN + LEIPZIG_OFFSET_MENSURAL: glyph = LEIPZIG_BBOX_SLASH_DOWN_MENSURAL; break;
-            /* ornaments */
-        case 35: glyph = LEIPZIG_BBOX_ORN_MORDENT; break;
-            /* todo */
-        default: glyph = LEIPZIG_BBOX_ALT_DOUBLE_SHARP; // ??
+    for (unsigned int i = 0; i < text.Len(); i++) {
+        unsigned char c = (unsigned char)text[i];
+        
+        MusLeipzigBBox::GetCharBounds(c, &g_x, &g_y, &g_w, &g_h);
+    
+        int x_off = x + (g_x * ((double)(m_font.GetPointSize() / LEIPZIG_UNITS_PER_EM)) );
+        // because we are in the rendering context, y position are already flipped
+        int y_off = y - (g_y * ((double)(m_font.GetPointSize() / LEIPZIG_UNITS_PER_EM)) ) + 2;
+        // the + 2 is to compesate a couple pixels down the figure (rounding error?)
+         
+        UpdateBB(x_off, y_off, 
+                  x_off + (g_w * ((double)(m_font.GetPointSize() / LEIPZIG_UNITS_PER_EM)) ),
+        // idem, y position are flipped
+                  y_off - (g_h * ((double)(m_font.GetPointSize() / LEIPZIG_UNITS_PER_EM)) ));
+        
+        lastCharWidth = (g_w * ((double)(m_font.GetPointSize() / LEIPZIG_UNITS_PER_EM)));
+        x += lastCharWidth; // move x to next char
+     
     }
-
     
+    /*
     int x_off = x + (bbox->m_bBox[glyph].m_x * ((double)(m_font.GetPointSize() / LEIPZIG_UNITS_PER_EM)) );
     // because we are in the rendering context, y position are already flipped
     int y_off = y - (bbox->m_bBox[glyph].m_y * ((double)(m_font.GetPointSize() / LEIPZIG_UNITS_PER_EM)) );
@@ -403,7 +357,7 @@ void MusBBoxDC::DrawMusicText(const wxString& text, int x, int y)
         x_off + (bbox->m_bBox[glyph].m_width * ((double)(m_font.GetPointSize() / LEIPZIG_UNITS_PER_EM)) ),
         // idem, y position are flipped
         y_off - (bbox->m_bBox[glyph].m_height * ((double)(m_font.GetPointSize() / LEIPZIG_UNITS_PER_EM)) ));
-    
+    */
 }
 
 

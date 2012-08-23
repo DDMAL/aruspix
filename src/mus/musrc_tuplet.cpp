@@ -28,6 +28,28 @@
 #include <typeinfo>
 
 #define TUPLET_OFFSET 20
+#define OBLIQUE_OFFSET 0x52 //move to oblique figures
+
+wxString IntToObliqueFigures(unsigned int number) {
+    char buf[16];
+    int len;
+    
+    memset(buf, 0x00, sizeof(buf));
+    
+    // We do not convert more that FF values
+    if (number > 0xFF) number = 0xFF;
+    
+    sprintf(buf, "%i", number);
+    
+    len = strlen(buf);
+    wxASSERT_MSG((sizeof(buf) - 1) > len, "String conversion overflow.");
+    
+    for (unsigned int i = 0; i < strlen(buf); i++) {
+        buf[i] += OBLIQUE_OFFSET;
+    }
+    
+    return wxString(buf);
+}
 
 /**
  * Analyze a tuplet object and figure out if all the notes are in the same beam
@@ -237,16 +259,17 @@ void MusRC::DrawTuplet( MusDC *dc, MusLaidOutLayerElement *element, MusLaidOutLa
     wxASSERT_MSG( layer, "Pointer to layer cannot be NULL" );
     wxASSERT_MSG( staff, "Pointer to staff cannot be NULL" );
     
-    int txt_lenght, char_position;
-    MusLeipzigBBox *bbox = new MusLeipzigBBox;
+    int txt_lenght, txt_height;
     
     MusTuplet *tuplet = dynamic_cast<MusTuplet*>(element->m_layerElement);
-    char notes = tuplet->m_notes.GetCount();
+    //char notes = tuplet->m_notes.GetCount();
     
+    wxString notes = IntToObliqueFigures((unsigned int)tuplet->m_notes.GetCount());
     
     // WORKS ONLY FOR ONE CHAR!
     //char_position = notes + 1; // in the bbox array, '0' char is at pos 1
     
+    /*
     switch (notes) {
         case 0: char_position = LEIPZIG_BBOX_OBLIQUE_FIGURE_0; break;
         case 1: char_position = LEIPZIG_BBOX_OBLIQUE_FIGURE_1; break;
@@ -259,9 +282,11 @@ void MusRC::DrawTuplet( MusDC *dc, MusLaidOutLayerElement *element, MusLaidOutLa
         case 8: char_position = LEIPZIG_BBOX_OBLIQUE_FIGURE_8; break;
         case 9: char_position = LEIPZIG_BBOX_OBLIQUE_FIGURE_9; break;
         default: char_position = LEIPZIG_BBOX_OBLIQUE_FIGURE_0; break;
-    }
+    }*/
     
-    txt_lenght = bbox->m_bBox[char_position].m_width * ((double)(m_layout->m_fontSize[0][0]) / LEIPZIG_UNITS_PER_EM) + 1;
+    //txt_lenght = bbox->m_bBox[char_position].m_width * ((double)(m_layout->m_fontSize[0][0]) / LEIPZIG_UNITS_PER_EM) + 1;
+    
+    dc->GetTextExtent(notes, &txt_lenght, &txt_height);
     
     MusPoint start, end, center;
     bool direction = GetTupletCoordinates(tuplet, layer, &start, &end, &center);
@@ -270,9 +295,9 @@ void MusRC::DrawTuplet( MusDC *dc, MusLaidOutLayerElement *element, MusLaidOutLa
     
     // Calculate position for number 0x82
     int txt_x = center.x - (txt_lenght / 2);
-    DrawLeipzigFont ( dc, txt_x,  center.y, notes + 0x82, staff, false);
+    //DrawLeipzigFont ( dc, txt_x,  center.y, notes + 0x82, staff, false);
     
-    //putstring(dc, txt_x, center.y, notes, 0);
+    putstring(dc, txt_x, center.y, notes, 0);
     
     dc->SetPen(AxBLACK);
     
@@ -284,9 +309,9 @@ void MusRC::DrawTuplet( MusDC *dc, MusLaidOutLayerElement *element, MusLaidOutLa
         double m = (double)(start.y - end.y) / (double)(start.x - end.x);
         
         // x = 10 pixels before the number
-        double x = txt_x - 10;
+        double x = txt_x - 4;
         // xa = just after, the number is abundant so I do not add anything
-        double xa = txt_x + txt_lenght;
+        double xa = txt_x + txt_lenght + 2;
         
         // calculate the y coords in the slope
         double y1 = (double)start.y + m * (x - (double)start.x);

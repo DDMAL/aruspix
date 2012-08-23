@@ -501,6 +501,8 @@
 		4D2F7EE2145ADBD000EF930B /* io */ = {
 			isa = PBXGroup;
 			children = (
+				8F3367F115A1E42F009AAB69 /* musiodarms.cpp */,
+				8F3367F015A1E417009AAB69 /* musiodarms.h */,
 				8F9F1A15156143A200C7D6F9 /* musiopae.cpp */,
 				8F9F1A16156143A200C7D6F9 /* musiopae.h */,
 				4D0C8DB31557E154003F487C /* musio.cpp */,
@@ -517,8 +519,6 @@
 				8FD2847915D4F13F0038D07D /* musiomusxml.h */,
 				4DDE3CDD0EF1B1D6006D4F2C /* musiowwg.cpp */,
 				4D3A8FDE0D35867200BBC1FB /* musiowwg.h */,
-				8F3367F115A1E42F009AAB69 /* musiodarms.cpp */,
-				8F3367F015A1E417009AAB69 /* musiodarms.h */,
 			);
 			name = io;
 			sourceTree = "<group>";

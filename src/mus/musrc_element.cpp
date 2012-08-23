@@ -698,37 +698,20 @@ void MusRC::DrawSpecialRest ( MusDC *dc, int a, MusLaidOutLayerElement *element,
     v_bline(dc, y - 4, y2 + 4, x2, 4);
     
     // Draw the text above
-    char txt[15];
+    int w, h;
     unsigned int start_offset = 0; // offset from x to center text
-    unsigned int txt_lenght = 0; // total lenght of the text
     
-    // convert m_multimeasure_dur to a string
-    sprintf(txt, "%i", rest->m_multimeasure_dur);
+    // convert to string
+    wxString text;
+    text << rest->m_multimeasure_dur;
     
-    // Calculate the total txt lenght first
-    for (unsigned int i = 0; i < strlen(txt); i++) {
-        // Char '0' is at poisition 48 in ASCII, in the BBOX array it is at position 1
-        // so subtract 47 from char to get the correct position into the bbox array
-        unsigned int char_position = txt[i] - 47;
-        // Get the width of the char, relative to current fontSize, we add 1 pixel padding between chars
-        txt_lenght += bbox->m_bBox[char_position].m_width * ((double)(m_layout->m_fontSize[0][0]) / LEIPZIG_UNITS_PER_EM) + 1;
-    }
+    dc->GetTextExtent(text, &w, &h);
+    start_offset = (x2 - x - w) / 2; // calculate offset to center text
     
-    // Now that we have the lenght, calculate the offset to have it centered
-    start_offset = (x2 - x - txt_lenght) / 2;
+    putstring(dc, x + start_offset, staff->m_y_drawing - m_layout->m_staffSize[staff->staffSize] + 5, text, false);
     
-    // Go through all chars and print them
-    for (unsigned int i = 0; i < strlen(txt); i++) {
-        // get char width, as above, plus 1 px padding
-        unsigned int char_position = txt[i] - 47;
-        txt_lenght = bbox->m_bBox[char_position].m_width * ((double)(m_layout->m_fontSize[0][0]) / LEIPZIG_UNITS_PER_EM) + 1;
-        // Draw the char 5 pixels above staff line
-        DrawLeipzigFont ( dc, x + start_offset, staff->m_y_drawing - m_layout->m_staffSize[staff->staffSize] + 5, txt[i], staff, false);
-        //move offset to start of next char
-        start_offset += txt_lenght;
-    }
-    
-	return;
+    return;
+
 }
 
 void MusRC::DrawLongRest ( MusDC *dc, int a, int b, MusLaidOutStaff *staff)

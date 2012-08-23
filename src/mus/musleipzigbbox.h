@@ -9,6 +9,8 @@
 #ifndef aruspix_musleipzigbbox_h
 #define aruspix_musleipzigbbox_h
 
+#include "musobject.h"
+
 #define LEIPZIG_BBOX_ORN_MORDENT 0
 #define LEIPZIG_BBOX_FIGURE_0 1
 #define LEIPZIG_BBOX_FIGURE_1 2
@@ -83,15 +85,30 @@
 class MusLeipzigBBox
 {
 public:
-    MusLeipzigBBox();
     
-    struct BoundingBox
+    // Get the bounds of a char in the array
+    static void GetCharBounds(const unsigned char c, int *x, int *y, int *w, int *h);
+    
+    
+private:
+    typedef struct _BoundingBox
     {
         double m_x;
         double m_y;
         double m_width;
         double m_height;
-    } m_bBox[65];
+    } BoundingBox;
+    
+    static BoundingBox *InitializeStatic();
+  
+public:
+
+    
+private:
+    
+    static BoundingBox *m_bBox;
+    
+    static bool m_initialized;
 };
 
 

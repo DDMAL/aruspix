@@ -74,7 +74,8 @@ bool MusXMLOutput::ExportFile( )
 
     // do this or finale will barf, versione 3.0 for now
     TiXmlUnknown *unk = new TiXmlUnknown;
-    unk->SetValue("!DOCTYPE score-partwise PUBLIC \"-//Recordare//DTD MusicXML 3.0 Partwise//EN\" \"http://www.musicxml.org/dtds/partwise.dtd\"");    
+    //unk->SetValue("!DOCTYPE score-partwise PUBLIC \"-//Recordare//DTD MusicXML 3.0 Partwise//EN\" \"http://www.musicxml.org/dtds/partwise.dtd\"");
+    unk->SetValue("!DOCTYPE score-timewise PUBLIC \"-//Recordare//DTD MusicXML 2.0 Timewise//EN\" \"http://www.musicxml.org/dtds/timewise.dtd\"");
     m_xml_doc->LinkEndChild(unk);
     
     // this starts the call of all the functors
@@ -92,7 +93,7 @@ bool MusXMLOutput::WriteDoc( MusDoc *doc )
     // Write the partwise declaration
     // the MusicXML "score-partwise" does not map to our MusScore
     
-    m_xml_score = new TiXmlElement("score-partwise");
+    m_xml_score = new TiXmlElement("score-timewise");
     
     // hardcode a voice for noew
     TiXmlElement *plist =  new TiXmlElement("part-list");
@@ -143,12 +144,7 @@ bool MusXMLOutput::WriteSection( MusSection *section )
 //bool MusXMLOutput::WriteMeiSection( Section *meiSection, MusSection *section )
 {
     printf("Section\n");
-    
-    m_xml_part = new TiXmlElement("part");
-    m_xml_part->SetAttribute("id", "P1");
-    
-    m_xml_score->LinkEndChild(m_xml_part);
-    
+        
     return true;
 }
 
@@ -165,18 +161,9 @@ bool MusXMLOutput::WriteMeasure( MusMeasure *measure )
     m_xml_measure = new TiXmlElement("measure");
     m_xml_measure->SetAttribute("number", mstring);
     
-    // in first measure set the divisions value in <attributes>
-    if (m_measure_count == 1) {
-        TiXmlElement *attributes = new TiXmlElement("attributes"); // this should be global
-        TiXmlElement *divisions = new TiXmlElement("divisions");
-        TiXmlText *divval = new TiXmlText("4"); // no more than sixteenths for now
-        
-        divisions->LinkEndChild(divval);
-        attributes->LinkEndChild(divisions);
-        m_xml_measure->LinkEndChild(attributes);
-    }
+    m_xml_score->LinkEndChild(m_xml_measure);
     
-    m_xml_part->LinkEndChild(m_xml_measure);
+    //m_xml_part->LinkEndChild(m_xml_measure);
     
     return true;
 }
@@ -185,6 +172,23 @@ bool MusXMLOutput::WriteStaff( MusStaff *staff )
 //bool MusXMLOutput::WriteMeiStaff( Staff *meiStaff, MusStaff *staff )
 {
     printf("Staff\n");
+    
+    m_xml_part = new TiXmlElement("part");
+    m_xml_part->SetAttribute("id", "P1");
+    
+    m_xml_measure->LinkEndChild(m_xml_part);
+    
+    // in first measure set the divisions value in <attributes>
+    if (m_measure_count == 1) {
+        TiXmlElement *attributes = new TiXmlElement("attributes"); // this should be global
+        TiXmlElement *divisions = new TiXmlElement("divisions");
+        TiXmlText *divval = new TiXmlText("4"); // no more than sixteenths for now
+        
+        divisions->LinkEndChild(divval);
+        attributes->LinkEndChild(divisions);
+        m_xml_part->LinkEndChild(attributes);
+    }
+    
     return true;
 }
 
@@ -248,7 +252,8 @@ bool MusXMLOutput::WriteLayerElement( MusLayerElement *element )
         
         note->LinkEndChild(duration);
         
-        m_xml_measure->LinkEndChild(note);
+        // measure in partwise
+        m_xml_part->LinkEndChild(note);
     } else if (dynamic_cast<MusRest*>(element)) {
         MusRest *r = dynamic_cast<MusRest*>(element);
         
@@ -260,7 +265,7 @@ bool MusXMLOutput::WriteLayerElement( MusLayerElement *element )
         TiXmlElement *duration = new TiXmlElement("duration");
         
         string t;
-        int dur;
+        int dur = 4;
         
         switch (r->m_dur) {
             case DUR_1: dur = 16; t = "whole"; break;
@@ -279,7 +284,7 @@ bool MusXMLOutput::WriteLayerElement( MusLayerElement *element )
         
         note->LinkEndChild(duration);
         
-        m_xml_measure->LinkEndChild(note);
+        m_xml_part->LinkEndChild(note);
     }
 
     
