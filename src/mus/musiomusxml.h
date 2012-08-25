@@ -63,7 +63,8 @@ public:
 private:
     
 public:
-    
+    void WriteClef(MusLayerElement *element);
+    void WriteKey(MusLayerElement *element);
     
 private:
     wxString m_filename;
@@ -71,7 +72,10 @@ private:
     TiXmlElement *m_xml_score;
     TiXmlElement *m_xml_part;
     TiXmlElement *m_xml_measure;
+    TiXmlElement *m_xml_attributes;
     TiXmlDocument *m_xml_doc;
+
+    TiXmlElement *m_current_clef;
     
     int m_measure_count;
 };

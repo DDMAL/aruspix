@@ -8,15 +8,6 @@
 
 #include <iostream>
 
-/////////////////////////////////////////////////////////////////////////////
-// Name:        musiomei.cpp
-// Author:      Laurent Pugin
-// Created:     2008
-// Copyright (c) Laurent Pugin. All rights reserved.
-/////////////////////////////////////////////////////////////////////////////
-
-
-
 #include <algorithm>
 using std::min;
 using std::max;
@@ -32,6 +23,7 @@ using std::max;
 #include "musbarline.h"
 #include "musbeam.h"
 #include "musclef.h"
+#include "muskeysig.h"
 #include "musmensur.h"
 #include "musneume.h"
 #include "musneumesymbol.h"
@@ -58,6 +50,8 @@ MusFileOutputStream( doc, -1 )
 {
     m_filename = filename;
     m_measure_count = 0;
+    m_xml_attributes = NULL;
+    m_current_clef = NULL;
 
 }
 
@@ -180,13 +174,13 @@ bool MusXMLOutput::WriteStaff( MusStaff *staff )
     
     // in first measure set the divisions value in <attributes>
     if (m_measure_count == 1) {
-        TiXmlElement *attributes = new TiXmlElement("attributes"); // this should be global
+        m_xml_attributes = new TiXmlElement("attributes");
         TiXmlElement *divisions = new TiXmlElement("divisions");
         TiXmlText *divval = new TiXmlText("4"); // no more than sixteenths for now
         
         divisions->LinkEndChild(divval);
-        attributes->LinkEndChild(divisions);
-        m_xml_part->LinkEndChild(attributes);
+        m_xml_attributes->LinkEndChild(divisions);
+        m_xml_part->LinkEndChild(m_xml_attributes);
     }
     
     return true;
@@ -204,6 +198,12 @@ bool MusXMLOutput::WriteLayerElement( MusLayerElement *element )
     printf("Layer Elem\n");
     char steps[] = {'C', 'D', 'E', 'F', 'G', 'A', 'B'};
     char buf[1024];
+    
+    if (dynamic_cast<MusClef*>(element)) {
+        WriteClef(element);
+    } else if (dynamic_cast<MusKeySig*>(element)) {
+        WriteKey(element);
+    }
     
     // FIXME, do note and rest parsing in a more clever way
     
@@ -331,10 +331,104 @@ bool MusXMLOutput::WriteLaidOutLayerElement( MusLaidOutLayerElement *laidOutLaye
 }
 
 
+void MusXMLOutput::WriteClef(MusLayerElement *element) {
+    wxString sign, line;
+    
+    // Create the attributes elem
+    // or use existing one, all the attribute changes
+    // go in the same <attributes>
+    if (m_xml_attributes == NULL) {
+        m_xml_attributes = new TiXmlElement("attributes");
+        // put it into the current part
+        m_xml_part->LinkEndChild(m_xml_attributes);
+    }
+    
+    MusClef *clef = dynamic_cast<MusClef*>(element);
+    
+    switch (clef->m_clefId) {
+        case SOL1: sign = "G"; line = "1"; break;
+        case SOL2: sign = "G"; line = "2"; break;
+        case UT1: sign = "C"; line = "1"; break;
+        case UT2: sign = "C"; line = "2"; break;
+        case UT3: sign = "C"; line = "3"; break;
+        case UT4: sign = "C"; line = "4"; break;
+        case UT5: sign = "C"; line = "5"; break;
+        case FA3: sign = "F"; line = "3"; break;
+        case FA4: sign = "F"; line = "4"; break;
+        case FA5: sign = "F"; line = "5"; break;
+        default: break;
+    }
+    
+    //Create the <clef> element
+    TiXmlElement *xclef = new TiXmlElement("clef");
+    
+    // Create the <sign> element and link to it it's text
+    TiXmlElement *xsign = new TiXmlElement("sign");
+    TiXmlText *xsignt = new TiXmlText(sign.c_str());
+    xsign->LinkEndChild(xsignt);
+    // Insert it into the <clef>
+    xclef->LinkEndChild(xsign);
+    
+    // Create the <line> element and link to it it's text
+    TiXmlElement *xline = new TiXmlElement("line");
+    TiXmlText *xlinet = new TiXmlText(line.c_str());
+    xline->LinkEndChild(xlinet);
+    // Insert it into the <clef>
+    xclef->LinkEndChild(xline); 
+    
+    // place clef into <attribute>
+    m_xml_attributes->LinkEndChild(xclef);
+    m_current_clef = xclef;
+    
+}
 
-
-
-
-
-
-
+void MusXMLOutput::WriteKey(MusLayerElement *element) {
+    MusKeySig* key = dynamic_cast<MusKeySig*>(element);
+    
+    // Check for attrib element as above
+    // or use existing one, all the attribute changes
+    // go in the same <attributes>
+    if (m_xml_attributes == NULL) {
+        m_xml_attributes = new TiXmlElement("attributes");
+        // put it into the current part
+        m_xml_part->LinkEndChild(m_xml_attributes);
+    }
+    
+    // create tompost <key> elem
+    TiXmlElement *xkey = new TiXmlElement("key");
+    
+    // Convert the number of alterations to string
+    wxString n_alter;
+    if (key->m_alteration == ACCID_FLAT)
+        // flats are negative numbers
+        n_alter << -key->m_num_alter;
+    else
+        n_alter << key->m_num_alter;
+    
+    //create <fifths> node with the number of alterations
+    TiXmlElement *xfifths = new TiXmlElement("fifths");
+    TiXmlText *xftxt = new TiXmlText(n_alter.c_str());
+    xfifths->LinkEndChild(xftxt);
+    // add it to the key elem
+    xkey->LinkEndChild(xfifths);
+    
+    //I dont know what musicxml does with the <mode> tag
+    //bmaybe it is just to annoy programmers using tinyxml
+    //finale sets this always to major
+    TiXmlElement *mode = new TiXmlElement("mode");
+    TiXmlText *major = new TiXmlText("major");
+    mode->LinkEndChild(major);
+    // add it to the key elem
+    xkey->LinkEndChild(mode);
+    
+    // Obviously the order in which <key> <clef> and <time>
+    // are fixed. If in music notation practice we have CLEF then KEY
+    // why should MusicXML follow? the genious architect decided to
+    // force the order of <attributes> REVERSED, <key> BEFORE <clef>
+    // wow.
+    if (!m_current_clef) // no clef
+        m_xml_attributes->LinkEndChild(xkey);
+    else // insert before the clef
+        m_xml_attributes->InsertBeforeChild(m_current_clef, *xkey);
+    
+}
