@@ -65,6 +65,9 @@ private:
 public:
     void WriteClef(MusLayerElement *element);
     void WriteKey(MusLayerElement *element);
+    void WriteTime(MusLayerElement *element);
+    void WriteMultiMeasureRest(MusRest *r);
+    void CreateAttributes();
     
 private:
     wxString m_filename;
@@ -73,6 +76,7 @@ private:
     TiXmlElement *m_xml_part;
     TiXmlElement *m_xml_measure;
     TiXmlElement *m_xml_attributes;
+    TiXmlElement *m_xml_measure_style;
     TiXmlDocument *m_xml_doc;
 
     TiXmlElement *m_current_clef;

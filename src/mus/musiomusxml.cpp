@@ -30,6 +30,7 @@ using std::max;
 #include "musnote.h"
 #include "musrest.h"
 #include "mussymbol.h"
+#include "musmensur.h"
 
 #include "muslaidoutlayerelement.h"
 
@@ -52,6 +53,7 @@ MusFileOutputStream( doc, -1 )
     m_measure_count = 0;
     m_xml_attributes = NULL;
     m_current_clef = NULL;
+    m_xml_measure_style = NULL;
 
 }
 
@@ -203,7 +205,11 @@ bool MusXMLOutput::WriteLayerElement( MusLayerElement *element )
         WriteClef(element);
     } else if (dynamic_cast<MusKeySig*>(element)) {
         WriteKey(element);
+    } else if (dynamic_cast<MusMensur*>(element)) {
+        WriteTime(element);
     }
+    
+ //   printf("---- %s\n", element->MusClassName().c_str());
     
     // FIXME, do note and rest parsing in a more clever way
     
@@ -256,6 +262,12 @@ bool MusXMLOutput::WriteLayerElement( MusLayerElement *element )
         m_xml_part->LinkEndChild(note);
     } else if (dynamic_cast<MusRest*>(element)) {
         MusRest *r = dynamic_cast<MusRest*>(element);
+        
+        // handle multi measure rest
+        if (r->m_dur == VALSilSpec) {
+            WriteMultiMeasureRest(r);
+            return true;
+        }
         
         TiXmlElement *note = new TiXmlElement("note");
         TiXmlElement *rest = new TiXmlElement("rest");
@@ -337,11 +349,7 @@ void MusXMLOutput::WriteClef(MusLayerElement *element) {
     // Create the attributes elem
     // or use existing one, all the attribute changes
     // go in the same <attributes>
-    if (m_xml_attributes == NULL) {
-        m_xml_attributes = new TiXmlElement("attributes");
-        // put it into the current part
-        m_xml_part->LinkEndChild(m_xml_attributes);
-    }
+    CreateAttributes();
     
     MusClef *clef = dynamic_cast<MusClef*>(element);
     
@@ -388,11 +396,7 @@ void MusXMLOutput::WriteKey(MusLayerElement *element) {
     // Check for attrib element as above
     // or use existing one, all the attribute changes
     // go in the same <attributes>
-    if (m_xml_attributes == NULL) {
-        m_xml_attributes = new TiXmlElement("attributes");
-        // put it into the current part
-        m_xml_part->LinkEndChild(m_xml_attributes);
-    }
+    CreateAttributes();
     
     // create tompost <key> elem
     TiXmlElement *xkey = new TiXmlElement("key");
@@ -431,4 +435,85 @@ void MusXMLOutput::WriteKey(MusLayerElement *element) {
     else // insert before the clef
         m_xml_attributes->InsertBeforeChild(m_current_clef, *xkey);
     
+}
+
+void MusXMLOutput::WriteTime(MusLayerElement *element) {
+    MusMensur *timesig = dynamic_cast<MusMensur*>(element);
+    wxString number;
+    
+    CreateAttributes();
+    
+    TiXmlElement *xtime = new TiXmlElement("time");
+    
+    // add symbol attribute if necessay
+    if (timesig->m_meterSymb == METER_SYMB_COMMON) {
+        xtime->SetAttribute("symbol", "common");
+        // if the number of beats was not specified, approximate it
+        if (timesig->m_num == 0){
+            timesig->m_num = 4;
+            timesig->m_numBase = 4;
+        }
+    } else if (timesig->m_meterSymb == METER_SYMB_CUT) {
+        xtime->SetAttribute("symbol", "cut");
+        if (timesig->m_num == 0){
+            timesig->m_num = 2;
+            timesig->m_numBase = 2;
+        }
+    }
+    
+    // Create beat and beat type attribsb
+    TiXmlElement *xbeats = new TiXmlElement("beats");
+    TiXmlElement *xbtype = new TiXmlElement("beat-type");
+    
+    // convert number to text for beats
+    number << timesig->m_num;
+    TiXmlText *beat_text = new TiXmlText(number.c_str());
+    xbeats->LinkEndChild(beat_text);
+    
+    // ditto as above
+    number.Clear();
+    number << timesig->m_numBase;
+    TiXmlText *base_text = new TiXmlText(number.c_str());
+    xbtype->LinkEndChild(base_text);
+    
+    // push it to xtime
+    xtime->LinkEndChild(xbeats);
+    xtime->LinkEndChild(xbtype);
+    
+    if (!m_current_clef) // no clef
+        m_xml_attributes->LinkEndChild(xtime);
+    else // insert before the clef
+        m_xml_attributes->InsertBeforeChild(m_current_clef, *xtime);
+}
+
+void MusXMLOutput::WriteMultiMeasureRest(MusRest *r) {
+    wxString num;
+    num << r->m_multimeasure_dur;
+    
+    TiXmlElement *xmrest = new TiXmlElement("multiple-rest");
+    TiXmlText *mdur = new TiXmlText(num.c_str());
+    xmrest->LinkEndChild(mdur);
+    
+    
+    // chech that <attributes> exists
+    CreateAttributes();
+    
+    if (!m_xml_measure_style) {
+        m_xml_measure_style = new TiXmlElement("measure-style");
+        // link it into the current attributes
+        m_xml_attributes->LinkEndChild(m_xml_measure_style);
+    }
+    
+    // put the multiple measure thing into the measure style
+    m_xml_measure_style->LinkEndChild(xmrest);
+    
+}
+
+void MusXMLOutput::CreateAttributes() {
+    // Make new attributes as necessary
+    if (m_xml_attributes == NULL) {
+        m_xml_attributes = new TiXmlElement("attributes");
+        // put it into the current part
+        m_xml_part->LinkEndChild(m_xml_attributes);
+    }
 }
