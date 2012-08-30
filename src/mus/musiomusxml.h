@@ -68,6 +68,7 @@ public:
     void WriteTime(MusLayerElement *element);
     void WriteMultiMeasureRest(MusRest *r);
     void CreateAttributes();
+    void CreateRestsForMultiMeasure();
     
 private:
     wxString m_filename;
@@ -78,8 +79,10 @@ private:
     TiXmlElement *m_xml_attributes;
     TiXmlElement *m_xml_measure_style;
     TiXmlDocument *m_xml_doc;
-
-    TiXmlElement *m_current_clef;
+    TiXmlElement *m_xml_current_clef;
+    
+    MusMensur *m_current_time;
+    int m_multimeasure_rests;
     
     int m_measure_count;
 };

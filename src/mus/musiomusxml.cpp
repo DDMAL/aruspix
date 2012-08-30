@@ -52,8 +52,11 @@ MusFileOutputStream( doc, -1 )
     m_filename = filename;
     m_measure_count = 0;
     m_xml_attributes = NULL;
-    m_current_clef = NULL;
+    m_xml_current_clef = NULL;
     m_xml_measure_style = NULL;
+    
+    m_current_time = NULL;
+    m_multimeasure_rests = 0;
 
 }
 
@@ -153,11 +156,18 @@ bool MusXMLOutput::WriteMeasure( MusMeasure *measure )
     
     // FIXME FInd a better solution, placeholder
     sprintf(mstring, "%i", m_measure_count);
+
     
-    m_xml_measure = new TiXmlElement("measure");
-    m_xml_measure->SetAttribute("number", mstring);
-    
-    m_xml_score->LinkEndChild(m_xml_measure);
+    if (m_multimeasure_rests > 0 )
+        CreateRestsForMultiMeasure(); // create empty measures
+    else {
+        m_xml_measure = new TiXmlElement("measure");
+        m_xml_measure->SetAttribute("number", mstring);
+        m_xml_score->LinkEndChild(m_xml_measure);
+    }
+        
+    // reset clef
+    m_xml_current_clef = NULL;
     
     //m_xml_part->LinkEndChild(m_xml_measure);
     
@@ -386,7 +396,7 @@ void MusXMLOutput::WriteClef(MusLayerElement *element) {
     
     // place clef into <attribute>
     m_xml_attributes->LinkEndChild(xclef);
-    m_current_clef = xclef;
+    m_xml_current_clef = xclef;
     
 }
 
@@ -430,10 +440,10 @@ void MusXMLOutput::WriteKey(MusLayerElement *element) {
     // why should MusicXML follow? the genious architect decided to
     // force the order of <attributes> REVERSED, <key> BEFORE <clef>
     // wow.
-    if (!m_current_clef) // no clef
+    if (!m_xml_current_clef) // no clef
         m_xml_attributes->LinkEndChild(xkey);
     else // insert before the clef
-        m_xml_attributes->InsertBeforeChild(m_current_clef, *xkey);
+        m_xml_attributes->InsertBeforeChild(m_xml_current_clef, *xkey);
     
 }
 
@@ -480,10 +490,13 @@ void MusXMLOutput::WriteTime(MusLayerElement *element) {
     xtime->LinkEndChild(xbeats);
     xtime->LinkEndChild(xbtype);
     
-    if (!m_current_clef) // no clef
+    if (!m_xml_current_clef) // no clef
         m_xml_attributes->LinkEndChild(xtime);
     else // insert before the clef
-        m_xml_attributes->InsertBeforeChild(m_current_clef, *xtime);
+        m_xml_attributes->InsertBeforeChild(m_xml_current_clef, *xtime);
+    
+    // save the current timesig in case we need to create mm rests
+    m_current_time = timesig;
 }
 
 void MusXMLOutput::WriteMultiMeasureRest(MusRest *r) {
@@ -507,6 +520,51 @@ void MusXMLOutput::WriteMultiMeasureRest(MusRest *r) {
     // put the multiple measure thing into the measure style
     m_xml_measure_style->LinkEndChild(xmrest);
     
+    // save the quantity of measures to create
+    m_multimeasure_rests = r->m_multimeasure_dur;
+    
+}
+
+void MusXMLOutput::CreateRestsForMultiMeasure() {
+    
+    // unbox all the measures we need
+    for (int i = 0; i <= m_multimeasure_rests; i++) {
+        wxString mstring;
+        
+        // create a fresh new rest
+        TiXmlElement *note = new TiXmlElement("note");
+        TiXmlElement *rest = new TiXmlElement("rest");
+        
+        note->LinkEndChild(rest);
+        
+        TiXmlElement *duration = new TiXmlElement("duration");
+        TiXmlText *dur_name = new TiXmlText("4");
+        duration->LinkEndChild(dur_name);
+        
+        note->LinkEndChild(duration);
+        
+        // add it to the current part
+        m_xml_part->LinkEndChild(note);
+        // first time is already linked
+        if (i > 0)
+            m_xml_measure->LinkEndChild(m_xml_part);
+        // and to the measure
+        m_xml_score->LinkEndChild(m_xml_measure);
+        
+        // create a new part
+        m_xml_part = new TiXmlElement("part");
+        m_xml_part->SetAttribute("id", "P1");
+        
+        m_xml_measure = new TiXmlElement("measure");
+        mstring << m_measure_count;
+        m_xml_measure->SetAttribute("number", mstring.c_str());
+        
+        m_measure_count++;
+    }
+    
+    m_multimeasure_rests = 0;
+    m_measure_count--;
+    m_measure_count--;
 }
 
 void MusXMLOutput::CreateAttributes() {
