@@ -56,6 +56,8 @@ MusFileOutputStream( doc, -1 )
     m_xml_measure_style = NULL;
     
     m_current_time = NULL;
+    m_current_beam = NULL;
+    m_in_beam = false;
     m_multimeasure_rests = 0;
 
 }
@@ -217,6 +219,8 @@ bool MusXMLOutput::WriteLayerElement( MusLayerElement *element )
         WriteTime(element);
     } else if (dynamic_cast<MusNote*>(element) || dynamic_cast<MusRest*>(element)) {
         WriteNoteOrRest(element);
+    } else if (dynamic_cast<MusBeam*>(element)) {
+        m_current_beam = dynamic_cast<MusBeam*>(element);
     }
     
  //   printf("---- %s\n", element->MusClassName().c_str());
@@ -483,6 +487,7 @@ void MusXMLOutput::WriteNoteOrRest(MusLayerElement *element) {
     wxString number;
     wxString t;
     wxString dur;
+    wxString num_of_beams;
     
     MusDurationInterface *di = dynamic_cast<MusDurationInterface*>(element);
     
@@ -497,8 +502,8 @@ void MusXMLOutput::WriteNoteOrRest(MusLayerElement *element) {
         case DUR_1: dur = "16"; t = "whole"; break;
         case DUR_2: dur = "8"; t = "whole"; break;
         case DUR_4: dur = "4"; t = "whole"; break;
-        case DUR_8: dur = "2"; t = "whole"; break;
-        case DUR_16: dur = "1"; t = "whole"; break;
+        case DUR_8: dur = "2"; t = "whole"; num_of_beams = "1"; break;
+        case DUR_16: dur = "1"; t = "whole"; num_of_beams = "2"; break;
             
         default:
             break;
@@ -547,6 +552,50 @@ void MusXMLOutput::WriteNoteOrRest(MusLayerElement *element) {
     duration->LinkEndChild(dur_name);
     //link it to <note>
     note->LinkEndChild(duration);
+    
+    // Do beaming
+    if (m_current_beam) {
+        wxString btype;
+        
+        int position = m_current_beam->m_notes.Index(*element);
+        
+        // if position == -1, the note is not into the current beam
+        if (position >= 0) {
+            
+            // this flas is set so we know if we are "into" a beam
+            if (!m_in_beam) {
+                // not set, note is begining
+                btype = "begin";
+                m_in_beam = true;
+            } else {
+                // if this note is the last in the beam, end the beaming
+                if (position == m_current_beam->m_notes.Count() - 1) {
+                    btype = "end";
+                    m_current_beam = NULL;
+                    m_in_beam = false;
+                } else {
+                    // note in the middle, do nothing special (continue)
+                    btype = "continue";
+                }
+            }
+            
+            // write the xml for the beam
+            TiXmlElement *xbeam = new TiXmlElement("beam");
+            // set the number of beams attribute (!!! couldn't they do this automatically???)
+            // seems to work even if left as 1
+            // num_of_beams is set above when parsing durations
+            xbeam->SetAttribute("number", num_of_beams.c_str());
+            
+            // write the arribute and attach it to beam
+            TiXmlText *xtype = new TiXmlText(btype.c_str());
+            xbeam->LinkEndChild(xtype);
+            
+            // attach the beam to the note
+            note->LinkEndChild(xbeam);
+        } else {
+            printf("Beam with no notes\n");
+        }
+    }
     
     // measure in partwise
     // link to part

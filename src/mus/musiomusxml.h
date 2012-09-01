@@ -83,6 +83,8 @@ private:
     TiXmlElement *m_xml_current_clef;
     
     MusMensur *m_current_time;
+    MusBeam *m_current_beam;
+    bool m_in_beam;
     int m_multimeasure_rests;
     
     int m_measure_count;
