@@ -208,107 +208,18 @@ bool MusXMLOutput::WriteLayer( MusLayer *layer )
 bool MusXMLOutput::WriteLayerElement( MusLayerElement *element )
 {
     printf("Layer Elem\n");
-    char steps[] = {'C', 'D', 'E', 'F', 'G', 'A', 'B'};
-    char buf[1024];
-    
+        
     if (dynamic_cast<MusClef*>(element)) {
         WriteClef(element);
     } else if (dynamic_cast<MusKeySig*>(element)) {
         WriteKey(element);
     } else if (dynamic_cast<MusMensur*>(element)) {
         WriteTime(element);
+    } else if (dynamic_cast<MusNote*>(element) || dynamic_cast<MusRest*>(element)) {
+        WriteNoteOrRest(element);
     }
     
  //   printf("---- %s\n", element->MusClassName().c_str());
-    
-    // FIXME, do note and rest parsing in a more clever way
-    
-    if (dynamic_cast<MusNote*>(element)) {
-        MusNote *n = dynamic_cast<MusNote*>(element);
-        
-        TiXmlElement *note = new TiXmlElement("note");
-        
-        // make pitch
-        TiXmlElement *pitch = new TiXmlElement("pitch");
-        TiXmlElement *step = new TiXmlElement("step");
-        TiXmlElement *octave = new TiXmlElement("octave");
-        
-        sprintf(buf, "%c", steps[n->m_pname - 1]);
-        TiXmlText *step_name = new TiXmlText(buf);
-        step->LinkEndChild(step_name);
-        
-        sprintf(buf, "%i", n->m_oct);
-        TiXmlText *octave_name = new TiXmlText(buf);
-        octave->LinkEndChild(octave_name);
-        
-        pitch->LinkEndChild(step);
-        pitch->LinkEndChild(octave);
-        note->LinkEndChild(pitch);
-        
-        TiXmlElement *duration = new TiXmlElement("duration");
-        TiXmlElement *type = new TiXmlElement("type");
-        
-        string t;
-        int dur;
-        
-        switch (n->m_dur) {
-            case DUR_1: dur = 16; t = "whole"; break;
-            case DUR_2: dur = 8; t = "whole"; break;
-            case DUR_4: dur = 4; t = "whole"; break;
-            case DUR_8: dur = 2; t = "whole"; break;
-            case DUR_16: dur = 1; t = "whole"; break;
-                
-            default:
-                break;
-        }
-        
-        sprintf(buf, "%i", dur);
-        TiXmlText *dur_name = new TiXmlText(buf);
-        duration->LinkEndChild(dur_name);
-        
-        note->LinkEndChild(duration);
-        
-        // measure in partwise
-        m_xml_part->LinkEndChild(note);
-    } else if (dynamic_cast<MusRest*>(element)) {
-        MusRest *r = dynamic_cast<MusRest*>(element);
-        
-        // handle multi measure rest
-        if (r->m_dur == VALSilSpec) {
-            WriteMultiMeasureRest(r);
-            return true;
-        }
-        
-        TiXmlElement *note = new TiXmlElement("note");
-        TiXmlElement *rest = new TiXmlElement("rest");
-        
-        note->LinkEndChild(rest);
-        
-        TiXmlElement *duration = new TiXmlElement("duration");
-        
-        string t;
-        int dur = 4;
-        
-        switch (r->m_dur) {
-            case DUR_1: dur = 16; t = "whole"; break;
-            case DUR_2: dur = 8; t = "whole"; break;
-            case DUR_4: dur = 4; t = "whole"; break;
-            case DUR_8: dur = 2; t = "whole"; break;
-            case DUR_16: dur = 1; t = "whole"; break;
-                
-            default:
-                break;
-        }
-        
-        sprintf(buf, "%i", dur);
-        TiXmlText *dur_name = new TiXmlText(buf);
-        duration->LinkEndChild(dur_name);
-        
-        note->LinkEndChild(duration);
-        
-        m_xml_part->LinkEndChild(note);
-    }
-
     
     return true;
  }
@@ -528,7 +439,7 @@ void MusXMLOutput::WriteMultiMeasureRest(MusRest *r) {
 void MusXMLOutput::CreateRestsForMultiMeasure() {
     
     // unbox all the measures we need
-    for (int i = 0; i <= m_multimeasure_rests; i++) {
+    for (int i = 0; i <= m_multimeasure_rests - 1; i++) {
         wxString mstring;
         
         // create a fresh new rest
@@ -565,6 +476,82 @@ void MusXMLOutput::CreateRestsForMultiMeasure() {
     m_multimeasure_rests = 0;
     m_measure_count--;
     m_measure_count--;
+}
+
+void MusXMLOutput::WriteNoteOrRest(MusLayerElement *element) {
+    char steps[] = {'C', 'D', 'E', 'F', 'G', 'A', 'B'};
+    wxString number;
+    wxString t;
+    wxString dur;
+    
+    MusDurationInterface *di = dynamic_cast<MusDurationInterface*>(element);
+    
+    // toplevel note element
+    TiXmlElement *note = new TiXmlElement("note");
+    
+    // duration is common in notes and rests
+    TiXmlElement *duration = new TiXmlElement("duration");
+    //TiXmlElement *type = new TiXmlElement("type");
+    
+    switch (di->m_dur) {
+        case DUR_1: dur = "16"; t = "whole"; break;
+        case DUR_2: dur = "8"; t = "whole"; break;
+        case DUR_4: dur = "4"; t = "whole"; break;
+        case DUR_8: dur = "2"; t = "whole"; break;
+        case DUR_16: dur = "1"; t = "whole"; break;
+            
+        default:
+            break;
+    }
+    
+    // if note we need the <pitch> too
+    if (dynamic_cast<MusNote*>(element)) {
+        MusNote *n = dynamic_cast<MusNote*>(element);
+        // make pitch
+        TiXmlElement *pitch = new TiXmlElement("pitch");
+        TiXmlElement *step = new TiXmlElement("step");
+        TiXmlElement *octave = new TiXmlElement("octave");
+        
+        number << steps[n->m_pname - 1];
+        TiXmlText *step_name = new TiXmlText(number.c_str());
+        step->LinkEndChild(step_name);
+        
+        
+        //printf("-----%n\n", n->m_oct);
+        number.Clear();
+        number << (int)n->m_oct;
+        TiXmlText *octave_name = new TiXmlText(number.c_str());
+        octave->LinkEndChild(octave_name);
+        
+        pitch->LinkEndChild(step);
+        pitch->LinkEndChild(octave);
+        note->LinkEndChild(pitch);
+    } else if (dynamic_cast<MusRest*>(element)) {
+        MusRest *r = dynamic_cast<MusRest*>(element);
+        // rests just link a <rest /> item
+        TiXmlElement *rest = new TiXmlElement("rest");
+        
+        note->LinkEndChild(rest);
+        
+        // handle multi measure rest
+        // break from the generation of this element
+        if (r->m_dur == VALSilSpec) {
+            WriteMultiMeasureRest(r);
+            return;
+        }
+
+    }
+    
+    // put the duration
+    TiXmlText *dur_name = new TiXmlText(dur.c_str());
+    duration->LinkEndChild(dur_name);
+    //link it to <note>
+    note->LinkEndChild(duration);
+    
+    // measure in partwise
+    // link to part
+    m_xml_part->LinkEndChild(note);
+        
 }
 
 void MusXMLOutput::CreateAttributes() {

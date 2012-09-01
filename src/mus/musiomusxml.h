@@ -66,6 +66,7 @@ public:
     void WriteClef(MusLayerElement *element);
     void WriteKey(MusLayerElement *element);
     void WriteTime(MusLayerElement *element);
+    void WriteNoteOrRest(MusLayerElement *element);
     void WriteMultiMeasureRest(MusRest *r);
     void CreateAttributes();
     void CreateRestsForMultiMeasure();
