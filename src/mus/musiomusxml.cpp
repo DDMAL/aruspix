@@ -155,21 +155,21 @@ bool MusXMLOutput::WriteSection( MusSection *section )
 bool MusXMLOutput::WriteMeasure( MusMeasure *measure )
 //bool MusXMLOutput::WriteMeiMeasure( Measure *meiMeasure, MusMeasure *measure )
 {
+    wxString num;
+
+    // Create multimeasure rests
+    if (m_multimeasure_rests > 0 )
+        CreateRestsForMultiMeasure();
+    
     m_measure_count++;
-    char mstring[1024];
+    num << m_measure_count;
     printf("Measure %i\n", m_measure_count);
     
-    // FIXME FInd a better solution, placeholder
-    sprintf(mstring, "%i", m_measure_count);
-
+    // go on and create this measure
+    m_xml_measure = new TiXmlElement("measure");
+    m_xml_measure->SetAttribute("number", num);
+    m_xml_score->LinkEndChild(m_xml_measure);
     
-    if (m_multimeasure_rests > 0 )
-        CreateRestsForMultiMeasure(); // create empty measures
-    else {
-        m_xml_measure = new TiXmlElement("measure");
-        m_xml_measure->SetAttribute("number", mstring);
-        m_xml_score->LinkEndChild(m_xml_measure);
-    }
         
     // reset clef
     m_xml_current_clef = NULL;
@@ -451,8 +451,10 @@ void MusXMLOutput::WriteMultiMeasureRest(MusRest *r) {
 void MusXMLOutput::CreateRestsForMultiMeasure() {
     
     // unbox all the measures we need
-    for (int i = 0; i <= m_multimeasure_rests - 1; i++) {
+    for (int i = 0; i < m_multimeasure_rests; i++) {
         wxString mstring;
+        
+        m_measure_count++;
         
         // create a fresh new rest
         TiXmlElement *note = new TiXmlElement("note");
@@ -482,11 +484,12 @@ void MusXMLOutput::CreateRestsForMultiMeasure() {
         mstring << m_measure_count;
         m_xml_measure->SetAttribute("number", mstring.c_str());
         
-        m_measure_count++;
     }
-    
+    printf("Measures incremented to %i.\n", m_measure_count);
     m_multimeasure_rests = 0;
-    m_measure_count--;
+    //m_measure_count--;
+    // we do not want to increment this two times
+    // a new measure is generated after the call to this function
     m_measure_count--;
 }
 
@@ -504,14 +507,18 @@ void MusXMLOutput::WriteNoteOrRest(MusLayerElement *element) {
     
     // duration is common in notes and rests
     TiXmlElement *duration = new TiXmlElement("duration");
-    //TiXmlElement *type = new TiXmlElement("type");
     
     switch (di->m_dur) {
+        case DUR_LG: dur = "64"; t = "longa"; break;
+        case DUR_BR: dur = "32"; t = "breve"; break;
         case DUR_1: dur = "16"; t = "whole"; break;
         case DUR_2: dur = "8"; t = "half    "; break;
         case DUR_4: dur = "4"; t = "quarter"; break;
         case DUR_8: dur = "2"; t = "eighth"; num_of_beams = "1"; break;
         case DUR_16: dur = "1"; t = "16th"; num_of_beams = "2"; break;
+        case DUR_32: dur = "1"; t = "32th"; num_of_beams = "3"; break;
+        case DUR_64: dur = "1"; t = "64th"; num_of_beams = "4"; break;
+        case DUR_128: dur = "1"; t = "128th"; num_of_beams = "5"; break;
             
         default:
             break;
