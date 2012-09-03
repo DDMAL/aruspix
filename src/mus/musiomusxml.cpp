@@ -31,6 +31,7 @@ using std::max;
 #include "musrest.h"
 #include "mussymbol.h"
 #include "musmensur.h"
+#include "mustie.h"
 
 #include "muslaidoutlayerelement.h"
 
@@ -54,10 +55,12 @@ MusFileOutputStream( doc, -1 )
     m_xml_attributes = NULL;
     m_xml_current_clef = NULL;
     m_xml_measure_style = NULL;
+    m_xml_last_note = NULL;
     
     m_current_time = NULL;
     m_current_beam = NULL;
     m_in_beam = false;
+    m_tied = false;
     m_multimeasure_rests = 0;
 
 }
@@ -221,6 +224,11 @@ bool MusXMLOutput::WriteLayerElement( MusLayerElement *element )
         WriteNoteOrRest(element);
     } else if (dynamic_cast<MusBeam*>(element)) {
         m_current_beam = dynamic_cast<MusBeam*>(element);
+    } else if (dynamic_cast<MusTie*>(element)) {
+        // add tie to last note
+        // continuation of ties is made with a <start> and <stop>
+        // in the same note
+        SetTie(m_xml_last_note, false);
     }
     
  //   printf("---- %s\n", element->MusClassName().c_str());
@@ -500,10 +508,10 @@ void MusXMLOutput::WriteNoteOrRest(MusLayerElement *element) {
     
     switch (di->m_dur) {
         case DUR_1: dur = "16"; t = "whole"; break;
-        case DUR_2: dur = "8"; t = "whole"; break;
-        case DUR_4: dur = "4"; t = "whole"; break;
-        case DUR_8: dur = "2"; t = "whole"; num_of_beams = "1"; break;
-        case DUR_16: dur = "1"; t = "whole"; num_of_beams = "2"; break;
+        case DUR_2: dur = "8"; t = "half    "; break;
+        case DUR_4: dur = "4"; t = "quarter"; break;
+        case DUR_8: dur = "2"; t = "eighth"; num_of_beams = "1"; break;
+        case DUR_16: dur = "1"; t = "16th"; num_of_beams = "2"; break;
             
         default:
             break;
@@ -531,6 +539,7 @@ void MusXMLOutput::WriteNoteOrRest(MusLayerElement *element) {
         pitch->LinkEndChild(step);
         pitch->LinkEndChild(octave);
         note->LinkEndChild(pitch);
+        
     } else if (dynamic_cast<MusRest*>(element)) {
         MusRest *r = dynamic_cast<MusRest*>(element);
         // rests just link a <rest /> item
@@ -545,6 +554,8 @@ void MusXMLOutput::WriteNoteOrRest(MusLayerElement *element) {
             return;
         }
 
+        // rests do not have notehead type
+        t = "";
     }
     
     // put the duration
@@ -552,6 +563,27 @@ void MusXMLOutput::WriteNoteOrRest(MusLayerElement *element) {
     duration->LinkEndChild(dur_name);
     //link it to <note>
     note->LinkEndChild(duration);
+    
+    // was the prevous note the last one in a tie?
+    // always close it, ties do not <continue>
+    if (m_tied)
+        SetTie(note, true);
+    // ties go between <duration> and <beam>
+    
+    if (t != "") {
+        TiXmlElement *xtype = new TiXmlElement("type");
+        TiXmlText *xtext = new TiXmlText(t.c_str());
+        xtype->LinkEndChild(xtext);
+        note->LinkEndChild(xtype);
+    }
+    
+    // add eventual dots to note/rest
+    // they go after <tie> and before <beam>
+    for (unsigned int i = 1; i == di->m_dots; i++) {
+        // a <dot /> for every dot
+        TiXmlElement *dot = new TiXmlElement("dot");
+        note->LinkEndChild(dot);
+    }
     
     // Do beaming
     if (m_current_beam) {
@@ -569,7 +601,7 @@ void MusXMLOutput::WriteNoteOrRest(MusLayerElement *element) {
                 m_in_beam = true;
             } else {
                 // if this note is the last in the beam, end the beaming
-                if (position == m_current_beam->m_notes.Count() - 1) {
+                if ((unsigned int)position == m_current_beam->m_notes.Count() - 1) {
                     btype = "end";
                     m_current_beam = NULL;
                     m_in_beam = false;
@@ -600,9 +632,40 @@ void MusXMLOutput::WriteNoteOrRest(MusLayerElement *element) {
     // measure in partwise
     // link to part
     m_xml_part->LinkEndChild(note);
-        
+    
+    // save to current note pointer
+    m_xml_last_note = note;
 }
 
+void MusXMLOutput::SetTie(TiXmlElement *xml_note, bool last) {
+    TiXmlElement *xtie = new TiXmlElement("tie");
+    wxString tie_type;
+    
+    if (!last) {
+        tie_type = "start";
+        m_tied = true;
+
+    } else {
+        // end tie, reset tied flag
+        tie_type = "stop";
+        m_tied = false;
+    }
+    
+    // add text to tie
+    xtie->SetAttribute("type", tie_type.c_str());
+    
+    // add to note
+    // it has to be immediately after <duration>
+    // so search for it
+    TiXmlNode *duration = xml_note->LastChild("duration");
+    // if exists, add it before
+    if (duration)
+        xml_note->InsertAfterChild(duration, *xtie);
+    else
+        // else just at the end
+        xml_note->LinkEndChild(xtie);
+}
+               
 void MusXMLOutput::CreateAttributes() {
     // Make new attributes as necessary
     if (m_xml_attributes == NULL) {

@@ -16,6 +16,7 @@
 
 #include "musdoc.h"
 #include "muslayer.h"
+#include "mustie.h"
 
 #include <tinyxml.h>
 
@@ -69,6 +70,7 @@ public:
     void WriteNoteOrRest(MusLayerElement *element);
     void WriteMultiMeasureRest(MusRest *r);
     void CreateAttributes();
+    void SetTie(TiXmlElement *xml_note, bool last);
     void CreateRestsForMultiMeasure();
     
 private:
@@ -79,12 +81,14 @@ private:
     TiXmlElement *m_xml_measure;
     TiXmlElement *m_xml_attributes;
     TiXmlElement *m_xml_measure_style;
+    TiXmlElement *m_xml_last_note;
     TiXmlDocument *m_xml_doc;
     TiXmlElement *m_xml_current_clef;
     
     MusMensur *m_current_time;
     MusBeam *m_current_beam;
     bool m_in_beam;
+    bool m_tied;
     int m_multimeasure_rests;
     
     int m_measure_count;
