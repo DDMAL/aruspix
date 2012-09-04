@@ -509,14 +509,14 @@ void MusXMLOutput::WriteNoteOrRest(MusLayerElement *element) {
     TiXmlElement *duration = new TiXmlElement("duration");
     
     switch (di->m_dur) {
-        case DUR_LG: dur = "64"; t = "longa"; break;
+        case DUR_LG: dur = "64"; t = "long"; break;
         case DUR_BR: dur = "32"; t = "breve"; break;
         case DUR_1: dur = "16"; t = "whole"; break;
-        case DUR_2: dur = "8"; t = "half    "; break;
+        case DUR_2: dur = "8"; t = "half"; break;
         case DUR_4: dur = "4"; t = "quarter"; break;
         case DUR_8: dur = "2"; t = "eighth"; num_of_beams = "1"; break;
         case DUR_16: dur = "1"; t = "16th"; num_of_beams = "2"; break;
-        case DUR_32: dur = "1"; t = "32th"; num_of_beams = "3"; break;
+        case DUR_32: dur = "1"; t = "32nd"; num_of_beams = "3"; break;
         case DUR_64: dur = "1"; t = "64th"; num_of_beams = "4"; break;
         case DUR_128: dur = "1"; t = "128th"; num_of_beams = "5"; break;
             
@@ -536,16 +536,25 @@ void MusXMLOutput::WriteNoteOrRest(MusLayerElement *element) {
         TiXmlText *step_name = new TiXmlText(number.c_str());
         step->LinkEndChild(step_name);
         
-        
-        //printf("-----%n\n", n->m_oct);
         number.Clear();
         number << (int)n->m_oct;
         TiXmlText *octave_name = new TiXmlText(number.c_str());
         octave->LinkEndChild(octave_name);
         
+        // do we have an alteration?
+        if (n->m_accid != 0) {
+            number.Clear();
+            number << 1;
+            TiXmlElement *xalter = new TiXmlElement("alter");
+            TiXmlText *altnr = new TiXmlText(number.c_str());
+            xalter->LinkEndChild(altnr);
+            pitch->LinkEndChild(xalter);
+        }
+        
         pitch->LinkEndChild(step);
         pitch->LinkEndChild(octave);
         note->LinkEndChild(pitch);
+        
         
     } else if (dynamic_cast<MusRest*>(element)) {
         MusRest *r = dynamic_cast<MusRest*>(element);
@@ -560,9 +569,6 @@ void MusXMLOutput::WriteNoteOrRest(MusLayerElement *element) {
             WriteMultiMeasureRest(r);
             return;
         }
-
-        // rests do not have notehead type
-        t = "";
     }
     
     // put the duration
