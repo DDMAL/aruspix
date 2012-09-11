@@ -574,7 +574,6 @@ int MusPaeInput::getGraceNote(const char* incipit, NoteObject *note, int index )
             while ((r < length) && (incipit[r] != 'r')) {
                 if ((incipit[r]-'A'>=0) && (incipit[r]-'A'<7)) {
                     note->appoggiatura++;
-                    std::cout << note->appoggiatura << std::endl; 
                 }
                 r++;
             }
@@ -929,6 +928,8 @@ int MusPaeInput::getNote( const char* incipit, NoteObject *note, MeasureObject *
     int oct, tie;
     int i = index;
     double tuplet = note->tuplet; // save for later
+    bool acc;
+    int app;
     
     note->duration = measure->durations[measure->durations_offset];
 
@@ -983,6 +984,9 @@ int MusPaeInput::getNote( const char* incipit, NoteObject *note, MeasureObject *
     oct = note->octave;
     measure->notes.push_back( *note );
     
+    acc = note->acciaccatura;
+    app = note->appoggiatura;
+    
     // Reset note to defaults
     note->clear();
     
@@ -1009,9 +1013,9 @@ int MusPaeInput::getNote( const char* incipit, NoteObject *note, MeasureObject *
     
     // grace notes
     note->acciaccatura = false;
-    if (note->appoggiatura > 0) {
+    if (app > 0) {
         //std::cout << note->appoggiatura << std::endl; 
-        note->appoggiatura--;
+        note->appoggiatura = --app;
         note->appoggiatura_multiple = false;
     }
     // durations

@@ -58,8 +58,8 @@ public:
     }
     NoteObject(void) { clear(); };
     void   clear(void) {
-        //appoggiatura = 0;
-        //acciaccatura = appoggiatura_multiple = fermata = trill = false;
+        appoggiatura = 0;
+        acciaccatura = appoggiatura_multiple = fermata = trill = false;
         tuplet = 1.0; // no tuplet
         tie = 0;
         
