@@ -229,7 +229,7 @@ void MusPaeInput::convertPlainAndEasyToKern(std::istream &infile, std::ostream &
         // end of appogiatura
 		else if (incipit[i] == 'r') {
 			current_note.appoggiatura = 0; // should not have to be done, but just in case
-		}
+        }
         
         //note and rest
         // getNote also creates a new note object
@@ -574,7 +574,7 @@ int MusPaeInput::getGraceNote(const char* incipit, NoteObject *note, int index )
             while ((r < length) && (incipit[r] != 'r')) {
                 if ((incipit[r]-'A'>=0) && (incipit[r]-'A'<7)) {
                     note->appoggiatura++;
-                    //std::cout << note->appoggiatura << std::endl; 
+                    std::cout << note->appoggiatura << std::endl; 
                 }
                 r++;
             }
@@ -1037,6 +1037,7 @@ int MusPaeInput::getNote( const char* incipit, NoteObject *note, MeasureObject *
 
 void MusPaeInput::printMeasure(std::ostream& out, MeasureObject *measure ) {
     MusBeam *beam = NULL;
+    MusBeam *appog_beam = NULL;
     
     m_measure =  new MusMeasure;
     m_staff = new MusStaff();
@@ -1085,18 +1086,44 @@ void MusPaeInput::printMeasure(std::ostream& out, MeasureObject *measure ) {
             n->m_dots = note->dots;
             n->m_accid = note->accidental;
             
-            if (note->beam & BEAM_INITIAL) {
-                beam = new MusBeam;
-                beam->AddNote(n);
-                m_layer->AddLayerElement(beam);
-            } else if (note->beam & BEAM_MEDIAL) {
-                if (beam)
-                    beam->AddNote(n);
+            // handle appoggiatura. if appoggiatura_multiple is set, it is the first
+            // in this case make a beam too
+            // note->appoggiatura == 1 is a SINGLE note
+            // note->appoggiatura == 2..n is multiple notes
+            // so if note->appoggiatura == 2 we now it is the last in a beamed appogg
+            if (note->appoggiatura > 0) {
+                n->m_cueSize = true;
                 
-            } else if (note->beam & BEAM_TERMINAL) {
-                beam = NULL;
+                if (note->appoggiatura_multiple && note->appoggiatura > 1) {
+                    appog_beam = new MusBeam;
+                    m_layer->AddLayerElement(appog_beam);
+                }
+                
+                // if the beam was not created, this is a single note appoggiatura
+                if (appog_beam)
+                    appog_beam->AddNote(n);
+                
+                // this is the last note in appoggiatura beam, set the beam to null
+                if (note->appoggiatura == 2) // last one in a beam is 2
+                    appog_beam = NULL;
             }
             
+            // do beaming, EXCEPT for grace notes
+            // which are unbeamed in the beam / have their own beam
+            if (!note->appoggiatura) {
+                if (note->beam & BEAM_INITIAL) {
+                    beam = new MusBeam;
+                    beam->AddNote(n);
+                    m_layer->AddLayerElement(beam);
+                } else if (note->beam & BEAM_MEDIAL) {
+                    if (beam)
+                        beam->AddNote(n);
+                    
+                } else if (note->beam & BEAM_TERMINAL) {
+                    beam = NULL;
+                }
+            }
+                
             m_layer->AddLayerElement(n); // create a note
             
             // FOR THE MOMENT WORKS ONLY WITH TWO NOTES

@@ -58,8 +58,8 @@ public:
     }
     NoteObject(void) { clear(); };
     void   clear(void) {
-        appoggiatura = 0;
-        acciaccatura = appoggiatura_multiple = fermata = trill = false;
+        //appoggiatura = 0;
+        //acciaccatura = appoggiatura_multiple = fermata = trill = false;
         tuplet = 1.0; // no tuplet
         tie = 0;
         
@@ -254,7 +254,7 @@ private:
 	MusLayer *m_layer;
     MusTie *m_current_tie;
     MusTuplet *m_current_tuplet;
-    
+        
     //unsigned char m_rest_position;
     //unsigned int m_rest_octave;
 };

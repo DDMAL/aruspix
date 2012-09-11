@@ -211,6 +211,13 @@ MusLayerElement *MusLayerElement::GetChildCopy()
 
 int MusLayerElement::GetHorizontalSpacing()
 {
+    // set less space for grace notes
+    if (dynamic_cast<MusNote*>(this)) {
+        MusNote *n = dynamic_cast<MusNote*>(this);
+        if (n->m_cueSize)
+            return 10;
+    }
+    
     return 20; // arbitrary generic value
 }
 

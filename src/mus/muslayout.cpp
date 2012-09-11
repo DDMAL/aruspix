@@ -177,7 +177,9 @@ void MusLayout::Realize( MusScore *score )
                     for (m = 0; m < (int)layer->m_elements.GetCount(); m++) {
                         MusLaidOutLayerElement *element = new MusLaidOutLayerElement( &layer->m_elements[m] );
                         element->m_x_abs = x;
+                        
                         x += 40;
+                            
                         laidOutLayer->AddElement( element );
                         //wxLogDebug("element %d added", m);
                     }			
