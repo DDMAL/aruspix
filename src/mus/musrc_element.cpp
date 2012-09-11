@@ -440,11 +440,13 @@ void MusRC::DrawNote ( MusDC *dc, MusLaidOutLayerElement *element, MusLaidOutLay
 									 note->m_cueSize );
 				}
 			}
+            if (note->m_cueSize && note->m_acciaccatura)
+                DrawAcciaccaturaSlash(dc, element);
 		}	// fin de dessin queues et crochets
 
 	}
-
-	DrawLedgerLines( dc, ynn,bby,xl,ledge, staffSize);
+    
+	DrawLedgerLines( dc, ynn, bby, xl, ledge, staffSize);
 
 	if (note->m_slur[0])
 	{	
@@ -1460,6 +1462,25 @@ void MusRC::DrawTie( MusDC *dc, MusLaidOutLayerElement *element, MusLaidOutLayer
 
     dc->EndGraphic(element, this ); //RZ
     
+}
+
+void MusRC::DrawAcciaccaturaSlash(MusDC *dc, MusLaidOutLayerElement *element) {
+    
+    MusNote *note = dynamic_cast<MusNote*>(element->m_layerElement);
+    
+    if (note->m_dur < DUR_8)
+        return;
+    
+    dc->SetPen(AxBLACK, 2, wxSOLID);
+    dc->SetBrush( AxBLACK, wxSOLID );
+    
+    if (element->m_drawn_stem_dir)
+        dc->DrawLine(element->m_stem_start.x - 10, ToRendererY(element->m_stem_start.y + 10), element->m_stem_start.x + 20, ToRendererY(element->m_stem_start.y + 40));
+    else
+        dc->DrawLine(element->m_stem_start.x - 10, ToRendererY(element->m_stem_start.y - 10), element->m_stem_start.x + 20, ToRendererY(element->m_stem_start.y - 40));
+    
+    dc->ResetPen();
+    dc->ResetBrush();
 }
 
 /*

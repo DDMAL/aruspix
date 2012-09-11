@@ -95,6 +95,9 @@ public:
     char m_stemDir;
     /** Indicates the stem length (0 == auto) */
     unsigned char m_stemLen;
+    /** indicates if the appoggiatura is slashed (i.e. it is an acciaccatura)
+     used with cueSize = true */
+    bool m_acciaccatura;
     
 private:
     

@@ -116,6 +116,7 @@ public:
 	void DrawSlur( MusDC *dc, MusLaidOutLayer *layer, int x1, int y1, int x2, int y2, bool up, int height = -1);
     int CalculatePitchCode ( MusLaidOutLayer *layer, int y_n, int x_pos, int *octave );
     /* musrc_element.cpp */
+    void DrawAcciaccaturaSlash(MusDC *dc, MusLaidOutLayerElement *element);
     void DrawElement( MusDC *dc, MusLaidOutLayerElement *element, MusLaidOutLayer *layer, MusLaidOutStaff *staff );
     void DrawDurationElement( MusDC *dc, MusLaidOutLayerElement *element, MusLaidOutLayer *layer, MusLaidOutStaff *staff );
     void DrawBeamElement(MusDC *dc, MusLaidOutLayerElement *element, MusLaidOutLayer *layer, MusLaidOutStaff *staff);

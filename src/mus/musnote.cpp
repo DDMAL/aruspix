@@ -28,6 +28,7 @@ MusNote::MusNote():
     memset(m_slur, 0, sizeof(unsigned char) * NOTE_MAX_SLURS);
     m_stemDir = 0;
     m_stemLen = 0;
+    m_acciaccatura = false;
 }
 
 

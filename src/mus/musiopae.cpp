@@ -1112,9 +1112,16 @@ void MusPaeInput::printMeasure(std::ostream& out, MeasureObject *measure ) {
                     appog_beam = NULL;
             }
             
+            // Acciaccaturas are similar but do not get beamed (do they)
+            // this case is simpler. NOTE a note can not be acciacctura AND appoggiatura
+            if (note->acciaccatura) {
+                n->m_cueSize = true;
+                n->m_acciaccatura = true;
+            }
+            
             // do beaming, EXCEPT for grace notes
             // which are unbeamed in the beam / have their own beam
-            if (!note->appoggiatura) {
+            if (!note->appoggiatura && !note->acciaccatura) {
                 if (note->beam & BEAM_INITIAL) {
                     beam = new MusBeam;
                     beam->AddNote(n);

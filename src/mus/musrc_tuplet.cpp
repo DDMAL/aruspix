@@ -294,12 +294,15 @@ void MusRC::DrawTuplet( MusDC *dc, MusLaidOutLayerElement *element, MusLaidOutLa
     dc->StartGraphic( element, "tuplet", wxString::Format("tuplet_%d_%d_%d", staff->GetId(), layer->voix, element->GetId()) );
     
     // Calculate position for number 0x82
-    int txt_x = center.x - (txt_lenght / 2);
+    // since the number is slanted, move the center left
+    // by 4 pixels so it seems more centered to the eye
+    int txt_x = center.x - (txt_lenght / 2) - 4;
     //DrawLeipzigFont ( dc, txt_x,  center.y, notes + 0x82, staff, false);
     
     putstring(dc, txt_x, center.y, notes, 0);
     
-    dc->SetPen(AxBLACK);
+    //dc->SetPen(AxBLACK);
+    dc->SetPen(AxBLACK, 2, wxSOLID);
     
     // Start is 0 when no line is necessary (i.e. beamed notes)
     if (start.x > 0) {
