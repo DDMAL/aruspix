@@ -1081,6 +1081,11 @@ void MusPaeInput::printMeasure(std::ostream& out, MeasureObject *measure ) {
             MusRest *r = new MusRest();
             r->m_dur = note->duration;
             r->m_pname = REST_AUTO;
+            
+            // draw a fermata?
+            if (note->fermata)
+                r->m_fermata = true;
+            
             m_layer->AddLayerElement(r); // create a rest
         } else {
             MusNote *n = new MusNote();
@@ -1182,17 +1187,12 @@ void MusPaeInput::printMeasure(std::ostream& out, MeasureObject *measure ) {
                 }
             }
             
+            // draw a fermata?
+            // this is identical in rest, maybe find a wiser solution?
+            if (note->fermata)
+                n->m_fermata = true;
+            
         } // note or rest
-        
-        if (note->acciaccatura) {
-            out << "q";
-        } else if (note->appoggiatura > 0) {
-            out << "Q";
-        }
-        
-        if (note->fermata) {
-            out << ";";
-        } 
         
         if (note->trill == true) {
             out << "t";

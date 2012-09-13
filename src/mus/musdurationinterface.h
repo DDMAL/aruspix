@@ -58,7 +58,8 @@ public:
     int m_numBase;
     /** Indicates if intial, medial or termial part of a tuplet for up to 6 nesting/overlaping tuplets */
     unsigned char m_tuplet[DURATION_MAX_TUPLETS];
-
+    /** Indicates if a fermata should be drawn on this note/rest */
+    bool m_fermata;
     
 
 private:

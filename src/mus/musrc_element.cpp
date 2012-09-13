@@ -549,6 +549,9 @@ void MusRC::DrawNote ( MusDC *dc, MusLaidOutLayerElement *element, MusLaidOutLay
 	//temp debug code
 	
 
+    if (note->m_fermata)
+        DrawFermata(dc, element, staff);
+    
 	return;
 }
 
@@ -611,6 +614,10 @@ void MusRC::DrawRest ( MusDC *dc, MusLaidOutLayerElement *element, MusLaidOutLay
 			default: DrawQuarterRest( dc, a, b, formval, rest->m_dots, rest->m_cueSize, staff);
 		}
 	}
+    
+    if(rest->m_fermata)
+        DrawFermata(dc, element, staff);
+    
 	return;
 }
 
@@ -1481,6 +1488,36 @@ void MusRC::DrawAcciaccaturaSlash(MusDC *dc, MusLaidOutLayerElement *element) {
     
     dc->ResetPen();
     dc->ResetBrush();
+}
+
+void MusRC::DrawFermata(MusDC *dc, MusLaidOutLayerElement *element, MusLaidOutStaff *staff) {
+    int x, y;
+    //MusNote *note = dynamic_cast<MusNote*>(element->m_layerElement);
+    
+    x = element->m_x_abs;
+    
+    if (dynamic_cast<MusNote*>(element->m_layerElement)) {
+        if (!element->m_drawn_stem_dir) { // stem down, fermata up!
+            
+            if ((element->m_y_drawing + staff->m_y_drawing) < staff->m_y_abs)
+                y = staff->m_y_abs + 20;
+            else
+                y = (element->m_y_drawing + staff->m_y_drawing) + 20;
+        
+            DrawLeipzigFont ( dc, element->m_x_abs, y, LEIPZIG_FERMATA_UP, staff, false );
+        } else { // stem up fermata down
+            
+            if ((element->m_y_drawing + staff->m_y_drawing) > (staff->m_y_abs - m_layout->m_staffSize[staff->staffSize]))
+                y = staff->m_y_abs - m_layout->m_staffSize[staff->staffSize] - 20;
+            else
+                y = (element->m_y_drawing + staff->m_y_drawing) - 20;
+            
+            DrawLeipzigFont ( dc, element->m_x_abs, y, LEIPZIG_FERMATA_DOWN, staff, false );
+        }
+    } else if (dynamic_cast<MusRest*>(element->m_layerElement)) {
+        y = staff->m_y_abs + 20;
+        DrawLeipzigFont ( dc, element->m_x_abs, y, LEIPZIG_FERMATA_UP, staff, false );
+    }
 }
 
 /*

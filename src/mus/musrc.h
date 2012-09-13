@@ -123,6 +123,7 @@ public:
     void DrawBarline( MusDC *dc, MusLaidOutLayerElement *element, MusLaidOutLayer *layer, MusLaidOutStaff *staff );  
     void DrawClef( MusDC *dc, MusLaidOutLayerElement *element, MusLaidOutLayer *layer, MusLaidOutStaff *staff );
     void DrawMensur( MusDC *dc, MusLaidOutLayerElement *element, MusLaidOutLayer *layer, MusLaidOutStaff *staff );
+    void DrawFermata(MusDC *dc, MusLaidOutLayerElement *element, MusLaidOutStaff *staff);
     void DrawMensurCircle( MusDC *dc, int x, int yy, MusLaidOutStaff *staff );
     void DrawMensurDot( MusDC *dc, int x, int yy, MusLaidOutStaff *staff ); 
     void DrawMensurFigures( MusDC *dc, int x, int y, int num, int numBase, MusLaidOutStaff *staff); 
