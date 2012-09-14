@@ -520,6 +520,9 @@ wxString FilenameLookup(unsigned char c) {
         case 0x89: glyph = "oblique_figure_7"; break;
         case 0x8A: glyph = "oblique_figure_8"; break;
         case 0x8B: glyph = "oblique_figure_9"; break;
+            /* fermatas */
+        case 0x3F: glyph = "fermata_up"; break;
+        case 0x40: glyph = "fermata_down"; break;          
             /* clef */
         case LEIPZIG_CLEF_G: glyph = "clef_G"; break;
         case LEIPZIG_CLEF_F: glyph = "clef_F"; break;
