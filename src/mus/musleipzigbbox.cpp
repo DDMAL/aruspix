@@ -10,12 +10,12 @@
 #include "musdef.h"
 
 bool MusLeipzigBBox::m_initialized =  false;
-MusLeipzigBBox::BoundingBox* MusLeipzigBBox::bBox = MusLeipzigBBox::InitializeStatic();
+MusLeipzigBBox::BoundingBox* MusLeipzigBBox::m_bBox = MusLeipzigBBox::InitializeStatic();
 
 // Statically initialize the struct
 MusLeipzigBBox::BoundingBox* MusLeipzigBBox::InitializeStatic() {
     
-    MusLeipzigBBox::BoundingBox* bBox = (MusLeipzigBBox::BoundingBox*)malloc(sizeof(MusLeipzigBBox::BoundingBox) * 65);
+    MusLeipzigBBox::BoundingBox* bBox = (MusLeipzigBBox::BoundingBox*)malloc(sizeof(MusLeipzigBBox::BoundingBox) * 66);
     
     bBox[LEIPZIG_BBOX_ORN_MORDENT].m_x = 0.0;
     bBox[LEIPZIG_BBOX_ORN_MORDENT].m_y = -2.0;
