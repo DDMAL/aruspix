@@ -69,6 +69,9 @@
 				<xsl:when test="@unicode='&#x2030;'"><xsl:value-of select="'oblique_figure_7'"/></xsl:when>
 				<xsl:when test="@unicode='&#x160;'"><xsl:value-of select="'oblique_figure_8'"/></xsl:when>
 				<xsl:when test="@unicode='&#x2039;'"><xsl:value-of select="'oblique_figure_9'"/></xsl:when>
+				<!-- Fermatas -->
+				<xsl:when test="@unicode='&#x3f;'"><xsl:value-of select="'fermata_up'"/></xsl:when>
+				<xsl:when test="@unicode='&#x40;'"><xsl:value-of select="'fermata_down'"/></xsl:when>
 				<!-- clef -->
 				<xsl:when test="@unicode='&#xcf;'"><xsl:value-of select="'clef_G'"/></xsl:when>
 				<xsl:when test="@unicode='&#xd0;'"><xsl:value-of select="'clef_F'"/></xsl:when>
