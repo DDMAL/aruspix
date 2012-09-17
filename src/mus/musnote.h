@@ -42,6 +42,14 @@
 /** 
  * This class models the MEI <note> element. 
  */
+
+
+// embellishments
+// for the moment only the trill is implemented
+#define EMB_NONE 0
+#define EMB_TRILL 1
+#define EMB_MORDENT 2
+
 class MusNote: public MusLayerElement, public MusDurationInterface, public MusPitchInterface
 {
 public:
@@ -72,7 +80,6 @@ public:
      * Set the note into a ligature.
      */
     virtual void SetLigature( );
-
     
 private:
     
@@ -98,6 +105,8 @@ public:
     /** indicates if the appoggiatura is slashed (i.e. it is an acciaccatura)
      used with cueSize = true */
     bool m_acciaccatura;
+    /** embellishment on this note **/
+    unsigned int m_embellishment;
     
 private:
     

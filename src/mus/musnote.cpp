@@ -29,6 +29,7 @@ MusNote::MusNote():
     m_stemDir = 0;
     m_stemLen = 0;
     m_acciaccatura = false;
+    m_embellishment = EMB_NONE;
 }
 
 

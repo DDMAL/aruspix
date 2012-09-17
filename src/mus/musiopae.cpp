@@ -1192,11 +1192,12 @@ void MusPaeInput::printMeasure(std::ostream& out, MeasureObject *measure ) {
             if (note->fermata)
                 n->m_fermata = true;
             
+            // draw a trill?
+            if (note->trill == true) {
+                n->m_embellishment = EMB_TRILL;
+            }
+            
         } // note or rest
-        
-        if (note->trill == true) {
-            out << "t";
-        }
 
     }
     if ( measure->barline.length() ) {

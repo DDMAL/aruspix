@@ -551,6 +551,9 @@ void MusRC::DrawNote ( MusDC *dc, MusLaidOutLayerElement *element, MusLaidOutLay
 
     if (note->m_fermata)
         DrawFermata(dc, element, staff);
+
+    if (note->m_embellishment == EMB_TRILL)
+        DrawTrill(dc, element, staff);
     
 	return;
 }
@@ -1490,34 +1493,75 @@ void MusRC::DrawAcciaccaturaSlash(MusDC *dc, MusLaidOutLayerElement *element) {
     dc->ResetBrush();
 }
 
+/** Draws a fermata
+ rest - the fermata is always above the stavv
+ note - for breves and semibreves, only above the staff
+      - for flagged notes, the fermata is on the side of the notehead
+ */
 void MusRC::DrawFermata(MusDC *dc, MusLaidOutLayerElement *element, MusLaidOutStaff *staff) {
     int x, y;
-    //MusNote *note = dynamic_cast<MusNote*>(element->m_layerElement);
+    int emb_offset = 0; // if there is and embellishment, offset the note up
     
+    // We position the fermata in the same horizontal pos. of th eobject
     x = element->m_x_abs;
     
+    // First case, notes
     if (dynamic_cast<MusNote*>(element->m_layerElement)) {
-        if (!element->m_drawn_stem_dir) { // stem down, fermata up!
-            
-            if ((element->m_y_drawing + staff->m_y_drawing) < staff->m_y_abs)
-                y = staff->m_y_abs + 20;
-            else
-                y = (element->m_y_drawing + staff->m_y_drawing) + 20;
+        MusNote *note = dynamic_cast<MusNote*>(element->m_layerElement);
         
+        // stem down or semibreve/longa, fermata up!
+        if (!element->m_drawn_stem_dir && (note->m_dur != DUR_1 || note->m_dur != DUR_BR)) {
+            
+            // only for up-fermatas, if there is a trill on the same note
+            // add a 35 pixel space so they do not collide
+            if (note->m_embellishment)
+                emb_offset = 35;
+            
+            // check that the notehead is in the staff.
+            if ((element->m_y_drawing + staff->m_y_drawing) < staff->m_y_abs)
+                // in the staff, set the fermata 20 pixels above the last line (+ embellishment offset)
+                y = staff->m_y_abs + 20 + emb_offset;
+            else
+                // out of the staff, place the trill 20 px above the notehead
+                y = (element->m_y_drawing + staff->m_y_drawing) + 20 + emb_offset;
+            
+            // draw the up-fermata
             DrawLeipzigFont ( dc, element->m_x_abs, y, LEIPZIG_FERMATA_UP, staff, false );
         } else { // stem up fermata down
             
+            // This works as above, only we check that the note head is not
+            // UNDER the staff
             if ((element->m_y_drawing + staff->m_y_drawing) > (staff->m_y_abs - m_layout->m_staffSize[staff->staffSize]))
+                // notehead in staff, set at 20 px under
                 y = staff->m_y_abs - m_layout->m_staffSize[staff->staffSize] - 20;
             else
+                // notehead under staff, set 20 px under notehead
                 y = (element->m_y_drawing + staff->m_y_drawing) - 20;
             
             DrawLeipzigFont ( dc, element->m_x_abs, y, LEIPZIG_FERMATA_DOWN, staff, false );
         }
     } else if (dynamic_cast<MusRest*>(element->m_layerElement)) {
+        // this is a rest
+        // rests for the moment are always in the staff
+        // so just place the fermata above the staff + 20 px
         y = staff->m_y_abs + 20;
         DrawLeipzigFont ( dc, element->m_x_abs, y, LEIPZIG_FERMATA_UP, staff, false );
     }
+}
+
+// Draw a trill above the notehead
+// This function works as the up-fermata portion of DrawFermata
+// if there are many symbols to draw we could make a generalized function
+void MusRC::DrawTrill(MusDC *dc, MusLaidOutLayerElement *element, MusLaidOutStaff *staff) {
+    int x, y;    
+    x = element->m_x_abs;
+
+    if ((element->m_y_drawing + staff->m_y_drawing) < staff->m_y_abs)
+        y = staff->m_y_abs + 30;
+    else
+        y = (element->m_y_drawing + staff->m_y_drawing) + 30;
+    
+    DrawLeipzigFont ( dc, element->m_x_abs, y, LEIPZIG_EMB_TRILL, staff, false );
 }
 
 /*
