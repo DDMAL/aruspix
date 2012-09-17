@@ -37,13 +37,14 @@ string m_svgdir;
 string m_outfile;
 string m_outformat = "svg";
 int m_scale = 100;
+int m_boder = 10;
 
 bool m_pae = false;
 bool m_darms = false;
 bool m_mei = false;
 bool m_no_mei_hdr = false;
 
-const char *cmdlineopts = "ndmpr:o:t:s:h";
+const char *cmdlineopts = "ndmpr:o:t:s:hb:";
 
 // Some handy string split functions
 std::vector<std::string> &split(const std::string &s, char delim, std::vector<std::string> &elems) {
@@ -70,6 +71,7 @@ void display_usage() {
     cerr << "-m read MEI file." << endl;
     cerr << "-t select output format: mei, svg (default)"<< endl;
     cerr << "-s scale percent (100 default, max 1000)" << endl<< endl;
+    cerr << "-b add border (10 px default, max 1000)" << endl;
     
     cerr << "Resources default dir: " << MusDoc::GetResourcesPath() << endl;
 }
@@ -106,6 +108,10 @@ int main(int argc, char** argv) {
                 
             case 's':
                 m_scale = atoi(optarg);
+                break;
+                
+            case 'b':
+                m_boder = atoi(optarg);
                 break;
                 
             case 'h':
@@ -191,20 +197,32 @@ int main(int argc, char** argv) {
     
     // Create SVG or mei
     if (m_outformat == "svg") {
-
+        
+        // Create a new visual layout and spave the music
         MusLayout *layout = new MusLayout( Raw );
         layout->Realize(doc->m_divs[0].m_score);
         doc->AddLayout( layout );
         layout->SpaceMusic();
-            
+        
+        // Get the current system for the SVG clipping size    
         MusPage *page = &layout->m_pages[0];
         MusSystem *system = &page->m_systems[0];
         
+        // creare a new local RC and set the above created layout
         MusRC rc;
         rc.SetLayout(layout);
+        // no left margin
         layout->m_leftMargin = 0; // good done here?
-        MusSvgDC *svg = new MusSvgDC(m_outfile.c_str(), system->m_contentBB_x2 - system->m_contentBB_x1, (system->m_contentBB_y2 - system->m_contentBB_y1));
+        
+        // Create the SVG object, h & w come from the system
+        // we add border*2 so it is centered into the image
+        MusSvgDC *svg = new MusSvgDC(m_outfile.c_str(), system->m_contentBB_x2 - system->m_contentBB_x1 + m_boder*2, (system->m_contentBB_y2 - system->m_contentBB_y1) + m_boder*2);
+        
+        // set scale and border from user options
         svg->SetUserScale((double)m_scale / 100, (double)m_scale / 100);
+        svg->SetLogicalOrigin(m_boder, m_boder);
+        
+        // render the page
         rc.DrawPage(svg, &layout->m_pages[0] , false);
         
         delete svg;
