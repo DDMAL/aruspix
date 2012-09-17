@@ -254,6 +254,8 @@ private:
 	MusLayer *m_layer;
     MusTie *m_current_tie;
     MusTuplet *m_current_tuplet;
+    
+    MusBeam *m_current_beam;
         
     //unsigned char m_rest_position;
     //unsigned int m_rest_octave;

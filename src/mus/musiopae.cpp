@@ -72,6 +72,8 @@ MusFileInputStream( doc, -1 )
 	m_layer = NULL;
     m_current_tie = NULL;
     m_current_tuplet =  NULL;
+    
+    m_current_beam = NULL;
 }
 
 MusPaeInput::~MusPaeInput()
@@ -1040,7 +1042,6 @@ int MusPaeInput::getNote( const char* incipit, NoteObject *note, MeasureObject *
 //
 
 void MusPaeInput::printMeasure(std::ostream& out, MeasureObject *measure ) {
-    MusBeam *beam = NULL;
     MusBeam *appog_beam = NULL;
     
     m_measure =  new MusMeasure;
@@ -1126,17 +1127,18 @@ void MusPaeInput::printMeasure(std::ostream& out, MeasureObject *measure ) {
             
             // do beaming, EXCEPT for grace notes
             // which are unbeamed in the beam / have their own beam
+            // m_current_beam is global so we can have cross-measure beams
             if (!note->appoggiatura && !note->acciaccatura) {
                 if (note->beam & BEAM_INITIAL) {
-                    beam = new MusBeam;
-                    beam->AddNote(n);
-                    m_layer->AddLayerElement(beam);
+                    m_current_beam = new MusBeam;
+                    m_current_beam->AddNote(n);
+                    m_layer->AddLayerElement(m_current_beam);
                 } else if (note->beam & BEAM_MEDIAL) {
-                    if (beam)
-                        beam->AddNote(n);
+                    if (m_current_beam)
+                        m_current_beam->AddNote(n);
                     
                 } else if (note->beam & BEAM_TERMINAL) {
-                    beam = NULL;
+                    m_current_beam = NULL;
                 }
             }
                 
@@ -1200,9 +1202,15 @@ void MusPaeInput::printMeasure(std::ostream& out, MeasureObject *measure ) {
         } // note or rest
 
     }
+    // Set barline
+    // FIXME use flags for proper barline identification
     if ( measure->barline.length() ) {
-        out << measure->barline << "\n";
         MusBarline *bline = new MusBarline;
+        if (measure->barline == "=")
+            bline->m_barlineType = BARLINE_SINGLE;
+        else 
+            bline->m_barlineType = BARLINE_DBL;
+        
         m_layer->AddLayerElement(bline);
     }
     
