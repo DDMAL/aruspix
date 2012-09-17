@@ -521,8 +521,8 @@ wxString FilenameLookup(unsigned char c) {
         case 0x8A: glyph = "oblique_figure_8"; break;
         case 0x8B: glyph = "oblique_figure_9"; break;
             /* fermatas */
-        case 0x3F: glyph = "fermata_up"; break;
-        case 0x40: glyph = "fermata_down"; break;          
+        case LEIPZIG_FERMATA_UP: glyph = "fermata_up"; break;
+        case LEIPZIG_FERMATA_DOWN: glyph = "fermata_down"; break;          
             /* clef */
         case LEIPZIG_CLEF_G: glyph = "clef_G"; break;
         case LEIPZIG_CLEF_F: glyph = "clef_F"; break;
@@ -589,7 +589,7 @@ void MusSvgDC::DrawMusicText(const wxString& text, int x, int y)
         
     // print chars one by one
     for (unsigned int i = 0; i < text.Len(); i++) {
-        unsigned char c = (unsigned char)text[0];
+        unsigned char c = (unsigned char)text[i];
         
         wxString glyph = FilenameLookup(c);
         
