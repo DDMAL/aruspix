@@ -16,7 +16,7 @@ include_directories(/usr/local/include)
 
 link_libraries(iconv xml2 mei ${wxWidgets_LIBRARIES})
 
-include_directories(src/mus src/)
+include_directories(src/mus src/ src/tinyxml)
 
 add_executable (aruspix 
 	src/mus/headless_main.cpp 
@@ -69,6 +69,7 @@ add_executable (aruspix
 	src/mus/musrc_page.cpp
 	src/mus/mustie.cpp
 	src/mus/musiomusxml.cpp
+	src/mus/musrc_tuplet.cpp
 	src/tinyxml/tinystr.cpp
 	src/tinyxml/tinyxml.cpp
 	src/tinyxml/tinyxmlerror.cpp
