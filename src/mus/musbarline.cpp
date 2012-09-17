@@ -18,7 +18,9 @@
 MusBarline::MusBarline():
 	MusLayerElement()
 {
-    m_barlineType = BARLINE_SINGLE;    
+    m_barlineType = BARLINE_SINGLE;
+    m_partialBarline = false; // this was used unitialized
+    m_onStaffOnly = false; // is this good?
 }
 
 

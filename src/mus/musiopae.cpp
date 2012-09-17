@@ -1064,7 +1064,7 @@ void MusPaeInput::printMeasure(std::ostream& out, MeasureObject *measure ) {
     
     if ( measure->wholerest > 0 ) {     
         MusRest *r = new MusRest();
-        r->m_dur = VALSilSpec; // surely this is NOT a multimeasure rest
+        r->m_dur = VALSilSpec; //
         r->m_multimeasure_dur = measure->wholerest;
         m_layer->AddLayerElement(r);
     }

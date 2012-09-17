@@ -19,6 +19,8 @@
 MusRest::MusRest():
 	MusLayerElement(), MusDurationInterface(), MusPositionInterface()
 {
+    // by default set automatic height
+    m_pname = REST_AUTO;
 }
 
 
