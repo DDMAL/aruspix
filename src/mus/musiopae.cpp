@@ -484,7 +484,7 @@ int MusPaeInput::getTupletFermata(const char* incipit, MeasureObject *measure, N
         // index points to the '(', so we look back
         // if the resut is a number or dot, it means we have the long format
         // i.e. 4(6ABC;5) or 4.(6ABC;5)
-        if ((index != 0) || (isdigit(incipit[index - 1]) || incipit[index - 1] == '.')) {
+        if ((index != 0) && (isdigit(incipit[index - 1]) || incipit[index - 1] == '.')) {
             
             // create the buffer so we can convert the tuplet nr to int
             buf = (char*)malloc(length + 1); // allocate it with space for 0x00
