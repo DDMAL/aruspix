@@ -256,7 +256,9 @@ void MusPaeInput::convertPlainAndEasyToKern(std::istream &infile, std::ostream &
         else if ((incipit[i] == 'i') && staff.size() > 0) {
             MeasureObject last_measure = staff[staff.size() - 1];
             current_measure.notes = last_measure.notes;
-            current_measure.time = last_measure.time;
+            // time was copied explicitally, but now not anymore
+            //current_measure.time = last_measure.time;
+            
             // if old measure does not end with a tie
             // force the first note of the newly copied measure to be without tie
             // this is to prevent copying tie closes which are invalid
@@ -1084,6 +1086,7 @@ void MusPaeInput::printMeasure(std::ostream& out, MeasureObject *measure ) {
             MusRest *r = new MusRest();
             r->m_dur = note->duration;
             r->m_pname = REST_AUTO;
+            r->m_dots = note->dots;
             
             // draw a fermata?
             if (note->fermata)
