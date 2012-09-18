@@ -481,7 +481,8 @@ int MusPaeInput::getTupletFermata(const char* incipit, double current_duration, 
         // we need to change the tuplet duration in consequence
         int note_dot = 0;
         // the duration for the tuplet given before it, or by the first duration value in triplets
-        if ((index == 0) || (isdigit(incipit[index-1]) == 0)) {
+        printf("OGA ------------------------------------ %c\n", incipit[index-1]);
+        if ((index == 0) || (!isdigit(incipit[index - 1]) && incipit[index - 1] != '.')) {
             is_triplet = true; // this means that we have to keep the first value for triplets
             current_duration *= 2; // in case there is no value, use the current value
             // this is wrong syntax wise but it appears in the data
@@ -1169,7 +1170,7 @@ void MusPaeInput::printMeasure(std::ostream& out, MeasureObject *measure ) {
             // we have a tuplet
             if (note->tuplet != 1.0) {
                 
-                if (m_current_tuplet == NULL) // first elem in tie
+                if (m_current_tuplet == NULL) // first elem in tuplet
                     m_current_tuplet = new MusTuplet;
                 
                 m_current_tuplet->AddNote(n); // place it into the array
