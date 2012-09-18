@@ -481,7 +481,6 @@ int MusPaeInput::getTupletFermata(const char* incipit, double current_duration, 
         // we need to change the tuplet duration in consequence
         int note_dot = 0;
         // the duration for the tuplet given before it, or by the first duration value in triplets
-        printf("OGA ------------------------------------ %c\n", incipit[index-1]);
         if ((index == 0) || (!isdigit(incipit[index - 1]) && incipit[index - 1] != '.')) {
             is_triplet = true; // this means that we have to keep the first value for triplets
             current_duration *= 2; // in case there is no value, use the current value
