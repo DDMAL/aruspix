@@ -55,6 +55,8 @@ public:
         accidental = old.accidental;
         dots = old.dots;
         rest = old.rest;
+        
+        clef = old.clef;
     }
     NoteObject(void) { clear(); };
     void   clear(void) {
@@ -71,6 +73,7 @@ public:
         dots = 0;
         rest = false;
         
+        clef = NULL;
     };
     
     NoteObject& operator=(const NoteObject& d){ // for STL vector
@@ -91,6 +94,8 @@ public:
         accidental = d.accidental;
         dots = d.dots;
         rest = d.rest;
+        
+        clef = d.clef;
         
         return *this;
     }
@@ -113,6 +118,8 @@ public:
     unsigned char accidental;
     unsigned int dots;
     bool rest;
+    
+    MusClef *clef;
 };
 
 
@@ -217,7 +224,7 @@ private:
      // parsing functions
      int       getKeyInfo          (const char* incipit, MeasureObject *measure, int index = 0);
      int       getTimeInfo         (const char* incipit, MeasureObject *measure, int index = 0);
-     int       getClefInfo         (const char* incipit, MeasureObject *measure, int index = 0 );
+     int       getClefInfo         (const char* incipit, MusClef *mus_clef, int index = 0 );
      int       getBarline          (const char* incipit, std::string *output, int index = 0 );
      int       getAccidental       (const char* incipit, unsigned char *accident, int index = 0);
      int       getOctave           (const char* incipit, unsigned char *octave, int index = 0 );

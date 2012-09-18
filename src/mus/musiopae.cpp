@@ -153,7 +153,9 @@ void MusPaeInput::convertPlainAndEasyToKern(std::istream &infile, std::ostream &
     }
     
     if (strlen(c_clef)) {
-        getClefInfo(c_clef, &current_measure );    // do we need to put a default clef?
+        MusClef *c = new MusClef;
+        getClefInfo(c_clef, c );    // do we need to put a default clef?
+        current_measure.clef = c;
     }
 
     if (strlen(c_keysig)) {
@@ -272,7 +274,9 @@ void MusPaeInput::convertPlainAndEasyToKern(std::istream &infile, std::ostream &
         
 		//clef change
 		else if ((incipit[i] == '%') && (i+1 < length)) {
-            i += getClefInfo(incipit, &current_measure, i + 1);
+            MusClef *c = new MusClef;
+            i += getClefInfo(incipit, c, i + 1);
+            current_note.clef = c;
         }
         
 		//time signature change
@@ -730,7 +734,7 @@ int MusPaeInput::getTimeInfo( const char* incipit, MeasureObject *measure, int i
 // getClefInfo -- read the key signature.
 //
 
-int MusPaeInput::getClefInfo( const char *incipit, MeasureObject *measure, int index ) {
+int MusPaeInput::getClefInfo( const char *incipit, MusClef *mclef, int index ) {
     
     // a clef is maximum 3 character length
     // go through the 3 character and retrieve the letter (clef) and the line
@@ -749,8 +753,7 @@ int MusPaeInput::getClefInfo( const char *incipit, MeasureObject *measure, int i
         i++;
         index++;
     }
-    
-    MusClef *mclef = new MusClef();
+
     
     if (clef == 'C') {
         switch (line) {
@@ -775,8 +778,8 @@ int MusPaeInput::getClefInfo( const char *incipit, MeasureObject *measure, int i
         printf("Clef is ??\n");
     }
     
-    measure->clef = mclef;
-    
+    //measure->clef = mclef;
+        
     return i;
 }
 
@@ -1069,13 +1072,12 @@ void MusPaeInput::printMeasure(std::ostream& out, MeasureObject *measure ) {
         m_layer->AddLayerElement(r);
     }
     
-    for (unsigned int i=0; i<measure->notes.size(); i++) { 
+    for (unsigned int i=0; i<measure->notes.size(); i++) {
         NoteObject *note = &measure->notes[i];
-        if (!note->acciaccatura) {
-            //out << Convert::durationToKernRhythm(buffer, note->duration);
-            //for(j=0; j<note->dot; j++) {
-            //    out << ".";
-            //}
+        
+        // A note can have a chef change before it
+        if ( note->clef != NULL ) {
+            m_layer->AddLayerElement(note->clef);
         }
                     
         if (note->rest) {
