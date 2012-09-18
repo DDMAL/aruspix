@@ -931,13 +931,14 @@ int MusPaeInput::getNote( const char* incipit, NoteObject *note, MeasureObject *
     int app;
     int tuplet_num;
     
-    note->duration = measure->durations[measure->durations_offset];
-
-    note->dots = measure->dots[measure->durations_offset];
-    //if ( note->tuplet != 1.0 ) {
-    //    note->duration /= note->tuplet;
-        //std::cout << durations[0] << ":" << note->tuplet << std::endl;
-    //}
+    if (note->acciaccatura) {
+        // acciaccaturas are always eights regardless
+        // and have no dots
+        note->duration = DUR_8;
+    } else {
+        note->duration = measure->durations[measure->durations_offset];
+        note->dots = measure->dots[measure->durations_offset];
+    }
     note->pitch = getPitch( incipit[i] );
     
     // lookout, hack. If it is a rest (255 val) then create the rest object.
