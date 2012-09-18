@@ -73,7 +73,6 @@
 		5736CE580C354E4A00254E7B /* cmpctrl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5736CE4B0C354E4A00254E7B /* cmpctrl.cpp */; };
 		5736CE590C354E4A00254E7B /* cmpfile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5736CE4D0C354E4A00254E7B /* cmpfile.cpp */; };
 		5736CE5A0C354E4A00254E7B /* cmpim.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5736CE4F0C354E4A00254E7B /* cmpim.cpp */; };
-		5736CE5B0C354E4A00254E7B /* cmpmlf.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5736CE510C354E4A00254E7B /* cmpmlf.cpp */; };
 		5769E11C0BF25A1D007772A6 /* axmus.icns in Resources */ = {isa = PBXBuildFile; fileRef = 5769E1180BF25A1D007772A6 /* axmus.icns */; };
 		5769E11D0BF25A1D007772A6 /* axproj.icns in Resources */ = {isa = PBXBuildFile; fileRef = 5769E1190BF25A1D007772A6 /* axproj.icns */; };
 		5769E11E0BF25A1D007772A6 /* axtyp.icns in Resources */ = {isa = PBXBuildFile; fileRef = 5769E11A0BF25A1D007772A6 /* axtyp.icns */; };
@@ -317,8 +316,6 @@
 		5736CE4E0C354E4A00254E7B /* cmpfile.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = cmpfile.h; sourceTree = "<group>"; };
 		5736CE4F0C354E4A00254E7B /* cmpim.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = cmpim.cpp; sourceTree = "<group>"; };
 		5736CE500C354E4A00254E7B /* cmpim.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = cmpim.h; sourceTree = "<group>"; };
-		5736CE510C354E4A00254E7B /* cmpmlf.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = cmpmlf.cpp; sourceTree = "<group>"; };
-		5736CE520C354E4A00254E7B /* cmpmlf.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = cmpmlf.h; sourceTree = "<group>"; };
 		5769E1180BF25A1D007772A6 /* axmus.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = axmus.icns; sourceTree = "<group>"; };
 		5769E1190BF25A1D007772A6 /* axproj.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = axproj.icns; sourceTree = "<group>"; };
 		5769E11A0BF25A1D007772A6 /* axtyp.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = axtyp.icns; sourceTree = "<group>"; };
@@ -619,8 +616,6 @@
 				5736CE4E0C354E4A00254E7B /* cmpfile.h */,
 				5736CE4F0C354E4A00254E7B /* cmpim.cpp */,
 				5736CE500C354E4A00254E7B /* cmpim.h */,
-				5736CE510C354E4A00254E7B /* cmpmlf.cpp */,
-				5736CE520C354E4A00254E7B /* cmpmlf.h */,
 			);
 			name = comparison;
 			path = ../src/comparison;
@@ -988,7 +983,6 @@
 				5736CE580C354E4A00254E7B /* cmpctrl.cpp in Sources */,
 				5736CE590C354E4A00254E7B /* cmpfile.cpp in Sources */,
 				5736CE5A0C354E4A00254E7B /* cmpim.cpp in Sources */,
-				5736CE5B0C354E4A00254E7B /* cmpmlf.cpp in Sources */,
 				57CA53DD0D340F61001FC334 /* imbrink.cpp in Sources */,
 				57CA53DE0D340F61001FC334 /* imext.cpp in Sources */,
 				57CA54220D34139D001FC334 /* axprogressdlg.cpp in Sources */,
@@ -1268,6 +1262,7 @@
 					"-DAX_SUPERIMPOSITION",
 					"-DAX_RECOGNITION",
 					"-DAX_EDITION",
+					"-DAX_COMPARISON",
 				);
 				OTHER_LDFLAGS = (
 					"-framework",
