@@ -228,6 +228,7 @@ void CmpMusWindow::OnScroll( wxScrollWinEvent &event )
 
 void CmpMusWindow::OnMouse(wxMouseEvent &event)
 {
+    /*
     if (event.GetEventType() == wxEVT_MOUSEWHEEL)
     {
         int x, y;
@@ -264,6 +265,7 @@ void CmpMusWindow::OnMouse(wxMouseEvent &event)
 		event.Skip();
 	}
 	else
+    */ // ax2
         event.Skip();
 }
 

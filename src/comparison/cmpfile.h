@@ -42,7 +42,8 @@ WX_DECLARE_OBJARRAY( CmpPartPage, ArrayOfCmpPartPages);
 class CmpCollationPart;
 WX_DECLARE_OBJARRAY( CmpCollationPart, ArrayOfCmpCollationParts);
 
-class MusLaidOutStaff;
+class MusLayer;
+class MusLayerElement;
 
 
 //----------------------------------------------------------------------------
@@ -85,11 +86,11 @@ public:
 	
 	
 protected:
-	bool Align( MusLaidOutStaff *staff_ref, MusLaidOutStaff *staff_var, CmpCollationPart *part_var );
+	bool Align( MusLayer *layer_ref, MusLayer *layer_var, CmpCollationPart *part_var );
 	void EndInsertion( CmpCollationPart *part_var  );
-	void AddInsertion( MusElement *elem, MusLaidOutStaff *aligned_staff, int i ); // Add elem into an insertion Staff
+	void AddInsertion( MusLayerElement *elem, MusLayer *aligned_layer, int i ); // Add elem into an insertion Staff
 			// If this staff has to be created, a symbol is added into the aligned staff before element i 
-	void SetCmpValues( MusElement *dest, MusElement *src, int flag );
+	void SetCmpValues( MusLayerElement *dest, MusLayerElement *src, int flag );
 	
 
 public:
@@ -118,13 +119,14 @@ class CmpPartPage: public wxObject
 {
 public:
     // constructors and destructors
-    CmpPartPage() { }
-    CmpPartPage(  wxString axfile ) { m_axfile = axfile; }
+    CmpPartPage();
+    CmpPartPage(  wxString axfile );
     ~CmpPartPage() {};
 
 public:
     wxString m_axfile;
-	wxArrayInt m_staves; // all staves if the array is empty
+	uuid_t m_start;
+    uuid_t m_end;
 };
 
 //----------------------------------------------------------------------------

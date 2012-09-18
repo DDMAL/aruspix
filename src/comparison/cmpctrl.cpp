@@ -414,10 +414,12 @@ void CmpCtrl::Update( )
 			for ( k = 0; k < (int)part->m_partpages.GetCount(); k++)
 			{
 				wxString staves = part->m_partpages[k].m_axfile;
+                /*
 				if ( !part->m_partpages[k].m_staves.IsEmpty() )
 				{
 					//TODO, something...
 				}
+                */
 				id = AppendItem( partid, staves, IMG_AXZ_OK, IMG_AXZ_OK_S );
 			}	
 		}

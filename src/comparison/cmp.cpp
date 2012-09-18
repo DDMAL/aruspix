@@ -257,18 +257,15 @@ void CmpEnv::UpdateTitle( )
 {
     wxASSERT_MSG( m_cmpFilePtr, wxT("Cmp file cannot be NULL") );
 
-    /*
     wxString msg = m_cmpFilePtr->m_shortname;
     if ( m_cmpCollationPtr && m_musViewPtr )
-        msg += wxString::Format("- %s - page %d / %d", 
-			m_cmpCollationPtr->m_name.c_str(), 
-			m_musViewPtr->m_npage + 1,
-			(int)m_cmpCollationPtr->GetMusFile()->m_pages.GetCount()  );
+        //msg += wxString::Format("- %s - page %d / %d", 
+		//	m_cmpCollationPtr->m_name.c_str(), 
+        //    m_musViewPtr->m_npage + 1,
+		//	(int)m_cmpCollationPtr->GetMusFile()->m_pages.GetCount()  );
+        msg += wxString::Format("- %s", m_cmpCollationPtr->m_name.c_str() );
 
     SetTitle( _T("%s"), msg.c_str() );
-    */ //ax2
-    wxLogError( "CmpEnv::UpdateTitle missing in ax2" );
-
 }
 
 
@@ -284,7 +281,7 @@ bool CmpEnv::ResetFile()
     m_bookSplitterPtr->Unsplit( m_cmpCtrlPanelPtr );
 
     m_musViewPtr->Show( false );
-    m_musViewPtr->SetDoc( NULL );
+    m_musViewPtr->SetLayout( NULL );
 	m_cmpCollationPtr = NULL;
     
     if ( m_imControlPtr1->Ok() )
@@ -312,7 +309,7 @@ void CmpEnv::UpdateViews( int flags )
     {
         //m_pageSplitterPtr->SplitHorizontally( m_musControlPtr , m_srcSplitterPtr, CmpEnv::s_view_sash );
 		m_pageSplitterPtr->SplitVertically( m_musControlPtr , m_srcSplitterPtr, CmpEnv::s_view_sash );
-        m_musViewPtr->SetDoc( m_cmpCollationPtr->GetMusFile() );
+        m_musViewPtr->SetLayout( &m_cmpCollationPtr->GetMusFile()->m_layouts[0] );
         //m_musViewPtr->SetEnv( this );
         //m_musViewPtr->SetToolPanel( m_toolpanel );
         m_musViewPtr->LoadPage( 0 );
