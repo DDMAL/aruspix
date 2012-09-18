@@ -30,6 +30,12 @@ public:
     MusMensur();
     virtual ~MusMensur();
     
+    /**
+     * Comparison operator. 
+     * Check if the MusLayerElement if a MusMensur and compare attributes
+     */
+    virtual bool operator==(MusLayerElement& other);
+    
     virtual wxString MusClassName( ) { return "MusMensur"; };
     
     /**

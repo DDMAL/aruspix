@@ -67,6 +67,12 @@ public:
     virtual void SetValue( int value, int flag = 0 );
     
     /**
+     * Comparison operator. 
+     * Check if the MusLayerElement if a MusNote and compare attributes
+     */
+    virtual bool operator==(MusLayerElement& other);
+    
+    /**
      * Change the coloration.
      */ 
 	virtual void ChangeColoration( );

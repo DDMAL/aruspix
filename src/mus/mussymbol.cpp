@@ -32,6 +32,15 @@ MusSymbol::~MusSymbol()
 {
 }
 
+bool MusSymbol::operator==( MusLayerElement& other)
+{
+    MusSymbol *otherSymbol = dynamic_cast<MusSymbol*>( &other );
+    if ( !otherSymbol ) {
+        return false;
+    }
+    return true;
+}
+
 void MusSymbol::Init( SymbolType type )
 {
     m_type = type; 

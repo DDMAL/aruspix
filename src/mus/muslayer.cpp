@@ -76,6 +76,39 @@ void MusLayer::Insert( MusLayerElement *layerElement, MusLayerElement *before )
     AddLayerElement( layerElement , idx );
 }
 
+void MusLayer::CopyContent( MusLayer *dest, uuid_t start , uuid_t end, bool newUuid )
+{
+    wxASSERT( dest );
+    
+    bool has_started = false;
+    
+    int i;
+    for (i = 0; i < (int)m_elements.Count(); i++) {
+        
+        // check if we have a start uuid or if we already passed it
+        if ( !uuid_is_null( start ) && !has_started ) {
+            if ( uuid_compare( start, *(&m_elements[i])->GetUuid() ) == 0 ) {
+                has_started = true;
+            } 
+            else {
+                continue;
+            }
+        }
+        
+        // copy and add it
+        MusLayerElement *copy = (&m_elements[i])->GetChildCopy( newUuid );
+        dest->AddLayerElement( copy );
+        
+        // check if we have a end uuid and if we have reached it. 
+        if ( !uuid_is_null( end ) ) {
+            if ( uuid_compare( end, *(&m_elements[i])->GetUuid() ) == 0 ) {
+                break;
+            }
+        }
+    }
+    
+}
+
 void MusLayer::Save( wxArrayPtrVoid params )
 {
     // param 0: output stream
@@ -171,6 +204,15 @@ MusLayerElement& MusLayerElement::operator=( const MusLayerElement& element )
 	return *this;
 }
 
+bool MusLayerElement::operator==( MusLayerElement& other)
+{
+    // This should never happen.
+    // The comparison is performed in the CmpFile::Align method.
+    // We expect to compare only MusNote, MusRest, etc object for which we have an overwritten method
+    wxLogError( "Missing comparison operator for '%s'", this->MusClassName().c_str() );
+    return false;
+}
+
 bool MusLayerElement::Check()
 {
     wxASSERT( m_layer );
@@ -179,7 +221,7 @@ bool MusLayerElement::Check()
 
 
 
-MusLayerElement *MusLayerElement::GetChildCopy() 
+MusLayerElement *MusLayerElement::GetChildCopy( bool newUuid ) 
 {
     
     // Is there another way to do this in C++ ?
@@ -204,6 +246,10 @@ MusLayerElement *MusLayerElement::GetChildCopy()
         
     element->m_layer = NULL;
     element->m_div = NULL;
+    
+    if ( !newUuid ) {
+        element->SetUuid( *this->GetUuid() );
+    }
     
     return element;
 }

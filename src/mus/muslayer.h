@@ -41,6 +41,16 @@ public:
     
     void Insert( MusLayerElement *element, MusLayerElement *before );
     
+    int GetElementCount() const { return (int)m_elements.GetCount(); };
+    
+    /**
+     * Copy the content of the layer to the dest layer.
+     * If start and end are not null (see uuid_clear), then ony element from and to 
+     * the element with the uuid are copied.
+     * By default, the uuid of the elements are kept.
+     */
+    void CopyContent( MusLayer *dest, uuid_t start, uuid_t end, bool newUuid = false );
+    
     // moulinette
     virtual void Process(MusFunctor *functor, wxArrayPtrVoid params );
     // functors
@@ -106,7 +116,13 @@ public:
     
     virtual bool Check();
     
-    MusLayerElement *GetChildCopy( );
+    virtual bool operator==( MusLayerElement& other);
+    
+    /**
+     * Return a copy of the MusLayerElement (child class).
+     * By default, a new uuid is generated
+     */
+    MusLayerElement *GetChildCopy( bool newUuid = true );
     
     /** The parent MusLayer setter */
     void SetLayer( MusLayer *layer ) { m_layer = layer; };

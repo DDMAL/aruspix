@@ -35,6 +35,12 @@ public:
     MusSymbol( SymbolType type );
     virtual ~MusSymbol();
     
+    /**
+     * Comparison operator. 
+     * Check if the MusLayerElement if a Symbol and compare attributes
+     */
+    virtual bool operator==(MusLayerElement& other);
+    
     virtual wxString MusClassName( ) { return "MusSymbol"; };
     
     /**

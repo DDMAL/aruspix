@@ -670,7 +670,7 @@ MusMeiInput::~MusMeiInput()
 bool MusMeiInput::ImportFile( )
 {
     
-    printf("ROOD %s\n", m_filename.c_str());
+    //printf("ROOD %s\n", m_filename.c_str());
     try {
         mei::MeiDocument *doc = XmlImport::documentFromFile( *new string( m_filename.c_str()) );
         if ( !doc ) {
@@ -909,7 +909,7 @@ bool MusMeiInput::ReadMeiLayer( Layer *layer )
 		vector<MeiElement*> children = layer->getChildren();
 		for (vector<MeiElement*>::iterator iter = children.begin(); iter != children.end(); ++iter) {
 			MeiElement *e = *iter;
-            if (e->getName()=="barline") {
+            if (e->getName()=="barLine") {
 				if (!ReadMeiBarline(dynamic_cast<BarLine*>(e))) {
 					return false;
 				}
@@ -969,6 +969,10 @@ bool MusMeiInput::ReadMeiLayer( Layer *layer )
 
 bool MusMeiInput::ReadMeiBarline( BarLine *barline )
 {
+    MusBarline *musBarline = new MusBarline();
+    SetMeiUuid( barline, musBarline );
+    
+    m_layer->AddLayerElement( musBarline );
     return true;
 }
 
@@ -1016,7 +1020,14 @@ bool MusMeiInput::ReadMeiBeam( Beam *beam )
 }
 
 bool MusMeiInput::ReadMeiClef( Clef *clef )
-{
+{ 
+    MusClef *musClef = new MusClef();
+    SetMeiUuid( clef, musClef );
+    if ( clef->m_Lineloc.hasLine( ) && clef->m_Clefshape.hasShape( ) ) {
+        musClef->m_clefId = StrToClef( clef->m_Lineloc.getLine()->getValue(), clef->m_Clefshape.getShape()->getValue() );
+    }
+    
+    m_layer->AddLayerElement( musClef );
     return true;
 }
 
