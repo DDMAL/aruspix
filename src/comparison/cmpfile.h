@@ -82,15 +82,24 @@ public:
 	bool Collate( );
 	bool Realize( );
 	bool IsCollationLoaded();
-	MusDoc *GetMusFile() { return m_musDocPtr; }
 	
 	
 protected:
+    /**
+     * Align the two layer using a dynamic progamming approach.
+     * The alignement is performed using the edit distance.
+     * The result of the alignment is saved in an additional MEI file.
+     */
 	bool Align( MusLayer *layer_ref, MusLayer *layer_var, CmpCollationPart *part_var );
-	void EndInsertion( CmpCollationPart *part_var  );
-	void AddInsertion( MusLayerElement *elem, MusLayer *aligned_layer, int i ); // Add elem into an insertion Staff
-			// If this staff has to be created, a symbol is added into the aligned staff before element i 
-	void SetCmpValues( MusLayerElement *dest, MusLayerElement *src, int flag );
+	
+    /**
+     * Create a <app> element in the layer_aligned MusLayer.
+     * The appType can be CMP_APP_DEL, CMP_APP_INS ou CMP_APP_SUBST.
+     * A deletion means that the element position i in not in layer_var.
+     * A insertion means that the element position j in layer_var is missing in layer_aligned after i.
+     * A substitution is element position j replacing element position i.
+     */ 
+    void CreateApp( MusLayer *layer_aligned, int i, MusLayer *layer_var, int j, int appType );  
 	
 
 public:
@@ -104,11 +113,14 @@ public:
 	static int s_index;
 	
 private:
-	wxString m_basename; // the basename of the CmpFile, used to read/write file from this class
-	MusDoc *m_musDocPtr;
+    /** The basename of the CmpFile, used to read/write file from this class. */
+	wxString m_basename;
+    /** The name of the reference source */
+    wxString m_refPartName;
+    /** The name of the variant source */
+    wxString m_varPartName;
+
 	bool m_isColLoaded;
-	
-	MusLaidOutStaff *m_insStaff;
 };
 
 //----------------------------------------------------------------------------
@@ -217,16 +229,14 @@ public:
     bool Collate( wxArrayPtrVoid params, AxProgressDlg *dlg );
     // static on arrays
     static CmpBookItem *FindFile( ArrayOfCmpBookItems *array, wxString filename, int* index  );
-	// distance
-	void Align( ArrayOfMLFSymbols *obtained, ArrayOfMLFSymbols *desired );
-    
+   
 public:
-        // files
+    // files
     ArrayOfCmpBookItems m_bookFiles;
 	ArrayOfCmpCollations m_collations;
 
 protected:
-        CmpEnv *m_envPtr;
+    CmpEnv *m_envPtr;
 
 
 private:

@@ -47,10 +47,9 @@ class CmpCtrlPanel;
 class CmpEnv;
 class CmpCollation;
 
-#define CMP_MATCH 1
-#define CMP_DEL 2
-#define CMP_SUBST 3
-#define CMP_INS 4
+#define CMP_APP_DEL 1
+#define CMP_APP_SUBST 2
+#define CMP_APP_INS 3
 
 //----------------------------------------------------------------------------
 // CmpEnv

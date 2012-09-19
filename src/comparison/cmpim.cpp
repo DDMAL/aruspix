@@ -96,9 +96,9 @@ void CmpImController::LoadRecImage( int colNo, wxString filename, int staff, int
 		wxPen blue( *wxBLUE, 1 );
 		switch (flag)
 		{
-			case CMP_INS : pen = wxRED_PEN; break;
+			case CMP_APP_INS : pen = wxRED_PEN; break;
 			//case CMP_DEL : pen = wxGREEN_PEN; break;
-			case CMP_SUBST : pen = &blue; break;
+			case CMP_APP_SUBST : pen = &blue; break;
 		}
 		imstaff->GetMinMax( &x1, &x2 );
 		((CmpImWindow*)m_viewPtr)->ScrollSource(  x1 + pos, y );

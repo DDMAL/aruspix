@@ -15,6 +15,7 @@
 
 #include "musdoc.h"
 #include "muslayer.h"
+#include "musapp.h"
 
 #include <mei/meielement.h>
 #include <mei/exceptions.h>
@@ -25,6 +26,7 @@
 #include <mei/shared.h>
 #include <mei/mensural.h>
 #include <mei/layout.h>
+#include <mei/critapp.h>
 
 #include <uuid/uuid.h>
 
@@ -91,6 +93,8 @@ private:
     void WriteMeiMensur( Mensur *meiMensur, MusMensur *mensur );
     void WriteMeiNote( Note *meiNote, MusNote *note );
     void WriteMeiRest( Rest *meiRest, MusRest *rest );
+    void WriteMeiApp( App *meiApp, MusLayerApp *app );
+    void WriteMeiRdg( Rdg *meiRdg, MusLayerRdg *rdg );
     /**
      * Write a MusSymbol. The appropriate MeiElement is created by the method
      * and returned.
@@ -172,13 +176,15 @@ private:
     bool ReadMeiSymbol( Accid *accid );
     bool ReadMeiSymbol( Custos *custos );
     bool ReadMeiSymbol( Dot *dot );
+    bool ReadMeiApp( App *app );
+    bool ReadMeiRdg( Rdg *rdg );
 	//
     void SetMeiUuid( MeiElement *element, MusObject *object );
 	int StrToDur(std::string dur);
 	int StrToOct(std::string oct);
 	int StrToPitch(std::string pitch ); 
     unsigned char StrToAccid(std::string accid);
-    ClefId StrToClef(std::string line, std::string shape);
+    ClefId StrToClef(std::string shape, std::string line);
     MensurSign StrToMensurSign(std::string sign);
 
     

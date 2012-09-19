@@ -305,7 +305,13 @@ bool MusMeiOutput::WriteLayerElement( MusLayerElement *element )
     }
     else if (dynamic_cast<MusSymbol*>(element)) {        
         meiElement = WriteMeiSymbol( dynamic_cast<MusSymbol*>(element) );
-    }   
+    }
+    // app
+    else if (dynamic_cast<MusLayerApp*>(element)) {   
+        App *app = new App();
+        WriteMeiApp( app, dynamic_cast<MusLayerApp*>(element) );
+        meiElement = app;
+    }
     
     // we have it, set the uuid we read
     if ( meiElement ) {
@@ -402,6 +408,20 @@ void MusMeiOutput::WriteMeiRest( Rest *meiRest, MusRest *rest )
     if ( rest->m_dots ) {
         meiRest->m_Augmentdots.setDots( wxString::Format("%d", rest->m_dots).c_str() );
     }
+    // missing position
+    return;
+}
+
+void MusMeiOutput::WriteMeiApp( App *meiApp, MusLayerApp *app )
+{    
+    // nothing to add for now
+    return;
+}
+
+void MusMeiOutput::WriteMeiRdg( Rdg *meiRdg, MusLayerRdg *rdg )
+{   
+    meiRdg->m_Source.setSource( rdg->m_srcId.c_str() );
+
     // missing position
     return;
 }
@@ -1023,8 +1043,8 @@ bool MusMeiInput::ReadMeiClef( Clef *clef )
 { 
     MusClef *musClef = new MusClef();
     SetMeiUuid( clef, musClef );
-    if ( clef->m_Lineloc.hasLine( ) && clef->m_Clefshape.hasShape( ) ) {
-        musClef->m_clefId = StrToClef( clef->m_Lineloc.getLine()->getValue(), clef->m_Clefshape.getShape()->getValue() );
+    if ( clef->m_Clefshape.hasShape( ) && clef->m_Lineloc.hasLine( ) ) {
+        musClef->m_clefId = StrToClef( clef->m_Clefshape.getShape()->getValue(), clef->m_Lineloc.getLine()->getValue() );
     }
     
     m_layer->AddLayerElement( musClef );
@@ -1231,14 +1251,36 @@ unsigned char MusMeiInput::StrToAccid(std::string accid)
 }
 
 
-ClefId MusMeiInput::StrToClef(std::string line, std::string shape)
+ClefId MusMeiInput::StrToClef( std::string shape, std::string line )
 {
-    
+    ClefId clefId = SOL2;
+    std::string clef = shape + line;
+    if ( clef == "G2" ) clefId = SOL2;
+    else if ( clef == "C1" ) clefId = SOL1; 
+    else if ( clef == "F5" ) clefId = FA5;
+    else if ( clef == "F4" ) clefId = FA4; 
+    else if ( clef == "F3" ) clefId = FA3; 
+    else if ( clef == "C1" ) clefId = UT1; 
+    else if ( clef == "C2" ) clefId = UT2; 
+    else if ( clef == "C3" ) clefId = UT3; 
+    else if ( clef == "C4" ) clefId = UT4; 
+    else if ( clef == "C5" ) clefId = UT5; 
+    else 
+    {
+        wxLogWarning("Unknown clef shape '%s' line '%s'", shape.c_str(), line.c_str() );
+    }
+    return clefId;
 }
 
 MensurSign MusMeiInput::StrToMensurSign(std::string sign)
 {
-    
+    if (sign == "C") return MENSUR_SIGN_C;
+    else if (sign == "O") return MENSUR_SIGN_O;
+    else {
+        wxLogWarning("Unknown mensur sign '%s'", sign.c_str() );
+	}
+    // default
+	return MENSUR_SIGN_C;
 }
 
 

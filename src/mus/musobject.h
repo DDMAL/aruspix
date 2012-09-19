@@ -43,6 +43,10 @@ WX_DECLARE_OBJARRAY( MusLayer, ArrayOfMusLayers );
 class MusLayerElement;
 WX_DECLARE_OBJARRAY( MusLayerElement, ArrayOfMusLayerElements );
 
+// App
+class MusLayerRdg;
+WX_DECLARE_OBJARRAY( MusLayerRdg, ArrayOfMusLayerRdgs );
+
 // Layout classes
 class MusLayout;
 WX_DECLARE_OBJARRAY( MusLayout, ArrayOfMusLayouts);

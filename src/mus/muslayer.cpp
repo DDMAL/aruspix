@@ -13,6 +13,7 @@
 #include "muslayer.h"
 #include "musdef.h"
 
+#include "musapp.h"
 #include "musbarline.h"
 #include "musbeam.h"
 #include "musclef.h"
@@ -21,6 +22,7 @@
 #include "musnote.h"
 #include "musrest.h"
 #include "mussymbol.h"
+
 
 #include "musdoc.h"
 #include "muslaidoutlayerelement.h"
@@ -147,7 +149,7 @@ void MusLayer::Process(MusFunctor *functor, wxArrayPtrVoid params )
 	{
         element = &m_elements[i];
         functor->Call( element, params );
-        if (elementFunctor) { // is is a MusSystemFunctor, call it
+        if (elementFunctor) { // is is a MusLayerElementFunctor, call it
             elementFunctor->Call( element, params );
         }
         else { // process it further
@@ -374,6 +376,10 @@ void MusLayerElement::Save( wxArrayPtrVoid params )
     // param 0: output stream
     MusFileOutputStream *output = (MusFileOutputStream*)params[0];         
     output->WriteLayerElement( this );
+    
+    if ( dynamic_cast<MusLayerApp*>(this) ) {
+        wxLogMessage(" prout ");
+    }
 }
 
 void MusLayerElement::AdjustPname( int *pname, int *oct )

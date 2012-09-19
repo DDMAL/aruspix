@@ -309,7 +309,7 @@ void CmpEnv::UpdateViews( int flags )
     {
         //m_pageSplitterPtr->SplitHorizontally( m_musControlPtr , m_srcSplitterPtr, CmpEnv::s_view_sash );
 		m_pageSplitterPtr->SplitVertically( m_musControlPtr , m_srcSplitterPtr, CmpEnv::s_view_sash );
-        m_musViewPtr->SetLayout( &m_cmpCollationPtr->GetMusFile()->m_layouts[0] );
+        //m_musViewPtr->SetLayout( &m_cmpCollationPtr->GetMusFile()->m_layouts[0] );
         //m_musViewPtr->SetEnv( this );
         //m_musViewPtr->SetToolPanel( m_toolpanel );
         m_musViewPtr->LoadPage( 0 );
