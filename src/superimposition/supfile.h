@@ -33,10 +33,15 @@ public:
     SupFile( wxString name, SupEnv *env = NULL );
     virtual ~SupFile();
     
+    /** @name File methods
+     * Standard file operation (new, open, save, close) methods for this AxFile child class.
+     */
+    ///@{
     virtual void NewContent(); // Create content for a new file
-	virtual void OpenContent( ); // Open content after archive extraction
-	virtual void SaveContent( ); // Save content before archive creation
-	virtual void CloseContent( ); // Desactivate content before deletion
+    virtual void OpenContent( ); // Open content after archive extraction
+    virtual void SaveContent( ); // Save content before archive creation
+    virtual void CloseContent( ); // Desactivate content before deletion
+    ///@}
     
     bool CancelSuperimposition( bool ask_user );
 	

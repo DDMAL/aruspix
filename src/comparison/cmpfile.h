@@ -206,10 +206,25 @@ public:
     CmpFile( wxString name, CmpEnv *env = NULL );
     virtual ~CmpFile();
     
-        virtual void NewContent(); // Create content for a new file
+    /** @name File methods
+     * Standard file operation (new, open, save, close) methods for this AxFile child class.
+     */
+    ///@{
+    virtual void NewContent(); // Create content for a new file
     virtual void OpenContent( ); // Open content after archive extraction
     virtual void SaveContent( ); // Save content before archive creation
     virtual void CloseContent( ); // Desactivate content before deletion
+    ///@}
+    
+    /**
+     * This method load the content from the Recognition books (or files).
+     * For each book, it create one MEI file for each part in the book.
+     * The part in the MEI file is represented in one layer.
+     * We several pages (or page parts) can be concatenated.
+     * The MEI file also contain the corresonding layout pages.
+     * Also see MusDoc::ResetAndCheckLayouts().
+     */
+    bool LoadBooks( wxArrayPtrVoid params, AxProgressDlg *dlg );
     
     // operations
     //bool LoadImages( );
@@ -225,7 +240,7 @@ public:
 	//int FilesForAdaptation( wxArrayString *filenames, wxArrayString *paths, bool *isCacheOk );
 	//bool HasToBePreprocessed( wxString imagefile );
 	CmpBookPart *FindBookPart( wxString id );
-	bool LoadBooks( wxArrayPtrVoid params, AxProgressDlg *dlg );
+
     bool Collate( wxArrayPtrVoid params, AxProgressDlg *dlg );
     // static on arrays
     static CmpBookItem *FindFile( ArrayOfCmpBookItems *array, wxString filename, int* index  );

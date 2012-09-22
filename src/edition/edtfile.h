@@ -33,10 +33,15 @@ public:
     EdtFile( wxString name, EdtEnv *env = NULL );
     virtual ~EdtFile();
     
+    /** @name File methods
+     * Standard file operation (new, open, save, close) methods for this AxFile child class.
+     */
+    ///@{
     virtual void NewContent(); // Create content for a new file
-	virtual void OpenContent( ); // Open content after archive extraction
-	virtual void SaveContent( ); // Save content before archive creation
-	virtual void CloseContent( ); // Desactivate content before deletion
+    virtual void OpenContent( ); // Open content after archive extraction
+    virtual void SaveContent( ); // Save content before archive creation
+    virtual void CloseContent( ); // Desactivate content before deletion
+    ///@}
     
     bool Create( ); // Create a file with user parameters (dialog)
 	
