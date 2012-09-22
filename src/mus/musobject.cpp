@@ -74,6 +74,7 @@ bool MusObject::CheckFunctor( wxArrayPtrVoid params )
 MusFunctor::MusFunctor( )
 { 
     m_success=false;
+    m_reverse=false;
     obj_fpt=NULL; 
     obj_fpt_bool=NULL; 
 }
@@ -81,6 +82,7 @@ MusFunctor::MusFunctor( )
 MusFunctor::MusFunctor( void(MusObject::*_obj_fpt)( wxArrayPtrVoid ))
 { 
     m_success=false;
+    m_reverse=false;
     obj_fpt=_obj_fpt; 
     obj_fpt_bool=NULL; 
 }
@@ -88,6 +90,7 @@ MusFunctor::MusFunctor( void(MusObject::*_obj_fpt)( wxArrayPtrVoid ))
 MusFunctor::MusFunctor( bool(MusObject::*_obj_fpt_bool)( wxArrayPtrVoid ))
 { 
     m_success=false;
+    m_reverse=false;
     obj_fpt_bool=_obj_fpt_bool; 
     obj_fpt=NULL;
 }

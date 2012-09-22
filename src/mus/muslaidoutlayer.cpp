@@ -712,10 +712,13 @@ void MusLaidOutLayer::Process(MusFunctor *functor, wxArrayPtrVoid params )
     
     MusLaidOutLayerElementFunctor *elementFunctor = dynamic_cast<MusLaidOutLayerElementFunctor*>(functor);
     MusLaidOutLayerElement *element;
+    int nbElements = (int)m_elements.GetCount();
 	int i;
-    for (i = 0; i < (int)m_elements.GetCount(); i++) 
+    for (i = 0; i < nbElements; i++) 
 	{
-        element = &m_elements[i];
+        if ( functor->m_reverse ) element = &m_elements[nbElements - i - 1];
+        else element = &m_elements[i];
+        
         functor->Call( element, params );
         if (elementFunctor) { // is is a MusLaidOutLayerElementFunctor, call it
             elementFunctor->Call( element, params );

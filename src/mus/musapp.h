@@ -33,15 +33,21 @@ public:
     
     void AddLayerRdg( MusLayerRdg *layerRdg );
     
+    virtual void Save( wxArrayPtrVoid params );
+    
+    // moulinette
+    virtual void Process(MusFunctor *functor, wxArrayPtrVoid params );
+    
 private:
     
 public:
     /** The children MusLayerRdg objects */
-    ArrayOfMusLayerRdgs m_rdgs;
+    ArrayOfMusLayers m_rdgs;
 
 private:
     
 };
+
 
 //----------------------------------------------------------------------------
 // MusLayerRdg
@@ -58,8 +64,11 @@ public:
     virtual ~MusLayerRdg();
     
     /** the parent MusLayerApp setter */
-    void SetLayerApp( MusLayerApp *app ) { m_app = app; };  
+    void SetLayerApp( MusLayerApp *app ) { m_app = app; }; 
     
+    // functor
+    void virtual Save( wxArrayPtrVoid params );
+
 private:
     
 public:

@@ -10,6 +10,7 @@
 #include "wx/wxprec.h"
 
 #include "musio.h"
+#include "musdoc.h"
 #include "muslaidoutlayerelement.h"
 
 #include "musbarline.h"
@@ -44,7 +45,7 @@ MusLaidOutLayerElement::~MusLaidOutLayerElement()
     // If the is a parent layer and it is still active (that is not being deleted)
     // we remove the element from its list
     if ( m_layer && m_layer->IsActive() ) {
-        wxLogDebug("Removing the LaidOutLayerElement from its parent" );
+        wxLogDebug("Detaching the LaidOutLayerElement" );
         m_layer->m_elements.Detach( m_layer->m_elements.Index( *this ) );
     }
 }
@@ -76,6 +77,26 @@ void MusLaidOutLayerElement::Delete( wxArrayPtrVoid params )
 
     if ( m_layerElement == element ) {
         //wxLogMessage( "YES" );
+        delete this;
+    }
+}
+
+void MusLaidOutLayerElement::CheckAndResetLayerElement( wxArrayPtrVoid params )
+{
+    // param 0: the MusDoc to check against
+    MusDoc *doc = (MusDoc*)params[0];
+    
+    char uuidStr[37]; // bad fix
+    uuid_unparse( *m_layerElement->GetUuid(), uuidStr ); 
+    
+    MusFunctor findElementUuid( &MusObject::FindWithUuid );
+    MusLayerElement *element = dynamic_cast<MusLayerElement*>( doc->FindLogicalObject( &findElementUuid, *m_layerElement->GetUuid() ) );
+    if ( element ) {
+        m_layerElement = element;
+    }
+    else {
+        m_layerElement = NULL;
+        //wxLogDebug( "Element %s not found in the logical tree", uuidStr );
         delete this;
     }
 }

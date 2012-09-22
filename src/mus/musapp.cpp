@@ -14,6 +14,7 @@
 #include "wx/arrimpl.cpp"
 WX_DEFINE_OBJARRAY( ArrayOfMusLayerRdgs );
 
+#include "musio.h"
 
 //----------------------------------------------------------------------------
 // MusLayerApp
@@ -39,6 +40,42 @@ void MusLayerApp::AddLayerRdg( MusLayerRdg *layerRdg )
     m_rdgs.Add( layerRdg );
 }
 
+void MusLayerApp::Save( wxArrayPtrVoid params )
+{
+    // param 0: output stream
+    MusFileOutputStream *output = (MusFileOutputStream*)params[0];         
+    output->WriteLayerApp( this );
+    
+    // save layers
+    MusLayerFunctor layer( &MusLayer::Save );
+    this->Process( &layer, params );
+}
+
+
+// functors for MusLayer
+
+void MusLayerApp::Process(MusFunctor *functor, wxArrayPtrVoid params )
+{
+    if (functor->m_success) {
+        return;
+    }
+    
+    MusLayerFunctor *rdgFunctor = dynamic_cast<MusLayerFunctor*>(functor);
+    MusLayer *rdg;
+	int i;
+    for (i = 0; i < (int)m_rdgs.GetCount(); i++) 
+	{
+        rdg = &m_rdgs[i];
+        functor->Call( rdg, params );
+        if (rdgFunctor) { // is is a MusLayerElementFunctor, call it
+            rdgFunctor->Call( rdg, params );
+        }
+        else { // process it further
+            rdg->Process( functor, params );
+        }
+	}
+}
+
 
 //----------------------------------------------------------------------------
 // MusLayerRdg
@@ -54,4 +91,17 @@ MusLayerRdg::MusLayerRdg():
 MusLayerRdg::~MusLayerRdg()
 {
     
+}
+
+void MusLayerRdg::Save( wxArrayPtrVoid params )
+{
+    // param 0: output stream
+    MusFileOutputStream *output = (MusFileOutputStream*)params[0];       
+    output->WriteLayerRdg( this );
+    
+    // save elements
+    MusLayerElementFunctor element( &MusLayerElement::Save );
+    this->Process( &element, params );
+    
+    output->EndLayerRdg( this );
 }

@@ -241,6 +241,7 @@ public:
     //virtual void Call( MusObject *ptr, wxArrayPtrVoid params, bool *success );
     
     bool m_success;
+    bool m_reverse;
     
 private:
     

@@ -15,6 +15,7 @@
 #include "muspage.h"
 #include "mussystem.h"
 #include "muslaidoutlayer.h"
+#include "muslaidoutlayerelement.h"
 
 
 #ifndef HEADLESS
@@ -114,6 +115,17 @@ void MusDoc::Check()
     this->ProcessLayout( &checkObjects, params );
 }
 
+
+void MusDoc::ResetAndCheckLayouts()
+{
+    wxArrayPtrVoid params;
+    params.Add( this );
+    MusLaidOutLayerElementFunctor checkObjects( &MusLaidOutLayerElement::CheckAndResetLayerElement );
+    // because we are going to delete MusLaidOutLayerElements, we need to process it from the end
+    checkObjects.m_reverse = true;
+    this->ProcessLayout( &checkObjects, params );
+}
+
 void MusDoc::GetNumberOfVoices( int *min_voice, int *max_voice )
 {
 	wxArrayPtrVoid params; // tableau de pointeurs pour parametres
@@ -177,8 +189,7 @@ MusObject *MusDoc::FindLogicalObject( MusFunctor *functor, uuid_t uuid )
         //and typedef __darwin_uuid_string_t        uuid_string_t;
         char uuidStr[37]; // bad fix
         uuid_unparse( uuid, uuidStr ); 
-        // this should be a fatal error
-        wxLogError( "Element %s not found in the logical tree", uuidStr );
+        wxLogDebug( "%s not found in the logical tree", uuidStr );
     }
     return element;
     

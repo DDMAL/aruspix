@@ -376,10 +376,6 @@ void MusLayerElement::Save( wxArrayPtrVoid params )
     // param 0: output stream
     MusFileOutputStream *output = (MusFileOutputStream*)params[0];         
     output->WriteLayerElement( this );
-    
-    if ( dynamic_cast<MusLayerApp*>(this) ) {
-        wxLogMessage(" prout ");
-    }
 }
 
 void MusLayerElement::AdjustPname( int *pname, int *oct )

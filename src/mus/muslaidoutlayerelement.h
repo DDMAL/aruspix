@@ -61,6 +61,7 @@ public:
     void Load( wxArrayPtrVoid params );
     void Delete( wxArrayPtrVoid params );
     void UpdateXPosition( wxArrayPtrVoid params );
+    void CheckAndResetLayerElement( wxArrayPtrVoid params );
         
 private:
     

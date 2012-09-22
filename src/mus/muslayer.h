@@ -54,7 +54,10 @@ public:
     // moulinette
     virtual void Process(MusFunctor *functor, wxArrayPtrVoid params );
     // functors
-    void Save( wxArrayPtrVoid params );
+    /**
+     * The save method was made virtual for the having it overriden in the MusLayerRdg class.
+     */
+    void virtual Save( wxArrayPtrVoid params );
     void Load( wxArrayPtrVoid params );
         
 private:
@@ -186,7 +189,13 @@ public:
     bool IsSymbol( );
     
     // functors
-    void Save( wxArrayPtrVoid params );
+    /**
+     * Save the object (virtual).
+     * Most of the child classes do not override it. In these cases, the actual 
+     * saving occurs in the MusFileOutputStream::WriteLayerElement method
+     * A few classes, such as MusLayerApp, have an overriden version.
+     */
+    virtual void Save( wxArrayPtrVoid params );
     
 private:
     

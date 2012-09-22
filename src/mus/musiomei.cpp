@@ -60,6 +60,8 @@ MusMeiOutput::MusMeiOutput( MusDoc *doc, wxString filename ) :
     m_measure = NULL;
     m_staff = NULL;
     m_layer = NULL;
+    m_rdgLayer = NULL;
+    m_currentLayer = NULL;
     m_layouts = NULL;
     m_layout = NULL;
     m_page = NULL;
@@ -249,6 +251,7 @@ bool MusMeiOutput::WriteLayer( MusLayer *layer )
 {
     wxASSERT( m_staff );
     m_layer = new Layer();
+    m_currentLayer = m_layer;
     m_layer->setId( GetMeiUuid( layer ));
     m_staff->addChild( m_layer );
     return true;
@@ -256,7 +259,7 @@ bool MusMeiOutput::WriteLayer( MusLayer *layer )
 
 bool MusMeiOutput::WriteLayerElement( MusLayerElement *element )
 {
-    wxASSERT( m_layer );
+    wxASSERT( m_currentLayer );
     
     MeiElement *meiElement = NULL;
     if (dynamic_cast<MusBarline*>(element)) {
@@ -306,17 +309,11 @@ bool MusMeiOutput::WriteLayerElement( MusLayerElement *element )
     else if (dynamic_cast<MusSymbol*>(element)) {        
         meiElement = WriteMeiSymbol( dynamic_cast<MusSymbol*>(element) );
     }
-    // app
-    else if (dynamic_cast<MusLayerApp*>(element)) {   
-        App *app = new App();
-        WriteMeiApp( app, dynamic_cast<MusLayerApp*>(element) );
-        meiElement = app;
-    }
     
     // we have it, set the uuid we read
     if ( meiElement ) {
         meiElement->setId( GetMeiUuid( element ));
-        m_layer->addChild( meiElement );
+        m_currentLayer->addChild( meiElement );
         return true;
     }
     else {
@@ -365,10 +362,10 @@ void MusMeiOutput::WriteMeiClef( Clef *meiClef, MusClef *clef )
 void MusMeiOutput::WriteMeiMensur( Mensur *meiMensur, MusMensur *mensur )
 {
     if ( mensur->m_sign ) {
-        meiMensur->m_MensurVis.setSign( MensurSignToStr( mensur->m_sign ));
+        meiMensur->m_MensurLog.setSign( MensurSignToStr( mensur->m_sign ));
     }
     if ( mensur->m_dot ) {
-        meiMensur->m_MensurVis.setDot("true");
+        meiMensur->m_MensurLog.setDot("true");
     }
     if ( mensur->m_slash ) {
         meiMensur->m_Slashcount.setSlash("1"); // only one slash for now
@@ -408,20 +405,6 @@ void MusMeiOutput::WriteMeiRest( Rest *meiRest, MusRest *rest )
     if ( rest->m_dots ) {
         meiRest->m_Augmentdots.setDots( wxString::Format("%d", rest->m_dots).c_str() );
     }
-    // missing position
-    return;
-}
-
-void MusMeiOutput::WriteMeiApp( App *meiApp, MusLayerApp *app )
-{    
-    // nothing to add for now
-    return;
-}
-
-void MusMeiOutput::WriteMeiRdg( Rdg *meiRdg, MusLayerRdg *rdg )
-{   
-    meiRdg->m_Source.setSource( rdg->m_srcId.c_str() );
-
     // missing position
     return;
 }
@@ -521,6 +504,34 @@ bool MusMeiOutput::WriteLaidOutLayerElement( MusLaidOutLayerElement *laidOutLaye
     return true;
 }
 
+
+
+bool MusMeiOutput::WriteLayerApp( MusLayerApp *app )
+{    
+    wxASSERT( m_currentLayer );
+    m_app = new App();
+    m_currentLayer->addChild( m_app ); 
+    return true;
+}
+
+bool MusMeiOutput::WriteLayerRdg( MusLayerRdg *rdg )
+{   
+    wxASSERT( m_app );
+    m_rdgLayer = new Rdg();
+    // now swith the m_currentLayer pointer
+    m_currentLayer = m_rdgLayer;
+    m_rdgLayer->m_Source.setSource( rdg->m_srcId.c_str() );
+    m_app->addChild( m_rdgLayer ); 
+    return true;
+}
+
+
+bool MusMeiOutput::EndLayerRdg( MusLayerRdg *rgd )
+{
+    // swith back the m_currentLayer
+    m_currentLayer = m_layer;
+    return true;
+}
 
 
 
@@ -1055,11 +1066,11 @@ bool MusMeiInput::ReadMeiMensur( Mensur *mensur )
 {
     MusMensur *musMensur = new MusMensur();
     SetMeiUuid( mensur, musMensur );
-    if ( mensur->m_MensurVis.hasSign( ) ) {
-        musMensur->m_sign = StrToMensurSign( mensur->m_MensurVis.getSign()->getValue() );
+    if ( mensur->m_MensurLog.hasSign( ) ) {
+        musMensur->m_sign = StrToMensurSign( mensur->m_MensurLog.getSign()->getValue() );
     }
-    if ( mensur->m_MensurVis.hasDot( ) ) {
-        musMensur->m_dot = ( mensur->m_MensurVis.getDot()->getValue() == "true" );
+    if ( mensur->m_MensurLog.hasDot( ) ) {
+        musMensur->m_dot = ( mensur->m_MensurLog.getDot()->getValue() == "true" );
     }
     if ( mensur->m_Slashcount.hasSlash( ) ) {
         musMensur->m_slash =  1; //atoi( mensur->m_Slashcount.getSlash()->getValue() );
