@@ -18,6 +18,7 @@
 
 #include "mus/musiobin.h"
 #include "mus/muslayer.h"
+#include "mus/muslayout.h"
 #include "mus/musiomei.h"
 #include "mus/musapp.h"
 
@@ -222,7 +223,7 @@ bool CmpCollation::Collate( )
 		if ( part->m_flags & PART_REFERENCE )
 		{
 			reference = &docs[i];
-            m_refPartName = part->m_bookPart->m_name;
+            m_refPartName = part->m_bookPart->m_bookname + "_" + part->m_bookPart->m_name;
 		}
 	}
 	
@@ -243,7 +244,7 @@ bool CmpCollation::Collate( )
 		CmpCollationPart *part = &m_collationParts[i];
         MusLayer *layer_ref = &reference->m_divs[0].m_score->m_sections[0].m_staves[0].m_layers[0];
         MusLayer *layer_var = &(&docs[i])->m_divs[0].m_score->m_sections[0].m_staves[0].m_layers[0];
-		m_varPartName = part->m_bookPart->m_name;
+		m_varPartName = part->m_bookPart->m_bookname + "_" + part->m_bookPart->m_name;
         Align( layer_ref, layer_var, part );
 			
 		//MusBinOutput bin_output( NULL, m_basename + book->m_shortname + ".swwg", MUS_BIN_ARUSPIX_CMP  );
@@ -889,8 +890,21 @@ bool CmpFile::LoadBooks( wxArrayPtrVoid params, AxProgressDlg *dlg )
 		{
 			CmpBookPart *part = &m_bookFiles[i].m_bookParts[j];
 			
+            // Create the new MEI file    
+            MusDoc *partDoc = new MusDoc( );
+            MusDiv *div = new MusDiv( );
+            MusScore *score = new MusScore( );
+            MusSection *section = new MusSection( );
+            MusStaff *staff = new MusStaff();
             MusLayer *partLayer = new MusLayer();
+            MusLayout *partLayout = new MusLayout( Facsimile );
             
+            staff->AddLayer( partLayer );
+            section->AddStaff( staff );
+            score->AddSection( section );
+            div->AddScore( score );
+            partDoc->AddDiv( div );
+            partDoc->AddLayout( partLayout );
 		
 			nfiles = (int)part->m_partpages.GetCount();
 			wxLogMessage( "%s", part->m_name.c_str() );
@@ -927,23 +941,18 @@ bool CmpFile::LoadBooks( wxArrayPtrVoid params, AxProgressDlg *dlg )
                     // Obviously not safe at all!
                     MusLayer *recLayer = &recFile.m_musDocPtr->m_divs[0].m_score->m_sections[0].m_staves[0].m_layers[0];
                     recLayer->CopyContent( partLayer, partPage->m_start, partPage->m_end );
+                    
+                    // Detach the correspondant layout page from the file - we will not save the file, so who cares?
+                    MusPage *partPage =  recFile.m_musDocPtr->m_layouts[0].m_pages.Detach( 0 ); 
+                    partLayout->AddPage( partPage );
 				
-				}
-				//imCounterInc( dlg->GetCounter() );	
+				}	
 			}
             
-            MusDoc *partDoc = new MusDoc( );
-            MusDiv *div = new MusDiv( );
-            MusScore *score = new MusScore( );
-            MusSection *section = new MusSection( );
-            MusStaff *staff = new MusStaff();
-            
-            staff->AddLayer( partLayer );
-            section->AddStaff( staff );
-            score->AddSection( section );
-            div->AddScore( score );
-            partDoc->AddDiv( div );
-            
+            // Now we need to reset the pointers from the layout since the objects have changed
+            // This will also remove the elements in the layout that where not copied in the logical tree
+            // For example, if we need only the first staff, all other staves in the layout page will be empty
+            partDoc->ResetAndCheckLayouts();
             
 			imCounterInc( dlg->GetCounter() );
             
