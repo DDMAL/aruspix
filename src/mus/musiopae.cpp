@@ -72,6 +72,8 @@ MusFileInputStream( doc, -1 )
 	m_layer = NULL;
     m_current_tie = NULL;
     m_current_tuplet =  NULL;
+    
+    m_current_beam = NULL;
 }
 
 MusPaeInput::~MusPaeInput()
@@ -151,7 +153,9 @@ void MusPaeInput::convertPlainAndEasyToKern(std::istream &infile, std::ostream &
     }
     
     if (strlen(c_clef)) {
-        getClefInfo(c_clef, &current_measure );    // do we need to put a default clef?
+        MusClef *c = new MusClef;
+        getClefInfo(c_clef, c );    // do we need to put a default clef?
+        current_measure.clef = c;
     }
 
     if (strlen(c_keysig)) {
@@ -208,7 +212,7 @@ void MusPaeInput::convertPlainAndEasyToKern(std::istream &infile, std::ostream &
         
 		// beginning tuplets & fermatas
 		else if (incipit[i] == '(') {
-            i += getTupletFermata( incipit, getDurationWithDot( current_measure.durations[0], current_measure.dots[0]), &current_note, i );
+            i += getTupletFermata( incipit, &current_measure, &current_note, i );
 		}
         
         // end of tuplets
@@ -252,7 +256,9 @@ void MusPaeInput::convertPlainAndEasyToKern(std::istream &infile, std::ostream &
         else if ((incipit[i] == 'i') && staff.size() > 0) {
             MeasureObject last_measure = staff[staff.size() - 1];
             current_measure.notes = last_measure.notes;
-            current_measure.time = last_measure.time;
+            // time was copied explicitally, but now not anymore
+            //current_measure.time = last_measure.time;
+            
             // if old measure does not end with a tie
             // force the first note of the newly copied measure to be without tie
             // this is to prevent copying tie closes which are invalid
@@ -270,7 +276,9 @@ void MusPaeInput::convertPlainAndEasyToKern(std::istream &infile, std::ostream &
         
 		//clef change
 		else if ((incipit[i] == '%') && (i+1 < length)) {
-            i += getClefInfo(incipit, &current_measure, i + 1);
+            MusClef *c = new MusClef;
+            i += getClefInfo(incipit, c, i + 1);
+            current_note.clef = c;
         }
         
 		//time signature change
@@ -455,7 +463,7 @@ int MusPaeInput::getAccidental(const char* incipit, unsigned char *accident, int
 // getTupletOrFermata --
 //
 
-int MusPaeInput::getTupletFermata(const char* incipit, double current_duration, NoteObject *note, int index ) {
+int MusPaeInput::getTupletFermata(const char* incipit, MeasureObject *measure, NoteObject *note, int index ) {
     
     int i = index;
     int length = strlen(incipit);
@@ -468,49 +476,67 @@ int MusPaeInput::getTupletFermata(const char* incipit, double current_duration, 
     
     if (is_tuplet == 0) {
         int t = i;
-        int note_duration = current_duration; // just in case the duration is missing in the tuplet
-        bool is_triplet = false; // in triplets, there is no duration given before the tuplet.
-        bool is_first_event = false; // we use the first duration if there is one (they should be one)
-        int note_count = 0; // we need to count notes for triplets as sometimes in the data several triplets appear together
-        // we need to change the tuplet duration in consequence
-        int note_dot = 0;
-        // the duration for the tuplet given before it, or by the first duration value in triplets
-        if ((index == 0) || (isdigit(incipit[index-1]) == 0)) {
-            is_triplet = true; // this means that we have to keep the first value for triplets
-            current_duration *= 2; // in case there is no value, use the current value
-            // this is wrong syntax wise but it appears in the data
-            is_first_event = true;
-        }
+        int t2 = 0;
+        int tuplet_val = 0;
+        char *buf;
         
-        double tuplet_duration = 0.0;
-        while ((t < length) && (incipit[t] != ')') && (incipit[t] != ';')) {
-            if (isdigit(incipit[t]) != 0) { // new duration in the tuplet
-                t += getDuration( incipit, &note_duration, &note_dot, t );
-                note_duration = getDurationWithDot(note_duration, note_dot);
-                if (is_triplet && is_first_event) { // it is a triplet
-                    current_duration = note_duration * 2;
-                    is_first_event = false; // we don't need to get the value again
+        // Triplets are in the form (4ABC)
+        // index points to the '(', so we look back
+        // if the resut is a number or dot, it means we have the long format
+        // i.e. 4(6ABC;5) or 4.(6ABC;5)
+        if ((index != 0) && (isdigit(incipit[index - 1]) || incipit[index - 1] == '.')) {
+            
+            // create the buffer so we can convert the tuplet nr to int
+            buf = (char*)malloc(length + 1); // allocate it with space for 0x00
+            memset(buf, 0x00, length + 1); // wipe it up
+            
+            // move until we find the ;
+            while ((t < length) && (incipit[t] != ';')) {
+                
+                // we should not find the parens before the ';' !
+                // FIXME find a graceful way to exit signaling this to user
+                if (incipit[t] == ')') {
+                    printf("You have a ) before the ; in a tuplet!\n");
+                    return i - index;
                 }
-            } else if (((incipit[t]-'A'>=0) && (incipit[t]-'A'<7)) || (incipit[t]=='-')) { // note or rest
-                //std::cout << "tuplet note:" << incipit[t] << std::endl;
-                tuplet_duration += note_duration;
-                is_first_event = false;
-                note_count++;
+                
+                t++;
             }
-            t++;
+            
+            //t + 1 should point to the number
+            t++; // move one char to the number
+            while (( (t + t2) < length) && (incipit[t + t2] != ')')) {
+                
+                // If we have extraneous chars, exit here
+                if (!isdigit(incipit[t + t2])) {
+                    printf("You have a non-number in a tuplet number\n");
+                    return i - index;
+                }
+                
+                // copy the number char-by-char
+                buf[t2] = incipit[t + t2];
+                t2++;
+            }
+            
+            tuplet_val = atoi(buf);
+            free(buf); // dispose of the buffer
+        
+        } else { // it is a triplet
+            // don't care to parse all the stuff
+            tuplet_val = 3;
         }
         
-        // the overall tuplet duration
-        if (!is_triplet) {
-            note->tuplet = tuplet_duration / current_duration;
-        } else {
-            // how many triplets we have is given by the note_count
-            // several triplet in one tuplet is wrong syntax wise but it appears in the data
-            note->tuplet = tuplet_duration / (current_duration * ceil(double(note_count)/3));
-        }
+        // durations where already parsed, get them from measure
+        note->tuplet_duration = measure->durations[measure->durations_offset];
+        // same for dots
+        note->tuplet_dots = measure->dots[measure->durations_offset];
+        // this is the first note, the notal number of notes = tuplet_val
+        note->tuplet_notes = tuplet_val;
+        // but also the note counter
+        note->tuplet_note =  tuplet_val;
         
     } else {
-        if ( note->tuplet != 1.0 ) {
+        if ( note->tuplet_notes > 0 ) {
             std::cout << "Warning: fermata within a tuplet. Won't be handled correctly" << std::endl;
         }
         note->fermata = true;
@@ -526,22 +552,13 @@ int MusPaeInput::getTupletFermata(const char* incipit, double current_duration, 
 //
 // getTupletFermataEnd --
 //
-
+// this can be deleted in the future?
 int MusPaeInput::getTupletFermataEnd(const char* incipit, NoteObject *note, int index ) {
     
     int i = index;
     int length = strlen(incipit);
-    
-    if (incipit[i] == ';') {
-        while ((i+1 < length) && (incipit[i+1] != ')')) {
-            // we don't need the number of notes in humdrum, just skip it
-            i++;
-        }
-    }
-    
+        
     // TODO currently fermatas inside tuplets won't be handled correctly
-    // close both now
-    note->tuplet = 1.0;
     note->fermata = false;
         
     return i - index;
@@ -620,22 +637,6 @@ int MusPaeInput::getPitch( char c_note ) {
     return pitch;
 }
 
-
-
-//////////////////////////////
-//
-// getDurationWithDot -- return the duration note given the note duration and the dot
-//
-
-double MusPaeInput::getDurationWithDot(double duration, int dot) {
-    
-    double duration_with_dot = duration;
-    int i;
-    for (i = 0; i < dot; i++) {
-        duration_with_dot = duration_with_dot + duration * pow(2.0, -(i+1));
-    }
-    return duration_with_dot;
-}
 
 //////////////////////////////
 //
@@ -728,7 +729,7 @@ int MusPaeInput::getTimeInfo( const char* incipit, MeasureObject *measure, int i
 // getClefInfo -- read the key signature.
 //
 
-int MusPaeInput::getClefInfo( const char *incipit, MeasureObject *measure, int index ) {
+int MusPaeInput::getClefInfo( const char *incipit, MusClef *mclef, int index ) {
     
     // a clef is maximum 3 character length
     // go through the 3 character and retrieve the letter (clef) and the line
@@ -747,8 +748,7 @@ int MusPaeInput::getClefInfo( const char *incipit, MeasureObject *measure, int i
         i++;
         index++;
     }
-    
-    MusClef *mclef = new MusClef();
+
     
     if (clef == 'C') {
         switch (line) {
@@ -773,8 +773,8 @@ int MusPaeInput::getClefInfo( const char *incipit, MeasureObject *measure, int i
         printf("Clef is ??\n");
     }
     
-    measure->clef = mclef;
-    
+    //measure->clef = mclef;
+        
     return i;
 }
 
@@ -927,17 +927,18 @@ int MusPaeInput::getNote( const char* incipit, NoteObject *note, MeasureObject *
     regex_t re;
     int oct, tie;
     int i = index;
-    double tuplet = note->tuplet; // save for later
     bool acc;
     int app;
+    int tuplet_num;
     
-    note->duration = measure->durations[measure->durations_offset];
-
-    note->dots = measure->dots[measure->durations_offset];
-    //if ( note->tuplet != 1.0 ) {
-    //    note->duration /= note->tuplet;
-        //std::cout << durations[0] << ":" << note->tuplet << std::endl;
-    //}
+    if (note->acciaccatura) {
+        // acciaccaturas are always eights regardless
+        // and have no dots
+        note->duration = DUR_8;
+    } else {
+        note->duration = measure->durations[measure->durations_offset];
+        note->dots = measure->dots[measure->durations_offset];
+    }
     note->pitch = getPitch( incipit[i] );
     
     // lookout, hack. If it is a rest (255 val) then create the rest object.
@@ -986,12 +987,20 @@ int MusPaeInput::getNote( const char* incipit, NoteObject *note, MeasureObject *
     
     acc = note->acciaccatura;
     app = note->appoggiatura;
+    tuplet_num = note->tuplet_note;
     
     // Reset note to defaults
     note->clear();
     
-    note->octave = oct;
-    note->tuplet = tuplet;
+    // write back the values we need to save
+
+    note->octave = oct; // save octave
+    
+    // tuplets. Decrease the current number is we are in a tuplet
+    // i.e. tuplet_num > 0
+    // al the other values just need to be in the first note
+    if (tuplet_num > 0)
+        note->tuplet_note = --tuplet_num;
     
     // If prevous note has tie, increment tie count
     if (tie > 0)
@@ -1040,7 +1049,6 @@ int MusPaeInput::getNote( const char* incipit, NoteObject *note, MeasureObject *
 //
 
 void MusPaeInput::printMeasure(std::ostream& out, MeasureObject *measure ) {
-    MusBeam *beam = NULL;
     MusBeam *appog_beam = NULL;
     
     m_measure =  new MusMeasure;
@@ -1063,24 +1071,24 @@ void MusPaeInput::printMeasure(std::ostream& out, MeasureObject *measure ) {
     
     if ( measure->wholerest > 0 ) {     
         MusRest *r = new MusRest();
-        r->m_dur = VALSilSpec; // surely this is NOT a multimeasure rest
+        r->m_dur = VALSilSpec; //
         r->m_multimeasure_dur = measure->wholerest;
         m_layer->AddLayerElement(r);
     }
     
-    for (unsigned int i=0; i<measure->notes.size(); i++) { 
+    for (unsigned int i=0; i<measure->notes.size(); i++) {
         NoteObject *note = &measure->notes[i];
-        if (!note->acciaccatura) {
-            //out << Convert::durationToKernRhythm(buffer, note->duration);
-            //for(j=0; j<note->dot; j++) {
-            //    out << ".";
-            //}
+        
+        // A note can have a chef change before it
+        if ( note->clef != NULL ) {
+            m_layer->AddLayerElement(note->clef);
         }
                     
         if (note->rest) {
             MusRest *r = new MusRest();
             r->m_dur = note->duration;
             r->m_pname = REST_AUTO;
+            r->m_dots = note->dots;
             
             // draw a fermata?
             if (note->fermata)
@@ -1126,17 +1134,18 @@ void MusPaeInput::printMeasure(std::ostream& out, MeasureObject *measure ) {
             
             // do beaming, EXCEPT for grace notes
             // which are unbeamed in the beam / have their own beam
+            // m_current_beam is global so we can have cross-measure beams
             if (!note->appoggiatura && !note->acciaccatura) {
                 if (note->beam & BEAM_INITIAL) {
-                    beam = new MusBeam;
-                    beam->AddNote(n);
-                    m_layer->AddLayerElement(beam);
+                    m_current_beam = new MusBeam;
+                    m_current_beam->AddNote(n);
+                    m_layer->AddLayerElement(m_current_beam);
                 } else if (note->beam & BEAM_MEDIAL) {
-                    if (beam)
-                        beam->AddNote(n);
+                    if (m_current_beam)
+                        m_current_beam->AddNote(n);
                     
                 } else if (note->beam & BEAM_TERMINAL) {
-                    beam = NULL;
+                    m_current_beam = NULL;
                 }
             }
                 
@@ -1162,26 +1171,19 @@ void MusPaeInput::printMeasure(std::ostream& out, MeasureObject *measure ) {
                 m_current_tie = NULL;
             }
             
-            // we have a tuplet
-            if (note->tuplet != 1.0) {
+            // we have a tuplet, the tuplet_note is > 0
+            // which means we are counting a tuplet
+            if (note->tuplet_note > 0) {
                 
-                if (m_current_tuplet == NULL) // first elem in tie
+                if (note->tuplet_notes == note->tuplet_note) // first elem in tuplet
                     m_current_tuplet = new MusTuplet;
                 
                 m_current_tuplet->AddNote(n); // place it into the array
                 
-                // Check for last note in tuplet
-                // if i is smaller that total number of notes in measure
-                // chech next note for contitnuation
-                if (i < measure->notes.capacity() - 1) {
-                    
-                    // Next note in measure is not tuplet, terminate tuplet obj
-                    if (measure->notes[i+1].tuplet == 1.0) {
-                        m_layer->AddLayerElement(m_current_tuplet);
-                        m_current_tuplet = NULL;
-                    }
-                // this is the last note in the measure, terminate regardless
-                } else if (i == measure->notes.capacity() - 1) {
+                // the last note counts always '1'
+                // insert the tuplet elem
+                // and reset the tuplet counter
+                if (note->tuplet_note == 1) {
                     m_layer->AddLayerElement(m_current_tuplet);
                     m_current_tuplet = NULL;
                 }
@@ -1200,9 +1202,15 @@ void MusPaeInput::printMeasure(std::ostream& out, MeasureObject *measure ) {
         } // note or rest
 
     }
+    // Set barline
+    // FIXME use flags for proper barline identification
     if ( measure->barline.length() ) {
-        out << measure->barline << "\n";
         MusBarline *bline = new MusBarline;
+        if (measure->barline == "=")
+            bline->m_barlineType = BARLINE_SINGLE;
+        else 
+            bline->m_barlineType = BARLINE_DBL;
+        
         m_layer->AddLayerElement(bline);
     }
     

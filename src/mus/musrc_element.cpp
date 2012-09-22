@@ -568,7 +568,8 @@ void MusRC::DrawRest ( MusDC *dc, MusLaidOutLayerElement *element, MusLaidOutLay
     MusRest *rest = dynamic_cast<MusRest*>(element->m_layerElement);
 
 	int formval = rest->m_dur;
-	int a = element->m_x_abs + rest->m_hOffset, b = element->m_y_drawing;
+	int a = element->m_x_abs + rest->m_hOffset;
+    int b = element->m_y_drawing;
 
 	//unsigned char dot = this->point;
 	/*if (inv_val && (!this->oblique && formval > DUR_1 || this->oblique && formval > DUR_2))
@@ -583,7 +584,7 @@ void MusRC::DrawRest ( MusDC *dc, MusLaidOutLayerElement *element, MusLaidOutLay
 		a -= m_layout->m_noteRadius[staff->staffSize][rest->m_cueSize];
     }
 
-	if (formval == DUR_BR || formval == DUR_2 || rest->m_dur == VALSilSpec) 
+	if (formval == DUR_BR || formval == DUR_2) 
     {
 		b -= 0; //m_layout->m_interl[staff->staffSize]; // LP position des silences
     }
@@ -601,7 +602,7 @@ void MusRC::DrawRest ( MusDC *dc, MusLaidOutLayerElement *element, MusLaidOutLay
         }
 	}
 
-	if (rest->m_dur == VALSilSpec) // LP: not sure what is actually does...
+	if (rest->m_dur == VALSilSpec && rest->m_multimeasure_dur > 1) // LP: not sure what is actually does...
     {
 		DrawSpecialRest( dc, a, element, staff);
     }

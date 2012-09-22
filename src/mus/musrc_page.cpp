@@ -661,6 +661,7 @@ int MusRC::CalculateRestPosY ( MusLaidOutStaff *staff, char duration)
         case DUR_64: offset = 2; break;
         case DUR_128: offset = 2; break;
         case DUR_256: offset = 1; break;
+        case VALSilSpec: offset = 7; break; // MM rests have same height as wholes
             
         default: offset = 12; break; // Signal an error, put the clef up high
     }
