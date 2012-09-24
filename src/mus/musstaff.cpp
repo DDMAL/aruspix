@@ -26,6 +26,7 @@ MusStaff::MusStaff():
 {
     m_measure = NULL;
     m_section = NULL;
+    m_antinque_notation = false;
 }
 
 MusStaff::~MusStaff()
