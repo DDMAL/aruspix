@@ -37,10 +37,10 @@ for (i = 0; i < items.length; i++) {
 	
 	header += "#define " + label + " " + i + "\n";
 	
-	impl += "m_bBox[" + label + "].m_x = " + r.x.toFixed(1) + ";\n";
-	impl += "m_bBox[" + label + "].m_y = " + r.y.toFixed(1) + ";\n";
-	impl += "m_bBox[" + label + "].m_width = " + r.width.toFixed(1) + ";\n";
-	impl += "m_bBox[" + label + "].m_height = " + r.height.toFixed(1) + ";\n";
+	impl += "bBox[" + label + "].m_x = " + r.x.toFixed(1) + ";\n";
+	impl += "bBox[" + label + "].m_y = " + r.y.toFixed(1) + ";\n";
+	impl += "bBox[" + label + "].m_width = " + r.width.toFixed(1) + ";\n";
+	impl += "bBox[" + label + "].m_height = " + r.height.toFixed(1) + ";\n";
 }
 
 impl += "\n\
@@ -52,7 +52,7 @@ impl += "\n\
 		double m_y;\n\
 		double m_width;\n\
 		double m_height;\n\
-	} m_bBox[" + i + "];\n\
+	} bBox[" + i + "];\n\
 };\n\
 \n";
 

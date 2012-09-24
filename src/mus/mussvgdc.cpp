@@ -575,6 +575,7 @@ wxString FilenameLookup(unsigned char c) {
         case LEIPZIG_STEM_FLAG_DOWN + LEIPZIG_OFFSET_MENSURAL: glyph = "slash_down_mensural"; break;
             /* ornaments */
         case 35: glyph = "orn_mordent"; break;
+        case LEIPZIG_EMB_TRILL: glyph = "orn_trill"; break;
             /* todo */
         default: glyph = "clef_G_chiavette";
     }

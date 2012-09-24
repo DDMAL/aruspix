@@ -119,6 +119,7 @@
 				<xsl:when test="@unicode='&#xe2;'"><xsl:value-of select="'slash_down_mensural'"/></xsl:when>
 				<!-- ornaments -->
 				<xsl:when test="@unicode='&#x23;'"><xsl:value-of select="'orn_mordent'"/></xsl:when>
+				<xsl:when test="@unicode='&#x74;'"><xsl:value-of select="'orn_trill'"/></xsl:when>
 				<!-- todo -->
 				<xsl:otherwise><xsl:value-of select="'unknown'"/></xsl:otherwise>
 			</xsl:choose>
