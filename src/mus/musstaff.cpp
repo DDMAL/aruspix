@@ -79,19 +79,6 @@ void MusStaff::Save( wxArrayPtrVoid params )
     this->Process( &layer, params );
 }
 
-void MusStaff::Load( wxArrayPtrVoid params )
-{
-    // param 0: output stream
-    MusFileInputStream *input = (MusFileInputStream*)params[0];       
-    
-    // load layers
-    MusLayer *layer;
-    while ( (layer = input->ReadLayer()) ) {
-        layer->Load( params );
-        this->AddLayer( layer );
-    }
-}
-
 // functors for MusStaff
 
 void MusStaff::Process(MusFunctor *functor, wxArrayPtrVoid params )

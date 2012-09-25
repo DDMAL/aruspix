@@ -122,18 +122,6 @@ void MusLayer::Save( wxArrayPtrVoid params )
     this->Process( &element, params );
 }
 
-void MusLayer::Load( wxArrayPtrVoid params )
-{
-    // param 0: output stream
-    MusFileInputStream *input = (MusFileInputStream*)params[0];       
-    
-    // load elements
-    MusLayerElement *element;
-    while ( (element = input->ReadLayerElement()) ) {
-        this->AddLayerElement( element );
-    }
-}
-
 // functors for MusLayer
 
 void MusLayer::Process(MusFunctor *functor, wxArrayPtrVoid params )

@@ -74,19 +74,6 @@ void MusSystem::Save( wxArrayPtrVoid params )
     this->Process( &staff, params );
 }
 
-void MusSystem::Load( wxArrayPtrVoid params )
-{
-    // param 0: output stream
-    MusFileInputStream *input = (MusFileInputStream*)params[0];       
-    
-    // load staves
-    MusLaidOutStaff *staff;
-    while ( (staff = input->ReadLaidOutStaff()) ) {
-        staff->Load( params );
-        this->AddStaff( staff );
-    }
-}
-
 void MusSystem::Trim( wxArrayPtrVoid params )
 {
     if ( !m_page ) {

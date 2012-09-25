@@ -61,19 +61,6 @@ void MusPage::Save( wxArrayPtrVoid params )
     this->Process( &system, params );
 }
 
-void MusPage::Load( wxArrayPtrVoid params )
-{
-    // param 0: output stream
-    MusFileInputStream *input = (MusFileInputStream*)params[0];       
-    
-    // load systems
-    MusSystem *system;
-    while ( (system = input->ReadSystem()) ) {
-        system->Load( params );
-        this->AddSystem( system );
-    }
-}
-
 
 void MusPage::AddSystem( MusSystem *system )
 {

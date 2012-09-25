@@ -99,25 +99,6 @@ void MusSection::Save( wxArrayPtrVoid params )
     }
 }
 
-void MusSection::Load( wxArrayPtrVoid params )
-{
-    // param 0: output stream
-    MusFileInputStream *input = (MusFileInputStream*)params[0];       
-    
-    // load measures ( measured music )
-    MusMeasure *measure;
-    while ( (measure = input->ReadMeasure()) ) {
-        measure->Load( params );
-        this->AddMeasure( measure );
-    }
-    // load staves ( unmeasured music )
-    MusStaff *staff;
-    while ( (staff = input->ReadStaff()) ) {
-        staff->Load( params );
-        this->AddStaff( staff );
-    }
-}
-
 // functors for MusSection
 
 void MusSection::Process(MusFunctor *functor, wxArrayPtrVoid params )

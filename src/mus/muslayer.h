@@ -58,7 +58,6 @@ public:
      * The save method was made virtual for the having it overriden in the MusLayerRdg class.
      */
     void virtual Save( wxArrayPtrVoid params );
-    void Load( wxArrayPtrVoid params );
         
 private:
     

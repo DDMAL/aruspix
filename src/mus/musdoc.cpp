@@ -84,32 +84,6 @@ bool MusDoc::Save( MusFileOutputStream *output )
     return true;
 }
 
-bool MusDoc::Load( MusFileInputStream *input )
-{
-    Reset();
-    input->ReadDoc( this );
-    
-    wxArrayPtrVoid params;
-	params.Add( input );
-    
-    // logical
-    MusDiv *div;
-    while( (div = input->ReadDiv()) ) {
-        div->Load( params );
-        this->AddDiv( div );
-    }
-    
-    // layout
-    MusLayout *layout;
-    while( (layout = input->ReadLayout()) ) {
-        layout->Load( params );
-        this->AddLayout( layout );
-    }
-    
-    this->Check();
-    return true;
-}
-
 void MusDoc::Check()
 {
     wxArrayPtrVoid params;

@@ -82,25 +82,6 @@ void MusDiv::Save( wxArrayPtrVoid params )
     this->Process( &parts, params );
 }
 
-void MusDiv::Load( wxArrayPtrVoid params )
-{
-    // param 0: output stream
-    MusFileInputStream *input = (MusFileInputStream*)params[0];       
-    
-    // load score
-    MusScore *score;
-    if( (score = input->ReadScore()) ) {
-        score->Load( params );
-        this->AddScore( score );
-    }
-    // load parts
-    MusPartSet *partSet;
-    if( (partSet = input->ReadPartSet()) ) {
-        partSet->Load( params );
-        this->AddPartSet( partSet );
-    }
-}
-
 // functors for MusDiv
 
 void MusDiv::Process(MusFunctor *functor, wxArrayPtrVoid params )
@@ -170,19 +151,6 @@ void MusScore::Save( wxArrayPtrVoid params )
     this->Process( &section, params );
 }
 
-void MusScore::Load( wxArrayPtrVoid params )
-{
-    // param 0: output stream
-    MusFileInputStream *input = (MusFileInputStream*)params[0];       
-    
-    // load score
-    MusSection *section;
-    while ( (section = input->ReadSection()) ) {
-        section->Load( params );
-        this->AddSection( section );
-    }
-}
-
 // functors for MusScore
 
 void MusScore::Process(MusFunctor *functor, wxArrayPtrVoid params )
@@ -247,19 +215,6 @@ void MusPartSet::Save( wxArrayPtrVoid params )
     this->Process( &part, params );
 }
 
-void MusPartSet::Load( wxArrayPtrVoid params )
-{
-    // param 0: output stream
-    MusFileInputStream *input = (MusFileInputStream*)params[0];       
-    
-    // load score
-    MusPart *part;
-    while ( (part = input->ReadPart()) ) {
-        part->Load( params );
-        this->AddPart( part );
-    }
-}
-
 // functors for MusPartSet
 
 void MusPartSet::Process(MusFunctor *functor, wxArrayPtrVoid params )
@@ -320,19 +275,6 @@ void MusPart::Save( wxArrayPtrVoid params )
     // save sections
     MusSectionFunctor section( &MusSection::Save );
     this->Process( &section, params );
-}
-
-void MusPart::Load( wxArrayPtrVoid params )
-{
-    // param 0: output stream
-    MusFileInputStream *input = (MusFileInputStream*)params[0];       
-    
-    MusSection *section;
-    // load score
-    while ( (section = input->ReadSection()) ) {
-        section->Load( params );
-        this->AddSection( section );
-    }
 }
 
 // functors for MusPart

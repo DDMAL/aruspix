@@ -123,20 +123,6 @@ void MusLayout::Save( wxArrayPtrVoid params )
     this->Process( &page, params );
 }
 
-void MusLayout::Load( wxArrayPtrVoid params )
-{
-    // param 0: output stream
-    MusFileInputStream *input = (MusFileInputStream*)params[0];       
-    
-    // load pages
-    MusPage *page;
-    while ( (page = input->ReadPage()) ) {
-        page->Load( params );
-        this->AddPage( page );
-    }
-}
-
-
 void MusLayout::AddPage( MusPage *page )
 {
 	//page->SetLayout( this );

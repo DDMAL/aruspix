@@ -50,8 +50,7 @@ public:
     // moulinette
     virtual void Process(MusFunctor *functor, wxArrayPtrVoid params );
     // functors
-    void Save( wxArrayPtrVoid params );
-    void Load( wxArrayPtrVoid params );    
+    void Save( wxArrayPtrVoid params );    
     
 public:
     /** The children MusMeasure objects */

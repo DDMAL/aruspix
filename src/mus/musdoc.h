@@ -70,8 +70,6 @@ public:
     
     bool Save( MusFileOutputStream *output );
     
-    bool Load( MusFileInputStream *input );
-    
     // moulinette
     void GetNumberOfVoices( int *min_voice, int *max_voice );
     MusLaidOutStaff *GetVoice( int i );

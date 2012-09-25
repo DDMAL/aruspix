@@ -140,29 +140,6 @@ public:
     // read
     bool ImportFile( ) { return true; }
     
-    virtual bool ReadDoc( MusDoc *doc ) { return true; };
-    // logical
-    virtual MusDiv* ReadDiv( ) { return NULL; }; 
-    virtual MusScore* ReadScore( ) { return NULL; }; 
-    virtual MusPartSet* ReadPartSet( ) { return NULL; };
-    virtual MusPart* ReadPart( ) { return NULL; };
-    virtual MusSection* ReadSection( ) { return NULL; };
-    virtual MusMeasure* ReadMeasure( ) { return NULL; };
-    virtual MusStaff* ReadStaff(  ) { return NULL; };
-    virtual MusLayer* ReadLayer( ) { return NULL; };
-    virtual MusLayerElement *ReadLayerElement( ) { return NULL; };
-    // layout
-    virtual MusLayout* ReadLayout( ) { return NULL; };
-    virtual MusPage* ReadPage( ) { return NULL; };
-    virtual MusSystem* ReadSystem( ) { return NULL; };
-    virtual MusLaidOutStaff* ReadLaidOutStaff( ) { return NULL; };
-    virtual MusLaidOutLayer* ReadLaidOutLayer(  ) { return NULL; };
-    virtual MusLaidOutLayerElement* ReadLaidOutLayerElement( ) { return NULL; };  
-    // app
-    virtual MusLayerApp* ReadLayerApp( ) { return NULL; };
-    virtual MusLayerRdg* ReadLayerRdg( ) { return NULL; };
-
-    
 public:
     
 protected:

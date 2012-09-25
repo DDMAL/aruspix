@@ -102,19 +102,6 @@ void MusLaidOutStaff::Save( wxArrayPtrVoid params )
     this->Process( &layer, params );
 }
 
-void MusLaidOutStaff::Load( wxArrayPtrVoid params )
-{
-    // param 0: output stream
-    MusFileInputStream *input = (MusFileInputStream*)params[0];       
-    
-    // load layers
-    MusLaidOutLayer *layer;
-    while ( (layer = input->ReadLaidOutLayer()) ) {
-        layer->Load( params );
-        this->AddLayer( layer );
-    }
-}
-
 void MusLaidOutStaff::AddLayer( MusLaidOutLayer *layer )
 {
 	layer->SetStaff( this );

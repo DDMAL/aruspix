@@ -104,19 +104,6 @@ void MusLaidOutLayer::Save( wxArrayPtrVoid params )
     this->Process( &element, params );
 }
 
-void MusLaidOutLayer::Load( wxArrayPtrVoid params )
-{
-    // param 0: output stream
-    MusFileInputStream *input = (MusFileInputStream*)params[0];       
-    
-    // load elements
-    MusLaidOutLayerElement *element;
-    while ( (element = input->ReadLaidOutLayerElement()) ) {
-        element->Load( params );
-        this->AddElement( element );
-    }
-}
-
 
 void MusLaidOutLayer::AddElement( MusLaidOutLayerElement *element, int idx )
 {
