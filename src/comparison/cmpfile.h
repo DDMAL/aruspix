@@ -88,9 +88,10 @@ protected:
     /**
      * Align the two layer using a dynamic progamming approach.
      * The alignement is performed using the edit distance.
-     * The result of the alignment is saved in an additional MEI file.
+     * For each match, the uuid is added to the uuid_refs and uuid_vars and uuid_count is incremented.
+     * This is done in order to then change the uuid in the variant layout for element synchronization.
      */
-	bool Align( MusLayer *layer_ref, MusLayer *layer_var, CmpCollationPart *part_var );
+	MusLayer *Align( MusLayer *layer_ref, MusLayer *layer_var, uuid_t *uuid_refs, uuid_t *uuid_vars, int *uuid_count );
 	
     /**
      * Create a <app> element in the layer_aligned MusLayer.

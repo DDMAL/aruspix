@@ -37,6 +37,12 @@ class MusMensur;
 class MusNote;
 class MusRest;
 class MusSymbol;
+class MusLayout;
+class MusPage;
+class MusSystem;
+class MusLaidOutStaff;
+class MusLaidOutLayer;
+class MusLaidOutLayerElement;
 
 using namespace mei;
 
@@ -146,7 +152,7 @@ private:
 	
     /** @name Methods for converting members into MEI attributes. */
     ///@{
-    std::string GetMeiUuid( MusObject *element );
+    std::string UuidToMeiStr( MusObject *element );
 	std::string DurToStr(int dur);
 	std::string OctToStr(int oct);
 	std::string PitchToStr(int pitch);
@@ -215,6 +221,7 @@ public:
     
 private:
     bool ReadMeiHeader( MeiHead *meihead );
+    // logical
     bool ReadMeiDiv( Mdiv *mdiv );
     bool ReadMeiScore( Score *score );
     bool ReadMeiParts( Parts * parts );
@@ -232,10 +239,19 @@ private:
     bool ReadMeiSymbol( Accid *accid );
     bool ReadMeiSymbol( Custos *custos );
     bool ReadMeiSymbol( Dot *dot );
+    // layout
+    bool ReadMeiLayout( Layout *layout );
+    bool ReadMeiPage( Page *page );
+    bool ReadMeiSystem( System *system );
+    bool ReadMeiLaidOutStaff( LaidOutStaff *laidOutStaff );
+    bool ReadMeiLaidOutLayer( LaidOutLayer *laidOutLayer );
+    bool ReadMeiLaidOutElement( LaidOutElement *laidOutElement );
+    // app
     bool ReadMeiApp( App *app );
     bool ReadMeiRdg( Rdg *rdg );
 	//
     void SetMeiUuid( MeiElement *element, MusObject *object );
+    void StrToUuid(std::string uuid, uuid_t dest);
 	int StrToDur(std::string dur);
 	int StrToOct(std::string oct);
 	int StrToPitch(std::string pitch ); 
@@ -248,6 +264,7 @@ public:
     
 private:
     wxString m_filename;
+    // logical
 	MusDiv *m_div;
 	MusScore *m_score;
 	MusPartSet *m_parts;
@@ -256,6 +273,12 @@ private:
 	MusMeasure *m_measure;
 	MusStaff *m_staff;
 	MusLayer *m_layer;
+    // layout
+    MusLayout *m_layout;
+    MusPage *m_page;
+    MusSystem *m_system;
+    MusLaidOutStaff *m_laidOutStaff;
+    MusLaidOutLayer *m_laidOutLayer;
 };
 
 

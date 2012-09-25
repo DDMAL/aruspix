@@ -180,6 +180,7 @@ MusLayerElement::~MusLayerElement()
         wxArrayPtrVoid params;
         params.Add( this );
         MusLaidOutLayerElementFunctor del( &MusLaidOutLayerElement::Delete );
+        del.m_reverse = true;
         m_div->m_doc->ProcessLayout( &del, params );
     }
     

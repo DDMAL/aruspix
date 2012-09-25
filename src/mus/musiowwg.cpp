@@ -278,11 +278,11 @@ bool MusWWGOutput::WriteFileHeader( const MusWWGData *wwgData )
 	Write( &m_doc->m_env.m_beamWhiteWidth, 1 ); // param - epBlancBarreValeur
 	Write( &m_doc->m_env.m_beamMaxSlope, 1 ); // param - m_beamMaxSlope
 	Write( &m_doc->m_env.m_beamMinSlope, 1 ); // param - m_beamMinSlope
-	int32 = wxINT32_SWAP_ON_BE( m_doc->m_env.m_paperWidth ); // param - m_paperWidth
+	int32 = wxINT32_SWAP_ON_BE( m_doc->m_pageWidth / 10 ); // param - m_paperWidth
 	Write( &int32, 4 );
-	int32 = wxINT32_SWAP_ON_BE( m_doc->m_env.m_paperHeight ); // param - m_paperHeight
+	int32 = wxINT32_SWAP_ON_BE( m_doc->m_pageHeight / 10 ); // param - m_paperHeight
 	Write( &int32, 4 );
-	int16 = wxINT16_SWAP_ON_BE( m_doc->m_env.m_topMargin ); // param - margeSommet
+	int16 = wxINT16_SWAP_ON_BE( m_doc->m_pageTopMar ); // param - margeSommet
 	Write( &int16, 2 );
 	int16 = wxINT16_SWAP_ON_BE( m_doc->m_env.m_leftMarginOddPage ); // param - margeGaucheImpaire
 	Write( &int16, 2 );
@@ -382,11 +382,11 @@ bool MusWWGOutput::WritePage( const MusPage *page )
     if (page->GetSystemCount() > 0) {
         system = &page->m_systems[0];
     }
-    int32 = system ? wxINT32_SWAP_ON_BE( system->indent ) : 0;
+    int32 = system ? wxINT32_SWAP_ON_BE( system->m_systemLeftMar ) : 0;
 	Write( &int32, 4 );
-    int32 = system ? wxINT32_SWAP_ON_BE( system->indentDroite ) : 0;
+    int32 = system ? wxINT32_SWAP_ON_BE( system->m_systemRightMar ) : 0;
 	Write( &int32, 4 );
-	int32 = system ? wxINT32_SWAP_ON_BE( system->lrg_lign ) : wxINT32_SWAP_ON_BE( 190 );
+	int32 = system ? wxINT32_SWAP_ON_BE( page->m_pageWidth - page->m_pageLeftMar ) : wxINT32_SWAP_ON_BE( 190 ); // more or less...
 	Write( &int32, 4 );
     
     l = 0; // staff number on the page
@@ -439,9 +439,10 @@ bool MusWWGOutput::WriteLayer( const MusLaidOutLayer *layer, int staffNo )
 	Write( &m_current_staff->vertBarre, 1 );
 	Write( &m_current_staff->brace, 1 );
 	Write( &m_current_staff->staffSize, 1 );
-    char indent = ( m_current_system->indent > 0 );
+    char indent = ( m_current_system->m_systemLeftMar > 0 );
     Write( &indent, 1 );
-	Write( &m_current_system->indentDroite, 1 );
+    indent = 0;
+	Write( &indent, 1 ); // fake it
 	Write( &m_current_staff->portNbLine, 1 );
 	Write( &m_current_staff->accol, 1 );
 	Write( &m_current_staff->accessoire, 1 );
@@ -777,15 +778,18 @@ bool MusWWGInput::ReadFileHeader( MusWWGData *wwgData )
 	Read( &m_doc->m_env.m_beamMaxSlope, 1 ); // ~param - ~m_beamMaxSlope
 	Read( &m_doc->m_env.m_beamMinSlope, 1 ); // ~param - ~m_beamMinSlope
 	Read( &int32, 4 );
-	m_doc->m_env.m_paperWidth = wxINT32_SWAP_ON_BE( int32 ); // ~param - ~m_paperWidth
+	m_doc->m_pageWidth = wxINT32_SWAP_ON_BE( int32 ); // ~param - ~m_paperWidth
+    m_doc->m_pageWidth *= 10; // changed
 	Read( &int32, 4 );
-	m_doc->m_env.m_paperHeight = wxINT32_SWAP_ON_BE( int32 ); // ~param - ~m_paperHeight
+	m_doc->m_pageHeight = wxINT32_SWAP_ON_BE( int32 ); // ~param - ~m_paperHeight
+    m_doc->m_pageHeight *= 10; 
 	Read( &int16, 2 );
-	m_doc->m_env.m_topMargin = wxINT16_SWAP_ON_BE( int16 ); // ~param - ~margeSommet
+	m_doc->m_pageTopMar = wxINT16_SWAP_ON_BE( int16 ); // ~param - ~margeSommet
 	Read( &int16, 2 );
 	m_doc->m_env.m_leftMarginOddPage = wxINT16_SWAP_ON_BE( int16 ); // ~param - ~margeGaucheImpaire
 	Read( &int16, 2 );
 	m_doc->m_env.m_leftMarginEvenPage = wxINT16_SWAP_ON_BE( int16 ); // ~param - ~margeGauchePaire
+    m_doc->m_pageLeftMar = m_doc->m_env.m_leftMarginOddPage;
 	Read( &wwgData->Epais1, 1 ); // ~param - ~epais1
 	Read( &wwgData->Epais2, 1 ); // ~param - ~epais2
 	Read( &wwgData->Epais3, 1 ); // ~param - ~epais3
@@ -899,9 +903,9 @@ bool MusWWGInput::ReadPage( MusPage *page )
 	lrg_lign = wxINT32_SWAP_ON_BE( int32 ); // page value in wwg
 
     MusSystem *system = new MusSystem(); // first system of the page 
-    system->indent = indent;
-    system->indentDroite = indentDroite;
-    system->lrg_lign = lrg_lign;  
+    system->m_systemLeftMar = indent;
+    system->m_systemRightMar = indentDroite;
+    //system->lrg_lign = lrg_lign;  
     int system_no = 0; // we don't have no members in system anymore 
     
     for (j = 0; j < nbrePortees; j++) 
@@ -926,14 +930,14 @@ bool MusWWGInput::ReadPage( MusPage *page )
             page->AddSystem( system ); // add the current one
             system = new MusSystem(); // create the next one
             system_no = m_noLigne - 1; 
-            system->indentDroite = indentDroite;
-            system->lrg_lign = lrg_lign;
+            system->m_systemRightMar = indentDroite;
+            //system->lrg_lign = lrg_lign;
         }
         if ( m_indent ) {
-			system->indent = indent;
+			system->m_systemLeftMar = indent;
         }
         if ( m_indentDroite ) {      
-            system->indentDroite = m_indentDroite;
+            system->m_systemRightMar = m_indentDroite;
         }
         staff->AddLayer( layer );
         system->AddStaff( staff );

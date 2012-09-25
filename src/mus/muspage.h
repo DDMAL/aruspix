@@ -87,6 +87,18 @@ public:
     /** The array of system breaks MusSymbols */
     ArrayOfMusLayerElements m_systemBreaks;
     
+    /** Page width (MEI scoredef@page.width). Saved if != -1 */
+    int m_pageWidth;
+    /** Page height (MEI scoredef@page.height). Saved if != -1 */
+    int m_pageHeight;
+    /** Page left margin (MEI scoredef@page.leftmar). Saved if != 0 */
+    short m_pageLeftMar;
+    /** Page right margin (MEI scoredef@page.rightmar). Saved if != 0 */
+    short m_pageRightMar;
+    /** Page top margin (MEI scoredef@page.topmar). Saved if != 0 */
+    short m_pageTopMar;
+    
+    
     /** definition en mm des portees de la page */
     unsigned char defin;
     /** longueur en mm de l'indentation des portees de la page */

@@ -100,6 +100,7 @@ public:
     
     // functors
     bool FindWithUuid( wxArrayPtrVoid params );
+    bool ReplaceUuid( wxArrayPtrVoid params );
     bool CheckFunctor( wxArrayPtrVoid params );
     /**
      * Set the layout pointer in all a layout tree.
@@ -274,6 +275,7 @@ private:
 /** 
  * This class contains the document environment variables.
  * It remains from the Wolfgang parameters strcuture.
+ * TODO - Integrate them in MEI.
  */
 class MusEnv 
 {
@@ -300,12 +302,6 @@ public:
     unsigned char m_beamMaxSlope;
     /** minimum beam slope */
     unsigned char m_beamMinSlope;
-    /** paper width */
-    int m_paperWidth;
-    /** paper height */
-    int m_paperHeight;
-    /** top margin */
-    short m_topMargin;
     /** left margin on odd pages */
     short m_leftMarginOddPage;
     /** left margin on even pages */

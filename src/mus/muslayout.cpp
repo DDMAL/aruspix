@@ -87,7 +87,10 @@ void MusLayout::Clear( )
 	m_fontHeightAscent[1][1] = 0;
     
 	//MesVal=1.0;
-    
+    m_pageWidth = -1;
+    m_pageHeight = -1;
+    m_pageLeftMar = 0;
+    m_pageRightMar = 0;
     m_charDefin = 20;
 }
 
@@ -171,7 +174,7 @@ void MusLayout::Realize( MusScore *score )
                     MusLayer *layer = &staff->m_layers[l];
                     MusLaidOutLayer *laidOutLayer;
                     if (l >= laidOutStaff->GetLayerCount()) {
-                        laidOutStaff->AddLayer( new MusLaidOutLayer( l, k, section, measure ));
+                        laidOutStaff->AddLayer( new MusLaidOutLayer( l, k, NULL, measure ));
                     }
                     laidOutLayer = &laidOutStaff->m_layers[l];
                     for (m = 0; m < (int)layer->m_elements.GetCount(); m++) {
@@ -238,7 +241,8 @@ void MusLayout::SpaceMusic() {
     
     rc.DrawPage(  &bb_dc, &m_pages[0] , false );
     
-    // Trim the system to the needed position
+    // Trim the page to the needed position
+    m_pages[0].m_pageWidth = 0; // first resest the page to 0
     params.Clear();
     MusSystemFunctor trimSystem(&MusSystem::Trim);
     m_doc->ProcessLayout( &trimSystem, params );
@@ -246,17 +250,28 @@ void MusLayout::SpaceMusic() {
     rc.DrawPage(  &bb_dc, &m_pages[0] , false );
 }
 
-void MusLayout::PaperSize( )
+void MusLayout::PaperSize( MusPage *page )
 {
-	if (this->m_env.m_landscape)
+    // we use the page members only if set (!= -1) 
+    if ( page  && ( page->m_pageHeight != -1 ) ) {
+        m_pageHeight = page->m_pageHeight;
+        m_pageWidth = page->m_pageWidth;
+        m_pageLeftMar = page->m_pageLeftMar;
+        m_pageRightMar = page->m_pageRightMar;
+    }
+	else if (this->m_env.m_landscape)
 	{	
-		m_pageWidth = this->m_env.m_paperWidth*10;
-		m_pageHeight = this->m_env.m_paperHeight*10;
+		m_pageWidth = m_doc->m_pageWidth;
+		m_pageHeight = m_doc->m_pageHeight;
+        m_pageLeftMar = m_doc->m_pageLeftMar;
+        m_pageRightMar = m_doc->m_pageRightMar;
 	}
 	else
 	{	
-		m_pageHeight = this->m_env.m_paperWidth*10;
-		m_pageWidth = this->m_env.m_paperHeight*10;
+		m_pageHeight = m_doc->m_pageWidth;
+		m_pageWidth = m_doc->m_pageHeight;
+        m_pageLeftMar = m_doc->m_pageLeftMar;
+        m_pageRightMar = m_doc->m_pageRightMar;
 	}
     
 	m_beamMaxSlope = this->m_env.m_beamMaxSlope;
@@ -267,6 +282,11 @@ void MusLayout::PaperSize( )
 	return;
 }
 
+
+int MusLayout::GetSystemRightX( MusSystem *system )
+{
+    return m_pageWidth - m_pageLeftMar - m_pageRightMar - system->m_systemRightMar;
+}
 
 int MusLayout::CalcMusicFontSize( )
 {
@@ -326,7 +346,7 @@ void MusLayout::UpdatePageValues()
      else
      m_leftMargin = this->m_env.m_leftMarginEvenPage*10;
      */
-	m_leftMargin = this->m_env.m_leftMarginEvenPage*10;
+	m_pageLeftMar = this->m_env.m_leftMarginEvenPage*10;
     
     m_smallStaffRatio[0] = this->m_env.m_smallStaffNum;
     m_smallStaffRatio[1] = this->m_env.m_smallStaffDen;

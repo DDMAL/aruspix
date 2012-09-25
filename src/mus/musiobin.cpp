@@ -44,6 +44,8 @@
 // MusBinOutput
 //----------------------------------------------------------------------------
 
+#ifdef PROUT
+
 MusBinOutput::MusBinOutput( MusDoc *doc, wxString filename ) :
     MusFileOutputStream( doc, filename )
 {
@@ -88,11 +90,11 @@ bool MusBinOutput::WriteDoc( MusDoc *doc )
     Write( &doc->m_env.m_beamWhiteWidth, 1);
     Write( &doc->m_env.m_beamMaxSlope, 1);
     Write( &doc->m_env.m_beamMinSlope, 1);
-    int32 = wxINT32_SWAP_ON_BE( doc->m_env.m_paperWidth );
+    int32 = wxINT32_SWAP_ON_BE( doc->m_pageWidth );
     Write( &int32, 4);
-    int32 = wxINT32_SWAP_ON_BE( doc->m_env.m_paperHeight );
+    int32 = wxINT32_SWAP_ON_BE( doc->m_pageHeight );
     Write( &int32, 4);
-    int16 = wxINT16_SWAP_ON_BE( doc->m_env.m_topMargin );
+    int16 = wxINT16_SWAP_ON_BE( doc->m_pageTopMar );
     Write( &int16, 2);
     int16 = wxINT16_SWAP_ON_BE( doc->m_env.m_leftMarginOddPage );
     Write( &int16, 2);
@@ -485,15 +487,15 @@ bool MusBinInput::ReadDoc( MusDoc *doc )
     Read( &doc->m_env.m_beamMaxSlope, 1);
     Read( &doc->m_env.m_beamMinSlope, 1);
     Read( &int32, 4 );
-    doc->m_env.m_paperWidth = wxINT32_SWAP_ON_BE( int32 );
+    doc->m_pageWidth = wxINT32_SWAP_ON_BE( int32 );
     Read( &int32, 4 );
-    doc->m_env.m_paperHeight = wxINT32_SWAP_ON_BE( int32 );
+    doc->m_pageHeight = wxINT32_SWAP_ON_BE( int32 );
     Read( &int16, 2 );
     doc->m_env.m_topMargin = wxINT32_SWAP_ON_BE( int16 );
     Read( &int16, 2 );
-    doc->m_env.m_leftMarginOddPage = wxINT32_SWAP_ON_BE( int16 );
+    doc->m_env.m_leftMarginOddPage = wxINT16_SWAP_ON_BE( int16 );
     Read( &int16, 2 );
-    doc->m_env.m_leftMarginEvenPage = wxINT32_SWAP_ON_BE( int16 );       
+    doc->m_env.m_leftMarginEvenPage = wxINT16_SWAP_ON_BE( int16 );       
     Read( &doc->m_env.m_smallStaffNum, 1);
     Read( &doc->m_env.m_smallStaffDen, 1);
     Read( &doc->m_env.m_graceNum, 1);
@@ -911,6 +913,8 @@ MusLaidOutLayerElement* MusBinInput::ReadLaidOutLayerElement( )
     return laidOutLayerElement;
 }
 
+#endif
+
 //----------------------------------------------------------------------------
 // MusBinInput_1_X
 //----------------------------------------------------------------------------
@@ -1040,11 +1044,11 @@ bool MusBinInput_1_X::ReadFileHeader( unsigned short *nbpage )
 	Read( &m_doc->m_env.m_beamWidth, 1 ); // param - epBarreValeur
 	Read( &m_doc->m_env.m_beamWhiteWidth, 1 ); // param - epBlancBarreValeur
 	Read( &int32, 4 );
-	m_doc->m_env.m_paperHeight = wxINT32_SWAP_ON_BE( int32 ); // param - pageFormatHor
+	m_doc->m_pageHeight = wxINT32_SWAP_ON_BE( int32 ) * 10; // param - pageFormatHor
 	Read( &int32, 4 );
-	m_doc->m_env.m_paperWidth = wxINT32_SWAP_ON_BE( int32 ); // param - pageFormatVer
+	m_doc->m_pageWidth = wxINT32_SWAP_ON_BE( int32 ) * 10; // param - pageFormatVer
 	Read( &int16, 2 );
-	m_doc->m_env.m_topMargin = wxINT16_SWAP_ON_BE( int16 ); // param - margeSommet
+	m_doc->m_pageTopMar = wxINT16_SWAP_ON_BE( int16 ); // param - margeSommet
 	Read( &int16, 2 );
 	m_doc->m_env.m_leftMarginOddPage = wxINT16_SWAP_ON_BE( int16 ); // param - margeGaucheImpaire
 	Read( &int16, 2 );
@@ -1120,9 +1124,9 @@ bool MusBinInput_1_X::ReadPage( MusPage *page )
     */
     
     MusSystem *system = new MusSystem(); // first system of the page 
-    system->indent = indent;
-    system->indentDroite = indentDroite;
-    system->lrg_lign = lrg_lign;  
+    system->m_systemLeftMar = indent;
+    system->m_systemRightMar = indentDroite;
+    //system->lrg_lign = lrg_lign;  
     int system_no = 0; // we don't have no members in system anymore 
     
     for (j = 0; j < nbrePortees; j++) 
@@ -1161,14 +1165,14 @@ bool MusBinInput_1_X::ReadPage( MusPage *page )
             page->AddSystem( system ); // add the current one
             system = new MusSystem(); // create the next one
             system_no = m_noLigne - 1; 
-            system->indentDroite = indentDroite;
-            system->lrg_lign = lrg_lign;
+            system->m_systemRightMar = indentDroite;
+            //system->lrg_lign = lrg_lign;
         }
         if ( m_indent ) {
-			system->indent = indent;
+			system->m_systemLeftMar = indent;
         }
         if ( m_indentDroite ) {      
-            system->indentDroite = m_indentDroite;
+            system->m_systemRightMar = m_indentDroite;
         }
         staff->AddLayer( layer );
         system->AddStaff( staff );

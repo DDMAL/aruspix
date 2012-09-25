@@ -102,6 +102,16 @@ private:
 public:
     /** nom complet du fichier */
     wxString m_fname;
+    /** Page width (MEI scoredef@page.width) - currently not saved */
+    int m_pageWidth;
+    /** Page height (MEI scoredef@page.height) - currently not saved */
+    int m_pageHeight;
+    /** Page left margin (MEI scoredef@page.leftmar) - currently not saved */
+    short m_pageLeftMar;
+    /** Page right margin (MEI scoredef@page.rightmar) - currently not saved */
+    short m_pageRightMar;
+    /** Page top margin (MEI scoredef@page.topmar) - currently not saved */
+    short m_pageTopMar;
     
     /** The layouts */
     ArrayOfMusLayouts m_layouts;
@@ -112,10 +122,7 @@ public:
     /** Data loaded from the Wolfgang files but unused **/
 	MusWWGData m_wwgData;
     
-
-
 private:
-    MeiDocument *m_meidoc;
 	
 };
 

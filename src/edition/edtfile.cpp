@@ -23,6 +23,7 @@
 #include "muspage.h"
 #include "mussystem.h"
 #include "muslaidoutstaff.h"
+#include "musiomei.h"
 #include "musiobin.h"
 
 enum
@@ -99,9 +100,9 @@ void EdtFile::SaveContent( )
 	wxASSERT( m_xml_root );
 	
     // save
-    MusBinOutput *bin_output = new MusBinOutput( m_musDocPtr, m_musDocPtr->m_fname );
-    bin_output->ExportFile();
-    delete bin_output; 
+    MusMeiOutput *mei_output = new MusMeiOutput( m_musDocPtr, m_musDocPtr->m_fname );
+    mei_output->ExportFile();
+    delete mei_output; 
 }
 
 void EdtFile::CloseContent( )
@@ -185,12 +186,12 @@ bool EdtFile::Create( )
     MusLayout *layout = new MusLayout( Facsimile );
     MusPage *page = new MusPage();
     
-	m_musDocPtr->m_env.m_paperWidth = width;
-	m_musDocPtr->m_env.m_paperHeight = height;
+	m_musDocPtr->m_pageWidth = width * 10;
+	m_musDocPtr->m_pageHeight = height * 10;
   
     for (i = 0; i < nb_systems; i++) {
         MusSystem *system = new MusSystem();
-        system->lrg_lign = width - 20;       
+        //system->lrg_lign = width - 20; // we have now m_systemRightMar  
         for (j = 0; j < nb_staves_per_system; j++)
         {
             logStaff = dynamic_cast<MusStaff*> (&section->m_staves[j]);

@@ -15,7 +15,6 @@
 
 #include "musdoc.h"
 
-
 enum
 {
 	MUS_BIN_ARUSPIX,
@@ -28,6 +27,9 @@ class MusLayer;
 class MusDurationInterface;
 class MusPitchInterface;
 class MusPositionInterface;
+
+
+#ifdef PROUT
 
 
 //----------------------------------------------------------------------------
@@ -158,7 +160,7 @@ private:
 
 };
 
-
+#endif
 
 //----------------------------------------------------------------------------
 // MusBinInput_1_X

@@ -39,7 +39,11 @@ WX_DEFINE_OBJARRAY( ArrayOfMusLaidOutLayers );
 MusLaidOutLayer::MusLaidOutLayer( int logLayerNb, int logStaffNb, MusSection *section, MusMeasure *measure ):
 	MusLayoutObject()
 {
-    wxASSERT_MSG( section, "MusSection pointer cannot be NULL when creating a MusLaidOutLayer");
+    if ( section ) {
+        wxASSERT_MSG( !measure , "MusMeasure pointer has to be NULL when creating a MusLaidOutLayer for unmeasured music");
+    } else if (measure ) {
+        wxASSERT_MSG( !section, "MusSection pointer has to be NULL when creating a MusLaidOutLayer for measured music");
+    }
     
 	Clear( );
     m_logLayerNb = logLayerNb;
@@ -53,10 +57,26 @@ MusLaidOutLayer::~MusLaidOutLayer()
     Deactivate();
 }
 
+void MusLaidOutLayer::SetSection( MusSection *section )
+{
+    if ( section ) {
+        wxASSERT_MSG( !m_measure , "MusMeasure pointer has to be NULL when creating a MusLaidOutLayer for unmeasured music");
+    }
+    m_section = section;    
+}
+
+void MusLaidOutLayer::SetMeasure( MusMeasure *measure )
+{
+    if (measure ) {
+        wxASSERT_MSG( !m_section, "MusSection pointer has to be NULL when creating a MusLaidOutLayer for measured music");
+    }
+    m_measure = measure;    
+}
+
 bool MusLaidOutLayer::Check()
 {
-    wxASSERT( m_staff && m_section );
-    return ( m_staff && m_section && MusLayoutObject::Check());
+    wxASSERT( m_staff && (m_section || m_measure) );
+    return ( m_staff && (m_section || m_measure) && MusLayoutObject::Check());
 }
 
 void MusLaidOutLayer::Clear()
@@ -716,6 +736,10 @@ void MusLaidOutLayer::Process(MusFunctor *functor, wxArrayPtrVoid params )
 	int i;
     for (i = 0; i < nbElements; i++) 
 	{
+        if (functor->m_success) {
+            break;
+        }
+        
         if ( functor->m_reverse ) element = &m_elements[nbElements - i - 1];
         else element = &m_elements[i];
         

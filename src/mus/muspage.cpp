@@ -42,6 +42,11 @@ void MusPage::Clear( )
 {
 	m_systems.Clear( );
 	defin = 20;
+    // by default we have no values and use the document ones
+    m_pageHeight = -1;
+    m_pageWidth = -1;
+    m_pageLeftMar = 0;
+    m_pageRightMar = 0;
 }
 
 

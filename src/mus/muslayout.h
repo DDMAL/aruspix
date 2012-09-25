@@ -59,10 +59,13 @@ public:
     
     void RefreshViews( ) {};
 	
-	/*
-     Calcul la taille de la page = calculFormatPapier()
+	/**
+     * Set the paper size for the layout (when drawing it)
+     * By default, the page size of the document is taken.
+     * If a page is given, the size of the page is taken.
+     * calculFormatPapier() in Wolfgang
      */
-	void PaperSize( );
+	void PaperSize( MusPage *page = NULL );
     /**
      Initialise les donnees de visualisation par page
      */
@@ -71,6 +74,11 @@ public:
      Initialise les donnees de polices (music and lyrics)
      */
 	virtual void UpdateFontValues();
+    
+    /**
+     * Return the right X position of the according to the page and system margins.
+     */
+    int GetSystemRightX( MusSystem *system );
     
 	int GetPageCount() const { return (int)m_pages.GetCount(); };
     
@@ -150,8 +158,19 @@ public:
     MusFontInfo m_ftLyrics;
 	
 	float m_beamMinSlope, m_beamMaxSlope;
-	int m_pageWidth, m_pageHeight;
-	int m_leftMargin;
+    /** @name Variables for rendering
+     * Variables for rendering used only at runtime.
+     * These variable are currently not saved in the MEI file.
+     * The are initialized either with the document ones or the page ones.
+     * This happen in PaperSize().
+     * Eventually, we could also store the in the layout as a default for all pages in each layout.
+     */
+    ///@{
+	int m_pageWidth;
+    int m_pageHeight;
+	int m_pageLeftMar;
+    int m_pageRightMar;
+    ///@}
 	
     //int mesureNum, mesureDen;
 	//float MesVal;

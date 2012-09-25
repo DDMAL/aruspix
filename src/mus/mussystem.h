@@ -85,12 +85,10 @@ public:
     /** The array of system breaks MusSymbols */
     ArrayOfMusLayerElements m_systemBreaks;
 
-    /** longueur en mm de l'indentation des portees de la page */
-    int indent;
-    /** longueur en mm de l'indentation droite des portees de la page */
-    int indentDroite;
-    /** longueur en mm des lignes de la pages */
-    int lrg_lign;
+    /** System left margin (MEI scoredef@system.leftmar). Saved if != 0 */
+    int m_systemLeftMar;
+    /** System right margin (MEI scoredef@system.rightmar). Saved if != 0 */
+    int m_systemRightMar;
 	/** 
      * The y absolute position of the system for facsimile layouts.
      * This is the top left corner of the system.

@@ -14,6 +14,7 @@ using std::max;
 
 #include "wx/fontdlg.h"
 #include "wx/fontutil.h"
+#include "wx/wfstream.h"
 
 #include "RtMidi.h"
 
@@ -21,7 +22,7 @@ using std::max;
 
 #include "muswindow.h"
 #include "mustoolpanel.h"
-#include "musiobin.h"
+#include "musiomei.h"
 
 #include "muslaidoutlayerelement.h"
 //#include "musstaff.h"
@@ -129,40 +130,46 @@ void MusWindow::Load( AxUndoFile *undoPtr )
     // keep a pointer to the doc because we are going to change the m_layout value
     // if we want to handle more that one layout, we should keep the layout number too
     MusDoc *doc = m_layout->m_doc;
-	MusBinInput *bin_input = new MusBinInput( doc, undoPtr->GetFilename() );
-
+    
+    // we have a file with extension .pos for storing the current position (page,system, etc.)
+    wxFileInputStream position_input( undoPtr->GetFilename() + ".pos" );
+    if ( !position_input.IsOk() )
+        return;
 
 	// keep current page, staff and element
-	bin_input->Read( &page, sizeof( int ));
-	bin_input->Read( &system, sizeof( int ));
-    bin_input->Read( &staff, sizeof( int ));
-	bin_input->Read( &layer, sizeof( int ));
-    bin_input->Read( &element, sizeof( int ));
-    bin_input->Read( &lyric_element, sizeof( int ) );
+	position_input.Read( &page, sizeof( int ));
+	position_input.Read( &system, sizeof( int ));
+    position_input.Read( &staff, sizeof( int ));
+	position_input.Read( &layer, sizeof( int ));
+    position_input.Read( &element, sizeof( int ));
+    position_input.Read( &lyric_element, sizeof( int ) );
     // edition state
     bool editor;
-    bin_input->Read( &editor, sizeof( bool ) );
+    position_input.Read( &editor, sizeof( bool ) );
     m_editorMode = editor ? MUS_EDITOR_EDIT : MUS_EDITOR_INSERT;
-	bin_input->Read( &m_lyricMode, sizeof( bool ) );
-	bin_input->Read( &m_inputLyric, sizeof( bool ) );
-	bin_input->Read( &m_lyricCursor, sizeof( int ) );
+	position_input.Read( &m_lyricMode, sizeof( bool ) );
+	position_input.Read( &m_inputLyric, sizeof( bool ) );
+	position_input.Read( &m_lyricCursor, sizeof( int ) );
+    
+    
+	MusMeiInput *mei_input = new MusMeiInput( doc, undoPtr->GetFilename() );
 		
 	//if ( undoPtr->m_flags == MUS_UNDO_FILE ) // this is now the only type of undo we handle anyway...
     {
-        bin_input->ImportFile();
+        mei_input->ImportFile();
         SetLayout( &doc->m_layouts[0] ); // only one layout for now
 	}
 
 	if (page < 0)  //|| (page > m_fh->nbpage - 1))
 	{
-		delete bin_input;
+		delete mei_input;
 		return;
 	}
 	
     SetPage( &m_layout->m_pages[page] );
 	m_npage = page;
 
-	delete bin_input;
+	delete mei_input;
 	
     m_currentSystem = NULL;
 	m_currentStaff = NULL;
@@ -238,27 +245,31 @@ void MusWindow::Store( AxUndoFile *undoPtr )
         element = m_currentElement->GetElementNo();
     }
 		
-    MusBinOutput *bin_output = new MusBinOutput( m_layout->m_doc, undoPtr->GetFilename() );
+    // we have a file with extension .pos for storing the current position (page,system, etc.)
+    wxFileOutputStream position_output( undoPtr->GetFilename() + ".pos" );
+    if ( !position_output.IsOk() )
+        return;
 	
-	bin_output->Write( &page, sizeof( int ) );
-    bin_output->Write( &system, sizeof( int ) );
-	bin_output->Write( &staff, sizeof( int ) );
-	bin_output->Write( &layer, sizeof( int ) );
-    bin_output->Write( &element, sizeof( int ) );
-    bin_output->Write( &lyric_element, sizeof( int ) );
+	position_output.Write( &page, sizeof( int ) );
+    position_output.Write( &system, sizeof( int ) );
+	position_output.Write( &staff, sizeof( int ) );
+	position_output.Write( &layer, sizeof( int ) );
+    position_output.Write( &element, sizeof( int ) );
+    position_output.Write( &lyric_element, sizeof( int ) );
     // edition state
     bool editor = m_editorMode == MUS_EDITOR_EDIT;
-    bin_output->Write( &editor, sizeof( bool ) );
-	bin_output->Write( &m_lyricMode, sizeof( bool ) );
-	bin_output->Write( &m_inputLyric, sizeof( bool ) );
-	bin_output->Write( &m_lyricCursor, sizeof( int ) );
-		
+    position_output.Write( &editor, sizeof( bool ) );
+	position_output.Write( &m_lyricMode, sizeof( bool ) );
+	position_output.Write( &m_inputLyric, sizeof( bool ) );
+	position_output.Write( &m_lyricCursor, sizeof( int ) );
+	
+    MusMeiOutput *mei_output = new MusMeiOutput( m_layout->m_doc, undoPtr->GetFilename() );
 	//if ( undoPtr->m_flags == MUS_UNDO_FILE ) // the only type of undo we handle
 	{
-	    bin_output->ExportFile();
+	    mei_output->ExportFile();
 	}
 
-    delete bin_output;
+    delete mei_output;
 }
 
 
@@ -267,7 +278,7 @@ void MusWindow::InitDC( wxDC *dc )
 	//if ( m_center )
 	//	dc->SetLogicalOrigin( - (margeMorteHor - m_leftMargin), -margeMorteVer );
 	//else
-        dc->SetLogicalOrigin( - (MUS_BORDER_AROUND_PAGE / 2) - m_layout->m_leftMargin,  - (MUS_BORDER_AROUND_PAGE / 2) );
+        dc->SetLogicalOrigin( - (MUS_BORDER_AROUND_PAGE / 2) - m_layout->m_pageLeftMar,  - (MUS_BORDER_AROUND_PAGE / 2) );
         
 	this->DoPrepareDC( *dc );
     
@@ -622,7 +633,7 @@ void MusWindow::UpdateScroll()
 	int x = 0;
 	if ( m_currentElement )
 		x = ToRendererX( m_currentElement->m_x_abs );
-	int y = ToRendererY(  m_currentStaff->m_y_drawing );
+	int y = ToRendererY(  m_currentStaff->m_y_abs + m_layout->m_staffSize[0] );
     
     x *= (double)m_zoomNum / m_zoomDen;
     y *= (double)m_zoomNum / m_zoomDen;
@@ -2080,7 +2091,7 @@ void MusWindow::OnPaint(wxPaintEvent &event)
     //if ( m_center )
 	//	dc.SetLogicalOrigin( - (margeMorteHor - m_leftMargin), -margeMorteVer );
 	//else
-		dc.SetLogicalOrigin( - MUS_BORDER_AROUND_PAGE / 2, - MUS_BORDER_AROUND_PAGE / 2);
+    //dc.SetLogicalOrigin( - MUS_BORDER_AROUND_PAGE / 2, - MUS_BORDER_AROUND_PAGE / 2);
     
 	this->PrepareDC( dc );
 	dc.SetTextForeground( *wxBLACK );

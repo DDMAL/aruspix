@@ -60,6 +60,29 @@ bool MusObject::FindWithUuid( wxArrayPtrVoid params )
     return false;
 }
 
+bool MusObject::ReplaceUuid( wxArrayPtrVoid params )
+{
+    // param 0: the uuid we are looking for (and have to replace
+    // param 1: the uuid we will replace with
+    // parma 2: the pointer to the element (when found)
+    uuid_t *uuidSrc = (uuid_t*)params[0];
+    uuid_t *uuidDst = (uuid_t*)params[1];
+    MusObject **element = (MusObject**)params[2];  
+    
+    if ( (*element) ) {
+        return true;
+    }
+    
+    if ( uuid_compare( *uuidSrc, *this->GetUuid() ) == 0 ) {
+        (*element) = this;
+        this->SetUuid( *uuidDst );
+        wxLogDebug("Replaced it!");
+        return true;
+    }
+    //wxLogDebug("Still looking for uuid...");
+    return false;
+}
+
 bool MusObject::CheckFunctor( wxArrayPtrVoid params )
 {
     this->Check();
@@ -245,9 +268,6 @@ MusEnv::MusEnv()
     m_beamWhiteWidth = 5;
     m_beamMaxSlope = 30;
     m_beamMinSlope = 10;
-    m_paperWidth = 210;
-    m_paperHeight = 297;
-    m_topMargin = 0;
     m_leftMarginOddPage = 10;
     m_leftMarginEvenPage = 10;
     

@@ -29,9 +29,8 @@ MusSystem::MusSystem( const MusSystem& system )
 {
     int i;
 
-	indent = system.indent;
-	indentDroite = system.indentDroite;
-	lrg_lign = system.lrg_lign;
+	m_systemLeftMar = system.m_systemLeftMar;
+	m_systemRightMar = system.m_systemRightMar;
 	m_x_abs = system.m_x_abs;
 	m_y_abs = system.m_y_abs;
 
@@ -57,9 +56,8 @@ void MusSystem::Clear( )
 {
 	m_staves.Clear( );
     m_page = NULL;
-	indent = 0;
-	indentDroite = 0;
-	lrg_lign = 19;
+	m_systemLeftMar = 0;
+	m_systemRightMar = 0;
 	m_y_abs = 0;
 	m_x_abs = 0;
 }
@@ -91,7 +89,14 @@ void MusSystem::Load( wxArrayPtrVoid params )
 
 void MusSystem::Trim( wxArrayPtrVoid params )
 {
-    lrg_lign = (m_contentBB_x2 - m_contentBB_x1 + 10) / 10; // In the DrawStaff it is multiplied by 10
+    if ( !m_page ) {
+        return;
+    }
+    
+    int system_length = (m_contentBB_x2 - m_contentBB_x1) + m_page->m_pageRightMar;
+    if ( m_page->m_pageWidth < system_length ) {
+        m_page->m_pageWidth = system_length;
+    }
 }
 
 void MusSystem::AddStaff( MusLaidOutStaff *staff )

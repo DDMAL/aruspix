@@ -28,6 +28,7 @@
 #include "muslaidoutlayerelement.h"
 
 #include "mus/musiobin.h"
+#include "mus/musiomei.h"
 #include "mus/musiomlf.h"
 
 //#include "ml/mldecoder.h"
@@ -164,8 +165,9 @@ void RecFile::UpgradeTo_1_5_0()
         return;
         
     // output the new binary file
-    MusBinOutput bin_output( m_musDocPtr, m_musDocPtr->m_fname );
-    bin_output.ExportFile();
+    wxLogDebug("%s", m_musDocPtr->m_fname.c_str() );
+    MusMeiOutput mei_output( m_musDocPtr, m_musDocPtr->m_fname );
+    mei_output.ExportFile();
         
     wxRemoveFile( m_basename + "rec.old.mlf" );        
     wxRemoveFile( m_basename + "page.wwg" );
@@ -186,12 +188,12 @@ void RecFile::UpgradeTo_2_0_0()
     if ( !wxCopyFile( m_basename + "page.bin", m_basename + backup ) )  
         return;
         
-    MusBinInput_1_X bin_input( m_musDocPtr, m_musDocPtr->m_fname );
+    MusBinInput_1_X bin_input( m_musDocPtr, m_basename + "page.bin" );
     bin_input.ImportFile();
     
     // output the new binary file
-    MusBinOutput bin_output( m_musDocPtr, m_musDocPtr->m_fname );
-    bin_output.ExportFile();    
+    MusMeiOutput mei_output( m_musDocPtr, m_musDocPtr->m_fname );
+    mei_output.ExportFile();    
 }
 
 
@@ -202,7 +204,7 @@ void RecFile::NewContent( )
 
 	// new MusDoc
     m_musDocPtr = new MusDoc();
-    m_musDocPtr->m_fname = m_basename + "page.bin";  
+    m_musDocPtr->m_fname = m_basename + "page.mei";  
         
 	// new ImPage and Load
     m_imPagePtr = new ImPage( m_basename, &m_isModified );
@@ -257,12 +259,12 @@ void RecFile::OpenContent( )
             RecFile::m_pre_page_binarization_method_size = atoi( root->Attribute( "pre_page_binarization_method_size" ) );
     }
 		
-	if ( wxFileExists( m_basename + "page.bin") )
+	if ( wxFileExists( m_basename + "page.mei") )
 	{
 
-        MusBinInput *bin_input = new MusBinInput( m_musDocPtr, m_musDocPtr->m_fname );
-        failed = !bin_input->ImportFile();
-        delete bin_input;           
+        MusMeiInput *mei_input = new MusMeiInput( m_musDocPtr, m_musDocPtr->m_fname );
+        failed = !mei_input->ImportFile();
+        delete mei_input;           
 		if ( failed )
 			return;
 		else
@@ -340,9 +342,9 @@ void RecFile::SaveContent( )
 		//possibility of MusDoc being a .mei not a .bin
 		//MusMeiOutput *mei_output = new MusMeiOutput( m_musDocPtr, m_musDocPtr->m_fname );
 		// save
-		MusBinOutput *bin_output = new MusBinOutput( m_musDocPtr, m_musDocPtr->m_fname );
-		bin_output->ExportFile();
-		delete bin_output;
+		MusMeiOutput *mei_output = new MusMeiOutput( m_musDocPtr, m_musDocPtr->m_fname );
+		mei_output->ExportFile();
+		delete mei_output;
 		
 		MusMLFOutput *mlfoutput = new MusMLFOutput( m_musDocPtr, m_basename + "page.mlf", NULL );
 		mlfoutput->m_pagePosition = true;
@@ -854,14 +856,8 @@ bool RecFile::RealizeFromMLF( wxArrayPtrVoid params, AxProgressDlg *dlg )
     MusPage *musPage = new MusPage();
     
     // dimensions
-	m_musDocPtr->m_env.m_paperWidth = m_imPagePtr->m_size.GetWidth() / 10;
-	m_musDocPtr->m_env.m_paperHeight = m_imPagePtr->m_size.GetHeight() / 10;
-
-    int x1 = 5, x2 = 195;
-    m_imPagePtr->CalcLeftRight( &x1, &x2 ); 
-	x1 = 0; // force it, indentation will be calculated staff by staff
-    m_musDocPtr->m_env.m_leftMarginOddPage = x1 / 10;
-    m_musDocPtr->m_env.m_leftMarginEvenPage = x1 / 10;
+	musPage->m_pageWidth = m_imPagePtr->m_size.GetWidth();
+	musPage->m_pageHeight = m_imPagePtr->m_size.GetHeight();
 
     int nb = (int)m_imPagePtr->m_staves.GetCount();
     ImStaff *imStaff;   
@@ -870,18 +866,15 @@ bool RecFile::RealizeFromMLF( wxArrayPtrVoid params, AxProgressDlg *dlg )
     {
         imStaff = &m_imPagePtr->m_staves[i];
         MusSystem *musSystem = new MusSystem();
-        musSystem->lrg_lign = (x2 - x1) / 10;
         MusLaidOutStaff *musStaff = new MusLaidOutStaff( 0 );
         MusLaidOutLayer *musLayer = new MusLaidOutLayer( 0, 0, section, NULL ); // only one layer per staff
         //musLayer->no = nb; ?? // ax2
-        musSystem->indent = imStaff->CalcIndentation( x1 );
+        musSystem->m_systemLeftMar = imStaff->m_x1;  
+        musSystem->m_systemRightMar = musPage->m_pageWidth - imStaff->m_x2;
         musSystem->m_y_abs =  imStaff->m_y;
         musStaff->m_y_abs =  imStaff->m_y;
         musStaff->notAnc = true;
-        //musStaff->ecart = (m_imPagePtr->ToViewY( imStaff->m_y ) -  previous ) / musPage->defin;
-        //imStaff->CalcEcart( previous ) / musPage->defin;
         musStaff->vertBarre = START_END;
-        //musStaff->brace = START_END;
         
         musStaff->AddLayer( musLayer );
         musSystem->AddStaff( musStaff );
@@ -903,12 +896,11 @@ bool RecFile::RealizeFromMLF( wxArrayPtrVoid params, AxProgressDlg *dlg )
     musLayout->AddPage( musPage );
     m_musDocPtr->AddLayout( musLayout );
     
-	wxString m_rec2_output = m_basename + "rec2.mlf";
-	
-    MusMLFOutput *mlfoutput = new MusMLFOutput( m_musDocPtr, m_rec2_output, NULL, "MusMLFSymbol" );
-    mlfoutput->WritePage( musPage, true );
-    delete mlfoutput;
-	
+	//wxString m_rec2_output = m_basename + "rec2.mlf";
+    //MusMLFOutput *mlfoutput = new MusMLFOutput( m_musDocPtr, m_rec2_output, NULL, "MusMLFSymbol" );
+    //mlfoutput->WritePage( musPage, true );
+    //delete mlfoutput;
+     
 	// save ????
     // MusBinOutput *bin_output = new MusBinOutput( m_musDocPtr, m_musDocPtr->m_fname );
     // bin_output->ExportFile();

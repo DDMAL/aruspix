@@ -46,8 +46,6 @@ MusLaidOutStaff::MusLaidOutStaff( const MusLaidOutStaff& staff )
 	vertBarre = staff.vertBarre;
 	brace = staff.brace;
 	staffSize = staff.staffSize;
-	//indent = staff.indent; // ax2
-	//indentDroite = staff.indentDroite; // ax2
 	portNbLine = staff.portNbLine;
 	accol = staff.accol;
 	accessoire = staff.accessoire;
@@ -82,8 +80,6 @@ void MusLaidOutStaff::Clear()
 	vertBarre = 0;
 	brace = 0;
 	staffSize = 0; 
-	//indent = 0; // ax2
-	//indentDroite = false; // ax2
 	portNbLine = 5;
 	accol = 0;
 	accessoire = 0;
@@ -141,8 +137,6 @@ void MusLaidOutStaff::CopyAttributes( MusLaidOutStaff *nstaff )
 	nstaff->vertBarre = vertBarre;
 	nstaff->brace = brace;
 	nstaff->staffSize = staffSize;
-	//nstaff->indent = indent;
-	///nstaff->indentDroite = indentDroite;
 	nstaff->portNbLine = portNbLine;
 	nstaff->accol = accol;
 	nstaff->accessoire = accessoire;

@@ -9,6 +9,7 @@
 // For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"
 
+#include "musdef.h"
 #include "muspositioninterface.h"
 
 
@@ -18,8 +19,8 @@
 
 MusPositionInterface::MusPositionInterface()
 {
-    m_oct = 0;
-    m_pname = 0;
+    m_oct = 3;
+    m_pname = PITCH_C;
 }
 
 

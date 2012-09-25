@@ -35,7 +35,7 @@ void MusRC::DrawPage( MusDC *dc, MusPage *page, bool background )
         dc->DrawRectangle( 0, 0, m_layout->m_pageWidth, m_layout->m_pageHeight );
     
     MusPoint origin = dc->GetLogicalOrigin();
-    dc->SetLogicalOrigin( origin.x - m_layout->m_leftMargin, origin.y );
+    dc->SetLogicalOrigin( origin.x - m_layout->m_pageLeftMar, origin.y );
 
     dc->StartPage();
 
@@ -166,7 +166,7 @@ void MusRC::DrawGroups( MusDC *dc, MusSystem *system )
 	{
 		staff =  &system->m_staves[i];
 
-		xx = system->indent ? system->indent*10 : 0;
+		xx = system->m_systemLeftMar;
 
 		if (staff->portNbLine == 1 || staff->portNbLine == 4)
 			portee = m_layout->m_staffSize[ staff->staffSize ]*2;
@@ -693,9 +693,8 @@ void MusRC::DrawStaffLines( MusDC *dc, MusLaidOutStaff *staff, MusSystem *system
 		yy  -= m_layout->m_interl[ staff->staffSize ];
 	yy = staff->m_y_drawing - m_layout->m_staffSize[ staff->staffSize ];
 
-	x1 = system->indent ? system->indent*10 : 0;
-	x2 = system->lrg_lign * 10;
-
+	x1 = system->m_systemLeftMar;
+    x2 = m_layout->GetSystemRightX( system );
 
 	dc->SetPen( m_currentColour, ToRendererX( m_layout->m_env.m_staffLineWidth ), wxSOLID );
     dc->SetBrush( m_currentColour , wxSOLID );

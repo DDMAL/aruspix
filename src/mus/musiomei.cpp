@@ -33,6 +33,8 @@ using std::max;
 #include "musrest.h"
 #include "mussymbol.h"
 
+#include "muslaidoutstaff.h"
+#include "muslaidoutlayer.h"
 #include "muslaidoutlayerelement.h"
 
 //#include "app/axapp.h"
@@ -110,7 +112,7 @@ bool MusMeiOutput::ExportFile( )
 	return true;    
 }
 
-std::string MusMeiOutput::GetMeiUuid( MusObject *element )
+std::string MusMeiOutput::UuidToMeiStr( MusObject *element )
 {
     // RZ uuid_string_t does not exist on freebsd
     char uuidStr[37];
@@ -169,7 +171,7 @@ bool MusMeiOutput::WriteDiv( MusDiv *div )
 {
     wxASSERT( m_body );
     m_div = new Mdiv();
-    m_div->setId( GetMeiUuid( div ));
+    m_div->setId( UuidToMeiStr( div ));
     m_body->addChild( m_div );
     return true;
 }
@@ -179,7 +181,7 @@ bool MusMeiOutput::WriteScore( MusScore *score )
 {
     wxASSERT( m_div );
     m_score = new Score();
-    m_score->setId( GetMeiUuid( score ));
+    m_score->setId( UuidToMeiStr( score ));
     m_div->addChild( m_score );
     return true;
 }
@@ -189,7 +191,7 @@ bool MusMeiOutput::WritePartSet( MusPartSet *partSet )
 {
     wxASSERT( m_div );
     m_parts = new Parts();
-    m_parts->setId( GetMeiUuid( partSet ));
+    m_parts->setId( UuidToMeiStr( partSet ));
     m_div->addChild( m_parts );
     return true;
 }
@@ -199,7 +201,7 @@ bool MusMeiOutput::WritePart( MusPart *part )
 {
     wxASSERT( m_parts );
     m_part = new Part();
-    m_part->setId( GetMeiUuid( part ));
+    m_part->setId( UuidToMeiStr( part ));
     m_parts->addChild( m_part );
     return true;
 }
@@ -209,7 +211,7 @@ bool MusMeiOutput::WriteSection( MusSection *section )
 {
     wxASSERT( m_score || m_part );
     m_section = new Section();
-    m_section->setId( GetMeiUuid( section ));
+    m_section->setId( UuidToMeiStr( section ));
     if ( m_score ) {
         m_score->addChild( m_section );
     }
@@ -224,7 +226,7 @@ bool MusMeiOutput::WriteMeasure( MusMeasure *measure )
 {
     wxASSERT( m_section );
     m_measure = new Measure();
-    m_measure->setId( GetMeiUuid( measure ));
+    m_measure->setId( UuidToMeiStr( measure ));
     m_section->addChild( m_measure );
     return true;
 }
@@ -234,7 +236,7 @@ bool MusMeiOutput::WriteStaff( MusStaff *staff )
 {
     wxASSERT( m_section || m_measure );
     m_staff = new Staff();
-    m_staff->setId( GetMeiUuid( staff ));
+    m_staff->setId( UuidToMeiStr( staff ));
     // measured music, we have a measure object
     if ( m_measure ) {
         m_measure->addChild( m_staff );
@@ -252,7 +254,7 @@ bool MusMeiOutput::WriteLayer( MusLayer *layer )
     wxASSERT( m_staff );
     m_layer = new Layer();
     m_currentLayer = m_layer;
-    m_layer->setId( GetMeiUuid( layer ));
+    m_layer->setId( UuidToMeiStr( layer ));
     m_staff->addChild( m_layer );
     return true;
 }
@@ -312,7 +314,7 @@ bool MusMeiOutput::WriteLayerElement( MusLayerElement *element )
     
     // we have it, set the uuid we read
     if ( meiElement ) {
-        meiElement->setId( GetMeiUuid( element ));
+        meiElement->setId( UuidToMeiStr( element ));
         m_currentLayer->addChild( meiElement );
         return true;
     }
@@ -336,14 +338,14 @@ void MusMeiOutput::WriteMeiBeam( Beam *meiBeam, MusBeam *beam )
             MusNote *musNote = dynamic_cast<MusNote*>( &beam->m_notes[i] );
             Note *note = new Note();
             WriteMeiNote( note, musNote );
-            note->setId( GetMeiUuid( musNote ));
+            note->setId( UuidToMeiStr( musNote ));
             meiBeam->addChild( note );
         }
         else if (dynamic_cast<MusRest*>(&beam->m_notes[i]) ) {
             MusRest *musRest = dynamic_cast<MusRest*>( &beam->m_notes[i] );
             Rest *rest = new Rest();
             WriteMeiRest( rest, musRest );
-            rest->setId( GetMeiUuid( musRest ));
+            rest->setId( UuidToMeiStr( musRest ));
             meiBeam->addChild( rest );
         }
     }
@@ -438,7 +440,7 @@ bool MusMeiOutput::WriteLayout( MusLayout *layout )
 {
     wxASSERT( m_layouts );
     m_layout = new Layout();
-    m_layout->setId( GetMeiUuid( layout ));
+    m_layout->setId( UuidToMeiStr( layout ));
     m_layouts->addChild( m_layout );
     return true;
 }
@@ -447,9 +449,17 @@ bool MusMeiOutput::WritePage( MusPage *page )
 {
     wxASSERT( m_layout );
     m_page = new Page();
-    m_page->setId( GetMeiUuid( page ));
+    m_page->setId( UuidToMeiStr( page ));
+    // size and margins but only if any - we rely on pageHeight only to check this
+    if ( page->m_pageHeight != -1 ) {
+        m_page->m_ScoreDefVis.setPageWidth( wxString::Format( "%d", page->m_pageWidth ).c_str() );
+        m_page->m_ScoreDefVis.setPageHeight( wxString::Format( "%d", page->m_pageHeight ).c_str() );
+        m_page->m_ScoreDefVis.setPageLeftmar( wxString::Format( "%d", page->m_pageLeftMar ).c_str() );
+        m_page->m_ScoreDefVis.setPageRightmar( wxString::Format( "%d", page->m_pageRightMar ).c_str() );
+    }
+    //
     MeiCommentNode *comment = new MeiCommentNode();
-    comment->setValue("Coordinates needs to be corrected");
+    comment->setValue("Coordinates in MEI axis direction");
     m_layout->addChild( comment );
     m_layout->addChild( m_page );
     return true;
@@ -459,9 +469,11 @@ bool MusMeiOutput::WriteSystem( MusSystem *system )
 {
     wxASSERT( m_page );
     m_system = new System();
-    m_system->setId( GetMeiUuid( system ));
-    // x - y positions (to be corrected)
-    m_system->m_Coordinated.setUlx( wxString::Format( "%d", system->m_x_abs ).c_str() );
+    m_system->setId( UuidToMeiStr( system ));
+    // margins
+    m_system->m_ScoreDefVis.setSystemLeftmar( wxString::Format( "%d", system->m_systemLeftMar ).c_str() );
+    m_system->m_ScoreDefVis.setSystemRightmar( wxString::Format( "%d", system->m_systemRightMar ).c_str() );
+    // y positions
     m_system->m_Coordinated.setUly( wxString::Format( "%d", system->m_y_abs ).c_str() );
     m_page->addChild( m_system );
     return true;
@@ -471,9 +483,10 @@ bool MusMeiOutput::WriteLaidOutStaff( MusLaidOutStaff *laidOutStaff )
 {
     wxASSERT( m_system );
     m_laidOutStaff = new LaidOutStaff();
-    m_laidOutStaff->setId( GetMeiUuid( laidOutStaff ));
-    // x - y positions (to be corrected)
-    m_laidOutStaff->m_Coordinated.setUly( wxString::Format( "%d", laidOutStaff->m_y_drawing ).c_str() );
+    m_laidOutStaff->setId( UuidToMeiStr( laidOutStaff ));
+    // y position
+    m_laidOutStaff->m_Coordinated.setUly( wxString::Format( "%d", laidOutStaff->m_y_abs ).c_str() );
+    m_laidOutStaff->m_Common.setN( wxString::Format( "%d", laidOutStaff->m_logStaffNb ).c_str() );
     m_system->addChild( m_laidOutStaff );
     return true;
 }
@@ -482,7 +495,20 @@ bool MusMeiOutput::WriteLaidOutLayer( MusLaidOutLayer *laidOutLayer )
 {    
     wxASSERT( m_laidOutStaff );
     m_laidOutLayer = new LaidOutLayer();
-    m_laidOutLayer->setId( GetMeiUuid( laidOutLayer ));
+    m_laidOutLayer->setId( UuidToMeiStr( laidOutLayer ));
+    m_laidOutLayer->m_Common.setN( wxString::Format( "%d", laidOutLayer->m_logLayerNb ).c_str() );
+    m_laidOutLayer->m_Staffident.setStaff( wxString::Format( "%d", laidOutLayer->m_logLayerNb ).c_str() );
+    if ( laidOutLayer->GetSection() ) {
+        // unmeasured music
+        m_laidOutLayer->m_Pointing.setTarget( UuidToMeiStr( laidOutLayer->GetSection() ) );
+    }
+    else if ( laidOutLayer->GetMeasure() ) {
+        // measured music
+        m_laidOutLayer->m_Pointing.setTarget( UuidToMeiStr( laidOutLayer->GetMeasure() ) );        
+    }
+    else {
+        wxLogWarning( "Attempt to write a <laidOutLayer> without @target" );
+    }
     m_laidOutStaff->addChild( m_laidOutLayer );
     return true;
 }
@@ -492,18 +518,14 @@ bool MusMeiOutput::WriteLaidOutLayerElement( MusLaidOutLayerElement *laidOutLaye
     wxASSERT( m_laidOutLayer );
     LaidOutElement *element = new LaidOutElement();
     
-//    Mordent *mor = new Mordent;
-    
-    element->setId( GetMeiUuid( laidOutLayerElement ));
-    // x - y position (to be corrected)
+    element->setId( UuidToMeiStr( laidOutLayerElement ));
+    // y position
     element->m_Coordinated.setUlx( wxString::Format( "%d", laidOutLayerElement->m_x_abs ).c_str() );
-    //element->m_Coordinated.setUly( wxString::Format( "%d", laidOutLayerElement->m_y_drawing ).c_str() );
     // pointer to the logical element
-    element->m_Pointing.setTarget(GetMeiUuid( laidOutLayerElement->m_layerElement ) );
+    element->m_Pointing.setTarget(UuidToMeiStr( laidOutLayerElement->m_layerElement ) );
     m_laidOutLayer->addChild( element );
     return true;
 }
-
 
 
 bool MusMeiOutput::WriteLayerApp( MusLayerApp *app )
@@ -683,7 +705,7 @@ MusMeiInput::MusMeiInput( MusDoc *doc, wxString filename ) :
 	MusFileInputStream( doc, -1 )
 {
     m_filename = filename;
-	
+	// logical
 	m_div = NULL;
 	m_score = NULL;
 	m_parts = NULL;
@@ -692,6 +714,12 @@ MusMeiInput::MusMeiInput( MusDoc *doc, wxString filename ) :
 	m_measure = NULL;
 	m_staff = NULL;
 	m_layer = NULL;
+    // layout
+    m_layout = NULL;
+    m_page = NULL;
+    m_system = NULL;
+    m_laidOutStaff = NULL;
+    m_laidOutLayer = NULL;
 }
 
 MusMeiInput::~MusMeiInput()
@@ -703,6 +731,7 @@ bool MusMeiInput::ImportFile( )
     
     //printf("ROOD %s\n", m_filename.c_str());
     try {
+        m_doc->Reset();
         mei::MeiDocument *doc = XmlImport::documentFromFile( *new string( m_filename.c_str()) );
         if ( !doc ) {
             return false;
@@ -718,9 +747,12 @@ bool MusMeiInput::ImportFile( )
         // music
         MeiElement *music = NULL;
         MeiElement *body = NULL;
+        MeiElement *layouts = NULL;
         if ( root->hasChildren("music") ) {
             music = root->getChildrenByName("music")[0];
         }
+        
+        // reading the body first
         if ( music && music->hasChildren("body") ) {
             body = music->getChildrenByName("body")[0];
         }
@@ -737,6 +769,26 @@ bool MusMeiInput::ImportFile( )
 					delete m_div;
 				}
 				m_div = NULL;
+			}
+        }
+        
+        // reading the layouts
+        if ( music && music->hasChildren("layouts") ) {
+            layouts = music->getChildrenByName("layouts")[0];
+        }
+        if ( layouts && layouts->hasChildren("layout") ) {
+			vector<MeiElement*> children = layouts->getChildrenByName("layout");
+			for (vector<MeiElement*>::iterator iter = children.begin(); iter != children.end(); ++iter) {
+				MeiElement *e = *iter;
+				m_layout = new MusLayout( Raw );
+                SetMeiUuid( e, m_layout );
+				if (ReadMeiLayout( dynamic_cast<Layout*>(e))) {
+					m_doc->AddLayout( m_layout );
+				}
+				else {
+					delete m_layout;
+				}
+				m_layout = NULL;
 			}
         }
         return true;
@@ -1170,11 +1222,223 @@ bool MusMeiInput::ReadMeiSymbol( Dot *dot )
 {
     MusSymbol *musDot = new MusSymbol( SYMBOL_DOT );
     SetMeiUuid( dot, musDot );
-    musDot->m_dot = 1;
+    musDot->m_dot = 0;
     // missing m_dots
     // missing position
 	
 	m_layer->AddLayerElement( musDot );
+    return true;
+}
+
+
+bool MusMeiInput::ReadMeiLayout( Layout *layout )
+{
+	if ( layout && layout->hasChildren("page") ) {
+		vector<MeiElement*> children = layout->getChildrenByName("page");
+		for (vector<MeiElement*>::iterator iter = children.begin(); iter != children.end(); ++iter) {
+			MeiElement *e = *iter;
+			m_page = new MusPage( );
+            SetMeiUuid( e, m_page );
+			if (ReadMeiPage(dynamic_cast<Page*>(e))) {
+				m_layout->AddPage( m_page );
+			}
+			else {
+				delete m_page;
+			}
+			m_page = NULL;
+		}
+		// success only if at least one page was added to the layout
+		return (m_layout->GetPageCount() > 0);
+	}
+    return false;
+}
+
+
+bool MusMeiInput::ReadMeiPage( Page *page )
+{
+    if ( page->m_ScoreDefVis.hasPageHeight() ) {
+        m_page->m_pageHeight = atoi ( page->m_ScoreDefVis.getPageHeight()->getValue().c_str() );
+    }
+    if ( page->m_ScoreDefVis.hasPageWidth() ) {
+        m_page->m_pageWidth = atoi ( page->m_ScoreDefVis.getPageWidth()->getValue().c_str() );
+    }
+    if ( page->m_ScoreDefVis.hasPageLeftmar() ) {
+        m_page->m_pageLeftMar = atoi ( page->m_ScoreDefVis.getPageLeftmar()->getValue().c_str() );
+    }
+    if ( page->m_ScoreDefVis.hasPageRightmar() ) {
+        m_page->m_pageRightMar = atoi ( page->m_ScoreDefVis.getPageRightmar()->getValue().c_str() );
+    }
+    
+	if ( page && page->hasChildren("system") ) {
+		vector<MeiElement*> children = page->getChildrenByName("system");
+		for (vector<MeiElement*>::iterator iter = children.begin(); iter != children.end(); ++iter) {
+			MeiElement *e = *iter;
+			m_system = new MusSystem( );
+            SetMeiUuid( e, m_system );
+			if (ReadMeiSystem(dynamic_cast<System*>(e))) {
+				m_page->AddSystem( m_system );
+			}
+			else {
+				delete m_system;
+			}
+			m_system = NULL;
+		}
+		// success only if at least one system was added to the page
+		return (m_page->GetSystemCount() > 0);
+	}
+    return false;
+}
+
+bool MusMeiInput::ReadMeiSystem( System *system )
+{
+    if ( system->m_ScoreDefVis.hasSystemLeftmar() ) {
+        m_system->m_systemLeftMar = atoi ( system->m_ScoreDefVis.getSystemLeftmar()->getValue().c_str() );
+    }
+    if ( system->m_ScoreDefVis.hasSystemRightmar() ) {
+        m_system->m_systemRightMar = atoi ( system->m_ScoreDefVis.getSystemRightmar()->getValue().c_str() );
+    }
+    if ( system->m_Coordinated.hasUly() ) {
+        m_system->m_y_abs = atoi ( system->m_Coordinated.getUly()->getValue().c_str() );
+    }
+    
+	if ( system && system->hasChildren("laidOutStaff") ) {
+		vector<MeiElement*> children = system->getChildrenByName("laidOutStaff");
+		for (vector<MeiElement*>::iterator iter = children.begin(); iter != children.end(); ++iter) {
+			MeiElement *e = *iter;
+            ReadMeiLaidOutStaff(dynamic_cast<LaidOutStaff*>(e));
+		}
+		// success only if at least one staff was added to the system
+		return (m_system->GetStaffCount() > 0);
+	}
+    return false;
+}
+
+bool MusMeiInput::ReadMeiLaidOutStaff( LaidOutStaff *staff  )
+{
+    int logStaffNb = -1;
+    if ( staff->m_Common.hasN() ) {
+        logStaffNb = atoi ( staff->m_Common.getN()->getValue().c_str() );
+    }
+    else {
+        // no idea what will happen if this is missing...
+        wxLogWarning( "@n missing in laidOutStaff element" );
+        return false;
+    }
+    
+    m_laidOutStaff = new MusLaidOutStaff( logStaffNb );
+    SetMeiUuid( staff, m_laidOutStaff );
+    
+    if ( staff->m_Coordinated.hasUly() ) {
+        m_laidOutStaff->m_y_abs = atoi ( staff->m_Coordinated.getUly()->getValue().c_str() );
+    }
+    
+	if ( staff && staff->hasChildren("laidOutLayer") ) {
+		vector<MeiElement*> children = staff->getChildrenByName("laidOutLayer");
+		for (vector<MeiElement*>::iterator iter = children.begin(); iter != children.end(); ++iter) {
+			MeiElement *e = *iter;
+            ReadMeiLaidOutLayer(dynamic_cast<LaidOutLayer*>(e));
+		}
+	}
+    
+    m_system->AddStaff( m_laidOutStaff );
+    m_laidOutStaff = NULL;
+    return true;
+}
+
+
+bool MusMeiInput::ReadMeiLaidOutLayer( LaidOutLayer *layer )
+{
+    int logLayerNb = -1;
+    int logStaffNb = -1;
+    MusSection *section = NULL;
+    MusMeasure *measure = NULL;
+    if ( layer->m_Common.hasN() ) {
+        logLayerNb = atoi ( layer->m_Common.getN()->getValue().c_str() );
+    }
+    else {
+        // no idea what will happen if this is missing...
+        wxLogWarning( "@n missing in laidOutLayer element" );
+        return false;
+    }
+    if ( layer->m_Staffident.hasStaff() ) {
+        logStaffNb = atoi ( layer->m_Staffident.getStaff()->getValue().c_str() );
+    }
+    else {
+        // no idea what will happen if this is missing...
+        wxLogWarning( "@staff missing in laidOutLayer element" );
+        return false;
+    }
+    if ( layer->m_Pointing.hasTarget() ) {
+        uuid_t uuid;
+        StrToUuid( layer->m_Pointing.getTarget()->getValue(), uuid );
+        MusFunctor findTargetUuid( &MusObject::FindWithUuid );
+        MusObject *target = m_doc->FindLogicalObject( &findTargetUuid, uuid );
+        if ( dynamic_cast<MusSection*>(target) ) {
+            section =  dynamic_cast<MusSection*>(target);
+        }
+        else if ( dynamic_cast<MusMeasure*>(target) ) {
+            measure = dynamic_cast<MusMeasure*>(target);
+        }
+        else {
+            // no idea what will happen if this is missing...
+            wxLogWarning( "The laidOutLayer target could not be found" ); 
+            return false;
+        }
+    }
+    else {
+        // no idea what will happen if this is missing...
+        wxLogWarning( "@target missing in laidOutLayer element" );
+        return false;
+    }
+        
+    m_laidOutLayer = new MusLaidOutLayer( logLayerNb, logStaffNb, section, measure );
+    SetMeiUuid( layer, m_laidOutLayer );
+    
+	if ( layer && layer->hasChildren("laidOutElement") ) {
+		vector<MeiElement*> children = layer->getChildrenByName("laidOutElement");
+		for (vector<MeiElement*>::iterator iter = children.begin(); iter != children.end(); ++iter) {
+			MeiElement *e = *iter;
+            ReadMeiLaidOutElement(dynamic_cast<LaidOutElement*>(e));
+        }
+	}
+    
+    m_laidOutStaff->AddLayer( m_laidOutLayer );
+    m_laidOutLayer = NULL;
+    return true;
+}
+
+bool MusMeiInput::ReadMeiLaidOutElement( LaidOutElement *laidOutElement )
+{
+    
+    MusLayerElement *element = NULL;
+    if ( laidOutElement->m_Pointing.hasTarget() ) {
+        uuid_t uuid;
+        StrToUuid( laidOutElement->m_Pointing.getTarget()->getValue(), uuid );
+        MusFunctor findTargetUuid( &MusObject::FindWithUuid );
+        MusObject *target = m_doc->FindLogicalObject( &findTargetUuid, uuid );
+        if ( dynamic_cast<MusLayerElement*>(target) ) {
+            element =  dynamic_cast<MusLayerElement*>(target);
+        }
+        else {
+            // no idea what will happen if this is missing...
+            wxLogWarning( "The laidOutElement target could not be found" ); 
+            return false;
+        }
+    }
+    else {
+        // no idea what will happen if this is missing...
+        wxLogWarning( "@target missing in laidOutElement element" );
+        return false;
+    }
+    
+    MusLaidOutLayerElement *laidOutLayerElement = new MusLaidOutLayerElement( element );
+    SetMeiUuid( laidOutElement, laidOutLayerElement );
+    
+    if ( laidOutElement->m_Coordinated.hasUlx() ) {
+        laidOutLayerElement->m_x_abs = atoi ( laidOutElement->m_Coordinated.getUlx()->getValue().c_str() );
+    }
+    
+    m_laidOutLayer->AddElement( laidOutLayerElement );
     return true;
 }
 
@@ -1185,17 +1449,22 @@ void MusMeiInput::SetMeiUuid( MeiElement *element, MusObject *object )
         return;
     }
     
-    std::string id = element->getId();
-    if ( id.length() != 38 ) {
-        return;
-    }
-    if ( id.compare( 0, 2, "m-" ) != 0 ) {
-        return;
-    }
-    id.erase( 0, 2 );
     uuid_t uuid;
-    uuid_parse( id.c_str(), uuid );
+    StrToUuid( element->getId(), uuid );
     object->SetUuid( uuid );
+}
+
+void MusMeiInput::StrToUuid(std::string uuid, uuid_t dest)
+{
+    uuid_clear( dest );
+    if ( uuid.length() != 38 ) {
+        return;
+    }
+    if ( uuid.compare( 0, 2, "m-" ) != 0 ) {
+        return;
+    }
+    uuid.erase( 0, 2 );
+    uuid_parse( uuid.c_str(), dest );
 }
 
 int MusMeiInput::StrToDur(std::string dur)
@@ -1267,7 +1536,7 @@ ClefId MusMeiInput::StrToClef( std::string shape, std::string line )
     ClefId clefId = SOL2;
     std::string clef = shape + line;
     if ( clef == "G2" ) clefId = SOL2;
-    else if ( clef == "C1" ) clefId = SOL1; 
+    else if ( clef == "G1" ) clefId = SOL1; 
     else if ( clef == "F5" ) clefId = FA5;
     else if ( clef == "F4" ) clefId = FA4; 
     else if ( clef == "F3" ) clefId = FA3; 

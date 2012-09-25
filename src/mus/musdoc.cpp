@@ -32,7 +32,6 @@ wxString MusDoc::m_respath = "/usr/local/share/aruspix";
 MusDoc::MusDoc()
 {
     Reset();
-    m_meidoc = NULL;
 }
 
 MusDoc::~MusDoc()
@@ -45,9 +44,13 @@ MusDoc::~MusDoc()
 
 void MusDoc::Reset()
 {
+    m_pageWidth = 2100;
+    m_pageHeight = 2970;
+    m_pageRightMar = 0;
+    m_pageLeftMar = 0;
+    m_pageTopMar = 0; 
     m_layouts.Clear();
     m_divs.Clear();
-    // what about m_meidoc ?
 }
 
 void MusDoc::AddDiv( MusDiv *div )
@@ -160,16 +163,6 @@ MusLaidOutStaff *MusDoc::GetVoice( int i )
     */ // ax2
     return NULL;
 }
-
-MeiDocument *MusDoc::GetMeiDocument() {
-    return m_meidoc;
-}
-
-void MusDoc::SetMeiDocument(MeiDocument *doc) {
-    m_meidoc = doc;
-}
-
-
 
 MusObject *MusDoc::FindLogicalObject( MusFunctor *functor, uuid_t uuid )
 {
