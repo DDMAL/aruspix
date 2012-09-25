@@ -73,6 +73,7 @@ private:
     MusTie *m_current_tie;
     
     unsigned int m_clef_offset;
+    bool m_antique_notation; // support square notation
     
     static pitchmap PitchMap[];
 };

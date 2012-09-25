@@ -184,9 +184,23 @@ int MusDarmsInput::do_globalSpec(int pos, const char* data) {
             pos = parseMeter(pos, data);
             break;
             
-        case 'N': // note type, ignore for the moment
+        case 'N': // notehead type:
+            /*
+             N0	notehead missing
+             N1	stem missing
+             N2	double notehead
+             N3	triangle notehead
+             N4	square notehead
+             N6	"X" notehead
+             N7	diamond notehead, stem centered
+             N8	diamond notehead, stem to side
+             NR	rest in place of notehead
+             */
             if (!isnumber(data[++pos])) {
                 printf("Expected number after N\n");
+            } else { // we honor only notehead 7, diamond
+                if (data[pos] == 0x07 + ASCII_NUMBER_OFFSET)
+                    m_antique_notation = true;
             }
             break;
         
@@ -407,6 +421,8 @@ bool MusDarmsInput::ImportFile() {
             printf("Global spec. at %i\n", pos);
             res = do_globalSpec(pos, data);
             if (res) pos = res;
+            // if notehead type was specified in the !Nx option preserve it
+            m_staff->m_antinque_notation = m_antique_notation;
         } else if (isnumber(c) || c == '-' ) { // check for '-' too as note positions can be negative
             //is number followed by '!' ? it is a clef
             if (data[pos + 1] == '!') {

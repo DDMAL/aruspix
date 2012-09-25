@@ -162,6 +162,8 @@ void MusLayout::Realize( MusScore *score )
                     system->AddStaff( new MusLaidOutStaff( k ));
                 }
                 laidOutStaff = &system->m_staves[k];
+                // preserve enevtual antique notation
+                laidOutStaff->notAnc = staff->m_antinque_notation;
                 
                 /* experimental brace
                 if (k == 0) laidOutStaff->brace = START;

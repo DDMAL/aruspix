@@ -15,7 +15,7 @@ MusLeipzigBBox::BoundingBox* MusLeipzigBBox::m_bBox = MusLeipzigBBox::Initialize
 // Statically initialize the struct
 MusLeipzigBBox::BoundingBox* MusLeipzigBBox::InitializeStatic() {
     
-    MusLeipzigBBox::BoundingBox* bBox = (MusLeipzigBBox::BoundingBox*)malloc(sizeof(MusLeipzigBBox::BoundingBox) * 66);
+    MusLeipzigBBox::BoundingBox* bBox = (MusLeipzigBBox::BoundingBox*)malloc(sizeof(MusLeipzigBBox::BoundingBox) * 67);
     
     bBox[LEIPZIG_BBOX_ORN_MORDENT].m_x = 0.0;
     bBox[LEIPZIG_BBOX_ORN_MORDENT].m_y = -2.0;
@@ -69,6 +69,10 @@ MusLeipzigBBox::BoundingBox* MusLeipzigBBox::InitializeStatic() {
     bBox[LEIPZIG_BBOX_FERMATA_DOWN].m_y = -348.0;
     bBox[LEIPZIG_BBOX_FERMATA_DOWN].m_width = 753.0;
     bBox[LEIPZIG_BBOX_FERMATA_DOWN].m_height = 405.0;
+    bBox[LEIPZIG_BBOX_ORN_TRILL].m_x = -216.0;
+    bBox[LEIPZIG_BBOX_ORN_TRILL].m_y = -161.0;
+    bBox[LEIPZIG_BBOX_ORN_TRILL].m_width = 432.0;
+    bBox[LEIPZIG_BBOX_ORN_TRILL].m_height = 364.0;
     bBox[LEIPZIG_BBOX_METER_SYMB_2_CUT].m_x = -0.4;
     bBox[LEIPZIG_BBOX_METER_SYMB_2_CUT].m_y = -69.0;
     bBox[LEIPZIG_BBOX_METER_SYMB_2_CUT].m_width = 358.4;
@@ -374,6 +378,7 @@ void MusLeipzigBBox::GetCharBounds(const unsigned char c, int *x, int *y, int *w
         case LEIPZIG_STEM_FLAG_DOWN + LEIPZIG_OFFSET_MENSURAL: glyph = LEIPZIG_BBOX_SLASH_DOWN_MENSURAL; break;
             /* ornaments */
         case 35: glyph = LEIPZIG_BBOX_ORN_MORDENT; break;
+        case LEIPZIG_EMB_TRILL: glyph = LEIPZIG_BBOX_ORN_TRILL; break;
             /* todo */
         default: glyph = LEIPZIG_BBOX_ALT_DOUBLE_SHARP; // ??
     }

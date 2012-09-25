@@ -59,7 +59,10 @@ public:
     MusSection *m_section;
     /** The parent MusMeasure (for measured music) */
     MusMeasure *m_measure;
-
+    /** indicates this staff is in anchent notation
+     it has to be carried on to the LayedOutStaf */
+    bool m_antinque_notation;
+    
 private:
 };
 

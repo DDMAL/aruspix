@@ -75,3 +75,6 @@ add_executable (aruspix
 	src/tinyxml/tinyxmlerror.cpp
 	src/tinyxml/tinyxmlparser.cpp
 	)
+
+install (TARGETS aruspix DESTINATION bin)
+INSTALL(DIRECTORY data/svg/ DESTINATION share/aruspix/svg FILES_MATCHING PATTERN "*.xml")
