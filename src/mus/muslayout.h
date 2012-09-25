@@ -21,8 +21,8 @@ class MusScore;
 
 enum LayoutType {
     Raw = 0,
-    Normal,
-    Facsimile
+    Rendering,
+    Transcription
 };
 
 
@@ -49,6 +49,8 @@ public:
 	void AddPage( MusPage *page );
     
     void Clear();
+    
+    LayoutType GetType() { return m_type; };
     
     /** The parent MusDoc setter */
     void SetDoc( MusDoc *doc );

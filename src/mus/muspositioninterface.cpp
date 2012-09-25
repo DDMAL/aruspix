@@ -19,7 +19,7 @@
 
 MusPositionInterface::MusPositionInterface()
 {
-    m_oct = 3;
+    m_oct = 5;
     m_pname = PITCH_C;
 }
 

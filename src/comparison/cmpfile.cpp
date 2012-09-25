@@ -910,7 +910,7 @@ bool CmpFile::LoadBooks( wxArrayPtrVoid params, AxProgressDlg *dlg )
             MusSection *section = new MusSection( );
             MusStaff *staff = new MusStaff();
             MusLayer *partLayer = new MusLayer();
-            MusLayout *partLayout = new MusLayout( Facsimile );
+            MusLayout *partLayout = new MusLayout( Transcription );
             
             staff->AddLayer( partLayer );
             section->AddStaff( staff );

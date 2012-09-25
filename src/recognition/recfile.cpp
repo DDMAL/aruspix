@@ -850,9 +850,10 @@ bool RecFile::RealizeFromMLF( wxArrayPtrVoid params, AxProgressDlg *dlg )
     MusScore *score = new MusScore( );
     MusSection *section = new MusSection( );
     MusStaff *logStaff = new MusStaff();
+    logStaff->m_mensuralNotation = true;
     MusLayer *logLayer = new MusLayer();
     // here we need to create the logical tree
-    MusLayout *musLayout = new MusLayout( Facsimile );  
+    MusLayout *musLayout = new MusLayout( Transcription );  
     MusPage *musPage = new MusPage();
     
     // dimensions
@@ -866,8 +867,8 @@ bool RecFile::RealizeFromMLF( wxArrayPtrVoid params, AxProgressDlg *dlg )
     {
         imStaff = &m_imPagePtr->m_staves[i];
         MusSystem *musSystem = new MusSystem();
-        MusLaidOutStaff *musStaff = new MusLaidOutStaff( 0 );
-        MusLaidOutLayer *musLayer = new MusLaidOutLayer( 0, 0, section, NULL ); // only one layer per staff
+        MusLaidOutStaff *musStaff = new MusLaidOutStaff( 1 );
+        MusLaidOutLayer *musLayer = new MusLaidOutLayer( 1, 1, section, NULL ); // only one layer per staff
         //musLayer->no = nb; ?? // ax2
         musSystem->m_systemLeftMar = imStaff->m_x1;  
         musSystem->m_systemRightMar = musPage->m_pageWidth - imStaff->m_x2;

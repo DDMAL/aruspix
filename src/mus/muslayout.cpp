@@ -109,6 +109,11 @@ void MusLayout::SetDoc( MusDoc *doc )
 
 void MusLayout::Save( wxArrayPtrVoid params )
 {
+    if ( this->m_type == Raw ) {
+        // we do not write 'Raw' layouts since there are created only for rendering
+        return; 
+    }
+    
     // param 0: output stream
     MusFileOutputStream *output = (MusFileOutputStream*)params[0];       
     output->WriteLayout( this );
@@ -159,11 +164,11 @@ void MusLayout::Realize( MusScore *score )
                 MusStaff *staff = &measure->m_staves[k];
                 MusLaidOutStaff *laidOutStaff;
                 if (k >= (int)system->m_staves.GetCount()) {
-                    system->AddStaff( new MusLaidOutStaff( k ));
+                    system->AddStaff( new MusLaidOutStaff( k + 1 ));
                 }
                 laidOutStaff = &system->m_staves[k];
                 // preserve enevtual antique notation
-                laidOutStaff->notAnc = staff->m_antinque_notation;
+                laidOutStaff->notAnc = staff->m_mensuralNotation;
                 
                 /* experimental brace
                 if (k == 0) laidOutStaff->brace = START;
@@ -176,7 +181,7 @@ void MusLayout::Realize( MusScore *score )
                     MusLayer *layer = &staff->m_layers[l];
                     MusLaidOutLayer *laidOutLayer;
                     if (l >= laidOutStaff->GetLayerCount()) {
-                        laidOutStaff->AddLayer( new MusLaidOutLayer( l, k, NULL, measure ));
+                        laidOutStaff->AddLayer( new MusLaidOutLayer( l + 1, k + 1, NULL, measure ));
                     }
                     laidOutLayer = &laidOutStaff->m_layers[l];
                     for (m = 0; m < (int)layer->m_elements.GetCount(); m++) {
@@ -196,14 +201,14 @@ void MusLayout::Realize( MusScore *score )
             MusStaff *staff = &section->m_staves[k];
             MusLaidOutStaff *laidOutStaff;
             if (k >= (int)system->m_staves.GetCount()) {
-                system->AddStaff( new MusLaidOutStaff( k ));
+                system->AddStaff( new MusLaidOutStaff( k + 1 ));
             }
             laidOutStaff = &system->m_staves[k];
             for (l = 0; l < (int)staff->m_layers.GetCount(); l++) {
                 MusLayer *layer = &staff->m_layers[l];
                 MusLaidOutLayer *laidOutLayer;
                 if (l >= laidOutStaff->GetLayerCount()) {
-                    laidOutStaff->AddLayer( new MusLaidOutLayer( l, k, section, NULL ));
+                    laidOutStaff->AddLayer( new MusLaidOutLayer( l + 1, k + 1, section, NULL ));
                 }
                 laidOutLayer = &laidOutStaff->m_layers[l];
                 for (m = 0; m < (int)layer->m_elements.GetCount(); m++) {

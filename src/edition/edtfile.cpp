@@ -183,7 +183,7 @@ bool EdtFile::Create( )
     }
     
     // create a new layout and the page
-    MusLayout *layout = new MusLayout( Facsimile );
+    MusLayout *layout = new MusLayout( Transcription );
     MusPage *page = new MusPage();
     
 	m_musDocPtr->m_pageWidth = width * 10;

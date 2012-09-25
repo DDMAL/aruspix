@@ -39,6 +39,9 @@ WX_DEFINE_OBJARRAY( ArrayOfMusLaidOutLayers );
 MusLaidOutLayer::MusLaidOutLayer( int logLayerNb, int logStaffNb, MusSection *section, MusMeasure *measure ):
 	MusLayoutObject()
 {
+    wxASSERT( logLayerNb > 0 );
+    wxASSERT( logStaffNb > 0 );
+    
     if ( section ) {
         wxASSERT_MSG( !measure , "MusMeasure pointer has to be NULL when creating a MusLaidOutLayer for unmeasured music");
     } else if (measure ) {

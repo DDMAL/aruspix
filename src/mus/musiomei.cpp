@@ -87,7 +87,7 @@ bool MusMeiOutput::ExportFile( )
         //std::string value1 = "href=\"mei-2012.rng\" type=\"application/xml\" schematypens=\"http://purl.oclc.org/dsdl/schematron\"";
         
         std::string name2 = "xml-model";
-        std::string value2 = "href=\"http://www.aruspix.net/mei-layout-2012-06-22.rng\" type=\"application/xml\" schematypens=\"http://relaxng.org/ns/structure/1.0\"";
+        std::string value2 = "href=\"http://www.aruspix.net/mei-layout-2012-09-25.rng\" type=\"application/xml\" schematypens=\"http://relaxng.org/ns/structure/1.0\"";
         
         //XmlProcessingInstruction *xpi1 = new XmlProcessingInstruction(name1, value1);
         XmlProcessingInstruction *xpi2 = new XmlProcessingInstruction(name2, value2);
@@ -440,6 +440,7 @@ bool MusMeiOutput::WriteLayout( MusLayout *layout )
 {
     wxASSERT( m_layouts );
     m_layout = new Layout();
+    m_layout->m_Typed.setType(LayoutTypeToStr( layout->GetType() ));
     m_layout->setId( UuidToMeiStr( layout ));
     m_layouts->addChild( m_layout );
     return true;
@@ -485,8 +486,11 @@ bool MusMeiOutput::WriteLaidOutStaff( MusLaidOutStaff *laidOutStaff )
     m_laidOutStaff = new LaidOutStaff();
     m_laidOutStaff->setId( UuidToMeiStr( laidOutStaff ));
     // y position
+    if ( laidOutStaff->notAnc ) {
+        m_laidOutStaff->m_Typed.setType("mensural");
+    }
     m_laidOutStaff->m_Coordinated.setUly( wxString::Format( "%d", laidOutStaff->m_y_abs ).c_str() );
-    m_laidOutStaff->m_Common.setN( wxString::Format( "%d", laidOutStaff->m_logStaffNb ).c_str() );
+    m_laidOutStaff->m_Staffident.setStaff( wxString::Format( "%d", laidOutStaff->m_logStaffNb ).c_str() );
     m_system->addChild( m_laidOutStaff );
     return true;
 }
@@ -496,7 +500,7 @@ bool MusMeiOutput::WriteLaidOutLayer( MusLaidOutLayer *laidOutLayer )
     wxASSERT( m_laidOutStaff );
     m_laidOutLayer = new LaidOutLayer();
     m_laidOutLayer->setId( UuidToMeiStr( laidOutLayer ));
-    m_laidOutLayer->m_Common.setN( wxString::Format( "%d", laidOutLayer->m_logLayerNb ).c_str() );
+    m_laidOutLayer->m_Layerident.setLayer( wxString::Format( "%d", laidOutLayer->m_logLayerNb ).c_str() );
     m_laidOutLayer->m_Staffident.setStaff( wxString::Format( "%d", laidOutLayer->m_logLayerNb ).c_str() );
     if ( laidOutLayer->GetSection() ) {
         // unmeasured music
@@ -696,6 +700,20 @@ std::string MusMeiOutput::DurToStr( int dur )
     return value;
 }
 
+std::string MusMeiOutput::LayoutTypeToStr(LayoutType type)
+{
+ 	string value; 
+	switch(type)
+	{	case Rendering : value = "rendering"; break;
+		case Transcription : value = "transcription"; break;		
+        default: 
+            wxLogWarning("Unknown layout type '%d'", type);
+            value = "";
+            break;
+	}
+	return value;   
+}
+
 //----------------------------------------------------------------------------
 // MusMeiInput
 //----------------------------------------------------------------------------
@@ -780,15 +798,7 @@ bool MusMeiInput::ImportFile( )
 			vector<MeiElement*> children = layouts->getChildrenByName("layout");
 			for (vector<MeiElement*>::iterator iter = children.begin(); iter != children.end(); ++iter) {
 				MeiElement *e = *iter;
-				m_layout = new MusLayout( Raw );
-                SetMeiUuid( e, m_layout );
-				if (ReadMeiLayout( dynamic_cast<Layout*>(e))) {
-					m_doc->AddLayout( m_layout );
-				}
-				else {
-					delete m_layout;
-				}
-				m_layout = NULL;
+                ReadMeiLayout( dynamic_cast<Layout*>(e));
 			}
         }
         return true;
@@ -1233,6 +1243,18 @@ bool MusMeiInput::ReadMeiSymbol( Dot *dot )
 
 bool MusMeiInput::ReadMeiLayout( Layout *layout )
 {
+    LayoutType type;
+    if ( layout->m_Typed.hasType() ) {
+        type = StrToLayoutType( layout->m_Typed.getType()->getValue().c_str() );
+    }
+    else {
+        wxLogWarning( "@type missing in layout element" );
+        return false;
+    }
+
+    m_layout = new MusLayout( type );
+    SetMeiUuid( layout, m_layout );
+    
 	if ( layout && layout->hasChildren("page") ) {
 		vector<MeiElement*> children = layout->getChildrenByName("page");
 		for (vector<MeiElement*>::iterator iter = children.begin(); iter != children.end(); ++iter) {
@@ -1247,10 +1269,16 @@ bool MusMeiInput::ReadMeiLayout( Layout *layout )
 			}
 			m_page = NULL;
 		}
-		// success only if at least one page was added to the layout
-		return (m_layout->GetPageCount() > 0);
 	}
-    return false;
+    
+    if (m_layout->GetPageCount() > 0) {
+        m_doc->AddLayout( m_layout );
+    }
+    else {
+        delete m_layout;
+    }
+    m_layout = NULL;
+    return true;
 }
 
 
@@ -1316,12 +1344,12 @@ bool MusMeiInput::ReadMeiSystem( System *system )
 bool MusMeiInput::ReadMeiLaidOutStaff( LaidOutStaff *staff  )
 {
     int logStaffNb = -1;
-    if ( staff->m_Common.hasN() ) {
-        logStaffNb = atoi ( staff->m_Common.getN()->getValue().c_str() );
+    if ( staff->m_Staffident.hasStaff() ) {
+        logStaffNb = atoi ( staff->m_Staffident.getStaff()->getValue().c_str() );
     }
     else {
         // no idea what will happen if this is missing...
-        wxLogWarning( "@n missing in laidOutStaff element" );
+        wxLogWarning( "@staff missing in laidOutStaff element" );
         return false;
     }
     
@@ -1330,6 +1358,10 @@ bool MusMeiInput::ReadMeiLaidOutStaff( LaidOutStaff *staff  )
     
     if ( staff->m_Coordinated.hasUly() ) {
         m_laidOutStaff->m_y_abs = atoi ( staff->m_Coordinated.getUly()->getValue().c_str() );
+    }
+    if ( staff->m_Typed.hasType() ) {
+        // we use type only for typing mensural notation
+        m_laidOutStaff->notAnc = true;
     }
     
 	if ( staff && staff->hasChildren("laidOutLayer") ) {
@@ -1352,12 +1384,12 @@ bool MusMeiInput::ReadMeiLaidOutLayer( LaidOutLayer *layer )
     int logStaffNb = -1;
     MusSection *section = NULL;
     MusMeasure *measure = NULL;
-    if ( layer->m_Common.hasN() ) {
-        logLayerNb = atoi ( layer->m_Common.getN()->getValue().c_str() );
+    if ( layer->m_Layerident.hasLayer() ) {
+        logLayerNb = atoi ( layer->m_Layerident.getLayer()->getValue().c_str() );
     }
     else {
         // no idea what will happen if this is missing...
-        wxLogWarning( "@n missing in laidOutLayer element" );
+        wxLogWarning( "@layer missing in laidOutLayer element" );
         return false;
     }
     if ( layer->m_Staffident.hasStaff() ) {
@@ -1561,6 +1593,17 @@ MensurSign MusMeiInput::StrToMensurSign(std::string sign)
 	}
     // default
 	return MENSUR_SIGN_C;
+}
+
+LayoutType MusMeiInput::StrToLayoutType(std::string type)
+{
+    if (type == "rendering") return Rendering;
+    else if (type == "transcription") return Transcription;
+    else {
+        wxLogWarning("Unknown layout type '%s'", type.c_str() );
+	}
+    // default
+	return Transcription;
 }
 
 

@@ -14,6 +14,7 @@
 #include "wx/wfstream.h"
 
 #include "musdoc.h"
+#include "muslayout.h"
 #include "muslayer.h"
 #include "musapp.h"
 
@@ -160,6 +161,7 @@ private:
     std::string ClefLineToStr(ClefId clefId);
     std::string ClefShapeToStr(ClefId clefId);
     std::string MensurSignToStr(MensurSign sign);
+    std::string LayoutTypeToStr(LayoutType type);
     ///@}
 
     
@@ -258,6 +260,7 @@ private:
     unsigned char StrToAccid(std::string accid);
     ClefId StrToClef(std::string shape, std::string line);
     MensurSign StrToMensurSign(std::string sign);
+    LayoutType StrToLayoutType(std::string type);
 
     
 public:

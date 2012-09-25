@@ -24,6 +24,7 @@ MusLaidOutStaff::MusLaidOutStaff( int logStaffNb ):
 	MusLayoutObject()
 {
 	Clear( );
+    wxASSERT ( logStaffNb > 0 );
     m_logStaffNb = logStaffNb;
 }
 

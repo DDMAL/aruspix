@@ -966,7 +966,7 @@ bool MusBinInput_1_X::ImportFile( )
     MusScore *score = new MusScore( );
     m_section = new MusSection( );
     // create a new layout  (we will get only one of them in a WWG)
-    MusLayout *layout = new MusLayout( Facsimile );
+    MusLayout *layout = new MusLayout( Transcription );
 
     unsigned short nbpage;
     ReadFileHeader( &nbpage ); // fileheader
@@ -1158,8 +1158,8 @@ bool MusBinInput_1_X::ReadPage( MusPage *page )
         m_logLayer = dynamic_cast<MusLayer*> (&m_logStaff->m_layers[0]);
         wxASSERT_MSG( m_logLayer, "MusLayer cannot be NULL" );
         
-		MusLaidOutStaff *staff = new MusLaidOutStaff( j );
-        MusLaidOutLayer *layer = new MusLaidOutLayer( 0, j, m_section, NULL ); // we have always on layer per staff
+		MusLaidOutStaff *staff = new MusLaidOutStaff( j + 1 );
+        MusLaidOutLayer *layer = new MusLaidOutLayer( 1, j + 1, m_section, NULL ); // we have always on layer per staff
 		ReadStaff( staff, layer, j );
         if ( m_noLigne > system_no + 1 ) { // we have a new system
             page->AddSystem( system ); // add the current one
