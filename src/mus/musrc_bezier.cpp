@@ -12,10 +12,10 @@
 
 //#define NBInt	40
 
-static int factor = 100;
-static long factor2;
+//static int factor = 100;
+//static long factor2;
 //static int nbint = NBInt;
-static int	*pCC = NULL;
+//static int	*pCC = NULL;
 
 /** static members **/
 MusPoint MusRC::point_[];

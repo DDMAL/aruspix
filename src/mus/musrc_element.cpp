@@ -679,7 +679,7 @@ void MusRC::DrawLedgerLines( MusDC *dc, int y_n, int y_p, int xn, unsigned int s
 #define NUMBER_REDUCTION 5
 void MusRC::DrawSpecialRest ( MusDC *dc, int a, MusLaidOutLayerElement *element, MusLaidOutStaff *staff)
 {	
-    MusLeipzigBBox *bbox = new MusLeipzigBBox();
+    //MusLeipzigBBox *bbox = new MusLeipzigBBox();
     int x, x2, y, y2, lenght;
 
     MusRest *rest = dynamic_cast<MusRest*>(element->m_layerElement);

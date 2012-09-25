@@ -89,6 +89,8 @@ bool CmpCollation::IsCollationLoaded( )
 {
 	if ( m_isColLoaded )
 		return true;
+    
+    return false;
 }
 
 bool CmpCollation::Realize( )
@@ -627,7 +629,7 @@ CmpBookItem::~CmpBookItem( )
 
 bool CmpBookItem::AssembleParts( )
 {
-	wxLogMessage( m_shortname );
+	wxLogMessage( m_shortname.c_str() );
 	
 	return true;
 }
@@ -772,7 +774,7 @@ void CmpFile::OpenContent( )
 void CmpFile::SaveContent( )
 {
     wxASSERT( m_xml_root );
-	int i, j, k, l;
+	int i, j, k;
     char uuidStr[37];
     
     TiXmlElement books("books");

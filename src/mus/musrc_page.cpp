@@ -314,7 +314,7 @@ void MusRC::DrawBrace ( MusDC *dc, MusSystem *system, int x, int y1, int y2, int
 	
 	int ymed, xdec, fact, nbrInt;
     //	static POINT *bcoord;
-	MusPoint *ptcoord;
+	// MusPoint *ptcoord;
     
     dc->SetPen( m_currentColour , 1, wxSOLID );
     dc->SetBrush( m_currentColour , wxSOLID );
