@@ -236,6 +236,7 @@ void MusLayout::SpaceMusic() {
     
     // Trim the page to the needed position
     m_pages[0].m_pageWidth = 0; // first resest the page to 0
+    m_pages[0].m_pageHeight = m_pageHeight;
     params.Clear();
     MusSystemFunctor trimSystem(&MusSystem::Trim);
     m_doc->ProcessLayout( &trimSystem, params );
