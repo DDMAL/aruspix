@@ -42,6 +42,37 @@ enum
 };
 
 
+class AxTreeItem;
+WX_DECLARE_OBJARRAY( AxTreeItem, ArrayOfTreeItems );
+
+//----------------------------------------------------------------------------
+// AxTreeItem
+//----------------------------------------------------------------------------
+
+/**
+ * This class hold an tree item id together with a wxObject (or two) associated with the row.
+ */
+class AxTreeItem: public wxObject
+{
+public:
+    // constructors and destructors
+    AxTreeItem();
+    AxTreeItem( wxTreeItemId id, wxObject *object, wxObject *secondaryObject = NULL );
+    virtual ~AxTreeItem() {};
+    
+public:
+    wxTreeItemId m_id;
+    /** A pointer to an object */
+	wxObject *m_object;
+    /** A pointer to an object when we need a second one */
+    wxObject *m_secondaryObject;
+    
+private:
+    
+	DECLARE_DYNAMIC_CLASS(AxTreeItem)
+};
+
+
 
 //----------------------------------------------------------------------------
 // AxCtrl
@@ -60,12 +91,19 @@ public:
     virtual void SaveDisplay( ) {};
 	virtual void LoadDisplay( ) {};
     
+protected:
+    wxObject *GetObject( wxTreeItemId, bool secondary = false );
+    
 private:
         
+public:
+    
 protected:
     void SetTypeImages( wxTreeItemId id, int type );
     bool SelectionIsChildOf( wxTreeItemId id );
     bool ItemIsChildOf( wxTreeItemId id, wxTreeItemId child );
+    
+    ArrayOfTreeItems m_axItems;
     
 private:
     DECLARE_EVENT_TABLE()
