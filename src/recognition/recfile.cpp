@@ -137,7 +137,7 @@ void RecFile::UpgradeTo_1_4_0()
 		this->CancelRecognition( false );
 	}
 	else
-		wxLogDebug("File successfully upgraded to 1.4.0");
+		wxLogMessage( "File successfully upgraded to 1.4.0");
 }
 
 void RecFile::UpgradeTo_1_5_0()
@@ -171,6 +171,8 @@ void RecFile::UpgradeTo_1_5_0()
         
     wxRemoveFile( m_basename + "rec.old.mlf" );        
     wxRemoveFile( m_basename + "page.wwg" );
+    
+    wxLogMessage( "File successfully upgraded to 1.5.0");
 }
 
 
@@ -188,12 +190,30 @@ void RecFile::UpgradeTo_2_0_0()
     if ( !wxCopyFile( m_basename + "page.bin", m_basename + backup ) )  
         return;
         
+    /*
     MusBinInput_1_X bin_input( m_musDocPtr, m_basename + "page.bin" );
     bin_input.ImportFile();
+    */
+    
+    // we need to read page.mlf 
+    // backup rec.mlf
+	if ( !wxCopyFile( m_basename + "rec.mlf", m_basename + "rec.old.mlf") )  
+        return;
+    // we need to read page.mlf 
+	if ( !wxCopyFile( m_basename + "page.mlf", m_basename + "rec.mlf", true) )  
+        return;
+    
+    wxArrayPtrVoid params;
+    
+    if ( !this->RealizeFromMLF( params, NULL ) )
+        return;
+	if ( !wxCopyFile( m_basename + "rec.old.mlf", m_basename + "rec.mlf", true) )  
+        return;
     
     // output the new binary file
     MusMeiOutput mei_output( m_musDocPtr, m_musDocPtr->m_fname );
-    mei_output.ExportFile();    
+    mei_output.ExportFile(); 
+    wxLogMessage( "File successfully upgraded to 2.0.0");
 }
 
 
