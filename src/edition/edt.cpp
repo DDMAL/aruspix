@@ -673,11 +673,13 @@ void EdtEnv::OnOpenMEI( wxCommandEvent &event )
 	if ( !meiInput.ImportFile() )
 		return;
     
+    m_edtFilePtr->m_musDocPtr->m_layouts.Clear();
+    
 	MusLayout *layout = new MusLayout( Raw );
 	layout->Realize(m_edtFilePtr->m_musDocPtr->m_divs[0].m_score);
 	m_edtFilePtr->m_musDocPtr->AddLayout( layout );
-    
     layout->SpaceMusic();
+
     
 	m_musViewPtr->SetEditorMode(MUS_EDITOR_EDIT);
     UpdateViews( 0 );
