@@ -78,19 +78,41 @@ CmpCollation::CmpCollation( wxString id, wxString name, wxString basename  )
 	m_name = name;
 	m_basename = basename;
 	m_isColLoaded = false;
+
+
+    // new MusDoc
+    m_musDocPtr = new MusDoc();
 }
 
 CmpCollation::~CmpCollation( )
 {
-
+	if ( m_musDocPtr )
+		delete m_musDocPtr;
 }
 
-bool CmpCollation::IsCollationLoaded( )
+bool CmpCollation::IsCollationLoaded( CmpCollationPart *part )
 {
-	if ( m_isColLoaded )
-		return true;
+	//if ( !m_isColLoaded )
+	//	return false;
     
-    return false;
+    wxString filename = m_basename + m_id + "." + part->m_bookPart->m_id + ".mei" ;
+    
+	if ( !wxFileExists( filename ) )
+		return false;
+    
+	MusMeiInput mei_input( m_musDocPtr, filename  );
+	if (!mei_input.ImportFile()) {
+		return false;
+    }
+    
+    // Create a raw layout of the collation
+    MusLayout *layout = new MusLayout( Raw );
+    layout->Realize( m_musDocPtr->m_divs[0].m_score );
+    m_musDocPtr->AddLayout( layout );
+    layout->SpaceMusic();
+    
+	m_isColLoaded = true;
+	return true;
 }
 
 bool CmpCollation::Realize( )
@@ -195,6 +217,7 @@ bool CmpCollation::Realize( )
 	return true;
     */
     wxLogError( "CmpCollation::Realize method missing in ax2") ;
+    m_isColLoaded = true;
     return true;
 }
 
@@ -213,6 +236,7 @@ bool CmpCollation::Collate( )
     
     // pointers for the refence doc
 	MusDoc *reference = NULL;
+    wxString refFilename;
     
     for( i = 0; i < (int)m_collationParts.GetCount(); i++ )
 	{
@@ -225,7 +249,8 @@ bool CmpCollation::Collate( )
 		if ( part->m_flags & PART_REFERENCE )
 		{
 			reference = &docs[i];
-            m_refPartName = part->m_bookPart->m_bookname + "_" + part->m_bookPart->m_name;
+            refFilename = m_basename + part->m_bookPart->m_id + ".mei";
+            m_refSource = part->m_bookPart->m_bookname;
 		}
 	}
 	
@@ -247,15 +272,23 @@ bool CmpCollation::Collate( )
 		CmpCollationPart *part = &m_collationParts[i];
         MusLayer *layer_ref = &reference->m_divs[0].m_score->m_sections[0].m_staves[0].m_layers[0];
         MusLayer *layer_var = &(&docs[i])->m_divs[0].m_score->m_sections[0].m_staves[0].m_layers[0];
+        MusSection *section_ref = &reference->m_divs[0].m_score->m_sections[0];
+        MusSection *section_var = &(&docs[i])->m_divs[0].m_score->m_sections[0];
         
         // we keep two arrays of uuid for then changing them in the layout
         int nbElements = layer_ref->GetElementCount();
+        nbElements++; // one more because we are also going to have the section uuid
         uuid_t *uuid_refs = (uuid_t*)malloc( nbElements * sizeof( uuid_t ) ); 
         uuid_t *uuid_vars = (uuid_t*)malloc( nbElements * sizeof( uuid_t ) ); 
         int uuid_count = 0;
         
-		m_varPartName = part->m_bookPart->m_bookname + "_" + part->m_bookPart->m_name;
-        MusLayer * layer_aligned = Align( layer_ref, layer_var, uuid_refs, uuid_vars, &uuid_count );
+        // section uuids
+        uuid_copy( uuid_refs[uuid_count], *section_ref->GetUuid() );
+        uuid_copy( uuid_vars[uuid_count], *section_var->GetUuid() );
+        uuid_count++;
+        
+		m_varSource = part->m_bookPart->m_bookname;
+        MusLayer *layer_aligned = Align( layer_ref, layer_var, uuid_refs, uuid_vars, &uuid_count );
         
         // We replace the uuids in the logical tree of the _original_ file for the matched element
         int j;
@@ -270,7 +303,14 @@ bool CmpCollation::Collate( )
         }
         
         // The we can detatch the layout from the original file
-        MusLayout *varLayout = docs[i].m_layouts.Detach( 0 );
+        MusLayout *varLayout = (&docs[i])->m_layouts.Detach( 0 );
+        
+        MusDoc tmpDoc;
+        MusMeiInput meiInput( &tmpDoc, refFilename );
+        if ( !meiInput.ImportFile() ) {
+            wxLogError( "Cannot open MEI part file");
+        }
+        MusLayout *refLayout = tmpDoc.m_layouts.Detach( 0 );
         
         wxLogMessage( _("Saving MEI collation file ... ") );
         
@@ -279,6 +319,8 @@ bool CmpCollation::Collate( )
         MusDiv *div = new MusDiv( );
         MusScore *score = new MusScore( );
         MusSection *section = new MusSection( );
+        // TRICK! Very important! Because the layouts point to the section, we need to keep the same uuid
+        section->SetUuid( *section_ref->GetUuid() );
         MusStaff *staff = new MusStaff();
         
         staff->AddLayer( layer_aligned );
@@ -287,6 +329,7 @@ bool CmpCollation::Collate( )
         div->AddScore( score );
         collationDoc->AddDiv( div );
         
+        collationDoc->AddLayout( refLayout );
         collationDoc->AddLayout( varLayout );
         collationDoc->ResetAndCheckLayouts();
         
@@ -320,8 +363,8 @@ void CmpCollation::CreateApp( MusLayer *layer_aligned, int i, MusLayer *layer_va
     MusLayerRdg *ref = new MusLayerRdg();
     MusLayerRdg *var = new MusLayerRdg();
     // set the source ids available as member variables
-    ref->m_srcId = m_refPartName;
-    var->m_srcId = m_varPartName;
+    ref->m_source = m_refSource;
+    var->m_source = m_varSource;
     
     if ( (appType == CMP_APP_SUBST) || (appType == CMP_APP_DEL) ) {
         ref->AddLayerElement( (&layer_aligned->m_elements[i])->GetChildCopy()  );
@@ -904,6 +947,7 @@ bool CmpFile::LoadBooks( wxArrayPtrVoid params, AxProgressDlg *dlg )
 		for ( int j = 0; j < nparts; j++ )
 		{
 			CmpBookPart *part = &m_bookFiles[i].m_bookParts[j];
+            MusSection *origSection = NULL;
 			
             // Create the new MEI file    
             MusDoc *partDoc = new MusDoc( );
@@ -944,6 +988,16 @@ bool CmpFile::LoadBooks( wxArrayPtrVoid params, AxProgressDlg *dlg )
 				wxString file = m_bookFiles[i].m_recBookFilePtr->m_axFileDir + wxFileName::GetPathSeparator() + partPage->m_axfile;
 				if ( !recFile.Open( file ) )
 					continue;
+                
+                if ( k == 0 ) {
+                    origSection = &recFile.m_musDocPtr->m_divs[0].m_score->m_sections[0];
+                }
+                else {
+                    // TRICK! We are here putting together several pages - since each page is a different section,
+                    // we need to make sure they have the same uuid because we are going to use the uuid to 
+                    // move the pointers when importing the layout - see MusDoc::ResetAndCheckLayouts()
+                    (&recFile.m_musDocPtr->m_divs[0].m_score->m_sections[0])->SetUuid( *origSection->GetUuid() );
+                }
 	
 				if ( !recFile.IsRecognized() ) 
 				{
@@ -963,6 +1017,11 @@ bool CmpFile::LoadBooks( wxArrayPtrVoid params, AxProgressDlg *dlg )
 				
 				}	
 			}
+            
+            // TRICK! Make sure the new section has the same uuid as the ones of the objects the pages currently point to
+            if ( origSection ) {
+                section->SetUuid( *origSection->GetUuid() );
+            }
             
             // Now we need to reset the pointers from the layout since the objects have changed
             // This will also remove the elements in the layout that where not copied in the logical tree

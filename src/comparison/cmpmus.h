@@ -22,8 +22,6 @@
 class CmpEnv;
 class CmpMusWindow;
 
-class CmpImWindow;
-class CmpImController;
 class CmpFile;
 
 
@@ -44,8 +42,8 @@ public:
         long style = wxTAB_TRAVERSAL | wxNO_BORDER );
     
     void Init( CmpEnv *env, CmpMusWindow *window );
-	void SetImViewAndController( CmpImWindow *cmpImWindow1, CmpImController *cmpImController1,
-		CmpImWindow *cmpImWindow2, CmpImController *cmpImController2 );
+	void SetImViewAndController( CmpMusWindow *cmpImWindow1, CmpMusController *cmpImController1,
+		CmpMusWindow *cmpImWindow2, CmpMusController *cmpImController2 );
 	void SetCmpFile( CmpFile *cmpFile );
     
 protected:
@@ -53,8 +51,8 @@ protected:
     CmpMusWindow *m_viewPtr;
 	// to synchronize view
 	CmpFile *m_cmpFilePtr;
-	CmpImWindow *m_imViewPtr1, *m_imViewPtr2;
-	CmpImController *m_imControlPtr1, *m_imControlPtr2;
+	CmpMusWindow *m_imViewPtr1, *m_imViewPtr2;
+	CmpMusController *m_imControlPtr1, *m_imControlPtr2;
 	
 private:
         void OnSize( wxSizeEvent &event );
@@ -79,8 +77,8 @@ public:
         long style = wxScrolledWindowStyle, bool center = true );
     virtual ~CmpMusWindow();
     void SetEnv( CmpEnv *env );
-	void SetImViewAndController( CmpImWindow *cmpImWindow1, CmpImController *cmpImController1,
-		CmpImWindow *cmpImWindow2, CmpImController *cmpImController2 );
+	void SetImViewAndController( CmpMusWindow *cmpImWindow1, CmpMusController *cmpImController1,
+		CmpMusWindow *cmpImWindow2, CmpMusController *cmpImController2 );
 	void SetCmpFile( CmpFile *cmpFile );
 
     // edition
@@ -92,18 +90,18 @@ public:
     
         
 protected:
-        bool m_shiftDown;
+    bool m_shiftDown;
     CmpEnv *m_envPtr;
 	CmpMusController *m_musControlPtr;
     //bool m_edition; // true if OnBeginEdition() has been called -> retranspose current staff
 	CmpFile *m_cmpFilePtr;
-	CmpImWindow *m_imViewPtr1, *m_imViewPtr2;
-	CmpImController *m_imControlPtr1, *m_imControlPtr2;
+	CmpMusWindow *m_imViewPtr1, *m_imViewPtr2;
+	CmpMusController *m_imControlPtr1, *m_imControlPtr2;
 	// variable to control alternance in images : change if we change the staff
 	int m_lastStaff, m_lastController;
     
 private:
-        void OnMouse( wxMouseEvent &event );
+    void OnMouse( wxMouseEvent &event );
     void OnScroll( wxScrollWinEvent &event );
     void OnKeyUp( wxKeyEvent &event );
     void OnKeyDown( wxKeyEvent &event );

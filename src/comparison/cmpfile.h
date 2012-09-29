@@ -81,7 +81,8 @@ public:
 	
 	bool Collate( );
 	bool Realize( );
-	bool IsCollationLoaded();
+	bool IsCollationLoaded( CmpCollationPart *part );
+    MusDoc *GetMusDoc() { return m_musDocPtr; };
 	
 	
 protected:
@@ -117,9 +118,11 @@ private:
     /** The basename of the CmpFile, used to read/write file from this class. */
 	wxString m_basename;
     /** The name of the reference source */
-    wxString m_refPartName;
+    wxString m_refSource;
     /** The name of the variant source */
-    wxString m_varPartName;
+    wxString m_varSource;
+    /** The MusDoc of the final collation */
+    MusDoc *m_musDocPtr;
 
 	bool m_isColLoaded;
 };

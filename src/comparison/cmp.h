@@ -46,6 +46,7 @@ class CmpCtrl;
 class CmpCtrlPanel;
 class CmpEnv;
 class CmpCollation;
+class CmpCollationPart;
 
 #define CMP_APP_DEL 1
 #define CMP_APP_SUBST 2
@@ -73,22 +74,24 @@ public:
     //
     bool ResetFile(); // must be called when new file is created or opened
     bool ResetCmpFile(); // must be called when new file is created or opened
-	void ViewCollation( CmpCollation *collation );
+	void ViewCollationPart( CmpCollationPart *collationPart, CmpCollation *collation );
     void OpenFile( wxString filename);
     void UpdateViews( int flags );
-	CmpCollation *GetCollationPtr() { return m_cmpCollationPtr; }
+    CmpCollation *GetCollationPtr() { return m_cmpCollationPtr; }
+	CmpCollationPart *GetCollationPartPtr() { return m_cmpCollationPartPtr; }
 
 private:
-        wxSplitterWindow *m_bookSplitterPtr;
+    wxSplitterWindow *m_bookSplitterPtr;
     wxSplitterWindow *m_pageSplitterPtr;
 	wxSplitterWindow *m_srcSplitterPtr;
     // im
-    CmpImController *m_imControlPtr1, *m_imControlPtr2;
-    CmpImWindow *m_imViewPtr1, *m_imViewPtr2;
+    CmpMusController *m_imControlPtr1, *m_imControlPtr2;
+    CmpMusWindow *m_imViewPtr1, *m_imViewPtr2;
     // mus    
     CmpMusController *m_musControlPtr;
     CmpMusWindow *m_musViewPtr;
-	CmpCollation *m_cmpCollationPtr;
+	CmpCollationPart *m_cmpCollationPartPtr;
+    CmpCollation *m_cmpCollationPtr;
     //MusToolPanel *m_toolpanel;
     //wxPanel *m_musPanelPtr; // panel complet: contient toolpanel et recmuscontoller
     // recognition elements
@@ -108,7 +111,7 @@ public:
     
 private:
 
-        void OnCmpEdit( wxCommandEvent &event );
+    void OnCmpEdit( wxCommandEvent &event );
     void OnCmpLoad( wxCommandEvent &event );
     void OnOpen( wxCommandEvent &event );
     void OnTools( wxCommandEvent &event );

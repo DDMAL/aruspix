@@ -91,7 +91,8 @@ CmpEnv::CmpEnv():
     m_musViewPtr = NULL;
     m_cmpFilePtr = NULL;
     m_cmpCtrlPanelPtr = NULL;
-	m_cmpCollationPtr = NULL;
+    m_cmpCollationPtr = NULL;
+	m_cmpCollationPartPtr = NULL;
 
     m_cmpFilePtr = new CmpFile( "cmp_file", this );
 
@@ -140,18 +141,16 @@ void CmpEnv::LoadWindow()
     m_srcSplitterPtr->SetWindowStyleFlag( wxSP_NOBORDER );
     m_srcSplitterPtr->SetMinimumPaneSize( 100 );
 
-    m_imControlPtr1 = new CmpImController( m_srcSplitterPtr, ID6_CONTROLLER1, wxDefaultPosition, wxDefaultSize, 0,
-        CONTROLLER_NO_TOOLBAR );
-    m_imControlPtr1->SetEnv( this );
-    m_imViewPtr1 = new CmpImWindow( m_imControlPtr1, ID6_VIEW1 , wxDefaultPosition, 
+    m_imControlPtr1 = new CmpMusController( m_srcSplitterPtr, ID6_CONTROLLER1 );
+    //m_imControlPtr1->SetEnv( this );
+    m_imViewPtr1 = new CmpMusWindow( m_imControlPtr1, ID6_VIEW1 , wxDefaultPosition, 
         wxDefaultSize, wxHSCROLL| wxVSCROLL | wxSUNKEN_BORDER);
     m_imViewPtr1->SetEnv( this );
     m_imControlPtr1->Init( this, m_imViewPtr1 );
 
-    m_imControlPtr2 = new CmpImController( m_srcSplitterPtr, ID6_CONTROLLER2, wxDefaultPosition, wxDefaultSize, 0,
-        CONTROLLER_NO_TOOLBAR );
-    m_imControlPtr2->SetEnv( this );
-    m_imViewPtr2 = new CmpImWindow( m_imControlPtr2, ID6_VIEW2 , wxDefaultPosition, 
+    m_imControlPtr2 = new CmpMusController( m_srcSplitterPtr );
+    //m_imControlPtr2->SetEnv( this );
+    m_imViewPtr2 = new CmpMusWindow( m_imControlPtr2, ID6_VIEW2 , wxDefaultPosition, 
         wxDefaultSize, wxHSCROLL| wxVSCROLL | wxSUNKEN_BORDER);
     m_imViewPtr2->SetEnv( this );
     m_imControlPtr2->Init( this, m_imViewPtr2 );
@@ -170,10 +169,13 @@ void CmpEnv::LoadWindow()
 
     //m_pageSplitterPtr->SetEnv( this, mussizer, m_toolpanel, m_musControlPtr );
 
-    if ( wxSystemSettings::GetColour(wxSYS_COLOUR_APPWORKSPACE) == *wxWHITE )
-        m_musControlPtr->SetBackgroundColour( *wxLIGHT_GREY );
-    else
-        m_musControlPtr->SetBackgroundColour( wxSystemSettings::GetColour(wxSYS_COLOUR_APPWORKSPACE) );
+    wxColour background = *wxLIGHT_GREY;
+    if ( wxSystemSettings::GetColour(wxSYS_COLOUR_APPWORKSPACE) != *wxWHITE ) {
+        background = wxSystemSettings::GetColour(wxSYS_COLOUR_APPWORKSPACE);
+    }
+    m_musControlPtr->SetBackgroundColour( background );
+    m_imControlPtr1->SetBackgroundColour( background );
+    m_imControlPtr2->SetBackgroundColour( background );
 
 	// load splitter
     m_bookSplitterPtr->SplitVertically( m_cmpCtrlPanelPtr, m_pageSplitterPtr, CmpEnv::s_book_sash );
@@ -181,11 +183,11 @@ void CmpEnv::LoadWindow()
     m_bookSplitterPtr->Unsplit( m_cmpCtrlPanelPtr );
 
     //m_pageSplitterPtr->SplitHorizontally( m_musControlPtr , m_srcSplitterPtr, CmpEnv::s_view_sash);
-	m_pageSplitterPtr->SplitVertically( m_musControlPtr , m_srcSplitterPtr, CmpEnv::s_view_sash);
+	m_pageSplitterPtr->SplitHorizontally( m_musControlPtr , m_srcSplitterPtr, CmpEnv::s_view_sash);
     m_pageSplitterPtr->Unsplit();
 	
 	//m_srcSplitterPtr->SplitVertically( m_imControlPtr1 , m_imControlPtr2);
-	m_srcSplitterPtr->SplitHorizontally( m_imControlPtr1 , m_imControlPtr2);
+	m_srcSplitterPtr->SplitVertically( m_imControlPtr1 , m_imControlPtr2);
     
 }
 
@@ -258,7 +260,7 @@ void CmpEnv::UpdateTitle( )
     wxASSERT_MSG( m_cmpFilePtr, wxT("Cmp file cannot be NULL") );
 
     wxString msg = m_cmpFilePtr->m_shortname;
-    if ( m_cmpCollationPtr && m_musViewPtr )
+    if ( m_cmpCollationPartPtr && m_musViewPtr )
         //msg += wxString::Format("- %s - page %d / %d", 
 		//	m_cmpCollationPtr->m_name.c_str(), 
         //    m_musViewPtr->m_npage + 1,
@@ -282,12 +284,15 @@ bool CmpEnv::ResetFile()
 
     m_musViewPtr->Show( false );
     m_musViewPtr->SetLayout( NULL );
-	m_cmpCollationPtr = NULL;
+	m_cmpCollationPartPtr = NULL;
+    m_cmpCollationPtr = NULL;
     
+    /*
     if ( m_imControlPtr1->Ok() )
         m_imControlPtr1->Close(); 
 	if ( m_imControlPtr2->Ok() )
         m_imControlPtr2->Close();
+    */
 
     if ( m_pageSplitterPtr->IsSplit() ) // keep position if splitted
         CmpEnv::s_view_sash = m_pageSplitterPtr->GetSashPosition( );
@@ -297,19 +302,21 @@ bool CmpEnv::ResetFile()
     return true;
 }
 
-void CmpEnv::ViewCollation( CmpCollation *collation )
+void CmpEnv::ViewCollationPart( CmpCollationPart *collationPart, CmpCollation *collation )
 {
-	m_cmpCollationPtr = collation;
+	m_cmpCollationPartPtr = collationPart;
+    m_cmpCollationPtr = collation;
 	UpdateViews( 0 );
 }
 
 void CmpEnv::UpdateViews( int flags )
 {
-    if ( m_cmpCollationPtr && m_cmpCollationPtr->IsCollationLoaded() )
+    if ( m_cmpCollationPartPtr && m_cmpCollationPtr && m_cmpCollationPtr->IsCollationLoaded( m_cmpCollationPartPtr) )
     {
         //m_pageSplitterPtr->SplitHorizontally( m_musControlPtr , m_srcSplitterPtr, CmpEnv::s_view_sash );
-		m_pageSplitterPtr->SplitVertically( m_musControlPtr , m_srcSplitterPtr, CmpEnv::s_view_sash );
-        //m_musViewPtr->SetLayout( &m_cmpCollationPtr->GetMusFile()->m_layouts[0] );
+		m_pageSplitterPtr->SplitHorizontally( m_musControlPtr , m_srcSplitterPtr, CmpEnv::s_view_sash );
+        // The last layout is the Raw layout created in CmpCollation::IsCollationLoaded
+        m_musViewPtr->SetLayout( &m_cmpCollationPtr->GetMusDoc()->m_layouts.Last() );
         //m_musViewPtr->SetEnv( this );
         //m_musViewPtr->SetToolPanel( m_toolpanel );
         m_musViewPtr->LoadPage( 0 );

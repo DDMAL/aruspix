@@ -58,6 +58,7 @@ void CmpImController::SetEnv( CmpEnv *env )
 
 void CmpImController::LoadRecImage( int colNo, wxString filename, int staff, int pos, int flag )
 {
+    /*
 	wxASSERT( m_envPtr );
 	wxASSERT( m_recFilePtr );
     wxClassInfo *info;
@@ -105,6 +106,7 @@ void CmpImController::LoadRecImage( int colNo, wxString filename, int staff, int
 		((CmpImWindow*)m_viewPtr)->SetCirclePen( pen , 2 );
 		((CmpImWindow*)m_viewPtr)->DrawCircle( );
 	}
+     */
 	
 	//wxLogMessage(" %s, %d, ID %d", full_filename.c_str(), staff, this->GetId() );
 }

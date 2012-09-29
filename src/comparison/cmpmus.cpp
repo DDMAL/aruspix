@@ -16,7 +16,7 @@ using std::max;
 
 #include "cmpmus.h"
 #include "cmp.h"
-#include "cmpim.h"
+#include "cmpfile.h"
 #include "recognition/recfile.h"
 
 #include "app/axapp.h"
@@ -24,7 +24,9 @@ using std::max;
 #include "im/impage.h"
 #include "im/imstaff.h"
 
-#include "mus/musstaff.h"
+#include "mus/musdoc.h"
+#include "mus/muslaidoutstaff.h"
+#include "mus/muslaidoutlayerelement.h"
 
 
 //----------------------------------------------------------------------------
@@ -68,8 +70,8 @@ void CmpMusController::Init( CmpEnv *env, CmpMusWindow *window )
 }
 
 
-void CmpMusController::SetImViewAndController( CmpImWindow *cmpImWindow1, CmpImController *cmpImController1,
-		CmpImWindow *cmpImWindow2, CmpImController *cmpImController2 )
+void CmpMusController::SetImViewAndController( CmpMusWindow *cmpImWindow1, CmpMusController *cmpImController1,
+		CmpMusWindow *cmpImWindow2, CmpMusController *cmpImController2 )
 {
 	m_imControlPtr1 = cmpImController1;
 	m_imViewPtr1 = cmpImWindow1;
@@ -148,8 +150,8 @@ void CmpMusWindow::SetEnv( CmpEnv *env )
     m_envPtr = env;
 }
 
-void CmpMusWindow::SetImViewAndController( CmpImWindow *cmpImWindow1, CmpImController *cmpImController1,
-		CmpImWindow *cmpImWindow2, CmpImController *cmpImController2 )
+void CmpMusWindow::SetImViewAndController( CmpMusWindow *cmpImWindow1, CmpMusController *cmpImController1,
+		CmpMusWindow *cmpImWindow2, CmpMusController *cmpImController2 )
 {
 	m_imControlPtr1 = cmpImController1;
 	m_imViewPtr1 = cmpImWindow1;
@@ -161,36 +163,6 @@ void CmpMusWindow::SetCmpFile( CmpFile *cmpFile )
 {
 	m_cmpFilePtr = cmpFile;
 }
-
-/*
-void CmpMusWindow::OnBeginEditionClef()
-{
-    if ( !m_envPtr )
-        return;
-
-    m_edition = true;
-    if ( m_currentStaff )
-        MusMLFOutput::GetUt1( m_currentStaff, true );
-}
-
-void CmpMusWindow::OnEndEditionClef()
-{
-    if ( !m_envPtr )
-        return;
-
-    if ( m_edition && m_currentStaff )
-        MusMLFInput::GetNotUt1( m_currentStaff, true );
-
-    m_edition = false;
-}
-
-
-void CmpMusWindow::OnEndEdition()
-{
-	m_recFilePtr->Modify();
-    m_musControlPtr->SyncStaffBitmap();
-}
-*/
 
 
 void CmpMusWindow::OnSize( wxSizeEvent &event )
@@ -228,7 +200,6 @@ void CmpMusWindow::OnScroll( wxScrollWinEvent &event )
 
 void CmpMusWindow::OnMouse(wxMouseEvent &event)
 {
-    /*
     if (event.GetEventType() == wxEVT_MOUSEWHEEL)
     {
         int x, y;
@@ -252,6 +223,13 @@ void CmpMusWindow::OnMouse(wxMouseEvent &event)
 	{
 		if ( m_currentStaff && m_currentElement )
 		{
+           // wxLogMessage( "%s", m_currentElement->m_layerElement->GetUuidStr().c_str() );
+            
+            m_imViewPtr1->SetLayout( &m_envPtr->GetCollationPtr()->GetMusDoc()->m_layouts[0] );
+            m_imViewPtr1->Resize();
+            m_imViewPtr2->SetLayout( &m_envPtr->GetCollationPtr()->GetMusDoc()->m_layouts[1] );
+            m_imViewPtr2->Resize();
+            /*
 			if ( m_currentStaff->no != m_lastStaff )
 				m_lastController = (m_lastController == 1) ? 0 : 1; // swap controller
 			m_lastStaff = m_currentStaff->no;
@@ -259,13 +237,12 @@ void CmpMusWindow::OnMouse(wxMouseEvent &event)
 			if ( controller )
 				controller->LoadRecImage( m_lastStaff, m_currentElement->m_im_filename, m_currentElement->m_im_staff, 
 					m_currentElement->m_im_pos, m_currentElement->m_cmp_flag );
+             */
 		
 			//wxLogMessage(" %s, %d", m_currentElement->m_im_filename.c_str(), m_currentElement->m_im_staff );
 		}
-		event.Skip();
 	}
 	else
-    */ // ax2
         event.Skip();
 }
 
