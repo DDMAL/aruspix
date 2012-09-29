@@ -40,6 +40,13 @@ void MusObject::SetUuid( uuid_t uuid )
     uuid_copy( m_uuid, uuid );
 };
 
+wxString MusObject::GetUuidStr()
+{
+    char uuidStr[37];
+    uuid_unparse( m_uuid, uuidStr ); 
+    return wxString( uuidStr );
+}
+
 bool MusObject::FindWithUuid( wxArrayPtrVoid params )
 {
     // param 0: the uuid we are looking for

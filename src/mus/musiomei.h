@@ -44,6 +44,7 @@ class MusSystem;
 class MusLaidOutStaff;
 class MusLaidOutLayer;
 class MusLaidOutLayerElement;
+class MusLayerApp;
 
 using namespace mei;
 
@@ -231,7 +232,8 @@ private:
     bool ReadMeiSection( Section *section );
     bool ReadMeiMeasure( Measure *measure );
     bool ReadMeiStaff( Staff *staff );
-    bool ReadMeiLayer( Layer *layer );
+    /** Reads the content of a <layer> or of a <rdg> for <app> within <layer> */
+    bool ReadMeiLayer( MeiElement *layer );
     bool ReadMeiBarline( BarLine *barline );
     bool ReadMeiBeam( Beam *beam );
     bool ReadMeiClef( Clef *clef );
@@ -249,6 +251,7 @@ private:
     bool ReadMeiLaidOutLayer( LaidOutLayer *laidOutLayer );
     bool ReadMeiLaidOutElement( LaidOutElement *laidOutElement );
     // app
+    /** Reads <app> elements. For now, only <app> within <layer> are taken into account */
     bool ReadMeiApp( App *app );
     bool ReadMeiRdg( Rdg *rdg );
 	//
@@ -282,6 +285,7 @@ private:
     MusSystem *m_system;
     MusLaidOutStaff *m_laidOutStaff;
     MusLaidOutLayer *m_laidOutLayer;
+    MusLayerApp *m_layerApp;
 };
 
 

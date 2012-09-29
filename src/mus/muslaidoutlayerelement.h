@@ -77,6 +77,8 @@ public:
     MusPoint m_stem_end; // end point (!), near beam or stem
     /** stem direction as drawn, true = up, false = down */
     bool m_drawn_stem_dir;
+    /** for elements in MusLayerApp. They will be drawn from the MusLaidOutLayerElement of the app (and not from the layer) */
+    bool m_in_layer_app;
     /** Pointer to the MusLayerElement */
     MusLayerElement *m_layerElement;
     

@@ -113,6 +113,11 @@ bool MusBinInput_1_X::ImportFile( )
     for (j = 0; j < layout->GetPageCount(); j++)
     {
         MusPage *page = &layout->m_pages[j];
+        page->m_pageWidth = m_doc->m_pageWidth;
+        page->m_pageHeight = m_doc->m_pageHeight;
+        page->m_pageLeftMar = m_doc->m_pageLeftMar;
+        page->m_pageRightMar = m_doc->m_pageRightMar;
+        
         m = 0; // staff number on the page
         int yy =  layout->m_pageHeight;
         for (k = 0; k < page->GetSystemCount(); k++) 

@@ -14,6 +14,7 @@
 #include "mussystem.h"
 #include "muslaidoutstaff.h"
 #include "muslaidoutlayer.h"
+#include "muslaidoutlayerelement.h"
 
 #include "musclef.h"
 
@@ -926,7 +927,9 @@ void MusRC::DrawLayer( MusDC *dc, MusLaidOutLayer *layer, MusLaidOutStaff *staff
 	{
 		pelement = &layer->m_elements[j];
 		//pelement->Init( m_r );
-		DrawElement( dc, pelement, layer, staff );
+        if ( !pelement->m_in_layer_app ) {
+            DrawElement( dc, pelement, layer, staff );
+        }
 	}
 
 }

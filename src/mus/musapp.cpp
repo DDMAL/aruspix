@@ -65,6 +65,7 @@ void MusLayerApp::Process(MusFunctor *functor, wxArrayPtrVoid params )
 	int i;
     for (i = 0; i < (int)m_rdgs.GetCount(); i++) 
 	{
+        //wxLogDebug("prout rdg");
         rdg = &m_rdgs[i];
         functor->Call( rdg, params );
         if (rdgFunctor) { // is is a MusLayerElementFunctor, call it

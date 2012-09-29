@@ -84,6 +84,13 @@ void MusSystem::Trim( wxArrayPtrVoid params )
     if ( m_page->m_pageWidth < system_length ) {
         m_page->m_pageWidth = system_length;
     }
+    /*
+    int system_height = (m_contentBB_y2 - m_contentBB_y1) + m_page->m_pageTopMar;
+    if ( m_page->m_pageHeight < system_height ) {
+        // not sure about this...
+        m_page->m_pageHeight = system_height;
+    }
+    */
 }
 
 void MusSystem::AddStaff( MusLaidOutStaff *staff )

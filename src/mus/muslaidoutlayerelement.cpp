@@ -38,6 +38,7 @@ MusLaidOutLayerElement::MusLaidOutLayerElement( MusLayerElement *element ):
     m_layer = NULL;
     m_x_abs = 0;
     m_y_drawing = 0;
+    m_in_layer_app = false;
 }
 
 MusLaidOutLayerElement::~MusLaidOutLayerElement()

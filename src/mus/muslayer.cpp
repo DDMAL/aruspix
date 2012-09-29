@@ -143,6 +143,12 @@ void MusLayer::Process(MusFunctor *functor, wxArrayPtrVoid params )
         else { // process it further
             // nothing we can do...
         }
+        // If this is a <app>, we need to process it further, but only if it is not a
+        // MusLayerElementFunctor (generic functors only)
+        if ( !elementFunctor && dynamic_cast<MusLayerApp*>(element) ) {
+            MusLayerApp *app = dynamic_cast<MusLayerApp*>(element);
+            app->Process( functor, params );
+        }
 	}
 }
 

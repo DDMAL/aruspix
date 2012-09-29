@@ -222,6 +222,13 @@ void MusBBoxDC::DrawEllipticArc(int x, int y, int width, int height, double star
     //WriteLine( wxString::Format("<path d=\"M%d %d A%d %d 0.0 %d %d  %d %d \" />",
     //    int(xs), int(ys), int(rx), int(ry),
     //    fArc, fSweep, int(xe), int(ye) ) );
+    
+    int penWidth = m_penWidth;
+    if ( penWidth % 2 ) {
+        penWidth += 1;
+    }
+    // needs to be fixed - for now uses the entire rectangle
+    UpdateBB( x - penWidth / 2, y - penWidth / 2, x + width + penWidth / 2, y + height + penWidth / 2);
 }
   
               

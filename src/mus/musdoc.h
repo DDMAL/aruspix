@@ -59,10 +59,10 @@ public:
     void Check();
     
     /**
-     * This method reset the MusLayerElement pointers and check the elements exist.
+     * This method reset the MusLayerElement, MusSection and MusMeasure pointers and check the elements exist.
      * It has to be call when a layout (pages) was copied from another file in memory
-     * because we need the MusLayerElement pointers to be redirected to the correct object.
-     * The methods find the MusLayerElement in the logical tree with the UUID.
+     * because we need the MusLayerElement, MusSection and MusMeasure pointers to be redirected to the correct object.
+     * The methods find the object in the logical tree with the UUID.
      * The MusLaidOutLayerElement is deleted from the layout if the MusLayerElement is not found.
      * Empty MusLaidOutLayer, MusLaidOutStaff, MusSystem etc. objects remain.
      */

@@ -546,7 +546,7 @@ bool MusMeiOutput::WriteLayerRdg( MusLayerRdg *rdg )
     m_rdgLayer = new Rdg();
     // now swith the m_currentLayer pointer
     m_currentLayer = m_rdgLayer;
-    m_rdgLayer->m_Source.setSource( rdg->m_srcId.c_str() );
+    m_rdgLayer->m_Source.setSource( rdg->m_source.c_str() );
     m_app->addChild( m_rdgLayer ); 
     return true;
 }
@@ -738,6 +738,8 @@ MusMeiInput::MusMeiInput( MusDoc *doc, wxString filename ) :
     m_system = NULL;
     m_laidOutStaff = NULL;
     m_laidOutLayer = NULL;
+    // app
+    m_layerApp = NULL;
 }
 
 MusMeiInput::~MusMeiInput()
@@ -996,7 +998,7 @@ bool MusMeiInput::ReadMeiStaff( Staff *staff )
     return false;
 }
 
-bool MusMeiInput::ReadMeiLayer( Layer *layer )
+bool MusMeiInput::ReadMeiLayer( MeiElement *layer )
 {
 	if ( layer && layer->hasChildren() ) {
 		vector<MeiElement*> children = layer->getChildren();
@@ -1048,6 +1050,12 @@ bool MusMeiInput::ReadMeiLayer( Layer *layer )
 					return false;
 				}
 			}
+            // app
+            else if (e->getName()=="app") {
+                if (!ReadMeiApp(dynamic_cast<App*>(e))) {
+					return false;
+				}
+            }
             // unkown            
 			else {
 				wxLogDebug("LayerElement %s ignored", e->getName().c_str() );
@@ -1453,7 +1461,7 @@ bool MusMeiInput::ReadMeiLaidOutElement( LaidOutElement *laidOutElement )
         }
         else {
             // no idea what will happen if this is missing...
-            wxLogWarning( "The laidOutElement target could not be found" ); 
+            wxLogWarning( "The laidOutElement target could not be found %s",  laidOutElement->m_Pointing.getTarget()->getValue().c_str() ); 
             return false;
         }
     }
@@ -1474,6 +1482,49 @@ bool MusMeiInput::ReadMeiLaidOutElement( LaidOutElement *laidOutElement )
     return true;
 }
 
+
+bool MusMeiInput::ReadMeiApp( App *app )
+{
+    m_layerApp = new MusLayerApp( );
+    SetMeiUuid( app, m_layerApp );
+    
+    if ( app && app->hasChildren("rdg") ) {
+		vector<MeiElement*> children = app->getChildrenByName("rdg");
+		for (vector<MeiElement*>::iterator iter = children.begin(); iter != children.end(); ++iter) {
+			MeiElement *e = *iter;
+			ReadMeiRdg(dynamic_cast<Rdg*>(e));
+		}
+	}
+	
+	m_layer->AddLayerElement( m_layerApp );
+    m_layerApp = NULL;
+    return true;
+}
+
+bool MusMeiInput::ReadMeiRdg( Rdg *rdg )
+{
+    wxASSERT( m_layerApp );
+    
+    MusLayerRdg *musRdg = new MusLayerRdg( );
+    SetMeiUuid( rdg, musRdg );
+    
+    if ( rdg->m_Source.hasSource() ) {
+        musRdg->m_source = rdg->m_Source.getSource()->getValue().c_str();
+    }
+    
+    // keep a pointer to the current layer to put it back at the end
+    MusLayer *currentLayer = m_layer;
+    // switch to the rdg
+    m_layer = musRdg;
+    
+    bool success = ReadMeiLayer( rdg );
+    m_layerApp->AddLayerRdg( musRdg );
+    
+    // switch back to the previous one
+    m_layer = currentLayer;
+    
+    return success;
+}
 
 void MusMeiInput::SetMeiUuid( MeiElement *element, MusObject *object )
 {

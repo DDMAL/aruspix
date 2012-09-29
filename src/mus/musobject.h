@@ -49,10 +49,10 @@ WX_DECLARE_OBJARRAY( MusLayerRdg, ArrayOfMusLayerRdgs );
 
 // Layout classes
 class MusLayout;
-WX_DECLARE_OBJARRAY( MusLayout, ArrayOfMusLayouts);
+WX_DECLARE_OBJARRAY( MusLayout, ArrayOfMusLayouts );
 
 class MusPage;
-WX_DECLARE_OBJARRAY( MusPage, ArrayOfMusPages);
+WX_DECLARE_OBJARRAY( MusPage, ArrayOfMusPages );
 
 class MusSystem;
 WX_DECLARE_OBJARRAY( MusSystem, ArrayOfMusSystems);
@@ -92,6 +92,7 @@ public:
     
     int GetId() { return 0; }; // used in SVG - TODO
     uuid_t* GetUuid() { return &m_uuid; };
+    wxString GetUuidStr();
     void SetUuid( uuid_t uuid );
     
     

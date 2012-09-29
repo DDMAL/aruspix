@@ -14,6 +14,7 @@
 #include "muslaidoutlayerelement.h"
 
 #include "musdef.h"
+#include "musdoc.h"
 #include "musclef.h"
 
 #include <typeinfo>
@@ -742,6 +743,38 @@ void MusLaidOutLayer::Process(MusFunctor *functor, wxArrayPtrVoid params )
         }
 	}
 }
+
+
+
+void MusLaidOutLayer::CheckAndResetSectionOrMeasure( wxArrayPtrVoid params )
+{
+    // param 0: the MusDoc to check against
+    MusDoc *doc = (MusDoc*)params[0];
+    
+    MusObject *object = NULL; // it will be the section or the measure
+    if ( m_measure ) {
+        object= m_measure;
+    }
+    else if ( m_section ) {
+        object = m_section;
+    }
+    else {
+        // this should never happen...
+        return;
+    }
+    
+    MusFunctor findElementUuid( &MusObject::FindWithUuid );
+    MusObject *element = dynamic_cast<MusObject*>( doc->FindLogicalObject( &findElementUuid, *object->GetUuid() ) );
+    if ( element ) {
+        object = element;
+    }
+    else {
+        object = NULL;
+        wxLogDebug( "Mesure or section not found in the logical tree" );
+        delete this;
+    }
+}
+
 
 void MusLaidOutLayer::CopyElements( wxArrayPtrVoid params )
 {

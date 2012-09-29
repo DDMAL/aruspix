@@ -97,10 +97,15 @@ void MusDoc::ResetAndCheckLayouts()
 {
     wxArrayPtrVoid params;
     params.Add( this );
-    MusLaidOutLayerElementFunctor checkObjects( &MusLaidOutLayerElement::CheckAndResetLayerElement );
+    MusLaidOutLayerElementFunctor checkLaidOutLayerElements( &MusLaidOutLayerElement::CheckAndResetLayerElement );
     // because we are going to delete MusLaidOutLayerElements, we need to process it from the end
-    checkObjects.m_reverse = true;
-    this->ProcessLayout( &checkObjects, params );
+    checkLaidOutLayerElements.m_reverse = true;
+    this->ProcessLayout( &checkLaidOutLayerElements, params );
+    
+    MusLaidOutLayerFunctor checkLaidOutLayers( &MusLaidOutLayer::CheckAndResetSectionOrMeasure );
+    // because we are going to delete MusLaidOutLayers, we need to process it from the end
+    checkLaidOutLayers.m_reverse = true;
+    this->ProcessLayout( &checkLaidOutLayers, params );
 }
 
 void MusDoc::GetNumberOfVoices( int *min_voice, int *max_voice )

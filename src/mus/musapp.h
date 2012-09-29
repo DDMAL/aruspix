@@ -35,6 +35,8 @@ public:
     
     virtual void Save( wxArrayPtrVoid params );
     
+    int GetRdgCount() { return (int)m_rdgs.GetCount(); };
+    
     // moulinette
     virtual void Process(MusFunctor *functor, wxArrayPtrVoid params );
     
@@ -77,7 +79,7 @@ public:
     /** The parent MusLayerApp */
     MusLayerApp *m_app;
     /** The source id */
-    wxString m_srcId;
+    wxString m_source;
     
 private:
     

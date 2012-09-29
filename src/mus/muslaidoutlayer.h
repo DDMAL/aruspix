@@ -65,6 +65,7 @@ public:
     void CopyElements( wxArrayPtrVoid params );
     void GetMaxXY( wxArrayPtrVoid params );
     void Save( wxArrayPtrVoid params );
+    void CheckAndResetSectionOrMeasure( wxArrayPtrVoid params );
     
 	void CopyAttributes( MusLaidOutLayer *layer ); // copy all attributes but none of the elements
     
