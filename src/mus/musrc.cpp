@@ -95,7 +95,8 @@ void MusRC::SetPage( MusPage *page )
 
 	m_currentElement = NULL;
 	m_currentStaff = NULL;
-
+    
+    /*
 	// selectionne le premier element
 	if ( m_page->GetSystemCount() > 0 ) 
     {
@@ -113,6 +114,7 @@ void MusRC::SetPage( MusPage *page )
             }
         }
 	}
+    */
 
 
     DoRefresh();

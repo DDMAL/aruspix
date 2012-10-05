@@ -41,12 +41,25 @@ public:
         const wxSize& size = wxDefaultSize,
         long style = wxTAB_TRAVERSAL | wxNO_BORDER );
     
-    void Init( CmpEnv *env, CmpMusWindow *window );
+    void Init( CmpEnv *env, CmpMusWindow *window, bool collationCtrl );
 	void SetImViewAndController( CmpMusWindow *cmpImWindow1, CmpMusController *cmpImController1,
 		CmpMusWindow *cmpImWindow2, CmpMusController *cmpImController2 );
 	void SetCmpFile( CmpFile *cmpFile );
+    /** 
+     * Loads the source page by looking at the MusLaidOutLayerElement in the layout.
+     * The MusLaidOutLayerElement passed as parameter is the one of the collation.
+     * The MusLayerElement pointer is used to find the corresponding one (if any)
+     **/
+    void LoadSource( MusLaidOutLayerElement *element );
+    /**
+     * Loads the sources.
+     * Called from the collationCtrl.
+     */
+    void LoadSources( );
     
 protected:
+    /** Specify if this is the collation controller (true) or a source controller (false) */
+    bool m_collationCtrl;
     CmpEnv *m_envPtr;
     CmpMusWindow *m_viewPtr;
 	// to synchronize view
@@ -76,11 +89,13 @@ public:
         const wxSize& size = wxDefaultSize,
         long style = wxScrolledWindowStyle, bool center = true );
     virtual ~CmpMusWindow();
-    void SetEnv( CmpEnv *env );
+    void SetEnv( CmpEnv *env, bool collationWin );
 	void SetImViewAndController( CmpMusWindow *cmpImWindow1, CmpMusController *cmpImController1,
 		CmpMusWindow *cmpImWindow2, CmpMusController *cmpImController2 );
 	void SetCmpFile( CmpFile *cmpFile );
-
+	// scroll
+	void UpdateCmpScroll(); // update scroll position if 
+    
     // edition
     //virtual void OnBeginEditionClef(); // 
     //virtual void OnEndEditionClef(); //
@@ -91,6 +106,8 @@ public:
         
 protected:
     bool m_shiftDown;
+    /** Specify if this is the collation window (true) or a source window (false) */
+    bool m_collationWin;
     CmpEnv *m_envPtr;
 	CmpMusController *m_musControlPtr;
     //bool m_edition; // true if OnBeginEdition() has been called -> retranspose current staff

@@ -72,6 +72,12 @@ public:
 	
 	static void SwapY( int *y1, int *y2 ) { int tmp = *y1; *y1 = *y2; *y2 = tmp; }
     
+    /**
+     * Set the current page to *page.
+     * This method is dangerous because it can potentially be a page that do not belong to the layout.
+     * It should be check (currently not done)
+     * A safer option would be to pass the page number.
+     */
 	void SetPage( MusPage *page );
 
 	/* musrc_graph.cpp */

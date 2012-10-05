@@ -45,6 +45,7 @@ CmpMusController::CmpMusController( wxWindow *parent, wxWindowID id,
     //MusOutputFunc4( this, TRUE );	
 	m_envPtr = NULL;
 	m_viewPtr = NULL;
+    m_collationCtrl = false;
 	
 	m_imControlPtr1 = NULL;
 	m_imViewPtr1 = NULL;
@@ -58,7 +59,7 @@ CmpMusController::CmpMusController()
 {
 }
 
-void CmpMusController::Init( CmpEnv *env, CmpMusWindow *window )
+void CmpMusController::Init( CmpEnv *env, CmpMusWindow *window, bool collationCtrl )
 {
 	// environement
     wxASSERT_MSG(env,"Environment cannot be NULL");
@@ -67,6 +68,7 @@ void CmpMusController::Init( CmpEnv *env, CmpMusWindow *window )
 	// view
     wxASSERT_MSG(window,"View cannot be NULL");
     m_viewPtr = window;
+    m_collationCtrl = collationCtrl;
 }
 
 
@@ -85,6 +87,52 @@ void CmpMusController::SetCmpFile( CmpFile *cmpFile )
 {
 	m_cmpFilePtr = cmpFile;
 	m_viewPtr->SetCmpFile( cmpFile );
+}
+
+
+void CmpMusController::LoadSources()
+{
+    if ( !m_collationCtrl || !m_viewPtr->m_currentElement ) {
+        // we are not in a collationCtrl or no element is selected
+        return;
+    }
+    
+    m_imControlPtr1->LoadSource( m_viewPtr->m_currentElement );
+    m_imControlPtr2->LoadSource( m_viewPtr->m_currentElement );
+}
+
+
+void CmpMusController::LoadSource( MusLaidOutLayerElement *element )
+{
+    if ( m_collationCtrl ) {
+        // this should never happen because we do not load the source from the collation controller
+        return;
+    }
+    
+    MusPage *currentPage = m_viewPtr->m_page;
+    MusLaidOutLayerElement *laidOutLayerElement = NULL;
+    wxArrayPtrVoid params;
+	params.Add( element->m_layerElement );
+    params.Add( &laidOutLayerElement );
+    MusLaidOutLayerElementFunctor findLayerElement( &MusLaidOutLayerElement::FindLayerElement );
+    m_viewPtr->m_layout->Process( &findLayerElement, params );
+    
+    if ( !laidOutLayerElement ) {
+        return; // we did not find it
+    }
+    
+    MusPage *page = laidOutLayerElement->m_layer->m_staff->m_system->m_page;
+    
+    if ( page != currentPage ) {
+        //wxLogMessage( "load page" );
+        m_viewPtr->SetPage( page );
+    }
+    m_viewPtr->m_currentSystem = laidOutLayerElement->m_layer->m_staff->m_system;    
+    m_viewPtr->m_currentStaff = laidOutLayerElement->m_layer->m_staff;
+    m_viewPtr->m_currentLayer = laidOutLayerElement->m_layer;
+    m_viewPtr->m_currentElement = laidOutLayerElement;
+    m_viewPtr->UpdateCmpScroll();
+    m_viewPtr->Refresh();
 }
 
 
@@ -135,6 +183,7 @@ CmpMusWindow::CmpMusWindow( CmpMusController *parent, wxWindowID id,
 	
 	m_lastStaff = -1, 
 	m_lastController = 1;
+    m_collationWin = false;
 }
 
 CmpMusWindow::CmpMusWindow()
@@ -145,9 +194,10 @@ CmpMusWindow::~CmpMusWindow()
 {
 }
 
-void CmpMusWindow::SetEnv( CmpEnv *env )
+void CmpMusWindow::SetEnv( CmpEnv *env, bool collationWin )
 {
     m_envPtr = env;
+    m_collationWin = collationWin;
 }
 
 void CmpMusWindow::SetImViewAndController( CmpMusWindow *cmpImWindow1, CmpMusController *cmpImController1,
@@ -164,6 +214,35 @@ void CmpMusWindow::SetCmpFile( CmpFile *cmpFile )
 	m_cmpFilePtr = cmpFile;
 }
 
+
+void CmpMusWindow::UpdateCmpScroll()
+{
+	if (!m_currentStaff)
+		return;
+    
+	int x = 0;
+	if ( m_currentElement )
+		x = ToRendererX( m_currentElement->m_x_abs );
+	int y = ToRendererY(  m_currentStaff->m_y_abs + m_layout->m_staffSize[0] );
+    
+    x *= (double)m_zoomNum / m_zoomDen;
+    y *= (double)m_zoomNum / m_zoomDen;
+    
+	// units
+	int xu, yu;
+	this->GetScrollPixelsPerUnit( &xu, &yu );
+	// size
+	int w, h;
+	this->GetClientSize( &w, &h );
+
+    x -= (w / 2);
+    y -= (h / 2);
+    x /= xu;
+    y /= yu;
+    
+	Scroll( x, y );
+	//OnSyncScroll( x, y );
+}
 
 void CmpMusWindow::OnSize( wxSizeEvent &event )
 {
@@ -200,56 +279,26 @@ void CmpMusWindow::OnScroll( wxScrollWinEvent &event )
 
 void CmpMusWindow::OnMouse(wxMouseEvent &event)
 {
-    if (event.GetEventType() == wxEVT_MOUSEWHEEL)
-    {
-        int x, y;
-        this->GetViewStart( &x, &y );
-        int rot = 0;
-        if ( event.m_wheelDelta )
-            rot = event.m_wheelRotation / event.m_wheelDelta * 6;
-
-        if (!m_shiftDown)
-            y -= rot;
-        else
-            x -= rot;
-
-        x = max( 0, x );
-        y = max( 0, y );
-        
-        this->Scroll( x, y );
-		OnSyncScroll( x, y );        
+    if ( !m_collationWin ) {
+        // for now we do nothing if this is a source window
+        return;
     }
-    else if (event.GetEventType() ==  wxEVT_LEFT_DCLICK)
+    
+    // this is the only mouse even we want to process
+    if ((event.GetEventType() ==  wxEVT_LEFT_DOWN) || (event.GetEventType() ==  wxEVT_LEFT_UP))
 	{
-		if ( m_currentStaff && m_currentElement )
-		{
-           // wxLogMessage( "%s", m_currentElement->m_layerElement->GetUuidStr().c_str() );
-            
-            m_imViewPtr1->SetLayout( &m_envPtr->GetCollationPtr()->GetMusDoc()->m_layouts[0] );
-            m_imViewPtr1->Resize();
-            m_imViewPtr2->SetLayout( &m_envPtr->GetCollationPtr()->GetMusDoc()->m_layouts[1] );
-            m_imViewPtr2->Resize();
-            /*
-			if ( m_currentStaff->no != m_lastStaff )
-				m_lastController = (m_lastController == 1) ? 0 : 1; // swap controller
-			m_lastStaff = m_currentStaff->no;
-			CmpImController *controller = (m_lastController == 0) ? m_imControlPtr1 : m_imControlPtr2;
-			if ( controller )
-				controller->LoadRecImage( m_lastStaff, m_currentElement->m_im_filename, m_currentElement->m_im_staff, 
-					m_currentElement->m_im_pos, m_currentElement->m_cmp_flag );
-             */
-		
-			//wxLogMessage(" %s, %d", m_currentElement->m_im_filename.c_str(), m_currentElement->m_im_staff );
-		}
-	}
-	else
         event.Skip();
+        m_musControlPtr->LoadSources();
+        return;
+    }
+
 }
 
 void CmpMusWindow::OnSyncScroll( int x, int y )
 {
-	//if ( m_imViewPtr )
-	//	m_imViewPtr->Scroll( x, y );
+	if ( m_collationWin ) {
+        m_musControlPtr->LoadSources();
+    }
 }
 
 	#endif // AX_COMPARISON

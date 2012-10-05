@@ -133,8 +133,8 @@ void CmpEnv::LoadWindow()
 	m_musControlPtr = new CmpMusController( m_pageSplitterPtr, ID6_DISPLAY );
     m_musViewPtr = new CmpMusWindow( m_musControlPtr, ID6_MUSWINDOW, wxDefaultPosition,
             wxDefaultSize, wxHSCROLL|wxVSCROLL|wxSIMPLE_BORDER , false);
-    m_musViewPtr->SetEnv( this );
-    m_musControlPtr->Init( this, m_musViewPtr );
+    m_musViewPtr->SetEnv( this, true );
+    m_musControlPtr->Init( this, m_musViewPtr, true );
 
 	// images: splitter image / image
 	m_srcSplitterPtr = new wxSplitterWindow( m_pageSplitterPtr, -1 );
@@ -145,15 +145,15 @@ void CmpEnv::LoadWindow()
     //m_imControlPtr1->SetEnv( this );
     m_imViewPtr1 = new CmpMusWindow( m_imControlPtr1, ID6_VIEW1 , wxDefaultPosition, 
         wxDefaultSize, wxHSCROLL| wxVSCROLL | wxSUNKEN_BORDER);
-    m_imViewPtr1->SetEnv( this );
-    m_imControlPtr1->Init( this, m_imViewPtr1 );
+    m_imViewPtr1->SetEnv( this, false );
+    m_imControlPtr1->Init( this, m_imViewPtr1, false );
 
     m_imControlPtr2 = new CmpMusController( m_srcSplitterPtr );
     //m_imControlPtr2->SetEnv( this );
     m_imViewPtr2 = new CmpMusWindow( m_imControlPtr2, ID6_VIEW2 , wxDefaultPosition, 
         wxDefaultSize, wxHSCROLL| wxVSCROLL | wxSUNKEN_BORDER);
-    m_imViewPtr2->SetEnv( this );
-    m_imControlPtr2->Init( this, m_imViewPtr2 );
+    m_imViewPtr2->SetEnv( this, false );
+    m_imControlPtr2->Init( this, m_imViewPtr2, false );
 	
 	m_musControlPtr->SetImViewAndController( m_imViewPtr1, m_imControlPtr1, m_imViewPtr2, m_imControlPtr2 );
 
@@ -313,14 +313,16 @@ void CmpEnv::UpdateViews( int flags )
 {
     if ( m_cmpCollationPartPtr && m_cmpCollationPtr && m_cmpCollationPtr->IsCollationLoaded( m_cmpCollationPartPtr) )
     {
-        //m_pageSplitterPtr->SplitHorizontally( m_musControlPtr , m_srcSplitterPtr, CmpEnv::s_view_sash );
 		m_pageSplitterPtr->SplitHorizontally( m_musControlPtr , m_srcSplitterPtr, CmpEnv::s_view_sash );
+        
         // The last layout is the Raw layout created in CmpCollation::IsCollationLoaded
         m_musViewPtr->SetLayout( &m_cmpCollationPtr->GetMusDoc()->m_layouts.Last() );
-        //m_musViewPtr->SetEnv( this );
-        //m_musViewPtr->SetToolPanel( m_toolpanel );
-        m_musViewPtr->LoadPage( 0 );
         m_musViewPtr->Resize( );  
+        m_imViewPtr1->SetLayout( &m_cmpCollationPtr->GetMusDoc()->m_layouts[0] );
+        m_imViewPtr1->Resize();
+        m_imViewPtr2->SetLayout( &m_cmpCollationPtr->GetMusDoc()->m_layouts[1] );
+        m_imViewPtr2->Resize();
+        
     }
 	UpdateTitle( );
 }

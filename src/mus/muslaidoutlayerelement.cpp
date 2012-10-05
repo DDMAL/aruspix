@@ -96,6 +96,24 @@ void MusLaidOutLayerElement::CheckAndResetLayerElement( wxArrayPtrVoid params )
     }
 }
 
+void MusLaidOutLayerElement::FindLayerElement( wxArrayPtrVoid params )
+{
+
+    // param 0: the MusLayerElement we are looking for
+    // param 1: the MusLaidOutElement retrieved
+    MusLayerElement *element = (MusLayerElement*)params[0];
+    MusLaidOutLayerElement **laidOutLayerElement = (MusLaidOutLayerElement**)params[1];  
+
+    if ( (*laidOutLayerElement) ) {
+        return;
+    }
+
+    if ( this->m_layerElement == element ) {
+        (*laidOutLayerElement) = this;
+        //wxLogDebug("Found it!");
+    }
+}
+
 void MusLaidOutLayerElement::UpdateXPosition( wxArrayPtrVoid params )
 {
     // param 0: the MusLayerElement we point to
