@@ -96,6 +96,11 @@ public:
     short m_pageRightMar;
     /** Page top margin (MEI scoredef@page.topmar). Saved if != 0 */
     short m_pageTopMar;
+    /** 
+     * Surface (MEI @surface). Saved as facsimile for transciption layout.
+     * For now, the target of the <graphic> element within surface is loaded here.
+     */
+    wxString m_surface;
     
     
     /** definition en mm des portees de la page */

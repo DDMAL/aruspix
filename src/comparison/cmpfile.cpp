@@ -16,8 +16,8 @@
 
 #include "recognition/recfile.h"
 
-#include "mus/musiobin.h"
 #include "mus/muslayer.h"
+#include "mus/muspage.h"
 #include "mus/muslayout.h"
 #include "mus/musiomei.h"
 #include "mus/musapp.h"
@@ -250,6 +250,7 @@ bool CmpCollation::Collate( )
 		{
 			reference = &docs[i];
             refFilename = m_basename + part->m_bookPart->m_id + ".mei";
+            // we will need to change this to a more sophisticated source structure
             m_refSource = part->m_bookPart->m_bookname;
 		}
 	}
@@ -957,6 +958,8 @@ bool CmpFile::LoadBooks( wxArrayPtrVoid params, AxProgressDlg *dlg )
             MusStaff *staff = new MusStaff();
             MusLayer *partLayer = new MusLayer();
             MusLayout *partLayout = new MusLayout( Transcription );
+            // we will need to change this to a more sophisticated source structure
+            partLayout->m_source = part->m_bookname;
             
             staff->AddLayer( partLayer );
             section->AddStaff( staff );
@@ -988,6 +991,12 @@ bool CmpFile::LoadBooks( wxArrayPtrVoid params, AxProgressDlg *dlg )
 				wxString file = m_bookFiles[i].m_recBookFilePtr->m_axFileDir + wxFileName::GetPathSeparator() + partPage->m_axfile;
 				if ( !recFile.Open( file ) )
 					continue;
+	
+				if ( !recFile.IsRecognized() ) 
+				{
+					wxLogWarning(_("File '%s' skipped"), file.c_str() );
+					continue;
+				}
                 
                 if ( k == 0 ) {
                     origSection = &recFile.m_musDocPtr->m_divs[0].m_score->m_sections[0];
@@ -998,12 +1007,14 @@ bool CmpFile::LoadBooks( wxArrayPtrVoid params, AxProgressDlg *dlg )
                     // move the pointers when importing the layout - see MusDoc::ResetAndCheckLayouts()
                     (&recFile.m_musDocPtr->m_divs[0].m_score->m_sections[0])->SetUuid( *origSection->GetUuid() );
                 }
-	
-				if ( !recFile.IsRecognized() ) 
-				{
-					wxLogWarning(_("File '%s' skipped"), file.c_str() );
-					continue;
-				}
+                
+                wxImage image;
+                if ( !image.LoadFile( recFile.m_basename + "img1.tif" ) ) {
+                    wxLogWarning( "Image file could not be loaded '%s'", file.c_str() );
+                }
+                if ( !image.SaveFile( m_basename + recFile.m_shortname +".png", wxBITMAP_TYPE_PNG ) ) {
+                    wxLogWarning( "Image file could not be saved '%s'", file.c_str() );
+                }                    
 
 				if ( !failed && !dlg->GetCanceled() )
 				{
@@ -1014,7 +1025,8 @@ bool CmpFile::LoadBooks( wxArrayPtrVoid params, AxProgressDlg *dlg )
                     // Detach the correspondant layout page from the file - we will not save the file, so who cares?
                     MusPage *partPage =  recFile.m_musDocPtr->m_layouts[0].m_pages.Detach( 0 ); 
                     partLayout->AddPage( partPage );
-				
+                    // temporary - for now we just put the filename in the surface - this is actually wrong
+                    partPage->m_surface = recFile.m_shortname + ".png";
 				}	
 			}
             

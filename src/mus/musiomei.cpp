@@ -441,6 +441,7 @@ bool MusMeiOutput::WriteLayout( MusLayout *layout )
     wxASSERT( m_layouts );
     m_layout = new Layout();
     m_layout->m_Typed.setType(LayoutTypeToStr( layout->GetType() ));
+    m_layout->m_Source.setSource( layout->m_source.c_str() );
     m_layout->setId( UuidToMeiStr( layout ));
     m_layouts->addChild( m_layout );
     return true;
@@ -457,6 +458,9 @@ bool MusMeiOutput::WritePage( MusPage *page )
         m_page->m_ScoreDefVis.setPageHeight( wxString::Format( "%d", page->m_pageHeight ).c_str() );
         m_page->m_ScoreDefVis.setPageLeftmar( wxString::Format( "%d", page->m_pageLeftMar ).c_str() );
         m_page->m_ScoreDefVis.setPageRightmar( wxString::Format( "%d", page->m_pageRightMar ).c_str() );
+    }
+    if ( !page->m_surface.IsEmpty() ) {
+        m_page->m_Surface.setSurface( page->m_surface.c_str() );
     }
     //
     MeiCommentNode *comment = new MeiCommentNode();
@@ -1263,6 +1267,10 @@ bool MusMeiInput::ReadMeiLayout( Layout *layout )
     m_layout = new MusLayout( type );
     SetMeiUuid( layout, m_layout );
     
+    if ( layout->m_Source.hasSource() ) {
+        m_layout->m_source = layout->m_Source.getSource()->getValue().c_str();
+    }
+    
 	if ( layout && layout->hasChildren("page") ) {
 		vector<MeiElement*> children = layout->getChildrenByName("page");
 		for (vector<MeiElement*>::iterator iter = children.begin(); iter != children.end(); ++iter) {
@@ -1303,6 +1311,9 @@ bool MusMeiInput::ReadMeiPage( Page *page )
     }
     if ( page->m_ScoreDefVis.hasPageRightmar() ) {
         m_page->m_pageRightMar = atoi ( page->m_ScoreDefVis.getPageRightmar()->getValue().c_str() );
+    }
+    if ( page->m_Surface.hasSurface() ){
+        m_page->m_surface = page->m_Surface.getSurface()->getValue().c_str();
     }
     
 	if ( page && page->hasChildren("system") ) {

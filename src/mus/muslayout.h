@@ -172,6 +172,9 @@ public:
 	int m_pageLeftMar;
     int m_pageRightMar;
     ///@}
+    
+    /** The source id */
+    wxString m_source;
 	
     //int mesureNum, mesureDen;
 	//float MesVal;

@@ -452,8 +452,6 @@ void CmpCtrl::Update( )
 				SetItemBold( id , true );
             }
             else {
-                wxObject *o = &m_cmpFilePtr->m_collations[i].m_collationParts[j];
-                CmpCollationPart *test = dynamic_cast<CmpCollationPart*>(o);
                 AxTreeItem *item = new AxTreeItem( id, &m_cmpFilePtr->m_collations[i].m_collationParts[j], &m_cmpFilePtr->m_collations[i] ); 
                 m_axItems.Add( item );
             }
