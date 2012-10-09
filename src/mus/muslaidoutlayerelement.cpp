@@ -46,7 +46,7 @@ MusLaidOutLayerElement::~MusLaidOutLayerElement()
     // If the is a parent layer and it is still active (that is not being deleted)
     // we remove the element from its list
     if ( m_layer && m_layer->IsActive() ) {
-        wxLogDebug("Detaching the LaidOutLayerElement" );
+        //wxLogDebug("Detaching the LaidOutLayerElement" );
         m_layer->m_elements.Detach( m_layer->m_elements.Index( *this ) );
     }
 }

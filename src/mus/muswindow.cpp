@@ -2101,6 +2101,7 @@ void MusWindow::OnPaint(wxPaintEvent &event)
 	
 	//m_page->Init( this );
     MusWxDC ax_dc( &dc );
+    
     DrawPage( &ax_dc, m_page );
 
     // TODO for cursor

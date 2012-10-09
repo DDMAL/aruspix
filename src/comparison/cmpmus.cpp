@@ -24,6 +24,7 @@ using std::max;
 #include "im/impage.h"
 #include "im/imstaff.h"
 
+#include "mus/muswxdc.h"
 #include "mus/musdoc.h"
 #include "mus/muslaidoutstaff.h"
 #include "mus/muslaidoutlayerelement.h"
@@ -165,6 +166,7 @@ BEGIN_EVENT_TABLE(CmpMusWindow,MusWindow)
     EVT_KEY_DOWN( CmpMusWindow::OnKeyDown )
     EVT_KEY_UP( CmpMusWindow::OnKeyUp )
     EVT_SIZE( CmpMusWindow::OnSize )
+    EVT_PAINT( CmpMusWindow::OnPaint )
 END_EVENT_TABLE()
 
 CmpMusWindow::CmpMusWindow( CmpMusController *parent, wxWindowID id,
@@ -184,6 +186,7 @@ CmpMusWindow::CmpMusWindow( CmpMusController *parent, wxWindowID id,
 	m_lastStaff = -1, 
 	m_lastController = 1;
     m_collationWin = false;
+    m_viewImage = false;
 }
 
 CmpMusWindow::CmpMusWindow()
@@ -212,6 +215,19 @@ void CmpMusWindow::SetImViewAndController( CmpMusWindow *cmpImWindow1, CmpMusCon
 void CmpMusWindow::SetCmpFile( CmpFile *cmpFile )
 {
 	m_cmpFilePtr = cmpFile;
+}
+
+
+void CmpMusWindow::OnPageChange( )
+{
+    if ( !m_page || m_page->m_surface.IsEmpty() ){
+        m_backgroundImage.Destroy();
+        return;
+    }
+    
+    if ( !m_backgroundImage.LoadFile( m_cmpFilePtr->m_basename + m_page->m_surface )  ) {
+        wxLogDebug("Cannot load image '%s'", m_page->m_surface.c_str() );
+    }
 }
 
 
@@ -293,6 +309,40 @@ void CmpMusWindow::OnMouse(wxMouseEvent &event)
     }
 
 }
+
+void CmpMusWindow::OnPaint(wxPaintEvent &event)
+{
+	if ( !m_page )
+		return;
+    
+	// calculate scroll position
+    int scrollX, scrollY;
+    this->GetViewStart(&scrollX,&scrollY);
+    int unitX, unitY;
+    this->GetScrollPixelsPerUnit(&unitX,&unitY);
+	wxSize csize = GetClientSize();
+    scrollX *= unitX;
+    scrollY *= unitY;
+    
+	wxPaintDC dc( this );
+    
+	this->PrepareDC( dc );
+	dc.SetTextForeground( *wxBLACK );
+	dc.SetMapMode( wxMM_TEXT );
+	dc.SetAxisOrientation( true, false );
+    dc.SetUserScale( double(GetZoom())/100.0,  double(GetZoom())/100.0 );
+	
+	//m_page->Init( this );
+    MusWxDC ax_dc( &dc );
+    if ( !m_collationWin && m_viewImage ) {
+        ax_dc.SetBackgroundImage( (void*)&m_backgroundImage );
+        ax_dc.DrawBackgroundImage();
+    }
+    else {
+        DrawPage( &ax_dc, m_page );
+    }
+}
+
 
 void CmpMusWindow::OnSyncScroll( int x, int y )
 {

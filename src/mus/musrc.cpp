@@ -116,7 +116,7 @@ void MusRC::SetPage( MusPage *page )
 	}
     */
 
-
+    OnPageChange();
     DoRefresh();
 }
 

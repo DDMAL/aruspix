@@ -130,6 +130,7 @@ private:
     void OnUndo( wxCommandEvent &event );
     void OnRedo( wxCommandEvent &event );
     void OnCollate( wxCommandEvent &event );
+    void OnViewImage( wxCommandEvent &event );
     virtual void OnUpdateUI( wxUpdateUIEvent &event );
 
 private:

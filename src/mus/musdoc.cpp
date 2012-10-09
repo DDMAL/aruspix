@@ -161,7 +161,7 @@ MusObject *MusDoc::FindLogicalObject( MusFunctor *functor, uuid_t uuid )
         //and typedef __darwin_uuid_string_t        uuid_string_t;
         char uuidStr[37]; // bad fix
         uuid_unparse( uuid, uuidStr ); 
-        wxLogDebug( "%s not found in the logical tree", uuidStr );
+        //wxLogDebug( "%s not found in the logical tree", uuidStr );
     }
     return element;
     

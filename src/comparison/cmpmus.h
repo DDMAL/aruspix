@@ -45,6 +45,7 @@ public:
 	void SetImViewAndController( CmpMusWindow *cmpImWindow1, CmpMusController *cmpImController1,
 		CmpMusWindow *cmpImWindow2, CmpMusController *cmpImController2 );
 	void SetCmpFile( CmpFile *cmpFile );
+    
     /** 
      * Loads the source page by looking at the MusLaidOutLayerElement in the layout.
      * The MusLaidOutLayerElement passed as parameter is the one of the collation.
@@ -96,12 +97,17 @@ public:
 	// scroll
 	void UpdateCmpScroll(); // update scroll position if 
     
+    virtual void OnPageChange( );
+    
     // edition
     //virtual void OnBeginEditionClef(); // 
     //virtual void OnEndEditionClef(); //
     //virtual void OnEndEdition();
 	virtual void OnSyncScroll( int x, int y );
 	virtual void OnSize( wxSizeEvent &event );
+    
+public:
+    bool m_viewImage;
     
         
 protected:
@@ -116,9 +122,11 @@ protected:
 	CmpMusController *m_imControlPtr1, *m_imControlPtr2;
 	// variable to control alternance in images : change if we change the staff
 	int m_lastStaff, m_lastController;
+    wxImage m_backgroundImage;
     
 private:
     void OnMouse( wxMouseEvent &event );
+    void OnPaint( wxPaintEvent &event );
     void OnScroll( wxScrollWinEvent &event );
     void OnKeyUp( wxKeyEvent &event );
     void OnKeyDown( wxKeyEvent &event );

@@ -59,16 +59,17 @@ const int ID6_CMP_EDIT = 16019;
 const int ID6_CMP_LOAD = 16020;
 const int ID6_MENU = 16021;
 const int ID6_COLLATE = 16022;
-const int ID6_PAGE = 16023;
-const int ID6_ZOOM_OUT = 16024;
-const int ID6_ZOOM_IN = 16025;
-const int ID6_ADJUST = 16026;
-const int ID6_ADJUST_V = 16027;
-const int ID6_ADJUST_H = 16028;
-const int ID6_PREVIOUS = 16029;
-const int ID6_NEXT = 16030;
-const int ID6_GOTO = 16031;
-const int ID6_TOOLS = 16032;
+const int ID6_VIEW_IMAGE = 16023;
+const int ID6_PAGE = 16024;
+const int ID6_ZOOM_OUT = 16025;
+const int ID6_ZOOM_IN = 16026;
+const int ID6_ADJUST = 16027;
+const int ID6_ADJUST_V = 16028;
+const int ID6_ADJUST_H = 16029;
+const int ID6_PREVIOUS = 16030;
+const int ID6_NEXT = 16031;
+const int ID6_GOTO = 16032;
+const int ID6_TOOLS = 16033;
 wxMenuBar *MenuBarFunc6();
 
 // Declare toolbar functions

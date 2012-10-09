@@ -87,7 +87,7 @@ bool MusMeiOutput::ExportFile( )
         //std::string value1 = "href=\"mei-2012.rng\" type=\"application/xml\" schematypens=\"http://purl.oclc.org/dsdl/schematron\"";
         
         std::string name2 = "xml-model";
-        std::string value2 = "href=\"http://www.aruspix.net/mei-layout-2012-09-25.rng\" type=\"application/xml\" schematypens=\"http://relaxng.org/ns/structure/1.0\"";
+        std::string value2 = "href=\"http://www.aruspix.net/mei-layout-2012-10-09.rng\" type=\"application/xml\" schematypens=\"http://relaxng.org/ns/structure/1.0\"";
         
         //XmlProcessingInstruction *xpi1 = new XmlProcessingInstruction(name1, value1);
         XmlProcessingInstruction *xpi2 = new XmlProcessingInstruction(name2, value2);
@@ -408,6 +408,8 @@ void MusMeiOutput::WriteMeiRest( Rest *meiRest, MusRest *rest )
         meiRest->m_Augmentdots.setDots( wxString::Format("%d", rest->m_dots).c_str() );
     }
     // missing position
+    meiRest->m_StafflocPitched.setPloc( PitchToStr( rest->m_pname ));
+    meiRest->m_StafflocPitched.setOloc( OctToStr( rest->m_oct ) );
     return;
 }
 
@@ -417,7 +419,9 @@ MeiElement *MusMeiOutput::WriteMeiSymbol( MusSymbol *symbol )
     if (symbol->m_type==SYMBOL_ACCID) {
         Accid *accid = new Accid();
         accid->m_Accidental.setAccid( AccidToStr( symbol->m_accid ));
-        // missing position
+        // position
+        accid->m_StafflocPitched.setPloc( PitchToStr( symbol->m_pname ));
+        accid->m_StafflocPitched.setOloc( OctToStr( symbol->m_oct ) );
         meiElement = accid;
     }
     else if (symbol->m_type==SYMBOL_CUSTOS) {
@@ -429,7 +433,9 @@ MeiElement *MusMeiOutput::WriteMeiSymbol( MusSymbol *symbol )
     else if (symbol->m_type==SYMBOL_DOT) {
         Dot *dot = new Dot();
         // missing m_dots
-        // missing position
+        // position
+        dot->m_StafflocPitched.setPloc( PitchToStr( symbol->m_pname ));
+        dot->m_StafflocPitched.setOloc( OctToStr( symbol->m_oct ) );
         meiElement = dot;
     }
     return meiElement;
@@ -1204,7 +1210,14 @@ bool MusMeiInput::ReadMeiRest( Rest *rest )
     if ( rest->m_Augmentdots.hasDots() ) {
 		musRest->m_dots = atoi( rest->m_Augmentdots.getDots()->getValue().c_str() );
 	}
-    // missing position
+    // position
+	if ( rest->m_StafflocPitched.hasPloc() ) {
+		musRest->m_pname = StrToPitch( rest->m_StafflocPitched.getPloc()->getValue() );
+	}
+	// oct
+	if ( rest->m_StafflocPitched.hasOloc() ) {
+		musRest->m_oct = StrToOct( rest->m_StafflocPitched.getOloc()->getValue() );
+	}
 	
 	m_layer->AddLayerElement( musRest );
     return true;
@@ -1217,7 +1230,14 @@ bool MusMeiInput::ReadMeiSymbol( Accid *accid )
     if ( accid->m_Accidental.hasAccid() ) {
         musAccid->m_accid = StrToAccid( accid->m_Accidental.getAccid()->getValue() );
     }
-    // missing position
+    // position
+	if ( accid->m_StafflocPitched.hasPloc() ) {
+		musAccid->m_pname = StrToPitch( accid->m_StafflocPitched.getPloc()->getValue() );
+	}
+	// oct
+	if ( accid->m_StafflocPitched.hasOloc() ) {
+		musAccid->m_oct = StrToOct( accid->m_StafflocPitched.getOloc()->getValue() );
+	}
 	
 	m_layer->AddLayerElement( musAccid );
     return true;
@@ -1246,7 +1266,14 @@ bool MusMeiInput::ReadMeiSymbol( Dot *dot )
     SetMeiUuid( dot, musDot );
     musDot->m_dot = 0;
     // missing m_dots
-    // missing position
+    // position
+	if ( dot->m_StafflocPitched.hasPloc() ) {
+		musDot->m_pname = StrToPitch( dot->m_StafflocPitched.getPloc()->getValue() );
+	}
+	// oct
+	if ( dot->m_StafflocPitched.hasOloc() ) {
+		musDot->m_oct = StrToOct( dot->m_StafflocPitched.getOloc()->getValue() );
+	}
 	
 	m_layer->AddLayerElement( musDot );
     return true;

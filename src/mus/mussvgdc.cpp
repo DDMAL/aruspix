@@ -214,6 +214,11 @@ void MusSvgDC::SetBackground( int colour, int style )
 {
     // nothing to do, we do not handle Background
 }
+
+void MusSvgDC::SetBackgroundImage( void *image, double opacity )
+{
+
+}
         
 void MusSvgDC::SetBackgroundMode( int mode )
 {
@@ -619,6 +624,11 @@ void MusSvgDC::DrawMusicText(const wxString& text, int x, int y)
 void MusSvgDC::DrawSpline(int n, MusPoint points[])
 {
     //m_dc->DrawSpline( n, (wxPoint*)points );
+}
+
+void MusSvgDC::DrawBackgroundImage( int x, int y )
+{
+   
 }
 
 

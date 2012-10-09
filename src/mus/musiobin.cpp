@@ -206,7 +206,7 @@ bool MusBinInput_1_X::ReadSeparator( )
 	wxString str1( buffer, 0, 6 );
 	wxString str2( BIN_SEPARATOR );
 	if ( str1 != str2 ) {
-		wxLogDebug("'%s' - '%s' - Error while reading separator", str1.c_str(), str2.c_str() );
+		//wxLogDebug("'%s' - '%s' - Error while reading separator", str1.c_str(), str2.c_str() );
 		return false;
     }
 	else

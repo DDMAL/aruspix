@@ -40,6 +40,8 @@ public:
     
     virtual void SetBackgroundMode( int mode );
     
+    virtual void SetBackgroundImage( void *image, double opacity = 1.0 );
+    
     virtual void SetPen( int colour, int width = 1, int style = wxSOLID );
     
     virtual void SetFont( MusFontInfo *font_info );
@@ -85,6 +87,8 @@ public:
     virtual void DrawMusicText(const wxString& text, int x, int y);
     
     virtual void DrawSpline(int n, MusPoint points[]);
+    
+    virtual void DrawBackgroundImage( int x = 0, int y = 0 );
    
     // Method for starting and ending a graphic - for example for grouping shapes in <g></g> in SVG
     
@@ -100,6 +104,7 @@ private:
     wxDC *m_dc;
     wxBrush m_brush;
     wxPen m_pen;
+    wxImage *m_backgroundImage;
     
     wxColour GetColour( int colour );
 };

@@ -73,6 +73,7 @@ BEGIN_EVENT_TABLE(CmpEnv,AxEnv)
     EVT_MENU( ID6_POPUP_TREE_LOAD, CmpEnv::OnCmpLoad )
     EVT_MENU( ID6_CMP_EDIT, CmpEnv::OnCmpEdit )
     EVT_MENU( ID6_POPUP_TREE_EDIT, CmpEnv::OnCmpEdit )
+    EVT_MENU( ID6_VIEW_IMAGE, CmpEnv::OnViewImage )
 END_EVENT_TABLE()
 
 IMPLEMENT_DYNAMIC_CLASS(CmpEnv,AxEnv)
@@ -176,6 +177,10 @@ void CmpEnv::LoadWindow()
     m_musControlPtr->SetBackgroundColour( background );
     m_imControlPtr1->SetBackgroundColour( background );
     m_imControlPtr2->SetBackgroundColour( background );
+    
+    m_musControlPtr->SetCmpFile( m_cmpFilePtr );
+    m_imControlPtr1->SetCmpFile( m_cmpFilePtr );
+    m_imControlPtr2->SetCmpFile( m_cmpFilePtr );
 
 	// load splitter
     m_bookSplitterPtr->SplitVertically( m_cmpCtrlPanelPtr, m_pageSplitterPtr, CmpEnv::s_book_sash );
@@ -207,7 +212,9 @@ void CmpEnv::RealizeToolbar( )
     toolbar->AddTool( ID6_COLLATE, _T("Collate"), m_framePtr->GetToolbarBitmap( "compfile.png" ), wxNullBitmap, wxITEM_NORMAL, _("Collate"), _("Build the collations") );
     toolbar->AddSeparator();
 	toolbar->AddTool( ID6_PREVIOUS, _T("Previous"), m_framePtr->GetToolbarBitmap( "previous.png" ), wxNullBitmap, wxITEM_NORMAL, _("Previous"), _("Previous page page") );
-	toolbar->AddTool( ID6_NEXT, _T("Next"), m_framePtr->GetToolbarBitmap( "next.png" ), wxNullBitmap, wxITEM_NORMAL, _("Next"), _("Next page") );    
+	toolbar->AddTool( ID6_NEXT, _T("Next"), m_framePtr->GetToolbarBitmap( "next.png" ), wxNullBitmap, wxITEM_NORMAL, _("Next"), _("Next page") );  
+    toolbar->AddTool( ID6_VIEW_IMAGE, _T("Facsimile"), m_framePtr->GetToolbarBitmap( "window_list.png" ), wxNullBitmap, wxITEM_CHECK, _("Facsimile"), _("Show the original facsimile of the sources") );
+    toolbar->AddSeparator();
     toolbar->Realize();
 }
 
@@ -325,6 +332,20 @@ void CmpEnv::UpdateViews( int flags )
         
     }
 	UpdateTitle( );
+}
+
+void CmpEnv::OnViewImage( wxCommandEvent &event )
+{
+    if ( event.IsChecked() ) {
+        m_imViewPtr1->m_viewImage = true;
+        m_imViewPtr2->m_viewImage = true;
+    }
+    else {
+        m_imViewPtr1->m_viewImage = false;
+        m_imViewPtr2->m_viewImage = false;
+    }
+    m_imViewPtr1->Refresh();
+    m_imViewPtr2->Refresh();
 }
 
 void CmpEnv::Open( wxString filename, int type )

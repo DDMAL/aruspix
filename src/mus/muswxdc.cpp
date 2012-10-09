@@ -19,6 +19,7 @@ MusWxDC::MusWxDC ( wxDC *dc ):
     MusDC()
 {
     m_dc = dc;
+    m_backgroundImage= NULL;
 }
 
 
@@ -37,6 +38,16 @@ void MusWxDC::SetBrush( int colour, int style )
 void MusWxDC::SetBackground( int colour, int style )
 {
     m_dc->SetBackground( wxBrush( GetColour( colour ), style ) );
+}
+
+void MusWxDC::SetBackgroundImage( void *image, double opacity )
+{
+    if ( image == NULL ) {
+        m_backgroundImage = NULL;
+    }
+    else {
+        m_backgroundImage = (wxImage*)image;
+    }
 }
         
 void MusWxDC::SetBackgroundMode( int mode )
@@ -177,11 +188,23 @@ void MusWxDC::DrawSpline(int n, MusPoint points[])
     m_dc->DrawSpline( n, (wxPoint*)points );
 }
 
+void MusWxDC::DrawBackgroundImage( int x, int y)
+{
+    if ( !m_backgroundImage || !m_backgroundImage->IsOk() ) {
+        return;
+    }
+    m_dc->DrawBitmap( wxBitmap( *m_backgroundImage ), x, y, false );
+    
+}
+
 void MusWxDC::EndGraphic( MusLayoutObject *object, MusRC *rc )
 {
     // actually draw the two bounding boxes  
     // bounding boxes are given in logical coordinates - we need to convert them
     // this is why we have a MusRC object
+    
+    return;
+    
     SetPen( AxRED, 1, wxDOT_DASH );
     if ( object->HasSelfBB() ) {
        m_dc->DrawRectangle( rc->ToRendererX( object->m_selfBB_x1 ), rc->ToRendererY( object->m_selfBB_y1 ), 

@@ -47,6 +47,7 @@ public:
     virtual void DoResize() {}
     virtual void DoLyricCursor( int x, int y, MusDC *dc, wxString lyric ) {}
     virtual void DoReset() {}
+    virtual void OnPageChange() {};
 
 	// navigation
 	void Next( bool forward );

@@ -196,6 +196,8 @@ wxMenuBar *MenuBarFunc6()
     item3->Append( ID6_CMP_LOAD, _("Reload files"), _("Reload images and Aruspix files into the book") );
     item3->AppendSeparator();
     item3->Append( ID6_COLLATE, _("Collate"), _("Collate the different editions") );
+    item3->AppendSeparator();
+    item3->Append( ID6_VIEW_IMAGE, _("Show original image"), _("Show the original image of the sources"), wxITEM_CHECK );
     item0->Append( item3, _("&Collator") );
     
     wxMenu* item4 = new wxMenu;

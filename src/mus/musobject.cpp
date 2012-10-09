@@ -83,7 +83,7 @@ bool MusObject::ReplaceUuid( wxArrayPtrVoid params )
     if ( uuid_compare( *uuidSrc, *this->GetUuid() ) == 0 ) {
         (*element) = this;
         this->SetUuid( *uuidDst );
-        wxLogDebug("Replaced it!");
+        //wxLogDebug("Replaced it!");
         return true;
     }
     //wxLogDebug("Still looking for uuid...");

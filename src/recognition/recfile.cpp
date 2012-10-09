@@ -892,8 +892,8 @@ bool RecFile::RealizeFromMLF( wxArrayPtrVoid params, AxProgressDlg *dlg )
         //musLayer->no = nb; ?? // ax2
         musSystem->m_systemLeftMar = imStaff->m_x1;  
         musSystem->m_systemRightMar = musPage->m_pageWidth - imStaff->m_x2;
-        musSystem->m_y_abs =  imStaff->m_y;
-        musStaff->m_y_abs =  imStaff->m_y;
+        musSystem->m_y_abs =  imStaff->m_y + STAFF / 2;
+        musStaff->m_y_abs =  imStaff->m_y + STAFF / 2;
         musStaff->notAnc = true;
         musStaff->vertBarre = START_END;
         

@@ -35,6 +35,8 @@ void MusRC::DrawPage( MusDC *dc, MusPage *page, bool background )
     if ( background )
         dc->DrawRectangle( 0, 0, m_layout->m_pageWidth, m_layout->m_pageHeight );
     
+    dc->DrawBackgroundImage( );
+    
     MusPoint origin = dc->GetLogicalOrigin();
     dc->SetLogicalOrigin( origin.x - m_layout->m_pageLeftMar, origin.y );
 
