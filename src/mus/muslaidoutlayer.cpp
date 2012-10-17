@@ -233,14 +233,14 @@ MusLaidOutLayerElement *MusLaidOutLayer::Insert( MusLayerElement *element, int x
     // The we need to find the staff and layer in the logical tree where to insert the element
     MusStaff *staff = NULL;
     if ( measure ) {
-        staff = measure->GetStaff( m_logStaffNb );
+        staff = measure->GetStaff( m_logStaffNb - 1 );
     }
     else if ( section ) { // it should be the case, but just to make sure
-        staff = section->GetStaff( m_logStaffNb );
+        staff = section->GetStaff( m_logStaffNb - 1 );
     }
     MusLayer * layer = NULL;
     if ( staff ) {
-        layer = staff->GetLayer( m_logLayerNb );
+        layer = staff->GetLayer( m_logLayerNb - 1 );
     }
     
     if ( !layer ) {
