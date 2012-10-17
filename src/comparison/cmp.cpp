@@ -629,12 +629,14 @@ void CmpEnv::OnNext( wxCommandEvent &event )
 
 void CmpEnv::OnUpdateUI( wxUpdateUIEvent &event )
 {
-	/*
-    wxASSERT_MSG( m_imControlPtr, wxT("Image controller cannot be NULL") );
-    wxASSERT_MSG( m_imViewPtr, wxT("View cannot be NULL") );
-    wxASSERT_MSG( m_musViewPtr, "WG Window cannot be NULL ");
-    wxASSERT_MSG( m_recFilePtr, "RecFile cannot be NULL ");
-	wxASSERT_MSG( m_recBookFilePtr, "RecBookFile cannot be NULL ");
+	
+    wxASSERT_MSG( m_imControlPtr1, wxT("Source controller 1 cannot be NULL") );
+    wxASSERT_MSG( m_imViewPtr1, wxT("Source view 1 cannot be NULL") );
+    wxASSERT_MSG( m_imControlPtr2, wxT("Source controller 2 cannot be NULL") );
+    wxASSERT_MSG( m_imViewPtr1, wxT("Source view 2 cannot be NULL") );
+    wxASSERT_MSG( m_musControlPtr, "Collation controller cannot be NULL ");
+    wxASSERT_MSG( m_musViewPtr, "Collation view cannot be NULL ");
+    wxASSERT_MSG( m_cmpFilePtr, "CmpFile cannot be NULL ");
     
     wxWindow* win = wxWindow::FindFocus();
     if (!win) 
@@ -647,108 +649,47 @@ void CmpEnv::OnUpdateUI( wxUpdateUIEvent &event )
 
     if (id == ID_CUT)
     {
-    
-        //event.Enable( true );
-        //wxLogDebug("CmpEnv::OnUpdateUI : update cut" );
-        if (win->GetId() == ID4_VIEW)
-           event.Enable( m_imControlPtr->CanCut() );
-        else if (m_musViewPtr && (win->GetId() == ID4_MUSWINDOW))
-            event.Enable( (m_musViewPtr && m_musViewPtr->CanCut()));
-        else
-            event.Enable( false );
-            
+        event.Enable( false );
     }
     else if (id == ID_COPY)
     {
-        if (win->GetId() == ID4_VIEW)
-           event.Enable( m_imControlPtr->CanCopy() );
-        else if (m_musViewPtr && (win->GetId() == ID4_MUSWINDOW))
-            event.Enable( (m_musViewPtr && m_musViewPtr->CanCopy()));
-        else
-            event.Enable( false );
+        event.Enable( false );
     }
     else if (id == ID_PASTE)
     {
-        if (win->GetId() == ID4_VIEW)
-           event.Enable( m_imControlPtr->CanPaste() );
-        else if (m_musViewPtr && (win->GetId() == ID4_MUSWINDOW))
-            event.Enable( (m_musViewPtr && m_musViewPtr->CanPaste()));
-        else
-            event.Enable( false );
+        event.Enable( false );
     }
     else if (id == ID_UNDO)
     {
-        if ( m_recFilePtr->IsRecognized() && m_musViewPtr && m_musViewPtr->CanUndo() )
-            event.Enable( true );
-        else if ( m_recFilePtr->IsPreprocessed() && m_recFilePtr->m_imPagePtr && m_recFilePtr->m_imPagePtr->CanUndo() )
-            event.Enable( true );
-        else
-            event.Enable( false );
+        event.Enable( false );
     }
     else if (id == ID_REDO)
     {
-        if ( m_recFilePtr->IsRecognized() && m_musViewPtr && m_musViewPtr->CanRedo() )
-            event.Enable( true );
-        else if ( m_recFilePtr->IsPreprocessed() && m_recFilePtr->m_imPagePtr && m_recFilePtr->m_imPagePtr->CanRedo() )
-            event.Enable( true );
-        else
-            event.Enable( false );
+        event.Enable( false );
     }
-    else if (id == ID4_PROCESS)
-        event.Enable( m_imControlPtr->Ok() && !m_recFilePtr->IsRecognized() );
-    else if (id == ID4_CANCEL_REC)
-        event.Enable( m_recFilePtr->IsRecognized() );
-    else if (id == ID4_ZOOM_OUT)
-        event.Enable( m_imViewPtr->CanZoomOut() );
-    else if (id == ID4_ZOOM_IN)
-        event.Enable( m_imViewPtr->CanZoomIn() );
-    else if (id == ID4_ADJUST)
-        event.Check( m_imViewPtr->GetAdjustMode() == ADJUST_BOTH );
-    else if (id == ID4_ADJUST_V)
-        event.Check( m_imViewPtr->GetAdjustMode() == ADJUST_VERTICAL );
-    else if (id == ID4_ADJUST_H)
-        event.Check( m_imViewPtr->GetAdjustMode() == ADJUST_HORIZONTAL );
+    else if (id == ID6_ZOOM_OUT)
+        event.Enable( false );
+    else if (id == ID6_ZOOM_IN)
+        event.Enable( false );
+    else if (id == ID6_ADJUST)
+        event.Check( false);
+    else if (id == ID6_ADJUST_V)
+        event.Check( false );
+    else if (id == ID6_ADJUST_H)
+        event.Check( false );
     else if (id == ID_SAVE )
-        event.Enable( m_recFilePtr->IsModified() );
+        event.Enable( m_cmpFilePtr->IsModified() );
     else if (id == ID_SAVE_AS )
-        event.Enable( m_recFilePtr->IsPreprocessed() );
+        event.Enable( true );
     else if (id == ID_CLOSE )
-        event.Enable( m_recFilePtr->IsPreprocessed() );
-    else if (id == ID4_EXPORT_IMAGE )
-        event.Enable( m_recFilePtr->IsRecognized() );
-	// book
-    else if (id == ID4_CLOSE_BOOK )
-        event.Enable( m_recBookFilePtr->IsOpened() );
-    else if (id == ID4_SAVE_BOOK )
-        event.Enable( m_recBookFilePtr->IsOpened() );
-    else if (id == ID4_SAVE_AS_BOOK )
-        event.Enable( m_recBookFilePtr->IsOpened() );
-    else if (id == ID4_BOOK_EDIT )
-        event.Enable( m_recBookFilePtr->IsOpened() );
-    else if (id == ID4_BOOK_LOAD )
-        event.Enable( m_recBookFilePtr->IsOpened() );
-    else if (id == ID4_BOOK_PRE )
-        event.Enable( m_recBookFilePtr->IsOpened() );
-    else if (id == ID4_BOOK_REC )
-        event.Enable( m_recBookFilePtr->IsOpened() );
-    else if (id == ID4_BOOK_ADAPT )
-        event.Enable( m_recBookFilePtr->IsOpened() );
-    else if (id == ID4_BOOK_RESET_ADAPT )
-        event.Enable( m_recBookFilePtr->IsOpened() );
-
-    else if (id == ID4_SHOW_STAFF_BMP )
-    {
-        event.Enable( m_recFilePtr->IsRecognized() );
-        event.Check( m_musControlPtr->ShowStaffBitmap() );
-    }
-    else if ( event.GetId() == ID4_INSERT_MODE )
-    {
-        event.Enable( m_musViewPtr->IsShown() );
-        event.Check( m_musViewPtr && !m_musViewPtr->m_editElement );
-    }
+        event.Enable( true );
+    // no new file for now
+    else if (id == ID_NEW )
+        event.Enable( false );
+    // default
     else
         event.Enable(true);
-	*/
+
 }
 
 	#endif // AX_COMPARISON
