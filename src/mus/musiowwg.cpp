@@ -284,9 +284,9 @@ bool MusWWGOutput::WriteFileHeader( const MusWWGData *wwgData )
 	Write( &int32, 4 );
 	int16 = wxINT16_SWAP_ON_BE( m_doc->m_pageTopMar ); // param - margeSommet
 	Write( &int16, 2 );
-	int16 = wxINT16_SWAP_ON_BE( m_doc->m_env.m_leftMarginOddPage ); // param - margeGaucheImpaire
+	int16 = wxINT16_SWAP_ON_BE( m_doc->m_pageLeftMar ); // param - margeGaucheImpaire
 	Write( &int16, 2 );
-	int16 = wxINT16_SWAP_ON_BE( m_doc->m_env.m_leftMarginEvenPage ); // param - margeGauchePaire
+	//int16 = wxINT16_SWAP_ON_BE( m_doc->m_env.m_leftMarginEvenPage ); // write the same value
 	Write( &int16, 2 );
 	Write( &wwgData->Epais1, 1 ); // param - epais1
 	Write( &wwgData->Epais2, 1 ); // param - epais2
@@ -786,10 +786,9 @@ bool MusWWGInput::ReadFileHeader( MusWWGData *wwgData )
 	Read( &int16, 2 );
 	m_doc->m_pageTopMar = wxINT16_SWAP_ON_BE( int16 ); // ~param - ~margeSommet
 	Read( &int16, 2 );
-	m_doc->m_env.m_leftMarginOddPage = wxINT16_SWAP_ON_BE( int16 ); // ~param - ~margeGaucheImpaire
+	m_doc->m_pageLeftMar = wxINT16_SWAP_ON_BE( int16 ); // ~param - ~margeGaucheImpaire
 	Read( &int16, 2 );
-	m_doc->m_env.m_leftMarginEvenPage = wxINT16_SWAP_ON_BE( int16 ); // ~param - ~margeGauchePaire
-    m_doc->m_pageLeftMar = m_doc->m_env.m_leftMarginOddPage;
+	//m_doc->m_env.m_leftMarginEvenPage = wxINT16_SWAP_ON_BE( int16 ); // ignore it
 	Read( &wwgData->Epais1, 1 ); // ~param - ~epais1
 	Read( &wwgData->Epais2, 1 ); // ~param - ~epais2
 	Read( &wwgData->Epais3, 1 ); // ~param - ~epais3

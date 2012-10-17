@@ -275,8 +275,6 @@ MusEnv::MusEnv()
     m_beamWhiteWidth = 5;
     m_beamMaxSlope = 30;
     m_beamMinSlope = 10;
-    m_leftMarginOddPage = 10;
-    m_leftMarginEvenPage = 10;
     
     // originally in MusParameters2
     m_smallStaffNum = 16;

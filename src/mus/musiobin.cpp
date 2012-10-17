@@ -177,9 +177,9 @@ bool MusBinInput_1_X::ReadFileHeader( unsigned short *nbpage )
 	Read( &int16, 2 );
 	m_doc->m_pageTopMar = wxINT16_SWAP_ON_BE( int16 ); // param - margeSommet
 	Read( &int16, 2 );
-	m_doc->m_env.m_leftMarginOddPage = wxINT16_SWAP_ON_BE( int16 ); // param - margeGaucheImpaire
+	m_doc->m_pageLeftMar = wxINT16_SWAP_ON_BE( int16 ); // param - margeGaucheImpaire
 	Read( &int16, 2 );
-	m_doc->m_env.m_leftMarginEvenPage = wxINT16_SWAP_ON_BE( int16 ); // param - margeGauchePaire
+	//m_doc->m_env.m_leftMarginEvenPage = wxINT16_SWAP_ON_BE( int16 ); // param - margeGauchePaire - ignore it
     
 	Read( &m_doc->m_env.m_smallStaffNum, 1 ); // rpPorteesNum
 	Read( &m_doc->m_env.m_smallStaffDen, 1 ); // rpPorteesDen

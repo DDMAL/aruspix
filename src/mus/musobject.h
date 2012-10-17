@@ -302,11 +302,7 @@ public:
     /** maximum beam slope */
     unsigned char m_beamMaxSlope;
     /** minimum beam slope */
-    unsigned char m_beamMinSlope;
-    /** left margin on odd pages */
-    short m_leftMarginOddPage;
-    /** left margin on even pages */
-    short m_leftMarginEvenPage;        
+    unsigned char m_beamMinSlope;     
     /** small staff size ratio numerator */
     unsigned char m_smallStaffNum;
     /** small staff size ratio denominator */

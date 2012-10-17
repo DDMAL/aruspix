@@ -377,16 +377,6 @@ void MusLayout::UpdateFontValues()
 
 void MusLayout::UpdatePageValues() 
 {
-	// margins
-    /*
-     int page = m_page->npage;
-     if (page % 2)	//pages impaires 
-     m_leftMargin = this->m_env.m_leftMarginOddPage*10;
-     else
-     m_leftMargin = this->m_env.m_leftMarginEvenPage*10;
-     */
-	m_pageLeftMar = this->m_env.m_leftMarginEvenPage*10;
-    
     m_smallStaffRatio[0] = this->m_env.m_smallStaffNum;
     m_smallStaffRatio[1] = this->m_env.m_smallStaffDen;
     m_graceRatio[0] = this->m_env.m_graceNum;
