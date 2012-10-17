@@ -48,6 +48,7 @@ wxSizer *AboutDlgFunc( wxWindow *parent, bool call_fit, bool set_sizer )
     item2->Add( 20, 20, 0, wxALIGN_CENTER|wxALL, 5 );
 
     wxButton *item4 = new wxButton( parent, wxID_OK, _("OK"), wxDefaultPosition, wxDefaultSize, 0 );
+    item4->SetDefault();
     item2->Add( item4, 0, wxALIGN_CENTER|wxALL, 5 );
 
     item1->Add( item2, 0, wxALIGN_CENTER|wxALL, 5 );
@@ -99,21 +100,38 @@ wxSizer *AboutDlgFunc( wxWindow *parent, bool call_fit, bool set_sizer )
     wxASSERT( item18 );
     item5->Add( item18, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxTOP, 5 );
 
-    item5->Add( 20, 5, 0, wxALIGN_CENTER|wxALL, 5 );
+    wxWindow *item19 = parent->FindWindow( ID0_LIBMEI );
+    wxASSERT( item19 );
+    item5->Add( item19, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxTOP, 5 );
 
-    wxStaticText *item19 = new wxStaticText( parent, ID0_TEXT, _("Copyright 2004-2008 Laurent Pugin"), wxDefaultPosition, wxDefaultSize, 0 );
-    item5->Add( item19, 0, wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxTOP, 5 );
+    item5->Add( 350, 5, 0, wxALIGN_CENTER|wxALL, 5 );
 
-    wxStaticText *item20 = new wxStaticText( parent, ID0_TEXT, _("All Rights Reserved"), wxDefaultPosition, wxDefaultSize, 0 );
-    item5->Add( item20, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+    wxStaticText *item20 = new wxStaticText( parent, TX_APP_COPYRIGHT, _("Copyright"), wxDefaultPosition, wxDefaultSize, 0 );
+    item5->Add( item20, 0, wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxTOP, 5 );
 
-    wxBoxSizer *item21 = new wxBoxSizer( wxHORIZONTAL );
+    wxStaticText *item21 = new wxStaticText( parent, TX_APP_LICENSE, _("License"), wxDefaultPosition, wxDefaultSize, 0 );
+    item5->Add( item21, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
-    item5->Add( item21, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL, 0 );
+    wxBoxSizer *item22 = new wxBoxSizer( wxHORIZONTAL );
+
+    item5->Add( item22, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL, 0 );
 
     item1->Add( item5, 0, wxALIGN_CENTER|wxALL, 5 );
 
     item0->Add( item1, 0, wxALIGN_CENTER|wxALL, 5 );
+
+    wxStaticLine *item23 = new wxStaticLine( parent, ID0_LINE, wxDefaultPosition, wxSize(20,-1), wxLI_HORIZONTAL );
+    item0->Add( item23, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+
+    wxBoxSizer *item24 = new wxBoxSizer( wxVERTICAL );
+
+    wxStaticText *item25 = new wxStaticText( parent, TX_APP_CONTRIBUTORS, _("Contributors:"), wxDefaultPosition, wxDefaultSize, wxST_NO_AUTORESIZE );
+    item24->Add( item25, 0, wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxTOP, 10 );
+
+    wxTextCtrl *item26 = new wxTextCtrl( parent, ID0_CONTRIBUTORS, wxT(""), wxDefaultPosition, wxSize(80,100), wxTE_MULTILINE|wxTE_READONLY );
+    item24->Add( item26, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL, 10 );
+
+    item0->Add( item24, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL, 0 );
 
     if (set_sizer)
     {

@@ -91,7 +91,10 @@ public:
         wxStaticBitmap* GetLogo()  { return (wxStaticBitmap*) FindWindow( ID0_LOGO ); }
     wxStaticText* GetTxAppVersion()  { return (wxStaticText*) FindWindow( TX_APP_VERSION ); }
     wxStaticText* GetTxAppBuild()  { return (wxStaticText*) FindWindow( TX_APP_BUILD ); }
-
+    wxStaticText* GetTxAppCopyright()  { return (wxStaticText*) FindWindow( TX_APP_COPYRIGHT ); }
+    wxStaticText* GetTxAppLicense()  { return (wxStaticText*) FindWindow( TX_APP_LICENSE ); }
+    wxTextCtrl* GetTxAppContributors()  { return (wxTextCtrl*) FindWindow( ID0_CONTRIBUTORS ); }
+    
 private:
         
 private:

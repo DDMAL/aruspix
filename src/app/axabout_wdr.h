@@ -39,6 +39,11 @@ const int ID0_WXWIDGETS = 9005;
 const int ID0_TORCH = 9006;
 const int ID0_IM = 9007;
 const int ID0_WG = 9008;
+const int ID0_LIBMEI = 9009;
+const int TX_APP_COPYRIGHT = 9010;
+const int TX_APP_LICENSE = 9011;
+const int TX_APP_CONTRIBUTORS = 9012;
+const int ID0_CONTRIBUTORS = 9013;
 wxSizer *AboutDlgFunc( wxWindow *parent, bool call_fit = TRUE, bool set_sizer = TRUE );
 
 // Declare menubar functions
