@@ -1388,6 +1388,7 @@ void RecEnv::OnExportImage( wxCommandEvent &event )
 
 void RecEnv::OnExportImage( wxCommandEvent &event )
 {
+    /*
     wxString filename;
     filename = wxFileSelector( _("Save"), wxGetApp().m_lastDirTIFF_out, _T(""), NULL, IMAGE_FILES, wxFD_SAVE);
     if (filename.IsEmpty())
@@ -1395,7 +1396,6 @@ void RecEnv::OnExportImage( wxCommandEvent &event )
         
     wxGetApp().m_lastDirTIFF_out = wxPathOnly( filename );
     
-    /*
     MusSVGFileDC svgDC (filename, m_musViewPtr->ToRendererX( m_musViewPtr->m_pageWidth + 30 )  ,
         m_musViewPtr->ToRendererX( m_musViewPtr->m_paperHeight + 10 )) ;
 	svgDC.SetTextForeground( *wxBLACK );
@@ -1403,6 +1403,7 @@ void RecEnv::OnExportImage( wxCommandEvent &event )
 	svgDC.SetAxisOrientation( true, false );
    m_musViewPtr->m_page->DrawPage( &svgDC, false );
    */
+   wxLogWarning( "Not implemented");
 }
   
 
@@ -1424,7 +1425,7 @@ void RecEnv::OnExportCmme( wxCommandEvent &event )
     cmme_output->ExportFile();
     delete cmme_output;
     */
-    wxLogWarning( "Not implemented"); // ax2
+    wxLogWarning( "Not implemented");
 }
 
 void RecEnv::OnExportWWG( wxCommandEvent &event )
@@ -1880,9 +1881,11 @@ void RecEnv::OnUpdateUI( wxUpdateUIEvent &event )
     else if (id == ID_CLOSE )
         event.Enable( m_recFilePtr->IsPreprocessed() );
     else if (id == ID4_EXPORT_IMAGE )
-        event.Enable( m_recFilePtr->IsRecognized() );
+        event.Enable( false ); // not implemented
+        //event.Enable( m_recFilePtr->IsRecognized() );
     else if (id == ID4_EXPORT_CMME )
-        event.Enable( m_recFilePtr->IsRecognized() );
+        event.Enable( false ); // not implemented
+        //event.Enable( m_recFilePtr->IsRecognized() );
     else if (id == ID4_EXPORT_WWG )
         event.Enable( m_recFilePtr->IsRecognized() );
 	// book
