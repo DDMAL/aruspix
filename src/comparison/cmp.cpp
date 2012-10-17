@@ -14,7 +14,6 @@
 #include "wx/log.h"
 
 #include "cmp.h"
-#include "cmpim.h"
 #include "cmpmus.h"
 #include "cmpfile.h"
 #include "cmpctrl.h"
