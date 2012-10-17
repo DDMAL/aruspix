@@ -509,13 +509,14 @@ AxOptMusWindow::AxOptMusWindow( wxWindow *parent, wxWindowID id,
     const wxPoint &position, const wxSize& size, long style, bool center ) :
     MusWindow( parent, id, position, size, style, center )
 {
+    
+    m_docPtr = NULL;
+    m_docPtr = new MusDoc();
     /*
-    m_filePtr = NULL;
-    m_filePtr = new MusDoc();
-    m_filePtr->m_parameters.param.m_paperWidth = 20;
-    m_filePtr->m_parameters.param.m_paperHeight = 20;
-    m_filePtr->m_parameters.param.m_leftMarginOddPage = 0;
-    m_filePtr->m_parameters.param.m_leftMarginEvenPage = 0;
+    m_docPtr->m_parameters.param.m_paperWidth = 20;
+    m_docPtr->m_parameters.param.m_paperHeight = 20;
+    m_docPtr->m_parameters.param.m_leftMarginOddPage = 0;
+    m_docPtr->m_parameters.param.m_leftMarginEvenPage = 0;
 
     MusPage *page = new MusPage();
     page->defin = 20;
