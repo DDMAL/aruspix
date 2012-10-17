@@ -145,9 +145,6 @@ void EdtEnv::RealizeToolbar( )
 {
     wxToolBar *toolbar =  m_framePtr->GetToolBar();
     
-    toolbar->InsertTool( 2, ID5_OPEN_MEI, _("Import MEI"), m_framePtr->GetToolbarBitmap( "folder_yellow.png" ) , wxNullBitmap, wxITEM_NORMAL, _("Import MEI"), _("Import an MEI file") );
-    toolbar->InsertTool( 5, ID5_SAVE_MEI, _("Save MEI"), m_framePtr->GetToolbarBitmap( "filesave.png" ) , wxNullBitmap, wxITEM_NORMAL, _("MeiEx"), _("Export an MEI file") );
-    
     toolbar->AddSeparator();
     toolbar->AddTool( ID5_ZOOMOUT, _T("Zoom out"), m_framePtr->GetToolbarBitmap( "viewmag-.png" ), wxNullBitmap, wxITEM_NORMAL, _("Zoom out"), _("Zoom out") );
     toolbar->AddTool( ID5_ZOOMIN, _T("Zoom in"), m_framePtr->GetToolbarBitmap( "viewmag+.png" ), wxNullBitmap, wxITEM_NORMAL, _("Zoom in"), _("Zoom in") );
@@ -410,9 +407,11 @@ void EdtEnv::OnUpdateUI( wxUpdateUIEvent &event )
         event.Enable(false);
         
     else if ( event.GetId() == ID_UNDO )
-        event.Enable( m_musViewPtr->CanUndo() );
+        event.Enable( false ); // undo to be fixed
+        //event.Enable( m_musViewPtr->CanUndo() );
     else if ( event.GetId() == ID_REDO )
-        event.Enable( m_musViewPtr->CanRedo() );
+        event.Enable( false ); // undo to be fixed
+        //event.Enable( m_musViewPtr->CanRedo() );
     else if ( event.GetId() == ID5_GOTO )
         event.Enable( m_musViewPtr->CanGoto() );
     else if ( event.GetId() == ID5_PREVIOUS )
@@ -424,7 +423,8 @@ void EdtEnv::OnUpdateUI( wxUpdateUIEvent &event )
     else if ( event.GetId() == ID5_ZOOMIN )
         event.Enable( m_musViewPtr->CanZoom( true ) );
     else if ( event.GetId() == ID5_SAVE_MODEL )
-        event.Enable( m_edtFilePtr->IsOpened() );
+        event.Enable( false ); 
+        //event.Enable( m_edtFilePtr->IsOpened() );
     else if ( event.GetId() == ID5_SAVE_WWG )
         event.Enable( m_edtFilePtr->IsOpened() );
     else if ( event.GetId() == ID5_SAVE_MEI )
@@ -436,11 +436,17 @@ void EdtEnv::OnUpdateUI( wxUpdateUIEvent &event )
     else if ( event.GetId() == ID5_SAVE_MEI )
         event.Enable( m_edtFilePtr->IsOpened() );
     else if ( event.GetId() == ID5_VOICES )
-        event.Enable( m_edtFilePtr->IsOpened() );
+        event.Enable( false );
+        //event.Enable( m_edtFilePtr->IsOpened() );
+    else if ( event.GetId() == ID5_INDENT )
+        event.Enable( false );
+    //event.Enable( m_edtFilePtr->IsOpened() );
     else if ( event.GetId() == ID_SAVE )
            event.Enable( m_edtFilePtr->IsOpened() && m_edtFilePtr->IsModified() );
     else if ( event.GetId() == ID_SAVE_AS )
         event.Enable( m_edtFilePtr->IsOpened() );
+    else if ( event.GetId() == ID_NEW )
+        event.Enable( false );
     else
         event.Enable(true);
 }
