@@ -532,6 +532,9 @@ AxAboutDlg::AxAboutDlg( wxWindow *parent, wxWindowID id, const wxString &title,
             this->GetTxAppContributors()->AppendText( "\n" );
         }
     }
+    // trick for updating the scroll
+    this->GetTxAppContributors()->SetInsertionPoint( 0 );
+    this->GetTxAppContributors()->WriteText( "" );
     
 
 #if defined(__WXMSW__)
