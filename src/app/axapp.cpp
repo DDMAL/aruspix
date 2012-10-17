@@ -159,7 +159,7 @@ bool AxApp::OnInit()
     pConfig->Read("ToolbarToolsize", &m_toolbar_toolsize, 16);
     pConfig->Read("Language",&m_language,-1);
     
-#ifdef __AXDEBUG__
+#ifndef __AXDEBUG__
 	wxSplashScreen* splash = NULL; // we don't want to show the splash screen in Debug mod
 #endif
     if ( m_language == -1 ) // never choosen before, it is the first time the user run aruspix, run setup
@@ -187,7 +187,7 @@ bool AxApp::OnInit()
 		{
 			wxMemoryDC dest;
 			dest.SelectObject( bitmap );
-#ifdef __AXDEBUG__
+#ifndef __AXDEBUG__
     #if defined(__WXMSW__)
 			long splash_style = wxSIMPLE_BORDER | wxSTAY_ON_TOP;
 			dest.SetFont( *wxNORMAL_FONT );
