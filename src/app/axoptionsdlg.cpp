@@ -21,8 +21,11 @@ using std::max;
 #include "axoptionsdlg.h"
 #include "aximage.h"
 #include "axapp.h"
-#include "mus/muslayout.h"
-#include "mus/musiowwg.h"
+
+#include "mus/musdoc.h"
+#include "mus/muslayer.h"
+#include "mus/muslaidoutlayerelement.h"
+
 #include "im/impage.h"
 
 #ifdef AX_SUPERIMPOSITION
@@ -103,7 +106,8 @@ AxOptionsDlg::AxOptionsDlg( wxWindow *parent, wxWindowID id, const wxString &tit
 	item0->SetSizeHints( this );
 
     m_musWinPtr = new AxOptMusWindow( GetMusPanel(), -1, wxDefaultPosition, wxDefaultSize, wxHSCROLL|wxVSCROLL|wxNO_BORDER );
-	m_musWinPtr->SetBackgroundColour( wxSystemSettings::GetColour( wxSYS_COLOUR_MENU)  );
+	m_musWinPtr->SetBackgroundColour( wxSystemSettings::GetColour( wxSYS_COLOUR_MENU )  );
+    m_musWinPtr->SetBackgroundColour( wxSystemSettings::GetColour( wxSYS_COLOUR_BTNSHADOW )  );
     m_musWinPtr->Resize( );
 	
 	m_notebook->SetSelection(s_last_open_tab);
@@ -512,38 +516,50 @@ AxOptMusWindow::AxOptMusWindow( wxWindow *parent, wxWindowID id,
     
     m_docPtr = NULL;
     m_docPtr = new MusDoc();
-    /*
-    m_docPtr->m_parameters.param.m_paperWidth = 20;
-    m_docPtr->m_parameters.param.m_paperHeight = 20;
-    m_docPtr->m_parameters.param.m_leftMarginOddPage = 0;
-    m_docPtr->m_parameters.param.m_leftMarginEvenPage = 0;
-
+    
+    m_docPtr->m_pageWidth = 150;
+    m_docPtr->m_pageHeight = 150;
+    m_docPtr->m_pageLeftMar = 0;
+    m_docPtr->m_pageRightMar = 0;
+    
+    MusDiv *div = new MusDiv( );
+    MusScore *score = new MusScore( );
+    MusSection *section = new MusSection( );
+    MusStaff *logStaff = new MusStaff();;
+    MusLayer *logLayer = new MusLayer();
+    
+    logStaff->AddLayer( logLayer );
+    section->AddStaff( logStaff );
+    score->AddSection( section );
+    div->AddScore( score );
+    m_docPtr->AddDiv( div );
+    
+    // create a new layout and the page
+    MusLayout *layout = new MusLayout( Transcription );
     MusPage *page = new MusPage();
-    page->defin = 20;
-    page->lrg_lign = 20;
+    MusSystem *system = new MusSystem();
+    system->m_y_abs = 120;
+    MusLaidOutStaff *staff = new MusLaidOutStaff( 1 );
+    staff->m_y_abs = 120;
+    MusLaidOutLayer *layer = new MusLaidOutLayer( 1, 1, section, NULL );
     
-    MusLaidOutStaff *staff = new MusLaidOutStaff();
-    staff->ecart = 4;
+    MusClef *clef = new MusClef();
+    clef->m_clefId = UT3;
     
-    MusSymbol1 *clef = new MusSymbol1();
-    clef->flag = CLE;
-    clef->code = UT3;
-    clef->m_x_abs = 95;
+    logLayer->AddLayerElement( clef );
+    MusLaidOutLayerElement *element = new MusLaidOutLayerElement( clef );
+    element->m_x_abs = 80;
+    layer->AddElement( element );
     
-    staff->m_elements.Add( clef );
-    page->m_staves.Add( staff );
-    m_filePtr->m_pages.Add( page );
-    m_filePtr->CheckIntegrity();
-
+    staff->AddLayer( layer );
+    system->AddStaff( staff );
+    page->AddSystem( system );
+    layout->AddPage( page );
+    m_docPtr->AddLayout( layout );
     
-    //MusBinOutput *bin_output = new MusBinOutput( m_filePtr, "D:/test.wwg" );
-    //bin_output->ExportFile();
-    //delete bin_output;
-
-	this->SetDoc( m_docPtr );
-	//this->Resize();
-    */
-    wxLogDebug( "AxOptMusWindow::AxOptMusWindow missing in ax2" );
+	this->SetLayout( layout );
+    this->SetZoom( 50 );
+	this->Resize();
 }
 
 AxOptMusWindow::AxOptMusWindow()
