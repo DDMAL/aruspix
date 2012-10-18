@@ -447,7 +447,9 @@ bool MusMeiOutput::WriteLayout( MusLayout *layout )
     wxASSERT( m_layouts );
     m_layout = new Layout();
     m_layout->m_Typed.setType(LayoutTypeToStr( layout->GetType() ));
-    m_layout->m_Source.setSource( layout->m_source.c_str() );
+    if ( !layout->m_source.IsEmpty() ) {
+        m_layout->m_Source.setSource( layout->m_source.c_str() );
+    }
     m_layout->setId( UuidToMeiStr( layout ));
     m_layouts->addChild( m_layout );
     return true;
