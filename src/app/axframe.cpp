@@ -456,20 +456,15 @@ void AxFrame::LoadConfig()
 	wxGetApp().m_lastDirMusModel_in = pConfig->Read("LastDirModel_in", default_models );
 	wxGetApp().m_lastDirTypModel_in = pConfig->Read("LastDirTypModel_in", default_models );
 
-	// Leipzig 4.4
-	//wxGetApp().m_musicFontDesc = pConfig->Read("MusicFontDesc", "0;12;70;90;90;0;Leipzig 4.4;33" ); // on OS X
-	//wxGetApp().m_musicFontName = pConfig->Read("MusicFontName", "Leipzig 4.4" ); // on OS X
-	// Leipzig 4.5
 #if defined(__WXMSW__)
-	wxGetApp().m_musicFontDesc = pConfig->Read("MusicFontDesc", "0;-13;0;0;0;400;0;0;0;2;3;2;1;2;Leipzig 4.3" );
-	wxGetApp().m_lyricFontDesc = pConfig->Read("LyricFontDesc", "0;-13;0;0;0;400;0;0;0;2;3;2;1;2;Leipzig 4.3" );
+	wxGetApp().m_musicFontDesc = pConfig->Read("MusicFontDesc", "0;-13;0;0;0;400;0;0;0;2;3;2;1;2;Leipzig 4.9" );
+	wxGetApp().m_lyricFontDesc = pConfig->Read("LyricFontDesc", "0;-13;0;0;0;400;0;0;0;2;3;2;1;2;Leipzig 4.3" ); // To be verified
 #else // OS X
-    // Get version 4.7, with windows encoding (33, should be wxFONTENCODING_CP1252, WinLatin1)
-	wxGetApp().m_musicFontDesc = pConfig->Read("MusicFontDesc-2.0.0", "0;13;70;90;90;0;Leipzig 4.8;33" ); // on OS X
-	//?? not sure what i'm really doing here but let's try it anyway
-    //wxGetApp().m_neumeFontDesc = pConfig->Read("NeumeFontDesc", "0;13;70;90;90;0;FestaDiesA;0" );
+    // From version 2.0.0, with windows encoding (33, should be wxFONTENCODING_CP1252, WinLatin1)
+    // From version 2.0.0, get version 4.9
+	wxGetApp().m_musicFontDesc = pConfig->Read("MusicFontDesc-2.0.0", "0;13;70;90;90;0;Leipzig 4.9;33" ); // on OS X
 	wxGetApp().m_neumeFontDesc = pConfig->Read("NeumeFontDesc", "0;53;70;90;90;0;Festa Dies A;0" );
-	wxGetApp().m_lyricFontDesc = pConfig->Read("LyricFontDesc", "0;12;70;93;90;0;Garamond;0" ); // on OS X
+	wxGetApp().m_lyricFontDesc = pConfig->Read("LyricFontDesc", "0;12;70;93;90;0;Garamond;0" );
 #endif
     pConfig->Read("FontSizeCorrection",&wxGetApp().m_fontSizeCorrection,100);
     pConfig->Read("FontPosCorrection",&wxGetApp().m_fontPosCorrection,0);

@@ -107,7 +107,6 @@ AxOptionsDlg::AxOptionsDlg( wxWindow *parent, wxWindowID id, const wxString &tit
 
     m_musWinPtr = new AxOptMusWindow( GetMusPanel(), -1, wxDefaultPosition, wxDefaultSize, wxHSCROLL|wxVSCROLL|wxNO_BORDER );
 	m_musWinPtr->SetBackgroundColour( wxSystemSettings::GetColour( wxSYS_COLOUR_MENU )  );
-    m_musWinPtr->SetBackgroundColour( wxSystemSettings::GetColour( wxSYS_COLOUR_BTNSHADOW )  );
     m_musWinPtr->Resize( );
 	
 	m_notebook->SetSelection(s_last_open_tab);
