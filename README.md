@@ -1,12 +1,11 @@
-
 # Aruspix Development Set Up #
 
 ## Introduction ##
 Aruspix uses four libraries that have to be installed on your system for it to compile. 
 They are the following:
 
-* wxWidgets 2.8.7 ([http://www.wxwidgets.org/](http://www.wxwidgets.org/))
-* IM 3.1 ([http://www.tecgraf.puc-rio.br/im/](http://www.tecgraf.puc-rio.br/im/)) 
+* wxWidgets 2.8.x ([http://www.wxwidgets.org/](http://www.wxwidgets.org/))
+* IM 3.x ([http://www.tecgraf.puc-rio.br/im/](http://www.tecgraf.puc-rio.br/im/)) 
 * Torch 2.0 ([http://www.torch.ch/](http://www.torch.ch/))
 * TinyXML ([http://www.grinninglizard.com/tinyxml/index.html/](http://www.grinninglizard.com/tinyxml/index.html/))
 
@@ -17,7 +16,7 @@ For MacOS X, TinyXML is include in the project and does not need to be installed
 
 ## Mac OS 10 Set Up (Using Xcode) ##
 
-IM Lib and Torch are available precompiled:
+IM Lib (3.6) and Torch are available precompiled:
 
 * [https://github.com/downloads/DDMAL/aruspix/imlib_osx10.6.tar.gz](https://github.com/downloads/DDMAL/aruspix/imlib_osx10.6.tar.gz)
 * [https://github.com/downloads/DDMAL/aruspix/torch3_osx10.6.tar.gz](https://github.com/downloads/DDMAL/aruspix/torch3_osx10.6.tar.gz)
@@ -32,14 +31,17 @@ NOTE: this was tested with xcode 4.3, with command line tools installed (or wx w
 
 Configure command:
 
-	./configure CFLAGS=-arch i386 CXXFLAGS=-arch i386 CPPFLAGS=-arch
+	cd osx-static-debug
+	../configure CFLAGS=-arch i386 CXXFLAGS=-arch i386 CPPFLAGS=-arch
 		i386 LDFLAGS=-arch i386 OBJCFLAGS=-arch i386 OBJCXXFLAGS=-arch i386
-		--disable-shared --with-libjpeg=builtin --with-libpng=builtin --disable-universal-binary
+		--disable-shared --with-libjpeg=builtin --with-libpng=builtin --disable-universal-binary --enable-debug
 		--with-macosx-sdk=/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.6.sdk
 	make clean (if necessary)
 	make
 
-* In the osx-static directory run the same commands
+In the osx-static directory, run the same commands but with:
+
+	--disable-debug
 
 ## Setting Aruspix Environment Variables ##
 
@@ -96,7 +98,7 @@ Open aruspix/osx/aruspix.xcodeproj with Xcode.
 Aruspix should be ready to be compiled in both Debug and Release mode.
 
 
-## Aruspix headless version on FreeBSD ##
+## Aruspix command line version on FreeBSD ##
 
 In this case, only libmei and wxWidgets are needed. The aruspix_headless is an amiable target on XCode, so this procedure is needed only if installing on FreeBSD or Linux (not tested)
 
