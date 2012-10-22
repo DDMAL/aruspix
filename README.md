@@ -6,7 +6,7 @@ Aruspix uses four libraries that have to be installed on your system for it to c
 They are the following:
 
 * wxWidgets 2.8.7 ([http://www.wxwidgets.org/](http://www.wxwidgets.org/))
-* IM 3.1 for VC 6 ([http://www.tecgraf.puc-rio.br/im/](http://www.tecgraf.puc-rio.br/im/)) 
+* IM 3.1 ([http://www.tecgraf.puc-rio.br/im/](http://www.tecgraf.puc-rio.br/im/)) 
 * Torch 2.0 ([http://www.torch.ch/](http://www.torch.ch/))
 * TinyXML ([http://www.grinninglizard.com/tinyxml/index.html/](http://www.grinninglizard.com/tinyxml/index.html/))
 
@@ -16,6 +16,11 @@ for Windows XP and MacOS X operating systems.
 For MacOS X, TinyXML is include in the project and does not need to be installed and compiled separately.
 
 ## Mac OS 10 Set Up (Using Xcode) ##
+
+IM Lib and Torch are available precompiled:
+
+* [https://github.com/downloads/DDMAL/aruspix/imlib_osx10.6.tar.gz](https://github.com/downloads/DDMAL/aruspix/imlib_osx10.6.tar.gz)
+* [https://github.com/downloads/DDMAL/aruspix/torch3_osx10.6.tar.gz](https://github.com/downloads/DDMAL/aruspix/torch3_osx10.6.tar.gz)
 
 ### wxWidgets Compilation ##
 	
@@ -43,7 +48,6 @@ file is used by Xcode to set the following environment variables for linking pur
 * ARUSPIX_IMLIB: Location of IM library.
 * ARUSPIX_TORCH: Location of Torch library.
 * ARUSPIX_MEI: Location of libmei framework.
-* ARUSPIX_GTEST: Location of gtest framework.
 * ARUSPIX_WX: Location of wxWidgets library.
 * ARUSPIX_WX_VERSION: wxWidgets library version number.
 
@@ -59,8 +63,6 @@ environment.plist prototype:
 		    <key>ARUSPIX_TORCH</key>
 		    <string>/Users/puginl/libs/Torch3</string>
 			<key>ARUSPIX_MEI</key>
-			<string>/Users/jamie/ax-libs/osx</string>
-			<key>ARUSPIX_GTEST</key>
 			<string>/Users/jamie/ax-libs/osx</string>
 		    <key>ARUSPIX_WX</key>
 		    <string>/Users/puginl/libs/wx2.8.7</string>
