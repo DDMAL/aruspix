@@ -3,11 +3,13 @@
 <plist version="1.0">
 <dict>
 	<key>ARUSPIX_IMLIB</key>
-	<string>/Users/nivenc/libs/imlib</string>
+	<string>/Users/lpugin/libs/imlib3.6_10.6</string>
 	<key>ARUSPIX_TORCH</key>
-	<string>/Users/nivenc/libs/Torch3</string>
+	<string>/Users/lpugin/libs/Torch3_10.6</string>
+	<key>ARUSPIX_MEI</key>
+	<string>/Users/lpuginl/libs/libmei/build/Debug</string>
 	<key>ARUSPIX_WX</key>
-	<string>/Users/libs/wx2.8.10</string>
+	<string>/Users/lpugin/libs/wx2.8.11</string>
 	<key>ARUSPIX_WX_VERSION</key>
 	<string>2.8</string>
 </dict>
