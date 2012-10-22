@@ -28,6 +28,8 @@ IM Lib and Torch are available precompiled:
 * Create two directories within the wxWidgets directory: osx-static, osx-static-debug.
 * In the osx-static-debug directory run the following commands to compile for debug mode:
 
+NOTE: this was tested with xcode 4.3, with command line tools installed (or wx will not compile).
+
 Configure command:
 
 	./configure CFLAGS=-arch i386 CXXFLAGS=-arch i386 CPPFLAGS=-arch
