@@ -4,13 +4,14 @@
 Aruspix uses four libraries that have to be installed on your system for it to compile. 
 They are the following:
 
-* wxWidgets 2.8.x ([http://www.wxwidgets.org/](http://www.wxwidgets.org/))
 * IM 3.x ([http://www.tecgraf.puc-rio.br/im/](http://www.tecgraf.puc-rio.br/im/)) 
-* Torch 2.0 ([http://www.torch.ch/](http://www.torch.ch/))
+* Torch 3.0 ([http://www.torch.ch/](http://www.torch.ch/))
+* wxWidgets 2.8.x ([http://www.wxwidgets.org/](http://www.wxwidgets.org/))
 * TinyXML ([http://www.grinninglizard.com/tinyxml/index.html/](http://www.grinninglizard.com/tinyxml/index.html/))
+* LibMEI ([http://github.com/DDMAL/libmei](http://github.com/DDMAL/libmei))
 
 This document will outline the steps involved in compiling these libraries 
-for Windows XP and MacOS X operating systems.
+for MacOS X and Windows XP operating systems.
 
 For MacOS X, TinyXML is include in the project and does not need to be installed and compiled separately.
 
@@ -23,7 +24,6 @@ IM Lib (3.6) and Torch are available precompiled:
 
 ### wxWidgets Compilation ##
 	
-
 * Create two directories within the wxWidgets directory: osx-static, osx-static-debug.
 * In the osx-static-debug directory run the following commands to compile for debug mode:
 
@@ -43,7 +43,15 @@ In the osx-static directory, run the same commands but with:
 
 	--disable-debug
 
-## Setting Aruspix Environment Variables ##
+
+### libmei ###
+
+It currently uses a forked version of the official LibMEI that includes a layout customization and that can be linked statically. You get it from [https://github.com/lpugin/libmei](https://github.com/lpugin/libmei), and compile the "static" target in xcode (For the moment you need the "static" branch).
+Once compiled, the ARUSPIX_MEI variable below needs to point to the mei compilation dir:
+
+	$MEI_BASE_DIR/build/Debug/
+
+### Setting Aruspix Environment Variables ###
 
 In the aruspix/osx directory you will find an XML file named sample_enviroment.plist. This
 file is used by Xcode to set the following environment variables for linking purposes:
@@ -66,10 +74,10 @@ environment.plist prototype:
 		    <string>/Users/puginl/libs/imlib</string>
 		    <key>ARUSPIX_TORCH</key>
 		    <string>/Users/puginl/libs/Torch3</string>
-			<key>ARUSPIX_MEI</key>
-			<string>/Users/jamie/ax-libs/osx</string>
+		    <key>ARUSPIX_MEI</key>
+		    <string>/Users/puginl/libs/libmei/build/Debug</string>
 		    <key>ARUSPIX_WX</key>
-		    <string>/Users/puginl/libs/wx2.8.7</string>
+		    <string>/Users/puginl/libs/wx2.8.11</string>
 		    <key>ARUSPIX_WX_VERSION</key>
 		    <string>2.8</string>
 		</dict>
@@ -80,13 +88,6 @@ environment.plist prototype:
 * In your home directory create the following hidden directory: .MacOSX.
 * Now copy the modified environment.plist file into the .MacOSX directory.
 * You must now log out and log back in.
-
-### libmei ###
-Libmei is now compiled statically. You get it from [https://github.com/DDMAL/libmei](https://github.com/DDMAL/libmei), and compile the "static" taghet in xcode (For the moment you need the "static" branch).
-Once compiled, the ARUSPIX_MEI variable above needs to point to the mei compilation dir:
-
-	$MEI_BASE_DIR/build/Debug/
-
 	
 ### Compilation of Machine Learning Executables used by Aruspix ###
 
@@ -94,6 +95,7 @@ Once compiled, the ARUSPIX_MEI variable above needs to point to the mei compilat
 * Compile the following executables in both release and debug mode: adapt, decoder, ngram.
 
 ### Compilation of Aruspix ###
+
 Open aruspix/osx/aruspix.xcodeproj with Xcode.
 Aruspix should be ready to be compiled in both Debug and Release mode.
 
@@ -103,7 +105,6 @@ Aruspix should be ready to be compiled in both Debug and Release mode.
 In this case, only libmei and wxWidgets are needed. The aruspix_headless is an amiable target on XCode, so this procedure is needed only if installing on FreeBSD or Linux (not tested)
 
 ### wxWidgets ###
-
 Download wxX11 version 2.8.x (any minor revision should do), and compile it:
 
 	$ ./configure --disable-gui --enable-static --disable-shared --enable-monolithic
