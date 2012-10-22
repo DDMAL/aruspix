@@ -32,6 +32,12 @@ public:
     MusRest();
     virtual ~MusRest();
     
+    /**
+     * Comparison operator. 
+     * Check if the MusLayerElement if a MusRest and compare attributes
+     */
+    virtual bool operator==(MusLayerElement& other);
+    
     virtual wxString MusClassName( ) { return "MusRest"; };
     
 private:

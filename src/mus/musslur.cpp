@@ -28,7 +28,7 @@ MusSlur::~MusSlur()
     // we need to detach all notes because it is not to the beam object to delete them
     int i;
     for (i = (int)m_notes.GetCount(); i > 0; i--) {
-        MusDurationInterface *note = dynamic_cast<MusDurationInterface*>(m_notes.Detach(i - 1));
+        dynamic_cast<MusDurationInterface*>(m_notes.Detach(i - 1));
     }
 }
 

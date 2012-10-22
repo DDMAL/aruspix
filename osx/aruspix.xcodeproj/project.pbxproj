@@ -61,6 +61,7 @@
 		4DA0004512CA26E300B65740 /* musrc.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4DA0004312CA26E300B65740 /* musrc.cpp */; };
 		4DA9FDDD0D90984E000E7BA6 /* supbookctrl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4DA9FDDB0D90984E000E7BA6 /* supbookctrl.cpp */; };
 		4DB2D96D0D8383EA003401B0 /* musmlfdic.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4DB2D96B0D8383EA003401B0 /* musmlfdic.cpp */; };
+		4DB3AE6A1608C26000D1273C /* musapp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4DB3AE691608C26000D1273C /* musapp.cpp */; };
 		4DB4F21B143F3D3200BCB254 /* musiomei.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4DB4F219143F3D3200BCB254 /* musiomei.cpp */; };
 		4DB9F0530D94A66E00ED8E3E /* imregister.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4DB9F0510D94A66E00ED8E3E /* imregister.cpp */; };
 		4DC24AA9119B718700B2EF98 /* RtMidi.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4DC24AA7119B718700B2EF98 /* RtMidi.cpp */; };
@@ -72,8 +73,6 @@
 		5736CE550C354E4A00254E7B /* cmp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5736CE460C354E4A00254E7B /* cmp.cpp */; };
 		5736CE580C354E4A00254E7B /* cmpctrl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5736CE4B0C354E4A00254E7B /* cmpctrl.cpp */; };
 		5736CE590C354E4A00254E7B /* cmpfile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5736CE4D0C354E4A00254E7B /* cmpfile.cpp */; };
-		5736CE5A0C354E4A00254E7B /* cmpim.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5736CE4F0C354E4A00254E7B /* cmpim.cpp */; };
-		5736CE5B0C354E4A00254E7B /* cmpmlf.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5736CE510C354E4A00254E7B /* cmpmlf.cpp */; };
 		5769E11C0BF25A1D007772A6 /* axmus.icns in Resources */ = {isa = PBXBuildFile; fileRef = 5769E1180BF25A1D007772A6 /* axmus.icns */; };
 		5769E11D0BF25A1D007772A6 /* axproj.icns in Resources */ = {isa = PBXBuildFile; fileRef = 5769E1190BF25A1D007772A6 /* axproj.icns */; };
 		5769E11E0BF25A1D007772A6 /* axtyp.icns in Resources */ = {isa = PBXBuildFile; fileRef = 5769E11A0BF25A1D007772A6 /* axtyp.icns */; };
@@ -293,6 +292,8 @@
 		4DA9FDDC0D90984E000E7BA6 /* supbookctrl.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = supbookctrl.h; sourceTree = "<group>"; };
 		4DB2D96B0D8383EA003401B0 /* musmlfdic.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = musmlfdic.cpp; path = ../src/mus/musmlfdic.cpp; sourceTree = SOURCE_ROOT; };
 		4DB2D96C0D8383EA003401B0 /* musmlfdic.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = musmlfdic.h; path = ../src/mus/musmlfdic.h; sourceTree = SOURCE_ROOT; };
+		4DB3AE681608BFBF00D1273C /* musapp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = musapp.h; path = ../src/mus/musapp.h; sourceTree = "<group>"; };
+		4DB3AE691608C26000D1273C /* musapp.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = musapp.cpp; path = ../src/mus/musapp.cpp; sourceTree = "<group>"; };
 		4DB4F219143F3D3200BCB254 /* musiomei.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = musiomei.cpp; path = ../src/mus/musiomei.cpp; sourceTree = SOURCE_ROOT; };
 		4DB4F21A143F3D3200BCB254 /* musiomei.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = musiomei.h; path = ../src/mus/musiomei.h; sourceTree = SOURCE_ROOT; };
 		4DB9F0510D94A66E00ED8E3E /* imregister.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = imregister.cpp; sourceTree = "<group>"; };
@@ -315,10 +316,6 @@
 		5736CE4C0C354E4A00254E7B /* cmpctrl.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = cmpctrl.h; sourceTree = "<group>"; };
 		5736CE4D0C354E4A00254E7B /* cmpfile.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = cmpfile.cpp; sourceTree = "<group>"; };
 		5736CE4E0C354E4A00254E7B /* cmpfile.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = cmpfile.h; sourceTree = "<group>"; };
-		5736CE4F0C354E4A00254E7B /* cmpim.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = cmpim.cpp; sourceTree = "<group>"; };
-		5736CE500C354E4A00254E7B /* cmpim.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = cmpim.h; sourceTree = "<group>"; };
-		5736CE510C354E4A00254E7B /* cmpmlf.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = cmpmlf.cpp; sourceTree = "<group>"; };
-		5736CE520C354E4A00254E7B /* cmpmlf.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = cmpmlf.h; sourceTree = "<group>"; };
 		5769E1180BF25A1D007772A6 /* axmus.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = axmus.icns; sourceTree = "<group>"; };
 		5769E1190BF25A1D007772A6 /* axproj.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = axproj.icns; sourceTree = "<group>"; };
 		5769E11A0BF25A1D007772A6 /* axtyp.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = axtyp.icns; sourceTree = "<group>"; };
@@ -433,6 +430,8 @@
 		4D2E465313FBE99100023B02 /* logical */ = {
 			isa = PBXGroup;
 			children = (
+				4DB3AE691608C26000D1273C /* musapp.cpp */,
+				4DB3AE681608BFBF00D1273C /* musapp.h */,
 				4D2E48D013FE5FDA00023B02 /* musbarline.cpp */,
 				4D2E48D113FE5FDA00023B02 /* musbarline.h */,
 				8FE5FE261599FA0500B44674 /* musbeam.cpp */,
@@ -617,10 +616,6 @@
 				5736CE4C0C354E4A00254E7B /* cmpctrl.h */,
 				5736CE4D0C354E4A00254E7B /* cmpfile.cpp */,
 				5736CE4E0C354E4A00254E7B /* cmpfile.h */,
-				5736CE4F0C354E4A00254E7B /* cmpim.cpp */,
-				5736CE500C354E4A00254E7B /* cmpim.h */,
-				5736CE510C354E4A00254E7B /* cmpmlf.cpp */,
-				5736CE520C354E4A00254E7B /* cmpmlf.h */,
 			);
 			name = comparison;
 			path = ../src/comparison;
@@ -673,8 +668,8 @@
 				57CA54210D34139D001FC334 /* axabout_wdr.cpp */,
 				57A668930C333F3000622C70 /* axctrl.cpp */,
 				57A668940C333F3000622C70 /* axctrl.h */,
-				A5AE82AD0A82AF50002BA6A5 /* axfile.h */,
 				4D2994D512C7F2B500D0514B /* axfile.cpp */,
+				A5AE82AD0A82AF50002BA6A5 /* axfile.h */,
 				A58524560A1B9604002D9D8A /* axapp.cpp */,
 				A58524570A1B9604002D9D8A /* axapp.h */,
 				A58524580A1B9604002D9D8A /* axenv.cpp */,
@@ -888,7 +883,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "RESOURCES=$BUILT_PRODUCTS_DIR/$TARGET_NAME.app/Contents/Resources/\nARUSPIX=$PROJECT_DIR/..\n\nif [ ! -d $RESOURCES/en ]; then\n\tcp -rf $ARUSPIX/local/* $BUILT_PRODUCTS_DIR/$TARGET_NAME.app/Contents/Resources/\nfi\nif [ ! -d $RESOURCES/Aruspix.localized ]; then\n\tcp -rf $ARUSPIX/data/* $BUILT_PRODUCTS_DIR/$TARGET_NAME.app/Contents/Resources/\nfi\n\nif [ $CONFIGURATION = \"Debug\" -o $CONFIGURATION = \"DebugDyn\" ]\nthen\n    names=\"decoderd ngramd adaptd\"\nelse\n    names=\"decoder ngram adapt\"\nfi\n\nfor n in $names\ndo\n\tcp -rf $BUILT_PRODUCTS_DIR/$n $BUILT_PRODUCTS_DIR/$TARGET_NAME.app/Contents/MacOS/;\ndone\n\n# XXX: Need to re-do this for release build\n# prepare installer, that is copy everything we need into ./bin/install_root\nif [ $CONFIGURATION = \"Release\" ]\nthen\n\tcp -rf $ARUSPIX/osx/install_root $ARUSPIX/bin;\n\tcp -rf $ARUSPIX/bin/Release/Aruspix.app $ARUSPIX/bin/install_root/Applications/; # copy the application bundle\n\t# rsync -r -t -u -v -C --links ${ARUSPIX_MEI}/mei.framework $ARUSPIX/bin/install_root/Library/Frameworks; # copy the mei.framework\nfi";
+			shellScript = "RESOURCES=$BUILT_PRODUCTS_DIR/$TARGET_NAME.app/Contents/Resources/\nARUSPIX=$PROJECT_DIR/..\n\nif [ ! -d $RESOURCES/en ]; then\n\tcp -rf $ARUSPIX/local/* $BUILT_PRODUCTS_DIR/$TARGET_NAME.app/Contents/Resources/\nfi\nif [ ! -d $RESOURCES/Aruspix.localized ]; then\n\tcp -rf $ARUSPIX/data/* $BUILT_PRODUCTS_DIR/$TARGET_NAME.app/Contents/Resources/\nfi\n\nif [ $CONFIGURATION = \"Debug\" -o $CONFIGURATION = \"DebugDyn\" ]\nthen\n    names=\"decoderd ngramd adaptd\"\nelse\n    names=\"decoder ngram adapt\"\nfi\n\nfor n in $names\ndo\n\tcp -rf $BUILT_PRODUCTS_DIR/$n $BUILT_PRODUCTS_DIR/$TARGET_NAME.app/Contents/MacOS/;\ndone\n\n# XXX: Need to re-do this for release build\n# prepare installer, that is copy everything we need into ./bin/install_root\nif [ $CONFIGURATION = \"Release\" ]\nthen\n\tcp -rf $ARUSPIX/osx/install_root $ARUSPIX/bin;\n\tcp -rf $ARUSPIX/bin/Release/Aruspix.app $ARUSPIX/bin/install_root/Applications; # copy the application bundle\n    # not sure that this is still required with XCode 3 (apply recommendation for the permission seems to do it)\n    chmod -R g+rwX $ARUSPIX/bin/install_root/\n    chmod -R o+rX $ARUSPIX/bin/install_root/\n    chmod 1775 $ARUSPIX/bin/install_root/Library\n    # chgrp -R admin $ARUSPIX/bin/install_root/\n    # commented it as it requires sudo password to be typed in the shell before building\n    # sudo chown -R root $ARUSPIX/bin/install_root/\nfi";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -987,8 +982,6 @@
 				5736CE550C354E4A00254E7B /* cmp.cpp in Sources */,
 				5736CE580C354E4A00254E7B /* cmpctrl.cpp in Sources */,
 				5736CE590C354E4A00254E7B /* cmpfile.cpp in Sources */,
-				5736CE5A0C354E4A00254E7B /* cmpim.cpp in Sources */,
-				5736CE5B0C354E4A00254E7B /* cmpmlf.cpp in Sources */,
 				57CA53DD0D340F61001FC334 /* imbrink.cpp in Sources */,
 				57CA53DE0D340F61001FC334 /* imext.cpp in Sources */,
 				57CA54220D34139D001FC334 /* axprogressdlg.cpp in Sources */,
@@ -1070,6 +1063,7 @@
 				8FF3AA8D15C81EDE00B9D9B0 /* mustuplet.cpp in Sources */,
 				8FD2847C15D4F14F0038D07D /* musiomusxml.cpp in Sources */,
 				8FAB8B1015E3A54F0061532C /* musrc_tuplet.cpp in Sources */,
+				4DB3AE6A1608C26000D1273C /* musapp.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1217,6 +1211,7 @@
 				GCC_WARN_TYPECHECK_CALLS_TO_PRINTF = NO;
 				HEADER_SEARCH_PATHS = "";
 				OBJROOT = "$(PROJECT_DIR)/../obj";
+				OTHER_CFLAGS = "";
 				SDKROOT = macosx10.6;
 				SYMROOT = "$(PROJECT_DIR)/../bin";
 				VALID_ARCHS = i386;
@@ -1268,6 +1263,7 @@
 					"-DAX_SUPERIMPOSITION",
 					"-DAX_RECOGNITION",
 					"-DAX_EDITION",
+					"-DAX_COMPARISON",
 				);
 				OTHER_LDFLAGS = (
 					"-framework",
@@ -1360,6 +1356,7 @@
 					"-DAX_SUPERIMPOSITION",
 					"-DAX_RECOGNITION",
 					"-DAX_EDITION",
+					"-DAX_COMPARISON",
 				);
 				OTHER_LDFLAGS = (
 					"-framework",

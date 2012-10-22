@@ -42,6 +42,8 @@ public:
     
     virtual void SetBackground( int colour, int style = wxSOLID );
     
+    virtual void SetBackgroundImage( void *image, double opacity = 1.0 ) {};
+    
     virtual void SetBackgroundMode( int mode );
     
     virtual void SetPen( int colour, int width = 1, int style = wxSOLID );
@@ -91,6 +93,8 @@ public:
     virtual void DrawMusicText(const wxString& text, int x, int y);
     
     virtual void DrawSpline(int n, MusPoint points[]);
+    
+    virtual void DrawBackgroundImage( int x = 0, int y = 0 ) {};
     
     // 
     virtual void StartGraphic( MusLayoutObject *object, wxString gClass, wxString gId );

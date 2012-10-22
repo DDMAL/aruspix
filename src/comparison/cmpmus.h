@@ -22,8 +22,6 @@
 class CmpEnv;
 class CmpMusWindow;
 
-class CmpImWindow;
-class CmpImController;
 class CmpFile;
 
 
@@ -43,18 +41,32 @@ public:
         const wxSize& size = wxDefaultSize,
         long style = wxTAB_TRAVERSAL | wxNO_BORDER );
     
-    void Init( CmpEnv *env, CmpMusWindow *window );
-	void SetImViewAndController( CmpImWindow *cmpImWindow1, CmpImController *cmpImController1,
-		CmpImWindow *cmpImWindow2, CmpImController *cmpImController2 );
+    void Init( CmpEnv *env, CmpMusWindow *window, bool collationCtrl );
+	void SetImViewAndController( CmpMusWindow *cmpImWindow1, CmpMusController *cmpImController1,
+		CmpMusWindow *cmpImWindow2, CmpMusController *cmpImController2 );
 	void SetCmpFile( CmpFile *cmpFile );
     
+    /** 
+     * Loads the source page by looking at the MusLaidOutLayerElement in the layout.
+     * The MusLaidOutLayerElement passed as parameter is the one of the collation.
+     * The MusLayerElement pointer is used to find the corresponding one (if any)
+     **/
+    void LoadSource( MusLaidOutLayerElement *element );
+    /**
+     * Loads the sources.
+     * Called from the collationCtrl.
+     */
+    void LoadSources( );
+    
 protected:
+    /** Specify if this is the collation controller (true) or a source controller (false) */
+    bool m_collationCtrl;
     CmpEnv *m_envPtr;
     CmpMusWindow *m_viewPtr;
 	// to synchronize view
 	CmpFile *m_cmpFilePtr;
-	CmpImWindow *m_imViewPtr1, *m_imViewPtr2;
-	CmpImController *m_imControlPtr1, *m_imControlPtr2;
+	CmpMusWindow *m_imViewPtr1, *m_imViewPtr2;
+	CmpMusController *m_imControlPtr1, *m_imControlPtr2;
 	
 private:
         void OnSize( wxSizeEvent &event );
@@ -78,11 +90,15 @@ public:
         const wxSize& size = wxDefaultSize,
         long style = wxScrolledWindowStyle, bool center = true );
     virtual ~CmpMusWindow();
-    void SetEnv( CmpEnv *env );
-	void SetImViewAndController( CmpImWindow *cmpImWindow1, CmpImController *cmpImController1,
-		CmpImWindow *cmpImWindow2, CmpImController *cmpImController2 );
+    void SetEnv( CmpEnv *env, bool collationWin );
+	void SetImViewAndController( CmpMusWindow *cmpImWindow1, CmpMusController *cmpImController1,
+		CmpMusWindow *cmpImWindow2, CmpMusController *cmpImController2 );
 	void SetCmpFile( CmpFile *cmpFile );
-
+	// scroll
+	void UpdateCmpScroll(); // update scroll position if 
+    
+    virtual void OnPageChange( );
+    
     // edition
     //virtual void OnBeginEditionClef(); // 
     //virtual void OnEndEditionClef(); //
@@ -90,20 +106,27 @@ public:
 	virtual void OnSyncScroll( int x, int y );
 	virtual void OnSize( wxSizeEvent &event );
     
+public:
+    bool m_viewImage;
+    
         
 protected:
-        bool m_shiftDown;
+    bool m_shiftDown;
+    /** Specify if this is the collation window (true) or a source window (false) */
+    bool m_collationWin;
     CmpEnv *m_envPtr;
 	CmpMusController *m_musControlPtr;
     //bool m_edition; // true if OnBeginEdition() has been called -> retranspose current staff
 	CmpFile *m_cmpFilePtr;
-	CmpImWindow *m_imViewPtr1, *m_imViewPtr2;
-	CmpImController *m_imControlPtr1, *m_imControlPtr2;
+	CmpMusWindow *m_imViewPtr1, *m_imViewPtr2;
+	CmpMusController *m_imControlPtr1, *m_imControlPtr2;
 	// variable to control alternance in images : change if we change the staff
 	int m_lastStaff, m_lastController;
+    wxImage m_backgroundImage;
     
 private:
-        void OnMouse( wxMouseEvent &event );
+    void OnMouse( wxMouseEvent &event );
+    void OnPaint( wxPaintEvent &event );
     void OnScroll( wxScrollWinEvent &event );
     void OnKeyUp( wxKeyEvent &event );
     void OnKeyDown( wxKeyEvent &event );

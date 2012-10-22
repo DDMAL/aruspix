@@ -26,7 +26,7 @@ MusStaff::MusStaff():
 {
     m_measure = NULL;
     m_section = NULL;
-    m_antinque_notation = false;
+    m_mensuralNotation = false;
 }
 
 MusStaff::~MusStaff()
@@ -77,19 +77,6 @@ void MusStaff::Save( wxArrayPtrVoid params )
     // save layers
     MusLayerFunctor layer( &MusLayer::Save );
     this->Process( &layer, params );
-}
-
-void MusStaff::Load( wxArrayPtrVoid params )
-{
-    // param 0: output stream
-    MusFileInputStream *input = (MusFileInputStream*)params[0];       
-    
-    // load layers
-    MusLayer *layer;
-    while ( (layer = input->ReadLayer()) ) {
-        layer->Load( params );
-        this->AddLayer( layer );
-    }
 }
 
 // functors for MusStaff

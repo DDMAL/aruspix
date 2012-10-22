@@ -30,6 +30,12 @@ public:
     MusBarline();
     virtual ~MusBarline();
     
+    /**
+     * Comparison operator. 
+     * Check if the MusLayerElement if a MusBarline and compare attributes
+     */
+    virtual bool operator==(MusLayerElement& other);
+    
     virtual wxString MusClassName( ) { return "MusBarline"; };	 
     
 private:

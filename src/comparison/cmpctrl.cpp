@@ -414,10 +414,12 @@ void CmpCtrl::Update( )
 			for ( k = 0; k < (int)part->m_partpages.GetCount(); k++)
 			{
 				wxString staves = part->m_partpages[k].m_axfile;
+                /*
 				if ( !part->m_partpages[k].m_staves.IsEmpty() )
 				{
 					//TODO, something...
 				}
+                */
 				id = AppendItem( partid, staves, IMG_AXZ_OK, IMG_AXZ_OK_S );
 			}	
 		}
@@ -446,8 +448,13 @@ void CmpCtrl::Update( )
 			CmpCollationPart *part = &m_cmpFilePtr->m_collations[i].m_collationParts[j];
 			wxString label = wxString::Format("%s (%s)", part->m_bookPart->m_bookname.c_str(), part->m_bookPart->m_name.c_str() ); 
 			id = AppendItem( m_cmpFilePtr->m_collations[i].m_colId, label, IMG_TEXT, IMG_TEXT_S );
-			if (  part->m_flags & PART_REFERENCE ) 
+			if (  part->m_flags & PART_REFERENCE ) {
 				SetItemBold( id , true );
+            }
+            else {
+                AxTreeItem *item = new AxTreeItem( id, &m_cmpFilePtr->m_collations[i].m_collationParts[j], &m_cmpFilePtr->m_collations[i] ); 
+                m_axItems.Add( item );
+            }
 		}		
 		
 		
@@ -456,18 +463,6 @@ void CmpCtrl::Update( )
 	this->LoadDisplay( );
 	
     m_cmpFilePtr->Modify();
-}
-
-CmpCollation *CmpCtrl::GetSelectedCollation( )
-{
-	int collations = (int)m_cmpFilePtr->m_collations.GetCount();
-    for ( int i = 0; i < collations; i++)
-    {
-		CmpCollation *item = &m_cmpFilePtr->m_collations[i];
-		if ( this->SelectionIsChildOf( item->m_colId ) )
-			return item;
-	}
-	return NULL;
 }
 
 CmpBookItem *CmpCtrl::GetSelectedBookItem()
@@ -518,13 +513,16 @@ void CmpCtrl::OnActivate( wxTreeEvent &event )
 
 	if ( !itemId.IsOk() )
 		return;
+    
+    wxObject *object = GetObject( itemId );
+    if ( object ) {
+        if ( dynamic_cast<CmpCollationPart*>(object) ) {
+            // we have click on a collation part
+            wxObject *secondaryObject = GetObject( itemId, true );
+            m_cmpEnvPtr->ViewCollationPart( dynamic_cast<CmpCollationPart*>(object), dynamic_cast<CmpCollation*>(secondaryObject) );
+        }
+    }
 		
-	CmpCollation *collation = GetSelectedCollation();
-	
-	if ( collation )
-	{
-		m_cmpEnvPtr->ViewCollation( collation );
-	}
 	/*
     else if ( ItemIsChildOf( m_imgFilesId, itemId ) )
     {   

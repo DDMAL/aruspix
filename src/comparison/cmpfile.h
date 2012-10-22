@@ -42,7 +42,8 @@ WX_DECLARE_OBJARRAY( CmpPartPage, ArrayOfCmpPartPages);
 class CmpCollationPart;
 WX_DECLARE_OBJARRAY( CmpCollationPart, ArrayOfCmpCollationParts);
 
-class MusLaidOutStaff;
+class MusLayer;
+class MusLayerElement;
 
 
 //----------------------------------------------------------------------------
@@ -80,16 +81,27 @@ public:
 	
 	bool Collate( );
 	bool Realize( );
-	bool IsCollationLoaded();
-	MusDoc *GetMusFile() { return m_musDocPtr; }
+	bool IsCollationLoaded( CmpCollationPart *part );
+    MusDoc *GetMusDoc() { return m_musDocPtr; };
 	
 	
 protected:
-	bool Align( MusLaidOutStaff *staff_ref, MusLaidOutStaff *staff_var, CmpCollationPart *part_var );
-	void EndInsertion( CmpCollationPart *part_var  );
-	void AddInsertion( MusElement *elem, MusLaidOutStaff *aligned_staff, int i ); // Add elem into an insertion Staff
-			// If this staff has to be created, a symbol is added into the aligned staff before element i 
-	void SetCmpValues( MusElement *dest, MusElement *src, int flag );
+    /**
+     * Align the two layer using a dynamic progamming approach.
+     * The alignement is performed using the edit distance.
+     * For each match, the uuid is added to the uuid_refs and uuid_vars and uuid_count is incremented.
+     * This is done in order to then change the uuid in the variant layout for element synchronization.
+     */
+	MusLayer *Align( MusLayer *layer_ref, MusLayer *layer_var, uuid_t *uuid_refs, uuid_t *uuid_vars, int *uuid_count );
+	
+    /**
+     * Create a <app> element in the layer_aligned MusLayer.
+     * The appType can be CMP_APP_DEL, CMP_APP_INS ou CMP_APP_SUBST.
+     * A deletion means that the element position i in not in layer_var.
+     * A insertion means that the element position j in layer_var is missing in layer_aligned after i.
+     * A substitution is element position j replacing element position i.
+     */ 
+    void CreateApp( MusLayer *layer_aligned, int i, MusLayer *layer_var, int j, int appType );  
 	
 
 public:
@@ -103,11 +115,16 @@ public:
 	static int s_index;
 	
 private:
-	wxString m_basename; // the basename of the CmpFile, used to read/write file from this class
-	MusDoc *m_musDocPtr;
+    /** The basename of the CmpFile, used to read/write file from this class. */
+	wxString m_basename;
+    /** The name of the reference source */
+    wxString m_refSource;
+    /** The name of the variant source */
+    wxString m_varSource;
+    /** The MusDoc of the final collation */
+    MusDoc *m_musDocPtr;
+
 	bool m_isColLoaded;
-	
-	MusLaidOutStaff *m_insStaff;
 };
 
 //----------------------------------------------------------------------------
@@ -118,13 +135,14 @@ class CmpPartPage: public wxObject
 {
 public:
     // constructors and destructors
-    CmpPartPage() { }
-    CmpPartPage(  wxString axfile ) { m_axfile = axfile; }
+    CmpPartPage();
+    CmpPartPage(  wxString axfile );
     ~CmpPartPage() {};
 
 public:
     wxString m_axfile;
-	wxArrayInt m_staves; // all staves if the array is empty
+	uuid_t m_start;
+    uuid_t m_end;
 };
 
 //----------------------------------------------------------------------------
@@ -192,10 +210,25 @@ public:
     CmpFile( wxString name, CmpEnv *env = NULL );
     virtual ~CmpFile();
     
-        virtual void NewContent(); // Create content for a new file
+    /** @name File methods
+     * Standard file operation (new, open, save, close) methods for this AxFile child class.
+     */
+    ///@{
+    virtual void NewContent(); // Create content for a new file
     virtual void OpenContent( ); // Open content after archive extraction
     virtual void SaveContent( ); // Save content before archive creation
     virtual void CloseContent( ); // Desactivate content before deletion
+    ///@}
+    
+    /**
+     * This method load the content from the Recognition books (or files).
+     * For each book, it create one MEI file for each part in the book.
+     * The part in the MEI file is represented in one layer.
+     * We several pages (or page parts) can be concatenated.
+     * The MEI file also contain the corresonding layout pages.
+     * Also see MusDoc::ResetAndCheckLayouts().
+     */
+    bool LoadBooks( wxArrayPtrVoid params, AxProgressDlg *dlg );
     
     // operations
     //bool LoadImages( );
@@ -211,20 +244,18 @@ public:
 	//int FilesForAdaptation( wxArrayString *filenames, wxArrayString *paths, bool *isCacheOk );
 	//bool HasToBePreprocessed( wxString imagefile );
 	CmpBookPart *FindBookPart( wxString id );
-	bool LoadBooks( wxArrayPtrVoid params, AxProgressDlg *dlg );
+
     bool Collate( wxArrayPtrVoid params, AxProgressDlg *dlg );
     // static on arrays
     static CmpBookItem *FindFile( ArrayOfCmpBookItems *array, wxString filename, int* index  );
-	// distance
-	void Align( ArrayOfMLFSymbols *obtained, ArrayOfMLFSymbols *desired );
-    
+   
 public:
-        // files
+    // files
     ArrayOfCmpBookItems m_bookFiles;
 	ArrayOfCmpCollations m_collations;
 
 protected:
-        CmpEnv *m_envPtr;
+    CmpEnv *m_envPtr;
 
 
 private:

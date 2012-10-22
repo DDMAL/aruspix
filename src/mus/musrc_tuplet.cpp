@@ -32,7 +32,7 @@
 
 wxString IntToObliqueFigures(unsigned int number) {
     char buf[16];
-    int len;
+    unsigned int len;
     
     memset(buf, 0x00, sizeof(buf));
     

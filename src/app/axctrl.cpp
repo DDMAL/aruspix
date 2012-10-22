@@ -15,7 +15,28 @@
 #include "axctrl.h"
 #include "axapp.h"
 
+#include "wx/arrimpl.cpp"
+WX_DEFINE_OBJARRAY( ArrayOfTreeItems );
 
+
+IMPLEMENT_DYNAMIC_CLASS(AxTreeItem, wxObject)
+
+//----------------------------------------------------------------------------
+// AxTreeItem
+//----------------------------------------------------------------------------
+
+AxTreeItem::AxTreeItem() 
+{
+    m_object = NULL;
+    m_secondaryObject = NULL;
+}
+
+AxTreeItem::AxTreeItem( wxTreeItemId id, wxObject *object, wxObject *secondaryObject ) 
+{
+    m_id = id;
+    m_object = object;
+    m_secondaryObject = secondaryObject;
+}
 
 //----------------------------------------------------------------------------
 // AxCtrl
@@ -110,6 +131,22 @@ bool AxCtrl::SelectionIsChildOf( wxTreeItemId id )
         }
     }
     return true;
+}
+
+wxObject *AxCtrl::GetObject( wxTreeItemId item, bool secondary )
+{
+    int i;
+    for (i = 0; i < (int)m_axItems.GetCount(); i++ ) {
+        if ( m_axItems[i].m_id == item ) {
+            if ( !secondary ) {
+                return (&m_axItems[i])->m_object;
+            }
+            else {
+                return (&m_axItems[i])->m_secondaryObject;
+            }
+        }
+    }
+    return NULL;
 }
 
 

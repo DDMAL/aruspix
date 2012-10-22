@@ -43,12 +43,16 @@ WX_DECLARE_OBJARRAY( MusLayer, ArrayOfMusLayers );
 class MusLayerElement;
 WX_DECLARE_OBJARRAY( MusLayerElement, ArrayOfMusLayerElements );
 
+// App
+class MusLayerRdg;
+WX_DECLARE_OBJARRAY( MusLayerRdg, ArrayOfMusLayerRdgs );
+
 // Layout classes
 class MusLayout;
-WX_DECLARE_OBJARRAY( MusLayout, ArrayOfMusLayouts);
+WX_DECLARE_OBJARRAY( MusLayout, ArrayOfMusLayouts );
 
 class MusPage;
-WX_DECLARE_OBJARRAY( MusPage, ArrayOfMusPages);
+WX_DECLARE_OBJARRAY( MusPage, ArrayOfMusPages );
 
 class MusSystem;
 WX_DECLARE_OBJARRAY( MusSystem, ArrayOfMusSystems);
@@ -88,6 +92,7 @@ public:
     
     int GetId() { return 0; }; // used in SVG - TODO
     uuid_t* GetUuid() { return &m_uuid; };
+    wxString GetUuidStr();
     void SetUuid( uuid_t uuid );
     
     
@@ -96,6 +101,7 @@ public:
     
     // functors
     bool FindWithUuid( wxArrayPtrVoid params );
+    bool ReplaceUuid( wxArrayPtrVoid params );
     bool CheckFunctor( wxArrayPtrVoid params );
     /**
      * Set the layout pointer in all a layout tree.
@@ -237,6 +243,7 @@ public:
     //virtual void Call( MusObject *ptr, wxArrayPtrVoid params, bool *success );
     
     bool m_success;
+    bool m_reverse;
     
 private:
     
@@ -269,6 +276,7 @@ private:
 /** 
  * This class contains the document environment variables.
  * It remains from the Wolfgang parameters strcuture.
+ * TODO - Integrate them in MEI.
  */
 class MusEnv 
 {
@@ -294,17 +302,7 @@ public:
     /** maximum beam slope */
     unsigned char m_beamMaxSlope;
     /** minimum beam slope */
-    unsigned char m_beamMinSlope;
-    /** paper width */
-    int m_paperWidth;
-    /** paper height */
-    int m_paperHeight;
-    /** top margin */
-    short m_topMargin;
-    /** left margin on odd pages */
-    short m_leftMarginOddPage;
-    /** left margin on even pages */
-    short m_leftMarginEvenPage;        
+    unsigned char m_beamMinSlope;     
     /** small staff size ratio numerator */
     unsigned char m_smallStaffNum;
     /** small staff size ratio denominator */

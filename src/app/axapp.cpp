@@ -15,6 +15,7 @@
 #include "wx/hyperlink.h"
 #include "wx/stdpaths.h"
 #include "wx/splash.h"
+#include "wx/tokenzr.h"
 
 #include "axapp.h"
 #include "axframe.h"
@@ -27,9 +28,13 @@ const wxString IPC_START = "StartOther";
 int AxApp::s_version_major = 2;
 int AxApp::s_version_minor = 0;
 int AxApp::s_version_revision = 0;
-wxString AxApp::s_version = wxString::Format("%d.%d.%d beta", AxApp::s_version_major, AxApp::s_version_minor, AxApp::s_version_revision);
+wxString AxApp::s_version = wxString::Format("%d.%d.%d", AxApp::s_version_major, AxApp::s_version_minor, AxApp::s_version_revision);
 wxString AxApp::s_build_date = __DATE__;
 wxString AxApp::s_build_time = __TIME__;
+
+#define COPYRIGHT "Copyright © 2004-2012 Laurent Pugin and others"
+#define LICENSE "Published under the GNU General Public License 3"
+#define CONTRIBUTORS "John Ashley Burgoyne;Greg Eustace;Andrew Hankinson;Tristan Himmelman;Tristan Matthews;Christopher Niven;Alastair Porter;Marnie Reckenberg;Gabriel Vigliensoni;Rodolfo Zitellini"
 
 IMPLEMENT_APP(AxApp)
 
@@ -190,20 +195,18 @@ bool AxApp::OnInit()
 			long splash_style = wxSIMPLE_BORDER; // stay on top did not work on OS X
 			dest.SetFont( *wxSMALL_FONT );		
     #endif
-#endif
-			wxString version = wxString::Format( "Version %s", AxApp::s_version.c_str() );
-			wxString build = wxString::Format( "Build %s - %s", AxApp::s_build_date.c_str() , AxApp::s_build_time.c_str() );
-			int x = 140;
-			dest.DrawText( version , x, 230 );
-			dest.DrawText( build , x, 245 );
-			dest.DrawText( "Laurent Pugin, Copyright 2004-2011" , x, 260 );
-			dest.DrawText( "All Rights Reserved" , x, 275 );
-			dest.SelectObject( wxNullBitmap );
+            wxString version = wxString::Format( "Version %s", AxApp::s_version.c_str() );
+            wxString build = wxString::Format( "Build %s - %s", AxApp::s_build_date.c_str() , AxApp::s_build_time.c_str() );
+            int x = 140;
+            dest.DrawText( version , x, 230 );
+            dest.DrawText( build , x, 245 );
+            dest.DrawText( COPYRIGHT , x, 260 );
+            dest.DrawText( LICENSE , x, 275 );
+            dest.SelectObject( wxNullBitmap );
 
-#ifndef __AXDEBUG__
-			splash = new wxSplashScreen(bitmap,
-					wxSPLASH_CENTRE_ON_SCREEN | wxSPLASH_TIMEOUT,
-					4000, NULL, -1, wxDefaultPosition, wxDefaultSize, splash_style );
+            splash = new wxSplashScreen(bitmap,
+                    wxSPLASH_CENTRE_ON_SCREEN | wxSPLASH_TIMEOUT,
+                    4000, NULL, -1, wxDefaultPosition, wxDefaultSize, splash_style );
 #endif
 		}
 	}
@@ -508,12 +511,31 @@ AxAboutDlg::AxAboutDlg( wxWindow *parent, wxWindowID id, const wxString &title,
     link4->SetNormalColour( normal );
     link4->SetHoverColour( hover );
     link4->SetVisitedColour( normal );
+    wxHyperlinkCtrl *link5 = new wxHyperlinkCtrl( this, ID0_LIBMEI, "Libmei C++ library for MEI", "http://ddmal.music.mcgill.ca/libmei" );
+    link5->SetNormalColour( normal );
+    link5->SetHoverColour( hover );
+    link5->SetVisitedColour( normal );
 
     AboutDlgFunc( this, true );
     wxString str;
     this->GetTxAppVersion()->SetLabel( AxApp::s_version );
     str = wxString::Format( "%s - %s", AxApp::s_build_date.c_str() , AxApp::s_build_time.c_str() );
     this->GetTxAppBuild()->SetLabel( str );
+    this->GetTxAppCopyright()->SetLabel( COPYRIGHT );
+    this->GetTxAppLicense()->SetLabel( LICENSE );
+    
+    wxStringTokenizer tkz( CONTRIBUTORS, ";" );
+    while ( tkz.HasMoreTokens() )
+    {
+        this->GetTxAppContributors()->AppendText( tkz.GetNextToken() );
+        if ( tkz.HasMoreTokens() ) {
+            this->GetTxAppContributors()->AppendText( "\n" );
+        }
+    }
+    // trick for updating the scroll
+    this->GetTxAppContributors()->SetInsertionPoint( 0 );
+    this->GetTxAppContributors()->WriteText( "" );
+    
 
 #if defined(__WXMSW__)
     this->GetLogo()->SetBitmap( wxBitmap( wxGetApp().m_resourcesPath + "/logo.win.png" , wxBITMAP_TYPE_PNG ) );

@@ -36,10 +36,15 @@ public:
     RecFile( wxString name, RecEnv *env = NULL );
     virtual ~RecFile();
     
+    /** @name File methods
+     * Standard file operation (new, open, save, close) methods for this AxFile child class.
+     */
+    ///@{
     virtual void NewContent(); // Create content for a new file
-	virtual void OpenContent( ); // Open content after archive extraction
-	virtual void SaveContent( ); // Save content before archive creation
-	virtual void CloseContent( ); // Desactivate content before deletion
+    virtual void OpenContent( ); // Open content after archive extraction
+    virtual void SaveContent( ); // Save content before archive creation
+    virtual void CloseContent( ); // Desactivate content before deletion
+    ///@}
 	
 	void SetforMEI(); //needs to be fooled into thinking it's been preprocessed and recognized
 	void SetImage( wxString filename );

@@ -15,6 +15,7 @@
 #include "muspage.h"
 #include "mussystem.h"
 #include "muslaidoutlayer.h"
+#include "muslaidoutlayerelement.h"
 
 
 #ifndef HEADLESS
@@ -31,7 +32,6 @@ wxString MusDoc::m_respath = "/usr/local/share/aruspix";
 MusDoc::MusDoc()
 {
     Reset();
-    m_meidoc = NULL;
 }
 
 MusDoc::~MusDoc()
@@ -44,9 +44,13 @@ MusDoc::~MusDoc()
 
 void MusDoc::Reset()
 {
+    m_pageWidth = 2100;
+    m_pageHeight = 2970;
+    m_pageRightMar = 0;
+    m_pageLeftMar = 0;
+    m_pageTopMar = 0; 
     m_layouts.Clear();
     m_divs.Clear();
-    // what about m_meidoc ?
 }
 
 void MusDoc::AddDiv( MusDiv *div )
@@ -80,38 +84,28 @@ bool MusDoc::Save( MusFileOutputStream *output )
     return true;
 }
 
-bool MusDoc::Load( MusFileInputStream *input )
-{
-    Reset();
-    input->ReadDoc( this );
-    
-    wxArrayPtrVoid params;
-	params.Add( input );
-    
-    // logical
-    MusDiv *div;
-    while( (div = input->ReadDiv()) ) {
-        div->Load( params );
-        this->AddDiv( div );
-    }
-    
-    // layout
-    MusLayout *layout;
-    while( (layout = input->ReadLayout()) ) {
-        layout->Load( params );
-        this->AddLayout( layout );
-    }
-    
-    this->Check();
-    return true;
-}
-
 void MusDoc::Check()
 {
     wxArrayPtrVoid params;
     MusFunctor checkObjects( &MusObject::CheckFunctor );
     this->ProcessLogical( &checkObjects, params );
     this->ProcessLayout( &checkObjects, params );
+}
+
+
+void MusDoc::ResetAndCheckLayouts()
+{
+    wxArrayPtrVoid params;
+    params.Add( this );
+    MusLaidOutLayerElementFunctor checkLaidOutLayerElements( &MusLaidOutLayerElement::CheckAndResetLayerElement );
+    // because we are going to delete MusLaidOutLayerElements, we need to process it from the end
+    checkLaidOutLayerElements.m_reverse = true;
+    this->ProcessLayout( &checkLaidOutLayerElements, params );
+    
+    MusLaidOutLayerFunctor checkLaidOutLayers( &MusLaidOutLayer::CheckAndResetSectionOrMeasure );
+    // because we are going to delete MusLaidOutLayers, we need to process it from the end
+    checkLaidOutLayers.m_reverse = true;
+    this->ProcessLayout( &checkLaidOutLayers, params );
 }
 
 void MusDoc::GetNumberOfVoices( int *min_voice, int *max_voice )
@@ -149,16 +143,6 @@ MusLaidOutStaff *MusDoc::GetVoice( int i )
     return NULL;
 }
 
-MeiDocument *MusDoc::GetMeiDocument() {
-    return m_meidoc;
-}
-
-void MusDoc::SetMeiDocument(MeiDocument *doc) {
-    m_meidoc = doc;
-}
-
-
-
 MusObject *MusDoc::FindLogicalObject( MusFunctor *functor, uuid_t uuid )
 {
     if ( uuid_is_null( uuid ) ) {
@@ -177,8 +161,7 @@ MusObject *MusDoc::FindLogicalObject( MusFunctor *functor, uuid_t uuid )
         //and typedef __darwin_uuid_string_t        uuid_string_t;
         char uuidStr[37]; // bad fix
         uuid_unparse( uuid, uuidStr ); 
-        // this should be a fatal error
-        wxLogError( "Element %s not found in the logical tree", uuidStr );
+        //wxLogDebug( "%s not found in the logical tree", uuidStr );
     }
     return element;
     

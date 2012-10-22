@@ -16,7 +16,7 @@ using std::max;
 
 #include "cmpmus.h"
 #include "cmp.h"
-#include "cmpim.h"
+#include "cmpfile.h"
 #include "recognition/recfile.h"
 
 #include "app/axapp.h"
@@ -24,7 +24,10 @@ using std::max;
 #include "im/impage.h"
 #include "im/imstaff.h"
 
-#include "mus/musstaff.h"
+#include "mus/muswxdc.h"
+#include "mus/musdoc.h"
+#include "mus/muslaidoutstaff.h"
+#include "mus/muslaidoutlayerelement.h"
 
 
 //----------------------------------------------------------------------------
@@ -43,6 +46,7 @@ CmpMusController::CmpMusController( wxWindow *parent, wxWindowID id,
     //MusOutputFunc4( this, TRUE );	
 	m_envPtr = NULL;
 	m_viewPtr = NULL;
+    m_collationCtrl = false;
 	
 	m_imControlPtr1 = NULL;
 	m_imViewPtr1 = NULL;
@@ -56,7 +60,7 @@ CmpMusController::CmpMusController()
 {
 }
 
-void CmpMusController::Init( CmpEnv *env, CmpMusWindow *window )
+void CmpMusController::Init( CmpEnv *env, CmpMusWindow *window, bool collationCtrl )
 {
 	// environement
     wxASSERT_MSG(env,"Environment cannot be NULL");
@@ -65,11 +69,12 @@ void CmpMusController::Init( CmpEnv *env, CmpMusWindow *window )
 	// view
     wxASSERT_MSG(window,"View cannot be NULL");
     m_viewPtr = window;
+    m_collationCtrl = collationCtrl;
 }
 
 
-void CmpMusController::SetImViewAndController( CmpImWindow *cmpImWindow1, CmpImController *cmpImController1,
-		CmpImWindow *cmpImWindow2, CmpImController *cmpImController2 )
+void CmpMusController::SetImViewAndController( CmpMusWindow *cmpImWindow1, CmpMusController *cmpImController1,
+		CmpMusWindow *cmpImWindow2, CmpMusController *cmpImController2 )
 {
 	m_imControlPtr1 = cmpImController1;
 	m_imViewPtr1 = cmpImWindow1;
@@ -83,6 +88,52 @@ void CmpMusController::SetCmpFile( CmpFile *cmpFile )
 {
 	m_cmpFilePtr = cmpFile;
 	m_viewPtr->SetCmpFile( cmpFile );
+}
+
+
+void CmpMusController::LoadSources()
+{
+    if ( !m_collationCtrl || !m_viewPtr->m_currentElement ) {
+        // we are not in a collationCtrl or no element is selected
+        return;
+    }
+    
+    m_imControlPtr1->LoadSource( m_viewPtr->m_currentElement );
+    m_imControlPtr2->LoadSource( m_viewPtr->m_currentElement );
+}
+
+
+void CmpMusController::LoadSource( MusLaidOutLayerElement *element )
+{
+    if ( m_collationCtrl ) {
+        // this should never happen because we do not load the source from the collation controller
+        return;
+    }
+    
+    MusPage *currentPage = m_viewPtr->m_page;
+    MusLaidOutLayerElement *laidOutLayerElement = NULL;
+    wxArrayPtrVoid params;
+	params.Add( element->m_layerElement );
+    params.Add( &laidOutLayerElement );
+    MusLaidOutLayerElementFunctor findLayerElement( &MusLaidOutLayerElement::FindLayerElement );
+    m_viewPtr->m_layout->Process( &findLayerElement, params );
+    
+    if ( !laidOutLayerElement ) {
+        return; // we did not find it
+    }
+    
+    MusPage *page = laidOutLayerElement->m_layer->m_staff->m_system->m_page;
+    
+    if ( page != currentPage ) {
+        //wxLogMessage( "load page" );
+        m_viewPtr->SetPage( page );
+    }
+    m_viewPtr->m_currentSystem = laidOutLayerElement->m_layer->m_staff->m_system;    
+    m_viewPtr->m_currentStaff = laidOutLayerElement->m_layer->m_staff;
+    m_viewPtr->m_currentLayer = laidOutLayerElement->m_layer;
+    m_viewPtr->m_currentElement = laidOutLayerElement;
+    m_viewPtr->UpdateCmpScroll();
+    m_viewPtr->Refresh();
 }
 
 
@@ -115,6 +166,7 @@ BEGIN_EVENT_TABLE(CmpMusWindow,MusWindow)
     EVT_KEY_DOWN( CmpMusWindow::OnKeyDown )
     EVT_KEY_UP( CmpMusWindow::OnKeyUp )
     EVT_SIZE( CmpMusWindow::OnSize )
+    EVT_PAINT( CmpMusWindow::OnPaint )
 END_EVENT_TABLE()
 
 CmpMusWindow::CmpMusWindow( CmpMusController *parent, wxWindowID id,
@@ -133,6 +185,8 @@ CmpMusWindow::CmpMusWindow( CmpMusController *parent, wxWindowID id,
 	
 	m_lastStaff = -1, 
 	m_lastController = 1;
+    m_collationWin = false;
+    m_viewImage = false;
 }
 
 CmpMusWindow::CmpMusWindow()
@@ -143,13 +197,14 @@ CmpMusWindow::~CmpMusWindow()
 {
 }
 
-void CmpMusWindow::SetEnv( CmpEnv *env )
+void CmpMusWindow::SetEnv( CmpEnv *env, bool collationWin )
 {
     m_envPtr = env;
+    m_collationWin = collationWin;
 }
 
-void CmpMusWindow::SetImViewAndController( CmpImWindow *cmpImWindow1, CmpImController *cmpImController1,
-		CmpImWindow *cmpImWindow2, CmpImController *cmpImController2 )
+void CmpMusWindow::SetImViewAndController( CmpMusWindow *cmpImWindow1, CmpMusController *cmpImController1,
+		CmpMusWindow *cmpImWindow2, CmpMusController *cmpImController2 )
 {
 	m_imControlPtr1 = cmpImController1;
 	m_imViewPtr1 = cmpImWindow1;
@@ -162,36 +217,48 @@ void CmpMusWindow::SetCmpFile( CmpFile *cmpFile )
 	m_cmpFilePtr = cmpFile;
 }
 
-/*
-void CmpMusWindow::OnBeginEditionClef()
+
+void CmpMusWindow::OnPageChange( )
 {
-    if ( !m_envPtr )
+    if ( !m_page || m_page->m_surface.IsEmpty() ){
+        m_backgroundImage.Destroy();
         return;
-
-    m_edition = true;
-    if ( m_currentStaff )
-        MusMLFOutput::GetUt1( m_currentStaff, true );
+    }
+    
+    if ( !m_backgroundImage.LoadFile( m_cmpFilePtr->m_basename + m_page->m_surface )  ) {
+        wxLogDebug("Cannot load image '%s'", m_page->m_surface.c_str() );
+    }
 }
 
-void CmpMusWindow::OnEndEditionClef()
+
+void CmpMusWindow::UpdateCmpScroll()
 {
-    if ( !m_envPtr )
-        return;
+	if (!m_currentStaff)
+		return;
+    
+	int x = 0;
+	if ( m_currentElement )
+		x = ToRendererX( m_currentElement->m_x_abs );
+	int y = ToRendererY(  m_currentStaff->m_y_abs );
+    
+    x *= (double)m_zoomNum / m_zoomDen;
+    y *= (double)m_zoomNum / m_zoomDen;
+    
+	// units
+	int xu, yu;
+	this->GetScrollPixelsPerUnit( &xu, &yu );
+	// size
+	int w, h;
+	this->GetClientSize( &w, &h );
 
-    if ( m_edition && m_currentStaff )
-        MusMLFInput::GetNotUt1( m_currentStaff, true );
-
-    m_edition = false;
+    x -= (w / 2);
+    y -= (h / 2);
+    x /= xu;
+    y /= yu;
+    
+	Scroll( x, y );
+	//OnSyncScroll( x, y );
 }
-
-
-void CmpMusWindow::OnEndEdition()
-{
-	m_recFilePtr->Modify();
-    m_musControlPtr->SyncStaffBitmap();
-}
-*/
-
 
 void CmpMusWindow::OnSize( wxSizeEvent &event )
 {
@@ -228,49 +295,60 @@ void CmpMusWindow::OnScroll( wxScrollWinEvent &event )
 
 void CmpMusWindow::OnMouse(wxMouseEvent &event)
 {
-    if (event.GetEventType() == wxEVT_MOUSEWHEEL)
-    {
-        int x, y;
-        this->GetViewStart( &x, &y );
-        int rot = 0;
-        if ( event.m_wheelDelta )
-            rot = event.m_wheelRotation / event.m_wheelDelta * 6;
-
-        if (!m_shiftDown)
-            y -= rot;
-        else
-            x -= rot;
-
-        x = max( 0, x );
-        y = max( 0, y );
-        
-        this->Scroll( x, y );
-		OnSyncScroll( x, y );        
+    if ( !m_collationWin ) {
+        // for now we do nothing if this is a source window
+        return;
     }
-    else if (event.GetEventType() ==  wxEVT_LEFT_DCLICK)
+    
+    // this is the only mouse even we want to process
+    if ((event.GetEventType() ==  wxEVT_LEFT_DOWN) || (event.GetEventType() ==  wxEVT_LEFT_UP))
 	{
-		if ( m_currentStaff && m_currentElement )
-		{
-			if ( m_currentStaff->no != m_lastStaff )
-				m_lastController = (m_lastController == 1) ? 0 : 1; // swap controller
-			m_lastStaff = m_currentStaff->no;
-			CmpImController *controller = (m_lastController == 0) ? m_imControlPtr1 : m_imControlPtr2;
-			if ( controller )
-				controller->LoadRecImage( m_lastStaff, m_currentElement->m_im_filename, m_currentElement->m_im_staff, 
-					m_currentElement->m_im_pos, m_currentElement->m_cmp_flag );
-		
-			//wxLogMessage(" %s, %d", m_currentElement->m_im_filename.c_str(), m_currentElement->m_im_staff );
-		}
-		event.Skip();
-	}
-	else
         event.Skip();
+        m_musControlPtr->LoadSources();
+        return;
+    }
+
 }
+
+void CmpMusWindow::OnPaint(wxPaintEvent &event)
+{
+	if ( !m_page )
+		return;
+    
+	// calculate scroll position
+    int scrollX, scrollY;
+    this->GetViewStart(&scrollX,&scrollY);
+    int unitX, unitY;
+    this->GetScrollPixelsPerUnit(&unitX,&unitY);
+	wxSize csize = GetClientSize();
+    scrollX *= unitX;
+    scrollY *= unitY;
+    
+	wxPaintDC dc( this );
+    
+	this->PrepareDC( dc );
+	dc.SetTextForeground( *wxBLACK );
+	dc.SetMapMode( wxMM_TEXT );
+	dc.SetAxisOrientation( true, false );
+    dc.SetUserScale( double(GetZoom())/100.0,  double(GetZoom())/100.0 );
+	
+	//m_page->Init( this );
+    MusWxDC ax_dc( &dc );
+    if ( !m_collationWin && m_viewImage ) {
+        ax_dc.SetBackgroundImage( (void*)&m_backgroundImage );
+        ax_dc.DrawBackgroundImage();
+    }
+    else {
+        DrawPage( &ax_dc, m_page );
+    }
+}
+
 
 void CmpMusWindow::OnSyncScroll( int x, int y )
 {
-	//if ( m_imViewPtr )
-	//	m_imViewPtr->Scroll( x, y );
+	if ( m_collationWin ) {
+        m_musControlPtr->LoadSources();
+    }
 }
 
 	#endif // AX_COMPARISON

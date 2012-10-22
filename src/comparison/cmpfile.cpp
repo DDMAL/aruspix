@@ -13,15 +13,14 @@
 
 #include "cmpfile.h"
 #include "cmp.h"
-#include "cmpmlf.h"
 
 #include "recognition/recfile.h"
 
-#include "mus/musiobin.h"
-#include "musstaff.h"
-#include "muselement.h"
-//#include "musnote.h"
-//#include "mussymbol.h"
+#include "mus/muslayer.h"
+#include "mus/muspage.h"
+#include "mus/muslayout.h"
+#include "mus/musiomei.h"
+#include "mus/musapp.h"
 
 
 #include "wx/arrimpl.cpp"
@@ -77,15 +76,12 @@ CmpCollation::CmpCollation( wxString id, wxString name, wxString basename  )
 {
 	m_id = id;
 	m_name = name;
-	m_length = 0; // x_abs of the last element + 50
 	m_basename = basename;
 	m_isColLoaded = false;
-	
-	m_insStaff = NULL;
 
-	// new MusDoc
+
+    // new MusDoc
     m_musDocPtr = new MusDoc();
-    m_musDocPtr->m_fname = m_basename + m_id + ".wwg";
 }
 
 CmpCollation::~CmpCollation( )
@@ -94,21 +90,27 @@ CmpCollation::~CmpCollation( )
 		delete m_musDocPtr;
 }
 
-bool CmpCollation::IsCollationLoaded( )
+bool CmpCollation::IsCollationLoaded( CmpCollationPart *part )
 {
-	if ( m_isColLoaded )
-		return true;
-
-	if ( !wxFileExists( m_musDocPtr->m_fname ) )
+	//if ( !m_isColLoaded )
+	//	return false;
+    
+    wxString filename = m_basename + m_id + "." + part->m_bookPart->m_id + ".mei" ;
+    
+	if ( !wxFileExists( filename ) )
 		return false;
-		
-	bool failed = false;
-	MusBinInput_1_X *bin_input = new MusBinInput_1_X( m_musDocPtr, m_musDocPtr->m_fname, MUS_BIN_ARUSPIX_CMP  );
-	failed = !bin_input->ImportFile();
-	delete bin_input;
-	if ( failed )
+    
+	MusMeiInput mei_input( m_musDocPtr, filename  );
+	if (!mei_input.ImportFile()) {
 		return false;
-
+    }
+    
+    // Create a raw layout of the collation
+    MusLayout *layout = new MusLayout( Raw );
+    layout->Realize( m_musDocPtr->m_divs[0].m_score );
+    m_musDocPtr->AddLayout( layout );
+    layout->SpaceMusic();
+    
 	m_isColLoaded = true;
 	return true;
 }
@@ -215,79 +217,174 @@ bool CmpCollation::Realize( )
 	return true;
     */
     wxLogError( "CmpCollation::Realize method missing in ax2") ;
+    m_isColLoaded = true;
     return true;
 }
 
 bool CmpCollation::Collate( )
 {
-    /*
 	int i;
 	// !!! THERE IS NO CHECK THAT THE FILES HAVE BEEN LOADED
 	// IF NOT, THE READING STAFF WILL CRASH...
 
-	int nstaff = (int)m_collationParts.GetCount();
+	int nparts = (int)m_collationParts.GetCount();
 	 
-	if ( nstaff == 0 )
+	if ( nparts == 0 )
 		return false;
 	
-	MusLaidOutStaff *staves = new MusLaidOutStaff[ nstaff ];
-	MusLaidOutStaff *reference = NULL;
-	for( i = 0; i < (int)m_collationParts.GetCount(); i++ )
+	MusDoc *docs = new MusDoc[ nparts ];
+    
+    // pointers for the refence doc
+	MusDoc *reference = NULL;
+    wxString refFilename;
+    
+    for( i = 0; i < (int)m_collationParts.GetCount(); i++ )
 	{
 		CmpCollationPart *part = &m_collationParts[i];
-		MusBinInput_1_X bin_input( NULL, m_basename + part->m_bookPart->m_id + ".swwg", MUS_BIN_ARUSPIX_CMP );
-		bin_input.ReadStaff( &staves[i] );
+        MusMeiInput meiInput( &docs[i], m_basename + part->m_bookPart->m_id + ".mei" );
+        if ( !meiInput.ImportFile() ) {
+            wxLogError( "Cannot open MEI part file");
+        }
+
 		if ( part->m_flags & PART_REFERENCE )
 		{
-			reference = &staves[i];
-			m_length = (&reference->m_elements.Last())->m_x_abs + 50;
+			reference = &docs[i];
+            refFilename = m_basename + part->m_bookPart->m_id + ".mei";
+            // we will need to change this to a more sophisticated source structure
+            m_refSource = part->m_bookPart->m_bookname;
 		}
 	}
 	
 	if ( reference == NULL )
 	{
 		wxLogError( _("No reference part found") );
-		delete[] staves;
+		delete[] docs;
 		return false;
 	}
 
 	for( i = 0; i < (int)m_collationParts.GetCount(); i++ )
 	{
+        if ( &docs[i] == reference ) {
+            // we are not going to compare the reference with itself
+            continue;
+        }
+        
+       
 		CmpCollationPart *part = &m_collationParts[i];
-		if ( &staves[i] != reference )
-			//&align_staves[i] = 
-			Align( reference, &staves[i], part );
+        MusLayer *layer_ref = &reference->m_divs[0].m_score->m_sections[0].m_staves[0].m_layers[0];
+        MusLayer *layer_var = &(&docs[i])->m_divs[0].m_score->m_sections[0].m_staves[0].m_layers[0];
+        MusSection *section_ref = &reference->m_divs[0].m_score->m_sections[0];
+        MusSection *section_var = &(&docs[i])->m_divs[0].m_score->m_sections[0];
+        
+        // we keep two arrays of uuid for then changing them in the layout
+        int nbElements = layer_ref->GetElementCount();
+        nbElements++; // one more because we are also going to have the section uuid
+        uuid_t *uuid_refs = (uuid_t*)malloc( nbElements * sizeof( uuid_t ) ); 
+        uuid_t *uuid_vars = (uuid_t*)malloc( nbElements * sizeof( uuid_t ) ); 
+        int uuid_count = 0;
+        
+        // section uuids
+        uuid_copy( uuid_refs[uuid_count], *section_ref->GetUuid() );
+        uuid_copy( uuid_vars[uuid_count], *section_var->GetUuid() );
+        uuid_count++;
+        
+		m_varSource = part->m_bookPart->m_bookname;
+        MusLayer *layer_aligned = Align( layer_ref, layer_var, uuid_refs, uuid_vars, &uuid_count );
+        
+        // We replace the uuids in the logical tree of the _original_ file for the matched element
+        int j;
+        for (j = 0; j < uuid_count; j++) {
+            MusFunctor replaceUuid( &MusObject::ReplaceUuid );
+            MusObject *element = NULL;
+            wxArrayPtrVoid params;
+            params.Add( uuid_vars[j] );
+            params.Add( uuid_refs[j] );
+            params.Add( &element );
+            docs[i].ProcessLogical( &replaceUuid, params );
+        }
+        
+        // The we can detatch the layout from the original file
+        MusLayout *varLayout = (&docs[i])->m_layouts.Detach( 0 );
+        
+        MusDoc tmpDoc;
+        MusMeiInput meiInput( &tmpDoc, refFilename );
+        if ( !meiInput.ImportFile() ) {
+            wxLogError( "Cannot open MEI part file");
+        }
+        MusLayout *refLayout = tmpDoc.m_layouts.Detach( 0 );
+        
+        wxLogMessage( _("Saving MEI collation file ... ") );
+        
+        // create the full mei doc
+        MusDoc *collationDoc = new MusDoc( );
+        MusDiv *div = new MusDiv( );
+        MusScore *score = new MusScore( );
+        MusSection *section = new MusSection( );
+        // TRICK! Very important! Because the layouts point to the section, we need to keep the same uuid
+        section->SetUuid( *section_ref->GetUuid() );
+        MusStaff *staff = new MusStaff();
+        
+        staff->AddLayer( layer_aligned );
+        section->AddStaff( staff );
+        score->AddSection( section );
+        div->AddScore( score );
+        collationDoc->AddDiv( div );
+        
+        collationDoc->AddLayout( refLayout );
+        collationDoc->AddLayout( varLayout );
+        collationDoc->ResetAndCheckLayouts();
+        
+        MusMeiOutput mei_output( collationDoc, m_basename + m_id + "." + part->m_bookPart->m_id + ".mei"  );
+        mei_output.ExportFile();
+        
+        free( uuid_refs );
+        free( uuid_vars );
 			
 		//MusBinOutput bin_output( NULL, m_basename + book->m_shortname + ".swwg", MUS_BIN_ARUSPIX_CMP  );
 		//bin_output.WriteStaff( musStaff );
 	}
+
 	
 	// save reference
-	MusBinOutput bin_output( NULL, m_basename + m_id + ".swwg", MUS_BIN_ARUSPIX_CMP  );
+	/*
+    MusBinOutput bin_output( NULL, m_basename + m_id + ".swwg", MUS_BIN_ARUSPIX_CMP  );
 	bin_output.WriteStaff( reference );
-	
-	delete[] staves;
+	*/ // ax2
+     
+	delete[] docs;
 	return true;
-    */
-    wxLogError( "CmpCollation::Collate missing in ax2" );
 	
 }
 
-void CmpCollation::SetCmpValues( MusElement *dest, MusElement *src, int flag )
+void CmpCollation::CreateApp( MusLayer *layer_aligned, int i, MusLayer *layer_var, int j, int appType )
 {
-	dest->m_cmp_flag = flag;
-	if ( src )
-	{
-		dest->m_im_filename = src->m_im_filename;
-		dest->m_im_staff = src->m_im_staff;
-		dest->m_im_pos = src->m_im_pos;
-	}
-	else
-	{
-		dest->m_im_filename = "";
-		dest->m_im_staff = 0;
-		dest->m_im_pos = 0;
-	}
+    MusLayerApp *app = new MusLayerApp();
+    
+    // we create two <rdg> because we are going to have an empty rdg for insertions and deletions
+    MusLayerRdg *ref = new MusLayerRdg();
+    MusLayerRdg *var = new MusLayerRdg();
+    // set the source ids available as member variables
+    ref->m_source = m_refSource;
+    var->m_source = m_varSource;
+    
+    if ( (appType == CMP_APP_SUBST) || (appType == CMP_APP_DEL) ) {
+        ref->AddLayerElement( (&layer_aligned->m_elements[i])->GetChildCopy()  );
+    }
+    if ( (appType == CMP_APP_SUBST) || (appType == CMP_APP_INS) ) {
+        var->AddLayerElement( (&layer_var->m_elements[j])->GetChildCopy()  );
+    }
+    
+    // then insert the rdg 
+    app->AddLayerRdg( ref );
+    app->AddLayerRdg( var );
+    // insert the app in the layer
+    layer_aligned->Insert( app, &layer_aligned->m_elements[i] );
+
+    // remove the original element (if any)
+    if ( appType != CMP_APP_INS ) {
+        delete &layer_aligned->m_elements[i+1];
+    }
+    
 }
 
 int minimum(int a,int b,int c)
@@ -302,26 +399,15 @@ int minimum(int a,int b,int c)
 }
 
 	
-bool CmpCollation::Align( MusLaidOutStaff *staff_ref, MusLaidOutStaff *staff_var, CmpCollationPart *part_var )
-{
-    /*
-	CmpMLFOutput m_cmpoutput1( NULL, wxGetApp().m_workingDir + "/cmp_staff1", "CmpMLFSymb"  );
-	m_cmpoutput1.WriteStaff( staff_ref );
-		
-	CmpMLFOutput m_cmpoutput2( NULL, wxGetApp().m_workingDir + "/cmp_staff2", "CmpMLFSymb"  );
-	m_cmpoutput2.WriteStaff( staff_var );
-	
-	ArrayOfMLFSymbols *reference = m_cmpoutput1.GetSymbols();
-	ArrayOfMLFSymbols *variant = m_cmpoutput2.GetSymbols();
-	
-	
+MusLayer *CmpCollation::Align( MusLayer *layer_ref, MusLayer *layer_var, uuid_t *uuid_refs, uuid_t *uuid_vars, int *uuid_count )
+{	
 	// We may eventually avoid the use of CmpMLFOuputs working directy on MusLaidOutStaff
 	// A comparison method for MusElement would have to be provided though
 
 	//Step 1
 	int k,i,j,n,m,cost,*d,distance;
-	n = (int)reference->GetCount();
-	m = (int)variant->GetCount();
+	n = layer_ref->GetElementCount();
+	m = layer_var->GetElementCount();
 	
 	int insert_cost = 2;
 	int delete_cost = 2;
@@ -357,10 +443,11 @@ bool CmpCollation::Align( MusLaidOutStaff *staff_ref, MusLaidOutStaff *staff_var
 		d[k*n]=k;
 	//Step 3 and 4	
 	for(i=1;i<n;i++)
+    {
 		for(j=1;j<m;j++)
 		{
 			//Step 5
-			if ( reference->Item(i-1).GetLabel() == variant->Item(j-1).GetLabel()) 
+			if ( layer_ref->m_elements[i-1] == layer_var->m_elements[j-1] ) 
 			//if(s[i-1]==t[j-1])
 				cost=0;
 			else
@@ -368,6 +455,7 @@ bool CmpCollation::Align( MusLaidOutStaff *staff_ref, MusLaidOutStaff *staff_var
 			//Step 6			 
 			d[j*n+i]=minimum(d[(j-1)*n+i]+delete_cost,d[j*n+i-1]+insert_cost,d[(j-1)*n+i-1]+cost);
 		}
+    }
 	
 	i=n-1;
 	j=m-1;
@@ -375,6 +463,7 @@ bool CmpCollation::Align( MusLaidOutStaff *staff_ref, MusLaidOutStaff *staff_var
 	int n_insert = 0;
 	int n_delete = 0;
 	int n_subst = 0;
+    
 	// principle : the aligned staff is identical to the reference.
 	// for every substitution, we replace the element using the one in the variant (and change the flag)
 	// for every deletion, we change the flag of the element
@@ -383,25 +472,28 @@ bool CmpCollation::Align( MusLaidOutStaff *staff_ref, MusLaidOutStaff *staff_var
 	// AddInsertion add the element to the current insertion staff
 	// if needed, AddInsertion create the insertion staff and add an element into the aligned staff (before position i)
 	// EndInsertion write the current insertion staff if it exists
-	MusLaidOutStaff aligned = *staff_ref;
-	wxASSERT( !m_insStaff );
-	m_insStaff = NULL;
-	int ii, jj;
+	
+    // Copy the original reference layer to a new one where we are going to insert the <app> and <rdg>
+    MusLayer *layer_aligned = new MusLayer();
+    uuid_t emptyUuid;
+    uuid_clear( emptyUuid );
+    layer_ref->CopyContent( layer_aligned, emptyUuid, emptyUuid );
+
 	while ((j > 0) && (i > 0))	
 	{
 		match = false;
-		if ( reference->Item(i-1).GetLabel() == variant->Item(j-1).GetLabel() )
+		if ( layer_ref->m_elements[i-1] == layer_var->m_elements[j-1] )
 		{
 			if (d[j*n+i] == d[(j-1)*n+i-1]) // align
 			{
 				//printf("%d - ", d[j*n+i]);
 				i--; j--;
-				//printf("   \t%10s\t%10s\n", reference->Item(i).GetLabel().c_str(), variant->Item(j).GetLabel().c_str() );
+				//printf("   \t%10s\t%10s\n", (&layer_ref->m_elements[i])->MusClassName().c_str(), (&layer_var->m_elements[j])->MusClassName().c_str() );
 				match = true;
-				ii = ((CmpMLFSymb*)&reference->Item(i))->m_index;
-				jj = ((CmpMLFSymb*)&variant->Item(j))->m_index;
-				SetCmpValues( &aligned.m_elements[ii], &staff_var->m_elements[jj], CMP_MATCH );
-				EndInsertion( part_var );
+                // here we store the uuid for synchronizing the layout
+                uuid_copy( uuid_refs[(*uuid_count)], *(&layer_ref->m_elements[i])->GetUuid() );
+                uuid_copy( uuid_vars[(*uuid_count)], *(&layer_var->m_elements[j])->GetUuid() );
+                (*uuid_count)++;
 			}
 		}
 		else
@@ -410,44 +502,34 @@ bool CmpCollation::Align( MusLaidOutStaff *staff_ref, MusLaidOutStaff *staff_var
 			{
 				//printf("%d - ", d[j*n+i]);
 				i--; j--;
-				//printf("S |\t%10s\t%10s\n", reference->Item(i).GetLabel().c_str(), variant->Item(j).GetLabel().c_str() );
-				//aligned.m_elements[i] = staff_var->m_elements[j];
-				ii = ((CmpMLFSymb*)&reference->Item(i))->m_index;
-				jj = ((CmpMLFSymb*)&variant->Item(j))->m_index;
-				if ( staff_var->m_elements[jj].IsNote() )
-					aligned.m_elements.Insert( new MusNote1( *(MusNote1*)&staff_var->m_elements[jj] ), ii );
-				else if ( staff_var->m_elements[jj].IsSymbol() )
-					aligned.m_elements.Insert( new MusSymbol1( *(MusSymbol1*)&staff_var->m_elements[jj] ), ii );
-				aligned.m_elements[ii]m_x_abs = aligned.m_elements[ii+1]m_x_abs;
-				aligned.m_elements.RemoveAt(ii+1);
-				SetCmpValues( &aligned.m_elements[ii], &staff_var->m_elements[jj], CMP_SUBST );
+				//printf("S |\t%10s\t%10s\n", (&layer_ref->m_elements[i])->MusClassName().c_str(), (&layer_var->m_elements[j])->MusClassName().c_str() );
+                CreateApp( layer_aligned, i + n_insert, layer_var, j, CMP_APP_SUBST );
 				match = true;
 				n_subst++;
-				EndInsertion( part_var );
 			}
 		}
+        // !match means we did not have a match or a substitution. It will be an insertion or a deletion
 		if ( !match )
 		{
 			if ((j > 0) && (d[j*n+i] == d[(j-1)*n+i] + insert_cost))
 			{
-				//printf("%d - ", d[j*n+i]);
+				printf("%d - ", d[j*n+i]);
 				j--;
-				ii = ((CmpMLFSymb*)&reference->Item(i))->m_index;
-				jj = ((CmpMLFSymb*)&variant->Item(j))->m_index;
-				//printf("I |\t%10s\t%10s\n", "-", variant->Item(j).GetLabel().c_str() );
+				///ii = ((CmpMLFSymb*)&reference->Item(i))->m_index;
+				///jj = ((CmpMLFSymb*)&variant->Item(j))->m_index;
+				printf("I |\t%10s\t%10s\n", "-", (&layer_var->m_elements[j])->MusClassName().c_str() );
+                CreateApp( layer_aligned, i + n_insert, layer_var, j, CMP_APP_INS );
 				n_insert++;
-				AddInsertion( &staff_var->m_elements[jj], &aligned, ii );
 			}
 			else if ((i > 0) && (d[j*n+i] == d[(j)*n+i-1] + delete_cost))
 			{
-				//printf("%d - ", d[j*n+i]);
+				printf("%d - ", d[j*n+i]);
 				i--;
-				ii = ((CmpMLFSymb*)&reference->Item(i))->m_index;
-				jj = ((CmpMLFSymb*)&variant->Item(j))->m_index;
-				//printf("D |\t%10s\t%10s\n", reference->Item(i).GetLabel().c_str(), "-" );
-				SetCmpValues( &aligned.m_elements[ii], NULL, CMP_DEL );
+				///ii = ((CmpMLFSymb*)&reference->Item(i))->m_index;
+				///jj = ((CmpMLFSymb*)&variant->Item(j))->m_index;
+				printf("D |\t%10s\t%10s\n", (&layer_ref->m_elements[i])->MusClassName().c_str(), "-" );
+                CreateApp( layer_aligned, i + n_insert, layer_var, j, CMP_APP_DEL );
 				n_delete++;
-				EndInsertion( part_var );
 			}
 			else
 			{
@@ -459,30 +541,28 @@ bool CmpCollation::Align( MusLaidOutStaff *staff_ref, MusLaidOutStaff *staff_var
 	while (j > 0)
 	{
 		j--;
-		jj = ((CmpMLFSymb*)&variant->Item(j))->m_index;
-		//printf("I |\t%10s\t%10s\n", "-", variant->Item(j).GetLabel().c_str() );
+		//jj = ((CmpMLFSymb*)&variant->Item(j))->m_index;
+		printf("I |\t%10s\t%10s\n", "-", (&layer_var->m_elements[j])->MusClassName().c_str() );
+        CreateApp( layer_aligned, i + n_insert, layer_var, j, CMP_APP_INS );
 		n_insert++;
-		AddInsertion( &staff_var->m_elements[jj], &aligned, 0 );
 	}
 	while (i > 0)
 	{
 		i--;
-		ii = ((CmpMLFSymb*)&reference->Item(i))->m_index;
-		//printf("D |\t%10s\t%10s\n", reference->Item(i).GetLabel().c_str(), "-" );
-		SetCmpValues( &aligned.m_elements[ii], NULL, CMP_DEL );
+		//ii = ((CmpMLFSymb*)&reference->Item(i))->m_index;
+		printf("D |\t%10s\t%10s\n", (&layer_ref->m_elements[i])->MusClassName().c_str(), "-" );
+        CreateApp( layer_aligned, i + n_insert, layer_var, j, CMP_APP_DEL );
 		n_delete++;
 	}
-	//printf("\nEnd (i = %d, j = %d)\n", i , j);
-	EndInsertion( part_var ); // flush the last insertion
+	printf("\nEnd (i = %d, j = %d)\n", i , j);
 	
-	MusBinOutput bin_output( NULL, m_basename + m_id + "." + part_var->m_bookPart->m_id + ".swwg", MUS_BIN_ARUSPIX_CMP  );
-	bin_output.WriteStaff( &aligned );
-	
+    /*
 	part_var->m_ins = n_insert;
 	part_var->m_del = n_delete;
 	part_var->m_subst = n_subst;
 	part_var->m_recall = (n - n_delete - n_subst) * 100. / (double)n;
 	part_var->m_precision = (n - n_delete - n_subst) * 100. / (double)(n - n_delete + n_insert);
+    */
 	
 	
 	//printf("Recall %5.2f | Precision %5.2f || N %d | I %d | D %d | S %d\n",
@@ -503,24 +583,14 @@ bool CmpCollation::Align( MusLaidOutStaff *staff_ref, MusLaidOutStaff *staff_var
 	
 	distance=d[n*m-1];
 	free(d);
-    */
-    wxLogError( "CmpCollation::Align missing in ax2" );
 	
-	return new MusLaidOutStaff();
+    return layer_aligned;
 }
 
-void  CmpCollation::EndInsertion( CmpCollationPart *part_var  )
+/*
+void  CmpCollation::AddInsertion( MusLayerElement *elem, MusLayer *aligned, int i )
 {
-	if ( !m_insStaff )
-		return;
-	
-	// save staff
-	delete m_insStaff;
-	m_insStaff = NULL;
-}
-
-void  CmpCollation::AddInsertion( MusElement *elem, MusLaidOutStaff *aligned, int i )
-{
+    
 	if ( !m_insStaff )
 	{
 		m_insStaff = new MusLaidOutStaff();
@@ -541,6 +611,26 @@ void  CmpCollation::AddInsertion( MusElement *elem, MusLaidOutStaff *aligned, in
 		}
 		aligned->CheckIntegrity( );
 	}
+    // ax2
+}
+*/
+
+//----------------------------------------------------------------------------
+// CmpPartPage
+//----------------------------------------------------------------------------
+
+
+CmpPartPage::CmpPartPage() 
+{ 
+    uuid_clear( m_start );
+    uuid_clear( m_end );
+}
+
+CmpPartPage::CmpPartPage(  wxString axfile ) 
+{
+    uuid_clear( m_start );
+    uuid_clear( m_end );
+    m_axfile = axfile; 
 }
 
 //----------------------------------------------------------------------------
@@ -583,7 +673,7 @@ CmpBookItem::~CmpBookItem( )
 
 bool CmpBookItem::AssembleParts( )
 {
-	wxLogMessage( m_shortname );
+	wxLogMessage( m_shortname.c_str() );
 	
 	return true;
 }
@@ -655,14 +745,20 @@ void CmpFile::OpenContent( )
 				if (!elem || !elem->Attribute( "filename" ) ) 
 					continue;
 				CmpPartPage *page = new CmpPartPage( elem->Attribute( "filename" ) );
+                
 				TiXmlNode *node3 = NULL;
-				for( node3 = node2->FirstChild( "staff" ); node3; node3 = node3->NextSibling( "staff" ) )
-				{
-					elem = node3->ToElement();
-					if (!elem || !elem->Attribute( "no" ) ) 
+                if ( ( node3 = node2->FirstChild( "start" ) ) ) {
+                    elem = node3->ToElement();
+                    if (!elem || !elem->Attribute( "uuid" ) ) 
 						continue;
-					page->m_staves.Add( atoi( elem->Attribute( "no" ) ) );
-				}
+                    uuid_parse( elem->Attribute( "uuid" ), page->m_start );
+                }
+                if ( ( node3 = node2->FirstChild( "end" ) ) ) {
+                    elem = node3->ToElement();
+                    if (!elem || !elem->Attribute( "uuid" ) ) 
+						continue;
+                    uuid_parse( elem->Attribute( "uuid" ), page->m_end );
+                }
 				part->m_partpages.Add( page );
 			}
 			book->m_bookParts.Add( part );
@@ -722,7 +818,8 @@ void CmpFile::OpenContent( )
 void CmpFile::SaveContent( )
 {
     wxASSERT( m_xml_root );
-	int i, j, k, l;
+	int i, j, k;
+    char uuidStr[37];
     
     TiXmlElement books("books");
     for ( i = 0; i < (int)m_bookFiles.GetCount(); i++)
@@ -749,12 +846,18 @@ void CmpFile::SaveContent( )
 				axfile.SetAttribute("flags", wxString::Format("%d", 0 ) );
 				// add staves if any
 				CmpPartPage *partpage = &bookpart->m_partpages[k];
-				for ( l = 0; l < (int)partpage->m_staves.GetCount(); l++)
-				{
-					TiXmlElement staff("staff");
-					staff.SetAttribute("no", wxString::Format("%d", partpage->m_staves[l] ) );
-					axfile.InsertEndChild( staff );
-				}
+                if ( !uuid_is_null( partpage->m_start ) ) {
+                    TiXmlElement start("start");
+                    uuid_unparse( partpage->m_start, uuidStr ); 
+                    start.SetAttribute("uuid", uuidStr );
+					axfile.InsertEndChild( start );
+                }
+                if ( !uuid_is_null( partpage->m_end ) ) {
+                    TiXmlElement end("end");
+                    uuid_unparse( partpage->m_end, uuidStr ); 
+                    end.SetAttribute("uuid", uuidStr );
+					axfile.InsertEndChild( end );
+                }
 				part.InsertEndChild( axfile );
 			}
 			book.InsertEndChild( part );	
@@ -830,7 +933,6 @@ bool CmpFile::LoadBooks( wxArrayPtrVoid params, AxProgressDlg *dlg )
       
     bool failed = false;
 
-    /*
     for ( int i = 0; i < nbooks; i++ )
     {
         if ( dlg->GetCanceled() ) // PROBLEM, canceled is true but don't know why ...
@@ -841,19 +943,35 @@ bool CmpFile::LoadBooks( wxArrayPtrVoid params, AxProgressDlg *dlg )
 		wxString job =  wxString::Format( _("Loading the files for the book '%s'"), m_bookFiles[i].m_recBookFilePtr->m_shortname.c_str() );
 		dlg->SetJob( job );
 		dlg->SetMaxJobBar( nparts );
-		wxLogMessage( m_bookFiles[i].m_recBookFilePtr->m_shortname );
+		wxLogMessage( "%s", m_bookFiles[i].m_recBookFilePtr->m_shortname.c_str() );
 			
 		for ( int j = 0; j < nparts; j++ )
 		{
 			CmpBookPart *part = &m_bookFiles[i].m_bookParts[j];
+            MusSection *origSection = NULL;
 			
-			MusMLFOutput *m_mlf = new MusMLFOutput( NULL, m_basename + part->m_id + ".mlf", NULL, "MusMLFSymbol" );
-			m_mlf->m_pagePosition = true;
+            // Create the new MEI file    
+            MusDoc *partDoc = new MusDoc( );
+            MusDiv *div = new MusDiv( );
+            MusScore *score = new MusScore( );
+            MusSection *section = new MusSection( );
+            MusStaff *staff = new MusStaff();
+            MusLayer *partLayer = new MusLayer();
+            MusLayout *partLayout = new MusLayout( Transcription );
+            // we will need to change this to a more sophisticated source structure
+            partLayout->m_source = part->m_bookname;
+            
+            staff->AddLayer( partLayer );
+            section->AddStaff( staff );
+            score->AddSection( section );
+            div->AddScore( score );
+            partDoc->AddDiv( div );
+            partDoc->AddLayout( partLayout );
 		
 			nfiles = (int)part->m_partpages.GetCount();
-			wxLogMessage( part->m_name );
+			wxLogMessage( "%s", part->m_name.c_str() );
 	
-			wxString operation =  wxString::Format( _("Adding data the part '%s' (%d/%d)"), part->m_name.c_str(), j + 1, nparts ) ;
+			wxString operation =  wxString::Format( _("Adding data to the part '%s' (%d/%d)"), part->m_name.c_str(), j + 1, nparts ) ;
 			dlg->SetOperation( operation );	
 			
 			//dlg->SetMaxJobBar( nfiles );
@@ -862,13 +980,15 @@ bool CmpFile::LoadBooks( wxArrayPtrVoid params, AxProgressDlg *dlg )
 		
 			for ( int k = 0; k < (int)nfiles; k++ )
 			{
+                CmpPartPage *partPage = &part->m_partpages[k];
+                
 				RecFile recFile( "cmp_add_file" );
 				recFile.New();
 				
 				imCounterInc( dlg->GetCounter() );
-				wxLogMessage( part->m_partpages[k].m_axfile );
+				wxLogMessage( "%s", partPage->m_axfile.c_str() );
 	
-				wxString file = m_bookFiles[i].m_recBookFilePtr->m_axFileDir + wxFileName::GetPathSeparator() + part->m_partpages[k].m_axfile;
+				wxString file = m_bookFiles[i].m_recBookFilePtr->m_axFileDir + wxFileName::GetPathSeparator() + partPage->m_axfile;
 				if ( !recFile.Open( file ) )
 					continue;
 	
@@ -877,37 +997,56 @@ bool CmpFile::LoadBooks( wxArrayPtrVoid params, AxProgressDlg *dlg )
 					wxLogWarning(_("File '%s' skipped"), file.c_str() );
 					continue;
 				}
-
+                
+                if ( k == 0 ) {
+                    origSection = &recFile.m_musDocPtr->m_divs[0].m_score->m_sections[0];
+                }
+                else {
+                    // TRICK! We are here putting together several pages - since each page is a different section,
+                    // we need to make sure they have the same uuid because we are going to use the uuid to 
+                    // move the pointers when importing the layout - see MusDoc::ResetAndCheckLayouts()
+                    (&recFile.m_musDocPtr->m_divs[0].m_score->m_sections[0])->SetUuid( *origSection->GetUuid() );
+                }
+                
+                wxImage image;
+                if ( !image.LoadFile( recFile.m_basename + "img1.tif" ) ) {
+                    wxLogWarning( "Image file could not be loaded '%s'", file.c_str() );
+                }
+                if ( !image.SaveFile( m_basename + recFile.m_shortname +".png", wxBITMAP_TYPE_PNG ) ) {
+                    wxLogWarning( "Image file could not be saved '%s'", file.c_str() );
+                }                    
 
 				if ( !failed && !dlg->GetCanceled() )
 				{
-					if ( part->m_partpages[k].m_staves.IsEmpty() ) // all staves
-						failed = !m_mlf->WritePage( &recFile.m_musDocPtr->m_pages[0], wxFileName( part->m_partpages[k].m_axfile ).GetName(), recFile.m_imPagePtr );
-					else
-						failed = !m_mlf->WritePage( &recFile.m_musDocPtr->m_pages[0], wxFileName( part->m_partpages[k].m_axfile ).GetName(), 
-							recFile.m_imPagePtr, &part->m_partpages[k].m_staves );
-				
-				}
-				//imCounterInc( dlg->GetCounter() );	
+                    // Obviously not safe at all!
+                    MusLayer *recLayer = &recFile.m_musDocPtr->m_divs[0].m_score->m_sections[0].m_staves[0].m_layers[0];
+                    recLayer->CopyContent( partLayer, partPage->m_start, partPage->m_end );
+                    
+                    // Detach the correspondant layout page from the file - we will not save the file, so who cares?
+                    MusPage *partPage =  recFile.m_musDocPtr->m_layouts[0].m_pages.Detach( 0 ); 
+                    partLayout->AddPage( partPage );
+                    // temporary - for now we just put the filename in the surface - this is actually wrong
+                    partPage->m_surface = recFile.m_shortname + ".png";
+				}	
 			}
-			m_mlf->Close();
-			delete m_mlf;
-			
-            wxLogMessage( _("Convert data ...") );
-            //wxLogMessage( _("Convert data ... " + m_basename + part->m_id) );
-			CmpMLFInput *m_cmpinput = new CmpMLFInput( NULL, m_basename + part->m_id + ".mlf"  );
-			MusLaidOutStaff *musStaff = m_cmpinput->ImportFileInStaff( );
-			musStaff->no = 0;
-			musStaff->vertBarre = START_END;
-			delete m_cmpinput;
+            
+            // TRICK! Make sure the new section has the same uuid as the ones of the objects the pages currently point to
+            if ( origSection ) {
+                section->SetUuid( *origSection->GetUuid() );
+            }
+            
+            // Now we need to reset the pointers from the layout since the objects have changed
+            // This will also remove the elements in the layout that where not copied in the logical tree
+            // For example, if we need only the first staff, all other staves in the layout page will be empty
+            partDoc->ResetAndCheckLayouts();
+            
 			imCounterInc( dlg->GetCounter() );
-			
-		
-			wxLogMessage( _("Write data ...") );
-			MusBinOutput *bin_output = new MusBinOutput( NULL, m_basename + part->m_id + ".swwg", MUS_BIN_ARUSPIX_CMP  );
-			bin_output->WriteStaff( musStaff );
-			delete bin_output;
-			delete musStaff;
+            
+            wxLogMessage( _("Saving MEI part file ...") );
+            MusMeiOutput *mei_output = new MusMeiOutput( partDoc, m_basename + part->m_id + ".mei"  );
+            mei_output->ExportFile();
+            delete mei_output;
+            
 			imCounterInc( dlg->GetCounter() );
 		}
     }
@@ -916,12 +1055,8 @@ bool CmpFile::LoadBooks( wxArrayPtrVoid params, AxProgressDlg *dlg )
 	
 	if (!failed)	
 		this->Modify();
-	*/
     
-    wxLogError( "CmpCollation::LoadBooks missing in ax2" );
-	return !failed;
-
-
+    return false;
 }
 
 /*
@@ -1040,133 +1175,7 @@ bool CmpFile::HasToBePreprocessed( wxString imagefile )
 }
 */
 
-/*
-bool CmpFile::Collate( wxArrayPtrVoid params, AxProgressDlg *dlg )
-{
-	wxASSERT_MSG( dlg, "AxProgressDlg cannot be NULL" );
 
-    wxArrayString paths, filenames;
-    size_t nbOfFiles, book_nbOfFiles;
-    
-	nbOfFiles = m_bookFiles.GetCount();
-    if ( nbOfFiles == 0 )
-        return false;  
-    
-    bool failed = false;
-
-    wxString ext, shortname, outfile;
-    for ( int i = 0; i < (int)nbOfFiles; i++ )
-    {
-        if ( dlg->GetCanceled() )
-            break;
-			
-		RecBookFile *book = m_bookFiles[i].m_recBookFilePtr;
-		
-		MusMLFOutput *m_mlf = new MusMLFOutput( NULL, m_basename + book->m_shortname + ".mlf", "MusMLFSymbol" );
-		m_mlf->m_writePosition = true;
-		
-		book_nbOfFiles = book->RecognizedFiles( &filenames, &paths );
-		for ( int j = 0; j < (int)book_nbOfFiles; j++ )
-		{
-			RecFile recFile( "cmp_add_file" );
-			recFile.New();
-	
-			if ( !recFile.Open( paths[j] ) )
-				continue;
-	
-			if ( !recFile.IsRecognized() ) 
-			{
-				wxLogWarning(_("File '%s' skipped"), paths[j].c_str() );
-				continue;
-			}
-	
-			//wxString operation =  wxString::Format( _("Adding data from file '%s' (%d/%d)"), shortname.c_str(), file_nb + 1, nb_files ) ;
-			//dlg->SetOperation( operation );
-	
-			// counter
-			//int counter = dlg->GetCounter();
-			//int count = 1;
-			//imCounterTotal( counter, count , operation.c_str() );
-
-			if ( !failed && !dlg->GetCanceled() )
-				failed = !m_mlf->WritePage( &recFile.m_musDocPtr->m_pages[0], wxFileName( filenames[j] ).GetName(), recFile.m_imPagePtr );
-			//imCounterInc( dlg->GetCounter() );	
-		}
-		m_mlf->Close();
-		delete m_mlf;
-    }
-
-    imCounterEnd( dlg->GetCounter() );
-	
-	if (!failed)	
-		this->Modify();
-	
-	return !failed;
-}
-*/
-
-/*
-bool CmpFile::Collate( wxArrayPtrVoid params, AxProgressDlg *dlg )
-{
-	wxASSERT_MSG( dlg, "AxProgressDlg cannot be NULL" );
-
-    wxArrayString paths, filenames;
-    size_t nbOfFiles;
-    
-	nbOfFiles = m_bookFiles.GetCount();
-    if ( nbOfFiles == 0 )
-        return false;  
-    
-    bool failed = false;
-
-    wxString ext, shortname, outfile;
-    for ( int i = 0; i < (int)nbOfFiles; i++ )
-    {
-        if ( dlg->GetCanceled() )
-            break;
-			
-		RecBookFile *book = m_bookFiles[i].m_recBookFilePtr;
-		/ *
-		CmpMLFInput *m_cmpinput = new CmpMLFInput( NULL, m_basename + book->m_shortname + ".mlf"  );
-		
-		MusLaidOutStaff *musStaff = m_cmpinput->ImportFileInStaff( );
-        musStaff->no = 0;
-        //musStaff->indent = imStaff->CalcIndentation( x1 );
-        //musStaff->ecart = (m_imPagePtr->ToViewY( imStaff->m_y ) -  previous ) / musPage->defin;
-        musStaff->vertBarre = START_END;
-        //previous += musStaff->ecart * musPage->defin;
-        //musPage->m_staves.Add( musStaff );
-
-		//m_cmpinput->Close();
-		delete m_cmpinput;
-		
-		MusBinOutput *bin_output = new MusBinOutput( NULL, m_basename + book->m_shortname + ".swwg", MUS_BIN_ARUSPIX_CMP  );
-		bin_output->WriteStaff( musStaff );
-		delete bin_output;
-		* /
-		
-		MusBinInput_1_X *bin_input = new MusBinInput_1_X( NULL, m_basename + book->m_shortname + ".swwg", MUS_BIN_ARUSPIX_CMP );
-		MusLaidOutStaff musStaff_loaded;
-		bin_input->ReadStaff( &musStaff_loaded );
-		delete bin_input;
-		
-		
-		CmpMLFOutput *m_cmpoutput = new CmpMLFOutput( NULL, m_basename + book->m_shortname + ".staff", "CmpMLFSymb"  );
-		m_cmpoutput->WriteStaff( &musStaff_loaded );
-		m_cmpoutput->Close();
-		delete m_cmpoutput;
-		
-		
-    }
-
-    imCounterEnd( dlg->GetCounter() );
-	
-	if (!failed)	
-		this->Modify();
-	
-	return !failed;
-}
-*/
 
 bool CmpFile::Collate( wxArrayPtrVoid params, AxProgressDlg *dlg )
 {
@@ -1188,7 +1197,7 @@ bool CmpFile::Collate( wxArrayPtrVoid params, AxProgressDlg *dlg )
 		wxString job =  wxString::Format( _("Build the collation '%s'"), collation->m_name.c_str() );
 		dlg->SetJob( job );
 		dlg->SetMaxJobBar( 1 );
-		wxLogMessage( collation->m_name.c_str() );
+		wxLogMessage( "%s", collation->m_name.c_str() );
 	
 		if (!failed)
 			failed = !collation->Collate( );

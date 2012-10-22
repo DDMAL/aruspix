@@ -44,6 +44,14 @@ public:
     
     /** The parent MusLaidOutStaff setter */
     void SetStaff( MusLaidOutStaff *staff ) { m_staff = staff; };
+    
+    void SetSection( MusSection *section );
+    
+    void SetMeasure ( MusMeasure *measure );
+    
+    MusSection *GetSection() { return m_section; };
+    
+    MusMeasure *GetMeasure() { return m_measure; };
 	
 	void AddElement( MusLaidOutLayerElement *element, int idx = -1 );
     	
@@ -57,7 +65,7 @@ public:
     void CopyElements( wxArrayPtrVoid params );
     void GetMaxXY( wxArrayPtrVoid params );
     void Save( wxArrayPtrVoid params );
-    void Load( wxArrayPtrVoid params );
+    void CheckAndResetSectionOrMeasure( wxArrayPtrVoid params );
     
 	void CopyAttributes( MusLaidOutLayer *layer ); // copy all attributes but none of the elements
     
@@ -112,13 +120,14 @@ public:
     int m_logLayerNb;
     /** The logical staff - used to overwrite the parent staff */
     int m_logStaffNb;
+	/** voix de la portee*/
+	unsigned short voix;  
+    
+protected:
     /** The section in the logical tree */
     MusSection *m_section;
     /** The measure in the logical tree (for measure music only) */
     MusMeasure *m_measure;
-    
-	/** voix de la portee*/
-	unsigned short voix;    
     
     // drawing variables
     //MusLaidOutLayerElement *beamListPremier; // we need to replace this with a proper beam class that handles a list of notes/rests

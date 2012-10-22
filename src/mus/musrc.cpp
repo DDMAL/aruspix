@@ -67,7 +67,6 @@ void MusRC::SetLayout( MusLayout *layout )
         m_layout = layout;
         //m_notation_mode = m_layout->m_env.m_notationMode;
         m_npage = 0;
-        m_layout->PaperSize();
         m_layout->UpdateFontValues();
         m_layout->UpdatePageValues();
         // for now we just get the first page
@@ -80,6 +79,8 @@ void MusRC::SetLayout( MusLayout *layout )
 void MusRC::SetPage( MusPage *page )
 {
 	wxASSERT_MSG( page, "MusPage cannot be NULL ");
+    
+    m_layout->PaperSize( page );
 
 	m_page = page;
     /*
@@ -94,7 +95,8 @@ void MusRC::SetPage( MusPage *page )
 
 	m_currentElement = NULL;
 	m_currentStaff = NULL;
-
+    
+    /*
 	// selectionne le premier element
 	if ( m_page->GetSystemCount() > 0 ) 
     {
@@ -112,8 +114,9 @@ void MusRC::SetPage( MusPage *page )
             }
         }
 	}
+    */
 
-
+    OnPageChange();
     DoRefresh();
 }
 

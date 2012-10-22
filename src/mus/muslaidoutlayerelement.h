@@ -58,9 +58,11 @@ public:
     
     // functors
     void Save( wxArrayPtrVoid params );
-    void Load( wxArrayPtrVoid params );
     void Delete( wxArrayPtrVoid params );
     void UpdateXPosition( wxArrayPtrVoid params );
+    void CheckAndResetLayerElement( wxArrayPtrVoid params );
+    /** Find the LaidOutLayerElement pointing to a specific LayerElement */
+    void FindLayerElement( wxArrayPtrVoid params );
         
 private:
     
@@ -77,6 +79,8 @@ public:
     MusPoint m_stem_end; // end point (!), near beam or stem
     /** stem direction as drawn, true = up, false = down */
     bool m_drawn_stem_dir;
+    /** for elements in MusLayerApp. They will be drawn from the MusLaidOutLayerElement of the app (and not from the layer) */
+    bool m_in_layer_app;
     /** Pointer to the MusLayerElement */
     MusLayerElement *m_layerElement;
     

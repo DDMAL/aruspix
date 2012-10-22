@@ -12,6 +12,7 @@
 #include "muslayout.h"
 #include "muslaidoutlayerelement.h"
 
+#include "musapp.h"
 #include "musbarline.h"
 #include "musleipzigbbox.h"
 #include "musclef.h"
@@ -79,8 +80,9 @@ void MusRC::DrawElement( MusDC *dc, MusLaidOutLayerElement *element, MusLaidOutL
     else if (dynamic_cast<MusTuplet*>(element->m_layerElement)) {
         DrawTuplet(dc, element, layer, staff);
     }
-
-
+    else if (dynamic_cast<MusLayerApp*>(element->m_layerElement)) {
+        DrawLayerApp(dc, element, layer, staff);
+    }
     
     m_currentColour = AxBLACK;
 
@@ -679,7 +681,7 @@ void MusRC::DrawLedgerLines( MusDC *dc, int y_n, int y_p, int xn, unsigned int s
 #define NUMBER_REDUCTION 5
 void MusRC::DrawSpecialRest ( MusDC *dc, int a, MusLaidOutLayerElement *element, MusLaidOutStaff *staff)
 {	
-    MusLeipzigBBox *bbox = new MusLeipzigBBox();
+    //MusLeipzigBBox *bbox = new MusLeipzigBBox();
     int x, x2, y, y2, lenght;
 
     MusRest *rest = dynamic_cast<MusRest*>(element->m_layerElement);
@@ -1563,6 +1565,49 @@ void MusRC::DrawTrill(MusDC *dc, MusLaidOutLayerElement *element, MusLaidOutStaf
         y = (element->m_y_drawing + staff->m_y_drawing) + 30;
     
     DrawLeipzigFont ( dc, element->m_x_abs, y, LEIPZIG_EMB_TRILL, staff, false );
+}
+
+
+void MusRC::DrawLayerApp( MusDC *dc, MusLaidOutLayerElement *element, MusLaidOutLayer *layer, MusLaidOutStaff *staff ){
+    
+    wxASSERT_MSG( layer, "Pointer to layer cannot be NULL" );
+    wxASSERT_MSG( staff, "Pointer to staff cannot be NULL" );
+    wxASSERT_MSG( staff->m_system, "Pointer to staff system cannot be NULL" );
+    
+    MusLayerApp *app = dynamic_cast<MusLayerApp*>(element->m_layerElement);    
+    int i;
+    for (i = 0; i < app->GetRdgCount(); i++ )
+    {
+        MusLayer *rdg = &app->m_rdgs[i];
+        int j;
+        for (j = 0; j < rdg->GetElementCount(); j++ ) {
+            MusLaidOutLayerElement *lelem = layer->GetFromMusLayerElement( &rdg->m_elements[j] );
+            if (i == 0) {
+                m_currentColour = AxGREEN;
+            }
+            else {
+                m_currentColour = AxBLUE;
+            }
+            DrawElement(dc, lelem, layer, staff );
+            /*
+            MusLaidOutLayerElement rdgElement(&rdg->m_elements[j] );
+            rdgElement.m_layer = element->m_layer;
+            rdgElement.SetLayout( m_layout );
+            rdgElement.m_x_abs = element->m_x_abs;
+            DrawElement(dc, &rdgElement, layer, staff );
+            rdgElement.m_layer = NULL;
+            */
+        }
+        
+        /*
+        MusLaidOutStaff *appStaff = new MusLaidOutStaff( staff->m_logStaffNb );
+        appStaff->m_y_drawing = staff->m_y_drawing + m_layout->m_staffSize[staff->staffSize];
+        appStaff->m_system = staff->m_system;
+        appStaff->SetLayout( m_layout );
+        DrawStaff(dc, appStaff, staff->m_system );
+        delete appStaff;
+        */
+    }
 }
 
 /*

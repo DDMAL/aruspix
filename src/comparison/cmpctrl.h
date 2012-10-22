@@ -128,10 +128,9 @@ public:
 	bool Collate( wxArrayPtrVoid params, AxProgressDlg *dlg );
 	//
 	CmpBookItem *GetSelectedBookItem();
-	CmpCollation *GetSelectedCollation( );
     
 private:
-        CmpFile *m_cmpFilePtr;
+    CmpFile *m_cmpFilePtr;
     CmpEnv *m_cmpEnvPtr;
 	CmpCtrlPanel *m_cmpCtrlPanelPtr;
     // id

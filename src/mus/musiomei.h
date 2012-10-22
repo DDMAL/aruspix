@@ -14,7 +14,9 @@
 #include "wx/wfstream.h"
 
 #include "musdoc.h"
+#include "muslayout.h"
 #include "muslayer.h"
+#include "musapp.h"
 
 #include <mei/meielement.h>
 #include <mei/exceptions.h>
@@ -25,6 +27,7 @@
 #include <mei/shared.h>
 #include <mei/mensural.h>
 #include <mei/layout.h>
+#include <mei/critapp.h>
 
 #include <uuid/uuid.h>
 
@@ -35,6 +38,13 @@ class MusMensur;
 class MusNote;
 class MusRest;
 class MusSymbol;
+class MusLayout;
+class MusPage;
+class MusSystem;
+class MusLaidOutStaff;
+class MusLaidOutLayer;
+class MusLaidOutLayerElement;
+class MusLayerApp;
 
 using namespace mei;
 
@@ -50,12 +60,21 @@ using namespace mei;
 class MusMeiOutput: public MusFileOutputStream
 {
 public:
-    // constructors and destructors
+    /** @name Constructors and destructor */
+    ///@{
     MusMeiOutput( MusDoc *doc, wxString filename );
     virtual ~MusMeiOutput();
+    ///@}
     
+    /**
+     * The main method for exporting the file to MEI.
+     */ 
     virtual bool ExportFile( );
     
+    /** @name Writing element methods
+     * Overriding methods for writing the MEI file.
+     */
+    ///@{
     virtual bool WriteDoc( MusDoc *doc );
     // logical
     virtual bool WriteDiv( MusDiv *div ); 
@@ -74,30 +93,68 @@ public:
     virtual bool WriteLaidOutStaff( MusLaidOutStaff *laidOutStaff );
     virtual bool WriteLaidOutLayer( MusLaidOutLayer *laidOutLayer );
     virtual bool WriteLaidOutLayerElement( MusLaidOutLayerElement *laidOutLayerElement );
+    // app
+    virtual bool WriteLayerApp( MusLayerApp *app );
+    virtual bool WriteLayerRdg( MusLayerRdg *rdg );
+    ///@}
+    
+    /**
+     * Method that closes the MEI Layer element.
+     * Because we have a to keep a pointer to the current MEI <layer> ,
+     * we need to change it and put it back to the parent MEI <layer> when
+     * reaching the end of the <rdg>
+     * This is achieved by changing the m_currentLayer pointer.
+     */
+    virtual bool EndLayerRdg( MusLayerRdg *rdg );
 
 private:
-    /*bool WriteMeiHeader( MeiHead *meiHead );
-    bool WriteMeiDiv( Mdiv *meiDiv, MusDiv *div );
-    bool WriteMeiScore( Score *meiScore, MusScore *score );
-    bool WriteMeiParts( Parts * meiParts, MusPartSet *partSet );
-    bool WriteMeiPart( Part *meiPart, MusPart *part );
-    bool WriteMeiSection( Section *meiSection, MusSection *section );
-    bool WriteMeiMeasure( Measure *meiMeasure, MusMeasure *measure );
-    bool WriteMeiStaff( Staff *meiStaff, MusStaff *staff );
-    bool WriteMeiLayer( Layer *meiLayer, MusLayer *layer );*/
-    void WriteMeiBarline( BarLine *meiBarline, MusBarline *barline );
-    void WriteMeiBeam( Beam *meiBeam, MusBeam *beam );
-    void WriteMeiClef( Clef *meiClef, MusClef *clef );
-    void WriteMeiMensur( Mensur *meiMensur, MusMensur *mensur );
-    void WriteMeiNote( Note *meiNote, MusNote *note );
-    void WriteMeiRest( Rest *meiRest, MusRest *rest );
+    
     /**
-     * Write a MusSymbol. The appropriate MeiElement is created by the method
-     * and returned.
+     * Write a MusBarline. 
+     * Callded from WriteLayerElement.
+     */
+    void WriteMeiBarline( BarLine *meiBarline, MusBarline *barline );
+    
+    /**
+     * Write a MusBeam. 
+     * Callded from WriteLayerElement.
+     */
+    void WriteMeiBeam( Beam *meiBeam, MusBeam *beam );
+    
+    /**
+     * Write a MusClef.  
+     * Callded from WriteLayerElement.
+     */
+    void WriteMeiClef( Clef *meiClef, MusClef *clef );
+    
+    /**
+     * Write a MusMensur. 
+     * Callded from WriteLayerElement.
+     */
+    void WriteMeiMensur( Mensur *meiMensur, MusMensur *mensur );
+    
+    /**
+     * Write a MusNote. 
+     * Callded from WriteLayerElement.
+     */
+    void WriteMeiNote( Note *meiNote, MusNote *note );
+    
+    /**
+     * Write a MusRest. 
+     * Callded from WriteLayerElement.
+     */
+    void WriteMeiRest( Rest *meiRest, MusRest *rest );
+    
+    /**
+     * Write a MusSymbol. 
+     * The appropriate MeiElement is created by the method and returned.
+     * Callded from WriteLayerElement.
      */
     MeiElement *WriteMeiSymbol( MusSymbol *symbol );    
-	//
-    std::string GetMeiUuid( MusObject *element );
+	
+    /** @name Methods for converting members into MEI attributes. */
+    ///@{
+    std::string UuidToMeiStr( MusObject *element );
 	std::string DurToStr(int dur);
 	std::string OctToStr(int oct);
 	std::string PitchToStr(int pitch);
@@ -105,6 +162,8 @@ private:
     std::string ClefLineToStr(ClefId clefId);
     std::string ClefShapeToStr(ClefId clefId);
     std::string MensurSignToStr(MensurSign sign);
+    std::string LayoutTypeToStr(LayoutType type);
+    ///@}
 
     
 public:
@@ -113,6 +172,8 @@ public:
 private:
     wxString m_filename;
     MeiElement *m_mei;
+    /** @name Members for pointers to the current element */
+    ///@{
     // logical
     Music *m_music;
     Body *m_body;
@@ -123,7 +184,12 @@ private:
     Section *m_section;
     Measure *m_measure;
     Staff *m_staff;
+    /** The pointer for the layer within a staff */
     Layer *m_layer;
+    /** The pointer for the layer within an app (MusLayerRdg) */
+    Rdg *m_rdgLayer;
+    /** The pointer to the current layer (either m_layer or m_rdgLayer) */
+    MeiElement *m_currentLayer;
     // layout
     Layouts *m_layouts;
     Layout *m_layout;
@@ -131,6 +197,9 @@ private:
     System *m_system;
     LaidOutStaff *m_laidOutStaff;
     LaidOutLayer *m_laidOutLayer;
+    // app
+    App *m_app;
+    ///@}
 };
 
 
@@ -155,6 +224,7 @@ public:
     
 private:
     bool ReadMeiHeader( MeiHead *meihead );
+    // logical
     bool ReadMeiDiv( Mdiv *mdiv );
     bool ReadMeiScore( Score *score );
     bool ReadMeiParts( Parts * parts );
@@ -162,7 +232,8 @@ private:
     bool ReadMeiSection( Section *section );
     bool ReadMeiMeasure( Measure *measure );
     bool ReadMeiStaff( Staff *staff );
-    bool ReadMeiLayer( Layer *layer );
+    /** Reads the content of a <layer> or of a <rdg> for <app> within <layer> */
+    bool ReadMeiLayer( MeiElement *layer );
     bool ReadMeiBarline( BarLine *barline );
     bool ReadMeiBeam( Beam *beam );
     bool ReadMeiClef( Clef *clef );
@@ -172,20 +243,34 @@ private:
     bool ReadMeiSymbol( Accid *accid );
     bool ReadMeiSymbol( Custos *custos );
     bool ReadMeiSymbol( Dot *dot );
+    // layout
+    bool ReadMeiLayout( Layout *layout );
+    bool ReadMeiPage( Page *page );
+    bool ReadMeiSystem( System *system );
+    bool ReadMeiLaidOutStaff( LaidOutStaff *laidOutStaff );
+    bool ReadMeiLaidOutLayer( LaidOutLayer *laidOutLayer );
+    bool ReadMeiLaidOutElement( LaidOutElement *laidOutElement );
+    // app
+    /** Reads <app> elements. For now, only <app> within <layer> are taken into account */
+    bool ReadMeiApp( App *app );
+    bool ReadMeiRdg( Rdg *rdg );
 	//
     void SetMeiUuid( MeiElement *element, MusObject *object );
+    void StrToUuid(std::string uuid, uuid_t dest);
 	int StrToDur(std::string dur);
 	int StrToOct(std::string oct);
 	int StrToPitch(std::string pitch ); 
     unsigned char StrToAccid(std::string accid);
-    ClefId StrToClef(std::string line, std::string shape);
+    ClefId StrToClef(std::string shape, std::string line);
     MensurSign StrToMensurSign(std::string sign);
+    LayoutType StrToLayoutType(std::string type);
 
     
 public:
     
 private:
     wxString m_filename;
+    // logical
 	MusDiv *m_div;
 	MusScore *m_score;
 	MusPartSet *m_parts;
@@ -194,6 +279,13 @@ private:
 	MusMeasure *m_measure;
 	MusStaff *m_staff;
 	MusLayer *m_layer;
+    // layout
+    MusLayout *m_layout;
+    MusPage *m_page;
+    MusSystem *m_system;
+    MusLaidOutStaff *m_laidOutStaff;
+    MusLaidOutLayer *m_laidOutLayer;
+    MusLayerApp *m_layerApp;
 };
 
 

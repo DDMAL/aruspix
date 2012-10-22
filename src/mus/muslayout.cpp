@@ -16,6 +16,7 @@
 #include "muslaidoutstaff.h"
 #include "muslaidoutlayer.h"
 #include "muslaidoutlayerelement.h"
+#include "musapp.h"
 
 #include "musio.h"
 #include "musdoc.h"
@@ -87,7 +88,10 @@ void MusLayout::Clear( )
 	m_fontHeightAscent[1][1] = 0;
     
 	//MesVal=1.0;
-    
+    m_pageWidth = -1;
+    m_pageHeight = -1;
+    m_pageLeftMar = 0;
+    m_pageRightMar = 0;
     m_charDefin = 20;
 }
 
@@ -106,6 +110,11 @@ void MusLayout::SetDoc( MusDoc *doc )
 
 void MusLayout::Save( wxArrayPtrVoid params )
 {
+    if ( this->m_type == Raw ) {
+        // we do not write 'Raw' layouts since there are created only for rendering
+        return; 
+    }
+    
     // param 0: output stream
     MusFileOutputStream *output = (MusFileOutputStream*)params[0];       
     output->WriteLayout( this );
@@ -114,20 +123,6 @@ void MusLayout::Save( wxArrayPtrVoid params )
     MusPageFunctor page( &MusPage::Save );
     this->Process( &page, params );
 }
-
-void MusLayout::Load( wxArrayPtrVoid params )
-{
-    // param 0: output stream
-    MusFileInputStream *input = (MusFileInputStream*)params[0];       
-    
-    // load pages
-    MusPage *page;
-    while ( (page = input->ReadPage()) ) {
-        page->Load( params );
-        this->AddPage( page );
-    }
-}
-
 
 void MusLayout::AddPage( MusPage *page )
 {
@@ -146,7 +141,7 @@ void MusLayout::Realize( MusScore *score )
 
     int x = 0; // hardcoded spacing
 	
-	int i, j, k, l, m;
+	int i, j, k, l, m, n, o;
 	for (i = 0; i < (int)score->m_sections.GetCount(); i++) {
 		MusSection *section = &score->m_sections[i];
         // measured music
@@ -156,11 +151,11 @@ void MusLayout::Realize( MusScore *score )
                 MusStaff *staff = &measure->m_staves[k];
                 MusLaidOutStaff *laidOutStaff;
                 if (k >= (int)system->m_staves.GetCount()) {
-                    system->AddStaff( new MusLaidOutStaff( k ));
+                    system->AddStaff( new MusLaidOutStaff( k + 1 ));
                 }
                 laidOutStaff = &system->m_staves[k];
                 // preserve enevtual antique notation
-                laidOutStaff->notAnc = staff->m_antinque_notation;
+                laidOutStaff->notAnc = staff->m_mensuralNotation;
                 
                 /* experimental brace
                 if (k == 0) laidOutStaff->brace = START;
@@ -173,7 +168,7 @@ void MusLayout::Realize( MusScore *score )
                     MusLayer *layer = &staff->m_layers[l];
                     MusLaidOutLayer *laidOutLayer;
                     if (l >= laidOutStaff->GetLayerCount()) {
-                        laidOutStaff->AddLayer( new MusLaidOutLayer( l, k, section, measure ));
+                        laidOutStaff->AddLayer( new MusLaidOutLayer( l + 1, k + 1, NULL, measure ));
                     }
                     laidOutLayer = &laidOutStaff->m_layers[l];
                     for (m = 0; m < (int)layer->m_elements.GetCount(); m++) {
@@ -193,22 +188,66 @@ void MusLayout::Realize( MusScore *score )
             MusStaff *staff = &section->m_staves[k];
             MusLaidOutStaff *laidOutStaff;
             if (k >= (int)system->m_staves.GetCount()) {
-                system->AddStaff( new MusLaidOutStaff( k ));
+                system->AddStaff( new MusLaidOutStaff( k + 1 ));
             }
             laidOutStaff = &system->m_staves[k];
             for (l = 0; l < (int)staff->m_layers.GetCount(); l++) {
                 MusLayer *layer = &staff->m_layers[l];
                 MusLaidOutLayer *laidOutLayer;
                 if (l >= laidOutStaff->GetLayerCount()) {
-                    laidOutStaff->AddLayer( new MusLaidOutLayer( l, k, section, NULL ));
+                    laidOutStaff->AddLayer( new MusLaidOutLayer( l + 1, k + 1, section, NULL ));
                 }
                 laidOutLayer = &laidOutStaff->m_layers[l];
                 for (m = 0; m < (int)layer->m_elements.GetCount(); m++) {
-                    MusLaidOutLayerElement *element = new MusLaidOutLayerElement( &layer->m_elements[m] );
-                    element->m_x_abs = x;
-                    x += 40;
-                    laidOutLayer->AddElement( element );
-                    //wxLogDebug("element %d added", m);
+                    /*
+                    if ( dynamic_cast<MusLayerApp*>( &layer->m_elements[m] ) ) {
+                        MusLayerApp *app = dynamic_cast<MusLayerApp*>( &layer->m_elements[m] );
+                        for (n = 0; n < app->GetRdgCount(); n++)
+                        {
+                            MusLaidOutStaff *appLaidOutStaff;
+                            if (k + (n + 1) >= (int)system->m_staves.GetCount()) {
+                                system->AddStaff( new MusLaidOutStaff( k + 1 ));
+                            }
+                            appLaidOutStaff = &system->m_staves[k + n + 1];
+                            MusLaidOutLayer *appLaidOutLayer;
+                            // only one layer per staff
+                            if (appLaidOutStaff->GetLayerCount() == 0) {
+                                appLaidOutStaff->AddLayer( new MusLaidOutLayer( 1, k + 1, section, NULL ));
+                            }
+                            appLaidOutLayer = &appLaidOutStaff->m_layers[0];
+                            MusLayer *appLayer = &app->m_rdgs[n];
+                            for (o = 0; o < appLayer->GetElementCount(); o++) {
+                                MusLaidOutLayerElement *element = new MusLaidOutLayerElement( &appLayer->m_elements[o] );
+                                element->m_x_abs = x + (o * 40);
+                                appLaidOutLayer->AddElement( element );                                
+                            }
+                        }
+
+                    }
+                    */
+                    if ( dynamic_cast<MusLayerApp*>( &layer->m_elements[m] ) ) {
+                        MusLayerApp *app = dynamic_cast<MusLayerApp*>( &layer->m_elements[m] );
+                        for (n = 0; n < app->GetRdgCount(); n++)
+                        {
+                            MusLayer *appLayer = &app->m_rdgs[n];
+                            for (o = 0; o < appLayer->GetElementCount(); o++) {
+                                MusLaidOutLayerElement *element = new MusLaidOutLayerElement( &appLayer->m_elements[o] );
+                                x += 40;
+                                element->m_in_layer_app = true;
+                                laidOutLayer->AddElement( element );                           
+                            }
+                        }
+                        
+                    }
+                    //else
+                    {
+                        MusLaidOutLayerElement *element = new MusLaidOutLayerElement( &layer->m_elements[m] );
+                        element->m_x_abs = x;
+                        x += 40;
+                        laidOutLayer->AddElement( element );
+                        
+                        //wxLogDebug("element %d added", m);
+                    }
                 }			
 			}
 		}
@@ -230,35 +269,48 @@ void MusLayout::SpaceMusic() {
     int shift = 0;
     params.Add( &shift );
     MusLaidOutLayerElementFunctor updateXPosition( &MusLaidOutLayerElement::UpdateXPosition );
-    m_doc->ProcessLayout( &updateXPosition, params );
+    this->Process( &updateXPosition, params );
     
     params.Clear();
     shift = m_pageHeight;
     params.Add( &shift );
     MusLaidOutStaffFunctor updateYPosition( &MusLaidOutStaff::UpdateYPosition );
-    m_doc->ProcessLayout( &updateYPosition, params );
+    this->Process( &updateYPosition, params );
     
     rc.DrawPage(  &bb_dc, &m_pages[0] , false );
     
-    // Trim the system to the needed position
+    // Trim the page to the needed position
+    m_pages[0].m_pageWidth = 0; // first resest the page to 0
+    m_pages[0].m_pageHeight = m_pageHeight;
     params.Clear();
     MusSystemFunctor trimSystem(&MusSystem::Trim);
-    m_doc->ProcessLayout( &trimSystem, params );
+    this->Process( &trimSystem, params );
     
     rc.DrawPage(  &bb_dc, &m_pages[0] , false );
 }
 
-void MusLayout::PaperSize( )
+void MusLayout::PaperSize( MusPage *page )
 {
-	if (this->m_env.m_landscape)
+    // we use the page members only if set (!= -1) 
+    if ( page  && ( page->m_pageHeight != -1 ) ) {
+        m_pageHeight = page->m_pageHeight;
+        m_pageWidth = page->m_pageWidth;
+        m_pageLeftMar = page->m_pageLeftMar;
+        m_pageRightMar = page->m_pageRightMar;
+    }
+	else if (this->m_env.m_landscape)
 	{	
-		m_pageWidth = this->m_env.m_paperWidth*10;
-		m_pageHeight = this->m_env.m_paperHeight*10;
+		m_pageWidth = m_doc->m_pageWidth;
+		m_pageHeight = m_doc->m_pageHeight;
+        m_pageLeftMar = m_doc->m_pageLeftMar;
+        m_pageRightMar = m_doc->m_pageRightMar;
 	}
 	else
 	{	
-		m_pageHeight = this->m_env.m_paperWidth*10;
-		m_pageWidth = this->m_env.m_paperHeight*10;
+		m_pageHeight = m_doc->m_pageWidth;
+		m_pageWidth = m_doc->m_pageHeight;
+        m_pageLeftMar = m_doc->m_pageLeftMar;
+        m_pageRightMar = m_doc->m_pageRightMar;
 	}
     
 	m_beamMaxSlope = this->m_env.m_beamMaxSlope;
@@ -269,6 +321,11 @@ void MusLayout::PaperSize( )
 	return;
 }
 
+
+int MusLayout::GetSystemRightX( MusSystem *system )
+{
+    return m_pageWidth - m_pageLeftMar - m_pageRightMar - system->m_systemRightMar;
+}
 
 int MusLayout::CalcMusicFontSize( )
 {
@@ -320,16 +377,6 @@ void MusLayout::UpdateFontValues()
 
 void MusLayout::UpdatePageValues() 
 {
-	// margins
-    /*
-     int page = m_page->npage;
-     if (page % 2)	//pages impaires 
-     m_leftMargin = this->m_env.m_leftMarginOddPage*10;
-     else
-     m_leftMargin = this->m_env.m_leftMarginEvenPage*10;
-     */
-	m_leftMargin = this->m_env.m_leftMarginEvenPage*10;
-    
     m_smallStaffRatio[0] = this->m_env.m_smallStaffNum;
     m_smallStaffRatio[1] = this->m_env.m_smallStaffDen;
     m_graceRatio[0] = this->m_env.m_graceNum;

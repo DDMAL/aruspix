@@ -64,19 +64,6 @@ void MusMeasure::Save( wxArrayPtrVoid params )
     this->Process( &staff, params );
 }
 
-void MusMeasure::Load( wxArrayPtrVoid params )
-{
-    // param 0: output stream
-    MusFileInputStream *input = (MusFileInputStream*)params[0];       
-    
-    // load staves
-    MusStaff *staff;
-    while ( (staff = input->ReadStaff()) ) {
-        staff->Load( params );
-        this->AddStaff( staff );
-    }
-}
-
 // functors for MusMeasure
 
 void MusMeasure::Process(MusFunctor *functor, wxArrayPtrVoid params )

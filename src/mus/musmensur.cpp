@@ -37,6 +37,15 @@ MusMensur::~MusMensur()
 {
 }
 
+bool MusMensur::operator==( MusLayerElement& other)
+{
+    MusMensur *otherMensur = dynamic_cast<MusMensur*>( &other );
+    if ( !otherMensur ) {
+        return false;
+    }
+    return true;
+}
+
 void MusMensur::SetValue( int value, int flag ) 
 {
     this->m_num = 0;

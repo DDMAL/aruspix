@@ -58,9 +58,17 @@ public:
      */ 
     void Check();
     
-    bool Save( MusFileOutputStream *output );
+    /**
+     * This method reset the MusLayerElement, MusSection and MusMeasure pointers and check the elements exist.
+     * It has to be call when a layout (pages) was copied from another file in memory
+     * because we need the MusLayerElement, MusSection and MusMeasure pointers to be redirected to the correct object.
+     * The methods find the object in the logical tree with the UUID.
+     * The MusLaidOutLayerElement is deleted from the layout if the MusLayerElement is not found.
+     * Empty MusLaidOutLayer, MusLaidOutStaff, MusSystem etc. objects remain.
+     */
+    void ResetAndCheckLayouts( );
     
-    bool Load( MusFileInputStream *input );
+    bool Save( MusFileOutputStream *output );
     
     // moulinette
     void GetNumberOfVoices( int *min_voice, int *max_voice );
@@ -92,6 +100,16 @@ private:
 public:
     /** nom complet du fichier */
     wxString m_fname;
+    /** Page width (MEI scoredef@page.width) - currently not saved */
+    int m_pageWidth;
+    /** Page height (MEI scoredef@page.height) - currently not saved */
+    int m_pageHeight;
+    /** Page left margin (MEI scoredef@page.leftmar) - currently not saved */
+    short m_pageLeftMar;
+    /** Page right margin (MEI scoredef@page.rightmar) - currently not saved */
+    short m_pageRightMar;
+    /** Page top margin (MEI scoredef@page.topmar) - currently not saved */
+    short m_pageTopMar;
     
     /** The layouts */
     ArrayOfMusLayouts m_layouts;
@@ -102,10 +120,7 @@ public:
     /** Data loaded from the Wolfgang files but unused **/
 	MusWWGData m_wwgData;
     
-
-
 private:
-    MeiDocument *m_meidoc;
 	
 };
 

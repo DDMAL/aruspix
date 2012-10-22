@@ -31,6 +31,9 @@ class MusSystem;
 class MusLaidOutStaff;
 class MusLaidOutLayer;
 class MusLaidOutLayerElement;
+// app
+class MusLayerApp;
+class MusLayerRdg;
 
 //----------------------------------------------------------------------------
 // MusFileOutputStream
@@ -52,6 +55,13 @@ public:
     
     virtual bool ExportFile( ) { return true; }
     
+    /** @name Writing element methods
+     * The following methods actually write the elements.
+     * They must be overriden in the child classes.
+     * The children of the elements do not have to be writen from theses methods.
+     * This actually happen in the Save method of the MusObject classes
+     */
+    ///@{
     virtual bool WriteDoc( MusDoc *doc ) { return true; };
     // logical
     virtual bool WriteDiv( MusDiv *div ) { return true; }; 
@@ -70,6 +80,36 @@ public:
     virtual bool WriteLaidOutStaff( MusLaidOutStaff *laidOutStaff ) { return true; };
     virtual bool WriteLaidOutLayer( MusLaidOutLayer *laidOutLayer ) { return true; };
     virtual bool WriteLaidOutLayerElement( MusLaidOutLayerElement *laidOutLayerElement ) { return true; };  
+    // app
+    virtual bool WriteLayerApp( MusLayerApp *app ) { return true; };
+    virtual bool WriteLayerRdg( MusLayerRdg *rdg ) { return true; };
+    ///@}
+
+    /** @name Closing element methods
+     * The following methods can be used to perform actions when the end of an element is reached.
+     * It is usually not necessary and most of the following methods are not overriden.
+     */    
+    ///@{ 
+    virtual bool EndDiv( MusDiv *div ) { return true; }; 
+    virtual bool EndScore( MusScore *score ) { return true; }; 
+    virtual bool EndPartSet( MusPartSet *parts ) { return true; };
+    virtual bool EndPart( MusPart *part ) { return true; };
+    virtual bool EndSection( MusSection *section ) { return true; };
+    virtual bool EndMeasure( MusMeasure *measure ) { return true; };
+    virtual bool EndStaff( MusStaff *staff ) { return true; };
+    virtual bool EndLayer( MusLayer *layer ) { return true; };
+    virtual bool EndLayerElement( MusLayerElement *element ) { return true; };
+    // layout
+    virtual bool EndLayout( MusLayout *layout ) { return true; };
+    virtual bool EndPage( MusPage *page ) { return true; };
+    virtual bool EndSystem( MusSystem *system ) { return true; };
+    virtual bool EndLaidOutStaff( MusLaidOutStaff *laidOutStaff ) { return true; };
+    virtual bool EndLaidOutLayer( MusLaidOutLayer *laidOutLayer ) { return true; };
+    virtual bool EndLaidOutLayerElement( MusLaidOutLayerElement *laidOutLayerElement ) { return true; };  
+    // app
+    virtual bool EndLayerApp( MusLayerApp *app ) { return true; };
+    virtual bool EndLayerRdg( MusLayerRdg *rdg ) { return true; };
+    ///@}
     
 public:
     
@@ -99,25 +139,6 @@ public:
     
     // read
     bool ImportFile( ) { return true; }
-    
-    virtual bool ReadDoc( MusDoc *doc ) { return true; };
-    // logical
-    virtual MusDiv* ReadDiv( ) { return NULL; }; 
-    virtual MusScore* ReadScore( ) { return NULL; }; 
-    virtual MusPartSet* ReadPartSet( ) { return NULL; };
-    virtual MusPart* ReadPart( ) { return NULL; };
-    virtual MusSection* ReadSection( ) { return NULL; };
-    virtual MusMeasure* ReadMeasure( ) { return NULL; };
-    virtual MusStaff* ReadStaff(  ) { return NULL; };
-    virtual MusLayer* ReadLayer( ) { return NULL; };
-    virtual MusLayerElement *ReadLayerElement( ) { return NULL; };
-    // layout
-    virtual MusLayout* ReadLayout( ) { return NULL; };
-    virtual MusPage* ReadPage( ) { return NULL; };
-    virtual MusSystem* ReadSystem( ) { return NULL; };
-    virtual MusLaidOutStaff* ReadLaidOutStaff( ) { return NULL; };
-    virtual MusLaidOutLayer* ReadLaidOutLayer(  ) { return NULL; };
-    virtual MusLaidOutLayerElement* ReadLaidOutLayerElement( ) { return NULL; };  
     
 public:
     

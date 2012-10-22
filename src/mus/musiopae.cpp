@@ -556,7 +556,7 @@ int MusPaeInput::getTupletFermata(const char* incipit, MeasureObject *measure, N
 int MusPaeInput::getTupletFermataEnd(const char* incipit, NoteObject *note, int index ) {
     
     int i = index;
-    int length = strlen(incipit);
+    //int length = strlen(incipit);
         
     // TODO currently fermatas inside tuplets won't be handled correctly
     note->fermata = false;

@@ -14,6 +14,7 @@
 #include "muslaidoutlayerelement.h"
 
 #include "musdef.h"
+#include "musdoc.h"
 #include "musclef.h"
 
 #include <typeinfo>
@@ -39,7 +40,14 @@ WX_DEFINE_OBJARRAY( ArrayOfMusLaidOutLayers );
 MusLaidOutLayer::MusLaidOutLayer( int logLayerNb, int logStaffNb, MusSection *section, MusMeasure *measure ):
 	MusLayoutObject()
 {
-    wxASSERT_MSG( section, "MusSection pointer cannot be NULL when creating a MusLaidOutLayer");
+    wxASSERT( logLayerNb > 0 );
+    wxASSERT( logStaffNb > 0 );
+    
+    if ( section ) {
+        wxASSERT_MSG( !measure , "MusMeasure pointer has to be NULL when creating a MusLaidOutLayer for unmeasured music");
+    } else if (measure ) {
+        wxASSERT_MSG( !section, "MusSection pointer has to be NULL when creating a MusLaidOutLayer for measured music");
+    }
     
 	Clear( );
     m_logLayerNb = logLayerNb;
@@ -53,10 +61,26 @@ MusLaidOutLayer::~MusLaidOutLayer()
     Deactivate();
 }
 
+void MusLaidOutLayer::SetSection( MusSection *section )
+{
+    if ( section ) {
+        wxASSERT_MSG( !m_measure , "MusMeasure pointer has to be NULL when creating a MusLaidOutLayer for unmeasured music");
+    }
+    m_section = section;    
+}
+
+void MusLaidOutLayer::SetMeasure( MusMeasure *measure )
+{
+    if (measure ) {
+        wxASSERT_MSG( !m_section, "MusSection pointer has to be NULL when creating a MusLaidOutLayer for measured music");
+    }
+    m_measure = measure;    
+}
+
 bool MusLaidOutLayer::Check()
 {
-    wxASSERT( m_staff && m_section );
-    return ( m_staff && m_section && MusLayoutObject::Check());
+    wxASSERT( m_staff && (m_section || m_measure) );
+    return ( m_staff && (m_section || m_measure) && MusLayoutObject::Check());
 }
 
 void MusLaidOutLayer::Clear()
@@ -79,19 +103,6 @@ void MusLaidOutLayer::Save( wxArrayPtrVoid params )
     // save elements
     MusLaidOutLayerElementFunctor element( &MusLaidOutLayerElement::Save );
     this->Process( &element, params );
-}
-
-void MusLaidOutLayer::Load( wxArrayPtrVoid params )
-{
-    // param 0: output stream
-    MusFileInputStream *input = (MusFileInputStream*)params[0];       
-    
-    // load elements
-    MusLaidOutLayerElement *element;
-    while ( (element = input->ReadLaidOutLayerElement()) ) {
-        element->Load( params );
-        this->AddElement( element );
-    }
 }
 
 
@@ -222,14 +233,14 @@ MusLaidOutLayerElement *MusLaidOutLayer::Insert( MusLayerElement *element, int x
     // The we need to find the staff and layer in the logical tree where to insert the element
     MusStaff *staff = NULL;
     if ( measure ) {
-        staff = measure->GetStaff( m_logStaffNb );
+        staff = measure->GetStaff( m_logStaffNb - 1 );
     }
     else if ( section ) { // it should be the case, but just to make sure
-        staff = section->GetStaff( m_logStaffNb );
+        staff = section->GetStaff( m_logStaffNb - 1 );
     }
     MusLayer * layer = NULL;
     if ( staff ) {
-        layer = staff->GetLayer( m_logLayerNb );
+        layer = staff->GetLayer( m_logLayerNb - 1 );
     }
     
     if ( !layer ) {
@@ -712,10 +723,17 @@ void MusLaidOutLayer::Process(MusFunctor *functor, wxArrayPtrVoid params )
     
     MusLaidOutLayerElementFunctor *elementFunctor = dynamic_cast<MusLaidOutLayerElementFunctor*>(functor);
     MusLaidOutLayerElement *element;
+    int nbElements = (int)m_elements.GetCount();
 	int i;
-    for (i = 0; i < (int)m_elements.GetCount(); i++) 
+    for (i = 0; i < nbElements; i++) 
 	{
-        element = &m_elements[i];
+        if (functor->m_success) {
+            break;
+        }
+        
+        if ( functor->m_reverse ) element = &m_elements[nbElements - i - 1];
+        else element = &m_elements[i];
+        
         functor->Call( element, params );
         if (elementFunctor) { // is is a MusLaidOutLayerElementFunctor, call it
             elementFunctor->Call( element, params );
@@ -725,6 +743,38 @@ void MusLaidOutLayer::Process(MusFunctor *functor, wxArrayPtrVoid params )
         }
 	}
 }
+
+
+
+void MusLaidOutLayer::CheckAndResetSectionOrMeasure( wxArrayPtrVoid params )
+{
+    // param 0: the MusDoc to check against
+    MusDoc *doc = (MusDoc*)params[0];
+    
+    MusObject *object = NULL; // it will be the section or the measure
+    if ( m_measure ) {
+        object= m_measure;
+    }
+    else if ( m_section ) {
+        object = m_section;
+    }
+    else {
+        // this should never happen...
+        return;
+    }
+    
+    MusFunctor findElementUuid( &MusObject::FindWithUuid );
+    MusObject *element = dynamic_cast<MusObject*>( doc->FindLogicalObject( &findElementUuid, *object->GetUuid() ) );
+    if ( element ) {
+        object = element;
+    }
+    else {
+        object = NULL;
+        wxLogDebug( "Mesure or section not found in the logical tree" );
+        delete this;
+    }
+}
+
 
 void MusLaidOutLayer::CopyElements( wxArrayPtrVoid params )
 {

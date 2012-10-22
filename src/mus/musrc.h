@@ -47,6 +47,7 @@ public:
     virtual void DoResize() {}
     virtual void DoLyricCursor( int x, int y, MusDC *dc, wxString lyric ) {}
     virtual void DoReset() {}
+    virtual void OnPageChange() {};
 
 	// navigation
 	void Next( bool forward );
@@ -72,6 +73,12 @@ public:
 	
 	static void SwapY( int *y1, int *y2 ) { int tmp = *y1; *y1 = *y2; *y2 = tmp; }
     
+    /**
+     * Set the current page to *page.
+     * This method is dangerous because it can potentially be a page that do not belong to the layout.
+     * It should be check (currently not done)
+     * A safer option would be to pass the page number.
+     */
 	void SetPage( MusPage *page );
 
 	/* musrc_graph.cpp */
@@ -149,6 +156,7 @@ public:
     void DrawDots ( MusDC *dc, int x1, int y1, int offy, unsigned char dots, MusLaidOutStaff *staff );
     void CalculateLigaturePosX ( MusLaidOutLayerElement *element, MusLaidOutLayer *layer, MusLaidOutStaff *staff);
     void DrawKeySig( MusDC *dc, MusLaidOutLayerElement *element, MusLaidOutLayer *layer, MusLaidOutStaff *staff );
+    void DrawLayerApp( MusDC *dc, MusLaidOutLayerElement *element, MusLaidOutLayer *layer, MusLaidOutStaff *staff );
     /* musrc_beam.cpp */
     void DrawBeam(  MusDC *dc, MusLaidOutLayer *layer, MusBeam *beam, MusLaidOutStaff *staff );
     /* musrc_beam_original.cpp */
@@ -189,6 +197,9 @@ public:
 	void DrawDivMinor(MusDC *dc, MusLaidOutLayerElement *element, MusLaidOutStaff *staff, bool cueSize);
 	void DrawDivSmall(MusDC *dc, MusLaidOutLayerElement *element, MusLaidOutStaff *staff, bool cueSize);
     
+private:
+	void UpdateStavesPos();
+    
 public:
     /** Layout */
     MusLayout *m_layout;
@@ -220,15 +231,13 @@ public:
 	bool m_lyricMode;
 	bool m_inputLyric;
 	MusEditorMode m_editorMode; // Edit or insert
-	    
-private:
-	void UpdateStavesPos();
-
+    
 private:
 
     // static for ligatures
     static int s_drawingLigX[2], s_drawingLigY[2];	// pour garder coord. des ligatures    
     static bool s_drawingLigObliqua;	// marque le 1e passage pour une oblique
+
 
 };
 

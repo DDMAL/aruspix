@@ -63,7 +63,6 @@ public:
     virtual void Process(MusFunctor *functor, wxArrayPtrVoid params );
     // functors
     void Save( wxArrayPtrVoid params );
-    void Load( wxArrayPtrVoid params );
     void GetPosOnPage( wxArrayPtrVoid params );
     void UpdateYPosition( wxArrayPtrVoid params );
     

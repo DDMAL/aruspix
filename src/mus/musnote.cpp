@@ -37,6 +37,15 @@ MusNote::~MusNote()
 {
 }
 
+bool MusNote::operator==( MusLayerElement& other)
+{
+    MusNote *otherNote = dynamic_cast<MusNote*>( &other );
+    if ( !otherNote ) {
+        return false;
+    }
+    return true;
+}
+
 void MusNote::SetValue( int value, int flag )
 {
     MusDurationInterface::SetDuration( value ); 

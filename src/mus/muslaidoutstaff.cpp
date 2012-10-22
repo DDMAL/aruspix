@@ -24,6 +24,7 @@ MusLaidOutStaff::MusLaidOutStaff( int logStaffNb ):
 	MusLayoutObject()
 {
 	Clear( );
+    wxASSERT ( logStaffNb > 0 );
     m_logStaffNb = logStaffNb;
 }
 
@@ -46,8 +47,6 @@ MusLaidOutStaff::MusLaidOutStaff( const MusLaidOutStaff& staff )
 	vertBarre = staff.vertBarre;
 	brace = staff.brace;
 	staffSize = staff.staffSize;
-	//indent = staff.indent; // ax2
-	//indentDroite = staff.indentDroite; // ax2
 	portNbLine = staff.portNbLine;
 	accol = staff.accol;
 	accessoire = staff.accessoire;
@@ -82,8 +81,6 @@ void MusLaidOutStaff::Clear()
 	vertBarre = 0;
 	brace = 0;
 	staffSize = 0; 
-	//indent = 0; // ax2
-	//indentDroite = false; // ax2
 	portNbLine = 5;
 	accol = 0;
 	accessoire = 0;
@@ -103,19 +100,6 @@ void MusLaidOutStaff::Save( wxArrayPtrVoid params )
     // save layers
     MusLaidOutLayerFunctor layer( &MusLaidOutLayer::Save );
     this->Process( &layer, params );
-}
-
-void MusLaidOutStaff::Load( wxArrayPtrVoid params )
-{
-    // param 0: output stream
-    MusFileInputStream *input = (MusFileInputStream*)params[0];       
-    
-    // load layers
-    MusLaidOutLayer *layer;
-    while ( (layer = input->ReadLaidOutLayer()) ) {
-        layer->Load( params );
-        this->AddLayer( layer );
-    }
 }
 
 void MusLaidOutStaff::AddLayer( MusLaidOutLayer *layer )
@@ -141,8 +125,6 @@ void MusLaidOutStaff::CopyAttributes( MusLaidOutStaff *nstaff )
 	nstaff->vertBarre = vertBarre;
 	nstaff->brace = brace;
 	nstaff->staffSize = staffSize;
-	//nstaff->indent = indent;
-	///nstaff->indentDroite = indentDroite;
 	nstaff->portNbLine = portNbLine;
 	nstaff->accol = accol;
 	nstaff->accessoire = accessoire;

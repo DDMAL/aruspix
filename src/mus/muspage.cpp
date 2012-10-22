@@ -42,6 +42,11 @@ void MusPage::Clear( )
 {
 	m_systems.Clear( );
 	defin = 20;
+    // by default we have no values and use the document ones
+    m_pageHeight = -1;
+    m_pageWidth = -1;
+    m_pageLeftMar = 0;
+    m_pageRightMar = 0;
 }
 
 
@@ -54,19 +59,6 @@ void MusPage::Save( wxArrayPtrVoid params )
     // save system
     MusSystemFunctor system( &MusSystem::Save );
     this->Process( &system, params );
-}
-
-void MusPage::Load( wxArrayPtrVoid params )
-{
-    // param 0: output stream
-    MusFileInputStream *input = (MusFileInputStream*)params[0];       
-    
-    // load systems
-    MusSystem *system;
-    while ( (system = input->ReadSystem()) ) {
-        system->Load( params );
-        this->AddSystem( system );
-    }
 }
 
 

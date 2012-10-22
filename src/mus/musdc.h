@@ -55,6 +55,8 @@ public:
     
     virtual void SetBackground( int colour, int style = wxSOLID ) = 0;
     
+    virtual void SetBackgroundImage( void *image, double opacity = 1.0 ) = 0;
+    
     virtual void SetBackgroundMode( int mode ) = 0;
     
     virtual void SetPen( int colour, int width = 1, int style = wxSOLID ) = 0;
@@ -104,6 +106,8 @@ public:
     virtual void DrawMusicText(const wxString& text, int x, int y) = 0;
     
     virtual void DrawSpline(int n, MusPoint points[]) = 0;
+    
+    virtual void DrawBackgroundImage( int x = 0, int y = 0 ) = 0;
     
     // Method for starting and ending a graphic - for example for grouping shapes in <g></g> in SVG
     

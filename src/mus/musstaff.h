@@ -50,7 +50,6 @@ public:
     virtual void Process(MusFunctor *functor, wxArrayPtrVoid params );
     // functors
     void Save( wxArrayPtrVoid params );
-    void Load( wxArrayPtrVoid params );
     
 public:
     /** The children MusLayer objects */
@@ -61,7 +60,7 @@ public:
     MusMeasure *m_measure;
     /** indicates this staff is in anchent notation
      it has to be carried on to the LayedOutStaf */
-    bool m_antinque_notation;
+    bool m_mensuralNotation;
     
 private:
 };

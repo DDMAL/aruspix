@@ -221,7 +221,7 @@ void MusRC::DrawBeam(  MusDC *dc, MusLaidOutLayer *layer, MusBeam *beam, MusLaid
             break;
         
         // This should mean we have no BEAM TERMINAL
-        if (ct >= beam->m_notes.Count()) {
+        if (ct >= (int)beam->m_notes.Count()) {
             return;
         }
         
