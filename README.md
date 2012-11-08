@@ -32,9 +32,9 @@ NOTE: this was tested with xcode 4.3, with command line tools installed (or wx w
 Configure command:
 
 	cd osx-static-debug
-	../configure CFLAGS=-arch i386 CXXFLAGS=-arch i386 CPPFLAGS=-arch
-		i386 LDFLAGS=-arch i386 OBJCFLAGS=-arch i386 OBJCXXFLAGS=-arch i386
-		--disable-shared --with-libjpeg=builtin --with-libpng=builtin --disable-universal-binary --enable-debug
+	../configure CFLAGS=-arch i386 CXXFLAGS=-arch i386 CPPFLAGS=-arch \
+		i386 LDFLAGS=-arch i386 OBJCFLAGS=-arch i386 OBJCXXFLAGS=-arch i386 \
+		--disable-shared --with-libjpeg=builtin --with-libpng=builtin --disable-universal-binary --enable-debug \
 		--with-macosx-sdk=/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.6.sdk
 	make clean (if necessary)
 	make
