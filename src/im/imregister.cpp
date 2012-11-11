@@ -590,7 +590,7 @@ bool ImRegister::Register( wxPoint *points1, wxPoint *points2)
     left_alpha1 = atan(left_alpha1);
 	float right_alpha1 = float(m_reg_points1[2].x - m_reg_points1[3].x) / float(m_reg_points1[2].y - m_reg_points1[3].y);
     right_alpha1 = atan(right_alpha1);
-	float alpha1 = (left_alpha1 + right_alpha1) / 2;
+	float alpha1 = -(left_alpha1 + right_alpha1) / 2;
 
     sin0 = sin(alpha1);
     cos0 = cos(alpha1);
@@ -619,7 +619,7 @@ bool ImRegister::Register( wxPoint *points1, wxPoint *points2)
     left_alpha2 = atan( left_alpha2 );
     float right_alpha2 = float(m_reg_points2[2].x - m_reg_points2[3].x) / float(m_reg_points2[2].y - m_reg_points2[3].y);
     right_alpha2 = atan( right_alpha2 );
-	float alpha2 = (left_alpha2 + right_alpha2) / 2;
+	float alpha2 = -(left_alpha2 + right_alpha2) / 2;
 
     sin0 = sin(alpha2);
     cos0 = cos(alpha2);
