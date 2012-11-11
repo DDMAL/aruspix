@@ -495,6 +495,7 @@ bool ImPage::Check( wxString infile, int max_size, int min_size, int index )
 	imFileReadImageInfo( ifile, 0, NULL, NULL, NULL, NULL);
 	imFileGetAttributeList( ifile, NULL, &attrib_count);
 	const void* attrib_data = imFileGetAttribute( ifile, "Photometric", &attrib_data_type, &attrib_count);
+    imFileClose( ifile );
 	if ( attrib_data && (attrib_count == 1) )
     {
 		if ( (int)(*((imushort*)attrib_data)) == PHOTOMETRIC_MINISWHITE )
