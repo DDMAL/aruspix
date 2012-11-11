@@ -238,8 +238,8 @@ wxMenuBar *MenuBarFunc2()
     
     wxMenu* item2 = new wxMenu;
     item2->AppendSeparator();
-    item2->Append( ID2_MANUAL_POINTS, _("Set points manually"), _("Set the superimposition points manually"), wxITEM_CHECK );
-    item2->Append( ID2_CANCEL_SUP, _("Cancel superimposition"), _("Undo the superimposition of the sources"), wxITEM_CHECK );
+    item2->Append( ID2_MANUAL_POINTS, _("Set points manually\tAlt-Ctrl-P"), _("Set the superimposition points manually"), wxITEM_CHECK );
+    item2->Append( ID2_CANCEL_SUP, _("Cancel superimposition\tAlt-Ctrl-Z"), _("Undo the superimposition of the sources") );
     item2->Append( ID2_PROCESS, _("&Run"), _("Process current page") );
     item0->Append( item2, _("commun2") );
     
