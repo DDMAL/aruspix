@@ -143,6 +143,45 @@ wxSizer *AboutDlgFunc( wxWindow *parent, bool call_fit, bool set_sizer )
     return item0;
 }
 
+wxSizer *UpdateDlgFunc( wxWindow *parent, bool call_fit, bool set_sizer )
+{
+    wxBoxSizer *item0 = new wxBoxSizer( wxVERTICAL );
+
+    wxStaticText *item1 = new wxStaticText( parent, TX_APP_NEW_VERSION, 
+        _("A new version of Aruspix is available!\n"
+          "\n"
+          "You can download it using the following link:\n"
+          ""),
+        wxDefaultPosition, wxDefaultSize, wxST_NO_AUTORESIZE );
+    item0->Add( item1, 1, wxALIGN_CENTER_VERTICAL|wxALL, 10 );
+
+    wxWindow *item2 = parent->FindWindow( ID0_UPDATE_LINK );
+    wxASSERT( item2 );
+    item0->Add( item2, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL, 10 );
+
+    wxStaticLine *item3 = new wxStaticLine( parent, ID0_LINE, wxDefaultPosition, wxSize(450,-1), wxLI_HORIZONTAL );
+    item0->Add( item3, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+
+    wxStaticText *item4 = new wxStaticText( parent, TX_APP_NEW_FEATURES, _("Changes:"), wxDefaultPosition, wxDefaultSize, wxST_NO_AUTORESIZE );
+    item0->Add( item4, 0, wxALIGN_CENTER_VERTICAL|wxALL, 10 );
+
+    wxTextCtrl *item5 = new wxTextCtrl( parent, ID0_NEW_FEATURES, wxT(""), wxDefaultPosition, wxSize(80,200), wxTE_MULTILINE|wxTE_READONLY );
+    item0->Add( item5, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL, 10 );
+
+    wxButton *item6 = new wxButton( parent, wxID_OK, _("OK"), wxDefaultPosition, wxDefaultSize, 0 );
+    item6->SetDefault();
+    item0->Add( item6, 0, wxALIGN_CENTER|wxALL, 5 );
+
+    if (set_sizer)
+    {
+        parent->SetSizer( item0 );
+        if (call_fit)
+            item0->SetSizeHints( parent );
+    }
+    
+    return item0;
+}
+
 // Implement menubar functions
 
 // Implement toolbar functions

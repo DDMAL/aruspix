@@ -1,0 +1,13 @@
+Version 2.0.2
+--------------
+- Automatic update checker
+
+Version 2.0.1
+-------------
+- Bug fixes in Superimposition workspace
+
+Version 2.0.0
+-------------
+- MEI integration
+- Command-line tool (basics)
+- MusicXML export (basics)
