@@ -343,6 +343,7 @@ wxMenuBar *MenuBarFunc4()
     item3->AppendSeparator();
     item3->Append( ID4_BOOK_PRE, _("Batch preprocessing"), _("Preprocess active pages of the book") );
     item3->Append( ID4_BOOK_REC, _("Batch recognition"), _("Run recognition on remaining pages of the book") );
+    item3->Append( ID4_BOOK_FULL, _("Batch (full process)"), _("Run preprocessing and recognition on active pages of a book") );
     item3->AppendSeparator();
     item3->Append( ID4_BOOK_ADAPT, _("Optimize"), _("Perform full optimization on recognized pages of the book") );
     item3->Append( ID4_BOOK_RESET_ADAPT, _("Reset optimization"), _("Reset optimization") );
