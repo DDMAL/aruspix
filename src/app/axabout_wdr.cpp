@@ -170,7 +170,7 @@ wxSizer *UpdateDlgFunc( wxWindow *parent, bool call_fit, bool set_sizer )
 
     wxButton *item6 = new wxButton( parent, wxID_OK, _("OK"), wxDefaultPosition, wxDefaultSize, 0 );
     item6->SetDefault();
-    item0->Add( item6, 0, wxALIGN_CENTER|wxALL, 5 );
+    item0->Add( item6, 0, wxALIGN_CENTER|wxLEFT|wxRIGHT|wxBOTTOM, 10 );
 
     if (set_sizer)
     {

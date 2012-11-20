@@ -345,7 +345,7 @@ void AxImageController::Open( const wxString fname , const int index)
     wxString filename;
     if ( fname.IsEmpty() )
 	{
-		filename = wxFileSelector( "Open", wxGetApp().m_lastDirTIFF_in, _T(""), _T(""), IMAGE_FILES, wxFD_OPEN);
+		filename = wxFileSelector( "Open", wxGetApp().m_lastDirTIFF_in, _T(""), _T(""), IMAGE_FILES_SELECTION, wxFD_OPEN);
 		if (filename.IsEmpty())
 			return;
 		wxGetApp().m_lastDirTIFF_in = wxPathOnly( filename );
