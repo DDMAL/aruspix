@@ -27,6 +27,9 @@
 class ProcessDlg;
 
 
+// values for AxFile::GetAllFiles
+#define IMAGE_FILES 1
+
 // IMPORTANT 
 // Any change of MAX_FILE_TYPES must be reported in axfile.cpp where
 // the enum values are mapped with const *char
@@ -133,6 +136,7 @@ public:
 	static bool Check( wxString filename, int *type, int *envtype );
 	static void GetVersion( TiXmlElement *root, int *vmaj, int *vmin, int *vrev );
 	static wxString FormatVersion( int vmaj, int vmin, int vrev );
+    static int GetAllFiles( wxString dirname, wxArrayString *files, int file_type );
 	// file chooser
 	static wxString Open( int file_type );
 	//

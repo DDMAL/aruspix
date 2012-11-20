@@ -517,6 +517,22 @@ wxString AxFile::GetPreview( wxString filename, wxString preview )
 }
 
 // static method
+int AxFile::GetAllFiles(wxString dirname, wxArrayString *files, int file_type )
+{
+    int nbfiles = 0;
+    if ( file_type == IMAGE_FILES ) 
+    {
+        nbfiles += wxDir::GetAllFiles( dirname, files, "*.tif", wxDIR_FILES  );
+        nbfiles += wxDir::GetAllFiles( dirname, files, "*.TIF", wxDIR_FILES  );
+        nbfiles += wxDir::GetAllFiles( dirname, files, "*.tiff", wxDIR_FILES  );
+        nbfiles += wxDir::GetAllFiles( dirname, files, "*.TIFF", wxDIR_FILES  );
+        nbfiles += wxDir::GetAllFiles( dirname, files, "*.png", wxDIR_FILES  );
+        nbfiles += wxDir::GetAllFiles( dirname, files, "*.PNG", wxDIR_FILES  );
+    }
+    return nbfiles;
+}
+
+// static method
 bool AxFile::ContainsFile( wxString filename, wxString search_filename )
 {
 	if ( !wxFileExists( filename ) )
@@ -574,7 +590,7 @@ bool AxFile::Terminate( int code, ... )
         msg.PrintfV( _("Error writing image in file '%s'") , argptr );
     
     va_end(argptr);
-    wxLogError( msg );
+    wxLogError( msg.c_str() );
     return false;
 }
 
