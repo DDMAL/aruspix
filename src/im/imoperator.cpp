@@ -534,6 +534,12 @@ void ImOperator::DistByCorrelation( _imImage *im1,  _imImage *im2,
     wxASSERT_MSG(im2, wxT("Image 2 cannot be NULL") );
     wxASSERT_MSG(im1->palette_count!=2, wxT("Image 1 cannot be binary") );
     wxASSERT_MSG(im2->palette_count!=2, wxT("Image 2 cannot be binary") );
+  
+    // this prevent imProccessCrop to crash when the image is too small
+    // it can happen when the correlation is too detailed
+    if ( (im2->width < 4) || (im2->height < 4) ) {
+        return;
+    }
     
     // this prevent imProccessCrop to crash when the window is too big
     // it can happen when something is going wrong with the correlation
