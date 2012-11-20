@@ -420,7 +420,9 @@ void RecFile::SetBinarization( int image_binarization_method, int page_binarizat
 // static
 bool RecFile::IsRecognized( wxString filename )
 {
-	return AxFile::ContainsFile( filename, "page.bin"  ) || AxFile::ContainsFile( filename, "page.wwg"  ) ; // page.wwg for files before 1.5
+	return AxFile::ContainsFile( filename, "page.mei"  ) 
+        || AxFile::ContainsFile( filename, "page.bin"  )  // page.wwg for files before 2.0
+        || AxFile::ContainsFile( filename, "page.wwg"  ); // page.wwg for files before 1.5
 }
 
 void RecFile::GetImage1( AxImage *image )
@@ -774,7 +776,7 @@ bool RecFile::Decode( wxArrayPtrVoid params, AxProgressDlg *dlg )
 	if ( !rec_wrdtrns.IsEmpty() )
 		args << " -wrdtrns_fname " << "\"" << rec_wrdtrns.c_str() << "\"";
 
-	wxLogDebug(args);
+	wxLogDebug( args.c_str() );
 
 	if (!dlg->SetOperation( _("Recognition...") ) )
 		return this->Terminate( ERR_CANCELED );
