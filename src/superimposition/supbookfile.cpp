@@ -332,7 +332,7 @@ bool SupBookFile::LoadImages1( )
 
     if ( wxDirExists( m_imgFileDir1 ) )
     {
-        nbfiles = wxDir::GetAllFiles( m_imgFileDir1, &paths, "*.tif", wxDIR_FILES  );
+        nbfiles = AxFile::GetAllFiles( m_imgFileDir1, &paths, IMAGE_FILES  );
     
         for ( i = 0; i < (int)nbfiles; i++ )
         {
@@ -353,7 +353,7 @@ bool SupBookFile::LoadImages2( )
 
     if ( wxDirExists( m_imgFileDir2 ) )
     {
-        nbfiles = wxDir::GetAllFiles( m_imgFileDir2, &paths, "*.tif", wxDIR_FILES  );
+        nbfiles = AxFile::GetAllFiles( m_imgFileDir2, &paths, IMAGE_FILES  );
     
         for ( i = 0; i < (int)nbfiles; i++ )
         {
