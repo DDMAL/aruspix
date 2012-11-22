@@ -325,8 +325,10 @@ SupImController::SupImController( wxWindow *parent, wxWindowID id,
     m_viewSrc2Ptr = NULL;
     m_supFilePtr = NULL;
 
-    m_red = 0;
-    m_green = 0;
+    m_redBrightness = 0;
+    m_redContrast = 0;
+    m_greenBrightness = 0;
+    m_greenContrast = 0;
 }
 
 SupImController::SupImController()
@@ -353,9 +355,9 @@ void SupImController::SetViews( SupImSrcWindow *view1, SupImSrcWindow *view2 )
     m_viewSrc2Ptr = view2;
 }
 
-void SupImController::OpenPage( bool yield )
+void SupImController::ResetImage( AxImage image )
 {
-    AxImageController::OpenPage( false );
+    AxImageController::ResetImage( image );
 	
 	if ( !m_imControl1Ptr || !m_imControl2Ptr )
 		return;
@@ -376,32 +378,7 @@ void SupImController::OpenPage( bool yield )
     memcpy( m_redIm->data[0], im1->data[0], m_redIm->size );
     m_greenIm = imImageCreate( im1->width, im1->height, IM_GRAY, IM_BYTE );
     memcpy( m_greenIm->data[0], im1->data[1], m_greenIm->size );
-
-    if ( ( m_red != 0 ) || ( m_green != 0 ))
-    {
-        this->UpdateBrightness( );
-    }
-	
-	/*
-    wxGetApp().Yield( );
-
-    // image sources
-    AxImage img;
-    SetImImage( m_redIm, &img );
-    m_imControl1Ptr->SetImage( img );
-    wxGetApp().Yield( );
-
-    if ( this->m_nbOfPages > 1 )
-    {
-        m_imControl2Ptr->Open( m_filename, 1 );
-    }
-    else
-    {
-        SetImImage( m_greenIm, &img );
-        m_imControl2Ptr->SetImage( img );
-    }
-	*/
-    
+   
     imImageDestroy( im1 );
 
     wxGetApp().AxEndBusyCursor();
@@ -410,32 +387,15 @@ void SupImController::OpenPage( bool yield )
 
 void SupImController::UpdateBrightness( )
 {
-    /*if (! m_redIm || ! m_greenIm ) 
+    if (! m_redIm || ! m_greenIm ) 
         return;
 		
 	if ( !m_imControl1Ptr || !m_imControl2Ptr )
 		return;
 
-    wxASSERT_MSG(m_viewPtr,"View cannot be NULL");*/
+    wxASSERT_MSG(m_viewPtr,"View cannot be NULL");
 
     wxGetApp().AxBeginBusyCursor();
-	
-    imImage *im = GetImImage( this, ( IM_RGB ) );
-
-    if ( m_redIm ) 
-		imImageDestroy( m_redIm );
-    m_redIm = NULL;
-    if ( m_greenIm ) 
-		imImageDestroy( m_greenIm );
-    m_greenIm = NULL;
-
-    // memorisation des 2 buffers
-    m_redIm = imImageCreate( im->width, im->height, IM_GRAY, IM_BYTE );
-    memcpy( m_redIm->data[0], im->data[0], m_redIm->size );
-    m_greenIm = imImageCreate( im->width, im->height, IM_GRAY, IM_BYTE );
-    memcpy( m_greenIm->data[0], im->data[1], m_greenIm->size );
-	
-	imImageDestroy( im );
     
     int w = m_redIm->width;
     int h = m_redIm->height;
@@ -447,16 +407,18 @@ void SupImController::UpdateBrightness( )
 
     float param[2] = { 0, 0 }; // %
 
-    if ( m_green != 0 )
-    {
-        param[0] = 10.0 * (float)m_green;
+    if ( (m_greenBrightness != 0)  || (m_greenContrast != 0))
+    {   
+        param[0] = 10.0 * (float)m_greenBrightness;
+        param[1] = 10.0 * (float)m_greenContrast;
         imProcessToneGamut( r_buf , imTmp, IM_GAMUT_BRIGHTCONT, param);
         imProcessBitwiseOp( r_buf, g_buf, r_buf, IM_BIT_OR ); // valeurs communes doivent rester à 100%
         imProcessBitwiseOp( imTmp, r_buf, r_buf, IM_BIT_AND ); // AND entre valeurs communes et brightness ajuste
     }
-    if ( m_red != 0 )
-    {
-        param[0] = 10.0 * (float)m_red;
+    if ( (m_redBrightness != 0)  || (m_redContrast != 0))
+    {        
+        param[0] = 10.0 * (float)m_redBrightness;
+        param[1] = 10.0 * (float)m_redContrast;
         imProcessToneGamut( g_buf , imTmp, IM_GAMUT_BRIGHTCONT, param);
         imProcessBitwiseOp( g_buf, r_buf, g_buf, IM_BIT_OR ); // valeurs communes doivent rester à 100%
         imProcessBitwiseOp( imTmp, g_buf, g_buf, IM_BIT_AND ); // AND entre valeurs communes et brightness ajuste

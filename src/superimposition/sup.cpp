@@ -9,6 +9,7 @@
 
 // For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"
+#include "wx/valgen.h"
 
 #include "sup.h"
 #include "supim.h"
@@ -70,6 +71,7 @@ BEGIN_EVENT_TABLE(SupEnv,AxEnv)
     EVT_MENU( ID2_ZOOM_IN1, SupEnv::OnZoom )
     EVT_MENU( ID2_ZOOM_OUT2, SupEnv::OnZoom )
     EVT_MENU( ID2_ZOOM_IN2, SupEnv::OnZoom )
+    EVT_MENU( ID2_ADJUST_DLG, SupEnv::OnAdjustDlg )
     EVT_MENU( ID2_MANUAL_POINTS, SupEnv::OnPutPoints )
     EVT_MENU( ID2_CANCEL_SUP, SupEnv::OnCancelSuperimposition )
     EVT_MENU( ID2_EXPORT_IMAGE, SupEnv::OnExportImage )
@@ -189,6 +191,8 @@ void SupEnv::LoadWindow()
     m_bookSplitterPtr->SetMinimumPaneSize( 100 );
     m_bookSplitterPtr->SplitVertically( m_supBookPanelPtr, m_pageSplitterPtr, SupEnv::s_book_sash );
     //m_bookSplitterPtr->Unsplit( m_supBookPanelPtr );
+    
+    m_adjustDlg = NULL;
 	
 	CloseAll( );
 }
@@ -225,6 +229,9 @@ void SupEnv::RealizeSupToolbar( bool superimposed )
         toolbar->AddTool( ID2_ZOOM_OUT, _T("Zoom out"), m_framePtr->GetToolbarBitmap( "viewmag-.png" ), wxNullBitmap, wxITEM_NORMAL, _("Zoom out"), _("Zoom out") );
         toolbar->AddTool( ID2_ZOOM_IN, _T("Zoom in"), m_framePtr->GetToolbarBitmap( "viewmag+.png" ), wxNullBitmap, wxITEM_NORMAL, _("Zoom in"), _("Zoom in") );
         
+        toolbar->AddSeparator(); 
+        
+        toolbar->AddTool( ID2_ADJUST_DLG, _T("Contrast / Bright."), m_framePtr->GetToolbarBitmap( "mix_recmon.png" ), wxNullBitmap, wxITEM_NORMAL, _("Contrast and Brightness"), _("Adjust brightness and contrast") );  
     }
     else {
         
@@ -375,6 +382,10 @@ bool SupEnv::ResetFile()
     m_pageSplitterPtr->Unsplit();
     UpdateTitle( );
     
+    if ( m_adjustDlg ) {
+        m_adjustDlg->Show( false );
+    }
+    
     return true;
 }
 
@@ -391,6 +402,8 @@ void SupEnv::UpdateViews( int flags )
         AxImage img;
         m_supFilePtr->GetResult( &img );
         m_imControl1Ptr->ResetImage( img );
+        m_imControl1Ptr->UpdateBrightness();
+        //
 		m_supFilePtr->GetSrc1( &img );
         m_srcControl1Ptr->ResetImage( img );
 		m_supFilePtr->GetSrc2( &img );
@@ -813,6 +826,14 @@ void SupEnv::OnZoom( wxCommandEvent &event )
     }
 }
 
+void SupEnv::OnAdjustDlg( wxCommandEvent &event )
+{
+    if ( !m_adjustDlg ) {
+        m_adjustDlg = new SupAdjustDlg( m_framePtr, -1, _("Adjust brightness and contrast"), m_imControl1Ptr );
+    }
+    m_adjustDlg->Show();
+}
+
 
 void SupEnv::OnPaste( wxCommandEvent &event )
 {
@@ -931,10 +952,76 @@ void SupEnv::OnUpdateUI( wxUpdateUIEvent &event )
     {
         event.Enable( m_imControl1Ptr->Ok() && m_imControl2Ptr->Ok() );
     }
+    else if (id == ID2_ADJUST_DLG)
+    {
+        event.Enable( m_supFilePtr->IsSuperimposed() );
+    }
     else {
         event.Enable(true);
     }
 
+}
+
+
+//----------------------------------------------------------------------------
+// SupAdjustDlg
+//----------------------------------------------------------------------------
+
+
+BEGIN_EVENT_TABLE(SupAdjustDlg,wxDialog)
+    EVT_BUTTON( wxID_OK, SupAdjustDlg::OnClose )
+    EVT_BUTTON( wxID_CANCEL, SupAdjustDlg::OnCancel )
+    EVT_BUTTON( ID2_RESET_ADJ, SupAdjustDlg::OnReset )
+    EVT_COMMAND_SCROLL( ID2_SRC1_B, SupAdjustDlg::OnSlider)
+    EVT_COMMAND_SCROLL( ID2_SRC1_C, SupAdjustDlg::OnSlider)
+    EVT_COMMAND_SCROLL( ID2_SRC2_B, SupAdjustDlg::OnSlider)
+    EVT_COMMAND_SCROLL( ID2_SRC2_C, SupAdjustDlg::OnSlider)
+END_EVENT_TABLE()
+
+SupAdjustDlg::SupAdjustDlg( wxWindow *parent, wxWindowID id, const wxString &title,
+                     SupImController *controller,
+                     const wxPoint &position, const wxSize& size, long style ) :
+wxDialog( parent, id, title, position, size, style )
+{
+    SupAdjustDlgFunc2( this, TRUE );
+    
+    this->GetSrc1B()->SetValidator(
+        wxGenericValidator(&controller->m_greenBrightness));
+    this->GetSrc1C()->SetValidator(
+        wxGenericValidator(&controller->m_greenContrast));
+    this->GetSrc2B()->SetValidator(
+        wxGenericValidator(&controller->m_redBrightness));
+    this->GetSrc2C()->SetValidator(
+        wxGenericValidator(&controller->m_redContrast));
+    
+    m_controller = controller;
+}
+
+void SupAdjustDlg::OnSlider( wxScrollEvent &event )
+{
+    this->TransferDataFromWindow();
+    m_controller->UpdateBrightness();
+}
+
+void SupAdjustDlg::OnReset(wxCommandEvent &event)
+{
+    this->GetSrc1B()->SetValue( 0 );
+    this->GetSrc1C()->SetValue( 0 );
+    this->GetSrc2B()->SetValue( 0 );
+    this->GetSrc2C()->SetValue( 0 );
+    this->TransferDataFromWindow();
+    m_controller->UpdateBrightness();
+}
+
+void SupAdjustDlg::OnCancel(wxCommandEvent &event)
+{
+    this->OnReset( event );
+    this->Show( false );
+}
+
+void SupAdjustDlg::OnClose(wxCommandEvent &event)
+{
+    this->Show( false );
 }
 
 #endif // AX_SUPERIMPOSITION

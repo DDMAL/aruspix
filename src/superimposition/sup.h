@@ -55,6 +55,7 @@ class SupBookCtrl;
 class SupBookFile;
 class SupBookPanel;
 class SupEnv;
+class SupAdjustDlg;
 
 
 /*
@@ -184,6 +185,9 @@ private:
     SupBookCtrl *m_supBookPtr; // tree
     SupBookFile *m_supBookFilePtr;
     SupBookPanel *m_supBookPanelPtr;
+    // Adjust dialog
+    SupAdjustDlg *m_adjustDlg;
+    
 
 public:
     static int s_subWindowLevel;
@@ -227,6 +231,7 @@ private:
     void OnCopy( wxCommandEvent &event );
     void OnCut( wxCommandEvent &event );
     void OnPutPoints( wxCommandEvent &event );
+    void OnAdjustDlg( wxCommandEvent &event );
     void OnRun( wxCommandEvent &event );
     void OnCancelSuperimposition( wxCommandEvent &event );
     void OnUpdateUI( wxUpdateUIEvent &event );
@@ -234,6 +239,39 @@ private:
 private:
     DECLARE_DYNAMIC_CLASS(SupEnv)
 
+    DECLARE_EVENT_TABLE()
+};
+
+
+//----------------------------------------------------------------------------
+// SupAdjustDlg
+//----------------------------------------------------------------------------
+
+class SupAdjustDlg: public wxDialog
+{
+public:
+    // constructors and destructors
+    SupAdjustDlg( wxWindow *parent, wxWindowID id, const wxString &title,
+              SupImController *controller,
+              const wxPoint& pos = wxDefaultPosition,
+              const wxSize& size = wxDefaultSize,
+              long style = wxDEFAULT_DIALOG_STYLE | wxSTAY_ON_TOP );
+    
+    wxSlider* GetSrc1B()  { return (wxSlider*) FindWindow( ID2_SRC1_B ); }
+    wxSlider* GetSrc1C()  { return (wxSlider*) FindWindow( ID2_SRC1_C ); }
+    wxSlider* GetSrc2B()  { return (wxSlider*) FindWindow( ID2_SRC2_B ); }
+    wxSlider* GetSrc2C()  { return (wxSlider*) FindWindow( ID2_SRC2_C ); }
+    
+private:
+    SupImController *m_controller;
+    
+private:
+    void OnSlider( wxScrollEvent &event );
+    void OnReset( wxCommandEvent &event );
+    void OnClose( wxCommandEvent &event );
+    void OnCancel( wxCommandEvent &event );
+    
+private:
     DECLARE_EVENT_TABLE()
 };
 

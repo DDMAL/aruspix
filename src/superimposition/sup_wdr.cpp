@@ -218,6 +218,72 @@ wxSizer *SupBookDataFunc2( wxWindow *parent, bool call_fit, bool set_sizer )
     return item0;
 }
 
+wxSizer *SupAdjustDlgFunc2( wxWindow *parent, bool call_fit, bool set_sizer )
+{
+    wxBoxSizer *item0 = new wxBoxSizer( wxVERTICAL );
+
+    wxFlexGridSizer *item1 = new wxFlexGridSizer( 2, 0, 0 );
+
+    wxStaticText *item2 = new wxStaticText( parent, ID_TEXT2, _("Source 1 brightness"), wxDefaultPosition, wxDefaultSize, 0 );
+    item1->Add( item2, 0, wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+
+    wxSlider *item3 = new wxSlider( parent, ID2_SRC1_B, 0, -5, 5, wxDefaultPosition, wxSize(150,-1), wxSL_AUTOTICKS );
+    item1->Add( item3, 0, wxALIGN_CENTER|wxALL, 5 );
+
+    wxStaticText *item4 = new wxStaticText( parent, ID_TEXT2, _("Source 1 contrast"), wxDefaultPosition, wxDefaultSize, 0 );
+    item1->Add( item4, 0, wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+
+    wxSlider *item5 = new wxSlider( parent, ID2_SRC1_C, 0, -5, 5, wxDefaultPosition, wxSize(150,-1), wxSL_AUTOTICKS );
+    item1->Add( item5, 0, wxALIGN_CENTER|wxALL, 5 );
+
+    item0->Add( item1, 0, wxALIGN_CENTER|wxALL, 5 );
+
+    wxStaticLine *item6 = new wxStaticLine( parent, ID_LINE2, wxDefaultPosition, wxSize(20,-1), wxLI_HORIZONTAL );
+    item0->Add( item6, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+
+    wxFlexGridSizer *item7 = new wxFlexGridSizer( 2, 0, 0 );
+
+    wxStaticText *item8 = new wxStaticText( parent, ID_TEXT2, _("Source 2 brightness"), wxDefaultPosition, wxDefaultSize, 0 );
+    item7->Add( item8, 0, wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+
+    wxSlider *item9 = new wxSlider( parent, ID2_SRC2_B, 0, -5, 5, wxDefaultPosition, wxSize(150,-1), wxSL_AUTOTICKS );
+    item7->Add( item9, 0, wxALIGN_CENTER|wxALL, 5 );
+
+    wxStaticText *item10 = new wxStaticText( parent, ID_TEXT2, _("Source 2 contrast"), wxDefaultPosition, wxDefaultSize, 0 );
+    item7->Add( item10, 0, wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+
+    wxSlider *item11 = new wxSlider( parent, ID2_SRC2_C, 0, -5, 5, wxDefaultPosition, wxSize(150,-1), wxSL_AUTOTICKS );
+    item7->Add( item11, 0, wxALIGN_CENTER|wxALL, 5 );
+
+    item0->Add( item7, 0, wxALIGN_CENTER|wxALL, 5 );
+
+    wxStaticLine *item12 = new wxStaticLine( parent, ID_LINE2, wxDefaultPosition, wxSize(20,-1), wxLI_HORIZONTAL );
+    item0->Add( item12, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+
+    wxBoxSizer *item13 = new wxBoxSizer( wxHORIZONTAL );
+
+    wxButton *item14 = new wxButton( parent, ID2_RESET_ADJ, _("Reset"), wxDefaultPosition, wxDefaultSize, 0 );
+    item13->Add( item14, 0, wxALIGN_CENTER|wxALL, 5 );
+
+    wxButton *item15 = new wxButton( parent, wxID_OK, _("Close"), wxDefaultPosition, wxDefaultSize, 0 );
+    item15->SetDefault();
+    item13->Add( item15, 0, wxALIGN_CENTER|wxALL, 5 );
+
+    wxButton *item16 = new wxButton( parent, wxID_CANCEL, _("Cancel"), wxDefaultPosition, wxDefaultSize, 0 );
+    item13->Add( item16, 0, wxALIGN_CENTER|wxALL, 5 );
+
+    item0->Add( item13, 0, wxALIGN_CENTER|wxLEFT|wxRIGHT|wxBOTTOM, 5 );
+
+    if (set_sizer)
+    {
+        parent->SetSizer( item0 );
+        if (call_fit)
+            item0->SetSizeHints( parent );
+    }
+    
+    return item0;
+}
+
 // Implement menubar functions
 
 wxMenuBar *MenuBarFunc2()
@@ -241,6 +307,7 @@ wxMenuBar *MenuBarFunc2()
     item2->Append( ID2_MANUAL_POINTS, _("Set points manually\tAlt-Ctrl-P"), _("Set the superimposition points manually"), wxITEM_CHECK );
     item2->Append( ID2_CANCEL_SUP, _("Cancel superimposition\tAlt-Ctrl-Z"), _("Undo the superimposition of the sources") );
     item2->Append( ID2_PROCESS, _("&Run"), _("Process current page") );
+    item2->Append( ID2_ADJUST_DLG, _("Adjust brightness and contrast"), _("Open the dialog for adjusting brightness and contrast") );
     item0->Append( item2, _("commun2") );
     
     wxMenu* item3 = new wxMenu;

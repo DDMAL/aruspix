@@ -98,18 +98,17 @@ public:
     virtual ~SupImController();
     
     void UpdateBrightness( );
+    
     virtual void CloseDraggingSelection(wxPoint start, wxPoint end);
     void SetControllers( AxImageController *controller1, AxImageController *controller2 );
     void SetViews( SupImSrcWindow *view1, SupImSrcWindow *view2 );
     void ScrollSources( double x, double y );
     void DrawCircles( bool clear = false );
+    void ResetImage( AxImage image );
 	void SetSupFile( SupFile *supFile ) { m_supFilePtr = supFile; }
     void SetInitialPoints( );
     wxPoint ToLogical( wxPoint p );
     wxPoint ToRender( wxPoint p );
-
-private:
-    virtual void OpenPage( bool yield = true );
     
 private:
     _imImage *m_greenIm;
@@ -120,7 +119,7 @@ private:
     SupImSrcWindow *m_viewSrc2Ptr;
 
 public:
-    int m_red, m_green;
+    int m_redContrast, m_redBrightness, m_greenContrast, m_greenBrightness;
     SupFile *m_supFilePtr;
 	
 protected:
