@@ -486,7 +486,6 @@ bool ImPage::Check( wxString infile, int max_size, int min_size, int index )
 
     // verifier negatif - positif : looking at the TIFF tag
 	int error;
-	bool minIsBlack = true;
 	imFile* ifile = imFileOpen( infile.c_str(), &error);
 	if (!ifile) 
 		return this->Terminate( ERR_FILE , infile.c_str());
@@ -496,27 +495,44 @@ bool ImPage::Check( wxString infile, int max_size, int min_size, int index )
 	imFileGetAttributeList( ifile, NULL, &attrib_count);
 	short attrib_data = *(short*)imFileGetAttribute( ifile, "Photometric", &attrib_data_type, &attrib_count);
     imFileClose( ifile );
-	if ( attrib_count == 1 )
-    {
-        wxLogDebug("Photometric %hd", (attrib_data) );
-		if ( (attrib_data) == (short)PHOTOMETRIC_MINISWHITE )
-			minIsBlack = false;
-	}
-
-	imStats istats;
-	imCalcImageStatistics( m_opImMain, &istats );
-    if ( AxImage::s_checkIfNegative )
-		minIsBlack = (istats.mean > 127) ? true : false;
-	else if ( (istats.mean > 127) && !minIsBlack )
-		wxLogWarning( _("Image is negative according to the mean, check the option in 'Preferences' to have it corrected") );
+    bool isRgb = true;
 	
-	if ( minIsBlack )
-	{
-		m_opImTmp1 = imImageClone( m_opImMain );
-		if ( !m_opImTmp1 )
-			return this->Terminate( ERR_MEMORY );
-		imProcessNegative( m_opImMain, m_opImTmp1 );
-		SwapImages( &m_opImMain, &m_opImTmp1 );
+    // we have a Photometric tag
+    if ( attrib_count == 1 )
+    {
+        imStats istats;
+        imCalcImageStatistics( m_opImMain, &istats );
+        wxLogDebug("RBG image mean %f", istats.mean );
+        wxLogDebug("Photometric %hd", (attrib_data) );
+		if ( (attrib_data) != (short)PHOTOMETRIC_RGB ) 
+        {
+            m_opImTmp1 = imImageClone( m_opImMain );
+            if ( !m_opImTmp1 )
+                return this->Terminate( ERR_MEMORY );
+            imProcessNegative( m_opImMain, m_opImTmp1 );
+            SwapImages( &m_opImMain, &m_opImTmp1 );
+            isRgb = false;
+        }
+	}
+    
+    if ( isRgb ) {
+        imStats istats;
+        imCalcImageStatistics( m_opImMain, &istats );
+        wxLogDebug("RBG image mean %f", istats.mean );
+        bool invert = true;
+        if ( AxImage::s_checkIfNegative )
+            invert = (istats.mean > 127) ? true : false;
+        else if ( istats.mean < 127 )
+            wxLogWarning( _("Image is negative according to the mean, check the option in 'Preferences' to have it corrected") );
+        
+        if ( invert )
+        {
+            m_opImTmp1 = imImageClone( m_opImMain );
+            if ( !m_opImTmp1 )
+                return this->Terminate( ERR_MEMORY );
+            imProcessNegative( m_opImMain, m_opImTmp1 );
+            SwapImages( &m_opImMain, &m_opImTmp1 );
+        }
     }
 
 	// historgramme (debug)
