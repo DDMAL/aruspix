@@ -40,3 +40,17 @@ bool MusPositionInterface::GetPosition(int *pname, int *oct)
     *pname = m_pname;
     return true;
 }
+
+bool MusPositionInterface::HasIdenticalPositionInterface( MusPositionInterface *otherPositionInterface )
+{
+    if ( !otherPositionInterface ) {
+        return false;
+    }
+    if ( this->m_oct != otherPositionInterface->m_oct ) {
+        return false;
+    }
+    if ( this->m_pname != otherPositionInterface->m_pname ) {
+        return false;
+    }
+    return true;
+}

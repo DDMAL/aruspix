@@ -52,6 +52,9 @@ bool MusClef::operator==( MusLayerElement& other)
     if ( !otherClef ) {
         return false;
     }
+    if ( this->m_clefId != otherClef->m_clefId ) {
+        return false;
+    }
     return true;
 }
 

@@ -43,6 +43,27 @@ bool MusMensur::operator==( MusLayerElement& other)
     if ( !otherMensur ) {
         return false;
     }
+    if ( this->m_dot != otherMensur->m_dot ) {
+        return false;
+    }
+    if ( this->m_meterSymb != otherMensur->m_meterSymb ) {
+        return false;
+    }
+    if ( this->m_num != otherMensur->m_num ) {
+        return false;
+    }
+    if ( this->m_numBase != otherMensur->m_numBase ) {
+        return false;
+    }
+    if ( this->m_reversed != otherMensur->m_reversed ) {
+        return false;
+    }
+    if ( this->m_sign != otherMensur->m_sign ) {
+        return false;
+    }
+    if ( this->m_slash != otherMensur->m_slash ) {
+        return false;
+    }
     return true;
 }
 

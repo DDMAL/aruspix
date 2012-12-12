@@ -35,6 +35,13 @@ public:
     /** Get the pitch */
     virtual bool GetPitch( int *pname, int *oct );
     
+    /**
+     * Interface comparison operator. 
+     * Check if the MusLayerElement has a MusPitchInterface and compare attributes
+     */
+    bool HasIdenticalPitchInterface(MusPitchInterface  *otherPitchInterface);
+
+    
 private:
     
 public:
