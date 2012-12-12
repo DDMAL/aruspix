@@ -1,3 +1,9 @@
+Version 2.0.6
+-------------
+- Bug fix in application menu
+- Open upgraded files as modified
+- New collation features
+
 Version 2.0.5
 -------------
 - Bug fix in image representation
