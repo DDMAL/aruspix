@@ -122,6 +122,7 @@ public:
     bool IsNew() { return m_filename.IsEmpty(); }
 	bool IsModified() { return m_isModified; }
 	void Modify() { m_isModified = true; }
+    bool IsOlderThan( int vmag, int vmin, int vrev );
 	// process
 	bool Terminate( int code = 0, ... );
 	int GetError() { return m_error; }
@@ -133,8 +134,7 @@ public:
 	
 	// the static methods enable some informations on the file to be obtained before (or without) opening it completely
 	// check version, and return type and envtype of a file (given by filename)
-	static bool Check( wxString filename, int *type, int *envtype );
-	static void GetVersion( TiXmlElement *root, int *vmaj, int *vmin, int *vrev );
+	static bool Check( wxString filename, int *type, int *envtype, int *vmajPtr = NULL, int *vminPtr = NULL, int *vrevPtr = NULL );
 	static wxString FormatVersion( int vmaj, int vmin, int vrev );
     static int GetAllFiles( wxString dirname, wxArrayString *files, int file_type );
 	// file chooser
@@ -145,6 +145,9 @@ public:
 	// unzip the preview file into the working directory and return path to it if success ("" otherwise)
 	static wxString GetPreview( wxString filename, wxString preview );
 
+protected:
+    static void GetVersion( TiXmlElement *root, int *vmaj, int *vmin, int *vrev );
+    
     
 public:
     wxString m_filename; 
