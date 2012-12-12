@@ -214,6 +214,7 @@ void RecFile::UpgradeTo_2_0_0()
     MusMeiOutput mei_output( m_musDocPtr, m_musDocPtr->m_fname );
     mei_output.ExportFile(); 
     wxLogMessage( "File successfully upgraded to 2.0.0");
+    this->Modify();
 }
 
 
