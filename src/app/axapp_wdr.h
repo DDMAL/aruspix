@@ -62,14 +62,13 @@ const int ID_MENU0 = 6022;
 const int ID_MENU_EDIT = 6023;
 const int ID_UNDO = 6024;
 const int ID_REDO = 6025;
-const int ID_MENU = 6026;
-const int ID_CUT = 6027;
-const int ID_COPY = 6028;
-const int ID_PASTE = 6029;
-const int ID_MENU_OPTIONS = 6030;
-const int ID_MENU_HELP = 6031;
-const int ID_HELP = 6032;
-const int ID_ABOUT = 6033;
+const int ID_CUT = 6026;
+const int ID_COPY = 6027;
+const int ID_PASTE = 6028;
+const int ID_MENU_OPTIONS = 6029;
+const int ID_MENU_HELP = 6030;
+const int ID_HELP = 6031;
+const int ID_ABOUT = 6032;
 wxMenuBar *MainMenuBarFunc();
 
 // Declare toolbar functions
