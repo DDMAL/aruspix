@@ -43,6 +43,47 @@ bool MusNote::operator==( MusLayerElement& other)
     if ( !otherNote ) {
         return false;
     }
+    if ( this->m_artic != otherNote->m_artic ) {
+        return false;
+    }
+    if ( this->m_chord != otherNote->m_chord ) {
+        return false;
+    }
+    if ( this->m_colored != otherNote->m_colored ) {
+        return false;
+    }
+    if ( this->m_headshape != otherNote->m_headshape ) {
+        return false;
+    }
+    if ( this->m_lig != otherNote->m_lig ) {
+        return false;
+    }
+    if ( this->m_ligObliqua != otherNote->m_ligObliqua ) {
+        return false;
+    }
+    // slur need value by value comparison
+    //if ( this->m_slur != otherNote->m_slur ) {
+    //    return false;
+    //}
+    if ( this->m_stemDir != otherNote->m_stemDir ) {
+        return false;
+    }
+    if ( this->m_stemLen != otherNote->m_stemLen ) {
+        return false;
+    }
+    if ( this->m_acciaccatura != otherNote->m_acciaccatura ) {
+        return false;
+    }
+    if ( this->m_embellishment != otherNote->m_embellishment ) {
+        return false;
+    }
+    if ( !this->HasIdenticalPitchInterface( otherNote ) ) {
+        return false;
+    }
+    if ( !this->HasIdenticalDurationInterface( otherNote ) ) {
+        return false;
+    }
+    
     return true;
 }
 
