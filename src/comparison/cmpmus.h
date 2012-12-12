@@ -69,7 +69,7 @@ protected:
 	CmpMusController *m_imControlPtr1, *m_imControlPtr2;
 	
 private:
-        void OnSize( wxSizeEvent &event );
+    void OnSize( wxSizeEvent &event );
 
 private:
     DECLARE_EVENT_TABLE()

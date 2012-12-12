@@ -23,6 +23,8 @@
 
 #include "im/impage.h"
 
+#include "recognition/recfile.h"
+
 #include "mus/musdoc.h"
 #include "mus/musiowwg.h"
 
@@ -66,12 +68,13 @@ BEGIN_EVENT_TABLE(CmpEnv,AxEnv)
     EVT_MENU( ID6_NEXT, CmpEnv::OnNext )
     EVT_MENU( ID6_PREVIOUS, CmpEnv::OnPrevious )
     EVT_MENU( ID6_GOTO, CmpEnv::OnGoto )
+    EVT_MENU( ID6_SET_DELIMITER, CmpEnv::OnSetAsDelimiter )
     //EVT_MENU_RANGE( ID4_INSERT_MODE, ID4_SYMBOLES, CmpEnv::OnTools )
     EVT_MENU( ID6_OPEN_CMP, CmpEnv::OnOpen )
     EVT_MENU( ID6_CMP_LOAD, CmpEnv::OnCmpLoad )
     EVT_MENU( ID6_POPUP_TREE_LOAD, CmpEnv::OnCmpLoad )
-    EVT_MENU( ID6_CMP_EDIT, CmpEnv::OnCmpEdit )
-    EVT_MENU( ID6_POPUP_TREE_EDIT, CmpEnv::OnCmpEdit )
+    EVT_MENU( ID6_POPUP_TREE_ADD_BOOK, CmpEnv::OnCmpAddBook )
+    EVT_MENU( ID6_POPUP_TREE_ADD_COLLATION, CmpEnv::OnCmpAddCollation )
     EVT_MENU( ID6_VIEW_IMAGE, CmpEnv::OnViewImage )
 END_EVENT_TABLE()
 
@@ -93,8 +96,10 @@ CmpEnv::CmpEnv():
     m_cmpCtrlPanelPtr = NULL;
     m_cmpCollationPtr = NULL;
 	m_cmpCollationPartPtr = NULL;
+    m_cmpPartPage = NULL;
 
     m_cmpFilePtr = new CmpFile( "cmp_file", this );
+    m_recFilePtr = new RecFile( "cmp_rec_file" );
 
     this->m_envMenuBarFuncPtr = MenuBarFunc6;
 }
@@ -106,6 +111,9 @@ CmpEnv::~CmpEnv()
 
     if ( m_cmpFilePtr )
         delete m_cmpFilePtr; 
+    
+    if ( m_recFilePtr )
+        delete m_recFilePtr; 
 }
 
 void CmpEnv::LoadWindow()
@@ -315,6 +323,133 @@ void CmpEnv::ViewCollationPart( CmpCollationPart *collationPart, CmpCollation *c
 	UpdateViews( 0 );
 }
 
+void CmpEnv::AddPart( CmpBookItem *book )
+{
+ 
+    wxString partname = wxGetTextFromUser( "Enter the name for the book", "" );
+    if (partname.Length() == 0 ) {
+        partname = "[unspecified]";
+    }
+    
+    char uuidStr[37];
+    uuid_t id;
+    uuid_generate( id );
+    uuid_unparse( id, uuidStr ); 
+    
+    CmpBookPart *part = new CmpBookPart( uuidStr, partname, book );
+    book->m_bookParts.Add( part );
+    m_cmpCtrlPtr->UpdateParts( book );
+    UpdateViews( 0 );
+}
+
+void CmpEnv::AddAxFile( wxString filename, CmpBookItem *book )
+{
+    wxASSERT( book );
+    
+    int i;
+    wxArrayString names;
+    for (i = 0; i < (int)book->m_bookParts.GetCount(); i++ ) {
+        names.Add( book->m_bookParts[i].m_name );
+    }
+    
+    i = wxGetSingleChoiceIndex( "Select the part", "", names );
+    if (i ==  -1) {
+        return;
+    }
+    
+    CmpBookPart *part = &book->m_bookParts[i];
+    CmpPartPage *page = new CmpPartPage( filename, part );
+    part->m_partpages.Add( page );
+    m_cmpCtrlPtr->UpdateParts( book );
+    UpdateViews( 0 );
+}
+
+void CmpEnv::AddPartPageStartEnd( wxString filename, CmpPartPage *page, bool isStart )
+{
+    wxASSERT( m_recFilePtr );
+    
+    RecBookFile *book = page->m_part->m_book->m_recBookFilePtr;
+    wxString file = book->m_axFileDir + wxFileName::GetPathSeparator() +  filename;	
+    
+    // we need to check that the file is at least version 2.0.0
+    int type, envtype, vmaj, vmin, vrev;
+    if ( !AxFile::Check( file, &type, &envtype, &vmaj, &vmin, &vrev ) ) 
+    {
+        wxLogError(_("File '%s' could not be verified"), file.c_str() );
+        return;
+    }
+    
+    if ( AxFile::FormatVersion( vmaj, vmin, vrev) < AxFile::FormatVersion(2, 0, 0) )
+    {
+        if ( wxMessageBox(_("The file needs to be upgraded to the current version of Aruspix\nDo you want to open it?")
+                          , wxGetApp().GetAppName() , wxYES | wxNO | wxICON_QUESTION ) == wxYES )
+		{
+            m_framePtr->Open( book->m_axFileDir + wxFileName::GetPathSeparator() +  filename );
+        }
+        return;
+    }
+    
+    m_recFilePtr->New();
+    if ( !m_recFilePtr->Open( file ) || !m_recFilePtr->IsRecognized() ) 
+    {
+        wxLogError(_("File '%s' could not be open or is not a recognized file"), file.c_str() );
+        return;
+    }
+    
+    // unset and unsplit
+    m_pageSplitterPtr->Unsplit();
+    m_cmpCollationPartPtr = NULL;
+    m_cmpCollationPtr = NULL;
+    
+    // keep data for when delimiter is selected
+    m_cmpPartPage = page;
+    m_delimiterIsStart = isStart;
+    
+    // set and update view
+    m_musViewPtr->SetLayout( &m_recFilePtr->m_musDocPtr->m_layouts[0]);
+    m_musViewPtr->Resize( ); 
+    UpdateViews( 0 );
+}
+
+void CmpEnv::AddCollationPart( CmpCollation *collation )
+{
+    int i, j;
+    wxArrayString names;
+    wxArrayString idrefs;
+    for (i = 0; i < (int)m_cmpFilePtr->m_bookFiles.GetCount(); i++ ) {
+        CmpBookItem *book = &m_cmpFilePtr->m_bookFiles[i];
+        for (j = 0; j < (int)book->m_bookParts.GetCount(); j++ ) {
+            names.Add( book->m_bookname + " - " + book->m_bookParts[j].m_name );
+            idrefs.Add( book->m_bookParts[i].m_id );
+        }
+    }
+    
+    i = wxGetSingleChoiceIndex( "Select the part", "", names );
+    if (i ==  -1) {
+        return;
+    }
+    
+    int flags = 0;
+    if ( wxMessageBox(_("Do you want to use this part as reference for the collation?")
+                      , wxGetApp().GetAppName() , wxYES | wxNO | wxICON_QUESTION ) == wxYES )
+    {
+        flags = 1;
+    }
+    
+    CmpBookPart *bookpart = m_cmpFilePtr->FindBookPart( idrefs[i] );
+    if ( !bookpart )
+    {
+        wxLogError(_("The part could not be loaded" ) );
+        return;         
+    }
+     
+    CmpCollationPart *part = new CmpCollationPart( bookpart, flags );
+    collation->m_collationParts.Add( part );    
+    
+    m_cmpCtrlPtr->UpdateCollationParts( collation );
+    UpdateViews( 0 );
+}
+
 void CmpEnv::UpdateViews( int flags )
 {
     if ( m_cmpCollationPartPtr && m_cmpCollationPtr && m_cmpCollationPtr->IsCollationLoaded( m_cmpCollationPartPtr) )
@@ -379,17 +514,61 @@ bool CmpEnv::CloseAll( )
 }
 
 
-void CmpEnv::OnCmpEdit( wxCommandEvent &event )
+
+void CmpEnv::OnSetAsDelimiter( wxCommandEvent &event )
 {
-	/*
-    RecBookDataDlg dlg( m_framePtr, -1, _("Edit book"), m_recBookFilePtr );
-    dlg.Center( wxBOTH );
-    if ( dlg.ShowModal() == wxID_OK )
+    wxASSERT( m_cmpPartPage && m_musViewPtr && m_musViewPtr->m_currentElement );
+    
+    m_cmpPartPage->SetStartEnd( m_musViewPtr->m_currentElement, m_delimiterIsStart );
+    m_cmpCtrlPtr->UpdateParts( m_cmpPartPage->m_part->m_book );
+
+    m_cmpPartPage = NULL;
+    m_recFilePtr->Close();
+    m_musViewPtr->Show( false );
+    m_musViewPtr->SetLayout( NULL );
+    UpdateViews( 0 );
+
+}
+
+void CmpEnv::OnCmpAddBook( wxCommandEvent &event )
+{
+	wxString filename = AxFile::Open( AX_FILE_PROJECT );
+    int type, envtype;
+    if ( !AxFile::Check( filename, &type, &envtype ) )
+        return;
+    if  (envtype != AX_FILE_RECOGNITION)
     {
-        m_recBookFilePtr->Modify();
-        m_recBookPtr->Update();
+        wxLogError("Invalid file");
+        return;
     }
-	*/
+    
+    wxString bookname = wxGetTextFromUser( "Enter the name for the book", "" );
+    if (bookname.Length() == 0 ) {
+        bookname = "[unspecified]";
+    }
+    
+    CmpBookItem *book = new CmpBookItem( filename, bookname, 0 );
+    m_cmpFilePtr->m_bookFiles.Add( book );
+    m_cmpCtrlPtr->Build();
+    UpdateViews( 0 );
+}
+
+void CmpEnv::OnCmpAddCollation( wxCommandEvent &event )
+{
+    wxString colname = wxGetTextFromUser( "Enter the name for the collation", "" );
+    if (colname.Length() == 0 ) {
+        colname = "[unspecified]";
+    }
+    
+    char uuidStr[37];
+    uuid_t id;
+    uuid_generate( id );
+    uuid_unparse( id, uuidStr );
+    
+    CmpCollation *collation = new CmpCollation( uuidStr, colname, m_cmpFilePtr->m_basename );
+    m_cmpFilePtr->m_collations.Add( collation );
+    m_cmpCtrlPtr->Build();
+    UpdateViews( 0 );
 }
 
 void CmpEnv::OnCmpLoad( wxCommandEvent &event )
@@ -401,18 +580,12 @@ void CmpEnv::OnCmpLoad( wxCommandEvent &event )
     wxArrayString paths, filenames;
     size_t nbOfFiles;
     
-    //nbOfFiles = m_recBookFilePtr->FilesToRecognize( &filenames, &paths );
 	nbOfFiles = m_cmpFilePtr->m_bookFiles.GetCount();
     if ( nbOfFiles == 0 )
     {
         wxLogMessage( _("Nothing to do! No book to collate") );
         return;  
 	}
-	// OR similary, plus propre
-    // if a book is opened, check if the file has to be preprocessed
-    //if ( m_recBookFilePtr->IsOpened() && !m_recBookFilePtr->HasToBePreprocessed( m_imControlPtr->GetFilename() ) )
-    //    return;
-						
 	
     AxProgressDlg *dlg = new AxProgressDlg( m_framePtr, -1, _("Load book") );
     dlg->Center( wxBOTH );
@@ -433,10 +606,6 @@ void CmpEnv::OnCmpLoad( wxCommandEvent &event )
     if ( failed || m_cmpFilePtr->GetError() != ERR_NONE ) // operation annulee ou failed
         return;
 
-    //UpdateViews( 0 );
-
-    //m_cmpFilePtr->LoadImages();
-    //m_cmpFilePtr->LoadAxfiles();
     m_cmpCtrlPtr->Update();
 }
 
@@ -468,20 +637,10 @@ void CmpEnv::OnNew( wxCommandEvent &event )
         return;
         
     m_cmpFilePtr->New();
-	
-    /*
-	RecBookDataDlg dlg( m_framePtr, -1, _("New book"), m_recBookFilePtr );
-    dlg.Center( wxBOTH );
-    if ( dlg.ShowModal() == wxID_OK )
-    {
-        m_recBookFilePtr->Modify();
-        wxGetApp().AxBeginBusyCursor( );
-        m_bookSplitterPtr->SplitVertically( m_recBookPanelPtr, m_pageSplitterPtr, CmpEnv::s_book_sash );
-        m_recBookPtr->Build();
-        wxGetApp().AxEndBusyCursor();
-    }
-	*/
     
+    m_bookSplitterPtr->SplitVertically( m_cmpCtrlPanelPtr, m_pageSplitterPtr, CmpEnv::s_book_sash );
+    m_cmpCtrlPtr->Build();
+    UpdateViews( 0 );
 }
 
 void CmpEnv::OnSave( wxCommandEvent &event )
@@ -682,8 +841,12 @@ void CmpEnv::OnUpdateUI( wxUpdateUIEvent &event )
         event.Enable( true );
     else if (id == ID_CLOSE )
         event.Enable( true );
-    // no new file for now
+    else if (id == ID6_SET_DELIMITER)
+        event.Enable( m_cmpPartPage && m_musViewPtr && m_musViewPtr->CanCopy() );
     else if (id == ID_NEW )
+        event.Enable( true );
+    // no new file for now - because we always show the image and not the transcription
+    else if (id == ID6_VIEW_IMAGE )
         event.Enable( false );
     // default
     else

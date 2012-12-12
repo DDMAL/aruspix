@@ -110,6 +110,11 @@ void CmpMusController::LoadSource( MusLaidOutLayerElement *element )
         return;
     }
     
+    if ( !m_viewPtr->m_page ) {
+        // this happen when we load a source when clicking during delimiter selection
+        return;
+    }
+    
     MusPage *currentPage = m_viewPtr->m_page;
     MusLaidOutLayerElement *laidOutLayerElement = NULL;
     wxArrayPtrVoid params;
@@ -186,7 +191,7 @@ CmpMusWindow::CmpMusWindow( CmpMusController *parent, wxWindowID id,
 	m_lastStaff = -1, 
 	m_lastController = 1;
     m_collationWin = false;
-    m_viewImage = false;
+    m_viewImage = true;
 }
 
 CmpMusWindow::CmpMusWindow()

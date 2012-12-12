@@ -28,12 +28,14 @@ IMPLEMENT_DYNAMIC_CLASS(AxTreeItem, wxObject)
 AxTreeItem::AxTreeItem() 
 {
     m_object = NULL;
+    m_type = 0;
     m_secondaryObject = NULL;
 }
 
-AxTreeItem::AxTreeItem( wxTreeItemId id, wxObject *object, wxObject *secondaryObject ) 
+AxTreeItem::AxTreeItem( wxTreeItemId id, int itemType, wxObject *object, wxObject *secondaryObject ) 
 {
     m_id = id;
+    m_type = itemType;
     m_object = object;
     m_secondaryObject = secondaryObject;
 }
@@ -69,6 +71,9 @@ wxGenericTreeCtrl( parent, id,  position, size, wxTR_HAS_BUTTONS | wxSUNKEN_BORD
     images->Add(wxBitmap( wxGetApp().m_resourcesPath + "/tree/doc.png", wxBITMAP_TYPE_PNG ) );
     images->Add(wxBitmap( wxGetApp().m_resourcesPath + "/tree/text_grey.png", wxBITMAP_TYPE_PNG ) );
     images->Add(wxBitmap( wxGetApp().m_resourcesPath + "/tree/text.png", wxBITMAP_TYPE_PNG ) );
+    images->Add(wxBitmap( wxGetApp().m_resourcesPath + "/tree/doc_start.png", wxBITMAP_TYPE_PNG ) );
+    images->Add(wxBitmap( wxGetApp().m_resourcesPath + "/tree/doc_end.png", wxBITMAP_TYPE_PNG ) );
+    images->Add(wxBitmap( wxGetApp().m_resourcesPath + "/tree/doc_start_end.png", wxBITMAP_TYPE_PNG ) );
     
     AssignImageList(images);
 }
@@ -133,8 +138,27 @@ bool AxCtrl::SelectionIsChildOf( wxTreeItemId id )
     return true;
 }
 
+int AxCtrl::GetType( wxTreeItemId item )
+{
+    if ( !item.IsOk() ) {
+        return 0;
+    }
+    
+    int i;
+    for (i = 0; i < (int)m_axItems.GetCount(); i++ ) {
+        if ( m_axItems[i].m_id == item ) {
+            return m_axItems[i].m_type;
+        }
+    }
+    return 0;
+}
+
 wxObject *AxCtrl::GetObject( wxTreeItemId item, bool secondary )
 {
+    if ( !item.IsOk() ) {
+        return NULL;
+    }
+    
     int i;
     for (i = 0; i < (int)m_axItems.GetCount(); i++ ) {
         if ( m_axItems[i].m_id == item ) {
@@ -148,5 +172,21 @@ wxObject *AxCtrl::GetObject( wxTreeItemId item, bool secondary )
     }
     return NULL;
 }
+
+wxTreeItemId AxCtrl::GetTreeItemId( wxObject *object )
+{
+    if ( !object ) {
+        return 0;
+    }
+
+    int i;
+    for (i = 0; i < (int)m_axItems.GetCount(); i++ ) {
+        if ( (&m_axItems[i])->m_object == object ) {
+            return m_axItems[i].m_id;
+        }
+    }
+    return 0;
+}
+
 
 

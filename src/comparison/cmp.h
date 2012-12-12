@@ -30,9 +30,16 @@ enum
     ID6_MUSWINDOW,
     
     ID6_POPUP_TREE_LOAD,
-    ID6_POPUP_TREE_EDIT,
-    ID6_POPUP_TREE_AX_DESACTIVATE,
+    ID6_POPUP_TREE_ADD_BOOK,
+    ID6_POPUP_TREE_ADD_AXFILE,
+    ID6_POPUP_TREE_ADD_PART,
+    ID6_POPUP_TREE_ADD_PART_PAGE_START,
+    ID6_POPUP_TREE_ADD_PART_PAGE_END,
+    ID6_POPUP_TREE_REMOVE_PART_PAGE_START,
+    ID6_POPUP_TREE_REMOVE_PART_PAGE_END,
 	ID6_POPUP_TREE_ASSEMBLE,
+    ID6_POPUP_TREE_ADD_COLLATION,
+    ID6_POPUP_TREE_ADD_COLLATION_PART   
 };
 
 class CmpImController;
@@ -42,9 +49,12 @@ class CmpMusWindow;
 
 class CmpFile;
 class CmpCtrl;
-//class RecFile;
+class RecFile;
 class CmpCtrlPanel;
 class CmpEnv;
+class CmpBookItem;
+class CmpBookPart;
+class CmpPartPage;
 class CmpCollation;
 class CmpCollationPart;
 
@@ -63,7 +73,7 @@ public:
     CmpEnv();
     virtual ~CmpEnv();
     
-        virtual void LoadWindow();
+    virtual void LoadWindow();
     static void LoadConfig();
     static void SaveConfig();
     virtual void ParseCmd( wxCmdLineParser *parser );
@@ -74,7 +84,30 @@ public:
     //
     bool ResetFile(); // must be called when new file is created or opened
     bool ResetCmpFile(); // must be called when new file is created or opened
+    /**
+     * Open a collation when double clicking on the tree item
+     */
 	void ViewCollationPart( CmpCollationPart *collationPart, CmpCollation *collation );
+    /**
+     * Add a CmpBookPart to a CmpBookItem when right click on the "Parts" subtree.
+     * Open a dialog for entering a part name (e.g., Canto)
+     */ 
+    void AddPart( CmpBookItem *book );
+    /**
+     * Add a CmpPartPage to a CmpBookPart when right click on a recognized file of a recognition book.
+     * Open a dialog for selecting to which part (e.g., Canto) the page has to be added
+     */
+    void AddAxFile( wxString filename, CmpBookItem *book );
+    /**
+     * Add a start or end delimiter to a CmpPartPage when right click on a part page in the tree.
+     * Open the recognition result, and the delimiter will be added when choosing "Set as delimiter" in "Edit" menu.
+     * See CmpEnv::OnSetDelimiter.
+     */ 
+    void AddPartPageStartEnd( wxString filename, CmpPartPage *page, bool isStart );
+    /**
+     * Add a CmpCollationPart to CmpCollation.
+     */
+    void AddCollationPart( CmpCollation *collation );
     void OpenFile( wxString filename);
     void UpdateViews( int flags );
     CmpCollation *GetCollationPtr() { return m_cmpCollationPtr; }
@@ -92,10 +125,10 @@ private:
     CmpMusWindow *m_musViewPtr;
 	CmpCollationPart *m_cmpCollationPartPtr;
     CmpCollation *m_cmpCollationPtr;
-    //MusToolPanel *m_toolpanel;
-    //wxPanel *m_musPanelPtr; // panel complet: contient toolpanel et recmuscontoller
-    // recognition elements
-    //RecFile *m_recFilePtr;
+    // recognition elements - used for selecting delimiters
+    RecFile *m_recFilePtr;
+    CmpPartPage *m_cmpPartPage;
+    bool m_delimiterIsStart;
     // 
     CmpCtrl *m_cmpCtrlPtr; // tree
     CmpFile *m_cmpFilePtr;
@@ -111,7 +144,14 @@ public:
     
 private:
 
-    void OnCmpEdit( wxCommandEvent &event );
+    /**
+     * Add a CmpBookItem to the CmpFile.
+     */
+    void OnCmpAddBook( wxCommandEvent &event );
+    /**
+     * Add a CmpCollation to the CmpFile.
+     */
+    void OnCmpAddCollation( wxCommandEvent &event );
     void OnCmpLoad( wxCommandEvent &event );
     void OnOpen( wxCommandEvent &event );
     void OnTools( wxCommandEvent &event );
@@ -129,6 +169,7 @@ private:
     void OnCut( wxCommandEvent &event );
     void OnUndo( wxCommandEvent &event );
     void OnRedo( wxCommandEvent &event );
+    void OnSetAsDelimiter( wxCommandEvent &event );
     void OnCollate( wxCommandEvent &event );
     void OnViewImage( wxCommandEvent &event );
     virtual void OnUpdateUI( wxUpdateUIEvent &event );

@@ -52,12 +52,12 @@ wxSizer *CmpDataFunc6( wxWindow *parent, bool call_fit = TRUE, bool set_sizer = 
 // Declare menubar functions
 
 const int ID6_MENU_FILE = 16015;
-const int ID6_OPEN_CMP = 16016;
-const int ID6_MENU_EDIT = 16017;
-const int ID6_COLLATOR = 16018;
-const int ID6_CMP_EDIT = 16019;
-const int ID6_CMP_LOAD = 16020;
-const int ID6_MENU = 16021;
+const int ID6_MENU = 16016;
+const int ID6_OPEN_CMP = 16017;
+const int ID6_MENU_EDIT = 16018;
+const int ID6_SET_DELIMITER = 16019;
+const int ID6_COLLATOR = 16020;
+const int ID6_CMP_LOAD = 16021;
 const int ID6_COLLATE = 16022;
 const int ID6_VIEW_IMAGE = 16023;
 const int ID6_PAGE = 16024;
