@@ -44,6 +44,12 @@ public:
     int GetElementCount() const { return (int)m_elements.GetCount(); };
     
     /**
+     * Basic method that remove intermediate clefs and custos.
+     * Used for building collations (See CmpFile::Collate).
+     */
+    void RemoveClefAndCustos( );
+    
+    /**
      * Copy the content of the layer to the dest layer.
      * If start and end are not null (see uuid_clear), then ony element from and to 
      * the element with the uuid are copied.
