@@ -351,6 +351,14 @@ void AxScrolledWindow::RedrawDraggingArea(wxPoint newPosition, bool drawShape)
     int y = max(m_startPosition.y, max(m_lastPosition.y , newPosition.y));
     int width = x -  redrawPosition.x + 1;
     int height = y -  redrawPosition.y + 1;
+    if ( redrawPosition.x > 0 ) {
+        redrawPosition.x--;
+        width++;
+    }
+    if ( redrawPosition.y > 0 ) {
+        redrawPosition.y--;
+        height++;
+    }
 
     // calculate scroll position
     int scrollX, scrollY;
@@ -370,7 +378,7 @@ void AxScrolledWindow::RedrawDraggingArea(wxPoint newPosition, bool drawShape)
 
     bufDC.Blit(redrawPosition.x  + scrollX, redrawPosition.y  + scrollY, width, height,
         &memDC, redrawPosition.x + scrollX, redrawPosition.y + scrollY);
-
+    
     memDC.SelectObject( wxNullBitmap );
 
     m_lastPosition = newPosition;
