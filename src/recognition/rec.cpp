@@ -215,6 +215,7 @@ BEGIN_EVENT_TABLE(RecEnv,AxEnv)
     EVT_MENU( ID4_BOOK_LOAD, RecEnv::OnBookLoad )
     EVT_MENU( ID4_BOOK_PRE, RecEnv::OnBookPreprocess )
     EVT_MENU( ID4_BOOK_REC, RecEnv::OnBookRecognize )
+    EVT_MENU( ID4_BOOK_FULL, RecEnv::OnBookFullProcess )
     EVT_MENU( ID4_BOOK_ADAPT, RecEnv::OnBookOptimize )
     EVT_MENU( ID4_POPUP_TREE_LOAD, RecEnv::OnBookLoad )
     EVT_MENU( ID4_BOOK_EDIT, RecEnv::OnBookEdit )
@@ -478,13 +479,13 @@ void RecEnv::ParseCmd( wxCmdLineParser *parser )
         
         // first parameter is input file
         wxString file = parser->GetParam( 0 );
-        wxLogDebug( file );
+        wxLogDebug( file.c_str() );
         
         if ( parser->Found("p") && (parser->GetParamCount() == 2) )
         {
             // with -p, the second parameter is the output filename
             wxString outfile = parser->GetParam( 1 );
-            wxLogDebug( outfile );
+            wxLogDebug( outfile.c_str() );
             
             // create a new  file
             m_recFilePtr->New(  );
@@ -947,6 +948,9 @@ void RecEnv::OnBookRecognize( wxCommandEvent &event )
     if ( !m_recBookFilePtr->IsOpened() )
         return;
 
+    if ( m_recBookFilePtr->IsModified() )
+        m_recBookFilePtr->Save();
+
     wxArrayString paths, filenames;
     size_t nbOfFiles;
     
@@ -1023,6 +1027,9 @@ void RecEnv::OnBookPreprocess( wxCommandEvent &event )
         
     if ( !m_recBookFilePtr->IsOpened() )
         return;
+    
+    if ( m_recBookFilePtr->IsModified() )
+        m_recBookFilePtr->Save();
 
     wxArrayString paths, filenames;
     size_t nbOfFiles;
@@ -1081,6 +1088,20 @@ void RecEnv::OnBookPreprocess( wxCommandEvent &event )
     dlg->Destroy();
     
     m_recBookPtr->Update();
+}
+
+void RecEnv::OnBookFullProcess( wxCommandEvent &event )
+{
+    // force dialog to close at the end
+    AxProgressDlg::s_close_at_end = true; 
+    
+    this->OnBookPreprocess( event );
+    
+    wxGetApp().Yield( );
+    // force this, because the previous dialog might have not been deleted yet
+    AxProgressDlg::s_instance_existing = false; 
+    
+    this->OnBookRecognize( event );
 }
 
 void RecEnv::OnBookLoad( wxCommandEvent &event )
@@ -1364,7 +1385,7 @@ void RecEnv::OnStaffCorrespondence( wxCommandEvent &event )
 void RecEnv::OnExportImage( wxCommandEvent &event )
 {
     wxString filename;
-    filename = wxFileSelector( _("Save"), wxGetApp().m_lastDirTIFF_out, _T(""), NULL, IMAGE_FILES, wxFD_SAVE);
+    filename = wxFileSelector( _("Save"), wxGetApp().m_lastDirTIFF_out, _T(""), NULL, IMAGE_FILES_SELECTION, wxFD_SAVE);
     if (filename.IsEmpty())
         return;
         
@@ -1390,7 +1411,7 @@ void RecEnv::OnExportImage( wxCommandEvent &event )
 {
     /*
     wxString filename;
-    filename = wxFileSelector( _("Save"), wxGetApp().m_lastDirTIFF_out, _T(""), NULL, IMAGE_FILES, wxFD_SAVE);
+    filename = wxFileSelector( _("Save"), wxGetApp().m_lastDirTIFF_out, _T(""), NULL, IMAGE_FILES_SELECTION, wxFD_SAVE);
     if (filename.IsEmpty())
         return;
         
@@ -1888,6 +1909,8 @@ void RecEnv::OnUpdateUI( wxUpdateUIEvent &event )
         //event.Enable( m_recFilePtr->IsRecognized() );
     else if (id == ID4_EXPORT_WWG )
         event.Enable( m_recFilePtr->IsRecognized() );
+    else if (id == ID4_EXPORT_MEI )
+        event.Enable( m_recFilePtr->IsRecognized() );
 	// book
     else if (id == ID4_CLOSE_BOOK )
         event.Enable( m_recBookFilePtr->IsOpened() );
@@ -1902,6 +1925,8 @@ void RecEnv::OnUpdateUI( wxUpdateUIEvent &event )
     else if (id == ID4_BOOK_PRE )
         event.Enable( m_recBookFilePtr->IsOpened() );
     else if (id == ID4_BOOK_REC )
+        event.Enable( m_recBookFilePtr->IsOpened() );
+    else if (id == ID4_BOOK_FULL )
         event.Enable( m_recBookFilePtr->IsOpened() );
     else if (id == ID4_BOOK_ADAPT )
         event.Enable( m_recBookFilePtr->IsOpened() );

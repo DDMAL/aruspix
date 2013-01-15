@@ -17,6 +17,7 @@
 #include "recognition/recfile.h"
 
 #include "mus/muslayer.h"
+#include "mus/muslaidoutlayerelement.h"
 #include "mus/muspage.h"
 #include "mus/muslayout.h"
 #include "mus/musiomei.h"
@@ -216,7 +217,7 @@ bool CmpCollation::Realize( )
 	
 	return true;
     */
-    wxLogError( "CmpCollation::Realize method missing in ax2") ;
+
     m_isColLoaded = true;
     return true;
 }
@@ -251,7 +252,11 @@ bool CmpCollation::Collate( )
 			reference = &docs[i];
             refFilename = m_basename + part->m_bookPart->m_id + ".mei";
             // we will need to change this to a more sophisticated source structure
-            m_refSource = part->m_bookPart->m_bookname;
+            m_refSource = part->m_bookPart->m_book->m_bookname;
+            
+            // we do it here so it is done only once
+            MusLayer *layer_ref = &reference->m_divs[0].m_score->m_sections[0].m_staves[0].m_layers[0];
+            layer_ref->RemoveClefAndCustos();
 		}
 	}
 	
@@ -276,6 +281,8 @@ bool CmpCollation::Collate( )
         MusSection *section_ref = &reference->m_divs[0].m_score->m_sections[0];
         MusSection *section_var = &(&docs[i])->m_divs[0].m_score->m_sections[0];
         
+        layer_var->RemoveClefAndCustos();
+        
         // we keep two arrays of uuid for then changing them in the layout
         int nbElements = layer_ref->GetElementCount();
         nbElements++; // one more because we are also going to have the section uuid
@@ -288,7 +295,7 @@ bool CmpCollation::Collate( )
         uuid_copy( uuid_vars[uuid_count], *section_var->GetUuid() );
         uuid_count++;
         
-		m_varSource = part->m_bookPart->m_bookname;
+		m_varSource = part->m_bookPart->m_book->m_bookname;
         MusLayer *layer_aligned = Align( layer_ref, layer_var, uuid_refs, uuid_vars, &uuid_count );
         
         // We replace the uuids in the logical tree of the _original_ file for the matched element
@@ -503,7 +510,7 @@ MusLayer *CmpCollation::Align( MusLayer *layer_ref, MusLayer *layer_var, uuid_t 
 				//printf("%d - ", d[j*n+i]);
 				i--; j--;
 				//printf("S |\t%10s\t%10s\n", (&layer_ref->m_elements[i])->MusClassName().c_str(), (&layer_var->m_elements[j])->MusClassName().c_str() );
-                CreateApp( layer_aligned, i + n_insert, layer_var, j, CMP_APP_SUBST );
+                CreateApp( layer_aligned, i, layer_var, j, CMP_APP_SUBST );
 				match = true;
 				n_subst++;
 			}
@@ -518,7 +525,7 @@ MusLayer *CmpCollation::Align( MusLayer *layer_ref, MusLayer *layer_var, uuid_t 
 				///ii = ((CmpMLFSymb*)&reference->Item(i))->m_index;
 				///jj = ((CmpMLFSymb*)&variant->Item(j))->m_index;
 				printf("I |\t%10s\t%10s\n", "-", (&layer_var->m_elements[j])->MusClassName().c_str() );
-                CreateApp( layer_aligned, i + n_insert, layer_var, j, CMP_APP_INS );
+                CreateApp( layer_aligned, i, layer_var, j, CMP_APP_INS );
 				n_insert++;
 			}
 			else if ((i > 0) && (d[j*n+i] == d[(j)*n+i-1] + delete_cost))
@@ -527,8 +534,8 @@ MusLayer *CmpCollation::Align( MusLayer *layer_ref, MusLayer *layer_var, uuid_t 
 				i--;
 				///ii = ((CmpMLFSymb*)&reference->Item(i))->m_index;
 				///jj = ((CmpMLFSymb*)&variant->Item(j))->m_index;
-				printf("D |\t%10s\t%10s\n", (&layer_ref->m_elements[i])->MusClassName().c_str(), "-" );
-                CreateApp( layer_aligned, i + n_insert, layer_var, j, CMP_APP_DEL );
+				//printf("D |\t%10s\t%10s\n", (&layer_ref->m_elements[i])->MusClassName().c_str(), "-" );
+                CreateApp( layer_aligned, i, layer_var, j, CMP_APP_DEL );
 				n_delete++;
 			}
 			else
@@ -542,16 +549,16 @@ MusLayer *CmpCollation::Align( MusLayer *layer_ref, MusLayer *layer_var, uuid_t 
 	{
 		j--;
 		//jj = ((CmpMLFSymb*)&variant->Item(j))->m_index;
-		printf("I |\t%10s\t%10s\n", "-", (&layer_var->m_elements[j])->MusClassName().c_str() );
-        CreateApp( layer_aligned, i + n_insert, layer_var, j, CMP_APP_INS );
+		//printf("I |\t%10s\t%10s\n", "-", (&layer_var->m_elements[j])->MusClassName().c_str() );
+        CreateApp( layer_aligned, i, layer_var, j, CMP_APP_INS );
 		n_insert++;
 	}
 	while (i > 0)
 	{
 		i--;
 		//ii = ((CmpMLFSymb*)&reference->Item(i))->m_index;
-		printf("D |\t%10s\t%10s\n", (&layer_ref->m_elements[i])->MusClassName().c_str(), "-" );
-        CreateApp( layer_aligned, i + n_insert, layer_var, j, CMP_APP_DEL );
+		//printf("D |\t%10s\t%10s\n", (&layer_ref->m_elements[i])->MusClassName().c_str(), "-" );
+        CreateApp( layer_aligned, i, layer_var, j, CMP_APP_DEL );
 		n_delete++;
 	}
 	printf("\nEnd (i = %d, j = %d)\n", i , j);
@@ -624,24 +631,61 @@ CmpPartPage::CmpPartPage()
 { 
     uuid_clear( m_start );
     uuid_clear( m_end );
+    m_part = NULL;
 }
 
-CmpPartPage::CmpPartPage(  wxString axfile ) 
+CmpPartPage::CmpPartPage(  wxString axfile, CmpBookPart *part ) 
 {
     uuid_clear( m_start );
     uuid_clear( m_end );
     m_axfile = axfile; 
+    m_part = part;
+}
+
+
+void CmpPartPage::SetStartEnd( MusLaidOutLayerElement *laidOutLayerElement, bool isStart ) 
+{ 
+    wxString uuidStr = laidOutLayerElement->m_layerElement->GetUuidStr();
+    
+    if ( isStart ) {
+        this->SetStart( uuidStr );
+    }
+    else
+    {
+        this->SetEnd( uuidStr );
+    }    
+    
+    uuid_parse( uuidStr.c_str(), this->m_start );
+}
+
+void CmpPartPage::SetStart( wxString uuidStr ) 
+{ 
+    uuid_parse( uuidStr.c_str(), this->m_start );
+}
+
+void CmpPartPage::SetEnd( wxString uuidStr ) 
+{ 
+    uuid_parse( uuidStr.c_str(), this->m_end );
+}
+
+bool CmpPartPage::HasStart() 
+{ 
+    return ( !uuid_is_null( m_start ) );
+}
+
+bool CmpPartPage::HasEnd() 
+{ 
+    return ( !uuid_is_null( m_end ) );
 }
 
 //----------------------------------------------------------------------------
 // CmpBookPart
 //----------------------------------------------------------------------------
 
-CmpBookPart::CmpBookPart( wxString id, wxString name, wxString bookname, CmpBookItem *book )
+CmpBookPart::CmpBookPart( wxString id, wxString name, CmpBookItem *book )
 {
 	m_id = id;
 	m_name = name;
-	m_bookname = bookname;
 	m_book = book;
 }
 
@@ -653,11 +697,12 @@ CmpBookPart::~CmpBookPart( )
 // CmpBookItem
 //----------------------------------------------------------------------------
 
-CmpBookItem::CmpBookItem( wxString filename, int flags )
+CmpBookItem::CmpBookItem( wxString filename, wxString bookname, int flags )
 {
 	m_filename = filename;
 	m_shortname = wxFileName( filename ).GetFullName(); 
 	m_flags = flags;
+	m_bookname = bookname;
     
 	wxString name = wxString::Format("cmp_book_file_%d", CmpBookItem::s_index++ );
 	m_recBookFilePtr = new RecBookFile( name );
@@ -721,43 +766,43 @@ void CmpFile::OpenContent( )
     for( node = root->FirstChild( "book" ); node; node = node->NextSibling( "book" ) )
     {
         elem = node->ToElement();
-        if (!elem || !elem->Attribute("filename") || !elem->Attribute( "flags" ) ) 
+        if (!elem || !elem->Attribute("filename") || !elem->Attribute("bookname") || !elem->Attribute( "flags" ) ) 
             continue;
 			
 		wxFileName filename(elem->Attribute("filename"));
 		//wxLogDebug( wxFileName( m_filename ).GetPath() );
 		filename.MakeAbsolute( wxFileName( m_filename ).GetPath() );
 		//wxLogDebug( filename.GetFullPath() );
-        CmpBookItem *book = new CmpBookItem( filename.GetFullPath(), atoi(elem->Attribute( "flags" )) );
+        CmpBookItem *book = new CmpBookItem( filename.GetFullPath(), elem->Attribute("bookname"), atoi(elem->Attribute( "flags" )) );
 		
 		TiXmlNode *node1 = NULL;
 		for( node1 = node->FirstChild( "part" ); node1; node1 = node1->NextSibling( "part" ) )
 		{	
 			elem = node1->ToElement();
-			if (!elem || !elem->Attribute("id") || !elem->Attribute( "name" ) || !elem->Attribute( "bookname" ) ) 
+			if (!elem || !elem->Attribute("id") || !elem->Attribute( "name" ) ) 
 				continue;
 			
-			CmpBookPart *part = new CmpBookPart( elem->Attribute("id"), elem->Attribute("name"), elem->Attribute("bookname"), book );
+			CmpBookPart *part = new CmpBookPart( elem->Attribute("id"), elem->Attribute("name"), book );
 			TiXmlNode *node2 = NULL;
 			for( node2 = node1->FirstChild( "axfile" ); node2; node2 = node2->NextSibling( "axfile" ) )
 			{
 				elem = node2->ToElement();
 				if (!elem || !elem->Attribute( "filename" ) ) 
 					continue;
-				CmpPartPage *page = new CmpPartPage( elem->Attribute( "filename" ) );
+				CmpPartPage *page = new CmpPartPage( elem->Attribute( "filename" ), part );
                 
 				TiXmlNode *node3 = NULL;
                 if ( ( node3 = node2->FirstChild( "start" ) ) ) {
                     elem = node3->ToElement();
                     if (!elem || !elem->Attribute( "uuid" ) ) 
 						continue;
-                    uuid_parse( elem->Attribute( "uuid" ), page->m_start );
+                    page->SetStart( elem->Attribute( "uuid" ) );
                 }
                 if ( ( node3 = node2->FirstChild( "end" ) ) ) {
                     elem = node3->ToElement();
                     if (!elem || !elem->Attribute( "uuid" ) ) 
 						continue;
-                    uuid_parse( elem->Attribute( "uuid" ), page->m_end );
+                    page->SetEnd( elem->Attribute( "uuid" ) );
                 }
 				part->m_partpages.Add( page );
 			}
@@ -830,6 +875,7 @@ void CmpFile::SaveContent( )
 		//wxLogDebug( filename.GetFullPath() );
         book.SetAttribute("filename", filename.GetFullPath().c_str() );
         book.SetAttribute("flags", wxString::Format("%d", m_bookFiles[i].m_flags ).c_str() );
+        book.SetAttribute("bookname", m_bookFiles[i].m_bookname.c_str() );
 		
 		// parts
 		for ( j = 0; j < (int)m_bookFiles[i].m_bookParts.GetCount(); j++ )
@@ -838,7 +884,6 @@ void CmpFile::SaveContent( )
 			TiXmlElement part("part");
 			part.SetAttribute("id", bookpart->m_id.c_str() );
 			part.SetAttribute("name", bookpart->m_name.c_str() );
-			part.SetAttribute("bookname", bookpart->m_bookname.c_str() );
 			for ( k = 0; k < (int)bookpart->m_partpages.GetCount(); k++)
 			{
 				TiXmlElement axfile("axfile");
@@ -959,7 +1004,7 @@ bool CmpFile::LoadBooks( wxArrayPtrVoid params, AxProgressDlg *dlg )
             MusLayer *partLayer = new MusLayer();
             MusLayout *partLayout = new MusLayout( Transcription );
             // we will need to change this to a more sophisticated source structure
-            partLayout->m_source = part->m_bookname;
+            partLayout->m_source = part->m_book->m_bookname;
             
             staff->AddLayer( partLayer );
             section->AddStaff( staff );
@@ -994,8 +1039,14 @@ bool CmpFile::LoadBooks( wxArrayPtrVoid params, AxProgressDlg *dlg )
 	
 				if ( !recFile.IsRecognized() ) 
 				{
-					wxLogWarning(_("File '%s' skipped"), file.c_str() );
-					continue;
+					wxLogWarning(_("File '%s' not recognized, the part was skipped"), file.c_str() );
+					break;
+				}
+                
+                if ( recFile.IsOlderThan(2, 0, 0) ) 
+				{
+					wxLogWarning(_("File '%s' not upgraded to at least 2.0.0, the part was skipped"), file.c_str() );
+					break;
 				}
                 
                 if ( k == 0 ) {

@@ -343,10 +343,9 @@ _imImage* GetImImage(const AxImage *img, const int color_space, const int data_t
 
 
 	//imImage* imTmp1 = imImageCreate(img->GetWidth(), img->GetHeight(), (IM_RGB | IM_PACKED ) , IM_BYTE);
-	imImage* imTmp1 = imImageCreate(img->GetWidth(), img->GetHeight(), ( IM_RGB ) , IM_BYTE);
+	imImage* imTmp1 = imImageCreate(img->GetWidth(), img->GetHeight(), ( IM_RGB ) , IM_BYTE );
 	memcpy(imTmp1->data[0],img->GetData(),img->GetWidth() * img->GetHeight() * 3);
 	//imImageCopyData(im,imTmp1);
-
 
 	if (!imColorModeIsPacked(color_space))
 	{
@@ -371,6 +370,12 @@ _imImage* GetImImage(const AxImage *img, const int color_space, const int data_t
 		imImageDestroy(imTmp1);
 		imTmp1 = imTmp2;
 	}
+    
+    // flip it
+    imImage* imTmp2 = imImageClone( imTmp1 );
+    imProcessFlip(imTmp1, imTmp2);
+    imImageDestroy(imTmp1);
+    imTmp1 = imTmp2;
 
 	return imTmp1;
 }
@@ -447,7 +452,9 @@ void SetImImage(_imImage *im, AxImage *img)
 	}*/
 
 
-	imImage* imTmp1 = imImageDuplicate(im);
+    // flip it
+	imImage* imTmp1 = imImageClone(im);
+    imProcessFlip(im, imTmp1);
 
 	if (!imColorModeMatch(imTmp1->color_space,IM_RGB))
 	{
@@ -461,14 +468,6 @@ void SetImImage(_imImage *im, AxImage *img)
 	{
 		imImage* imTmp2 = imImageCreate(imTmp1->width, imTmp1->height, IM_RGB, IM_BYTE);
 		imConvertDataType(imTmp1,imTmp2,0,0,0,0);
-		imImageDestroy(imTmp1);
-		imTmp1 = imTmp2;
-	}
-	
-	if (!imColorModeIsTopDown(imTmp1->color_space))
-	{
-		imImage* imTmp2 = imImageClone( imTmp1 );
-		imProcessFlip(imTmp1, imTmp2);
 		imImageDestroy(imTmp1);
 		imTmp1 = imTmp2;
 	}

@@ -220,15 +220,15 @@ bool AxFile::Open( wxString filename )
 		AxFile::GetVersion( m_xml_root, &m_vmaj, &m_vmin, &m_vrev );
 	}
 	// add warning if failed ???
+    
+	m_isNew = false;
+	m_isModified = false;
+	m_isOpened = true;
 	
 	// open content
 	this->OpenContent( );
 	
 	m_xml_root = NULL; // not needed anymore, and allocated by dom variable
-	
-	m_isNew = false;
-	m_isModified = false;
-	m_isOpened = true;
 	
 	return true;
 }
@@ -392,6 +392,11 @@ bool AxFile::Check( wxString filename )
 	return true;
 }
 
+bool AxFile::IsOlderThan( int vmaj, int vmin, int vrev)
+{
+	return ( AxFile::FormatVersion(m_vmaj, m_vmin, m_vrev) < AxFile::FormatVersion(vmaj, vmin, vrev) ); 
+}
+
 // static method
 void AxFile::GetVersion( TiXmlElement *root, int *vmaj, int *vmin, int *vrev )
 {
@@ -410,7 +415,7 @@ wxString AxFile::FormatVersion( int vmaj, int vmin, int vrev )
 }
 
 // static method
-bool AxFile::Check( wxString filename, int *type, int *envtype )
+bool AxFile::Check( wxString filename, int *type, int *envtype, int *vmajPtr, int *vminPtr, int *vrevPtr )
 {
 	wxASSERT( type );
 	wxASSERT( envtype );
@@ -481,6 +486,12 @@ bool AxFile::Check( wxString filename, int *type, int *envtype )
 
 	if ( root->Attribute("env_type_id"))
         *envtype = atof(root->Attribute("env_type_id"));
+    
+    if ( vmajPtr && vminPtr && vrevPtr ) {
+        (*vmajPtr) = vmaj;
+        (*vminPtr) = vmin;
+        (*vrevPtr) = vrev;
+    }
 	
 	return true;
 }
@@ -514,6 +525,22 @@ wxString AxFile::GetPreview( wxString filename, wxString preview )
     }
 
 	return "";	
+}
+
+// static method
+int AxFile::GetAllFiles(wxString dirname, wxArrayString *files, int file_type )
+{
+    int nbfiles = 0;
+    if ( file_type == IMAGE_FILES ) 
+    {
+        nbfiles += wxDir::GetAllFiles( dirname, files, "*.tif", wxDIR_FILES  );
+        nbfiles += wxDir::GetAllFiles( dirname, files, "*.TIF", wxDIR_FILES  );
+        nbfiles += wxDir::GetAllFiles( dirname, files, "*.tiff", wxDIR_FILES  );
+        nbfiles += wxDir::GetAllFiles( dirname, files, "*.TIFF", wxDIR_FILES  );
+        nbfiles += wxDir::GetAllFiles( dirname, files, "*.png", wxDIR_FILES  );
+        nbfiles += wxDir::GetAllFiles( dirname, files, "*.PNG", wxDIR_FILES  );
+    }
+    return nbfiles;
 }
 
 // static method
@@ -574,7 +601,7 @@ bool AxFile::Terminate( int code, ... )
         msg.PrintfV( _("Error writing image in file '%s'") , argptr );
     
     va_end(argptr);
-    wxLogError( msg );
+    wxLogError( msg.c_str() );
     return false;
 }
 

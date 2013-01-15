@@ -20,7 +20,7 @@ class AxFrame;
 #define AX_MENUS_END 0 // nombre de menus à la fin de la barre (aide, ...)
 #define AX_MENUS_COMMON 2 // nombre de menus commun au debut (fichier, edition, ...)
 #define AX_MENUS_1_ITEMS 6 // nombre d'entrees de menus a la fin du menu 1
-#define AX_MENUS_2_ITEMS 2 // nombre d'entrees de menus a la fin du menu 2
+#define AX_MENUS_2_ITEMS 0 // nombre d'entrees de menus a la fin du menu 2
 
 //typedef void EnvToolBarFunc_t ( wxToolBar *parent );
 typedef wxMenuBar *EnvMenuBarFunc_t ( );

@@ -37,3 +37,37 @@ void MusDurationInterface::SetDuration( int value )
 {
     this->m_dur = value;
 }
+
+bool MusDurationInterface::HasIdenticalDurationInterface( MusDurationInterface *otherDurationInterface )
+{
+    if ( !otherDurationInterface ) {
+        return false;
+    }
+    // beam requires value by value comparison
+    //if ( this->m_beam != otherDurationInterface->m_beam ) {
+    //    return false;
+    //}
+    if ( this->m_breakSec != otherDurationInterface->m_breakSec ) {
+        return false;
+    }
+    if ( this->m_dots != otherDurationInterface->m_dots ) {
+        return false;
+    }
+    if ( this->m_dur != otherDurationInterface->m_dur ) {
+        return false;
+    }
+    if ( this->m_num != otherDurationInterface->m_num ) {
+        return false;
+    }
+    if ( this->m_numBase != otherDurationInterface->m_numBase ) {
+        return false;
+    }
+    // tuplet requires value by value comparison
+    //if ( this->m_tuplet != otherDurationInterface->m_tuplet ) {
+    //    return false;
+    //}
+    if ( this->m_fermata != otherDurationInterface->m_fermata ) {
+        return false;
+    }
+    return true;
+}

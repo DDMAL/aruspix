@@ -99,6 +99,7 @@ void AxEnv::Show()
 			text.Replace("_","&");
 			frameMenu1->Insert(frameMenu1Count - AX_MENUS_1_ITEMS,item->GetId(), text,item->GetHelp(),item->GetKind());			
 			m_commonMenuItems1.Add(item->GetId()); // tableau des ids a supprimer quand decharge
+            //wxLogDebug("M1 %d", item->GetId() );
 		}
 
 		// menu 2 (Edition) insertion des autres items
@@ -116,6 +117,7 @@ void AxEnv::Show()
 			text.Replace("_","&");
 			frameMenu2->Insert(frameMenu2Count - AX_MENUS_2_ITEMS, item->GetId(), text, item->GetHelp(),item->GetKind());			
 			m_commonMenuItems2.Add(item->GetId()); // tableau des ids a supprimer quand decharge
+            //wxLogDebug("M2 %d", item->GetId() );
 		}
 
 		// insertion des autres menus (entre AX_MENUS_COMMON et AX_MENUS_END)

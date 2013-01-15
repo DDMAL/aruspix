@@ -34,5 +34,11 @@ bool MusRest::operator==( MusLayerElement& other)
     if ( !otherRest ) {
         return false;
     }
+    if ( !this->HasIdenticalPositionInterface( otherRest ) ) {
+        return false;
+    }
+    if ( !this->HasIdenticalDurationInterface( otherRest ) ) {
+        return false;
+    }
     return true;
 }

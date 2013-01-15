@@ -40,3 +40,20 @@ bool MusPitchInterface::GetPitch(int *pname, int *oct)
     *pname = m_pname;
     return true;
 }
+
+bool MusPitchInterface::HasIdenticalPitchInterface( MusPitchInterface *otherPitchInterface )
+{
+    if ( !otherPitchInterface ) {
+        return false;
+    }
+    if ( this->m_accid != otherPitchInterface->m_accid ) {
+        return false;
+    }
+    if ( this->m_oct != otherPitchInterface->m_oct ) {
+        return false;
+    }
+    if ( this->m_pname != otherPitchInterface->m_pname ) {
+        return false;
+    }
+    return true;
+}

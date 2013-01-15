@@ -19,7 +19,7 @@
 //#define sm_classwxTreeCtrl sm_classwxGenericTreeCtrl
 #endif
 
-#define NB_IMAGES 16
+#define NB_IMAGES 19
 
 enum 
 {
@@ -38,7 +38,10 @@ enum
     IMG_DOC,
 	IMG_DOC_S,
     IMG_TEXT,
-	IMG_TEXT_S
+	IMG_TEXT_S,
+    IMG_DOC_START,
+    IMG_DOC_END,
+    IMG_DOC_START_END
 };
 
 
@@ -57,11 +60,13 @@ class AxTreeItem: public wxObject
 public:
     // constructors and destructors
     AxTreeItem();
-    AxTreeItem( wxTreeItemId id, wxObject *object, wxObject *secondaryObject = NULL );
+    AxTreeItem( wxTreeItemId id, int itemType, wxObject *object, wxObject *secondaryObject = NULL );
     virtual ~AxTreeItem() {};
     
 public:
     wxTreeItemId m_id;
+    /** A type of item (specific to each implementation) */
+    int m_type;
     /** A pointer to an object */
 	wxObject *m_object;
     /** A pointer to an object when we need a second one */
@@ -92,7 +97,9 @@ public:
 	virtual void LoadDisplay( ) {};
     
 protected:
+    int GetType( wxTreeItemId );
     wxObject *GetObject( wxTreeItemId, bool secondary = false );
+    wxTreeItemId GetTreeItemId( wxObject *object );
     
 private:
         

@@ -41,6 +41,12 @@ public:
     
     virtual void SetDuration( int value );
     
+    /**
+     * Inteface comparison operator. 
+     * Check if the MusLayerElement has a MusDurationInterface and compare attributes
+     */
+    bool HasIdenticalDurationInterface(MusDurationInterface  *otherDurationInterface);
+    
 private:
     
 public:

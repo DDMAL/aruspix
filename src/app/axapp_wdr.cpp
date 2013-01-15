@@ -168,11 +168,9 @@ wxMenuBar *MainMenuBarFunc()
     wxMenu* item3 = new wxMenu;
     item3->Append( ID_UNDO, _("Undo\tCtrl-Z"), _("Redo last operation") );
     item3->Append( ID_REDO, _("Redo\tShift-Ctrl-Z"), _("Redo last operation") );
-    item3->AppendSeparator();
     item3->Append( ID_CUT, _("Cu&t\tCtrl-X"), _("Cut the image and place it in the clipboard") );
     item3->Append( ID_COPY, _("&Copy\tCtrl-C"), _("Copy the image in the clipboard") );
     item3->Append( ID_PASTE, _("&Paste\tCtrl-V"), _("Paste the image from clipboard") );
-    item3->AppendSeparator();
     item3->Append( ID_MENU_OPTIONS, _("&Options"), _("Modify Aruspix options") );
     item0->Append( item3, _("&Edit") );
     

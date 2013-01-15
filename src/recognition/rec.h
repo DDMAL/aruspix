@@ -221,6 +221,7 @@ private:
     void OnExportAxmus( wxCommandEvent &event );
     void OnBookEdit( wxCommandEvent &event );
     void OnBookOptimize( wxCommandEvent &event );
+    void OnBookFullProcess( wxCommandEvent &event );
     void OnBookRecognize( wxCommandEvent &event );
     void OnBookPreprocess( wxCommandEvent &event );
     void OnBookLoad( wxCommandEvent &event );

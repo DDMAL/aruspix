@@ -111,8 +111,6 @@ private:
 	wxWindow *m_parent;
 
 
-    // static members to keep timer operation values
-	static bool s_close_at_end;
     // values are in milliseconds second per units
     static int s_timer_decoding; // time for staff decoding | one unit = on staff 
     static int s_timer_model_bigram;  // time for models generation | one unit = 1 file
@@ -121,6 +119,7 @@ private:
 
 public:
     int m_counter;
+	static bool s_close_at_end;
 	static bool s_instance_existing;
     
 private:

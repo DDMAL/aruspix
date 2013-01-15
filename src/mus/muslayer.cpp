@@ -122,6 +122,67 @@ void MusLayer::Save( wxArrayPtrVoid params )
     this->Process( &element, params );
 }
 
+void MusLayer::RemoveClefAndCustos()
+{
+    MusClef *currentClef = NULL;
+  
+    int i;
+    int elementCount =  this->GetElementCount();
+    for (i = 0; i < elementCount; i++)
+    {
+        if ( (&m_elements[i])->IsClef() ) {
+            MusClef *clef = dynamic_cast<MusClef*>(&m_elements[i]);
+            // we remove the clef because it is the same as the previous one
+            if ( currentClef && ((*currentClef) == (*clef)) ) {
+                // check if it is a F clef with a Longa before
+                if ( (i > 0) && (&m_elements[i - 1])->IsNote() )
+                {
+                    MusNote *note = dynamic_cast<MusNote*>(&m_elements[i - 1]);
+                    if ( note && (note->m_dur == DUR_LG) )
+                    {
+                        bool removeLonga = false;
+                        // we check only for the pitch, not the octave, but should be enough
+                        if ( (clef->m_clefId == FA3) && ( note->m_pname == PITCH_G ) )
+                            removeLonga = true;
+                        else if ( (clef->m_clefId == FA4) && ( note->m_pname == PITCH_B ) )
+                            removeLonga = true;
+                        else if ( (clef->m_clefId == FA5) && ( note->m_pname == PITCH_D ) )
+                            removeLonga = true;
+                        if ( removeLonga ) {
+                            delete note;
+                            elementCount--;
+                            i--;
+                        }
+                    }
+                }
+                delete clef;
+                elementCount--;
+                // now remove alterations (keys)
+                for (; i < elementCount; i++) {
+                    MusSymbol *accid = dynamic_cast<MusSymbol*>(&m_elements[i]);
+                    if ( accid && accid->IsSymbol( SYMBOL_ACCID ) ) {
+                        delete accid;
+                        elementCount--;
+                        i--;                        
+                    }
+                    else
+                        break;
+                }
+                i--;
+            
+            }
+            else {
+                currentClef = clef;
+            }
+        }
+        else if ( (&m_elements[i])->IsSymbol( SYMBOL_CUSTOS ) ) {
+            delete &m_elements[i];
+            elementCount--;
+            i--;
+        }
+    }
+}
+
 // functors for MusLayer
 
 void MusLayer::Process(MusFunctor *functor, wxArrayPtrVoid params )
@@ -237,6 +298,8 @@ MusLayerElement *MusLayerElement::GetChildCopy( bool newUuid )
     else if (this->IsSymbol() )
         element = new MusSymbol( *(MusSymbol*)this );
     else {
+        wxLogDebug( "Missing %s", this->MusClassName().c_str() );
+        wxYield();
         wxASSERT_MSG( false , "Copy of this type unimplemented" );
         return NULL;
     }

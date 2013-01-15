@@ -38,6 +38,18 @@ bool MusSymbol::operator==( MusLayerElement& other)
     if ( !otherSymbol ) {
         return false;
     }
+    if ( this->m_type != otherSymbol->m_type ) {
+        return false;
+    }
+    if ( this->m_dot != otherSymbol->m_dot ) {
+        return false;
+    }
+    if ( this->m_accid != otherSymbol->m_accid ) {
+        return false;
+    }
+    if ( !this->HasIdenticalPositionInterface( otherSymbol ) ) {
+        return false;
+    }
     return true;
 }
 

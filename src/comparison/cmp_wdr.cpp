@@ -185,14 +185,16 @@ wxMenuBar *MenuBarFunc6()
     wxMenuBar *item0 = new wxMenuBar;
     
     wxMenu* item1 = new wxMenu;
+    item1->AppendSeparator();
     item1->Append( ID6_OPEN_CMP, _("Open &collator"), _("Open a book") );
     item0->Append( item1, _("commun1") );
     
     wxMenu* item2 = new wxMenu;
+    item2->AppendSeparator();
+    item2->Append( ID6_SET_DELIMITER, _("Set element as delimiter"), _("Set the current element as delimiter") );
     item0->Append( item2, _("commun2") );
     
     wxMenu* item3 = new wxMenu;
-    item3->Append( ID6_CMP_EDIT, _("Edit"), _("Edit the book informations") );
     item3->Append( ID6_CMP_LOAD, _("Reload files"), _("Reload images and Aruspix files into the book") );
     item3->AppendSeparator();
     item3->Append( ID6_COLLATE, _("Collate"), _("Collate the different editions") );

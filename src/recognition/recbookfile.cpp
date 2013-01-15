@@ -572,7 +572,7 @@ bool RecBookFile::LoadImages( )
 
     if ( wxDirExists( m_imgFileDir ) )
     {
-        nbfiles = wxDir::GetAllFiles( m_imgFileDir, &paths, "*.tif", wxDIR_FILES  );
+        nbfiles = AxFile::GetAllFiles( m_imgFileDir, &paths, IMAGE_FILES  );
     
         for ( i = 0; i < (int)nbfiles; i++ )
         {

@@ -55,32 +55,42 @@ const int ID2_BOOK_AXFILES = 12017;
 const int ID2_ON_BOOK_AXFILES = 12018;
 wxSizer *SupBookDataFunc2( wxWindow *parent, bool call_fit = TRUE, bool set_sizer = TRUE );
 
+const int ID_TEXT2 = 12019;
+const int ID2_SRC1_B = 12020;
+const int ID2_SRC1_C = 12021;
+const int ID_LINE2 = 12022;
+const int ID2_SRC2_B = 12023;
+const int ID2_SRC2_C = 12024;
+const int ID2_RESET_ADJ = 12025;
+wxSizer *SupAdjustDlgFunc2( wxWindow *parent, bool call_fit = TRUE, bool set_sizer = TRUE );
+
 // Declare menubar functions
 
-const int ID2_MENU_FILE = 12019;
-const int ID2_MENU0 = 12020;
-const int ID2_NEW_BOOK = 12021;
-const int ID2_OPEN_BOOK = 12022;
-const int ID2_CLOSE_BOOK = 12023;
-const int ID2_SAVE_BOOK = 12024;
-const int ID2_SAVE_AS_BOOK = 12025;
-const int ID2_EXPORT_IMAGE = 12026;
-const int ID2_MENU_EDIT = 12027;
-const int ID2_MENU = 12028;
-const int ID2_MANUAL_POINTS = 12029;
-const int ID2_CANCEL_SUP = 12030;
-const int ID2_PROCESS = 12031;
-const int ID2_BOOK = 12032;
-const int ID2_BOOK_EDIT = 12033;
-const int ID2_BOOK_LOAD = 12034;
-const int ID2_BOOK_SUP = 12035;
-const int ID2_PAGE = 12036;
-const int ID2_ZOOM_OUT = 12037;
-const int ID2_ZOOM_IN = 12038;
-const int ID2_ZOOM_OUT1 = 12039;
-const int ID2_ZOOM_IN1 = 12040;
-const int ID2_ZOOM_OUT2 = 12041;
-const int ID2_ZOOM_IN2 = 12042;
+const int ID2_MENU_FILE = 12026;
+const int ID2_MENU0 = 12027;
+const int ID2_NEW_BOOK = 12028;
+const int ID2_OPEN_BOOK = 12029;
+const int ID2_CLOSE_BOOK = 12030;
+const int ID2_SAVE_BOOK = 12031;
+const int ID2_SAVE_AS_BOOK = 12032;
+const int ID2_EXPORT_IMAGE = 12033;
+const int ID2_MENU_EDIT = 12034;
+const int ID2_MENU = 12035;
+const int ID2_MANUAL_POINTS = 12036;
+const int ID2_CANCEL_SUP = 12037;
+const int ID2_PROCESS = 12038;
+const int ID2_ADJUST_DLG = 12039;
+const int ID2_BOOK = 12040;
+const int ID2_BOOK_EDIT = 12041;
+const int ID2_BOOK_LOAD = 12042;
+const int ID2_BOOK_SUP = 12043;
+const int ID2_PAGE = 12044;
+const int ID2_ZOOM_OUT = 12045;
+const int ID2_ZOOM_IN = 12046;
+const int ID2_ZOOM_OUT1 = 12047;
+const int ID2_ZOOM_IN1 = 12048;
+const int ID2_ZOOM_OUT2 = 12049;
+const int ID2_ZOOM_IN2 = 12050;
 wxMenuBar *MenuBarFunc2();
 
 // Declare toolbar functions

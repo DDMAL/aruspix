@@ -25,120 +25,19 @@
 #include "recognition/recfile.h"
 
 
-/*
-
-//----------------------------------------------------------------------------
-// CmpDataDlg
-//----------------------------------------------------------------------------
-
-
-BEGIN_EVENT_TABLE(CmpDataDlg,wxDialog)
-    EVT_BUTTON( wxID_OK, CmpDataDlg::OnOk )
-    //EVT_BUTTON( wxID_CANCEL, CmpDataDlg::OnCancel )
-    //EVT_BUTTON( ID6_ON_BOOK_IMAGES, CmpDataDlg::OnBrowseImages )
-    //EVT_BUTTON( ID6_ON_BOOK_AXFILES, CmpDataDlg::OnBrowseAxfiles )
-END_EVENT_TABLE()
-
-CmpDataDlg::CmpDataDlg( wxWindow *parent, wxWindowID id, const wxString &title,
-    RecBookFile *recBookFile ) :
-    wxDialog( parent, id, title )
-{
-        BookDataFunc4( this, TRUE );
-    m_recBookFile = recBookFile;
-    m_loadAxfiles = false;
-    m_loadImages = false;
-    
-    this->RISM()->SetValidator(
-        wxTextValidator( wxFILTER_ASCII, &recBookFile->m_RISM ));   
-    this->Composer()->SetValidator(
-        wxTextValidator( wxFILTER_ASCII, &recBookFile->m_Composer ));
-    this->Title()->SetValidator(
-        wxTextValidator( wxFILTER_ASCII, &recBookFile->m_Title ));
-    this->Printer()->SetValidator(
-        wxTextValidator( wxFILTER_ASCII, &recBookFile->m_Printer ));
-    this->Year()->SetValidator(
-        wxTextValidator( wxFILTER_NUMERIC, &recBookFile->m_Year ));
-    this->Library()->SetValidator(
-        wxTextValidator( wxFILTER_ASCII, &recBookFile->m_Library ));
-    // files
-    this->Axfiles()->SetValidator(
-        wxTextValidator( wxFILTER_NONE, &recBookFile->m_axFileDir ));
-    this->Images()->SetValidator(
-        wxTextValidator( wxFILTER_NONE, &recBookFile->m_imgFileDir ));
-}
-
-/ *
-bool CmpDataDlg::Validate()
-{
-    return TRUE;
-}
-
-bool CmpDataDlg::TransferDataToWindow()
-{
-    return TRUE;
-}
-* /
-
-/ *
-bool CmpDataDlg::TransferDataFromWindow()
-{
-    return true;
-}
-* /
-
-
-void CmpDataDlg::OnBrowseAxfiles( wxCommandEvent &event )
-{
-    wxString start = this->Axfiles()->GetValue( ).IsEmpty() ? wxGetApp().m_lastDirAX0_out : this->Axfiles()->GetValue( );
-    wxString input = wxDirSelector( _("Aruspix file folder"), start );
-    if ( input.empty() )
-        return;
-    
-    wxGetApp().m_lastDirAX0_out = input;
-    this->Axfiles()->SetValue(input);
-    m_loadAxfiles = true;
-}
-
-void CmpDataDlg::OnBrowseImages( wxCommandEvent &event )
-{
-    wxString start = this->Images()->GetValue( ).IsEmpty() ? wxGetApp().m_lastDirTIFF_in : this->Images()->GetValue( );
-    wxString input = wxDirSelector( _("Images folder"), start );
-    if ( input.empty() )
-        return;
-
-    wxGetApp().m_lastDirTIFF_in = input;
-    this->Images()->SetValue(input);
-    m_loadImages = true;
-}
-
-
-void CmpDataDlg::OnOk(wxCommandEvent &event)
-{
-    if ( Validate() && TransferDataFromWindow() )
-    {
-        if ( m_loadImages )
-            m_recBookFile->LoadImages( );
-        if ( m_loadAxfiles)
-            m_recBookFile->LoadAxfiles( );
-        if ( IsModal() )
-            EndModal(wxID_OK);
-        else
-        {
-            SetReturnCode(wxID_OK);
-            this->Show(false);
-        }
-    }
-}
-
-/ *
-void CmpDataDlg::OnCancel(wxCommandEvent &event)
-{
-    event.Skip();
-}
-* /
-
-*/
-
+enum {
+    CMP_TREE_ROOT = 0,
+    CMP_TREE_BOOKS,
+    CMP_TREE_BOOK_AXFILE,
+    CMP_TREE_BOOK_PARTS,
+    CMP_TREE_BOOK_PART_PAGE,
+    CMP_TREE_BOOK_PART_PAGE_START,
+    CMP_TREE_BOOK_PART_PAGE_END,
+    CMP_TREE_BOOK_PART_PAGE_START_END,
+    CMP_TREE_COLLATIONS,
+    CMP_TREE_COLLATION,
+    CMP_TREE_COLLATION_RESULT
+};
 
 //----------------------------------------------------------------------------
 // CmpCtrlPanel
@@ -274,12 +173,20 @@ void CmpCtrlPanel::OnPreview( wxCommandEvent &event )
 
 BEGIN_EVENT_TABLE(CmpCtrl,AxCtrl)
     EVT_TREE_ITEM_MENU( ID6_TREEBOOK, CmpCtrl::OnMenu )
-    EVT_MENU( ID6_POPUP_TREE_LOAD, CmpCtrl::OnBook )
-    EVT_MENU( ID6_POPUP_TREE_EDIT, CmpCtrl::OnBook )
+    EVT_MENU( ID6_POPUP_TREE_LOAD, CmpCtrl::OnCmpEvent )
 	EVT_MENU( ID6_POPUP_TREE_ASSEMBLE, CmpCtrl::OnAssembleParts )
-	EVT_MENU( ID6_POPUP_TREE_AX_DESACTIVATE, CmpCtrl::OnAxDesactivate )
+    EVT_MENU( ID6_POPUP_TREE_ADD_PART, CmpCtrl::OnAddPart )
+    EVT_MENU( ID6_POPUP_TREE_ADD_AXFILE, CmpCtrl::OnAddAxFile )
+    EVT_MENU( ID6_POPUP_TREE_ADD_PART_PAGE_START, CmpCtrl::OnAddPartPageStartEnd )
+    EVT_MENU( ID6_POPUP_TREE_ADD_PART_PAGE_END, CmpCtrl::OnAddPartPageStartEnd )
+    EVT_MENU( ID6_POPUP_TREE_ADD_AXFILE, CmpCtrl::OnAddAxFile )
+    EVT_MENU( ID6_POPUP_TREE_ADD_COLLATION, CmpCtrl::OnCmpEvent )
+    EVT_MENU( ID6_POPUP_TREE_ADD_COLLATION_PART, CmpCtrl::OnAddCollationPart )
     EVT_TREE_ITEM_ACTIVATED( ID6_TREEBOOK, CmpCtrl::OnActivate )
     EVT_TREE_SEL_CHANGED( ID6_TREEBOOK, CmpCtrl::OnSelection )
+    // Events with no specific method that need to be passed to the CmpEnv object
+    EVT_MENU( ID6_POPUP_TREE_ADD_BOOK, CmpCtrl::OnCmpEvent )    
+    EVT_MENU( ID6_POPUP_TREE_LOAD, CmpCtrl::OnCmpEvent )
 END_EVENT_TABLE()
 
 CmpCtrl::CmpCtrl( wxWindow *parent, wxWindowID id,
@@ -338,9 +245,8 @@ void CmpCtrl::Update( )
     wxASSERT( m_cmpEnvPtr );
     
     wxTreeItemId id;
-	int i, j, k;
-	
-	this->SaveDisplay( );
+    AxTreeItem *axTreeItem = NULL;
+	int i, j;
 	
 	DeleteChildren( m_booksId );
     int books = (int)m_cmpFilePtr->m_bookFiles.GetCount();
@@ -348,38 +254,22 @@ void CmpCtrl::Update( )
         SetItemText( m_booksId, wxString::Format( _("Books (%d)"), books ) );
     else
         SetItemText( m_booksId, _("Books") );
+    // For specific menu
+    axTreeItem = new AxTreeItem( m_booksId, CMP_TREE_BOOKS, NULL ); 
+    m_axItems.Add( axTreeItem );
+    
     for ( i = 0; i < books; i++)
     {
 		RecBookFile *book = m_cmpFilePtr->m_bookFiles[i].m_recBookFilePtr;
-        m_cmpFilePtr->m_bookFiles[i].m_bookId = AppendItem( m_booksId, m_cmpFilePtr->m_bookFiles[i].m_shortname );
-		SetTypeImages( m_cmpFilePtr->m_bookFiles[i].m_bookId, IMG_FOLDER );
+        wxTreeItemId m_bookId = AppendItem( m_booksId, m_cmpFilePtr->m_bookFiles[i].m_shortname );
+		SetTypeImages( m_bookId, IMG_FOLDER );
 		
-		
-		//m_cmpFilePtr->m_bookFiles[i].m_imgFilesId = AppendItem( m_cmpFilePtr->m_bookFiles[i].m_bookId, _("Images") );
-		//SetTypeImages( m_cmpFilePtr->m_bookFiles[i].m_imgFilesId, IMG_FOLDER );
-		m_cmpFilePtr->m_bookFiles[i].m_axFilesId = AppendItem( m_cmpFilePtr->m_bookFiles[i].m_bookId, _("Aruspix files") );
-		SetTypeImages( m_cmpFilePtr->m_bookFiles[i].m_axFilesId, IMG_FOLDER );
-		m_cmpFilePtr->m_bookFiles[i].m_partsId = AppendItem( m_cmpFilePtr->m_bookFiles[i].m_bookId, _("Parts") );
-		SetTypeImages( m_cmpFilePtr->m_bookFiles[i].m_partsId, IMG_FOLDER );
-		
-		/*
-		//DeleteChildren( m_cmpFilePtr->m_bookFiles[i].m_imgFilesId );
-		int img = (int)book->m_imgFiles.GetCount();
-		if ( img > 0 )
-			SetItemText( m_cmpFilePtr->m_bookFiles[i].m_imgFilesId, wxString::Format( _("Images (%d)"), img ) );
-		else
-			SetItemText( m_cmpFilePtr->m_bookFiles[i].m_imgFilesId, _("Images") );
-		for ( int j = 0; j < img; j++)
-		{
-			id = AppendItem( m_cmpFilePtr->m_bookFiles[i].m_imgFilesId, book->m_imgFiles[j].m_filename, IMG_DOC, IMG_DOC_S );
-			if (  book->m_imgFiles[j].m_flags & FILE_DESACTIVATED ) 
-				SetItemTextColour( id , *wxLIGHT_GREY );
-			if ( !wxFileExists( book->m_imgFileDir + wxFileName::GetPathSeparator() +  book->m_imgFiles[j].m_filename ) ) 
-				SetItemTextColour( id , *wxRED );
-		}
-		*/
-    
-		//DeleteChildren( m_cmpFilePtr->m_bookFiles[i].m_axFilesId );
+        // The name of the book
+        AppendItem( m_bookId, m_cmpFilePtr->m_bookFiles[i].m_bookname, IMG_TEXT, IMG_TEXT_S );
+        
+        // The Aruspix files of the book
+        m_cmpFilePtr->m_bookFiles[i].m_axFilesId = AppendItem( m_bookId, _("Aruspix files") );
+		SetTypeImages( m_cmpFilePtr->m_bookFiles[i].m_axFilesId, IMG_FOLDER );        
 		int ax = (int)book->m_axFiles.GetCount();
 		if ( ax > 0 )
 			SetItemText( m_cmpFilePtr->m_bookFiles[i].m_axFilesId, wxString::Format( _("Aruspix files (%d)"), ax ) );
@@ -396,33 +286,19 @@ void CmpCtrl::Update( )
 			{
 				SetItemImage( id, IMG_AXZ_OK ); 
 				SetItemImage( id, IMG_AXZ_OK_S,  wxTreeItemIcon_Selected );
+                axTreeItem = new AxTreeItem( id, CMP_TREE_BOOK_AXFILE, &m_cmpFilePtr->m_bookFiles[i] ); 
+                m_axItems.Add( axTreeItem );
 			}	
 		}
 		
-		//DeleteChildren( m_cmpFilePtr->m_bookFiles[i].m_partsId );
-		int parts = (int)m_cmpFilePtr->m_bookFiles[i].m_bookParts.GetCount();
-		if ( parts > 0 )
-			SetItemText( m_cmpFilePtr->m_bookFiles[i].m_partsId, wxString::Format( _("Parts (%d)"), parts ) );
-		else
-			SetItemText( m_cmpFilePtr->m_bookFiles[i].m_partsId, _("Parts") );
-		for ( j = 0; j < parts; j++)
-		{
-			CmpBookPart *part = &m_cmpFilePtr->m_bookFiles[i].m_bookParts[j];
-			wxTreeItemId partid;
-			partid = AppendItem( m_cmpFilePtr->m_bookFiles[i].m_partsId, part->m_name );
-			SetTypeImages( partid, IMG_FOLDER );
-			for ( k = 0; k < (int)part->m_partpages.GetCount(); k++)
-			{
-				wxString staves = part->m_partpages[k].m_axfile;
-                /*
-				if ( !part->m_partpages[k].m_staves.IsEmpty() )
-				{
-					//TODO, something...
-				}
-                */
-				id = AppendItem( partid, staves, IMG_AXZ_OK, IMG_AXZ_OK_S );
-			}	
-		}
+        // The parts of the book
+		m_cmpFilePtr->m_bookFiles[i].m_partsId = AppendItem( m_bookId, _("Parts") );
+		SetTypeImages( m_cmpFilePtr->m_bookFiles[i].m_partsId, IMG_FOLDER );
+        // for the parts we associate the book object
+        axTreeItem = new AxTreeItem( m_cmpFilePtr->m_bookFiles[i].m_partsId, CMP_TREE_BOOK_PARTS, &m_cmpFilePtr->m_bookFiles[i] ); 
+        m_axItems.Add( axTreeItem );
+        // We have a separate method for this
+        UpdateParts( &m_cmpFilePtr->m_bookFiles[i] );
     }
 	
     DeleteChildren( m_cmpId );
@@ -431,38 +307,99 @@ void CmpCtrl::Update( )
         SetItemText( m_cmpId, wxString::Format( _("Collations (%d)"), collations ) );
     else
         SetItemText( m_cmpId, _("Collations") );
+    // For specific menu
+    axTreeItem = new AxTreeItem( m_cmpId, CMP_TREE_COLLATIONS, NULL ); 
+    m_axItems.Add( axTreeItem );
+    
     for ( i = 0; i < collations; i++)
     {
 		//RecBookFile *book = m_cmpFilePtr->m_bookFiles[i].m_recBookFilePtr;
 		m_cmpFilePtr->m_collations[i].m_colId = AppendItem( m_cmpId, m_cmpFilePtr->m_collations[i].m_name );
 		SetTypeImages( m_cmpFilePtr->m_collations[i].m_colId, IMG_FOLDER );
-		
-		//DeleteChildren( m_cmpFilePtr->m_bookFiles[i].m_partsId );
-		int parts = (int)m_cmpFilePtr->m_collations[i].m_collationParts.GetCount();
-		//if ( parts > 0 )
-		//	SetItemText( colid, wxString::Format( _("Parts (%d)"), parts ) );
-		//else
-		//	SetItemText( colid, _("Parts") );
-		for ( j = 0; j < parts; j++)
-		{
-			CmpCollationPart *part = &m_cmpFilePtr->m_collations[i].m_collationParts[j];
-			wxString label = wxString::Format("%s (%s)", part->m_bookPart->m_bookname.c_str(), part->m_bookPart->m_name.c_str() ); 
-			id = AppendItem( m_cmpFilePtr->m_collations[i].m_colId, label, IMG_TEXT, IMG_TEXT_S );
-			if (  part->m_flags & PART_REFERENCE ) {
-				SetItemBold( id , true );
-            }
-            else {
-                AxTreeItem *item = new AxTreeItem( id, &m_cmpFilePtr->m_collations[i].m_collationParts[j], &m_cmpFilePtr->m_collations[i] ); 
-                m_axItems.Add( item );
-            }
-		}		
-		
-		
+        // for the parts we associate the collation object
+        axTreeItem = new AxTreeItem( m_cmpFilePtr->m_collations[i].m_colId, CMP_TREE_COLLATION, &m_cmpFilePtr->m_collations[i] ); 
+        m_axItems.Add( axTreeItem );
+        // We have a separate method for this
+        UpdateCollationParts( &m_cmpFilePtr->m_collations[i] );
 	}
-		
-	this->LoadDisplay( );
 	
     m_cmpFilePtr->Modify();
+}
+
+
+void CmpCtrl::UpdateParts( CmpBookItem *book )
+{
+    int j, k;
+    
+    if ( !book->m_partsId.IsOk() ) {
+        wxLogDebug( "wxTreeItemId should be Ok" );
+        return;
+    }
+    DeleteChildren( book->m_partsId );
+    
+    int parts = (int)book->m_bookParts.GetCount();
+    if ( parts > 0 )
+        SetItemText( book->m_partsId, wxString::Format( _("Parts (%d)"), parts ) );
+    else
+        SetItemText( book->m_partsId, _("Parts") );
+    for ( j = 0; j < parts; j++)
+    {
+        CmpBookPart *part = &book->m_bookParts[j];
+        wxTreeItemId partid;
+        partid = AppendItem( book->m_partsId, part->m_name );
+        SetTypeImages( partid, IMG_FOLDER );
+        for ( k = 0; k < (int)part->m_partpages.GetCount(); k++)
+        {
+            wxString staves = part->m_partpages[k].m_axfile;
+            int img = IMG_DOC;
+            int itemType = CMP_TREE_BOOK_PART_PAGE;
+            if ( part->m_partpages[k].HasStart() && part->m_partpages[k].HasEnd() ) {
+                img = IMG_DOC_START_END;
+                itemType = CMP_TREE_BOOK_PART_PAGE_START_END;
+            }
+            else if ( part->m_partpages[k].HasStart() ) {
+                img = IMG_DOC_START;
+                itemType = CMP_TREE_BOOK_PART_PAGE_START;
+            }
+            else if ( part->m_partpages[k].HasEnd() ) {
+                img = IMG_DOC_END;
+                itemType = CMP_TREE_BOOK_PART_PAGE_END;
+            }
+            wxTreeItemId id = AppendItem( partid, staves, img, img );
+            AxTreeItem *axTreeItem = new AxTreeItem( id, itemType, &part->m_partpages[k] ); 
+            m_axItems.Add( axTreeItem );
+        }	
+    }
+}
+
+void CmpCtrl::UpdateCollationParts( CmpCollation *collation )
+{
+    int j;
+    
+    if ( !collation->m_colId.IsOk() ) {
+        wxLogDebug( "wxTreeItemId should be Ok" );
+        return;
+    }
+    DeleteChildren( collation->m_colId ); 
+    
+    int parts = (int)collation->m_collationParts.GetCount();
+    //if ( parts > 0 )
+    //	SetItemText( colid, wxString::Format( _("Parts (%d)"), parts ) );
+    //else
+    //	SetItemText( colid, _("Parts") );
+    for ( j = 0; j < parts; j++)
+    {
+        CmpCollationPart *part = &collation->m_collationParts[j];
+        wxString label = wxString::Format("%s (%s)", part->m_bookPart->m_book->m_bookname.c_str(), part->m_bookPart->m_name.c_str() ); 
+        wxTreeItemId id = AppendItem( collation->m_colId, label, IMG_TEXT, IMG_TEXT_S );
+        if (  part->m_flags & PART_REFERENCE ) {
+            SetItemBold( id , true );
+        }
+        else {
+            AxTreeItem *axTreeItem = new AxTreeItem( id, CMP_TREE_COLLATION_RESULT, &collation->m_collationParts[j], collation ); 
+            m_axItems.Add( axTreeItem );
+        }
+    }		
 }
 
 CmpBookItem *CmpCtrl::GetSelectedBookItem()
@@ -489,15 +426,7 @@ void CmpCtrl::OnSelection( wxTreeEvent &event )
 		
 	CmpBookItem *item = GetSelectedBookItem();
 	
-	if ( item && ItemIsChildOf( item->m_imgFilesId, itemId ) )
-    {   
-        m_cmpCtrlPanelPtr->Preview( item->m_recBookFilePtr->m_imgFileDir + wxFileName::GetPathSeparator() +  GetItemText( itemId ) );
-    }
-    else if ( item && ItemIsChildOf( item->m_axFilesId, itemId ) )
-    {
-        m_cmpCtrlPanelPtr->Preview( item->m_recBookFilePtr->m_axFileDir + wxFileName::GetPathSeparator() +  GetItemText( itemId ) );
-    }
-    else if ( item && ItemIsChildOf( item->m_partsId, itemId ) )
+	if ( item )
     {
         m_cmpCtrlPanelPtr->Preview( item->m_recBookFilePtr->m_axFileDir + wxFileName::GetPathSeparator() +  GetItemText( itemId ) );
     }
@@ -514,6 +443,7 @@ void CmpCtrl::OnActivate( wxTreeEvent &event )
 	if ( !itemId.IsOk() )
 		return;
     
+    // we should use type here
     wxObject *object = GetObject( itemId );
     if ( object ) {
         if ( dynamic_cast<CmpCollationPart*>(object) ) {
@@ -522,96 +452,9 @@ void CmpCtrl::OnActivate( wxTreeEvent &event )
             m_cmpEnvPtr->ViewCollationPart( dynamic_cast<CmpCollationPart*>(object), dynamic_cast<CmpCollation*>(secondaryObject) );
         }
     }
-		
-	/*
-    else if ( ItemIsChildOf( m_imgFilesId, itemId ) )
-    {   
-        m_cmpEnvPtr->OpenFile( m_cmpFilePtr->m_imgFileDir + wxFileName::GetPathSeparator() +  GetItemText( itemId ), -1 );
-    }
-    else if ( ItemIsChildOf( m_axFilesId, itemId ) )
-    {
-        m_cmpEnvPtr->OpenFile( m_cmpFilePtr->m_axFileDir + wxFileName::GetPathSeparator() +  GetItemText( itemId ), AX_FILE_DEFAULT );
-    }
-	else if ( ItemIsChildOf( m_optFilesId, itemId ) )
-    {
-        m_cmpEnvPtr->OpenFile( m_cmpFilePtr->m_axFileDir + wxFileName::GetPathSeparator() +  GetItemText( itemId ), AX_FILE_DEFAULT );
-    }
-	*/
 }
 
-void CmpCtrl::OnAxDesactivate( wxCommandEvent &event )
-{
-    wxArrayTreeItemIds array;
-    size_t count = GetSelections(array);
-    for ( size_t n = 0; n < count; n++ )
-    {
-        wxString name = GetItemText(array.Item(n));
-        m_cmpFilePtr->DesactivateAxfile( name );
-    }
-    Update( );  
-}
-
-/*
-void CmpCtrl::OnAxRemove( wxCommandEvent &event )
-{
-    if ( wxMessageBox("The files won't be deleted. Do you want to remove the files?", wxGetApp().GetAppName() , wxYES | wxNO | wxICON_QUESTION ) != wxYES )
-        return;
-
-    wxArrayTreeItemIds array;
-    size_t count = GetSelections(array);
-    for ( size_t n = 0; n < count; n++ )
-    {
-        wxString name = GetItemText(array.Item(n));
-        m_cmpFilePtr->RemoveAxfile( name );
-    }
-    Update( );     
-}
-
-
-void CmpCtrl::OnAxDelete( wxCommandEvent &event )
-{
-    if ( wxMessageBox("Are you sure you want to delete the files?", wxGetApp().GetAppName() , wxYES | wxNO | wxICON_QUESTION ) != wxYES )
-        return;
-
-    wxArrayTreeItemIds array;
-    size_t count = GetSelections(array);
-    for ( size_t n = 0; n < count; n++ )
-    {
-        wxString name = GetItemText(array.Item(n));
-        m_cmpFilePtr->DeleteAxfile( name );
-    }
-    Update( );      
-}
-
-void CmpCtrl::OnImgDesactivate( wxCommandEvent &event )
-{
-    wxArrayTreeItemIds array;
-    size_t count = GetSelections(array);
-    for ( size_t n = 0; n < count; n++ )
-    {
-        wxString name = GetItemText(array.Item(n));
-        m_cmpFilePtr->DesactivateImage( name );
-    }
-    Update( );    
-}
-
-void CmpCtrl::OnImgRemove( wxCommandEvent &event )
-{
-    if ( wxMessageBox("The files won't be deleted. Do you want to remove the files?", wxGetApp().GetAppName() , wxYES | wxNO | wxICON_QUESTION ) != wxYES )
-        return;
-
-    wxArrayTreeItemIds array;
-    size_t count = GetSelections(array);
-    for ( size_t n = 0; n < count; n++ )
-    {
-        wxString name = GetItemText(array.Item(n));
-        m_cmpFilePtr->RemoveImage( name );
-    }
-    Update( );    
-}
-*/
-
-void CmpCtrl::OnBook( wxCommandEvent &event )
+void CmpCtrl::OnCmpEvent( wxCommandEvent &event )
 {
     m_cmpEnvPtr->ProcessEvent( event );
 }
@@ -626,40 +469,132 @@ void CmpCtrl::OnAssembleParts( wxCommandEvent &event )
 	//event.Skip();
 }
 
+void CmpCtrl::OnAddPart( wxCommandEvent &event )
+{    
+    wxObject *object = GetObject( this->GetSelection() );
+    
+    if ( object && dynamic_cast<CmpBookItem*>(object) ) {
+        m_cmpEnvPtr->AddPart( dynamic_cast<CmpBookItem*>(object) );
+    }
+    
+}
+
+void CmpCtrl::OnAddAxFile( wxCommandEvent &event )
+{    
+    wxObject *object = GetObject( this->GetSelection() );
+    
+    if ( object && dynamic_cast<CmpBookItem*>(object) ) {
+        m_cmpEnvPtr->AddAxFile( this->GetItemText( this->GetSelection() ), dynamic_cast<CmpBookItem*>(object) );
+    }
+    
+}
+
+void CmpCtrl::OnAddPartPageStartEnd( wxCommandEvent &event )
+{    
+    wxObject *object = GetObject( this->GetSelection() );
+    
+    if ( object && dynamic_cast<CmpPartPage*>(object) ) {
+        m_cmpEnvPtr->AddPartPageStartEnd( this->GetItemText( this->GetSelection() ),
+            dynamic_cast<CmpPartPage*>(object), (event.GetId() == ID6_POPUP_TREE_ADD_PART_PAGE_START)  );
+    }
+    
+}
+
+
+void CmpCtrl::OnAddCollationPart( wxCommandEvent &event )
+{    
+    wxObject *object = GetObject( this->GetSelection() );
+    
+    if ( object && dynamic_cast<CmpCollation*>(object) ) {
+        m_cmpEnvPtr->AddCollationPart( dynamic_cast<CmpCollation*>(object) );
+    }
+    
+}
+
 void CmpCtrl::OnMenu( wxTreeEvent &event )
 {
     wxMenu popup;
-    popup.Append( ID6_POPUP_TREE_EDIT, _("Edit") );
+    
     popup.Append( ID6_POPUP_TREE_LOAD, _("Reload files"), _("Reload images and Aruspix files")  );
-    //popup.AppendSeparator( );
-    //popup.Append( ID6_POPUP_TREE_PRE, _("Batch preprocessing") );
-    //popup.Append( ID6_POPUP_TREE_REC, _("Batch recognition") );
-    //popup.Append( ID6_POPUP_TREE_ADAPT, _("Optimize") );
+    // Books
+    popup.AppendSeparator( );
+    popup.Append( ID6_POPUP_TREE_ADD_BOOK, _("Add book") );   
+    popup.Enable( ID6_POPUP_TREE_ADD_BOOK, false );
+    // Book submenu
+    // I am not absolutely sure it we gets deleted, so potential very smal memory leak
+    wxMenu *bookSubmenu = new wxMenu(); 
+    bookSubmenu->Append( ID6_POPUP_TREE_ASSEMBLE, _("Assemble parts") );
+    bookSubmenu->Enable( ID6_POPUP_TREE_ASSEMBLE, false );
+    bookSubmenu->AppendSeparator( );
+    bookSubmenu->Append( ID6_POPUP_TREE_ADD_PART, _("Add part to book") );
+    bookSubmenu->Enable( ID6_POPUP_TREE_ADD_PART, false );
+    bookSubmenu->Append( ID6_POPUP_TREE_ADD_AXFILE, _("Add file to part") );
+    bookSubmenu->Enable( ID6_POPUP_TREE_ADD_AXFILE, false );
+    // Page submenu in Book submenu
+    wxMenu *pageSubmenu = new wxMenu();
+    pageSubmenu->Append( ID6_POPUP_TREE_ADD_PART_PAGE_START, _("Add start delimiter for a page") );
+    pageSubmenu->Enable( ID6_POPUP_TREE_ADD_PART_PAGE_START, false );
+    pageSubmenu->Append( ID6_POPUP_TREE_ADD_PART_PAGE_END, _("Add end delimiter for a page") );
+    pageSubmenu->Enable( ID6_POPUP_TREE_ADD_PART_PAGE_END, false );
+    pageSubmenu->Append( ID6_POPUP_TREE_REMOVE_PART_PAGE_START, _("Remove start delimiter for a page") );
+    pageSubmenu->Enable( ID6_POPUP_TREE_REMOVE_PART_PAGE_START, false );
+    pageSubmenu->Append( ID6_POPUP_TREE_REMOVE_PART_PAGE_END, _("Remove end delimiter for a page") );
+    pageSubmenu->Enable( ID6_POPUP_TREE_REMOVE_PART_PAGE_END, false );
+    bookSubmenu->AppendSubMenu( pageSubmenu,  _("Part page") );
+    popup.AppendSubMenu( bookSubmenu, _("Book") );
+    // Collations
+    popup.AppendSeparator( );
+    popup.Append( ID6_POPUP_TREE_ADD_COLLATION, _("Add collation") );   
+    popup.Enable( ID6_POPUP_TREE_ADD_COLLATION, false );
+    // Collation submenu
+    wxMenu *colSubmenu = new wxMenu(); 
+    colSubmenu->Append( ID6_POPUP_TREE_ADD_COLLATION_PART, _("Add part to collation") );
+    colSubmenu->Enable( ID6_POPUP_TREE_ADD_COLLATION_PART, false );
+    popup.AppendSubMenu( colSubmenu, _("Collation") );
     
-    
-    if ( SelectionIsChildOf( m_booksId ) )
-    {
-        popup.AppendSeparator( );
-        popup.Append( ID6_POPUP_TREE_ASSEMBLE, _("Assemble parts") );
-    }
-	/*
-    if ( SelectionIsChildOf( m_imgFilesId ) )
-    {
-        popup.AppendSeparator( );
-        popup.Append( ID6_POPUP_TREE_IMG_REMOVE, _("Remove file reference from book") );
-		popup.AppendSeparator( );
-        popup.Append( ID6_POPUP_TREE_IMG_DESACTIVATE, _("Desactivate / reactivate") );
-    }
-    else if ( SelectionIsChildOf( m_axFilesId ) )
-    {
-        popup.AppendSeparator( );
-        popup.Append( ID6_POPUP_TREE_AX_REMOVE, _("Remove file reference from book") );
-        popup.Append( ID6_POPUP_TREE_AX_DELETE, _("Delete file permanently") );
-		popup.AppendSeparator( );
-		popup.Append( ID6_POPUP_TREE_AX_DESACTIVATE, _("Desactivate / reactivate") );
-    }
-	*/
+    int itemType = GetType( event.GetItem() );
 
+    // first menu according to wxTreeItemId
+    if ( itemType == CMP_TREE_BOOKS )
+    {
+        popup.Enable( ID6_POPUP_TREE_ADD_BOOK, true );
+    }
+    else if ( itemType == CMP_TREE_BOOK_PARTS ) {
+        // we have click Parts and want to add a part to a book
+        popup.Enable( ID6_POPUP_TREE_ADD_PART, true );
+        popup.Enable( ID6_POPUP_TREE_ASSEMBLE, true );
+    }
+    else if ( itemType == CMP_TREE_BOOK_AXFILE ) {
+        // we have click Aruspix file of a book and want to add it to a part
+        popup.Enable( ID6_POPUP_TREE_ADD_AXFILE, true );
+    }
+    else if ( itemType == CMP_TREE_COLLATIONS )
+    {
+        popup.Enable( ID6_POPUP_TREE_ADD_COLLATION, true );
+    }
+    else if ( itemType == CMP_TREE_COLLATION ) {
+        // we have click a collation and want to add a part to a it
+        popup.Enable( ID6_POPUP_TREE_ADD_COLLATION_PART, true );
+    }
+    
+    // bitfields would be better...
+    if ( (itemType == CMP_TREE_BOOK_PART_PAGE) || (itemType == CMP_TREE_BOOK_PART_PAGE_END)  ) {
+        // we have click a page and want to add a start delimiter
+        popup.Enable( ID6_POPUP_TREE_ADD_PART_PAGE_START, true );
+    }
+    if ( (itemType == CMP_TREE_BOOK_PART_PAGE) || (itemType == CMP_TREE_BOOK_PART_PAGE_START)  ) {
+        // we have click a page and want to add a end delimiter
+        popup.Enable( ID6_POPUP_TREE_ADD_PART_PAGE_END, true );
+    }
+    if ( (itemType == CMP_TREE_BOOK_PART_PAGE_START) || (itemType == CMP_TREE_BOOK_PART_PAGE_START_END)  ) {
+        // we have click a page and want to remove a start delimiter
+        popup.Enable( ID6_POPUP_TREE_REMOVE_PART_PAGE_START, true );
+    }
+    if ( (itemType == CMP_TREE_BOOK_PART_PAGE_END) || (itemType == CMP_TREE_BOOK_PART_PAGE_START_END)  ) {
+        // we have click a page and want to remove a end delimiter
+        popup.Enable( ID6_POPUP_TREE_REMOVE_PART_PAGE_END, true );
+    }
+    
     wxPoint clientpt = event.GetPoint();
     wxPoint screenpt = ClientToScreen(clientpt);    
     PopupMenu(&popup, clientpt );

@@ -16,9 +16,13 @@
 #include "wx/stdpaths.h"
 #include "wx/splash.h"
 #include "wx/tokenzr.h"
+#include "wx/txtstrm.h"
+#include "wx/url.h"
+#include "wx/protocol/http.h"
 
 #include "axapp.h"
 #include "axframe.h"
+#include "axfile.h"
 #include "axundo.h"
 
 #define APPNAME "Aruspix"
@@ -27,7 +31,7 @@ const wxString IPC_START = "StartOther";
 
 int AxApp::s_version_major = 2;
 int AxApp::s_version_minor = 0;
-int AxApp::s_version_revision = 1;
+int AxApp::s_version_revision = 6;
 wxString AxApp::s_version = wxString::Format("%d.%d.%d", AxApp::s_version_major, AxApp::s_version_minor, AxApp::s_version_revision);
 wxString AxApp::s_build_date = __DATE__;
 wxString AxApp::s_build_time = __TIME__;
@@ -35,6 +39,14 @@ wxString AxApp::s_build_time = __TIME__;
 #define COPYRIGHT "Copyright © 2004-2012 Laurent Pugin and others"
 #define LICENSE "Published under the GNU General Public License 3"
 #define CONTRIBUTORS "John Ashley Burgoyne;Greg Eustace;Andrew Hankinson;Tristan Himmelman;Tristan Matthews;Christopher Niven;Alastair Porter;Marnie Reckenberg;Gabriel Vigliensoni;Rodolfo Zitellini"
+#define UPDATE_URL "http://www.aruspix.net/downloads/changes.txt"
+
+#if defined(__WXMSW__)
+    // To be tested
+    #define UPDATE_FILE "http://www.aruspix.net/downloads/AruspixInstaller%d.%d.%d.exe"
+#else // OS X
+    #define UPDATE_FILE "http://www.aruspix.net/downloads/Aruspix%d.%d.%d.dmg"
+#endif
 
 IMPLEMENT_APP(AxApp)
 
@@ -272,7 +284,14 @@ bool AxApp::OnInit()
 #if !defined(__WXMSW__)
 	m_mainFrame->Lower( ); 	// again, stay on top did not work for OS X	
 #endif
-
+ 
+    AxUpdateDlg *dlg = new AxUpdateDlg( NULL ,-1, _("Update"));
+    if ( dlg->CheckForUpdate() ) {
+        dlg->Center(wxBOTH);
+        dlg->ShowModal();
+    }
+    dlg->Destroy();
+ 
     return TRUE;
 }
 
@@ -543,6 +562,83 @@ AxAboutDlg::AxAboutDlg( wxWindow *parent, wxWindowID id, const wxString &title,
 	this->GetLogo()->SetBitmap( wxBitmap( wxGetApp().m_resourcesPath + "/logo.png" , wxBITMAP_TYPE_PNG ) );
 #endif	
 	
+}
+
+
+//----------------------------------------------------------------------------
+// AxUpdateDlg
+//----------------------------------------------------------------------------
+
+
+BEGIN_EVENT_TABLE(AxUpdateDlg,wxDialog)
+
+END_EVENT_TABLE()
+
+AxUpdateDlg::AxUpdateDlg( wxWindow *parent, wxWindowID id, const wxString &title,
+                       const wxPoint &position, const wxSize& size, long style ) :
+wxDialog( parent, id, title, position, size, style )
+{
+
+}
+
+bool AxUpdateDlg::CheckForUpdate()
+{
+	wxURL url( UPDATE_URL );
+	wxInputStream *input = url.GetInputStream();
+	if (!input || !input->IsOk()) { 
+        return false;
+    }
+    wxString changes;
+    int vmaj, vmin, vrev;
+    wxTextInputStream text( *input );
+    
+    changes = text.ReadLine();
+    wxString version = changes;
+    if ( !version.Replace( "Version ", "" ) ) {
+        return false;
+    }
+    
+    wxStringTokenizer tkz( version, "." );
+    if ( !tkz.HasMoreTokens() ) {
+        return false;
+    }
+    vmaj = atoi( tkz.GetNextToken().c_str() );
+    if ( !tkz.HasMoreTokens() ) {
+        return false;
+    }
+    vmin = atoi( tkz.GetNextToken().c_str() );
+    if ( !tkz.HasMoreTokens() ) {
+        return false;
+    }
+    vrev = atoi( tkz.GetNextToken().c_str() );
+    
+	if ( AxFile::FormatVersion( vmaj, vmin, vrev ) <= AxFile::FormatVersion( 
+            AxApp::s_version_major, AxApp::s_version_minor, AxApp::s_version_revision ) ) {
+        return false;
+    }
+
+    while(!input->Eof() ) {
+        changes += "\n";
+        changes += text.ReadLine();
+    }
+    wxString linkString = wxString::Format( UPDATE_FILE, vmaj, vmin, vrev );
+    
+    
+    wxColour normal( 0, 192, 0 );
+    wxColour hover( 0, 125, 0 );  
+    wxHyperlinkCtrl *link1 = new wxHyperlinkCtrl( this, ID0_UPDATE_LINK, linkString, linkString );
+    link1->SetNormalColour( normal );
+    link1->SetHoverColour( hover );
+    link1->SetVisitedColour( normal );
+    
+    UpdateDlgFunc( this, true );
+    
+    this->GetTxAppFeatures()->SetValue( changes );
+    // trick for updating the scroll
+    this->GetTxAppFeatures()->SetInsertionPoint( 0 );
+    this->GetTxAppFeatures()->WriteText( "" );    
+    
+    return true;
 }
 
 

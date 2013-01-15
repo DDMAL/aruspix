@@ -136,13 +136,20 @@ class CmpPartPage: public wxObject
 public:
     // constructors and destructors
     CmpPartPage();
-    CmpPartPage(  wxString axfile );
+    CmpPartPage(  wxString axfile, CmpBookPart *part );
     ~CmpPartPage() {};
+    
+    void SetStartEnd( MusLaidOutLayerElement *laidOutLayerElement, bool isStart );
+    void SetStart( wxString uuidStr );
+    void SetEnd( wxString uuidStr );
+    bool HasStart();
+    bool HasEnd();
 
 public:
     wxString m_axfile;
 	uuid_t m_start;
     uuid_t m_end;
+    CmpBookPart *m_part;
 };
 
 //----------------------------------------------------------------------------
@@ -156,13 +163,12 @@ class CmpBookPart: public wxObject
 public:
     // constructors and destructors
     CmpBookPart() { m_book = NULL; }
-    CmpBookPart( wxString id, wxString name, wxString bookname, CmpBookItem *book );
+    CmpBookPart( wxString id, wxString name, CmpBookItem *book );
     ~CmpBookPart();
 
 public:
     wxString m_id;
 	wxString m_name;
-	wxString m_bookname;
 	ArrayOfCmpPartPages m_partpages; // to be modified to an extended object with position for refinement
 	CmpBookItem *m_book;
 	
@@ -178,7 +184,7 @@ class CmpBookItem: public wxObject
 public:
     // constructors and destructors
     CmpBookItem() { m_recBookFilePtr = NULL; }
-    CmpBookItem( wxString filename, int flags = 0 );
+    CmpBookItem( wxString filename, wxString bookname, int flags = 0 );
     ~CmpBookItem();
 	
 	// operations
@@ -187,11 +193,11 @@ public:
 public:
     wxString m_filename;
 	wxString m_shortname;
+	wxString m_bookname;
 	int m_flags;
 	RecBookFile *m_recBookFilePtr;
     wxTreeItemId m_bookId;
     wxTreeItemId m_axFilesId;
-    wxTreeItemId m_imgFilesId;
 	wxTreeItemId m_partsId;
 	// parts
 	ArrayOfCmpBookParts m_bookParts;

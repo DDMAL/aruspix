@@ -103,6 +103,32 @@ private:
     DECLARE_EVENT_TABLE()
 };
 
+
+//----------------------------------------------------------------------------
+// AxUpdateDlg
+//----------------------------------------------------------------------------
+
+class AxUpdateDlg: public wxDialog
+{
+public:
+    // constructors and destructors
+    AxUpdateDlg( wxWindow *parent, wxWindowID id, const wxString &title,
+               const wxPoint& pos = wxDefaultPosition,
+               const wxSize& size = wxDefaultSize,
+               long style = wxDEFAULT_DIALOG_STYLE );
+    
+    wxStaticText* GetTxAppUpdateLink()  { return (wxStaticText*) FindWindow( ID0_UPDATE_LINK ); }
+    wxTextCtrl* GetTxAppFeatures()  { return (wxTextCtrl*) FindWindow( ID0_NEW_FEATURES ); }
+    bool CheckForUpdate();
+    
+private:
+    
+private:
+    
+private:
+    DECLARE_EVENT_TABLE()
+};
+
 //----------------------------------------------------------------------------
 // AxApp
 //----------------------------------------------------------------------------
@@ -116,7 +142,7 @@ public:
     AxApp();
     virtual ~AxApp();
     
-        virtual bool OnInit();
+    virtual bool OnInit();
     virtual int OnExit();
     //static wxString FindAppPath();
     static bool CheckDir( wxString dirname, int permission );

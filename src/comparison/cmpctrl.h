@@ -23,51 +23,11 @@ class CmpEnv;
 class CmpFile;
 class CmpCtrl;
 class CmpBookItem;
+class CmpBookPart;
 class CmpCollation;
 
 class BookFile;
 class AxProgressDlg;
-
-
-/*
-//----------------------------------------------------------------------------
-// CmpDataDlg
-//----------------------------------------------------------------------------
-
-class CmpDataDlg: public wxDialog
-{
-public:
-    // constructors and destructors
-    CmpDataDlg( wxWindow *parent, wxWindowID id, const wxString &title,
-        RecBookFile *recBookFile );
-    
-        wxTextCtrl* Axfiles()  { return (wxTextCtrl*) FindWindow( ID6_BOOK_AXFILES ); }
-    wxTextCtrl* Images()  { return (wxTextCtrl*) FindWindow( ID6_BOOK_IMAGES ); }
-    wxTextCtrl* Library()  { return (wxTextCtrl*) FindWindow( ID6_LIBRARY ); }
-    wxTextCtrl* Year()  { return (wxTextCtrl*) FindWindow( ID6_YEAR ); }
-    wxTextCtrl* Printer()  { return (wxTextCtrl*) FindWindow( ID6_PRINTER ); }
-    wxTextCtrl* Title()  { return (wxTextCtrl*) FindWindow( ID6_TITLE ); }
-    wxTextCtrl* Composer()  { return (wxTextCtrl*) FindWindow( ID6_COMPOSER ); }
-    wxTextCtrl* RISM()  { return (wxTextCtrl*) FindWindow( ID6_RISM ); }
-    //virtual bool Validate();
-    //virtual bool TransferDataToWindow();
-    //virtual bool TransferDataFromWindow();
-    
-private:
-        RecBookFile *m_recBookFile;
-    bool m_loadAxfiles;
-    bool m_loadImages;
-    
-private:
-        void OnBrowseAxfiles( wxCommandEvent &event );
-    void OnBrowseImages( wxCommandEvent &event );
-    void OnOk( wxCommandEvent &event );
-    //void OnCancel( wxCommandEvent &event );
-
-private:
-    DECLARE_EVENT_TABLE()
-};
-*/
 
 //----------------------------------------------------------------------------
 // CmpCtrlPanel
@@ -117,11 +77,13 @@ public:
         long style = 0 );
 	virtual ~CmpCtrl();
     
-        void SetBookFile( CmpFile *cmpFile ) { m_cmpFilePtr = cmpFile; }
+    void SetBookFile( CmpFile *cmpFile ) { m_cmpFilePtr = cmpFile; }
     void SetEnv( CmpEnv *cmpEnv ) { m_cmpEnvPtr = cmpEnv; }
 	void SetBookPanel( CmpCtrlPanel *cmpCtrlPanel ) { m_cmpCtrlPanelPtr = cmpCtrlPanel; }
     void Build( );
     void Update( );
+    void UpdateParts( CmpBookItem *book );
+    void UpdateCollationParts( CmpCollation *collation );
 	virtual void SaveDisplay( );
 	virtual void LoadDisplay( );
 	//
@@ -139,16 +101,47 @@ private:
 	wxTreeItemId m_booksId;
     
 private:
-        void OnSelection( wxTreeEvent &event );
+    /**
+     * Item is selected.
+     * Loads the preview when available.
+     */
+    void OnSelection( wxTreeEvent &event );
+    /**
+     * Item is double clicked or space bar is pressed.
+     */
     void OnActivate( wxTreeEvent &event );
-	void OnAxDesactivate( wxCommandEvent &event );
-    //void OnAxRemove( wxCommandEvent &event );
-    //void OnAxDelete( wxCommandEvent &event );
-    //void OnImgDesactivate( wxCommandEvent &event );
-    //void OnImgRemove( wxCommandEvent &event );
-    void OnBookEdit( wxCommandEvent &event );
-    void OnBook( wxCommandEvent &event );
+    /**
+     * Method for event that are processed directly by the CmpEnv.
+     */ 
+    void OnCmpEvent( wxCommandEvent &event );
+    /**
+     * Assemble the parts of a CmpBookPart (TODO).
+     */
 	void OnAssembleParts( wxCommandEvent &event );
+    /**
+     * Add a CmpPartPage to a CmpBookPart.
+     * See CmpEnv::AddAxFile.
+     */
+    void OnAddAxFile( wxCommandEvent &event );
+    /**
+     * Add a CmpBookPart to a CmpBookItem.
+     * See CmpEnv::AddPart.
+     */
+    void OnAddPart( wxCommandEvent &event );
+    /**
+     * Add a start or end delimiter to a CmpPartPage.
+     * See CmpEnv::AddPartPageStartEnd.
+     */
+    void OnAddPartPageStartEnd( wxCommandEvent &event );
+    /**
+     * Add a CmpCollationPart to a CmpCollation.
+     * See CmpEnv::AddCollationPart.
+     */
+    void OnAddCollationPart( wxCommandEvent &event );
+    /**
+     * Prepare the popup menu when right click on an item.
+     * Uses AxTreeItem::m_type to figure out what menu items to enable.
+     */
     void OnMenu( wxTreeEvent &event );
 
 private:

@@ -36,6 +36,13 @@ public:
     /** Get the position */
     virtual bool GetPosition( int *pname, int *oct );
     
+    /**
+     * Inteface comparison operator. 
+     * Check if the MusLayerElement has a MusPositionInterface and compare attributes
+     */
+    bool HasIdenticalPositionInterface(MusPositionInterface  *otherPitchInterface);
+
+    
 private:
     
 public:

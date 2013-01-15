@@ -35,7 +35,7 @@ class AxScrolledWindow;
 #define ID_POPUP_MENU_BY_FILES 21999 
 
 /*
-#define IMAGE_FILES \
+#define IMAGE_FILES_SELECTION \
         "Image files|*.bmp;*.png;*.jpg;*jpeg;*.gif;*.tif;*.tiff;*.pcx;*.ico;*.cur|" \
         "BMP files (*.bmp)|*.bmp|" \
         "PNG files (*.png)|*.png|" \
@@ -48,10 +48,10 @@ class AxScrolledWindow;
         "All files (*.*)|*.*"
 */
 
-#define IMAGE_FILES \
-        "TIFF files|*.tif;*.tiff|" \
+#define IMAGE_FILES_SELECTION \
+        "TIFF files|*.tif;*.tiff;*.TIF;*.TIFF|" \
+        "PNG files|*.png;*.PNG|" \
         "All files (*.*)|*.*"
-
 
 //----------------------------------------------------------------------------
 // AxImageController

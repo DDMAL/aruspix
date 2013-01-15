@@ -231,12 +231,13 @@ bool SupBookFile::CreateFiles( bool ask_user )
 	}
 	
 	// get active image files from both sets
-	wxArrayString paths1, paths2;	
+	wxArrayString paths1, paths2, filenames;	
 	for( i = 0; i < (int)m_imgFiles1.GetCount(); i++)
 	{
 		if ( m_imgFiles1[i].m_flags & FILE_DESACTIVATED )
 			continue;
 		paths1.Add( m_imgFileDir1 + wxFileName::GetPathSeparator() +  m_imgFiles1[i].m_filename );
+        filenames.Add( m_imgFiles1[i].m_filename );
 	}
 	for( i = 0; i < (int)m_imgFiles2.GetCount(); i++)
 	{
@@ -248,7 +249,9 @@ bool SupBookFile::CreateFiles( bool ask_user )
 	// create Aruspix files using active image files
 	for( i = 0; (i < (int)paths1.GetCount()) && (i < (int)paths2.GetCount()); i++)
 	{
-		wxString axfile = wxString::Format("%s_%03d.axz", m_shortname.c_str(), i+1 );
+        wxString basename;
+        wxFileName::SplitPath( filenames[i], NULL, &basename, NULL );
+		wxString axfile = wxString::Format("%s_%s.axz", basename.c_str(), m_Library2.c_str() );
 		SupFile supfile( "sup_book_file_create" );
 		supfile.New();
 		supfile.m_original1 = paths1[i];
@@ -332,7 +335,7 @@ bool SupBookFile::LoadImages1( )
 
     if ( wxDirExists( m_imgFileDir1 ) )
     {
-        nbfiles = wxDir::GetAllFiles( m_imgFileDir1, &paths, "*.tif", wxDIR_FILES  );
+        nbfiles = AxFile::GetAllFiles( m_imgFileDir1, &paths, IMAGE_FILES  );
     
         for ( i = 0; i < (int)nbfiles; i++ )
         {
@@ -353,7 +356,7 @@ bool SupBookFile::LoadImages2( )
 
     if ( wxDirExists( m_imgFileDir2 ) )
     {
-        nbfiles = wxDir::GetAllFiles( m_imgFileDir2, &paths, "*.tif", wxDIR_FILES  );
+        nbfiles = AxFile::GetAllFiles( m_imgFileDir2, &paths, IMAGE_FILES  );
     
         for ( i = 0; i < (int)nbfiles; i++ )
         {
