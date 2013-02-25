@@ -12,7 +12,7 @@
 
 //#include "wx/config.h"
 #include "wx/valgen.h"
-//#include "wx/file.h"
+#include "wx/file.h"
 //#include "wx/filename.h"
 //#include "wx/dir.h"
 #include "wx/log.h"
@@ -223,8 +223,8 @@ BEGIN_EVENT_TABLE(RecEnv,AxEnv)
     EVT_MENU( ID4_POPUP_TREE_REC, RecEnv::OnBookPreprocess )
     EVT_MENU( ID4_POPUP_TREE_ADAPT, RecEnv::OnBookOptimize )
     EVT_MENU( ID4_POPUP_TREE_BOOK_EDIT, RecEnv::OnBookEdit )
-    EVT_MENU( ID4_EXPORT_AXMUS, RecEnv::OnExportAxmus )
-    EVT_MENU( ID4_EXPORT_AXTYP, RecEnv::OnExportAxtyp )
+    EVT_MENU( ID4_EXPORT_MODELS, RecEnv::OnExportModels )
+    EVT_MENU( ID4_IMPORT_MODELS, RecEnv::OnImportModels )
     EVT_MENU( ID4_BOOK_RESET_ADAPT, RecEnv::OnResetAdaptation )
 END_EVENT_TABLE()
 
@@ -761,108 +761,26 @@ void RecEnv::OnResetAdaptation( wxCommandEvent &event )
     }
 }
 
-void RecEnv::OnExportAxmus( wxCommandEvent &event )
+void RecEnv::OnExportModels( wxCommandEvent &event )
 {
     if ( AxProgressDlg::s_instance_existing )
         return;
 
-    wxArrayString paths, filenames;
-    size_t nbOfFiles;
+	if ( !m_recBookFilePtr )
+        return;
     
-    nbOfFiles = AxFileSelector( AX_FILE_DEFAULT, &filenames, &paths, m_framePtr );  
-                
-    // input AXZ files : choose a directory of select muliple files
-    if ( nbOfFiles == 0 )
-        return; 
-    
-    // name of model to generate - temporary...
-    RecMusModel model( "rec_export_mus" );
-    model.New();
-    
-    wxArrayPtrVoid params;
-    params.Add( &nbOfFiles );
-    params.Add( &paths );
-    
-    AxProgressDlg *dlg = new AxProgressDlg( m_framePtr, -1, _("Export music model") );
-    dlg->Center( wxBOTH );
-    dlg->Show();
-    dlg->SetMaxBatchBar( 2 );
-    
-    bool failed = false;
-    
-    if ( !failed )
-        failed = !model.AddFiles( params, dlg );
-
-    if ( !failed )  
-        failed = !model.Commit( dlg );
-        
-    if ( !failed )  
-        failed = !model.Train( params, dlg );
-        
-    imCounterEnd( dlg->GetCounter() );
-
-    dlg->AxShowModal( failed ); // stop process  ( failed ???? )
-    dlg->Destroy();
-    
-    if ( !failed )
-        model.Save();
+    m_recBookFilePtr->ExportModels();
 }
 
-//#define META_BATCH3
-//#define META_BATCH_MUS
-
-void RecEnv::OnExportAxtyp( wxCommandEvent &event )
+void RecEnv::OnImportModels( wxCommandEvent &event )
 {
-#ifndef META_BATCH3
     if ( AxProgressDlg::s_instance_existing )
         return;
-
-    wxArrayString paths, filenames;
-    size_t nbOfFiles;
     
-    nbOfFiles = AxFileSelector( AX_FILE_DEFAULT, &filenames, &paths, m_framePtr );  
-                
-    // input AXZ files : choose a directory of select muliple files
-    if ( nbOfFiles == 0 )
-        return; 
+	if ( !m_recBookFilePtr )
+        return;
     
-    // name of model to generate - temporary...
-    RecTypModel model( "rec_export_typ" );
-    model.New();
-    
-    wxArrayPtrVoid params;
-    params.Add( &nbOfFiles );
-    params.Add( &paths );
-    
-    AxProgressDlg *dlg = new AxProgressDlg( m_framePtr, -1, _("Export typographic model") );
-    dlg->Center( wxBOTH );
-    dlg->Show();
-    dlg->SetMaxBatchBar( 3 );
-    
-    bool failed = false;
-    
-    if ( !failed )
-        failed = !model.AddFiles( params, dlg );
-
-    if ( !failed )  
-        failed = !model.Commit( dlg );
-        
-    if ( !failed )  
-        failed = !model.Train( params, dlg );
-        
-    imCounterEnd( dlg->GetCounter() );
-
-    dlg->AxShowModal( failed ); // stop process  ( failed ???? )
-    dlg->Destroy();
-    
-    wxMessageBox("Training typographic models from scratch is not implemented yet. The exported file won't be valid as is. It has to be trained first.");
-    
-    if ( !failed )
-        model.Save();
-#else	
-	wxLogMessage("MetaBatch!! Research method");
-	BatchAdaptation();
-#endif
+    m_recBookFilePtr->ImportModels();    
 }
 
 
@@ -1931,6 +1849,10 @@ void RecEnv::OnUpdateUI( wxUpdateUIEvent &event )
     else if (id == ID4_BOOK_ADAPT )
         event.Enable( m_recBookFilePtr->IsOpened() );
     else if (id == ID4_BOOK_RESET_ADAPT )
+        event.Enable( m_recBookFilePtr->IsOpened() );
+    else if (id == ID4_EXPORT_MODELS )
+         event.Enable( m_recBookFilePtr->IsOpened() && wxFileExists( m_recBookFilePtr->GetTypFilename() ) && wxFileExists( m_recBookFilePtr->GetMusFilename() ) );
+    else if (id == ID4_IMPORT_MODELS )
         event.Enable( m_recBookFilePtr->IsOpened() );
 
     else if (id == ID4_SHOW_STAFF_BMP )

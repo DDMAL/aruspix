@@ -385,6 +385,50 @@ bool RecBookFile::ResetAdaptation( bool ask_user )
 	return true;
 }
 
+
+bool RecBookFile::ImportModels( )
+{
+	if ( !this->ResetAdaptation( true ) ) {
+        return false;
+    }
+    
+    wxString filename;
+    filename = wxFileSelector( _("Open"), wxGetApp().m_lastDirAX0_out, m_shortname + ".axtyp", "axtyp", "Aruspix Typographic Model Files|*.axtyp", wxFD_OPEN);
+    if (filename.IsEmpty())
+        return false;
+    
+    wxCopyFile( filename, GetTypFilename() );
+    
+    filename = wxFileSelector( _("Open"), wxGetApp().m_lastDirAX0_out, m_shortname + ".axmus", "axmus", "Aruspix Music Model Files|*.axmus", wxFD_OPEN);
+    if (filename.IsEmpty())
+        return false;
+    
+    wxCopyFile( filename, GetMusFilename() );
+	
+	m_fullOptimized = true;
+	m_nbFilesOptimization = 0;
+	m_optFiles.Clear( );
+	return true;
+}
+
+bool RecBookFile::ExportModels( )
+{
+    wxString filename;
+    filename = wxFileSelector( _("Save"), wxGetApp().m_lastDirAX0_out, m_shortname + ".axtyp", "axtyp", "Aruspix Typographic Model Files|*.axtyp", wxFD_SAVE);
+    if (filename.IsEmpty())
+        return false;
+    
+    wxCopyFile( GetTypFilename(), filename );
+    
+    filename = wxFileSelector( _("Save"), wxGetApp().m_lastDirAX0_out, m_shortname + ".axmus", "axmus", "Aruspix Music Model Files|*.axmus", wxFD_SAVE);
+    if (filename.IsEmpty())
+        return false;
+    
+    wxCopyFile( GetMusFilename(), filename );
+
+	return true;
+}
+
 bool RecBookFile::TypAdaptation( wxArrayPtrVoid params, AxProgressDlg *dlg )
 {
 	// params 0: nbfiles (unused)

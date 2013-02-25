@@ -348,27 +348,32 @@ wxMenuBar *MenuBarFunc4()
     item3->Append( ID4_BOOK_ADAPT, _("Optimize"), _("Perform full optimization on recognized pages of the book") );
     item3->Append( ID4_BOOK_RESET_ADAPT, _("Reset optimization"), _("Reset optimization") );
     item3->AppendSeparator();
-    item3->Append( ID4_EXPORT_AXTYP, _("Export typographic model"), _("Export Aruspix files to train a new typographic model") );
-    item3->Append( ID4_EXPORT_AXMUS, _("Export music model"), _("Export Aruspix files to train a new music model") );
-    item0->Append( item3, _("&Book") );
+    item3->Append( ID4_EXPORT_MODELS, _("Export models"), _("Export the Aruspix typographic model of the book") );
     
     wxMenu* item4 = new wxMenu;
-    item4->Append( ID4_ZOOM_OUT, _("Zoom out\t-"), _("Zoom out") );
-    item4->Append( ID4_ZOOM_IN, _("Zoom in\t+"), _("Zoom in") );
-    item4->Append( ID4_ADJUST, _("Adjust"), _("Adjust to fit the window"), wxITEM_CHECK );
-    item4->Append( ID4_ADJUST_V, _("Adjust vertically"), _("Adjust to fit the window vertically"), wxITEM_CHECK );
-    item4->Append( ID4_ADJUST_H, _("Adjust horizontally"), _("Adjust to fit the window horizontally"), wxITEM_CHECK );
-    item0->Append( item4, _("&Page") );
+    item4->Append( ID4_EXPORT_PAGES_MEI, _("MEI"), _("Export pages of the books as MEI files") );
+    item3->Append( ID4_MENU, _("Export pages"), item4 );
+
+    item3->Append( ID4_IMPORT_MODELS, _("Import models"), _("Import an Aruspix typographic and music model to be used for this book") );
+    item0->Append( item3, _("&Book") );
     
     wxMenu* item5 = new wxMenu;
-    item5->Append( ID4_SHOW_STAFF_BMP, _("Staff correspondence"), _("Show staff correspondence on image"), wxITEM_CHECK );
-    item5->AppendSeparator();
-    item5->Append( ID4_INSERT_MODE, _("&Insertion"), wxT(""), wxITEM_CHECK );
-    item5->Append( ID4_NOTES, _("&Notes and rests"), wxT("") );
-    item5->Append( ID4_KEYS, _("&Keys"), wxT("") );
-    item5->Append( ID4_SIGNS, _("&Propostions"), wxT("") );
-    item5->Append( ID4_SYMBOLES, _("&Symboles"), wxT("") );
-    item0->Append( item5, _("&Tools") );
+    item5->Append( ID4_ZOOM_OUT, _("Zoom out\t-"), _("Zoom out") );
+    item5->Append( ID4_ZOOM_IN, _("Zoom in\t+"), _("Zoom in") );
+    item5->Append( ID4_ADJUST, _("Adjust"), _("Adjust to fit the window"), wxITEM_CHECK );
+    item5->Append( ID4_ADJUST_V, _("Adjust vertically"), _("Adjust to fit the window vertically"), wxITEM_CHECK );
+    item5->Append( ID4_ADJUST_H, _("Adjust horizontally"), _("Adjust to fit the window horizontally"), wxITEM_CHECK );
+    item0->Append( item5, _("&Page") );
+    
+    wxMenu* item6 = new wxMenu;
+    item6->Append( ID4_SHOW_STAFF_BMP, _("Staff correspondence"), _("Show staff correspondence on image"), wxITEM_CHECK );
+    item6->AppendSeparator();
+    item6->Append( ID4_INSERT_MODE, _("&Insertion"), wxT(""), wxITEM_CHECK );
+    item6->Append( ID4_NOTES, _("&Notes and rests"), wxT("") );
+    item6->Append( ID4_KEYS, _("&Keys"), wxT("") );
+    item6->Append( ID4_SIGNS, _("&Propostions"), wxT("") );
+    item6->Append( ID4_SYMBOLES, _("&Symboles"), wxT("") );
+    item0->Append( item6, _("&Tools") );
     
     return item0;
 }

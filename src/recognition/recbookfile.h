@@ -65,6 +65,8 @@ public:
 	int RecognizedFiles( wxArrayString *filenames, wxArrayString *paths );
 	bool HasToBePreprocessed( wxString imagefile );
 	// adaptation
+    bool ExportModels( );
+    bool ImportModels( );
 	bool ResetAdaptation( bool ask_user );
 	bool FastAdaptation( wxArrayPtrVoid params, AxProgressDlg *dlg );
 	bool TypAdaptation( wxArrayPtrVoid params, AxProgressDlg *dlg );
