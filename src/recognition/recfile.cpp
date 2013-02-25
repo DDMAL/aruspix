@@ -476,7 +476,7 @@ bool RecFile::CancelRecognition( bool ask_user )
 	wxRemoveFile( m_basename + "rec.mlf" );
 	wxRemoveFile( m_basename + "rec.xml" );
 	wxRemoveFile( m_basename + "mfc.input" );
-	wxRemoveFile( m_basename + "page.bin" );
+	wxRemoveFile( m_basename + "page.mei" );
 	wxRemoveFile( m_basename + "page.mlf" );
 	wxRemoveFile( m_basename + "staves.tif" );
 	
