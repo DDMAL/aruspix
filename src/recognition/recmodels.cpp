@@ -17,6 +17,9 @@
 #include "recmodels.h"
 #include "recfile.h"
 
+#include "mus/musdoc.h"
+#include "mus/muspage.h"
+
 #include "app/axapp.h"
 #include "app/axprocess.h"
 
@@ -224,7 +227,7 @@ void RecTypModel::UpdateInputFiles( )
 
 bool RecTypModel::AddFile( wxArrayPtrVoid params, AxProgressDlg *dlg )
 {
-    /*
+    
 	wxASSERT_MSG( dlg, "AxProgressDlg cannot be NULL" );
 	wxASSERT( m_mlf );
 	wxASSERT( m_mlf_hmms );
@@ -268,9 +271,9 @@ bool RecTypModel::AddFile( wxArrayPtrVoid params, AxProgressDlg *dlg )
     int count = names.GetCount() + 2;
     imCounterTotal( counter, count , operation.c_str() );
 	
-	m_mlf->WritePage( &recFile.m_musDocPtr->m_pages[0], shortname, recFile.m_imPagePtr );
+	m_mlf->WritePage( &recFile.m_musDocPtr->m_layouts[0].m_pages[0], shortname, recFile.m_imPagePtr );
 	imCounterInc( dlg->GetCounter() );
-	m_mlf_hmms->WritePage( &recFile.m_musDocPtr->m_pages[0], shortname, recFile.m_imPagePtr );
+	m_mlf_hmms->WritePage( &recFile.m_musDocPtr->m_layouts[0].m_pages[0], shortname, recFile.m_imPagePtr );
 	imCounterInc( dlg->GetCounter() );
 	
 	for( int i = 0; i < (int)names.GetCount(); i++ )
@@ -280,8 +283,6 @@ bool RecTypModel::AddFile( wxArrayPtrVoid params, AxProgressDlg *dlg )
 		wxCopyFile( names[i], out );
 		imCounterInc( dlg->GetCounter() );
 	}
-    */
-    wxLogError( "RecTypeModel::AddFile missing in ax2" );	
 	
 	return true;
 }
@@ -615,7 +616,7 @@ void RecMusModel::SaveModelContent( )
 
 bool RecMusModel::AddFile( wxArrayPtrVoid params, AxProgressDlg *dlg )
 {
-    /*
+    
 	wxASSERT_MSG( dlg, "AxProgressDlg cannot be NULL" );
 	wxASSERT( m_mlf );
 	
@@ -652,12 +653,10 @@ bool RecMusModel::AddFile( wxArrayPtrVoid params, AxProgressDlg *dlg )
 	bool failed = false;
 
 	if ( !failed && !dlg->GetCanceled() )
-		failed = !m_mlf->WritePage( &recFile.m_musDocPtr->m_pages[0], true );
+		failed = !m_mlf->WritePage( &recFile.m_musDocPtr->m_layouts[0].m_pages[0], true );
 	imCounterInc( dlg->GetCounter() );	
 	
 	m_nbfiles++;
-    */
-    wxLogError( "RecMusModel::AddFile missing in ax2" );
 	return true;
 }
 
