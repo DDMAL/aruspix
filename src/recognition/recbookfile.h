@@ -26,7 +26,9 @@ class RecBookFile;
 class RecBookCtrl;
 class RecModel;
 
-
+enum {
+    REC_BOOK_EXPORT_MEI = 0
+};
 
 
 //----------------------------------------------------------------------------
@@ -64,6 +66,7 @@ public:
 	int FilesForAdaptation( wxArrayString *filenames, wxArrayString *paths, bool *isCacheOk );
 	int RecognizedFiles( wxArrayString *filenames, wxArrayString *paths );
 	bool HasToBePreprocessed( wxString imagefile );
+    bool ExportPages( int exportType );
 	// adaptation
     bool ExportModels( );
     bool ImportModels( );

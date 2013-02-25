@@ -348,13 +348,13 @@ wxMenuBar *MenuBarFunc4()
     item3->Append( ID4_BOOK_ADAPT, _("Optimize"), _("Perform full optimization on recognized pages of the book") );
     item3->Append( ID4_BOOK_RESET_ADAPT, _("Reset optimization"), _("Reset optimization") );
     item3->AppendSeparator();
-    item3->Append( ID4_EXPORT_MODELS, _("Export models"), _("Export the Aruspix typographic model of the book") );
+    item3->Append( ID4_BOOK_EXPORT_MODELS, _("Export models"), _("Export the Aruspix typographic model of the book") );
     
     wxMenu* item4 = new wxMenu;
-    item4->Append( ID4_EXPORT_PAGES_MEI, _("MEI"), _("Export pages of the books as MEI files") );
+    item4->Append( ID4_BOOK_EXPORT_MEI, _("MEI"), _("Export pages of the books as MEI files") );
     item3->Append( ID4_MENU, _("Export pages"), item4 );
 
-    item3->Append( ID4_IMPORT_MODELS, _("Import models"), _("Import an Aruspix typographic and music model to be used for this book") );
+    item3->Append( ID4_BOOK_IMPORT_MODELS, _("Import models"), _("Import an Aruspix typographic and music model to be used for this book") );
     item0->Append( item3, _("&Book") );
     
     wxMenu* item5 = new wxMenu;

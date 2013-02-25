@@ -223,8 +223,9 @@ BEGIN_EVENT_TABLE(RecEnv,AxEnv)
     EVT_MENU( ID4_POPUP_TREE_REC, RecEnv::OnBookPreprocess )
     EVT_MENU( ID4_POPUP_TREE_ADAPT, RecEnv::OnBookOptimize )
     EVT_MENU( ID4_POPUP_TREE_BOOK_EDIT, RecEnv::OnBookEdit )
-    EVT_MENU( ID4_EXPORT_MODELS, RecEnv::OnExportModels )
-    EVT_MENU( ID4_IMPORT_MODELS, RecEnv::OnImportModels )
+    EVT_MENU( ID4_BOOK_EXPORT_MEI, RecEnv::OnBookExportMEI )
+    EVT_MENU( ID4_BOOK_EXPORT_MODELS, RecEnv::OnBookExportModels )
+    EVT_MENU( ID4_BOOK_IMPORT_MODELS, RecEnv::OnBookImportModels )
     EVT_MENU( ID4_BOOK_RESET_ADAPT, RecEnv::OnResetAdaptation )
 END_EVENT_TABLE()
 
@@ -761,23 +762,32 @@ void RecEnv::OnResetAdaptation( wxCommandEvent &event )
     }
 }
 
-void RecEnv::OnExportModels( wxCommandEvent &event )
+void RecEnv::OnBookExportModels( wxCommandEvent &event )
 {
     if ( AxProgressDlg::s_instance_existing )
         return;
 
-	if ( !m_recBookFilePtr )
+	if ( !m_recBookFilePtr || !m_recBookFilePtr->IsOpened() )
         return;
     
     m_recBookFilePtr->ExportModels();
 }
 
-void RecEnv::OnImportModels( wxCommandEvent &event )
+
+void RecEnv::OnBookExportMEI ( wxCommandEvent &event )
+{
+	if ( !m_recBookFilePtr || !m_recBookFilePtr->IsOpened() )
+        return;
+      
+    m_recBookFilePtr->ExportPages( REC_BOOK_EXPORT_MEI );
+}
+
+void RecEnv::OnBookImportModels( wxCommandEvent &event )
 {
     if ( AxProgressDlg::s_instance_existing )
         return;
     
-	if ( !m_recBookFilePtr )
+	if ( !m_recBookFilePtr || !m_recBookFilePtr->IsOpened() )
         return;
     
     m_recBookFilePtr->ImportModels();    
@@ -1850,9 +1860,11 @@ void RecEnv::OnUpdateUI( wxUpdateUIEvent &event )
         event.Enable( m_recBookFilePtr->IsOpened() );
     else if (id == ID4_BOOK_RESET_ADAPT )
         event.Enable( m_recBookFilePtr->IsOpened() );
-    else if (id == ID4_EXPORT_MODELS )
+    else if (id == ID4_BOOK_EXPORT_MODELS )
          event.Enable( m_recBookFilePtr->IsOpened() && wxFileExists( m_recBookFilePtr->GetTypFilename() ) && wxFileExists( m_recBookFilePtr->GetMusFilename() ) );
-    else if (id == ID4_IMPORT_MODELS )
+    else if (id == ID4_BOOK_IMPORT_MODELS )
+        event.Enable( m_recBookFilePtr->IsOpened() );
+    else if (id == ID4_BOOK_EXPORT_MEI )
         event.Enable( m_recBookFilePtr->IsOpened() );
 
     else if (id == ID4_SHOW_STAFF_BMP )

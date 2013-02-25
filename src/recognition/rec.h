@@ -217,8 +217,9 @@ private:
     void Preprocess( );
 
     void OnResetAdaptation( wxCommandEvent &event );
-    void OnImportModels( wxCommandEvent &event );
-    void OnExportModels( wxCommandEvent &event );
+    void OnBookImportModels( wxCommandEvent &event );
+    void OnBookExportModels( wxCommandEvent &event );
+    void OnBookExportMEI ( wxCommandEvent &event );
     void OnBookEdit( wxCommandEvent &event );
     void OnBookOptimize( wxCommandEvent &event );
     void OnBookFullProcess( wxCommandEvent &event );
