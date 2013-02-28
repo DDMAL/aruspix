@@ -218,6 +218,61 @@ void RecFile::UpgradeTo_2_0_0()
 }
 
 
+void RecFile::UpgradeTo_2_1_0()
+{
+    if ( AxFile::FormatVersion(m_vmaj, m_vmin, m_vrev) >= AxFile::FormatVersion(2, 1, 0) )
+		return; // when do not need to upgrade the file
+    if ( AxFile::FormatVersion(m_vmaj, m_vmin, m_vrev) < AxFile::FormatVersion(2, 0, 0) )
+        return; // the file has been upgraded by Upgrade_2_0_0
+    
+    if ( !m_musDocPtr ) {
+        wxLogError( "File cannot be upgraded to 2.1.0 (No document)");    
+        return;
+    }
+    if ( m_musDocPtr->m_layouts.GetCount() != 1 ) {
+        wxLogError( "File cannot be upgraded to 2.1.0 (Wrong number of layouts)");    
+        return;
+    }
+    if ( m_musDocPtr->m_layouts[0].m_pages.GetCount() != 1  ) {
+        wxLogError( "File cannot be upgraded to 2.1.0 (Wrong number of pages)");    
+        return;
+    }
+    
+    MusPage *page = &m_musDocPtr->m_layouts[0].m_pages[0];
+    
+    int i, j;
+    int elementCount = 0;
+    
+    for ( i = 0; i < (int)page->m_systems.GetCount(); i++ ) {
+        MusLaidOutLayer *laidOutLayer = &page->m_systems[i].m_staves[0].m_layers[0];
+        if ( !laidOutLayer ) {
+            wxLogError( "File cannot be upgraded to 2.1.0 (Missing MusLaidOutLayer)");    
+            return;
+        }
+        MusLayer *currentLayer = laidOutLayer->GetSection()->GetStaff( laidOutLayer->m_logStaffNb - 1 )->GetLayer( laidOutLayer->m_logLayerNb - 1 );
+        if ( !currentLayer ) {
+            wxLogError( "File cannot be upgraded to 2.1.0 (Missing MusLayer)");    
+            return;
+        }
+        for ( j = 0; j < laidOutLayer->GetElementCount(); j++ ) {
+            if ( j >=  (int)currentLayer->m_elements.GetCount() ) {
+                wxLogError( "File cannot be upgraded to 2.1.0 (Too many MusLaidOutLayerElement)");    
+                return;
+            }
+            MusObject *target = &currentLayer->m_elements[ elementCount ];
+            elementCount++;
+            if ( dynamic_cast<MusLayerElement*>(target) ) {
+                MusLaidOutLayerElement *element = &laidOutLayer->m_elements[j];
+                element->m_layerElement = dynamic_cast<MusLayerElement*>(target);
+            }
+        }
+        
+    }
+    
+    wxLogMessage( "File successfully upgraded to 2.1.0");
+    this->Modify();
+}
+
 void RecFile::NewContent( )
 {
 	wxASSERT_MSG( !m_imPagePtr, "ImPage should be NULL" );
@@ -288,8 +343,11 @@ void RecFile::OpenContent( )
         delete mei_input;           
 		if ( failed )
 			return;
-		else
-			m_isRecognized = true;	
+		
+        m_isRecognized = true;
+        
+        UpgradeTo_2_1_0();
+        
 	} //else if there's an MEI in there?
 	
 	return;       

@@ -72,6 +72,7 @@ public:
 	void UpgradeTo_1_4_0();
     void UpgradeTo_1_5_0();
     void UpgradeTo_2_0_0();
+    void UpgradeTo_2_1_0();
 	
 	// status
 	static bool IsRecognized( wxString filename );
