@@ -1,0 +1,263 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-model href="http://www.oasis-open.org/docbook/xml/5.0/rng/docbook.rng" schematypens="http://relaxng.org/ns/structure/1.0"?>
+<book xmlns="http://docbook.org/ns/docbook"
+    xmlns:xlink="http://www.w3.org/1999/xlink" version="5.0">
+    <info>
+        <title>Aruspix User Manual</title>
+        <subtitle>Version 2.0.7</subtitle>
+        <pubdate>February 2013</pubdate>
+    </info>
+    <chapter>
+        <title>Introduction</title>
+        <para>[To do]</para>
+        <section>
+            <title>Aruspix workspaces</title>
+            <para>[To do]</para>
+        </section>
+    </chapter>
+    <chapter>
+        <title>Superimposition</title>
+        <para>[To do]</para>
+        <section>
+            <title>Semi-automatic superimposition</title>
+            <para>[To do]</para>
+        </section>
+        <section>
+            <title>Batch superimposition</title>
+            <para>[To do]</para>
+        </section>
+    </chapter>
+    <chapter>
+        <title>Recognition</title>
+        <para>
+            In the Recognition workspace, Aruspix acts as a program for the optical recognition of
+            early printed music sources. Starting with scanned images of these
+            early sources, Aruspix will first pre-process the image, to clean,
+            correct and pre-classify the various elements, then digitally recognize
+            the image for musical content. This two-step process can be applied
+            to single pages, or to an entire book, or batch, of pages. When working
+            with books, an optimization process can be applied after a significant
+            number of pages (approx. 20) has been corrected. The optimization
+            process will improve results for the recognition of the book. Your
+            prepared images for use with Aruspix must be stored as TIFF files.
+            A resolution of at least 300 dpi is recommended. Each single file
+            or image should contain only one page of music.
+            
+            To begin using Aruspix, have a look at the two menus at the top of
+            the screen. The upper menu is like the one for most applications
+            File, Edit, Window, etc. This will be called the Application menu.
+            
+            <mediaobject>
+                <imageobject>
+                    <imagedata fileref="docimgs/rec/ApplicationMenu.png"/>
+                </imageobject>
+                <textobject>
+                    <phrase>The application menu in the Recognition workspace</phrase>
+                </textobject>
+            </mediaobject>
+            
+            Directly below the Application menu bar, you will see a tool bar 
+            with helpful graphics "New" and "Open" for a book, "New" and "Open" for a file, "Save", etc. 
+            
+            <mediaobject>
+                <imageobject>
+                    <imagedata fileref="docimgs/rec/ToolBar.png"/>
+                </imageobject>
+                <textobject>
+                    <phrase>The application toolbar in the Recognition workspace</phrase>
+                </textobject>
+            </mediaobject>
+            
+        </para>
+        <section>
+            <title>Single page processing</title>
+            <para>
+                The first thing you need to do to start transcription is to pre-process
+                the music images you wish to transcribe. For now, we will begin with
+                a single page. From the tool bar, click on the "New" icon
+                <footnote>
+                    <para>
+                        <mediaobject>
+                            <imageobject>
+                                <imagedata fileref="docimgs/rec/NewFileButton.png"/>
+                            </imageobject>
+                        </mediaobject>
+                    </para>
+                </footnote>
+                and select a TIFF image. If at any time the image you are working with does not fit the screen, use the "Zoom"
+                buttons on the toolbar to adjust the image size
+                <footnote>
+                    <para>
+                        <mediaobject>
+                            <imageobject>
+                                <imagedata fileref="docimgs/rec/ZoomButtons.png"/>
+                            </imageobject>
+                        </mediaobject>
+                    </para>
+                </footnote>.
+            </para>
+            <para>               
+                To pre-process this image, click "Run" on the tool bar
+                <footnote>
+                    <para>
+                        <mediaobject>
+                            <imageobject>
+                                <imagedata fileref="docimgs/rec/RunButton.png"/>
+                            </imageobject>
+                        </mediaobject>
+                    </para>
+                </footnote>.
+                In a few seconds the pre-processed version of this page will appear
+                on your screen. Once your page is pre-processed, the first editing
+                step must be done. The page is color coded during pre-processing,
+                and it is necessary to check that everything is correctly labeled.
+                In this example, there is only one correction to be made: there is
+                a bit of black border on the upper left-hand side of the image which
+                should be erased. Double-click on any part of the black border, and
+                it will all turn red.
+                
+                <mediaobject>
+                    <imageobject>
+                        <imagedata fileref="docimgs/rec/PreProcCorrection.png"/>
+                    </imageobject>
+                    <textobject>
+                        <phrase>Correction of the pre-processing</phrase>
+                    </textobject>
+                </mediaobject>
+                
+            </para>
+            <para>
+                To erase the border, right-click (or &lt;ctrl-click&gt;) over the red, and
+                a colour-menu will appear. For border element, choose "Blank", and the border will fade out. 
+                
+                <mediaobject>
+                    <imageobject>
+                        <imagedata fileref="docimgs/rec/PreProcMenu.png"/>
+                    </imageobject>
+                    <textobject>
+                        <phrase>Pre-processing correction menu</phrase>
+                    </textobject>
+                </mediaobject>
+                
+            </para>
+            <para>
+                Once the page has been corrected at this stage, it is ready for transcription.
+                Simply click on the "Run" button
+                for a second time, and wait for the process to complete.
+                If you want to, you can tick the "Close" option. This will ensure that in future you will
+                not have to close the dialogue box yourself every time you transcribe
+                a page. What should appear before you is a screen split into two sections,
+                with your original page showing on the top half, and the newly transcribed
+                page lined up below. In between the two screens is an additional toolbar for editing the music.
+                
+                <mediaobject>
+                    <imageobject>
+                        <imagedata fileref="docimgs/rec/EditScreen.png"/>
+                    </imageobject>
+                    <textobject>
+                        <phrase>The music editing window after recognition</phrase>
+                    </textobject>
+                </mediaobject>
+                
+            </para>
+            <section>
+                <title>The music editor</title>
+                <para>
+                    Before you begin making corrections, it is a good idea to learn how to move around
+                    the page and familiarize yourself with the interface. For now, you will be working
+                    on the bottom screen - the top screen will be for reference only. As you can see,
+                    the first symbol on the bottom screen is red, while the rest are black. The red
+                    symbol indicates where Aruspix is focussed - it is the cursor. Click on any symbol,
+                    and it will become red. You can also use the arrow keys to move around the page.
+                    There can only be one red symbol at a time - you cannot work with multiple symbols.
+                </para>
+                <para>
+                    While you move around the score, you may notice that the music editing bar changes
+                    from time to time. Musical symbols in Aruspix are grouped into categories, and the
+                    entire category of each symbol will appear in the editing bar when one of its
+                    members is highlighted. If you place the cursor on a "Long", and the "Notes"
+                    category shows in the editing bar. Move the cursor to the a "Flat", and the editing
+                    bar will now show the category with miscalleanous symbols. 
+                </para>
+                <para>
+                    Any member of a category of symbols is interchangeable with any other member of
+                    the same category. For example a "Semi-Minim" can be change into a "Minim" or a
+                    "Long". Because notes and clefs are in different categories, you cannot transform
+                    the "Long" into a "Clef". You must delete it and then replace it. To delete a
+                    symbol, select it and then press &lt;delete&gt;. You can use either of the two
+                    delete keys (see reference for more details). 
+                </para>
+                <para>                    
+                    To insert a new symbol, click on "Insert" in the editing bar <footnote>
+                        <para>
+                            <mediaobject>
+                                <imageobject>
+                                    <imagedata fileref="docimgs/rec/InsertButton.png"/>
+                                </imageobject>
+                            </mediaobject>
+                        </para>
+                    </footnote>. The arrow for the mouse should become a pencil. Next, use the pencil to
+                    click on the category button (e.g., "Clefs") and select the symbol to be insterted, for example a canto clef <footnote>
+                        <para>
+                            <mediaobject>
+                                <imageobject>
+                                    <imagedata fileref="docimgs/rec/CantoClef.png"/>
+                                </imageobject>
+                            </mediaobject>
+                        </para>
+                    </footnote>. Double-click on the staff where you want to insert this clef, and it
+                    will appear. To return to the editing mode, select "Edit" from the editing bar <footnote>
+                        <para>
+                            <mediaobject>
+                                <imageobject>
+                                    <imagedata fileref="docimgs/rec/EditButton.png"/>
+                                </imageobject>
+                            </mediaobject>
+                        </para>
+                    </footnote>, and the pencil will be replaced by the arrow. You will need to click
+                    on a symbol to make the cursor reappear. </para>
+                <para>
+                    To insert a "Sharp", select a note and then press &lt;s&gt;. The sharp should appear at the correct
+                    pitch. There is a similar shortcut for inputting flats - press &lt;b&gt;. There is
+                    no shortcut for the natural sign. 
+                </para>
+                <para>         
+                    The final step in editing is adjusting the alignment - making sure
+                    that the symbols on the bottom screen are aligned with those on the
+                    top screen. This cannot be done just by looking, so there is a special
+                    tool in Aruspix for this procedure. Move the cursor to the first clef
+                    at the top of the page, then press &lt;ctrl-b&gt;. This activates the highlight
+                    function, and you will see on the top screen that a row of hand-drawn
+                    blue symbols appears overtop of the original image.               
+                    
+                    <mediaobject>
+                        <imageobject>
+                            <imagedata fileref="docimgs/rec/Highlight.png"/>
+                        </imageobject>
+                        <textobject>
+                            <phrase>Transcription hightlighting</phrase>
+                        </textobject>
+                    </mediaobject>
+                    
+                </para>
+                <para>
+                    The cursor now appears in both screens simultaneously. To move any
+                    of the blue symbols on the top screen, you need to move the corresponding
+                    symbol on the bottom screen. Try to align the blue symbols with their
+                    matching symbols underneath as closely as possible, either by dragging
+                    them with the mouse, or by using the following keyboard commands:
+                    
+                    <itemizedlist>
+                        <listitem><para>move to the right: &lt;ctrl - right arrow&gt;</para></listitem>
+                        <listitem><para>move to the left: &lt;ctrl - left arrow&gt;</para></listitem>
+                        <listitem><para>move up: &lt;ctrl - up arrow&gt;</para></listitem>
+                        <listitem><para>move down: &lt;ctrl down arrow&gt;</para></listitem>
+                    </itemizedlist>
+                    
+                    When the page is aligned, click {}``Save'' to store the corrections.
+                    
+                </para>
+            </section>
+        </section>
+    </chapter>
+</book>

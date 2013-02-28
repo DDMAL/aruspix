@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<style>
+    body { 
+        font-family: Verdana, Arial, Helvetica, sans-serif, StarSymbol; 
+    }
+    h1 { 
+        color: #0066C9; 
+        text-align: left;
+    }
+    h2 { 
+        color: #987C38; 
+        background-color: #FFFFFF
+    }
+    h3 { 
+        color: #987C38; 
+        background-color: #FFFFFF
+    }
+    a:link { 
+        color:#00C000; 
+        text-decoration: none 
+    } 
+    a:visited { 
+        color:#00C000; 
+        text-decoration: none
+    } 
+    a:hover { 
+        text-decoration: underline 
+    }
+    body {
+        margin: 0px;
+        background-image:url('../docimgs/background.png');
+        background-repeat:repeat-x;
+    }
+    hr {
+        visibility: hidden;
+        display: none;
+        border: 0;
+    }
+    div.navheader {
+        height: 130px;
+        background-image:url('../docimgs/header.png');
+        background-repeat: no-repeat;
+    }
+    div.chapter, div.book {
+        margin: 20px;
+    }
+    div.navheader table, div.navfooter table {
+        padding: 10px 20px;
+    }
+    div.navheader table tr th {
+        font-size: 150%;
+    }
+</style>

@@ -1,3 +1,11 @@
+Version 2.1.0
+-------------
+- Bug fix mouse position
+- Bug fix copy / paste
+- Bug fix with single figure proportion
+- Upgrade to 2.1.0
+- Correction of dot offset
+
 Version 2.0.7
 -------------
 - Bug fix in dragging area
