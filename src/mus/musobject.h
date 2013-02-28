@@ -94,6 +94,7 @@ public:
     uuid_t* GetUuid() { return &m_uuid; };
     wxString GetUuidStr();
     void SetUuid( uuid_t uuid );
+    void ResetUuid( );
     
     
     

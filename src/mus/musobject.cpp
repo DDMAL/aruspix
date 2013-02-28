@@ -47,6 +47,11 @@ wxString MusObject::GetUuidStr()
     return wxString( uuidStr );
 }
 
+void MusObject::ResetUuid()
+{
+    uuid_generate( m_uuid );
+}
+
 bool MusObject::FindWithUuid( wxArrayPtrVoid params )
 {
     // param 0: the uuid we are looking for
