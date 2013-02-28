@@ -278,7 +278,7 @@ void MusWindow::InitDC( wxDC *dc )
 	//if ( m_center )
 	//	dc->SetLogicalOrigin( - (margeMorteHor - m_leftMargin), -margeMorteVer );
 	//else
-        dc->SetLogicalOrigin( - (MUS_BORDER_AROUND_PAGE / 2) - m_layout->m_pageLeftMar,  - (MUS_BORDER_AROUND_PAGE / 2) );
+    //dc->SetLogicalOrigin( - (MUS_BORDER_AROUND_PAGE / 2) - m_layout->m_pageLeftMar,  - (MUS_BORDER_AROUND_PAGE / 2) );
         
 	this->DoPrepareDC( *dc );
     
@@ -1522,7 +1522,7 @@ void MusWindow::MensuralEditOnKeyDown(wxKeyEvent &event) {
         MusSymbol dot( SYMBOL_DOT );
         dot.m_pname = note->m_pname;
         dot.m_oct = note->m_oct;
-        m_currentLayer->Insert( &dot, m_currentElement->m_x_abs + m_layout->m_step1 * 3 );
+        m_currentLayer->Insert( &dot, m_currentElement->m_x_abs + m_layout->m_step1 * 2 );
         CheckPoint( UNDO_PART, MUS_UNDO_FILE );
         OnEndEdition();
     }
