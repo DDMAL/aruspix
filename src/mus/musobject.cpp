@@ -231,17 +231,6 @@ MusDocObject::~MusDocObject()
 {
 }
 
-/*
-void MusDocObject::SetDoc( ArrayPtrVoid params )
-{
-    // param 0: MusDoc
-    wxASSERT( dynamic_cast<MusDoc*>((MusDoc*)params[0]) ); 
-    m_doc = (MusDoc*)params[0];  
-}
-*/ // ax2.3
-
-
-
 void MusDocObject::Refresh() 
 {
     // if we have a parent MusDocObject, propagate it

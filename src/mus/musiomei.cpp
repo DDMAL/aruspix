@@ -225,6 +225,10 @@ bool MusMeiOutput::WriteLayerElement( MusLayerElement *element )
         wxASSERT( m_beam );
         currentParent = m_beam;
     }
+    else if ( dynamic_cast<MusTuplet*>(element->m_parent) ) {
+        wxASSERT( m_tuplet );
+        currentParent = m_tuplet;
+    }
     // we should do the same for any MusLayerElement container (slur, tuplet, etc. )
     
     TiXmlElement *xmlElement = NULL;
@@ -601,6 +605,7 @@ MusMeiInput::MusMeiInput( MusDoc *doc, wxString filename ) :
     m_layerApp = NULL;
     m_layerRdg = NULL;
     m_beam = NULL;
+    m_tuplet = NULL;
     //
     m_currentLayer = NULL; 
 }
@@ -988,48 +993,34 @@ MusLayerElement *MusMeiInput::ReadMeiRest( TiXmlElement *rest )
 
 MusLayerElement *MusMeiInput::ReadMeiTuplet( TiXmlElement *tuplet )
 {
-    /*
-    wxASSERT ( !m_beam );
+    wxASSERT ( !m_tuplet );
     
-    m_beam = new MusBeam();
-    SetMeiUuid( beam, m_beam );
-    ReadMeiLayerElement( beam, m_beam );
+    // m_tuplet will be used for adding elements to the beam
+    m_tuplet = new MusTuplet();
     
     MusObject *previousLayer = m_currentLayer;
-    m_currentLayer = m_beam;
+    m_currentLayer = m_tuplet;
     
     TiXmlElement *current = NULL;
-    for( current = beam->FirstChildElement( ); current; current = current->NextSiblingElement( ) ) {
-        if ( wxString( current->Value() ) == "note" ) {
-            if (!ReadMeiNote( current )) {
-                return false;
-            }
-        }
-        else if ( wxString( current->Value() ) == "rest" ) {
-            if (!ReadMeiRest( current )) {
-                return false;
-            }
-        }
-        // unkown            
-        else {
-            wxLogDebug("LayerElement %s ignored", current->Value() );
-        }
+    for( current = tuplet->FirstChildElement( ); current; current = current->NextSiblingElement( ) ) {
+        ReadMeiLayerElement( current );
     }
     
-    if ( m_beam->GetNoteCount() == 1 ) {
-        wxLogWarning("Beam element with only one note");
+    if ( m_tuplet->GetNoteCount() == 1 ) {
+        wxLogWarning("Tuplet element with only one note");
     }
     // switch back to the previous one
     m_currentLayer = previousLayer;
-    if ( m_beam->GetNoteCount() < 1 ) {
-        delete m_beam;
-    } 
-    else {
-        AddLayerElement( m_beam );
+    if ( m_tuplet->GetNoteCount() < 1 ) {
+        delete m_tuplet;
+        return NULL;
     }
-    m_beam = NULL;
-    */
-    return NULL;
+    else {
+        // set the member to NULL but keep a pointer to be returned
+        MusTuplet *musTuplet = m_tuplet;
+        m_tuplet = NULL;
+        return musTuplet;
+    }
 }
 
 
@@ -1154,6 +1145,9 @@ void MusMeiInput::AddLayerElement( MusLayerElement *element )
     }
     else if ( dynamic_cast<MusBeam*>( m_currentLayer ) ) {
         ((MusBeam*)m_currentLayer)->AddElement( element );
+    }
+    else if ( dynamic_cast<MusTuplet*>( m_currentLayer ) ) {
+        ((MusTuplet*)m_currentLayer)->AddElement( element );
     }
     
 }
