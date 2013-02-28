@@ -1157,7 +1157,7 @@ void MusRC::DrawMensur( MusDC *dc, MusLaidOutLayerElement *element, MusLaidOutLa
 	}
 
 
-	if (mensur->m_num && mensur->m_numBase)
+	if (mensur->m_num)
 	{	
         x = element->m_x_abs;
 		if (mensur->m_sign || mensur->m_meterSymb) 
@@ -1295,9 +1295,8 @@ void MusRC::DrawMensurFigures( MusDC *dc, int x, int y, int num, int numBase, Mu
 
 	if (numBase)
 	{
-	s = wxString::Format("%u",numBase);
+        s = wxString::Format("%u",numBase);
 		putstring ( dc, x, yden, s, 1, staff->staffSize);	// '1' = centrer
-
 	}
 	return;
 }
