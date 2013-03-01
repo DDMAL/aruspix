@@ -397,7 +397,22 @@ void MusMeiOutput::WriteMeiNote( Note *meiNote, MusNote *note )
     if ( note->m_accid ) {
         meiNote->m_Accidental.setAccid( AccidToStr( note->m_accid ));
     }
-    // missing m_artic, m_chord, m_colored, m_lig, m_headShape, m_ligObliqua, m_slur, m_stemDir, m_stemLen
+    if ( note->m_lig ) {
+        if ( note->m_ligObliqua ) {
+            meiNote->m_NoteLogMensural.setLig( "obliqua" );
+        }
+        else {
+            meiNote->m_NoteLogMensural.setLig( "recta" );
+        }
+    }
+    if ( note->m_stemDir ) {
+        // this is not really correct because MusNote::m_stemDir indicates that it is opposite the normal position
+        meiNote->m_Stemmed.setStemDir( "up" );
+    }
+    if ( note->m_colored ) {
+        meiNote->m_Coloration.setColored( "true" );
+    }
+    // missing m_artic, m_chord, m_headShape, m_slur, m_stemLen
     return;
 }
 
@@ -1126,7 +1141,7 @@ bool MusMeiInput::ReadMeiBeam( Beam *beam )
         // - changing the flag of the note
         // - delete the MusBeam
         delete musBeam;
-        wxLogWarning("Beam element with only zero or one note");
+        //wxLogWarning("Beam element with only zero or one note");
     }
     
     return true;
@@ -1196,6 +1211,22 @@ bool MusMeiInput::ReadMeiNote( Note *note )
     if ( note->m_Accidental.hasAccid() ) {
 		musNote->m_accid = StrToAccid( note->m_Accidental.getAccid()->getValue() );
 	}
+    // ligature
+    if ( note->m_NoteLogMensural.hasLig() ) {
+        musNote->m_lig = true; // this has to be double checked
+        if ( note->m_NoteLogMensural.getLig()->getValue() == "obliqua" ) {
+            musNote->m_ligObliqua = true;
+        }
+    }
+    // stem direction
+    if ( note->m_Stemmed.hasStemDir() ) {
+        // we use it to indicate opposite direction
+        musNote->m_stemDir = 1;
+    }
+    // coloration
+    if ( note->m_Coloration.hasColored() ) {
+        musNote->m_colored = ( note->m_Coloration.getColored()->getValue() == "true" );
+    }
 	
 	m_layer->AddLayerElement( musNote );
     return true;
@@ -1495,7 +1526,7 @@ bool MusMeiInput::ReadMeiLaidOutElement( LaidOutElement *laidOutElement )
         uuid_t uuid;
         StrToUuid( laidOutElement->m_Pointing.getTarget()->getValue(), uuid );
         MusFunctor findTargetUuid( &MusObject::FindWithUuid );
-        MusObject *target = m_doc->FindLogicalObject( &findTargetUuid, uuid );
+        MusObject *target = m_doc->FindLogicalObject( &findTargetUuid, uuid );       
         if ( dynamic_cast<MusLayerElement*>(target) ) {
             element =  dynamic_cast<MusLayerElement*>(target);
         }
@@ -1608,7 +1639,7 @@ int MusMeiInput::StrToDur(std::string dur)
     else if (dur == "8") value = DUR_8;
     else if (dur == "16") value = DUR_16;
 	else {
-		wxLogWarning("Unknow duration '%s'", dur.c_str());
+		//wxLogWarning("Unknown duration '%s'", dur.c_str());
         value = DUR_4;
 	}
     return value;
