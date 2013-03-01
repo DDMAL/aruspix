@@ -1,3 +1,7 @@
+Version 2.1.1
+-------------
+- Bug fix in saving notes (coloration and stem direction)
+
 Version 2.1.0
 -------------
 - Bug fix mouse position
