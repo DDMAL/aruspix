@@ -104,7 +104,7 @@ public:
     
     
     /** definition en mm des portees de la page */
-    unsigned char defin;
+    unsigned char defin; // m_pageScale
     /** longueur en mm de l'indentation des portees de la page */
     //int indent; // ax2
     /** longueur en mm de l'indentation droite des portees de la page */

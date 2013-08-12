@@ -68,6 +68,12 @@
                 </textobject>
             </mediaobject>
             
+            <mediaobject>
+                <videoobject>
+                    <videodata fileref=""></videodata>
+                </videoobject>
+            </mediaobject>
+            
         </para>
         <section>
             <title>Single page processing</title>

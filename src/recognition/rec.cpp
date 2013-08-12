@@ -868,6 +868,104 @@ void RecEnv::OnBookOptimize( wxCommandEvent &event )
     m_recBookPtr->Update(); 
 }
 
+/*
+void RecEnv::OnBookOptimize( wxCommandEvent &event )
+{
+    wxLogMessage( _("Temporary method for leave-one-out cross validation") );
+    
+    wxString outputDir = wxDirSelector( "Choose", wxGetApp().m_lastDirBatch_out );
+    if ( outputDir.empty() )
+        return;
+    
+    if ( AxProgressDlg::s_instance_existing )
+        return;
+    
+    if ( !m_recBookFilePtr->IsOpened() )
+        return;
+    
+    wxArrayString paths, filenames;
+    size_t nbOfFiles;
+    
+    // Reset the optimization because cache need to be empty
+    m_recBookFilePtr->ResetAdaptation( false );
+    
+	bool isCacheOk;
+    nbOfFiles = m_recBookFilePtr->FilesForAdaptation( &filenames, &paths, &isCacheOk );
+    // Force cache to be false here
+    isCacheOk = false;
+    if ( nbOfFiles == 0 )
+    {
+        wxLogMessage( _("Nothing to do! The is no active file for optimization") );
+        return;  
+	}
+    
+    AxProgressDlg *dlg = new AxProgressDlg( m_framePtr, -1, _("Optimization for leave-one-out cross validation") );
+    dlg->Center( wxBOTH );
+    dlg->Show();
+	dlg->SetMaxBatchBar( 6 * nbOfFiles );	
+    
+    bool failed = false;
+
+    int i;
+    for ( i = 0; i < nbOfFiles; i++ )
+    {
+        m_recBookFilePtr->ResetAdaptation( false );
+        
+        wxString modelName = filenames[i];
+        filenames.RemoveAt( i );
+        
+        // we do fast adaption here
+        bool fast = true;
+        wxArrayPtrVoid typ_params;	
+        typ_params.Add( &nbOfFiles );
+        typ_params.Add( &paths );
+        typ_params.Add( &filenames );
+        typ_params.Add( &isCacheOk );
+        typ_params.Add( &fast ); // bool, fast or not
+        typ_params.Add( m_typModelPtr );
+        
+        wxArrayPtrVoid mus_params;
+        mus_params.Add( &nbOfFiles );
+        mus_params.Add( &paths );
+        mus_params.Add( &isCacheOk );
+        mus_params.Add( m_musModelPtr );
+        mus_params.Add( m_typModelPtr ); // to get the merged dictionnary
+        
+        failed = false;
+        
+        if ( !failed )
+            failed = !m_recBookFilePtr->TypAdaptation( typ_params, dlg );
+               
+        if ( !failed ) // load optimized model because we use the merged dictionnary for MusAdaptation
+            // not really nice...
+            failed = (!m_typModelPtr->Close() || !m_typModelPtr->Open( m_recBookFilePtr->GetTypFilename() ));
+        
+        if ( !failed )
+            failed = !m_recBookFilePtr->MusAdaptation( mus_params, dlg );
+        
+        wxString typName = modelName;
+        wxString musName = modelName;
+        typName.Replace( ".axz", ".axtyp" );
+        musName.Replace( ".axz", ".axmus" );
+        
+        wxCopyFile( m_recBookFilePtr->GetTypFilename(), outputDir + "/" + typName );
+        wxCopyFile( m_recBookFilePtr->GetMusFilename(), outputDir + "/" + musName );
+        
+        wxLogMessage( modelName );
+        
+        filenames.Insert( modelName, i );
+    }
+    
+	
+    imCounterEnd( dlg->GetCounter() );
+    
+    dlg->AxShowModal( failed ); // stop process
+    dlg->Destroy();
+    
+}
+*/
+
+
 void RecEnv::OnBookRecognize( wxCommandEvent &event )
 {
     if ( AxProgressDlg::s_instance_existing )

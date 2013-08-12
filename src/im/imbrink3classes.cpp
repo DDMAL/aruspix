@@ -141,6 +141,8 @@ int imProcessBrink2ClassesThreshold(const imImage* image, imImage* dest, bool wh
 	return T;
 }
 
+
+
 int imProcessBrink3ClassesThreshold( const imImage* image, imImage* dest, bool white_is_255, int algorithm )
 {	
 	imImage *src = imImageDuplicate( image );
@@ -153,11 +155,25 @@ int imProcessBrink3ClassesThreshold( const imImage* image, imImage* dest, bool w
 	unsigned long imhist[MAX_GREY];
 	double h[MAX_GREY]; 
 	double accum[MAX_GREY];
-	double count_f[MAX_GREY][MAX_GREY], count_b[MAX_GREY][MAX_GREY], count_t[MAX_GREY][MAX_GREY];
+	/*
+    double count_f[MAX_GREY][MAX_GREY], count_b[MAX_GREY][MAX_GREY], count_t[MAX_GREY][MAX_GREY];
 	double mu_f[MAX_GREY][MAX_GREY], mu_b[MAX_GREY][MAX_GREY], mu_t[MAX_GREY][MAX_GREY];
 	double KL_f_base[MAX_GREY][MAX_GREY], KL_b_base[MAX_GREY][MAX_GREY], KL_t_base[MAX_GREY][MAX_GREY];
 	double KL_f[MAX_GREY][MAX_GREY], KL_b[MAX_GREY][MAX_GREY], KL_t[MAX_GREY][MAX_GREY];
-	
+    */
+	double** count_f = alloc2DArray( MAX_GREY, MAX_GREY );
+    double** count_b = alloc2DArray( MAX_GREY, MAX_GREY );
+    double** count_t = alloc2DArray( MAX_GREY, MAX_GREY );
+    double** mu_f = alloc2DArray( MAX_GREY, MAX_GREY );
+    double** mu_b = alloc2DArray( MAX_GREY, MAX_GREY );
+    double** mu_t = alloc2DArray( MAX_GREY, MAX_GREY );
+    double** KL_f_base = alloc2DArray( MAX_GREY, MAX_GREY );
+    double** KL_b_base = alloc2DArray( MAX_GREY, MAX_GREY );
+    double** KL_t_base = alloc2DArray( MAX_GREY, MAX_GREY );
+    double** KL_f = alloc2DArray( MAX_GREY, MAX_GREY );
+    double** KL_b = alloc2DArray( MAX_GREY, MAX_GREY );
+    double** KL_t = alloc2DArray( MAX_GREY, MAX_GREY );
+    
 	/*
 	double mu_f_term[MAX_GREY][MAX_GREY], mu_b_term[MAX_GREY][MAX_GREY], mu_t_term[MAX_GREY][MAX_GREY];
 	The above allocation caused a runtime error (EXC_BAD_ACCESS) error in Xcode. It is now allocated within the Li and Lee if statement below
@@ -312,6 +328,19 @@ int imProcessBrink3ClassesThreshold( const imImage* image, imImage* dest, bool w
 	
 	imProcessThreshold( src, dest, T, TRUE );
 	imProcessBitwiseNot( dest, dest );
+    
+    free2DArray( count_f, MAX_GREY );
+    free2DArray( count_b, MAX_GREY );
+    free2DArray( count_t, MAX_GREY );
+    free2DArray( mu_f, MAX_GREY );
+    free2DArray( mu_b, MAX_GREY );
+    free2DArray( mu_t, MAX_GREY );
+    free2DArray( KL_f_base, MAX_GREY );
+    free2DArray( KL_b_base, MAX_GREY );
+    free2DArray( KL_t_base, MAX_GREY );
+    free2DArray( KL_f, MAX_GREY );
+    free2DArray( KL_b, MAX_GREY );
+    free2DArray( KL_t, MAX_GREY );
 	
 	return T;
 }

@@ -80,13 +80,13 @@ public:
 	ImOperator();
     virtual ~ImOperator();
     
-        int GetError( ) { return m_error; }
+    int GetError( ) { return m_error; }
 	void SetProgressDlg( AxProgressDlg *dlg );
     void SetMapImage( _imImage *image );
     //wxString GetShortName() { return m_shortname; }
     
 protected:
-        void MedianFilter( int values[], int size, int filter_size, int *avg_ptr = NULL);
+    void MedianFilter( int values[], int size, int filter_size, int *avg_ptr = NULL);
     void PruneElementsZone( _imImage *image, int min_threshold, int max_threshold, int type = IM_PRUNE_CLEAR_HEIGHT );
     void MoveElements( _imImage *src, _imImage *dest, int bounding_boxes[],
         int count, int margins[4], int factor = 1 );

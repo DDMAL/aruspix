@@ -1,3 +1,7 @@
+Version 2.1.2
+-------------
+- Bug fix in 3-class binarization
+
 Version 2.1.1
 -------------
 - Bug fix in saving notes (coloration and stem direction)

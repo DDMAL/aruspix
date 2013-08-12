@@ -13,6 +13,7 @@
 		4D1675E70D8B628900F4D912 /* imkmeans.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D1675E60D8B628900F4D912 /* imkmeans.cpp */; };
 		4D1676650D8B765000F4D912 /* supbookfile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D1676610D8B765000F4D912 /* supbookfile.cpp */; };
 		4D1676660D8B765000F4D912 /* supfile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D1676630D8B765000F4D912 /* supfile.cpp */; };
+		4D246C391684AA82008F421B /* musapp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4DB3AE691608C26000D1273C /* musapp.cpp */; };
 		4D25BF5914A3BBB500596392 /* cmp_wdr_inc.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D25BF5814A3BBB500596392 /* cmp_wdr_inc.cpp */; };
 		4D25BF5C14A3BCB600596392 /* sup_wdr_inc.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D25BF5B14A3BCB600596392 /* sup_wdr_inc.cpp */; };
 		4D25BF5E14A3BD0300596392 /* edt_wdr_inc.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D25BF5D14A3BD0300596392 /* edt_wdr_inc.cpp */; };
@@ -947,6 +948,7 @@
 				8FF3AA8E15C81EDE00B9D9B0 /* mustuplet.cpp in Sources */,
 				8FD2847D15D4F14F0038D07D /* musiomusxml.cpp in Sources */,
 				8FAB8B1115E3A54F0061532C /* musrc_tuplet.cpp in Sources */,
+				4D246C391684AA82008F421B /* musapp.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1158,12 +1160,13 @@
 				);
 				OTHER_LDFLAGS = (
 					"-lwx_base_carbon-$(ARUSPIX_WX_VERSION)",
-					"-lmei",
 					"-framework",
 					carbon,
 					"-liconv",
 					"-lwx_base_carbon_net-$(ARUSPIX_WX_VERSION)",
 					"-lxml2",
+					"-force_load",
+					"$(ARUSPIX_MEI)/libmei.a",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx10.6;

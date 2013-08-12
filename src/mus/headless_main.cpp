@@ -212,7 +212,7 @@ int main(int argc, char** argv) {
         MusRC rc;
         rc.SetLayout(layout);
         // no left margin
-        layout->m_leftMargin = 0; // good done here?
+        //layout->m_leftMargin = 0; // good done here?
         
         // Create the SVG object, h & w come from the system
         // we add border*2 so it is centered into the image
