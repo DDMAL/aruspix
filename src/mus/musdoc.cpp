@@ -115,18 +115,16 @@ void MusDoc::SpaceMusic() {
     wxArrayPtrVoid params;
     int shift = 0;
     params.Add( &shift );
-    /*
-    MusLayerElementFunctor updateXPosition( &MusLayerElement::UpdateXPosition );
+    
+    MusFunctor updateXPosition( &MusLayerElement::UpdateLayerElementXPos );
     this->Process( &updateXPosition, params );
-    */ // ax2.3
     
     params.Clear();
     shift = m_pageHeight;
     params.Add( &shift );
-    /*
-    MusStaffFunctor updateYPosition( &MusStaff::UpdateYPosition );
+    
+    MusFunctor updateYPosition( &MusStaff::UpdateStaffYPos );
     this->Process( &updateYPosition, params );
-    */// ax2.3
     
     rc.DrawPage(  &bb_dc, (MusPage*)&m_children[0] , false );
     
@@ -134,10 +132,9 @@ void MusDoc::SpaceMusic() {
     ((MusPage*)&m_children[0])->m_pageWidth = 0; // first resest the page to 0
     ((MusPage*)&m_children[0])->m_pageHeight = m_pageHeight;
     params.Clear();
-    /*
-    MusSystemFunctor trimSystem(&MusSystem::Trim);
+    
+    MusFunctor trimSystem(&MusSystem::TrimSystem);
     this->Process( &trimSystem, params );
-    */ // ax2.3
     
     rc.DrawPage(  &bb_dc, (MusPage*)&m_children[0] , false );
 }

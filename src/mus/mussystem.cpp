@@ -60,19 +60,6 @@ bool MusSystem::Save( wxArrayPtrVoid params )
     return !output->WriteSystem( this );
 }
 
-void MusSystem::Trim( wxArrayPtrVoid params )
-{
-    if ( !m_parent ) {
-        return;
-    }
-    MusPage *page = (MusPage*)m_parent;
-    
-    int system_length = (m_contentBB_x2 - m_contentBB_x1) + page->m_pageRightMar;
-    if ( page->m_pageWidth < system_length ) {
-        page->m_pageWidth = system_length;
-    }
-}
-
 void MusSystem::AddStaff( MusStaff *staff )
 {
 	staff->SetParent( this );

@@ -64,7 +64,6 @@ public:
     
     // functors
     virtual bool Save( wxArrayPtrVoid params );
-    void Trim( wxArrayPtrVoid params );
     //void ProcessStaves( wxArrayPtrVoid params );
     //void ProcessVoices( wxArrayPtrVoid params );
     //void CountVoices( wxArrayPtrVoid params );

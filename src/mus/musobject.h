@@ -58,7 +58,11 @@ public:
     // moulinette
     virtual void Process(MusFunctor *functor, wxArrayPtrVoid params );
     
+    // functor methods
     virtual bool Save( wxArrayPtrVoid params ) { return false; };
+    virtual bool TrimSystem( wxArrayPtrVoid params );
+    virtual bool UpdateLayerElementXPos( wxArrayPtrVoid params );
+    virtual bool UpdateStaffYPos( wxArrayPtrVoid params );
 
 public:
     bool m_active;

@@ -227,6 +227,87 @@ MusEnv::~MusEnv()
 }
 
 
+//----------------------------------------------------------------------------
+// MusObject functor methods
+//----------------------------------------------------------------------------
+
+bool MusObject::TrimSystem( wxArrayPtrVoid params )
+{
+    MusSystem *current = dynamic_cast<MusSystem*>(this);
+    if ( !current  ) {
+        return false;
+    }
+    
+    if ( !m_parent ) {
+        return false;
+    }
+    MusPage *page = (MusPage*)m_parent;
+    
+    int system_length = (current->m_contentBB_x2 - current->m_contentBB_x1) + page->m_pageRightMar;
+    if ( page->m_pageWidth < system_length ) {
+        page->m_pageWidth = system_length;
+    }
+    return false;
+}
+
+bool MusObject::UpdateLayerElementXPos( wxArrayPtrVoid params )
+{
+    // param 0: the MusLayerElement we point to
+	int *current_x_shift = (int*)params[0];
+    
+    MusLayerElement *current = dynamic_cast<MusLayerElement*>(this);
+    if ( !current  ) {
+        return false;
+    }
+    
+    // reset the x position if we are starting a new layer
+    if ( current->m_parent->m_children.Index( *this ) == 0 ) {
+        (*current_x_shift) = 0;
+    }
+    
+    if ( !current->HasUpdatedBB() ) {
+        // this is all we need for empty elements
+        current->m_x_abs = (*current_x_shift);
+        return false;
+    }
+    
+    if ( dynamic_cast<MusBeam*>(current) ) {
+        return false;
+    }
+    
+    if ( dynamic_cast<MusTie*>(current) ) {
+        return false;
+    }
+    
+    if ( dynamic_cast<MusTuplet*>(current) ) {
+        return false;
+    }
+    
+    int negative_offset = current->m_x_abs - current->m_contentBB_x1;
+    current->m_x_abs = (*current_x_shift) + negative_offset;
+    (*current_x_shift) += (current->m_contentBB_x2 - current->m_contentBB_x1) + current->GetHorizontalSpacing();
+    
+    return false;
+}
+
+
+bool MusObject::UpdateStaffYPos( wxArrayPtrVoid params )
+{
+    // param 0: the MusLayerElement we point to
+	int *current_y_shift = (int*)params[0]; 
+    
+    MusStaff *current = dynamic_cast<MusStaff*>(this);
+    if ( !current  ) {
+        return false;
+    }
+    
+    int negative_offset = current->m_y_abs - current->m_contentBB_y2;
+    current->m_y_abs = (*current_y_shift) + negative_offset;
+    (*current_y_shift) -= (current->m_contentBB_y2 - current->m_contentBB_y1);
+    return false;
+}
+
+
 
 
 

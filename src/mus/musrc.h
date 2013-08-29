@@ -14,6 +14,8 @@
 #include "wx/dynarray.h"
 
 #include "musbeam.h"
+#include "mustie.h"
+#include "mustuplet.h"
 #include "musdef.h"
 #include "musdc.h"
 

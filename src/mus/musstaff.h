@@ -56,7 +56,6 @@ public:
     // functors
     virtual bool Save( wxArrayPtrVoid params );
     virtual bool GetPosOnPage( wxArrayPtrVoid params );
-    virtual bool UpdateYPosition( wxArrayPtrVoid params );
     
 	void CopyAttributes( MusStaff *staff ); // copy all attributes but none of the elements
 	//void ClearElements( MusDC *dc , MusElement *start = NULL );

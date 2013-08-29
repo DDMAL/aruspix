@@ -114,7 +114,6 @@ public:
     
     // functors
     void Delete( wxArrayPtrVoid params );
-    void UpdateXPosition( wxArrayPtrVoid params );
     void CheckAndResetLayerElement( wxArrayPtrVoid params );
     /** Find the LaidOutLayerElement pointing to a specific LayerElement */
     void FindLayerElement( wxArrayPtrVoid params );
