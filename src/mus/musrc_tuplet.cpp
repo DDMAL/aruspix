@@ -55,13 +55,13 @@ wxString IntToObliqueFigures(unsigned int number) {
  * or not
  */
 bool AllNotesBeamed(MusTuplet* tuplet, MusLayer *layer) {
-    /*
+    
     MusBeam *currentBeam, *firstBeam = NULL;
     bool succ = false;
     
-    for (unsigned int i = 0; i < tuplet->m_notes.GetCount(); i++) {
-        MusNote *mnote = dynamic_cast<MusNote*>(&tuplet->m_children[i]));
-        MusLayerElement *laidNote = layer->GetFromMusLayerElement(&tuplet->m_notes[i]);
+    for (int i = 0; i < tuplet->GetNoteCount(); i++) {
+        MusNote *mnote = dynamic_cast<MusNote*>(&tuplet->m_children[i]);
+        MusLayerElement *laidNote = dynamic_cast<MusLayerElement*>(&tuplet->m_children[i]);
         
         // First check: if a note is out of a beam
         if (mnote->m_beam[0] == 0)
@@ -86,10 +86,9 @@ bool AllNotesBeamed(MusTuplet* tuplet, MusLayer *layer) {
         
         // So the beam is the same, check that the note
         // is actually into this beam, if not return false
-        if (currentBeam->m_children.Index(tuplet->m_notes[0]) == wxNOT_FOUND)
+        if (currentBeam->m_children.Index(tuplet->m_children[0]) == wxNOT_FOUND)
             return false;
     }
-    */ // ax2.3
     return true;
 }
 
