@@ -89,13 +89,13 @@ public:
 		wxArrayInt *staff_numbers = NULL ); // manage staves throuhg staff_numbers
 											// write all staves if staff_numbers == NULL
 											
-    bool WriteLayer( const MusLaidOutLayer *layer, int offset = -1, int end_point = -1 );
-    bool WriteNote( MusLaidOutLayerElement *element );
-    bool WriteSymbol( MusLaidOutLayerElement *element );
+    bool WriteLayer( const MusLayer *layer, int offset = -1, int end_point = -1 );
+    bool WriteNote( MusLayerElement *element );
+    bool WriteSymbol( MusLayerElement *element );
 	// specific
-	//static MusLaidOutStaff *SplitSymboles( MusLaidOutStaff *staff );
-	static MusLaidOutLayer *GetUt1( MusLaidOutLayer *layer );
-	static void GetUt1( MusLaidOutLayer *layer, MusLaidOutLayerElement *pelement, int *code, int *oct);
+	//static MusStaff *SplitSymboles( MusStaff *staff );
+	static MusLayer *GetUt1( MusLayer *layer );
+	static void GetUt1( MusLayer *layer, MusLayerElement *pelement, int *code, int *oct);
 	void StartLabel( );
 	void EndLabel( int offset = -1, int end_point = -1 );
 	// access
@@ -107,7 +107,7 @@ protected:
 	ArrayOfMLFSymbols m_symbols; // symbol list
 	wxString m_mlf_class_name;
 	wxString m_shortname;
-	MusLaidOutLayer *m_layer; // utilise pour les segments de portee, doit etre accessible dans WriteSymbol
+	MusLayer *m_layer; // utilise pour les segments de portee, doit etre accessible dans WriteSymbol
 	// page, staff index
 	int m_staff_i;
 	bool m_addHeader; // used to know if #MLF# header must be added (first file or not)
@@ -137,8 +137,8 @@ public:
     MusMLFInput( MusDoc *file, wxString filename );
     virtual ~MusMLFInput();
     
-    bool ReadPage( MusPage *page, MusLayer *logLayer, bool firstLineMLF, ImPage *imPage = NULL );
-    bool ReadLabel( MusLaidOutLayer *layer, int offset = 0 );
+    bool ReadPage( MusPage *page, bool firstLineMLF, ImPage *imPage = NULL );
+    bool ReadLabel( MusLayer *layer, int offset = 0 );
 	// specific
     /**
      * Parse a MLF line. Format is "[BEGIN END] LABEL". 
@@ -149,8 +149,8 @@ public:
     static bool ParseLine( wxString line, char *elementType, wxString *elementLine, int *pos );
 	static MusLayerElement *ConvertSymbol( wxString line );
 	static MusLayerElement *ConvertNote( wxString line  );
-	static void GetNotUt1( MusLaidOutLayer *layer );
-	static void GetNotUt1( MusLaidOutLayer *layer, MusLaidOutLayerElement *pelement, int *code, int *oct);
+	static void GetNotUt1( MusLayer *layer );
+	static void GetNotUt1( MusLayer *layer, MusLayerElement *pelement, int *code, int *oct);
 	static void GetPitchWWG( char code, int *code1);
 	bool ReadLine( wxString *line );
 	bool ReadLabelStr( wxString label );

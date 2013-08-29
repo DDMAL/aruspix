@@ -15,7 +15,6 @@
 
 #include "musdoc.h"
 #include "musiopae.h"
-#include "muslayout.h"
 #include "musrc.h"
 #include "mussvgdc.h"
 #include "musbboxdc.h"
@@ -47,17 +46,17 @@ bool m_no_mei_hdr = false;
 const char *cmdlineopts = "ndmpr:o:t:s:hb:";
 
 // Some handy string split functions
-std::vector<std::string> &split(const std::string &s, char delim, std::vector<std::string> &elems) {
-    std::stringstream ss(s);
-    std::string item;
+std::vector<wxString> &split(const wxString &s, char delim, std::vector<wxString> &elems) {
+    wxStringstream ss(s);
+    wxString item;
     while(std::getline(ss, item, delim)) {
         elems.push_back(item);
     }
     return elems;
 }
 
-std::vector<std::string> split(const std::string &s, char delim) {
-    std::vector<std::string> elems;
+std::vector<wxString> split(const wxString &s, char delim) {
+    std::vector<wxString> elems;
     return split(s, delim, elems);
 }
 
@@ -191,7 +190,7 @@ int main(int argc, char** argv) {
     
     // create outfile
     if (m_outfile.length() == 0) {
-        std::vector<std::string> v = split(m_infile, '/');
+        std::vector<wxString> v = split(m_infile, '/');
         m_outfile = v[v.capacity() - 1] + "." + m_outformat; // can be only mei or svg
     }
     
@@ -199,18 +198,17 @@ int main(int argc, char** argv) {
     if (m_outformat == "svg") {
         
         // Create a new visual layout and spave the music
-        MusLayout *layout = new MusLayout( Raw );
-        layout->Realize(doc->m_divs[0].m_score);
-        doc->AddLayout( layout );
-        layout->SpaceMusic();
+        MusDoc *doc = new MusDoc( Raw );
+        doc->Realize( );
+        doc->SpaceMusic();
         
         // Get the current system for the SVG clipping size    
-        MusPage *page = &layout->m_pages[0];
-        MusSystem *system = &page->m_systems[0];
+        MusPage *page = (MusPage*)&doc->m_children[0];
+        MusSystem *system = (MusSystem*)&page->m_children[0];
         
         // creare a new local RC and set the above created layout
         MusRC rc;
-        rc.SetLayout(layout);
+        rc.SetDoc(doc);
         // no left margin
         //layout->m_leftMargin = 0; // good done here?
         
@@ -223,7 +221,7 @@ int main(int argc, char** argv) {
         svg->SetLogicalOrigin(m_boder, m_boder);
         
         // render the page
-        rc.DrawPage(svg, &layout->m_pages[0] , false);
+        rc.DrawPage(svg, &doc->m_pages[0] , false);
         
         delete svg;
     } else {

@@ -15,12 +15,10 @@
 
 class MusDC;
 
-#include "muslayout.h"
+#include "musdoc.h"
 
 class MusSystem;
-class MusLaidOutStaff;
-class MusSystemFunctor;
-class MusStaffFunctor;
+class MusStaff;
 
 enum {
     PAGE_VALUES_VOICES = 0,
@@ -33,18 +31,16 @@ enum {
 //----------------------------------------------------------------------------
 
 /**
- * This class represents a page in a laid-out score (MusLayout).
- * A MusPage is contained in a MusLayout.
+ * This class represents a page in a laid-out score (MusDoc).
+ * A MusPage is contained in a MusDoc.
  * It contains MusSystem objects.
 */
-class MusPage: public MusLayoutObject
+class MusPage: public MusDocObject
 {
 public:
     // constructors and destructors
     MusPage();
     virtual ~MusPage();
-    
-    virtual bool Check( );
     
     virtual wxString MusClassName( ) { return "MusPage"; };	    
     
@@ -60,32 +56,23 @@ public:
 
     void SetValues( int type );
 	
-	int GetSystemCount() const { return (int)m_systems.GetCount(); };
+	int GetSystemCount() const { return (int)m_children.GetCount(); };
     
     int GetPageNo() const;
     
     /**
      * Return the position of the staff on the page, from top to bottom
      */
-    int GetStaffPosOnPage( MusLaidOutStaff *staff );
+    int GetStaffPosOnPage( MusStaff *staff );
 
-    // moulinette
-    virtual void Process(MusFunctor *functor, wxArrayPtrVoid params );
+
     // functors
-    void Save( wxArrayPtrVoid params );
-    void ProcessStaves( wxArrayPtrVoid params );
-    void ProcessVoices( wxArrayPtrVoid params );
-    void CountVoices( wxArrayPtrVoid params );
+    virtual bool Save( wxArrayPtrVoid params );
     
     
 private:
     
 public:
-    /** The MusSystem objects of the page */
-    ArrayOfMusSystems m_systems;  
-    /** The array of system breaks MusSymbols */
-    ArrayOfMusLayerElements m_systemBreaks;
-    
     /** Page width (MEI scoredef@page.width). Saved if != -1 */
     int m_pageWidth;
     /** Page height (MEI scoredef@page.height). Saved if != -1 */
@@ -115,33 +102,5 @@ public:
 private:
     
 };
-
-
-//----------------------------------------------------------------------------
-// MusPageFunctor
-//----------------------------------------------------------------------------
-
-/**
- * This class is a Functor that processes MusPage objects.
- * Needs testing.
-*/
-class MusPageFunctor: public MusFunctor
-{
-private:
-    void (MusPage::*fpt)( wxArrayPtrVoid params );   // pointer to member function
-
-public:
-
-    // constructor - takes pointer to an object and pointer to a member and stores
-    // them in two private variables
-    MusPageFunctor( void(MusPage::*_fpt)( wxArrayPtrVoid ) ) { fpt=_fpt; };
-	virtual ~MusPageFunctor() {};
-
-    // override function "Call"
-    void Call( MusPage *ptr, wxArrayPtrVoid params )
-        { (*ptr.*fpt)( params );};          // execute member function
-};
-
-
 
 #endif

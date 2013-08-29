@@ -14,23 +14,11 @@
 #include "wx/wfstream.h"
 
 class MusDoc;
-// logical
-class MusDiv;
-class MusScore;
-class MusPartSet;
-class MusPart;
-class MusSection;
-class MusMeasure;
+class MusPage;
+class MusSystem;
 class MusStaff;
 class MusLayer;
 class MusLayerElement;
-// layout
-class MusLayout;
-class MusPage;
-class MusSystem;
-class MusLaidOutStaff;
-class MusLaidOutLayer;
-class MusLaidOutLayerElement;
 // app
 class MusLayerApp;
 class MusLayerRdg;
@@ -63,23 +51,11 @@ public:
      */
     ///@{
     virtual bool WriteDoc( MusDoc *doc ) { return true; };
-    // logical
-    virtual bool WriteDiv( MusDiv *div ) { return true; }; 
-    virtual bool WriteScore( MusScore *score ) { return true; }; 
-    virtual bool WritePartSet( MusPartSet *parts ) { return true; };
-    virtual bool WritePart( MusPart *part ) { return true; };
-    virtual bool WriteSection( MusSection *section ) { return true; };
-    virtual bool WriteMeasure( MusMeasure *measure ) { return true; };
+    virtual bool WritePage( MusPage *page ) { return true; };
+    virtual bool WriteSystem( MusSystem *system ) { return true; }; 
     virtual bool WriteStaff( MusStaff *staff ) { return true; };
     virtual bool WriteLayer( MusLayer *layer ) { return true; };
     virtual bool WriteLayerElement( MusLayerElement *element ) { return true; };
-    // layout
-    virtual bool WriteLayout( MusLayout *layout ) { return true; };
-    virtual bool WritePage( MusPage *page ) { return true; };
-    virtual bool WriteSystem( MusSystem *system ) { return true; };
-    virtual bool WriteLaidOutStaff( MusLaidOutStaff *laidOutStaff ) { return true; };
-    virtual bool WriteLaidOutLayer( MusLaidOutLayer *laidOutLayer ) { return true; };
-    virtual bool WriteLaidOutLayerElement( MusLaidOutLayerElement *laidOutLayerElement ) { return true; };  
     // app
     virtual bool WriteLayerApp( MusLayerApp *app ) { return true; };
     virtual bool WriteLayerRdg( MusLayerRdg *rdg ) { return true; };
@@ -90,22 +66,11 @@ public:
      * It is usually not necessary and most of the following methods are not overriden.
      */    
     ///@{ 
-    virtual bool EndDiv( MusDiv *div ) { return true; }; 
-    virtual bool EndScore( MusScore *score ) { return true; }; 
-    virtual bool EndPartSet( MusPartSet *parts ) { return true; };
-    virtual bool EndPart( MusPart *part ) { return true; };
-    virtual bool EndSection( MusSection *section ) { return true; };
-    virtual bool EndMeasure( MusMeasure *measure ) { return true; };
-    virtual bool EndStaff( MusStaff *staff ) { return true; };
-    virtual bool EndLayer( MusLayer *layer ) { return true; };
-    virtual bool EndLayerElement( MusLayerElement *element ) { return true; };
-    // layout
-    virtual bool EndLayout( MusLayout *layout ) { return true; };
     virtual bool EndPage( MusPage *page ) { return true; };
     virtual bool EndSystem( MusSystem *system ) { return true; };
-    virtual bool EndLaidOutStaff( MusLaidOutStaff *laidOutStaff ) { return true; };
-    virtual bool EndLaidOutLayer( MusLaidOutLayer *laidOutLayer ) { return true; };
-    virtual bool EndLaidOutLayerElement( MusLaidOutLayerElement *laidOutLayerElement ) { return true; };  
+    virtual bool EndStaff( MusStaff *staff ) { return true; };
+    virtual bool EndLayer( MusLayer *layer ) { return true; };
+    virtual bool EndLayerElement( MusLayerElement *element ) { return true; }; 
     // app
     virtual bool EndLayerApp( MusLayerApp *app ) { return true; };
     virtual bool EndLayerRdg( MusLayerRdg *rdg ) { return true; };

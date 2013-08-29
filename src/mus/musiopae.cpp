@@ -61,13 +61,6 @@ MusPaeInput::MusPaeInput( MusDoc *doc, wxString filename ) :
 MusFileInputStream( doc, -1 )
 {
     m_filename = filename;
-	
-	m_div = NULL;
-	m_score = NULL;
-	m_parts = NULL;
-	m_part = NULL;
-	m_section = NULL;
-	m_measure = NULL;
 	m_staff = NULL;
 	m_layer = NULL;
     m_current_tie = NULL;
@@ -109,7 +102,7 @@ void MusPaeInput::convertPlainAndEasyToKern(std::istream &infile, std::ostream &
     char incipit[10001] = {0};
     bool in_beam = false;
     
-    string s_key;
+    wxString s_key;
     MeasureObject current_measure;
     NoteObject current_note;
     NoteObject *prev_note;
@@ -119,11 +112,6 @@ void MusPaeInput::convertPlainAndEasyToKern(std::istream &infile, std::ostream &
     //current_key.setAll(0);
     
     vector<MeasureObject> staff;
-    
-    // Aruspux styff
-    m_div = new MusDiv();
-    m_score = new MusScore( );
-    m_section = new MusSection( );
     
     // read values
     while (!infile.eof()) {
@@ -310,10 +298,6 @@ void MusPaeInput::convertPlainAndEasyToKern(std::istream &infile, std::ostream &
         MeasureObject obj = *it;
         printMeasure( out, &obj );
     }
-    
-    m_score->AddSection(m_section);
-    m_div->AddScore(m_score);
-    m_doc->AddDiv(m_div);
 }
 
 
@@ -808,7 +792,7 @@ int MusPaeInput::getWholeRest( const char *incipit, int *wholerest, int index ) 
 // getBarline -- read the barline.
 //
 
-int MusPaeInput::getBarline( const char *incipit, string *output, int index ) {
+int MusPaeInput::getBarline( const char *incipit, wxString *output, int index ) {
     
     regex_t re;
     regcomp(&re, "^://:", REG_EXTENDED);
@@ -1051,29 +1035,28 @@ int MusPaeInput::getNote( const char* incipit, NoteObject *note, MeasureObject *
 void MusPaeInput::printMeasure(std::ostream& out, MeasureObject *measure ) {
     MusBeam *appog_beam = NULL;
     
-    m_measure =  new MusMeasure;
     m_staff = new MusStaff();
-    m_layer = new MusLayer();
+    m_layer = new MusLayer( 1 );
     
     
     if ( measure->clef != NULL ) {
-        m_layer->AddLayerElement(measure->clef);
+        m_layer->AddElement(measure->clef);
     }
     
     if ( measure->key.size() > 0 ) {
         MusKeySig *key = new MusKeySig(measure->key.size(), measure->key_alteration);
-        m_layer->AddLayerElement(key);
+        m_layer->AddElement(key);
     }
     
     if ( measure->time != NULL ) {
-        m_layer->AddLayerElement(measure->time);
+        m_layer->AddElement(measure->time);
     }
     
     if ( measure->wholerest > 0 ) {     
         MusRest *r = new MusRest();
         r->m_dur = VALSilSpec; //
         r->m_multimeasure_dur = measure->wholerest;
-        m_layer->AddLayerElement(r);
+        m_layer->AddElement(r);
     }
     
     for (unsigned int i=0; i<measure->notes.size(); i++) {
@@ -1081,7 +1064,7 @@ void MusPaeInput::printMeasure(std::ostream& out, MeasureObject *measure ) {
         
         // A note can have a chef change before it
         if ( note->clef != NULL ) {
-            m_layer->AddLayerElement(note->clef);
+            m_layer->AddElement(note->clef);
         }
                     
         if (note->rest) {
@@ -1094,7 +1077,7 @@ void MusPaeInput::printMeasure(std::ostream& out, MeasureObject *measure ) {
             if (note->fermata)
                 r->m_fermata = true;
             
-            m_layer->AddLayerElement(r); // create a rest
+            m_layer->AddElement(r); // create a rest
         } else {
             MusNote *n = new MusNote();
             n->m_pname = note->pitch;
@@ -1113,7 +1096,7 @@ void MusPaeInput::printMeasure(std::ostream& out, MeasureObject *measure ) {
                 
                 if (note->appoggiatura_multiple && note->appoggiatura > 1) {
                     appog_beam = new MusBeam;
-                    m_layer->AddLayerElement(appog_beam);
+                    m_layer->AddElement(appog_beam);
                 }
                 
                 // if the beam was not created, this is a single note appoggiatura
@@ -1139,7 +1122,7 @@ void MusPaeInput::printMeasure(std::ostream& out, MeasureObject *measure ) {
                 if (note->beam & BEAM_INITIAL) {
                     m_current_beam = new MusBeam;
                     m_current_beam->AddNote(n);
-                    m_layer->AddLayerElement(m_current_beam);
+                    m_layer->AddElement(m_current_beam);
                 } else if (note->beam & BEAM_MEDIAL) {
                     if (m_current_beam)
                         m_current_beam->AddNote(n);
@@ -1149,7 +1132,7 @@ void MusPaeInput::printMeasure(std::ostream& out, MeasureObject *measure ) {
                 }
             }
                 
-            m_layer->AddLayerElement(n); // create a note
+            m_layer->AddElement(n); // create a note
             
             // FOR THE MOMENT WORKS ONLY WITH TWO NOTES
             // FIXME
@@ -1158,7 +1141,7 @@ void MusPaeInput::printMeasure(std::ostream& out, MeasureObject *measure ) {
             if (note->tie == 1) {
                 MusTie *tie = new MusTie;
                 tie->m_first = n;
-                m_layer->AddLayerElement(tie);
+                m_layer->AddElement(tie);
                 m_current_tie = tie;
             } else if (note->tie == 2) {
                 if (m_current_tie)
@@ -1184,7 +1167,7 @@ void MusPaeInput::printMeasure(std::ostream& out, MeasureObject *measure ) {
                 // insert the tuplet elem
                 // and reset the tuplet counter
                 if (note->tuplet_note == 1) {
-                    m_layer->AddLayerElement(m_current_tuplet);
+                    m_layer->AddElement(m_current_tuplet);
                     m_current_tuplet = NULL;
                 }
             }
@@ -1211,12 +1194,10 @@ void MusPaeInput::printMeasure(std::ostream& out, MeasureObject *measure ) {
         else 
             bline->m_barlineType = BARLINE_DBL;
         
-        m_layer->AddLayerElement(bline);
+        m_layer->AddElement(bline);
     }
     
     m_staff->AddLayer(m_layer);
-    m_measure->AddStaff(m_staff);
-    m_section->AddMeasure(m_measure);
 }
 
 

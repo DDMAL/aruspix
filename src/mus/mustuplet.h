@@ -30,17 +30,13 @@ public:
     
     virtual wxString MusClassName( ) { return "MusTuplet"; };
     
+	int GetNoteCount() const { return (int)m_children.GetCount(); };
+    
     /**
      * Add an element (a note or a rest) to a beam.
      * Only MusNote or MusRest elements will be actually added to the beam.
      */
     void AddNote(MusLayerElement *element);
-    
-    /**
-     * The array of notes or rests.
-     * The beam object do not own the notes.
-     */
-    ArrayOfMusLayerElements m_notes; //
     
 private:
     

@@ -139,7 +139,7 @@ public:
     CmpPartPage(  wxString axfile, CmpBookPart *part );
     ~CmpPartPage() {};
     
-    void SetStartEnd( MusLaidOutLayerElement *laidOutLayerElement, bool isStart );
+    void SetStartEnd( MusLayerElement *laidOutLayerElement, bool isStart );
     void SetStart( wxString uuidStr );
     void SetEnd( wxString uuidStr );
     bool HasStart();

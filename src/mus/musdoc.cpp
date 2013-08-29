@@ -9,14 +9,15 @@
 #include "wx/wxprec.h"
 
 #include "musdoc.h"
-#include "musdiv.h"
 
-#include "muslayout.h"
 #include "muspage.h"
 #include "mussystem.h"
-#include "muslaidoutlayer.h"
-#include "muslaidoutlayerelement.h"
+#include "musstaff.h"
+#include "muslayer.h"
+#include "muslayerelement.h"
 
+#include "musbboxdc.h"
+#include "musrc.h"
 
 #ifndef HEADLESS
 #include "app/axapp.h"
@@ -29,83 +30,306 @@
 // Initialize static respource path
 wxString MusDoc::m_respath = "/usr/local/share/aruspix";
 
-MusDoc::MusDoc()
+MusDoc::MusDoc() :
+    MusObject()
 {
-    Reset();
+    Reset( Raw );
 }
 
 MusDoc::~MusDoc()
 {
-    // We do this because we want the layout to be deleted first.
-    // This avoid all MusLayerElement to be searched in the layouts
-    // when deleted in the logical tree.
-    this->Reset();
+    
 }
 
-void MusDoc::Reset()
+void MusDoc::Reset( DocType type )
+{
+    m_type = type;
+    
+    m_children.Clear();
+
+    ResetPaperSize();
+    
+	m_step1 = 10;
+    m_step3 = 60;
+    m_step2 = 3 * m_step1;
+    m_halfInterl[0] = 10;
+	m_halfInterl[1] = 8;
+    m_interl[0] = 20;
+    m_interl[1] = 16;
+    m_staffSize[0] = 80;
+    m_staffSize[1] = 64;
+    m_octaveSize[0] = 70;
+    m_octaveSize[1] = 56;
+    m_fontHeight = 100;
+    m_smallStaffRatio[0] = 16;
+    m_smallStaffRatio[1] = 20;
+    m_graceRatio[0] = 3;
+    m_graceRatio[1] = 4;
+    m_beamWidth[0] = 10;
+    m_beamWidth[1] = 6;
+    m_beamWhiteWidth[0] = 6;
+    m_beamWhiteWidth[1] = 4;
+	m_barlineSpacing = 16;
+    m_fontSize[0][0] = 160;
+    m_fontSize[0][1] = 120;
+    m_fontSize[1][0] = 128; 
+    m_fontSize[1][1] = 100;
+	m_fontHeightAscent[0][0] = 0;
+	m_fontHeightAscent[0][1] = 0;
+	m_fontHeightAscent[1][0] = 0;
+	m_fontHeightAscent[1][1] = 0;
+    
+    m_charDefin = 20;
+}
+
+void MusDoc::ResetPaperSize()
 {
     m_pageWidth = 2100;
     m_pageHeight = 2970;
     m_pageRightMar = 0;
     m_pageLeftMar = 0;
     m_pageTopMar = 0; 
-    m_layouts.Clear();
-    m_divs.Clear();
 }
 
-void MusDoc::AddDiv( MusDiv *div )
+bool MusDoc::Save( wxArrayPtrVoid params )
+{  
+    // param 0: output stream
+    MusFileOutputStream *output = (MusFileOutputStream*)params[0];       
+    return !output->WriteDoc( this );
+}
+
+void MusDoc::AddPage( MusPage *page )
 {
-	div->SetDoc( this );
-	m_divs.Add( div );
+	page->SetParent( this );
+	m_children.Add( page );
 }
 
+void MusDoc::SpaceMusic() {
+    
+    // Calculate bounding boxes
+    MusRC rc;
+    MusBBoxDC bb_dc( &rc, 0, 0 );
+    rc.SetDoc(this);
+    rc.DrawPage(  &bb_dc, (MusPage*)&m_children[0], false );
+    
+    wxArrayPtrVoid params;
+    int shift = 0;
+    params.Add( &shift );
+    /*
+    MusLayerElementFunctor updateXPosition( &MusLayerElement::UpdateXPosition );
+    this->Process( &updateXPosition, params );
+    */ // ax2.3
+    
+    params.Clear();
+    shift = m_pageHeight;
+    params.Add( &shift );
+    /*
+    MusStaffFunctor updateYPosition( &MusStaff::UpdateYPosition );
+    this->Process( &updateYPosition, params );
+    */// ax2.3
+    
+    rc.DrawPage(  &bb_dc, (MusPage*)&m_children[0] , false );
+    
+    // Trim the page to the needed position
+    ((MusPage*)&m_children[0])->m_pageWidth = 0; // first resest the page to 0
+    ((MusPage*)&m_children[0])->m_pageHeight = m_pageHeight;
+    params.Clear();
+    /*
+    MusSystemFunctor trimSystem(&MusSystem::Trim);
+    this->Process( &trimSystem, params );
+    */ // ax2.3
+    
+    rc.DrawPage(  &bb_dc, (MusPage*)&m_children[0] , false );
+}
 
-void MusDoc::AddLayout( MusLayout *layout )
+void MusDoc::PaperSize( MusPage *page )
 {
-	layout->SetDoc( this );
-	m_layouts.Add( layout );
+    // we use the page members only if set (!= -1) 
+    if ( page  && ( page->m_pageHeight != -1 ) ) {
+        m_pageHeight = page->m_pageHeight;
+        m_pageWidth = page->m_pageWidth;
+        m_pageLeftMar = page->m_pageLeftMar;
+        m_pageRightMar = page->m_pageRightMar;
+	}
+	else
+	{	
+        ResetPaperSize();
+        if (this->m_env.m_landscape)
+        {	
+            int pageHeight = m_pageWidth;
+            m_pageWidth = m_pageHeight;
+            m_pageHeight = pageHeight;
+            int pageRightMar = m_pageLeftMar;
+            m_pageLeftMar = this->m_pageRightMar;
+            m_pageRightMar = pageRightMar;
+        }
+    }
+    
+    
+	m_beamMaxSlope = this->m_env.m_beamMaxSlope;
+	m_beamMinSlope = this->m_env.m_beamMinSlope;
+	m_beamMaxSlope /= 100;
+	m_beamMinSlope /= 100;
+    
+	return;
 }
+
+
+int MusDoc::GetSystemRightX( MusSystem *system )
+{
+    return m_pageWidth - m_pageLeftMar - m_pageRightMar - system->m_systemRightMar;
+}
+
+int MusDoc::CalcMusicFontSize( )
+{
+    // we just have the Leipzig font for now
+    return round((double)m_charDefin * LEIPZIG_UNITS_PER_EM / LEIPZIG_WHOLE_NOTE_HEAD_HEIGHT);
+}
+
+int MusDoc::CalcNeumesFontSize( )
+{
+    return 100;
+}
+
+void MusDoc::UpdateFontValues() 
+{	
+	if ( !m_ftLeipzig.FromString( MusDoc::GetMusicFontDescStr() ) )
+        wxLogWarning(_("Impossible to load font 'Leipzig'") );
+	
+	if ( !m_ftFestaDiesA.FromString( MusDoc::GetNeumeFontDescStr() ) )
+		wxLogWarning(_("Impossible to load font 'Festa Dies'") );
+	
+	//wxLogMessage(_("Size %d, Family %d, Style %d, Weight %d, Underline %d, Face %s, Desc %s"),
+	//	m_ftLeipzig.GetPointSize(),
+	//	m_ftLeipzig.GetFamily(),
+	//	m_ftLeipzig.GetStyle(),
+	//	m_ftLeipzig.GetWeight(),
+	//	m_ftLeipzig.GetUnderlined(),
+	//	m_ftLeipzig.GetFaceName().c_str(),
+	//	m_ftLeipzig.GetNativeFontInfoDesc().c_str());
+    
+	m_activeFonts[0][0] = m_ftLeipzig;
+    m_activeFonts[0][1] = m_ftLeipzig;
+    m_activeFonts[1][0] = m_ftLeipzig;
+    m_activeFonts[1][1] = m_ftLeipzig;
+	
+	m_activeChantFonts[0][0] = m_ftFestaDiesA;
+    m_activeChantFonts[0][1] = m_ftFestaDiesA;
+    m_activeChantFonts[1][0] = m_ftFestaDiesA;
+    m_activeChantFonts[1][1] = m_ftFestaDiesA;
+	
+	// Lyrics
+	if ( !m_ftLyrics.FromString( MusDoc::GetLyricFontDescStr() ) )
+		wxLogWarning(_("Impossible to load font for the lyrics") );
+    
+	m_activeLyricFonts[0] = m_ftLyrics;
+    m_activeLyricFonts[1] = m_ftLyrics;
+}
+
+
+
+void MusDoc::UpdatePageValues() 
+{
+    m_smallStaffRatio[0] = this->m_env.m_smallStaffNum;
+    m_smallStaffRatio[1] = this->m_env.m_smallStaffDen;
+    m_graceRatio[0] = this->m_env.m_graceNum;
+    m_graceRatio[1] = this->m_env.m_graceDen;
+    
+    // half of the space between two lines
+    m_halfInterl[0] = m_charDefin/2;
+    // same for small staves
+    m_halfInterl[1] = (m_halfInterl[0] * m_smallStaffRatio[0]) / m_smallStaffRatio[1];
+    // space between two lines
+    m_interl[0] = m_halfInterl[0] * 2;
+    // same for small staves
+    m_interl[1] = m_halfInterl[1] * 2;
+    // staff (with five lines)
+    m_staffSize[0] = m_interl[0] * 4;
+    m_staffSize[1] = m_interl[1] * 4;
+    // 
+    m_octaveSize[0] = m_halfInterl[0] * 7;
+    m_octaveSize[1] = m_halfInterl[1] * 7;
+    
+    m_step1 = m_halfInterl[0];
+    m_step2 = m_step1 * 3;
+    m_step3 = m_step1 * 6;
+    
+    // values for beams
+    m_beamWidth[0] = this->m_env.m_beamWidth;
+    m_beamWhiteWidth[0] = this->m_env.m_beamWhiteWidth;
+    m_barlineSpacing = m_beamWidth[0] + m_beamWhiteWidth[0];
+    m_beamWidth[1] = (m_beamWidth[0] * m_smallStaffRatio[0]) / m_smallStaffRatio[1];
+    m_beamWhiteWidth[1] = (m_beamWhiteWidth[0] * m_smallStaffRatio[0]) / m_smallStaffRatio[1];
+    
+    m_fontHeight = CalcMusicFontSize();
+    m_fontHeightAscent[0][0] = floor(LEIPZIG_ASCENT * (double)m_fontHeight / LEIPZIG_UNITS_PER_EM);
+	m_fontHeightAscent[0][0] +=  MusDoc::GetFontPosCorrection();
+	m_fontHeightAscent[0][1] = (m_fontHeightAscent[0][0] * m_graceRatio[0]) / m_graceRatio[1];
+    m_fontHeightAscent[1][0] = (m_fontHeightAscent[0][0] * m_smallStaffRatio[0]) / m_smallStaffRatio[1];
+	m_fontHeightAscent[1][1] = (m_fontHeightAscent[1][0] * m_graceRatio[0]) / m_graceRatio[1];    
+    
+    m_fontSize[0][0] = m_fontHeight;
+    m_fontSize[0][1] = (m_fontSize[0][0] * m_graceRatio[0]) / m_graceRatio[1];
+    m_fontSize[1][0] = (m_fontSize[0][0] * m_smallStaffRatio[0]) / m_smallStaffRatio[1];
+    m_fontSize[1][1]= (m_fontSize[1][0] * m_graceRatio[0])/ m_graceRatio[1];
+    
+	m_activeFonts[0][0].SetPointSize( m_fontSize[0][0] ); //160
+    m_activeFonts[0][1].SetPointSize( m_fontSize[0][1] ); //120
+    m_activeFonts[1][0].SetPointSize( m_fontSize[1][0] ); //128
+    m_activeFonts[1][1].SetPointSize( m_fontSize[1][1] ); //100
+    
+	//experimental font size for now
+	//they can all be the same size, seeing as the 'grace notes' are built in the font
+	
+	m_activeChantFonts[0][0].SetPointSize( 110 ); // change this following the Leipzig method
+    m_activeChantFonts[0][1].SetPointSize( 110 );
+    m_activeChantFonts[1][0].SetPointSize( 110 );
+    m_activeChantFonts[1][1].SetPointSize( 110 );
+	
+	m_activeLyricFonts[0].SetPointSize( m_ftLyrics.GetPointSize() );
+    m_activeLyricFonts[1].SetPointSize( m_ftLyrics.GetPointSize() );
+    
+    m_verticalUnit1[0] = (float)m_interl[0]/4;
+    m_verticalUnit2[0] = (float)m_interl[0]/8;
+    m_verticalUnit1[1] = (float)m_interl[1]/4;
+    m_verticalUnit2[1] = (float)m_interl[1]/8;
+    
+    int glyph_size;
+    glyph_size = round(LEIPZIG_HALF_NOTE_HEAD_WIDTH * (double)m_fontHeight / LEIPZIG_UNITS_PER_EM);
+    m_noteRadius[0][0] = glyph_size / 2;
+    m_noteRadius[0][1] = (m_noteRadius[0][0] * m_graceRatio[0])/m_graceRatio[1];
+    m_noteRadius[1][0] = (m_noteRadius[0][0] * m_smallStaffRatio[0])/m_smallStaffRatio[1];
+    m_noteRadius[1][1] = (m_noteRadius[1][0] * m_graceRatio[0])/m_graceRatio[1];
+    
+    m_ledgerLine[0][0] = (int)(glyph_size * .72);
+    m_ledgerLine[0][1] = (m_ledgerLine[0][0] * m_graceRatio[0])/m_graceRatio[1];
+    m_ledgerLine[1][0] = (m_ledgerLine[0][0] * m_smallStaffRatio[0])/m_smallStaffRatio[1];
+    m_ledgerLine[1][1] = (m_ledgerLine[1][0] * m_graceRatio[0])/m_graceRatio[1];
+    
+    glyph_size = round(LEIPZIG_WHOLE_NOTE_HEAD_WIDTH * (double)m_fontHeight / LEIPZIG_UNITS_PER_EM);
+    m_ledgerLine[0][2] = (int)(glyph_size * .66);
+    m_ledgerLine[1][2] = (m_ledgerLine[0][2] * m_smallStaffRatio[0]) /m_smallStaffRatio[1];
+    
+    m_brevisWidth[0] = (int)((glyph_size * 0.8) / 2);
+    m_brevisWidth[1] = (m_brevisWidth[0] * m_smallStaffRatio[0]) /m_smallStaffRatio[1];
+    
+    glyph_size = round(LEIPZIG_SHARP_WIDTH * (double)m_fontHeight / LEIPZIG_UNITS_PER_EM);
+    m_accidWidth[0][0] = glyph_size;
+    m_accidWidth[0][1] = (m_accidWidth[0][0] * m_graceRatio[0])/m_graceRatio[1];
+    m_accidWidth[1][0] = (m_accidWidth[0][0] * m_smallStaffRatio[0]) /m_smallStaffRatio[1];
+    m_accidWidth[1][1] = (m_accidWidth[1][0] * m_graceRatio[0])/m_graceRatio[1];
+}
+
 
 bool MusDoc::Save( MusFileOutputStream *output )
 {
-    output->WriteDoc( this );
-    
     wxArrayPtrVoid params;
 	params.Add( output );
-    
-    // logical
-    MusDivFunctor div( &MusDiv::Save );
-    this->ProcessLogical( &div, params );
-    
-    // layout
-    MusLayoutFunctor layout( &MusLayout::Save );
-    this->ProcessLayout( &layout, params );    
+
+    MusFunctor save( &MusObject::Save );
+    this->Process( &save, params );
     
     return true;
-}
-
-void MusDoc::Check()
-{
-    wxArrayPtrVoid params;
-    MusFunctor checkObjects( &MusObject::CheckFunctor );
-    this->ProcessLogical( &checkObjects, params );
-    this->ProcessLayout( &checkObjects, params );
-}
-
-
-void MusDoc::ResetAndCheckLayouts()
-{
-    wxArrayPtrVoid params;
-    params.Add( this );
-    MusLaidOutLayerElementFunctor checkLaidOutLayerElements( &MusLaidOutLayerElement::CheckAndResetLayerElement );
-    // because we are going to delete MusLaidOutLayerElements, we need to process it from the end
-    checkLaidOutLayerElements.m_reverse = true;
-    this->ProcessLayout( &checkLaidOutLayerElements, params );
-    
-    MusLaidOutLayerFunctor checkLaidOutLayers( &MusLaidOutLayer::CheckAndResetSectionOrMeasure );
-    // because we are going to delete MusLaidOutLayers, we need to process it from the end
-    checkLaidOutLayers.m_reverse = true;
-    this->ProcessLayout( &checkLaidOutLayers, params );
 }
 
 void MusDoc::GetNumberOfVoices( int *min_voice, int *max_voice )
@@ -117,19 +341,19 @@ void MusDoc::GetNumberOfVoices( int *min_voice, int *max_voice )
 
 	params.Add( min_voice );
     params.Add( max_voice );
-    MusPageFunctor countVoices( &MusPage::CountVoices );
+    //MusPageFunctor countVoices( &MusPage::CountVoices ); // ax2.3
     //this->Process( &countVoices, params ); // ax2
 }
         
     
-MusLaidOutStaff *MusDoc::GetVoice( int i )
+MusStaff *MusDoc::GetVoice( int i )
 {
     /*
 	wxArrayPtrVoid params; // tableau de pointeurs pour parametres
     
-    MusLaidOutLayerFunctor copyElements( &MusLaidOutLayer::CopyElements );
+    MusLayerFunctor copyElements( &MusLayer::CopyElements );
     wxArrayPtrVoid staffParams; // idem for staff functor
-    MusLaidOutStaff *staff = new MusLaidOutStaff();
+    MusStaff *staff = new MusStaff();
     staffParams.Add( staff );
     
     params.Add(&copyElements);
@@ -143,75 +367,6 @@ MusLaidOutStaff *MusDoc::GetVoice( int i )
     return NULL;
 }
 
-MusObject *MusDoc::FindLogicalObject( MusFunctor *functor, uuid_t uuid )
-{
-    if ( uuid_is_null( uuid ) ) {
-        return NULL;
-    }
-    
-    MusObject *element = NULL;
-    wxArrayPtrVoid params;
-	params.Add( uuid );
-    params.Add( &element );
-    this->ProcessLogical( functor, params );
-    
-    if (!element) {
-        // RZ uuid_string_t does not exist on freebsd   
-        //but typedef       char    __darwin_uuid_string_t[37];
-        //and typedef __darwin_uuid_string_t        uuid_string_t;
-        char uuidStr[37]; // bad fix
-        uuid_unparse( uuid, uuidStr ); 
-        //wxLogDebug( "%s not found in the logical tree", uuidStr );
-    }
-    return element;
-    
-}
-
-// functors for MusLayout
-
-void MusDoc::ProcessLayout(MusFunctor *functor, wxArrayPtrVoid params )
-{
-    if (functor->m_success) {
-        return;
-    }
-    
-    MusLayoutFunctor *layoutFunctor = dynamic_cast<MusLayoutFunctor*>(functor);
-    MusLayout *layout;
-	int i;
-    for (i = 0; i < (int)m_layouts.GetCount(); i++) 
-	{
-        layout = &m_layouts[i];
-        functor->Call( layout, params );
-        if (layoutFunctor) { // is is a MusSystemFunctor, call it
-            layoutFunctor->Call( layout, params );
-        }
-        else { // process it further
-            layout->Process( functor, params );
-        }
-	}
-}
-
-void MusDoc::ProcessLogical(MusFunctor *functor, wxArrayPtrVoid params )
-{
-    if (functor->m_success) {
-        return;
-    }
-    
-    MusDivFunctor *divFunctor = dynamic_cast<MusDivFunctor*>(functor);
-    MusDiv *div;
-	int i;
-    for (i = 0; i < (int)m_divs.GetCount(); i++) 
-	{
-        div = &m_divs[i];
-        functor->Call( div, params );
-        if (divFunctor) { // is is a MusSystemFunctor, call it
-            divFunctor->Call( div, params );
-        }
-        else { // process it further
-            div->Process( functor, params );
-        }
-	}
-}
 
 wxString MusDoc::GetAxVersion() {
 #ifdef HEADLESS

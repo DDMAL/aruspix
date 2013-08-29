@@ -14,9 +14,10 @@ using std::max;
 
 #include "musbeam.h"
 #include "musrc.h"
-#include "muslayout.h"
 #include "musnote.h"
-#include "muslaidoutlayerelement.h"
+#include "muslayerelement.h"
+#include "muslayer.h"
+#include "musstaff.h"
 
 #include <math.h>
 
@@ -51,7 +52,7 @@ static struct coord {  float a;
 			float b;
 			unsigned vlr: 8;	/* valeur */
 			unsigned prov: 8;	/* ON si portee sup. */
-			struct MusLaidOutLayerElement *chk;
+			struct MusLayerElement *chk;
 	     } 	crd[NbREL]; /* garde les coord.d'entree*/
 
 
@@ -74,9 +75,9 @@ char extern_queue = 0;
 
 /* This need to be put into a beam class */
 
-void MusRC::DrawBeam(  MusDC *dc, MusLaidOutLayer *layer, MusBeam *beam, MusLaidOutStaff *staff )
+void MusRC::DrawBeam(  MusDC *dc, MusLayer *layer, MusBeam *beam, MusStaff *staff )
 {
-    struct MusLaidOutLayerElement *chk;
+    struct MusLayerElement *chk;
 	static struct fb {
 		unsigned _liaison : 1;	/* temoin pour liaison: si ON, il y a
 							   de la liaison dans l'air et beam doit
@@ -126,11 +127,11 @@ void MusRC::DrawBeam(  MusDC *dc, MusLaidOutLayer *layer, MusBeam *beam, MusLaid
 	}
 	
     // Should we assert this at the beginning?
-    if (beam->m_notes.IsEmpty())
+    if (beam->m_children.IsEmpty())
         return;
     
     // chk point to the first Note in the layed out layer
-    chk = layer->GetFromMusLayerElement(&beam->m_notes[0]);
+    chk = (MusLayerElement*)&beam->m_children[0];
     
     //	bch.markchrd = shortest = fb.mq_val = valref = ct = cpte_stop = fb.mrq_port = OFF;
 	bch.markchrd = 0;
@@ -145,7 +146,7 @@ void MusRC::DrawBeam(  MusDC *dc, MusLaidOutLayer *layer, MusBeam *beam, MusLaid
 		/* retablir a la fin si provshp existe */
 
 	low = chk->m_y_drawing + staff->m_y_drawing;	/* initialiser */
-    k = ((MusNote*)chk->m_layerElement)->m_colored ? ((MusNote*)chk->m_layerElement)->m_dur+1 : ((MusNote*)chk->m_layerElement)->m_dur;
+    k = ((MusNote*)chk)->m_colored ? ((MusNote*)chk)->m_dur+1 : ((MusNote*)chk)->m_dur;
     
 	valref = k;		/* m_dur test conservee */
     //	valref = chk->m_dur;		/* m_dur test conservee */
@@ -156,10 +157,10 @@ void MusRC::DrawBeam(  MusDC *dc, MusLaidOutLayer *layer, MusBeam *beam, MusLaid
     } 
     else
     {	
-        dx[0] =  m_layout->m_noteRadius[staff->staffSize][0] - ((m_layout->m_noteRadius[staff->staffSize][0] * m_layout->m_env.m_stemCorrection) / 20);
-        dx[1] =  m_layout->m_noteRadius[staff->staffSize][1] - ((m_layout->m_noteRadius[staff->staffSize][1] * m_layout->m_env.m_stemCorrection) / 20);
-        dx[0] -= (m_layout->m_env.m_stemWidth)/2;
-        dx[1] -= (m_layout->m_env.m_stemWidth)/2;
+        dx[0] =  m_doc->m_noteRadius[staff->staffSize][0] - ((m_doc->m_noteRadius[staff->staffSize][0] * m_doc->m_env.m_stemCorrection) / 20);
+        dx[1] =  m_doc->m_noteRadius[staff->staffSize][1] - ((m_doc->m_noteRadius[staff->staffSize][1] * m_doc->m_env.m_stemCorrection) / 20);
+        dx[0] -= (m_doc->m_env.m_stemWidth)/2;
+        dx[1] -= (m_doc->m_env.m_stemWidth)/2;
     }
 	_yy[0] = staff->m_y_drawing;	
 
@@ -170,24 +171,24 @@ void MusRC::DrawBeam(  MusDC *dc, MusLaidOutLayer *layer, MusBeam *beam, MusLaid
 	}
     ***/
     
-    extern_q_auto = 1; //RZ was ((MusNote*)chk->m_layerElement)->m_stemLen; bit it is always 0!
-    extern_queue =  ((MusNote*)chk->m_layerElement)->m_stemDir;
+    extern_q_auto = 1; //RZ was ((MusNote*)chk)->m_stemLen; bit it is always 0!
+    extern_queue =  ((MusNote*)chk)->m_stemDir;
 
 	do
 	{
-		if (chk->IsNote() || (((MusNote*)chk->m_layerElement)->m_beam[0] & BEAM_INITIAL) || (((MusNote*)chk->m_layerElement)->m_beam[0] & BEAM_TERMINAL))
-			k = ((MusNote*)chk->m_layerElement)->m_colored ? ((MusNote*)chk->m_layerElement)->m_dur+1 : ((MusNote*)chk->m_layerElement)->m_dur;
+		if (chk->IsNote() || (((MusNote*)chk)->m_beam[0] & BEAM_INITIAL) || (((MusNote*)chk)->m_beam[0] & BEAM_TERMINAL))
+			k = ((MusNote*)chk)->m_colored ? ((MusNote*)chk)->m_dur+1 : ((MusNote*)chk)->m_dur;
 
         // if (chk->type == NOTE && /*chk->sil == _NOT &&*/ k > DUR_4)
-		if (chk->IsNote() || (((MusNote*)chk->m_layerElement)->m_beam[0] & BEAM_INITIAL) || (((MusNote*)chk->m_layerElement)->m_beam[0] & BEAM_TERMINAL) && k > DUR_4)
+		if (chk->IsNote() || (((MusNote*)chk)->m_beam[0] & BEAM_INITIAL) || (((MusNote*)chk)->m_beam[0] & BEAM_TERMINAL) && k > DUR_4)
 		{	(crd+ct)->chk = chk;
 			/* garantir uniformite des flags */
 
 			if (!calcBeam)	/* on ne se limite pas au calcul des queues */
 			{	
-                ((MusNote*)chk->m_layerElement)->m_stemLen = extern_q_auto;
-				if (!extern_q_auto)	((MusNote*)chk->m_layerElement)->m_stemDir = extern_queue;
-				if ( !fb._liaison && (((MusNote*)chk->m_layerElement)->m_slur[0] & SLUR_TERMINAL)) {
+                ((MusNote*)chk)->m_stemLen = extern_q_auto;
+				if (!extern_q_auto)	((MusNote*)chk)->m_stemDir = extern_queue;
+				if ( !fb._liaison && (((MusNote*)chk)->m_slur[0] & SLUR_TERMINAL)) {
 					fb._liaison = ON;
                 }
                 /***if (chk->grp==END) {	
@@ -199,9 +200,9 @@ void MusRC::DrawBeam(  MusDC *dc, MusLaidOutLayer *layer, MusBeam *beam, MusLaid
 				fb.mrq_port = chk->_shport;
             }***/
 
-			(crd+ct)->a = chk->m_x_abs + chk->m_layerElement->m_hOffset - m_layout->m_env.m_stemWidth / 2;		/* enregistrement des coord. */
+			(crd+ct)->a = chk->m_x_abs + chk->m_hOffset - m_doc->m_env.m_stemWidth / 2;		/* enregistrement des coord. */
 			(crd+ct)->vlr = k;
-			if (((MusNote*)chk->m_layerElement)->m_breakSec && ct)
+			if (((MusNote*)chk)->m_breakSec && ct)
 			/* enregistr. des ruptures de beaming; des la 2e note;(autrement idiot)*/
 				*(st_rl + (cpte_stop++)) = ct;
 
@@ -217,15 +218,15 @@ void MusRC::DrawBeam(  MusDC *dc, MusLaidOutLayer *layer, MusBeam *beam, MusLaid
             }
 			ct++;
 		}
-		if (((MusNote*)chk->m_layerElement)->m_beam[0] & BEAM_TERMINAL) 
+		if (((MusNote*)chk)->m_beam[0] & BEAM_TERMINAL) 
             break;
         
         // This should mean we have no BEAM TERMINAL
-        if (ct >= (int)beam->m_notes.Count()) {
+        if (ct >= (int)beam->m_children.Count()) {
             return;
         }
         
-        chk = layer->GetFromMusLayerElement(&beam->m_notes[ct]);
+        chk = (MusLayerElement*)&beam->m_children[ct];
         
 		//chk = layer->GetNext(chk);
 		//if (chk == NULL) { 
@@ -236,12 +237,12 @@ void MusRC::DrawBeam(  MusDC *dc, MusLaidOutLayer *layer, MusBeam *beam, MusLaid
 	}	while (ct < NbREL);
 
     // SECURITE : EVITER DE BARRER UN ACCORD ISOLE...
-/*	if (chk->IsNote() && (((MusNote*)chk->m_layerElement)->m_chord & CHORD_TERMINAL)  && (chk->m_x_abs == layer->beamListPremier->m_x_abs))
+/*	if (chk->IsNote() && (((MusNote*)chk)->m_chord & CHORD_TERMINAL)  && (chk->m_x_abs == layer->beamListPremier->m_x_abs))
 	{	chk = layer->beamListPremier;
 		do {	
-                ((MusNote*)chk->m_layerElement)->m_beam[0] = 0;
+                ((MusNote*)chk)->m_beam[0] = 0;
 				chk = layer->GetNext(chk);
-			}	while (chk && chk->IsNote() && !((MusNote*)chk->m_layerElement)->m_chord & CHORD_TERMINAL);
+			}	while (chk && chk->IsNote() && !((MusNote*)chk)->m_chord & CHORD_TERMINAL);
 		layer->beamListPremier = NULL;
 		return;
 	}
@@ -271,7 +272,7 @@ void MusRC::DrawBeam(  MusDC *dc, MusLaidOutLayer *layer, MusBeam *beam, MusLaid
 		{	case 0: crd[i].prov = OFF;
 					(crd+i)->b = crd[i].chk->m_y_drawing+staff->m_y_drawing;
 					break;
-			case 1: if (crd[i].chk->m_layerElement->m_staffShift)
+			case 1: if (crd[i].chk->m_staffShift)
 					{	crd[i].prov = ON;
 						(crd+i)->b = crd[i].chk->m_y_drawing + _yy[0];
 					}
@@ -280,7 +281,7 @@ void MusRC::DrawBeam(  MusDC *dc, MusLaidOutLayer *layer, MusBeam *beam, MusLaid
 						(crd+i)->b = crd[i].chk->m_y_drawing + _yy[1];
 					}
 					break;
-			case 2: if (crd[i].chk->m_layerElement->m_staffShift)
+			case 2: if (crd[i].chk->m_staffShift)
 					{	crd[i].prov = OFF;
 						(crd+i)->b = crd[i].chk->m_y_drawing + _yy[1];
 					}
@@ -313,7 +314,7 @@ void MusRC::DrawBeam(  MusDC *dc, MusLaidOutLayer *layer, MusBeam *beam, MusLaid
 	/* direction queues: auto = moyenne */
 	/* bch.inpt: le flot de donnees a ete envoye par input et non rd_objet */
 	{	
-        milieu = _yy[0] - (m_layout->m_staffSize[staff->staffSize] + m_layout->m_interl[staff->staffSize] * 2);
+        milieu = _yy[0] - (m_doc->m_staffSize[staff->staffSize] + m_doc->m_interl[staff->staffSize] * 2);
 		y_moy /= ct;
 		if ( y_moy <  milieu )
 			fb.dir = ON;
@@ -331,14 +332,14 @@ void MusRC::DrawBeam(  MusDC *dc, MusLaidOutLayer *layer, MusBeam *beam, MusLaid
 	else
 		fb.dir = extern_queue;	// si mrq_port, dir tjrs egal a m_stemDir
 
-    if (crd[_ct].chk->m_layerElement->m_cueSize == false)
+    if (crd[_ct].chk->m_cueSize == false)
     {
-        deltanbbar = m_layout->m_beamWidth[staff->staffSize];
-        deltablanc = m_layout->m_beamWhiteWidth[staff->staffSize];
+        deltanbbar = m_doc->m_beamWidth[staff->staffSize];
+        deltablanc = m_doc->m_beamWhiteWidth[staff->staffSize];
     }
     else
-    {	deltanbbar = max (2, (m_layout->m_beamWidth[staff->staffSize]/2));
-        deltablanc = max (2, (m_layout->m_beamWhiteWidth[staff->staffSize]-1));
+    {	deltanbbar = max (2, (m_doc->m_beamWidth[staff->staffSize]/2));
+        deltablanc = max (2, (m_doc->m_beamWhiteWidth[staff->staffSize]-1));
     }
 	deltabar = deltanbbar + deltablanc;
 
@@ -367,7 +368,7 @@ void MusRC::DrawBeam(  MusDC *dc, MusLaidOutLayer *layer, MusBeam *beam, MusLaid
     /***
 	if (fb.mrq_port && extern_q_auto)
 	// deux portees concernees (partage), en mode automatique 
-	{	ecart = e_t->m_layout->m_interl[staff->staffSize]*6;
+	{	ecart = e_t->m_doc->m_interl[staff->staffSize]*6;
 		for (i=0; i<ct; i++)
 		{	if ((crd+i)->prov)
 			{	(crd+i)->a -= dx[crd[i].chk->dimin];
@@ -391,11 +392,11 @@ void MusRC::DrawBeam(  MusDC *dc, MusLaidOutLayer *layer, MusBeam *beam, MusLaid
 	{	
         ecart = ((shortest-DUR_8)*(deltabar));
 
-		if (crd[_ct].chk->m_layerElement->m_cueSize)
-			ecart += m_layout->m_halfInterl[staff->staffSize]*5;
+		if (crd[_ct].chk->m_cueSize)
+			ecart += m_doc->m_halfInterl[staff->staffSize]*5;
 		else
         //   Le 24 Septembre 1993: obtenir des DUR_8 reliees a la hauteur des separees 
-			ecart += (shortest > DUR_8) ? m_layout->m_interl[staff->staffSize]*hauteurBarreMoyenne : m_layout->m_interl[staff->staffSize]*(hauteurBarreMoyenne+0.5);
+			ecart += (shortest > DUR_8) ? m_doc->m_interl[staff->staffSize]*hauteurBarreMoyenne : m_doc->m_interl[staff->staffSize]*(hauteurBarreMoyenne+0.5);
 
 		if (!fb.dir && !staff->notAnc)
 		{	dx[0] = - dx[0];
@@ -403,7 +404,7 @@ void MusRC::DrawBeam(  MusDC *dc, MusLaidOutLayer *layer, MusBeam *beam, MusLaid
 		}
         /***
         if (crd[_ct].chk->existDebord) {
-        ecart = m_layout->m_interl[0]*2;
+        ecart = m_doc->m_interl[0]*2;
             if (!fb.mrq_port) extern_q_auto= 0;
         }
         ***/
@@ -416,14 +417,14 @@ void MusRC::DrawBeam(  MusDC *dc, MusLaidOutLayer *layer, MusBeam *beam, MusLaid
 
 		for (i=0; i<ct; i++)
 		{	*(_ybeam+i) = crd[i].b + ecart;
-			(crd+i)->a +=  dx[crd[i].chk->m_layerElement->m_cueSize];
+			(crd+i)->a +=  dx[crd[i].chk->m_cueSize];
 			s_y += _ybeam[i];
  			s_y2 += _ybeam[i] * _ybeam[i];
 			s_x += crd[i].a;
 			s_x2 += crd[i].a * crd[i].a;
 			s_xy += crd[i].a * _ybeam[i];
             if ( crd[i].chk->IsNote() ) {
-                ((MusNote*)crd[i].chk->m_layerElement)->m_stemDir = fb.dir;
+                ((MusNote*)crd[i].chk)->m_stemDir = fb.dir;
             }
 		}
 
@@ -437,8 +438,8 @@ void MusRC::DrawBeam(  MusDC *dc, MusLaidOutLayer *layer, MusBeam *beam, MusLaid
 	else
 		dB = 0.0;
 	/* Correction esthetique : */
-	if (fabs(dB) < m_layout->m_beamMinSlope ) dB = 0.0;
-	if (fabs(dB) > m_layout->m_beamMaxSlope ) dB = (dB>0) ? m_layout->m_beamMaxSlope : - m_layout->m_beamMaxSlope;
+	if (fabs(dB) < m_doc->m_beamMinSlope ) dB = 0.0;
+	if (fabs(dB) > m_doc->m_beamMaxSlope ) dB = (dB>0) ? m_doc->m_beamMaxSlope : - m_doc->m_beamMaxSlope;
 	/* pente correcte: entre 0 et env 0.4 (0.2 a 0.4) */
 
 if (fPente)
@@ -508,25 +509,25 @@ if (fPente)
 		if (fb.fl_cond)	/* esth: eviter que queues depassent barres */
 		{	if (crd[i].prov)	/* venant du haut, m_stemDir en bas */
 			{	/***fy1 = *(_ybeam+i)+v_pnt;***/	/* on raccourcit m_stemDir */
-				fy2 = crd[i].b-m_layout->m_verticalUnit2[staff->staffSize];
+				fy2 = crd[i].b-m_doc->m_verticalUnit2[staff->staffSize];
 			}
 			else
 			{	/***fy1 = *(_ybeam+i)-e_t->v_pnt;***/	/* on allonge m_stemDir */
-				fy2 = crd[i].b+m_layout->m_verticalUnit2[staff->staffSize];
+				fy2 = crd[i].b+m_doc->m_verticalUnit2[staff->staffSize];
 			}
 		}
 		else	// on tient compte de l'‚paisseur qui fait des "bosses"
 		{	if (fb.dir)	// m_stemDir en haut
-			{	fy1 = *(_ybeam+i) - m_layout->m_env.m_stemWidth;
-				fy2 = crd[i].b+m_layout->m_verticalUnit2[staff->staffSize];
+			{	fy1 = *(_ybeam+i) - m_doc->m_env.m_stemWidth;
+				fy2 = crd[i].b+m_doc->m_verticalUnit2[staff->staffSize];
                 crd[i].chk->m_stem_start.x = crd[i].chk->m_stem_end.x = crd[i].a;
                 crd[i].chk->m_stem_start.y = fy2;
                 crd[i].chk->m_stem_end.y = fy1;
                 crd[i].chk->m_drawn_stem_dir = true;
 			}
 			else
-			{	fy1 = *(_ybeam+i) + m_layout->m_env.m_stemWidth;
-				fy2 = crd[i].b-m_layout->m_verticalUnit2[staff->staffSize];
+			{	fy1 = *(_ybeam+i) + m_doc->m_env.m_stemWidth;
+				fy2 = crd[i].b-m_doc->m_verticalUnit2[staff->staffSize];
                 crd[i].chk->m_stem_start.x = crd[i].chk->m_stem_end.x = crd[i].a;
                 crd[i].chk->m_stem_start.y = fy2;
                 crd[i].chk->m_stem_end.y = fy1;
@@ -535,29 +536,29 @@ if (fPente)
 		}
 		if ((crd+i)->chk->IsNote() && ((MusNote*)(crd+i)->chk)->m_headshape != SANSQUEUE)
 		{	
-            v_bline (dc,fy2, fy1, crd[i].a, m_layout->m_env.m_stemWidth);
+            v_bline (dc,fy2, fy1, crd[i].a, m_doc->m_env.m_stemWidth);
             
 // ICI, bon endroit pour enfiler les STACCATOS - ne sont traités ici que ceux qui sont opposés à la tête (les autres, in wgnote.cpp)
 			if (((MusNote*)(crd+i)->chk)->m_artic
 				 && (!((MusNote*)(crd+i)->chk)->m_chord || (((MusNote*)(crd+i)->chk)->m_chord & CHORD_TERMINAL)))
 			// les cas non traités par note()
 /*			{	if (fb.dir || (fb.mrq_port && m_stemLen && !crd[i].prov))
-					putStacc (dc,crd[i].a-dx[crd[i].chk->dimin],fy1+e_t->m_layout->m_interl[staff->staffSize]-staff->m_y_drawing, 0,crd[i].chk->typStac);
+					putStacc (dc,crd[i].a-dx[crd[i].chk->dimin],fy1+e_t->m_doc->m_interl[staff->staffSize]-staff->m_y_drawing, 0,crd[i].chk->typStac);
 				else
-					putStacc (dc,crd[i].a-dx[crd[i].chk->dimin],fy1-e_t->m_layout->m_interl[staff->staffSize]-staff->m_y_drawing, -1,crd[i].chk->typStac);
+					putStacc (dc,crd[i].a-dx[crd[i].chk->dimin],fy1-e_t->m_doc->m_interl[staff->staffSize]-staff->m_y_drawing, -1,crd[i].chk->typStac);
 			}
 */
 			{	
                 /***if (fb.mrq_port && extern_q_auto)
 				{	if (crd[i].prov)
-						putStacc (dc,crd[i].a+dx[crd[i].chk->dimin],fy1-e_t->m_layout->m_interl[staff->staffSize]-staff->m_y_drawing, -1,crd[i].chk->typStac);
+						putStacc (dc,crd[i].a+dx[crd[i].chk->dimin],fy1-e_t->m_doc->m_interl[staff->staffSize]-staff->m_y_drawing, -1,crd[i].chk->typStac);
 					else
-						putStacc (dc,crd[i].a-dx[crd[i].chk->dimin],fy1+e_t->m_layout->m_interl[staff->staffSize]-staff->m_y_drawing, 0,crd[i].chk->typStac);
+						putStacc (dc,crd[i].a-dx[crd[i].chk->dimin],fy1+e_t->m_doc->m_interl[staff->staffSize]-staff->m_y_drawing, 0,crd[i].chk->typStac);
 				}
 				else if (fb.dir)
-					putStacc (dc,crd[i].a-dx[crd[i].chk->dimin],fy1+e_t->m_layout->m_interl[staff->staffSize]-staff->m_y_drawing, 0,crd[i].chk->typStac);
+					putStacc (dc,crd[i].a-dx[crd[i].chk->dimin],fy1+e_t->m_doc->m_interl[staff->staffSize]-staff->m_y_drawing, 0,crd[i].chk->typStac);
 				else
-					putStacc (dc,crd[i].a-dx[crd[i].chk->dimin],fy1-e_t->m_layout->m_interl[staff->staffSize]-staff->m_y_drawing, -1,crd[i].chk->typStac);
+					putStacc (dc,crd[i].a-dx[crd[i].chk->dimin],fy1-e_t->m_doc->m_interl[staff->staffSize]-staff->m_y_drawing, -1,crd[i].chk->typStac);
                 ***/
 			}
 
@@ -567,8 +568,8 @@ if (fPente)
 
     // NOUVEAU
     // Correction des positions x extremes en fonction de l'‚paisseur des queues
-	(*crd).a -= (m_layout->m_env.m_stemWidth-1) / 3;
-	(crd+_ct)->a += (m_layout->m_env.m_stemWidth-1) / 3;
+	(*crd).a -= (m_doc->m_env.m_stemWidth-1) / 3;
+	(crd+_ct)->a += (m_doc->m_env.m_stemWidth-1) / 3;
 
 	delt_y = (!fb.dir || fb.fl_cond ) ? 1.0 : -1.0;
 	/* on choisit une direction pour faire le premier paquet horizontal */
@@ -714,7 +715,7 @@ if (fPente)
                     {
                         if (apax == t && k==0 && mx_i[k] != crd[_ct].a)	/* au debut du paquet */
                         {	fy1 = my_i[k] + barre_y;
-                            mx_f[k] = mx_i[k] + m_layout->m_ledgerLine[staff->staffSize][0];
+                            mx_f[k] = mx_i[k] + m_doc->m_ledgerLine[staff->staffSize][0];
                             fy2 = dA + sy_up + barre_y + dB * mx_f[k];
 
                             decalage= hGrosseligne (dc,mx_i[k],fy1,mx_f[k],fy2,deltanbbar*delt_y /***, workColor2***/ );
@@ -723,7 +724,7 @@ if (fPente)
                         }
                         else		/* corps ou fin de paquet */
                         {	fy2 = my_i[k] + barre_y;
-                            mx_i[k] -= m_layout->m_ledgerLine[staff->staffSize][0];
+                            mx_i[k] -= m_doc->m_ledgerLine[staff->staffSize][0];
                             fy1 = dA + sy_up + barre_y + dB * mx_i[k];
                             decalage= hGrosseligne (dc,mx_i[k],fy1,mx_f[k],fy2,deltanbbar*delt_y /***,workColor2***/);
                             fy1 += decalage; fy2 += decalage;

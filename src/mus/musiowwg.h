@@ -15,7 +15,6 @@
 
 #include "musdoc.h"
 
-class MusSection;
 class MusStaff;
 class MusLayer;
 
@@ -132,7 +131,7 @@ public:
 	bool WriteFonts( const MusWWGData *fonts );
 	bool WriteSeparator( );
 	bool WritePage( const MusPage *page );
-	bool WriteLayer( const MusLaidOutLayer *layer, int staffNo );
+	bool WriteLayer( const MusLayer *layer, int staffNo );
 
 	bool WritePagination( const MusWWGData *pagination );
 	bool WriteHeader( const MusWWGData *header);
@@ -151,7 +150,7 @@ private:
 	wxInt32 int32;
 	wxString m_filename;
     MusSystem *m_current_system; // the current system we are writing
-    MusLaidOutStaff *m_current_staff; // the current staff we are writing
+    MusStaff *m_current_staff; // the current staff we are writing
 
 private:
 };
@@ -178,9 +177,9 @@ public:
 	bool ReadFonts( MusWWGData *fonts );
 	bool ReadSeparator( );
 	bool ReadPage( MusPage *page );
-	bool ReadStaff( MusLaidOutStaff *staff, MusLaidOutLayer *layer, int staffNo );
-	bool ReadNote( MusLaidOutLayer *layer );
-	bool ReadSymbol( MusLaidOutLayer *layer );
+	bool ReadStaff( MusStaff *staff, MusLayer *layer, int staffNo );
+	bool ReadNote( MusLayer *layer );
+	bool ReadSymbol( MusLayer *layer );
 	bool ReadElementAttr( );
 	bool ReadDebord( );
 	bool ReadPagination( MusWWGData *pagination );
@@ -198,10 +197,6 @@ private:
     unsigned short m_noLigne;
     char m_indent;
     char m_indentDroite;
-	// logical tree
-	MusSection *m_section;
-	MusStaff *m_logStaff;
-    MusLayer *m_logLayer;
 	
 private:
 };

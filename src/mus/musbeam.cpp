@@ -27,8 +27,8 @@ MusBeam::~MusBeam()
 {
     // we need to detach all notes because it is not to the beam object to delete them
     int i;
-    for (i = (int)m_notes.GetCount(); i > 0; i--) {
-        MusDurationInterface *note = dynamic_cast<MusDurationInterface*>(m_notes.Detach(i - 1));
+    for (i = GetNoteCount(); i > 0; i--) {
+        MusDurationInterface *note = dynamic_cast<MusDurationInterface*>(m_children.Detach(i - 1));
         note->m_beam[0] = 0;
     }
 }
@@ -40,15 +40,15 @@ void MusBeam::AddNote(MusLayerElement *element) {
     }
     MusDurationInterface *note = dynamic_cast<MusDurationInterface*>(element);
     // Set the first as initial
-    if (m_notes.Count() == 0)
+    if (GetNoteCount() == 0)
         note->m_beam[0] = BEAM_INITIAL;
     else
         note->m_beam[0] = BEAM_TERMINAL;
-    m_notes.Add(element);
+    m_children.Add(element);
     
     // Set the last note to median if we have more than one note in the array
-    if (m_notes.Count() > 2) {
-        MusDurationInterface *last_note = dynamic_cast<MusDurationInterface*>(&m_notes[m_notes.Count() - 2]);
+    if (GetNoteCount() > 2) {
+        MusDurationInterface *last_note = dynamic_cast<MusDurationInterface*>(&m_children[GetNoteCount() - 2]);
         last_note->m_beam[0] = BEAM_MEDIAL;
     }
 }

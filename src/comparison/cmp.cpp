@@ -297,7 +297,7 @@ bool CmpEnv::ResetFile()
     m_bookSplitterPtr->Unsplit( m_cmpCtrlPanelPtr );
 
     m_musViewPtr->Show( false );
-    m_musViewPtr->SetLayout( NULL );
+    m_musViewPtr->SetDoc( NULL );
 	m_cmpCollationPartPtr = NULL;
     m_cmpCollationPtr = NULL;
     
@@ -406,7 +406,7 @@ void CmpEnv::AddPartPageStartEnd( wxString filename, CmpPartPage *page, bool isS
     m_delimiterIsStart = isStart;
     
     // set and update view
-    m_musViewPtr->SetLayout( &m_recFilePtr->m_musDocPtr->m_layouts[0]);
+    m_musViewPtr->SetDoc( m_recFilePtr->m_musDocPtr );
     m_musViewPtr->Resize( ); 
     UpdateViews( 0 );
 }
@@ -457,13 +457,14 @@ void CmpEnv::UpdateViews( int flags )
 		m_pageSplitterPtr->SplitHorizontally( m_musControlPtr , m_srcSplitterPtr, CmpEnv::s_view_sash );
         
         // The last layout is the Raw layout created in CmpCollation::IsCollationLoaded
+        /*
         m_musViewPtr->SetLayout( &m_cmpCollationPtr->GetMusDoc()->m_layouts.Last() );
         m_musViewPtr->Resize( );  
         m_imViewPtr1->SetLayout( &m_cmpCollationPtr->GetMusDoc()->m_layouts[0] );
         m_imViewPtr1->Resize();
         m_imViewPtr2->SetLayout( &m_cmpCollationPtr->GetMusDoc()->m_layouts[1] );
         m_imViewPtr2->Resize();
-        
+        */
     }
 	UpdateTitle( );
 }
@@ -525,7 +526,7 @@ void CmpEnv::OnSetAsDelimiter( wxCommandEvent &event )
     m_cmpPartPage = NULL;
     m_recFilePtr->Close();
     m_musViewPtr->Show( false );
-    m_musViewPtr->SetLayout( NULL );
+    m_musViewPtr->SetDoc( NULL );
     UpdateViews( 0 );
 
 }

@@ -13,9 +13,8 @@ using std::min;
 using std::max;
 
 #include "musrc.h"
-#include "muslayout.h"
 #include "musnote.h"
-#include "muslaidoutlayerelement.h"
+#include "muslayerelement.h"
 
 #include <math.h>
 
@@ -50,7 +49,7 @@ static struct coord {  float a;
     float b;
     unsigned vlr: 8;	/* valeur */
     unsigned prov: 8;	/* ON si portee sup. */
-    struct MusLaidOutLayerElement *chk;
+    struct MusLayerElement *chk;
 } 	crd[NbREL]; /* garde les coord.d'entree*/
 
 
@@ -73,9 +72,9 @@ char extern_queue = 0;
 
 /* This need to be put into a beam class */
 
-void MusRC::DrawBeamOriginal(  MusDC *dc, MusLaidOutLayer *layer, MusLaidOutStaff *staff )
+void MusRC::DrawBeamOriginal(  MusDC *dc, MusLayer *layer, MusStaff *staff )
 {
-	struct MusLaidOutLayerElement *chk;
+	struct MusLayerElement *chk;
 	static struct fb {
 		unsigned _liaison : 1;	/* temoin pour liaison: si ON, il y a
                                  de la liaison dans l'air et beam doit

@@ -318,7 +318,7 @@ void AxFrame::InitMidi()
 
     // midi input
     m_midiIn = new RtMidiIn();
-//	std::string portName;
+//	wxString portName;
 	
 //    // Check available ports.
     unsigned int nPorts = m_midiIn->getPortCount();

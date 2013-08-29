@@ -96,9 +96,9 @@ public:
     virtual void DrawBackgroundImage( int x = 0, int y = 0 );
     
     // 
-    virtual void StartGraphic( MusLayoutObject *object, wxString gClass, wxString gId );
+    virtual void StartGraphic( MusDocObject *object, wxString gClass, wxString gId );
     
-    virtual void EndGraphic( MusLayoutObject *object, MusRC *rc  );
+    virtual void EndGraphic( MusDocObject *object, MusRC *rc  );
     
     virtual void StartPage();
     

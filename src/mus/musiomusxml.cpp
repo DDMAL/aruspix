@@ -33,7 +33,7 @@ using std::max;
 #include "musmensur.h"
 #include "mustie.h"
 
-#include "muslaidoutlayerelement.h"
+#include "muslayerelement.h"
 
 #include "tinyxml.h"
 
@@ -117,41 +117,8 @@ bool MusXMLOutput::WriteDoc( MusDoc *doc )
     return true;
 }
 
-bool MusXMLOutput::WriteDiv( MusDiv *div )
-{
-    printf("Div\n");
-    return true;
-}
 
-bool MusXMLOutput::WriteScore( MusScore *score )
-//bool MusXMLOutput::WriteMeiScore( Score *meiScore, MusScore *score )
-{
-    printf("Score\n");
-    return true;
-}
-
-bool MusXMLOutput::WritePartSet( MusPartSet *partSet )
-//bool MusXMLOutput::WriteMeiParts( Parts * meiParts, MusPartSet *partSet )
-{
-    printf("PartSet\n");
-    return true;
-}
-
-bool MusXMLOutput::WritePart( MusPart *part )
-//bool MusXMLOutput::WriteMeiPart( Part *meiPart, MusPart *part )
-{
-    printf("Part\n");
-    return true;
-}
-
-bool MusXMLOutput::WriteSection( MusSection *section )
-//bool MusXMLOutput::WriteMeiSection( Section *meiSection, MusSection *section )
-{
-    printf("Section\n");
-        
-    return true;
-}
-
+/*
 bool MusXMLOutput::WriteMeasure( MusMeasure *measure )
 //bool MusXMLOutput::WriteMeiMeasure( Measure *meiMeasure, MusMeasure *measure )
 {
@@ -178,6 +145,7 @@ bool MusXMLOutput::WriteMeasure( MusMeasure *measure )
     
     return true;
 }
+*/ // ax2.3
 
 bool MusXMLOutput::WriteStaff( MusStaff *staff )
 //bool MusXMLOutput::WriteMeiStaff( Staff *meiStaff, MusStaff *staff )
@@ -239,7 +207,7 @@ bool MusXMLOutput::WriteLayerElement( MusLayerElement *element )
 
 
 
-bool MusXMLOutput::WriteLayout( MusLayout *layout )
+bool MusXMLOutput::WriteLayout( MusDoc *layout )
 {
     printf("Layout\n");
     return true;
@@ -257,19 +225,19 @@ bool MusXMLOutput::WriteSystem( MusSystem *system )
     return true;
 }
 
-bool MusXMLOutput::WriteLaidOutStaff( MusLaidOutStaff *laidOutStaff )
+bool MusXMLOutput::WriteLaidOutStaff( MusStaff *laidOutStaff )
 {
     printf("Laid staff\n");
     return true;
 }
 
-bool MusXMLOutput::WriteLaidOutLayer( MusLaidOutLayer *laidOutLayer )
+bool MusXMLOutput::WriteLaidOutLayer( MusLayer *laidOutLayer )
 {    printf("Laid layer\n");
     return true;
 
 }
 
-bool MusXMLOutput::WriteLaidOutLayerElement( MusLaidOutLayerElement *laidOutLayerElement )
+bool MusXMLOutput::WriteLaidOutLayerElement( MusLayerElement *laidOutLayerElement )
 {
     printf("Laid Layer Elem\n");
     return true;
@@ -602,7 +570,7 @@ void MusXMLOutput::WriteNoteOrRest(MusLayerElement *element) {
     if (m_current_beam) {
         wxString btype;
         
-        int position = m_current_beam->m_notes.Index(*element);
+        int position = m_current_beam->m_children.Index(*element);
         
         // if position == -1, the note is not into the current beam
         if (position >= 0) {
@@ -614,7 +582,7 @@ void MusXMLOutput::WriteNoteOrRest(MusLayerElement *element) {
                 m_in_beam = true;
             } else {
                 // if this note is the last in the beam, end the beaming
-                if ((unsigned int)position == m_current_beam->m_notes.Count() - 1) {
+                if (position == m_current_beam->GetNoteCount() - 1) {
                     btype = "end";
                     m_current_beam = NULL;
                     m_in_beam = false;

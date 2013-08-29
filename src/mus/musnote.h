@@ -15,10 +15,10 @@
     #include "wx/wx.h"
 #endif
 
-#include "musbeam.h"
-#include "muslayer.h"
+#include "muslayerelement.h"
 #include "musdurationinterface.h"
 #include "muspitchinterface.h"
+#include "musbeam.h"
 
 #define SLUR_INITIAL  (1<<1)
 #define SLUR_MEDIAL  (1<<2) 

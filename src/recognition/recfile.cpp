@@ -25,7 +25,7 @@
 
 #include "mus/musdoc.h"
 #include "mus/musstaff.h"
-#include "muslaidoutlayerelement.h"
+#include "muslayerelement.h"
 
 #include "mus/musiobin.h"
 #include "mus/musiomei.h"
@@ -225,6 +225,7 @@ void RecFile::UpgradeTo_2_1_0()
     if ( AxFile::FormatVersion(m_vmaj, m_vmin, m_vrev) < AxFile::FormatVersion(2, 0, 0) )
         return; // the file has been upgraded by Upgrade_2_0_0
     
+    /*
     if ( !m_musDocPtr ) {
         wxLogError( "File cannot be upgraded to 2.1.0 (No document)");    
         return;
@@ -244,9 +245,9 @@ void RecFile::UpgradeTo_2_1_0()
     int elementCount = 0;
     
     for ( i = 0; i < (int)page->m_systems.GetCount(); i++ ) {
-        MusLaidOutLayer *laidOutLayer = &page->m_systems[i].m_staves[0].m_layers[0];
+        MusLayer *laidOutLayer = &page->m_systems[i].m_staves[0].m_layers[0];
         if ( !laidOutLayer ) {
-            wxLogError( "File cannot be upgraded to 2.1.0 (Missing MusLaidOutLayer)");    
+            wxLogError( "File cannot be upgraded to 2.1.0 (Missing MusLayer)");    
             return;
         }
         MusLayer *currentLayer = laidOutLayer->GetSection()->GetStaff( laidOutLayer->m_logStaffNb - 1 )->GetLayer( laidOutLayer->m_logLayerNb - 1 );
@@ -256,20 +257,48 @@ void RecFile::UpgradeTo_2_1_0()
         }
         for ( j = 0; j < laidOutLayer->GetElementCount(); j++ ) {
             if ( j >=  (int)currentLayer->m_elements.GetCount() ) {
-                wxLogError( "File cannot be upgraded to 2.1.0 (Too many MusLaidOutLayerElement)");    
+                wxLogError( "File cannot be upgraded to 2.1.0 (Too many MusLayerElement)");    
                 return;
             }
             MusObject *target = &currentLayer->m_elements[ elementCount ];
             elementCount++;
             if ( dynamic_cast<MusLayerElement*>(target) ) {
-                MusLaidOutLayerElement *element = &laidOutLayer->m_elements[j];
+                MusLayerElement *element = &laidOutLayer->m_elements[j];
                 element->m_layerElement = dynamic_cast<MusLayerElement*>(target);
             }
         }
         
     }
+    */
     
-    wxLogMessage( "File successfully upgraded to 2.1.0");
+    wxLogMessage( "File NOT successfully upgraded to 2.1.0");
+    this->Modify();
+}
+
+void RecFile::UpgradeTo_2_3_0()
+{
+    if ( AxFile::FormatVersion(m_vmaj, m_vmin, m_vrev) >= AxFile::FormatVersion(2, 3, 0) )
+		return; // when do not need to upgrade the file
+    if ( AxFile::FormatVersion(m_vmaj, m_vmin, m_vrev) < AxFile::FormatVersion(2, 0, 0) )
+        return; // the file has been upgraded by Upgrade_2_0_0
+    
+	if ( !wxCopyFile( m_basename + "rec.mlf", m_basename + "rec.old.mlf") )  
+        return;
+    // we need to read page.mlf 
+	if ( !wxCopyFile( m_basename + "page.mlf", m_basename + "rec.mlf", true) )  
+        return;
+    
+    wxArrayPtrVoid params;
+    
+    if ( !this->RealizeFromMLF( params, NULL ) )
+        return;
+	if ( !wxCopyFile( m_basename + "rec.old.mlf", m_basename + "rec.mlf", true) )  
+        return;
+    
+    // output the new binary file
+    MusMeiOutput mei_output( m_musDocPtr, m_musDocPtr->m_fname );
+    mei_output.ExportFile(); 
+    wxLogMessage( "File successfully upgraded to 2.3.0");
     this->Modify();
 }
 
@@ -296,6 +325,7 @@ void RecFile::NewContent( )
 	m_isPreprocessed = false;
 	m_isRecognized = false;
 }
+
 
 
 void RecFile::OpenContent( )
@@ -337,6 +367,7 @@ void RecFile::OpenContent( )
 		
 	if ( wxFileExists( m_basename + "page.mei") )
 	{
+        UpgradeTo_2_3_0();
 
         MusMeiInput *mei_input = new MusMeiInput( m_musDocPtr, m_musDocPtr->m_fname );
         failed = !mei_input->ImportFile();
@@ -428,7 +459,7 @@ void RecFile::SaveContent( )
 		MusMLFOutput *mlfoutput = new MusMLFOutput( m_musDocPtr, m_basename + "page.mlf", NULL );
 		mlfoutput->m_pagePosition = true;
         // !!! No check if layout and page exist!
-		mlfoutput->WritePage( &m_musDocPtr->m_layouts[0].m_pages[0] , "staff", m_imPagePtr );
+		mlfoutput->WritePage( (MusPage*)&m_musDocPtr->m_children[0] , "staff", m_imPagePtr );
 		delete mlfoutput;
 		TiXmlElement root( "recpage" );
     
@@ -730,59 +761,6 @@ bool RecFile::Decode( wxArrayPtrVoid params, AxProgressDlg *dlg )
 	//double rec_int_prune = RecEnv::s_rec_int_prune;
 	//double rec_word_pen = RecEnv::s_rec_word_pen;
 	
-	/*
-	wxString log = wxGetApp().m_logDir + "/decoder.log";
-	
-	MlDecoder *decoder = new MlDecoder( input, rec_models, rec_dict );
-
-	decoder->log_fname = log;
-	decoder->am_models_fname = rec_models;
-	decoder->am_sil_phone = "{s}";
-	decoder->am_phone_del_pen = rec_phone_pen;
-
-	decoder->lex_dict_fname = rec_dict;
-
-	if ( rec_lm_order && !rec_lm.IsEmpty() )
-	{
-		decoder->lm_fname = musModelPtr->m_basename + "ngram.gram";
-		decoder->lm_ngram_order = rec_lm_order;
-		decoder->lm_scaling_factor = rec_lm_scaling;
-	}
-	
-	if ( rec_int_prune != 0.0 )
-		decoder->dec_int_prune_window = rec_int_prune;
-		
-	if ( rec_word_pen != 0.0 )
-		decoder->dec_word_entr_pen = rec_word_pen;
-
-	if ( rec_delayed )
-		decoder->dec_delayed_lm = true;
-	
-	if ( !rec_output.IsEmpty() )
-		decoder->output_fname = rec_output;
-
-	if ( !rec_wrdtrns.IsEmpty() )
-		decoder->wrdtrns_fname = rec_wrdtrns;
-
-	decoder->Create();
-	decoder->Run();
-	
-	//wxMilliSleep( 10000 );
-	
-	while  ( decoder->IsAlive()  )
-	{
-		wxMilliSleep( 200 );
-		if( !dlg->IncTimerOperation( ) )
-		{
-				//process->m_deleteOnTerminate = true;
-				//process->m_canceled = true;
-				//wxKill( pid, wxSIGKILL );
-				decoder->Delete(); 
-				return this->Terminate( ERR_CANCELED );
-		}
-	}
-	*/
-	
 #ifdef __WXMSW__
 	#if defined(_DEBUG)
 		wxString cmd = "Decoder.exe";
@@ -852,50 +830,6 @@ bool RecFile::Decode( wxArrayPtrVoid params, AxProgressDlg *dlg )
 	dlg->EndTimerOperation( TIMER_DECODING );	
 	delete process;
 
-
-
-	/*Torch::DiskXFile::setBigEndianMode() ;
-
-	wxString input = wxGetApp().m_workingDir + "/" + imPage->GetShortName() + ".input";
-	input.Replace( "\\/", "/" );
-
-	Torch::LexiconInfo lex_info( m_rec_models.c_str() , "{s}" , "" , m_rec_dict.c_str() , 
-                          "" , "" , "" ) ;
-
-    Torch::PhoneModels phone_models ( lex_info.phone_info , (char*) m_rec_models.c_str(),
-							   true , m_rec_phone_pen , 
-                               false , "" , "" , 
-                               9 , "" , false , 
-                               (real)0.005 , (real)0.005 ) ;
-
-    Torch::LinearLexicon lexicon( &lex_info , &phone_models ) ;
-
-    Torch::LanguageModel *lang_model;
-    if ( m_rec_lm_order <= 0 )
-        lang_model = NULL ;
-    else
-    {
-        lang_model = new Torch::LanguageModel( m_rec_lm_order , lex_info.vocabulary , 
-			(char*)m_rec_lm.c_str() , m_rec_ls_scaling ) ;
-    }
-
-	real end_prune = m_rec_end_prune;
-	if ( end_prune == 0 )
-		end_prune = LOG_ZERO;
-    Torch::BeamSearchDecoder bs_decoder( &lexicon , lang_model , m_rec_word_pen ,
-			LOG_ZERO, end_prune ,
-			m_rec_delayed , false ) ;
-
-
-    Torch::DecoderBatchTest batch_tester( (char*)input.c_str() , Torch::DST_FEATS_HTK , (char*)m_rec_wrdtrns.c_str()  , &bs_decoder , 
-                                   true , true , (char*)m_rec_output.c_str() , false , 10.0 ) ;
-    
-	batch_tester.run() ;
-
-    if ( lang_model != NULL )
-        delete lang_model ; 
-    return(0) ;*/
-
 	return true;
 }
 
@@ -909,15 +843,8 @@ bool RecFile::RealizeFromMLF( wxArrayPtrVoid params, AxProgressDlg *dlg )
 		return this->Terminate( ERR_CANCELED );
 
     
-    m_musDocPtr->Reset();
-    MusDiv *div = new MusDiv( );
-    MusScore *score = new MusScore( );
-    MusSection *section = new MusSection( );
-    MusStaff *logStaff = new MusStaff();
-    logStaff->m_mensuralNotation = true;
-    MusLayer *logLayer = new MusLayer();
-    // here we need to create the logical tree
-    MusLayout *musLayout = new MusLayout( Transcription );  
+    m_musDocPtr->Reset( Transcription );
+    // here we need to create the logical tree 
     MusPage *musPage = new MusPage();
     
     // dimensions
@@ -931,8 +858,9 @@ bool RecFile::RealizeFromMLF( wxArrayPtrVoid params, AxProgressDlg *dlg )
     {
         imStaff = &m_imPagePtr->m_staves[i];
         MusSystem *musSystem = new MusSystem();
-        MusLaidOutStaff *musStaff = new MusLaidOutStaff( 1 );
-        MusLaidOutLayer *musLayer = new MusLaidOutLayer( 1, 1, section, NULL ); // only one layer per staff
+        MusStaff *musStaff = new MusStaff( 1 );
+        musStaff->m_mensuralNotation = true;
+        MusLayer *musLayer = new MusLayer( 1 ); // only one layer per staff
         //musLayer->no = nb; ?? // ax2
         musSystem->m_systemLeftMar = imStaff->m_x1;  
         musSystem->m_systemRightMar = musPage->m_pageWidth - imStaff->m_x2;
@@ -945,21 +873,14 @@ bool RecFile::RealizeFromMLF( wxArrayPtrVoid params, AxProgressDlg *dlg )
         musSystem->AddStaff( musStaff );
         musPage->AddSystem( musSystem );
     } 
-    
-    logStaff->AddLayer( logLayer );
-    section->AddStaff( logStaff );
-    score->AddSection( section );
-    div->AddScore( score );
-    m_musDocPtr->AddDiv( div );
 	
 	wxString m_rec_output = m_basename + "rec.mlf";
 	
     MusMLFInput *mlfinput = new MusMLFInput( m_musDocPtr, m_rec_output );
-    mlfinput->ReadPage( musPage, logLayer, true, m_imPagePtr );
+    mlfinput->ReadPage( musPage, true, m_imPagePtr );
     delete mlfinput;
     
-    musLayout->AddPage( musPage );
-    m_musDocPtr->AddLayout( musLayout );
+    m_musDocPtr->AddPage( musPage );
     
 	//wxString m_rec2_output = m_basename + "rec2.mlf";
     //MusMLFOutput *mlfoutput = new MusMLFOutput( m_musDocPtr, m_rec2_output, NULL, "MusMLFSymbol" );

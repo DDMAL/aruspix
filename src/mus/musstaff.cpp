@@ -13,92 +13,198 @@
 #include "musstaff.h"
 #include "muslayer.h"
 
-#include "wx/arrimpl.cpp"
-WX_DEFINE_OBJARRAY( ArrayOfMusStaves );
-
-
 //----------------------------------------------------------------------------
 // MusStaff
 //----------------------------------------------------------------------------
 
-MusStaff::MusStaff():
-    MusLogicalObject()
+MusStaff::MusStaff( int logStaffNb ):
+	MusDocObject()
 {
-    m_measure = NULL;
-    m_section = NULL;
-    m_mensuralNotation = false;
+	Clear( );
+    //wxASSERT ( logStaffNb > 0 );
+    m_logStaffNb = logStaffNb;
+}
+
+MusStaff::MusStaff( const MusStaff& staff )
+{
+    m_parent = NULL;
+	totGrp = staff.totGrp;
+	//noLigne = staff.noLigne;
+	armTyp = staff.armTyp;
+	armNbr = staff.armNbr;
+	notAnc = staff.notAnc;
+	grise = staff.grise;
+	invisible = staff.invisible;
+	vertBarre = staff.vertBarre;
+	brace = staff.brace;
+	staffSize = staff.staffSize;
+	portNbLine = staff.portNbLine;
+	accol = staff.accol;
+	accessoire = staff.accessoire;
+	m_y_abs = staff.m_y_abs;
+	m_y_drawing = staff.m_y_drawing;
+
+    int i;
+	for (i = 0; i < staff.GetLayerCount(); i++)
+	{
+        MusLayer *nlayer = new MusLayer( *(MusLayer*)&staff.m_children[i] );
+        this->AddLayer( nlayer );
+	}
 }
 
 MusStaff::~MusStaff()
 {
+    
 }
 
-bool MusStaff::Check()
+void MusStaff::Clear()
 {
-    wxASSERT( ( m_measure || m_section ) );
-    return ( ( m_measure || m_section ) && MusLogicalObject::Check() );
+	ClearChildren();
+    m_parent = NULL;
+	noGrp = 0;
+	totGrp = 0;
+	//noLigne = 0; // ax2
+	armTyp = 0;
+	armNbr = 0;
+	notAnc = false; // LP we want modern notation :))
+	grise = false;
+	invisible = false;
+	vertBarre = 0;
+	brace = 0;
+	staffSize = 0; 
+	portNbLine = 5;
+	accol = 0;
+	accessoire = 0;
+	m_y_abs = 0;
+	m_y_drawing = 0;
+    
+    //
+    //beamListPremier = NULL;
 }
 
-
+bool MusStaff::Save( wxArrayPtrVoid params )
+{
+    // param 0: output stream
+    MusFileOutputStream *output = (MusFileOutputStream*)params[0];         
+    return !output->WriteStaff( this );
+}
 
 void MusStaff::AddLayer( MusLayer *layer )
 {
-	layer->SetStaff( this );
-	m_layers.Add( layer );	
+	layer->SetParent( this );
+	m_children.Add( layer );
 }
 
-MusLayer *MusStaff::GetLayer( int layerNo )
+void MusStaff::CopyAttributes( MusStaff *nstaff )
 {
-    if ( layerNo >= (int)m_layers.GetCount() ) {
+	if ( !nstaff )
+		return;
+
+	nstaff->Clear();
+	nstaff->noGrp = noGrp;
+	nstaff->totGrp = totGrp;
+	//nstaff->noLigne = noLigne;
+	nstaff->armTyp = armTyp;
+	nstaff->armNbr = armNbr;
+	nstaff->notAnc = notAnc;
+	nstaff->grise = grise;
+	nstaff->invisible = invisible;
+	nstaff->vertBarre = vertBarre;
+	nstaff->brace = brace;
+	nstaff->staffSize = staffSize;
+	nstaff->portNbLine = portNbLine;
+	nstaff->accol = accol;
+	nstaff->accessoire = accessoire;
+	nstaff->m_y_abs = m_y_abs;
+	nstaff->m_y_drawing = m_y_drawing;
+}
+
+int MusStaff::GetStaffNo() const
+{
+    wxASSERT_MSG( m_parent, "System cannot be NULL");
+    
+    return m_parent->m_children.Index( *this );
+}
+
+MusLayer *MusStaff::GetFirst( )
+{
+	if ( m_children.IsEmpty() )
+		return NULL;
+	return (MusLayer*)&m_children[0];
+}
+
+MusLayer *MusStaff::GetLast( )
+{
+	if ( m_children.IsEmpty() )
+		return NULL;
+	int i = GetLayerCount() - 1;
+	return (MusLayer*)&m_children[i];
+}
+
+MusLayer *MusStaff::GetNext( MusLayer *layer )
+{	
+    if ( !layer || m_children.IsEmpty())
         return NULL;
-    }
-    return &m_layers[layerNo];
+        
+	int i = m_children.Index( *layer );
+
+	if ((i == wxNOT_FOUND ) || ( i >= GetLayerCount() - 1 )) 
+		return NULL;
+
+	return (MusLayer*)&m_children[i + 1];
 }
 
-void MusStaff::SetMeasure( MusMeasure *measure )
+MusLayer *MusStaff::GetPrevious( MusLayer *layer )
 {
-    wxASSERT_MSG( !m_measure, "A staff cannot be child of a section and a measure at the same time" );   
-    m_measure = measure;    
+    if ( !layer || m_children.IsEmpty())
+        return NULL;
+        
+	int i = m_children.Index( *layer );
+
+	if ((i == wxNOT_FOUND ) || ( i <= 0 )) 
+        return NULL;
+	
+    return (MusLayer*)&m_children[i - 1];
 }
 
-void MusStaff::SetSection( MusSection *section )
+
+MusLayer *MusStaff::GetLayer( int LayerNo )
 {
-    wxASSERT_MSG( !m_measure, "A staff cannot be child of a section and a measure at the same time" );    
-    m_section = section;    
+    if ( LayerNo > (int)m_children.GetCount() - 1 )
+        return NULL;
+	
+	return (MusLayer*)&m_children[LayerNo];
 }
 
-
-void MusStaff::Save( wxArrayPtrVoid params )
+bool MusStaff::GetPosOnPage( wxArrayPtrVoid params )
 {
-    // param 0: output stream
-    MusFileOutputStream *output = (MusFileOutputStream*)params[0];       
-    output->WriteStaff( this );
+    // param 0: the MusStaff we are looking for
+    // param 1: the position on the page (int)
+    // param 2; the success flag (bool)
+    MusStaff *staff = (MusStaff*)params[0];
+	int *position = (int*)params[1];
+    bool *success = (bool*)params[2];
     
-    // save layers
-    MusLayerFunctor layer( &MusLayer::Save );
-    this->Process( &layer, params );
-}
-
-// functors for MusStaff
-
-void MusStaff::Process(MusFunctor *functor, wxArrayPtrVoid params )
-{
-    if (functor->m_success) {
-        return;
+    if ( (*success) ) {
+        return true;
+    } 
+    (*position)++;
+    if ( this == staff ) {
+        (*success) = true;
+        return true;
     }
-    
-    MusLayerFunctor *layerFunctor = dynamic_cast<MusLayerFunctor*>(functor);
-    MusLayer *layer;
-    int i;
-    for (i = 0; i < (int)m_layers.GetCount(); i++) 
-	{
-        layer = &m_layers[i];
-        functor->Call( layer, params );
-        if (layerFunctor) { // is is a MusLayerFunctor, call it
-            layerFunctor->Call( layer, params );
-        }
-        else { // process it further
-            layer->Process( functor, params );
-        }
-	}
+    // to be verified
+    return false;
 }
+
+bool MusStaff::UpdateYPosition( wxArrayPtrVoid params )
+{
+    // param 0: the MusLayerElement we point to
+	int *current_y_shift = (int*)params[0];  
+    
+    int negative_offset = this->m_y_abs - this->m_contentBB_y2;
+    this->m_y_abs = (*current_y_shift) + negative_offset;
+    (*current_y_shift) -= (this->m_contentBB_y2 - this->m_contentBB_y1);
+    return true;
+}
+

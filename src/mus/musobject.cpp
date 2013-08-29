@@ -10,11 +10,9 @@
 
 #include "musobject.h"
 #include "musrc.h"
-#include "musdiv.h"
-#include "muslayout.h"
 
 #include "wx/arrimpl.cpp"
-WX_DEFINE_OBJARRAY( ArrayOfMusLayoutObjects );
+WX_DEFINE_OBJARRAY( ArrayOfMusObjects );
 
 #include <algorithm>
 using std::min;
@@ -27,6 +25,7 @@ using std::max;
 MusObject::MusObject() :
 	wxObject()
 {
+    m_parent = NULL;
     m_active = true;
     uuid_generate( m_uuid );
 }
@@ -52,159 +51,64 @@ void MusObject::ResetUuid()
     uuid_generate( m_uuid );
 }
 
-bool MusObject::FindWithUuid( wxArrayPtrVoid params )
+
+bool MusObject::operator==( MusObject& other)
 {
-    // param 0: the uuid we are looking for
-    // parma 1: the pointer to the element
-    uuid_t *uuid = (uuid_t*)params[0];  
-    MusObject **element = (MusObject**)params[1];  
-    
-    if ( (*element) ) {
-        return true;
-    }
-    
-    if ( uuid_compare( *uuid, *this->GetUuid() ) == 0 ) {
-        (*element) = this;
-        //wxLogDebug("Found it!");
-        return true;
-    }
-    //wxLogDebug("Still looking for uuid...");
+    // This should never happen.
+    // The comparison is performed in the CmpFile::Align method.
+    // We expect to compare only MusNote, MusRest, etc object for which we have an overwritten method
+    wxLogError( "Missing comparison operator for '%s'", this->MusClassName().c_str() );
     return false;
 }
 
-bool MusObject::ReplaceUuid( wxArrayPtrVoid params )
+bool MusObject::Check() 
 {
-    // param 0: the uuid we are looking for (and have to replace
-    // param 1: the uuid we will replace with
-    // parma 2: the pointer to the element (when found)
-    uuid_t *uuidSrc = (uuid_t*)params[0];
-    uuid_t *uuidDst = (uuid_t*)params[1];
-    MusObject **element = (MusObject**)params[2];  
-    
-    if ( (*element) ) {
-        return true;
+    return true; 
+}
+
+void MusObject::Process(MusFunctor *functor, wxArrayPtrVoid params )
+{
+    if (functor->m_stopIt) {
+        return;
     }
     
-    if ( uuid_compare( *uuidSrc, *this->GetUuid() ) == 0 ) {
-        (*element) = this;
-        this->SetUuid( *uuidDst );
-        //wxLogDebug("Replaced it!");
-        return true;
-    }
-    //wxLogDebug("Still looking for uuid...");
-    return false;
-}
+    functor->Call( this, params );
 
-bool MusObject::CheckFunctor( wxArrayPtrVoid params )
-{
-    this->Check();
-    return false;
-}
-
-
-//----------------------------------------------------------------------------
-// MusFunctor
-//----------------------------------------------------------------------------
-
-MusFunctor::MusFunctor( )
-{ 
-    m_success=false;
-    m_reverse=false;
-    obj_fpt=NULL; 
-    obj_fpt_bool=NULL; 
-}
-
-MusFunctor::MusFunctor( void(MusObject::*_obj_fpt)( wxArrayPtrVoid ))
-{ 
-    m_success=false;
-    m_reverse=false;
-    obj_fpt=_obj_fpt; 
-    obj_fpt_bool=NULL; 
-}
-
-MusFunctor::MusFunctor( bool(MusObject::*_obj_fpt_bool)( wxArrayPtrVoid ))
-{ 
-    m_success=false;
-    m_reverse=false;
-    obj_fpt_bool=_obj_fpt_bool; 
-    obj_fpt=NULL;
-}
-
-
-void MusFunctor::Call( MusObject *ptr, wxArrayPtrVoid params )
-{ 
-    if (obj_fpt) {
-        (*ptr.*obj_fpt)( params );
-    }
-    else if (obj_fpt_bool)
-    {
-        m_success = (*ptr.*obj_fpt_bool)( params );
-    }
+    MusObject *obj;
+	int i;
+    for (i = 0; i < (int)m_children.GetCount(); i++) 
+	{
+        obj = &m_children[i];
+        obj->Process( functor, params );
+	}
 }
 
 //----------------------------------------------------------------------------
-// MusLogicalObject
+// MusDocObject
 //----------------------------------------------------------------------------
 
-MusLogicalObject::MusLogicalObject() :
+MusDocObject::MusDocObject() :
 	MusObject()
 {
-    m_div = NULL;
-}
-
-MusLogicalObject::~MusLogicalObject()
-{
-}
-
-
-bool MusLogicalObject::Check()
-{
-    wxASSERT( m_div );
-    return m_div;
-}
-
-
-void MusLogicalObject::SetDiv( wxArrayPtrVoid params )
-{
-    // param 0: MusDiv
-    wxASSERT( dynamic_cast<MusDiv*>((MusDiv*)params[0]) ); 
-    
-    m_div = (MusDiv*)params[0];  
-}
-
-
-//----------------------------------------------------------------------------
-// MusLayoutObject
-//----------------------------------------------------------------------------
-
-MusLayoutObject::MusLayoutObject() :
-	MusObject()
-{
-	m_layout = NULL;
+	m_doc = NULL;
     ResetBB();
 }
 
-MusLayoutObject::~MusLayoutObject()
+MusDocObject::~MusDocObject()
 {
 }
 
-bool MusLayoutObject::Check()
+/*
+void MusDocObject::SetDoc( wxArrayPtrVoid params )
 {
-    wxASSERT( m_layout );
-    return m_layout;
+    // param 0: MusDoc
+    wxASSERT( dynamic_cast<MusDoc*>((MusDoc*)params[0]) ); 
+    m_doc = (MusDoc*)params[0];  
 }
-
-void MusLayoutObject::SetLayout( wxArrayPtrVoid params )
-{
-    // param 0: MusLayout
-    wxASSERT( dynamic_cast<MusLayout*>((MusLayout*)params[0]) ); 
-    
-    m_layout = (MusLayout*)params[0];  
-    //ResetBB();
-}
+*/ // ax2.3
 
 
-void MusLayoutObject::UpdateContentBB( int x1, int y1, int x2, int y2) 
+void MusDocObject::UpdateContentBB( int x1, int y1, int x2, int y2) 
 {
     //printf("CB Was: %i %i %i %i\n", m_contentBB_x1, m_contentBB_y1, m_contentBB_x2 ,m_contentBB_y2);
     
@@ -222,7 +126,7 @@ void MusLayoutObject::UpdateContentBB( int x1, int y1, int x2, int y2)
     //printf("CB Is:  %i %i %i %i\n", m_contentBB_x1,m_contentBB_y1, m_contentBB_x2, m_contentBB_y2);
 }
 
-void MusLayoutObject::UpdateSelfBB( int x1, int y1, int x2, int y2 ) 
+void MusDocObject::UpdateSelfBB( int x1, int y1, int x2, int y2 ) 
 {
     //printf("SB Was: %i %i %i %i\n", m_selfBB_x1,m_selfBB_y1, m_selfBB_x2 ,m_selfBB_y2);
     
@@ -242,7 +146,7 @@ void MusLayoutObject::UpdateSelfBB( int x1, int y1, int x2, int y2 )
     
 }
 
-void MusLayoutObject::ResetBB() 
+void MusDocObject::ResetBB() 
 {
     m_contentBB_x1 = 0xFFFF;
     m_contentBB_y1 = 0xFFFF;
@@ -256,14 +160,38 @@ void MusLayoutObject::ResetBB()
     m_updatedBB = false;
 }
 
-bool MusLayoutObject::HasContentBB() 
+bool MusDocObject::HasContentBB() 
 {
     return ( (m_contentBB_x1 != 0xFFFF) && (m_contentBB_y1 != 0xFFFF) && (m_contentBB_x2 != -0xFFFF) && (m_contentBB_y2 != -0xFFFF) );
 }
 
-bool MusLayoutObject::HasSelfBB() 
+bool MusDocObject::HasSelfBB() 
 {
     return ( (m_selfBB_x1 != 0xFFFF) && (m_selfBB_y1 != 0xFFFF) && (m_selfBB_x2 != -0xFFFF) && (m_selfBB_y2 != -0xFFFF) );
+}
+
+
+//----------------------------------------------------------------------------
+// MusFunctor
+//----------------------------------------------------------------------------
+
+MusFunctor::MusFunctor( )
+{ 
+    m_stopIt=false;
+    m_reverse=false;
+    obj_fpt=NULL; 
+}
+
+MusFunctor::MusFunctor( bool(MusObject::*_obj_fpt)( wxArrayPtrVoid ))
+{ 
+    m_stopIt=false;
+    m_reverse=false;
+    obj_fpt=_obj_fpt; 
+}
+
+void MusFunctor::Call( MusObject *ptr, wxArrayPtrVoid params )
+{ 
+    m_stopIt = (*ptr.*obj_fpt)( params );
 }
 
 //----------------------------------------------------------------------------
@@ -272,7 +200,7 @@ bool MusLayoutObject::HasSelfBB()
 
 MusEnv::MusEnv()
 {
-    m_landscape = true;
+    m_landscape = false;
     m_staffLineWidth = 2;
     m_stemWidth = 3;
     m_barlineWidth = 3;

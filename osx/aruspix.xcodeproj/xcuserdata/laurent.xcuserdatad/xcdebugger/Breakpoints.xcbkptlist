@@ -55,9 +55,7 @@
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
          startingLineNumber = "672"
-         endingLineNumber = "672"
-         landmarkName = "MusRC::CalculateRestPosY ( MusLaidOutStaff *staff, char duration)"
-         landmarkType = "5">
+         endingLineNumber = "672">
       </FileBreakpoint>
       <FileBreakpoint
          shouldBeEnabled = "No"
@@ -79,11 +77,11 @@
          continueAfterRunningActions = "No"
          isPathRelative = "0"
          filePath = "../src/mus/musiobin.cpp"
-         timestampString = "370381479.743347"
+         timestampString = "398849305.377005"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "580"
-         endingLineNumber = "580">
+         startingLineNumber = "530"
+         endingLineNumber = "530">
       </FileBreakpoint>
       <FileBreakpoint
          shouldBeEnabled = "No"
@@ -114,11 +112,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "../src/mus/muswindow.cpp"
-         timestampString = "370280946.793583"
+         timestampString = "398849305.377005"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "531"
-         endingLineNumber = "531"
+         startingLineNumber = "527"
+         endingLineNumber = "527"
          landmarkName = "MusWindow::GetToolType()"
          landmarkType = "5">
       </FileBreakpoint>
@@ -140,11 +138,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "../src/comparison/cmpmus.cpp"
-         timestampString = "376331251.414016"
+         timestampString = "398849305.377005"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "245"
-         endingLineNumber = "245"
+         startingLineNumber = "247"
+         endingLineNumber = "247"
          landmarkName = "CmpMusWindow::UpdateCmpScroll()"
          landmarkType = "5">
       </FileBreakpoint>
@@ -153,12 +151,12 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "../src/comparison/cmpmus.cpp"
-         timestampString = "376485426.003796"
+         timestampString = "398849305.377005"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "140"
-         endingLineNumber = "140"
-         landmarkName = "CmpMusController::LoadSource( MusLaidOutLayerElement *element )"
+         startingLineNumber = "141"
+         endingLineNumber = "141"
+         landmarkName = "CmpMusController::LoadSource( MusLayerElement *element )"
          landmarkType = "5">
       </FileBreakpoint>
       <FileBreakpoint

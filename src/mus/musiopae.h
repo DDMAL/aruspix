@@ -203,7 +203,7 @@ public:
     vector<int> durations;
     vector<int> dots; // use the same offset as durations, they are used in parallel
     unsigned int durations_offset;
-    std::string barline;
+    wxString barline;
     int    abbreviation_offset;  
     int    wholerest;   // number of whole rests to process
 };
@@ -242,7 +242,7 @@ private:
      int       getKeyInfo          (const char* incipit, MeasureObject *measure, int index = 0);
      int       getTimeInfo         (const char* incipit, MeasureObject *measure, int index = 0);
      int       getClefInfo         (const char* incipit, MusClef *mus_clef, int index = 0 );
-     int       getBarline          (const char* incipit, std::string *output, int index = 0 );
+     int       getBarline          (const char* incipit, wxString *output, int index = 0 );
      int       getAccidental       (const char* incipit, unsigned char *accident, int index = 0);
      int       getOctave           (const char* incipit, unsigned char *octave, int index = 0 );
      int       getDurations        (const char* incipit, MeasureObject *measure, int index = 0);
@@ -267,12 +267,6 @@ public:
     
 private:
     wxString m_filename;
-	MusDiv *m_div;
-	MusScore *m_score;
-	MusPartSet *m_parts;
-	MusPart *m_part;
-	MusSection *m_section;
-	MusMeasure *m_measure;
 	MusStaff *m_staff;
 	MusLayer *m_layer;
     MusTie *m_current_tie;

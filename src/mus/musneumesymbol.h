@@ -16,14 +16,6 @@
 #include "muslayer.h"
 #include "muspositioninterface.h"
 
-#include <string>
-using std::string;
-
-#include <mei/meielement.h>
-#include <mei/exceptions.h>
-
-using mei::MeiElement;
-using mei::MeiAttribute;
 
 enum MusNeumeSymbolType {
     NEUME_SYMB_COMMA,
@@ -48,7 +40,6 @@ enum MusNeumeSymbolType {
 class MusNeumeSymbol : public MusLayerElement, public MusPositionInterface {
 public:
 	MusNeumeSymbol();
-	MusNeumeSymbol(MeiElement &meielement);
 	MusNeumeSymbol(const MusNeumeSymbol &symbol);
 	virtual ~MusNeumeSymbol() {}
     
@@ -56,7 +47,7 @@ public:
 	
 	void calcoffs (int *offst, int value);
     MusNeumeSymbolType GetSymbolType();
-	void SetValue(int value, MusLaidOutStaff *staff, int flag);
+	void SetValue(int value, MusStaff *staff, int flag);
 	int getValue();
 	void SetPitch(int pitch, int oct);
 	
@@ -64,20 +55,15 @@ public:
 	void ResetToClef();
 	MusNeumeSymbolType getType();
 	
-    MeiElement *getMeiRef();
 	void deleteMeiRef();
     
     // ax2 - member previously in MusElement (duplicated in MusNeume
-    std::string PitchToStr(int pitch);
-    int StrToPitch(std::string pitch);
+    wxString PitchToStr(int pitch);
+    int StrToPitch(wxString pitch);
 
 
 private:
     MusNeumeSymbolType symbolType;
-	MeiElement *m_meiref;
-    void updateMeiRefClef(string shape, string line);
-    void updateMeiRefDiv(string form);
-    void updateMeiRefAccid(string accid, int pitch, int octave);
 	int value; //this is to denote the line a clef lies on
 };
 

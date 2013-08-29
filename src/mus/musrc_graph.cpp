@@ -9,8 +9,8 @@
 #include "wx/wxprec.h"
 
 #include "musrc.h"
-#include "muslaidoutstaff.h"
-#include "muslayout.h"
+#include "musstaff.h"
+
 
 #include <algorithm>
 using std::min;
@@ -134,15 +134,15 @@ int MusRC::hGrosseligne ( MusDC *dc, int x1, int y1, int x2, int y2, int decal)
 }
 
 
-int MusRC::DrawDot ( MusDC *dc, int x, int b, int decal, MusLaidOutStaff *staff )
+int MusRC::DrawDot ( MusDC *dc, int x, int b, int decal, MusStaff *staff )
 {	int y = b + staff->m_y_drawing;
 
-	if (decal > 600 || in (y, (int)staff->m_y_drawing - m_layout->m_staffSize[staff->staffSize], 
-		(int)staff->m_y_drawing - m_layout->m_staffSize[staff->staffSize]*2))
-	{	decal += m_layout->m_halfInterl[staff->staffSize];
+	if (decal > 600 || in (y, (int)staff->m_y_drawing - m_doc->m_staffSize[staff->staffSize], 
+		(int)staff->m_y_drawing - m_doc->m_staffSize[staff->staffSize]*2))
+	{	decal += m_doc->m_halfInterl[staff->staffSize];
 		if (decal > 600)
 			decal -= 1000;
-		if (0 == ((int)b % (int)m_layout->m_interl[staff->staffSize]))
+		if (0 == ((int)b % (int)m_doc->m_interl[staff->staffSize]))
 				y += decal;
 	}
 
@@ -166,9 +166,9 @@ int MusRC::DrawDot ( MusDC *dc, int x, int b, int decal, MusLaidOutStaff *staff 
  */
 
 void MusRC::festa_string ( MusDC *dc, int x, int y, const wxString str, 
-							  MusLaidOutStaff *staff, int dimin ) {
+							  MusStaff *staff, int dimin ) {
 	int staffSize = staff->staffSize;
-	int fontCorr = m_layout->m_fontHeightAscent[staffSize][dimin];
+	int fontCorr = m_doc->m_fontHeightAscent[staffSize][dimin];
 	
 	wxASSERT_MSG( dc , "DC cannot be NULL");
 	
@@ -176,12 +176,12 @@ void MusRC::festa_string ( MusDC *dc, int x, int y, const wxString str,
 	// m_activeChantFonts
 	if (staff->notAnc)
 	{	
-		dc->SetFont( &m_layout->m_activeChantFonts[ staffSize][0] );			
-		fontCorr = m_layout->m_fontHeightAscent[ staffSize][0];
+		dc->SetFont( &m_doc->m_activeChantFonts[ staffSize][0] );			
+		fontCorr = m_doc->m_fontHeightAscent[ staffSize][0];
 	}
 	else
 	{
-		dc->SetFont( &m_layout->m_activeChantFonts[ staffSize][ dimin ] );
+		dc->SetFont( &m_doc->m_activeChantFonts[ staffSize][ dimin ] );
 	}
 	
 	if ( dc)
@@ -207,12 +207,12 @@ void MusRC::festa_string ( MusDC *dc, int x, int y, const wxString str,
 
 
 void MusRC::DrawLeipzigFont ( MusDC *dc, int x, int y, unsigned char c, 
-						 MusLaidOutStaff *staff, bool dimin )
+						 MusStaff *staff, bool dimin )
 {  
 	int staffSize = staff->staffSize;
 	int fontCorr = 0;
     if (dc->CorrectMusicAscent()) {
-        fontCorr = m_layout->m_fontHeightAscent[staffSize][dimin];
+        fontCorr = m_doc->m_fontHeightAscent[staffSize][dimin];
     }
 
 	wxASSERT_MSG( dc , "DC cannot be NULL");
@@ -225,13 +225,13 @@ void MusRC::DrawLeipzigFont ( MusDC *dc, int x, int y, unsigned char c,
 		{	
 			c+= 14;	// les cles d===e tablature
             if (dc->CorrectMusicAscent()) {
-                fontCorr = m_layout->m_fontHeightAscent[ staffSize][0];
+                fontCorr = m_doc->m_fontHeightAscent[ staffSize][0];
             }
 		}
 	}
 	if (!staff->notAnc || !in (c, 241, 243))	// tout sauf clefs de tablature
 	{
-        dc->SetFont( &m_layout->m_activeFonts[ staffSize ][ dimin ] );
+        dc->SetFont( &m_doc->m_activeFonts[ staffSize ][ dimin ] );
 	}
 
 	if ( dc)
@@ -281,10 +281,10 @@ void MusRC::putstring ( MusDC *dc, int x, int y, wxString s, int centrer, int st
 
     int fontCorr = 0;
     
-    dc->SetFont( &m_layout->m_activeFonts[ staffSize ][0] );
+    dc->SetFont( &m_doc->m_activeFonts[ staffSize ][0] );
     x = ToRendererX(x);
     if (dc->CorrectMusicAscent()) {
-        fontCorr = m_layout->m_fontHeightAscent[staffSize][0];
+        fontCorr = m_doc->m_fontHeightAscent[staffSize][0];
     }
     
     
@@ -305,7 +305,7 @@ void MusRC::putlyric ( MusDC *dc, int x, int y, wxString s, int staffSize, bool 
 { 
 	wxASSERT_MSG( dc , "DC cannot be NULL");
 
-    dc->SetFont( &m_layout->m_activeLyricFonts[ staffSize ] );
+    dc->SetFont( &m_doc->m_activeLyricFonts[ staffSize ] );
 	x = ToRendererX(x);
 
 	dc->SetTextForeground( m_currentColour );

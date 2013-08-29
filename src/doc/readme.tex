@@ -225,16 +225,6 @@ Debug DLL" for debug versions.
 		\item You must now log out and log back in.
 	\end{enumerate}
 
-\subsection{Google test framework}
-Unit tests are written using googletest (\url{http://code.google.com/p/googletest/}).
-Download a copy and build it in Xcode (using \verb!xcode/gtest.xcodeproj!. You will end up with a gtest.framework folder in the build directory. Copy this somewhere
-(such as the same directory as your checked out copy of aruspix).
-
-Open up the aruspix project and find gtest.framework entry in the sidebar. Right click on it and choose Add > Existing framework. Then select Add other... and choose the framework folder.
-
-Run tests by compiling the \verb!ax_test! target. Run it from a terminal or the xcode console. If you get a ``Library not loaded`` error, you need to set the framework path
-for the executable. Make `ax\_test' active and choose Project > Edit Active Exectuable. In the arguments tab, set a variable \verb!DYLD_FRAMEWORK_PATH! to \verb!../../..!.
-This is the path from the ax\_test binary (in aruspix/build/Debug) to the gtest.framework folder.
 
 \subsection{libmei}
 Do the same as gtest with libmei (copy the framework somewhere, add existing framework, change DYLD\_FRAMEWORK\_PATH)
@@ -245,6 +235,14 @@ Do the same as gtest with libmei (copy the framework somewhere, add existing fra
 		\item Open aruspix/osx/torch.xcodeproj with Xcode.
 		\item Compile the following executables in both release and debug mode: adapt, decoder, ngram.
 	\end{enumerate}
+	
+	From version 2.2, Julius recognizer is used. It needs to be compiled separately from the command line. Copy the Makefile\_sample to Makefile and change it appropriately (set the path to Julius). Julius version 4.2.2 or greater is necessary.
+	
+	Then run:
+	\begin{verbatim} 
+		make
+		make install
+	\end{verbatim}
 
 %******************************
 \subsection{Compilation of Aruspix}

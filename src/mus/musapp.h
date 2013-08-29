@@ -33,18 +33,11 @@ public:
     
     void AddLayerRdg( MusLayerRdg *layerRdg );
     
-    virtual void Save( wxArrayPtrVoid params );
-    
-    int GetRdgCount() { return (int)m_rdgs.GetCount(); };
-    
-    // moulinette
-    virtual void Process(MusFunctor *functor, wxArrayPtrVoid params );
+    int GetRdgCount() { return (int)m_children.GetCount(); };
     
 private:
     
 public:
-    /** The children MusLayerRdg objects */
-    ArrayOfMusLayers m_rdgs;
 
 private:
     
@@ -62,22 +55,15 @@ class MusLayerRdg: public MusLayer
 {
 public:
     // constructors and destructors
-    MusLayerRdg();
+    MusLayerRdg( int logLayerNb );
     virtual ~MusLayerRdg();
     
-    /** the parent MusLayerApp setter */
-    void SetLayerApp( MusLayerApp *app ) { m_app = app; }; 
-    
     // functor
-    void virtual Save( wxArrayPtrVoid params );
+    virtual bool Save( wxArrayPtrVoid params );
 
 private:
     
 public:
-    /** The children MusLayerElement objects */
-    //ArrayOfMusLayerElements m_elements;
-    /** The parent MusLayerApp */
-    MusLayerApp *m_app;
     /** The source id */
     wxString m_source;
     

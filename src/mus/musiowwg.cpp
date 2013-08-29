@@ -14,9 +14,9 @@
 
 #include "muspage.h"
 #include "mussystem.h"
-#include "muslaidoutstaff.h"
-#include "muslaidoutlayer.h"
-#include "muslaidoutlayerelement.h"
+#include "musstaff.h"
+#include "muslayer.h"
+#include "muslayerelement.h"
 #include "musbarline.h"
 #include "musclef.h"
 #include "musmensur.h"
@@ -196,7 +196,7 @@ MusWWGOutput::~MusWWGOutput()
 
 bool MusWWGOutput::ExportFile( )
 {
-    wxASSERT_MSG( m_doc->m_layouts.GetCount() > 0, "At least one layout is required" );
+    wxASSERT_MSG( m_doc->m_children.GetCount() > 0, "At least one page is required" );
 
 	int i;
 
@@ -212,10 +212,9 @@ bool MusWWGOutput::ExportFile( )
 	WriteFonts( &m_doc->m_wwgData );
 	
     MusPage *page = NULL;
-    MusLayout *layout = &m_doc->m_layouts[0];
-    for (i = 0; i < (int)layout->m_pages.GetCount(); i++)
+    for (i = 0; i < (int)m_doc->GetPageCount(); i++)
     {
-		page = &layout->m_pages[i];
+		page = (MusPage*)&m_doc->m_children[i];
 		WritePage( page );
     }
     
@@ -369,7 +368,7 @@ bool MusWWGOutput::WritePage( const MusPage *page )
 	Write( &int32, 4 );
 	short nbStaves = 0;
 	for (i = 0; i < page->GetSystemCount(); i++) {
-		nbStaves += (&page->m_systems[i])->GetStaffCount();
+		nbStaves += ((MusSystem*)&page->m_children[i])->GetStaffCount();
 	}
 	int16 = wxINT16_SWAP_ON_BE( nbStaves );
 	Write( &int16, 2 );
@@ -380,7 +379,7 @@ bool MusWWGOutput::WritePage( const MusPage *page )
     // get the first system for indent information
     MusSystem *system = NULL;
     if (page->GetSystemCount() > 0) {
-        system = &page->m_systems[0];
+        system = (MusSystem*)&page->m_children[0];
     }
     int32 = system ? wxINT32_SWAP_ON_BE( system->m_systemLeftMar ) : 0;
 	Write( &int32, 4 );
@@ -391,18 +390,18 @@ bool MusWWGOutput::WritePage( const MusPage *page )
     
     l = 0; // staff number on the page
     for (i = 0; i < page->GetSystemCount(); i++) {
-        m_current_system = &page->m_systems[i];
+        m_current_system = (MusSystem*)&page->m_children[i];
         
         // TODO - We need to fill the ecarts[] array here because we now have m_y_abs positions for the staves
         
         for (j = 0; j < system->GetStaffCount(); j++) 
         {
-            //MusLaidOutStaff *cstaff
+            //MusStaff *cstaff
             //staff = MusMLFOutput::SplitSymboles( cstaff ); // split the symbols (sharp, dots, etc. - this should probably be optional)
-            m_current_staff = &system->m_staves[j];
+            m_current_staff = (MusStaff*)&system->m_children[j];
             for (k = 0; k < m_current_staff->GetLayerCount(); k ++)
             {
-                MusLaidOutLayer *layer = &m_current_staff->m_layers[k];
+                MusLayer *layer = (MusLayer*)&m_current_staff->m_children[k];
                 WriteLayer( layer, l );
             }
             l++;
@@ -413,7 +412,7 @@ bool MusWWGOutput::WritePage( const MusPage *page )
 
 }
 
-bool MusWWGOutput::WriteLayer( const MusLaidOutLayer *layer, int staffNo )
+bool MusWWGOutput::WriteLayer( const MusLayer *layer, int staffNo )
 {
 	int k;
 
@@ -452,7 +451,7 @@ bool MusWWGOutput::WriteLayer( const MusLaidOutLayer *layer, int staffNo )
 	{
         WWGInitElement();
     
-        MusLaidOutLayerElement *element = &layer->m_elements[k];
+        MusLayerElement *element = (MusLayerElement*)&layer->m_children[k];
         // position x for all elmements
         xrel = element->m_x_abs;
         if (dynamic_cast<MusBarline*>(element)) {
@@ -492,7 +491,7 @@ bool MusWWGOutput::WriteNote( )
 	Write( &TYPE, 1 );
 	WriteElementAttr( );
 	Write( &sil, 1 );
-	unsigned char val = val; 
+	unsigned char val = 0; 
 	if ( ( sil == _SIL ) && ( val == CUSTOS ) ) // do we still want this? Should be an option somewhere
 		val = DUR_256;
 	Write( &val, 1 );
@@ -653,9 +652,7 @@ bool MusWWGOutput::WriteFooter( const MusWWGData *footer )
 MusWWGInput::MusWWGInput( MusDoc *doc, wxString filename ) :
 	MusFileInputStream( doc, filename )
 {
-	m_section = NULL;
-	m_logStaff = NULL;
-	m_logLayer = NULL;
+
 }
 
 MusWWGInput::~MusWWGInput()
@@ -673,12 +670,7 @@ bool MusWWGInput::ImportFile( )
 	}
     
     // reset the MusDoc and create the logical tree
-    m_doc->Reset();	
-    MusDiv *div = new MusDiv( );
-    MusScore *score = new MusScore( );
-    m_section = new MusSection( );
-    // create a new layout  (we will get only one of them in a WWG)
-    MusLayout *layout = new MusLayout( Transcription );
+    m_doc->Reset( Transcription);	
     
     // read WWG header
     ReadFileHeader( &m_doc->m_wwgData ); // fileheader
@@ -690,7 +682,7 @@ bool MusWWGInput::ImportFile( )
 	{
 		MusPage *page = new MusPage();
 		ReadPage( page );
-        layout->AddPage( page );
+        m_doc->AddPage( page );
     }
 
     if ( !ReadSeparator() ) 
@@ -707,28 +699,24 @@ bool MusWWGInput::ImportFile( )
 	//	ReadPage( & m_doc->m_masqueVariable );
 
 	//wxLogMessage("OK %d",  m_doc->m_pages.GetCount() );
-    m_doc->AddLayout( layout );	
-    score->AddSection( m_section );
-    div->AddScore( score );
-    m_doc->AddDiv( div );
     
     // update the system and staff y positions
-    layout->PaperSize();
+    m_doc->PaperSize();
     int j, k, l, m;
-    for (j = 0; j < layout->GetPageCount(); j++)
+    for (j = 0; j < m_doc->GetPageCount(); j++)
     {
-        MusPage *page = &layout->m_pages[j];
+        MusPage *page = (MusPage*)&m_doc->m_children[j];
         m = 0; // staff number on the page
-        int yy =  layout->m_pageHeight;
+        int yy =  m_doc->m_pageHeight;
         for (k = 0; k < page->GetSystemCount(); k++) 
         {
-            MusSystem *system = &page->m_systems[k];
-            MusLaidOutStaff *staff = NULL;
+            MusSystem *system = (MusSystem*)&page->m_children[k];
+            MusStaff *staff = NULL;
             
             for (l = 0; l < system->GetStaffCount(); l++) 
             {
-                staff = &system->m_staves[l];
-                yy -= ecarts[m] * layout->m_interl[ staff->staffSize ];
+                staff = (MusStaff*)&system->m_children[l];
+                yy -= ecarts[m] * m_doc->m_interl[ staff->staffSize ];
                 staff->m_y_abs = yy;
                 m++;
                 
@@ -909,21 +897,8 @@ bool MusWWGInput::ReadPage( MusPage *page )
     
     for (j = 0; j < nbrePortees; j++) 
 	{
-        // create or get the current MusStaff in the logical tree;
-        if (j >= (int)m_section->m_staves.GetCount()) {
-            MusStaff *staff = new MusStaff();
-            MusLayer *layer = new MusLayer();
-            staff->AddLayer( layer );
-            m_section->AddStaff( staff );
-        }
-        // we ignore voice numbers here
-        m_logStaff = dynamic_cast<MusStaff*> (&m_section->m_staves[j]);
-        wxASSERT_MSG( m_logStaff, "MusStaff cannot be NULL" );
-        m_logLayer = dynamic_cast<MusLayer*> (&m_logStaff->m_layers[0]);
-        wxASSERT_MSG( m_logLayer, "MusLayer cannot be NULL" );
-        
-		MusLaidOutStaff *staff = new MusLaidOutStaff( j + 1 );
-        MusLaidOutLayer *layer = new MusLaidOutLayer( 1, j + 1, m_section, NULL ); // only one layer per staff
+		MusStaff *staff = new MusStaff( j + 1 );
+        MusLayer *layer = new MusLayer( 1 ); // only one layer per staff
 		ReadStaff( staff, layer, j );
         if ( m_noLigne > system_no + 1 ) { // we have a new system
             page->AddSystem( system ); // add the current one
@@ -947,10 +922,8 @@ bool MusWWGInput::ReadPage( MusPage *page )
 	return true;
 
 }
-bool MusWWGInput::ReadStaff( MusLaidOutStaff *staff, MusLaidOutLayer *layer, int staffNo )
-{
-	wxASSERT_MSG( m_section, "MusSection cannot be NULL");
-	
+bool MusWWGInput::ReadStaff( MusStaff *staff, MusLayer *layer, int staffNo )
+{	
 	unsigned int k;
 
 	Read( &uint32, 4 );
@@ -1011,7 +984,7 @@ bool MusWWGInput::ReadStaff( MusLaidOutStaff *staff, MusLaidOutLayer *layer, int
 	return true;
 }
 
-bool MusWWGInput::ReadNote( MusLaidOutLayer *layer )
+bool MusWWGInput::ReadNote( MusLayer *layer )
 {
 	
 	ReadElementAttr( );
@@ -1092,12 +1065,10 @@ bool MusWWGInput::ReadNote( MusLaidOutLayer *layer )
         layer_element = rest;
     }
     
-    // if we got something, add it to the LaidOutLayer
+    // if we got something, add it to the Layer
     if ( layer_element ) {
-        m_logLayer->AddLayerElement( layer_element );
-        MusLaidOutLayerElement *element = new MusLaidOutLayerElement( layer_element );
-        element->m_x_abs = xrel;
-        layer->AddElement( element );
+        layer_element->m_x_abs = xrel;
+        layer->AddElement( layer_element );
     }
        
     /*
@@ -1118,10 +1089,8 @@ bool MusWWGInput::ReadNote( MusLaidOutLayer *layer )
     return true;
 }
 
-bool MusWWGInput::ReadSymbol( MusLaidOutLayer *layer )
-{
-	wxASSERT_MSG( m_logStaff, "MusStaff cannot be NULL" );	
-	
+bool MusWWGInput::ReadSymbol( MusLayer *layer )
+{	
 	ReadElementAttr( );
 	Read( &flag , 1 );
 	Read( &calte , 1 );
@@ -1199,10 +1168,8 @@ bool MusWWGInput::ReadSymbol( MusLaidOutLayer *layer )
     }
     
     if ( layer_element ) {
-        m_logLayer->AddLayerElement( layer_element );
-        MusLaidOutLayerElement *element = new MusLaidOutLayerElement( layer_element );
-        element->m_x_abs = xrel;
-        layer->AddElement( element );
+        layer_element->m_x_abs = xrel;
+        layer->AddElement( layer_element );
     }
 
 	return true;

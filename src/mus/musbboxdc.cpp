@@ -44,14 +44,14 @@ MusBBoxDC::~MusBBoxDC ( )
 {
 }
 
-void MusBBoxDC::StartGraphic( MusLayoutObject *object, wxString gClass, wxString gId )
+void MusBBoxDC::StartGraphic( MusDocObject *object, wxString gClass, wxString gId )
 {
     // add object
     object->ResetBB();
     m_objects.Add( object );
 }
       
-void MusBBoxDC::EndGraphic(MusLayoutObject *object, MusRC *rc ) 
+void MusBBoxDC::EndGraphic(MusDocObject *object, MusRC *rc ) 
 {
     // detach the object
     m_objects.Detach(m_objects.Index(*object));
@@ -376,7 +376,7 @@ void MusBBoxDC::DrawSpline(int n, MusPoint points[])
 void MusBBoxDC::UpdateBB(int x1, int y1, int x2, int y2) 
 {
     /*
-    MusLayoutObject *first = &m_objects[m_objects.Count() - 1];
+    MusDocObject *first = &m_objects[m_objects.Count() - 1];
     
     first->UpdateOwnBB(x1, y1, x2, y2);
     
@@ -389,7 +389,7 @@ void MusBBoxDC::UpdateBB(int x1, int y1, int x2, int y2)
         
         // All the next ones, stretch using contentBB
         for (int i = m_objects.Count() - 3; i >= 0; i--) {
-            MusLayoutObject *precedent = &m_objects[i + 1];
+            MusDocObject *precedent = &m_objects[i + 1];
             m_objects[i].UpdateContentBB(precedent->m_contentBB_x1, precedent->m_contentBB_y1, precedent->m_contentBB_x2, precedent->m_contentBB_y2);
         }
     }
@@ -401,11 +401,11 @@ void MusBBoxDC::UpdateBB(int x1, int y1, int x2, int y2)
     wxASSERT_MSG( !m_objects.IsEmpty(), "Array cannot be empty" ) ;
     
     // we need to store logical coordinates in the objects, we need to convert them back (this is why we need a MusRC object)
-    (&m_objects.Last())->UpdateSelfBB( m_rc->ToLogicalX(x1), m_rc->ToLogicalY(y1), m_rc->ToLogicalX(x2), m_rc->ToLogicalY(y2) );
+    ((MusDocObject*)&m_objects.Last())->UpdateSelfBB( m_rc->ToLogicalX(x1), m_rc->ToLogicalY(y1), m_rc->ToLogicalX(x2), m_rc->ToLogicalY(y2) );
     
     int i;
     for (i = 0; i < (int)m_objects.GetCount(); i++) {
-        (&m_objects[i])->UpdateContentBB( m_rc->ToLogicalX(x1), m_rc->ToLogicalY(y1), m_rc->ToLogicalX(x2), m_rc->ToLogicalY(y2) );
+        ((MusDocObject*)&m_objects[i])->UpdateContentBB( m_rc->ToLogicalX(x1), m_rc->ToLogicalY(y1), m_rc->ToLogicalX(x2), m_rc->ToLogicalY(y2) );
     }
 }
 

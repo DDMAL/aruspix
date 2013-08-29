@@ -610,7 +610,7 @@ bool RecEnv::ResetFile()
         return false;
 
     m_musViewPtr->Show( false );
-    m_musViewPtr->SetLayout( NULL );
+    m_musViewPtr->SetDoc( NULL );
     
     if ( m_imControlPtr->Ok() )
     {
@@ -677,7 +677,7 @@ void RecEnv::UpdateViews( int flags )
         m_recFilePtr->GetImage1( &img );
         m_imControlPtr->ResetImage( img );
 
-        m_musViewPtr->SetLayout( &m_recFilePtr->m_musDocPtr->m_layouts[0] ); // ax2
+        m_musViewPtr->SetDoc( m_recFilePtr->m_musDocPtr );
         m_musViewPtr->SetEnv( this );
         m_musViewPtr->SetToolPanel( m_toolpanel );
         m_musViewPtr->LoadPage( 1 );

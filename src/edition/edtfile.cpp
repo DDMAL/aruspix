@@ -22,7 +22,7 @@
 #include "musdoc.h"
 #include "muspage.h"
 #include "mussystem.h"
-#include "muslaidoutstaff.h"
+#include "musstaff.h"
 #include "musiomei.h"
 #include "musiobin.h"
 
@@ -169,21 +169,7 @@ bool EdtFile::Create( )
     // especially handling pageBreaks and systemBreaks
     
     // reset the MusDoc and create the logical tree
-    m_musDocPtr->Reset();	
-    MusDiv *div = new MusDiv( );
-    MusScore *score = new MusScore( );
-    MusSection *section = new MusSection( );
-    MusStaff *logStaff = NULL;
-    MusLayer *logLayer = NULL;
-    for (j = 0; j < nb_staves_per_system; j++) {
-        logStaff = new MusStaff();
-        logLayer = new MusLayer();
-        logStaff->AddLayer( logLayer );
-        section->AddStaff( logStaff );
-    }
-    
-    // create a new layout and the page
-    MusLayout *layout = new MusLayout( Transcription );
+    m_musDocPtr->Reset( Transcription);	
     MusPage *page = new MusPage();
     
 	m_musDocPtr->m_pageWidth = width * 10;
@@ -194,9 +180,7 @@ bool EdtFile::Create( )
         //system->lrg_lign = width - 20; // we have now m_systemRightMar  
         for (j = 0; j < nb_staves_per_system; j++)
         {
-            logStaff = dynamic_cast<MusStaff*> (&section->m_staves[j]);
-            wxASSERT_MSG( logStaff, "MusStaff cannot be NULL" );
-            MusLaidOutStaff *staff = new MusLaidOutStaff( j + 1 );
+            MusStaff *staff = new MusStaff( j + 1 );
             staff->portNbLine = EdtNewDlg::s_staffLines;
             if (EdtNewDlg::s_m_notationMode == MUS_MENSURAL_MODE)
                 staff->notAnc = true;
@@ -214,15 +198,11 @@ bool EdtFile::Create( )
             // We also need to create the layers!
             // ...
             // We also need to add pageBreaks and systemBreak to the layers
-            system->m_staves.Add( staff );
+            system->AddStaff( staff );
         }
-        page->m_systems.Add( system );
+        page->AddSystem( system );
     }
-    layout->AddPage( page );    
-    m_musDocPtr->AddLayout( layout );
-    score->AddSection( section );
-    div->AddScore( score );
-    m_musDocPtr->AddDiv( div );
+    m_musDocPtr->AddPage( page );
 
     return true;
 }

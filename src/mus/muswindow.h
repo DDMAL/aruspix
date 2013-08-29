@@ -129,7 +129,7 @@ public:
 
 	MusLayerElement *m_newElement;
 	MusLayerElement *m_bufferElement;
-	MusLaidOutLayerElement *m_lastEditedElement;
+	MusLayerElement *m_lastEditedElement;
 
 	// keep elements statically - m_newElement will point on them
     MusBarline m_barline;

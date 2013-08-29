@@ -47,11 +47,11 @@ public:
 	void SetCmpFile( CmpFile *cmpFile );
     
     /** 
-     * Loads the source page by looking at the MusLaidOutLayerElement in the layout.
-     * The MusLaidOutLayerElement passed as parameter is the one of the collation.
+     * Loads the source page by looking at the MusLayerElement in the layout.
+     * The MusLayerElement passed as parameter is the one of the collation.
      * The MusLayerElement pointer is used to find the corresponding one (if any)
      **/
-    void LoadSource( MusLaidOutLayerElement *element );
+    void LoadSource( MusLayerElement *element );
     /**
      * Loads the sources.
      * Called from the collationCtrl.

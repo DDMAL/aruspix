@@ -27,11 +27,11 @@ class MusStaff;
 //----------------------------------------------------------------------------
 
 /**
- * This class represents a system in a laid-out score (MusLayout).
+ * This class represents a system in a laid-out score (MusDoc).
  * A MusSystem is contained in a MusPage.
- * It contains MusLaidOutStaff objects.
+ * It contains MusStaff objects.
 */
-class MusSystem: public MusLayoutObject
+class MusSystem: public MusDocObject
 {
 public:
     // constructors and destructors
@@ -39,36 +39,31 @@ public:
 	MusSystem( const MusSystem& system ); // copy contructor
     virtual ~MusSystem();
     
-    virtual bool Check();
+    //virtual bool Check();
     
     virtual wxString MusClassName( ) { return "MusSystem"; };	    
     
     void Clear();
     
-    /** The parent MusPage setter */
-    void SetPage( MusPage *page ) { m_page = page; };
-    
     //void SetDoc( wxArrayPtrVoid params );
 	
-	void AddStaff( MusLaidOutStaff *staff );
+	void AddStaff( MusStaff *staff );
 	
-	MusLaidOutStaff *GetFirst( );
-	MusLaidOutStaff *GetLast( );
-	MusLaidOutStaff *GetNext( MusLaidOutStaff *staff );
-	MusLaidOutStaff *GetPrevious( MusLaidOutStaff *staff );
-    MusLaidOutStaff *GetStaff( int StaffNo );
-	MusLaidOutStaff *GetAtPos( int y );
+	MusStaff *GetFirst( );
+	MusStaff *GetLast( );
+	MusStaff *GetNext( MusStaff *staff );
+	MusStaff *GetPrevious( MusStaff *staff );
+    MusStaff *GetStaff( int StaffNo );
+	MusStaff *GetAtPos( int y );
 
     void SetValues( int type );
 	
-	int GetStaffCount() const { return (int)m_staves.GetCount(); };
+	int GetStaffCount() const { return (int)m_children.GetCount(); };
     
     int GetSystemNo() const;
     
-    // moulinette
-    virtual void Process(MusFunctor *functor, wxArrayPtrVoid params );
     // functors
-    void Save( wxArrayPtrVoid params );
+    virtual bool Save( wxArrayPtrVoid params );
     void Trim( wxArrayPtrVoid params );
     //void ProcessStaves( wxArrayPtrVoid params );
     //void ProcessVoices( wxArrayPtrVoid params );
@@ -77,13 +72,6 @@ public:
 private:
     
 public:
-    /** The MusLaidOutStaff objects of the system */
-    ArrayOfMusLaidOutStaves m_staves;
-    /** The parent MusPage */
-    MusPage *m_page;
-    /** The array of system breaks MusSymbols */
-    ArrayOfMusLayerElements m_systemBreaks;
-
     /** System left margin (MEI scoredef@system.leftmar). Saved if != 0 */
     int m_systemLeftMar;
     /** System right margin (MEI scoredef@system.rightmar). Saved if != 0 */
@@ -102,33 +90,5 @@ public:
 private:
     
 };
-
-
-//----------------------------------------------------------------------------
-// MusSystemFunctor
-//----------------------------------------------------------------------------
-
-/**
- * This class is a Functor that processes MusSystem objects.
- * Needs testing.
-*/
-class MusSystemFunctor: public MusFunctor
-{
-private:
-    void (MusSystem::*fpt)( wxArrayPtrVoid params );   // pointer to member function
-
-public:
-
-    // constructor - takes pointer to an object and pointer to a member and stores
-    // them in two private variables
-    MusSystemFunctor( void(MusSystem::*_fpt)( wxArrayPtrVoid )) { fpt=_fpt; };
-	virtual ~MusSystemFunctor() {};
-
-    // override function "Call"
-    virtual void Call( MusSystem *ptr, wxArrayPtrVoid params )
-        { (*ptr.*fpt )( params ) ; };          // execute member function
-};
-
-
 
 #endif

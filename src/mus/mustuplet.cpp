@@ -27,8 +27,8 @@ MusTuplet::~MusTuplet()
 {
     // we need to detach all notes because it is not to the beam object to delete them
     int i;
-    for (i = (int)m_notes.GetCount(); i > 0; i--) {
-        m_notes.Detach(i - 1);
+    for (i = GetNoteCount(); i > 0; i--) {
+        m_children.Detach(i - 1);
     }
 }
 
@@ -38,6 +38,6 @@ void MusTuplet::AddNote(MusLayerElement *element) {
         return;
     }
     
-    m_notes.Add(element);
+    m_children.Add(element);
     
 }

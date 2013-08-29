@@ -15,20 +15,13 @@
 
 #include <vector>
 using std::vector;
-using std::string;
 
 #include "muslayer.h"
 #include "muspitchinterface.h"
 
-#include <mei/meielement.h>
-#include <mei/exceptions.h>
-
-using mei::MeiElement;
-using mei::MeiAttribute;
-
 #include "musdef.h"
 
-class MusLaidOutStaff;
+class MusStaff;
 
 enum NeumeOrnament {
     HE,
@@ -77,15 +70,11 @@ class MusNeumeElement: public MusLayerElement, public MusPitchInterface
 {
 public:
     MusNeumeElement(const MusNeumeElement &element);
-    MusNeumeElement(MeiElement &meielement, int pitch, int oct);
     //MusNeumeElement(int _pitchDifference);
     virtual ~MusNeumeElement() {}
     
     int getPitchDifference();
     NeumeElementType getElementType();
-    MeiElement &getMeiElement();
-    void updateMeiRef(string pitch, int oct);
-	void deleteMeiRef();
 	NeumeOrnament getOrnament();
     
     // ax2 - member previously in MusElement
@@ -98,7 +87,6 @@ private:
     int m_pitch_difference;
     NeumeElementType m_element_type;
     NeumeOrnament ornament;
-    MeiElement *m_meiref;
 };
 
 
@@ -115,7 +103,6 @@ public:
     // constructors and destructors
     MusNeume();
     MusNeume( const MusNeume &neume);
-    MusNeume(MeiElement &meielement);
     virtual ~MusNeume() {}
     
     virtual wxString MusClassName( ) { return "MusNeume"; };
@@ -123,32 +110,26 @@ public:
     void setType(wxString type);
     void setType(NeumeType type);
     NeumeType getType();
-    MeiElement &getMeiElement();
     vector<MusNeumeElement> getPitches();
 	void deleteMeiRef();
 
-    //void append( MusDC *dc, MusLaidOutStaff *staff ); //for creating multi-note neumes
+    //void append( MusDC *dc, MusStaff *staff ); //for creating multi-note neumes
     
     virtual void SetPitch( int pitch, int oct );
-    //virtual void SetValue( int value, MusLaidOutStaff *staff = NULL, int vflag = 0 );
+    //virtual void SetValue( int value, MusStaff *staff = NULL, int vflag = 0 );
     //int GetValue();
     
     //helper debug method
     //void printNeumeList();
     
     // ax2 - member previously in MusElement
-    std::string PitchToStr(int pitch);
-    int StrToPitch(std::string pitch);
+    wxString PitchToStr(int pitch);
+    int StrToPitch(wxString pitch);
 
 private:
-    void readNoteContainer(MeiElement &nc, int pitch, int oct);
 
     NeumeOrnament ornament;
     NeumeType m_type;
-    /**
-     * A member reamaining from before 2.0
-     */
-    MeiElement *m_meiref;
     
 
 public:

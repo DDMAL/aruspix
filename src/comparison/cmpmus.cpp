@@ -26,8 +26,8 @@ using std::max;
 
 #include "mus/muswxdc.h"
 #include "mus/musdoc.h"
-#include "mus/muslaidoutstaff.h"
-#include "mus/muslaidoutlayerelement.h"
+#include "mus/musstaff.h"
+#include "mus/muslayerelement.h"
 
 
 //----------------------------------------------------------------------------
@@ -103,8 +103,9 @@ void CmpMusController::LoadSources()
 }
 
 
-void CmpMusController::LoadSource( MusLaidOutLayerElement *element )
+void CmpMusController::LoadSource( MusLayerElement *element )
 {
+    /*
     if ( m_collationCtrl ) {
         // this should never happen because we do not load the source from the collation controller
         return;
@@ -116,11 +117,11 @@ void CmpMusController::LoadSource( MusLaidOutLayerElement *element )
     }
     
     MusPage *currentPage = m_viewPtr->m_page;
-    MusLaidOutLayerElement *laidOutLayerElement = NULL;
+    MusLayerElement *laidOutLayerElement = NULL;
     wxArrayPtrVoid params;
 	params.Add( element->m_layerElement );
     params.Add( &laidOutLayerElement );
-    MusLaidOutLayerElementFunctor findLayerElement( &MusLaidOutLayerElement::FindLayerElement );
+    MusLayerElementFunctor findLayerElement( &MusLayerElement::FindLayerElement );
     m_viewPtr->m_layout->Process( &findLayerElement, params );
     
     if ( !laidOutLayerElement ) {
@@ -139,6 +140,7 @@ void CmpMusController::LoadSource( MusLaidOutLayerElement *element )
     m_viewPtr->m_currentElement = laidOutLayerElement;
     m_viewPtr->UpdateCmpScroll();
     m_viewPtr->Refresh();
+    */ // ax2.3
 }
 
 

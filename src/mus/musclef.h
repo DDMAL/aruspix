@@ -13,7 +13,7 @@
     #include "wx/wx.h"
 #endif
 
-#include "muslayer.h"
+#include "muslayerelement.h"
 #include "musdef.h"
 
 //----------------------------------------------------------------------------

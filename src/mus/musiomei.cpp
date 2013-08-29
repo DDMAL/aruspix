@@ -19,10 +19,6 @@ using std::max;
 
 #include "musiomei.h"
 
-#include <mei/xmlimport.h>
-#include <mei/xmlexport.h>
-#include <mei/cmnornaments.h>
-
 #include "musbarline.h"
 #include "musbeam.h"
 #include "musclef.h"
@@ -33,14 +29,11 @@ using std::max;
 #include "musrest.h"
 #include "mussymbol.h"
 
-#include "muslaidoutstaff.h"
-#include "muslaidoutlayer.h"
-#include "muslaidoutlayerelement.h"
+#include "musstaff.h"
+#include "muslayer.h"
+#include "muslayerelement.h"
 
 //#include "app/axapp.h"
-
-#include <vector>
-using std::vector;
 
 //----------------------------------------------------------------------------
 // MusMeiOutput
@@ -52,24 +45,13 @@ MusMeiOutput::MusMeiOutput( MusDoc *doc, wxString filename ) :
 {
     m_filename = filename;
     m_mei = NULL;
-    m_music = NULL;
-    m_body = NULL;
-    m_div = NULL;
     m_score = NULL;
-    m_parts = NULL;
-    m_part = NULL;
-    m_section = NULL;
-    m_measure = NULL;
+    m_page = NULL;
+    m_system = NULL;
     m_staff = NULL;
     m_layer = NULL;
     m_rdgLayer = NULL;
     m_currentLayer = NULL;
-    m_layouts = NULL;
-    m_layout = NULL;
-    m_page = NULL;
-    m_system = NULL;
-    m_laidOutStaff = NULL;
-    m_laidOutLayer = NULL;
 }
 
 MusMeiOutput::~MusMeiOutput()
@@ -79,31 +61,36 @@ MusMeiOutput::~MusMeiOutput()
 bool MusMeiOutput::ExportFile( )
 {
     try {
+        TiXmlDocument *meiDoc = new TiXmlDocument();
         
-        
-        XmlInstructions procinst;
-        
-        //std::string name1 = "xml-model";
-        //std::string value1 = "href=\"mei-2012.rng\" type=\"application/xml\" schematypens=\"http://purl.oclc.org/dsdl/schematron\"";
-        
-        std::string name2 = "xml-model";
-        std::string value2 = "href=\"http://www.aruspix.net/mei-layout-2012-10-09.rng\" type=\"application/xml\" schematypens=\"http://relaxng.org/ns/structure/1.0\"";
-        
-        //XmlProcessingInstruction *xpi1 = new XmlProcessingInstruction(name1, value1);
-        XmlProcessingInstruction *xpi2 = new XmlProcessingInstruction(name2, value2);
-        
-        //procinst.push_back(xpi1);
-        procinst.push_back(xpi2);
-        
-        mei::MeiDocument *meiDoc = new mei::MeiDocument();
-        
-        m_mei = new MeiElement("mei");
-        // this starts the call of all the functors
-        
-        m_doc->Save( this );
+        m_mei = new TiXmlElement("mei");
+        m_mei->SetAttribute( "xmlns", "http://www.music-encoding.org/ns/mei" );
+        m_mei->SetAttribute( "meiversion", "2012" );
 
-        meiDoc->setRootElement(m_mei);
-        XmlExport::meiDocumentToFile( meiDoc, m_filename.c_str(), procinst );
+        // element to place the pages
+        m_score = new TiXmlElement("score");
+        m_score->SetAttribute( "type",  DocTypeToStr( m_doc->GetType() ).c_str() );
+        
+        
+        // this starts the call of all the functors
+        m_doc->Save( this );
+        
+        // after the functor has run, we have the header in m_mei and the score in m_score
+        TiXmlElement *mdiv = new TiXmlElement("mdiv");
+        mdiv->LinkEndChild( m_score );
+        TiXmlElement *body = new TiXmlElement("body");
+        body->LinkEndChild( mdiv );
+        TiXmlElement *music = new TiXmlElement("music");
+        music->LinkEndChild( body );
+        m_mei->LinkEndChild( music );
+        
+        TiXmlUnknown *schema = new TiXmlUnknown();
+        schema->SetValue("?xml-model href=\"http://www.aruspix.net/mei-layout-2012-10-09.rng\" type=\"application/xml\" schematypens=\"http://relaxng.org/ns/structure/1.0\"?");
+        
+        meiDoc->LinkEndChild( new TiXmlDeclaration( "1.0", "UTF-8", "" ) );
+        meiDoc->LinkEndChild(schema);
+        meiDoc->LinkEndChild(m_mei);
+        meiDoc->SaveFile( m_filename.c_str() );
     }
     catch( char * str ) {
         wxLogError("%s", str );
@@ -112,14 +99,14 @@ bool MusMeiOutput::ExportFile( )
 	return true;    
 }
 
-std::string MusMeiOutput::UuidToMeiStr( MusObject *element )
+wxString MusMeiOutput::UuidToMeiStr( MusObject *element )
 {
     // RZ uuid_string_t does not exist on freebsd
     char uuidStr[37];
     uuid_unparse( *element->GetUuid(), uuidStr );
-    string out;    
+    wxString out;    
     // xml IDs can't start with a number, so we prepend "m-" to every ID.
-    out = "m-" + string(uuidStr);
+    out = "m-" + wxString(uuidStr);
     std::transform(out.begin(), out.end(), out.begin(), ::tolower);
     return out;
 }
@@ -129,133 +116,96 @@ bool MusMeiOutput::WriteDoc( MusDoc *doc )
     wxASSERT( m_mei );
     
     // ---- header ----
-    MeiHead *meiHead = new MeiHead();
+    TiXmlElement *meiHead = new TiXmlElement("meiHead");
     
-    MeiElement *fileDesc = new MeiElement("fileDesc");
-    MeiElement *titleStmt = new MeiElement("titleStmt");
-    fileDesc->addChild(titleStmt);
-    MeiElement *title = new MeiElement("title");
-    titleStmt->addChild(title);
-    MeiElement *pubStmt = new MeiElement("pubStmt");
-    fileDesc->addChild(pubStmt);
-    MeiElement *date = new MeiElement("date");
-    pubStmt->addChild(date);
+    TiXmlElement *fileDesc = new TiXmlElement("fileDesc");
+    TiXmlElement *titleStmt = new TiXmlElement("titleStmt");
+    fileDesc->LinkEndChild(titleStmt);
+    TiXmlElement *title = new TiXmlElement("title");
+    titleStmt->LinkEndChild(title);
+    TiXmlElement *pubStmt = new TiXmlElement("pubStmt");
+    fileDesc->LinkEndChild(pubStmt);
+    TiXmlElement *date = new TiXmlElement("date");
+    pubStmt->LinkEndChild(date);
     
-    MeiElement *encodingDesc = new MeiElement("encodingDesc");
-    MeiElement *projectDesc = new MeiElement("projectDesc");
-    encodingDesc->addChild(projectDesc);
-    MeiElement *p1 = new MeiElement("p");
-    projectDesc->addChild(p1);
+    TiXmlElement *encodingDesc = new TiXmlElement("encodingDesc");
+    TiXmlElement *projectDesc = new TiXmlElement("projectDesc");
+    encodingDesc->LinkEndChild(projectDesc);
+    TiXmlElement *p1 = new TiXmlElement("p");
+    projectDesc->LinkEndChild(p1);
     
-    p1->setValue( wxString::Format( "Encoded with Aruspix version %s",  MusDoc::GetAxVersion().c_str() ).c_str() );
-    date->setValue( wxNow().c_str() );
+    p1->LinkEndChild( new TiXmlText( wxString::Format( "Encoded with Aruspix version %s",  MusDoc::GetAxVersion().c_str() ).c_str() ) );
+    date->LinkEndChild( new TiXmlText( wxNow().c_str() ) );
     
-    meiHead->addChild(fileDesc);
-    meiHead->addChild(encodingDesc);
-    m_mei->addChild( meiHead );
-    
-    // ---- music ---- 
-    m_music = new Music();
-    m_layouts = new Layouts();
-    m_body = new Body();
-    // add them, layout first, the body containing divs
-    m_music->addChild( m_layouts );
-    m_music->addChild( m_body );
-    m_mei->addChild( m_music );
+    meiHead->LinkEndChild(fileDesc);
+    meiHead->LinkEndChild(encodingDesc);
+    m_mei->LinkEndChild( meiHead );
     
     return true;
 }
 
-bool MusMeiOutput::WriteDiv( MusDiv *div )
-//bool MusMeiOutput::WriteMeiDiv( Mdiv *meiDiv, MusDiv *div )
-{
-    wxASSERT( m_body );
-    m_div = new Mdiv();
-    m_div->setId( UuidToMeiStr( div ));
-    m_body->addChild( m_div );
-    return true;
-}
 
-bool MusMeiOutput::WriteScore( MusScore *score )
-//bool MusMeiOutput::WriteMeiScore( Score *meiScore, MusScore *score )
+bool MusMeiOutput::WritePage( MusPage *page )
 {
-    wxASSERT( m_div );
-    m_score = new Score();
-    m_score->setId( UuidToMeiStr( score ));
-    m_div->addChild( m_score );
-    return true;
-}
-
-bool MusMeiOutput::WritePartSet( MusPartSet *partSet )
-//bool MusMeiOutput::WriteMeiParts( Parts * meiParts, MusPartSet *partSet )
-{
-    wxASSERT( m_div );
-    m_parts = new Parts();
-    m_parts->setId( UuidToMeiStr( partSet ));
-    m_div->addChild( m_parts );
-    return true;
-}
-
-bool MusMeiOutput::WritePart( MusPart *part )
-//bool MusMeiOutput::WriteMeiPart( Part *meiPart, MusPart *part )
-{
-    wxASSERT( m_parts );
-    m_part = new Part();
-    m_part->setId( UuidToMeiStr( part ));
-    m_parts->addChild( m_part );
-    return true;
-}
-
-bool MusMeiOutput::WriteSection( MusSection *section )
-//bool MusMeiOutput::WriteMeiSection( Section *meiSection, MusSection *section )
-{
-    wxASSERT( m_score || m_part );
-    m_section = new Section();
-    m_section->setId( UuidToMeiStr( section ));
-    if ( m_score ) {
-        m_score->addChild( m_section );
+    wxASSERT( m_score );
+    m_page = new TiXmlElement("page");
+    m_page->SetAttribute( "xml:id",  UuidToMeiStr( page ).c_str() );
+    // size and margins but only if any - we rely on pageHeight only to check this
+    if ( page->m_pageHeight != -1 ) {
+        m_page->SetAttribute( "pageWidth", wxString::Format( "%d", page->m_pageWidth ).c_str() );
+        m_page->SetAttribute( "pageHeight", wxString::Format( "%d", page->m_pageHeight ).c_str() );
+        m_page->SetAttribute( "pageLeftmar", wxString::Format( "%d", page->m_pageLeftMar ).c_str() );
+        m_page->SetAttribute( "pageRightmar", wxString::Format( "%d", page->m_pageRightMar ).c_str() );
     }
-    else {
-        m_part->addChild( m_section );
+    if ( !page->m_surface.IsEmpty() ) {
+        m_page->SetAttribute( "surface", page->m_surface.c_str() );
     }
+    //
+    TiXmlComment *comment = new TiXmlComment();
+    comment->SetValue( "Coordinates in MEI axis direction" );
+    m_score->LinkEndChild( comment );
+    m_score->LinkEndChild( m_page );
     return true;
 }
 
-bool MusMeiOutput::WriteMeasure( MusMeasure *measure )
-//bool MusMeiOutput::WriteMeiMeasure( Measure *meiMeasure, MusMeasure *measure )
+bool MusMeiOutput::WriteSystem( MusSystem *system )
 {
-    wxASSERT( m_section );
-    m_measure = new Measure();
-    m_measure->setId( UuidToMeiStr( measure ));
-    m_section->addChild( m_measure );
+    wxASSERT( m_page );
+    m_system = new TiXmlElement("system");
+    m_system->SetAttribute( "xml:id",  UuidToMeiStr( system ).c_str() );
+    // margins
+    m_system->SetAttribute( "systemLeftmar", wxString::Format( "%d", system->m_systemLeftMar ).c_str() );
+    m_system->SetAttribute( "systemRightmar", wxString::Format( "%d", system->m_systemRightMar ).c_str() );
+    // y positions
+    m_system->SetAttribute( "uly", wxString::Format( "%d", system->m_y_abs ).c_str() );
+    m_page->LinkEndChild( m_system );
     return true;
 }
 
 bool MusMeiOutput::WriteStaff( MusStaff *staff )
-//bool MusMeiOutput::WriteMeiStaff( Staff *meiStaff, MusStaff *staff )
 {
-    wxASSERT( m_section || m_measure );
-    m_staff = new Staff();
-    m_staff->setId( UuidToMeiStr( staff ));
-    // measured music, we have a measure object
-    if ( m_measure ) {
-        m_measure->addChild( m_staff );
+    wxASSERT( m_system );
+    m_staff = new TiXmlElement("staff");
+    m_staff->SetAttribute( "xml:id",  UuidToMeiStr( staff ).c_str() );
+    // y position
+    if ( staff->notAnc ) {
+        m_staff->SetAttribute( "type", "mensural" );
     }
-    // unmeasured music
-    else {
-        m_section->addChild( m_staff );
-    }
+    m_staff->SetAttribute( "uly", wxString::Format( "%d", staff->m_y_abs ).c_str() );
+    m_staff->SetAttribute( "staff", wxString::Format( "%d", staff->m_logStaffNb ).c_str() );    
+
+    m_system->LinkEndChild( m_staff );
     return true;
 }
 
 bool MusMeiOutput::WriteLayer( MusLayer *layer )
-//bool MusMeiOutput::WriteMeiLayer( Layer *meiLayer, MusLayer *layer )
 {
     wxASSERT( m_staff );
-    m_layer = new Layer();
+    m_layer = new TiXmlElement("layer");
     m_currentLayer = m_layer;
-    m_layer->setId( UuidToMeiStr( layer ));
-    m_staff->addChild( m_layer );
+    m_layer->SetAttribute( "xml:id",  UuidToMeiStr( layer ).c_str() );
+    m_layer->SetAttribute( "layer", wxString::Format( "%d", layer->m_logLayerNb ).c_str() );
+    m_staff->LinkEndChild( m_layer );
     return true;
 }
 
@@ -263,26 +213,22 @@ bool MusMeiOutput::WriteLayerElement( MusLayerElement *element )
 {
     wxASSERT( m_currentLayer );
     
-    MeiElement *meiElement = NULL;
+    TiXmlElement *xmlElement = NULL;
     if (dynamic_cast<MusBarline*>(element)) {
-        BarLine *barline = new BarLine();
-        WriteMeiBarline( barline, dynamic_cast<MusBarline*>(element) );
-        meiElement = barline;
+        xmlElement = new TiXmlElement( "barline" );
+        WriteMeiBarline( xmlElement, dynamic_cast<MusBarline*>(element) );
     }
     else if (dynamic_cast<MusBeam*>(element)) {
-        Beam *beam = new Beam();
-        WriteMeiBeam( beam, dynamic_cast<MusBeam*>(element) );
-        meiElement = beam;
+        xmlElement = new TiXmlElement("beam");
+        WriteMeiBeam( xmlElement, dynamic_cast<MusBeam*>(element) );
     }
     else if (dynamic_cast<MusClef*>(element)) {
-        Clef *clef = new Clef();
-        WriteMeiClef( clef, dynamic_cast<MusClef*>(element) );
-        meiElement = clef;
+        xmlElement = new TiXmlElement("clef");
+        WriteMeiClef( xmlElement, dynamic_cast<MusClef*>(element) );
     }
     else if (dynamic_cast<MusMensur*>(element)) {
-        Mensur *mensur = new Mensur();
-        WriteMeiMensur( mensur, dynamic_cast<MusMensur*>(element) );
-        meiElement = mensur;
+        xmlElement = new TiXmlElement("mensur");
+        WriteMeiMensur( xmlElement, dynamic_cast<MusMensur*>(element) );
     }
     else if (dynamic_cast<MusNeume*>(element)) {
         wxLogWarning( "Neume are not saved in MEI files" );
@@ -295,27 +241,26 @@ bool MusMeiOutput::WriteLayerElement( MusLayerElement *element )
             // the note will be saved from the beam element;
             return true;
         }
-        Note *note = new Note();
-        WriteMeiNote( note, dynamic_cast<MusNote*>(element) );
-        meiElement = note;
+        xmlElement = new TiXmlElement("note");
+        WriteMeiNote( xmlElement, dynamic_cast<MusNote*>(element) );
     }
     else if (dynamic_cast<MusRest*>(element)) {
         if ( dynamic_cast<MusRest*>(element)->m_beam[0] ) {
             // the rest will be saved from the beam element;
             return true;
         }
-        Rest *rest = new Rest();
-        WriteMeiRest( rest, dynamic_cast<MusRest*>(element) );
-        meiElement = rest;
+        xmlElement = new TiXmlElement("rest");
+        WriteMeiRest( xmlElement, dynamic_cast<MusRest*>(element) );
     }
     else if (dynamic_cast<MusSymbol*>(element)) {        
-        meiElement = WriteMeiSymbol( dynamic_cast<MusSymbol*>(element) );
+        xmlElement = WriteMeiSymbol( dynamic_cast<MusSymbol*>(element) );
     }
     
     // we have it, set the uuid we read
-    if ( meiElement ) {
-        meiElement->setId( UuidToMeiStr( element ));
-        m_currentLayer->addChild( meiElement );
+    if ( xmlElement ) {
+        xmlElement->SetAttribute( "xml:id",  UuidToMeiStr( element ).c_str() );
+        xmlElement->SetAttribute( "ulx", wxString::Format( "%d", element->m_x_abs ).c_str() );
+        m_currentLayer->LinkEndChild( xmlElement );
         return true;
     }
     else {
@@ -324,257 +269,154 @@ bool MusMeiOutput::WriteLayerElement( MusLayerElement *element )
     }    
 }
 
-void MusMeiOutput::WriteMeiBarline( BarLine *meiBarline, MusBarline *barline )
+void MusMeiOutput::WriteMeiBarline( TiXmlElement *meiBarline, MusBarline *barline )
 {
     return;
 }
 
 
-void MusMeiOutput::WriteMeiBeam( Beam *meiBeam, MusBeam *beam )
+void MusMeiOutput::WriteMeiBeam( TiXmlElement *meiBeam, MusBeam *beam )
 {
     int i = 0;
-    for (i = 0; i < (int)beam->m_notes.Count(); i++) {
-        if ( dynamic_cast<MusNote*>(&beam->m_notes[i]) ) {
-            MusNote *musNote = dynamic_cast<MusNote*>( &beam->m_notes[i] );
-            Note *note = new Note();
+    for (i = 0; i < beam->GetNoteCount(); i++) {
+        if ( dynamic_cast<MusNote*>(&beam->m_children[i]) ) {
+            MusNote *musNote = dynamic_cast<MusNote*>( &beam->m_children[i] );
+            TiXmlElement *note = new TiXmlElement("note");
             WriteMeiNote( note, musNote );
-            note->setId( UuidToMeiStr( musNote ));
-            meiBeam->addChild( note );
+            note->SetAttribute( "xml:id",  UuidToMeiStr( musNote ).c_str() );
+            meiBeam->LinkEndChild( note );
         }
-        else if (dynamic_cast<MusRest*>(&beam->m_notes[i]) ) {
-            MusRest *musRest = dynamic_cast<MusRest*>( &beam->m_notes[i] );
-            Rest *rest = new Rest();
+        else if (dynamic_cast<MusRest*>(&beam->m_children[i]) ) {
+            MusRest *musRest = dynamic_cast<MusRest*>( &beam->m_children[i] );
+            TiXmlElement *rest = new TiXmlElement("rest");
             WriteMeiRest( rest, musRest );
-            rest->setId( UuidToMeiStr( musRest ));
-            meiBeam->addChild( rest );
+            rest->SetAttribute( "xml:id",  UuidToMeiStr( musRest ).c_str() );
+            meiBeam->LinkEndChild( rest );
         }
     }
     return;
 }
 
 
-void MusMeiOutput::WriteMeiClef( Clef *meiClef, MusClef *clef )
+void MusMeiOutput::WriteMeiClef( TiXmlElement *meiClef, MusClef *clef )
 {
-    meiClef->m_Lineloc.setLine( ClefLineToStr( clef->m_clefId ) );
-    meiClef->m_Clefshape.setShape( ClefShapeToStr( clef->m_clefId ) );
+    meiClef->SetAttribute( "line", ClefLineToStr( clef->m_clefId ).c_str() );
+    meiClef->SetAttribute( "shape", ClefShapeToStr( clef->m_clefId ).c_str() );
     return;
 }
 
 
-void MusMeiOutput::WriteMeiMensur( Mensur *meiMensur, MusMensur *mensur )
+void MusMeiOutput::WriteMeiMensur( TiXmlElement *meiMensur, MusMensur *mensur )
 {
     if ( mensur->m_sign ) {
-        meiMensur->m_MensurLog.setSign( MensurSignToStr( mensur->m_sign ));
+        meiMensur->SetAttribute( "sign", MensurSignToStr( mensur->m_sign ).c_str() );
     }
     if ( mensur->m_dot ) {
-        meiMensur->m_MensurLog.setDot("true");
+        meiMensur->SetAttribute( "dot", "true" );
     }
     if ( mensur->m_slash ) {
-        meiMensur->m_Slashcount.setSlash("1"); // only one slash for now
+        meiMensur->SetAttribute( "slash", "1" ); // only one slash for now
     }
     if ( mensur->m_reversed ) {
-        meiMensur->m_MensurVis.setOrient("reversed"); // only orientation
+        meiMensur->SetAttribute( "orient", "reversed" ); // only orientation
     }
     if ( mensur->m_num ) {
-        meiMensur->m_DurationRatio.setNum( wxString::Format("%d", mensur->m_num ).c_str() );
+        meiMensur->SetAttribute( "num", wxString::Format("%d", mensur->m_num ).c_str() );
     }
     if ( mensur->m_numBase ) {
-        meiMensur->m_DurationRatio.setNumbase( wxString::Format("%d", mensur->m_numBase ).c_str() );
+        meiMensur->SetAttribute( "numbase", wxString::Format("%d", mensur->m_numBase ).c_str() );
     }
     // missing m_meterSymb
     
     return;
 }
 
-void MusMeiOutput::WriteMeiNote( Note *meiNote, MusNote *note )
+void MusMeiOutput::WriteMeiNote( TiXmlElement *meiNote, MusNote *note )
 {
-    meiNote->m_Pitch.setPname( PitchToStr( note->m_pname ));
-    meiNote->m_Octave.setOct( OctToStr( note->m_oct ));
-    meiNote->m_DurationMusical.setDur( DurToStr( note->m_dur ));
+    meiNote->SetAttribute( "pname", PitchToStr( note->m_pname ).c_str() );
+    meiNote->SetAttribute( "oct", OctToStr( note->m_oct ).c_str() );
+    meiNote->SetAttribute( "dur", DurToStr( note->m_dur ).c_str() );
     if ( note->m_dots ) {
-        meiNote->m_Augmentdots.setDots( wxString::Format("%d", note->m_dots).c_str() );
+        meiNote->SetAttribute( "dots", wxString::Format("%d", note->m_dots).c_str() );
     }
     if ( note->m_accid ) {
-        meiNote->m_Accidental.setAccid( AccidToStr( note->m_accid ));
+        meiNote->SetAttribute( "accid", AccidToStr( note->m_accid ).c_str() );
     }
     if ( note->m_lig ) {
         if ( note->m_ligObliqua ) {
-            meiNote->m_NoteLogMensural.setLig( "obliqua" );
+            meiNote->SetAttribute( "lig", "obliqua" );
         }
         else {
-            meiNote->m_NoteLogMensural.setLig( "recta" );
+            meiNote->SetAttribute( "lig", "recta" );
         }
     }
     if ( note->m_stemDir ) {
         // this is not really correct because MusNote::m_stemDir indicates that it is opposite the normal position
-        meiNote->m_Stemmed.setStemDir( "up" );
+        meiNote->SetAttribute( "stemDir", "up" );
     }
     if ( note->m_colored ) {
-        meiNote->m_Coloration.setColored( "true" );
+        meiNote->SetAttribute( "colored", "true" );
     }
     // missing m_artic, m_chord, m_headShape, m_slur, m_stemLen
     return;
 }
 
-void MusMeiOutput::WriteMeiRest( Rest *meiRest, MusRest *rest )
+void MusMeiOutput::WriteMeiRest( TiXmlElement *meiRest, MusRest *rest )
 {    
-    meiRest->m_DurationMusical.setDur( DurToStr( rest->m_dur ));
+    meiRest->SetAttribute( "dur", DurToStr( rest->m_dur ).c_str() );
     if ( rest->m_dots ) {
-        meiRest->m_Augmentdots.setDots( wxString::Format("%d", rest->m_dots).c_str() );
+        meiRest->SetAttribute( "dots", wxString::Format("%d", rest->m_dots).c_str() );
     }
     // missing position
-    meiRest->m_StafflocPitched.setPloc( PitchToStr( rest->m_pname ));
-    meiRest->m_StafflocPitched.setOloc( OctToStr( rest->m_oct ) );
+    meiRest->SetAttribute( "ploc", PitchToStr( rest->m_pname ).c_str() );
+    meiRest->SetAttribute( "oloc", OctToStr( rest->m_oct ).c_str() );
     return;
 }
 
-MeiElement *MusMeiOutput::WriteMeiSymbol( MusSymbol *symbol )
+TiXmlElement *MusMeiOutput::WriteMeiSymbol( MusSymbol *symbol )
 {
-    MeiElement *meiElement = NULL;
+    TiXmlElement *xmlElement = NULL;
     if (symbol->m_type==SYMBOL_ACCID) {
-        Accid *accid = new Accid();
-        accid->m_Accidental.setAccid( AccidToStr( symbol->m_accid ));
+        TiXmlElement *accid = new TiXmlElement("accid");
+        accid->SetAttribute( "accid", AccidToStr( symbol->m_accid ).c_str() );
         // position
-        accid->m_StafflocPitched.setPloc( PitchToStr( symbol->m_pname ));
-        accid->m_StafflocPitched.setOloc( OctToStr( symbol->m_oct ) );
-        meiElement = accid;
+        accid->SetAttribute( "ploc", PitchToStr( symbol->m_pname ).c_str() );
+        accid->SetAttribute( "oloc", OctToStr( symbol->m_oct ).c_str() );
+        xmlElement = accid;
     }
     else if (symbol->m_type==SYMBOL_CUSTOS) {
-        Custos *custos = new Custos();
-        custos->m_Pitch.setPname( PitchToStr( symbol->m_pname ) );
-        custos->m_Octave.setOct( OctToStr( symbol->m_oct ) );
-        meiElement = custos;
+        TiXmlElement *custos = new TiXmlElement("custos");
+        custos->SetAttribute( "pname", PitchToStr( symbol->m_pname ).c_str() );
+        custos->SetAttribute( "oct", OctToStr( symbol->m_oct ).c_str() );
+        xmlElement = custos;
     }
     else if (symbol->m_type==SYMBOL_DOT) {
-        Dot *dot = new Dot();
+        TiXmlElement *dot = new TiXmlElement("dot");
         // missing m_dots
         // position
-        dot->m_StafflocPitched.setPloc( PitchToStr( symbol->m_pname ));
-        dot->m_StafflocPitched.setOloc( OctToStr( symbol->m_oct ) );
-        meiElement = dot;
+        dot->SetAttribute( "ploc", PitchToStr( symbol->m_pname ).c_str() );
+        dot->SetAttribute( "oloc", OctToStr( symbol->m_oct ).c_str() );
+        xmlElement = dot;
     }
-    return meiElement;
+    return xmlElement;
 }
-
-
-bool MusMeiOutput::WriteLayout( MusLayout *layout )
-{
-    wxASSERT( m_layouts );
-    m_layout = new Layout();
-    m_layout->m_Typed.setType(LayoutTypeToStr( layout->GetType() ));
-    if ( !layout->m_source.IsEmpty() ) {
-        m_layout->m_Source.setSource( layout->m_source.c_str() );
-    }
-    m_layout->setId( UuidToMeiStr( layout ));
-    m_layouts->addChild( m_layout );
-    return true;
-}
-
-bool MusMeiOutput::WritePage( MusPage *page )
-{
-    wxASSERT( m_layout );
-    m_page = new Page();
-    m_page->setId( UuidToMeiStr( page ));
-    // size and margins but only if any - we rely on pageHeight only to check this
-    if ( page->m_pageHeight != -1 ) {
-        m_page->m_ScoreDefVis.setPageWidth( wxString::Format( "%d", page->m_pageWidth ).c_str() );
-        m_page->m_ScoreDefVis.setPageHeight( wxString::Format( "%d", page->m_pageHeight ).c_str() );
-        m_page->m_ScoreDefVis.setPageLeftmar( wxString::Format( "%d", page->m_pageLeftMar ).c_str() );
-        m_page->m_ScoreDefVis.setPageRightmar( wxString::Format( "%d", page->m_pageRightMar ).c_str() );
-    }
-    if ( !page->m_surface.IsEmpty() ) {
-        m_page->m_Surface.setSurface( page->m_surface.c_str() );
-    }
-    //
-    MeiCommentNode *comment = new MeiCommentNode();
-    comment->setValue("Coordinates in MEI axis direction");
-    m_layout->addChild( comment );
-    m_layout->addChild( m_page );
-    return true;
-}
-
-bool MusMeiOutput::WriteSystem( MusSystem *system )
-{
-    wxASSERT( m_page );
-    m_system = new System();
-    m_system->setId( UuidToMeiStr( system ));
-    // margins
-    m_system->m_ScoreDefVis.setSystemLeftmar( wxString::Format( "%d", system->m_systemLeftMar ).c_str() );
-    m_system->m_ScoreDefVis.setSystemRightmar( wxString::Format( "%d", system->m_systemRightMar ).c_str() );
-    // y positions
-    m_system->m_Coordinated.setUly( wxString::Format( "%d", system->m_y_abs ).c_str() );
-    m_page->addChild( m_system );
-    return true;
-}
-
-bool MusMeiOutput::WriteLaidOutStaff( MusLaidOutStaff *laidOutStaff )
-{
-    wxASSERT( m_system );
-    m_laidOutStaff = new LaidOutStaff();
-    m_laidOutStaff->setId( UuidToMeiStr( laidOutStaff ));
-    // y position
-    if ( laidOutStaff->notAnc ) {
-        m_laidOutStaff->m_Typed.setType("mensural");
-    }
-    m_laidOutStaff->m_Coordinated.setUly( wxString::Format( "%d", laidOutStaff->m_y_abs ).c_str() );
-    m_laidOutStaff->m_Staffident.setStaff( wxString::Format( "%d", laidOutStaff->m_logStaffNb ).c_str() );
-    m_system->addChild( m_laidOutStaff );
-    return true;
-}
-
-bool MusMeiOutput::WriteLaidOutLayer( MusLaidOutLayer *laidOutLayer )
-{    
-    wxASSERT( m_laidOutStaff );
-    m_laidOutLayer = new LaidOutLayer();
-    m_laidOutLayer->setId( UuidToMeiStr( laidOutLayer ));
-    m_laidOutLayer->m_Layerident.setLayer( wxString::Format( "%d", laidOutLayer->m_logLayerNb ).c_str() );
-    m_laidOutLayer->m_Staffident.setStaff( wxString::Format( "%d", laidOutLayer->m_logLayerNb ).c_str() );
-    if ( laidOutLayer->GetSection() ) {
-        // unmeasured music
-        m_laidOutLayer->m_Pointing.setTarget( UuidToMeiStr( laidOutLayer->GetSection() ) );
-    }
-    else if ( laidOutLayer->GetMeasure() ) {
-        // measured music
-        m_laidOutLayer->m_Pointing.setTarget( UuidToMeiStr( laidOutLayer->GetMeasure() ) );        
-    }
-    else {
-        wxLogWarning( "Attempt to write a <laidOutLayer> without @target" );
-    }
-    m_laidOutStaff->addChild( m_laidOutLayer );
-    return true;
-}
-
-bool MusMeiOutput::WriteLaidOutLayerElement( MusLaidOutLayerElement *laidOutLayerElement )
-{
-    wxASSERT( m_laidOutLayer );
-    LaidOutElement *element = new LaidOutElement();
-    
-    element->setId( UuidToMeiStr( laidOutLayerElement ));
-    // y position
-    element->m_Coordinated.setUlx( wxString::Format( "%d", laidOutLayerElement->m_x_abs ).c_str() );
-    // pointer to the logical element
-    element->m_Pointing.setTarget(UuidToMeiStr( laidOutLayerElement->m_layerElement ) );
-    m_laidOutLayer->addChild( element );
-    return true;
-}
-
 
 bool MusMeiOutput::WriteLayerApp( MusLayerApp *app )
 {    
     wxASSERT( m_currentLayer );
-    m_app = new App();
-    m_currentLayer->addChild( m_app ); 
+    m_app = new TiXmlElement("app");
+    m_currentLayer->LinkEndChild( m_app ); 
     return true;
 }
 
 bool MusMeiOutput::WriteLayerRdg( MusLayerRdg *rdg )
 {   
     wxASSERT( m_app );
-    m_rdgLayer = new Rdg();
+    m_rdgLayer = new TiXmlElement("rdg");
     // now swith the m_currentLayer pointer
     m_currentLayer = m_rdgLayer;
-    m_rdgLayer->m_Source.setSource( rdg->m_source.c_str() );
-    m_app->addChild( m_rdgLayer ); 
+    m_rdgLayer->SetAttribute( "source", rdg->m_source.c_str() );
+    m_app->LinkEndChild( m_rdgLayer ); 
     return true;
 }
 
@@ -588,11 +430,11 @@ bool MusMeiOutput::EndLayerRdg( MusLayerRdg *rgd )
 
 
 
-std::string MusMeiOutput::OctToStr(int oct)
+wxString MusMeiOutput::OctToStr(int oct)
 {
 	char buf[3];
 	snprintf(buf, 2, "%d", oct);
-	return std::string(buf);
+	return wxString(buf);
 	
 	// For some reason, #include <sstream> does not work with xcode 3.2
 	//std::ostringstream oss;
@@ -601,9 +443,9 @@ std::string MusMeiOutput::OctToStr(int oct)
 }
 
 
-std::string MusMeiOutput::PitchToStr(int pitch)
+wxString MusMeiOutput::PitchToStr(int pitch)
 {
-    string value;
+    wxString value;
     switch (pitch) {
         case 7:
         case 0: value = "b"; break;
@@ -621,9 +463,9 @@ std::string MusMeiOutput::PitchToStr(int pitch)
 	return value;
 }
 
-std::string MusMeiOutput::AccidToStr(unsigned char accid)
+wxString MusMeiOutput::AccidToStr(unsigned char accid)
 {
-    string value;
+    wxString value;
     switch (accid) {
         case ACCID_SHARP: value = "s"; break;
         case ACCID_FLAT: value = "f"; break;
@@ -640,9 +482,9 @@ std::string MusMeiOutput::AccidToStr(unsigned char accid)
 	return value;
 }
 
-std::string MusMeiOutput::ClefLineToStr( ClefId clefId )
+wxString MusMeiOutput::ClefLineToStr( ClefId clefId )
 {	
-	string value; 
+	wxString value; 
 	switch(clefId)
 	{	
         case SOL2 : value = "2"; break;
@@ -664,9 +506,9 @@ std::string MusMeiOutput::ClefLineToStr( ClefId clefId )
 	return value;
 }
 
-std::string MusMeiOutput::ClefShapeToStr( ClefId clefId )
+wxString MusMeiOutput::ClefShapeToStr( ClefId clefId )
 {	
-	string value; 
+	wxString value; 
 	switch(clefId)
 	{	
         case SOL2 : 
@@ -688,9 +530,9 @@ std::string MusMeiOutput::ClefShapeToStr( ClefId clefId )
 	return value;
 }
 
-std::string MusMeiOutput::MensurSignToStr(MensurSign sign)
+wxString MusMeiOutput::MensurSignToStr(MensurSign sign)
 {
- 	string value; 
+ 	wxString value; 
 	switch(sign)
 	{	case MENSUR_SIGN_C : value = "C"; break;
 		case MENSUR_SIGN_O : value = "O"; break;		
@@ -703,9 +545,9 @@ std::string MusMeiOutput::MensurSignToStr(MensurSign sign)
 }
 
 
-std::string MusMeiOutput::DurToStr( int dur )
+wxString MusMeiOutput::DurToStr( int dur )
 {
-    string value;
+    wxString value;
     if (dur == DUR_LG) value = "longa";
     else if (dur == DUR_BR) value = "brevis";
     else if (dur == DUR_1) value = "semibrevis";
@@ -727,9 +569,9 @@ std::string MusMeiOutput::DurToStr( int dur )
     return value;
 }
 
-std::string MusMeiOutput::LayoutTypeToStr(LayoutType type)
+wxString MusMeiOutput::DocTypeToStr(DocType type)
 {
- 	string value; 
+ 	wxString value; 
 	switch(type)
 	{	case Rendering : value = "rendering"; break;
 		case Transcription : value = "transcription"; break;		
@@ -750,21 +592,10 @@ MusMeiInput::MusMeiInput( MusDoc *doc, wxString filename ) :
 	MusFileInputStream( doc, -1 )
 {
     m_filename = filename;
-	// logical
-	m_div = NULL;
-	m_score = NULL;
-	m_parts = NULL;
-	m_part = NULL;
-	m_section = NULL;
-	m_measure = NULL;
-	m_staff = NULL;
-	m_layer = NULL;
-    // layout
-    m_layout = NULL;
     m_page = NULL;
     m_system = NULL;
-    m_laidOutStaff = NULL;
-    m_laidOutLayer = NULL;
+	m_staff = NULL;
+	m_layer = NULL;
     // app
     m_layerApp = NULL;
 }
@@ -775,60 +606,59 @@ MusMeiInput::~MusMeiInput()
 
 bool MusMeiInput::ImportFile( )
 {
-    
-    //printf("ROOD %s\n", m_filename.c_str());
     try {
-        m_doc->Reset();
-        mei::MeiDocument *doc = XmlImport::documentFromFile( *new string( m_filename.c_str()) );
-        if ( !doc ) {
+        TiXmlElement *current;
+        
+        m_doc->Reset( Raw );
+
+        TiXmlDocument doc( m_filename.c_str() );
+        bool loadOkay = doc.LoadFile();
+        if (!loadOkay)
+        {
             return false;
         }
-        MeiElement *root = doc->getRootElement();
-        // header
-        if ( root->hasChildren("meiHead") ) {
-             vector<MeiElement*> children = root->getChildrenByName("meiHead");
-             if ( dynamic_cast<MeiHead*> (children[0]) ) {
-                ReadMeiHeader(dynamic_cast<MeiHead*> (children[0]));
-             }
+        TiXmlElement *root = doc.RootElement();
+        if ( root && (current = root->FirstChildElement( "meiHead" ) ) ) 
+        {
+            ReadMeiHeader( current );
         }
         // music
-        MeiElement *music = NULL;
-        MeiElement *body = NULL;
-        MeiElement *layouts = NULL;
-        if ( root->hasChildren("music") ) {
-            music = root->getChildrenByName("music")[0];
+        TiXmlElement *music = NULL;
+        TiXmlElement *body = NULL;
+        TiXmlElement *mdiv = NULL;
+        TiXmlElement *score = NULL;
+        if ( root ) {
+            music = root->FirstChildElement("music");
         }
-        
-        // reading the body first
-        if ( music && music->hasChildren("body") ) {
-            body = music->getChildrenByName("body")[0];
+        if ( music) {
+            body = music->FirstChildElement("body");
         }
-		if ( body && body->hasChildren("mdiv") ) {
-			vector<MeiElement*> children = body->getChildrenByName("mdiv");
-			for (vector<MeiElement*>::iterator iter = children.begin(); iter != children.end(); ++iter) {
-				MeiElement *e = *iter;
-				m_div = new MusDiv( );
-                SetMeiUuid( e, m_div );
-				if (ReadMeiDiv(dynamic_cast<Mdiv*>(e))) {
-					m_doc->AddDiv( m_div );
-				}
-				else {
-					delete m_div;
-				}
-				m_div = NULL;
-			}
+		if ( body ) {
+            mdiv = body->FirstChildElement("mdiv");
         }
-        
-        // reading the layouts
-        if ( music && music->hasChildren("layouts") ) {
-            layouts = music->getChildrenByName("layouts")[0];
+        if ( mdiv ) {
+            score = mdiv->FirstChildElement("score");
         }
-        if ( layouts && layouts->hasChildren("layout") ) {
-			vector<MeiElement*> children = layouts->getChildrenByName("layout");
-			for (vector<MeiElement*>::iterator iter = children.begin(); iter != children.end(); ++iter) {
-				MeiElement *e = *iter;
-                ReadMeiLayout( dynamic_cast<Layout*>(e));
-			}
+        if ( score ) {
+            
+            // check if there is a type attribute for the score
+            DocType type;
+            if ( score->Attribute( "type" ) ) {
+                type = StrToDocType( score->Attribute( "type" ) );
+                m_doc->Reset( type );
+            }
+            
+            for( current = score->FirstChildElement( "page" ); current; current = current->NextSiblingElement( "page" ) ) {
+                m_page = new MusPage( );
+                SetMeiUuid( current, m_page );
+                if (ReadMeiPage( current )) {
+                    m_doc->AddPage( m_page );
+                }
+                else {
+                    delete m_page;
+                }
+                m_page = NULL;
+            }
         }
         return true;
     }
@@ -838,303 +668,216 @@ bool MusMeiInput::ImportFile( )
    }
 }
 
-bool MusMeiInput::ReadMeiHeader( MeiHead *meiHead )
+bool MusMeiInput::ReadMeiHeader( TiXmlElement *meiHead )
 {
     return true;
 }
 
-bool MusMeiInput::ReadMeiDiv( Mdiv *mdiv )
-{		
-	if ( mdiv && mdiv->hasChildren("score") ) {
-		vector<MeiElement*> children = mdiv->getChildrenByName("score");
-		if ( dynamic_cast<Score*> (children[0]) ) {
-			m_score = new MusScore( );
-            SetMeiUuid( children[0], m_score );
-			if (ReadMeiScore(dynamic_cast<Score*> (children[0]))) {
-				m_div->AddScore(m_score);
-				return true;
-			}
-			else {
-				delete m_score;
-				return false;
-			}
-		}
-	} else if ( mdiv && mdiv->hasChildren("parts") ) {
-		vector<MeiElement*> children = mdiv->getChildrenByName("parts");
-		if ( dynamic_cast<Parts*> (children[0]) ) {
-			m_parts = new MusPartSet( );
-            SetMeiUuid( children[0], m_parts );
-			if (ReadMeiParts(dynamic_cast<Parts*> (children[0]))) {
-				m_div->AddPartSet( m_parts );
-				return true;
-			}
-			else {
-				delete m_parts;
-				return false;
-			}
-		}
-	}
-    return false;
+
+bool MusMeiInput::ReadMeiPage( TiXmlElement *page )
+{
+    if ( page->Attribute( "pageHeight" ) ) {
+        m_page->m_pageHeight = atoi ( page->Attribute( "pageHeight" ) );
+    }
+    if ( page->Attribute( "pageWidth" ) ) {
+        m_page->m_pageWidth = atoi ( page->Attribute( "pageWidth" ) );
+    }
+    if ( page->Attribute( "pageLeftmar" ) ) {
+        m_page->m_pageLeftMar = atoi ( page->Attribute( "pageLeftmar" ) );
+    }
+    if ( page->Attribute( "pageRightmar" ) ) {
+        m_page->m_pageRightMar = atoi ( page->Attribute( "pageRightmar" ) );
+    }
+    if ( page->Attribute( "surface" ) ) {
+        m_page->m_surface = page->Attribute( "surface" );
+    }
+    
+    TiXmlElement *current = NULL;
+    for( current = page->FirstChildElement( "system" ); current; current = current->NextSiblingElement( "system" ) ) {
+        m_system = new MusSystem( );
+        SetMeiUuid( current, m_system );
+        if (ReadMeiSystem( current )) {
+            m_page->AddSystem( m_system );
+        }
+        else {
+            delete m_system;
+        }
+        m_system = NULL;
+    }
+    // success only if at least one system was added to the page
+    return (m_page->GetSystemCount() > 0);
 }
 
-bool MusMeiInput::ReadMeiScore( Score *score )
+bool MusMeiInput::ReadMeiSystem( TiXmlElement *system )
 {
-	if ( score && score->hasChildren("section") ) {
-		vector<MeiElement*> children = score->getChildrenByName("section");
-		for (vector<MeiElement*>::iterator iter = children.begin(); iter != children.end(); ++iter) {
-			MeiElement *e = *iter;
-			m_section = new MusSection( );
-            SetMeiUuid( e, m_section );
-			if (ReadMeiSection(dynamic_cast<Section*>(e))) {
-				m_score->AddSection( m_section );
-			}
-			else {
-				delete m_section;
-			}
-			m_section = NULL;
-		}
-		// success only if at least one section was added to the score
-		return (m_score->m_sections.GetCount() > 0);
-	}
-	return false;
+    if ( system->Attribute( "systemLeftmar") ) {
+        m_system->m_systemLeftMar = atoi ( system->Attribute( "systemLeftmar" ) );
+    }
+    if ( system->Attribute( "systemRightmar" ) ) {
+        m_system->m_systemRightMar = atoi ( system->Attribute( "systemRightmar" ) );
+    }
+    if ( system->Attribute( "uly" ) ) {
+        m_system->m_y_abs = atoi ( system->Attribute( "uly" ) );
+    }
+    
+    TiXmlElement *current = NULL;
+    for( current = system->FirstChildElement( "staff" ); current; current = current->NextSiblingElement( "staff" ) ) {
+        m_staff = new MusStaff( );
+        SetMeiUuid( current, m_staff );
+        if (ReadMeiStaff( current )) {
+            m_system->AddStaff( m_staff );
+        }
+        else {
+            delete m_staff;
+        }
+        m_staff = NULL;
+    }
+    // success only if at least one staff was added to the measure
+    return (m_system->GetStaffCount() > 0);
 }
 
-bool MusMeiInput::ReadMeiParts( Parts * parts )
+bool MusMeiInput::ReadMeiStaff( TiXmlElement *staff )
 {
-	if ( parts && parts->hasChildren("part") ) {
-		vector<MeiElement*> children = parts->getChildrenByName("part");
-		for (vector<MeiElement*>::iterator iter = children.begin(); iter != children.end(); ++iter) {
-			MeiElement *e = *iter;
-			m_part = new MusPart(  );
-            SetMeiUuid( e, m_part );
-			if (ReadMeiPart(dynamic_cast<Part*>(e))) {
-				m_parts->AddPart( m_part );
-			}
-			else {
-				delete m_part;
-			}
-			m_part = NULL;
-		}
-		// success only if at least one part was added to the parts
-		return (m_parts->m_parts.GetCount() > 0);
-	}
-	return false;
+    if ( staff->Attribute( "staff" ) ) {
+        m_staff->m_logStaffNb = atoi ( staff->Attribute( "staff" ) );
+    }
+    if ( staff->Attribute( "uly" ) ) {
+        m_staff->m_y_abs = atoi ( staff->Attribute( "uly" ) );
+    }
+    if ( staff->Attribute( "type" ) ) {
+        // we use type only for typing mensural notation
+        m_staff->notAnc = true;
+    }
+    
+    TiXmlElement *current = NULL;
+    for( current = staff->FirstChildElement( "layer" ); current; current = current->NextSiblingElement( "layer" ) ) {
+        m_layer = new MusLayer( 1 );
+        SetMeiUuid( current , m_layer );
+        if (ReadMeiLayer( current )) {
+            m_staff->AddLayer( m_layer );
+        }
+        else {
+            delete m_layer;
+        }
+        m_layer = NULL;
+    }
+    // success only if at least one layer was added to the staff
+    return (m_staff->GetLayerCount() > 0);
 }
 
-bool MusMeiInput::ReadMeiPart( Part *part )
+bool MusMeiInput::ReadMeiLayer( TiXmlElement *layer )
 {
-	if ( part && part->hasChildren("section") ) {
-		vector<MeiElement*> children = part->getChildrenByName("section");
-		for (vector<MeiElement*>::iterator iter = children.begin(); iter != children.end(); ++iter) {
-			MeiElement *e = *iter;
-			m_section = new MusSection( );
-            SetMeiUuid( e, m_section );
-			if (ReadMeiSection(dynamic_cast<Section*>(e))) {
-				m_part->AddSection( m_section );
-			}
-			else {
-				delete m_section;
-			}
-			m_section = NULL;
-		}
-		// success only if at least one section was added to the score
-		return (m_part->m_sections.GetCount() > 0);
-	}
-	return false;
-}
-
-bool MusMeiInput::ReadMeiSection( Section *section )
-{
-	if ( section && section->hasChildren("measure") ) {
-		vector<MeiElement*> children = section->getChildrenByName("measure");
-		for (vector<MeiElement*>::iterator iter = children.begin(); iter != children.end(); ++iter) {
-			MeiElement *e = *iter;
-			m_measure = new MusMeasure( );
-            SetMeiUuid( e, m_measure );
-			if (ReadMeiMeasure(dynamic_cast<Measure*>(e))) {
-				m_section->AddMeasure( m_measure );
-			}
-			else {
-				delete m_measure;
-			}
-			m_measure = NULL;
-		}
-		// success only if at least one measure was added to the section
-		return (m_section->m_measures.GetCount() > 0);
-	} else if ( section && section->hasChildren("staff") ) {
-		vector<MeiElement*> children = section->getChildrenByName("staff");
-		for (vector<MeiElement*>::iterator iter = children.begin(); iter != children.end(); ++iter) {
-			MeiElement *e = *iter;
-			m_staff= new MusStaff( );
-            SetMeiUuid( e, m_staff );
-			if (ReadMeiStaff(dynamic_cast<Staff*>(e))) {
-				m_section->AddStaff( m_staff );
-			}
-			else {
-				delete m_staff;
-			}
-			m_staff = NULL;
-		}
-		// success only if at least one staff was added to the section
-		return (m_section->m_staves.GetCount() > 0);
-	}
-    return false;
-}
-
-bool MusMeiInput::ReadMeiMeasure( Measure *measure )
-{
-	if ( measure && measure->hasChildren("staff") ) {
-		vector<MeiElement*> children = measure->getChildrenByName("staff");
-		for (vector<MeiElement*>::iterator iter = children.begin(); iter != children.end(); ++iter) {
-			MeiElement *e = *iter;
-			m_staff = new MusStaff( );
-            SetMeiUuid( e, m_staff );
-			if (ReadMeiStaff(dynamic_cast<Staff*>(e))) {
-				m_measure->AddStaff( m_staff );
-			}
-			else {
-				delete m_staff;
-			}
-			m_staff = NULL;
-		}
-		// success only if at least one staff was added to the measure
-		return (m_measure->m_staves.GetCount() > 0);
-	}
-    return false;
-}
-
-bool MusMeiInput::ReadMeiStaff( Staff *staff )
-{
-	if ( staff && staff->hasChildren("layer") ) {
-		vector<MeiElement*> children = staff->getChildrenByName("layer");
-		for (vector<MeiElement*>::iterator iter = children.begin(); iter != children.end(); ++iter) {
-			MeiElement *e = *iter;
-			m_layer = new MusLayer( );
-            SetMeiUuid( e, m_layer );
-			if (ReadMeiLayer(dynamic_cast<Layer*>(e))) {
-				m_staff->AddLayer( m_layer );
-			}
-			else {
-				delete m_layer;
-			}
-			m_layer = NULL;
-		}
-		// success only if at least one layer was added to the staff
-		return (m_staff->m_layers.GetCount() > 0);
-	}
-    return false;
-}
-
-bool MusMeiInput::ReadMeiLayer( MeiElement *layer )
-{
-	if ( layer && layer->hasChildren() ) {
-		vector<MeiElement*> children = layer->getChildren();
-		for (vector<MeiElement*>::iterator iter = children.begin(); iter != children.end(); ++iter) {
-			MeiElement *e = *iter;
-            if (e->getName()=="barLine") {
-				if (!ReadMeiBarline(dynamic_cast<BarLine*>(e))) {
-					return false;
-				}
-			}
-            else if (e->getName()=="beam") {
-				if (!ReadMeiBeam(dynamic_cast<Beam*>(e))) {
-					return false;
-				}
-			}
-            else if (e->getName()=="clef") {
-				if (!ReadMeiClef(dynamic_cast<Clef*>(e))) {
-					return false;
-				}
-			}
-            else if (e->getName()=="mensur") {
-				if (!ReadMeiMensur(dynamic_cast<Mensur*>(e))) {
-					return false;
-				}
-			}
-            else if (e->getName()=="note") {
-				if (!ReadMeiNote(dynamic_cast<Note*>(e))) {
-					return false;
-				}
-			}
-            else if (e->getName()=="rest") {
-				if (!ReadMeiRest(dynamic_cast<Rest*>(e))) {
-					return false;
-				}
-			}
-            // symbols
-            else if (e->getName()=="accid") {
-				if (!ReadMeiSymbol(dynamic_cast<Accid*>(e))) {
-					return false;
-				}
-			}
-            else if (e->getName()=="custos") {
-				if (!ReadMeiSymbol(dynamic_cast<Custos*>(e))) {
-					return false;
-				}
-			}
-            else if (e->getName()=="dot") {
-				if (!ReadMeiSymbol(dynamic_cast<Dot*>(e))) {
-					return false;
-				}
-			}
-            // app
-            else if (e->getName()=="app") {
-                if (!ReadMeiApp(dynamic_cast<App*>(e))) {
-					return false;
-				}
+    TiXmlElement *current = NULL;
+    for( current = layer->FirstChildElement( ); current; current = current->NextSiblingElement( ) ) {
+        if ( wxString( current->Value() )  == "barLine" ) {
+            if (!ReadMeiBarline( current )) {
+                return false;
             }
-            // unkown            
-			else {
-				wxLogDebug("LayerElement %s ignored", e->getName().c_str() );
-			}
+        }
+        else if ( wxString( current->Value() ) == "beam" ) {
+            if (!ReadMeiBeam( current )) {
+                return false;
+            }
+        }
+        else if ( wxString( current->Value() ) == "clef" ) {
+            if (!ReadMeiClef( current )) {
+                return false;
+            }
+        }
+        else if ( wxString( current->Value() ) == "mensur" ) {
+            if (!ReadMeiMensur( current )) {
+                return false;
+            }
+        }
+        else if ( wxString( current->Value() ) == "note" ) {
+            if (!ReadMeiNote( current )) {
+                return false;
+            }
+        }
+        else if ( wxString( current->Value() ) == "rest" ) {
+            if (!ReadMeiRest( current )) {
+                return false;
+            }
+        }
+        // symbols
+        else if ( wxString( current->Value() ) == "accid" ) {
+            if (!ReadMeiAccid( current )) {
+                return false;
+            }
+        }
+        else if ( wxString( current->Value() ) == "custos" ) {
+            if (!ReadMeiCustos( current )) {
+                return false;
+            }
+        }
+        else if ( wxString( current->Value() ) == "dot" ) {
+            if (!ReadMeiDot( current )) {
+                return false;
+            }
+        }
+        // app
+        else if ( wxString( current->Value() ) == "app" ) {
+            if (!ReadMeiApp( current )) {
+                return false;
+            }
+        }
+        // unkown            
+        else {
+            wxLogDebug("Element %s ignored", current->Value() );
+        }
 
-		}
-		// success in any case
-		return true;
-	}
-    return false;
+    }
+    // success in any case
+    return true;
 }
 
-bool MusMeiInput::ReadMeiBarline( BarLine *barline )
+bool MusMeiInput::ReadMeiLayerElement( TiXmlElement *xmlElement, MusLayerElement *musElement )
+{
+    if ( xmlElement->Attribute( "ulx" ) ) {
+        musElement->m_x_abs = atoi ( xmlElement->Attribute( "ulx" ) );
+    }
+    return true;
+}
+
+bool MusMeiInput::ReadMeiBarline( TiXmlElement *barline )
 {
     MusBarline *musBarline = new MusBarline();
     SetMeiUuid( barline, musBarline );
+    ReadMeiLayerElement( barline, musBarline );
     
-    m_layer->AddLayerElement( musBarline );
+    m_layer->AddElement( musBarline );
     return true;
 }
 
-bool MusMeiInput::ReadMeiBeam( Beam *beam )
+bool MusMeiInput::ReadMeiBeam( TiXmlElement *beam )
 {
     MusBeam *musBeam = new MusBeam();
     SetMeiUuid( beam, musBeam );
+    ReadMeiLayerElement( beam, musBeam );
     // we add it before the notes
-    m_layer->AddLayerElement( musBeam );
+    m_layer->AddElement( musBeam );
     
-	if ( beam && beam->hasChildren() ) {
-		vector<MeiElement*> children = beam->getChildren();
-		for (vector<MeiElement*>::iterator iter = children.begin(); iter != children.end(); ++iter) {
-			MeiElement *e = *iter;
-            if (e->getName()=="note") {
-				if (!ReadMeiNote(dynamic_cast<Note*>(e))) {
-					return false;
-				}
-                musBeam->AddNote( &m_layer->m_elements.Last() );
-			}
-            else if (e->getName()=="rest") {
-				if (!ReadMeiRest(dynamic_cast<Rest*>(e))) {
-					return false;
-				}
-                musBeam->AddNote( &m_layer->m_elements.Last() );
-			}
-            // unkown            
-			else {
-				wxLogDebug("LayerElement %s ignored", e->getName().c_str() );
-			}
+    TiXmlElement *current = NULL;
+    for( current = beam->FirstChildElement( ); current; current = current->NextSiblingElement( ) ) {
+        if ( wxString( current->Value() ) == "note" ) {
+            if (!ReadMeiNote( current )) {
+                return false;
+            }
+            musBeam->AddNote( (MusLayerElement*)&m_layer->m_children.Last() );
+        }
+        else if ( wxString( current->Value() ) == "rest" ) {
+            if (!ReadMeiRest( current )) {
+                return false;
+            }
+            musBeam->AddNote( (MusLayerElement*)&m_layer->m_children.Last() );
+        }
+        // unkown            
+        else {
+            wxLogDebug("LayerElement %s ignored", current->Value() );
         }
     }
     
-    if ( musBeam->m_notes.Count() < 2 ) {
+    if ( musBeam->GetNoteCount() < 2 ) {
         // this does everything we need, that is:
         // - removing the MusBeam from the m_layer
         // - detaching the note
@@ -1147,440 +890,209 @@ bool MusMeiInput::ReadMeiBeam( Beam *beam )
     return true;
 }
 
-bool MusMeiInput::ReadMeiClef( Clef *clef )
+bool MusMeiInput::ReadMeiClef( TiXmlElement *clef )
 { 
     MusClef *musClef = new MusClef();
     SetMeiUuid( clef, musClef );
-    if ( clef->m_Clefshape.hasShape( ) && clef->m_Lineloc.hasLine( ) ) {
-        musClef->m_clefId = StrToClef( clef->m_Clefshape.getShape()->getValue(), clef->m_Lineloc.getLine()->getValue() );
+    ReadMeiLayerElement( clef, musClef );
+    
+    if ( clef->Attribute( "shape" ) && clef->Attribute( "line" ) ) {
+        musClef->m_clefId = StrToClef( clef->Attribute( "shape" ) , clef->Attribute( "line" ) );
     }
     
-    m_layer->AddLayerElement( musClef );
+    m_layer->AddElement( musClef );
     return true;
 }
 
-bool MusMeiInput::ReadMeiMensur( Mensur *mensur )
+bool MusMeiInput::ReadMeiMensur( TiXmlElement *mensur )
 {
     MusMensur *musMensur = new MusMensur();
     SetMeiUuid( mensur, musMensur );
-    if ( mensur->m_MensurLog.hasSign( ) ) {
-        musMensur->m_sign = StrToMensurSign( mensur->m_MensurLog.getSign()->getValue() );
+    ReadMeiLayerElement( mensur, musMensur );
+    
+    if ( mensur->Attribute( "sign" ) ) {
+        musMensur->m_sign = StrToMensurSign( mensur->Attribute( "sign" ) );
     }
-    if ( mensur->m_MensurLog.hasDot( ) ) {
-        musMensur->m_dot = ( mensur->m_MensurLog.getDot()->getValue() == "true" );
+    if ( mensur->Attribute( "dot" ) ) {
+        musMensur->m_dot = ( strcmp( mensur->Attribute( "dot" ), "true" ) == 0 );
     }
-    if ( mensur->m_Slashcount.hasSlash( ) ) {
-        musMensur->m_slash =  1; //atoi( mensur->m_Slashcount.getSlash()->getValue() );
+    if ( mensur->Attribute( "slash" ) ) {
+        musMensur->m_slash =  1; //atoi( mensur->Attribute( "Slash" ) );
     }
-    if ( mensur->m_MensurVis.hasOrient( ) ) {
-        musMensur->m_reversed = ( mensur->m_MensurVis.getOrient()->getValue() == "reversed" );
+    if ( mensur->Attribute( "orient" ) ) {
+        musMensur->m_reversed = ( strcmp ( mensur->Attribute( "orient" ), "reversed" ) == 0 );
     }
-    if ( mensur->m_DurationRatio.hasNum( ) ) {
-        musMensur->m_num = atoi ( mensur->m_DurationRatio.getNum()->getValue().c_str() );
+    if ( mensur->Attribute( "num" ) ) {
+        musMensur->m_num = atoi ( mensur->Attribute( "num" ) );
     }
-    if ( mensur->m_DurationRatio.hasNumbase( ) ) {
-        musMensur->m_numBase = atoi ( mensur->m_DurationRatio.getNumbase()->getValue().c_str() );
+    if ( mensur->Attribute( "numbase" ) ) {
+        musMensur->m_numBase = atoi ( mensur->Attribute( "numbase" ) );
     }
     // missing m_meterSymb
     
-    m_layer->AddLayerElement( musMensur );
+    m_layer->AddElement( musMensur );
     return true;
 }
 
-bool MusMeiInput::ReadMeiNote( Note *note )
+bool MusMeiInput::ReadMeiNote( TiXmlElement *note )
 {
 	MusNote *musNote = new MusNote();
     SetMeiUuid( note, musNote );
+    ReadMeiLayerElement( note, musNote );
+    
 	// pitch
-	if ( note->m_Pitch.hasPname() ) {
-		musNote->m_pname = StrToPitch( note->m_Pitch.getPname()->getValue() );
+	if ( note->Attribute( "pname" ) ) {
+		musNote->m_pname = StrToPitch( note->Attribute( "pname" ) );
 	}
 	// oct
-	if ( note->m_Octave.hasOct() ) {
-		musNote->m_oct = StrToOct( note->m_Octave.getOct()->getValue() );
+	if ( note->Attribute( "oct" ) ) {
+		musNote->m_oct = StrToOct( note->Attribute( "oct" ) );
 	}
 	// duration
-	if ( note->m_DurationMusical.hasDur() ) {
-		musNote->m_dur = StrToDur( note->m_DurationMusical.getDur()->getValue() );
+	if ( note->Attribute( "dur" ) ) {
+		musNote->m_dur = StrToDur( note->Attribute( "dur" ) );
 	}
     // dots
-    if ( note->m_Augmentdots.hasDots() ) {
-		musNote->m_dots = atoi( note->m_Augmentdots.getDots()->getValue().c_str() );
+    if ( note->Attribute( "dots" ) ) {
+		musNote->m_dots = atoi( note->Attribute( "dots" ) );
 	}
     // accid
-    if ( note->m_Accidental.hasAccid() ) {
-		musNote->m_accid = StrToAccid( note->m_Accidental.getAccid()->getValue() );
+    if ( note->Attribute( "accid" ) ) {
+		musNote->m_accid = StrToAccid( note->Attribute( "accid" ) );
 	}
     // ligature
-    if ( note->m_NoteLogMensural.hasLig() ) {
+    if ( note->Attribute( "lig" ) ) {
         musNote->m_lig = true; // this has to be double checked
-        if ( note->m_NoteLogMensural.getLig()->getValue() == "obliqua" ) {
+        if ( strcmp( note->Attribute( "lig" ), "obliqua" ) == 0 ) {
             musNote->m_ligObliqua = true;
         }
     }
     // stem direction
-    if ( note->m_Stemmed.hasStemDir() ) {
+    if ( note->Attribute( "stemDir" ) ) {
         // we use it to indicate opposite direction
         musNote->m_stemDir = 1;
     }
     // coloration
-    if ( note->m_Coloration.hasColored() ) {
-        musNote->m_colored = ( note->m_Coloration.getColored()->getValue() == "true" );
+    if ( note->Attribute( "colored" ) ) {
+        musNote->m_colored = ( strcmp ( note->Attribute( "colored" ), "true" ) == 0 );
     }
 	
-	m_layer->AddLayerElement( musNote );
+	m_layer->AddElement( musNote );
     return true;
 }
 
-bool MusMeiInput::ReadMeiRest( Rest *rest )
+bool MusMeiInput::ReadMeiRest( TiXmlElement *rest )
 {
     MusRest *musRest = new MusRest();
     SetMeiUuid( rest, musRest );
+    ReadMeiLayerElement( rest, musRest );
+    
 	// duration
-	if ( rest->m_DurationMusical.hasDur() ) {
-		musRest->m_dur = StrToDur( rest->m_DurationMusical.getDur()->getValue() );
+	if ( rest->Attribute( "dur" ) ) {
+		musRest->m_dur = StrToDur( rest->Attribute( "dur" ) );
 	}
-    if ( rest->m_Augmentdots.hasDots() ) {
-		musRest->m_dots = atoi( rest->m_Augmentdots.getDots()->getValue().c_str() );
+    if ( rest->Attribute( "dots" ) ) {
+		musRest->m_dots = atoi( rest->Attribute( "dots" ) );
 	}
     // position
-	if ( rest->m_StafflocPitched.hasPloc() ) {
-		musRest->m_pname = StrToPitch( rest->m_StafflocPitched.getPloc()->getValue() );
+	if ( rest->Attribute( "ploc" ) ) {
+		musRest->m_pname = StrToPitch( rest->Attribute( "ploc" ) );
 	}
 	// oct
-	if ( rest->m_StafflocPitched.hasOloc() ) {
-		musRest->m_oct = StrToOct( rest->m_StafflocPitched.getOloc()->getValue() );
+	if ( rest->Attribute( "oloc" ) ) {
+		musRest->m_oct = StrToOct( rest->Attribute( "oloc" ) );
 	}
 	
-	m_layer->AddLayerElement( musRest );
+	m_layer->AddElement( musRest );
     return true;
 }
 
-bool MusMeiInput::ReadMeiSymbol( Accid *accid )
+bool MusMeiInput::ReadMeiAccid( TiXmlElement *accid )
 {
     MusSymbol *musAccid = new MusSymbol( SYMBOL_ACCID );
     SetMeiUuid( accid, musAccid );
-    if ( accid->m_Accidental.hasAccid() ) {
-        musAccid->m_accid = StrToAccid( accid->m_Accidental.getAccid()->getValue() );
+    ReadMeiLayerElement( accid, musAccid );
+    
+    if ( accid->Attribute( "accid" ) ) {
+        musAccid->m_accid = StrToAccid( accid->Attribute( "accid" ) );
     }
     // position
-	if ( accid->m_StafflocPitched.hasPloc() ) {
-		musAccid->m_pname = StrToPitch( accid->m_StafflocPitched.getPloc()->getValue() );
+	if ( accid->Attribute( "ploc" ) ) {
+		musAccid->m_pname = StrToPitch( accid->Attribute( "ploc" ) );
 	}
 	// oct
-	if ( accid->m_StafflocPitched.hasOloc() ) {
-		musAccid->m_oct = StrToOct( accid->m_StafflocPitched.getOloc()->getValue() );
+	if ( accid->Attribute( "oloc" ) ) {
+		musAccid->m_oct = StrToOct( accid->Attribute( "oloc" ) );
 	}
 	
-	m_layer->AddLayerElement( musAccid );
+	m_layer->AddElement( musAccid );
     return true;
 }
 
-bool MusMeiInput::ReadMeiSymbol( Custos *custos )
+bool MusMeiInput::ReadMeiCustos( TiXmlElement *custos )
 {
     MusSymbol *musCustos = new MusSymbol( SYMBOL_CUSTOS );
     SetMeiUuid( custos, musCustos );
+    ReadMeiLayerElement( custos, musCustos );
+    
 	// position (pitch)
-	if ( custos->m_Pitch.hasPname() ) {
-		musCustos->m_pname = StrToPitch( custos->m_Pitch.getPname()->getValue() );
+	if ( custos->Attribute( "pname" ) ) {
+		musCustos->m_pname = StrToPitch( custos->Attribute( "pname" ) );
 	}
 	// oct
-	if ( custos->m_Octave.hasOct() ) {
-		musCustos->m_oct = StrToOct( custos->m_Octave.getOct()->getValue() );
+	if ( custos->Attribute( "oct" ) ) {
+		musCustos->m_oct = StrToOct( custos->Attribute( "oct" ) );
 	}
 	
-	m_layer->AddLayerElement( musCustos );    
+	m_layer->AddElement( musCustos );    
     return true;
 }
 
-bool MusMeiInput::ReadMeiSymbol( Dot *dot )
+bool MusMeiInput::ReadMeiDot( TiXmlElement *dot )
 {
     MusSymbol *musDot = new MusSymbol( SYMBOL_DOT );
     SetMeiUuid( dot, musDot );
+    ReadMeiLayerElement( dot, musDot );
+    
     musDot->m_dot = 0;
     // missing m_dots
     // position
-	if ( dot->m_StafflocPitched.hasPloc() ) {
-		musDot->m_pname = StrToPitch( dot->m_StafflocPitched.getPloc()->getValue() );
+	if ( dot->Attribute( "ploc" ) ) {
+		musDot->m_pname = StrToPitch( dot->Attribute( "ploc" ) );
 	}
 	// oct
-	if ( dot->m_StafflocPitched.hasOloc() ) {
-		musDot->m_oct = StrToOct( dot->m_StafflocPitched.getOloc()->getValue() );
+	if ( dot->Attribute( "oloc" ) ) {
+		musDot->m_oct = StrToOct( dot->Attribute( "oloc" ) );
 	}
 	
-	m_layer->AddLayerElement( musDot );
+	m_layer->AddElement( musDot );
     return true;
 }
 
-
-bool MusMeiInput::ReadMeiLayout( Layout *layout )
-{
-    LayoutType type;
-    if ( layout->m_Typed.hasType() ) {
-        type = StrToLayoutType( layout->m_Typed.getType()->getValue().c_str() );
-    }
-    else {
-        wxLogWarning( "@type missing in layout element" );
-        return false;
-    }
-
-    m_layout = new MusLayout( type );
-    SetMeiUuid( layout, m_layout );
-    
-    if ( layout->m_Source.hasSource() ) {
-        m_layout->m_source = layout->m_Source.getSource()->getValue().c_str();
-    }
-    
-	if ( layout && layout->hasChildren("page") ) {
-		vector<MeiElement*> children = layout->getChildrenByName("page");
-		for (vector<MeiElement*>::iterator iter = children.begin(); iter != children.end(); ++iter) {
-			MeiElement *e = *iter;
-			m_page = new MusPage( );
-            SetMeiUuid( e, m_page );
-			if (ReadMeiPage(dynamic_cast<Page*>(e))) {
-				m_layout->AddPage( m_page );
-			}
-			else {
-				delete m_page;
-			}
-			m_page = NULL;
-		}
-	}
-    
-    if (m_layout->GetPageCount() > 0) {
-        m_doc->AddLayout( m_layout );
-    }
-    else {
-        delete m_layout;
-    }
-    m_layout = NULL;
-    return true;
-}
-
-
-bool MusMeiInput::ReadMeiPage( Page *page )
-{
-    if ( page->m_ScoreDefVis.hasPageHeight() ) {
-        m_page->m_pageHeight = atoi ( page->m_ScoreDefVis.getPageHeight()->getValue().c_str() );
-    }
-    if ( page->m_ScoreDefVis.hasPageWidth() ) {
-        m_page->m_pageWidth = atoi ( page->m_ScoreDefVis.getPageWidth()->getValue().c_str() );
-    }
-    if ( page->m_ScoreDefVis.hasPageLeftmar() ) {
-        m_page->m_pageLeftMar = atoi ( page->m_ScoreDefVis.getPageLeftmar()->getValue().c_str() );
-    }
-    if ( page->m_ScoreDefVis.hasPageRightmar() ) {
-        m_page->m_pageRightMar = atoi ( page->m_ScoreDefVis.getPageRightmar()->getValue().c_str() );
-    }
-    if ( page->m_Surface.hasSurface() ){
-        m_page->m_surface = page->m_Surface.getSurface()->getValue().c_str();
-    }
-    
-	if ( page && page->hasChildren("system") ) {
-		vector<MeiElement*> children = page->getChildrenByName("system");
-		for (vector<MeiElement*>::iterator iter = children.begin(); iter != children.end(); ++iter) {
-			MeiElement *e = *iter;
-			m_system = new MusSystem( );
-            SetMeiUuid( e, m_system );
-			if (ReadMeiSystem(dynamic_cast<System*>(e))) {
-				m_page->AddSystem( m_system );
-			}
-			else {
-				delete m_system;
-			}
-			m_system = NULL;
-		}
-		// success only if at least one system was added to the page
-		return (m_page->GetSystemCount() > 0);
-	}
-    return false;
-}
-
-bool MusMeiInput::ReadMeiSystem( System *system )
-{
-    if ( system->m_ScoreDefVis.hasSystemLeftmar() ) {
-        m_system->m_systemLeftMar = atoi ( system->m_ScoreDefVis.getSystemLeftmar()->getValue().c_str() );
-    }
-    if ( system->m_ScoreDefVis.hasSystemRightmar() ) {
-        m_system->m_systemRightMar = atoi ( system->m_ScoreDefVis.getSystemRightmar()->getValue().c_str() );
-    }
-    if ( system->m_Coordinated.hasUly() ) {
-        m_system->m_y_abs = atoi ( system->m_Coordinated.getUly()->getValue().c_str() );
-    }
-    
-	if ( system && system->hasChildren("laidOutStaff") ) {
-		vector<MeiElement*> children = system->getChildrenByName("laidOutStaff");
-		for (vector<MeiElement*>::iterator iter = children.begin(); iter != children.end(); ++iter) {
-			MeiElement *e = *iter;
-            ReadMeiLaidOutStaff(dynamic_cast<LaidOutStaff*>(e));
-		}
-		// success only if at least one staff was added to the system
-		return (m_system->GetStaffCount() > 0);
-	}
-    return false;
-}
-
-bool MusMeiInput::ReadMeiLaidOutStaff( LaidOutStaff *staff  )
-{
-    int logStaffNb = -1;
-    if ( staff->m_Staffident.hasStaff() ) {
-        logStaffNb = atoi ( staff->m_Staffident.getStaff()->getValue().c_str() );
-    }
-    else {
-        // no idea what will happen if this is missing...
-        wxLogWarning( "@staff missing in laidOutStaff element" );
-        return false;
-    }
-    
-    m_laidOutStaff = new MusLaidOutStaff( logStaffNb );
-    SetMeiUuid( staff, m_laidOutStaff );
-    
-    if ( staff->m_Coordinated.hasUly() ) {
-        m_laidOutStaff->m_y_abs = atoi ( staff->m_Coordinated.getUly()->getValue().c_str() );
-    }
-    if ( staff->m_Typed.hasType() ) {
-        // we use type only for typing mensural notation
-        m_laidOutStaff->notAnc = true;
-    }
-    
-	if ( staff && staff->hasChildren("laidOutLayer") ) {
-		vector<MeiElement*> children = staff->getChildrenByName("laidOutLayer");
-		for (vector<MeiElement*>::iterator iter = children.begin(); iter != children.end(); ++iter) {
-			MeiElement *e = *iter;
-            ReadMeiLaidOutLayer(dynamic_cast<LaidOutLayer*>(e));
-		}
-	}
-    
-    m_system->AddStaff( m_laidOutStaff );
-    m_laidOutStaff = NULL;
-    return true;
-}
-
-
-bool MusMeiInput::ReadMeiLaidOutLayer( LaidOutLayer *layer )
-{
-    int logLayerNb = -1;
-    int logStaffNb = -1;
-    MusSection *section = NULL;
-    MusMeasure *measure = NULL;
-    if ( layer->m_Layerident.hasLayer() ) {
-        logLayerNb = atoi ( layer->m_Layerident.getLayer()->getValue().c_str() );
-    }
-    else {
-        // no idea what will happen if this is missing...
-        wxLogWarning( "@layer missing in laidOutLayer element" );
-        return false;
-    }
-    if ( layer->m_Staffident.hasStaff() ) {
-        logStaffNb = atoi ( layer->m_Staffident.getStaff()->getValue().c_str() );
-    }
-    else {
-        // no idea what will happen if this is missing...
-        wxLogWarning( "@staff missing in laidOutLayer element" );
-        return false;
-    }
-    if ( layer->m_Pointing.hasTarget() ) {
-        uuid_t uuid;
-        StrToUuid( layer->m_Pointing.getTarget()->getValue(), uuid );
-        MusFunctor findTargetUuid( &MusObject::FindWithUuid );
-        MusObject *target = m_doc->FindLogicalObject( &findTargetUuid, uuid );
-        if ( dynamic_cast<MusSection*>(target) ) {
-            section =  dynamic_cast<MusSection*>(target);
-        }
-        else if ( dynamic_cast<MusMeasure*>(target) ) {
-            measure = dynamic_cast<MusMeasure*>(target);
-        }
-        else {
-            // no idea what will happen if this is missing...
-            wxLogWarning( "The laidOutLayer target could not be found" ); 
-            return false;
-        }
-    }
-    else {
-        // no idea what will happen if this is missing...
-        wxLogWarning( "@target missing in laidOutLayer element" );
-        return false;
-    }
-        
-    m_laidOutLayer = new MusLaidOutLayer( logLayerNb, logStaffNb, section, measure );
-    SetMeiUuid( layer, m_laidOutLayer );
-    
-	if ( layer && layer->hasChildren("laidOutElement") ) {
-		vector<MeiElement*> children = layer->getChildrenByName("laidOutElement");
-		for (vector<MeiElement*>::iterator iter = children.begin(); iter != children.end(); ++iter) {
-			MeiElement *e = *iter;
-            ReadMeiLaidOutElement(dynamic_cast<LaidOutElement*>(e));
-        }
-	}
-    
-    m_laidOutStaff->AddLayer( m_laidOutLayer );
-    m_laidOutLayer = NULL;
-    return true;
-}
-
-bool MusMeiInput::ReadMeiLaidOutElement( LaidOutElement *laidOutElement )
-{
-    
-    MusLayerElement *element = NULL;
-    if ( laidOutElement->m_Pointing.hasTarget() ) {
-        uuid_t uuid;
-        StrToUuid( laidOutElement->m_Pointing.getTarget()->getValue(), uuid );
-        MusFunctor findTargetUuid( &MusObject::FindWithUuid );
-        MusObject *target = m_doc->FindLogicalObject( &findTargetUuid, uuid );       
-        if ( dynamic_cast<MusLayerElement*>(target) ) {
-            element =  dynamic_cast<MusLayerElement*>(target);
-        }
-        else {
-            // no idea what will happen if this is missing...
-            wxLogWarning( "The laidOutElement target could not be found %s",  laidOutElement->m_Pointing.getTarget()->getValue().c_str() ); 
-            return false;
-        }
-    }
-    else {
-        // no idea what will happen if this is missing...
-        wxLogWarning( "@target missing in laidOutElement element" );
-        return false;
-    }
-    
-    MusLaidOutLayerElement *laidOutLayerElement = new MusLaidOutLayerElement( element );
-    SetMeiUuid( laidOutElement, laidOutLayerElement );
-    
-    if ( laidOutElement->m_Coordinated.hasUlx() ) {
-        laidOutLayerElement->m_x_abs = atoi ( laidOutElement->m_Coordinated.getUlx()->getValue().c_str() );
-    }
-    
-    m_laidOutLayer->AddElement( laidOutLayerElement );
-    return true;
-}
-
-
-bool MusMeiInput::ReadMeiApp( App *app )
+bool MusMeiInput::ReadMeiApp( TiXmlElement *app )
 {
     m_layerApp = new MusLayerApp( );
     SetMeiUuid( app, m_layerApp );
-    
-    if ( app && app->hasChildren("rdg") ) {
-		vector<MeiElement*> children = app->getChildrenByName("rdg");
-		for (vector<MeiElement*>::iterator iter = children.begin(); iter != children.end(); ++iter) {
-			MeiElement *e = *iter;
-			ReadMeiRdg(dynamic_cast<Rdg*>(e));
-		}
+   
+    TiXmlElement *current = NULL;
+    for( current = app->FirstChildElement( "rdg" ); current; current = current->NextSiblingElement( "rdg" ) ) {
+        ReadMeiRdg( current );
 	}
 	
-	m_layer->AddLayerElement( m_layerApp );
+	m_layer->AddElement( m_layerApp );
     m_layerApp = NULL;
     return true;
 }
 
-bool MusMeiInput::ReadMeiRdg( Rdg *rdg )
+bool MusMeiInput::ReadMeiRdg( TiXmlElement *rdg )
 {
     wxASSERT( m_layerApp );
     
-    MusLayerRdg *musRdg = new MusLayerRdg( );
+    MusLayerRdg *musRdg = new MusLayerRdg( 1 );
     SetMeiUuid( rdg, musRdg );
     
-    if ( rdg->m_Source.hasSource() ) {
-        musRdg->m_source = rdg->m_Source.getSource()->getValue().c_str();
+    if ( rdg->Attribute( "source" ) ) {
+        musRdg->m_source = rdg->Attribute( "source" );
     }
     
     // keep a pointer to the current layer to put it back at the end
@@ -1597,18 +1109,18 @@ bool MusMeiInput::ReadMeiRdg( Rdg *rdg )
     return success;
 }
 
-void MusMeiInput::SetMeiUuid( MeiElement *element, MusObject *object )
+void MusMeiInput::SetMeiUuid( TiXmlElement *element, MusObject *object )
 {
-    if ( !element->hasId() ) {
+    if ( !element->Attribute( "xml:id" ) ) {
         return;
     }
     
     uuid_t uuid;
-    StrToUuid( element->getId(), uuid );
+    StrToUuid( element->Attribute( "xml:id" ), uuid );
     object->SetUuid( uuid );
 }
 
-void MusMeiInput::StrToUuid(std::string uuid, uuid_t dest)
+void MusMeiInput::StrToUuid(wxString uuid, uuid_t dest)
 {
     uuid_clear( dest );
     if ( uuid.length() != 38 ) {
@@ -1621,7 +1133,7 @@ void MusMeiInput::StrToUuid(std::string uuid, uuid_t dest)
     uuid_parse( uuid.c_str(), dest );
 }
 
-int MusMeiInput::StrToDur(std::string dur)
+int MusMeiInput::StrToDur(wxString dur)
 {
     int value;
     if (dur == "longa") value = DUR_LG;
@@ -1645,12 +1157,12 @@ int MusMeiInput::StrToDur(std::string dur)
     return value;
 }
 
-int MusMeiInput::StrToOct(std::string oct)
+int MusMeiInput::StrToOct(wxString oct)
 {
 	return atoi(oct.c_str());
 }
 
-int MusMeiInput::StrToPitch(std::string pitch)
+int MusMeiInput::StrToPitch(wxString pitch)
 {
     int value;
     if (pitch == "c") value = PITCH_C;
@@ -1668,7 +1180,7 @@ int MusMeiInput::StrToPitch(std::string pitch)
 }
 
 
-unsigned char MusMeiInput::StrToAccid(std::string accid)
+unsigned char MusMeiInput::StrToAccid(wxString accid)
 {
     unsigned char value;
     if ( accid == "s" ) value = ACCID_SHARP;
@@ -1685,10 +1197,10 @@ unsigned char MusMeiInput::StrToAccid(std::string accid)
 }
 
 
-ClefId MusMeiInput::StrToClef( std::string shape, std::string line )
+ClefId MusMeiInput::StrToClef( wxString shape, wxString line )
 {
     ClefId clefId = SOL2;
-    std::string clef = shape + line;
+    wxString clef = shape + line;
     if ( clef == "G2" ) clefId = SOL2;
     else if ( clef == "G1" ) clefId = SOL1; 
     else if ( clef == "F5" ) clefId = FA5;
@@ -1706,7 +1218,7 @@ ClefId MusMeiInput::StrToClef( std::string shape, std::string line )
     return clefId;
 }
 
-MensurSign MusMeiInput::StrToMensurSign(std::string sign)
+MensurSign MusMeiInput::StrToMensurSign(wxString sign)
 {
     if (sign == "C") return MENSUR_SIGN_C;
     else if (sign == "O") return MENSUR_SIGN_O;
@@ -1717,7 +1229,7 @@ MensurSign MusMeiInput::StrToMensurSign(std::string sign)
 	return MENSUR_SIGN_C;
 }
 
-LayoutType MusMeiInput::StrToLayoutType(std::string type)
+DocType MusMeiInput::StrToDocType(wxString type)
 {
     if (type == "rendering") return Rendering;
     else if (type == "transcription") return Transcription;
