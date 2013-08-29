@@ -404,7 +404,7 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		4D2E465313FBE99100023B02 /* logical */ = {
+		4D2E465313FBE99100023B02 /* elements */ = {
 			isa = PBXGroup;
 			children = (
 				4DB3AE691608C26000D1273C /* musapp.cpp */,
@@ -444,22 +444,22 @@
 				8FF3AA8C15C81EDD00B9D9B0 /* mustuplet.cpp */,
 				8FF3AA8F15C81EF200B9D9B0 /* mustuplet.h */,
 			);
-			name = logical;
+			name = elements;
 			sourceTree = "<group>";
 		};
-		4D2E465413FBE9AE00023B02 /* layout */ = {
+		4D2E465413FBE9AE00023B02 /* containers */ = {
 			isa = PBXGroup;
 			children = (
-				4D2E4A0613FE992A00023B02 /* muslayer.cpp */,
-				4D2E49CB13FE8D1000023B02 /* muslayer.h */,
-				4D2E465613FBE9F200023B02 /* musstaff.cpp */,
-				4D2E465513FBE9F200023B02 /* musstaff.h */,
-				4D3A8FE30D35867200BBC1FB /* muspage.cpp */,
-				4D6E913813E89B98003B00D4 /* muspage.h */,
 				4D6E917713E9DA0A003B00D4 /* mussystem.cpp */,
 				4D3A8FE40D35867200BBC1FB /* mussystem.h */,
+				4D3A8FE30D35867200BBC1FB /* muspage.cpp */,
+				4D6E913813E89B98003B00D4 /* muspage.h */,
+				4D2E465613FBE9F200023B02 /* musstaff.cpp */,
+				4D2E465513FBE9F200023B02 /* musstaff.h */,
+				4D2E4A0613FE992A00023B02 /* muslayer.cpp */,
+				4D2E49CB13FE8D1000023B02 /* muslayer.h */,
 			);
-			name = layout;
+			name = containers;
 			sourceTree = "<group>";
 		};
 		4D2F7EE2145ADBD000EF930B /* io */ = {
@@ -511,8 +511,8 @@
 			children = (
 				4DA86239140AC2B400BF052A /* dc */,
 				4D2F7EE2145ADBD000EF930B /* io */,
-				4D2E465413FBE9AE00023B02 /* layout */,
-				4D2E465313FBE99100023B02 /* logical */,
+				4D2E465413FBE9AE00023B02 /* containers */,
+				4D2E465313FBE99100023B02 /* elements */,
 				4D2F7EEF145AE16800EF930B /* view */,
 				4D6E911513E88A7B003B00D4 /* musdoc.cpp */,
 				4D6E911613E88A7B003B00D4 /* musdoc.h */,
