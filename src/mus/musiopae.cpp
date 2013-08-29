@@ -298,6 +298,13 @@ void MusPaeInput::convertPlainAndEasyToKern(std::istream &infile, std::ostream &
         MeasureObject obj = *it;
         printMeasure( out, &obj );
     }
+    
+    m_doc->Reset( Raw );
+    MusPage *page = new MusPage();
+    MusSystem *system = new MusSystem();
+    system->AddStaff( m_staff );
+    page->AddSystem( system );
+    m_doc->AddPage( page );
 }
 
 

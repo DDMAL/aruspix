@@ -389,6 +389,7 @@ bool MusDarmsInput::ImportFile() {
     infile.close();
     printf("len: %i, %s\n", len, data);
     
+    m_doc->Reset( Raw );
     MusSystem *system = new MusSystem();
     MusPage *page = new MusPage();
     m_staff = new MusStaff( 1 );
