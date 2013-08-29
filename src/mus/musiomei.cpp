@@ -65,7 +65,7 @@ bool MusMeiOutput::ExportFile( )
         
         m_mei = new TiXmlElement("mei");
         m_mei->SetAttribute( "xmlns", "http://www.music-encoding.org/ns/mei" );
-        m_mei->SetAttribute( "meiversion", "2012" );
+        m_mei->SetAttribute( "meiversion", "2013" );
 
         // element to place the pages
         m_score = new TiXmlElement("score");
@@ -85,7 +85,7 @@ bool MusMeiOutput::ExportFile( )
         m_mei->LinkEndChild( music );
         
         TiXmlUnknown *schema = new TiXmlUnknown();
-        schema->SetValue("?xml-model href=\"http://www.aruspix.net/mei-layout-2012-10-09.rng\" type=\"application/xml\" schematypens=\"http://relaxng.org/ns/structure/1.0\"?");
+        schema->SetValue("?xml-model href=\"http://www.aruspix.net/mei-page-based-2013-08-29.rng\" type=\"application/xml\" schematypens=\"http://relaxng.org/ns/structure/1.0\"?");
         
         meiDoc->LinkEndChild( new TiXmlDeclaration( "1.0", "UTF-8", "" ) );
         meiDoc->LinkEndChild(schema);
@@ -150,12 +150,12 @@ bool MusMeiOutput::WritePage( MusPage *page )
     wxASSERT( m_score );
     m_page = new TiXmlElement("page");
     m_page->SetAttribute( "xml:id",  UuidToMeiStr( page ).c_str() );
-    // size and margins but only if any - we rely on pageHeight only to check this
+    // size and margins but only if any - we rely on page.height only to check this
     if ( page->m_pageHeight != -1 ) {
-        m_page->SetAttribute( "pageWidth", wxString::Format( "%d", page->m_pageWidth ).c_str() );
-        m_page->SetAttribute( "pageHeight", wxString::Format( "%d", page->m_pageHeight ).c_str() );
-        m_page->SetAttribute( "pageLeftmar", wxString::Format( "%d", page->m_pageLeftMar ).c_str() );
-        m_page->SetAttribute( "pageRightmar", wxString::Format( "%d", page->m_pageRightMar ).c_str() );
+        m_page->SetAttribute( "page.width", wxString::Format( "%d", page->m_pageWidth ).c_str() );
+        m_page->SetAttribute( "page.height", wxString::Format( "%d", page->m_pageHeight ).c_str() );
+        m_page->SetAttribute( "page.leftmar", wxString::Format( "%d", page->m_pageLeftMar ).c_str() );
+        m_page->SetAttribute( "page.rightmar", wxString::Format( "%d", page->m_pageRightMar ).c_str() );
     }
     if ( !page->m_surface.IsEmpty() ) {
         m_page->SetAttribute( "surface", page->m_surface.c_str() );
@@ -174,8 +174,8 @@ bool MusMeiOutput::WriteSystem( MusSystem *system )
     m_system = new TiXmlElement("system");
     m_system->SetAttribute( "xml:id",  UuidToMeiStr( system ).c_str() );
     // margins
-    m_system->SetAttribute( "systemLeftmar", wxString::Format( "%d", system->m_systemLeftMar ).c_str() );
-    m_system->SetAttribute( "systemRightmar", wxString::Format( "%d", system->m_systemRightMar ).c_str() );
+    m_system->SetAttribute( "system.leftmar", wxString::Format( "%d", system->m_systemLeftMar ).c_str() );
+    m_system->SetAttribute( "system.rightmar", wxString::Format( "%d", system->m_systemRightMar ).c_str() );
     // y positions
     m_system->SetAttribute( "uly", wxString::Format( "%d", system->m_y_abs ).c_str() );
     m_page->LinkEndChild( m_system );
@@ -189,10 +189,10 @@ bool MusMeiOutput::WriteStaff( MusStaff *staff )
     m_staff->SetAttribute( "xml:id",  UuidToMeiStr( staff ).c_str() );
     // y position
     if ( staff->notAnc ) {
-        m_staff->SetAttribute( "type", "mensural" );
+        m_staff->SetAttribute( "label", "mensural" );
     }
     m_staff->SetAttribute( "uly", wxString::Format( "%d", staff->m_y_abs ).c_str() );
-    m_staff->SetAttribute( "staff", wxString::Format( "%d", staff->m_logStaffNb ).c_str() );    
+    m_staff->SetAttribute( "n", wxString::Format( "%d", staff->m_logStaffNb ).c_str() );    
 
     m_system->LinkEndChild( m_staff );
     return true;
@@ -204,7 +204,7 @@ bool MusMeiOutput::WriteLayer( MusLayer *layer )
     m_layer = new TiXmlElement("layer");
     m_currentLayer = m_layer;
     m_layer->SetAttribute( "xml:id",  UuidToMeiStr( layer ).c_str() );
-    m_layer->SetAttribute( "layer", wxString::Format( "%d", layer->m_logLayerNb ).c_str() );
+    m_layer->SetAttribute( "n", wxString::Format( "%d", layer->m_logLayerNb ).c_str() );
     m_staff->LinkEndChild( m_layer );
     return true;
 }
@@ -676,17 +676,17 @@ bool MusMeiInput::ReadMeiHeader( TiXmlElement *meiHead )
 
 bool MusMeiInput::ReadMeiPage( TiXmlElement *page )
 {
-    if ( page->Attribute( "pageHeight" ) ) {
-        m_page->m_pageHeight = atoi ( page->Attribute( "pageHeight" ) );
+    if ( page->Attribute( "page.height" ) ) {
+        m_page->m_pageHeight = atoi ( page->Attribute( "page.height" ) );
     }
-    if ( page->Attribute( "pageWidth" ) ) {
-        m_page->m_pageWidth = atoi ( page->Attribute( "pageWidth" ) );
+    if ( page->Attribute( "page.width" ) ) {
+        m_page->m_pageWidth = atoi ( page->Attribute( "page.width" ) );
     }
-    if ( page->Attribute( "pageLeftmar" ) ) {
-        m_page->m_pageLeftMar = atoi ( page->Attribute( "pageLeftmar" ) );
+    if ( page->Attribute( "page.leftmar" ) ) {
+        m_page->m_pageLeftMar = atoi ( page->Attribute( "page.leftmar" ) );
     }
-    if ( page->Attribute( "pageRightmar" ) ) {
-        m_page->m_pageRightMar = atoi ( page->Attribute( "pageRightmar" ) );
+    if ( page->Attribute( "page.rightmar" ) ) {
+        m_page->m_pageRightMar = atoi ( page->Attribute( "page.rightmar" ) );
     }
     if ( page->Attribute( "surface" ) ) {
         m_page->m_surface = page->Attribute( "surface" );
@@ -710,11 +710,11 @@ bool MusMeiInput::ReadMeiPage( TiXmlElement *page )
 
 bool MusMeiInput::ReadMeiSystem( TiXmlElement *system )
 {
-    if ( system->Attribute( "systemLeftmar") ) {
-        m_system->m_systemLeftMar = atoi ( system->Attribute( "systemLeftmar" ) );
+    if ( system->Attribute( "system.leftmar") ) {
+        m_system->m_systemLeftMar = atoi ( system->Attribute( "system.leftmar" ) );
     }
-    if ( system->Attribute( "systemRightmar" ) ) {
-        m_system->m_systemRightMar = atoi ( system->Attribute( "systemRightmar" ) );
+    if ( system->Attribute( "system.rightmar" ) ) {
+        m_system->m_systemRightMar = atoi ( system->Attribute( "system.rightmar" ) );
     }
     if ( system->Attribute( "uly" ) ) {
         m_system->m_y_abs = atoi ( system->Attribute( "uly" ) );
@@ -738,13 +738,13 @@ bool MusMeiInput::ReadMeiSystem( TiXmlElement *system )
 
 bool MusMeiInput::ReadMeiStaff( TiXmlElement *staff )
 {
-    if ( staff->Attribute( "staff" ) ) {
-        m_staff->m_logStaffNb = atoi ( staff->Attribute( "staff" ) );
+    if ( staff->Attribute( "n" ) ) {
+        m_staff->m_logStaffNb = atoi ( staff->Attribute( "n" ) );
     }
     if ( staff->Attribute( "uly" ) ) {
         m_staff->m_y_abs = atoi ( staff->Attribute( "uly" ) );
     }
-    if ( staff->Attribute( "type" ) ) {
+    if ( staff->Attribute( "label" ) ) {
         // we use type only for typing mensural notation
         m_staff->notAnc = true;
     }
@@ -767,6 +767,10 @@ bool MusMeiInput::ReadMeiStaff( TiXmlElement *staff )
 
 bool MusMeiInput::ReadMeiLayer( TiXmlElement *layer )
 {
+    if ( layer->Attribute( "n" ) ) {
+        m_layer->m_logLayerNb = atoi ( layer->Attribute( "n" ) );
+    }
+    
     TiXmlElement *current = NULL;
     for( current = layer->FirstChildElement( ); current; current = current->NextSiblingElement( ) ) {
         if ( wxString( current->Value() )  == "barLine" ) {
