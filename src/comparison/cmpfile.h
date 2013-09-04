@@ -165,6 +165,12 @@ public:
     CmpBookPart() { m_book = NULL; }
     CmpBookPart( wxString id, wxString name, CmpBookItem *book );
     ~CmpBookPart();
+    
+    /**
+     * Return a MusLayer containing the content to be aligned.
+     * Go through all the pages / systems and also remove clefs and custos.
+     */
+    MusLayer *GetContentToAlign( wxString basename );
 
 public:
     wxString m_id;
@@ -229,10 +235,7 @@ public:
     /**
      * This method load the content from the Recognition books (or files).
      * For each book, it create one MEI file for each part in the book.
-     * The part in the MEI file is represented in one layer.
-     * We several pages (or page parts) can be concatenated.
-     * The MEI file also contain the corresonding layout pages.
-     * Also see MusDoc::ResetAndCheckLayouts().
+     * Several pages (or page parts) can be concatenated.
      */
     bool LoadBooks( wxArrayPtrVoid params, AxProgressDlg *dlg );
     

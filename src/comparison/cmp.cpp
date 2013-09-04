@@ -364,6 +364,7 @@ void CmpEnv::AddAxFile( wxString filename, CmpBookItem *book )
     UpdateViews( 0 );
 }
 
+
 void CmpEnv::AddPartPageStartEnd( wxString filename, CmpPartPage *page, bool isStart )
 {
     wxASSERT( m_recFilePtr );
@@ -408,6 +409,17 @@ void CmpEnv::AddPartPageStartEnd( wxString filename, CmpPartPage *page, bool isS
     // set and update view
     m_musViewPtr->SetDoc( m_recFilePtr->m_musDocPtr );
     m_musViewPtr->Resize( ); 
+    UpdateViews( 0 );
+}
+
+void CmpEnv::RemovePartPageStartEnd( wxString filename, CmpPartPage *page, bool isStart )
+{
+    wxASSERT( page );
+    
+    page->SetStartEnd( NULL, isStart );
+    m_cmpCtrlPtr->UpdateParts( page->m_part->m_book );
+    
+    m_cmpPartPage = NULL;
     UpdateViews( 0 );
 }
 

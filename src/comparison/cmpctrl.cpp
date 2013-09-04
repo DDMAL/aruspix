@@ -179,6 +179,8 @@ BEGIN_EVENT_TABLE(CmpCtrl,AxCtrl)
     EVT_MENU( ID6_POPUP_TREE_ADD_AXFILE, CmpCtrl::OnAddAxFile )
     EVT_MENU( ID6_POPUP_TREE_ADD_PART_PAGE_START, CmpCtrl::OnAddPartPageStartEnd )
     EVT_MENU( ID6_POPUP_TREE_ADD_PART_PAGE_END, CmpCtrl::OnAddPartPageStartEnd )
+    EVT_MENU( ID6_POPUP_TREE_REMOVE_PART_PAGE_START, CmpCtrl::OnRemovePartPageStartEnd )
+    EVT_MENU( ID6_POPUP_TREE_REMOVE_PART_PAGE_END, CmpCtrl::OnRemovePartPageStartEnd )
     EVT_MENU( ID6_POPUP_TREE_ADD_AXFILE, CmpCtrl::OnAddAxFile )
     EVT_MENU( ID6_POPUP_TREE_ADD_COLLATION, CmpCtrl::OnCmpEvent )
     EVT_MENU( ID6_POPUP_TREE_ADD_COLLATION_PART, CmpCtrl::OnAddCollationPart )
@@ -500,6 +502,16 @@ void CmpCtrl::OnAddPartPageStartEnd( wxCommandEvent &event )
     
 }
 
+void CmpCtrl::OnRemovePartPageStartEnd( wxCommandEvent &event )
+{    
+    wxObject *object = GetObject( this->GetSelection() );
+    
+    if ( object && dynamic_cast<CmpPartPage*>(object) ) {
+        m_cmpEnvPtr->RemovePartPageStartEnd( this->GetItemText( this->GetSelection() ),
+            dynamic_cast<CmpPartPage*>(object), (event.GetId() == ID6_POPUP_TREE_REMOVE_PART_PAGE_START)  );
+    }
+    
+}
 
 void CmpCtrl::OnAddCollationPart( wxCommandEvent &event )
 {    

@@ -105,6 +105,10 @@ public:
      */ 
     void AddPartPageStartEnd( wxString filename, CmpPartPage *page, bool isStart );
     /**
+     * Remove a start or end delimiter to a CmpPartPage when right click on a part page in the tree.
+     */ 
+    void RemovePartPageStartEnd( wxString filename, CmpPartPage *page, bool isStart );
+    /**
      * Add a CmpCollationPart to CmpCollation.
      */
     void AddCollationPart( CmpCollation *collation );
