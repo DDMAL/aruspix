@@ -122,7 +122,13 @@ private:
      * The appropriate MeiElement is created by the method and returned.
      * Callded from WriteLayerElement.
      */
-    TiXmlElement *WriteMeiSymbol( MusSymbol *symbol );    
+    TiXmlElement *WriteMeiSymbol( MusSymbol *symbol ); 
+    
+    /**
+     * Write a sameAs attribute
+     * The method has to be called by classed that support it (e.g., MusLayerElement)
+     */
+    void WriteSameAsAttr( TiXmlElement *meiElement, MusObject *element );
 	
     /** @name Methods for converting members into MEI attributes. */
     ///@{
@@ -199,6 +205,13 @@ private:
     /** Reads <app> elements. For now, only <app> within <layer> are taken into account */
     bool ReadMeiApp( TiXmlElement *app );
     bool ReadMeiRdg( TiXmlElement *rdg );
+    
+    /**
+     * Read a sameAs attribute
+     * The method has to be called by classed that support it (e.g., MusLayerElement)
+     */
+    void ReadSameAsAttr( TiXmlElement *element, MusObject *object );
+    
 	//
     void SetMeiUuid( TiXmlElement *element, MusObject *object );
     void StrToUuid(wxString uuid, uuid_t dest);

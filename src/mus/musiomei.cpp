@@ -263,6 +263,7 @@ bool MusMeiOutput::WriteLayerElement( MusLayerElement *element )
     
     // we have it, set the uuid we read
     if ( xmlElement ) {
+        this->WriteSameAsAttr( xmlElement, element );
         xmlElement->SetAttribute( "xml:id",  UuidToMeiStr( element ).c_str() );
         xmlElement->SetAttribute( "ulx", wxString::Format( "%d", element->m_x_abs ).c_str() );
         currentParent->LinkEndChild( xmlElement );
@@ -425,6 +426,14 @@ bool MusMeiOutput::WriteLayerRdg( MusLayerRdg *rdg )
     m_rdgLayer->SetAttribute( "source", rdg->m_source.c_str() );
     m_app->LinkEndChild( m_rdgLayer ); 
     return true;
+}
+
+
+void MusMeiOutput::WriteSameAsAttr( TiXmlElement *meiElement, MusObject *element )
+{
+    if ( !element->m_sameAs.IsEmpty() ) {
+        meiElement->SetAttribute( "sameas", element->m_sameAs.c_str() );
+    }
 }
 
 
@@ -838,6 +847,7 @@ bool MusMeiInput::ReadMeiLayerElement( TiXmlElement *xmlElement, MusLayerElement
     if ( xmlElement->Attribute( "ulx" ) ) {
         musElement->m_x_abs = atoi ( xmlElement->Attribute( "ulx" ) );
     }
+    ReadSameAsAttr( xmlElement, musElement );
     return true;
 }
 
@@ -1110,6 +1120,18 @@ bool MusMeiInput::ReadMeiRdg( TiXmlElement *rdg )
     
     return success;
 }
+
+
+void MusMeiInput::ReadSameAsAttr( TiXmlElement *element, MusObject *object )
+{
+    if ( !element->Attribute( "sameas" ) ) {
+        return;
+    }
+    
+    object->m_sameAs = element->Attribute( "sameas" );
+}
+
+
 
 void MusMeiInput::SetMeiUuid( TiXmlElement *element, MusObject *object )
 {
