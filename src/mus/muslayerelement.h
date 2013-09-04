@@ -34,7 +34,7 @@ public:
     MusLayerElement();
     virtual ~MusLayerElement();
     
-    MusLayerElement& operator=( const MusLayerElement& element); // copy assignement;
+    MusLayerElement& operator=( const MusLayerElement& element ); // copy assignement;
     
     /**
      * Return a copy of the MusLayerElement (child class).

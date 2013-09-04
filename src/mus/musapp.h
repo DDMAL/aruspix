@@ -35,6 +35,9 @@ public:
     
     int GetRdgCount() { return (int)m_children.GetCount(); };
     
+    // functor
+    virtual bool Save( wxArrayPtrVoid params );
+    
 private:
     
 public:

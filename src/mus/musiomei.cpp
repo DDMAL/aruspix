@@ -51,7 +51,6 @@ MusMeiOutput::MusMeiOutput( MusDoc *doc, wxString filename ) :
     m_staff = NULL;
     m_layer = NULL;
     m_rdgLayer = NULL;
-    m_currentLayer = NULL;
 }
 
 MusMeiOutput::~MusMeiOutput()
@@ -202,7 +201,6 @@ bool MusMeiOutput::WriteLayer( MusLayer *layer )
 {
     wxASSERT( m_staff );
     m_layer = new TiXmlElement("layer");
-    m_currentLayer = m_layer;
     m_layer->SetAttribute( "xml:id",  UuidToMeiStr( layer ).c_str() );
     m_layer->SetAttribute( "n", wxString::Format( "%d", layer->m_logLayerNb ).c_str() );
     m_staff->LinkEndChild( m_layer );
@@ -211,7 +209,14 @@ bool MusMeiOutput::WriteLayer( MusLayer *layer )
 
 bool MusMeiOutput::WriteLayerElement( MusLayerElement *element )
 {
-    wxASSERT( m_currentLayer );
+    wxASSERT( m_layer );
+    
+    TiXmlElement *currentParent = m_layer;
+    if ( dynamic_cast<MusLayerRdg*>(element->m_parent) ) {
+        wxASSERT( m_rdgLayer );
+        currentParent = m_rdgLayer;
+    }
+    // we should do the same for any MusLayerElement container (beam, slur, tuplet, etc. )
     
     TiXmlElement *xmlElement = NULL;
     if (dynamic_cast<MusBarline*>(element)) {
@@ -260,7 +265,7 @@ bool MusMeiOutput::WriteLayerElement( MusLayerElement *element )
     if ( xmlElement ) {
         xmlElement->SetAttribute( "xml:id",  UuidToMeiStr( element ).c_str() );
         xmlElement->SetAttribute( "ulx", wxString::Format( "%d", element->m_x_abs ).c_str() );
-        m_currentLayer->LinkEndChild( xmlElement );
+        currentParent->LinkEndChild( xmlElement );
         return true;
     }
     else {
@@ -279,6 +284,9 @@ void MusMeiOutput::WriteMeiBeam( TiXmlElement *meiBeam, MusBeam *beam )
 {
     int i = 0;
     for (i = 0; i < beam->GetNoteCount(); i++) {
+        // This needs testing. For the sake of consistency, should be moved in a MusBeam::Save functor
+        WriteLayerElement( (MusLayerElement*)&beam->m_children[i] );
+        /*
         if ( dynamic_cast<MusNote*>(&beam->m_children[i]) ) {
             MusNote *musNote = dynamic_cast<MusNote*>( &beam->m_children[i] );
             TiXmlElement *note = new TiXmlElement("note");
@@ -293,6 +301,7 @@ void MusMeiOutput::WriteMeiBeam( TiXmlElement *meiBeam, MusBeam *beam )
             rest->SetAttribute( "xml:id",  UuidToMeiStr( musRest ).c_str() );
             meiBeam->LinkEndChild( rest );
         }
+        */
     }
     return;
 }
@@ -403,9 +412,9 @@ TiXmlElement *MusMeiOutput::WriteMeiSymbol( MusSymbol *symbol )
 
 bool MusMeiOutput::WriteLayerApp( MusLayerApp *app )
 {    
-    wxASSERT( m_currentLayer );
+    wxASSERT( m_layer );
     m_app = new TiXmlElement("app");
-    m_currentLayer->LinkEndChild( m_app ); 
+    m_layer->LinkEndChild( m_app ); 
     return true;
 }
 
@@ -413,21 +422,10 @@ bool MusMeiOutput::WriteLayerRdg( MusLayerRdg *rdg )
 {   
     wxASSERT( m_app );
     m_rdgLayer = new TiXmlElement("rdg");
-    // now swith the m_currentLayer pointer
-    m_currentLayer = m_rdgLayer;
     m_rdgLayer->SetAttribute( "source", rdg->m_source.c_str() );
     m_app->LinkEndChild( m_rdgLayer ); 
     return true;
 }
-
-
-bool MusMeiOutput::EndLayerRdg( MusLayerRdg *rgd )
-{
-    // swith back the m_currentLayer
-    m_currentLayer = m_layer;
-    return true;
-}
-
 
 
 wxString MusMeiOutput::OctToStr(int oct)

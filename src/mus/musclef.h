@@ -34,7 +34,7 @@ public:
      * Comparison operator. 
      * Check if the MusLayerElement if a MusClef and compare attributes
      */
-    virtual bool operator==(MusLayerElement& other);
+    virtual bool operator==(MusObject& other);
     
     virtual wxString MusClassName( ) { return "MusClef"; };	
     

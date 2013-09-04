@@ -46,7 +46,7 @@ int MusClef::GetClefOffset ()
 	return offset;
 }
 
-bool MusClef::operator==( MusLayerElement& other)
+bool MusClef::operator==( MusObject& other )
 {
     MusClef *otherClef = dynamic_cast<MusClef*>( &other );
     if ( !otherClef ) {

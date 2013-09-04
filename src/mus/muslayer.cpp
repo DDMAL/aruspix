@@ -192,6 +192,16 @@ MusLayerElement *MusLayer::Insert( MusLayerElement *element, int x )
 }
 
 
+void MusLayer::Insert( MusLayerElement *layerElement, MusLayerElement *before )
+{
+    int idx = 0;
+    if ( before ) {
+        idx = m_children.Index( *before );
+    }
+    AddElement( layerElement , idx );
+}
+
+
 void MusLayer::Delete( MusLayerElement *element )
 {
 	if ( !element ) {
@@ -344,19 +354,19 @@ void MusLayer::RemoveClefAndCustos()
                         else if ( (clef->m_clefId == FA5) && ( note->m_pname == PITCH_D ) )
                             removeLonga = true;
                         if ( removeLonga ) {
-                            delete note;
+                            this->Delete( note );
                             elementCount--;
                             i--;
                         }
                     }
                 }
-                delete clef;
+                this->Delete( clef );
                 elementCount--;
                 // now remove alterations (keys)
                 for (; i < elementCount; i++) {
                     MusSymbol *accid = dynamic_cast<MusSymbol*>(&m_children[i]);
                     if ( accid && accid->IsSymbol( SYMBOL_ACCID ) ) {
-                        delete accid;
+                        this->Delete( accid );
                         elementCount--;
                         i--;                        
                     }
@@ -371,7 +381,8 @@ void MusLayer::RemoveClefAndCustos()
             }
         }
         else if ( ((MusLayerElement*)&m_children[i])->IsSymbol( SYMBOL_CUSTOS ) ) {
-            delete &m_children[i];
+            MusSymbol *symbol = dynamic_cast<MusSymbol*>(&m_children[i]);
+            this->Delete( symbol );
             elementCount--;
             i--;
         }
@@ -614,7 +625,7 @@ void MusLayer::DeleteLyric( MusSymbol1 *symbol )
 			note->m_lyrics.Detach(i);
 	}
 	
-	delete symbol;
+	this->Delete( symbol );
 }
 
 MusNote1 *MusLayer::GetNextNote( MusSymbol1 * lyric )
@@ -682,4 +693,61 @@ void MusLayer::AdjustLyricLineHeight( int delta )
 	}
 }
 */
+
+// functors
+
+bool MusLayer::CopyToLayer( wxArrayPtrVoid params )
+{  
+    // Things we might want to add: 
+    // - checking that the parent is a staff to avoid copying MusApp
+    // - adding a parent nbLogStaff and a nbLogLayer parameter for copying a specific staff / layer
+    
+    
+    // param 0: the MusLayer we need to copy to
+	MusLayer *destinationLayer = (MusLayer*)params[0]; 
+    // param 1: the uuid of the start element (if any)
+    uuid_t *start = (uuid_t*)params[1];
+    // param 2: the uuid of the end element (if any)
+    uuid_t *end = (uuid_t*)params[2];
+    // param 3: we have a start element and have started
+    bool *has_started = (bool*)params[3];
+    // param 4: we have an end element and have ended
+    bool *has_ended = (bool*)params[4];
+    // param 5: we want a new uuid for the copied elements
+    bool *new_uuid = (bool*)params[5];
+    
+    if ( (*has_ended) ) {
+        return true;
+    }
+    
+    int i;
+    for ( i = 0; i < this->GetElementCount(); i++ ) 
+    {
+        // check if we have a start uuid or if we already passed it
+        if ( !uuid_is_null( *start ) && !(*has_started) ) {
+            if ( uuid_compare( (*start), *(&m_children[i])->GetUuid() ) == 0 ) {
+                (*has_started) = true;
+            } 
+            else {
+                continue;
+            }
+        }
+        
+        // copy and add it
+        MusLayerElement *copy = ((MusLayerElement*)&m_children[i])->GetChildCopy( (*new_uuid) );
+        destinationLayer->AddElement( copy );
+        
+        // check if we have a end uuid and if we have reached it. 
+        if ( !uuid_is_null( *end ) ) {
+            if ( uuid_compare( *end, *(&m_children[i])->GetUuid() ) == 0 ) {
+                (*has_ended) = true;
+                return true;
+            }
+        }
+
+        
+    }
+    return false;
+
+}
 

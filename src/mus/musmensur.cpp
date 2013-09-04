@@ -37,7 +37,7 @@ MusMensur::~MusMensur()
 {
 }
 
-bool MusMensur::operator==( MusLayerElement& other)
+bool MusMensur::operator==( MusObject& other )
 {
     MusMensur *otherMensur = dynamic_cast<MusMensur*>( &other );
     if ( !otherMensur ) {

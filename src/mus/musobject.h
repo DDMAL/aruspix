@@ -38,7 +38,7 @@ public:
     
     virtual bool Check();
     
-    virtual bool operator==( MusObject& other);
+    virtual bool operator==( MusObject& other );
     
     bool IsActive() { return m_active; };
     void Deactivate() { m_active = false; };
@@ -55,10 +55,21 @@ public:
     
     virtual wxString MusClassName( ) { return "[MISSING]"; };
     
+    /**
+     * Add a same as attribute to the object.
+     * If a filename is given, the attribute with be filename#id
+     * If several value are added, they will be separated by a whitespace.
+     */
+    void AddSameAs( wxString id, wxString filename = "" );
+    
     // moulinette
     virtual void Process(MusFunctor *functor, wxArrayPtrVoid params );
     
     // functor methods
+    /**
+     * See MusLayer::CopyToLayer
+     */ 
+    virtual bool CopyToLayer( wxArrayPtrVoid params ) { return false; };
     virtual bool Save( wxArrayPtrVoid params ) { return false; };
     virtual bool TrimSystem( wxArrayPtrVoid params );
     virtual bool UpdateLayerElementXPos( wxArrayPtrVoid params );
@@ -68,6 +79,7 @@ public:
     bool m_active;
     ArrayOfMusObjects m_children;
     MusObject *m_parent;
+    wxString m_sameAs;
 
 public:
     

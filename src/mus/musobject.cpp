@@ -52,13 +52,27 @@ void MusObject::ResetUuid()
 }
 
 
-bool MusObject::operator==( MusObject& other)
+bool MusObject::operator==( MusObject& other )
 {
     // This should never happen.
     // The comparison is performed in the CmpFile::Align method.
     // We expect to compare only MusNote, MusRest, etc object for which we have an overwritten method
     wxLogError( "Missing comparison operator for '%s'", this->MusClassName().c_str() );
     return false;
+}
+
+void MusObject::AddSameAs( wxString id, wxString filename )
+{
+    wxString sameAs = filename;
+    if ( !filename.IsEmpty() ) {
+        sameAs += "#";
+    }
+    sameAs += id;
+    
+    if ( !m_sameAs.IsEmpty() ) {
+        m_sameAs += " ";
+    }
+    m_sameAs += sameAs;
 }
 
 bool MusObject::Check() 

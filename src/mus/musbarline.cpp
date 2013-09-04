@@ -28,7 +28,7 @@ MusBarline::~MusBarline()
 {
 }
 
-bool MusBarline::operator==( MusLayerElement& other)
+bool MusBarline::operator==( MusObject& other )
 {
     MusBarline *otherBarline = dynamic_cast<MusBarline*>( &other );
     if ( !otherBarline ) {

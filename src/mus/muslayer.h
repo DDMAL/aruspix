@@ -47,10 +47,15 @@ public:
     int GetLayerNo() const;
 
     // functors
-    void CopyElements( wxArrayPtrVoid params );
-    void GetMaxXY( wxArrayPtrVoid params );
+    /**
+     * Copy the elements to a MusLayer passed in parameters. 
+     * Also take into account a start and end uuid for the page (if any)
+     */ 
+    virtual bool CopyToLayer( wxArrayPtrVoid params );
+    void CopyElements( wxArrayPtrVoid params ); // unused
+    void GetMaxXY( wxArrayPtrVoid params ); // unused
     virtual bool Save( wxArrayPtrVoid params );
-    void CheckAndResetSectionOrMeasure( wxArrayPtrVoid params );
+    void CheckAndResetSectionOrMeasure( wxArrayPtrVoid params ); // unused
     
 	void CopyAttributes( MusLayer *layer ); // copy all attributes but none of the elements
     
@@ -60,6 +65,9 @@ public:
 	MusLayerElement *GetPrevious( MusLayerElement *element );
 	MusLayerElement *GetAtPos( int x );
 	MusLayerElement *Insert( MusLayerElement *element, int x ); // return a pointer on the inserted element
+    
+    void Insert( MusLayerElement *element, MusLayerElement *before );
+    
 	void Delete( MusLayerElement *element );
 	/** 
      * Looks for the first MusLayerElement with an LayoutElement of type elementType.

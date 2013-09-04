@@ -32,7 +32,7 @@ MusSymbol::~MusSymbol()
 {
 }
 
-bool MusSymbol::operator==( MusLayerElement& other)
+bool MusSymbol::operator==( MusObject& other )
 {
     MusSymbol *otherSymbol = dynamic_cast<MusSymbol*>( &other );
     if ( !otherSymbol ) {

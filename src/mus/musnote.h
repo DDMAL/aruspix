@@ -70,7 +70,7 @@ public:
      * Comparison operator. 
      * Check if the MusLayerElement if a MusNote and compare attributes
      */
-    virtual bool operator==(MusLayerElement& other);
+    virtual bool operator==(MusObject& other);
     
     /**
      * Change the coloration.

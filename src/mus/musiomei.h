@@ -78,15 +78,6 @@ public:
     virtual bool WriteLayerApp( MusLayerApp *app );
     virtual bool WriteLayerRdg( MusLayerRdg *rdg );
     ///@}
-    
-    /**
-     * Method that closes the MEI Layer element.
-     * Because we have a to keep a pointer to the current MEI <layer> ,
-     * we need to change it and put it back to the parent MEI <layer> when
-     * reaching the end of the <rdg>
-     * This is achieved by changing the m_currentLayer pointer.
-     */
-    virtual bool EndLayerRdg( MusLayerRdg *rdg );
 
 private:
     
@@ -163,8 +154,6 @@ private:
     TiXmlElement *m_layer;
     /** The pointer for the layer within an app (MusLayerRdg) */
     TiXmlElement *m_rdgLayer;
-    /** The pointer to the current layer (either m_layer or m_rdgLayer) */
-    TiXmlElement *m_currentLayer;
     // app
     TiXmlElement *m_app;
     ///@}

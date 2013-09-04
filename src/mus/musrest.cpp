@@ -28,7 +28,7 @@ MusRest::~MusRest()
 {
 }
 
-bool MusRest::operator==( MusLayerElement& other)
+bool MusRest::operator==( MusObject& other )
 {
     MusRest *otherRest = dynamic_cast<MusRest*>( &other );
     if ( !otherRest ) {
