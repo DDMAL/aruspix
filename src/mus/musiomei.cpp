@@ -362,7 +362,7 @@ void MusMeiOutput::WriteMeiNote( TiXmlElement *meiNote, MusNote *note )
     }
     if ( note->m_stemDir ) {
         // this is not really correct because MusNote::m_stemDir indicates that it is opposite the normal position
-        meiNote->SetAttribute( "stemDir", "up" );
+        meiNote->SetAttribute( "stem.dir", "up" );
     }
     if ( note->m_colored ) {
         meiNote->SetAttribute( "colored", "true" );
@@ -980,7 +980,7 @@ bool MusMeiInput::ReadMeiNote( TiXmlElement *note )
         }
     }
     // stem direction
-    if ( note->Attribute( "stemDir" ) ) {
+    if ( note->Attribute( "stem.dir" ) ) {
         // we use it to indicate opposite direction
         musNote->m_stemDir = 1;
     }
