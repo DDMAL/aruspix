@@ -21,6 +21,7 @@ class MusFunctor;
 class MusObject;
 WX_DECLARE_OBJARRAY( MusObject, ArrayOfMusObjects );
 
+WX_DECLARE_LIST( MusObject, ListOfMusObjects );
 
 //----------------------------------------------------------------------------
 // MusObject
@@ -56,20 +57,42 @@ public:
     virtual wxString MusClassName( ) { return "[MISSING]"; };
     
     /**
-     * Add a same as attribute to the object.
+     * Create a list of all the children MusLayerElement.
+     * This is used for navigating in a MusLayer (See MusLayer::GetPrevious and MusLayer::GetNext).
+     */  
+    void GetList( ListOfMusObjects *list );
+    
+    /**
+     * Add a sameAs attribute to the object.
      * If a filename is given, the attribute with be filename#id
      * If several value are added, they will be separated by a whitespace.
      */
     void AddSameAs( wxString id, wxString filename = "" );
+    
+    /**
+     * Parse the sameAs attribute and return the one at the #idx position (if any).
+     */
+    bool GetSameAs( wxString *id, wxString *filename, int idx = 0 );
     
     // moulinette
     virtual void Process(MusFunctor *functor, wxArrayPtrVoid params );
     
     // functor methods
     /**
+     * Add each MusLayerElements and its children to a list
+     */
+    virtual bool AddMusLayerElementToList( wxArrayPtrVoid params );
+    
+    /**
      * See MusLayer::CopyToLayer
      */ 
     virtual bool CopyToLayer( wxArrayPtrVoid params ) { return false; };
+    
+    /**
+     * Find a MusObject with a specified uuid
+     */
+    virtual bool FindByUuid( wxArrayPtrVoid params );
+    
     virtual bool Save( wxArrayPtrVoid params ) { return false; };
     virtual bool TrimSystem( wxArrayPtrVoid params );
     virtual bool UpdateLayerElementXPos( wxArrayPtrVoid params );

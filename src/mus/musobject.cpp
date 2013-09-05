@@ -8,11 +8,17 @@
 // For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"
 
+#include "wx/tokenzr.h"
+
 #include "musobject.h"
+#include "musapp.h"
 #include "musrc.h"
 
 #include "wx/arrimpl.cpp"
 WX_DEFINE_OBJARRAY( ArrayOfMusObjects );
+
+#include <wx/listimpl.cpp>
+WX_DEFINE_LIST( ListOfMusObjects );
 
 #include <algorithm>
 using std::min;
@@ -61,6 +67,23 @@ bool MusObject::operator==( MusObject& other )
     return false;
 }
 
+void MusObject::GetList( ListOfMusObjects *list )
+{
+    MusFunctor addToList( &MusObject::AddMusLayerElementToList );
+    wxArrayPtrVoid params;
+    params.Add ( list );
+    this->Process( &addToList, params );
+
+    /* // For debuging
+    ListOfMusObjects::iterator iter;
+    for (iter = list->begin(); iter != list->end(); ++iter)
+    {
+        MusObject *current = *iter;
+        wxLogDebug("%s", current->MusClassName().c_str() );
+    }
+    */
+}
+
 void MusObject::AddSameAs( wxString id, wxString filename )
 {
     wxString sameAs = filename;
@@ -73,6 +96,20 @@ void MusObject::AddSameAs( wxString id, wxString filename )
         m_sameAs += " ";
     }
     m_sameAs += sameAs;
+}
+
+bool MusObject::GetSameAs( wxString *id, wxString *filename, int idx )
+{
+    int i = 0;
+    wxString value;
+    wxStringTokenizer tkz( m_sameAs,  " " );
+    while ( tkz.HasMoreTokens() ) {
+        value = tkz.GetNextToken();
+        if ( i == idx ) {
+            wxMessageBox( value );
+        }
+        i++;
+    }
 }
 
 bool MusObject::Check() 
@@ -245,6 +282,36 @@ MusEnv::~MusEnv()
 // MusObject functor methods
 //----------------------------------------------------------------------------
 
+bool MusObject::AddMusLayerElementToList( wxArrayPtrVoid params )
+{
+    // param 0: the ListOfMusObjects
+    ListOfMusObjects *list = (ListOfMusObjects*)params[0];
+    if ( dynamic_cast<MusLayerElement*>(this ) ) {
+        list->Append( this );
+    }
+    return false;
+}
+
+bool MusObject::FindByUuid( wxArrayPtrVoid params )
+{
+    // param 0: the uuid we are looking for
+    // parma 1: the pointer to the element
+    uuid_t *uuid = (uuid_t*)params[0];  
+    MusObject **element = (MusObject**)params[1];  
+    
+    if ( (*element) ) {
+        return true;
+    }
+    
+    if ( uuid_compare( *uuid, *this->GetUuid() ) == 0 ) {
+        (*element) = this;
+        //wxLogDebug("Found it!");
+        return true;
+    }
+    //wxLogDebug("Still looking for uuid...");
+    return false;
+}
+
 bool MusObject::TrimSystem( wxArrayPtrVoid params )
 {
     MusSystem *current = dynamic_cast<MusSystem*>(this);
@@ -276,7 +343,14 @@ bool MusObject::UpdateLayerElementXPos( wxArrayPtrVoid params )
     
     // reset the x position if we are starting a new layer
     if ( current->m_parent->m_children.Index( *this ) == 0 ) {
-        (*current_x_shift) = 0;
+        MusLayerRdg *rdgLayer = dynamic_cast<MusLayerRdg*>( current->m_parent );
+        MusLayer *layer = dynamic_cast<MusLayer*>( current->m_parent );
+        // The problem is that we don't want to reset the x position with rdgLayer
+        // We need to make sure we are on a "drawing", or "top" layer
+        // Alternatively, we could add a member / method to check this ( MusLayer::IsDrawingLayer, IsTopLayer? )
+        if ( layer and !rdgLayer ) {
+            (*current_x_shift) = 0;
+        }
     }
     
     if ( !current->HasUpdatedBB() ) {

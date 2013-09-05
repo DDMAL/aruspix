@@ -111,28 +111,37 @@ MusLayerElement *MusLayer::GetLast( )
 
 MusLayerElement *MusLayer::GetNext( MusLayerElement *element )
 {	
-    if ( !element || m_children.IsEmpty())
-		return NULL;
-        
-	int i = m_children.Index( *element );
-
-	if ((i == wxNOT_FOUND ) || (i >= GetElementCount() - 1 )) 
-		return NULL;
-
-	return (MusLayerElement*)&m_children[i + 1];
+    // We create the list each time - this is not optimized but seems to be fast enough
+    ListOfMusObjects list;
+    GetList( &list );
+    
+    if ( !element || list.IsEmpty() )
+        return NULL;
+    
+	int i = list.IndexOf( element );
+    
+	if ((i == wxNOT_FOUND )|| (i >= (int)list.GetCount() - 1 )) 
+        return NULL;
+    
+    ListOfMusObjects::compatibility_iterator item = list.Item( i + 1 );
+    return (MusLayerElement*)item->GetData();
 }
 
 MusLayerElement *MusLayer::GetPrevious( MusLayerElement *element )
 {
-    if ( !element || m_children.IsEmpty())
-		return NULL;
-        
-	int i = m_children.Index( *element );
-
+    ListOfMusObjects list;
+    GetList( &list );
+    
+    if ( !element || list.IsEmpty() )
+        return NULL;
+    
+	int i = list.IndexOf( element );
+    
 	if ((i == wxNOT_FOUND ) || ( i <= 0 ))
         return NULL;
-	
-    return (MusLayerElement*)&m_children[i - 1];
+    
+    ListOfMusObjects::compatibility_iterator item = list.Item( i - 1 );
+    return (MusLayerElement*)item->GetData();
 }
 
 MusLayerElement *MusLayer::GetAtPos( int x )
