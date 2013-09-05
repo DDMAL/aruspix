@@ -37,7 +37,6 @@ void MusLayerApp::AddLayerRdg( MusLayerRdg *layerRdg )
     m_children.Add( layerRdg );
 }
 
-
 bool MusLayerApp::Save( wxArrayPtrVoid params )
 {
     // param 0: output stream

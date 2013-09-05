@@ -580,7 +580,9 @@ wxString MusMeiOutput::DocTypeToStr(DocType type)
 {
  	wxString value; 
 	switch(type)
-	{	case Rendering : value = "rendering"; break;
+	{	
+        case Raw : value = "raw"; break;
+        case Rendering : value = "rendering"; break;
 		case Transcription : value = "transcription"; break;		
         default: 
             wxLogWarning("Unknown layout type '%d'", type);
@@ -1255,13 +1257,14 @@ MensurSign MusMeiInput::StrToMensurSign(wxString sign)
 
 DocType MusMeiInput::StrToDocType(wxString type)
 {
-    if (type == "rendering") return Rendering;
+    if (type == "raw") return Raw;
+    else if (type == "rendering") return Rendering;
     else if (type == "transcription") return Transcription;
     else {
         wxLogWarning("Unknown layout type '%s'", type.c_str() );
 	}
     // default
-	return Transcription;
+	return Raw;
 }
 
 
