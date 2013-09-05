@@ -83,17 +83,18 @@ public:
 	bool Realize( );
 	bool IsCollationLoaded( CmpCollationPart *part );
     MusDoc *GetMusDoc() { return m_musDocPtr; };
+    MusDoc *GetMusDocSrc1() { return m_musDocSrc1Ptr; };
+    MusDoc *GetMusDocSrc2() { return m_musDocSrc2Ptr; };
 	
 	
 protected:
     /**
      * Align the two layer using a dynamic progamming approach.
      * The alignement is performed using the edit distance.
-     * For each match, the uuid is added to the uuid_refs and uuid_vars and uuid_count is incremented.
-     * This is done in order to then change the uuid in the variant layout for element synchronization.
+     * The alignement is performed in-place in the layer_ref MusLayer
      */
-	MusLayer *Align( MusLayer *layer_ref, MusLayer *layer_var, uuid_t *uuid_refs, uuid_t *uuid_vars, int *uuid_count );
-	
+	bool Align( MusLayer *layer_ref, MusLayer *layer_var, wxString refFileId, wxString varFileId );
+
     /**
      * Create a <app> element in the layer_aligned MusLayer.
      * The appType can be CMP_APP_DEL, CMP_APP_INS ou CMP_APP_SUBST.
@@ -101,7 +102,12 @@ protected:
      * A insertion means that the element position j in layer_var is missing in layer_aligned after i.
      * A substitution is element position j replacing element position i.
      */ 
-    void CreateApp( MusLayer *layer_aligned, int i, MusLayer *layer_var, int j, int appType );  
+    void CreateApp( MusLayer *layer_aligned, int i, MusLayer *layer_var, int j, int appType, wxString refFileId, wxString varFileId );
+    
+    /**
+     * Return the filename of the MEI reference file.
+     */
+    wxString GetRefPartFilename( );
 	
 
 public:
@@ -123,7 +129,12 @@ private:
     wxString m_varSource;
     /** The MusDoc of the final collation */
     MusDoc *m_musDocPtr;
+    /** The MusDoc of the source 1 in the collation */
+    MusDoc *m_musDocSrc1Ptr;
+    /** The MusDoc of the source 2 in the collation */
+    MusDoc *m_musDocSrc2Ptr;
 
+    
 	bool m_isColLoaded;
 };
 

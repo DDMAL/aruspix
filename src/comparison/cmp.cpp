@@ -464,19 +464,17 @@ void CmpEnv::AddCollationPart( CmpCollation *collation )
 
 void CmpEnv::UpdateViews( int flags )
 {
-    if ( m_cmpCollationPartPtr && m_cmpCollationPtr && m_cmpCollationPtr->IsCollationLoaded( m_cmpCollationPartPtr) )
+    if ( m_cmpCollationPartPtr && m_cmpCollationPtr && m_cmpCollationPtr->IsCollationLoaded( m_cmpCollationPartPtr ) )
     {
 		m_pageSplitterPtr->SplitHorizontally( m_musControlPtr , m_srcSplitterPtr, CmpEnv::s_view_sash );
         
         // The last layout is the Raw layout created in CmpCollation::IsCollationLoaded
-        /*
-        m_musViewPtr->SetLayout( &m_cmpCollationPtr->GetMusDoc()->m_layouts.Last() );
+        m_musViewPtr->SetDoc( m_cmpCollationPtr->GetMusDoc() );
         m_musViewPtr->Resize( );  
-        m_imViewPtr1->SetLayout( &m_cmpCollationPtr->GetMusDoc()->m_layouts[0] );
+        m_imViewPtr1->SetDoc( m_cmpCollationPtr->GetMusDocSrc1() );
         m_imViewPtr1->Resize();
-        m_imViewPtr2->SetLayout( &m_cmpCollationPtr->GetMusDoc()->m_layouts[1] );
+        m_imViewPtr2->SetDoc( m_cmpCollationPtr->GetMusDocSrc2() );
         m_imViewPtr2->Resize();
-        */
     }
 	UpdateTitle( );
 }

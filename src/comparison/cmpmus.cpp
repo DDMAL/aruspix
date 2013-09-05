@@ -98,6 +98,10 @@ void CmpMusController::LoadSources()
         return;
     }
     
+    wxString id, filename;
+    m_viewPtr->m_currentElement->GetSameAs( &id, &filename );
+    m_viewPtr->m_currentElement->GetSameAs( &id, &filename, 1 );
+    
     m_imControlPtr1->LoadSource( m_viewPtr->m_currentElement );
     m_imControlPtr2->LoadSource( m_viewPtr->m_currentElement );
 }
@@ -105,7 +109,6 @@ void CmpMusController::LoadSources()
 
 void CmpMusController::LoadSource( MusLayerElement *element )
 {
-    /*
     if ( m_collationCtrl ) {
         // this should never happen because we do not load the source from the collation controller
         return;
@@ -116,28 +119,29 @@ void CmpMusController::LoadSource( MusLayerElement *element )
         return;
     }
     
+    /*
     MusPage *currentPage = m_viewPtr->m_page;
-    MusLayerElement *laidOutLayerElement = NULL;
+    MusLayerElement *layerElement = NULL;
     wxArrayPtrVoid params;
-	params.Add( element->m_layerElement );
-    params.Add( &laidOutLayerElement );
+	params.Add( element);
+    params.Add( &layerElement );
     MusLayerElementFunctor findLayerElement( &MusLayerElement::FindLayerElement );
-    m_viewPtr->m_layout->Process( &findLayerElement, params );
+    m_viewPtr->m_doc->Process( &findLayerElement, params );
     
-    if ( !laidOutLayerElement ) {
+    if ( !layerElement ) {
         return; // we did not find it
     }
     
-    MusPage *page = laidOutLayerElement->m_layer->m_staff->m_system->m_page;
+    MusPage *page = layerElement->m_layer->m_staff->m_system->m_page;
     
     if ( page != currentPage ) {
         //wxLogMessage( "load page" );
         m_viewPtr->SetPage( page );
     }
-    m_viewPtr->m_currentSystem = laidOutLayerElement->m_layer->m_staff->m_system;    
-    m_viewPtr->m_currentStaff = laidOutLayerElement->m_layer->m_staff;
-    m_viewPtr->m_currentLayer = laidOutLayerElement->m_layer;
-    m_viewPtr->m_currentElement = laidOutLayerElement;
+    m_viewPtr->m_currentSystem = layerElement->m_layer->m_staff->m_system;    
+    m_viewPtr->m_currentStaff = layerElement->m_layer->m_staff;
+    m_viewPtr->m_currentLayer = layerElement->m_layer;
+    m_viewPtr->m_currentElement = layerElement;
     m_viewPtr->UpdateCmpScroll();
     m_viewPtr->Refresh();
     */ // ax2.3
