@@ -11,7 +11,6 @@
 #include "wx/tokenzr.h"
 
 #include "musobject.h"
-#include "musapp.h"
 #include "musrc.h"
 
 #include "wx/arrimpl.cpp"
@@ -343,12 +342,9 @@ bool MusObject::UpdateLayerElementXPos( wxArrayPtrVoid params )
     
     // reset the x position if we are starting a new layer
     if ( current->m_parent->m_children.Index( *this ) == 0 ) {
-        MusLayerRdg *rdgLayer = dynamic_cast<MusLayerRdg*>( current->m_parent );
         MusLayer *layer = dynamic_cast<MusLayer*>( current->m_parent );
-        // The problem is that we don't want to reset the x position with rdgLayer
-        // We need to make sure we are on a "drawing", or "top" layer
-        // Alternatively, we could add a member / method to check this ( MusLayer::IsDrawingLayer, IsTopLayer? )
-        if ( layer and !rdgLayer ) {
+        // The parent is a MusLayer, we need to reset the x shift
+        if ( layer ) {
             (*current_x_shift) = 0;
         }
     }

@@ -605,8 +605,10 @@ MusMeiInput::MusMeiInput( MusDoc *doc, wxString filename ) :
     m_system = NULL;
 	m_staff = NULL;
 	m_layer = NULL;
-    // app
     m_layerApp = NULL;
+    m_layerRdg = NULL;
+    //
+    m_currentLayer = NULL; 
 }
 
 MusMeiInput::~MusMeiInput()
@@ -761,6 +763,7 @@ bool MusMeiInput::ReadMeiStaff( TiXmlElement *staff )
     TiXmlElement *current = NULL;
     for( current = staff->FirstChildElement( "layer" ); current; current = current->NextSiblingElement( "layer" ) ) {
         m_layer = new MusLayer( 1 );
+        m_currentLayer = m_layer;
         SetMeiUuid( current , m_layer );
         if (ReadMeiLayer( current )) {
             m_staff->AddLayer( m_layer );
@@ -859,7 +862,7 @@ bool MusMeiInput::ReadMeiBarline( TiXmlElement *barline )
     SetMeiUuid( barline, musBarline );
     ReadMeiLayerElement( barline, musBarline );
     
-    m_layer->AddElement( musBarline );
+    AddLayerElement( musBarline );
     return true;
 }
 
@@ -869,7 +872,7 @@ bool MusMeiInput::ReadMeiBeam( TiXmlElement *beam )
     SetMeiUuid( beam, musBeam );
     ReadMeiLayerElement( beam, musBeam );
     // we add it before the notes
-    m_layer->AddElement( musBeam );
+    AddLayerElement( musBeam );
     
     TiXmlElement *current = NULL;
     for( current = beam->FirstChildElement( ); current; current = current->NextSiblingElement( ) ) {
@@ -914,7 +917,7 @@ bool MusMeiInput::ReadMeiClef( TiXmlElement *clef )
         musClef->m_clefId = StrToClef( clef->Attribute( "shape" ) , clef->Attribute( "line" ) );
     }
     
-    m_layer->AddElement( musClef );
+    AddLayerElement( musClef );
     return true;
 }
 
@@ -944,7 +947,7 @@ bool MusMeiInput::ReadMeiMensur( TiXmlElement *mensur )
     }
     // missing m_meterSymb
     
-    m_layer->AddElement( musMensur );
+    AddLayerElement( musMensur );
     return true;
 }
 
@@ -991,7 +994,7 @@ bool MusMeiInput::ReadMeiNote( TiXmlElement *note )
         musNote->m_colored = ( strcmp ( note->Attribute( "colored" ), "true" ) == 0 );
     }
 	
-	m_layer->AddElement( musNote );
+	AddLayerElement( musNote );
     return true;
 }
 
@@ -1017,7 +1020,7 @@ bool MusMeiInput::ReadMeiRest( TiXmlElement *rest )
 		musRest->m_oct = StrToOct( rest->Attribute( "oloc" ) );
 	}
 	
-	m_layer->AddElement( musRest );
+	AddLayerElement( musRest );
     return true;
 }
 
@@ -1039,7 +1042,7 @@ bool MusMeiInput::ReadMeiAccid( TiXmlElement *accid )
 		musAccid->m_oct = StrToOct( accid->Attribute( "oloc" ) );
 	}
 	
-	m_layer->AddElement( musAccid );
+	AddLayerElement( musAccid );
     return true;
 }
 
@@ -1058,7 +1061,7 @@ bool MusMeiInput::ReadMeiCustos( TiXmlElement *custos )
 		musCustos->m_oct = StrToOct( custos->Attribute( "oct" ) );
 	}
 	
-	m_layer->AddElement( musCustos );    
+	AddLayerElement( musCustos );    
     return true;
 }
 
@@ -1079,7 +1082,7 @@ bool MusMeiInput::ReadMeiDot( TiXmlElement *dot )
 		musDot->m_oct = StrToOct( dot->Attribute( "oloc" ) );
 	}
 	
-	m_layer->AddElement( musDot );
+	AddLayerElement( musDot );
     return true;
 }
 
@@ -1093,32 +1096,33 @@ bool MusMeiInput::ReadMeiApp( TiXmlElement *app )
         ReadMeiRdg( current );
 	}
 	
-	m_layer->AddElement( m_layerApp );
+	AddLayerElement( m_layerApp );
     m_layerApp = NULL;
     return true;
 }
 
 bool MusMeiInput::ReadMeiRdg( TiXmlElement *rdg )
 {
+    wxASSERT ( !m_layerRdg );
     wxASSERT( m_layerApp );
     
-    MusLayerRdg *musRdg = new MusLayerRdg( 1 );
+    MusLayerRdg *musRdg = new MusLayerRdg( );
     SetMeiUuid( rdg, musRdg );
     
     if ( rdg->Attribute( "source" ) ) {
         musRdg->m_source = rdg->Attribute( "source" );
     }
     
-    // keep a pointer to the current layer to put it back at the end
-    MusLayer *currentLayer = m_layer;
     // switch to the rdg
-    m_layer = musRdg;
+    m_layerRdg = musRdg;
+    MusObject *previousLayer = m_currentLayer;
+    m_currentLayer = m_layerRdg;
     
     bool success = ReadMeiLayer( rdg );
     m_layerApp->AddLayerRdg( musRdg );
     
-    // switch back to the previous one
-    m_layer = currentLayer;
+    m_currentLayer = previousLayer;
+    m_layerRdg = NULL;
     
     return success;
 }
@@ -1134,6 +1138,17 @@ void MusMeiInput::ReadSameAsAttr( TiXmlElement *element, MusObject *object )
 }
 
 
+void MusMeiInput::AddLayerElement( MusLayerElement *element )
+{
+    wxASSERT( m_currentLayer );
+    if ( dynamic_cast<MusLayer*>( m_currentLayer ) ) {
+        ((MusLayer*)m_currentLayer)->AddElement( element );
+    }
+    else if ( dynamic_cast<MusLayerRdg*>( m_currentLayer ) ) {
+        ((MusLayerRdg*)m_currentLayer)->AddElement( element );
+    }
+    
+}
 
 void MusMeiInput::SetMeiUuid( TiXmlElement *element, MusObject *object )
 {

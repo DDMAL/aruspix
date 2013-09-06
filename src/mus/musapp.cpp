@@ -48,8 +48,8 @@ bool MusLayerApp::Save( wxArrayPtrVoid params )
 // MusLayerRdg
 //----------------------------------------------------------------------------
 
-MusLayerRdg::MusLayerRdg( int logLayerNb ):
-	MusLayer( logLayerNb )
+MusLayerRdg::MusLayerRdg( ):
+    MusObject()
 {
 
 }
@@ -58,6 +58,18 @@ MusLayerRdg::MusLayerRdg( int logLayerNb ):
 MusLayerRdg::~MusLayerRdg()
 {
     
+}
+
+
+void MusLayerRdg::AddElement( MusLayerElement *element, int idx )
+{
+	element->SetParent( this );
+    if ( idx == -1 ) {
+        m_children.Add( element );
+    }
+    else {
+        m_children.Insert( element, idx );
+    }
 }
 
 

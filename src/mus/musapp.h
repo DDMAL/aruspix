@@ -54,12 +54,16 @@ private:
 /** 
  * This class models the MEI <rdg> element for a <app> in a <layer>
  */
-class MusLayerRdg: public MusLayer
+class MusLayerRdg: public MusObject
 {
 public:
     // constructors and destructors
-    MusLayerRdg( int logLayerNb );
+    MusLayerRdg( );
     virtual ~MusLayerRdg();
+    
+	void AddElement( MusLayerElement *element, int idx = -1 );
+    
+	int GetElementCount() const { return (int)m_children.GetCount(); };
     
     // functor
     virtual bool Save( wxArrayPtrVoid params );

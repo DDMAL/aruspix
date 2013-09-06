@@ -212,6 +212,11 @@ private:
      */
     void ReadSameAsAttr( TiXmlElement *element, MusObject *object );
     
+    /**
+     * Add the LayerElement to the appropriate parent (e.g., MusLayer, MusLayerRdg)
+     */
+    void AddLayerElement( MusLayerElement *element );
+    
 	//
     void SetMeiUuid( TiXmlElement *element, MusObject *object );
     void StrToUuid(wxString uuid, uuid_t dest);
@@ -232,6 +237,8 @@ private:
     MusSystem *m_system;
 	MusStaff *m_staff;
 	MusLayer *m_layer;
+    MusLayerRdg *m_layerRdg;
+    MusObject *m_currentLayer;
     MusLayerApp *m_layerApp;
 };
 
