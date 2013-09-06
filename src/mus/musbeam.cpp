@@ -38,6 +38,8 @@ void MusBeam::AddNote(MusLayerElement *element) {
     if (!element->HasDurationInterface()) {
         return;
     }
+    element->SetParent( this );
+    
     MusDurationInterface *note = dynamic_cast<MusDurationInterface*>(element);
     // Set the first as initial
     if (GetNoteCount() == 0)
@@ -52,3 +54,12 @@ void MusBeam::AddNote(MusLayerElement *element) {
         last_note->m_beam[0] = BEAM_MEDIAL;
     }
 }
+
+/*
+bool MusBeam::Save( wxArrayPtrVoid params )
+{
+    // param 0: output stream
+    MusFileOutputStream *output = (MusFileOutputStream*)params[0];       
+    return !output->WriteLayerRdg( this );
+}
+*/

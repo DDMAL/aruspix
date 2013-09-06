@@ -158,8 +158,10 @@ private:
     TiXmlElement *m_staff;
     /** The pointer for the layer within a staff */
     TiXmlElement *m_layer;
-    /** The pointer for the layer within an app (MusLayerRdg) */
+    /** The pointer for the rdg within an app (MusLayerRdg) */
     TiXmlElement *m_rdgLayer;
+    /** The pointer for a beam */
+    TiXmlElement *m_beam;
     // app
     TiXmlElement *m_app;
     ///@}
@@ -238,6 +240,7 @@ private:
 	MusStaff *m_staff;
 	MusLayer *m_layer;
     MusLayerRdg *m_layerRdg;
+    MusBeam *m_beam;
     MusObject *m_currentLayer;
     MusLayerApp *m_layerApp;
 };

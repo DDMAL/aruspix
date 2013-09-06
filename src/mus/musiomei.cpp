@@ -51,6 +51,7 @@ MusMeiOutput::MusMeiOutput( MusDoc *doc, wxString filename ) :
     m_staff = NULL;
     m_layer = NULL;
     m_rdgLayer = NULL;
+    m_beam = NULL;
 }
 
 MusMeiOutput::~MusMeiOutput()
@@ -211,12 +212,19 @@ bool MusMeiOutput::WriteLayerElement( MusLayerElement *element )
 {
     wxASSERT( m_layer );
     
+    // Here we look at what is the parent.
+    // For example, if we are in a beam, we must attach it to the beam xml element (m_beam)
+    // By default, we attach it to m_layer
     TiXmlElement *currentParent = m_layer;
     if ( dynamic_cast<MusLayerRdg*>(element->m_parent) ) {
         wxASSERT( m_rdgLayer );
         currentParent = m_rdgLayer;
     }
-    // we should do the same for any MusLayerElement container (beam, slur, tuplet, etc. )
+    else if ( dynamic_cast<MusBeam*>(element->m_parent) ) {
+        wxASSERT( m_beam );
+        currentParent = m_beam;
+    }
+    // we should do the same for any MusLayerElement container (slur, tuplet, etc. )
     
     TiXmlElement *xmlElement = NULL;
     if (dynamic_cast<MusBarline*>(element)) {
@@ -225,6 +233,7 @@ bool MusMeiOutput::WriteLayerElement( MusLayerElement *element )
     }
     else if (dynamic_cast<MusBeam*>(element)) {
         xmlElement = new TiXmlElement("beam");
+        m_beam = xmlElement;
         WriteMeiBeam( xmlElement, dynamic_cast<MusBeam*>(element) );
     }
     else if (dynamic_cast<MusClef*>(element)) {
@@ -242,18 +251,10 @@ bool MusMeiOutput::WriteLayerElement( MusLayerElement *element )
         wxLogWarning( "NeumeSymbol are not saved in MEI files" );
     }
     else if (dynamic_cast<MusNote*>(element)) {
-        if ( dynamic_cast<MusNote*>(element)->m_beam[0] ) {
-            // the note will be saved from the beam element;
-            return true;
-        }
         xmlElement = new TiXmlElement("note");
         WriteMeiNote( xmlElement, dynamic_cast<MusNote*>(element) );
     }
     else if (dynamic_cast<MusRest*>(element)) {
-        if ( dynamic_cast<MusRest*>(element)->m_beam[0] ) {
-            // the rest will be saved from the beam element;
-            return true;
-        }
         xmlElement = new TiXmlElement("rest");
         WriteMeiRest( xmlElement, dynamic_cast<MusRest*>(element) );
     }
@@ -283,27 +284,6 @@ void MusMeiOutput::WriteMeiBarline( TiXmlElement *meiBarline, MusBarline *barlin
 
 void MusMeiOutput::WriteMeiBeam( TiXmlElement *meiBeam, MusBeam *beam )
 {
-    int i = 0;
-    for (i = 0; i < beam->GetNoteCount(); i++) {
-        // This needs testing. For the sake of consistency, should be moved in a MusBeam::Save functor
-        WriteLayerElement( (MusLayerElement*)&beam->m_children[i] );
-        /*
-        if ( dynamic_cast<MusNote*>(&beam->m_children[i]) ) {
-            MusNote *musNote = dynamic_cast<MusNote*>( &beam->m_children[i] );
-            TiXmlElement *note = new TiXmlElement("note");
-            WriteMeiNote( note, musNote );
-            note->SetAttribute( "xml:id",  UuidToMeiStr( musNote ).c_str() );
-            meiBeam->LinkEndChild( note );
-        }
-        else if (dynamic_cast<MusRest*>(&beam->m_children[i]) ) {
-            MusRest *musRest = dynamic_cast<MusRest*>( &beam->m_children[i] );
-            TiXmlElement *rest = new TiXmlElement("rest");
-            WriteMeiRest( rest, musRest );
-            rest->SetAttribute( "xml:id",  UuidToMeiStr( musRest ).c_str() );
-            meiBeam->LinkEndChild( rest );
-        }
-        */
-    }
     return;
 }
 
@@ -608,6 +588,7 @@ MusMeiInput::MusMeiInput( MusDoc *doc, wxString filename ) :
 	m_layer = NULL;
     m_layerApp = NULL;
     m_layerRdg = NULL;
+    m_beam = NULL;
     //
     m_currentLayer = NULL; 
 }
@@ -869,11 +850,14 @@ bool MusMeiInput::ReadMeiBarline( TiXmlElement *barline )
 
 bool MusMeiInput::ReadMeiBeam( TiXmlElement *beam )
 {
-    MusBeam *musBeam = new MusBeam();
-    SetMeiUuid( beam, musBeam );
-    ReadMeiLayerElement( beam, musBeam );
-    // we add it before the notes
-    AddLayerElement( musBeam );
+    wxASSERT ( !m_beam );
+    
+    m_beam = new MusBeam();
+    SetMeiUuid( beam, m_beam );
+    ReadMeiLayerElement( beam, m_beam );
+    
+    MusObject *previousLayer = m_currentLayer;
+    m_currentLayer = m_beam;
     
     TiXmlElement *current = NULL;
     for( current = beam->FirstChildElement( ); current; current = current->NextSiblingElement( ) ) {
@@ -881,13 +865,11 @@ bool MusMeiInput::ReadMeiBeam( TiXmlElement *beam )
             if (!ReadMeiNote( current )) {
                 return false;
             }
-            musBeam->AddNote( (MusLayerElement*)&m_layer->m_children.Last() );
         }
         else if ( wxString( current->Value() ) == "rest" ) {
             if (!ReadMeiRest( current )) {
                 return false;
             }
-            musBeam->AddNote( (MusLayerElement*)&m_layer->m_children.Last() );
         }
         // unkown            
         else {
@@ -895,15 +877,18 @@ bool MusMeiInput::ReadMeiBeam( TiXmlElement *beam )
         }
     }
     
-    if ( musBeam->GetNoteCount() < 2 ) {
-        // this does everything we need, that is:
-        // - removing the MusBeam from the m_layer
-        // - detaching the note
-        // - changing the flag of the note
-        // - delete the MusBeam
-        delete musBeam;
-        //wxLogWarning("Beam element with only zero or one note");
+    if ( m_beam->GetNoteCount() == 1 ) {
+        wxLogWarning("Beam element with only one note");
     }
+    // switch back to the previous one
+    m_currentLayer = previousLayer;
+    if ( m_beam->GetNoteCount() < 1 ) {
+        delete m_beam;
+    } 
+    else {
+        AddLayerElement( m_beam );
+    }
+    m_beam = NULL;
     
     return true;
 }
@@ -1107,21 +1092,21 @@ bool MusMeiInput::ReadMeiRdg( TiXmlElement *rdg )
     wxASSERT ( !m_layerRdg );
     wxASSERT( m_layerApp );
     
-    MusLayerRdg *musRdg = new MusLayerRdg( );
-    SetMeiUuid( rdg, musRdg );
+    m_layerRdg = new MusLayerRdg( );
+    SetMeiUuid( rdg, m_layerRdg );
     
     if ( rdg->Attribute( "source" ) ) {
-        musRdg->m_source = rdg->Attribute( "source" );
+        m_layerRdg->m_source = rdg->Attribute( "source" );
     }
     
     // switch to the rdg
-    m_layerRdg = musRdg;
     MusObject *previousLayer = m_currentLayer;
     m_currentLayer = m_layerRdg;
     
     bool success = ReadMeiLayer( rdg );
-    m_layerApp->AddLayerRdg( musRdg );
     
+    // switch back to the previous one
+    m_layerApp->AddLayerRdg( m_layerRdg );
     m_currentLayer = previousLayer;
     m_layerRdg = NULL;
     
@@ -1147,6 +1132,9 @@ void MusMeiInput::AddLayerElement( MusLayerElement *element )
     }
     else if ( dynamic_cast<MusLayerRdg*>( m_currentLayer ) ) {
         ((MusLayerRdg*)m_currentLayer)->AddElement( element );
+    }
+    else if ( dynamic_cast<MusBeam*>( m_currentLayer ) ) {
+        ((MusBeam*)m_currentLayer)->AddNote( element );
     }
     
 }

@@ -102,9 +102,6 @@ void MusRC::DrawDurationElement( MusDC *dc, MusLayerElement *element, MusLayer *
     {
         MusNote *note = dynamic_cast<MusNote*>(element);
         int oct = note->m_oct - 4;
-
-        if (note->m_beam[0])
-            return;
         
         //if ( !m_lyricMode && BelongsToTheNote( m_currentElement ) ) // the current element is a lyric that belongs to the note we are drawing
         //    m_currentColour = AxCYAN;
@@ -139,18 +136,6 @@ void MusRC::DrawDurationElement( MusDC *dc, MusLayerElement *element, MusLayer *
         dc->EndGraphic(element, this ); //RZ
 	}
     
-    
-    // draw the beams
-    /*
-    if (layer->beamListPremier && durElement->m_beam[0] & BEAM_TERMINAL) // only one beam ([0] for now
-    {   
-        // we will need to change the to a MusBeam object once we have one 
-        dc->StartGraphic( element, "beam", wxString::Format("s_%d_%d_%d", staff->GetId(), layer->voix, element->GetId()) );
-        DrawBeam( dc, layer, staff );
-        dc->EndGraphic(element, this ); //RZ
-    }
-    */
-    
 	/* 
 	for ( int i = 0; i < (int)m_lyrics.GetCount(); i++ ){
 		MusSymbol1 *lyric = &m_lyrics[i];
@@ -172,6 +157,7 @@ void MusRC::DrawDurationElement( MusDC *dc, MusLayerElement *element, MusLayer *
 }
 
 void MusRC::DrawBeamElement(MusDC *dc, MusLayerElement *element, MusLayer *layer, MusStaff *staff) {
+    
     wxASSERT_MSG( layer, "Pointer to layer cannot be NULL" );
     wxASSERT_MSG( staff, "Pointer to staff cannot be NULL" );
     
@@ -180,38 +166,9 @@ void MusRC::DrawBeamElement(MusDC *dc, MusLayerElement *element, MusLayer *layer
     dc->StartGraphic( element, "beam", wxString::Format("s_%d_%d_%d", staff->GetId(), layer->voix, element->GetId() ) );
     
     for (unsigned int i = 0; i < beam->m_children.Count(); i++) {
-        
-        // the code below looks pretty repetitive. Should be improved, using MusDurationInterface cast?
-        if ( dynamic_cast<MusNote*>(&beam->m_children[i]) ) {
-
-            MusNote *note = dynamic_cast<MusNote*>(&beam->m_children[i]);
-            int oct = note->m_oct - 4;
-            
-            //if ( !m_lyricMode && BelongsToTheNote( m_currentElement ) ) // the current element is a lyric that belongs to the note we are drawing
-            //    m_currentColour = AxCYAN;
-            
-            dc->StartGraphic( note, "note", wxString::Format("s_%d_%d_%d", staff->GetId(), layer->voix, note->GetId() ) );
-            
-            note->m_y_drawing = CalculatePitchPosY( staff, note->m_pname, layer->GetClefOffset( note ), oct );
-            
-            DrawNote(dc, note, layer, staff, true);
-            
-            dc->EndGraphic(note, this );
-        }
-        else if ( dynamic_cast<MusRest*>(&beam->m_children[i]) ) {
-            
-            MusRest *rest = dynamic_cast<MusRest*>(&beam->m_children[i]);
-            int oct = rest->m_oct - 4;
-            
-            dc->StartGraphic( rest, "rest", wxString::Format("s_%d_%d_%d", staff->GetId(), layer->voix, rest->GetId() ) );
-            
-            rest->m_y_drawing = CalculatePitchPosY( staff, rest->m_pname, layer->GetClefOffset( rest ), oct );
-            
-            // We have no inBeam parameter here. It would be necessary for beams starting with a rest. Do we need this?
-            DrawRest(dc, rest, layer, staff );
-            
-            dc->EndGraphic(rest, this );
-            
+        if ( dynamic_cast<MusLayerElement*>(&beam->m_children[i]) ) {
+            MusLayerElement *element = dynamic_cast<MusLayerElement*>(&beam->m_children[i]);
+            DrawElement(dc, element, layer, staff);
         }
     }
     
@@ -228,13 +185,15 @@ void MusRC::DrawBeamElement(MusDC *dc, MusLayerElement *element, MusLayer *layer
 // queue: le ptr *testchord extern peut garder le x et l'y.
 
 
-void MusRC::DrawNote ( MusDC *dc, MusLayerElement *element, MusLayer *layer, MusStaff *staff, bool inBeam)
+void MusRC::DrawNote ( MusDC *dc, MusLayerElement *element, MusLayer *layer, MusStaff *staff)
 {
     wxASSERT_MSG( layer, "Pointer to layer cannot be NULL" );
     wxASSERT_MSG( staff, "Pointer to staff cannot be NULL" );
     wxASSERT_MSG( dynamic_cast<MusNote*>(element), "Element must be a MusNote" );
     
     MusNote *note = dynamic_cast<MusNote*>(element);
+    
+    bool inBeam = (note->GetFirstParent( &typeid( MusBeam ) ) != NULL );
     
 	int staffSize = staff->staffSize;
 

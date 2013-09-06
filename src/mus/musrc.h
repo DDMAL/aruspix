@@ -139,7 +139,7 @@ public:
     void DrawMensurHalfCircle( MusDC *dc, int x, int yy, MusStaff *staff );
     void DrawMensurReversedHalfCircle( MusDC *dc, int x, int yy, MusStaff *staff ); 
     void DrawMensurSlash( MusDC *dc, int x, int yy, MusStaff *staff );  
-    void DrawNote( MusDC *dc, MusLayerElement *element, MusLayer *layer, MusStaff *staff, bool inBeam = false );  
+    void DrawNote( MusDC *dc, MusLayerElement *element, MusLayer *layer, MusStaff *staff );  
     void DrawRest( MusDC *dc, MusLayerElement *element, MusLayer *layer, MusStaff *staff );
     void DrawSymbol( MusDC *dc, MusLayerElement *element, MusLayer *layer, MusStaff *staff, MusLayerElement *parent = NULL );
     void DrawSymbolAccid( MusDC *dc, MusLayerElement *element, MusLayer *layer, MusStaff *staff );

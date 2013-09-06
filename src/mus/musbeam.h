@@ -39,6 +39,9 @@ public:
      */
     void AddNote(MusLayerElement *element);
     
+    // functor
+    //virtual bool Save( wxArrayPtrVoid params );
+    
 private:
 
 public:
