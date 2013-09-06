@@ -15,6 +15,8 @@
     #include "wx/wx.h"
 #endif
 
+#include <typeinfo>
+
 class MusDoc;
 class MusFunctor;
 
@@ -57,6 +59,11 @@ public:
     virtual wxString MusClassName( ) { return "[MISSING]"; };
     
     /**
+     * Return the first parent of the specified type.
+     */
+    MusObject *GetFirstParent( const std::type_info *elementType );
+    
+    /**
      * Create a list of all the children MusLayerElement.
      * This is used for navigating in a MusLayer (See MusLayer::GetPrevious and MusLayer::GetNext).
      */  
@@ -89,7 +96,7 @@ public:
     virtual bool CopyToLayer( wxArrayPtrVoid params ) { return false; };
     
     /**
-     * Find a MusObject with a specified uuid
+     * Find a MusObject with a specified uuid.
      */
     virtual bool FindByUuid( wxArrayPtrVoid params );
     

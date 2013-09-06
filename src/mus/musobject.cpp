@@ -97,6 +97,19 @@ void MusObject::AddSameAs( wxString id, wxString filename )
     m_sameAs += sameAs;
 }
 
+MusObject *MusObject::GetFirstParent( const std::type_info *elementType )
+{
+    if ( !m_parent ) {
+        return NULL;
+    }
+    
+    if ( typeid(*m_parent) == *elementType ) {
+        return m_parent;
+    }
+    else {
+        return ( m_parent->GetFirstParent( elementType ) );
+    }
+}
 bool MusObject::GetSameAs( wxString *id, wxString *filename, int idx )
 {
     int i = 0;
@@ -105,10 +118,15 @@ bool MusObject::GetSameAs( wxString *id, wxString *filename, int idx )
     while ( tkz.HasMoreTokens() ) {
         value = tkz.GetNextToken();
         if ( i == idx ) {
-            wxMessageBox( value );
+            if ( value.Find( "#" ) != wxNOT_FOUND ) {
+                (*filename) = value.Before('#');
+            }
+            (*id) = value.AfterFirst('#');
+            return true;
         }
         i++;
     }
+    return false;
 }
 
 bool MusObject::Check() 

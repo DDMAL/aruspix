@@ -98,10 +98,6 @@ void CmpMusController::LoadSources()
         return;
     }
     
-    wxString id, filename;
-    m_viewPtr->m_currentElement->GetSameAs( &id, &filename );
-    m_viewPtr->m_currentElement->GetSameAs( &id, &filename, 1 );
-    
     m_imControlPtr1->LoadSource( m_viewPtr->m_currentElement );
     m_imControlPtr2->LoadSource( m_viewPtr->m_currentElement );
 }
@@ -119,32 +115,47 @@ void CmpMusController::LoadSource( MusLayerElement *element )
         return;
     }
     
-    /*
-    MusPage *currentPage = m_viewPtr->m_page;
-    MusLayerElement *layerElement = NULL;
-    wxArrayPtrVoid params;
-	params.Add( element);
-    params.Add( &layerElement );
-    MusLayerElementFunctor findLayerElement( &MusLayerElement::FindLayerElement );
-    m_viewPtr->m_doc->Process( &findLayerElement, params );
-    
-    if ( !layerElement ) {
-        return; // we did not find it
+    wxString id, filename;
+    int i = 0;
+    while ( element->GetSameAs( &id, &filename, i) ) {
+        if ( filename == m_viewPtr->m_doc->m_fname ) {
+            break;
+        }
+        i++;
     }
     
-    MusPage *page = layerElement->m_layer->m_staff->m_system->m_page;
+    if ( filename.IsEmpty() ) {
+        // we did not find a sameAs with our filename
+        return;
+    }
     
+    MusPage *currentPage = m_viewPtr->m_page;    
+    
+    MusObject *viewElement = NULL;
+    wxArrayPtrVoid params;
+    uuid_t uuid;
+    uuid_parse( id.c_str(), uuid );
+	params.Add( uuid );
+    params.Add( &viewElement );
+    MusFunctor findLayerElement( &MusObject::FindByUuid );
+    m_viewPtr->m_doc->Process( &findLayerElement, params );
+    
+    MusLayerElement *layerElement;
+    if ( !viewElement ) { // || !(layerElement == dynamic_cast<MusLayerElement*>(viewElement)) ) {
+        return; // we did not find it or it is not a MusLayerElement
+    }
+    
+    MusPage *page = dynamic_cast<MusPage*>(viewElement->GetFirstParent( &typeid(MusPage) ));
     if ( page != currentPage ) {
         //wxLogMessage( "load page" );
         m_viewPtr->SetPage( page );
     }
-    m_viewPtr->m_currentSystem = layerElement->m_layer->m_staff->m_system;    
-    m_viewPtr->m_currentStaff = layerElement->m_layer->m_staff;
-    m_viewPtr->m_currentLayer = layerElement->m_layer;
-    m_viewPtr->m_currentElement = layerElement;
+    m_viewPtr->m_currentSystem = dynamic_cast<MusSystem*>(viewElement->GetFirstParent( &typeid(MusSystem) ));
+    m_viewPtr->m_currentStaff = dynamic_cast<MusStaff*>(viewElement->GetFirstParent( &typeid(MusStaff) ));
+    m_viewPtr->m_currentLayer = dynamic_cast<MusLayer*>(viewElement->GetFirstParent( &typeid(MusLayer) ));
+    m_viewPtr->m_currentElement = dynamic_cast<MusLayerElement*>(viewElement);
     m_viewPtr->UpdateCmpScroll();
     m_viewPtr->Refresh();
-    */ // ax2.3
 }
 
 
@@ -195,7 +206,6 @@ CmpMusWindow::CmpMusWindow( CmpMusController *parent, wxWindowID id,
 	m_imViewPtr2 = NULL;
 	
 	m_lastStaff = -1, 
-	m_lastController = 1;
     m_collationWin = false;
     m_viewImage = true;
 }
@@ -267,7 +277,7 @@ void CmpMusWindow::UpdateCmpScroll()
     x /= xu;
     y /= yu;
     
-	Scroll( x, y );
+	Scroll( max( x, 0), max( y, 0 ) );
 	//OnSyncScroll( x, y );
 }
 

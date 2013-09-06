@@ -601,6 +601,7 @@ MusMeiInput::MusMeiInput( MusDoc *doc, wxString filename ) :
 	MusFileInputStream( doc, -1 )
 {
     m_filename = filename;
+    wxFileName::SplitPath( m_filename, NULL, &doc->m_fname, NULL );
     m_page = NULL;
     m_system = NULL;
 	m_staff = NULL;

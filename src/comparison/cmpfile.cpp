@@ -336,8 +336,8 @@ void CmpCollation::CreateApp( MusLayer *layer_aligned, int i, MusLayer *layer_va
     MusLayerApp *app = new MusLayerApp();
     
     // we create two <rdg> because we are going to have an empty rdg for insertions and deletions
-    MusLayerRdg *ref = new MusLayerRdg( 1 );
-    MusLayerRdg *var = new MusLayerRdg( 1 );
+    MusLayerRdg *ref = new MusLayerRdg( );
+    MusLayerRdg *var = new MusLayerRdg( );
     // set the source ids available as member variables
     ref->m_source = m_refSource;
     var->m_source = m_varSource;
@@ -456,7 +456,7 @@ bool CmpCollation::Align( MusLayer *layer_ref, MusLayer *layer_var, wxString ref
 				//printf("   \t%10s\t%10s\n", (&layer_ref->m_children[i])->MusClassName().c_str(), (&layer_var->m_children[j])->MusClassName().c_str() );
 				match = true;
                 (&layer_ref->m_children[i])->AddSameAs( (&layer_ref->m_children[i])->GetUuidStr(), refFileId );
-                (&layer_ref->m_children[i])->AddSameAs( (&layer_ref->m_children[j])->GetUuidStr(), varFileId );
+                (&layer_ref->m_children[i])->AddSameAs( (&layer_var->m_children[j])->GetUuidStr(), varFileId );
 			}
 		}
 		else
