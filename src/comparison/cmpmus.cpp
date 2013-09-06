@@ -140,7 +140,6 @@ void CmpMusController::LoadSource( MusLayerElement *element )
     MusFunctor findLayerElement( &MusObject::FindByUuid );
     m_viewPtr->m_doc->Process( &findLayerElement, params );
     
-    MusLayerElement *layerElement;
     if ( !viewElement ) { // || !(layerElement == dynamic_cast<MusLayerElement*>(viewElement)) ) {
         return; // we did not find it or it is not a MusLayerElement
     }
