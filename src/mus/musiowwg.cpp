@@ -24,6 +24,7 @@
 #include "mussymbol.h"
 #include "musrest.h"
 #include "musneume.h"
+#include "musbeam.h"
 //#include "musiomlf.h"
 
 #include "musstaff.h"
@@ -176,6 +177,7 @@ void MusWWGElement::WWGInitElement()
     debordSize = 0;
     xrel = 0;
     dec_y = 0;
+    
 }
 
 //----------------------------------------------------------------------------
@@ -652,6 +654,9 @@ bool MusWWGOutput::WriteFooter( const MusWWGData *footer )
 MusWWGInput::MusWWGInput( MusDoc *doc, wxString filename ) :
 	MusFileInputStream( doc, filename )
 {
+    //
+    m_currentBeam = NULL;
+    m_isLastNoteInBeam = false;
 
 }
 
@@ -1021,13 +1026,17 @@ bool MusWWGInput::ReadNote( MusLayer *layer )
         note->m_oct = oct;
         note->m_pname = code;
         if ( drel ) {
-            note->m_beam[0] |= BEAM_INITIAL;
+            wxASSERT( !m_currentBeam );
+            m_currentBeam = new MusBeam();
+            m_isLastNoteInBeam = false;
+            //note->m_beam[0] |= BEAM_INITIAL;
         }
         if ( rel ) {
-            note->m_beam[0] |= BEAM_MEDIAL;
+            //note->m_beam[0] |= BEAM_MEDIAL;
         }
         if ( frel ) {
-            note->m_beam[0] |= BEAM_TERMINAL;
+            m_isLastNoteInBeam = true;
+            //note->m_beam[0] |= BEAM_TERMINAL;
         }
         // ligature
         if ( ligat ) {
@@ -1068,7 +1077,17 @@ bool MusWWGInput::ReadNote( MusLayer *layer )
     // if we got something, add it to the Layer
     if ( layer_element ) {
         layer_element->m_x_abs = xrel;
-        layer->AddElement( layer_element );
+        if ( m_currentBeam ) {
+            m_currentBeam->AddNote( layer_element );
+            if ( m_isLastNoteInBeam ) {
+                layer->AddElement( m_currentBeam );
+                m_isLastNoteInBeam = false;
+                m_currentBeam = NULL;
+            }
+        }
+        else{
+            layer->AddElement( layer_element );
+        }
     }
        
     /*

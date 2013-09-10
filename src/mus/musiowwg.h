@@ -17,6 +17,7 @@
 
 class MusStaff;
 class MusLayer;
+class MusBeam;
 
 //----------------------------------------------------------------------------
 // MusWWGElement
@@ -108,6 +109,7 @@ protected:
     
     // WWG staff
     unsigned short ecarts[1024];
+    
 };
 
 //----------------------------------------------------------------------------
@@ -197,6 +199,10 @@ private:
     unsigned short m_noLigne;
     char m_indent;
     char m_indentDroite;
+    
+    //
+    MusBeam *m_currentBeam;
+    bool m_isLastNoteInBeam;
 	
 private:
 };
