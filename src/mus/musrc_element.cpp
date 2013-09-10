@@ -41,9 +41,14 @@ void MusRC::DrawElement( MusDC *dc, MusLayerElement *element, MusLayer *layer, M
 {
     wxASSERT_MSG( layer, "Pointer to layer cannot be NULL" );
     wxASSERT_MSG( staff, "Pointer to staff cannot be NULL" );
+    
+    int previousColor = m_currentColour;
 
     if (element == m_currentElement) {
 		m_currentColour = AxRED;
+    }
+    else {
+        m_currentColour = AxBLACK;
     }
     
     if (dynamic_cast<MusBarline*>(element)) {
@@ -83,9 +88,7 @@ void MusRC::DrawElement( MusDC *dc, MusLayerElement *element, MusLayer *layer, M
         DrawLayerApp(dc, element, layer, staff);
     }
     
-    m_currentColour = AxBLACK;
-
-
+    m_currentColour = previousColor;
 }
 
 void MusRC::DrawDurationElement( MusDC *dc, MusLayerElement *element, MusLayer *layer, MusStaff *staff )
