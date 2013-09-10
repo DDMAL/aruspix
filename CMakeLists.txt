@@ -14,7 +14,7 @@ include_directories(/usr/local/include)
 #link_directories(/Users/xhero/devel/ARUSPIX/wxMac-2.8.12/osx-static-debug/lib
 #		/Users/xhero/devel/ARUSPIX/libmei-fork/build/Release/)
 
-link_libraries(iconv xml2 mei ${wxWidgets_LIBRARIES})
+link_libraries(iconv xml2 ${wxWidgets_LIBRARIES})
 
 include_directories(src/mus src/ src/tinyxml)
 
@@ -34,26 +34,21 @@ add_executable (aruspix
 	src/mus/musobject.cpp 
 	src/mus/mussection.cpp 
 	src/mus/musbboxdc.cpp 
-	src/mus/muslaidoutlayer.cpp 
 	src/mus/muspage.cpp 
+	src/mus/mussystem.cpp 
 	src/mus/musstaff.cpp 
+	src/mus/muslayer.cpp
+	src/mus/muslayerelement.cpp 
 	src/mus/musclef.cpp 
-	src/mus/muslaidoutlayerelement.cpp 
 	src/mus/muspitchinterface.cpp 
 	src/mus/mussvgdc.cpp 
 	src/mus/musdc.cpp 
-	src/mus/muslaidoutstaff.cpp 
 	src/mus/muspositioninterface.cpp 
 	src/mus/mussymbol.cpp 
-	src/mus/musdiv.cpp 
-	src/mus/muslayer.cpp 
 	src/mus/musrc.cpp 
-	src/mus/mussystem.cpp 
-	src/mus/musdoc.cpp 
-	src/mus/muslayout.cpp	
+	src/mus/musdoc.cpp 	
 	src/mus/musrc_beam.cpp  
 	src/mus/musdurationinterface.cpp 
-	src/mus/musmeasure.cpp 
 	src/mus/musrc_bezier.cpp 
 	src/mus/musio.cpp 
 	src/mus/musmensur.cpp 
