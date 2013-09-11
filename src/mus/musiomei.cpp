@@ -28,6 +28,7 @@ using std::max;
 #include "musnote.h"
 #include "musrest.h"
 #include "mussymbol.h"
+#include "mustuplet.h"
 
 #include "musstaff.h"
 #include "muslayer.h"
@@ -258,6 +259,11 @@ bool MusMeiOutput::WriteLayerElement( MusLayerElement *element )
         xmlElement = new TiXmlElement("rest");
         WriteMeiRest( xmlElement, dynamic_cast<MusRest*>(element) );
     }
+    else if (dynamic_cast<MusTuplet*>(element)) {
+        xmlElement = new TiXmlElement("tuplet");
+        m_tuplet = xmlElement;
+        WriteMeiTuplet( xmlElement, dynamic_cast<MusTuplet*>(element) );
+    }
     else if (dynamic_cast<MusSymbol*>(element)) {        
         xmlElement = WriteMeiSymbol( dynamic_cast<MusSymbol*>(element) );
     }
@@ -389,6 +395,12 @@ TiXmlElement *MusMeiOutput::WriteMeiSymbol( MusSymbol *symbol )
         xmlElement = dot;
     }
     return xmlElement;
+}
+
+
+void MusMeiOutput::WriteMeiTuplet( TiXmlElement *meiTuplet, MusTuplet *tuplet )
+{
+    return;
 }
 
 bool MusMeiOutput::WriteLayerApp( MusLayerApp *app )
@@ -797,6 +809,11 @@ bool MusMeiInput::ReadMeiLayer( TiXmlElement *layer )
                 return false;
             }
         }
+        else if ( wxString( current->Value() ) == "tuplet" ) {
+            if (!ReadMeiTuplet( current )) {
+                return false;
+            }
+        }
         // symbols
         else if ( wxString( current->Value() ) == "accid" ) {
             if (!ReadMeiAccid( current )) {
@@ -1009,6 +1026,54 @@ bool MusMeiInput::ReadMeiRest( TiXmlElement *rest )
 	AddLayerElement( musRest );
     return true;
 }
+
+
+bool MusMeiInput::ReadMeiTuplet( TiXmlElement *tuplet )
+{
+    /*
+    wxASSERT ( !m_beam );
+    
+    m_beam = new MusBeam();
+    SetMeiUuid( beam, m_beam );
+    ReadMeiLayerElement( beam, m_beam );
+    
+    MusObject *previousLayer = m_currentLayer;
+    m_currentLayer = m_beam;
+    
+    TiXmlElement *current = NULL;
+    for( current = beam->FirstChildElement( ); current; current = current->NextSiblingElement( ) ) {
+        if ( wxString( current->Value() ) == "note" ) {
+            if (!ReadMeiNote( current )) {
+                return false;
+            }
+        }
+        else if ( wxString( current->Value() ) == "rest" ) {
+            if (!ReadMeiRest( current )) {
+                return false;
+            }
+        }
+        // unkown            
+        else {
+            wxLogDebug("LayerElement %s ignored", current->Value() );
+        }
+    }
+    
+    if ( m_beam->GetNoteCount() == 1 ) {
+        wxLogWarning("Beam element with only one note");
+    }
+    // switch back to the previous one
+    m_currentLayer = previousLayer;
+    if ( m_beam->GetNoteCount() < 1 ) {
+        delete m_beam;
+    } 
+    else {
+        AddLayerElement( m_beam );
+    }
+    m_beam = NULL;
+    */
+    return true;
+}
+
 
 bool MusMeiInput::ReadMeiAccid( TiXmlElement *accid )
 {

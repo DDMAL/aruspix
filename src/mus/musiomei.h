@@ -33,6 +33,8 @@ class MusMensur;
 class MusNote;
 class MusRest;
 class MusSymbol;
+class MusTuplet;
+
 class MusDoc;
 class MusPage;
 class MusSystem;
@@ -118,6 +120,12 @@ private:
     void WriteMeiRest( TiXmlElement *meiRest, MusRest *rest );
     
     /**
+     * Write a MusTuplet. 
+     * Callded from WriteLayerElement.
+     */
+    void WriteMeiTuplet( TiXmlElement *meiTuplet, MusTuplet *tuplet );
+    
+    /**
      * Write a MusSymbol. 
      * The appropriate MeiElement is created by the method and returned.
      * Callded from WriteLayerElement.
@@ -162,6 +170,8 @@ private:
     TiXmlElement *m_rdgLayer;
     /** The pointer for a beam */
     TiXmlElement *m_beam;
+    /** The pointer for a tuplet */
+    TiXmlElement *m_tuplet;
     // app
     TiXmlElement *m_app;
     ///@}
@@ -201,6 +211,7 @@ private:
     bool ReadMeiMensur( TiXmlElement *mensur );
     bool ReadMeiNote( TiXmlElement *note );
     bool ReadMeiRest( TiXmlElement *rest );
+    bool ReadMeiTuplet( TiXmlElement *tuplet );
     bool ReadMeiAccid( TiXmlElement *accid );
     bool ReadMeiCustos( TiXmlElement *custos );
     bool ReadMeiDot( TiXmlElement *dot );
@@ -241,6 +252,7 @@ private:
 	MusLayer *m_layer;
     MusLayerRdg *m_layerRdg;
     MusBeam *m_beam;
+    MusTuplet *m_tuplet;
     MusObject *m_currentLayer;
     MusLayerApp *m_layerApp;
 };
