@@ -43,9 +43,6 @@ public:
     
     virtual bool operator==( MusObject& other );
     
-    bool IsActive() { return m_active; };
-    void Deactivate() { m_active = false; };
-    
     int GetId() { return 0; }; // used in SVG - TODO
     uuid_t* GetUuid() { return &m_uuid; };
     wxString GetUuidStr();
@@ -116,12 +113,9 @@ public:
     virtual bool UpdateStaffYPos( wxArrayPtrVoid params );
 
 public:
-    bool m_active;
     ArrayOfMusObjects m_children;
     MusObject *m_parent;
     wxString m_sameAs;
-
-public:
     
 protected:
     uuid_t m_uuid;

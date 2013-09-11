@@ -31,7 +31,6 @@ MusObject::MusObject() :
 	wxObject()
 {
     m_parent = NULL;
-    m_active = true;
     m_isModified = true;
     uuid_generate( m_uuid );
 }
