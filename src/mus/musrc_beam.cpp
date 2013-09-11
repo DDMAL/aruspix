@@ -52,7 +52,7 @@ static struct coord {  float a;
 			float b;
 			unsigned vlr: 8;	/* valeur */
 			unsigned prov: 8;	/* ON si portee sup. */
-			struct MusLayerElement *chk;
+            MusLayerElement *chk;
 	     } 	crd[NbREL]; /* garde les coord.d'entree*/
 
 
@@ -77,7 +77,7 @@ char extern_queue = 0;
 
 void MusRC::DrawBeam(  MusDC *dc, MusLayer *layer, MusBeam *beam, MusStaff *staff )
 {
-    struct MusLayerElement *chk;
+    MusLayerElement *chk;
 	static struct fb {
 		unsigned _liaison : 1;	/* temoin pour liaison: si ON, il y a
 							   de la liaison dans l'air et beam doit
@@ -180,11 +180,11 @@ void MusRC::DrawBeam(  MusDC *dc, MusLayer *layer, MusBeam *beam, MusStaff *staf
 			k = ((MusNote*)chk)->m_colored ? ((MusNote*)chk)->m_dur+1 : ((MusNote*)chk)->m_dur;
 
         // if (chk->type == NOTE && /*chk->sil == _NOT &&*/ k > DUR_4)
-		if (chk->IsNote() || (((MusNote*)chk)->m_beam[0] & BEAM_INITIAL) || (((MusNote*)chk)->m_beam[0] & BEAM_TERMINAL) && k > DUR_4)
+		if (chk->HasDurationInterface() || (((MusDurationInterface*)chk)->m_beam[0] & BEAM_INITIAL) || (((MusDurationInterface*)chk)->m_beam[0] & BEAM_TERMINAL) && k > DUR_4)
 		{	(crd+ct)->chk = chk;
 			/* garantir uniformite des flags */
 
-			if (!calcBeam)	/* on ne se limite pas au calcul des queues */
+			if (!calcBeam && chk->IsNote())	/* on ne se limite pas au calcul des queues */
 			{	
                 ((MusNote*)chk)->m_stemLen = extern_q_auto;
 				if (!extern_q_auto)	((MusNote*)chk)->m_stemDir = extern_queue;
