@@ -60,7 +60,6 @@ MusLayerElement& MusLayerElement::operator=( const MusLayerElement& element )
         m_visible = element.m_visible;
         // pointers have to be NULL
         m_parent = NULL;
-        m_doc = NULL;
 	}
 	return *this;
 }
@@ -92,7 +91,6 @@ MusLayerElement *MusLayerElement::GetChildCopy( bool newUuid )
     }
         
     element->m_parent = NULL;
-    element->m_doc = NULL;
     
     if ( !newUuid ) {
         element->SetUuid( *this->GetUuid() );

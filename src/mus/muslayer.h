@@ -29,7 +29,7 @@ class MusLayerElement;
  * A MusLayer is contained in a MusStaff.
  * It contains MusLayerElement objects.
 */
-class MusLayer: public MusDocObject
+class MusLayer: public MusDocObject, public MusObjectListInterface
 {
 public:
     // constructors and destructors

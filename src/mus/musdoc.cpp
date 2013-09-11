@@ -105,6 +105,11 @@ void MusDoc::AddPage( MusPage *page )
     Modify();
 }
 
+void MusDoc::Refresh()
+{
+    RefreshViews();
+}
+
 void MusDoc::SpaceMusic() {
     
     // Calculate bounding boxes

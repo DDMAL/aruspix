@@ -97,7 +97,7 @@ void MusRC::DrawDurationElement( MusDC *dc, MusLayerElement *element, MusLayer *
     wxASSERT_MSG( staff, "Pointer to staff cannot be NULL" );
 
     MusDurationInterface *durElement = dynamic_cast<MusDurationInterface*>(element);
-	if ( !element->Check() || !durElement )
+	if ( !durElement )
 		return;
         
 	

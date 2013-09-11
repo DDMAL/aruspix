@@ -66,16 +66,13 @@ bool MusObject::operator==( MusObject& other )
     return false;
 }
 
-void MusObject::Modify()
-{
-    if ( m_isModified ) {
-        return;
-    }
-    
-    m_isModified = true;
-    if ( m_parent ) {
+void MusObject::Modify( bool modified )
+{    
+    // if we have a parent and a new modification, propagate it
+    if ( m_parent && !m_isModified && modified ) {
         m_parent->Modify();
     }
+    m_isModified = modified;
 }
 
 void MusObject::GetList( ListOfMusObjects *list )
@@ -141,11 +138,6 @@ bool MusObject::GetSameAs( wxString *id, wxString *filename, int idx )
     return false;
 }
 
-bool MusObject::Check() 
-{
-    return true; 
-}
-
 void MusObject::Process(MusFunctor *functor, wxArrayPtrVoid params )
 {
     if (functor->m_stopIt) {
@@ -170,7 +162,7 @@ void MusObject::Process(MusFunctor *functor, wxArrayPtrVoid params )
 MusDocObject::MusDocObject() :
 	MusObject()
 {
-	m_doc = NULL;
+	//m_doc = NULL;
     ResetBB();
 }
 
@@ -186,6 +178,16 @@ void MusDocObject::SetDoc( wxArrayPtrVoid params )
     m_doc = (MusDoc*)params[0];  
 }
 */ // ax2.3
+
+
+
+void MusDocObject::Refresh() 
+{
+    // if we have a parent MusDocObject, propagate it
+    if ( dynamic_cast<MusDocObject*>(m_parent) ) {
+        ((MusDocObject*)m_parent)->Refresh();
+    }
+}
 
 
 void MusDocObject::UpdateContentBB( int x1, int y1, int x2, int y2) 
@@ -248,6 +250,25 @@ bool MusDocObject::HasContentBB()
 bool MusDocObject::HasSelfBB() 
 {
     return ( (m_selfBB_x1 != 0xFFFF) && (m_selfBB_y1 != 0xFFFF) && (m_selfBB_x2 != -0xFFFF) && (m_selfBB_y2 != -0xFFFF) );
+}
+
+
+//----------------------------------------------------------------------------
+// MusObjectListInterface
+//----------------------------------------------------------------------------
+
+
+void MusObjectListInterface::ResetList( MusObject *node )
+{
+    // nothing to do, the list if up to date
+    if ( !node->IsModified() ) {
+        return;
+    }
+    
+    m_list.Clear();
+    node->GetList( &m_list );
+    this->FilterList();
+    node->Modify( false );
 }
 
 

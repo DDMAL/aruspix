@@ -24,9 +24,6 @@
 void MusRC::DrawPage( MusDC *dc, MusPage *page, bool background ) 
 {
 	wxASSERT_MSG( dc , "DC cannot be NULL");
-
-	if ( !page->Check() )
-		return;
     
     int i;
 	MusSystem *system = NULL;
@@ -64,9 +61,6 @@ void MusRC::DrawSystem( MusDC *dc, MusSystem *system )
 {
 	wxASSERT_MSG( dc , "DC cannot be NULL");
 
-	if ( !system->Check() )
-		return;
-
 	int i;
     MusStaff *staff;
     
@@ -94,9 +88,6 @@ void MusRC::DrawBracket ( MusDC *dc, MusSystem *system, int x, int y1, int y2, i
 //	int x, y1, y2;	x, 1e et 2e y de barre vert
 //	int cod; si ON, on fait 2e barre vert. mince en position  x
 {
-	if ( !system->Check() )
-		return;
-
 	int xg, xd, yg, yd, ecart, centre;
  	//HPEN hPen;
   
@@ -145,8 +136,6 @@ void MusRC::DrawBracket ( MusDC *dc, MusSystem *system, int x, int y1, int y2, i
 void MusRC::DrawGroups( MusDC *dc, MusSystem *system )
 {
 	wxASSERT_MSG( dc , "DC cannot be NULL");
-	if ( !system->Check() )
-		return;
 
 	int i, flLine=0, flBrace=0;
 	int xx, portee;
@@ -309,9 +298,7 @@ void MusRC::DrawBrace ( MusDC *dc, MusSystem *system, int x, int y1, int y2, int
     int new_coords[2][6];
     
 	wxASSERT_MSG( dc , "DC cannot be NULL");
-	if ( !system->Check() )
-		return;
-    
+
 	SwapY( &y1, &y2 );
 	
 	int ymed, xdec, fact, nbrInt;
@@ -408,8 +395,6 @@ void MusRC::DrawBarline ( MusDC *dc, MusSystem *system, int x, int cod, bool por
 // porteeAutonome: indique s'il faut des barres privees sur chaque portee plutÙt que traversantes
 {
 	wxASSERT_MSG( dc , "DC cannot be NULL");
-	if ( !system->Check() )
-		return;
 
 	int i, j, accDeb=0, flLine=0, portee;
 	float a;
@@ -495,8 +480,6 @@ void MusRC::DrawBarline ( MusDC *dc, MusSystem *system, int x, int cod, bool por
 void MusRC::DrawSpecialBarline( MusDC *dc, MusSystem *system, int x, BarlineType code, bool porteeAutonome, MusStaff *pportee)
 {
 	wxASSERT_MSG( dc , "DC cannot be NULL");
-	if ( !system->Check() )
-		return;	
 	
 	int x1, x2;
 
@@ -577,8 +560,6 @@ void MusRC::DrawSpecialBarline( MusDC *dc, MusSystem *system, int x, BarlineType
 void MusRC::DrawPartialBarline ( MusDC *dc, MusSystem *system, int x, MusStaff *pportee)
 {
 	wxASSERT_MSG( dc , "DC cannot be NULL");
-	if ( !system->Check() )
-		return;
 
 	int b, bb;
 
@@ -673,8 +654,6 @@ int MusRC::CalculateRestPosY ( MusStaff *staff, char duration)
 void MusRC::DrawStaffLines( MusDC *dc, MusStaff *staff, MusSystem *system )
 {
 	wxASSERT_MSG( dc , "DC cannot be NULL");
-	if ( !staff->Check() )
-		return;
         
     if (staff->invisible)
         return;
@@ -721,8 +700,6 @@ void MusRC::DrawStaffLines( MusDC *dc, MusStaff *staff, MusSystem *system )
 void MusRC::DrawStaff( MusDC *dc, MusStaff *staff, MusSystem *system )
 {
 	wxASSERT_MSG( dc , "DC cannot be NULL");
-	if ( !staff->Check() )
-		return;
     
     dc->StartGraphic( staff, "staff", wxString::Format("s_%d", staff->GetId()) );
     
@@ -918,8 +895,6 @@ void MusRC::DrawSlur( MusDC *dc, MusLayer *layer, int x1, int y1, int x2, int y2
 void MusRC::DrawLayer( MusDC *dc, MusLayer *layer, MusStaff *staff )
 {
 	wxASSERT_MSG( dc , "DC cannot be NULL");
-	if ( !layer->Check() )
-		return;
 
 	MusLayerElement *pelement = NULL;
 	int j;

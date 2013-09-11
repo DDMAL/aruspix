@@ -112,36 +112,33 @@ MusLayerElement *MusLayer::GetLast( )
 
 MusLayerElement *MusLayer::GetNext( MusLayerElement *element )
 {	
-    // We create the list each time - this is not optimized but seems to be fast enough
-    ListOfMusObjects list;
-    GetList( &list );
+    this->ResetList( this );
     
-    if ( !element || list.IsEmpty() )
+    if ( !element || m_list.IsEmpty() )
         return NULL;
     
-	int i = list.IndexOf( element );
+	int i = m_list.IndexOf( element );
     
-	if ((i == wxNOT_FOUND )|| (i >= (int)list.GetCount() - 1 )) 
+	if ((i == wxNOT_FOUND )|| (i >= (int)m_list.GetCount() - 1 )) 
         return NULL;
     
-    ListOfMusObjects::compatibility_iterator item = list.Item( i + 1 );
+    ListOfMusObjects::compatibility_iterator item = m_list.Item( i + 1 );
     return (MusLayerElement*)item->GetData();
 }
 
 MusLayerElement *MusLayer::GetPrevious( MusLayerElement *element )
 {
-    ListOfMusObjects list;
-    GetList( &list );
+    this->ResetList( this );
     
-    if ( !element || list.IsEmpty() )
+    if ( !element || m_list.IsEmpty() )
         return NULL;
     
-	int i = list.IndexOf( element );
+	int i = m_list.IndexOf( element );
     
 	if ((i == wxNOT_FOUND ) || ( i <= 0 ))
         return NULL;
     
-    ListOfMusObjects::compatibility_iterator item = list.Item( i - 1 );
+    ListOfMusObjects::compatibility_iterator item = m_list.Item( i - 1 );
     return (MusLayerElement*)item->GetData();
 }
 
@@ -196,7 +193,7 @@ MusLayerElement *MusLayer::Insert( MusLayerElement *element, int x )
     insertElement->m_x_abs = x;
     AddElement( insertElement, idx );
     
-	m_doc->RefreshViews();
+	Refresh();
     //
 	return insertElement;
 }
@@ -234,7 +231,7 @@ void MusLayer::Delete( MusLayerElement *element )
         //m_r->OnEndEditionClef();
 	}
     
-    m_doc->RefreshViews();
+    Refresh();
 }
 
 

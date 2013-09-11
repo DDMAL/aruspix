@@ -62,11 +62,9 @@ public:
     void ResetPaperSize( );
     
     /**
-     * Check the validity of the document.
-     * Verify that all element have a valid pointer to their parent.
-     * This is more of a debugging method.
-     */ 
-    //virtual bool Check();
+     * Refreshes the views from MusDoc.
+     */
+    virtual void Refresh();
     
     /**
      * This method reset the MusLayerElement, MusSection and MusMeasure pointers and check the elements exist.

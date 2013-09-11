@@ -1199,7 +1199,7 @@ void MusMeiInput::AddLayerElement( MusLayerElement *element )
         ((MusLayerRdg*)m_currentLayer)->AddElement( element );
     }
     else if ( dynamic_cast<MusBeam*>( m_currentLayer ) ) {
-        ((MusBeam*)m_currentLayer)->AddNote( element );
+        ((MusBeam*)m_currentLayer)->AddElement( element );
     }
     
 }

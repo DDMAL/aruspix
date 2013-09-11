@@ -1108,7 +1108,7 @@ void MusPaeInput::printMeasure(std::ostream& out, MeasureObject *measure ) {
                 
                 // if the beam was not created, this is a single note appoggiatura
                 if (appog_beam)
-                    appog_beam->AddNote(n);
+                    appog_beam->AddElement(n);
                 
                 // this is the last note in appoggiatura beam, set the beam to null
                 if (note->appoggiatura == 2) // last one in a beam is 2
@@ -1128,11 +1128,11 @@ void MusPaeInput::printMeasure(std::ostream& out, MeasureObject *measure ) {
             if (!note->appoggiatura && !note->acciaccatura) {
                 if (note->beam & BEAM_INITIAL) {
                     m_current_beam = new MusBeam;
-                    m_current_beam->AddNote(n);
+                    m_current_beam->AddElement(n);
                     m_layer->AddElement(m_current_beam);
                 } else if (note->beam & BEAM_MEDIAL) {
                     if (m_current_beam)
-                        m_current_beam->AddNote(n);
+                        m_current_beam->AddElement(n);
                     
                 } else if (note->beam & BEAM_TERMINAL) {
                     m_current_beam = NULL;

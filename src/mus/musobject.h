@@ -39,8 +39,6 @@ public:
     MusObject();
     virtual ~MusObject();
     
-    virtual bool Check();
-    
     virtual bool operator==( MusObject& other );
     
     int GetId() { return 0; }; // used in SVG - TODO
@@ -86,7 +84,7 @@ public:
     /**
      * Mark the object and its parent (if any) as modified
      */
-    void Modify();
+    void Modify( bool modified = true );
     
     // moulinette
     virtual void Process(MusFunctor *functor, wxArrayPtrVoid params );
@@ -146,6 +144,12 @@ public:
     MusDocObject();
     virtual ~MusDocObject();
     
+    /**
+     * Refreshes the views from MusDoc.
+     * From other MusDocObject, simply pass it to its parent until MusDoc is reached.
+     */
+    virtual void Refresh();
+    
     void UpdateContentBB( int x1, int y1, int x2, int y2);
     void UpdateSelfBB( int x1, int y1, int x2, int y2 );
     bool HasContentBB();
@@ -165,12 +169,46 @@ private:
     bool m_updatedBB;
     
 protected:
-    MusDoc *m_doc;
+    //MusDoc *m_doc;
     
 public:
     
 };
 
+
+//----------------------------------------------------------------------------
+// MusObjectListInterface
+//----------------------------------------------------------------------------
+
+/** 
+ * This class is an interface for elements maintaining a list of children
+ * MusLayerElement for processing.
+ * The list is a flatten list of pointers to children elements.
+ * It is not an abstract class but should not be instanciate directly.
+ */
+class MusObjectListInterface
+{
+public:
+    // constructors and destructors
+    MusObjectListInterface() {};
+    virtual ~MusObjectListInterface() {};
+    
+protected:
+    /**
+     * Filter the list for a specific class.
+     * For example, keep only notes in MusBeam
+     */
+    virtual void FilterList() {};
+    
+    /**
+     * Reset the list of children and call FilterList().
+     */
+    void ResetList( MusObject *node );
+        
+protected:
+    ListOfMusObjects m_list;
+    
+};
 
 //----------------------------------------------------------------------------
 // abstract base class MusFunctor
