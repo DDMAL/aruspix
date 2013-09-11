@@ -47,6 +47,7 @@ void MusBeam::AddNote(MusLayerElement *element) {
     else
         note->m_beam[0] = BEAM_TERMINAL;
     m_children.Add(element);
+    Modify();
     
     // Set the last note to median if we have more than one note in the array
     if (GetNoteCount() > 2) {

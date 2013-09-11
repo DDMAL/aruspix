@@ -35,6 +35,7 @@ void MusLayerApp::AddLayerRdg( MusLayerRdg *layerRdg )
     
 	layerRdg->SetParent( this );
     m_children.Add( layerRdg );
+    Modify();
 }
 
 bool MusLayerApp::Save( wxArrayPtrVoid params )

@@ -74,6 +74,7 @@ void MusLayer::AddElement( MusLayerElement *element, int idx )
     else {
         m_children.Insert( element, idx );
     }
+    Modify();
 }
 
 void MusLayer::CopyAttributes( MusLayer *nlayer )
@@ -226,6 +227,7 @@ void MusLayer::Delete( MusLayerElement *element )
 	
     int pos = m_children.Index( *element );
     m_children.RemoveAt( pos );
+    Modify();
 
 	if ( is_clef )
 	{

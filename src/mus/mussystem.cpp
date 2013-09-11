@@ -64,6 +64,7 @@ void MusSystem::AddStaff( MusStaff *staff )
 {
 	staff->SetParent( this );
 	m_children.Add( staff );
+    Modify();
 }
 
 int MusSystem::GetSystemNo() const

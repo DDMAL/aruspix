@@ -39,5 +39,5 @@ void MusTuplet::AddNote(MusLayerElement *element) {
     }
     
     m_children.Add(element);
-    
+    Modify();
 }

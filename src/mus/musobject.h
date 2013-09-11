@@ -81,6 +81,16 @@ public:
      */
     bool GetSameAs( wxString *id, wxString *filename, int idx = 0 );
     
+    /**
+     * Check if the content was modified or not
+     */
+    bool IsModified( ) { return m_isModified; };
+    
+    /**
+     * Mark the object and its parent (if any) as modified
+     */
+    void Modify();
+    
     // moulinette
     virtual void Process(MusFunctor *functor, wxArrayPtrVoid params );
     
@@ -117,6 +127,13 @@ protected:
     uuid_t m_uuid;
 
 private:
+    /**
+     * Indicated whether the object content is up-to-date or not.
+     * This is usefull for object using sub-lists of objects when drawing.
+     * For example, MusBeam has a list of children notes and this value indicates if the
+     * list needs to be updated or not. Is is moslty and optimization feature.
+     */
+    bool m_isModified;
     
 };
 

@@ -102,6 +102,7 @@ void MusDoc::AddPage( MusPage *page )
 {
 	page->SetParent( this );
 	m_children.Add( page );
+    Modify();
 }
 
 void MusDoc::SpaceMusic() {

@@ -54,6 +54,7 @@ void MusPage::AddSystem( MusSystem *system )
 {
 	system->SetParent( this );
 	m_children.Add( system );
+    Modify();
 }
 
 int MusPage::GetPageNo() const

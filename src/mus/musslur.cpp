@@ -39,5 +39,6 @@ void MusSlur::AddNote(MusLayerElement *element) {
     }
 
     m_children.Add(element);
+    Modify();
     
 }

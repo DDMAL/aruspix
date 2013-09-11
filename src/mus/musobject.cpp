@@ -32,6 +32,7 @@ MusObject::MusObject() :
 {
     m_parent = NULL;
     m_active = true;
+    m_isModified = true;
     uuid_generate( m_uuid );
 }
 
@@ -64,6 +65,18 @@ bool MusObject::operator==( MusObject& other )
     // We expect to compare only MusNote, MusRest, etc object for which we have an overwritten method
     wxLogError( "Missing comparison operator for '%s'", this->MusClassName().c_str() );
     return false;
+}
+
+void MusObject::Modify()
+{
+    if ( m_isModified ) {
+        return;
+    }
+    
+    m_isModified = true;
+    if ( m_parent ) {
+        m_parent->Modify();
+    }
 }
 
 void MusObject::GetList( ListOfMusObjects *list )
