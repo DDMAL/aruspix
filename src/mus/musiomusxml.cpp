@@ -570,7 +570,7 @@ void MusXMLOutput::WriteNoteOrRest(MusLayerElement *element) {
     if (m_current_beam) {
         wxString btype;
         
-        int position = m_current_beam->m_children.Index(*element);
+        int position = m_current_beam->GetChildIndex( element );
         
         // if position == -1, the note is not into the current beam
         if (position >= 0) {

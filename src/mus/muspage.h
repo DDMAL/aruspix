@@ -56,7 +56,7 @@ public:
 
     void SetValues( int type );
 	
-	int GetSystemCount() const { return (int)m_children.GetCount(); };
+	int GetSystemCount() const { return (int)m_children.size(); };
     
     int GetPageNo() const;
     

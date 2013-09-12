@@ -31,7 +31,7 @@ public:
     virtual wxString MusClassName( ) { return "MusSlur"; };
 
     
-	int GetNoteCount() const { return (int)m_children.GetCount(); };
+	int GetNoteCount() const { return (int)m_children.size(); };
     
     /**
      * Add an element (a note or a rest) to a beam.

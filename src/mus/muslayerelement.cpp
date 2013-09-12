@@ -108,7 +108,7 @@ int MusLayerElement::GetElementNo() const
 {
     wxASSERT_MSG( m_parent, "Layer cannot be NULL");
     
-    return m_parent->m_children.Index( *this );
+    return m_parent->GetChildIndex( this );
 }
 
 

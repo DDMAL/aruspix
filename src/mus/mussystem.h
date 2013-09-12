@@ -58,7 +58,7 @@ public:
 
     void SetValues( int type );
 	
-	int GetStaffCount() const { return (int)m_children.GetCount(); };
+	int GetStaffCount() const { return (int)m_children.size(); };
     
     int GetSystemNo() const;
     

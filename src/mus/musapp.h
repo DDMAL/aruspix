@@ -33,7 +33,7 @@ public:
     
     void AddLayerRdg( MusLayerRdg *layerRdg );
     
-    int GetRdgCount() { return (int)m_children.GetCount(); };
+    int GetRdgCount() { return (int)m_children.size(); };
     
     // functor
     virtual bool Save( wxArrayPtrVoid params );
@@ -63,7 +63,7 @@ public:
     
 	void AddElement( MusLayerElement *element, int idx = -1 );
     
-	int GetElementCount() const { return (int)m_children.GetCount(); };
+	int GetElementCount() const { return (int)m_children.size(); };
     
     // functor
     virtual bool Save( wxArrayPtrVoid params );

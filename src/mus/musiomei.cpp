@@ -779,119 +779,89 @@ bool MusMeiInput::ReadMeiLayer( TiXmlElement *layer )
     
     TiXmlElement *current = NULL;
     for( current = layer->FirstChildElement( ); current; current = current->NextSiblingElement( ) ) {
-        if ( wxString( current->Value() )  == "barLine" ) {
-            if (!ReadMeiBarline( current )) {
-                return false;
-            }
-        }
-        else if ( wxString( current->Value() ) == "beam" ) {
-            if (!ReadMeiBeam( current )) {
-                return false;
-            }
-        }
-        else if ( wxString( current->Value() ) == "clef" ) {
-            if (!ReadMeiClef( current )) {
-                return false;
-            }
-        }
-        else if ( wxString( current->Value() ) == "mensur" ) {
-            if (!ReadMeiMensur( current )) {
-                return false;
-            }
-        }
-        else if ( wxString( current->Value() ) == "note" ) {
-            if (!ReadMeiNote( current )) {
-                return false;
-            }
-        }
-        else if ( wxString( current->Value() ) == "rest" ) {
-            if (!ReadMeiRest( current )) {
-                return false;
-            }
-        }
-        else if ( wxString( current->Value() ) == "tuplet" ) {
-            if (!ReadMeiTuplet( current )) {
-                return false;
-            }
-        }
-        // symbols
-        else if ( wxString( current->Value() ) == "accid" ) {
-            if (!ReadMeiAccid( current )) {
-                return false;
-            }
-        }
-        else if ( wxString( current->Value() ) == "custos" ) {
-            if (!ReadMeiCustos( current )) {
-                return false;
-            }
-        }
-        else if ( wxString( current->Value() ) == "dot" ) {
-            if (!ReadMeiDot( current )) {
-                return false;
-            }
-        }
-        // app
-        else if ( wxString( current->Value() ) == "app" ) {
-            if (!ReadMeiApp( current )) {
-                return false;
-            }
-        }
-        // unkown            
-        else {
-            wxLogDebug("Element %s ignored", current->Value() );
-        }
-
+        ReadMeiLayerElement( current );
     }
     // success in any case
     return true;
 }
 
-bool MusMeiInput::ReadMeiLayerElement( TiXmlElement *xmlElement, MusLayerElement *musElement )
+bool MusMeiInput::ReadMeiLayerElement( TiXmlElement *xmlElement )
 {
+    MusLayerElement *musElement = NULL;
+    if ( wxString( xmlElement->Value() )  == "barLine" ) {
+        musElement = ReadMeiBarline( xmlElement );
+    }
+    else if ( wxString( xmlElement->Value() ) == "beam" ) {
+        musElement = ReadMeiBeam( xmlElement );
+    }
+    else if ( wxString( xmlElement->Value() ) == "clef" ) {
+        musElement = ReadMeiClef( xmlElement );
+    }
+    else if ( wxString( xmlElement->Value() ) == "mensur" ) {
+        musElement = ReadMeiMensur( xmlElement );
+    }
+    else if ( wxString( xmlElement->Value() ) == "note" ) {
+        musElement = ReadMeiNote( xmlElement );
+    }
+    else if ( wxString( xmlElement->Value() ) == "rest" ) {
+        musElement = ReadMeiRest( xmlElement );
+    }
+    else if ( wxString( xmlElement->Value() ) == "tuplet" ) {
+        musElement = ReadMeiTuplet( xmlElement );
+    }
+    // symbols
+    else if ( wxString( xmlElement->Value() ) == "accid" ) {
+        musElement = ReadMeiAccid( xmlElement );
+    }
+    else if ( wxString( xmlElement->Value() ) == "custos" ) {
+        musElement = ReadMeiCustos( xmlElement );
+    }
+    else if ( wxString( xmlElement->Value() ) == "dot" ) {
+        musElement = ReadMeiDot( xmlElement );
+    }
+    // app
+    else if ( wxString( xmlElement->Value() ) == "app" ) {
+        musElement = ReadMeiApp( xmlElement );
+    }
+    // unkown            
+    else {
+        wxLogDebug("Element %s ignored", xmlElement->Value() );
+    }
+    
+    if ( !musElement ) {
+        return false;
+    }
+    
     if ( xmlElement->Attribute( "ulx" ) ) {
         musElement->m_x_abs = atoi ( xmlElement->Attribute( "ulx" ) );
     }
     ReadSameAsAttr( xmlElement, musElement );
+    SetMeiUuid( xmlElement, musElement );
+    
+    AddLayerElement( musElement );
     return true;
 }
 
-bool MusMeiInput::ReadMeiBarline( TiXmlElement *barline )
+MusLayerElement *MusMeiInput::ReadMeiBarline( TiXmlElement *barline )
 {
     MusBarline *musBarline = new MusBarline();
-    SetMeiUuid( barline, musBarline );
-    ReadMeiLayerElement( barline, musBarline );
     
-    AddLayerElement( musBarline );
-    return true;
+    return musBarline;    
 }
 
-bool MusMeiInput::ReadMeiBeam( TiXmlElement *beam )
+MusLayerElement *MusMeiInput::ReadMeiBeam( TiXmlElement *beam )
 {
     wxASSERT ( !m_beam );
     
+    // m_beam will be used for adding elements to the beam
     m_beam = new MusBeam();
-    SetMeiUuid( beam, m_beam );
-    ReadMeiLayerElement( beam, m_beam );
     
     MusObject *previousLayer = m_currentLayer;
     m_currentLayer = m_beam;
     
     TiXmlElement *current = NULL;
     for( current = beam->FirstChildElement( ); current; current = current->NextSiblingElement( ) ) {
-        if ( wxString( current->Value() ) == "note" ) {
-            if (!ReadMeiNote( current )) {
-                return false;
-            }
-        }
-        else if ( wxString( current->Value() ) == "rest" ) {
-            if (!ReadMeiRest( current )) {
-                return false;
-            }
-        }
-        // unkown            
-        else {
-            wxLogDebug("LayerElement %s ignored", current->Value() );
-        }
+        ReadMeiLayerElement( current );
     }
     
     if ( m_beam->GetNoteCount() == 1 ) {
@@ -901,34 +871,29 @@ bool MusMeiInput::ReadMeiBeam( TiXmlElement *beam )
     m_currentLayer = previousLayer;
     if ( m_beam->GetNoteCount() < 1 ) {
         delete m_beam;
+        return NULL;
     } 
     else {
-        AddLayerElement( m_beam );
+        // set the member to NULL but keep a pointer to be returned        
+        MusBeam *musBeam = m_beam;
+        m_beam = NULL;
+        return musBeam;
     }
-    m_beam = NULL;
-    
-    return true;
 }
 
-bool MusMeiInput::ReadMeiClef( TiXmlElement *clef )
+MusLayerElement *MusMeiInput::ReadMeiClef( TiXmlElement *clef )
 { 
-    MusClef *musClef = new MusClef();
-    SetMeiUuid( clef, musClef );
-    ReadMeiLayerElement( clef, musClef );
-    
+    MusClef *musClef = new MusClef(); 
     if ( clef->Attribute( "shape" ) && clef->Attribute( "line" ) ) {
         musClef->m_clefId = StrToClef( clef->Attribute( "shape" ) , clef->Attribute( "line" ) );
     }
     
-    AddLayerElement( musClef );
-    return true;
+    return musClef;
 }
 
-bool MusMeiInput::ReadMeiMensur( TiXmlElement *mensur )
+MusLayerElement *MusMeiInput::ReadMeiMensur( TiXmlElement *mensur )
 {
     MusMensur *musMensur = new MusMensur();
-    SetMeiUuid( mensur, musMensur );
-    ReadMeiLayerElement( mensur, musMensur );
     
     if ( mensur->Attribute( "sign" ) ) {
         musMensur->m_sign = StrToMensurSign( mensur->Attribute( "sign" ) );
@@ -950,15 +915,12 @@ bool MusMeiInput::ReadMeiMensur( TiXmlElement *mensur )
     }
     // missing m_meterSymb
     
-    AddLayerElement( musMensur );
-    return true;
+    return musMensur;
 }
 
-bool MusMeiInput::ReadMeiNote( TiXmlElement *note )
+MusLayerElement *MusMeiInput::ReadMeiNote( TiXmlElement *note )
 {
 	MusNote *musNote = new MusNote();
-    SetMeiUuid( note, musNote );
-    ReadMeiLayerElement( note, musNote );
     
 	// pitch
 	if ( note->Attribute( "pname" ) ) {
@@ -997,15 +959,12 @@ bool MusMeiInput::ReadMeiNote( TiXmlElement *note )
         musNote->m_colored = ( strcmp ( note->Attribute( "colored" ), "true" ) == 0 );
     }
 	
-	AddLayerElement( musNote );
-    return true;
+	return musNote;
 }
 
-bool MusMeiInput::ReadMeiRest( TiXmlElement *rest )
+MusLayerElement *MusMeiInput::ReadMeiRest( TiXmlElement *rest )
 {
     MusRest *musRest = new MusRest();
-    SetMeiUuid( rest, musRest );
-    ReadMeiLayerElement( rest, musRest );
     
 	// duration
 	if ( rest->Attribute( "dur" ) ) {
@@ -1023,12 +982,11 @@ bool MusMeiInput::ReadMeiRest( TiXmlElement *rest )
 		musRest->m_oct = StrToOct( rest->Attribute( "oloc" ) );
 	}
 	
-	AddLayerElement( musRest );
-    return true;
+    return musRest;
 }
 
 
-bool MusMeiInput::ReadMeiTuplet( TiXmlElement *tuplet )
+MusLayerElement *MusMeiInput::ReadMeiTuplet( TiXmlElement *tuplet )
 {
     /*
     wxASSERT ( !m_beam );
@@ -1071,15 +1029,13 @@ bool MusMeiInput::ReadMeiTuplet( TiXmlElement *tuplet )
     }
     m_beam = NULL;
     */
-    return true;
+    return NULL;
 }
 
 
-bool MusMeiInput::ReadMeiAccid( TiXmlElement *accid )
+MusLayerElement *MusMeiInput::ReadMeiAccid( TiXmlElement *accid )
 {
     MusSymbol *musAccid = new MusSymbol( SYMBOL_ACCID );
-    SetMeiUuid( accid, musAccid );
-    ReadMeiLayerElement( accid, musAccid );
     
     if ( accid->Attribute( "accid" ) ) {
         musAccid->m_accid = StrToAccid( accid->Attribute( "accid" ) );
@@ -1093,15 +1049,12 @@ bool MusMeiInput::ReadMeiAccid( TiXmlElement *accid )
 		musAccid->m_oct = StrToOct( accid->Attribute( "oloc" ) );
 	}
 	
-	AddLayerElement( musAccid );
-    return true;
+	return musAccid;
 }
 
-bool MusMeiInput::ReadMeiCustos( TiXmlElement *custos )
+MusLayerElement *MusMeiInput::ReadMeiCustos( TiXmlElement *custos )
 {
     MusSymbol *musCustos = new MusSymbol( SYMBOL_CUSTOS );
-    SetMeiUuid( custos, musCustos );
-    ReadMeiLayerElement( custos, musCustos );
     
 	// position (pitch)
 	if ( custos->Attribute( "pname" ) ) {
@@ -1112,15 +1065,12 @@ bool MusMeiInput::ReadMeiCustos( TiXmlElement *custos )
 		musCustos->m_oct = StrToOct( custos->Attribute( "oct" ) );
 	}
 	
-	AddLayerElement( musCustos );    
-    return true;
+	return musCustos;    
 }
 
-bool MusMeiInput::ReadMeiDot( TiXmlElement *dot )
+MusLayerElement *MusMeiInput::ReadMeiDot( TiXmlElement *dot )
 {
     MusSymbol *musDot = new MusSymbol( SYMBOL_DOT );
-    SetMeiUuid( dot, musDot );
-    ReadMeiLayerElement( dot, musDot );
     
     musDot->m_dot = 0;
     // missing m_dots
@@ -1133,23 +1083,23 @@ bool MusMeiInput::ReadMeiDot( TiXmlElement *dot )
 		musDot->m_oct = StrToOct( dot->Attribute( "oloc" ) );
 	}
 	
-	AddLayerElement( musDot );
-    return true;
+	return musDot;
 }
 
-bool MusMeiInput::ReadMeiApp( TiXmlElement *app )
+MusLayerElement *MusMeiInput::ReadMeiApp( TiXmlElement *app )
 {
     m_layerApp = new MusLayerApp( );
-    SetMeiUuid( app, m_layerApp );
    
     TiXmlElement *current = NULL;
     for( current = app->FirstChildElement( "rdg" ); current; current = current->NextSiblingElement( "rdg" ) ) {
         ReadMeiRdg( current );
 	}
 	
-	AddLayerElement( m_layerApp );
+    // set the member to NULL but keep a pointer to be returned
+    MusLayerApp *layerApp = m_layerApp;
     m_layerApp = NULL;
-    return true;
+    
+    return layerApp;
 }
 
 bool MusMeiInput::ReadMeiRdg( TiXmlElement *rdg )
@@ -1158,7 +1108,6 @@ bool MusMeiInput::ReadMeiRdg( TiXmlElement *rdg )
     wxASSERT( m_layerApp );
     
     m_layerRdg = new MusLayerRdg( );
-    SetMeiUuid( rdg, m_layerRdg );
     
     if ( rdg->Attribute( "source" ) ) {
         m_layerRdg->m_source = rdg->Attribute( "source" );
@@ -1167,15 +1116,20 @@ bool MusMeiInput::ReadMeiRdg( TiXmlElement *rdg )
     // switch to the rdg
     MusObject *previousLayer = m_currentLayer;
     m_currentLayer = m_layerRdg;
-    
-    bool success = ReadMeiLayer( rdg );
+ 
+    TiXmlElement *current = NULL;
+    for( current = rdg->FirstChildElement( ); current; current = current->NextSiblingElement( ) ) {
+        ReadMeiLayerElement( current );
+    }
     
     // switch back to the previous one
-    m_layerApp->AddLayerRdg( m_layerRdg );
     m_currentLayer = previousLayer;
+
+    // set the member to NULL but keep a pointer to be returned
+    MusLayerRdg *layerRdg = m_layerRdg;
     m_layerRdg = NULL;
     
-    return success;
+    return layerRdg;
 }
 
 

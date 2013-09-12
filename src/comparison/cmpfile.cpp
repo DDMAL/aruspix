@@ -343,24 +343,24 @@ void CmpCollation::CreateApp( MusLayer *layer_aligned, int i, MusLayer *layer_va
     var->m_source = m_varSource;
     
     if ( (appType == CMP_APP_SUBST) || (appType == CMP_APP_DEL) ) {
-        ref->AddElement( (((MusLayerElement*)&layer_aligned->m_children[i]))->GetChildCopy()  );
-        (&ref->m_children[0])->AddSameAs( (&layer_aligned->m_children[i])->GetUuidStr(), refFileId );
+        ref->AddElement( (((MusLayerElement*)layer_aligned->m_children[i]))->GetChildCopy()  );
+        (ref->m_children[0])->AddSameAs( (layer_aligned->m_children[i])->GetUuidStr(), refFileId );
     }
     if ( (appType == CMP_APP_SUBST) || (appType == CMP_APP_INS) ) {
-        var->AddElement( (((MusLayerElement*)&layer_var->m_children[j]))->GetChildCopy()  );
-        (&var->m_children[0])->AddSameAs( (&layer_var->m_children[j])->GetUuidStr(), varFileId );
+        var->AddElement( (((MusLayerElement*)layer_var->m_children[j]))->GetChildCopy()  );
+        (var->m_children[0])->AddSameAs( (layer_var->m_children[j])->GetUuidStr(), varFileId );
     }
     
     // then insert the rdg 
     app->AddLayerRdg( ref );
     app->AddLayerRdg( var );
     // insert the app in the layer
-    layer_aligned->Insert( app, (MusLayerElement*)&layer_aligned->m_children[i] );
+    layer_aligned->Insert( app, (MusLayerElement*)layer_aligned->m_children[i] );
 
     // remove the original element (if any)
     if ( appType != CMP_APP_INS ) {
-        layer_aligned->Delete( (MusLayerElement*)&layer_aligned->m_children[i+1] );
-        //delete &layer_aligned->m_children[i+1];
+        layer_aligned->Delete( (MusLayerElement*)layer_aligned->m_children[i+1] );
+        //delete layer_aligned->m_children[i+1];
     }
 }
 
@@ -421,7 +421,7 @@ bool CmpCollation::Align( MusLayer *layer_ref, MusLayer *layer_var, wxString ref
 		for(j=1;j<m;j++)
 		{
 			//Step 5
-			if ( layer_ref->m_children[i-1] == layer_var->m_children[j-1] ) 
+			if ( (*layer_ref->m_children[i-1]) == (*layer_var->m_children[j-1]) )
 			//if(s[i-1]==t[j-1])
 				cost=0;
 			else
@@ -433,7 +433,7 @@ bool CmpCollation::Align( MusLayer *layer_ref, MusLayer *layer_var, wxString ref
 	
 	i=n-1;
 	j=m-1;
-	bool match;
+	bool match = false;
 	int n_insert = 0;
 	int n_delete = 0;
 	int n_subst = 0;
@@ -447,16 +447,16 @@ bool CmpCollation::Align( MusLayer *layer_ref, MusLayer *layer_var, wxString ref
 	while ((j > 0) && (i > 0))	
 	{
 		match = false;
-		if ( layer_ref->m_children[i-1] == layer_var->m_children[j-1] )
+		if ( (*layer_ref->m_children[i-1]) == (*layer_var->m_children[j-1]) )
 		{
 			if (d[j*n+i] == d[(j-1)*n+i-1]) // align
 			{
 				//printf("%d - ", d[j*n+i]);
 				i--; j--;
-				//printf("   \t%10s\t%10s\n", (&layer_ref->m_children[i])->MusClassName().c_str(), (&layer_var->m_children[j])->MusClassName().c_str() );
+				//printf("   \t%10s\t%10s\n", (layer_ref->m_children[i])->MusClassName().c_str(), (layer_var->m_children[j])->MusClassName().c_str() );
 				match = true;
-                (&layer_ref->m_children[i])->AddSameAs( (&layer_ref->m_children[i])->GetUuidStr(), refFileId );
-                (&layer_ref->m_children[i])->AddSameAs( (&layer_var->m_children[j])->GetUuidStr(), varFileId );
+                (layer_ref->m_children[i])->AddSameAs( (layer_ref->m_children[i])->GetUuidStr(), refFileId );
+                (layer_ref->m_children[i])->AddSameAs( (layer_var->m_children[j])->GetUuidStr(), varFileId );
 			}
 		}
 		else
@@ -465,7 +465,7 @@ bool CmpCollation::Align( MusLayer *layer_ref, MusLayer *layer_var, wxString ref
 			{
 				//printf("%d - ", d[j*n+i]);
 				i--; j--;
-				//printf("S |\t%10s\t%10s\n", (&layer_ref->m_children[i])->MusClassName().c_str(), (&layer_var->m_children[j])->MusClassName().c_str() );
+				//printf("S |\t%10s\t%10s\n", (layer_ref->m_children[i])->MusClassName().c_str(), (layer_var->m_children[j])->MusClassName().c_str() );
                 CreateApp( layer_ref, i, layer_var, j, CMP_APP_SUBST, refFileId, varFileId );
 				match = true;
 				n_subst++;
@@ -480,7 +480,7 @@ bool CmpCollation::Align( MusLayer *layer_ref, MusLayer *layer_var, wxString ref
 				j--;
 				///ii = ((CmpMLFSymb*)&reference->Item(i))->m_index;
 				///jj = ((CmpMLFSymb*)&variant->Item(j))->m_index;
-				printf("I |\t%10s\t%10s\n", "-", (&layer_var->m_children[j])->MusClassName().c_str() );
+				printf("I |\t%10s\t%10s\n", "-", (layer_var->m_children[j])->MusClassName().c_str() );
                 CreateApp( layer_ref, i, layer_var, j, CMP_APP_INS, refFileId, varFileId );
 				n_insert++;
 			}
@@ -488,7 +488,7 @@ bool CmpCollation::Align( MusLayer *layer_ref, MusLayer *layer_var, wxString ref
 			{
 				printf("%d - ", d[j*n+i]);
 				i--;
-				//printf("D |\t%10s\t%10s\n", (&layer_ref->m_children[i])->MusClassName().c_str(), "-" );
+				//printf("D |\t%10s\t%10s\n", (layer_ref->m_children[i])->MusClassName().c_str(), "-" );
                 CreateApp( layer_ref, i, layer_var, j, CMP_APP_DEL, refFileId, varFileId );
 				n_delete++;
 			}
@@ -502,14 +502,14 @@ bool CmpCollation::Align( MusLayer *layer_ref, MusLayer *layer_var, wxString ref
 	while (j > 0)
 	{
 		j--;
-		//printf("I |\t%10s\t%10s\n", "-", (&layer_var->m_children[j])->MusClassName().c_str() );
+		//printf("I |\t%10s\t%10s\n", "-", (layer_var->m_children[j])->MusClassName().c_str() );
         CreateApp( layer_ref, i, layer_var, j, CMP_APP_INS, refFileId, varFileId );
 		n_insert++;
 	}
 	while (i > 0)
 	{
 		i--;
-		//printf("D |\t%10s\t%10s\n", (&layer_ref->m_children[i])->MusClassName().c_str(), "-" );
+		//printf("D |\t%10s\t%10s\n", (layer_ref->m_children[i])->MusClassName().c_str(), "-" );
         CreateApp( layer_ref, i, layer_var, j, CMP_APP_DEL, refFileId, varFileId );
 		n_delete++;
 	}
@@ -639,7 +639,7 @@ MusLayer *CmpBookPart::GetContentToAlign( wxString basename )
     for ( int k = 0; k < (int)nfiles; k++ )
     {
         CmpPartPage *partPage = &this->m_partpages[k];
-        MusPage *currentPage = (MusPage*)&doc.m_children[k];
+        MusPage *currentPage = (MusPage*)doc.m_children[k];
         
         bool has_started = false;
         bool has_ended = false;
@@ -1014,7 +1014,7 @@ bool CmpFile::LoadBooks( wxArrayPtrVoid params, AxProgressDlg *dlg )
 				if ( !failed && !dlg->GetCanceled() )
 				{            
                     // Detach the correspondant layout page from the file - we will not save the file, so who cares?
-                    MusPage *partPage =  (MusPage*)recFile.m_musDocPtr->m_children.Detach( 0 ); 
+                    MusPage *partPage =  (MusPage*)recFile.m_musDocPtr->DetachChild( 0 );
                     partDoc->AddPage( partPage );
                     // temporary - for now we just put the filename in the surface - this is actually wrong
                     partPage->m_surface = recFile.m_shortname + ".png";

@@ -34,7 +34,7 @@ void MusLayerApp::AddLayerRdg( MusLayerRdg *layerRdg )
     //layerRdg->SetStaff( this->m_layer->m_staff );
     
 	layerRdg->SetParent( this );
-    m_children.Add( layerRdg );
+    m_children.push_back( layerRdg );
     Modify();
 }
 
@@ -66,10 +66,10 @@ void MusLayerRdg::AddElement( MusLayerElement *element, int idx )
 {
 	element->SetParent( this );
     if ( idx == -1 ) {
-        m_children.Add( element );
+        m_children.push_back( element );
     }
     else {
-        m_children.Insert( element, idx );
+        InsertChild( element, idx );
     }
 }
 

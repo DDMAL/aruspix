@@ -203,8 +203,8 @@ int main(int argc, char** argv) {
         doc->SpaceMusic();
         
         // Get the current system for the SVG clipping size    
-        MusPage *page = (MusPage*)&doc->m_children[0];
-        MusSystem *system = (MusSystem*)&page->m_children[0];
+        MusPage *page = dynamic_cast<MusPage*>doc->m_children[0];
+        MusSystem *system = dynamic_cast<MusSystem*>page->m_children[0];
         
         // creare a new local RC and set the above created layout
         MusRC rc;

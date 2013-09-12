@@ -93,7 +93,7 @@ bool MusBinInput_1_X::ImportFile( )
     int j, k, l, m;
     for (j = 0; j < m_doc->GetPageCount(); j++)
     {
-        MusPage *page = (MusPage*)&m_doc->m_children[j];
+        MusPage *page = (MusPage*)m_doc->m_children[j];
         page->m_pageWidth = m_doc->m_pageWidth;
         page->m_pageHeight = m_doc->m_pageHeight;
         page->m_pageLeftMar = m_doc->m_pageLeftMar;
@@ -103,12 +103,12 @@ bool MusBinInput_1_X::ImportFile( )
         int yy =  m_doc->m_pageHeight;
         for (k = 0; k < page->GetSystemCount(); k++) 
         {
-            MusSystem *system = (MusSystem*)&page->m_children[k];
+            MusSystem *system = (MusSystem*)page->m_children[k];
             MusStaff *staff = NULL;
             
             for (l = 0; l < system->GetStaffCount(); l++) 
             {
-                staff = (MusStaff*)&system->m_children[l];
+                staff = (MusStaff*)system->m_children[l];
                 yy -= ecarts[m] * m_doc->m_interl[ staff->staffSize ];
                 staff->m_y_abs = yy;
                 m++;

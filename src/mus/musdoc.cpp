@@ -45,7 +45,7 @@ void MusDoc::Reset( DocType type )
 {
     m_type = type;
     
-    m_children.Clear();
+    ClearChildren();
 
     ResetPaperSize();
     
@@ -101,7 +101,7 @@ bool MusDoc::Save( wxArrayPtrVoid params )
 void MusDoc::AddPage( MusPage *page )
 {
 	page->SetParent( this );
-	m_children.Add( page );
+	m_children.push_back( page );
     Modify();
 }
 
@@ -113,10 +113,15 @@ void MusDoc::Refresh()
 void MusDoc::SpaceMusic() {
     
     // Calculate bounding boxes
+    MusPage *page = dynamic_cast<MusPage*>(m_children[0]);
+    if ( !page ) {
+        return;
+    }
+    
     MusRC rc;
     MusBBoxDC bb_dc( &rc, 0, 0 );
     rc.SetDoc(this);
-    rc.DrawPage(  &bb_dc, (MusPage*)&m_children[0], false );
+    rc.DrawPage(  &bb_dc, page, false );
     
     wxArrayPtrVoid params;
     int shift = 0;
@@ -132,17 +137,17 @@ void MusDoc::SpaceMusic() {
     MusFunctor updateYPosition( &MusStaff::UpdateStaffYPos );
     this->Process( &updateYPosition, params );
     
-    rc.DrawPage(  &bb_dc, (MusPage*)&m_children[0] , false );
+    rc.DrawPage(  &bb_dc, dynamic_cast<MusPage*>(m_children[0]) , false );
     
     // Trim the page to the needed position
-    ((MusPage*)&m_children[0])->m_pageWidth = 0; // first resest the page to 0
-    ((MusPage*)&m_children[0])->m_pageHeight = m_pageHeight;
+    page->m_pageWidth = 0; // first resest the page to 0
+    page->m_pageHeight = m_pageHeight;
     params.Clear();
     
     MusFunctor trimSystem(&MusSystem::TrimSystem);
     this->Process( &trimSystem, params );
     
-    rc.DrawPage(  &bb_dc, (MusPage*)&m_children[0] , false );
+    rc.DrawPage(  &bb_dc, page , false );
 }
 
 void MusDoc::PaperSize( MusPage *page )

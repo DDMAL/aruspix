@@ -13,11 +13,11 @@
 #include "musobject.h"
 #include "musrc.h"
 
-#include "wx/arrimpl.cpp"
-WX_DEFINE_OBJARRAY( ArrayOfMusObjects );
+//#include "wx/arrimpl.cpp"
+//WX_DEFINE_OBJARRAY( ArrayOfMusObjects );
 
-#include <wx/listimpl.cpp>
-WX_DEFINE_LIST( ListOfMusObjects );
+//#include <wx/listimpl.cpp>
+//WX_DEFINE_LIST( ListOfMusObjects );
 
 #include <algorithm>
 using std::min;
@@ -51,9 +51,56 @@ wxString MusObject::GetUuidStr()
     return wxString( uuidStr );
 }
 
+void MusObject::ClearChildren()
+{
+    ArrayOfMusObjects::iterator iter;
+    for (iter = m_children.begin(); iter != m_children.end(); ++iter)
+    {
+        delete *iter;
+    }
+    m_children.clear();
+}
+
+void MusObject::InsertChild( MusObject *element, int idx )
+{
+    if ( idx >= (int)m_children.size() ) {
+        m_children.push_back( element );
+    }
+    ArrayOfMusObjects::iterator iter = m_children.begin();
+    m_children.insert( iter+(idx), element );
+}
+
+MusObject *MusObject::DetachChild( int idx )
+{
+    if ( idx >= (int)m_children.size() ) {
+        return NULL;
+    }
+    MusObject *child = m_children[idx];
+    child->m_parent = NULL;
+    ArrayOfMusObjects::iterator iter = m_children.begin();
+    m_children.erase( iter+(idx) );
+    return child;
+}
+
+void MusObject::RemoveChildAt( int idx )
+{
+    if ( idx >= (int)m_children.size() ) {
+        return;
+    }
+    delete m_children[idx];
+    ArrayOfMusObjects::iterator iter = m_children.begin();
+    m_children.erase( iter+(idx) );
+}
+
 void MusObject::ResetUuid()
 {
     uuid_generate( m_uuid );
+}
+
+void MusObject::SetParent( MusObject *parent )
+{
+    wxASSERT( !m_parent );
+    m_parent = parent;
 }
 
 
@@ -66,6 +113,20 @@ bool MusObject::operator==( MusObject& other )
     return false;
 }
 
+int MusObject::GetChildIndex( const MusObject *child )
+{
+    ArrayOfMusObjects::iterator iter;
+    int i;
+    for (iter = m_children.begin(), i = 0; iter != m_children.end(); ++iter, i++)
+    {
+        if ( child == *iter ) {
+            return i;
+        }
+
+    }
+    return -1;
+}
+
 void MusObject::Modify( bool modified )
 {    
     // if we have a parent and a new modification, propagate it
@@ -75,7 +136,7 @@ void MusObject::Modify( bool modified )
     m_isModified = modified;
 }
 
-void MusObject::GetList( ListOfMusObjects *list )
+void MusObject::FillList( ListOfMusObjects *list )
 {
     MusFunctor addToList( &MusObject::AddMusLayerElementToList );
     wxArrayPtrVoid params;
@@ -106,9 +167,9 @@ void MusObject::AddSameAs( wxString id, wxString filename )
     m_sameAs += sameAs;
 }
 
-MusObject *MusObject::GetFirstParent( const std::type_info *elementType )
+MusObject *MusObject::GetFirstParent( const std::type_info *elementType, int maxSteps )
 {
-    if ( !m_parent ) {
+    if ( (maxSteps == 0) || !m_parent ) {
         return NULL;
     }
     
@@ -116,7 +177,7 @@ MusObject *MusObject::GetFirstParent( const std::type_info *elementType )
         return m_parent;
     }
     else {
-        return ( m_parent->GetFirstParent( elementType ) );
+        return ( m_parent->GetFirstParent( elementType, maxSteps - 1 ) );
     }
 }
 bool MusObject::GetSameAs( wxString *id, wxString *filename, int idx )
@@ -148,9 +209,9 @@ void MusObject::Process(MusFunctor *functor, wxArrayPtrVoid params )
 
     MusObject *obj;
 	int i;
-    for (i = 0; i < (int)m_children.GetCount(); i++) 
+    for (i = 0; i < (int)m_children.size(); i++)
 	{
-        obj = &m_children[i];
+        obj = m_children[i];
         obj->Process( functor, params );
 	}
 }
@@ -265,12 +326,70 @@ void MusObjectListInterface::ResetList( MusObject *node )
         return;
     }
     
-    m_list.Clear();
-    node->GetList( &m_list );
+    m_list.clear();
+    node->FillList( &m_list );
     this->FilterList();
     node->Modify( false );
 }
 
+ListOfMusObjects *MusObjectListInterface::GetList( MusObject *node )
+{   
+    ResetList( node );
+    return &m_list;
+}
+
+
+int MusObjectListInterface::GetListIndex( const MusObject *listElement )
+{
+    ListOfMusObjects::iterator iter;
+    int i;
+    for (iter = m_list.begin(), i = 0; iter != m_list.end(); ++iter, i++)
+    {
+        if ( listElement == *iter ) {
+            return i;
+        }
+        
+    }
+    return -1;
+}
+
+MusObject *MusObjectListInterface::GetListPrevious( const MusObject *listElement )
+{
+    ListOfMusObjects::iterator iter;
+    int i;
+    for (iter = m_list.begin(), i = 0; iter != m_list.end(); ++iter, i++)
+    {
+        if (listElement == *iter) {
+            if (i > 0) {
+                return *(--iter);
+            }
+            else {
+                return NULL;
+            }
+        }
+        
+    }
+    return NULL;
+}
+
+MusObject *MusObjectListInterface::GetListNext( const MusObject *listElement )
+{
+    ListOfMusObjects::reverse_iterator iter;
+    int i;
+    for (iter = m_list.rbegin(), i = 0; iter != m_list.rend(); ++iter, i++)
+    {
+        if ( listElement == *iter ) {
+            if (i > 0) {
+                return *(--iter);
+            }
+            else {
+                return NULL;
+            }
+        }
+        
+    }
+    return NULL;
+}
 
 //----------------------------------------------------------------------------
 // MusFunctor
@@ -337,7 +456,7 @@ bool MusObject::AddMusLayerElementToList( wxArrayPtrVoid params )
     // param 0: the ListOfMusObjects
     ListOfMusObjects *list = (ListOfMusObjects*)params[0];
     if ( dynamic_cast<MusLayerElement*>(this ) ) {
-        list->Append( this );
+        list->push_back( this );
     }
     return false;
 }
@@ -392,7 +511,7 @@ bool MusObject::UpdateLayerElementXPos( wxArrayPtrVoid params )
     }
     
     // reset the x position if we are starting a new layer
-    if ( current->m_parent->m_children.Index( *this ) == 0 ) {
+    if ( current->m_parent->GetChildIndex( this ) == 0 ) {
         MusLayer *layer = dynamic_cast<MusLayer*>( current->m_parent );
         // The parent is a MusLayer, we need to reset the x shift
         if ( layer ) {

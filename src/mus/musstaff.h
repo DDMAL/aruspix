@@ -49,7 +49,7 @@ public:
 
 	void AddLayer( MusLayer *layer );
 	
-	int GetLayerCount() const { return (int)m_children.GetCount(); };
+	int GetLayerCount() const { return (int)m_children.size(); };
     
     int GetStaffNo() const;
 

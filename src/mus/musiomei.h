@@ -204,19 +204,19 @@ private:
     bool ReadMeiSystem( TiXmlElement *system );
     bool ReadMeiStaff( TiXmlElement *staff );
     bool ReadMeiLayer( TiXmlElement *layer );
-    bool ReadMeiLayerElement( TiXmlElement *XmlElement, MusLayerElement *musElement );
-    bool ReadMeiBarline( TiXmlElement *barline );
-    bool ReadMeiBeam( TiXmlElement *beam );
-    bool ReadMeiClef( TiXmlElement *clef );
-    bool ReadMeiMensur( TiXmlElement *mensur );
-    bool ReadMeiNote( TiXmlElement *note );
-    bool ReadMeiRest( TiXmlElement *rest );
-    bool ReadMeiTuplet( TiXmlElement *tuplet );
-    bool ReadMeiAccid( TiXmlElement *accid );
-    bool ReadMeiCustos( TiXmlElement *custos );
-    bool ReadMeiDot( TiXmlElement *dot );
+    bool ReadMeiLayerElement( TiXmlElement *XmlElement );
+    MusLayerElement *ReadMeiBarline( TiXmlElement *barline );
+    MusLayerElement *ReadMeiBeam( TiXmlElement *beam );
+    MusLayerElement *ReadMeiClef( TiXmlElement *clef );
+    MusLayerElement *ReadMeiMensur( TiXmlElement *mensur );
+    MusLayerElement *ReadMeiNote( TiXmlElement *note );
+    MusLayerElement *ReadMeiRest( TiXmlElement *rest );
+    MusLayerElement *ReadMeiTuplet( TiXmlElement *tuplet );
+    MusLayerElement *ReadMeiAccid( TiXmlElement *accid );
+    MusLayerElement *ReadMeiCustos( TiXmlElement *custos );
+    MusLayerElement *ReadMeiDot( TiXmlElement *dot );
     /** Reads <app> elements. For now, only <app> within <layer> are taken into account */
-    bool ReadMeiApp( TiXmlElement *app );
+    MusLayerElement *ReadMeiApp( TiXmlElement *app );
     bool ReadMeiRdg( TiXmlElement *rdg );
     
     /**

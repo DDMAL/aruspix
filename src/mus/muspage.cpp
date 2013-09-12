@@ -53,7 +53,7 @@ bool MusPage::Save( wxArrayPtrVoid params )
 void MusPage::AddSystem( MusSystem *system )
 {
 	system->SetParent( this );
-	m_children.Add( system );
+	m_children.push_back( system );
     Modify();
 }
 
@@ -61,7 +61,7 @@ int MusPage::GetPageNo() const
 {
     wxASSERT_MSG( m_parent, "Doc cannot be NULL");
     
-    return m_parent->m_children.Index( *this );
+    return m_parent->GetChildIndex( this );
 }
 
 int MusPage::GetStaffPosOnPage( MusStaff *staff )
@@ -83,43 +83,43 @@ int MusPage::GetStaffPosOnPage( MusStaff *staff )
 
 MusSystem *MusPage::GetFirst( )
 {
-	if ( m_children.IsEmpty() )
+	if ( m_children.empty() )
 		return NULL;
-	return (MusSystem*)&m_children[0];
+	return (MusSystem*)m_children[0];
 }
 
 MusSystem *MusPage::GetLast( )
 {
-	if ( m_children.IsEmpty() )
+	if ( m_children.empty() )
 		return NULL;
 	int i = GetSystemCount() - 1;
-	return (MusSystem*)&m_children[i];
+	return (MusSystem*)m_children[i];
 }
 
 MusSystem *MusPage::GetNext( MusSystem *system )
 {
-    if ( !system || m_children.IsEmpty())
+    if ( !system || m_children.empty())
         return NULL;
         
-	int i = m_children.Index( *system );
+	int i = this->GetChildIndex( system );
 
-	if ((i == wxNOT_FOUND ) || ( i >= GetSystemCount() - 1 )) 
+	if ((i == -1 ) || ( i >= GetSystemCount() - 1 ))
 		return NULL;
 	
-	return (MusSystem*)&m_children[i + 1];
+	return (MusSystem*)m_children[i + 1];
 }
 
 MusSystem *MusPage::GetPrevious( MusSystem *system  )
 {
-    if ( !system || m_children.IsEmpty())
+    if ( !system || m_children.empty())
         return NULL;
         
-	int i = m_children.Index( *system );
+	int i = GetChildIndex( system );
 
-	if ((i == wxNOT_FOUND ) || ( i <= 0 )) 
+	if ((i == -1 ) || ( i <= 0 ))
         return NULL;
 	
-    return (MusSystem*)&m_children[i - 1];
+    return (MusSystem*)m_children[i - 1];
 }
 
 
@@ -131,24 +131,15 @@ MusSystem *MusPage::GetAtPos( int y )
 	if ( !system )
 		return NULL;
 	
-	while ( this->GetNext(system) )
+    MusSystem *next = NULL;
+	while ( (next = this->GetNext(system)) )
 	{
-		if ( (int)system->m_y_abs < y )
+		if ( (int)next->m_y_abs < y )
 		{
-			// one too much
-			if ( this->GetPrevious( system ) ){
-				system = this->GetPrevious( system );
-				//if ( dif < abs( system->m_y_abs - y ) )
-				//	system = this->GetNext( system );
-			}
-				
 			return system;
 		}
-		system = this->GetNext( system );
+		system = next;
 	}
-
-	if ( ( (int)system->m_y_abs < y )  && this->GetPrevious( system ) )
-		system = this->GetPrevious( system );
 
 	return system;
 }

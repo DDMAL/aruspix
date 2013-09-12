@@ -42,7 +42,7 @@ public:
 	
 	void AddElement( MusLayerElement *element, int idx = -1 );
     	
-	int GetElementCount() const { return (int)m_children.GetCount(); };
+	int GetElementCount() const { return (int)m_children.size(); };
     
     int GetLayerNo() const;
 

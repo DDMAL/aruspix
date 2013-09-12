@@ -40,7 +40,7 @@ void MusRC::DrawPage( MusDC *dc, MusPage *page, bool background )
 
     for (i = 0; i < page->GetSystemCount(); i++) 
 	{
-		system = (MusSystem*)&page->m_children[i];
+		system = (MusSystem*)page->m_children[i];
         DrawSystem( dc, system );
         
         // TODO here: also update x_abs and m_y_drawing positions for system. How to calculate them?
@@ -76,7 +76,7 @@ void MusRC::DrawSystem( MusDC *dc, MusSystem *system )
 
     for (i = 0; i < (int)system->GetStaffCount(); i++) 
 	{
-		staff = (MusStaff*)&system->m_children[i];
+		staff = (MusStaff*)system->m_children[i];
         DrawStaff( dc , staff, system );		
 	}
     
@@ -155,7 +155,7 @@ void MusRC::DrawGroups( MusDC *dc, MusSystem *system )
 
     for (i = 0; i < system->GetStaffCount(); i++) 
 	{
-		staff =  (MusStaff*)&system->m_children[i];
+		staff =  (MusStaff*)system->m_children[i];
 
 		xx = system->m_systemLeftMar;
 
@@ -417,9 +417,9 @@ void MusRC::DrawBarline ( MusDC *dc, MusSystem *system, int x, int cod, bool por
 	i=j= pportee->GetStaffNo();
 	if (pportee->noGrp)
 	{	
-		while (i && ((MusStaff*)&system->m_children[i])->vertBarre != START && ((MusStaff*)&system->m_children[i])->vertBarre != START_END)
+		while (i && ((MusStaff*)system->m_children[i])->vertBarre != START && ((MusStaff*)system->m_children[i])->vertBarre != START_END)
 			--i;	// position 1e portee du groupe 
-		while (j<system->GetStaffCount() && ((MusStaff*)&system->m_children[j])->vertBarre != END && ((MusStaff*)&system->m_children[j])->vertBarre != START_END)
+		while (j<system->GetStaffCount() && ((MusStaff*)system->m_children[j])->vertBarre != END && ((MusStaff*)system->m_children[j])->vertBarre != START_END)
 			++j;	// position derniere portee du groupe 
 	}
 	b = bb = 0.0;
@@ -428,7 +428,7 @@ void MusRC::DrawBarline ( MusDC *dc, MusSystem *system, int x, int cod, bool por
 
 	for (; i <= j; i++)	// parcours du groupe de portees concernees 
 	{
-		st_i = (MusStaff*)&system->m_children[i];
+		st_i = (MusStaff*)system->m_children[i];
 		
 		// on calcule l'epaisseur de la portee courante
 		if (st_i->portNbLine == 1 || st_i->portNbLine == 4)
@@ -714,7 +714,7 @@ void MusRC::DrawStaff( MusDC *dc, MusStaff *staff, MusSystem *system )
 
 	for(j = 0; j < staff->GetLayerCount(); j++)
 	{
-		layer = (MusLayer*)&staff->m_children[j];
+		layer = (MusLayer*)staff->m_children[j];
 		//layer->Init( m_r );
 		DrawLayer( dc, layer, staff );
 	}
@@ -754,9 +754,10 @@ int MusRC::CalculatePitchCode ( MusLayer *layer, int y_n, int x_pos, int *octave
 	if (y_n > plafond)
 		y_n = plafond;
 
+    MusLayerElement *previous = NULL;
 	MusLayerElement *pelement = layer->GetAtPos( x_pos );
-	if ( layer->GetPrevious( pelement ) )
-		pelement = layer->GetPrevious( pelement );
+	if ( (previous = layer->GetPrevious( pelement ) ) )
+		pelement = previous;
 
 	MusClef *clef = layer->GetClef (pelement);
     if (clef) {
@@ -901,7 +902,7 @@ void MusRC::DrawLayer( MusDC *dc, MusLayer *layer, MusStaff *staff )
 
 	for(j = 0; j < layer->GetElementCount(); j++)
 	{
-		pelement = (MusLayerElement*)&layer->m_children[j];
+		pelement = (MusLayerElement*)layer->m_children[j];
 		//pelement->Init( m_r );
         if ( !pelement->m_in_layer_app ) {
             DrawElement( dc, pelement, layer, staff );

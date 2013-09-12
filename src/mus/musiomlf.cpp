@@ -549,9 +549,9 @@ MusLayer *MusMLFOutput::GetUt1( MusLayer *layer )
 	
 	for (int i = 0; i < (int)layer->GetElementCount(); i++ )
 	{
-		if ( ((MusLayerElement*)&layer->m_children[i])->HasPitchInterface() )
+		if ( ((MusLayerElement*)layer->m_children[i])->HasPitchInterface() )
 		{
-			MusLayerElement *element = (MusLayerElement*)&layer->m_children[i];
+			MusLayerElement *element = (MusLayerElement*)layer->m_children[i];
 			{
 				GetUt1( layer, element, &code, &oct );
                 MusPitchInterface *pitchElement = dynamic_cast<MusPitchInterface*>(element);
@@ -559,9 +559,9 @@ MusLayer *MusMLFOutput::GetUt1( MusLayer *layer )
 				pitchElement->m_oct = oct;
 			}
 		}
-		else if ( ((MusLayerElement*)&layer->m_children[i])->HasPositionInterface() )
+		else if ( ((MusLayerElement*)layer->m_children[i])->HasPositionInterface() )
 		{
-			MusLayerElement *element = (MusLayerElement*)&layer->m_children[i];
+			MusLayerElement *element = (MusLayerElement*)layer->m_children[i];
 			{
 				GetUt1( layer, element, &code, &oct );
                 MusPositionInterface *positionElement = dynamic_cast<MusPositionInterface*>(element);
@@ -625,7 +625,7 @@ bool MusMLFOutput::WritePage( const MusPage *page, bool write_header )
     m_layer = NULL;
     for (m_staff_i = 0; m_staff_i < (int)page->GetSystemCount(); m_staff_i++) 
     {
-        m_layer = (MusLayer*)&page->m_children[m_staff_i].m_children[0].m_children[0];
+        m_layer = (MusLayer*)page->m_children[m_staff_i]->m_children[0]->m_children[0];
         WriteLayer( m_layer );
 		m_layer = NULL;
     }
@@ -659,7 +659,7 @@ bool MusMLFOutput::WritePage( const MusPage *page, wxString filename, ImPage *im
 			continue;
 
         // I think this is wrong, we need to loop through all the staves? maybe not
-        m_layer = (MusLayer*)&page->m_children[m_staff_i].m_children[0].m_children[0];
+        m_layer = (MusLayer*)page->m_children[m_staff_i]->m_children[0]->m_children[0];
 		imPage->m_staves[m_staff_i].GetMinMax( &offset, &end_point );
         WriteLayer( m_layer, offset, end_point );
 		m_layer = NULL;
@@ -681,7 +681,7 @@ bool MusMLFOutput::WriteLayer( const MusLayer *layer, int offset,  int end_point
 
     for (k = 0;k < layer->GetElementCount() ; k++ )
     {
-        MusLayerElement *element = (MusLayerElement*)&layer->m_children[k];
+        MusLayerElement *element = (MusLayerElement*)layer->m_children[k];
         // we could write all of the in one method, left over from version < 2.0.0
         if ( element->IsNote() || element->IsRest() || element->IsSymbol( SYMBOL_CUSTOS) )
         {
@@ -1229,9 +1229,9 @@ void MusMLFInput::GetNotUt1( MusLayer *layer )
 	
 	for (int i = 0; i < (int)layer->GetElementCount(); i++ )
 	{
-		if ( ((MusLayerElement*)&layer->m_children[i])->HasPitchInterface() )
+		if ( ((MusLayerElement*)layer->m_children[i])->HasPitchInterface() )
 		{
-			MusLayerElement *element = (MusLayerElement*)&layer->m_children[i];
+			MusLayerElement *element = (MusLayerElement*)layer->m_children[i];
 			{
 				GetNotUt1( layer, element, &code, &oct );
                 MusPitchInterface *pitchElement = dynamic_cast<MusPitchInterface*>(element);
@@ -1239,9 +1239,9 @@ void MusMLFInput::GetNotUt1( MusLayer *layer )
 				pitchElement->m_oct = oct;
 			}
 		}
-		else if ( ((MusLayerElement*)&layer->m_children[i])->HasPositionInterface() )
+		else if ( ((MusLayerElement*)layer->m_children[i])->HasPositionInterface() )
 		{
-			MusLayerElement *element = (MusLayerElement*)&layer->m_children[i];
+			MusLayerElement *element = (MusLayerElement*)layer->m_children[i];
 			{
 				GetNotUt1( layer, element, &code, &oct );
                 MusPositionInterface *positionElement = dynamic_cast<MusPositionInterface*>(element);
@@ -1369,7 +1369,7 @@ bool MusMLFInput::ReadPage( MusPage *page, bool firstLineMLF, ImPage *imPage )
             if ( m_staff_label < (int)page->GetSystemCount() )
 			{
                 // first layer of the first staff of the system
-				layer = (MusLayer*)&page->m_children[ m_staff_label ].m_children[0].m_children[0];
+				layer = (MusLayer*)page->m_children[ m_staff_label ]->m_children[0]->m_children[0];
 				m_staff_i = m_staff_label; //m_staff_i++;
 			}
 			offset = 0;

@@ -162,7 +162,7 @@ void MusWindow::Load( AxUndoFile *undoPtr )
 		return;
 	}
 	
-    SetPage( (MusPage*)&m_doc->m_children[page] );
+    SetPage( (MusPage*)m_doc->m_children[page] );
 	m_npage = page;
 
 	delete mei_input;
@@ -173,13 +173,13 @@ void MusWindow::Load( AxUndoFile *undoPtr )
     m_currentElement = NULL;
 
     if ( system != -1 ) {
-		m_currentSystem = (MusSystem*)&m_page->m_children[system];
+		m_currentSystem = (MusSystem*)m_page->m_children[system];
     }	
 	if ( m_currentSystem && (staff != -1) ) {
-		m_currentStaff = (MusStaff*)&m_currentSystem->m_children[staff];
+		m_currentStaff = (MusStaff*)m_currentSystem->m_children[staff];
     }	
 	if ( m_currentStaff && (layer != -1) ) {
-		m_currentLayer = (MusLayer*)&m_currentStaff->m_children[layer];
+		m_currentLayer = (MusLayer*)m_currentStaff->m_children[layer];
     }		
 	if ( m_currentLayer && (element != -1) )
 	{
@@ -191,7 +191,7 @@ void MusWindow::Load( AxUndoFile *undoPtr )
         //    m_currentElement = &m_currentStaff->m_elements[element];
         //}
         
-        m_currentElement = (MusLayerElement*)&m_currentLayer->m_children[element];
+        m_currentElement = (MusLayerElement*)m_currentLayer->m_children[element];
 
 	}
 
@@ -368,12 +368,12 @@ void MusWindow::Goto( )
 {
 	if ( !m_doc )
 		return;
-    AxGotoDlg *dlg = new AxGotoDlg(this, -1, _("Go to page ..."), m_doc->m_children.GetCount(), m_npage );
+    AxGotoDlg *dlg = new AxGotoDlg(this, -1, _("Go to page ..."), m_doc->m_children.size(), m_npage );
     dlg->Center(wxBOTH);
     if ( dlg->ShowModal() == wxID_OK )
 	{
 		m_npage = dlg->GetPage();
-		SetPage( (MusPage*)&m_doc->m_children[m_npage] );
+		SetPage( (MusPage*)m_doc->m_children[m_npage] );
     }
 	dlg->Destroy();
     wxLogError( "MusWindow::Goto missing in ax2" );
@@ -1114,8 +1114,9 @@ bool MusWindow::MoveLeftRight( bool left )
     
     if ( left ) {
         // previous element
-        if ( m_currentLayer->GetPrevious( m_currentElement )) {
-            m_currentElement = m_currentLayer->GetPrevious( m_currentElement );
+        MusLayerElement *previous = NULL;
+        if ( (previous = m_currentLayer->GetPrevious( m_currentElement ) ) ) {
+            m_currentElement = previous;
         }
         // previous system
         else if ( m_page->GetPrevious( m_currentSystem ) )
@@ -1136,8 +1137,9 @@ bool MusWindow::MoveLeftRight( bool left )
     }
     else {
         // next element
-        if ( m_currentLayer->GetNext( m_currentElement )) {
-            m_currentElement = m_currentLayer->GetNext( m_currentElement );
+        MusLayerElement *next = NULL;
+        if ( ( next =  m_currentLayer->GetNext( m_currentElement ) ) ) {
+            m_currentElement = next;
         }
         // next system
         else if ( m_page->GetNext( m_currentSystem ) )

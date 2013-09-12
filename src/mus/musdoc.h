@@ -148,7 +148,7 @@ public:
      */
     int GetSystemRightX( MusSystem *system );
     
-	int GetPageCount() const { return (int)m_children.GetCount(); };
+	int GetPageCount() const { return (int)m_children.size(); };
     
     // functors
     virtual bool Save( wxArrayPtrVoid params );

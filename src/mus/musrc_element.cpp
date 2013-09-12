@@ -168,9 +168,9 @@ void MusRC::DrawBeamElement(MusDC *dc, MusLayerElement *element, MusLayer *layer
 
     dc->StartGraphic( element, "beam", wxString::Format("s_%d_%d_%d", staff->GetId(), layer->voix, element->GetId() ) );
     
-    for (unsigned int i = 0; i < beam->m_children.Count(); i++) {
-        if ( dynamic_cast<MusLayerElement*>(&beam->m_children[i]) ) {
-            MusLayerElement *element = dynamic_cast<MusLayerElement*>(&beam->m_children[i]);
+    for (unsigned int i = 0; i < beam->m_children.size(); i++) {
+        if ( dynamic_cast<MusLayerElement*>(beam->m_children[i]) ) {
+            MusLayerElement *element = dynamic_cast<MusLayerElement*>(beam->m_children[i]);
             DrawElement(dc, element, layer, staff);
         }
     }
@@ -1535,10 +1535,10 @@ void MusRC::DrawLayerApp( MusDC *dc, MusLayerElement *element, MusLayer *layer, 
     int i;
     for (i = 0; i < app->GetRdgCount(); i++ )
     {
-        MusLayer *rdg = (MusLayer*)&app->m_children[i];
+        MusLayer *rdg = (MusLayer*)app->m_children[i];
         int j;
         for (j = 0; j < rdg->GetElementCount(); j++ ) {
-            MusLayerElement *lelem = (MusLayerElement*)&rdg->m_children[j];
+            MusLayerElement *lelem = (MusLayerElement*)rdg->m_children[j];
             if (i == 0) {
                 m_currentColour = AxGREEN;
             }

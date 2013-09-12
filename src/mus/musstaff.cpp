@@ -47,7 +47,7 @@ MusStaff::MusStaff( const MusStaff& staff )
     int i;
 	for (i = 0; i < staff.GetLayerCount(); i++)
 	{
-        MusLayer *nlayer = new MusLayer( *(MusLayer*)&staff.m_children[i] );
+        MusLayer *nlayer = new MusLayer( *(MusLayer*)staff.m_children[i] );
         this->AddLayer( nlayer );
 	}
 }
@@ -92,7 +92,7 @@ bool MusStaff::Save( wxArrayPtrVoid params )
 void MusStaff::AddLayer( MusLayer *layer )
 {
 	layer->SetParent( this );
-	m_children.Add( layer );
+	m_children.push_back( layer );
 }
 
 void MusStaff::CopyAttributes( MusStaff *nstaff )
@@ -123,57 +123,57 @@ int MusStaff::GetStaffNo() const
 {
     wxASSERT_MSG( m_parent, "System cannot be NULL");
     
-    return m_parent->m_children.Index( *this );
+    return m_parent->GetChildIndex( this );
 }
 
 MusLayer *MusStaff::GetFirst( )
 {
-	if ( m_children.IsEmpty() )
+	if ( m_children.empty() )
 		return NULL;
-	return (MusLayer*)&m_children[0];
+	return (MusLayer*)m_children[0];
 }
 
 MusLayer *MusStaff::GetLast( )
 {
-	if ( m_children.IsEmpty() )
+	if ( m_children.empty() )
 		return NULL;
 	int i = GetLayerCount() - 1;
-	return (MusLayer*)&m_children[i];
+	return (MusLayer*)m_children[i];
 }
 
 MusLayer *MusStaff::GetNext( MusLayer *layer )
 {	
-    if ( !layer || m_children.IsEmpty())
+    if ( !layer || m_children.empty())
         return NULL;
         
-	int i = m_children.Index( *layer );
+	int i = 0; GetChildIndex( layer );
 
-	if ((i == wxNOT_FOUND ) || ( i >= GetLayerCount() - 1 )) 
+	if ((i == -1 ) || ( i >= GetLayerCount() - 1 ))
 		return NULL;
 
-	return (MusLayer*)&m_children[i + 1];
+	return (MusLayer*)m_children[i + 1];
 }
 
 MusLayer *MusStaff::GetPrevious( MusLayer *layer )
 {
-    if ( !layer || m_children.IsEmpty())
+    if ( !layer || m_children.empty())
         return NULL;
         
-	int i = m_children.Index( *layer );
+	int i = GetChildIndex( layer );
 
-	if ((i == wxNOT_FOUND ) || ( i <= 0 )) 
+	if ((i == -1 ) || ( i <= 0 ))
         return NULL;
 	
-    return (MusLayer*)&m_children[i - 1];
+    return (MusLayer*)m_children[i - 1];
 }
 
 
 MusLayer *MusStaff::GetLayer( int LayerNo )
 {
-    if ( LayerNo > (int)m_children.GetCount() - 1 )
+    if ( LayerNo > (int)m_children.size() - 1 )
         return NULL;
 	
-	return (MusLayer*)&m_children[LayerNo];
+	return (MusLayer*)m_children[LayerNo];
 }
 
 bool MusStaff::GetPosOnPage( wxArrayPtrVoid params )

@@ -459,7 +459,7 @@ void RecFile::SaveContent( )
 		MusMLFOutput *mlfoutput = new MusMLFOutput( m_musDocPtr, m_basename + "page.mlf", NULL );
 		mlfoutput->m_pagePosition = true;
         // !!! No check if layout and page exist!
-		mlfoutput->WritePage( (MusPage*)&m_musDocPtr->m_children[0] , "staff", m_imPagePtr );
+		mlfoutput->WritePage( (MusPage*)m_musDocPtr->m_children[0] , "staff", m_imPagePtr );
 		delete mlfoutput;
 		TiXmlElement root( "recpage" );
     

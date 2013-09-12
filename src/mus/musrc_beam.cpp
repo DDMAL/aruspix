@@ -127,11 +127,11 @@ void MusRC::DrawBeam(  MusDC *dc, MusLayer *layer, MusBeam *beam, MusStaff *staf
 	}
 	
     // Should we assert this at the beginning?
-    if (beam->m_children.IsEmpty())
+    if (beam->m_children.empty())
         return;
     
     // chk point to the first Note in the layed out layer
-    chk = (MusLayerElement*)&beam->m_children[0];
+    chk = (MusLayerElement*)beam->m_children[0];
     
     //	bch.markchrd = shortest = fb.mq_val = valref = ct = cpte_stop = fb.mrq_port = OFF;
 	bch.markchrd = 0;
@@ -224,11 +224,11 @@ void MusRC::DrawBeam(  MusDC *dc, MusLayer *layer, MusBeam *beam, MusStaff *staf
             break;
         
         // This should mean we have no BEAM TERMINAL
-        if (ct >= (int)beam->m_children.Count()) {
+        if (ct >= (int)beam->m_children.size()) {
             return;
         }
         
-        chk = (MusLayerElement*)&beam->m_children[ct];
+        chk = (MusLayerElement*)beam->m_children[ct];
         
 		//chk = layer->GetNext(chk);
 		//if (chk == NULL) { 

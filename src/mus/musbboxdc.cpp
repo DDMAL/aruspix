@@ -48,13 +48,14 @@ void MusBBoxDC::StartGraphic( MusDocObject *object, wxString gClass, wxString gI
 {
     // add object
     object->ResetBB();
-    m_objects.Add( object );
+    m_objects.push_back( object );
 }
       
 void MusBBoxDC::EndGraphic(MusDocObject *object, MusRC *rc ) 
 {
     // detach the object
-    m_objects.Detach(m_objects.Index(*object));
+    wxASSERT( m_objects.back() == object );
+    m_objects.pop_back();
 }
 
 void MusBBoxDC::StartPage( )
@@ -398,14 +399,15 @@ void MusBBoxDC::UpdateBB(int x1, int y1, int x2, int y2)
     // simpler version 
     
     // the array should not be empty
-    wxASSERT_MSG( !m_objects.IsEmpty(), "Array cannot be empty" ) ;
+    wxASSERT_MSG( !m_objects.empty(), "Array cannot be empty" ) ;
+    
     
     // we need to store logical coordinates in the objects, we need to convert them back (this is why we need a MusRC object)
-    ((MusDocObject*)&m_objects.Last())->UpdateSelfBB( m_rc->ToLogicalX(x1), m_rc->ToLogicalY(y1), m_rc->ToLogicalX(x2), m_rc->ToLogicalY(y2) );
+    ((MusDocObject*)m_objects.back())->UpdateSelfBB( m_rc->ToLogicalX(x1), m_rc->ToLogicalY(y1), m_rc->ToLogicalX(x2), m_rc->ToLogicalY(y2) );
     
     int i;
-    for (i = 0; i < (int)m_objects.GetCount(); i++) {
-        ((MusDocObject*)&m_objects[i])->UpdateContentBB( m_rc->ToLogicalX(x1), m_rc->ToLogicalY(y1), m_rc->ToLogicalX(x2), m_rc->ToLogicalY(y2) );
+    for (i = 0; i < (int)m_objects.size(); i++) {
+        ((MusDocObject*)m_objects[i])->UpdateContentBB( m_rc->ToLogicalX(x1), m_rc->ToLogicalY(y1), m_rc->ToLogicalX(x2), m_rc->ToLogicalY(y2) );
     }
 }
 

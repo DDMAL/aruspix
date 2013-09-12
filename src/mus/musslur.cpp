@@ -25,11 +25,6 @@ MusLayerElement()
 
 MusSlur::~MusSlur()
 {
-    // we need to detach all notes because it is not to the beam object to delete them
-    int i;
-    for (i = GetNoteCount(); i > 0; i--) {
-        dynamic_cast<MusDurationInterface*>(m_children.Detach(i - 1));
-    }
 }
 
 void MusSlur::AddNote(MusLayerElement *element) {
@@ -38,7 +33,7 @@ void MusSlur::AddNote(MusLayerElement *element) {
         return;
     }
 
-    m_children.Add(element);
+    m_children.push_back(element);
     Modify();
     
 }

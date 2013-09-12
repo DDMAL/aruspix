@@ -34,7 +34,7 @@ MusSystem::MusSystem( const MusSystem& system )
 
 	for (i = 0; i < this->GetStaffCount(); i++)
 	{
-        MusStaff *nstaff = new MusStaff( *(MusStaff*)&system.m_children[i] );
+        MusStaff *nstaff = new MusStaff( *(MusStaff*)system.m_children[i] );
         this->AddStaff( nstaff );
 	}
 }
@@ -63,7 +63,7 @@ bool MusSystem::Save( wxArrayPtrVoid params )
 void MusSystem::AddStaff( MusStaff *staff )
 {
 	staff->SetParent( this );
-	m_children.Add( staff );
+	m_children.push_back( staff );
     Modify();
 }
 
@@ -71,7 +71,7 @@ int MusSystem::GetSystemNo() const
 {
     wxASSERT_MSG( m_parent, "Page cannot be NULL");
     
-    return m_parent->m_children.Index( *this );
+    return m_parent->GetChildIndex( this );
 }
 
 /*
@@ -91,64 +91,64 @@ void MusSystem::ClearStaves( MusDC *dc, MusStaff *start )
 	int j;
 	for(j = 0; j < nbrePortees; j++)
 	{
-		if (start && (start != &this->m_children[j]))
+		if (start && (start != this->m_children[j]))
 			continue;
 		else
 			start = NULL;
-		(&this->m_children[j])->ClearElements( dc );
+		(this->m_children[j])->ClearElements( dc );
 	}
 }
 */
 
 MusStaff *MusSystem::GetFirst( )
 {
-	if ( m_children.IsEmpty() )
+	if ( m_children.empty() )
 		return NULL;
-	return (MusStaff*)&m_children[0];
+	return (MusStaff*)m_children[0];
 }
 
 MusStaff *MusSystem::GetLast( )
 {
-	if ( m_children.IsEmpty() )
+	if ( m_children.empty() )
 		return NULL;
-	int i = (int)m_children.GetCount() - 1;
-	return (MusStaff*)&m_children[i];
+	int i = (int)m_children.size() - 1;
+	return (MusStaff*)m_children[i];
 }
 
 MusStaff *MusSystem::GetNext( MusStaff *staff )
 {
-    if ( !staff || m_children.IsEmpty())
+    if ( !staff || m_children.empty())
         return NULL;
         
-	int i = m_children.Index( *staff );
-
-	if ((i == wxNOT_FOUND ) || ( i >= GetStaffCount() - 1 )) 
+	int i = GetChildIndex( staff );
+    
+	if ((i == -1 ) || ( i >= GetStaffCount() - 1 ))
 		return NULL;
 	
-	return (MusStaff*)&m_children[i + 1];
+	return (MusStaff*)m_children[i + 1];
 	
 }
 
 MusStaff *MusSystem::GetStaff( int StaffNo )
 {
-    if ( StaffNo > (int)m_children.GetCount() - 1 )
+    if ( StaffNo > (int)m_children.size() - 1 )
         return NULL;
 	
-	return (MusStaff*)&m_children[StaffNo];
+	return (MusStaff*)m_children[StaffNo];
 }
 
 
 MusStaff *MusSystem::GetPrevious( MusStaff *staff  )
 {
-    if ( !staff || m_children.IsEmpty())
+    if ( !staff || m_children.empty() )
         return NULL;
         
-	int i = m_children.Index( *staff );
+	int i = GetChildIndex( staff );
 
-	if ((i == wxNOT_FOUND ) || ( i <= 0 ))
+	if ((i == -1 ) || ( i <= 0 ))
         return NULL;
 	
-    return (MusStaff*)&m_children[i - 1];
+    return (MusStaff*)m_children[i - 1];
 }
 
 
@@ -159,26 +159,17 @@ MusStaff *MusSystem::GetAtPos( int y )
 	if ( !staff )
 		return NULL;
 	
+    
+    MusStaff *next = NULL;
 	//int dif =  abs( staff->m_y_drawing - y );
-	while ( this->GetNext(staff) )
+	while ( (next = this->GetNext(staff) ) )
 	{
 		if ( (int)staff->m_y_drawing < y )
 		{
-			// one too much
-			if ( this->GetPrevious( staff ) ){
-				staff = this->GetPrevious( staff );
-				//if ( dif < abs( staff->m_y_drawing - y ) )
-				//	staff = this->GetNext( staff );
-			}
-				
 			return staff;
 		}
-		staff = this->GetNext( staff );
-		//dif = abs( staff->m_y_drawing - y );
+		staff = next;
 	}
-
-	if ( ( (int)staff->m_y_drawing < y )  && this->GetPrevious( staff ) )
-		staff = this->GetPrevious( staff );
 
 	return staff;
 }
@@ -191,8 +182,8 @@ void MusSystem::SetValues( int type )
     for (i = 0; i < GetStaffCount(); i++) 
 	{
         switch ( type ) {
-            case PAGE_VALUES_VOICES: values += wxString::Format("%d;", (&m_children[i])->voix ); break;
-            case PAGE_VALUES_INDENT: values += wxString::Format("%d;", (&m_children[i])->indent ); break;
+            case PAGE_VALUES_VOICES: values += wxString::Format("%d;", (m_children[i])->voix ); break;
+            case PAGE_VALUES_INDENT: values += wxString::Format("%d;", (m_children[i])->indent ); break;
         }
 	}
     values = wxGetTextFromUser( "Enter values for the pages", "", values );
@@ -203,8 +194,8 @@ void MusSystem::SetValues( int type )
     for (i = 0; (i < GetStaffCount()) && (i < (int)values_arr.GetCount()) ; i++) 
 	{
         switch ( type ) {
-            case PAGE_VALUES_VOICES: (&m_children[i])->voix = atoi( values_arr[i].c_str() ); break;
-            case PAGE_VALUES_INDENT: (&m_children[i])->indent = atoi( values_arr[i].c_str() ); break;
+            case PAGE_VALUES_VOICES: (m_children[i])->voix = atoi( values_arr[i].c_str() ); break;
+            case PAGE_VALUES_INDENT: (m_children[i])->indent = atoi( values_arr[i].c_str() ); break;
         }	
 	}
     */

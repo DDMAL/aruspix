@@ -25,15 +25,9 @@ MusBeam::MusBeam():
 
 MusBeam::~MusBeam()
 {
-    // we need to detach all notes because it is not to the beam object to delete them
-    int i;
-    for (i = GetNoteCount(); i > 0; i--) {
-        MusDurationInterface *note = dynamic_cast<MusDurationInterface*>(m_children.Detach(i - 1));
-        note->m_beam[0] = 0;
-    }
 }
 
-void MusBeam::AddNote(MusLayerElement *element) {
+void MusBeam::AddElement(MusLayerElement *element) {
    
     if (!element->HasDurationInterface()) {
         return;
@@ -46,21 +40,28 @@ void MusBeam::AddNote(MusLayerElement *element) {
         note->m_beam[0] = BEAM_INITIAL;
     else
         note->m_beam[0] = BEAM_TERMINAL;
-    m_children.Add(element);
+    m_children.push_back(element);
     Modify();
     
     // Set the last note to median if we have more than one note in the array
     if (GetNoteCount() > 2) {
-        MusDurationInterface *last_note = dynamic_cast<MusDurationInterface*>(&m_children[GetNoteCount() - 2]);
+        MusDurationInterface *last_note = dynamic_cast<MusDurationInterface*>(m_children[GetNoteCount() - 2]);
         last_note->m_beam[0] = BEAM_MEDIAL;
     }
 }
 
-/*
-bool MusBeam::Save( wxArrayPtrVoid params )
+void MusBeam::FilterList()
 {
-    // param 0: output stream
-    MusFileOutputStream *output = (MusFileOutputStream*)params[0];       
-    return !output->WriteLayerRdg( this );
+    // We want to keep only notes and rest
+    // Eventually, we also need to filter out grace notes properly (e.g., with sub-beams)
+    ListOfMusObjects::iterator iter;
+    for (iter = m_list.begin(); iter != m_list.end(); ++iter)
+    {
+        MusLayerElement *currentElement = dynamic_cast<MusLayerElement*>(*iter);
+        if ( currentElement && !currentElement->HasDurationInterface() )
+        {
+            wxLogDebug("%s", currentElement->MusClassName().c_str() );
+            m_list.erase( iter );
+        }
+    }
 }
-*/

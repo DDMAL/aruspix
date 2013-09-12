@@ -9,21 +9,25 @@
 #define __MUS_OBJECT_H__
 
 #include <wx/wxprec.h>
-#include <uuid/uuid.h>
 
 #ifndef WX_PRECOMP
-    #include "wx/wx.h"
+    //#include "wx/wx.h"
 #endif
 
+#include <uuid/uuid.h>
 #include <typeinfo>
+#include <vector>
+#include <list>
 
 class MusDoc;
 class MusFunctor;
-
 class MusObject;
-WX_DECLARE_OBJARRAY( MusObject, ArrayOfMusObjects );
 
-WX_DECLARE_LIST( MusObject, ListOfMusObjects );
+typedef std::vector<MusObject*> ArrayOfMusObjects;
+
+typedef std::list<MusObject*> ListOfMusObjects;
+
+typedef std::vector<void*> ArrayOfVoidPtr;
 
 //----------------------------------------------------------------------------
 // MusObject
@@ -47,22 +51,51 @@ public:
     void SetUuid( uuid_t uuid );
     void ResetUuid( );
     
-    void ClearChildren() { m_children.Clear(); }
+    /**
+     * Clear the children vector and delete all the objects.
+     */
+    void ClearChildren();
     
-    void SetParent( MusObject *parent ) { m_parent = parent; }
+    /**
+     * Set the parent of the MusObject.
+     * The current parent is expected to be NULL.
+     */
+    void SetParent( MusObject *parent );
     
     virtual wxString MusClassName( ) { return "[MISSING]"; };
     
     /**
-     * Return the first parent of the specified type.
+     * Look for the MusObject in the children and return its position (-1 if not found)
      */
-    MusObject *GetFirstParent( const std::type_info *elementType );
+    int GetChildIndex( const MusObject *child );
     
     /**
-     * Create a list of all the children MusLayerElement.
+     * Insert a element at the idx position.
+     */
+    void InsertChild( MusObject *element, int idx );
+    
+    /**
+     * Detach the child at the idx position (NULL if not found)
+     * The parent pointer is set to NULL.
+     */
+    MusObject *DetachChild( int idx );
+    
+    /**
+     * Remove and delete the child at the idx position.
+     */
+    void RemoveChildAt( int idx );
+    
+    /**
+     * Return the first parent of the specified type.
+     * The maxSteps parameter limit the search to a certain number of level if not -1.
+     */
+    MusObject *GetFirstParent( const std::type_info *elementType, int maxSteps = -1 );
+    
+    /**
+     * Fill the list of all the children MusLayerElement.
      * This is used for navigating in a MusLayer (See MusLayer::GetPrevious and MusLayer::GetNext).
      */  
-    void GetList( ListOfMusObjects *list );
+    void FillList( ListOfMusObjects *list );
     
     /**
      * Add a sameAs attribute to the object.
@@ -193,6 +226,27 @@ public:
     MusObjectListInterface() {};
     virtual ~MusObjectListInterface() {};
     
+    /**
+     * Look for the MusObject in the list and return its position (-1 if not found)
+     */
+    int GetListIndex( const MusObject *listElement );
+    
+    /**
+     * Returns the previous object in the list (NULL if not found)
+     */
+    MusObject *GetListPrevious( const MusObject *listElement );
+
+    /**
+     * Returns the previous next in the list (NULL if not found)
+     */
+    MusObject *GetListNext( const MusObject *listElement );
+    
+    /**
+     * Return the list.
+     * Because this is an interface, we need to pass the object - not the best design.
+     */
+    ListOfMusObjects *GetList( MusObject *node );
+    
 protected:
     /**
      * Filter the list for a specific class.
@@ -202,6 +256,7 @@ protected:
     
     /**
      * Reset the list of children and call FilterList().
+     * As for GetList, we need to pass the object.
      */
     void ResetList( MusObject *node );
         
