@@ -1029,14 +1029,11 @@ bool MusWWGInput::ReadNote( MusLayer *layer )
             wxASSERT( !m_currentBeam );
             m_currentBeam = new MusBeam();
             m_isLastNoteInBeam = false;
-            //note->m_beam[0] |= BEAM_INITIAL;
         }
         if ( rel ) {
-            //note->m_beam[0] |= BEAM_MEDIAL;
         }
         if ( frel ) {
             m_isLastNoteInBeam = true;
-            //note->m_beam[0] |= BEAM_TERMINAL;
         }
         // ligature
         if ( ligat ) {

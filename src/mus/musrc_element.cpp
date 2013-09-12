@@ -285,13 +285,6 @@ void MusRC::DrawNote ( MusDC *dc, MusLayerElement *element, MusLayer *layer, Mus
 		if (note->m_chord) { /*** && this == testchord)***/
 			ynn_chrd = ynn;
         }
-		//if (((note->m_beam[0] & BEAM_INITIAL) || (note->m_beam[0] & BEAM_MEDIAL)) && formval > DUR_4)
-		if (inBeam && formval > DUR_4)
-        {
-            //if (note->m_beam[0] & BEAM_INITIAL) { RZ COMMENTED
-            //    layer->beamListPremier = element;
-            //}
-		}
 		else if (note->m_headshape != SANSQUEUE && (!note->m_chord || (note->m_chord==CHORD_TERMINAL))) {	
             if (note->m_chord==CHORD_TERMINAL) {	
 				/***up = testchord->obj.not.haste;
@@ -445,7 +438,7 @@ void MusRC::DrawNote ( MusDC *dc, MusLayerElement *element, MusLayer *layer, Mus
 		}*///
 	}
 	else
-	{	if (note->m_dur < DUR_2 || (note->m_dur > DUR_8 && !note->m_beam[0] && up))
+	{	if (note->m_dur < DUR_2 || (note->m_dur > DUR_8 && !inBeam && up))
 			x2 = xn + m_doc->m_step1*7/2;
 		else
 			x2 = xn + m_doc->m_step1*5/2;

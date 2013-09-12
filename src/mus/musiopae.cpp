@@ -179,6 +179,7 @@ void MusPaeInput::convertPlainAndEasyToKern(std::istream &infile, std::ostream &
             i += getAccidental( incipit, &current_note.accidental, i );
         }
         
+        /*
         // beaming starts
 		else if (incipit[i] == '{') {
 			//current_note.beam = 1;
@@ -193,6 +194,7 @@ void MusPaeInput::convertPlainAndEasyToKern(std::istream &infile, std::ostream &
             current_note.beam = 0;
             in_beam = false;
 		}
+        */ // ax2.3 LP
 		
         // slurs are read when adding the note
 		else if (incipit[i] == '+') {
@@ -279,9 +281,11 @@ void MusPaeInput::convertPlainAndEasyToKern(std::istream &infile, std::ostream &
             i += getKeyInfo( incipit, &current_measure, i + 1);
 		} 
         
+        /*
         if (in_beam && (current_note.beam & BEAM_INITIAL) == 0 && (current_note.beam & BEAM_TERMINAL) == 0) {
             current_note.beam |= BEAM_MEDIAL;
         }
+        */ // ax2.3 LP
             
         i++;
     }
@@ -946,7 +950,9 @@ int MusPaeInput::getNote( const char* incipit, NoteObject *note, MeasureObject *
         //std::cout << "regexp " << is_not_last_note << std::endl;
         if ( is_not_last_note != 0 ) {
             //note->beam = -1; // close the beam
+            /*
             note->beam |= BEAM_TERMINAL;
+            */ // ax2.3
         }
     }
     
@@ -1126,6 +1132,7 @@ void MusPaeInput::printMeasure(std::ostream& out, MeasureObject *measure ) {
             // which are unbeamed in the beam / have their own beam
             // m_current_beam is global so we can have cross-measure beams
             if (!note->appoggiatura && !note->acciaccatura) {
+                /*
                 if (note->beam & BEAM_INITIAL) {
                     m_current_beam = new MusBeam;
                     m_current_beam->AddElement(n);
@@ -1137,6 +1144,7 @@ void MusPaeInput::printMeasure(std::ostream& out, MeasureObject *measure ) {
                 } else if (note->beam & BEAM_TERMINAL) {
                     m_current_beam = NULL;
                 }
+                */ // ax2.3 LP
             }
                 
             m_layer->AddElement(n); // create a note

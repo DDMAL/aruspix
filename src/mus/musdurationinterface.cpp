@@ -24,7 +24,6 @@
 
 MusDurationInterface::MusDurationInterface()
 {
-    memset(m_beam, 0, DURATION_MAX_BEAMS * sizeof(unsigned char));
     m_breakSec = 0;
     m_dots = 0;
     m_dur = 0;

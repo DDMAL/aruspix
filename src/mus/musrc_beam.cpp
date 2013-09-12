@@ -126,12 +126,14 @@ void MusRC::DrawBeam(  MusDC *dc, MusLayer *layer, MusBeam *beam, MusStaff *staf
 		fb._grp = OFF;			/* reinitialisation du test (static) */
 	}
 	
+    beam->ResetList( beam );
+    
     // Should we assert this at the beginning?
-    if (beam->m_children.empty())
+    if (beam->m_list.empty())
         return;
     
     // chk point to the first Note in the layed out layer
-    chk = (MusLayerElement*)beam->m_children[0];
+    chk = dynamic_cast<MusLayerElement*>(beam->m_list.front());
     
     //	bch.markchrd = shortest = fb.mq_val = valref = ct = cpte_stop = fb.mrq_port = OFF;
 	bch.markchrd = 0;
@@ -174,16 +176,18 @@ void MusRC::DrawBeam(  MusDC *dc, MusLayer *layer, MusBeam *beam, MusStaff *staf
     extern_q_auto = 1; //RZ was ((MusNote*)chk)->m_stemLen; bit it is always 0!
     extern_queue =  ((MusNote*)chk)->m_stemDir;
 
+    ListOfMusObjects::iterator iter = beam->m_list.begin();
+    
 	do
 	{
-        ((MusNote*)chk)->IsFirstInBeam( chk );
-		//if (chk->IsNote() || (((MusNote*)chk)->m_beam[0] & BEAM_INITIAL) || (((MusNote*)chk)->m_beam[0] & BEAM_TERMINAL))
-		if ( chk->IsNote() || (((MusNote*)chk)->IsFirstInBeam( chk )) || (((MusNote*)chk)->IsLastInBeam( chk )))
+        if ( chk->IsNote() ) {
             k = ((MusNote*)chk)->m_colored ? ((MusNote*)chk)->m_dur+1 : ((MusNote*)chk)->m_dur;
+        }
 
         // if (chk->type == NOTE && /*chk->sil == _NOT &&*/ k > DUR_4)
-		if (chk->HasDurationInterface() || (((MusDurationInterface*)chk)->m_beam[0] & BEAM_INITIAL) || (((MusDurationInterface*)chk)->m_beam[0] & BEAM_TERMINAL) && k > DUR_4)
-		{	(crd+ct)->chk = chk;
+		if (k > DUR_4)
+        {
+			(crd+ct)->chk = chk;
 			/* garantir uniformite des flags */
 
 			if (!calcBeam && chk->IsNote())	/* on ne se limite pas au calcul des queues */
@@ -204,8 +208,8 @@ void MusRC::DrawBeam(  MusDC *dc, MusLayer *layer, MusBeam *beam, MusStaff *staf
 
 			(crd+ct)->a = chk->m_x_abs + chk->m_hOffset - m_doc->m_env.m_stemWidth / 2;		/* enregistrement des coord. */
 			(crd+ct)->vlr = k;
-			if (((MusNote*)chk)->m_breakSec && ct)
-			/* enregistr. des ruptures de beaming; des la 2e note;(autrement idiot)*/
+			if (chk->IsNote() && ((MusNote*)chk)->m_breakSec && ct)
+                /* enregistr. des ruptures de beaming; des la 2e note;(autrement idiot)*/
 				*(st_rl + (cpte_stop++)) = ct;
 
 			/***if (extern_q_auto && chk->chord)
@@ -213,30 +217,25 @@ void MusRC::DrawBeam(  MusDC *dc, MusLayer *layer, MusBeam *beam, MusStaff *staf
 				fb.flsht = fb.flsht ? fb.flsht : chk->_shport;
 			}***/
             if (chk->IsNote())	// ‚viter de prendre en compte silences
-            {			shortest = max (k,shortest);
-                        if (!fb.mq_val && k != valref)
-                            fb.mq_val = ON; /* plus d'une valeur est presente*/
-                        valref = min (k,valref);
+            {
+                shortest = max (k,shortest);
+                if (!fb.mq_val && k != valref) fb.mq_val = ON; /* plus d'une valeur est presente*/
+                valref = min (k,valref);
             }
 			ct++;
 		}
-		if (((MusNote*)chk)->m_beam[0] & BEAM_TERMINAL) 
-            break;
         
-        // This should mean we have no BEAM TERMINAL
-        if (ct >= (int)beam->m_children.size()) {
+        iter++;
+        if (iter == beam->m_list.end()) {
+            break;
+        }
+        
+        chk = dynamic_cast<MusLayerElement*>(*iter);
+		if (chk == NULL) { 
             return;
         }
         
-        chk = (MusLayerElement*)beam->m_children[ct];
-        
-		//chk = layer->GetNext(chk);
-		//if (chk == NULL) { 
-        //    layer->beamListPremier = NULL;
-        //    return;
-        //}
-        
-	}	while (ct < NbREL);
+	}	while (1);
 
     // SECURITE : EVITER DE BARRER UN ACCORD ISOLE...
 /*	if (chk->IsNote() && (((MusNote*)chk)->m_chord & CHORD_TERMINAL)  && (chk->m_x_abs == layer->beamListPremier->m_x_abs))

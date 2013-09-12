@@ -64,7 +64,7 @@ bool AllNotesBeamed(MusTuplet* tuplet, MusLayer *layer) {
         MusLayerElement *laidNote = dynamic_cast<MusLayerElement*>(tuplet->m_children[i]);
         
         // First check: if a note is out of a beam
-        if (mnote->m_beam[0] == 0)
+        if (!mnote->IsInBeam( mnote ))
             return false;
         
         currentBeam = dynamic_cast<MusBeam*>(layer->GetFirst(laidNote, BACKWARD, &typeid(MusBeam), &succ));

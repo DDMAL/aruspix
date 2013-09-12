@@ -253,14 +253,14 @@ protected:
      * For example, keep only notes in MusBeam
      */
     virtual void FilterList() {};
-    
+
+public:    
     /**
      * Reset the list of children and call FilterList().
      * As for GetList, we need to pass the object.
      */
     void ResetList( MusObject *node );
         
-protected:
     ListOfMusObjects m_list;
     
 };
