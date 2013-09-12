@@ -86,7 +86,7 @@ public:
 
     virtual bool WritePage( const MusPage *page, bool write_header = false );
 	bool WritePage( const MusPage *page, wxString filename, ImPage *imPage,
-		wxArrayInt *staff_numbers = NULL ); // manage staves throuhg staff_numbers
+		std::vector<int> *staff_numbers = NULL ); // manage staves throuhg staff_numbers
 											// write all staves if staff_numbers == NULL
 											
     bool WriteLayer( const MusLayer *layer, int offset = -1, int end_point = -1 );

@@ -460,7 +460,7 @@ void MusMLFOutput::EndLabel( int offset, int end_point )
 			wxString hmm = word_label;
 			hmm.MakeLower();
 			w->m_hmms.Add( hmm );
-			w->m_states.Add( m_symbols[i].GetNbOfStates() );
+			w->m_states.push_back( m_symbols[i].GetNbOfStates() );
 			m_dict->m_dict.Add( w );
 			m_dict->m_dict.Sort( SortMLFWords );
 		}
@@ -634,7 +634,7 @@ bool MusMLFOutput::WritePage( const MusPage *page, bool write_header )
 }
 
 // idem ExportFile() puis WritePage(), mais gere la position des portee de imPage et les portee selon staff numbers
-bool MusMLFOutput::WritePage( const MusPage *page, wxString filename, ImPage *imPage, wxArrayInt *staff_numbers )
+bool MusMLFOutput::WritePage( const MusPage *page, wxString filename, ImPage *imPage, std::vector<int> *staff_numbers )
 {
 	wxASSERT_MSG( page, "MusPage cannot be NULL" );
 	wxASSERT_MSG( imPage, "ImPage cannot be NULL" );
@@ -655,8 +655,8 @@ bool MusMLFOutput::WritePage( const MusPage *page, wxString filename, ImPage *im
     m_layer = NULL;
     for (m_staff_i = 0; m_staff_i < (int)page->GetSystemCount(); m_staff_i++) 
     {
-		if ( staff_numbers && ( staff_numbers->Index( m_staff_i ) == wxNOT_FOUND ) )
-			continue;
+		//if ( staff_numbers && ( staff_numbers->Index( m_staff_i ) == wxNOT_FOUND ) )
+		//	continue; // commented in version 2.3.0
 
         // I think this is wrong, we need to loop through all the staves? maybe not
         m_layer = (MusLayer*)page->m_children[m_staff_i]->m_children[0]->m_children[0];

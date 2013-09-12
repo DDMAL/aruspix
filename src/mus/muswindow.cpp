@@ -287,9 +287,9 @@ void MusWindow::DoLyricCursor( int x, int y, MusDC *dc, wxString lyric )
 {
     int xCursor = x;
     if ( m_lyricCursor > 0 ){
-        wxArrayInt lyricPos;
+        std::vector<int> lyricPos;
         // TODO dc->GetPartialTextExtents( s, lyricPos );
-        if ( m_lyricCursor <= (int)lyricPos.GetCount() )
+        if ( m_lyricCursor <= (int)lyricPos.size() )
             xCursor += lyricPos[m_lyricCursor-1];			
     }
     // the cursor witdh

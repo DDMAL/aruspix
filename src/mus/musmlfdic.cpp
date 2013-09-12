@@ -95,7 +95,7 @@ void MusMLFDictionary::Load( TiXmlElement *file_root )
 				continue;
 			
 			word.m_hmms.Add( elem->Attribute("name") );
-			word.m_states.Add( atoi(elem->Attribute("states")) );
+			word.m_states.push_back( atoi(elem->Attribute("states")) );
 		}
         m_dict.Add( word );
     }
@@ -114,7 +114,7 @@ void MusMLFDictionary::Save( TiXmlElement *file_root )
     {
         TiXmlElement elem ("entry");
 		elem.SetAttribute("word", m_dict[i].m_word.c_str() );
-		wxASSERT( m_dict[i].m_hmms.GetCount() == m_dict[i].m_states.GetCount() );
+		wxASSERT( m_dict[i].m_hmms.GetCount() == m_dict[i].m_states.size() );
 		for( j = 0; j < (int)m_dict[i].m_hmms.GetCount(); j++ )
 		{
 			TiXmlElement symb ("hmm");
@@ -157,7 +157,7 @@ void MusMLFDictionary::WriteStates( wxString filename )
 	wxFileOutputStream stream( filename );
 	wxTextOutputStream fstates( stream );
 	for( i = 0; i < (int)m_dict.GetCount(); i++ )
-		for( j = 0; j < (int)m_dict[i].m_states.GetCount(); j++ )
+		for( j = 0; j < (int)m_dict[i].m_states.size(); j++ )
 			fstates.WriteString( wxString::Format( "%02d\n", m_dict[i].m_states[j] ) );
 	fstates.WriteString( wxString::Format( "%02d\n", 4 ) ); // {s} symbol
 	stream.Close();
@@ -166,7 +166,7 @@ void MusMLFDictionary::WriteStates( wxString filename )
 	wxFileOutputStream stream_3( filename + "3" );
 	wxTextOutputStream fstates3( stream_3 );
 	for( i = 0; i < (int)m_dict.GetCount(); i++ )
-		for( j = 0; j < (int)m_dict[i].m_states.GetCount(); j++ )
+		for( j = 0; j < (int)m_dict[i].m_states.size(); j++ )
 			fstates3.WriteString( wxString::Format( "%02d\n", m_dict[i].m_states[j] + 4 ) );
 	fstates3.WriteString( wxString::Format( "%02d\n", 4 ) );
 	stream_3.Close();
