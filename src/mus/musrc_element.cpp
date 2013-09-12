@@ -285,6 +285,10 @@ void MusRC::DrawNote ( MusDC *dc, MusLayerElement *element, MusLayer *layer, Mus
 		if (note->m_chord) { /*** && this == testchord)***/
 			ynn_chrd = ynn;
         }
+		if (inBeam && formval > DUR_4)
+        {
+            // no stem
+		}
 		else if (note->m_headshape != SANSQUEUE && (!note->m_chord || (note->m_chord==CHORD_TERMINAL))) {	
             if (note->m_chord==CHORD_TERMINAL) {	
 				/***up = testchord->obj.not.haste;
