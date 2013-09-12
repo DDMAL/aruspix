@@ -132,11 +132,11 @@ void CmpMusController::LoadSource( MusLayerElement *element )
     MusPage *currentPage = m_viewPtr->m_page;    
     
     MusObject *viewElement = NULL;
-    wxArrayPtrVoid params;
+    ArrayPtrVoid params;
     uuid_t uuid;
     uuid_parse( id.c_str(), uuid );
-	params.Add( uuid );
-    params.Add( &viewElement );
+	params.push_back( uuid );
+    params.push_back( &viewElement );
     MusFunctor findLayerElement( &MusObject::FindByUuid );
     m_viewPtr->m_doc->Process( &findLayerElement, params );
     

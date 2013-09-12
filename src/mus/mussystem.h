@@ -45,7 +45,7 @@ public:
     
     void Clear();
     
-    //void SetDoc( wxArrayPtrVoid params );
+    //void SetDoc( ArrayPtrVoid params );
 	
 	void AddStaff( MusStaff *staff );
 	
@@ -63,10 +63,10 @@ public:
     int GetSystemNo() const;
     
     // functors
-    virtual bool Save( wxArrayPtrVoid params );
-    //void ProcessStaves( wxArrayPtrVoid params );
-    //void ProcessVoices( wxArrayPtrVoid params );
-    //void CountVoices( wxArrayPtrVoid params );
+    virtual bool Save( ArrayPtrVoid params );
+    //void ProcessStaves( ArrayPtrVoid params );
+    //void ProcessVoices( ArrayPtrVoid params );
+    //void CountVoices( ArrayPtrVoid params );
     
 private:
     

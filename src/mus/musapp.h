@@ -36,7 +36,7 @@ public:
     int GetRdgCount() { return (int)m_children.size(); };
     
     // functor
-    virtual bool Save( wxArrayPtrVoid params );
+    virtual bool Save( ArrayPtrVoid params );
     
 private:
     
@@ -66,7 +66,7 @@ public:
 	int GetElementCount() const { return (int)m_children.size(); };
     
     // functor
-    virtual bool Save( wxArrayPtrVoid params );
+    virtual bool Save( ArrayPtrVoid params );
 
 private:
     

@@ -151,7 +151,7 @@ public:
 	int GetPageCount() const { return (int)m_children.size(); };
     
     // functors
-    virtual bool Save( wxArrayPtrVoid params );
+    virtual bool Save( ArrayPtrVoid params );
     
 private:
     // method calculating the font size

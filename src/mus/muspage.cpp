@@ -42,7 +42,7 @@ void MusPage::Clear( )
 }
 
 
-bool MusPage::Save( wxArrayPtrVoid params )
+bool MusPage::Save( ArrayPtrVoid params )
 {
     // param 0: output stream
     MusFileOutputStream *output = (MusFileOutputStream*)params[0];       
@@ -69,7 +69,7 @@ int MusPage::GetStaffPosOnPage( MusStaff *staff )
     /*
     int position = -1;
     bool success = false;
-    wxArrayPtrVoid params;
+    ArrayPtrVoid params;
     params.Add( staff );
     params.Add( &position );
     params.Add( &success );

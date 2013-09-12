@@ -226,7 +226,7 @@ bool MusLayerElement::IsRest()
 }
 
 
-bool MusLayerElement::Save( wxArrayPtrVoid params )
+bool MusLayerElement::Save( ArrayPtrVoid params )
 {
     // param 0: output stream
     MusFileOutputStream *output = (MusFileOutputStream*)params[0];         

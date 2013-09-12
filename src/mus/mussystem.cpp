@@ -53,7 +53,7 @@ void MusSystem::Clear( )
 }
 
 
-bool MusSystem::Save( wxArrayPtrVoid params )
+bool MusSystem::Save( ArrayPtrVoid params )
 {
     // param 0: output stream
     MusFileOutputStream *output = (MusFileOutputStream*)params[0];       
@@ -75,7 +75,7 @@ int MusSystem::GetSystemNo() const
 }
 
 /*
-void MusSystem::SetDoc( wxArrayPtrVoid params )
+void MusSystem::SetDoc( ArrayPtrVoid params )
 {
     wxLogDebug("PROUT");    
 }

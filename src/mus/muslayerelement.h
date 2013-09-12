@@ -107,14 +107,14 @@ public:
      * saving occurs in the MusFileOutputStream::WriteLayerElement method
      * A few classes, such as MusLayerApp, have an overriden version.
      */
-    virtual bool Save( wxArrayPtrVoid params );
+    virtual bool Save( ArrayPtrVoid params );
     
     
     int GetElementNo() const;
     
     // functors
-    void Delete( wxArrayPtrVoid params );
-    void CheckAndResetLayerElement( wxArrayPtrVoid params );
+    void Delete( ArrayPtrVoid params );
+    void CheckAndResetLayerElement( ArrayPtrVoid params );
     
 private:
     

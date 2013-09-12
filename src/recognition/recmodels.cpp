@@ -653,7 +653,7 @@ bool RecMusModel::AddFile( wxArrayPtrVoid params, AxProgressDlg *dlg )
 	bool failed = false;
 
 	if ( !failed && !dlg->GetCanceled() )
-		failed = !m_mlf->WritePage( (MusPage*)recFile.m_musDocPtr->m_children[0], true );
+		failed = !m_mlf->WritePage( (MusPage*)&recFile.m_musDocPtr->m_children[0], true );
 	imCounterInc( dlg->GetCounter() );	
 	
 	m_nbfiles++;

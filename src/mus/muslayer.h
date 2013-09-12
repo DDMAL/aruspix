@@ -51,11 +51,11 @@ public:
      * Copy the elements to a MusLayer passed in parameters. 
      * Also take into account a start and end uuid for the page (if any)
      */ 
-    virtual bool CopyToLayer( wxArrayPtrVoid params );
-    void CopyElements( wxArrayPtrVoid params ); // unused
-    void GetMaxXY( wxArrayPtrVoid params ); // unused
-    virtual bool Save( wxArrayPtrVoid params );
-    void CheckAndResetSectionOrMeasure( wxArrayPtrVoid params ); // unused
+    virtual bool CopyToLayer( ArrayPtrVoid params );
+    void CopyElements( ArrayPtrVoid params ); // unused
+    void GetMaxXY( ArrayPtrVoid params ); // unused
+    virtual bool Save( ArrayPtrVoid params );
+    void CheckAndResetSectionOrMeasure( ArrayPtrVoid params ); // unused
     
 	void CopyAttributes( MusLayer *layer ); // copy all attributes but none of the elements
     

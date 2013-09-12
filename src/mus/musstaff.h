@@ -54,8 +54,8 @@ public:
     int GetStaffNo() const;
 
     // functors
-    virtual bool Save( wxArrayPtrVoid params );
-    virtual bool GetPosOnPage( wxArrayPtrVoid params );
+    virtual bool Save( ArrayPtrVoid params );
+    virtual bool GetPosOnPage( ArrayPtrVoid params );
     
 	void CopyAttributes( MusStaff *staff ); // copy all attributes but none of the elements
 	//void ClearElements( MusDC *dc , MusElement *start = NULL );

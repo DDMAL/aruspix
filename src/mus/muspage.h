@@ -67,7 +67,7 @@ public:
 
 
     // functors
-    virtual bool Save( wxArrayPtrVoid params );
+    virtual bool Save( ArrayPtrVoid params );
     
     
 private:

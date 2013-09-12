@@ -38,7 +38,7 @@ void MusLayerApp::AddLayerRdg( MusLayerRdg *layerRdg )
     Modify();
 }
 
-bool MusLayerApp::Save( wxArrayPtrVoid params )
+bool MusLayerApp::Save( ArrayPtrVoid params )
 {
     // param 0: output stream
     MusFileOutputStream *output = (MusFileOutputStream*)params[0];         
@@ -74,7 +74,7 @@ void MusLayerRdg::AddElement( MusLayerElement *element, int idx )
 }
 
 
-bool MusLayerRdg::Save( wxArrayPtrVoid params )
+bool MusLayerRdg::Save( ArrayPtrVoid params )
 {
     // param 0: output stream
     MusFileOutputStream *output = (MusFileOutputStream*)params[0];       

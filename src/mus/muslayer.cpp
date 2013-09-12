@@ -57,7 +57,7 @@ void MusLayer::Clear()
 }
 
 
-bool MusLayer::Save( wxArrayPtrVoid params )
+bool MusLayer::Save( ArrayPtrVoid params )
 {
     // param 0: output stream
     MusFileOutputStream *output = (MusFileOutputStream*)params[0];       
@@ -694,7 +694,7 @@ void MusLayer::AdjustLyricLineHeight( int delta )
 
 // functors
 
-bool MusLayer::CopyToLayer( wxArrayPtrVoid params )
+bool MusLayer::CopyToLayer( ArrayPtrVoid params )
 {  
     // Things we might want to add: 
     // - checking that the parent is a staff to avoid copying MusApp

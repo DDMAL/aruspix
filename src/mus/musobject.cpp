@@ -139,8 +139,8 @@ void MusObject::Modify( bool modified )
 void MusObject::FillList( ListOfMusObjects *list )
 {
     MusFunctor addToList( &MusObject::AddMusLayerElementToList );
-    wxArrayPtrVoid params;
-    params.Add ( list );
+    ArrayPtrVoid params;
+    params.push_back ( list );
     this->Process( &addToList, params );
 
     /* // For debuging
@@ -199,7 +199,7 @@ bool MusObject::GetSameAs( wxString *id, wxString *filename, int idx )
     return false;
 }
 
-void MusObject::Process(MusFunctor *functor, wxArrayPtrVoid params )
+void MusObject::Process(MusFunctor *functor, ArrayPtrVoid params )
 {
     if (functor->m_stopIt) {
         return;
@@ -232,7 +232,7 @@ MusDocObject::~MusDocObject()
 }
 
 /*
-void MusDocObject::SetDoc( wxArrayPtrVoid params )
+void MusDocObject::SetDoc( ArrayPtrVoid params )
 {
     // param 0: MusDoc
     wxASSERT( dynamic_cast<MusDoc*>((MusDoc*)params[0]) ); 
@@ -402,14 +402,14 @@ MusFunctor::MusFunctor( )
     obj_fpt=NULL; 
 }
 
-MusFunctor::MusFunctor( bool(MusObject::*_obj_fpt)( wxArrayPtrVoid ))
+MusFunctor::MusFunctor( bool(MusObject::*_obj_fpt)( ArrayPtrVoid ))
 { 
     m_stopIt=false;
     m_reverse=false;
     obj_fpt=_obj_fpt; 
 }
 
-void MusFunctor::Call( MusObject *ptr, wxArrayPtrVoid params )
+void MusFunctor::Call( MusObject *ptr, ArrayPtrVoid params )
 { 
     m_stopIt = (*ptr.*obj_fpt)( params );
 }
@@ -451,7 +451,7 @@ MusEnv::~MusEnv()
 // MusObject functor methods
 //----------------------------------------------------------------------------
 
-bool MusObject::AddMusLayerElementToList( wxArrayPtrVoid params )
+bool MusObject::AddMusLayerElementToList( ArrayPtrVoid params )
 {
     // param 0: the ListOfMusObjects
     ListOfMusObjects *list = (ListOfMusObjects*)params[0];
@@ -461,7 +461,7 @@ bool MusObject::AddMusLayerElementToList( wxArrayPtrVoid params )
     return false;
 }
 
-bool MusObject::FindByUuid( wxArrayPtrVoid params )
+bool MusObject::FindByUuid( ArrayPtrVoid params )
 {
     // param 0: the uuid we are looking for
     // parma 1: the pointer to the element
@@ -481,7 +481,7 @@ bool MusObject::FindByUuid( wxArrayPtrVoid params )
     return false;
 }
 
-bool MusObject::TrimSystem( wxArrayPtrVoid params )
+bool MusObject::TrimSystem( ArrayPtrVoid params )
 {
     MusSystem *current = dynamic_cast<MusSystem*>(this);
     if ( !current  ) {
@@ -500,7 +500,7 @@ bool MusObject::TrimSystem( wxArrayPtrVoid params )
     return false;
 }
 
-bool MusObject::UpdateLayerElementXPos( wxArrayPtrVoid params )
+bool MusObject::UpdateLayerElementXPos( ArrayPtrVoid params )
 {
     // param 0: the MusLayerElement we point to
 	int *current_x_shift = (int*)params[0];
@@ -545,7 +545,7 @@ bool MusObject::UpdateLayerElementXPos( wxArrayPtrVoid params )
 }
 
 
-bool MusObject::UpdateStaffYPos( wxArrayPtrVoid params )
+bool MusObject::UpdateStaffYPos( ArrayPtrVoid params )
 {
     // param 0: the MusLayerElement we point to
 	int *current_y_shift = (int*)params[0]; 

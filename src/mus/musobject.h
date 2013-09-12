@@ -27,7 +27,7 @@ typedef std::vector<MusObject*> ArrayOfMusObjects;
 
 typedef std::list<MusObject*> ListOfMusObjects;
 
-typedef std::vector<void*> ArrayOfVoidPtr;
+typedef std::vector<void*> ArrayPtrVoid;
 
 //----------------------------------------------------------------------------
 // MusObject
@@ -120,28 +120,28 @@ public:
     void Modify( bool modified = true );
     
     // moulinette
-    virtual void Process(MusFunctor *functor, wxArrayPtrVoid params );
+    virtual void Process(MusFunctor *functor, ArrayPtrVoid params );
     
     // functor methods
     /**
      * Add each MusLayerElements and its children to a list
      */
-    virtual bool AddMusLayerElementToList( wxArrayPtrVoid params );
+    virtual bool AddMusLayerElementToList( ArrayPtrVoid params );
     
     /**
      * See MusLayer::CopyToLayer
      */ 
-    virtual bool CopyToLayer( wxArrayPtrVoid params ) { return false; };
+    virtual bool CopyToLayer( ArrayPtrVoid params ) { return false; };
     
     /**
      * Find a MusObject with a specified uuid.
      */
-    virtual bool FindByUuid( wxArrayPtrVoid params );
+    virtual bool FindByUuid( ArrayPtrVoid params );
     
-    virtual bool Save( wxArrayPtrVoid params ) { return false; };
-    virtual bool TrimSystem( wxArrayPtrVoid params );
-    virtual bool UpdateLayerElementXPos( wxArrayPtrVoid params );
-    virtual bool UpdateStaffYPos( wxArrayPtrVoid params );
+    virtual bool Save( ArrayPtrVoid params ) { return false; };
+    virtual bool TrimSystem( ArrayPtrVoid params );
+    virtual bool UpdateLayerElementXPos( ArrayPtrVoid params );
+    virtual bool UpdateStaffYPos( ArrayPtrVoid params );
 
 public:
     ArrayOfMusObjects m_children;
@@ -276,18 +276,18 @@ protected:
 class MusFunctor
 {
 private:
-    bool (MusObject::*obj_fpt)( wxArrayPtrVoid params );   // pointer to member function
+    bool (MusObject::*obj_fpt)( ArrayPtrVoid params );   // pointer to member function
     
 public:
     
     // constructor - takes pointer to an object and pointer to a member and stores
     // them in two private variables
     MusFunctor( );
-    MusFunctor( bool(MusObject::*_obj_fpt)( wxArrayPtrVoid ));
+    MusFunctor( bool(MusObject::*_obj_fpt)( ArrayPtrVoid ));
 	virtual ~MusFunctor() {};
     
     // override function "Call"
-    virtual void Call( MusObject *ptr, wxArrayPtrVoid params );
+    virtual void Call( MusObject *ptr, ArrayPtrVoid params );
     
     bool m_stopIt;
     bool m_reverse;

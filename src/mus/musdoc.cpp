@@ -91,7 +91,7 @@ void MusDoc::ResetPaperSize()
     m_pageTopMar = 0; 
 }
 
-bool MusDoc::Save( wxArrayPtrVoid params )
+bool MusDoc::Save( ArrayPtrVoid params )
 {  
     // param 0: output stream
     MusFileOutputStream *output = (MusFileOutputStream*)params[0];       
@@ -123,16 +123,16 @@ void MusDoc::SpaceMusic() {
     rc.SetDoc(this);
     rc.DrawPage(  &bb_dc, page, false );
     
-    wxArrayPtrVoid params;
+    ArrayPtrVoid params;
     int shift = 0;
-    params.Add( &shift );
+    params.push_back( &shift );
     
     MusFunctor updateXPosition( &MusLayerElement::UpdateLayerElementXPos );
     this->Process( &updateXPosition, params );
     
-    params.Clear();
+    params.clear();
     shift = m_pageHeight;
-    params.Add( &shift );
+    params.push_back( &shift );
     
     MusFunctor updateYPosition( &MusStaff::UpdateStaffYPos );
     this->Process( &updateYPosition, params );
@@ -142,7 +142,7 @@ void MusDoc::SpaceMusic() {
     // Trim the page to the needed position
     page->m_pageWidth = 0; // first resest the page to 0
     page->m_pageHeight = m_pageHeight;
-    params.Clear();
+    params.clear();
     
     MusFunctor trimSystem(&MusSystem::TrimSystem);
     this->Process( &trimSystem, params );
@@ -331,8 +331,8 @@ void MusDoc::UpdatePageValues()
 
 bool MusDoc::Save( MusFileOutputStream *output )
 {
-    wxArrayPtrVoid params;
-	params.Add( output );
+    ArrayPtrVoid params;
+	params.push_back( output );
 
     MusFunctor save( &MusObject::Save );
     this->Process( &save, params );
@@ -342,13 +342,13 @@ bool MusDoc::Save( MusFileOutputStream *output )
 
 void MusDoc::GetNumberOfVoices( int *min_voice, int *max_voice )
 {
-	wxArrayPtrVoid params; // tableau de pointeurs pour parametres
+	ArrayPtrVoid params; // tableau de pointeurs pour parametres
 
     (*max_voice) = 0;
     (*min_voice) = 100000; // never more than 10000 voices ?
 
-	params.Add( min_voice );
-    params.Add( max_voice );
+	params.push_back( min_voice );
+    params.push_back( max_voice );
     //MusPageFunctor countVoices( &MusPage::CountVoices ); // ax2.3
     //this->Process( &countVoices, params ); // ax2
 }
@@ -357,10 +357,10 @@ void MusDoc::GetNumberOfVoices( int *min_voice, int *max_voice )
 MusStaff *MusDoc::GetVoice( int i )
 {
     /*
-	wxArrayPtrVoid params; // tableau de pointeurs pour parametres
+	ArrayPtrVoid params; // tableau de pointeurs pour parametres
     
     MusLayerFunctor copyElements( &MusLayer::CopyElements );
-    wxArrayPtrVoid staffParams; // idem for staff functor
+    ArrayPtrVoid staffParams; // idem for staff functor
     MusStaff *staff = new MusStaff();
     staffParams.Add( staff );
     

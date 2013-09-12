@@ -82,7 +82,7 @@ void MusStaff::Clear()
     //beamListPremier = NULL;
 }
 
-bool MusStaff::Save( wxArrayPtrVoid params )
+bool MusStaff::Save( ArrayPtrVoid params )
 {
     // param 0: output stream
     MusFileOutputStream *output = (MusFileOutputStream*)params[0];         
@@ -176,7 +176,7 @@ MusLayer *MusStaff::GetLayer( int LayerNo )
 	return (MusLayer*)m_children[LayerNo];
 }
 
-bool MusStaff::GetPosOnPage( wxArrayPtrVoid params )
+bool MusStaff::GetPosOnPage( ArrayPtrVoid params )
 {
     // param 0: the MusStaff we are looking for
     // param 1: the position on the page (int)

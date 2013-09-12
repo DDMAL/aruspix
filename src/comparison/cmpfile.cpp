@@ -644,13 +644,13 @@ MusLayer *CmpBookPart::GetContentToAlign( wxString basename )
         bool has_started = false;
         bool has_ended = false;
         bool new_uuid = false;
-        wxArrayPtrVoid params;
-        params.Add ( alignLayer );
-        params.Add( partPage->m_start );
-        params.Add( partPage->m_end );
-        params.Add( &has_started );
-        params.Add( &has_ended);
-        params.Add( &new_uuid );
+        ArrayPtrVoid params;
+        params.push_back( alignLayer );
+        params.push_back( partPage->m_start );
+        params.push_back( partPage->m_end );
+        params.push_back( &has_started );
+        params.push_back( &has_ended);
+        params.push_back( &new_uuid );
         
         MusFunctor copyToLayer( &MusObject::CopyToLayer );
         currentPage->Process( &copyToLayer, params );
