@@ -24,6 +24,8 @@
 #define DURATION_MAX_BEAMS 6
 #define DURATION_MAX_TUPLETS 6
 
+class MusObject;
+
 //----------------------------------------------------------------------------
 // MusDurationInterface
 //----------------------------------------------------------------------------
@@ -40,6 +42,24 @@ public:
     virtual ~MusDurationInterface();
     
     virtual void SetDuration( int value );
+    
+    /**
+     * Look if the note or rest is in a beam.
+     * Look for the fist beam parent and check is the note is in is content list.
+     * Looking in the content list is necessary for grace notes or imbricated beams.
+     */
+    bool IsInBeam( MusObject *noteOrRest );
+    
+    /**
+     * Return true if the note or rest is the first of a beam.
+     */
+    bool IsFirstInBeam( MusObject *noteOrRest );
+    
+    /**
+     * Return true if the note or rest is the last of a beam.
+     */
+    bool IsLastInBeam( MusObject *noteOrRest );
+    
     
     /**
      * Inteface comparison operator. 

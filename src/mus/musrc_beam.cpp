@@ -176,8 +176,10 @@ void MusRC::DrawBeam(  MusDC *dc, MusLayer *layer, MusBeam *beam, MusStaff *staf
 
 	do
 	{
-		if (chk->IsNote() || (((MusNote*)chk)->m_beam[0] & BEAM_INITIAL) || (((MusNote*)chk)->m_beam[0] & BEAM_TERMINAL))
-			k = ((MusNote*)chk)->m_colored ? ((MusNote*)chk)->m_dur+1 : ((MusNote*)chk)->m_dur;
+        ((MusNote*)chk)->IsFirstInBeam( chk );
+		//if (chk->IsNote() || (((MusNote*)chk)->m_beam[0] & BEAM_INITIAL) || (((MusNote*)chk)->m_beam[0] & BEAM_TERMINAL))
+		if ( chk->IsNote() || (((MusNote*)chk)->IsFirstInBeam( chk )) || (((MusNote*)chk)->IsLastInBeam( chk )))
+            k = ((MusNote*)chk)->m_colored ? ((MusNote*)chk)->m_dur+1 : ((MusNote*)chk)->m_dur;
 
         // if (chk->type == NOTE && /*chk->sil == _NOT &&*/ k > DUR_4)
 		if (chk->HasDurationInterface() || (((MusDurationInterface*)chk)->m_beam[0] & BEAM_INITIAL) || (((MusDurationInterface*)chk)->m_beam[0] & BEAM_TERMINAL) && k > DUR_4)
