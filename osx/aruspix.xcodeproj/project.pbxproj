@@ -794,7 +794,7 @@
 		A58508B40A001129006E82B1 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0430;
+				LastUpgradeCheck = 0460;
 				ORGANIZATIONNAME = com.aruspix.www;
 			};
 			buildConfigurationList = A58508B50A001129006E82B1 /* Build configuration list for PBXProject "aruspix" */;
@@ -1069,7 +1069,7 @@
 					"$(ARUSPIX_MEI)/libmei.a",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = macosx10.6;
+				SDKROOT = macosx10.7;
 				USER_HEADER_SEARCH_PATHS = "$(ARUSPIX_WX)/osx-static-debug/lib $(ARUSPIX_MEI)/..";
 			};
 			name = Debug;
@@ -1116,7 +1116,7 @@
 					"-lwx_base_carbon_net-$(ARUSPIX_WX_VERSION)",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = macosx10.6;
+				SDKROOT = macosx10.7;
 				USER_HEADER_SEARCH_PATHS = "$(ARUSPIX_WX)/osx-static-debug/lib $(ARUSPIX_MEI)/..";
 			};
 			name = Release;
@@ -1140,9 +1140,10 @@
 					"$(ARUSPIX_IMLIB)/lib",
 					"$(ARUSPIX_WX)/osx-static-debug/lib",
 				);
+				MACOSX_DEPLOYMENT_TARGET = 10.7;
 				OBJROOT = "$(PROJECT_DIR)/../obj";
 				OTHER_LDFLAGS = "";
-				SDKROOT = macosx10.6;
+				SDKROOT = macosx10.7;
 				SYMROOT = "$(PROJECT_DIR)/../bin";
 				VALID_ARCHS = i386;
 			};
@@ -1156,9 +1157,10 @@
 				GCC_VERSION = com.apple.compilers.llvmgcc42;
 				GCC_WARN_TYPECHECK_CALLS_TO_PRINTF = NO;
 				HEADER_SEARCH_PATHS = "";
+				MACOSX_DEPLOYMENT_TARGET = 10.7;
 				OBJROOT = "$(PROJECT_DIR)/../obj";
 				OTHER_CFLAGS = "";
-				SDKROOT = macosx10.6;
+				SDKROOT = macosx10.7;
 				SYMROOT = "$(PROJECT_DIR)/../bin";
 				VALID_ARCHS = i386;
 			};
@@ -1246,7 +1248,7 @@
 					"-lwxjpegd-$(ARUSPIX_WX_VERSION)",
 				);
 				PRODUCT_NAME = Aruspix;
-				SDKROOT = macosx10.6;
+				SDKROOT = macosx10.7;
 				SECTORDER_FLAGS = "";
 				STRIP_INSTALLED_PRODUCT = NO;
 				STRIP_STYLE = debugging;
@@ -1336,7 +1338,7 @@
 					"-lwxjpeg-$(ARUSPIX_WX_VERSION)",
 				);
 				PRODUCT_NAME = Aruspix;
-				SDKROOT = macosx10.6;
+				SDKROOT = macosx10.7;
 				SECTORDER_FLAGS = "";
 				SYMROOT = "$(PROJECT_DIR)/../bin";
 				WARNING_CFLAGS = (
