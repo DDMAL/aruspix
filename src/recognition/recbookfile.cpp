@@ -15,8 +15,10 @@
 #include "rec.h"
 #include "recfile.h"
 #include "recmodels.h"
+
 #include "im/impage.h"
 
+#include "mus/musiomei.h"
 
 //----------------------------------------------------------------------------
 // RecBookFile
@@ -383,6 +385,94 @@ bool RecBookFile::ResetAdaptation( bool ask_user )
 	m_nbFilesOptimization = 0;
 	m_optFiles.Clear( );
 	return true;
+}
+
+
+bool RecBookFile::ImportModels( )
+{
+	if ( !this->ResetAdaptation( true ) ) {
+        return false;
+    }
+    
+    wxString filename;
+    filename = wxFileSelector( _("Open"), wxGetApp().m_lastDirAX0_out, m_shortname + ".axtyp", "axtyp", "Aruspix Typographic Model Files|*.axtyp", wxFD_OPEN);
+    if (filename.IsEmpty())
+        return false;
+    
+    wxCopyFile( filename, GetTypFilename() );
+    
+    filename = wxFileSelector( _("Open"), wxGetApp().m_lastDirAX0_out, m_shortname + ".axmus", "axmus", "Aruspix Music Model Files|*.axmus", wxFD_OPEN);
+    if (filename.IsEmpty())
+        return false;
+    
+    wxCopyFile( filename, GetMusFilename() );
+	
+	m_fullOptimized = true;
+	m_nbFilesOptimization = 0;
+	m_optFiles.Clear( );
+	return true;
+}
+
+bool RecBookFile::ExportModels( )
+{
+    wxString filename;
+    filename = wxFileSelector( _("Save"), wxGetApp().m_lastDirAX0_out, m_shortname + ".axtyp", "axtyp", "Aruspix Typographic Model Files|*.axtyp", wxFD_SAVE);
+    if (filename.IsEmpty())
+        return false;
+    
+    wxCopyFile( GetTypFilename(), filename );
+    
+    filename = wxFileSelector( _("Save"), wxGetApp().m_lastDirAX0_out, m_shortname + ".axmus", "axmus", "Aruspix Music Model Files|*.axmus", wxFD_SAVE);
+    if (filename.IsEmpty())
+        return false;
+    
+    wxCopyFile( GetMusFilename(), filename );
+
+	return true;
+}
+
+
+bool RecBookFile::ExportPages( int exportType )
+{
+    
+    wxArrayString paths, filenames;
+	size_t nbOfFiles;
+    int i;
+    
+    wxString outputDir = wxDirSelector( _("Output folder"), wxGetApp().m_lastDirBatch_out );
+    if ( outputDir.empty() )
+        return false;
+    wxGetApp().m_lastDirBatch_out = outputDir;
+        
+	nbOfFiles = RecognizedFiles( &filenames, &paths );
+    
+    for ( i = 0; i < (int)nbOfFiles; i++ )
+    {
+        RecFile recFile( "rec_book_export" );
+        recFile.New();
+        
+        if ( !recFile.Open( paths[i] ) )
+            return false;
+        
+        if ( !recFile.IsRecognized() ) 
+        {
+            wxLogWarning(_("File '%s' skipped"), paths[i].c_str() );
+            continue;
+        }
+        
+        wxString out = outputDir + wxFileName::GetPathSeparator() + recFile.m_shortname;
+        
+        MusFileOutputStream *outStream = NULL;
+        switch( exportType ) {
+            case ( REC_BOOK_EXPORT_MEI ): outStream = new MusMeiOutput( recFile.m_musDocPtr, out + ".mei" ); break;
+        }
+        if ( outStream ) {
+            outStream->ExportFile();
+            delete outStream;
+        }
+    }
+    
+    return true;
 }
 
 bool RecBookFile::TypAdaptation( wxArrayPtrVoid params, AxProgressDlg *dlg )

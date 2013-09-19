@@ -14,15 +14,17 @@
 #include "wx/dynarray.h"
 
 #include "musbeam.h"
+#include "mustie.h"
+#include "mustuplet.h"
 #include "musdef.h"
 #include "musdc.h"
 
-class MusLayout;
+class MusDoc;
 class MusPage;
 class MusSystem;
-class MusLaidOutStaff;
-class MusLaidOutLayer;
-class MusLaidOutLayerElement;
+class MusStaff;
+class MusLayer;
+class MusLayerElement;
 
 //----------------------------------------------------------------------------
 // MusRC
@@ -60,7 +62,7 @@ public:
 	// convenience method that should be changed after refactoring
 	bool IsNoteSelected();
 	    
-    void SetLayout( MusLayout *layout );
+    void SetDoc( MusDoc *doc );
     
     /** x value in the Renderer */
 	int ToRendererX( int i );
@@ -86,9 +88,9 @@ public:
 	void v_bline2 ( MusDC *dc, int y1, int y2, int x1, int nbr);
 	void h_bline ( MusDC *dc, int x1, int x2, int y1, int nbr);
 	void festa_string ( MusDC *dc, int x, int y, const wxString str, 
-					   MusLaidOutStaff *staff, int dimin ); 
+					   MusStaff *staff, int dimin ); 
 	void DrawLeipzigFont ( MusDC *dc, int x, int y, unsigned char c, 
-				  MusLaidOutStaff *staff, bool dimin );
+				  MusStaff *staff, bool dimin );
     void DrawTieBezier(MusDC *dc, int x, int y, int x1, int height, int width, bool direction);
 	//void putfontfast ( MusDC *dc, int x, int y, unsigned char c );
 	void putstring ( MusDC *dc, int x, int y, wxString s, int centrer, int staffSize = 0);
@@ -96,7 +98,7 @@ public:
 	void box( MusDC *dc, int x1, int y1, int x2, int y2);
 	void rect_plein2( MusDC *dc, int x1, int y1, int x2, int y2);
 	int hGrosseligne ( MusDC *dc, int x1, int y1, int x2, int y2, int decal);
-	int DrawDot ( MusDC *dc, int x, int b, int decal, MusLaidOutStaff *staff );
+	int DrawDot ( MusDC *dc, int x, int b, int decal, MusStaff *staff );
 	/* musrc_bezier.cpp */
 	static int CC(int ,int );
 	static long BBlend(int ,int ,long );
@@ -111,98 +113,99 @@ public:
 	void DrawGroups( MusDC *dc, MusSystem *system );
 	void DrawBracket ( MusDC *dc, MusSystem *system, int x, int y1, int y2, int cod, int staffSize);
 	void DrawBrace ( MusDC *dc, MusSystem *system, int x, int y1, int y2, int staffSize);
-	void DrawBarline ( MusDC *dc, MusSystem *system, int x, int cod, bool porteeAutonome, MusLaidOutStaff *pportee);
-	void DrawSpecialBarline( MusDC *dc, MusSystem *system, int x, BarlineType code, bool porteeAutonome, MusLaidOutStaff *pportee);
-	void DrawPartialBarline ( MusDC *dc, MusSystem *system, int x, MusLaidOutStaff *pportee);
-	void DrawStaff( MusDC *dc, MusLaidOutStaff *staff, MusSystem *system );
-	void DrawStaffLines( MusDC *dc, MusLaidOutStaff *staff, MusSystem *system );
-    int CalculatePitchPosY ( MusLaidOutStaff *staff, char pname, int dec_clef, int oct);
-	int CalculateNeumePosY ( MusLaidOutStaff *staff, char note, int dec_clef, int oct);
-    int CalculateRestPosY ( MusLaidOutStaff *staff, char duration);
-	void DrawLayer( MusDC *dc, MusLaidOutLayer *layer, MusLaidOutStaff *staff );
-	void DrawSlur( MusDC *dc, MusLaidOutLayer *layer, int x1, int y1, int x2, int y2, bool up, int height = -1);
-    int CalculatePitchCode ( MusLaidOutLayer *layer, int y_n, int x_pos, int *octave );
+	void DrawBarline ( MusDC *dc, MusSystem *system, int x, int cod, bool porteeAutonome, MusStaff *pportee);
+	void DrawSpecialBarline( MusDC *dc, MusSystem *system, int x, BarlineType code, bool porteeAutonome, MusStaff *pportee);
+	void DrawPartialBarline ( MusDC *dc, MusSystem *system, int x, MusStaff *pportee);
+	void DrawStaff( MusDC *dc, MusStaff *staff, MusSystem *system );
+	void DrawStaffLines( MusDC *dc, MusStaff *staff, MusSystem *system );
+    int CalculatePitchPosY ( MusStaff *staff, char pname, int dec_clef, int oct);
+	int CalculateNeumePosY ( MusStaff *staff, char note, int dec_clef, int oct);
+    int CalculateRestPosY ( MusStaff *staff, char duration);
+	void DrawLayer( MusDC *dc, MusLayer *layer, MusStaff *staff );
+	void DrawSlur( MusDC *dc, MusLayer *layer, int x1, int y1, int x2, int y2, bool up, int height = -1);
+    int CalculatePitchCode ( MusLayer *layer, int y_n, int x_pos, int *octave );
     /* musrc_element.cpp */
-    void DrawAcciaccaturaSlash(MusDC *dc, MusLaidOutLayerElement *element);
-    void DrawElement( MusDC *dc, MusLaidOutLayerElement *element, MusLaidOutLayer *layer, MusLaidOutStaff *staff );
-    void DrawDurationElement( MusDC *dc, MusLaidOutLayerElement *element, MusLaidOutLayer *layer, MusLaidOutStaff *staff );
-    void DrawBeamElement(MusDC *dc, MusLaidOutLayerElement *element, MusLaidOutLayer *layer, MusLaidOutStaff *staff);
-    void DrawBarline( MusDC *dc, MusLaidOutLayerElement *element, MusLaidOutLayer *layer, MusLaidOutStaff *staff );  
-    void DrawClef( MusDC *dc, MusLaidOutLayerElement *element, MusLaidOutLayer *layer, MusLaidOutStaff *staff );
-    void DrawMensur( MusDC *dc, MusLaidOutLayerElement *element, MusLaidOutLayer *layer, MusLaidOutStaff *staff );
-    void DrawFermata(MusDC *dc, MusLaidOutLayerElement *element, MusLaidOutStaff *staff);
-    void DrawMensurCircle( MusDC *dc, int x, int yy, MusLaidOutStaff *staff );
-    void DrawMensurDot( MusDC *dc, int x, int yy, MusLaidOutStaff *staff ); 
-    void DrawMensurFigures( MusDC *dc, int x, int y, int num, int numBase, MusLaidOutStaff *staff); 
-    void DrawMensurHalfCircle( MusDC *dc, int x, int yy, MusLaidOutStaff *staff );
-    void DrawMensurReversedHalfCircle( MusDC *dc, int x, int yy, MusLaidOutStaff *staff ); 
-    void DrawMensurSlash( MusDC *dc, int x, int yy, MusLaidOutStaff *staff );  
-    void DrawNote( MusDC *dc, MusLaidOutLayerElement *element, MusLaidOutLayer *layer, MusLaidOutStaff *staff, bool inBeam = false );  
-    void DrawRest( MusDC *dc, MusLaidOutLayerElement *element, MusLaidOutLayer *layer, MusLaidOutStaff *staff );
-    void DrawSymbol( MusDC *dc, MusLaidOutLayerElement *element, MusLaidOutLayer *layer, MusLaidOutStaff *staff, MusLaidOutLayerElement *parent = NULL );
-    void DrawSymbolAccid( MusDC *dc, MusLaidOutLayerElement *element, MusLaidOutLayer *layer, MusLaidOutStaff *staff );
-    void DrawSymbolCustos( MusDC *dc, MusLaidOutLayerElement *element, MusLaidOutLayer *layer, MusLaidOutStaff *staff );
-    void DrawSymbolDot( MusDC *dc, MusLaidOutLayerElement *element, MusLaidOutLayer *layer, MusLaidOutStaff *staff );
-    void DrawTie( MusDC *dc, MusLaidOutLayerElement *element, MusLaidOutLayer *layer, MusLaidOutStaff *staff );
-    void DrawTuplet( MusDC *dc, MusLaidOutLayerElement *element, MusLaidOutLayer *layer, MusLaidOutStaff *staff);
-    void DrawTrill(MusDC *dc, MusLaidOutLayerElement *element, MusLaidOutStaff *staff);
-    void DrawLigature( MusDC *dc, int y, MusLaidOutLayerElement *element, MusLaidOutLayer *layer, MusLaidOutStaff *staff );  
+    void DrawAcciaccaturaSlash(MusDC *dc, MusLayerElement *element);
+    void DrawElement( MusDC *dc, MusLayerElement *element, MusLayer *layer, MusStaff *staff );
+    void DrawDurationElement( MusDC *dc, MusLayerElement *element, MusLayer *layer, MusStaff *staff );
+    void DrawBeamElement(MusDC *dc, MusLayerElement *element, MusLayer *layer, MusStaff *staff);
+    void DrawBarline( MusDC *dc, MusLayerElement *element, MusLayer *layer, MusStaff *staff );  
+    void DrawClef( MusDC *dc, MusLayerElement *element, MusLayer *layer, MusStaff *staff );
+    void DrawMensur( MusDC *dc, MusLayerElement *element, MusLayer *layer, MusStaff *staff );
+    void DrawFermata(MusDC *dc, MusLayerElement *element, MusStaff *staff);
+    void DrawMensurCircle( MusDC *dc, int x, int yy, MusStaff *staff );
+    void DrawMensurDot( MusDC *dc, int x, int yy, MusStaff *staff ); 
+    void DrawMensurFigures( MusDC *dc, int x, int y, int num, int numBase, MusStaff *staff); 
+    void DrawMensurHalfCircle( MusDC *dc, int x, int yy, MusStaff *staff );
+    void DrawMensurReversedHalfCircle( MusDC *dc, int x, int yy, MusStaff *staff ); 
+    void DrawMensurSlash( MusDC *dc, int x, int yy, MusStaff *staff );  
+    void DrawNote( MusDC *dc, MusLayerElement *element, MusLayer *layer, MusStaff *staff );  
+    void DrawRest( MusDC *dc, MusLayerElement *element, MusLayer *layer, MusStaff *staff );
+    void DrawSymbol( MusDC *dc, MusLayerElement *element, MusLayer *layer, MusStaff *staff, MusLayerElement *parent = NULL );
+    void DrawSymbolAccid( MusDC *dc, MusLayerElement *element, MusLayer *layer, MusStaff *staff );
+    void DrawSymbolCustos( MusDC *dc, MusLayerElement *element, MusLayer *layer, MusStaff *staff );
+    void DrawSymbolDot( MusDC *dc, MusLayerElement *element, MusLayer *layer, MusStaff *staff );
+    void DrawTie( MusDC *dc, MusLayerElement *element, MusLayer *layer, MusStaff *staff );
+    void DrawTupletElement( MusDC *dc, MusLayerElement *element, MusLayer *layer, MusStaff *staff );
+    void DrawTuplet( MusDC *dc, MusTuplet *tuplet, MusLayer *layer, MusStaff *staff);
+    void DrawTrill(MusDC *dc, MusLayerElement *element, MusStaff *staff);
+    void DrawLigature( MusDC *dc, int y, MusLayerElement *element, MusLayer *layer, MusStaff *staff );  
     void DrawLedgerLines( MusDC *dc, int y_n, int y_p, int xn, unsigned int smaller, int staffSize);
-    void DrawSpecialRest ( MusDC *dc, int a, MusLaidOutLayerElement *element, MusLaidOutStaff *staff);
-    void DrawLongRest ( MusDC *dc, int a, int b, MusLaidOutStaff *staff);
-    void DrawBreveRest ( MusDC *dc, int a, int b, MusLaidOutStaff *staff);
-    void DrawWholeRest ( MusDC *dc, int a, int b, int valeur, unsigned char dots, unsigned int smaller, MusLaidOutStaff *staff);
-    void DrawQuarterRest ( MusDC *dc, int a, int b, int valeur, unsigned char dots, unsigned int smaller, MusLaidOutStaff *staff);
-    void DrawDots ( MusDC *dc, int x1, int y1, int offy, unsigned char dots, MusLaidOutStaff *staff );
-    void CalculateLigaturePosX ( MusLaidOutLayerElement *element, MusLaidOutLayer *layer, MusLaidOutStaff *staff);
-    void DrawKeySig( MusDC *dc, MusLaidOutLayerElement *element, MusLaidOutLayer *layer, MusLaidOutStaff *staff );
-    void DrawLayerApp( MusDC *dc, MusLaidOutLayerElement *element, MusLaidOutLayer *layer, MusLaidOutStaff *staff );
+    void DrawSpecialRest ( MusDC *dc, int a, MusLayerElement *element, MusStaff *staff);
+    void DrawLongRest ( MusDC *dc, int a, int b, MusStaff *staff);
+    void DrawBreveRest ( MusDC *dc, int a, int b, MusStaff *staff);
+    void DrawWholeRest ( MusDC *dc, int a, int b, int valeur, unsigned char dots, unsigned int smaller, MusStaff *staff);
+    void DrawQuarterRest ( MusDC *dc, int a, int b, int valeur, unsigned char dots, unsigned int smaller, MusStaff *staff);
+    void DrawDots ( MusDC *dc, int x1, int y1, int offy, unsigned char dots, MusStaff *staff );
+    void CalculateLigaturePosX ( MusLayerElement *element, MusLayer *layer, MusStaff *staff);
+    void DrawKeySig( MusDC *dc, MusLayerElement *element, MusLayer *layer, MusStaff *staff );
+    void DrawLayerApp( MusDC *dc, MusLayerElement *element, MusLayer *layer, MusStaff *staff );
     /* musrc_beam.cpp */
-    void DrawBeam(  MusDC *dc, MusLaidOutLayer *layer, MusBeam *beam, MusLaidOutStaff *staff );
+    void DrawBeam(  MusDC *dc, MusLayer *layer, MusBeam *beam, MusStaff *staff );
     /* musrc_beam_original.cpp */
-    void DrawBeamOriginal(  MusDC *dc, MusLaidOutLayer *layer, MusLaidOutStaff *staff );
+    void DrawBeamOriginal(  MusDC *dc, MusLayer *layer, MusStaff *staff );
     
     /* musrc_neumes.cpp - musneume */
-    void DrawNeume( MusDC *dc, MusLaidOutLayerElement *element, MusLaidOutLayer *layer, MusLaidOutStaff *staff);
-    void NeumeLine( MusDC *dc, MusLaidOutLayerElement *element, MusLaidOutLayer *layer, MusLaidOutStaff *staff, int x1, int x2, int y1, int y2);
-    void DrawAncus( MusDC *dc, MusLaidOutLayerElement *element, MusLaidOutLayer *layer, MusLaidOutStaff *staff);
-    void DrawCephalicus( MusDC *dc, MusLaidOutLayerElement *element, MusLaidOutLayer *layer, MusLaidOutStaff *staff);
-    void DrawPunctum( MusDC *dc, MusLaidOutLayerElement *element, MusLaidOutLayer *layer, MusLaidOutStaff *staff);
-    void DrawPunctumInclinatum( MusDC *dc, MusLaidOutLayerElement *element, MusLaidOutLayer *layer, MusLaidOutStaff *staff);
-    void DrawVirga( MusDC *dc, MusLaidOutLayerElement *element, MusLaidOutLayer *layer, MusLaidOutStaff *staff);
-    void DrawVirgaLiquescent( MusDC *dc, MusLaidOutLayerElement *element, MusLaidOutLayer *layer, MusLaidOutStaff *staff);
-    void DrawPodatus( MusDC *dc, MusLaidOutLayerElement *element, MusLaidOutLayer *layer, MusLaidOutStaff *staff);
-    void DrawClivis( MusDC *dc, MusLaidOutLayerElement *element, MusLaidOutLayer *layer, MusLaidOutStaff *staff);
-    void DrawEpiphonus( MusDC *dc, MusLaidOutLayerElement *element, MusLaidOutLayer *layer, MusLaidOutStaff *staff);
-    void DrawPorrectus( MusDC *dc, MusLaidOutLayerElement *element, MusLaidOutLayer *layer, MusLaidOutStaff *staff);
-    void DrawPorrectusFlexus( MusDC *dc, MusLaidOutLayerElement *element, MusLaidOutLayer *layer, MusLaidOutStaff *staff);
-    void DrawSalicus( MusDC *dc, MusLaidOutLayerElement *element, MusLaidOutLayer *layer, MusLaidOutStaff *staff);
-    void DrawScandicus( MusDC *dc, MusLaidOutLayerElement *element, MusLaidOutLayer *layer, MusLaidOutStaff *staff);
-    void DrawScandicusFlexus( MusDC *dc, MusLaidOutLayerElement *element, MusLaidOutLayer *layer, MusLaidOutStaff *staff);
-    void DrawTorculus( MusDC *dc, MusLaidOutLayerElement *element, MusLaidOutLayer *layer, MusLaidOutStaff *staff);
-    void DrawTorculusLiquescent( MusDC *dc, MusLaidOutLayerElement *element, MusLaidOutLayer *layer, MusLaidOutStaff *staff);
-    void DrawTorculusResupinus( MusDC *dc, MusLaidOutLayerElement *element, MusLaidOutLayer *layer, MusLaidOutStaff *staff);
-    void DrawCompound( MusDC *dc, MusLaidOutLayerElement *element, MusLaidOutLayer *layer, MusLaidOutStaff *staff);
-    void DrawCustos( MusDC *dc, MusLaidOutLayerElement *element, MusLaidOutLayer *layer, MusLaidOutStaff *staff);
-	void DrawNeumeDots(MusDC *dc, MusLaidOutLayerElement *element, MusLaidOutLayer *layer, MusLaidOutStaff *staff);
+    void DrawNeume( MusDC *dc, MusLayerElement *element, MusLayer *layer, MusStaff *staff);
+    void NeumeLine( MusDC *dc, MusLayerElement *element, MusLayer *layer, MusStaff *staff, int x1, int x2, int y1, int y2);
+    void DrawAncus( MusDC *dc, MusLayerElement *element, MusLayer *layer, MusStaff *staff);
+    void DrawCephalicus( MusDC *dc, MusLayerElement *element, MusLayer *layer, MusStaff *staff);
+    void DrawPunctum( MusDC *dc, MusLayerElement *element, MusLayer *layer, MusStaff *staff);
+    void DrawPunctumInclinatum( MusDC *dc, MusLayerElement *element, MusLayer *layer, MusStaff *staff);
+    void DrawVirga( MusDC *dc, MusLayerElement *element, MusLayer *layer, MusStaff *staff);
+    void DrawVirgaLiquescent( MusDC *dc, MusLayerElement *element, MusLayer *layer, MusStaff *staff);
+    void DrawPodatus( MusDC *dc, MusLayerElement *element, MusLayer *layer, MusStaff *staff);
+    void DrawClivis( MusDC *dc, MusLayerElement *element, MusLayer *layer, MusStaff *staff);
+    void DrawEpiphonus( MusDC *dc, MusLayerElement *element, MusLayer *layer, MusStaff *staff);
+    void DrawPorrectus( MusDC *dc, MusLayerElement *element, MusLayer *layer, MusStaff *staff);
+    void DrawPorrectusFlexus( MusDC *dc, MusLayerElement *element, MusLayer *layer, MusStaff *staff);
+    void DrawSalicus( MusDC *dc, MusLayerElement *element, MusLayer *layer, MusStaff *staff);
+    void DrawScandicus( MusDC *dc, MusLayerElement *element, MusLayer *layer, MusStaff *staff);
+    void DrawScandicusFlexus( MusDC *dc, MusLayerElement *element, MusLayer *layer, MusStaff *staff);
+    void DrawTorculus( MusDC *dc, MusLayerElement *element, MusLayer *layer, MusStaff *staff);
+    void DrawTorculusLiquescent( MusDC *dc, MusLayerElement *element, MusLayer *layer, MusStaff *staff);
+    void DrawTorculusResupinus( MusDC *dc, MusLayerElement *element, MusLayer *layer, MusStaff *staff);
+    void DrawCompound( MusDC *dc, MusLayerElement *element, MusLayer *layer, MusStaff *staff);
+    void DrawCustos( MusDC *dc, MusLayerElement *element, MusLayer *layer, MusStaff *staff);
+	void DrawNeumeDots(MusDC *dc, MusLayerElement *element, MusLayer *layer, MusStaff *staff);
     void DrawNeumeLedgerLines( MusDC *dc, int y_n, int y_p, int xn, unsigned int smaller, int staffSize);
 	/* musrc_neumes.cpp - musneumesymbol */
-    void DrawNeumeSymbol(MusDC *dc, MusLaidOutLayerElement *element, MusLaidOutLayer *layer, MusLaidOutStaff *staff);
-	void DrawNeumeClef(MusDC *dc, MusLaidOutLayerElement *element, MusLaidOutLayer *layer, MusLaidOutStaff *staff);
-	void DrawComma(MusDC *dc, MusLaidOutLayerElement *element, MusLaidOutStaff *staff, bool cueSize);
-	void DrawFlat(MusDC *dc, MusLaidOutLayerElement *element, MusLaidOutStaff *staff, bool cueSize);
-	void DrawNatural(MusDC *dc, MusLaidOutLayerElement *element, MusLaidOutStaff *staff, bool cueSize);
-	void DrawDivFinal(MusDC *dc, MusLaidOutLayerElement *element, MusLaidOutStaff *staff, bool cueSize);
-	void DrawDivMajor(MusDC *dc, MusLaidOutLayerElement *element, MusLaidOutStaff *staff, bool cueSize);
-	void DrawDivMinor(MusDC *dc, MusLaidOutLayerElement *element, MusLaidOutStaff *staff, bool cueSize);
-	void DrawDivSmall(MusDC *dc, MusLaidOutLayerElement *element, MusLaidOutStaff *staff, bool cueSize);
+    void DrawNeumeSymbol(MusDC *dc, MusLayerElement *element, MusLayer *layer, MusStaff *staff);
+	void DrawNeumeClef(MusDC *dc, MusLayerElement *element, MusLayer *layer, MusStaff *staff);
+	void DrawComma(MusDC *dc, MusLayerElement *element, MusStaff *staff, bool cueSize);
+	void DrawFlat(MusDC *dc, MusLayerElement *element, MusStaff *staff, bool cueSize);
+	void DrawNatural(MusDC *dc, MusLayerElement *element, MusStaff *staff, bool cueSize);
+	void DrawDivFinal(MusDC *dc, MusLayerElement *element, MusStaff *staff, bool cueSize);
+	void DrawDivMajor(MusDC *dc, MusLayerElement *element, MusStaff *staff, bool cueSize);
+	void DrawDivMinor(MusDC *dc, MusLayerElement *element, MusStaff *staff, bool cueSize);
+	void DrawDivSmall(MusDC *dc, MusLayerElement *element, MusStaff *staff, bool cueSize);
     
 private:
 	void UpdateStavesPos();
     
 public:
-    /** Layout */
-    MusLayout *m_layout;
+    /** Document */
+    MusDoc *m_doc;
     /** Page affichee */
     MusPage *m_page;
     /** No Page affichee */
@@ -222,9 +225,9 @@ public:
     int m_currentColour;
     
     // element currently selected
-	MusLaidOutLayerElement *m_currentElement;
-    MusLaidOutLayer *m_currentLayer;
-	MusLaidOutStaff *m_currentStaff;
+	MusLayerElement *m_currentElement;
+    MusLayer *m_currentLayer;
+	MusStaff *m_currentStaff;
     MusSystem *m_currentSystem;
     
 	int m_notation_mode; // neumes or mensural notation mode

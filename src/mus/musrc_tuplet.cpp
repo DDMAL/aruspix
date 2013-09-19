@@ -9,8 +9,7 @@
 #include "wx/wxprec.h"
 
 #include "musrc.h"
-#include "muslayout.h"
-#include "muslaidoutlayerelement.h"
+#include "muslayerelement.h"
 
 #include "musbarline.h"
 #include "musleipzigbbox.h"
@@ -55,19 +54,20 @@ wxString IntToObliqueFigures(unsigned int number) {
  * Analyze a tuplet object and figure out if all the notes are in the same beam
  * or not
  */
-bool AllNotesBeamed(MusTuplet* tuplet, MusLaidOutLayer *layer) {
+bool AllNotesBeamed(MusTuplet* tuplet, MusLayer *layer) {
+    
     MusBeam *currentBeam, *firstBeam = NULL;
     bool succ = false;
     
-    for (unsigned int i = 0; i < tuplet->m_notes.GetCount(); i++) {
-        MusNote *mnote = dynamic_cast<MusNote*>(&tuplet->m_notes[i]);
-        MusLaidOutLayerElement *laidNote = layer->GetFromMusLayerElement(&tuplet->m_notes[i]);
+    for (int i = 0; i < tuplet->GetNoteCount(); i++) {
+        MusNote *mnote = dynamic_cast<MusNote*>(tuplet->m_children[i]);
+        MusLayerElement *laidNote = dynamic_cast<MusLayerElement*>(tuplet->m_children[i]);
         
         // First check: if a note is out of a beam
-        if (mnote->m_beam[0] == 0)
+        if (!mnote->IsInBeam( mnote ))
             return false;
         
-        currentBeam = dynamic_cast<MusBeam*>(layer->GetFirst(laidNote, BACKWARD, &typeid(MusBeam), &succ)->m_layerElement);
+        currentBeam = dynamic_cast<MusBeam*>(layer->GetFirst(laidNote, BACKWARD, &typeid(MusBeam), &succ));
         // no MusBeam found before this note, but the note is set as beamed. mah!
         // return false, we have no beaming
         if (!succ)
@@ -86,10 +86,9 @@ bool AllNotesBeamed(MusTuplet* tuplet, MusLaidOutLayer *layer) {
         
         // So the beam is the same, check that the note
         // is actually into this beam, if not return false
-        if (currentBeam->m_notes.Index(tuplet->m_notes[0]) == wxNOT_FOUND)
+        if (currentBeam->GetChildIndex(tuplet->m_children[0]) == -1)
             return false;
     }
-    
     return true;
 }
 
@@ -120,13 +119,13 @@ bool AllNotesBeamed(MusTuplet* tuplet, MusLaidOutLayer *layer) {
  
  */
 
-bool GetTupletCoordinates(MusTuplet* tuplet, MusLaidOutLayer *layer, MusPoint* start, MusPoint* end, MusPoint *center) {
+bool GetTupletCoordinates(MusTuplet* tuplet, MusLayer *layer, MusPoint* start, MusPoint* end, MusPoint *center) {
     MusPoint first, last;
     int x, y;
     bool direction = true; //true = up, false = down
 
-    MusLaidOutLayerElement *firstNote = layer->GetFromMusLayerElement(&tuplet->m_notes[0]);
-    MusLaidOutLayerElement *lastNote = layer->GetFromMusLayerElement(&tuplet->m_notes[tuplet->m_notes.GetCount() - 1]);
+    MusLayerElement *firstNote = dynamic_cast<MusLayerElement*>(tuplet->m_children[0]);
+    MusLayerElement *lastNote = dynamic_cast<MusLayerElement*>(tuplet->m_children[tuplet->GetNoteCount() - 1]);
     
     // AllNotesBeamed tries to figure out if all the notes are in the same beam
     if (AllNotesBeamed(tuplet, layer)) {
@@ -162,8 +161,8 @@ bool GetTupletCoordinates(MusTuplet* tuplet, MusLaidOutLayer *layer, MusPoint* s
         
         // THe first step is to calculate all the stem directions
         // cycle into the elements and count the up and down dirs
-        for (unsigned int i = 0; i < tuplet->m_notes.GetCount(); i++) {
-            MusLaidOutLayerElement *currentNote = layer->GetFromMusLayerElement(&tuplet->m_notes[i]);
+        for (int i = 0; i < tuplet->GetNoteCount(); i++) {
+            MusLayerElement *currentNote = dynamic_cast<MusLayerElement*>(tuplet->m_children[i]);
             
             if (currentNote->m_drawn_stem_dir == true)
                 ups++;
@@ -192,8 +191,8 @@ bool GetTupletCoordinates(MusTuplet* tuplet, MusLaidOutLayer *layer, MusPoint* s
             // and stop at last -1)
             // We will see if the position of the note is more (or less for down stems) of the calculated
             // average. In this case we offset down or up all the points
-            for (unsigned int i = 1; i < tuplet->m_notes.GetCount() - 1 ; i++) {
-                 MusLaidOutLayerElement *currentNote = layer->GetFromMusLayerElement(&tuplet->m_notes[i]);
+            for (int i = 1; i < tuplet->GetNoteCount() - 1 ; i++) {
+                 MusLayerElement *currentNote = dynamic_cast<MusLayerElement*>(tuplet->m_children[i]);
                 
                 if (direction) {
                     // The note is more than the avg, adjust to y the difference
@@ -222,8 +221,8 @@ bool GetTupletCoordinates(MusTuplet* tuplet, MusLaidOutLayer *layer, MusPoint* s
             y = 0;
             
             // Find the tallest stem and set y to it (with the offset distance)
-            for (unsigned int i = 0; i < tuplet->m_notes.GetCount(); i++) {
-                MusLaidOutLayerElement *currentNote = layer->GetFromMusLayerElement(&tuplet->m_notes[i]);
+            for (int i = 0; i < tuplet->GetNoteCount(); i++) {
+                MusLayerElement *currentNote = dynamic_cast<MusLayerElement*>(tuplet->m_children[i]);
                 
                 if (currentNote->m_drawn_stem_dir == direction) {
                                         
@@ -254,17 +253,17 @@ bool GetTupletCoordinates(MusTuplet* tuplet, MusLaidOutLayer *layer, MusPoint* s
 }
 
 
-void MusRC::DrawTuplet( MusDC *dc, MusLaidOutLayerElement *element, MusLaidOutLayer *layer, MusLaidOutStaff *staff)
+void MusRC::DrawTuplet( MusDC *dc, MusTuplet *tuplet, MusLayer *layer, MusStaff *staff)
 {
     wxASSERT_MSG( layer, "Pointer to layer cannot be NULL" );
     wxASSERT_MSG( staff, "Pointer to staff cannot be NULL" );
     
     int txt_lenght, txt_height;
     
-    MusTuplet *tuplet = dynamic_cast<MusTuplet*>(element->m_layerElement);
+    // rz MusTuplet *tuplet = dynamic_cast<MusTuplet*>(element);
     //char notes = tuplet->m_notes.GetCount();
     
-    wxString notes = IntToObliqueFigures((unsigned int)tuplet->m_notes.GetCount());
+    wxString notes = IntToObliqueFigures((unsigned int)tuplet->GetNoteCount());
     
     // WORKS ONLY FOR ONE CHAR!
     //char_position = notes + 1; // in the bbox array, '0' char is at pos 1
@@ -291,7 +290,7 @@ void MusRC::DrawTuplet( MusDC *dc, MusLaidOutLayerElement *element, MusLaidOutLa
     MusPoint start, end, center;
     bool direction = GetTupletCoordinates(tuplet, layer, &start, &end, &center);
     
-    dc->StartGraphic( element, "tuplet", wxString::Format("tuplet_%d_%d_%d", staff->GetId(), layer->voix, element->GetId()) );
+    //rz dc->StartGraphic( element, "tuplet", wxString::Format("tuplet_%d_%d_%d", staff->GetId(), layer->voix, element->GetId()) );
     
     // Calculate position for number 0x82
     // since the number is slanted, move the center left
@@ -336,5 +335,5 @@ void MusRC::DrawTuplet( MusDC *dc, MusLaidOutLayerElement *element, MusLaidOutLa
                 
     }
     
-    dc->EndGraphic(element, this );
+    //rz dc->EndGraphic(element, this );
 }

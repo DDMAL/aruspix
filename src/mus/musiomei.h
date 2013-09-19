@@ -14,22 +14,17 @@
 #include "wx/wfstream.h"
 
 #include "musdoc.h"
-#include "muslayout.h"
 #include "muslayer.h"
 #include "musapp.h"
 
-#include <mei/meielement.h>
-#include <mei/exceptions.h>
-#include <mei/meidocument.h>
-
-#include <mei/header.h> 
-#include <mei/cmn.h>
-#include <mei/shared.h>
-#include <mei/mensural.h>
-#include <mei/layout.h>
-#include <mei/critapp.h>
-
 #include <uuid/uuid.h>
+
+// TINYXML
+#if defined (__WXMSW__)
+    #include "tinyxml.h"
+#else
+    #include "tinyxml/tinyxml.h"
+#endif
 
 class MusBarline;
 class MusBeam;
@@ -38,15 +33,15 @@ class MusMensur;
 class MusNote;
 class MusRest;
 class MusSymbol;
-class MusLayout;
+class MusTuplet;
+
+class MusDoc;
 class MusPage;
 class MusSystem;
-class MusLaidOutStaff;
-class MusLaidOutLayer;
-class MusLaidOutLayerElement;
+class MusStaff;
+class MusLayer;
+class MusLayerElement;
 class MusLayerApp;
-
-using namespace mei;
 
 //----------------------------------------------------------------------------
 // MusMeiOutput
@@ -76,36 +71,15 @@ public:
      */
     ///@{
     virtual bool WriteDoc( MusDoc *doc );
-    // logical
-    virtual bool WriteDiv( MusDiv *div ); 
-    virtual bool WriteScore( MusScore *score ); 
-    virtual bool WritePartSet( MusPartSet *parts );
-    virtual bool WritePart( MusPart *part );
-    virtual bool WriteSection( MusSection *section );
-    virtual bool WriteMeasure( MusMeasure *measure );
+    virtual bool WritePage( MusPage *page );
+    virtual bool WriteSystem( MusSystem *system );
     virtual bool WriteStaff( MusStaff *staff );
     virtual bool WriteLayer( MusLayer *layer );
     virtual bool WriteLayerElement( MusLayerElement *element );
-    // layout
-    virtual bool WriteLayout( MusLayout *layout );
-    virtual bool WritePage( MusPage *page );
-    virtual bool WriteSystem( MusSystem *system );
-    virtual bool WriteLaidOutStaff( MusLaidOutStaff *laidOutStaff );
-    virtual bool WriteLaidOutLayer( MusLaidOutLayer *laidOutLayer );
-    virtual bool WriteLaidOutLayerElement( MusLaidOutLayerElement *laidOutLayerElement );
     // app
     virtual bool WriteLayerApp( MusLayerApp *app );
     virtual bool WriteLayerRdg( MusLayerRdg *rdg );
     ///@}
-    
-    /**
-     * Method that closes the MEI Layer element.
-     * Because we have a to keep a pointer to the current MEI <layer> ,
-     * we need to change it and put it back to the parent MEI <layer> when
-     * reaching the end of the <rdg>
-     * This is achieved by changing the m_currentLayer pointer.
-     */
-    virtual bool EndLayerRdg( MusLayerRdg *rdg );
 
 private:
     
@@ -113,56 +87,68 @@ private:
      * Write a MusBarline. 
      * Callded from WriteLayerElement.
      */
-    void WriteMeiBarline( BarLine *meiBarline, MusBarline *barline );
+    void WriteMeiBarline( TiXmlElement *meiBarline, MusBarline *barline );
     
     /**
      * Write a MusBeam. 
      * Callded from WriteLayerElement.
      */
-    void WriteMeiBeam( Beam *meiBeam, MusBeam *beam );
+    void WriteMeiBeam( TiXmlElement *meiBeam, MusBeam *beam );
     
     /**
      * Write a MusClef.  
      * Callded from WriteLayerElement.
      */
-    void WriteMeiClef( Clef *meiClef, MusClef *clef );
+    void WriteMeiClef( TiXmlElement *meiClef, MusClef *clef );
     
     /**
      * Write a MusMensur. 
      * Callded from WriteLayerElement.
      */
-    void WriteMeiMensur( Mensur *meiMensur, MusMensur *mensur );
+    void WriteMeiMensur( TiXmlElement *meiMensur, MusMensur *mensur );
     
     /**
      * Write a MusNote. 
      * Callded from WriteLayerElement.
      */
-    void WriteMeiNote( Note *meiNote, MusNote *note );
+    void WriteMeiNote( TiXmlElement *meiNote, MusNote *note );
     
     /**
      * Write a MusRest. 
      * Callded from WriteLayerElement.
      */
-    void WriteMeiRest( Rest *meiRest, MusRest *rest );
+    void WriteMeiRest( TiXmlElement *meiRest, MusRest *rest );
+    
+    /**
+     * Write a MusTuplet. 
+     * Callded from WriteLayerElement.
+     */
+    void WriteMeiTuplet( TiXmlElement *meiTuplet, MusTuplet *tuplet );
     
     /**
      * Write a MusSymbol. 
      * The appropriate MeiElement is created by the method and returned.
      * Callded from WriteLayerElement.
      */
-    MeiElement *WriteMeiSymbol( MusSymbol *symbol );    
+    TiXmlElement *WriteMeiSymbol( MusSymbol *symbol ); 
+    
+    /**
+     * Write a sameAs attribute
+     * The method has to be called by classed that support it (e.g., MusLayerElement)
+     */
+    void WriteSameAsAttr( TiXmlElement *meiElement, MusObject *element );
 	
     /** @name Methods for converting members into MEI attributes. */
     ///@{
-    std::string UuidToMeiStr( MusObject *element );
-	std::string DurToStr(int dur);
-	std::string OctToStr(int oct);
-	std::string PitchToStr(int pitch);
-    std::string AccidToStr(unsigned char accid);
-    std::string ClefLineToStr(ClefId clefId);
-    std::string ClefShapeToStr(ClefId clefId);
-    std::string MensurSignToStr(MensurSign sign);
-    std::string LayoutTypeToStr(LayoutType type);
+    wxString UuidToMeiStr( MusObject *element );
+	wxString DurToStr(int dur);
+	wxString OctToStr(int oct);
+	wxString PitchToStr(int pitch);
+    wxString AccidToStr(unsigned char accid);
+    wxString ClefLineToStr(ClefId clefId);
+    wxString ClefShapeToStr(ClefId clefId);
+    wxString MensurSignToStr(MensurSign sign);
+    wxString DocTypeToStr(DocType type);
     ///@}
 
     
@@ -171,34 +157,23 @@ public:
 
 private:
     wxString m_filename;
-    MeiElement *m_mei;
+    TiXmlElement *m_mei;
     /** @name Members for pointers to the current element */
     ///@{
-    // logical
-    Music *m_music;
-    Body *m_body;
-    Mdiv *m_div;
-    Score *m_score;
-    Parts *m_parts;
-    Part *m_part;
-    Section *m_section;
-    Measure *m_measure;
-    Staff *m_staff;
+    TiXmlElement *m_score;
+    TiXmlElement *m_page;
+    TiXmlElement *m_system;
+    TiXmlElement *m_staff;
     /** The pointer for the layer within a staff */
-    Layer *m_layer;
-    /** The pointer for the layer within an app (MusLayerRdg) */
-    Rdg *m_rdgLayer;
-    /** The pointer to the current layer (either m_layer or m_rdgLayer) */
-    MeiElement *m_currentLayer;
-    // layout
-    Layouts *m_layouts;
-    Layout *m_layout;
-    Page *m_page;
-    System *m_system;
-    LaidOutStaff *m_laidOutStaff;
-    LaidOutLayer *m_laidOutLayer;
+    TiXmlElement *m_layer;
+    /** The pointer for the rdg within an app (MusLayerRdg) */
+    TiXmlElement *m_rdgLayer;
+    /** The pointer for a beam */
+    TiXmlElement *m_beam;
+    /** The pointer for a tuplet */
+    TiXmlElement *m_tuplet;
     // app
-    App *m_app;
+    TiXmlElement *m_app;
     ///@}
 };
 
@@ -223,68 +198,62 @@ public:
     bool ImportFile( );    
     
 private:
-    bool ReadMeiHeader( MeiHead *meihead );
-    // logical
-    bool ReadMeiDiv( Mdiv *mdiv );
-    bool ReadMeiScore( Score *score );
-    bool ReadMeiParts( Parts * parts );
-    bool ReadMeiPart( Part *part );
-    bool ReadMeiSection( Section *section );
-    bool ReadMeiMeasure( Measure *measure );
-    bool ReadMeiStaff( Staff *staff );
+    bool ReadMeiHeader( TiXmlElement *meihead );
     /** Reads the content of a <layer> or of a <rdg> for <app> within <layer> */
-    bool ReadMeiLayer( MeiElement *layer );
-    bool ReadMeiBarline( BarLine *barline );
-    bool ReadMeiBeam( Beam *beam );
-    bool ReadMeiClef( Clef *clef );
-    bool ReadMeiMensur( Mensur *mensur );
-    bool ReadMeiNote( Note *note );
-    bool ReadMeiRest( Rest *rest );
-    bool ReadMeiSymbol( Accid *accid );
-    bool ReadMeiSymbol( Custos *custos );
-    bool ReadMeiSymbol( Dot *dot );
-    // layout
-    bool ReadMeiLayout( Layout *layout );
-    bool ReadMeiPage( Page *page );
-    bool ReadMeiSystem( System *system );
-    bool ReadMeiLaidOutStaff( LaidOutStaff *laidOutStaff );
-    bool ReadMeiLaidOutLayer( LaidOutLayer *laidOutLayer );
-    bool ReadMeiLaidOutElement( LaidOutElement *laidOutElement );
-    // app
+    bool ReadMeiPage( TiXmlElement *page );
+    bool ReadMeiSystem( TiXmlElement *system );
+    bool ReadMeiStaff( TiXmlElement *staff );
+    bool ReadMeiLayer( TiXmlElement *layer );
+    bool ReadMeiLayerElement( TiXmlElement *XmlElement );
+    MusLayerElement *ReadMeiBarline( TiXmlElement *barline );
+    MusLayerElement *ReadMeiBeam( TiXmlElement *beam );
+    MusLayerElement *ReadMeiClef( TiXmlElement *clef );
+    MusLayerElement *ReadMeiMensur( TiXmlElement *mensur );
+    MusLayerElement *ReadMeiNote( TiXmlElement *note );
+    MusLayerElement *ReadMeiRest( TiXmlElement *rest );
+    MusLayerElement *ReadMeiTuplet( TiXmlElement *tuplet );
+    MusLayerElement *ReadMeiAccid( TiXmlElement *accid );
+    MusLayerElement *ReadMeiCustos( TiXmlElement *custos );
+    MusLayerElement *ReadMeiDot( TiXmlElement *dot );
     /** Reads <app> elements. For now, only <app> within <layer> are taken into account */
-    bool ReadMeiApp( App *app );
-    bool ReadMeiRdg( Rdg *rdg );
+    MusLayerElement *ReadMeiApp( TiXmlElement *app );
+    bool ReadMeiRdg( TiXmlElement *rdg );
+    
+    /**
+     * Read a sameAs attribute
+     * The method has to be called by classed that support it (e.g., MusLayerElement)
+     */
+    void ReadSameAsAttr( TiXmlElement *element, MusObject *object );
+    
+    /**
+     * Add the LayerElement to the appropriate parent (e.g., MusLayer, MusLayerRdg)
+     */
+    void AddLayerElement( MusLayerElement *element );
+    
 	//
-    void SetMeiUuid( MeiElement *element, MusObject *object );
-    void StrToUuid(std::string uuid, uuid_t dest);
-	int StrToDur(std::string dur);
-	int StrToOct(std::string oct);
-	int StrToPitch(std::string pitch ); 
-    unsigned char StrToAccid(std::string accid);
-    ClefId StrToClef(std::string shape, std::string line);
-    MensurSign StrToMensurSign(std::string sign);
-    LayoutType StrToLayoutType(std::string type);
+    void SetMeiUuid( TiXmlElement *element, MusObject *object );
+    void StrToUuid(wxString uuid, uuid_t dest);
+	int StrToDur(wxString dur);
+	int StrToOct(wxString oct);
+	int StrToPitch(wxString pitch ); 
+    unsigned char StrToAccid(wxString accid);
+    ClefId StrToClef(wxString shape, wxString line);
+    MensurSign StrToMensurSign(wxString sign);
+    DocType StrToDocType(wxString type);
 
     
 public:
     
 private:
     wxString m_filename;
-    // logical
-	MusDiv *m_div;
-	MusScore *m_score;
-	MusPartSet *m_parts;
-	MusPart *m_part;
-	MusSection *m_section;
-	MusMeasure *m_measure;
-	MusStaff *m_staff;
-	MusLayer *m_layer;
-    // layout
-    MusLayout *m_layout;
     MusPage *m_page;
     MusSystem *m_system;
-    MusLaidOutStaff *m_laidOutStaff;
-    MusLaidOutLayer *m_laidOutLayer;
+	MusStaff *m_staff;
+	MusLayer *m_layer;
+    MusLayerRdg *m_layerRdg;
+    MusBeam *m_beam;
+    MusTuplet *m_tuplet;
+    MusObject *m_currentLayer;
     MusLayerApp *m_layerApp;
 };
 

@@ -44,22 +44,16 @@ public:
     
     virtual bool WriteDoc( MusDoc *doc );
     // logical
-    virtual bool WriteDiv( MusDiv *div ); 
-    virtual bool WriteScore( MusScore *score ); 
-    virtual bool WritePartSet( MusPartSet *parts );
-    virtual bool WritePart( MusPart *part );
-    virtual bool WriteSection( MusSection *section );
-    virtual bool WriteMeasure( MusMeasure *measure );
     virtual bool WriteStaff( MusStaff *staff );
     virtual bool WriteLayer( MusLayer *layer );
     virtual bool WriteLayerElement( MusLayerElement *element );
     // layout
-    virtual bool WriteLayout( MusLayout *layout );
+    virtual bool WriteLayout( MusDoc *layout );
     virtual bool WritePage( MusPage *page );
     virtual bool WriteSystem( MusSystem *system );
-    virtual bool WriteLaidOutStaff( MusLaidOutStaff *laidOutStaff );
-    virtual bool WriteLaidOutLayer( MusLaidOutLayer *laidOutLayer );
-    virtual bool WriteLaidOutLayerElement( MusLaidOutLayerElement *laidOutLayerElement );
+    virtual bool WriteLaidOutStaff( MusStaff *laidOutStaff );
+    virtual bool WriteLaidOutLayer( MusLayer *laidOutLayer );
+    virtual bool WriteLaidOutLayerElement( MusLayerElement *laidOutLayerElement );
     
 private:
     

@@ -337,6 +337,25 @@ void corr( int a[], int b[], int size, int win, int *dec, int *max)
 	delete[] mask;
 }
 
+double** alloc2DArray( int x, int y )
+{
+    double** array;  
+    array = (double**) malloc(x*sizeof(double*));  
+    for (int i = 0; i < x; i++)  
+        array[i] = (double*) malloc(y*sizeof(double));  
+    return array;  
+} 
+
+void free2DArray( double **array, int x )
+{
+    int i;
+    for (i = 0; i < x; i++){  
+        free(array[i]);  
+    }  
+    free(array); 
+}
+
+
 /*
 	Analyse les runs dans une image b/w
 	peak_val est la longueur du run le plus represente dans l'image

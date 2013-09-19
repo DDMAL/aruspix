@@ -21,9 +21,9 @@
 
 #include "muspage.h"
 #include "mussystem.h"
-#include "muslaidoutstaff.h"
-#include "muslaidoutlayer.h"
-#include "muslaidoutlayerelement.h"
+#include "musstaff.h"
+#include "muslayer.h"
+#include "muslayerelement.h"
 #include "musbarline.h"
 #include "musclef.h"
 #include "musmensur.h"
@@ -32,9 +32,6 @@
 #include "musrest.h"
 #include "musneume.h"
 #include "musneumesymbol.h"
-
-#include "musstaff.h"
-#include "muslayer.h"
 
 
 //----------------------------------------------------------------------------
@@ -62,10 +59,6 @@ MusBinInput_1_X::MusBinInput_1_X( MusDoc *doc, wxString filename, int flag ) :
 {
 	m_flag = flag;
 	m_vmaj = m_vmin = m_vrev = 10000; // arbitrary version, we assume we will never reach version 10000...
-    
-	m_section = NULL;
-	m_logStaff = NULL;
-	m_logLayer = NULL;
 }
 
 MusBinInput_1_X::~MusBinInput_1_X()
@@ -83,12 +76,7 @@ bool MusBinInput_1_X::ImportFile( )
 	}
     
     // reset the MusDoc and create the logical tree
-    m_doc->Reset();	
-    MusDiv *div = new MusDiv( );
-    MusScore *score = new MusScore( );
-    m_section = new MusSection( );
-    // create a new layout  (we will get only one of them in a WWG)
-    MusLayout *layout = new MusLayout( Transcription );
+    m_doc->Reset( Transcription );	
 
     unsigned short nbpage;
     ReadFileHeader( &nbpage ); // fileheader
@@ -97,38 +85,31 @@ bool MusBinInput_1_X::ImportFile( )
 	{
 		MusPage *page = new MusPage();
 		ReadPage( page );
-        layout->AddPage( page );
+        m_doc->AddPage( page );
     }
     
-	//wxLogMessage("OK %d",  m_doc->m_pages.GetCount() );
-    m_doc->AddLayout( layout );	
-    score->AddSection( m_section );
-    div->AddScore( score );
-    m_doc->AddDiv( div );
-    
-    
     // update the system and staff y positions
-    layout->PaperSize();
+    m_doc->PaperSize();
     int j, k, l, m;
-    for (j = 0; j < layout->GetPageCount(); j++)
+    for (j = 0; j < m_doc->GetPageCount(); j++)
     {
-        MusPage *page = &layout->m_pages[j];
+        MusPage *page = (MusPage*)m_doc->m_children[j];
         page->m_pageWidth = m_doc->m_pageWidth;
         page->m_pageHeight = m_doc->m_pageHeight;
         page->m_pageLeftMar = m_doc->m_pageLeftMar;
         page->m_pageRightMar = m_doc->m_pageRightMar;
         
         m = 0; // staff number on the page
-        int yy =  layout->m_pageHeight;
+        int yy =  m_doc->m_pageHeight;
         for (k = 0; k < page->GetSystemCount(); k++) 
         {
-            MusSystem *system = &page->m_systems[k];
-            MusLaidOutStaff *staff = NULL;
+            MusSystem *system = (MusSystem*)page->m_children[k];
+            MusStaff *staff = NULL;
             
             for (l = 0; l < system->GetStaffCount(); l++) 
             {
-                staff = &system->m_staves[l];
-                yy -= ecarts[m] * layout->m_interl[ staff->staffSize ];
+                staff = (MusStaff*)system->m_children[l];
+                yy -= ecarts[m] * m_doc->m_interl[ staff->staffSize ];
                 staff->m_y_abs = yy;
                 m++;
                 
@@ -258,35 +239,8 @@ bool MusBinInput_1_X::ReadPage( MusPage *page )
     
     for (j = 0; j < nbrePortees; j++) 
 	{
-        // create or get the current MusStaff in the logical tree;
-        /*
-        // this creates one staff in the logical tree per staff on the page
-        if (j >= (int)m_section->m_staves.GetCount()) {
-            MusStaff *staff = new MusStaff();
-            MusLayer *layer = new MusLayer();
-            staff->AddLayer( layer );
-            m_section->AddStaff( staff );
-        }
-        // we ignore voice numbers here
-        m_logStaff = dynamic_cast<MusStaff*> (&m_section->m_staves[j]);
-        wxASSERT_MSG( m_logStaff, "MusStaff cannot be NULL" );
-        m_logLayer = dynamic_cast<MusLayer*> (&m_logStaff->m_layers[0]);
-        wxASSERT_MSG( m_logLayer, "MusLayer cannot be NULL" );
-        */
-        // the alternate option is to create one single staff in the logical tree
-        if ((int)m_section->m_staves.GetCount() == 0) {
-            MusStaff *staff = new MusStaff();
-            MusLayer *layer = new MusLayer();
-            staff->AddLayer( layer );
-            m_section->AddStaff( staff );
-        }
-        m_logStaff = dynamic_cast<MusStaff*> (&m_section->m_staves[0]);
-        wxASSERT_MSG( m_logStaff, "MusStaff cannot be NULL" );
-        m_logLayer = dynamic_cast<MusLayer*> (&m_logStaff->m_layers[0]);
-        wxASSERT_MSG( m_logLayer, "MusLayer cannot be NULL" );
-        
-		MusLaidOutStaff *staff = new MusLaidOutStaff( j + 1 );
-        MusLaidOutLayer *layer = new MusLaidOutLayer( 1, j + 1, m_section, NULL ); // we have always on layer per staff
+		MusStaff *staff = new MusStaff( j + 1 );
+        MusLayer *layer = new MusLayer( 1 ); // we have always on layer per staff
 		ReadStaff( staff, layer, j );
         if ( m_noLigne > system_no + 1 ) { // we have a new system
             page->AddSystem( system ); // add the current one
@@ -310,7 +264,7 @@ bool MusBinInput_1_X::ReadPage( MusPage *page )
 	return true;
 
 }
-bool MusBinInput_1_X::ReadStaff( MusLaidOutStaff *staff, MusLaidOutLayer *layer, int staffNo )
+bool MusBinInput_1_X::ReadStaff( MusStaff *staff, MusLayer *layer, int staffNo )
 {
 	unsigned int k;
 
@@ -388,7 +342,7 @@ bool MusBinInput_1_X::ReadStaff( MusLaidOutStaff *staff, MusLaidOutLayer *layer,
 }
 
 
-bool MusBinInput_1_X::ReadSymbol( MusLaidOutLayer *layer, bool isLyric )
+bool MusBinInput_1_X::ReadSymbol( MusLayer *layer, bool isLyric )
 {
 	ReadElementAttr(  );
 	Read( &flag , 1 );
@@ -475,10 +429,8 @@ bool MusBinInput_1_X::ReadSymbol( MusLaidOutLayer *layer, bool isLyric )
     }
     
     if ( layer_element ) {
-        m_logLayer->AddLayerElement( layer_element );
-        MusLaidOutLayerElement *element = new MusLaidOutLayerElement( layer_element );
-        element->m_x_abs = x_abs;
-        layer->AddElement( element );
+        layer_element->m_x_abs = x_abs;
+        layer->AddElement( layer_element );
     }
     
 	if ( isLyric ) {
@@ -489,7 +441,7 @@ bool MusBinInput_1_X::ReadSymbol( MusLaidOutLayer *layer, bool isLyric )
 	return true;
 }
 
-bool MusBinInput_1_X::ReadNote( MusLaidOutLayer *layer )
+bool MusBinInput_1_X::ReadNote( MusLayer *layer )
 {
 	ReadElementAttr( );
 	Read( &sil, 1 );
@@ -553,10 +505,8 @@ bool MusBinInput_1_X::ReadNote( MusLaidOutLayer *layer )
     
     // if we got something, add it to the LaidOutLayer
     if ( layer_element ) {
-        m_logLayer->AddLayerElement( layer_element );
-        MusLaidOutLayerElement *element = new MusLaidOutLayerElement( layer_element );
-        element->m_x_abs = x_abs;
-        layer->AddElement( element );
+        layer_element->m_x_abs = x_abs;
+        layer->AddElement( layer_element );
     }
     
 	char count;

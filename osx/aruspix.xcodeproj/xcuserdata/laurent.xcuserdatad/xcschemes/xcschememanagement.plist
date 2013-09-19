@@ -12,11 +12,6 @@
 		<key>aruspix_headless.xcscheme</key>
 		<dict>
 			<key>orderHint</key>
-			<integer>2</integer>
-		</dict>
-		<key>ax_test.xcscheme</key>
-		<dict>
-			<key>orderHint</key>
 			<integer>1</integer>
 		</dict>
 	</dict>

@@ -18,49 +18,6 @@
 // MusNeumeElement
 //----------------------------------------------------------------------------
 
-/**
- * Take an MEIElement <note> and the pitch and octave of the first note in a <neume>
- * create an element that is the difference in pitch.
- */
-MusNeumeElement::MusNeumeElement(MeiElement &element, int firstpitch, int firstoct) : MusLayerElement(), MusPitchInterface() {
-    m_meiref = &element;
-    MeiAttribute *p = m_meiref->getAttribute("pname");
-    MeiAttribute *o = m_meiref->getAttribute("oct");
-    //fake oct attribute
-    if (o == NULL) {
-        //m_meiref->addAttribute(MeiAttribute("oct","4")); // BROKEN!!! ax2  - Commented by LP - does not work with the new version of libmei
-        o = m_meiref->getAttribute("oct");
-    }
-    if (p && o) {
-        string meipitch = p->getValue();
-        int octave = atoi((o->getValue()).c_str());
-        if (meipitch == "c") {
-            m_pitch_difference = (octave*7 + 1) -  (firstoct*7 + firstpitch);
-        } else if (meipitch == "d") {
-            m_pitch_difference = (octave*7 + 2) -  (firstoct*7 + firstpitch);
-        } else if (meipitch == "e") {
-            m_pitch_difference = (octave*7 + 3) -  (firstoct*7 + firstpitch);
-        } else if (meipitch == "f") {
-            m_pitch_difference = (octave*7 + 4) -  (firstoct*7 + firstpitch);
-        } else if (meipitch == "g") {
-            m_pitch_difference = (octave*7 + 5) -  (firstoct*7 + firstpitch);
-        } else if (meipitch == "a") {
-            m_pitch_difference = (octave*7 + 6) -  (firstoct*7 + firstpitch);
-        } else if (meipitch == "b") {
-            m_pitch_difference = (octave*7 + 7) -  (firstoct*7 + firstpitch);
-        }
-    } else {
-        throw "missing pitch or octave";
-    }
-    // // BROKEN!!! ax2  - Commented by LP - does not work with the new version of libmei
-    /*
-	for (vector<MeiElement*>::iterator i = m_meiref->getChildren().begin(); i != m_meiref->getChildren().end(); i++) {
-		if ((*i)->getName() == "dot") {
-			this->ornament = DOT;
-		}
-	}
-    */
-}
 
 /*MusNeumeElement::MusNeumeElement(int _pitchDifference)
 {
@@ -71,7 +28,6 @@ MusNeumeElement::MusNeumeElement(MeiElement &element, int firstpitch, int firsto
 // Duplicate an existing pitch
 MusNeumeElement::MusNeumeElement( const MusNeumeElement &other) : MusLayerElement(other), MusPitchInterface(other) {
     m_pitch_difference = other.m_pitch_difference;
-    m_meiref = other.m_meiref;
     m_element_type = other.m_element_type;
 	ornament = other.ornament;
     
@@ -84,27 +40,9 @@ int MusNeumeElement::getPitchDifference() {
     return m_pitch_difference;
 }
 
-MeiElement &MusNeumeElement::getMeiElement() {
-    return *m_meiref;
-}
-
 NeumeElementType MusNeumeElement::getElementType()
 {
     return m_element_type;
-}
-
-void MusNeumeElement::updateMeiRef(string pitch, int oct) {
-    m_meiref->getAttribute("pname")->setValue(pitch);
-    char buf[8];
-    snprintf(buf, 2, "%d", oct);
-    m_meiref->getAttribute("oct")->setValue(string(buf));
-}
-
-void MusNeumeElement::deleteMeiRef() {
-	if (m_meiref->hasParent()) {
-		//m_meiref->getParent().removeChild(m_meiref); // // BROKEN!!! ax2  - Commented by LP - does not work with the new version of libmei
-		delete m_meiref;
-	}
 }
 
 NeumeOrnament MusNeumeElement::getOrnament() {
@@ -129,7 +67,6 @@ MusNeume::MusNeume() : MusLayerElement(), MusPitchInterface() {
     m_pitches.push_back(third);
     m_pitches.push_back(fourth);
     m_pitches.push_back(fifth);*/
-    m_meiref = 0; //this is necessary to avoid garbage when things aren't called from MEIs.
 	ornament = NONE;
 }
 
@@ -140,94 +77,7 @@ MusNeume::MusNeume( const MusNeume &neume) :
     //TYPE = neume.TYPE;
     m_type = neume.m_type;
     m_pitches = neume.m_pitches;
-    m_meiref = neume.m_meiref;
 	ornament = neume.ornament;
-}
-
-/**
- * Create a neume from an MeiElement.
- */
-MusNeume::MusNeume(MeiElement &element) : MusLayerElement(), MusPitchInterface() {
-    //TYPE = NEUME;
-    MeiAttribute *p = NULL;
-    MeiAttribute *o = NULL;
-    vector<MeiElement*> children;
-    if (element.getName() == "neume") {
-        m_meiref = &element;
-        MeiAttribute *nameattr = m_meiref->getAttribute("name");
-        wxString type = "";
-        if (nameattr) {
-            type = (nameattr->getValue()).c_str();
-        }
-        setType(type);
-
-        // Find the first note in the first nc
-        children = m_meiref->getChildren();
-        bool fail = true;
-        if (children.size() > 0 && children[0]->getName() == "nc") {
-            vector<MeiElement*> firstnotes = children[0]->getChildren();
-            if (firstnotes.size() > 0) {
-                MeiElement note = *firstnotes[0];
-                p = note.getAttribute("pname");
-                o = note.getAttribute("oct");
-                //fake oct attribute
-                if (o == NULL) {
-                    //note.addAttribute(MeiAttribute("oct","4")); // // BROKEN!!! ax2  - Commented by LP - does not work with the new version of libmei
-                    o = note.getAttribute("oct");
-                }
-                if (p == NULL || o == NULL) {
-                    throw "missing pitch or octave";
-                }
-                m_pname = this->StrToPitch(p->getValue());
-                m_oct = atoi(o->getValue().c_str());
-                fail = false;
-            }
-        }
-        if (fail) {
-            throw "no pitches for neume";
-        }
-    } else if (element.getName() == "custos") {
-        m_meiref = &element;
-        setType(element.getName().c_str());
-        p = m_meiref->getAttribute("pname");
-        o = m_meiref->getAttribute("oct");
-        if (p == NULL || o == NULL) {
-            throw "missing pitch or octave";
-        }
-        m_oct = atoi(o->getValue().c_str());
-        m_pname = this->StrToPitch(p->getValue());
-    } else {
-        throw "invalid type for a neume";
-    }
-    
-    // Now that we have a neume, populate it with each set of notes
-    // // BROKEN!!! ax2  - Commented by LP - does not work with the new version of libmei
-    /*
-    if (m_meiref->getName() == "neume") {
-        for (vector<MeiElement*>::iterator i = m_meiref->getChildren().begin(); i != m_meiref->getChildren().end(); i++) {
-            if ((*i)->getName() == "nc") {
-                readNoteContainer(**i, m_pname, m_oct);
-            }
-        }
-    }
-    */
-}
-
-void MusNeume::readNoteContainer(MeiElement &element, int pitch, int oct) {
-    if (element.getName() == "nc") {
-        if (element.getAttribute("inclinatum") != NULL && element.getAttribute("inclinatum")->getValue() == "true") {
-            this->setType(NEUME_TYPE_PUNCTUM_INCLINATUM);
-        }
-        // // BROKEN!!! ax2  - Commented by LP - does not work with the new version of libmei
-        /*
-        for (vector<MeiElement*>::iterator i = element.getChildren().begin(); i != element.getChildren().end(); i++) {
-            if ((*i)->getName() == "note") {
-                MusNeumeElement note = MusNeumeElement(**i, pitch, oct);
-                m_pitches.push_back(note);
-            }
-        }
-        */
-    }
 }
 
 /**
@@ -269,7 +119,7 @@ void MusNeume::setType(wxString type)
         m_type = NEUME_TYPE_TORCULUS_RESUPINUS;
         //torculus liquescent?
     } else {
-        string t = type.mb_str();
+        wxString t = type.mb_str();
         throw "unknown neume type " + t;
     }
 }
@@ -282,27 +132,14 @@ NeumeType MusNeume::getType() {
     return m_type;
 }
 
-MeiElement &MusNeume::getMeiElement() {
-    return *m_meiref;
-}
-
-void MusNeume::deleteMeiRef() {
-	if (m_meiref->hasParent()) {
-		//m_meiref->getParent().removeChild(m_meiref); // // BROKEN!!! ax2  - Commented by LP - does not work with the new version of libmei
-		delete m_meiref;
-	} else {
-		delete m_meiref;
-	}
-}
-
 vector<MusNeumeElement> MusNeume::getPitches() {
     return m_pitches;
 }
 
 
-std::string MusNeume::PitchToStr(int pitch)
+wxString MusNeume::PitchToStr(int pitch)
 {
-    string value;
+    wxString value;
     switch (pitch) {
         case 0: value = "b"; break;
         case 1: value = "c"; break;
@@ -316,7 +153,7 @@ std::string MusNeume::PitchToStr(int pitch)
     return value;
 }
 
-int MusNeume::StrToPitch(std::string pitch)
+int MusNeume::StrToPitch(wxString pitch)
 {
     int value;
     if (pitch == "c") {
@@ -348,9 +185,7 @@ void MusNeume::SetPitch( int pitch, int oct )
     this->m_oct = oct;
     this->m_pname = pitch;
     
-    for (vector<MusNeumeElement>::iterator i = m_pitches.begin(); i != m_pitches.end(); i++) {
-        int thispitch = (i->getPitchDifference() + pitch) % 7;
-        
+    for (vector<MusNeumeElement>::iterator i = m_pitches.begin(); i != m_pitches.end(); i++) {      
         int octave = oct;
         int testpitch = pitch + i->getPitchDifference();
         if (testpitch > 7) {
@@ -358,7 +193,6 @@ void MusNeume::SetPitch( int pitch, int oct )
         } else if (testpitch < 1) {
             octave -= floor((1 - testpitch)/7) + 1;
         }
-        i->updateMeiRef(PitchToStr(thispitch), octave);
     }
     /* - no more MusRC access in ax2
     if (m_r) {

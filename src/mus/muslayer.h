@@ -9,39 +9,78 @@
 #ifndef __MUS_LAYER_H__
 #define __MUS_LAYER_H__
 
-#ifndef WX_PRECOMP
-    #include "wx/wx.h"
-#endif
+#include <typeinfo>
+
+class MusDC;
 
 #include "musstaff.h"
-#include "musdef.h"
+
+//#define STAFF_OFFSET 190
+
+class MusNote;
+class MusLayerElement;
 
 //----------------------------------------------------------------------------
 // MusLayer
 //----------------------------------------------------------------------------
 
-/** 
- * This class models the MEI <layer> element.
- * A MusLayer is a MusStaffInterface
- */
-class MusLayer: public MusLogicalObject
+/**
+ * This class represents a layer in a laid-out score (MusDoc).
+ * A MusLayer is contained in a MusStaff.
+ * It contains MusLayerElement objects.
+*/
+class MusLayer: public MusDocObject, public MusObjectListInterface
 {
 public:
     // constructors and destructors
-    MusLayer();
-    virtual ~MusLayer();	
+    MusLayer( int logLayerNb );
+    virtual ~MusLayer();
     
-    virtual bool Check();
+    virtual wxString MusClassName( ) { return "MusLayer"; };	
     
-    virtual wxString MusClassName( ) { return "MusLayer"; };
+    void Clear();
 	
-	void AddLayerElement( MusLayerElement *element, int idx = -1 );
+	void AddElement( MusLayerElement *element, int idx = -1 );
+    	
+	int GetElementCount() const { return (int)m_children.size(); };
     
-    void SetStaff( MusStaff *staff ) { m_staff = staff; };
+    int GetLayerNo() const;
+
+    // functors
+    /**
+     * Copy the elements to a MusLayer passed in parameters. 
+     * Also take into account a start and end uuid for the page (if any)
+     */ 
+    virtual bool CopyToLayer( ArrayPtrVoid params );
+    void CopyElements( ArrayPtrVoid params ); // unused
+    void GetMaxXY( ArrayPtrVoid params ); // unused
+    virtual bool Save( ArrayPtrVoid params );
+    void CheckAndResetSectionOrMeasure( ArrayPtrVoid params ); // unused
+    
+	void CopyAttributes( MusLayer *layer ); // copy all attributes but none of the elements
+    
+	MusLayerElement *GetFirst( );
+	MusLayerElement *GetLast( );
+	MusLayerElement *GetNext( MusLayerElement *element );
+	MusLayerElement *GetPrevious( MusLayerElement *element );
+	MusLayerElement *GetAtPos( int x );
+	MusLayerElement *Insert( MusLayerElement *element, int x ); // return a pointer on the inserted element
     
     void Insert( MusLayerElement *element, MusLayerElement *before );
     
-    int GetElementCount() const { return (int)m_elements.GetCount(); };
+	void Delete( MusLayerElement *element );
+	/** 
+     * Looks for the first MusLayerElement with an LayoutElement of type elementType.
+     * Looks FORWARD of BACKWARD depending on the direction parameter.
+     * Returns the retrieved element if *succ == true or the original element if not.
+     */
+    MusLayerElement *GetFirst( MusLayerElement *element, unsigned int direction, const std::type_info *elementType, bool *succ );
+    /** Get the current clef for the test element */
+	MusClef *GetClef ( MusLayerElement *test );
+	void getOctDec (int ft, int _ot, int rupt, int *oct);
+    /** Return the clef offset for the position x (retrieve the first clef before it) */
+    int GetClefOffset( MusLayerElement *test  );
+    
     
     /**
      * Basic method that remove intermediate clefs and custos.
@@ -50,205 +89,42 @@ public:
     void RemoveClefAndCustos( );
     
     /**
-     * Copy the content of the layer to the dest layer.
-     * If start and end are not null (see uuid_clear), then ony element from and to 
-     * the element with the uuid are copied.
-     * By default, the uuid of the elements are kept.
-     */
-    void CopyContent( MusLayer *dest, uuid_t start, uuid_t end, bool newUuid = false );
-    
-    // moulinette
-    virtual void Process(MusFunctor *functor, wxArrayPtrVoid params );
-    // functors
-    /**
-     * The save method was made virtual for the having it overriden in the MusLayerRdg class.
-     */
-    void virtual Save( wxArrayPtrVoid params );
-    void Load( wxArrayPtrVoid params );
-        
-private:
-    
-public:
-    /** The children MusLayerElement objects */
-    ArrayOfMusLayerElements m_elements;
-    /** the parent MusStaff */
-    MusStaff *m_staff;
-
-private:
-    
-};
-
-
-//----------------------------------------------------------------------------
-// MusLayerFunctor
-//----------------------------------------------------------------------------
-
-/**
-    This class is a Functor that processes MusLayer objects.
-    Needs testing.
-*/
-class MusLayerFunctor: public MusFunctor
-{
-private:
-    void (MusLayer::*fpt)( wxArrayPtrVoid params );   // pointer to member function
-
-public:
-
-    // constructor - takes pointer to an object and pointer to a member and stores
-    // them in two private variables
-    MusLayerFunctor( void(MusLayer::*_fpt)( wxArrayPtrVoid )) { fpt=_fpt; };
-	virtual ~MusLayerFunctor() {};
-
-    // override function "Call"
-    virtual void Call( MusLayer *ptr, wxArrayPtrVoid params )
-        { (*ptr.*fpt)( params);};          // execute member function
-};
-
-
-
-//----------------------------------------------------------------------------
-// MusLayerElement
-//----------------------------------------------------------------------------
-
-/** 
- * This class is a base class for the MusLayer (<layer>) content.
- * It is not an abstract class but should not be instanciate directly.
- */
-class MusLayerElement: public MusLogicalObject
-{
-public:
-    // constructors and destructors
-    MusLayerElement();
-    virtual ~MusLayerElement();
-    
-    MusLayerElement& operator=( const MusLayerElement& element); // copy assignement;
-    
-    virtual bool Check();
-    
-    virtual bool operator==( MusLayerElement& other);
-    
-    /**
-     * Return a copy of the MusLayerElement (child class).
-     * By default, a new uuid is generated
-     */
-    MusLayerElement *GetChildCopy( bool newUuid = true );
-    
-    /** The parent MusLayer setter */
-    void SetLayer( MusLayer *layer ) { m_layer = layer; };
-    
-    /**
-     * Return the default horizontal spacing of elements.
-     * This method should be redefined whenever necessary in the child classes.
-     */
-    virtual int GetHorizontalSpacing( );
-    
-    /** Adjust the pname and the octave for values outside the range */
-    static void AdjustPname( int *pname, int *oct );
-    
-    /** 
-     * Set the pitch or position for MusPitchInterface or MusPositionInterface elements.
-     * Because MusPitchInterface and PositionInterface are not child classes of MusLayerElement,
-     * the call had to be done explicitly from this method. The method can still be overriden.
-     */
-    virtual void SetPitchOrPosition( int pname, int oct );
-    
-    /**
-     * Get the pitch or position for MusPitchInterface or MusPositionInterface elements.
-     * See MusLayerElement::SetPitchOrPosition for more comments.
-     */
-    virtual bool GetPitchOrPosition( int *pname, int *oct );
-    
-    /**
-     * Set the value for child element of MusLayerElement.
-     * For example, set the duration for MusDurationInterface elements (call explicitly) 
-     */
-	virtual void SetValue( int value, int flag = 0 );
-    
-    /**
-     * Change the coloration for MusNote elements.
+     * Checks that the X position of the currentElement is not before the previous element or after the next one.
      */ 
-	virtual void ChangeColoration( ) {};
-    
-    /**
-     * Change the stem direction for MusNote elements.
-     */
-	virtual void ChangeStem( ) {};
-    
-    /**
-     * Set the ligature flag for MusNote elements.
-     */
-	virtual void SetLigature( ) {};
+    void CheckXPosition( MusLayerElement *currentElement );
 
-    
-    bool IsBarline();
-    bool IsBeam();
-    bool IsClef();
-    bool HasDurationInterface();
-    bool IsMensur();
-    bool IsNeume();
-    bool IsNeumeSymbol();
-    bool IsNote();
-    bool HasPitchInterface();
-    bool HasPositionInterface();
-    bool IsRest();
-    bool IsSymbol( SymbolType type );
-    bool IsSymbol( );
-    
-    // functors
-    /**
-     * Save the object (virtual).
-     * Most of the child classes do not override it. In these cases, the actual 
-     * saving occurs in the MusFileOutputStream::WriteLayerElement method
-     * A few classes, such as MusLayerApp, have an overriden version.
-     */
-    virtual void Save( wxArrayPtrVoid params );
+    //Lyric related methods
+    /*
+	int GetLyricPos( MusSymbol *lyric );
+	MusSymbol *GetPreviousLyric( MusSymbol *lyric );
+	MusSymbol *GetNextLyric( MusSymbol *lyric );
+	MusSymbol *GetFirstLyric( );
+	MusSymbol *GetLastLyric( );
+	MusSymbol *GetLyricAtPos( int x );
+	void DeleteLyric( MusSymbol *symbol );
+	MusNote *GetNextNote( MusSymbol * lyric );
+	MusNote *GetPreviousNote( MusSymbol * lyric );
+	void SwitchLyricNoteAssociation( MusSymbol *lyric, MusNote *oldNote, MusNote* newNote, bool beginning );
+	void AdjustLyricLineHeight( int delta );
+    */
     
 private:
     
 public:
-    /** The parent MusLayer */
-    MusLayer *m_layer;
+    /** The logical layer */
+    int m_logLayerNb;
+    /** The logical staff - used to overwrite the parent staff */
+    int m_logStaffNb;
+	/** voix de la portee*/
+	unsigned short voix;  
     
-    /** Indicates if cue size */
-    bool m_cueSize;
-    /** Indicates an horizontal offset */
-    int m_hOffset;
-    /** Indicates if occurs on staff above (-1) or below (1) */
-    char m_staffShift;
-    /** Indicates if visible (default) or not */
-    bool m_visible;
+protected:
+    // drawing variables
+    //MusLayerElement *beamListPremier; // we need to replace this with a proper beam class that handles a list of notes/rests
 
 private:
     
 };
-
-
-//----------------------------------------------------------------------------
-// MusLayerElementFunctor
-//----------------------------------------------------------------------------
-
-/**
- * This class is a Functor that processes MusLayerElement objects.
- * Needs testing.
- */
-class MusLayerElementFunctor: public MusFunctor
-{
-private:
-    void (MusLayerElement::*fpt)( wxArrayPtrVoid params );   // pointer to member function
-    
-public:
-    
-    // constructor - takes pointer to an object and pointer to a member and stores
-    // them in two private variables
-    MusLayerElementFunctor( void(MusLayerElement::*_fpt)( wxArrayPtrVoid ))  { fpt=_fpt; };
-    MusLayerElementFunctor( bool(MusLayerElement::*_fpt_bool)( wxArrayPtrVoid ));
-	virtual ~MusLayerElementFunctor() {};
-    
-    // override function "Call"
-    virtual void Call( MusLayerElement *ptr, wxArrayPtrVoid params )
-    { (*ptr.*fpt)( params);};          // execute member function
-};
-
 
 
 #endif

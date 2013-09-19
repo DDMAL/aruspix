@@ -9,7 +9,7 @@
 #include "wx/wxprec.h"
 
 #include "musrc.h"
-#include "muslaidoutlayerelement.h"
+#include "muslayerelement.h"
 #include "musnote.h"
 #include "musiobin.h"
 
@@ -22,7 +22,7 @@
 
 MusRC::MusRC( )
 {
-	m_layout = NULL;
+	m_doc = NULL;
     m_page = NULL;
 	m_npage = 0;
 
@@ -50,11 +50,11 @@ MusRC::~MusRC()
 {
 }
 
-void MusRC::SetLayout( MusLayout *layout )
+void MusRC::SetDoc( MusDoc *doc )
 {
-	if ( layout == NULL ) // unset file
+	if ( doc == NULL ) // unset file
 	{
-		m_layout = NULL;
+		m_doc = NULL;
 		m_page = NULL;
         m_currentElement = NULL;
         m_currentLayer = NULL;
@@ -64,13 +64,13 @@ void MusRC::SetLayout( MusLayout *layout )
 		return;
 	}
     else {
-        m_layout = layout;
+        m_doc = doc;
         //m_notation_mode = m_layout->m_env.m_notationMode;
         m_npage = 0;
-        m_layout->UpdateFontValues();
-        m_layout->UpdatePageValues();
+        m_doc->UpdateFontValues();
+        m_doc->UpdatePageValues();
         // for now we just get the first page
-        SetPage( &m_layout->m_pages[m_npage] );
+        SetPage( (MusPage*)m_doc->m_children[m_npage] );
         //CheckPoint( UNDO_ALL, MUS_UNDO_FILE ); // ax2
     }
 }
@@ -80,7 +80,7 @@ void MusRC::SetPage( MusPage *page )
 {
 	wxASSERT_MSG( page, "MusPage cannot be NULL ");
     
-    m_layout->PaperSize( page );
+    m_doc->PaperSize( page );
 
 	m_page = page;
     /*
@@ -123,16 +123,16 @@ void MusRC::SetPage( MusPage *page )
 bool MusRC::HasNext( bool forward ) 
 { 
 	if ( forward )
-		return ( m_layout && ((int)m_layout->m_pages.GetCount() - 1 > m_npage) );
+		return ( m_doc && ((int)m_doc->GetPageCount() - 1 > m_npage) );
 	else
-		return ( m_layout && (m_npage > 0) );
+		return ( m_doc && (m_npage > 0) );
     return false;
 		
 }
 
 void MusRC::Next( bool forward ) 
 { 
-	if ( !m_layout )
+	if ( !m_doc )
         return;
 
 	if ( forward && this->HasNext( true ) )
@@ -140,7 +140,7 @@ void MusRC::Next( bool forward )
 	else if ( !forward && this->HasNext( false ) )
 		m_npage--;
 
-	SetPage( &m_layout->m_pages[m_npage] );
+	SetPage( (MusPage*)m_doc->m_children[m_npage] );
 }
 
 void MusRC::LoadPage( int nopage )
@@ -166,22 +166,22 @@ int MusRC::ToLogicalX( int i )  { return i; };
 /** y value in the Renderer */
 int MusRC::ToRendererY( int i )  
 { 
-    if (!m_layout) {
+    if (!m_doc) {
         return 0;
     }
     
-    return m_layout->m_pageHeight - i; // flipped
+    return m_doc->m_pageHeight - i; // flipped
 }
 
 /** y value in the Logical world  */
 int MusRC::ToLogicalY( int i )  
 { 
     { 
-        if (!m_layout) {
+        if (!m_doc) {
             return 0;
         }
         
-        return m_layout->m_pageHeight - i; // flipped
+        return m_doc->m_pageHeight - i; // flipped
     }
 }
 

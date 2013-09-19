@@ -10,6 +10,12 @@
 #include "wx/wxprec.h"
 
 #include "musdurationinterface.h"
+#include "musbeam.h"
+
+/**
+ * Define the maximum levels between a beam and its notes
+ */
+#define MAX_BEAM_DEPTH 5 
 
 
 //----------------------------------------------------------------------------
@@ -18,7 +24,6 @@
 
 MusDurationInterface::MusDurationInterface()
 {
-    memset(m_beam, 0, DURATION_MAX_BEAMS * sizeof(unsigned char));
     m_breakSec = 0;
     m_dots = 0;
     m_dur = 0;
@@ -37,6 +42,45 @@ void MusDurationInterface::SetDuration( int value )
 {
     this->m_dur = value;
 }
+
+bool MusDurationInterface::IsInBeam( MusObject *noteOrRest )
+{
+    MusBeam *beam = dynamic_cast<MusBeam*>( noteOrRest->GetFirstParent( &typeid(MusBeam), MAX_BEAM_DEPTH ) );
+    if ( !beam ) {
+        return false;
+    }
+    return true;
+}
+
+bool MusDurationInterface::IsFirstInBeam( MusObject *noteOrRest )
+{
+    MusBeam *beam = dynamic_cast<MusBeam*>( noteOrRest->GetFirstParent( &typeid(MusBeam), MAX_BEAM_DEPTH ) );
+    if ( !beam ) {
+        return false;
+    }
+    ListOfMusObjects *notesOrRests = beam->GetList( beam );
+    ListOfMusObjects::iterator iter = notesOrRests->begin();
+    if ( *iter == noteOrRest ) {
+        return true;
+    }
+    return false;    
+}
+
+bool MusDurationInterface::IsLastInBeam( MusObject *noteOrRest )
+{
+    MusBeam *beam = dynamic_cast<MusBeam*>( noteOrRest->GetFirstParent( &typeid(MusBeam), MAX_BEAM_DEPTH ) );
+    if ( !beam ) {
+        return false;
+    }
+    ListOfMusObjects *notesOrRests = beam->GetList( beam );
+    ListOfMusObjects::reverse_iterator iter = notesOrRests->rbegin();
+    if ( *iter == noteOrRest ) {
+        return true;
+    }
+    return false;    
+    
+}
+
 
 bool MusDurationInterface::HasIdenticalDurationInterface( MusDurationInterface *otherDurationInterface )
 {

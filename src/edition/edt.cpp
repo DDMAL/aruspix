@@ -172,7 +172,7 @@ bool EdtEnv::ResetFile()
         return false;
 
     m_musViewPtr->Show( false );
-    m_musViewPtr->SetLayout( NULL );
+    m_musViewPtr->SetDoc( NULL );
     
     // XXX: What's this doing?
     //((EdtPanel*)m_envWindowPtr)->GetMusToolPanel()->SetMusWindow( NULL );
@@ -249,7 +249,7 @@ void EdtEnv::UpdateTitle( )
 
 void EdtEnv::UpdateViews( int flags )
 {
-    m_musViewPtr->SetLayout( &m_edtFilePtr->m_musDocPtr->m_layouts[0] );
+    m_musViewPtr->SetDoc( m_edtFilePtr->m_musDocPtr );
     m_musViewPtr->SetToolPanel( ((EdtPanel*)m_envWindowPtr)->GetMusToolPanel()  );
     m_musViewPtr->Resize( );
     wxYield();
@@ -407,10 +407,10 @@ void EdtEnv::OnUpdateUI( wxUpdateUIEvent &event )
         event.Enable(false);
         
     else if ( event.GetId() == ID_UNDO )
-        event.Enable( false ); // undo to be fixed
+        event.Enable( true ); // undo to be fixed
         //event.Enable( m_musViewPtr->CanUndo() );
     else if ( event.GetId() == ID_REDO )
-        event.Enable( false ); // undo to be fixed
+        event.Enable( true ); // undo to be fixed
         //event.Enable( m_musViewPtr->CanRedo() );
     else if ( event.GetId() == ID5_GOTO )
         event.Enable( m_musViewPtr->CanGoto() );
@@ -474,12 +474,8 @@ void EdtEnv::OnOpenPAE( wxCommandEvent &event )
     MusPaeInput paeInput( m_edtFilePtr->m_musDocPtr, filename );
 	if ( !paeInput.ImportFile() )
 		return;
-    
-	MusLayout *layout = new MusLayout( Raw );
-	layout->Realize(m_edtFilePtr->m_musDocPtr->m_divs[0].m_score);
-	m_edtFilePtr->m_musDocPtr->AddLayout( layout );
-    
-    layout->SpaceMusic();
+
+    m_edtFilePtr->m_musDocPtr->SpaceMusic();
     
 	m_musViewPtr->SetEditorMode(MUS_EDITOR_EDIT);
     UpdateViews( 0 );
@@ -505,11 +501,7 @@ void EdtEnv::OnOpenDARMS( wxCommandEvent &event )
 	if ( !darmsInput.ImportFile() )
 		return;
     
-	MusLayout *layout = new MusLayout( Raw );
-	layout->Realize(m_edtFilePtr->m_musDocPtr->m_divs[0].m_score);
-	m_edtFilePtr->m_musDocPtr->AddLayout( layout );
-    
-    layout->SpaceMusic();
+    m_edtFilePtr->m_musDocPtr->SpaceMusic();
     
 	m_musViewPtr->SetEditorMode(MUS_EDITOR_EDIT);
     UpdateViews( 0 );
@@ -529,7 +521,7 @@ void EdtEnv::OnOpenMLF( wxCommandEvent &event )
     
     m_edtFilePtr->New();
 	//MusPage *page = new MusPage();
-	//MusLaidOutStaff *staff = new MusLaidOutStaff();
+	//MusStaff *staff = new MusStaff();
 	//page->m_staves.Add( staff );
 	//m_edtFilePtr->m_pages.Add( page );
     MusMLFInput *mlfinput = new MusMLFInput( m_edtFilePtr->m_musDocPtr, mlf );
@@ -592,8 +584,8 @@ void EdtEnv::OnSaveSVG( wxCommandEvent &event )
     m_musViewPtr->SetZoom( 100 );
     
     
-    MusSvgDC svgDC (filename, m_musViewPtr->ToRendererX( m_musViewPtr->m_layout->m_pageWidth + 30 )  ,
-        m_musViewPtr->ToRendererX( m_musViewPtr->m_layout->m_pageHeight + 10 )) ;
+    MusSvgDC svgDC (filename, m_musViewPtr->ToRendererX( m_musViewPtr->m_doc->m_pageWidth + 30 )  ,
+        m_musViewPtr->ToRendererX( m_musViewPtr->m_doc->m_pageHeight + 10 )) ;
         
     //svgDC.SetUserScale( 1, 1 );
     //svgDC.SetLogicalScale( 1.0, 1.0 );  
@@ -612,7 +604,7 @@ void EdtEnv::OnSaveSVG( wxCommandEvent &event )
     m_musViewPtr->m_currentElement = NULL;
 	//svgDC.SetAxisOrientation( true, false );
     MusRC rc;
-    rc.SetLayout(m_musViewPtr->m_layout);
+    rc.SetDoc(m_musViewPtr->m_doc );
     rc.DrawPage(  &svgDC, m_musViewPtr->m_page, false ); // ax2 - needs testing
     
     // reset the zoom
@@ -679,13 +671,9 @@ void EdtEnv::OnOpenMEI( wxCommandEvent &event )
 	if ( !meiInput.ImportFile() )
 		return;
     
-    //m_edtFilePtr->m_musDocPtr->m_layouts.Clear();
-    
-	MusLayout *layout = new MusLayout( Raw );
-	layout->Realize(m_edtFilePtr->m_musDocPtr->m_divs[0].m_score);
-	m_edtFilePtr->m_musDocPtr->AddLayout( layout );
-    layout->SpaceMusic();
-
+    if ( m_edtFilePtr->m_musDocPtr->GetType() != Transcription ) {
+        m_edtFilePtr->m_musDocPtr->SpaceMusic();
+    }
     
 	m_musViewPtr->SetEditorMode(MUS_EDITOR_EDIT);
     UpdateViews( 0 );
@@ -693,13 +681,10 @@ void EdtEnv::OnOpenMEI( wxCommandEvent &event )
 
 void EdtEnv::OnSaveMEI( wxCommandEvent &event )
 {
-/*
-
     if (  !m_panelPtr || !m_edtFilePtr )
         return;
 
-    string docname = m_edtFilePtr->m_musDocPtr->GetMeiDocument()->getDocName();
-    wxString wxdocname = docname.c_str();
+    wxString wxdocname = m_edtFilePtr->m_shortname;
     wxString name, ext;
     wxFileName::SplitPath(wxdocname, NULL, &name, &ext);
     wxString savename = name + "." + ext;
@@ -721,8 +706,6 @@ void EdtEnv::OnSaveMEI( wxCommandEvent &event )
         delete mei_output;
 	}
     wxGetApp().m_lastDirAX0_out = wxPathOnly( filename );
-*/
-    wxLogMessage("Fix me!"); // ax2
 }
 
 void EdtEnv::OnSaveModel( wxCommandEvent &event )

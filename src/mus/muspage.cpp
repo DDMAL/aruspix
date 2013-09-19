@@ -13,17 +13,15 @@
 #include "muspage.h"
 #include "musdoc.h"
 #include "mussystem.h"
-#include "muslaidoutstaff.h"
+#include "musstaff.h"
 
-#include "wx/arrimpl.cpp"
-WX_DEFINE_OBJARRAY( ArrayOfMusPages );
 
 //----------------------------------------------------------------------------
 // MusPage
 //----------------------------------------------------------------------------
 
 MusPage::MusPage() :
-	MusLayoutObject()
+	MusDocObject()
 {
 	Clear( );
 }
@@ -32,15 +30,9 @@ MusPage::~MusPage()
 {
 }
 
-bool MusPage::Check()
-{
-    wxASSERT( m_layout );
-    return (m_layout);
-}
-
 void MusPage::Clear( )
 {
-	m_systems.Clear( );
+	ClearChildren( );
 	defin = 20;
     // by default we have no values and use the document ones
     m_pageHeight = -1;
@@ -50,84 +42,84 @@ void MusPage::Clear( )
 }
 
 
-void MusPage::Save( wxArrayPtrVoid params )
+bool MusPage::Save( ArrayPtrVoid params )
 {
     // param 0: output stream
     MusFileOutputStream *output = (MusFileOutputStream*)params[0];       
-    output->WritePage( this );
-    
-    // save system
-    MusSystemFunctor system( &MusSystem::Save );
-    this->Process( &system, params );
+    return !output->WritePage( this );
 }
 
 
 void MusPage::AddSystem( MusSystem *system )
 {
-	system->SetPage( this );
-	m_systems.Add( system );
+	system->SetParent( this );
+	m_children.push_back( system );
+    Modify();
 }
 
 int MusPage::GetPageNo() const
 {
-    wxASSERT_MSG( m_layout, "Layout cannot be NULL");
+    wxASSERT_MSG( m_parent, "Doc cannot be NULL");
     
-    return m_layout->m_pages.Index( *this );
+    return m_parent->GetChildIndex( this );
 }
 
-int MusPage::GetStaffPosOnPage( MusLaidOutStaff *staff )
+int MusPage::GetStaffPosOnPage( MusStaff *staff )
 {
+    /*
     int position = -1;
     bool success = false;
-    wxArrayPtrVoid params;
+    ArrayPtrVoid params;
     params.Add( staff );
     params.Add( &position );
     params.Add( &success );
-    MusLaidOutStaffFunctor getStaffPosOnPage( &MusLaidOutStaff::GetPosOnPage );
+    MusStaffFunctor getStaffPosOnPage( &MusStaff::GetPosOnPage );
     Process( &getStaffPosOnPage, params );    
     return position;
+    */ // ax2.3
+    return 0;
 }
 
 
 MusSystem *MusPage::GetFirst( )
 {
-	if ( m_systems.IsEmpty() )
+	if ( m_children.empty() )
 		return NULL;
-	return &m_systems[0];
+	return (MusSystem*)m_children[0];
 }
 
 MusSystem *MusPage::GetLast( )
 {
-	if ( m_systems.IsEmpty() )
+	if ( m_children.empty() )
 		return NULL;
 	int i = GetSystemCount() - 1;
-	return &m_systems[i];
+	return (MusSystem*)m_children[i];
 }
 
 MusSystem *MusPage::GetNext( MusSystem *system )
 {
-    if ( !system || m_systems.IsEmpty())
+    if ( !system || m_children.empty())
         return NULL;
         
-	int i = m_systems.Index( *system );
+	int i = this->GetChildIndex( system );
 
-	if ((i == wxNOT_FOUND ) || ( i >= GetSystemCount() - 1 )) 
+	if ((i == -1 ) || ( i >= GetSystemCount() - 1 ))
 		return NULL;
 	
-	return &m_systems[i + 1];
+	return (MusSystem*)m_children[i + 1];
 }
 
 MusSystem *MusPage::GetPrevious( MusSystem *system  )
 {
-    if ( !system || m_systems.IsEmpty())
+    if ( !system || m_children.empty())
         return NULL;
         
-	int i = m_systems.Index( *system );
+	int i = GetChildIndex( system );
 
-	if ((i == wxNOT_FOUND ) || ( i <= 0 )) 
+	if ((i == -1 ) || ( i <= 0 ))
         return NULL;
 	
-    return &m_systems[i - 1];
+    return (MusSystem*)m_children[i - 1];
 }
 
 
@@ -139,24 +131,15 @@ MusSystem *MusPage::GetAtPos( int y )
 	if ( !system )
 		return NULL;
 	
-	while ( this->GetNext(system) )
+    MusSystem *next = NULL;
+	while ( (next = this->GetNext(system)) )
 	{
-		if ( (int)system->m_y_abs < y )
+		if ( (int)next->m_y_abs < y )
 		{
-			// one too much
-			if ( this->GetPrevious( system ) ){
-				system = this->GetPrevious( system );
-				//if ( dif < abs( system->m_y_abs - y ) )
-				//	system = this->GetNext( system );
-			}
-				
 			return system;
 		}
-		system = this->GetNext( system );
+		system = next;
 	}
-
-	if ( ( (int)system->m_y_abs < y )  && this->GetPrevious( system ) )
-		system = this->GetPrevious( system );
 
 	return system;
 }
@@ -186,103 +169,6 @@ void MusPage::SetValues( int type )
         }	
 	}
 */
-    wxLogDebug("TODO");
-    return;
-}
-
-// functors for MusPage
-
-void MusPage::Process(MusFunctor *functor, wxArrayPtrVoid params )
-{
-    if (functor->m_success) {
-        return;
-    }
-    
-    MusSystemFunctor *sysFunctor = dynamic_cast<MusSystemFunctor*>(functor);
-    MusSystem *system;
-	int i;
-    for (i = 0; i < GetSystemCount(); i++) 
-	{
-        
-        system = &m_systems[i];
-        functor->Call( system, params );
-        if (sysFunctor) { // is is a MusSystemFunctor, call it and stop
-            sysFunctor->Call( system, params );
-        }
-        else { // process it further
-            system->Process( functor, params );
-        }
-	}
-}
-
-void MusPage::ProcessStaves( wxArrayPtrVoid params )
-{
-    // param 0: MusSystemFunctor
-    // param 1; wxArrayPtrVoid
-    
-    MusSystemFunctor *systemFunctor = (MusSystemFunctor*)params[0];
-    wxArrayPtrVoid *systemParams = (wxArrayPtrVoid*)params[1];
-    
-	int i;
-    MusSystem *system;
-
-    for (i = 0; i < this->GetSystemCount(); i++) 
-	{
-		system = &m_systems[i];
-		systemFunctor->Call( system, *systemParams );	
-	}
-}
-
-
-void MusPage::ProcessVoices( wxArrayPtrVoid params )
-{
-    /*
-    // param 0: MusStaffFunctor
-    // param 1; wxArrayPtrVoid 
-    // param 2; int (voice number)
-    
-    MusStaffFunctor *staffFunctor = (MusStaffFunctor*)params[0];
-    wxArrayPtrVoid *staffParams = (wxArrayPtrVoid*)params[1];
-    int *voice = (int*)params[2];
-    
-	int i;
-    MusLaidOutStaff *staff;
-
-    for (i = 0; i < nbrePortees; i++) 
-	{
-		staff = &m_staves[i];
-        if (staff->voix == (*voice)) {
-            staffFunctor->Call( staff, *staffParams );
-        }
-	}
-    */
-    wxLogDebug("TODO");
-    return;
-}
-
-void MusPage::CountVoices( wxArrayPtrVoid params )
-{
-    /*
-    // param 0; int (min number of voice number)
-    // param 1; int (max number of voice number)
-    
-    int *min_voice = (int*)params[0];
-    int *max_voice = (int*)params[1];
-    
-	int i;
-    MusLaidOutStaff *staff;
-
-    for (i = 0; i < nbrePortees; i++) 
-	{
-		staff = &m_staves[i];
-        if (staff->voix > (*max_voice)) {
-           (*max_voice) = staff->voix;
-        }
-        if (staff->voix < (*min_voice)) {
-           (*min_voice) = staff->voix;
-        }
-	}
-    */
     wxLogDebug("TODO");
     return;
 }

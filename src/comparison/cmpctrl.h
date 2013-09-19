@@ -134,6 +134,11 @@ private:
      */
     void OnAddPartPageStartEnd( wxCommandEvent &event );
     /**
+     * Remove a start or end delimiter to a CmpPartPage.
+     * See CmpEnv::RemovePartPageStartEnd.
+     */
+    void OnRemovePartPageStartEnd( wxCommandEvent &event );
+    /**
      * Add a CmpCollationPart to a CmpCollation.
      * See CmpEnv::AddCollationPart.
      */

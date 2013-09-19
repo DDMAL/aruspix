@@ -45,13 +45,6 @@ pitchmap MusDarmsInput::PitchMap[] = {
 MusDarmsInput::MusDarmsInput( MusDoc *doc, wxString filename ) :
 MusFileInputStream( doc, -1 )
 {	
-	m_div = NULL;
-	m_score = NULL;
-	m_parts = NULL;
-	m_part = NULL;
-	m_section = NULL;
-    
-    m_measure = NULL;
     m_layer = NULL;
     m_staff = NULL;
     
@@ -79,7 +72,7 @@ void MusDarmsInput::UnrollKeysig(int quantity, char alter) {
     }
     
     MusKeySig *k = new MusKeySig(quantity, accid);
-    m_layer->AddLayerElement(k);
+    m_layer->AddElement(k);
     return;
     //////
     for (int i = 0; i < quantity; i++) {
@@ -87,7 +80,7 @@ void MusDarmsInput::UnrollKeysig(int quantity, char alter) {
         alter->m_oct = 4;
         alter->m_pname = alteration_set[i];
         alter->m_accid = accid;
-        m_layer->AddLayerElement(alter);
+        m_layer->AddElement(alter);
     }
 
 }
@@ -147,7 +140,7 @@ int MusDarmsInput::parseMeter(int pos, const char* data) {
         printf("Meter is: %i %i\n", meter->m_num, meter->m_numBase);
     }
     
-    m_layer->AddLayerElement(meter);
+    m_layer->AddElement(meter);
     return pos;
 }
 
@@ -248,7 +241,7 @@ int MusDarmsInput::do_Clef(int pos, const char* data) {
         return 0; // fail
     }
     
-    m_layer->AddLayerElement(mclef);
+    m_layer->AddElement(mclef);
     return pos;
 }
 
@@ -334,7 +327,7 @@ int MusDarmsInput::do_Note(int pos, const char* data, bool rest) {
         rest->m_dur = duration;
         rest->m_pname = REST_AUTO;
         rest->m_dots = dot;
-        m_layer->AddLayerElement(rest);
+        m_layer->AddElement(rest);
     } else {
         
         if ((position + m_clef_offset) > sizeof(PitchMap))
@@ -346,7 +339,7 @@ int MusDarmsInput::do_Note(int pos, const char* data, bool rest) {
         note->m_oct = PitchMap[position + m_clef_offset].oct;
         note->m_pname = PitchMap[position + m_clef_offset].pitch;
         note->m_dots = dot;
-        m_layer->AddLayerElement(note);
+        m_layer->AddElement(note);
         
         // Ties are between two notes and have a reference to the two notes
         // if more than two notes are ties, the m_second note of the first
@@ -362,7 +355,7 @@ int MusDarmsInput::do_Note(int pos, const char* data, bool rest) {
             // create a new mus tie with this note
             m_current_tie = new MusTie;
             m_current_tie->m_first = note;
-            m_layer->AddLayerElement(m_current_tie);
+            m_layer->AddElement(m_current_tie);
         } else {
             // no tie (L or J) specified for not
             // but if cur tie !NULL we need to close the tie
@@ -396,22 +389,15 @@ bool MusDarmsInput::ImportFile() {
     infile.close();
     printf("len: %i, %s\n", len, data);
     
-    // Prepare the aruspix document
-    m_div = new MusDiv();
-    m_score = new MusScore( );
-    m_section = new MusSection( );
-    
-    // Create here, for now we have just one huge measure
-    m_measure = new MusMeasure;
-    m_staff = new MusStaff;
-    m_layer = new MusLayer;
+    m_doc->Reset( Raw );
+    MusSystem *system = new MusSystem();
+    MusPage *page = new MusPage();
+    m_staff = new MusStaff( 1 );
+    m_layer = new MusLayer( 1 );
     
     m_current_tie = NULL;
     
     m_staff->AddLayer(m_layer);
-    m_measure->AddStaff(m_staff);
-    //m_measure->AddStaff(new MusStaff);
-    m_section->AddMeasure(m_measure);
     
     // do this the C style, char by char
     while (pos < len) {
@@ -443,9 +429,9 @@ bool MusDarmsInput::ImportFile() {
         pos++;
     }
     
-    m_score->AddSection(m_section);
-    m_div->AddScore(m_score);
-    m_doc->AddDiv(m_div);
+    system->AddStaff( m_staff );
+    page->AddSystem( system );
+    m_doc->AddPage( page );
     
     return true;
 }

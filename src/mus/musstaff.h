@@ -1,7 +1,7 @@
 /////////////////////////////////////////////////////////////////////////////
 // Name:        musstaff.h
 // Author:      Laurent Pugin
-// Created:     2005
+// Created:     2011
 // Copyright (c) Authors and others. All rights reserved.
 /////////////////////////////////////////////////////////////////////////////
 
@@ -13,82 +13,117 @@
     #include "wx/wx.h"
 #endif
 
-#include "musmeasure.h"
-#include "mussection.h"
+class MusDC;
+
+#include "mussystem.h"
+
+#define STAFF_OFFSET 190
+#define MAXCLE 100	// maximum number of clef on one staff
+
+class MusLayer;
+class MusClef;
+
 
 
 //----------------------------------------------------------------------------
 // MusStaff
 //----------------------------------------------------------------------------
 
-/** 
- * This class models the MEI <staff> element.
- * A MusStaff is a MusMeasureInterface (for measured music) or a MusSectionInterface (for unmeasured music)
- */
-class MusStaff: public MusLogicalObject
+/**
+ * This class represents a staff in a laid-out score (MusDoc).
+ * A MusStaff is contained in a MusSystem.
+ * It contains MusLayer objects.
+*/
+class MusStaff: public MusDocObject
 {
+    
 public:
     // constructors and destructors
-    MusStaff();
+    MusStaff( int logStaffNb = -1 );
+	MusStaff( const MusStaff& staff ); // copy contructor
     virtual ~MusStaff();
-    
-    virtual bool Check();
-    
-    virtual wxString MusClassName( ) { return "MusStaff"; };
-    
-    /** the parent MusSection setter (for unmeasured music) */
-    void SetSection( MusSection *section );
 
-    /** the parent MusMeasure setter (for measured music) */
-    void SetMeasure( MusMeasure *measure );  
-	
+    virtual wxString MusClassName( ) { return "MusStaff"; };	    
+    
+    void Clear();
+
 	void AddLayer( MusLayer *layer );
+	
+	int GetLayerCount() const { return (int)m_children.size(); };
     
-    MusLayer *GetLayer( int layerNo );
-    
-    // moulinette
-    virtual void Process(MusFunctor *functor, wxArrayPtrVoid params );
+    int GetStaffNo() const;
+
     // functors
-    void Save( wxArrayPtrVoid params );
+    virtual bool Save( ArrayPtrVoid params );
+    virtual bool GetPosOnPage( ArrayPtrVoid params );
+    
+	void CopyAttributes( MusStaff *staff ); // copy all attributes but none of the elements
+	//void ClearElements( MusDC *dc , MusElement *start = NULL );
+
+	MusLayer *GetFirst( );
+	MusLayer *GetLast( );
+	MusLayer *GetNext( MusLayer *staff );
+	MusLayer *GetPrevious( MusLayer *staff );
+    MusLayer *GetLayer( int LayerNo );
     
 public:
-    /** The children MusLayer objects */
-    ArrayOfMusLayers m_layers;
-    /** The parent MusSection (for unmeasured music) */
-    MusSection *m_section;
-    /** The parent MusMeasure (for measured music) */
-    MusMeasure *m_measure;
+    /** The logical staff */
+    int m_logStaffNb;
+    
+    
+	/** numero dans le groupe auquel appartient la portee */
+	unsigned short noGrp;
+	/** nombre total de portee dans le groupe */
+	unsigned short totGrp;
+	/** numero de systeme */
+	//unsigned short noLigne; // ax2
+	/** type d'armure. 0 = aucune1 = dieses2 = bemols */
+	unsigned char armTyp;
+	/** nombre d'alterations a l'armures */
+	unsigned char armNbr;
+	/** portee en notation ancienne */
+	char notAnc;
+	/** portee grise */
+	char grise;
+	/** portee invisible */
+	char invisible;
+	/** barre verticale. 0 = aucun1 = debut2 = fin */
+	unsigned char vertBarre;
+	/** accolade ou bloc. 0 = aucun1 = debut2 = fin */
+	unsigned char brace;
+	/** taille. 0 = normale1 = petite  */
+	unsigned char staffSize;
+	
+    /** portee indentee
+		char dans Wolfgang - ici indentation par portee
+	*/
+	//int indent; // ax2 
+	/** portee indentee a droite */
+	//char indentDroite; // ax2
+	/** type de portee (nombre de lignes) */
+	unsigned char portNbLine;
+	/** type d'accolade. 0 = bloc1 = accolade ronde */
+	unsigned char accol;
+	/** ???? */
+	unsigned char accessoire;
+	/** 
+     * The y absolute position of the staff for facsimile layouts.
+     * This is the top left corner of the staff (the x position is the position of the system).
+     */
+    int m_y_abs;
+	/** 
+     * The y drawing position of the staff.
+     * This position is staff size above the m_y_abs position and is the reference point for drawing elements.
+     * It is re-computed everytime the staff is drawn and it is not stored in the file.
+     */
+    int m_y_drawing;
+    
     /** indicates this staff is in anchent notation
      it has to be carried on to the LayedOutStaf */
     bool m_mensuralNotation;
-    
+
 private:
 };
 
-
-//----------------------------------------------------------------------------
-// MusStaffFunctor
-//----------------------------------------------------------------------------
-
-/**
-    This class is a Functor that processes MusStaff objects.
-    Needs testing.
-*/
-class MusStaffFunctor: public MusFunctor
-{
-private:
-    void (MusStaff::*fpt)( wxArrayPtrVoid params );   // pointer to member function
-
-public:
-
-    // constructor - takes pointer to an object and pointer to a member and stores
-    // them in two private variables
-    MusStaffFunctor( void(MusStaff::*_fpt)( wxArrayPtrVoid )) { fpt=_fpt; };
-	virtual ~MusStaffFunctor() {};
-
-    // override function "Call"
-    virtual void Call( MusStaff *ptr, wxArrayPtrVoid params )
-        { (*ptr.*fpt)( params);};          // execute member function
-};
 
 #endif

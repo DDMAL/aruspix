@@ -19,8 +19,8 @@
 #include "im/impage.h"
 #include "im/imstaff.h"
 
-#include "mus/muslaidoutlayer.h"
-#include "mus/muslaidoutlayerelement.h"
+#include "mus/muslayer.h"
+#include "mus/muslayerelement.h"
 
 
 #include "wx/arrimpl.cpp"
@@ -267,7 +267,7 @@ void RecMLFBmp::StartLabel( )
 	m_currentWidth = -1;
 }
 
-wxBitmap RecMLFBmp::GenerateBitmap( ImStaff *imstaff, MusLaidOutLayer *musLayer, int currentElementNo )
+wxBitmap RecMLFBmp::GenerateBitmap( ImStaff *imstaff, MusLayer *musLayer, int currentElementNo )
 {
 	int mn, mx;
 	int bx, by;
@@ -426,8 +426,8 @@ bool RecMLFBmp::WritePage( const MusPage *page )
     m_staff = NULL;
     for (m_staff_i = 0; m_staff_i < page->GetStaffCount(); m_staff_i++) 
     {
-        MusLaidOutStaff *staff = &page->m_staves[m_staff_i];
-		MusLaidOutStaff *ut1_staff = MusMLFOutput::GetUt1( staff );
+        MusStaff *staff = &page->m_staves[m_staff_i];
+		MusStaff *ut1_staff = MusMLFOutput::GetUt1( staff );
         WriteStaff( ut1_staff );
 		delete ut1_staff;
     }
@@ -436,20 +436,20 @@ bool RecMLFBmp::WritePage( const MusPage *page )
 }
 */
 
-bool RecMLFBmp::WriteLayer( const MusLaidOutLayer *layer, int currentElementNo )
+bool RecMLFBmp::WriteLayer( const MusLayer *layer, int currentElementNo )
 {
 
 	if (layer->GetElementCount() == 0)
 		return true;
     
-    unsigned int k;
+    int k;
 
 	StartLabel();
 	bool ok;
 
-    for (k = 0;k < layer->m_elements.GetCount(); k++ )
+    for (k = 0;k < layer->GetElementCount(); k++ )
     {
-        MusLaidOutLayerElement *element = &layer->m_elements[k];
+        MusLayerElement *element = (MusLayerElement*)layer->m_children[k];
         // we could write all of the in one method, left over from version < 2.0.0
         if ( element->IsNote() || element->IsRest() || element->IsSymbol( SYMBOL_CUSTOS) )
         {

@@ -1,8 +1,27 @@
+Version 2.1.2
+-------------
+- Bug fix in 3-class binarization
+
+Version 2.1.1
+-------------
+- Bug fix in saving notes (coloration and stem direction)
+
+Version 2.1.0
+-------------
+- Bug fix mouse position
+- Bug fix copy / paste
+- Bug fix with single figure proportion
+- Upgrade to 2.1.0
+- Correction of dot offset
+
 Version 2.0.7
 -------------
 - Bug fix in dragging area
+- Bug fix in book adaptation
+- Bug fix in book model export
 - Changing contrast / brightness adjustment steps
-
+- New function for importing models to be used in book recognition
+- New function for exporting book pages in MEI
 
 Version 2.0.6
 -------------

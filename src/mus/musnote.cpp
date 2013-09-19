@@ -37,7 +37,7 @@ MusNote::~MusNote()
 {
 }
 
-bool MusNote::operator==( MusLayerElement& other)
+bool MusNote::operator==( MusObject& other )
 {
     MusNote *otherNote = dynamic_cast<MusNote*>( &other );
     if ( !otherNote ) {

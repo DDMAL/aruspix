@@ -33,18 +33,14 @@ public:
     
     void AddLayerRdg( MusLayerRdg *layerRdg );
     
-    virtual void Save( wxArrayPtrVoid params );
+    int GetRdgCount() { return (int)m_children.size(); };
     
-    int GetRdgCount() { return (int)m_rdgs.GetCount(); };
-    
-    // moulinette
-    virtual void Process(MusFunctor *functor, wxArrayPtrVoid params );
+    // functor
+    virtual bool Save( ArrayPtrVoid params );
     
 private:
     
 public:
-    /** The children MusLayerRdg objects */
-    ArrayOfMusLayers m_rdgs;
 
 private:
     
@@ -58,26 +54,23 @@ private:
 /** 
  * This class models the MEI <rdg> element for a <app> in a <layer>
  */
-class MusLayerRdg: public MusLayer
+class MusLayerRdg: public MusObject
 {
 public:
     // constructors and destructors
-    MusLayerRdg();
+    MusLayerRdg( );
     virtual ~MusLayerRdg();
     
-    /** the parent MusLayerApp setter */
-    void SetLayerApp( MusLayerApp *app ) { m_app = app; }; 
+	void AddElement( MusLayerElement *element, int idx = -1 );
+    
+	int GetElementCount() const { return (int)m_children.size(); };
     
     // functor
-    void virtual Save( wxArrayPtrVoid params );
+    virtual bool Save( ArrayPtrVoid params );
 
 private:
     
 public:
-    /** The children MusLayerElement objects */
-    //ArrayOfMusLayerElements m_elements;
-    /** The parent MusLayerApp */
-    MusLayerApp *m_app;
     /** The source id */
     wxString m_source;
     

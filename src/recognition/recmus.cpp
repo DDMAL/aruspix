@@ -27,7 +27,7 @@ using std::max;
 #include "mus/mustoolpanel.h"
 //#include "mus/musstaff.h"
 #include "mus/muspage.h"
-#include "mus/muslaidoutlayerelement.h"
+#include "mus/muslayerelement.h"
 
 #include "im/impage.h"
 #include "im/imstaff.h"

@@ -13,7 +13,7 @@
     #include "wx/wx.h"
 #endif
 
-#include "muslayer.h"
+#include "muslayerelement.h"
 #include "muspositioninterface.h"
 #include "musdef.h"
 
@@ -39,7 +39,7 @@ public:
      * Comparison operator. 
      * Check if the MusLayerElement if a Symbol and compare attributes
      */
-    virtual bool operator==(MusLayerElement& other);
+    virtual bool operator==(MusObject& other);
     
     virtual wxString MusClassName( ) { return "MusSymbol"; };
     

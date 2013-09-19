@@ -24,7 +24,7 @@ using std::max;
 
 #include "mus/musdoc.h"
 #include "mus/muslayer.h"
-#include "mus/muslaidoutlayerelement.h"
+#include "mus/muslayerelement.h"
 
 #include "im/impage.h"
 
@@ -277,9 +277,9 @@ void AxOptionsDlg::UpdateFontCorrections( int eventID )
 
 	wxGetApp().m_fontPosCorrection = GetScMusOffset()->GetValue();
 	wxGetApp().m_fontSizeCorrection = GetScMusSize()->GetValue();
-	m_musWinPtr->m_layout->UpdatePageValues();
+	m_musWinPtr->m_doc->UpdatePageValues();
 	if ( eventID == ID_SC_MUS_SIZE)
-		m_musWinPtr->m_layout->UpdateFontValues();
+		m_musWinPtr->m_doc->UpdateFontValues();
     m_musWinPtr->Resize( );
 }
 
@@ -515,48 +515,32 @@ AxOptMusWindow::AxOptMusWindow( wxWindow *parent, wxWindowID id,
     
     m_docPtr = NULL;
     m_docPtr = new MusDoc();
+    m_docPtr->Reset( Transcription );
     
     m_docPtr->m_pageWidth = 150;
     m_docPtr->m_pageHeight = 150;
     m_docPtr->m_pageLeftMar = 0;
     m_docPtr->m_pageRightMar = 0;
     
-    MusDiv *div = new MusDiv( );
-    MusScore *score = new MusScore( );
-    MusSection *section = new MusSection( );
-    MusStaff *logStaff = new MusStaff();;
-    MusLayer *logLayer = new MusLayer();
-    
-    logStaff->AddLayer( logLayer );
-    section->AddStaff( logStaff );
-    score->AddSection( section );
-    div->AddScore( score );
-    m_docPtr->AddDiv( div );
-    
     // create a new layout and the page
-    MusLayout *layout = new MusLayout( Transcription );
     MusPage *page = new MusPage();
     MusSystem *system = new MusSystem();
     system->m_y_abs = 120;
-    MusLaidOutStaff *staff = new MusLaidOutStaff( 1 );
+    MusStaff *staff = new MusStaff( 1 );
     staff->m_y_abs = 120;
-    MusLaidOutLayer *layer = new MusLaidOutLayer( 1, 1, section, NULL );
+    MusLayer *layer = new MusLayer( 1 );
     
     MusClef *clef = new MusClef();
     clef->m_clefId = UT3;
+    clef->m_x_abs = 80;
     
-    logLayer->AddLayerElement( clef );
-    MusLaidOutLayerElement *element = new MusLaidOutLayerElement( clef );
-    element->m_x_abs = 80;
-    layer->AddElement( element );
-    
+    layer->AddElement( clef );
     staff->AddLayer( layer );
     system->AddStaff( staff );
     page->AddSystem( system );
-    layout->AddPage( page );
-    m_docPtr->AddLayout( layout );
+    m_docPtr->AddPage( page );
     
-	this->SetLayout( layout );
+	this->SetDoc( m_docPtr );
     this->SetZoom( 50 );
 	this->Resize();
 }

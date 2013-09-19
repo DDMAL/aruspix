@@ -13,7 +13,7 @@
     #include "wx/wx.h"
 #endif
 
-#include "muslayer.h"
+#include "muslayerelement.h"
 #include "musdurationinterface.h"
 #include "muspositioninterface.h"
 
@@ -36,7 +36,7 @@ public:
      * Comparison operator. 
      * Check if the MusLayerElement if a MusRest and compare attributes
      */
-    virtual bool operator==(MusLayerElement& other);
+    virtual bool operator==(MusObject& other);
     
     virtual wxString MusClassName( ) { return "MusRest"; };
     

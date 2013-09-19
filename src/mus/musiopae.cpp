@@ -33,6 +33,9 @@
 
 using std::vector;
 
+#define BEAM_INITIAL    0x01
+#define BEAM_MEDIAL     0x02
+#define BEAM_TERMINAL      0x04
 
 // User interface variables:
 int       debugQ = 0;                // used with --debug option
@@ -61,13 +64,6 @@ MusPaeInput::MusPaeInput( MusDoc *doc, wxString filename ) :
 MusFileInputStream( doc, -1 )
 {
     m_filename = filename;
-	
-	m_div = NULL;
-	m_score = NULL;
-	m_parts = NULL;
-	m_part = NULL;
-	m_section = NULL;
-	m_measure = NULL;
 	m_staff = NULL;
 	m_layer = NULL;
     m_current_tie = NULL;
@@ -109,7 +105,7 @@ void MusPaeInput::convertPlainAndEasyToKern(std::istream &infile, std::ostream &
     char incipit[10001] = {0};
     bool in_beam = false;
     
-    string s_key;
+    wxString s_key;
     MeasureObject current_measure;
     NoteObject current_note;
     NoteObject *prev_note;
@@ -119,11 +115,6 @@ void MusPaeInput::convertPlainAndEasyToKern(std::istream &infile, std::ostream &
     //current_key.setAll(0);
     
     vector<MeasureObject> staff;
-    
-    // Aruspux styff
-    m_div = new MusDiv();
-    m_score = new MusScore( );
-    m_section = new MusSection( );
     
     // read values
     while (!infile.eof()) {
@@ -191,6 +182,7 @@ void MusPaeInput::convertPlainAndEasyToKern(std::istream &infile, std::ostream &
             i += getAccidental( incipit, &current_note.accidental, i );
         }
         
+        //
         // beaming starts
 		else if (incipit[i] == '{') {
 			//current_note.beam = 1;
@@ -205,6 +197,7 @@ void MusPaeInput::convertPlainAndEasyToKern(std::istream &infile, std::ostream &
             current_note.beam = 0;
             in_beam = false;
 		}
+        // // ax2.3 LP
 		
         // slurs are read when adding the note
 		else if (incipit[i] == '+') {
@@ -291,9 +284,11 @@ void MusPaeInput::convertPlainAndEasyToKern(std::istream &infile, std::ostream &
             i += getKeyInfo( incipit, &current_measure, i + 1);
 		} 
         
+        //
         if (in_beam && (current_note.beam & BEAM_INITIAL) == 0 && (current_note.beam & BEAM_TERMINAL) == 0) {
             current_note.beam |= BEAM_MEDIAL;
         }
+        // // ax2.3 LP
             
         i++;
     }
@@ -305,15 +300,22 @@ void MusPaeInput::convertPlainAndEasyToKern(std::istream &infile, std::ostream &
         current_measure.notes.clear();
     }
     
+    m_staff = new MusStaff( 1 );
+    m_layer = new MusLayer( 1 );
+    m_staff->AddLayer(m_layer);
+    
     vector<MeasureObject>::iterator it;
     for ( it = staff.begin() ; it < staff.end(); it++ ) {
         MeasureObject obj = *it;
         printMeasure( out, &obj );
     }
     
-    m_score->AddSection(m_section);
-    m_div->AddScore(m_score);
-    m_doc->AddDiv(m_div);
+    m_doc->Reset( Raw );
+    MusPage *page = new MusPage();
+    MusSystem *system = new MusSystem();
+    system->AddStaff( m_staff );
+    page->AddSystem( system );
+    m_doc->AddPage( page );
 }
 
 
@@ -808,7 +810,7 @@ int MusPaeInput::getWholeRest( const char *incipit, int *wholerest, int index ) 
 // getBarline -- read the barline.
 //
 
-int MusPaeInput::getBarline( const char *incipit, string *output, int index ) {
+int MusPaeInput::getBarline( const char *incipit, wxString *output, int index ) {
     
     regex_t re;
     regcomp(&re, "^://:", REG_EXTENDED);
@@ -955,7 +957,9 @@ int MusPaeInput::getNote( const char* incipit, NoteObject *note, MeasureObject *
         //std::cout << "regexp " << is_not_last_note << std::endl;
         if ( is_not_last_note != 0 ) {
             //note->beam = -1; // close the beam
+            /*
             note->beam |= BEAM_TERMINAL;
+            */ // ax2.3
         }
     }
     
@@ -1049,31 +1053,31 @@ int MusPaeInput::getNote( const char* incipit, NoteObject *note, MeasureObject *
 //
 
 void MusPaeInput::printMeasure(std::ostream& out, MeasureObject *measure ) {
+    bool tupletized = false, beamed = false;
     MusBeam *appog_beam = NULL;
     
-    m_measure =  new MusMeasure;
-    m_staff = new MusStaff();
-    m_layer = new MusLayer();
+//    m_staff = new MusStaff( 1 );
+//    m_layer = new MusLayer( 1 );
     
     
     if ( measure->clef != NULL ) {
-        m_layer->AddLayerElement(measure->clef);
+        m_layer->AddElement(measure->clef);
     }
     
     if ( measure->key.size() > 0 ) {
         MusKeySig *key = new MusKeySig(measure->key.size(), measure->key_alteration);
-        m_layer->AddLayerElement(key);
+        m_layer->AddElement(key);
     }
     
     if ( measure->time != NULL ) {
-        m_layer->AddLayerElement(measure->time);
+        m_layer->AddElement(measure->time);
     }
     
     if ( measure->wholerest > 0 ) {     
         MusRest *r = new MusRest();
         r->m_dur = VALSilSpec; //
         r->m_multimeasure_dur = measure->wholerest;
-        m_layer->AddLayerElement(r);
+        m_layer->AddElement(r);
     }
     
     for (unsigned int i=0; i<measure->notes.size(); i++) {
@@ -1081,7 +1085,7 @@ void MusPaeInput::printMeasure(std::ostream& out, MeasureObject *measure ) {
         
         // A note can have a chef change before it
         if ( note->clef != NULL ) {
-            m_layer->AddLayerElement(note->clef);
+            m_layer->AddElement(note->clef);
         }
                     
         if (note->rest) {
@@ -1094,7 +1098,7 @@ void MusPaeInput::printMeasure(std::ostream& out, MeasureObject *measure ) {
             if (note->fermata)
                 r->m_fermata = true;
             
-            m_layer->AddLayerElement(r); // create a rest
+            m_layer->AddElement(r); // create a rest
         } else {
             MusNote *n = new MusNote();
             n->m_pname = note->pitch;
@@ -1113,12 +1117,12 @@ void MusPaeInput::printMeasure(std::ostream& out, MeasureObject *measure ) {
                 
                 if (note->appoggiatura_multiple && note->appoggiatura > 1) {
                     appog_beam = new MusBeam;
-                    m_layer->AddLayerElement(appog_beam);
+                    m_layer->AddElement(appog_beam);
                 }
                 
                 // if the beam was not created, this is a single note appoggiatura
                 if (appog_beam)
-                    appog_beam->AddNote(n);
+                    appog_beam->AddElement(n);
                 
                 // this is the last note in appoggiatura beam, set the beam to null
                 if (note->appoggiatura == 2) // last one in a beam is 2
@@ -1136,20 +1140,38 @@ void MusPaeInput::printMeasure(std::ostream& out, MeasureObject *measure ) {
             // which are unbeamed in the beam / have their own beam
             // m_current_beam is global so we can have cross-measure beams
             if (!note->appoggiatura && !note->acciaccatura) {
+                
+                beamed = true;
+                
                 if (note->beam & BEAM_INITIAL) {
                     m_current_beam = new MusBeam;
-                    m_current_beam->AddNote(n);
-                    m_layer->AddLayerElement(m_current_beam);
+                    if (note->tuplet_note < 1)
+                        m_current_beam->AddElement(n);
+                    
+                    if (m_current_tuplet)
+                        m_current_tuplet->AddElement(m_current_beam);
+                    else
+                        m_layer->AddElement(m_current_beam);
+                    
                 } else if (note->beam & BEAM_MEDIAL) {
-                    if (m_current_beam)
-                        m_current_beam->AddNote(n);
+                    if (m_current_beam && note->tuplet_note < 1)
+                        m_current_beam->AddElement(n);
                     
                 } else if (note->beam & BEAM_TERMINAL) {
                     m_current_beam = NULL;
                 }
+                // // ax2.3 LP
             }
-                
-            m_layer->AddLayerElement(n); // create a note
+            
+            // draw a fermata?
+            // this is identical in rest, maybe find a wiser solution?
+            if (note->fermata)
+                n->m_fermata = true;
+            
+            // draw a trill?
+            if (note->trill == true) {
+                n->m_embellishment = EMB_TRILL;
+            }
             
             // FOR THE MOMENT WORKS ONLY WITH TWO NOTES
             // FIXME
@@ -1158,7 +1180,7 @@ void MusPaeInput::printMeasure(std::ostream& out, MeasureObject *measure ) {
             if (note->tie == 1) {
                 MusTie *tie = new MusTie;
                 tie->m_first = n;
-                m_layer->AddLayerElement(tie);
+                m_layer->AddElement(tie);
                 m_current_tie = tie;
             } else if (note->tie == 2) {
                 if (m_current_tie)
@@ -1175,29 +1197,28 @@ void MusPaeInput::printMeasure(std::ostream& out, MeasureObject *measure ) {
             // which means we are counting a tuplet
             if (note->tuplet_note > 0) {
                 
-                if (note->tuplet_notes == note->tuplet_note) // first elem in tuplet
-                    m_current_tuplet = new MusTuplet;
+                tupletized = true;
                 
-                m_current_tuplet->AddNote(n); // place it into the array
+                if (note->tuplet_notes == note->tuplet_note) { // first elem in tuplet
+                    m_current_tuplet = new MusTuplet;
+                    if (m_current_beam)
+                        m_current_beam->AddElement(m_current_tuplet);
+                    else
+                        m_layer->AddElement(m_current_tuplet);
+                }
+                
+                m_current_tuplet->AddElement(n); // place it into the array
                 
                 // the last note counts always '1'
                 // insert the tuplet elem
                 // and reset the tuplet counter
                 if (note->tuplet_note == 1) {
-                    m_layer->AddLayerElement(m_current_tuplet);
                     m_current_tuplet = NULL;
                 }
             }
             
-            // draw a fermata?
-            // this is identical in rest, maybe find a wiser solution?
-            if (note->fermata)
-                n->m_fermata = true;
-            
-            // draw a trill?
-            if (note->trill == true) {
-                n->m_embellishment = EMB_TRILL;
-            }
+            if (!beamed && !tupletized)
+                m_layer->AddElement(n); // create a note
             
         } // note or rest
 
@@ -1211,12 +1232,10 @@ void MusPaeInput::printMeasure(std::ostream& out, MeasureObject *measure ) {
         else 
             bline->m_barlineType = BARLINE_DBL;
         
-        m_layer->AddLayerElement(bline);
+        m_layer->AddElement(bline);
     }
     
-    m_staff->AddLayer(m_layer);
-    m_measure->AddStaff(m_staff);
-    m_section->AddMeasure(m_measure);
+    //m_staff->AddLayer(m_layer);
 }
 
 

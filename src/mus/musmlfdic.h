@@ -13,6 +13,8 @@
 #endif
 #include "wx/wfstream.h"
 
+#include <vector>
+
 class MusMLFSymbol;
 WX_DECLARE_OBJARRAY( MusMLFSymbol, ArrayOfMLFSymbols);
 
@@ -53,7 +55,7 @@ public:
 public:
 	wxString m_word;
 	wxArrayString m_hmms; // sub_words and states have to be feed in parallel
-	wxArrayInt m_states;
+	std::vector<int> m_states;
 };
 
 

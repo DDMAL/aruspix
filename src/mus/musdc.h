@@ -24,7 +24,7 @@
 class MusPoint;
 class MusRect;
 class MusFontInfo;
-class MusLayoutObject;
+class MusDocObject;
 class MusRC;
 
 // ---------------------------------------------------------------------------
@@ -111,9 +111,9 @@ public:
     
     // Method for starting and ending a graphic - for example for grouping shapes in <g></g> in SVG
     
-    virtual void StartGraphic( MusLayoutObject *object, wxString gClass, wxString gId ) = 0;
+    virtual void StartGraphic( MusDocObject *object, wxString gClass, wxString gId ) = 0;
     
-    virtual void EndGraphic( MusLayoutObject *object, MusRC *rc  ) = 0;
+    virtual void EndGraphic( MusDocObject *object, MusRC *rc  ) = 0;
     
     virtual void StartPage( ) = 0;
     

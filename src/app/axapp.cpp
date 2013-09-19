@@ -30,13 +30,13 @@
 const wxString IPC_START = "StartOther";
 
 int AxApp::s_version_major = 2;
-int AxApp::s_version_minor = 0;
-int AxApp::s_version_revision = 6;
+int AxApp::s_version_minor = 3;
+int AxApp::s_version_revision = 0;
 wxString AxApp::s_version = wxString::Format("%d.%d.%d", AxApp::s_version_major, AxApp::s_version_minor, AxApp::s_version_revision);
 wxString AxApp::s_build_date = __DATE__;
 wxString AxApp::s_build_time = __TIME__;
 
-#define COPYRIGHT "Copyright © 2004-2012 Laurent Pugin and others"
+#define COPYRIGHT "Copyright © 2004-2013 Laurent Pugin and others"
 #define LICENSE "Published under the GNU General Public License 3"
 #define CONTRIBUTORS "John Ashley Burgoyne;Greg Eustace;Andrew Hankinson;Tristan Himmelman;Tristan Matthews;Christopher Niven;Alastair Porter;Marnie Reckenberg;Gabriel Vigliensoni;Rodolfo Zitellini"
 #define UPDATE_URL "http://www.aruspix.net/downloads/changes.txt"

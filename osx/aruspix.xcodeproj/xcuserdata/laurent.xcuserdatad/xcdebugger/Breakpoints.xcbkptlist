@@ -4,111 +4,16 @@
    version = "1.0">
    <FileBreakpoints>
       <FileBreakpoint
-         shouldBeEnabled = "No"
+         shouldBeEnabled = "Yes"
          ignoreCount = "0"
          continueAfterRunningActions = "No"
-         isPathRelative = "0"
-         filePath = "../src/superimposition/sup.cpp"
-         timestampString = "347457761.047995"
+         filePath = "../src/edition/edt.cpp"
+         timestampString = "400754197.777532"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "795"
-         endingLineNumber = "795"
-         landmarkName = "SupEnv::OnZoom( wxCommandEvent &amp;event )"
-         landmarkType = "5">
-      </FileBreakpoint>
-      <FileBreakpoint
-         shouldBeEnabled = "No"
-         ignoreCount = "0"
-         continueAfterRunningActions = "No"
-         isPathRelative = "0"
-         filePath = "../src/superimposition/supim.cpp"
-         timestampString = "347456008.756919"
-         startingColumnNumber = "9223372036854775807"
-         endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "219"
-         endingLineNumber = "219"
-         landmarkName = "SupImWindow::OnPaint(wxPaintEvent &amp;event)"
-         landmarkType = "5">
-      </FileBreakpoint>
-      <FileBreakpoint
-         shouldBeEnabled = "No"
-         ignoreCount = "0"
-         continueAfterRunningActions = "No"
-         isPathRelative = "0"
-         filePath = "../src/im/imregister.cpp"
-         timestampString = "348318361.810135"
-         startingColumnNumber = "9223372036854775807"
-         endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "71"
-         endingLineNumber = "71"
-         landmarkName = "ImRegister::Terminate( int code, ... )"
-         landmarkType = "5">
-      </FileBreakpoint>
-      <FileBreakpoint
-         shouldBeEnabled = "No"
-         ignoreCount = "0"
-         continueAfterRunningActions = "No"
-         isPathRelative = "0"
-         filePath = "../src/mus/musrc_page.cpp"
-         timestampString = "351084039.663334"
-         startingColumnNumber = "9223372036854775807"
-         endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "677"
-         endingLineNumber = "677"
-         landmarkName = "MusRC::CalculatePitchCode ( MusLaidOutLayer *layer, int y_n, int x_pos, int *octave )"
-         landmarkType = "5">
-      </FileBreakpoint>
-      <FileBreakpoint
-         shouldBeEnabled = "No"
-         ignoreCount = "0"
-         continueAfterRunningActions = "No"
-         isPathRelative = "0"
-         filePath = "../src/mus/muslaidoutlayer.h"
-         timestampString = "361959437.796631"
-         startingColumnNumber = "9223372036854775807"
-         endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "76"
-         endingLineNumber = "76"
-         landmarkName = "class MusLaidOutLayer"
-         landmarkType = "3">
-      </FileBreakpoint>
-      <FileBreakpoint
-         shouldBeEnabled = "No"
-         ignoreCount = "0"
-         continueAfterRunningActions = "No"
-         isPathRelative = "0"
-         filePath = "../src/mus/musiobin.cpp"
-         timestampString = "361875963.186796"
-         startingColumnNumber = "9223372036854775807"
-         endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "1416"
-         endingLineNumber = "1416">
-      </FileBreakpoint>
-      <FileBreakpoint
-         shouldBeEnabled = "No"
-         ignoreCount = "0"
-         continueAfterRunningActions = "No"
-         filePath = "../src/mus/musobject.cpp"
-         timestampString = "361962172.634671"
-         startingColumnNumber = "9223372036854775807"
-         endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "28"
-         endingLineNumber = "28"
-         landmarkName = "MusObject::MusObject()"
-         landmarkType = "5">
-      </FileBreakpoint>
-      <FileBreakpoint
-         shouldBeEnabled = "No"
-         ignoreCount = "0"
-         continueAfterRunningActions = "No"
-         filePath = "../src/mus/muslayer.cpp"
-         timestampString = "361986059.438702"
-         startingColumnNumber = "9223372036854775807"
-         endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "96"
-         endingLineNumber = "96"
-         landmarkName = "MusLayer::Load( wxArrayPtrVoid params )"
+         startingLineNumber = "670"
+         endingLineNumber = "670"
+         landmarkName = "EdtEnv::OnOpenMEI( wxCommandEvent &amp;event )"
          landmarkType = "5">
       </FileBreakpoint>
       <FileBreakpoint
@@ -116,51 +21,12 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "../src/edition/edt.cpp"
-         timestampString = "361810873.077957"
+         timestampString = "400754407.51062"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "526"
-         endingLineNumber = "526"
-         landmarkName = "EdtEnv::OnSaveSVG( wxCommandEvent &amp;event )"
-         landmarkType = "5">
-      </FileBreakpoint>
-      <FileBreakpoint
-         shouldBeEnabled = "No"
-         ignoreCount = "0"
-         continueAfterRunningActions = "No"
-         filePath = "../src/mus/muslaidoutlayer.cpp"
-         timestampString = "362037717.318284"
-         startingColumnNumber = "9223372036854775807"
-         endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "349"
-         endingLineNumber = "349"
-         landmarkName = "MusLaidOutLayer::GetClef( MusLaidOutLayerElement *test )"
-         landmarkType = "5">
-      </FileBreakpoint>
-      <FileBreakpoint
-         shouldBeEnabled = "No"
-         ignoreCount = "0"
-         continueAfterRunningActions = "No"
-         filePath = "../src/mus/muslaidoutlayerelement.cpp"
-         timestampString = "361968623.613447"
-         startingColumnNumber = "9223372036854775807"
-         endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "74"
-         endingLineNumber = "74"
-         landmarkName = "MusLaidOutLayerElement::Delete( wxArrayPtrVoid params )"
-         landmarkType = "5">
-      </FileBreakpoint>
-      <FileBreakpoint
-         shouldBeEnabled = "Yes"
-         ignoreCount = "0"
-         continueAfterRunningActions = "No"
-         filePath = "../src/mus/muslayer.cpp"
-         timestampString = "362039319.310522"
-         startingColumnNumber = "9223372036854775807"
-         endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "167"
-         endingLineNumber = "167"
-         landmarkName = "MusLayerElement::operator=( const MusLayerElement&amp; element )"
+         startingLineNumber = "679"
+         endingLineNumber = "679"
+         landmarkName = "EdtEnv::OnOpenMEI( wxCommandEvent &amp;event )"
          landmarkType = "5">
       </FileBreakpoint>
    </FileBreakpoints>

@@ -30,6 +30,10 @@ int count( int a[], int size );
 void corr( int a[], int b[], int size, int win, int *dec, int *max);
 
 //*****
+    
+double** alloc2DArray( int x, int y );
+    
+void free2DArray( double **array, int x );
 
 void imSetData( _imImage *image, _imImage *selection, int pos_x, int pos_y );
 

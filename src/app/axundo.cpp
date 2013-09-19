@@ -45,6 +45,7 @@ AxUndoFile::~AxUndoFile()
 	{
 		bool ok = wxRemoveFile( m_filename );
 		wxASSERT_MSG( ok , "Error erasing undo file" );
+        ok = false; // remove compilation warning for unused variable;
 	}
 	delete logNo;
 }

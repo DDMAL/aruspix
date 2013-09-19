@@ -60,13 +60,7 @@ public:
     
 private:
     wxString m_filename;
-	MusDiv *m_div;
-	MusScore *m_score;
-	MusPartSet *m_parts;
-	MusPart *m_part;
-	MusSection *m_section;
-    
-    MusMeasure *m_measure;
+
 	MusStaff *m_staff;
 	MusLayer *m_layer;
     

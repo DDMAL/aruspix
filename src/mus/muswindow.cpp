@@ -24,7 +24,7 @@ using std::max;
 #include "mustoolpanel.h"
 #include "musiomei.h"
 
-#include "muslaidoutlayerelement.h"
+#include "muslayerelement.h"
 //#include "musstaff.h"
 //#include "musnote.h"
 ////#include "mussymbol.h"
@@ -120,16 +120,12 @@ MusWindow::~MusWindow()
 // undo
 void MusWindow::Load( AxUndoFile *undoPtr )
 {
-	wxASSERT_MSG( m_layout, "MusDoc should not be NULL in UNDO");
+	wxASSERT_MSG( m_doc, "MusDoc should not be NULL in UNDO");
 
-	if ( !m_layout )
+	if ( !m_doc )
 		return;
 	
 	int page, system, staff, layer, element, lyric_element;
-
-    // keep a pointer to the doc because we are going to change the m_layout value
-    // if we want to handle more that one layout, we should keep the layout number too
-    MusDoc *doc = m_layout->m_doc;
     
     // we have a file with extension .pos for storing the current position (page,system, etc.)
     wxFileInputStream position_input( undoPtr->GetFilename() + ".pos" );
@@ -152,12 +148,12 @@ void MusWindow::Load( AxUndoFile *undoPtr )
 	position_input.Read( &m_lyricCursor, sizeof( int ) );
     
     
-	MusMeiInput *mei_input = new MusMeiInput( doc, undoPtr->GetFilename() );
+	MusMeiInput *mei_input = new MusMeiInput( m_doc, undoPtr->GetFilename() );
 		
 	//if ( undoPtr->m_flags == MUS_UNDO_FILE ) // this is now the only type of undo we handle anyway...
     {
         mei_input->ImportFile();
-        SetLayout( &doc->m_layouts[0] ); // only one layout for now
+        SetDoc( m_doc );
 	}
 
 	if (page < 0)  //|| (page > m_fh->nbpage - 1))
@@ -166,7 +162,7 @@ void MusWindow::Load( AxUndoFile *undoPtr )
 		return;
 	}
 	
-    SetPage( &m_layout->m_pages[page] );
+    SetPage( (MusPage*)m_doc->m_children[page] );
 	m_npage = page;
 
 	delete mei_input;
@@ -177,13 +173,13 @@ void MusWindow::Load( AxUndoFile *undoPtr )
     m_currentElement = NULL;
 
     if ( system != -1 ) {
-		m_currentSystem = &m_page->m_systems[system];
+		m_currentSystem = (MusSystem*)m_page->m_children[system];
     }	
 	if ( m_currentSystem && (staff != -1) ) {
-		m_currentStaff = &m_currentSystem->m_staves[staff];
+		m_currentStaff = (MusStaff*)m_currentSystem->m_children[staff];
     }	
 	if ( m_currentStaff && (layer != -1) ) {
-		m_currentLayer = &m_currentStaff->m_layers[layer];
+		m_currentLayer = (MusLayer*)m_currentStaff->m_children[layer];
     }		
 	if ( m_currentLayer && (element != -1) )
 	{
@@ -195,7 +191,7 @@ void MusWindow::Load( AxUndoFile *undoPtr )
         //    m_currentElement = &m_currentStaff->m_elements[element];
         //}
         
-        m_currentElement = &m_currentLayer->m_elements[element];
+        m_currentElement = (MusLayerElement*)m_currentLayer->m_children[element];
 
 	}
 
@@ -208,9 +204,9 @@ void MusWindow::Load( AxUndoFile *undoPtr )
 
 void MusWindow::Store( AxUndoFile *undoPtr )
 {
-	wxASSERT_MSG( m_layout, "MusLayout should not be NULL in UNDO");
+	wxASSERT_MSG( m_doc, "MusDoc should not be NULL in UNDO");
 
-	if ( !m_layout )
+	if ( !m_doc )
 		return;
 	// keep current page, system, staff layer, and element and lyric
 	int page = -1;
@@ -263,7 +259,7 @@ void MusWindow::Store( AxUndoFile *undoPtr )
 	position_output.Write( &m_inputLyric, sizeof( bool ) );
 	position_output.Write( &m_lyricCursor, sizeof( int ) );
 	
-    MusMeiOutput *mei_output = new MusMeiOutput( m_layout->m_doc, undoPtr->GetFilename() );
+    MusMeiOutput *mei_output = new MusMeiOutput( m_doc, undoPtr->GetFilename() );
 	//if ( undoPtr->m_flags == MUS_UNDO_FILE ) // the only type of undo we handle
 	{
 	    mei_output->ExportFile();
@@ -278,7 +274,7 @@ void MusWindow::InitDC( wxDC *dc )
 	//if ( m_center )
 	//	dc->SetLogicalOrigin( - (margeMorteHor - m_leftMargin), -margeMorteVer );
 	//else
-        dc->SetLogicalOrigin( - (MUS_BORDER_AROUND_PAGE / 2) - m_layout->m_pageLeftMar,  - (MUS_BORDER_AROUND_PAGE / 2) );
+    //dc->SetLogicalOrigin( - (MUS_BORDER_AROUND_PAGE / 2) - m_doc->m_pageLeftMar,  - (MUS_BORDER_AROUND_PAGE / 2) );
         
 	this->DoPrepareDC( *dc );
     
@@ -291,9 +287,9 @@ void MusWindow::DoLyricCursor( int x, int y, MusDC *dc, wxString lyric )
 {
     int xCursor = x;
     if ( m_lyricCursor > 0 ){
-        wxArrayInt lyricPos;
+        std::vector<int> lyricPos;
         // TODO dc->GetPartialTextExtents( s, lyricPos );
-        if ( m_lyricCursor <= (int)lyricPos.GetCount() )
+        if ( m_lyricCursor <= (int)lyricPos.size() )
             xCursor += lyricPos[m_lyricCursor-1];			
     }
     // the cursor witdh
@@ -333,13 +329,13 @@ void MusWindow::DoReset( )
 void MusWindow::Resize( )
 {
 	wxWindow *parent = this->GetParent();
-	if (!parent || !m_layout) 
+	if (!parent || !m_doc) 
 		return;
 	
 	Show( false );
 	wxSize parent_s = parent->GetClientSize();
-	int page_w = (ToRendererX(m_layout->m_pageWidth) + MUS_BORDER_AROUND_PAGE) * GetZoom() / 100;
-	int page_h = (ToRendererX(m_layout->m_pageHeight) + MUS_BORDER_AROUND_PAGE) * GetZoom() / 100;
+	int page_w = (ToRendererX(m_doc->m_pageWidth) + MUS_BORDER_AROUND_PAGE) * GetZoom() / 100;
+	int page_h = (ToRendererX(m_doc->m_pageHeight) + MUS_BORDER_AROUND_PAGE) * GetZoom() / 100;
 	int win_w = min( page_w, parent_s.GetWidth() );
 	int win_h = min( page_h, parent_s.GetHeight() );
 
@@ -370,14 +366,14 @@ bool MusWindow::CanGoto( )
 
 void MusWindow::Goto( )
 {
-	if ( !m_layout )
+	if ( !m_doc )
 		return;
-    AxGotoDlg *dlg = new AxGotoDlg(this, -1, _("Go to page ..."), m_layout->m_pages.GetCount(), m_npage );
+    AxGotoDlg *dlg = new AxGotoDlg(this, -1, _("Go to page ..."), m_doc->m_children.size(), m_npage );
     dlg->Center(wxBOTH);
     if ( dlg->ShowModal() == wxID_OK )
 	{
 		m_npage = dlg->GetPage();
-		SetPage( &m_layout->m_pages[m_npage] );
+		SetPage( (MusPage*)m_doc->m_children[m_npage] );
     }
 	dlg->Destroy();
     wxLogError( "MusWindow::Goto missing in ax2" );
@@ -387,15 +383,15 @@ void MusWindow::Goto( )
 bool MusWindow::CanZoom( bool zoomIn ) 
 { 
 	if ( zoomIn )
-		return ( m_layout && (m_zoomNum/m_zoomDen < 1) );
+		return ( m_doc && (m_zoomNum/m_zoomDen < 1) );
 	else
-        return ( m_layout && (m_zoomNum >= 2) );
-		//return ( m_layout && ((float)zoomNum/(float)zoomDen > 0.1) );
+        return ( m_doc && (m_zoomNum >= 2) );
+		//return ( m_doc && ((float)zoomNum/(float)zoomDen > 0.1) );
 }
 
 void MusWindow::Zoom( bool zoomIn )
 {
-	if ( !m_layout )
+	if ( !m_doc )
 		return;
 
 	if ( zoomIn && this->CanZoom( true ) )
@@ -408,7 +404,7 @@ void MusWindow::Zoom( bool zoomIn )
 
 void MusWindow::SetZoom( int percent )
 {
-	if ( !m_layout )
+	if ( !m_doc )
 		return;
 
 	m_zoomNum = percent;
@@ -447,32 +443,32 @@ void MusWindow::SetEditorMode( MusEditorMode mode )
 			m_lastEditedElement = m_currentElement;
             if ( m_currentElement->IsBarline() )
 			{
-				m_barline = *(MusBarline*)m_currentElement->m_layerElement;
+				m_barline = *(MusBarline*)m_currentElement;
 				m_newElement = &m_barline;
 			}
             else if ( m_currentElement->IsClef() )
 			{
-				m_clef = *(MusClef*)m_currentElement->m_layerElement;
+				m_clef = *(MusClef*)m_currentElement;
 				m_newElement = &m_clef;
 			}
 			else if ( m_currentElement->IsMensur() )
 			{
-				m_mensur = *(MusMensur*)m_currentElement->m_layerElement;
+				m_mensur = *(MusMensur*)m_currentElement;
 				m_newElement = &m_mensur;
 			}            
 			else if ( m_currentElement->IsNote() )
 			{
-				m_note = *(MusNote*)m_currentElement->m_layerElement;
+				m_note = *(MusNote*)m_currentElement;
 				m_newElement = &m_note;
 			}
 			else if ( m_currentElement->IsRest() )
 			{
-				m_rest = *(MusRest*)m_currentElement->m_layerElement;
+				m_rest = *(MusRest*)m_currentElement;
 				m_newElement = &m_rest;
 			}
 			else if ( m_currentElement->IsSymbol() )
 			{
-				m_symbol = *(MusSymbol*)m_currentElement->m_layerElement;
+				m_symbol = *(MusSymbol*)m_currentElement;
 				m_newElement = &m_symbol;
 			}
 		}
@@ -532,7 +528,7 @@ int MusWindow::GetToolType()
 
 	if (m_editorMode == MUS_EDITOR_EDIT) {
         if (m_currentElement) {
-            sync = m_currentElement->m_layerElement;
+            sync = m_currentElement;
         }
     }
 	else
@@ -593,7 +589,7 @@ void MusWindow::Copy()
 	if ( m_bufferElement )
 		delete m_bufferElement;
     
-    m_bufferElement = m_currentElement->m_layerElement->GetChildCopy();
+    m_bufferElement = m_currentElement->GetChildCopy();
 }
 
 void MusWindow::Cut()
@@ -619,7 +615,7 @@ void MusWindow::Paste()
 		return;
 			
 	// arbitrary x value after the current element
-	m_currentElement = m_currentLayer->Insert( m_bufferElement, m_currentElement->m_x_abs + m_layout->m_step1 * 3 );
+	m_currentElement = m_currentLayer->Insert( m_bufferElement, m_currentElement->m_x_abs + m_doc->m_step1 * 3 );
 
 	this->Refresh();
 	OnEndEdition();
@@ -633,7 +629,7 @@ void MusWindow::UpdateScroll()
 	int x = 0;
 	if ( m_currentElement )
 		x = ToRendererX( m_currentElement->m_x_abs );
-	int y = ToRendererY(  m_currentStaff->m_y_abs + m_layout->m_staffSize[0] );
+	int y = ToRendererY(  m_currentStaff->m_y_abs + m_doc->m_staffSize[0] );
     
     x *= (double)m_zoomNum / m_zoomDen;
     y *= (double)m_zoomNum / m_zoomDen;
@@ -656,7 +652,7 @@ void MusWindow::UpdateScroll()
 		x = -1;
 	else
 		x /= xu;
-	if ( (y > ys ) && (y < ys + h - 2 * ToRendererX(m_layout->m_staffSize[0])) )
+	if ( (y > ys ) && (y < ys + h - 2 * ToRendererX(m_doc->m_staffSize[0])) )
 		y = -1;
 	else
 		y /= yu;
@@ -810,7 +806,7 @@ void MusWindow::OnMouseDClick(wxMouseEvent &event)
             OnBeginEditionClef();
 			m_lastEditedElement = m_currentLayer->Insert( m_newElement, m_insert_x );
             OnEndEditionClef();
-            m_lastEditedElement->m_layerElement->SetPitchOrPosition( m_insert_pname, m_insert_oct );
+            m_lastEditedElement->SetPitchOrPosition( m_insert_pname, m_insert_oct );
 			CheckPoint( UNDO_PART, MUS_UNDO_FILE );
 			OnEndEdition();
 		}
@@ -887,7 +883,7 @@ void MusWindow::OnMouseLeftDown(wxMouseEvent &event)
 		
         /* ax2
 		// Checking if there is a Lyric element closer to click location then default note
-		MusLaidOutStaff *lyricStaff;
+		MusStaff *lyricStaff;
 		if ( noteStaff->m_y_drawing <= (uint)(y + 80)){
 			if ((lyricStaff = m_page->GetPrevious( noteStaff )) == NULL) lyricStaff = noteStaff;
 		} else {
@@ -986,7 +982,7 @@ void MusWindow::OnMouseMotion(wxMouseEvent &event)
 		if ( m_editorMode == MUS_EDITOR_EDIT )
 		{
 			m_insert_pname = CalculatePitchCode( m_currentLayer, y, m_insert_x, &m_insert_oct );
-			m_currentElement->m_layerElement->SetPitchOrPosition( m_insert_pname, m_insert_oct );
+			m_currentElement->SetPitchOrPosition( m_insert_pname, m_insert_oct );
 		} 
 		else if ( m_lyricMode )					// Movement of lyric element on y-axis
 		{
@@ -1034,8 +1030,8 @@ bool MusWindow::MoveUpDown( bool up )
     
     MusPage *page = m_page;
     MusSystem *system = m_currentSystem;
-    MusLaidOutStaff *staff = m_currentStaff;
-    MusLaidOutLayer *layer = m_currentLayer;
+    MusStaff *staff = m_currentStaff;
+    MusLayer *layer = m_currentLayer;
     
     int x = 0;
     if ( m_currentElement ) {
@@ -1113,13 +1109,14 @@ bool MusWindow::MoveLeftRight( bool left )
     
     MusPage *page = m_page;
     MusSystem *system = m_currentSystem;
-    MusLaidOutStaff *staff = m_currentStaff;
-    MusLaidOutLayer *layer = m_currentLayer;
+    MusStaff *staff = m_currentStaff;
+    MusLayer *layer = m_currentLayer;
     
     if ( left ) {
         // previous element
-        if ( m_currentLayer->GetPrevious( m_currentElement )) {
-            m_currentElement = m_currentLayer->GetPrevious( m_currentElement );
+        MusLayerElement *previous = NULL;
+        if ( (previous = m_currentLayer->GetPrevious( m_currentElement ) ) ) {
+            m_currentElement = previous;
         }
         // previous system
         else if ( m_page->GetPrevious( m_currentSystem ) )
@@ -1140,8 +1137,9 @@ bool MusWindow::MoveLeftRight( bool left )
     }
     else {
         // next element
-        if ( m_currentLayer->GetNext( m_currentElement )) {
-            m_currentElement = m_currentLayer->GetNext( m_currentElement );
+        MusLayerElement *next = NULL;
+        if ( ( next =  m_currentLayer->GetNext( m_currentElement ) ) ) {
+            m_currentElement = next;
         }
         // next system
         else if ( m_page->GetNext( m_currentSystem ) )
@@ -1263,7 +1261,7 @@ void MusWindow::NeumeEditOnKeyDown(wxKeyEvent &event) {
     {
         PrepareCheckPoint( UNDO_PART, MUS_UNDO_FILE );
         MusElement *del = m_currentElement;
-        MusLaidOutStaff *delstaff = m_currentStaff;
+        MusStaff *delstaff = m_currentStaff;
         
         if (event.m_keyCode == WXK_DELETE )		//"Delete" event
         {
@@ -1295,7 +1293,7 @@ void MusWindow::NeumeEditOnKeyDown(wxKeyEvent &event) {
         if ( m_currentStaff != delstaff )
         {
             // reset previous staff with no element before checkpoint and then swap again
-            MusLaidOutStaff *tmp = m_currentStaff;
+            MusStaff *tmp = m_currentStaff;
             m_currentStaff = delstaff;
             del = m_currentElement;
             m_currentElement = NULL;
@@ -1435,8 +1433,8 @@ void MusWindow::MensuralEditOnKeyDown(wxKeyEvent &event) {
     if ( ((event.m_keyCode == WXK_DELETE ) || (event.m_keyCode == WXK_BACK)) && m_currentElement) //"Delete or Backspace" event
     {
         PrepareCheckPoint( UNDO_PART, MUS_UNDO_FILE );
-        MusLaidOutLayerElement *del = m_currentElement;
-        MusLaidOutLayer *delLayer = m_currentLayer;
+        MusLayerElement *del = m_currentElement;
+        MusLayer *delLayer = m_currentLayer;
         
         if (event.m_keyCode == WXK_DELETE )		//"Delete" event
         {
@@ -1448,7 +1446,7 @@ void MusWindow::MensuralEditOnKeyDown(wxKeyEvent &event) {
         }
         
         // we have moved, currentLayer is now the layer we will be after deletion
-        MusLaidOutLayer *nextLayer = m_currentLayer;
+        MusLayer *nextLayer = m_currentLayer;
         m_currentLayer = delLayer; // we swap it to do the deletion
         
         // in case we failed moving
@@ -1469,37 +1467,37 @@ void MusWindow::MensuralEditOnKeyDown(wxKeyEvent &event) {
     else if ( in ( event.m_keyCode, WXK_F2, WXK_F8 ) && m_currentElement ) // Change hauteur
     {
         PrepareCheckPoint( UNDO_PART, MUS_UNDO_FILE );
-        m_currentElement->m_layerElement->GetPitchOrPosition( &m_insert_pname, &m_insert_oct);
+        m_currentElement->GetPitchOrPosition( &m_insert_pname, &m_insert_oct);
         m_insert_pname = event.m_keyCode - WXK_F1;
         MusLayerElement::AdjustPname( &m_insert_pname, &m_insert_oct );
-        m_currentElement->m_layerElement->SetPitchOrPosition( m_insert_pname, m_insert_oct );
+        m_currentElement->SetPitchOrPosition( m_insert_pname, m_insert_oct );
         CheckPoint( UNDO_PART, MUS_UNDO_FILE );
         OnEndEdition();
     }
     else if ( event.m_controlDown && ( event.m_keyCode == WXK_UP ) && m_currentElement) // correction hauteur avec les fleches, up
     {
         PrepareCheckPoint( UNDO_PART, MUS_UNDO_FILE );
-        m_currentElement->m_layerElement->GetPitchOrPosition( &m_insert_pname, &m_insert_oct);
+        m_currentElement->GetPitchOrPosition( &m_insert_pname, &m_insert_oct);
         m_insert_pname++;
         MusLayerElement::AdjustPname( &m_insert_pname, &m_insert_oct );
-        m_currentElement->m_layerElement->SetPitchOrPosition( m_insert_pname, m_insert_oct );
+        m_currentElement->SetPitchOrPosition( m_insert_pname, m_insert_oct );
         CheckPoint( UNDO_PART, MUS_UNDO_FILE );
         OnEndEdition();
     }
     else if ( event.m_controlDown && ( event.m_keyCode == WXK_DOWN ) && m_currentElement) // correction hauteur avec les fleches, down
     {
         PrepareCheckPoint( UNDO_PART, MUS_UNDO_FILE );
-        m_currentElement->m_layerElement->GetPitchOrPosition( &m_insert_pname, &m_insert_oct);
+        m_currentElement->GetPitchOrPosition( &m_insert_pname, &m_insert_oct);
         m_insert_pname--;
         MusLayerElement::AdjustPname( &m_insert_pname, &m_insert_oct );
-        m_currentElement->m_layerElement->SetPitchOrPosition( m_insert_pname, m_insert_oct );
+        m_currentElement->SetPitchOrPosition( m_insert_pname, m_insert_oct );
         CheckPoint( UNDO_PART, MUS_UNDO_FILE );
         OnEndEdition();
     }
     else if ( m_currentElement && m_currentElement->IsNote() && 
              ( (event.m_keyCode == 'F') || (event.m_keyCode == 'S' ) ) ) // ajouter un bemol à une note
     {
-        MusNote *note = dynamic_cast<MusNote*>(m_currentElement->m_layerElement);
+        MusNote *note = dynamic_cast<MusNote*>(m_currentElement);
         PrepareCheckPoint( UNDO_PART, MUS_UNDO_FILE );
         MusSymbol alteration( SYMBOL_ACCID );
         alteration.m_pname = note->m_pname;
@@ -1510,19 +1508,19 @@ void MusWindow::MensuralEditOnKeyDown(wxKeyEvent &event) {
         else {
             alteration.m_accid = ACCID_SHARP;
         }
-        m_currentLayer->Insert( &alteration, m_currentElement->m_x_abs - m_layout->m_step1 * 3 );
+        m_currentLayer->Insert( &alteration, m_currentElement->m_x_abs - m_doc->m_step1 * 3 );
         CheckPoint( UNDO_PART, MUS_UNDO_FILE );
         OnEndEdition();
     }
     else if ( m_currentElement && m_currentElement->IsNote() && 
 			 (event.m_keyCode == '.')  ) // ajouter un point
     {
-        MusNote *note = dynamic_cast<MusNote*>(m_currentElement->m_layerElement);
+        MusNote *note = dynamic_cast<MusNote*>(m_currentElement);
         PrepareCheckPoint( UNDO_PART, MUS_UNDO_FILE );
         MusSymbol dot( SYMBOL_DOT );
         dot.m_pname = note->m_pname;
         dot.m_oct = note->m_oct;
-        m_currentLayer->Insert( &dot, m_currentElement->m_x_abs + m_layout->m_step1 * 3 );
+        m_currentLayer->Insert( &dot, m_currentElement->m_x_abs + m_doc->m_step1 * 2 );
         CheckPoint( UNDO_PART, MUS_UNDO_FILE );
         OnEndEdition();
     }
@@ -1531,7 +1529,7 @@ void MusWindow::MensuralEditOnKeyDown(wxKeyEvent &event) {
     {
         PrepareCheckPoint( UNDO_PART, MUS_UNDO_FILE );
         //int vflag = ( event.m_controlDown || (noteKeyCode == CUSTOS)) ? 1 : 0;
-        m_currentElement->m_layerElement->SetValue( noteKeyCode );
+        m_currentElement->SetValue( noteKeyCode );
         CheckPoint( UNDO_PART, MUS_UNDO_FILE );
         OnEndEdition();
     }
@@ -1539,7 +1537,7 @@ void MusWindow::MensuralEditOnKeyDown(wxKeyEvent &event) {
 			 (event.m_keyCode == 'L')  ) // Ligature 
     {	
         PrepareCheckPoint( UNDO_PART, MUS_UNDO_FILE );
-        m_currentElement->m_layerElement->SetLigature( );
+        m_currentElement->SetLigature( );
         CheckPoint( UNDO_PART, MUS_UNDO_FILE );
         OnEndEdition();
     }
@@ -1547,7 +1545,7 @@ void MusWindow::MensuralEditOnKeyDown(wxKeyEvent &event) {
 			 (event.m_keyCode == 'I')  ) // Change coloration
     {
         PrepareCheckPoint( UNDO_PART, MUS_UNDO_FILE );
-        m_currentElement->m_layerElement->ChangeColoration( );
+        m_currentElement->ChangeColoration( );
         CheckPoint( UNDO_PART, MUS_UNDO_FILE );	
         OnEndEdition();
     }
@@ -1555,7 +1553,7 @@ void MusWindow::MensuralEditOnKeyDown(wxKeyEvent &event) {
 			 (event.m_keyCode == 'A')  ) // Change stem direction
     {
         PrepareCheckPoint( UNDO_PART, MUS_UNDO_FILE );
-        m_currentElement->m_layerElement->ChangeStem(  );
+        m_currentElement->ChangeStem(  );
         CheckPoint( UNDO_PART, MUS_UNDO_FILE );
         OnEndEdition();
     }
@@ -1613,7 +1611,7 @@ void MusWindow::MensuralEditOnKeyDown(wxKeyEvent &event) {
         // we might be editing a clef - see method for doc
         OnBeginEditionClef();
         int vflag = ( event.m_controlDown ) ? 1 : 0;
-        m_currentElement->m_layerElement->SetValue( event.m_keyCode, vflag );
+        m_currentElement->SetValue( event.m_keyCode, vflag );
         OnEndEditionClef();
         CheckPoint( UNDO_PART, MUS_UNDO_FILE );	
         OnEndEdition();
@@ -1791,7 +1789,7 @@ void MusWindow::LyricEntry(wxKeyEvent &event)
 			
 			PrepareCheckPoint( UNDO_PART, MUS_UNDO_FILE );
 			MusElement *del = m_currentElement;
-			MusLaidOutStaff *delstaff = m_currentStaff;
+			MusStaff *delstaff = m_currentStaff;
 			
 			// Find next element to select
 			if (event.m_keyCode == WXK_DELETE )												//"Delete" event
@@ -1823,7 +1821,7 @@ void MusWindow::LyricEntry(wxKeyEvent &event)
 			if ( m_currentStaff != delstaff )
 			{
 				// Reset previous staff with no element before checkpoint and then swap again
-				MusLaidOutStaff *tmp = m_currentStaff;
+				MusStaff *tmp = m_currentStaff;
 				m_currentStaff = delstaff;
 				del = m_currentElement;
 				m_currentElement = NULL;

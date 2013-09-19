@@ -26,8 +26,8 @@ using std::max;
 
 #include "mus/muswxdc.h"
 #include "mus/musdoc.h"
-#include "mus/muslaidoutstaff.h"
-#include "mus/muslaidoutlayerelement.h"
+#include "mus/musstaff.h"
+#include "mus/muslayerelement.h"
 
 
 //----------------------------------------------------------------------------
@@ -103,7 +103,7 @@ void CmpMusController::LoadSources()
 }
 
 
-void CmpMusController::LoadSource( MusLaidOutLayerElement *element )
+void CmpMusController::LoadSource( MusLayerElement *element )
 {
     if ( m_collationCtrl ) {
         // this should never happen because we do not load the source from the collation controller
@@ -115,28 +115,44 @@ void CmpMusController::LoadSource( MusLaidOutLayerElement *element )
         return;
     }
     
-    MusPage *currentPage = m_viewPtr->m_page;
-    MusLaidOutLayerElement *laidOutLayerElement = NULL;
-    wxArrayPtrVoid params;
-	params.Add( element->m_layerElement );
-    params.Add( &laidOutLayerElement );
-    MusLaidOutLayerElementFunctor findLayerElement( &MusLaidOutLayerElement::FindLayerElement );
-    m_viewPtr->m_layout->Process( &findLayerElement, params );
-    
-    if ( !laidOutLayerElement ) {
-        return; // we did not find it
+    wxString id, filename;
+    int i = 0;
+    while ( element->GetSameAs( &id, &filename, i) ) {
+        if ( filename == m_viewPtr->m_doc->m_fname ) {
+            break;
+        }
+        i++;
     }
     
-    MusPage *page = laidOutLayerElement->m_layer->m_staff->m_system->m_page;
+    if ( filename.IsEmpty() ) {
+        // we did not find a sameAs with our filename
+        return;
+    }
     
+    MusPage *currentPage = m_viewPtr->m_page;    
+    
+    MusObject *viewElement = NULL;
+    ArrayPtrVoid params;
+    uuid_t uuid;
+    uuid_parse( id.c_str(), uuid );
+	params.push_back( uuid );
+    params.push_back( &viewElement );
+    MusFunctor findLayerElement( &MusObject::FindByUuid );
+    m_viewPtr->m_doc->Process( &findLayerElement, params );
+    
+    if ( !viewElement ) { // || !(layerElement == dynamic_cast<MusLayerElement*>(viewElement)) ) {
+        return; // we did not find it or it is not a MusLayerElement
+    }
+    
+    MusPage *page = dynamic_cast<MusPage*>(viewElement->GetFirstParent( &typeid(MusPage) ));
     if ( page != currentPage ) {
         //wxLogMessage( "load page" );
         m_viewPtr->SetPage( page );
     }
-    m_viewPtr->m_currentSystem = laidOutLayerElement->m_layer->m_staff->m_system;    
-    m_viewPtr->m_currentStaff = laidOutLayerElement->m_layer->m_staff;
-    m_viewPtr->m_currentLayer = laidOutLayerElement->m_layer;
-    m_viewPtr->m_currentElement = laidOutLayerElement;
+    m_viewPtr->m_currentSystem = dynamic_cast<MusSystem*>(viewElement->GetFirstParent( &typeid(MusSystem) ));
+    m_viewPtr->m_currentStaff = dynamic_cast<MusStaff*>(viewElement->GetFirstParent( &typeid(MusStaff) ));
+    m_viewPtr->m_currentLayer = dynamic_cast<MusLayer*>(viewElement->GetFirstParent( &typeid(MusLayer) ));
+    m_viewPtr->m_currentElement = dynamic_cast<MusLayerElement*>(viewElement);
     m_viewPtr->UpdateCmpScroll();
     m_viewPtr->Refresh();
 }
@@ -189,7 +205,6 @@ CmpMusWindow::CmpMusWindow( CmpMusController *parent, wxWindowID id,
 	m_imViewPtr2 = NULL;
 	
 	m_lastStaff = -1, 
-	m_lastController = 1;
     m_collationWin = false;
     m_viewImage = true;
 }
@@ -261,7 +276,7 @@ void CmpMusWindow::UpdateCmpScroll()
     x /= xu;
     y /= yu;
     
-	Scroll( x, y );
+	Scroll( max( x, 0), max( y, 0 ) );
 	//OnSyncScroll( x, y );
 }
 

@@ -13,16 +13,13 @@
     #include "wx/wx.h"
 #endif
 
-#define BEAM_INITIAL  (1<<1)
-#define BEAM_MEDIAL  (1<<2) 
-#define BEAM_TERMINAL  (1<<3) 
-
 #define TUPLET_INITIAL  (1<<1)
 #define TUPLET_MEDIAL  (1<<2) 
 #define TUPLET_TERMINAL  (1<<3)
 
-#define DURATION_MAX_BEAMS 6
 #define DURATION_MAX_TUPLETS 6
+
+class MusObject;
 
 //----------------------------------------------------------------------------
 // MusDurationInterface
@@ -42,6 +39,24 @@ public:
     virtual void SetDuration( int value );
     
     /**
+     * Look if the note or rest is in a beam.
+     * Look for the fist beam parent and check is the note is in is content list.
+     * Looking in the content list is necessary for grace notes or imbricated beams.
+     */
+    bool IsInBeam( MusObject *noteOrRest );
+    
+    /**
+     * Return true if the note or rest is the first of a beam.
+     */
+    bool IsFirstInBeam( MusObject *noteOrRest );
+    
+    /**
+     * Return true if the note or rest is the last of a beam.
+     */
+    bool IsLastInBeam( MusObject *noteOrRest );
+    
+    
+    /**
      * Inteface comparison operator. 
      * Check if the MusLayerElement has a MusDurationInterface and compare attributes
      */
@@ -50,8 +65,6 @@ public:
 private:
     
 public:
-    /** Indicates if intial, medial or termial part of a beam for up to 6 nesting/overlaping beams */
-    unsigned char m_beam[DURATION_MAX_BEAMS];
     /** Indicates a break in the beaming */
     unsigned char m_breakSec;
     /** Indicates the number of augmentation dots */

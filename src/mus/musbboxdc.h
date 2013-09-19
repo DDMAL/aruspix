@@ -97,9 +97,9 @@ public:
     virtual void DrawBackgroundImage( int x = 0, int y = 0 ) {};
     
     // 
-    virtual void StartGraphic( MusLayoutObject *object, wxString gClass, wxString gId );
+    virtual void StartGraphic( MusDocObject *object, wxString gClass, wxString gId );
     
-    virtual void EndGraphic(MusLayoutObject *object, MusRC *rc );
+    virtual void EndGraphic(MusDocObject *object, MusRC *rc );
     
     virtual void StartPage();
     
@@ -114,7 +114,7 @@ private:
     /**
      * The array containing the object for which the bounding box needs to be updated
      */ 
-    ArrayOfMusLayoutObjects m_objects;
+    ArrayOfMusObjects m_objects;
     
     MusFontInfo m_font;
     

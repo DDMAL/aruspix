@@ -15,15 +15,14 @@
 #include "wx/wx.h"
 #endif
 
-#include "musobject.h"
-#include "muslayer.h"
+#include "muslayerelement.h"
 #include "musnote.h"
 
 //----------------------------------------------------------------------------
 // MusBeam
 //----------------------------------------------------------------------------
 
-class MusBeam: public MusLayerElement
+class MusBeam: public MusLayerElement, public MusObjectListInterface
 {
 public:
     // constructors and destructors
@@ -32,17 +31,27 @@ public:
     
     virtual wxString MusClassName( ) { return "MusBeam"; };
     
+    int GetNoteCount() const { return (int)m_children.size(); };
+    
+    //int GetNoteCount();
+    
+    
+    
     /**
      * Add an element (a note or a rest) to a beam.
      * Only MusNote or MusRest elements will be actually added to the beam.
      */
-    void AddNote(MusLayerElement *element);
+    void AddElement(MusLayerElement *element);
     
+    // functor
+    //virtual bool Save( ArrayPtrVoid params );
+    
+protected:
     /**
-     * The array of notes or rests.
-     * The beam object do not own the notes.
+     * Filter the list for a specific class.
+     * For example, keep only notes in MusBeam
      */
-    ArrayOfMusLayerElements m_notes; // should remain private?
+    virtual void FilterList();
     
 private:
 

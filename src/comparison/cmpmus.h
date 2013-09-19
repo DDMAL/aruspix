@@ -47,11 +47,11 @@ public:
 	void SetCmpFile( CmpFile *cmpFile );
     
     /** 
-     * Loads the source page by looking at the MusLaidOutLayerElement in the layout.
-     * The MusLaidOutLayerElement passed as parameter is the one of the collation.
-     * The MusLayerElement pointer is used to find the corresponding one (if any)
+     * Loads the source page by looking at the MusLayerElement from the collation.
+     * The MusLayerElement passed as parameter is the one of the collation.
+     * The MusLayerElement sameAs attribute is used to find the corresponding one (if any)
      **/
-    void LoadSource( MusLaidOutLayerElement *element );
+    void LoadSource( MusLayerElement *element );
     /**
      * Loads the sources.
      * Called from the collationCtrl.
@@ -121,7 +121,7 @@ protected:
 	CmpMusWindow *m_imViewPtr1, *m_imViewPtr2;
 	CmpMusController *m_imControlPtr1, *m_imControlPtr2;
 	// variable to control alternance in images : change if we change the staff
-	int m_lastStaff, m_lastController;
+	int m_lastStaff;
     wxImage m_backgroundImage;
     
 private:

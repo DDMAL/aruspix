@@ -43,9 +43,9 @@ public:
 	bool ReadFileHeader( unsigned short *nbpage );
 	bool ReadSeparator( );
 	bool ReadPage( MusPage *page );
-	bool ReadStaff( MusLaidOutStaff *staff, MusLaidOutLayer *layer, int staffNo );
-	bool ReadNote( MusLaidOutLayer *layer );
-	bool ReadSymbol( MusLaidOutLayer *layer, bool isLyric = false );
+	bool ReadStaff( MusStaff *staff, MusLayer *layer, int staffNo );
+	bool ReadNote( MusLayer *layer );
+	bool ReadSymbol( MusLayer *layer, bool isLyric = false );
     bool ReadNeume( );
     bool ReadLyric( );
 	bool ReadElementAttr( );
@@ -63,7 +63,6 @@ private:
 	int m_flag;
     int m_vmaj, m_vmin, m_vrev;
 	// logical tree
-	MusSection *m_section;
 	MusStaff *m_logStaff;
     MusLayer *m_logLayer;
     // for reading files before 2.0.0
