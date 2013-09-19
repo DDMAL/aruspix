@@ -46,6 +46,7 @@ bool m_no_mei_hdr = false;
 const char *cmdlineopts = "ndmpr:o:t:s:hb:";
 
 // Some handy string split functions
+/*
 std::vector<wxString> &split(const wxString &s, char delim, std::vector<wxString> &elems) {
     wxStringstream ss(s);
     wxString item;
@@ -59,7 +60,23 @@ std::vector<wxString> split(const wxString &s, char delim) {
     std::vector<wxString> elems;
     return split(s, delim, elems);
 }
+*/
 
+std::vector<std::string> &split(const std::string &s, char delim, std::vector<std::string> &elems) {
+    std::stringstream ss(s);
+    std::string item;
+    while (std::getline(ss, item, delim)) {
+        elems.push_back(item);
+    }
+    return elems;
+}
+
+
+std::vector<std::string> split(const std::string &s, char delim) {
+    std::vector<std::string> elems;
+    split(s, delim, elems);
+    return elems;
+}
 
 void display_usage() {
     cerr << "Aruspix headless usage:" << endl;
@@ -190,7 +207,7 @@ int main(int argc, char** argv) {
     
     // create outfile
     if (m_outfile.length() == 0) {
-        std::vector<wxString> v = split(m_infile, '/');
+        std::vector<string> v = split(m_infile, '/');
         m_outfile = v[v.capacity() - 1] + "." + m_outformat; // can be only mei or svg
     }
     
@@ -198,13 +215,12 @@ int main(int argc, char** argv) {
     if (m_outformat == "svg") {
         
         // Create a new visual layout and spave the music
-        MusDoc *doc = new MusDoc( Raw );
-        doc->Realize( );
+        //doc->Realize( );
         doc->SpaceMusic();
         
         // Get the current system for the SVG clipping size    
-        MusPage *page = dynamic_cast<MusPage*>doc->m_children[0];
-        MusSystem *system = dynamic_cast<MusSystem*>page->m_children[0];
+        MusPage *page = dynamic_cast<MusPage*>(doc->m_children[0]);
+        MusSystem *system = dynamic_cast<MusSystem*>(page->m_children[0]);
         
         // creare a new local RC and set the above created layout
         MusRC rc;
@@ -221,7 +237,7 @@ int main(int argc, char** argv) {
         svg->SetLogicalOrigin(m_boder, m_boder);
         
         // render the page
-        rc.DrawPage(svg, &doc->m_pages[0] , false);
+        rc.DrawPage(svg, page , false);
         
         delete svg;
     } else {

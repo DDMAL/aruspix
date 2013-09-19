@@ -253,14 +253,14 @@ bool GetTupletCoordinates(MusTuplet* tuplet, MusLayer *layer, MusPoint* start, M
 }
 
 
-void MusRC::DrawTuplet( MusDC *dc, MusLayerElement *element, MusLayer *layer, MusStaff *staff)
+void MusRC::DrawTuplet( MusDC *dc, MusTuplet *tuplet, MusLayer *layer, MusStaff *staff)
 {
     wxASSERT_MSG( layer, "Pointer to layer cannot be NULL" );
     wxASSERT_MSG( staff, "Pointer to staff cannot be NULL" );
     
     int txt_lenght, txt_height;
     
-    MusTuplet *tuplet = dynamic_cast<MusTuplet*>(element);
+    // rz MusTuplet *tuplet = dynamic_cast<MusTuplet*>(element);
     //char notes = tuplet->m_notes.GetCount();
     
     wxString notes = IntToObliqueFigures((unsigned int)tuplet->GetNoteCount());
@@ -290,7 +290,7 @@ void MusRC::DrawTuplet( MusDC *dc, MusLayerElement *element, MusLayer *layer, Mu
     MusPoint start, end, center;
     bool direction = GetTupletCoordinates(tuplet, layer, &start, &end, &center);
     
-    dc->StartGraphic( element, "tuplet", wxString::Format("tuplet_%d_%d_%d", staff->GetId(), layer->voix, element->GetId()) );
+    //rz dc->StartGraphic( element, "tuplet", wxString::Format("tuplet_%d_%d_%d", staff->GetId(), layer->voix, element->GetId()) );
     
     // Calculate position for number 0x82
     // since the number is slanted, move the center left
@@ -335,5 +335,5 @@ void MusRC::DrawTuplet( MusDC *dc, MusLayerElement *element, MusLayer *layer, Mu
                 
     }
     
-    dc->EndGraphic(element, this );
+    //rz dc->EndGraphic(element, this );
 }

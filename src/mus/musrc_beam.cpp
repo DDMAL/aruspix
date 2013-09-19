@@ -180,6 +180,9 @@ void MusRC::DrawBeam(  MusDC *dc, MusLayer *layer, MusBeam *beam, MusStaff *staf
     
 	do
 	{
+        
+        wxLogDebug("-> %s", chk->MusClassName().c_str() );
+        
         if ( chk->IsNote() ) {
             k = ((MusNote*)chk)->m_colored ? ((MusNote*)chk)->m_dur+1 : ((MusNote*)chk)->m_dur;
         }

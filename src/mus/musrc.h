@@ -146,7 +146,8 @@ public:
     void DrawSymbolCustos( MusDC *dc, MusLayerElement *element, MusLayer *layer, MusStaff *staff );
     void DrawSymbolDot( MusDC *dc, MusLayerElement *element, MusLayer *layer, MusStaff *staff );
     void DrawTie( MusDC *dc, MusLayerElement *element, MusLayer *layer, MusStaff *staff );
-    void DrawTuplet( MusDC *dc, MusLayerElement *element, MusLayer *layer, MusStaff *staff);
+    void DrawTupletElement( MusDC *dc, MusLayerElement *element, MusLayer *layer, MusStaff *staff );
+    void DrawTuplet( MusDC *dc, MusTuplet *tuplet, MusLayer *layer, MusStaff *staff);
     void DrawTrill(MusDC *dc, MusLayerElement *element, MusStaff *staff);
     void DrawLigature( MusDC *dc, int y, MusLayerElement *element, MusLayer *layer, MusStaff *staff );  
     void DrawLedgerLines( MusDC *dc, int y_n, int y_p, int xn, unsigned int smaller, int staffSize);

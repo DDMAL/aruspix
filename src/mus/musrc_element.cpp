@@ -82,7 +82,7 @@ void MusRC::DrawElement( MusDC *dc, MusLayerElement *element, MusLayer *layer, M
         DrawTie(dc, element, layer, staff);
     } 
     else if (dynamic_cast<MusTuplet*>(element)) {
-        DrawTuplet(dc, element, layer, staff);
+        DrawTupletElement(dc, element, layer, staff);
     }
     else if (dynamic_cast<MusLayerApp*>(element)) {
         DrawLayerApp(dc, element, layer, staff);
@@ -177,6 +177,29 @@ void MusRC::DrawBeamElement(MusDC *dc, MusLayerElement *element, MusLayer *layer
     
     // BEAM!
     DrawBeam( dc, layer, beam, staff );
+    
+    dc->EndGraphic(element, this ); //RZ
+}
+
+void MusRC::DrawTupletElement(MusDC *dc, MusLayerElement *element, MusLayer *layer, MusStaff *staff) {
+    
+    wxASSERT_MSG( layer, "Pointer to layer cannot be NULL" );
+    wxASSERT_MSG( staff, "Pointer to staff cannot be NULL" );
+    
+    MusTuplet *tuplet = dynamic_cast<MusTuplet*>(element);
+    
+    dc->StartGraphic( element, "tuplet", wxString::Format("s_%d_%d_%d", staff->GetId(), layer->voix, element->GetId() ) );
+    
+    // Draw the inner elements
+    for (unsigned int i = 0; i < tuplet->m_children.size(); i++) {
+        if ( dynamic_cast<MusLayerElement*>(tuplet->m_children[i]) ) {
+            MusLayerElement *element = dynamic_cast<MusLayerElement*>(tuplet->m_children[i]);
+            DrawElement(dc, element, layer, staff);
+        }
+    }
+    
+    // Tupletize the elements!
+    DrawTuplet( dc, tuplet, layer, staff );
     
     dc->EndGraphic(element, this ); //RZ
 }

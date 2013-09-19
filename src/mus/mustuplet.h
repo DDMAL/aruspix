@@ -33,10 +33,10 @@ public:
 	int GetNoteCount() const { return (int)m_children.size(); };
     
     /**
-     * Add an element (a note or a rest) to a beam.
+     * Add an element (a note or a rest) to a tuplet.
      * Only MusNote or MusRest elements will be actually added to the beam.
      */
-    void AddNote(MusLayerElement *element);
+    void AddElement(MusLayerElement *element);
     
 private:
     

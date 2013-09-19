@@ -27,12 +27,13 @@ MusTuplet::~MusTuplet()
 {
 }
 
-void MusTuplet::AddNote(MusLayerElement *element) {
+void MusTuplet::AddElement(MusLayerElement *element) {
     
-    if (!element->HasDurationInterface()) {
-        return;
-    }
+    //if (!element->HasDurationInterface()) {
+    //    return;
+    //}
     
+    element->SetParent( this );
     m_children.push_back(element);
     Modify();
 }
