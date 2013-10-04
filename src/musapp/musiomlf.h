@@ -13,9 +13,10 @@
 #endif
 #include "wx/wfstream.h"
 
-#include "musio.h"
 #include "musmlfdic.h"
-#include "muslayer.h"
+
+#include "mus/musio.h"
+#include "mus/muslayer.h"
 
 class ImPage;
 class AxProgressDlg;

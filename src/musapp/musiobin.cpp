@@ -19,19 +19,19 @@
 
 #include "musiobin.h"
 
-#include "muspage.h"
-#include "mussystem.h"
-#include "musstaff.h"
-#include "muslayer.h"
-#include "muslayerelement.h"
-#include "musbarline.h"
-#include "musclef.h"
-#include "musmensur.h"
-#include "musnote.h"
-#include "mussymbol.h"
-#include "musrest.h"
-#include "musneume.h"
-#include "musneumesymbol.h"
+#include "mus/muspage.h"
+#include "mus/mussystem.h"
+#include "mus/musstaff.h"
+#include "mus/muslayer.h"
+#include "mus/muslayerelement.h"
+#include "mus/musbarline.h"
+#include "mus/musclef.h"
+#include "mus/musmensur.h"
+#include "mus/musnote.h"
+#include "mus/mussymbol.h"
+#include "mus/musrest.h"
+#include "mus/musneume.h"
+#include "mus/musneumesymbol.h"
 
 
 //----------------------------------------------------------------------------
@@ -55,7 +55,7 @@
 
 
 MusBinInput_1_X::MusBinInput_1_X( MusDoc *doc, wxString filename, int flag ) :
-	MusFileInputStream( doc, filename )
+	MusFileInputStream( doc, filename.mb_str() )
 {
 	m_flag = flag;
 	m_vmaj = m_vmin = m_vrev = 10000; // arbitrary version, we assume we will never reach version 10000...

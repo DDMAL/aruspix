@@ -22,16 +22,12 @@ using std::max;
 
 #include "muswindow.h"
 #include "mustoolpanel.h"
-#include "musiomei.h"
 
-#include "muslayerelement.h"
-//#include "musstaff.h"
-//#include "musnote.h"
-////#include "mussymbol.h"
+#include "mus/musiomei.h"
+#include "msu/muslayerelement.h"
+#include "mus/muswxdc.h"
 
 #include "app/axgotodlg.h"
-
-#include "muswxdc.h"
 
 #include <iostream>
 #include <cstdlib>

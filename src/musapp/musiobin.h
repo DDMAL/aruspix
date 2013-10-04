@@ -13,7 +13,7 @@
 #endif
 #include "wx/wfstream.h"
 
-#include "musdoc.h"
+#include "mus/musdoc.h"
 
 enum
 {

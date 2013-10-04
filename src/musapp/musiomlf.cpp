@@ -18,21 +18,20 @@ using std::max;
 #include "wx/txtstrm.h"
 
 #include "musiomlf.h"
-
-#include "muspage.h"
-#include "mussystem.h"
-#include "musstaff.h"
-#include "muslayer.h"
-#include "muslayerelement.h"
-
-#include "musclef.h"
-#include "musmensur.h"
-#include "musnote.h"
-#include "musneume.h"
-#include "musrest.h"
-#include "mussymbol.h"
-
 #include "musmlfdic.h"
+
+#include "mus/muspage.h"
+#include "mus/mussystem.h"
+#include "mus/musstaff.h"
+#include "mus/muslayer.h"
+#include "mus/muslayerelement.h"
+
+#include "mus/musclef.h"
+#include "mus/musmensur.h"
+#include "mus/musnote.h"
+#include "mus/musneume.h"
+#include "mus/musrest.h"
+#include "mus/mussymbol.h"
 
 #include "im/impage.h"
 #include "im/imstaff.h"
@@ -312,7 +311,7 @@ wxString MusMLFSymbol::GetLabelType( )
 //----------------------------------------------------------------------------
 
 MusMLFOutput::MusMLFOutput( MusDoc *doc, wxString filename, MusMLFDictionary *dict, wxString model_symbol_name ) :
-    MusFileOutputStream( doc, filename )
+    MusFileOutputStream( doc, filename.mb_str() )
 {
     m_filename = filename;
     wxFileName::SplitPath( m_filename, NULL, &m_shortname, NULL );
@@ -1207,7 +1206,7 @@ MusLayerElement *MusMLFInput::ConvertSymbol( wxString line )
 }
 
 MusMLFInput::MusMLFInput( MusDoc *file, wxString filename ) :
-    MusFileInputStream( file, filename )
+    MusFileInputStream( file, filename.mb_str() )
 {
 	m_staff_i = m_staff_label = -1;
 }

@@ -15,8 +15,8 @@ using std::max;
 
 #include "mustoolpanel.h"
 #include "muswindow.h"
-#include "musstaff.h"
-//#include "muselement.h"
+
+#include "mus/musstaff.h"
 
 #include "app/axapp.h"
 
