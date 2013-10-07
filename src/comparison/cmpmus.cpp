@@ -24,7 +24,7 @@ using std::max;
 #include "im/impage.h"
 #include "im/imstaff.h"
 
-#include "mus/muswxdc.h"
+#include "musapp/muswxdc.h"
 #include "mus/musdoc.h"
 #include "mus/musstaff.h"
 #include "mus/muslayerelement.h"
@@ -115,7 +115,7 @@ void CmpMusController::LoadSource( MusLayerElement *element )
         return;
     }
     
-    wxString id, filename;
+    std::string id, filename;
     int i = 0;
     while ( element->GetSameAs( &id, &filename, i) ) {
         if ( filename == m_viewPtr->m_doc->m_fname ) {
@@ -124,7 +124,7 @@ void CmpMusController::LoadSource( MusLayerElement *element )
         i++;
     }
     
-    if ( filename.IsEmpty() ) {
+    if ( filename.empty() ) {
         // we did not find a sameAs with our filename
         return;
     }
@@ -240,12 +240,12 @@ void CmpMusWindow::SetCmpFile( CmpFile *cmpFile )
 
 void CmpMusWindow::OnPageChange( )
 {
-    if ( !m_page || m_page->m_surface.IsEmpty() ){
+    if ( !m_page || m_page->m_surface.empty() ){
         m_backgroundImage.Destroy();
         return;
     }
     
-    if ( !m_backgroundImage.LoadFile( m_cmpFilePtr->m_basename + m_page->m_surface )  ) {
+    if ( !m_backgroundImage.LoadFile( m_cmpFilePtr->m_basename +  wxString( m_page->m_surface.c_str() ) )  ) {
         wxLogDebug("Cannot load image '%s'", m_page->m_surface.c_str() );
     }
 }

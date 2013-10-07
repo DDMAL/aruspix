@@ -6,15 +6,10 @@
 /////////////////////////////////////////////////////////////////////////////
 
 
-// For compilers that support precompilation, includes "wx/wx.h".
-#include "wx/wxprec.h"
-
 #include "musmensur.h"
-
 
 int MusMensur::s_num = 3;
 int MusMensur::s_numBase = 2;
-   
 
 //----------------------------------------------------------------------------
 // MusMensur

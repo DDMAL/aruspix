@@ -5,21 +5,21 @@
 // Copyright (c) Authors and others. All rights reserved.
 /////////////////////////////////////////////////////////////////////////////
 
-
-// For compilers that support precompilation, includes "wx/wx.h".
-#include "wx/wxprec.h"
-
-#include "musio.h"
 #include "muslayer.h"
-#include "muslayerelement.h"
 
+//----------------------------------------------------------------------------
+
+#include <assert.h>
+
+//----------------------------------------------------------------------------
+
+#include "musclef.h"
 #include "musdef.h"
 #include "musdoc.h"
-#include "musclef.h"
+#include "musio.h"
+#include "muslayerelement.h"
 #include "musnote.h"
 #include "mussymbol.h"
-
-#include <typeinfo>
 
 // sorting function
 int SortElements(MusLayerElement **first, MusLayerElement **second)
@@ -39,7 +39,7 @@ int SortElements(MusLayerElement **first, MusLayerElement **second)
 MusLayer::MusLayer( int logLayerNb ):
 	MusDocObject()
 {
-    wxASSERT( logLayerNb > 0 );  
+    assert( logLayerNb > 0 );
     m_logLayerNb = logLayerNb;
     
 	Clear( );
@@ -88,7 +88,7 @@ void MusLayer::CopyAttributes( MusLayer *nlayer )
 
 int MusLayer::GetLayerNo() const
 {
-    wxASSERT_MSG( m_parent, "LaidOutStaff cannot be NULL");
+    assert( m_parent ); // LaidOutStaff cannot be NULL
     
     return m_parent->GetChildIndex( this );
 }
@@ -391,7 +391,7 @@ void MusLayer::RemoveClefAndCustos()
 static char armatKey[] = {PITCH_F,PITCH_C,PITCH_G,PITCH_D,PITCH_A,PITCH_E,PITCH_B};
 int MusLayer::armatDisp ( MusDC *dc )
 {
-	wxASSERT_MSG( dc , "DC cannot be NULL");
+	assert( dc ); // DC cannot be NULL
 
 	if ( !Check() )
 		return 0;

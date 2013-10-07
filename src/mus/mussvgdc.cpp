@@ -5,21 +5,24 @@
 // Copyright (c) Authors and others. All rights reserved.
 /////////////////////////////////////////////////////////////////////////////
 
-//#include <iostream>
 
-// For compilers that support precompilation, includes "wx/wx.h".
-#include "wx/wxprec.h"
-
-#include "wx/filefn.h"
-
-//#include "wx/docview.h"
-//#include "wx/timer.h"
-
-#include "musleipzigbbox.h"
 #include "mussvgdc.h"
+
+//----------------------------------------------------------------------------
+
+#include <fstream>
+
+//----------------------------------------------------------------------------
+
 #include "musdef.h"
 #include "musdoc.h"
+#include "musleipzigbbox.h"
 #include "musrc.h"
+
+//----------------------------------------------------------------------------
+
+#include <math.h>
+
 
 #define space " "
 #define semicolon ";"
@@ -34,7 +37,7 @@ static inline double RadToDeg(double deg) { return (deg * 180.0) / M_PI; }
 //----------------------------------------------------------------------------
 
 
-MusSvgDC::MusSvgDC (wxString f, int width, int height):
+MusSvgDC::MusSvgDC (std::string f, int width, int height):
     MusDC()
 {	
 	
@@ -48,8 +51,8 @@ MusSvgDC::MusSvgDC (wxString f, int width, int height):
     m_originX = 0;
     m_originY = 0;
     
-    SetBrush( AxBLACK, wxSOLID );
-    SetPen( AxBLACK, 1, wxSOLID );
+    SetBrush( AxBLACK, AxSOLID );
+    SetPen( AxBLACK, 1, AxSOLID );
 
     //m_font  = *wxNORMAL_FONT;
 
@@ -61,7 +64,8 @@ MusSvgDC::MusSvgDC (wxString f, int width, int height):
     m_committed = false;
     m_filename = f ;
     
-    m_outfile = new wxMemoryOutputStream() ;   
+    m_outfile.str("");
+    m_outfile.clear();
 }
 
 
@@ -70,30 +74,17 @@ MusSvgDC::~MusSvgDC ( )
     if (!m_committed) {
         Commit();
     }
-    delete m_outfile ;
 }
 
 
-bool MusSvgDC::copy_wxTransferFileToStream(const wxString& filename, wxFileOutputStream& stream)
+bool MusSvgDC::copy_wxTransferFileToStream(const std::string& filename, std::ofstream& dest)
 {
-    wxFFile file(filename, _T("rb"));
-    if ( !file.IsOpened() )
-        return false;
     
-    char buf[4096];
+    std::ifstream source( filename.c_str(), std::ios::binary );
     
-    size_t nRead;
-    do
-    {
-        nRead = file.Read(buf, WXSIZEOF(buf));
-        if ( file.Error() )
-            return false;
-        
-        stream.Write(buf, nRead);
-        if ( !stream )
-            return false;
-    }
-    while ( !file.Eof() );
+    dest << source.rdbuf();
+    
+    source.close();
     
     return true;
 }
@@ -104,8 +95,8 @@ void MusSvgDC::Commit() {
         return;
     }
 
-    wxFileOutputStream outfile(m_filename);
-    if (!outfile.Ok()) {
+    std::ofstream outfile(m_filename.c_str());
+    if (!outfile.is_open()) {
         return;
     }
     
@@ -120,49 +111,40 @@ void MusSvgDC::Commit() {
     WriteLine("</svg>\n") ;
 
     // header
-    wxString s ;
-    s.Printf ( "<?xml version=\"1.0\" encoding=\"ISO-8859-1\" standalone=\"no\"?>\n<svg width=\"%dpx\" height=\"%dpx\"",  
-            (int)((double)m_width * m_userScaleX), (int)((double)m_height * m_userScaleY));
+    std::string s = Mus::StringFormat ( "<?xml version=\"1.0\" encoding=\"ISO-8859-1\" standalone=\"no\"?>\n<svg width=\"%dpx\" height=\"%dpx\"", (int)((double)m_width * m_userScaleX), (int)((double)m_height * m_userScaleY));
     s += " version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\"  xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n";
     
-    const wxWX2MBbuf buf = s.mb_str(wxConvUTF8);
-    outfile.Write(buf, strlen((const char *)buf));
+    outfile << s;
     
-    // insert the def for the leipzig glyphes if any
-    if (m_leipzig_glyphs.Count() > 0)
+    if (m_leipzig_glyphs.size() > 0)
     {
-        s = "\t<defs>\n";
-        outfile.Write(s, strlen(s));
-        for (i = 0; i < (int)m_leipzig_glyphs.Count(); i++) {
-            s = "\t\t";
-            outfile.Write(s, strlen(s));
-            copy_wxTransferFileToStream( MusDoc::GetResourcesPath() + "/svg/" + m_leipzig_glyphs[i] + ".xml", outfile );
+        outfile << "\t<defs>\n";
+        
+        std::vector<std::string>::const_iterator it;
+        for(it = m_leipzig_glyphs.begin(); it != m_leipzig_glyphs.end(); ++i)
+        {
+            outfile << "\t\t";
+            copy_wxTransferFileToStream( Mus::GetResourcesPath() + "/svg/" + (*it) + ".xml", outfile );
         }
-        s = "\t</defs>\n";
-        outfile.Write(s, strlen(s));
-    
+        outfile << "\t</defs>\n";
     }
-    wxMemoryInputStream input(*m_outfile);
-    input.SeekI(0);
-    //input.Read( *m_outfile );
-    outfile.Write( input );
+    outfile << m_outfile.str();
     m_committed = true;
 }
 
 
-void MusSvgDC::WriteLine( wxString string )
+void MusSvgDC::WriteLine( std::string string )
 {
-    wxString output;
-    output.Append( '\t', m_indents );
+    std::string output;
+    output.append( m_indents, '\t' );
     output += string + "\n"; 
-    const wxWX2MBbuf buf = output.mb_str(wxConvUTF8);
-    m_outfile->Write(buf, strlen((const char *)buf));
+    m_outfile << output;
 }
 
 
-void MusSvgDC::StartGraphic( MusDocObject *object, wxString gClass, wxString gId )
+void MusSvgDC::StartGraphic( MusDocObject *object, std::string gClass, std::string gId )
 {
-    WriteLine(wxString::Format("<g class=\"%s\" id=\"%s\" style=\"%s %s %s %s\">", gClass.c_str(), gId.c_str(), m_penColour.c_str(), m_penStyle.c_str(),
+    WriteLine(Mus::StringFormat("<g class=\"%s\" id=\"%s\" style=\"%s %s %s %s\">", gClass.c_str(), gId.c_str(), m_penColour.c_str(), m_penStyle.c_str(),
         m_brushColour.c_str(), m_brushStyle.c_str() ) );
     m_graphics++;
     m_indents++;
@@ -179,7 +161,7 @@ void MusSvgDC::EndGraphic(MusDocObject *object, MusRC *rc )
 
 void MusSvgDC::StartPage( )
 {
-    WriteLine(wxString::Format("<g class=\"page\" transform=\"translate(%d, %d)  scale(%f, %f)\">", 
+    WriteLine(Mus::StringFormat("<g class=\"page\" transform=\"translate(%d, %d)  scale(%f, %f)\">", 
         (int)((double)m_originX * m_userScaleX), (int)((double)m_originY * m_userScaleY), m_userScaleX, m_userScaleY ) );
     m_graphics++;
     m_indents++;
@@ -199,10 +181,10 @@ void MusSvgDC::SetBrush( int colour, int style )
     m_brushColour = "fill:#" + GetColour(colour) + semicolon;
     switch ( style )
     {
-        case wxSOLID :
+        case AxSOLID :
             m_brushStyle = "fill-opacity:1.0; ";
             break ;
-        case wxTRANSPARENT:
+        case AxTRANSPARENT:
             m_brushStyle = "fill-opacity:0.0; ";
             break ;
         default :
@@ -228,13 +210,13 @@ void MusSvgDC::SetBackgroundMode( int mode )
 void MusSvgDC::SetPen( int colour, int width, int style )
 {
     m_penColour = "stroke:#" + GetColour(colour)  + semicolon;
-    m_penWidth = "stroke-width:" + wxString::Format("%d", width) + semicolon;
+    m_penWidth = "stroke-width:" + Mus::StringFormat("%d", width) + semicolon;
     switch ( style )
     {
-        case wxSOLID :
+        case AxSOLID :
             m_penStyle = "stroke-opacity:1.0; ";
             break ;
-        case wxTRANSPARENT:
+        case AxTRANSPARENT:
             m_penStyle = "stroke-opacity:0.0; ";
             break ;
         default :
@@ -264,12 +246,12 @@ void MusSvgDC::SetTextBackground( int colour )
        
 void MusSvgDC::ResetBrush( )
 {
-    SetBrush( AxBLACK, wxSOLID );
+    SetBrush( AxBLACK, AxSOLID );
 }
         
 void MusSvgDC::ResetPen( )
 {
-    SetPen( AxBLACK, 1, wxSOLID );
+    SetPen( AxBLACK, 1, AxSOLID );
 } 
 
 void MusSvgDC::SetLogicalOrigin( int x, int y ) 
@@ -285,14 +267,14 @@ void MusSvgDC::SetUserScale( double xScale, double yScale )
 }       
 
 // Copied from bBoxDc, TODO find another more generic solution
-void MusSvgDC::GetTextExtent( wxString& string, int *w, int *h )
+void MusSvgDC::GetTextExtent( const std::string& string, int *w, int *h )
 {
     int x, y, partial_w, partial_h;
     
     *w = 0;
     *h = 0;
     
-    for (unsigned int i = 0; i < string.Len(); i++) {
+    for (unsigned int i = 0; i < string.length(); i++) {
         
         MusLeipzigBBox::GetCharBounds(string.c_str()[i], &x, &y, &partial_w, &partial_h);
         
@@ -315,7 +297,7 @@ MusPoint MusSvgDC::GetLogicalOrigin( )
 // Drawing mething
 void MusSvgDC::DrawComplexBezierPath(int x, int y, int bezier1_coord[6], int bezier2_coord[6])
 {
-    WriteLine( wxString::Format("<path d=\"M%d,%d C%d,%d %d,%d %d,%d C%d,%d %d,%d %d,%d\" style=\"fill:#000; fill-opacity:1.0; stroke:#000000; stroke-linecap:round; stroke-linejoin:round; stroke-opacity:1.0; stroke-opacity:1.0; stroke-width:1\" />", 
+    WriteLine( Mus::StringFormat("<path d=\"M%d,%d C%d,%d %d,%d %d,%d C%d,%d %d,%d %d,%d\" style=\"fill:#000; fill-opacity:1.0; stroke:#000000; stroke-linecap:round; stroke-linejoin:round; stroke-opacity:1.0; stroke-opacity:1.0; stroke-width:1\" />", 
                                 x, y, // M command
                                 bezier1_coord[0], bezier1_coord[1], bezier1_coord[2], bezier1_coord[3], bezier1_coord[4], bezier1_coord[5], // First bezier
                                 bezier2_coord[0], bezier2_coord[1], bezier2_coord[2], bezier2_coord[3], bezier2_coord[4], bezier2_coord[5] // Second Bezier
@@ -333,7 +315,7 @@ void MusSvgDC::DrawEllipse(int x, int y, int width, int height)
     int rh = height / 2;
     int rw = width  / 2;
 
-    WriteLine(wxString::Format("<ellipse cx=\"%d\" cy=\"%d\" rx=\"%d\" ry=\"%d\" />", x+rw,y+rh, rw, rh ));
+    WriteLine(Mus::StringFormat("<ellipse cx=\"%d\" cy=\"%d\" rx=\"%d\" ry=\"%d\" />", x+rw,y+rh, rw, rh ));
 }
 
         
@@ -358,7 +340,7 @@ void MusSvgDC::DrawEllipticArc(int x, int y, int width, int height, double start
 
     //known bug: SVG draws with the current pen along the radii, but this does not happen in wxMSW
 
-    wxString s ;
+    std::string s ;
     //radius
     double rx = width / 2 ;
     double ry = height / 2 ;
@@ -384,11 +366,11 @@ void MusSvgDC::DrawEllipticArc(int x, int y, int width, int height, double start
     if ( fabs(theta2 - theta1) > M_PI) fSweep = 1; else fSweep = 0 ;
 
     // this version closes the arc
-    //s.Printf ( wxT("<path d=\"M%d %d A%d %d 0.0 %d %d  %d %d L %d %d z "),
+    //s.Printf ( "<path d=\"M%d %d A%d %d 0.0 %d %d  %d %d L %d %d z ",
     //    int(xs), int(ys), int(rx), int(ry),
     //    fArc, fSweep, int(xe), int(ye), int(xc), int(yc)  );
 
-    WriteLine( wxString::Format("<path d=\"M%d %d A%d %d 0.0 %d %d  %d %d \" />",
+    WriteLine( Mus::StringFormat("<path d=\"M%d %d A%d %d 0.0 %d %d  %d %d \" />",
         int(xs), int(ys), int(rx), int(ry),
         fArc, fSweep, int(xe), int(ye) ) );
 }
@@ -396,17 +378,17 @@ void MusSvgDC::DrawEllipticArc(int x, int y, int width, int height, double start
               
 void MusSvgDC::DrawLine(int x1, int y1, int x2, int y2)
 {
-    WriteLine( wxString::Format("<path d=\"M%d %d L%d %d\" style=\"%s\" />", x1,y1,x2,y2, m_penWidth.c_str()) );
+    WriteLine( Mus::StringFormat("<path d=\"M%d %d L%d %d\" style=\"%s\" />", x1,y1,x2,y2, m_penWidth.c_str()) );
 }
  
                
 void MusSvgDC::DrawPolygon(int n, MusPoint points[], int xoffset, int yoffset, int fill_style)
 {
 
-    wxString s ;
+    std::string s ;
     s = "<polygon style=\"";
     //if ( fillStyle == wxODDEVEN_RULE )
-    //    s = s + wxT("fill-rule:evenodd; ");
+    //    s = s + "fill-rule:evenodd; ";
     //else
     s += "fill-rule:nonzero; ";
 
@@ -414,10 +396,10 @@ void MusSvgDC::DrawPolygon(int n, MusPoint points[], int xoffset, int yoffset, i
 
     for (int i = 0; i < n;  i++)
     {
-        s += wxString::Format("%d,%d ", points [i].x+xoffset, points[i].y+yoffset );
+        s += Mus::StringFormat("%d,%d ", points [i].x+xoffset, points[i].y+yoffset );
         //CalcBoundingBox ( points [i].x+xoffset, points[i].y+yoffset);
     }
-    s += wxT("\" /> ") ;
+    s += "\" /> " ;
     WriteLine(s);
 }
     
@@ -431,7 +413,7 @@ void MusSvgDC::DrawRectangle(int x, int y, int width, int height)
 void MusSvgDC::DrawRoundedRectangle(int x, int y, int width, int height, double radius)
 {
 
-    wxString s ;
+    std::string s ;
     
     // negative heights or widths are not allowed in SVG
     if ( height < 0 ) {
@@ -443,12 +425,12 @@ void MusSvgDC::DrawRoundedRectangle(int x, int y, int width, int height, double 
         x -= width;
     }   
 
-    WriteLine ( wxString::Format(" <rect x=\"%d\" y=\"%d\" width=\"%d\" height=\"%d\" rx=\"%.2g\" />", x, y, width, height, radius ) );
+    WriteLine ( Mus::StringFormat(" <rect x=\"%d\" y=\"%d\" width=\"%d\" height=\"%d\" rx=\"%.2g\" />", x, y, width, height, radius ) );
 
 }
 
         
-void MusSvgDC::DrawText(const wxString& text, int x, int y)
+void MusSvgDC::DrawText(const std::string& text, int x, int y)
 {
     //DrawRotatedText( text, x, y, 0.0 );
     DrawMusicText(text, x, y);
@@ -456,52 +438,52 @@ void MusSvgDC::DrawText(const wxString& text, int x, int y)
 
 
 
-void MusSvgDC::DrawRotatedText(const wxString& text, int x, int y, double angle)
+void MusSvgDC::DrawRotatedText(const std::string& text, int x, int y, double angle)
 {
     //known bug; if the font is drawn in a scaled DC, it will not behave exactly as wxMSW
 
-    wxString s;
+    std::string s;
 
     // calculate bounding box
-    wxCoord w, h, desc;
+    int w, h, desc;
     //DoGetTextExtent(sText, &w, &h, &desc);
     w = h = desc = 0;
 
     //double rad = DegToRad(angle);
 
     
-    //if (m_backgroundMode == wxSOLID)
+    //if (m_backgroundMode == AxSOLID)
     {
         WriteLine("/*- MusSVGFileDC::DrawRotatedText - Backgound not implemented */") ;
     }
     /*
-    s = wxString::Format(" <text x=\"%d\" y=\"%d\" dx=\"%d\" dy=\"%d\" ", x, y, 1, 1) ;
+    s = Mus::StringFormat(" <text x=\"%d\" y=\"%d\" dx=\"%d\" dy=\"%d\" ", x, y, 1, 1) ;
 
     // For some reason, some browsers (e.g., Chrome) do not like spaces or dots in font names...
     sTmp.Replace(" ", "");
     sTmp.Replace(".", "");
-    if (sTmp.Len () > 0)  s = s + wxT("style=\"font-family: '") + sTmp + wxT("'; ");
-    else s = s + wxT("style=\" ") ;
+    if (sTmp.Len () > 0)  s = s + "style=\"font-family: '" + sTmp + "'; ";
+    else s = s + "style=\" " ;
 
-    wxString fontweights [3] = { wxT("normal"), wxT("lighter"), wxT("bold") };
-    s = s + wxT("font-weight:") + fontweights[m_font.GetWeight() - wxNORMAL] + semicolon + space;
+    std::string fontweights [3] = { "normal", "lighter", "bold" };
+    s = s + "font-weight:" + fontweights[m_font.GetWeight() - wxNORMAL] + semicolon + space;
 
-    wxString fontstyles [5] = { wxT("normal"), wxT("style error"), wxT("style error"), wxT("italic"), wxT("oblique") };
-    s = s + wxT("font-style:") + fontstyles[m_font.GetStyle() - wxNORMAL] + semicolon  + space;
+    std::string fontstyles [5] = { "normal", "style error", "style error", "italic", "oblique" };
+    s = s + "font-style:" + fontstyles[m_font.GetStyle() - wxNORMAL] + semicolon  + space;
 
-    sTmp.Printf (wxT("font-size:%dpt; "), (int)((double)m_font.GetPointSize() * 1) );
+    sTmp.Printf ("font-size:%dpt; ", (int)((double)m_font.GetPointSize() * 1) );
     s = s + sTmp ;
     // remove the color information because normaly already in the graphic element
-    //s = s + wxT("fill:#") + wxColStr (m_textForegroundColour) + wxT("; stroke:#") + wxColStr (m_textForegroundColour) + wxT("; ") ;
-    sTmp.Printf ( wxT("stroke-width:0;\"  transform=\"rotate( %.2g %d %d )  \" >"),  -angle, x,y ) ;
-    s = s + sTmp + sText + wxT("</text> ") + newline ;
+    //s = s + "fill:#" + wxColStr (m_textForegroundColour) + "; stroke:#" + wxColStr (m_textForegroundColour) + "; " ;
+    sTmp.Printf ( "stroke-width:0;\"  transform=\"rotate( %.2g %d %d )  \" >",  -angle, x,y ) ;
+    s = s + sTmp + sText + "</text> " + newline ;
 
     write(s);
     */
 }
 
-wxString FilenameLookup(unsigned char c) {
-    wxString glyph;
+std::string FilenameLookup(unsigned char c) {
+    std::string glyph;
     switch (c) {
             /* figures */
         case 48: glyph = "figure_0"; break;
@@ -588,24 +570,26 @@ wxString FilenameLookup(unsigned char c) {
     return glyph;
 }
 
-void MusSvgDC::DrawMusicText(const wxString& text, int x, int y)
+void MusSvgDC::DrawMusicText(const std::string& text, int x, int y)
 {
 
     int w, h, gx, gy;
         
     // print chars one by one
-    for (unsigned int i = 0; i < text.Len(); i++) {
+    for (unsigned int i = 0; i < text.length(); i++) {
         unsigned char c = (unsigned char)text[i];
         
-        wxString glyph = FilenameLookup(c);
+        std::string glyph = FilenameLookup(c);
         
         // Add the glyph to the array for the <defs>
-        if (m_leipzig_glyphs.Index(glyph) == wxNOT_FOUND) {
-            m_leipzig_glyphs.Add(glyph);
+        std::vector<std::string>::const_iterator it = std::find(m_leipzig_glyphs.begin(), m_leipzig_glyphs.end(), glyph);
+        if (it == m_leipzig_glyphs.end())
+        {
+            m_leipzig_glyphs.push_back( glyph );
         }
         
         // Write the char in the SVG
-        WriteLine ( wxString::Format("<use xlink:href=\"#%s\" transform=\"translate(%d, %d) scale(%f, %f)\"/>",
+        WriteLine ( Mus::StringFormat("<use xlink:href=\"#%s\" transform=\"translate(%d, %d) scale(%f, %f)\"/>",
                                      glyph.c_str(), x, y, ((double)(m_font.GetPointSize() / LEIPZIG_UNITS_PER_EM)),
                                      ((double)(m_font.GetPointSize() / LEIPZIG_UNITS_PER_EM)) ) );
         
@@ -632,8 +616,11 @@ void MusSvgDC::DrawBackgroundImage( int x, int y )
 }
 
 
-wxString MusSvgDC::GetColour( int colour )
-{ 
+std::string MusSvgDC::GetColour( int colour )
+{
+    std::stringstream ss;
+    ss << std::hex;
+
     switch ( colour )
     {
     case (AxBLACK): return "000000";
@@ -647,8 +634,9 @@ wxString MusSvgDC::GetColour( int colour )
         int blue =  (colour & 255);
         int green = (colour >> 8) & 255;
         int red = (colour >> 16) & 255;
-        wxString s = wxDecToHex(char(red)) + wxDecToHex(char(green)) + wxDecToHex(char(blue)) ;
-        return s;
+        ss << red << green << blue;
+        //std::strin = wxDecToHex(char(red)) + wxDecToHex(char(green)) + wxDecToHex(char(blue)) ;  // ax3
+        return ss.str();
     }
 }
 

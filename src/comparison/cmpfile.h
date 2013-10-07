@@ -19,7 +19,7 @@
 
 #include "app/axfile.h"
 #include "recognition/recbookfile.h"
-#include "mus/musiomlf.h"
+#include "musapp/musiomlf.h"
 
 #include "cmp_wdr.h"
 

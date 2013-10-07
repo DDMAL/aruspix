@@ -1,23 +1,26 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        musstaff.cpp
+// Name:        musrc_beam.cpp
 // Author:      Laurent Pugin
 // Created:     2005
 // Copyright (c) Author and others. All rights reserved.
 /////////////////////////////////////////////////////////////////////////////
 
-// For compilers that support precompilation, includes "wx/wx.h".
-#include "wx/wxprec.h"
+
+#include "musrc.h"
+
+//----------------------------------------------------------------------------
 
 #include <algorithm>
-using std::min;
-using std::max;
+
+//----------------------------------------------------------------------------
 
 #include "musbeam.h"
-#include "musrc.h"
-#include "musnote.h"
-#include "muslayerelement.h"
 #include "muslayer.h"
+#include "muslayerelement.h"
+#include "musnote.h"
 #include "musstaff.h"
+
+//----------------------------------------------------------------------------
 
 #include <math.h>
 
@@ -181,7 +184,7 @@ void MusRC::DrawBeam(  MusDC *dc, MusLayer *layer, MusBeam *beam, MusStaff *staf
 	do
 	{
         
-        wxLogDebug("-> %s", chk->MusClassName().c_str() );
+        Mus::LogDebug("-> %s", chk->MusClassName().c_str() );
         
         if ( chk->IsNote() ) {
             k = ((MusNote*)chk)->m_colored ? ((MusNote*)chk)->m_dur+1 : ((MusNote*)chk)->m_dur;
@@ -221,9 +224,9 @@ void MusRC::DrawBeam(  MusDC *dc, MusLayer *layer, MusBeam *beam, MusStaff *staf
 			}***/
             if (chk->IsNote())	// ‚viter de prendre en compte silences
             {
-                shortest = max (k,shortest);
+                shortest = std::max(k,shortest);
                 if (!fb.mq_val && k != valref) fb.mq_val = ON; /* plus d'une valeur est presente*/
-                valref = min (k,valref);
+                valref = std::min(k,valref);
             }
 			ct++;
 		}
@@ -252,7 +255,7 @@ void MusRC::DrawBeam(  MusDC *dc, MusLayer *layer, MusBeam *beam, MusStaff *staf
 	}
 */
     
-    wxLogDebug("ct %d", ct );
+    Mus::LogDebug("ct %d", ct );
 
 	_ct = ct - 1;		/* compte d'entree moins 1 */
 
@@ -294,8 +297,8 @@ void MusRC::DrawBeam(  MusDC *dc, MusLayer *layer, MusBeam *beam, MusStaff *staf
 						(crd+i)->b = crd[i].chk->m_y_drawing + _yy[0];
 					}
 		}
-		high= max ((double)(crd+i)->b,high);		/* enregistrement des extremes */
-		low = min ((double)(crd+i)->b,low);
+		high= std::max((double)(crd+i)->b,high);		/* enregistrement des extremes */
+		low = std::min((double)(crd+i)->b,low);
         /* lie au choix, plus bas, d'introduire l'accelerateur pour sy_up...
         if ((crd+i)->b==high) highIndice = i;
         if ((crd+i)->b==low) lowIndice = i;
@@ -342,8 +345,8 @@ void MusRC::DrawBeam(  MusDC *dc, MusLayer *layer, MusBeam *beam, MusStaff *staf
         deltablanc = m_doc->m_beamWhiteWidth[staff->staffSize];
     }
     else
-    {	deltanbbar = max (2, (m_doc->m_beamWidth[staff->staffSize]/2));
-        deltablanc = max (2, (m_doc->m_beamWhiteWidth[staff->staffSize]-1));
+    {	deltanbbar = std::max(2, (m_doc->m_beamWidth[staff->staffSize]/2));
+        deltablanc = std::max(2, (m_doc->m_beamWhiteWidth[staff->staffSize]-1));
     }
 	deltabar = deltanbbar + deltablanc;
 
@@ -692,7 +695,7 @@ if (fPente)
                 }
 
                 fbarre_y = barre_y;	/* stockage */
-                for (k=0; k<=min((mx_f[_mif]?_mif:(_mif-1)),MAX_MIF); k++)
+                for (k=0; k<=std::min((mx_f[_mif]?_mif:(_mif-1)),MAX_MIF); k++)
                 {
                     /* "constantes" de corr. definissant origine du calcul des
                      * y, dans les cas de partage entre portees automatiques;

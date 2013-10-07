@@ -1,46 +1,46 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        musrc_neumes.cpp
+// Name:        musrc_element.cpp
 // Author:      Laurent Pugin and Chris Niven
 // Created:     2011
 // Copyright (c) Authors and others. All rights reserved.
 /////////////////////////////////////////////////////////////////////////////
 
-// For compilers that support precompilation, includes "wx/wx.h".
-#include "wx/wxprec.h"
 
 #include "musrc.h"
-#include "muslayerelement.h"
+
+//----------------------------------------------------------------------------
+
+#include <assert.h>
+#include <sstream>
+#include <typeinfo>
+
+//----------------------------------------------------------------------------
 
 #include "musapp.h"
 #include "musbarline.h"
-#include "musleipzigbbox.h"
+#include "musbeam.h"
 #include "musclef.h"
+#include "muskeysig.h"
+#include "muslayerelement.h"
+#include "musleipzigbbox.h"
 #include "musmensur.h"
-#include "musneume.h"
 #include "musnote.h"
 #include "musrest.h"
 #include "mussymbol.h"
-#include "muskeysig.h"
-#include "musbeam.h"
 #include "mustie.h"
 #include "mustuplet.h"
-
-#include <typeinfo>
-using std::min;
-using std::max;
 
 //----------------------------------------------------------------------------
 // MusRC - MusLayerElement
 //----------------------------------------------------------------------------
-
 
 int MusRC::s_drawingLigX[2], MusRC::s_drawingLigY[2];	// pour garder coord. des ligatures    
 bool MusRC::s_drawingLigObliqua = false;	// marque le 1e passage pour une oblique
 
 void MusRC::DrawElement( MusDC *dc, MusLayerElement *element, MusLayer *layer, MusStaff *staff )
 {
-    wxASSERT_MSG( layer, "Pointer to layer cannot be NULL" );
-    wxASSERT_MSG( staff, "Pointer to staff cannot be NULL" );
+    assert(layer); // Pointer to layer cannot be NULL"
+    assert(staff); // Pointer to staff cannot be NULL"
     
     int previousColor = m_currentColour;
 
@@ -66,9 +66,6 @@ void MusRC::DrawElement( MusDC *dc, MusLayerElement *element, MusLayer *layer, M
     else if (dynamic_cast<MusMensur*>(element)) {
         DrawMensur(dc, element, layer, staff);
     }
-    else if (dynamic_cast<MusNeume*>(element)) {
-        DrawNeume(dc, element, layer, staff);
-    }
     else if (dynamic_cast<MusNote*>(element)) {
         DrawDurationElement(dc, element, layer, staff);
     }
@@ -93,8 +90,8 @@ void MusRC::DrawElement( MusDC *dc, MusLayerElement *element, MusLayer *layer, M
 
 void MusRC::DrawDurationElement( MusDC *dc, MusLayerElement *element, MusLayer *layer, MusStaff *staff )
 {
-    wxASSERT_MSG( layer, "Pointer to layer cannot be NULL" );
-    wxASSERT_MSG( staff, "Pointer to staff cannot be NULL" );
+    assert(layer); // Pointer to layer cannot be NULL"
+    assert(staff); // Pointer to staff cannot be NULL"
 
     MusDurationInterface *durElement = dynamic_cast<MusDurationInterface*>(element);
 	if ( !durElement )
@@ -109,7 +106,7 @@ void MusRC::DrawDurationElement( MusDC *dc, MusLayerElement *element, MusLayer *
         //if ( !m_lyricMode && BelongsToTheNote( m_currentElement ) ) // the current element is a lyric that belongs to the note we are drawing
         //    m_currentColour = AxCYAN;
             
-        dc->StartGraphic( element, "note", wxString::Format("s_%d_%d_%d", staff->GetId(), layer->voix, element->GetId() ) );
+        dc->StartGraphic( element, "note", Mus::StringFormat("s_%d_%d_%d", staff->GetId(), layer->voix, element->GetId() ) );
         element->m_y_drawing = CalculatePitchPosY( staff, note->m_pname, layer->GetClefOffset( element ), oct );
         
         if (!note->m_chord) // && (!pelement->ElemInvisible || illumine))
@@ -125,7 +122,7 @@ void MusRC::DrawDurationElement( MusDC *dc, MusLayerElement *element, MusLayer *
         MusRest *rest = dynamic_cast<MusRest*>(element);
         int oct = rest->m_oct - 4;
 
-        dc->StartGraphic( element, "rest", wxString::Format("s_%d_%d_%d", staff->GetId(), layer->voix, element->GetId()) );
+        dc->StartGraphic( element, "rest", Mus::StringFormat("s_%d_%d_%d", staff->GetId(), layer->voix, element->GetId()) );
         //if (!transp_sil)
 		//	pnote->code = getSilencePitch (pelement);
         
@@ -161,12 +158,12 @@ void MusRC::DrawDurationElement( MusDC *dc, MusLayerElement *element, MusLayer *
 
 void MusRC::DrawBeamElement(MusDC *dc, MusLayerElement *element, MusLayer *layer, MusStaff *staff) {
     
-    wxASSERT_MSG( layer, "Pointer to layer cannot be NULL" );
-    wxASSERT_MSG( staff, "Pointer to staff cannot be NULL" );
+    assert(layer); // Pointer to layer cannot be NULL"
+    assert(staff); // Pointer to staff cannot be NULL"
     
     MusBeam *beam = dynamic_cast<MusBeam*>(element);
 
-    dc->StartGraphic( element, "beam", wxString::Format("s_%d_%d_%d", staff->GetId(), layer->voix, element->GetId() ) );
+    dc->StartGraphic( element, "beam", Mus::StringFormat("s_%d_%d_%d", staff->GetId(), layer->voix, element->GetId() ) );
     
     for (unsigned int i = 0; i < beam->m_children.size(); i++) {
         if ( dynamic_cast<MusLayerElement*>(beam->m_children[i]) ) {
@@ -183,12 +180,12 @@ void MusRC::DrawBeamElement(MusDC *dc, MusLayerElement *element, MusLayer *layer
 
 void MusRC::DrawTupletElement(MusDC *dc, MusLayerElement *element, MusLayer *layer, MusStaff *staff) {
     
-    wxASSERT_MSG( layer, "Pointer to layer cannot be NULL" );
-    wxASSERT_MSG( staff, "Pointer to staff cannot be NULL" );
+    assert(layer); // Pointer to layer cannot be NULL"
+    assert(staff); // Pointer to staff cannot be NULL"
     
     MusTuplet *tuplet = dynamic_cast<MusTuplet*>(element);
     
-    dc->StartGraphic( element, "tuplet", wxString::Format("s_%d_%d_%d", staff->GetId(), layer->voix, element->GetId() ) );
+    dc->StartGraphic( element, "tuplet", Mus::StringFormat("s_%d_%d_%d", staff->GetId(), layer->voix, element->GetId() ) );
     
     // Draw the inner elements
     for (unsigned int i = 0; i < tuplet->m_children.size(); i++) {
@@ -213,9 +210,9 @@ void MusRC::DrawTupletElement(MusDC *dc, MusLayerElement *element, MusLayer *lay
 
 void MusRC::DrawNote ( MusDC *dc, MusLayerElement *element, MusLayer *layer, MusStaff *staff)
 {
-    wxASSERT_MSG( layer, "Pointer to layer cannot be NULL" );
-    wxASSERT_MSG( staff, "Pointer to staff cannot be NULL" );
-    wxASSERT_MSG( dynamic_cast<MusNote*>(element), "Element must be a MusNote" );
+    assert(layer); // Pointer to layer cannot be NULL"
+    assert(staff); // Pointer to staff cannot be NULL"
+    assert(dynamic_cast<MusNote*>(element)); // Element must be a MusNote"
     
     MusNote *note = dynamic_cast<MusNote*>(element);
     
@@ -277,7 +274,7 @@ void MusRC::DrawNote ( MusDC *dc, MusLayerElement *element, MusLayer *layer, Mus
  	}
 	else if (note->m_dur==DUR_1)
 	{	
-        if (in (note->m_headshape, LOSANGEVIDE, OPTIONLIBRE))
+        if ( is_in (note->m_headshape, LOSANGEVIDE, OPTIONLIBRE))
 			fontNo = LEIPZIG_OFFSET_NOTE_HEAD+note->m_headshape;
 		else if (note->m_colored) // && !note->m_ligObliqua) // in WG, use of obliq for coloration? 
 			fontNo = LEIPZIG_HEAD_WHOLE_FILLED;
@@ -289,7 +286,7 @@ void MusRC::DrawNote ( MusDC *dc, MusLayerElement *element, MusLayer *layer, Mus
 	}
 	else
 	{	
-        if (in (note->m_headshape, LOSANGEVIDE, OPTIONLIBRE))
+        if ( is_in (note->m_headshape, LOSANGEVIDE, OPTIONLIBRE))
 			fontNo = LEIPZIG_OFFSET_NOTE_HEAD+note->m_headshape;
 
 		else if (note->m_colored || formval == DUR_2)
@@ -541,9 +538,9 @@ void MusRC::DrawNote ( MusDC *dc, MusLayerElement *element, MusLayer *layer, Mus
 
 void MusRC::DrawRest ( MusDC *dc, MusLayerElement *element, MusLayer *layer, MusStaff *staff )
 {	
-    wxASSERT_MSG( layer, "Pointer to layer cannot be NULL" );
-    wxASSERT_MSG( staff, "Pointer to staff cannot be NULL" );
-    wxASSERT_MSG( dynamic_cast<MusRest*>(element), "Element must be a MusRest" );
+    assert(layer); // Pointer to layer cannot be NULL"
+    assert(staff); // Pointer to staff cannot be NULL"
+    assert(dynamic_cast<MusRest*>(element)); // Element must be a MusRest"
         
     MusRest *rest = dynamic_cast<MusRest*>(element);
 
@@ -615,7 +612,7 @@ void MusRC::DrawLedgerLines( MusDC *dc, int y_n, int y_p, int xn, unsigned int s
 
 	yh = y_p + m_doc->m_halfInterl[staffSize]; yb = y_p- m_doc->m_staffSize[staffSize]- m_doc->m_halfInterl[staffSize];
 
-	if (!in(y_n,yh,yb))                           // note hors-portee?
+	if (!is_in(y_n,yh,yb))                           // note hors-portee?
 	{
 		xng = xn - smaller;
 		xnd = xn + smaller;
@@ -634,8 +631,8 @@ void MusRC::DrawLedgerLines( MusDC *dc, int y_n, int y_p, int xn, unsigned int s
 		//xng = toZoom(xng);
 		//xnd = toZoom(xnd);
 
-        dc->SetPen( m_currentColour, ToRendererX( m_doc->m_env.m_staffLineWidth ), wxSOLID );
-        dc->SetBrush(m_currentColour , wxTRANSPARENT );
+        dc->SetPen( m_currentColour, ToRendererX( m_doc->m_env.m_staffLineWidth ), AxSOLID );
+        dc->SetBrush(m_currentColour , AxTRANSPARENT );
 
 		for (i = 0; i < test; i++)
 		{
@@ -695,13 +692,13 @@ void MusRC::DrawSpecialRest ( MusDC *dc, int a, MusLayerElement *element, MusSta
     unsigned int start_offset = 0; // offset from x to center text
     
     // convert to string
-    wxString text;
+    std::stringstream text;
     text << rest->m_multimeasure_dur;
     
-    dc->GetTextExtent(text, &w, &h);
+    dc->GetTextExtent( text.str(), &w, &h);
     start_offset = (x2 - x - w) / 2; // calculate offset to center text
     
-    putstring(dc, x + start_offset, staff->m_y_drawing - m_doc->m_staffSize[staff->staffSize] + 5, text, false);
+    putstring(dc, x + start_offset, staff->m_y_drawing - m_doc->m_staffSize[staff->staffSize] + 5, text.str(), false);
     
     return;
 
@@ -807,7 +804,7 @@ void MusRC::DrawDots ( MusDC *dc, int x1, int y1, int offy, unsigned char dots, 
 	int i;
 	for (i = 0; i < dots; i++) {
 		DrawDot ( dc, x1, y1, 0, staff);
-		x1 += max (6, m_doc->m_step1);
+		x1 += std::max (6, m_doc->m_step1);
 	}
 	return;
 }
@@ -839,9 +836,9 @@ void MusRC::CalculateLigaturePosX ( MusLayerElement *element, MusLayer *layer, M
 
 void MusRC::DrawLigature ( MusDC *dc, int y, MusLayerElement *element, MusLayer *layer, MusStaff *staff )
 {	
-    wxASSERT_MSG( layer, "Pointer to layer cannot be NULL" );
-    wxASSERT_MSG( staff, "Pointer to staff cannot be NULL" );
-    wxASSERT_MSG( dynamic_cast<MusNote*>(element), "Element must be a MusNote" );
+    assert(layer); // Pointer to layer cannot be NULL"
+    assert(staff); // Pointer to staff cannot be NULL"
+    assert(dynamic_cast<MusNote*>(element)); // Element must be a MusNote"
     
     MusNote *note = dynamic_cast<MusNote*>(element);
     
@@ -849,7 +846,7 @@ void MusRC::DrawLigature ( MusDC *dc, int y, MusLayerElement *element, MusLayer 
 	int xn, x1, x2, yy2, y1, y2, y3, y4, y5;
 	int milieu, up, epaisseur;
 
-	epaisseur = max (2, m_doc->m_env.m_beamWidth/2);
+	epaisseur = std::max (2, m_doc->m_env.m_beamWidth/2);
 	xn = element->m_x_abs;
 	
 	if ((note->m_lig==LIG_MEDIAL) || (note->m_lig==LIG_TERMINAL))
@@ -965,15 +962,15 @@ void MusRC::DrawLigature ( MusDC *dc, int y, MusLayerElement *element, MusLayer 
 
 void MusRC::DrawBarline( MusDC *dc, MusLayerElement *element, MusLayer *layer, MusStaff *staff )
 {
-    wxASSERT_MSG( layer, "Pointer to layer cannot be NULL" );
-    wxASSERT_MSG( staff, "Pointer to staff cannot be NULL" );
-    wxASSERT_MSG( staff->m_parent, "Pointer to system cannot be NULL" );
-    wxASSERT_MSG( dynamic_cast<MusBarline*>(element), "Element must be a MusBarline" );
+    assert(layer); // Pointer to layer cannot be NULL"
+    assert(staff); // Pointer to staff cannot be NULL"
+    assert(staff->m_parent); // Pointer to system cannot be NULL"
+    assert(dynamic_cast<MusBarline*>(element)); // Element must be a MusBarline"
     
     MusBarline *barline = dynamic_cast<MusBarline*>(element);
     int x = element->m_x_abs + barline->m_hOffset;
 
-    dc->StartGraphic( element, "barline", wxString::Format("s_%d_%d_%d", staff->GetId(), layer->voix, element->GetId()) );
+    dc->StartGraphic( element, "barline", Mus::StringFormat("s_%d_%d_%d", staff->GetId(), layer->voix, element->GetId()) );
     
     if (barline->m_barlineType==BARLINE_SINGLE)			
     {	
@@ -993,13 +990,13 @@ void MusRC::DrawBarline( MusDC *dc, MusLayerElement *element, MusLayer *layer, M
 
 void MusRC::DrawClef( MusDC *dc, MusLayerElement *element, MusLayer *layer, MusStaff *staff )
 {
-    wxASSERT_MSG( layer, "Pointer to layer cannot be NULL" );
-    wxASSERT_MSG( staff, "Pointer to staff cannot be NULL" );
-    wxASSERT_MSG( dynamic_cast<MusClef*>(element), "Element must be a MusClef" );
+    assert(layer); // Pointer to layer cannot be NULL"
+    assert(staff); // Pointer to staff cannot be NULL"
+    assert(dynamic_cast<MusClef*>(element)); // Element must be a MusClef"
     
     MusClef *clef = dynamic_cast<MusClef*>(element);
 
-    dc->StartGraphic( element, "clef", wxString::Format("s_%d_%d_%d", staff->GetId(), layer->voix, element->GetId()) );
+    dc->StartGraphic( element, "clef", Mus::StringFormat("s_%d_%d_%d", staff->GetId(), layer->voix, element->GetId()) );
 	
 	int b = (staff->m_y_drawing- m_doc->m_staffSize[ staff->staffSize ]);
 	int a = element->m_x_abs;
@@ -1061,13 +1058,13 @@ void MusRC::DrawClef( MusDC *dc, MusLayerElement *element, MusLayer *layer, MusS
 
 void MusRC::DrawMensur( MusDC *dc, MusLayerElement *element, MusLayer *layer, MusStaff *staff )
 {
-    wxASSERT_MSG( layer, "Pointer to layer cannot be NULL" );
-    wxASSERT_MSG( staff, "Pointer to staff cannot be NULL" );
-    wxASSERT_MSG( dynamic_cast<MusMensur*>(element), "Element must be a MusMensur" );
+    assert(layer); // Pointer to layer cannot be NULL"
+    assert(staff); // Pointer to staff cannot be NULL"
+    assert(dynamic_cast<MusMensur*>(element)); // Element must be a MusMensur"
 
     MusMensur *mensur = dynamic_cast<MusMensur*>(element);
  
-    dc->StartGraphic( element, "mensur", wxString::Format("s_%d_%d_%d", staff->GetId(), layer->voix, element->GetId()) );
+    dc->StartGraphic( element, "mensur", Mus::StringFormat("s_%d_%d_%d", staff->GetId(), layer->voix, element->GetId()) );
 	
 	int x, yp;
 	float mDen=1.0, mNum=1.0;
@@ -1159,15 +1156,15 @@ void MusRC::DrawMensur( MusDC *dc, MusLayerElement *element, MusLayer *layer, Mu
 
 void MusRC::DrawMensurCircle( MusDC *dc, int x, int yy, MusStaff *staff )
 {
-	wxASSERT_MSG( dc , "DC cannot be NULL");
+	assert( dc ); // DC cannot be NULL
 	
 	int y =  ToRendererY (yy - m_doc->m_interl[ staff->staffSize ] * 6);
 	int r = ToRendererX( m_doc->m_interl[ staff->staffSize ]);
 
-	int w = max( ToRendererX(4), 2 );
+	int w = std::max( ToRendererX(4), 2 );
 
-    dc->SetPen( m_currentColour, w, wxSOLID );
-    dc->SetBrush( m_currentColour, wxTRANSPARENT );
+    dc->SetPen( m_currentColour, w, AxSOLID );
+    dc->SetBrush( m_currentColour, AxTRANSPARENT );
 
 	dc->DrawCircle( ToRendererX(x), y, r );
 
@@ -1177,11 +1174,11 @@ void MusRC::DrawMensurCircle( MusDC *dc, int x, int yy, MusStaff *staff )
 
 void MusRC::DrawMensurHalfCircle( MusDC *dc, int x, int yy, MusStaff *staff )
 {
-	wxASSERT_MSG( dc , "DC cannot be NULL");
+	assert( dc ); // DC cannot be NULL
 
-	int w = max( ToRendererX(4), 2 );
-    dc->SetPen( m_currentColour, w, wxSOLID );
-    dc->SetBrush( m_currentColour, wxTRANSPARENT );
+	int w = std::max( ToRendererX(4), 2 );
+    dc->SetPen( m_currentColour, w, AxSOLID );
+    dc->SetBrush( m_currentColour, AxTRANSPARENT );
 
 	int y =  ToRendererY (yy - m_doc->m_interl[ staff->staffSize ] * 5);
 	int r = ToRendererX( m_doc->m_interl[ staff->staffSize ]);
@@ -1199,11 +1196,11 @@ void MusRC::DrawMensurHalfCircle( MusDC *dc, int x, int yy, MusStaff *staff )
 
 void MusRC::DrawMensurReversedHalfCircle( MusDC *dc, int x, int yy, MusStaff *staff )
 {	
-	wxASSERT_MSG( dc , "DC cannot be NULL");
+	assert( dc ); // DC cannot be NULL
 
-	int w = max( ToRendererX(4), 2 );
-    dc->SetPen( m_currentColour, w, wxSOLID );
-    dc->SetBrush( m_currentColour, wxTRANSPARENT );
+	int w = std::max( ToRendererX(4), 2 );
+    dc->SetPen( m_currentColour, w, AxSOLID );
+    dc->SetBrush( m_currentColour, AxTRANSPARENT );
 
 	int y =  ToRendererY (yy - m_doc->m_interl[ staff->staffSize ] * 5);
 	int r = ToRendererX( m_doc->m_interl[ staff->staffSize ] );
@@ -1221,13 +1218,13 @@ void MusRC::DrawMensurReversedHalfCircle( MusDC *dc, int x, int yy, MusStaff *st
 
 void MusRC::DrawMensurDot ( MusDC *dc, int x, int yy, MusStaff *staff )
 {
-	wxASSERT_MSG( dc , "DC cannot be NULL");
+	assert( dc ); // DC cannot be NULL
 
 	int y =  ToRendererY (yy - m_doc->m_interl[ staff->staffSize ] * 6);
-	int r = max( ToRendererX(4), 2 );
+	int r = std::max( ToRendererX(4), 2 );
 	
-    dc->SetPen( m_currentColour, 1, wxSOLID );
-    dc->SetBrush( m_currentColour, wxSOLID );
+    dc->SetPen( m_currentColour, 1, AxSOLID );
+    dc->SetBrush( m_currentColour, AxSOLID );
 
 	dc->DrawCircle( ToRendererX(x) -r/2 , y, r );
 		
@@ -1240,7 +1237,7 @@ void MusRC::DrawMensurDot ( MusDC *dc, int x, int yy, MusStaff *staff )
 
 void MusRC::DrawMensurSlash ( MusDC *dc, int a, int yy, MusStaff *staff )
 {	
-	wxASSERT_MSG( dc , "DC cannot be NULL");
+	assert( dc ); // DC cannot be NULL
 	
 	int y1 = yy - m_doc->m_staffSize[ staff->staffSize ];
 	int y2 = y1 - m_doc->m_staffSize[ staff->staffSize ];
@@ -1252,10 +1249,10 @@ void MusRC::DrawMensurSlash ( MusDC *dc, int a, int yy, MusStaff *staff )
 
 void MusRC::DrawMensurFigures( MusDC *dc, int x, int y, int num, int numBase, MusStaff *staff)
 {
-	wxASSERT_MSG( dc , "DC cannot be NULL");	
+	assert( dc ); // DC cannot be NULL	
     	
 	int ynum, yden;
-	wxString s;
+	std::string s;
 
 	if (numBase)
 	{	
@@ -1268,12 +1265,12 @@ void MusRC::DrawMensurFigures( MusDC *dc, int x, int y, int num, int numBase, Mu
 	if (numBase > 9 || num > 9)	// avancer
 		x += m_doc->m_step1*2;
 
-	s = wxString::Format("%u",num);
+	s = Mus::StringFormat("%u",num);
 	putstring ( dc, x, ynum, s, 1, staff->staffSize);	// '1' = centrer
 
 	if (numBase)
 	{
-        s = wxString::Format("%u",numBase);
+        s = Mus::StringFormat("%u",numBase);
 		putstring ( dc, x, yden, s, 1, staff->staffSize);	// '1' = centrer
 	}
 	return;
@@ -1282,9 +1279,9 @@ void MusRC::DrawMensurFigures( MusDC *dc, int x, int y, int num, int numBase, Mu
 
 void MusRC::DrawSymbol( MusDC *dc, MusLayerElement *element, MusLayer *layer, MusStaff *staff, MusLayerElement *parent )
 {
-    wxASSERT_MSG( layer, "Pointer to layer cannot be NULL" );
-    wxASSERT_MSG( staff, "Pointer to staff cannot be NULL" );
-    wxASSERT_MSG( dynamic_cast<MusSymbol*>(element), "Element must be a MusSymbol" );
+    assert(layer); // Pointer to layer cannot be NULL"
+    assert(staff); // Pointer to staff cannot be NULL"
+    assert(dynamic_cast<MusSymbol*>(element)); // Element must be a MusSymbol"
     
     // This is used when we add dynamically an element (eg. accidentals before notes)
     // So we can get the clef without adding the new elem in the list
@@ -1310,12 +1307,12 @@ void MusRC::DrawSymbol( MusDC *dc, MusLayerElement *element, MusLayer *layer, Mu
 
 void MusRC::DrawSymbolAccid( MusDC *dc, MusLayerElement *element, MusLayer *layer, MusStaff *staff )
 {
-    wxASSERT_MSG( layer, "Pointer to layer cannot be NULL" );
-    wxASSERT_MSG( staff, "Pointer to staff cannot be NULL" );
-    wxASSERT_MSG( dynamic_cast<MusSymbol*>(element), "Element must be a MusSymbol" );
+    assert(layer); // Pointer to layer cannot be NULL"
+    assert(staff); // Pointer to staff cannot be NULL"
+    assert(dynamic_cast<MusSymbol*>(element)); // Element must be a MusSymbol"
     
     MusSymbol *accid = dynamic_cast<MusSymbol*>(element);
-    dc->StartGraphic( element, "accid", wxString::Format("accid_%d_%d_%d", staff->GetId(), layer->voix, element->GetId()) );
+    dc->StartGraphic( element, "accid", Mus::StringFormat("accid_%d_%d_%d", staff->GetId(), layer->voix, element->GetId()) );
     
     int x = element->m_x_abs + accid->m_hOffset;
     int y = element->m_y_drawing + staff->m_y_drawing;
@@ -1344,12 +1341,12 @@ void MusRC::DrawSymbolAccid( MusDC *dc, MusLayerElement *element, MusLayer *laye
 
 void MusRC::DrawSymbolCustos( MusDC *dc, MusLayerElement *element, MusLayer *layer, MusStaff *staff )
 {
-    wxASSERT_MSG( layer, "Pointer to layer cannot be NULL" );
-    wxASSERT_MSG( staff, "Pointer to staff cannot be NULL" );
-    wxASSERT_MSG( dynamic_cast<MusSymbol*>(element), "Element must be a MusSymbol" );
+    assert(layer); // Pointer to layer cannot be NULL"
+    assert(staff); // Pointer to staff cannot be NULL"
+    assert(dynamic_cast<MusSymbol*>(element)); // Element must be a MusSymbol"
     
     MusSymbol *custos = dynamic_cast<MusSymbol*>(element);
-    dc->StartGraphic( element, "custos", wxString::Format("custos_%d_%d_%d", staff->GetId(), layer->voix, element->GetId()) );
+    dc->StartGraphic( element, "custos", Mus::StringFormat("custos_%d_%d_%d", staff->GetId(), layer->voix, element->GetId()) );
 
     int x = element->m_x_abs + custos->m_hOffset;
     int y = element->m_y_drawing + staff->m_y_drawing;
@@ -1363,19 +1360,19 @@ void MusRC::DrawSymbolCustos( MusDC *dc, MusLayerElement *element, MusLayer *lay
 
 void MusRC::DrawSymbolDot( MusDC *dc, MusLayerElement *element, MusLayer *layer, MusStaff *staff )
 {
-    wxASSERT_MSG( layer, "Pointer to layer cannot be NULL" );
-    wxASSERT_MSG( staff, "Pointer to staff cannot be NULL" );
-    wxASSERT_MSG( dynamic_cast<MusSymbol*>(element), "Element must be a MusSymbol" );
+    assert(layer); // Pointer to layer cannot be NULL"
+    assert(staff); // Pointer to staff cannot be NULL"
+    assert(dynamic_cast<MusSymbol*>(element)); // Element must be a MusSymbol"
     
     MusSymbol *dot = dynamic_cast<MusSymbol*>(element);
-    dc->StartGraphic( element, "dot", wxString::Format("dot_%d_%d_%d", staff->GetId(), layer->voix, element->GetId()) );
+    dc->StartGraphic( element, "dot", Mus::StringFormat("dot_%d_%d_%d", staff->GetId(), layer->voix, element->GetId()) );
     
     int x = element->m_x_abs + dot->m_hOffset;
     int y = element->m_y_drawing;
 
     switch (dot->m_dot)
     {	
-        case 1 : DrawDot( dc,x,y,0,staff); x += max (6, m_doc->m_step1);
+        case 1 : DrawDot( dc,x,y,0,staff); x += std::max (6, m_doc->m_step1);
         case 0 : DrawDot ( dc,x,y,0,staff);
     }
     
@@ -1385,8 +1382,8 @@ void MusRC::DrawSymbolDot( MusDC *dc, MusLayerElement *element, MusLayer *layer,
 
 void MusRC::DrawKeySig( MusDC *dc, MusLayerElement *element, MusLayer *layer, MusStaff *staff )
 {
-    wxASSERT_MSG( layer, "Pointer to layer cannot be NULL" );
-    wxASSERT_MSG( staff, "Pointer to staff cannot be NULL" );
+    assert(layer); // Pointer to layer cannot be NULL"
+    assert(staff); // Pointer to staff cannot be NULL"
 
     MusKeySig *ks = dynamic_cast<MusKeySig*>(element);
     int symb;
@@ -1397,7 +1394,7 @@ void MusRC::DrawKeySig( MusDC *dc, MusLayerElement *element, MusLayer *layer, Mu
         return;
     }
     
-    dc->StartGraphic( element, "keysig", wxString::Format("keysig_%d_%d_%d", staff->GetId(), layer->voix, element->GetId()) );
+    dc->StartGraphic( element, "keysig", Mus::StringFormat("keysig_%d_%d_%d", staff->GetId(), layer->voix, element->GetId()) );
     
     for (int i = 0; i < ks->m_num_alter; i++) {
         
@@ -1420,8 +1417,8 @@ void MusRC::DrawKeySig( MusDC *dc, MusLayerElement *element, MusLayer *layer, Mu
 
 void MusRC::DrawTie( MusDC *dc, MusLayerElement *element, MusLayer *layer, MusStaff *staff)
 {
-    wxASSERT_MSG( layer, "Pointer to layer cannot be NULL" );
-    wxASSERT_MSG( staff, "Pointer to staff cannot be NULL" );
+    assert(layer); // Pointer to layer cannot be NULL"
+    assert(staff); // Pointer to staff cannot be NULL"
     
     bool up = false;
     
@@ -1441,7 +1438,7 @@ void MusRC::DrawTie( MusDC *dc, MusLayerElement *element, MusLayer *layer, MusSt
     
     up = (ynn < milieu) ? true : false;
     
-    dc->StartGraphic( element, "tie", wxString::Format("tie_%d_%d_%d", staff->GetId(), layer->voix, element->GetId()) );
+    dc->StartGraphic( element, "tie", Mus::StringFormat("tie_%d_%d_%d", staff->GetId(), layer->voix, element->GetId()) );
     
     // FIXME, take in account elements that can be netween notes, eg keys time etc
     
@@ -1461,8 +1458,8 @@ void MusRC::DrawAcciaccaturaSlash(MusDC *dc, MusLayerElement *element) {
     if (note->m_dur < DUR_8)
         return;
     
-    dc->SetPen(AxBLACK, 2, wxSOLID);
-    dc->SetBrush( AxBLACK, wxSOLID );
+    dc->SetPen(AxBLACK, 2, AxSOLID);
+    dc->SetBrush( AxBLACK, AxSOLID );
     
     if (element->m_drawn_stem_dir)
         dc->DrawLine(element->m_stem_start.x - 10, ToRendererY(element->m_stem_start.y + 10), element->m_stem_start.x + 20, ToRendererY(element->m_stem_start.y + 40));
@@ -1547,9 +1544,9 @@ void MusRC::DrawTrill(MusDC *dc, MusLayerElement *element, MusStaff *staff) {
 
 void MusRC::DrawLayerApp( MusDC *dc, MusLayerElement *element, MusLayer *layer, MusStaff *staff ){
     
-    wxASSERT_MSG( layer, "Pointer to layer cannot be NULL" );
-    wxASSERT_MSG( staff, "Pointer to staff cannot be NULL" );
-    wxASSERT_MSG( staff->m_parent, "Pointer to staff system cannot be NULL" );
+    assert(layer); // Pointer to layer cannot be NULL"
+    assert(staff); // Pointer to staff cannot be NULL"
+    assert(staff->m_parent); // Pointer to staff system cannot be NULL"
     
     MusLayerApp *app = dynamic_cast<MusLayerApp*>(element);    
     int i;

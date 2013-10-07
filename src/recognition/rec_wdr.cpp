@@ -37,7 +37,8 @@
 #include "recognition/recmus.h"
 #include "recognition/recim.h"
 #include "recognition/recbookctrl.h"
-#include "mus/mustoolpanel.h"
+
+#include "musapp/mustoolpanel.h"
 
 // Implement window functions
 

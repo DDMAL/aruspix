@@ -9,15 +9,9 @@
 #ifndef __MUS_LAYER_ELEMENT_H__
 #define __MUS_LAYER_ELEMENT_H__
 
-#ifndef WX_PRECOMP
-    #include "wx/wx.h"
-#endif
-
-#include "musobject.h"
-#include "musdef.h"
-
 #include "musdc.h" // for MusPoint
-
+#include "musdef.h"
+#include "musobject.h"
 
 //----------------------------------------------------------------------------
 // MusLayerElement

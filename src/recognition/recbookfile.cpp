@@ -464,7 +464,7 @@ bool RecBookFile::ExportPages( int exportType )
         
         MusFileOutputStream *outStream = NULL;
         switch( exportType ) {
-            case ( REC_BOOK_EXPORT_MEI ): outStream = new MusMeiOutput( recFile.m_musDocPtr, out + ".mei" ); break;
+            case ( REC_BOOK_EXPORT_MEI ): outStream = new MusMeiOutput( recFile.m_musDocPtr, (out + ".mei").c_str() ); break;
         }
         if ( outStream ) {
             outStream->ExportFile();

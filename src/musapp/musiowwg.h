@@ -13,7 +13,9 @@
 #endif
 #include "wx/wfstream.h"
 
-#include "musdoc.h"
+#include "mus/musdoc.h"
+
+#include "muswwg.h"
 
 class MusStaff;
 class MusLayer;
@@ -119,11 +121,11 @@ protected:
 /**
  * This class is a file output stream for writing Wolfgang WWG files.
 */
-class MusWWGOutput: public MusFileOutputStream, public MusWWGElement
+class MusWWGOutput: public wxFileOutputStream, public MusWWGElement
 {
 public:
     // constructors and destructors
-    MusWWGOutput( MusDoc *doc, wxString filename );
+    MusWWGOutput( MusDoc *doc, std::string filename );
     virtual ~MusWWGOutput();
     
     bool ExportFile( );
@@ -146,15 +148,17 @@ private:
     bool WriteElementAttr( );
     bool WriteDebord( );
 
-    wxUint16 uint16;
-	wxInt16 int16;
-	wxUint32 uint32;
-	wxInt32 int32;
-	wxString m_filename;
+    unsigned short uint16;
+	signed short int16;
+	unsigned int uint32;
+	signed int int32;
+	std::string m_filename;
     MusSystem *m_current_system; // the current system we are writing
     MusStaff *m_current_staff; // the current staff we are writing
 
-private:
+protected:
+    MusDoc *m_doc;
+    MusWWGData m_wwgData;
 };
 
 
@@ -165,11 +169,11 @@ private:
 /**
  * This class is a file input stream for reading Wolfgang WWG files.
 */
-class MusWWGInput: public MusFileInputStream, public MusWWGElement
+class MusWWGInput: public wxFileInputStream, public MusWWGElement
 {
 public:
     // constructors and destructors
-    MusWWGInput( MusDoc *doc, wxString filename);
+    MusWWGInput( MusDoc *doc, std::string filename);
     virtual ~MusWWGInput();
     
     bool ImportFile( );
@@ -189,10 +193,10 @@ public:
 	bool ReadFooter( MusWWGData *footer);
     
 private:
-    wxUint16 uint16;
-	wxInt16 int16;
-	wxUint32 uint32;
-	wxInt32 int32;
+    unsigned short uint16;
+	signed short int16;
+	unsigned int uint32;
+	signed int int32;
     // 
     //ArrayOfMusSymbols m_lyrics;
     // for reading system from 2.0.0
@@ -203,8 +207,10 @@ private:
     //
     MusBeam *m_currentBeam;
     bool m_isLastNoteInBeam;
-	
-private:
+    
+protected:
+    MusDoc *m_doc;
+    MusWWGData m_wwgData;
 };
 
 

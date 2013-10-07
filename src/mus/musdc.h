@@ -5,12 +5,11 @@
 // Copyright (c) Authors and others. All rights reserved.   
 /////////////////////////////////////////////////////////////////////////////
 
+
 #ifndef __MUS_DC_H__
 #define __MUS_DC_H__
 
-
-#include "wx/defs.h"
-
+#include <string>
 
 #define AxWHITE  255 << 16 | 255 << 8 | 255
 #define AxBLACK 0
@@ -20,6 +19,24 @@
 #define AxCYAN 255 << 8 | 255
 #define AxLIGHT_GREY 127 << 16 | 127 << 8 | 127
 
+/*  Polygon filling mode */
+enum
+{
+    AxODDEVEN_RULE = 1,
+    AxWINDING_RULE
+};
+
+enum
+{
+    /*  Pen styles */
+    AxSOLID      =   100,
+    AxDOT,
+    AxLONG_DASH,
+    AxSHORT_DASH,
+    AxDOT_DASH,
+    AxUSER_DASH,
+    AxTRANSPARENT
+};
 
 class MusPoint;
 class MusRect;
@@ -51,15 +68,15 @@ public:
     
     // Setters
     
-    virtual void SetBrush( int colour, int style = wxSOLID ) = 0;
+    virtual void SetBrush( int colour, int style = AxSOLID ) = 0;
     
-    virtual void SetBackground( int colour, int style = wxSOLID ) = 0;
+    virtual void SetBackground( int colour, int style = AxSOLID ) = 0;
     
     virtual void SetBackgroundImage( void *image, double opacity = 1.0 ) = 0;
     
     virtual void SetBackgroundMode( int mode ) = 0;
     
-    virtual void SetPen( int colour, int width = 1, int style = wxSOLID ) = 0;
+    virtual void SetPen( int colour, int width = 1, int style = AxSOLID ) = 0;
     
     virtual void SetFont( MusFontInfo *font_info ) = 0;
 
@@ -75,7 +92,7 @@ public:
     
     // Getters 
     
-    virtual void GetTextExtent( wxString& string, int *w, int *h ) = 0;
+    virtual void GetTextExtent( const std::string& string, int *w, int *h ) = 0;
     
     virtual MusPoint GetLogicalOrigin( ) = 0;
     
@@ -93,17 +110,17 @@ public:
     
     virtual void DrawLine(int x1, int y1, int x2, int y2) = 0;
     
-    virtual void DrawPolygon(int n, MusPoint points[], int xoffset = 0, int yoffset = 0, int fill_style = wxODDEVEN_RULE) = 0;
+    virtual void DrawPolygon(int n, MusPoint points[], int xoffset = 0, int yoffset = 0, int fill_style = AxODDEVEN_RULE) = 0;
     
     virtual void DrawRectangle(int x, int y, int width, int height) = 0;
     
-    virtual void DrawRotatedText(const wxString& text, int x, int y, double angle) = 0;
+    virtual void DrawRotatedText(const std::string& text, int x, int y, double angle) = 0;
     
     virtual void DrawRoundedRectangle(int x, int y, int width, int height, double radius) = 0;
     
-    virtual void DrawText(const wxString& text, int x, int y) = 0;
+    virtual void DrawText(const std::string& text, int x, int y) = 0;
     
-    virtual void DrawMusicText(const wxString& text, int x, int y) = 0;
+    virtual void DrawMusicText(const std::string& text, int x, int y) = 0;
     
     virtual void DrawSpline(int n, MusPoint points[]) = 0;
     
@@ -111,7 +128,7 @@ public:
     
     // Method for starting and ending a graphic - for example for grouping shapes in <g></g> in SVG
     
-    virtual void StartGraphic( MusDocObject *object, wxString gClass, wxString gId ) = 0;
+    virtual void StartGraphic( MusDocObject *object, std::string gClass, std::string gId ) = 0;
     
     virtual void EndGraphic( MusDocObject *object, MusRC *rc  ) = 0;
     
@@ -149,7 +166,7 @@ public:
         weight = 0; //was wxFONTWEIGHT_NORMAL;
         underlined = false;
         faceName.clear();
-        encoding = wxFONTENCODING_DEFAULT;    
+        encoding = 0; //was wxFONTENCODING_DEFAULT;
     }
     virtual ~MusFontInfo() {};
     
@@ -158,7 +175,7 @@ public:
     int GetStyle() { return style; };
     int GetWeight() { return weight; }
     bool GetUnderlined() { return underlined; }
-    wxString GetFaceName() { return faceName; }
+    std::string GetFaceName() { return faceName; }
     int GetFamily() { return family; }
     int GetEncoding() { return encoding; }
 
@@ -166,20 +183,20 @@ public:
     void SetStyle(int style_) { style = style_; }
     void SetWeight(int weight_) { weight = weight_; }
     void SetUnderlined(bool underlined_) { underlined = underlined_; }
-    void SetFaceName(wxString& faceName_) { faceName = faceName_; }
+    void SetFaceName(std::string& faceName_) { faceName = faceName_; }
     void SetFamily(int family_) { family = family_; }
     void SetEncoding(int encoding_) { encoding = encoding_; }
     
     // in axdc.cpp
-    bool FromString(const wxString& s);
-    wxString ToString() const;
+    bool FromString(const std::string& s);
+    std::string ToString() const;
     
     int           pointSize;
     int           family;
     int           style;
     int           weight;
     bool          underlined;
-    wxString      faceName;
+    std::string   faceName;
     int           encoding;
 };
 

@@ -5,10 +5,6 @@
 // Copyright (c) Authors and others. All rights reserved.
 /////////////////////////////////////////////////////////////////////////////
 
-#include <algorithm>
-using std::min;
-using std::max;
-
 // For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"
 
@@ -24,8 +20,9 @@ using std::max;
 #include "mustoolpanel.h"
 
 #include "mus/musiomei.h"
-#include "msu/muslayerelement.h"
-#include "mus/muswxdc.h"
+#include "mus/muslayerelement.h"
+
+#include "musapp/muswxdc.h"
 
 #include "app/axgotodlg.h"
 
@@ -144,7 +141,7 @@ void MusWindow::Load( AxUndoFile *undoPtr )
 	position_input.Read( &m_lyricCursor, sizeof( int ) );
     
     
-	MusMeiInput *mei_input = new MusMeiInput( m_doc, undoPtr->GetFilename() );
+	MusMeiInput *mei_input = new MusMeiInput( m_doc, undoPtr->GetFilename().c_str() );
 		
 	//if ( undoPtr->m_flags == MUS_UNDO_FILE ) // this is now the only type of undo we handle anyway...
     {
@@ -255,7 +252,7 @@ void MusWindow::Store( AxUndoFile *undoPtr )
 	position_output.Write( &m_inputLyric, sizeof( bool ) );
 	position_output.Write( &m_lyricCursor, sizeof( int ) );
 	
-    MusMeiOutput *mei_output = new MusMeiOutput( m_doc, undoPtr->GetFilename() );
+    MusMeiOutput *mei_output = new MusMeiOutput( m_doc, undoPtr->GetFilename().c_str() );
 	//if ( undoPtr->m_flags == MUS_UNDO_FILE ) // the only type of undo we handle
 	{
 	    mei_output->ExportFile();
@@ -289,15 +286,15 @@ void MusWindow::DoLyricCursor( int x, int y, MusDC *dc, wxString lyric )
             xCursor += lyricPos[m_lyricCursor-1];			
     }
     // the cursor witdh
-    int wCursor = max( 1, ToRendererX( 2 ) );
+    int wCursor = std::max( 1, ToRendererX( 2 ) );
     
     // get the bounding box and draw it
     int wBox, hBox, wBox_empty;
-    dc->GetTextExtent( lyric, &wBox, &hBox );
+    dc->GetTextExtent( lyric.mb_str(), &wBox, &hBox );
     if (lyric.Length() == 0) // we need the height of the BB even if the sting is empty
     {
         wxString empty = "d";
-        dc->GetTextExtent( empty, &wBox_empty, &hBox );
+        dc->GetTextExtent( empty.mb_str(), &wBox_empty, &hBox );
     }
     dc->SetPen( AxBLACK, 1, wxSHORT_DASH );
     dc->DrawRectangle( x - 2 * wCursor, ToRendererY( y ) - wCursor, 
@@ -332,8 +329,8 @@ void MusWindow::Resize( )
 	wxSize parent_s = parent->GetClientSize();
 	int page_w = (ToRendererX(m_doc->m_pageWidth) + MUS_BORDER_AROUND_PAGE) * GetZoom() / 100;
 	int page_h = (ToRendererX(m_doc->m_pageHeight) + MUS_BORDER_AROUND_PAGE) * GetZoom() / 100;
-	int win_w = min( page_w, parent_s.GetWidth() );
-	int win_h = min( page_h, parent_s.GetHeight() );
+	int win_w = std::min( page_w, parent_s.GetWidth() );
+	int win_h = std::min( page_h, parent_s.GetHeight() );
 
     wxScrollBar bar(this,-1);
     wxSize barSize = bar.GetSize();
@@ -1460,7 +1457,7 @@ void MusWindow::MensuralEditOnKeyDown(wxKeyEvent &event) {
         OnEndEdition();
         SyncToolPanel();
     }
-    else if ( in ( event.m_keyCode, WXK_F2, WXK_F8 ) && m_currentElement ) // Change hauteur
+    else if ( is_in ( event.m_keyCode, WXK_F2, WXK_F8 ) && m_currentElement ) // Change hauteur
     {
         PrepareCheckPoint( UNDO_PART, MUS_UNDO_FILE );
         m_currentElement->GetPitchOrPosition( &m_insert_pname, &m_insert_oct);
@@ -1521,7 +1518,7 @@ void MusWindow::MensuralEditOnKeyDown(wxKeyEvent &event) {
         OnEndEdition();
     }
     else if ( m_currentElement && (m_currentElement->IsNote() || m_currentElement->IsRest()) &&
-             ( in( noteKeyCode, 0, 7 ) ) ) // change duration on a note or a rest
+             ( is_in( noteKeyCode, 0, 7 ) ) ) // change duration on a note or a rest
     {
         PrepareCheckPoint( UNDO_PART, MUS_UNDO_FILE );
         //int vflag = ( event.m_controlDown || (noteKeyCode == CUSTOS)) ? 1 : 0;
@@ -1601,7 +1598,7 @@ void MusWindow::MensuralEditOnKeyDown(wxKeyEvent &event) {
     } 
     */
     else if ( m_currentElement && (m_currentElement->IsMensur() || m_currentElement->IsClef() || m_currentElement->IsSymbol())
-        && in( event.m_keyCode, 33, 125) ) // any other keycode on symbol (ascii codes)
+        && is_in( event.m_keyCode, 33, 125) ) // any other keycode on symbol (ascii codes)
     {
         PrepareCheckPoint( UNDO_PART, MUS_UNDO_FILE );
         // we might be editing a clef - see method for doc
@@ -1644,11 +1641,11 @@ void MusWindow::MensuralInsertOnKeyDown(wxKeyEvent &event) {
     else if ( m_newElement && (m_newElement->IsNote() || m_newElement->IsRest()) ) 
     // change duree sur une note ou un silence
     {
-        if ( event.m_controlDown && in( noteKeyCode, 0, 6 ) ) {
+        if ( event.m_controlDown && is_in( noteKeyCode, 0, 6 ) ) {
             m_newElement = &m_rest;
             m_newElement->SetValue( noteKeyCode , 0 );
         }
-        else if ( in( noteKeyCode, 0, 7 ) ){
+        else if ( is_in( noteKeyCode, 0, 7 ) ){
             m_newElement = &m_note;
             m_newElement->SetValue( noteKeyCode , 0 );
         }
@@ -1660,12 +1657,12 @@ void MusWindow::MensuralInsertOnKeyDown(wxKeyEvent &event) {
     else if ( m_newElement && m_newElement->IsNote() && (noteKeyCode == 'A') )
         m_newElement->ChangeStem( );
     else if ( m_newElement && (m_newElement->IsClef() || m_newElement->IsMensur()) &&
-        in( event.m_keyCode, 33, 125) ) // any other keycode on clef and mensur (ascii codes)
+        is_in( event.m_keyCode, 33, 125) ) // any other keycode on clef and mensur (ascii codes)
     {
         m_newElement->SetValue( event.m_keyCode, 0 );
     }
     else if ( m_newElement && (m_newElement->IsSymbol() || m_newElement->IsBarline()) &&
-             in( event.m_keyCode, 33, 125) ) // any other keycode on symbol (ascii codes)
+             is_in( event.m_keyCode, 33, 125) ) // any other keycode on symbol (ascii codes)
     {
         if (noteKeyCode == '|') {
             m_newElement = &m_barline;

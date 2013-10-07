@@ -1,3 +1,11 @@
+/////////////////////////////////////////////////////////////////////////////
+// Name:        musdef.h
+// Author:      Laurent Pugin
+// Created:     2005
+// Copyright (c) Authors and others. All rights reserved.
+/////////////////////////////////////////////////////////////////////////////
+
+
 #ifndef __MUS_DEF_H__
 #define __MUS_DEF_H__
 
@@ -6,7 +14,7 @@
 //----------------------------------------------------------------------------
 
 #include <algorithm>
-#define in(x,a,b) (((x) >= std::min((a),(b))) && ((x) <= std::max((a),(b)))) 
+#define is_in(x,a,b) (((x) >= std::min((a),(b))) && ((x) <= std::max((a),(b))))
 
 // Is this score for Mensural, neumes, or CMN
 enum MusNotationMode {

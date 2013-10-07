@@ -1,13 +1,13 @@
-//
-//  musleipzigbbox.h
-//  aruspix
-//
-//  Created by Rodolfo Zitellini on 30/07/12.
-//  Copyright (c) 2012 com.aruspix.www. All rights reserved.
-//
+/////////////////////////////////////////////////////////////////////////////
+// Name:        musleipzigbbox.h
+// Author:      Rodolfo Zitellini
+// Created:     30/07/2012
+// Copyright (c) Authors and others. All rights reserved.
+/////////////////////////////////////////////////////////////////////////////
 
-#ifndef aruspix_musleipzigbbox_h
-#define aruspix_musleipzigbbox_h
+
+#ifndef __MUS_LEIPZIGBBOX_H__
+#define __MUS_LEIPZIGBBOX_H__
 
 #include "musobject.h"
 

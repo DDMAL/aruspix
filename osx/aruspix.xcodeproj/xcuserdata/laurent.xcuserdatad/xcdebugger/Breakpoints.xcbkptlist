@@ -7,27 +7,12 @@
          shouldBeEnabled = "Yes"
          ignoreCount = "0"
          continueAfterRunningActions = "No"
-         filePath = "../src/edition/edt.cpp"
-         timestampString = "400754197.777532"
+         filePath = "../src/musapp/musiowwg.h"
+         timestampString = "402604610.799265"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "670"
-         endingLineNumber = "670"
-         landmarkName = "EdtEnv::OnOpenMEI( wxCommandEvent &amp;event )"
-         landmarkType = "5">
-      </FileBreakpoint>
-      <FileBreakpoint
-         shouldBeEnabled = "Yes"
-         ignoreCount = "0"
-         continueAfterRunningActions = "No"
-         filePath = "../src/edition/edt.cpp"
-         timestampString = "400754407.51062"
-         startingColumnNumber = "9223372036854775807"
-         endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "679"
-         endingLineNumber = "679"
-         landmarkName = "EdtEnv::OnOpenMEI( wxCommandEvent &amp;event )"
-         landmarkType = "5">
+         startingLineNumber = "125"
+         endingLineNumber = "125">
       </FileBreakpoint>
    </FileBreakpoints>
 </Bucket>

@@ -105,7 +105,7 @@ bool CmpCollation::IsCollationLoaded( CmpCollationPart *part )
     wxString filename = m_basename + m_id + "." + part->m_bookPart->m_id + ".mei" ;
 	if ( !wxFileExists( filename ) )
 		return false;
-	MusMeiInput mei_input( m_musDocPtr, filename  );
+	MusMeiInput mei_input( m_musDocPtr, filename.c_str()  );
 	if (!mei_input.ImportFile()) {
 		return false;
     }
@@ -115,7 +115,7 @@ bool CmpCollation::IsCollationLoaded( CmpCollationPart *part )
     filename = m_basename + GetRefPartFilename() + ".mei";
 	if ( !wxFileExists( filename ) )
 		return false;
-	MusMeiInput mei_input1( m_musDocSrc1Ptr, filename  );
+	MusMeiInput mei_input1( m_musDocSrc1Ptr, filename.c_str()  );
 	if (!mei_input1.ImportFile()) {
 		return false;
     }
@@ -124,7 +124,7 @@ bool CmpCollation::IsCollationLoaded( CmpCollationPart *part )
     filename = m_basename + part->m_bookPart->m_id + ".mei" ;
 	if ( !wxFileExists( filename ) )
 		return false;
-	MusMeiInput mei_input2( m_musDocSrc2Ptr, filename  );
+	MusMeiInput mei_input2( m_musDocSrc2Ptr, filename.mb_str()  );
 	if (!mei_input2.ImportFile()) {
 		return false;
     }
@@ -321,7 +321,7 @@ bool CmpCollation::Collate( )
         page->AddSystem( system );
         collationDoc.AddPage( page );
         
-        MusMeiOutput mei_output( &collationDoc, m_basename + m_id + "." + variant->m_bookPart->m_id + ".mei"  );
+        MusMeiOutput mei_output( &collationDoc, (m_basename + m_id + "." + variant->m_bookPart->m_id + ".mei").mb_str()  );
         mei_output.ExportFile();
         
         delete layer_var;
@@ -344,11 +344,11 @@ void CmpCollation::CreateApp( MusLayer *layer_aligned, int i, MusLayer *layer_va
     
     if ( (appType == CMP_APP_SUBST) || (appType == CMP_APP_DEL) ) {
         ref->AddElement( (((MusLayerElement*)layer_aligned->m_children[i]))->GetChildCopy()  );
-        (ref->m_children[0])->AddSameAs( (layer_aligned->m_children[i])->GetUuidStr(), refFileId );
+        (ref->m_children[0])->AddSameAs( (layer_aligned->m_children[i])->GetUuidStr(), refFileId.mb_str() );
     }
     if ( (appType == CMP_APP_SUBST) || (appType == CMP_APP_INS) ) {
         var->AddElement( (((MusLayerElement*)layer_var->m_children[j]))->GetChildCopy()  );
-        (var->m_children[0])->AddSameAs( (layer_var->m_children[j])->GetUuidStr(), varFileId );
+        (var->m_children[0])->AddSameAs( (layer_var->m_children[j])->GetUuidStr(), varFileId.mb_str() );
     }
     
     // then insert the rdg 
@@ -455,8 +455,8 @@ bool CmpCollation::Align( MusLayer *layer_ref, MusLayer *layer_var, wxString ref
 				i--; j--;
 				//printf("   \t%10s\t%10s\n", (layer_ref->m_children[i])->MusClassName().c_str(), (layer_var->m_children[j])->MusClassName().c_str() );
 				match = true;
-                (layer_ref->m_children[i])->AddSameAs( (layer_ref->m_children[i])->GetUuidStr(), refFileId );
-                (layer_ref->m_children[i])->AddSameAs( (layer_var->m_children[j])->GetUuidStr(), varFileId );
+                (layer_ref->m_children[i])->AddSameAs( (layer_ref->m_children[i])->GetUuidStr(), refFileId.mb_str() );
+                (layer_ref->m_children[i])->AddSameAs( (layer_var->m_children[j])->GetUuidStr(), varFileId.mb_str() );
 			}
 		}
 		else
@@ -571,7 +571,7 @@ void CmpPartPage::SetStartEnd( MusLayerElement *element, bool isStart )
 { 
     wxString uuidStr;
     if ( element ) {
-        uuidStr = element->GetUuidStr();
+        uuidStr = element->GetUuidStr().c_str();
     }
     
     if ( isStart ) {
@@ -629,7 +629,7 @@ MusLayer *CmpBookPart::GetContentToAlign( wxString basename )
     MusLayer *alignLayer = new MusLayer( 1 );
     MusDoc doc;
     
-    MusMeiInput meiInput( &doc, basename + this->m_id + ".mei" );
+    MusMeiInput meiInput( &doc, (basename + this->m_id + ".mei").mb_str() );
     if ( !meiInput.ImportFile() ) {
         wxLogError( "Cannot open MEI part file");
     }
@@ -1024,7 +1024,7 @@ bool CmpFile::LoadBooks( wxArrayPtrVoid params, AxProgressDlg *dlg )
 			imCounterInc( dlg->GetCounter() );
             
             wxLogMessage( _("Saving MEI part file ...") );
-            MusMeiOutput *mei_output = new MusMeiOutput( partDoc, m_basename + part->m_id + ".mei"  );
+            MusMeiOutput *mei_output = new MusMeiOutput( partDoc, (m_basename + part->m_id + ".mei").mb_str()  );
             mei_output->ExportFile();
             delete mei_output;
             

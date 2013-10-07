@@ -5,26 +5,22 @@
 // Copyright (c) Authors and others. All rights reserved.
 /////////////////////////////////////////////////////////////////////////////
 
+
 #ifndef __MUS_RENDERER_H__
 #define __MUS_RENDERER_H__
 
-#ifndef WX_PRECOMP
-    #include "wx/wx.h"
-#endif
-#include "wx/dynarray.h"
-
 #include "musbeam.h"
+#include "musdc.h"
+#include "musdef.h"
 #include "mustie.h"
 #include "mustuplet.h"
-#include "musdef.h"
-#include "musdc.h"
 
 class MusDoc;
-class MusPage;
-class MusSystem;
-class MusStaff;
 class MusLayer;
 class MusLayerElement;
+class MusPage;
+class MusStaff;
+class MusSystem;
 
 //----------------------------------------------------------------------------
 // MusRC
@@ -47,7 +43,7 @@ public:
     virtual void OnEndEditionClef() {}
     virtual void DoRefresh() {}
     virtual void DoResize() {}
-    virtual void DoLyricCursor( int x, int y, MusDC *dc, wxString lyric ) {}
+    virtual void DoLyricCursor( int x, int y, MusDC *dc, std::string lyric ) {}
     virtual void DoReset() {}
     virtual void OnPageChange() {};
 
@@ -87,14 +83,14 @@ public:
 	void v_bline ( MusDC *dc, int y1, int y2, int x1, int nbr);
 	void v_bline2 ( MusDC *dc, int y1, int y2, int x1, int nbr);
 	void h_bline ( MusDC *dc, int x1, int x2, int y1, int nbr);
-	void festa_string ( MusDC *dc, int x, int y, const wxString str, 
+	void festa_string ( MusDC *dc, int x, int y, const std::string str, 
 					   MusStaff *staff, int dimin ); 
 	void DrawLeipzigFont ( MusDC *dc, int x, int y, unsigned char c, 
 				  MusStaff *staff, bool dimin );
     void DrawTieBezier(MusDC *dc, int x, int y, int x1, int height, int width, bool direction);
 	//void putfontfast ( MusDC *dc, int x, int y, unsigned char c );
-	void putstring ( MusDC *dc, int x, int y, wxString s, int centrer, int staffSize = 0);
-	void putlyric ( MusDC *dc, int x, int y, wxString s, int staffSize = 0, bool cursor = false);
+	void putstring ( MusDC *dc, int x, int y, std::string s, int centrer, int staffSize = 0);
+	void putlyric ( MusDC *dc, int x, int y, std::string s, int staffSize = 0, bool cursor = false);
 	void box( MusDC *dc, int x1, int y1, int x2, int y2);
 	void rect_plein2( MusDC *dc, int x1, int y1, int x2, int y2);
 	int hGrosseligne ( MusDC *dc, int x1, int y1, int x2, int y2, int decal);
@@ -213,7 +209,7 @@ public:
 	/** format max utile; en principe, celui de la feuille **/
 	//int m_pageMaxY, m_pageMaxX;
 
-	wxString m_str;
+	std::string m_str;
     
 	// static
 	static MusPoint point_[4];

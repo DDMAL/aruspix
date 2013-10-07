@@ -21,9 +21,9 @@
 
 void MusRC::DrawNeume( MusDC *dc, MusLayerElement *element, MusLayer *layer, MusStaff *staff)
 {
-    assert(layer); // Pointer to layer cannot be NULL"
-    assert(staff); // Pointer to staff cannot be NULL"
-    assert(dynamic_cast<MusNeume*>(element)); // Element must be a MusNeume"
+    wxASSERT_MSG( layer, "Pointer to layer cannot be NULL" );
+    wxASSERT_MSG( staff, "Pointer to staff cannot be NULL" );
+    wxASSERT_MSG( dynamic_cast<MusNeume*>(element), "Element must be a MusNeume" );
     
     MusNeume *neume = dynamic_cast<MusNeume*>(element);
     
@@ -64,8 +64,8 @@ void MusRC::DrawNeume( MusDC *dc, MusLayerElement *element, MusLayer *layer, Mus
 
 void MusRC::NeumeLine( MusDC *dc, MusLayerElement *element, MusLayer *layer, MusStaff *staff, int x1, int x2, int y1, int y2)
 {
-    dc->SetPen( m_currentColour, ToRendererX( m_doc->m_env.m_staffLineWidth ), AxSOLID );
-    dc->SetBrush(m_currentColour , AxTRANSPARENT );
+    dc->SetPen( m_currentColour, ToRendererX( m_doc->m_env.m_staffLineWidth ), wxSOLID );
+    dc->SetBrush(m_currentColour , wxTRANSPARENT );
     dc->DrawLine( ToRendererX(x1) , ToRendererY (y1) , ToRendererX(x2) , ToRendererY (y2) );
     dc->ResetPen();
     dc->ResetBrush();
@@ -73,7 +73,7 @@ void MusRC::NeumeLine( MusDC *dc, MusLayerElement *element, MusLayer *layer, Mus
 
 void MusRC::DrawAncus( MusDC *dc, MusLayerElement *element, MusLayer *layer, MusStaff *staff )
 {
-    assert(dynamic_cast<MusNeume*>(element)); // Element must be a MusNeume"    
+    wxASSERT_MSG( dynamic_cast<MusNeume*>(element), "Element must be a MusNeume" );    
     MusNeume *neume = dynamic_cast<MusNeume*>(element);
 
     // magic happens here
@@ -106,7 +106,7 @@ void MusRC::DrawAncus( MusDC *dc, MusLayerElement *element, MusLayer *layer, Mus
 
 void MusRC::DrawCustos( MusDC *dc, MusLayerElement *element, MusLayer *layer, MusStaff *staff )
 {
-    assert(dynamic_cast<MusNeume*>(element)); // Element must be a MusNeume"    
+    wxASSERT_MSG( dynamic_cast<MusNeume*>(element), "Element must be a MusNeume" );    
     MusNeume *neume = dynamic_cast<MusNeume*>(element);
     
     // magic happens here
@@ -129,7 +129,7 @@ void MusRC::DrawCustos( MusDC *dc, MusLayerElement *element, MusLayer *layer, Mu
 
 void MusRC::DrawEpiphonus( MusDC *dc, MusLayerElement *element, MusLayer *layer, MusStaff *staff )
 {
-    assert(dynamic_cast<MusNeume*>(element)); // Element must be a MusNeume"    
+    wxASSERT_MSG( dynamic_cast<MusNeume*>(element), "Element must be a MusNeume" );    
     MusNeume *neume = dynamic_cast<MusNeume*>(element);
 
     //podatus_ep for first note
@@ -159,7 +159,7 @@ void MusRC::DrawEpiphonus( MusDC *dc, MusLayerElement *element, MusLayer *layer,
 
 void MusRC::DrawCephalicus( MusDC *dc, MusLayerElement *element, MusLayer *layer, MusStaff *staff )
 {
-    assert(dynamic_cast<MusNeume*>(element)); // Element must be a MusNeume"    
+    wxASSERT_MSG( dynamic_cast<MusNeume*>(element), "Element must be a MusNeume" );    
     MusNeume *neume = dynamic_cast<MusNeume*>(element);
 
     // magic happens here
@@ -188,7 +188,7 @@ void MusRC::DrawCephalicus( MusDC *dc, MusLayerElement *element, MusLayer *layer
 
 void MusRC::DrawPunctum( MusDC *dc, MusLayerElement *element, MusLayer *layer, MusStaff *staff ) 
 {
-    assert(dynamic_cast<MusNeume*>(element)); // Element must be a MusNeume"    
+    wxASSERT_MSG( dynamic_cast<MusNeume*>(element), "Element must be a MusNeume" );    
     MusNeume *neume = dynamic_cast<MusNeume*>(element);
     
     // magic happens here
@@ -211,7 +211,7 @@ void MusRC::DrawPunctum( MusDC *dc, MusLayerElement *element, MusLayer *layer, M
 
 void MusRC::DrawPunctumInclinatum( MusDC *dc, MusLayerElement *element, MusLayer *layer, MusStaff *staff ) 
 {
-    assert(dynamic_cast<MusNeume*>(element)); // Element must be a MusNeume"    
+    wxASSERT_MSG( dynamic_cast<MusNeume*>(element), "Element must be a MusNeume" );    
     MusNeume *neume = dynamic_cast<MusNeume*>(element);
 
     // magic happens here
@@ -234,7 +234,7 @@ void MusRC::DrawPunctumInclinatum( MusDC *dc, MusLayerElement *element, MusLayer
 
 void MusRC::DrawVirga( MusDC *dc, MusLayerElement *element, MusLayer *layer, MusStaff *staff ) 
 {
-    assert(dynamic_cast<MusNeume*>(element)); // Element must be a MusNeume"    
+    wxASSERT_MSG( dynamic_cast<MusNeume*>(element), "Element must be a MusNeume" );    
     MusNeume *neume = dynamic_cast<MusNeume*>(element);
 
     // magic happens here
@@ -258,7 +258,7 @@ void MusRC::DrawVirga( MusDC *dc, MusLayerElement *element, MusLayer *layer, Mus
 
 void MusRC::DrawSalicus( MusDC *dc, MusLayerElement *element, MusLayer *layer, MusStaff *staff )
 {
-    assert(dynamic_cast<MusNeume*>(element)); // Element must be a MusNeume"    
+    wxASSERT_MSG( dynamic_cast<MusNeume*>(element), "Element must be a MusNeume" );    
     MusNeume *neume = dynamic_cast<MusNeume*>(element);
 
     // magic happens here
@@ -292,7 +292,7 @@ void MusRC::DrawSalicus( MusDC *dc, MusLayerElement *element, MusLayer *layer, M
 
 void MusRC::DrawPodatus( MusDC *dc, MusLayerElement *element, MusLayer *layer, MusStaff *staff ) 
 {
-    assert(dynamic_cast<MusNeume*>(element)); // Element must be a MusNeume"    
+    wxASSERT_MSG( dynamic_cast<MusNeume*>(element), "Element must be a MusNeume" );    
     MusNeume *neume = dynamic_cast<MusNeume*>(element);
 
     // magic happens here
@@ -320,7 +320,7 @@ void MusRC::DrawPodatus( MusDC *dc, MusLayerElement *element, MusLayer *layer, M
 
 void MusRC::DrawClivis( MusDC *dc, MusLayerElement *element, MusLayer *layer, MusStaff *staff ) 
 {
-    assert(dynamic_cast<MusNeume*>(element)); // Element must be a MusNeume"    
+    wxASSERT_MSG( dynamic_cast<MusNeume*>(element), "Element must be a MusNeume" );    
     MusNeume *neume = dynamic_cast<MusNeume*>(element);
 
     // magic happens here
@@ -355,7 +355,7 @@ void MusRC::DrawClivis( MusDC *dc, MusLayerElement *element, MusLayer *layer, Mu
 
 void MusRC::DrawPorrectus( MusDC *dc, MusLayerElement *element, MusLayer *layer, MusStaff *staff ) 
 {
-    assert(dynamic_cast<MusNeume*>(element)); // Element must be a MusNeume"    
+    wxASSERT_MSG( dynamic_cast<MusNeume*>(element), "Element must be a MusNeume" );    
     MusNeume *neume = dynamic_cast<MusNeume*>(element);
 
     // magic happens here
@@ -405,7 +405,7 @@ void MusRC::DrawPorrectus( MusDC *dc, MusLayerElement *element, MusLayer *layer,
 
 void MusRC::DrawPorrectusFlexus( MusDC *dc, MusLayerElement *element, MusLayer *layer, MusStaff *staff)
 {
-    assert(dynamic_cast<MusNeume*>(element)); // Element must be a MusNeume"    
+    wxASSERT_MSG( dynamic_cast<MusNeume*>(element), "Element must be a MusNeume" );    
     MusNeume *neume = dynamic_cast<MusNeume*>(element);
 
     // magic happens here
@@ -457,7 +457,7 @@ void MusRC::DrawPorrectusFlexus( MusDC *dc, MusLayerElement *element, MusLayer *
 
 void MusRC::DrawScandicus( MusDC *dc, MusLayerElement *element, MusLayer *layer, MusStaff *staff ) 
 {
-    assert(dynamic_cast<MusNeume*>(element)); // Element must be a MusNeume"    
+    wxASSERT_MSG( dynamic_cast<MusNeume*>(element), "Element must be a MusNeume" );    
     MusNeume *neume = dynamic_cast<MusNeume*>(element);
 
     // magic happens here
@@ -490,7 +490,7 @@ void MusRC::DrawScandicus( MusDC *dc, MusLayerElement *element, MusLayer *layer,
 
 void MusRC::DrawScandicusFlexus( MusDC *dc, MusLayerElement *element, MusLayer *layer, MusStaff *staff )
 {
-    assert(dynamic_cast<MusNeume*>(element)); // Element must be a MusNeume"    
+    wxASSERT_MSG( dynamic_cast<MusNeume*>(element), "Element must be a MusNeume" );    
     MusNeume *neume = dynamic_cast<MusNeume*>(element);
 
     // magic happens here
@@ -530,7 +530,7 @@ void MusRC::DrawScandicusFlexus( MusDC *dc, MusLayerElement *element, MusLayer *
 
 void MusRC::DrawTorculus( MusDC *dc, MusLayerElement *element, MusLayer *layer, MusStaff *staff ) 
 {
-    assert(dynamic_cast<MusNeume*>(element)); // Element must be a MusNeume"    
+    wxASSERT_MSG( dynamic_cast<MusNeume*>(element), "Element must be a MusNeume" );    
     MusNeume *neume = dynamic_cast<MusNeume*>(element);
 
     // magic happens here
@@ -565,7 +565,7 @@ void MusRC::DrawTorculus( MusDC *dc, MusLayerElement *element, MusLayer *layer, 
 
 void MusRC::DrawTorculusLiquescent( MusDC *dc, MusLayerElement *element, MusLayer *layer, MusStaff *staff )
 {
-    assert(dynamic_cast<MusNeume*>(element)); // Element must be a MusNeume"    
+    wxASSERT_MSG( dynamic_cast<MusNeume*>(element), "Element must be a MusNeume" );    
     MusNeume *neume = dynamic_cast<MusNeume*>(element);
 
     // magic happens here
@@ -597,7 +597,7 @@ void MusRC::DrawTorculusLiquescent( MusDC *dc, MusLayerElement *element, MusLaye
 
 void MusRC::DrawTorculusResupinus( MusDC *dc, MusLayerElement *element, MusLayer *layer, MusStaff *staff )
 {
-    assert(dynamic_cast<MusNeume*>(element)); // Element must be a MusNeume"    
+    wxASSERT_MSG( dynamic_cast<MusNeume*>(element), "Element must be a MusNeume" );    
     MusNeume *neume = dynamic_cast<MusNeume*>(element);
 
     // magic happens here
@@ -653,7 +653,7 @@ void MusRC::DrawTorculusResupinus( MusDC *dc, MusLayerElement *element, MusLayer
 
 void MusRC::DrawCompound( MusDC *dc, MusLayerElement *element, MusLayer *layer, MusStaff *staff ) 
 {
-    assert(dynamic_cast<MusNeume*>(element)); // Element must be a MusNeume"    
+    wxASSERT_MSG( dynamic_cast<MusNeume*>(element), "Element must be a MusNeume" );    
     MusNeume *neume = dynamic_cast<MusNeume*>(element);
 
     // magic happens here
@@ -687,7 +687,7 @@ void MusRC::DrawCompound( MusDC *dc, MusLayerElement *element, MusLayer *layer, 
 
 void MusRC::DrawNeumeDots(MusDC *dc, MusLayerElement *element, MusLayer *layer, MusStaff *staff) 
 {
-    assert(dynamic_cast<MusNeume*>(element)); // Element must be a MusNeume"    
+    wxASSERT_MSG( dynamic_cast<MusNeume*>(element), "Element must be a MusNeume" );    
     MusNeume *neume = dynamic_cast<MusNeume*>(element);
     
 	for (vector<MusNeumeElement>::iterator i = neume->m_pitches.begin(); i != neume->m_pitches.end(); i++) {
@@ -736,8 +736,8 @@ void MusRC::DrawNeumeLedgerLines( MusDC *dc, int y_n, int y_p, int xn, unsigned 
         //xng = toZoom(xng);
         //xnd = toZoom(xnd);
         
-        dc->SetPen( m_currentColour, ToRendererX( m_doc->m_env.m_staffLineWidth ), AxSOLID );
-        dc->SetBrush(m_currentColour , AxTRANSPARENT );
+        dc->SetPen( m_currentColour, ToRendererX( m_doc->m_env.m_staffLineWidth ), wxSOLID );
+        dc->SetBrush(m_currentColour , wxTRANSPARENT );
         
         for (i = 0; i < test; i++)
         {
@@ -763,12 +763,12 @@ void MusRC::DrawNeumeLedgerLines( MusDC *dc, int y_n, int y_p, int xn, unsigned 
 
 void MusRC::DrawNeumeSymbol( MusDC *dc, MusLayerElement *element, MusLayer *layer, MusStaff *staff)
 {
-    assert(layer); // Pointer to layer cannot be NULL"
-    assert(staff); // Pointer to staff cannot be NULL"
-    assert(dynamic_cast<MusNeumeSymbol*>(element)); // Element must be a MusNeumeSymbol"	
+    wxASSERT_MSG( layer, "Pointer to layer cannot be NULL" );
+    wxASSERT_MSG( staff, "Pointer to staff cannot be NULL" );
+    wxASSERT_MSG( dynamic_cast<MusNeumeSymbol*>(element), "Element must be a MusNeumeSymbol" );	
     MusNeumeSymbol *symbol = dynamic_cast<MusNeumeSymbol*>(element);   
 	
-    dc->StartGraphic( element, "neumeSymbol", Mus::StringFormat("neumeSymbol_%d_%d_%d", staff->GetId(), layer->voix, element->GetId() ) );
+    dc->StartGraphic( element, "neumeSymbol", Mus::StringFormat()("neumeSymbol_%d_%d_%d", staff->GetId(), layer->voix, element->GetId() ) );
 	
 	int x = element->m_x_abs + symbol->m_hOffset;
 	
@@ -808,7 +808,7 @@ void MusRC::DrawNeumeSymbol( MusDC *dc, MusLayerElement *element, MusLayer *laye
 
 void MusRC::DrawNeumeClef( MusDC *dc, MusLayerElement *element, MusLayer *layer, MusStaff *staff)
 {
-    assert(dynamic_cast<MusNeumeSymbol*>(element)); // Element must be a MusNeumeSymbol"	
+    wxASSERT_MSG( dynamic_cast<MusNeumeSymbol*>(element), "Element must be a MusNeumeSymbol" );	
     MusNeumeSymbol *clef = dynamic_cast<MusNeumeSymbol*>(element);   
 	
 	int x = element->m_x_abs;

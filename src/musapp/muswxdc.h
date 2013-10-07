@@ -58,7 +58,7 @@ public:
     
     // Getters
     
-    virtual void GetTextExtent( wxString& string, int *w, int *h );
+    virtual void GetTextExtent( const std::string& string, int *w, int *h );
     
     virtual MusPoint GetLogicalOrigin( );
 
@@ -78,13 +78,13 @@ public:
     
     virtual void DrawRectangle(int x, int y, int width, int height);
     
-    virtual void DrawRotatedText(const wxString& text, int x, int y, double angle);
+    virtual void DrawRotatedText(const std::string& text, int x, int y, double angle);
     
     virtual void DrawRoundedRectangle(int x, int y, int width, int height, double radius);
     
-    virtual void DrawText(const wxString& text, int x, int y);
+    virtual void DrawText(const std::string& text, int x, int y);
     
-    virtual void DrawMusicText(const wxString& text, int x, int y);
+    virtual void DrawMusicText(const std::string& text, int x, int y);
     
     virtual void DrawSpline(int n, MusPoint points[]);
     
@@ -92,7 +92,7 @@ public:
    
     // Method for starting and ending a graphic - for example for grouping shapes in <g></g> in SVG
     
-    virtual void StartGraphic( MusDocObject *object, wxString gClass, wxString gId ) {};
+    virtual void StartGraphic( MusDocObject *object, std::string gClass, std::string gId ) {};
     
     virtual void EndGraphic( MusDocObject *object, MusRC *rc  );
     

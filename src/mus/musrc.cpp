@@ -5,16 +5,18 @@
 // Copyright (c) Authors and others. All rights reserved.
 /////////////////////////////////////////////////////////////////////////////
 
-// For compilers that support precompilation, includes "wx/wx.h".
-#include "wx/wxprec.h"
 
 #include "musrc.h"
+
+//----------------------------------------------------------------------------
+
+#include <assert.h>
+#include <typeinfo>
+
+//----------------------------------------------------------------------------
+
 #include "muslayerelement.h"
 #include "musnote.h"
-#include "musiobin.h"
-
-
-#include <typeinfo>
 
 //----------------------------------------------------------------------------
 // MusRC
@@ -42,7 +44,7 @@ MusRC::MusRC( )
     
 	discontinu = 0;
 	
-	m_str.Alloc(1000);
+	m_str.reserve(1000);
 }
 
 
@@ -78,7 +80,7 @@ void MusRC::SetDoc( MusDoc *doc )
 
 void MusRC::SetPage( MusPage *page )
 {
-	wxASSERT_MSG( page, "MusPage cannot be NULL ");
+	assert( page ); // MusPage cannot be NULL
     
     m_doc->PaperSize( page );
 
@@ -155,7 +157,7 @@ void MusRC::LoadPage( int nopage )
 	m_npage = nopage;
 	SetPage( &m_doc->m_pages[m_npage] );
     */
-    wxLogDebug( "MusRC::LoadPage missing in ax2" );
+    Mus::LogDebug( "MusRC::LoadPage missing in ax2" );
 }
 
 int MusRC::ToRendererX( int i ) { return i; }; // the same

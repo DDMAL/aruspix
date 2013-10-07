@@ -32,7 +32,7 @@ class MusLayer;
  * This class is a file input stream for binary object serialization for files
  * before version 2.0
 */
-class MusBinInput_1_X: public MusFileInputStream
+class MusBinInput_1_X: public wxFileInputStream
 {
 public:
     // constructors and destructors
@@ -191,7 +191,8 @@ private:
     /* code du symbol */
     unsigned short l_ptch;
 
-private:
+protected:
+    MusDoc *m_doc;
 	
 };
 

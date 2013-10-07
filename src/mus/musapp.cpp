@@ -6,10 +6,9 @@
 /////////////////////////////////////////////////////////////////////////////
 
 
-// For compilers that support precompilation, includes "wx/wx.h".
-#include "wx/wxprec.h"
-
 #include "musapp.h"
+
+//----------------------------------------------------------------------------
 
 #include "musio.h"
 
@@ -29,7 +28,7 @@ MusLayerApp::~MusLayerApp()
 
 void MusLayerApp::AddLayerRdg( MusLayerRdg *layerRdg )
 {
-    //wxASSERT_MSG( this->m_layer->m_staff, "Layer staff cannot be NULL when adding and <rdg>" ); 
+    //assert(this->m_layer->m_staff); // Layer staff cannot be NULL when adding and <rdg>" 
     // The the to the parent staff will be NULL!
     //layerRdg->SetStaff( this->m_layer->m_staff );
     

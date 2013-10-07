@@ -11,14 +11,11 @@
 
 #include <typeinfo>
 
-class MusDC;
-
 #include "musstaff.h"
 
-//#define STAFF_OFFSET 190
-
-class MusNote;
+class MusDC;
 class MusLayerElement;
+class MusNote;
 
 //----------------------------------------------------------------------------
 // MusLayer
@@ -36,7 +33,7 @@ public:
     MusLayer( int logLayerNb );
     virtual ~MusLayer();
     
-    virtual wxString MusClassName( ) { return "MusLayer"; };	
+    virtual std::string MusClassName( ) { return "MusLayer"; };	
     
     void Clear();
 	

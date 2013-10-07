@@ -12,7 +12,7 @@
     #include "wx/wx.h"
 #endif
 
-#include "muswwg.h"
+#include <string>
 
 /* dans wgmidi.h */
 #define MAXMIDICANAL 16
@@ -61,7 +61,7 @@ public:
 public:
     // ------ //
     // header //
-    wxString h_texte;	
+    std::string h_texte;	
 	char h_aussiPremierPage; // premier numéro: 16 bits, 100 BYTES
 	char h_position; // see wgdef.h
 
@@ -72,7 +72,7 @@ public:
     
     // -------------------- //
     // footer - idem header //
-    wxString f_texte;	
+    std::string f_texte;	
 	char f_aussiPremierPage;
 	char f_position;	
 	char f_numeroFonte;
@@ -104,7 +104,7 @@ public:
     // file header //
     unsigned short maj_ver; // version
     unsigned short min_ver; // sous-version
-    wxString name; // nom du fichier 
+    std::string name; // nom du fichier 
     unsigned int filesize; // taille du fichier en bytes
     unsigned short nbpage; // nombre de pages
     unsigned short nopage; // numero de page courante

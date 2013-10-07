@@ -43,7 +43,7 @@ public:
 	MusNeumeSymbol(const MusNeumeSymbol &symbol);
 	virtual ~MusNeumeSymbol() {}
     
-    virtual wxString MusClassName( ) { return "MusNeumeSymbol"; };
+    virtual std::string MusClassName( ) { return "MusNeumeSymbol"; };
 	
 	void calcoffs (int *offst, int value);
     MusNeumeSymbolType GetSymbolType();
@@ -58,8 +58,8 @@ public:
 	void deleteMeiRef();
     
     // ax2 - member previously in MusElement (duplicated in MusNeume
-    wxString PitchToStr(int pitch);
-    int StrToPitch(wxString pitch);
+    std::string PitchToStr(int pitch);
+    int StrToPitch(std::string pitch);
 
 
 private:

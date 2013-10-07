@@ -5,41 +5,36 @@
 // Copyright (c) Laurent Pugin. All rights reserved.
 /////////////////////////////////////////////////////////////////////////////
 
-#ifdef __GNUG__
-    #pragma implementation "musio.h"
-#endif
-
-// For compilers that support precompilation, includes "wx/wx.h".
-//#include "wx/wxprec.h"
-
-#ifdef __BORLANDC__
-    #pragma hdrstop
-#endif
-//#include "wx/filename.h"
 
 #include "musio.h"
 
+//----------------------------------------------------------------------------
+
+#include <assert.h>
 
 //----------------------------------------------------------------------------
 // MusFileOutputStream
 //----------------------------------------------------------------------------
 
-MusFileOutputStream::MusFileOutputStream( MusDoc *doc, wxString filename ) :
-wxFileOutputStream( filename )
+MusFileOutputStream::MusFileOutputStream( MusDoc *doc, std::string filename ) :
+    std::ofstream( filename.c_str() )
 {
-	//wxASSERT_MSG( doc, "Document cannot be NULL" );
+	assert(doc); // Document cannot be NULL"
 	m_doc = doc;
 }
 
-MusFileOutputStream::MusFileOutputStream( MusDoc *doc, int fd ) :
-wxFileOutputStream( fd )
+MusFileOutputStream::MusFileOutputStream( MusDoc *doc ) :
+    std::ofstream(  )
 {
-	//wxASSERT_MSG( doc, "Document cannot be NULL" );
+	assert(doc); // Document cannot be NULL"
 	m_doc = doc;
 }
 
 MusFileOutputStream::~MusFileOutputStream()
 {
+    if ( this->is_open()) {
+        this->close();
+    }
 }
 
 
@@ -48,21 +43,24 @@ MusFileOutputStream::~MusFileOutputStream()
 // MusFileInputStream
 //----------------------------------------------------------------------------
 
-MusFileInputStream::MusFileInputStream( MusDoc *doc, wxString filename  ) :
-wxFileInputStream( filename )
+MusFileInputStream::MusFileInputStream( MusDoc *doc, std::string filename  ) :
+    std::ifstream( filename.c_str() )
 {
-	//wxASSERT_MSG( doc, "Document cannot be NULL" );
+	assert(doc); // Document cannot be NULL"
 	m_doc = doc;
 }
 
-MusFileInputStream::MusFileInputStream( MusDoc *doc, int fd ) :
-wxFileInputStream( fd )
+MusFileInputStream::MusFileInputStream( MusDoc *doc ) :
+    std::ifstream(  )
 {
-	//wxASSERT_MSG( doc, "Document cannot be NULL" );
+	assert(doc); // Document cannot be NULL"
 	m_doc = doc;
 }
 
 MusFileInputStream::~MusFileInputStream()
 {
+    if ( this->is_open()) {
+        this->close();
+    }
 }
 

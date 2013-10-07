@@ -29,7 +29,6 @@ using std::max;
 #include "mus/musclef.h"
 #include "mus/musmensur.h"
 #include "mus/musnote.h"
-#include "mus/musneume.h"
 #include "mus/musrest.h"
 #include "mus/mussymbol.h"
 
@@ -311,8 +310,9 @@ wxString MusMLFSymbol::GetLabelType( )
 //----------------------------------------------------------------------------
 
 MusMLFOutput::MusMLFOutput( MusDoc *doc, wxString filename, MusMLFDictionary *dict, wxString model_symbol_name ) :
-    MusFileOutputStream( doc, filename.mb_str() )
+    wxFileOutputStream( filename )
 {
+    m_doc = doc;
     m_filename = filename;
     wxFileName::SplitPath( m_filename, NULL, &m_shortname, NULL );
 	m_addHeader = true;
@@ -325,8 +325,9 @@ MusMLFOutput::MusMLFOutput( MusDoc *doc, wxString filename, MusMLFDictionary *di
 
 
 MusMLFOutput::MusMLFOutput( MusDoc *doc, int fd, wxString filename, MusMLFDictionary *dict,  wxString model_symbol_name ) :
-	MusFileOutputStream( doc, fd )
+	wxFileOutputStream( fd )
 {
+    m_doc = doc;
     m_filename = filename;
     wxFileName::SplitPath( m_filename, NULL, &m_shortname, NULL );
 	m_addHeader = false;
@@ -1206,8 +1207,9 @@ MusLayerElement *MusMLFInput::ConvertSymbol( wxString line )
 }
 
 MusMLFInput::MusMLFInput( MusDoc *file, wxString filename ) :
-    MusFileInputStream( file, filename.mb_str() )
+    wxFileInputStream( filename )
 {
+    m_doc = file;
 	m_staff_i = m_staff_label = -1;
 }
 

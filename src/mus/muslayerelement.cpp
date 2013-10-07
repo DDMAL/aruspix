@@ -6,25 +6,26 @@
 /////////////////////////////////////////////////////////////////////////////
 
 
-// For compilers that support precompilation, includes "wx/wx.h".
-#include "wx/wxprec.h"
-
-#include "musio.h"
 #include "muslayerelement.h"
-#include "musdef.h"
 
+//----------------------------------------------------------------------------
+
+#include <assert.h>
+
+//----------------------------------------------------------------------------
+
+#include "mus.h"
 #include "musapp.h"
 #include "musbarline.h"
 #include "musbeam.h"
 #include "musclef.h"
+#include "musdef.h"
+#include "musdoc.h"
+#include "musio.h"
 #include "musmensur.h"
-#include "musneume.h"
 #include "musnote.h"
 #include "musrest.h"
 #include "mussymbol.h"
-
-
-#include "musdoc.h"
 
 
 //----------------------------------------------------------------------------
@@ -84,9 +85,8 @@ MusLayerElement *MusLayerElement::GetChildCopy( bool newUuid )
     else if (this->IsSymbol() )
         element = new MusSymbol( *(MusSymbol*)this );
     else {
-        wxLogDebug( "Missing %s", this->MusClassName().c_str() );
-        wxYield();
-        wxASSERT_MSG( false , "Copy of this type unimplemented" );
+        Mus::LogDebug( "Missing %s", this->MusClassName().c_str() );
+        assert( false ); // Copy of this type unimplemented
         return NULL;
     }
         
@@ -106,7 +106,7 @@ MusLayerElement *MusLayerElement::GetChildCopy( bool newUuid )
 
 int MusLayerElement::GetElementNo() const
 {
-    wxASSERT_MSG( m_parent, "Layer cannot be NULL");
+    assert( m_parent ); // Layer cannot be NULL
     
     return m_parent->GetChildIndex( this );
 }

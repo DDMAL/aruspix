@@ -5,20 +5,13 @@
 // Copyright (c) Authors and others. All rights reserved.
 /////////////////////////////////////////////////////////////////////////////
 
-
-
-
 #ifndef __MUS_NOTE_H__
 #define __MUS_NOTE_H__
 
-#ifndef WX_PRECOMP
-    #include "wx/wx.h"
-#endif
-
-#include "muslayerelement.h"
-#include "musdurationinterface.h"
-#include "muspitchinterface.h"
 #include "musbeam.h"
+#include "musdurationinterface.h"
+#include "muslayerelement.h"
+#include "muspitchinterface.h"
 
 #define SLUR_INITIAL  (1<<1)
 #define SLUR_MEDIAL  (1<<2) 
@@ -33,7 +26,6 @@
 #define CHORD_TERMINAL  (1<<3) 
 
 #define NOTE_MAX_SLURS 6
-
 
 //----------------------------------------------------------------------------
 // MusNote
@@ -57,7 +49,7 @@ public:
     MusNote();
     virtual ~MusNote();
     
-    virtual wxString MusClassName( ) { return "MusNote"; };
+    virtual std::string MusClassName( ) { return "MusNote"; };
     
      /** 
       * Set the duration.

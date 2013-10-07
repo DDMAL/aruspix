@@ -9,17 +9,12 @@
 #ifndef __MUS_SYSTEM_H__
 #define __MUS_SYSTEM_H__
 
-#ifndef WX_PRECOMP
-    #include "wx/wx.h"
-#endif
-
-class MusDC;
-
-#include "muspage.h"
 #include "musbarline.h"
+#include "muspage.h"
 
 #define SYSTEM_OFFSET 190
 
+class MusDC;
 class MusStaff;
 
 //----------------------------------------------------------------------------
@@ -41,7 +36,7 @@ public:
     
     //virtual bool Check();
     
-    virtual wxString MusClassName( ) { return "MusSystem"; };	    
+    virtual std::string MusClassName( ) { return "MusSystem"; };	    
     
     void Clear();
     

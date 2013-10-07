@@ -33,10 +33,10 @@
 #include "im/impage.h"
 
 #include "mus/musdoc.h"
-#include "mus/musiowwg.h"
-//#include "mus/musiocmme.h" // ax2
-#include "mus/musiomei.h" // ax2
-#include "mus/mustoolpanel.h"
+#include "mus/musiomei.h"
+
+#include "musapp/mustoolpanel.h"
+#include "musapp/musiowwg.h"
 
 // statics
 bool RecEnv::s_check = true;
@@ -1488,7 +1488,7 @@ void RecEnv::OnExportWWG( wxCommandEvent &event )
     wxGetApp().m_lastDirAX0_out = wxPathOnly( filename );
     
     // save
-    MusWWGOutput *wwg_output = new MusWWGOutput( m_recFilePtr->m_musDocPtr, filename );
+    MusWWGOutput *wwg_output = new MusWWGOutput( m_recFilePtr->m_musDocPtr, filename.c_str() );
     wwg_output->ExportFile();
     delete wwg_output;
 }
@@ -1835,7 +1835,7 @@ void RecEnv::OnSaveMEI( wxCommandEvent &event )
     if (filename.IsEmpty())
         return;
     
-    MusMeiOutput *mei_output = new MusMeiOutput( m_recFilePtr->m_musDocPtr, filename );
+    MusMeiOutput *mei_output = new MusMeiOutput( m_recFilePtr->m_musDocPtr, filename.c_str() );
     mei_output->ExportFile();
     delete mei_output;
 }

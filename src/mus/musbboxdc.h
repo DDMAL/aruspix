@@ -5,13 +5,9 @@
 // Copyright (c) Authors and others. All rights reserved.   
 /////////////////////////////////////////////////////////////////////////////
 
+
 #ifndef __MUS_BBOX_DC_H__
 #define __MUS_BBOX_DC_H__
-
-
-#ifndef WX_PRECOMP
-    #include "wx/wx.h"
-#endif
 
 #include "musdc.h"
 #include "musobject.h"
@@ -38,15 +34,15 @@ public:
     
     // Setters
     
-    virtual void SetBrush( int colour, int style = wxSOLID );
+    virtual void SetBrush( int colour, int style = AxSOLID );
     
-    virtual void SetBackground( int colour, int style = wxSOLID );
+    virtual void SetBackground( int colour, int style = AxSOLID );
     
     virtual void SetBackgroundImage( void *image, double opacity = 1.0 ) {};
     
     virtual void SetBackgroundMode( int mode );
     
-    virtual void SetPen( int colour, int width = 1, int style = wxSOLID );
+    virtual void SetPen( int colour, int width = 1, int style = AxSOLID );
     
     virtual void SetFont( MusFontInfo *font_info );
         
@@ -64,7 +60,7 @@ public:
     
     // Getters
     
-    virtual void GetTextExtent( wxString& string, int *w, int *h );
+    virtual void GetTextExtent( const std::string& string, int *w, int *h );
     
     virtual MusPoint GetLogicalOrigin( );
 
@@ -80,24 +76,24 @@ public:
     
     virtual void DrawLine(int x1, int y1, int x2, int y2);
     
-    virtual void DrawPolygon(int n, MusPoint points[], int xoffset, int yoffset, int fill_style = wxODDEVEN_RULE);
+    virtual void DrawPolygon(int n, MusPoint points[], int xoffset, int yoffset, int fill_style = AxODDEVEN_RULE);
     
     virtual void DrawRectangle(int x, int y, int width, int height);
     
-    virtual void DrawRotatedText(const wxString& text, int x, int y, double angle);
+    virtual void DrawRotatedText(const std::string& text, int x, int y, double angle);
     
     virtual void DrawRoundedRectangle(int x, int y, int width, int height, double radius);
     
-    virtual void DrawText(const wxString& text, int x, int y);
+    virtual void DrawText(const std::string& text, int x, int y);
     
-    virtual void DrawMusicText(const wxString& text, int x, int y);
+    virtual void DrawMusicText(const std::string& text, int x, int y);
     
     virtual void DrawSpline(int n, MusPoint points[]);
     
     virtual void DrawBackgroundImage( int x = 0, int y = 0 ) {};
     
     // 
-    virtual void StartGraphic( MusDocObject *object, wxString gClass, wxString gId );
+    virtual void StartGraphic( MusDocObject *object, std::string gClass, std::string gId );
     
     virtual void EndGraphic(MusDocObject *object, MusRC *rc );
     

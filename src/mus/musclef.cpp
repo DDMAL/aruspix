@@ -6,11 +6,7 @@
 /////////////////////////////////////////////////////////////////////////////
 
 
-// For compilers that support precompilation, includes "wx/wx.h".
-#include "wx/wxprec.h"
-
 #include "musclef.h"
-
 
 //----------------------------------------------------------------------------
 // MusClef

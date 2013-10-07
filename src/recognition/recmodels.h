@@ -25,8 +25,8 @@
 
 #define MUS_NGRAM_ORDER 3
 
-#include "mus/musiomlf.h"
-#include "mus/musmlfdic.h"
+#include "musapp/musiomlf.h"
+#include "musapp/musmlfdic.h"
 
 
 

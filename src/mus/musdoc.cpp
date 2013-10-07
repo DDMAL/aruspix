@@ -5,30 +5,27 @@
 // Copyright (c) Authors and others. All rights reserved.
 /////////////////////////////////////////////////////////////////////////////
 
-// For compilers that support precompilation, includes "wx/wx.h".
-#include "wx/wxprec.h"
 
 #include "musdoc.h"
 
-#include "muspage.h"
-#include "mussystem.h"
-#include "musstaff.h"
+//----------------------------------------------------------------------------
+
+#include "mus.h"
+#include "musbboxdc.h"
 #include "muslayer.h"
 #include "muslayerelement.h"
-
-#include "musbboxdc.h"
+#include "muspage.h"
 #include "musrc.h"
+#include "musstaff.h"
+#include "mussystem.h"
 
-#ifndef HEADLESS
-#include "app/axapp.h"
-#endif
+//----------------------------------------------------------------------------
+
+#include <math.h>
 
 //----------------------------------------------------------------------------
 // MusDoc
 //----------------------------------------------------------------------------
-
-// Initialize static respource path
-wxString MusDoc::m_respath = "/usr/local/share/aruspix";
 
 MusDoc::MusDoc() :
     MusObject()
@@ -201,13 +198,10 @@ int MusDoc::CalcNeumesFontSize( )
 
 void MusDoc::UpdateFontValues() 
 {	
-	if ( !m_ftLeipzig.FromString( MusDoc::GetMusicFontDescStr() ) )
-        wxLogWarning(_("Impossible to load font 'Leipzig'") );
+	if ( !m_ftLeipzig.FromString( Mus::GetMusicFontDescStr() ) )
+        Mus::LogWarning( "Impossible to load font 'Leipzig'" );
 	
-	if ( !m_ftFestaDiesA.FromString( MusDoc::GetNeumeFontDescStr() ) )
-		wxLogWarning(_("Impossible to load font 'Festa Dies'") );
-	
-	//wxLogMessage(_("Size %d, Family %d, Style %d, Weight %d, Underline %d, Face %s, Desc %s"),
+	//Mus::LogMessage( "Size %d, Family %d, Style %d, Weight %d, Underline %d, Face %s, Desc %s",
 	//	m_ftLeipzig.GetPointSize(),
 	//	m_ftLeipzig.GetFamily(),
 	//	m_ftLeipzig.GetStyle(),
@@ -227,8 +221,8 @@ void MusDoc::UpdateFontValues()
     m_activeChantFonts[1][1] = m_ftFestaDiesA;
 	
 	// Lyrics
-	if ( !m_ftLyrics.FromString( MusDoc::GetLyricFontDescStr() ) )
-		wxLogWarning(_("Impossible to load font for the lyrics") );
+	if ( !m_ftLyrics.FromString( Mus::GetLyricFontDescStr() ) )
+		Mus::LogWarning( "Impossible to load font for the lyrics" );
     
 	m_activeLyricFonts[0] = m_ftLyrics;
     m_activeLyricFonts[1] = m_ftLyrics;
@@ -271,7 +265,7 @@ void MusDoc::UpdatePageValues()
     
     m_fontHeight = CalcMusicFontSize();
     m_fontHeightAscent[0][0] = floor(LEIPZIG_ASCENT * (double)m_fontHeight / LEIPZIG_UNITS_PER_EM);
-	m_fontHeightAscent[0][0] +=  MusDoc::GetFontPosCorrection();
+	m_fontHeightAscent[0][0] +=  Mus::GetFontPosCorrection();
 	m_fontHeightAscent[0][1] = (m_fontHeightAscent[0][0] * m_graceRatio[0]) / m_graceRatio[1];
     m_fontHeightAscent[1][0] = (m_fontHeightAscent[0][0] * m_smallStaffRatio[0]) / m_smallStaffRatio[1];
 	m_fontHeightAscent[1][1] = (m_fontHeightAscent[1][0] * m_graceRatio[0]) / m_graceRatio[1];    
@@ -373,59 +367,4 @@ MusStaff *MusDoc::GetVoice( int i )
     return staff;
     */ // ax2
     return NULL;
-}
-
-
-wxString MusDoc::GetAxVersion() {
-#ifdef HEADLESS
-    return wxString("command line"); // we need to add versioning
-#else
-    return AxApp::s_version;
-#endif
-}
-
-wxString MusDoc::GetResourcesPath() {
-#ifdef HEADLESS
-    //hardcode galore
-    return m_respath;
-#else
-    return wxGetApp().m_resourcesPath;
-#endif
-}    
-    
-wxString MusDoc::GetMusicFontDescStr() {
-#ifdef HEADLESS
-    return wxString("0;13;70;90;90;0;Leipzig 4.7;33");
-#else
-    return wxGetApp().m_musicFontDesc;
-#endif
-}
-    
-wxString MusDoc::GetNeumeFontDescStr() {
-#ifdef HEADLESS
-    return wxString("0;53;70;90;90;0;Festa Dies A;0");
-#else
-    return wxGetApp().m_neumeFontDesc;
-#endif
-}
-        
-wxString MusDoc::GetLyricFontDescStr() {
-#ifdef HEADLESS
-    return wxString("0;12;70;93;90;0;Garamond;0");
-#else
-    return wxGetApp().m_lyricFontDesc;
-#endif
-}
-
-
-int MusDoc::GetFontPosCorrection(){
-#ifdef HEADLESS
-    return 0;
-#else
-    return wxGetApp().m_fontPosCorrection;
-#endif
-}
-
-wxString MusDoc::GetFileVersion(int vmaj, int vmin, int vrev) {
-    return wxString::Format("%04d.%04d.%04d", vmaj, vmin, vrev );
 }

@@ -9,21 +9,14 @@
 #ifndef __MUS_STAFF_H__
 #define __MUS_STAFF_H__
 
-#ifndef WX_PRECOMP
-    #include "wx/wx.h"
-#endif
-
-class MusDC;
-
 #include "mussystem.h"
 
 #define STAFF_OFFSET 190
 #define MAXCLE 100	// maximum number of clef on one staff
 
-class MusLayer;
 class MusClef;
-
-
+class MusDC;
+class MusLayer;
 
 //----------------------------------------------------------------------------
 // MusStaff
@@ -43,7 +36,7 @@ public:
 	MusStaff( const MusStaff& staff ); // copy contructor
     virtual ~MusStaff();
 
-    virtual wxString MusClassName( ) { return "MusStaff"; };	    
+    virtual std::string MusClassName( ) { return "MusStaff"; };	    
     
     void Clear();
 

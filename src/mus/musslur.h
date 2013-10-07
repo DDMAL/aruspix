@@ -1,24 +1,20 @@
-//
-//  musslur.h
-//  aruspix
-//
-//  Created by Rodolfo Zitellini on 26/06/12.
-//  Copyright (c) 2012 com.aruspix.www. All rights reserved.
-//
+/////////////////////////////////////////////////////////////////////////////
+// Name:        musslur.h
+// Author:      Rodolfo Zitellini
+// Created:     26/06/2012
+// Copyright (c) Authors and others. All rights reserved.
+/////////////////////////////////////////////////////////////////////////////
+
 
 #ifndef __MUS_SLUR_H__
 #define __MUS_SLUR_H__
 
-#ifndef WX_PRECOMP
-#include "wx/wx.h"
-#endif
-
-#include "musobject.h"
 #include "muslayer.h"
 #include "musnote.h"
+#include "musobject.h"
 
 //----------------------------------------------------------------------------
-// MusBeam
+// MusSlur
 //----------------------------------------------------------------------------
 
 class MusSlur: public MusLayerElement
@@ -28,7 +24,7 @@ public:
     MusSlur();
     virtual ~MusSlur();
     
-    virtual wxString MusClassName( ) { return "MusSlur"; };
+    virtual std::string MusClassName( ) { return "MusSlur"; };
 
     
 	int GetNoteCount() const { return (int)m_children.size(); };

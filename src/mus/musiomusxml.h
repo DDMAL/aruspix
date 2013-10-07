@@ -1,24 +1,24 @@
-//
-//  musiomusxml.h
-//  aruspix
-//
-//  Created by Rodolfo Zitellini on 10/08/12.
-//  Copyright (c) 2012 com.aruspix.www. All rights reserved.
-//
+/////////////////////////////////////////////////////////////////////////////
+// Name:        musiomusxml.h
+// Author:      Rodolfo Zitellini
+// Created:     10/08/2012
+// Copyright (c) Authors and others. All rights reserved.
+/////////////////////////////////////////////////////////////////////////////
 
-#ifndef aruspix_musiomusxml_h
-#define aruspix_musiomusxml_h
 
-#ifndef WX_PRECOMP
-#include "wx/wx.h"
-#endif
-#include "wx/wfstream.h"
+#ifndef __MUS_IOMUSXML_H__
+#define __MUS_IOMUSXML_H__
 
 #include "musdoc.h"
 #include "muslayer.h"
 #include "mustie.h"
 
-#include <tinyxml.h>
+// TINYXML
+#if defined (__WXMSW__)
+    #include "tinyxml.h"
+#else
+    #include "tinyxml/tinyxml.h"
+#endif
 
 class MusBarline;
 class MusBeam;
@@ -37,7 +37,7 @@ class MusXMLOutput: public MusFileOutputStream
 {
 public:
     // constructors and destructors
-    MusXMLOutput( MusDoc *doc, wxString filename );
+    MusXMLOutput( MusDoc *doc, std::string filename );
     virtual ~MusXMLOutput();
     
     virtual bool ExportFile( );
@@ -68,7 +68,7 @@ public:
     void CreateRestsForMultiMeasure();
     
 private:
-    wxString m_filename;
+    std::string m_filename;
     
     TiXmlElement *m_xml_score;
     TiXmlElement *m_xml_part;
@@ -88,4 +88,4 @@ private:
     int m_measure_count;
 };
 
-#endif
+#endif // __MUS_IOMUSXML_H__

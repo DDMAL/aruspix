@@ -5,16 +5,19 @@
 // Copyright (c) Authors and others. All rights reserved.
 /////////////////////////////////////////////////////////////////////////////
 
-// For compilers that support precompilation, includes "wx/wx.h".
-#include "wx/wxprec.h"
-
-//#include "wx/tokenzr.h"
 
 #include "muspage.h"
-#include "musdoc.h"
-#include "mussystem.h"
-#include "musstaff.h"
 
+//----------------------------------------------------------------------------
+
+#include <assert.h>
+
+//----------------------------------------------------------------------------
+
+#include "musdef.h"
+#include "musdoc.h"
+#include "musstaff.h"
+#include "mussystem.h"
 
 //----------------------------------------------------------------------------
 // MusPage
@@ -59,7 +62,7 @@ void MusPage::AddSystem( MusSystem *system )
 
 int MusPage::GetPageNo() const
 {
-    wxASSERT_MSG( m_parent, "Doc cannot be NULL");
+    assert( m_parent ); // Doc cannot be NULL
     
     return m_parent->GetChildIndex( this );
 }
@@ -148,12 +151,12 @@ void MusPage::SetValues( int type )
 {
 /* 
     int i;
-    wxString values;
+    std::string values;
     for (i = 0; i < nbrePortees; i++) 
 	{
         switch ( type ) {
-            case PAGE_VALUES_VOICES: values += wxString::Format("%d;", (&m_staves[i])->voix ); break;
-            case PAGE_VALUES_INDENT: values += wxString::Format("%d;", (&m_staves[i])->indent ); break;
+            case PAGE_VALUES_VOICES: values += Mus::StringFormat("%d;", (&m_staves[i])->voix ); break;
+            case PAGE_VALUES_INDENT: values += Mus::StringFormat("%d;", (&m_staves[i])->indent ); break;
         }
 	}
     values = wxGetTextFromUser( "Enter values for the pages", "", values );
@@ -169,6 +172,6 @@ void MusPage::SetValues( int type )
         }	
 	}
 */
-    wxLogDebug("TODO");
+    Mus::LogDebug("TODO");
     return;
 }

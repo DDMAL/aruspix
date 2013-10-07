@@ -1,34 +1,32 @@
-//
-//  musiodarms.cpp
-//  aruspix
-//
-//  Created by Rodolfo Zitellini on 02/07/12.
-//  Copyright (c) 2012 com.aruspix.www. All rights reserved.
-//
+/////////////////////////////////////////////////////////////////////////////
+// Name:        musiodarms.cpp
+// Author:      Rodolfo Zitellini
+// Created:     02/07/2012
+// Copyright (c) Authors and others. All rights reserved.
+/////////////////////////////////////////////////////////////////////////////
 
-#include <iostream>
+
+#include "musiodarms.h"
+
+//----------------------------------------------------------------------------
+
 #include <fstream>
+#include <iostream>
 #include <sstream>
 
-#ifndef WX_PRECOMP
-#include "wx/wx.h"
-#endif
-#include "wx/wfstream.h"
-
-#include "musdoc.h"
-#include "muslayer.h"
+//----------------------------------------------------------------------------
 
 #include "musbarline.h"
+#include "musbeam.h"
 #include "musclef.h"
+#include "musdoc.h"
+#include "muskeysig.h"
+#include "muslayer.h"
 #include "musmensur.h"
-#include "musneume.h"
 #include "musnote.h"
 #include "musrest.h"
 #include "mussymbol.h"
-#include "muskeysig.h"
-#include "musbeam.h"
 
-#include "musiodarms.h"
 
 // Ok, this is ugly, but since this is static data, why not?
 pitchmap MusDarmsInput::PitchMap[] = {
@@ -42,8 +40,8 @@ pitchmap MusDarmsInput::PitchMap[] = {
     /* 49 */ {8, PITCH_C}, {8, PITCH_D}, {8, PITCH_E}, {8, PITCH_F}, {8, PITCH_G}, {8, PITCH_A}, {8, PITCH_B},
 };
 
-MusDarmsInput::MusDarmsInput( MusDoc *doc, wxString filename ) :
-MusFileInputStream( doc, -1 )
+MusDarmsInput::MusDarmsInput( MusDoc *doc, std::string filename ) :
+MusFileInputStream( doc )
 {	
     m_layer = NULL;
     m_staff = NULL;
@@ -377,7 +375,7 @@ bool MusDarmsInput::ImportFile() {
     int pos = 0;
     std::ifstream infile;
     
-    infile.open(m_filename);
+    infile.open(m_filename.c_str());
     
     if (infile.eof()) {
         infile.close();

@@ -24,10 +24,10 @@ using std::max;
 #include "app/axapp.h"
 
 #include "mus/musdoc.h"
-#include "mus/mustoolpanel.h"
-//#include "mus/musstaff.h"
 #include "mus/muspage.h"
 #include "mus/muslayerelement.h"
+
+#include "musapp/mustoolpanel.h"
 
 #include "im/impage.h"
 #include "im/imstaff.h"

@@ -83,7 +83,7 @@ MusNeume::MusNeume( const MusNeume &neume) :
 /**
  * The type of this neume (from MEI) e.g. 'torculus', 'podatus'
  */
-void MusNeume::setType(wxString type)
+void MusNeume::setType(std::string type)
 {
     if (type == "punctum") {
         m_type = NEUME_TYPE_PUNCTUM;
@@ -119,8 +119,7 @@ void MusNeume::setType(wxString type)
         m_type = NEUME_TYPE_TORCULUS_RESUPINUS;
         //torculus liquescent?
     } else {
-        wxString t = type.mb_str();
-        throw "unknown neume type " + t;
+        throw "unknown neume type " + type;
     }
 }
 
@@ -137,9 +136,9 @@ vector<MusNeumeElement> MusNeume::getPitches() {
 }
 
 
-wxString MusNeume::PitchToStr(int pitch)
+std::string MusNeume::PitchToStr(int pitch)
 {
-    wxString value;
+    std::string value;
     switch (pitch) {
         case 0: value = "b"; break;
         case 1: value = "c"; break;
@@ -153,7 +152,7 @@ wxString MusNeume::PitchToStr(int pitch)
     return value;
 }
 
-int MusNeume::StrToPitch(wxString pitch)
+int MusNeume::StrToPitch(std::string pitch)
 {
     int value;
     if (pitch == "c") {

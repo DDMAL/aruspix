@@ -1,22 +1,23 @@
-//
-//  muskeysig.h
-//  aruspix
-//
-//  Created by Rodolfo Zitellini on 10/07/12.
-//  Copyright (c) 2012 com.aruspix.www. All rights reserved.
-//
 
-#ifndef aruspix_muskeysig_h
-#define aruspix_muskeysig_h
+/////////////////////////////////////////////////////////////////////////////
+// Name:        muskeysig.h
+// Author:      Rodolfo Zitellini
+// Created:     10/07/2012
+// Copyright (c) Authors and others. All rights reserved.
+/////////////////////////////////////////////////////////////////////////////
 
-#ifndef WX_PRECOMP
-#include "wx/wx.h"
-#endif
 
+#ifndef __MUS_KEYSIG_H__
+#define __MUS_KEYSIG_H__
+
+#include "musdef.h"
 #include "muslayer.h"
 #include "muspositioninterface.h"
-#include "musdef.h"
 
+
+//----------------------------------------------------------------------------
+// MusKeysig
+//----------------------------------------------------------------------------
 
 class MusKeySig: public MusLayerElement, public MusPositionInterface
 {
@@ -26,7 +27,7 @@ public:
     MusKeySig(int num_alter, char alter);
     virtual ~MusKeySig();
     
-    virtual wxString MusClassName( ) { return "MusKeySig"; };
+    virtual std::string MusClassName( ) { return "MusKeySig"; };
     
     unsigned char GetAlterationAt(int pos);
     int GetOctave(unsigned char pitch, char clef);

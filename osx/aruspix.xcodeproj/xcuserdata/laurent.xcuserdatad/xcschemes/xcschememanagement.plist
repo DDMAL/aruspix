@@ -9,7 +9,7 @@
 			<key>orderHint</key>
 			<integer>0</integer>
 		</dict>
-		<key>aruspix_headless.xcscheme</key>
+		<key>aruspix_cmd_line.xcscheme</key>
 		<dict>
 			<key>orderHint</key>
 			<integer>1</integer>
@@ -17,6 +17,11 @@
 	</dict>
 	<key>SuppressBuildableAutocreation</key>
 	<dict>
+		<key>4D784B871802DC1900461A35</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
 		<key>8F23816A159462AF00C04D47</key>
 		<dict>
 			<key>primary</key>

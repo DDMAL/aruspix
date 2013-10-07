@@ -19,12 +19,14 @@
 #include "app/axframe.h"
 #include "app/axapp.h"
 
-#include "mus/muswindow.h"
+
 #include "mus/musdoc.h"
 #include "mus/muspage.h"
-#include "mus/mustoolpanel.h"
-#include "mus/musiowwg.h"
-#include "mus/musiomlf.h"
+
+#include "musapp/muswindow.h"
+#include "musapp/mustoolpanel.h"
+#include "musapp/musiowwg.h"
+#include "musapp/musiomlf.h"
 
 // experimental
 #include "mus/musiopae.h"
@@ -195,7 +197,7 @@ void EdtEnv::ParseCmd( wxCmdLineParser *parser )
         
         // first parameter is input file
         wxString file = parser->GetParam( 0 );
-        wxLogDebug( file );
+        wxLogDebug( file.c_str() );
         
         // experiments
         // convert mei file to svg
@@ -205,7 +207,7 @@ void EdtEnv::ParseCmd( wxCmdLineParser *parser )
             
             // with -m, the second parameter is the output filename
             wxString outfile = parser->GetParam( 1 );
-            wxLogDebug( outfile );
+            wxLogDebug( outfile.c_str() );
             
             /*
             MusDoc *mfile = new MusDoc();
@@ -471,7 +473,7 @@ void EdtEnv::OnOpenPAE( wxCommandEvent &event )
     
     m_edtFilePtr->New();
 
-    MusPaeInput paeInput( m_edtFilePtr->m_musDocPtr, filename );
+    MusPaeInput paeInput( m_edtFilePtr->m_musDocPtr, filename.mb_str() );
 	if ( !paeInput.ImportFile() )
 		return;
 
@@ -497,7 +499,7 @@ void EdtEnv::OnOpenDARMS( wxCommandEvent &event )
     
     m_edtFilePtr->New();
     
-    MusDarmsInput darmsInput( m_edtFilePtr->m_musDocPtr, filename );
+    MusDarmsInput darmsInput( m_edtFilePtr->m_musDocPtr, filename.mb_str() );
 	if ( !darmsInput.ImportFile() )
 		return;
     
@@ -584,7 +586,7 @@ void EdtEnv::OnSaveSVG( wxCommandEvent &event )
     m_musViewPtr->SetZoom( 100 );
     
     
-    MusSvgDC svgDC (filename, m_musViewPtr->ToRendererX( m_musViewPtr->m_doc->m_pageWidth + 30 )  ,
+    MusSvgDC svgDC (filename.mb_str(), m_musViewPtr->ToRendererX( m_musViewPtr->m_doc->m_pageWidth + 30 )  ,
         m_musViewPtr->ToRendererX( m_musViewPtr->m_doc->m_pageHeight + 10 )) ;
         
     //svgDC.SetUserScale( 1, 1 );
@@ -626,7 +628,7 @@ void EdtEnv::OnOpenWWG( wxCommandEvent &event )
     
     m_edtFilePtr->New();
     
-    MusWWGInput wwginput( m_edtFilePtr->m_musDocPtr, filename );
+    MusWWGInput wwginput( m_edtFilePtr->m_musDocPtr, filename.mb_str() );
 	if ( !wwginput.ImportFile() )
 		return;
 
@@ -638,16 +640,21 @@ void EdtEnv::OnSaveWWG( wxCommandEvent &event )
     if (!m_edtFilePtr) {
         return;
     };
+    
+    wxString wxdocname = m_edtFilePtr->m_shortname;
+    wxString name, ext;
+    wxFileName::SplitPath(wxdocname, NULL, &name, &ext);
+    wxString savename = name + ".wwg";
 
     wxString filename;
-    filename = wxFileSelector( _("Save"), wxGetApp().m_lastDirAX0_out, m_edtFilePtr->m_musDocPtr->m_wwgData.name + ".wwg", "wwg", "Wolfgang WWG|*.wwg", wxFD_SAVE);
+    filename = wxFileSelector( _("Save"), wxGetApp().m_lastDirAX0_out, savename, "wwg", "Wolfgang WWG|*.wwg", wxFD_SAVE);
     if (filename.IsEmpty())
         return;
         
     wxGetApp().m_lastDirAX0_out = wxPathOnly( filename );
     
     // save
-    MusWWGOutput *wwg_output = new MusWWGOutput( m_edtFilePtr->m_musDocPtr, filename );
+    MusWWGOutput *wwg_output = new MusWWGOutput( m_edtFilePtr->m_musDocPtr, filename.mb_str() );
     wwg_output->ExportFile();
     delete wwg_output;
 }
@@ -667,7 +674,7 @@ void EdtEnv::OnOpenMEI( wxCommandEvent &event )
     
     m_edtFilePtr->New();
 
-    MusMeiInput meiInput( m_edtFilePtr->m_musDocPtr, filename );
+    MusMeiInput meiInput( m_edtFilePtr->m_musDocPtr, filename.mb_str() );
 	if ( !meiInput.ImportFile() )
 		return;
     
@@ -696,12 +703,12 @@ void EdtEnv::OnSaveMEI( wxCommandEvent &event )
         wxString message = _("File aldready exists. Overwrite?");
         wxMessageDialog dialog ( m_musViewPtr, message, _("File exits"), wxYES_NO|wxICON_QUESTION );
         if ( dialog.ShowModal () == wxID_YES ) {
-            MusMeiOutput *mei_output = new MusMeiOutput( m_edtFilePtr->m_musDocPtr, filename );
+            MusMeiOutput *mei_output = new MusMeiOutput( m_edtFilePtr->m_musDocPtr, filename.mb_str() );
             mei_output->ExportFile();
             delete mei_output;
         }
     } else {
-        MusMeiOutput *mei_output = new MusMeiOutput( m_edtFilePtr->m_musDocPtr, filename );
+        MusMeiOutput *mei_output = new MusMeiOutput( m_edtFilePtr->m_musDocPtr, filename.mb_str() );
         mei_output->ExportFile();
         delete mei_output;
 	}

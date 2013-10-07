@@ -9,12 +9,8 @@
 #ifndef __MUS_BARLINE_H__
 #define __MUS_BARLINE_H__
 
-#ifndef WX_PRECOMP
-    #include "wx/wx.h"
-#endif
-
-#include "muslayerelement.h"
 #include "musdef.h"
+#include "muslayerelement.h"
 
 //----------------------------------------------------------------------------
 // MusBarline
@@ -36,7 +32,7 @@ public:
      */
     virtual bool operator==(MusObject& other);
     
-    virtual wxString MusClassName( ) { return "MusBarline"; };	 
+    virtual std::string MusClassName( ) { return "MusBarline"; };	 
     
 private:
     

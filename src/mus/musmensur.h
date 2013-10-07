@@ -9,12 +9,8 @@
 #ifndef __MUS_MENSUR_H__
 #define __MUS_MENSUR_H__
 
-#ifndef WX_PRECOMP
-    #include "wx/wx.h"
-#endif
-
-#include "muslayerelement.h"
 #include "musdef.h"
+#include "muslayerelement.h"
 
 //----------------------------------------------------------------------------
 // MusMensur
@@ -36,7 +32,7 @@ public:
      */
     virtual bool operator==(MusObject& other);
     
-    virtual wxString MusClassName( ) { return "MusMensur"; };
+    virtual std::string MusClassName( ) { return "MusMensur"; };
     
     /**
      * Set the value for the mensur.

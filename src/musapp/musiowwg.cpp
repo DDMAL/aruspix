@@ -23,9 +23,7 @@
 #include "musnote.h"
 #include "mussymbol.h"
 #include "musrest.h"
-#include "musneume.h"
 #include "musbeam.h"
-//#include "musiomlf.h"
 
 #include "musstaff.h"
 #include "muslayer.h"
@@ -184,9 +182,10 @@ void MusWWGElement::WWGInitElement()
 // MusFileOutputStream
 //----------------------------------------------------------------------------
 
-MusWWGOutput::MusWWGOutput( MusDoc *doc, wxString filename ) :
-	MusFileOutputStream( doc, filename )
+MusWWGOutput::MusWWGOutput( MusDoc *doc, std::string filename ) :
+	wxFileOutputStream( filename.c_str() )
 {
+    m_doc = doc;
 	m_filename = filename;
     m_current_system = NULL;
     m_current_staff = NULL;
@@ -208,10 +207,10 @@ bool MusWWGOutput::ExportFile( )
 		return false;
 	}
 
-    WriteFileHeader( &m_doc->m_wwgData ); // fileheader
-    WriteParametersMidi( &m_doc->m_wwgData ); // parametres midi
-    WriteParameters2( &m_doc->m_wwgData ); // param2
-	WriteFonts( &m_doc->m_wwgData );
+    WriteFileHeader( &m_wwgData ); // fileheader
+    WriteParametersMidi( &m_wwgData ); // parametres midi
+    WriteParameters2( &m_wwgData ); // param2
+	WriteFonts( &m_wwgData );
 	
     MusPage *page = NULL;
     for (i = 0; i < (int)m_doc->GetPageCount(); i++)
@@ -226,11 +225,11 @@ bool MusWWGOutput::ExportFile( )
     if (!WriteSeparator() ) 
 		return false;
 	if (  m_doc->m_env.m_headerType & PAGINATION )
-		WritePagination( & m_doc->m_wwgData );
+		WritePagination( & m_wwgData );
 	if (  m_doc->m_env.m_headerType & ENTETE )
-		WriteHeader( & m_doc->m_wwgData );
+		WriteHeader( & m_wwgData );
 	if (  m_doc->m_env.m_headerType & PIEDDEPAGE )
-		WriteFooter( & m_doc->m_wwgData );
+		WriteFooter( & m_wwgData );
 	//if (  m_doc->m_param2.m_headerType & MASQUEFIXE )
 	//	WritePage( & m_doc->m_masqueFixe );
 	//if (  m_doc->m_param2.m_headerType & MASQUEVARIABLE )
@@ -244,8 +243,12 @@ bool MusWWGOutput::ExportFile( )
 
 bool MusWWGOutput::WriteFileHeader( const MusWWGData *wwgData )
 {
-    wxString shortname;
-    wxFileName::SplitPath( m_filename, NULL, &shortname, NULL );
+    std::string shortname = m_filename;
+    //wxFileName::SplitPath( m_filename, NULL, &shortname, NULL );
+    size_t pos;
+    if ( (pos = m_filename.find_last_not_of( "/" ) != std::string::npos ) ){
+        shortname = m_filename.substr( pos + 1, std::string::npos );
+    }
     shortname += ".wwg";
 
 	char buffer[WIN_MAX_FNAME + WIN_MAX_EXT + 1];
@@ -259,7 +262,7 @@ bool MusWWGOutput::WriteFileHeader( const MusWWGData *wwgData )
 	//if ( header->name.Length() > WIN_MAX_FNAME + WIN_MAX_EXT )
 	//	return false;
 	//memcpy( buffer, header->name.c_str(), header->name.Length() );
-    memcpy( buffer, shortname.c_str(), shortname.Length() );
+    memcpy( buffer, shortname.c_str(), shortname.length() );
 	Write( buffer, WIN_MAX_FNAME + WIN_MAX_EXT ); // name, unused
     uint32 = wxUINT32_SWAP_ON_BE( wwgData->filesize ); // filesize
 	Write( &uint32, 4 );
@@ -468,9 +471,6 @@ bool MusWWGOutput::WriteLayer( const MusLayer *layer, int staffNo )
             TYPE = SYMB;
             WriteSymbol();
         }
-        else if (dynamic_cast<MusNeume*>(element)) {
-            // nothing?
-        }
         if (dynamic_cast<MusNote*>(element)) {
             TYPE = NOTE;
             WriteNote( );
@@ -614,9 +614,9 @@ bool MusWWGOutput::WriteHeader( const MusWWGData *header )
 {
 	char buffer[HEADER_FOOTER_TEXT + 1];
 	memset( buffer, 0, HEADER_FOOTER_TEXT + 1);
-	if ( header->h_texte.Length() > HEADER_FOOTER_TEXT + 1 )
+	if ( header->h_texte.length() > HEADER_FOOTER_TEXT + 1 )
 		return false;
-	memcpy( buffer, header->h_texte.c_str(), header->h_texte.Length() );
+	memcpy( buffer, header->h_texte.c_str(), header->h_texte.length() );
 	Write( buffer, HEADER_FOOTER_TEXT );
 	Write( &header->h_aussiPremierPage, 1 );
 	Write( &header->h_position, 1 );
@@ -631,9 +631,9 @@ bool MusWWGOutput::WriteFooter( const MusWWGData *footer )
 {
 	char buffer[HEADER_FOOTER_TEXT + 1];
 	memset( buffer, 0, HEADER_FOOTER_TEXT + 1);
-	if ( footer->f_texte.Length() > HEADER_FOOTER_TEXT + 1 )
+	if ( footer->f_texte.length() > HEADER_FOOTER_TEXT + 1 )
 		return false;
-	memcpy( buffer, footer->f_texte.c_str(), footer->f_texte.Length() );
+	memcpy( buffer, footer->f_texte.c_str(), footer->f_texte.length() );
 	Write( buffer, HEADER_FOOTER_TEXT );
 	Write( &footer->f_aussiPremierPage, 1 );
 	Write( &footer->f_position, 1 );
@@ -651,10 +651,11 @@ bool MusWWGOutput::WriteFooter( const MusWWGData *footer )
 // MusWWGInput
 //----------------------------------------------------------------------------
 
-MusWWGInput::MusWWGInput( MusDoc *doc, wxString filename ) :
-	MusFileInputStream( doc, filename )
+MusWWGInput::MusWWGInput( MusDoc *doc, std::string filename ) :
+	wxFileInputStream( filename.c_str() )
 {
     //
+    m_doc = doc;
     m_currentBeam = NULL;
     m_isLastNoteInBeam = false;
 
@@ -678,12 +679,12 @@ bool MusWWGInput::ImportFile( )
     m_doc->Reset( Transcription);	
     
     // read WWG header
-    ReadFileHeader( &m_doc->m_wwgData ); // fileheader
-    ReadParametersMidi( &m_doc->m_wwgData  ); // parametres midi
-    ReadParameters2( &m_doc->m_wwgData  ); // param2
-	ReadFonts( &m_doc->m_wwgData  );
+    ReadFileHeader( &m_wwgData ); // fileheader
+    ReadParametersMidi( &m_wwgData  ); // parametres midi
+    ReadParameters2( &m_wwgData  ); // param2
+	ReadFonts( &m_wwgData  );
     
-    for (i = 0; i <  m_doc->m_wwgData.nbpage; i++ )
+    for (i = 0; i <  m_wwgData.nbpage; i++ )
 	{
 		MusPage *page = new MusPage();
 		ReadPage( page );
@@ -693,11 +694,11 @@ bool MusWWGInput::ImportFile( )
     if ( !ReadSeparator() ) 
 		return false;
 	if (  m_doc->m_env.m_headerType & PAGINATION )
-		ReadPagination( &m_doc->m_wwgData  );
+		ReadPagination( &m_wwgData  );
 	if (  m_doc->m_env.m_headerType & ENTETE )
-		ReadHeader( &m_doc->m_wwgData );
+		ReadHeader( &m_wwgData );
 	if (  m_doc->m_env.m_headerType & PIEDDEPAGE )
-		ReadFooter( &m_doc->m_wwgData );
+		ReadFooter( &m_wwgData );
 	//if ( & m_doc->m_env.param.m_headerType & MASQUEFIXE )
 	//	ReadPage( & m_doc->m_masqueFixe );
 	//if ( & m_doc->m_env.param.m_headerType & MASQUEVARIABLE )
@@ -857,8 +858,8 @@ bool MusWWGInput::ReadSeparator( )
 	char buffer[7];
 
 	Read( buffer, 7 );
-	wxString str1( buffer, 0, 6 );
-	wxString str2( WWG_SEPARATOR );
+	std::string str1( buffer, 0, 6 );
+	std::string str2( WWG_SEPARATOR );
 	if ( str1 != str2 ) {
 		wxLogDebug("'%s' - '%s' - Error while reading separator", str1.c_str(), str2.c_str() );
         return false;
@@ -978,7 +979,7 @@ bool MusWWGInput::ReadStaff( MusStaff *staff, MusLayer *layer, int staffNo )
             // We keep it and
             /*
             if ( (flag == CHAINE) && (fonte == LYRIC) ) {
-                m_debord_str = wxString( (char*)pdebord,
+                m_debord_str = std::string( (char*)pdebord,
                     (int)debordSize - 4);  // - sizeof( debordSize ) - sizeof( debordCode );
                 m_lyrics.Add( symbol );
             }

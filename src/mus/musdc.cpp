@@ -6,80 +6,69 @@
 /////////////////////////////////////////////////////////////////////////////
 
 
-// For compilers that support precompilation, includes "wx/wx.h".
-#include "wx/wxprec.h"
-
-#include "wx/tokenzr.h"
-
 #include "musdc.h"
+
+//----------------------------------------------------------------------------
+
+#include <sstream>
+#include <string>
+
+//----------------------------------------------------------------------------
+
+#include "musdoc.h"
 
 //----------------------------------------------------------------------------
 // MusFontInfo
 //----------------------------------------------------------------------------
 
-bool MusFontInfo::FromString(const wxString& s)
+bool MusFontInfo::FromString(const std::string& ss)
 {
-    long l;
+    std::istringstream iss( ss );
+    std::string token;
 
-    wxStringTokenizer tokenizer(s, _T(";"));
-
-    wxString token = tokenizer.GetNextToken();
+    getline( iss, token, ';');
     //
     //  Ignore the version for now
     //
 
-    token = tokenizer.GetNextToken();
-    if ( !token.ToLong(&l) )
-        return false;
-    pointSize = (int)l;
+    getline( iss, token, ';');
+    pointSize = atoi( token.c_str() );
 
-    token = tokenizer.GetNextToken();
-    if ( !token.ToLong(&l) )
-        return false;
-    family = (int)l;
+    getline( iss, token, ';');
+    family = atoi( token.c_str() );
 
-    token = tokenizer.GetNextToken();
-    if ( !token.ToLong(&l) )
-        return false;
-    style = (int)l;
+    getline( iss, token, ';');
+    style = atoi( token.c_str() );
 
-    token = tokenizer.GetNextToken();
-    if ( !token.ToLong(&l) )
-        return false;
-    weight = (int)l;
+    getline( iss, token, ';');
+    weight = atoi( token.c_str() );
 
-    token = tokenizer.GetNextToken();
-    if ( !token.ToLong(&l) )
-        return false;
-    underlined = l != 0;
+    getline( iss, token, ';');
+    underlined = (atoi( token.c_str() ) != 0);
 
-    faceName = tokenizer.GetNextToken();
-
+    getline( iss, token, ';');
+    faceName = token;
 #ifndef __WXMAC__
-    if( !faceName )
+    if( faceName.empty() )
         return false;
 #endif
 
-    token = tokenizer.GetNextToken();
-    if ( !token.ToLong(&l) )
-        return false;
-    encoding = (int)l;
+    getline( iss, token, ';');
+    encoding = atoi( token.c_str() );;
 
     return true;
 }
 
-wxString MusFontInfo::ToString() const
+std::string MusFontInfo::ToString() const
 {
-    wxString s;
-
-    s.Printf(_T("%d;%d;%d;%d;%d;%d;%s;%d"),
+    std::string s = Mus::StringFormat( "%d;%d;%d;%d;%d;%d;%s;%d",
              0,                                 // version
              pointSize,
              family,
              style,
              weight,
              underlined,
-             faceName.GetData(),
+             faceName.c_str(),
              encoding);
 
     return s;

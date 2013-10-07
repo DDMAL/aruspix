@@ -26,7 +26,8 @@
 #include "recognition/recfile.h"
 
 #include "mus/musdoc.h"
-#include "mus/musiowwg.h"
+
+#include "musapp/musiowwg.h"
 
 int CmpEnv::s_book_sash = 200; // batch processing
 int CmpEnv::s_view_sash = 0;

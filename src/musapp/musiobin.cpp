@@ -30,8 +30,6 @@
 #include "mus/musnote.h"
 #include "mus/mussymbol.h"
 #include "mus/musrest.h"
-#include "mus/musneume.h"
-#include "mus/musneumesymbol.h"
 
 
 //----------------------------------------------------------------------------
@@ -55,8 +53,9 @@
 
 
 MusBinInput_1_X::MusBinInput_1_X( MusDoc *doc, wxString filename, int flag ) :
-	MusFileInputStream( doc, filename.mb_str() )
+	wxFileInputStream( filename )
 {
+    m_doc = doc;
 	m_flag = flag;
 	m_vmaj = m_vmin = m_vrev = 10000; // arbitrary version, we assume we will never reach version 10000...
 }
@@ -169,7 +168,7 @@ bool MusBinInput_1_X::ReadFileHeader( unsigned short *nbpage )
 	Read( &m_doc->m_env.m_stemCorrection, 1 ); // hampesCorr
     m_doc->m_env.m_stemCorrection = 1;	// force it 
 
-	if ( MusDoc::GetFileVersion(m_vmaj, m_vmin, m_vrev) < MusDoc::GetFileVersion(1, 6, 1) )
+	if ( Mus::GetFileVersion(m_vmaj, m_vmin, m_vrev) < Mus::GetFileVersion(1, 6, 1) )
 		return true; // following values where added in 1.6.1
     // 1.6.1
     Read( &int32, 4 );

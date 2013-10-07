@@ -5,13 +5,17 @@
 // Copyright (c) Authors and others. All rights reserved.
 /////////////////////////////////////////////////////////////////////////////
 
-// For compilers that support precompilation, includes "wx/wx.h".
-#include "wx/wxprec.h"
+
+#include "mussystem.h"
+
+//----------------------------------------------------------------------------
+
+#include <assert.h>
+
+//----------------------------------------------------------------------------
 
 #include "musio.h"
-#include "mussystem.h"
 #include "musstaff.h"
-
 
 //----------------------------------------------------------------------------
 // MusSystem
@@ -69,7 +73,7 @@ void MusSystem::AddStaff( MusStaff *staff )
 
 int MusSystem::GetSystemNo() const
 {
-    wxASSERT_MSG( m_parent, "Page cannot be NULL");
+    assert( m_parent ); // Page cannot be NULL
     
     return m_parent->GetChildIndex( this );
 }
@@ -77,14 +81,14 @@ int MusSystem::GetSystemNo() const
 /*
 void MusSystem::SetDoc( ArrayPtrVoid params )
 {
-    wxLogDebug("PROUT");    
+    Mus::LogDebug("PROUT");    
 }
 */
 
 /*
 void MusSystem::ClearStaves( MusDC *dc, MusStaff *start )
 {
-	wxASSERT_MSG( dc , "DC cannot be NULL");
+	assert( dc ); // DC cannot be NULL
 	if ( !Check() )
 		return;
 
@@ -178,12 +182,12 @@ void MusSystem::SetValues( int type )
 {
     /*
     int i;
-    wxString values;
+    std::string values;
     for (i = 0; i < GetStaffCount(); i++) 
 	{
         switch ( type ) {
-            case PAGE_VALUES_VOICES: values += wxString::Format("%d;", (m_children[i])->voix ); break;
-            case PAGE_VALUES_INDENT: values += wxString::Format("%d;", (m_children[i])->indent ); break;
+            case PAGE_VALUES_VOICES: values += Mus::StringFormat("%d;", (m_children[i])->voix ); break;
+            case PAGE_VALUES_INDENT: values += Mus::StringFormat("%d;", (m_children[i])->indent ); break;
         }
 	}
     values = wxGetTextFromUser( "Enter values for the pages", "", values );
@@ -199,7 +203,7 @@ void MusSystem::SetValues( int type )
         }	
 	}
     */
-    wxLogDebug("TODO");
+    printf("TODO");
     return;
 }
 

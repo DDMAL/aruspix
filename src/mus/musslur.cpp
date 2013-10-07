@@ -1,17 +1,12 @@
-//
-//  musbeam.cpp
-//  aruspix
-//
-//  Created by Rodolfo Zitellini on 26/06/12.
-//  Copyright (c) 2012 com.aruspix.www. All rights reserved.
-//
+/////////////////////////////////////////////////////////////////////////////
+// Name:        musslur.cpp
+// Author:      Rodolfo Zitellini
+// Created:     26/06/2012
+// Copyright (c) Authors and others. All rights reserved.
+/////////////////////////////////////////////////////////////////////////////
 
-
-// For compilers that support precompilation, includes "wx/wx.h".
-#include "wx/wxprec.h"
 
 #include "musslur.h"
-
 
 //----------------------------------------------------------------------------
 // MusSlur

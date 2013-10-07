@@ -15,9 +15,7 @@
     #include "wx/wx.h"
 #endif
 
-#include "mus/muswindow.h"
-
-//#include "cmp_wdr.h"
+#include "musapp/muswindow.h"
 
 class CmpEnv;
 class CmpMusWindow;

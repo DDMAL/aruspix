@@ -1,33 +1,28 @@
-//
-//  headless_main.cpp
-//  aruspix
-//
-//  Created by Rodolfo Zitellini on 22/06/12.
-//  Copyright (c) 2012 com.aruspix.www. All rights reserved.
-//
+/////////////////////////////////////////////////////////////////////////////
+// Name:        headless_main.cpp
+// Author:      Rodolfo Zitellini
+// Created:     26/06/2012
+// Copyright (c) Authors and others. All rights reserved.
+/////////////////////////////////////////////////////////////////////////////
+
 
 #include <iostream>
-#include <string>
 #include <sstream>
-
-#include <wx/string.h>
-#include "wx/wx.h"
-
-#include "musdoc.h"
-#include "musiopae.h"
-#include "musrc.h"
-#include "mussvgdc.h"
-#include "musbboxdc.h"
-#include "muspage.h"
-#include "mussystem.h"
-#include "musiomei.h"
-#include "musiodarms.h"
-
-#include "musiomusxml.h"
-
 #include <stdio.h>
 #include <stdlib.h>
+#include <string>
 #include <unistd.h>
+
+#include "musbboxdc.h"
+#include "musdoc.h"
+#include "musiodarms.h"
+#include "musiomei.h"
+#include "musiomusxml.h"
+#include "musiopae.h"
+#include "muspage.h"
+#include "musrc.h"
+#include "mussvgdc.h"
+#include "mussystem.h"
 
 using namespace std;
 
@@ -47,17 +42,17 @@ const char *cmdlineopts = "ndmpr:o:t:s:hb:";
 
 // Some handy string split functions
 /*
-std::vector<wxString> &split(const wxString &s, char delim, std::vector<wxString> &elems) {
+std::vector<std::string> &split(const std::string &s, char delim, std::vector<std::string> &elems) {
     wxStringstream ss(s);
-    wxString item;
+    std::string item;
     while(std::getline(ss, item, delim)) {
         elems.push_back(item);
     }
     return elems;
 }
 
-std::vector<wxString> split(const wxString &s, char delim) {
-    std::vector<wxString> elems;
+std::vector<std::string> split(const std::string &s, char delim) {
+    std::vector<std::string> elems;
     return split(s, delim, elems);
 }
 */
@@ -89,7 +84,7 @@ void display_usage() {
     cerr << "-s scale percent (100 default, max 1000)" << endl<< endl;
     cerr << "-b add border (10 px default, max 1000)" << endl;
     
-    cerr << "Resources default dir: " << MusDoc::GetResourcesPath() << endl;
+    cerr << "Resources default dir: " << Mus::GetResourcesPath() << endl;
 }
 
 int main(int argc, char** argv) {
@@ -111,7 +106,7 @@ int main(int argc, char** argv) {
             case 'n': m_no_mei_hdr = true; break;
                 
             case 'r':
-                MusDoc::SetResourcesPath(optarg);
+                Mus::SetResourcesPath(optarg);
                 break;
                 
             case 'o':

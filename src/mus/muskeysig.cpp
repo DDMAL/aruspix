@@ -1,16 +1,13 @@
-//
-//  muskeysig.cpp
-//  aruspix
-//
-//  Created by Rodolfo Zitellini on 10/07/12.
-//  Copyright (c) 2012 com.aruspix.www. All rights reserved.
-//
 
-// For compilers that support precompilation, includes "wx/wx.h".
-#include "wx/wxprec.h"
+/////////////////////////////////////////////////////////////////////////////
+// Name:        muskeysig.cpp
+// Author:      Rodolfo Zitellini
+// Created:     10/07/2012
+// Copyright (c) Authors and others. All rights reserved.
+/////////////////////////////////////////////////////////////////////////////
+
 
 #include "muskeysig.h"
-
 
 //----------------------------------------------------------------------------
 // MusKeySig

@@ -130,9 +130,9 @@ MusNeumeSymbolType MusNeumeSymbol::GetSymbolType() {
     return symbolType;
 }
 
-wxString MusNeumeSymbol::PitchToStr(int pitch)
+std::string MusNeumeSymbol::PitchToStr(int pitch)
 {
-    wxString value;
+    std::string value;
     switch (pitch) {
         case 0: value = "b"; break;
         case 1: value = "c"; break;
@@ -146,7 +146,7 @@ wxString MusNeumeSymbol::PitchToStr(int pitch)
     return value;
 }
 
-int MusNeumeSymbol::StrToPitch(wxString pitch)
+int MusNeumeSymbol::StrToPitch(std::string pitch)
 {
     int value;
     if (pitch == "c") {

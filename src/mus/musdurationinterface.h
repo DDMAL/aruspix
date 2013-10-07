@@ -9,10 +9,6 @@
 #ifndef __MUS_DURATION_INTERFACE_H__
 #define __MUS_DURATION_INTERFACE_H__
 
-#ifndef WX_PRECOMP
-    #include "wx/wx.h"
-#endif
-
 #define TUPLET_INITIAL  (1<<1)
 #define TUPLET_MEDIAL  (1<<2) 
 #define TUPLET_TERMINAL  (1<<3)

@@ -5,19 +5,16 @@
 // Copyright (c) Authors and others. All rights reserved.
 /////////////////////////////////////////////////////////////////////////////
 
+
 #ifndef __MUS_OBJECT_H__
 #define __MUS_OBJECT_H__
 
-#include <wx/wxprec.h>
-
-#ifndef WX_PRECOMP
-    #include "wx/wx.h"
-#endif
-
-#include <uuid/uuid.h>
+#include <list>
+#include <string>
 #include <typeinfo>
 #include <vector>
-#include <list>
+
+#include <uuid/uuid.h>
 
 class MusDoc;
 class MusFunctor;
@@ -36,7 +33,7 @@ typedef std::vector<void*> ArrayPtrVoid;
 /** 
  * This class represents a basic object
  */
-class MusObject: public wxObject
+class MusObject
 {
 public:
     // constructors and destructors
@@ -47,7 +44,7 @@ public:
     
     int GetId() { return 0; }; // used in SVG - TODO
     uuid_t* GetUuid() { return &m_uuid; };
-    wxString GetUuidStr();
+    std::string GetUuidStr();
     void SetUuid( uuid_t uuid );
     void ResetUuid( );
     
@@ -62,7 +59,7 @@ public:
      */
     void SetParent( MusObject *parent );
     
-    virtual wxString MusClassName( ) { return "[MISSING]"; };
+    virtual std::string MusClassName( ) { return "[MISSING]"; };
     
     /**
      * Look for the MusObject in the children and return its position (-1 if not found)
@@ -102,12 +99,12 @@ public:
      * If a filename is given, the attribute with be filename#id
      * If several value are added, they will be separated by a whitespace.
      */
-    void AddSameAs( wxString id, wxString filename = "" );
+    void AddSameAs( std::string id, std::string filename = "" );
     
     /**
      * Parse the sameAs attribute and return the one at the #idx position (if any).
      */
-    bool GetSameAs( wxString *id, wxString *filename, int idx = 0 );
+    bool GetSameAs( std::string *id, std::string *filename, int idx = 0 );
     
     /**
      * Check if the content was modified or not
@@ -146,7 +143,7 @@ public:
 public:
     ArrayOfMusObjects m_children;
     MusObject *m_parent;
-    wxString m_sameAs;
+    std::string m_sameAs;
     
 protected:
     uuid_t m_uuid;
@@ -295,57 +292,5 @@ public:
 private:
     
 };
-
-
-//----------------------------------------------------------------------------
-// MusEnv
-//----------------------------------------------------------------------------
-
-/** 
- * This class contains the document environment variables.
- * It remains from the Wolfgang parameters strcuture.
- * TODO - Integrate them in MEI.
- */
-class MusEnv 
-{
-public:
-    // constructors and destructors
-    MusEnv();
-    virtual ~MusEnv();
-    
-    
-public:
-    /** landscape paper orientation */
-    char m_landscape;
-    /** staff line width */
-    unsigned char m_staffLineWidth;
-    /** stem width */
-    unsigned char m_stemWidth;
-    /** barline width */
-    unsigned char m_barlineWidth;
-    /** beam width */
-    unsigned char m_beamWidth;
-    /** beam white width */
-    unsigned char m_beamWhiteWidth;
-    /** maximum beam slope */
-    unsigned char m_beamMaxSlope;
-    /** minimum beam slope */
-    unsigned char m_beamMinSlope;     
-    /** small staff size ratio numerator */
-    unsigned char m_smallStaffNum;
-    /** small staff size ratio denominator */
-    unsigned char m_smallStaffDen;
-    /** grace size ratio numerator */
-    unsigned char m_graceNum;
-    /** grace size ratio denominator */
-    unsigned char m_graceDen;
-    /** stem position correction */
-    signed char m_stemCorrection;
-    /** header and footer type */
-    unsigned int m_headerType;
-    /** notation mode. Since since Aruspix 1.6.1 */
-    int m_notationMode;
-};
-
 
 #endif

@@ -1,29 +1,22 @@
-//
-//  musiodarms.h
-//  aruspix
-//
-//  Created by Rodolfo Zitellini on 02/07/12.
-//  Copyright (c) 2012 com.aruspix.www. All rights reserved.
-//
+/////////////////////////////////////////////////////////////////////////////
+// Name:        musiodarms.h
+// Author:      Rodolfo Zitellini
+// Created:     02/07/2012
+// Copyright (c) Authors and others. All rights reserved.
+/////////////////////////////////////////////////////////////////////////////
 
-#ifndef aruspix_musiodarms_h
-#define aruspix_musiodarms_h
+
+#ifndef __MUS_IODARMS_H__
+#define __MUS_IODARMS_H__
 
 #include <string>
 #include <vector>
 
-#ifndef WX_PRECOMP
-#include "wx/wx.h"
-#endif
-#include "wx/wfstream.h"
-
-#include "musdoc.h"
-#include "muslayer.h"
-
 #include "musbarline.h"
 #include "musclef.h"
+#include "musdoc.h"
+#include "muslayer.h"
 #include "musmensur.h"
-#include "musneume.h"
 #include "musnote.h"
 #include "musrest.h"
 #include "mussymbol.h"
@@ -44,7 +37,7 @@ class MusDarmsInput: public MusFileInputStream
 {
 public:
     // constructors and destructors
-    MusDarmsInput( MusDoc *doc, wxString filename );
+    MusDarmsInput( MusDoc *doc, std::string filename );
     virtual ~MusDarmsInput();
     
     bool ImportFile( );    
@@ -59,7 +52,7 @@ private:
 public:
     
 private:
-    wxString m_filename;
+    std::string m_filename;
 
 	MusStaff *m_staff;
 	MusLayer *m_layer;
@@ -73,4 +66,4 @@ private:
 };
 
 
-#endif
+#endif // __MUS_IODARMS_H__

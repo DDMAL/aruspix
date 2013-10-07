@@ -1,21 +1,17 @@
-//
-//  mustuplet.h
-//  aruspix
-//
-//  Created by Rodolfo Zitellini on 26/06/12.
-//  Copyright (c) 2012 com.aruspix.www. All rights reserved.
-//
+/////////////////////////////////////////////////////////////////////////////
+// Name:        mustuplet.h
+// Author:      Rodolfo Zitellini
+// Created:     26/06/2012
+// Copyright (c) Authors and others. All rights reserved.
+/////////////////////////////////////////////////////////////////////////////
+
 
 #ifndef __MUS_TUPLET_H__
 #define __MUS_TUPLET_H__
 
-#ifndef WX_PRECOMP
-#include "wx/wx.h"
-#endif
-
-#include "musobject.h"
 #include "muslayer.h"
 #include "musnote.h"
+#include "musobject.h"
 
 //----------------------------------------------------------------------------
 // MusBeam
@@ -28,7 +24,7 @@ public:
     MusTuplet();
     virtual ~MusTuplet();
     
-    virtual wxString MusClassName( ) { return "MusTuplet"; };
+    virtual std::string MusClassName( ) { return "MusTuplet"; };
     
 	int GetNoteCount() const { return (int)m_children.size(); };
     

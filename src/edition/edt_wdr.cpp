@@ -33,7 +33,7 @@
 #endif
 
 // Custom source
-#include "mus/mustoolpanel.h"
+#include "musapp/mustoolpanel.h"
 #include "edt.h"
 
 // Implement window functions

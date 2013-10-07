@@ -15,7 +15,7 @@
 #endif
 #include "wx/wfstream.h"
 
-#include "mus/musiomlf.h"
+#include "musapp/musiomlf.h"
 
 class ImPage;
 class ImStaff;

@@ -15,7 +15,6 @@
 
 #include "musmlfdic.h"
 
-#include "mus/musio.h"
 #include "mus/muslayer.h"
 
 class ImPage;
@@ -77,7 +76,7 @@ private:
  * This class is a file output stream for writing HTK Master Label Files (MLF).
  * Broken in Aruspix 2.0
 */
-class MusMLFOutput: public MusFileOutputStream
+class MusMLFOutput: public wxFileOutputStream
 {
 public:
     // constructors and destructors
@@ -103,6 +102,7 @@ public:
 	ArrayOfMLFSymbols *GetSymbols( ) { return &m_symbols; };
     
 protected:
+    MusDoc *m_doc;
     wxString m_filename;
 	// specific
 	ArrayOfMLFSymbols m_symbols; // symbol list
@@ -131,7 +131,7 @@ private:
  * This class is a file input stream for reading HTK Master Label Files (MLF).
  * Broken in Aruspix 2.0
 */
-class MusMLFInput: public MusFileInputStream
+class MusMLFInput: public wxFileInputStream
 {
 public:
     // constructors and destructors
@@ -159,6 +159,7 @@ public:
 
     
 protected:
+    MusDoc *m_doc;
     // page, staff index
 	int m_staff_i, m_staff_label;
     MusLayer *m_logLayer; // the layer to which logical elements will be added. Currently only one

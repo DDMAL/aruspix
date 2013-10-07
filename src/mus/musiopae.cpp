@@ -5,33 +5,31 @@
 // Copyright (c) Laurent Pugin. All rights reserved.
 /////////////////////////////////////////////////////////////////////////////
 
-#include <iostream>
-#include <fstream>
-#include <sstream>
-
-// For compilers that support precompilation, includes "wx/wx.h".
-#include "wx/wx.h"
-
-#include "wx/filename.h"
-#include "wx/txtstrm.h"
 
 #include "musiopae.h"
 
+//----------------------------------------------------------------------------
+
+#include <iostream>
+#include <fstream>
+#include <sstream>
+#include <vector>
+
+//----------------------------------------------------------------------------
+
 #include "musbarline.h"
 #include "musclef.h"
+#include "muskeysig.h"
 #include "musmensur.h"
-#include "musneume.h"
 #include "musnote.h"
 #include "musrest.h"
 #include "mussymbol.h"
-#include "muskeysig.h"
+#include "mustie.h"
+#include "mustuplet.h"
 
-//#include "app/axapp.h"
+//----------------------------------------------------------------------------
 
-#include <vector>
 #include <regex.h>
-
-using std::vector;
 
 #define BEAM_INITIAL    0x01
 #define BEAM_MEDIAL     0x02
@@ -59,9 +57,9 @@ char data_value[MAX_DATA_LEN]; //ditto as above
 // MusPaeInput
 //----------------------------------------------------------------------------
 
-MusPaeInput::MusPaeInput( MusDoc *doc, wxString filename ) :
+MusPaeInput::MusPaeInput( MusDoc *doc, std::string filename ) :
 // This is pretty bad. We open a bad fileoinputstream as we don't use it
-MusFileInputStream( doc, -1 )
+MusFileInputStream( doc )
 {
     m_filename = filename;
 	m_staff = NULL;
@@ -82,7 +80,7 @@ bool MusPaeInput::ImportFile()
 {
     
     std::ifstream infile;
-    infile.open(m_filename);
+    infile.open(m_filename.c_str());
     
     convertPlainAndEasyToKern(infile, std::cout);
     
@@ -105,7 +103,7 @@ void MusPaeInput::convertPlainAndEasyToKern(std::istream &infile, std::ostream &
     char incipit[10001] = {0};
     bool in_beam = false;
     
-    wxString s_key;
+    std::string s_key;
     MeasureObject current_measure;
     NoteObject current_note;
     NoteObject *prev_note;
@@ -114,7 +112,7 @@ void MusPaeInput::convertPlainAndEasyToKern(std::istream &infile, std::ostream &
     //current_key.setSize(7);
     //current_key.setAll(0);
     
-    vector<MeasureObject> staff;
+    std::vector<MeasureObject> staff;
     
     // read values
     while (!infile.eof()) {
@@ -304,7 +302,7 @@ void MusPaeInput::convertPlainAndEasyToKern(std::istream &infile, std::ostream &
     m_layer = new MusLayer( 1 );
     m_staff->AddLayer(m_layer);
     
-    vector<MeasureObject>::iterator it;
+    std::vector<MeasureObject>::iterator it;
     for ( it = staff.begin() ; it < staff.end(); it++ ) {
         MeasureObject obj = *it;
         printMeasure( out, &obj );
@@ -810,7 +808,7 @@ int MusPaeInput::getWholeRest( const char *incipit, int *wholerest, int index ) 
 // getBarline -- read the barline.
 //
 
-int MusPaeInput::getBarline( const char *incipit, wxString *output, int index ) {
+int MusPaeInput::getBarline( const char *incipit, std::string *output, int index ) {
     
     regex_t re;
     regcomp(&re, "^://:", REG_EXTENDED);

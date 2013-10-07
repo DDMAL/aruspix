@@ -86,7 +86,7 @@ void EdtFile::OpenContent( )
         return;
     }
     
-    MusBinInput_1_X *bin_input = new MusBinInput_1_X( m_musDocPtr, m_musDocPtr->m_fname );
+    MusBinInput_1_X *bin_input = new MusBinInput_1_X( m_musDocPtr, wxString( m_musDocPtr->m_fname.c_str() ) );
     bin_input->ImportFile();
     delete bin_input;
 	

@@ -5,19 +5,17 @@
 // Copyright (c) Authors and others. All rights reserved.   
 /////////////////////////////////////////////////////////////////////////////
 
+
 #ifndef __MUS_SVG_DC_H__
 #define __MUS_SVG_DC_H__
 
-//#include <iostream>
-
-#ifndef WX_PRECOMP
-    #include "wx/wx.h"
-#endif
-
-#include "wx/wfstream.h"
-#include "wx/mstream.h"
-
 #include "musdc.h"
+
+#include <iostream>
+#include <fstream>
+#include <sstream>
+#include <string>
+#include <vector>
 
 //----------------------------------------------------------------------------
 // MusBBoxDC
@@ -32,20 +30,20 @@ class MusSvgDC: public MusDC
 {
 public:
 
-    MusSvgDC ( wxString f, int width, int height );
+    MusSvgDC ( std::string f, int width, int height );
     virtual ~MusSvgDC();
     
     // Setters
     
-    virtual void SetBrush( int colour, int style = wxSOLID );
+    virtual void SetBrush( int colour, int style = AxSOLID );
     
-    virtual void SetBackground( int colour, int style = wxSOLID );
+    virtual void SetBackground( int colour, int style = AxSOLID );
     
     virtual void SetBackgroundImage( void *image, double opacity = 1.0 );
     
     virtual void SetBackgroundMode( int mode );
     
-    virtual void SetPen( int colour, int width = 1, int style = wxSOLID );
+    virtual void SetPen( int colour, int width = 1, int style = AxSOLID );
     
     virtual void SetFont( MusFontInfo *font_info );
         
@@ -63,7 +61,7 @@ public:
     
     // Getters
     
-    virtual void GetTextExtent( wxString& string, int *w, int *h );
+    virtual void GetTextExtent( const std::string& string, int *w, int *h );
     
     virtual MusPoint GetLogicalOrigin( );
 
@@ -79,24 +77,24 @@ public:
     
     virtual void DrawLine(int x1, int y1, int x2, int y2);
     
-    virtual void DrawPolygon(int n, MusPoint points[], int xoffset, int yoffset, int fill_style = wxODDEVEN_RULE);
+    virtual void DrawPolygon(int n, MusPoint points[], int xoffset, int yoffset, int fill_style = AxODDEVEN_RULE);
     
     virtual void DrawRectangle(int x, int y, int width, int height);
     
-    virtual void DrawRotatedText(const wxString& text, int x, int y, double angle);
+    virtual void DrawRotatedText(const std::string& text, int x, int y, double angle);
     
     virtual void DrawRoundedRectangle(int x, int y, int width, int height, double radius);
     
-    virtual void DrawText(const wxString& text, int x, int y);
+    virtual void DrawText(const std::string& text, int x, int y);
     
-    virtual void DrawMusicText(const wxString& text, int x, int y);
+    virtual void DrawMusicText(const std::string& text, int x, int y);
     
     virtual void DrawSpline(int n, MusPoint points[]);
     
     virtual void DrawBackgroundImage( int x = 0, int y = 0 );
     
     // 
-    virtual void StartGraphic( MusDocObject *object, wxString gClass, wxString gId );
+    virtual void StartGraphic( MusDocObject *object, std::string gClass, std::string gId );
     
     virtual void EndGraphic( MusDocObject *object, MusRC *rc  );
     
@@ -107,15 +105,14 @@ public:
     
 private:
     
-    bool copy_wxTransferFileToStream(const wxString& filename, wxFileOutputStream& stream);
+    bool copy_wxTransferFileToStream(const std::string& filename, std::ofstream& dest);
     
-    //wxFileOutputStream * m_outfile ;
-    // changed to a memory stream because we want to prepend the <defs> which will know only when we reach the end of the page
+    // we use a std::stringstream because we want to prepend the <defs> which will know only when we reach the end of the page
     // some viewer seem to support to have the <defs> at the end, but some do not (pdf2svg, for example)
-    // for this reason, the file is written only from the destructor or when Flush() is called
-    wxMemoryOutputStream * m_outfile;
+    // for this reason, the file is finally written only from the destructor or when Flush() is called
+    std::stringstream m_outfile;
     bool m_committed; // did we flushed the file?
-    wxString m_filename;
+    std::string m_filename;
     int m_graphics;
     int m_indents;
     int m_width, m_height;
@@ -125,20 +122,20 @@ private:
       
     // holds the list of glyphs from the leipzig font used so far
     // they will be added at the end of the file as <defs>
-    wxArrayString m_leipzig_glyphs;
+    std::vector<std::string> m_leipzig_glyphs;
         
     void Commit();    
     
-    void WriteLine( wxString );
+    void WriteLine( std::string );
     
     //
-    wxString m_brushColour;
-    wxString m_brushStyle;
-    wxString m_penColour;
-    wxString m_penWidth;
-    wxString m_penStyle;
+    std::string m_brushColour;
+    std::string m_brushStyle;
+    std::string m_penColour;
+    std::string m_penWidth;
+    std::string m_penStyle;
         
-    wxString GetColour( int colour );
+    std::string GetColour( int colour );
         
 };
 

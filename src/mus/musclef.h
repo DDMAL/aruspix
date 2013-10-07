@@ -9,12 +9,8 @@
 #ifndef __MUS_CLEF_H__
 #define __MUS_CLEF_H__
 
-#ifndef WX_PRECOMP
-    #include "wx/wx.h"
-#endif
-
-#include "muslayerelement.h"
 #include "musdef.h"
+#include "muslayerelement.h"
 
 //----------------------------------------------------------------------------
 // MusClef
@@ -36,7 +32,7 @@ public:
      */
     virtual bool operator==(MusObject& other);
     
-    virtual wxString MusClassName( ) { return "MusClef"; };	
+    virtual std::string MusClassName( ) { return "MusClef"; };	
     
     /**
      * Return the offset of the clef

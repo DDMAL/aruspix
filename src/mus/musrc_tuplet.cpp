@@ -1,35 +1,37 @@
-//
-//  musrc_tuplet.cpp
-//  aruspix
-//
-//  Created by Rodolfo Zitellini on 21/08/12.
-//  Copyright (c) 2012 com.aruspix.www. All rights reserved.
-//
+/////////////////////////////////////////////////////////////////////////////
+// Name:        musrc_tuplet.cpp
+// Author:      Rodolfo Zitellini
+// Created:     21/08/2012
+// Copyright (c) Authors and others. All rights reserved.
+/////////////////////////////////////////////////////////////////////////////
 
-#include "wx/wxprec.h"
 
 #include "musrc.h"
-#include "muslayerelement.h"
+
+//----------------------------------------------------------------------------
+
+#include <assert.h>
+#include <typeinfo>
+
+//----------------------------------------------------------------------------
 
 #include "musbarline.h"
-#include "musleipzigbbox.h"
+#include "musbeam.h"
 #include "musclef.h"
+#include "muskeysig.h"
+#include "muslayerelement.h"
+#include "musleipzigbbox.h"
 #include "musmensur.h"
-#include "musneume.h"
 #include "musnote.h"
 #include "musrest.h"
 #include "mussymbol.h"
-#include "muskeysig.h"
-#include "musbeam.h"
 #include "mustie.h"
 #include "mustuplet.h"
-
-#include <typeinfo>
 
 #define TUPLET_OFFSET 20
 #define OBLIQUE_OFFSET 0x52 //move to oblique figures
 
-wxString IntToObliqueFigures(unsigned int number) {
+std::string IntToObliqueFigures(unsigned int number) {
     char buf[16];
     unsigned int len;
     
@@ -41,13 +43,13 @@ wxString IntToObliqueFigures(unsigned int number) {
     sprintf(buf, "%i", number);
     
     len = strlen(buf);
-    wxASSERT_MSG((sizeof(buf) - 1) > len, "String conversion overflow.");
+    assert((sizeof(buf) - 1) > len ); // String conversion overflow 
     
     for (unsigned int i = 0; i < strlen(buf); i++) {
         buf[i] += OBLIQUE_OFFSET;
     }
     
-    return wxString(buf);
+    return std::string(buf);
 }
 
 /**
@@ -255,15 +257,15 @@ bool GetTupletCoordinates(MusTuplet* tuplet, MusLayer *layer, MusPoint* start, M
 
 void MusRC::DrawTuplet( MusDC *dc, MusTuplet *tuplet, MusLayer *layer, MusStaff *staff)
 {
-    wxASSERT_MSG( layer, "Pointer to layer cannot be NULL" );
-    wxASSERT_MSG( staff, "Pointer to staff cannot be NULL" );
+    assert(layer); // Pointer to layer cannot be NULL"
+    assert(staff); // Pointer to staff cannot be NULL"
     
     int txt_lenght, txt_height;
     
     // rz MusTuplet *tuplet = dynamic_cast<MusTuplet*>(element);
     //char notes = tuplet->m_notes.GetCount();
     
-    wxString notes = IntToObliqueFigures((unsigned int)tuplet->GetNoteCount());
+    std::string notes = IntToObliqueFigures((unsigned int)tuplet->GetNoteCount());
     
     // WORKS ONLY FOR ONE CHAR!
     //char_position = notes + 1; // in the bbox array, '0' char is at pos 1
@@ -290,7 +292,7 @@ void MusRC::DrawTuplet( MusDC *dc, MusTuplet *tuplet, MusLayer *layer, MusStaff 
     MusPoint start, end, center;
     bool direction = GetTupletCoordinates(tuplet, layer, &start, &end, &center);
     
-    //rz dc->StartGraphic( element, "tuplet", wxString::Format("tuplet_%d_%d_%d", staff->GetId(), layer->voix, element->GetId()) );
+    //rz dc->StartGraphic( element, "tuplet", Mus::StringFormat("tuplet_%d_%d_%d", staff->GetId(), layer->voix, element->GetId()) );
     
     // Calculate position for number 0x82
     // since the number is slanted, move the center left
@@ -301,7 +303,7 @@ void MusRC::DrawTuplet( MusDC *dc, MusTuplet *tuplet, MusLayer *layer, MusStaff 
     putstring(dc, txt_x, center.y, notes, 0);
     
     //dc->SetPen(AxBLACK);
-    dc->SetPen(AxBLACK, 2, wxSOLID);
+    dc->SetPen(AxBLACK, 2, AxSOLID);
     
     // Start is 0 when no line is necessary (i.e. beamed notes)
     if (start.x > 0) {

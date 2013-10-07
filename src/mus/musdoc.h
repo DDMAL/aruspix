@@ -5,25 +5,17 @@
 // Copyright (c) Authors and others. All rights reserved.
 /////////////////////////////////////////////////////////////////////////////
 
+
 #ifndef __MUS_DOC_H__
 #define __MUS_DOC_H__
 
-#ifndef WX_PRECOMP
-    #include "wx/wx.h"
-#endif
-#include "wx/wfstream.h"
-
-class MeiDocument;
-class MusPage;
-
-#include "musobject.h"
+#include "mus.h"
+#include "musdc.h"
 #include "musdef.h"
 #include "musio.h"
-#include "muswwg.h"
-#include "musdc.h"
+#include "musobject.h"
 
-class MusFileOutputStream;
-
+class MusPage;
 
 enum DocType {
     Raw = 0,
@@ -80,26 +72,10 @@ public:
     // moulinette
     void GetNumberOfVoices( int *min_voice, int *max_voice );
     MusStaff *GetVoice( int i );
-
-    MeiDocument *GetMeiDocument();
-    void SetMeiDocument(MeiDocument *doc);
-        
-    // Some statis utiliry functions
-    static wxString GetAxVersion();
-    static wxString GetResourcesPath();
-    static void SetResourcesPath(wxString p) {m_respath = p;}
-    static wxString GetMusicFontDescStr();
-    static wxString GetNeumeFontDescStr();
-    static wxString GetLyricFontDescStr();
-    static int GetFontPosCorrection();
-    static wxString GetFileVersion(int vmaj, int vmin, int vrev);
-    
-private:
-    static wxString m_respath;
     
 public:
     /** nom complet du fichier */
-    wxString m_fname;
+    std::string m_fname;
     /** Page width (MEI scoredef@page.width) - currently not saved */
     int m_pageWidth;
     /** Page height (MEI scoredef@page.height) - currently not saved */
@@ -112,9 +88,6 @@ public:
     short m_pageTopMar;
     
     MusEnv m_env;
-	
-    /** Data loaded from the Wolfgang files but unused **/
-	MusWWGData m_wwgData;
     
 public:
     
@@ -232,7 +205,7 @@ public:
     ///@}
     
     /** The source id */
-    wxString m_source;
+    std::string m_source;
 	
     //int mesureNum, mesureDen;
 	//float MesVal;

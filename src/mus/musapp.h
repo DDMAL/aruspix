@@ -9,10 +9,6 @@
 #ifndef __MUS_APP_H__
 #define __MUS_APP_H__
 
-#ifndef WX_PRECOMP
-    #include "wx/wx.h"
-#endif
-
 #include "muslayer.h"
 
 class MusLayerRdg;
@@ -72,7 +68,7 @@ private:
     
 public:
     /** The source id */
-    wxString m_source;
+    std::string m_source;
     
 private:
     

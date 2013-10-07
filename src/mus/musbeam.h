@@ -1,19 +1,13 @@
+/////////////////////////////////////////////////////////////////////////////
+// Name:        musbeam.h
+// Author:      Rodolfo Zitellini
+// Created:     26/06/2012
+// Copyright (c) Authors and others. All rights reserved.
+/////////////////////////////////////////////////////////////////////////////
 //
-//  musbeam.h
-//  aruspix
-//
-//  Created by Rodolfo Zitellini on 26/06/12.
-//  Copyright (c) 2012 com.aruspix.www. All rights reserved.
-//
-
-
 
 #ifndef __MUS_BEAM_H__
 #define __MUS_BEAM_H__
-
-#ifndef WX_PRECOMP
-#include "wx/wx.h"
-#endif
 
 #include "muslayerelement.h"
 #include "musnote.h"
@@ -29,7 +23,7 @@ public:
     MusBeam();
     virtual ~MusBeam();
     
-    virtual wxString MusClassName( ) { return "MusBeam"; };
+    virtual std::string MusClassName( ) { return "MusBeam"; };
     
     int GetNoteCount() const { return (int)m_children.size(); };
     

@@ -9,22 +9,16 @@
 #ifndef __MUS_PAGE_H__
 #define __MUS_PAGE_H__
 
-#ifndef WX_PRECOMP
-    #include "wx/wx.h"
-#endif
-
-class MusDC;
-
 #include "musdoc.h"
 
-class MusSystem;
+class MusDC;
 class MusStaff;
+class MusSystem;
 
 enum {
     PAGE_VALUES_VOICES = 0,
     PAGE_VALUES_INDENT
 };
-
 
 //----------------------------------------------------------------------------
 // MusPage
@@ -42,7 +36,7 @@ public:
     MusPage();
     virtual ~MusPage();
     
-    virtual wxString MusClassName( ) { return "MusPage"; };	    
+    virtual std::string MusClassName( ) { return "MusPage"; };	    
     
     void Clear();
 	
@@ -87,7 +81,7 @@ public:
      * Surface (MEI @surface). Saved as facsimile for transciption layout.
      * For now, the target of the <graphic> element within surface is loaded here.
      */
-    wxString m_surface;
+    std::string m_surface;
     
     
     /** definition en mm des portees de la page */

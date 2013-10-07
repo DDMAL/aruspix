@@ -8,14 +8,9 @@
 #ifndef __MUS_IOMEI_H__
 #define __MUS_IOMEI_H__
 
-#ifndef WX_PRECOMP
-    #include "wx/wx.h"
-#endif
-#include "wx/wfstream.h"
-
+#include "musapp.h"
 #include "musdoc.h"
 #include "muslayer.h"
-#include "musapp.h"
 
 #include <uuid/uuid.h>
 
@@ -29,19 +24,19 @@
 class MusBarline;
 class MusBeam;
 class MusClef;
+class MusDoc;
+class MusLayer;
+class MusLayerApp;
+class MusLayerElement;
 class MusMensur;
 class MusNote;
+class MusPage;
 class MusRest;
+class MusStaff;
 class MusSymbol;
+class MusSystem;
 class MusTuplet;
 
-class MusDoc;
-class MusPage;
-class MusSystem;
-class MusStaff;
-class MusLayer;
-class MusLayerElement;
-class MusLayerApp;
 
 //----------------------------------------------------------------------------
 // MusMeiOutput
@@ -57,7 +52,7 @@ class MusMeiOutput: public MusFileOutputStream
 public:
     /** @name Constructors and destructor */
     ///@{
-    MusMeiOutput( MusDoc *doc, wxString filename );
+    MusMeiOutput( MusDoc *doc, std::string filename );
     virtual ~MusMeiOutput();
     ///@}
     
@@ -140,15 +135,15 @@ private:
 	
     /** @name Methods for converting members into MEI attributes. */
     ///@{
-    wxString UuidToMeiStr( MusObject *element );
-	wxString DurToStr(int dur);
-	wxString OctToStr(int oct);
-	wxString PitchToStr(int pitch);
-    wxString AccidToStr(unsigned char accid);
-    wxString ClefLineToStr(ClefId clefId);
-    wxString ClefShapeToStr(ClefId clefId);
-    wxString MensurSignToStr(MensurSign sign);
-    wxString DocTypeToStr(DocType type);
+    std::string UuidToMeiStr( MusObject *element );
+	std::string DurToStr(int dur);
+	std::string OctToStr(int oct);
+	std::string PitchToStr(int pitch);
+    std::string AccidToStr(unsigned char accid);
+    std::string ClefLineToStr(ClefId clefId);
+    std::string ClefShapeToStr(ClefId clefId);
+    std::string MensurSignToStr(MensurSign sign);
+    std::string DocTypeToStr(DocType type);
     ///@}
 
     
@@ -156,7 +151,7 @@ public:
 
 
 private:
-    wxString m_filename;
+    std::string m_filename;
     TiXmlElement *m_mei;
     /** @name Members for pointers to the current element */
     ///@{
@@ -191,7 +186,7 @@ class MusMeiInput: public MusFileInputStream
 {
 public:
     // constructors and destructors
-    MusMeiInput( MusDoc *doc, wxString filename );
+    MusMeiInput( MusDoc *doc, std::string filename );
     virtual ~MusMeiInput();
     
     
@@ -232,20 +227,20 @@ private:
     
 	//
     void SetMeiUuid( TiXmlElement *element, MusObject *object );
-    void StrToUuid(wxString uuid, uuid_t dest);
-	int StrToDur(wxString dur);
-	int StrToOct(wxString oct);
-	int StrToPitch(wxString pitch ); 
-    unsigned char StrToAccid(wxString accid);
-    ClefId StrToClef(wxString shape, wxString line);
-    MensurSign StrToMensurSign(wxString sign);
-    DocType StrToDocType(wxString type);
+    void StrToUuid(std::string uuid, uuid_t dest);
+	int StrToDur(std::string dur);
+	int StrToOct(std::string oct);
+	int StrToPitch(std::string pitch ); 
+    unsigned char StrToAccid(std::string accid);
+    ClefId StrToClef(std::string shape, std::string line);
+    MensurSign StrToMensurSign(std::string sign);
+    DocType StrToDocType(std::string type);
 
     
 public:
     
 private:
-    wxString m_filename;
+    std::string m_filename;
     MusPage *m_page;
     MusSystem *m_system;
 	MusStaff *m_staff;

@@ -5,35 +5,23 @@
 // Copyright (c) Authors and others. All rights reserved.
 /////////////////////////////////////////////////////////////////////////////
 
+
 #ifndef __MUS_IOPAE_H__
 #define __MUS_IOPAE_H__
-
-//#include <iostream>
-//#include <fstream>
-//#include <sstream>
 
 #include <string>
 #include <vector>
 
-#ifndef WX_PRECOMP
-#include "wx/wx.h"
-#endif
-#include "wx/wfstream.h"
+#include "musio.h"
 
-#include "musdoc.h"
-#include "muslayer.h"
+class MusBeam;
+class MusClef;
+class MusLayer;
+class MusMensur;
+class MusStaff;
+class MusTie;
+class MusTuplet;
 
-#include "musbarline.h"
-#include "musclef.h"
-#include "musmensur.h"
-#include "musneume.h"
-#include "musnote.h"
-#include "musrest.h"
-#include "mussymbol.h"
-#include "musbeam.h"
-#include "musslur.h"
-#include "mustie.h"
-#include "mustuplet.h"
 
 class NoteObject {
 public:
@@ -195,15 +183,15 @@ public:
     };
     MusClef *clef;
     MusMensur *time;
-    vector<NoteObject> notes;
+    std::vector<NoteObject> notes;
 
-    vector<int> key;
+    std::vector<int> key;
     char key_alteration;
     
-    vector<int> durations;
-    vector<int> dots; // use the same offset as durations, they are used in parallel
+    std::vector<int> durations;
+    std::vector<int> dots; // use the same offset as durations, they are used in parallel
     unsigned int durations_offset;
-    wxString barline;
+    std::string barline;
     int    abbreviation_offset;  
     int    wholerest;   // number of whole rests to process
 };
@@ -228,7 +216,7 @@ class MusPaeInput: public MusFileInputStream
 {
 public:
     // constructors and destructors
-    MusPaeInput( MusDoc *doc, wxString filename );
+    MusPaeInput( MusDoc *doc, std::string filename );
     virtual ~MusPaeInput();
     
     bool ImportFile( );    
@@ -242,7 +230,7 @@ private:
      int       getKeyInfo          (const char* incipit, MeasureObject *measure, int index = 0);
      int       getTimeInfo         (const char* incipit, MeasureObject *measure, int index = 0);
      int       getClefInfo         (const char* incipit, MusClef *mus_clef, int index = 0 );
-     int       getBarline          (const char* incipit, wxString *output, int index = 0 );
+     int       getBarline          (const char* incipit, std::string *output, int index = 0 );
      int       getAccidental       (const char* incipit, unsigned char *accident, int index = 0);
      int       getOctave           (const char* incipit, unsigned char *octave, int index = 0 );
      int       getDurations        (const char* incipit, MeasureObject *measure, int index = 0);
@@ -266,7 +254,7 @@ private:
 public:
     
 private:
-    wxString m_filename;
+    std::string m_filename;
 	MusStaff *m_staff;
 	MusLayer *m_layer;
     MusTie *m_current_tie;

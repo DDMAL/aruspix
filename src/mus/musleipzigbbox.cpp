@@ -1,12 +1,15 @@
-//
-//  musleipzigbbox.cpp
-//  aruspix
-//
-//  Created by Rodolfo Zitellini on 30/07/12.
-//  Copyright (c) 2012 com.aruspix.www. All rights reserved.
-//
+/////////////////////////////////////////////////////////////////////////////
+// Name:        musleipzigbbox.cpp
+// Author:      Rodolfo Zitellini
+// Created:     30/07/2012
+// Copyright (c) Authors and others. All rights reserved.
+/////////////////////////////////////////////////////////////////////////////
+
 
 #include "musleipzigbbox.h"
+
+//----------------------------------------------------------------------------
+
 #include "musdef.h"
 
 bool MusLeipzigBBox::m_initialized =  false;

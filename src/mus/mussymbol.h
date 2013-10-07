@@ -9,13 +9,9 @@
 #ifndef __MUS_SYMBOL_H__
 #define __MUS_SYMBOL_H__
 
-#ifndef WX_PRECOMP
-    #include "wx/wx.h"
-#endif
-
+#include "musdef.h"
 #include "muslayerelement.h"
 #include "muspositioninterface.h"
-#include "musdef.h"
 
 //----------------------------------------------------------------------------
 // MusSymbol
@@ -41,7 +37,7 @@ public:
      */
     virtual bool operator==(MusObject& other);
     
-    virtual wxString MusClassName( ) { return "MusSymbol"; };
+    virtual std::string MusClassName( ) { return "MusSymbol"; };
     
     /**
      * Set the value for the symbol.

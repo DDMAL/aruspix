@@ -9,11 +9,6 @@
 #ifndef __MUS_PITCH_INTERFACE_H__
 #define __MUS_PITCH_INTERFACE_H__
 
-#ifndef WX_PRECOMP
-    #include "wx/wx.h"
-#endif
-
-
 //----------------------------------------------------------------------------
 // MusPitchInterface
 //----------------------------------------------------------------------------

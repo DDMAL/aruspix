@@ -26,10 +26,12 @@
 #include "mus/musdoc.h"
 #include "mus/musstaff.h"
 #include "muslayerelement.h"
-
-#include "mus/musiobin.h"
 #include "mus/musiomei.h"
-#include "mus/musiomlf.h"
+
+#include "musapp/musiomlf.h"
+#include "musapp/musiobin.h"
+
+
 
 //#include "ml/mldecoder.h"
 

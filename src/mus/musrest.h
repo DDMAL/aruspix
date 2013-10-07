@@ -9,14 +9,9 @@
 #ifndef __MUS_REST_H__
 #define __MUS_REST_H__
 
-#ifndef WX_PRECOMP
-    #include "wx/wx.h"
-#endif
-
-#include "muslayerelement.h"
 #include "musdurationinterface.h"
+#include "muslayerelement.h"
 #include "muspositioninterface.h"
-
 
 //----------------------------------------------------------------------------
 // MusRest
@@ -38,7 +33,7 @@ public:
      */
     virtual bool operator==(MusObject& other);
     
-    virtual wxString MusClassName( ) { return "MusRest"; };
+    virtual std::string MusClassName( ) { return "MusRest"; };
     
 private:
     

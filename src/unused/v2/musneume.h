@@ -11,7 +11,6 @@
 #ifndef WX_PRECOMP
     #include "wx/wx.h"
 #endif
-#include "wx/dynarray.h"
 
 #include <vector>
 using std::vector;
@@ -105,9 +104,9 @@ public:
     MusNeume( const MusNeume &neume);
     virtual ~MusNeume() {}
     
-    virtual wxString MusClassName( ) { return "MusNeume"; };
+    virtual std::string MusClassName( ) { return "MusNeume"; };
     
-    void setType(wxString type);
+    void setType(std::string type);
     void setType(NeumeType type);
     NeumeType getType();
     vector<MusNeumeElement> getPitches();
@@ -123,8 +122,8 @@ public:
     //void printNeumeList();
     
     // ax2 - member previously in MusElement
-    wxString PitchToStr(int pitch);
-    int StrToPitch(wxString pitch);
+    std::string PitchToStr(int pitch);
+    int StrToPitch(std::string pitch);
 
 private:
 

@@ -1,30 +1,30 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        musgraph.cpp
+// Name:        musrc_graph.cpp
 // Author:      Laurent Pugin
 // Created:     2005
 // Copyright (c) Authors and others. All rights reserved.
 /////////////////////////////////////////////////////////////////////////////
 
-// For compilers that support precompilation, includes "wx/wx.h".
-#include "wx/wxprec.h"
 
 #include "musrc.h"
+
+//----------------------------------------------------------------------------
+
+#include <assert.h>
+
+//----------------------------------------------------------------------------
+
 #include "musstaff.h"
-
-
-#include <algorithm>
-using std::min;
-using std::max;
 
 void MusRC::v_bline ( MusDC *dc, int y1, int y2, int x1, int nbr)
 {
-	wxASSERT_MSG( dc , "DC cannot be NULL");
+	assert( dc ); // DC cannot be NULL
 
 	if (discontinu)
 		nbr = 1;
 
-    dc->SetPen( m_currentColour, max( 1, ToRendererX(nbr) ), wxSOLID );
-    dc->SetBrush( m_currentColour, wxSOLID );
+    dc->SetPen( m_currentColour, std::max( 1, ToRendererX(nbr) ), AxSOLID );
+    dc->SetBrush( m_currentColour, AxSOLID );
 
 	dc->DrawLine( ToRendererX(x1) , ToRendererY(y1), ToRendererX(x1), ToRendererY(y2) );
 
@@ -37,7 +37,7 @@ void MusRC::v_bline ( MusDC *dc, int y1, int y2, int x1, int nbr)
 
 void MusRC::v_bline2 ( MusDC *dc, int y1, int y2, int x1, int nbr)	
 {
-	wxASSERT_MSG( dc , "DC cannot be NULL");
+	assert( dc ); // DC cannot be NULL
 
 	SwapY( &y1, &y2 );
 
@@ -46,8 +46,8 @@ void MusRC::v_bline2 ( MusDC *dc, int y1, int y2, int x1, int nbr)
 	if (ToRendererX(nbr) < 1)
 		nbr = ToLogicalX(1);
 
-    dc->SetPen( m_currentColour, 1, wxSOLID );
-    dc->SetBrush( m_currentColour, wxSOLID );
+    dc->SetPen( m_currentColour, 1, AxSOLID );
+    dc->SetBrush( m_currentColour, AxSOLID );
 
 	dc->DrawRectangle( ToRendererX( x2 ), ToRendererY(y1), ToRendererX(nbr) , ToRendererX( y1 - y2 ));
 
@@ -60,13 +60,13 @@ void MusRC::v_bline2 ( MusDC *dc, int y1, int y2, int x1, int nbr)
 
 void MusRC::h_bline ( MusDC *dc, int x1, int x2, int y1, int nbr)
 {		
-	wxASSERT_MSG( dc , "DC cannot be NULL");
+	assert( dc ); // DC cannot be NULL
 
 	if (discontinu)
 		nbr = 1;
 
-    dc->SetPen( m_currentColour, max( 1, ToRendererX(nbr) ), wxSOLID );
-    dc->SetBrush( m_currentColour, wxTRANSPARENT );
+    dc->SetPen( m_currentColour, std::max( 1, ToRendererX(nbr) ), AxSOLID );
+    dc->SetBrush( m_currentColour, AxTRANSPARENT );
 
 	dc->DrawLine( ToRendererX(x1) , ToRendererY(y1), ToRendererX(x2), ToRendererY(y1) );
 
@@ -78,11 +78,11 @@ void MusRC::h_bline ( MusDC *dc, int x1, int x2, int y1, int nbr)
 //draw a box, lol. It's like a rectangle, but not filled in.
 void MusRC::box( MusDC *dc, int x1, int y1, int x2, int y2)
 {
-	wxASSERT_MSG( dc, "DC cannot be NULL");
+	assert( dc ); // DC cannot be NULL
 	
 	SwapY( &y1, &y2 );
 
-    dc->SetPen( m_currentColour, 3, wxSOLID);
+    dc->SetPen( m_currentColour, 3, AxSOLID);
 	
 	dc->DrawRectangle( ToRendererX(x1), ToRendererY(y1), ToRendererX(x2 - x1), ToRendererX(y1 - y2));
 	
@@ -93,12 +93,12 @@ void MusRC::box( MusDC *dc, int x1, int y1, int x2, int y2)
 
 void MusRC::rect_plein2( MusDC *dc, int x1, int y1, int x2, int y2 )	/* dessine rectangle plein */
 {	
-	wxASSERT_MSG( dc , "DC cannot be NULL");
+	assert( dc ); // DC cannot be NULL
 
 	SwapY( &y1, &y2 );
 
-    dc->SetPen( m_currentColour, 1, wxSOLID  );
-    dc->SetBrush( m_currentColour, wxSOLID );
+    dc->SetPen( m_currentColour, 1, AxSOLID  );
+    dc->SetBrush( m_currentColour, AxSOLID );
 
 	dc->DrawRectangle( ToRendererX( x1 ), ToRendererY(y1), ToRendererX(x2 - x1) , ToRendererX( y1 - y2 ));
 
@@ -113,8 +113,8 @@ int MusRC::hGrosseligne ( MusDC *dc, int x1, int y1, int x2, int y2, int decal)
 	MusPoint p[4];
 	int dec = decal;
   
-    dc->SetPen( m_currentColour, 1, wxSOLID );
-    dc->SetBrush( m_currentColour, wxSOLID );
+    dc->SetPen( m_currentColour, 1, AxSOLID );
+    dc->SetBrush( m_currentColour, AxSOLID );
 
 	decal = ToRendererX(decal);
 	p[0].x = ToRendererX(x1);
@@ -137,7 +137,7 @@ int MusRC::hGrosseligne ( MusDC *dc, int x1, int y1, int x2, int y2, int decal)
 int MusRC::DrawDot ( MusDC *dc, int x, int b, int decal, MusStaff *staff )
 {	int y = b + staff->m_y_drawing;
 
-	if (decal > 600 || in (y, (int)staff->m_y_drawing - m_doc->m_staffSize[staff->staffSize], 
+	if (decal > 600 || is_in (y, (int)staff->m_y_drawing - m_doc->m_staffSize[staff->staffSize],
 		(int)staff->m_y_drawing - m_doc->m_staffSize[staff->staffSize]*2))
 	{	decal += m_doc->m_halfInterl[staff->staffSize];
 		if (decal > 600)
@@ -146,10 +146,10 @@ int MusRC::DrawDot ( MusDC *dc, int x, int b, int decal, MusStaff *staff )
 				y += decal;
 	}
 
-	int r = max( ToRendererX(4), 2 );
+	int r = std::max( ToRendererX(4), 2 );
 	
-    dc->SetPen( m_currentColour, 1, wxSOLID );
-    dc->SetBrush( m_currentColour, wxSOLID );
+    dc->SetPen( m_currentColour, 1, AxSOLID );
+    dc->SetBrush( m_currentColour, AxSOLID );
 
 	dc->DrawCircle( ToRendererX(x) , ToRendererY(y), r );
 		
@@ -165,12 +165,12 @@ int MusRC::DrawDot ( MusDC *dc, int x, int b, int decal, MusStaff *staff )
 	super-hack time
  */
 
-void MusRC::festa_string ( MusDC *dc, int x, int y, const wxString str, 
+void MusRC::festa_string ( MusDC *dc, int x, int y, const std::string str, 
 							  MusStaff *staff, int dimin ) {
 	int staffSize = staff->staffSize;
 	int fontCorr = m_doc->m_fontHeightAscent[staffSize][dimin];
 	
-	wxASSERT_MSG( dc , "DC cannot be NULL");
+	assert( dc ); // DC cannot be NULL
 	
 	//need to add handling for festa dies font
 	// m_activeChantFonts
@@ -187,16 +187,16 @@ void MusRC::festa_string ( MusDC *dc, int x, int y, const wxString str,
 	if ( dc)
 	{	
 		dc->SetBackground( AxBLUE );
-		dc->SetBackgroundMode( wxTRANSPARENT );
+		dc->SetBackgroundMode( AxTRANSPARENT );
 		
 		dc->SetTextForeground( m_currentColour );
-        dc->SetPen( m_currentColour, 1, wxSOLID );
-        dc->SetBrush( m_currentColour, wxSOLID );
+        dc->SetPen( m_currentColour, 1, AxSOLID );
+        dc->SetBrush( m_currentColour, AxSOLID );
 		
 		//printf("Drawing text here, x: %d, y: %d, y (zoomed): %d, y + fontcorr: %d\n"
 		//	   , ToRendererX(x), y, ToRendererY(y), ToRendererY(y + fontCorr));
 
-		dc->DrawText( wxString::Format(wxT("%s"), str.c_str()), ToRendererX(x), ToRendererY(y + fontCorr - 4) );
+		dc->DrawText( Mus::StringFormat( "%s", str.c_str()), ToRendererX(x), ToRendererY(y + fontCorr - 4) );
 		
         dc->ResetPen();
         dc->ResetBrush();
@@ -215,13 +215,13 @@ void MusRC::DrawLeipzigFont ( MusDC *dc, int x, int y, unsigned char c,
         fontCorr = m_doc->m_fontHeightAscent[staffSize][dimin];
     }
 
-	wxASSERT_MSG( dc , "DC cannot be NULL");
+	assert( dc ); // DC cannot be NULL
 
     // Font offset management for clef in mensural mode - needs improvement (font modification?)
 	if (staff->notAnc && (unsigned char)c >= LEIPZIG_OFFSET_IN_FONT)
 	{	
 		c+= LEIPZIG_OFFSET_MENSURAL;
-		if (dimin && in (c, 227, 229))	// les trois clefs
+		if (dimin && is_in (c, 227, 229))	// les trois clefs
 		{	
 			c+= 14;	// les cles d===e tablature
             if (dc->CorrectMusicAscent()) {
@@ -229,7 +229,7 @@ void MusRC::DrawLeipzigFont ( MusDC *dc, int x, int y, unsigned char c,
             }
 		}
 	}
-	if (!staff->notAnc || !in (c, 241, 243))	// tout sauf clefs de tablature
+	if (!staff->notAnc || !is_in (c, 241, 243))	// tout sauf clefs de tablature
 	{
         dc->SetFont( &m_doc->m_activeFonts[ staffSize ][ dimin ] );
 	}
@@ -237,12 +237,12 @@ void MusRC::DrawLeipzigFont ( MusDC *dc, int x, int y, unsigned char c,
 	if ( dc)
 	{	
 		dc->SetBackground( AxBLUE );
-		dc->SetBackgroundMode( wxTRANSPARENT );
+		dc->SetBackgroundMode( AxTRANSPARENT );
 
 		m_str = (char)c;
 		dc->SetTextForeground( m_currentColour );
-        dc->SetPen( m_currentColour, 1, wxSOLID );
-        dc->SetBrush( m_currentColour, wxSOLID );
+        dc->SetPen( m_currentColour, 1, AxSOLID );
+        dc->SetBrush( m_currentColour, AxSOLID );
 
 		//printf("Drawing text here, x: %d, y: %d, y (zoomed): %d, y + fontcorr: %d\n"
 		//	   , ToRendererX(x), y, ToRendererY(y), ToRendererY(y + fontCorr));
@@ -275,9 +275,9 @@ void MusRC::putfontfast ( MusDC *dc, int x, int y, unsigned char c )
 */
 
 
-void MusRC::putstring ( MusDC *dc, int x, int y, wxString s, int centrer, int staffSize)
+void MusRC::putstring ( MusDC *dc, int x, int y, std::string s, int centrer, int staffSize)
 { 
-	wxASSERT_MSG( dc , "DC cannot be NULL");
+	assert( dc ); // DC cannot be NULL
 
     int fontCorr = 0;
     
@@ -290,7 +290,7 @@ void MusRC::putstring ( MusDC *dc, int x, int y, wxString s, int centrer, int st
     
 	if ( centrer )
 	{
-        wxLogDebug("Centering string not implemented with MusDC");
+        Mus::LogDebug("Centering string not implemented with MusDC");
 		
         int w, h;
 		dc->GetTextExtent( s, &w, &h );
@@ -301,9 +301,9 @@ void MusRC::putstring ( MusDC *dc, int x, int y, wxString s, int centrer, int st
 	dc->DrawText( s, x, ToRendererY(y + fontCorr ));
 }
 
-void MusRC::putlyric ( MusDC *dc, int x, int y, wxString s, int staffSize, bool cursor)
+void MusRC::putlyric ( MusDC *dc, int x, int y, std::string s, int staffSize, bool cursor)
 { 
-	wxASSERT_MSG( dc , "DC cannot be NULL");
+	assert( dc ); // DC cannot be NULL
 
     dc->SetFont( &m_doc->m_activeLyricFonts[ staffSize ] );
 	x = ToRendererX(x);

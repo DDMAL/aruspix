@@ -35,7 +35,7 @@
 // Custom source
 #include "comparison/cmpmus.h"
 #include "comparison/cmpctrl.h"
-#include "mus/mustoolpanel.h"
+#include "musapp/mustoolpanel.h"
 
 // Implement window functions
 

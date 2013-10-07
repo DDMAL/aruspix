@@ -6,10 +6,10 @@
 /////////////////////////////////////////////////////////////////////////////
 
 
-// For compilers that support precompilation, includes "wx/wx.h".
-#include "wx/wxprec.h"
-
 #include "musdurationinterface.h"
+
+//----------------------------------------------------------------------------
+
 #include "musbeam.h"
 
 /**

@@ -1,21 +1,26 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        musrc_neumes.cpp
+// Name:        musrc_page.cpp
 // Author:      Laurent Pugin and Chris Niven
 // Created:     2011
 // Copyright (c) Authors and others. All rights reserved.
 /////////////////////////////////////////////////////////////////////////////
 
-// For compilers that support precompilation, includes "wx/wx.h".
-#include "wx/wxprec.h"
 
 #include "musrc.h"
-#include "muspage.h"
-#include "mussystem.h"
-#include "musstaff.h"
-#include "muslayer.h"
-#include "muslayerelement.h"
+
+//----------------------------------------------------------------------------
+
+#include <assert.h>
+#include <math.h>
+
+//----------------------------------------------------------------------------
 
 #include "musclef.h"
+#include "muslayer.h"
+#include "muslayerelement.h"
+#include "muspage.h"
+#include "musstaff.h"
+#include "mussystem.h"
 
 //----------------------------------------------------------------------------
 // MusRC - MusPage
@@ -23,7 +28,7 @@
 
 void MusRC::DrawPage( MusDC *dc, MusPage *page, bool background ) 
 {
-	wxASSERT_MSG( dc , "DC cannot be NULL");
+	assert( dc ); // DC cannot be NULL
     
     int i;
 	MusSystem *system = NULL;
@@ -59,7 +64,7 @@ void MusRC::DrawPage( MusDC *dc, MusPage *page, bool background )
 
 void MusRC::DrawSystem( MusDC *dc, MusSystem *system ) 
 {
-	wxASSERT_MSG( dc , "DC cannot be NULL");
+	assert( dc ); // DC cannot be NULL
 
 	int i;
     MusStaff *staff;
@@ -70,7 +75,7 @@ void MusRC::DrawSystem( MusDC *dc, MusSystem *system )
     dc->ResetPen();
     */
     
-    dc->StartGraphic( system, "system", wxString::Format("system_%d", system->GetId() ) );
+    dc->StartGraphic( system, "system", Mus::StringFormat("system_%d", system->GetId() ) );
     
     DrawGroups( dc, system );
 
@@ -100,8 +105,8 @@ void MusRC::DrawBracket ( MusDC *dc, MusSystem *system, int x, int y1, int y2, i
 	}
 	//else if (hdc)
 	{
-        dc->SetPen( m_currentColour , 1, wxSOLID );
-        dc->SetBrush( m_currentColour , wxTRANSPARENT );
+        dc->SetPen( m_currentColour , 1, AxSOLID );
+        dc->SetBrush( m_currentColour , AxTRANSPARENT );
 
 		ecart = m_doc->m_barlineSpacing;
 		centre = x - ecart;
@@ -135,7 +140,7 @@ void MusRC::DrawBracket ( MusDC *dc, MusSystem *system, int x, int y1, int y2, i
 
 void MusRC::DrawGroups( MusDC *dc, MusSystem *system )
 {
-	wxASSERT_MSG( dc , "DC cannot be NULL");
+	assert( dc ); // DC cannot be NULL
 
 	int i, flLine=0, flBrace=0;
 	int xx, portee;
@@ -220,7 +225,7 @@ void MusRC::DrawGroups( MusDC *dc, MusSystem *system )
 /*
 void MusRC::DrawBraceOlde ( MusDC *dc, MusSystem *system, int x, int y1, int y2, int staffSize)
 {	
-	wxASSERT_MSG( dc , "DC cannot be NULL");
+	assert( dc ); // DC cannot be NULL
 	if ( !system->Check() )
 		return;
     
@@ -230,8 +235,8 @@ void MusRC::DrawBraceOlde ( MusDC *dc, MusSystem *system, int x, int y1, int y2,
     //	static POINT *bcoord;
 	MusPoint *ptcoord;
     
-    dc->SetPen( m_currentColour , 1, wxSOLID );
-    dc->SetBrush( m_currentColour , wxSOLID );
+    dc->SetPen( m_currentColour , 1, AxSOLID );
+    dc->SetBrush( m_currentColour , AxSOLID );
     
 	x -= m_doc->m_beamWhiteWidth[ staffSize ];  // distance entre barre et debut accolade
     
@@ -297,7 +302,7 @@ void MusRC::DrawBrace ( MusDC *dc, MusSystem *system, int x, int y1, int y2, int
 {	
     int new_coords[2][6];
     
-	wxASSERT_MSG( dc , "DC cannot be NULL");
+	assert( dc ); // DC cannot be NULL
 
 	SwapY( &y1, &y2 );
 	
@@ -305,8 +310,8 @@ void MusRC::DrawBrace ( MusDC *dc, MusSystem *system, int x, int y1, int y2, int
     //	static POINT *bcoord;
 	// MusPoint *ptcoord;
     
-    dc->SetPen( m_currentColour , 1, wxSOLID );
-    dc->SetBrush( m_currentColour , wxSOLID );
+    dc->SetPen( m_currentColour , 1, AxSOLID );
+    dc->SetBrush( m_currentColour , AxSOLID );
     
 	x -= m_doc->m_beamWhiteWidth[ staffSize ];  // distance entre barre et debut accolade
     
@@ -376,8 +381,8 @@ void MusRC::DrawBrace ( MusDC *dc, MusSystem *system, int x, int y1, int y2, int
     
     dc->DrawComplexBezierPath(point_[3].x, point_[3].y, new_coords[0], new_coords[1]);
     
-    //dc->SetPen( m_currentColour , 1, wxSOLID );
-    //dc->SetBrush( m_currentColour , wxSOLID );
+    //dc->SetPen( m_currentColour , 1, AxSOLID );
+    //dc->SetBrush( m_currentColour , AxSOLID );
 	//dc->DrawPolygon (nbrInt*2,  bcoord, 0, 0, wxWINDING_RULE  ); //(sizeof (bcoord)*2) / sizeof (POINT)); nbrInt*2+ 1;
 	
     dc->ResetPen();
@@ -394,7 +399,7 @@ void MusRC::DrawBarline ( MusDC *dc, MusSystem *system, int x, int cod, bool por
 // cod: 0 = barre d'epaisseur 1 point; 1 = barre d'ep. "epLignesVer"
 // porteeAutonome: indique s'il faut des barres privees sur chaque portee plutÙt que traversantes
 {
-	wxASSERT_MSG( dc , "DC cannot be NULL");
+	assert( dc ); // DC cannot be NULL
 
 	int i, j, accDeb=0, flLine=0, portee;
 	float a;
@@ -479,7 +484,7 @@ void MusRC::DrawBarline ( MusDC *dc, MusSystem *system, int x, int cod, bool por
 
 void MusRC::DrawSpecialBarline( MusDC *dc, MusSystem *system, int x, BarlineType code, bool porteeAutonome, MusStaff *pportee)
 {
-	wxASSERT_MSG( dc , "DC cannot be NULL");
+	assert( dc ); // DC cannot be NULL
 	
 	int x1, x2;
 
@@ -559,11 +564,11 @@ void MusRC::DrawSpecialBarline( MusDC *dc, MusSystem *system, int x, BarlineType
 
 void MusRC::DrawPartialBarline ( MusDC *dc, MusSystem *system, int x, MusStaff *pportee)
 {
-	wxASSERT_MSG( dc , "DC cannot be NULL");
+	assert( dc ); // DC cannot be NULL
 
 	int b, bb;
 
-	MusStaff *next = system->GetNext( false );	
+	MusStaff *next = system->GetNext( NULL );
 	if ( next )
 	{	
 		b = pportee->m_y_drawing - m_doc->m_staffSize[ pportee->staffSize ]*2;
@@ -585,7 +590,7 @@ void MusRC::DrawPartialBarline ( MusDC *dc, MusSystem *system, int x, MusStaff *
 
 int MusRC::CalculateNeumePosY ( MusStaff *staff, char note, int dec_clef, int oct)
 {
-    wxASSERT_MSG( staff, "Pointer to staff cannot be NULL" );
+    assert(staff); // Pointer to staff cannot be NULL"
 
 	static char notes[] = {1,2,3,4,5,6,7};
 	int y_int;
@@ -604,7 +609,7 @@ int MusRC::CalculateNeumePosY ( MusStaff *staff, char note, int dec_clef, int oc
 
 int MusRC::CalculatePitchPosY ( MusStaff *staff, char pname, int dec_clef, int oct)
 {
-    wxASSERT_MSG( staff, "Pointer to staff cannot be NULL" );
+    assert(staff); // Pointer to staff cannot be NULL"
 	
     static char touches[] = {PITCH_C,PITCH_D,PITCH_E,PITCH_F,PITCH_G,PITCH_A,PITCH_B};
 	int y_int;
@@ -626,7 +631,7 @@ int MusRC::CalculatePitchPosY ( MusStaff *staff, char pname, int dec_clef, int o
 
 int MusRC::CalculateRestPosY ( MusStaff *staff, char duration)
 {
-    wxASSERT_MSG( staff, "Pointer to staff cannot be NULL" );
+    assert(staff); // Pointer to staff cannot be NULL"
 
 	int staff_space = m_doc->m_halfInterl[staff->staffSize];
     int base = -17 * staff_space; // -17 is a magic number copied from above
@@ -653,7 +658,7 @@ int MusRC::CalculateRestPosY ( MusStaff *staff, char duration)
 
 void MusRC::DrawStaffLines( MusDC *dc, MusStaff *staff, MusSystem *system )
 {
-	wxASSERT_MSG( dc , "DC cannot be NULL");
+	assert( dc ); // DC cannot be NULL
         
     if (staff->invisible)
         return;
@@ -677,8 +682,8 @@ void MusRC::DrawStaffLines( MusDC *dc, MusStaff *staff, MusSystem *system )
 	x1 = system->m_systemLeftMar;
     x2 = m_doc->GetSystemRightX( system );
 
-	dc->SetPen( m_currentColour, ToRendererX( m_doc->m_env.m_staffLineWidth ), wxSOLID );
-    dc->SetBrush( m_currentColour , wxSOLID );
+	dc->SetPen( m_currentColour, ToRendererX( m_doc->m_env.m_staffLineWidth ), AxSOLID );
+    dc->SetBrush( m_currentColour , AxSOLID );
 
 	x1 = ToRendererX (x1);
 	x2 = ToRendererX (x2);
@@ -699,9 +704,9 @@ void MusRC::DrawStaffLines( MusDC *dc, MusStaff *staff, MusSystem *system )
 
 void MusRC::DrawStaff( MusDC *dc, MusStaff *staff, MusSystem *system )
 {
-	wxASSERT_MSG( dc , "DC cannot be NULL");
+	assert( dc ); // DC cannot be NULL
     
-    dc->StartGraphic( staff, "staff", wxString::Format("s_%d", staff->GetId()) );
+    dc->StartGraphic( staff, "staff", Mus::StringFormat("s_%d", staff->GetId()) );
     
     // Set the drawing y for the staff, which is one staff lize above its y position.
     // This is used as a reference point for drawing its content.
@@ -736,8 +741,8 @@ void MusRC::DrawStaff( MusDC *dc, MusStaff *staff, MusSystem *system )
 
 int MusRC::CalculatePitchCode ( MusLayer *layer, int y_n, int x_pos, int *octave )
 {
-    wxASSERT_MSG( layer, "Pointer to layer cannot be NULL" );
-    wxASSERT_MSG( layer->m_parent, "Pointer to staff cannot be NULL" );
+    assert(layer); // Pointer to layer cannot be NULL"
+    assert(layer->m_parent); // Pointer to staff cannot be NULL"
 	
     static int touches[] = {PITCH_C,PITCH_D,PITCH_E,PITCH_F,PITCH_G,PITCH_A,PITCH_B};
 	int y_dec, yb, plafond;
@@ -812,11 +817,11 @@ MusPoint CalcPositionAfterRotation( MusPoint point , float rot_alpha, MusPoint c
   **/
 void MusRC::DrawSlur( MusDC *dc, MusLayer *layer, int x1, int y1, int x2, int y2, bool up, int height )
 {
-    wxASSERT_MSG( layer, "Pointer to layer cannot be NULL" );
-    wxASSERT_MSG( layer->m_parent, "Pointer to staff cannot be NULL" );
+    assert(layer); // Pointer to layer cannot be NULL"
+    assert(layer->m_parent); // Pointer to staff cannot be NULL"
 
-    dc->SetPen( m_currentColour, 1, wxSOLID );
-    dc->SetBrush( m_currentColour, wxSOLID );
+    dc->SetPen( m_currentColour, 1, AxSOLID );
+    dc->SetBrush( m_currentColour, AxSOLID );
 
 
     int distX = x1 - x2;
@@ -895,7 +900,7 @@ void MusRC::DrawSlur( MusDC *dc, MusLayer *layer, int x1, int y1, int x2, int y2
 
 void MusRC::DrawLayer( MusDC *dc, MusLayer *layer, MusStaff *staff )
 {
-	wxASSERT_MSG( dc , "DC cannot be NULL");
+	assert( dc ); // DC cannot be NULL
 
 	MusLayerElement *pelement = NULL;
 	int j;

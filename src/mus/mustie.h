@@ -1,21 +1,17 @@
-//
-//  musbeam.h
-//  aruspix
-//
-//  Created by Rodolfo Zitellini on 26/06/12.
-//  Copyright (c) 2012 com.aruspix.www. All rights reserved.
-//
+/////////////////////////////////////////////////////////////////////////////
+// Name:        mustie.h
+// Author:      Rodolfo Zitellini
+// Created:     26/06/2012
+// Copyright (c) Authors and others. All rights reserved.
+/////////////////////////////////////////////////////////////////////////////
+
 
 #ifndef __MUS_TIE_H__
 #define __MUS_TIE_H__
 
-#ifndef WX_PRECOMP
-#include "wx/wx.h"
-#endif
-
-#include "musobject.h"
 #include "muslayer.h"
 #include "musnote.h"
+#include "musobject.h"
 
 //----------------------------------------------------------------------------
 // MusTie
@@ -30,7 +26,7 @@ public:
     MusTie();
     virtual ~MusTie();
     
-    virtual wxString MusClassName( ) { return "MusTie"; };
+    virtual std::string MusClassName( ) { return "MusTie"; };
     
     MusNote *m_first;
     MusNote *m_second;

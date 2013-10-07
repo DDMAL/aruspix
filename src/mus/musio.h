@@ -8,20 +8,18 @@
 #ifndef __MUS_IO_H__
 #define __MUS_IO_H__
 
-#ifndef WX_PRECOMP
-    #include "wx/wx.h"
-#endif
-#include "wx/wfstream.h"
+#include <fstream>
+#include <iostream>
+#include <string>
 
 class MusDoc;
-class MusPage;
-class MusSystem;
-class MusStaff;
 class MusLayer;
-class MusLayerElement;
-// app
 class MusLayerApp;
+class MusLayerElement;
 class MusLayerRdg;
+class MusPage;
+class MusStaff;
+class MusSystem;
 
 //----------------------------------------------------------------------------
 // MusFileOutputStream
@@ -31,12 +29,12 @@ class MusLayerRdg;
  * This class is a base class for file output stream classes.
  * It is not an abstract class but should not be instanciate directly.
  */ 
-class MusFileOutputStream: public wxFileOutputStream
+class MusFileOutputStream: public std::ofstream
 {
 public:
     // constructors and destructors
-    MusFileOutputStream( MusDoc *doc, wxString filename );
-	MusFileOutputStream( MusDoc *doc, int fd );
+    MusFileOutputStream( MusDoc *doc, std::string filename );
+	MusFileOutputStream( MusDoc *doc );
     MusFileOutputStream() {};
 	//MusFileOutputStream( MusDoc *file, wxFile *wxfile );
     virtual ~MusFileOutputStream();
@@ -93,12 +91,12 @@ private:
  * This class is a base class for file input stream classes.
  * It is not an abstract class but should not be instanciate directly.
  */ 
-class MusFileInputStream: public wxFileInputStream
+class MusFileInputStream: public std::ifstream
 {
 public:
     // constructors and destructors
-    MusFileInputStream( MusDoc *doc, wxString filename );
-    MusFileInputStream( MusDoc *doc, int fr );
+    MusFileInputStream( MusDoc *doc, std::string filename );
+    MusFileInputStream( MusDoc *doc );
     MusFileInputStream() {};
     virtual ~MusFileInputStream();
     

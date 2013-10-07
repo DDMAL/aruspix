@@ -6,11 +6,7 @@
 /////////////////////////////////////////////////////////////////////////////
 
 
-// For compilers that support precompilation, includes "wx/wx.h".
-#include "wx/wxprec.h"
-
 #include "musrest.h"
-
 
 //----------------------------------------------------------------------------
 // MusRest
@@ -22,7 +18,6 @@ MusRest::MusRest():
     // by default set automatic height
     m_pname = REST_AUTO;
 }
-
 
 MusRest::~MusRest()
 {

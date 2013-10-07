@@ -5,13 +5,19 @@
 // Copyright (c) Authors and others. All rights reserved.
 /////////////////////////////////////////////////////////////////////////////
 
-// For compilers that support precompilation, includes "wx/wx.h".
-#include "wx/wxprec.h"
 
-#include "musleipzigbbox.h"
 #include "musbboxdc.h"
-#include "musrc.h"
+
+//----------------------------------------------------------------------------
+
+#include <assert.h>
+#include <math.h>
+
+//----------------------------------------------------------------------------
+
 #include "musdef.h"
+#include "musleipzigbbox.h"
+#include "musrc.h"
 
 static inline double DegToRad(double deg) { return (deg * M_PI) / 180.0; }
 static inline double RadToDeg(double deg) { return (deg * 180.0) / M_PI; }
@@ -35,8 +41,8 @@ MusBBoxDC::MusBBoxDC ( MusRC *rc, int width, int height):
     m_originX = 0;
     m_originY = 0;
     
-    SetBrush( AxBLACK, wxSOLID );
-    SetPen( AxBLACK, 1, wxSOLID );
+    SetBrush( AxBLACK, AxSOLID );
+    SetPen( AxBLACK, 1, AxSOLID );
 }
 
 
@@ -44,7 +50,7 @@ MusBBoxDC::~MusBBoxDC ( )
 {
 }
 
-void MusBBoxDC::StartGraphic( MusDocObject *object, wxString gClass, wxString gId )
+void MusBBoxDC::StartGraphic( MusDocObject *object, std::string gClass, std::string gId )
 {
     // add object
     object->ResetBB();
@@ -54,7 +60,7 @@ void MusBBoxDC::StartGraphic( MusDocObject *object, wxString gClass, wxString gI
 void MusBBoxDC::EndGraphic(MusDocObject *object, MusRC *rc ) 
 {
     // detach the object
-    wxASSERT( m_objects.back() == object );
+    assert( m_objects.back() == object );
     m_objects.pop_back();
 }
 
@@ -106,7 +112,7 @@ void MusBBoxDC::ResetBrush( )
         
 void MusBBoxDC::ResetPen( )
 {
-    SetPen( AxBLACK, 1, wxSOLID );
+    SetPen( AxBLACK, 1, AxSOLID );
 } 
 
 void MusBBoxDC::SetLogicalOrigin( int x, int y ) 
@@ -123,14 +129,14 @@ void MusBBoxDC::SetUserScale( double xScale, double yScale )
     m_userScaleY = yScale;
 }       
 
-void MusBBoxDC::GetTextExtent( wxString& string, int *w, int *h )
+void MusBBoxDC::GetTextExtent( const std::string& string, int *w, int *h )
 {
     int x, y, partial_w, partial_h;
     
     *w = 0;
     *h = 0;
     
-    for (unsigned int i = 0; i < string.Len(); i++) {
+    for (unsigned int i = 0; i < string.length(); i++) {
         
         MusLeipzigBBox::GetCharBounds(string.c_str()[i], &x, &y, &partial_w, &partial_h);
         
@@ -195,7 +201,7 @@ void MusBBoxDC::DrawEllipticArc(int x, int y, int width, int height, double star
 
     //known bug: SVG draws with the current pen along the radii, but this does not happen in wxMSW
 
-    wxString s ;
+    std::string s ;
     //radius
     double rx = width / 2 ;
     double ry = height / 2 ;
@@ -220,7 +226,7 @@ void MusBBoxDC::DrawEllipticArc(int x, int y, int width, int height, double star
     int fSweep ;
     if ( fabs(theta2 - theta1) > M_PI) fSweep = 1; else fSweep = 0 ;
 
-    //WriteLine( wxString::Format("<path d=\"M%d %d A%d %d 0.0 %d %d  %d %d \" />",
+    //WriteLine( Mus::StringFormat("<path d=\"M%d %d A%d %d 0.0 %d %d  %d %d \" />",
     //    int(xs), int(ys), int(rx), int(ry),
     //    fArc, fSweep, int(xe), int(ye) ) );
     
@@ -302,41 +308,41 @@ void MusBBoxDC::DrawRoundedRectangle(int x, int y, int width, int height, double
 }
 
         
-void MusBBoxDC::DrawText(const wxString& text, int x, int y)
+void MusBBoxDC::DrawText(const std::string& text, int x, int y)
 {
     DrawMusicText( text, x, y);
 }
 
 
 
-void MusBBoxDC::DrawRotatedText(const wxString& text, int x, int y, double angle)
+void MusBBoxDC::DrawRotatedText(const std::string& text, int x, int y, double angle)
 {
     //known bug; if the font is drawn in a scaled DC, it will not behave exactly as wxMSW
 
-    wxString s;
+    std::string s;
 
     // calculate bounding box
-    wxCoord w, h, desc;
+    int w, h, desc;
     //DoGetTextExtent(sText, &w, &h, &desc);
     w = h = desc = 0;
 
     //double rad = DegToRad(angle);
 
     
-    //if (m_backgroundMode == wxSOLID)
+    //if (m_backgroundMode == AxSOLID)
     {
         //WriteLine("/*- MusSVGFileDC::DrawRotatedText - Backgound not implemented */") ;
     }
 }
 
 
-void MusBBoxDC::DrawMusicText(const wxString& text, int x, int y)
+void MusBBoxDC::DrawMusicText(const std::string& text, int x, int y)
 {  
     
     int g_x, g_y, g_w, g_h;
     int lastCharWidth = 0;
     
-    for (unsigned int i = 0; i < text.Len(); i++) {
+    for (unsigned int i = 0; i < text.length(); i++) {
         unsigned char c = (unsigned char)text[i];
         
         MusLeipzigBBox::GetCharBounds(c, &g_x, &g_y, &g_w, &g_h);
@@ -399,7 +405,7 @@ void MusBBoxDC::UpdateBB(int x1, int y1, int x2, int y2)
     // simpler version 
     
     // the array should not be empty
-    wxASSERT_MSG( !m_objects.empty(), "Array cannot be empty" ) ;
+    assert( !m_objects.empty() ); // Array cannot be empty
     
     
     // we need to store logical coordinates in the objects, we need to convert them back (this is why we need a MusRC object)

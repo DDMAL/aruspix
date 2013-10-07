@@ -9,11 +9,6 @@
 #ifndef __MUS_POSITION_INTERFACE_H__
 #define __MUS_POSITION_INTERFACE_H__
 
-#ifndef WX_PRECOMP
-    #include "wx/wx.h"
-#endif
-
-
 //----------------------------------------------------------------------------
 // MusPositionInterface
 //----------------------------------------------------------------------------

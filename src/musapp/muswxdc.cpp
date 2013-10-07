@@ -66,7 +66,7 @@ void MusWxDC::SetPen( int colour, int width, int style )
 void MusWxDC::SetFont( MusFontInfo *font_info )
 {
     wxFont font( font_info->pointSize, (wxFontFamily)font_info->family, font_info->style,
-        (wxFontWeight)font_info->weight, font_info->underlined, font_info->faceName,
+        (wxFontWeight)font_info->weight, font_info->underlined, font_info->faceName.c_str(),
         (wxFontEncoding)font_info->encoding );
     m_dc->SetFont( font );
 }
@@ -98,9 +98,9 @@ void MusWxDC::SetLogicalOrigin( int x, int y )
 }
        
 
-void MusWxDC::GetTextExtent( wxString& string, int *w, int *h )
+void MusWxDC::GetTextExtent( const std::string& string, int *w, int *h )
 {
-    m_dc->GetTextExtent( string, w, h );
+    m_dc->GetTextExtent( string.c_str(), w, h );
 } 
 
 
@@ -168,19 +168,19 @@ void MusWxDC::DrawRoundedRectangle(int x, int y, int width, int height, double r
     m_dc->DrawRoundedRectangle( x, y, width, height, radius );
 }
         
-void MusWxDC::DrawText(const wxString& text, int x, int y)
+void MusWxDC::DrawText(const std::string& text, int x, int y)
 {
-    m_dc->DrawText( text, x, y );
+    m_dc->DrawText( text.c_str(), x, y );
 }
 
-void MusWxDC::DrawMusicText(const wxString& text, int x, int y)
+void MusWxDC::DrawMusicText(const std::string& text, int x, int y)
 {
-    m_dc->DrawText( text, x, y );
+    m_dc->DrawText( text.c_str(), x, y );
 }
 
-void MusWxDC::DrawRotatedText(const wxString& text, int x, int y, double angle)
+void MusWxDC::DrawRotatedText(const std::string& text, int x, int y, double angle)
 {
-    m_dc->DrawRotatedText( text, x, y, angle );
+    m_dc->DrawRotatedText( text.c_str(), x, y, angle );
 }
 
 void MusWxDC::DrawSpline(int n, MusPoint points[])

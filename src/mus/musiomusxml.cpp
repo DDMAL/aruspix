@@ -1,54 +1,40 @@
-//
-//  musiomusxml.cpp
-//  aruspix
-//
-//  Created by Rodolfo Zitellini on 10/08/12.
-//  Copyright (c) 2012 com.aruspix.www. All rights reserved.
-//
+/////////////////////////////////////////////////////////////////////////////
+// Name:        musiomusxml.cpp
+// Author:      Rodolfo Zitellini
+// Created:     10/08/2012
+// Copyright (c) Authors and others. All rights reserved.
+/////////////////////////////////////////////////////////////////////////////
 
-#include <iostream>
-
-#include <algorithm>
-using std::min;
-using std::max;
-
-// For compilers that support precompilation, includes "wx/wx.h".
-#include "wx/wx.h"
-
-#include "wx/filename.h"
-#include "wx/txtstrm.h"
 
 #include "musiomusxml.h"
+
+//----------------------------------------------------------------------------
+
+#include <algorithm>
+#include <iostream>
+#include <sstream>
+
+//----------------------------------------------------------------------------
 
 #include "musbarline.h"
 #include "musbeam.h"
 #include "musclef.h"
 #include "muskeysig.h"
+#include "muslayerelement.h"
 #include "musmensur.h"
-#include "musneume.h"
-#include "musneumesymbol.h"
+#include "musmensur.h"
 #include "musnote.h"
 #include "musrest.h"
 #include "mussymbol.h"
-#include "musmensur.h"
 #include "mustie.h"
-
-#include "muslayerelement.h"
-
-#include "tinyxml.h"
-
-//#include "app/axapp.h"
-
-#include <vector>
-using std::vector;
 
 //----------------------------------------------------------------------------
 // MusXMLOutput
 //----------------------------------------------------------------------------
 
-MusXMLOutput::MusXMLOutput( MusDoc *doc, wxString filename ) :
+MusXMLOutput::MusXMLOutput( MusDoc *doc, std::string filename ) :
 // This is pretty bad. We open a bad fileoutputstream as we don't use it
-MusFileOutputStream( doc, -1 )
+MusFileOutputStream( doc )
 {
     m_filename = filename;
     m_measure_count = 0;
@@ -85,7 +71,7 @@ bool MusXMLOutput::ExportFile( )
     // this starts the call of all the functors
     m_doc->Save( this );
         
-    m_xml_doc->SaveFile( m_filename );
+    m_xml_doc->SaveFile( m_filename.c_str() );
     
 	return true;    
 }
@@ -122,7 +108,7 @@ bool MusXMLOutput::WriteDoc( MusDoc *doc )
 bool MusXMLOutput::WriteMeasure( MusMeasure *measure )
 //bool MusXMLOutput::WriteMeiMeasure( Measure *meiMeasure, MusMeasure *measure )
 {
-    wxString num;
+    std::string num;
 
     // Create multimeasure rests
     if (m_multimeasure_rests > 0 )
@@ -245,7 +231,7 @@ bool MusXMLOutput::WriteLaidOutLayerElement( MusLayerElement *laidOutLayerElemen
 
 
 void MusXMLOutput::WriteClef(MusLayerElement *element) {
-    wxString sign, line;
+    std::string sign, line;
     
     // Create the attributes elem
     // or use existing one, all the attribute changes
@@ -303,7 +289,7 @@ void MusXMLOutput::WriteKey(MusLayerElement *element) {
     TiXmlElement *xkey = new TiXmlElement("key");
     
     // Convert the number of alterations to string
-    wxString n_alter;
+    std::stringstream n_alter;
     if (key->m_alteration == ACCID_FLAT)
         // flats are negative numbers
         n_alter << -key->m_num_alter;
@@ -312,7 +298,7 @@ void MusXMLOutput::WriteKey(MusLayerElement *element) {
     
     //create <fifths> node with the number of alterations
     TiXmlElement *xfifths = new TiXmlElement("fifths");
-    TiXmlText *xftxt = new TiXmlText(n_alter.c_str());
+    TiXmlText *xftxt = new TiXmlText(n_alter.str().c_str());
     xfifths->LinkEndChild(xftxt);
     // add it to the key elem
     xkey->LinkEndChild(xfifths);
@@ -340,7 +326,7 @@ void MusXMLOutput::WriteKey(MusLayerElement *element) {
 
 void MusXMLOutput::WriteTime(MusLayerElement *element) {
     MusMensur *timesig = dynamic_cast<MusMensur*>(element);
-    wxString number;
+    std::stringstream number;
     
     CreateAttributes();
     
@@ -368,13 +354,13 @@ void MusXMLOutput::WriteTime(MusLayerElement *element) {
     
     // convert number to text for beats
     number << timesig->m_num;
-    TiXmlText *beat_text = new TiXmlText(number.c_str());
+    TiXmlText *beat_text = new TiXmlText(number.str().c_str());
     xbeats->LinkEndChild(beat_text);
     
     // ditto as above
-    number.Clear();
+    number.clear();
     number << timesig->m_numBase;
-    TiXmlText *base_text = new TiXmlText(number.c_str());
+    TiXmlText *base_text = new TiXmlText(number.str().c_str());
     xbtype->LinkEndChild(base_text);
     
     // push it to xtime
@@ -391,11 +377,11 @@ void MusXMLOutput::WriteTime(MusLayerElement *element) {
 }
 
 void MusXMLOutput::WriteMultiMeasureRest(MusRest *r) {
-    wxString num;
+    std::stringstream num;
     num << r->m_multimeasure_dur;
     
     TiXmlElement *xmrest = new TiXmlElement("multiple-rest");
-    TiXmlText *mdur = new TiXmlText(num.c_str());
+    TiXmlText *mdur = new TiXmlText(num.str().c_str());
     xmrest->LinkEndChild(mdur);
     
     
@@ -420,7 +406,7 @@ void MusXMLOutput::CreateRestsForMultiMeasure() {
     
     // unbox all the measures we need
     for (int i = 0; i < m_multimeasure_rests; i++) {
-        wxString mstring;
+        std::stringstream mstring;
         
         m_measure_count++;
         
@@ -450,7 +436,7 @@ void MusXMLOutput::CreateRestsForMultiMeasure() {
         
         m_xml_measure = new TiXmlElement("measure");
         mstring << m_measure_count;
-        m_xml_measure->SetAttribute("number", mstring.c_str());
+        m_xml_measure->SetAttribute("number", mstring.str().c_str());
         
     }
     printf("Measures incremented to %i.\n", m_measure_count);
@@ -463,10 +449,10 @@ void MusXMLOutput::CreateRestsForMultiMeasure() {
 
 void MusXMLOutput::WriteNoteOrRest(MusLayerElement *element) {
     char steps[] = {'C', 'D', 'E', 'F', 'G', 'A', 'B'};
-    wxString number;
-    wxString t;
-    wxString dur;
-    wxString num_of_beams;
+    std::stringstream number;
+    std::string t;
+    std::string dur;
+    std::string num_of_beams;
     
     MusDurationInterface *di = dynamic_cast<MusDurationInterface*>(element);
     
@@ -501,20 +487,20 @@ void MusXMLOutput::WriteNoteOrRest(MusLayerElement *element) {
         TiXmlElement *octave = new TiXmlElement("octave");
         
         number << steps[n->m_pname - 1];
-        TiXmlText *step_name = new TiXmlText(number.c_str());
+        TiXmlText *step_name = new TiXmlText(number.str().c_str());
         step->LinkEndChild(step_name);
         
-        number.Clear();
+        number.clear();
         number << (int)n->m_oct;
-        TiXmlText *octave_name = new TiXmlText(number.c_str());
+        TiXmlText *octave_name = new TiXmlText(number.str().c_str());
         octave->LinkEndChild(octave_name);
         
         // do we have an alteration?
         if (n->m_accid != 0) {
-            number.Clear();
+            number.clear();
             number << 1;
             TiXmlElement *xalter = new TiXmlElement("alter");
-            TiXmlText *altnr = new TiXmlText(number.c_str());
+            TiXmlText *altnr = new TiXmlText(number.str().c_str());
             xalter->LinkEndChild(altnr);
             pitch->LinkEndChild(xalter);
         }
@@ -568,7 +554,7 @@ void MusXMLOutput::WriteNoteOrRest(MusLayerElement *element) {
     
     // Do beaming
     if (m_current_beam) {
-        wxString btype;
+        std::string btype;
         
         int position = m_current_beam->GetChildIndex( element );
         
@@ -620,7 +606,7 @@ void MusXMLOutput::WriteNoteOrRest(MusLayerElement *element) {
 
 void MusXMLOutput::SetTie(TiXmlElement *xml_note, bool last) {
     TiXmlElement *xtie = new TiXmlElement("tie");
-    wxString tie_type;
+    std::string tie_type;
     
     if (!last) {
         tie_type = "start";

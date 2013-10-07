@@ -6,11 +6,15 @@
 /////////////////////////////////////////////////////////////////////////////
 
 
-// For compilers that support precompilation, includes "wx/wx.h".
-#include "wx/wxprec.h"
+#include "musstaff.h"
+
+//----------------------------------------------------------------------------
+
+#include <assert.h>
+
+//----------------------------------------------------------------------------
 
 #include "musio.h"
-#include "musstaff.h"
 #include "muslayer.h"
 
 //----------------------------------------------------------------------------
@@ -121,7 +125,7 @@ void MusStaff::CopyAttributes( MusStaff *nstaff )
 
 int MusStaff::GetStaffNo() const
 {
-    wxASSERT_MSG( m_parent, "System cannot be NULL");
+    assert( m_parent ); // System cannot be NULL
     
     return m_parent->GetChildIndex( this );
 }
