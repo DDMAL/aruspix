@@ -165,10 +165,10 @@ MusStaff *MusSystem::GetAtPos( int y )
 	
     
     MusStaff *next = NULL;
-	//int dif =  abs( staff->m_y_drawing - y );
+	//int dif =  abs( staff->m_y_sdrawing - y );
 	while ( (next = this->GetNext(staff) ) )
 	{
-		if ( (int)staff->m_y_drawing < y )
+		if ( (int)staff->m_y_sdrawing < y )
 		{
 			return staff;
 		}

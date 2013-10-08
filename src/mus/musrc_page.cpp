@@ -571,8 +571,8 @@ void MusRC::DrawPartialBarline ( MusDC *dc, MusSystem *system, int x, MusStaff *
 	MusStaff *next = system->GetNext( NULL );
 	if ( next )
 	{	
-		b = pportee->m_y_drawing - m_doc->m_staffSize[ pportee->staffSize ]*2;
-		bb = next->m_y_drawing - m_doc->m_staffSize[ next->staffSize];
+		b = pportee->m_y_sdrawing - m_doc->m_staffSize[ pportee->staffSize ]*2;
+		bb = next->m_y_sdrawing - m_doc->m_staffSize[ next->staffSize];
 
 		if (m_doc->m_env.m_barlineWidth > 2)	// barres plus epaisses qu'un 1/2 mm
 			v_bline2 ( dc, b, bb, x,  m_doc->m_env.m_barlineWidth);
@@ -616,7 +616,7 @@ int MusRC::CalculatePitchPosY ( MusStaff *staff, char pname, int dec_clef, int o
 	char *ptouche, i;
 	ptouche=&touches[0];
 
-	y_int = ((dec_clef + oct*7) - 17 ) * m_doc->m_halfInterl[staff->staffSize];
+	y_int = ((dec_clef + oct*7) - 9 ) * m_doc->m_halfInterl[staff->staffSize];
 	if (staff->portNbLine > 5)
 		y_int -= ((staff->portNbLine - 5) * 2) * m_doc->m_halfInterl[staff->staffSize];
 
@@ -665,19 +665,15 @@ void MusRC::DrawStaffLines( MusDC *dc, MusStaff *staff, MusSystem *system )
 
 	int j, x1, x2, yy;
 
-	yy = staff->m_y_drawing;
+	yy = staff->m_y_sdrawing;
     
     /*
     dc->SetPen( AxRED );
-    dc->DrawLine( system->m_x_abs, ToRendererY(staff->m_y_drawing), system->m_x_abs + 10, ToRendererY(staff->m_y_drawing) );
+    dc->DrawLine( system->m_x_abs, ToRendererY(staff->m_y_sdrawing), system->m_x_abs + 10, ToRendererY(staff->m_y_sdrawing) );
     dc->ResetPen();
     */
-    
-    if ( staff->portNbLine == 1 )
-		yy  -= m_doc->m_interl[ staff->staffSize ]*2;
-    else if ( staff->portNbLine == 4 )
-		yy  -= m_doc->m_interl[ staff->staffSize ];
-	yy = staff->m_y_drawing - m_doc->m_staffSize[ staff->staffSize ];
+
+	yy = staff->m_y_sdrawing; // - m_doc->m_staffSize[ staff->staffSize ];
 
 	x1 = system->m_systemLeftMar;
     x2 = m_doc->GetSystemRightX( system );
@@ -710,7 +706,7 @@ void MusRC::DrawStaff( MusDC *dc, MusStaff *staff, MusSystem *system )
     
     // Set the drawing y for the staff, which is one staff lize above its y position.
     // This is used as a reference point for drawing its content.
-    staff->m_y_drawing = staff->m_y_abs + m_doc->m_staffSize[ staff->staffSize ];
+    staff->m_y_sdrawing = staff->m_y_abs; //+ m_doc->m_staffSize[ staff->staffSize ];
     
     DrawStaffLines( dc, staff, system );
         
@@ -752,7 +748,7 @@ int MusRC::CalculatePitchCode ( MusLayer *layer, int y_n, int x_pos, int *octave
     int staffSize = ((MusStaff*)layer->m_parent)->staffSize;
 	// calculer position du do central en fonction clef
 	y_n += (int) m_doc->m_verticalUnit2[staffSize];
-	yb = ((MusStaff*)layer->m_parent)->m_y_drawing -  m_doc->m_staffSize[((MusStaff*)layer->m_parent)->staffSize]*2; // UT1 default 
+	yb = ((MusStaff*)layer->m_parent)->m_y_sdrawing -  m_doc->m_staffSize[((MusStaff*)layer->m_parent)->staffSize]*2; // UT1 default
 	
 
 	plafond = yb + 8 *  m_doc->m_octaveSize[staffSize];

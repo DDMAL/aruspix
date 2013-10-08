@@ -400,7 +400,8 @@ MusFunctor::MusFunctor( bool(MusObject::*_obj_fpt)( ArrayPtrVoid ))
 }
 
 void MusFunctor::Call( MusObject *ptr, ArrayPtrVoid params )
-{ 
+{
+    // we should have return codes (not just bool) for avoiding to go further down the tree in some cases
     m_stopIt = (*ptr.*obj_fpt)( params );
 }
 
@@ -510,11 +511,11 @@ bool MusObject::UpdateStaffYPos( ArrayPtrVoid params )
     MusStaff *current = dynamic_cast<MusStaff*>(this);
     if ( !current  ) {
         return false;
-    }
-    
+    }    
     int negative_offset = current->m_y_abs - current->m_contentBB_y2;
     current->m_y_abs = (*current_y_shift) + negative_offset;
     (*current_y_shift) -= (current->m_contentBB_y2 - current->m_contentBB_y1);
+    // we should have return codes for avoiding to go further down the tree in such cases
     return false;
 }
 

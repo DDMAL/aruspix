@@ -109,7 +109,7 @@ public:
      * This position is staff size above the m_y_abs position and is the reference point for drawing elements.
      * It is re-computed everytime the staff is drawn and it is not stored in the file.
      */
-    int m_y_drawing;
+    int m_y_sdrawing;
     
     /** indicates this staff is in anchent notation
      it has to be carried on to the LayedOutStaf */
