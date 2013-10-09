@@ -42,6 +42,7 @@ void MusPage::Clear( )
     m_pageWidth = -1;
     m_pageLeftMar = 0;
     m_pageRightMar = 0;
+    m_pageTopMar = 0;
 }
 
 

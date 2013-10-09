@@ -46,7 +46,8 @@ MusStaff::MusStaff( const MusStaff& staff )
 	accol = staff.accol;
 	accessoire = staff.accessoire;
 	m_y_abs = staff.m_y_abs;
-	m_y_sdrawing = staff.m_y_sdrawing;
+    m_y_rel = staff.m_y_rel;
+	m_y_drawing = staff.m_y_drawing;
 
     int i;
 	for (i = 0; i < staff.GetLayerCount(); i++)
@@ -79,8 +80,9 @@ void MusStaff::Clear()
 	portNbLine = 5;
 	accol = 0;
 	accessoire = 0;
-	m_y_abs = 0;
-	m_y_sdrawing = 0;
+	m_y_abs = AX_UNSET;
+    m_y_rel = 0;
+	m_y_drawing = 0;
     
     //
     //beamListPremier = NULL;
@@ -120,7 +122,8 @@ void MusStaff::CopyAttributes( MusStaff *nstaff )
 	nstaff->accol = accol;
 	nstaff->accessoire = accessoire;
 	nstaff->m_y_abs = m_y_abs;
-	nstaff->m_y_sdrawing = m_y_sdrawing;
+    nstaff->m_y_rel = m_y_rel;
+	nstaff->m_y_drawing = m_y_drawing;
 }
 
 int MusStaff::GetStaffNo() const
@@ -178,6 +181,12 @@ MusLayer *MusStaff::GetLayer( int LayerNo )
         return NULL;
 	
 	return (MusLayer*)m_children[LayerNo];
+}
+
+
+int MusStaff::GetVerticalSpacing()
+{
+    return 30; // arbitrary generic value
 }
 
 bool MusStaff::GetPosOnPage( ArrayPtrVoid params )

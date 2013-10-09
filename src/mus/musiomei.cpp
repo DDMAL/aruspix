@@ -205,6 +205,8 @@ bool MusMeiOutput::WriteLayer( MusLayer *layer )
     return true;
 }
 
+#define test 0x8000000
+
 bool MusMeiOutput::WriteLayerElement( MusLayerElement *element )
 {
     assert( m_layer );
@@ -266,7 +268,9 @@ bool MusMeiOutput::WriteLayerElement( MusLayerElement *element )
     if ( xmlElement ) {
         this->WriteSameAsAttr( xmlElement, element );
         xmlElement->SetAttribute( "xml:id",  UuidToMeiStr( element ).c_str() );
-        xmlElement->SetAttribute( "ulx", Mus::StringFormat( "%d", element->m_x_abs ).c_str() );
+        if ( element->m_x_abs != AX_UNSET) {
+            xmlElement->SetAttribute( "ulx", Mus::StringFormat( "%d", element->m_x_abs ).c_str() );
+        }
         currentParent->LinkEndChild( xmlElement );
         return true;
     }
@@ -1225,6 +1229,7 @@ unsigned char MusMeiInput::StrToAccid(std::string accid)
     else if ( accid == "nf" ) value = ACCID_QUARTER_FLAT;
     else {
         Mus::LogWarning("Unknown accid '%s'", accid.c_str() );
+        value = ACCID_NATURAL;
     }
 	return value;
 }

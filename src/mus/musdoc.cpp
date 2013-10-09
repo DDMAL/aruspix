@@ -128,13 +128,15 @@ void MusDoc::SpaceMusic() {
     this->Process( &updateXPosition, params );
     
     params.clear();
-    shift = m_pageHeight;
+    shift = m_pageHeight - page->m_pageTopMar;
+    int staff_shift = 0;
     params.push_back( &shift );
+    params.push_back( &staff_shift );
     
-    MusFunctor updateYPosition( &MusStaff::UpdateStaffYPos );
+    MusFunctor updateYPosition( &MusObject::UpdateSystemAndStaffYPos );
     this->Process( &updateYPosition, params );
     
-    rc.DrawPage(  &bb_dc, dynamic_cast<MusPage*>(m_children[0]) , false );
+    //rc.DrawPage(  &bb_dc, page , false );
     
     // Trim the page to the needed position
     page->m_pageWidth = 0; // first resest the page to 0
@@ -155,6 +157,7 @@ void MusDoc::PaperSize( MusPage *page )
         m_pageWidth = page->m_pageWidth;
         m_pageLeftMar = page->m_pageLeftMar;
         m_pageRightMar = page->m_pageRightMar;
+        m_pageTopMar = page->m_pageTopMar;
 	}
 	else
 	{	
@@ -169,7 +172,6 @@ void MusDoc::PaperSize( MusPage *page )
             m_pageRightMar = pageRightMar;
         }
     }
-    
     
 	m_beamMaxSlope = this->m_env.m_beamMaxSlope;
 	m_beamMinSlope = this->m_env.m_beamMinSlope;

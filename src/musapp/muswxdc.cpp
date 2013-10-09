@@ -203,7 +203,7 @@ void MusWxDC::EndGraphic( MusDocObject *object, MusRC *rc )
     // bounding boxes are given in logical coordinates - we need to convert them
     // this is why we have a MusRC object
     
-    return;
+    //return;
     
     SetPen( AxRED, 1, wxDOT_DASH );
     if ( object->HasSelfBB() ) {

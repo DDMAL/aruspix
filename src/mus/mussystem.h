@@ -50,6 +50,11 @@ public:
 	MusStaff *GetPrevious( MusStaff *staff );
     MusStaff *GetStaff( int StaffNo );
 	MusStaff *GetAtPos( int y );
+    
+    /**
+     * Return the default horizontal spacing of system.
+     */
+    int GetVerticalSpacing();
 
     void SetValues( int type );
 	
@@ -71,10 +76,20 @@ public:
     /** System right margin (MEI scoredef@system.rightmar). Saved if != 0 */
     int m_systemRightMar;
 	/** 
-     * The y absolute position of the system for facsimile layouts.
+     * The Y absolute position of the staff for facsimile (transcription) encodings.
      * This is the top left corner of the system.
      */
     int m_y_abs;
+    /**
+     * The Y relative position of the system.
+     * It is used internally when calculating the layout andd it is not stored in the file.
+     */
+    int m_y_rel;
+	/**
+     * The Y drawing position of the system.
+     * It is re-computed everytime the staff is drawn and it is not stored in the file.
+     */
+    int m_y_drawing;
 	/** 
      * The x absolute position of the  system for facsimile layouts.
      * This is the top left corner of the system.

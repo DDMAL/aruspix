@@ -40,7 +40,9 @@ MusLayerElement::MusLayerElement():
     m_staffShift = 0;
     m_visible = true;
     
-    m_x_abs = 0;
+    m_x_abs = AX_UNSET;
+    m_x_rel = 0;
+    m_x_drawing = 0;
     m_y_drawing = 0;
     m_in_layer_app = false;
 }

@@ -138,7 +138,7 @@ public:
     virtual bool Save( ArrayPtrVoid params ) { return false; };
     virtual bool TrimSystem( ArrayPtrVoid params );
     virtual bool UpdateLayerElementXPos( ArrayPtrVoid params );
-    virtual bool UpdateStaffYPos( ArrayPtrVoid params );
+    virtual bool UpdateSystemAndStaffYPos( ArrayPtrVoid params );
 
 public:
     ArrayOfMusObjects m_children;

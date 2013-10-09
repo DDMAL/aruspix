@@ -113,10 +113,14 @@ public:
 private:
     
 public:
-	/** Position X */
+	/** Absolute position X. This is used for facsimile (transcription) encoding */
     int m_x_abs;
-	/** Position Y */
-	int m_y_drawing ; 
+	/** Relative position X. This is used internally when calculating the layout */
+    int m_x_rel;
+	/** Drawing position X. This is used internally when drawing */
+    int m_x_drawing;
+	/** Drawing position Y. This is used internally when drawing */
+	int m_y_drawing; 
     /** for elements in MusLayerApp. They will be drawn from the MusLayerElement of the app (and not from the layer) */
     bool m_in_layer_app;
     

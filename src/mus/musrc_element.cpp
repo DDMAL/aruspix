@@ -51,6 +51,19 @@ void MusRC::DrawElement( MusDC *dc, MusLayerElement *element, MusLayer *layer, M
         m_currentColour = AxBLACK;
     }
     
+    // Here we set the appropriate x value to be used for drawing
+    // With Raw documents, we use m_x_rel that is calculated by the layout algorithm
+    // With Transcription documents, we use the m_x_abs
+    if ( element->m_x_abs == AX_UNSET ) {
+        assert( m_doc->GetType() == Raw );
+        element->m_x_drawing = element->m_x_rel;
+    }
+    else
+    {
+        assert( m_doc->GetType() == Transcription );
+        element->m_x_drawing = element->m_x_abs;
+    }
+    
     if (dynamic_cast<MusBarline*>(element)) {
         DrawBarline(dc, element, layer, staff);
     }
@@ -147,7 +160,7 @@ void MusRC::DrawDurationElement( MusDC *dc, MusLayerElement *element, MusLayer *
             else if ( (this == m_currentElement) || BelongsToTheNote( m_currentElement ) )
                 m_currentColour = AxCYAN;
 
-			putlyric(dc, lyric->m_x_abs + staff->m_x_abs, staff->m_y_sdrawing + lyric->dec_y , 
+			putlyric(dc, lyric->m_x_drawing + staff->m_x_drawing, staff->m_y_drawing + lyric->dec_y , 
 						  lyric->m_debord_str, staff->staffSize, ( lyric == m_currentElement && m_inputLyric ) );
 		}		
 	}
@@ -227,9 +240,9 @@ void MusRC::DrawNote ( MusDC *dc, MusLayerElement *element, MusLayer *layer, Mus
 	int formval = 0;	// pour permettre dessiner colorations avec dÇcalage de val
 	int rayon, milieu = 0;
 
-	int xn = element->m_x_abs, xl = element->m_x_abs;
-	int bby = staff->m_y_sdrawing;  // bby= y sommet portee
-	int ynn = element->m_y_drawing + staff->m_y_sdrawing; 
+	int xn = element->m_x_drawing, xl = element->m_x_drawing;
+	int bby = staff->m_y_drawing;  // bby= y sommet portee
+	int ynn = element->m_y_drawing + staff->m_y_drawing; 
 	static int ynn_chrd;
 
 	xn += note->m_hOffset;
@@ -312,7 +325,7 @@ void MusRC::DrawNote ( MusDC *dc, MusLayerElement *element, MusLayer *layer, Mus
 		else if (note->m_headshape != SANSQUEUE && (!note->m_chord || (note->m_chord==CHORD_TERMINAL))) {	
             if (note->m_chord==CHORD_TERMINAL) {	
 				/***up = testchord->obj.not.haste;
-				xn = testchord->m_x_abs;***/
+				xn = testchord->m_x_drawing;***/
 			}
 			else {
 				//***up = this->q_auto ? ((ynn < milieu)? ON :OFF):this->queue;
@@ -446,15 +459,15 @@ void MusRC::DrawNote ( MusDC *dc, MusLayerElement *element, MusLayer *layer, Mus
         accid.m_oct = note->m_oct;
         accid.m_pname = note->m_pname;
 		accid.m_accid = note->m_accid;
-        accid.m_x_abs = x1;
+        accid.m_x_drawing = x1;
         DrawSymbol( dc, &accid, layer, staff, element ); // ax2
 	}
 	if (note->m_chord)
 	{	
-        /***x2 = testchord->m_x_abs + m_doc->m_step2;
+        /***x2 = testchord->m_x_drawing + m_doc->m_step2;
 		if (this->haste)
 		{	if (this->lat || (this->ptr_fe && this->ptr_fe->type==NOTE && this->ptr_fe->obj.not.lat)
-				|| (this->ptr_pe && element->m_x_abs==this->ptr_pe->m_x_abs && this->ptr_pe->type==NOTE && this->ptr_pe->obj.not.lat
+				|| (this->ptr_pe && element->m_x_drawing==this->ptr_pe->m_x_drawing && this->ptr_pe->type==NOTE && this->ptr_pe->obj.not.lat
 					&& this->dec_y - this->ptr_pe->dec_y < m_doc->m_interl[staffSize]
 					&& 0 != ((int)b % (int)m_doc->m_interl[staffSize]))
 				)
@@ -493,7 +506,7 @@ void MusRC::DrawNote ( MusDC *dc, MusLayerElement *element, MusLayer *layer, Mus
 
 				}
 				else	// tous les cas inversÇs par queue_lig
-				{	b = decval-staff->m_y_sdrawing;
+				{	b = decval-staff->m_y_drawing;
 	
 					if ((!this->queue && !this->chord) || (this->chord && !this->haste))
 					{	b -= m_doc->m_interl[staffSize];
@@ -520,8 +533,8 @@ void MusRC::DrawNote ( MusDC *dc, MusLayerElement *element, MusLayer *layer, Mus
 	
 	//temp debug code
 //	m_currentColour = wxCYAN;
-//	rect_plein2(dc, element->m_x_abs - 3, ynn - 3, element->m_x_abs + 3, ynn + 3);
-//	printf("\nxrel: %d, ynn: %d\n\n", element->m_x_abs, ynn);
+//	rect_plein2(dc, element->m_x_drawing - 3, ynn - 3, element->m_x_drawing + 3, ynn + 3);
+//	printf("\nxrel: %d, ynn: %d\n\n", element->m_x_drawing, ynn);
 //	m_currentColour = wxBLACK;
 	//temp debug code
 	
@@ -545,7 +558,7 @@ void MusRC::DrawRest ( MusDC *dc, MusLayerElement *element, MusLayer *layer, Mus
     MusRest *rest = dynamic_cast<MusRest*>(element);
 
 	int formval = rest->m_dur;
-	int a = element->m_x_abs + rest->m_hOffset;
+	int a = element->m_x_drawing + rest->m_hOffset;
     int b = element->m_y_drawing;
 
 	//unsigned char dot = this->point;
@@ -671,7 +684,7 @@ void MusRC::DrawSpecialRest ( MusDC *dc, int a, MusLayerElement *element, MusSta
     
     // Position centered in third line
     // it would be m_interl * 6.5, or m_interl / 2 * 13
-	y = staff->m_y_sdrawing - (m_doc->m_interl[staff->staffSize] / 2) * 13;
+	y = staff->m_y_drawing - (m_doc->m_interl[staff->staffSize] / 2) * 13;
     y2 = y + m_doc->m_interl[staff->staffSize];
 	
     // a is the central point, claculate x and x2
@@ -699,7 +712,7 @@ void MusRC::DrawSpecialRest ( MusDC *dc, int a, MusLayerElement *element, MusSta
     dc->GetTextExtent( text.str(), &w, &h);
     start_offset = (x2 - x - w) / 2; // calculate offset to center text
     
-    putstring(dc, x + start_offset, staff->m_y_sdrawing - m_doc->m_staffSize[staff->staffSize] + 5, text.str(), false);
+    putstring(dc, x + start_offset, staff->m_y_drawing - m_doc->m_staffSize[staff->staffSize] + 5, text.str(), false);
     
     return;
 
@@ -707,7 +720,7 @@ void MusRC::DrawSpecialRest ( MusDC *dc, int a, MusLayerElement *element, MusSta
 
 void MusRC::DrawLongRest ( MusDC *dc, int a, int b, MusStaff *staff)
 
-{	int x, x2, y = b + staff->m_y_sdrawing, y2;
+{	int x, x2, y = b + staff->m_y_drawing, y2;
 
 	x = a; //- m_doc->m_step1/3; 
 	x2 = a+ (m_doc->m_step1 *2 / 3); // LP
@@ -721,7 +734,7 @@ void MusRC::DrawLongRest ( MusDC *dc, int a, int b, MusStaff *staff)
 
 void MusRC::DrawBreveRest ( MusDC *dc, int a, int b, MusStaff *staff)
 
-{	int x, x2, y = b + staff->m_y_sdrawing, y2;
+{	int x, x2, y = b + staff->m_y_drawing, y2;
 
 	x = a; //- m_doc->m_step1/3; 
 	x2 = a+ (m_doc->m_step1 *2 / 3); // LP
@@ -739,7 +752,7 @@ void MusRC::DrawBreveRest ( MusDC *dc, int a, int b, MusStaff *staff)
 
 void MusRC::DrawWholeRest ( MusDC *dc, int a, int b, int valeur, unsigned char dots, unsigned int smaller, MusStaff *staff)
 
-{	int x, x2, y = b + staff->m_y_sdrawing, y2, vertic = m_doc->m_halfInterl[staff->staffSize];
+{	int x, x2, y = b + staff->m_y_drawing, y2, vertic = m_doc->m_halfInterl[staff->staffSize];
 	int off;
 	float foff;
 
@@ -773,11 +786,11 @@ void MusRC::DrawWholeRest ( MusDC *dc, int a, int b, int valeur, unsigned char d
 	x -= off;
 	x2 += off;
 
-	if (y > (int)staff->m_y_sdrawing  || y < (int)staff->m_y_sdrawing - m_doc->m_staffSize[staff->staffSize])
+	if (y > (int)staff->m_y_drawing  || y < (int)staff->m_y_drawing - m_doc->m_staffSize[staff->staffSize])
 		h_bline ( dc, x, x2, y, m_doc->m_env.m_staffLineWidth);
 
 	if (dots)
-		DrawDots ( dc,(x2 + m_doc->m_step1), y2, -(int)staff->m_y_sdrawing, dots, staff);
+		DrawDots ( dc,(x2 + m_doc->m_step1), y2, -(int)staff->m_y_drawing, dots, staff);
 }
 
 
@@ -785,9 +798,9 @@ void MusRC::DrawQuarterRest ( MusDC *dc, int a, int b, int valeur, unsigned char
 {
 	int _intrl = m_doc->m_interl[staff->staffSize];
 
-	DrawLeipzigFont( dc, a, (b + staff->m_y_sdrawing), LEIPZIG_REST_QUARTER + (valeur-DUR_4), staff, smaller );
+	DrawLeipzigFont( dc, a, (b + staff->m_y_drawing), LEIPZIG_REST_QUARTER + (valeur-DUR_4), staff, smaller );
 
-	//DrawLeipzigFont( dc, a, (b + staff->m_y_sdrawing - m_doc->m_halfInterl[staff->staffSize]), '#', staff, note->m_cueSize);
+	//DrawLeipzigFont( dc, a, (b + staff->m_y_drawing - m_doc->m_halfInterl[staff->staffSize]), '#', staff, note->m_cueSize);
 
 	if (dots)
 	{	if (valeur >= DUR_16)
@@ -830,7 +843,7 @@ void MusRC::CalculateLigaturePosX ( MusLayerElement *element, MusLayer *layer, M
     } 
 	if (previousNote->m_lig && previousNote->m_dur <= DUR_1)
 	{	
-        element->m_x_abs = previous->m_x_abs + m_doc->m_brevisWidth[staff->staffSize] * 2;
+        element->m_x_drawing = previous->m_x_drawing + m_doc->m_brevisWidth[staff->staffSize] * 2;
 	}
     return;
 }
@@ -848,14 +861,14 @@ void MusRC::DrawLigature ( MusDC *dc, int y, MusLayerElement *element, MusLayer 
 	int milieu, up, epaisseur;
 
 	epaisseur = std::max (2, m_doc->m_env.m_beamWidth/2);
-	xn = element->m_x_abs;
+	xn = element->m_x_drawing;
 	
 	if ((note->m_lig==LIG_MEDIAL) || (note->m_lig==LIG_TERMINAL))
     {
 		CalculateLigaturePosX ( element, layer, staff );
     }
 	else {
-		xn = element->m_x_abs + note->m_hOffset;
+		xn = element->m_x_drawing + note->m_hOffset;
     }
 
 
@@ -942,7 +955,7 @@ void MusRC::DrawLigature ( MusDC *dc, int y, MusLayerElement *element, MusLayer 
 	}
 	else if (note->m_dur == DUR_LG)		// DUR_LG isolee: queue comme notes normales
 	{	
-		milieu = staff->m_y_sdrawing - m_doc->m_interl[staff->staffSize]*6;
+		milieu = staff->m_y_drawing - m_doc->m_interl[staff->staffSize]*6;
 		//***up = this->q_auto ? ((y < milieu)? ON :OFF):this->queue;
 		// ENZ
 		up = (y < milieu) ? ON : OFF;
@@ -969,7 +982,7 @@ void MusRC::DrawBarline( MusDC *dc, MusLayerElement *element, MusLayer *layer, M
     assert(dynamic_cast<MusBarline*>(element)); // Element must be a MusBarline"
     
     MusBarline *barline = dynamic_cast<MusBarline*>(element);
-    int x = element->m_x_abs + barline->m_hOffset;
+    int x = element->m_x_drawing + barline->m_hOffset;
 
     dc->StartGraphic( element, "barline", Mus::StringFormat("s_%d_%d_%d", staff->GetId(), layer->voix, element->GetId()) );
     
@@ -999,8 +1012,8 @@ void MusRC::DrawClef( MusDC *dc, MusLayerElement *element, MusLayer *layer, MusS
 
     dc->StartGraphic( element, "clef", Mus::StringFormat("s_%d_%d_%d", staff->GetId(), layer->voix, element->GetId()) );
 	
-	int b = staff->m_y_sdrawing;
-	int a = element->m_x_abs;
+	int b = staff->m_y_drawing;
+	int a = element->m_x_drawing;
     int sym = LEIPZIG_CLEF_G;	//sSOL, position d'ordre des cles sol fa ut in fonts
 
 	if (staff->portNbLine > 5)
@@ -1072,7 +1085,7 @@ void MusRC::DrawMensur( MusDC *dc, MusLayerElement *element, MusLayer *layer, Mu
 
 	if (mensur->m_meterSymb)
 	{	
-		yp = staff->m_y_sdrawing - (m_doc->m_halfInterl[ staff->staffSize ]*6);
+		yp = staff->m_y_drawing - (m_doc->m_halfInterl[ staff->staffSize ]*6);
 		
 		unsigned char fontChar = LEIPZIG_METER_SYMB_COMMON;
 		switch (mensur->m_meterSymb)
@@ -1100,7 +1113,7 @@ void MusRC::DrawMensur( MusDC *dc, MusLayerElement *element, MusLayer *layer, Mu
 		}
 		if ( dc )
 		{	
-			DrawLeipzigFont( dc, element->m_x_abs, yp, fontChar, staff, staff->staffSize);
+			DrawLeipzigFont( dc, element->m_x_drawing, yp, fontChar, staff, staff->staffSize);
 		}
 	}
 	else
@@ -1108,26 +1121,26 @@ void MusRC::DrawMensur( MusDC *dc, MusLayerElement *element, MusLayer *layer, Mu
 		if (mensur->m_sign==MENSUR_SIGN_O)
 		{	
             mNum = 2; mDen = 2;
-			DrawMensurCircle ( dc, element->m_x_abs, staff->m_y_sdrawing, staff);
+			DrawMensurCircle ( dc, element->m_x_drawing, staff->m_y_drawing, staff);
 		}
 		else if (mensur->m_sign==MENSUR_SIGN_C && !mensur->m_reversed)
 		{	
             mNum = 2; mDen = 2;
-			DrawMensurHalfCircle ( dc, element->m_x_abs, staff->m_y_sdrawing, staff);
+			DrawMensurHalfCircle ( dc, element->m_x_drawing, staff->m_y_drawing, staff);
 		}
 		else if (mensur->m_sign==MENSUR_SIGN_C && mensur->m_reversed)
 		{	
             mNum = 4; mDen = 2;
-			DrawMensurReversedHalfCircle ( dc, element->m_x_abs, staff->m_y_sdrawing, staff);
+			DrawMensurReversedHalfCircle ( dc, element->m_x_drawing, staff->m_y_drawing, staff);
 		}
 		if (mensur->m_slash) // we handle only one single slash
 		{	
-            DrawMensurSlash ( dc, element->m_x_abs, staff->m_y_sdrawing, staff);
+            DrawMensurSlash ( dc, element->m_x_drawing, staff->m_y_drawing, staff);
 			mDen = 1;
 		}
 		if (mensur->m_dot) // we handle only one single dot
 		{	
-            DrawMensurDot (dc, element->m_x_abs, staff->m_y_sdrawing, staff);
+            DrawMensurDot (dc, element->m_x_drawing, staff->m_y_drawing, staff);
 			mNum = 9; mDen = 4;
 		}
 	}
@@ -1135,12 +1148,12 @@ void MusRC::DrawMensur( MusDC *dc, MusLayerElement *element, MusLayer *layer, Mu
 
 	if (mensur->m_num)
 	{	
-        x = element->m_x_abs;
+        x = element->m_x_drawing;
 		if (mensur->m_sign || mensur->m_meterSymb) 
         {
 			x += m_doc->m_step1*5; // step forward because we have a sign or a meter symbol
         }
-		DrawMensurFigures ( dc, x, staff->m_y_sdrawing, mensur->m_num, mensur->m_numBase, staff);
+		DrawMensurFigures ( dc, x, staff->m_y_drawing, mensur->m_num, mensur->m_numBase, staff);
 		//mDen = max ( this->durDen, (unsigned short)1); // ax2
 		//mNum = max ( this->durNum, (unsigned short)1); // ax2
 	}
@@ -1159,7 +1172,7 @@ void MusRC::DrawMensurCircle( MusDC *dc, int x, int yy, MusStaff *staff )
 {
 	assert( dc ); // DC cannot be NULL
 	
-	int y =  ToRendererY (yy - m_doc->m_interl[ staff->staffSize ] * 6);
+	int y =  ToRendererY (yy - m_doc->m_interl[ staff->staffSize ] * 2);
 	int r = ToRendererX( m_doc->m_interl[ staff->staffSize ]);
 
 	int w = std::max( ToRendererX(4), 2 );
@@ -1181,7 +1194,7 @@ void MusRC::DrawMensurHalfCircle( MusDC *dc, int x, int yy, MusStaff *staff )
     dc->SetPen( m_currentColour, w, AxSOLID );
     dc->SetBrush( m_currentColour, AxTRANSPARENT );
 
-	int y =  ToRendererY (yy - m_doc->m_interl[ staff->staffSize ] * 5);
+	int y =  ToRendererY (yy - m_doc->m_interl[ staff->staffSize ]);
 	int r = ToRendererX( m_doc->m_interl[ staff->staffSize ]);
 
 	x = ToRendererX (x);
@@ -1203,9 +1216,10 @@ void MusRC::DrawMensurReversedHalfCircle( MusDC *dc, int x, int yy, MusStaff *st
     dc->SetPen( m_currentColour, w, AxSOLID );
     dc->SetBrush( m_currentColour, AxTRANSPARENT );
 
-	int y =  ToRendererY (yy - m_doc->m_interl[ staff->staffSize ] * 5);
+	int y =  ToRendererY (yy - m_doc->m_interl[ staff->staffSize ]);
 	int r = ToRendererX( m_doc->m_interl[ staff->staffSize ] );
 
+    // needs to be fixed
 	x = ToRendererX (x);
 	x -= 4*r/3;
 
@@ -1221,7 +1235,7 @@ void MusRC::DrawMensurDot ( MusDC *dc, int x, int yy, MusStaff *staff )
 {
 	assert( dc ); // DC cannot be NULL
 
-	int y =  ToRendererY (yy - m_doc->m_interl[ staff->staffSize ] * 6);
+	int y =  ToRendererY (yy - m_doc->m_interl[ staff->staffSize ] * 2);
 	int r = std::max( ToRendererX(4), 2 );
 	
     dc->SetPen( m_currentColour, 1, AxSOLID );
@@ -1240,7 +1254,7 @@ void MusRC::DrawMensurSlash ( MusDC *dc, int a, int yy, MusStaff *staff )
 {	
 	assert( dc ); // DC cannot be NULL
 	
-	int y1 = yy - m_doc->m_staffSize[ staff->staffSize ];
+	int y1 = yy;
 	int y2 = y1 - m_doc->m_staffSize[ staff->staffSize ];
 	
 	v_bline2 ( dc, y1, y2, a, 3);
@@ -1315,8 +1329,8 @@ void MusRC::DrawSymbolAccid( MusDC *dc, MusLayerElement *element, MusLayer *laye
     MusSymbol *accid = dynamic_cast<MusSymbol*>(element);
     dc->StartGraphic( element, "accid", Mus::StringFormat("accid_%d_%d_%d", staff->GetId(), layer->voix, element->GetId()) );
     
-    int x = element->m_x_abs + accid->m_hOffset;
-    int y = element->m_y_drawing + staff->m_y_sdrawing;
+    int x = element->m_x_drawing + accid->m_hOffset;
+    int y = element->m_y_drawing + staff->m_y_drawing;
     
     int symc;
     switch (accid->m_accid)
@@ -1349,8 +1363,8 @@ void MusRC::DrawSymbolCustos( MusDC *dc, MusLayerElement *element, MusLayer *lay
     MusSymbol *custos = dynamic_cast<MusSymbol*>(element);
     dc->StartGraphic( element, "custos", Mus::StringFormat("custos_%d_%d_%d", staff->GetId(), layer->voix, element->GetId()) );
 
-    int x = element->m_x_abs + custos->m_hOffset;
-    int y = element->m_y_drawing + staff->m_y_sdrawing;
+    int x = element->m_x_drawing + custos->m_hOffset;
+    int y = element->m_y_drawing + staff->m_y_drawing;
     y -= m_doc->m_halfInterl[staff->staffSize] - m_doc->m_verticalUnit2[staff->staffSize];  // LP - correction in 2.0.0
     
     DrawLeipzigFont( dc, x, y, 35, staff, custos->m_cueSize );
@@ -1368,7 +1382,7 @@ void MusRC::DrawSymbolDot( MusDC *dc, MusLayerElement *element, MusLayer *layer,
     MusSymbol *dot = dynamic_cast<MusSymbol*>(element);
     dc->StartGraphic( element, "dot", Mus::StringFormat("dot_%d_%d_%d", staff->GetId(), layer->voix, element->GetId()) );
     
-    int x = element->m_x_abs + dot->m_hOffset;
+    int x = element->m_x_drawing + dot->m_hOffset;
     int y = element->m_y_drawing;
 
     switch (dot->m_dot)
@@ -1401,8 +1415,8 @@ void MusRC::DrawKeySig( MusDC *dc, MusLayerElement *element, MusLayer *layer, Mu
         
         element->m_y_drawing = CalculatePitchPosY( staff, ks->GetAlterationAt(i), layer->GetClefOffset( element ), ks->GetOctave(ks->GetAlterationAt(i), c->m_clefId));
         
-        x = element->m_x_abs + (m_doc->m_accidWidth[staff->staffSize][0] * i);
-        y = element->m_y_drawing + staff->m_y_sdrawing;
+        x = element->m_x_drawing + (m_doc->m_accidWidth[staff->staffSize][0] * i);
+        y = element->m_y_drawing + staff->m_y_drawing;
         
         if (ks->m_alteration == ACCID_FLAT)
             symb = LEIPZIG_ACCID_FLAT;
@@ -1433,8 +1447,8 @@ void MusRC::DrawTie( MusDC *dc, MusLayerElement *element, MusLayer *layer, MusSt
     // Copied from DrawNote
     // We could use the stamDir information
     // but then we have to take in account (1) beams (2) stemmed and non stemmed notes tied together
-    int ynn = note1->m_y_drawing + staff->m_y_sdrawing;
-    int bby = staff->m_y_sdrawing;
+    int ynn = note1->m_y_drawing + staff->m_y_drawing;
+    int bby = staff->m_y_drawing;
     int milieu = bby - m_doc->m_interl[staff->staffSize] * 2;
     
     up = (ynn < milieu) ? true : false;
@@ -1444,9 +1458,9 @@ void MusRC::DrawTie( MusDC *dc, MusLayerElement *element, MusLayer *layer, MusSt
     // FIXME, take in account elements that can be netween notes, eg keys time etc
     
     if (up)
-        DrawTieBezier(dc, ToRendererX(note1->m_x_abs), ToRendererY(note1->m_y_drawing + staff->m_y_sdrawing - 14), ToRendererX(note2->m_x_abs), 20, 6, true);
+        DrawTieBezier(dc, ToRendererX(note1->m_x_drawing), ToRendererY(note1->m_y_drawing + staff->m_y_drawing - 14), ToRendererX(note2->m_x_drawing), 20, 6, true);
     else
-        DrawTieBezier(dc, ToRendererX(note1->m_x_abs), ToRendererY(note1->m_y_drawing + staff->m_y_sdrawing + 14), ToRendererX(note2->m_x_abs), 20, 6, false);
+        DrawTieBezier(dc, ToRendererX(note1->m_x_drawing), ToRendererY(note1->m_y_drawing + staff->m_y_drawing + 14), ToRendererX(note2->m_x_drawing), 20, 6, false);
 
     dc->EndGraphic(element, this ); //RZ
     
@@ -1481,7 +1495,7 @@ void MusRC::DrawFermata(MusDC *dc, MusLayerElement *element, MusStaff *staff) {
     int emb_offset = 0; // if there is and embellishment, offset the note up
     
     // We position the fermata in the same horizontal pos. of th eobject
-    x = element->m_x_abs;
+    x = element->m_x_drawing;
     
     // First case, notes
     if (dynamic_cast<MusNote*>(element)) {
@@ -1496,34 +1510,34 @@ void MusRC::DrawFermata(MusDC *dc, MusLayerElement *element, MusStaff *staff) {
                 emb_offset = 35;
             
             // check that the notehead is in the staff.
-            if ((element->m_y_drawing + staff->m_y_sdrawing) < staff->m_y_abs)
+            if ((element->m_y_drawing + staff->m_y_drawing) < staff->m_y_abs)
                 // in the staff, set the fermata 20 pixels above the last line (+ embellishment offset)
                 y = staff->m_y_abs + 20 + emb_offset;
             else
                 // out of the staff, place the trill 20 px above the notehead
-                y = (element->m_y_drawing + staff->m_y_sdrawing) + 20 + emb_offset;
+                y = (element->m_y_drawing + staff->m_y_drawing) + 20 + emb_offset;
             
             // draw the up-fermata
-            DrawLeipzigFont ( dc, element->m_x_abs, y, LEIPZIG_FERMATA_UP, staff, false );
+            DrawLeipzigFont ( dc, element->m_x_drawing, y, LEIPZIG_FERMATA_UP, staff, false );
         } else { // stem up fermata down
             
             // This works as above, only we check that the note head is not
             // UNDER the staff
-            if ((element->m_y_drawing + staff->m_y_sdrawing) > (staff->m_y_sdrawing - m_doc->m_staffSize[staff->staffSize]))
+            if ((element->m_y_drawing + staff->m_y_drawing) > (staff->m_y_drawing - m_doc->m_staffSize[staff->staffSize]))
                 // notehead in staff, set at 20 px under
-                y = staff->m_y_sdrawing - m_doc->m_staffSize[staff->staffSize] - 20;
+                y = staff->m_y_drawing - m_doc->m_staffSize[staff->staffSize] - 20;
             else
                 // notehead under staff, set 20 px under notehead
-                y = (element->m_y_drawing + staff->m_y_sdrawing) - 20;
+                y = (element->m_y_drawing + staff->m_y_drawing) - 20;
             
-            DrawLeipzigFont ( dc, element->m_x_abs, y, LEIPZIG_FERMATA_DOWN, staff, false );
+            DrawLeipzigFont ( dc, element->m_x_drawing, y, LEIPZIG_FERMATA_DOWN, staff, false );
         }
     } else if (dynamic_cast<MusRest*>(element)) {
         // this is a rest
         // rests for the moment are always in the staff
         // so just place the fermata above the staff + 20 px
         y = staff->m_y_abs + 20;
-        DrawLeipzigFont ( dc, element->m_x_abs, y, LEIPZIG_FERMATA_UP, staff, false );
+        DrawLeipzigFont ( dc, element->m_x_drawing, y, LEIPZIG_FERMATA_UP, staff, false );
     }
 }
 
@@ -1532,14 +1546,14 @@ void MusRC::DrawFermata(MusDC *dc, MusLayerElement *element, MusStaff *staff) {
 // if there are many symbols to draw we could make a generalized function
 void MusRC::DrawTrill(MusDC *dc, MusLayerElement *element, MusStaff *staff) {
     int x, y;    
-    x = element->m_x_abs;
+    x = element->m_x_drawing;
 
-    if ((element->m_y_drawing + staff->m_y_sdrawing) < staff->m_y_abs)
+    if ((element->m_y_drawing + staff->m_y_drawing) < staff->m_y_abs)
         y = staff->m_y_abs + 30;
     else
-        y = (element->m_y_drawing + staff->m_y_sdrawing) + 30;
+        y = (element->m_y_drawing + staff->m_y_drawing) + 30;
     
-    DrawLeipzigFont ( dc, element->m_x_abs, y, LEIPZIG_EMB_TRILL, staff, false );
+    DrawLeipzigFont ( dc, element->m_x_drawing, y, LEIPZIG_EMB_TRILL, staff, false );
 }
 
 
@@ -1568,7 +1582,7 @@ void MusRC::DrawLayerApp( MusDC *dc, MusLayerElement *element, MusLayer *layer, 
             MusLayerElement rdgElement(&rdg->m_elements[j] );
             rdgElement.m_layer = element->m_layer;
             rdgElement.SetLayout( m_doc );
-            rdgElement.m_x_abs = element->m_x_abs;
+            rdgElement.m_x_drawing = element->m_x_drawing;
             DrawElement(dc, &rdgElement, layer, staff );
             rdgElement.m_layer = NULL;
             */
@@ -1576,7 +1590,7 @@ void MusRC::DrawLayerApp( MusDC *dc, MusLayerElement *element, MusLayer *layer, 
         
         /*
         MusStaff *appStaff = new MusStaff( staff->m_logStaffNb );
-        appStaff->m_y_drawing = staff->m_y_sdrawing + m_doc->m_staffSize[staff->staffSize];
+        appStaff->m_y_drawing = staff->m_y_drawing + m_doc->m_staffSize[staff->staffSize];
         appStaff->m_system = staff->m_system;
         appStaff->SetLayout( m_doc );
         DrawStaff(dc, appStaff, staff->m_system );
@@ -1596,31 +1610,6 @@ void MusNote1::DeleteLyricFromNote( MusSymbol1 *lyric )
 			this->m_lyrics.RemoveAt( i );
 			break;
 		}
-	}
-}
-
-void MusNote1::CheckLyricIntegrity( )
-{
-	this->m_lyrics.Sort( SortElements );
-	int num = this->m_lyrics.GetCount();
-	int i = 0;
-	
-	// Check for empty lyric elements
-	while ( i < num ){
-		MusSymbol1 *symbol = &this->m_lyrics[i];		
-		if ( symbol->IsLyricEmpty() ){
-			this->m_lyrics.RemoveAt( i );
-			delete symbol;
-			num = this->m_lyrics.GetCount();
-		}
-		else i++;
-	}
-	
-	// Ensure elements have correct numbering within array
-	num = this->m_lyrics.GetCount();
-	for ( i = 0; i < num; i++ ){
-		MusElement *element = &this->m_lyrics[i];
-		element->no = i;
 	}
 }
 

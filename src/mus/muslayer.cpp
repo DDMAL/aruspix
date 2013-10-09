@@ -21,17 +21,6 @@
 #include "musnote.h"
 #include "mussymbol.h"
 
-// sorting function
-int SortElements(MusLayerElement **first, MusLayerElement **second)
-{
-	if ( (*first)->m_x_abs < (*second)->m_x_abs )
-		return -1;
-	else if ( (*first)->m_x_abs > (*second)->m_x_abs )
-		return 1;
-	else 
-		return 0;
-}
-
 //----------------------------------------------------------------------------
 // MusLayer
 //----------------------------------------------------------------------------
@@ -136,17 +125,14 @@ MusLayerElement *MusLayer::GetAtPos( int x )
 	if ( !element )
 		return NULL;
 
-	//int xx = 0;
-//	while (this->GetNext(element) && ((int)element->m_x_abs < x) )
-//		element = this->GetNext( element );
-
-	int dif = x - element->m_x_abs;
+    
+	int dif = x - element->m_x_drawing;
     MusLayerElement *next = NULL;
-	while ( (next = this->GetNext( element )) && (int)element->m_x_abs < x ){
+	while ( (next = this->GetNext( element )) && (int)element->m_x_drawing < x ){
 		element = next;
-		if ( (int)element->m_x_abs > x && dif < (int)element->m_x_abs - x )
+		if ( (int)element->m_x_drawing > x && dif < (int)element->m_x_drawing - x )
 			return this->GetPrevious( element );
-		dif = x - element->m_x_abs;
+		dif = x - element->m_x_drawing;
 	}
 	
 	return element;
@@ -168,7 +154,7 @@ MusLayerElement *MusLayer::Insert( MusLayerElement *element, int x )
     // We are also updating the section and measure ( TODO, not necessary for now )
     int idx = 0;
 	MusLayerElement *next = this->GetFirst();
-	while ( next && (next->m_x_abs < x) )
+	while ( next && (next->m_x_drawing < x) )
 	{
         idx++;
         // update section and measure if necessary (no section breaks and measure breaks for now)
@@ -178,7 +164,7 @@ MusLayerElement *MusLayer::Insert( MusLayerElement *element, int x )
 			break;
 	}
     
-    // Insert in the logical tree
+    // Insert in the logical tree - this works only for facsimile (transcription) encoding
     insertElement->m_x_abs = x;
     AddElement( insertElement, idx );
     

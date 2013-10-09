@@ -35,7 +35,9 @@ MusSystem::MusSystem( const MusSystem& system )
 	m_systemRightMar = system.m_systemRightMar;
 	m_x_abs = system.m_x_abs;
 	m_y_abs = system.m_y_abs;
-
+	m_y_rel = system.m_y_rel;
+	m_y_drawing = system.m_y_drawing;
+    
 	for (i = 0; i < this->GetStaffCount(); i++)
 	{
         MusStaff *nstaff = new MusStaff( *(MusStaff*)system.m_children[i] );
@@ -52,8 +54,10 @@ void MusSystem::Clear( )
 	ClearChildren();
 	m_systemLeftMar = 0;
 	m_systemRightMar = 0;
-	m_y_abs = 0;
-	m_x_abs = 0;
+	m_x_abs = AX_UNSET;
+	m_y_abs = AX_UNSET;
+    m_y_rel = 0;
+	m_y_drawing = 0;
 }
 
 
@@ -76,6 +80,11 @@ int MusSystem::GetSystemNo() const
     assert( m_parent ); // Page cannot be NULL
     
     return m_parent->GetChildIndex( this );
+}
+
+int MusSystem::GetVerticalSpacing()
+{
+    return 100; // arbitrary generic value
 }
 
 /*
@@ -165,10 +174,10 @@ MusStaff *MusSystem::GetAtPos( int y )
 	
     
     MusStaff *next = NULL;
-	//int dif =  abs( staff->m_y_sdrawing - y );
+	//int dif =  abs( staff->m_y_drawing - y );
 	while ( (next = this->GetNext(staff) ) )
 	{
-		if ( (int)staff->m_y_sdrawing < y )
+		if ( (int)staff->m_y_drawing < y )
 		{
 			return staff;
 		}

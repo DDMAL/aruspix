@@ -16,6 +16,8 @@
 #include <algorithm>
 #define is_in(x,a,b) (((x) >= std::min((a),(b))) && ((x) <= std::max((a),(b))))
 
+#define AX_UNSET -0x7FFFFFFF
+
 // Is this score for Mensural, neumes, or CMN
 enum MusNotationMode {
     MUS_MENSURAL_MODE = 0,

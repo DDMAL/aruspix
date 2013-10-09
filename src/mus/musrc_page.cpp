@@ -77,13 +77,15 @@ void MusRC::DrawSystem( MusDC *dc, MusSystem *system )
     
     dc->StartGraphic( system, "system", Mus::StringFormat("system_%d", system->GetId() ) );
     
-    DrawGroups( dc, system );
-
     for (i = 0; i < (int)system->GetStaffCount(); i++) 
 	{
 		staff = (MusStaff*)system->m_children[i];
         DrawStaff( dc , staff, system );		
 	}
+
+    // We draw the groups after the staves because we use the m_y_darwing member of the staves
+    // that needs to be intialized.
+    DrawGroups( dc, system );
     
     dc->EndGraphic(system, this );
 
@@ -170,27 +172,27 @@ void MusRC::DrawGroups( MusDC *dc, MusSystem *system )
             portee = ((staff->portNbLine-1) * m_doc->m_interl[staff->staffSize]);
 
 		if (staff->vertBarre == START)
-			b_gr = (int)(staff->m_y_abs);
+			b_gr = (int)(staff->m_y_drawing);
 		// key[i].yp est position du curseur par default m_staffSize (4 interl) au-dessus de ligne superieure
 		// decporttyp est la valeur de remplacement de m_staffSize si on veut autre espace
 		else if (staff->vertBarre == START_END)
-		{	b_gr = (int)(staff->m_y_abs);
-			bb_gr = (int)(staff->m_y_abs - portee);//m_staffSize[staff->staffSize]*2;
+		{	b_gr = (int)(staff->m_y_drawing);
+			bb_gr = (int)(staff->m_y_drawing - portee);//m_staffSize[staff->staffSize]*2;
 			flLine = 1;
 		}
 		else if (staff->vertBarre == END)
-		{	bb_gr = (int)(staff->m_y_abs - portee);//m_staffSize[staff->staffSize]*2;
+		{	bb_gr = (int)(staff->m_y_drawing - portee);//m_staffSize[staff->staffSize]*2;
 			flLine = 1;
 		}
 		if (staff->brace == START)
-			b_acc = (int)(staff->m_y_abs);
+			b_acc = (int)(staff->m_y_drawing);
 		else if (staff->brace == START_END)
-		{	b_acc = (int)(staff->m_y_abs);
-			bb_acc = (int)(staff->m_y_abs - portee);//m_staffSize[staff->staffSize]*2;
+		{	b_acc = (int)(staff->m_y_drawing);
+			bb_acc = (int)(staff->m_y_drawing - portee);//m_staffSize[staff->staffSize]*2;
 			flBrace = 1;
 		}
 		else if (staff->brace == END)
-		{	bb_acc = (int)(staff->m_y_abs - portee);//m_staffSize[staff->staffSize]*2;
+		{	bb_acc = (int)(staff->m_y_drawing - portee);//m_staffSize[staff->staffSize]*2;
 			flBrace = 1;
 		}
 
@@ -444,19 +446,19 @@ void MusRC::DrawBarline ( MusDC *dc, MusSystem *system, int x, int cod, bool por
 		if (porteeAutonome || st_i->brace == START_END || st_i->vertBarre == START_END
 			|| !st_i->brace || !pportee->noGrp)
 		{	if (!accDeb)
-			{	b = st_i->m_y_abs;
-				bb = st_i->m_y_abs - portee;//m_staffSize[st_ipTaille]*2;
+			{	b = st_i->m_y_drawing;
+				bb = st_i->m_y_drawing - portee;//m_staffSize[st_ipTaille]*2;
 				flLine = 1;
 			}
 		}
 		else if (st_i->brace == START || st_i->vertBarre == START)
-		{	b = st_i->m_y_abs;
-			bb = st_i->m_y_abs - portee; //m_staffSize[st_ipTaille]*2;
+		{	b = st_i->m_y_drawing;
+			bb = st_i->m_y_drawing - portee; //m_staffSize[st_ipTaille]*2;
 			if (st_i->brace)
 				accDeb = ON;
 		}
 		else if (st_i->brace == END || st_i->vertBarre == END)
-		{	bb = st_i->m_y_abs - portee;//m_staffSize[st_ipTaille]*2;
+		{	bb = st_i->m_y_drawing - portee;//m_staffSize[st_ipTaille]*2;
 			flLine = 1;
 			accDeb=0;
 		}
@@ -571,8 +573,8 @@ void MusRC::DrawPartialBarline ( MusDC *dc, MusSystem *system, int x, MusStaff *
 	MusStaff *next = system->GetNext( NULL );
 	if ( next )
 	{	
-		b = pportee->m_y_sdrawing - m_doc->m_staffSize[ pportee->staffSize ]*2;
-		bb = next->m_y_sdrawing - m_doc->m_staffSize[ next->staffSize];
+		b = pportee->m_y_drawing - m_doc->m_staffSize[ pportee->staffSize ]*2;
+		bb = next->m_y_drawing - m_doc->m_staffSize[ next->staffSize];
 
 		if (m_doc->m_env.m_barlineWidth > 2)	// barres plus epaisses qu'un 1/2 mm
 			v_bline2 ( dc, b, bb, x,  m_doc->m_env.m_barlineWidth);
@@ -665,15 +667,15 @@ void MusRC::DrawStaffLines( MusDC *dc, MusStaff *staff, MusSystem *system )
 
 	int j, x1, x2, yy;
 
-	yy = staff->m_y_sdrawing;
+	yy = staff->m_y_drawing;
     
     /*
     dc->SetPen( AxRED );
-    dc->DrawLine( system->m_x_abs, ToRendererY(staff->m_y_sdrawing), system->m_x_abs + 10, ToRendererY(staff->m_y_sdrawing) );
+    dc->DrawLine( system->m_x_abs, ToRendererY(staff->m_y_drawing), system->m_x_abs + 10, ToRendererY(staff->m_y_drawing) );
     dc->ResetPen();
     */
 
-	yy = staff->m_y_sdrawing; // - m_doc->m_staffSize[ staff->staffSize ];
+	yy = staff->m_y_drawing; // - m_doc->m_staffSize[ staff->staffSize ];
 
 	x1 = system->m_systemLeftMar;
     x2 = m_doc->GetSystemRightX( system );
@@ -704,9 +706,18 @@ void MusRC::DrawStaff( MusDC *dc, MusStaff *staff, MusSystem *system )
     
     dc->StartGraphic( staff, "staff", Mus::StringFormat("s_%d", staff->GetId()) );
     
-    // Set the drawing y for the staff, which is one staff lize above its y position.
-    // This is used as a reference point for drawing its content.
-    staff->m_y_sdrawing = staff->m_y_abs; //+ m_doc->m_staffSize[ staff->staffSize ];
+    // Here we set the appropriate y value to be used for drawing
+    // With Raw documents, we use m_y_rel that is calculated by the layout algorithm
+    // With Transcription documents, we use the m_y_abs
+    if ( staff->m_y_abs == AX_UNSET ) {
+        assert( m_doc->GetType() == Raw );
+        staff->m_y_drawing = staff->m_y_rel + system->m_y_rel;
+    }
+    else
+    {
+        assert( m_doc->GetType() == Transcription );
+        staff->m_y_drawing = staff->m_y_abs;
+    }
     
     DrawStaffLines( dc, staff, system );
         
@@ -748,7 +759,7 @@ int MusRC::CalculatePitchCode ( MusLayer *layer, int y_n, int x_pos, int *octave
     int staffSize = ((MusStaff*)layer->m_parent)->staffSize;
 	// calculer position du do central en fonction clef
 	y_n += (int) m_doc->m_verticalUnit2[staffSize];
-	yb = ((MusStaff*)layer->m_parent)->m_y_sdrawing -  m_doc->m_staffSize[((MusStaff*)layer->m_parent)->staffSize]*2; // UT1 default
+	yb = ((MusStaff*)layer->m_parent)->m_y_drawing -  m_doc->m_staffSize[((MusStaff*)layer->m_parent)->staffSize]*2; // UT1 default
 	
 
 	plafond = yb + 8 *  m_doc->m_octaveSize[staffSize];

@@ -45,6 +45,11 @@ public:
 	int GetLayerCount() const { return (int)m_children.size(); };
     
     int GetStaffNo() const;
+    
+    /**
+     * Return the default horizontal spacing of staves.
+     */
+    int GetVerticalSpacing();
 
     // functors
     virtual bool Save( ArrayPtrVoid params );
@@ -100,16 +105,20 @@ public:
 	/** ???? */
 	unsigned char accessoire;
 	/** 
-     * The y absolute position of the staff for facsimile layouts.
-     * This is the top left corner of the staff (the x position is the position of the system).
+     * The Y absolute position of the staff for facsimile (transcription) encodings.
+     * This is the top left corner of the staff (the X position is the position of the system).
      */
     int m_y_abs;
+    /**
+     * The Y relative position of the staff.
+     * It is used internally when calculating the layout andd it is not stored in the file.
+     */
+    int m_y_rel;
 	/** 
-     * The y drawing position of the staff.
-     * This position is staff size above the m_y_abs position and is the reference point for drawing elements.
+     * The Y drawing position of the staff.
      * It is re-computed everytime the staff is drawn and it is not stored in the file.
      */
-    int m_y_sdrawing;
+    int m_y_drawing;
     
     /** indicates this staff is in anchent notation
      it has to be carried on to the LayedOutStaf */

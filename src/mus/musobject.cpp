@@ -460,7 +460,7 @@ bool MusObject::TrimSystem( ArrayPtrVoid params )
 
 bool MusObject::UpdateLayerElementXPos( ArrayPtrVoid params )
 {
-    // param 0: the MusLayerElement we point to
+    // param 0: the current x shift
 	int *current_x_shift = (int*)params[0];
     
     MusLayerElement *current = dynamic_cast<MusLayerElement*>(this);
@@ -479,7 +479,7 @@ bool MusObject::UpdateLayerElementXPos( ArrayPtrVoid params )
     
     if ( !current->HasUpdatedBB() ) {
         // this is all we need for empty elements
-        current->m_x_abs = (*current_x_shift);
+        current->m_x_rel = (*current_x_shift);
         return false;
     }
     
@@ -495,26 +495,52 @@ bool MusObject::UpdateLayerElementXPos( ArrayPtrVoid params )
         return false;
     }
     
-    int negative_offset = current->m_x_abs - current->m_contentBB_x1;
-    current->m_x_abs = (*current_x_shift) + negative_offset;
+    int negative_offset = current->m_x_rel - current->m_contentBB_x1;
+    current->m_x_rel = (*current_x_shift) + negative_offset;
     (*current_x_shift) += (current->m_contentBB_x2 - current->m_contentBB_x1) + current->GetHorizontalSpacing();
     
     return false;
 }
 
 
-bool MusObject::UpdateStaffYPos( ArrayPtrVoid params )
+bool MusObject::UpdateSystemAndStaffYPos( ArrayPtrVoid params )
 {
-    // param 0: the MusLayerElement we point to
-	int *current_y_shift = (int*)params[0]; 
+    // param 0: the current y system shift
+    // param 1: the current y staff shift
+	int *current_y_system_shift = (int*)params[0];
+	int *current_y_staff_shift = (int*)params[1];
     
     MusStaff *current = dynamic_cast<MusStaff*>(this);
     if ( !current  ) {
         return false;
-    }    
-    int negative_offset = current->m_y_abs - current->m_contentBB_y2;
-    current->m_y_abs = (*current_y_shift) + negative_offset;
-    (*current_y_shift) -= (current->m_contentBB_y2 - current->m_contentBB_y1);
+    }
+    
+    // This is the value that need to be added to fix everything
+    int negative_offset = current->m_y_rel - current->m_contentBB_y2;
+    
+    // reset the x position if we are starting a new system
+    if ( current->m_parent->GetChildIndex( this ) == 0 ) {
+        MusSystem *system = dynamic_cast<MusSystem*>( current->m_parent );
+        // The parent is a MusSystem, we need to reset the y staff shift
+        if ( system ) {
+            // the staff position is the same as the one of the system
+            (*current_y_staff_shift) = 0;
+            current->m_y_rel = 0;
+            // move the system down to fit the content
+            system->m_y_rel = (*current_y_system_shift)  + negative_offset;
+            // spacing for the next system
+            (*current_y_system_shift) -= system->GetVerticalSpacing();
+        }
+    }
+    else
+    {
+        // just more the staff down
+        current->m_y_rel = (*current_y_staff_shift)  + negative_offset;
+    }
+    
+    int shift = (current->m_contentBB_y2 - current->m_contentBB_y1) + current->GetVerticalSpacing();
+    (*current_y_staff_shift) -= shift;
+    (*current_y_system_shift) -= shift;
     // we should have return codes for avoiding to go further down the tree in such cases
     return false;
 }
