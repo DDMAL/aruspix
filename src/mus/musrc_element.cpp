@@ -684,7 +684,7 @@ void MusRC::DrawSpecialRest ( MusDC *dc, int a, MusLayerElement *element, MusSta
     
     // Position centered in third line
     // it would be m_interl * 6.5, or m_interl / 2 * 13
-	y = staff->m_y_drawing - (m_doc->m_interl[staff->staffSize] / 2) * 13;
+	y = staff->m_y_drawing - (m_doc->m_interl[staff->staffSize] / 2) * 5;
     y2 = y + m_doc->m_interl[staff->staffSize];
 	
     // a is the central point, claculate x and x2
@@ -712,7 +712,7 @@ void MusRC::DrawSpecialRest ( MusDC *dc, int a, MusLayerElement *element, MusSta
     dc->GetTextExtent( text.str(), &w, &h);
     start_offset = (x2 - x - w) / 2; // calculate offset to center text
     
-    putstring(dc, x + start_offset, staff->m_y_drawing - m_doc->m_staffSize[staff->staffSize] + 5, text.str(), false);
+    putstring(dc, x + start_offset, staff->m_y_drawing + 5, text.str(), false);
     
     return;
 
