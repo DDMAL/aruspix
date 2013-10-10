@@ -24,7 +24,9 @@
 #include "app/axprocess.h"
 
 #include "mus/musdoc.h"
+#include "mus/mussystem.h"
 #include "mus/musstaff.h"
+#include "mus/musmeasure.h"
 #include "muslayerelement.h"
 #include "mus/musiomei.h"
 
@@ -862,6 +864,7 @@ bool RecFile::RealizeFromMLF( wxArrayPtrVoid params, AxProgressDlg *dlg )
         MusSystem *musSystem = new MusSystem();
         MusStaff *musStaff = new MusStaff( 1 );
         musStaff->m_mensuralNotation = true;
+        MusMeasure *musMeasure = new MusMeasure( false, 1 );
         MusLayer *musLayer = new MusLayer( 1 ); // only one layer per staff
         //musLayer->no = nb; ?? // ax2
         musSystem->m_systemLeftMar = imStaff->m_x1;  
@@ -870,8 +873,8 @@ bool RecFile::RealizeFromMLF( wxArrayPtrVoid params, AxProgressDlg *dlg )
         musStaff->m_y_abs =  imStaff->m_y + STAFF / 2;
         musStaff->notAnc = true;
         musStaff->vertBarre = START_END;
-        
-        musStaff->AddLayer( musLayer );
+        musMeasure->AddLayer( musLayer );
+        musStaff->AddMeasure( musMeasure );
         musSystem->AddStaff( musStaff );
         musPage->AddSystem( musSystem );
     } 

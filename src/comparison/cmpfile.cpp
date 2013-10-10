@@ -18,6 +18,9 @@
 
 #include "mus/muslayer.h"
 #include "mus/muslayerelement.h"
+#include "mus/musmeasure.h"
+#include "mus/musstaff.h"
+#include "mus/mussystem.h"
 #include "mus/muspage.h"
 #include "mus/musiomei.h"
 #include "mus/musapp.h"
@@ -315,8 +318,9 @@ bool CmpCollation::Collate( )
         MusPage *page = new MusPage( );
         MusSystem *system = new MusSystem( );
         MusStaff *staff = new MusStaff( 1 );
-        
-        staff->AddLayer( layer_ref );
+        MusMeasure *measure = new MusMeasure( false, 1 );
+        measure->AddLayer( layer_ref );
+        staff->AddMeasure( measure );
         system->AddStaff( staff );
         page->AddSystem( system );
         collationDoc.AddPage( page );

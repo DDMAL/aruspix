@@ -14,8 +14,9 @@
 
 //----------------------------------------------------------------------------
 
+#include "musdef.h"
 #include "musio.h"
-#include "muslayer.h"
+#include "musmeasure.h"
 
 //----------------------------------------------------------------------------
 // MusStaff
@@ -50,10 +51,10 @@ MusStaff::MusStaff( const MusStaff& staff )
 	m_y_drawing = staff.m_y_drawing;
 
     int i;
-	for (i = 0; i < staff.GetLayerCount(); i++)
+	for (i = 0; i < staff.GetMeasureCount(); i++)
 	{
-        MusLayer *nlayer = new MusLayer( *(MusLayer*)staff.m_children[i] );
-        this->AddLayer( nlayer );
+        MusMeasure *nmeasure = new MusMeasure( *(MusMeasure*)staff.m_children[i] );
+        this->AddMeasure( nmeasure );
 	}
 }
 
@@ -95,10 +96,10 @@ bool MusStaff::Save( ArrayPtrVoid params )
     return !output->WriteStaff( this );
 }
 
-void MusStaff::AddLayer( MusLayer *layer )
+void MusStaff::AddMeasure( MusMeasure *measure )
 {
-	layer->SetParent( this );
-	m_children.push_back( layer );
+	measure->SetParent( this );
+	m_children.push_back( measure );
 }
 
 void MusStaff::CopyAttributes( MusStaff *nstaff )
@@ -133,54 +134,54 @@ int MusStaff::GetStaffNo() const
     return m_parent->GetChildIndex( this );
 }
 
-MusLayer *MusStaff::GetFirst( )
+MusMeasure *MusStaff::GetFirst( )
 {
 	if ( m_children.empty() )
 		return NULL;
-	return (MusLayer*)m_children[0];
+	return (MusMeasure*)m_children[0];
 }
 
-MusLayer *MusStaff::GetLast( )
+MusMeasure *MusStaff::GetLast( )
 {
 	if ( m_children.empty() )
 		return NULL;
-	int i = GetLayerCount() - 1;
-	return (MusLayer*)m_children[i];
+	int i = GetMeasureCount() - 1;
+	return (MusMeasure*)m_children[i];
 }
 
-MusLayer *MusStaff::GetNext( MusLayer *layer )
+MusMeasure *MusStaff::GetNext( MusMeasure *measure )
 {	
-    if ( !layer || m_children.empty())
+    if ( !measure || m_children.empty())
         return NULL;
         
-	int i = 0; GetChildIndex( layer );
+	int i = GetChildIndex( measure );
 
-	if ((i == -1 ) || ( i >= GetLayerCount() - 1 ))
+	if ((i == -1 ) || ( i >= GetMeasureCount() - 1 ))
 		return NULL;
 
-	return (MusLayer*)m_children[i + 1];
+	return (MusMeasure*)m_children[i + 1];
 }
 
-MusLayer *MusStaff::GetPrevious( MusLayer *layer )
+MusMeasure *MusStaff::GetPrevious( MusMeasure *measure )
 {
-    if ( !layer || m_children.empty())
+    if ( !measure || m_children.empty())
         return NULL;
         
-	int i = GetChildIndex( layer );
+	int i = GetChildIndex( measure );
 
 	if ((i == -1 ) || ( i <= 0 ))
         return NULL;
 	
-    return (MusLayer*)m_children[i - 1];
+    return (MusMeasure*)m_children[i - 1];
 }
 
 
-MusLayer *MusStaff::GetLayer( int LayerNo )
+MusMeasure *MusStaff::GetMeasure( int MeasureNo )
 {
-    if ( LayerNo > (int)m_children.size() - 1 )
+    if ( MeasureNo > (int)m_children.size() - 1 )
         return NULL;
 	
-	return (MusLayer*)m_children[LayerNo];
+	return (MusMeasure*)m_children[MeasureNo];
 }
 
 

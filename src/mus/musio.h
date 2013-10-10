@@ -17,6 +17,7 @@ class MusLayer;
 class MusLayerApp;
 class MusLayerElement;
 class MusLayerRdg;
+class MusMeasure;
 class MusPage;
 class MusStaff;
 class MusSystem;
@@ -52,6 +53,7 @@ public:
     virtual bool WritePage( MusPage *page ) { return true; };
     virtual bool WriteSystem( MusSystem *system ) { return true; }; 
     virtual bool WriteStaff( MusStaff *staff ) { return true; };
+    virtual bool WriteMeasure( MusMeasure *measure ) { return true; };
     virtual bool WriteLayer( MusLayer *layer ) { return true; };
     virtual bool WriteLayerElement( MusLayerElement *element ) { return true; };
     // app

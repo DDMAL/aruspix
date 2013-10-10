@@ -10,6 +10,8 @@
 
 //----------------------------------------------------------------------------
 
+#include <stdlib.h>
+
 #include "musdef.h"
 
 bool MusLeipzigBBox::m_initialized =  false;

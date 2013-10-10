@@ -11,7 +11,7 @@
 #define __MUS_KEYSIG_H__
 
 #include "musdef.h"
-#include "muslayer.h"
+#include "muslayerelement.h"
 #include "muspositioninterface.h"
 
 

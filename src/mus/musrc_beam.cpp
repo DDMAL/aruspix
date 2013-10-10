@@ -15,6 +15,7 @@
 //----------------------------------------------------------------------------
 
 #include "musbeam.h"
+#include "musdoc.h"
 #include "muslayer.h"
 #include "muslayerelement.h"
 #include "musnote.h"

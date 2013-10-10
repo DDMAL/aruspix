@@ -17,15 +17,19 @@
 //----------------------------------------------------------------------------
 
 #include "musbarline.h"
-#include "musbeam.h"
 #include "musclef.h"
 #include "musdoc.h"
 #include "muskeysig.h"
-#include "muslayer.h"
+#include "musmeasure.h"
 #include "musmensur.h"
 #include "musnote.h"
+#include "muspage.h"
 #include "musrest.h"
 #include "mussymbol.h"
+#include "mussystem.h"
+#include "musstaff.h"
+#include "mustie.h"
+#include "mustuplet.h"
 
 
 // Ok, this is ugly, but since this is static data, why not?
@@ -44,6 +48,7 @@ MusDarmsInput::MusDarmsInput( MusDoc *doc, std::string filename ) :
 MusFileInputStream( doc )
 {	
     m_layer = NULL;
+    m_measure = NULL;
     m_staff = NULL;
     
     m_filename = filename;
@@ -391,11 +396,12 @@ bool MusDarmsInput::ImportFile() {
     MusSystem *system = new MusSystem();
     MusPage *page = new MusPage();
     m_staff = new MusStaff( 1 );
+    m_measure = new MusMeasure( false, 1 );
     m_layer = new MusLayer( 1 );
     
     m_current_tie = NULL;
-    
-    m_staff->AddLayer(m_layer);
+    m_staff->AddMeasure( m_measure );
+    m_measure->AddLayer(m_layer);
     
     // do this the C style, char by char
     while (pos < len) {

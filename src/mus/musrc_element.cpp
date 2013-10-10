@@ -16,17 +16,21 @@
 
 //----------------------------------------------------------------------------
 
+#include "mus.h"
 #include "musapp.h"
 #include "musbarline.h"
 #include "musbeam.h"
 #include "musclef.h"
+#include "musdoc.h"
 #include "muskeysig.h"
 #include "muslayerelement.h"
 #include "musleipzigbbox.h"
+#include "musmeasure.h"
 #include "musmensur.h"
 #include "musnote.h"
 #include "musrest.h"
 #include "mussymbol.h"
+#include "musstaff.h"
 #include "mustie.h"
 #include "mustuplet.h"
 
@@ -37,7 +41,7 @@
 int MusRC::s_drawingLigX[2], MusRC::s_drawingLigY[2];	// pour garder coord. des ligatures    
 bool MusRC::s_drawingLigObliqua = false;	// marque le 1e passage pour une oblique
 
-void MusRC::DrawElement( MusDC *dc, MusLayerElement *element, MusLayer *layer, MusStaff *staff )
+void MusRC::DrawElement( MusDC *dc, MusLayerElement *element, MusLayer *layer, MusMeasure *measure, MusStaff *staff )
 {
     assert(layer); // Pointer to layer cannot be NULL"
     assert(staff); // Pointer to staff cannot be NULL"
@@ -56,7 +60,7 @@ void MusRC::DrawElement( MusDC *dc, MusLayerElement *element, MusLayer *layer, M
     // With Transcription documents, we use the m_x_abs
     if ( element->m_x_abs == AX_UNSET ) {
         assert( m_doc->GetType() == Raw );
-        element->m_x_drawing = element->m_x_rel;
+        element->m_x_drawing = element->m_x_rel + measure->m_x_drawing;
     }
     else
     {
@@ -68,7 +72,7 @@ void MusRC::DrawElement( MusDC *dc, MusLayerElement *element, MusLayer *layer, M
         DrawBarline(dc, element, layer, staff);
     }
     else if (dynamic_cast<MusBeam*>(element)) {
-        DrawBeamElement(dc, element, layer, staff);
+        DrawBeamElement(dc, element, layer, measure, staff);
     }
     else if (dynamic_cast<MusClef*>(element)) {
         DrawClef(dc, element, layer, staff);
@@ -92,10 +96,10 @@ void MusRC::DrawElement( MusDC *dc, MusLayerElement *element, MusLayer *layer, M
         DrawTie(dc, element, layer, staff);
     } 
     else if (dynamic_cast<MusTuplet*>(element)) {
-        DrawTupletElement(dc, element, layer, staff);
+        DrawTupletElement(dc, element, layer, measure, staff);
     }
     else if (dynamic_cast<MusLayerApp*>(element)) {
-        DrawLayerApp(dc, element, layer, staff);
+        DrawLayerApp(dc, element, layer, measure, staff);
     }
     
     m_currentColour = previousColor;
@@ -169,7 +173,7 @@ void MusRC::DrawDurationElement( MusDC *dc, MusLayerElement *element, MusLayer *
 	return;
 }
 
-void MusRC::DrawBeamElement(MusDC *dc, MusLayerElement *element, MusLayer *layer, MusStaff *staff) {
+void MusRC::DrawBeamElement(MusDC *dc, MusLayerElement *element, MusLayer *layer, MusMeasure *measure, MusStaff *staff) {
     
     assert(layer); // Pointer to layer cannot be NULL"
     assert(staff); // Pointer to staff cannot be NULL"
@@ -181,7 +185,7 @@ void MusRC::DrawBeamElement(MusDC *dc, MusLayerElement *element, MusLayer *layer
     for (unsigned int i = 0; i < beam->m_children.size(); i++) {
         if ( dynamic_cast<MusLayerElement*>(beam->m_children[i]) ) {
             MusLayerElement *element = dynamic_cast<MusLayerElement*>(beam->m_children[i]);
-            DrawElement(dc, element, layer, staff);
+            DrawElement(dc, element, layer, measure, staff);
         }
     }
     
@@ -191,7 +195,7 @@ void MusRC::DrawBeamElement(MusDC *dc, MusLayerElement *element, MusLayer *layer
     dc->EndGraphic(element, this ); //RZ
 }
 
-void MusRC::DrawTupletElement(MusDC *dc, MusLayerElement *element, MusLayer *layer, MusStaff *staff) {
+void MusRC::DrawTupletElement(MusDC *dc, MusLayerElement *element, MusLayer *layer, MusMeasure *measure, MusStaff *staff) {
     
     assert(layer); // Pointer to layer cannot be NULL"
     assert(staff); // Pointer to staff cannot be NULL"
@@ -204,7 +208,7 @@ void MusRC::DrawTupletElement(MusDC *dc, MusLayerElement *element, MusLayer *lay
     for (unsigned int i = 0; i < tuplet->m_children.size(); i++) {
         if ( dynamic_cast<MusLayerElement*>(tuplet->m_children[i]) ) {
             MusLayerElement *element = dynamic_cast<MusLayerElement*>(tuplet->m_children[i]);
-            DrawElement(dc, element, layer, staff);
+            DrawElement(dc, element, layer, measure, staff);
         }
     }
     
@@ -551,9 +555,9 @@ void MusRC::DrawNote ( MusDC *dc, MusLayerElement *element, MusLayer *layer, Mus
 
 void MusRC::DrawRest ( MusDC *dc, MusLayerElement *element, MusLayer *layer, MusStaff *staff )
 {	
-    assert(layer); // Pointer to layer cannot be NULL"
-    assert(staff); // Pointer to staff cannot be NULL"
-    assert(dynamic_cast<MusRest*>(element)); // Element must be a MusRest"
+    assert(layer); // Pointer to layer cannot be NULL
+    assert(staff); // Pointer to staff cannot be NULL
+    assert(dynamic_cast<MusRest*>(element)); // Element must be a MusRest
         
     MusRest *rest = dynamic_cast<MusRest*>(element);
 
@@ -1557,7 +1561,7 @@ void MusRC::DrawTrill(MusDC *dc, MusLayerElement *element, MusStaff *staff) {
 }
 
 
-void MusRC::DrawLayerApp( MusDC *dc, MusLayerElement *element, MusLayer *layer, MusStaff *staff ){
+void MusRC::DrawLayerApp( MusDC *dc, MusLayerElement *element, MusLayer *layer, MusMeasure *measure, MusStaff *staff ){
     
     assert(layer); // Pointer to layer cannot be NULL"
     assert(staff); // Pointer to staff cannot be NULL"
@@ -1577,7 +1581,7 @@ void MusRC::DrawLayerApp( MusDC *dc, MusLayerElement *element, MusLayer *layer, 
             else {
                 m_currentColour = AxBLUE;
             }
-            DrawElement(dc, lelem, layer, staff );
+            DrawElement(dc, lelem, layer, measure, staff );
             /*
             MusLayerElement rdgElement(&rdg->m_elements[j] );
             rdgElement.m_layer = element->m_layer;

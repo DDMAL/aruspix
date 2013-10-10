@@ -9,14 +9,14 @@
 #ifndef __MUS_STAFF_H__
 #define __MUS_STAFF_H__
 
-#include "mussystem.h"
+#include "musobject.h"
 
 #define STAFF_OFFSET 190
 #define MAXCLE 100	// maximum number of clef on one staff
 
 class MusClef;
 class MusDC;
-class MusLayer;
+class MusMeasure;
 
 //----------------------------------------------------------------------------
 // MusStaff
@@ -25,7 +25,8 @@ class MusLayer;
 /**
  * This class represents a staff in a laid-out score (MusDoc).
  * A MusStaff is contained in a MusSystem.
- * It contains MusLayer objects.
+ * It contains MusMeasure objects.
+ * For unmeasured music, on single MusMeasure is added for simplifying internal processing
 */
 class MusStaff: public MusDocObject
 {
@@ -39,10 +40,10 @@ public:
     virtual std::string MusClassName( ) { return "MusStaff"; };	    
     
     void Clear();
-
-	void AddLayer( MusLayer *layer );
+    
+    void AddMeasure( MusMeasure *measure );
 	
-	int GetLayerCount() const { return (int)m_children.size(); };
+	int GetMeasureCount() const { return (int)m_children.size(); };
     
     int GetStaffNo() const;
     
@@ -58,11 +59,11 @@ public:
 	void CopyAttributes( MusStaff *staff ); // copy all attributes but none of the elements
 	//void ClearElements( MusDC *dc , MusElement *start = NULL );
 
-	MusLayer *GetFirst( );
-	MusLayer *GetLast( );
-	MusLayer *GetNext( MusLayer *staff );
-	MusLayer *GetPrevious( MusLayer *staff );
-    MusLayer *GetLayer( int LayerNo );
+	MusMeasure *GetFirst( );
+	MusMeasure *GetLast( );
+	MusMeasure *GetNext( MusMeasure *measure );
+	MusMeasure *GetPrevious( MusMeasure *measure );
+    MusMeasure *GetMeasure( int MeasureNo );
     
 public:
     /** The logical staff */

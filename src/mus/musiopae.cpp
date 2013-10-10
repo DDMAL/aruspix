@@ -19,11 +19,16 @@
 
 #include "musbarline.h"
 #include "musclef.h"
+#include "musdoc.h"
 #include "muskeysig.h"
+#include "musmeasure.h"
 #include "musmensur.h"
 #include "musnote.h"
+#include "muspage.h"
 #include "musrest.h"
 #include "mussymbol.h"
+#include "mussystem.h"
+#include "musstaff.h"
 #include "mustie.h"
 #include "mustuplet.h"
 
@@ -63,6 +68,7 @@ MusFileInputStream( doc )
 {
     m_filename = filename;
 	m_staff = NULL;
+    m_measure = NULL;
 	m_layer = NULL;
     m_current_tie = NULL;
     m_current_tuplet =  NULL;
@@ -299,8 +305,11 @@ void MusPaeInput::convertPlainAndEasyToKern(std::istream &infile, std::ostream &
     }
     
     m_staff = new MusStaff( 1 );
+    // for now in an un-measured way
+    m_measure = new MusMeasure( false, 1 );
     m_layer = new MusLayer( 1 );
-    m_staff->AddLayer(m_layer);
+    m_staff->AddMeasure( m_measure );
+    m_measure->AddLayer(m_layer);
     
     std::vector<MeasureObject>::iterator it;
     for ( it = staff.begin() ; it < staff.end(); it++ ) {

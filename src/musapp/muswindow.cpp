@@ -20,6 +20,11 @@
 #include "mustoolpanel.h"
 
 #include "mus/musiomei.h"
+#include "mus/muspage.h"
+#include "mus/mussystem.h"
+#include "mus/musstaff.h"
+#include "mus/musmeasure.h"
+#include "mus/muslayer.h"
 #include "mus/muslayerelement.h"
 
 #include "musapp/muswxdc.h"
@@ -867,7 +872,8 @@ void MusWindow::OnMouseLeftDown(wxMouseEvent &event)
         m_currentSystem = m_page->GetAtPos( y );
         // we certainly need to check pointers here!
         m_currentStaff = m_currentSystem->GetAtPos( y );
-        m_currentLayer = m_currentStaff->GetFirst();
+        m_currentMeasure = m_currentStaff->GetFirst();
+        m_currentLayer = m_currentMeasure->GetFirst();
 		m_currentElement = m_currentLayer->GetAtPos( x );				
         
 		m_lyricMode = false;
@@ -954,7 +960,8 @@ void MusWindow::OnMouseLeftDown(wxMouseEvent &event)
             m_currentSystem = m_page->GetAtPos( y );
             // we certainly need to check pointers here!
             m_currentStaff = m_currentSystem->GetAtPos( y );
-            m_currentLayer = m_currentStaff->GetFirst();
+            m_currentMeasure = m_currentStaff->GetFirst();
+            m_currentLayer = m_currentMeasure->GetFirst();
 		}
     }
 	event.Skip();    
@@ -1024,24 +1031,28 @@ bool MusWindow::MoveUpDown( bool up )
     MusPage *page = m_page;
     MusSystem *system = m_currentSystem;
     MusStaff *staff = m_currentStaff;
+    MusMeasure *measure = m_currentMeasure;
     MusLayer *layer = m_currentLayer;
     
     int x = 0;
     if ( m_currentElement ) {
-        x = m_currentElement->m_x_abs;
+        x = m_currentElement->m_x_drawing;
     }
     
     if ( up ) {
         // layer up in the staff
-        if ( m_currentStaff->GetPrevious( m_currentLayer ) )
+        if ( m_currentMeasure->GetPrevious( m_currentLayer ) )
         {
-            layer = m_currentStaff->GetPrevious( m_currentLayer );
+            layer = m_currentMeasure->GetPrevious( m_currentLayer );
         }
         // staff up in the system
         else if ( m_currentSystem->GetPrevious( m_currentStaff ) )
         {
             staff = m_currentSystem->GetPrevious( m_currentStaff );
-            layer = staff->GetLast();
+            measure = staff->GetFirst(); // we should look for the x position
+            if ( measure ) {
+                layer = measure->GetLast();
+            }
         }
         // previous system
         else if ( m_page->GetPrevious( m_currentSystem ) )
@@ -1049,7 +1060,10 @@ bool MusWindow::MoveUpDown( bool up )
             system = m_page->GetPrevious( m_currentSystem );
             staff = system->GetLast();
             if ( staff ) {
-                layer = staff->GetLast();
+                measure = staff->GetFirst(); // we should look for the x position
+                if ( measure ) {
+                    layer = measure->GetLast();
+                }
             }
         }
         // previous page
@@ -1057,15 +1071,19 @@ bool MusWindow::MoveUpDown( bool up )
     }
     else {
         // layer up in the staff
-        if ( m_currentStaff->GetNext( m_currentLayer ) )
+        if ( m_currentMeasure->GetNext( m_currentLayer ) )
         {
-            layer = m_currentStaff->GetNext( m_currentLayer );
+            layer = m_currentMeasure->GetNext( m_currentLayer );
         }
         // staff up in the system
         else if ( m_currentSystem->GetNext( m_currentStaff ) )
-        {
+        {            
             staff = m_currentSystem->GetNext( m_currentStaff );
-            layer = staff->GetFirst();
+            measure = staff->GetFirst(); // we should look for the x position
+            if ( measure ) {
+                layer = measure->GetFirst();
+            }
+            
         }
         // previous system
         else if ( m_page->GetNext( m_currentSystem ) )
@@ -1073,18 +1091,22 @@ bool MusWindow::MoveUpDown( bool up )
             system = m_page->GetNext( m_currentSystem );
             staff = system->GetFirst();
             if ( staff ) {
-                layer = staff->GetFirst();
+                measure = staff->GetFirst(); // we should look for the x position
+                if ( measure ) {
+                    layer = measure->GetFirst();
+                }
             }
         }
         // previous page
         // TODO - we would also to set the page in the MusWindow
     }
     
-    if ( !layer || !staff || !system || !page ) {
+    if ( !layer || !measure || !staff || !system || !page ) {
         return false;
     }
     
     m_currentLayer = layer;
+    m_currentMeasure = measure;
     m_currentStaff = staff;
     m_currentSystem = system;
     m_page = page;
@@ -1103,6 +1125,7 @@ bool MusWindow::MoveLeftRight( bool left )
     MusPage *page = m_page;
     MusSystem *system = m_currentSystem;
     MusStaff *staff = m_currentStaff;
+    MusMeasure *measure = m_currentMeasure;
     MusLayer *layer = m_currentLayer;
     
     if ( left ) {
@@ -1110,6 +1133,18 @@ bool MusWindow::MoveLeftRight( bool left )
         MusLayerElement *previous = NULL;
         if ( (previous = m_currentLayer->GetPrevious( m_currentElement ) ) ) {
             m_currentElement = previous;
+        }
+        // previous measure
+        else if ( m_currentStaff->GetPrevious( m_currentMeasure ) )
+        {
+            int currentLayerNo = m_currentLayer->GetLayerNo();
+            measure = m_currentStaff->GetPrevious( m_currentMeasure );
+            if ( measure ) {
+                layer = measure->GetLayer( currentLayerNo );
+                if ( layer ) {
+                    m_currentElement = layer->GetLast();
+                }
+            }
         }
         // previous system
         else if ( m_page->GetPrevious( m_currentSystem ) )
@@ -1119,9 +1154,12 @@ bool MusWindow::MoveLeftRight( bool left )
             system = m_page->GetPrevious( m_currentSystem );
             staff = system->GetStaff( currentStaffNo );
             if ( staff ) {
-                layer = staff->GetLayer( currentLayerNo );
-                if ( layer ) {
-                    m_currentElement = layer->GetLast();
+                measure = staff->GetLast();
+                if ( measure ) {
+                    layer = measure->GetLayer( currentLayerNo );
+                    if ( layer ) {
+                        m_currentElement = layer->GetLast();
+                    }
                 }
             }
         }
@@ -1134,6 +1172,18 @@ bool MusWindow::MoveLeftRight( bool left )
         if ( ( next =  m_currentLayer->GetNext( m_currentElement ) ) ) {
             m_currentElement = next;
         }
+        // next measure
+        else if ( m_currentStaff->GetNext( m_currentMeasure ) )
+        {
+            int currentLayerNo = m_currentLayer->GetLayerNo();
+            measure = m_currentStaff->GetNext( m_currentMeasure );
+            if ( measure ) {
+                layer = measure->GetLayer( currentLayerNo );
+                if ( layer ) {
+                    m_currentElement = layer->GetFirst();
+                }
+            }
+        }
         // next system
         else if ( m_page->GetNext( m_currentSystem ) )
         {
@@ -1142,9 +1192,12 @@ bool MusWindow::MoveLeftRight( bool left )
             system = m_page->GetNext( m_currentSystem );
             staff = system->GetStaff( currentStaffNo );
             if ( staff ) {
-                layer = staff->GetLayer( currentLayerNo );
-                if ( layer ) {
-                    m_currentElement = layer->GetFirst();
+                measure = staff->GetFirst();
+                if ( measure ) {
+                    layer = measure->GetLayer( currentLayerNo );
+                    if ( layer ) {
+                        m_currentElement = layer->GetFirst();
+                    }
                 }
             }
         }
@@ -1152,11 +1205,12 @@ bool MusWindow::MoveLeftRight( bool left )
         // TODO - we would also to set the page in the MusWindow
     }
     
-    if ( !layer || !staff || !system || !page ) {
+    if ( !layer || !measure || !staff || !system || !page ) {
         return false;
     }
     
     m_currentLayer = layer;
+    m_currentMeasure = measure;
     m_currentStaff = staff;
     m_currentSystem = system;
     m_page = page;

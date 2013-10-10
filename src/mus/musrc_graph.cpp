@@ -14,6 +14,7 @@
 
 //----------------------------------------------------------------------------
 
+#include "musdoc.h"
 #include "musstaff.h"
 
 void MusRC::v_bline ( MusDC *dc, int y1, int y2, int x1, int nbr)

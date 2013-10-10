@@ -17,7 +17,17 @@
 
 //----------------------------------------------------------------------------
 
+#include "mus.h"
+#include "musbeam.h"
+#include "muslayer.h"
+#include "muslayerelement.h"
+#include "musmeasure.h"
+#include "muspage.h"
 #include "musrc.h"
+#include "musstaff.h"
+#include "mussystem.h"
+#include "mustie.h"
+#include "mustuplet.h"
 
 //----------------------------------------------------------------------------
 // MusObject
@@ -458,28 +468,39 @@ bool MusObject::TrimSystem( ArrayPtrVoid params )
     return false;
 }
 
-bool MusObject::UpdateLayerElementXPos( ArrayPtrVoid params )
+bool MusObject::LayOutLayerElementXPos( ArrayPtrVoid params )
 {
-    // param 0: the current x shift
-	int *current_x_shift = (int*)params[0];
+    // param 0: the current x measure shift
+    // param 1: the current x element shift
+	int *current_x_measure_shift = (int*)params[0];
+    int *current_x_element_shift = (int*)params[1];
     
+    // starting a new staff
+    MusStaff *current_staff = dynamic_cast<MusStaff*>(this);
+    if ( current_staff  ) {
+        (*current_x_measure_shift) = 0;
+    }
+
+    // starting a new measure
+    MusMeasure *current_measure = dynamic_cast<MusMeasure*>(this);
+    if ( current_measure ) {
+        current_measure->m_x_rel = (*current_x_measure_shift);
+    }
+    
+    // starting an new layer
+    MusLayer *current_layer = dynamic_cast<MusLayer*>(this);
+    if ( current_layer  ) {
+        (*current_x_element_shift) = 0;
+    }
+
     MusLayerElement *current = dynamic_cast<MusLayerElement*>(this);
     if ( !current  ) {
         return false;
     }
-    
-    // reset the x position if we are starting a new layer
-    if ( current->m_parent->GetChildIndex( this ) == 0 ) {
-        MusLayer *layer = dynamic_cast<MusLayer*>( current->m_parent );
-        // The parent is a MusLayer, we need to reset the x shift
-        if ( layer ) {
-            (*current_x_shift) = 0;
-        }
-    }
-    
+
     if ( !current->HasUpdatedBB() ) {
         // this is all we need for empty elements
-        current->m_x_rel = (*current_x_shift);
+        current->m_x_rel = (*current_x_element_shift);
         return false;
     }
     
@@ -496,14 +517,17 @@ bool MusObject::UpdateLayerElementXPos( ArrayPtrVoid params )
     }
     
     int negative_offset = current->m_x_rel - current->m_contentBB_x1;
-    current->m_x_rel = (*current_x_shift) + negative_offset;
-    (*current_x_shift) += (current->m_contentBB_x2 - current->m_contentBB_x1) + current->GetHorizontalSpacing();
+    current->m_x_rel = (*current_x_element_shift) + negative_offset;
+    
+    int shift = (current->m_contentBB_x2 - current->m_contentBB_x1) + current->GetHorizontalSpacing();
+    (*current_x_element_shift) += shift;
+    (*current_x_measure_shift) += shift; // this will not work with more than one layer because we are cumulating
     
     return false;
 }
 
 
-bool MusObject::UpdateSystemAndStaffYPos( ArrayPtrVoid params )
+bool MusObject::LayOutSystemAndStaffYPos( ArrayPtrVoid params )
 {
     // param 0: the current y system shift
     // param 1: the current y staff shift
@@ -515,7 +539,7 @@ bool MusObject::UpdateSystemAndStaffYPos( ArrayPtrVoid params )
         return false;
     }
     
-    // This is the value that need to be added to fix everything
+    // This is the value that need to be added to fit everything
     int negative_offset = current->m_y_rel - current->m_contentBB_y2;
     
     // reset the x position if we are starting a new system

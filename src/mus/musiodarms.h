@@ -12,15 +12,13 @@
 #include <string>
 #include <vector>
 
-#include "musbarline.h"
-#include "musclef.h"
-#include "musdoc.h"
-#include "muslayer.h"
-#include "musmensur.h"
-#include "musnote.h"
-#include "musrest.h"
-#include "mussymbol.h"
-#include "mustie.h"
+#include "musio.h"
+
+class MusDoc;
+class MusLayer;
+class MusMeasure;
+class MusStaff;
+class MusTie;
 
 //----------------------------------------------------------------------------
 // MusDarmsInput
@@ -55,6 +53,7 @@ private:
     std::string m_filename;
 
 	MusStaff *m_staff;
+    MusMeasure *m_measure;
 	MusLayer *m_layer;
     
     MusTie *m_current_tie;

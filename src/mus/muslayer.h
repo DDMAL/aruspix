@@ -11,8 +11,9 @@
 
 #include <typeinfo>
 
-#include "musstaff.h"
+#include "musobject.h"
 
+class MusClef;
 class MusDC;
 class MusLayerElement;
 class MusNote;
