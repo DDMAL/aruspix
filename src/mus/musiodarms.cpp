@@ -27,7 +27,6 @@
 #include "musrest.h"
 #include "mussymbol.h"
 
-
 // Ok, this is ugly, but since this is static data, why not?
 pitchmap MusDarmsInput::PitchMap[] = {
     /* 00 */ {1, PITCH_C}, {1, PITCH_D}, {1, PITCH_E}, {1, PITCH_F}, {1, PITCH_G}, {1, PITCH_A}, {1, PITCH_B},
@@ -109,10 +108,10 @@ int MusDarmsInput::parseMeter(int pos, const char* data) {
     }
     
     // See if followed by numerical meter
-    if (isnumber(data[pos])) { // Coupound meter
+    if (isdigit(data[pos])) { // Coupound meter
         int n1, n2;
         n1 = data[pos] - ASCII_NUMBER_OFFSET; // old school conversion to int
-        if (isnumber(data[pos + 1])) {
+        if (isdigit(data[pos + 1])) {
             n2 = data[++pos] - ASCII_NUMBER_OFFSET; // idem
             n1 = (n1 * 10) + n2;
         }
@@ -128,7 +127,7 @@ int MusDarmsInput::parseMeter(int pos, const char* data) {
             if (data[pos] == '-') printf("Time sig numbers should be divided with ':'.\n");
             // same as above, get one or two nums
             n1 = data[++pos] - ASCII_NUMBER_OFFSET; // old school conversion to int
-            if (isnumber(data[pos + 1])) {
+            if (isdigit(data[pos + 1])) {
                 n2 = data[++pos] - ASCII_NUMBER_OFFSET; // idem
                 n1 = (n1 * 10) + n2;
             }
@@ -152,13 +151,13 @@ int MusDarmsInput::do_globalSpec(int pos, const char* data) {
     switch (digit) {
         case 'I': // Voice nr.
             //the next digit should be a number, but we do not care what
-            if (!isnumber(data[++pos])) {
+            if (!isdigit(data[++pos])) {
                 printf("Expected number after I\n");
             }
             break;
             
         case 'K': // key sig, !K2- = two flats
-            if (isnumber(data[pos + 1])) { // is followed by number?
+            if (isdigit(data[pos + 1])) { // is followed by number?
                 pos++; // move forward
                 quantity = data[pos] - ASCII_NUMBER_OFFSET; // get number from ascii char
             }
@@ -187,7 +186,7 @@ int MusDarmsInput::do_globalSpec(int pos, const char* data) {
              N8	diamond notehead, stem to side
              NR	rest in place of notehead
              */
-            if (!isnumber(data[++pos])) {
+            if (!isdigit(data[++pos])) {
                 printf("Expected number after N\n");
             } else { // we honor only notehead 7, diamond
                 if (data[pos] == 0x07 + ASCII_NUMBER_OFFSET)
@@ -256,15 +255,15 @@ int MusDarmsInput::do_Note(int pos, const char* data, bool rest) {
     // Negative number, only '-' and one digit
     if (data[pos] == '-') {
         // be sure following char is a number
-        if (!isnumber(data[pos + 1])) return 0;
+        if (!isdigit(data[pos + 1])) return 0;
         position = -(data[++pos] - ASCII_NUMBER_OFFSET);
     } else {
         // as above
-        if (!isnumber(data[pos]) && data[pos] != 'R') return 0; // this should not happen, as it is checked in the caller
+        if (!isdigit(data[pos]) && data[pos] != 'R') return 0; // this should not happen, as it is checked in the caller
         // positive number
         position = data[pos] - ASCII_NUMBER_OFFSET;
         //check for second digit
-        if (isnumber(data[pos + 1])) {
+        if (isdigit(data[pos + 1])) {
             pos++;
             position = (position * 10) + (data[pos] - ASCII_NUMBER_OFFSET);
         }
@@ -407,7 +406,7 @@ bool MusDarmsInput::ImportFile() {
             if (res) pos = res;
             // if notehead type was specified in the !Nx option preserve it
             m_staff->m_mensuralNotation = m_antique_notation;
-        } else if (isnumber(c) || c == '-' ) { // check for '-' too as note positions can be negative
+        } else if (isdigit(c) || c == '-' ) { // check for '-' too as note positions can be negative
             //is number followed by '!' ? it is a clef
             if (data[pos + 1] == '!') {
                 res = do_Clef(pos, data);

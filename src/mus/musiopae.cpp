@@ -87,6 +87,15 @@ bool MusPaeInput::ImportFile()
     return true;
 }
 
+bool MusPaeInput::ImportString(std::string pae)
+{
+    
+    std::istringstream in_stream(pae);
+    
+    convertPlainAndEasyToKern(in_stream, std::cout);
+    
+    return true;
+}
 
 //////////////////////////////
 //

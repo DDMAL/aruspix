@@ -102,15 +102,18 @@ public:
     
     virtual void EndPage();
     
+    // I know, just want to test it
+    std::stringstream m_outdata;
     
 private:
     
-    bool copy_wxTransferFileToStream(const std::string& filename, std::ofstream& dest);
+    bool copy_wxTransferFileToStream(const std::string& filename, std::ostream& dest);
     
     // we use a std::stringstream because we want to prepend the <defs> which will know only when we reach the end of the page
     // some viewer seem to support to have the <defs> at the end, but some do not (pdf2svg, for example)
     // for this reason, the file is finally written only from the destructor or when Flush() is called
     std::stringstream m_outfile;
+    
     bool m_committed; // did we flushed the file?
     std::string m_filename;
     int m_graphics;

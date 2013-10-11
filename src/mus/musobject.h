@@ -14,7 +14,11 @@
 #include <typeinfo>
 #include <vector>
 
+#ifndef USE_FAKE_UUIDS
 #include <uuid/uuid.h>
+#else
+#include "musuuid.h"
+#endif
 
 class MusDoc;
 class MusFunctor;

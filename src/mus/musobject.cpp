@@ -94,7 +94,8 @@ void MusObject::ResetUuid()
 
 void MusObject::SetParent( MusObject *parent )
 {
-    assert( !m_parent );
+    // RZ FIXME just for test
+    //assert( !m_parent );
     m_parent = parent;
 }
 

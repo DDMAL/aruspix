@@ -175,7 +175,7 @@ int main(int argc, char** argv) {
     
     MusDoc *doc =  new MusDoc();
 
-    MusFileInputStream import;
+    //MusFileInputStream import;
     
     if (m_pae) {
         MusPaeInput mpae( doc, m_infile.c_str() );
@@ -246,4 +246,49 @@ int main(int argc, char** argv) {
     cerr << "Output written to " << m_outfile << endl;
     
     return 0;
+}
+
+extern "C" {
+    const char * pae2svg(const char * pae) {
+        string cpp_pae = *new string(pae);
+        string out_str;
+        
+        Mus::SetResourcesPath("data/svg/");
+        
+        MusDoc *doc =  new MusDoc();
+        
+        MusPaeInput mpae( doc, NULL );
+        mpae.ImportString(cpp_pae);
+        
+        // Create a new visual layout and spave the music
+        //doc->Realize( );
+        doc->SpaceMusic();
+        
+        // Get the current system for the SVG clipping size    
+        MusPage *page = dynamic_cast<MusPage*>(doc->m_children[0]);
+        MusSystem *system = dynamic_cast<MusSystem*>(page->m_children[0]);
+        
+        // creare a new local RC and set the above created layout
+        MusRC rc;
+        rc.SetDoc(doc);
+        // no left margin
+        //layout->m_leftMargin = 0; // good done here?
+        
+        // Create the SVG object, h & w come from the system
+        // we add border*2 so it is centered into the image
+        MusSvgDC *svg = new MusSvgDC("", system->m_contentBB_x2 - system->m_contentBB_x1 + m_boder*2, (system->m_contentBB_y2 - system->m_contentBB_y1) + m_boder*2);
+        
+        // set scale and border from user options
+        svg->SetUserScale((double)m_scale / 100, (double)m_scale / 100);
+        svg->SetLogicalOrigin(m_boder, m_boder);
+        
+        // render the page
+        rc.DrawPage(svg, page , false);
+        
+        // get the data
+        out_str = svg->m_outdata.str();
+
+        delete svg;
+        return out_str.c_str();
+    }
 }

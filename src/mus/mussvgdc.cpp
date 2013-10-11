@@ -66,6 +66,8 @@ MusSvgDC::MusSvgDC (std::string f, int width, int height):
     
     m_outfile.str("");
     m_outfile.clear();
+    
+    m_outdata.clear();
 }
 
 
@@ -77,7 +79,7 @@ MusSvgDC::~MusSvgDC ( )
 }
 
 
-bool MusSvgDC::copy_wxTransferFileToStream(const std::string& filename, std::ofstream& dest)
+bool MusSvgDC::copy_wxTransferFileToStream(const std::string& filename, std::ostream& dest)
 {
     
     std::ifstream source( filename.c_str(), std::ios::binary );
@@ -95,11 +97,13 @@ void MusSvgDC::Commit() {
         return;
     }
 
-    std::ofstream outfile(m_filename.c_str());
-    if (!outfile.is_open()) {
-        return;
+    std::ostream *outfile;
+    if (!m_filename.empty()) {
+        outfile = new std::ofstream(m_filename.c_str());
+    } else {
+        outfile = &m_outdata;
     }
-    
+        
     int i;
     // close unclosed graphics, just in case
     for (i = m_graphics; i < 0; m_graphics-- ) {
@@ -114,21 +118,21 @@ void MusSvgDC::Commit() {
     std::string s = Mus::StringFormat ( "<?xml version=\"1.0\" encoding=\"ISO-8859-1\" standalone=\"no\"?>\n<svg width=\"%dpx\" height=\"%dpx\"", (int)((double)m_width * m_userScaleX), (int)((double)m_height * m_userScaleY));
     s += " version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\"  xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n";
     
-    outfile << s;
+    *outfile << s;
     
     if (m_leipzig_glyphs.size() > 0)
     {
-        outfile << "\t<defs>\n";
+        *outfile << "\t<defs>\n";
         
         std::vector<std::string>::const_iterator it;
-        for(it = m_leipzig_glyphs.begin(); it != m_leipzig_glyphs.end(); ++i)
+        for(it = m_leipzig_glyphs.begin(); it != m_leipzig_glyphs.end(); ++it)
         {
-            outfile << "\t\t";
-            copy_wxTransferFileToStream( Mus::GetResourcesPath() + "/svg/" + (*it) + ".xml", outfile );
+            *outfile << "\t\t";
+            copy_wxTransferFileToStream( Mus::GetResourcesPath() + "/svg/" + (*it) + ".xml", *outfile );
         }
-        outfile << "\t</defs>\n";
+        *outfile << "\t</defs>\n";
     }
-    outfile << m_outfile.str();
+    *outfile << m_outfile.str();
     m_committed = true;
 }
 

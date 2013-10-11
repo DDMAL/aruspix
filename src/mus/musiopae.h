@@ -219,7 +219,8 @@ public:
     MusPaeInput( MusDoc *doc, std::string filename );
     virtual ~MusPaeInput();
     
-    bool ImportFile( );    
+    bool ImportFile( );
+    bool ImportString(std::string pae);
     
 private:
     // function declarations:

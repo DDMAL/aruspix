@@ -12,7 +12,11 @@
 #include "musdoc.h"
 #include "muslayer.h"
 
+#ifndef USE_FAKE_UUIDS
 #include <uuid/uuid.h>
+#else
+#include "musuuid.h"
+#endif
 
 // TINYXML
 #if defined (__WXMSW__)
