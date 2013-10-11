@@ -26,6 +26,7 @@ using std::max;
 
 #include "musapp/muswxdc.h"
 #include "mus/musdoc.h"
+#include "mus/mussystem.h"
 #include "mus/musstaff.h"
 #include "mus/muslayerelement.h"
 

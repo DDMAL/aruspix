@@ -678,6 +678,8 @@ void EdtEnv::OnOpenMEI( wxCommandEvent &event )
 	if ( !meiInput.ImportFile() )
 		return;
     
+    //OnSaveMEI( event );
+    
     if ( m_edtFilePtr->m_musDocPtr->GetType() != Transcription ) {
         m_edtFilePtr->m_musDocPtr->SpaceMusic();
     }

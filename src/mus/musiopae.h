@@ -17,6 +17,7 @@
 class MusBeam;
 class MusClef;
 class MusLayer;
+class MusMeasure;
 class MusMensur;
 class MusStaff;
 class MusTie;
@@ -257,6 +258,7 @@ public:
 private:
     std::string m_filename;
 	MusStaff *m_staff;
+    MusMeasure *m_measure;
 	MusLayer *m_layer;
     MusTie *m_current_tie;
     MusTuplet *m_current_tuplet;

@@ -22,6 +22,7 @@
 #include "mus/muspage.h"
 #include "mus/mussystem.h"
 #include "mus/musstaff.h"
+#include "mus/musmeasure.h"
 #include "mus/muslayer.h"
 #include "mus/muslayerelement.h"
 #include "mus/musbarline.h"
@@ -239,6 +240,7 @@ bool MusBinInput_1_X::ReadPage( MusPage *page )
     for (j = 0; j < nbrePortees; j++) 
 	{
 		MusStaff *staff = new MusStaff( j + 1 );
+        MusMeasure *measure = new MusMeasure( false );
         MusLayer *layer = new MusLayer( 1 ); // we have always on layer per staff
 		ReadStaff( staff, layer, j );
         if ( m_noLigne > system_no + 1 ) { // we have a new system
@@ -254,7 +256,9 @@ bool MusBinInput_1_X::ReadPage( MusPage *page )
         if ( m_indentDroite ) {      
             system->m_systemRightMar = m_indentDroite;
         }
-        staff->AddLayer( layer );
+        
+        staff->AddMeasure( measure );
+        measure->AddLayer( layer );
         system->AddStaff( staff );
 	}
     // add the last system

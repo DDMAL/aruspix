@@ -73,6 +73,7 @@ public:
     virtual bool WritePage( MusPage *page );
     virtual bool WriteSystem( MusSystem *system );
     virtual bool WriteStaff( MusStaff *staff );
+    virtual bool WriteMeasure( MusMeasure *measure );
     virtual bool WriteLayer( MusLayer *layer );
     virtual bool WriteLayerElement( MusLayerElement *element );
     // app
@@ -163,6 +164,7 @@ private:
     TiXmlElement *m_page;
     TiXmlElement *m_system;
     TiXmlElement *m_staff;
+    TiXmlElement *m_measure;
     /** The pointer for the layer within a staff */
     TiXmlElement *m_layer;
     /** The pointer for the rdg within an app (MusLayerRdg) */
@@ -202,6 +204,7 @@ private:
     bool ReadMeiPage( TiXmlElement *page );
     bool ReadMeiSystem( TiXmlElement *system );
     bool ReadMeiStaff( TiXmlElement *staff );
+    bool ReadMeiMeasure( TiXmlElement *measure );
     bool ReadMeiLayer( TiXmlElement *layer );
     bool ReadMeiLayerElement( TiXmlElement *XmlElement );
     MusLayerElement *ReadMeiBarline( TiXmlElement *barline );
@@ -229,6 +232,11 @@ private:
      */
     void AddLayerElement( MusLayerElement *element );
     
+    /**
+     * Read unsupported element and try to convert them
+     */
+    bool ReadUnsupported( TiXmlElement *element );
+    
 	//
     void SetMeiUuid( TiXmlElement *element, MusObject *object );
     void StrToUuid(std::string uuid, uuid_t dest);
@@ -248,12 +256,16 @@ private:
     MusPage *m_page;
     MusSystem *m_system;
 	MusStaff *m_staff;
+    MusMeasure *m_measure;
 	MusLayer *m_layer;
     MusLayerRdg *m_layerRdg;
     MusBeam *m_beam;
     MusTuplet *m_tuplet;
     MusObject *m_currentLayer;
     MusLayerApp *m_layerApp;
+    
+    // unsupported elements
+    MusMeasure *m_contentBasedMeasure;
 };
 
 

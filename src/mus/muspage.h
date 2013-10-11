@@ -9,7 +9,7 @@
 #ifndef __MUS_PAGE_H__
 #define __MUS_PAGE_H__
 
-#include "musdoc.h"
+#include "musobject.h"
 
 class MusDC;
 class MusStaff;

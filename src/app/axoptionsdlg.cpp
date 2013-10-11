@@ -23,7 +23,11 @@ using std::max;
 #include "axapp.h"
 
 #include "mus/musdoc.h"
-#include "mus/muslayer.h"
+#include "mus/muspage.h"
+#include "mus/mussystem.h"
+#include "mus/musstaff.h"
+#include "mus/musmeasure.h"
+#include "mus/muslayer.h"#include "mus/musmeasure.h"
 #include "mus/muslayerelement.h"
 
 #include "im/impage.h"
@@ -527,6 +531,7 @@ AxOptMusWindow::AxOptMusWindow( wxWindow *parent, wxWindowID id,
     MusSystem *system = new MusSystem();
     system->m_y_abs = 120;
     MusStaff *staff = new MusStaff( 1 );
+    MusMeasure *measure = new MusMeasure( false, 1 );
     staff->m_y_abs = 120;
     MusLayer *layer = new MusLayer( 1 );
     
@@ -535,7 +540,8 @@ AxOptMusWindow::AxOptMusWindow( wxWindow *parent, wxWindowID id,
     clef->m_x_abs = 80;
     
     layer->AddElement( clef );
-    staff->AddLayer( layer );
+    measure->AddLayer( layer );
+    staff->AddMeasure( measure );
     system->AddStaff( staff );
     page->AddSystem( system );
     m_docPtr->AddPage( page );

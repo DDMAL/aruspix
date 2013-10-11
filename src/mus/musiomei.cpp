@@ -22,11 +22,14 @@
 #include "musclef.h"
 #include "muslayer.h"
 #include "muslayerelement.h"
+#include "musmeasure.h"
 #include "musmensur.h"
 #include "musnote.h"
+#include "muspage.h"
 #include "musrest.h"
 #include "musstaff.h"
 #include "mussymbol.h"
+#include "mussystem.h"
 #include "mustuplet.h"
 
 //----------------------------------------------------------------------------
@@ -43,6 +46,7 @@ MusMeiOutput::MusMeiOutput( MusDoc *doc, std::string filename ) :
     m_page = NULL;
     m_system = NULL;
     m_staff = NULL;
+    m_measure = NULL;
     m_layer = NULL;
     m_rdgLayer = NULL;
     m_beam = NULL;
@@ -195,17 +199,30 @@ bool MusMeiOutput::WriteStaff( MusStaff *staff )
     return true;
 }
 
+bool MusMeiOutput::WriteMeasure( MusMeasure *measure )
+{
+    assert( m_staff );
+    m_measure = new TiXmlElement("measure");
+    m_measure->SetAttribute( "xml:id",  UuidToMeiStr( measure ).c_str() );
+    m_measure->SetAttribute( "n", Mus::StringFormat( "%d", measure->m_logMeasureNb ).c_str() );
+    m_staff->LinkEndChild( m_measure );
+    return true;
+}
+
 bool MusMeiOutput::WriteLayer( MusLayer *layer )
 {
     assert( m_staff );
     m_layer = new TiXmlElement("layer");
     m_layer->SetAttribute( "xml:id",  UuidToMeiStr( layer ).c_str() );
     m_layer->SetAttribute( "n", Mus::StringFormat( "%d", layer->m_logLayerNb ).c_str() );
-    m_staff->LinkEndChild( m_layer );
+    if ( m_measure ) {
+        m_measure->LinkEndChild( m_layer );
+    }
+    else {
+        m_staff->LinkEndChild( m_layer );
+    }
     return true;
 }
-
-#define test 0x8000000
 
 bool MusMeiOutput::WriteLayerElement( MusLayerElement *element )
 {
@@ -595,13 +612,16 @@ MusMeiInput::MusMeiInput( MusDoc *doc, std::string filename ) :
     m_page = NULL;
     m_system = NULL;
 	m_staff = NULL;
+    m_measure = NULL;
 	m_layer = NULL;
     m_layerApp = NULL;
     m_layerRdg = NULL;
     m_beam = NULL;
     m_tuplet = NULL;
     //
-    m_currentLayer = NULL; 
+    m_currentLayer = NULL;
+    // for reading unsupported formats
+    m_contentBasedMeasure = NULL;
 }
 
 MusMeiInput::~MusMeiInput()
@@ -652,16 +672,26 @@ bool MusMeiInput::ImportFile( )
                 m_doc->Reset( type );
             }
             
-            for( current = score->FirstChildElement( "page" ); current; current = current->NextSiblingElement( "page" ) ) {
+            // this is a page-based mei file, we just loop trough the pages
+            if ( score->FirstChildElement( "page" ) ) {             
+                for( current = score->FirstChildElement( "page" ); current; current = current->NextSiblingElement( "page" ) ) {
+                    m_page = new MusPage( );
+                    SetMeiUuid( current, m_page );
+                    if (ReadMeiPage( current )) {
+                        m_doc->AddPage( m_page );
+                    }
+                    else {
+                        delete m_page;
+                    }
+                    m_page = NULL;
+                }
+            }
+            else {
                 m_page = new MusPage( );
-                SetMeiUuid( current, m_page );
-                if (ReadMeiPage( current )) {
-                    m_doc->AddPage( m_page );
-                }
-                else {
-                    delete m_page;
-                }
-                m_page = NULL;
+                m_system = new MusSystem( );
+                m_page->AddSystem( m_system );
+                m_doc->AddPage( m_page );
+                return ReadUnsupported( score );
             }
         }
         return true;
@@ -754,20 +784,68 @@ bool MusMeiInput::ReadMeiStaff( TiXmlElement *staff )
     }
     
     TiXmlElement *current = NULL;
-    for( current = staff->FirstChildElement( "layer" ); current; current = current->NextSiblingElement( "layer" ) ) {
+    // unmeasured music
+    if ( staff->FirstChildElement( "layer" ) ) {
+        // this is the trick for un-measured music: we add one measure ( false )
+        if ( !m_measure ) {
+            m_measure = new MusMeasure( false );
+        }
+        for( current = staff->FirstChildElement( "layer" ); current; current = current->NextSiblingElement( "layer" ) ) {
+            m_layer = new MusLayer( 1 );
+            m_currentLayer = m_layer;
+            SetMeiUuid( current , m_layer );
+            if (ReadMeiLayer( current )) {
+                m_measure->AddLayer( m_layer );
+            }
+            else {
+                delete m_layer;
+            }
+            m_layer = NULL;
+        }
+        if ( m_measure->GetLayerCount() > 0) {
+            m_staff->AddMeasure( m_measure );
+        }
+        else {
+            delete m_measure;
+        }
+        m_measure = NULL;
+    }
+    else {
+        // measured
+        for( current = staff->FirstChildElement( "measure" ); current; current = current->NextSiblingElement( "measure" ) ) {
+            m_measure = new MusMeasure( );
+            SetMeiUuid( current , m_measure );
+            if (ReadMeiMeasure( current )) {
+                m_staff->AddMeasure( m_measure );
+            }
+            else {
+                delete m_measure;
+            }
+            m_measure = NULL;
+        }
+    }
+    
+    // success only if at least one measure was added to the staff
+    return (m_staff->GetMeasureCount() > 0);
+}
+
+bool MusMeiInput::ReadMeiMeasure( TiXmlElement *measure )
+{ 
+    TiXmlElement *current = NULL;
+    for( current = measure->FirstChildElement( "layer" ); current; current = current->NextSiblingElement( "layer" ) ) {
         m_layer = new MusLayer( 1 );
         m_currentLayer = m_layer;
         SetMeiUuid( current , m_layer );
         if (ReadMeiLayer( current )) {
-            m_staff->AddLayer( m_layer );
+            m_measure->AddLayer( m_layer );
         }
         else {
             delete m_layer;
         }
         m_layer = NULL;
     }
-    // success only if at least one layer was added to the staff
-    return (m_staff->GetLayerCount() > 0);
+    // success only if at least one layer was added to the measure
+    return (m_measure->GetLayerCount() > 0);
 }
 
 bool MusMeiInput::ReadMeiLayer( TiXmlElement *layer )
@@ -870,6 +948,7 @@ MusLayerElement *MusMeiInput::ReadMeiBeam( TiXmlElement *beam )
     m_currentLayer = previousLayer;
     if ( m_beam->GetNoteCount() < 1 ) {
         delete m_beam;
+        m_beam = NULL;
         return NULL;
     } 
     else {
@@ -1144,6 +1223,52 @@ void MusMeiInput::AddLayerElement( MusLayerElement *element )
         ((MusTuplet*)m_currentLayer)->AddElement( element );
     }
     
+}
+
+
+bool MusMeiInput::ReadUnsupported( TiXmlElement *element )
+{
+    if ( element->FirstChildElement( "section" ) ) {
+        return ReadUnsupported( element->FirstChildElement( "section" ) );
+    }
+    else if ( element->FirstChildElement( "measure" ) ) {
+        TiXmlElement *current = NULL;
+        for( current = element->FirstChildElement( "measure" ); current; current = current->NextSiblingElement( "measure" ) ) {
+            if ( m_contentBasedMeasure ) {
+                delete m_contentBasedMeasure;
+            }
+            m_contentBasedMeasure = new MusMeasure( );
+            m_measure = m_contentBasedMeasure;
+            // this will return false because measure will have no layer child
+            ReadMeiMeasure( current );
+            if ( current->FirstChildElement( "staff" )) {
+                ReadUnsupported( current );
+            }
+            delete m_contentBasedMeasure;
+            m_contentBasedMeasure = NULL;
+        }
+    }
+    else if ( element->FirstChildElement( "staff" ) ) {
+        TiXmlElement *current = NULL;
+        for( current = element->FirstChildElement( "staff" ); current; current = current->NextSiblingElement( "staff" ) ) {
+            int n = 1;
+            if ( current->Attribute( "n" ) ) {
+                current->Attribute( "n", &n );
+            }
+            MusStaff *staff = m_system->GetStaff( n - 1 );
+            if ( staff ) {
+                m_staff = staff;
+            }
+            else
+            {
+                m_staff = new MusStaff( n );
+                m_system->AddStaff( m_staff );
+            }
+            m_measure = new MusMeasure( *m_contentBasedMeasure );
+            ReadMeiStaff( current );
+        }
+    }
+    return true;
 }
 
 void MusMeiInput::SetMeiUuid( TiXmlElement *element, MusObject *object )

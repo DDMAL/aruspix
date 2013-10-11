@@ -16,8 +16,10 @@
 //----------------------------------------------------------------------------
 
 #include "musclef.h"
+#include "musdoc.h"
 #include "muslayer.h"
 #include "muslayerelement.h"
+#include "musmeasure.h"
 #include "muspage.h"
 #include "musstaff.h"
 #include "mussystem.h"
@@ -721,26 +723,63 @@ void MusRC::DrawStaff( MusDC *dc, MusStaff *staff, MusSystem *system )
     
     DrawStaffLines( dc, staff, system );
         
-	MusLayer *layer = NULL;
+	MusMeasure *measure = NULL;
 	int j;
 
-	for(j = 0; j < staff->GetLayerCount(); j++)
+	for(j = 0; j < staff->GetMeasureCount(); j++)
 	{
-		layer = (MusLayer*)staff->m_children[j];
-		//layer->Init( m_r );
-		DrawLayer( dc, layer, staff );
+		measure = (MusMeasure*)staff->m_children[j];
+		DrawMeasure( dc, measure, staff, system );
 	}
     
-    dc->EndGraphic(staff, this ); //RZ
+    dc->EndGraphic( staff, this );
+}
 
+//----------------------------------------------------------------------------
+// MusRC - MusMeasure
+//----------------------------------------------------------------------------
+
+void MusRC::DrawMeasure( MusDC *dc, MusMeasure *measure, MusStaff *staff, MusSystem *system )
+{
+	assert( dc ); // DC cannot be NULL
+    
+    // This is a special case where we do not draw (SVG, Bounding boxes, etc.) the measure if un-measured music
+    if ( measure->IsMeasuredMusic()) {
+        dc->StartGraphic( measure, "measure", Mus::StringFormat("s_%d", staff->GetId()) );
+    }
+    
+    // Here we set the appropriate y value to be used for drawing
+    // With Raw documents, we use m_x_rel that is calculated by the layout algorithm
+    // With Transcription documents, we use the m_x_abs
+    if ( measure->m_x_abs == AX_UNSET ) {
+        assert( m_doc->GetType() == Raw );
+        measure->m_x_drawing = measure->m_x_rel + system->m_systemLeftMar;
+    }
+    else
+    {
+        assert( m_doc->GetType() == Transcription );
+        measure->m_x_drawing = measure->m_x_abs;
+    }
+    
+	MusLayer *layer = NULL;
+	int j;
+    
+	for(j = 0; j < measure->GetLayerCount(); j++)
+	{
+		layer = (MusLayer*)measure->m_children[j];
+		//layer->Init( m_r );
+		DrawLayer( dc, layer, measure, staff );
+	}
+ 
+    if ( measure->IsMeasuredMusic()) {
+        dc->EndGraphic( measure, this );
+    }
 }
 
 
 //----------------------------------------------------------------------------
 // MusRC - MusLayer
 //----------------------------------------------------------------------------
-
-
 
 
 // a partir d'un y, trouve la hauteur d'une note exprimee en code touche et
@@ -905,19 +944,20 @@ void MusRC::DrawSlur( MusDC *dc, MusLayer *layer, int x1, int y1, int x2, int y2
 
 }
 
-void MusRC::DrawLayer( MusDC *dc, MusLayer *layer, MusStaff *staff )
+void MusRC::DrawLayer( MusDC *dc, MusLayer *layer, MusMeasure *measure, MusStaff *staff )
 {
 	assert( dc ); // DC cannot be NULL
 
-	MusLayerElement *pelement = NULL;
+	MusLayerElement *element = NULL;
 	int j;
 
 	for(j = 0; j < layer->GetElementCount(); j++)
 	{
-		pelement = (MusLayerElement*)layer->m_children[j];
+		element = (MusLayerElement*)layer->m_children[j];
+        
 		//pelement->Init( m_r );
-        if ( !pelement->m_in_layer_app ) {
-            DrawElement( dc, pelement, layer, staff );
+        if ( !element->m_in_layer_app ) {
+            DrawElement( dc, element, layer, measure, staff );
         }
 	}
 

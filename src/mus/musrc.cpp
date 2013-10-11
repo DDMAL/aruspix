@@ -15,6 +15,7 @@
 
 //----------------------------------------------------------------------------
 
+#include "musdoc.h"
 #include "muslayerelement.h"
 #include "musnote.h"
 
@@ -31,6 +32,7 @@ MusRC::MusRC( )
 	m_currentColour = AxBLACK;
 	m_currentElement = NULL;
     m_currentLayer = NULL;
+    m_currentMeasure = NULL;
 	m_currentStaff = NULL;
     m_currentSystem = NULL;
 
@@ -60,6 +62,7 @@ void MusRC::SetDoc( MusDoc *doc )
 		m_page = NULL;
         m_currentElement = NULL;
         m_currentLayer = NULL;
+        m_currentMeasure = NULL;
         m_currentStaff = NULL;
         m_currentSystem = NULL;
         DoReset();
@@ -96,6 +99,8 @@ void MusRC::SetPage( MusPage *page )
     //m_pageMaxX = m_doc->m_pageWidth-40; // is this a dead margin?
 
 	m_currentElement = NULL;
+    m_currentLayer = NULL;
+    m_currentMeasure = NULL;
 	m_currentStaff = NULL;
     
     /*

@@ -100,7 +100,7 @@ public:
     
     /**
      * Add a sameAs attribute to the object.
-     * If a filename is given, the attribute with be filename#id
+     * If a filename is given, the attribute will be filename#id.
      * If several value are added, they will be separated by a whitespace.
      */
     void AddSameAs( std::string id, std::string filename = "" );
@@ -141,8 +141,18 @@ public:
     
     virtual bool Save( ArrayPtrVoid params ) { return false; };
     virtual bool TrimSystem( ArrayPtrVoid params );
-    virtual bool UpdateLayerElementXPos( ArrayPtrVoid params );
-    virtual bool UpdateSystemAndStaffYPos( ArrayPtrVoid params );
+
+    /**
+     * Lay out the X positions of the staff content looking that the bounding boxes.
+     * The m_x_rel is updated appropriately
+     */
+    virtual bool LayOutLayerElementXPos( ArrayPtrVoid params );
+    
+    /**
+     * Lay out the system and staff Y positions looking that the bounding boxes of each staff.
+     * The m_y_rel of systems and staves is updated appropriately
+     */
+    virtual bool LayOutSystemAndStaffYPos( ArrayPtrVoid params );
 
 public:
     ArrayOfMusObjects m_children;

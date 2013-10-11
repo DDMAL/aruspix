@@ -15,6 +15,7 @@
 #include "muspage.h"
 #include "mussystem.h"
 #include "musstaff.h"
+#include "musmeasure.h"
 #include "muslayer.h"
 #include "muslayerelement.h"
 #include "musbarline.h"
@@ -404,10 +405,11 @@ bool MusWWGOutput::WritePage( const MusPage *page )
             //MusStaff *cstaff
             //staff = MusMLFOutput::SplitSymboles( cstaff ); // split the symbols (sharp, dots, etc. - this should probably be optional)
             m_current_staff = (MusStaff*)system->m_children[j];
-            for (k = 0; k < m_current_staff->GetLayerCount(); k ++)
+            for (k = 0; k < m_current_staff->GetMeasureCount(); k ++)
             {
-                MusLayer *layer = (MusLayer*)m_current_staff->m_children[k];
-                WriteLayer( layer, l );
+                // This needs to be fixed
+                //MusLayer *layer = (MusLayer*)m_current_staff->m_children[k];
+                //WriteLayer( layer, l );
             }
             l++;
         }
@@ -904,6 +906,7 @@ bool MusWWGInput::ReadPage( MusPage *page )
     for (j = 0; j < nbrePortees; j++) 
 	{
 		MusStaff *staff = new MusStaff( j + 1 );
+        MusMeasure *measure = new MusMeasure( false );
         MusLayer *layer = new MusLayer( 1 ); // only one layer per staff
 		ReadStaff( staff, layer, j );
         if ( m_noLigne > system_no + 1 ) { // we have a new system
@@ -919,7 +922,8 @@ bool MusWWGInput::ReadPage( MusPage *page )
         if ( m_indentDroite ) {      
             system->m_systemRightMar = m_indentDroite;
         }
-        staff->AddLayer( layer );
+        measure->AddLayer( layer );
+        staff->AddMeasure( measure );
         system->AddStaff( staff );
 	}
     // add the last system

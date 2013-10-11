@@ -10,7 +10,7 @@
 #define __MUS_SYSTEM_H__
 
 #include "musbarline.h"
-#include "muspage.h"
+#include "musobject.h"
 
 #define SYSTEM_OFFSET 190
 

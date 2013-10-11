@@ -121,19 +121,21 @@ void MusDoc::SpaceMusic() {
     rc.DrawPage(  &bb_dc, page, false );
     
     ArrayPtrVoid params;
-    int shift = 0;
-    params.push_back( &shift );
+    int measure_shift = 0;
+    int element_shift = 0;
+    params.push_back( &measure_shift );
+    params.push_back( &element_shift );
     
-    MusFunctor updateXPosition( &MusLayerElement::UpdateLayerElementXPos );
+    MusFunctor updateXPosition( &MusLayerElement::LayOutLayerElementXPos );
     this->Process( &updateXPosition, params );
     
     params.clear();
-    shift = m_pageHeight - page->m_pageTopMar;
+    int system_shift = m_pageHeight - page->m_pageTopMar;
     int staff_shift = 0;
-    params.push_back( &shift );
+    params.push_back( &system_shift );
     params.push_back( &staff_shift );
     
-    MusFunctor updateYPosition( &MusObject::UpdateSystemAndStaffYPos );
+    MusFunctor updateYPosition( &MusObject::LayOutSystemAndStaffYPos );
     this->Process( &updateYPosition, params );
     
     //rc.DrawPage(  &bb_dc, page , false );
