@@ -121,7 +121,7 @@ void MusSvgDC::Commit() {
         outfile << "\t<defs>\n";
         
         std::vector<std::string>::const_iterator it;
-        for(it = m_leipzig_glyphs.begin(); it != m_leipzig_glyphs.end(); ++i)
+        for(it = m_leipzig_glyphs.begin(); it != m_leipzig_glyphs.end(); ++it)
         {
             outfile << "\t\t";
             copy_wxTransferFileToStream( Mus::GetResourcesPath() + "/svg/" + (*it) + ".xml", outfile );
