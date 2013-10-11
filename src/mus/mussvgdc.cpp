@@ -98,7 +98,7 @@ void MusSvgDC::Commit() {
     }
 
     std::ostream *outfile;
-    if (!m_filename.empty()) {
+    if (m_filename != "") {
         outfile = new std::ofstream(m_filename.c_str());
     } else {
         outfile = &m_outdata;

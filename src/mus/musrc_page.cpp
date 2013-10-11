@@ -757,7 +757,7 @@ void MusRC::DrawMeasure( MusDC *dc, MusMeasure *measure, MusStaff *staff, MusSys
     }
     else
     {
-        assert( m_doc->GetType() == Transcription );
+        //assert( m_doc->GetType() == Transcription );
         measure->m_x_drawing = measure->m_x_abs;
     }
     

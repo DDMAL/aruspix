@@ -34,6 +34,7 @@
 
 //----------------------------------------------------------------------------
 
+
 #include <regex.h>
 
 #define BEAM_INITIAL    0x01
@@ -131,10 +132,11 @@ void MusPaeInput::convertPlainAndEasyToKern(std::istream &infile, std::ostream &
     
     // read values
     while (!infile.eof()) {
-        infile.getline(data_line, 10000, '\n');
+        infile.getline(data_line, 10000);
+        std::cerr << data_line;
         if (infile.eof()) {
-            //std::cerr << "Truncated file or ending tag missing" << std::endl;
-            //exit(1);
+            std::cerr << "Truncated file or ending tag missing" << std::endl;
+            exit(1);
         }
         getAtRecordKeyValue(data_key, data_value, data_line);
         if (strcmp(data_key,"end")==0) {   

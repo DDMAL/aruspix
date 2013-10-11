@@ -253,9 +253,12 @@ extern "C" {
         string cpp_pae = *new string(pae);
         string out_str;
         
-        Mus::SetResourcesPath("data/svg/");
+        cerr << cpp_pae;
+        
+        Mus::SetResourcesPath("/data");
         
         MusDoc *doc =  new MusDoc();
+        doc->Reset(Raw);
         
         MusPaeInput mpae( doc, NULL );
         mpae.ImportString(cpp_pae);
@@ -285,9 +288,11 @@ extern "C" {
         // render the page
         rc.DrawPage(svg, page , false);
         
+        svg->Commit();
+        
         // get the data
         out_str = svg->m_outdata.str();
-
+        
         delete svg;
         return out_str.c_str();
     }

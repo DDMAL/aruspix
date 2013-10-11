@@ -102,8 +102,9 @@ public:
     
     virtual void EndPage();
     
-    // I know, just want to test it
+    // RZ FIXME testing
     std::stringstream m_outdata;
+    void Commit(); //was private
     
 private:
     
@@ -126,8 +127,6 @@ private:
     // holds the list of glyphs from the leipzig font used so far
     // they will be added at the end of the file as <defs>
     std::vector<std::string> m_leipzig_glyphs;
-        
-    void Commit();    
     
     void WriteLine( std::string );
     
