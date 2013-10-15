@@ -102,14 +102,14 @@ private:
         double m_height;
     } BoundingBox;
     
-    static BoundingBox *InitializeStatic();
+    static void InitializeStatic();
   
 public:
 
     
 private:
     
-    static BoundingBox *m_bBox;
+    static BoundingBox m_bBox[67];
     
     static bool m_initialized;
 };
