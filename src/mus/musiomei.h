@@ -195,10 +195,11 @@ public:
     MusMeiInput( MusDoc *doc, std::string filename );
     virtual ~MusMeiInput();
     
-    
-    bool ImportFile( );    
+    bool ImportFile( );
+    bool ImportString(std::string mei);
     
 private:
+    bool ReadMei( TiXmlElement *root );
     bool ReadMeiHeader( TiXmlElement *meihead );
     /** Reads the content of a <layer> or of a <rdg> for <app> within <layer> */
     bool ReadMeiPage( TiXmlElement *page );
