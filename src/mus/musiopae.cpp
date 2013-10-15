@@ -37,10 +37,27 @@
 
 #include <regex.h>
 
+/* Leave them here form now
+#include "../../llvm_regexp/regex_impl.h"
+#include "../../llvm_regexp/regutils.h"
+#include "../../llvm_regexp/regex2.h"
+
+#include "../../llvm_regexp/regcclass.h"
+#include "../../llvm_regexp/regcname.h"
+
+#define regex_t llvm_regex_t
+#define regmatch_t llvm_regmatch_t
+#define regcomp llvm_regcomp
+#define regerror llvm_regerror
+#define regexec llvm_regexec
+#define regfree llvm_regfree
+*/
+
 #define BEAM_INITIAL    0x01
 #define BEAM_MEDIAL     0x02
 #define BEAM_TERMINAL      0x04
 
+ 
 // User interface variables:
 int       debugQ = 0;                // used with --debug option
 int       stdoutQ = 0;
@@ -133,9 +150,8 @@ void MusPaeInput::convertPlainAndEasyToKern(std::istream &infile, std::ostream &
     // read values
     while (!infile.eof()) {
         infile.getline(data_line, 10000);
-        std::cerr << data_line;
         if (infile.eof()) {
-            std::cerr << "Truncated file or ending tag missing" << std::endl;
+            //std::cerr << "Truncated file or ending tag missing" << std::endl;
             exit(1);
         }
         getAtRecordKeyValue(data_key, data_value, data_line);
@@ -975,11 +991,11 @@ int MusPaeInput::getNote( const char* incipit, NoteObject *note, MeasureObject *
         //std::cout << "regexp " << is_not_last_note << std::endl;
         if ( is_not_last_note != 0 ) {
             //note->beam = -1; // close the beam
-            /*
-            note->beam |= BEAM_TERMINAL;
-            */ // ax2.3
+
+            //note->beam |= BEAM_TERMINAL;
+             // ax2.3
         }
-    }
+    } 
     
     // trills
     regcomp(&re, "^[^ABCDEFG]*t", REG_EXTENDED);

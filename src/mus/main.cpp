@@ -87,7 +87,7 @@ void display_usage() {
     cerr << "Resources default dir: " << Mus::GetResourcesPath() << endl;
 }
 
-int main(int argc, char** argv) {
+int no_main(int argc, char** argv) {
     
     int opt;
     
@@ -249,19 +249,26 @@ int main(int argc, char** argv) {
 }
 
 extern "C" {
-    const char * pae2svg(const char * pae) {
-        string cpp_pae = *new string(pae);
+    char * pae2svg(const char * pae) {
+        string cpp_pae(pae);
         string out_str;
-        
-        cerr << cpp_pae;
+        char * leak_me;
         
         Mus::SetResourcesPath("/data");
         
         MusDoc *doc =  new MusDoc();
         doc->Reset(Raw);
         
-        MusPaeInput mpae( doc, NULL );
-        mpae.ImportString(cpp_pae);
+        
+        MusPaeInput *mpae = new MusPaeInput( doc, "" );
+        mpae->ImportString(cpp_pae);
+        //mpae->ImportFile();
+        /*
+        MusMeiInput meiinput( doc, "/data/svg/untitled.mei" );
+        if ( !meiinput.ImportFile()) {
+            cerr << "Great! it CRASHED!";
+            exit(1);
+        }*/
         
         // Create a new visual layout and spave the music
         //doc->Realize( );
@@ -294,6 +301,10 @@ extern "C" {
         out_str = svg->m_outdata.str();
         
         delete svg;
-        return out_str.c_str();
+        delete doc;
+        //delete mpae;
+        leak_me = (char *)malloc(strlen(out_str.c_str()));
+        strcpy(leak_me, out_str.c_str());
+        return leak_me;
     }
 }

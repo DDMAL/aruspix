@@ -1,0 +1,49 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+
+    <title>Dynamic demo</title>
+
+<script src="../build/aruspix.js" type="text/javascript"></script>	
+
+<script type="text/javascript">
+function render( notes )
+{
+		//int_sqrt = Module.cwrap('_pae2svg', 'char', ['char'])
+		
+			var pae = "@start:00000400003643-1.1.1\n \
+		@clef:C-1\n \
+		@keysig:xFC\n \
+		@key:\n \
+		@timesig:3/4\n \
+		@data: " + notes + "\n \
+		@end:00000400003643-1.1.1\n";
+			var ptr;
+			var svg;
+			//alert ( pae );
+			
+			pae2svg = Module.cwrap('pae2svg', 'string', ['string', 'string'])
+			
+			//c_str = allocate(intArrayFromString(pae), 'i8', ALLOC_STACK);
+			//ptr = _pae2svg( c_str );
+			//console.log(Pointer_stringify(ptr));
+			
+			svg = pae2svg(pae);
+			
+			document.getElementById('test').innerHTML = svg;//Pointer_stringify(ptr);
+
+};
+</script>
+</head>
+<body>
+Dynamic input demo
+	<div id="test"></div>
+	
+	<hr>
+  <form onsubmit="render(texty.value); return false">
+    PAE: <input type="text" name="texty" value="''4D/{8D6CD}4EC/i/8{D'B}AG"><br>
+    <input type="submit" value="Go!">
+  </form>
+	
+</body>
