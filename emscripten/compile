@@ -64,7 +64,7 @@ emcc --closure 0 -O2 \
 	lib/regex/regfree.c \
 	lib/regex/regerror.c \
 	--embed-file data/svg/ \
-	-s EXPORTED_FUNCTIONS="['_pae2svg']" \
+	-s EXPORTED_FUNCTIONS="['_convertMusic']" \
     -o build/aruspix.js
 
 # Unused

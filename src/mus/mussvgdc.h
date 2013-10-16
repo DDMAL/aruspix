@@ -65,6 +65,8 @@ public:
     
     virtual MusPoint GetLogicalOrigin( );
 
+    std::string GetStringSVG(); // get the string representation of the svg
+    
     // Drawing methods
     
     virtual void DrawComplexBezierPath(int x, int y, int bezier1_coord[6], int bezier2_coord[6]);
@@ -102,10 +104,6 @@ public:
     
     virtual void EndPage();
     
-    // RZ FIXME testing
-    std::stringstream m_outdata;
-    void Commit(); //was private
-    
 private:
     
     bool copy_wxTransferFileToStream(const std::string& filename, std::ostream& dest);
@@ -128,6 +126,8 @@ private:
     // they will be added at the end of the file as <defs>
     std::vector<std::string> m_leipzig_glyphs;
     
+    void Commit();
+    
     void WriteLine( std::string );
     
     //
@@ -136,7 +136,10 @@ private:
     std::string m_penColour;
     std::string m_penWidth;
     std::string m_penStyle;
-        
+    
+    // XML redered string if rendering to String.
+    std::stringstream m_outdata;
+    
     std::string GetColour( int colour );
         
 };

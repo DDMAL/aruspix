@@ -644,4 +644,10 @@ std::string MusSvgDC::GetColour( int colour )
     }
 }
 
+std::string MusSvgDC::GetStringSVG() {
+    if (!m_committed)
+        Commit();
+    
+    return m_outdata.str();
+}
 

@@ -26,6 +26,11 @@
 
 using namespace std;
 
+typedef enum _file_types {
+    mei_file = 0,
+    pae_file,
+} ConvertFileType;
+
 string m_infile;
 string m_svgdir;
 string m_outfile;
@@ -71,6 +76,50 @@ std::vector<std::string> split(const std::string &s, char delim) {
     std::vector<std::string> elems;
     split(s, delim, elems);
     return elems;
+}
+
+MusSvgDC *RenderToSVG(string out_file, MusDoc *doc) {
+    // Create a new visual layout and spave the music
+    //doc->Realize( );
+    doc->SpaceMusic();
+    
+    // Get the current system for the SVG clipping size    
+    MusPage *page = dynamic_cast<MusPage*>(doc->m_children[0]);
+    MusSystem *system = dynamic_cast<MusSystem*>(page->m_children[0]);
+    
+    // creare a new local RC and set the above created layout
+    MusRC rc;
+    rc.SetDoc(doc);
+    // no left margin
+    //layout->m_leftMargin = 0; // good done here?
+    
+    // Create the SVG object, h & w come from the system
+    // we add border*2 so it is centered into the image
+    MusSvgDC *svg = new MusSvgDC(m_outfile.c_str(), system->m_contentBB_x2 - system->m_contentBB_x1 + m_boder*2, (system->m_contentBB_y2 - system->m_contentBB_y1) + m_boder*2);
+    
+    // set scale and border from user options
+    svg->SetUserScale((double)m_scale / 100, (double)m_scale / 100);
+    svg->SetLogicalOrigin(m_boder, m_boder);
+    
+    // render the page
+    rc.DrawPage(svg, page , false);
+    
+    return svg;
+}
+
+void SvgToFile(string out_file, MusDoc *doc) {
+    MusSvgDC *svg = RenderToSVG(out_file, doc);
+    delete svg;
+}
+
+string SvgToString(MusDoc *doc) {
+    string out_str;
+    MusSvgDC *svg = RenderToSVG("", doc);
+    
+    // get the data
+    out_str = svg->GetStringSVG();
+    delete svg;
+    return out_str;
 }
 
 void display_usage() {
@@ -208,33 +257,8 @@ int no_main(int argc, char** argv) {
     
     // Create SVG or mei
     if (m_outformat == "svg") {
-        
-        // Create a new visual layout and spave the music
-        //doc->Realize( );
-        doc->SpaceMusic();
-        
-        // Get the current system for the SVG clipping size    
-        MusPage *page = dynamic_cast<MusPage*>(doc->m_children[0]);
-        MusSystem *system = dynamic_cast<MusSystem*>(page->m_children[0]);
-        
-        // creare a new local RC and set the above created layout
-        MusRC rc;
-        rc.SetDoc(doc);
-        // no left margin
-        //layout->m_leftMargin = 0; // good done here?
-        
-        // Create the SVG object, h & w come from the system
-        // we add border*2 so it is centered into the image
-        MusSvgDC *svg = new MusSvgDC(m_outfile.c_str(), system->m_contentBB_x2 - system->m_contentBB_x1 + m_boder*2, (system->m_contentBB_y2 - system->m_contentBB_y1) + m_boder*2);
-        
-        // set scale and border from user options
-        svg->SetUserScale((double)m_scale / 100, (double)m_scale / 100);
-        svg->SetLogicalOrigin(m_boder, m_boder);
-        
-        // render the page
-        rc.DrawPage(svg, page , false);
-        
-        delete svg;
+        // Write it to file
+        SvgToFile(m_outfile, doc);
     } else {
         MusXMLOutput meioutput(doc, m_outfile.c_str());
         if (!meioutput.ExportFile()) {
@@ -249,8 +273,8 @@ int no_main(int argc, char** argv) {
 }
 
 extern "C" {
-    char * pae2svg(const char * pae) {
-        string cpp_pae(pae);
+    char * convertMusic(ConvertFileType input_format, ConvertFileType output_format, const char * data) {
+        string cpp_pae(data);
         string out_str;
         char * leak_me;
         
@@ -259,50 +283,23 @@ extern "C" {
         MusDoc *doc =  new MusDoc();
         doc->Reset(Raw);
         
+        // default to mei if unset.
+        if (input_format == pae_file) {
+            MusPaeInput mpae( doc, "" );
+            mpae.ImportString(cpp_pae); //cannot fail
+        } else {
+            MusMeiInput meiinput( doc, "/data/svg/untitled.mei" );
+            if ( !meiinput.ImportFile()) {
+                return 0;
+            }
+        }
         
-        MusPaeInput *mpae = new MusPaeInput( doc, "" );
-        mpae->ImportString(cpp_pae);
-        //mpae->ImportFile();
-        /*
-        MusMeiInput meiinput( doc, "/data/svg/untitled.mei" );
-        if ( !meiinput.ImportFile()) {
-            cerr << "Great! it CRASHED!";
-            exit(1);
-        }*/
+        // in the future we will be able to render to mei too
+        out_str = SvgToString(doc);
         
-        // Create a new visual layout and spave the music
-        //doc->Realize( );
-        doc->SpaceMusic();
-        
-        // Get the current system for the SVG clipping size    
-        MusPage *page = dynamic_cast<MusPage*>(doc->m_children[0]);
-        MusSystem *system = dynamic_cast<MusSystem*>(page->m_children[0]);
-        
-        // creare a new local RC and set the above created layout
-        MusRC rc;
-        rc.SetDoc(doc);
-        // no left margin
-        //layout->m_leftMargin = 0; // good done here?
-        
-        // Create the SVG object, h & w come from the system
-        // we add border*2 so it is centered into the image
-        MusSvgDC *svg = new MusSvgDC("", system->m_contentBB_x2 - system->m_contentBB_x1 + m_boder*2, (system->m_contentBB_y2 - system->m_contentBB_y1) + m_boder*2);
-        
-        // set scale and border from user options
-        svg->SetUserScale((double)m_scale / 100, (double)m_scale / 100);
-        svg->SetLogicalOrigin(m_boder, m_boder);
-        
-        // render the page
-        rc.DrawPage(svg, page , false);
-        
-        svg->Commit();
-        
-        // get the data
-        out_str = svg->m_outdata.str();
-        
-        delete svg;
         delete doc;
-        //delete mpae;
+
+        /* is this the correct way to output strings? */
         leak_me = (char *)malloc(strlen(out_str.c_str()));
         strcpy(leak_me, out_str.c_str());
         return leak_me;

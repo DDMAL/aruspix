@@ -23,13 +23,13 @@ function render( notes )
 			var svg;
 			//alert ( pae );
 			
-			pae2svg = Module.cwrap('pae2svg', 'string', ['string', 'string'])
+			convertMusic = Module.cwrap('convertMusic', 'string', ['integer', 'integer', 'string'])
 			
 			//c_str = allocate(intArrayFromString(pae), 'i8', ALLOC_STACK);
 			//ptr = _pae2svg( c_str );
 			//console.log(Pointer_stringify(ptr));
 			
-			svg = pae2svg(pae);
+			svg = convertMusic(1, 0, pae);
 			
 			document.getElementById('test').innerHTML = svg;//Pointer_stringify(ptr);
 
