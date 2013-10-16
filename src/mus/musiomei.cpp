@@ -37,7 +37,6 @@
 //----------------------------------------------------------------------------
 
 MusMeiOutput::MusMeiOutput( MusDoc *doc, std::string filename ) :
-    // This is pretty bad. We open a bad fileoutputstream as we don't use it
 	MusFileOutputStream( doc )
 {
     m_filename = filename;
@@ -604,7 +603,6 @@ std::string MusMeiOutput::DocTypeToStr(DocType type)
 //----------------------------------------------------------------------------
 
 MusMeiInput::MusMeiInput( MusDoc *doc, std::string filename ) :
-    // This is pretty bad. We open a bad fileoinputstream as we don't use it
 	MusFileInputStream( doc )
 {
     m_filename = filename;
@@ -631,10 +629,7 @@ MusMeiInput::~MusMeiInput()
 bool MusMeiInput::ImportFile( )
 {
     try {
-        TiXmlElement *current;
-        
         m_doc->Reset( Raw );
-
         TiXmlDocument doc( m_filename.c_str() );
         bool loadOkay = doc.LoadFile();
         if (!loadOkay)
@@ -642,64 +637,88 @@ bool MusMeiInput::ImportFile( )
             return false;
         }
         TiXmlElement *root = doc.RootElement();
-        if ( root && (current = root->FirstChildElement( "meiHead" ) ) ) 
-        {
-            ReadMeiHeader( current );
+        return ReadMei( root );
         }
-        // music
-        TiXmlElement *music = NULL;
-        TiXmlElement *body = NULL;
-        TiXmlElement *mdiv = NULL;
-        TiXmlElement *score = NULL;
-        if ( root ) {
-            music = root->FirstChildElement("music");
-        }
-        if ( music) {
-            body = music->FirstChildElement("body");
-        }
-		if ( body ) {
-            mdiv = body->FirstChildElement("mdiv");
-        }
-        if ( mdiv ) {
-            score = mdiv->FirstChildElement("score");
-        }
-        if ( score ) {
-            
-            // check if there is a type attribute for the score
-            DocType type;
-            if ( score->Attribute( "type" ) ) {
-                type = StrToDocType( score->Attribute( "type" ) );
-                m_doc->Reset( type );
-            }
-            
-            // this is a page-based mei file, we just loop trough the pages
-            if ( score->FirstChildElement( "page" ) ) {             
-                for( current = score->FirstChildElement( "page" ); current; current = current->NextSiblingElement( "page" ) ) {
-                    m_page = new MusPage( );
-                    SetMeiUuid( current, m_page );
-                    if (ReadMeiPage( current )) {
-                        m_doc->AddPage( m_page );
-                    }
-                    else {
-                        delete m_page;
-                    }
-                    m_page = NULL;
-                }
-            }
-            else {
-                m_page = new MusPage( );
-                m_system = new MusSystem( );
-                m_page->AddSystem( m_system );
-                m_doc->AddPage( m_page );
-                return ReadUnsupported( score );
-            }
-        }
-        return true;
+    catch( char * str ) {
+        Mus::LogError("%s", str );
+        return false;
+    }
+}
+
+bool MusMeiInput::ImportString( const std::string mei )
+{
+    try {
+        m_doc->Reset( Raw );
+        TiXmlDocument doc;
+        doc.Parse( mei.c_str() );
+        TiXmlElement *root = doc.RootElement();
+        return ReadMei( root );
     }
     catch( char * str ) {
         Mus::LogError("%s", str );
         return false;
-   }
+    }
+}
+
+
+
+bool MusMeiInput::ReadMei( TiXmlElement *root )
+{
+    TiXmlElement *current;
+    
+    if ( root && (current = root->FirstChildElement( "meiHead" ) ) )
+    {
+        ReadMeiHeader( current );
+    }
+    // music
+    TiXmlElement *music = NULL;
+    TiXmlElement *body = NULL;
+    TiXmlElement *mdiv = NULL;
+    TiXmlElement *score = NULL;
+    if ( root ) {
+        music = root->FirstChildElement("music");
+    }
+    if ( music) {
+        body = music->FirstChildElement("body");
+    }
+    if ( body ) {
+        mdiv = body->FirstChildElement("mdiv");
+    }
+    if ( mdiv ) {
+        score = mdiv->FirstChildElement("score");
+    }
+    if ( score ) {
+        
+        // check if there is a type attribute for the score
+        DocType type;
+        if ( score->Attribute( "type" ) ) {
+            type = StrToDocType( score->Attribute( "type" ) );
+            m_doc->Reset( type );
+        }
+        
+        // this is a page-based mei file, we just loop trough the pages
+        if ( score->FirstChildElement( "page" ) ) {             
+            for( current = score->FirstChildElement( "page" ); current; current = current->NextSiblingElement( "page" ) ) {
+                m_page = new MusPage( );
+                SetMeiUuid( current, m_page );
+                if (ReadMeiPage( current )) {
+                    m_doc->AddPage( m_page );
+                }
+                else {
+                    delete m_page;
+                }
+                m_page = NULL;
+            }
+        }
+        else {
+            m_page = new MusPage( );
+            m_system = new MusSystem( );
+            m_page->AddSystem( m_system );
+            m_doc->AddPage( m_page );
+            return ReadUnsupported( score );
+        }
+    }
+    return true;
 }
 
 bool MusMeiInput::ReadMeiHeader( TiXmlElement *meiHead )
