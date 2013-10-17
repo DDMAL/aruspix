@@ -30,7 +30,7 @@ class MusSvgDC: public MusDC
 {
 public:
 
-    MusSvgDC ( std::string f, int width, int height );
+    MusSvgDC ( int width, int height );
     virtual ~MusSvgDC();
     
     // Setters
@@ -106,15 +106,21 @@ public:
     
 private:
     
-    bool copy_wxTransferFileToStream(const std::string& filename, std::ostream& dest);
+    /**
+     * Copy the content of a file to the output stream.
+     * This is used for copying <defs> items.
+     */
+    bool CopyFileToStream(const std::string& filename, std::ostream& dest);
     
     // we use a std::stringstream because we want to prepend the <defs> which will know only when we reach the end of the page
     // some viewer seem to support to have the <defs> at the end, but some do not (pdf2svg, for example)
-    // for this reason, the file is finally written only from the destructor or when Flush() is called
-    std::stringstream m_outfile;
+    // for this reason, the full svg is finally written a string from the destructor or when Flush() is called
+    std::stringstream m_outdata;
+    
+    // the std::stringstream we are writing the svg (without <defs>)
+    std::stringstream m_svg;
     
     bool m_committed; // did we flushed the file?
-    std::string m_filename;
     int m_graphics;
     int m_indents;
     int m_width, m_height;
@@ -136,9 +142,6 @@ private:
     std::string m_penColour;
     std::string m_penWidth;
     std::string m_penStyle;
-    
-    // XML redered string if rendering to String.
-    std::stringstream m_outdata;
     
     std::string GetColour( int colour );
         

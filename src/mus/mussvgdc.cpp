@@ -37,7 +37,7 @@ static inline double RadToDeg(double deg) { return (deg * 180.0) / M_PI; }
 //----------------------------------------------------------------------------
 
 
-MusSvgDC::MusSvgDC (std::string f, int width, int height):
+MusSvgDC::MusSvgDC(int width, int height):
     MusDC()
 {	
 	
@@ -54,18 +54,15 @@ MusSvgDC::MusSvgDC (std::string f, int width, int height):
     SetBrush( AxBLACK, AxSOLID );
     SetPen( AxBLACK, 1, AxSOLID );
 
-    //m_font  = *wxNORMAL_FONT;
-
     m_graphics = 0;
     m_indents = 1;
     
     m_leipzig_glyphs.clear();
     
     m_committed = false;
-    m_filename = f ;
     
-    m_outfile.str("");
-    m_outfile.clear();
+    m_svg.str("");
+    m_svg.clear();
     
     m_outdata.clear();
 }
@@ -79,15 +76,11 @@ MusSvgDC::~MusSvgDC ( )
 }
 
 
-bool MusSvgDC::copy_wxTransferFileToStream(const std::string& filename, std::ostream& dest)
+bool MusSvgDC::CopyFileToStream(const std::string& filename, std::ostream& dest)
 {
-    
     std::ifstream source( filename.c_str(), std::ios::binary );
-    
     dest << source.rdbuf();
-    
     source.close();
-    
     return true;
 }
 
@@ -95,13 +88,6 @@ void MusSvgDC::Commit() {
 
     if (m_committed) {
         return;
-    }
-
-    std::ostream *outfile;
-    if (m_filename != "") {
-        outfile = new std::ofstream(m_filename.c_str());
-    } else {
-        outfile = &m_outdata;
     }
         
     int i;
@@ -118,21 +104,22 @@ void MusSvgDC::Commit() {
     std::string s = Mus::StringFormat ( "<?xml version=\"1.0\" encoding=\"ISO-8859-1\" standalone=\"no\"?>\n<svg width=\"%dpx\" height=\"%dpx\"", (int)((double)m_width * m_userScaleX), (int)((double)m_height * m_userScaleY));
     s += " version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\"  xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n";
     
-    *outfile << s;
+    m_outdata << s;
     
     if (m_leipzig_glyphs.size() > 0)
     {
-        *outfile << "\t<defs>\n";
+        m_outdata << "\t<defs>\n";
         
         std::vector<std::string>::const_iterator it;
         for(it = m_leipzig_glyphs.begin(); it != m_leipzig_glyphs.end(); ++it)
         {
-            *outfile << "\t\t";
-            copy_wxTransferFileToStream( Mus::GetResourcesPath() + "/svg/" + (*it) + ".xml", *outfile );
+            m_outdata << "\t\t";
+            CopyFileToStream( Mus::GetResourcesPath() + "/svg/" + (*it) + ".xml", m_outdata );
         }
-        *outfile << "\t</defs>\n";
+        m_outdata << "\t</defs>\n";
     }
-    *outfile << m_outfile.str();
+    // finally concatenate the svg
+    m_outdata << m_svg.str();
     m_committed = true;
 }
 
@@ -142,7 +129,7 @@ void MusSvgDC::WriteLine( std::string string )
     std::string output;
     output.append( m_indents, '\t' );
     output += string + "\n"; 
-    m_outfile << output;
+    m_svg << output;
 }
 
 
@@ -644,7 +631,8 @@ std::string MusSvgDC::GetColour( int colour )
     }
 }
 
-std::string MusSvgDC::GetStringSVG() {
+std::string MusSvgDC::GetStringSVG()
+{
     if (!m_committed)
         Commit();
     

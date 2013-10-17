@@ -78,7 +78,67 @@ std::vector<std::string> split(const std::string &s, char delim) {
     return elems;
 }
 
-MusSvgDC *RenderToSVG(string out_file, MusDoc *doc) {
+class MusController
+{
+public:
+    // constructors and destructors
+    MusController() {};
+    virtual ~MusController() {};
+    
+    bool LoadFile( string filename );
+    bool LoadString( string data );
+    string RenderToSvg( int pageNo =  1 );
+    
+private:
+    MusDoc m_doc;
+    MusRC m_rc;
+};
+    
+bool MusController::LoadFile( string filename )
+{
+    MusMeiInput meiinput( &m_doc, filename.c_str() );
+    if ( !meiinput.ImportFile()) {
+        cerr << "Error importing " << m_outfile << "." << endl;
+        return false;
+    }
+    
+    m_rc.SetDoc( &m_doc );
+    return true;
+}
+    
+bool MusController::LoadString( string data )
+{
+ 
+    m_rc.SetDoc( &m_doc );
+}
+
+string MusController::RenderToSvg( int pageNo )
+{
+    m_doc.SpaceMusic();
+    
+    // Get the current system for the SVG clipping size
+    MusPage *page = dynamic_cast<MusPage*>(m_doc.m_children[0]);
+    MusSystem *system = dynamic_cast<MusSystem*>(page->m_children[0]);
+    
+    // Create the SVG object, h & w come from the system
+    // we add border*2 so it is centered into the image
+    MusSvgDC *svg = new MusSvgDC(system->m_contentBB_x2 - system->m_contentBB_x1 + m_boder*2, (system->m_contentBB_y2 - system->m_contentBB_y1) + m_boder*2);
+    
+    // set scale and border from user options
+    svg->SetUserScale((double)m_scale / 100, (double)m_scale / 100);
+    svg->SetLogicalOrigin(m_boder, m_boder);
+    
+    // render the page
+    m_rc.DrawPage(svg, page , false);
+    
+    string test = Mus::GetResourcesPath();
+    string out_str = svg->GetStringSVG();
+    delete svg;
+    return out_str;
+}
+
+
+MusSvgDC *RenderToSVG(MusDoc *doc) {
     // Create a new visual layout and spave the music
     //doc->Realize( );
     doc->SpaceMusic();
@@ -95,7 +155,7 @@ MusSvgDC *RenderToSVG(string out_file, MusDoc *doc) {
     
     // Create the SVG object, h & w come from the system
     // we add border*2 so it is centered into the image
-    MusSvgDC *svg = new MusSvgDC(m_outfile.c_str(), system->m_contentBB_x2 - system->m_contentBB_x1 + m_boder*2, (system->m_contentBB_y2 - system->m_contentBB_y1) + m_boder*2);
+    MusSvgDC *svg = new MusSvgDC(system->m_contentBB_x2 - system->m_contentBB_x1 + m_boder*2, (system->m_contentBB_y2 - system->m_contentBB_y1) + m_boder*2);
     
     // set scale and border from user options
     svg->SetUserScale((double)m_scale / 100, (double)m_scale / 100);
@@ -103,20 +163,21 @@ MusSvgDC *RenderToSVG(string out_file, MusDoc *doc) {
     
     // render the page
     rc.DrawPage(svg, page , false);
-    
+
     return svg;
 }
 
 void SvgToFile(string out_file, MusDoc *doc) {
-    MusSvgDC *svg = RenderToSVG(out_file, doc);
+    MusSvgDC *svg = RenderToSVG(doc);
     delete svg;
 }
 
 string SvgToString(MusDoc *doc) {
     string out_str;
-    MusSvgDC *svg = RenderToSVG("", doc);
+    MusSvgDC *svg = RenderToSVG(doc);
     
     // get the data
+    string test = Mus::GetResourcesPath();
     out_str = svg->GetStringSVG();
     delete svg;
     return out_str;
@@ -136,7 +197,7 @@ void display_usage() {
     cerr << "Resources default dir: " << Mus::GetResourcesPath() << endl;
 }
 
-int no_main(int argc, char** argv) {
+int main(int argc, char** argv) {
     
     int opt;
     
@@ -155,7 +216,7 @@ int no_main(int argc, char** argv) {
             case 'n': m_no_mei_hdr = true; break;
                 
             case 'r':
-                Mus::SetResourcesPath(optarg);
+                //Mus::SetResourcesPath(optarg);
                 break;
                 
             case 'o':
@@ -223,6 +284,7 @@ int no_main(int argc, char** argv) {
     cerr << "Reading " << m_infile << "..." << endl;
     
     MusDoc *doc =  new MusDoc();
+    MusController controller;
 
     //MusFileInputStream import;
     
@@ -239,9 +301,7 @@ int no_main(int argc, char** argv) {
             exit(1);
         }
     } else if (m_mei){
-        MusMeiInput meiinput( doc, m_infile.c_str() );
-        if ( !meiinput.ImportFile()) {
-            cerr << "Error importing " << m_outfile << "." << endl;
+        if ( !controller.LoadFile( m_infile ) ) {
             exit(1);
         }
     } else {
@@ -257,8 +317,9 @@ int no_main(int argc, char** argv) {
     
     // Create SVG or mei
     if (m_outformat == "svg") {
+        string svg = controller.RenderToSvg();
         // Write it to file
-        SvgToFile(m_outfile, doc);
+        SvgToString( doc );
     } else {
         MusXMLOutput meioutput(doc, m_outfile.c_str());
         if (!meioutput.ExportFile()) {
