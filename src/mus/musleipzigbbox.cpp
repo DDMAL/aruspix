@@ -22,7 +22,7 @@ MusLeipzigBBox::BoundingBox* MusLeipzigBBox::m_bBox = MusLeipzigBBox::Initialize
 */
 
 
-MusLeipzigBBox::BoundingBox MusLeipzigBBox::m_bBox[67];
+MusLeipzigBBox::BoundingBox MusLeipzigBBox::m_bBox[68];
 
 // Statically initialize the struct
 void MusLeipzigBBox::InitializeStatic() {
@@ -301,6 +301,8 @@ void MusLeipzigBBox::InitializeStatic() {
     m_bBox[LEIPZIG_BBOX_OBLIQUE_FIGURE_9].m_y = -172.0;
     m_bBox[LEIPZIG_BBOX_OBLIQUE_FIGURE_9].m_width = 225.0;
     m_bBox[LEIPZIG_BBOX_OBLIQUE_FIGURE_9].m_height = 327.0;
+    
+    m_initialized = true;
     
     return;
 };

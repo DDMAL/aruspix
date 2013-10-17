@@ -109,7 +109,7 @@ public:
     
 private:
     
-    static BoundingBox m_bBox[67];
+    static BoundingBox m_bBox[68];
     
     static bool m_initialized;
 };
