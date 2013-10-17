@@ -21,6 +21,7 @@ emcc --closure 0 -g \
 	$ARUSPIX_ROOT/src/mus/musbboxdc.cpp \
 	$ARUSPIX_ROOT/src/mus/musbeam.cpp \
 	$ARUSPIX_ROOT/src/mus/musclef.cpp \
+	$ARUSPIX_ROOT/src/mus/muscontroller.cpp \
 	$ARUSPIX_ROOT/src/mus/musdc.cpp \
 	$ARUSPIX_ROOT/src/mus/musdoc.cpp \
 	$ARUSPIX_ROOT/src/mus/musdurationinterface.cpp \

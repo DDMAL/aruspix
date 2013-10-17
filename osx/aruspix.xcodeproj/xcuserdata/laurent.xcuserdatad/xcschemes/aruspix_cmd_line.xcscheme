@@ -15,7 +15,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "8F23816A159462AF00C04D47"
-               BuildableName = "aruspix_headless"
+               BuildableName = "aruspix_cmd_line"
                BlueprintName = "aruspix_cmd_line"
                ReferencedContainer = "container:aruspix.xcodeproj">
             </BuildableReference>
@@ -33,7 +33,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "8F23816A159462AF00C04D47"
-            BuildableName = "aruspix_headless"
+            BuildableName = "aruspix_cmd_line"
             BlueprintName = "aruspix_cmd_line"
             ReferencedContainer = "container:aruspix.xcodeproj">
          </BuildableReference>
@@ -52,11 +52,25 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "8F23816A159462AF00C04D47"
-            BuildableName = "aruspix_headless"
+            BuildableName = "aruspix_cmd_line"
             BlueprintName = "aruspix_cmd_line"
             ReferencedContainer = "container:aruspix.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
+      <CommandLineArguments>
+         <CommandLineArgument
+            argument = "-o test.svg"
+            isEnabled = "YES">
+         </CommandLineArgument>
+         <CommandLineArgument
+            argument = "-r /Users/laurent/projects/aruspix/data"
+            isEnabled = "YES">
+         </CommandLineArgument>
+         <CommandLineArgument
+            argument = "-m /Users/laurent/Downloads/untitled6.mei"
+            isEnabled = "YES">
+         </CommandLineArgument>
+      </CommandLineArguments>
       <AdditionalOptions>
       </AdditionalOptions>
    </LaunchAction>
@@ -70,7 +84,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "8F23816A159462AF00C04D47"
-            BuildableName = "aruspix_headless"
+            BuildableName = "aruspix_cmd_line"
             BlueprintName = "aruspix_cmd_line"
             ReferencedContainer = "container:aruspix.xcodeproj">
          </BuildableReference>

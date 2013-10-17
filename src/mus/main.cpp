@@ -6,44 +6,16 @@
 /////////////////////////////////////////////////////////////////////////////
 
 
-#include <iostream>
 #include <sstream>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string>
 #include <unistd.h>
 
-#include "musbboxdc.h"
-#include "musdoc.h"
-#include "musiodarms.h"
-#include "musiomei.h"
-#include "musiomusxml.h"
-#include "musiopae.h"
-#include "muspage.h"
-#include "musrc.h"
-#include "mussvgdc.h"
-#include "mussystem.h"
+#include "mus.h"
+#include "muscontroller.h"
 
 using namespace std;
-
-typedef enum _file_types {
-    mei_file = 0,
-    pae_file,
-} ConvertFileType;
-
-string m_infile;
-string m_svgdir;
-string m_outfile;
-string m_outformat = "svg";
-int m_scale = 100;
-int m_boder = 10;
-
-bool m_pae = false;
-bool m_darms = false;
-bool m_mei = false;
-bool m_no_mei_hdr = false;
-
-const char *cmdlineopts = "ndmpr:o:t:s:hb:";
 
 // Some handy string split functions
 /*
@@ -78,110 +50,6 @@ std::vector<std::string> split(const std::string &s, char delim) {
     return elems;
 }
 
-class MusController
-{
-public:
-    // constructors and destructors
-    MusController() {};
-    virtual ~MusController() {};
-    
-    bool LoadFile( string filename );
-    bool LoadString( string data );
-    string RenderToSvg( int pageNo =  1 );
-    
-private:
-    MusDoc m_doc;
-    MusRC m_rc;
-};
-    
-bool MusController::LoadFile( string filename )
-{
-    MusMeiInput meiinput( &m_doc, filename.c_str() );
-    if ( !meiinput.ImportFile()) {
-        cerr << "Error importing " << m_outfile << "." << endl;
-        return false;
-    }
-    
-    m_rc.SetDoc( &m_doc );
-    return true;
-}
-    
-bool MusController::LoadString( string data )
-{
- 
-    m_rc.SetDoc( &m_doc );
-}
-
-string MusController::RenderToSvg( int pageNo )
-{
-    m_doc.SpaceMusic();
-    
-    // Get the current system for the SVG clipping size
-    MusPage *page = dynamic_cast<MusPage*>(m_doc.m_children[0]);
-    MusSystem *system = dynamic_cast<MusSystem*>(page->m_children[0]);
-    
-    // Create the SVG object, h & w come from the system
-    // we add border*2 so it is centered into the image
-    MusSvgDC *svg = new MusSvgDC(system->m_contentBB_x2 - system->m_contentBB_x1 + m_boder*2, (system->m_contentBB_y2 - system->m_contentBB_y1) + m_boder*2);
-    
-    // set scale and border from user options
-    svg->SetUserScale((double)m_scale / 100, (double)m_scale / 100);
-    svg->SetLogicalOrigin(m_boder, m_boder);
-    
-    // render the page
-    m_rc.DrawPage(svg, page , false);
-    
-    string test = Mus::GetResourcesPath();
-    string out_str = svg->GetStringSVG();
-    delete svg;
-    return out_str;
-}
-
-
-MusSvgDC *RenderToSVG(MusDoc *doc) {
-    // Create a new visual layout and spave the music
-    //doc->Realize( );
-    doc->SpaceMusic();
-    
-    // Get the current system for the SVG clipping size    
-    MusPage *page = dynamic_cast<MusPage*>(doc->m_children[0]);
-    MusSystem *system = dynamic_cast<MusSystem*>(page->m_children[0]);
-    
-    // creare a new local RC and set the above created layout
-    MusRC rc;
-    rc.SetDoc(doc);
-    // no left margin
-    //layout->m_leftMargin = 0; // good done here?
-    
-    // Create the SVG object, h & w come from the system
-    // we add border*2 so it is centered into the image
-    MusSvgDC *svg = new MusSvgDC(system->m_contentBB_x2 - system->m_contentBB_x1 + m_boder*2, (system->m_contentBB_y2 - system->m_contentBB_y1) + m_boder*2);
-    
-    // set scale and border from user options
-    svg->SetUserScale((double)m_scale / 100, (double)m_scale / 100);
-    svg->SetLogicalOrigin(m_boder, m_boder);
-    
-    // render the page
-    rc.DrawPage(svg, page , false);
-
-    return svg;
-}
-
-void SvgToFile(string out_file, MusDoc *doc) {
-    MusSvgDC *svg = RenderToSVG(doc);
-    delete svg;
-}
-
-string SvgToString(MusDoc *doc) {
-    string out_str;
-    MusSvgDC *svg = RenderToSVG(doc);
-    
-    // get the data
-    string test = Mus::GetResourcesPath();
-    out_str = svg->GetStringSVG();
-    delete svg;
-    return out_str;
-}
 
 void display_usage() {
     cerr << "Aruspix headless usage:" << endl;
@@ -197,9 +65,25 @@ void display_usage() {
     cerr << "Resources default dir: " << Mus::GetResourcesPath() << endl;
 }
 
-int main(int argc, char** argv) {
+int main(int argc, char** argv)
+{
+    
+    string m_infile;
+    string m_svgdir;
+    string m_outfile;
+    string m_outformat = "svg";
+    
+    ConvertFileType m_type;
+    bool m_no_mei_hdr = false;
+    
+    const char *cmdlineopts = "ndmpr:o:t:s:hb:";
     
     int opt;
+    
+    MusController controller;
+    
+    // read pae by default
+    m_type = pae_file;
     
     if (argc < 2) {
         cerr << "Expecting one input file." << endl << endl;
@@ -210,13 +94,13 @@ int main(int argc, char** argv) {
     opt = getopt( argc, argv, cmdlineopts );
     while( opt != -1 ) {
         switch( opt ) {
-            case 'p': m_pae = true; break;
-            case 'd': m_darms = true; break;
-            case 'm': m_mei = true; break;
+            case 'p': m_type = pae_file; break;
+            case 'd': m_type = darms_file; break;
+            case 'm': m_type = mei_file; break;
             case 'n': m_no_mei_hdr = true; break;
                 
             case 'r':
-                //Mus::SetResourcesPath(optarg);
+                Mus::SetResourcesPath(optarg);
                 break;
                 
             case 'o':
@@ -228,11 +112,11 @@ int main(int argc, char** argv) {
                 break;
                 
             case 's':
-                m_scale = atoi(optarg);
+                controller.SetScale( atoi(optarg) );
                 break;
                 
             case 'b':
-                m_boder = atoi(optarg);
+                controller.SetBorder( atoi(optarg) );
                 break;
                 
             case 'h':
@@ -256,57 +140,25 @@ int main(int argc, char** argv) {
         exit(1);
     }
     
-    if ((m_pae && m_mei) || (m_pae && m_darms) || (m_darms && m_mei) || (m_pae && m_darms && m_mei)) {
-        cerr << "Please select only one output option: -d -m -p." << endl;
-        exit(1);
-    }
-    
-    // If no input type is specified, set darms as default
-    if (!m_pae && !m_darms && !m_mei)
-        m_darms = true;
-    
-    
     if (m_outformat != "svg" && m_outformat != "mei") {
         cerr << "Output format can only be: mei svg" << endl;
         exit(1);
     }
     
-    if (m_outformat == "mei" && m_mei) {
+    if (m_outformat == "mei" && (m_type = mei_file)) {
         cerr << "Cannot convert from mei to mei (do not specify -m and -t mei)." << endl;
         exit(1);
     }
     
-    if (m_scale > 1000) {
+    if (controller.GetScale() > 1000) {
         cerr << "Scale cannot be > 1000." << endl;
         exit(1);
     }
     
     cerr << "Reading " << m_infile << "..." << endl;
-    
-    MusDoc *doc =  new MusDoc();
-    MusController controller;
 
-    //MusFileInputStream import;
-    
-    if (m_pae) {
-        MusPaeInput mpae( doc, m_infile.c_str() );
-        if ( !mpae.ImportFile()) {
-            cerr << "Error importing " << m_outfile << "." << endl;
-            exit(1);
-        }
-    } else if (m_darms) {
-        MusDarmsInput mdarms( doc, m_infile.c_str() );
-        if ( !mdarms.ImportFile()) {
-           cerr << "Error importing " << m_outfile << "." << endl;
-            exit(1);
-        }
-    } else if (m_mei){
-        if ( !controller.LoadFile( m_infile ) ) {
-            exit(1);
-        }
-    } else {
-        cerr << "No input type selected! Should never get here, default is DARMS" << endl;
-        exit(1); 
+    if ( !controller.LoadFile( m_infile, m_type ) ) {
+        exit(1);
     }
     
     // create outfile
@@ -317,15 +169,21 @@ int main(int argc, char** argv) {
     
     // Create SVG or mei
     if (m_outformat == "svg") {
-        string svg = controller.RenderToSvg();
+        if ( !controller.RenderToSvgFile( m_outfile ) ) {
+            cerr << "Unable to write SVG to " << m_outfile << "." << endl;
+            exit(1);
+        }
         // Write it to file
-        SvgToString( doc );
+        
     } else {
+        // To be implemented in MusController
+        /*
         MusXMLOutput meioutput(doc, m_outfile.c_str());
         if (!meioutput.ExportFile()) {
             cerr << "Unable to write MEI to " << m_outfile << "." << endl;
             exit(1);
         }
+        */
         
     }
     cerr << "Output written to " << m_outfile << endl;
@@ -335,32 +193,27 @@ int main(int argc, char** argv) {
 
 extern "C" {
     char * convertMusic(ConvertFileType input_format, ConvertFileType output_format, const char * c_data) {
+        
         string data(c_data);
         string out_str;
         char * leak_me;
         
-        Mus::SetResourcesPath("/data");
+        MusController controller;
         
-        MusDoc *doc =  new MusDoc();
-        doc->Reset(Raw);
+        Mus::SetResourcesPath("/data");
         
         // default to mei if unset.
         if (input_format == pae_file) {
-            MusPaeInput mpae( doc, "" );
-            mpae.ImportString(data); //cannot fail
+            controller.LoadString( data, pae_file );
         } else {
-            MusMeiInput meiinput( doc, "" );
-            if ( !meiinput.ImportString(data)) {
-                return 0;
-            }
+            controller.LoadString( data, mei_file );
         }
         
         // in the future we will be able to render to mei too
-        out_str = SvgToString(doc);
-        
-        delete doc;
+        out_str = controller.RenderToSvg();
 
         /* is this the correct way to output strings? */
+        // LP What happen if you just return out_str.c_str() and set the return type to const char *
         leak_me = (char *)malloc(strlen(out_str.c_str()));
         strcpy(leak_me, out_str.c_str());
         return leak_me;

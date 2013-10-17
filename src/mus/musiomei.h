@@ -195,8 +195,8 @@ public:
     MusMeiInput( MusDoc *doc, std::string filename );
     virtual ~MusMeiInput();
     
-    bool ImportFile( );
-    bool ImportString(std::string mei);
+    virtual bool ImportFile( );
+    virtual bool ImportString(std::string mei);
     
 private:
     bool ReadMei( TiXmlElement *root );

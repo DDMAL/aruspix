@@ -38,7 +38,7 @@ public:
     MusDarmsInput( MusDoc *doc, std::string filename );
     virtual ~MusDarmsInput();
     
-    bool ImportFile( );    
+    virtual bool ImportFile( );
     
 private:
     int do_Note(int pos, const char* data, bool rest);

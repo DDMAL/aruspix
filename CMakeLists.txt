@@ -18,6 +18,7 @@ add_executable (aruspix
 	src/mus/musbboxdc.cpp 
 	src/mus/musbeam.cpp
 	src/mus/musclef.cpp 
+	src/mus/muscontroller.cpp
 	src/mus/musdc.cpp 
 	src/mus/musdoc.cpp 	
 	src/mus/musdurationinterface.cpp 

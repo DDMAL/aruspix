@@ -103,7 +103,8 @@ public:
     virtual ~MusFileInputStream();
     
     // read
-    bool ImportFile( ) { return true; }
+    virtual bool ImportFile( ) { return true; }
+    virtual bool ImportString( std::string data ) { return true; }
     
 public:
     
