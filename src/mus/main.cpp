@@ -334,8 +334,8 @@ int main(int argc, char** argv) {
 }
 
 extern "C" {
-    char * convertMusic(ConvertFileType input_format, ConvertFileType output_format, const char * data) {
-        string cpp_pae(data);
+    char * convertMusic(ConvertFileType input_format, ConvertFileType output_format, const char * c_data) {
+        string data(c_data);
         string out_str;
         char * leak_me;
         
@@ -347,10 +347,10 @@ extern "C" {
         // default to mei if unset.
         if (input_format == pae_file) {
             MusPaeInput mpae( doc, "" );
-            mpae.ImportString(cpp_pae); //cannot fail
+            mpae.ImportString(data); //cannot fail
         } else {
-            MusMeiInput meiinput( doc, "/data/svg/untitled.mei" );
-            if ( !meiinput.ImportFile()) {
+            MusMeiInput meiinput( doc, "" );
+            if ( !meiinput.ImportString(data)) {
                 return 0;
             }
         }

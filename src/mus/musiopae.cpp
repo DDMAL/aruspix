@@ -151,8 +151,8 @@ void MusPaeInput::convertPlainAndEasyToKern(std::istream &infile, std::ostream &
     while (!infile.eof()) {
         infile.getline(data_line, 10000);
         if (infile.eof()) {
-            //std::cerr << "Truncated file or ending tag missing" << std::endl;
-            exit(1);
+            std::cerr << "Truncated file or ending tag missing" << std::endl;
+            //exit(1);
         }
         getAtRecordKeyValue(data_key, data_value, data_line);
         if (strcmp(data_key,"end")==0) {   

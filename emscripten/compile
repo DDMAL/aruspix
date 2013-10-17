@@ -9,7 +9,7 @@ if [ ! -d data ]; then mkdir data; fi
 echo "Sync svg resources"
 cp -r ../data/svg data/
 
-emcc --closure 0 -O2 \
+emcc --closure 0 -g \
 	-I$ARUSPIX_ROOT/src \
 	-DCMD_LINE \
 	-DUSE_FAKE_UUIDS \
