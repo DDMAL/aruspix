@@ -70,9 +70,6 @@ MusSvgDC::MusSvgDC(int width, int height):
 
 MusSvgDC::~MusSvgDC ( )
 {
-    if (!m_committed) {
-        Commit();
-    }
 }
 
 
@@ -84,7 +81,7 @@ bool MusSvgDC::CopyFileToStream(const std::string& filename, std::ostream& dest)
     return true;
 }
 
-void MusSvgDC::Commit() {
+void MusSvgDC::Commit( bool xml_tag ) {
 
     if (m_committed) {
         return;
@@ -101,7 +98,12 @@ void MusSvgDC::Commit() {
     WriteLine("</svg>\n") ;
 
     // header
-    std::string s = Mus::StringFormat ( "<?xml version=\"1.0\" encoding=\"ISO-8859-1\" standalone=\"no\"?>\n<svg width=\"%dpx\" height=\"%dpx\"", (int)((double)m_width * m_userScaleX), (int)((double)m_height * m_userScaleY));
+    std::string s;
+    if ( xml_tag ) {
+        s = "<?xml version=\"1.0\" encoding=\"ISO-8859-1\" standalone=\"no\"?>\n";
+    }
+    
+    s += Mus::StringFormat ( "<svg width=\"%dpx\" height=\"%dpx\"", (int)((double)m_width * m_userScaleX), (int)((double)m_height * m_userScaleY));
     s += " version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\"  xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n";
     
     m_outdata << s;
@@ -631,10 +633,10 @@ std::string MusSvgDC::GetColour( int colour )
     }
 }
 
-std::string MusSvgDC::GetStringSVG()
+std::string MusSvgDC::GetStringSVG( bool xml_tag )
 {
     if (!m_committed)
-        Commit();
+        Commit( xml_tag );
     
     return m_outdata.str();
 }

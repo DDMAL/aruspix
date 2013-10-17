@@ -65,7 +65,11 @@ public:
     
     virtual MusPoint GetLogicalOrigin( );
 
-    std::string GetStringSVG(); // get the string representation of the svg
+    /**
+     * Get the the SVG into a string
+     * Add the xml tag if necessary.
+     */
+    std::string GetStringSVG( bool xml_tag = false );
     
     // Drawing methods
     
@@ -132,7 +136,11 @@ private:
     // they will be added at the end of the file as <defs>
     std::vector<std::string> m_leipzig_glyphs;
     
-    void Commit();
+    /**
+     * Flush the data to the internal buffer.
+     * Adds the xml tag if necessary and the <defs> from m_leipzig_glyphs
+     */
+    void Commit( bool xml_tag );
     
     void WriteLine( std::string );
     

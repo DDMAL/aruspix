@@ -104,7 +104,7 @@ bool MusController::LoadString( std::string data, ConvertFileType type )
     return true;
 }
 
-std::string MusController::RenderToSvg( int pageNo )
+std::string MusController::RenderToSvg( int pageNo, bool xml_tag )
 {
     m_doc.SpaceMusic();
     
@@ -123,14 +123,14 @@ std::string MusController::RenderToSvg( int pageNo )
     // render the page
     m_rc.DrawPage( &svg, page , false);
     
-    std::string out_str = svg.GetStringSVG();
+    std::string out_str = svg.GetStringSVG( xml_tag );
     return out_str;
 }
 
 
 bool MusController::RenderToSvgFile( std::string filename, int pageNo )
 {
-    std::string output = RenderToSvg( pageNo );
+    std::string output = RenderToSvg( pageNo, true );
     
     std::ofstream outfile;
     outfile.open ( filename.c_str() );

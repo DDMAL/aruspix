@@ -44,7 +44,7 @@ public:
     /**
      * Render the page in SVG and returns it as a string
      */
-    std::string RenderToSvg( int pageNo =  1 );
+    std::string RenderToSvg( int pageNo =  1, bool xml_tag = false );
 
     /**
      * Render the page in SVG and save it to the file.
