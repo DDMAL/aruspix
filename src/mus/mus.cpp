@@ -13,7 +13,8 @@
 
 //----------------------------------------------------------------------------
 
-#ifndef CMD_LINE
+// AX_APP is define is the Aruspix wxWidget application only
+#ifdef AX_APP
 #include "wx/wxprec.h"
 #include "app/axapp.h"
 #endif
@@ -26,7 +27,7 @@ std::string Mus::m_respath = "/usr/local/share/aruspix";
 //----------------------------------------------------------------------------
 
 std::string Mus::GetAxVersion() {
-#ifdef CMD_LINE
+#ifndef AX_APP
     return std::string("command line"); // we need to add versioning
 #else
     return AxApp::s_version.mb_str();
@@ -34,7 +35,7 @@ std::string Mus::GetAxVersion() {
 }
 
 std::string Mus::GetResourcesPath() {
-#ifdef CMD_LINE
+#ifndef AX_APP
     //hardcode galore
     return m_respath;
 #else
@@ -43,7 +44,7 @@ std::string Mus::GetResourcesPath() {
 }
 
 std::string Mus::GetMusicFontDescStr() {
-#ifdef CMD_LINE
+#ifndef AX_APP
     return std::string("0;13;70;90;90;0;Leipzig 4.7;33");
 #else
     return wxGetApp().m_musicFontDesc.mb_str();
@@ -51,7 +52,7 @@ std::string Mus::GetMusicFontDescStr() {
 }
 
 std::string Mus::GetLyricFontDescStr() {
-#ifdef CMD_LINE
+#ifndef AX_APP
     return std::string("0;12;70;93;90;0;Garamond;0");
 #else
     return wxGetApp().m_lyricFontDesc.mb_str();
@@ -60,7 +61,7 @@ std::string Mus::GetLyricFontDescStr() {
 
 
 int Mus::GetFontPosCorrection(){
-#ifdef CMD_LINE
+#ifndef AX_APP
     return 0;
 #else
     return wxGetApp().m_fontPosCorrection;
@@ -101,7 +102,7 @@ void Mus::LogDebug(const char *fmt, ...)
 {
     va_list args;
     va_start ( args, fmt );
-#ifdef CMD_LINE
+#ifndef AX_APP
     #if defined(_DEBUG)
     vprintf( fmt, args );
     #endif
@@ -115,7 +116,7 @@ void Mus::LogError(const char *fmt, ...)
 {
     va_list args;
     va_start ( args, fmt );
-#ifdef CMD_LINE
+#ifndef AX_APP
     vprintf( fmt, args );
 #else
     wxVLogError( fmt, args );
@@ -127,7 +128,7 @@ void Mus::LogMessage(const char *fmt, ...)
 {
     va_list args;
     va_start ( args, fmt );
-#ifdef CMD_LINE
+#ifndef AX_APP
     vprintf( fmt, args );
 #else
     wxVLogMessage( fmt, args );
@@ -139,7 +140,7 @@ void Mus::LogWarning(const char *fmt, ...)
 {
     va_list args;
     va_start ( args, fmt );
-#ifdef CMD_LINE
+#ifndef AX_APP
     vprintf( fmt, args );
 #else
     wxVLogWarning( fmt, args );

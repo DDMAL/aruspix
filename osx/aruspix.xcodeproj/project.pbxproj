@@ -321,7 +321,7 @@
 		57EA3DE40C00BDEB00414247 /* recbookctrl.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = recbookctrl.h; sourceTree = "<group>"; };
 		8F0576A415C43053002F761C /* mustie.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = mustie.cpp; path = ../src/mus/mustie.cpp; sourceTree = "<group>"; };
 		8F0576A715C43064002F761C /* mustie.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = mustie.h; path = ../src/mus/mustie.h; sourceTree = "<group>"; };
-		8F23816B159462AF00C04D47 /* aruspix_headless */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; name = aruspix_headless; path = aruspix_cmd_line; sourceTree = BUILT_PRODUCTS_DIR; };
+		8F23816B159462AF00C04D47 /* aruspix_cmd_line */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = aruspix_cmd_line; sourceTree = BUILT_PRODUCTS_DIR; };
 		8F2381791594632C00C04D47 /* main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = main.cpp; path = ../src/mus/main.cpp; sourceTree = "<group>"; };
 		8F3367F015A1E417009AAB69 /* musiodarms.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = musiodarms.h; path = ../src/mus/musiodarms.h; sourceTree = "<group>"; };
 		8F3367F115A1E42F009AAB69 /* musiodarms.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = musiodarms.cpp; path = ../src/mus/musiodarms.cpp; sourceTree = "<group>"; };
@@ -621,7 +621,7 @@
 				5769E11B0BF25A1D007772A6 /* axz.icns */,
 				A585251B0A1B983B002D9D8A /* ax.icns */,
 				A58523900A1B9504002D9D8A /* Aruspix.app */,
-				8F23816B159462AF00C04D47 /* aruspix_headless */,
+				8F23816B159462AF00C04D47 /* aruspix_cmd_line */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -780,7 +780,7 @@
 			);
 			name = aruspix_cmd_line;
 			productName = aruspix_headless;
-			productReference = 8F23816B159462AF00C04D47 /* aruspix_headless */;
+			productReference = 8F23816B159462AF00C04D47 /* aruspix_cmd_line */;
 			productType = "com.apple.product-type.tool";
 		};
 		A58508C00A00113C006E82B1 /* Aruspix */ = {
@@ -1055,10 +1055,7 @@
 				LIBRARY_SEARCH_PATHS = "";
 				MACOSX_DEPLOYMENT_TARGET = 10.6;
 				ONLY_ACTIVE_ARCH = NO;
-				OTHER_CFLAGS = (
-					"-DCMD_LINE",
-					"-fexceptions",
-				);
+				OTHER_CFLAGS = "-fexceptions";
 				OTHER_LDFLAGS = "";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx10.7;
@@ -1088,10 +1085,7 @@
 				LIBRARY_SEARCH_PATHS = "";
 				MACOSX_DEPLOYMENT_TARGET = 10.6;
 				ONLY_ACTIVE_ARCH = NO;
-				OTHER_CFLAGS = (
-					"-DCMD_LINE",
-					"-fexceptions",
-				);
+				OTHER_CFLAGS = "-fexceptions";
 				OTHER_LDFLAGS = "";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx10.7;
@@ -1186,6 +1180,7 @@
 					"-D_LARGE_FILES",
 					"-DWX_PRECOMP",
 					"-DNO_GCC_PRAGMA",
+					"-DAX_APP",
 					"-DAX_SUPERIMPOSITION",
 					"-DAX_RECOGNITION",
 					"-DAX_EDITION",
@@ -1276,6 +1271,7 @@
 					"-DNO_GCC_PRAGMA",
 					"-D_LARGE_FILES",
 					"-DWX_PRECOMP",
+					"-DAX_APP",
 					"-DAX_SUPERIMPOSITION",
 					"-DAX_RECOGNITION",
 					"-DAX_EDITION",

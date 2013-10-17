@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 2.8)
 
 project(Aruspix)
 
-add_definitions(-g -DCMD_LINE)
+add_definitions(-g)
 
 include_directories(/usr/local/include)
 
