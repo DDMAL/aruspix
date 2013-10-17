@@ -586,7 +586,7 @@ void EdtEnv::OnSaveSVG( wxCommandEvent &event )
     m_musViewPtr->SetZoom( 100 );
     
     
-    MusSvgDC svgDC (filename.mb_str(), m_musViewPtr->ToRendererX( m_musViewPtr->m_doc->m_pageWidth + 30 )  ,
+    MusSvgDC svgDC (m_musViewPtr->ToRendererX( m_musViewPtr->m_doc->m_pageWidth + 30 )  ,
         m_musViewPtr->ToRendererX( m_musViewPtr->m_doc->m_pageHeight + 10 )) ;
         
     //svgDC.SetUserScale( 1, 1 );
@@ -607,7 +607,11 @@ void EdtEnv::OnSaveSVG( wxCommandEvent &event )
 	//svgDC.SetAxisOrientation( true, false );
     MusRC rc;
     rc.SetDoc(m_musViewPtr->m_doc );
-    rc.DrawPage(  &svgDC, m_musViewPtr->m_page, false ); // ax2 - needs testing
+    rc.DrawPage(  &svgDC, m_musViewPtr->m_page, false );
+    
+    wxString svg = wxString( svgDC.GetStringSVG().c_str() ); // ax3
+    // we still need to write the SVG to the file...
+    //filename.mb_str(),
     
     // reset the zoom
     m_musViewPtr->SetZoom( zoom );
