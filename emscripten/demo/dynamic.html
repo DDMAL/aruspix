@@ -8,42 +8,70 @@
 <script src="../build/aruspix.js" type="text/javascript"></script>	
 
 <script type="text/javascript">
-function render( notes )
-{
-		//int_sqrt = Module.cwrap('_pae2svg', 'char', ['char'])
-		
-			var pae = "@start:00000400003643-1.1.1\n \
-		@clef:C-1\n \
-		@keysig:xFC\n \
-		@key:\n \
-		@timesig:3/4\n \
-		@data: " + notes + "\n \
-		@end:00000400003643-1.1.1\n";
-			var ptr;
-			var svg;
-			//alert ( pae );
-			
-			convertMusic = Module.cwrap('convertMusic', 'string', ['integer', 'integer', 'string'])
-			
-			//c_str = allocate(intArrayFromString(pae), 'i8', ALLOC_STACK);
-			//ptr = _pae2svg( c_str );
-			//console.log(Pointer_stringify(ptr));
-			
-			svg = convertMusic(1, 0, pae);
-			
-			document.getElementById('test').innerHTML = svg;//Pointer_stringify(ptr);
+
+// Export the conversion function
+convertMusic = Module.cwrap('convertMusic', 'string', ['integer', 'integer', 'string'])
+
+function render_music( music, format )
+{	
+	// The trailing newline is needed so we can read the file lines
+	// correctly if the file does not end with a newline
+	var svg = convertMusic(format, 0, music + "\n");
+	document.getElementById('test').innerHTML = svg;
 
 };
+
+function upload_file(input, format) {
+	
+	var file = document.getElementById(input).files[0];
+	
+	var reader = new FileReader();
+
+	// Closure to capture the file information.
+	reader.onload = (function(theFile) {
+		return function(e) {
+		// Render thumbnail.
+		 render_music(e.target.result, format);
+	};
+	})(file);
+
+	// Read in the image file as a data URL.
+	reader.readAsText(file);
+
+  };
+  
 </script>
 </head>
 <body>
-Dynamic input demo
-	<div id="test"></div>
-	
+<h3>Read PAE/MEI from Javascript Demo</h3>
+	<div id="test">	(output will be here)</div>
+
 	<hr>
-  <form onsubmit="render(texty.value); return false">
-    PAE: <input type="text" name="texty" value="''4D/{8D6CD}4EC/i/8{D'B}AG"><br>
-    <input type="submit" value="Go!">
+	Please enter some pae:
+  <form onsubmit="render_music(texty.value, 1); return false">
+	<textarea rows="10" cols="50" name="texty">
+@start:00000400003643-1.1.1
+@clef:C-1
+@keysig:xFC
+@key:
+@timesig:3/4
+@data: ''4D/{8D6CD}4EC/i/8{D'B}AG
+@end:00000400003643-1.1.1
+	</textarea>
+    <input type="submit" value="Render">
   </form>
-	
+  <hr>
+  Or select a PAE file to read:
+
+  <form onsubmit="upload_file('pae_files', 1); return false">
+    <input type="file" id="pae_files" name="files[]" />
+    <input type="submit" value="Render">
+  </form>
+  <hr>
+  Alternatively read a MEI file:
+
+  <form onsubmit="upload_file('mei_files', 0); return false">
+    <input type="file" id="mei_files" name="files[]" />
+    <input type="submit" value="Render">
+  </form>
 </body>
