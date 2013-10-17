@@ -106,7 +106,7 @@ int MusDarmsInput::parseMeter(int pos, const char* data) {
     } else if (data[pos] == 'O') {
         if (data[pos + 1] == '/') {
             pos++;
-            printf("O/ not supported\n");
+            Mus::LogMessage("O/ not supported");
         }
         meter->m_sign = MENSUR_SIGN_O;
         pos++;
@@ -129,7 +129,7 @@ int MusDarmsInput::parseMeter(int pos, const char* data) {
             meter->m_numBase = 1;
         } else {
             pos++;
-            if (data[pos] == '-') printf("Time sig numbers should be divided with ':'.\n");
+            if (data[pos] == '-') Mus::LogMessage("Time sig numbers should be divided with ':'.");
             // same as above, get one or two nums
             n1 = data[++pos] - ASCII_NUMBER_OFFSET; // old school conversion to int
             if (isdigit(data[pos + 1])) {
@@ -139,7 +139,7 @@ int MusDarmsInput::parseMeter(int pos, const char* data) {
             
             meter->m_numBase = n1;
         }
-        printf("Meter is: %i %i\n", meter->m_num, meter->m_numBase);
+        Mus::LogMessage("Meter is: %i %i", meter->m_num, meter->m_numBase);
     }
     
     m_layer->AddElement(meter);
@@ -157,7 +157,7 @@ int MusDarmsInput::do_globalSpec(int pos, const char* data) {
         case 'I': // Voice nr.
             //the next digit should be a number, but we do not care what
             if (!isdigit(data[++pos])) {
-                printf("Expected number after I\n");
+                Mus::LogMessage("Expected number after I");
             }
             break;
             
@@ -171,7 +171,7 @@ int MusDarmsInput::do_globalSpec(int pos, const char* data) {
             if (data[pos] == '-' || data[pos] == '#') {
                 UnrollKeysig(quantity, data[pos]);
             } else {
-                printf("Invalid char for K: %c\n", data[pos]);
+                Mus::LogMessage("Invalid char for K: %c", data[pos]);
             }
             break;
             
@@ -192,7 +192,7 @@ int MusDarmsInput::do_globalSpec(int pos, const char* data) {
              NR	rest in place of notehead
              */
             if (!isdigit(data[++pos])) {
-                printf("Expected number after N\n");
+                Mus::LogMessage("Expected number after N");
             } else { // we honor only notehead 7, diamond
                 if (data[pos] == 0x07 + ASCII_NUMBER_OFFSET)
                     m_antique_notation = true;
@@ -219,14 +219,14 @@ int MusDarmsInput::do_Clef(int pos, const char* data) {
             case 3: mclef->m_clefId = UT2; break;
             case 5: mclef->m_clefId = UT3; break;
             case 7: mclef->m_clefId = UT4; break;
-            default: printf("Invalid C clef on line %i\n", position); break;
+            default: Mus::LogMessage("Invalid C clef on line %i", position); break;
         }
         m_clef_offset = 21 - position; // 21 is the position in the array, position is of the clef
     } else if (data[pos] == 'G') {
         switch (position) {
             case 1: mclef->m_clefId = SOL1; break;
             case 3: mclef->m_clefId = SOL2; break;
-            default: printf("Invalid G clef on line %i\n", position); break;
+            default: Mus::LogMessage("Invalid G clef on line %i", position); break;
         }
         m_clef_offset = 25 - position;
     } else if (data[pos] == 'F') {
@@ -234,12 +234,12 @@ int MusDarmsInput::do_Clef(int pos, const char* data) {
             case 3: mclef->m_clefId = FA3; break;
             case 5: mclef->m_clefId = FA4; break;
             case 7: mclef->m_clefId = FA5; break;
-            default: printf("Invalid F clef on line %i\n", position); break;
+            default: Mus::LogMessage("Invalid F clef on line %i", position); break;
         }
         m_clef_offset = 15 - position;
     } else {
         // what the...
-        printf("Invalid clef specification: %c\n", data[pos]);
+        Mus::LogMessage("Invalid clef specification: %c", data[pos]);
         return 0; // fail
     }
     
@@ -308,7 +308,7 @@ int MusDarmsInput::do_Note(int pos, const char* data, bool rest) {
         case 'Z': duration = DUR_256; break;
             
         default:
-            printf("Unkown note duration: %c\n", data[pos]);
+            Mus::LogMessage("Unkown note duration: %c", data[pos]);
             return 0;
             break;
     }
@@ -389,7 +389,7 @@ bool MusDarmsInput::ImportFile() {
     infile.getline(data, sizeof(data), '\n');
     len = strlen(data);
     infile.close();
-    printf("len: %i, %s\n", len, data);
+    Mus::LogMessage("len: %i, %s", len, data);
     
     m_doc->Reset( Raw );
     MusSystem *system = new MusSystem();
@@ -407,7 +407,7 @@ bool MusDarmsInput::ImportFile() {
         char c = data[pos];
         
         if (c == '!') {
-            printf("Global spec. at %i\n", pos);
+            Mus::LogMessage("Global spec. at %i", pos);
             res = do_globalSpec(pos, data);
             if (res) pos = res;
             // if notehead type was specified in the !Nx option preserve it
@@ -426,7 +426,7 @@ bool MusDarmsInput::ImportFile() {
             if (res) pos = res;
         } else {
             //if (!isspace(c))
-                //printf("Other %c\n", c);
+                //Mus::LogMessage("Other %c", c);
         }
  
         pos++;

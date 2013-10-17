@@ -253,7 +253,7 @@ void MusDocObject::Refresh()
 
 void MusDocObject::UpdateContentBB( int x1, int y1, int x2, int y2) 
 {
-    //printf("CB Was: %i %i %i %i\n", m_contentBB_x1, m_contentBB_y1, m_contentBB_x2 ,m_contentBB_y2);
+    //Mus::LogDebug("CB Was: %i %i %i %i", m_contentBB_x1, m_contentBB_y1, m_contentBB_x2 ,m_contentBB_y2);
     
     int min_x = std::min( x1, x2 );
     int max_x = std::max( x1, x2 );
@@ -266,12 +266,12 @@ void MusDocObject::UpdateContentBB( int x1, int y1, int x2, int y2)
     if (m_contentBB_y2 < max_y) m_contentBB_y2 = max_y;
     
     m_updatedBB = true;
-    //printf("CB Is:  %i %i %i %i\n", m_contentBB_x1,m_contentBB_y1, m_contentBB_x2, m_contentBB_y2);
+    //Mus::LogDebug("CB Is:  %i %i %i %i", m_contentBB_x1,m_contentBB_y1, m_contentBB_x2, m_contentBB_y2);
 }
 
 void MusDocObject::UpdateSelfBB( int x1, int y1, int x2, int y2 ) 
 {
-    //printf("SB Was: %i %i %i %i\n", m_selfBB_x1,m_selfBB_y1, m_selfBB_x2 ,m_selfBB_y2);
+    //Mus::LogDebug("SB Was: %i %i %i %i", m_selfBB_x1,m_selfBB_y1, m_selfBB_x2 ,m_selfBB_y2);
     
     int min_x = std::min( x1, x2 );
     int max_x = std::max( x1, x2 );
@@ -285,7 +285,7 @@ void MusDocObject::UpdateSelfBB( int x1, int y1, int x2, int y2 )
     
     m_updatedBB = true;
     
-    //printf("SB Is:  %i %i %i %i\n", m_selfBB_x1,m_selfBB_y1, m_selfBB_x2 ,m_selfBB_y2);
+    //Mus::LogDebug("SB Is:  %i %i %i %i", m_selfBB_x1,m_selfBB_y1, m_selfBB_x2 ,m_selfBB_y2);
     
 }
 

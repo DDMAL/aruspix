@@ -14,6 +14,7 @@
 
 //----------------------------------------------------------------------------
 
+#include "mus.h"
 #include "musio.h"
 #include "musstaff.h"
 
@@ -212,7 +213,7 @@ void MusSystem::SetValues( int type )
         }	
 	}
     */
-    printf("TODO");
+    Mus::LogDebug("TODO");
     return;
 }
 

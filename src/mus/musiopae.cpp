@@ -151,7 +151,7 @@ void MusPaeInput::convertPlainAndEasyToKern(std::istream &infile, std::ostream &
     while (!infile.eof()) {
         infile.getline(data_line, 10000);
         if (infile.eof()) {
-            std::cerr << "Truncated file or ending tag missing" << std::endl;
+            Mus::LogDebug("Truncated file or ending tag missing");
             //exit(1);
         }
         getAtRecordKeyValue(data_key, data_value, data_line);
@@ -532,7 +532,7 @@ int MusPaeInput::getTupletFermata(const char* incipit, MeasureObject *measure, N
                 // we should not find the parens before the ';' !
                 // FIXME find a graceful way to exit signaling this to user
                 if (incipit[t] == ')') {
-                    printf("You have a ) before the ; in a tuplet!\n");
+                    Mus::LogDebug("You have a ) before the ; in a tuplet!");
                     return i - index;
                 }
                 
@@ -545,7 +545,7 @@ int MusPaeInput::getTupletFermata(const char* incipit, MeasureObject *measure, N
                 
                 // If we have extraneous chars, exit here
                 if (!isdigit(incipit[t + t2])) {
-                    printf("You have a non-number in a tuplet number\n");
+                    Mus::LogDebug("You have a non-number in a tuplet number");
                     return i - index;
                 }
                 
@@ -806,7 +806,7 @@ int MusPaeInput::getClefInfo( const char *incipit, MusClef *mclef, int index ) {
         }
     } else {
         // what the...
-        printf("Clef is ??\n");
+        Mus::LogDebug("Clef is ??");
     }
     
     //measure->clef = mclef;

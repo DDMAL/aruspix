@@ -100,11 +100,15 @@ std::string Mus::GetFilename( std::string fullpath )
 
 void Mus::LogDebug(const char *fmt, ...)
 {
+#ifdef EMSCRIPTEN
+    return;
+#endif
     va_list args;
     va_start ( args, fmt );
 #ifndef AX_APP
     #if defined(_DEBUG)
     vprintf( fmt, args );
+    printf("\n");
     #endif
 #else
     wxVLogDebug( fmt, args );
@@ -114,10 +118,14 @@ void Mus::LogDebug(const char *fmt, ...)
 
 void Mus::LogError(const char *fmt, ...)
 {
+#ifdef EMSCRIPTEN
+    return;
+#endif
     va_list args;
     va_start ( args, fmt );
 #ifndef AX_APP
     vprintf( fmt, args );
+    printf("\n");
 #else
     wxVLogError( fmt, args );
 #endif
@@ -126,10 +134,14 @@ void Mus::LogError(const char *fmt, ...)
 
 void Mus::LogMessage(const char *fmt, ...)
 {
+#ifdef EMSCRIPTEN
+    return;
+#endif
     va_list args;
     va_start ( args, fmt );
 #ifndef AX_APP
     vprintf( fmt, args );
+    printf("\n");
 #else
     wxVLogMessage( fmt, args );
 #endif
@@ -138,10 +150,14 @@ void Mus::LogMessage(const char *fmt, ...)
 
 void Mus::LogWarning(const char *fmt, ...)
 {
+#ifdef EMSCRIPTEN
+    return;
+#endif
     va_list args;
     va_start ( args, fmt );
 #ifndef AX_APP
     vprintf( fmt, args );
+    printf("\n");
 #else
     wxVLogWarning( fmt, args );
 #endif

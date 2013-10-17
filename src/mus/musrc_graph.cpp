@@ -195,7 +195,7 @@ void MusRC::festa_string ( MusDC *dc, int x, int y, const std::string str,
         dc->SetPen( m_currentColour, 1, AxSOLID );
         dc->SetBrush( m_currentColour, AxSOLID );
 		
-		//printf("Drawing text here, x: %d, y: %d, y (zoomed): %d, y + fontcorr: %d\n"
+		//Mus::LogDebug("Drawing text here, x: %d, y: %d, y (zoomed): %d, y + fontcorr: %d"
 		//	   , ToRendererX(x), y, ToRendererY(y), ToRendererY(y + fontCorr));
 
 		dc->DrawText( Mus::StringFormat( "%s", str.c_str()), ToRendererX(x), ToRendererY(y + fontCorr - 4) );
@@ -246,7 +246,7 @@ void MusRC::DrawLeipzigFont ( MusDC *dc, int x, int y, unsigned char c,
         dc->SetPen( m_currentColour, 1, AxSOLID );
         dc->SetBrush( m_currentColour, AxSOLID );
 
-		//printf("Drawing text here, x: %d, y: %d, y (zoomed): %d, y + fontcorr: %d\n"
+		//Mus::LogDebug("Drawing text here, x: %d, y: %d, y (zoomed): %d, y + fontcorr: %d"
 		//	   , ToRendererX(x), y, ToRendererY(y), ToRendererY(y + fontCorr));
         // DrawMusicText is the same with AxWxDc but different with MusSvgDC
 		dc->DrawMusicText( m_str, ToRendererX(x), ToRendererY(y + fontCorr) );

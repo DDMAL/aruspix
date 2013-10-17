@@ -90,7 +90,7 @@ bool MusMeiOutput::ExportFile( )
         meiDoc->SaveFile( m_filename.c_str() );
     }
     catch( char * str ) {
-        printf("%s", str );
+        Mus::LogError("%s", str );
         return false;
     }
 	return true;    

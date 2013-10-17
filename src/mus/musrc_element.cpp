@@ -538,7 +538,7 @@ void MusRC::DrawNote ( MusDC *dc, MusLayerElement *element, MusLayer *layer, Mus
 	//temp debug code
 //	m_currentColour = wxCYAN;
 //	rect_plein2(dc, element->m_x_drawing - 3, ynn - 3, element->m_x_drawing + 3, ynn + 3);
-//	printf("\nxrel: %d, ynn: %d\n\n", element->m_x_drawing, ynn);
+//	Mus::LogDebug("xrel: %d, ynn: %d", element->m_x_drawing, ynn);
 //	m_currentColour = wxBLACK;
 	//temp debug code
 	
