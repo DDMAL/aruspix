@@ -194,7 +194,7 @@ int main(int argc, char** argv)
 }
 
 extern "C" {
-    char * convertMusic(ConvertFileType input_format, ConvertFileType output_format, const char * c_data) {
+    const char * convertMusic(ConvertFileType input_format, ConvertFileType output_format, const char * c_data) {
         
         string data(c_data);
         string out_str;
@@ -212,7 +212,6 @@ extern "C" {
         
         // in the future we will be able to render to mei too
         out_str = controller.RenderToSvg();
-        controller.SetCString(out_str);
-        return controller.GetCString();
+        return out_str.c_str();
     }
 }
