@@ -42,6 +42,7 @@ MusObject::MusObject()
 
 MusObject::~MusObject()
 {
+    ClearChildren();
 }
 
 void MusObject::SetUuid( uuid_t uuid )
