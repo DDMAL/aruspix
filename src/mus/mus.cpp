@@ -106,7 +106,7 @@ void Mus::LogDebug(const char *fmt, ...)
     va_list args;
     va_start ( args, fmt );
 #ifndef AX_APP
-    #if defined(_DEBUG)
+    #if defined(DEBUG)
     vprintf( fmt, args );
     printf("\n");
     #endif
