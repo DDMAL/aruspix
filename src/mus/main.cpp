@@ -198,8 +198,7 @@ extern "C" {
         
         string data(c_data);
         string out_str;
-        char * leak_me;
-        
+    
         MusController controller;
         
         Mus::SetResourcesPath("/data");
@@ -213,11 +212,7 @@ extern "C" {
         
         // in the future we will be able to render to mei too
         out_str = controller.RenderToSvg();
-
-        /* is this the correct way to output strings? */
-        // LP What happen if you just return out_str.c_str() and set the return type to const char *
-        leak_me = (char *)malloc(strlen(out_str.c_str()) + 1);
-        strcpy(leak_me, out_str.c_str());
-        return leak_me;
+        controller.SetCString(out_str);
+        return controller.GetCString();
     }
 }

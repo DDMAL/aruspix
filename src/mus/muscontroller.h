@@ -50,6 +50,16 @@ public:
      * Render the page in SVG and save it to the file.
      */
     bool RenderToSvgFile( std::string filename, int pageNo =  1 );
+
+    /**
+     * @name Set and get a std::string into a char * buffer.
+     * This is used for returning a string buffer to emscripten.
+     * The buffer is freed when reset or in MusController destructor.
+     */
+    ///@{
+    void SetCString( std::string data );
+    char *GetCString( );
+    ///@}
     
     /**
      * @name Set and get the border
@@ -76,6 +86,10 @@ private:
     MusRC m_rc;
     int m_border;
     int m_scale;
+    /**
+     *
+     */
+    char *m_cString;
 };
 
 #endif

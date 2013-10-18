@@ -33,11 +33,16 @@ MusController::MusController()
 {
     m_border = 10;
     m_scale = 100;
+    
+    m_cString = NULL;
 }
 
 
 MusController::~MusController()
 {
+    if (m_cString) {
+        free( m_cString );
+    }
 }
 
 bool MusController::LoadFile( std::string filename, ConvertFileType type )
@@ -143,4 +148,30 @@ bool MusController::RenderToSvgFile( std::string filename, int pageNo )
     outfile << output;
     outfile.close();
     return true;
+}
+
+void MusController::SetCString( std::string data )
+{
+    if (m_cString) {
+        free(m_cString);
+        m_cString = NULL;
+    }
+    
+    m_cString = (char *)malloc(strlen(data.c_str()) + 1);
+    
+    // something went wrong
+    if (!m_cString) {
+        return;
+    }
+    strcpy(m_cString, data.c_str());
+}
+
+char *MusController::GetCString( )
+{
+    if (m_cString) {
+        return m_cString;
+    }
+    else {
+        return "[unspecified]";
+    }
 }
