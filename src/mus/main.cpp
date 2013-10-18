@@ -31,6 +31,7 @@ std::vector<std::string> split(const std::string &s, char delim) {
 }
 */
 
+/*
 std::vector<std::string> &split(const std::string &s, char delim, std::vector<std::string> &elems) {
     std::stringstream ss(s);
     std::string item;
@@ -46,8 +47,9 @@ std::vector<std::string> split(const std::string &s, char delim) {
     split(s, delim, elems);
     return elems;
 }
+*/
 
-
+extern "C" {
 void display_usage() {
     cerr << "Aruspix headless usage:" << endl;
     cerr << "aruspix [-d -p -m] [-s -t mei, svg] [-o outfile -r resources -h] infile" << endl << endl;
@@ -60,6 +62,7 @@ void display_usage() {
     cerr << "-b add border (10 px default, max 1000)" << endl;
     
     cerr << "Resources default dir: " << Mus::GetResourcesPath() << endl;
+}
 }
 
 int main(int argc, char** argv)
@@ -160,8 +163,10 @@ int main(int argc, char** argv)
     
     // create outfile
     if (m_outfile.length() == 0) {
+        /*
         std::vector<string> v = split(m_infile, '/');
         m_outfile = v[v.capacity() - 1] + "." + m_outformat; // can be only mei or svg
+        */
     }
     
     // Create SVG or mei

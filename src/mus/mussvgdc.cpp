@@ -29,8 +29,10 @@
  
 //#include "app/axapp.h"
 
+extern "C" {
 static inline double DegToRad(double deg) { return (deg * M_PI) / 180.0; }
 static inline double RadToDeg(double deg) { return (deg * 180.0) / M_PI; }
+}
 
 //----------------------------------------------------------------------------
 // MusSvgDC
