@@ -107,6 +107,7 @@ void Mus::LogDebug(const char *fmt, ...)
     va_start ( args, fmt );
 #ifndef AX_APP
     #if defined(DEBUG)
+    printf("[Debug] ");
     vprintf( fmt, args );
     printf("\n");
     #endif
@@ -124,6 +125,7 @@ void Mus::LogError(const char *fmt, ...)
     va_list args;
     va_start ( args, fmt );
 #ifndef AX_APP
+    printf("[Error] ");
     vprintf( fmt, args );
     printf("\n");
 #else
@@ -140,6 +142,7 @@ void Mus::LogMessage(const char *fmt, ...)
     va_list args;
     va_start ( args, fmt );
 #ifndef AX_APP
+    printf("[Message] ");
     vprintf( fmt, args );
     printf("\n");
 #else
@@ -156,6 +159,7 @@ void Mus::LogWarning(const char *fmt, ...)
     va_list args;
     va_start ( args, fmt );
 #ifndef AX_APP
+    printf("[Warning] ");
     vprintf( fmt, args );
     printf("\n");
 #else

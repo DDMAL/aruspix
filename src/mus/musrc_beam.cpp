@@ -185,7 +185,7 @@ void MusRC::DrawBeam(  MusDC *dc, MusLayer *layer, MusBeam *beam, MusStaff *staf
 	do
 	{
         
-        Mus::LogDebug("-> %s", chk->MusClassName().c_str() );
+        //Mus::LogDebug("-> %s", chk->MusClassName().c_str() );
         
         if ( chk->IsNote() ) {
             k = ((MusNote*)chk)->m_colored ? ((MusNote*)chk)->m_dur+1 : ((MusNote*)chk)->m_dur;
@@ -256,7 +256,7 @@ void MusRC::DrawBeam(  MusDC *dc, MusLayer *layer, MusBeam *beam, MusStaff *staf
 	}
 */
     
-    Mus::LogDebug("ct %d", ct );
+    //Mus::LogDebug("ct %d", ct );
 
 	_ct = ct - 1;		/* compte d'entree moins 1 */
 
