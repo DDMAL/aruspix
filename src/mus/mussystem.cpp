@@ -16,6 +16,7 @@
 
 #include "mus.h"
 #include "musio.h"
+#include "muspage.h"
 #include "musstaff.h"
 
 //----------------------------------------------------------------------------
@@ -215,5 +216,21 @@ void MusSystem::SetValues( int type )
     */
     Mus::LogDebug("TODO");
     return;
+}
+
+
+
+bool MusSystem::TrimSystem( ArrayPtrVoid params )
+{
+    if ( !m_parent || !dynamic_cast<MusPage*>(m_parent) ) {
+        return false;
+    }
+    MusPage *page = dynamic_cast<MusPage*>(m_parent);
+    
+    int system_length = (this->m_contentBB_x2 - this->m_contentBB_x1) + page->m_pageRightMar;
+    if ( page->m_pageWidth < system_length ) {
+        page->m_pageWidth = system_length;
+    }
+    return false;
 }
 

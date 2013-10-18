@@ -65,6 +65,13 @@ public:
 	MusMeasure *GetPrevious( MusMeasure *measure );
     MusMeasure *GetMeasure( int MeasureNo );
     
+    
+    /**
+     * Lay out the system and staff Y positions looking that the bounding boxes of each staff.
+     * The m_y_rel of systems and staves is updated appropriately.
+     */
+    virtual bool LayOutSystemAndStaffYPos( ArrayPtrVoid params );
+    
 public:
     /** The logical staff */
     int m_logStaffNb;

@@ -140,7 +140,12 @@ public:
     virtual bool FindByUuid( ArrayPtrVoid params );
     
     virtual bool Save( ArrayPtrVoid params ) { return false; };
-    virtual bool TrimSystem( ArrayPtrVoid params );
+    
+    /**
+     * Adjust the size of a system according to its content
+     * See MusSystem for actual implementation.
+     */
+    virtual bool TrimSystem( ArrayPtrVoid params ) { return false; };
 
     /**
      * Lay out the X positions of the staff content looking that the bounding boxes.
@@ -150,9 +155,10 @@ public:
     
     /**
      * Lay out the system and staff Y positions looking that the bounding boxes of each staff.
-     * The m_y_rel of systems and staves is updated appropriately
+     * The m_y_rel of systems and staves is updated appropriately.
+     * See MusStaff for actual implementation.
      */
-    virtual bool LayOutSystemAndStaffYPos( ArrayPtrVoid params );
+    virtual bool LayOutSystemAndStaffYPos( ArrayPtrVoid params )  { return false; };
 
 public:
     ArrayOfMusObjects m_children;

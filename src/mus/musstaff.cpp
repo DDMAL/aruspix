@@ -17,6 +17,7 @@
 #include "musdef.h"
 #include "musio.h"
 #include "musmeasure.h"
+#include "mussystem.h"
 
 //----------------------------------------------------------------------------
 // MusStaff
@@ -208,6 +209,47 @@ bool MusStaff::GetPosOnPage( ArrayPtrVoid params )
         return true;
     }
     // to be verified
+    return false;
+}
+
+//----------------------------------------------------------------------------
+// MusStaff functor methods
+//----------------------------------------------------------------------------
+
+bool MusStaff::LayOutSystemAndStaffYPos( ArrayPtrVoid params )
+{
+    // param 0: the current y system shift
+    // param 1: the current y staff shift
+	int *current_y_system_shift = (int*)params[0];
+	int *current_y_staff_shift = (int*)params[1];
+    
+    // This is the value that need to be added to fit everything
+    int negative_offset = this->m_y_rel - this->m_contentBB_y2;
+    
+    // reset the x position if we are starting a new system
+    if ( this->m_parent->GetChildIndex( this ) == 0 ) {
+        MusSystem *system = dynamic_cast<MusSystem*>( this->m_parent );
+        // The parent is a MusSystem, we need to reset the y staff shift
+        if ( system ) {
+            // the staff position is the same as the one of the system
+            (*current_y_staff_shift) = 0;
+            this->m_y_rel = 0;
+            // move the system down to fit the content
+            system->m_y_rel = (*current_y_system_shift)  + negative_offset;
+            // spacing for the next system
+            (*current_y_system_shift) -= system->GetVerticalSpacing();
+        }
+    }
+    else
+    {
+        // just more the staff down
+        this->m_y_rel = (*current_y_staff_shift)  + negative_offset;
+    }
+    
+    int shift = (this->m_contentBB_y2 - this->m_contentBB_y1) + this->GetVerticalSpacing();
+    (*current_y_staff_shift) -= shift;
+    (*current_y_system_shift) -= shift;
+    // we should have return codes for avoiding to go further down the tree in such cases
     return false;
 }
 

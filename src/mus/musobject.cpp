@@ -25,7 +25,6 @@
 #include "muspage.h"
 #include "musrc.h"
 #include "musstaff.h"
-#include "mussystem.h"
 #include "mustie.h"
 #include "mustuplet.h"
 
@@ -450,24 +449,6 @@ bool MusObject::FindByUuid( ArrayPtrVoid params )
     return false;
 }
 
-bool MusObject::TrimSystem( ArrayPtrVoid params )
-{
-    MusSystem *current = dynamic_cast<MusSystem*>(this);
-    if ( !current  ) {
-        return false;
-    }
-    
-    if ( !m_parent ) {
-        return false;
-    }
-    MusPage *page = (MusPage*)m_parent;
-    
-    int system_length = (current->m_contentBB_x2 - current->m_contentBB_x1) + page->m_pageRightMar;
-    if ( page->m_pageWidth < system_length ) {
-        page->m_pageWidth = system_length;
-    }
-    return false;
-}
 
 bool MusObject::LayOutLayerElementXPos( ArrayPtrVoid params )
 {
@@ -524,49 +505,6 @@ bool MusObject::LayOutLayerElementXPos( ArrayPtrVoid params )
     (*current_x_element_shift) += shift;
     (*current_x_measure_shift) += shift; // this will not work with more than one layer because we are cumulating
     
-    return false;
-}
-
-
-bool MusObject::LayOutSystemAndStaffYPos( ArrayPtrVoid params )
-{
-    // param 0: the current y system shift
-    // param 1: the current y staff shift
-	int *current_y_system_shift = (int*)params[0];
-	int *current_y_staff_shift = (int*)params[1];
-    
-    MusStaff *current = dynamic_cast<MusStaff*>(this);
-    if ( !current  ) {
-        return false;
-    }
-    
-    // This is the value that need to be added to fit everything
-    int negative_offset = current->m_y_rel - current->m_contentBB_y2;
-    
-    // reset the x position if we are starting a new system
-    if ( current->m_parent->GetChildIndex( this ) == 0 ) {
-        MusSystem *system = dynamic_cast<MusSystem*>( current->m_parent );
-        // The parent is a MusSystem, we need to reset the y staff shift
-        if ( system ) {
-            // the staff position is the same as the one of the system
-            (*current_y_staff_shift) = 0;
-            current->m_y_rel = 0;
-            // move the system down to fit the content
-            system->m_y_rel = (*current_y_system_shift)  + negative_offset;
-            // spacing for the next system
-            (*current_y_system_shift) -= system->GetVerticalSpacing();
-        }
-    }
-    else
-    {
-        // just more the staff down
-        current->m_y_rel = (*current_y_staff_shift)  + negative_offset;
-    }
-    
-    int shift = (current->m_contentBB_y2 - current->m_contentBB_y1) + current->GetVerticalSpacing();
-    (*current_y_staff_shift) -= shift;
-    (*current_y_system_shift) -= shift;
-    // we should have return codes for avoiding to go further down the tree in such cases
     return false;
 }
 

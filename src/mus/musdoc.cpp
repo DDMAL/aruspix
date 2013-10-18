@@ -145,7 +145,7 @@ void MusDoc::SpaceMusic() {
     page->m_pageHeight = m_pageHeight;
     params.clear();
     
-    MusFunctor trimSystem(&MusSystem::TrimSystem);
+    MusFunctor trimSystem(&MusObject::TrimSystem);
     this->Process( &trimSystem, params );
     
     rc.DrawPage(  &bb_dc, page , false );

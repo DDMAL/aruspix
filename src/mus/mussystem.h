@@ -64,9 +64,11 @@ public:
     
     // functors
     virtual bool Save( ArrayPtrVoid params );
-    //void ProcessStaves( ArrayPtrVoid params );
-    //void ProcessVoices( ArrayPtrVoid params );
-    //void CountVoices( ArrayPtrVoid params );
+
+    /**
+     * Adjust the size of a system according to its content (to be verified)
+     */
+    virtual bool TrimSystem( ArrayPtrVoid params );
     
 private:
     
