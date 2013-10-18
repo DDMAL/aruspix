@@ -159,10 +159,10 @@ MusPoint MusBBoxDC::GetLogicalOrigin( )
 void MusBBoxDC::DrawComplexBezierPath(int x, int y, int bezier1_coord[6], int bezier2_coord[6])
 {
     int vals[4];
-    FindPointsForBounds(*new MusPoint(x, y), 
-                        *new MusPoint(bezier1_coord[0], bezier1_coord[1]), 
-                        *new MusPoint(bezier1_coord[2], bezier1_coord[3]),
-                        *new MusPoint(bezier1_coord[4], bezier1_coord[5]), 
+    FindPointsForBounds( MusPoint(x, y), 
+                        MusPoint(bezier1_coord[0], bezier1_coord[1]), 
+                        MusPoint(bezier1_coord[2], bezier1_coord[3]),
+                        MusPoint(bezier1_coord[4], bezier1_coord[5]),
                         vals);
     
     UpdateBB(vals[0], vals[1], vals[2], vals[3]);

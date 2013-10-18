@@ -31,7 +31,7 @@ void uuid_clear(uuid_t uuid) {
 }
 
 void uuid_parse(const char * str_in, uuid_t uuid_out) {
-    uuid_out = *new uuid_t(str_in);
+    uuid_out = uuid_t(str_in);
 }
 
 void uuid_generate(uuid_t uuid) {

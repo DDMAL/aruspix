@@ -101,11 +101,11 @@ int main(int argc, char** argv)
                 break;
                 
             case 'o':
-                m_outfile = *new string(optarg);
+                m_outfile = string(optarg);
                 break;
             
             case 't':
-                m_outformat = *new string(optarg);
+                m_outformat = string(optarg);
                 break;
                 
             case 's':
@@ -129,7 +129,7 @@ int main(int argc, char** argv)
     }
     
     if (optind <= argc - 1) {
-        m_infile = *new string(argv[optind]);
+        m_infile = string(argv[optind]);
     }
     else {
         cerr << "Incorrect number of options: expecting one input file." << endl << endl;
@@ -211,7 +211,7 @@ extern "C" {
 
         /* is this the correct way to output strings? */
         // LP What happen if you just return out_str.c_str() and set the return type to const char *
-        leak_me = (char *)malloc(strlen(out_str.c_str()));
+        leak_me = (char *)malloc(strlen(out_str.c_str()) + 1);
         strcpy(leak_me, out_str.c_str());
         return leak_me;
     }
