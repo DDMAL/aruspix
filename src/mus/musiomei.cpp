@@ -715,7 +715,10 @@ bool MusMeiInput::ReadMei( TiXmlElement *root )
             m_system = new MusSystem( );
             m_page->AddSystem( m_system );
             m_doc->AddPage( m_page );
-            return ReadUnsupported( score );
+            TiXmlElement *current = NULL;
+            for( current = score->FirstChildElement( ); current; current = current->NextSiblingElement( ) ) {
+                ReadUnsupported( current );
+            }
         }
     }
     return true;
@@ -1247,45 +1250,57 @@ void MusMeiInput::AddLayerElement( MusLayerElement *element )
 
 bool MusMeiInput::ReadUnsupported( TiXmlElement *element )
 {
-    if ( element->FirstChildElement( "section" ) ) {
-        return ReadUnsupported( element->FirstChildElement( "section" ) );
-    }
-    else if ( element->FirstChildElement( "measure" ) ) {
+    if ( std::string( element->Value() ) == "section" ) {
         TiXmlElement *current = NULL;
-        for( current = element->FirstChildElement( "measure" ); current; current = current->NextSiblingElement( "measure" ) ) {
-            if ( m_contentBasedMeasure ) {
-                delete m_contentBasedMeasure;
-            }
-            m_contentBasedMeasure = new MusMeasure( );
-            m_measure = m_contentBasedMeasure;
-            // this will return false because measure will have no layer child
-            ReadMeiMeasure( current );
-            if ( current->FirstChildElement( "staff" )) {
-                ReadUnsupported( current );
-            }
-            delete m_contentBasedMeasure;
-            m_contentBasedMeasure = NULL;
+        for( current = element->FirstChildElement( ); current; current = current->NextSiblingElement( ) ) {
+            ReadUnsupported( current );
         }
     }
-    else if ( element->FirstChildElement( "staff" ) ) {
+    else if ( std::string( element->Value() ) == "measure" ) {
+        Mus::LogDebug( "measure" );
+        if ( m_contentBasedMeasure ) {
+            delete m_contentBasedMeasure;
+        }
+        m_contentBasedMeasure = new MusMeasure( );
+        m_measure = m_contentBasedMeasure;
+        // this will return false because measure will have no layer child
+        ReadMeiMeasure( element );
+        // read the staff elements (and nothing else?)
         TiXmlElement *current = NULL;
         for( current = element->FirstChildElement( "staff" ); current; current = current->NextSiblingElement( "staff" ) ) {
-            int n = 1;
-            if ( current->Attribute( "n" ) ) {
-                current->Attribute( "n", &n );
-            }
-            MusStaff *staff = m_system->GetStaff( n - 1 );
-            if ( staff ) {
-                m_staff = staff;
-            }
-            else
-            {
-                m_staff = new MusStaff( n );
-                m_system->AddStaff( m_staff );
-            }
-            m_measure = new MusMeasure( *m_contentBasedMeasure );
-            ReadMeiStaff( current );
+            ReadUnsupported( current );
         }
+        delete m_contentBasedMeasure;
+        m_contentBasedMeasure = NULL;
+    }
+    else if ( std::string( element->Value() ) == "staff" ) {
+        Mus::LogDebug( "staff" );
+        int n = 1;
+        if ( element->Attribute( "n" ) ) {
+            element->Attribute( "n", &n );
+        }
+        MusStaff *staff = m_system->GetStaff( n - 1 );
+        if ( staff ) {
+            m_staff = staff;
+        }
+        else
+        {
+            m_staff = new MusStaff( n );
+            m_system->AddStaff( m_staff );
+        }
+        m_measure = new MusMeasure( *m_contentBasedMeasure );
+        ReadMeiStaff( element );
+    }
+    else if ( (std::string( element->Value() ) == "pb") && (m_system->GetStaffCount() > 0 ) ) {
+        Mus::LogDebug( "pb" );
+        m_page = new MusPage( );
+        m_system = new MusSystem( );
+        m_page->AddSystem( m_system );
+        m_doc->AddPage( m_page );
+        
+    }
+    else {
+        Mus::LogWarning( "Element %s ignored", element->Value() );
     }
     return true;
 }
