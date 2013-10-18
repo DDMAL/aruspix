@@ -8,7 +8,7 @@
    java -jar batik-ttf2svg.jar ../Leipzig-4.7.ttf -l 0 -h 20000 -o ../Leipzig-4.7.svg
    (update font names as needed)
 
-4) Split font
+4) Split font (note: Oxygen with Xalan works too)
    Copy Leipzig-4.7.svg to xalan dir
    Copy split.xsl to xalan dir
    java -classpath xalan.jar:serializer.jar:xml-apis.jar:xercesImpl.jar org.apache.xalan.xslt.Process -IN Leipzig-4.7.svg  -XSL split.xsl -OUT split.foo
@@ -16,6 +16,5 @@
 
 5) Create C dimensions:
    copy newly generated boundingbox.svg from xalan dir into varia/svg
-   open boundingbox.svg with a browser (works with safari), will open popup window so unblock them. It runs showbboxdims.js
-   copy & paste where needed:
-	musbboxdc.c
+   open boundingbox.svg with a browser (works with safari). It runs showbboxdims.js and output data in the console
+   copy & paste where needed (musleipzigbbox.h/cpp)

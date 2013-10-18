@@ -17,16 +17,12 @@ if(!document.documentElement.getScreenBBox) {
     document.documentElement.appendChild(s);
 }
 
-var header = "";
-var impl = "\n\
-/**\n\
- * This class is used for getting the bounding box of the Leipzig glyphs.\n\
- * The values are used obtained with the ./varia/svg/split.xsl.\n\
- */\n\
-class MusLeipzigBBox\n\
-{\n\
-public:\n\
-	MusLeipzigBBox() {\n";
+var header = "/*\n\
+ * This list is used for getting the bounding box of the Leipzig glyphs.\n\
+ * The values were obtained with ./varia/svg/split.xsl and boundingbox.svg.\n\
+ * It should not be modified by hand.\n\
+ */\n";
+var impl = header;
 
 var items = document.documentElement.getElementsByTagName('path');
 var i;
@@ -35,30 +31,29 @@ for (i = 0; i < items.length; i++) {
 	label = "LEIPZIG_BBOX_" + item.getAttribute("id").toUpperCase();
 	r = item.getBBox();
 	
+	// add the define to the header
 	header += "#define " + label + " " + i + "\n";
 	
-	impl += "bBox[" + label + "].m_x = " + r.x.toFixed(1) + ";\n";
-	impl += "bBox[" + label + "].m_y = " + r.y.toFixed(1) + ";\n";
-	impl += "bBox[" + label + "].m_width = " + r.width.toFixed(1) + ";\n";
-	impl += "bBox[" + label + "].m_height = " + r.height.toFixed(1) + ";\n";
+	// add the bb value to the implementation
+	impl += "m_bBox[" + label + "].m_x = " + r.x.toFixed(1) + ";\n";
+	impl += "m_bBox[" + label + "].m_y = " + r.y.toFixed(1) + ";\n";
+	impl += "m_bBox[" + label + "].m_width = " + r.width.toFixed(1) + ";\n";
+	impl += "m_bBox[" + label + "].m_height = " + r.height.toFixed(1) + ";\n";
 }
 
-impl += "\n\
-	};\n\
-\n\
-	struct BoundingBox\n\
-	{\n\
-		double m_x;\n\
-		double m_y;\n\
-		double m_width;\n\
-		double m_height;\n\
-	} bBox[" + i + "];\n\
-};\n\
-\n";
+header += "#define LEIPZIG_GLYPHS " + i + "\n";
+header += "/* end of the generated data */\n\n";
+impl += "/* end of the generated data */\n\n";
 
-//alert(header);
+// ouptut the content to be copied to the header file
+console.log(header);
+// output the content to be copied to the implementation file
+console.log(impl);
 
+/*
+// open a new window for the output
 var win = window.open( null, "win", "width=800,height=600"); // a window object
 var doc = win.document;
 doc.open("text/plain", "replace");
 doc.write( header.replace(/\n/g, "<br/>") + "<br><br>" + impl.replace(/\n/g, "<br/>"));
+*/

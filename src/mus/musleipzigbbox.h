@@ -11,6 +11,11 @@
 
 #include "musobject.h"
 
+/*
+ * This list is used for getting the bounding box of the Leipzig glyphs.
+ * The values were obtained with ./varia/svg/split.xsl and boundingbox.svg.
+ * It should not be modified by hand.
+ */
 #define LEIPZIG_BBOX_ORN_MORDENT 0
 #define LEIPZIG_BBOX_FIGURE_0 1
 #define LEIPZIG_BBOX_FIGURE_1 2
@@ -79,11 +84,13 @@
 #define LEIPZIG_BBOX_OBLIQUE_FIGURE_3 65
 #define LEIPZIG_BBOX_OBLIQUE_FIGURE_7 66
 #define LEIPZIG_BBOX_OBLIQUE_FIGURE_9 67
+#define LEIPZIG_GLYPHS 68
+/* end of the generated data */
 
 
 /**
  * This class is used for getting the bounding box of the Leipzig glyphs.
- * The values are used obtained with the ./varia/svg/split.xsl.
+ * The values (above) are used obtained with the ./varia/svg/split.xsl.
  */
 class MusLeipzigBBox
 {
@@ -109,7 +116,7 @@ public:
     
 private:
     
-    static BoundingBox m_bBox[68];
+    static BoundingBox m_bBox[LEIPZIG_GLYPHS];
     
     static bool m_initialized;
 };

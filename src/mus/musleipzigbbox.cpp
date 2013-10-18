@@ -18,20 +18,23 @@ MusLeipzigBBox::BoundingBox* MusLeipzigBBox::m_bBox = MusLeipzigBBox::Initialize
 */
 
 
-MusLeipzigBBox::BoundingBox MusLeipzigBBox::m_bBox[68];
+MusLeipzigBBox::BoundingBox MusLeipzigBBox::m_bBox[LEIPZIG_GLYPHS];
 
 // Statically initialize the struct
 void MusLeipzigBBox::InitializeStatic() {
-    
-    //MusLeipzigBBox::BoundingBox* bBox = (MusLeipzigBBox::BoundingBox*)malloc(sizeof(MusLeipzigBBox::BoundingBox) * 67);
-    
+        
+    /*
+     * This list is used for getting the bounding box of the Leipzig glyphs.
+     * The values were obtained with ./varia/svg/split.xsl and boundingbox.svg.
+     * It should not be modified by hand.
+     */
     m_bBox[LEIPZIG_BBOX_ORN_MORDENT].m_x = 0.0;
     m_bBox[LEIPZIG_BBOX_ORN_MORDENT].m_y = -2.0;
     m_bBox[LEIPZIG_BBOX_ORN_MORDENT].m_width = 605.0;
     m_bBox[LEIPZIG_BBOX_ORN_MORDENT].m_height = 242.0;
     m_bBox[LEIPZIG_BBOX_FIGURE_0].m_x = 0.0;
     m_bBox[LEIPZIG_BBOX_FIGURE_0].m_y = 0.0;
-    m_bBox[LEIPZIG_BBOX_FIGURE_0].m_width = 427.0;
+    m_bBox[LEIPZIG_BBOX_FIGURE_0].m_width = 427.7;
     m_bBox[LEIPZIG_BBOX_FIGURE_0].m_height = 516.0;
     m_bBox[LEIPZIG_BBOX_FIGURE_1].m_x = 0.0;
     m_bBox[LEIPZIG_BBOX_FIGURE_1].m_y = 0.0;
@@ -51,11 +54,11 @@ void MusLeipzigBBox::InitializeStatic() {
     m_bBox[LEIPZIG_BBOX_FIGURE_4].m_height = 494.0;
     m_bBox[LEIPZIG_BBOX_FIGURE_5].m_x = 0.0;
     m_bBox[LEIPZIG_BBOX_FIGURE_5].m_y = 0.0;
-    m_bBox[LEIPZIG_BBOX_FIGURE_5].m_width = 357.0;
+    m_bBox[LEIPZIG_BBOX_FIGURE_5].m_width = 357.7;
     m_bBox[LEIPZIG_BBOX_FIGURE_5].m_height = 494.0;
-    m_bBox[LEIPZIG_BBOX_FIGURE_6].m_x = -0.7;
+    m_bBox[LEIPZIG_BBOX_FIGURE_6].m_x = -1.3;
     m_bBox[LEIPZIG_BBOX_FIGURE_6].m_y = 0.0;
-    m_bBox[LEIPZIG_BBOX_FIGURE_6].m_width = 394.7;
+    m_bBox[LEIPZIG_BBOX_FIGURE_6].m_width = 395.3;
     m_bBox[LEIPZIG_BBOX_FIGURE_6].m_height = 516.0;
     m_bBox[LEIPZIG_BBOX_FIGURE_7].m_x = 0.0;
     m_bBox[LEIPZIG_BBOX_FIGURE_7].m_y = 0.0;
@@ -81,9 +84,9 @@ void MusLeipzigBBox::InitializeStatic() {
     m_bBox[LEIPZIG_BBOX_ORN_TRILL].m_y = -161.0;
     m_bBox[LEIPZIG_BBOX_ORN_TRILL].m_width = 432.0;
     m_bBox[LEIPZIG_BBOX_ORN_TRILL].m_height = 364.0;
-    m_bBox[LEIPZIG_BBOX_METER_SYMB_2_CUT].m_x = -0.4;
+    m_bBox[LEIPZIG_BBOX_METER_SYMB_2_CUT].m_x = -2.0;
     m_bBox[LEIPZIG_BBOX_METER_SYMB_2_CUT].m_y = -69.0;
-    m_bBox[LEIPZIG_BBOX_METER_SYMB_2_CUT].m_width = 358.4;
+    m_bBox[LEIPZIG_BBOX_METER_SYMB_2_CUT].m_width = 360.0;
     m_bBox[LEIPZIG_BBOX_METER_SYMB_2_CUT].m_height = 633.0;
     m_bBox[LEIPZIG_BBOX_METER_SYMB_CUT].m_x = 1.0;
     m_bBox[LEIPZIG_BBOX_METER_SYMB_CUT].m_y = -69.0;
@@ -193,15 +196,15 @@ void MusLeipzigBBox::InitializeStatic() {
     m_bBox[LEIPZIG_BBOX_SLASH_DOWN_MENSURAL].m_y = 6.0;
     m_bBox[LEIPZIG_BBOX_SLASH_DOWN_MENSURAL].m_width = 162.0;
     m_bBox[LEIPZIG_BBOX_SLASH_DOWN_MENSURAL].m_height = 237.0;
-    m_bBox[LEIPZIG_BBOX_CLEF_G_MENSURAL].m_x = 145.9;
-    m_bBox[LEIPZIG_BBOX_CLEF_G_MENSURAL].m_y = -180.3;
-    m_bBox[LEIPZIG_BBOX_CLEF_G_MENSURAL].m_width = 461.1;
-    m_bBox[LEIPZIG_BBOX_CLEF_G_MENSURAL].m_height = 935.5;
+    m_bBox[LEIPZIG_BBOX_CLEF_G_MENSURAL].m_x = 145.3;
+    m_bBox[LEIPZIG_BBOX_CLEF_G_MENSURAL].m_y = -180.7;
+    m_bBox[LEIPZIG_BBOX_CLEF_G_MENSURAL].m_width = 461.7;
+    m_bBox[LEIPZIG_BBOX_CLEF_G_MENSURAL].m_height = 936.3;
     m_bBox[LEIPZIG_BBOX_CLEF_F_MENSURAL].m_x = 109.0;
     m_bBox[LEIPZIG_BBOX_CLEF_F_MENSURAL].m_y = -753.0;
     m_bBox[LEIPZIG_BBOX_CLEF_F_MENSURAL].m_width = 286.0;
     m_bBox[LEIPZIG_BBOX_CLEF_F_MENSURAL].m_height = 1108.0;
-    m_bBox[LEIPZIG_BBOX_CLEF_C_MENSURAL].m_x = 0.0;
+    m_bBox[LEIPZIG_BBOX_CLEF_C_MENSURAL].m_x = 154.0;
     m_bBox[LEIPZIG_BBOX_CLEF_C_MENSURAL].m_y = -602.0;
     m_bBox[LEIPZIG_BBOX_CLEF_C_MENSURAL].m_width = 349.0;
     m_bBox[LEIPZIG_BBOX_CLEF_C_MENSURAL].m_height = 1197.0;
@@ -297,6 +300,7 @@ void MusLeipzigBBox::InitializeStatic() {
     m_bBox[LEIPZIG_BBOX_OBLIQUE_FIGURE_9].m_y = -172.0;
     m_bBox[LEIPZIG_BBOX_OBLIQUE_FIGURE_9].m_width = 225.0;
     m_bBox[LEIPZIG_BBOX_OBLIQUE_FIGURE_9].m_height = 327.0;
+    /* end of the generated data */
     
     m_initialized = true;
     
