@@ -89,9 +89,6 @@ MusFileInputStream( doc )
     m_measure = NULL;
 	m_layer = NULL;
     m_current_tie = NULL;
-    m_current_tuplet =  NULL;
-    
-    m_current_beam = NULL;
 }
 
 MusPaeInput::~MusPaeInput()
@@ -139,7 +136,6 @@ void MusPaeInput::convertPlainAndEasyToKern(std::istream &infile, std::ostream &
     std::string s_key;
     MeasureObject current_measure;
     NoteObject current_note;
-    NoteObject *prev_note;
     
     //Array<int> current_key; // not the measure one, which will be altered by temporary alterations
     //current_key.setSize(7);
@@ -217,14 +213,14 @@ void MusPaeInput::convertPlainAndEasyToKern(std::istream &infile, std::ostream &
         // beaming starts
 		else if (incipit[i] == '{') {
 			//current_note.beam = 1;
-            current_note.beam |= BEAM_INITIAL;
+            current_note.beam = BEAM_INITIAL;
             in_beam = true;
         }
         
         // beaming ends
 		else if (incipit[i] == '}') {
 			//current_note.beam = 0; // should not have to be done, but just in case
-            prev_note->beam |= BEAM_TERMINAL;
+            current_measure.notes[current_measure.notes.size() - 1].beam = BEAM_TERMINAL;
             current_note.beam = 0;
             in_beam = false;
 		}
@@ -262,7 +258,6 @@ void MusPaeInput::convertPlainAndEasyToKern(std::istream &infile, std::ostream &
         //note and rest
         // getNote also creates a new note object
         else if (((incipit[i]-'A'>=0) && (incipit[i]-'A'<7)) || (incipit[i]=='-')) {
-            prev_note = &current_note; // save the old note for beaming, etc
             i += getNote( incipit, &current_note, &current_measure, i );
         }
         
@@ -316,9 +311,9 @@ void MusPaeInput::convertPlainAndEasyToKern(std::istream &infile, std::ostream &
 		} 
         
         //
-        if (in_beam && (current_note.beam & BEAM_INITIAL) == 0 && (current_note.beam & BEAM_TERMINAL) == 0) {
-            current_note.beam |= BEAM_MEDIAL;
-        }
+        //if (in_beam && (current_note.beam & BEAM_INITIAL) == 0 && (current_note.beam & BEAM_TERMINAL) == 0) {
+        //    current_note.beam |= BEAM_MEDIAL;
+        //}
         // // ax2.3 LP
             
         i++;
@@ -332,9 +327,10 @@ void MusPaeInput::convertPlainAndEasyToKern(std::istream &infile, std::ostream &
     }
     
     m_staff = new MusStaff( 1 );
-    // for now in an un-measured way
+    
     m_measure = new MusMeasure( false, 1 );
     m_layer = new MusLayer( 1 );
+    
     m_staff->AddMeasure( m_measure );
     m_measure->AddLayer(m_layer);
     
@@ -992,7 +988,7 @@ int MusPaeInput::getNote( const char* incipit, NoteObject *note, MeasureObject *
         if ( is_not_last_note != 0 ) {
             //note->beam = -1; // close the beam
 
-            //note->beam |= BEAM_TERMINAL;
+            //note->beam = BEAM_TERMINAL;
              // ax2.3
         }
     } 
@@ -1043,20 +1039,6 @@ int MusPaeInput::getNote( const char* incipit, NoteObject *note, MeasureObject *
     // If prevous note has tie, increment tie count
     if (tie > 0)
         note->tie = ++tie;
-        
-    // reset values
-    // beam
-    //if (note->beam > 0) {
-    //    note->beam++;
-    //} else if (note->beam == -1) {
-    //    note->beam = 0;
-    //}
-    // tie
-    //if (note->tie == 1) {
-    //    note->tie++;
-    //} else if (note->tie == 2) {
-    //    note->tie = 0;
-    //}
     
     // grace notes
     note->acciaccatura = false;
@@ -1089,10 +1071,7 @@ int MusPaeInput::getNote( const char* incipit, NoteObject *note, MeasureObject *
 void MusPaeInput::printMeasure(std::ostream& out, MeasureObject *measure ) {
     bool tupletized = false, beamed = false;
     MusBeam *appog_beam = NULL;
-    
-//    m_staff = new MusStaff( 1 );
-//    m_layer = new MusLayer( 1 );
-    
+
     
     if ( measure->clef != NULL ) {
         m_layer->AddElement(measure->clef);
@@ -1114,149 +1093,13 @@ void MusPaeInput::printMeasure(std::ostream& out, MeasureObject *measure ) {
         m_layer->AddElement(r);
     }
     
-    for (unsigned int i=0; i<measure->notes.size(); i++) {
-        NoteObject *note = &measure->notes[i];
-        
-        // A note can have a chef change before it
-        if ( note->clef != NULL ) {
-            m_layer->AddElement(note->clef);
-        }
-                    
-        if (note->rest) {
-            MusRest *r = new MusRest();
-            r->m_dur = note->duration;
-            r->m_pname = REST_AUTO;
-            r->m_dots = note->dots;
-            
-            // draw a fermata?
-            if (note->fermata)
-                r->m_fermata = true;
-            
-            m_layer->AddElement(r); // create a rest
-        } else {
-            MusNote *n = new MusNote();
-            n->m_pname = note->pitch;
-            n->m_oct = note->octave;
-            n->m_dur = note->duration;
-            n->m_dots = note->dots;
-            n->m_accid = note->accidental;
-            
-            // handle appoggiatura. if appoggiatura_multiple is set, it is the first
-            // in this case make a beam too
-            // note->appoggiatura == 1 is a SINGLE note
-            // note->appoggiatura == 2..n is multiple notes
-            // so if note->appoggiatura == 2 we now it is the last in a beamed appogg
-            if (note->appoggiatura > 0) {
-                n->m_cueSize = true;
-                
-                if (note->appoggiatura_multiple && note->appoggiatura > 1) {
-                    appog_beam = new MusBeam;
-                    m_layer->AddElement(appog_beam);
-                }
-                
-                // if the beam was not created, this is a single note appoggiatura
-                if (appog_beam)
-                    appog_beam->AddElement(n);
-                
-                // this is the last note in appoggiatura beam, set the beam to null
-                if (note->appoggiatura == 2) // last one in a beam is 2
-                    appog_beam = NULL;
-            }
-            
-            // Acciaccaturas are similar but do not get beamed (do they)
-            // this case is simpler. NOTE a note can not be acciacctura AND appoggiatura
-            if (note->acciaccatura) {
-                n->m_cueSize = true;
-                n->m_acciaccatura = true;
-            }
-            
-            // do beaming, EXCEPT for grace notes
-            // which are unbeamed in the beam / have their own beam
-            // m_current_beam is global so we can have cross-measure beams
-            if (!note->appoggiatura && !note->acciaccatura) {
-                
-                beamed = true;
-                
-                if (note->beam & BEAM_INITIAL) {
-                    m_current_beam = new MusBeam;
-                    if (note->tuplet_note < 1)
-                        m_current_beam->AddElement(n);
-                    
-                    if (m_current_tuplet)
-                        m_current_tuplet->AddElement(m_current_beam);
-                    else
-                        m_layer->AddElement(m_current_beam);
-                    
-                } else if (note->beam & BEAM_MEDIAL) {
-                    if (m_current_beam && note->tuplet_note < 1)
-                        m_current_beam->AddElement(n);
-                    
-                } else if (note->beam & BEAM_TERMINAL) {
-                    m_current_beam = NULL;
-                }
-                // // ax2.3 LP
-            }
-            
-            // draw a fermata?
-            // this is identical in rest, maybe find a wiser solution?
-            if (note->fermata)
-                n->m_fermata = true;
-            
-            // draw a trill?
-            if (note->trill == true) {
-                n->m_embellishment = EMB_TRILL;
-            }
-            
-            // FOR THE MOMENT WORKS ONLY WITH TWO NOTES
-            // FIXME
-            // if tie is 1, we are the first note in a tie.
-            // Create it and add it to the layer
-            if (note->tie == 1) {
-                MusTie *tie = new MusTie;
-                tie->m_first = n;
-                m_layer->AddElement(tie);
-                m_current_tie = tie;
-            } else if (note->tie == 2) {
-                if (m_current_tie)
-                    m_current_tie->m_second = n;
-                // If a measure is duplicated, it is possible
-                // that the first note still bears a tie
-                // so we make this ref null and avoid duplicate ties
-                // I added a chech when copying measure
-                // but nevertheless we check two times
-                m_current_tie = NULL;
-            }
-            
-            // we have a tuplet, the tuplet_note is > 0
-            // which means we are counting a tuplet
-            if (note->tuplet_note > 0) {
-                
-                tupletized = true;
-                
-                if (note->tuplet_notes == note->tuplet_note) { // first elem in tuplet
-                    m_current_tuplet = new MusTuplet;
-                    if (m_current_beam)
-                        m_current_beam->AddElement(m_current_tuplet);
-                    else
-                        m_layer->AddElement(m_current_tuplet);
-                }
-                
-                m_current_tuplet->AddElement(n); // place it into the array
-                
-                // the last note counts always '1'
-                // insert the tuplet elem
-                // and reset the tuplet counter
-                if (note->tuplet_note == 1) {
-                    m_current_tuplet = NULL;
-                }
-            }
-            
-            if (!beamed && !tupletized)
-                m_layer->AddElement(n); // create a note
-            
-        } // note or rest
+    m_nested_objects.clear();
 
+    for (unsigned int i=0; i<measure->notes.size(); i++) {
+        NoteObject note = measure->notes[i];
+        parseNote(note);
     }
+    
     // Set barline
     // FIXME use flags for proper barline identification
     if ( measure->barline.length() ) {
@@ -1272,6 +1115,110 @@ void MusPaeInput::printMeasure(std::ostream& out, MeasureObject *measure ) {
     //m_staff->AddLayer(m_layer);
 }
 
+void MusPaeInput::parseNote(NoteObject note) {
+    
+    MusLayerElement *element;
+    
+    if (note.rest) {
+        MusRest *rest =  new MusRest();
+
+        rest->m_pname = REST_AUTO;
+        rest->m_dots = note.dots;
+        rest->m_dur = note.duration;
+
+        if (note.fermata)
+            rest->m_fermata = true;
+        
+        element = rest;
+    } else {
+        MusNote *mnote = new MusNote();
+        
+        mnote->m_pname = note.pitch;
+        mnote->m_oct = note.octave;
+        mnote->m_accid = note.accidental;
+        
+        mnote->m_dots = note.dots;
+        mnote->m_dur = note.duration;
+        
+        if (note.fermata)
+            mnote->m_fermata = true;
+        
+        if (note.trill == true)
+            mnote->m_embellishment = EMB_TRILL;
+        
+        element = mnote;
+    }
+    
+
+    // Acciaccaturas are similar but do not get beamed (do they)
+    // this case is simpler. NOTE a note can not be acciacctura AND appoggiatura
+    // Acciaccatura rests do not exist
+    if (note.acciaccatura && dynamic_cast<MusNote *>(element)) {
+        element->m_cueSize = true;
+        dynamic_cast<MusNote *>(element)->m_acciaccatura = true;
+    }
+    
+    
+    if (note.beam == BEAM_INITIAL)
+        PushContainer(new MusBeam());
+    
+    // we have a tuplet, the tuplet_note is > 0
+    // which means we are counting a tuplet
+    if (note.tuplet_note > 0 && note.tuplet_notes == note.tuplet_note) // first elem in tuplet
+        PushContainer(new MusTuplet());
+    
+    if (note.appoggiatura > 0) {
+        element->m_cueSize = true;
+        
+        if (note.appoggiatura_multiple && note.appoggiatura > 1)
+            PushContainer(new MusBeam());
+
+    }
+    
+    // Add the note to the current container
+    AddLayerElement(element);
+    
+    
+    // this is the last note in appoggiatura beam, set the beam to null
+    if (note.appoggiatura_multiple && note.appoggiatura == 2) // last one in a beam is 2
+        PopContainer();
+
+    // the last note counts always '1'
+    // insert the tuplet elem
+    // and reset the tuplet counter
+    if (note.tuplet_note == 1)
+        PopContainer();
+    
+    if (note.beam == BEAM_TERMINAL)
+        PopContainer();
+}
+
+void MusPaeInput::PushContainer(MusLayerElement *container) {
+    AddLayerElement(container);
+    m_nested_objects.push_back(container);
+}
+
+void MusPaeInput::PopContainer() {
+    assert(m_nested_objects.size() > 0);
+    m_nested_objects.pop_back();
+}
+
+void MusPaeInput::AddLayerElement(MusLayerElement *element) {
+    
+    if (m_nested_objects.size() > 0) {
+        MusLayerElement *bottom = m_nested_objects.back();
+        
+        if ( dynamic_cast<MusBeam*>( bottom ) ) {
+            ((MusBeam*)bottom)->AddElement( element );
+        }
+        else if ( dynamic_cast<MusTuplet*>( bottom ) ) {
+            ((MusTuplet*)bottom)->AddElement( element );
+        }
+        
+    } else {
+        m_layer->AddElement(element);
+    }
+}
 
 
 //////////////////////////////
