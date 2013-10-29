@@ -1081,6 +1081,7 @@ bool MusWWGInput::ReadNote( MusLayer *layer )
         layer_element->m_x_abs = xrel;
         if ( m_currentBeam ) {
             m_currentBeam->AddElement( layer_element );
+            m_currentBeam->m_x_abs = layer_element->m_x_abs;
             if ( m_isLastNoteInBeam ) {
                 layer->AddElement( m_currentBeam );
                 m_isLastNoteInBeam = false;
