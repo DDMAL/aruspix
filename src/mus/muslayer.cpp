@@ -227,7 +227,9 @@ MusLayerElement *MusLayer::GetFirst( MusLayerElement *element, unsigned int dire
 	if (element == NULL)
 		return (element);
 
-	int i = this->GetChildIndex( element );
+    ResetList(this);
+    
+	int i = GetListIndex( element );
 	if ( i == -1 )
 		return (element);
 
@@ -241,15 +243,15 @@ MusLayerElement *MusLayer::GetFirst( MusLayerElement *element, unsigned int dire
                 break;
             }
 			i--;
-			element = (MusLayerElement*)m_children[i];
+            element = (MusLayerElement*)GetListPrevious(element);
 		}
 		else
-		{	if (i >= (int)m_children.size() - 1 ) {
+		{	if (i >= (int)GetList(this)->size() - 1 ) {
                 *succ = false;
                 break;
             }
 			i++;
-			element = (MusLayerElement*)m_children[i];
+			element = (MusLayerElement*)GetListNext(element);
 		}
 	}	
 

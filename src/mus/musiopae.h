@@ -247,8 +247,13 @@ private:
      int       getPitch            (char c_note );
      
      // output functions
+     void      AddLayerElement     (MusLayerElement *element);
+     void      parseNote           (NoteObject note);
+     void      PopContainer        ();
      void      printMeasure        (std::ostream& out, MeasureObject *measure);
-     
+     void      PushContainer       (MusLayerElement *container);
+
+
      // input functions
      void      getAtRecordKeyValue (char *key, char* value, const char* input);
      
@@ -261,10 +266,9 @@ private:
     MusMeasure *m_measure;
 	MusLayer *m_layer;
     MusTie *m_current_tie;
-    MusTuplet *m_current_tuplet;
+
+    std::vector<MusLayerElement *> m_nested_objects;   
     
-    MusBeam *m_current_beam;
-        
     //unsigned char m_rest_position;
     //unsigned int m_rest_octave;
 };
