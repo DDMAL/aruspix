@@ -222,13 +222,11 @@ void MusPaeInput::convertPlainAndEasyToKern(std::istream &infile, std::ostream &
         }
         
         // beaming ends
-		else if (incipit[i] == '}') {
-			//current_note.beam = 0; // should not have to be done, but just in case
+		else if (incipit[i] == '}' && in_beam) {
             current_measure.notes[current_measure.notes.size() - 1].beam = BEAM_TERMINAL;
             current_note.beam = 0;
             in_beam = false;
 		}
-        // // ax2.3 LP
 		
         // slurs are read when adding the note
 		else if (incipit[i] == '+') {
@@ -1073,9 +1071,6 @@ int MusPaeInput::getNote( const char* incipit, NoteObject *note, MeasureObject *
 //
 
 void MusPaeInput::printMeasure(std::ostream& out, MeasureObject *measure ) {
-    bool tupletized = false, beamed = false;
-    MusBeam *appog_beam = NULL;
-
     
     if ( measure->clef != NULL ) {
         m_layer->AddElement(measure->clef);
@@ -1306,6 +1301,3 @@ void MusPaeInput::getAtRecordKeyValue(char *key, char* value,
         break;
     }
 }
-
-// md5sum: 00d5e9dedeb47c815390eac97f8c9f42 pae2kern.cpp [20050403]
-

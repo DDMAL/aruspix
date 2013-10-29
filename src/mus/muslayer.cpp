@@ -242,7 +242,7 @@ MusLayerElement *MusLayer::GetFirst( MusLayerElement *element, unsigned int dire
             element = (MusLayerElement*)GetListPrevious(element);
 		}
 		else
-		{	if (i >= (int)m_children.size() - 1 ) {
+		{	if (i >= (int)GetList(this)->size() - 1 ) {
                 *succ = false;
                 break;
             }
