@@ -156,6 +156,7 @@ bool MusMeiOutput::WritePage( MusPage *page )
         m_page->SetAttribute( "page.height", Mus::StringFormat( "%d", page->m_pageHeight ).c_str() );
         m_page->SetAttribute( "page.leftmar", Mus::StringFormat( "%d", page->m_pageLeftMar ).c_str() );
         m_page->SetAttribute( "page.rightmar", Mus::StringFormat( "%d", page->m_pageRightMar ).c_str() );
+        m_page->SetAttribute( "page.rightmar", Mus::StringFormat( "%d", page->m_pageRightMar ).c_str() );
     }
     if ( !page->m_surface.empty() ) {
         m_page->SetAttribute( "surface", page->m_surface.c_str() );
@@ -575,6 +576,9 @@ std::string MusMeiOutput::DurToStr( int dur )
     else if (dur == DUR_4) value = "4";
     else if (dur == DUR_8) value = "8";
     else if (dur == DUR_16) value = "16";
+    else if (dur == DUR_32) value = "32";
+    else if (dur == DUR_64) value = "64";
+    else if (dur == DUR_128) value = "128";
 	else {
 		Mus::LogWarning("Unknown duration '%d'", dur);
         value = "4";
@@ -743,6 +747,9 @@ bool MusMeiInput::ReadMeiPage( TiXmlElement *page )
     }
     if ( page->Attribute( "page.rightmar" ) ) {
         m_page->m_pageRightMar = atoi ( page->Attribute( "page.rightmar" ) );
+    }
+    if ( page->Attribute( "page.topmar" ) ) {
+        m_page->m_pageTopMar = atoi ( page->Attribute( "page.topmar" ) );
     }
     if ( page->Attribute( "surface" ) ) {
         m_page->m_surface = page->Attribute( "surface" );
@@ -1346,6 +1353,9 @@ int MusMeiInput::StrToDur(std::string dur)
     else if (dur == "4") value = DUR_4;
     else if (dur == "8") value = DUR_8;
     else if (dur == "16") value = DUR_16;
+    else if (dur == "32") value = DUR_32;
+    else if (dur == "64") value = DUR_64;
+    else if (dur == "128") value = DUR_128;
 	else {
 		//Mus::LogWarning("Unknown duration '%s'", dur.c_str());
         value = DUR_4;

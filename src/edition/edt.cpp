@@ -477,7 +477,7 @@ void EdtEnv::OnOpenPAE( wxCommandEvent &event )
 	if ( !paeInput.ImportFile() )
 		return;
 
-    m_edtFilePtr->m_musDocPtr->SpaceMusic();
+    m_edtFilePtr->m_musDocPtr->Layout();
     
 	m_musViewPtr->SetEditorMode(MUS_EDITOR_EDIT);
     UpdateViews( 0 );
@@ -503,7 +503,7 @@ void EdtEnv::OnOpenDARMS( wxCommandEvent &event )
 	if ( !darmsInput.ImportFile() )
 		return;
     
-    m_edtFilePtr->m_musDocPtr->SpaceMusic();
+    m_edtFilePtr->m_musDocPtr->Layout();
     
 	m_musViewPtr->SetEditorMode(MUS_EDITOR_EDIT);
     UpdateViews( 0 );
@@ -685,7 +685,7 @@ void EdtEnv::OnOpenMEI( wxCommandEvent &event )
     //OnSaveMEI( event );
     
     if ( m_edtFilePtr->m_musDocPtr->GetType() != Transcription ) {
-        m_edtFilePtr->m_musDocPtr->SpaceMusic();
+        m_edtFilePtr->m_musDocPtr->Layout();
     }
     
 	m_musViewPtr->SetEditorMode(MUS_EDITOR_EDIT);

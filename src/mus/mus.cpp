@@ -176,8 +176,8 @@ MusEnv::MusEnv()
 {
     m_landscape = false;
     m_staffLineWidth = 2;
-    m_stemWidth = 3;
-    m_barlineWidth = 3;
+    m_stemWidth = 2;
+    m_barlineWidth = 2;
     m_beamWidth = 10;
     m_beamWhiteWidth = 5;
     m_beamMaxSlope = 30;

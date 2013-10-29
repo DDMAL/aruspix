@@ -18,6 +18,7 @@
 //----------------------------------------------------------------------------
 
 #include "mus.h"
+#include "musaligner.h"
 #include "musbeam.h"
 #include "muslayer.h"
 #include "muslayerelement.h"
@@ -212,11 +213,17 @@ bool MusObject::GetSameAs( std::string *id, std::string *filename, int idx )
 
 void MusObject::Process(MusFunctor *functor, ArrayPtrVoid params )
 {
-    if (functor->m_stopIt) {
+    if (functor->m_returnCode == FUNCTOR_STOP) {
         return;
     }
     
     functor->Call( this, params );
+    
+    // do not go any deeper in this case
+    if (functor->m_returnCode == FUNCTOR_SIBLINGS) {
+        functor->m_returnCode = FUNCTOR_CONTINUE;
+        return;
+    }
 
     MusObject *obj;
 	int i;
@@ -397,39 +404,39 @@ MusObject *MusObjectListInterface::GetListNext( const MusObject *listElement )
 
 MusFunctor::MusFunctor( )
 { 
-    m_stopIt=false;
-    m_reverse=false;
-    obj_fpt=NULL; 
+    m_returnCode = FUNCTOR_CONTINUE;
+    m_reverse = false;
+    obj_fpt = NULL; 
 }
 
-MusFunctor::MusFunctor( bool(MusObject::*_obj_fpt)( ArrayPtrVoid ))
+MusFunctor::MusFunctor( int(MusObject::*_obj_fpt)( ArrayPtrVoid ))
 { 
-    m_stopIt=false;
-    m_reverse=false;
-    obj_fpt=_obj_fpt; 
+    m_returnCode = FUNCTOR_CONTINUE;
+    m_reverse = false;
+    obj_fpt = _obj_fpt; 
 }
 
 void MusFunctor::Call( MusObject *ptr, ArrayPtrVoid params )
 {
     // we should have return codes (not just bool) for avoiding to go further down the tree in some cases
-    m_stopIt = (*ptr.*obj_fpt)( params );
+    m_returnCode = (*ptr.*obj_fpt)( params );
 }
 
 //----------------------------------------------------------------------------
 // MusObject functor methods
 //----------------------------------------------------------------------------
 
-bool MusObject::AddMusLayerElementToList( ArrayPtrVoid params )
+int MusObject::AddMusLayerElementToList( ArrayPtrVoid params )
 {
     // param 0: the ListOfMusObjects
     ListOfMusObjects *list = (ListOfMusObjects*)params[0];
     if ( dynamic_cast<MusLayerElement*>(this ) ) {
         list->push_back( this );
     }
-    return false;
+    return FUNCTOR_CONTINUE;
 }
 
-bool MusObject::FindByUuid( ArrayPtrVoid params )
+int MusObject::FindByUuid( ArrayPtrVoid params )
 {
     // param 0: the uuid we are looking for
     // parma 1: the pointer to the element
@@ -437,25 +444,28 @@ bool MusObject::FindByUuid( ArrayPtrVoid params )
     MusObject **element = (MusObject**)params[1];  
     
     if ( (*element) ) {
-        return true;
+        // this should not happen, but just in case
+        return FUNCTOR_STOP;
     }
     
     if ( uuid_compare( *uuid, *this->GetUuid() ) == 0 ) {
         (*element) = this;
         //Mus::LogDebug("Found it!");
-        return true;
+        return FUNCTOR_STOP;
     }
     //Mus::LogDebug("Still looking for uuid...");
-    return false;
+    return FUNCTOR_CONTINUE;
 }
 
 
-bool MusObject::LayOutLayerElementXPos( ArrayPtrVoid params )
+int MusObject::LayOutLayerElementXPos( ArrayPtrVoid params )
 {
     // param 0: the current x measure shift
     // param 1: the current x element shift
+    // param 2: the width of the previous element
 	int *current_x_measure_shift = (int*)params[0];
     int *current_x_element_shift = (int*)params[1];
+    int *min_pos = (int*)params[2];
     
     // starting a new staff
     MusStaff *current_staff = dynamic_cast<MusStaff*>(this);
@@ -473,40 +483,63 @@ bool MusObject::LayOutLayerElementXPos( ArrayPtrVoid params )
     MusLayer *current_layer = dynamic_cast<MusLayer*>(this);
     if ( current_layer  ) {
         (*current_x_element_shift) = 0;
+        (*min_pos) = 5;
     }
 
     MusLayerElement *current = dynamic_cast<MusLayerElement*>(this);
     if ( !current  ) {
-        return false;
+        return FUNCTOR_CONTINUE;
     }
+    
+    // we should have processed aligned before
+    assert( current->GetAlignment() );
 
     if ( !current->HasUpdatedBB() ) {
         // this is all we need for empty elements
-        current->m_x_rel = (*current_x_element_shift);
-        return false;
+        current->GetAlignment()->SetXRel(*current_x_element_shift);
+        return FUNCTOR_CONTINUE;
     }
     
     if ( dynamic_cast<MusBeam*>(current) ) {
-        return false;
+        return FUNCTOR_CONTINUE;
     }
     
     if ( dynamic_cast<MusTie*>(current) ) {
-        return false;
+        return FUNCTOR_CONTINUE;
     }
     
     if ( dynamic_cast<MusTuplet*>(current) ) {
-        return false;
+        return FUNCTOR_CONTINUE;
     }
     
-    int negative_offset = current->m_x_rel - current->m_contentBB_x1;
-    current->m_x_rel = (*current_x_element_shift) + negative_offset;
+    // the negative offset it the part of the bounding box that overflows on the left
+    // |____x_____|
+    //  ---- = negative offset
+    int negative_offset = current->GetAlignment()->GetXRel() - current->m_contentBB_x1;
     
-    int shift = (current->m_contentBB_x2 - current->m_contentBB_x1) + current->GetHorizontalSpacing();
-    (*current_x_element_shift) += shift;
-    (*current_x_measure_shift) += shift; // this will not work with more than one layer because we are cumulating
+    // this will probably never happen
+    if ( negative_offset < 0 ) {
+        negative_offset = 0;
+    }
     
-    return false;
+    // check if the element overlaps with the preceeding one given by (*min_pos)
+    int overlap = 0;
+    if ( (current->GetAlignment()->GetXRel() - negative_offset) < (*min_pos) ) {
+        overlap = (*min_pos) - current->GetAlignment()->GetXRel() + negative_offset;
+        // shift the current element
+        current->GetAlignment()->SetXShift( overlap );
+    }
+    
+    //Mus::LogDebug("%s min_pos %d; negative offset %d;  x_rel %d; overlap %d", current->MusClassName().c_str(), (*min_pos), negative_offset, current->GetAlignment()->GetXRel(), overlap );
+    
+    // the next minimal position if given by the right side of the bounding box + the spacing of the element
+    (*min_pos) = current->m_contentBB_x2 + current->GetHorizontalSpacing();
+    
+    return FUNCTOR_CONTINUE;
 }
+
+
+
 
 
 

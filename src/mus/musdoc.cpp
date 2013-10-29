@@ -11,11 +11,9 @@
 //----------------------------------------------------------------------------
 
 #include "mus.h"
-#include "musbboxdc.h"
 #include "muslayer.h"
 #include "muslayerelement.h"
 #include "muspage.h"
-#include "musrc.h"
 #include "musstaff.h"
 #include "mussystem.h"
 
@@ -88,11 +86,14 @@ void MusDoc::ResetPaperSize()
     m_pageTopMar = 0; 
 }
 
-bool MusDoc::Save( ArrayPtrVoid params )
+int MusDoc::Save( ArrayPtrVoid params )
 {  
     // param 0: output stream
     MusFileOutputStream *output = (MusFileOutputStream*)params[0];       
-    return !output->WriteDoc( this );
+    if (!output->WriteDoc( this )) {
+        return FUNCTOR_STOP;
+    }
+    return FUNCTOR_CONTINUE;
 }
 
 void MusDoc::AddPage( MusPage *page )
@@ -107,48 +108,15 @@ void MusDoc::Refresh()
     RefreshViews();
 }
 
-void MusDoc::SpaceMusic() {
-    
-    // Calculate bounding boxes
-    MusPage *page = dynamic_cast<MusPage*>(m_children[0]);
-    if ( !page ) {
-        return;
-    }
-    
-    MusRC rc;
-    MusBBoxDC bb_dc( &rc, 0, 0 );
-    rc.SetDoc(this);
-    rc.DrawPage(  &bb_dc, page, false );
-    
-    ArrayPtrVoid params;
-    int measure_shift = 0;
-    int element_shift = 0;
-    params.push_back( &measure_shift );
-    params.push_back( &element_shift );
-    
-    MusFunctor updateXPosition( &MusLayerElement::LayOutLayerElementXPos );
-    this->Process( &updateXPosition, params );
-    
-    params.clear();
-    int system_shift = m_pageHeight - page->m_pageTopMar;
-    int staff_shift = 0;
-    params.push_back( &system_shift );
-    params.push_back( &staff_shift );
-    
-    MusFunctor updateYPosition( &MusObject::LayOutSystemAndStaffYPos );
-    this->Process( &updateYPosition, params );
-    
-    //rc.DrawPage(  &bb_dc, page , false );
-    
-    // Trim the page to the needed position
-    page->m_pageWidth = 0; // first resest the page to 0
-    page->m_pageHeight = m_pageHeight;
-    params.clear();
-    
-    MusFunctor trimSystem(&MusObject::TrimSystem);
-    this->Process( &trimSystem, params );
-    
-    rc.DrawPage(  &bb_dc, page , false );
+void MusDoc::Layout( bool trim )
+{
+    int i;
+	MusPage *page = NULL;
+    for (i = 0; i < this->GetPageCount(); i++)
+	{
+		page = (MusPage*)this->m_children[i];
+        page->Layout( trim );
+     }
 }
 
 void MusDoc::PaperSize( MusPage *page )
@@ -327,7 +295,7 @@ void MusDoc::UpdatePageValues()
 }
 
 
-bool MusDoc::Save( MusFileOutputStream *output )
+int MusDoc::Save( MusFileOutputStream *output )
 {
     ArrayPtrVoid params;
 	params.push_back( output );

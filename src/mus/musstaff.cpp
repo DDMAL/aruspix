@@ -14,6 +14,7 @@
 
 //----------------------------------------------------------------------------
 
+#include "mus.h"
 #include "musdef.h"
 #include "musio.h"
 #include "musmeasure.h"
@@ -90,11 +91,15 @@ void MusStaff::Clear()
     //beamListPremier = NULL;
 }
 
-bool MusStaff::Save( ArrayPtrVoid params )
+int MusStaff::Save( ArrayPtrVoid params )
 {
     // param 0: output stream
     MusFileOutputStream *output = (MusFileOutputStream*)params[0];         
-    return !output->WriteStaff( this );
+    if (!output->WriteStaff( this )) {
+        return FUNCTOR_STOP;
+    }
+    return FUNCTOR_CONTINUE;
+
 }
 
 void MusStaff::AddMeasure( MusMeasure *measure )
@@ -216,7 +221,7 @@ bool MusStaff::GetPosOnPage( ArrayPtrVoid params )
 // MusStaff functor methods
 //----------------------------------------------------------------------------
 
-bool MusStaff::LayOutSystemAndStaffYPos( ArrayPtrVoid params )
+int MusStaff::LayOutSystemAndStaffYPos( ArrayPtrVoid params )
 {
     // param 0: the current y system shift
     // param 1: the current y staff shift
@@ -249,7 +254,19 @@ bool MusStaff::LayOutSystemAndStaffYPos( ArrayPtrVoid params )
     int shift = (this->m_contentBB_y2 - this->m_contentBB_y1) + this->GetVerticalSpacing();
     (*current_y_staff_shift) -= shift;
     (*current_y_system_shift) -= shift;
-    // we should have return codes for avoiding to go further down the tree in such cases
-    return false;
+    // do not go further down the tree in this case
+    return FUNCTOR_SIBLINGS;
+}
+
+int MusStaff::Align( ArrayPtrVoid params )
+{
+    // param 0: the aligner
+    // param 1: the measureAligner
+    // param 2: the measureNb
+    // param 3: the time
+	int *measureNb = (int*)params[2];
+    
+    (*measureNb) = 0;
+    return FUNCTOR_CONTINUE;
 }
 

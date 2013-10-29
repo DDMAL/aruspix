@@ -46,6 +46,8 @@
 		4D72429C132012A00023497A /* mussvgdc.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D72429B132012A00023497A /* mussvgdc.cpp */; };
 		4D7362820D35C7D30030DFA6 /* recmus.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D7362800D35C7D30030DFA6 /* recmus.cpp */; };
 		4D7362A40D35CECC0030DFA6 /* cmpmus.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D7362A20D35CECC0030DFA6 /* cmpmus.cpp */; };
+		4D76EDF01811C39300A6024B /* musaligner.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D76EDEE1811C38E00A6024B /* musaligner.cpp */; };
+		4D76EDF11811C39300A6024B /* musaligner.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D76EDEE1811C38E00A6024B /* musaligner.cpp */; };
 		4D784B7517FEBB5000461A35 /* musiobin.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D784B6B17FEBB5000461A35 /* musiobin.cpp */; };
 		4D784B7617FEBB5000461A35 /* musiomlf.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D784B6D17FEBB5000461A35 /* musiomlf.cpp */; };
 		4D784B7717FEBB5000461A35 /* musmlfdic.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D784B6F17FEBB5000461A35 /* musmlfdic.cpp */; };
@@ -246,6 +248,8 @@
 		4D7362810D35C7D30030DFA6 /* recmus.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = recmus.h; sourceTree = "<group>"; };
 		4D7362A20D35CECC0030DFA6 /* cmpmus.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = cmpmus.cpp; sourceTree = "<group>"; };
 		4D7362A30D35CECC0030DFA6 /* cmpmus.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = cmpmus.h; sourceTree = "<group>"; };
+		4D76EDEE1811C38E00A6024B /* musaligner.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = musaligner.cpp; path = ../src/mus/musaligner.cpp; sourceTree = "<group>"; };
+		4D76EDEF1811C39100A6024B /* musaligner.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = musaligner.h; path = ../src/mus/musaligner.h; sourceTree = "<group>"; };
 		4D784B6B17FEBB5000461A35 /* musiobin.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = musiobin.cpp; sourceTree = "<group>"; };
 		4D784B6C17FEBB5000461A35 /* musiobin.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = musiobin.h; sourceTree = "<group>"; };
 		4D784B6D17FEBB5000461A35 /* musiomlf.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = musiomlf.cpp; sourceTree = "<group>"; };
@@ -508,11 +512,13 @@
 				4D784B831802A8AC00461A35 /* mus.h */,
 				4D3A8FE10D35867200BBC1FB /* musobject.cpp */,
 				4D3A8FE20D35867200BBC1FB /* musobject.h */,
-				8F2381791594632C00C04D47 /* main.cpp */,
+				4D76EDEE1811C38E00A6024B /* musaligner.cpp */,
+				4D76EDEF1811C39100A6024B /* musaligner.h */,
 				4D28D70C181006AC00C54CFC /* muscontroller.cpp */,
 				4D28D70D181006AD00C54CFC /* muscontroller.h */,
 				8FA8EC8418083F21003ADB5F /* musuuid.h */,
 				8FA8EC89180841C3003ADB5F /* musuuid.cpp */,
+				8F2381791594632C00C04D47 /* main.cpp */,
 			);
 			name = mus;
 			sourceTree = "<group>";
@@ -914,6 +920,7 @@
 				8FA8EC8B180841C3003ADB5F /* musuuid.cpp in Sources */,
 				4DAF10BC18085C8200767149 /* musmeasure.cpp in Sources */,
 				4D28D70E181006AD00C54CFC /* muscontroller.cpp in Sources */,
+				4D76EDF11811C39300A6024B /* musaligner.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1025,6 +1032,7 @@
 				4D784B851802A8EB00461A35 /* mus.cpp in Sources */,
 				8FA8EC8A180841C3003ADB5F /* musuuid.cpp in Sources */,
 				4DAF10BB18085C8200767149 /* musmeasure.cpp in Sources */,
+				4D76EDF01811C39300A6024B /* musaligner.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1039,7 +1047,7 @@
 				FRAMEWORK_SEARCH_PATHS = "";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_ENABLE_OBJC_EXCEPTIONS = NO;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
 					"$(inherited)",
@@ -1070,7 +1078,7 @@
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
-				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_ENABLE_OBJC_EXCEPTIONS = NO;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=0",
 					"$(inherited)",

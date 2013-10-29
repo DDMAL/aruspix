@@ -12,8 +12,10 @@ cp -r ../data/svg data/
 emcc --closure 0 -O2 \
 	-I$ARUSPIX_ROOT/src \
 	-DUSE_FAKE_UUIDS \
+	-s ASM_JS=1 \
 	$ARUSPIX_ROOT/src/mus/main.cpp \
 	$ARUSPIX_ROOT/src/mus/mus.cpp \
+	$ARUSPIX_ROOT/src/mus/musaligner.cpp \
 	$ARUSPIX_ROOT/src/mus/musapp.cpp \
 	$ARUSPIX_ROOT/src/mus/musbarline.cpp \
 	$ARUSPIX_ROOT/src/mus/musmeasure.cpp \

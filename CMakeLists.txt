@@ -13,6 +13,7 @@ include_directories(src/mus src/ src/tinyxml)
 add_executable (aruspix 
 	src/mus/main.cpp 
 	src/mus/mus.cpp
+	src/mus/musaligner.cpp
 	src/mus/musapp.cpp
 	src/mus/musbarline.cpp 
 	src/mus/musbboxdc.cpp 

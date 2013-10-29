@@ -112,7 +112,7 @@ bool CmpCollation::IsCollationLoaded( CmpCollationPart *part )
 	if (!mei_input.ImportFile()) {
 		return false;
     }
-    m_musDocPtr->SpaceMusic();
+    m_musDocPtr->Layout();
     
     // The source 1
     filename = m_basename + GetRefPartFilename() + ".mei";

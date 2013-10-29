@@ -46,11 +46,15 @@ void MusLayer::Clear()
 }
 
 
-bool MusLayer::Save( ArrayPtrVoid params )
+int MusLayer::Save( ArrayPtrVoid params )
 {
     // param 0: output stream
     MusFileOutputStream *output = (MusFileOutputStream*)params[0];       
-    return !output->WriteLayer( this );
+    if (!output->WriteLayer( this )) {
+        return FUNCTOR_STOP;
+    }
+    return FUNCTOR_CONTINUE;
+
 }
 
 
@@ -678,9 +682,11 @@ void MusLayer::AdjustLyricLineHeight( int delta )
 }
 */
 
-// functors
+//----------------------------------------------------------------------------
+// MusLayer functor methods
+//----------------------------------------------------------------------------
 
-bool MusLayer::CopyToLayer( ArrayPtrVoid params )
+int MusLayer::CopyToLayer( ArrayPtrVoid params )
 {  
     // Things we might want to add: 
     // - checking that the parent is a staff to avoid copying MusApp
@@ -701,7 +707,7 @@ bool MusLayer::CopyToLayer( ArrayPtrVoid params )
     bool *new_uuid = (bool*)params[5];
     
     if ( (*has_ended) ) {
-        return true;
+        return FUNCTOR_STOP;
     }
     
     int i;
@@ -725,13 +731,26 @@ bool MusLayer::CopyToLayer( ArrayPtrVoid params )
         if ( !uuid_is_null( *end ) ) {
             if ( uuid_compare( *end, *(m_children[i])->GetUuid() ) == 0 ) {
                 (*has_ended) = true;
-                return true;
+                return FUNCTOR_STOP;
             }
         }
 
         
     }
-    return false;
+    return FUNCTOR_CONTINUE;
+}
 
+int MusLayer::Align( ArrayPtrVoid params )
+{
+    // param 0: the aligner
+    // param 1: the measureAligner
+    // param 2: the measureNb
+    // param 3: the time
+    double *time = (double*)params[3];
+
+    // we are starting a new layer, reset the time;
+    (*time) = 0.0;
+
+    return FUNCTOR_CONTINUE;
 }
 

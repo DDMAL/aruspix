@@ -15,12 +15,14 @@
 //----------------------------------------------------------------------------
 
 #include "mus.h"
+#include "musaligner.h"
 #include "musapp.h"
 #include "musbarline.h"
 #include "musbeam.h"
 #include "musclef.h"
 #include "musdef.h"
 #include "musdoc.h"
+#include "muskeysig.h"
 #include "musio.h"
 #include "musmensur.h"
 #include "musnote.h"
@@ -41,10 +43,12 @@ MusLayerElement::MusLayerElement():
     m_visible = true;
     
     m_x_abs = AX_UNSET;
-    m_x_rel = 0;
+    //m_x_rel = 0;
     m_x_drawing = 0;
     m_y_drawing = 0;
     m_in_layer_app = false;
+    
+    m_alignment = NULL;
 }
 
 
@@ -63,6 +67,7 @@ MusLayerElement& MusLayerElement::operator=( const MusLayerElement& element )
         m_visible = element.m_visible;
         // pointers have to be NULL
         m_parent = NULL;
+        m_alignment = NULL;
 	}
 	return *this;
 }
@@ -116,14 +121,7 @@ int MusLayerElement::GetElementNo() const
 
 int MusLayerElement::GetHorizontalSpacing()
 {
-    // set less space for grace notes
-    if (IsNote()) {
-        MusNote *n = dynamic_cast<MusNote*>(this);
-        if (n->m_cueSize)
-            return 10;
-    }
-    
-    return 20; // arbitrary generic value
+    return 10; // arbitrary generic value
 }
 
 void MusLayerElement::SetPitchOrPosition(int pname, int oct) 
@@ -192,6 +190,12 @@ bool MusLayerElement::IsSymbol( )
     return (dynamic_cast<MusSymbol*>(this));
 }
 
+
+bool MusLayerElement::IsKeySig()
+{
+    return (dynamic_cast<MusKeySig*>(this));
+}
+
 bool MusLayerElement::IsMensur() 
 {  
     return (dynamic_cast<MusMensur*>(this));
@@ -228,11 +232,15 @@ bool MusLayerElement::IsRest()
 }
 
 
-bool MusLayerElement::Save( ArrayPtrVoid params )
+int MusLayerElement::Save( ArrayPtrVoid params )
 {
     // param 0: output stream
     MusFileOutputStream *output = (MusFileOutputStream*)params[0];         
-    return !output->WriteLayerElement( this );
+    if (!output->WriteLayerElement( this )) {
+        return FUNCTOR_STOP;
+    }
+    return FUNCTOR_CONTINUE;
+
 }
 
 void MusLayerElement::AdjustPname( int *pname, int *oct )
@@ -250,5 +258,59 @@ void MusLayerElement::AdjustPname( int *pname, int *oct )
 			(*oct)++;
         (*pname) = PITCH_C;
 	}
+}
+
+double MusLayerElement::GetAlignementDuration()
+{
+    if ( HasDurationInterface() ) {
+        MusDurationInterface *duration = dynamic_cast<MusDurationInterface*>(this);
+        return duration->GetAlignementDuration( );
+    }
+    else {
+        return 0.0;
+    }
+}
+
+int MusLayerElement::GetShiftedXRel()
+{
+    if (m_alignment) {
+        return m_alignment->GetShiftedXRel();
+    }
+    return 0;
+}
+
+int MusLayerElement::Align( ArrayPtrVoid params )
+{
+    // param 0: the aligner
+    // param 1: the measureAligner
+    // param 2: the measureNb
+    // param 3: the time
+    MusMeasureAligner **measureAligner = (MusMeasureAligner**)params[1];
+    double *time = (double*)params[3];
+    
+    MusAlignmentType type = ALIGNMENT_DEFAULT;
+    if ( this->IsBarline() ) {
+        type = ALIGNMENT_BARLINE;
+    }
+    else if ( this->IsClef() ) {
+        type = ALIGNMENT_CLEF;
+    }
+    else if ( this->IsKeySig() ) {
+        type = ALIGNMENT_KEYSIG;
+    }
+    else if ( this->IsMensur() ) {
+        type = ALIGNMENT_MENSUR;
+    }
+    
+    m_alignment = (*measureAligner)->GetAlignmentAtTime( *time, type );
+    
+    // increase the time position
+    (*time) += this->GetAlignementDuration();
+    
+    (*measureAligner)->SetMaxTime( *time );
+    
+    //Mus::LogDebug("Time %f", (*time) );
+    
+    return FUNCTOR_CONTINUE;
 }
 

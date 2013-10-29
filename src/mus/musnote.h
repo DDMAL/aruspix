@@ -79,6 +79,11 @@ public:
      */
     virtual void SetLigature( );
     
+    /**
+     * Return the default horizontal spacing of notes.
+     */
+    virtual int GetHorizontalSpacing( );
+    
 private:
     
 public:

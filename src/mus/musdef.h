@@ -18,6 +18,18 @@
 
 #define AX_UNSET -0x7FFFFFFF
 
+/**
+ * Codes returned by MusFunctors.
+ * Default is FUNCTOR_CONTINUE.
+ * FUNCTOR_SIBLINGS will no go any deeper in the tree.
+ * FUNCTOR_STOP wil stop the tree processing.
+ */
+enum MusFunctorCode {
+    FUNCTOR_CONTINUE = 0,
+    FUNCTOR_SIBLINGS,
+    FUNCTOR_STOP
+};
+
 // Is this score for Mensural, neumes, or CMN
 enum MusNotationMode {
     MUS_MENSURAL_MODE = 0,
@@ -54,6 +66,8 @@ enum MusEditorMode {
 #define DUR_64 8
 #define DUR_128 9
 #define DUR_256 10
+// used for alignement
+#define DUR_MAX 1024
 
 // ACCID
 #define ACCID_SHARP 1

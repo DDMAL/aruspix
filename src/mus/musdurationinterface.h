@@ -34,6 +34,9 @@ public:
     
     virtual void SetDuration( int value );
     
+    
+    virtual double GetAlignementDuration( );
+    
     /**
      * Look if the note or rest is in a beam.
      * Look for the fist beam parent and check is the note is in is content list.

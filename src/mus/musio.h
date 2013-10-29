@@ -60,21 +60,6 @@ public:
     virtual bool WriteLayerApp( MusLayerApp *app ) { return true; };
     virtual bool WriteLayerRdg( MusLayerRdg *rdg ) { return true; };
     ///@}
-
-    /** @name Closing element methods
-     * The following methods can be used to perform actions when the end of an element is reached.
-     * It is usually not necessary and most of the following methods are not overriden.
-     */    
-    ///@{ 
-    virtual bool EndPage( MusPage *page ) { return true; };
-    virtual bool EndSystem( MusSystem *system ) { return true; };
-    virtual bool EndStaff( MusStaff *staff ) { return true; };
-    virtual bool EndLayer( MusLayer *layer ) { return true; };
-    virtual bool EndLayerElement( MusLayerElement *element ) { return true; }; 
-    // app
-    virtual bool EndLayerApp( MusLayerApp *app ) { return true; };
-    virtual bool EndLayerRdg( MusLayerRdg *rdg ) { return true; };
-    ///@}
     
 public:
     
