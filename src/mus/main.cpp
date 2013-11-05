@@ -9,61 +9,41 @@
 #include <sstream>
 #include <string>
 
+#include <getopt.h>
+
 #include "mus.h"
 #include "muscontroller.h"
 
 using namespace std;
 
-// Some handy string split functions
-/*
-std::vector<std::string> &split(const std::string &s, char delim, std::vector<std::string> &elems) {
-    wxStringstream ss(s);
-    std::string item;
-    while(std::getline(ss, item, delim)) {
-        elems.push_back(item);
-    }
-    return elems;
-}
-
-std::vector<std::string> split(const std::string &s, char delim) {
-    std::vector<std::string> elems;
-    return split(s, delim, elems);
-}
-*/
-
-/*
-std::vector<std::string> &split(const std::string &s, char delim, std::vector<std::string> &elems) {
-    std::stringstream ss(s);
-    std::string item;
-    while (std::getline(ss, item, delim)) {
-        elems.push_back(item);
-    }
-    return elems;
-}
-
-
-std::vector<std::string> split(const std::string &s, char delim) {
-    std::vector<std::string> elems;
-    split(s, delim, elems);
-    return elems;
-}
-*/
-
-extern "C" {
 void display_usage() {
-    cerr << "Aruspix headless usage:" << endl;
-    cerr << "aruspix [-d -p -m] [-s -t mei, svg] [-o outfile -r resources -h] infile" << endl << endl;
+    cerr << "Aruspix command line usage:" << endl;
+    cerr << "aruspix [-f pae, mei, darms] [-s -t mei, svg] [-o outfile -r resources -h] infile" << endl << endl;
 
-    cerr << "-d read DARMS file [default if no option is given]" << endl;
-    cerr << "-p read PAE file." << endl;
-    cerr << "-m read MEI file." << endl;
-    cerr << "-t select output format: mei, svg (default)"<< endl;
-    cerr << "-s scale percent (100 default, max 1000)" << endl<< endl;
-    cerr << "-b add border (10 px default, max 1000)" << endl;
+    cerr << "-b, --border" << endl;
+    cerr << "\t\tadd border (10 px default, max 1000)" << endl;
+
+    cerr << "-f, --format" << endl;
+    cerr << "\t\tSelect output format: darms, mei, pae" << endl;
+    cerr << "\t\t(optional, default is pae)" << endl;
     
-    cerr << "Resources default dir: " << Mus::GetResourcesPath() << endl;
+    cerr << "-o, --output" << endl;
+    cerr << "\t\tOutput file name" << endl;
+    
+    cerr << "-r, --recources" << endl;
+    cerr << "\t\tSpecify path for SVG resoucces" << endl;
+    cerr << "\t\t(default in " <<  Mus::GetResourcesPath() << ")" << endl;
+    
+    cerr << "-s, --scale" << endl;
+    cerr << "\t\tscale percent (100 default, max 1000)" << endl;
+    
+    cerr << "-t, --type" << endl;
+    cerr << "\t\tSelect output format: mei, svg" << endl;
+    cerr << "\t\t(optional, default is svg)" << endl;
+
+    
 }
-}
+
 
 int main(int argc, char** argv)
 {
@@ -74,12 +54,8 @@ int main(int argc, char** argv)
     string m_outformat = "svg";
     
     ConvertFileType m_type;
-    bool m_no_mei_hdr = false;
-    
-    const char *cmdlineopts = "ndmpr:o:t:s:hb:";
-    
-    int opt;
-    
+    int m_no_mei_hdr = 0;
+      
     MusController controller;
     
     // read pae by default
@@ -90,14 +66,41 @@ int main(int argc, char** argv)
         display_usage();
         exit(1);
     }
+    int c;
     
-    opt = getopt( argc, argv, cmdlineopts );
-    while( opt != -1 ) {
-        switch( opt ) {
-            case 'p': m_type = pae_file; break;
-            case 'd': m_type = darms_file; break;
-            case 'm': m_type = mei_file; break;
-            case 'n': m_no_mei_hdr = true; break;
+    static struct option long_options[] =
+    {
+        {"no-mei-hdr",  no_argument,      &m_no_mei_hdr, 1},
+        {"border",      required_argument, 0, 'b'},
+        {"format",      required_argument, 0, 'f'},
+        {"output",      required_argument, 0, 'o'},
+        {"resources",   required_argument, 0, 'r'},
+        {"scale",       required_argument, 0, 's'},
+        {"type",        required_argument, 0, 't'},
+        {0, 0, 0, 0}
+    };
+    
+    while ((c = getopt_long(argc, argv, "b:f:o:r:s:t:", long_options, NULL)) != -1)
+    {                
+        switch (c)
+        {
+            case '0': break;
+
+            case 'f': {
+                string informat = string(optarg);
+                if (informat == "pae")
+                    m_type = pae_file;
+                else if(informat == "darms")
+                    m_type = darms_file;
+                else if(informat == "mei")
+                    m_type = mei_file;
+                else {
+                    cerr << "Input format can only be: pae mei darms" << endl;
+                    display_usage();
+                    exit(1);
+                }
+            }
+                break;
                 
             case 'r':
                 Mus::SetResourcesPath(optarg);
@@ -106,7 +109,7 @@ int main(int argc, char** argv)
             case 'o':
                 m_outfile = string(optarg);
                 break;
-            
+                
             case 't':
                 m_outformat = string(optarg);
                 break;
@@ -123,12 +126,15 @@ int main(int argc, char** argv)
                 display_usage();
                 exit(0);
                 break;
+            
+            case '?':
+                display_usage();
+                exit(0);
+                break;
                 
             default:
                 break;
         }
-        
-        opt = getopt( argc, argv, cmdlineopts );
     }
     
     if (optind <= argc - 1) {
@@ -145,8 +151,8 @@ int main(int argc, char** argv)
         exit(1);
     }
     
-    if (m_outformat == "mei" && (m_type = mei_file)) {
-        cerr << "Cannot convert from mei to mei (do not specify -m and -t mei)." << endl;
+    if (m_outformat == "mei" && m_type == mei_file) {
+        cerr << "Cannot convert from mei to mei (do not specify -f mei and -t mei)." << endl;
         exit(1);
     }
     
@@ -159,14 +165,6 @@ int main(int argc, char** argv)
 
     if ( !controller.LoadFile( m_infile, m_type ) ) {
         exit(1);
-    }
-    
-    // create outfile
-    if (m_outfile.length() == 0) {
-        /*
-        std::vector<string> v = split(m_infile, '/');
-        m_outfile = v[v.capacity() - 1] + "." + m_outformat; // can be only mei or svg
-        */
     }
     
     // Create SVG or mei
@@ -191,27 +189,4 @@ int main(int argc, char** argv)
     cerr << "Output written to " << m_outfile << endl;
     
     return 0;
-}
-
-extern "C" {
-    const char * convertMusic(ConvertFileType input_format, ConvertFileType output_format, const char * c_data) {
-        
-        string data(c_data);
-        string out_str;
-    
-        MusController controller;
-        
-        Mus::SetResourcesPath("/data");
-        
-        // default to mei if unset.
-        if (input_format == pae_file) {
-            controller.LoadString( data, pae_file );
-        } else {
-            controller.LoadString( data, mei_file );
-        }
-        
-        // in the future we will be able to render to mei too
-        out_str = controller.RenderToSvg();
-        return out_str.c_str();
-    }
 }

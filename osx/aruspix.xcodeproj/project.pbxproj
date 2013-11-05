@@ -319,6 +319,7 @@
 		57CA54210D34139D001FC334 /* axabout_wdr.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = axabout_wdr.cpp; sourceTree = "<group>"; };
 		57EA3DE30C00BDEB00414247 /* recbookctrl.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = recbookctrl.cpp; sourceTree = "<group>"; };
 		57EA3DE40C00BDEB00414247 /* recbookctrl.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = recbookctrl.h; sourceTree = "<group>"; };
+		8F052C5A182928D700A5F021 /* emscripten_main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = emscripten_main.cpp; path = ../src/mus/emscripten_main.cpp; sourceTree = "<group>"; };
 		8F0576A415C43053002F761C /* mustie.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = mustie.cpp; path = ../src/mus/mustie.cpp; sourceTree = "<group>"; };
 		8F0576A715C43064002F761C /* mustie.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = mustie.h; path = ../src/mus/mustie.h; sourceTree = "<group>"; };
 		8F23816B159462AF00C04D47 /* aruspix_cmd_line */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = aruspix_cmd_line; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -513,6 +514,7 @@
 				4D28D70D181006AD00C54CFC /* muscontroller.h */,
 				8FA8EC8418083F21003ADB5F /* musuuid.h */,
 				8FA8EC89180841C3003ADB5F /* musuuid.cpp */,
+				8F052C5A182928D700A5F021 /* emscripten_main.cpp */,
 			);
 			name = mus;
 			sourceTree = "<group>";

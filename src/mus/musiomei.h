@@ -12,7 +12,7 @@
 #include "musdoc.h"
 #include "muslayer.h"
 
-#ifndef USE_FAKE_UUIDS
+#ifndef USE_EMSCRIPTEN
 #include <uuid/uuid.h>
 #else
 #include "musuuid.h"
