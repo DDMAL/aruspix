@@ -63,11 +63,15 @@ void MusSystem::Clear( )
 }
 
 
-bool MusSystem::Save( ArrayPtrVoid params )
+int MusSystem::Save( ArrayPtrVoid params )
 {
     // param 0: output stream
     MusFileOutputStream *output = (MusFileOutputStream*)params[0];       
-    return !output->WriteSystem( this );
+    if (!output->WriteSystem( this )) {
+        return FUNCTOR_STOP;
+    }
+    return FUNCTOR_CONTINUE;
+
 }
 
 void MusSystem::AddStaff( MusStaff *staff )
@@ -218,12 +222,14 @@ void MusSystem::SetValues( int type )
     return;
 }
 
+//----------------------------------------------------------------------------
+// MusSystem functor methods
+//----------------------------------------------------------------------------
 
-
-bool MusSystem::TrimSystem( ArrayPtrVoid params )
+int MusSystem::TrimSystem( ArrayPtrVoid params )
 {
     if ( !m_parent || !dynamic_cast<MusPage*>(m_parent) ) {
-        return false;
+        return FUNCTOR_CONTINUE;
     }
     MusPage *page = dynamic_cast<MusPage*>(m_parent);
     
@@ -231,6 +237,45 @@ bool MusSystem::TrimSystem( ArrayPtrVoid params )
     if ( page->m_pageWidth < system_length ) {
         page->m_pageWidth = system_length;
     }
-    return false;
+    return FUNCTOR_SIBLINGS;
 }
+
+int MusSystem::Align( ArrayPtrVoid params )
+{
+    // param 0: the aligner
+    // param 1: the measureAligner
+    // param 2: the measureNb
+    // param 3: the time
+    MusAligner **aligner = (MusAligner**)params[0];
+    
+    m_aligner.ClearChildren();
+    (*aligner) = &m_aligner;
+    
+    return FUNCTOR_CONTINUE;
+}
+
+
+int MusSystem::IntegrateBoundingBoxShift( ArrayPtrVoid params )
+{
+    // param 0: the cumulated shift
+    // param 1: the functor to be redirected to MusAligner
+    MusFunctor *integrateBoundingBoxShift = (MusFunctor*)params[1];
+    
+    m_aligner.Process( integrateBoundingBoxShift, params);
+    
+    return FUNCTOR_SIBLINGS;
+}
+
+int MusSystem::SetAligmentXPos( ArrayPtrVoid params )
+{
+    // param 0: the previous time position (unused)
+    // param 1: the previous x rel position (unused)
+    // param 2: the functor to be redirected to MusAligner
+    MusFunctor *setAligmnentPosX = (MusFunctor*)params[2];
+
+    m_aligner.Process( setAligmnentPosX, params);
+    
+    return FUNCTOR_SIBLINGS;
+}
+
 

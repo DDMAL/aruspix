@@ -14,6 +14,8 @@
 #include <typeinfo>
 #include <vector>
 
+#include "musdef.h"
+
 #ifndef USE_EMSCRIPTEN
 #include <uuid/uuid.h>
 #else
@@ -127,38 +129,57 @@ public:
     /**
      * Add each MusLayerElements and its children to a list
      */
-    virtual bool AddMusLayerElementToList( ArrayPtrVoid params );
+    virtual int AddMusLayerElementToList( ArrayPtrVoid params );
     
     /**
      * See MusLayer::CopyToLayer
      */ 
-    virtual bool CopyToLayer( ArrayPtrVoid params ) { return false; };
+    virtual int CopyToLayer( ArrayPtrVoid params ) { return false; };
     
     /**
      * Find a MusObject with a specified uuid.
      */
-    virtual bool FindByUuid( ArrayPtrVoid params );
+    virtual int FindByUuid( ArrayPtrVoid params );
     
-    virtual bool Save( ArrayPtrVoid params ) { return false; };
+    virtual int Save( ArrayPtrVoid params ) { return FUNCTOR_CONTINUE; };
     
     /**
      * Adjust the size of a system according to its content
-     * See MusSystem for actual implementation.
+     * See MusSystem::TrimSystem for actual implementation.
      */
-    virtual bool TrimSystem( ArrayPtrVoid params ) { return false; };
+    virtual int TrimSystem( ArrayPtrVoid params ) { return FUNCTOR_CONTINUE; };
 
     /**
      * Lay out the X positions of the staff content looking that the bounding boxes.
      * The m_x_rel is updated appropriately
      */
-    virtual bool LayOutLayerElementXPos( ArrayPtrVoid params );
+    virtual int SetBoundingBoxShift( ArrayPtrVoid params );
     
     /**
      * Lay out the system and staff Y positions looking that the bounding boxes of each staff.
      * The m_y_rel of systems and staves is updated appropriately.
-     * See MusStaff for actual implementation.
+     * See MusStaff::LayOutSystemAndStaffYPos for actual implementation.
      */
-    virtual bool LayOutSystemAndStaffYPos( ArrayPtrVoid params )  { return false; };
+    virtual int LayOutSystemAndStaffYPos( ArrayPtrVoid params )  { return FUNCTOR_CONTINUE; };
+    
+    /**
+     * Align the content of a system.
+     * For each MusLayerElement, instanciate its MusAlignment.
+     * It creates it if no other note or event occurs at its position.
+     */
+    virtual int Align( ArrayPtrVoid params ) { return FUNCTOR_CONTINUE; };
+    
+    /**
+     * Set the position of the MusAlignment.
+     * Looks at the time different with the previous MusAlignment.
+     */
+    virtual int SetAligmentXPos( ArrayPtrVoid params ) { return FUNCTOR_CONTINUE; };
+    
+    /**
+     * Corrects the alignment once the the content of a system has been aligned and laid out
+     * See MusSystem::IntegrateBoundingBoxShift for actual implementation
+     */
+    virtual int IntegrateBoundingBoxShift( ArrayPtrVoid params ) { return FUNCTOR_CONTINUE; };
 
 public:
     ArrayOfMusObjects m_children;
@@ -293,20 +314,20 @@ public:
 class MusFunctor
 {
 private:
-    bool (MusObject::*obj_fpt)( ArrayPtrVoid params );   // pointer to member function
+    int (MusObject::*obj_fpt)( ArrayPtrVoid params );   // pointer to member function
     
 public:
     
     // constructor - takes pointer to an object and pointer to a member and stores
     // them in two private variables
     MusFunctor( );
-    MusFunctor( bool(MusObject::*_obj_fpt)( ArrayPtrVoid ));
+    MusFunctor( int(MusObject::*_obj_fpt)( ArrayPtrVoid ));
 	virtual ~MusFunctor() {};
     
     // override function "Call"
     virtual void Call( MusObject *ptr, ArrayPtrVoid params );
     
-    bool m_stopIt;
+    int m_returnCode;
     bool m_reverse;
     
 private:

@@ -14,6 +14,8 @@
 
 //----------------------------------------------------------------------------
 
+#include "mus.h"
+#include "musaligner.h"
 #include "musdef.h"
 #include "musio.h"
 #include "muslayer.h"
@@ -64,11 +66,15 @@ void MusMeasure::Clear()
     m_x_drawing = 0;
 }
 
-bool MusMeasure::Save( ArrayPtrVoid params )
+int MusMeasure::Save( ArrayPtrVoid params )
 {
     // param 0: output stream
     MusFileOutputStream *output = (MusFileOutputStream*)params[0];
-    return !output->WriteMeasure( this );
+    if (!output->WriteMeasure( this )) {
+        return FUNCTOR_STOP;
+    }
+    return FUNCTOR_CONTINUE;
+
 }
 
 void MusMeasure::AddLayer( MusLayer *layer )
@@ -132,5 +138,41 @@ MusLayer *MusMeasure::GetLayer( int LayerNo )
         return NULL;
 	
 	return (MusLayer*)m_children[LayerNo];
+}
+
+int MusMeasure::GetXRel()
+{
+    if (m_alignment) {
+        return m_alignment->GetXRel();
+    }
+    return 0;
+}
+
+//----------------------------------------------------------------------------
+// MusMeasure functor methods
+//----------------------------------------------------------------------------
+
+int MusMeasure::Align( ArrayPtrVoid params )
+{
+    // param 0: the aligner
+    // param 1: the measureAligner
+    // param 2: the measureNb
+    // param 3: the time
+    MusAligner **aligner = (MusAligner**)params[0];
+    MusMeasureAligner **measureAligner = (MusMeasureAligner**)params[1];
+	int *measureNb = (int*)params[2];
+    
+    // this gets (or creates) the measureAligner for the measure
+    (*measureAligner) = (*aligner)->GetMeasureAligner(*measureNb);
+    
+    assert( *measureAligner );
+    
+    // Set the pointer of the m_alignment
+    m_alignment = (*measureAligner)->GetMeasureAlignment();
+    
+    // for next measure
+    (*measureNb)++;
+    
+    return FUNCTOR_CONTINUE;
 }
 

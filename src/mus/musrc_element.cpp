@@ -60,7 +60,9 @@ void MusRC::DrawElement( MusDC *dc, MusLayerElement *element, MusLayer *layer, M
     // With Transcription documents, we use the m_x_abs
     if ( element->m_x_abs == AX_UNSET ) {
         assert( m_doc->GetType() == Raw );
-        element->m_x_drawing = element->m_x_rel + measure->m_x_drawing;
+        //element->m_x_drawing = element->m_x_rel + measure->m_x_drawing;
+        //element->m_x_drawing = element->m_x_rel + measure->GetXRel();
+        element->m_x_drawing = element->GetShiftedXRel() + measure->GetXRel();
     }
     else
     {

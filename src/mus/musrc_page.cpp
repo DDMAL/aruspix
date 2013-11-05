@@ -761,6 +761,12 @@ void MusRC::DrawMeasure( MusDC *dc, MusMeasure *measure, MusStaff *staff, MusSys
         measure->m_x_drawing = measure->m_x_abs;
     }
     
+    MusBarline barline;
+    dc->StartGraphic( &barline, "barline", Mus::StringFormat("s_%d", barline.GetId()) );
+    //DrawBarline ( dc, system, measure->m_x_drawing, m_doc->m_env.m_barlineWidth, 1, staff);
+    DrawBarline ( dc, system, measure->m_x_drawing, 10, 1, staff);
+    dc->EndGraphic( &barline, this );
+    
 	MusLayer *layer = NULL;
 	int j;
     

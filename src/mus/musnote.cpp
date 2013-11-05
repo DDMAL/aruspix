@@ -125,3 +125,11 @@ void MusNote::SetLigature( )
 	
 	this->m_lig = true;
 }
+
+int MusNote::GetHorizontalSpacing()
+{
+    if (this->m_cueSize) {
+        return 3;
+    }
+    return 5; // arbitrary generic value
+}

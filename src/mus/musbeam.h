@@ -38,7 +38,7 @@ public:
     void AddElement(MusLayerElement *element);
     
     // functor
-    //virtual bool Save( ArrayPtrVoid params );
+    //virtual int Save( ArrayPtrVoid params );
     
 protected:
     /**

@@ -14,8 +14,11 @@
 
 //----------------------------------------------------------------------------
 
+#include "musaligner.h"
+#include "musbboxdc.h"
 #include "musdef.h"
 #include "musdoc.h"
+#include "musrc.h"
 #include "musstaff.h"
 #include "mussystem.h"
 
@@ -46,11 +49,14 @@ void MusPage::Clear( )
 }
 
 
-bool MusPage::Save( ArrayPtrVoid params )
+int MusPage::Save( ArrayPtrVoid params )
 {
     // param 0: output stream
     MusFileOutputStream *output = (MusFileOutputStream*)params[0];       
-    return !output->WritePage( this );
+    if (!output->WritePage( this )) {
+        return FUNCTOR_STOP;
+    }
+    return FUNCTOR_CONTINUE;
 }
 
 
@@ -146,6 +152,87 @@ MusSystem *MusPage::GetAtPos( int y )
 	}
 
 	return system;
+}
+
+void MusPage::Layout( bool trim )
+{
+    if (!dynamic_cast<MusDoc*>(m_parent)) {
+        assert( false );
+        return;
+    }
+    MusDoc *doc = dynamic_cast<MusDoc*>(m_parent);
+       
+    ArrayPtrVoid params;
+    
+    // align the content of the page
+    MusAligner *alignerPtr = NULL;
+    MusMeasureAligner *measureAlignerPtr = NULL;
+    int measureNb = 0;
+    double time = 0.0;
+    params.push_back( &alignerPtr );
+    params.push_back( &measureAlignerPtr );
+    params.push_back( &measureNb );
+    params.push_back( &time );
+    MusFunctor align( &MusObject::Align );
+    this->Process( &align, params );
+    
+    // set the x position of each MusAlignment
+    params.clear();
+    double previousTime = 0.0;
+    int previousXRel = 0;
+    params.push_back( &previousTime );
+    params.push_back( &previousXRel );
+    MusFunctor setAlignment( &MusObject::SetAligmentXPos );
+    // special case: because we redirect the functor, pass is a parameter to itself (!)
+    params.push_back( &setAlignment );
+    this->Process( &setAlignment, params );
+    
+    // render it for filling the bounding boxing
+    MusRC rc;
+    MusBBoxDC bb_dc( &rc, 0, 0 );
+    rc.SetDoc(doc);
+    rc.DrawPage(  &bb_dc, this, false );
+    
+    // set the X shift of the MusAlignment using the bounding boxes
+    params.clear();
+    int measure_shift = 0;
+    int element_shift = 0;
+    int previous_width = 0;
+    params.push_back( &measure_shift );
+    params.push_back( &element_shift );
+    params.push_back( &previous_width );
+    MusFunctor setBoundingBoxShift( &MusLayerElement::SetBoundingBoxShift );
+    this->Process( &setBoundingBoxShift, params );
+    
+    // integrate the bounding box shift
+    params.clear();
+    int shift = 0;
+    params.push_back( &shift );
+    MusFunctor integrateBoundingBoxShift( &MusObject::IntegrateBoundingBoxShift );
+    // special case: because we redirect the functor, pass is a parameter to itself (!)
+    params.push_back( &integrateBoundingBoxShift );
+    this->Process( &integrateBoundingBoxShift, params );
+    
+    params.clear();
+    int system_shift = doc->m_pageHeight - this->m_pageTopMar;
+    int staff_shift = 0;
+    params.push_back( &system_shift );
+    params.push_back( &staff_shift );
+    MusFunctor updateYPosition( &MusObject::LayOutSystemAndStaffYPos );
+    this->Process( &updateYPosition, params );
+    
+    if ( trim ) {    
+        // Trim the page to the needed position
+        // LP I am not sure about this. m_pageHeight / Width should not be modified
+        this->m_pageWidth = 0; // first resest the page to 0
+        this->m_pageHeight = doc->m_pageHeight;
+        params.clear();
+        
+        MusFunctor trimSystem(&MusObject::TrimSystem);
+        this->Process( &trimSystem, params );
+    }
+    
+    rc.DrawPage(  &bb_dc, this , false );
 }
 
 void MusPage::SetValues( int type )

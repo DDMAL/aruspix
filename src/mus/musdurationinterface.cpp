@@ -10,6 +10,12 @@
 
 //----------------------------------------------------------------------------
 
+#include <math.h>
+
+//----------------------------------------------------------------------------
+
+#include "mus.h"
+#include "musdef.h"
 #include "musbeam.h"
 
 /**
@@ -41,6 +47,17 @@ MusDurationInterface::~MusDurationInterface()
 void MusDurationInterface::SetDuration( int value )
 {
     this->m_dur = value;
+}
+
+
+double MusDurationInterface::GetAlignementDuration()
+{
+    double duration = DUR_MAX / pow (2.0, (double)(m_dur - 2.0));
+    if ( m_dots > 0 ) {
+        duration = 2 * duration - (duration / pow(2, m_dots));
+    }
+    //Mus::LogDebug("Duration %d; Dot %d; Alignement %f", m_dur, m_dots, duration );
+    return duration;
 }
 
 bool MusDurationInterface::IsInBeam( MusObject *noteOrRest )

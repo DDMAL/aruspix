@@ -67,7 +67,7 @@ public:
      * Empty MusLayer, MusStaff, MusSystem etc. objects remain.
      */
     
-    virtual bool Save( MusFileOutputStream *output );
+    virtual int Save( MusFileOutputStream *output );
     
     // moulinette
     void GetNumberOfVoices( int *min_voice, int *max_voice );
@@ -96,7 +96,7 @@ public:
     /** The parent MusDoc setter */
     void SetDoc( MusDoc *doc );
     /* Claculate spacing in the music */
-    void SpaceMusic();
+    void Layout( bool trim = false );
     
     void RefreshViews( ) {};
 	
@@ -124,7 +124,7 @@ public:
 	int GetPageCount() const { return (int)m_children.size(); };
     
     // functors
-    virtual bool Save( ArrayPtrVoid params );
+    virtual int Save( ArrayPtrVoid params );
     
 private:
     // method calculating the font size

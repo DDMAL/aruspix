@@ -37,11 +37,14 @@ void MusLayerApp::AddLayerRdg( MusLayerRdg *layerRdg )
     Modify();
 }
 
-bool MusLayerApp::Save( ArrayPtrVoid params )
+int MusLayerApp::Save( ArrayPtrVoid params )
 {
     // param 0: output stream
     MusFileOutputStream *output = (MusFileOutputStream*)params[0];         
-    return !output->WriteLayerApp( this );
+    if (!output->WriteLayerApp( this )) {
+        return FUNCTOR_STOP;
+    }
+    return FUNCTOR_CONTINUE;
 }
 
 //----------------------------------------------------------------------------
@@ -73,9 +76,12 @@ void MusLayerRdg::AddElement( MusLayerElement *element, int idx )
 }
 
 
-bool MusLayerRdg::Save( ArrayPtrVoid params )
+int MusLayerRdg::Save( ArrayPtrVoid params )
 {
     // param 0: output stream
     MusFileOutputStream *output = (MusFileOutputStream*)params[0];       
-    return !output->WriteLayerRdg( this );
+    if (!output->WriteLayerRdg( this )) {
+        return FUNCTOR_STOP;
+    }
+    return FUNCTOR_CONTINUE;
 }

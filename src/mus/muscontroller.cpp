@@ -106,7 +106,7 @@ bool MusController::LoadString( std::string data, ConvertFileType type )
 
 std::string MusController::RenderToSvg( int pageNo, bool xml_tag )
 {
-    m_doc.SpaceMusic();
+    m_doc.Layout();
     
     // Get the current system for the SVG clipping size
     MusPage *page = dynamic_cast<MusPage*>(m_doc.m_children[0]);

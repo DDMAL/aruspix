@@ -11,6 +11,7 @@
 
 #include "musobject.h"
 
+class MusAlignment;
 class MusLayer;
 
 //----------------------------------------------------------------------------
@@ -48,7 +49,7 @@ public:
     int GetMeasureNo() const;
        
     // functors
-    virtual bool Save( ArrayPtrVoid params );
+    virtual int Save( ArrayPtrVoid params );
     
 	void CopyAttributes( MusMeasure *measure ); // copy all attributes but none of the elements
 	//void ClearElements( MusDC *dc , MusElement *start = NULL );
@@ -58,6 +59,13 @@ public:
 	MusLayer *GetNext( MusLayer *layer );
 	MusLayer *GetPrevious( MusLayer *layer );
     MusLayer *GetLayer( int LayerNo );
+    
+    int GetXRel( );
+    
+    /**
+     * Align the content of a system.
+     */
+    virtual int Align( ArrayPtrVoid params );
         
 public:
     /** The logical staff */
@@ -80,6 +88,8 @@ public:
     
 private:
     bool m_measuredMusic;
+    
+    MusAlignment *m_alignment;
     
 };
 

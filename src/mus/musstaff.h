@@ -53,7 +53,7 @@ public:
     int GetVerticalSpacing();
 
     // functors
-    virtual bool Save( ArrayPtrVoid params );
+    virtual int Save( ArrayPtrVoid params );
     virtual bool GetPosOnPage( ArrayPtrVoid params );
     
 	void CopyAttributes( MusStaff *staff ); // copy all attributes but none of the elements
@@ -70,7 +70,12 @@ public:
      * Lay out the system and staff Y positions looking that the bounding boxes of each staff.
      * The m_y_rel of systems and staves is updated appropriately.
      */
-    virtual bool LayOutSystemAndStaffYPos( ArrayPtrVoid params );
+    virtual int LayOutSystemAndStaffYPos( ArrayPtrVoid params );
+    
+    /**
+     * Align the content of a system.
+     */
+    virtual int Align( ArrayPtrVoid params );
     
 public:
     /** The logical staff */

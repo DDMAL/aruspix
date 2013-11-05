@@ -49,10 +49,10 @@ public:
      * Copy the elements to a MusLayer passed in parameters. 
      * Also take into account a start and end uuid for the page (if any)
      */ 
-    virtual bool CopyToLayer( ArrayPtrVoid params );
+    virtual int CopyToLayer( ArrayPtrVoid params );
     void CopyElements( ArrayPtrVoid params ); // unused
     void GetMaxXY( ArrayPtrVoid params ); // unused
-    virtual bool Save( ArrayPtrVoid params );
+    virtual int Save( ArrayPtrVoid params );
     void CheckAndResetSectionOrMeasure( ArrayPtrVoid params ); // unused
     
 	void CopyAttributes( MusLayer *layer ); // copy all attributes but none of the elements
@@ -106,6 +106,11 @@ public:
 	void SwitchLyricNoteAssociation( MusSymbol *lyric, MusNote *oldNote, MusNote* newNote, bool beginning );
 	void AdjustLyricLineHeight( int delta );
     */
+    
+    /**
+     * Align the content of a system.
+     */
+    virtual int Align( ArrayPtrVoid params );
     
 private:
     

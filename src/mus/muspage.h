@@ -58,10 +58,14 @@ public:
      * Return the position of the staff on the page, from top to bottom
      */
     int GetStaffPosOnPage( MusStaff *staff );
-
+    
+    /**
+     * Do the layout of the page
+     */
+    void Layout( bool trim = false );
 
     // functors
-    virtual bool Save( ArrayPtrVoid params );
+    virtual int Save( ArrayPtrVoid params );
     
     
 private:

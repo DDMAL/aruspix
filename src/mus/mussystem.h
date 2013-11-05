@@ -9,6 +9,7 @@
 #ifndef __MUS_SYSTEM_H__
 #define __MUS_SYSTEM_H__
 
+#include "musaligner.h"
 #include "musbarline.h"
 #include "musobject.h"
 
@@ -33,14 +34,10 @@ public:
     MusSystem();
 	MusSystem( const MusSystem& system ); // copy contructor
     virtual ~MusSystem();
-    
-    //virtual bool Check();
-    
+        
     virtual std::string MusClassName( ) { return "MusSystem"; };	    
     
     void Clear();
-    
-    //void SetDoc( ArrayPtrVoid params );
 	
 	void AddStaff( MusStaff *staff );
 	
@@ -63,14 +60,32 @@ public:
     int GetSystemNo() const;
     
     // functors
-    virtual bool Save( ArrayPtrVoid params );
+    virtual int Save( ArrayPtrVoid params );
 
     /**
      * Adjust the size of a system according to its content (to be verified)
      */
-    virtual bool TrimSystem( ArrayPtrVoid params );
+    virtual int TrimSystem( ArrayPtrVoid params );
+    
+    /**
+     * Align the content of a system.
+     */
+    virtual int Align( ArrayPtrVoid params );
+    
+    /**
+     * Correct the alignment once the the content of a system has been aligned and laid out.
+     * Special case that redirects the functor to the MusAligner.
+     */
+    virtual int IntegrateBoundingBoxShift( ArrayPtrVoid params );
+    
+    /**
+     * Set the position of the MusAlignment.
+     * Special case that redirects the functor to the MusAligner.
+     */
+    virtual int SetAligmentXPos( ArrayPtrVoid params );
     
 private:
+    MusAligner m_aligner;
     
 public:
     /** System left margin (MEI scoredef@system.leftmar). Saved if != 0 */

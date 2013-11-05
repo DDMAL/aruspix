@@ -13,6 +13,8 @@
 #include "musdef.h"
 #include "musobject.h"
 
+class MusAlignment;
+
 //----------------------------------------------------------------------------
 // MusLayerElement
 //----------------------------------------------------------------------------
@@ -78,12 +80,16 @@ public:
      * Set the ligature flag for MusNote elements.
      */
 	virtual void SetLigature( ) {};
+    
+    
+    int GetElementNo() const;
 
     
     bool IsBarline();
     bool IsBeam();
     bool IsClef();
     bool HasDurationInterface();
+    bool IsKeySig();
     bool IsMensur();
     bool IsNeume();
     bool IsNeumeSymbol();
@@ -94,6 +100,12 @@ public:
     bool IsSymbol( SymbolType type );
     bool IsSymbol( );
     
+    virtual double GetAlignementDuration();
+    
+    MusAlignment *GetAlignment() { return m_alignment; };
+    
+    int GetShiftedXRel();
+    
     // functors
     /**
      * Save the object (virtual).
@@ -101,14 +113,12 @@ public:
      * saving occurs in the MusFileOutputStream::WriteLayerElement method
      * A few classes, such as MusLayerApp, have an overriden version.
      */
-    virtual bool Save( ArrayPtrVoid params );
+    virtual int Save( ArrayPtrVoid params );
     
-    
-    int GetElementNo() const;
-    
-    // functors
-    void Delete( ArrayPtrVoid params );
-    void CheckAndResetLayerElement( ArrayPtrVoid params );
+    /**
+     * Align the content of a system.
+     */
+    virtual int Align( ArrayPtrVoid params );
     
 private:
     
@@ -116,17 +126,13 @@ public:
 	/** Absolute position X. This is used for facsimile (transcription) encoding */
     int m_x_abs;
 	/** Relative position X. This is used internally when calculating the layout */
-    int m_x_rel;
+    //int m_x_rel;
 	/** Drawing position X. This is used internally when drawing */
     int m_x_drawing;
 	/** Drawing position Y. This is used internally when drawing */
 	int m_y_drawing; 
     /** for elements in MusLayerApp. They will be drawn from the MusLayerElement of the app (and not from the layer) */
     bool m_in_layer_app;
-    
-private:
-    
-public:
     /** Indicates if cue size */
     bool m_cueSize;
     /** Indicates an horizontal offset */
@@ -143,6 +149,7 @@ public:
     bool m_drawn_stem_dir;
     
 private:
+    MusAlignment *m_alignment;
     
 };
 

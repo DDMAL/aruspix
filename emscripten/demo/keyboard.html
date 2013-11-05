@@ -288,47 +288,6 @@ function pe_incipit(destination_column, clef, keysig, timesig, incipit, target)
 	    // unsupported/error case
 	  }
 	});*/
-
-	// timer stuff - suspend request for two seconds
-	var secs = 0; // actually milliseconds
-	var timerID = null;
-	var timerRunning = false;
-	var delay = 1000;
-	var reload = false;
-
-	function InitializeTimer( )
-	{
-	    secs = 2; // how many seconds in between
-	    StopTheClock();
-	    StartTheTimer();
-	}
-
-	function StopTheClock()
-	{
-	    if(timerRunning)
-	        clearTimeout(timerID)
-	    timerRunning = false;
-	}
-
-	function StartTheTimer( )
-	{
-	    if (secs==0)
-	    {
-	        StopTheClock()
-	        if (reload) {
-	           // notes have been entered in between, update display
-	           update_display(); 
-	        }
-	    }
-	    else
-	    {
-	        self.status = secs;
-	        secs = secs - 1;
-	        timerRunning = true;
-	        timerID = self.setTimeout("StartTheTimer()", delay)
-	    }
-	}
-	// end timer stuff
 	
 	// global variables for the music notation
 	var current_oct = -1;
@@ -475,17 +434,7 @@ function pe_incipit(destination_column, clef, keysig, timesig, incipit, target)
 			$('#btn_clear_incipit').show();	
 		}
 	
-	   	if (secs==0) {
-          //console.log( "Reloading from onscroll" );
-          reload = false; // means we don't want to update at the end of the timer
-                          // because we are already updating now
-                          // will be true only if more events in between
-          update_display();           
-          InitializeTimer(this); 
-       }
-       else {
-          reload = true; // more events, update at the end
-       }
+		update_display();
 	}
 		
 	// actually updating
