@@ -21,36 +21,6 @@ using namespace jsonxx;
 extern "C" {
     const char * convertMusic(ConvertFileType input_format, ConvertFileType output_format, const char * c_data) {
         
-        string teststr(
-                       "{"
-                       "  \"foo\" : 1,"
-                       "  \"bar\" : false,"
-                       "  \"person\" : {\"name\" : \"GWB\", \"age\" : 60,},"
-                       "  \"data\": [\"abcd\", 42],"
-                       "}"
-                       );
-        
-        // Parse string or stream
-        Object o;
-        assert(o.parse(teststr));
-        
-        // Validation. Checking for JSON types and values as well
-        assert(1 == o.get<Number>("foo"));
-        assert(o.has<Boolean>("bar"));
-        assert(o.has<Object>("person"));
-        assert(o.get<Object>("person").has<Number>("age"));
-        assert(o.has<Array>("data"));
-        assert(o.get<Array>("data").get<Number>(1) == 42);
-        assert(o.get<Array>("data").get<String>(0) == "abcd");
-        assert(!o.has<Number>("data"));
-        cout << o.json() << endl;                     // JSON output
-        cout << o.xml(JSONx) << endl;                 // JSON to XML conversion (JSONx subtype)
-        cout << o.xml(JXML) << endl;                  // JSON to XML conversion (JXML subtype)
-        cout << o.xml(JXMLex) << endl;                // JSON to XML conversion (JXMLex subtype)
-        
-        
-        
-        
         string data(c_data);
         string out_str;
         
