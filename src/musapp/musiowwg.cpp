@@ -715,7 +715,7 @@ bool MusWWGInput::ImportFile( )
     {
         MusPage *page = (MusPage*)m_doc->m_children[j];
         m = 0; // staff number on the page
-        int yy =  m_doc->m_pageHeight;
+        int yy =  m_doc->m_pageHeight + m_doc->m_staffSize[ 0 ];
         for (k = 0; k < page->GetSystemCount(); k++) 
         {
             MusSystem *system = (MusSystem*)page->m_children[k];
@@ -724,7 +724,7 @@ bool MusWWGInput::ImportFile( )
             for (l = 0; l < system->GetStaffCount(); l++) 
             {
                 staff = (MusStaff*)system->m_children[l];
-                yy -= ecarts[m] * m_doc->m_interl[ staff->staffSize ];
+                yy -= ecarts[m] * m_doc->m_interl[ staff->staffSize ];;
                 staff->m_y_abs = yy;
                 m++;
                 
@@ -766,6 +766,7 @@ bool MusWWGInput::ReadFileHeader( MusWWGData *wwgData )
 	Read( &uint32, 4 );
 	wwgData->xpos = wxUINT32_SWAP_ON_BE( uint32 );  // ~xpso
 	Read( &m_doc->m_env.m_landscape, 1 ); // ~param - ~m_landscape
+    m_doc->m_env.m_landscape = !m_doc->m_env.m_landscape; // flip it? why?
     Read( &m_doc->m_env.m_staffLineWidth, 1 ); // ~param - ~epLignesPortee
 	Read( &m_doc->m_env.m_stemWidth, 1 ); // ~param - ~epQueueNotes
 	Read( &m_doc->m_env.m_barlineWidth, 1 ); // ~param - ~epBarreMesure
@@ -889,7 +890,7 @@ bool MusWWGInput::ReadPage( MusPage *page )
 	Read( &noMasqueVar, 1 );
 	Read( &reserve, 1 );
 	Read( &page->defin, 1 );
-    page->defin = 16;
+    //page->defin = 16;
 	Read( &int32, 4 );
 	indent = wxINT32_SWAP_ON_BE( int32 );	// page value in wwg
 	Read( &int32, 4 );
