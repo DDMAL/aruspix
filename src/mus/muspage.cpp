@@ -176,13 +176,24 @@ void MusPage::Layout( bool trim )
     MusFunctor align( &MusObject::Align );
     this->Process( &align, params );
     
+    // set the x position of each MusAlignment
+    params.clear();
+    double previousTime = 0.0;
+    int previousXRel = 0;
+    params.push_back( &previousTime );
+    params.push_back( &previousXRel );
+    MusFunctor setAlignment( &MusObject::SetAligmentXPos );
+    // special case: because we redirect the functor, pass is a parameter to itself (!)
+    params.push_back( &setAlignment );
+    this->Process( &setAlignment, params );
+    
     // render it for filling the bounding boxing
     MusRC rc;
     MusBBoxDC bb_dc( &rc, 0, 0 );
     rc.SetDoc(doc);
     rc.DrawPage(  &bb_dc, this, false );
     
-    // update the X position of the MusLayerElement unsing the bounding boxes
+    // set the X shift of the MusAlignment using the bounding boxes
     params.clear();
     int measure_shift = 0;
     int element_shift = 0;
@@ -190,17 +201,17 @@ void MusPage::Layout( bool trim )
     params.push_back( &measure_shift );
     params.push_back( &element_shift );
     params.push_back( &previous_width );
-    MusFunctor updateXPosition( &MusLayerElement::LayOutLayerElementXPos );
-    this->Process( &updateXPosition, params );
+    MusFunctor setBoundingBoxShift( &MusLayerElement::SetBoundingBoxShift );
+    this->Process( &setBoundingBoxShift, params );
     
-    // correct the alignment
+    // integrate the bounding box shift
     params.clear();
     int shift = 0;
     params.push_back( &shift );
-    MusFunctor correctAlignment( &MusObject::CorrectAlignment );
+    MusFunctor integrateBoundingBoxShift( &MusObject::IntegrateBoundingBoxShift );
     // special case: because we redirect the functor, pass is a parameter to itself (!)
-    params.push_back( &correctAlignment );
-    this->Process( &correctAlignment, params );
+    params.push_back( &integrateBoundingBoxShift );
+    this->Process( &integrateBoundingBoxShift, params );
     
     params.clear();
     int system_shift = doc->m_pageHeight - this->m_pageTopMar;

@@ -458,7 +458,7 @@ int MusObject::FindByUuid( ArrayPtrVoid params )
 }
 
 
-int MusObject::LayOutLayerElementXPos( ArrayPtrVoid params )
+int MusObject::SetBoundingBoxShift( ArrayPtrVoid params )
 {
     // param 0: the current x measure shift
     // param 1: the current x element shift

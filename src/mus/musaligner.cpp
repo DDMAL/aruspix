@@ -11,6 +11,7 @@
 //----------------------------------------------------------------------------
 
 #include <assert.h>
+#include <math.h>
 
 //----------------------------------------------------------------------------
 
@@ -122,8 +123,6 @@ MusAlignment::MusAlignment( ):
 MusAlignment::MusAlignment( double time, MusAlignmentType type ):
     MusObject()
 {
-    // arbitray value for now
-    m_x_rel = (int)time / 2;
     m_x_shift = 0;
     m_time = time;
     m_type = type;
@@ -151,20 +150,20 @@ void MusAlignment::SetXShift( int x_shift )
 // Functors
 //----------------------------------------------------------------------------
 
-int MusMeasureAligner::CorrectAlignment( ArrayPtrVoid params )
+int MusMeasureAligner::IntegrateBoundingBoxShift( ArrayPtrVoid params )
 {
     // param 0: the cumulated shift
     // param 1: the functor to be redirected to MusAligner
     int *shift = (int*)params[0];
     
-    // We start a new MusMeasureAligner (i.e., a new system)
+    // We start a new MusMeasureAligner
     // Reset the cumulated shift to 0;
     (*shift) = 0;
     
     return FUNCTOR_CONTINUE;
 }
 
-int MusAlignment::CorrectAlignment( ArrayPtrVoid params )
+int MusAlignment::IntegrateBoundingBoxShift( ArrayPtrVoid params )
 {
     // param 0: the cumulated shift
     // param 1: the functor to be redirected to MusAligner
@@ -175,5 +174,45 @@ int MusAlignment::CorrectAlignment( ArrayPtrVoid params )
     m_x_shift += (*shift);
     (*shift) = m_x_shift;   
 
+    return FUNCTOR_CONTINUE;
+}
+
+int MusMeasureAligner::SetAligmentXPos( ArrayPtrVoid params )
+{
+    // param 0: the previous time position
+    // param 1: the previous x rel position
+    // param 2: the functor to be redirected to MusAligner (unused)
+    double *previousTime = (double*)params[0];
+    int *previousXRel = (int*)params[1];
+    
+    // We start a new MusMeasureAligner
+    // Reset the previous time position and x_rel to 0;
+    (*previousTime) = 0.0;
+    (*previousXRel) = 0;
+    
+    return FUNCTOR_CONTINUE;
+}
+
+int MusAlignment::SetAligmentXPos( ArrayPtrVoid params )
+{
+    // param 0: the previous time position
+    // param 1: the previous x rel position
+    // param 2: the functor to be redirected to MusAligner (unused)
+    double *previousTime = (double*)params[0];
+    int *previousXRel = (int*)params[1];
+    
+    //Mus::LogDebug("time %f; x_rel %d; m_shift %d, shift %d => %d", m_time, m_x_rel, m_x_shift, (*shift), m_x_rel + m_x_shift + (*shift));
+    
+    int intervalXRel = 0;
+    double intervalTime = (m_time - (*previousTime));
+    if ( intervalTime > 0.0 ) {
+        double factor = pow( 0.1, log2( 1.0 / intervalTime ) );
+        intervalXRel = pow( intervalTime, 0.60 ) * 2.5;
+    }
+    
+    m_x_rel = (*previousXRel) + (intervalXRel);
+    (*previousTime) = m_time;
+    (*previousXRel) = m_x_rel;
+    
     return FUNCTOR_CONTINUE;
 }

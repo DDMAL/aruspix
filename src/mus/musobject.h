@@ -153,7 +153,7 @@ public:
      * Lay out the X positions of the staff content looking that the bounding boxes.
      * The m_x_rel is updated appropriately
      */
-    virtual int LayOutLayerElementXPos( ArrayPtrVoid params );
+    virtual int SetBoundingBoxShift( ArrayPtrVoid params );
     
     /**
      * Lay out the system and staff Y positions looking that the bounding boxes of each staff.
@@ -164,14 +164,22 @@ public:
     
     /**
      * Align the content of a system.
+     * For each MusLayerElement, instanciate its MusAlignment.
+     * It creates it if no other note or event occurs at its position.
      */
     virtual int Align( ArrayPtrVoid params ) { return FUNCTOR_CONTINUE; };
     
     /**
-     * Correcte the alignment once the the content of a system has been aligned and laid out
-     * See MusSystem::CorrectAlignment for actual implementation
+     * Set the position of the MusAlignment.
+     * Looks at the time different with the previous MusAlignment.
      */
-    virtual int CorrectAlignment( ArrayPtrVoid params ) { return FUNCTOR_CONTINUE; };
+    virtual int SetAligmentXPos( ArrayPtrVoid params ) { return FUNCTOR_CONTINUE; };
+    
+    /**
+     * Corrects the alignment once the the content of a system has been aligned and laid out
+     * See MusSystem::IntegrateBoundingBoxShift for actual implementation
+     */
+    virtual int IntegrateBoundingBoxShift( ArrayPtrVoid params ) { return FUNCTOR_CONTINUE; };
 
 public:
     ArrayOfMusObjects m_children;

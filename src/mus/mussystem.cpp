@@ -254,13 +254,26 @@ int MusSystem::Align( ArrayPtrVoid params )
     return FUNCTOR_CONTINUE;
 }
 
-int MusSystem::CorrectAlignment( ArrayPtrVoid params )
+
+int MusSystem::IntegrateBoundingBoxShift( ArrayPtrVoid params )
 {
     // param 0: the cumulated shift
     // param 1: the functor to be redirected to MusAligner
-    MusFunctor *correctAligner = (MusFunctor*)params[1];
+    MusFunctor *integrateBoundingBoxShift = (MusFunctor*)params[1];
+    
+    m_aligner.Process( integrateBoundingBoxShift, params);
+    
+    return FUNCTOR_SIBLINGS;
+}
 
-    m_aligner.Process( correctAligner, params);
+int MusSystem::SetAligmentXPos( ArrayPtrVoid params )
+{
+    // param 0: the previous time position (unused)
+    // param 1: the previous x rel position (unused)
+    // param 2: the functor to be redirected to MusAligner
+    MusFunctor *setAligmnentPosX = (MusFunctor*)params[2];
+
+    m_aligner.Process( setAligmnentPosX, params);
     
     return FUNCTOR_SIBLINGS;
 }

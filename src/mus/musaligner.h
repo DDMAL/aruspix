@@ -101,7 +101,13 @@ public:
      * Correct the alignment once the the content of a system has been aligned and laid out.
      * Special case of functor redirected from MusSystem.
      */
-    virtual int CorrectAlignment( ArrayPtrVoid params );
+    virtual int IntegrateBoundingBoxShift( ArrayPtrVoid params );
+    
+    /**
+     * Set the position of the MusAlignment.
+     * Looks at the time different with the previous MusAlignment.
+     */
+    virtual int SetAligmentXPos( ArrayPtrVoid params );
     
 private:
     
@@ -149,7 +155,15 @@ public:
      * Correct the alignment once the the content of a system has been aligned and laid out.
      * Special case of functor redirected from MusSystem.
      */
-    virtual int CorrectAlignment( ArrayPtrVoid params );
+    virtual int IntegrateBoundingBoxShift( ArrayPtrVoid params );
+    
+    
+    /**
+     * Set the position of the MusAlignment.
+     * Looks at the time different with the previous MusAlignment.
+     * For each MusMeasureAlignment, we need to reset the previous time position.
+     */
+    virtual int SetAligmentXPos( ArrayPtrVoid params );
 
     
 private:
