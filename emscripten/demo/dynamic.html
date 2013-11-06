@@ -11,12 +11,14 @@
 
 // Export the conversion function
 convertMusic = Module.cwrap('convertMusic', 'string', ['integer', 'integer', 'string'])
+convertMusic2 = Module.cwrap('convertMusic', 'string', ['string', 'string'])
 
 function render_music( music, format )
 {	
 	// The trailing newline is needed so we can read the file lines
 	// correctly if the file does not end with a newline
-	var svg = convertMusic(format, 0, music + "\n");
+	//var svg = convertMusic(format, 0, music + "\n");
+	var svg = convertMusic2(music, JSON.stringify({InputFormat: 'pae', Scale: 50}));
 	document.getElementById('test').innerHTML = svg;
 
 };

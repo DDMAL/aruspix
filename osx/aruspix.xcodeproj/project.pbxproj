@@ -327,6 +327,7 @@
 		8F0576A715C43064002F761C /* mustie.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = mustie.h; path = ../src/mus/mustie.h; sourceTree = "<group>"; };
 		8F23816B159462AF00C04D47 /* aruspix_cmd_line */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = aruspix_cmd_line; sourceTree = BUILT_PRODUCTS_DIR; };
 		8F2381791594632C00C04D47 /* main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = main.cpp; path = ../src/mus/main.cpp; sourceTree = "<group>"; };
+		8F23C19B182AA0CF00C60239 /* emscripten_main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = emscripten_main.cpp; path = ../src/mus/emscripten_main.cpp; sourceTree = "<group>"; };
 		8F3367F015A1E417009AAB69 /* musiodarms.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = musiodarms.h; path = ../src/mus/musiodarms.h; sourceTree = "<group>"; };
 		8F3367F115A1E42F009AAB69 /* musiodarms.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = musiodarms.cpp; path = ../src/mus/musiodarms.cpp; sourceTree = "<group>"; };
 		8F4FA6DF15AC0C4000CF9FD8 /* muskeysig.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = muskeysig.cpp; path = ../src/mus/muskeysig.cpp; sourceTree = "<group>"; };
@@ -519,6 +520,7 @@
 				8FA8EC8418083F21003ADB5F /* musuuid.h */,
 				8FA8EC89180841C3003ADB5F /* musuuid.cpp */,
 				8F2381791594632C00C04D47 /* main.cpp */,
+				8F23C19B182AA0CF00C60239 /* emscripten_main.cpp */,
 			);
 			name = mus;
 			sourceTree = "<group>";
