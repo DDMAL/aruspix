@@ -18,26 +18,26 @@ using namespace std;
 
 void display_usage() {
     cerr << "Aruspix command line usage:" << endl;
-    cerr << "aruspix [-f pae, mei, darms] [-s -t mei, svg] [-o outfile -r resources -h] infile" << endl << endl;
+    cerr << "aruspix [-f pae | mei | darms] [-s scale] [-t mei | svg] [-r resources] [-o outfile] infile" << endl << endl;
 
-    cerr << "-b, --border" << endl;
-    cerr << "\t\tadd border (10 px default, max 1000)" << endl;
+    cerr << "-b, --border=BORDER" << endl;
+    cerr << "\t\tAdd border (10 px default, max 1000)" << endl;
 
-    cerr << "-f, --format" << endl;
-    cerr << "\t\tSelect output format: darms, mei, pae" << endl;
+    cerr << "-f, --format=INPUT_FORMAT" << endl;
+    cerr << "\t\tSelect input format: darms, mei, pae" << endl;
     cerr << "\t\t(optional, default is pae)" << endl;
     
-    cerr << "-o, --output" << endl;
+    cerr << "-o, --output=FILE_NAME" << endl;
     cerr << "\t\tOutput file name" << endl;
     
-    cerr << "-r, --recources" << endl;
+    cerr << "-r, --recources=PATH" << endl;
     cerr << "\t\tSpecify path for SVG resoucces" << endl;
     cerr << "\t\t(default in " <<  Mus::GetResourcesPath() << ")" << endl;
     
-    cerr << "-s, --scale" << endl;
+    cerr << "-s, --scale=FACTOR" << endl;
     cerr << "\t\tscale percent (100 default, max 1000)" << endl;
     
-    cerr << "-t, --type" << endl;
+    cerr << "-t, --type=OUTPUT_TYPE" << endl;
     cerr << "\t\tSelect output format: mei, svg" << endl;
     cerr << "\t\t(optional, default is svg)" << endl;
 

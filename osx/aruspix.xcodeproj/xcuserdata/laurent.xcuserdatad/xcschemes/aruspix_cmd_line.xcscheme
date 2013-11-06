@@ -59,15 +59,39 @@
       </BuildableProductRunnable>
       <CommandLineArguments>
          <CommandLineArgument
-            argument = "-o test.svg"
-            isEnabled = "YES">
-         </CommandLineArgument>
-         <CommandLineArgument
             argument = "-r /Users/laurent/projects/aruspix/data"
             isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
-            argument = "-m /Users/laurent/Downloads/untitled6.mei"
+            argument = "-f mei"
+            isEnabled = "YES">
+         </CommandLineArgument>
+         <CommandLineArgument
+            argument = "-f pae"
+            isEnabled = "NO">
+         </CommandLineArgument>
+         <CommandLineArgument
+            argument = "/Users/laurent/projects/aruspix/varia/00000400003643-1.1.1.pae"
+            isEnabled = "NO">
+         </CommandLineArgument>
+         <CommandLineArgument
+            argument = "/Users/laurent/Documents/marenzio/book1/marenzio-small.mei"
+            isEnabled = "NO">
+         </CommandLineArgument>
+         <CommandLineArgument
+            argument = "/Users/laurent/Downloads/book1-full.mei"
+            isEnabled = "NO">
+         </CommandLineArgument>
+         <CommandLineArgument
+            argument = "/Users/laurent/Downloads/untitled8.mei"
+            isEnabled = "YES">
+         </CommandLineArgument>
+         <CommandLineArgument
+            argument = "/Users/laurent/Downloads/Beethoven_op.18_1.mei"
+            isEnabled = "NO">
+         </CommandLineArgument>
+         <CommandLineArgument
+            argument = "-o test.svg"
             isEnabled = "YES">
          </CommandLineArgument>
       </CommandLineArguments>
