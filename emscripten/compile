@@ -20,7 +20,6 @@ emcc --closure 0 -O2 \
 	-DUSE_EMSCRIPTEN \
 	-s TOTAL_MEMORY=256*1024*1024 \
 	-s TOTAL_STACK=16*1024*1024 \
-	$ARUSPIX_ROOT/src/mus/main.cpp \
 	$ARUSPIX_ROOT/src/mus/emscripten_main.cpp \
 	$ARUSPIX_ROOT/src/mus/mus.cpp \
 	$ARUSPIX_ROOT/src/mus/musaligner.cpp \
