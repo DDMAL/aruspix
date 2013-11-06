@@ -8,13 +8,14 @@
 		<script src="../build/aruspix.js" type="text/javascript"></script>
 		<script type="text/javascript">
 //<![CDATA[
-		convertMusic = Module.cwrap('convertMusic', 'string', ['integer', 'integer', 'string'])
+		//convertMusic = Module.cwrap('convertMusic', 'string', ['integer', 'integer', 'string'])
+		convertMusic = Module.cwrap('convertMusic', 'string', ['string', 'string'])
 		
 		function render( mei )
 		{	
 			// The trailing newline is needed so we can read the file lines
 			// correctly if the file does not end with a newline
-			var svg = convertMusic(0, 0, mei + "\n");
+			var svg = convertMusic(mei + "\n", , JSON.stringify({InputFormat: 'mei', Scale: 50}));
 			document.getElementById('test').innerHTML = svg;
 		};
 //]]>

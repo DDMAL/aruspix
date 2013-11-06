@@ -61,13 +61,14 @@ span.ui-icon-custom-barline
 <script type="text/javascript">
 
 // Export the conversion function
-convertMusic = Module.cwrap('convertMusic', 'string', ['integer', 'integer', 'string'])
+//convertMusic = Module.cwrap('convertMusic', 'string', ['integer', 'integer', 'string'])
+convertMusic = Module.cwrap('convertMusic', 'string', ['string', 'string'])
 
 function render_music( music, format )
 {	
 	// The trailing newline is needed so we can read the file lines
 	// correctly if the file does not end with a newline
-	var svg = convertMusic(format, 0, music + "\n");
+	var svg = convertMusic(music + "\n", JSON.stringify({InputFormat: format, Scale: 50}));
 	document.getElementById('render_01').innerHTML = svg;
 	
 
@@ -93,7 +94,7 @@ function pe_incipit(destination_column, clef, keysig, timesig, incipit, target)
 	pae = pae + "@timesig:" + pae_timesig + "\n";
 	pae = pae + "@data: " + pae_incipit + "\n";
 	pae = pae + "@end:pae-file\n"
-	render_music(pae, 1);
+	render_music(pae, 'pae');
 	
 }
   

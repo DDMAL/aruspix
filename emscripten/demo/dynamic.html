@@ -10,15 +10,15 @@
 <script type="text/javascript">
 
 // Export the conversion function
-convertMusic = Module.cwrap('convertMusic', 'string', ['integer', 'integer', 'string'])
-convertMusic2 = Module.cwrap('convertMusic', 'string', ['string', 'string'])
+//convertMusic = Module.cwrap('convertMusic', 'string', ['integer', 'integer', 'string'])
+convertMusic = Module.cwrap('convertMusic', 'string', ['string', 'string'])
 
 function render_music( music, format )
 {	
 	// The trailing newline is needed so we can read the file lines
 	// correctly if the file does not end with a newline
 	//var svg = convertMusic(format, 0, music + "\n");
-	var svg = convertMusic2(music, JSON.stringify({InputFormat: 'pae', Scale: 50}));
+	var svg = convertMusic(music, JSON.stringify({InputFormat: format, Scale: 50}));
 	document.getElementById('test').innerHTML = svg;
 
 };
@@ -50,7 +50,7 @@ function upload_file(input, format) {
 
 	<hr>
 	Please enter some pae:
-  <form onsubmit="render_music(texty.value, 1); return false">
+  <form onsubmit="render_music(texty.value, 'pae'); return false">
 	<textarea rows="10" cols="50" name="texty">
 @start:00000400003643-1.1.1
 @clef:C-1
@@ -65,14 +65,14 @@ function upload_file(input, format) {
   <hr>
   Or select a PAE file to read:
 
-  <form onsubmit="upload_file('pae_files', 1); return false">
+  <form onsubmit="upload_file('pae_files', 'pae'); return false">
     <input type="file" id="pae_files" name="files[]" />
     <input type="submit" value="Render">
   </form>
   <hr>
   Alternatively read a MEI file:
 
-  <form onsubmit="upload_file('mei_files', 0); return false">
+  <form onsubmit="upload_file('mei_files', 'mei'); return false">
     <input type="file" id="mei_files" name="files[]" />
     <input type="submit" value="Render">
   </form>
