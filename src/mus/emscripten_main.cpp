@@ -12,10 +12,7 @@
 #include "mus.h"
 #include "muscontroller.h"
 
-#include "jsonxx.h"
-
 using namespace std;
-using namespace jsonxx;
 
 
 extern "C" {
@@ -24,43 +21,18 @@ extern "C" {
         string notation(c_notation);
         string json_options(c_options);
         string out_str;
-        
-        string in_format;
-        string out_format;
-        int scale = 100;
-        int border = 10;
-        
-        Object json;
-        
-        // Read JSON options
-        json.parse(json_options);
-        
-        if (json.has<String>("InputFormat"))
-            in_format = json.get<String>("InputFormat");
-        
-        if (json.has<String>("OutputFormat"))
-            out_format = json.get<String>("OutputFormat");
-        
-        if (json.has<Number>("Scale"))
-            scale = json.get<Number>("Scale");
-        
-        if (json.has<Number>("Border"))
-            border = json.get<Number>("Border");
-        
         MusController controller;
         
-        controller.SetScale(scale);
-        controller.SetBorder(border);
+        if (!controller.ParseOptions( json_options )) {
+            Mus::LogError( "Could not load JSON options." );
+            return NULL;
+        }
         
         Mus::SetResourcesPath("/data");
         
         // default to mei if unset.
-        if (in_format == "pae") {
-            controller.LoadString( notation, pae_file );
-        } else {
-            controller.LoadString( notation, mei_file );
-        }
-        
+        controller.LoadString( notation );
+
         // in the future we will be able to render to mei too
         out_str = controller.RenderToSvg();
         return out_str.c_str();

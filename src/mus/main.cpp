@@ -53,7 +53,7 @@ int main(int argc, char** argv)
     string m_outfile;
     string m_outformat = "svg";
     
-    ConvertFileType m_type;
+    ConvertFileFormat m_type;
     int m_no_mei_hdr = 0;
       
     MusController controller;
@@ -163,7 +163,9 @@ int main(int argc, char** argv)
     
     cerr << "Reading " << m_infile << "..." << endl;
 
-    if ( !controller.LoadFile( m_infile, m_type ) ) {
+    controller.SetFormat(m_type);
+    
+    if ( !controller.LoadFile( m_infile ) ) {
         exit(1);
     }
     

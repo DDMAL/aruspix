@@ -14,11 +14,11 @@
 
 #include <string>
 
-typedef enum _file_types {
+typedef enum _file_formats {
     mei_file = 0,
     pae_file,
     darms_file
-} ConvertFileType;
+} ConvertFileFormat;
 
 //----------------------------------------------------------------------------
 // MusController
@@ -34,12 +34,18 @@ public:
     /**
      * Load a file with the specified type.
      */
-    bool LoadFile( std::string filename, ConvertFileType type );
+    bool LoadFile( std::string filename );
     
     /**
      * Load a string data witht he specified type.
      */
-    bool LoadString( std::string data, ConvertFileType type );
+    bool LoadString( std::string data );
+    
+    /**
+     * Parse the options passed as JSON string
+     * only available for Emscripten based compiles
+     **/
+    bool ParseOptions( std::string json_options );
     
     /**
      * Render the page in SVG and returns it as a string
@@ -67,6 +73,14 @@ public:
     int GetScale() { return m_scale; };
     ///@}
     
+    /**
+     * @name Get the input file format (defined as ConvertFileFormat)
+     */
+    ///@{
+    void SetFormat( ConvertFileFormat format ) { m_format = format; };
+    int GetFormat() { return m_format; };
+    ///@}
+    
 private:
     
 public:
@@ -76,6 +90,7 @@ private:
     MusRC m_rc;
     int m_border;
     int m_scale;
+    ConvertFileFormat m_format;
 };
 
 #endif

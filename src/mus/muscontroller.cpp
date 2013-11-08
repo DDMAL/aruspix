@@ -25,6 +25,11 @@
 #include "mussvgdc.h"
 #include "mussystem.h"
 
+#ifdef USE_EMSCRIPTEN
+#include "jsonxx.h"
+using namespace jsonxx;
+#endif
+
 //----------------------------------------------------------------------------
 // MusController
 //----------------------------------------------------------------------------
@@ -33,21 +38,22 @@ MusController::MusController()
 {
     m_border = 10;
     m_scale = 100;
-    }
+    m_format = pae_file;
+}
 
 
 MusController::~MusController()
 {
 }
 
-bool MusController::LoadFile( std::string filename, ConvertFileType type )
+bool MusController::LoadFile( std::string filename )
 {
     MusFileInputStream *input = NULL;
-    if (type == pae_file) {
+    if (m_format == pae_file) {
         input = new MusPaeInput( &m_doc, filename.c_str() );
-    } else if (type == darms_file) {
+    } else if (m_format == darms_file) {
         input = new MusDarmsInput( &m_doc, filename.c_str() );
-    } else if (type == mei_file) {
+    } else if (m_format == mei_file) {
         input = new MusMeiInput( &m_doc, filename.c_str() );
     }
     else {
@@ -73,12 +79,12 @@ bool MusController::LoadFile( std::string filename, ConvertFileType type )
     return true;
 }
 
-bool MusController::LoadString( std::string data, ConvertFileType type )
+bool MusController::LoadString( std::string data )
 {
     MusFileInputStream *input = NULL;
-    if (type == pae_file) {
+    if (m_format == pae_file) {
         input = new MusPaeInput( &m_doc, "" );
-    } else if (type == mei_file) {
+    } else if (m_format == mei_file) {
         input = new MusMeiInput( &m_doc, "" );
     }
     else {
@@ -102,6 +108,65 @@ bool MusController::LoadString( std::string data, ConvertFileType type )
     m_rc.SetDoc( &m_doc );
     delete input;
     return true;
+}
+
+bool MusController::ParseOptions( std::string json_options ) {
+#ifdef USE_EMSCRIPTEN
+    std::string in_format = "pae";
+    
+    int scale = m_scale;
+    int border = m_border;
+    
+    Object json;
+        
+    // Read JSON options
+    if (!json.parse(json_options)) {
+        Mus::LogError( "Can not parse JSON string." );
+        return false;
+    }
+    
+    if (json.has<String>("InputFormat"))
+        in_format = json.get<String>("InputFormat");
+    
+    if (json.has<Number>("Scale"))
+        scale = json.get<Number>("Scale");
+    
+    if (json.has<Number>("Border"))
+        border = json.get<Number>("Border");
+    
+    if (in_format == "pae") 
+        SetFormat(pae_file);
+    else if (in_format == "mei")
+        SetFormat(mei_file);
+    else if (in_format == "darms")
+        SetFormat(darms_file);
+    else { // fail if format in invalid
+        Mus::LogError( "InputFormat is invalid: %s\n", in_format.c_str() );
+        return false;
+    }
+    
+    // Check boundaries for scale and border
+    
+    if (border < 0 || border > 1000) {
+        Mus::LogError( "Border out of bounds, use 10 (default)." );
+        border = 10;
+    }
+        
+    if (scale < 0 || scale > 1000) {
+        Mus::LogError( "Scale out of bounds, use 10 (default)." );
+        scale = 100;
+    }
+    
+    SetScale(scale);
+    SetBorder(border);
+    
+    return true;
+    
+#else
+    // The non js version of the app should not use this function.
+    return false;
+#endif
+    
 }
 
 std::string MusController::RenderToSvg( int pageNo, bool xml_tag )
