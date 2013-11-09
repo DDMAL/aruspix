@@ -16,7 +16,7 @@
 #define SYSTEM_OFFSET 190
 
 class MusDC;
-class MusStaff;
+class MusMeasure;
 
 //----------------------------------------------------------------------------
 // MusSystem
@@ -39,14 +39,14 @@ public:
     
     void Clear();
 	
-	void AddStaff( MusStaff *staff );
+	void AddMeasure( MusMeasure *measure );
 	
-	MusStaff *GetFirst( );
-	MusStaff *GetLast( );
-	MusStaff *GetNext( MusStaff *staff );
-	MusStaff *GetPrevious( MusStaff *staff );
-    MusStaff *GetStaff( int StaffNo );
-	MusStaff *GetAtPos( int y );
+	MusMeasure *GetFirst( );
+	MusMeasure *GetLast( );
+	MusMeasure *GetNext( MusMeasure *measure );
+	MusMeasure *GetPrevious( MusMeasure *measure );
+    MusMeasure *GetMeasure( int MeasureNo );
+	MusMeasure *GetAtPos( int x );
     
     /**
      * Return the default horizontal spacing of system.
@@ -55,7 +55,7 @@ public:
 
     void SetValues( int type );
 	
-	int GetStaffCount() const { return (int)m_children.size(); };
+	int GetMeasureCount() const { return (int)m_children.size(); };
     
     int GetSystemNo() const;
     

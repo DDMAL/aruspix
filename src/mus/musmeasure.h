@@ -12,7 +12,7 @@
 #include "musobject.h"
 
 class MusAlignment;
-class MusLayer;
+class MusStaff;
 
 //----------------------------------------------------------------------------
 // MusMeasure
@@ -42,9 +42,9 @@ public:
     
     void Clear();
     
-	void AddLayer( MusLayer *layer );
+	void AddStaff( MusStaff *staff );
 	
-	int GetLayerCount() const { return (int)m_children.size(); };
+	int GetStaffCount() const { return (int)m_children.size(); };
     
     int GetMeasureNo() const;
        
@@ -54,11 +54,11 @@ public:
 	void CopyAttributes( MusMeasure *measure ); // copy all attributes but none of the elements
 	//void ClearElements( MusDC *dc , MusElement *start = NULL );
     
-	MusLayer *GetFirst( );
-	MusLayer *GetLast( );
-	MusLayer *GetNext( MusLayer *layer );
-	MusLayer *GetPrevious( MusLayer *layer );
-    MusLayer *GetLayer( int LayerNo );
+	MusStaff *GetFirst( );
+	MusStaff *GetLast( );
+	MusStaff *GetNext( MusStaff *layer );
+	MusStaff *GetPrevious( MusStaff *layer );
+    MusStaff *GetStaff( int StaffNo );
     
     int GetXRel( );
     

@@ -16,8 +16,8 @@
 
 #include "mus.h"
 #include "musio.h"
+#include "musmeasure.h"
 #include "muspage.h"
-#include "musstaff.h"
 
 //----------------------------------------------------------------------------
 // MusSystem
@@ -40,10 +40,10 @@ MusSystem::MusSystem( const MusSystem& system )
 	m_y_rel = system.m_y_rel;
 	m_y_drawing = system.m_y_drawing;
     
-	for (i = 0; i < this->GetStaffCount(); i++)
+	for (i = 0; i < this->GetMeasureCount(); i++)
 	{
-        MusStaff *nstaff = new MusStaff( *(MusStaff*)system.m_children[i] );
-        this->AddStaff( nstaff );
+        MusMeasure *nmeasure = new MusMeasure( *(MusMeasure*)system.m_children[i] );
+        this->AddMeasure( nmeasure );
 	}
 }
 
@@ -74,10 +74,10 @@ int MusSystem::Save( ArrayPtrVoid params )
 
 }
 
-void MusSystem::AddStaff( MusStaff *staff )
+void MusSystem::AddMeasure( MusMeasure *measure )
 {
-	staff->SetParent( this );
-	m_children.push_back( staff );
+	measure->SetParent( this );
+	m_children.push_back( measure );
     Modify();
 }
 
@@ -119,78 +119,77 @@ void MusSystem::ClearStaves( MusDC *dc, MusStaff *start )
 }
 */
 
-MusStaff *MusSystem::GetFirst( )
+MusMeasure *MusSystem::GetFirst( )
 {
 	if ( m_children.empty() )
 		return NULL;
-	return (MusStaff*)m_children[0];
+	return (MusMeasure*)m_children[0];
 }
 
-MusStaff *MusSystem::GetLast( )
+MusMeasure *MusSystem::GetLast( )
 {
 	if ( m_children.empty() )
 		return NULL;
 	int i = (int)m_children.size() - 1;
-	return (MusStaff*)m_children[i];
+	return (MusMeasure*)m_children[i];
 }
 
-MusStaff *MusSystem::GetNext( MusStaff *staff )
+MusMeasure *MusSystem::GetNext( MusMeasure *measure )
 {
-    if ( !staff || m_children.empty())
+    if ( !measure || m_children.empty())
         return NULL;
         
-	int i = GetChildIndex( staff );
+	int i = GetChildIndex( measure );
     
-	if ((i == -1 ) || ( i >= GetStaffCount() - 1 ))
+	if ((i == -1 ) || ( i >= GetMeasureCount() - 1 ))
 		return NULL;
 	
-	return (MusStaff*)m_children[i + 1];
+	return (MusMeasure*)m_children[i + 1];
 	
 }
 
-MusStaff *MusSystem::GetStaff( int StaffNo )
+MusMeasure *MusSystem::GetMeasure( int MeasureNo )
 {
-    if ( StaffNo > (int)m_children.size() - 1 )
+    if ( MeasureNo > (int)m_children.size() - 1 )
         return NULL;
 	
-	return (MusStaff*)m_children[StaffNo];
+	return (MusMeasure*)m_children[MeasureNo];
 }
 
 
-MusStaff *MusSystem::GetPrevious( MusStaff *staff  )
+MusMeasure *MusSystem::GetPrevious( MusMeasure *measure  )
 {
-    if ( !staff || m_children.empty() )
+    if ( !measure || m_children.empty() )
         return NULL;
         
-	int i = GetChildIndex( staff );
+	int i = GetChildIndex( measure );
 
 	if ((i == -1 ) || ( i <= 0 ))
         return NULL;
 	
-    return (MusStaff*)m_children[i - 1];
+    return (MusMeasure*)m_children[i - 1];
 }
 
 
-MusStaff *MusSystem::GetAtPos( int y )
+MusMeasure *MusSystem::GetAtPos( int x )
 {
 	//y += ( STAFF_OFFSET / 2 );
-	MusStaff *staff = this->GetFirst();
-	if ( !staff )
+	MusMeasure *measure = this->GetFirst();
+	if ( !measure )
 		return NULL;
 	
     
-    MusStaff *next = NULL;
-	//int dif =  abs( staff->m_y_drawing - y );
-	while ( (next = this->GetNext(staff) ) )
+    MusMeasure *next = NULL;
+	while ( (next = this->GetNext(measure) ) )
 	{
-		if ( (int)staff->m_y_drawing < y )
+		if ( (int)measure->m_x_drawing < x )
 		{
-			return staff;
+			return measure;
 		}
-		staff = next;
+		measure = next;
 	}
 
-	return staff;
+	return measure;
 }
 
 void MusSystem::SetValues( int type )

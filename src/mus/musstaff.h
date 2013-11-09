@@ -16,7 +16,7 @@
 
 class MusClef;
 class MusDC;
-class MusMeasure;
+class MusLayer;
 
 //----------------------------------------------------------------------------
 // MusStaff
@@ -41,9 +41,9 @@ public:
     
     void Clear();
     
-    void AddMeasure( MusMeasure *measure );
+    void AddLayer( MusLayer *layer );
 	
-	int GetMeasureCount() const { return (int)m_children.size(); };
+	int GetLayerCount() const { return (int)m_children.size(); };
     
     int GetStaffNo() const;
     
@@ -59,11 +59,11 @@ public:
 	void CopyAttributes( MusStaff *staff ); // copy all attributes but none of the elements
 	//void ClearElements( MusDC *dc , MusElement *start = NULL );
 
-	MusMeasure *GetFirst( );
-	MusMeasure *GetLast( );
-	MusMeasure *GetNext( MusMeasure *measure );
-	MusMeasure *GetPrevious( MusMeasure *measure );
-    MusMeasure *GetMeasure( int MeasureNo );
+	MusLayer *GetFirst( );
+	MusLayer *GetLast( );
+	MusLayer *GetNext( MusLayer *layer );
+	MusLayer *GetPrevious( MusLayer *layer );
+    MusLayer *GetLayer( int LayerNo );
     
     
     /**
