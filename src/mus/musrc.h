@@ -9,6 +9,8 @@
 #ifndef __MUS_RENDERER_H__
 #define __MUS_RENDERER_H__
 
+#include <typeinfo>
+
 #include "musdc.h"
 #include "musdef.h"
 
@@ -120,6 +122,7 @@ public:
     int CalculateRestPosY ( MusStaff *staff, char duration);
 	void DrawMeasure( MusDC *dc, MusMeasure *measure, MusStaff *staff, MusSystem *system );
     void DrawLayer( MusDC *dc, MusLayer *layer, MusMeasure *measure, MusStaff *staff );
+    void DrawLayerList( MusDC *dc, MusLayer *layer, MusMeasure *measure, MusStaff *staff, const std::type_info *elementType );
 	void DrawSlur( MusDC *dc, MusLayer *layer, int x1, int y1, int x2, int y2, bool up, int height = -1);
     int CalculatePitchCode ( MusLayer *layer, int y_n, int x_pos, int *octave );
     

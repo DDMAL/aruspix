@@ -15,6 +15,7 @@
 
 //----------------------------------------------------------------------------
 
+#include "musbeam.h"
 #include "musclef.h"
 #include "musdoc.h"
 #include "muslayer.h"
@@ -23,6 +24,7 @@
 #include "muspage.h"
 #include "musstaff.h"
 #include "mussystem.h"
+#include "mustuplet.h"
 
 //----------------------------------------------------------------------------
 // MusRC - MusPage
@@ -956,7 +958,10 @@ void MusRC::DrawLayer( MusDC *dc, MusLayer *layer, MusMeasure *measure, MusStaff
 
 	MusLayerElement *element = NULL;
 	int j;
-
+    
+    // first we need to clear the drawing list of postponed elements
+    layer->ResetDrawingList();
+    
 	for(j = 0; j < layer->GetElementCount(); j++)
 	{
 		element = (MusLayerElement*)layer->m_children[j];
@@ -966,7 +971,37 @@ void MusRC::DrawLayer( MusDC *dc, MusLayer *layer, MusMeasure *measure, MusStaff
             DrawElement( dc, element, layer, measure, staff );
         }
 	}
+    
+    // first draw the beams
+    DrawLayerList(dc, layer, measure, staff, &typeid(MusBeam) );
+    // then tuplets
+    DrawLayerList(dc, layer, measure, staff, &typeid(MusTuplet) );
+    
+}
 
+
+void MusRC::DrawLayerList( MusDC *dc, MusLayer *layer, MusMeasure *measure, MusStaff *staff, const std::type_info *elementType )
+{
+	assert( dc ); // DC cannot be NULL
+    
+    ListOfMusObjects *drawingList = layer->GetDrawingList();
+	MusLayerElement *element = NULL;
+    
+    ListOfMusObjects::iterator iter;
+    
+    for (iter = drawingList->begin(); iter != drawingList->end(); ++iter)
+    {
+        element = dynamic_cast<MusLayerElement*>(*iter);
+        if ( (typeid(*element) == *elementType) &&  (*elementType == typeid(MusBeam) ) ) {
+            MusBeam *beam = dynamic_cast<MusBeam*>(element);
+            DrawBeam( dc, layer, beam, staff );
+        }
+        else if ( (typeid(*element) == *elementType) &&  (*elementType == typeid(MusTuplet) ) ) {
+            MusTuplet *tuplet = dynamic_cast<MusTuplet*>(element);
+            DrawTuplet( dc, tuplet, layer, staff );
+        }
+            
+    }
 }
 
 

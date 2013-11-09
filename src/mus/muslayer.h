@@ -79,6 +79,25 @@ public:
     /** Return the clef offset for the position x (retrieve the first clef before it) */
     int GetClefOffset( MusLayerElement *test  );
     
+    /**
+     * Add an element to the drawing list.
+     * The drawing list is used to postponed the drawing of elements
+     * that need to be drawn in a particular order.
+     * For example, we need to draw beams before tuplets
+     */
+    void AddToDrawingList( MusLayerElement *element );
+
+    /**
+     * Return the darwing list.
+     * This is used when actually darwing the list (see MusRC::DrawLayerList)
+     */
+    ListOfMusObjects *GetDrawingList( );
+
+    /**
+     * Reset the darwing list.
+     * Clears the list - called when the layer starts to be drawn
+     */
+    void ResetDrawingList( );
     
     /**
      * Basic method that remove intermediate clefs and custos.
@@ -125,6 +144,7 @@ public:
 protected:
     // drawing variables
     //MusLayerElement *beamListPremier; // we need to replace this with a proper beam class that handles a list of notes/rests
+    ListOfMusObjects m_drawingList;
 
 private:
     

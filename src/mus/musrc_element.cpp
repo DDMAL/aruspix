@@ -191,10 +191,10 @@ void MusRC::DrawBeamElement(MusDC *dc, MusLayerElement *element, MusLayer *layer
         }
     }
     
-    // BEAM!
-    DrawBeam( dc, layer, beam, staff );
+    // Add to the list of postponed element 
+    layer->AddToDrawingList( beam );
     
-    dc->EndGraphic(element, this ); //RZ
+    dc->EndGraphic(element, this );
 }
 
 void MusRC::DrawTupletElement(MusDC *dc, MusLayerElement *element, MusLayer *layer, MusMeasure *measure, MusStaff *staff) {
@@ -214,10 +214,10 @@ void MusRC::DrawTupletElement(MusDC *dc, MusLayerElement *element, MusLayer *lay
         }
     }
     
-    // Tupletize the elements!
-    DrawTuplet( dc, tuplet, layer, staff );
+    // Add to the list of postponed element
+    layer->AddToDrawingList( tuplet );
     
-    dc->EndGraphic(element, this ); //RZ
+    dc->EndGraphic(element, this );
 }
 
 // dessine la note en a,b+by. Calcule et dessine lignes addit. avec by=m_y_drawing

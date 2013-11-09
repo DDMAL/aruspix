@@ -43,6 +43,7 @@ void MusLayer::Clear()
 {
     ClearChildren();
 	voix = 0;
+    m_drawingList.clear();
 }
 
 
@@ -142,6 +143,21 @@ MusLayerElement *MusLayer::GetAtPos( int x )
 	return element;
 }
 
+void MusLayer::AddToDrawingList( MusLayerElement *element )
+{
+    m_drawingList.push_back( element );
+}
+
+ListOfMusObjects *MusLayer::GetDrawingList( )
+{
+    return &m_drawingList;
+}
+
+void MusLayer::ResetDrawingList( )
+{
+    m_drawingList.clear();
+}
+
 MusLayerElement *MusLayer::Insert( MusLayerElement *element, int x )
 {
 	if ( !element ) { 
@@ -213,7 +229,6 @@ void MusLayer::Delete( MusLayerElement *element )
     
     Refresh();
 }
-
 
 // Dans la direction indiquee (direction), cavale sur tout element qui n'est pas un
 // symbol, de la nature indiquee (flg). Retourne le ptr si succes, ou 
