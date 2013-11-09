@@ -115,14 +115,14 @@ public:
 	void DrawBarline ( MusDC *dc, MusSystem *system, int x, int cod, bool porteeAutonome, MusStaff *pportee);
 	void DrawSpecialBarline( MusDC *dc, MusSystem *system, int x, BarlineType code, bool porteeAutonome, MusStaff *pportee);
 	void DrawPartialBarline ( MusDC *dc, MusSystem *system, int x, MusStaff *pportee);
-	void DrawStaff( MusDC *dc, MusStaff *staff, MusSystem *system );
-	void DrawStaffLines( MusDC *dc, MusStaff *staff, MusSystem *system );
+    void DrawMeasure( MusDC *dc, MusMeasure *measure, MusSystem *system );
+    void DrawStaff( MusDC *dc, MusStaff *staff, MusMeasure *measure, MusSystem *system );
+	void DrawStaffLines( MusDC *dc, MusStaff *staff, MusMeasure *measure, MusSystem *system );
     int CalculatePitchPosY ( MusStaff *staff, char pname, int dec_clef, int oct);
 	int CalculateNeumePosY ( MusStaff *staff, char note, int dec_clef, int oct);
     int CalculateRestPosY ( MusStaff *staff, char duration);
-	void DrawMeasure( MusDC *dc, MusMeasure *measure, MusStaff *staff, MusSystem *system );
-    void DrawLayer( MusDC *dc, MusLayer *layer, MusMeasure *measure, MusStaff *staff );
-    void DrawLayerList( MusDC *dc, MusLayer *layer, MusMeasure *measure, MusStaff *staff, const std::type_info *elementType );
+    void DrawLayer( MusDC *dc, MusLayer *layer, MusStaff *staff,  MusMeasure *measure );
+    void DrawLayerList( MusDC *dc, MusLayer *layer, MusStaff *staff, MusMeasure *measure, const std::type_info *elementType );
 	void DrawSlur( MusDC *dc, MusLayer *layer, int x1, int y1, int x2, int y2, bool up, int height = -1);
     int CalculatePitchCode ( MusLayer *layer, int y_n, int x_pos, int *octave );
     

@@ -71,7 +71,7 @@ void MusRC::DrawSystem( MusDC *dc, MusSystem *system )
 	assert( dc ); // DC cannot be NULL
 
 	int i;
-    MusStaff *staff;
+    MusMeasure *measure;
     
     /*
     dc->SetPen( AxRED );
@@ -81,10 +81,10 @@ void MusRC::DrawSystem( MusDC *dc, MusSystem *system )
     
     dc->StartGraphic( system, "system", Mus::StringFormat("system_%d", system->GetId() ) );
     
-    for (i = 0; i < (int)system->GetStaffCount(); i++) 
+    for (i = 0; i < (int)system->GetMeasureCount(); i++)
 	{
-		staff = (MusStaff*)system->m_children[i];
-        DrawStaff( dc , staff, system );		
+		measure = (MusMeasure*)system->m_children[i];
+        DrawMeasure( dc , measure, system );
 	}
 
     // We draw the groups after the staves because we use the m_y_darwing member of the staves
@@ -164,6 +164,7 @@ void MusRC::DrawGroups( MusDC *dc, MusSystem *system )
 
 	b_gr = bb_gr = b_acc = bb_acc = 0;                
 
+    /*
     for (i = 0; i < system->GetStaffCount(); i++) 
 	{
 		staff =  (MusStaff*)system->m_children[i];
@@ -224,6 +225,7 @@ void MusRC::DrawGroups( MusDC *dc, MusSystem *system )
 		//if (_encontinu && staff->vertBarre > 1) // > START
 		//	break;
 	}
+    */
     
 	return;
 }
@@ -425,6 +427,7 @@ void MusRC::DrawBarline ( MusDC *dc, MusSystem *system, int x, int cod, bool por
 	/***if (_shport)
 		shportee (0);***/
 
+    /*
 	i=j= pportee->GetStaffNo();
 	if (pportee->noGrp)
 	{	
@@ -483,6 +486,7 @@ void MusRC::DrawBarline ( MusDC *dc, MusSystem *system, int x, int cod, bool por
 
 
 	}
+    */ // ax3
     
 	return;
 }
@@ -574,6 +578,7 @@ void MusRC::DrawPartialBarline ( MusDC *dc, MusSystem *system, int x, MusStaff *
 
 	int b, bb;
 
+    /* ax3
 	MusStaff *next = system->GetNext( NULL );
 	if ( next )
 	{	
@@ -586,7 +591,50 @@ void MusRC::DrawPartialBarline ( MusDC *dc, MusSystem *system, int x, MusStaff *
 			v_bline ( dc, b, bb, x,  m_doc->m_env.m_barlineWidth);
 		
 	}
+    */
 
+}
+
+
+
+//----------------------------------------------------------------------------
+// MusRC - MusMeasure
+//----------------------------------------------------------------------------
+
+void MusRC::DrawMeasure( MusDC *dc, MusMeasure *measure, MusSystem *system )
+{
+	assert( dc ); // DC cannot be NULL
+    
+    // This is a special case where we do not draw (SVG, Bounding boxes, etc.) the measure if un-measured music
+    if ( measure->IsMeasuredMusic()) {
+        dc->StartGraphic( measure, "measure", Mus::StringFormat("s_%d", measure->GetId()) );
+    }
+    
+    // Here we set the appropriate y value to be used for drawing
+    // With Raw documents, we use m_x_rel that is calculated by the layout algorithm
+    // With Transcription documents, we use the m_x_abs
+    if ( measure->m_x_abs == AX_UNSET ) {
+        assert( m_doc->GetType() == Raw );
+        measure->m_x_drawing = measure->m_x_rel + system->m_systemLeftMar;
+    }
+    else
+    {
+        //assert( m_doc->GetType() == Transcription );
+        measure->m_x_drawing = measure->m_x_abs;
+    }
+    
+	MusStaff *staff = NULL;
+	int j;
+    
+	for(j = 0; j < measure->GetStaffCount(); j++)
+	{
+		staff = (MusStaff*)measure->m_children[j];
+		DrawStaff( dc, staff, measure, system );
+	}
+    
+    if ( measure->IsMeasuredMusic()) {
+        dc->EndGraphic( measure, this );
+    }
 }
 
 
@@ -662,7 +710,7 @@ int MusRC::CalculateRestPosY ( MusStaff *staff, char duration)
     return base + staff_space * offset;
 }
 
-void MusRC::DrawStaffLines( MusDC *dc, MusStaff *staff, MusSystem *system )
+void MusRC::DrawStaffLines( MusDC *dc, MusStaff *staff, MusMeasure *measure, MusSystem *system )
 {
 	assert( dc ); // DC cannot be NULL
         
@@ -672,14 +720,6 @@ void MusRC::DrawStaffLines( MusDC *dc, MusStaff *staff, MusSystem *system )
 	int j, x1, x2, yy;
 
 	yy = staff->m_y_drawing;
-    
-    /*
-    dc->SetPen( AxRED );
-    dc->DrawLine( system->m_x_abs, ToRendererY(staff->m_y_drawing), system->m_x_abs + 10, ToRendererY(staff->m_y_drawing) );
-    dc->ResetPen();
-    */
-
-	yy = staff->m_y_drawing; // - m_doc->m_staffSize[ staff->staffSize ];
 
 	x1 = system->m_systemLeftMar;
     x2 = m_doc->GetSystemRightX( system );
@@ -704,7 +744,7 @@ void MusRC::DrawStaffLines( MusDC *dc, MusStaff *staff, MusSystem *system )
 
 
 
-void MusRC::DrawStaff( MusDC *dc, MusStaff *staff, MusSystem *system )
+void MusRC::DrawStaff( MusDC *dc, MusStaff *staff, MusMeasure *measure, MusSystem *system )
 {
 	assert( dc ); // DC cannot be NULL
     
@@ -723,65 +763,19 @@ void MusRC::DrawStaff( MusDC *dc, MusStaff *staff, MusSystem *system )
         staff->m_y_drawing = staff->m_y_abs;
     }
     
-    DrawStaffLines( dc, staff, system );
+    DrawStaffLines( dc, staff, measure, system );
         
-	MusMeasure *measure = NULL;
-	int j;
-
-	for(j = 0; j < staff->GetMeasureCount(); j++)
-	{
-		measure = (MusMeasure*)staff->m_children[j];
-		DrawMeasure( dc, measure, staff, system );
-	}
-    
-    dc->EndGraphic( staff, this );
-}
-
-//----------------------------------------------------------------------------
-// MusRC - MusMeasure
-//----------------------------------------------------------------------------
-
-void MusRC::DrawMeasure( MusDC *dc, MusMeasure *measure, MusStaff *staff, MusSystem *system )
-{
-	assert( dc ); // DC cannot be NULL
-    
-    // This is a special case where we do not draw (SVG, Bounding boxes, etc.) the measure if un-measured music
-    if ( measure->IsMeasuredMusic()) {
-        dc->StartGraphic( measure, "measure", Mus::StringFormat("s_%d", staff->GetId()) );
-    }
-    
-    // Here we set the appropriate y value to be used for drawing
-    // With Raw documents, we use m_x_rel that is calculated by the layout algorithm
-    // With Transcription documents, we use the m_x_abs
-    if ( measure->m_x_abs == AX_UNSET ) {
-        assert( m_doc->GetType() == Raw );
-        measure->m_x_drawing = measure->m_x_rel + system->m_systemLeftMar;
-    }
-    else
-    {
-        //assert( m_doc->GetType() == Transcription );
-        measure->m_x_drawing = measure->m_x_abs;
-    }
-    
-    MusBarline barline;
-    dc->StartGraphic( &barline, "barline", Mus::StringFormat("s_%d", barline.GetId()) );
-    //DrawBarline ( dc, system, measure->m_x_drawing, m_doc->m_env.m_barlineWidth, 1, staff);
-    DrawBarline ( dc, system, measure->m_x_drawing, 10, 1, staff);
-    dc->EndGraphic( &barline, this );
-    
 	MusLayer *layer = NULL;
 	int j;
     
-	for(j = 0; j < measure->GetLayerCount(); j++)
+	for(j = 0; j < staff->GetLayerCount(); j++)
 	{
 		layer = (MusLayer*)measure->m_children[j];
 		//layer->Init( m_r );
-		DrawLayer( dc, layer, measure, staff );
+		DrawLayer( dc, layer, staff, measure );
 	}
- 
-    if ( measure->IsMeasuredMusic()) {
-        dc->EndGraphic( measure, this );
-    }
+    
+    dc->EndGraphic( staff, this );
 }
 
 
@@ -952,7 +946,7 @@ void MusRC::DrawSlur( MusDC *dc, MusLayer *layer, int x1, int y1, int x2, int y2
 
 }
 
-void MusRC::DrawLayer( MusDC *dc, MusLayer *layer, MusMeasure *measure, MusStaff *staff )
+void MusRC::DrawLayer( MusDC *dc, MusLayer *layer, MusStaff *staff, MusMeasure *measure)
 {
 	assert( dc ); // DC cannot be NULL
 
@@ -973,14 +967,14 @@ void MusRC::DrawLayer( MusDC *dc, MusLayer *layer, MusMeasure *measure, MusStaff
 	}
     
     // first draw the beams
-    DrawLayerList(dc, layer, measure, staff, &typeid(MusBeam) );
+    DrawLayerList(dc, layer, staff, measure, &typeid(MusBeam) );
     // then tuplets
-    DrawLayerList(dc, layer, measure, staff, &typeid(MusTuplet) );
+    DrawLayerList(dc, layer, staff, measure, &typeid(MusTuplet) );
     
 }
 
 
-void MusRC::DrawLayerList( MusDC *dc, MusLayer *layer, MusMeasure *measure, MusStaff *staff, const std::type_info *elementType )
+void MusRC::DrawLayerList( MusDC *dc, MusLayer *layer, MusStaff *staff, MusMeasure *measure, const std::type_info *elementType )
 {
 	assert( dc ); // DC cannot be NULL
     
