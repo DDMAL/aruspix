@@ -104,7 +104,7 @@ public:
     
     MusAlignment *GetAlignment() { return m_alignment; };
     
-    int GetShiftedXRel();
+    int GetXRel();
     
     // functors
     /**

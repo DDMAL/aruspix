@@ -78,8 +78,6 @@ public:
     
     void SetXShift( int x_shift );
     int GetXShift() { return m_x_shift; };
-    
-    int GetShiftedXRel() { return m_x_rel + m_x_shift; };
 
     /**
      * @name Set and get the time value of the alignment
@@ -114,9 +112,16 @@ private:
 public:
     
 private:
+    /**
+     * Stores the position relative to the measure.
+     * This is instanciated the MusObject::SetAligmentXPos functor.
+     * It takes into account a non-linear according to the time interval with
+     * the previous MusAlignement
+     */
     int m_x_rel;
     int m_x_shift;
     double m_time;
+    double m_max_duration;
     MusAlignmentType m_type;
 };
 

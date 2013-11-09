@@ -271,10 +271,10 @@ double MusLayerElement::GetAlignementDuration()
     }
 }
 
-int MusLayerElement::GetShiftedXRel()
+int MusLayerElement::GetXRel()
 {
     if (m_alignment) {
-        return m_alignment->GetShiftedXRel();
+        return m_alignment->GetXRel();
     }
     return 0;
 }

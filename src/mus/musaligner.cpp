@@ -169,10 +169,10 @@ int MusAlignment::IntegrateBoundingBoxShift( ArrayPtrVoid params )
     // param 1: the functor to be redirected to MusAligner
     int *shift = (int*)params[0];
     
-    //Mus::LogDebug("time %f; x_rel %d; m_shift %d, shift %d => %d", m_time, m_x_rel, m_x_shift, (*shift), m_x_rel + m_x_shift + (*shift));
-    
-    m_x_shift += (*shift);
-    (*shift) = m_x_shift;   
+    // integrates the m_x_shift into the m_x_rel
+    m_x_rel += m_x_shift + (*shift);
+    // cumulate the shift value
+    (*shift) += m_x_shift;
 
     return FUNCTOR_CONTINUE;
 }
@@ -201,13 +201,10 @@ int MusAlignment::SetAligmentXPos( ArrayPtrVoid params )
     double *previousTime = (double*)params[0];
     int *previousXRel = (int*)params[1];
     
-    //Mus::LogDebug("time %f; x_rel %d; m_shift %d, shift %d => %d", m_time, m_x_rel, m_x_shift, (*shift), m_x_rel + m_x_shift + (*shift));
-    
     int intervalXRel = 0;
     double intervalTime = (m_time - (*previousTime));
     if ( intervalTime > 0.0 ) {
-        double factor = pow( 0.1, log2( 1.0 / intervalTime ) );
-        intervalXRel = pow( intervalTime, 0.60 ) * 2.5;
+        intervalXRel = pow( intervalTime, 0.60 ) * 2.5; // 2.5 is an abritrary value
     }
     
     m_x_rel = (*previousXRel) + (intervalXRel);
