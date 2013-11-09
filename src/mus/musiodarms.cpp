@@ -399,8 +399,8 @@ bool MusDarmsInput::ImportFile() {
     m_layer = new MusLayer( 1 );
     
     m_current_tie = NULL;
-    m_staff->AddMeasure( m_measure );
-    m_measure->AddLayer(m_layer);
+    m_staff->AddLayer(m_layer);
+    m_measure->AddStaff( m_staff );
     
     // do this the C style, char by char
     while (pos < len) {
@@ -432,7 +432,7 @@ bool MusDarmsInput::ImportFile() {
         pos++;
     }
     
-    system->AddStaff( m_staff );
+    system->AddMeasure( m_measure );
     page->AddSystem( system );
     m_doc->AddPage( page );
     
