@@ -759,11 +759,11 @@ int MusLayer::CopyToLayer( ArrayPtrVoid params )
 
 int MusLayer::Align( ArrayPtrVoid params )
 {
-    // param 0: the aligner
-    // param 1: the measureAligner
-    // param 2: the measureNb
-    // param 3: the time
-    double *time = (double*)params[3];
+    // param 0: the measureAligner (unused)
+    // param 1: the time
+    // param 2: the systemAligner (unused)
+    // param 3: the staffNb (unused)
+    double *time = (double*)params[1];
 
     // we are starting a new layer, reset the time;
     (*time) = 0.0;

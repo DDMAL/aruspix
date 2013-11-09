@@ -165,14 +165,14 @@ void MusPage::Layout( bool trim )
     ArrayPtrVoid params;
     
     // align the content of the page
-    MusAligner *alignerPtr = NULL;
     MusMeasureAligner *measureAlignerPtr = NULL;
-    int measureNb = 0;
     double time = 0.0;
-    params.push_back( &alignerPtr );
+    MusSystemAligner *systemAlignerPtr = NULL;
+    int staffNb = 0;
     params.push_back( &measureAlignerPtr );
-    params.push_back( &measureNb );
     params.push_back( &time );
+    params.push_back( &systemAlignerPtr );
+    params.push_back( &staffNb );
     MusFunctor align( &MusObject::Align );
     this->Process( &align, params );
     

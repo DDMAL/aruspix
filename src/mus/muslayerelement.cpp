@@ -281,12 +281,12 @@ int MusLayerElement::GetXRel()
 
 int MusLayerElement::Align( ArrayPtrVoid params )
 {
-    // param 0: the aligner
-    // param 1: the measureAligner
-    // param 2: the measureNb
-    // param 3: the time
-    MusMeasureAligner **measureAligner = (MusMeasureAligner**)params[1];
-    double *time = (double*)params[3];
+    // param 0: the measureAligner
+    // param 1: the time
+    // param 2: the systemAligner (unused)
+    // param 3: the staffNb (unused)
+    MusMeasureAligner **measureAligner = (MusMeasureAligner**)params[0];
+    double *time = (double*)params[1];
     
     MusAlignmentType type = ALIGNMENT_DEFAULT;
     if ( this->IsBarline() ) {

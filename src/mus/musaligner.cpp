@@ -19,35 +19,51 @@
 #include "muslayerelement.h"
 
 //----------------------------------------------------------------------------
-// MusAligner
+// MusSystemAligner
 //----------------------------------------------------------------------------
 
-MusAligner::MusAligner():
-MusObject()
+MusSystemAligner::MusSystemAligner():
+    MusObject()
 {
 }
 
-MusAligner::~MusAligner()
+MusSystemAligner::~MusSystemAligner()
 {
     
 }
 
-MusMeasureAligner* MusAligner::GetMeasureAligner( int idx)
+MusStaffAlignment* MusSystemAligner::GetStaffAlignment( int idx)
 {
-    if (idx < GetMeasureAlignerCount()) {
-        //Mus::LogDebug("Returning measure aligner %d", idx);
-        return (MusMeasureAligner*)m_children[idx];
+    if (idx < GetStaffAlignmentCount()) {
+        //Mus::LogDebug("Returning staff alignment %d", idx);
+        return (MusStaffAlignment*)m_children[idx];
     }
     // check that we are searching for the next one (not gap)
-    assert( idx == GetMeasureAlignerCount() );
-    //Mus::LogDebug("Creating measure aligner");
+    assert( idx == GetStaffAlignmentCount() );
+    //Mus::LogDebug("Creating staff alignment");
     
     // This is the first time we are looking for it (e.g., first staff)
-    // We create the MusMeasureAligner
-    MusMeasureAligner *aligner = new MusMeasureAligner();
-    aligner->SetParent( this );
-    m_children.push_back( aligner );
-    return aligner;
+    // We create the MusStaffAlignment
+    MusStaffAlignment *alignment = new MusStaffAlignment();
+    alignment->SetParent( this );
+    m_children.push_back( alignment );
+    return alignment;
+}
+
+
+//----------------------------------------------------------------------------
+// MusStaffAlignment
+//----------------------------------------------------------------------------
+
+MusStaffAlignment::MusStaffAlignment():
+    MusObject()
+{
+    m_y_rel = 0;
+}
+
+MusStaffAlignment::~MusStaffAlignment()
+{
+    
 }
 
 //----------------------------------------------------------------------------

@@ -15,7 +15,6 @@
 //----------------------------------------------------------------------------
 
 #include "mus.h"
-#include "musaligner.h"
 #include "musdef.h"
 #include "musio.h"
 #include "musstaff.h"
@@ -154,25 +153,47 @@ int MusMeasure::GetXRel()
 
 int MusMeasure::Align( ArrayPtrVoid params )
 {
-    // param 0: the aligner
-    // param 1: the measureAligner
-    // param 2: the measureNb
-    // param 3: the time
-    MusAligner **aligner = (MusAligner**)params[0];
-    MusMeasureAligner **measureAligner = (MusMeasureAligner**)params[1];
-	int *measureNb = (int*)params[2];
+    // param 0: the measureAligner
+    // param 1: the time (unused)
+    // param 2: the systemAligner (unused)
+    // param 3: the staffNb
+    MusMeasureAligner **measureAligner = (MusMeasureAligner**)params[0];
+    int *staffNb = (int*)params[3];
     
-    // this gets (or creates) the measureAligner for the measure
-    (*measureAligner) = (*aligner)->GetMeasureAligner(*measureNb);
+    // clear the content of the measureAligner
+    m_measureAligner.ClearChildren();
+    
+    // point to it
+    (*measureAligner) = &m_measureAligner;
+    
+    // we also need to reset the staffNb
+    (*staffNb) = 0;
     
     assert( *measureAligner );
-    
-    // Set the pointer of the m_alignment
-    m_alignment = (*measureAligner)->GetMeasureAlignment();
-    
-    // for next measure
-    (*measureNb)++;
-    
+        
     return FUNCTOR_CONTINUE;
+}
+
+int MusMeasure::IntegrateBoundingBoxShift( ArrayPtrVoid params )
+{
+    // param 0: the cumulated shift
+    // param 1: the functor to be redirected to MusAligner
+    MusFunctor *integrateBoundingBoxShift = (MusFunctor*)params[1];
+    
+    m_measureAligner.Process( integrateBoundingBoxShift, params);
+    
+    return FUNCTOR_SIBLINGS;
+}
+
+int MusMeasure::SetAligmentXPos( ArrayPtrVoid params )
+{
+    // param 0: the previous time position (unused)
+    // param 1: the previous x rel position (unused)
+    // param 2: the functor to be redirected to MusAligner
+    MusFunctor *setAligmnentPosX = (MusFunctor*)params[2];
+    
+    m_measureAligner.Process( setAligmnentPosX, params);
+    
+    return FUNCTOR_SIBLINGS;
 }
 

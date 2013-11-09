@@ -241,40 +241,15 @@ int MusSystem::TrimSystem( ArrayPtrVoid params )
 
 int MusSystem::Align( ArrayPtrVoid params )
 {
-    // param 0: the aligner
-    // param 1: the measureAligner
-    // param 2: the measureNb
-    // param 3: the time
-    MusAligner **aligner = (MusAligner**)params[0];
+    // param 0: the measureAligner (unused)
+    // param 1: the time (unused)
+    // param 2: the systemAligner
+    // param 3: the staffNb (unused)
+    MusSystemAligner **systemAligner = (MusSystemAligner**)params[2];
     
-    m_aligner.ClearChildren();
-    (*aligner) = &m_aligner;
+    m_systemAligner.ClearChildren();
+    (*systemAligner) = &m_systemAligner;
     
     return FUNCTOR_CONTINUE;
 }
-
-
-int MusSystem::IntegrateBoundingBoxShift( ArrayPtrVoid params )
-{
-    // param 0: the cumulated shift
-    // param 1: the functor to be redirected to MusAligner
-    MusFunctor *integrateBoundingBoxShift = (MusFunctor*)params[1];
-    
-    m_aligner.Process( integrateBoundingBoxShift, params);
-    
-    return FUNCTOR_SIBLINGS;
-}
-
-int MusSystem::SetAligmentXPos( ArrayPtrVoid params )
-{
-    // param 0: the previous time position (unused)
-    // param 1: the previous x rel position (unused)
-    // param 2: the functor to be redirected to MusAligner
-    MusFunctor *setAligmnentPosX = (MusFunctor*)params[2];
-
-    m_aligner.Process( setAligmnentPosX, params);
-    
-    return FUNCTOR_SIBLINGS;
-}
-
 

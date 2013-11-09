@@ -72,20 +72,8 @@ public:
      */
     virtual int Align( ArrayPtrVoid params );
     
-    /**
-     * Correct the alignment once the the content of a system has been aligned and laid out.
-     * Special case that redirects the functor to the MusAligner.
-     */
-    virtual int IntegrateBoundingBoxShift( ArrayPtrVoid params );
-    
-    /**
-     * Set the position of the MusAlignment.
-     * Special case that redirects the functor to the MusAligner.
-     */
-    virtual int SetAligmentXPos( ArrayPtrVoid params );
-    
 private:
-    MusAligner m_aligner;
+    MusSystemAligner m_systemAligner;
     
 public:
     /** System left margin (MEI scoredef@system.leftmar). Saved if != 0 */

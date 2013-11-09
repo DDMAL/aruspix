@@ -11,7 +11,8 @@
 
 #include "musobject.h"
 
-class MusAlignment;
+class MusSystemAligner;
+class MusStaffAlignment;
 class MusMeasureAligner;
 
 /**
@@ -27,28 +28,28 @@ enum MusAlignmentType {
 };
 
 //----------------------------------------------------------------------------
-// MusAligner
+// MusSystemAligner
 //----------------------------------------------------------------------------
 
 /**
  * This class aligns the content of a system
- * It contains a vector of MusMeasureAligner
+ * It contains a vector of MusStaffAlignment
  */
-class MusAligner: public MusObject
+class MusSystemAligner: public MusObject
 {
 public:
     // constructors and destructors
-    MusAligner();
-    virtual ~MusAligner();
+    MusSystemAligner();
+    virtual ~MusSystemAligner();
     
-    int GetMeasureAlignerCount() const { return (int)m_children.size(); };
+    int GetStaffAlignmentCount() const { return (int)m_children.size(); };
     
     /**
-     * Get the MusMeasureAligner at index idx.
-     * Creates the MusMeasureAligner if not there yet.
+     * Get the MusStaffAlignment at index idx.
+     * Creates the MusStaffAlignment if not there yet.
      * Checks the they are created incrementally (without gap).
      */
-    MusMeasureAligner* GetMeasureAligner( int idx );
+    MusStaffAlignment* GetStaffAlignment( int idx );
     
 private:
     
@@ -57,6 +58,32 @@ public:
 private:
     
 };
+
+//----------------------------------------------------------------------------
+// MusStaffAlignment
+//----------------------------------------------------------------------------
+
+/**
+ * This class stores an alignement position staves will point to
+ */
+class MusStaffAlignment: public MusObject
+{
+public:
+    // constructors and destructors
+    MusStaffAlignment();
+    virtual ~MusStaffAlignment();
+    
+private:
+    
+public:
+    
+private:
+    /**
+     * Stores the position relative to the system.
+     */
+    int m_y_rel;
+};
+
 
 //----------------------------------------------------------------------------
 // MusAlignment
@@ -145,11 +172,6 @@ public:
     MusAlignment* GetAlignmentAtTime( double time, MusAlignmentType type );
     
     /**
-     * Return the address of the MusAlignment for the measure
-     */
-    MusAlignment* GetMeasureAlignment( ) { return &m_alignment; };
-    
-    /**
      * Keep the maximum time of the measure.
      * This correspond to the whole duration of the measure and 
      * should be the same for all staves/layers.
@@ -178,12 +200,6 @@ private:
 public:
     
 private:
-    /**
-     * The alignement for the measure.
-     * All MusAlignment in the corresponding MusMeasure points to it.
-     */
-    MusAlignment m_alignment;
-    
     /**
      *
      */

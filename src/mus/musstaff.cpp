@@ -15,6 +15,7 @@
 //----------------------------------------------------------------------------
 
 #include "mus.h"
+#include "musaligner.h"
 #include "musdef.h"
 #include "musio.h"
 #include "muslayer.h"
@@ -51,6 +52,7 @@ MusStaff::MusStaff( const MusStaff& staff )
 	m_y_abs = staff.m_y_abs;
     m_y_rel = staff.m_y_rel;
 	m_y_drawing = staff.m_y_drawing;
+    m_staffAlignment = NULL;
 
     int i;
 	for (i = 0; i < staff.GetLayerCount(); i++)
@@ -86,9 +88,7 @@ void MusStaff::Clear()
 	m_y_abs = AX_UNSET;
     m_y_rel = 0;
 	m_y_drawing = 0;
-    
-    //
-    //beamListPremier = NULL;
+    m_staffAlignment = NULL;
 }
 
 int MusStaff::Save( ArrayPtrVoid params )
@@ -221,6 +221,30 @@ bool MusStaff::GetPosOnPage( ArrayPtrVoid params )
 // MusStaff functor methods
 //----------------------------------------------------------------------------
 
+
+int MusStaff::Align( ArrayPtrVoid params )
+{
+    // param 0: the measureAligner (unused)
+    // param 1: the time (unused)
+    // param 2: the systemAligner
+    // param 3: the staffNb
+    MusSystemAligner **systemAligner = (MusSystemAligner**)params[2];
+	int *staffNb = (int*)params[3];
+    
+    // this gets (or creates) the measureAligner for the measure
+    MusStaffAlignment *alignment = (*systemAligner)->GetStaffAlignment( *staffNb );
+    
+    assert( alignment );
+    
+    // Set the pointer of the m_alignment
+    m_staffAlignment = alignment;
+    
+    // for next staff
+    (*staffNb)++;
+    
+    return FUNCTOR_CONTINUE;
+}
+
 int MusStaff::LayOutSystemAndStaffYPos( ArrayPtrVoid params )
 {
     // param 0: the current y system shift
@@ -257,16 +281,3 @@ int MusStaff::LayOutSystemAndStaffYPos( ArrayPtrVoid params )
     // do not go further down the tree in this case
     return FUNCTOR_SIBLINGS;
 }
-
-int MusStaff::Align( ArrayPtrVoid params )
-{
-    // param 0: the aligner
-    // param 1: the measureAligner
-    // param 2: the measureNb
-    // param 3: the time
-	int *measureNb = (int*)params[2];
-    
-    (*measureNb) = 0;
-    return FUNCTOR_CONTINUE;
-}
-

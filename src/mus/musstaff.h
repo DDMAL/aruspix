@@ -17,6 +17,7 @@
 class MusClef;
 class MusDC;
 class MusLayer;
+class MusStaffAlignment;
 
 //----------------------------------------------------------------------------
 // MusStaff
@@ -138,6 +139,13 @@ public:
     bool m_mensuralNotation;
 
 private:
+    
+    /**
+     * A pointer to a MusStaffAlignment for aligning the staves
+     */
+    MusStaffAlignment *m_staffAlignment;
+
+    
 };
 
 
