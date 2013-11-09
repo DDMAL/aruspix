@@ -1306,6 +1306,11 @@ bool MusMeiInput::ReadUnsupported( TiXmlElement *element )
         m_doc->AddPage( m_page );
         
     }
+    else if ( (std::string( element->Value() ) == "sb") && (m_page->GetSystemCount() > 0 ) ) {
+        Mus::LogDebug( "sb" );
+        m_system = new MusSystem( );
+        m_page->AddSystem( m_system );
+    }
     else {
         Mus::LogWarning( "Element %s ignored", element->Value() );
     }
