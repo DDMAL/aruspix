@@ -264,9 +264,6 @@ private:
     MusTuplet *m_tuplet;
     MusObject *m_currentLayer;
     MusLayerApp *m_layerApp;
-    
-    // unsupported elements
-    MusMeasure *m_contentBasedMeasure;
 };
 
 

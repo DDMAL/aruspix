@@ -622,8 +622,6 @@ MusMeiInput::MusMeiInput( MusDoc *doc, std::string filename ) :
     m_tuplet = NULL;
     //
     m_currentLayer = NULL;
-    // for reading unsupported formats
-    m_contentBasedMeasure = NULL;
 }
 
 MusMeiInput::~MusMeiInput()
@@ -784,11 +782,58 @@ bool MusMeiInput::ReadMeiSystem( TiXmlElement *system )
     }
     
     TiXmlElement *current = NULL;
-    for( current = system->FirstChildElement( "staff" ); current; current = current->NextSiblingElement( "staff" ) ) {
+    // unmeasured music
+    if ( system->FirstChildElement( "staff" ) ) {
+        // this is the trick for un-measured music: we add one measure ( false )
+        if ( !m_measure ) {
+            m_measure = new MusMeasure( false );
+        }
+        for( current = system->FirstChildElement( "staff" ); current; current = current->NextSiblingElement( "staff" ) ) {
+            m_staff = new MusStaff( );
+            SetMeiUuid( current , m_staff );
+            if ( ReadMeiStaff( current )) {
+                m_measure->AddStaff( m_staff );
+            }
+            else {
+                delete m_staff;
+            }
+            m_staff = NULL;
+        }
+        if ( m_measure->GetStaffCount() > 0) {
+            m_system->AddMeasure( m_measure );
+        }
+        else {
+            delete m_measure;
+        }
+        m_measure = NULL;
+    }
+    else {
+        // measured
+        for( current = system->FirstChildElement( "measure" ); current; current = current->NextSiblingElement( "measure" ) ) {
+            m_measure = new MusMeasure( );
+            SetMeiUuid( current, m_measure );
+            if (ReadMeiMeasure( current )) {
+                m_system->AddMeasure( m_measure );
+            }
+            else {
+                delete m_measure;
+            }
+            m_measure = NULL;
+        }
+    }
+    
+    // success only if at least one measure was added to the system
+    return (m_system->GetMeasureCount() > 0);
+}
+
+bool MusMeiInput::ReadMeiMeasure( TiXmlElement *measure )
+{
+    TiXmlElement *current = NULL;
+    for( current = measure->FirstChildElement( "staff" ); current; current = current->NextSiblingElement( "staff" ) ) {
         m_staff = new MusStaff( );
-        SetMeiUuid( current, m_staff );
-        if (ReadMeiStaff( current )) {
-            m_system->AddStaff( m_staff );
+        SetMeiUuid( current , m_staff );
+        if ( ReadMeiStaff( current )) {
+            m_measure->AddStaff( m_staff );
         }
         else {
             delete m_staff;
@@ -796,7 +841,7 @@ bool MusMeiInput::ReadMeiSystem( TiXmlElement *system )
         m_staff = NULL;
     }
     // success only if at least one staff was added to the measure
-    return (m_system->GetStaffCount() > 0);
+    return (m_measure->GetStaffCount() > 0);
 }
 
 bool MusMeiInput::ReadMeiStaff( TiXmlElement *staff )
@@ -813,68 +858,21 @@ bool MusMeiInput::ReadMeiStaff( TiXmlElement *staff )
     }
     
     TiXmlElement *current = NULL;
-    // unmeasured music
-    if ( staff->FirstChildElement( "layer" ) ) {
-        // this is the trick for un-measured music: we add one measure ( false )
-        if ( !m_measure ) {
-            m_measure = new MusMeasure( false );
-        }
-        for( current = staff->FirstChildElement( "layer" ); current; current = current->NextSiblingElement( "layer" ) ) {
-            m_layer = new MusLayer( 1 );
-            m_currentLayer = m_layer;
-            SetMeiUuid( current , m_layer );
-            if (ReadMeiLayer( current )) {
-                m_measure->AddLayer( m_layer );
-            }
-            else {
-                delete m_layer;
-            }
-            m_layer = NULL;
-        }
-        if ( m_measure->GetLayerCount() > 0) {
-            m_staff->AddMeasure( m_measure );
-        }
-        else {
-            delete m_measure;
-        }
-        m_measure = NULL;
-    }
-    else {
-        // measured
-        for( current = staff->FirstChildElement( "measure" ); current; current = current->NextSiblingElement( "measure" ) ) {
-            m_measure = new MusMeasure( );
-            SetMeiUuid( current , m_measure );
-            if (ReadMeiMeasure( current )) {
-                m_staff->AddMeasure( m_measure );
-            }
-            else {
-                delete m_measure;
-            }
-            m_measure = NULL;
-        }
-    }
-    
-    // success only if at least one measure was added to the staff
-    return (m_staff->GetMeasureCount() > 0);
-}
-
-bool MusMeiInput::ReadMeiMeasure( TiXmlElement *measure )
-{ 
-    TiXmlElement *current = NULL;
-    for( current = measure->FirstChildElement( "layer" ); current; current = current->NextSiblingElement( "layer" ) ) {
+    for( current = staff->FirstChildElement( "layer" ); current; current = current->NextSiblingElement( "layer" ) ) {
         m_layer = new MusLayer( 1 );
         m_currentLayer = m_layer;
         SetMeiUuid( current , m_layer );
         if (ReadMeiLayer( current )) {
-            m_measure->AddLayer( m_layer );
+            m_staff->AddLayer( m_layer );
         }
         else {
             delete m_layer;
         }
         m_layer = NULL;
     }
-    // success only if at least one layer was added to the measure
-    return (m_measure->GetLayerCount() > 0);
+    
+    // success only if at least one measure was added to the staff
+    return (m_staff->GetLayerCount() > 0);
 }
 
 bool MusMeiInput::ReadMeiLayer( TiXmlElement *layer )
@@ -1265,21 +1263,17 @@ bool MusMeiInput::ReadUnsupported( TiXmlElement *element )
     }
     else if ( std::string( element->Value() ) == "measure" ) {
         Mus::LogDebug( "measure" );
-        if ( m_contentBasedMeasure ) {
-            delete m_contentBasedMeasure;
+        m_measure = new MusMeasure( );
+        SetMeiUuid( element, m_measure );
+        if (ReadMeiMeasure( element )) {
+            m_system->AddMeasure( m_measure );
         }
-        m_contentBasedMeasure = new MusMeasure( );
-        m_measure = m_contentBasedMeasure;
-        // this will return false because measure will have no layer child
-        ReadMeiMeasure( element );
-        // read the staff elements (and nothing else?)
-        TiXmlElement *current = NULL;
-        for( current = element->FirstChildElement( "staff" ); current; current = current->NextSiblingElement( "staff" ) ) {
-            ReadUnsupported( current );
+        else {
+            delete m_measure;
         }
-        delete m_contentBasedMeasure;
-        m_contentBasedMeasure = NULL;
+        m_measure = NULL;
     }
+    /*
     else if ( std::string( element->Value() ) == "staff" ) {
         Mus::LogDebug( "staff" );
         int n = 1;
@@ -1298,7 +1292,8 @@ bool MusMeiInput::ReadUnsupported( TiXmlElement *element )
         m_measure = new MusMeasure( *m_contentBasedMeasure );
         ReadMeiStaff( element );
     }
-    else if ( (std::string( element->Value() ) == "pb") && (m_system->GetStaffCount() > 0 ) ) {
+    */
+    else if ( (std::string( element->Value() ) == "pb") && (m_system->GetMeasureCount() > 0 ) ) {
         Mus::LogDebug( "pb" );
         m_page = new MusPage( );
         m_system = new MusSystem( );
