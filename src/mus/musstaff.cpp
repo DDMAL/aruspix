@@ -184,7 +184,7 @@ MusLayer *MusStaff::GetPrevious( MusLayer *layer )
 
 MusLayer *MusStaff::GetLayer( int LayerNo )
 {
-    if ( Layer > (int)m_children.size() - 1 )
+    if ( LayerNo > (int)m_children.size() - 1 )
         return NULL;
 	
 	return (MusLayer*)m_children[LayerNo];
