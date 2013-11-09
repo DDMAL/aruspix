@@ -17,6 +17,7 @@
 //----------------------------------------------------------------------------
 
 #include "mus.h"
+#include "musapp.h"
 #include "musbarline.h"
 #include "musbeam.h"
 #include "musclef.h"
@@ -27,6 +28,7 @@
 #include "musnote.h"
 #include "muspage.h"
 #include "musrest.h"
+#include "musscoredef.h"
 #include "musstaff.h"
 #include "mussymbol.h"
 #include "mussystem.h"
@@ -44,8 +46,10 @@ MusMeiOutput::MusMeiOutput( MusDoc *doc, std::string filename ) :
     m_score = NULL;
     m_page = NULL;
     m_system = NULL;
-    m_staff = NULL;
+    m_staffGrp = NULL;
+    m_staffDef = NULL;
     m_measure = NULL;
+    m_staff = NULL;
     m_layer = NULL;
     m_rdgLayer = NULL;
     m_beam = NULL;
@@ -180,6 +184,25 @@ bool MusMeiOutput::WriteSystem( MusSystem *system )
     // y positions
     m_system->SetAttribute( "uly", Mus::StringFormat( "%d", system->m_y_abs ).c_str() );
     m_page->LinkEndChild( m_system );
+    return true;
+}
+
+bool MusMeiOutput::WriteStaffGrp( MusStaffGrp *staffGrp )
+{
+    // for now only as part of a system
+    assert( m_system );
+    m_staffGrp = new TiXmlElement("staffGrp");
+    m_staffGrp->SetAttribute( "xml:id",  UuidToMeiStr( staffGrp ).c_str() );
+    m_system->LinkEndChild( m_staffGrp );
+    return true;
+}
+
+bool MusMeiOutput::WriteStaffDef( MusStaffDef *staffDef )
+{
+    assert( m_staffGrp );
+    m_staffDef = new TiXmlElement("staffDef");
+    m_staffDef->SetAttribute( "xml:id",  UuidToMeiStr( staffDef ).c_str() );
+    m_staffGrp->LinkEndChild( m_staffDef );
     return true;
 }
 

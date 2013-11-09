@@ -8,9 +8,8 @@
 #ifndef __MUS_IOMEI_H__
 #define __MUS_IOMEI_H__
 
-#include "musapp.h"
+//#include "musapp.h"
 #include "musdoc.h"
-#include "muslayer.h"
 
 #ifndef USE_EMSCRIPTEN
 #include <uuid/uuid.h>
@@ -28,17 +27,11 @@
 class MusBarline;
 class MusBeam;
 class MusClef;
-class MusDoc;
 class MusLayer;
-class MusLayerApp;
-class MusLayerElement;
 class MusMensur;
 class MusNote;
-class MusPage;
 class MusRest;
-class MusStaff;
 class MusSymbol;
-class MusSystem;
 class MusTuplet;
 
 
@@ -72,8 +65,10 @@ public:
     virtual bool WriteDoc( MusDoc *doc );
     virtual bool WritePage( MusPage *page );
     virtual bool WriteSystem( MusSystem *system );
-    virtual bool WriteStaff( MusStaff *staff );
+    virtual bool WriteStaffGrp( MusStaffGrp *staffGrp );
+    virtual bool WriteStaffDef( MusStaffDef *staffDef );
     virtual bool WriteMeasure( MusMeasure *measure );
+    virtual bool WriteStaff( MusStaff *staff );
     virtual bool WriteLayer( MusLayer *layer );
     virtual bool WriteLayerElement( MusLayerElement *element );
     // app
@@ -163,8 +158,10 @@ private:
     TiXmlElement *m_score;
     TiXmlElement *m_page;
     TiXmlElement *m_system;
-    TiXmlElement *m_staff;
+    TiXmlElement *m_staffGrp;
+    TiXmlElement *m_staffDef;
     TiXmlElement *m_measure;
+    TiXmlElement *m_staff;
     /** The pointer for the layer within a staff */
     TiXmlElement *m_layer;
     /** The pointer for the rdg within an app (MusLayerRdg) */
@@ -204,8 +201,10 @@ private:
     /** Reads the content of a <layer> or of a <rdg> for <app> within <layer> */
     bool ReadMeiPage( TiXmlElement *page );
     bool ReadMeiSystem( TiXmlElement *system );
-    bool ReadMeiStaff( TiXmlElement *staff );
+    bool ReadMeiStaffGrp( TiXmlElement *system );
+    bool ReadMeiStaffDef( TiXmlElement *system );
     bool ReadMeiMeasure( TiXmlElement *measure );
+    bool ReadMeiStaff( TiXmlElement *staff );
     bool ReadMeiLayer( TiXmlElement *layer );
     bool ReadMeiLayerElement( TiXmlElement *XmlElement );
     MusLayerElement *ReadMeiBarline( TiXmlElement *barline );
@@ -256,8 +255,8 @@ private:
     std::string m_filename;
     MusPage *m_page;
     MusSystem *m_system;
-	MusStaff *m_staff;
     MusMeasure *m_measure;
+	MusStaff *m_staff;
 	MusLayer *m_layer;
     MusLayerRdg *m_layerRdg;
     MusBeam *m_beam;
