@@ -1,0 +1,297 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<?xml-model href="./mei-page-based.rng" type="application/xml" schematypens="http://purl.oclc.org/dsdl/schematron"?>
+<?xml-model href="./mei-page-based.rng" type="application/xml" schematypens="http://relaxng.org/ns/structure/1.0"?>
+<mei xmlns="http://www.music-encoding.org/ns/mei" meiversion="2013">
+    <meiHead>
+        <fileDesc>
+            <titleStmt>
+                <title />
+            </titleStmt>
+            <pubStmt>
+                <date>Thu Sep 12 21:35:30 2013</date>
+            </pubStmt>
+        </fileDesc>
+        <encodingDesc>
+            <projectDesc>
+                <p>Encoded with Aruspix version 2.3.0 and by hand</p>
+            </projectDesc>
+        </encodingDesc>
+    </meiHead>
+    <music>
+        <body>
+            <mdiv>
+                <pages type="transcription">
+                    <!--Coordinates in MEI axis direction-->
+                    <page position="absolute" page.width="1338" page.height="1866" page.leftmar="0" page.rightmar="0" surface="MarL_1587_M.0511_I.Bc_06_012.png">
+                        <system system.leftmar="255" system.rightmar="0" uly="1716">
+                            <staff label="mensural" uly="1716" n="1">
+                                <layer n="1">
+                                    <clef line="3" shape="C" ulx="257" />
+                                    <mensur sign="C" ulx="301" />
+                                    <rest dur="minima" ploc="g" oloc="4" ulx="349" />
+                                    <note pname="d" oct="5" dur="semibrevis" ulx="381" />
+                                    <accid accid="s" ploc="c" oloc="5" ulx="413" />
+                                    <note pname="c" oct="5" dur="minima" ulx="437" />
+                                    <rest dur="brevis" ploc="g" oloc="4" ulx="487" />
+                                    <rest dur="semiminima" ploc="g" oloc="4" ulx="521" />
+                                    <note pname="b" oct="4" dur="semiminima" ulx="559" />
+                                    <note pname="b" oct="4" dur="semiminima" ulx="619" />
+                                    <note pname="b" oct="4" dur="semiminima" ulx="675" />
+                                    <note pname="d" oct="5" dur="semiminima" ulx="739" />
+                                    <dot ploc="e" oloc="5" ulx="769" />
+                                    <note pname="d" oct="5" dur="fusa" ulx="783" />
+                                    <note pname="a" oct="4" dur="semiminima" ulx="835" />
+                                    <note pname="a" oct="4" dur="semiminima" ulx="881" />
+                                    <note pname="b" oct="4" dur="minima" ulx="939" />
+                                    <note pname="b" oct="4" dur="minima" ulx="993" />
+                                    <note pname="b" oct="4" dur="semiminima" ulx="1029" />
+                                    <note pname="b" oct="4" dur="fusa" ulx="1095" />
+                                    <note pname="b" oct="4" dur="fusa" ulx="1162" />
+                                    <note pname="a" oct="4" dur="semiminima" ulx="1209" />
+                                    <note pname="d" oct="5" dur="semiminima" ulx="1257" />
+                                    <custos pname="b" oct="4" ulx="1305" />
+                                </layer>
+                            </staff>
+                        </system>
+                        <system system.leftmar="33" system.rightmar="0" uly="1504">
+                            <staff label="mensural" uly="1504" n="1">
+                                <layer n="1">
+                                    <clef line="3" shape="C" ulx="35" />
+                                    <note pname="b" oct="4" dur="minima" ulx="85" />
+                                    <note pname="a" oct="4" dur="minima" ulx="135" />
+                                    <note pname="e" oct="5" dur="semiminima" ulx="201" />
+                                    <note pname="e" oct="5" dur="fusa" ulx="257" />
+                                    <note pname="b" oct="4" dur="fusa" ulx="323" />
+                                    <note pname="a" oct="4" dur="semiminima" ulx="387" />
+                                    <note pname="d" oct="5" dur="semiminima" ulx="455" />
+                                    <note pname="d" oct="5" dur="semiminima" ulx="501" />
+                                    <note pname="b" oct="4" dur="semiminima" ulx="553" />
+                                    <rest dur="minima" ploc="g" oloc="4" ulx="599" />
+                                    <rest dur="semibrevis" ploc="b" oloc="4" ulx="622" />
+                                    <rest dur="semiminima" ploc="g" oloc="4" ulx="655" />
+                                    <note pname="a" oct="4" dur="minima" ulx="691" />
+                                    <note pname="d" oct="5" dur="semiminima" ulx="759" />
+                                    <dot ploc="e" oloc="5" ulx="789" />
+                                    <note pname="b" oct="4" dur="fusa" ulx="803" />
+                                    <note pname="e" oct="5" dur="semiminima" ulx="855" />
+                                    <dot ploc="e" oloc="5" ulx="885" />
+                                    <note pname="d" oct="5" dur="fusa" ulx="905" />
+                                    <note pname="c" oct="5" dur="semiminima" ulx="949" />
+                                    <note pname="b" oct="4" dur="semiminima" ulx="999" />
+                                    <note pname="b" oct="4" dur="semiminima" ulx="1051" />
+                                    <note pname="e" oct="5" dur="semiminima" ulx="1101" />
+                                    <dot ploc="e" oloc="5" ulx="1131" />
+                                    <note pname="c" oct="5" dur="fusa" ulx="1151" />
+                                    <note pname="b" oct="4" dur="semiminima" ulx="1205" />
+                                    <note pname="b" oct="4" dur="semiminima" ulx="1253" />
+                                    <custos pname="d" oct="5" ulx="1286" />
+                                </layer>
+                            </staff>
+                        </system>
+                        <system system.leftmar="33" system.rightmar="9" uly="1288">
+                            <staff label="mensural" uly="1288" n="1">
+                                <layer n="1">
+                                    <clef line="3" shape="C" ulx="35" />
+                                    <rest dur="minima" ploc="b" oloc="4" ulx="81" />
+                                    <note pname="d" oct="5" dur="semiminima" ulx="111" />
+                                    <note pname="b" oct="4" dur="semiminima" ulx="177" />
+                                    <note pname="e" oct="4" dur="minima" ulx="227" />
+                                    <note pname="a" oct="4" dur="semiminima" ulx="271" />
+                                    <dot ploc="a" oloc="4" ulx="305" />
+                                    <note pname="g" oct="4" dur="fusa" ulx="321" />
+                                    <note pname="f" oct="4" dur="fusa" ulx="351" />
+                                    <note pname="e" oct="4" dur="fusa" ulx="395" />
+                                    <note pname="d" oct="4" dur="semiminima" ulx="427" />
+                                    <note pname="d" oct="4" dur="semiminima" ulx="473" />
+                                    <note pname="d" oct="5" dur="semiminima" ulx="521" />
+                                    <dot ploc="e" oloc="5" ulx="555" />
+                                    <note pname="c" oct="5" dur="fusa" ulx="585" />
+                                    <note pname="b" oct="4" dur="fusa" ulx="653" />
+                                    <note pname="a" oct="4" dur="fusa" ulx="717" />
+                                    <note pname="g" oct="4" dur="semiminima" ulx="771" />
+                                    <note pname="c" oct="5" dur="semiminima" ulx="817" />
+                                    <rest dur="semiminima" ploc="b" oloc="4" ulx="867" />
+                                    <note pname="d" oct="5" dur="semiminima" ulx="903" />
+                                    <note pname="g" oct="4" dur="fusa" ulx="951" />
+                                    <note pname="a" oct="4" dur="fusa" ulx="1006" />
+                                    <note pname="b" oct="4" dur="fusa" ulx="1056" />
+                                    <note pname="c" oct="5" dur="fusa" ulx="1110" />
+                                    <note pname="d" oct="5" dur="minima" ulx="1159" />
+                                    <dot ploc="e" oloc="5" ulx="1193" />
+                                    <note pname="d" oct="5" dur="semiminima" ulx="1211" />
+                                    <rest dur="minima" ploc="b" oloc="4" ulx="1261" />
+                                    <custos pname="g" oct="4" ulx="1299" />
+                                </layer>
+                            </staff>
+                        </system>
+                        <system system.leftmar="30" system.rightmar="18" uly="1072">
+                            <staff label="mensural" uly="1072" n="1">
+                                <layer n="1">
+                                    <clef line="3" shape="C" ulx="34" />
+                                    <note pname="g" oct="4" dur="minima" ulx="84" />
+                                    <dot ploc="a" oloc="4" ulx="114" />
+                                    <note pname="g" oct="4" dur="semiminima" ulx="146" />
+                                    <note pname="g" oct="4" dur="semibrevis" ulx="214" />
+                                    <note pname="a" oct="4" dur="minima" ulx="260" />
+                                    <note pname="a" oct="4" dur="minima" ulx="310" />
+                                    <note pname="b" oct="4" dur="semibrevis" ulx="364" />
+                                    <note pname="a" oct="4" dur="semibrevis" ulx="412" />
+                                    <rest dur="minima" ploc="b" oloc="4" ulx="458" />
+                                    <note pname="e" oct="5" dur="minima" ulx="490" />
+                                    <note pname="e" oct="5" dur="semiminima" ulx="540" />
+                                    <note pname="e" oct="5" dur="semiminima" ulx="586" />
+                                    <note pname="e" oct="5" dur="semiminima" ulx="634" />
+                                    <note pname="d" oct="5" dur="semiminima" ulx="680" />
+                                    <note pname="c" oct="5" dur="fusa" ulx="731" />
+                                    <note pname="b" oct="4" dur="fusa" ulx="766" />
+                                    <note pname="a" oct="4" dur="fusa" ulx="810" />
+                                    <note pname="b" oct="4" dur="fusa" ulx="849" />
+                                    <note pname="c" oct="5" dur="fusa" ulx="889" />
+                                    <note pname="d" oct="5" dur="fusa" ulx="925" />
+                                    <note pname="e" oct="5" dur="fusa" ulx="960" />
+                                    <note pname="c" oct="5" dur="fusa" ulx="1003" />
+                                    <note pname="d" oct="5" dur="minima" ulx="1036" />
+                                    <note pname="d" oct="5" dur="semiminima" ulx="1088" />
+                                    <note pname="e" oct="5" dur="semiminima" ulx="1134" />
+                                    <note pname="a" oct="4" dur="semiminima" ulx="1180" />
+                                    <dot ploc="a" oloc="4" ulx="1214" />
+                                    <note pname="g" oct="4" dur="fusa" ulx="1232" />
+                                    <custos pname="a" oct="4" ulx="1276" />
+                                </layer>
+                            </staff>
+                        </system>
+                        <system system.leftmar="27" system.rightmar="21" uly="864">
+                            <staff label="mensural" uly="864" n="1">
+                                <layer n="1">
+                                    <clef line="3" shape="C" ulx="31" />
+                                    <note pname="a" oct="4" dur="semiminima" ulx="75" />
+                                    <note pname="c" oct="5" dur="semiminima" ulx="149" />
+                                    <note pname="b" oct="4" dur="minima" ulx="213" />
+                                    <note pname="b" oct="4" dur="minima" ulx="261" />
+                                    <rest dur="semibrevis" ploc="b" oloc="4" ulx="312" />
+                                    <rest dur="longa" ploc="e" oloc="4" ulx="337" />
+                                    <rest dur="longa" ploc="e" oloc="4" ulx="363" />
+                                    <rest dur="semibrevis" ploc="b" oloc="4" ulx="394" />
+                                    <rest dur="minima" ploc="g" oloc="4" ulx="421" />
+                                    <rest dur="semiminima" ploc="g" oloc="4" ulx="449" />
+                                    <note pname="d" oct="5" dur="semiminima" ulx="485" />
+                                    <note pname="d" oct="5" dur="semiminima" ulx="549" />
+                                    <dot ploc="e" oloc="5" ulx="579" />
+                                    <note pname="d" oct="5" dur="fusa" ulx="609" />
+                                    <note pname="d" oct="5" dur="semiminima" ulx="663" />
+                                    <note pname="c" oct="5" dur="semiminima" ulx="707" />
+                                    <note pname="b" oct="4" dur="minima" ulx="755" />
+                                    <note pname="c" oct="5" dur="minima" ulx="805" />
+                                    <rest dur="minima" ploc="b" oloc="4" ulx="853" />
+                                    <note pname="e" oct="5" dur="minima" ulx="885" />
+                                    <note pname="e" oct="5" dur="semiminima" ulx="949" />
+                                    <note pname="e" oct="5" dur="semiminima" ulx="997" />
+                                    <note pname="e" oct="5" dur="semiminima" ulx="1043" />
+                                    <note pname="d" oct="5" dur="semiminima" ulx="1091" />
+                                    <note pname="c" oct="5" dur="fusa" ulx="1125" />
+                                    <note pname="b" oct="4" dur="fusa" ulx="1161" />
+                                    <note pname="a" oct="4" dur="fusa" ulx="1201" />
+                                    <note pname="b" oct="4" dur="fusa" ulx="1237" />
+                                    <custos pname="c" oct="5" ulx="1275" />
+                                </layer>
+                            </staff>
+                        </system>
+                        <system system.leftmar="27" system.rightmar="21" uly="652">
+                            <staff label="mensural" uly="652" n="1">
+                                <layer n="1">
+                                    <clef line="3" shape="C" ulx="29" />
+                                    <note pname="c" oct="5" dur="fusa" ulx="73" />
+                                    <note pname="d" oct="5" dur="fusa" ulx="125" />
+                                    <note pname="e" oct="5" dur="fusa" ulx="177" />
+                                    <note pname="c" oct="5" dur="fusa" ulx="229" />
+                                    <note pname="d" oct="5" dur="minima" ulx="285" />
+                                    <note pname="d" oct="5" dur="semiminima" ulx="335" />
+                                    <note pname="e" oct="5" dur="semiminima" ulx="381" />
+                                    <note pname="a" oct="4" dur="semiminima" ulx="427" />
+                                    <dot ploc="a" oloc="4" ulx="459" />
+                                    <note pname="g" oct="4" dur="fusa" ulx="487" />
+                                    <note pname="a" oct="4" dur="semiminima" ulx="537" />
+                                    <note pname="c" oct="5" dur="semiminima" ulx="583" />
+                                    <note pname="b" oct="4" dur="minima" ulx="631" />
+                                    <note pname="b" oct="4" dur="minima" ulx="683" />
+                                    <rest dur="longa" ploc="e" oloc="4" ulx="729" />
+                                    <rest dur="longa" ploc="e" oloc="4" ulx="757" />
+                                    <rest dur="brevis" ploc="g" oloc="4" ulx="787" />
+                                    <rest dur="minima" ploc="g" oloc="4" ulx="813" />
+                                    <rest dur="semiminima" ploc="g" oloc="4" ulx="843" />
+                                    <note pname="a" oct="4" dur="semiminima" ulx="877" />
+                                    <note pname="b" oct="4" dur="semiminima" ulx="927" />
+                                    <dot ploc="c" oloc="5" ulx="959" />
+                                    <note pname="b" oct="4" dur="fusa" ulx="985" />
+                                    <note pname="b" oct="4" dur="semiminima" ulx="1041" />
+                                    <note pname="a" oct="4" dur="semiminima" ulx="1087" />
+                                    <accid accid="s" ploc="g" oloc="4" ulx="1119" />
+                                    <note pname="g" oct="4" dur="minima" ulx="1145" />
+                                    <note pname="a" oct="4" dur="semibrevis" ulx="1197" />
+                                    <rest dur="minima" ploc="g" oloc="4" ulx="1245" />
+                                    <custos pname="b" oct="4" ulx="1275" />
+                                </layer>
+                            </staff>
+                        </system>
+                        <system system.leftmar="24" system.rightmar="24" uly="440">
+                            <staff label="mensural" uly="440" n="1">
+                                <layer n="1">
+                                    <clef line="3" shape="C" ulx="28" />
+                                    <note pname="b" oct="4" dur="semiminima" ulx="74" />
+                                    <dot ploc="c" oloc="5" ulx="106" />
+                                    <note pname="a" oct="4" dur="fusa" ulx="136" />
+                                    <note pname="g" oct="4" dur="semiminima" ulx="192" />
+                                    <note pname="g" oct="4" dur="fusa" ulx="240" />
+                                    <note pname="f" oct="4" dur="fusa" ulx="286" />
+                                    <note pname="e" oct="4" dur="semiminima" ulx="342" />
+                                    <note pname="a" oct="4" dur="fusa" ulx="390" />
+                                    <note pname="g" oct="4" dur="fusa" ulx="442" />
+                                    <note pname="f" oct="4" dur="semiminima" ulx="490" />
+                                    <note pname="f" oct="4" dur="fusa" ulx="534" />
+                                    <note pname="e" oct="4" dur="fusa" ulx="590" />
+                                    <note pname="d" oct="4" dur="semiminima" ulx="636" />
+                                    <note pname="d" oct="5" dur="fusa" ulx="680" />
+                                    <note pname="c" oct="5" dur="fusa" ulx="746" />
+                                    <note pname="b" oct="4" dur="semiminima" ulx="802" />
+                                    <note pname="b" oct="4" dur="fusa" ulx="846" />
+                                    <note pname="a" oct="4" dur="fusa" ulx="898" />
+                                    <note pname="g" oct="4" dur="minima" ulx="950" />
+                                    <rest dur="minima" ploc="g" oloc="4" ulx="1004" />
+                                    <note pname="d" oct="5" dur="minima" ulx="1030" />
+                                    <note pname="d" oct="5" dur="semiminima" ulx="1094" />
+                                    <note pname="b" oct="4" dur="semiminima" ulx="1160" />
+                                    <note pname="a" oct="4" dur="minima" ulx="1222" />
+                                    <custos pname="a" oct="4" ulx="1281" />
+                                </layer>
+                            </staff>
+                        </system>
+                        <system system.leftmar="21" system.rightmar="27" uly="220">
+                            <staff label="mensural" uly="220" n="1">
+                                <layer n="1">
+                                    <clef line="3" shape="C" ulx="23" />
+                                    <note pname="a" oct="4" dur="semiminima" ulx="85" />
+                                    <note pname="g" oct="4" dur="semiminima" ulx="147" />
+                                    <note pname="e" oct="4" dur="semiminima" ulx="211" />
+                                    <dot ploc="f" oloc="4" ulx="247" />
+                                    <note pname="e" oct="4" dur="fusa" ulx="273" />
+                                    <note pname="e" oct="4" dur="semiminima" ulx="339" />
+                                    <note pname="a" oct="4" dur="semiminima" ulx="401" />
+                                    <note pname="a" oct="4" dur="minima" ulx="461" />
+                                    <note pname="a" oct="4" dur="semiminima" ulx="527" />
+                                    <note pname="b" oct="4" dur="semiminima" ulx="593" />
+                                    <note pname="g" oct="4" dur="semiminima" ulx="657" />
+                                    <dot ploc="a" oloc="4" ulx="691" />
+                                    <note pname="g" oct="4" dur="fusa" ulx="729" />
+                                    <note pname="g" oct="4" dur="semiminima" ulx="795" />
+                                    <note pname="d" oct="4" dur="semiminima" ulx="857" />
+                                    <note pname="e" oct="4" dur="semibrevis" ulx="921" />
+                                    <note pname="d" oct="4" dur="longa" ulx="979" />
+                                </layer>
+                            </staff>
+                        </system>
+                    </page>
+                </pages>
+            </mdiv>
+        </body>
+    </music>
+</mei>

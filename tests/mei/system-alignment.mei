@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<?xml-model href="./mei-page-based.rng" type="application/xml" schematypens="http://relaxng.org/ns/structure/1.0"?>
+<mei xmlns="http://www.music-encoding.org/ns/mei" meiversion="2013">
+    <meiHead>
+        <fileDesc>
+            <titleStmt>
+                <title />
+            </titleStmt>
+            <pubStmt>
+                <date>Thu Oct 10 12:41:06 2013&#x0A;</date>
+            </pubStmt>
+        </fileDesc>
+        <encodingDesc>
+            <projectDesc>
+                <p>Measure alignment testing</p>
+            </projectDesc>
+        </encodingDesc>
+    </meiHead>
+    <music>
+        <body>
+            <mdiv>
+                <pages type="raw">
+                    <!--Coordinates in MEI axis direction-->
+                    <page page.width="2108" page.height="2970" page.leftmar="20" page.rightmar="20" page.topmar="20">
+                        <system system.leftmar="0" system.rightmar="0">
+
+                            <measure n="1">
+                                <staff n="1">
+                                    <layer n="1">
+                                        <note pname="d" oct="5" dur="minima" />
+                                        <note pname="d" oct="5" dur="minima" />
+                                        <beam>
+                                            <note pname="c" oct="4" dur="semifusa" />
+                                            <note pname="c" oct="4" dur="semifusa" />
+                                            <note pname="c" oct="4" dur="fusa" accid="s" />
+                                            <note pname="c" oct="4" dur="fusa" />
+                                            <note pname="c" oct="3" dur="fusa" accid="s" />
+                                        </beam>
+                                        <note pname="c" oct="4" dur="semiminima" />
+                                        <note pname="g" oct="4" dur="semiminima" />
+                                    </layer>
+                                </staff>
+                                <staff n="2">
+                                    <layer n="1">
+                                        <note pname="d" oct="4" accid="s" dur="minima" />
+                                        <note pname="d" oct="4" dur="semiminima" />
+                                        <note pname="d" oct="4" dur="semiminima" />
+                                        
+                                        <beam>
+                                            <note pname="c" oct="4" dur="fusa" dots="2" />
+                                            <note pname="c" oct="4" dur="32" />
+                                        </beam>
+                                        <beam>
+                                            <note pname="c" oct="4" dur="semifusa" accid="s" />
+                                            <note pname="a" oct="4" dur="semifusa" />
+                                            <note pname="c" oct="4" dur="semifusa" />
+                                            <note pname="a" oct="3" dur="semifusa" />
+                                        </beam>
+                                        <note pname="c" oct="4" dur="minima" />
+                                    </layer>
+                                </staff>
+                            </measure>
+                         
+                        </system>  
+                       
+                        <system system.leftmar="0" system.rightmar="0">
+                            
+                            <measure n="1">
+                                <staff n="1">
+                                    <layer n="1">
+                                        <note pname="d" oct="5" dur="minima" />
+                                        <note pname="d" oct="5" dur="minima" />
+                                        <beam>
+                                            <note pname="c" oct="4" dur="semifusa" />
+                                            <note pname="c" oct="4" dur="semifusa" />
+                                            <note pname="c" oct="4" dur="fusa" accid="s" />
+                                            <note pname="c" oct="4" dur="fusa" />
+                                            <note pname="c" oct="3" dur="fusa" accid="s" />
+                                        </beam>
+                                        <note pname="c" oct="4" dur="semiminima" />
+                                        <note pname="g" oct="4" dur="semiminima" />
+                                    </layer>
+                                </staff>
+                                <staff n="2">
+                                    <layer n="1">
+                                        <note pname="d" oct="4" accid="s" dur="minima" />
+                                        <note pname="d" oct="4" dur="semiminima" />
+                                        <note pname="d" oct="4" dur="semiminima" />
+                                        
+                                        <beam>
+                                            <note pname="c" oct="4" dur="fusa" dots="2" />
+                                            <note pname="c" oct="4" dur="32" />
+                                        </beam>
+                                        <beam>
+                                            <note pname="c" oct="4" dur="semifusa" accid="s" />
+                                            <note pname="a" oct="4" dur="semifusa" />
+                                            <note pname="c" oct="4" dur="semifusa" />
+                                            <note pname="a" oct="3" dur="semifusa" />
+                                        </beam>
+                                        <note pname="c" oct="4" dur="minima" />
+                                    </layer>
+                                </staff>
+                            </measure>
+                            
+                        </system>
+                       
+                    </page>
+                </pages>
+            </mdiv>
+        </body>
+    </music>
+</mei>
