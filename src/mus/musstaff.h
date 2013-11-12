@@ -52,6 +52,10 @@ public:
      * Return the default horizontal spacing of staves.
      */
     int GetVerticalSpacing();
+    
+    MusStaffAlignment *GetAlignment() { return m_staffAlignment; };
+    
+    int GetYRel();
 
     // functors
     virtual int Save( ArrayPtrVoid params );
@@ -65,13 +69,6 @@ public:
 	MusLayer *GetNext( MusLayer *layer );
 	MusLayer *GetPrevious( MusLayer *layer );
     MusLayer *GetLayer( int LayerNo );
-    
-    
-    /**
-     * Lay out the system and staff Y positions looking that the bounding boxes of each staff.
-     * The m_y_rel of systems and staves is updated appropriately.
-     */
-    virtual int LayOutSystemAndStaffYPos( ArrayPtrVoid params );
     
     /**
      * Align the content of a system.
@@ -127,7 +124,7 @@ public:
      * The Y relative position of the staff.
      * It is used internally when calculating the layout andd it is not stored in the file.
      */
-    int m_y_rel;
+    //int m_y_rel;
 	/** 
      * The Y drawing position of the staff.
      * It is re-computed everytime the staff is drawn and it is not stored in the file.

@@ -43,7 +43,7 @@ MusMeiOutput::MusMeiOutput( MusDoc *doc, std::string filename ) :
 {
     m_filename = filename;
     m_mei = NULL;
-    m_score = NULL;
+    m_pages = NULL;
     m_page = NULL;
     m_system = NULL;
     m_staffGrp = NULL;
@@ -69,8 +69,8 @@ bool MusMeiOutput::ExportFile( )
         m_mei->SetAttribute( "meiversion", "2013" );
 
         // element to place the pages
-        m_score = new TiXmlElement("score");
-        m_score->SetAttribute( "type",  DocTypeToStr( m_doc->GetType() ).c_str() );
+        m_pages = new TiXmlElement("pages");
+        m_pages->SetAttribute( "type",  DocTypeToStr( m_doc->GetType() ).c_str() );
         
         
         // this starts the call of all the functors
@@ -78,7 +78,7 @@ bool MusMeiOutput::ExportFile( )
         
         // after the functor has run, we have the header in m_mei and the score in m_score
         TiXmlElement *mdiv = new TiXmlElement("mdiv");
-        mdiv->LinkEndChild( m_score );
+        mdiv->LinkEndChild( m_pages );
         TiXmlElement *body = new TiXmlElement("body");
         body->LinkEndChild( mdiv );
         TiXmlElement *music = new TiXmlElement("music");
@@ -151,7 +151,7 @@ bool MusMeiOutput::WriteDoc( MusDoc *doc )
 
 bool MusMeiOutput::WritePage( MusPage *page )
 {
-    assert( m_score );
+    assert( m_pages );
     m_page = new TiXmlElement("page");
     m_page->SetAttribute( "xml:id",  UuidToMeiStr( page ).c_str() );
     // size and margins but only if any - we rely on page.height only to check this
@@ -168,8 +168,8 @@ bool MusMeiOutput::WritePage( MusPage *page )
     //
     TiXmlComment *comment = new TiXmlComment();
     comment->SetValue( "Coordinates in MEI axis direction" );
-    m_score->LinkEndChild( comment );
-    m_score->LinkEndChild( m_page );
+    m_pages->LinkEndChild( comment );
+    m_pages->LinkEndChild( m_page );
     return true;
 }
 
@@ -699,7 +699,7 @@ bool MusMeiInput::ReadMei( TiXmlElement *root )
     TiXmlElement *music = NULL;
     TiXmlElement *body = NULL;
     TiXmlElement *mdiv = NULL;
-    TiXmlElement *score = NULL;
+    TiXmlElement *pages = NULL;
     if ( root ) {
         music = root->FirstChildElement("music");
     }
@@ -710,20 +710,20 @@ bool MusMeiInput::ReadMei( TiXmlElement *root )
         mdiv = body->FirstChildElement("mdiv");
     }
     if ( mdiv ) {
-        score = mdiv->FirstChildElement("score");
+        pages = mdiv->FirstChildElement("pages");
     }
-    if ( score ) {
+    if ( pages ) {
         
         // check if there is a type attribute for the score
         DocType type;
-        if ( score->Attribute( "type" ) ) {
-            type = StrToDocType( score->Attribute( "type" ) );
+        if ( pages->Attribute( "type" ) ) {
+            type = StrToDocType( pages->Attribute( "type" ) );
             m_doc->Reset( type );
         }
         
         // this is a page-based mei file, we just loop trough the pages
-        if ( score->FirstChildElement( "page" ) ) {             
-            for( current = score->FirstChildElement( "page" ); current; current = current->NextSiblingElement( "page" ) ) {
+        if ( pages->FirstChildElement( "page" ) ) {
+            for( current = pages->FirstChildElement( "page" ); current; current = current->NextSiblingElement( "page" ) ) {
                 m_page = new MusPage( );
                 SetMeiUuid( current, m_page );
                 if (ReadMeiPage( current )) {
@@ -741,7 +741,7 @@ bool MusMeiInput::ReadMei( TiXmlElement *root )
             m_page->AddSystem( m_system );
             m_doc->AddPage( m_page );
             TiXmlElement *current = NULL;
-            for( current = score->FirstChildElement( ); current; current = current->NextSiblingElement( ) ) {
+            for( current = pages->FirstChildElement( ); current; current = current->NextSiblingElement( ) ) {
                 ReadUnsupported( current );
             }
         }

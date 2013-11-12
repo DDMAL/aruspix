@@ -247,9 +247,69 @@ int MusSystem::Align( ArrayPtrVoid params )
     // param 3: the staffNb (unused)
     MusSystemAligner **systemAligner = (MusSystemAligner**)params[2];
     
-    m_systemAligner.ClearChildren();
+    m_systemAligner.Reset();
     (*systemAligner) = &m_systemAligner;
     
     return FUNCTOR_CONTINUE;
+}
+
+
+int MusSystem::SetAligmentYPos( ArrayPtrVoid params )
+{
+    // param 0: the staff number
+    // param 1: the staff margin (unused)
+    // param 2: the functor to be redirected to MusStaffAligner
+    int *staffNb = (int*)params[0];
+    MusFunctor *setAligmnentPosY = (MusFunctor*)params[2];
+    
+    (*staffNb) = 0;
+    
+    m_systemAligner.Process( setAligmnentPosY, params);
+    
+    return FUNCTOR_SIBLINGS;
+}
+
+
+int MusSystem::IntegrateBoundingBoxYShift( ArrayPtrVoid params )
+{
+    // param 0: the cumulated shift
+    // param 1: the functor to be redirected to MusSystemAligner
+    int *shift = (int*)params[0];
+    MusFunctor *integrateBoundingBoxYShift = (MusFunctor*)params[1];
+    
+    (*shift) = 0;
+    m_systemAligner.Process( integrateBoundingBoxYShift, params);
+    
+    return FUNCTOR_SIBLINGS;
+}
+
+
+
+int MusSystem::AlignMeasures( ArrayPtrVoid params )
+{
+    // param 0: the cumulated shift
+    int *shift = (int*)params[0];
+    
+    (*shift) = 0;
+    
+    return FUNCTOR_CONTINUE;
+}
+
+
+int MusSystem::AlignSystems( ArrayPtrVoid params )
+{
+    // param 0: the cumulated shift
+    // param 1: the system margin
+    int *shift = (int*)params[0];
+    int *systemMargin = (int*)params[1];
+    
+    this->m_y_rel = (*shift);
+    
+    assert( m_systemAligner.GetBottomAlignment() );
+    
+    (*shift) += m_systemAligner.GetBottomAlignment()->GetYRel() - (*systemMargin);
+    
+    
+    return FUNCTOR_SIBLINGS;
 }
 

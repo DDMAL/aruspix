@@ -155,7 +155,7 @@ private:
     TiXmlElement *m_mei;
     /** @name Members for pointers to the current element */
     ///@{
-    TiXmlElement *m_score;
+    TiXmlElement *m_pages;
     TiXmlElement *m_page;
     TiXmlElement *m_system;
     TiXmlElement *m_staffGrp;

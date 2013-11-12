@@ -122,8 +122,12 @@ public:
      */
     void Modify( bool modified = true );
     
-    // moulinette
-    virtual void Process(MusFunctor *functor, ArrayPtrVoid params );
+    /**
+     * Main method that processes functors.
+     * For each object, it will call the functor.
+     * Depending on the code returned by the functor, it will also process it for all children.
+     */
+    virtual void Process( MusFunctor *functor, ArrayPtrVoid params );
     
     // functor methods
     /**
@@ -138,9 +142,15 @@ public:
     
     /**
      * Find a MusObject with a specified uuid.
+     * param 0: the uuid we are looking for.
+     * param 1: the pointer to pointer to the MusObject retrieved (if found).
      */
     virtual int FindByUuid( ArrayPtrVoid params );
     
+    /**
+     * Save the content of and object by calling the appropriate MusFileOutputStream method
+     * param 0: a pointer to the MusFileOutputStream.
+     */
     virtual int Save( ArrayPtrVoid params ) { return FUNCTOR_CONTINUE; };
     
     /**
@@ -151,16 +161,15 @@ public:
 
     /**
      * Lay out the X positions of the staff content looking that the bounding boxes.
-     * The m_x_rel is updated appropriately
+     * The m_x_shift is updated appropriately
      */
-    virtual int SetBoundingBoxShift( ArrayPtrVoid params );
+    virtual int SetBoundingBoxXShift( ArrayPtrVoid params );
     
     /**
-     * Lay out the system and staff Y positions looking that the bounding boxes of each staff.
-     * The m_y_rel of systems and staves is updated appropriately.
-     * See MusStaff::LayOutSystemAndStaffYPos for actual implementation.
+     * Lay out the Y positions of the staff looking that the bounding box of each staff.
+     * The m_y_shift is updated appropriately
      */
-    virtual int LayOutSystemAndStaffYPos( ArrayPtrVoid params )  { return FUNCTOR_CONTINUE; };
+    virtual int SetBoundingBoxYShift( ArrayPtrVoid params );
     
     /**
      * Align the content of a system.
@@ -174,12 +183,33 @@ public:
      * Looks at the time different with the previous MusAlignment.
      */
     virtual int SetAligmentXPos( ArrayPtrVoid params ) { return FUNCTOR_CONTINUE; };
+
+    /**
+     * Set the position of the StaffAlignment.
+     */
+    virtual int SetAligmentYPos( ArrayPtrVoid params ) { return FUNCTOR_CONTINUE; };
     
     /**
-     * Corrects the alignment once the the content of a system has been aligned and laid out
-     * See MusSystem::IntegrateBoundingBoxShift for actual implementation
+     * Correct the X alignment once the the content of a system has been aligned and laid out
+     * See MusMeasure::IntegrateBoundingBoxXShift for actual implementation
      */
-    virtual int IntegrateBoundingBoxShift( ArrayPtrVoid params ) { return FUNCTOR_CONTINUE; };
+    virtual int IntegrateBoundingBoxXShift( ArrayPtrVoid params ) { return FUNCTOR_CONTINUE; };
+    
+    /**
+     * Correct the Y alignment once the the content of a system has been aligned and laid out
+     * See MusSystem::IntegrateBoundingBoxYShift for actual implementation
+     */
+    virtual int IntegrateBoundingBoxYShift( ArrayPtrVoid params ) { return FUNCTOR_CONTINUE; };
+    
+    /**
+     * Align the measures by adjusting the m_x_rel position looking at the MusMeasureAligner.
+     */
+    virtual int AlignMeasures( ArrayPtrVoid params ) { return FUNCTOR_CONTINUE; };
+    
+    /**
+     * Align the system by adjusting the m_y_rel position looking at the MusSystemAligner.
+     */
+    virtual int AlignSystems( ArrayPtrVoid params ) { return FUNCTOR_CONTINUE; };
 
 public:
     ArrayOfMusObjects m_children;

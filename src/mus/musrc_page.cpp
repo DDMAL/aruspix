@@ -755,7 +755,7 @@ void MusRC::DrawStaff( MusDC *dc, MusStaff *staff, MusMeasure *measure, MusSyste
     // With Transcription documents, we use the m_y_abs
     if ( staff->m_y_abs == AX_UNSET ) {
         assert( m_doc->GetType() == Raw );
-        staff->m_y_drawing = staff->m_y_rel + system->m_y_rel;
+        staff->m_y_drawing = staff->GetYRel() + system->m_y_rel;
     }
     else
     {
@@ -770,7 +770,7 @@ void MusRC::DrawStaff( MusDC *dc, MusStaff *staff, MusMeasure *measure, MusSyste
     
 	for(j = 0; j < staff->GetLayerCount(); j++)
 	{
-		layer = (MusLayer*)measure->m_children[j];
+		layer = (MusLayer*)staff->m_children[j];
 		//layer->Init( m_r );
 		DrawLayer( dc, layer, staff, measure );
 	}

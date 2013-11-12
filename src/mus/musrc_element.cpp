@@ -62,7 +62,7 @@ void MusRC::DrawElement( MusDC *dc, MusLayerElement *element, MusLayer *layer, M
         assert( m_doc->GetType() == Raw );
         //element->m_x_drawing = element->m_x_rel + measure->m_x_drawing;
         //element->m_x_drawing = element->m_x_rel + measure->GetXRel();
-        element->m_x_drawing = element->GetXRel() + measure->GetXRel();
+        element->m_x_drawing = element->GetXRel() + measure->m_x_drawing;
     }
     else
     {

@@ -24,7 +24,9 @@ enum MusAlignmentType {
     ALIGNMENT_CLEF,
     ALIGNMENT_MENSUR,
     ALIGNMENT_KEYSIG,
-    ALIGNMENT_BARLINE
+    ALIGNMENT_BARLINE,
+    ALIGNMENT_MEASURE_START,
+    ALIGNMENT_MEASURE_END
 };
 
 //----------------------------------------------------------------------------
@@ -45,6 +47,17 @@ public:
     int GetStaffAlignmentCount() const { return (int)m_children.size(); };
     
     /**
+     * Reset the aligner (clear the content) and creates the end (bottom) alignement
+     */
+    void Reset();
+    
+    /**
+     * Get bottom MusStaffAlignment for the system.
+     * For each MusSystemAligner, we keep and MusStaffAlignment for the bottom position.
+     */
+    MusStaffAlignment *GetBottomAlignment( ) { return m_bottomAlignment; };
+    
+    /**
      * Get the MusStaffAlignment at index idx.
      * Creates the MusStaffAlignment if not there yet.
      * Checks the they are created incrementally (without gap).
@@ -56,6 +69,10 @@ private:
 public:
     
 private:
+    /**
+     * A pointer to the left MusStaffAlignment object kept for the system bottom position
+     */
+    MusStaffAlignment *m_bottomAlignment;
     
 };
 
@@ -73,6 +90,24 @@ public:
     MusStaffAlignment();
     virtual ~MusStaffAlignment();
     
+    void SetYRel( int y_rel ) { m_y_rel = y_rel; };
+    int GetYRel() { return m_y_rel; };
+    
+    void SetYShift( int y_shift );
+    int GetYShift() { return m_y_shift; };
+    
+    /**
+     * Set the position of the StaffAlignment.
+     * Functor redirected from MusSystem.
+     */
+    virtual int SetAligmentYPos( ArrayPtrVoid params );
+    
+    /**
+     * Correct the Y alignment once the the content of a system has been aligned and laid out.
+     * Special case of functor redirected from MusSystem.
+     */
+    virtual int IntegrateBoundingBoxYShift( ArrayPtrVoid params );
+    
 private:
     
 public:
@@ -82,6 +117,7 @@ private:
      * Stores the position relative to the system.
      */
     int m_y_rel;
+    int m_y_shift;
 };
 
 
@@ -123,10 +159,10 @@ public:
     ///@}
     
     /**
-     * Correct the alignment once the the content of a system has been aligned and laid out.
-     * Special case of functor redirected from MusSystem.
+     * Correct the X alignment once the the content of a system has been aligned and laid out.
+     * Special case of functor redirected from MusMeasure.
      */
-    virtual int IntegrateBoundingBoxShift( ArrayPtrVoid params );
+    virtual int IntegrateBoundingBoxXShift( ArrayPtrVoid params );
     
     /**
      * Set the position of the MusAlignment.
@@ -148,7 +184,6 @@ private:
     int m_x_rel;
     int m_x_shift;
     double m_time;
-    double m_max_duration;
     MusAlignmentType m_type;
 };
 
@@ -169,6 +204,11 @@ public:
     
     int GetAlignmentCount() const { return (int)m_children.size(); };
     
+    /**
+     * Reset the aligner (clear the content) and creates the start (left) and end (right) alignement
+     */
+    void Reset();
+    
     MusAlignment* GetAlignmentAtTime( double time, MusAlignmentType type );
     
     /**
@@ -179,10 +219,24 @@ public:
     void SetMaxTime( double time );
     
     /**
-     * Correct the alignment once the the content of a system has been aligned and laid out.
-     * Special case of functor redirected from MusSystem.
+     * Get left MusAlignment for the measure.
+     * For each MusMeasureAligner, we keep and MusAlignment for the left position.
+     * The MusAlignment time will be always stay 0.0 and be the first in the list.
      */
-    virtual int IntegrateBoundingBoxShift( ArrayPtrVoid params );
+    MusAlignment *GetLeftAlignment( ) { return m_leftAlignment; };
+    
+    /**
+     * Get right MusAlignment for the measure.
+     * For each MusMeasureAligner, we keep and MusAlignment for the right position.
+     * The MusAlignment time will be increased whenever necessary when values are added.
+     */
+    MusAlignment *GetRightAlignment( ) { return m_rightAlignment; };
+    
+    /**
+     * Correct the X alignment once the the content of a system has been aligned and laid out.
+     * Special case of functor redirected from MusMeasure.
+     */
+    virtual int IntegrateBoundingBoxXShift( ArrayPtrVoid params );
     
     
     /**
@@ -194,16 +248,20 @@ public:
 
     
 private:
-    
     void AddAlignment( MusAlignment *alignment, int idx = -1 );
     
 public:
     
 private:
     /**
-     *
+     * A pointer to the left MusAlignment object kept for the measure start position
      */
-    double m_max;
+    MusAlignment *m_leftAlignment;
+    
+    /**
+     * A pointer to the left MusAlignment object kept for the measure end position
+     */
+    MusAlignment *m_rightAlignment;
 };
 
 

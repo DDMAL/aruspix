@@ -50,7 +50,6 @@ MusStaff::MusStaff( const MusStaff& staff )
 	accol = staff.accol;
 	accessoire = staff.accessoire;
 	m_y_abs = staff.m_y_abs;
-    m_y_rel = staff.m_y_rel;
 	m_y_drawing = staff.m_y_drawing;
     m_staffAlignment = NULL;
 
@@ -86,7 +85,6 @@ void MusStaff::Clear()
 	accol = 0;
 	accessoire = 0;
 	m_y_abs = AX_UNSET;
-    m_y_rel = 0;
 	m_y_drawing = 0;
     m_staffAlignment = NULL;
 }
@@ -129,7 +127,6 @@ void MusStaff::CopyAttributes( MusStaff *nstaff )
 	nstaff->accol = accol;
 	nstaff->accessoire = accessoire;
 	nstaff->m_y_abs = m_y_abs;
-    nstaff->m_y_rel = m_y_rel;
 	nstaff->m_y_drawing = m_y_drawing;
 }
 
@@ -217,6 +214,15 @@ bool MusStaff::GetPosOnPage( ArrayPtrVoid params )
     return false;
 }
 
+
+int MusStaff::GetYRel()
+{
+    if (m_staffAlignment) {
+        return m_staffAlignment->GetYRel();
+    }
+    return 0;
+}
+
 //----------------------------------------------------------------------------
 // MusStaff functor methods
 //----------------------------------------------------------------------------
@@ -245,6 +251,7 @@ int MusStaff::Align( ArrayPtrVoid params )
     return FUNCTOR_CONTINUE;
 }
 
+/*
 int MusStaff::LayOutSystemAndStaffYPos( ArrayPtrVoid params )
 {
     // param 0: the current y system shift
@@ -253,7 +260,7 @@ int MusStaff::LayOutSystemAndStaffYPos( ArrayPtrVoid params )
 	int *current_y_staff_shift = (int*)params[1];
     
     // This is the value that need to be added to fit everything
-    int negative_offset = this->m_y_rel - this->m_contentBB_y2;
+    int negative_offset = this->m_staffAlignment->GetXRel() - this->m_contentBB_y2;
     
     // reset the x position if we are starting a new system
     if ( this->m_parent->GetChildIndex( this ) == 0 ) {
@@ -281,3 +288,4 @@ int MusStaff::LayOutSystemAndStaffYPos( ArrayPtrVoid params )
     // do not go further down the tree in this case
     return FUNCTOR_SIBLINGS;
 }
+*/

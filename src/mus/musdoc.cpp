@@ -115,6 +115,7 @@ void MusDoc::Layout( bool trim )
     for (i = 0; i < this->GetPageCount(); i++)
 	{
 		page = (MusPage*)this->m_children[i];
+        PaperSize( page );
         page->Layout( trim );
      }
 }

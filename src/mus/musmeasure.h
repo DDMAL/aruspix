@@ -69,16 +69,21 @@ public:
     virtual int Align( ArrayPtrVoid params );
     
     /**
-     * Correct the alignment once the the content of a system has been aligned and laid out.
-     * Special case that redirects the functor to the MusAligner.
+     * Correct the X alignment once the the content of a system has been aligned and laid out.
+     * Special case that redirects the functor to the MusMeasureAligner.
      */
-    virtual int IntegrateBoundingBoxShift( ArrayPtrVoid params );
+    virtual int IntegrateBoundingBoxXShift( ArrayPtrVoid params );
     
     /**
      * Set the position of the MusAlignment.
      * Special case that redirects the functor to the MusAligner.
      */
     virtual int SetAligmentXPos( ArrayPtrVoid params );
+    
+    /**
+     * Align the measures by adjusting the m_x_rel position looking at the MusMeasureAligner.
+     */
+    virtual int AlignMeasures( ArrayPtrVoid params );
         
 public:
     /** The logical staff */
@@ -103,9 +108,6 @@ private:
     bool m_measuredMusic;
     
     MusMeasureAligner m_measureAligner;
-    
-    MusAlignment *m_alignment;
-    
 };
 
 

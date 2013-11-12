@@ -72,6 +72,29 @@ public:
      */
     virtual int Align( ArrayPtrVoid params );
     
+    /**
+     * Set the position of the StaffAlignment.
+     * Redirect the functor to the MusSytemAligner
+     */
+    virtual int SetAligmentYPos( ArrayPtrVoid params );
+    
+    /**
+     * Correct the Y alignment once the the content of a system has been aligned and laid out.
+     * Special case that redirects the functor to the MusSystemAligner.
+     */
+    virtual int IntegrateBoundingBoxYShift( ArrayPtrVoid params );
+    
+    /**
+     * Align the system by adjusting the m_y_rel position looking at the MusSystemAligner.
+     */
+    virtual int AlignSystems( ArrayPtrVoid params );
+    
+    /**
+     * Align the measures by adjusting the m_x_rel position looking at the MusMeasureAligner.
+     * In MusSystem object resets the shift to 0;
+     */
+    virtual int AlignMeasures( ArrayPtrVoid params );
+    
 private:
     MusSystemAligner m_systemAligner;
     

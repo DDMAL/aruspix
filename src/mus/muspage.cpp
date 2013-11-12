@@ -164,7 +164,10 @@ void MusPage::Layout( bool trim )
        
     ArrayPtrVoid params;
     
-    // align the content of the page
+    // Align the content of the page using measure and system aligners
+    // After this:
+    // - each MusLayerElement object will have its MusAlignment pointer initialized
+    // - each MusStaff object will then have its MusStaffAlignment pointer initialized
     MusMeasureAligner *measureAlignerPtr = NULL;
     double time = 0.0;
     MusSystemAligner *systemAlignerPtr = NULL;
@@ -176,50 +179,91 @@ void MusPage::Layout( bool trim )
     MusFunctor align( &MusObject::Align );
     this->Process( &align, params );
     
-    // set the x position of each MusAlignment
+    // Set the X position of each MusAlignment
+    // Does a duration-based non linear spacing looking at the duration space between two MusAlignment objects
     params.clear();
     double previousTime = 0.0;
     int previousXRel = 0;
     params.push_back( &previousTime );
     params.push_back( &previousXRel );
-    MusFunctor setAlignment( &MusObject::SetAligmentXPos );
-    // special case: because we redirect the functor, pass is a parameter to itself (!)
-    params.push_back( &setAlignment );
-    this->Process( &setAlignment, params );
+    MusFunctor setAlignmentX( &MusObject::SetAligmentXPos );
+    // Special case: because we redirect the functor, pass is a parameter to itself (!)
+    params.push_back( &setAlignmentX );
+    this->Process( &setAlignmentX, params );
     
-    // render it for filling the bounding boxing
+    // Render it for filling the bounding boxing
     MusRC rc;
     MusBBoxDC bb_dc( &rc, 0, 0 );
     rc.SetDoc(doc);
     rc.DrawPage(  &bb_dc, this, false );
     
-    // set the X shift of the MusAlignment using the bounding boxes
+    // Set the Y position of each MusStaffAlignment
+    // Does a simple positionning of the staves
     params.clear();
-    int measure_shift = 0;
+    staffNb = 0;
+    int staffMargin = doc->m_staffSize[0];
+    params.push_back( &staffNb );
+    params.push_back( &staffMargin );
+    MusFunctor setAlignmentY( &MusObject::SetAligmentYPos );
+    // special case: because we redirect the functor, pass is a parameter to itself (!)
+    params.push_back( &setAlignmentY );
+    this->Process( &setAlignmentY, params );
+    
+    // Adjust the X shift of the MusAlignment looking at the bounding boxes
+    // Look at each MusLayerElement and changes the m_x_shift if the bouding box is overlapping
+    params.clear();
     int element_shift = 0;
     int previous_width = 0;
-    params.push_back( &measure_shift );
     params.push_back( &element_shift );
     params.push_back( &previous_width );
-    MusFunctor setBoundingBoxShift( &MusLayerElement::SetBoundingBoxShift );
-    this->Process( &setBoundingBoxShift, params );
+    MusFunctor setBoundingBoxXShift( &MusLayerElement::SetBoundingBoxXShift );
+    this->Process( &setBoundingBoxXShift, params );
     
-    // integrate the bounding box shift
+    // Integrate the X bounding box shift of the elements
+    // Once the m_x_shift have been calculated, move all positions accordingly
     params.clear();
     int shift = 0;
     params.push_back( &shift );
-    MusFunctor integrateBoundingBoxShift( &MusObject::IntegrateBoundingBoxShift );
+    MusFunctor integrateBoundingBoxXShift( &MusObject::IntegrateBoundingBoxXShift );
     // special case: because we redirect the functor, pass is a parameter to itself (!)
-    params.push_back( &integrateBoundingBoxShift );
-    this->Process( &integrateBoundingBoxShift, params );
+    params.push_back( &integrateBoundingBoxXShift );
+    this->Process( &integrateBoundingBoxXShift, params );
     
+    // Adjust the Y shift of the MusStaffAlignment looking at the bounding boxes
+    // Look at each MusStaff and changes the m_y_shift if the bounding box is overlapping 
     params.clear();
-    int system_shift = doc->m_pageHeight - this->m_pageTopMar;
     int staff_shift = 0;
-    params.push_back( &system_shift );
+    int previous_height = 0;
     params.push_back( &staff_shift );
-    MusFunctor updateYPosition( &MusObject::LayOutSystemAndStaffYPos );
-    this->Process( &updateYPosition, params );
+    params.push_back( &previous_height );
+    MusFunctor setBoundingBoxYShift( &MusObject::SetBoundingBoxYShift );
+    this->Process( &setBoundingBoxYShift, params );
+    
+    // Integrate the Y bounding box shift of the staves
+    // Once the m_y_shift have been calculated, move all positions accordingly
+    params.clear();
+    shift = 0;
+    params.push_back( &shift );
+    MusFunctor integrateBoundingBoxYShift( &MusObject::IntegrateBoundingBoxYShift );
+    // special case: because we redirect the functor, pass is a parameter to itself (!)
+    params.push_back( &integrateBoundingBoxYShift );
+    this->Process( &integrateBoundingBoxYShift, params );
+    
+    // Adjust measure Y position
+    params.clear();
+    shift = 0;
+    params.push_back( &shift );
+    MusFunctor alignMeasures( &MusObject::AlignMeasures );
+    this->Process( &alignMeasures, params );
+    
+    // Adjust system Y position
+    params.clear();
+    shift = doc->m_pageHeight - doc->m_pageTopMar;
+    int systemMargin = doc->m_staffSize[0];
+    params.push_back( &shift );
+    params.push_back( &systemMargin );
+    MusFunctor alignSystems( &MusObject::AlignSystems );
+    this->Process( &alignSystems, params );
     
     if ( trim ) {    
         // Trim the page to the needed position

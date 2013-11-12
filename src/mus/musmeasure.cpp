@@ -141,8 +141,8 @@ MusStaff *MusMeasure::GetStaff( int StaffNo )
 
 int MusMeasure::GetXRel()
 {
-    if (m_alignment) {
-        return m_alignment->GetXRel();
+    if ( m_measureAligner.GetLeftAlignment() ) {
+        return m_measureAligner.GetLeftAlignment()->GetXRel();
     }
     return 0;
 }
@@ -161,7 +161,7 @@ int MusMeasure::Align( ArrayPtrVoid params )
     int *staffNb = (int*)params[3];
     
     // clear the content of the measureAligner
-    m_measureAligner.ClearChildren();
+    m_measureAligner.Reset();
     
     // point to it
     (*measureAligner) = &m_measureAligner;
@@ -174,7 +174,7 @@ int MusMeasure::Align( ArrayPtrVoid params )
     return FUNCTOR_CONTINUE;
 }
 
-int MusMeasure::IntegrateBoundingBoxShift( ArrayPtrVoid params )
+int MusMeasure::IntegrateBoundingBoxXShift( ArrayPtrVoid params )
 {
     // param 0: the cumulated shift
     // param 1: the functor to be redirected to MusAligner
@@ -193,6 +193,20 @@ int MusMeasure::SetAligmentXPos( ArrayPtrVoid params )
     MusFunctor *setAligmnentPosX = (MusFunctor*)params[2];
     
     m_measureAligner.Process( setAligmnentPosX, params);
+    
+    return FUNCTOR_SIBLINGS;
+}
+
+int MusMeasure::AlignMeasures( ArrayPtrVoid params )
+{
+    // param 0: the cumulated shift
+    int *shift = (int*)params[0];
+    
+    this->m_x_rel = (*shift);
+    
+    assert( m_measureAligner.GetRightAlignment() );
+    
+    (*shift) += m_measureAligner.GetRightAlignment()->GetXRel();
     
     return FUNCTOR_SIBLINGS;
 }

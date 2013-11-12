@@ -302,13 +302,16 @@ int MusLayerElement::Align( ArrayPtrVoid params )
         type = ALIGNMENT_MENSUR;
     }
     
+    // get the duration of the event
+    double duration = this->GetAlignementDuration();
+    
+    (*measureAligner)->SetMaxTime( (*time) + duration );
+    
     m_alignment = (*measureAligner)->GetAlignmentAtTime( *time, type );
     
     // increase the time position
-    (*time) += this->GetAlignementDuration();
-    
-    (*measureAligner)->SetMaxTime( *time );
-    
+    (*time) += duration;
+
     //Mus::LogDebug("Time %f", (*time) );
     
     return FUNCTOR_CONTINUE;

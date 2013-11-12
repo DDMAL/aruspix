@@ -25,6 +25,7 @@
 MusSystemAligner::MusSystemAligner():
     MusObject()
 {
+    m_bottomAlignment = NULL;
 }
 
 MusSystemAligner::~MusSystemAligner()
@@ -32,10 +33,24 @@ MusSystemAligner::~MusSystemAligner()
     
 }
 
-MusStaffAlignment* MusSystemAligner::GetStaffAlignment( int idx)
+
+void MusSystemAligner::Reset()
 {
+    this->ClearChildren();
+    m_bottomAlignment = NULL;
+    m_bottomAlignment = GetStaffAlignment( 0 );
+}
+
+MusStaffAlignment* MusSystemAligner::GetStaffAlignment( int idx )
+{
+    // The last one is always the bottomAlignment (unless if not created)
+    if ( m_bottomAlignment ) {
+        // remove it temporarily
+        this->m_children.pop_back();
+    }
+    
     if (idx < GetStaffAlignmentCount()) {
-        //Mus::LogDebug("Returning staff alignment %d", idx);
+        this->m_children.push_back( m_bottomAlignment );
         return (MusStaffAlignment*)m_children[idx];
     }
     // check that we are searching for the next one (not gap)
@@ -47,6 +62,11 @@ MusStaffAlignment* MusSystemAligner::GetStaffAlignment( int idx)
     MusStaffAlignment *alignment = new MusStaffAlignment();
     alignment->SetParent( this );
     m_children.push_back( alignment );
+    
+    if ( m_bottomAlignment ) {
+        this->m_children.push_back( m_bottomAlignment );
+    }
+    
     return alignment;
 }
 
@@ -59,11 +79,20 @@ MusStaffAlignment::MusStaffAlignment():
     MusObject()
 {
     m_y_rel = 0;
+    m_y_shift = 0;
 }
 
 MusStaffAlignment::~MusStaffAlignment()
 {
     
+}
+
+void MusStaffAlignment::SetYShift( int y_shift )
+{
+    if ( y_shift < m_y_shift )
+    {
+        m_y_shift = y_shift;
+    }
 }
 
 //----------------------------------------------------------------------------
@@ -73,12 +102,21 @@ MusStaffAlignment::~MusStaffAlignment()
 MusMeasureAligner::MusMeasureAligner():
     MusObject()
 {
-    m_max = 0.0;
+    m_leftAlignment = NULL;
+    m_rightAlignment = NULL;
 }
 
 MusMeasureAligner::~MusMeasureAligner()
 {
-    
+}
+
+void MusMeasureAligner::Reset()
+{
+    this->ClearChildren();
+    m_leftAlignment = new MusAlignment( 0.0, ALIGNMENT_MEASURE_START );
+    AddAlignment( m_leftAlignment );
+    m_rightAlignment = new MusAlignment( 0.0, ALIGNMENT_MEASURE_END );
+    AddAlignment( m_rightAlignment );
 }
 
 void MusMeasureAligner::AddAlignment( MusAlignment *alignment, int idx )
@@ -111,6 +149,11 @@ MusAlignment* MusMeasureAligner::GetAlignmentAtTime( double time, MusAlignmentTy
         }
     }
     // nothing found
+    if ( idx == -1 ) {
+        // this is tricky! Because we want m_rightAlignment to always stay at the end,
+        // we always to insert _before_ the last one - m_rightAlignment is added in Reset()
+        idx = GetAlignmentCount() - 1;
+    }
     MusAlignment *newAlignement = new MusAlignment( time, type );
     AddAlignment( newAlignement, idx );
     return newAlignement;
@@ -118,8 +161,8 @@ MusAlignment* MusMeasureAligner::GetAlignmentAtTime( double time, MusAlignmentTy
 
 void MusMeasureAligner::SetMaxTime( double time )
 {
-    if ( m_max < time ) {
-        m_max = time;
+    if ( m_rightAlignment->GetTime() < time ) {
+        m_rightAlignment->SetTime( time );
     }
 }
 
@@ -139,6 +182,7 @@ MusAlignment::MusAlignment( ):
 MusAlignment::MusAlignment( double time, MusAlignmentType type ):
     MusObject()
 {
+    m_x_rel = 0;
     m_x_shift = 0;
     m_time = time;
     m_type = type;
@@ -166,10 +210,39 @@ void MusAlignment::SetXShift( int x_shift )
 // Functors
 //----------------------------------------------------------------------------
 
-int MusMeasureAligner::IntegrateBoundingBoxShift( ArrayPtrVoid params )
+int MusStaffAlignment::SetAligmentYPos( ArrayPtrVoid params )
+{
+    // param 0: the staffNb
+    // param 1: the staff margin
+    // param 2: the functor to be redirected to MusSystemAligner (unused)
+    int *staffNb = (int*)params[0];
+    int *staffMargin = (int*)params[1];
+
+    m_y_rel = (*staffNb) * -(*staffMargin) + (*staffMargin);
+    (*staffNb)++;
+    
+    return FUNCTOR_CONTINUE;
+}
+
+int MusStaffAlignment::IntegrateBoundingBoxYShift( ArrayPtrVoid params )
 {
     // param 0: the cumulated shift
-    // param 1: the functor to be redirected to MusAligner
+    // param 1: the functor to be redirected to the MusSystemAligner (unused)
+    int *shift = (int*)params[0];
+    
+    // integrates the m_x_shift into the m_x_rel
+    m_y_rel += m_y_shift + (*shift);
+    // cumulate the shift value
+    (*shift) += m_y_shift;
+    m_y_shift = 0;
+    
+    return FUNCTOR_CONTINUE;
+}
+
+int MusMeasureAligner::IntegrateBoundingBoxXShift( ArrayPtrVoid params )
+{
+    // param 0: the cumulated shift
+    // param 1: the functor to be redirected to the MusMeasureAligner (unused)
     int *shift = (int*)params[0];
     
     // We start a new MusMeasureAligner
@@ -179,16 +252,17 @@ int MusMeasureAligner::IntegrateBoundingBoxShift( ArrayPtrVoid params )
     return FUNCTOR_CONTINUE;
 }
 
-int MusAlignment::IntegrateBoundingBoxShift( ArrayPtrVoid params )
+int MusAlignment::IntegrateBoundingBoxXShift( ArrayPtrVoid params )
 {
     // param 0: the cumulated shift
-    // param 1: the functor to be redirected to MusAligner
+    // param 1: the functor to be redirected to the MusMeasureAligner (unused)
     int *shift = (int*)params[0];
     
     // integrates the m_x_shift into the m_x_rel
     m_x_rel += m_x_shift + (*shift);
     // cumulate the shift value
     (*shift) += m_x_shift;
+    m_x_shift = 0;
 
     return FUNCTOR_CONTINUE;
 }
@@ -197,7 +271,7 @@ int MusMeasureAligner::SetAligmentXPos( ArrayPtrVoid params )
 {
     // param 0: the previous time position
     // param 1: the previous x rel position
-    // param 2: the functor to be redirected to MusAligner (unused)
+    // param 2: the functor to be redirected to the MusMeasureAligner (unused)
     double *previousTime = (double*)params[0];
     int *previousXRel = (int*)params[1];
     
@@ -213,7 +287,7 @@ int MusAlignment::SetAligmentXPos( ArrayPtrVoid params )
 {
     // param 0: the previous time position
     // param 1: the previous x rel position
-    // param 2: the functor to be redirected to MusAligner (unused)
+    // param 2: the functor to be redirected to the MusMeasureAligner (unused)
     double *previousTime = (double*)params[0];
     int *previousXRel = (int*)params[1];
     

@@ -68,6 +68,8 @@
 		4DB9F0530D94A66E00ED8E3E /* imregister.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4DB9F0510D94A66E00ED8E3E /* imregister.cpp */; };
 		4DC24AA9119B718700B2EF98 /* RtMidi.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4DC24AA7119B718700B2EF98 /* RtMidi.cpp */; };
 		4DC24ABC119B72EF00B2EF98 /* edtfile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4DC24ABA119B72EF00B2EF98 /* edtfile.cpp */; };
+		4DC3771A182ED71D00494D0E /* musscoredef.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4DC37718182ED71C00494D0E /* musscoredef.cpp */; };
+		4DC3771B182ED71D00494D0E /* musscoredef.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4DC37718182ED71C00494D0E /* musscoredef.cpp */; };
 		4DC6A82D1473F80D00D73769 /* musrc_graph.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4DC6A82C1473F80D00D73769 /* musrc_graph.cpp */; };
 		4DC6A82F1473F83900D73769 /* musrc_bezier.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4DC6A82E1473F83900D73769 /* musrc_bezier.cpp */; };
 		5736CE550C354E4A00254E7B /* cmp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5736CE460C354E4A00254E7B /* cmp.cpp */; };
@@ -288,6 +290,8 @@
 		4DC24AA8119B718700B2EF98 /* RtMidi.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RtMidi.h; path = ../src/rtmidi/RtMidi.h; sourceTree = SOURCE_ROOT; };
 		4DC24ABA119B72EF00B2EF98 /* edtfile.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = edtfile.cpp; path = ../src/edition/edtfile.cpp; sourceTree = SOURCE_ROOT; };
 		4DC24ABB119B72EF00B2EF98 /* edtfile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = edtfile.h; path = ../src/edition/edtfile.h; sourceTree = SOURCE_ROOT; };
+		4DC37718182ED71C00494D0E /* musscoredef.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = musscoredef.cpp; path = ../src/mus/musscoredef.cpp; sourceTree = "<group>"; };
+		4DC37719182ED71D00494D0E /* musscoredef.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = musscoredef.h; path = ../src/mus/musscoredef.h; sourceTree = "<group>"; };
 		4DC6A82C1473F80D00D73769 /* musrc_graph.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = musrc_graph.cpp; path = ../src/mus/musrc_graph.cpp; sourceTree = "<group>"; };
 		4DC6A82E1473F83900D73769 /* musrc_bezier.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = musrc_bezier.cpp; path = ../src/mus/musrc_bezier.cpp; sourceTree = "<group>"; };
 		5736CE460C354E4A00254E7B /* cmp.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = cmp.cpp; sourceTree = "<group>"; };
@@ -450,6 +454,8 @@
 		4D2E465413FBE9AE00023B02 /* containers */ = {
 			isa = PBXGroup;
 			children = (
+				4DC37718182ED71C00494D0E /* musscoredef.cpp */,
+				4DC37719182ED71D00494D0E /* musscoredef.h */,
 				4DAF10B918085C8200767149 /* musmeasure.cpp */,
 				4DAF10BA18085C8200767149 /* musmeasure.h */,
 				4D6E917713E9DA0A003B00D4 /* mussystem.cpp */,
@@ -923,6 +929,7 @@
 				4DAF10BC18085C8200767149 /* musmeasure.cpp in Sources */,
 				4D28D70E181006AD00C54CFC /* muscontroller.cpp in Sources */,
 				4D76EDF11811C39300A6024B /* musaligner.cpp in Sources */,
+				4DC3771B182ED71D00494D0E /* musscoredef.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1035,6 +1042,7 @@
 				8FA8EC8A180841C3003ADB5F /* musuuid.cpp in Sources */,
 				4DAF10BB18085C8200767149 /* musmeasure.cpp in Sources */,
 				4D76EDF01811C39300A6024B /* musaligner.cpp in Sources */,
+				4DC3771A182ED71D00494D0E /* musscoredef.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -439,7 +439,7 @@ int MusObject::AddMusLayerElementToList( ArrayPtrVoid params )
 int MusObject::FindByUuid( ArrayPtrVoid params )
 {
     // param 0: the uuid we are looking for
-    // parma 1: the pointer to the element
+    // param 1: the pointer to pointer to the MusObject
     uuid_t *uuid = (uuid_t*)params[0];  
     MusObject **element = (MusObject**)params[1];  
     
@@ -458,26 +458,12 @@ int MusObject::FindByUuid( ArrayPtrVoid params )
 }
 
 
-int MusObject::SetBoundingBoxShift( ArrayPtrVoid params )
+int MusObject::SetBoundingBoxXShift( ArrayPtrVoid params )
 {
-    // param 0: the current x measure shift
-    // param 1: the current x element shift
-    // param 2: the width of the previous element
-	int *current_x_measure_shift = (int*)params[0];
-    int *current_x_element_shift = (int*)params[1];
-    int *min_pos = (int*)params[2];
-    
-    // starting a new staff
-    MusStaff *current_staff = dynamic_cast<MusStaff*>(this);
-    if ( current_staff  ) {
-        (*current_x_measure_shift) = 0;
-    }
-
-    // starting a new measure
-    MusMeasure *current_measure = dynamic_cast<MusMeasure*>(this);
-    if ( current_measure ) {
-        current_measure->m_x_rel = (*current_x_measure_shift);
-    }
+    // param 0: the current x element shift
+    // param 1: the width of the previous element
+    int *current_x_element_shift = (int*)params[0];
+    int *min_pos = (int*)params[1];
     
     // starting an new layer
     MusLayer *current_layer = dynamic_cast<MusLayer*>(this);
@@ -536,6 +522,53 @@ int MusObject::SetBoundingBoxShift( ArrayPtrVoid params )
     (*min_pos) = current->m_contentBB_x2 + current->GetHorizontalSpacing();
     
     return FUNCTOR_CONTINUE;
+}
+
+int MusObject::SetBoundingBoxYShift( ArrayPtrVoid params )
+{
+    // param 0: the current y staff shift
+    // param 1: the height of the previous staff
+	int *current_y_staff_shift = (int*)params[0];
+    int *min_pos = (int*)params[1];
+    
+    // starting a new system
+    MusMeasure *current_measure = dynamic_cast<MusMeasure*>(this);
+    if ( current_measure  ) {
+        (*current_y_staff_shift) = 0;
+        (*min_pos) = 0;
+    }
+    
+    MusStaff *current = dynamic_cast<MusStaff*>(this);
+    if ( !current  ) {
+        return FUNCTOR_CONTINUE;
+    }
+    
+    // at this stage we assume we have instanciated the alignment pointer
+    assert( current->GetAlignment() );
+    
+    // This is the value that need to be removed to fit everything
+    int negative_offset = current->GetAlignment()->GetYRel() - current->m_contentBB_y2;
+    
+    // this will probably never happen
+    //if ( negative_offset < 0 ) {
+    //    negative_offset = 0;
+    //}
+    
+    // check if the staff overlaps with the preceeding one given by (*min_pos)
+    int overlap = 0;
+    if ( (current->GetAlignment()->GetYRel() - negative_offset) > (*min_pos) ) {
+        overlap = (*min_pos) - current->GetAlignment()->GetYRel() - negative_offset;
+        // shift the current element
+        current->GetAlignment()->SetYShift( overlap );
+    }
+    
+    //Mus::LogDebug("%s min_pos %d; negative offset %d;  x_rel %d; overlap %d", current->MusClassName().c_str(), (*min_pos), negative_offset, current->GetAlignment()->GetXRel(), overlap );
+    
+    // the next minimal position if given by the right side of the bounding box + the spacing of the element
+    (*min_pos) = current->m_contentBB_y1 - current->GetVerticalSpacing();
+    
+        // do not go further down the tree in this case
+    return FUNCTOR_SIBLINGS;
 }
 
 
