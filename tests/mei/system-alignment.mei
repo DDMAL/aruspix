@@ -22,7 +22,7 @@
                 <pages type="raw">
                     <!--Coordinates in MEI axis direction-->
                     <page page.width="2108" page.height="2970" page.leftmar="20" page.rightmar="20" page.topmar="20">
-                        <system system.leftmar="0" system.rightmar="0">
+                        <system system.leftmar="200" system.rightmar="0">
 
                             <measure n="1">
                                 <staff n="1">
@@ -59,6 +59,18 @@
                                         <note pname="c" oct="4" dur="minima" />
                                     </layer>
                                 </staff>
+                                <staff n="3">
+                                    <layer n="1">
+                                        <note pname="d" oct="4" accid="s" dur="minima" />
+                                        <note pname="d" oct="4" dur="semiminima" />
+                                        <note pname="d" oct="4" dur="semiminima" />
+                                        
+                                        <note pname="d" oct="4" accid="s" dur="minima" />
+                                        <note pname="d" oct="4" dur="semiminima" />
+                                        <note pname="d" oct="4" dur="semiminima" />
+                                    </layer>
+                                </staff>
+                                
                             </measure>
                          
                         </system>  
