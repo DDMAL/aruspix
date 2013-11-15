@@ -81,6 +81,20 @@ void MusRC::DrawSystem( MusDC *dc, MusSystem *system )
     
     dc->StartGraphic( system, "system", Mus::StringFormat("system_%d", system->GetId() ) );
     
+    
+    if ( system->m_y_abs == AX_UNSET ) {
+        assert( m_doc->GetType() == Raw );
+        system->m_y_drawing = system->m_y_rel;
+        system->m_x_drawing = system->m_x_rel;
+    }
+    else
+    {
+        assert( m_doc->GetType() == Transcription );
+        system->m_y_drawing = system->m_y_abs;
+        system->m_x_drawing = system->m_x_abs;
+    }
+    
+    
     for (i = 0; i < (int)system->GetMeasureCount(); i++)
 	{
 		measure = (MusMeasure*)system->m_children[i];
@@ -615,11 +629,11 @@ void MusRC::DrawMeasure( MusDC *dc, MusMeasure *measure, MusSystem *system )
     // With Transcription documents, we use the m_x_abs
     if ( measure->m_x_abs == AX_UNSET ) {
         assert( m_doc->GetType() == Raw );
-        measure->m_x_drawing = measure->m_x_rel + system->m_systemLeftMar;
+        measure->m_x_drawing = measure->m_x_rel + system->m_x_drawing;
     }
     else
     {
-        //assert( m_doc->GetType() == Transcription );
+        assert( m_doc->GetType() == Transcription );
         measure->m_x_drawing = measure->m_x_abs;
     }
     
@@ -755,7 +769,7 @@ void MusRC::DrawStaff( MusDC *dc, MusStaff *staff, MusMeasure *measure, MusSyste
     // With Transcription documents, we use the m_y_abs
     if ( staff->m_y_abs == AX_UNSET ) {
         assert( m_doc->GetType() == Raw );
-        staff->m_y_drawing = staff->GetYRel() + system->m_y_rel;
+        staff->m_y_drawing = staff->GetYRel() + system->m_y_drawing;
     }
     else
     {

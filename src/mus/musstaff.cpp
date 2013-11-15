@@ -190,7 +190,7 @@ MusLayer *MusStaff::GetLayer( int LayerNo )
 
 int MusStaff::GetVerticalSpacing()
 {
-    return 30; // arbitrary generic value
+    return 160; // arbitrary generic value
 }
 
 bool MusStaff::GetPosOnPage( ArrayPtrVoid params )

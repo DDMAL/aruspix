@@ -115,7 +115,7 @@ public:
     int m_y_rel;
 	/**
      * The Y drawing position of the system.
-     * It is re-computed everytime the staff is drawn and it is not stored in the file.
+     * It is re-computed everytime the system is drawn and it is not stored in the file.
      */
     int m_y_drawing;
 	/** 
@@ -123,6 +123,16 @@ public:
      * This is the top left corner of the system.
      */
     int m_x_abs;
+    /**
+     * The X relative position of the system.
+     * It is used internally when calculating the layout andd it is not stored in the file.
+     */
+    int m_x_rel;
+	/**
+     * The X drawing position of the system.
+     * It is re-computed everytime the system is drawn and it is not stored in the file.
+     */
+    int m_x_drawing;
 
 private:
     

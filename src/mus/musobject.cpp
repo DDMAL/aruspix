@@ -26,6 +26,7 @@
 #include "muspage.h"
 #include "musrc.h"
 #include "musstaff.h"
+#include "mussystem.h"
 #include "mustie.h"
 #include "mustuplet.h"
 
@@ -460,15 +461,12 @@ int MusObject::FindByUuid( ArrayPtrVoid params )
 
 int MusObject::SetBoundingBoxXShift( ArrayPtrVoid params )
 {
-    // param 0: the current x element shift
-    // param 1: the width of the previous element
-    int *current_x_element_shift = (int*)params[0];
-    int *min_pos = (int*)params[1];
+    // param 0: the width of the previous element
+    int *min_pos = (int*)params[0];
     
     // starting an new layer
     MusLayer *current_layer = dynamic_cast<MusLayer*>(this);
     if ( current_layer  ) {
-        (*current_x_element_shift) = 0;
         (*min_pos) = 5;
     }
 
@@ -482,7 +480,7 @@ int MusObject::SetBoundingBoxXShift( ArrayPtrVoid params )
 
     if ( !current->HasUpdatedBB() ) {
         // this is all we need for empty elements
-        current->GetAlignment()->SetXRel(*current_x_element_shift);
+        current->GetAlignment()->SetXRel(*min_pos);
         return FUNCTOR_CONTINUE;
     }
     
@@ -526,15 +524,12 @@ int MusObject::SetBoundingBoxXShift( ArrayPtrVoid params )
 
 int MusObject::SetBoundingBoxYShift( ArrayPtrVoid params )
 {
-    // param 0: the current y staff shift
-    // param 1: the height of the previous staff
-	int *current_y_staff_shift = (int*)params[0];
-    int *min_pos = (int*)params[1];
+    // param 0: the height of the previous staff
+    int *min_pos = (int*)params[0];
     
     // starting a new system
     MusMeasure *current_measure = dynamic_cast<MusMeasure*>(this);
     if ( current_measure  ) {
-        (*current_y_staff_shift) = 0;
         (*min_pos) = 0;
     }
     
@@ -550,22 +545,21 @@ int MusObject::SetBoundingBoxYShift( ArrayPtrVoid params )
     int negative_offset = current->GetAlignment()->GetYRel() - current->m_contentBB_y2;
     
     // this will probably never happen
-    //if ( negative_offset < 0 ) {
-    //    negative_offset = 0;
-    //}
+    if ( negative_offset > 0 ) {
+        negative_offset = 0;
+    }
     
     // check if the staff overlaps with the preceeding one given by (*min_pos)
     int overlap = 0;
     if ( (current->GetAlignment()->GetYRel() - negative_offset) > (*min_pos) ) {
-        overlap = (*min_pos) - current->GetAlignment()->GetYRel() - negative_offset;
-        // shift the current element
+        overlap = (*min_pos) - current->GetAlignment()->GetYRel() + negative_offset;
         current->GetAlignment()->SetYShift( overlap );
     }
     
     //Mus::LogDebug("%s min_pos %d; negative offset %d;  x_rel %d; overlap %d", current->MusClassName().c_str(), (*min_pos), negative_offset, current->GetAlignment()->GetXRel(), overlap );
     
     // the next minimal position if given by the right side of the bounding box + the spacing of the element
-    (*min_pos) = current->m_contentBB_y1 - current->GetVerticalSpacing();
+    (*min_pos) = current->m_contentBB_y1;
     
         // do not go further down the tree in this case
     return FUNCTOR_SIBLINGS;

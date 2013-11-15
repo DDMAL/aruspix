@@ -212,14 +212,22 @@ void MusAlignment::SetXShift( int x_shift )
 
 int MusStaffAlignment::SetAligmentYPos( ArrayPtrVoid params )
 {
-    // param 0: the staffNb
+    // param 0: the previous staff height
     // param 1: the staff margin
+    // param 2: the staff interline sizes (int[2])
     // param 2: the functor to be redirected to MusSystemAligner (unused)
-    int *staffNb = (int*)params[0];
+    int *previousStaffHeight = (int*)params[0];
     int *staffMargin = (int*)params[1];
+    int **interlineSizes = (int**)params[2];
 
-    m_y_rel = (*staffNb) * -(*staffMargin) + (*staffMargin);
-    (*staffNb)++;
+    int min_shift = (*staffMargin) + (*previousStaffHeight);
+    
+    if ( m_y_shift > -min_shift) {
+        m_y_shift = -min_shift;
+    }
+    
+    // for now always for interlines, eventually should be taken from the staffDef, so should the staff size
+    (*previousStaffHeight) = 4 * (*interlineSizes)[0];
     
     return FUNCTOR_CONTINUE;
 }

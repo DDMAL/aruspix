@@ -197,24 +197,10 @@ void MusPage::Layout( bool trim )
     rc.SetDoc(doc);
     rc.DrawPage(  &bb_dc, this, false );
     
-    // Set the Y position of each MusStaffAlignment
-    // Does a simple positionning of the staves
-    params.clear();
-    staffNb = 0;
-    int staffMargin = doc->m_staffSize[0];
-    params.push_back( &staffNb );
-    params.push_back( &staffMargin );
-    MusFunctor setAlignmentY( &MusObject::SetAligmentYPos );
-    // special case: because we redirect the functor, pass is a parameter to itself (!)
-    params.push_back( &setAlignmentY );
-    this->Process( &setAlignmentY, params );
-    
     // Adjust the X shift of the MusAlignment looking at the bounding boxes
     // Look at each MusLayerElement and changes the m_x_shift if the bouding box is overlapping
     params.clear();
-    int element_shift = 0;
     int previous_width = 0;
-    params.push_back( &element_shift );
     params.push_back( &previous_width );
     MusFunctor setBoundingBoxXShift( &MusLayerElement::SetBoundingBoxXShift );
     this->Process( &setBoundingBoxXShift, params );
@@ -232,14 +218,26 @@ void MusPage::Layout( bool trim )
     // Adjust the Y shift of the MusStaffAlignment looking at the bounding boxes
     // Look at each MusStaff and changes the m_y_shift if the bounding box is overlapping 
     params.clear();
-    int staff_shift = 0;
     int previous_height = 0;
-    params.push_back( &staff_shift );
     params.push_back( &previous_height );
     MusFunctor setBoundingBoxYShift( &MusObject::SetBoundingBoxYShift );
     this->Process( &setBoundingBoxYShift, params );
     
-    // Integrate the Y bounding box shift of the staves
+    // Set the Y position of each MusStaffAlignment
+    // Adjusts the Y shift for making sure there is a minimal space (staffMargin) between each staff
+    params.clear();
+    int previousStaffHeight = 0; // 0 for the first staff, reset for each system (see MusSystem::SetAlignmentYPos)
+    int staffMargin = doc->m_staffSize[0]; // the minimal space we want to have between each staff
+    int* interlineSizes = doc->m_interl; // the interline sizes to be used for calculating the (previous) staff height
+    params.push_back( &previousStaffHeight );
+    params.push_back( &staffMargin );
+    params.push_back( &interlineSizes );
+    MusFunctor setAlignmentY( &MusObject::SetAligmentYPos );
+    // special case: because we redirect the functor, pass is a parameter to itself (!)
+    params.push_back( &setAlignmentY );
+    this->Process( &setAlignmentY, params );
+    
+    // Integrate the Y shift of the staves
     // Once the m_y_shift have been calculated, move all positions accordingly
     params.clear();
     shift = 0;

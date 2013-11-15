@@ -36,6 +36,8 @@ MusSystem::MusSystem( const MusSystem& system )
 	m_systemLeftMar = system.m_systemLeftMar;
 	m_systemRightMar = system.m_systemRightMar;
 	m_x_abs = system.m_x_abs;
+	m_x_rel = system.m_x_rel;
+	m_x_drawing = system.m_x_drawing;
 	m_y_abs = system.m_y_abs;
 	m_y_rel = system.m_y_rel;
 	m_y_drawing = system.m_y_drawing;
@@ -57,6 +59,8 @@ void MusSystem::Clear( )
 	m_systemLeftMar = 0;
 	m_systemRightMar = 0;
 	m_x_abs = AX_UNSET;
+    m_x_rel = 0;
+	m_x_drawing = 0;
 	m_y_abs = AX_UNSET;
     m_y_rel = 0;
 	m_y_drawing = 0;
@@ -90,34 +94,8 @@ int MusSystem::GetSystemNo() const
 
 int MusSystem::GetVerticalSpacing()
 {
-    return 100; // arbitrary generic value
+    return 0; // arbitrary generic value
 }
-
-/*
-void MusSystem::SetDoc( ArrayPtrVoid params )
-{
-    Mus::LogDebug("PROUT");    
-}
-*/
-
-/*
-void MusSystem::ClearStaves( MusDC *dc, MusStaff *start )
-{
-	assert( dc ); // DC cannot be NULL
-	if ( !Check() )
-		return;
-
-	int j;
-	for(j = 0; j < nbrePortees; j++)
-	{
-		if (start && (start != this->m_children[j]))
-			continue;
-		else
-			start = NULL;
-		(this->m_children[j])->ClearElements( dc );
-	}
-}
-*/
 
 MusMeasure *MusSystem::GetFirst( )
 {
@@ -247,6 +225,8 @@ int MusSystem::Align( ArrayPtrVoid params )
     // param 3: the staffNb (unused)
     MusSystemAligner **systemAligner = (MusSystemAligner**)params[2];
     
+    // When calculating the alignment, the position has to be 0
+    m_x_rel = 0;
     m_systemAligner.Reset();
     (*systemAligner) = &m_systemAligner;
     
@@ -256,13 +236,14 @@ int MusSystem::Align( ArrayPtrVoid params )
 
 int MusSystem::SetAligmentYPos( ArrayPtrVoid params )
 {
-    // param 0: the staff number
+    // param 0: the previous staff height
     // param 1: the staff margin (unused)
-    // param 2: the functor to be redirected to MusStaffAligner
-    int *staffNb = (int*)params[0];
-    MusFunctor *setAligmnentPosY = (MusFunctor*)params[2];
+    // param 2: the staff interline sizes (int[2]) (unused)
+    // param 2: the functor to be redirected to MusSystemAligner
+    int *previousStaffHeight = (int*)params[0];
+    MusFunctor *setAligmnentPosY = (MusFunctor*)params[3];
     
-    (*staffNb) = 0;
+    (*previousStaffHeight) = 0;
     
     m_systemAligner.Process( setAligmnentPosY, params);
     
@@ -277,6 +258,7 @@ int MusSystem::IntegrateBoundingBoxYShift( ArrayPtrVoid params )
     int *shift = (int*)params[0];
     MusFunctor *integrateBoundingBoxYShift = (MusFunctor*)params[1];
     
+    m_x_rel = this->m_systemLeftMar;
     (*shift) = 0;
     m_systemAligner.Process( integrateBoundingBoxYShift, params);
     

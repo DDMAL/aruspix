@@ -735,15 +735,15 @@ bool MusMeiInput::ReadMei( TiXmlElement *root )
                 m_page = NULL;
             }
         }
-        else {
-            m_page = new MusPage( );
-            m_system = new MusSystem( );
-            m_page->AddSystem( m_system );
-            m_doc->AddPage( m_page );
-            TiXmlElement *current = NULL;
-            for( current = pages->FirstChildElement( ); current; current = current->NextSiblingElement( ) ) {
-                ReadUnsupported( current );
-            }
+    }
+    else {
+        m_page = new MusPage( );
+        m_system = new MusSystem( );
+        m_page->AddSystem( m_system );
+        m_doc->AddPage( m_page );
+        TiXmlElement *current = NULL;
+        for( current = mdiv->FirstChildElement( ); current; current = current->NextSiblingElement( ) ) {
+            ReadUnsupported( current );
         }
     }
     return true;
@@ -1278,11 +1278,17 @@ void MusMeiInput::AddLayerElement( MusLayerElement *element )
 
 bool MusMeiInput::ReadUnsupported( TiXmlElement *element )
 {
-    if ( std::string( element->Value() ) == "section" ) {
+    if ( std::string( element->Value() ) == "score" ) {
         TiXmlElement *current = NULL;
         for( current = element->FirstChildElement( ); current; current = current->NextSiblingElement( ) ) {
             ReadUnsupported( current );
         }
+    }
+    if ( std::string( element->Value() ) == "section" ) {
+        TiXmlElement *current = NULL;
+        for( current = element->FirstChildElement( ); current; current = current->NextSiblingElement( ) ) {
+            ReadUnsupported( current );
+        }       
     }
     else if ( std::string( element->Value() ) == "measure" ) {
         Mus::LogDebug( "measure" );
