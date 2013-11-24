@@ -328,24 +328,30 @@ void MusPaeInput::convertPlainAndEasyToKern(std::istream &infile, std::ostream &
         current_measure.notes.clear();
     }
     
-    m_staff = new MusStaff( 1 );
-    
-    m_measure = new MusMeasure( false, 1 );
-    m_layer = new MusLayer( 1 );
-    
-    m_staff->AddLayer(m_layer);
-    m_measure->AddStaff( m_staff );
-    
-    std::vector<MeasureObject>::iterator it;
-    for ( it = staff.begin() ; it < staff.end(); it++ ) {
-        MeasureObject obj = *it;
-        printMeasure( out, &obj );
-    }
     
     m_doc->Reset( Raw );
     MusPage *page = new MusPage();
     MusSystem *system = new MusSystem();
-    system->AddMeasure( m_measure );
+    
+    int measure_count = 1;
+    
+    std::vector<MeasureObject>::iterator it;
+    for ( it = staff.begin() ; it < staff.end(); it++ ) {
+        
+        m_staff = new MusStaff( 1 );
+        m_measure = new MusMeasure( true, measure_count );
+        m_layer = new MusLayer( 1 );
+        
+        m_staff->AddLayer(m_layer);
+        m_measure->AddStaff( m_staff );
+        system->AddMeasure( m_measure );
+        
+        MeasureObject obj = *it;
+        printMeasure( out, &obj );
+        measure_count++;
+    }
+    
+
     page->AddSystem( system );
     m_doc->AddPage( page );
 }
