@@ -20,6 +20,7 @@
 #include "app/axapp.h"
 
 #include "musdoc.h"
+#include "musmeasure.h"
 #include "muspage.h"
 #include "mussystem.h"
 #include "musstaff.h"
@@ -177,6 +178,7 @@ bool EdtFile::Create( )
   
     for (i = 0; i < nb_systems; i++) {
         MusSystem *system = new MusSystem();
+        MusMeasure *measure = new MusMeasure();
         //system->lrg_lign = width - 20; // we have now m_systemRightMar  
         for (j = 0; j < nb_staves_per_system; j++)
         {
@@ -198,8 +200,9 @@ bool EdtFile::Create( )
             // We also need to create the layers!
             // ...
             // We also need to add pageBreaks and systemBreak to the layers
-            system->AddStaff( staff );
+            measure->AddStaff( staff );
         }
+        system->AddMeasure( measure );
         page->AddSystem( system );
     }
     m_musDocPtr->AddPage( page );

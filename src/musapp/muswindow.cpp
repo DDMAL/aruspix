@@ -871,9 +871,9 @@ void MusWindow::OnMouseLeftDown(wxMouseEvent &event)
 		// Default selection of closest note
         m_currentSystem = m_page->GetAtPos( y );
         // we certainly need to check pointers here!
-        m_currentStaff = m_currentSystem->GetAtPos( y );
-        m_currentMeasure = m_currentStaff->GetFirst();
-        m_currentLayer = m_currentMeasure->GetFirst();
+        m_currentMeasure = m_currentSystem->GetAtPos( x );
+        m_currentStaff = m_currentMeasure->GetFirst();
+        m_currentLayer = m_currentStaff->GetFirst();
 		m_currentElement = m_currentLayer->GetAtPos( x );				
         
 		m_lyricMode = false;
@@ -959,9 +959,9 @@ void MusWindow::OnMouseLeftDown(wxMouseEvent &event)
             // Default selection of closest note
             m_currentSystem = m_page->GetAtPos( y );
             // we certainly need to check pointers here!
-            m_currentStaff = m_currentSystem->GetAtPos( y );
-            m_currentMeasure = m_currentStaff->GetFirst();
-            m_currentLayer = m_currentMeasure->GetFirst();
+            m_currentMeasure = m_currentSystem->GetAtPos( y );
+            m_currentStaff = m_currentMeasure->GetFirst();
+            m_currentLayer = m_currentStaff->GetFirst();
 		}
     }
 	event.Skip();    
@@ -1041,28 +1041,28 @@ bool MusWindow::MoveUpDown( bool up )
     
     if ( up ) {
         // layer up in the staff
-        if ( m_currentMeasure->GetPrevious( m_currentLayer ) )
+        if ( m_currentStaff->GetPrevious( m_currentLayer ) )
         {
-            layer = m_currentMeasure->GetPrevious( m_currentLayer );
+            layer = m_currentStaff->GetPrevious( m_currentLayer );
         }
         // staff up in the system
-        else if ( m_currentSystem->GetPrevious( m_currentStaff ) )
+        else if ( m_currentMeasure->GetPrevious( m_currentStaff ) )
         {
-            staff = m_currentSystem->GetPrevious( m_currentStaff );
-            measure = staff->GetFirst(); // we should look for the x position
-            if ( measure ) {
-                layer = measure->GetLast();
+            staff = m_currentMeasure->GetPrevious( m_currentStaff );
+            if ( staff ) {
+                layer = staff->GetLast();
             }
         }
         // previous system
         else if ( m_page->GetPrevious( m_currentSystem ) )
         {
             system = m_page->GetPrevious( m_currentSystem );
-            staff = system->GetLast();
-            if ( staff ) {
-                measure = staff->GetFirst(); // we should look for the x position
-                if ( measure ) {
-                    layer = measure->GetLast();
+            // we should look at the x position
+            measure = system->GetLast();
+            if ( measure ) {
+                staff = measure->GetLast();
+                if ( staff ) {
+                    layer = staff->GetLast();
                 }
             }
         }
@@ -1070,30 +1070,30 @@ bool MusWindow::MoveUpDown( bool up )
         // TODO - we would also to set the page in the MusWindow
     }
     else {
-        // layer up in the staff
-        if ( m_currentMeasure->GetNext( m_currentLayer ) )
+        // layer down in the staff
+        if ( m_currentStaff->GetNext( m_currentLayer ) )
         {
-            layer = m_currentMeasure->GetNext( m_currentLayer );
+            layer = m_currentStaff->GetNext( m_currentLayer );
         }
-        // staff up in the system
-        else if ( m_currentSystem->GetNext( m_currentStaff ) )
+        // staff down in the system
+        else if ( m_currentMeasure->GetNext( m_currentStaff ) )
         {            
-            staff = m_currentSystem->GetNext( m_currentStaff );
-            measure = staff->GetFirst(); // we should look for the x position
-            if ( measure ) {
-                layer = measure->GetFirst();
+            staff = m_currentMeasure->GetNext( m_currentStaff );
+            if ( staff ) {
+                layer = staff->GetFirst();
             }
             
         }
-        // previous system
+        // next system
         else if ( m_page->GetNext( m_currentSystem ) )
         {
             system = m_page->GetNext( m_currentSystem );
-            staff = system->GetFirst();
-            if ( staff ) {
-                measure = staff->GetFirst(); // we should look for the x position
-                if ( measure ) {
-                    layer = measure->GetFirst();
+            // we should look for the x position
+            measure = system->GetFirst();
+            if ( measure ) {
+                staff = measure->GetFirst();
+                if ( staff ) {
+                    layer = staff->GetFirst();
                 }
             }
         }
@@ -1135,12 +1135,14 @@ bool MusWindow::MoveLeftRight( bool left )
             m_currentElement = previous;
         }
         // previous measure
-        else if ( m_currentStaff->GetPrevious( m_currentMeasure ) )
+        else if ( m_currentSystem->GetPrevious( m_currentMeasure ) )
         {
             int currentLayerNo = m_currentLayer->GetLayerNo();
-            measure = m_currentStaff->GetPrevious( m_currentMeasure );
-            if ( measure ) {
-                layer = measure->GetLayer( currentLayerNo );
+            int currentStaffNo = m_currentStaff->GetStaffNo();
+            measure = m_currentSystem->GetPrevious( m_currentMeasure );
+            staff = measure->GetStaff( currentStaffNo );
+            if ( staff ) {
+                layer = staff->GetLayer( currentLayerNo );
                 if ( layer ) {
                     m_currentElement = layer->GetLast();
                 }
@@ -1152,11 +1154,11 @@ bool MusWindow::MoveLeftRight( bool left )
             int currentStaffNo = m_currentStaff->GetStaffNo();
             int currentLayerNo = m_currentLayer->GetLayerNo();
             system = m_page->GetPrevious( m_currentSystem );
-            staff = system->GetStaff( currentStaffNo );
-            if ( staff ) {
-                measure = staff->GetLast();
-                if ( measure ) {
-                    layer = measure->GetLayer( currentLayerNo );
+            measure = system->GetLast();
+            if ( measure ) {
+                staff = measure->GetStaff( currentStaffNo );
+                if ( staff ) {
+                    layer = staff->GetLayer( currentLayerNo );
                     if ( layer ) {
                         m_currentElement = layer->GetLast();
                     }
@@ -1173,12 +1175,14 @@ bool MusWindow::MoveLeftRight( bool left )
             m_currentElement = next;
         }
         // next measure
-        else if ( m_currentStaff->GetNext( m_currentMeasure ) )
+        else if ( m_currentSystem->GetNext( m_currentMeasure ) )
         {
             int currentLayerNo = m_currentLayer->GetLayerNo();
-            measure = m_currentStaff->GetNext( m_currentMeasure );
-            if ( measure ) {
-                layer = measure->GetLayer( currentLayerNo );
+            int currentStaffNo = m_currentStaff->GetStaffNo();
+            measure = m_currentSystem->GetNext( m_currentMeasure );
+            staff = measure->GetStaff( currentStaffNo );
+            if ( staff ) {
+                layer = staff->GetLayer( currentLayerNo );
                 if ( layer ) {
                     m_currentElement = layer->GetFirst();
                 }
@@ -1190,11 +1194,11 @@ bool MusWindow::MoveLeftRight( bool left )
             int currentStaffNo = m_currentStaff->GetStaffNo();
             int currentLayerNo = m_currentLayer->GetLayerNo();
             system = m_page->GetNext( m_currentSystem );
-            staff = system->GetStaff( currentStaffNo );
-            if ( staff ) {
-                measure = staff->GetFirst();
-                if ( measure ) {
-                    layer = measure->GetLayer( currentLayerNo );
+            measure = system->GetFirst();
+            if ( measure ) {
+                staff = measure->GetStaff( currentStaffNo );
+                if ( staff ) {
+                    layer = staff->GetLayer( currentLayerNo );
                     if ( layer ) {
                         m_currentElement = layer->GetFirst();
                     }

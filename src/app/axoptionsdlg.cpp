@@ -540,9 +540,9 @@ AxOptMusWindow::AxOptMusWindow( wxWindow *parent, wxWindowID id,
     clef->m_x_abs = 80;
     
     layer->AddElement( clef );
-    measure->AddLayer( layer );
-    staff->AddMeasure( measure );
-    system->AddStaff( staff );
+    staff->AddLayer( layer );
+    measure->AddStaff( staff );
+    system->AddMeasure( measure );
     page->AddSystem( system );
     m_docPtr->AddPage( page );
     

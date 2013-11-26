@@ -319,9 +319,9 @@ bool CmpCollation::Collate( )
         MusSystem *system = new MusSystem( );
         MusStaff *staff = new MusStaff( 1 );
         MusMeasure *measure = new MusMeasure( false, 1 );
-        measure->AddLayer( layer_ref );
-        staff->AddMeasure( measure );
-        system->AddStaff( staff );
+        staff->AddLayer( layer_ref );
+        measure->AddStaff( staff );
+        system->AddMeasure( measure );
         page->AddSystem( system );
         collationDoc.AddPage( page );
         

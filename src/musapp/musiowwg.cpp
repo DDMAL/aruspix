@@ -374,7 +374,9 @@ bool MusWWGOutput::WritePage( const MusPage *page )
 	Write( &int32, 4 );
 	short nbStaves = 0;
 	for (i = 0; i < page->GetSystemCount(); i++) {
-		nbStaves += ((MusSystem*)page->m_children[i])->GetStaffCount();
+        MusSystem *system = (MusSystem*)page->m_children[i];
+        MusMeasure *measure = (MusMeasure*)system->m_children[0];
+		nbStaves += measure->GetStaffCount();
 	}
 	int16 = wxINT16_SWAP_ON_BE( nbStaves );
 	Write( &int16, 2 );
@@ -400,18 +402,20 @@ bool MusWWGOutput::WritePage( const MusPage *page )
         
         // TODO - We need to fill the ecarts[] array here because we now have m_y_abs positions for the staves
         
-        for (j = 0; j < system->GetStaffCount(); j++) 
+        for (j = 0; j < m_current_system->GetMeasureCount(); j++)
         {
-            //MusStaff *cstaff
-            //staff = MusMLFOutput::SplitSymboles( cstaff ); // split the symbols (sharp, dots, etc. - this should probably be optional)
-            m_current_staff = (MusStaff*)system->m_children[j];
-            for (k = 0; k < m_current_staff->GetMeasureCount(); k ++)
+            MusMeasure *measure = (MusMeasure*)m_current_system->m_children[j];
+        
+            for (k = 0; k < measure->GetStaffCount(); k++)
             {
-                // This needs to be fixed
-                //MusLayer *layer = (MusLayer*)m_current_staff->m_children[k];
-                //WriteLayer( layer, l );
+                m_current_staff = (MusStaff*)measure->m_children[k];
+                for (l = 0; l < m_current_staff->GetLayerCount(); l++)
+                {
+                    // This needs to be fixed
+                    MusLayer *layer = (MusLayer*)m_current_staff->m_children[l];
+                    WriteLayer( layer, k );
+                }
             }
-            l++;
         }
     }
 
@@ -719,9 +723,11 @@ bool MusWWGInput::ImportFile( )
         for (k = 0; k < page->GetSystemCount(); k++) 
         {
             MusSystem *system = (MusSystem*)page->m_children[k];
+            // only one measure per staff
+            MusMeasure *measure = (MusMeasure*)system->m_children[0];
             MusStaff *staff = NULL;
             
-            for (l = 0; l < system->GetStaffCount(); l++) 
+            for (l = 0; l < measure->GetStaffCount(); l++)
             {
                 staff = (MusStaff*)system->m_children[l];
                 yy -= ecarts[m] * m_doc->m_interl[ staff->staffSize ];;
@@ -906,8 +912,8 @@ bool MusWWGInput::ReadPage( MusPage *page )
     
     for (j = 0; j < nbrePortees; j++) 
 	{
-		MusStaff *staff = new MusStaff( j + 1 );
         MusMeasure *measure = new MusMeasure( false );
+		MusStaff *staff = new MusStaff( j + 1 );
         MusLayer *layer = new MusLayer( 1 ); // only one layer per staff
 		ReadStaff( staff, layer, j );
         if ( m_noLigne > system_no + 1 ) { // we have a new system
@@ -923,9 +929,9 @@ bool MusWWGInput::ReadPage( MusPage *page )
         if ( m_indentDroite ) {      
             system->m_systemRightMar = m_indentDroite;
         }
-        measure->AddLayer( layer );
-        staff->AddMeasure( measure );
-        system->AddStaff( staff );
+        staff->AddLayer( layer );
+        measure->AddStaff( staff );
+        system->AddMeasure( measure );
 	}
     // add the last system
     page->AddSystem( system );

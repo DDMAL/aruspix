@@ -104,9 +104,11 @@ bool MusBinInput_1_X::ImportFile( )
         for (k = 0; k < page->GetSystemCount(); k++) 
         {
             MusSystem *system = (MusSystem*)page->m_children[k];
+            // we always have one single measure per system
+            MusMeasure *measure = (MusMeasure*)system->m_children[0];
             MusStaff *staff = NULL;
             
-            for (l = 0; l < system->GetStaffCount(); l++) 
+            for (l = 0; l < measure->GetStaffCount(); l++)
             {
                 staff = (MusStaff*)system->m_children[l];
                 yy -= ecarts[m] * m_doc->m_interl[ staff->staffSize ];
@@ -235,12 +237,12 @@ bool MusBinInput_1_X::ReadPage( MusPage *page )
     system->m_systemLeftMar = indent;
     system->m_systemRightMar = indentDroite;
     //system->lrg_lign = lrg_lign;  
-    int system_no = 0; // we don't have no members in system anymore 
+    int system_no = 0; // we don't have no members in system anymore
     
     for (j = 0; j < nbrePortees; j++) 
 	{
-		MusStaff *staff = new MusStaff( j + 1 );
         MusMeasure *measure = new MusMeasure( false );
+		MusStaff *staff = new MusStaff( j + 1 );
         MusLayer *layer = new MusLayer( 1 ); // we have always on layer per staff
 		ReadStaff( staff, layer, j );
         if ( m_noLigne > system_no + 1 ) { // we have a new system
@@ -257,9 +259,9 @@ bool MusBinInput_1_X::ReadPage( MusPage *page )
             system->m_systemRightMar = m_indentDroite;
         }
         
-        staff->AddMeasure( measure );
-        measure->AddLayer( layer );
-        system->AddStaff( staff );
+        staff->AddLayer( layer );
+        measure->AddStaff( staff );
+        system->AddMeasure( measure );
 	}
     // add the last system
     page->AddSystem( system );    
