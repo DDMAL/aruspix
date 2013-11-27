@@ -56,24 +56,25 @@ std::string IntToObliqueFigures(unsigned int number) {
  * Analyze a tuplet object and figure out if all the notes are in the same beam
  * or not
  */
-bool AllNotesBeamed(MusTuplet* tuplet, MusLayer *layer) {
+ArrayOfMusObjects AllNotesBeamed(MusTuplet* tuplet) {
     
     MusBeam *currentBeam, *firstBeam = NULL;
-    bool succ = false;
+    ArrayOfMusObjects elems;
     
-    for (int i = 0; i < tuplet->GetNoteCount(); i++) {
-        MusNote *mnote = dynamic_cast<MusNote*>(tuplet->m_children[i]);
-        MusLayerElement *laidNote = dynamic_cast<MusLayerElement*>(tuplet->m_children[i]);
+    // Are we contained in a beam?
+    if (dynamic_cast<MusBeam*>(tuplet->m_parent) && !tuplet->m_children.empty())
+        return tuplet->m_children;
+
+    
+    // No we contain a beam? Go on and search for it in the children
+    for (unsigned int i = 0; i < tuplet->m_children.size(); i++) {
+        if (dynamic_cast<MusNote*>(tuplet->m_children[i]))
+            return ArrayOfMusObjects();
         
-        // First check: if a note is out of a beam
-        if (!mnote->IsInBeam( mnote ))
-            return false;
+        currentBeam = dynamic_cast<MusBeam*>(tuplet->m_children[i]);
         
-        currentBeam = dynamic_cast<MusBeam*>(layer->GetFirst(laidNote, BACKWARD, &typeid(MusBeam), &succ));
-        // no MusBeam found before this note, but the note is set as beamed. mah!
-        // return false, we have no beaming
-        if (!succ)
-            return false;
+        if (!currentBeam)
+            continue;
         
         // The first time we find a beam, set the previous one
         if (firstBeam == NULL)
@@ -83,15 +84,14 @@ bool AllNotesBeamed(MusTuplet* tuplet, MusLayer *layer) {
         // if it is a different one, it means the tuplet
         // is broken into two beams
         if (firstBeam != currentBeam)
-            return false;
-     
+            return ArrayOfMusObjects();
         
-        // So the beam is the same, check that the note
-        // is actually into this beam, if not return false
-        if (currentBeam->GetChildIndex(tuplet->m_children[0]) == -1)
-            return false;
     }
-    return true;
+    
+    assert(currentBeam);
+        
+    std::copy( currentBeam->m_list.begin(), currentBeam->m_list.end(), std::back_inserter( elems ) );
+    return elems;
 }
 
 /**
@@ -125,12 +125,17 @@ bool GetTupletCoordinates(MusTuplet* tuplet, MusLayer *layer, MusPoint* start, M
     MusPoint first, last;
     int x, y;
     bool direction = true; //true = up, false = down
-
-    MusLayerElement *firstNote = dynamic_cast<MusLayerElement*>(tuplet->m_children[0]);
-    MusLayerElement *lastNote = dynamic_cast<MusLayerElement*>(tuplet->m_children[tuplet->GetNoteCount() - 1]);
+    
+    MusLayerElement *firstNote, *lastNote;
+    
+    ArrayOfMusObjects beamed_notes = AllNotesBeamed(tuplet);
     
     // AllNotesBeamed tries to figure out if all the notes are in the same beam
-    if (AllNotesBeamed(tuplet, layer)) {
+    if (beamed_notes.size() > 0) {
+        
+        firstNote = dynamic_cast<MusLayerElement*>(beamed_notes.front());
+        lastNote = dynamic_cast<MusLayerElement*>(beamed_notes.back());
+
         // yes they are in a beam
         // get the x position centered from the STEM so it looks better
         // NOTE start and end are left to 0, this is the signal that no bracket has to be drawn
@@ -148,6 +153,23 @@ bool GetTupletCoordinates(MusTuplet* tuplet, MusLayer *layer, MusPoint* start, M
         center->y = y;
         direction =  firstNote->m_drawn_stem_dir; // stem direction is same for all notes
     } else {
+            
+        ArrayOfMusObjects all_notes;
+        
+        // We can have a mixed group of Beams and notes. Flatten it
+        for (unsigned int i = 0; i < tuplet->m_children.size(); i++) {
+            if (dynamic_cast<MusNote*>(tuplet->m_children[i]))
+                all_notes.push_back(tuplet->m_children[i]);
+            
+            if (dynamic_cast<MusBeam*>(tuplet->m_children[i])) {
+                MusBeam* beam = dynamic_cast<MusBeam*>(tuplet->m_children[i]);
+                std::copy( beam->m_list.begin(), beam->m_list.end(), std::back_inserter( all_notes ) );
+            }
+        }
+        
+        firstNote = dynamic_cast<MusLayerElement*>(all_notes.front());
+        lastNote = dynamic_cast<MusLayerElement*>(all_notes.back());
+        
         // There are unbeamed notes of two different beams
         // treat all the notes as unbeames
         int ups = 0, downs = 0; // quantity of up- and down-stems
@@ -163,8 +185,8 @@ bool GetTupletCoordinates(MusTuplet* tuplet, MusLayer *layer, MusPoint* start, M
         
         // THe first step is to calculate all the stem directions
         // cycle into the elements and count the up and down dirs
-        for (int i = 0; i < tuplet->GetNoteCount(); i++) {
-            MusLayerElement *currentNote = dynamic_cast<MusLayerElement*>(tuplet->m_children[i]);
+        for (int i = 0; i < all_notes.size(); i++) {
+            MusLayerElement *currentNote = dynamic_cast<MusLayerElement*>(all_notes[i]);
             
             if (currentNote->m_drawn_stem_dir == true)
                 ups++;
@@ -193,8 +215,8 @@ bool GetTupletCoordinates(MusTuplet* tuplet, MusLayer *layer, MusPoint* start, M
             // and stop at last -1)
             // We will see if the position of the note is more (or less for down stems) of the calculated
             // average. In this case we offset down or up all the points
-            for (int i = 1; i < tuplet->GetNoteCount() - 1 ; i++) {
-                 MusLayerElement *currentNote = dynamic_cast<MusLayerElement*>(tuplet->m_children[i]);
+            for (int i = 1; i < all_notes.size() - 1 ; i++) {
+                 MusLayerElement *currentNote = dynamic_cast<MusLayerElement*>(all_notes[i]);
                 
                 if (direction) {
                     // The note is more than the avg, adjust to y the difference
@@ -223,8 +245,8 @@ bool GetTupletCoordinates(MusTuplet* tuplet, MusLayer *layer, MusPoint* start, M
             y = 0;
             
             // Find the tallest stem and set y to it (with the offset distance)
-            for (int i = 0; i < tuplet->GetNoteCount(); i++) {
-                MusLayerElement *currentNote = dynamic_cast<MusLayerElement*>(tuplet->m_children[i]);
+            for (int i = 0; i < all_notes.size(); i++) {
+                MusLayerElement *currentNote = dynamic_cast<MusLayerElement*>(all_notes[i]);
                 
                 if (currentNote->m_drawn_stem_dir == direction) {
                                         
@@ -262,38 +284,13 @@ void MusRC::DrawTuplet( MusDC *dc, MusTuplet *tuplet, MusLayer *layer, MusStaff 
     
     int txt_lenght, txt_height;
     
-    // rz MusTuplet *tuplet = dynamic_cast<MusTuplet*>(element);
-    //char notes = tuplet->m_notes.GetCount();
-    
     std::string notes = IntToObliqueFigures((unsigned int)tuplet->GetNoteCount());
-    
-    // WORKS ONLY FOR ONE CHAR!
-    //char_position = notes + 1; // in the bbox array, '0' char is at pos 1
-    
-    /*
-    switch (notes) {
-        case 0: char_position = LEIPZIG_BBOX_OBLIQUE_FIGURE_0; break;
-        case 1: char_position = LEIPZIG_BBOX_OBLIQUE_FIGURE_1; break;
-        case 2: char_position = LEIPZIG_BBOX_OBLIQUE_FIGURE_2; break;
-        case 3: char_position = LEIPZIG_BBOX_OBLIQUE_FIGURE_3; break;
-        case 4: char_position = LEIPZIG_BBOX_OBLIQUE_FIGURE_4; break;
-        case 5: char_position = LEIPZIG_BBOX_OBLIQUE_FIGURE_5; break;
-        case 6: char_position = LEIPZIG_BBOX_OBLIQUE_FIGURE_6; break;
-        case 7: char_position = LEIPZIG_BBOX_OBLIQUE_FIGURE_7; break;
-        case 8: char_position = LEIPZIG_BBOX_OBLIQUE_FIGURE_8; break;
-        case 9: char_position = LEIPZIG_BBOX_OBLIQUE_FIGURE_9; break;
-        default: char_position = LEIPZIG_BBOX_OBLIQUE_FIGURE_0; break;
-    }*/
-    
-    //txt_lenght = bbox->m_bBox[char_position].m_width * ((double)(m_layout->m_fontSize[0][0]) / LEIPZIG_UNITS_PER_EM) + 1;
     
     dc->GetTextExtent(notes, &txt_lenght, &txt_height);
     
     MusPoint start, end, center;
     bool direction = GetTupletCoordinates(tuplet, layer, &start, &end, &center);
-    
-    //rz dc->StartGraphic( element, "tuplet", Mus::StringFormat("tuplet_%d_%d_%d", staff->GetId(), layer->voix, element->GetId()) );
-    
+        
     // Calculate position for number 0x82
     // since the number is slanted, move the center left
     // by 4 pixels so it seems more centered to the eye

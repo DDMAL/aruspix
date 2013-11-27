@@ -39,7 +39,7 @@ private:
 public:
     
 private:
-    
+
 };
 
 #endif

@@ -234,7 +234,7 @@ void MusPaeInput::convertPlainAndEasyToKern(std::istream &infile, std::ostream &
         
 		// beginning tuplets & fermatas
 		else if (incipit[i] == '(') {
-            i += getTupletFermata( incipit, &current_measure, &current_note, i );
+            i += getTupletFermata( incipit, &current_note, i );
 		}
         
         // end of tuplets
@@ -503,7 +503,7 @@ int MusPaeInput::getAccidental(const char* incipit, unsigned char *accident, int
 // getTupletOrFermata --
 //
 
-int MusPaeInput::getTupletFermata(const char* incipit, MeasureObject *measure, NoteObject *note, int index ) {
+int MusPaeInput::getTupletFermata(const char* incipit, NoteObject* note, int index ) {
     
     int i = index;
     int length = strlen(incipit);
@@ -566,10 +566,6 @@ int MusPaeInput::getTupletFermata(const char* incipit, MeasureObject *measure, N
             tuplet_val = 3;
         }
         
-        // durations where already parsed, get them from measure
-        note->tuplet_duration = measure->durations[measure->durations_offset];
-        // same for dots
-        note->tuplet_dots = measure->dots[measure->durations_offset];
         // this is the first note, the notal number of notes = tuplet_val
         note->tuplet_notes = tuplet_val;
         // but also the note counter

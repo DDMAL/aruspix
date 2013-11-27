@@ -3,5 +3,5 @@
 @keysig:none
 @key: 
 @timesig:c/
-@data:4({8''DF'F})4({8''DG'G})4({8''CF'F})4({8''EA'A})/4({8''CF'F})4({8''DG'G})
+@data:({8''DF'F})({8''DG'G})({8''CF'F})({8''EA'A})/({8''CF'F}){(8''DG'G)}
 @end:triplet_short

@@ -45,9 +45,7 @@ public:
         rest = old.rest;
         
         clef = old.clef;
-        
-        tuplet_duration = old.tuplet_duration;
-        tuplet_dots = old.tuplet_dots;
+
         tuplet_notes = old.tuplet_notes;
         tuplet_note = old.tuplet_note;
     }
@@ -65,8 +63,6 @@ public:
         dots = 0;
         rest = false;
         
-        tuplet_duration = -1;
-        tuplet_dots = 0;
         tuplet_notes = 0;
         tuplet_note = 0;
         
@@ -93,8 +89,6 @@ public:
         
         clef = d.clef;
         
-        tuplet_duration = d.tuplet_duration;
-        tuplet_dots = d.tuplet_dots;
         tuplet_notes = d.tuplet_notes;
         tuplet_note = d.tuplet_note;
         
@@ -105,8 +99,6 @@ public:
     //MusRest *mrest; // this is not too nice
 
     // tuplet stuff
-    int tuplet_duration; // Original duration of a tuplet, eg DUR_4, negative = no tuplet
-    int tuplet_dots; // dots to the above duration
     int tuplet_notes; // quantity of notes in the tuplet
     int tuplet_note; // indicates this note is the nth in the tuplet
     
@@ -237,7 +229,7 @@ private:
      int       getOctave           (const char* incipit, unsigned char *octave, int index = 0 );
      int       getDurations        (const char* incipit, MeasureObject *measure, int index = 0);
      int       getDuration         (const char* incipit, int *duration, int *dot, int index );
-     int       getTupletFermata    (const char* incipit, MeasureObject *measure, NoteObject *note, int index = 0);
+     int       getTupletFermata    (const char* incipit, NoteObject *note, int index = 0);
      int       getTupletFermataEnd (const char* incipit, NoteObject *note, int index = 0);
      int       getGraceNote        (const char* incipit, NoteObject *note, int index = 0);
      int       getWholeRest        (const char* incipit, int *wholerest, int index );
