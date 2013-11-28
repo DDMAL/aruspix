@@ -130,7 +130,7 @@ void MusStaff::CopyAttributes( MusStaff *nstaff )
 	nstaff->m_y_drawing = m_y_drawing;
 }
 
-int MusStaff::GetStaffNo() const
+int MusStaff::GetStaffIdx() const
 {
     assert( m_parent ); // System cannot be NULL
     

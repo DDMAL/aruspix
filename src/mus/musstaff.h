@@ -46,7 +46,7 @@ public:
 	
 	int GetLayerCount() const { return (int)m_children.size(); };
     
-    int GetStaffNo() const;
+    int GetStaffIdx() const;
     
     /**
      * Return the default horizontal spacing of staves.

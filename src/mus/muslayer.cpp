@@ -80,7 +80,7 @@ void MusLayer::CopyAttributes( MusLayer *nlayer )
 	nlayer->voix = voix;
 }
 
-int MusLayer::GetLayerNo() const
+int MusLayer::GetLayerIdx() const
 {
     assert( m_parent ); // LaidOutStaff cannot be NULL
     

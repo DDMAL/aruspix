@@ -42,7 +42,7 @@ public:
     	
 	int GetElementCount() const { return (int)m_children.size(); };
     
-    int GetLayerNo() const;
+    int GetLayerIdx() const;
 
     // functors
     /**
@@ -136,8 +136,6 @@ private:
 public:
     /** The logical layer */
     int m_logLayerNb;
-    /** The logical staff - used to overwrite the parent staff */
-    int m_logStaffNb;
 	/** voix de la portee*/
 	unsigned short voix;  
     
