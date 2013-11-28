@@ -31,7 +31,7 @@ class MusLayer: public MusDocObject, public MusObjectListInterface
 {
 public:
     // constructors and destructors
-    MusLayer( int logLayerNb );
+    MusLayer( int n );
     virtual ~MusLayer();
     
     virtual std::string MusClassName( ) { return "MusLayer"; };	
@@ -43,11 +43,21 @@ public:
 	int GetElementCount() const { return (int)m_children.size(); };
     
     /**
-     * Return the index position of the layer in its staff parent
+     * Return the index position of the layer in its staff parent.
+     * The index position is 0-based.
      */
     int GetLayerIdx() const { return MusObject::GetIdx(); };
     
-    int GetLayerNo() const;
+    
+    /**
+     * @name Set and get the layer number which is 1-based.
+     * This can be different from the index position in the parent staff.
+     */
+    ///@{
+    int GetLayerNo() const { return m_n; };
+    void SetLayerNo( int n ) { m_n = n; };
+    ///@}
+    
 
     // functors
     /**
@@ -72,16 +82,26 @@ public:
     void Insert( MusLayerElement *element, MusLayerElement *before );
     
 	void Delete( MusLayerElement *element );
-	/** 
-     * Looks for the first MusLayerElement with an LayoutElement of type elementType.
+	
+    /**
+     * Looks for the first MusLayerElement of type elementType.
      * Looks FORWARD of BACKWARD depending on the direction parameter.
      * Returns the retrieved element if *succ == true or the original element if not.
      */
     MusLayerElement *GetFirst( MusLayerElement *element, unsigned int direction, const std::type_info *elementType, bool *succ );
-    /** Get the current clef for the test element */
+    
+    /** 
+     * Get the current clef for the test element.
+     * Goes back on the layer until a clef is found.
+     * This is used when inserting a note by passing a y position because we need
+     * to know the clef in order to get the pitch.
+     */
 	MusClef *GetClef ( MusLayerElement *test );
-	void getOctDec (int ft, int _ot, int rupt, int *oct);
-    /** Return the clef offset for the position x (retrieve the first clef before it) */
+    
+    /** 
+     * Return the clef offset for the position x.
+     * The method uses MusLayer::GetClef first to find the clef before test.
+     */
     int GetClefOffset( MusLayerElement *test  );
     
     /**
@@ -139,8 +159,6 @@ public:
 private:
     
 public:
-    /** The logical layer */
-    int m_logLayerNb;
 	/** voix de la portee*/
 	unsigned short voix;  
     
@@ -150,6 +168,8 @@ protected:
     ListOfMusObjects m_drawingList;
 
 private:
+    /** The layer number */
+    int m_n;
     
 };
 

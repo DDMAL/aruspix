@@ -25,12 +25,12 @@
 // MusStaff
 //----------------------------------------------------------------------------
 
-MusStaff::MusStaff( int logStaffNb ):
+MusStaff::MusStaff( int n ):
 	MusDocObject()
 {
 	Clear( );
-    //wxASSERT ( logStaffNb > 0 );
-    m_logStaffNb = logStaffNb;
+    //wxASSERT ( n > 0 );
+    m_n = n;
 }
 
 MusStaff::MusStaff( const MusStaff& staff )
@@ -104,6 +104,10 @@ void MusStaff::AddLayer( MusLayer *layer )
 {
 	layer->SetParent( this );
 	m_children.push_back( layer );
+    
+    if ( layer->GetLayerNo() == -1 ) {
+        layer->SetLayerNo( this->GetLayerCount() );
+    }
 }
 
 void MusStaff::CopyAttributes( MusStaff *nstaff )

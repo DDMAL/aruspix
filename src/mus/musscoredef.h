@@ -22,7 +22,7 @@ class MusStaffDef;
  * This class represents a MEI scoreDef.
  * It contains MusStaffGrp objects.
 */
-class MusScoreDef: public MusObject
+class MusScoreDef: public MusObject, public MusObjectListInterface
 {
 public:
     // constructors and destructors

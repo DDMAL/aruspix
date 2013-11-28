@@ -216,7 +216,7 @@ bool MusMeiOutput::WriteStaff( MusStaff *staff )
         m_staff->SetAttribute( "label", "mensural" );
     }
     m_staff->SetAttribute( "uly", Mus::StringFormat( "%d", staff->m_y_abs ).c_str() );
-    m_staff->SetAttribute( "n", Mus::StringFormat( "%d", staff->m_logStaffNb ).c_str() );    
+    m_staff->SetAttribute( "n", Mus::StringFormat( "%d", staff->GetStaffNo() ).c_str() );
 
     m_system->LinkEndChild( m_staff );
     return true;
@@ -237,7 +237,7 @@ bool MusMeiOutput::WriteLayer( MusLayer *layer )
     assert( m_staff );
     m_layer = new TiXmlElement("layer");
     m_layer->SetAttribute( "xml:id",  UuidToMeiStr( layer ).c_str() );
-    m_layer->SetAttribute( "n", Mus::StringFormat( "%d", layer->m_logLayerNb ).c_str() );
+    m_layer->SetAttribute( "n", Mus::StringFormat( "%d", layer->GetLayerNo() ).c_str() );
     if ( m_measure ) {
         m_measure->LinkEndChild( m_layer );
     }
@@ -870,7 +870,10 @@ bool MusMeiInput::ReadMeiMeasure( TiXmlElement *measure )
 bool MusMeiInput::ReadMeiStaff( TiXmlElement *staff )
 {
     if ( staff->Attribute( "n" ) ) {
-        m_staff->m_logStaffNb = atoi ( staff->Attribute( "n" ) );
+        m_staff->SetStaffNo( atoi ( staff->Attribute( "n" ) ) );
+    }
+    else {
+        Mus::LogWarning("No @n on staff");
     }
     if ( staff->Attribute( "uly" ) ) {
         m_staff->m_y_abs = atoi ( staff->Attribute( "uly" ) );
@@ -901,7 +904,10 @@ bool MusMeiInput::ReadMeiStaff( TiXmlElement *staff )
 bool MusMeiInput::ReadMeiLayer( TiXmlElement *layer )
 {
     if ( layer->Attribute( "n" ) ) {
-        m_layer->m_logLayerNb = atoi ( layer->Attribute( "n" ) );
+        m_layer->SetLayerNo( atoi ( layer->Attribute( "n" ) ) );
+    }
+    else {
+        Mus::LogWarning("No @n on layer");
     }
     
     TiXmlElement *current = NULL;

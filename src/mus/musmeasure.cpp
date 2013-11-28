@@ -81,10 +81,9 @@ void MusMeasure::AddStaff( MusStaff *staff )
 	staff->SetParent( this );
 	m_children.push_back( staff );
     
-    //if ( staff->GetStaffNo() == -1 ) {
-        //staff->SetStaffNo( this->GetStaffCount() );
-    //}
-    
+    if ( staff->GetStaffNo() == -1 ) {
+        staff->SetStaffNo( this->GetStaffCount() );
+    }
 }
 
 MusStaff *MusMeasure::GetFirst( )

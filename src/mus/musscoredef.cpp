@@ -22,7 +22,7 @@
 //----------------------------------------------------------------------------
 
 MusScoreDef::MusScoreDef() :
-	MusObject()
+	MusObject(), MusObjectListInterface()
 {
 }
 

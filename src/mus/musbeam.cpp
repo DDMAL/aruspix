@@ -13,7 +13,7 @@
 //----------------------------------------------------------------------------
 
 MusBeam::MusBeam():
-    MusLayerElement()
+    MusLayerElement(), MusObjectListInterface()
 {
 }
 

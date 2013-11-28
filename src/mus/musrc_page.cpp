@@ -442,7 +442,7 @@ void MusRC::DrawBarline ( MusDC *dc, MusSystem *system, int x, int cod, bool por
 		shportee (0);***/
 
     /*
-	i=j= pportee->GetStaffNo();
+	i=j= pportee->GetStaffIdx();
 	if (pportee->noGrp)
 	{	
 		while (i && ((MusStaff*)system->m_children[i])->vertBarre != START && ((MusStaff*)system->m_children[i])->vertBarre != START_END)
