@@ -68,6 +68,11 @@ public:
     virtual std::string MusClassName( ) { return "[MISSING]"; };
     
     /**
+     * Return the index position of the object in its parent (-1 if not found)
+     */
+    int GetIdx() const;
+    
+    /**
      * Look for the MusObject in the children and return its position (-1 if not found)
      */
     int GetChildIndex( const MusObject *child );

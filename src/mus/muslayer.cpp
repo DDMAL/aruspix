@@ -80,15 +80,6 @@ void MusLayer::CopyAttributes( MusLayer *nlayer )
 	nlayer->voix = voix;
 }
 
-int MusLayer::GetLayerIdx() const
-{
-    assert( m_parent ); // LaidOutStaff cannot be NULL
-    
-    return m_parent->GetChildIndex( this );
-}
-
-
-
 MusLayerElement *MusLayer::GetFirst( )
 {
 	if ( m_children.empty() )

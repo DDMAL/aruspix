@@ -67,13 +67,6 @@ void MusPage::AddSystem( MusSystem *system )
     Modify();
 }
 
-int MusPage::GetPageNo() const
-{
-    assert( m_parent ); // Doc cannot be NULL
-    
-    return m_parent->GetChildIndex( this );
-}
-
 int MusPage::GetStaffPosOnPage( MusStaff *staff )
 {
     /*

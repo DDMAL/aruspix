@@ -68,6 +68,13 @@ void MusObject::ClearChildren()
     m_children.clear();
 }
 
+int MusObject::GetIdx() const
+{
+    assert( m_parent );
+    
+    return m_parent->GetChildIndex( this );
+}
+
 void MusObject::InsertChild( MusObject *element, int idx )
 {
     if ( idx >= (int)m_children.size() ) {

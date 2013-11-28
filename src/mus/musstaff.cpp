@@ -130,13 +130,6 @@ void MusStaff::CopyAttributes( MusStaff *nstaff )
 	nstaff->m_y_drawing = m_y_drawing;
 }
 
-int MusStaff::GetStaffIdx() const
-{
-    assert( m_parent ); // System cannot be NULL
-    
-    return m_parent->GetChildIndex( this );
-}
-
 MusLayer *MusStaff::GetFirst( )
 {
 	if ( m_children.empty() )

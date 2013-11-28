@@ -46,7 +46,10 @@ public:
 	
 	int GetLayerCount() const { return (int)m_children.size(); };
     
-    int GetStaffIdx() const;
+    /**
+     * Return the index position of the staff in its measure parent
+     */
+    int GetStaffIdx() const { return MusObject::GetIdx(); };
     
     /**
      * Return the default horizontal spacing of staves.

@@ -42,7 +42,12 @@ public:
     	
 	int GetElementCount() const { return (int)m_children.size(); };
     
-    int GetLayerIdx() const;
+    /**
+     * Return the index position of the layer in its staff parent
+     */
+    int GetLayerIdx() const { return MusObject::GetIdx(); };
+    
+    int GetLayerNo() const;
 
     // functors
     /**

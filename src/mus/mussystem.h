@@ -57,7 +57,10 @@ public:
 	
 	int GetMeasureCount() const { return (int)m_children.size(); };
     
-    int GetSystemNo() const;
+    /**
+     * Return the index position of the system in its page parent
+     */
+    int GetSystemIdx() const { return MusObject::GetIdx(); };
     
     // functors
     virtual int Save( ArrayPtrVoid params );
