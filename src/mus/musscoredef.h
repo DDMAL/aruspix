@@ -9,6 +9,9 @@
 #ifndef __MUS_SCOREDEF_H__
 #define __MUS_SCOREDEF_H__
 
+#include "musclef.h"
+#include "muskeysig.h"
+#include "musmensur.h"
 #include "musobject.h"
 
 class MusStaffGrp;
@@ -22,7 +25,7 @@ class MusStaffDef;
  * This class represents a MEI scoreDef.
  * It contains MusStaffGrp objects.
 */
-class MusScoreDef: public MusObject, public MusObjectListInterface
+class MusScoreDef: public MusObject
 {
 public:
     // constructors and destructors
@@ -32,6 +35,11 @@ public:
     virtual std::string MusClassName( ) { return "MusScoreDef"; };	    
     
 	void AddStaffGrp( MusStaffGrp *staffGrp );
+    
+    /**
+     * Get the staffDef with number n (NULL if not found).
+     */
+    MusStaffDef *GetStaffDef( int n );
     
 private:
     
@@ -88,15 +96,39 @@ public:
     virtual ~MusStaffDef();
     
     virtual std::string MusClassName( ) { return "MusStaffDef"; };
+    
+    /**
+     * @name Set and get  the staff number which is 1-based.
+     * This can be different from the index position in the parent measure.
+     */
+    ///@{
+    int GetStaffNo() const { return m_n; };
+    void SetStaffNo( int n ) { m_n = n; };
+    ///@}
 
     // functors
     virtual int Save( ArrayPtrVoid params );
+    
+    /**
+     * Find the MusStaffDef with number m_n value.
+     * param 0: the n we are looking for.
+     * param 1: the pointer to pointer to the MusStaffDef retrieved (if found).
+     */
+    virtual int FindStaffDefByNumber( ArrayPtrVoid params );
     
 private:
     
 public:
     
 private:
+    /** The staff number */
+    int m_n;
+    /** The clef attribute */
+    MusClef m_clef;
+    /** The key signature */
+    MusKeySig m_keySig;
+    /** The mensure (time signature */
+    MusMensur m_mensur;
     
 };
 

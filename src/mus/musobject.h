@@ -153,6 +153,13 @@ public:
     virtual int FindByUuid( ArrayPtrVoid params );
     
     /**
+     * Find the MusStaffDef with number m_n value.
+     * param 0: the n we are looking for.
+     * param 1: the pointer to pointer to the MusStaffDef retrieved (if found).
+     */
+    virtual int FindStaffDefByNumber( ArrayPtrVoid params ) { return FUNCTOR_CONTINUE; };
+    
+    /**
      * Save the content of and object by calling the appropriate MusFileOutputStream method
      * param 0: a pointer to the MusFileOutputStream.
      */
@@ -310,7 +317,7 @@ public:
     MusObject *GetListPrevious( const MusObject *listElement );
 
     /**
-     * Returns the previous next in the list (NULL if not found)
+     * Returns the next object in the list (NULL if not found)
      */
     MusObject *GetListNext( const MusObject *listElement );
     
