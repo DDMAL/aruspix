@@ -215,16 +215,16 @@ void MusWindow::Store( AxUndoFile *undoPtr )
     int lyric_element = -1;
     
 	if ( m_page ) {
-		page = m_page->GetPageNo();
+		page = m_page->GetPageIdx();
     }
 	if ( m_currentSystem ) {
-		system = m_currentSystem->GetSystemNo();
+		system = m_currentSystem->GetSystemIdx();
     }
 	if ( m_currentStaff ) {
-		staff = m_currentStaff->GetStaffNo();
+		staff = m_currentStaff->GetStaffIdx();
     }
     if ( m_currentLayer ) {
-        layer = m_currentLayer->GetLayerNo();
+        layer = m_currentLayer->GetLayerIdx();
     }
 	if ( m_currentElement ) {
         /*
@@ -1137,8 +1137,8 @@ bool MusWindow::MoveLeftRight( bool left )
         // previous measure
         else if ( m_currentSystem->GetPrevious( m_currentMeasure ) )
         {
-            int currentLayerNo = m_currentLayer->GetLayerNo();
-            int currentStaffNo = m_currentStaff->GetStaffNo();
+            int currentLayerNo = m_currentLayer->GetLayerIdx();
+            int currentStaffNo = m_currentStaff->GetStaffIdx();
             measure = m_currentSystem->GetPrevious( m_currentMeasure );
             staff = measure->GetStaff( currentStaffNo );
             if ( staff ) {
@@ -1151,8 +1151,8 @@ bool MusWindow::MoveLeftRight( bool left )
         // previous system
         else if ( m_page->GetPrevious( m_currentSystem ) )
         {
-            int currentStaffNo = m_currentStaff->GetStaffNo();
-            int currentLayerNo = m_currentLayer->GetLayerNo();
+            int currentStaffNo = m_currentStaff->GetStaffIdx();
+            int currentLayerNo = m_currentLayer->GetLayerIdx();
             system = m_page->GetPrevious( m_currentSystem );
             measure = system->GetLast();
             if ( measure ) {
@@ -1177,8 +1177,8 @@ bool MusWindow::MoveLeftRight( bool left )
         // next measure
         else if ( m_currentSystem->GetNext( m_currentMeasure ) )
         {
-            int currentLayerNo = m_currentLayer->GetLayerNo();
-            int currentStaffNo = m_currentStaff->GetStaffNo();
+            int currentLayerNo = m_currentLayer->GetLayerIdx();
+            int currentStaffNo = m_currentStaff->GetStaffIdx();
             measure = m_currentSystem->GetNext( m_currentMeasure );
             staff = measure->GetStaff( currentStaffNo );
             if ( staff ) {
@@ -1191,8 +1191,8 @@ bool MusWindow::MoveLeftRight( bool left )
         // next system
         else if ( m_page->GetNext( m_currentSystem ) )
         {
-            int currentStaffNo = m_currentStaff->GetStaffNo();
-            int currentLayerNo = m_currentLayer->GetLayerNo();
+            int currentStaffNo = m_currentStaff->GetStaffIdx();
+            int currentLayerNo = m_currentLayer->GetLayerIdx();
             system = m_page->GetNext( m_currentSystem );
             measure = system->GetFirst();
             if ( measure ) {

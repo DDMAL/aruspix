@@ -254,7 +254,7 @@ void RecFile::UpgradeTo_2_1_0()
             wxLogError( "File cannot be upgraded to 2.1.0 (Missing MusLayer)");    
             return;
         }
-        MusLayer *currentLayer = laidOutLayer->GetSection()->GetStaff( laidOutLayer->m_logStaffNb - 1 )->GetLayer( laidOutLayer->m_logLayerNb - 1 );
+        MusLayer *currentLayer = laidOutLayer->GetSection()->GetStaff( laidOutLayer->m_n - 1 )->GetLayer( laidOutLayer->m_n - 1 );
         if ( !currentLayer ) {
             wxLogError( "File cannot be upgraded to 2.1.0 (Missing MusLayer)");    
             return;

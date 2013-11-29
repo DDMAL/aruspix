@@ -435,9 +435,9 @@ bool MusWWGOutput::WriteLayer( const MusLayer *layer, int staffNo )
 	Write( &uint16, 2 );
 	uint16 = wxUINT16_SWAP_ON_BE( m_current_staff->totGrp );
 	Write( &uint16, 2 );
-	uint16 = wxUINT16_SWAP_ON_BE( m_current_system->GetSystemNo() ); // we don't have noLigne anymore - given by the current system being written
+	uint16 = wxUINT16_SWAP_ON_BE( m_current_system->GetSystemIdx() ); // we don't have noLigne anymore - given by the current system being written
 	Write( &uint16, 2 );
-	uint16 = wxUINT16_SWAP_ON_BE( m_current_staff->GetStaffNo() );
+	uint16 = wxUINT16_SWAP_ON_BE( m_current_staff->GetStaffIdx() );
 	Write( &uint16, 2 );
 	Write( &m_current_staff->armTyp, 1 );
 	Write( &m_current_staff->armNbr, 1 );
