@@ -174,9 +174,10 @@ int MusMeasure::Align( ArrayPtrVoid params )
 
 int MusMeasure::IntegrateBoundingBoxXShift( ArrayPtrVoid params )
 {
-    // param 0: the cumulated shift
-    // param 1: the functor to be redirected to MusAligner
-    MusFunctor *integrateBoundingBoxShift = (MusFunctor*)params[1];
+    // param 0: the cumulated shift (unused)
+    // param 1: the cumulated width (unused)
+    // param 2: the functor to be redirected to MusAligner
+    MusFunctor *integrateBoundingBoxShift = (MusFunctor*)params[2];
     
     m_measureAligner.Process( integrateBoundingBoxShift, params);
     

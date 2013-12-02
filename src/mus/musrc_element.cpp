@@ -695,7 +695,7 @@ void MusRC::DrawMultiRest(MusDC *dc, MusLayerElement *element, MusLayer *layer, 
     if (multirest->GetNumber() > 999)
         multirest->SetNumber(999);
     
-    // This is 1/2 the lenght of th black rectangle
+    // This is 1/2 the length of th black rectangle
 	length = (m_doc->m_step1 * 5);
     
     // Position centered in third line
@@ -704,7 +704,7 @@ void MusRC::DrawMultiRest(MusDC *dc, MusLayerElement *element, MusLayer *layer, 
     y2 = y + m_doc->m_interl[staff->staffSize];
 	
     // a is the central point, claculate x and x2
-    x = a - length; 
+    x = a - length;
     x2 = a + length;
     
     // Draw the base rect

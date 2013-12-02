@@ -307,6 +307,9 @@ int MusLayerElement::Align( ArrayPtrVoid params )
     else if ( this->IsMensur() ) {
         type = ALIGNMENT_MENSUR;
     }
+    else if ( this->IsMultiRest() ) {
+        type = ALIGNMENT_MULTIREST;
+    }
     
     // get the duration of the event
     double duration = this->GetAlignementDuration();

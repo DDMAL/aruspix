@@ -578,6 +578,7 @@ int MusObject::SetBoundingBoxXShift( ArrayPtrVoid params )
     
     // the next minimal position if given by the right side of the bounding box + the spacing of the element
     (*min_pos) = current->m_contentBB_x2 + current->GetHorizontalSpacing();
+    current->GetAlignment()->SetMaxWidth( (*min_pos ) );
     
     return FUNCTOR_CONTINUE;
 }
@@ -621,7 +622,7 @@ int MusObject::SetBoundingBoxYShift( ArrayPtrVoid params )
     // the next minimal position if given by the right side of the bounding box + the spacing of the element
     (*min_pos) = current->m_contentBB_y1;
     
-        // do not go further down the tree in this case
+    // do not go further down the tree in this case
     return FUNCTOR_SIBLINGS;
 }
 

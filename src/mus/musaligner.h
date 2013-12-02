@@ -25,6 +25,7 @@ enum MusAlignmentType {
     ALIGNMENT_MENSUR,
     ALIGNMENT_KEYSIG,
     ALIGNMENT_BARLINE,
+    ALIGNMENT_MULTIREST,
     ALIGNMENT_MEASURE_START,
     ALIGNMENT_MEASURE_END
 };
@@ -141,6 +142,9 @@ public:
     
     void SetXShift( int x_shift );
     int GetXShift() { return m_x_shift; };
+    
+    void SetMaxWidth( int max_width );
+    int GetMaxWidth() { return m_max_width; };
 
     /**
      * @name Set and get the time value of the alignment
@@ -183,6 +187,7 @@ private:
      */
     int m_x_rel;
     int m_x_shift;
+    int m_max_width;
     double m_time;
     MusAlignmentType m_type;
 };
