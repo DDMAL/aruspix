@@ -24,6 +24,7 @@
 MusScoreDef::MusScoreDef() :
 	MusObject()
 {
+    this->ResetUuid();
 }
 
 MusScoreDef::~MusScoreDef()

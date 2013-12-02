@@ -38,6 +38,7 @@ public:
     virtual bool operator==(MusObject& other);
     
     virtual std::string MusClassName( ) { return "MusSymbol"; };
+    virtual std::string GetIdShortName() { return "symbol-"; };
     
     /**
      * Set the value for the symbol.

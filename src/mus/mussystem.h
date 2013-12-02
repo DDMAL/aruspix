@@ -35,7 +35,8 @@ public:
 	MusSystem( const MusSystem& system ); // copy contructor
     virtual ~MusSystem();
         
-    virtual std::string MusClassName( ) { return "MusSystem"; };	    
+    virtual std::string MusClassName( ) { return "MusSystem"; };
+    virtual std::string GetIdShortName() { return "system-"; };
     
     void Clear();
 	

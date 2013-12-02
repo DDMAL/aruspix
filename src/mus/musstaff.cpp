@@ -59,6 +59,8 @@ MusStaff::MusStaff( const MusStaff& staff )
         MusLayer *nlayer = new MusLayer( *(MusLayer*)staff.m_children[i] );
         this->AddLayer( nlayer );
 	}
+    
+    this->ResetUuid();
 }
 
 MusStaff::~MusStaff()

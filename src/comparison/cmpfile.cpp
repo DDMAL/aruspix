@@ -557,15 +557,15 @@ bool CmpCollation::Align( MusLayer *layer_ref, MusLayer *layer_var, wxString ref
 
 CmpPartPage::CmpPartPage() 
 { 
-    uuid_clear( m_start );
-    uuid_clear( m_end );
+    m_start.clear();
+    m_end.clear();
     m_part = NULL;
 }
 
 CmpPartPage::CmpPartPage(  wxString axfile, CmpBookPart *part ) 
 {
-    uuid_clear( m_start );
-    uuid_clear( m_end );
+    m_start.clear();
+    m_end.clear();
     m_axfile = axfile; 
     m_part = part;
 }
@@ -589,28 +589,30 @@ void CmpPartPage::SetStartEnd( MusLayerElement *element, bool isStart )
 
 void CmpPartPage::SetStart( wxString uuidStr ) 
 { 
-    uuid_clear( this->m_start );
+    this->m_start.clear();
     if ( !uuidStr.IsEmpty() ) {
-        uuid_parse( uuidStr.c_str(), this->m_start );
+        //uuid_parse( uuidStr.c_str(), this->m_start );
+        this->m_start = uuidStr;
     }
 }
 
 void CmpPartPage::SetEnd( wxString uuidStr ) 
 { 
-    uuid_clear( this->m_end );
+    this->m_end.clear();
     if ( !uuidStr.IsEmpty() ) {
-        uuid_parse( uuidStr.c_str(), this->m_end );
+        //uuid_parse( uuidStr.c_str(), this->m_end );
+        this->m_end = uuidStr;
     }
 }
 
 bool CmpPartPage::HasStart() 
 { 
-    return ( !uuid_is_null( m_start ) );
+    return ( !m_start.empty() );
 }
 
 bool CmpPartPage::HasEnd() 
 { 
-    return ( !uuid_is_null( m_end ) );
+    return ( !m_end.empty() );
 }
 
 //----------------------------------------------------------------------------
@@ -650,8 +652,8 @@ MusLayer *CmpBookPart::GetContentToAlign( wxString basename )
         bool new_uuid = false;
         ArrayPtrVoid params;
         params.push_back( alignLayer );
-        params.push_back( partPage->m_start );
-        params.push_back( partPage->m_end );
+        params.push_back( &partPage->m_start );
+        params.push_back( &partPage->m_end );
         params.push_back( &has_started );
         params.push_back( &has_ended);
         params.push_back( &new_uuid );
@@ -834,7 +836,7 @@ void CmpFile::SaveContent( )
 {
     wxASSERT( m_xml_root );
 	int i, j, k;
-    char uuidStr[37];
+    //char uuidStr[37];
     
     TiXmlElement books("books");
     for ( i = 0; i < (int)m_bookFiles.GetCount(); i++)
@@ -861,16 +863,14 @@ void CmpFile::SaveContent( )
 				axfile.SetAttribute("flags", wxString::Format("%d", 0 ) );
 				// add staves if any
 				CmpPartPage *partpage = &bookpart->m_partpages[k];
-                if ( !uuid_is_null( partpage->m_start ) ) {
+                if ( !partpage->m_start.empty() ) {
                     TiXmlElement start("start");
-                    uuid_unparse( partpage->m_start, uuidStr ); 
-                    start.SetAttribute("uuid", uuidStr );
+                    start.SetAttribute("uuid", partpage->m_start.c_str() );
 					axfile.InsertEndChild( start );
                 }
-                if ( !uuid_is_null( partpage->m_end ) ) {
+                if ( !partpage->m_end.empty() ) {
                     TiXmlElement end("end");
-                    uuid_unparse( partpage->m_end, uuidStr ); 
-                    end.SetAttribute("uuid", uuidStr );
+                    end.SetAttribute("uuid", partpage->m_end.c_str() );
 					axfile.InsertEndChild( end );
                 }
 				part.InsertEndChild( axfile );

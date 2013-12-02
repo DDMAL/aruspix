@@ -54,6 +54,7 @@ MusLayerElement(), MusPositionInterface()
 {
     m_num_alter = num_alter;
     m_alteration = alter;
+    this->ResetUuid();
 }
 
 MusKeySig::~MusKeySig()

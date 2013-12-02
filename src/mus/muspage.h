@@ -36,7 +36,8 @@ public:
     MusPage();
     virtual ~MusPage();
     
-    virtual std::string MusClassName( ) { return "MusPage"; };	    
+    virtual std::string MusClassName( ) { return "MusPage"; };
+    virtual std::string GetIdShortName() { return "page-"; };
     
     void Clear();
 	

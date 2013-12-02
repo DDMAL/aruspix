@@ -27,6 +27,7 @@ MusSystem::MusSystem() :
 	MusDocObject()
 {
 	Clear( );
+    this->ResetUuid();
 }
 
 MusSystem::MusSystem( const MusSystem& system )

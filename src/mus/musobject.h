@@ -16,12 +16,14 @@
 
 #include "musdef.h"
 
+/*
 #ifndef USE_EMSCRIPTEN
 #include <uuid/uuid.h>
 #else
 #include "musuuid.h"
 #endif
-
+*/
+ 
 class MusDoc;
 class MusFunctor;
 class MusObject;
@@ -49,9 +51,9 @@ public:
     virtual bool operator==( MusObject& other );
     
     int GetId() { return 0; }; // used in SVG - TODO
-    uuid_t* GetUuid() { return &m_uuid; };
+    std::string GetUuid() { return m_uuid; };
     std::string GetUuidStr();
-    void SetUuid( uuid_t uuid );
+    void SetUuid( std::string uuid );
     void ResetUuid( );
     
     /**
@@ -66,6 +68,11 @@ public:
     void SetParent( MusObject *parent );
     
     virtual std::string MusClassName( ) { return "[MISSING]"; };
+    
+    /**
+     * Get the short name of the class, for generating uuids
+     */
+    virtual std::string GetIdShortName() { return "m-"; }; 
     
     /**
      * Look for the MusObject in the children and return its position (-1 if not found)
@@ -217,9 +224,12 @@ public:
     std::string m_sameAs;
     
 protected:
-    uuid_t m_uuid;
+    std::string m_uuid;
 
 private:
+    
+    void GenerateUuid();
+    
     /**
      * Indicated whether the object content is up-to-date or not.
      * This is usefull for object using sub-lists of objects when drawing.

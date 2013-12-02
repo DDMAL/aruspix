@@ -56,6 +56,7 @@ void MusSymbol::Init( SymbolType type )
     m_dot = 0;
     // ACCID
     m_accid = 0;
+    this->ResetUuid();
 }
 
 

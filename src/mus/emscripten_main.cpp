@@ -6,6 +6,10 @@
 //  Copyright (c) 2013 com.aruspix.www. All rights reserved.
 //
 
+#include <cstdlib>
+#include <iostream>
+#include <ctime>
+
 #include <sstream>
 #include <string>
 
@@ -14,6 +18,7 @@
 
 using namespace std;
 
+bool initialized = false;
 
 extern "C" {
     const char * convertMusic(const char * c_notation, const char * c_options) {
@@ -22,6 +27,11 @@ extern "C" {
         string json_options(c_options);
         string out_str;
         MusController controller;
+        
+        if (!initialized) {
+            std::srand(std::time(0));
+            initialized = true;
+        }
         
         if (!controller.ParseOptions( json_options )) {
             Mus::LogError( "Could not load JSON options." );

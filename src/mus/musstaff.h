@@ -38,7 +38,8 @@ public:
 	MusStaff( const MusStaff& staff ); // copy contructor
     virtual ~MusStaff();
 
-    virtual std::string MusClassName( ) { return "MusStaff"; };	    
+    virtual std::string MusClassName( ) { return "MusStaff"; };	
+    virtual std::string GetIdShortName() { return "staff-"; };
     
     void Clear();
     

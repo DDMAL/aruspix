@@ -46,6 +46,7 @@ void MusPage::Clear( )
     m_pageLeftMar = 0;
     m_pageRightMar = 0;
     m_pageTopMar = 0;
+    this->ResetUuid();
 }
 
 

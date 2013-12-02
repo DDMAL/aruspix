@@ -17,6 +17,7 @@ MusRest::MusRest():
 {
     // by default set automatic height
     m_pname = REST_AUTO;
+    this->ResetUuid();
 }
 
 MusRest::~MusRest()

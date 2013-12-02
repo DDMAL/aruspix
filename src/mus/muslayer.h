@@ -34,7 +34,8 @@ public:
     MusLayer( int logLayerNb );
     virtual ~MusLayer();
     
-    virtual std::string MusClassName( ) { return "MusLayer"; };	
+    virtual std::string MusClassName( ) { return "MusLayer"; };
+    virtual std::string GetIdShortName() { return "layer-"; };
     
     void Clear();
 	

@@ -25,6 +25,7 @@ public:
     virtual ~MusSlur();
     
     virtual std::string MusClassName( ) { return "MusSlur"; };
+    virtual std::string GetIdShortName() { return "slur-"; };
 
     
 	int GetNoteCount() const { return (int)m_children.size(); };

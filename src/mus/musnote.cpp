@@ -26,6 +26,7 @@ MusNote::MusNote():
     m_stemLen = 0;
     m_acciaccatura = false;
     m_embellishment = EMB_NONE;
+    this->ResetUuid();
 }
 
 

@@ -5,6 +5,9 @@
 // Copyright (c) Authors and others. All rights reserved.
 /////////////////////////////////////////////////////////////////////////////
 
+#include <cstdlib>
+#include <iostream>
+#include <ctime>
 
 #include <sstream>
 #include <string>
@@ -52,6 +55,9 @@ int main(int argc, char** argv)
     string m_svgdir;
     string m_outfile;
     string m_outformat = "svg";
+    
+    // Init random number generator for uuids
+    std::srand(std::time(0));
     
     ConvertFileFormat m_type;
     int m_no_mei_hdr = 0;

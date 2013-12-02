@@ -134,9 +134,8 @@ void CmpMusController::LoadSource( MusLayerElement *element )
     
     MusObject *viewElement = NULL;
     ArrayPtrVoid params;
-    uuid_t uuid;
-    uuid_parse( id.c_str(), uuid );
-	params.push_back( uuid );
+
+	params.push_back( &id );
     params.push_back( &viewElement );
     MusFunctor findLayerElement( &MusObject::FindByUuid );
     m_viewPtr->m_doc->Process( &findLayerElement, params );

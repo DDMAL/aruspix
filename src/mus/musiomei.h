@@ -11,11 +11,13 @@
 //#include "musapp.h"
 #include "musdoc.h"
 
+/*
 #ifndef USE_EMSCRIPTEN
 #include <uuid/uuid.h>
 #else
 #include "musuuid.h"
 #endif
+*/
 
 // TINYXML
 #if defined (__WXMSW__)
@@ -239,7 +241,6 @@ private:
     
 	//
     void SetMeiUuid( TiXmlElement *element, MusObject *object );
-    void StrToUuid(std::string uuid, uuid_t dest);
 	int StrToDur(std::string dur);
 	int StrToOct(std::string oct);
 	int StrToPitch(std::string pitch ); 

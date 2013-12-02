@@ -100,7 +100,7 @@ MusLayerElement *MusLayerElement::GetChildCopy( bool newUuid )
     element->m_parent = NULL;
     
     if ( !newUuid ) {
-        element->SetUuid( *this->GetUuid() );
+        element->SetUuid( this->GetUuid() );
     }
     else {
         element->ResetUuid( );
