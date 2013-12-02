@@ -38,7 +38,6 @@ MusObject::MusObject()
 {
     m_parent = NULL;
     m_isModified = true;
-    uuid_generate( m_uuid );
 }
 
 MusObject::~MusObject()
@@ -46,16 +45,14 @@ MusObject::~MusObject()
     ClearChildren();
 }
 
-void MusObject::SetUuid( uuid_t uuid )
+void MusObject::SetUuid( std::string uuid )
 { 
-    uuid_copy( m_uuid, uuid );
+    m_uuid = uuid;
 };
 
 std::string MusObject::GetUuidStr()
 {
-    char uuidStr[37];
-    uuid_unparse( m_uuid, uuidStr ); 
-    return std::string( uuidStr );
+    return m_uuid;
 }
 
 void MusObject::ClearChildren()
@@ -106,9 +103,19 @@ void MusObject::RemoveChildAt( int idx )
     m_children.erase( iter+(idx) );
 }
 
+void MusObject::GenerateUuid() {
+    int nr = std::rand();
+    char str[17];
+    // I do not want to use a stream to do this!
+    snprintf (str, 16, "%016d", nr);
+    
+    m_uuid = this->GetIdShortName() + std::string(str);
+    
+}
+
 void MusObject::ResetUuid()
 {
-    uuid_generate( m_uuid );
+    GenerateUuid();
 }
 
 void MusObject::SetParent( MusObject *parent )
@@ -448,7 +455,7 @@ int MusObject::FindByUuid( ArrayPtrVoid params )
 {
     // param 0: the uuid we are looking for
     // param 1: the pointer to pointer to the MusObject
-    uuid_t *uuid = (uuid_t*)params[0];  
+    std::string *uuid = (std::string*)params[0];  
     MusObject **element = (MusObject**)params[1];  
     
     if ( (*element) ) {
@@ -456,7 +463,7 @@ int MusObject::FindByUuid( ArrayPtrVoid params )
         return FUNCTOR_STOP;
     }
     
-    if ( uuid_compare( *uuid, *this->GetUuid() ) == 0 ) {
+    if ( *uuid == this->GetUuid()) {
         (*element) = this;
         //Mus::LogDebug("Found it!");
         return FUNCTOR_STOP;

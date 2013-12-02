@@ -32,7 +32,8 @@ public:
      */
     virtual bool operator==(MusObject& other);
     
-    virtual std::string MusClassName( ) { return "MusBarline"; };	 
+    virtual std::string MusClassName( ) { return "MusBarline"; };
+    virtual std::string GetIdShortName() { return "bar-"; };
     
 private:
     

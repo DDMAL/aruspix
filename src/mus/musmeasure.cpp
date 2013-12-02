@@ -32,6 +32,7 @@ MusDocObject()
     if ( !m_measuredMusic ) {
         m_x_abs = 0;
     }
+    this->ResetUuid();
 }
 
 MusMeasure::~MusMeasure()

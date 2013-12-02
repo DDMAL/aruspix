@@ -102,13 +102,9 @@ bool MusMeiOutput::ExportFile( )
 
 std::string MusMeiOutput::UuidToMeiStr( MusObject *element )
 {
-    // RZ uuid_string_t does not exist on freebsd
-    char uuidStr[37];
-    uuid_unparse( *element->GetUuid(), uuidStr );
-    std::string out;    
-    // xml IDs can't start with a number, so we prepend "m-" to every ID.
-    out = "m-" + std::string(uuidStr);
+    std::string out = element->GetUuid();
     std::transform(out.begin(), out.end(), out.begin(), ::tolower);
+    Mus::LogDebug("uuid: %s\n", out.c_str());
     return out;
 }
 
@@ -1353,22 +1349,7 @@ void MusMeiInput::SetMeiUuid( TiXmlElement *element, MusObject *object )
         return;
     }
     
-    uuid_t uuid;
-    StrToUuid( element->Attribute( "xml:id" ), uuid );
-    object->SetUuid( uuid );
-}
-
-void MusMeiInput::StrToUuid(std::string uuid, uuid_t dest)
-{
-    uuid_clear( dest );
-    if ( uuid.length() != 38 ) {
-        return;
-    }
-    if ( uuid.compare( 0, 2, "m-" ) != 0 ) {
-        return;
-    }
-    uuid.erase( 0, 2 );
-    uuid_parse( uuid.c_str(), dest );
+    object->SetUuid( element->Attribute( "xml:id" ) );
 }
 
 int MusMeiInput::StrToDur(std::string dur)

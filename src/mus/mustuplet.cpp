@@ -15,6 +15,7 @@
 MusTuplet::MusTuplet():
 MusLayerElement()
 {
+    this->ResetUuid();
 }
 
 

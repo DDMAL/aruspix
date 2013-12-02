@@ -25,6 +25,7 @@ MusMensur::MusMensur():
     m_reversed = false;
     m_sign = MENSUR_SIGN_NONE;
     m_slash = 0;
+    this->ResetUuid();
 }
 
 

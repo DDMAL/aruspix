@@ -24,6 +24,7 @@ public:
     virtual ~MusBeam();
     
     virtual std::string MusClassName( ) { return "MusBeam"; };
+    virtual std::string GetIdShortName() { return "beam-"; };
     
     int GetNoteCount() const { return (int)m_children.size(); };
     

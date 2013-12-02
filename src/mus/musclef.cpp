@@ -16,6 +16,8 @@ MusClef::MusClef():
 	MusLayerElement()
 {
     m_clefId = UT1;
+    
+    this->ResetUuid();
 }
 
 

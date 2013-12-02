@@ -158,8 +158,8 @@ public:
 
 public:
     wxString m_axfile;
-	uuid_t m_start;
-    uuid_t m_end;
+    std::string m_start;
+    std::string m_end;
     CmpBookPart *m_part;
 };
 

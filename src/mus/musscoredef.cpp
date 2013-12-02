@@ -89,6 +89,7 @@ MusScoreDef::MusScoreDef() :
     m_clef = NULL;
     m_keySig = NULL;
     m_mensur = NULL;
+    this->ResetUuid();
 }
 
 MusScoreDef::~MusScoreDef()

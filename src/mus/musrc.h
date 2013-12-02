@@ -145,7 +145,8 @@ public:
     void DrawMensurFigures( MusDC *dc, int x, int y, int num, int numBase, MusStaff *staff); 
     void DrawMensurHalfCircle( MusDC *dc, int x, int yy, MusStaff *staff );
     void DrawMensurReversedHalfCircle( MusDC *dc, int x, int yy, MusStaff *staff ); 
-    void DrawMensurSlash( MusDC *dc, int x, int yy, MusStaff *staff );  
+    void DrawMensurSlash( MusDC *dc, int x, int yy, MusStaff *staff );
+    void DrawMultiRest( MusDC *dc, MusLayerElement *element, MusLayer *layer, MusStaff *staff );
     void DrawNote( MusDC *dc, MusLayerElement *element, MusLayer *layer, MusStaff *staff );  
     void DrawRest( MusDC *dc, MusLayerElement *element, MusLayer *layer, MusStaff *staff );
     void DrawSymbol( MusDC *dc, MusLayerElement *element, MusLayer *layer, MusStaff *staff, MusLayerElement *parent = NULL );
@@ -157,7 +158,6 @@ public:
     void DrawTrill(MusDC *dc, MusLayerElement *element, MusStaff *staff);
     void DrawLigature( MusDC *dc, int y, MusLayerElement *element, MusLayer *layer, MusStaff *staff );  
     void DrawLedgerLines( MusDC *dc, int y_n, int y_p, int xn, unsigned int smaller, int staffSize);
-    void DrawSpecialRest ( MusDC *dc, int a, MusLayerElement *element, MusStaff *staff);
     void DrawLongRest ( MusDC *dc, int a, int b, MusStaff *staff);
     void DrawBreveRest ( MusDC *dc, int a, int b, MusStaff *staff);
     void DrawWholeRest ( MusDC *dc, int a, int b, int valeur, unsigned char dots, unsigned int smaller, MusStaff *staff);

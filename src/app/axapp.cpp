@@ -25,6 +25,11 @@
 #include "axfile.h"
 #include "axundo.h"
 
+// Standard headers, used for random number seed init
+#include <cstdlib>
+#include <iostream>
+#include <ctime>
+
 #define APPNAME "Aruspix"
 
 const wxString IPC_START = "StartOther";
@@ -83,6 +88,7 @@ bool AxApp::OnInit()
 {
     wxInitAllImageHandlers();
     
+    std::srand(std::time(0));
     
     SetVendorName("Aruspix");
     SetAppName(APPNAME); // not needed, it's the default value

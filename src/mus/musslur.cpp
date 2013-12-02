@@ -15,6 +15,7 @@
 MusSlur::MusSlur():
 MusLayerElement()
 {
+    this->ResetUuid();
 }
 
 

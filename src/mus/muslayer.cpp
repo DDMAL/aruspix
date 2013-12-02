@@ -32,6 +32,8 @@ MusLayer::MusLayer( int n ):
     m_n = n;
     
 	Clear( );
+    
+    this->ResetUuid();
 }
 
 MusLayer::~MusLayer()
@@ -594,9 +596,9 @@ int MusLayer::CopyToLayer( ArrayPtrVoid params )
     // param 0: the MusLayer we need to copy to
 	MusLayer *destinationLayer = (MusLayer*)params[0]; 
     // param 1: the uuid of the start element (if any)
-    uuid_t *start = (uuid_t*)params[1];
+    std::string *start = (std::string*)params[1];
     // param 2: the uuid of the end element (if any)
-    uuid_t *end = (uuid_t*)params[2];
+    std::string *end = (std::string*)params[2];
     // param 3: we have a start element and have started
     bool *has_started = (bool*)params[3];
     // param 4: we have an end element and have ended
@@ -612,8 +614,8 @@ int MusLayer::CopyToLayer( ArrayPtrVoid params )
     for ( i = 0; i < this->GetElementCount(); i++ ) 
     {
         // check if we have a start uuid or if we already passed it
-        if ( !uuid_is_null( *start ) && !(*has_started) ) {
-            if ( uuid_compare( (*start), *(m_children[i])->GetUuid() ) == 0 ) {
+        if ( !start->empty() && !(*has_started) ) {
+            if ( *start == m_children[i]->GetUuid() ) {
                 (*has_started) = true;
             } 
             else {
@@ -626,8 +628,8 @@ int MusLayer::CopyToLayer( ArrayPtrVoid params )
         destinationLayer->AddElement( copy );
         
         // check if we have a end uuid and if we have reached it. 
-        if ( !uuid_is_null( *end ) ) {
-            if ( uuid_compare( *end, *(m_children[i])->GetUuid() ) == 0 ) {
+        if ( !end->empty() ) {
+            if ( *end == m_children[i]->GetUuid() ) {
                 (*has_ended) = true;
                 return FUNCTOR_STOP;
             }
