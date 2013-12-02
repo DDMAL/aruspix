@@ -680,7 +680,7 @@ void MusRC::DrawLedgerLines( MusDC *dc, int y_n, int y_p, int xn, unsigned int s
 #define NUMBER_REDUCTION 5
 void MusRC::DrawMultiRest(MusDC *dc, MusLayerElement *element, MusLayer *layer, MusStaff *staff)
 {	
-    int x, x2, y, y2, lenght;
+    int x, x2, y, y2, length;
 
     assert(layer); // Pointer to layer cannot be NULL"
     assert(staff); // Pointer to staff cannot be NULL"
@@ -696,7 +696,7 @@ void MusRC::DrawMultiRest(MusDC *dc, MusLayerElement *element, MusLayer *layer, 
         multirest->SetNumber(999);
     
     // This is 1/2 the lenght of th black rectangle
-	lenght = (m_doc->m_step1 * 5);
+	length = (m_doc->m_step1 * 5);
     
     // Position centered in third line
     // it would be m_interl * 6.5, or m_interl / 2 * 13
@@ -704,8 +704,8 @@ void MusRC::DrawMultiRest(MusDC *dc, MusLayerElement *element, MusLayer *layer, 
     y2 = y + m_doc->m_interl[staff->staffSize];
 	
     // a is the central point, claculate x and x2
-    x = a - lenght; 
-    x2 = a + lenght;
+    x = a - length; 
+    x2 = a + length;
     
     // Draw the base rect
     // make it 8 pixels smaller than the interline space
