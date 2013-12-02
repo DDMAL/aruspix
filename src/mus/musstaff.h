@@ -34,7 +34,7 @@ class MusStaff: public MusDocObject
     
 public:
     // constructors and destructors
-    MusStaff( int logStaffNb = -1 );
+    MusStaff( int n = -1 );
 	MusStaff( const MusStaff& staff ); // copy contructor
     virtual ~MusStaff();
 
@@ -47,7 +47,19 @@ public:
 	
 	int GetLayerCount() const { return (int)m_children.size(); };
     
-    int GetStaffNo() const;
+    /**
+     * Return the index position of the staff in its measure parent
+     */
+    int GetStaffIdx() const { return MusObject::GetIdx(); };
+    
+    /**
+     * @name Set and get  the staff number which is 1-based.
+     * This can be different from the index position in the parent measure.
+     */
+    ///@{
+    int GetStaffNo() const { return m_n; };
+    void SetStaffNo( int n ) { m_n = n; };
+    ///@}
     
     /**
      * Return the default horizontal spacing of staves.
@@ -77,10 +89,6 @@ public:
     virtual int Align( ArrayPtrVoid params );
     
 public:
-    /** The logical staff */
-    int m_logStaffNb;
-    
-    
 	/** numero dans le groupe auquel appartient la portee */
 	unsigned short noGrp;
 	/** nombre total de portee dans le groupe */
@@ -137,6 +145,8 @@ public:
     bool m_mensuralNotation;
 
 private:
+    /** The staff number */
+    int m_n;
     
     /**
      * A pointer to a MusStaffAlignment for aligning the staves

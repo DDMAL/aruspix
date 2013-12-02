@@ -86,13 +86,6 @@ void MusSystem::AddMeasure( MusMeasure *measure )
     Modify();
 }
 
-int MusSystem::GetSystemNo() const
-{
-    assert( m_parent ); // Page cannot be NULL
-    
-    return m_parent->GetChildIndex( this );
-}
-
 int MusSystem::GetVerticalSpacing()
 {
     return 0; // arbitrary generic value

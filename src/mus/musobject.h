@@ -73,7 +73,12 @@ public:
      * Get the short name of the class, for generating uuids
      */
     virtual std::string GetIdShortName() { return "m-"; }; 
-    
+
+    /**
+     * Return the index position of the object in its parent (-1 if not found)
+     */
+    int GetIdx() const;
+
     /**
      * Look for the MusObject in the children and return its position (-1 if not found)
      */
@@ -153,6 +158,13 @@ public:
      * param 1: the pointer to pointer to the MusObject retrieved (if found).
      */
     virtual int FindByUuid( ArrayPtrVoid params );
+    
+    /**
+     * Find the MusStaffDef with number m_n value.
+     * param 0: the n we are looking for.
+     * param 1: the pointer to pointer to the MusStaffDef retrieved (if found).
+     */
+    virtual int FindStaffDefByNumber( ArrayPtrVoid params ) { return FUNCTOR_CONTINUE; };
     
     /**
      * Save the content of and object by calling the appropriate MusFileOutputStream method
@@ -315,7 +327,7 @@ public:
     MusObject *GetListPrevious( const MusObject *listElement );
 
     /**
-     * Returns the previous next in the list (NULL if not found)
+     * Returns the next object in the list (NULL if not found)
      */
     MusObject *GetListNext( const MusObject *listElement );
     

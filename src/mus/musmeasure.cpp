@@ -78,16 +78,13 @@ int MusMeasure::Save( ArrayPtrVoid params )
 }
 
 void MusMeasure::AddStaff( MusStaff *staff )
-{
+{    
 	staff->SetParent( this );
 	m_children.push_back( staff );
-}
-
-int MusMeasure::GetMeasureNo() const
-{
-    assert( m_parent ); // System cannot be NULL
     
-    return m_parent->GetChildIndex( this );
+    if ( staff->GetStaffNo() == -1 ) {
+        staff->SetStaffNo( this->GetStaffCount() );
+    }
 }
 
 MusStaff *MusMeasure::GetFirst( )

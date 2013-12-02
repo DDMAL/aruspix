@@ -53,7 +53,10 @@ public:
 	
 	int GetSystemCount() const { return (int)m_children.size(); };
     
-    int GetPageNo() const;
+    /**
+     * Return the index position of the page in its document parent
+     */
+    int GetPageIdx() const { return MusObject::GetIdx(); };
     
     /**
      * Return the position of the staff on the page, from top to bottom

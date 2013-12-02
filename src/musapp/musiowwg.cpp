@@ -435,9 +435,9 @@ bool MusWWGOutput::WriteLayer( const MusLayer *layer, int staffNo )
 	Write( &uint16, 2 );
 	uint16 = wxUINT16_SWAP_ON_BE( m_current_staff->totGrp );
 	Write( &uint16, 2 );
-	uint16 = wxUINT16_SWAP_ON_BE( m_current_system->GetSystemNo() ); // we don't have noLigne anymore - given by the current system being written
+	uint16 = wxUINT16_SWAP_ON_BE( m_current_system->GetSystemIdx() ); // we don't have noLigne anymore - given by the current system being written
 	Write( &uint16, 2 );
-	uint16 = wxUINT16_SWAP_ON_BE( m_current_staff->GetStaffNo() );
+	uint16 = wxUINT16_SWAP_ON_BE( m_current_staff->GetStaffIdx() );
 	Write( &uint16, 2 );
 	Write( &m_current_staff->armTyp, 1 );
 	Write( &m_current_staff->armNbr, 1 );
@@ -729,7 +729,7 @@ bool MusWWGInput::ImportFile( )
             
             for (l = 0; l < measure->GetStaffCount(); l++)
             {
-                staff = (MusStaff*)system->m_children[l];
+                staff = (MusStaff*)measure->m_children[l];
                 yy -= ecarts[m] * m_doc->m_interl[ staff->staffSize ];;
                 staff->m_y_abs = yy;
                 m++;
@@ -904,7 +904,8 @@ bool MusWWGInput::ReadPage( MusPage *page )
 	Read( &int32, 4 );
 	lrg_lign = wxINT32_SWAP_ON_BE( int32 ); // page value in wwg
 
-    MusSystem *system = new MusSystem(); // first system of the page 
+    MusSystem *system = new MusSystem(); // first system of the page
+    MusMeasure *measure = new MusMeasure( false );
     system->m_systemLeftMar = indent;
     system->m_systemRightMar = indentDroite;
     //system->lrg_lign = lrg_lign;  
@@ -912,13 +913,14 @@ bool MusWWGInput::ReadPage( MusPage *page )
     
     for (j = 0; j < nbrePortees; j++) 
 	{
-        MusMeasure *measure = new MusMeasure( false );
 		MusStaff *staff = new MusStaff( j + 1 );
         MusLayer *layer = new MusLayer( 1 ); // only one layer per staff
 		ReadStaff( staff, layer, j );
         if ( m_noLigne > system_no + 1 ) { // we have a new system
+            system->AddMeasure( measure );
             page->AddSystem( system ); // add the current one
             system = new MusSystem(); // create the next one
+            measure = new MusMeasure( false );
             system_no = m_noLigne - 1; 
             system->m_systemRightMar = indentDroite;
             //system->lrg_lign = lrg_lign;
@@ -931,9 +933,9 @@ bool MusWWGInput::ReadPage( MusPage *page )
         }
         staff->AddLayer( layer );
         measure->AddStaff( staff );
-        system->AddMeasure( measure );
 	}
     // add the last system
+    system->AddMeasure( measure );
     page->AddSystem( system );
 
 	return true;

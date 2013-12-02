@@ -25,11 +25,11 @@
 // MusLayer
 //----------------------------------------------------------------------------
 
-MusLayer::MusLayer( int logLayerNb ):
-	MusDocObject()
+MusLayer::MusLayer( int n ):
+	MusDocObject(), MusObjectListInterface()
 {
-    assert( logLayerNb > 0 );
-    m_logLayerNb = logLayerNb;
+    assert( n > 0 );
+    m_n = n;
     
 	Clear( );
     
@@ -81,15 +81,6 @@ void MusLayer::CopyAttributes( MusLayer *nlayer )
 	nlayer->Clear();
 	nlayer->voix = voix;
 }
-
-int MusLayer::GetLayerNo() const
-{
-    assert( m_parent ); // LaidOutStaff cannot be NULL
-    
-    return m_parent->GetChildIndex( this );
-}
-
-
 
 MusLayerElement *MusLayer::GetFirst( )
 {
@@ -319,21 +310,6 @@ int MusLayer::GetClefOffset( MusLayerElement *test )
     
 }
 
-
-// alternateur de position d'octave 
-void MusLayer::getOctDec (int ft, int _ot, int rupt, int *oct)
-{
-	if (ft>0)	// ordre ACCID_SHARP 
-		if (rupt % 2 == 0)	// direction: au premier appel; puis on alterne...
-			// test a revoir (mauvais, ne marche pas si rupt est impair) 
-			*oct -=1;
-		else *oct = _ot;
-	else
-		if (rupt % 2 == 0)	*oct +=1;
-		else *oct -= 1;
-	return;
-}
-
 void MusLayer::RemoveClefAndCustos()
 {
     MusClef *currentClef = NULL;
@@ -395,101 +371,6 @@ void MusLayer::RemoveClefAndCustos()
         }
     }
 }
-
-/*
-static char armatKey[] = {PITCH_F,PITCH_C,PITCH_G,PITCH_D,PITCH_A,PITCH_E,PITCH_B};
-int MusLayer::armatDisp ( MusDC *dc )
-{
-	assert( dc ); // DC cannot be NULL
-
-	if ( !Check() )
-		return 0;
-
-	// calculer x_abs, c et oct
-    // y_note calcule le decalage en fonction du code de hauteur c et du
-    // decalage eventuel implique par l'oct courante et la clef. Ce
-    // decalage est retourne par testcle() qui presuppose l'existence de
-    // la table poscle
-	int step, oct;
-	unsigned int xrl;
-	MusLayerElement *element;
-	int dec;
-	int pos=1, fact, i, c, clid=UT1, rupture=-1;	// rupture, 1e pos (in array) ou
-		// un shift d'octave est necessaire; ensuite, fonctionne par modulo
-		// pour pairs (pour ACCID_SHARP) et impair (pour ACCID_FLAT)
-	int _oct;
-
-
-	step = m_r->m_step1*8;
-	//xrl = step + (this->indent? this->indent*10 : 0);
-    // ax2 : we don't have staff->indent anymore. this is stored at the system level
-    xrl = step;
-
-	if (this->notAnc)
-		xrl += m_r->m_step1;
-
-	step = m_r->m_accidWidth[this->staffSize][0];
-
-	dec = this->GetClefOffset(xrl);	// clef courante
-
-	element = this->GetFirst();
-	if (element && clefIndex.compte )
-	{
-		element = this->no_note ( element,FORWARD, CLE, &pos);
-		if (element != NULL && element->m_x_abs < xrl && pos)
-			this->GetClef (element,(char *)&clid);
-	}
-
-	if (this->armTyp==ACCID_SHARP) 	// direction de parcourt de l'array 
-	{	pos = 0; fact = 1;	}
-	else
-	{	pos = 6; fact = -1;	}
-
-	oct = 0;		// default
-
-	if (clid==FA4 || clid==FA5 || clid==FA3 || clid==UT5)
-		oct = pos ? -2 : -1;
-
-	else
-	{	if (pos && (clid==UT4 || clid==UT3 || clid==UT2 || clid==SOLva))
-			oct = -1;
-
-		else if (!pos && (clid==SOL1 || clid==SOL2))
-			oct = 1;
-	}
-
-	if (!pos)	// c'est des DIESES
-	{	if (clid == UT4)
-			rupture = 2;
-		else if (clid == UT3 || clid < FA3 || clid == SOLva || clid == FA5)
-								// ut3, sol1-2, fa4, solva 
-			rupture = 4;
-	}
-	else
-	{	if (clid == FA3 || clid == UT5)
-			rupture = 2;
-		else if (clid == UT2)
-			rupture = 4;
-	}
-	_oct = oct;
-
-	for (i = 0; i < this->armNbr; i++, pos += fact, xrl+=step)
-	{
-		c = armatKey [pos];
-		if (i%2 && this->armTyp == ACCID_FLAT) oct += 1;
-		else oct = _oct; 
-		if (clid == UT1 && i==1) oct = _oct;
-// correctif pour BEMOLS, clef Ut1, descente apres SI initial. Controler??? 
-		if (rupture==i)
-		{	this->getOctDec (fact,_oct,rupture, &oct); rupture = i+1;	}
-
-		//if (!modMetafile || in (xrl, drawRect.left, drawRect.right) && in (this->m_y_drawing, drawRect.top, drawRect.bottom+m_staffSize[staffSize]))
-			((MusSymbol1*)element)->dess_symb ( dc,xrl,this->CalculatePitchPosY(c,dec, oct),ALTER,this->armTyp , this);
-	}
-	return xrl;
-
-}
-*/
 
 /*
 // Gets the y coordinate of the previous lyric. If lyric is NULL, it will return the y coordinate of the first lyric 

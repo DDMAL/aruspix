@@ -48,7 +48,10 @@ public:
 	
 	int GetStaffCount() const { return (int)m_children.size(); };
     
-    int GetMeasureNo() const;
+    /**
+     * Return the index position of the measure in its system parent
+     */
+    int GetMeasureNo() const { return MusObject::GetIdx(); };
        
     // functors
     virtual int Save( ArrayPtrVoid params );

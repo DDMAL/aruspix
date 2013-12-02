@@ -69,6 +69,21 @@ int MusStaffGrp::Save( ArrayPtrVoid params )
     
 }
 
+MusStaffDef *MusScoreDef::GetStaffDef( int n )
+{
+    MusStaffDef *staffDef = NULL;
+    ArrayPtrVoid params;
+	params.push_back( &n );
+    params.push_back( &staffDef );
+    MusFunctor findStaffDef( &MusObject::FindStaffDefByNumber );
+    this->Process( &findStaffDef, params );
+    
+    // the staffDef should never be NULL
+    assert(staffDef);
+    
+    return staffDef;
+}
+
 
 //----------------------------------------------------------------------------
 // MusStaffDef
@@ -93,3 +108,29 @@ int MusStaffDef::Save( ArrayPtrVoid params )
     return FUNCTOR_CONTINUE;
     
 }
+
+//----------------------------------------------------------------------------
+// MusStaffDef functor methods
+//----------------------------------------------------------------------------
+
+int MusStaffDef::FindStaffDefByNumber( ArrayPtrVoid params )
+{
+    // param 0: the n we are looking for
+    // param 1: the pointer to pointer to the MusStaffDef
+    int *n = (int*)params[0];
+    MusStaffDef **staffDef = (MusStaffDef**)params[1];
+    
+    if ( (*staffDef) ) {
+        // this should not happen, but just in case
+        return FUNCTOR_STOP;
+    }
+    
+    if ( this->GetStaffNo() == (*n) ) {
+        (*staffDef) = this;
+        //Mus::LogDebug("Found it!");
+        return FUNCTOR_STOP;
+    }
+    //Mus::LogDebug("Still looking for it...");
+    return FUNCTOR_CONTINUE;
+}
+

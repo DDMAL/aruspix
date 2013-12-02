@@ -1595,7 +1595,7 @@ void MusRC::DrawLayerApp( MusDC *dc, MusLayerElement *element, MusLayer *layer, 
         }
         
         /*
-        MusStaff *appStaff = new MusStaff( staff->m_logStaffNb );
+        MusStaff *appStaff = new MusStaff( staff->m_n );
         appStaff->m_y_drawing = staff->m_y_drawing + m_doc->m_staffSize[staff->staffSize];
         appStaff->m_system = staff->m_system;
         appStaff->SetLayout( m_doc );
