@@ -27,6 +27,7 @@
 #include "muskeysig.h"
 #include "musmeasure.h"
 #include "musmensur.h"
+#include "musmultirest.h"
 #include "musnote.h"
 #include "muspage.h"
 #include "musrest.h"
@@ -1087,11 +1088,9 @@ void MusPaeInput::printMeasure(std::ostream& out, MeasureObject *measure ) {
         m_layer->AddElement(measure->time);
     }
     
-    if ( measure->wholerest > 0 ) {     
-        MusRest *r = new MusRest();
-        r->m_dur = VALSilSpec; //
-        r->m_multimeasure_dur = measure->wholerest;
-        m_layer->AddElement(r);
+    if ( measure->wholerest > 0 ) { 
+        MusMultiRest *mr = new MusMultiRest(measure->wholerest);
+        m_layer->AddElement(mr);
     }
     
     m_nested_objects.clear();

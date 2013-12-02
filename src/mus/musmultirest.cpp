@@ -22,7 +22,7 @@ MusMultiRest::MusMultiRest(int number):
 }
 
 
-MusMultiRest::MusMultiRest()
+MusMultiRest::~MusMultiRest()
 {
 }
 

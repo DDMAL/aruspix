@@ -27,6 +27,7 @@
 #include "musleipzigbbox.h"
 #include "musmeasure.h"
 #include "musmensur.h"
+#include "musmultirest.h"
 #include "musnote.h"
 #include "musrest.h"
 #include "mussymbol.h"
@@ -84,6 +85,9 @@ void MusRC::DrawElement( MusDC *dc, MusLayerElement *element, MusLayer *layer, M
     }
     else if (dynamic_cast<MusMensur*>(element)) {
         DrawMensur(dc, element, layer, staff);
+    }
+    else if (dynamic_cast<MusMultiRest*>(element)) {
+        DrawMultiRest(dc, element, layer, staff);
     }
     else if (dynamic_cast<MusNote*>(element)) {
         DrawDurationElement(dc, element, layer, staff);
@@ -600,7 +604,7 @@ void MusRC::DrawRest ( MusDC *dc, MusLayerElement *element, MusLayer *layer, Mus
 
 	if (rest->m_dur == VALSilSpec && rest->m_multimeasure_dur > 1) // LP: not sure what is actually does...
     {
-		DrawSpecialRest( dc, a, element, staff);
+        Mus::LogError("Tried to set multi meausure in rest\n");
     }
 	else
 	{	
@@ -674,16 +678,22 @@ void MusRC::DrawLedgerLines( MusDC *dc, int y_n, int y_p, int xn, unsigned int s
 /** This function draws multi-measure rests
  **/
 #define NUMBER_REDUCTION 5
-void MusRC::DrawSpecialRest ( MusDC *dc, int a, MusLayerElement *element, MusStaff *staff)
+void MusRC::DrawMultiRest(MusDC *dc, MusLayerElement *element, MusLayer *layer, MusStaff *staff)
 {	
-    //MusLeipzigBBox *bbox = new MusLeipzigBBox();
     int x, x2, y, y2, lenght;
 
-    MusRest *rest = dynamic_cast<MusRest*>(element);
+    assert(layer); // Pointer to layer cannot be NULL"
+    assert(staff); // Pointer to staff cannot be NULL"
+    assert(dynamic_cast<MusMultiRest*>(element)); // Element must be a MusSymbol"
+    
+    MusMultiRest *multirest = dynamic_cast<MusMultiRest*>(element);
+    dc->StartGraphic( element, "multirest", Mus::StringFormat("accid_%d_%d_%d", staff->GetId(), layer->voix, element->GetId()) );
+    
+    int a = element->m_x_drawing + multirest->m_hOffset;
     
     // We do not support more than three chars
-    if (rest->m_multimeasure_dur > 999)
-        rest->m_multimeasure_dur = 999;
+    if (multirest->GetNumber() > 999)
+        multirest->SetNumber(999);
     
     // This is 1/2 the lenght of th black rectangle
 	lenght = (m_doc->m_step1 * 5);
@@ -713,12 +723,14 @@ void MusRC::DrawSpecialRest ( MusDC *dc, int a, MusLayerElement *element, MusSta
     
     // convert to string
     std::stringstream text;
-    text << rest->m_multimeasure_dur;
+    text << multirest->GetNumber();
     
     dc->GetTextExtent( text.str(), &w, &h);
     start_offset = (x2 - x - w) / 2; // calculate offset to center text
     
     putstring(dc, x + start_offset, staff->m_y_drawing + 5, text.str(), false);
+    
+    dc->EndGraphic(element, this);
     
     return;
 

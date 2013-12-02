@@ -91,6 +91,7 @@ public:
     bool HasDurationInterface();
     bool IsKeySig();
     bool IsMensur();
+    bool IsMultiRest();
     bool IsNeume();
     bool IsNeumeSymbol();
     bool IsNote();

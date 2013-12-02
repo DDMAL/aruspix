@@ -24,7 +24,7 @@ class MusMultiRest: public MusLayerElement
 public:
     // constructors and destructors
     MusMultiRest(int number);
-    virtual MusMultiRest();
+    virtual ~MusMultiRest();
     
     /**
      * Comparison operator. 
@@ -38,7 +38,7 @@ public:
     /**
      * Get the multi measure rest number
      */
-    void GetNumber() {return m_number;};
+    int GetNumber() {return m_number;};
     
     /**
      * Set the multi measure rest number.
@@ -46,11 +46,11 @@ public:
 	void SetNumber( int number ) {m_number = number;};
     
 private:
-    
-public:
     /** Indicates the shape and the line of the clef using clef ids  */
     int m_number;
     
+public:
+
 private:
     
 };

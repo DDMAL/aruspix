@@ -25,6 +25,7 @@
 #include "muskeysig.h"
 #include "musio.h"
 #include "musmensur.h"
+#include "musmultirest.h"
 #include "musnote.h"
 #include "musrest.h"
 #include "mussymbol.h"
@@ -194,6 +195,11 @@ bool MusLayerElement::IsSymbol( )
 bool MusLayerElement::IsKeySig()
 {
     return (dynamic_cast<MusKeySig*>(this));
+}
+
+bool MusLayerElement::IsMultiRest() 
+{  
+    return (dynamic_cast<MusMultiRest*>(this));
 }
 
 bool MusLayerElement::IsMensur() 
