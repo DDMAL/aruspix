@@ -34,15 +34,16 @@ void MusBeam::FilterList()
 {
     // We want to keep only notes and rest
     // Eventually, we also need to filter out grace notes properly (e.g., with sub-beams)
-    ListOfMusObjects::iterator iter;
+    ListOfMusObjects::iterator iter = m_list.begin();
     
-    for (iter = m_list.begin(); iter != m_list.end(); ++iter)
-    {
+    while ( iter != m_list.end()) {
         MusLayerElement *currentElement = dynamic_cast<MusLayerElement*>(*iter);
         if ( currentElement && !currentElement->HasDurationInterface() )
         {
-            Mus::LogDebug("KILLED!!! %s", currentElement->MusClassName().c_str() );
+            //Mus::LogDebug("KILLED!!! %s", currentElement->MusClassName().c_str() );
             iter = m_list.erase( iter );
+        } else {
+            iter++;
         }
     }
     
