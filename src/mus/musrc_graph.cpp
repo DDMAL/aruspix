@@ -258,25 +258,6 @@ void MusRC::DrawLeipzigFont ( MusDC *dc, int x, int y, unsigned char c,
 	return;
 }
 
-
-/**
-  Utilise une table de bitmap m_fontsBitmaps
-  Plus rapide que DrawText
-  **/
-/*
-void MusRC::putfontfast ( MusDC *dc, int x, int y, unsigned char c )
-{  
-	//wxColour col = dc->GetTextForeground();
-	dc->SetTextForeground( m_currentColour );
-	dc->DrawText("",0,0); // needed to flush current colour
-
-	dc->DrawBitmap( m_fontBitmaps[c][0][0], ToRendererX(x) - 2 , ToRendererY(y + this->m_fontHeightAscent[0][0]), true );
-
-	return;
-}
-*/
-
-
 void MusRC::putstring ( MusDC *dc, int x, int y, std::string s, int centrer, int staffSize)
 { 
 	assert( dc ); // DC cannot be NULL
