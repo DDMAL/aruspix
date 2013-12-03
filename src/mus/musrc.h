@@ -172,6 +172,11 @@ public:
 private:
 	void UpdateStavesPos();
     
+    //Used for calculating tuplets
+    bool GetTupletCoordinates(MusTuplet* tuplet, MusLayer *layer, MusPoint* start, MusPoint* end, MusPoint *center);
+    std::string IntToObliqueFigures(unsigned int number);
+    bool OneBeamInTuplet(MusTuplet* tuplet);
+    
 public:
     /** Document */
     MusDoc *m_doc;

@@ -17,7 +17,7 @@
 // MusBeam
 //----------------------------------------------------------------------------
 
-class MusTuplet: public MusLayerElement
+class MusTuplet: public MusLayerElement, public MusObjectListInterface
 {
 public:
     // constructors and destructors
@@ -33,6 +33,13 @@ public:
      * Only MusNote or MusRest elements will be actually added to the beam.
      */
     void AddElement(MusLayerElement *element);
+    
+protected:
+    /**
+     * Filter the list for a specific class.
+     * For example, keep only notes in MusBeam
+     */
+    virtual void FilterList();
     
 private:
     
