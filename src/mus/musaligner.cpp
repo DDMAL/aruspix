@@ -283,14 +283,20 @@ int MusAlignment::IntegrateBoundingBoxXShift( ArrayPtrVoid params )
     
     // integrates the m_x_shift into the m_x_rel
     m_x_rel += m_x_shift + (*shift);
+    // the alignment for the end of the measure is not moved by SetBoundingBoxXShift because
+    // there is no corresponding MusLayerElement pointing to it.
+    // For this reason, we need to check if the cumulating width is not larger than
+    // what given by the total duration of the measure.
+    // This occur typically when a element with not duration (clef) is at the end of the measure
     if ( (m_type == ALIGNMENT_MEASURE_END) && (m_x_rel < (*width) ) ) {
         m_x_rel = (*width);
     }
-    // cumulate the shift value
+    // cumulate the shift value and the width
     (*shift) += m_x_shift;
     (*width) = m_x_rel + m_max_width;
+    // reset member to 0
     m_x_shift = 0;
-    m_max_width = (*width);
+    m_max_width = 0;
 
     return FUNCTOR_CONTINUE;
 }
