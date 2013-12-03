@@ -51,7 +51,6 @@ public:
     virtual bool operator==( MusObject& other );
     
     std::string GetUuid() { return m_uuid; };
-    std::string GetUuidStr();
     void SetUuid( std::string uuid );
     void ResetUuid( );
     

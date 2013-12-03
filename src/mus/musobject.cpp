@@ -50,11 +50,6 @@ void MusObject::SetUuid( std::string uuid )
     m_uuid = uuid;
 };
 
-std::string MusObject::GetUuidStr()
-{
-    return m_uuid;
-}
-
 void MusObject::ClearChildren()
 {
     ArrayOfMusObjects::iterator iter;
