@@ -47,6 +47,7 @@ add_executable (aruspix
 	src/mus/musrc_page.cpp
 	src/mus/musrc_tuplet.cpp
 	src/mus/musrest.cpp 
+	src/mus/musscoredef.cpp
 	src/mus/musslur.cpp
 	src/mus/musstaff.cpp 
 	src/mus/mussvgdc.cpp 
