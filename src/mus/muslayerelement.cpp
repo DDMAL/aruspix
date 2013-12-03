@@ -44,7 +44,6 @@ MusLayerElement::MusLayerElement():
     m_visible = true;
     
     m_x_abs = AX_UNSET;
-    //m_x_rel = 0;
     m_x_drawing = 0;
     m_y_drawing = 0;
     m_in_layer_app = false;
@@ -62,6 +61,7 @@ MusLayerElement& MusLayerElement::operator=( const MusLayerElement& element )
 {
 	if ( this != &element ) // not self assignement
 	{
+        // is this necessary?
         m_cueSize = element.m_cueSize;
         m_hOffset = element.m_hOffset;
         m_staffShift = element.m_staffShift;
@@ -306,6 +306,9 @@ int MusLayerElement::Align( ArrayPtrVoid params )
     }
     else if ( this->IsMensur() ) {
         type = ALIGNMENT_MENSUR;
+    }
+    else if ( this->IsMultiRest() ) {
+        type = ALIGNMENT_MULTIREST;
     }
     
     // get the duration of the event

@@ -110,6 +110,14 @@ void MusDoc::Refresh()
 
 void MusDoc::Layout( bool trim )
 {
+    MusScoreDef currentScoreDef = m_scoreDef;
+    int staffNo = 0;
+    ArrayPtrVoid params;
+    params.push_back( &currentScoreDef );
+    params.push_back( &staffNo );
+    MusFunctor setPageScoreDef( &MusObject::SetPageScoreDef );
+    this->Process( &setPageScoreDef, params );
+    
     int i;
 	MusPage *page = NULL;
     for (i = 0; i < this->GetPageCount(); i++)

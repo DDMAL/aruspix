@@ -57,6 +57,7 @@ emcc --closure 0 -O2 \
 	$ARUSPIX_ROOT/src/mus/musrc_page.cpp \
 	$ARUSPIX_ROOT/src/mus/musrc_tuplet.cpp \
 	$ARUSPIX_ROOT/src/mus/musrest.cpp \
+	$ARUSPIX_ROOT/src/mus/musscoredef.cpp \
 	$ARUSPIX_ROOT/src/mus/musslur.cpp \
 	$ARUSPIX_ROOT/src/mus/musstaff.cpp \
 	$ARUSPIX_ROOT/src/mus/mussvgdc.cpp \

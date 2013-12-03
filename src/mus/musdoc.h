@@ -14,6 +14,7 @@
 #include "musdef.h"
 #include "musio.h"
 #include "musobject.h"
+#include "musscoredef.h"
 
 class MusPage;
 
@@ -212,6 +213,12 @@ public:
     
     /** indique si la definition de page poue laquelle fontes actuelles est a jour */
     int m_charDefin;
+    
+    /**
+     * Hold the top scoreDef.
+     * In a standard MEI file, this is the <scoreDef> encoded before the first <section>.
+     */
+    MusScoreDef m_scoreDef;
     
     
 private:

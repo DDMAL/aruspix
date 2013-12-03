@@ -203,7 +203,9 @@ void MusPage::Layout( bool trim )
     // Once the m_x_shift have been calculated, move all positions accordingly
     params.clear();
     int shift = 0;
+    int width = 0;
     params.push_back( &shift );
+    params.push_back( &width );
     MusFunctor integrateBoundingBoxXShift( &MusObject::IntegrateBoundingBoxXShift );
     // special case: because we redirect the functor, pass is a parameter to itself (!)
     params.push_back( &integrateBoundingBoxXShift );
@@ -241,7 +243,7 @@ void MusPage::Layout( bool trim )
     params.push_back( &integrateBoundingBoxYShift );
     this->Process( &integrateBoundingBoxYShift, params );
     
-    // Adjust measure Y position
+    // Adjust measure X position
     params.clear();
     shift = 0;
     params.push_back( &shift );

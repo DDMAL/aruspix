@@ -10,6 +10,7 @@
 #define __MUS_PAGE_H__
 
 #include "musobject.h"
+#include "musscoredef.h"
 
 class MusDC;
 class MusStaff;
@@ -100,6 +101,14 @@ public:
     //int indentDroite; // ax2
     /** longueur en mm des lignes de la pages */
     //int lrg_lign; // ax2
+    
+    /**
+     * Hold the top scoreDef of the page.
+     * The value must be initialized by going through the whole score for finding
+     * all the clef or key changes that might occur within the text.
+     * The value is initialized with by the MusObject::SetPageScoreDef functor.
+     */
+    MusScoreDef m_drawing_scoreDef;
 
 private:
     

@@ -50,11 +50,6 @@ void MusObject::SetUuid( std::string uuid )
     m_uuid = uuid;
 };
 
-std::string MusObject::GetUuidStr()
-{
-    return m_uuid;
-}
-
 void MusObject::ClearChildren()
 {
     ArrayOfMusObjects::iterator iter;
@@ -473,6 +468,52 @@ int MusObject::FindByUuid( ArrayPtrVoid params )
 }
 
 
+int MusObject::SetPageScoreDef( ArrayPtrVoid params )
+{
+    /*
+    // param 0: the height of the previous staff
+    ScoreDef *currentScoreDef = (int*)params[0];
+    
+    // starting a new system
+    MusMeasure *current_measure = dynamic_cast<MusMeasure*>(this);
+    if ( current_measure  ) {
+        (*min_pos) = 0;
+    }
+    
+    MusStaff *current = dynamic_cast<MusStaff*>(this);
+    if ( !current  ) {
+        return FUNCTOR_CONTINUE;
+    }
+    
+    // at this stage we assume we have instanciated the alignment pointer
+    assert( current->GetAlignment() );
+    
+    // This is the value that need to be removed to fit everything
+    int negative_offset = current->GetAlignment()->GetYRel() - current->m_contentBB_y2;
+    
+    // this will probably never happen
+    if ( negative_offset > 0 ) {
+        negative_offset = 0;
+    }
+    
+    // check if the staff overlaps with the preceeding one given by (*min_pos)
+    int overlap = 0;
+    if ( (current->GetAlignment()->GetYRel() - negative_offset) > (*min_pos) ) {
+        overlap = (*min_pos) - current->GetAlignment()->GetYRel() + negative_offset;
+        current->GetAlignment()->SetYShift( overlap );
+    }
+    
+    //Mus::LogDebug("%s min_pos %d; negative offset %d;  x_rel %d; overlap %d", current->MusClassName().c_str(), (*min_pos), negative_offset, current->GetAlignment()->GetXRel(), overlap );
+    
+    // the next minimal position if given by the right side of the bounding box + the spacing of the element
+    (*min_pos) = current->m_contentBB_y1;
+    
+    // do not go further down the tree in this case
+    */
+    return FUNCTOR_SIBLINGS;
+}
+
+
 int MusObject::SetBoundingBoxXShift( ArrayPtrVoid params )
 {
     // param 0: the width of the previous element
@@ -532,6 +573,7 @@ int MusObject::SetBoundingBoxXShift( ArrayPtrVoid params )
     
     // the next minimal position if given by the right side of the bounding box + the spacing of the element
     (*min_pos) = current->m_contentBB_x2 + current->GetHorizontalSpacing();
+    current->GetAlignment()->SetMaxWidth( (*min_pos ) );
     
     return FUNCTOR_CONTINUE;
 }
@@ -575,7 +617,7 @@ int MusObject::SetBoundingBoxYShift( ArrayPtrVoid params )
     // the next minimal position if given by the right side of the bounding box + the spacing of the element
     (*min_pos) = current->m_contentBB_y1;
     
-        // do not go further down the tree in this case
+    // do not go further down the tree in this case
     return FUNCTOR_SIBLINGS;
 }
 

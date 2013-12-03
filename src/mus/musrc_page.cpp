@@ -79,7 +79,7 @@ void MusRC::DrawSystem( MusDC *dc, MusSystem *system )
     dc->ResetPen();
     */
     
-    dc->StartGraphic( system, "system", Mus::StringFormat("system_%d", system->GetId() ) );
+    dc->StartGraphic( system, "system", system->GetUuid() );
     
     
     if ( system->m_y_abs == AX_UNSET ) {
@@ -621,7 +621,7 @@ void MusRC::DrawMeasure( MusDC *dc, MusMeasure *measure, MusSystem *system )
     
     // This is a special case where we do not draw (SVG, Bounding boxes, etc.) the measure if un-measured music
     if ( measure->IsMeasuredMusic()) {
-        dc->StartGraphic( measure, "measure", Mus::StringFormat("s_%d", measure->GetId()) );
+        dc->StartGraphic( measure, "measure", measure->GetUuid() );
     }
     
     // Here we set the appropriate y value to be used for drawing
@@ -762,7 +762,7 @@ void MusRC::DrawStaff( MusDC *dc, MusStaff *staff, MusMeasure *measure, MusSyste
 {
 	assert( dc ); // DC cannot be NULL
     
-    dc->StartGraphic( staff, "staff", Mus::StringFormat("s_%d", staff->GetId()) );
+    dc->StartGraphic( staff, "staff", staff->GetUuid());
     
     // Here we set the appropriate y value to be used for drawing
     // With Raw documents, we use m_y_rel that is calculated by the layout algorithm

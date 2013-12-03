@@ -50,9 +50,7 @@ public:
     
     virtual bool operator==( MusObject& other );
     
-    int GetId() { return 0; }; // used in SVG - TODO
     std::string GetUuid() { return m_uuid; };
-    std::string GetUuidStr();
     void SetUuid( std::string uuid );
     void ResetUuid( );
     
@@ -209,6 +207,18 @@ public:
     virtual int SetAligmentYPos( ArrayPtrVoid params ) { return FUNCTOR_CONTINUE; };
     
     /**
+     * Set the initial scoreDef of each page.
+     * This is necessary for integrating changes that occur within a page.
+     */
+    virtual int SetPageScoreDef( ArrayPtrVoid params );
+    
+    /**
+     * Replace all the staffDefs in a scoreDef.
+     * param 0: a pointer to the scoreDef we are going to replace the staffDefs
+     */
+    virtual int ReplaceStaffDefsInScoreDef( ArrayPtrVoid params ) { return FUNCTOR_CONTINUE; };
+    
+    /**
      * Correct the X alignment once the the content of a system has been aligned and laid out
      * See MusMeasure::IntegrateBoundingBoxXShift for actual implementation
      */
@@ -333,6 +343,8 @@ public:
     
     /**
      * Return the list.
+     * Before returning the list, it checks that the list is up-to-date with MusObject::IsModified
+     * If not, it updates the list and also calls FilterList.
      * Because this is an interface, we need to pass the object - not the best design.
      */
     ListOfMusObjects *GetList( MusObject *node );
