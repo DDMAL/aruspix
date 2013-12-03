@@ -50,7 +50,6 @@ public:
     
     virtual bool operator==( MusObject& other );
     
-    int GetId() { return 0; }; // used in SVG - TODO
     std::string GetUuid() { return m_uuid; };
     std::string GetUuidStr();
     void SetUuid( std::string uuid );
