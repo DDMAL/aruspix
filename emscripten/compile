@@ -15,6 +15,7 @@ echo "Compliling"
 
 emcc --closure 0 -O2 \
 	-s ASM_JS=0 \
+	-s OUTLINING_LIMIT=160000 \
 	-I$ARUSPIX_ROOT/src \
 	-I./lib/jsonxx \
 	-DUSE_EMSCRIPTEN \
