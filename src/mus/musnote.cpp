@@ -13,7 +13,7 @@
 //----------------------------------------------------------------------------
 
 MusNote::MusNote():
-	MusLayerElement(), MusDurationInterface(), MusPitchInterface()
+	MusLayerElement("note-"), MusDurationInterface(), MusPitchInterface()
 {
     m_artic = 0;
     m_chord = 0;
@@ -26,7 +26,6 @@ MusNote::MusNote():
     m_stemLen = 0;
     m_acciaccatura = false;
     m_embellishment = EMB_NONE;
-    this->ResetUuid();
 }
 
 

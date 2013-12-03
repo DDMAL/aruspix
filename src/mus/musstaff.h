@@ -39,7 +39,6 @@ public:
     virtual ~MusStaff();
 
     virtual std::string MusClassName( ) { return "MusStaff"; };	
-    virtual std::string GetIdShortName() { return "staff-"; };
     
     void Clear();
     

@@ -28,6 +28,7 @@ class MusLayerElement: public MusDocObject
 public:
     // constructors and destructors
     MusLayerElement();
+    MusLayerElement(std::string classid);
     virtual ~MusLayerElement();
     
     MusLayerElement& operator=( const MusLayerElement& element ); // copy assignement;
@@ -122,6 +123,7 @@ public:
     virtual int Align( ArrayPtrVoid params );
     
 private:
+    void Init();
     
 public:
 	/** Absolute position X. This is used for facsimile (transcription) encoding */

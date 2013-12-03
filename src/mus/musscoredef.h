@@ -75,7 +75,6 @@ public:
     virtual ~MusScoreDef();
         
     virtual std::string MusClassName( ) { return "MusScoreDef"; };
-    virtual std::string GetIdShortName() { return "scoredef-"; };
     
 	void AddStaffGrp( MusStaffGrp *staffGrp );
     

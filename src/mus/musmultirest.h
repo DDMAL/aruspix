@@ -33,7 +33,6 @@ public:
     virtual bool operator==(MusObject& other);
     
     virtual std::string MusClassName( ) { return "MusMultiRest"; };
-    virtual std::string GetIdShortName() { return "multirest-"; };
     
     /**
      * Get the multi measure rest number

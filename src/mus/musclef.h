@@ -33,7 +33,6 @@ public:
     virtual bool operator==(MusObject& other);
     
     virtual std::string MusClassName( ) { return "MusClef"; };
-    virtual std::string GetIdShortName() { return "clef-"; };
     
     /**
      * Return the offset of the clef

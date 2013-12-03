@@ -16,7 +16,7 @@ int MusMensur::s_numBase = 2;
 //----------------------------------------------------------------------------
 
 MusMensur::MusMensur():
-	MusLayerElement()
+	MusLayerElement("mensur-")
 {
     m_dot = 0;
     m_meterSymb = METER_SYMB_NONE;
@@ -25,7 +25,6 @@ MusMensur::MusMensur():
     m_reversed = false;
     m_sign = MENSUR_SIGN_NONE;
     m_slash = 0;
-    this->ResetUuid();
 }
 
 

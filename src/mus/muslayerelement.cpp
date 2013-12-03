@@ -36,19 +36,15 @@
 //----------------------------------------------------------------------------
 
 MusLayerElement::MusLayerElement():
-	MusDocObject()
+    MusDocObject("le-")
 {
-    m_cueSize = false;
-    m_hOffset = 0;
-    m_staffShift = 0;
-    m_visible = true;
-    
-    m_x_abs = AX_UNSET;
-    m_x_drawing = 0;
-    m_y_drawing = 0;
-    m_in_layer_app = false;
-    
-    m_alignment = NULL;
+    Init();
+}
+
+MusLayerElement::MusLayerElement(std::string classid):
+	MusDocObject(classid)
+{
+    Init();
 }
 
 
@@ -156,6 +152,20 @@ void MusLayerElement::SetValue( int value, int flag )
         MusDurationInterface *duration = dynamic_cast<MusDurationInterface*>(this);
         duration->SetDuration( value );
     }
+}
+
+void MusLayerElement::Init() {
+    m_cueSize = false;
+    m_hOffset = 0;
+    m_staffShift = 0;
+    m_visible = true;
+    
+    m_x_abs = AX_UNSET;
+    m_x_drawing = 0;
+    m_y_drawing = 0;
+    m_in_layer_app = false;
+    
+    m_alignment = NULL;
 }
 
 

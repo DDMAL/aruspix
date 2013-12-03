@@ -14,11 +14,9 @@
 //----------------------------------------------------------------------------
 
 MusMultiRest::MusMultiRest(int number):
-    MusLayerElement()
+    MusLayerElement("multirest-")
 {
     m_number = number;
-    
-    this->ResetUuid();
 }
 
 

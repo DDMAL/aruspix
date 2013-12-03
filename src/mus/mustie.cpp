@@ -13,11 +13,10 @@
 //----------------------------------------------------------------------------
 
 MusTie::MusTie():
-MusLayerElement()
+MusLayerElement("tie-")
 {
     m_first = NULL;
     m_second = NULL;
-    this->ResetUuid();
 }
 
 

@@ -24,7 +24,7 @@
 //----------------------------------------------------------------------------
 
 MusMeasure::MusMeasure( bool measureMusic, int logMeasureNb ):
-MusDocObject()
+    MusDocObject("measure-")
 {
 	Clear( );
     m_measuredMusic = measureMusic;
@@ -32,7 +32,6 @@ MusDocObject()
     if ( !m_measuredMusic ) {
         m_x_abs = 0;
     }
-    this->ResetUuid();
 }
 
 MusMeasure::~MusMeasure()

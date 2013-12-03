@@ -25,8 +25,7 @@ public:
     virtual ~MusTuplet();
     
     virtual std::string MusClassName( ) { return "MusTuplet"; };
-    virtual std::string GetIdShortName() { return "tuplet-"; };
-    
+
 	int GetNoteCount() const { return (int)m_children.size(); };
     
     /**

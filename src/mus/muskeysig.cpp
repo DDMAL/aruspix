@@ -50,11 +50,10 @@ MusLayerElement(), MusPositionInterface()
 }
 
 MusKeySig::MusKeySig(int num_alter, char alter):
-MusLayerElement(), MusPositionInterface()
+    MusLayerElement("ksig-"), MusPositionInterface()
 {
     m_num_alter = num_alter;
     m_alteration = alter;
-    this->ResetUuid();
 }
 
 MusKeySig::~MusKeySig()

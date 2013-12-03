@@ -27,7 +27,6 @@ public:
     virtual ~MusTie();
     
     virtual std::string MusClassName( ) { return "MusTie"; };
-    virtual std::string GetIdShortName() { return "tie-"; };
     
     MusNote *m_first;
     MusNote *m_second;

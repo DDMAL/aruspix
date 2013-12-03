@@ -13,9 +13,8 @@
 //----------------------------------------------------------------------------
 
 MusSlur::MusSlur():
-MusLayerElement()
+MusLayerElement("slur-")
 {
-    this->ResetUuid();
 }
 
 

@@ -46,6 +46,7 @@ class MusObject
 public:
     // constructors and destructors
     MusObject();
+    MusObject(std::string classid);
     virtual ~MusObject();
     
     virtual bool operator==( MusObject& other );
@@ -66,11 +67,6 @@ public:
     void SetParent( MusObject *parent );
     
     virtual std::string MusClassName( ) { return "[MISSING]"; };
-    
-    /**
-     * Get the short name of the class, for generating uuids
-     */
-    virtual std::string GetIdShortName() { return "m-"; }; 
 
     /**
      * Return the index position of the object in its parent (-1 if not found)
@@ -247,10 +243,12 @@ public:
     
 protected:
     std::string m_uuid;
+    std::string m_classid;
 
 private:
     
     void GenerateUuid();
+    void Init(std::string);
     
     /**
      * Indicated whether the object content is up-to-date or not.
@@ -275,6 +273,7 @@ class MusDocObject: public MusObject
 public:
     // constructors and destructors
     MusDocObject();
+    MusDocObject(std::string classid);
     virtual ~MusDocObject();
     
     /**

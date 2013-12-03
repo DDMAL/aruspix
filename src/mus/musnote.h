@@ -50,7 +50,6 @@ public:
     virtual ~MusNote();
     
     virtual std::string MusClassName( ) { return "MusNote"; };
-    virtual std::string GetIdShortName() { return "note-"; };
     
      /** 
       * Set the duration.

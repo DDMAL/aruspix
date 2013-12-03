@@ -13,13 +13,11 @@
 //----------------------------------------------------------------------------
 
 MusBarline::MusBarline():
-	MusLayerElement()
+	MusLayerElement("bline-")
 {
     m_barlineType = BARLINE_SINGLE;
     m_partialBarline = false; // this was used unitialized
     m_onStaffOnly = false; // is this good?
-    
-    this->ResetUuid();
 }
 
 

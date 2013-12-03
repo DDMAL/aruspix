@@ -28,7 +28,6 @@ public:
     virtual ~MusKeySig();
     
     virtual std::string MusClassName( ) { return "MusKeySig"; };
-    virtual std::string GetIdShortName() { return "key-"; };
     
     unsigned char GetAlterationAt(int pos);
     int GetOctave(unsigned char pitch, char clef);

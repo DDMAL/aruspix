@@ -35,7 +35,6 @@ public:
     virtual ~MusMeasure();
     
     virtual std::string MusClassName( ) { return "MusMeasure"; };
-    virtual std::string GetIdShortName() { return "measure-"; };
     
     /**
      * Return

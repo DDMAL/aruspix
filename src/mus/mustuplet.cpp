@@ -13,9 +13,8 @@
 //----------------------------------------------------------------------------
 
 MusTuplet::MusTuplet():
-MusLayerElement()
+MusLayerElement("tuplet-")
 {
-    this->ResetUuid();
 }
 
 

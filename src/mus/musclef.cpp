@@ -13,11 +13,9 @@
 //----------------------------------------------------------------------------
 
 MusClef::MusClef():
-	MusLayerElement()
+	MusLayerElement("clef-")
 {
     m_clefId = UT1;
-    
-    this->ResetUuid();
 }
 
 

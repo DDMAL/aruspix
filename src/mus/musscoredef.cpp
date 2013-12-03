@@ -84,12 +84,11 @@ void MusScoreOrStaffDefAttrInterface::ReplaceMensur( MusMensur *newMensur )
 //----------------------------------------------------------------------------
 
 MusScoreDef::MusScoreDef() :
-	MusObject(), MusScoreOrStaffDefAttrInterface()
+	MusObject("scoredef-"), MusScoreOrStaffDefAttrInterface()
 {
     m_clef = NULL;
     m_keySig = NULL;
     m_mensur = NULL;
-    this->ResetUuid();
 }
 
 MusScoreDef::~MusScoreDef()

@@ -13,9 +13,8 @@
 //----------------------------------------------------------------------------
 
 MusBeam::MusBeam():
-    MusLayerElement(), MusObjectListInterface()
+    MusLayerElement("beam-"), MusObjectListInterface()
 {
-    this->ResetUuid();
 }
 
 

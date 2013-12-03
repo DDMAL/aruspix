@@ -26,14 +26,12 @@
 //----------------------------------------------------------------------------
 
 MusLayer::MusLayer( int n ):
-	MusDocObject(), MusObjectListInterface()
+	MusDocObject("layer-"), MusObjectListInterface()
 {
     assert( n > 0 );
     m_n = n;
     
 	Clear( );
-    
-    this->ResetUuid();
 }
 
 MusLayer::~MusLayer()

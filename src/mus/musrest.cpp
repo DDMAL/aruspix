@@ -13,11 +13,10 @@
 //----------------------------------------------------------------------------
 
 MusRest::MusRest():
-	MusLayerElement(), MusDurationInterface(), MusPositionInterface()
+	MusLayerElement("rest-"), MusDurationInterface(), MusPositionInterface()
 {
     // by default set automatic height
     m_pname = REST_AUTO;
-    this->ResetUuid();
 }
 
 MusRest::~MusRest()

@@ -36,13 +36,23 @@
 
 MusObject::MusObject()
 {
-    m_parent = NULL;
-    m_isModified = true;
+    Init("m-");
+}
+
+MusObject::MusObject(std::string classid) {
+    Init(classid);
 }
 
 MusObject::~MusObject()
 {
     ClearChildren();
+}
+
+void MusObject::Init(std::string classid) {
+    m_parent = NULL;
+    m_isModified = true;
+    m_classid = classid;
+    this->GenerateUuid();
 }
 
 void MusObject::SetUuid( std::string uuid )
@@ -104,8 +114,7 @@ void MusObject::GenerateUuid() {
     // I do not want to use a stream to do this!
     snprintf (str, 16, "%016d", nr);
     
-    m_uuid = this->GetIdShortName() + std::string(str);
-    
+    m_uuid = m_classid + std::string(str);
 }
 
 void MusObject::ResetUuid()
@@ -248,8 +257,18 @@ void MusObject::Process(MusFunctor *functor, ArrayPtrVoid params )
 // MusDocObject
 //----------------------------------------------------------------------------
 
-MusDocObject::MusDocObject() :
-	MusObject()
+
+// Note: since it is one line of code
+// I am not making a new function for the two
+// constructors.
+MusDocObject::MusDocObject():
+    MusObject("md-")
+{
+	ResetBB();
+}
+
+MusDocObject::MusDocObject(std::string classid) :
+    MusObject(classid)
 {
 	//m_doc = NULL;
     ResetBB();

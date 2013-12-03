@@ -33,7 +33,6 @@ public:
     virtual bool operator==(MusObject& other);
     
     virtual std::string MusClassName( ) { return "MusMensur"; };
-    virtual std::string GetIdShortName() { return "mensur-"; };
     
     /**
      * Set the value for the mensur.

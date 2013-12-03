@@ -36,7 +36,6 @@ public:
     virtual ~MusSystem();
         
     virtual std::string MusClassName( ) { return "MusSystem"; };
-    virtual std::string GetIdShortName() { return "system-"; };
     
     void Clear();
 	
