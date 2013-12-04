@@ -139,7 +139,8 @@ MusAlignment* MusMeasureAligner::GetAlignmentAtTime( double time, MusAlignmentTy
     for (i = 0; i < GetAlignmentCount(); i++)
     {
         alignment = (MusAlignment*)m_children[i];
-        if ( (alignment->GetTime() == time) && (alignment->GetType() == type) ) {
+        double alignment_time = alignment->GetTime();
+        if ( Mus::AreEqual( alignment_time, time ) && (alignment->GetType() == type) ) {
             return alignment;
         }
         // nothing found, do not go any further but keep the index

@@ -50,9 +50,9 @@ void MusDurationInterface::SetDuration( int value )
 }
 
 
-double MusDurationInterface::GetAlignementDuration()
+double MusDurationInterface::GetAlignementDuration( int num, int numbase )
 {
-    double duration = DUR_MAX / pow (2.0, (double)(m_dur - 2.0));
+    double duration = DUR_MAX / pow (2.0, (double)(m_dur - 2.0)) * numbase / num;
     if ( m_dots > 0 ) {
         duration = 2 * duration - (duration / pow(2, m_dots));
     }

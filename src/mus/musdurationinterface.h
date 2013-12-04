@@ -35,7 +35,7 @@ public:
     virtual void SetDuration( int value );
     
     
-    virtual double GetAlignementDuration( );
+    virtual double GetAlignementDuration( int num, int numbase );
     
     /**
      * Look if the note or rest is in a beam.

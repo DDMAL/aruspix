@@ -29,6 +29,12 @@
 #include "musnote.h"
 #include "musrest.h"
 #include "mussymbol.h"
+#include "mustuplet.h"
+
+/**
+ * Define the maximum levels between a tuplet and its notes
+ */
+#define MAX_TUPLET_DEPTH 3
 
 
 //----------------------------------------------------------------------------
@@ -279,8 +285,15 @@ void MusLayerElement::AdjustPname( int *pname, int *oct )
 double MusLayerElement::GetAlignementDuration()
 {
     if ( HasDurationInterface() ) {
+        MusTuplet *tuplet = dynamic_cast<MusTuplet*>( this->GetFirstParent( &typeid(MusTuplet), MAX_TUPLET_DEPTH ) );
+        int num = 1;
+        int numbase = 1;
+        if ( tuplet ) {
+            num = tuplet->m_num;
+            numbase = tuplet->m_numbase;
+        }
         MusDurationInterface *duration = dynamic_cast<MusDurationInterface*>(this);
-        return duration->GetAlignementDuration( );
+        return duration->GetAlignementDuration( num, numbase );
     }
     else {
         return 0.0;

@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<?xml-model href="./mei-page-based.rng" type="application/xml" schematypens="http://relaxng.org/ns/structure/1.0"?>
+<mei xmlns="http://www.music-encoding.org/ns/mei" meiversion="2013">
+    <meiHead>
+        <fileDesc>
+            <titleStmt>
+                <title />
+            </titleStmt>
+            <pubStmt>
+                <date>4 December 2013</date>
+            </pubStmt>
+        </fileDesc>
+        <encodingDesc>
+            <projectDesc>
+                <p>Tuplets example</p>
+            </projectDesc>
+        </encodingDesc>
+    </meiHead>
+    <music>
+    <music>
+        <body>
+            <mdiv>
+                <score>
+                    <scoreDef meter.count="3" meter.unit="4" key.sig="0">
+                        <staffGrp xml:id="P1" symbol="brace" label="Part_1">
+                            <staffDef n="1" lines="5" clef.line="2" clef.shape="G" key.sig="0"/>
+                            <staffDef n="2" lines="5" clef.line="4" clef.shape="F" key.sig="0"/>
+                        </staffGrp>
+                    </scoreDef>
+                    <section>
+                     <measure n="1" xml:id="d1e12_1">
+                            <staff n="1">
+                                <layer n="1">
+                                    <!-- tuplet element -->
+                                    <tuplet num="15" numbase="6" num.visible="true" num.place="above" num.format="count">
+                                        <beam>
+                                            <note xml:id="d1e41.1" pname="d" oct="5" dur="8" tuplet="i1" stem.dir="up" size="cue"/>
+                                            <note xml:id="d1e66.1" pname="e" oct="5" dur="8" tuplet="m1" stem.dir="up" size="cue"/>
+                                            <note xml:id="d1e90.1" pname="d" oct="5" dur="8" tuplet="m1" stem.dir="up" size="cue"/>
+                                            <note xml:id="d1e114.1" pname="c" oct="5" dur="8" tuplet="m1" stem.dir="up" accid.ges="s" size="cue">
+                                                <accid accid="s"/>
+                                            </note>
+                                            <note xml:id="d1e142.1" pname="d" oct="5" dur="8" tuplet="m1" stem.dir="up" size="cue"/>
+                                            <note xml:id="d1e166.1" pname="d" oct="5" dur="8" tuplet="m1" stem.dir="up" accid.ges="s" size="cue">
+                                                <accid accid="s"/>
+                                            </note>
+                                            <note xml:id="d1e194.1" pname="e" oct="5" dur="8" tuplet="m1" stem.dir="up" size="cue"/>
+                                            <note xml:id="d1e218.1" pname="f" oct="5" dur="8" tuplet="m1" stem.dir="up" size="cue"/>
+                                            <note xml:id="d1e242.1" pname="f" oct="5" dur="8" tuplet="m1" stem.dir="up" accid.ges="s" size="cue">
+                                                <accid accid="s"/>
+                                            </note>
+                                            <note xml:id="d1e270.1" pname="g" oct="5" dur="8" tuplet="m1" stem.dir="up" size="cue"/>
+                                            <note xml:id="d1e295.1" pname="g" oct="5" dur="8" tuplet="m1" stem.dir="up" accid.ges="s" size="cue">
+                                                <accid accid="s"/>
+                                            </note>
+                                            <note xml:id="d1e323.1" pname="b" oct="5" dur="16" tuplet="m1" stem.dir="up" size="cue"/>
+                                            <note xml:id="d1e347.1" pname="a" oct="5" dur="16" tuplet="m1" stem.dir="up" size="cue"/>
+                                            <note xml:id="d1e323.1" pname="b" oct="5" dur="16" tuplet="m1" stem.dir="up" size="cue"/>
+                                            <note xml:id="d1e347.1" pname="a" oct="5" dur="16" tuplet="m1" stem.dir="up" size="cue"/>
+                                            <note xml:id="d1e371.1" pname="g" oct="5" dur="8" tuplet="m1" stem.dir="up" size="cue">
+                                                <accid accid="n"/>
+                                            </note>
+                                            <note xml:id="d1e397.1" pname="f" oct="5" dur="8" tuplet="t1" stem.dir="up" size="cue">
+                                                <accid accid="n"/>
+                                            </note>
+                                        </beam>
+                                    </tuplet>
+                                    <note xml:id="d1e534_1" dur="4" pname="f" oct="4"/>
+                                </layer>
+                            </staff>
+                            <staff n="2">
+                                <layer n="1">
+                                    <note xml:id="d1e427_1" dur="4" pname="f" oct="4"/>
+                                    <note xml:id="d1e480_1" dur="4" pname="f" oct="4"/>
+                                    <note xml:id="d1e534_1" dur="4" pname="f" oct="4"/>
+                                    <note xml:id="d1e534_1" dur="4" pname="f" oct="4"/>
+                                </layer>
+                            </staff>
+                        </measure>
+                    </section>
+                </score>
+            </mdiv>
+        </body>
+    </music>
+</mei>

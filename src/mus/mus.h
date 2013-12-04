@@ -40,6 +40,11 @@ public:
     static void LogMessage(  const char *fmt, ... );
     static void LogWarning(  const char *fmt, ... );
     
+    /**
+     * Utility for comparing doubles
+     */
+    static bool AreEqual(double dFirstVal, double dSecondVal);
+    
 private:
     static std::string m_respath;
 };
