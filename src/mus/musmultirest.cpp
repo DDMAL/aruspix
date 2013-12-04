@@ -13,6 +13,12 @@
 // MusClef
 //----------------------------------------------------------------------------
 
+MusMultiRest::MusMultiRest():
+MusLayerElement("multirest-")
+{
+    m_number = 0;
+}
+
 MusMultiRest::MusMultiRest(int number):
     MusLayerElement("multirest-")
 {

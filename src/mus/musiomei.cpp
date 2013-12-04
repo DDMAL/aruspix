@@ -25,6 +25,7 @@
 #include "muslayerelement.h"
 #include "musmeasure.h"
 #include "musmensur.h"
+#include "musmultirest.h"
 #include "musnote.h"
 #include "muspage.h"
 #include "musrest.h"
@@ -289,6 +290,10 @@ bool MusMeiOutput::WriteLayerElement( MusLayerElement *element )
         xmlElement = new TiXmlElement("mensur");
         WriteMeiMensur( xmlElement, dynamic_cast<MusMensur*>(element) );
     }
+    else if (dynamic_cast<MusMultiRest*>(element)) {
+        xmlElement = new TiXmlElement("multiRest");
+        WriteMeiMultiRest( xmlElement, dynamic_cast<MusMultiRest*>(element) );
+    }
     else if (dynamic_cast<MusNote*>(element)) {
         xmlElement = new TiXmlElement("note");
         WriteMeiNote( xmlElement, dynamic_cast<MusNote*>(element) );
@@ -364,6 +369,13 @@ void MusMeiOutput::WriteMeiMensur( TiXmlElement *meiMensur, MusMensur *mensur )
     }
     // missing m_meterSymb
     
+    return;
+}
+
+void MusMeiOutput::WriteMeiMultiRest( TiXmlElement *meiMultiRest, MusMultiRest *multiRest )
+{
+    meiMultiRest->SetAttribute( "num", Mus::StringFormat("%d", multiRest->GetNumber()).c_str() );
+
     return;
 }
 
@@ -946,6 +958,9 @@ bool MusMeiInput::ReadMeiLayerElement( TiXmlElement *xmlElement )
     else if ( std::string( xmlElement->Value() ) == "rest" ) {
         musElement = ReadMeiRest( xmlElement );
     }
+    else if ( std::string( xmlElement->Value() ) == "multiRest" ) {
+        musElement = ReadMeiMultiRest( xmlElement );
+    }
     else if ( std::string( xmlElement->Value() ) == "tuplet" ) {
         musElement = ReadMeiTuplet( xmlElement );
     }
@@ -1032,6 +1047,7 @@ MusLayerElement *MusMeiInput::ReadMeiClef( TiXmlElement *clef )
     return musClef;
 }
 
+
 MusLayerElement *MusMeiInput::ReadMeiMensur( TiXmlElement *mensur )
 {
     MusMensur *musMensur = new MusMensur();
@@ -1057,6 +1073,18 @@ MusLayerElement *MusMeiInput::ReadMeiMensur( TiXmlElement *mensur )
     // missing m_meterSymb
     
     return musMensur;
+}
+
+MusLayerElement *MusMeiInput::ReadMeiMultiRest( TiXmlElement *multiRest )
+{
+	MusMultiRest *musMultiRest = new MusMultiRest();
+    
+	// pitch
+    if ( multiRest->Attribute( "num" ) ) {
+        musMultiRest->SetNumber( atoi ( multiRest->Attribute( "num" ) ) );
+    }
+	
+	return musMultiRest;
 }
 
 MusLayerElement *MusMeiInput::ReadMeiNote( TiXmlElement *note )
@@ -1103,6 +1131,7 @@ MusLayerElement *MusMeiInput::ReadMeiNote( TiXmlElement *note )
 	return musNote;
 }
 
+
 MusLayerElement *MusMeiInput::ReadMeiRest( TiXmlElement *rest )
 {
     MusRest *musRest = new MusRest();
@@ -1136,6 +1165,14 @@ MusLayerElement *MusMeiInput::ReadMeiTuplet( TiXmlElement *tuplet )
     
     MusObject *previousLayer = m_currentLayer;
     m_currentLayer = m_tuplet;
+    
+    // Read in the numerator and denominator properties
+    if ( tuplet->Attribute( "num" ) ) {
+		m_tuplet->m_num = atoi( tuplet->Attribute( "num" ) );
+	}
+    if ( tuplet->Attribute( "numbase" ) ) {
+		m_tuplet->m_numbase = atoi( tuplet->Attribute( "numbase" ) );
+	}
     
     TiXmlElement *current = NULL;
     for( current = tuplet->FirstChildElement( ); current; current = current->NextSiblingElement( ) ) {

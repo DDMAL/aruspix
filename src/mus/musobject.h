@@ -15,14 +15,6 @@
 #include <vector>
 
 #include "musdef.h"
-
-/*
-#ifndef USE_EMSCRIPTEN
-#include <uuid/uuid.h>
-#else
-#include "musuuid.h"
-#endif
-*/
  
 class MusDoc;
 class MusFunctor;

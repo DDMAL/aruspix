@@ -22,6 +22,7 @@ class MusBeam;
 class MusClef;
 class MusLayer;
 class MusMensur;
+class MusMultiRest;
 class MusNote;
 class MusRest;
 class MusSymbol;
@@ -95,6 +96,12 @@ private:
      * Callded from WriteLayerElement.
      */
     void WriteMeiMensur( TiXmlElement *meiMensur, MusMensur *mensur );
+    
+    /**
+     * Write a MusMultiRest. 
+     * Callded from WriteLayerElement.
+     */
+    void WriteMeiMultiRest( TiXmlElement *meiMultiRest, MusMultiRest *multiRest );
     
     /**
      * Write a MusNote. 
@@ -206,6 +213,7 @@ private:
     MusLayerElement *ReadMeiBeam( TiXmlElement *beam );
     MusLayerElement *ReadMeiClef( TiXmlElement *clef );
     MusLayerElement *ReadMeiMensur( TiXmlElement *mensur );
+    MusLayerElement *ReadMeiMultiRest( TiXmlElement *multiRest );
     MusLayerElement *ReadMeiNote( TiXmlElement *note );
     MusLayerElement *ReadMeiRest( TiXmlElement *rest );
     MusLayerElement *ReadMeiTuplet( TiXmlElement *tuplet );
