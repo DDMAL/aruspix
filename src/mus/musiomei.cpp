@@ -183,6 +183,12 @@ bool MusMeiOutput::WriteSystem( MusSystem *system )
     return true;
 }
 
+bool MusMeiOutput::WriteScoreDef( MusScoreDef *scoreDef )
+{
+    return true;
+    
+}
+
 bool MusMeiOutput::WriteStaffGrp( MusStaffGrp *staffGrp )
 {
     // for now only as part of a system
@@ -843,6 +849,11 @@ bool MusMeiInput::ReadMeiSystem( TiXmlElement *system )
     
     // success only if at least one measure was added to the system
     return (m_system->GetMeasureCount() > 0);
+}
+
+bool MusMeiInput::ReadMeiScoreDef( TiXmlElement *scoreDef )
+{
+    return true;
 }
 
 bool MusMeiInput::ReadMeiMeasure( TiXmlElement *measure )

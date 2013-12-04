@@ -8,16 +8,7 @@
 #ifndef __MUS_IOMEI_H__
 #define __MUS_IOMEI_H__
 
-//#include "musapp.h"
 #include "musdoc.h"
-
-/*
-#ifndef USE_EMSCRIPTEN
-#include <uuid/uuid.h>
-#else
-#include "musuuid.h"
-#endif
-*/
 
 // TINYXML
 #if defined (__WXMSW__)
@@ -67,6 +58,7 @@ public:
     virtual bool WriteDoc( MusDoc *doc );
     virtual bool WritePage( MusPage *page );
     virtual bool WriteSystem( MusSystem *system );
+    virtual bool WriteScoreDef( MusScoreDef *scoreDef );
     virtual bool WriteStaffGrp( MusStaffGrp *staffGrp );
     virtual bool WriteStaffDef( MusStaffDef *staffDef );
     virtual bool WriteMeasure( MusMeasure *measure );
@@ -203,6 +195,7 @@ private:
     /** Reads the content of a <layer> or of a <rdg> for <app> within <layer> */
     bool ReadMeiPage( TiXmlElement *page );
     bool ReadMeiSystem( TiXmlElement *system );
+    bool ReadMeiScoreDef( TiXmlElement *scoreDef );
     bool ReadMeiStaffGrp( TiXmlElement *system );
     bool ReadMeiStaffDef( TiXmlElement *system );
     bool ReadMeiMeasure( TiXmlElement *measure );
