@@ -11,14 +11,6 @@
 //#include "musapp.h"
 #include "musdoc.h"
 
-/*
-#ifndef USE_EMSCRIPTEN
-#include <uuid/uuid.h>
-#else
-#include "musuuid.h"
-#endif
-*/
-
 // TINYXML
 #if defined (__WXMSW__)
     #include "tinyxml.h"

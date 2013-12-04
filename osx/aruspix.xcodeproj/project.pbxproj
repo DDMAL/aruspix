@@ -102,8 +102,6 @@
 		8F89005B15C6C641006C88A4 /* musleipzigbbox.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8F89005A15C6C641006C88A4 /* musleipzigbbox.cpp */; };
 		8F89005C15C6C641006C88A4 /* musleipzigbbox.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8F89005A15C6C641006C88A4 /* musleipzigbbox.cpp */; };
 		8F9F1A17156143A200C7D6F9 /* musiopae.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8F9F1A15156143A200C7D6F9 /* musiopae.cpp */; };
-		8FA8EC8A180841C3003ADB5F /* musuuid.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8FA8EC89180841C3003ADB5F /* musuuid.cpp */; };
-		8FA8EC8B180841C3003ADB5F /* musuuid.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8FA8EC89180841C3003ADB5F /* musuuid.cpp */; };
 		8FAB8B1015E3A54F0061532C /* musrc_tuplet.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8FAB8B0F15E3A54F0061532C /* musrc_tuplet.cpp */; };
 		8FAB8B1115E3A54F0061532C /* musrc_tuplet.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8FAB8B0F15E3A54F0061532C /* musrc_tuplet.cpp */; };
 		8FD2847C15D4F14F0038D07D /* musiomusxml.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8FD2847B15D4F14F0038D07D /* musiomusxml.cpp */; };
@@ -344,8 +342,6 @@
 		8F89005D15C6C659006C88A4 /* musleipzigbbox.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = musleipzigbbox.h; path = ../src/mus/musleipzigbbox.h; sourceTree = "<group>"; };
 		8F9F1A15156143A200C7D6F9 /* musiopae.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = musiopae.cpp; path = ../src/mus/musiopae.cpp; sourceTree = "<group>"; };
 		8F9F1A16156143A200C7D6F9 /* musiopae.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = musiopae.h; path = ../src/mus/musiopae.h; sourceTree = "<group>"; };
-		8FA8EC8418083F21003ADB5F /* musuuid.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = musuuid.h; path = ../src/mus/musuuid.h; sourceTree = "<group>"; };
-		8FA8EC89180841C3003ADB5F /* musuuid.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = musuuid.cpp; path = ../src/mus/musuuid.cpp; sourceTree = "<group>"; };
 		8FAB8B0F15E3A54F0061532C /* musrc_tuplet.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = musrc_tuplet.cpp; path = ../src/mus/musrc_tuplet.cpp; sourceTree = "<group>"; };
 		8FD2847915D4F13F0038D07D /* musiomusxml.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = musiomusxml.h; path = ../src/mus/musiomusxml.h; sourceTree = "<group>"; };
 		8FD2847B15D4F14F0038D07D /* musiomusxml.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = musiomusxml.cpp; path = ../src/mus/musiomusxml.cpp; sourceTree = "<group>"; };
@@ -529,8 +525,6 @@
 				4D76EDEF1811C39100A6024B /* musaligner.h */,
 				4D28D70C181006AC00C54CFC /* muscontroller.cpp */,
 				4D28D70D181006AD00C54CFC /* muscontroller.h */,
-				8FA8EC8418083F21003ADB5F /* musuuid.h */,
-				8FA8EC89180841C3003ADB5F /* musuuid.cpp */,
 				8F2381791594632C00C04D47 /* main.cpp */,
 				8F23C19B182AA0CF00C60239 /* emscripten_main.cpp */,
 			);
@@ -931,7 +925,6 @@
 				8FAB8B1115E3A54F0061532C /* musrc_tuplet.cpp in Sources */,
 				4D246C391684AA82008F421B /* musapp.cpp in Sources */,
 				4D784B861802A8EB00461A35 /* mus.cpp in Sources */,
-				8FA8EC8B180841C3003ADB5F /* musuuid.cpp in Sources */,
 				4DAF10BC18085C8200767149 /* musmeasure.cpp in Sources */,
 				4D28D70E181006AD00C54CFC /* muscontroller.cpp in Sources */,
 				4D76EDF11811C39300A6024B /* musaligner.cpp in Sources */,
@@ -1046,7 +1039,6 @@
 				4D784B7F17FF212200461A35 /* muswwg.cpp in Sources */,
 				4D784B8217FF242500461A35 /* musiowwg.cpp in Sources */,
 				4D784B851802A8EB00461A35 /* mus.cpp in Sources */,
-				8FA8EC8A180841C3003ADB5F /* musuuid.cpp in Sources */,
 				4DAF10BB18085C8200767149 /* musmeasure.cpp in Sources */,
 				4D76EDF01811C39300A6024B /* musaligner.cpp in Sources */,
 				4DC3771A182ED71D00494D0E /* musscoredef.cpp in Sources */,
