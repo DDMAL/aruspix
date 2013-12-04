@@ -23,6 +23,7 @@ class MusMultiRest: public MusLayerElement
 {
 public:
     // constructors and destructors
+    MusMultiRest();
     MusMultiRest(int number);
     virtual ~MusMultiRest();
     
