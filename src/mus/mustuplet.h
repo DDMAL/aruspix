@@ -44,6 +44,8 @@ protected:
 private:
     
 public:
+    int m_num;
+    int m_numbase;
     
 private:
 

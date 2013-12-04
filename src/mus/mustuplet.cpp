@@ -15,6 +15,8 @@
 MusTuplet::MusTuplet():
 MusLayerElement("tuplet-"), MusObjectListInterface()
 {
+    m_num = 1;
+    m_numbase = 1;
 }
 
 

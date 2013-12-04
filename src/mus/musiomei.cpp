@@ -1155,6 +1155,14 @@ MusLayerElement *MusMeiInput::ReadMeiTuplet( TiXmlElement *tuplet )
     MusObject *previousLayer = m_currentLayer;
     m_currentLayer = m_tuplet;
     
+    // Read in the numerator and denominator properties
+    if ( tuplet->Attribute( "num" ) ) {
+		m_tuplet->m_num = atoi( tuplet->Attribute( "num" ) );
+	}
+    if ( tuplet->Attribute( "numbase" ) ) {
+		m_tuplet->m_numbase = atoi( tuplet->Attribute( "numbase" ) );
+	}
+    
     TiXmlElement *current = NULL;
     for( current = tuplet->FirstChildElement( ); current; current = current->NextSiblingElement( ) ) {
         ReadMeiLayerElement( current );
