@@ -84,7 +84,7 @@ protected:
  * This class represents a MEI scoreDef.
  * It contains MusStaffGrp objects.
 */
-class MusScoreDef: public MusObject, public MusScoreOrStaffDefAttrInterface
+class MusScoreDef: public MusObject, public MusScoreOrStaffDefAttrInterface, public MusObjectListInterface
 {
 public:
     // constructors and destructors
@@ -117,6 +117,13 @@ public:
      * This is necessary at the beginning or when a scoreDef occurs.
      */
     void SetRedraw( bool clef, bool keysig, bool mensur );
+    
+protected:
+    /**
+     * Filter the list for a specific class.
+     * For example, keep staffGrp for fast access.
+     */
+    virtual void FilterList();
     
 private:
     
@@ -203,13 +210,6 @@ public:
 
     // functors
     virtual int Save( ArrayPtrVoid params );
-    
-    /**
-     * Find the MusStaffDef with number m_n value.
-     * param 0: the n we are looking for.
-     * param 1: the pointer to pointer to the MusStaffDef retrieved (if found).
-     */
-    virtual int FindStaffDefByNumber( ArrayPtrVoid params );
     
     /**
      * Replace all the staffDefs in a scoreDef.

@@ -194,6 +194,7 @@ bool MusMeiOutput::WriteScoreDef( MusScoreDef *scoreDef )
     if (scoreDef->GetClefAttr()) {
         m_scoreDef->SetAttribute( "clef.line", ClefLineToStr( scoreDef->GetClefAttr()->m_clefId ).c_str() );
         m_scoreDef->SetAttribute( "clef.shape", ClefShapeToStr( scoreDef->GetClefAttr()->m_clefId ).c_str() );
+        // we should add 8va attr
     }
     if (scoreDef->GetKeySigAttr()) {
         m_scoreDef->SetAttribute( "key.sig", KeySigToStr( scoreDef->GetKeySigAttr()->m_num_alter,
@@ -224,6 +225,7 @@ bool MusMeiOutput::WriteStaffDef( MusStaffDef *staffDef )
     if (staffDef->GetClefAttr()) {
         m_staffDef->SetAttribute( "clef.line", ClefLineToStr( staffDef->GetClefAttr()->m_clefId ).c_str() );
         m_staffDef->SetAttribute( "clef.shape", ClefShapeToStr( staffDef->GetClefAttr()->m_clefId ).c_str() );
+        // we should add 8va attr
     }
     if (staffDef->GetKeySigAttr()) {
         m_staffDef->SetAttribute( "key.sig", KeySigToStr( staffDef->GetKeySigAttr()->m_num_alter,
@@ -368,6 +370,7 @@ void MusMeiOutput::WriteMeiClef( TiXmlElement *meiClef, MusClef *clef )
 {
     meiClef->SetAttribute( "line", ClefLineToStr( clef->m_clefId ).c_str() );
     meiClef->SetAttribute( "shape", ClefShapeToStr( clef->m_clefId ).c_str() );
+    // we should add 8va attr
     return;
 }
 
@@ -932,6 +935,7 @@ bool MusMeiInput::ReadMeiScoreDef( TiXmlElement *scoreDef )
         MusClef clef;
         clef.m_clefId = StrToClef( scoreDef->Attribute( "clef.shape" ) , scoreDef->Attribute( "clef.line" ) );
         m_scoreDef->ReplaceClef( &clef );
+        // add other attributes for SOLva
     }
     
     TiXmlElement *current = NULL;
@@ -1007,6 +1011,10 @@ bool MusMeiInput::ReadMeiStaffDef( TiXmlElement *staffDef )
     if ( staffDef->Attribute( "clef.line" ) && staffDef->Attribute( "clef.shape" ) ) {
         MusClef clef;
         clef.m_clefId = StrToClef( staffDef->Attribute( "clef.shape" ) , staffDef->Attribute( "clef.line" ) );
+        // this is obviously a short cut - assuming @clef.dis being SOLva
+        if ( staffDef->Attribute( "clef.dis" ) ) {
+            clef.m_clefId = SOLva;
+        }
         m_staffDef->ReplaceClef( &clef );
     }
     

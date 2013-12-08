@@ -74,7 +74,7 @@ void MusDoc::Reset( DocType type )
 	m_fontHeightAscent[1][0] = 0;
 	m_fontHeightAscent[1][1] = 0;
     
-    m_charDefin = 18;
+    m_charDefin = 20;
 }
 
 void MusDoc::ResetPaperSize()

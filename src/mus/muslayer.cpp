@@ -17,6 +17,7 @@
 #include "musclef.h"
 #include "musdef.h"
 #include "musdoc.h"
+#include "muskeysig.h"
 #include "musio.h"
 #include "muslayerelement.h"
 #include "musnote.h"
@@ -294,9 +295,11 @@ MusClef* MusLayer::GetClef( MusLayerElement *test )
     {	
         test = GetFirst(test, BACKWARD, &typeid(MusClef), &succ);
     }
+    if ( dynamic_cast<MusClef*>(test) ) {
+        return dynamic_cast<MusClef*>(test);
+    }
 
-    MusClef *clef = dynamic_cast<MusClef*>(test);
-    return clef;
+    return &m_currentClef;
 }
 
 int MusLayer::GetClefOffset( MusLayerElement *test )
@@ -652,6 +655,9 @@ int MusLayer::Align( ArrayPtrVoid params )
     
     if ( m_clef ) {
         m_clef->Align( params );
+    }
+    if ( m_keySig ) {
+        m_keySig->Align( params );
     }
 
     return FUNCTOR_CONTINUE;

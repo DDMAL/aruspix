@@ -109,7 +109,7 @@ void MusScoreOrStaffDefAttrInterface::ReplaceMensur( MusMensur *newMensur )
 //----------------------------------------------------------------------------
 
 MusScoreDef::MusScoreDef() :
-	MusObject("scoredef-"), MusScoreOrStaffDefAttrInterface()
+	MusObject("scoredef-"), MusScoreOrStaffDefAttrInterface(), MusObjectListInterface()
 {
 }
 
@@ -149,18 +149,38 @@ void MusScoreDef::Replace( MusStaffDef *newStaffDef )
     }
 }
 
+void MusScoreDef::FilterList()
+{
+    // We want to keep only staffDef
+    ListOfMusObjects::iterator iter = m_list.begin();
+    
+    while ( iter != m_list.end()) {
+        MusStaffDef *currentStaffDef = dynamic_cast<MusStaffDef*>(*iter);
+        if ( !currentStaffDef )
+        {
+            iter = m_list.erase( iter );
+        } else {
+            iter++;
+        }
+    }
+    
+}
+
 
 MusStaffDef *MusScoreDef::GetStaffDef( int n )
 {
     MusStaffDef *staffDef = NULL;
-    ArrayPtrVoid params;
-	params.push_back( &n );
-    params.push_back( &staffDef );
-    MusFunctor findStaffDef( &MusObject::FindStaffDefByNumber );
-    this->Process( &findStaffDef, params );
     
-    // the staffDef should never be NULL
-    assert(staffDef);
+    this->ResetList( this );
+    ListOfMusObjects::iterator iter;
+    int i;
+    for (iter = m_list.begin(), i = 0; iter != m_list.end(); ++iter, i++)
+    {
+        staffDef = dynamic_cast<MusStaffDef*>(*iter);
+        if (staffDef && (staffDef->GetStaffNo() == n) ) {
+            return staffDef;
+        }
+    }
     
     return staffDef;
 }
@@ -193,12 +213,14 @@ void MusStaffGrp::AddStaffDef( MusStaffDef *staffDef )
 {
 	staffDef->SetParent( this );
 	m_children.push_back( staffDef );
+    Modify();
 }
 
 void MusStaffGrp::AddStaffGrp( MusStaffGrp *staffGrp )
 {
 	staffGrp->SetParent( this );
 	m_children.push_back( staffGrp );
+    Modify();
 }
 
 int MusStaffGrp::Save( ArrayPtrVoid params )
@@ -239,27 +261,6 @@ int MusStaffDef::Save( ArrayPtrVoid params )
 //----------------------------------------------------------------------------
 // MusStaffDef functor methods
 //----------------------------------------------------------------------------
-
-int MusStaffDef::FindStaffDefByNumber( ArrayPtrVoid params )
-{
-    // param 0: the n we are looking for
-    // param 1: the pointer to pointer to the MusStaffDef
-    int *n = (int*)params[0];
-    MusStaffDef **staffDef = (MusStaffDef**)params[1];
-    
-    if ( (*staffDef) ) {
-        // this should not happen, but just in case
-        return FUNCTOR_STOP;
-    }
-    
-    if ( this->GetStaffNo() == (*n) ) {
-        (*staffDef) = this;
-        Mus::LogMessage("Found it!");
-        return FUNCTOR_STOP;
-    }
-    //Mus::LogDebug("Still looking for it...");
-    return FUNCTOR_CONTINUE;
-}
 
 int MusStaffDef::ReplaceStaffDefsInScoreDef( ArrayPtrVoid params )
 {

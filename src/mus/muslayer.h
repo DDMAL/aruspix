@@ -163,19 +163,19 @@ private:
     
 public:
 	/** voix de la portee*/
-	unsigned short voix;  
-    
-protected:
-    // drawing variables
-    //MusLayerElement *beamListPremier; // we need to replace this with a proper beam class that handles a list of notes/rests
-    ListOfMusObjects m_drawingList;
+	unsigned short voix;
     
     /**
      * The current clef.
      * This is used for getting the clef when interacting, for example by clicking in order to get the pitch from a position
      */
     MusClef m_currentClef;
-
+    
+protected:
+    // drawing variables
+    //MusLayerElement *beamListPremier; // we need to replace this with a proper beam class that handles a list of notes/rests
+    ListOfMusObjects m_drawingList;
+    
 private:
     /** The layer number */
     int m_n;

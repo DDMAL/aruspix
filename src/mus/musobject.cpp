@@ -506,9 +506,9 @@ int MusObject::AddMusLayerElementToList( ArrayPtrVoid params )
 {
     // param 0: the ListOfMusObjects
     ListOfMusObjects *list = (ListOfMusObjects*)params[0];
-    if ( dynamic_cast<MusLayerElement*>(this ) ) {
+    //if ( dynamic_cast<MusLayerElement*>(this ) ) {
         list->push_back( this );
-    }
+    //}
     return FUNCTOR_CONTINUE;
 }
 
@@ -565,7 +565,6 @@ int MusObject::SetPageScoreDef( ArrayPtrVoid params )
         return FUNCTOR_CONTINUE;
     }
 
-    /*
     // starting a new layer
     MusLayer *current_layer = dynamic_cast<MusLayer*>(this);
     if ( current_layer  ) {
@@ -598,10 +597,9 @@ int MusObject::SetPageScoreDef( ArrayPtrVoid params )
             (*currentStaffDef)->SetDrawMensur( false );
         }
         // Set the currentClef to the layer
-        //current_layer->m_currentClef = *currentStaffDef->GetClefAttr();
+        current_layer->m_currentClef = *(*currentStaffDef)->GetClefAttr();
         return FUNCTOR_CONTINUE;
     }
-    */
     
     // starting a new clef
     MusClef *current_clef = dynamic_cast<MusClef*>(this);
@@ -632,6 +630,9 @@ int MusObject::SetBoundingBoxXShift( ArrayPtrVoid params )
         (*min_pos) = 5;
         if (current_layer->GetClefAttr()) {
             current_layer->GetClefAttr()->SetBoundingBoxXShift( params );
+        }
+        if (current_layer->GetKeySigAttr()) {
+            current_layer->GetKeySigAttr()->SetBoundingBoxXShift( params );
         }
     }
 
