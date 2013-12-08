@@ -34,6 +34,7 @@ add_executable (aruspix
 	src/mus/musleipzigbbox.cpp
 	src/mus/musmensur.cpp 
 	src/mus/musmeasure.cpp
+	src/mus/musmultirest.cpp
 	src/mus/musnote.cpp 
 	src/mus/musobject.cpp 
 	src/mus/muspage.cpp 

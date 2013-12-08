@@ -19,7 +19,8 @@ emcc --closure 0 -O2 \
 	-I$ARUSPIX_ROOT/src \
 	-I./lib/jsonxx \
 	-DUSE_EMSCRIPTEN \
-	-s TOTAL_MEMORY=256*1024*1024 \
+	-s ALLOW_MEMORY_GROWTH=1 \
+	-s TOTAL_MEMORY=64*1024*1024 \
 	-s TOTAL_STACK=16*1024*1024 \
 	$ARUSPIX_ROOT/src/mus/emscripten_main.cpp \
 	$ARUSPIX_ROOT/src/mus/mus.cpp \
@@ -44,6 +45,7 @@ emcc --closure 0 -O2 \
 	$ARUSPIX_ROOT/src/mus/muslayerelement.cpp \
 	$ARUSPIX_ROOT/src/mus/musleipzigbbox.cpp \
 	$ARUSPIX_ROOT/src/mus/musmensur.cpp \
+	$ARUSPIX_ROOT/src/mus/musmultirest.cpp \
 	$ARUSPIX_ROOT/src/mus/musnote.cpp \
 	$ARUSPIX_ROOT/src/mus/musobject.cpp \
 	$ARUSPIX_ROOT/src/mus/muspage.cpp \
@@ -65,15 +67,10 @@ emcc --closure 0 -O2 \
 	$ARUSPIX_ROOT/src/mus/mussystem.cpp \
 	$ARUSPIX_ROOT/src/mus/mustie.cpp \
 	$ARUSPIX_ROOT/src/mus/mustuplet.cpp \
-	$ARUSPIX_ROOT/src/mus/musuuid.cpp \
 	$ARUSPIX_ROOT/src/tinyxml/tinystr.cpp \
 	$ARUSPIX_ROOT/src/tinyxml/tinyxml.cpp \
 	$ARUSPIX_ROOT/src/tinyxml/tinyxmlerror.cpp \
 	$ARUSPIX_ROOT/src/tinyxml/tinyxmlparser.cpp \
-	lib/regex/regcomp.c \
-	lib/regex/regexec.c \
-	lib/regex/regfree.c \
-	lib/regex/regerror.c \
 	lib/jsonxx/jsonxx.cc \
 	--embed-file data/svg/ \
 	-s EXPORTED_FUNCTIONS="['_convertMusic']" \
@@ -82,6 +79,12 @@ emcc --closure 0 -O2 \
 if [ $? -eq 0 ]; then echo "Done."; fi
 
 # Unused
+
+#	lib/regex/regcomp.c \
+#	lib/regex/regexec.c \
+#	lib/regex/regfree.c \
+#	lib/regex/regerror.c \
+
 #/Users/xhero/Downloads/e2fsprogs-1.42.8/lib/uuid/result.bc \
 #--embed-file data/svg/ \
 #	llvm_regexp/regcomp.c \
