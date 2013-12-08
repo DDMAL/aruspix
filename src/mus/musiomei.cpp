@@ -21,6 +21,7 @@
 #include "musbarline.h"
 #include "musbeam.h"
 #include "musclef.h"
+#include "muskeysig.h"
 #include "muslayer.h"
 #include "muslayerelement.h"
 #include "musmeasure.h"
@@ -46,6 +47,7 @@ MusMeiOutput::MusMeiOutput( MusDoc *doc, std::string filename ) :
     m_mei = NULL;
     m_pages = NULL;
     m_page = NULL;
+    m_scoreDef = NULL;
     m_system = NULL;
     m_staffGrp = NULL;
     m_staffDef = NULL;
@@ -186,13 +188,26 @@ bool MusMeiOutput::WriteSystem( MusSystem *system )
 
 bool MusMeiOutput::WriteScoreDef( MusScoreDef *scoreDef )
 {
+    assert( m_system );
+    m_scoreDef = new TiXmlElement("scoreDef");
+    m_scoreDef->SetAttribute( "xml:id",  UuidToMeiStr( scoreDef ).c_str() );
+    if (scoreDef->GetClefAttr()) {
+        m_scoreDef->SetAttribute( "clef.line", ClefLineToStr( scoreDef->GetClefAttr()->m_clefId ).c_str() );
+        m_scoreDef->SetAttribute( "clef.shape", ClefShapeToStr( scoreDef->GetClefAttr()->m_clefId ).c_str() );
+    }
+    if (scoreDef->GetKeySigAttr()) {
+        m_scoreDef->SetAttribute( "key.sig", KeySigToStr( scoreDef->GetKeySigAttr()->m_num_alter,
+                                                         scoreDef->GetKeySigAttr()->m_alteration ).c_str() );
+    }
+    // this needs to be fixed
+    m_page->LinkEndChild( m_system );
     return true;
     
 }
 
 bool MusMeiOutput::WriteStaffGrp( MusStaffGrp *staffGrp )
 {
-    // for now only as part of a system
+    // for now only as part of a system - this needs to be fixed
     assert( m_system );
     m_staffGrp = new TiXmlElement("staffGrp");
     m_staffGrp->SetAttribute( "xml:id",  UuidToMeiStr( staffGrp ).c_str() );
@@ -205,6 +220,16 @@ bool MusMeiOutput::WriteStaffDef( MusStaffDef *staffDef )
     assert( m_staffGrp );
     m_staffDef = new TiXmlElement("staffDef");
     m_staffDef->SetAttribute( "xml:id",  UuidToMeiStr( staffDef ).c_str() );
+    m_staffDef->SetAttribute( "n", Mus::StringFormat( "%d", staffDef->GetStaffNo() ).c_str() );
+    if (staffDef->GetClefAttr()) {
+        m_staffDef->SetAttribute( "clef.line", ClefLineToStr( staffDef->GetClefAttr()->m_clefId ).c_str() );
+        m_staffDef->SetAttribute( "clef.shape", ClefShapeToStr( staffDef->GetClefAttr()->m_clefId ).c_str() );
+    }
+    if (staffDef->GetKeySigAttr()) {
+        m_staffDef->SetAttribute( "key.sig", KeySigToStr( staffDef->GetKeySigAttr()->m_num_alter,
+                                                         staffDef->GetKeySigAttr()->m_alteration ).c_str() );
+    }
+
     m_staffGrp->LinkEndChild( m_staffDef );
     return true;
 }
@@ -639,6 +664,25 @@ std::string MusMeiOutput::DocTypeToStr(DocType type)
 	return value;   
 }
 
+
+std::string MusMeiOutput::KeySigToStr(int num, char alter_type )
+{
+ 	std::string value;
+    if (num == 0) {
+        return "0";
+    }
+	switch(alter_type)
+	{	case ACCID_FLAT : value = Mus::StringFormat("%df", num); break;
+		case ACCID_SHARP : value = Mus::StringFormat("%ds", num); break;
+        default:
+            Mus::LogWarning("Unknown key signature values '%d' and '%d", num, alter_type);
+            value = "0";
+            break;
+	}
+	return value;
+}
+
+
 //----------------------------------------------------------------------------
 // MusMeiInput
 //----------------------------------------------------------------------------
@@ -649,6 +693,8 @@ MusMeiInput::MusMeiInput( MusDoc *doc, std::string filename ) :
     m_filename = filename;
     m_doc->m_fname = Mus::GetFilename( filename );
     m_page = NULL;
+    m_scoreDef = NULL;
+    m_staffDef = NULL;
     m_system = NULL;
 	m_staff = NULL;
     m_measure = NULL;
@@ -659,6 +705,8 @@ MusMeiInput::MusMeiInput( MusDoc *doc, std::string filename ) :
     m_tuplet = NULL;
     //
     m_currentLayer = NULL;
+    //
+    m_hasScoreDef = false;
 }
 
 MusMeiInput::~MusMeiInput()
@@ -771,6 +819,8 @@ bool MusMeiInput::ReadMeiHeader( TiXmlElement *meiHead )
 
 bool MusMeiInput::ReadMeiPage( TiXmlElement *page )
 {
+    assert( m_page );
+    
     if ( page->Attribute( "page.height" ) ) {
         m_page->m_pageHeight = atoi ( page->Attribute( "page.height" ) );
     }
@@ -808,6 +858,10 @@ bool MusMeiInput::ReadMeiPage( TiXmlElement *page )
 
 bool MusMeiInput::ReadMeiSystem( TiXmlElement *system )
 {
+    assert( m_system );
+    assert( !m_measure );
+    assert( !m_staff );
+    
     if ( system->Attribute( "system.leftmar") ) {
         m_system->m_systemLeftMar = atoi ( system->Attribute( "system.leftmar" ) );
     }
@@ -865,11 +919,105 @@ bool MusMeiInput::ReadMeiSystem( TiXmlElement *system )
 
 bool MusMeiInput::ReadMeiScoreDef( TiXmlElement *scoreDef )
 {
+    assert( m_scoreDef );
+    assert( m_staffGrps.empty() );
+    
+    if ( scoreDef->Attribute( "key.sig" ) ) {
+        MusKeySig keysig(
+                StrToKeySigNum( scoreDef->Attribute( "key.sig" ) ),
+                StrToKeySigType( scoreDef->Attribute( "key.sig" ) ) );
+        m_scoreDef->ReplaceKeySig( &keysig );
+    }
+    if ( scoreDef->Attribute( "clef.line" ) && scoreDef->Attribute( "clef.shape" ) ) {
+        MusClef clef;
+        clef.m_clefId = StrToClef( scoreDef->Attribute( "clef.shape" ) , scoreDef->Attribute( "clef.line" ) );
+        m_scoreDef->ReplaceClef( &clef );
+    }
+    
+    TiXmlElement *current = NULL;
+    for( current = scoreDef->FirstChildElement( "staffGrp" ); current; current = current->NextSiblingElement( "staffGrp" ) ) {
+        MusStaffGrp *staffGrp = new MusStaffGrp( );
+        m_staffGrps.push_back( staffGrp );
+        SetMeiUuid( current , staffGrp );
+        if (ReadMeiStaffGrp( current )) {
+            m_scoreDef->AddStaffGrp( staffGrp );
+        }
+        else {
+            delete staffGrp;
+        }
+        m_staffGrps.pop_back();
+    }
+    
+    return true;
+}
+
+bool MusMeiInput::ReadMeiStaffGrp( TiXmlElement *staffGrp )
+{
+    assert( !m_staffGrps.empty() );
+    assert( !m_staffDef );
+    
+    MusStaffGrp *currentStaffGrp = m_staffGrps.back();
+    
+    TiXmlElement *current = NULL;
+    for( current = staffGrp->FirstChildElement( ); current; current = current->NextSiblingElement( ) ) {
+        if ( std::string( current->Value() ) == "staffGrp" ) {
+            MusStaffGrp *staffGrp = new MusStaffGrp( );
+            m_staffGrps.push_back( staffGrp );
+            SetMeiUuid( current , staffGrp );
+            if (ReadMeiStaffGrp( current )) {
+                currentStaffGrp->AddStaffGrp( staffGrp );
+            }
+            else {
+                delete staffGrp;
+            }
+            m_staffGrps.pop_back();            
+        }
+        else if ( std::string( current->Value() ) == "staffDef" ) {
+            m_staffDef = new MusStaffDef( );
+            SetMeiUuid( current , m_staffDef );
+            if (ReadMeiStaffDef( current )) {
+                currentStaffGrp->AddStaffDef( m_staffDef );
+            }
+            else {
+                delete m_staffDef;
+            }
+            m_staffDef = NULL;
+        }        
+    }
+    
+    return true;
+}
+
+bool MusMeiInput::ReadMeiStaffDef( TiXmlElement *staffDef )
+{
+    assert( m_staffDef );
+    
+    if ( staffDef->Attribute( "n" ) ) {
+        m_staffDef->SetStaffNo( atoi ( staffDef->Attribute( "n" ) ) );
+    }
+    else {
+        Mus::LogWarning("No @n on staffDef");
+    }
+    if ( staffDef->Attribute( "key.sig" ) ) {
+        MusKeySig keysig(
+                         StrToKeySigNum( staffDef->Attribute( "key.sig" ) ),
+                         StrToKeySigType( staffDef->Attribute( "key.sig" ) ) );
+        m_staffDef->ReplaceKeySig( &keysig );
+    }
+    if ( staffDef->Attribute( "clef.line" ) && staffDef->Attribute( "clef.shape" ) ) {
+        MusClef clef;
+        clef.m_clefId = StrToClef( staffDef->Attribute( "clef.shape" ) , staffDef->Attribute( "clef.line" ) );
+        m_staffDef->ReplaceClef( &clef );
+    }
+    
     return true;
 }
 
 bool MusMeiInput::ReadMeiMeasure( TiXmlElement *measure )
 {
+    assert( m_measure );
+    assert( !m_staff );
+    
     TiXmlElement *current = NULL;
     for( current = measure->FirstChildElement( "staff" ); current; current = current->NextSiblingElement( "staff" ) ) {
         m_staff = new MusStaff( );
@@ -888,6 +1036,9 @@ bool MusMeiInput::ReadMeiMeasure( TiXmlElement *measure )
 
 bool MusMeiInput::ReadMeiStaff( TiXmlElement *staff )
 {
+    assert( m_staff );
+    assert( !m_layer );
+    
     if ( staff->Attribute( "n" ) ) {
         m_staff->SetStaffNo( atoi ( staff->Attribute( "n" ) ) );
     }
@@ -922,6 +1073,8 @@ bool MusMeiInput::ReadMeiStaff( TiXmlElement *staff )
 
 bool MusMeiInput::ReadMeiLayer( TiXmlElement *layer )
 {
+    assert( m_layer );
+    
     if ( layer->Attribute( "n" ) ) {
         m_layer->SetLayerNo( atoi ( layer->Attribute( "n" ) ) );
     }
@@ -1385,6 +1538,17 @@ bool MusMeiInput::ReadUnsupported( TiXmlElement *element )
         m_system = new MusSystem( );
         m_page->AddSystem( m_system );
     }
+    else if ( (std::string( element->Value() ) == "scoreDef") && ( !m_hasScoreDef ) ) {
+        Mus::LogDebug( "scoreDef" );
+        m_scoreDef = &m_doc->m_scoreDef;
+        SetMeiUuid( element, m_scoreDef );
+        if (ReadMeiScoreDef( element )) {
+            m_hasScoreDef = true;
+        }
+        else {
+            m_hasScoreDef = false;
+        }
+    }
     else {
         Mus::LogWarning( "Element %s ignored", element->Value() );
     }
@@ -1512,5 +1676,23 @@ DocType MusMeiInput::StrToDocType(std::string type)
 	return Raw;
 }
 
+unsigned char MusMeiInput::StrToKeySigType(std::string accid)
+{
+    if ( accid == "0" ) return  ACCID_NATURAL;
+    else if ( accid.at(1) == 'f' ) return ACCID_FLAT;
+    else if ( accid.at(1) == 's' ) return ACCID_SHARP;
+    else {
+        Mus::LogWarning("Unknown keysig '%s'", accid.c_str() );
+        return ACCID_NATURAL;
+    }
+}
 
+int MusMeiInput::StrToKeySigNum(std::string accid)
+{
+    if ( accid == "0" ) return  0;
+    else {
+        // low level way, remove '0', which is 48
+        return accid.at(0) - '0';
+    }
+}
 

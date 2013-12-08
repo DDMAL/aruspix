@@ -74,7 +74,7 @@ void MusDoc::Reset( DocType type )
 	m_fontHeightAscent[1][0] = 0;
 	m_fontHeightAscent[1][1] = 0;
     
-    m_charDefin = 20;
+    m_charDefin = 18;
 }
 
 void MusDoc::ResetPaperSize()
@@ -110,11 +110,12 @@ void MusDoc::Refresh()
 
 void MusDoc::Layout( bool trim )
 {
-    MusScoreDef currentScoreDef = m_scoreDef;
-    int staffNo = 0;
+    MusScoreDef currentScoreDef;
+    currentScoreDef = m_scoreDef;
+    MusStaffDef *staffDef = NULL;
     ArrayPtrVoid params;
     params.push_back( &currentScoreDef );
-    params.push_back( &staffNo );
+    params.push_back( &staffDef );
     MusFunctor setPageScoreDef( &MusObject::SetPageScoreDef );
     this->Process( &setPageScoreDef, params );
     

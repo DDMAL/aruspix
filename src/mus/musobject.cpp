@@ -14,17 +14,21 @@
 #include <iostream>
 #include <sstream>
 #include <string>
+#include <typeinfo>
 
 //----------------------------------------------------------------------------
 
 #include "mus.h"
 #include "musaligner.h"
 #include "musbeam.h"
+#include "musclef.h"
+#include "muskeysig.h"
 #include "muslayer.h"
 #include "muslayerelement.h"
 #include "musmeasure.h"
 #include "muspage.h"
 #include "musrc.h"
+#include "musscoredef.h"
 #include "musstaff.h"
 #include "mussystem.h"
 #include "mustie.h"
@@ -43,12 +47,55 @@ MusObject::MusObject(std::string classid) {
     Init(classid);
 }
 
+MusObject *MusObject::Clone( ) {
+    // This should new happen because the method should be overwritten
+    assert( false );
+}
+
+MusObject::MusObject( const MusObject& object )
+{
+    m_parent = NULL;
+    m_classid = object.m_classid;
+    m_uuid = object.m_uuid; // for now copy the uuid - to be decided
+    
+    int i;
+    for (i = 0; i < (int)object.m_children.size(); i++)
+    {
+        MusObject *current = object.m_children[i];
+        MusObject* copy = current->Clone();
+        copy->SetParent( this );
+        m_children.push_back( copy );
+    }
+
+}
+
+MusObject& MusObject::operator=( const MusObject& object )
+{
+	if ( this != &object ) // not self assignement
+	{
+        m_parent = NULL;
+        m_classid = object.m_classid;
+        m_uuid = object.m_uuid; // for now copy the uuid - to be decided
+        
+        int i;
+        for (i = 0; i < (int)object.m_children.size(); i++)
+        {
+            MusObject *current = object.m_children[i];
+            MusObject* copy = current->Clone();
+            copy->SetParent( this );
+            m_children.push_back( copy );
+        }
+	}
+	return *this;
+}
+
 MusObject::~MusObject()
 {
     ClearChildren();
 }
 
-void MusObject::Init(std::string classid) {
+void MusObject::Init(std::string classid)
+{
     m_parent = NULL;
     m_isModified = true;
     m_classid = classid;
@@ -489,47 +536,88 @@ int MusObject::FindByUuid( ArrayPtrVoid params )
 
 int MusObject::SetPageScoreDef( ArrayPtrVoid params )
 {
-    /*
-    // param 0: the height of the previous staff
-    ScoreDef *currentScoreDef = (int*)params[0];
+
+    // param 0: the current scoreDef
+    MusScoreDef *currentScoreDef = (MusScoreDef*)params[0];
+    MusStaffDef **currentStaffDef = (MusStaffDef**)params[1];
     
-    // starting a new system
-    MusMeasure *current_measure = dynamic_cast<MusMeasure*>(this);
-    if ( current_measure  ) {
-        (*min_pos) = 0;
-    }
-    
-    MusStaff *current = dynamic_cast<MusStaff*>(this);
-    if ( !current  ) {
+
+    // starting a new page
+    MusPage *current_page = dynamic_cast<MusPage*>(this);
+    if ( current_page  ) {
+        currentScoreDef->SetRedraw( true, true, false );
+        current_page->m_drawing_scoreDef = *currentScoreDef;
         return FUNCTOR_CONTINUE;
     }
     
-    // at this stage we assume we have instanciated the alignment pointer
-    assert( current->GetAlignment() );
-    
-    // This is the value that need to be removed to fit everything
-    int negative_offset = current->GetAlignment()->GetYRel() - current->m_contentBB_y2;
-    
-    // this will probably never happen
-    if ( negative_offset > 0 ) {
-        negative_offset = 0;
+   
+    // starting a new system
+    MusSystem *current_system = dynamic_cast<MusSystem*>(this);
+    if ( current_system  ) {
+        currentScoreDef->SetRedraw( true, true, false );
+        return FUNCTOR_CONTINUE;
     }
-    
-    // check if the staff overlaps with the preceeding one given by (*min_pos)
-    int overlap = 0;
-    if ( (current->GetAlignment()->GetYRel() - negative_offset) > (*min_pos) ) {
-        overlap = (*min_pos) - current->GetAlignment()->GetYRel() + negative_offset;
-        current->GetAlignment()->SetYShift( overlap );
+
+    // starting a new staff
+    MusStaff *current_staff = dynamic_cast<MusStaff*>(this);
+    if ( current_staff  ) {
+        (*currentStaffDef) = currentScoreDef->GetStaffDef( current_staff->GetStaffNo() );
+        return FUNCTOR_CONTINUE;
     }
-    
-    //Mus::LogDebug("%s min_pos %d; negative offset %d;  x_rel %d; overlap %d", current->MusClassName().c_str(), (*min_pos), negative_offset, current->GetAlignment()->GetXRel(), overlap );
-    
-    // the next minimal position if given by the right side of the bounding box + the spacing of the element
-    (*min_pos) = current->m_contentBB_y1;
-    
-    // do not go further down the tree in this case
+
+    /*
+    // starting a new layer
+    MusLayer *current_layer = dynamic_cast<MusLayer*>(this);
+    if ( current_layer  ) {
+        assert( currentStaffDef );
+        if ( (*currentStaffDef)->DrawClef() ) {
+            if ( (*currentStaffDef)->GetClefAttr() ) {
+                current_layer->ReplaceClef( (*currentStaffDef)->GetClefAttr() );
+            }
+            else {
+                current_layer->ReplaceClef( currentScoreDef->GetClefAttr() );
+            }
+            (*currentStaffDef)->SetDrawClef( false );
+        }
+        if ( (*currentStaffDef)->DrawKeySig() ) {
+            if ( (*currentStaffDef)->GetKeySigAttr() ) {
+                current_layer->ReplaceKeySig( (*currentStaffDef)->GetKeySigAttr() );
+            }
+            else {
+                current_layer->ReplaceKeySig( currentScoreDef->GetKeySigAttr() );
+            }
+            (*currentStaffDef)->SetDrawKeySig( false );
+        }
+        if ( (*currentStaffDef)->DrawMensur() ) {
+            if ( (*currentStaffDef)->GetMensurAttr() ) {
+                current_layer->ReplaceMensur( (*currentStaffDef)->GetMensurAttr() );
+            }
+            else {
+                current_layer->ReplaceMensur( currentScoreDef->GetMensurAttr() );
+            }
+            (*currentStaffDef)->SetDrawMensur( false );
+        }
+        // Set the currentClef to the layer
+        //current_layer->m_currentClef = *currentStaffDef->GetClefAttr();
+        return FUNCTOR_CONTINUE;
+    }
     */
-    return FUNCTOR_SIBLINGS;
+    
+    // starting a new clef
+    MusClef *current_clef = dynamic_cast<MusClef*>(this);
+    if ( current_clef  ) {
+        currentScoreDef->ReplaceClef( current_clef );
+        return FUNCTOR_CONTINUE;
+    }
+    
+    // starting a new keysig
+    MusKeySig *current_keysig = dynamic_cast<MusKeySig*>(this);
+    if ( current_keysig  ) {
+        currentScoreDef->ReplaceKeySig( current_keysig );
+        return FUNCTOR_CONTINUE;
+    }
+    
+    return FUNCTOR_CONTINUE;
 }
 
 
@@ -542,6 +630,9 @@ int MusObject::SetBoundingBoxXShift( ArrayPtrVoid params )
     MusLayer *current_layer = dynamic_cast<MusLayer*>(this);
     if ( current_layer  ) {
         (*min_pos) = 5;
+        if (current_layer->GetClefAttr()) {
+            current_layer->GetClefAttr()->SetBoundingBoxXShift( params );
+        }
     }
 
     MusLayerElement *current = dynamic_cast<MusLayerElement*>(this);

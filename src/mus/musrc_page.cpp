@@ -12,15 +12,18 @@
 
 #include <assert.h>
 #include <math.h>
+#include <typeinfo>
 
 //----------------------------------------------------------------------------
 
 #include "musbeam.h"
 #include "musclef.h"
 #include "musdoc.h"
+#include "muskeysig.h"
 #include "muslayer.h"
 #include "muslayerelement.h"
 #include "musmeasure.h"
+#include "musmensur.h"
 #include "muspage.h"
 #include "musstaff.h"
 #include "mussystem.h"
@@ -46,6 +49,8 @@ void MusRC::DrawPage( MusDC *dc, MusPage *page, bool background )
     dc->SetLogicalOrigin( origin.x - m_doc->m_pageLeftMar, origin.y );
 
     dc->StartPage();
+    
+    this->m_drawing_scoreDef = page->m_drawing_scoreDef;
 
     for (i = 0; i < page->GetSystemCount(); i++) 
 	{
@@ -969,6 +974,16 @@ void MusRC::DrawLayer( MusDC *dc, MusLayer *layer, MusStaff *staff, MusMeasure *
     
     // first we need to clear the drawing list of postponed elements
     layer->ResetDrawingList();
+    
+    if (layer->GetClefAttr()) {
+        DrawElement(dc, layer->GetClefAttr(), layer, measure, staff);
+    }
+    if (layer->GetKeySigAttr()) {
+        DrawElement(dc, layer->GetKeySigAttr(), layer, measure, staff);
+    }
+    if (layer->GetMensurAttr()) {
+        DrawElement(dc, layer->GetMensurAttr(), layer, measure, staff);
+    }
     
 	for(j = 0; j < layer->GetElementCount(); j++)
 	{

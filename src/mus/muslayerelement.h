@@ -31,7 +31,7 @@ public:
     MusLayerElement(std::string classid);
     virtual ~MusLayerElement();
     
-    MusLayerElement& operator=( const MusLayerElement& element ); // copy assignement;
+    MusLayerElement& operator=( const MusLayerElement& element ); // copy assignement - this need to be changed to the MusObject::Clone way;
     
     /**
      * Return a copy of the MusLayerElement (child class).

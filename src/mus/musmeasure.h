@@ -31,7 +31,6 @@ class MusMeasure: public MusDocObject
 public:
     // constructors and destructors
     MusMeasure( bool measuredMusic = true, int logMeasureNb = -1 );
-    MusMeasure( const MusMeasure& measure ); // copy contructor
     virtual ~MusMeasure();
     
     virtual std::string MusClassName( ) { return "MusMeasure"; };

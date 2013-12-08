@@ -39,21 +39,6 @@ MusMeasure::~MusMeasure()
     
 }
 
-MusMeasure::MusMeasure( const MusMeasure& measure )
-{
-    m_logMeasureNb = measure.m_logMeasureNb;
-	m_x_abs = measure.m_x_abs;
-    m_x_rel = measure.m_x_rel;
-	m_x_drawing = measure.m_x_drawing;
-    
-    int i;
-	for (i = 0; i < measure.GetStaffCount(); i++)
-	{
-        MusStaff *nstaff = new MusStaff( *(MusStaff*)measure.m_children[i] );
-        this->AddStaff( nstaff );
-	}
-}
-
 void MusMeasure::Clear()
 {
 	ClearChildren();

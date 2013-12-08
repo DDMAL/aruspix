@@ -196,7 +196,7 @@ void MusPage::Layout( bool trim )
     params.clear();
     int previous_width = 0;
     params.push_back( &previous_width );
-    MusFunctor setBoundingBoxXShift( &MusLayerElement::SetBoundingBoxXShift );
+    MusFunctor setBoundingBoxXShift( &MusObject::SetBoundingBoxXShift );
     this->Process( &setBoundingBoxXShift, params );
     
     // Integrate the X bounding box shift of the elements

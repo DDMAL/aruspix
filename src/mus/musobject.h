@@ -41,6 +41,26 @@ public:
     MusObject(std::string classid);
     virtual ~MusObject();
     
+    /**
+     * Copy constructor that also copy the children.
+     * The children are copied using the MusObject::Clone virtual method that
+     * Needs to be overwritten in the child class - we make it crash otherwise,
+     * Because this will create problem if we don't check this (the parents will 
+     * one the same child...)
+     * UUID: the uuid is copied, is needs to be reset later if this is not wished
+     */
+    MusObject( const MusObject& object );
+    
+    /**
+     * See copy constructor.
+     */
+    MusObject& operator=( const MusObject& object ); // copy assignement;
+    
+    /**
+     * Method call for copying child classes
+     */
+    virtual MusObject* Clone();
+    
     virtual bool operator==( MusObject& other );
     
     std::string GetUuid() { return m_uuid; };
@@ -199,6 +219,15 @@ public:
      * This is necessary for integrating changes that occur within a page.
      */
     virtual int SetPageScoreDef( ArrayPtrVoid params );
+
+    /**
+     * Set the initial scoreDef of each page.
+     * This is necessary for integrating changes that occur within a page.
+     * param 0: bool clef flag.
+     * param 1: bool keysig flag.
+     * param 2: bool the mensur flag.
+     */
+    virtual int SetStaffDefDraw( ArrayPtrVoid params ) { return FUNCTOR_CONTINUE; };
     
     /**
      * Replace all the staffDefs in a scoreDef.

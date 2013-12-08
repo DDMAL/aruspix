@@ -11,6 +11,7 @@
 //----------------------------------------------------------------------------
 
 #include <assert.h>
+#include <typeinfo>
 
 //----------------------------------------------------------------------------
 
@@ -80,6 +81,7 @@ MusLayerElement *MusLayerElement::GetChildCopy( bool newUuid )
 {
     
     // Is there another way to do this in C++ ?
+    // Yes, change this to the MusObject::Clone method - however, newUuid will not be possible in this way
     MusLayerElement *element = NULL;
 
     if ( this->IsBarline() )

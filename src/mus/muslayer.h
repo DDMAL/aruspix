@@ -11,9 +11,10 @@
 
 #include <typeinfo>
 
+#include "musclef.h"
 #include "musobject.h"
+#include "musscoredef.h"
 
-class MusClef;
 class MusDC;
 class MusLayerElement;
 class MusNote;
@@ -27,7 +28,7 @@ class MusNote;
  * A MusLayer is contained in a MusStaff.
  * It contains MusLayerElement objects.
 */
-class MusLayer: public MusDocObject, public MusObjectListInterface
+class MusLayer: public MusDocObject, public MusObjectListInterface, public MusScoreOrStaffDefAttrInterface
 {
 public:
     // constructors and destructors
@@ -57,7 +58,6 @@ public:
     int GetLayerNo() const { return m_n; };
     void SetLayerNo( int n ) { m_n = n; };
     ///@}
-    
 
     // functors
     /**
@@ -154,6 +154,9 @@ public:
     /**
      * Align the content of a system.
      */
+    
+    ///@{
+
     virtual int Align( ArrayPtrVoid params );
     
 private:
@@ -166,6 +169,12 @@ protected:
     // drawing variables
     //MusLayerElement *beamListPremier; // we need to replace this with a proper beam class that handles a list of notes/rests
     ListOfMusObjects m_drawingList;
+    
+    /**
+     * The current clef.
+     * This is used for getting the clef when interacting, for example by clicking in order to get the pitch from a position
+     */
+    MusClef m_currentClef;
 
 private:
     /** The layer number */

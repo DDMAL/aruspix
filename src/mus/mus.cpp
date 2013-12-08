@@ -10,6 +10,7 @@
 //----------------------------------------------------------------------------
 
 #include <cmath>
+#include <stdarg.h>
 
 //----------------------------------------------------------------------------
 
@@ -112,7 +113,7 @@ void Mus::LogDebug(const char *fmt, ...)
 {
 #ifdef EMSCRIPTEN
     return;
-#endif
+#else
     va_list args;
     va_start ( args, fmt );
 #ifndef AX_APP
@@ -125,13 +126,14 @@ void Mus::LogDebug(const char *fmt, ...)
     wxVLogDebug( fmt, args );
 #endif
     va_end ( args );
+#endif
 }
 
 void Mus::LogError(const char *fmt, ...)
 {
 #ifdef EMSCRIPTEN
     return;
-#endif
+#else
     va_list args;
     va_start ( args, fmt );
 #ifndef AX_APP
@@ -142,13 +144,14 @@ void Mus::LogError(const char *fmt, ...)
     wxVLogError( fmt, args );
 #endif
     va_end ( args );
+#endif
 }
 
 void Mus::LogMessage(const char *fmt, ...)
 {
 #ifdef EMSCRIPTEN
     return;
-#endif
+#else
     va_list args;
     va_start ( args, fmt );
 #ifndef AX_APP
@@ -159,13 +162,14 @@ void Mus::LogMessage(const char *fmt, ...)
     wxVLogMessage( fmt, args );
 #endif
     va_end ( args );
+#endif
 }
 
 void Mus::LogWarning(const char *fmt, ...)
 {
 #ifdef EMSCRIPTEN
     return;
-#endif
+#else
     va_list args;
     va_start ( args, fmt );
 #ifndef AX_APP
@@ -176,6 +180,7 @@ void Mus::LogWarning(const char *fmt, ...)
     wxVLogWarning( fmt, args );
 #endif
     va_end ( args );
+#endif
 }
 
 //----------------------------------------------------------------------------

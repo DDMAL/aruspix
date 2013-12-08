@@ -145,6 +145,7 @@ private:
     std::string ClefShapeToStr(ClefId clefId);
     std::string MensurSignToStr(MensurSign sign);
     std::string DocTypeToStr(DocType type);
+    std::string KeySigToStr(int num, char alter_type );
     ///@}
 
     
@@ -158,6 +159,7 @@ private:
     ///@{
     TiXmlElement *m_pages;
     TiXmlElement *m_page;
+    TiXmlElement *m_scoreDef;
     TiXmlElement *m_system;
     TiXmlElement *m_staffGrp;
     TiXmlElement *m_staffDef;
@@ -249,7 +251,8 @@ private:
     ClefId StrToClef(std::string shape, std::string line);
     MensurSign StrToMensurSign(std::string sign);
     DocType StrToDocType(std::string type);
-
+    unsigned char StrToKeySigType(std::string accid);
+    int StrToKeySigNum(std::string accid);
     
 public:
     
@@ -257,6 +260,9 @@ private:
     std::string m_filename;
     MusPage *m_page;
     MusSystem *m_system;
+    MusScoreDef *m_scoreDef;
+    std::list<MusStaffGrp*> m_staffGrps;
+    MusStaffDef *m_staffDef;
     MusMeasure *m_measure;
 	MusStaff *m_staff;
 	MusLayer *m_layer;
@@ -265,6 +271,10 @@ private:
     MusTuplet *m_tuplet;
     MusObject *m_currentLayer;
     MusLayerApp *m_layerApp;
+    /**
+     * This is used when reading a standard MEI file to specify if a scoreDef has already been read or not.
+     */
+    bool m_hasScoreDef;
 };
 
 

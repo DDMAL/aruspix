@@ -11,6 +11,7 @@
 //----------------------------------------------------------------------------
 
 #include <assert.h>
+#include <typeinfo>
 
 //----------------------------------------------------------------------------
 
@@ -47,6 +48,30 @@ MusScoreOrStaffDefAttrInterface::~MusScoreOrStaffDefAttrInterface()
     if (m_mensur) {
         delete m_mensur;
     }
+}
+
+MusScoreOrStaffDefAttrInterface::MusScoreOrStaffDefAttrInterface( const MusScoreOrStaffDefAttrInterface& interface )
+{
+    m_clef = NULL;
+    m_keySig = NULL;
+    m_mensur = NULL;
+    this->ReplaceClef( interface.m_clef );
+    this->ReplaceKeySig( interface.m_keySig );
+    this->ReplaceMensur( interface.m_mensur );
+}
+
+MusScoreOrStaffDefAttrInterface& MusScoreOrStaffDefAttrInterface::operator=( const MusScoreOrStaffDefAttrInterface& interface )
+{
+	if ( this != &interface ) // not self assignement
+	{
+        m_clef = NULL;
+        m_keySig = NULL;
+        m_mensur = NULL;
+        this->ReplaceClef( interface.m_clef );
+        this->ReplaceKeySig( interface.m_keySig );
+        this->ReplaceMensur( interface.m_mensur );
+	}
+	return *this;
 }
 
 void MusScoreOrStaffDefAttrInterface::ReplaceClef( MusClef *newClef )
@@ -86,13 +111,11 @@ void MusScoreOrStaffDefAttrInterface::ReplaceMensur( MusMensur *newMensur )
 MusScoreDef::MusScoreDef() :
 	MusObject("scoredef-"), MusScoreOrStaffDefAttrInterface()
 {
-    m_clef = NULL;
-    m_keySig = NULL;
-    m_mensur = NULL;
 }
 
 MusScoreDef::~MusScoreDef()
 {
+    
 }
 
 void MusScoreDef::AddStaffGrp( MusStaffGrp *staffGrp )
@@ -120,9 +143,9 @@ void MusScoreDef::Replace( MusStaffDef *newStaffDef )
     
     // if found, replace attributes
     if (staffDef) {
-        staffDef->ReplaceClef( newStaffDef->m_clef );
-        staffDef->ReplaceKeySig( newStaffDef->m_keySig );
-        staffDef->ReplaceMensur( newStaffDef->m_mensur );
+        staffDef->ReplaceClef( newStaffDef->GetClefAttr() );
+        staffDef->ReplaceKeySig( newStaffDef->GetKeySigAttr() );
+        staffDef->ReplaceMensur( newStaffDef->GetMensurAttr() );
     }
 }
 
@@ -143,6 +166,16 @@ MusStaffDef *MusScoreDef::GetStaffDef( int n )
 }
 
 
+void MusScoreDef::SetRedraw( bool clef, bool keysig, bool mensur )
+{
+    ArrayPtrVoid params;
+	params.push_back( &clef );
+    params.push_back( &keysig );
+	params.push_back( &mensur );
+    MusFunctor setStaffDefDraw( &MusObject::SetStaffDefDraw );
+    this->Process( &setStaffDefDraw, params );
+}
+
 //----------------------------------------------------------------------------
 // MusStaffGrp
 //----------------------------------------------------------------------------
@@ -162,6 +195,11 @@ void MusStaffGrp::AddStaffDef( MusStaffDef *staffDef )
 	m_children.push_back( staffDef );
 }
 
+void MusStaffGrp::AddStaffGrp( MusStaffGrp *staffGrp )
+{
+	staffGrp->SetParent( this );
+	m_children.push_back( staffGrp );
+}
 
 int MusStaffGrp::Save( ArrayPtrVoid params )
 {
@@ -185,11 +223,6 @@ MusStaffDef::MusStaffDef() :
 
 MusStaffDef::~MusStaffDef()
 {
-}
-
-void MusStaffDef::SetScoreDefPtr()
-{
-    m_parentScoreDef = dynamic_cast<MusScoreDef*>( this->GetFirstParent( &typeid(MusScoreDef), MAX_STAFFGRP_DEPTH ) );
 }
 
 int MusStaffDef::Save( ArrayPtrVoid params )
@@ -221,7 +254,7 @@ int MusStaffDef::FindStaffDefByNumber( ArrayPtrVoid params )
     
     if ( this->GetStaffNo() == (*n) ) {
         (*staffDef) = this;
-        //Mus::LogDebug("Found it!");
+        Mus::LogMessage("Found it!");
         return FUNCTOR_STOP;
     }
     //Mus::LogDebug("Still looking for it...");
@@ -234,6 +267,28 @@ int MusStaffDef::ReplaceStaffDefsInScoreDef( ArrayPtrVoid params )
     MusScoreDef *scoreDef = (MusScoreDef*)params[0];
     
     scoreDef->Replace( this );
+    
+    return FUNCTOR_CONTINUE;
+}
+
+int MusStaffDef::SetStaffDefDraw( ArrayPtrVoid params )
+{
+    // param 0: bool clef flag
+    // param 1: bool keysig flag
+    // param 2: bool the mensur flag
+    bool *clef = (bool*)params[0];
+    bool *keysig = (bool*)params[1];
+    bool *mensur = (bool*)params[2];
+    
+    if ( (*clef) ) {
+        this->SetDrawClef( true );
+    }
+    if ( (*keysig) ) {
+        this->SetDrawKeySig( true );
+    }
+    if ( (*mensur) ) {
+        this->SetDrawMensur( true );
+    }
     
     return FUNCTOR_CONTINUE;
 }

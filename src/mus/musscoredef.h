@@ -17,6 +17,12 @@ class MusMensur;
 class MusStaffGrp;
 class MusStaffDef;
 
+#define STAFFDEF_DRAW_NONE  0
+#define STAFFDEF_DRAW_CLEF  (1<<0)
+#define STAFFDEF_DRAW_KEYSIG  (1<<1)
+#define STAFFDEF_DRAW_MENSUR  (1<<2)
+#define STAFFDEF_DRAW_ALL (1<<3) - 1
+
 //----------------------------------------------------------------------------
 // MusScoreOrStaffDefAttrInterface
 //----------------------------------------------------------------------------
@@ -31,6 +37,8 @@ public:
     // constructors and destructors
     MusScoreOrStaffDefAttrInterface();
     virtual ~MusScoreOrStaffDefAttrInterface();
+    MusScoreOrStaffDefAttrInterface( const MusScoreOrStaffDefAttrInterface& interface ); // copy contructor
+    MusScoreOrStaffDefAttrInterface& operator=( const MusScoreOrStaffDefAttrInterface& interface ); // copy assignement;
     
     /**
      * Replace the clef (if any) with the newClef (if any).
@@ -47,7 +55,16 @@ public:
      */
     void ReplaceMensur( MusMensur *newMensur );
     
-public:
+    /**
+     * @name Get  the clef, keysig and mensure.
+     */
+    ///@{
+    MusClef *GetClefAttr() const { return m_clef; };
+    MusKeySig *GetKeySigAttr() const { return m_keySig; };
+    MusMensur *GetMensurAttr() const { return m_mensur; };
+    ///@}
+    
+protected:
     /** The clef attribute */
     MusClef *m_clef;
     /** The key signature */
@@ -95,6 +112,12 @@ public:
      */
     MusStaffDef *GetStaffDef( int n );
     
+    /**
+     * Set the redraw flag to all staffDefs.
+     * This is necessary at the beginning or when a scoreDef occurs.
+     */
+    void SetRedraw( bool clef, bool keysig, bool mensur );
+    
 private:
     
 public:
@@ -118,10 +141,13 @@ public:
     // constructors and destructors
     MusStaffGrp();
     virtual ~MusStaffGrp();
+    virtual MusObject* Clone() { return new MusStaffGrp(*this); };
     
     virtual std::string MusClassName( ) { return "MusStaffGrp"; };
 	
 	void AddStaffDef( MusStaffDef *staffDef );
+    
+	void AddStaffGrp( MusStaffGrp *staffGrp );
     
     // functors
     virtual int Save( ArrayPtrVoid params );
@@ -148,6 +174,7 @@ public:
     // constructors and destructors
     MusStaffDef();
     virtual ~MusStaffDef();
+    virtual MusObject* Clone() { return new MusStaffDef(*this); };
     
     virtual std::string MusClassName( ) { return "MusStaffDef"; };
     
@@ -161,9 +188,18 @@ public:
     ///@}
     
     /**
-     * We
+     * @name Set and get the layer drawing flags for clef, keysig and mensur.
+     * This will be true when starting a new system or when a scoreDef or staffDef changes occurs
+     * This will be true only for the first layer in the staff.
      */
-    void SetScoreDefPtr();
+    ///@{
+    int DrawClef() const { return m_drawClef; };
+    void SetDrawClef( bool drawClef ) { m_drawClef = drawClef; };
+    int DrawKeySig() const { return m_drawKeySig; };
+    void SetDrawKeySig( bool drawKeySig ) { m_drawKeySig = drawKeySig; };
+    int DrawMensur() const { return m_drawMensur; };
+    void SetDrawMensur( bool drawMensur ) { m_drawClef = drawMensur; };
+    ///@}
 
     // functors
     virtual int Save( ArrayPtrVoid params );
@@ -182,6 +218,15 @@ public:
      */
     virtual int ReplaceStaffDefsInScoreDef( ArrayPtrVoid params );
     
+    /**
+     * Set the initial scoreDef of each page.
+     * This is necessary for integrating changes that occur within a page.
+     * param 0: bool clef flag.
+     * param 1: bool keysig flag.
+     * param 2: bool the mensur flag.
+     */
+    virtual int SetStaffDefDraw( ArrayPtrVoid params );
+    
 private:
     
 public:
@@ -191,10 +236,13 @@ private:
     int m_n;
     
     /**
-     * The scoreDef parent.
-     * We cache this for efficiency.
+     *  @name Flags for indicating where the clef, keysig and mensur needs to be drawn or not
      */
-    MusScoreDef *m_parentScoreDef;
+    ///@{
+    bool m_drawClef;
+    bool m_drawKeySig;
+    bool m_drawMensur;
+    ///@}
     
 };
 

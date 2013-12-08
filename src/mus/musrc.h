@@ -13,6 +13,7 @@
 
 #include "musdc.h"
 #include "musdef.h"
+#include "musscoredef.h"
 
 class MusBeam;
 class MusDoc;
@@ -216,6 +217,8 @@ private:
     static int s_drawingLigX[2], s_drawingLigY[2];	// pour garder coord. des ligatures    
     static bool s_drawingLigObliqua;	// marque le 1e passage pour une oblique
 
+    MusScoreDef m_drawing_scoreDef;
+    
 
 };
 

@@ -10,6 +10,7 @@
 //----------------------------------------------------------------------------
 
 #include <assert.h>
+#include <typeinfo>
 
 //----------------------------------------------------------------------------
 
@@ -26,7 +27,7 @@
 //----------------------------------------------------------------------------
 
 MusLayer::MusLayer( int n ):
-	MusDocObject("layer-"), MusObjectListInterface()
+	MusDocObject("layer-"), MusObjectListInterface(), MusScoreOrStaffDefAttrInterface()
 {
     assert( n > 0 );
     m_n = n;
@@ -648,6 +649,10 @@ int MusLayer::Align( ArrayPtrVoid params )
 
     // we are starting a new layer, reset the time;
     (*time) = 0.0;
+    
+    if ( m_clef ) {
+        m_clef->Align( params );
+    }
 
     return FUNCTOR_CONTINUE;
 }
