@@ -597,7 +597,9 @@ int MusObject::SetPageScoreDef( ArrayPtrVoid params )
             (*currentStaffDef)->SetDrawMensur( false );
         }
         // Set the currentClef to the layer
-        current_layer->m_currentClef = *(*currentStaffDef)->GetClefAttr();
+        if ( (*currentStaffDef)->GetClefAttr() ) {
+            current_layer->m_currentClef = *(*currentStaffDef)->GetClefAttr();
+        }
         return FUNCTOR_CONTINUE;
     }
     

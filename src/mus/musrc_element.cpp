@@ -1433,7 +1433,7 @@ void MusRC::DrawKeySig( MusDC *dc, MusLayerElement *element, MusLayer *layer, Mu
         
         element->m_y_drawing = CalculatePitchPosY( staff, ks->GetAlterationAt(i), layer->GetClefOffset( element ), ks->GetOctave(ks->GetAlterationAt(i), c->m_clefId));
         
-        x = element->m_x_drawing + (m_doc->m_accidWidth[staff->staffSize][0] * i);
+        x = element->m_x_drawing + (m_doc->m_accidWidth[staff->staffSize][0] + 5) * i;
         y = element->m_y_drawing + staff->m_y_drawing;
         
         if (ks->m_alteration == ACCID_FLAT)
