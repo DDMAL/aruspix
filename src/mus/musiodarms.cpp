@@ -432,6 +432,13 @@ bool MusDarmsInput::ImportFile() {
         pos++;
     }
     
+    // add miniaml scoreDef
+    MusStaffGrp *staffGrp = new MusStaffGrp();
+    MusStaffDef *staffDef = new MusStaffDef();
+    staffDef->SetStaffNo( 1 );
+    staffGrp->AddStaffDef( staffDef );
+    m_doc->m_scoreDef.AddStaffGrp( staffGrp );
+    
     system->AddMeasure( m_measure );
     page->AddSystem( system );
     m_doc->AddPage( page );

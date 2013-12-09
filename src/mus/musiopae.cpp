@@ -339,6 +339,7 @@ void MusPaeInput::convertPlainAndEasyToKern(std::istream &infile, std::ostream &
     std::vector<MeasureObject>::iterator it;
     for ( it = staff.begin() ; it < staff.end(); it++ ) {
         
+        
         m_staff = new MusStaff( 1 );
         m_measure = new MusMeasure( true, measure_count );
         m_layer = new MusLayer( 1 );
@@ -351,7 +352,13 @@ void MusPaeInput::convertPlainAndEasyToKern(std::istream &infile, std::ostream &
         printMeasure( out, &obj );
         measure_count++;
     }
-    
+
+    // add miniaml scoreDef
+    MusStaffGrp *staffGrp = new MusStaffGrp();
+    MusStaffDef *staffDef = new MusStaffDef();
+    staffDef->SetStaffNo( 1 );
+    staffGrp->AddStaffDef( staffDef );
+    m_doc->m_scoreDef.AddStaffGrp( staffGrp );
 
     page->AddSystem( system );
     m_doc->AddPage( page );
