@@ -711,18 +711,18 @@ int MusRC::CalculateRestPosY ( MusStaff *staff, char duration)
     int offset;
     
     switch (duration) {
-        case DUR_LG: offset = 4; break;
-        case DUR_BR: offset = 5; break;
-        case DUR_1: offset = 7; break;
-        case DUR_2: offset = 5; break;
-        case DUR_4: offset = 3; break;
-        case DUR_8: offset = 3; break;    
-        case DUR_16: offset = 3; break;
-        case DUR_32: offset = 3; break;
-        case DUR_64: offset = 2; break;
-        case DUR_128: offset = 2; break;
-        case DUR_256: offset = 1; break;
-        case VALSilSpec: offset = 7; break; // MM rests have same height as wholes
+        case DUR_LG: offset = 12; break;
+        case DUR_BR: offset = 13; break;
+        case DUR_1: offset = 15; break;
+        case DUR_2: offset = 13; break;
+        case DUR_4: offset = 11; break;
+        case DUR_8: offset = 11; break;
+        case DUR_16: offset = 11; break;
+        case DUR_32: offset = 11; break;
+        case DUR_64: offset = 10; break;
+        case DUR_128: offset = 10; break;
+        case DUR_256: offset = 9; break;
+        case VALSilSpec: offset = 15; break; // MM rests have same height as wholes
             
         default: offset = 12; break; // Signal an error, put the clef up high
     }
