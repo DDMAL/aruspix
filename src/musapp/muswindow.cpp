@@ -1137,12 +1137,12 @@ bool MusWindow::MoveLeftRight( bool left )
         // previous measure
         else if ( m_currentSystem->GetPrevious( m_currentMeasure ) )
         {
-            int currentLayerNo = m_currentLayer->GetLayerIdx();
-            int currentStaffNo = m_currentStaff->GetStaffIdx();
+            int currentLayerIdx = m_currentLayer->GetLayerIdx();
+            int currentStaffIdx = m_currentStaff->GetStaffIdx();
             measure = m_currentSystem->GetPrevious( m_currentMeasure );
-            staff = measure->GetStaff( currentStaffNo );
+            staff = measure->GetStaffWithIdx( currentStaffIdx );
             if ( staff ) {
-                layer = staff->GetLayer( currentLayerNo );
+                layer = staff->GetLayerWithIdx( currentLayerIdx );
                 if ( layer ) {
                     m_currentElement = layer->GetLast();
                 }
@@ -1151,14 +1151,14 @@ bool MusWindow::MoveLeftRight( bool left )
         // previous system
         else if ( m_page->GetPrevious( m_currentSystem ) )
         {
-            int currentStaffNo = m_currentStaff->GetStaffIdx();
-            int currentLayerNo = m_currentLayer->GetLayerIdx();
+            int currentStaffIdx = m_currentStaff->GetStaffIdx();
+            int currentLayerIdx = m_currentLayer->GetLayerIdx();
             system = m_page->GetPrevious( m_currentSystem );
             measure = system->GetLast();
             if ( measure ) {
-                staff = measure->GetStaff( currentStaffNo );
+                staff = measure->GetStaffWithIdx( currentStaffIdx );
                 if ( staff ) {
-                    layer = staff->GetLayer( currentLayerNo );
+                    layer = staff->GetLayerWithIdx( currentLayerIdx );
                     if ( layer ) {
                         m_currentElement = layer->GetLast();
                     }
@@ -1177,12 +1177,12 @@ bool MusWindow::MoveLeftRight( bool left )
         // next measure
         else if ( m_currentSystem->GetNext( m_currentMeasure ) )
         {
-            int currentLayerNo = m_currentLayer->GetLayerIdx();
-            int currentStaffNo = m_currentStaff->GetStaffIdx();
+            int currentLayerIdx = m_currentLayer->GetLayerIdx();
+            int currentStaffIdx = m_currentStaff->GetStaffIdx();
             measure = m_currentSystem->GetNext( m_currentMeasure );
-            staff = measure->GetStaff( currentStaffNo );
+            staff = measure->GetStaffWithIdx( currentStaffIdx );
             if ( staff ) {
-                layer = staff->GetLayer( currentLayerNo );
+                layer = staff->GetLayerWithIdx( currentLayerIdx );
                 if ( layer ) {
                     m_currentElement = layer->GetFirst();
                 }
@@ -1191,14 +1191,14 @@ bool MusWindow::MoveLeftRight( bool left )
         // next system
         else if ( m_page->GetNext( m_currentSystem ) )
         {
-            int currentStaffNo = m_currentStaff->GetStaffIdx();
-            int currentLayerNo = m_currentLayer->GetLayerIdx();
+            int currentStaffIdx = m_currentStaff->GetStaffIdx();
+            int currentLayerIdx = m_currentLayer->GetLayerIdx();
             system = m_page->GetNext( m_currentSystem );
             measure = system->GetFirst();
             if ( measure ) {
-                staff = measure->GetStaff( currentStaffNo );
+                staff = measure->GetStaffWithIdx( currentStaffIdx );
                 if ( staff ) {
-                    layer = staff->GetLayer( currentLayerNo );
+                    layer = staff->GetLayerWithIdx( currentLayerIdx );
                     if ( layer ) {
                         m_currentElement = layer->GetFirst();
                     }

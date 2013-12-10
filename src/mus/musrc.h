@@ -110,9 +110,10 @@ public:
     /* musrc_page.cpp */
 	void DrawPage( MusDC *dc, MusPage *page, bool background = true );
     void DrawSystem( MusDC *dc, MusSystem *system );
-	void DrawGroups( MusDC *dc, MusSystem *system );
-	void DrawBracket ( MusDC *dc, MusSystem *system, int x, int y1, int y2, int cod, int staffSize);
-	void DrawBrace ( MusDC *dc, MusSystem *system, int x, int y1, int y2, int staffSize);
+	void DrawScoreDef( MusDC *dc, MusSystem *system, MusScoreDef *scoreDef, MusMeasure *previousMeasure = NULL );
+	void DrawStaffGrp( MusDC *dc, MusScoreDef *scoreDef, MusMeasure *measure, MusStaffGrp *staffGrp, int x );
+	void DrawBracket ( MusDC *dc, int x, int y1, int y2, int staffSize);
+	void DrawBrace ( MusDC *dc, int x, int y1, int y2, int staffSize);
 	void DrawBarline ( MusDC *dc, MusSystem *system, int x, int cod, bool porteeAutonome, MusStaff *pportee);
 	void DrawSpecialBarline( MusDC *dc, MusSystem *system, int x, BarlineType code, bool porteeAutonome, MusStaff *pportee);
 	void DrawPartialBarline ( MusDC *dc, MusSystem *system, int x, MusStaff *pportee);

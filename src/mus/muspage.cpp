@@ -39,7 +39,8 @@ MusPage::~MusPage()
 void MusPage::Clear( )
 {
 	ClearChildren( );
-	defin = 20;
+    m_drawing_scoreDef.Clear();
+	defin = 18;
     // by default we have no values and use the document ones
     m_pageHeight = -1;
     m_pageWidth = -1;

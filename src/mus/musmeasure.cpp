@@ -113,18 +113,40 @@ MusStaff *MusMeasure::GetPrevious( MusStaff *staff )
 }
 
 
-MusStaff *MusMeasure::GetStaff( int StaffNo )
+MusStaff *MusMeasure::GetStaffWithIdx( int staffIdx )
 {
-    if ( StaffNo > (int)m_children.size() - 1 )
+    if ( staffIdx > (int)m_children.size() - 1 )
         return NULL;
 	
-	return (MusStaff*)m_children[StaffNo];
+	return (MusStaff*)m_children[staffIdx];
+}
+
+
+MusStaff *MusMeasure::GetStaffWithNo( int staffNo )
+{
+    int i;
+    MusStaff *staff = NULL;
+    for (i = 0; i < this->GetStaffCount(); i++ ) {
+        staff = dynamic_cast<MusStaff*>(m_children[i]);
+        if ( staff && (staff->GetStaffNo() == staffNo ) ) {
+            return staff;
+        }
+    }
+	return NULL;
 }
 
 int MusMeasure::GetXRel()
 {
     if ( m_measureAligner.GetLeftAlignment() ) {
         return m_measureAligner.GetLeftAlignment()->GetXRel();
+    }
+    return 0;
+}
+
+int MusMeasure::GetXRelRight()
+{
+    if ( m_measureAligner.GetRightAlignment() ) {
+        return m_measureAligner.GetRightAlignment()->GetXRel();
     }
     return 0;
 }

@@ -196,6 +196,50 @@ void MusLayer::Insert( MusLayerElement *layerElement, MusLayerElement *before )
     AddElement( layerElement , idx );
 }
 
+void MusLayer::SetDrawingValues( MusScoreDef *currentScoreDef, MusStaffDef *currentStaffDef )
+{
+    if (!currentStaffDef || !currentScoreDef) {
+        Mus::LogDebug("scoreDef and/or staffDef not found");
+        return;
+    }
+    
+    if ( currentStaffDef->DrawClef() ) {
+        if ( currentStaffDef->GetClefAttr() ) {
+            this->ReplaceClef( currentStaffDef->GetClefAttr() );
+        }
+        else {
+            this->ReplaceClef( currentScoreDef->GetClefAttr() );
+        }
+        currentStaffDef->SetDrawClef( false );
+    }
+    if ( currentStaffDef->DrawKeySig() ) {
+        if ( currentStaffDef->GetKeySigAttr() ) {
+            this->ReplaceKeySig( currentStaffDef->GetKeySigAttr() );
+        }
+        else {
+            this->ReplaceKeySig( currentScoreDef->GetKeySigAttr() );
+        }
+        currentStaffDef->SetDrawKeySig( false );
+    }
+    if ( currentStaffDef->DrawMensur() ) {
+        if ( currentStaffDef->GetMensurAttr() ) {
+            this->ReplaceMensur( currentStaffDef->GetMensurAttr() );
+        }
+        else {
+            this->ReplaceMensur( currentScoreDef->GetMensurAttr() );
+        }
+        currentStaffDef->SetDrawMensur( false );
+    }
+    
+    // also put the current clef (if any if the staffDef or the scoreDef)
+    if ( currentStaffDef->GetClefAttr() ) {
+        this->m_currentClef = *currentStaffDef->GetClefAttr();
+    }
+    else if ( currentScoreDef->GetClefAttr() ) {
+        this->m_currentClef = *currentScoreDef->GetClefAttr();
+    }
+}
+
 
 void MusLayer::Delete( MusLayerElement *element )
 {

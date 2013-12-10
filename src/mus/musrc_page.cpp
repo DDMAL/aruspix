@@ -36,9 +36,14 @@
 void MusRC::DrawPage( MusDC *dc, MusPage *page, bool background ) 
 {
 	assert( dc ); // DC cannot be NULL
+    assert( page );
     
     int i;
 	MusSystem *system = NULL;
+    
+    // Set the current score def to the page one
+    // The page one has previously been set by MusObject::SetPageScoreDef
+    m_drawing_scoreDef = page->m_drawing_scoreDef;
 
     if ( background )
         dc->DrawRectangle( 0, 0, m_doc->m_pageWidth, m_doc->m_pageHeight );
@@ -49,8 +54,6 @@ void MusRC::DrawPage( MusDC *dc, MusPage *page, bool background )
     dc->SetLogicalOrigin( origin.x - m_doc->m_pageLeftMar, origin.y );
 
     dc->StartPage();
-    
-    this->m_drawing_scoreDef = page->m_drawing_scoreDef;
 
     for (i = 0; i < page->GetSystemCount(); i++) 
 	{
@@ -73,16 +76,10 @@ void MusRC::DrawPage( MusDC *dc, MusPage *page, bool background )
 
 void MusRC::DrawSystem( MusDC *dc, MusSystem *system ) 
 {
-	assert( dc ); // DC cannot be NULL
-
+	assert( system ); // other asserted before
+    
 	int i;
     MusMeasure *measure;
-    
-    /*
-    dc->SetPen( AxRED );
-    dc->DrawLine( system->m_x_abs, ToRendererY(system->m_y_drawing), system->m_x_abs + 10, ToRendererY(system->m_y_drawing) );
-    dc->ResetPen();
-    */
     
     dc->StartGraphic( system, "system", system->GetUuid() );
     
@@ -108,31 +105,103 @@ void MusRC::DrawSystem( MusDC *dc, MusSystem *system )
 
     // We draw the groups after the staves because we use the m_y_darwing member of the staves
     // that needs to be intialized.
-    DrawGroups( dc, system );
+    // Warning: we assume for now the scoreDef occuring in the system will not change the staffGrps content
+    // and @symbol values, otherwise results will be unexpected...
+    DrawScoreDef( dc, system, &m_drawing_scoreDef );
     
     dc->EndGraphic(system, this );
 
 }
 
-void MusRC::DrawBracket ( MusDC *dc, MusSystem *system, int x, int y1, int y2, int cod, int staffSize)
-//	int x, y1, y2;	x, 1e et 2e y de barre vert
-//	int cod; si ON, on fait 2e barre vert. mince en position  x
+void MusRC::DrawScoreDef( MusDC *dc, MusSystem *system, MusScoreDef *scoreDef, MusMeasure *previousMeasure )
+{
+    assert( scoreDef ); // other asserted before
+    
+    if (!previousMeasure) {
+        // This is the case when drawing the system scoreDef.
+        // First get the first measure of the system
+        previousMeasure = dynamic_cast<MusMeasure*>(system->GetFirstChild( &typeid(MusMeasure) ) );
+    }
+    
+    // we need at least one measure to be able to draw the groups - we need access to the staff elements,
+    // and it does not make sense anyway...
+    if (!previousMeasure ) {
+        return;
+    }
+    
+    MusStaffGrp *staffGrp = dynamic_cast<MusStaffGrp*>(scoreDef->GetFirstChild( &typeid(MusStaffGrp) ) );
+    if ( !staffGrp ) {
+        return;
+    }
+    
+    // Draw the first staffGrp and from there its children recursively
+    DrawStaffGrp( dc, scoreDef, previousMeasure, staffGrp, system->m_x_drawing );
+    
+	return;
+}
+
+
+void MusRC::DrawStaffGrp( MusDC *dc, MusScoreDef *scoreDef, MusMeasure *measure, MusStaffGrp *staffGrp, int x )
+{
+    ListOfMusObjects *staffDefs = staffGrp->GetList( staffGrp );
+    if ( staffDefs->empty() ) {
+        return;
+    }
+    
+    // Get the first and last staffDef of the staffGrp
+    MusStaffDef *firstDef = dynamic_cast<MusStaffDef*>(staffDefs->front());
+    MusStaffDef *lastDef = dynamic_cast<MusStaffDef*>(staffDefs->back());
+    
+    if (!firstDef || !lastDef ) {
+        Mus::LogDebug("Could not get staffDef while drawing staffGrp - Mus::DrawStaffGrp");
+        return;
+    }
+    
+    // Get the corresponding staff looking at the previous (or first) measure
+    MusStaff *first = measure->GetStaffWithNo( firstDef->GetStaffNo() );
+    MusStaff *last = measure->GetStaffWithNo( lastDef->GetStaffNo() );
+    
+    if (!first || !last ) {
+        Mus::LogDebug("Could not get staff (%d; %d) while drawing staffGrp - Mus::DrawStaffGrp", firstDef->GetStaffNo(), lastDef->GetStaffNo() );
+        return;
+    }
+    
+    int y_top = first->m_y_drawing;
+    // for the bottom position we need to take into account the number of lines and the staff size
+    int y_bottom = last->m_y_drawing - (last->portNbLine - 1) * m_doc->m_interl[last->staffSize];
+    
+    // actually draw the line, the brace or the bracket
+    if ( staffGrp->GetSymbol() == STAFFGRP_LINE ) {
+        v_bline( dc , y_top, y_bottom, x, m_doc->m_env.m_barlineWidth);
+
+    }
+    else if ( staffGrp->GetSymbol() == STAFFGRP_BRACE ) {
+        DrawBrace ( dc, x, y_top, y_bottom, last->staffSize );
+    }
+    else if ( staffGrp->GetSymbol() == STAFFGRP_BRACKET ) {
+        DrawBracket( dc, x, y_top, y_bottom, last->staffSize );        
+    }
+    
+    // recursively draw the children
+    int i;
+    MusStaffGrp *childStaffGrp = NULL;
+    for (i = 0; i < staffGrp->GetChildCount(); i++) {
+        childStaffGrp = dynamic_cast<MusStaffGrp*>(staffGrp->GetChild( i ));
+        if ( childStaffGrp ) {
+            DrawStaffGrp( dc, scoreDef, measure, childStaffGrp, x );
+        }
+    }
+        
+}
+
+
+void MusRC::DrawBracket ( MusDC *dc, int x, int y1, int y2, int staffSize)
 {
 	int xg, xd, yg, yd, ecart, centre;
- 	//HPEN hPen;
-  
-	//discontinu = 0;
-
-	if (cod == 2)
 	{
-		DrawBrace ( dc, system, x, y1, y2, staffSize);
-		return;
-	}
-	//else if (hdc)
-	{
-        dc->SetPen( m_currentColour , 1, AxSOLID );
+        dc->SetPen( m_currentColour , 2, AxSOLID );
         dc->SetBrush( m_currentColour , AxTRANSPARENT );
-
+        
 		ecart = m_doc->m_barlineSpacing;
 		centre = x - ecart;
 		
@@ -142,190 +211,25 @@ void MusRC::DrawBracket ( MusDC *dc, MusSystem *system, int x, int y1, int y2, i
 		yg = y1 + m_doc->m_interl[ staffSize ] * 2;
 		yd = y1;
 		SwapY( &yg, &yd );
-		dc->DrawEllipticArc( ToRendererX(xg), ToRendererY(yg), ToRendererX(xd-xg), ToRendererX(yg-yd), 88, 0 );
-	
+		dc->DrawEllipticArc( ToRendererX(xg), ToRendererY(yg), ToRendererX(xd-xg), ToRendererX(yg-yd), 90, 40 );
+        
 		yg = y2;
 		yd = y2 - m_doc->m_interl[ staffSize ] * 2;
 		SwapY( &yg, &yd );
-		dc->DrawEllipticArc( ToRendererX(xg), ToRendererY(yg), ToRendererX(xd-xg), ToRendererX(yg-yd), 360, 272 );
+		dc->DrawEllipticArc( ToRendererX(xg), ToRendererY(yg), ToRendererX(xd-xg), ToRendererX(yg-yd), 320, 270 );
 		
         dc->ResetPen();
         dc->ResetBrush();
-
+        
 		xg = x - (m_doc->m_beamWhiteWidth[0] + 1);
 		// determine le blanc entre barres grosse et mince
 		v_bline2( dc, y1, y2, xg, m_doc->m_beamWidth[0]);
 	}
-	//if (cod)
-		//v_bline(dc, y1, y2, x, m_doc->m_parameters.m_barlineWidth);
-
 	return;
 }
 
 
-void MusRC::DrawGroups( MusDC *dc, MusSystem *system )
-{
-	assert( dc ); // DC cannot be NULL
-
-	int i, flLine=0, flBrace=0;
-	int xx, portee;
-	int b_gr, bb_gr;
-	int b_acc, bb_acc;               
-	//extern int _encontinu;
-
-    MusStaff *staff;
-
-// 	if ((wxg+margeMorteHor) > (staff->indent ? portIndent : portNoIndent))
- 	//if ((wxg+margeMorteHor) > max (portIndent, portNoIndent))
- 	//	return;
-//	SYMBOLCOL;
-//  MESURECOL;
-
-	b_gr = bb_gr = b_acc = bb_acc = 0;                
-
-    /*
-    for (i = 0; i < system->GetStaffCount(); i++) 
-	{
-		staff =  (MusStaff*)system->m_children[i];
-
-		xx = system->m_systemLeftMar;
-
-		if (staff->portNbLine == 1 || staff->portNbLine == 4)
-			portee = m_doc->m_staffSize[ staff->staffSize ]*2;
-		else
-            portee = ((staff->portNbLine-1) * m_doc->m_interl[staff->staffSize]);
-
-		if (staff->vertBarre == START)
-			b_gr = (int)(staff->m_y_drawing);
-		// key[i].yp est position du curseur par default m_staffSize (4 interl) au-dessus de ligne superieure
-		// decporttyp est la valeur de remplacement de m_staffSize si on veut autre espace
-		else if (staff->vertBarre == START_END)
-		{	b_gr = (int)(staff->m_y_drawing);
-			bb_gr = (int)(staff->m_y_drawing - portee);//m_staffSize[staff->staffSize]*2;
-			flLine = 1;
-		}
-		else if (staff->vertBarre == END)
-		{	bb_gr = (int)(staff->m_y_drawing - portee);//m_staffSize[staff->staffSize]*2;
-			flLine = 1;
-		}
-		if (staff->brace == START)
-			b_acc = (int)(staff->m_y_drawing);
-		else if (staff->brace == START_END)
-		{	b_acc = (int)(staff->m_y_drawing);
-			bb_acc = (int)(staff->m_y_drawing - portee);//m_staffSize[staff->staffSize]*2;
-			flBrace = 1;
-		}
-		else if (staff->brace == END)
-		{	bb_acc = (int)(staff->m_y_drawing - portee);//m_staffSize[staff->staffSize]*2;
-			flBrace = 1;
-		}
-
-		//if (!modMetafile || ( bb_gr < drawRect.top && b_gr > drawRect.bottom && 
-		//			 in (xx, drawRect.left, drawRect.right)))
-			if (flLine)
-			{ 	      
-                if (m_doc->m_env.m_barlineWidth > 2)
-					v_bline2( dc ,b_gr,bb_gr,xx, m_doc->m_env.m_barlineWidth);
-				else
-					v_bline( dc ,b_gr,bb_gr,xx, m_doc->m_env.m_barlineWidth);
-				flLine = 0;
-			}
-
-		//if (!modMetafile || ( bb_acc < drawRect.top && b_acc > drawRect.bottom && 
-		//			 in (xx, drawRect.left, drawRect.right)))
-		if (flBrace)
-		{		if (staff->accol)
-					DrawBracket ( dc, system, xx- m_doc->m_step1/2 , b_acc, bb_acc, 2, staff->staffSize);
-				else
-					DrawBracket ( dc, system, xx,b_acc,bb_acc, 1, staff->staffSize);
-			flBrace = 0;
-		}
-
-		//if (_encontinu && staff->vertBarre > 1) // > START
-		//	break;
-	}
-    */
-    
-	return;
-}
-
-/*
-void MusRC::DrawBraceOlde ( MusDC *dc, MusSystem *system, int x, int y1, int y2, int staffSize)
-{	
-	assert( dc ); // DC cannot be NULL
-	if ( !system->Check() )
-		return;
-    
-	SwapY( &y1, &y2 );
-	
-	int ymed, xdec, fact, nbrInt;
-    //	static POINT *bcoord;
-	MusPoint *ptcoord;
-    
-    dc->SetPen( m_currentColour , 1, AxSOLID );
-    dc->SetBrush( m_currentColour , AxSOLID );
-    
-	x -= m_doc->m_beamWhiteWidth[ staffSize ];  // distance entre barre et debut accolade
-    
-	nbrInt = BEZIER_NB_POINTS;
-    
-	ymed = (y1 + y2) / 2;
-	fact = m_doc->m_beamWidth[ staffSize ]-1 + m_doc->m_env.m_barlineWidth;
-	xdec = ToRendererX(fact);
-    
-	point_[0].x = ToRendererX(x);
-	point_[0].y = ToRendererY(y1);
-	point_[1].x = ToRendererX(x - m_doc->m_step2);
-	point_[1].y = point_[0].y - ToRendererX( m_doc->m_interl[ staffSize ]*3);
-	point_[3].x = ToRendererX(x - m_doc->m_step1*2);
-	point_[3].y = ToRendererY(ymed);
-	point_[2].x = ToRendererX(x + m_doc->m_step1);
-	point_[2].y = point_[3].y + ToRendererX( m_doc->m_interl[ staffSize ]);
-    
-	ptcoord = &bcoord[0];
-	calcBez ( ptcoord, nbrInt );
-    
-	pntswap (&point_[0], &point_[3]);
-	pntswap (&point_[1], &point_[2]);
-	
-	point_[1].x += xdec;
-	point_[2].x += xdec;
-	point_[1].y = point_[0].y + ToRendererX( m_doc->m_interl[ staffSize ]*2);
-    
-	ptcoord = &bcoord[nbrInt+1];	// suite de la matrice: retour du bezier
-	calcBez ( ptcoord, nbrInt );
-    
-	//SetPolyFillMode (hdc, WINDING);
-	dc->DrawPolygon (nbrInt*2,  bcoord, 0, 0, wxWINDING_RULE ); //(sizeof (bcoord)*2) / sizeof (POINT)); nbrInt*2+ 1;
-    
-	// on produit l'image reflet vers le bas: 0 est identique 
-	point_[1].y = point_[0].y - ToRendererX( m_doc->m_interl[ staffSize ]*2);
-	point_[3].y = ToRendererY(y2);
-	point_[2].y = point_[3].y + ToRendererX( m_doc->m_interl[ staffSize ]*3);
-    
-	ptcoord = &bcoord[0];
-	calcBez ( ptcoord, nbrInt );
-    
-	pntswap (&point_[0], &point_[3]);
-	pntswap (&point_[1], &point_[2]);
-	
-	point_[1].x -= xdec;
-	point_[2].x -= xdec;
-	point_[2].y = point_[3].y - ToRendererX( m_doc->m_interl[ staffSize ]);
-    
-	ptcoord = &bcoord[nbrInt+1];	// suite de la matrice: retour du bezier 
-	calcBez ( ptcoord, nbrInt );
-    
-	dc->DrawPolygon (nbrInt*2,  bcoord, 0, 0, wxWINDING_RULE  ); //(sizeof (bcoord)*2) / sizeof (POINT)); nbrInt*2+ 1;
-	
-    dc->ResetPen();
-    dc->ResetBrush();
-    
-	return;
-}
-*/
-
-void MusRC::DrawBrace ( MusDC *dc, MusSystem *system, int x, int y1, int y2, int staffSize)
+void MusRC::DrawBrace ( MusDC *dc, int x, int y1, int y2, int staffSize)
 {	
     int new_coords[2][6];
     
@@ -334,8 +238,6 @@ void MusRC::DrawBrace ( MusDC *dc, MusSystem *system, int x, int y1, int y2, int
 	SwapY( &y1, &y2 );
 	
 	int ymed, xdec, fact, nbrInt;
-    //	static POINT *bcoord;
-	// MusPoint *ptcoord;
     
     dc->SetPen( m_currentColour , 1, AxSOLID );
     dc->SetBrush( m_currentColour , AxSOLID );
@@ -408,10 +310,6 @@ void MusRC::DrawBrace ( MusDC *dc, MusSystem *system, int x, int y1, int y2, int
     
     dc->DrawComplexBezierPath(point_[3].x, point_[3].y, new_coords[0], new_coords[1]);
     
-    //dc->SetPen( m_currentColour , 1, AxSOLID );
-    //dc->SetBrush( m_currentColour , AxSOLID );
-	//dc->DrawPolygon (nbrInt*2,  bcoord, 0, 0, wxWINDING_RULE  ); //(sizeof (bcoord)*2) / sizeof (POINT)); nbrInt*2+ 1;
-	
     dc->ResetPen();
     dc->ResetBrush();
         

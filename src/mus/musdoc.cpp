@@ -74,7 +74,9 @@ void MusDoc::Reset( DocType type )
 	m_fontHeightAscent[1][0] = 0;
 	m_fontHeightAscent[1][1] = 0;
     
-    m_charDefin = 19;
+    m_charDefin = 18;
+    
+    m_scoreDef.Clear();
 }
 
 void MusDoc::ResetPaperSize()
@@ -278,9 +280,9 @@ void MusDoc::UpdatePageValues()
     m_verticalUnit1[1] = (float)m_interl[1]/4;
     m_verticalUnit2[1] = (float)m_interl[1]/8;
     
-    int glyph_size;
-    glyph_size = round(LEIPZIG_HALF_NOTE_HEAD_WIDTH * (double)m_fontHeight / LEIPZIG_UNITS_PER_EM);
-    m_noteRadius[0][0] = glyph_size / 2;
+    float glyph_size;
+    glyph_size = (LEIPZIG_HALF_NOTE_HEAD_WIDTH * (float)m_fontHeight / LEIPZIG_UNITS_PER_EM);
+    m_noteRadius[0][0] = ceil(glyph_size / 2);
     m_noteRadius[0][1] = (m_noteRadius[0][0] * m_graceRatio[0])/m_graceRatio[1];
     m_noteRadius[1][0] = (m_noteRadius[0][0] * m_smallStaffRatio[0])/m_smallStaffRatio[1];
     m_noteRadius[1][1] = (m_noteRadius[1][0] * m_graceRatio[0])/m_graceRatio[1];

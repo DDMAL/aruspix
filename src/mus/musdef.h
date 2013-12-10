@@ -152,6 +152,14 @@ enum ClefId {
 };
 
 // the maximum is 255 (unsigned char)
+enum StaffGrpSymbol {
+    STAFFGRP_NONE = 0,
+    STAFFGRP_LINE,
+    STAFFGRP_BRACE,
+    STAFFGRP_BRACKET
+};
+
+// the maximum is 255 (unsigned char)
 enum MeterSymb {
     METER_SYMB_NONE = 0,
     METER_SYMB_COMMON,

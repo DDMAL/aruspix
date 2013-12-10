@@ -366,7 +366,7 @@ void MusSvgDC::DrawEllipticArc(int x, int y, int width, int height, double start
     //    fArc, fSweep, int(xe), int(ye), int(xc), int(yc)  );
 
     WriteLine( Mus::StringFormat("<path d=\"M%d %d A%d %d 0.0 %d %d  %d %d \" />",
-        int(xs), int(ys), int(rx), int(ry),
+        int(xs), int(ys), abs(int(rx)), abs(int(ry)),
         fArc, fSweep, int(xe), int(ye) ) );
 }
   

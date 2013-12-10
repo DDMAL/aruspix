@@ -212,6 +212,13 @@ bool MusMeiOutput::WriteStaffGrp( MusStaffGrp *staffGrp )
     assert( m_system );
     m_staffGrp = new TiXmlElement("staffGrp");
     m_staffGrp->SetAttribute( "xml:id",  UuidToMeiStr( staffGrp ).c_str() );
+    if ( staffGrp->GetSymbol() != STAFFGRP_NONE ) {
+        m_staffGrp->SetAttribute( "symbol", StaffGrpSymbolToStr( staffGrp->GetSymbol() ).c_str() );
+    }
+    if ( staffGrp->GetBarthru() ) {
+        m_staffGrp->SetAttribute( "barthru", BoolToStr( staffGrp->GetBarthru() ).c_str() );
+    }
+    
     m_system->LinkEndChild( m_staffGrp );
     return true;
 }
@@ -508,6 +515,11 @@ void MusMeiOutput::WriteSameAsAttr( TiXmlElement *meiElement, MusObject *element
     }
 }
 
+std::string MusMeiOutput::BoolToStr(bool value)
+{
+    if (value) return "true";
+    return "false";
+}
 
 std::string MusMeiOutput::OctToStr(int oct)
 {
@@ -680,6 +692,22 @@ std::string MusMeiOutput::KeySigToStr(int num, char alter_type )
         default:
             Mus::LogWarning("Unknown key signature values '%d' and '%d", num, alter_type);
             value = "0";
+            break;
+	}
+	return value;
+}
+
+
+std::string MusMeiOutput::StaffGrpSymbolToStr(StaffGrpSymbol symbol)
+{
+ 	std::string value;
+	switch(symbol)
+	{	case STAFFGRP_LINE : value = "line"; break;
+		case STAFFGRP_BRACE : value = "brace"; break;
+        case STAFFGRP_BRACKET : value = "bracket"; break;
+        default:
+            Mus::LogWarning("Unknown staffGrp @symbol  '%d'", symbol);
+            value = "line";
             break;
 	}
 	return value;
@@ -961,6 +989,13 @@ bool MusMeiInput::ReadMeiStaffGrp( TiXmlElement *staffGrp )
     assert( !m_staffDef );
     
     MusStaffGrp *currentStaffGrp = m_staffGrps.back();
+    
+    if ( staffGrp->Attribute( "symbol" ) ) {
+        currentStaffGrp->SetSymbol( StrToStaffGrpSymbol( staffGrp->Attribute( "symbol" ) ) );
+    }
+    if ( staffGrp->Attribute( "barthru" ) ) {
+        currentStaffGrp->SetBarthru( StrToBool( staffGrp->Attribute( "barthru" ) ) );
+    }
     
     TiXmlElement *current = NULL;
     for( current = staffGrp->FirstChildElement( ); current; current = current->NextSiblingElement( ) ) {
@@ -1572,6 +1607,12 @@ void MusMeiInput::SetMeiUuid( TiXmlElement *element, MusObject *object )
     object->SetUuid( element->Attribute( "xml:id" ) );
 }
 
+bool MusMeiInput::StrToBool(std::string value)
+{
+    if (value == "false") return false;
+	return true;
+}
+
 int MusMeiInput::StrToDur(std::string dur)
 {
     int value;
@@ -1702,5 +1743,17 @@ int MusMeiInput::StrToKeySigNum(std::string accid)
         // low level way, remove '0', which is 48
         return accid.at(0) - '0';
     }
+}
+
+StaffGrpSymbol MusMeiInput::StrToStaffGrpSymbol(std::string symbol)
+{
+    if (symbol == "line") return STAFFGRP_LINE;
+    else if (symbol == "brace") return STAFFGRP_BRACE;
+    else if (symbol == "bracket") return STAFFGRP_BRACKET;
+    else {
+        Mus::LogWarning("Unknown staffGrp @symbol '%s'", symbol.c_str() );
+	}
+    // default
+	return STAFFGRP_LINE;
 }
 

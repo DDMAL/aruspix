@@ -148,7 +148,7 @@ int MusRC::DrawDot ( MusDC *dc, int x, int b, int decal, MusStaff *staff )
 				y += decal;
 	}
 
-	int r = std::max( ToRendererX(4), 2 );
+	int r = std::max( ToRendererX(3), 2 );
 	
     dc->SetPen( m_currentColour, 1, AxSOLID );
     dc->SetBrush( m_currentColour, AxSOLID );

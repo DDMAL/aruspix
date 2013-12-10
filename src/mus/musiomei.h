@@ -137,6 +137,7 @@ private:
     /** @name Methods for converting members into MEI attributes. */
     ///@{
     std::string UuidToMeiStr( MusObject *element );
+    std::string BoolToStr(bool value );
 	std::string DurToStr(int dur);
 	std::string OctToStr(int oct);
 	std::string PitchToStr(int pitch);
@@ -146,6 +147,7 @@ private:
     std::string MensurSignToStr(MensurSign sign);
     std::string DocTypeToStr(DocType type);
     std::string KeySigToStr(int num, char alter_type );
+    std::string StaffGrpSymbolToStr(StaffGrpSymbol symbol);
     ///@}
 
     
@@ -244,6 +246,7 @@ private:
     
 	//
     void SetMeiUuid( TiXmlElement *element, MusObject *object );
+    bool StrToBool(std::string value);
 	int StrToDur(std::string dur);
 	int StrToOct(std::string oct);
 	int StrToPitch(std::string pitch ); 
@@ -253,6 +256,7 @@ private:
     DocType StrToDocType(std::string type);
     unsigned char StrToKeySigType(std::string accid);
     int StrToKeySigNum(std::string accid);
+    StaffGrpSymbol StrToStaffGrpSymbol(std::string sign);
     
 public:
     

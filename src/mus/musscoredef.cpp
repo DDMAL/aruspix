@@ -118,10 +118,20 @@ MusScoreDef::~MusScoreDef()
     
 }
 
+void MusScoreDef::Clear()
+{
+    ReplaceClef(NULL);
+    ReplaceKeySig(NULL);
+    ReplaceMensur(NULL);
+    ClearChildren();
+}
+
 void MusScoreDef::AddStaffGrp( MusStaffGrp *staffGrp )
 {
+    assert( m_children.empty() );
 	staffGrp->SetParent( this );
 	m_children.push_back( staffGrp );
+    Modify();
 }
 
 void MusScoreDef::Replace( MusScoreDef *newScoreDef )
@@ -163,7 +173,6 @@ void MusScoreDef::FilterList()
             iter++;
         }
     }
-    
 }
 
 
@@ -201,8 +210,10 @@ void MusScoreDef::SetRedraw( bool clef, bool keysig, bool mensur )
 //----------------------------------------------------------------------------
 
 MusStaffGrp::MusStaffGrp() :
-    MusObject()
+    MusObject(), MusObjectListInterface()
 {
+    m_symbol = STAFFGRP_NONE;
+    m_barthru = true;
 }
 
 MusStaffGrp::~MusStaffGrp()
@@ -232,6 +243,23 @@ int MusStaffGrp::Save( ArrayPtrVoid params )
     }
     return FUNCTOR_CONTINUE;
     
+}
+
+
+void MusStaffGrp::FilterList()
+{
+    // We want to keep only staffDef
+    ListOfMusObjects::iterator iter = m_list.begin();
+    
+    while ( iter != m_list.end()) {
+        MusStaffDef *currentStaffDef = dynamic_cast<MusStaffDef*>(*iter);
+        if ( !currentStaffDef )
+        {
+            iter = m_list.erase( iter );
+        } else {
+            iter++;
+        }
+    }
 }
 
 //----------------------------------------------------------------------------

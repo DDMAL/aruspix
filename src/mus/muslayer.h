@@ -135,6 +135,13 @@ public:
      * This works for facsimile (transcription) encodings only because it looks at the m_x_abs position
      */ 
     void CheckXPosition( MusLayerElement *currentElement );
+    
+    /**
+     * Set drawing clef, keysig and mensur if necessary and if available.
+     * Also set the current clef.
+     */
+    void SetDrawingValues( MusScoreDef *currentScoreDef, MusStaffDef *currentStaffDef );
+    
 
     //Lyric related methods
     /*
@@ -165,12 +172,6 @@ public:
 	/** voix de la portee*/
 	unsigned short voix;
     
-    /**
-     * The current clef.
-     * This is used for getting the clef when interacting, for example by clicking in order to get the pitch from a position
-     */
-    MusClef m_currentClef;
-    
 protected:
     // drawing variables
     //MusLayerElement *beamListPremier; // we need to replace this with a proper beam class that handles a list of notes/rests
@@ -179,6 +180,12 @@ protected:
 private:
     /** The layer number */
     int m_n;
+
+    /**
+     * The current clef.
+     * This is used for getting the clef when interacting, for example by clicking in order to get the pitch from a position
+     */
+    MusClef m_currentClef;
     
 };
 

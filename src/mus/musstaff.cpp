@@ -178,12 +178,12 @@ MusLayer *MusStaff::GetPrevious( MusLayer *layer )
 }
 
 
-MusLayer *MusStaff::GetLayer( int LayerNo )
+MusLayer *MusStaff::GetLayerWithIdx( int LayerIdx )
 {
-    if ( LayerNo > (int)m_children.size() - 1 )
+    if ( LayerIdx > (int)m_children.size() - 1 )
         return NULL;
 	
-	return (MusLayer*)m_children[LayerNo];
+	return (MusLayer*)m_children[LayerIdx];
 }
 
 

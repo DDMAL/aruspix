@@ -61,9 +61,13 @@ public:
 	MusStaff *GetLast( );
 	MusStaff *GetNext( MusStaff *layer );
 	MusStaff *GetPrevious( MusStaff *layer );
-    MusStaff *GetStaff( int StaffNo );
+    MusStaff *GetStaffWithIdx( int staffIdx );
+    
+    MusStaff *GetStaffWithNo( int staffNo );
     
     int GetXRel( );
+    
+    int GetXRelRight( );
     
     /**
      * Align the content of a system.

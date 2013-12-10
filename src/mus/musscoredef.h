@@ -93,6 +93,8 @@ public:
         
     virtual std::string MusClassName( ) { return "MusScoreDef"; };
     
+    void Clear();
+    
 	void AddStaffGrp( MusStaffGrp *staffGrp );
     
     /**
@@ -142,7 +144,7 @@ private:
  * This class represents a MEI staffGrp.
  * It contains MusStaffDef objects.
  */
-class MusStaffGrp: public MusObject
+class MusStaffGrp: public MusObject, public MusObjectListInterface
 {
 public:
     // constructors and destructors
@@ -156,14 +158,39 @@ public:
     
 	void AddStaffGrp( MusStaffGrp *staffGrp );
     
+    /**
+     * @name Set and get the staffGrp @symbol
+     */
+    ///@{
+    StaffGrpSymbol GetSymbol() const { return m_symbol; };
+    void SetSymbol( StaffGrpSymbol symbol ) { m_symbol = symbol; };
+    ///@}
+    
+    /**
+     * @name Set and get the staffGrp @barthru
+     */
+    ///@{
+    bool GetBarthru() const { return m_barthru; };
+    void SetBarthru( bool barthru ) { m_barthru = barthru; };
+    ///@}
+    
     // functors
     virtual int Save( ArrayPtrVoid params );
+    
+protected:
+    /**
+     * Filter the list for a specific class.
+     * For example, keep staffDef for fast access.
+     */
+    virtual void FilterList();
     
 private:
     
 public:
     
 private:
+    StaffGrpSymbol m_symbol;
+    bool m_barthru;
     
 };
 

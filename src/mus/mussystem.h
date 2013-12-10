@@ -45,7 +45,7 @@ public:
 	MusMeasure *GetLast( );
 	MusMeasure *GetNext( MusMeasure *measure );
 	MusMeasure *GetPrevious( MusMeasure *measure );
-    MusMeasure *GetMeasure( int MeasureNo );
+    //MusMeasure *GetMeasure( int MeasureNo );
 	MusMeasure *GetAtPos( int x );
     
     /**

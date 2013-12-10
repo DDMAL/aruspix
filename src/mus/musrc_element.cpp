@@ -272,8 +272,8 @@ void MusRC::DrawNote ( MusDC *dc, MusLayerElement *element, MusLayer *layer, Mus
 	}
 
 	/*NEW: diminuer le rayon d'une quantitÇ paramÇtrable*/
-	//if (val>DUR_1)
-	//	rayon -= ((rayon * m_doc->m_parameters.m_stemCorrection) / 20);
+	if (note->m_dur > DUR_1)
+		rayon -= ((rayon * m_doc->m_env.m_stemCorrection) / 20);
 	x1 = xn-rayon;	// position d'appel du caractäre et de la queue gauche
     xl = xn;
 
@@ -340,7 +340,7 @@ void MusRC::DrawNote ( MusDC *dc, MusLayerElement *element, MusLayer *layer, Mus
 			else {
 				//***up = this->q_auto ? ((ynn < milieu)? ON :OFF):this->queue;
 				// ENZ
-				up = (ynn < milieu) ? ON : OFF;
+				up = (ynn > milieu) ? ON : OFF;
             }
 			
 			// ENZ
@@ -836,7 +836,7 @@ void MusRC::DrawDots ( MusDC *dc, int x1, int y1, int offy, unsigned char dots, 
 	int i;
 	for (i = 0; i < dots; i++) {
 		DrawDot ( dc, x1, y1, 0, staff);
-		x1 += std::max (6, m_doc->m_step1);
+		x1 += std::max (6, 2 * m_doc->m_step1);
 	}
 	return;
 }

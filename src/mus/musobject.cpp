@@ -43,45 +43,52 @@ MusObject::MusObject()
     Init("m-");
 }
 
-MusObject::MusObject(std::string classid) {
+MusObject::MusObject(std::string classid)
+{
     Init(classid);
 }
 
-MusObject *MusObject::Clone( ) {
+MusObject *MusObject::Clone( )
+{
     // This should new happen because the method should be overwritten
     assert( false );
 }
 
 MusObject::MusObject( const MusObject& object )
 {
+    ClearChildren();
     m_parent = NULL;
     m_classid = object.m_classid;
     m_uuid = object.m_uuid; // for now copy the uuid - to be decided
+    m_isModified = true;
     
     int i;
     for (i = 0; i < (int)object.m_children.size(); i++)
     {
         MusObject *current = object.m_children[i];
         MusObject* copy = current->Clone();
+        copy->Modify();
         copy->SetParent( this );
         m_children.push_back( copy );
     }
-
 }
 
 MusObject& MusObject::operator=( const MusObject& object )
 {
 	if ( this != &object ) // not self assignement
 	{
+        ClearChildren();
         m_parent = NULL;
         m_classid = object.m_classid;
         m_uuid = object.m_uuid; // for now copy the uuid - to be decided
+        m_isModified = true;
         
         int i;
         for (i = 0; i < (int)object.m_children.size(); i++)
         {
             MusObject *current = object.m_children[i];
             MusObject* copy = current->Clone();
+            copy->Modify();
             copy->SetParent( this );
             m_children.push_back( copy );
         }
@@ -143,6 +150,15 @@ MusObject *MusObject::DetachChild( int idx )
     ArrayOfMusObjects::iterator iter = m_children.begin();
     m_children.erase( iter+(idx) );
     return child;
+}
+
+
+MusObject* MusObject::GetChild( int idx )
+{
+    if ( (idx < 0) || (idx >= (int)m_children.size()) ) {
+        return NULL;
+    }
+    return m_children[idx];
 }
 
 void MusObject::RemoveChildAt( int idx )
@@ -212,7 +228,7 @@ void MusObject::FillList( ListOfMusObjects *list )
 {
     MusFunctor addToList( &MusObject::AddMusLayerElementToList );
     ArrayPtrVoid params;
-    params.push_back ( list );
+    params.push_back ( &list );
     this->Process( &addToList, params );
 
     /* // For debuging
@@ -252,6 +268,23 @@ MusObject *MusObject::GetFirstParent( const std::type_info *elementType, int max
         return ( m_parent->GetFirstParent( elementType, maxSteps - 1 ) );
     }
 }
+
+
+MusObject *MusObject::GetFirstChild( const std::type_info *elementType )
+{
+    ArrayOfMusObjects::iterator iter;
+    int i;
+    for (iter = m_children.begin(), i = 0; iter != m_children.end(); ++iter, i++)
+    {
+        if ( typeid(**iter) == *elementType )
+        {
+            return *iter;
+        }
+    }
+    return NULL;
+}
+
+
 bool MusObject::GetSameAs( std::string *id, std::string *filename, int idx )
 {
     int i = 0;
@@ -402,6 +435,21 @@ bool MusDocObject::HasSelfBB()
 //----------------------------------------------------------------------------
 
 
+MusObjectListInterface::MusObjectListInterface( const MusObjectListInterface& interface )
+{
+    // actually nothing to do, we just don't want the list to be copied
+    m_list.clear();
+}
+
+MusObjectListInterface& MusObjectListInterface::operator=( const MusObjectListInterface& interface )
+{
+    // actually nothing to do, we just don't want the list to be copied
+    if ( this != &interface ) {
+        this->m_list.clear();
+    }
+	return *this;
+}
+
 void MusObjectListInterface::ResetList( MusObject *node )
 {
     // nothing to do, the list if up to date
@@ -505,9 +553,9 @@ void MusFunctor::Call( MusObject *ptr, ArrayPtrVoid params )
 int MusObject::AddMusLayerElementToList( ArrayPtrVoid params )
 {
     // param 0: the ListOfMusObjects
-    ListOfMusObjects *list = (ListOfMusObjects*)params[0];
+    ListOfMusObjects **list = (ListOfMusObjects**)params[0];
     //if ( dynamic_cast<MusLayerElement*>(this ) ) {
-        list->push_back( this );
+        (*list)->push_back( this );
     //}
     return FUNCTOR_CONTINUE;
 }
@@ -568,38 +616,7 @@ int MusObject::SetPageScoreDef( ArrayPtrVoid params )
     // starting a new layer
     MusLayer *current_layer = dynamic_cast<MusLayer*>(this);
     if ( current_layer  ) {
-        assert( currentStaffDef );
-        if ( (*currentStaffDef)->DrawClef() ) {
-            if ( (*currentStaffDef)->GetClefAttr() ) {
-                current_layer->ReplaceClef( (*currentStaffDef)->GetClefAttr() );
-            }
-            else {
-                current_layer->ReplaceClef( currentScoreDef->GetClefAttr() );
-            }
-            (*currentStaffDef)->SetDrawClef( false );
-        }
-        if ( (*currentStaffDef)->DrawKeySig() ) {
-            if ( (*currentStaffDef)->GetKeySigAttr() ) {
-                current_layer->ReplaceKeySig( (*currentStaffDef)->GetKeySigAttr() );
-            }
-            else {
-                current_layer->ReplaceKeySig( currentScoreDef->GetKeySigAttr() );
-            }
-            (*currentStaffDef)->SetDrawKeySig( false );
-        }
-        if ( (*currentStaffDef)->DrawMensur() ) {
-            if ( (*currentStaffDef)->GetMensurAttr() ) {
-                current_layer->ReplaceMensur( (*currentStaffDef)->GetMensurAttr() );
-            }
-            else {
-                current_layer->ReplaceMensur( currentScoreDef->GetMensurAttr() );
-            }
-            (*currentStaffDef)->SetDrawMensur( false );
-        }
-        // Set the currentClef to the layer
-        if ( (*currentStaffDef)->GetClefAttr() ) {
-            current_layer->m_currentClef = *(*currentStaffDef)->GetClefAttr();
-        }
+        current_layer->SetDrawingValues( currentScoreDef, (*currentStaffDef) );
         return FUNCTOR_CONTINUE;
     }
     

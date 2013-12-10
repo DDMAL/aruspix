@@ -56,8 +56,8 @@ MusSystem::~MusSystem()
 void MusSystem::Clear( )
 {
 	ClearChildren();
-	m_systemLeftMar = 0;
-	m_systemRightMar = 0;
+	m_systemLeftMar = 50;
+	m_systemRightMar = 50;
 	m_x_abs = AX_UNSET;
     m_x_rel = 0;
 	m_x_drawing = 0;
@@ -118,15 +118,6 @@ MusMeasure *MusSystem::GetNext( MusMeasure *measure )
 	return (MusMeasure*)m_children[i + 1];
 	
 }
-
-MusMeasure *MusSystem::GetMeasure( int MeasureNo )
-{
-    if ( MeasureNo > (int)m_children.size() - 1 )
-        return NULL;
-	
-	return (MusMeasure*)m_children[MeasureNo];
-}
-
 
 MusMeasure *MusSystem::GetPrevious( MusMeasure *measure  )
 {

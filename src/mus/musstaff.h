@@ -80,7 +80,7 @@ public:
 	MusLayer *GetLast( );
 	MusLayer *GetNext( MusLayer *layer );
 	MusLayer *GetPrevious( MusLayer *layer );
-    MusLayer *GetLayer( int LayerNo );
+    MusLayer *GetLayerWithIdx( int LayerIdx );
     
     /**
      * Align the content of a system.

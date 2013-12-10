@@ -68,6 +68,17 @@ public:
     void ResetUuid( );
     
     /**
+     * Children count
+     * Used for classes with several types of children
+     */
+    int GetChildCount() { return (int)m_children.size(); };
+    
+    /**
+     * Child access (generic)
+     */
+    MusObject *GetChild( int idx );
+    
+    /**
      * Clear the children vector and delete all the objects.
      */
     void ClearChildren();
@@ -111,6 +122,11 @@ public:
      * The maxSteps parameter limit the search to a certain number of level if not -1.
      */
     MusObject *GetFirstParent( const std::type_info *elementType, int maxSteps = -1 );
+    
+    /**
+     * Return the first of the specified type.
+     */
+    MusObject *GetFirstChild( const std::type_info *elementType );
     
     /**
      * Fill the list of all the children MusLayerElement.
@@ -338,7 +354,9 @@ public:
     // constructors and destructors
     MusObjectListInterface() {};
     virtual ~MusObjectListInterface() {};
-    
+    MusObjectListInterface( const MusObjectListInterface& interface ); // copy constructor;
+    MusObjectListInterface& operator=( const MusObjectListInterface& interface ); // copy assignement;
+
     /**
      * Look for the MusObject in the list and return its position (-1 if not found)
      */
