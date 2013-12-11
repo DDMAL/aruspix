@@ -173,13 +173,13 @@ void MusRC::DrawStaffGrp( MusDC *dc, MusScoreDef *scoreDef, MusMeasure *measure,
     // actually draw the line, the brace or the bracket
     if ( staffGrp->GetSymbol() == STAFFGRP_LINE ) {
         v_bline( dc , y_top, y_bottom, x, m_doc->m_env.m_barlineWidth);
-
     }
     else if ( staffGrp->GetSymbol() == STAFFGRP_BRACE ) {
         DrawBrace ( dc, x, y_top, y_bottom, last->staffSize );
     }
     else if ( staffGrp->GetSymbol() == STAFFGRP_BRACKET ) {
-        DrawBracket( dc, x, y_top, y_bottom, last->staffSize );        
+        DrawBracket( dc, x, y_top, y_bottom, last->staffSize );
+        x -= 2 * m_doc->m_beamWidth[0] - m_doc->m_beamWhiteWidth[0];
     }
     
     // recursively draw the children
@@ -198,33 +198,33 @@ void MusRC::DrawStaffGrp( MusDC *dc, MusScoreDef *scoreDef, MusMeasure *measure,
 void MusRC::DrawBracket ( MusDC *dc, int x, int y1, int y2, int staffSize)
 {
 	int xg, xd, yg, yd, ecart, centre;
-	{
-        dc->SetPen( m_currentColour , 2, AxSOLID );
-        dc->SetBrush( m_currentColour , AxTRANSPARENT );
-        
-		ecart = m_doc->m_barlineSpacing;
-		centre = x - ecart;
-		
-		xg = centre - ecart*2;
-		xd = centre + ecart*2;
-		
-		yg = y1 + m_doc->m_interl[ staffSize ] * 2;
-		yd = y1;
-		SwapY( &yg, &yd );
-		dc->DrawEllipticArc( ToRendererX(xg), ToRendererY(yg), ToRendererX(xd-xg), ToRendererX(yg-yd), 90, 40 );
-        
-		yg = y2;
-		yd = y2 - m_doc->m_interl[ staffSize ] * 2;
-		SwapY( &yg, &yd );
-		dc->DrawEllipticArc( ToRendererX(xg), ToRendererY(yg), ToRendererX(xd-xg), ToRendererX(yg-yd), 320, 270 );
-		
-        dc->ResetPen();
-        dc->ResetBrush();
-        
-		xg = x - (m_doc->m_beamWhiteWidth[0] + 1);
-		// determine le blanc entre barres grosse et mince
-		v_bline2( dc, y1, y2, xg, m_doc->m_beamWidth[0]);
-	}
+
+    dc->SetPen( m_currentColour , 2, AxSOLID );
+    dc->SetBrush( m_currentColour , AxTRANSPARENT );
+    
+    ecart = m_doc->m_barlineSpacing;
+    centre = x - ecart;
+    
+    xg = centre - ecart*2;
+    xd = centre + ecart*2;
+    
+    yg = y1 + m_doc->m_interl[ staffSize ] * 2;
+    yd = y1;
+    SwapY( &yg, &yd );
+    dc->DrawEllipticArc( ToRendererX(xg), ToRendererY(yg), ToRendererX(xd-xg), ToRendererX(yg-yd), 90, 40 );
+    
+    yg = y2;
+    yd = y2 - m_doc->m_interl[ staffSize ] * 2;
+    SwapY( &yg, &yd );
+    dc->DrawEllipticArc( ToRendererX(xg), ToRendererY(yg), ToRendererX(xd-xg), ToRendererX(yg-yd), 320, 270 );
+    
+    dc->ResetPen();
+    dc->ResetBrush();
+    
+    xg = x - (m_doc->m_beamWhiteWidth[0] + 1);
+    // determine le blanc entre barres grosse et mince
+    v_bline2( dc, y1, y2, xg, m_doc->m_beamWidth[0]);
+
 	return;
 }
 

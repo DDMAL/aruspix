@@ -13,14 +13,13 @@ echo "Compliling"
 # we use ASM_JS=0 because otherwise it does not work with FireFox
 # memory is increased (TOTAL_MEMORY and TOTAL_STACK) for processing large files (tested up to 7MB)
 
-emcc --closure 0 -O2 \
-	-s ASM_JS=0 \
+emcc --closure 1 -O2 \
+	-s ASM_JS=1 \
 	-s OUTLINING_LIMIT=160000 \
 	-I$ARUSPIX_ROOT/src \
 	-I./lib/jsonxx \
 	-DUSE_EMSCRIPTEN \
-	-s ALLOW_MEMORY_GROWTH=1 \
-	-s TOTAL_MEMORY=64*1024*1024 \
+	-s TOTAL_MEMORY=256*1024*1024 \
 	-s TOTAL_STACK=16*1024*1024 \
 	$ARUSPIX_ROOT/src/mus/emscripten_main.cpp \
 	$ARUSPIX_ROOT/src/mus/mus.cpp \
