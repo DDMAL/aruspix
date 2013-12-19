@@ -43,6 +43,9 @@ enum MusEditorMode {
 	MUS_EDITOR_INSERT
 };
 
+// SPACING
+#define SPACING_MINPOS 8
+
 // PITCHES
 #define PITCH_C 1
 #define PITCH_D 2
@@ -115,15 +118,13 @@ enum MusEditorMode {
 
 // the maximum is 255 (unsigned char)
 enum BarlineType {
+    BARLINE_NONE = 0, // None is used to indicated we are actually drawing the staffGrp
     BARLINE_SINGLE,
     BARLINE_END,
-    BARLINE_START, // no MEI equivalent
     BARLINE_RPTBOTH,
     BARLINE_RPTSTART,
     BARLINE_RPTEND,
-    BARLINE_DBL,
-    BARLINE_BRACE, // no MEI equivalent
-    BARLINE_BRACKET
+    BARLINE_DBL
 };
 
 // the maximum is 255 (unsigned char)

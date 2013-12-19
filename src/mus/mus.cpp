@@ -193,8 +193,8 @@ MusEnv::MusEnv()
     m_staffLineWidth = 2;
     m_stemWidth = 2;
     m_barlineWidth = 2;
-    m_beamWidth = 10;
-    m_beamWhiteWidth = 5;
+    m_beamWidth = 8;
+    m_beamWhiteWidth = 6;
     m_beamMaxSlope = 30;
     m_beamMinSlope = 10;
     
