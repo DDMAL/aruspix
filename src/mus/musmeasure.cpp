@@ -48,6 +48,9 @@ void MusMeasure::Clear()
     m_x_abs = AX_UNSET;
     m_x_rel = 0;
     m_x_drawing = 0;
+    // by default, we have a single barline on the right (none on the left)
+    m_rightBarline.m_barlineType = BARLINE_SINGLE;
+    m_leftBarline.m_barlineType = BARLINE_NONE;
 }
 
 int MusMeasure::Save( ArrayPtrVoid params )
@@ -170,6 +173,10 @@ int MusMeasure::Align( ArrayPtrVoid params )
     // point to it
     (*measureAligner) = &m_measureAligner;
     
+    if ( m_rightBarline.m_barlineType != BARLINE_NONE ) {
+        m_rightBarline.SetAlignment( m_measureAligner.GetRightAlignment() );
+    }
+    
     // we also need to reset the staffNb
     (*staffNb) = 0;
     
@@ -181,9 +188,8 @@ int MusMeasure::Align( ArrayPtrVoid params )
 int MusMeasure::IntegrateBoundingBoxXShift( ArrayPtrVoid params )
 {
     // param 0: the cumulated shift (unused)
-    // param 1: the cumulated width (unused)
-    // param 2: the functor to be redirected to MusAligner
-    MusFunctor *integrateBoundingBoxShift = (MusFunctor*)params[2];
+    // param 1: the functor to be redirected to MusAligner
+    MusFunctor *integrateBoundingBoxShift = (MusFunctor*)params[1];
     
     m_measureAligner.Process( integrateBoundingBoxShift, params);
     
@@ -202,6 +208,24 @@ int MusMeasure::SetAligmentXPos( ArrayPtrVoid params )
     return FUNCTOR_SIBLINGS;
 }
 
+#include <math.h>
+
+int MusMeasure::JustifyX( ArrayPtrVoid params )
+{
+    // param 0: the justification ratio
+    // param 1: the system full width (without system margins) (unused)
+    // param 2: the functor to be redirected to the MusMeasureAligner
+    double *ratio = (double*)params[0];
+    MusFunctor *justifyX = (MusFunctor*)params[2];
+    
+    this->m_x_rel = ceil((*ratio) * (double)this->m_x_rel);
+    
+    m_measureAligner.Process( justifyX, params );
+    
+    return FUNCTOR_SIBLINGS;
+}
+
+
 int MusMeasure::AlignMeasures( ArrayPtrVoid params )
 {
     // param 0: the cumulated shift
@@ -213,6 +237,11 @@ int MusMeasure::AlignMeasures( ArrayPtrVoid params )
     
     (*shift) += m_measureAligner.GetRightAlignment()->GetXRel();
     
+    // We also need to take into account the measure end (right) barline with here
+    if (GetRightBarlineType() != BARLINE_NONE) {
+        // shift the next measure of the total with
+        (*shift) += GetRightBarline()->GetAlignment()->GetMaxWidth();
+    }
+    
     return FUNCTOR_SIBLINGS;
 }
-

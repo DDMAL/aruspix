@@ -213,7 +213,7 @@ MusStaffGrp::MusStaffGrp() :
     MusObject(), MusObjectListInterface()
 {
     m_symbol = STAFFGRP_NONE;
-    m_barthru = true;
+    m_barthru = false;
 }
 
 MusStaffGrp::~MusStaffGrp()

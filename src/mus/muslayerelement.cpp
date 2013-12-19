@@ -162,7 +162,8 @@ void MusLayerElement::SetValue( int value, int flag )
     }
 }
 
-void MusLayerElement::Init() {
+void MusLayerElement::Init()
+{
     m_cueSize = false;
     m_hOffset = 0;
     m_staffShift = 0;

@@ -465,7 +465,6 @@ void MusRC::DrawNote ( MusDC *dc, MusLayerElement *element, MusLayer *layer, Mus
 		else
 			x1 -= 1.5 * m_doc->m_accidWidth[staffSize][note->m_cueSize];
 		MusSymbol accid( SYMBOL_ACCID );
-		//symb.Init( m_r );
         accid.m_oct = note->m_oct;
         accid.m_pname = note->m_pname;
 		accid.m_accid = note->m_accid;
@@ -832,10 +831,14 @@ void MusRC::DrawQuarterRest ( MusDC *dc, int a, int b, int valeur, unsigned char
 void MusRC::DrawDots ( MusDC *dc, int x1, int y1, int offy, unsigned char dots, MusStaff *staff )
 
 {
-	y1 += offy;
+	y1 += offy + staff->m_y_drawing;
+    if ((y1 % (int)m_doc->m_interl[staff->staffSize]) == 0) {
+        y1 += m_doc->m_halfInterl[staff->staffSize];
+    }
+    
 	int i;
 	for (i = 0; i < dots; i++) {
-		DrawDot ( dc, x1, y1, 0, staff);
+		DoDrawDot ( dc, x1, y1);
 		x1 += std::max (6, 2 * m_doc->m_step1);
 	}
 	return;
@@ -1004,18 +1007,16 @@ void MusRC::DrawBarline( MusDC *dc, MusLayerElement *element, MusLayer *layer, M
 
     dc->StartGraphic( element, "barline", element->GetUuid() );
     
-    if (barline->m_barlineType==BARLINE_SINGLE)			
-    {	
-        DrawBarline( dc, (MusSystem*)staff->m_parent, x,  m_doc->m_env.m_barlineWidth, barline->m_onStaffOnly, staff);
-    }
-    else if (barline->m_partialBarline)
+    if (barline->m_partialBarline)
     {
         DrawPartialBarline ( dc, (MusSystem*)staff->m_parent, x, staff);
     }
     else
     {
-        DrawSpecialBarline( dc, (MusSystem*)staff->m_parent, x, barline->m_barlineType, barline->m_onStaffOnly, staff);
+        //DrawBarline( dc, (MusSystem*)staff->m_parent, x,  m_doc->m_env.m_barlineWidth, barline->m_onStaffOnly, staff);
     }
+    
+
     
     dc->EndGraphic(element, this ); //RZ
 }
@@ -1405,11 +1406,11 @@ void MusRC::DrawSymbolDot( MusDC *dc, MusLayerElement *element, MusLayer *layer,
 
     switch (dot->m_dot)
     {	
-        case 1 : DrawDot( dc,x,y,0,staff); x += std::max (6, m_doc->m_step1);
-        case 0 : DrawDot ( dc,x,y,0,staff);
+        case 1 : DoDrawDot( dc, x, y ); x += std::max (6, m_doc->m_step1);
+        case 0 : DoDrawDot ( dc, x, y );
     }
     
-    dc->EndGraphic(element, this ); //RZ
+    dc->EndGraphic(element, this );
 
 }
 

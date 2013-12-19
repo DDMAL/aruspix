@@ -161,7 +161,7 @@ public:
      * For each object, it will call the functor.
      * Depending on the code returned by the functor, it will also process it for all children.
      */
-    virtual void Process( MusFunctor *functor, ArrayPtrVoid params );
+    virtual void Process( MusFunctor *functor, ArrayPtrVoid params, MusFunctor *endFunctor = NULL );
     
     // functor methods
     /**
@@ -198,6 +198,12 @@ public:
      * The m_x_shift is updated appropriately
      */
     virtual int SetBoundingBoxXShift( ArrayPtrVoid params );
+    
+    /**
+     * Lay out the X positions of the staff content looking that the bounding boxes.
+     * This is the MusFunctor called at the end of the measure or a layer.
+     */
+    virtual int SetBoundingBoxXShiftEnd( ArrayPtrVoid params );
     
     /**
      * Lay out the Y positions of the staff looking that the bounding box of each staff.
@@ -260,6 +266,17 @@ public:
      * Align the measures by adjusting the m_x_rel position looking at the MusMeasureAligner.
      */
     virtual int AlignMeasures( ArrayPtrVoid params ) { return FUNCTOR_CONTINUE; };
+    
+    /**
+     * Store the width of the system in the MusMeasureAligner for justification
+     * This method is called at the end of a system
+     */
+    virtual int AlignMeasuresEnd( ArrayPtrVoid params ) { return FUNCTOR_CONTINUE; };
+    
+    /**
+     * Justify the X positions
+     */
+    virtual int JustifyX( ArrayPtrVoid params ) { return FUNCTOR_CONTINUE; };
     
     /**
      * Align the system by adjusting the m_y_rel position looking at the MusSystemAligner.

@@ -64,6 +64,7 @@ void MusSystem::Clear( )
 	m_y_abs = AX_UNSET;
     m_y_rel = 0;
 	m_y_drawing = 0;
+    m_total_drawing_width = 0;
 }
 
 
@@ -249,8 +250,6 @@ int MusSystem::IntegrateBoundingBoxYShift( ArrayPtrVoid params )
     return FUNCTOR_SIBLINGS;
 }
 
-
-
 int MusSystem::AlignMeasures( ArrayPtrVoid params )
 {
     // param 0: the cumulated shift
@@ -261,6 +260,15 @@ int MusSystem::AlignMeasures( ArrayPtrVoid params )
     return FUNCTOR_CONTINUE;
 }
 
+int MusSystem::AlignMeasuresEnd( ArrayPtrVoid params )
+{
+    // param 0: the cumulated shift
+    int *shift = (int*)params[0];
+    
+    m_total_drawing_width = (*shift);
+    
+    return FUNCTOR_CONTINUE;
+}
 
 int MusSystem::AlignSystems( ArrayPtrVoid params )
 {
@@ -277,5 +285,25 @@ int MusSystem::AlignSystems( ArrayPtrVoid params )
     
     
     return FUNCTOR_SIBLINGS;
+}
+
+
+int MusSystem::JustifyX( ArrayPtrVoid params )
+{
+    // param 0: the justification ratio (unused)
+    // param 1: the system full width (without system margins)
+    // param 2: the functor to be redirected to the MusMeasureAligner (unused)
+    double *ratio = (double*)params[0];
+    int *systemFullWidth = (int*)params[1];
+    
+    (*ratio) = (double)((*systemFullWidth) - this->m_systemLeftMar - this->m_systemRightMar) / (double)m_total_drawing_width;
+    
+    if ((*ratio) < 0.8 ) {
+        // Arbitrary value for avoiding over-compressed justification
+        Mus::LogWarning("Justification stop because of a ratio smaller the 0.8");
+        return FUNCTOR_SIBLINGS;
+    }
+    
+    return FUNCTOR_CONTINUE;
 }
 

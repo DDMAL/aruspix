@@ -151,7 +151,7 @@ public:
     /** stem direction as drawn, true = up, false = down */
     bool m_drawn_stem_dir;
     
-private:
+protected:
     MusAlignment *m_alignment;
     
 };

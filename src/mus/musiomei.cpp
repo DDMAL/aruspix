@@ -1061,6 +1061,10 @@ bool MusMeiInput::ReadMeiMeasure( TiXmlElement *measure )
     assert( m_measure );
     assert( !m_staff );
     
+    if ( measure->Attribute( "right" ) ) {
+        m_measure->GetRightBarline()->m_barlineType = StrToBarlineType( measure->Attribute( "right" ) );
+    }
+    
     TiXmlElement *current = NULL;
     for( current = measure->FirstChildElement( "staff" ); current; current = current->NextSiblingElement( "staff" ) ) {
         m_staff = new MusStaff( );
@@ -1743,6 +1747,21 @@ int MusMeiInput::StrToKeySigNum(std::string accid)
         // low level way, remove '0', which is 48
         return accid.at(0) - '0';
     }
+}
+
+BarlineType MusMeiInput::StrToBarlineType(std::string type)
+{
+    if (type == "sigle") return BARLINE_SINGLE;
+    else if (type == "end") return BARLINE_END;
+    else if (type == "dbl") return BARLINE_DBL;
+    else if (type == "rptend") return BARLINE_RPTEND;
+    else if (type == "rptstart") return BARLINE_RPTSTART;
+    else if (type == "rptboth") return BARLINE_RPTBOTH;
+    else {
+        Mus::LogWarning("Unknown barline type '%s'", type.c_str() );
+	}
+    // default
+	return BARLINE_SINGLE;
 }
 
 StaffGrpSymbol MusMeiInput::StrToStaffGrpSymbol(std::string symbol)

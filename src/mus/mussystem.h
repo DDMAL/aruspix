@@ -98,6 +98,17 @@ public:
      */
     virtual int AlignMeasures( ArrayPtrVoid params );
     
+    /** 
+     * Store the width of the system in the MusMeasureAligner for justification
+     */
+    virtual int AlignMeasuresEnd( ArrayPtrVoid params );
+    
+    /**
+     * Justify the X positions
+     * Special case that redirects the functor to the MusMeasureAligner.
+     */
+    virtual int JustifyX( ArrayPtrVoid params );
+    
 private:
     MusSystemAligner m_systemAligner;
     
@@ -136,6 +147,11 @@ public:
      * It is re-computed everytime the system is drawn and it is not stored in the file.
      */
     int m_x_drawing;
+    /**
+     * The total width of the system.
+     * It is computed during the layout processed and used for calculating the justification ratio.
+     */
+    int m_total_drawing_width;
 
 private:
     

@@ -17,6 +17,7 @@
 //----------------------------------------------------------------------------
 
 #include "musbeam.h"
+#include "musbarline.h"
 #include "musclef.h"
 #include "musdoc.h"
 #include "muskeysig.h"
@@ -107,42 +108,48 @@ void MusRC::DrawSystem( MusDC *dc, MusSystem *system )
     // that needs to be intialized.
     // Warning: we assume for now the scoreDef occuring in the system will not change the staffGrps content
     // and @symbol values, otherwise results will be unexpected...
-    DrawScoreDef( dc, system, &m_drawing_scoreDef );
+    // First get the first measure of the system
+    measure  = dynamic_cast<MusMeasure*>(system->GetFirstChild( &typeid(MusMeasure) ) );
+    if ( measure ) {
+        // NULL for the MusBarline parameters indicates that we are drawing the scoreDef
+        DrawScoreDef( dc, &m_drawing_scoreDef, measure, system->m_x_drawing, NULL );
+    }
     
     dc->EndGraphic(system, this );
 
 }
 
-void MusRC::DrawScoreDef( MusDC *dc, MusSystem *system, MusScoreDef *scoreDef, MusMeasure *previousMeasure )
+void MusRC::DrawScoreDef( MusDC *dc, MusScoreDef *scoreDef, MusMeasure *measure, int x, MusBarline *barline  )
 {
     assert( scoreDef ); // other asserted before
-    
-    if (!previousMeasure) {
-        // This is the case when drawing the system scoreDef.
-        // First get the first measure of the system
-        previousMeasure = dynamic_cast<MusMeasure*>(system->GetFirstChild( &typeid(MusMeasure) ) );
-    }
-    
+
     // we need at least one measure to be able to draw the groups - we need access to the staff elements,
-    // and it does not make sense anyway...
-    if (!previousMeasure ) {
-        return;
-    }
+    assert( measure );
     
     MusStaffGrp *staffGrp = dynamic_cast<MusStaffGrp*>(scoreDef->GetFirstChild( &typeid(MusStaffGrp) ) );
     if ( !staffGrp ) {
         return;
     }
     
-    // Draw the first staffGrp and from there its children recursively
-    DrawStaffGrp( dc, scoreDef, previousMeasure, staffGrp, system->m_x_drawing );
+    if ( barline == NULL) {
+        // Draw the first staffGrp and from there its children recursively
+        DrawStaffGrp( dc, measure, staffGrp, x );
+    }
+    else{
+        dc->StartGraphic( barline, "barline", barline->GetUuid() );
+        DrawBarlines( dc, measure, staffGrp, x, barline );
+        dc->EndGraphic( barline, this );
+    }
     
 	return;
 }
 
 
-void MusRC::DrawStaffGrp( MusDC *dc, MusScoreDef *scoreDef, MusMeasure *measure, MusStaffGrp *staffGrp, int x )
+void MusRC::DrawStaffGrp( MusDC *dc, MusMeasure *measure, MusStaffGrp *staffGrp, int x )
 {
+    assert( measure );
+    assert( staffGrp );
+    
     ListOfMusObjects *staffDefs = staffGrp->GetList( staffGrp );
     if ( staffDefs->empty() ) {
         return;
@@ -188,10 +195,9 @@ void MusRC::DrawStaffGrp( MusDC *dc, MusScoreDef *scoreDef, MusMeasure *measure,
     for (i = 0; i < staffGrp->GetChildCount(); i++) {
         childStaffGrp = dynamic_cast<MusStaffGrp*>(staffGrp->GetChild( i ));
         if ( childStaffGrp ) {
-            DrawStaffGrp( dc, scoreDef, measure, childStaffGrp, x );
+            DrawStaffGrp( dc, measure, childStaffGrp, x );
         }
     }
-        
 }
 
 
@@ -317,175 +323,153 @@ void MusRC::DrawBrace ( MusDC *dc, int x, int y1, int y2, int staffSize)
 }
 
 
-
-
- 
-void MusRC::DrawBarline ( MusDC *dc, MusSystem *system, int x, int cod, bool porteeAutonome, MusStaff *pportee)
-// cod: 0 = barre d'epaisseur 1 point; 1 = barre d'ep. "epLignesVer"
-// porteeAutonome: indique s'il faut des barres privees sur chaque portee plutÙt que traversantes
+void MusRC::DrawBarlines( MusDC *dc, MusMeasure *measure, MusStaffGrp *staffGrp, int x, MusBarline *barline )
 {
-	assert( dc ); // DC cannot be NULL
-
-	int i, j, accDeb=0, flLine=0, portee;
-	float a;
-	float b, bb;
-/*
-	a = ((x >= m_pageMaxX) ? (m_pageMaxX - 2*h_pnt) : x);
-	if (!in (a, wxg,wxd)) return;
-*/
-	/***if (modMetafile && !in (x, drawRect.left, drawRect.right) )
-		return;***/
-
-	a = x;
-
-//	MESURECOL;
-	//TUE_RECT;
-
-	/***if (_shport)
-		shportee (0);***/
-
-    /*
-	i=j= pportee->GetStaffIdx();
-	if (pportee->noGrp)
-	{	
-		while (i && ((MusStaff*)system->m_children[i])->vertBarre != START && ((MusStaff*)system->m_children[i])->vertBarre != START_END)
-			--i;	// position 1e portee du groupe 
-		while (j<system->GetStaffCount() && ((MusStaff*)system->m_children[j])->vertBarre != END && ((MusStaff*)system->m_children[j])->vertBarre != START_END)
-			++j;	// position derniere portee du groupe 
-	}
-	b = bb = 0.0;
-
-	MusStaff *st_i = NULL;
-
-	for (; i <= j; i++)	// parcours du groupe de portees concernees 
-	{
-		st_i = (MusStaff*)system->m_children[i];
-		
-		// on calcule l'epaisseur de la portee courante
-		if (st_i->portNbLine == 1 || st_i->portNbLine == 4)
-			portee = m_doc->m_staffSize[ st_i->staffSize ]*2;
-		else
-			portee = ((st_i->portNbLine-1) * m_doc->m_interl[st_i->staffSize]);
-		// on place les marqueurs DEB et END des barres
-		if (porteeAutonome || st_i->brace == START_END || st_i->vertBarre == START_END
-			|| !st_i->brace || !pportee->noGrp)
-		{	if (!accDeb)
-			{	b = st_i->m_y_drawing;
-				bb = st_i->m_y_drawing - portee;//m_staffSize[st_ipTaille]*2;
-				flLine = 1;
-			}
-		}
-		else if (st_i->brace == START || st_i->vertBarre == START)
-		{	b = st_i->m_y_drawing;
-			bb = st_i->m_y_drawing - portee; //m_staffSize[st_ipTaille]*2;
-			if (st_i->brace)
-				accDeb = ON;
-		}
-		else if (st_i->brace == END || st_i->vertBarre == END)
-		{	bb = st_i->m_y_drawing - portee;//m_staffSize[st_ipTaille]*2;
-			flLine = 1;
-			accDeb=0;
-		}
-
-		if (flLine)
-		{	//if (b > drawRect.top && bb < drawRect.bottom)
-			//	b = drawRect.top;
-
-			//if (!modMetafile || ( bb < drawRect.top && b > drawRect.bottom))
-			{	
-				if (cod > 2)	// barres plus epaisses qu'un 1/2 mm
-					v_bline2( dc, (int)b, (int)bb, (int)a, cod); 
-				else
-					v_bline( dc, (int)b, (int)bb, (int)a, cod);
-			}
-			flLine = 0;
-		}
-
-
-	}
-    */ // ax3
+    assert( measure );
+    assert( staffGrp );
     
-	return;
+    if ( !staffGrp->GetBarthru() ) {
+        // recursively draw the children (staffDef or staffGrp)
+        int i;
+        MusStaffGrp *childStaffGrp = NULL;
+        MusStaffDef *childStaffDef = NULL;
+        for (i = 0; i < staffGrp->GetChildCount(); i++) {
+            childStaffGrp = dynamic_cast<MusStaffGrp*>(staffGrp->GetChild( i ));
+            childStaffDef = dynamic_cast<MusStaffDef*>(staffGrp->GetChild( i ));
+            if ( childStaffGrp ) {
+                DrawBarlines( dc, measure, childStaffGrp, x, barline );
+            }
+            else if ( childStaffDef ) {
+                MusStaff *staff = measure->GetStaffWithNo( childStaffDef->GetStaffNo() );
+                if (!staff ) {
+                    Mus::LogDebug("Could not get staff (%d) while drawing staffGrp - Mus::DrawBarlines", childStaffDef->GetStaffNo() );
+                    continue;
+                }
+                int y_top = staff->m_y_drawing;
+                // for the bottom position we need to take into account the number of lines and the staff size
+                int y_bottom = staff->m_y_drawing - (staff->portNbLine - 1) * m_doc->m_interl[staff->staffSize];
+                DrawBarline( dc, x, y_top, y_bottom, barline );
+                if ( barline->HasRepetitionDots() ) {
+                    DrawBarlineDots( dc, x, staff, barline );
+                }
+            }
+        }
+    }
+    else {
+ 
+        ListOfMusObjects *staffDefs = staffGrp->GetList( staffGrp );
+        if ( staffDefs->empty() ) {
+            return;
+        }
+        
+        // Get the first and last staffDef of the staffGrp
+        MusStaffDef *firstDef = dynamic_cast<MusStaffDef*>(staffDefs->front());
+        MusStaffDef *lastDef = dynamic_cast<MusStaffDef*>(staffDefs->back());
+        
+        if (!firstDef || !lastDef ) {
+            Mus::LogDebug("Could not get staffDef while drawing staffGrp - Mus::DrawStaffGrp");
+            return;
+        }
+        
+        // Get the corresponding staff looking at the previous (or first) measure
+        MusStaff *first = measure->GetStaffWithNo( firstDef->GetStaffNo() );
+        MusStaff *last = measure->GetStaffWithNo( lastDef->GetStaffNo() );
+        
+        if (!first || !last ) {
+            Mus::LogDebug("Could not get staff (%d; %d) while drawing staffGrp - Mus::DrawStaffGrp", firstDef->GetStaffNo(), lastDef->GetStaffNo() );
+            return;
+        }
+        
+        int y_top = first->m_y_drawing;
+        // for the bottom position we need to take into account the number of lines and the staff size
+        int y_bottom = last->m_y_drawing - (last->portNbLine - 1) * m_doc->m_interl[last->staffSize];
+        
+        DrawBarline( dc, x, y_top, y_bottom, barline );
+        
+        // Now we have a barthru barline, but we have dots so we still need to go through each staff
+        if ( barline->HasRepetitionDots() ) {
+            int i;
+            MusStaffDef *childStaffDef = NULL;
+            for (i = 0; i < staffGrp->GetChildCount(); i++) {
+                childStaffDef = dynamic_cast<MusStaffDef*>(staffGrp->GetChild( i ));
+                if ( childStaffDef ) {
+                    MusStaff *staff = measure->GetStaffWithNo( childStaffDef->GetStaffNo() );
+                    if (!staff ) {
+                        Mus::LogDebug("Could not get staff (%d) while drawing staffGrp - Mus::DrawBarlines", childStaffDef->GetStaffNo() );
+                        continue;
+                    }
+                    DrawBarlineDots( dc, x, staff, barline );
+                }
+            }
+        }
+    }
 }
 
+void MusRC::DrawBarline( MusDC *dc, int x, int y_top, int y_bottom, MusBarline *barline )
+{
+    assert( dc );
 
-void MusRC::DrawSpecialBarline( MusDC *dc, MusSystem *system, int x, BarlineType code, bool porteeAutonome, MusStaff *pportee)
+	int x1 = x - m_doc->m_beamWidth[0] - m_doc->m_env.m_barlineWidth;
+	int x2 = x + m_doc->m_beamWidth[0] + m_doc->m_env.m_barlineWidth;
+    
+	if (barline->m_barlineType == BARLINE_SINGLE)
+    {
+        v_bline( dc , y_top, y_bottom, x, m_doc->m_env.m_barlineWidth);
+    }
+    else if (barline->m_barlineType == BARLINE_RPTBOTH)
+    {
+        v_bline( dc , y_top, y_bottom, x1, m_doc->m_env.m_barlineWidth);
+        v_bline( dc , y_top, y_bottom, x, m_doc->m_beamWidth[0]);
+        v_bline( dc , y_top, y_bottom, x2, m_doc->m_env.m_barlineWidth);
+    }
+    else if (barline->m_barlineType  == BARLINE_RPTSTART)
+    {
+        v_bline( dc , y_top, y_bottom, x, m_doc->m_beamWidth[0]);
+        v_bline( dc , y_top, y_bottom, x2, m_doc->m_env.m_barlineWidth);
+    }
+    else if (barline->m_barlineType == BARLINE_RPTEND)
+	{
+        v_bline( dc , y_top, y_bottom, x1, m_doc->m_env.m_barlineWidth);
+        v_bline( dc , y_top, y_bottom, x, m_doc->m_beamWidth[0]);
+	}
+	else if (barline->m_barlineType  == BARLINE_DBL)
+	{
+        // Narrow the bars a little bit - should be centered?
+        x1 += m_doc->m_env.m_barlineWidth;
+        v_bline( dc , y_top, y_bottom, x, m_doc->m_env.m_barlineWidth);
+        v_bline( dc , y_top, y_bottom, x1, m_doc->m_env.m_barlineWidth);
+	}
+	else if (barline->m_barlineType  == BARLINE_END)
+    {
+        v_bline( dc , y_top, y_bottom, x1, m_doc->m_env.m_barlineWidth);
+        v_bline( dc , y_top, y_bottom, x, m_doc->m_beamWidth[0]);
+    }
+}
+
+ 
+void MusRC::DrawBarlineDots ( MusDC *dc, int x, MusStaff *staff, MusBarline *barline )
 {
 	assert( dc ); // DC cannot be NULL
-	
-	int x1, x2;
-
-	//if (modMetafile && !in (x, drawRect.left, drawRect.right) )
-	//	return;
-
-    /*
-    int bardroite = 0;
-	MusStaff *st = NULL;
     
-	if (code < 0) // -1 = bracket 
-	{	
-		bardroite = 1;
-		code = abs (code); // -1 becomes 1
+	int x1 = x - 2 * m_doc->m_beamWidth[0] - m_doc->m_env.m_barlineWidth;
+	int x2 = x + 2 * m_doc->m_beamWidth[0] + m_doc->m_env.m_barlineWidth;
+    
+    int y_bottom = staff->m_y_drawing - staff->portNbLine  * m_doc->m_halfInterl[staff->staffSize];
+    int y_top = y_bottom + m_doc->m_interl[staff->staffSize];
+ 
+    if ((barline->m_barlineType  == BARLINE_RPTSTART) || (barline->m_barlineType == BARLINE_RPTBOTH))
+    {
+        DoDrawDot(dc, x2, y_bottom );
+        DoDrawDot(dc, x2, y_top );
+
+    }
+    if ((barline->m_barlineType == BARLINE_RPTEND) || (barline->m_barlineType == BARLINE_RPTBOTH))
+	{
+        DoDrawDot(dc, x1, y_bottom );
+        DoDrawDot(dc, x1, y_top );
 	}
-	if ( in (code, 1, 64) )	// accolade simple
-	{	
-		st = pportee;
-		while (system->GetNext( st ) && code > 0) // apparently designed to span over more than 2 staves
-		{	
-			st = system->GetNext( st );
-			code--;
-		}
-		if (code == 0)
-		{	
-			int y1 =  pportee->m_y_drawing- m_staffSize[ pportee->staffSize ];
-            int y2 = st->m_y_drawing- m_staffSize[ pportee->staffSize]*2;
-			if (bardroite) {
-                v_bline( dc, y1, y2, x, m_doc->m_parameters.m_barlineWidth);
-                DrawBracket ( dc, system, x, y1, y2, 1, pportee->staffSize );
-            }
-			else {
-				DrawBrace ( dc, system, x, y1, y2, pportee->staffSize);
-            }
-		}
-		return;
-	}
-    */ // ax2 no support of brace (1) and brackets (-1) barlines
-	x1 = x2 = 0;
-
-
-	x1 = x - m_doc->m_beamWhiteWidth[0] - m_doc->m_beamWidth[0] - m_doc->m_env.m_barlineWidth;
-	x2 = x + m_doc->m_beamWhiteWidth[0] + m_doc->m_beamWidth[0] - m_doc->m_env.m_barlineWidth;
-
- /* I, barre d'entree..., equivalente a barre de reprise ouvrante */
-
-	if (code == BARLINE_RPTBOTH || code == BARLINE_RPTSTART || code == BARLINE_START)
-	/* une grosse barre entre deux minces ou une grosse+mince qui "Ouvre" */
-		DrawBarline ( dc, system, x2, m_doc->m_env.m_barlineWidth, porteeAutonome, pportee);
-
-	/* une grosse barre */
-	if (code == BARLINE_END || code == BARLINE_RPTBOTH || code == BARLINE_RPTEND || code == BARLINE_RPTSTART || code == BARLINE_START)
-	{	DrawBarline ( dc, system, x, m_doc->m_beamWidth[0], porteeAutonome, pportee);
-
-	}
-	if (code == BARLINE_DBL)	/* deux barres minces */
-	{	DrawBarline ( dc, system, x,  m_doc->m_env.m_barlineWidth, porteeAutonome, pportee);
-		DrawBarline ( dc, system, x1 + m_doc->m_beamWidth[0],  m_doc->m_env.m_barlineWidth, porteeAutonome, pportee);
-	}
-	if (code == BARLINE_RPTBOTH || code == BARLINE_END || code == BARLINE_RPTEND)
-		DrawBarline ( dc, system, x1,  m_doc->m_env.m_barlineWidth, porteeAutonome, pportee);
-
-	if (code == BARLINE_RPTBOTH || code == BARLINE_RPTEND || code == BARLINE_RPTSTART)
-	{	if (code == BARLINE_RPTEND)
-			x2 = 0;
-		if (code == BARLINE_RPTSTART)
-			x1 = 0;
-		if (x1)
-			x1 -= (m_doc->m_step1 + (m_doc->m_env.m_barlineWidth/2));
-		if (x2)
-			x2 += m_doc->m_step1;
-		//putDeuxpoints ( dc, x1 , x2);
-	}
-
+    
+	return;
 }
 
 
@@ -547,7 +531,14 @@ void MusRC::DrawMeasure( MusDC *dc, MusMeasure *measure, MusSystem *system )
 	{
 		staff = (MusStaff*)measure->m_children[j];
 		DrawStaff( dc, staff, measure, system );
-	}
+    }
+
+    if ( measure->GetLeftBarlineType() != BARLINE_NONE) {
+        DrawScoreDef( dc, &m_drawing_scoreDef, measure, measure->m_x_drawing, measure->GetLeftBarline() );
+    }
+    if ( measure->GetRightBarlineType() != BARLINE_NONE) {
+        DrawScoreDef( dc, &m_drawing_scoreDef, measure, measure->m_x_drawing + measure->GetXRelRight(), measure->GetRightBarline() );
+    }
     
     if ( measure->IsMeasuredMusic()) {
         dc->EndGraphic( measure, this );
@@ -688,7 +679,6 @@ void MusRC::DrawStaff( MusDC *dc, MusStaff *staff, MusMeasure *measure, MusSyste
 	for(j = 0; j < staff->GetLayerCount(); j++)
 	{
 		layer = (MusLayer*)staff->m_children[j];
-		//layer->Init( m_r );
 		DrawLayer( dc, layer, staff, measure );
 	}
     
@@ -887,7 +877,6 @@ void MusRC::DrawLayer( MusDC *dc, MusLayer *layer, MusStaff *staff, MusMeasure *
 	{
 		element = (MusLayerElement*)layer->m_children[j];
         
-		//pelement->Init( m_r );
         if ( !element->m_in_layer_app ) {
             DrawElement( dc, element, layer, measure, staff );
         }

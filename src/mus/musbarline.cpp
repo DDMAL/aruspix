@@ -20,7 +20,6 @@ MusBarline::MusBarline():
     m_onStaffOnly = false; // is this good?
 }
 
-
 MusBarline::~MusBarline()
 {
 }
@@ -32,4 +31,12 @@ bool MusBarline::operator==( MusObject& other )
         return false;
     }
     return true;
+}
+
+bool MusBarline::HasRepetitionDots()
+{
+    if (m_barlineType == BARLINE_RPTSTART || m_barlineType == BARLINE_RPTEND || m_barlineType == BARLINE_RPTBOTH) {
+        return true;
+    }
+    return false;
 }

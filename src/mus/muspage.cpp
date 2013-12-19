@@ -195,18 +195,19 @@ void MusPage::Layout( bool trim )
     // Adjust the X shift of the MusAlignment looking at the bounding boxes
     // Look at each MusLayerElement and changes the m_x_shift if the bouding box is overlapping
     params.clear();
-    int previous_width = 0;
-    params.push_back( &previous_width );
+    int min_pos = 0;
+    int measure_width = 0;
+    params.push_back( &min_pos );
+    params.push_back( &measure_width );
     MusFunctor setBoundingBoxXShift( &MusObject::SetBoundingBoxXShift );
-    this->Process( &setBoundingBoxXShift, params );
+    MusFunctor setBoundingBoxXShiftEnd( &MusObject::SetBoundingBoxXShiftEnd );
+    this->Process( &setBoundingBoxXShift, params, &setBoundingBoxXShiftEnd );
     
     // Integrate the X bounding box shift of the elements
     // Once the m_x_shift have been calculated, move all positions accordingly
     params.clear();
     int shift = 0;
-    int width = 0;
     params.push_back( &shift );
-    params.push_back( &width );
     MusFunctor integrateBoundingBoxXShift( &MusObject::IntegrateBoundingBoxXShift );
     // special case: because we redirect the functor, pass is a parameter to itself (!)
     params.push_back( &integrateBoundingBoxXShift );
@@ -249,7 +250,8 @@ void MusPage::Layout( bool trim )
     shift = 0;
     params.push_back( &shift );
     MusFunctor alignMeasures( &MusObject::AlignMeasures );
-    this->Process( &alignMeasures, params );
+    MusFunctor alignMeasuresEnd( &MusObject::AlignMeasuresEnd );
+    this->Process( &alignMeasures, params, &alignMeasuresEnd );
     
     // Adjust system Y position
     params.clear();
@@ -259,6 +261,17 @@ void MusPage::Layout( bool trim )
     params.push_back( &systemMargin );
     MusFunctor alignSystems( &MusObject::AlignSystems );
     this->Process( &alignSystems, params );
+    
+    // Justify X position
+    params.clear();
+    double ratio = 0.0;
+    int systemFullWidth = doc->m_pageWidth - doc->m_pageLeftMar - doc->m_pageRightMar;
+    params.push_back( &ratio );
+    params.push_back( &systemFullWidth );
+    MusFunctor justifyX( &MusObject::JustifyX );
+    // special case: because we redirect the functor, pass is a parameter to itself (!)
+    params.push_back( &justifyX );
+    this->Process( &justifyX, params );
     
     if ( trim ) {    
         // Trim the page to the needed position

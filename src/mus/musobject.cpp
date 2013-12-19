@@ -310,7 +310,7 @@ bool MusObject::GetSameAs( std::string *id, std::string *filename, int idx )
     return false;
 }
 
-void MusObject::Process(MusFunctor *functor, ArrayPtrVoid params )
+void MusObject::Process(MusFunctor *functor, ArrayPtrVoid params, MusFunctor *endFunctor )
 {
     if (functor->m_returnCode == FUNCTOR_STOP) {
         return;
@@ -329,8 +329,12 @@ void MusObject::Process(MusFunctor *functor, ArrayPtrVoid params )
     for (i = 0; i < (int)m_children.size(); i++)
 	{
         obj = m_children[i];
-        obj->Process( functor, params );
+        obj->Process( functor, params, endFunctor);
 	}
+    
+    if ( endFunctor ) {
+        endFunctor->Call( this, params );
+    }
 }
 
 //----------------------------------------------------------------------------
@@ -640,19 +644,39 @@ int MusObject::SetPageScoreDef( ArrayPtrVoid params )
 
 int MusObject::SetBoundingBoxXShift( ArrayPtrVoid params )
 {
-    // param 0: the width of the previous element
+    // param 0: the minimu position (i.e., the width of the previous element)
+    // param 1: the maximum width in the current measure
     int *min_pos = (int*)params[0];
+    int *measure_width = (int*)params[1];
+
+    // starting a new measure
+    MusMeasure *current_measure = dynamic_cast<MusMeasure*>(this);
+    if ( current_measure  ) {
+        // we reset the measure width and the minimum position
+        (*measure_width) = 0;
+        (*min_pos) = 0;
+        if (current_measure->GetLeftBarlineType() != BARLINE_NONE) {
+            current_measure->GetLeftBarline()->SetBoundingBoxXShift( params );
+        }
+        return FUNCTOR_CONTINUE;
+    }
     
     // starting an new layer
     MusLayer *current_layer = dynamic_cast<MusLayer*>(this);
     if ( current_layer  ) {
-        (*min_pos) = 5;
+        // mininimum position is the with for the last (previous) layer
+        // we keep it if is higher than what we had so far
+        // this will be used for shifting the right barline
+        (*measure_width) = std::max( (*measure_width), (*min_pos) );
+        // reset it as the minimum position
+        (*min_pos) = SPACING_MINPOS;
         if (current_layer->GetClefAttr()) {
             current_layer->GetClefAttr()->SetBoundingBoxXShift( params );
         }
         if (current_layer->GetKeySigAttr()) {
             current_layer->GetKeySigAttr()->SetBoundingBoxXShift( params );
         }
+        return FUNCTOR_CONTINUE;
     }
 
     MusLayerElement *current = dynamic_cast<MusLayerElement*>(this);
@@ -703,7 +727,38 @@ int MusObject::SetBoundingBoxXShift( ArrayPtrVoid params )
     
     // the next minimal position if given by the right side of the bounding box + the spacing of the element
     (*min_pos) = current->m_contentBB_x2 + current->GetHorizontalSpacing();
-    current->GetAlignment()->SetMaxWidth( (*min_pos ) );
+    current->GetAlignment()->SetMaxWidth( current->m_contentBB_x2 - current->GetAlignment()->GetXRel() + current->GetHorizontalSpacing() );
+    
+    return FUNCTOR_CONTINUE;
+}
+
+int MusObject::SetBoundingBoxXShiftEnd( ArrayPtrVoid params )
+{
+    // param 0: the minimu position (i.e., the width of the previous element)
+    // param 1: the maximum width in the current measure
+    int *min_pos = (int*)params[0];
+    int *measure_width = (int*)params[1];
+    
+    // ending a measure
+    MusMeasure *current_measure = dynamic_cast<MusMeasure*>(this);
+    if ( current_measure  ) {
+        // as minimum position of the barline use the measure width
+        (*min_pos) = (*measure_width);
+        if (current_measure->GetRightBarlineType() != BARLINE_NONE) {
+            current_measure->GetRightBarline()->SetBoundingBoxXShift( params );
+        }
+        return FUNCTOR_CONTINUE;
+    }
+    
+    // ending a layer
+    MusLayer *current_layer = dynamic_cast<MusLayer*>(this);
+    if ( current_layer  ) {
+        // mininimum position is the with the layer
+        // we keep it if is higher than what we had so far
+        // this will be used for shifting the right barline
+        (*measure_width) = std::max( (*measure_width), (*min_pos) );
+        return FUNCTOR_CONTINUE;
+    }
     
     return FUNCTOR_CONTINUE;
 }
@@ -713,7 +768,7 @@ int MusObject::SetBoundingBoxYShift( ArrayPtrVoid params )
     // param 0: the height of the previous staff
     int *min_pos = (int*)params[0];
     
-    // starting a new system
+    // starting a new measure
     MusMeasure *current_measure = dynamic_cast<MusMeasure*>(this);
     if ( current_measure  ) {
         (*min_pos) = 0;

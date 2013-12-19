@@ -34,6 +34,22 @@ public:
     
     virtual std::string MusClassName( ) { return "MusBarline"; };
     
+    /**
+     * Use to set the alignment for the MusMeasure MusBarline members.
+     * This is as special case where we need to add to the measure aligner.
+     */
+    void SetAlignment( MusAlignment *alignment ) { m_alignment = alignment; };
+    
+    /*
+     * Return true if the barline type requires repetition dots to be drawn.
+     */
+    bool HasRepetitionDots( );
+    
+    /**
+     * Return the default horizontal spacing of notes.
+     */
+    virtual int GetHorizontalSpacing( ) { return 0; }
+    
 private:
     
 public:

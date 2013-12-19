@@ -12,6 +12,7 @@
 #include "musobject.h"
 
 #include "musaligner.h"
+#include "musbarline.h"
 
 class MusStaff;
 
@@ -36,7 +37,7 @@ public:
     virtual std::string MusClassName( ) { return "MusMeasure"; };
     
     /**
-     * Return
+     * Return true if measured music (otherwise we have fakes measures)
      */
     bool IsMeasuredMusic() { return m_measuredMusic; };
     
@@ -50,6 +51,27 @@ public:
      * Return the index position of the measure in its system parent
      */
     int GetMeasureNo() const { return MusObject::GetIdx(); };
+    
+    /**
+     * @name Set and get the left and right barline types
+     */
+    ///@{
+    BarlineType GetLeftBarlineType() const { return m_leftBarline.m_barlineType; };
+    void SetLeftBarlineType( BarlineType type ) { m_leftBarline.m_barlineType = type; };
+    BarlineType GetRightBarlineType() const { return m_rightBarline.m_barlineType; };
+    void SetRightBarlineType( BarlineType type ) { m_rightBarline.m_barlineType = type; };
+    ///@}
+    
+    /**
+     * @name Set and get the barlines. 
+     * Careful - the barlines are owned by the measure and will be destroy by it.
+     * This method should be used only for acessing them (e.g., when drawing) and 
+     * not for creating other measure objects.
+     */
+    ///@{
+    MusBarline *GetLeftBarline() { return &m_leftBarline; };
+    MusBarline *GetRightBarline() { return &m_rightBarline; };
+    ///@}
        
     // functors
     virtual int Save( ArrayPtrVoid params );
@@ -82,14 +104,21 @@ public:
     
     /**
      * Set the position of the MusAlignment.
-     * Special case that redirects the functor to the MusAligner.
+     * Special case that redirects the functor to the MusMeasureAligner.
      */
     virtual int SetAligmentXPos( ArrayPtrVoid params );
     
     /**
      * Align the measures by adjusting the m_x_rel position looking at the MusMeasureAligner.
+     * This method also moves the end position of the measure according to the barline width.
      */
     virtual int AlignMeasures( ArrayPtrVoid params );
+    
+    /**
+     * Justify the X positions
+     * Special case that redirects the functor to the MusMeasureAligner.
+     */
+    virtual int JustifyX( ArrayPtrVoid params );
         
 public:
     /** The logical staff */
@@ -114,6 +143,14 @@ private:
     bool m_measuredMusic;
     
     MusMeasureAligner m_measureAligner;
+    
+    /**
+     * @name The measure barlines (left and right) used when drawing
+     */
+    ///@{
+    MusBarline m_leftBarline;
+    MusBarline m_rightBarline;
+    ///@}
 };
 
 

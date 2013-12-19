@@ -16,6 +16,7 @@
 #include "musscoredef.h"
 
 class MusBeam;
+class MusBarline;
 class MusDoc;
 class MusLayer;
 class MusLayerElement;
@@ -98,7 +99,7 @@ public:
 	void box( MusDC *dc, int x1, int y1, int x2, int y2);
 	void rect_plein2( MusDC *dc, int x1, int y1, int x2, int y2);
 	int hGrosseligne ( MusDC *dc, int x1, int y1, int x2, int y2, int decal);
-	int DrawDot ( MusDC *dc, int x, int b, int decal, MusStaff *staff );
+	int DoDrawDot ( MusDC *dc, int x, int y );
 	/* musrc_bezier.cpp */
 	static int CC(int ,int );
 	static long BBlend(int ,int ,long );
@@ -110,12 +111,13 @@ public:
     /* musrc_page.cpp */
 	void DrawPage( MusDC *dc, MusPage *page, bool background = true );
     void DrawSystem( MusDC *dc, MusSystem *system );
-	void DrawScoreDef( MusDC *dc, MusSystem *system, MusScoreDef *scoreDef, MusMeasure *previousMeasure = NULL );
-	void DrawStaffGrp( MusDC *dc, MusScoreDef *scoreDef, MusMeasure *measure, MusStaffGrp *staffGrp, int x );
+	void DrawScoreDef( MusDC *dc, MusScoreDef *scoreDef, MusMeasure *measure, int x, MusBarline *barline = NULL );
+	void DrawStaffGrp( MusDC *dc, MusMeasure *measure, MusStaffGrp *staffGrp, int x );
 	void DrawBracket ( MusDC *dc, int x, int y1, int y2, int staffSize);
 	void DrawBrace ( MusDC *dc, int x, int y1, int y2, int staffSize);
-	void DrawBarline ( MusDC *dc, MusSystem *system, int x, int cod, bool porteeAutonome, MusStaff *pportee);
-	void DrawSpecialBarline( MusDC *dc, MusSystem *system, int x, BarlineType code, bool porteeAutonome, MusStaff *pportee);
+    void DrawBarlines( MusDC *dc, MusMeasure *measure, MusStaffGrp *staffGrp, int x, MusBarline *barline );
+    void DrawBarline( MusDC *dc, int x, int y_top, int y_bottom, MusBarline *barline );
+	void DrawBarlineDots ( MusDC *dc, int x, MusStaff *staff, MusBarline *barline );
 	void DrawPartialBarline ( MusDC *dc, MusSystem *system, int x, MusStaff *pportee);
     void DrawMeasure( MusDC *dc, MusMeasure *measure, MusSystem *system );
     void DrawStaff( MusDC *dc, MusStaff *staff, MusMeasure *measure, MusSystem *system );

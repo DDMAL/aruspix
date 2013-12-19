@@ -1110,13 +1110,13 @@ void MusPaeInput::printMeasure(std::ostream& out, MeasureObject *measure ) {
     // Set barline
     // FIXME use flags for proper barline identification
     if ( measure->barline.length() ) {
-        MusBarline *bline = new MusBarline;
+        MusBarline *bline = m_measure->GetRightBarline();
         if (measure->barline == "=")
             bline->m_barlineType = BARLINE_SINGLE;
         else 
             bline->m_barlineType = BARLINE_DBL;
         
-        m_layer->AddElement(bline);
+        //m_layer->AddElement(bline);
     }
     
     //m_staff->AddLayer(m_layer);

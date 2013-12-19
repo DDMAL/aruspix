@@ -41,40 +41,14 @@ void MusDoc::Reset( DocType type )
     m_type = type;
     
     ClearChildren();
+    
+    // there is no reason why this is treated differently
+    // show be in MusEnv and set in UpdatePageValues
+    m_charDefin = 18;
+    
+    UpdatePageValues();
 
     ResetPaperSize();
-    
-	m_step1 = 10;
-    m_step3 = 60;
-    m_step2 = 3 * m_step1;
-    m_halfInterl[0] = 10;
-	m_halfInterl[1] = 8;
-    m_interl[0] = 20;
-    m_interl[1] = 16;
-    m_staffSize[0] = 80;
-    m_staffSize[1] = 64;
-    m_octaveSize[0] = 70;
-    m_octaveSize[1] = 56;
-    m_fontHeight = 100;
-    m_smallStaffRatio[0] = 16;
-    m_smallStaffRatio[1] = 20;
-    m_graceRatio[0] = 3;
-    m_graceRatio[1] = 4;
-    m_beamWidth[0] = 10;
-    m_beamWidth[1] = 6;
-    m_beamWhiteWidth[0] = 6;
-    m_beamWhiteWidth[1] = 4;
-	m_barlineSpacing = 16;
-    m_fontSize[0][0] = 160;
-    m_fontSize[0][1] = 120;
-    m_fontSize[1][0] = 128; 
-    m_fontSize[1][1] = 100;
-	m_fontHeightAscent[0][0] = 0;
-	m_fontHeightAscent[0][1] = 0;
-	m_fontHeightAscent[1][0] = 0;
-	m_fontHeightAscent[1][1] = 0;
-    
-    m_charDefin = 18;
     
     m_scoreDef.Clear();
 }

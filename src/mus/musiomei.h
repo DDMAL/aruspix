@@ -147,6 +147,7 @@ private:
     std::string MensurSignToStr(MensurSign sign);
     std::string DocTypeToStr(DocType type);
     std::string KeySigToStr(int num, char alter_type );
+    std::string BarlineTypeToStr(BarlineType type);
     std::string StaffGrpSymbolToStr(StaffGrpSymbol symbol);
     ///@}
 
@@ -256,6 +257,7 @@ private:
     DocType StrToDocType(std::string type);
     unsigned char StrToKeySigType(std::string accid);
     int StrToKeySigNum(std::string accid);
+    BarlineType StrToBarlineType(std::string type);
     StaffGrpSymbol StrToStaffGrpSymbol(std::string sign);
     
 public:

@@ -135,19 +135,8 @@ int MusRC::hGrosseligne ( MusDC *dc, int x1, int y1, int x2, int y2, int decal)
 }
 
 
-int MusRC::DrawDot ( MusDC *dc, int x, int b, int decal, MusStaff *staff )
+int MusRC::DoDrawDot ( MusDC *dc, int x, int y )
 {
-    int y = b + staff->m_y_drawing;
-
-	if (decal > 600 || is_in (y, (int)staff->m_y_drawing,
-		(int)staff->m_y_drawing - m_doc->m_staffSize[staff->staffSize]))
-	{	decal += m_doc->m_halfInterl[staff->staffSize];
-		if (decal > 600)
-			decal -= 1000;
-		if (0 == ((int)b % (int)m_doc->m_interl[staff->staffSize]))
-				y += decal;
-	}
-
 	int r = std::max( ToRendererX(3), 2 );
 	
     dc->SetPen( m_currentColour, 1, AxSOLID );

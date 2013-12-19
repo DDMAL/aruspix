@@ -174,6 +174,12 @@ public:
      */
     virtual int SetAligmentXPos( ArrayPtrVoid params );
     
+    /**
+     * Justify the X positions
+     * Special case of functor redirected from MusMeasure.
+     */
+    virtual int JustifyX( ArrayPtrVoid params );
+    
 private:
     
 public:
@@ -245,6 +251,14 @@ public:
     void SetMaxTime( double time );
     
     /**
+     * @name Set and get the total width
+     */
+    ///@{
+    //void SetTotalWidh( int width ) { m_totalWidth = width; };
+    //int GetTotalWidth() { return m_totalWidth; };
+    ///@}
+    
+    /**
      * Get left MusAlignment for the measure.
      * For each MusMeasureAligner, we keep and MusAlignment for the left position.
      * The MusAlignment time will be always stay 0.0 and be the first in the list.
@@ -264,13 +278,18 @@ public:
      */
     virtual int IntegrateBoundingBoxXShift( ArrayPtrVoid params );
     
-    
     /**
      * Set the position of the MusAlignment.
      * Looks at the time different with the previous MusAlignment.
      * For each MusMeasureAlignment, we need to reset the previous time position.
      */
     virtual int SetAligmentXPos( ArrayPtrVoid params );
+    
+    /**
+     * Justify the X positions
+     * Special case of functor redirected from MusMeasure.
+     */
+    //virtual int JustifyX( ArrayPtrVoid params );
 
     
 private:
@@ -288,6 +307,11 @@ private:
      * A pointer to the left MusAlignment object kept for the measure end position
      */
     MusAlignment *m_rightAlignment;
+    
+    /**
+     * Store the system width in order to calculate the justification ratio
+     */
+    //int m_totalWidth;
 };
 
 

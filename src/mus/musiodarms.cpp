@@ -16,7 +16,6 @@
 
 //----------------------------------------------------------------------------
 
-#include "musbarline.h"
 #include "musclef.h"
 #include "musdoc.h"
 #include "muskeysig.h"
