@@ -177,7 +177,7 @@ bool MusRC::GetTupletCoordinates(MusTuplet* tuplet, MusLayer *layer, MusPoint* s
         
         // In this case use the center of the notehead to calculate the exact center
         // as it looks better
-        x = firstNote->m_x_drawing + (lastNote->m_x_drawing - firstNote->m_x_drawing) / 2;
+        x = firstNote->m_xDrawing + (lastNote->m_xDrawing - firstNote->m_xDrawing) / 2;
         
         // Return the start and end position for the brackes
         // starting from the first edge and last of the BBoxes

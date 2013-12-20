@@ -39,7 +39,7 @@ MusPage::~MusPage()
 void MusPage::Clear( )
 {
 	ClearChildren( );
-    m_drawing_scoreDef.Clear();
+    m_drawingScoreDef.Clear();
 	defin = 18;
     // by default we have no values and use the document ones
     m_pageHeight = -1;
@@ -139,7 +139,7 @@ MusSystem *MusPage::GetAtPos( int y )
     MusSystem *next = NULL;
 	while ( (next = this->GetNext(system)) )
 	{
-		if ( (int)next->m_y_abs < y )
+		if ( (int)next->m_yAbs < y )
 		{
 			return system;
 		}
@@ -149,7 +149,7 @@ MusSystem *MusPage::GetAtPos( int y )
 	return system;
 }
 
-void MusPage::Layout( bool trim )
+void MusPage::Layout( )
 {
     if (!dynamic_cast<MusDoc*>(m_parent)) {
         assert( false );
@@ -193,7 +193,7 @@ void MusPage::Layout( bool trim )
     rc.DrawPage(  &bb_dc, this, false );
     
     // Adjust the X shift of the MusAlignment looking at the bounding boxes
-    // Look at each MusLayerElement and changes the m_x_shift if the bouding box is overlapping
+    // Look at each MusLayerElement and changes the m_xShift if the bouding box is overlapping
     params.clear();
     int min_pos = 0;
     int measure_width = 0;
@@ -204,7 +204,7 @@ void MusPage::Layout( bool trim )
     this->Process( &setBoundingBoxXShift, params, &setBoundingBoxXShiftEnd );
     
     // Integrate the X bounding box shift of the elements
-    // Once the m_x_shift have been calculated, move all positions accordingly
+    // Once the m_xShift have been calculated, move all positions accordingly
     params.clear();
     int shift = 0;
     params.push_back( &shift );
@@ -213,8 +213,16 @@ void MusPage::Layout( bool trim )
     params.push_back( &integrateBoundingBoxXShift );
     this->Process( &integrateBoundingBoxXShift, params );
     
+    // Adjust measure X position
+    params.clear();
+    shift = 0;
+    params.push_back( &shift );
+    MusFunctor alignMeasures( &MusObject::AlignMeasures );
+    MusFunctor alignMeasuresEnd( &MusObject::AlignMeasuresEnd );
+    this->Process( &alignMeasures, params, &alignMeasuresEnd );
+    
     // Adjust the Y shift of the MusStaffAlignment looking at the bounding boxes
-    // Look at each MusStaff and changes the m_y_shift if the bounding box is overlapping 
+    // Look at each MusStaff and changes the m_yShift if the bounding box is overlapping 
     params.clear();
     int previous_height = 0;
     params.push_back( &previous_height );
@@ -236,7 +244,7 @@ void MusPage::Layout( bool trim )
     this->Process( &setAlignmentY, params );
     
     // Integrate the Y shift of the staves
-    // Once the m_y_shift have been calculated, move all positions accordingly
+    // Once the m_yShift have been calculated, move all positions accordingly
     params.clear();
     shift = 0;
     params.push_back( &shift );
@@ -244,14 +252,6 @@ void MusPage::Layout( bool trim )
     // special case: because we redirect the functor, pass is a parameter to itself (!)
     params.push_back( &integrateBoundingBoxYShift );
     this->Process( &integrateBoundingBoxYShift, params );
-    
-    // Adjust measure X position
-    params.clear();
-    shift = 0;
-    params.push_back( &shift );
-    MusFunctor alignMeasures( &MusObject::AlignMeasures );
-    MusFunctor alignMeasuresEnd( &MusObject::AlignMeasuresEnd );
-    this->Process( &alignMeasures, params, &alignMeasuresEnd );
     
     // Adjust system Y position
     params.clear();
@@ -272,19 +272,19 @@ void MusPage::Layout( bool trim )
     // special case: because we redirect the functor, pass is a parameter to itself (!)
     params.push_back( &justifyX );
     this->Process( &justifyX, params );
+       
+    // Trim the page to the needed position
+    // LP I am not sure about this. m_pageHeight / Width should not be modified
+    /*
+    this->m_pageWidth = 0; // first resest the page to 0
+    this->m_pageHeight = doc->m_pageHeight;
+    params.clear();
     
-    if ( trim ) {    
-        // Trim the page to the needed position
-        // LP I am not sure about this. m_pageHeight / Width should not be modified
-        this->m_pageWidth = 0; // first resest the page to 0
-        this->m_pageHeight = doc->m_pageHeight;
-        params.clear();
-        
-        MusFunctor trimSystem(&MusObject::TrimSystem);
-        this->Process( &trimSystem, params );
-    }
+    MusFunctor trimSystem(&MusObject::TrimSystem);
+    this->Process( &trimSystem, params );
+    */
     
-    rc.DrawPage(  &bb_dc, this , false );
+    //rc.DrawPage(  &bb_dc, this , false );
 }
 
 void MusPage::SetValues( int type )

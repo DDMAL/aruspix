@@ -112,12 +112,12 @@ bool MusBinInput_1_X::ImportFile( )
             {
                 staff = (MusStaff*)measure->m_children[l];
                 yy -= ecarts[m] * m_doc->m_interl[ staff->staffSize ];
-                staff->m_y_abs = yy;
+                staff->m_yAbs = yy;
                 m++;
                 
                 // we are handling the first staff - update the position of the system as well
                 if ( l == 0 ) { 
-                    system->m_y_abs = yy;
+                    system->m_yAbs = yy;
                 }
             }
         }
@@ -436,7 +436,7 @@ bool MusBinInput_1_X::ReadSymbol( MusLayer *layer, bool isLyric )
     }
     
     if ( layer_element ) {
-        layer_element->m_x_abs = x_abs;
+        layer_element->m_xAbs = x_abs;
         layer->AddElement( layer_element );
     }
     
@@ -512,7 +512,7 @@ bool MusBinInput_1_X::ReadNote( MusLayer *layer )
     
     // if we got something, add it to the LaidOutLayer
     if ( layer_element ) {
-        layer_element->m_x_abs = x_abs;
+        layer_element->m_xAbs = x_abs;
         layer->AddElement( layer_element );
     }
     

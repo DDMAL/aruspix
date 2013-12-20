@@ -83,12 +83,15 @@ bool MusSvgDC::CopyFileToStream(const std::string& filename, std::ostream& dest)
     return true;
 }
 
+
+
+
 void MusSvgDC::Commit( bool xml_tag ) {
 
     if (m_committed) {
         return;
     }
-        
+    
     int i;
     // close unclosed graphics, just in case
     for (i = m_graphics; i < 0; m_graphics-- ) {
@@ -102,7 +105,7 @@ void MusSvgDC::Commit( bool xml_tag ) {
     // header
     std::string s;
     if ( xml_tag ) {
-        s = "<?xml version=\"1.0\" encoding=\"ISO-8859-1\" standalone=\"no\"?>\n";
+        s = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n";
     }
     
     s += Mus::StringFormat ( "<svg width=\"%dpx\" height=\"%dpx\"", (int)((double)m_width * m_userScaleX), (int)((double)m_height * m_userScaleY));

@@ -34,8 +34,6 @@ enum DocType {
  */
 class MusDoc: public MusObject
 {
-	//friend class MusFileOutputStream;
-	friend class MusFileInputStream;
 
 public:
     // constructors and destructors
@@ -58,15 +56,6 @@ public:
      * Refreshes the views from MusDoc.
      */
     virtual void Refresh();
-    
-    /**
-     * This method reset the MusLayerElement, MusSection and MusMeasure pointers and check the elements exist.
-     * It has to be call when a layout (pages) was copied from another file in memory
-     * because we need the MusLayerElement, MusSection and MusMeasure pointers to be redirected to the correct object.
-     * The methods find the object in the logical tree with the UUID.
-     * The MusLayerElement is deleted from the layout if the MusLayerElement is not found.
-     * Empty MusLayer, MusStaff, MusSystem etc. objects remain.
-     */
     
     virtual int Save( MusFileOutputStream *output );
     
@@ -94,10 +83,8 @@ public:
     
     DocType GetType() { return m_type; };
     
-    /** The parent MusDoc setter */
-    void SetDoc( MusDoc *doc );
-    /* Claculate spacing in the music */
-    void Layout( bool trim = false );
+    /* Perform the layout of the music */
+    void Layout( );
     
     void RefreshViews( ) {};
 	
@@ -191,20 +178,7 @@ public:
     MusFontInfo m_ftLyrics;
 	
 	float m_beamMinSlope, m_beamMaxSlope;
-    /** @name Variables for rendering
-     * Variables for rendering used only at runtime.
-     * These variable are currently not saved in the MEI file.
-     * The are initialized either with the document ones or the page ones.
-     * This happen in PaperSize().
-     * Eventually, we could also store the in the layout as a default for all pages in each layout.
-     */
-    ///@{
-	//int m_pageWidth;
-    //int m_pageHeight;
-	//int m_pageLeftMar;
-    //int m_pageRightMar;
-    ///@}
-    
+
     /** The source id */
     std::string m_source;
 	
@@ -219,7 +193,6 @@ public:
      * In a standard MEI file, this is the <scoreDef> encoded before the first <section>.
      */
     MusScoreDef m_scoreDef;
-    
     
 private:
     DocType m_type;

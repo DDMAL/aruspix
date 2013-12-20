@@ -91,11 +91,11 @@ public:
     MusStaffAlignment();
     virtual ~MusStaffAlignment();
     
-    void SetYRel( int y_rel ) { m_y_rel = y_rel; };
-    int GetYRel() { return m_y_rel; };
+    void SetYRel( int yRel ) { m_yRel = yRel; };
+    int GetYRel() { return m_yRel; };
     
-    void SetYShift( int y_shift );
-    int GetYShift() { return m_y_shift; };
+    void SetYShift( int yShift );
+    int GetYShift() { return m_yShift; };
     
     /**
      * Set the position of the StaffAlignment.
@@ -117,8 +117,8 @@ private:
     /**
      * Stores the position relative to the system.
      */
-    int m_y_rel;
-    int m_y_shift;
+    int m_yRel;
+    int m_yShift;
 };
 
 
@@ -138,13 +138,13 @@ public:
     virtual ~MusAlignment();
     
     void SetXRel( int x_rel );
-    int GetXRel() { return m_x_rel; };
+    int GetXRel() { return m_xRel; };
     
-    void SetXShift( int x_shift );
-    int GetXShift() { return m_x_shift; };
+    void SetXShift( int xShift );
+    int GetXShift() { return m_xShift; };
     
     void SetMaxWidth( int max_width );
-    int GetMaxWidth() { return m_max_width; };
+    int GetMaxWidth() { return m_maxWidth; };
 
     /**
      * @name Set and get the time value of the alignment
@@ -191,19 +191,19 @@ private:
      * It takes into account a non-linear according to the time interval with
      * the previous MusAlignement
      */
-    int m_x_rel;
+    int m_xRel;
     /**
      * Stores temporally the maximum amount we need to shift the element pointing to it for 
      * avoiding collisions. This is set in MusObject::SetBoundingBoxXShift and then
      * integrated for all aligment in MusAligment::IntegrateBoundingBoxXShift.
      */
-    int m_x_shift;
+    int m_xShift;
     /**
      * Stores temporally the maximum width of the of the element pointing to it.
-     * It is set and integrated as m_x_shift and it is used only for shifting the
+     * It is set and integrated as m_xShift and it is used only for shifting the
      * alignment of the end of the measure (ALIGNMENT_MEASURE_END).
      */
-    int m_max_width;
+    int m_maxWidth;
     /**
      * Stores the time at which the alignment occur.
      * It is set by  MusObject::Align.

@@ -109,7 +109,7 @@ public:
     virtual int SetAligmentXPos( ArrayPtrVoid params );
     
     /**
-     * Align the measures by adjusting the m_x_rel position looking at the MusMeasureAligner.
+     * Align the measures by adjusting the m_xRel position looking at the MusMeasureAligner.
      * This method also moves the end position of the measure according to the barline width.
      */
     virtual int AlignMeasures( ArrayPtrVoid params );
@@ -127,17 +127,17 @@ public:
      * The X absolute position of the measure for facsimile (transcription) encodings.
      * This is the top left position of the measure.
      */
-    int m_x_abs;
+    int m_xAbs;
     /**
      * The X relative position of the measure.
      * It is used internally when calculating the layout and it is not stored in the file.
      */
-    int m_x_rel;
+    int m_xRel;
 	/**
      * The X drawing position of the measure.
      * It is re-computed everytime the measure is drawn and it is not stored in the file.
      */
-    int m_x_drawing;
+    int m_xDrawing;
     
 private:
     bool m_measuredMusic;

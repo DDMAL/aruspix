@@ -78,8 +78,8 @@ MusStaffAlignment* MusSystemAligner::GetStaffAlignment( int idx )
 MusStaffAlignment::MusStaffAlignment():
     MusObject()
 {
-    m_y_rel = 0;
-    m_y_shift = 0;
+    m_yRel = 0;
+    m_yShift = 0;
 }
 
 MusStaffAlignment::~MusStaffAlignment()
@@ -87,11 +87,11 @@ MusStaffAlignment::~MusStaffAlignment()
     
 }
 
-void MusStaffAlignment::SetYShift( int y_shift )
+void MusStaffAlignment::SetYShift( int yShift )
 {
-    if ( y_shift < m_y_shift )
+    if ( yShift < m_yShift )
     {
-        m_y_shift = y_shift;
+        m_yShift = yShift;
     }
 }
 
@@ -175,9 +175,9 @@ void MusMeasureAligner::SetMaxTime( double time )
 MusAlignment::MusAlignment( ):
     MusObject()
 {
-    m_x_rel = 0;
-    m_x_shift = 0;
-    m_max_width = 0;
+    m_xRel = 0;
+    m_xShift = 0;
+    m_maxWidth = 0;
     m_time = 0.0;
     m_type = ALIGNMENT_DEFAULT;
 }
@@ -185,9 +185,9 @@ MusAlignment::MusAlignment( ):
 MusAlignment::MusAlignment( double time, MusAlignmentType type ):
     MusObject()
 {
-    m_x_rel = 0;
-    m_x_shift = 0;
-    m_max_width = 0;
+    m_xRel = 0;
+    m_xShift = 0;
+    m_maxWidth = 0;
     m_time = time;
     m_type = type;
 }
@@ -199,22 +199,22 @@ MusAlignment::~MusAlignment()
 
 void MusAlignment::SetXRel( int x_rel )
 {
-    m_x_rel = x_rel;
+    m_xRel = x_rel;
 }
 
-void MusAlignment::SetXShift( int x_shift )
+void MusAlignment::SetXShift( int xShift )
 {
-    if ( x_shift > m_x_shift )
+    if ( xShift > m_xShift )
     {
-        m_x_shift = x_shift;
+        m_xShift = xShift;
     }
 }
 
 void MusAlignment::SetMaxWidth( int max_width )
 {
-    if ( max_width > m_max_width )
+    if ( max_width > m_maxWidth )
     {
-        m_max_width = max_width;
+        m_maxWidth = max_width;
     }
 }
 
@@ -234,8 +234,8 @@ int MusStaffAlignment::SetAligmentYPos( ArrayPtrVoid params )
 
     int min_shift = (*staffMargin) + (*previousStaffHeight);
     
-    if ( m_y_shift > -min_shift) {
-        m_y_shift = -min_shift;
+    if ( m_yShift > -min_shift) {
+        m_yShift = -min_shift;
     }
     
     // for now always for interlines, eventually should be taken from the staffDef, so should the staff size
@@ -250,11 +250,11 @@ int MusStaffAlignment::IntegrateBoundingBoxYShift( ArrayPtrVoid params )
     // param 1: the functor to be redirected to the MusSystemAligner (unused)
     int *shift = (int*)params[0];
     
-    // integrates the m_x_shift into the m_x_rel
-    m_y_rel += m_y_shift + (*shift);
+    // integrates the m_xShift into the m_xRel
+    m_yRel += m_yShift + (*shift);
     // cumulate the shift value
-    (*shift) += m_y_shift;
-    m_y_shift = 0;
+    (*shift) += m_yShift;
+    m_yShift = 0;
     
     return FUNCTOR_CONTINUE;
 }
@@ -279,13 +279,13 @@ int MusAlignment::IntegrateBoundingBoxXShift( ArrayPtrVoid params )
     // param 1: the functor to be redirected to the MusMeasureAligner (unused)
     int *shift = (int*)params[0];
     
-    // integrates the m_x_shift into the m_x_rel
-    m_x_rel += m_x_shift + (*shift);
+    // integrates the m_xShift into the m_xRel
+    m_xRel += m_xShift + (*shift);
     // cumulate the shift value and the width
-    (*shift) += m_x_shift;
+    (*shift) += m_xShift;
 
     // reset member to 0
-    m_x_shift = 0;
+    m_xShift = 0;
     
     return FUNCTOR_CONTINUE;
 }
@@ -320,9 +320,9 @@ int MusAlignment::SetAligmentXPos( ArrayPtrVoid params )
         intervalXRel = pow( intervalTime, 0.60 ) * 2.5; // 2.5 is an abritrary value
     }
     
-    m_x_rel = (*previousXRel) + (intervalXRel);
+    m_xRel = (*previousXRel) + (intervalXRel);
     (*previousTime) = m_time;
-    (*previousXRel) = m_x_rel;
+    (*previousXRel) = m_xRel;
     
     return FUNCTOR_CONTINUE;
 }
@@ -335,7 +335,7 @@ int MusAlignment::JustifyX( ArrayPtrVoid params )
     // param 2: the functor to be redirected to the MusMeasureAligner (unused)
     double *ratio = (double*)params[0];
     
-    this->m_x_rel = ceil((*ratio) * (double)this->m_x_rel);
+    this->m_xRel = ceil((*ratio) * (double)this->m_xRel);
 
     return FUNCTOR_CONTINUE;
 }

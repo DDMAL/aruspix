@@ -35,12 +35,12 @@ MusSystem::MusSystem( const MusSystem& system )
 
 	m_systemLeftMar = system.m_systemLeftMar;
 	m_systemRightMar = system.m_systemRightMar;
-	m_x_abs = system.m_x_abs;
-	m_x_rel = system.m_x_rel;
-	m_x_drawing = system.m_x_drawing;
-	m_y_abs = system.m_y_abs;
-	m_y_rel = system.m_y_rel;
-	m_y_drawing = system.m_y_drawing;
+	m_xAbs = system.m_xAbs;
+	m_xRel = system.m_xRel;
+	m_xDrawing = system.m_xDrawing;
+	m_yAbs = system.m_yAbs;
+	m_yRel = system.m_yRel;
+	m_yDrawing = system.m_yDrawing;
     
 	for (i = 0; i < this->GetMeasureCount(); i++)
 	{
@@ -58,13 +58,13 @@ void MusSystem::Clear( )
 	ClearChildren();
 	m_systemLeftMar = 50;
 	m_systemRightMar = 50;
-	m_x_abs = AX_UNSET;
-    m_x_rel = 0;
-	m_x_drawing = 0;
-	m_y_abs = AX_UNSET;
-    m_y_rel = 0;
-	m_y_drawing = 0;
-    m_total_drawing_width = 0;
+	m_xAbs = AX_UNSET;
+    m_xRel = 0;
+	m_xDrawing = 0;
+	m_yAbs = AX_UNSET;
+    m_yRel = 0;
+	m_yDrawing = 0;
+    m_totalDrawingWidth = 0;
 }
 
 
@@ -145,7 +145,7 @@ MusMeasure *MusSystem::GetAtPos( int x )
     MusMeasure *next = NULL;
 	while ( (next = this->GetNext(measure) ) )
 	{
-		if ( (int)measure->m_x_drawing < x )
+		if ( (int)measure->m_xDrawing < x )
 		{
 			return measure;
 		}
@@ -211,7 +211,7 @@ int MusSystem::Align( ArrayPtrVoid params )
     MusSystemAligner **systemAligner = (MusSystemAligner**)params[2];
     
     // When calculating the alignment, the position has to be 0
-    m_x_rel = 0;
+    m_xRel = 0;
     m_systemAligner.Reset();
     (*systemAligner) = &m_systemAligner;
     
@@ -243,7 +243,7 @@ int MusSystem::IntegrateBoundingBoxYShift( ArrayPtrVoid params )
     int *shift = (int*)params[0];
     MusFunctor *integrateBoundingBoxYShift = (MusFunctor*)params[1];
     
-    m_x_rel = this->m_systemLeftMar;
+    m_xRel = this->m_systemLeftMar;
     (*shift) = 0;
     m_systemAligner.Process( integrateBoundingBoxYShift, params);
     
@@ -265,7 +265,7 @@ int MusSystem::AlignMeasuresEnd( ArrayPtrVoid params )
     // param 0: the cumulated shift
     int *shift = (int*)params[0];
     
-    m_total_drawing_width = (*shift);
+    m_totalDrawingWidth = (*shift);
     
     return FUNCTOR_CONTINUE;
 }
@@ -277,12 +277,11 @@ int MusSystem::AlignSystems( ArrayPtrVoid params )
     int *shift = (int*)params[0];
     int *systemMargin = (int*)params[1];
     
-    this->m_y_rel = (*shift);
+    this->m_yRel = (*shift);
     
     assert( m_systemAligner.GetBottomAlignment() );
     
     (*shift) += m_systemAligner.GetBottomAlignment()->GetYRel() - (*systemMargin);
-    
     
     return FUNCTOR_SIBLINGS;
 }
@@ -296,7 +295,7 @@ int MusSystem::JustifyX( ArrayPtrVoid params )
     double *ratio = (double*)params[0];
     int *systemFullWidth = (int*)params[1];
     
-    (*ratio) = (double)((*systemFullWidth) - this->m_systemLeftMar - this->m_systemRightMar) / (double)m_total_drawing_width;
+    (*ratio) = (double)((*systemFullWidth) - this->m_systemLeftMar - this->m_systemRightMar) / (double)m_totalDrawingWidth;
     
     if ((*ratio) < 0.8 ) {
         // Arbitrary value for avoiding over-compressed justification

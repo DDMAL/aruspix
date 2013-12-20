@@ -44,7 +44,7 @@ void MusRC::DrawPage( MusDC *dc, MusPage *page, bool background )
     
     // Set the current score def to the page one
     // The page one has previously been set by MusObject::SetPageScoreDef
-    m_drawing_scoreDef = page->m_drawing_scoreDef;
+    m_drawingScoreDef = page->m_drawingScoreDef;
 
     if ( background )
         dc->DrawRectangle( 0, 0, m_doc->m_pageWidth, m_doc->m_pageHeight );
@@ -61,7 +61,7 @@ void MusRC::DrawPage( MusDC *dc, MusPage *page, bool background )
 		system = (MusSystem*)page->m_children[i];
         DrawSystem( dc, system );
         
-        // TODO here: also update x_abs and m_y_drawing positions for system. How to calculate them?
+        // TODO here: also update x_abs and m_yDrawing positions for system. How to calculate them?
     }
     
     dc->EndPage();
@@ -85,16 +85,16 @@ void MusRC::DrawSystem( MusDC *dc, MusSystem *system )
     dc->StartGraphic( system, "system", system->GetUuid() );
     
     
-    if ( system->m_y_abs == AX_UNSET ) {
+    if ( system->m_yAbs == AX_UNSET ) {
         assert( m_doc->GetType() == Raw );
-        system->m_y_drawing = system->m_y_rel;
-        system->m_x_drawing = system->m_x_rel;
+        system->m_yDrawing = system->m_yRel;
+        system->m_xDrawing = system->m_xRel;
     }
     else
     {
         assert( m_doc->GetType() == Transcription );
-        system->m_y_drawing = system->m_y_abs;
-        system->m_x_drawing = system->m_x_abs;
+        system->m_yDrawing = system->m_yAbs;
+        system->m_xDrawing = system->m_xAbs;
     }
     
     
@@ -112,7 +112,7 @@ void MusRC::DrawSystem( MusDC *dc, MusSystem *system )
     measure  = dynamic_cast<MusMeasure*>(system->GetFirstChild( &typeid(MusMeasure) ) );
     if ( measure ) {
         // NULL for the MusBarline parameters indicates that we are drawing the scoreDef
-        DrawScoreDef( dc, &m_drawing_scoreDef, measure, system->m_x_drawing, NULL );
+        DrawScoreDef( dc, &m_drawingScoreDef, measure, system->m_xDrawing, NULL );
     }
     
     dc->EndGraphic(system, this );
@@ -173,9 +173,9 @@ void MusRC::DrawStaffGrp( MusDC *dc, MusMeasure *measure, MusStaffGrp *staffGrp,
         return;
     }
     
-    int y_top = first->m_y_drawing;
+    int y_top = first->m_yDrawing;
     // for the bottom position we need to take into account the number of lines and the staff size
-    int y_bottom = last->m_y_drawing - (last->portNbLine - 1) * m_doc->m_interl[last->staffSize];
+    int y_bottom = last->m_yDrawing - (last->portNbLine - 1) * m_doc->m_interl[last->staffSize];
     
     // actually draw the line, the brace or the bracket
     if ( staffGrp->GetSymbol() == STAFFGRP_LINE ) {
@@ -345,9 +345,9 @@ void MusRC::DrawBarlines( MusDC *dc, MusMeasure *measure, MusStaffGrp *staffGrp,
                     Mus::LogDebug("Could not get staff (%d) while drawing staffGrp - Mus::DrawBarlines", childStaffDef->GetStaffNo() );
                     continue;
                 }
-                int y_top = staff->m_y_drawing;
+                int y_top = staff->m_yDrawing;
                 // for the bottom position we need to take into account the number of lines and the staff size
-                int y_bottom = staff->m_y_drawing - (staff->portNbLine - 1) * m_doc->m_interl[staff->staffSize];
+                int y_bottom = staff->m_yDrawing - (staff->portNbLine - 1) * m_doc->m_interl[staff->staffSize];
                 DrawBarline( dc, x, y_top, y_bottom, barline );
                 if ( barline->HasRepetitionDots() ) {
                     DrawBarlineDots( dc, x, staff, barline );
@@ -380,9 +380,9 @@ void MusRC::DrawBarlines( MusDC *dc, MusMeasure *measure, MusStaffGrp *staffGrp,
             return;
         }
         
-        int y_top = first->m_y_drawing;
+        int y_top = first->m_yDrawing;
         // for the bottom position we need to take into account the number of lines and the staff size
-        int y_bottom = last->m_y_drawing - (last->portNbLine - 1) * m_doc->m_interl[last->staffSize];
+        int y_bottom = last->m_yDrawing - (last->portNbLine - 1) * m_doc->m_interl[last->staffSize];
         
         DrawBarline( dc, x, y_top, y_bottom, barline );
         
@@ -454,7 +454,7 @@ void MusRC::DrawBarlineDots ( MusDC *dc, int x, MusStaff *staff, MusBarline *bar
 	int x1 = x - 2 * m_doc->m_beamWidth[0] - m_doc->m_env.m_barlineWidth;
 	int x2 = x + 2 * m_doc->m_beamWidth[0] + m_doc->m_env.m_barlineWidth;
     
-    int y_bottom = staff->m_y_drawing - staff->portNbLine  * m_doc->m_halfInterl[staff->staffSize];
+    int y_bottom = staff->m_yDrawing - staff->portNbLine  * m_doc->m_halfInterl[staff->staffSize];
     int y_top = y_bottom + m_doc->m_interl[staff->staffSize];
  
     if ((barline->m_barlineType  == BARLINE_RPTSTART) || (barline->m_barlineType == BARLINE_RPTBOTH))
@@ -483,8 +483,8 @@ void MusRC::DrawPartialBarline ( MusDC *dc, MusSystem *system, int x, MusStaff *
 	MusStaff *next = system->GetNext( NULL );
 	if ( next )
 	{	
-		b = pportee->m_y_drawing - m_doc->m_staffSize[ pportee->staffSize ]*2;
-		bb = next->m_y_drawing - m_doc->m_staffSize[ next->staffSize];
+		b = pportee->m_yDrawing - m_doc->m_staffSize[ pportee->staffSize ]*2;
+		bb = next->m_yDrawing - m_doc->m_staffSize[ next->staffSize];
 
 		if (m_doc->m_env.m_barlineWidth > 2)	// barres plus epaisses qu'un 1/2 mm
 			v_bline2 ( dc, b, bb, x,  m_doc->m_env.m_barlineWidth);
@@ -512,16 +512,16 @@ void MusRC::DrawMeasure( MusDC *dc, MusMeasure *measure, MusSystem *system )
     }
     
     // Here we set the appropriate y value to be used for drawing
-    // With Raw documents, we use m_x_rel that is calculated by the layout algorithm
-    // With Transcription documents, we use the m_x_abs
-    if ( measure->m_x_abs == AX_UNSET ) {
+    // With Raw documents, we use m_xRel that is calculated by the layout algorithm
+    // With Transcription documents, we use the m_xAbs
+    if ( measure->m_xAbs == AX_UNSET ) {
         assert( m_doc->GetType() == Raw );
-        measure->m_x_drawing = measure->m_x_rel + system->m_x_drawing;
+        measure->m_xDrawing = measure->m_xRel + system->m_xDrawing;
     }
     else
     {
         assert( m_doc->GetType() == Transcription );
-        measure->m_x_drawing = measure->m_x_abs;
+        measure->m_xDrawing = measure->m_xAbs;
     }
     
 	MusStaff *staff = NULL;
@@ -534,10 +534,10 @@ void MusRC::DrawMeasure( MusDC *dc, MusMeasure *measure, MusSystem *system )
     }
 
     if ( measure->GetLeftBarlineType() != BARLINE_NONE) {
-        DrawScoreDef( dc, &m_drawing_scoreDef, measure, measure->m_x_drawing, measure->GetLeftBarline() );
+        DrawScoreDef( dc, &m_drawingScoreDef, measure, measure->m_xDrawing, measure->GetLeftBarline() );
     }
     if ( measure->GetRightBarlineType() != BARLINE_NONE) {
-        DrawScoreDef( dc, &m_drawing_scoreDef, measure, measure->m_x_drawing + measure->GetXRelRight(), measure->GetRightBarline() );
+        DrawScoreDef( dc, &m_drawingScoreDef, measure, measure->m_xDrawing + measure->GetXRelRight(), measure->GetRightBarline() );
     }
     
     if ( measure->IsMeasuredMusic()) {
@@ -582,9 +582,9 @@ int MusRC::CalculatePitchPosY ( MusStaff *staff, char pname, int dec_clef, int o
 	if (staff->portNbLine > 5)
 		y_int -= ((staff->portNbLine - 5) * 2) * m_doc->m_halfInterl[staff->staffSize];
 
-	/* exprime distance separant m_y_drawing de
+	/* exprime distance separant m_yDrawing de
 	position 1e Si, corrigee par dec_clef et oct. Elle est additionnee
-	ensuite, donc elle doit etre NEGATIVE si plus bas que m_y_drawing */
+	ensuite, donc elle doit etre NEGATIVE si plus bas que m_yDrawing */
 	for (i=0; i<(signed)sizeof(touches); i++)
 		if (*(ptouche+i) == pname)
 			return(y_int += ((i+1)*m_doc->m_halfInterl[staff->staffSize]));
@@ -627,7 +627,7 @@ void MusRC::DrawStaffLines( MusDC *dc, MusStaff *staff, MusMeasure *measure, Mus
 
 	int j, x1, x2, yy;
 
-	yy = staff->m_y_drawing;
+	yy = staff->m_yDrawing;
 
 	x1 = system->m_systemLeftMar;
     x2 = m_doc->GetSystemRightX( system );
@@ -659,16 +659,16 @@ void MusRC::DrawStaff( MusDC *dc, MusStaff *staff, MusMeasure *measure, MusSyste
     dc->StartGraphic( staff, "staff", staff->GetUuid());
     
     // Here we set the appropriate y value to be used for drawing
-    // With Raw documents, we use m_y_rel that is calculated by the layout algorithm
-    // With Transcription documents, we use the m_y_abs
-    if ( staff->m_y_abs == AX_UNSET ) {
+    // With Raw documents, we use m_yRel that is calculated by the layout algorithm
+    // With Transcription documents, we use the m_yAbs
+    if ( staff->m_yAbs == AX_UNSET ) {
         assert( m_doc->GetType() == Raw );
-        staff->m_y_drawing = staff->GetYRel() + system->m_y_drawing;
+        staff->m_yDrawing = staff->GetYRel() + system->m_yDrawing;
     }
     else
     {
         assert( m_doc->GetType() == Transcription );
-        staff->m_y_drawing = staff->m_y_abs;
+        staff->m_yDrawing = staff->m_yAbs;
     }
     
     DrawStaffLines( dc, staff, measure, system );
@@ -707,7 +707,7 @@ int MusRC::CalculatePitchCode ( MusLayer *layer, int y_n, int x_pos, int *octave
     int staffSize = ((MusStaff*)layer->m_parent)->staffSize;
 	// calculer position du do central en fonction clef
 	y_n += (int) m_doc->m_verticalUnit2[staffSize];
-	yb = ((MusStaff*)layer->m_parent)->m_y_drawing -  m_doc->m_staffSize[((MusStaff*)layer->m_parent)->staffSize]*2; // UT1 default
+	yb = ((MusStaff*)layer->m_parent)->m_yDrawing -  m_doc->m_staffSize[((MusStaff*)layer->m_parent)->staffSize]*2; // UT1 default
 	
 
 	plafond = yb + 8 *  m_doc->m_octaveSize[staffSize];

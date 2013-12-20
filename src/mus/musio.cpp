@@ -48,6 +48,7 @@ MusFileInputStream::MusFileInputStream( MusDoc *doc, std::string filename  ) :
 {
 	assert(doc); // Document cannot be NULL"
 	m_doc = doc;
+    m_hasLayoutInformation = false;
 }
 
 MusFileInputStream::MusFileInputStream( MusDoc *doc ) :
@@ -55,6 +56,7 @@ MusFileInputStream::MusFileInputStream( MusDoc *doc ) :
 {
 	assert(doc); // Document cannot be NULL"
 	m_doc = doc;
+    m_hasLayoutInformation = false;
 }
 
 MusFileInputStream::~MusFileInputStream()

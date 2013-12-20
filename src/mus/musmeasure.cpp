@@ -30,7 +30,7 @@ MusMeasure::MusMeasure( bool measureMusic, int logMeasureNb ):
     m_measuredMusic = measureMusic;
     m_logMeasureNb = logMeasureNb;
     if ( !m_measuredMusic ) {
-        m_x_abs = 0;
+        m_xAbs = 0;
     }
 }
 
@@ -45,9 +45,9 @@ void MusMeasure::Clear()
     m_parent = NULL;
     m_logMeasureNb = -1;
     m_measuredMusic = true;
-    m_x_abs = AX_UNSET;
-    m_x_rel = 0;
-    m_x_drawing = 0;
+    m_xAbs = AX_UNSET;
+    m_xRel = 0;
+    m_xDrawing = 0;
     // by default, we have a single barline on the right (none on the left)
     m_rightBarline.m_barlineType = BARLINE_SINGLE;
     m_leftBarline.m_barlineType = BARLINE_NONE;
@@ -218,7 +218,7 @@ int MusMeasure::JustifyX( ArrayPtrVoid params )
     double *ratio = (double*)params[0];
     MusFunctor *justifyX = (MusFunctor*)params[2];
     
-    this->m_x_rel = ceil((*ratio) * (double)this->m_x_rel);
+    this->m_xRel = ceil((*ratio) * (double)this->m_xRel);
     
     m_measureAligner.Process( justifyX, params );
     
@@ -231,7 +231,7 @@ int MusMeasure::AlignMeasures( ArrayPtrVoid params )
     // param 0: the cumulated shift
     int *shift = (int*)params[0];
     
-    this->m_x_rel = (*shift);
+    this->m_xRel = (*shift);
     
     assert( m_measureAligner.GetRightAlignment() );
     

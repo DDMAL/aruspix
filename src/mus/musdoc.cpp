@@ -84,7 +84,7 @@ void MusDoc::Refresh()
     RefreshViews();
 }
 
-void MusDoc::Layout( bool trim )
+void MusDoc::Layout( )
 {
     MusScoreDef currentScoreDef;
     currentScoreDef = m_scoreDef;
@@ -101,7 +101,8 @@ void MusDoc::Layout( bool trim )
 	{
 		page = (MusPage*)this->m_children[i];
         PaperSize( page );
-        page->Layout( trim );
+        page->Layout( );
+        break;
      }
 }
 

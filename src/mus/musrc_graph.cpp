@@ -21,9 +21,6 @@ void MusRC::v_bline ( MusDC *dc, int y1, int y2, int x1, int nbr)
 {
 	assert( dc ); // DC cannot be NULL
 
-	if (discontinu)
-		nbr = 1;
-
     dc->SetPen( m_currentColour, std::max( 1, ToRendererX(nbr) ), AxSOLID );
     dc->SetBrush( m_currentColour, AxSOLID );
 
@@ -62,9 +59,6 @@ void MusRC::v_bline2 ( MusDC *dc, int y1, int y2, int x1, int nbr)
 void MusRC::h_bline ( MusDC *dc, int x1, int x2, int y1, int nbr)
 {		
 	assert( dc ); // DC cannot be NULL
-
-	if (discontinu)
-		nbr = 1;
 
     dc->SetPen( m_currentColour, std::max( 1, ToRendererX(nbr) ), AxSOLID );
     dc->SetBrush( m_currentColour, AxTRANSPARENT );

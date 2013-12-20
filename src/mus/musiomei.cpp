@@ -181,7 +181,7 @@ bool MusMeiOutput::WriteSystem( MusSystem *system )
     m_system->SetAttribute( "system.leftmar", Mus::StringFormat( "%d", system->m_systemLeftMar ).c_str() );
     m_system->SetAttribute( "system.rightmar", Mus::StringFormat( "%d", system->m_systemRightMar ).c_str() );
     // y positions
-    m_system->SetAttribute( "uly", Mus::StringFormat( "%d", system->m_y_abs ).c_str() );
+    m_system->SetAttribute( "uly", Mus::StringFormat( "%d", system->m_yAbs ).c_str() );
     m_page->LinkEndChild( m_system );
     return true;
 }
@@ -252,7 +252,7 @@ bool MusMeiOutput::WriteStaff( MusStaff *staff )
     if ( staff->notAnc ) {
         m_staff->SetAttribute( "label", "mensural" );
     }
-    m_staff->SetAttribute( "uly", Mus::StringFormat( "%d", staff->m_y_abs ).c_str() );
+    m_staff->SetAttribute( "uly", Mus::StringFormat( "%d", staff->m_yAbs ).c_str() );
     m_staff->SetAttribute( "n", Mus::StringFormat( "%d", staff->GetStaffNo() ).c_str() );
 
     m_system->LinkEndChild( m_staff );
@@ -349,8 +349,8 @@ bool MusMeiOutput::WriteLayerElement( MusLayerElement *element )
     if ( xmlElement ) {
         this->WriteSameAsAttr( xmlElement, element );
         xmlElement->SetAttribute( "xml:id",  UuidToMeiStr( element ).c_str() );
-        if ( element->m_x_abs != AX_UNSET) {
-            xmlElement->SetAttribute( "ulx", Mus::StringFormat( "%d", element->m_x_abs ).c_str() );
+        if ( element->m_xAbs != AX_UNSET) {
+            xmlElement->SetAttribute( "ulx", Mus::StringFormat( "%d", element->m_xAbs ).c_str() );
         }
         currentParent->LinkEndChild( xmlElement );
         return true;
@@ -814,8 +814,10 @@ bool MusMeiInput::ReadMei( TiXmlElement *root )
             m_doc->Reset( type );
         }
         
-        // this is a page-based mei file, we just loop trough the pages
+        // this is a page-based MEI file, we just loop trough the pages
         if ( pages->FirstChildElement( "page" ) ) {
+            // because we are in a page-based MEI
+            this->m_hasLayoutInformation = true;
             for( current = pages->FirstChildElement( "page" ); current; current = current->NextSiblingElement( "page" ) ) {
                 m_page = new MusPage( );
                 SetMeiUuid( current, m_page );
@@ -900,7 +902,7 @@ bool MusMeiInput::ReadMeiSystem( TiXmlElement *system )
         m_system->m_systemRightMar = atoi ( system->Attribute( "system.rightmar" ) );
     }
     if ( system->Attribute( "uly" ) ) {
-        m_system->m_y_abs = atoi ( system->Attribute( "uly" ) );
+        m_system->m_yAbs = atoi ( system->Attribute( "uly" ) );
     }
     
     TiXmlElement *current = NULL;
@@ -1093,7 +1095,7 @@ bool MusMeiInput::ReadMeiStaff( TiXmlElement *staff )
         Mus::LogWarning("No @n on staff");
     }
     if ( staff->Attribute( "uly" ) ) {
-        m_staff->m_y_abs = atoi ( staff->Attribute( "uly" ) );
+        m_staff->m_yAbs = atoi ( staff->Attribute( "uly" ) );
     }
     if ( staff->Attribute( "label" ) ) {
         // we use type only for typing mensural notation
@@ -1188,7 +1190,7 @@ bool MusMeiInput::ReadMeiLayerElement( TiXmlElement *xmlElement )
     }
     
     if ( xmlElement->Attribute( "ulx" ) ) {
-        musElement->m_x_abs = atoi ( xmlElement->Attribute( "ulx" ) );
+        musElement->m_xAbs = atoi ( xmlElement->Attribute( "ulx" ) );
     }
     ReadSameAsAttr( xmlElement, musElement );
     SetMeiUuid( xmlElement, musElement );
@@ -1574,6 +1576,7 @@ bool MusMeiInput::ReadUnsupported( TiXmlElement *element )
     */
     else if ( (std::string( element->Value() ) == "pb") && (m_system->GetMeasureCount() > 0 ) ) {
         Mus::LogDebug( "pb" );
+        this->m_hasLayoutInformation = true;
         m_page = new MusPage( );
         m_system = new MusSystem( );
         m_page->AddSystem( m_system );
@@ -1582,6 +1585,7 @@ bool MusMeiInput::ReadUnsupported( TiXmlElement *element )
     }
     else if ( (std::string( element->Value() ) == "sb") && (m_page->GetSystemCount() > 0 ) ) {
         Mus::LogDebug( "sb" );
+        this->m_hasLayoutInformation = true;
         m_system = new MusSystem( );
         m_page->AddSystem( m_system );
     }

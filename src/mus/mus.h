@@ -45,6 +45,17 @@ public:
      */
     static bool AreEqual(double dFirstVal, double dSecondVal);
     
+    /**
+     * Utility for converting UTF16 (std::wstring) to UTF-8
+     */
+    static std::string UTF16to8(const wchar_t * in);
+
+    /**
+     * Utility for converting UTF-8 to UTF16 (std::wstring)
+     */
+    static std::wstring UTF8to16(const char * in);
+    
+    
 private:
     static std::string m_respath;
 };

@@ -124,13 +124,13 @@ MusLayerElement *MusLayer::GetAtPos( int x )
 		return NULL;
 
     
-	int dif = x - element->m_x_drawing;
+	int dif = x - element->m_xDrawing;
     MusLayerElement *next = NULL;
-	while ( (next = this->GetNext( element )) && (int)element->m_x_drawing < x ){
+	while ( (next = this->GetNext( element )) && (int)element->m_xDrawing < x ){
 		element = next;
-		if ( (int)element->m_x_drawing > x && dif < (int)element->m_x_drawing - x )
+		if ( (int)element->m_xDrawing > x && dif < (int)element->m_xDrawing - x )
 			return this->GetPrevious( element );
-		dif = x - element->m_x_drawing;
+		dif = x - element->m_xDrawing;
 	}
 	
 	return element;
@@ -167,7 +167,7 @@ MusLayerElement *MusLayer::Insert( MusLayerElement *element, int x )
     // We are also updating the section and measure ( TODO, not necessary for now )
     int idx = 0;
 	MusLayerElement *next = this->GetFirst();
-	while ( next && (next->m_x_drawing < x) )
+	while ( next && (next->m_xDrawing < x) )
 	{
         idx++;
         // update section and measure if necessary (no section breaks and measure breaks for now)
@@ -178,7 +178,7 @@ MusLayerElement *MusLayer::Insert( MusLayerElement *element, int x )
 	}
     
     // Insert in the logical tree - this works only for facsimile (transcription) encoding
-    insertElement->m_x_abs = x;
+    insertElement->m_xAbs = x;
     AddElement( insertElement, idx );
     
 	Refresh();
@@ -319,11 +319,11 @@ void MusLayer::CheckXPosition( MusLayerElement *currentElement )
     MusLayerElement *previous = GetPrevious( currentElement );
     MusLayerElement *next = GetNext( currentElement );
     
-    if ( previous && previous->m_x_abs >= currentElement->m_x_abs ) {
-        currentElement->m_x_abs = previous->m_x_abs + 2;
+    if ( previous && previous->m_xAbs >= currentElement->m_xAbs ) {
+        currentElement->m_xAbs = previous->m_xAbs + 2;
     }
-    if ( next && next->m_x_abs <= currentElement->m_x_abs ) {
-        currentElement->m_x_abs = next->m_x_abs - 2;
+    if ( next && next->m_xAbs <= currentElement->m_xAbs ) {
+        currentElement->m_xAbs = next->m_xAbs - 2;
     }
 }
 
@@ -537,12 +537,12 @@ MusSymbol1 *MusLayer::GetLyricAtPos( int x )
 		return NULL;
 	
 	//int xx = 0;
-	int dif = x - lyric->m_x_abs;
-	while ( this->GetNextLyric( lyric ) && (int)lyric->m_x_abs < x ){
+	int dif = x - lyric->m_xAbs;
+	while ( this->GetNextLyric( lyric ) && (int)lyric->m_xAbs < x ){
 		lyric = this->GetNextLyric( lyric );
-		if ( (int)lyric->m_x_abs > x && dif < (int)lyric->m_x_abs - x )
+		if ( (int)lyric->m_xAbs > x && dif < (int)lyric->m_xAbs - x )
 			return this->GetPreviousLyric( lyric );
-		dif = x - lyric->m_x_abs;
+		dif = x - lyric->m_xAbs;
 	}
 		
 	return lyric;

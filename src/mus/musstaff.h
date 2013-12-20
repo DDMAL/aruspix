@@ -127,17 +127,17 @@ public:
      * The Y absolute position of the staff for facsimile (transcription) encodings.
      * This is the top left corner of the staff (the X position is the position of the system).
      */
-    int m_y_abs;
+    int m_yAbs;
     /**
      * The Y relative position of the staff.
      * It is used internally when calculating the layout andd it is not stored in the file.
      */
-    //int m_y_rel;
+    //int m_yRel;
 	/** 
      * The Y drawing position of the staff.
      * It is re-computed everytime the staff is drawn and it is not stored in the file.
      */
-    int m_y_drawing;
+    int m_yDrawing;
     
     /** indicates this staff is in anchent notation
      it has to be carried on to the LayedOutStaf */

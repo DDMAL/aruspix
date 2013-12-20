@@ -169,9 +169,9 @@ void MusLayerElement::Init()
     m_staffShift = 0;
     m_visible = true;
     
-    m_x_abs = AX_UNSET;
-    m_x_drawing = 0;
-    m_y_drawing = 0;
+    m_xAbs = AX_UNSET;
+    m_xDrawing = 0;
+    m_yDrawing = 0;
     m_in_layer_app = false;
     
     m_alignment = NULL;

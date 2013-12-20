@@ -49,8 +49,8 @@ MusStaff::MusStaff( const MusStaff& staff )
 	portNbLine = staff.portNbLine;
 	accol = staff.accol;
 	accessoire = staff.accessoire;
-	m_y_abs = staff.m_y_abs;
-	m_y_drawing = staff.m_y_drawing;
+	m_yAbs = staff.m_yAbs;
+	m_yDrawing = staff.m_yDrawing;
     m_staffAlignment = NULL;
 
     int i;
@@ -86,8 +86,8 @@ void MusStaff::Clear()
 	portNbLine = 5;
 	accol = 0;
 	accessoire = 0;
-	m_y_abs = AX_UNSET;
-	m_y_drawing = 0;
+	m_yAbs = AX_UNSET;
+	m_yDrawing = 0;
     m_staffAlignment = NULL;
 }
 
@@ -132,8 +132,8 @@ void MusStaff::CopyAttributes( MusStaff *nstaff )
 	nstaff->portNbLine = portNbLine;
 	nstaff->accol = accol;
 	nstaff->accessoire = accessoire;
-	nstaff->m_y_abs = m_y_abs;
-	nstaff->m_y_drawing = m_y_drawing;
+	nstaff->m_yAbs = m_yAbs;
+	nstaff->m_yDrawing = m_yDrawing;
 }
 
 MusLayer *MusStaff::GetFirst( )
@@ -268,9 +268,9 @@ int MusStaff::LayOutSystemAndStaffYPos( ArrayPtrVoid params )
         if ( system ) {
             // the staff position is the same as the one of the system
             (*current_y_staff_shift) = 0;
-            this->m_y_rel = 0;
+            this->m_yRel = 0;
             // move the system down to fit the content
-            system->m_y_rel = (*current_y_system_shift)  + negative_offset;
+            system->m_yRel = (*current_y_system_shift)  + negative_offset;
             // spacing for the next system
             (*current_y_system_shift) -= system->GetVerticalSpacing();
         }
@@ -278,7 +278,7 @@ int MusStaff::LayOutSystemAndStaffYPos( ArrayPtrVoid params )
     else
     {
         // just more the staff down
-        this->m_y_rel = (*current_y_staff_shift)  + negative_offset;
+        this->m_yRel = (*current_y_staff_shift)  + negative_offset;
     }
     
     int shift = (this->m_contentBB_y2 - this->m_contentBB_y1) + this->GetVerticalSpacing();

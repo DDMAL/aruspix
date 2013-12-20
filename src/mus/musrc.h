@@ -174,7 +174,6 @@ public:
     void DrawBeam(  MusDC *dc, MusLayer *layer, MusBeam *beam, MusStaff *staff );
     
 private:
-	void UpdateStavesPos();
     
     //Used for calculating tuplets
     bool GetTupletCoordinates(MusTuplet* tuplet, MusLayer *layer, MusPoint* start, MusPoint* end, MusPoint *center);
@@ -188,18 +187,13 @@ public:
     MusPage *m_page;
     /** No Page affichee */
     int m_npage;
-	/** format max utile; en principe, celui de la feuille **/
-	//int m_pageMaxY, m_pageMaxX;
 
 	std::string m_str;
     
 	// static
 	static MusPoint point_[4];
 	static MusPoint bcoord[2*(BEZIER_NB_POINTS+1)];
-    
-	int discontinu;
 
-	//const wxColour *m_currentColour;
     int m_currentColour;
     
     // element currently selected
@@ -220,7 +214,7 @@ private:
     static int s_drawingLigX[2], s_drawingLigY[2];	// pour garder coord. des ligatures    
     static bool s_drawingLigObliqua;	// marque le 1e passage pour une oblique
 
-    MusScoreDef m_drawing_scoreDef;
+    MusScoreDef m_drawingScoreDef;
     
 
 };

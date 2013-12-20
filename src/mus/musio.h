@@ -95,10 +95,20 @@ public:
     virtual bool ImportFile( ) { return true; }
     virtual bool ImportString( std::string data ) { return true; }
     
+    bool HasLayoutInformation() { return m_hasLayoutInformation; };
+    
 public:
     
 protected:
     MusDoc *m_doc;
+    
+    /**
+     * Becomes true if layout information is found during the import.
+     * This will be true if the file is page-based MEI or if the MEI
+     * file contains <pb> and <sb>. This will stay wrong with PAE import
+     */
+    bool m_hasLayoutInformation;
+    
     
 };
 

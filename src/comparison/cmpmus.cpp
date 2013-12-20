@@ -258,8 +258,8 @@ void CmpMusWindow::UpdateCmpScroll()
     
 	int x = 0;
 	if ( m_currentElement )
-		x = ToRendererX( m_currentElement->m_x_abs );
-	int y = ToRendererY(  m_currentStaff->m_y_abs );
+		x = ToRendererX( m_currentElement->m_xAbs );
+	int y = ToRendererY(  m_currentStaff->m_yAbs );
     
     x *= (double)m_zoomNum / m_zoomDen;
     y *= (double)m_zoomNum / m_zoomDen;

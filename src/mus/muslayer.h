@@ -132,7 +132,7 @@ public:
     
     /**
      * Checks that the X position of the currentElement is not before the previous element or after the next one.
-     * This works for facsimile (transcription) encodings only because it looks at the m_x_abs position
+     * This works for facsimile (transcription) encodings only because it looks at the m_xAbs position
      */ 
     void CheckXPosition( MusLayerElement *currentElement );
     

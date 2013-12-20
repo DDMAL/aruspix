@@ -195,7 +195,7 @@ public:
 
     /**
      * Lay out the X positions of the staff content looking that the bounding boxes.
-     * The m_x_shift is updated appropriately
+     * The m_xShift is updated appropriately
      */
     virtual int SetBoundingBoxXShift( ArrayPtrVoid params );
     
@@ -207,7 +207,7 @@ public:
     
     /**
      * Lay out the Y positions of the staff looking that the bounding box of each staff.
-     * The m_y_shift is updated appropriately
+     * The m_yShift is updated appropriately
      */
     virtual int SetBoundingBoxYShift( ArrayPtrVoid params );
     
@@ -263,7 +263,7 @@ public:
     virtual int IntegrateBoundingBoxYShift( ArrayPtrVoid params ) { return FUNCTOR_CONTINUE; };
     
     /**
-     * Align the measures by adjusting the m_x_rel position looking at the MusMeasureAligner.
+     * Align the measures by adjusting the m_xRel position looking at the MusMeasureAligner.
      */
     virtual int AlignMeasures( ArrayPtrVoid params ) { return FUNCTOR_CONTINUE; };
     
@@ -279,7 +279,7 @@ public:
     virtual int JustifyX( ArrayPtrVoid params ) { return FUNCTOR_CONTINUE; };
     
     /**
-     * Align the system by adjusting the m_y_rel position looking at the MusSystemAligner.
+     * Align the system by adjusting the m_yRel position looking at the MusSystemAligner.
      */
     virtual int AlignSystems( ArrayPtrVoid params ) { return FUNCTOR_CONTINUE; };
 

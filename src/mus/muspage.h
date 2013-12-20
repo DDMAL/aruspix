@@ -66,7 +66,17 @@ public:
     /**
      * Do the layout of the page
      */
-    void Layout( bool trim = false );
+    void Layout( );
+    
+    /**
+     * Do the horizontal layout of the page
+     */
+    void HorizontalLayout( );
+
+    /**
+     * Do the vertical layout of the page
+     */
+    void VerticalLayout( );
 
     // functors
     virtual int Save( ArrayPtrVoid params );
@@ -107,7 +117,7 @@ public:
      * all the clef or key changes that might occur within the text.
      * The value is initialized with by the MusObject::SetPageScoreDef functor.
      */
-    MusScoreDef m_drawing_scoreDef;
+    MusScoreDef m_drawingScoreDef;
 
 private:
     

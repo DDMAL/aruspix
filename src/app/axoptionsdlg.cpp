@@ -529,15 +529,15 @@ AxOptMusWindow::AxOptMusWindow( wxWindow *parent, wxWindowID id,
     // create a new layout and the page
     MusPage *page = new MusPage();
     MusSystem *system = new MusSystem();
-    system->m_y_abs = 120;
+    system->m_yAbs = 120;
     MusStaff *staff = new MusStaff( 1 );
     MusMeasure *measure = new MusMeasure( false, 1 );
-    staff->m_y_abs = 120;
+    staff->m_yAbs = 120;
     MusLayer *layer = new MusLayer( 1 );
     
     MusClef *clef = new MusClef();
     clef->m_clefId = UT3;
-    clef->m_x_abs = 80;
+    clef->m_xAbs = 80;
     
     layer->AddElement( clef );
     staff->AddLayer( layer );

@@ -88,12 +88,12 @@ public:
     virtual int IntegrateBoundingBoxYShift( ArrayPtrVoid params );
     
     /**
-     * Align the system by adjusting the m_y_rel position looking at the MusSystemAligner.
+     * Align the system by adjusting the m_yRel position looking at the MusSystemAligner.
      */
     virtual int AlignSystems( ArrayPtrVoid params );
     
     /**
-     * Align the measures by adjusting the m_x_rel position looking at the MusMeasureAligner.
+     * Align the measures by adjusting the m_xRel position looking at the MusMeasureAligner.
      * In MusSystem object resets the shift to 0;
      */
     virtual int AlignMeasures( ArrayPtrVoid params );
@@ -121,37 +121,37 @@ public:
      * The Y absolute position of the staff for facsimile (transcription) encodings.
      * This is the top left corner of the system.
      */
-    int m_y_abs;
+    int m_yAbs;
     /**
      * The Y relative position of the system.
      * It is used internally when calculating the layout andd it is not stored in the file.
      */
-    int m_y_rel;
+    int m_yRel;
 	/**
      * The Y drawing position of the system.
      * It is re-computed everytime the system is drawn and it is not stored in the file.
      */
-    int m_y_drawing;
+    int m_yDrawing;
 	/** 
      * The x absolute position of the  system for facsimile layouts.
      * This is the top left corner of the system.
      */
-    int m_x_abs;
+    int m_xAbs;
     /**
      * The X relative position of the system.
      * It is used internally when calculating the layout andd it is not stored in the file.
      */
-    int m_x_rel;
+    int m_xRel;
 	/**
      * The X drawing position of the system.
      * It is re-computed everytime the system is drawn and it is not stored in the file.
      */
-    int m_x_drawing;
+    int m_xDrawing;
     /**
      * The total width of the system.
      * It is computed during the layout processed and used for calculating the justification ratio.
      */
-    int m_total_drawing_width;
+    int m_totalDrawingWidth;
 
 private:
     

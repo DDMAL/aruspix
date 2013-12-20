@@ -613,7 +613,7 @@ void MusWindow::Paste()
 		return;
 			
 	// arbitrary x value after the current element
-	m_currentElement = m_currentLayer->Insert( m_bufferElement, m_currentElement->m_x_abs + m_doc->m_step1 * 3 );
+	m_currentElement = m_currentLayer->Insert( m_bufferElement, m_currentElement->m_xAbs + m_doc->m_step1 * 3 );
 
 	this->Refresh();
 	OnEndEdition();
@@ -626,8 +626,8 @@ void MusWindow::UpdateScroll()
 		
 	int x = 0;
 	if ( m_currentElement )
-		x = ToRendererX( m_currentElement->m_x_abs );
-	int y = ToRendererY(  m_currentStaff->m_y_abs + m_doc->m_staffSize[0] );
+		x = ToRendererX( m_currentElement->m_xAbs );
+	int y = ToRendererY(  m_currentStaff->m_yAbs + m_doc->m_staffSize[0] );
     
     x *= (double)m_zoomNum / m_zoomDen;
     y *= (double)m_zoomNum / m_zoomDen;
@@ -677,7 +677,7 @@ void MusWindow::OnPopupMenuNote( wxCommandEvent &event )
 	else
 	{
 		note = new MusNote1( false, DUR_LG, PITCH_G );
-		note->m_x_abs = m_insert_x;
+		note->m_xAbs = m_insert_x;
 	}
 
 	note->sil = false; // comming from custos
@@ -730,7 +730,7 @@ void MusWindow::OnPopupMenuSymbole( wxCommandEvent &event )
 	else
 	{
 		symbol = new MusSymbol1( );
-		symbol->m_x_abs = m_insert_x;
+		symbol->m_xAbs = m_insert_x;
 	}
 
 	int id = event.GetId();
@@ -790,7 +790,7 @@ void MusWindow::OnMouseDClick(wxMouseEvent &event)
 		m_insert_x = ToLogicalX( dc.DeviceToLogicalX( event.m_x ) ); //???
 		int y = ToLogicalY( dc.DeviceToLogicalY( event.m_y ) );
 		m_insert_pname = CalculatePitchCode( m_currentLayer, y, m_insert_x, &m_insert_oct );
-		//m_newElement->m_x_abs = m_insert_x;
+		//m_newElement->m_xAbs = m_insert_x;
 	}
 	if ( m_editorMode == MUS_EDITOR_EDIT )
 	{
@@ -883,19 +883,19 @@ void MusWindow::OnMouseLeftDown(wxMouseEvent &event)
         /* ax2
 		// Checking if there is a Lyric element closer to click location then default note
 		MusStaff *lyricStaff;
-		if ( noteStaff->m_y_drawing <= (uint)(y + 80)){
+		if ( noteStaff->m_yDrawing <= (uint)(y + 80)){
 			if ((lyricStaff = m_page->GetPrevious( noteStaff )) == NULL) lyricStaff = noteStaff;
 		} else {
 			if ((lyricStaff = m_page->GetNext( noteStaff )) == NULL) lyricStaff = noteStaff;
 		}		
-		int y_note = noteStaff->m_y_drawing;
+		int y_note = noteStaff->m_yDrawing;
         if (noteElement) {
             y_note += noteElement->dec_y;
         }
 		MusElement *lyricElement = lyricStaff->GetLyricAtPos( x );		// Lyric element closest to mouse click
 		
 		if ( lyricElement != NULL){
-			int y_lyric = lyricElement->dec_y + lyricStaff->m_y_drawing;
+			int y_lyric = lyricElement->dec_y + lyricStaff->m_yDrawing;
 			if ( abs( y_lyric - y ) <= abs( y_note - y ) ){				// Checking if lyric element is closer than note element
 				m_lyricMode = true;
 				m_inputLyric = false;
@@ -909,7 +909,7 @@ void MusWindow::OnMouseLeftDown(wxMouseEvent &event)
 		
 		// Track motion on y-axis
 		if ( m_currentElement )
-			m_dragging_y_offset = y - m_currentStaff->m_y_drawing - m_currentElement->m_y_drawing;
+			m_dragging_y_offset = y - m_currentStaff->m_yDrawing - m_currentElement->m_yDrawing;
 		else
 			m_dragging_y_offset = 0;
 
@@ -986,14 +986,14 @@ void MusWindow::OnMouseMotion(wxMouseEvent &event)
 		} 
 		else if ( m_lyricMode )					// Movement of lyric element on y-axis
 		{
-			m_currentElement->m_y_drawing = y - m_currentStaff->m_y_drawing;
+			m_currentElement->m_yDrawing = y - m_currentStaff->m_yDrawing;
 		} 
 		
 		if ( m_insert_x != m_dragging_x  )		// If element has moved in the x-axis
 		{
 			// TODO m_currentElement->ClearElement( &dc, m_currentStaff );
             wxLogDebug("End dragging m_dragging_x %d; m_insert_x %d", m_dragging_x, m_insert_x );
-			m_currentElement->m_x_abs += ( m_insert_x - m_dragging_x );
+			m_currentElement->m_xAbs += ( m_insert_x - m_dragging_x );
             m_currentLayer->CheckXPosition( m_currentElement );
 			m_dragging_x = m_insert_x;
 			if ( m_editorMode == MUS_EDITOR_EDIT ) {
@@ -1036,7 +1036,7 @@ bool MusWindow::MoveUpDown( bool up )
     
     int x = 0;
     if ( m_currentElement ) {
-        x = m_currentElement->m_x_drawing;
+        x = m_currentElement->m_xDrawing;
     }
     
     if ( up ) {
@@ -1390,7 +1390,7 @@ void MusWindow::NeumeEditOnKeyDown(wxKeyEvent &event) {
             alteration.calte = ACCID_FLAT;
         else
             alteration.calte = ACCID_SHARP;
-        alterationm_x_abs = m_currentElement->m_x_abs - m_step1 * 3;
+        alterationm_x_abs = m_currentElement->m_xAbs - m_step1 * 3;
         m_currentStaff->Insert( &alteration );
         CheckPoint( UNDO_PART, MUS_UNDO_FILE );
     }
@@ -1402,7 +1402,7 @@ void MusWindow::NeumeEditOnKeyDown(wxKeyEvent &event) {
         point.flag = PNT;
         point.code = m_currentElement->code;
         point.oct = m_currentElement->oct;
-        pointm_x_abs = m_currentElement->m_x_abs + m_step1 * 3;
+        pointm_x_abs = m_currentElement->m_xAbs + m_step1 * 3;
         // special case where we move forward
         m_currentElement = m_currentStaff->Insert( &point );
         CheckPoint( UNDO_PART, MUS_UNDO_FILE );
@@ -1419,9 +1419,9 @@ void MusWindow::NeumeEditOnKeyDown(wxKeyEvent &event) {
     {
         PrepareCheckPoint( UNDO_PART, MUS_UNDO_FILE );
         if ( event.m_keyCode == WXK_LEFT ) {
-            m_currentElement->m_x_abs -=3;
+            m_currentElement->m_xAbs -=3;
         } else {
-            m_currentElement->m_x_abs +=3;
+            m_currentElement->m_xAbs +=3;
         }
         this->Refresh();
         CheckPoint( UNDO_PART, MUS_UNDO_FILE );
@@ -1559,7 +1559,7 @@ void MusWindow::MensuralEditOnKeyDown(wxKeyEvent &event) {
         else {
             alteration.m_accid = ACCID_SHARP;
         }
-        m_currentLayer->Insert( &alteration, m_currentElement->m_x_abs - m_doc->m_step1 * 3 );
+        m_currentLayer->Insert( &alteration, m_currentElement->m_xAbs - m_doc->m_step1 * 3 );
         CheckPoint( UNDO_PART, MUS_UNDO_FILE );
         OnEndEdition();
     }
@@ -1571,7 +1571,7 @@ void MusWindow::MensuralEditOnKeyDown(wxKeyEvent &event) {
         MusSymbol dot( SYMBOL_DOT );
         dot.m_pname = note->m_pname;
         dot.m_oct = note->m_oct;
-        m_currentLayer->Insert( &dot, m_currentElement->m_x_abs + m_doc->m_step1 * 2 );
+        m_currentLayer->Insert( &dot, m_currentElement->m_xAbs + m_doc->m_step1 * 2 );
         CheckPoint( UNDO_PART, MUS_UNDO_FILE );
         OnEndEdition();
     }
@@ -1612,9 +1612,9 @@ void MusWindow::MensuralEditOnKeyDown(wxKeyEvent &event) {
     {
         PrepareCheckPoint( UNDO_PART, MUS_UNDO_FILE );
         if ( event.m_keyCode == WXK_LEFT ) {
-            m_currentElement->m_x_abs -=3;
+            m_currentElement->m_xAbs -=3;
         } else {
-            m_currentElement->m_x_abs +=3;
+            m_currentElement->m_xAbs +=3;
         }
         m_currentLayer->CheckXPosition( m_currentElement );
         this->Refresh();
@@ -1636,7 +1636,7 @@ void MusWindow::MensuralEditOnKeyDown(wxKeyEvent &event) {
             lyric->flag = CHAINE;
             lyric->fonte = LYRIC;
             lyric->m_debord_str = "";
-            lyric->m_x_abs = ((MusNote1*)m_currentElement)->m_x_abs - 10;
+            lyric->m_xAbs = ((MusNote1*)m_currentElement)->m_xAbs - 10;
             lyric->dec_y = - STAFF_OFFSET;   //Add define for height
             lyric->offset = ((MusNote1*)m_currentElement)->offset;
             lyric->m_note_ptr = (MusNote1*)m_currentElement;
@@ -1644,8 +1644,8 @@ void MusWindow::MensuralEditOnKeyDown(wxKeyEvent &event) {
             m_currentElement = lyric;
             m_inputLyric = true;
         }
-        else if ( m_currentElement && m_currentStaff->GetLyricAtPos( m_currentElement->m_x_abs ) )
-            m_currentElement = m_currentStaff->GetLyricAtPos( m_currentElement->m_x_abs );
+        else if ( m_currentElement && m_currentStaff->GetLyricAtPos( m_currentElement->m_xAbs ) )
+            m_currentElement = m_currentStaff->GetLyricAtPos( m_currentElement->m_xAbs );
         else if ( m_currentStaff->GetFirstLyric() )
             m_currentElement = m_currentStaff->GetFirstLyric();
         else{
@@ -1782,8 +1782,8 @@ void MusWindow::LyricEntry(wxKeyEvent &event)
 			m_editorMode = MUS_EDITOR_EDIT;
 			if ( m_currentElement && m_currentElement->IsSymbol() && ((MusSymbol1*)m_currentElement)->m_note_ptr )
 				m_currentElement = ((MusSymbol1*)m_currentElement)->m_note_ptr;
-			else if ( m_currentElement && m_currentStaff->GetAtPos( m_currentElement->m_x_abs ) )
-				m_currentElement = m_currentStaff->GetAtPos( m_currentElement->m_x_abs );
+			else if ( m_currentElement && m_currentStaff->GetAtPos( m_currentElement->m_xAbs ) )
+				m_currentElement = m_currentStaff->GetAtPos( m_currentElement->m_xAbs );
 			else if ( m_currentStaff->GetFirst() )
 				m_currentElement = m_currentStaff->GetFirst();
 			else if ( m_page->GetFirst() ){
@@ -1917,7 +1917,7 @@ void MusWindow::LyricEntry(wxKeyEvent &event)
 				{
 					int x = 0;
 					if ( m_currentElement )
-						x = m_currentElement->m_x_abs;
+						x = m_currentElement->m_xAbs;
 					m_currentStaff = m_page->GetPrevious( m_currentStaff );
 					m_currentElement = m_currentStaff->GetLyricAtPos(x);
 					UpdateScroll();
@@ -1929,7 +1929,7 @@ void MusWindow::LyricEntry(wxKeyEvent &event)
 				{
 					int x = 0;
 					if ( m_currentElement )
-						x = m_currentElement->m_x_abs;
+						x = m_currentElement->m_xAbs;
 					m_currentStaff = m_page->GetNext( m_currentStaff );
 					m_currentElement = m_currentStaff->GetLyricAtPos(x);
 					UpdateScroll();
@@ -2008,7 +2008,7 @@ void MusWindow::LyricEntry(wxKeyEvent &event)
 					//Add new lyric element to the next note
 					MusSymbol1 *lyric = new MusSymbol1( *((MusSymbol1*)m_currentElement) );
 					lyric->m_debord_str = "";
-					lyric->m_x_abs = note->m_x_abs - 10;
+					lyric->m_xAbs = note->m_xAbs - 10;
 					m_currentStaff->SwitchLyricNoteAssociation( lyric, ((MusSymbol1*)m_currentElement)->m_note_ptr, note, true );				
 					(((MusSymbol1*)m_currentElement)->m_note_ptr)->CheckLyricIntegrity();
 					m_currentElement = lyric;
@@ -2033,14 +2033,14 @@ void MusWindow::LyricEntry(wxKeyEvent &event)
 					//Add new lyric to next note
 					MusSymbol1 *lyric = new MusSymbol1( *((MusSymbol1*)m_currentElement) );
 					lyric->m_debord_str = "";
-					lyric->m_x_abs = note->m_x_abs - 10;					
+					lyric->m_xAbs = note->m_xAbs - 10;					
 					m_currentStaff->SwitchLyricNoteAssociation( lyric, ((MusSymbol1*)m_currentElement)->m_note_ptr, note, true );				
 					
 					//Add dash ("-") element between the two lyrics
 					MusSymbol1 *lyric2 = new MusSymbol1( *((MusSymbol1*)m_currentElement) );
 					lyric2->m_debord_str = "-";
 					int length = ((MusSymbol1*)m_currentElement)->m_debord_str.Length();
-					lyric2->m_x_abs = lyric->m_x_abs - ( lyric->m_x_abs - ( m_currentElement->m_x_abs + length * 10 ) ) / 2;			
+					lyric2->m_xAbs = lyric->m_xAbs - ( lyric->m_xAbs - ( m_currentElement->m_xAbs + length * 10 ) ) / 2;			
 					m_currentStaff->SwitchLyricNoteAssociation( lyric2, ((MusSymbol1*)m_currentElement)->m_note_ptr, note, true );				
                     
 					m_currentElement = lyric;
@@ -2165,10 +2165,10 @@ void MusWindow::OnPaint(wxPaintEvent &event)
 	//	m_currentColour = AxRED;
 		//drawing code here
 		
-		//printf("staff y: %d\n", m_currentStaff->m_y_drawing);
+		//printf("staff y: %d\n", m_currentStaff->m_yDrawing);
 		
-	// TODO	this->rect_plein2(&dc, m_newElement->m_x_abs+35, m_currentStaff->m_y_drawing-200, 
-	//					  m_newElement->m_x_abs+40, m_currentStaff->m_y_drawing-40);
+	// TODO	this->rect_plein2(&dc, m_newElement->m_xAbs+35, m_currentStaff->m_yDrawing-200, 
+	//					  m_newElement->m_xAbs+40, m_currentStaff->m_yDrawing-40);
 		
 	//	m_currentColour = AxBLACK;
 	//}

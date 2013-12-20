@@ -598,7 +598,7 @@ int MusObject::SetPageScoreDef( ArrayPtrVoid params )
     MusPage *current_page = dynamic_cast<MusPage*>(this);
     if ( current_page  ) {
         currentScoreDef->SetRedraw( true, true, false );
-        current_page->m_drawing_scoreDef = *currentScoreDef;
+        current_page->m_drawingScoreDef = *currentScoreDef;
         return FUNCTOR_CONTINUE;
     }
     

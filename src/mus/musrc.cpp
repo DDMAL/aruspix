@@ -43,8 +43,6 @@ MusRC::MusRC( )
 	
 	m_notation_mode = MUS_MENSURAL_MODE;
     //m_notation_mode = MUS_CMN_MODE;
-    
-	discontinu = 0;
 	
 	m_str.reserve(1000);
 }
@@ -88,15 +86,6 @@ void MusRC::SetPage( MusPage *page )
     m_doc->PaperSize( page );
 
 	m_page = page;
-    /*
-    UpdatePageValues();
-	if (m_charDefin == 0)
-		UpdatePageFontValues();
-    //m_pageMaxX = m_page->lrg_lign*10; // ax2 set in PaperSize
-    UpdateStavesPos();
-    */
-    //m_pageMaxY = m_doc->m_pageHeight-40; // is this a dead margin?
-    //m_pageMaxX = m_doc->m_pageWidth-40; // is this a dead margin?
 
 	m_currentElement = NULL;
     m_currentLayer = NULL;
