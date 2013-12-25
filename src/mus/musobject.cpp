@@ -22,6 +22,7 @@
 #include "musaligner.h"
 #include "musbeam.h"
 #include "musclef.h"
+#include "musdoc.h"
 #include "muskeysig.h"
 #include "muslayer.h"
 #include "muslayerelement.h"
@@ -725,11 +726,15 @@ int MusObject::SetBoundingBoxXShift( ArrayPtrVoid params )
     MusLayer *current_layer = dynamic_cast<MusLayer*>(this);
     if ( current_layer  ) {
         // mininimum position is the with for the last (previous) layer
-        // we keep it if is higher than what we had so far
-        // this will be used for shifting the right barline
+        // we keep it if it is higher than what we had so far
+        // this will be used for shifting the right barline.
+        // This can probably also be done in a EndFunctor for the measure
         (*measure_width) = std::max( (*measure_width), (*min_pos) );
-        // reset it as the minimum position
-        (*min_pos) = SPACING_MINPOS;
+        // reset it as the minimum position to the step (if doc found)
+        (*min_pos) = 0;
+        MusDoc *doc = dynamic_cast<MusDoc*>( current_layer->GetFirstParent( &typeid(MusDoc) ) );
+        if (doc) (*min_pos) = doc->m_step1;
+        // set scoreDef attr
         if (current_layer->GetClefAttr()) {
             current_layer->GetClefAttr()->SetBoundingBoxXShift( params );
         }

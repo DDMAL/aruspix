@@ -362,7 +362,6 @@ private:
     bool m_updatedBB;
     
 protected:
-    //MusDoc *m_doc;
     
 public:
     
