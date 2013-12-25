@@ -45,6 +45,8 @@ enum MusEditorMode {
 
 // SPACING
 #define SPACING_MINPOS 8
+#define MIN_TIE_HEIGHT 12
+#define MIN_TIE_THICKNESS 6
 
 // PITCHES
 #define PITCH_C 1

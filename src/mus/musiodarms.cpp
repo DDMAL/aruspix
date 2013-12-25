@@ -351,18 +351,18 @@ int MusDarmsInput::do_Note(int pos, const char* data, bool rest) {
         if (tie) {
             // cur tie !NULL, so we add this note as second note there
             if (m_current_tie) {
-                m_current_tie->m_second = note;
+                m_current_tie->SetSecondNote( note );
             }
             // create a new mus tie with this note
             m_current_tie = new MusTie;
-            m_current_tie->m_first = note;
+            m_current_tie->SetFirstNote( note );
             m_layer->AddElement(m_current_tie);
         } else {
             // no tie (L or J) specified for not
             // but if cur tie !NULL we need to close the tie
             // and set cur tie to NULL
             if (m_current_tie) {
-                m_current_tie->m_second = note;
+                m_current_tie->SetSecondNote( note );
                 m_current_tie = NULL;
             }
         }

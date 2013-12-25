@@ -32,6 +32,7 @@
 #include "musrest.h"
 #include "mussymbol.h"
 #include "musstaff.h"
+#include "mussystem.h"
 #include "mustie.h"
 #include "mustuplet.h"
 
@@ -99,7 +100,7 @@ void MusRC::DrawElement( MusDC *dc, MusLayerElement *element, MusLayer *layer, M
         DrawSymbol(dc, element, layer, staff);
     }
     else if (dynamic_cast<MusTie*>(element)) {
-        DrawTie(dc, element, layer, staff);
+        DrawTie(dc, element, layer, staff, measure);
     } 
     else if (dynamic_cast<MusTuplet*>(element)) {
         DrawTupletElement(dc, element, layer, measure, staff);
@@ -139,8 +140,8 @@ void MusRC::DrawDurationElement( MusDC *dc, MusLayerElement *element, MusLayer *
         //{
             //	note->accord(dc, staff);
         }
-        dc->EndGraphic(element, this ); //RZ
-	} 
+        dc->EndGraphic(element, this );
+	}
     else if (dynamic_cast<MusRest*>(element)) {
         MusRest *rest = dynamic_cast<MusRest*>(element);
         int oct = rest->m_oct - 4;
@@ -156,7 +157,7 @@ void MusRC::DrawDurationElement( MusDC *dc, MusLayerElement *element, MusLayer *
             element->m_yDrawing = CalculatePitchPosY( staff, rest->m_pname, layer->GetClefOffset( element ), oct);
 		
         DrawRest( dc, element, layer, staff );
-        dc->EndGraphic(element, this ); //RZ
+        dc->EndGraphic(element, this );
 	}
     
 	/* 
@@ -184,7 +185,8 @@ void MusRC::DrawBeamElement(MusDC *dc, MusLayerElement *element, MusLayer *layer
     assert(layer); // Pointer to layer cannot be NULL"
     assert(staff); // Pointer to staff cannot be NULL"
     
-    MusBeam *beam = dynamic_cast<MusBeam*>(element);
+    MusBeam *beam = dynamic_cast
+    <MusBeam*>(element);
 
     dc->StartGraphic( element, "beam", element->GetUuid() );
     
@@ -546,6 +548,28 @@ void MusRC::DrawNote ( MusDC *dc, MusLayerElement *element, MusLayer *layer, Mus
 //	Mus::LogDebug("xrel: %d, ynn: %d", element->m_xDrawing, ynn);
 //	m_currentColour = wxBLACK;
 	//temp debug code
+    
+    
+    // Add the ties to the postponed drawing list
+    if ( note->GetTieAttrInitial() ) {
+        // normally, we add the tie from the terminal note,
+        // however, when the notes are not on the same system (or page),
+        // we need to draw them twice. For this reason, we look if the
+        // parent system is the same or not. If not, we also add to the list
+        // the tie from the inital note
+        MusNote *noteTerminal = note->GetTieAttrInitial()->GetSecondNote();
+        if ( noteTerminal ) {
+            MusSystem *parentSystem1 = dynamic_cast<MusSystem*>( note->GetFirstParent( &typeid(MusSystem) ) );
+            MusSystem *parentSystem2 = dynamic_cast<MusSystem*>( noteTerminal->GetFirstParent( &typeid(MusSystem) ) );
+            if ( (parentSystem1 != parentSystem2) && parentSystem1 ) {
+                layer->AddToDrawingList( note->GetTieAttrInitial() );
+            }
+        }
+    }
+    if ( note->GetTieAttrTerminal() ) {
+        layer->AddToDrawingList( note->GetTieAttrTerminal() );
+    }
+
 	
 
     if (note->m_fermata)
@@ -1449,39 +1473,84 @@ void MusRC::DrawKeySig( MusDC *dc, MusLayerElement *element, MusLayer *layer, Mu
     
 }
 
-void MusRC::DrawTie( MusDC *dc, MusLayerElement *element, MusLayer *layer, MusStaff *staff)
+void MusRC::DrawTie( MusDC *dc, MusLayerElement *element, MusLayer *layer, MusStaff *staff, MusMeasure *measure )
 {
     assert(layer); // Pointer to layer cannot be NULL"
     assert(staff); // Pointer to staff cannot be NULL"
+    assert(dynamic_cast<MusTie*>(element)); // The element must be a tie
     
     bool up = false;
     
-    MusTie *t = dynamic_cast<MusTie*>(element);
-    MusLayerElement *note1 = t->m_first;
-    MusLayerElement *note2 = t->m_second;
+    MusTie *tie = dynamic_cast<MusTie*>(element);
+    MusLayerElement *note1 = tie->GetFirstNote();
+    MusLayerElement *note2 = tie->GetSecondNote();
+    MusSystem *currentSystem = dynamic_cast<MusSystem*>( staff->GetFirstParent( &typeid(MusSystem) ) );
+    MusSystem *parentSystem1 = NULL;
+    MusSystem *parentSystem2 = NULL;
     
-    if (note1 == NULL || note2 == NULL)
-        return;
+    // In order to know if we are drawing a normal tie or a tie splitted over two systems, we need
+    // to look at the parent system of each note.
+    if ( note1 ) {
+        parentSystem1 = dynamic_cast<MusSystem*>( note1->GetFirstParent( &typeid(MusSystem) ) );
+    }
+    if ( note2 ) {
+        parentSystem2 = dynamic_cast<MusSystem*>( note2->GetFirstParent( &typeid(MusSystem) ) );
+    }
     
-    // Copied from DrawNote
-    // We could use the stamDir information
-    // but then we have to take in account (1) beams (2) stemmed and non stemmed notes tied together
-    int ynn = note1->m_yDrawing + staff->m_yDrawing;
-    int bby = staff->m_yDrawing;
-    int milieu = bby - m_doc->m_interl[staff->staffSize] * 2;
-    
-    up = (ynn < milieu) ? true : false;
-    
-    dc->StartGraphic( element, "tie", element->GetUuid() );
-    
-    // FIXME, take in account elements that can be netween notes, eg keys time etc
-    
-    if (up)
-        DrawTieBezier(dc, ToRendererX(note1->m_xDrawing), ToRendererY(note1->m_yDrawing + staff->m_yDrawing - 14), ToRendererX(note2->m_xDrawing), 20, 6, true);
-    else
-        DrawTieBezier(dc, ToRendererX(note1->m_xDrawing), ToRendererY(note1->m_yDrawing + staff->m_yDrawing + 14), ToRendererX(note2->m_xDrawing), 20, 6, false);
+    // This is the case when the tie is split over two system of two pages.
+    // In this case, we are now drawing its beginning to the end of the measure (i.e., the last aligner)
+    if ( parentSystem2 && currentSystem && ( parentSystem2 != currentSystem) ) {
+        MusAlignment *nextAlignement = note1->GetAlignment();
+        while (nextAlignement) {
+            if (nextAlignement->GetType() == ALIGNMENT_MEASURE_END) break;
+            nextAlignement = dynamic_cast<MusAlignment*>(nextAlignement->GetNextSibling());
+        }
+        if (!nextAlignement) {
+            return;
+        }
+        int y = note1->m_yDrawing + staff->m_yDrawing;
+        int x2 = measure->m_xDrawing + nextAlignement->GetXRel();
+        DrawTieBezier(dc, note1->m_xDrawing, y - 14, x2, true);
+    }
+    // Now this is the case when the tie is split but we are drawing the end of it
+    else if ( parentSystem1 && currentSystem && ( parentSystem1 != currentSystem) ) {
+        MusAlignment *previousAlignement = note2->GetAlignment();
+        while (previousAlignement) {
+            if (previousAlignement->GetType() != ALIGNMENT_DEFAULT) break;
+            previousAlignement = dynamic_cast<MusAlignment*>(previousAlignement->GetPreviousSibling());
+        }
+        if (!previousAlignement) {
+            return;
+        }
+        int y = note2->m_yDrawing + staff->m_yDrawing;
+        //int x1 = measure->m_xDrawing + previousAlignement->GetXRel() + previousAlignement->GetMaxWidth();
+        // is it actually better for x1 just to have a fixed value
+        int x1 = note2->m_xDrawing - m_doc->m_step2;
+        DrawTieBezier(dc, x1, y - 14, note2->m_xDrawing, true);
+    }
+    // Finally the normal case, but double check we have two notes
+    else if ( note1 && note2 ) {
+        
+        // Copied from DrawNote
+        // We could use the stamDir information
+        // but then we have to take in account (1) beams (2) stemmed and non stemmed notes tied together
+        int ynn = note1->m_yDrawing + staff->m_yDrawing;
+        int bby = staff->m_yDrawing;
+        int milieu = bby - m_doc->m_interl[staff->staffSize] * 2;
+        
+        up = (ynn < milieu) ? true : false;
+        
+        dc->StartGraphic( element, "tie", element->GetUuid() );
+        
+        // FIXME, take in account elements that can be netween notes, eg keys time etc
+        // 20 height nice with 70, not nice with 50
+        if (up)
+            DrawTieBezier(dc, note1->m_xDrawing, note1->m_yDrawing + staff->m_yDrawing - 14, note2->m_xDrawing, true);
+        else
+            DrawTieBezier(dc, note1->m_xDrawing, note1->m_yDrawing + staff->m_yDrawing + 14, note2->m_xDrawing, false);
 
-    dc->EndGraphic(element, this ); //RZ
+        dc->EndGraphic(element, this );
+    }
     
 }
 

@@ -27,6 +27,8 @@
 
 #define NOTE_MAX_SLURS 6
 
+class MusTie;
+
 //----------------------------------------------------------------------------
 // MusNote
 //----------------------------------------------------------------------------
@@ -84,7 +86,30 @@ public:
      */
     virtual int GetHorizontalSpacing( );
     
+    /**
+     *
+     */
+    void SetTieAttrInitial( );
+    void SetTieAttrTerminal( MusNote *previousNote );
+    MusTie *GetTieAttrInitial( ) { return m_tieAttrInitial; };
+    MusTie *GetTieAttrTerminal( ) { return m_tieAttrTerminal; };
+    void ResetTieAttrInitial();
+    void ResetTieAttrTerminal() { m_tieAttrTerminal = NULL; };
+    
 private:
+    
+protected:
+    
+    /**
+     * @name Tie attributes are represented by pointers to MusTie objects.
+     * There is one pointer for the initial attribute and one pointer for the end attribute.
+     * The MusTie objects points back to the notes as it is the case is a MEI tie element.
+     * With attributes, the note with the initial attribute own the MusTie object and take care of deleting it
+     */
+    ///@{
+    MusTie *m_tieAttrInitial;
+    MusTie *m_tieAttrTerminal;
+    ///@}
     
 public:
     /** Indicates the articulation (0 == none) */

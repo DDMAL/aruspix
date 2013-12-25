@@ -92,7 +92,7 @@ public:
 					   MusStaff *staff, int dimin ); 
 	void DrawLeipzigFont ( MusDC *dc, int x, int y, unsigned char c, 
 				  MusStaff *staff, bool dimin );
-    void DrawTieBezier(MusDC *dc, int x, int y, int x1, int height, int width, bool direction);
+    void DrawTieBezier(MusDC *dc, int x, int y, int x1, bool direction);
 	//void putfontfast ( MusDC *dc, int x, int y, unsigned char c );
 	void putstring ( MusDC *dc, int x, int y, std::string s, int centrer, int staffSize = 0);
 	void putlyric ( MusDC *dc, int x, int y, std::string s, int staffSize = 0, bool cursor = false);
@@ -157,7 +157,7 @@ public:
     void DrawSymbolAccid( MusDC *dc, MusLayerElement *element, MusLayer *layer, MusStaff *staff );
     void DrawSymbolCustos( MusDC *dc, MusLayerElement *element, MusLayer *layer, MusStaff *staff );
     void DrawSymbolDot( MusDC *dc, MusLayerElement *element, MusLayer *layer, MusStaff *staff );
-    void DrawTie( MusDC *dc, MusLayerElement *element, MusLayer *layer, MusStaff *staff );
+    void DrawTie( MusDC *dc, MusLayerElement *element, MusLayer *layer, MusStaff *staff, MusMeasure *measure );
     void DrawTuplet( MusDC *dc, MusTuplet *tuplet, MusLayer *layer, MusStaff *staff);
     void DrawTrill(MusDC *dc, MusLayerElement *element, MusStaff *staff);
     void DrawLigature( MusDC *dc, int y, MusLayerElement *element, MusLayer *layer, MusStaff *staff );  

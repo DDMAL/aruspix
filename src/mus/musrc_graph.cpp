@@ -121,7 +121,7 @@ int MusRC::hGrosseligne ( MusDC *dc, int x1, int y1, int x2, int y2, int decal)
 	p[3].x = p[0].x;
 	p[3].y = p[0].y - decal;
 
-	dc->DrawPolygon ( 4, p); //(sizeof (bcoord)*2) / sizeof (POINT)); nbrInt*2+ 1;
+	dc->DrawPolygon ( 4, p ); //(sizeof (bcoord)*2) / sizeof (POINT)); nbrInt*2+ 1;
 
     dc->ResetPen();
     dc->ResetBrush();
@@ -281,8 +281,12 @@ void MusRC::putlyric ( MusDC *dc, int x, int y, std::string s, int staffSize, bo
         DoLyricCursor( x, y, dc, s );	
 }
 
-void MusRC::DrawTieBezier(MusDC *dc, int x, int y, int x1, int height, int width, bool direction)
+void MusRC::DrawTieBezier(MusDC *dc, int x, int y, int x1, bool direction)
 {
+    int height = std::max( MIN_TIE_HEIGHT, std::min( 1 * m_doc->m_interl[0], abs( x1 - x ) / 4 ) );
+    
+    int thickness = std::max( m_doc->m_interl[0] / 3, MIN_TIE_THICKNESS );
+    
     int one, two; // control points at 1/4 and 3/4 of total lenght
     int bez1[6], bez2[6]; // filled array with control points and end point
     
@@ -293,27 +297,27 @@ void MusRC::DrawTieBezier(MusDC *dc, int x, int y, int x1, int height, int width
     
     if (direction) {
         // tie goes up
-        top_y = y + height;
+        top_y = y - height;
         // the second bezier in internal
-        top_y_fill = top_y - width;
+        top_y_fill = top_y + thickness;
     } else {
         //tie goes down
-        top_y = y - height;
+        top_y = y + height;
         // second bezier is internal as above
-        top_y_fill = top_y + width;
+        top_y_fill = top_y - thickness;
     }
     
     // Points for first bez, they go from xy to x1y1
-    bez1[0] = x + one; bez1[1] = top_y;
-    bez1[2] = x + two; bez1[3] = top_y;
-    bez1[4] = x1; bez1[5] = y;
+    bez1[0] = ToRendererX(x + one); bez1[1] = ToRendererY(top_y);
+    bez1[2] = ToRendererX(x + two); bez1[3] = ToRendererY(top_y);
+    bez1[4] = ToRendererX(x1); bez1[5] = ToRendererY(y);
     
     // second bez. goes back
-    bez2[0] = x + two; bez2[1] = top_y_fill;
-    bez2[2] = x + one; bez2[3] = top_y_fill;
-    bez2[4] = x; bez2[5] = y;
+    bez2[0] = ToRendererX(x + two); bez2[1] = ToRendererY(top_y_fill);
+    bez2[2] = ToRendererX(x + one); bez2[3] = ToRendererY(top_y_fill);
+    bez2[4] = ToRendererX(x); bez2[5] = ToRendererY(y);
     
     // Actually draw it
-    dc->DrawComplexBezierPath(x, y, bez1, bez2);
+    dc->DrawComplexBezierPath(ToRendererX(x), ToRendererY(y), bez1, bez2);
 }
 

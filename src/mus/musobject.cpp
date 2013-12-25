@@ -284,6 +284,66 @@ MusObject *MusObject::GetFirstChild( const std::type_info *elementType )
     return NULL;
 }
 
+MusObject *MusObject::GetNextSibling( const std::type_info *elementType )
+{
+    if (!m_parent) {
+        return NULL;
+    }
+    
+    ArrayOfMusObjects::iterator iter;
+    bool foundCurrent = false;
+    for (iter = this->m_parent->m_children.begin(); iter != m_children.end(); ++iter)
+    {
+        // we have not found the current object
+        if ( this == *iter ) {
+            foundCurrent = true;
+            // continue to find the next sibling
+            continue;
+        }
+        else if (!foundCurrent) {
+            continue;
+        }
+        if ( !elementType ) {
+            return *iter;
+        }
+        if ( typeid(**iter) == *elementType )
+        {
+            return *iter;
+        }
+    }
+    return NULL;
+}
+
+MusObject *MusObject::GetPreviousSibling( const std::type_info *elementType )
+{
+    if (!m_parent) {
+        return NULL;
+    }
+    
+    ArrayOfMusObjects::reverse_iterator iter;
+    bool foundCurrent = false;
+    for (iter = this->m_parent->m_children.rbegin(); iter != m_children.rend(); ++iter)
+    {
+        // we have not found the current object
+        if ( this == *iter ) {
+            foundCurrent = true;
+            // continue to find the next sibling
+            continue;
+        }
+        else if (!foundCurrent) {
+            continue;
+        }
+        if ( !elementType ) {
+            return *iter;
+        }
+        if ( typeid(**iter) == *elementType )
+        {
+            return *iter;
+        }
+    }
+    return NULL;
+}
+
 
 bool MusObject::GetSameAs( std::string *id, std::string *filename, int idx )
 {

@@ -245,6 +245,14 @@ private:
      */
     bool ReadUnsupported( TiXmlElement *element );
     
+    /**
+     * Look through the list of notes with open tie stored in MusMeiInput::m_openTies.
+     * The note has to be on the same staff (@n) and the same layer (@n) and
+     * have the same pitch. If found, the terminal attribute is the and the note
+     * is removed from the list
+     */
+    bool FindOpenTie( MusNote *terminalNote );
+    
 	//
     void SetMeiUuid( TiXmlElement *element, MusObject *object );
     bool StrToBool(std::string value);
@@ -281,6 +289,11 @@ private:
      * This is used when reading a standard MEI file to specify if a scoreDef has already been read or not.
      */
     bool m_hasScoreDef;
+    
+    /**
+     * A vector of keeping the notes with open ties.
+     */
+    std::vector<MusNote*> m_openTies;
 };
 
 

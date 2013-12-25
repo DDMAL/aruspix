@@ -28,6 +28,7 @@
 #include "muspage.h"
 #include "musstaff.h"
 #include "mussystem.h"
+#include "mustie.h"
 #include "mustuplet.h"
 
 //----------------------------------------------------------------------------
@@ -886,6 +887,8 @@ void MusRC::DrawLayer( MusDC *dc, MusLayer *layer, MusStaff *staff, MusMeasure *
     DrawLayerList(dc, layer, staff, measure, &typeid(MusBeam) );
     // then tuplets
     DrawLayerList(dc, layer, staff, measure, &typeid(MusTuplet) );
+    // then ties
+    DrawLayerList(dc, layer, staff, measure, &typeid(MusTie) );
     
 }
 
@@ -902,6 +905,8 @@ void MusRC::DrawLayerList( MusDC *dc, MusLayer *layer, MusStaff *staff, MusMeasu
     for (iter = drawingList->begin(); iter != drawingList->end(); ++iter)
     {
         element = dynamic_cast<MusLayerElement*>(*iter);
+        if (!element) continue; 
+        
         if ( (typeid(*element) == *elementType) &&  (*elementType == typeid(MusBeam) ) ) {
             MusBeam *beam = dynamic_cast<MusBeam*>(element);
             DrawBeam( dc, layer, beam, staff );
@@ -910,7 +915,10 @@ void MusRC::DrawLayerList( MusDC *dc, MusLayer *layer, MusStaff *staff, MusMeasu
             MusTuplet *tuplet = dynamic_cast<MusTuplet*>(element);
             DrawTuplet( dc, tuplet, layer, staff );
         }
-            
+        else if ( (typeid(*element) == *elementType) &&  (*elementType == typeid(MusTie) ) ) {
+            MusTie *tie = dynamic_cast<MusTie*>(element);
+            DrawTie( dc, tie, layer, staff, measure );
+        }
     }
 }
 

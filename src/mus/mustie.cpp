@@ -9,6 +9,10 @@
 #include "mustie.h"
 
 //----------------------------------------------------------------------------
+
+#include <assert.h>
+
+//----------------------------------------------------------------------------
 // MusTie
 //----------------------------------------------------------------------------
 
@@ -22,4 +26,22 @@ MusLayerElement("tie-")
 
 MusTie::~MusTie()
 {
+    if (m_first && m_first->GetTieAttrTerminal() == this) {
+        m_first->ResetTieAttrInitial();
+    }
+    if (m_second && m_second->GetTieAttrTerminal() == this) {
+        m_second->ResetTieAttrTerminal();
+    }
+}
+
+void MusTie::SetFirstNote( MusNote *note )
+{
+    assert( !m_first );
+    m_first = note;
+}
+
+void MusTie::SetSecondNote( MusNote *note )
+{
+    assert( !m_second );
+    m_second = note;
 }

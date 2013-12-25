@@ -9,6 +9,11 @@
 #include "musnote.h"
 
 //----------------------------------------------------------------------------
+
+#include "mus.h"
+#include "mustie.h"
+
+//----------------------------------------------------------------------------
 // MusNote
 //----------------------------------------------------------------------------
 
@@ -26,11 +31,16 @@ MusNote::MusNote():
     m_stemLen = 0;
     m_acciaccatura = false;
     m_embellishment = EMB_NONE;
+    // tie pointers
+    m_tieAttrInitial = NULL;
+    m_tieAttrTerminal = NULL;
 }
 
 
 MusNote::~MusNote()
 {
+    // This deletes the MusTie object if necessary
+    ResetTieAttrInitial();
 }
 
 bool MusNote::operator==( MusObject& other )
@@ -100,6 +110,39 @@ void MusNote::SetValue( int value, int flag )
 		this->m_stemDir = 0;
         this->m_stemLen = 0;
     }    
+}
+
+void MusNote::SetTieAttrInitial()
+{
+    if ( m_tieAttrInitial ) {
+        Mus::LogWarning("Initial tie attribute already set for note '%s", this->GetUuid().c_str() );
+        return;
+    }
+    m_tieAttrInitial = new MusTie();
+    m_tieAttrInitial->SetFirstNote( this );
+}
+
+void MusNote::SetTieAttrTerminal( MusNote *previousNote )
+{
+    if ( m_tieAttrTerminal ) {
+        Mus::LogWarning("Terminal tie attribute already set for note '%s", this->GetUuid().c_str() );
+        return;
+    }
+    if ( !previousNote || !previousNote->GetTieAttrInitial() ) {
+        Mus::LogWarning("No previous note or previous note without intial or median attribute for note '%s", this->GetUuid().c_str() );
+        return;
+    }
+    m_tieAttrTerminal = previousNote->GetTieAttrInitial();
+    m_tieAttrTerminal->SetSecondNote( this );
+}
+
+void MusNote::ResetTieAttrInitial( )
+{
+    if ( m_tieAttrInitial ) {
+        // Deleting the MusTie object will also reset the m_tieAttrTerminal of the second note
+        delete m_tieAttrInitial;
+        m_tieAttrInitial = NULL;
+    }
 }
 
 void MusNote::ChangeColoration( )

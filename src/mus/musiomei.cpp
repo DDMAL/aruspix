@@ -841,6 +841,15 @@ bool MusMeiInput::ReadMei( TiXmlElement *root )
             ReadUnsupported( current );
         }
     }
+    
+    if ( !m_openTies.empty()) {
+        std::vector<MusNote*>::iterator iter;
+        for (iter = m_openTies.begin(); iter != m_openTies.end(); ++iter)
+        {
+            Mus::LogWarning("Terminal tie for note '%s' could not be matched", (*iter)->GetUuid().c_str() );
+        }
+    }
+    
     return true;
 }
 
@@ -1329,6 +1338,18 @@ MusLayerElement *MusMeiInput::ReadMeiNote( TiXmlElement *note )
     if ( note->Attribute( "colored" ) ) {
         musNote->m_colored = ( strcmp ( note->Attribute( "colored" ), "true" ) == 0 );
     }
+    // coloration
+    if ( note->Attribute( "tie" ) ) {
+        if ( (strcmp ( note->Attribute( "tie" ), "i" ) == 0) || (strcmp ( note->Attribute( "tie" ), "m" ) == 0) ) {
+            musNote->SetTieAttrInitial();
+            m_openTies.push_back( musNote );
+        }
+        if ( (strcmp ( note->Attribute( "tie" ), "t" ) == 0) || (strcmp ( note->Attribute( "tie" ), "m" ) == 0) ) {
+            if (!FindOpenTie( musNote ) ) {
+                Mus::LogWarning("Initial tie could not be found" );
+            }
+        }
+    }
 	
 	return musNote;
 }
@@ -1604,6 +1625,41 @@ bool MusMeiInput::ReadUnsupported( TiXmlElement *element )
         Mus::LogWarning( "Element %s ignored", element->Value() );
     }
     return true;
+}
+
+bool MusMeiInput::FindOpenTie( MusNote *terminalNote )
+{
+    assert( m_staff );
+    assert( m_layer );
+    
+    std::vector<MusNote*>::iterator iter;
+    for (iter = m_openTies.begin(); iter != m_openTies.end(); ++iter)
+    {
+        // we need to get the parent layer for comparing their number
+        MusLayer *parentLayer = dynamic_cast<MusLayer*>( (*iter)->GetFirstParent( &typeid(MusLayer) ) );
+        if (!parentLayer) {
+            continue;
+        }
+        MusStaff *parentStaff = dynamic_cast<MusStaff*>( parentLayer->GetFirstParent( &typeid(MusStaff) ) );
+        // We assume the if the note has no parent staff it is because we are in the same layer and that
+        // the layer has not been added to its parent staff yet.
+        // If we have one, compare the number
+        if ( (parentStaff) && (m_staff->GetStaffNo() != parentStaff->GetStaffNo()) ) {
+            continue;
+        }
+        // same layer?
+        if ( m_layer->GetLayerNo() != parentLayer->GetLayerNo() ) {
+            continue;
+        }
+        // we only compare oct and pname because alteration is not relevant for ties
+        if ( (terminalNote->m_oct == (*iter)->m_oct) && (terminalNote->m_pname == (*iter)->m_pname) ) {
+            terminalNote->SetTieAttrTerminal( *iter );
+            m_openTies.erase(iter);
+            return true;
+        }
+        
+    }
+    return false;
 }
 
 void MusMeiInput::SetMeiUuid( TiXmlElement *element, MusObject *object )

@@ -28,14 +28,24 @@ public:
     
     virtual std::string MusClassName( ) { return "MusTie"; };
     
-    MusNote *m_first;
-    MusNote *m_second;
+    /**
+     * @name Set and get the first and second note of the tie
+     * The setter asserts that no note was previously set.
+     */
+    ///@{
+    void SetFirstNote( MusNote *note );
+    void SetSecondNote( MusNote *note );
+    MusNote *GetFirstNote() { return m_first; };
+    MusNote *GetSecondNote() { return m_second; };
+    ///@}
     
 private:
     
 public:
     
 private:
+    MusNote *m_first;
+    MusNote *m_second;
     
 };
 

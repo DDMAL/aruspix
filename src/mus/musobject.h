@@ -129,6 +129,20 @@ public:
     MusObject *GetFirstChild( const std::type_info *elementType );
     
     /**
+     * Return the previous sibling object of the specified type.
+     * If no type is specified, returns the previous object.
+     * Returns NULL if not found in both cases.
+     */
+    MusObject *GetPreviousSibling( const std::type_info *elementType = NULL );
+    
+    /**
+     * Return the next sibling object of the specified type.
+     * If no type is specified, returns the next object.
+     * Returns NULL if not found in both cases.
+     */
+    MusObject *GetNextSibling( const std::type_info *elementType = NULL );
+    
+    /**
      * Fill the list of all the children MusLayerElement.
      * This is used for navigating in a MusLayer (See MusLayer::GetPrevious and MusLayer::GetNext).
      */  

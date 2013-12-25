@@ -102,7 +102,7 @@ void MusDoc::Layout( )
 		page = (MusPage*)this->m_children[i];
         PaperSize( page );
         page->Layout( );
-        break;
+        //break;
      }
 }
 
