@@ -144,60 +144,13 @@ int MusRC::DoDrawDot ( MusDC *dc, int x, int y )
 	return y;
 }
 
-/** 
- Adding experimental code for neumes drawing. Right now its just a copy of DrawLeipzigFont, but
- eventually neume-specific functionality will most likely be implemented.
-	super-hack time
- */
-
-void MusRC::festa_string ( MusDC *dc, int x, int y, const std::string str, 
-							  MusStaff *staff, int dimin ) {
-	int staffSize = staff->staffSize;
-	int fontCorr = m_doc->m_fontHeightAscent[staffSize][dimin];
-	
-	assert( dc ); // DC cannot be NULL
-	
-	//need to add handling for festa dies font
-	// m_activeChantFonts
-	if (staff->notAnc)
-	{	
-		dc->SetFont( &m_doc->m_activeChantFonts[ staffSize][0] );			
-		fontCorr = m_doc->m_fontHeightAscent[ staffSize][0];
-	}
-	else
-	{
-		dc->SetFont( &m_doc->m_activeChantFonts[ staffSize][ dimin ] );
-	}
-	
-	if ( dc)
-	{	
-		dc->SetBackground( AxBLUE );
-		dc->SetBackgroundMode( AxTRANSPARENT );
-		
-		dc->SetTextForeground( m_currentColour );
-        dc->SetPen( m_currentColour, 1, AxSOLID );
-        dc->SetBrush( m_currentColour, AxSOLID );
-		
-		//Mus::LogDebug("Drawing text here, x: %d, y: %d, y (zoomed): %d, y + fontcorr: %d"
-		//	   , ToRendererX(x), y, ToRendererY(y), ToRendererY(y + fontCorr));
-
-		dc->DrawText( Mus::StringFormat( "%s", str.c_str()), ToRendererX(x), ToRendererY(y + fontCorr - 4) );
-		
-        dc->ResetPen();
-        dc->ResetBrush();
-	}
-	
-	return;
-}
-
-
 void MusRC::DrawLeipzigFont ( MusDC *dc, int x, int y, unsigned char c, 
 						 MusStaff *staff, bool dimin )
 {  
 	int staffSize = staff->staffSize;
 	int fontCorr = 0;
     if (dc->CorrectMusicAscent()) {
-        fontCorr = m_doc->m_fontHeightAscent[staffSize][dimin];
+        fontCorr = m_doc->m_rendFontHeightAscent[staffSize][dimin];
     }
 
 	assert( dc ); // DC cannot be NULL
@@ -210,13 +163,13 @@ void MusRC::DrawLeipzigFont ( MusDC *dc, int x, int y, unsigned char c,
 		{	
 			c+= 14;	// les cles d===e tablature
             if (dc->CorrectMusicAscent()) {
-                fontCorr = m_doc->m_fontHeightAscent[ staffSize][0];
+                fontCorr = m_doc->m_rendFontHeightAscent[ staffSize][0];
             }
 		}
 	}
 	if (!staff->notAnc || !is_in (c, 241, 243))	// tout sauf clefs de tablature
 	{
-        dc->SetFont( &m_doc->m_activeFonts[ staffSize ][ dimin ] );
+        dc->SetFont( &m_doc->m_rendFonts[ staffSize ][ dimin ] );
 	}
 
 	if ( dc)
@@ -247,10 +200,10 @@ void MusRC::putstring ( MusDC *dc, int x, int y, std::string s, int centrer, int
 
     int fontCorr = 0;
     
-    dc->SetFont( &m_doc->m_activeFonts[ staffSize ][0] );
+    dc->SetFont( &m_doc->m_rendFonts[ staffSize ][0] );
     x = ToRendererX(x);
     if (dc->CorrectMusicAscent()) {
-        fontCorr = m_doc->m_fontHeightAscent[staffSize][0];
+        fontCorr = m_doc->m_rendFontHeightAscent[staffSize][0];
     }
     
     
@@ -271,7 +224,7 @@ void MusRC::putlyric ( MusDC *dc, int x, int y, std::string s, int staffSize, bo
 { 
 	assert( dc ); // DC cannot be NULL
 
-    dc->SetFont( &m_doc->m_activeLyricFonts[ staffSize ] );
+    dc->SetFont( &m_doc->m_rendLyricFonts[ staffSize ] );
 	x = ToRendererX(x);
 
 	dc->SetTextForeground( m_currentColour );
@@ -283,9 +236,9 @@ void MusRC::putlyric ( MusDC *dc, int x, int y, std::string s, int staffSize, bo
 
 void MusRC::DrawTieBezier(MusDC *dc, int x, int y, int x1, bool direction)
 {
-    int height = std::max( MIN_TIE_HEIGHT, std::min( 1 * m_doc->m_interl[0], abs( x1 - x ) / 4 ) );
+    int height = std::max( MIN_TIE_HEIGHT, std::min( 1 * m_doc->m_rendInterl[0], abs( x1 - x ) / 4 ) );
     
-    int thickness = std::max( m_doc->m_interl[0] / 3, MIN_TIE_THICKNESS );
+    int thickness = std::max( m_doc->m_rendInterl[0] / 3, MIN_TIE_THICKNESS );
     
     int one, two; // control points at 1/4 and 3/4 of total lenght
     int bez1[6], bez2[6]; // filled array with control points and end point

@@ -180,7 +180,7 @@ std::string MusController::RenderToSvg( int pageNo, bool xml_tag )
     // Create the SVG object, h & w come from the system
     // we add border*2 so it is centered into the image
     //MusSvgDC svg(system->m_contentBB_x2 - system->m_contentBB_x1 + m_border * 2, (system->m_contentBB_y2 - system->m_contentBB_y1) + m_border * 2);
-    MusSvgDC svg( m_doc.m_pageWidth, m_doc.m_pageHeight );
+    MusSvgDC svg( m_doc.m_rendPageWidth, m_doc.m_rendPageHeight );
     
     // set scale and border from user options
     svg.SetUserScale((double)m_scale / 100, (double)m_scale / 100);

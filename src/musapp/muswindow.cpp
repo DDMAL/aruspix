@@ -332,8 +332,8 @@ void MusWindow::Resize( )
 	
 	Show( false );
 	wxSize parent_s = parent->GetClientSize();
-	int page_w = (ToRendererX(m_doc->m_pageWidth) + MUS_BORDER_AROUND_PAGE) * GetZoom() / 100;
-	int page_h = (ToRendererX(m_doc->m_pageHeight) + MUS_BORDER_AROUND_PAGE) * GetZoom() / 100;
+	int page_w = (ToRendererX(m_doc->m_rendPageWidth) + MUS_BORDER_AROUND_PAGE) * GetZoom() / 100;
+	int page_h = (ToRendererX(m_doc->m_rendPageHeight) + MUS_BORDER_AROUND_PAGE) * GetZoom() / 100;
 	int win_w = std::min( page_w, parent_s.GetWidth() );
 	int win_h = std::min( page_h, parent_s.GetHeight() );
 
@@ -613,7 +613,7 @@ void MusWindow::Paste()
 		return;
 			
 	// arbitrary x value after the current element
-	m_currentElement = m_currentLayer->Insert( m_bufferElement, m_currentElement->m_xAbs + m_doc->m_step1 * 3 );
+	m_currentElement = m_currentLayer->Insert( m_bufferElement, m_currentElement->m_xAbs + m_doc->m_rendStep1 * 3 );
 
 	this->Refresh();
 	OnEndEdition();
@@ -627,7 +627,7 @@ void MusWindow::UpdateScroll()
 	int x = 0;
 	if ( m_currentElement )
 		x = ToRendererX( m_currentElement->m_xAbs );
-	int y = ToRendererY(  m_currentStaff->m_yAbs + m_doc->m_staffSize[0] );
+	int y = ToRendererY(  m_currentStaff->m_yAbs + m_doc->m_rendStaffSize[0] );
     
     x *= (double)m_zoomNum / m_zoomDen;
     y *= (double)m_zoomNum / m_zoomDen;
@@ -650,7 +650,7 @@ void MusWindow::UpdateScroll()
 		x = -1;
 	else
 		x /= xu;
-	if ( (y > ys ) && (y < ys + h - 2 * ToRendererX(m_doc->m_staffSize[0])) )
+	if ( (y > ys ) && (y < ys + h - 2 * ToRendererX(m_doc->m_rendStaffSize[0])) )
 		y = -1;
 	else
 		y /= yu;
@@ -1559,7 +1559,7 @@ void MusWindow::MensuralEditOnKeyDown(wxKeyEvent &event) {
         else {
             alteration.m_accid = ACCID_SHARP;
         }
-        m_currentLayer->Insert( &alteration, m_currentElement->m_xAbs - m_doc->m_step1 * 3 );
+        m_currentLayer->Insert( &alteration, m_currentElement->m_xAbs - m_doc->m_rendStep1 * 3 );
         CheckPoint( UNDO_PART, MUS_UNDO_FILE );
         OnEndEdition();
     }
@@ -1571,7 +1571,7 @@ void MusWindow::MensuralEditOnKeyDown(wxKeyEvent &event) {
         MusSymbol dot( SYMBOL_DOT );
         dot.m_pname = note->m_pname;
         dot.m_oct = note->m_oct;
-        m_currentLayer->Insert( &dot, m_currentElement->m_xAbs + m_doc->m_step1 * 2 );
+        m_currentLayer->Insert( &dot, m_currentElement->m_xAbs + m_doc->m_rendStep1 * 2 );
         CheckPoint( UNDO_PART, MUS_UNDO_FILE );
         OnEndEdition();
     }

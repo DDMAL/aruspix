@@ -47,25 +47,183 @@ public:
      */ 
     void Reset( DocType type );
     
-    /*
-     * Clear the paper size of the document.
-     */ 
-    void ResetPaperSize( );
-    
     /**
      * Refreshes the views from MusDoc.
      */
     virtual void Refresh();
     
-    virtual int Save( MusFileOutputStream *output );
+    /**
+     * Getter for the DocType.
+     * The setter is MusDoc::Reset.
+     */
+    DocType GetType() { return m_type; };
     
-    // moulinette
-    void GetNumberOfVoices( int *min_voice, int *max_voice );
-    MusStaff *GetVoice( int i );
+    /**
+     * @name Setters for the page dimensions and margins
+     */
+    ///@{
+    void SetPageHeight( int pageHeight ) { m_pageHeight = pageHeight; };
+    void SetPageWidth( int pageWidth ) { m_pageWidth = pageWidth; };
+    void SetPageLeftMar( int pageLeftMar ) { m_pageLeftMar = pageLeftMar; };
+    void SetPageRightMar( int pageRightMar ) { m_pageRightMar = pageRightMar; };
+    void SetPageTopMar( int pageTopMar ) { m_pageTopMar = pageTopMar; };
+    ///@}
+    
+    /**
+     * Saves the document using the specified output stream.
+     * Creates a functors that will parse the full tree.
+     */
+    virtual int Save( MusFileOutputStream *output );
+
+    
+    /**
+     * Performs the layout of the entire document
+     */
+    void Layout( );
+    
+    /**
+     * To be implemented.
+     */
+    void RefreshViews( ) {};
+	
+	/**
+     * Set the paper size for the (when drawing it)
+     * By default, the page size of the document is taken.
+     * If a page is given, the size of the page is taken.
+     * calculFormatPapier() in Wolfgang
+     */
+	void SetRendPage( MusPage *page );
+
+    /**
+     * Initializes fonts from the resources (music and lyrics)
+     * The method is called when the doc is reset.
+     */
+	virtual void UpdateFontValues();
+        
+    //----------//
+    // Functors //
+    //----------//
+    
+    /**
+     * Functor method for saving the page
+     */
+    virtual int Save( ArrayPtrVoid params );
+    
+private:
+    /**
+     * Calculates the Leipzig font size according to the m_interlDefin reference value.
+     * The size is calculated using  LEIPZIG_UNITS_PER_EM and LEIPZIG_WHOLE_NOTE_HEAD_HEIGHT.
+     * See musdef.h for more information about these values.
+     */
+    int CalcLeipzigFontSize( );
     
 public:
-    /** nom complet du fichier */
+    
+
+    /** 
+     * The full name of the file. Exact use to be clarified.
+     */
     std::string m_fname;
+    
+    /**
+     * The object with the default values.
+     * This could be saved somewhere as preferences (todo).
+     */
+    MusEnv m_env;
+    
+    /** 
+     * The source id. Exact use to be clarified.
+     */
+    std::string m_source;
+    
+    /**
+     * Holds the top scoreDef.
+     * In a standard MEI file, this is the <scoreDef> encoded before the first <section>.
+     */
+    MusScoreDef m_scoreDef;
+    
+    /*
+     * The following values are set in the MusDoc::SetRenderedPage.
+     * They are all current values to be used when rendering a page in a MusRC and 
+     * reset for every page. However, most of them are based on the m_staffDefin values
+     * and will remain the same. This can be optimized.
+     * The pages dimensions and margins are based on the page ones, the document ones or 
+     * the default in the following order and if available.
+     */
+  
+    /** The page currently being rendered */
+    MusPage *m_rendPage;
+    /** Editor step (10 by default) */
+    int m_rendStep1;
+    /** Editor medium step (3 * m_rendStep1) */
+    int m_rendStep2;
+    /** Editor large step (6 * m_rendStep1) */
+    int m_rendStep3;
+    /** Half a the space between to staff lines for normal and small staff (10 and 8 by default) */
+    int m_rendHalfInterl[2];
+    /** Space between to staff lines for normal and small staff (20 and 16 by default) */
+    int m_rendInterl[2];
+    /** Height of a five line staff for normal and small staff (80 and 64 by default) */
+    int m_rendStaffSize[2];
+    /** Height of an octave for normal and small staff (70 and 56 by default) */
+    int m_rendOctaveSize[2];
+    /** Font height (100 par defaut) */
+    int m_rendFontHeight;
+    /** Font height with ascent for normal and small staff and normal and grace size */
+	int m_rendFontHeightAscent[2][2];
+    /** Normal and small staff ration (16 / 20 by default) */
+    int m_rendSmallStaffRatio[2];
+    /** Normal and grace size (3 / 4 by default) */
+    int m_rendGraceRatio[2];
+    /** Height of a beam for normal and small staff (10 and 6 by default) */
+    int m_rendBeamWidth[2];
+    /** Height of a beam spacing (white) for normal and small staff (10 and 6 by default) */
+    int m_rendBeamWhiteWidth[2];
+    /** Current font height with ascent for normal and small staff and normal and grace size */
+    int m_rendFontSize[2][2];
+    /** Note radius for normal and small staff and normal and grace size */
+    int m_rendNoteRadius[2][2];
+    /** Ledger line length for normal and small staff and normal and grace size */
+    int m_rendLedgerLine[2][3];
+    /** Brevis width for normal and small staff */
+    int m_rendBrevisWidth[2];
+    /** Accident width for normal and small staff and normal and grace size */
+    int m_rendAccidWidth[2][2];
+    /** A vertical unit corresponding to the 1/4 of an interline */
+    float m_rendVerticalUnit1[2];
+    /** A vertical unit corresponding to the 1/8 of an interline */
+    float m_rendVerticalUnit2[2];
+    /** Current Leipzig font for normal and small staff and normal and grace size */
+    MusFontInfo m_rendFonts[2][2];				
+    /** Leipzig font */
+    MusFontInfo m_rendLeipzigFont;
+    /** Current lyric font for normal and small staff and normal and grace size */
+    MusFontInfo m_rendLyricFonts[2];
+    /** Lyric font by default */
+    MusFontInfo m_rendLyricFont;
+    /** The current page height */
+    int m_rendPageHeight;
+    /** The current page height */
+    int m_rendPageWidth;
+    /** The current page witdth */
+    int m_rendPageLeftMar;
+    /** The current page left margin */
+    int m_rendPageRightMar;
+    /** The current page right margin */
+    int m_rendPageTopMar;
+    /** the current beam minimal slope */
+	float m_rendBeamMinSlope;
+    /** the current beam maximal slope */
+    float m_rendBeamMaxSlope;
+    
+private:
+    /**
+     * The type of document indicates how to deal with the layout information.
+     * A Transcription document types means that the layout information is included
+     * and that no layout algorithm should be applied.
+     */
+    DocType m_type;
+    
     /** Page width (MEI scoredef@page.width) - currently not saved */
     int m_pageWidth;
     /** Page height (MEI scoredef@page.height) - currently not saved */
@@ -76,127 +234,6 @@ public:
     short m_pageRightMar;
     /** Page top margin (MEI scoredef@page.topmar) - currently not saved */
     short m_pageTopMar;
-    
-    MusEnv m_env;
-    
-public:
-    
-    DocType GetType() { return m_type; };
-    
-    /* Perform the layout of the music */
-    void Layout( );
-    
-    void RefreshViews( ) {};
-	
-	/**
-     * Set the paper size for the layout (when drawing it)
-     * By default, the page size of the document is taken.
-     * If a page is given, the size of the page is taken.
-     * calculFormatPapier() in Wolfgang
-     */
-	void PaperSize( MusPage *page = NULL );
-    /**
-     Initialise les donnees de visualisation par page
-     */
-	virtual void UpdatePageValues();
-    /**
-     Initialise les donnees de polices (music and lyrics)
-     */
-	virtual void UpdateFontValues();
-    
-    /**
-     * Return the right X position of the according to the page and system margins.
-     */
-    int GetSystemRightX( MusSystem *system );
-    
-	int GetPageCount() const { return (int)m_children.size(); };
-    
-    // functors
-    virtual int Save( ArrayPtrVoid params );
-    
-private:
-    // method calculating the font size
-    int CalcMusicFontSize( );
-    int CalcNeumesFontSize( );
-    
-public:
-    
-    // Previously in MusRC
-    /** Editor step (10 by default) */
-    int m_step1;
-    /** Editor medium step (3 * m_step1) */
-    int m_step2;
-    /** Editor large step (6 * m_step1) */
-    int m_step3;
-    /** Half a the space between to staff lines for normal and small staff (10 and 8 by default) */
-    int m_halfInterl[2];
-    /** Space between to staff lines for normal and small staff (20 and 16 by default) */
-    int m_interl[2];
-    /** Height of a five line staff for normal and small staff (80 and 64 by default) */
-    int m_staffSize[2];
-    /** Height of an octave for normal and small staff (70 and 56 by default) */
-    int m_octaveSize[2];
-    /** Font height (100 par defaut) */
-    int m_fontHeight;
-    /** Font height with ascent for normal and small staff and normal and grace size */
-	int m_fontHeightAscent[2][2];
-    /** Normal and small staff ration (16 / 20 by default) */
-    int m_smallStaffRatio[2];
-    /** Normal and grace size (3 / 4 by default) */
-    int m_graceRatio[2];
-    /** Height of a beam for normal and small staff (10 and 6 by default) */
-    int m_beamWidth[2];
-    /** Height of a beam spacing (white) for normal and small staff (10 and 6 by default) */
-    int m_beamWhiteWidth[2];
-    /** Current font height with ascent for normal and small staff and normal and grace size */
-    int m_fontSize[2][2];
-    /** Note radius for normal and small staff and normal and grace size */
-    int m_noteRadius[2][2];
-    /** Ledger line length for normal and small staff and normal and grace size */
-    int m_ledgerLine[2][3];
-    /** Brevis width for normal and small staff */
-    int m_brevisWidth[2];
-    /** Accident width for normal and small staff and normal and grace size */
-    int m_accidWidth[2][2];
-    /** A vertical unit corresponding to the 1/4 of an interline */
-    float m_verticalUnit1[2];
-    /** A vertical unit corresponding to the 1/8 of an interline */
-    float m_verticalUnit2[2];
-    /** Spacing between barlines */
-    int m_barlineSpacing;
-    /** Current Leipzig font for normal and small staff and normal and grace size */
-    MusFontInfo m_activeFonts[2][2];				
-    /** Leipzig font */
-    MusFontInfo m_ftLeipzig;
-    /** Current FestaDiesA font for normal and small staff and normal and grace size */
-	MusFontInfo m_activeChantFonts[2][2];
-	/** FestaDiesA font for neume notation */
-	MusFontInfo m_ftFestaDiesA;
-    /** Current lyric font for normal and small staff and normal and grace size */
-    MusFontInfo m_activeLyricFonts[2];
-    /** Lyric font by default */
-    MusFontInfo m_ftLyrics;
-	
-	float m_beamMinSlope, m_beamMaxSlope;
-
-    /** The source id */
-    std::string m_source;
-	
-    //int mesureNum, mesureDen;
-	//float MesVal;
-    
-    /** indique si la definition de page poue laquelle fontes actuelles est a jour */
-    int m_charDefin;
-    
-    /**
-     * Hold the top scoreDef.
-     * In a standard MEI file, this is the <scoreDef> encoded before the first <section>.
-     */
-    MusScoreDef m_scoreDef;
-    
-private:
-    DocType m_type;
-    
 	
 };
 

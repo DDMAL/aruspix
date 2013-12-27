@@ -66,9 +66,8 @@ private:
 //----------------------------------------------------------------------------
 
 /** 
- * This class contains the document environment variables.
- * It remains from the Wolfgang parameters strcuture.
- * TODO - Integrate them in MEI.
+ * This class contains the document default environment variables.
+ * Some of them are not available as is in MEI - to be solved
  */
 class MusEnv 
 {
@@ -79,36 +78,48 @@ public:
     
     
 public:
-    /** landscape paper orientation */
+    /** The reference interline definition  */
+    int m_interlDefin;
+    /** The landscape paper orientation flag */
     char m_landscape;
-    /** staff line width */
+    /** The staff line width */
     unsigned char m_staffLineWidth;
-    /** stem width */
+    /** The stem width */
     unsigned char m_stemWidth;
-    /** barline width */
+    /** The barline width */
     unsigned char m_barlineWidth;
-    /** beam width */
+    /** The beam width */
     unsigned char m_beamWidth;
-    /** beam white width */
+    /** The beam white width */
     unsigned char m_beamWhiteWidth;
-    /** maximum beam slope */
+    /** The maximum beam slope */
     unsigned char m_beamMaxSlope;
-    /** minimum beam slope */
+    /** The minimum beam slope */
     unsigned char m_beamMinSlope;     
-    /** small staff size ratio numerator */
+    /** The small staff size ratio numerator */
     unsigned char m_smallStaffNum;
-    /** small staff size ratio denominator */
+    /** The small staff size ratio denominator */
     unsigned char m_smallStaffDen;
-    /** grace size ratio numerator */
+    /** The grace size ratio numerator */
     unsigned char m_graceNum;
-    /** grace size ratio denominator */
+    /** The grace size ratio denominator */
     unsigned char m_graceDen;
-    /** stem position correction */
+    /** The stem position correction */
     signed char m_stemCorrection;
-    /** header and footer type */
+    /** The header and footer type */
     unsigned int m_headerType;
-    /** notation mode. Since since Aruspix 1.6.1 */
+    /** The notation mode (cmn or mensural) */
     int m_notationMode;
+    /** The current page height */
+    int m_pageHeight;
+    /** The current page height */
+    int m_pageWidth;
+    /** The current page witdth */
+    int m_pageLeftMar;
+    /** The current page left margin */
+    int m_pageRightMar;
+    /** The current page right margin */
+    int m_pageTopMar;
 };
 
 

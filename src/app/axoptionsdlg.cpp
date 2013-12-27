@@ -281,7 +281,7 @@ void AxOptionsDlg::UpdateFontCorrections( int eventID )
 
 	wxGetApp().m_fontPosCorrection = GetScMusOffset()->GetValue();
 	wxGetApp().m_fontSizeCorrection = GetScMusSize()->GetValue();
-	m_musWinPtr->m_doc->UpdatePageValues();
+	//m_musWinPtr->m_doc->UpdatePageValues();
 	if ( eventID == ID_SC_MUS_SIZE)
 		m_musWinPtr->m_doc->UpdateFontValues();
     m_musWinPtr->Resize( );
@@ -521,13 +521,13 @@ AxOptMusWindow::AxOptMusWindow( wxWindow *parent, wxWindowID id,
     m_docPtr = new MusDoc();
     m_docPtr->Reset( Transcription );
     
-    m_docPtr->m_pageWidth = 150;
-    m_docPtr->m_pageHeight = 150;
-    m_docPtr->m_pageLeftMar = 0;
-    m_docPtr->m_pageRightMar = 0;
     
     // create a new layout and the page
     MusPage *page = new MusPage();
+    page->m_pageWidth = 150;
+    page->m_pageHeight = 150;
+    page->m_pageLeftMar = 0;
+    page->m_pageRightMar = 0;
     MusSystem *system = new MusSystem();
     system->m_yAbs = 120;
     MusStaff *staff = new MusStaff( 1 );

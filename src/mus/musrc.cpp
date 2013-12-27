@@ -70,8 +70,6 @@ void MusRC::SetDoc( MusDoc *doc )
         m_doc = doc;
         //m_notation_mode = m_layout->m_env.m_notationMode;
         m_npage = 0;
-        m_doc->UpdateFontValues();
-        m_doc->UpdatePageValues();
         // for now we just get the first page
         SetPage( (MusPage*)m_doc->m_children[m_npage] );
         //CheckPoint( UNDO_ALL, MUS_UNDO_FILE ); // ax2
@@ -83,7 +81,7 @@ void MusRC::SetPage( MusPage *page )
 {
 	assert( page ); // MusPage cannot be NULL
     
-    m_doc->PaperSize( page );
+    m_doc->SetRendPage( page );
 
 	m_page = page;
 
@@ -119,7 +117,7 @@ void MusRC::SetPage( MusPage *page )
 bool MusRC::HasNext( bool forward ) 
 { 
 	if ( forward )
-		return ( m_doc && ((int)m_doc->GetPageCount() - 1 > m_npage) );
+		return ( m_doc && ((int)m_doc->GetChildCount() - 1 > m_npage) );
 	else
 		return ( m_doc && (m_npage > 0) );
     return false;
@@ -166,7 +164,7 @@ int MusRC::ToRendererY( int i )
         return 0;
     }
     
-    return m_doc->m_pageHeight - i; // flipped
+    return m_doc->m_rendPageHeight - i; // flipped
 }
 
 /** y value in the Logical world  */
@@ -177,7 +175,7 @@ int MusRC::ToLogicalY( int i )
             return 0;
         }
         
-        return m_doc->m_pageHeight - i; // flipped
+        return m_doc->m_rendPageHeight - i; // flipped
     }
 }
 

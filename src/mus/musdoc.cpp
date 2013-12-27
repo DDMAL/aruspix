@@ -38,28 +38,21 @@ MusDoc::~MusDoc()
 
 void MusDoc::Reset( DocType type )
 {
+    UpdateFontValues();
+    
     m_type = type;
     
     ClearChildren();
     
-    // there is no reason why this is treated differently
-    // show be in MusEnv and set in UpdatePageValues
-    m_charDefin = 18;
-    
-    UpdatePageValues();
-
-    ResetPaperSize();
-    
-    m_scoreDef.Clear();
-}
-
-void MusDoc::ResetPaperSize()
-{
-    m_pageWidth = 2100;
-    m_pageHeight = 2970;
+    m_pageWidth = -1;
+    m_pageHeight = -1;
     m_pageRightMar = 0;
     m_pageLeftMar = 0;
-    m_pageTopMar = 0; 
+    m_pageTopMar = 0;
+    
+    m_rendPage = NULL;
+    
+    m_scoreDef.Clear();
 }
 
 int MusDoc::Save( ArrayPtrVoid params )
@@ -97,188 +90,180 @@ void MusDoc::Layout( )
     
     int i;
 	MusPage *page = NULL;
-    for (i = 0; i < this->GetPageCount(); i++)
+    for (i = 0; i < this->GetChildCount(); i++)
 	{
 		page = (MusPage*)this->m_children[i];
-        PaperSize( page );
         page->Layout( );
         //break;
      }
 }
 
-void MusDoc::PaperSize( MusPage *page )
+void MusDoc::SetRendPage( MusPage *page )
 {
+    if ( !page || (page == m_rendPage) ) {
+        return;
+    }
+    m_rendPage = page;
+    
     // we use the page members only if set (!= -1) 
-    if ( page  && ( page->m_pageHeight != -1 ) ) {
-        m_pageHeight = page->m_pageHeight;
-        m_pageWidth = page->m_pageWidth;
-        m_pageLeftMar = page->m_pageLeftMar;
-        m_pageRightMar = page->m_pageRightMar;
-        m_pageTopMar = page->m_pageTopMar;
+    if ( page->m_pageHeight != -1 )
+    {
+        m_rendPageHeight = page->m_pageHeight;
+        m_rendPageWidth = page->m_pageWidth;
+        m_rendPageLeftMar = page->m_pageLeftMar;
+        m_rendPageRightMar = page->m_pageRightMar;
+        m_rendPageTopMar = page->m_pageTopMar;
 	}
-	else
-	{	
-        ResetPaperSize();
-        if (this->m_env.m_landscape)
-        {	
-            int pageHeight = m_pageWidth;
-            m_pageWidth = m_pageHeight;
-            m_pageHeight = pageHeight;
-            int pageRightMar = m_pageLeftMar;
-            m_pageLeftMar = this->m_pageRightMar;
-            m_pageRightMar = pageRightMar;
-        }
+	else if ( this->m_pageHeight != -1 )
+	{
+        m_rendPageHeight = this->m_pageHeight;
+        m_rendPageWidth = this->m_pageWidth;
+        m_rendPageLeftMar = this->m_pageLeftMar;
+        m_rendPageRightMar = this->m_pageRightMar;
+        m_rendPageTopMar = this->m_pageTopMar;
+    }
+    else
+    {
+        m_rendPageHeight = m_env.m_pageHeight;
+        m_rendPageWidth = m_env.m_pageWidth;
+        m_rendPageLeftMar = m_env.m_pageLeftMar;
+        m_rendPageRightMar = m_env.m_pageRightMar;
+        m_rendPageTopMar = m_env.m_pageTopMar;
     }
     
-	m_beamMaxSlope = this->m_env.m_beamMaxSlope;
-	m_beamMinSlope = this->m_env.m_beamMinSlope;
-	m_beamMaxSlope /= 100;
-	m_beamMinSlope /= 100;
+    if (this->m_env.m_landscape)
+    {	
+        int pageHeight = m_rendPageWidth;
+        m_rendPageWidth = m_rendPageHeight;
+        m_rendPageHeight = pageHeight;
+        int pageRightMar = m_rendPageLeftMar;
+        m_rendPageLeftMar = m_rendPageRightMar;
+        m_rendPageRightMar = pageRightMar;
+    }
+    
+    // From here we could check if values have changed
+    // Since  m_env.m_interlDefin stays the same, it useless to do it
+    // every time for now.
+    
+	m_rendBeamMaxSlope = this->m_env.m_beamMaxSlope;
+	m_rendBeamMinSlope = this->m_env.m_beamMinSlope;
+	m_rendBeamMaxSlope /= 100;
+	m_rendBeamMinSlope /= 100;
+    
+    m_rendSmallStaffRatio[0] = this->m_env.m_smallStaffNum;
+    m_rendSmallStaffRatio[1] = this->m_env.m_smallStaffDen;
+    m_rendGraceRatio[0] = this->m_env.m_graceNum;
+    m_rendGraceRatio[1] = this->m_env.m_graceDen;
+    
+    // half of the space between two lines
+    m_rendHalfInterl[0] = m_env.m_interlDefin/2;
+    // same for small staves
+    m_rendHalfInterl[1] = (m_rendHalfInterl[0] * m_rendSmallStaffRatio[0]) / m_rendSmallStaffRatio[1];
+    // space between two lines
+    m_rendInterl[0] = m_rendHalfInterl[0] * 2;
+    // same for small staves
+    m_rendInterl[1] = m_rendHalfInterl[1] * 2;
+    // staff (with five lines)
+    m_rendStaffSize[0] = m_rendInterl[0] * 4;
+    m_rendStaffSize[1] = m_rendInterl[1] * 4;
+    //
+    m_rendOctaveSize[0] = m_rendHalfInterl[0] * 7;
+    m_rendOctaveSize[1] = m_rendHalfInterl[1] * 7;
+    
+    m_rendStep1 = m_rendHalfInterl[0];
+    m_rendStep2 = m_rendStep1 * 3;
+    m_rendStep3 = m_rendStep1 * 6;
+    
+    // values for beams
+    m_rendBeamWidth[0] = this->m_env.m_beamWidth;
+    m_rendBeamWhiteWidth[0] = this->m_env.m_beamWhiteWidth;
+    m_rendBeamWidth[1] = (m_rendBeamWidth[0] * m_rendSmallStaffRatio[0]) / m_rendSmallStaffRatio[1];
+    m_rendBeamWhiteWidth[1] = (m_rendBeamWhiteWidth[0] * m_rendSmallStaffRatio[0]) / m_rendSmallStaffRatio[1];
+    
+    m_rendFontHeight = CalcLeipzigFontSize();
+    m_rendFontHeightAscent[0][0] = floor(LEIPZIG_ASCENT * (double)m_rendFontHeight / LEIPZIG_UNITS_PER_EM);
+	m_rendFontHeightAscent[0][0] +=  Mus::GetFontPosCorrection();
+	m_rendFontHeightAscent[0][1] = (m_rendFontHeightAscent[0][0] * m_rendGraceRatio[0]) / m_rendGraceRatio[1];
+    m_rendFontHeightAscent[1][0] = (m_rendFontHeightAscent[0][0] * m_rendSmallStaffRatio[0]) / m_rendSmallStaffRatio[1];
+	m_rendFontHeightAscent[1][1] = (m_rendFontHeightAscent[1][0] * m_rendGraceRatio[0]) / m_rendGraceRatio[1];
+    
+    m_rendFontSize[0][0] = m_rendFontHeight;
+    m_rendFontSize[0][1] = (m_rendFontSize[0][0] * m_rendGraceRatio[0]) / m_rendGraceRatio[1];
+    m_rendFontSize[1][0] = (m_rendFontSize[0][0] * m_rendSmallStaffRatio[0]) / m_rendSmallStaffRatio[1];
+    m_rendFontSize[1][1]= (m_rendFontSize[1][0] * m_rendGraceRatio[0])/ m_rendGraceRatio[1];
+    
+	m_rendFonts[0][0].SetPointSize( m_rendFontSize[0][0] ); //160
+    m_rendFonts[0][1].SetPointSize( m_rendFontSize[0][1] ); //120
+    m_rendFonts[1][0].SetPointSize( m_rendFontSize[1][0] ); //128
+    m_rendFonts[1][1].SetPointSize( m_rendFontSize[1][1] ); //100
+    
+	m_rendLyricFonts[0].SetPointSize( m_rendLyricFont.GetPointSize() );
+    m_rendLyricFonts[1].SetPointSize( m_rendLyricFont.GetPointSize() );
+    
+    m_rendVerticalUnit1[0] = (float)m_rendInterl[0]/4;
+    m_rendVerticalUnit2[0] = (float)m_rendInterl[0]/8;
+    m_rendVerticalUnit1[1] = (float)m_rendInterl[1]/4;
+    m_rendVerticalUnit2[1] = (float)m_rendInterl[1]/8;
+    
+    float glyph_size;
+    glyph_size = (LEIPZIG_HALF_NOTE_HEAD_WIDTH * (float)m_rendFontHeight / LEIPZIG_UNITS_PER_EM);
+    m_rendNoteRadius[0][0] = ceil(glyph_size / 2);
+    m_rendNoteRadius[0][1] = (m_rendNoteRadius[0][0] * m_rendGraceRatio[0])/m_rendGraceRatio[1];
+    m_rendNoteRadius[1][0] = (m_rendNoteRadius[0][0] * m_rendSmallStaffRatio[0])/m_rendSmallStaffRatio[1];
+    m_rendNoteRadius[1][1] = (m_rendNoteRadius[1][0] * m_rendGraceRatio[0])/m_rendGraceRatio[1];
+    
+    m_rendLedgerLine[0][0] = (int)(glyph_size * .72);
+    m_rendLedgerLine[0][1] = (m_rendLedgerLine[0][0] * m_rendGraceRatio[0])/m_rendGraceRatio[1];
+    m_rendLedgerLine[1][0] = (m_rendLedgerLine[0][0] * m_rendSmallStaffRatio[0])/m_rendSmallStaffRatio[1];
+    m_rendLedgerLine[1][1] = (m_rendLedgerLine[1][0] * m_rendGraceRatio[0])/m_rendGraceRatio[1];
+    
+    glyph_size = round(LEIPZIG_WHOLE_NOTE_HEAD_WIDTH * (double)m_rendFontHeight / LEIPZIG_UNITS_PER_EM);
+    m_rendLedgerLine[0][2] = (int)(glyph_size * .66);
+    m_rendLedgerLine[1][2] = (m_rendLedgerLine[0][2] * m_rendSmallStaffRatio[0]) /m_rendSmallStaffRatio[1];
+    
+    m_rendBrevisWidth[0] = (int)((glyph_size * 0.8) / 2);
+    m_rendBrevisWidth[1] = (m_rendBrevisWidth[0] * m_rendSmallStaffRatio[0]) /m_rendSmallStaffRatio[1];
+    
+    glyph_size = round(LEIPZIG_SHARP_WIDTH * (double)m_rendFontHeight / LEIPZIG_UNITS_PER_EM);
+    m_rendAccidWidth[0][0] = glyph_size;
+    m_rendAccidWidth[0][1] = (m_rendAccidWidth[0][0] * m_rendGraceRatio[0])/m_rendGraceRatio[1];
+    m_rendAccidWidth[1][0] = (m_rendAccidWidth[0][0] * m_rendSmallStaffRatio[0]) /m_rendSmallStaffRatio[1];
+    m_rendAccidWidth[1][1] = (m_rendAccidWidth[1][0] * m_rendGraceRatio[0])/m_rendGraceRatio[1];
     
 	return;
 }
 
-
-int MusDoc::GetSystemRightX( MusSystem *system )
+int MusDoc::CalcLeipzigFontSize( )
 {
-    return m_pageWidth - m_pageLeftMar - m_pageRightMar - system->m_systemRightMar;
-}
-
-int MusDoc::CalcMusicFontSize( )
-{
-    // we just have the Leipzig font for now
-    return round((double)m_charDefin * LEIPZIG_UNITS_PER_EM / LEIPZIG_WHOLE_NOTE_HEAD_HEIGHT);
-}
-
-int MusDoc::CalcNeumesFontSize( )
-{
-    return 100;
+    // We just have the Leipzig font for now
+    return round((double)m_env.m_interlDefin * LEIPZIG_UNITS_PER_EM / LEIPZIG_WHOLE_NOTE_HEAD_HEIGHT);
 }
 
 void MusDoc::UpdateFontValues() 
 {	
-	if ( !m_ftLeipzig.FromString( Mus::GetMusicFontDescStr() ) )
+	if ( !m_rendLeipzigFont.FromString( Mus::GetMusicFontDescStr() ) )
         Mus::LogWarning( "Impossible to load font 'Leipzig'" );
 	
 	//Mus::LogMessage( "Size %d, Family %d, Style %d, Weight %d, Underline %d, Face %s, Desc %s",
-	//	m_ftLeipzig.GetPointSize(),
-	//	m_ftLeipzig.GetFamily(),
-	//	m_ftLeipzig.GetStyle(),
-	//	m_ftLeipzig.GetWeight(),
-	//	m_ftLeipzig.GetUnderlined(),
-	//	m_ftLeipzig.GetFaceName().c_str(),
-	//	m_ftLeipzig.GetNativeFontInfoDesc().c_str());
+	//	m_rendLeipzigFont.GetPointSize(),
+	//	m_rendLeipzigFont.GetFamily(),
+	//	m_rendLeipzigFont.GetStyle(),
+	//	m_rendLeipzigFont.GetWeight(),
+	//	m_rendLeipzigFont.GetUnderlined(),
+	//	m_rendLeipzigFont.GetFaceName().c_str(),
+	//	m_rendLeipzigFont.GetNativeFontInfoDesc().c_str());
     
-	m_activeFonts[0][0] = m_ftLeipzig;
-    m_activeFonts[0][1] = m_ftLeipzig;
-    m_activeFonts[1][0] = m_ftLeipzig;
-    m_activeFonts[1][1] = m_ftLeipzig;
-	
-	m_activeChantFonts[0][0] = m_ftFestaDiesA;
-    m_activeChantFonts[0][1] = m_ftFestaDiesA;
-    m_activeChantFonts[1][0] = m_ftFestaDiesA;
-    m_activeChantFonts[1][1] = m_ftFestaDiesA;
+	m_rendFonts[0][0] = m_rendLeipzigFont;
+    m_rendFonts[0][1] = m_rendLeipzigFont;
+    m_rendFonts[1][0] = m_rendLeipzigFont;
+    m_rendFonts[1][1] = m_rendLeipzigFont;
 	
 	// Lyrics
-	if ( !m_ftLyrics.FromString( Mus::GetLyricFontDescStr() ) )
+	if ( !m_rendLyricFont.FromString( Mus::GetLyricFontDescStr() ) )
 		Mus::LogWarning( "Impossible to load font for the lyrics" );
     
-	m_activeLyricFonts[0] = m_ftLyrics;
-    m_activeLyricFonts[1] = m_ftLyrics;
-}
-
-
-
-void MusDoc::UpdatePageValues() 
-{
-    m_smallStaffRatio[0] = this->m_env.m_smallStaffNum;
-    m_smallStaffRatio[1] = this->m_env.m_smallStaffDen;
-    m_graceRatio[0] = this->m_env.m_graceNum;
-    m_graceRatio[1] = this->m_env.m_graceDen;
-    
-    // half of the space between two lines
-    m_halfInterl[0] = m_charDefin/2;
-    // same for small staves
-    m_halfInterl[1] = (m_halfInterl[0] * m_smallStaffRatio[0]) / m_smallStaffRatio[1];
-    // space between two lines
-    m_interl[0] = m_halfInterl[0] * 2;
-    // same for small staves
-    m_interl[1] = m_halfInterl[1] * 2;
-    // staff (with five lines)
-    m_staffSize[0] = m_interl[0] * 4;
-    m_staffSize[1] = m_interl[1] * 4;
-    // 
-    m_octaveSize[0] = m_halfInterl[0] * 7;
-    m_octaveSize[1] = m_halfInterl[1] * 7;
-    
-    m_step1 = m_halfInterl[0];
-    m_step2 = m_step1 * 3;
-    m_step3 = m_step1 * 6;
-    
-    // values for beams
-    m_beamWidth[0] = this->m_env.m_beamWidth;
-    m_beamWhiteWidth[0] = this->m_env.m_beamWhiteWidth;
-    m_barlineSpacing = m_beamWidth[0] + m_beamWhiteWidth[0];
-    m_beamWidth[1] = (m_beamWidth[0] * m_smallStaffRatio[0]) / m_smallStaffRatio[1];
-    m_beamWhiteWidth[1] = (m_beamWhiteWidth[0] * m_smallStaffRatio[0]) / m_smallStaffRatio[1];
-    
-    m_fontHeight = CalcMusicFontSize();
-    m_fontHeightAscent[0][0] = floor(LEIPZIG_ASCENT * (double)m_fontHeight / LEIPZIG_UNITS_PER_EM);
-	m_fontHeightAscent[0][0] +=  Mus::GetFontPosCorrection();
-	m_fontHeightAscent[0][1] = (m_fontHeightAscent[0][0] * m_graceRatio[0]) / m_graceRatio[1];
-    m_fontHeightAscent[1][0] = (m_fontHeightAscent[0][0] * m_smallStaffRatio[0]) / m_smallStaffRatio[1];
-	m_fontHeightAscent[1][1] = (m_fontHeightAscent[1][0] * m_graceRatio[0]) / m_graceRatio[1];    
-    
-    m_fontSize[0][0] = m_fontHeight;
-    m_fontSize[0][1] = (m_fontSize[0][0] * m_graceRatio[0]) / m_graceRatio[1];
-    m_fontSize[1][0] = (m_fontSize[0][0] * m_smallStaffRatio[0]) / m_smallStaffRatio[1];
-    m_fontSize[1][1]= (m_fontSize[1][0] * m_graceRatio[0])/ m_graceRatio[1];
-    
-	m_activeFonts[0][0].SetPointSize( m_fontSize[0][0] ); //160
-    m_activeFonts[0][1].SetPointSize( m_fontSize[0][1] ); //120
-    m_activeFonts[1][0].SetPointSize( m_fontSize[1][0] ); //128
-    m_activeFonts[1][1].SetPointSize( m_fontSize[1][1] ); //100
-    
-	//experimental font size for now
-	//they can all be the same size, seeing as the 'grace notes' are built in the font
-	
-	m_activeChantFonts[0][0].SetPointSize( 110 ); // change this following the Leipzig method
-    m_activeChantFonts[0][1].SetPointSize( 110 );
-    m_activeChantFonts[1][0].SetPointSize( 110 );
-    m_activeChantFonts[1][1].SetPointSize( 110 );
-	
-	m_activeLyricFonts[0].SetPointSize( m_ftLyrics.GetPointSize() );
-    m_activeLyricFonts[1].SetPointSize( m_ftLyrics.GetPointSize() );
-    
-    m_verticalUnit1[0] = (float)m_interl[0]/4;
-    m_verticalUnit2[0] = (float)m_interl[0]/8;
-    m_verticalUnit1[1] = (float)m_interl[1]/4;
-    m_verticalUnit2[1] = (float)m_interl[1]/8;
-    
-    float glyph_size;
-    glyph_size = (LEIPZIG_HALF_NOTE_HEAD_WIDTH * (float)m_fontHeight / LEIPZIG_UNITS_PER_EM);
-    m_noteRadius[0][0] = ceil(glyph_size / 2);
-    m_noteRadius[0][1] = (m_noteRadius[0][0] * m_graceRatio[0])/m_graceRatio[1];
-    m_noteRadius[1][0] = (m_noteRadius[0][0] * m_smallStaffRatio[0])/m_smallStaffRatio[1];
-    m_noteRadius[1][1] = (m_noteRadius[1][0] * m_graceRatio[0])/m_graceRatio[1];
-    
-    m_ledgerLine[0][0] = (int)(glyph_size * .72);
-    m_ledgerLine[0][1] = (m_ledgerLine[0][0] * m_graceRatio[0])/m_graceRatio[1];
-    m_ledgerLine[1][0] = (m_ledgerLine[0][0] * m_smallStaffRatio[0])/m_smallStaffRatio[1];
-    m_ledgerLine[1][1] = (m_ledgerLine[1][0] * m_graceRatio[0])/m_graceRatio[1];
-    
-    glyph_size = round(LEIPZIG_WHOLE_NOTE_HEAD_WIDTH * (double)m_fontHeight / LEIPZIG_UNITS_PER_EM);
-    m_ledgerLine[0][2] = (int)(glyph_size * .66);
-    m_ledgerLine[1][2] = (m_ledgerLine[0][2] * m_smallStaffRatio[0]) /m_smallStaffRatio[1];
-    
-    m_brevisWidth[0] = (int)((glyph_size * 0.8) / 2);
-    m_brevisWidth[1] = (m_brevisWidth[0] * m_smallStaffRatio[0]) /m_smallStaffRatio[1];
-    
-    glyph_size = round(LEIPZIG_SHARP_WIDTH * (double)m_fontHeight / LEIPZIG_UNITS_PER_EM);
-    m_accidWidth[0][0] = glyph_size;
-    m_accidWidth[0][1] = (m_accidWidth[0][0] * m_graceRatio[0])/m_graceRatio[1];
-    m_accidWidth[1][0] = (m_accidWidth[0][0] * m_smallStaffRatio[0]) /m_smallStaffRatio[1];
-    m_accidWidth[1][1] = (m_accidWidth[1][0] * m_graceRatio[0])/m_graceRatio[1];
+	m_rendLyricFonts[0] = m_rendLyricFont;
+    m_rendLyricFonts[1] = m_rendLyricFont;
 }
 
 
@@ -293,37 +278,3 @@ int MusDoc::Save( MusFileOutputStream *output )
     return true;
 }
 
-void MusDoc::GetNumberOfVoices( int *min_voice, int *max_voice )
-{
-	ArrayPtrVoid params; // tableau de pointeurs pour parametres
-
-    (*max_voice) = 0;
-    (*min_voice) = 100000; // never more than 10000 voices ?
-
-	params.push_back( min_voice );
-    params.push_back( max_voice );
-    //MusPageFunctor countVoices( &MusPage::CountVoices ); // ax2.3
-    //this->Process( &countVoices, params ); // ax2
-}
-        
-    
-MusStaff *MusDoc::GetVoice( int i )
-{
-    /*
-	ArrayPtrVoid params; // tableau de pointeurs pour parametres
-    
-    MusLayerFunctor copyElements( &MusLayer::CopyElements );
-    ArrayPtrVoid staffParams; // idem for staff functor
-    MusStaff *staff = new MusStaff();
-    staffParams.Add( staff );
-    
-    params.Add(&copyElements);
-    params.Add(&staffParams);
-    params.Add(&i);
-
-    MusPageFunctor processVoices( &MusPage::ProcessVoices );
-    this->Process( &processVoices, params ); 
-    return staff;
-    */ // ax2
-    return NULL;
-}

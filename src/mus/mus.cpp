@@ -265,6 +265,8 @@ std::wstring Mus::UTF8to16(const char * in)
 
 MusEnv::MusEnv()
 {
+    
+    m_interlDefin = 18;
     m_landscape = false;
     m_staffLineWidth = 2;
     m_stemWidth = 2;
@@ -281,6 +283,12 @@ MusEnv::MusEnv()
     m_graceDen = 4;
 	m_stemCorrection = 0;
     m_headerType = 0;
+    
+    m_pageHeight = 2970;
+    m_pageWidth = 2100;
+    m_pageRightMar = 0;
+    m_pageLeftMar = 0;
+    m_pageTopMar = 0;
     
     // additional parameters
     m_notationMode = MUS_MENSURAL_MODE;

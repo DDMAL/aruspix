@@ -293,7 +293,7 @@ MusObject *MusObject::GetNextSibling( const std::type_info *elementType )
     
     ArrayOfMusObjects::iterator iter;
     bool foundCurrent = false;
-    for (iter = this->m_parent->m_children.begin(); iter != m_children.end(); ++iter)
+    for (iter = this->m_parent->m_children.begin(); iter != this->m_parent->m_children.end(); ++iter)
     {
         // we have not found the current object
         if ( this == *iter ) {
@@ -323,7 +323,7 @@ MusObject *MusObject::GetPreviousSibling( const std::type_info *elementType )
     
     ArrayOfMusObjects::reverse_iterator iter;
     bool foundCurrent = false;
-    for (iter = this->m_parent->m_children.rbegin(); iter != m_children.rend(); ++iter)
+    for (iter = this->m_parent->m_children.rbegin(); iter != this->m_parent->m_children.rend(); ++iter)
     {
         // we have not found the current object
         if ( this == *iter ) {
@@ -385,13 +385,11 @@ void MusObject::Process(MusFunctor *functor, ArrayPtrVoid params, MusFunctor *en
         return;
     }
 
-    MusObject *obj;
-	int i;
-    for (i = 0; i < (int)m_children.size(); i++)
-	{
-        obj = m_children[i];
-        obj->Process( functor, params, endFunctor);
-	}
+    ArrayOfMusObjects::iterator iter;
+    for (iter = this->m_children.begin(); iter != m_children.end(); ++iter)
+    {
+        (*iter)->Process( functor, params, endFunctor );
+    }
     
     if ( endFunctor ) {
         endFunctor->Call( this, params );
@@ -733,7 +731,7 @@ int MusObject::SetBoundingBoxXShift( ArrayPtrVoid params )
         // reset it as the minimum position to the step (if doc found)
         (*min_pos) = 0;
         MusDoc *doc = dynamic_cast<MusDoc*>( current_layer->GetFirstParent( &typeid(MusDoc) ) );
-        if (doc) (*min_pos) = doc->m_step1;
+        if (doc) (*min_pos) = doc->m_rendStep1;
         // set scoreDef attr
         if (current_layer->GetClefAttr()) {
             current_layer->GetClefAttr()->SetBoundingBoxXShift( params );

@@ -163,8 +163,8 @@ void MusRC::DrawBeam(  MusDC *dc, MusLayer *layer, MusBeam *beam, MusStaff *staf
     } 
     else
     {	
-        dx[0] =  m_doc->m_noteRadius[staff->staffSize][0] - ((m_doc->m_noteRadius[staff->staffSize][0] * m_doc->m_env.m_stemCorrection) / 20);
-        dx[1] =  m_doc->m_noteRadius[staff->staffSize][1] - ((m_doc->m_noteRadius[staff->staffSize][1] * m_doc->m_env.m_stemCorrection) / 20);
+        dx[0] =  m_doc->m_rendNoteRadius[staff->staffSize][0] - ((m_doc->m_rendNoteRadius[staff->staffSize][0] * m_doc->m_env.m_stemCorrection) / 20);
+        dx[1] =  m_doc->m_rendNoteRadius[staff->staffSize][1] - ((m_doc->m_rendNoteRadius[staff->staffSize][1] * m_doc->m_env.m_stemCorrection) / 20);
         dx[0] -= (m_doc->m_env.m_stemWidth)/2;
         dx[1] -= (m_doc->m_env.m_stemWidth)/2;
     }
@@ -322,7 +322,7 @@ void MusRC::DrawBeam(  MusDC *dc, MusLayer *layer, MusBeam *beam, MusStaff *staf
 	/* direction queues: auto = moyenne */
 	/* bch.inpt: le flot de donnees a ete envoye par input et non rd_objet */
 	{	
-        milieu = _yy[0] - (m_doc->m_interl[staff->staffSize] * 2);
+        milieu = _yy[0] - (m_doc->m_rendInterl[staff->staffSize] * 2);
 		y_moy /= ct;
 		if ( y_moy <  milieu )
 			fb.dir = ON;
@@ -342,12 +342,12 @@ void MusRC::DrawBeam(  MusDC *dc, MusLayer *layer, MusBeam *beam, MusStaff *staf
 
     if (crd[_ct].chk->m_cueSize == false)
     {
-        deltanbbar = m_doc->m_beamWidth[staff->staffSize];
-        deltablanc = m_doc->m_beamWhiteWidth[staff->staffSize];
+        deltanbbar = m_doc->m_rendBeamWidth[staff->staffSize];
+        deltablanc = m_doc->m_rendBeamWhiteWidth[staff->staffSize];
     }
     else
-    {	deltanbbar = std::max(2, (m_doc->m_beamWidth[staff->staffSize]/2));
-        deltablanc = std::max(2, (m_doc->m_beamWhiteWidth[staff->staffSize]-1));
+    {	deltanbbar = std::max(2, (m_doc->m_rendBeamWidth[staff->staffSize]/2));
+        deltablanc = std::max(2, (m_doc->m_rendBeamWhiteWidth[staff->staffSize]-1));
     }
 	deltabar = deltanbbar + deltablanc;
 
@@ -376,7 +376,7 @@ void MusRC::DrawBeam(  MusDC *dc, MusLayer *layer, MusBeam *beam, MusStaff *staf
     /***
 	if (fb.mrq_port && extern_q_auto)
 	// deux portees concernees (partage), en mode automatique 
-	{	ecart = e_t->m_doc->m_interl[staff->staffSize]*6;
+	{	ecart = e_t->m_doc->m_rendInterl[staff->staffSize]*6;
 		for (i=0; i<ct; i++)
 		{	if ((crd+i)->prov)
 			{	(crd+i)->a -= dx[crd[i].chk->dimin];
@@ -401,10 +401,10 @@ void MusRC::DrawBeam(  MusDC *dc, MusLayer *layer, MusBeam *beam, MusStaff *staf
         ecart = ((shortest-DUR_8)*(deltabar));
 
 		if (crd[_ct].chk->m_cueSize)
-			ecart += m_doc->m_halfInterl[staff->staffSize]*5;
+			ecart += m_doc->m_rendHalfInterl[staff->staffSize]*5;
 		else
         //   Le 24 Septembre 1993: obtenir des DUR_8 reliees a la hauteur des separees 
-			ecart += (shortest > DUR_8) ? m_doc->m_interl[staff->staffSize]*hauteurBarreMoyenne : m_doc->m_interl[staff->staffSize]*(hauteurBarreMoyenne+0.5);
+			ecart += (shortest > DUR_8) ? m_doc->m_rendInterl[staff->staffSize]*hauteurBarreMoyenne : m_doc->m_rendInterl[staff->staffSize]*(hauteurBarreMoyenne+0.5);
 
 		if (!fb.dir && !staff->notAnc)
 		{	dx[0] = - dx[0];
@@ -412,7 +412,7 @@ void MusRC::DrawBeam(  MusDC *dc, MusLayer *layer, MusBeam *beam, MusStaff *staf
 		}
         /***
         if (crd[_ct].chk->existDebord) {
-        ecart = m_doc->m_interl[0]*2;
+        ecart = m_doc->m_rendInterl[0]*2;
             if (!fb.mrq_port) extern_q_auto= 0;
         }
         ***/
@@ -446,8 +446,8 @@ void MusRC::DrawBeam(  MusDC *dc, MusLayer *layer, MusBeam *beam, MusStaff *staf
 	else
 		dB = 0.0;
 	/* Correction esthetique : */
-	if (fabs(dB) < m_doc->m_beamMinSlope ) dB = 0.0;
-	if (fabs(dB) > m_doc->m_beamMaxSlope ) dB = (dB>0) ? m_doc->m_beamMaxSlope : - m_doc->m_beamMaxSlope;
+	if (fabs(dB) < m_doc->m_rendBeamMinSlope ) dB = 0.0;
+	if (fabs(dB) > m_doc->m_rendBeamMaxSlope ) dB = (dB>0) ? m_doc->m_rendBeamMaxSlope : - m_doc->m_rendBeamMaxSlope;
 	/* pente correcte: entre 0 et env 0.4 (0.2 a 0.4) */
 
 if (fPente)
@@ -517,17 +517,17 @@ if (fPente)
 		if (fb.fl_cond)	/* esth: eviter que queues depassent barres */
 		{	if (crd[i].prov)	/* venant du haut, m_stemDir en bas */
 			{	/***fy1 = *(_ybeam+i)+v_pnt;***/	/* on raccourcit m_stemDir */
-				fy2 = crd[i].b-m_doc->m_verticalUnit2[staff->staffSize];
+				fy2 = crd[i].b-m_doc->m_rendVerticalUnit2[staff->staffSize];
 			}
 			else
 			{	/***fy1 = *(_ybeam+i)-e_t->v_pnt;***/	/* on allonge m_stemDir */
-				fy2 = crd[i].b+m_doc->m_verticalUnit2[staff->staffSize];
+				fy2 = crd[i].b+m_doc->m_rendVerticalUnit2[staff->staffSize];
 			}
 		}
 		else	// on tient compte de l'‚paisseur qui fait des "bosses"
 		{	if (fb.dir)	// m_stemDir en haut
 			{	fy1 = *(_ybeam+i) - m_doc->m_env.m_stemWidth;
-				fy2 = crd[i].b+m_doc->m_verticalUnit2[staff->staffSize];
+				fy2 = crd[i].b+m_doc->m_rendVerticalUnit2[staff->staffSize];
                 crd[i].chk->m_stem_start.x = crd[i].chk->m_stem_end.x = crd[i].a;
                 crd[i].chk->m_stem_start.y = fy2;
                 crd[i].chk->m_stem_end.y = fy1;
@@ -535,7 +535,7 @@ if (fPente)
 			}
 			else
 			{	fy1 = *(_ybeam+i) + m_doc->m_env.m_stemWidth;
-				fy2 = crd[i].b-m_doc->m_verticalUnit2[staff->staffSize];
+				fy2 = crd[i].b-m_doc->m_rendVerticalUnit2[staff->staffSize];
                 crd[i].chk->m_stem_start.x = crd[i].chk->m_stem_end.x = crd[i].a;
                 crd[i].chk->m_stem_start.y = fy2;
                 crd[i].chk->m_stem_end.y = fy1;
@@ -551,22 +551,22 @@ if (fPente)
 				 && (!((MusNote*)(crd+i)->chk)->m_chord || (((MusNote*)(crd+i)->chk)->m_chord & CHORD_TERMINAL)))
 			// les cas non traités par note()
 /*			{	if (fb.dir || (fb.mrq_port && m_stemLen && !crd[i].prov))
-					putStacc (dc,crd[i].a-dx[crd[i].chk->dimin],fy1+e_t->m_doc->m_interl[staff->staffSize]-staff->m_yDrawing, 0,crd[i].chk->typStac);
+					putStacc (dc,crd[i].a-dx[crd[i].chk->dimin],fy1+e_t->m_doc->m_rendInterl[staff->staffSize]-staff->m_yDrawing, 0,crd[i].chk->typStac);
 				else
-					putStacc (dc,crd[i].a-dx[crd[i].chk->dimin],fy1-e_t->m_doc->m_interl[staff->staffSize]-staff->m_yDrawing, -1,crd[i].chk->typStac);
+					putStacc (dc,crd[i].a-dx[crd[i].chk->dimin],fy1-e_t->m_doc->m_rendInterl[staff->staffSize]-staff->m_yDrawing, -1,crd[i].chk->typStac);
 			}
 */
 			{	
                 /***if (fb.mrq_port && extern_q_auto)
 				{	if (crd[i].prov)
-						putStacc (dc,crd[i].a+dx[crd[i].chk->dimin],fy1-e_t->m_doc->m_interl[staff->staffSize]-staff->m_yDrawing, -1,crd[i].chk->typStac);
+						putStacc (dc,crd[i].a+dx[crd[i].chk->dimin],fy1-e_t->m_doc->m_rendInterl[staff->staffSize]-staff->m_yDrawing, -1,crd[i].chk->typStac);
 					else
-						putStacc (dc,crd[i].a-dx[crd[i].chk->dimin],fy1+e_t->m_doc->m_interl[staff->staffSize]-staff->m_yDrawing, 0,crd[i].chk->typStac);
+						putStacc (dc,crd[i].a-dx[crd[i].chk->dimin],fy1+e_t->m_doc->m_rendInterl[staff->staffSize]-staff->m_yDrawing, 0,crd[i].chk->typStac);
 				}
 				else if (fb.dir)
-					putStacc (dc,crd[i].a-dx[crd[i].chk->dimin],fy1+e_t->m_doc->m_interl[staff->staffSize]-staff->m_yDrawing, 0,crd[i].chk->typStac);
+					putStacc (dc,crd[i].a-dx[crd[i].chk->dimin],fy1+e_t->m_doc->m_rendInterl[staff->staffSize]-staff->m_yDrawing, 0,crd[i].chk->typStac);
 				else
-					putStacc (dc,crd[i].a-dx[crd[i].chk->dimin],fy1-e_t->m_doc->m_interl[staff->staffSize]-staff->m_yDrawing, -1,crd[i].chk->typStac);
+					putStacc (dc,crd[i].a-dx[crd[i].chk->dimin],fy1-e_t->m_doc->m_rendInterl[staff->staffSize]-staff->m_yDrawing, -1,crd[i].chk->typStac);
                 ***/
 			}
 
@@ -723,7 +723,7 @@ if (fPente)
                     {
                         if (apax == t && k==0 && mx_i[k] != crd[_ct].a)	/* au debut du paquet */
                         {	fy1 = my_i[k] + barre_y;
-                            mx_f[k] = mx_i[k] + m_doc->m_ledgerLine[staff->staffSize][0];
+                            mx_f[k] = mx_i[k] + m_doc->m_rendLedgerLine[staff->staffSize][0];
                             fy2 = dA + sy_up + barre_y + dB * mx_f[k];
 
                             decalage= hGrosseligne (dc,mx_i[k],fy1,mx_f[k],fy2,deltanbbar*delt_y /***, workColor2***/ );
@@ -732,7 +732,7 @@ if (fPente)
                         }
                         else		/* corps ou fin de paquet */
                         {	fy2 = my_i[k] + barre_y;
-                            mx_i[k] -= m_doc->m_ledgerLine[staff->staffSize][0];
+                            mx_i[k] -= m_doc->m_rendLedgerLine[staff->staffSize][0];
                             fy1 = dA + sy_up + barre_y + dB * mx_i[k];
                             decalage= hGrosseligne (dc,mx_i[k],fy1,mx_f[k],fy2,deltanbbar*delt_y /***,workColor2***/);
                             fy1 += decalage; fy2 += decalage;

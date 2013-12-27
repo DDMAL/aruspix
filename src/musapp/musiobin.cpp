@@ -89,18 +89,15 @@ bool MusBinInput_1_X::ImportFile( )
     }
     
     // update the system and staff y positions
-    m_doc->PaperSize();
     int j, k, l, m;
-    for (j = 0; j < m_doc->GetPageCount(); j++)
+    for (j = 0; j < m_doc->GetChildCount(); j++)
     {
         MusPage *page = (MusPage*)m_doc->m_children[j];
-        page->m_pageWidth = m_doc->m_pageWidth;
-        page->m_pageHeight = m_doc->m_pageHeight;
-        page->m_pageLeftMar = m_doc->m_pageLeftMar;
-        page->m_pageRightMar = m_doc->m_pageRightMar;
+        
+        m_doc->SetRendPage( page );
         
         m = 0; // staff number on the page
-        int yy =  m_doc->m_pageHeight;
+        int yy =  m_doc->m_rendPageHeight;
         for (k = 0; k < page->GetSystemCount(); k++) 
         {
             MusSystem *system = (MusSystem*)page->m_children[k];
@@ -111,7 +108,7 @@ bool MusBinInput_1_X::ImportFile( )
             for (l = 0; l < measure->GetStaffCount(); l++)
             {
                 staff = (MusStaff*)measure->m_children[l];
-                yy -= ecarts[m] * m_doc->m_interl[ staff->staffSize ];
+                yy -= ecarts[m] * m_doc->m_rendInterl[ staff->staffSize ];
                 staff->m_yAbs = yy;
                 m++;
                 
@@ -154,13 +151,13 @@ bool MusBinInput_1_X::ReadFileHeader( unsigned short *nbpage )
 	Read( &m_doc->m_env.m_beamWidth, 1 ); // param - epBarreValeur
 	Read( &m_doc->m_env.m_beamWhiteWidth, 1 ); // param - epBlancBarreValeur
 	Read( &int32, 4 );
-	m_doc->m_pageHeight = wxINT32_SWAP_ON_BE( int32 ) * 10; // param - pageFormatHor
+	m_doc->SetPageHeight( wxINT32_SWAP_ON_BE( int32 ) * 10 ); // param - pageFormatHor
 	Read( &int32, 4 );
-	m_doc->m_pageWidth = wxINT32_SWAP_ON_BE( int32 ) * 10; // param - pageFormatVer
+	m_doc->SetPageWidth( wxINT32_SWAP_ON_BE( int32 ) * 10 ); // param - pageFormatVer
 	Read( &int16, 2 );
-	m_doc->m_pageTopMar = wxINT16_SWAP_ON_BE( int16 ); // param - margeSommet
+	m_doc->SetPageTopMar( wxINT16_SWAP_ON_BE( int16 ) ); // param - margeSommet
 	Read( &int16, 2 );
-	m_doc->m_pageLeftMar = wxINT16_SWAP_ON_BE( int16 ); // param - margeGaucheImpaire
+	m_doc->SetPageLeftMar( wxINT16_SWAP_ON_BE( int16 ) ); // param - margeGaucheImpaire
 	Read( &int16, 2 );
 	//m_doc->m_env.m_leftMarginEvenPage = wxINT16_SWAP_ON_BE( int16 ); // param - margeGauchePaire - ignore it
     

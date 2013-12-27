@@ -214,7 +214,7 @@ bool MusWWGOutput::ExportFile( )
 	WriteFonts( &m_wwgData );
 	
     MusPage *page = NULL;
-    for (i = 0; i < (int)m_doc->GetPageCount(); i++)
+    for (i = 0; i < (int)m_doc->GetChildCount(); i++)
     {
 		page = (MusPage*)m_doc->m_children[i];
 		WritePage( page );
@@ -283,13 +283,13 @@ bool MusWWGOutput::WriteFileHeader( const MusWWGData *wwgData )
 	Write( &m_doc->m_env.m_beamWhiteWidth, 1 ); // param - epBlancBarreValeur
 	Write( &m_doc->m_env.m_beamMaxSlope, 1 ); // param - m_beamMaxSlope
 	Write( &m_doc->m_env.m_beamMinSlope, 1 ); // param - m_beamMinSlope
-	int32 = wxINT32_SWAP_ON_BE( m_doc->m_pageWidth / 10 ); // param - m_paperWidth
+	int32 = wxINT32_SWAP_ON_BE( m_doc->m_rendPageWidth / 10 ); // param - m_paperWidth
 	Write( &int32, 4 );
-	int32 = wxINT32_SWAP_ON_BE( m_doc->m_pageHeight / 10 ); // param - m_paperHeight
+	int32 = wxINT32_SWAP_ON_BE( m_doc->m_rendPageHeight / 10 ); // param - m_paperHeight
 	Write( &int32, 4 );
-	int16 = wxINT16_SWAP_ON_BE( m_doc->m_pageTopMar ); // param - margeSommet
+	int16 = wxINT16_SWAP_ON_BE( m_doc->m_rendPageTopMar ); // param - margeSommet
 	Write( &int16, 2 );
-	int16 = wxINT16_SWAP_ON_BE( m_doc->m_pageLeftMar ); // param - margeGaucheImpaire
+	int16 = wxINT16_SWAP_ON_BE( m_doc->m_rendPageLeftMar ); // param - margeGaucheImpaire
 	Write( &int16, 2 );
 	//int16 = wxINT16_SWAP_ON_BE( m_doc->m_env.m_leftMarginEvenPage ); // write the same value
 	Write( &int16, 2 );
@@ -713,13 +713,15 @@ bool MusWWGInput::ImportFile( )
 	//wxLogMessage("OK %d",  m_doc->m_pages.GetCount() );
     
     // update the system and staff y positions
-    m_doc->PaperSize();
     int j, k, l, m;
-    for (j = 0; j < m_doc->GetPageCount(); j++)
+    for (j = 0; j < m_doc->GetChildCount(); j++)
     {
         MusPage *page = (MusPage*)m_doc->m_children[j];
+        
+        m_doc->SetRendPage( page );
+        
         m = 0; // staff number on the page
-        int yy =  m_doc->m_pageHeight + m_doc->m_staffSize[ 0 ];
+        int yy =  m_doc->m_rendPageHeight + m_doc->m_rendStaffSize[ 0 ];
         for (k = 0; k < page->GetSystemCount(); k++) 
         {
             MusSystem *system = (MusSystem*)page->m_children[k];
@@ -730,7 +732,7 @@ bool MusWWGInput::ImportFile( )
             for (l = 0; l < measure->GetStaffCount(); l++)
             {
                 staff = (MusStaff*)measure->m_children[l];
-                yy -= ecarts[m] * m_doc->m_interl[ staff->staffSize ];;
+                yy -= ecarts[m] * m_doc->m_rendInterl[ staff->staffSize ];;
                 staff->m_yAbs = yy;
                 m++;
                 
@@ -781,15 +783,13 @@ bool MusWWGInput::ReadFileHeader( MusWWGData *wwgData )
 	Read( &m_doc->m_env.m_beamMaxSlope, 1 ); // ~param - ~m_beamMaxSlope
 	Read( &m_doc->m_env.m_beamMinSlope, 1 ); // ~param - ~m_beamMinSlope
 	Read( &int32, 4 );
-	m_doc->m_pageWidth = wxINT32_SWAP_ON_BE( int32 ); // ~param - ~m_paperWidth
-    m_doc->m_pageWidth *= 10; // changed
+	m_doc->SetPageHeight( wxINT32_SWAP_ON_BE( int32 ) * 10 ); // ~param - ~m_paperHeight
 	Read( &int32, 4 );
-	m_doc->m_pageHeight = wxINT32_SWAP_ON_BE( int32 ); // ~param - ~m_paperHeight
-    m_doc->m_pageHeight *= 10; 
+	m_doc->SetPageWidth( wxINT32_SWAP_ON_BE( int32 ) * 10 ); // ~param - ~m_paperWidth
 	Read( &int16, 2 );
-	m_doc->m_pageTopMar = wxINT16_SWAP_ON_BE( int16 ); // ~param - ~margeSommet
+	m_doc->SetPageTopMar( wxINT16_SWAP_ON_BE( int16 ) ); // ~param - ~margeSommet
 	Read( &int16, 2 );
-	m_doc->m_pageLeftMar = wxINT16_SWAP_ON_BE( int16 ); // ~param - ~margeGaucheImpaire
+	m_doc->SetPageLeftMar( wxINT16_SWAP_ON_BE( int16 ) ); // ~param - ~margeGaucheImpaire
 	Read( &int16, 2 );
 	//m_doc->m_env.m_leftMarginEvenPage = wxINT16_SWAP_ON_BE( int16 ); // ignore it
 	Read( &wwgData->Epais1, 1 ); // ~param - ~epais1

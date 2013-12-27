@@ -156,7 +156,9 @@ void MusPage::Layout( )
         return;
     }
     MusDoc *doc = dynamic_cast<MusDoc*>(m_parent);
-       
+    
+    doc->SetRendPage( this );
+    
     ArrayPtrVoid params;
     
     // Align the content of the page using measure and system aligners
@@ -233,8 +235,8 @@ void MusPage::Layout( )
     // Adjusts the Y shift for making sure there is a minimal space (staffMargin) between each staff
     params.clear();
     int previousStaffHeight = 0; // 0 for the first staff, reset for each system (see MusSystem::SetAlignmentYPos)
-    int staffMargin = doc->m_staffSize[0]; // the minimal space we want to have between each staff
-    int* interlineSizes = doc->m_interl; // the interline sizes to be used for calculating the (previous) staff height
+    int staffMargin = doc->m_rendStaffSize[0]; // the minimal space we want to have between each staff
+    int* interlineSizes = doc->m_rendInterl; // the interline sizes to be used for calculating the (previous) staff height
     params.push_back( &previousStaffHeight );
     params.push_back( &staffMargin );
     params.push_back( &interlineSizes );
@@ -255,8 +257,8 @@ void MusPage::Layout( )
     
     // Adjust system Y position
     params.clear();
-    shift = doc->m_pageHeight - doc->m_pageTopMar;
-    int systemMargin = doc->m_staffSize[0];
+    shift = doc->m_rendPageHeight - doc->m_rendPageTopMar;
+    int systemMargin = doc->m_rendStaffSize[0];
     params.push_back( &shift );
     params.push_back( &systemMargin );
     MusFunctor alignSystems( &MusObject::AlignSystems );
@@ -265,13 +267,13 @@ void MusPage::Layout( )
     // Justify X position
     params.clear();
     double ratio = 0.0;
-    int systemFullWidth = doc->m_pageWidth - doc->m_pageLeftMar - doc->m_pageRightMar;
+    int systemFullWidth = doc->m_rendPageWidth - doc->m_rendPageLeftMar - doc->m_rendPageRightMar;
     params.push_back( &ratio );
     params.push_back( &systemFullWidth );
     MusFunctor justifyX( &MusObject::JustifyX );
     // special case: because we redirect the functor, pass is a parameter to itself (!)
     params.push_back( &justifyX );
-    this->Process( &justifyX, params );
+    //this->Process( &justifyX, params );
        
     // Trim the page to the needed position
     // LP I am not sure about this. m_pageHeight / Width should not be modified

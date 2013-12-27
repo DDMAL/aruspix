@@ -173,8 +173,8 @@ bool EdtFile::Create( )
     m_musDocPtr->Reset( Transcription);	
     MusPage *page = new MusPage();
     
-	m_musDocPtr->m_pageWidth = width * 10;
-	m_musDocPtr->m_pageHeight = height * 10;
+	page->m_pageWidth = width * 10;
+	page->m_pageHeight = height * 10;
   
     for (i = 0; i < nb_systems; i++) {
         MusSystem *system = new MusSystem();

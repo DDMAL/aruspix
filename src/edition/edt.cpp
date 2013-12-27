@@ -586,8 +586,8 @@ void EdtEnv::OnSaveSVG( wxCommandEvent &event )
     m_musViewPtr->SetZoom( 100 );
     
     
-    MusSvgDC svgDC (m_musViewPtr->ToRendererX( m_musViewPtr->m_doc->m_pageWidth + 30 )  ,
-        m_musViewPtr->ToRendererX( m_musViewPtr->m_doc->m_pageHeight + 10 )) ;
+    MusSvgDC svgDC (m_musViewPtr->ToRendererX( m_musViewPtr->m_doc->m_rendPageWidth + 30 )  ,
+        m_musViewPtr->ToRendererX( m_musViewPtr->m_doc->m_rendPageHeight + 10 )) ;
         
     //svgDC.SetUserScale( 1, 1 );
     //svgDC.SetLogicalScale( 1.0, 1.0 );  
