@@ -171,7 +171,7 @@ void MusLayerElement::Init()
     
     m_xAbs = AX_UNSET;
     m_xDrawing = 0;
-    m_yDrawing = 0;
+    m_yRel = 0;
     m_in_layer_app = false;
     
     m_alignment = NULL;

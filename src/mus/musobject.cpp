@@ -780,6 +780,7 @@ int MusObject::SetBoundingBoxXShift( ArrayPtrVoid params )
     
     // check if the element overlaps with the preceeding one given by (*min_pos)
     int overlap = 0;
+    overlap = (*min_pos) - current->GetAlignment()->GetXRel() + negative_offset;
     if ( (current->GetAlignment()->GetXRel() - negative_offset) < (*min_pos) ) {
         overlap = (*min_pos) - current->GetAlignment()->GetXRel() + negative_offset;
         // shift the current element
