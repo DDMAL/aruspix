@@ -39,6 +39,17 @@ MusController::MusController()
     m_border = 10;
     m_scale = 100;
     m_format = pae_file;
+    
+    // default page size
+    m_pageHeight = 2970;
+    m_pageWidth = 2100;
+    
+    m_noLayout = false;
+    m_ignoreLayout = false;
+    m_adjustPageHeight = false;
+    m_noJustification = false;
+    m_showBoundingBoxes = false;
+    
 }
 
 
@@ -117,6 +128,9 @@ bool MusController::ParseOptions( std::string json_options ) {
     int scale = m_scale;
     int border = m_border;
     
+    int width = m_pageWidth;
+    int height = m_pageHeight;
+    
     Object json;
         
     // Read JSON options
@@ -125,15 +139,38 @@ bool MusController::ParseOptions( std::string json_options ) {
         return false;
     }
     
-    if (json.has<String>("InputFormat"))
-        in_format = json.get<String>("InputFormat");
+    if (json.has<String>("inputFormat"))
+        in_format = json.get<String>("inputFormat");
     
-    if (json.has<Number>("Scale"))
-        scale = json.get<Number>("Scale");
+    if (json.has<Number>("scale"))
+        scale = json.get<Number>("scale");
     
-    if (json.has<Number>("Border"))
-        border = json.get<Number>("Border");
+    if (json.has<Number>("border"))
+        border = json.get<Number>("border");
+
+    if (json.has<Number>("pageWidth"))
+        width = json.get<Number>("pageWidth");
     
+    if (json.has<Number>("pageHeight"))
+        height = json.get<Number>("pageHeight");
+    
+    // Parse the various flags
+    if (json.has<Boolean>("noLayout"))
+        SetNoLayout(json.get<Boolean>("noLayout"));
+    
+    if (json.has<Boolean>("ignoreLayout"))
+        SetIgnoreLayout(json.get<Boolean>("ignoreLayout"));
+
+    if (json.has<Boolean>("adjustPageHeight"))
+        SetAdjustPageHeight(json.get<Boolean>("adjustPageHeight"));
+
+    if (json.has<Boolean>("noJustification"))
+        SetNoJustification(json.get<Boolean>("noJustification"));
+
+    if (json.has<Boolean>("showBoundingBoxes"))
+        SetShowBoundingBoxes(json.get<Boolean>("showBoundingBoxes"));
+    
+    // set file type
     if (in_format == "pae") 
         SetFormat(pae_file);
     else if (in_format == "mei")
@@ -147,18 +184,25 @@ bool MusController::ParseOptions( std::string json_options ) {
     
     // Check boundaries for scale and border
     
-    if (border < 0 || border > 1000) {
+    if (border < 0 || border > 1000)
         Mus::LogError( "Border out of bounds, use 10 (default)." );
-        border = 10;
-    }
+    else
+        SetBorder(border);
         
-    if (scale < 0 || scale > 1000) {
+    if (scale < 0 || scale > 1000)
         Mus::LogError( "Scale out of bounds, use 10 (default)." );
-        scale = 100;
-    }
+    else
+        SetScale(scale);
     
-    SetScale(scale);
-    SetBorder(border);
+    if (width < 0 || width > 5000)
+        Mus::LogError( "Page width out of bounds" );
+    else
+        SetPageWidth(width);
+    
+    if (height < 0 || height > 5000)
+        Mus::LogError( "Page Height out of bounds." );
+    else
+        SetPageHeight(height);
     
     return true;
     
@@ -180,11 +224,14 @@ std::string MusController::RenderToSvg( int pageNo, bool xml_tag )
     // Create the SVG object, h & w come from the system
     // we add border*2 so it is centered into the image
     //MusSvgDC svg(system->m_contentBB_x2 - system->m_contentBB_x1 + m_border * 2, (system->m_contentBB_y2 - system->m_contentBB_y1) + m_border * 2);
-    MusSvgDC svg( m_doc.m_rendPageWidth, m_doc.m_rendPageHeight );
+    MusSvgDC svg( m_pageWidth + m_border * 2, m_pageHeight + m_border * 2 );
     
     // set scale and border from user options
     svg.SetUserScale((double)m_scale / 100, (double)m_scale / 100);
     svg.SetLogicalOrigin(m_border, m_border);
+    
+    // debug BB?
+    svg.SetDrawBoundingBoxes(m_showBoundingBoxes);
     
     // render the page
     m_rc.DrawPage( &svg, page , false);

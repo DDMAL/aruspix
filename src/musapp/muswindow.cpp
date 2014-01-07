@@ -2150,6 +2150,7 @@ void MusWindow::OnPaint(wxPaintEvent &event)
 	
 	//m_page->Init( this );
     MusWxDC ax_dc( &dc );
+    ax_dc.SetDrawBoundingBoxes(true);
     
     DrawPage( &ax_dc, m_page );
 

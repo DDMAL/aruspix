@@ -63,7 +63,7 @@ class MusDC
 {
 public:
 
-    MusDC () { m_correctMusicAscent = true; };
+    MusDC () { m_correctMusicAscent = true; m_drawBoundingBoxes = false;};
     virtual ~MusDC() {};
     
     // Setters
@@ -141,9 +141,14 @@ public:
     static int RGB2Int( char red, char green, char blue ) { return (red << 16 | green << 8 | blue); };
 
     
+    // debug bounding boxes?
+    virtual void SetDrawBoundingBoxes(bool b) {m_drawBoundingBoxes = b;};
+    virtual bool GetDrawBoundingBoxes() {return m_drawBoundingBoxes;};
+    
 protected:
     
     bool m_correctMusicAscent; // specify if the ascent has to be correct when rendering the Leipzig font (true wxDC, false SVG)
+    bool m_drawBoundingBoxes;
 };
 
 // ---------------------------------------------------------------------------

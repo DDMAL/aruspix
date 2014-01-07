@@ -74,6 +74,64 @@ public:
     ///@}
     
     /**
+     * @name Set and get the page height (in pixels)
+     */
+    ///@{
+    void SetPageHeight( int h ) { m_pageHeight = h; };
+    int GetPageHeight() { return m_pageHeight; };
+    ///@}
+    
+    /**
+     * @name Set and get the page width (in pixels)
+     */
+    ///@{
+    void SetPageWidth( int w ) { m_pageWidth = w; };
+    int GetPageWidth() { return m_pageWidth; };
+    ///@}
+    
+    /**
+     * @name Ignore all encoded layout information (if any) 
+     * and output one single page with one single system
+     */
+    ///@{
+    void SetNoLayout( bool l ) { m_noLayout = l; };
+    int GetNoLayout() { return m_noLayout; };
+    ///@}
+    
+    /**
+     * @name Ignore all encoded layout information (if any) 
+     * and fully recalculate the layout 
+     */
+    ///@{
+    void SetIgnoreLayout( bool l ) { m_ignoreLayout = l; };
+    int GetIgnoreLayout() { return m_ignoreLayout; };
+    ///@}
+    
+    /**
+     * @name Crop the page height to the height of the content 
+     */
+    ///@{
+    void SetAdjustPageHeight( bool a ) { m_adjustPageHeight = a; };
+    int GetAdjustPageHeight() { return m_adjustPageHeight; };
+    ///@}
+    
+    /**
+     * @name Do not justify the system (for debugging purposes) 
+     */
+    ///@{
+    void SetNoJustification( bool j ) { m_noJustification = j; };
+    int GetNoJustification() { return m_noJustification; };
+    ///@}
+    
+    /**
+     * @name Do not justify the system (for debugging purposes) 
+     */
+    ///@{
+    void SetShowBoundingBoxes( bool b ) { m_showBoundingBoxes = b; };
+    int GetShowBoundingBoxes() { return m_showBoundingBoxes; };
+    ///@}
+    
+    /**
      * @name Get the input file format (defined as ConvertFileFormat)
      */
     ///@{
@@ -91,6 +149,16 @@ private:
     int m_border;
     int m_scale;
     ConvertFileFormat m_format;
+    
+    int m_pageHeight;
+    int m_pageWidth;
+    
+    bool m_noLayout;
+    bool m_ignoreLayout;
+    bool m_adjustPageHeight;
+    // for debugging
+    bool m_noJustification;
+    bool m_showBoundingBoxes;
 };
 
 #endif

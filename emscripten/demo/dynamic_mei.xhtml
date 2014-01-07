@@ -15,7 +15,7 @@
 		{	
 			// The trailing newline is needed so we can read the file lines
 			// correctly if the file does not end with a newline
-			var svg = convertMusic(mei + "\n", , JSON.stringify({InputFormat: 'mei', Scale: 50}));
+			var svg = convertMusic(mei + "\n", , JSON.stringify({inputFormat: 'mei', scale: 50, pageHeight: 250, pageWidth: 2000}));
 			document.getElementById('test').innerHTML = svg;
 		};
 //]]>

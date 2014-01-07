@@ -12,6 +12,8 @@
 #include <sstream>
 #include <string>
 
+#include <assert.h>
+
 #include <getopt.h>
 
 #include "mus.h"
@@ -19,10 +21,47 @@
 
 using namespace std;
 
+
+// Some redundant code to get basenames
+// and remove extensions
+// possible that it is not in std??
+struct MatchPathSeparator
+{
+    bool operator()( char ch ) const
+    {
+        return ch == '\\' || ch == '/';
+    }
+};
+
+std::string basename( std::string const& pathname )
+{
+    return std::string( 
+                       std::find_if( pathname.rbegin(), pathname.rend(),
+                                    MatchPathSeparator() ).base(),
+                       pathname.end() );
+}
+
+std::string removeExtension( std::string const& filename )
+{
+    std::string::const_reverse_iterator
+    pivot
+    = std::find( filename.rbegin(), filename.rend(), '.' );
+    return pivot == filename.rend()
+    ? filename
+    : std::string( filename.begin(), pivot.base() - 1 );
+}
+
+
 void display_usage() {
     cerr << "Aruspix command line usage:" << endl;
     cerr << "aruspix [-f pae | mei | darms] [-s scale] [-t mei | svg] [-r resources] [-o outfile] infile" << endl << endl;
 
+    cerr << "-p, --page-height=PAGE_HEIGHT" << endl;
+    cerr << "\t\tSpecify the page height (default is 2970)" << endl;
+
+    cerr << "-w, --page-width=PAGE_WIDTH" << endl;
+    cerr << "\t\tSpecify the page width (default is 2100)" << endl;
+    
     cerr << "-b, --border=BORDER" << endl;
     cerr << "\t\tAdd border (10 px default, max 1000)" << endl;
 
@@ -44,7 +83,22 @@ void display_usage() {
     cerr << "\t\tSelect output format: mei, svg" << endl;
     cerr << "\t\t(optional, default is svg)" << endl;
 
+    cerr << "--no-layout" << endl;
+    cerr << "\t\tIgnore all encoded layout information (if any)" << endl;
+    cerr << "\t\tand output one single page with one single system" << endl;
     
+    cerr << "--ignore-layout" << endl;
+    cerr << "\t\tIgnore all encoded layout information (if any)" << endl;
+    cerr << "\t\tand fully recalculate the layout" << endl;
+    
+    cerr << "--adjust-page-height" << endl;
+    cerr << "\t\tCrop the page height to the height of the content" << endl;
+    
+    cerr << "--no-justification" << endl;
+    cerr << "\t\tDo not justify the system (for debugging purposes)" << endl;
+    
+    cerr << "--show-bounding-boxes" << endl;
+    cerr << "\t\tShow symbol bounding boxes (for debugging purposes)" << endl;
 }
 
 
@@ -61,6 +115,11 @@ int main(int argc, char** argv)
     
     ConvertFileFormat m_type;
     int m_no_mei_hdr = 0;
+    int m_adjust_page_height = 0;
+    int m_no_layout = 0;
+    int m_ignore_layout = 0;
+    int m_no_justification = 0;
+    int m_show_bounding_boxes = 0;
       
     MusController controller;
     
@@ -73,20 +132,27 @@ int main(int argc, char** argv)
         exit(1);
     }
     int c;
-    
+        
     static struct option long_options[] =
     {
-        {"no-mei-hdr",  no_argument,      &m_no_mei_hdr, 1},
-        {"border",      required_argument, 0, 'b'},
-        {"format",      required_argument, 0, 'f'},
-        {"output",      required_argument, 0, 'o'},
-        {"resources",   required_argument, 0, 'r'},
-        {"scale",       required_argument, 0, 's'},
-        {"type",        required_argument, 0, 't'},
+        
+        {"adjust-page-height",  no_argument,        &m_adjust_page_height, 1},
+        {"border",              required_argument,  0, 'b'},
+        {"format",              required_argument,  0, 'f'},
+        {"no-layout",           no_argument,        &m_no_layout, 1},
+        {"no-mei-hdr",          no_argument,        &m_no_mei_hdr, 1},
+        {"no-justification",    no_argument,        &m_no_justification, 1},
+        {"output",              required_argument,  0, 'o'},
+        {"page-height",         required_argument,  0, 'p'},
+        {"page-width",          required_argument,  0, 'w'},        
+        {"resources",           required_argument,  0, 'r'},
+        {"scale",               required_argument,  0, 's'},
+        {"show-bounding-boxes", no_argument,        &m_show_bounding_boxes, 1},
+        {"type",                required_argument,  0, 't'},
         {0, 0, 0, 0}
     };
     
-    while ((c = getopt_long(argc, argv, "b:f:o:r:s:t:", long_options, NULL)) != -1)
+    while ((c = getopt_long(argc, argv, "b:f:o:p:r:s:t:w:", long_options, NULL)) != -1)
     {                
         switch (c)
         {
@@ -114,6 +180,14 @@ int main(int argc, char** argv)
                 
             case 'o':
                 m_outfile = string(optarg);
+                break;
+            
+            case 'p':
+                controller.SetPageHeight(atoi(optarg));
+                break;
+ 
+            case 'w':
+                controller.SetPageWidth(atoi(optarg));
                 break;
                 
             case 't':
@@ -143,6 +217,13 @@ int main(int argc, char** argv)
         }
     }
     
+    // Set the various flags
+    controller.SetAdjustPageHeight(m_adjust_page_height);
+    controller.SetNoLayout(m_no_layout);
+    controller.SetIgnoreLayout(m_ignore_layout);
+    controller.SetNoJustification(m_no_justification);
+    controller.SetShowBoundingBoxes(m_show_bounding_boxes);
+    
     if (optind <= argc - 1) {
         m_infile = string(argv[optind]);
     }
@@ -165,6 +246,10 @@ int main(int argc, char** argv)
     if (controller.GetScale() > 1000) {
         cerr << "Scale cannot be > 1000." << endl;
         exit(1);
+    }
+    
+    if (m_outfile.empty()) {
+        m_outfile = removeExtension(basename(m_infile)) + "." + m_outformat;
     }
     
     cerr << "Reading " << m_infile << "..." << endl;

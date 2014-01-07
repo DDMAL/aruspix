@@ -204,19 +204,20 @@ void MusWxDC::EndGraphic( MusDocObject *object, MusRC *rc )
     // this is why we have a MusRC object
     
     //return;
-    
-    SetPen( AxRED, 1, wxDOT_DASH );
-    if ( object->HasSelfBB() ) {
-       m_dc->DrawRectangle( rc->ToRendererX( object->m_selfBB_x1 ), rc->ToRendererY( object->m_selfBB_y1 ), 
-            rc->ToRendererX( object->m_selfBB_x2 ) - rc->ToRendererX( object->m_selfBB_x1 ), 
-            rc->ToRendererY( object->m_selfBB_y2 ) - rc->ToRendererY( object->m_selfBB_y1 ));
-    }
+    if (GetDrawBoundingBoxes()) {
+        SetPen( AxRED, 1, wxDOT_DASH );
+        if ( object->HasSelfBB() ) {
+           m_dc->DrawRectangle( rc->ToRendererX( object->m_selfBB_x1 ), rc->ToRendererY( object->m_selfBB_y1 ), 
+                rc->ToRendererX( object->m_selfBB_x2 ) - rc->ToRendererX( object->m_selfBB_x1 ), 
+                rc->ToRendererY( object->m_selfBB_y2 ) - rc->ToRendererY( object->m_selfBB_y1 ));
+        }
 
-    SetPen( AxBLUE, 1, wxDOT);
-    if ( object->HasContentBB() ) {
-        m_dc->DrawRectangle( rc->ToRendererX( object->m_contentBB_x1 ), rc->ToRendererY( object->m_contentBB_y1 ), 
-            rc->ToRendererX( object->m_contentBB_x2 ) - rc->ToRendererX( object->m_contentBB_x1 ), 
-            rc->ToRendererY( object->m_contentBB_y2 ) - rc->ToRendererY( object->m_contentBB_y1 )); 
+        SetPen( AxBLUE, 1, wxDOT);
+        if ( object->HasContentBB() ) {
+            m_dc->DrawRectangle( rc->ToRendererX( object->m_contentBB_x1 ), rc->ToRendererY( object->m_contentBB_y1 ), 
+                rc->ToRendererX( object->m_contentBB_x2 ) - rc->ToRendererX( object->m_contentBB_x1 ), 
+                rc->ToRendererY( object->m_contentBB_y2 ) - rc->ToRendererY( object->m_contentBB_y1 )); 
+        }
     }
 }
 

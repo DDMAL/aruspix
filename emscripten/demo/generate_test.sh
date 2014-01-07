@@ -19,7 +19,7 @@ convertMusic = Module.cwrap('convertMusic', 'string', ['string', 'string'])
 
 function render_music( music, format )
 {	
-	var svg = convertMusic(music, JSON.stringify({InputFormat: format, Scale: 50}));
+	var svg = convertMusic(music, JSON.stringify({inputFormat: format, scale: 50, pageHeight: 250, pageWidth: 2000}));
 	return svg;
 
 };

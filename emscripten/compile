@@ -1,6 +1,7 @@
 #/bin/bash
 
 ARUSPIX_ROOT=../
+EMCC=`which emcc`
 
 if [ ! -d build ]; then mkdir build; fi
 
@@ -13,7 +14,7 @@ echo "Compliling"
 # we use ASM_JS=0 because otherwise it does not work with FireFox
 # memory is increased (TOTAL_MEMORY and TOTAL_STACK) for processing large files (tested up to 7MB)
 
-emcc --closure 1 -O2 \
+python $EMCC --closure 0 -O2 \
 	-s ASM_JS=1 \
 	-s OUTLINING_LIMIT=160000 \
 	-I$ARUSPIX_ROOT/src \
