@@ -151,7 +151,7 @@ void MusRC::DrawBeam(  MusDC *dc, MusLayer *layer, MusBeam *beam, MusStaff *staf
 	/***if (e_t->_shport) { provshp = e_t->_shport; shportee (0);}***/
 		/* retablir a la fin si provshp existe */
 
-	low = chk->m_yDrawing + staff->m_yDrawing;	/* initialiser */
+	low = chk->m_yRel + staff->m_yDrawing;	/* initialiser */
     k = ((MusNote*)chk)->m_colored ? ((MusNote*)chk)->m_dur+1 : ((MusNote*)chk)->m_dur;
     
 	valref = k;		/* m_dur test conservee */
@@ -278,24 +278,24 @@ void MusRC::DrawBeam(  MusDC *dc, MusLayer *layer, MusBeam *beam, MusStaff *staf
 	for (i = 0; i < ct; i++)
 	{	switch (fb.mrq_port)
 		{	case 0: crd[i].prov = OFF;
-					(crd+i)->b = crd[i].chk->m_yDrawing+staff->m_yDrawing;
+					(crd+i)->b = crd[i].chk->m_yRel+staff->m_yDrawing;
 					break;
 			case 1: if (crd[i].chk->m_staffShift)
 					{	crd[i].prov = ON;
-						(crd+i)->b = crd[i].chk->m_yDrawing + _yy[0];
+						(crd+i)->b = crd[i].chk->m_yRel + _yy[0];
 					}
 					else
 					{	crd[i].prov = OFF;
-						(crd+i)->b = crd[i].chk->m_yDrawing + _yy[1];
+						(crd+i)->b = crd[i].chk->m_yRel + _yy[1];
 					}
 					break;
 			case 2: if (crd[i].chk->m_staffShift)
 					{	crd[i].prov = OFF;
-						(crd+i)->b = crd[i].chk->m_yDrawing + _yy[1];
+						(crd+i)->b = crd[i].chk->m_yRel + _yy[1];
 					}
 					else
 					{	crd[i].prov = ON;
-						(crd+i)->b = crd[i].chk->m_yDrawing + _yy[0];
+						(crd+i)->b = crd[i].chk->m_yRel + _yy[0];
 					}
 		}
 		high= std::max((double)(crd+i)->b,high);		/* enregistrement des extremes */

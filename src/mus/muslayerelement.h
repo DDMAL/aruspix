@@ -132,8 +132,8 @@ public:
     //int m_xRel;
 	/** Drawing position X. This is used internally when drawing */
     int m_xDrawing;
-	/** Drawing position Y. This is used internally when drawing */
-	int m_yDrawing; 
+	/** Relative position Y. This is used internally when drawing */
+	int m_yRel;
     /** for elements in MusLayerApp. They will be drawn from the MusLayerElement of the app (and not from the layer) */
     bool m_in_layer_app;
     /** Indicates if cue size */

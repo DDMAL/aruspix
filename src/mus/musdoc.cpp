@@ -94,7 +94,7 @@ void MusDoc::Layout( )
 	{
 		page = (MusPage*)this->m_children[i];
         page->Layout( );
-        //break;
+        break;
      }
 }
 

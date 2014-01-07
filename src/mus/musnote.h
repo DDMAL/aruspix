@@ -103,7 +103,7 @@ protected:
     /**
      * @name Tie attributes are represented by pointers to MusTie objects.
      * There is one pointer for the initial attribute and one pointer for the end attribute.
-     * The MusTie objects points back to the notes as it is the case is a MEI tie element.
+     * The MusTie objects points back to the notes as it is the case with a MEI tie element.
      * With attributes, the note with the initial attribute own the MusTie object and take care of deleting it
      */
     ///@{

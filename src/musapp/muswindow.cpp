@@ -909,7 +909,7 @@ void MusWindow::OnMouseLeftDown(wxMouseEvent &event)
 		
 		// Track motion on y-axis
 		if ( m_currentElement )
-			m_dragging_y_offset = y - m_currentStaff->m_yDrawing - m_currentElement->m_yDrawing;
+			m_dragging_y_offset = y - m_currentStaff->m_yDrawing - m_currentElement->m_yRel;
 		else
 			m_dragging_y_offset = 0;
 
@@ -986,7 +986,7 @@ void MusWindow::OnMouseMotion(wxMouseEvent &event)
 		} 
 		else if ( m_lyricMode )					// Movement of lyric element on y-axis
 		{
-			m_currentElement->m_yDrawing = y - m_currentStaff->m_yDrawing;
+			m_currentElement->m_yRel = y - m_currentStaff->m_yDrawing;
 		} 
 		
 		if ( m_insert_x != m_dragging_x  )		// If element has moved in the x-axis
