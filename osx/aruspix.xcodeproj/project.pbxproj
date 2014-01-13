@@ -242,7 +242,7 @@
 		4D64284D0D9344FD00DA3A64 /* supim.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = supim.cpp; sourceTree = "<group>"; };
 		4D64284E0D9344FD00DA3A64 /* supim.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = supim.h; sourceTree = "<group>"; };
 		4D6E911513E88A7B003B00D4 /* musdoc.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; lineEnding = 0; name = musdoc.cpp; path = ../src/mus/musdoc.cpp; sourceTree = SOURCE_ROOT; xcLanguageSpecificationIdentifier = xcode.lang.cpp; };
-		4D6E911613E88A7B003B00D4 /* musdoc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; name = musdoc.h; path = ../src/mus/musdoc.h; sourceTree = SOURCE_ROOT; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
+		4D6E911613E88A7B003B00D4 /* doc.h */ = {isa = PBXFileReference; fileEncoding = 4; lineEnding = 0; name = doc.h; path = ../src/mus/doc.h; sourceTree = SOURCE_ROOT; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		4D6E913813E89B98003B00D4 /* muspage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; name = muspage.h; path = ../src/mus/muspage.h; sourceTree = SOURCE_ROOT; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		4D6E917713E9DA0A003B00D4 /* mussystem.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; lineEnding = 0; name = mussystem.cpp; path = ../src/mus/mussystem.cpp; sourceTree = SOURCE_ROOT; xcLanguageSpecificationIdentifier = xcode.lang.cpp; };
 		4D72429B132012A00023497A /* mussvgdc.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; lineEnding = 0; name = mussvgdc.cpp; path = ../src/mus/mussvgdc.cpp; sourceTree = SOURCE_ROOT; xcLanguageSpecificationIdentifier = xcode.lang.cpp; };
@@ -515,7 +515,7 @@
 				4D2E465313FBE99100023B02 /* elements */,
 				4D2F7EEF145AE16800EF930B /* view */,
 				4D6E911513E88A7B003B00D4 /* musdoc.cpp */,
-				4D6E911613E88A7B003B00D4 /* musdoc.h */,
+				4D6E911613E88A7B003B00D4 /* doc.h */,
 				4D3A8FD50D35867200BBC1FB /* musdef.h */,
 				4D784B841802A8E600461A35 /* mus.cpp */,
 				4D784B831802A8AC00461A35 /* mus.h */,
