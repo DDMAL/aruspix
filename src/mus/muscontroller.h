@@ -145,7 +145,7 @@ public:
     
 private:
     MusDoc m_doc;
-    MusRC m_rc;
+    View m_rc;
     int m_border;
     int m_scale;
     ConvertFileFormat m_format;

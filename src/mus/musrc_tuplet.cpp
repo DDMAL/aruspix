@@ -31,7 +31,7 @@
 #define TUPLET_OFFSET 20
 #define OBLIQUE_OFFSET 0x52 //move to oblique figures
 
-std::string MusRC::IntToObliqueFigures(unsigned int number) {
+std::string View::IntToObliqueFigures(unsigned int number) {
     char buf[16];
     unsigned int len;
     
@@ -56,7 +56,7 @@ std::string MusRC::IntToObliqueFigures(unsigned int number) {
  * Analyze a tuplet object and figure out if all the notes are in the same beam
  * or not
  */
-bool MusRC::OneBeamInTuplet(Tuplet* tuplet) {
+bool View::OneBeamInTuplet(Tuplet* tuplet) {
     
     Beam *currentBeam, *firstBeam = NULL;
     ArrayOfMusObjects elems;
@@ -123,7 +123,7 @@ bool MusRC::OneBeamInTuplet(Tuplet* tuplet) {
  
  */
 
-bool MusRC::GetTupletCoordinates(Tuplet* tuplet, Layer *layer, MusPoint* start, MusPoint* end, MusPoint *center) {
+bool View::GetTupletCoordinates(Tuplet* tuplet, Layer *layer, MusPoint* start, MusPoint* end, MusPoint *center) {
     MusPoint first, last;
     int x, y;
     bool direction = true; //true = up, false = down
@@ -286,7 +286,7 @@ bool MusRC::GetTupletCoordinates(Tuplet* tuplet, Layer *layer, MusPoint* start, 
 }
 
 
-void MusRC::DrawTuplet( DeviceContext *dc, Tuplet *tuplet, Layer *layer, Staff *staff)
+void View::DrawTuplet( DeviceContext *dc, Tuplet *tuplet, Layer *layer, Staff *staff)
 {
     assert(layer); // Pointer to layer cannot be NULL"
     assert(staff); // Pointer to staff cannot be NULL"

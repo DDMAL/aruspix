@@ -13,7 +13,7 @@
 #include "musobject.h"
 
 //----------------------------------------------------------------------------
-// MusBBoxDC
+// BBoxDeviceContext
 //----------------------------------------------------------------------------
 
 /** 
@@ -25,12 +25,12 @@
  * drawn (the top one on the stack). The content bounding box is updated for all objects
  * the stack
  */
-class MusBBoxDC: public DeviceContext
+class BBoxDeviceContext: public DeviceContext
 {
 public:
 
-    MusBBoxDC ( MusRC *rc, int width, int height );
-    virtual ~MusBBoxDC();
+    BBoxDeviceContext ( View *rc, int width, int height );
+    virtual ~BBoxDeviceContext();
     
     // Setters
     
@@ -95,7 +95,7 @@ public:
     // 
     virtual void StartGraphic( MusDocObject *object, std::string gClass, std::string gId );
     
-    virtual void EndGraphic(MusDocObject *object, MusRC *rc );
+    virtual void EndGraphic(MusDocObject *object, View *rc );
     
     virtual void StartPage();
     
@@ -117,7 +117,7 @@ private:
     /**
      * The rendering context we are calling from - used to flip back the Y coordinates
      */
-    MusRC *m_rc;
+    View *m_rc;
    
     //
     int m_penWidth;

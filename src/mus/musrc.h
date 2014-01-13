@@ -28,18 +28,18 @@ class Tie;
 class Tuplet;
 
 //----------------------------------------------------------------------------
-// MusRC
+// View
 //----------------------------------------------------------------------------
 
 /** 
  * This class is a rendering context and corresponds to the view of a MVC design pattern.
  */
-class MusRC
+class View
 {
 public:
     // constructors and destructors
-    MusRC();
-	virtual ~MusRC();
+    View();
+	virtual ~View();
 
 	// edition
     virtual void OnBeginEdition() {}

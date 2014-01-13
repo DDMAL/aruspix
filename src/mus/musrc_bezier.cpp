@@ -9,10 +9,10 @@
 #include "musrc.h"
 
 /** static members **/
-MusPoint MusRC::point_[];
-MusPoint MusRC::bcoord[];
+MusPoint View::point_[];
+MusPoint View::bcoord[];
  
-void MusRC::pntswap (MusPoint *x1, MusPoint *x2)
+void View::pntswap (MusPoint *x1, MusPoint *x2)
 {	MusPoint a;
 	a = *x1;
 	*x1 = *x2;

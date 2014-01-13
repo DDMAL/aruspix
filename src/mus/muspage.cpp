@@ -189,8 +189,8 @@ void Page::Layout( )
     this->Process( &setAlignmentX, params );
     
     // Render it for filling the bounding boxing
-    MusRC rc;
-    MusBBoxDC bb_dc( &rc, 0, 0 );
+    View rc;
+    BBoxDeviceContext bb_dc( &rc, 0, 0 );
     rc.SetDoc(doc);
     rc.DrawPage(  &bb_dc, this, false );
     

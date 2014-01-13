@@ -197,11 +197,11 @@ void MusWxDC::DrawBackgroundImage( int x, int y)
     
 }
 
-void MusWxDC::EndGraphic( MusDocObject *object, MusRC *rc )
+void MusWxDC::EndGraphic( MusDocObject *object, View *rc )
 {
     // actually draw the two bounding boxes  
     // bounding boxes are given in logical coordinates - we need to convert them
-    // this is why we have a MusRC object
+    // this is why we have a View object
     
     //return;
     if (GetDrawBoundingBoxes()) {

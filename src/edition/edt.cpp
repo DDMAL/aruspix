@@ -586,7 +586,7 @@ void EdtEnv::OnSaveSVG( wxCommandEvent &event )
     m_musViewPtr->SetZoom( 100 );
     
     
-    MusSvgDC svgDC (m_musViewPtr->ToRendererX( m_musViewPtr->m_doc->m_rendPageWidth + 30 )  ,
+    SvgDeviceContext svgDC (m_musViewPtr->ToRendererX( m_musViewPtr->m_doc->m_rendPageWidth + 30 )  ,
         m_musViewPtr->ToRendererX( m_musViewPtr->m_doc->m_rendPageHeight + 10 )) ;
         
     //svgDC.SetUserScale( 1, 1 );
@@ -605,7 +605,7 @@ void EdtEnv::OnSaveSVG( wxCommandEvent &event )
 	
     m_musViewPtr->m_currentElement = NULL;
 	//svgDC.SetAxisOrientation( true, false );
-    MusRC rc;
+    View rc;
     rc.SetDoc(m_musViewPtr->m_doc );
     rc.DrawPage(  &svgDC, m_musViewPtr->m_page, false );
     

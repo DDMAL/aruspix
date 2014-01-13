@@ -73,7 +73,7 @@ END_EVENT_TABLE()
 
 MusWindow::MusWindow( wxWindow *parent, wxWindowID id,
     const wxPoint &position, const wxSize& size, long style, bool center ) :
-    wxScrolledWindow( parent, id, position, size, style ), MusRC( ), AxUndo( 100 )
+    wxScrolledWindow( parent, id, position, size, style ), View( ), AxUndo( 100 )
 {
     m_newElement = NULL;
 	m_bufferElement = NULL;

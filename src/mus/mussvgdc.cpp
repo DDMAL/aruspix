@@ -35,11 +35,11 @@ static inline double RadToDeg(double deg) { return (deg * 180.0) / M_PI; }
 }
 
 //----------------------------------------------------------------------------
-// MusSvgDC
+// SvgDeviceContext
 //----------------------------------------------------------------------------
 
 
-MusSvgDC::MusSvgDC(int width, int height):
+SvgDeviceContext::SvgDeviceContext(int width, int height):
     DeviceContext()
 {	
 	
@@ -70,12 +70,12 @@ MusSvgDC::MusSvgDC(int width, int height):
 }
 
 
-MusSvgDC::~MusSvgDC ( )
+SvgDeviceContext::~SvgDeviceContext ( )
 {
 }
 
 
-bool MusSvgDC::CopyFileToStream(const std::string& filename, std::ostream& dest)
+bool SvgDeviceContext::CopyFileToStream(const std::string& filename, std::ostream& dest)
 {
     std::ifstream source( filename.c_str(), std::ios::binary );
     dest << source.rdbuf();
@@ -86,7 +86,7 @@ bool MusSvgDC::CopyFileToStream(const std::string& filename, std::ostream& dest)
 
 
 
-void MusSvgDC::Commit( bool xml_tag ) {
+void SvgDeviceContext::Commit( bool xml_tag ) {
 
     if (m_committed) {
         return;
@@ -95,7 +95,7 @@ void MusSvgDC::Commit( bool xml_tag ) {
     int i;
     // close unclosed graphics, just in case
     for (i = m_graphics; i < 0; m_graphics-- ) {
-        WriteLine("/*- MusSvgDC::Flush - Unclosed graphic */");
+        WriteLine("/*- SvgDeviceContext::Flush - Unclosed graphic */");
         WriteLine("</g>");
         m_indents--;
     }
@@ -131,7 +131,7 @@ void MusSvgDC::Commit( bool xml_tag ) {
 }
 
 
-void MusSvgDC::WriteLine( std::string string )
+void SvgDeviceContext::WriteLine( std::string string )
 {
     std::string output;
     output.append( m_indents, '\t' );
@@ -140,7 +140,7 @@ void MusSvgDC::WriteLine( std::string string )
 }
 
 
-void MusSvgDC::StartGraphic( MusDocObject *object, std::string gClass, std::string gId )
+void SvgDeviceContext::StartGraphic( MusDocObject *object, std::string gClass, std::string gId )
 {
     WriteLine(Mus::StringFormat("<g class=\"%s\" id=\"%s\" style=\"%s %s %s %s\">", gClass.c_str(), gId.c_str(), m_penColour.c_str(), m_penStyle.c_str(),
         m_brushColour.c_str(), m_brushStyle.c_str() ) );
@@ -149,7 +149,7 @@ void MusSvgDC::StartGraphic( MusDocObject *object, std::string gClass, std::stri
 }
   
       
-void MusSvgDC::EndGraphic(MusDocObject *object, MusRC *rc ) 
+void SvgDeviceContext::EndGraphic(MusDocObject *object, View *rc ) 
 {
     m_graphics--;
     m_indents--;
@@ -157,7 +157,7 @@ void MusSvgDC::EndGraphic(MusDocObject *object, MusRC *rc )
 }
 
 
-void MusSvgDC::StartPage( )
+void SvgDeviceContext::StartPage( )
 {
     WriteLine(Mus::StringFormat("<g class=\"page\" transform=\"translate(%d, %d)  scale(%f, %f)\">", 
         (int)((double)m_originX * m_userScaleX), (int)((double)m_originY * m_userScaleY), m_userScaleX, m_userScaleY ) );
@@ -166,7 +166,7 @@ void MusSvgDC::StartPage( )
 }
  
        
-void MusSvgDC::EndPage() 
+void SvgDeviceContext::EndPage() 
 {
     m_graphics--;
     m_indents--;
@@ -174,7 +174,7 @@ void MusSvgDC::EndPage()
 }
 
         
-void MusSvgDC::SetBrush( int colour, int style )
+void SvgDeviceContext::SetBrush( int colour, int style )
 {
     m_brushColour = "fill:#" + GetColour(colour) + semicolon;
     switch ( style )
@@ -190,22 +190,22 @@ void MusSvgDC::SetBrush( int colour, int style )
     }
 }
         
-void MusSvgDC::SetBackground( int colour, int style )
+void SvgDeviceContext::SetBackground( int colour, int style )
 {
     // nothing to do, we do not handle Background
 }
 
-void MusSvgDC::SetBackgroundImage( void *image, double opacity )
+void SvgDeviceContext::SetBackgroundImage( void *image, double opacity )
 {
 
 }
         
-void MusSvgDC::SetBackgroundMode( int mode )
+void SvgDeviceContext::SetBackgroundMode( int mode )
 {
     // nothing to do, we do not handle Background Mode
 }
         
-void MusSvgDC::SetPen( int colour, int width, int style )
+void SvgDeviceContext::SetPen( int colour, int width, int style )
 {
     m_penColour = "stroke:#" + GetColour(colour)  + semicolon;
     m_penWidth = "stroke-width:" + Mus::StringFormat("%d", width) + semicolon;
@@ -222,7 +222,7 @@ void MusSvgDC::SetPen( int colour, int width, int style )
     }
 }
         
-void MusSvgDC::SetFont( FontMetricsInfo *font_info )
+void SvgDeviceContext::SetFont( FontMetricsInfo *font_info )
 {
     m_font = *font_info;
     //wxFont font( font_info->pointSize, (wxFontFamily)font_info->family, font_info->style,
@@ -232,40 +232,40 @@ void MusSvgDC::SetFont( FontMetricsInfo *font_info )
 }
             
 
-void MusSvgDC::SetTextForeground( int colour )
+void SvgDeviceContext::SetTextForeground( int colour )
 {
     m_brushColour = "fill:#" + GetColour(colour); // we use the brush colour for text
 }
         
-void MusSvgDC::SetTextBackground( int colour )
+void SvgDeviceContext::SetTextBackground( int colour )
 {
     // nothing to do, we do not handle Text Background Mode
 }
        
-void MusSvgDC::ResetBrush( )
+void SvgDeviceContext::ResetBrush( )
 {
     SetBrush( AxBLACK, AxSOLID );
 }
         
-void MusSvgDC::ResetPen( )
+void SvgDeviceContext::ResetPen( )
 {
     SetPen( AxBLACK, 1, AxSOLID );
 } 
 
-void MusSvgDC::SetLogicalOrigin( int x, int y ) 
+void SvgDeviceContext::SetLogicalOrigin( int x, int y ) 
 {
     m_originX = -x;
     m_originY = -y;
 } 
 
-void MusSvgDC::SetUserScale( double xScale, double yScale ) 
+void SvgDeviceContext::SetUserScale( double xScale, double yScale ) 
 {
     m_userScaleX = xScale;
     m_userScaleY = yScale;
 }       
 
 // Copied from bBoxDc, TODO find another more generic solution
-void MusSvgDC::GetTextExtent( const std::string& string, int *w, int *h )
+void SvgDeviceContext::GetTextExtent( const std::string& string, int *w, int *h )
 {
     int x, y, partial_w, partial_h;
     
@@ -274,7 +274,7 @@ void MusSvgDC::GetTextExtent( const std::string& string, int *w, int *h )
     
     for (unsigned int i = 0; i < string.length(); i++) {
         
-        MusLeipzigBBox::GetCharBounds(string.c_str()[i], &x, &y, &partial_w, &partial_h);
+        LeipzigBBox::GetCharBounds(string.c_str()[i], &x, &y, &partial_w, &partial_h);
         
         partial_w *= ((m_font.GetPointSize() / LEIPZIG_UNITS_PER_EM));
         partial_h *= ((m_font.GetPointSize() / LEIPZIG_UNITS_PER_EM));
@@ -285,7 +285,7 @@ void MusSvgDC::GetTextExtent( const std::string& string, int *w, int *h )
 }
        
 
-MusPoint MusSvgDC::GetLogicalOrigin( ) 
+MusPoint SvgDeviceContext::GetLogicalOrigin( ) 
 {
     return MusPoint( m_originX, m_originY );
 }
@@ -293,7 +293,7 @@ MusPoint MusSvgDC::GetLogicalOrigin( )
 
 
 // Drawing mething
-void MusSvgDC::DrawComplexBezierPath(int x, int y, int bezier1_coord[6], int bezier2_coord[6])
+void SvgDeviceContext::DrawComplexBezierPath(int x, int y, int bezier1_coord[6], int bezier2_coord[6])
 {
     WriteLine( Mus::StringFormat("<path d=\"M%d,%d C%d,%d %d,%d %d,%d C%d,%d %d,%d %d,%d\" style=\"fill:#000; fill-opacity:1.0; stroke:#000000; stroke-linecap:round; stroke-linejoin:round; stroke-opacity:1.0; stroke-width:0\" />", 
                                 x, y, // M command
@@ -302,13 +302,13 @@ void MusSvgDC::DrawComplexBezierPath(int x, int y, int bezier1_coord[6], int bez
                                 ) );
 }
 
-void MusSvgDC::DrawCircle(int x, int y, int radius)
+void SvgDeviceContext::DrawCircle(int x, int y, int radius)
 {
     DrawEllipse(x - radius, y - radius, 2*radius, 2*radius);
 }
 
 
-void MusSvgDC::DrawEllipse(int x, int y, int width, int height)
+void SvgDeviceContext::DrawEllipse(int x, int y, int width, int height)
 {
     int rh = height / 2;
     int rw = width  / 2;
@@ -317,7 +317,7 @@ void MusSvgDC::DrawEllipse(int x, int y, int width, int height)
 }
 
         
-void MusSvgDC::DrawEllipticArc(int x, int y, int width, int height, double start, double end)
+void SvgDeviceContext::DrawEllipticArc(int x, int y, int width, int height, double start, double end)
 {
     /*
     Draws an arc of an ellipse. The current pen is used for drawing the arc
@@ -374,13 +374,13 @@ void MusSvgDC::DrawEllipticArc(int x, int y, int width, int height, double start
 }
   
               
-void MusSvgDC::DrawLine(int x1, int y1, int x2, int y2)
+void SvgDeviceContext::DrawLine(int x1, int y1, int x2, int y2)
 {
     WriteLine( Mus::StringFormat("<path d=\"M%d %d L%d %d\" style=\"%s\" />", x1,y1,x2,y2, m_penWidth.c_str()) );
 }
  
                
-void MusSvgDC::DrawPolygon(int n, MusPoint points[], int xoffset, int yoffset, int fill_style)
+void SvgDeviceContext::DrawPolygon(int n, MusPoint points[], int xoffset, int yoffset, int fill_style)
 {
 
     std::string s ;
@@ -402,13 +402,13 @@ void MusSvgDC::DrawPolygon(int n, MusPoint points[], int xoffset, int yoffset, i
 }
     
             
-void MusSvgDC::DrawRectangle(int x, int y, int width, int height)
+void SvgDeviceContext::DrawRectangle(int x, int y, int width, int height)
 {
     DrawRoundedRectangle( x, y, width, height, 0 );
 }
 
 
-void MusSvgDC::DrawRoundedRectangle(int x, int y, int width, int height, double radius)
+void SvgDeviceContext::DrawRoundedRectangle(int x, int y, int width, int height, double radius)
 {
 
     std::string s ;
@@ -428,7 +428,7 @@ void MusSvgDC::DrawRoundedRectangle(int x, int y, int width, int height, double 
 }
 
         
-void MusSvgDC::DrawText(const std::string& text, int x, int y)
+void SvgDeviceContext::DrawText(const std::string& text, int x, int y)
 {
     //DrawRotatedText( text, x, y, 0.0 );
     DrawMusicText(text, x, y);
@@ -436,7 +436,7 @@ void MusSvgDC::DrawText(const std::string& text, int x, int y)
 
 
 
-void MusSvgDC::DrawRotatedText(const std::string& text, int x, int y, double angle)
+void SvgDeviceContext::DrawRotatedText(const std::string& text, int x, int y, double angle)
 {
     //known bug; if the font is drawn in a scaled DC, it will not behave exactly as wxMSW
 
@@ -568,7 +568,7 @@ std::string FilenameLookup(unsigned char c) {
     return glyph;
 }
 
-void MusSvgDC::DrawMusicText(const std::string& text, int x, int y)
+void SvgDeviceContext::DrawMusicText(const std::string& text, int x, int y)
 {
 
     int w, h, gx, gy;
@@ -592,7 +592,7 @@ void MusSvgDC::DrawMusicText(const std::string& text, int x, int y)
                                      ((double)(m_font.GetPointSize() / LEIPZIG_UNITS_PER_EM)) ) );
         
         // Get the bounds of the char
-        MusLeipzigBBox::GetCharBounds(c, &gx, &gy, &w, &h);
+        LeipzigBBox::GetCharBounds(c, &gx, &gy, &w, &h);
         // Sum it to x so we move it to the start of the next char
         x += (w * ((double)(m_font.GetPointSize() / LEIPZIG_UNITS_PER_EM)));
     }
@@ -603,18 +603,18 @@ void MusSvgDC::DrawMusicText(const std::string& text, int x, int y)
 }
 
 
-void MusSvgDC::DrawSpline(int n, MusPoint points[])
+void SvgDeviceContext::DrawSpline(int n, MusPoint points[])
 {
     //m_dc->DrawSpline( n, (wxPoint*)points );
 }
 
-void MusSvgDC::DrawBackgroundImage( int x, int y )
+void SvgDeviceContext::DrawBackgroundImage( int x, int y )
 {
    
 }
 
 
-std::string MusSvgDC::GetColour( int colour )
+std::string SvgDeviceContext::GetColour( int colour )
 {
     std::stringstream ss;
     ss << std::hex;
@@ -638,7 +638,7 @@ std::string MusSvgDC::GetColour( int colour )
     }
 }
 
-std::string MusSvgDC::GetStringSVG( bool xml_tag )
+std::string SvgDeviceContext::GetStringSVG( bool xml_tag )
 {
     if (!m_committed)
         Commit( xml_tag );

@@ -32,10 +32,10 @@
 #include "mustuplet.h"
 
 //----------------------------------------------------------------------------
-// MusRC - Page
+// View - Page
 //----------------------------------------------------------------------------
 
-void MusRC::DrawPage( DeviceContext *dc, Page *page, bool background ) 
+void View::DrawPage( DeviceContext *dc, Page *page, bool background ) 
 {
 	assert( dc ); // DC cannot be NULL
     assert( page );
@@ -69,14 +69,14 @@ void MusRC::DrawPage( DeviceContext *dc, Page *page, bool background )
 }
 
 //----------------------------------------------------------------------------
-// MusRC - System
+// View - System
 //----------------------------------------------------------------------------
 
 
 // drawing
 
 
-void MusRC::DrawSystem( DeviceContext *dc, System *system ) 
+void View::DrawSystem( DeviceContext *dc, System *system ) 
 {
 	assert( system ); // other asserted before
     
@@ -120,7 +120,7 @@ void MusRC::DrawSystem( DeviceContext *dc, System *system )
 
 }
 
-void MusRC::DrawScoreDef( DeviceContext *dc, ScoreDef *scoreDef, Measure *measure, int x, Barline *barline  )
+void View::DrawScoreDef( DeviceContext *dc, ScoreDef *scoreDef, Measure *measure, int x, Barline *barline  )
 {
     assert( scoreDef ); // other asserted before
 
@@ -146,7 +146,7 @@ void MusRC::DrawScoreDef( DeviceContext *dc, ScoreDef *scoreDef, Measure *measur
 }
 
 
-void MusRC::DrawStaffGrp( DeviceContext *dc, Measure *measure, MusStaffGrp *staffGrp, int x )
+void View::DrawStaffGrp( DeviceContext *dc, Measure *measure, MusStaffGrp *staffGrp, int x )
 {
     assert( measure );
     assert( staffGrp );
@@ -202,7 +202,7 @@ void MusRC::DrawStaffGrp( DeviceContext *dc, Measure *measure, MusStaffGrp *staf
 }
 
 
-void MusRC::DrawBracket ( DeviceContext *dc, int x, int y1, int y2, int staffSize)
+void View::DrawBracket ( DeviceContext *dc, int x, int y1, int y2, int staffSize)
 {
 	int xg, xd, yg, yd, ecart, centre;
 
@@ -236,7 +236,7 @@ void MusRC::DrawBracket ( DeviceContext *dc, int x, int y1, int y2, int staffSiz
 }
 
 
-void MusRC::DrawBrace ( DeviceContext *dc, int x, int y1, int y2, int staffSize)
+void View::DrawBrace ( DeviceContext *dc, int x, int y1, int y2, int staffSize)
 {	
     int new_coords[2][6];
     
@@ -324,7 +324,7 @@ void MusRC::DrawBrace ( DeviceContext *dc, int x, int y1, int y2, int staffSize)
 }
 
 
-void MusRC::DrawBarlines( DeviceContext *dc, Measure *measure, MusStaffGrp *staffGrp, int x, Barline *barline )
+void View::DrawBarlines( DeviceContext *dc, Measure *measure, MusStaffGrp *staffGrp, int x, Barline *barline )
 {
     assert( measure );
     assert( staffGrp );
@@ -406,7 +406,7 @@ void MusRC::DrawBarlines( DeviceContext *dc, Measure *measure, MusStaffGrp *staf
     }
 }
 
-void MusRC::DrawBarline( DeviceContext *dc, int x, int y_top, int y_bottom, Barline *barline )
+void View::DrawBarline( DeviceContext *dc, int x, int y_top, int y_bottom, Barline *barline )
 {
     assert( dc );
 
@@ -448,7 +448,7 @@ void MusRC::DrawBarline( DeviceContext *dc, int x, int y_top, int y_bottom, Barl
 }
 
  
-void MusRC::DrawBarlineDots ( DeviceContext *dc, int x, Staff *staff, Barline *barline )
+void View::DrawBarlineDots ( DeviceContext *dc, int x, Staff *staff, Barline *barline )
 {
 	assert( dc ); // DC cannot be NULL
     
@@ -474,7 +474,7 @@ void MusRC::DrawBarlineDots ( DeviceContext *dc, int x, Staff *staff, Barline *b
 }
 
 
-void MusRC::DrawPartialBarline ( DeviceContext *dc, System *system, int x, Staff *pportee)
+void View::DrawPartialBarline ( DeviceContext *dc, System *system, int x, Staff *pportee)
 {
 	assert( dc ); // DC cannot be NULL
 
@@ -500,10 +500,10 @@ void MusRC::DrawPartialBarline ( DeviceContext *dc, System *system, int x, Staff
 
 
 //----------------------------------------------------------------------------
-// MusRC - Measure
+// View - Measure
 //----------------------------------------------------------------------------
 
-void MusRC::DrawMeasure( DeviceContext *dc, Measure *measure, System *system )
+void View::DrawMeasure( DeviceContext *dc, Measure *measure, System *system )
 {
 	assert( dc ); // DC cannot be NULL
     
@@ -548,10 +548,10 @@ void MusRC::DrawMeasure( DeviceContext *dc, Measure *measure, System *system )
 
 
 //----------------------------------------------------------------------------
-// MusRC - Staff
+// View - Staff
 //----------------------------------------------------------------------------
 
-int MusRC::CalculateNeumePosY ( Staff *staff, char note, int dec_clef, int oct)
+int View::CalculateNeumePosY ( Staff *staff, char note, int dec_clef, int oct)
 {
     assert(staff); // Pointer to staff cannot be NULL"
 
@@ -570,7 +570,7 @@ int MusRC::CalculateNeumePosY ( Staff *staff, char note, int dec_clef, int oct)
 	return 0;
 }
 
-int MusRC::CalculatePitchPosY ( Staff *staff, char pname, int dec_clef, int oct)
+int View::CalculatePitchPosY ( Staff *staff, char pname, int dec_clef, int oct)
 {
     assert(staff); // Pointer to staff cannot be NULL"
 	
@@ -592,7 +592,7 @@ int MusRC::CalculatePitchPosY ( Staff *staff, char pname, int dec_clef, int oct)
 	return 0;
 }
 
-int MusRC::CalculateRestPosY ( Staff *staff, char duration)
+int View::CalculateRestPosY ( Staff *staff, char duration)
 {
     assert(staff); // Pointer to staff cannot be NULL"
 
@@ -619,7 +619,7 @@ int MusRC::CalculateRestPosY ( Staff *staff, char duration)
     return base + staff_space * offset;
 }
 
-void MusRC::DrawStaffLines( DeviceContext *dc, Staff *staff, Measure *measure, System *system )
+void View::DrawStaffLines( DeviceContext *dc, Staff *staff, Measure *measure, System *system )
 {
 	assert( dc ); // DC cannot be NULL
         
@@ -653,7 +653,7 @@ void MusRC::DrawStaffLines( DeviceContext *dc, Staff *staff, Measure *measure, S
 
 
 
-void MusRC::DrawStaff( DeviceContext *dc, Staff *staff, Measure *measure, System *system )
+void View::DrawStaff( DeviceContext *dc, Staff *staff, Measure *measure, System *system )
 {
 	assert( dc ); // DC cannot be NULL
     
@@ -688,14 +688,14 @@ void MusRC::DrawStaff( DeviceContext *dc, Staff *staff, Measure *measure, System
 
 
 //----------------------------------------------------------------------------
-// MusRC - Layer
+// View - Layer
 //----------------------------------------------------------------------------
 
 
 // a partir d'un y, trouve la hauteur d'une note exprimee en code touche et
 // octave. Retourne code clavier, et situe l'octave. 
 
-int MusRC::CalculatePitchCode ( Layer *layer, int y_n, int x_pos, int *octave )
+int View::CalculatePitchCode ( Layer *layer, int y_n, int x_pos, int *octave )
 {
     assert(layer); // Pointer to layer cannot be NULL"
     assert(layer->m_parent); // Pointer to staff cannot be NULL"
@@ -771,7 +771,7 @@ MusPoint CalcPositionAfterRotation( MusPoint point , float rot_alpha, MusPoint c
   up = liaison vers le haut
   heigth = hauteur de la liaison ( ‡ plat )
   **/
-void MusRC::DrawSlur( DeviceContext *dc, Layer *layer, int x1, int y1, int x2, int y2, bool up, int height )
+void View::DrawSlur( DeviceContext *dc, Layer *layer, int x1, int y1, int x2, int y2, bool up, int height )
 {
     assert(layer); // Pointer to layer cannot be NULL"
     assert(layer->m_parent); // Pointer to staff cannot be NULL"
@@ -854,7 +854,7 @@ void MusRC::DrawSlur( DeviceContext *dc, Layer *layer, int x1, int y1, int x2, i
 
 }
 
-void MusRC::DrawLayer( DeviceContext *dc, Layer *layer, Staff *staff, Measure *measure)
+void View::DrawLayer( DeviceContext *dc, Layer *layer, Staff *staff, Measure *measure)
 {
 	assert( dc ); // DC cannot be NULL
 
@@ -893,7 +893,7 @@ void MusRC::DrawLayer( DeviceContext *dc, Layer *layer, Staff *staff, Measure *m
 }
 
 
-void MusRC::DrawLayerList( DeviceContext *dc, Layer *layer, Staff *staff, Measure *measure, const std::type_info *elementType )
+void View::DrawLayerList( DeviceContext *dc, Layer *layer, Staff *staff, Measure *measure, const std::type_info *elementType )
 {
 	assert( dc ); // DC cannot be NULL
     

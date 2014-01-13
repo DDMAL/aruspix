@@ -12,16 +12,16 @@
 
 #include "musdef.h"
 
-bool MusLeipzigBBox::m_initialized =  false;
+bool LeipzigBBox::m_initialized =  false;
 /*
-MusLeipzigBBox::BoundingBox* MusLeipzigBBox::m_bBox = MusLeipzigBBox::InitializeStatic();
+LeipzigBBox::BoundingBox* LeipzigBBox::m_bBox = LeipzigBBox::InitializeStatic();
 */
 
 
-MusLeipzigBBox::BoundingBox MusLeipzigBBox::m_bBox[LEIPZIG_GLYPHS];
+LeipzigBBox::BoundingBox LeipzigBBox::m_bBox[LEIPZIG_GLYPHS];
 
 // Statically initialize the struct
-void MusLeipzigBBox::InitializeStatic() {
+void LeipzigBBox::InitializeStatic() {
         
     /*
      * This list is used for getting the bounding box of the Leipzig glyphs.
@@ -307,7 +307,7 @@ void MusLeipzigBBox::InitializeStatic() {
     return;
 };
 
-void MusLeipzigBBox::GetCharBounds(const unsigned char c, int *x, int *y, int *w, int *h)
+void LeipzigBBox::GetCharBounds(const unsigned char c, int *x, int *y, int *w, int *h)
 {
     unsigned int glyph;
     

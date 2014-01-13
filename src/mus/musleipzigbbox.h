@@ -92,7 +92,7 @@
  * This class is used for getting the bounding box of the Leipzig glyphs.
  * The values (above) are used obtained with the ./varia/svg/split.xsl.
  */
-class MusLeipzigBBox
+class LeipzigBBox
 {
 public:
     

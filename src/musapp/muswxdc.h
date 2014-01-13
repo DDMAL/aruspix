@@ -94,7 +94,7 @@ public:
     
     virtual void StartGraphic( MusDocObject *object, std::string gClass, std::string gId ) {};
     
-    virtual void EndGraphic( MusDocObject *object, MusRC *rc  );
+    virtual void EndGraphic( MusDocObject *object, View *rc  );
     
     virtual void StartPage( ) { m_dc->EndPage(); };
     

@@ -20,10 +20,10 @@
 #include "musnote.h"
 
 //----------------------------------------------------------------------------
-// MusRC
+// View
 //----------------------------------------------------------------------------
 
-MusRC::MusRC( )
+View::View( )
 {
 	m_doc = NULL;
     m_page = NULL;
@@ -48,11 +48,11 @@ MusRC::MusRC( )
 }
 
 
-MusRC::~MusRC()
+View::~View()
 {
 }
 
-void MusRC::SetDoc( MusDoc *doc )
+void View::SetDoc( MusDoc *doc )
 {
 	if ( doc == NULL ) // unset file
 	{
@@ -77,7 +77,7 @@ void MusRC::SetDoc( MusDoc *doc )
 }
 
 
-void MusRC::SetPage( Page *page )
+void View::SetPage( Page *page )
 {
 	assert( page ); // Page cannot be NULL
     
@@ -114,7 +114,7 @@ void MusRC::SetPage( Page *page )
     DoRefresh();
 }
 
-bool MusRC::HasNext( bool forward ) 
+bool View::HasNext( bool forward ) 
 { 
 	if ( forward )
 		return ( m_doc && ((int)m_doc->GetChildCount() - 1 > m_npage) );
@@ -124,7 +124,7 @@ bool MusRC::HasNext( bool forward )
 		
 }
 
-void MusRC::Next( bool forward ) 
+void View::Next( bool forward ) 
 { 
 	if ( !m_doc )
         return;
@@ -137,7 +137,7 @@ void MusRC::Next( bool forward )
 	SetPage( (Page*)m_doc->m_children[m_npage] );
 }
 
-void MusRC::LoadPage( int nopage )
+void View::LoadPage( int nopage )
 {
     /*
 	if ( !m_doc )
@@ -149,16 +149,16 @@ void MusRC::LoadPage( int nopage )
 	m_npage = nopage;
 	SetPage( &m_doc->m_pages[m_npage] );
     */
-    Mus::LogDebug( "MusRC::LoadPage missing in ax2" );
+    Mus::LogDebug( "View::LoadPage missing in ax2" );
 }
 
-int MusRC::ToRendererX( int i ) { return i; }; // the same
+int View::ToRendererX( int i ) { return i; }; // the same
 
 /** x value in the Logical world */
-int MusRC::ToLogicalX( int i )  { return i; };
+int View::ToLogicalX( int i )  { return i; };
 
 /** y value in the Renderer */
-int MusRC::ToRendererY( int i )  
+int View::ToRendererY( int i )  
 { 
     if (!m_doc) {
         return 0;
@@ -168,7 +168,7 @@ int MusRC::ToRendererY( int i )
 }
 
 /** y value in the Logical world  */
-int MusRC::ToLogicalY( int i )  
+int View::ToLogicalY( int i )  
 { 
     { 
         if (!m_doc) {
@@ -179,7 +179,7 @@ int MusRC::ToLogicalY( int i )
     }
 }
 
-bool MusRC::IsNoteSelected() 
+bool View::IsNoteSelected() 
 { 
 	if (!m_currentElement) 
 		return false;

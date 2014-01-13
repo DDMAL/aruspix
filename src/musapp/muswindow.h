@@ -55,10 +55,10 @@ enum
 
 /** 
  * This class is a application window and corresponds to the controller of a MVC design pattern.
- * It also implements the view (MusRC) because the application window is used both for interacting
+ * It also implements the view (View) because the application window is used both for interacting
  * with the user and for rendering the model.
  */
-class MusWindow: public wxScrolledWindow, public MusRC, public AxUndo
+class MusWindow: public wxScrolledWindow, public View, public AxUndo
 {
 public:
     // constructors and destructors

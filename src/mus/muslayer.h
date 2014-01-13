@@ -114,7 +114,7 @@ public:
 
     /**
      * Return the darwing list.
-     * This is used when actually darwing the list (see MusRC::DrawLayerList)
+     * This is used when actually darwing the list (see View::DrawLayerList)
      */
     ListOfMusObjects *GetDrawingList( );
 

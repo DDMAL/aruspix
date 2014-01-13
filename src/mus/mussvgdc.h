@@ -18,7 +18,7 @@
 #include <vector>
 
 //----------------------------------------------------------------------------
-// MusBBoxDC
+// BBoxDeviceContext
 //----------------------------------------------------------------------------
 
 /** 
@@ -26,12 +26,12 @@
  * The Leipzig font is embedded by incorporating ./data/svg/xxx.xml glyphs within
  * the SVG file.
  */
-class MusSvgDC: public DeviceContext
+class SvgDeviceContext: public DeviceContext
 {
 public:
 
-    MusSvgDC ( int width, int height );
-    virtual ~MusSvgDC();
+    SvgDeviceContext ( int width, int height );
+    virtual ~SvgDeviceContext();
     
     // Setters
     
@@ -102,7 +102,7 @@ public:
     // 
     virtual void StartGraphic( MusDocObject *object, std::string gClass, std::string gId );
     
-    virtual void EndGraphic( MusDocObject *object, MusRC *rc  );
+    virtual void EndGraphic( MusDocObject *object, View *rc  );
     
     virtual void StartPage();
     

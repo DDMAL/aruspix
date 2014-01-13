@@ -42,7 +42,7 @@ class MusPoint;
 class MusRect;
 class FontMetricsInfo;
 class MusDocObject;
-class MusRC;
+class View;
 
 // ---------------------------------------------------------------------------
 // DeviceContext
@@ -53,7 +53,7 @@ class MusRC;
  * It enables different types of concrete classes to be implemented.
  * For example:
  *  MusWxDC - a wrapper to wxDCs;
- *  MusSvgDC - a non-gui file DC;
+ *  SvgDeviceContext - a non-gui file DC;
  *  MusCairoDC - a wrapper to a Cairo surface;
  * The class uses int-based colour encoding (instead of wxColour in wxDC).
  * It uses FontMetricsInfo (instead of wxFont in wxDC).
@@ -130,7 +130,7 @@ public:
     
     virtual void StartGraphic( MusDocObject *object, std::string gClass, std::string gId ) = 0;
     
-    virtual void EndGraphic( MusDocObject *object, MusRC *rc  ) = 0;
+    virtual void EndGraphic( MusDocObject *object, View *rc  ) = 0;
     
     virtual void StartPage( ) = 0;
     

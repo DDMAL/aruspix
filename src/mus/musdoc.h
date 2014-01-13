@@ -144,7 +144,7 @@ public:
     
     /*
      * The following values are set in the MusDoc::SetRenderedPage.
-     * They are all current values to be used when rendering a page in a MusRC and 
+     * They are all current values to be used when rendering a page in a View and 
      * reset for every page. However, most of them are based on the m_staffDefin values
      * and will remain the same. This can be optimized.
      * The pages dimensions and margins are based on the page ones, the document ones or 

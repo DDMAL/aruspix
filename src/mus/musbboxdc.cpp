@@ -25,11 +25,11 @@ static inline double RadToDeg(double deg) { return (deg * 180.0) / M_PI; }
 }
 
 //----------------------------------------------------------------------------
-// MusBBoxDC
+// BBoxDeviceContext
 //----------------------------------------------------------------------------
 
 
-MusBBoxDC::MusBBoxDC ( MusRC *rc, int width, int height):
+BBoxDeviceContext::BBoxDeviceContext ( View *rc, int width, int height):
     DeviceContext()
 {	
     m_correctMusicAscent = false; // do not correct the ascent in the Leipzig font    
@@ -48,90 +48,90 @@ MusBBoxDC::MusBBoxDC ( MusRC *rc, int width, int height):
 }
 
 
-MusBBoxDC::~MusBBoxDC ( )
+BBoxDeviceContext::~BBoxDeviceContext ( )
 {
 }
 
-void MusBBoxDC::StartGraphic( MusDocObject *object, std::string gClass, std::string gId )
+void BBoxDeviceContext::StartGraphic( MusDocObject *object, std::string gClass, std::string gId )
 {
     // add object
     object->ResetBB();
     m_objects.push_back( object );
 }
       
-void MusBBoxDC::EndGraphic(MusDocObject *object, MusRC *rc ) 
+void BBoxDeviceContext::EndGraphic(MusDocObject *object, View *rc ) 
 {
     // detach the object
     assert( m_objects.back() == object );
     m_objects.pop_back();
 }
 
-void MusBBoxDC::StartPage( )
+void BBoxDeviceContext::StartPage( )
 {
 }
  
-void MusBBoxDC::EndPage() 
+void BBoxDeviceContext::EndPage() 
 {
 }
 
-void MusBBoxDC::SetBrush( int colour, int style )
+void BBoxDeviceContext::SetBrush( int colour, int style )
 {
 }
         
-void MusBBoxDC::SetBackground( int colour, int style )
+void BBoxDeviceContext::SetBackground( int colour, int style )
 {
     // nothing to do, we do not handle Background
 }
         
-void MusBBoxDC::SetBackgroundMode( int mode )
+void BBoxDeviceContext::SetBackgroundMode( int mode )
 {
     // nothing to do, we do not handle Background Mode
 }
         
-void MusBBoxDC::SetPen( int colour, int width, int style )
+void BBoxDeviceContext::SetPen( int colour, int width, int style )
 {
     m_penWidth = width;
 }
         
-void MusBBoxDC::SetFont( FontMetricsInfo *font_info )
+void BBoxDeviceContext::SetFont( FontMetricsInfo *font_info )
 {
     m_font = *font_info;
 }
             
 
-void MusBBoxDC::SetTextForeground( int colour )
+void BBoxDeviceContext::SetTextForeground( int colour )
 {
 }
         
-void MusBBoxDC::SetTextBackground( int colour )
+void BBoxDeviceContext::SetTextBackground( int colour )
 {
     // nothing to do, we do not handle Text Background Mode
 }
        
-void MusBBoxDC::ResetBrush( )
+void BBoxDeviceContext::ResetBrush( )
 {
 }
         
-void MusBBoxDC::ResetPen( )
+void BBoxDeviceContext::ResetPen( )
 {
     SetPen( AxBLACK, 1, AxSOLID );
 } 
 
-void MusBBoxDC::SetLogicalOrigin( int x, int y ) 
+void BBoxDeviceContext::SetLogicalOrigin( int x, int y ) 
 {
     //// no idea how to handle this with the BB
     m_originX = -x;
     m_originY = -y;
 } 
 
-void MusBBoxDC::SetUserScale( double xScale, double yScale ) 
+void BBoxDeviceContext::SetUserScale( double xScale, double yScale ) 
 {
     //// no idea how to handle this with the BB
     m_userScaleX = xScale;
     m_userScaleY = yScale;
 }       
 
-void MusBBoxDC::GetTextExtent( const std::string& string, int *w, int *h )
+void BBoxDeviceContext::GetTextExtent( const std::string& string, int *w, int *h )
 {
     int x, y, partial_w, partial_h;
     
@@ -140,7 +140,7 @@ void MusBBoxDC::GetTextExtent( const std::string& string, int *w, int *h )
     
     for (unsigned int i = 0; i < string.length(); i++) {
         
-        MusLeipzigBBox::GetCharBounds(string.c_str()[i], &x, &y, &partial_w, &partial_h);
+        LeipzigBBox::GetCharBounds(string.c_str()[i], &x, &y, &partial_w, &partial_h);
         
         partial_w *= ((m_font.GetPointSize() / LEIPZIG_UNITS_PER_EM));
         partial_h *= ((m_font.GetPointSize() / LEIPZIG_UNITS_PER_EM));
@@ -152,13 +152,13 @@ void MusBBoxDC::GetTextExtent( const std::string& string, int *w, int *h )
 }
        
 
-MusPoint MusBBoxDC::GetLogicalOrigin( ) 
+MusPoint BBoxDeviceContext::GetLogicalOrigin( ) 
 {
     return MusPoint( m_originX, m_originY );
 }
 
 // claculated better
-void MusBBoxDC::DrawComplexBezierPath(int x, int y, int bezier1_coord[6], int bezier2_coord[6])
+void BBoxDeviceContext::DrawComplexBezierPath(int x, int y, int bezier1_coord[6], int bezier2_coord[6])
 {
     int vals[4];
     FindPointsForBounds( MusPoint(x, y), 
@@ -170,19 +170,19 @@ void MusBBoxDC::DrawComplexBezierPath(int x, int y, int bezier1_coord[6], int be
     UpdateBB(vals[0], vals[1], vals[2], vals[3]);
 }
 
-void MusBBoxDC::DrawCircle(int x, int y, int radius)
+void BBoxDeviceContext::DrawCircle(int x, int y, int radius)
 {
     DrawEllipse(x - radius, y - radius, 2*radius, 2*radius);
 }
 
 
-void MusBBoxDC::DrawEllipse(int x, int y, int width, int height)
+void BBoxDeviceContext::DrawEllipse(int x, int y, int width, int height)
 {
     UpdateBB(x, y, x + width, y + height);
 }
 
         
-void MusBBoxDC::DrawEllipticArc(int x, int y, int width, int height, double start, double end)
+void BBoxDeviceContext::DrawEllipticArc(int x, int y, int width, int height, double start, double end)
 {
     /*
     Draws an arc of an ellipse. The current pen is used for drawing the arc
@@ -241,7 +241,7 @@ void MusBBoxDC::DrawEllipticArc(int x, int y, int width, int height, double star
 }
   
               
-void MusBBoxDC::DrawLine(int x1, int y1, int x2, int y2)
+void BBoxDeviceContext::DrawLine(int x1, int y1, int x2, int y2)
 {
     if ( x1 > x2 ) {
         int tmp = x1;
@@ -262,7 +262,7 @@ void MusBBoxDC::DrawLine(int x1, int y1, int x2, int y2)
 }
  
                
-void MusBBoxDC::DrawPolygon(int n, MusPoint points[], int xoffset, int yoffset, int fill_style)
+void BBoxDeviceContext::DrawPolygon(int n, MusPoint points[], int xoffset, int yoffset, int fill_style)
 {
     if ( n == 0 ) {
         return;
@@ -284,13 +284,13 @@ void MusBBoxDC::DrawPolygon(int n, MusPoint points[], int xoffset, int yoffset, 
 }
     
             
-void MusBBoxDC::DrawRectangle(int x, int y, int width, int height)
+void BBoxDeviceContext::DrawRectangle(int x, int y, int width, int height)
 {
     DrawRoundedRectangle( x, y, width, height, 0 );
 }
 
 
-void MusBBoxDC::DrawRoundedRectangle(int x, int y, int width, int height, double radius)
+void BBoxDeviceContext::DrawRoundedRectangle(int x, int y, int width, int height, double radius)
 {
     // avoid negative heights or widths
     if ( height < 0 ) {
@@ -310,14 +310,14 @@ void MusBBoxDC::DrawRoundedRectangle(int x, int y, int width, int height, double
 }
 
         
-void MusBBoxDC::DrawText(const std::string& text, int x, int y)
+void BBoxDeviceContext::DrawText(const std::string& text, int x, int y)
 {
     DrawMusicText( text, x, y);
 }
 
 
 
-void MusBBoxDC::DrawRotatedText(const std::string& text, int x, int y, double angle)
+void BBoxDeviceContext::DrawRotatedText(const std::string& text, int x, int y, double angle)
 {
     //known bug; if the font is drawn in a scaled DC, it will not behave exactly as wxMSW
 
@@ -338,7 +338,7 @@ void MusBBoxDC::DrawRotatedText(const std::string& text, int x, int y, double an
 }
 
 
-void MusBBoxDC::DrawMusicText(const std::string& text, int x, int y)
+void BBoxDeviceContext::DrawMusicText(const std::string& text, int x, int y)
 {  
     
     int g_x, g_y, g_w, g_h;
@@ -347,7 +347,7 @@ void MusBBoxDC::DrawMusicText(const std::string& text, int x, int y)
     for (unsigned int i = 0; i < text.length(); i++) {
         unsigned char c = (unsigned char)text[i];
         
-        MusLeipzigBBox::GetCharBounds(c, &g_x, &g_y, &g_w, &g_h);
+        LeipzigBBox::GetCharBounds(c, &g_x, &g_y, &g_w, &g_h);
     
         int x_off = x + (g_x * ((double)(m_font.GetPointSize() / LEIPZIG_UNITS_PER_EM)) ) - 2;
         // because we are in the rendering context, y position are already flipped
@@ -377,12 +377,12 @@ void MusBBoxDC::DrawMusicText(const std::string& text, int x, int y)
 }
 
 
-void MusBBoxDC::DrawSpline(int n, MusPoint points[])
+void BBoxDeviceContext::DrawSpline(int n, MusPoint points[])
 {
     //m_dc->DrawSpline( n, (wxPoint*)points );
 }
 
-void MusBBoxDC::UpdateBB(int x1, int y1, int x2, int y2) 
+void BBoxDeviceContext::UpdateBB(int x1, int y1, int x2, int y2) 
 {
     /*
     MusDocObject *first = &m_objects[m_objects.Count() - 1];
@@ -410,7 +410,7 @@ void MusBBoxDC::UpdateBB(int x1, int y1, int x2, int y2)
     assert( !m_objects.empty() ); // Array cannot be empty
     
     
-    // we need to store logical coordinates in the objects, we need to convert them back (this is why we need a MusRC object)
+    // we need to store logical coordinates in the objects, we need to convert them back (this is why we need a View object)
     ((MusDocObject*)m_objects.back())->UpdateSelfBB( m_rc->ToLogicalX(x1), m_rc->ToLogicalY(y1), m_rc->ToLogicalX(x2), m_rc->ToLogicalY(y2) );
     
     int i;
@@ -420,7 +420,7 @@ void MusBBoxDC::UpdateBB(int x1, int y1, int x2, int y2)
 }
 
 // Ok, shame on me, found off the internet and modified, but for now it works
-void MusBBoxDC::FindPointsForBounds(MusPoint P0, MusPoint P1, MusPoint P2, MusPoint P3, int *ret)
+void BBoxDeviceContext::FindPointsForBounds(MusPoint P0, MusPoint P1, MusPoint P2, MusPoint P3, int *ret)
 {
     
     int A = P3.x - 3 * P2.x + 3 * P1.x - P0.x;
