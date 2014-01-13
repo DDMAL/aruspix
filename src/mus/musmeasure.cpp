@@ -24,7 +24,7 @@
 //----------------------------------------------------------------------------
 
 Measure::Measure( bool measureMusic, int logMeasureNb ):
-    MusDocObject("measure-")
+    DocObject("measure-")
 {
 	Clear( );
     m_measuredMusic = measureMusic;

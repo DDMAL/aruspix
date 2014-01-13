@@ -24,11 +24,11 @@ class Note;
 //----------------------------------------------------------------------------
 
 /**
- * This class represents a layer in a laid-out score (MusDoc).
+ * This class represents a layer in a laid-out score (Doc).
  * A Layer is contained in a Staff.
  * It contains LayerElement objects.
 */
-class Layer: public MusDocObject, public MusObjectListInterface, public ScoreOrStaffDefAttrInterface
+class Layer: public DocObject, public ObjectListInterface, public ScoreOrStaffDefAttrInterface
 {
 public:
     // constructors and destructors
@@ -47,7 +47,7 @@ public:
      * Return the index position of the layer in its staff parent.
      * The index position is 0-based.
      */
-    int GetLayerIdx() const { return MusObject::GetIdx(); };
+    int GetLayerIdx() const { return Object::GetIdx(); };
     
     
     /**
@@ -116,7 +116,7 @@ public:
      * Return the darwing list.
      * This is used when actually darwing the list (see View::DrawLayerList)
      */
-    ListOfMusObjects *GetDrawingList( );
+    ListOfObjects *GetDrawingList( );
 
     /**
      * Reset the darwing list.
@@ -175,7 +175,7 @@ public:
 protected:
     // drawing variables
     //LayerElement *beamListPremier; // we need to replace this with a proper beam class that handles a list of notes/rests
-    ListOfMusObjects m_drawingList;
+    ListOfObjects m_drawingList;
     
 private:
     /** The layer number */

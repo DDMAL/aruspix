@@ -264,7 +264,7 @@ void RecFile::UpgradeTo_2_1_0()
                 wxLogError( "File cannot be upgraded to 2.1.0 (Too many LayerElement)");    
                 return;
             }
-            MusObject *target = &currentLayer->m_elements[ elementCount ];
+            Object *target = &currentLayer->m_elements[ elementCount ];
             elementCount++;
             if ( dynamic_cast<LayerElement*>(target) ) {
                 LayerElement *element = &laidOutLayer->m_elements[j];
@@ -309,10 +309,10 @@ void RecFile::UpgradeTo_2_3_0()
 void RecFile::NewContent( )
 {
 	wxASSERT_MSG( !m_imPagePtr, "ImPage should be NULL" );
-	wxASSERT_MSG( !m_musDocPtr, "MusDoc should be NULL" );
+	wxASSERT_MSG( !m_musDocPtr, "Doc should be NULL" );
 
-	// new MusDoc
-    m_musDocPtr = new MusDoc();
+	// new Doc
+    m_musDocPtr = new Doc();
     m_musDocPtr->m_fname = m_basename + "page.mei";  
         
 	// new ImPage and Load
@@ -432,7 +432,7 @@ void RecFile::OpenContent( )
 void RecFile::SaveContent( )
 {
 	wxASSERT_MSG( m_imPagePtr, "ImPage should not be NULL" );
-	wxASSERT_MSG( m_musDocPtr, "MusDoc should not be NULL" );
+	wxASSERT_MSG( m_musDocPtr, "Doc should not be NULL" );
 	wxASSERT( m_xml_root );
     
 		
@@ -453,7 +453,7 @@ void RecFile::SaveContent( )
 		return;
 	else
 	{
-		//possibility of MusDoc being a .mei not a .bin
+		//possibility of Doc being a .mei not a .bin
 		//MusMeiOutput *mei_output = new MusMeiOutput( m_musDocPtr, m_musDocPtr->m_fname );
 		// save
 		MusMeiOutput *mei_output = new MusMeiOutput( m_musDocPtr, m_musDocPtr->m_fname );
@@ -840,7 +840,7 @@ bool RecFile::Decode( wxArrayPtrVoid params, AxProgressDlg *dlg )
 bool RecFile::RealizeFromMLF( wxArrayPtrVoid params, AxProgressDlg *dlg )
 {
     wxASSERT_MSG( m_imPagePtr , "Page cannot be NULL");
-    wxASSERT_MSG( m_musDocPtr , "MusDoc cannot be NULL");
+    wxASSERT_MSG( m_musDocPtr , "Doc cannot be NULL");
 	//wxASSERT_MSG( dlg, "AxProgressDlg cannot be NULL" );
 	
 	if (dlg && !dlg->SetOperation( _("Load results...") ) )

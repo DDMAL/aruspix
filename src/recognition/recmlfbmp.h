@@ -108,7 +108,7 @@ class RecMLFBmp: public MusMLFOutput
 {
 public:
     // constructors and destructors
-    RecMLFBmp( MusDoc *file, wxString filename, wxString model_symbol_name = "RecMLFSymbolBmp" );
+    RecMLFBmp( Doc *file, wxString filename, wxString model_symbol_name = "RecMLFSymbolBmp" );
     virtual ~RecMLFBmp();
     
         //bool GenerateBitmaps( ImPage *impage );

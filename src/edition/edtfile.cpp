@@ -71,10 +71,10 @@ EdtFile::~EdtFile()
 
 void EdtFile::NewContent( )
 {
-	wxASSERT_MSG( !m_musDocPtr, "MusDoc should be NULL" );
+	wxASSERT_MSG( !m_musDocPtr, "Doc should be NULL" );
 
-	// new MusDoc
-    m_musDocPtr = new MusDoc();
+	// new Doc
+    m_musDocPtr = new Doc();
     m_musDocPtr->m_fname = m_basename + "page.bin";
 }
 
@@ -97,7 +97,7 @@ void EdtFile::OpenContent( )
 
 void EdtFile::SaveContent( )
 {
-	wxASSERT_MSG( m_musDocPtr, "MusDoc should not be NULL" );
+	wxASSERT_MSG( m_musDocPtr, "Doc should not be NULL" );
 	wxASSERT( m_xml_root );
 	
     // save
@@ -169,7 +169,7 @@ bool EdtFile::Create( )
     // the way the doc is created need to be rethought
     // especially handling pageBreaks and systemBreaks
     
-    // reset the MusDoc and create the logical tree
+    // reset the Doc and create the logical tree
     m_musDocPtr->Reset( Transcription);	
     Page *page = new Page();
     

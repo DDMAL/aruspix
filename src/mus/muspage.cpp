@@ -27,7 +27,7 @@
 //----------------------------------------------------------------------------
 
 Page::Page() :
-	MusDocObject("page-")
+	DocObject("page-")
 {
 	Clear( );
 }
@@ -151,11 +151,11 @@ System *Page::GetAtPos( int y )
 
 void Page::Layout( )
 {
-    if (!dynamic_cast<MusDoc*>(m_parent)) {
+    if (!dynamic_cast<Doc*>(m_parent)) {
         assert( false );
         return;
     }
-    MusDoc *doc = dynamic_cast<MusDoc*>(m_parent);
+    Doc *doc = dynamic_cast<Doc*>(m_parent);
     
     doc->SetRendPage( this );
     
@@ -173,7 +173,7 @@ void Page::Layout( )
     params.push_back( &time );
     params.push_back( &systemAlignerPtr );
     params.push_back( &staffNb );
-    MusFunctor align( &MusObject::Align );
+    MusFunctor align( &Object::Align );
     this->Process( &align, params );
     
     // Set the X position of each MusAlignment
@@ -183,7 +183,7 @@ void Page::Layout( )
     int previousXRel = 0;
     params.push_back( &previousTime );
     params.push_back( &previousXRel );
-    MusFunctor setAlignmentX( &MusObject::SetAligmentXPos );
+    MusFunctor setAlignmentX( &Object::SetAligmentXPos );
     // Special case: because we redirect the functor, pass is a parameter to itself (!)
     params.push_back( &setAlignmentX );
     this->Process( &setAlignmentX, params );
@@ -201,8 +201,8 @@ void Page::Layout( )
     int measure_width = 0;
     params.push_back( &min_pos );
     params.push_back( &measure_width );
-    MusFunctor setBoundingBoxXShift( &MusObject::SetBoundingBoxXShift );
-    MusFunctor setBoundingBoxXShiftEnd( &MusObject::SetBoundingBoxXShiftEnd );
+    MusFunctor setBoundingBoxXShift( &Object::SetBoundingBoxXShift );
+    MusFunctor setBoundingBoxXShiftEnd( &Object::SetBoundingBoxXShiftEnd );
     this->Process( &setBoundingBoxXShift, params, &setBoundingBoxXShiftEnd );
     
     // Integrate the X bounding box shift of the elements
@@ -210,7 +210,7 @@ void Page::Layout( )
     params.clear();
     int shift = 0;
     params.push_back( &shift );
-    MusFunctor integrateBoundingBoxXShift( &MusObject::IntegrateBoundingBoxXShift );
+    MusFunctor integrateBoundingBoxXShift( &Object::IntegrateBoundingBoxXShift );
     // special case: because we redirect the functor, pass is a parameter to itself (!)
     params.push_back( &integrateBoundingBoxXShift );
     this->Process( &integrateBoundingBoxXShift, params );
@@ -219,8 +219,8 @@ void Page::Layout( )
     params.clear();
     shift = 0;
     params.push_back( &shift );
-    MusFunctor alignMeasures( &MusObject::AlignMeasures );
-    MusFunctor alignMeasuresEnd( &MusObject::AlignMeasuresEnd );
+    MusFunctor alignMeasures( &Object::AlignMeasures );
+    MusFunctor alignMeasuresEnd( &Object::AlignMeasuresEnd );
     this->Process( &alignMeasures, params, &alignMeasuresEnd );
     
     // Adjust the Y shift of the MusStaffAlignment looking at the bounding boxes
@@ -228,7 +228,7 @@ void Page::Layout( )
     params.clear();
     int previous_height = 0;
     params.push_back( &previous_height );
-    MusFunctor setBoundingBoxYShift( &MusObject::SetBoundingBoxYShift );
+    MusFunctor setBoundingBoxYShift( &Object::SetBoundingBoxYShift );
     this->Process( &setBoundingBoxYShift, params );
     
     // Set the Y position of each MusStaffAlignment
@@ -240,7 +240,7 @@ void Page::Layout( )
     params.push_back( &previousStaffHeight );
     params.push_back( &staffMargin );
     params.push_back( &interlineSizes );
-    MusFunctor setAlignmentY( &MusObject::SetAligmentYPos );
+    MusFunctor setAlignmentY( &Object::SetAligmentYPos );
     // special case: because we redirect the functor, pass is a parameter to itself (!)
     params.push_back( &setAlignmentY );
     this->Process( &setAlignmentY, params );
@@ -250,7 +250,7 @@ void Page::Layout( )
     params.clear();
     shift = 0;
     params.push_back( &shift );
-    MusFunctor integrateBoundingBoxYShift( &MusObject::IntegrateBoundingBoxYShift );
+    MusFunctor integrateBoundingBoxYShift( &Object::IntegrateBoundingBoxYShift );
     // special case: because we redirect the functor, pass is a parameter to itself (!)
     params.push_back( &integrateBoundingBoxYShift );
     this->Process( &integrateBoundingBoxYShift, params );
@@ -261,7 +261,7 @@ void Page::Layout( )
     int systemMargin = doc->m_rendStaffSize[0];
     params.push_back( &shift );
     params.push_back( &systemMargin );
-    MusFunctor alignSystems( &MusObject::AlignSystems );
+    MusFunctor alignSystems( &Object::AlignSystems );
     this->Process( &alignSystems, params );
     
     // Justify X position
@@ -270,7 +270,7 @@ void Page::Layout( )
     int systemFullWidth = doc->m_rendPageWidth - doc->m_rendPageLeftMar - doc->m_rendPageRightMar;
     params.push_back( &ratio );
     params.push_back( &systemFullWidth );
-    MusFunctor justifyX( &MusObject::JustifyX );
+    MusFunctor justifyX( &Object::JustifyX );
     // special case: because we redirect the functor, pass is a parameter to itself (!)
     params.push_back( &justifyX );
     //this->Process( &justifyX, params );
@@ -282,7 +282,7 @@ void Page::Layout( )
     this->m_pageHeight = doc->m_pageHeight;
     params.clear();
     
-    MusFunctor trimSystem(&MusObject::TrimSystem);
+    MusFunctor trimSystem(&Object::TrimSystem);
     this->Process( &trimSystem, params );
     */
     
@@ -297,8 +297,8 @@ void Page::SetValues( int type )
     for (i = 0; i < nbrePortees; i++) 
 	{
         switch ( type ) {
-            case PAGE_VALUES_VOICES: values += Mus::StringFormat("%d;", (&m_staves[i])->voix ); break;
-            case PAGE_VALUES_INDENT: values += Mus::StringFormat("%d;", (&m_staves[i])->indent ); break;
+            case PAGE_VALUES_VOICES: values += Vrv::StringFormat("%d;", (&m_staves[i])->voix ); break;
+            case PAGE_VALUES_INDENT: values += Vrv::StringFormat("%d;", (&m_staves[i])->indent ); break;
         }
 	}
     values = wxGetTextFromUser( "Enter values for the pages", "", values );
@@ -314,6 +314,6 @@ void Page::SetValues( int type )
         }	
 	}
 */
-    Mus::LogDebug("TODO");
+    Vrv::LogDebug("TODO");
     return;
 }

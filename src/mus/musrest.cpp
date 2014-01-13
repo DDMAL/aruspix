@@ -23,7 +23,7 @@ Rest::~Rest()
 {
 }
 
-bool Rest::operator==( MusObject& other )
+bool Rest::operator==( Object& other )
 {
     Rest *otherRest = dynamic_cast<Rest*>( &other );
     if ( !otherRest ) {

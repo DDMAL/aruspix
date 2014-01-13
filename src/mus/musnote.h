@@ -64,7 +64,7 @@ public:
      * Comparison operator. 
      * Check if the LayerElement if a Note and compare attributes
      */
-    virtual bool operator==(MusObject& other);
+    virtual bool operator==(Object& other);
     
     /**
      * Change the coloration.

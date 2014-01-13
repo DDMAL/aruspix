@@ -13,7 +13,7 @@
 //----------------------------------------------------------------------------
 
 Tuplet::Tuplet():
-LayerElement("tuplet-"), MusObjectListInterface()
+LayerElement("tuplet-"), ObjectListInterface()
 {
     m_num = 1;
     m_numbase = 1;
@@ -39,7 +39,7 @@ void Tuplet::FilterList()
 {
     // We want to keep only notes and rest
     // Eventually, we also need to filter out grace notes properly (e.g., with sub-beams)
-    ListOfMusObjects::iterator iter = m_list.begin();
+    ListOfObjects::iterator iter = m_list.begin();
     
     while ( iter != m_list.end()) {
         LayerElement *currentElement = dynamic_cast<LayerElement*>(*iter);

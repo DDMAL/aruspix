@@ -43,13 +43,13 @@
 //----------------------------------------------------------------------------
 
 LayerElement::LayerElement():
-    MusDocObject("le-")
+    DocObject("le-")
 {
     Init();
 }
 
 LayerElement::LayerElement(std::string classid):
-	MusDocObject(classid)
+	DocObject(classid)
 {
     Init();
 }
@@ -81,7 +81,7 @@ LayerElement *LayerElement::GetChildCopy( bool newUuid )
 {
     
     // Is there another way to do this in C++ ?
-    // Yes, change this to the MusObject::Clone method - however, newUuid will not be possible in this way
+    // Yes, change this to the Object::Clone method - however, newUuid will not be possible in this way
     LayerElement *element = NULL;
 
     if ( this->IsBarline() )
@@ -97,7 +97,7 @@ LayerElement *LayerElement::GetChildCopy( bool newUuid )
     else if (this->IsSymbol() )
         element = new MusSymbol( *(MusSymbol*)this );
     else {
-        Mus::LogDebug( "Missing %s", this->MusClassName().c_str() );
+        Vrv::LogDebug( "Missing %s", this->MusClassName().c_str() );
         assert( false ); // Copy of this type unimplemented
         return NULL;
     }
@@ -347,7 +347,7 @@ int LayerElement::Align( ArrayPtrVoid params )
     // increase the time position
     (*time) += duration;
 
-    //Mus::LogDebug("Time %f", (*time) );
+    //Vrv::LogDebug("Time %f", (*time) );
     
     return FUNCTOR_CONTINUE;
 }

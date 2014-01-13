@@ -17,7 +17,7 @@
 
 class Beam;
 class Barline;
-class MusDoc;
+class Doc;
 class Layer;
 class LayerElement;
 class Measure;
@@ -63,7 +63,7 @@ public:
 	// convenience method that should be changed after refactoring
 	bool IsNoteSelected();
 	    
-    void SetDoc( MusDoc *doc );
+    void SetDoc( Doc *doc );
     
     /** x value in the Renderer */
 	int ToRendererX( int i );
@@ -182,7 +182,7 @@ private:
     
 public:
     /** Document */
-    MusDoc *m_doc;
+    Doc *m_doc;
     /** Page affichee */
     Page *m_page;
     /** No Page affichee */

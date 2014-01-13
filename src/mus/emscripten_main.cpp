@@ -34,11 +34,11 @@ extern "C" {
         }
         
         if (!controller.ParseOptions( json_options )) {
-            Mus::LogError( "Could not load JSON options." );
+            Vrv::LogError( "Could not load JSON options." );
             return NULL;
         }
         
-        Mus::SetResourcesPath("/data");
+        Vrv::SetResourcesPath("/data");
         
         // default to mei if unset.
         controller.LoadString( notation );

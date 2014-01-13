@@ -22,21 +22,21 @@
 #include <math.h>
 
 //----------------------------------------------------------------------------
-// MusDoc
+// Doc
 //----------------------------------------------------------------------------
 
-MusDoc::MusDoc() :
-    MusObject("doc-")
+Doc::Doc() :
+    Object("doc-")
 {
     Reset( Raw );
 }
 
-MusDoc::~MusDoc()
+Doc::~Doc()
 {
     
 }
 
-void MusDoc::Reset( DocType type )
+void Doc::Reset( DocType type )
 {
     UpdateFontValues();
     
@@ -55,7 +55,7 @@ void MusDoc::Reset( DocType type )
     m_scoreDef.Clear();
 }
 
-int MusDoc::Save( ArrayPtrVoid params )
+int Doc::Save( ArrayPtrVoid params )
 {  
     // param 0: output stream
     MusFileOutputStream *output = (MusFileOutputStream*)params[0];       
@@ -65,19 +65,19 @@ int MusDoc::Save( ArrayPtrVoid params )
     return FUNCTOR_CONTINUE;
 }
 
-void MusDoc::AddPage( Page *page )
+void Doc::AddPage( Page *page )
 {
 	page->SetParent( this );
 	m_children.push_back( page );
     Modify();
 }
 
-void MusDoc::Refresh()
+void Doc::Refresh()
 {
     RefreshViews();
 }
 
-void MusDoc::Layout( )
+void Doc::Layout( )
 {
     ScoreDef currentScoreDef;
     currentScoreDef = m_scoreDef;
@@ -85,7 +85,7 @@ void MusDoc::Layout( )
     ArrayPtrVoid params;
     params.push_back( &currentScoreDef );
     params.push_back( &staffDef );
-    MusFunctor setPageScoreDef( &MusObject::SetPageScoreDef );
+    MusFunctor setPageScoreDef( &Object::SetPageScoreDef );
     this->Process( &setPageScoreDef, params );
     
     int i;
@@ -98,7 +98,7 @@ void MusDoc::Layout( )
      }
 }
 
-void MusDoc::SetRendPage( Page *page )
+void Doc::SetRendPage( Page *page )
 {
     if ( !page || (page == m_rendPage) ) {
         return;
@@ -182,7 +182,7 @@ void MusDoc::SetRendPage( Page *page )
     
     m_rendFontHeight = CalcLeipzigFontSize();
     m_rendFontHeightAscent[0][0] = floor(LEIPZIG_ASCENT * (double)m_rendFontHeight / LEIPZIG_UNITS_PER_EM);
-	m_rendFontHeightAscent[0][0] +=  Mus::GetFontPosCorrection();
+	m_rendFontHeightAscent[0][0] +=  Vrv::GetFontPosCorrection();
 	m_rendFontHeightAscent[0][1] = (m_rendFontHeightAscent[0][0] * m_rendGraceRatio[0]) / m_rendGraceRatio[1];
     m_rendFontHeightAscent[1][0] = (m_rendFontHeightAscent[0][0] * m_rendSmallStaffRatio[0]) / m_rendSmallStaffRatio[1];
 	m_rendFontHeightAscent[1][1] = (m_rendFontHeightAscent[1][0] * m_rendGraceRatio[0]) / m_rendGraceRatio[1];
@@ -233,18 +233,18 @@ void MusDoc::SetRendPage( Page *page )
 	return;
 }
 
-int MusDoc::CalcLeipzigFontSize( )
+int Doc::CalcLeipzigFontSize( )
 {
     // We just have the Leipzig font for now
     return round((double)m_env.m_interlDefin * LEIPZIG_UNITS_PER_EM / LEIPZIG_WHOLE_NOTE_HEAD_HEIGHT);
 }
 
-void MusDoc::UpdateFontValues() 
+void Doc::UpdateFontValues() 
 {	
-	if ( !m_rendLeipzigFont.FromString( Mus::GetMusicFontDescStr() ) )
-        Mus::LogWarning( "Impossible to load font 'Leipzig'" );
+	if ( !m_rendLeipzigFont.FromString( Vrv::GetMusicFontDescStr() ) )
+        Vrv::LogWarning( "Impossible to load font 'Leipzig'" );
 	
-	//Mus::LogMessage( "Size %d, Family %d, Style %d, Weight %d, Underline %d, Face %s, Desc %s",
+	//Vrv::LogMessage( "Size %d, Family %d, Style %d, Weight %d, Underline %d, Face %s, Desc %s",
 	//	m_rendLeipzigFont.GetPointSize(),
 	//	m_rendLeipzigFont.GetFamily(),
 	//	m_rendLeipzigFont.GetStyle(),
@@ -259,20 +259,20 @@ void MusDoc::UpdateFontValues()
     m_rendFonts[1][1] = m_rendLeipzigFont;
 	
 	// Lyrics
-	if ( !m_rendLyricFont.FromString( Mus::GetLyricFontDescStr() ) )
-		Mus::LogWarning( "Impossible to load font for the lyrics" );
+	if ( !m_rendLyricFont.FromString( Vrv::GetLyricFontDescStr() ) )
+		Vrv::LogWarning( "Impossible to load font for the lyrics" );
     
 	m_rendLyricFonts[0] = m_rendLyricFont;
     m_rendLyricFonts[1] = m_rendLyricFont;
 }
 
 
-int MusDoc::Save( MusFileOutputStream *output )
+int Doc::Save( MusFileOutputStream *output )
 {
     ArrayPtrVoid params;
 	params.push_back( output );
 
-    MusFunctor save( &MusObject::Save );
+    MusFunctor save( &Object::Save );
     this->Process( &save, params );
     
     return true;

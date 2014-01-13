@@ -23,7 +23,7 @@
 //----------------------------------------------------------------------------
 
 MusSystemAligner::MusSystemAligner():
-    MusObject()
+    Object()
 {
     m_bottomAlignment = NULL;
 }
@@ -55,7 +55,7 @@ MusStaffAlignment* MusSystemAligner::GetStaffAlignment( int idx )
     }
     // check that we are searching for the next one (not gap)
     assert( idx == GetStaffAlignmentCount() );
-    //Mus::LogDebug("Creating staff alignment");
+    //Vrv::LogDebug("Creating staff alignment");
     
     // This is the first time we are looking for it (e.g., first staff)
     // We create the MusStaffAlignment
@@ -76,7 +76,7 @@ MusStaffAlignment* MusSystemAligner::GetStaffAlignment( int idx )
 //----------------------------------------------------------------------------
 
 MusStaffAlignment::MusStaffAlignment():
-    MusObject()
+    Object()
 {
     m_yRel = 0;
     m_yShift = 0;
@@ -100,7 +100,7 @@ void MusStaffAlignment::SetYShift( int yShift )
 //----------------------------------------------------------------------------
 
 MusMeasureAligner::MusMeasureAligner():
-    MusObject()
+    Object()
 {
     m_leftAlignment = NULL;
     m_rightAlignment = NULL;
@@ -141,7 +141,7 @@ MusAlignment* MusMeasureAligner::GetAlignmentAtTime( double time, MusAlignmentTy
     {
         alignment = (MusAlignment*)m_children[i];
         double alignment_time = alignment->GetTime();
-        if ( Mus::AreEqual( alignment_time, time ) && (alignment->GetType() == type) ) {
+        if ( Vrv::AreEqual( alignment_time, time ) && (alignment->GetType() == type) ) {
             return alignment;
         }
         // nothing found, do not go any further but keep the index
@@ -173,7 +173,7 @@ void MusMeasureAligner::SetMaxTime( double time )
 //----------------------------------------------------------------------------
 
 MusAlignment::MusAlignment( ):
-    MusObject()
+    Object()
 {
     m_xRel = 0;
     m_xShift = 0;
@@ -183,7 +183,7 @@ MusAlignment::MusAlignment( ):
 }
 
 MusAlignment::MusAlignment( double time, MusAlignmentType type ):
-    MusObject()
+    Object()
 {
     m_xRel = 0;
     m_xShift = 0;

@@ -15,7 +15,7 @@
 
 #define DURATION_MAX_TUPLETS 6
 
-class MusObject;
+class Object;
 
 //----------------------------------------------------------------------------
 // DurationInterface
@@ -42,17 +42,17 @@ public:
      * Look for the fist beam parent and check is the note is in is content list.
      * Looking in the content list is necessary for grace notes or imbricated beams.
      */
-    bool IsInBeam( MusObject *noteOrRest );
+    bool IsInBeam( Object *noteOrRest );
     
     /**
      * Return true if the note or rest is the first of a beam.
      */
-    bool IsFirstInBeam( MusObject *noteOrRest );
+    bool IsFirstInBeam( Object *noteOrRest );
     
     /**
      * Return true if the note or rest is the last of a beam.
      */
-    bool IsLastInBeam( MusObject *noteOrRest );
+    bool IsLastInBeam( Object *noteOrRest );
     
     
     /**

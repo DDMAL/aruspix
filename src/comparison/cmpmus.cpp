@@ -132,12 +132,12 @@ void CmpMusController::LoadSource( LayerElement *element )
     
     Page *currentPage = m_viewPtr->m_page;    
     
-    MusObject *viewElement = NULL;
+    Object *viewElement = NULL;
     ArrayPtrVoid params;
 
 	params.push_back( &id );
     params.push_back( &viewElement );
-    MusFunctor findLayerElement( &MusObject::FindByUuid );
+    MusFunctor findLayerElement( &Object::FindByUuid );
     m_viewPtr->m_doc->Process( &findLayerElement, params );
     
     if ( !viewElement ) { // || !(layerElement == dynamic_cast<LayerElement*>(viewElement)) ) {

@@ -518,7 +518,7 @@ AxOptMusWindow::AxOptMusWindow( wxWindow *parent, wxWindowID id,
 {
     
     m_docPtr = NULL;
-    m_docPtr = new MusDoc();
+    m_docPtr = new Doc();
     m_docPtr->Reset( Transcription );
     
     

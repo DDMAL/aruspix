@@ -37,18 +37,18 @@ class MusXMLOutput: public MusFileOutputStream
 {
 public:
     // constructors and destructors
-    MusXMLOutput( MusDoc *doc, std::string filename );
+    MusXMLOutput( Doc *doc, std::string filename );
     virtual ~MusXMLOutput();
     
     virtual bool ExportFile( );
     
-    virtual bool WriteDoc( MusDoc *doc );
+    virtual bool WriteDoc( Doc *doc );
     // logical
     virtual bool WriteStaff( Staff *staff );
     virtual bool WriteLayer( Layer *layer );
     virtual bool WriteLayerElement( LayerElement *element );
     // layout
-    virtual bool WriteLayout( MusDoc *layout );
+    virtual bool WriteLayout( Doc *layout );
     virtual bool WritePage( Page *page );
     virtual bool WriteSystem( System *system );
     virtual bool WriteLaidOutStaff( Staff *laidOutStaff );

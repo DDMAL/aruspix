@@ -32,7 +32,7 @@ Mensur::~Mensur()
 {
 }
 
-bool Mensur::operator==( MusObject& other )
+bool Mensur::operator==( Object& other )
 {
     Mensur *otherMensur = dynamic_cast<Mensur*>( &other );
     if ( !otherMensur ) {

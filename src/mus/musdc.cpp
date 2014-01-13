@@ -61,7 +61,7 @@ bool FontMetricsInfo::FromString(const std::string& ss)
 
 std::string FontMetricsInfo::ToString() const
 {
-    std::string s = Mus::StringFormat( "%d;%d;%d;%d;%d;%d;%s;%d",
+    std::string s = Vrv::StringFormat( "%d;%d;%d;%d;%d;%d;%s;%d",
              0,                                 // version
              pointSize,
              family,

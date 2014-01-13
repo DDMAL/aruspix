@@ -109,7 +109,7 @@ void ScoreOrStaffDefAttrInterface::ReplaceMensur( Mensur *newMensur )
 //----------------------------------------------------------------------------
 
 ScoreDef::ScoreDef() :
-	MusObject("scoredef-"), ScoreOrStaffDefAttrInterface(), MusObjectListInterface()
+	Object("scoredef-"), ScoreOrStaffDefAttrInterface(), ObjectListInterface()
 {
 }
 
@@ -142,7 +142,7 @@ void ScoreDef::Replace( ScoreDef *newScoreDef )
     
     ArrayPtrVoid params;
 	params.push_back( this );
-    MusFunctor replaceStaffDefsInScoreDef( &MusObject::ReplaceStaffDefsInScoreDef );
+    MusFunctor replaceStaffDefsInScoreDef( &Object::ReplaceStaffDefsInScoreDef );
     newScoreDef->Process( &replaceStaffDefsInScoreDef, params );
 }
 
@@ -162,7 +162,7 @@ void ScoreDef::Replace( MusStaffDef *newStaffDef )
 void ScoreDef::FilterList()
 {
     // We want to keep only staffDef
-    ListOfMusObjects::iterator iter = m_list.begin();
+    ListOfObjects::iterator iter = m_list.begin();
     
     while ( iter != m_list.end()) {
         MusStaffDef *currentStaffDef = dynamic_cast<MusStaffDef*>(*iter);
@@ -181,7 +181,7 @@ MusStaffDef *ScoreDef::GetStaffDef( int n )
     MusStaffDef *staffDef = NULL;
     
     this->ResetList( this );
-    ListOfMusObjects::iterator iter;
+    ListOfObjects::iterator iter;
     int i;
     for (iter = m_list.begin(), i = 0; iter != m_list.end(); ++iter, i++)
     {
@@ -201,7 +201,7 @@ void ScoreDef::SetRedraw( bool clef, bool keysig, bool mensur )
 	params.push_back( &clef );
     params.push_back( &keysig );
 	params.push_back( &mensur );
-    MusFunctor setStaffDefDraw( &MusObject::SetStaffDefDraw );
+    MusFunctor setStaffDefDraw( &Object::SetStaffDefDraw );
     this->Process( &setStaffDefDraw, params );
 }
 
@@ -210,7 +210,7 @@ void ScoreDef::SetRedraw( bool clef, bool keysig, bool mensur )
 //----------------------------------------------------------------------------
 
 MusStaffGrp::MusStaffGrp() :
-    MusObject(), MusObjectListInterface()
+    Object(), ObjectListInterface()
 {
     m_symbol = STAFFGRP_NONE;
     m_barthru = false;
@@ -249,7 +249,7 @@ int MusStaffGrp::Save( ArrayPtrVoid params )
 void MusStaffGrp::FilterList()
 {
     // We want to keep only staffDef
-    ListOfMusObjects::iterator iter = m_list.begin();
+    ListOfObjects::iterator iter = m_list.begin();
     
     while ( iter != m_list.end()) {
         MusStaffDef *currentStaffDef = dynamic_cast<MusStaffDef*>(*iter);
@@ -267,7 +267,7 @@ void MusStaffGrp::FilterList()
 //----------------------------------------------------------------------------
 
 MusStaffDef::MusStaffDef() :
-    MusObject(), ScoreOrStaffDefAttrInterface()
+    Object(), ScoreOrStaffDefAttrInterface()
 {
 }
 

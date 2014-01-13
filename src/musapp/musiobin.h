@@ -36,7 +36,7 @@ class MusBinInput_1_X: public wxFileInputStream
 {
 public:
     // constructors and destructors
-    MusBinInput_1_X( MusDoc *file, wxString filename, int flag = MUS_BIN_ARUSPIX );
+    MusBinInput_1_X( Doc *file, wxString filename, int flag = MUS_BIN_ARUSPIX );
     virtual ~MusBinInput_1_X();
     
     bool ImportFile( );
@@ -192,7 +192,7 @@ private:
     unsigned short l_ptch;
 
 protected:
-    MusDoc *m_doc;
+    Doc *m_doc;
 	
 };
 

@@ -59,7 +59,7 @@ std::string View::IntToObliqueFigures(unsigned int number) {
 bool View::OneBeamInTuplet(Tuplet* tuplet) {
     
     Beam *currentBeam, *firstBeam = NULL;
-    ArrayOfMusObjects elems;
+    ArrayOfObjects elems;
     
     // Are we contained in a beam?
     if (dynamic_cast<Beam*>(tuplet->GetFirstParent(&typeid(Beam), 3)) && !tuplet->m_children.empty())
@@ -154,7 +154,7 @@ bool View::GetTupletCoordinates(Tuplet* tuplet, Layer *layer, MusPoint* start, M
         direction =  firstNote->m_drawn_stem_dir; // stem direction is same for all notes
     } else {
             
-        //ArrayOfMusObjects all_notes;
+        //ArrayOfObjects all_notes;
         
         // We can have a mixed group of Beams and notes. Flatten it
         /*
@@ -186,7 +186,7 @@ bool View::GetTupletCoordinates(Tuplet* tuplet, Layer *layer, MusPoint* start, M
         
         // THe first step is to calculate all the stem directions
         // cycle into the elements and count the up and down dirs
-        ListOfMusObjects::iterator iter = tuplet->m_list.begin();
+        ListOfObjects::iterator iter = tuplet->m_list.begin();
         while (iter != tuplet->m_list.end()) {
             LayerElement *currentNote = dynamic_cast<LayerElement*>(*iter);
             

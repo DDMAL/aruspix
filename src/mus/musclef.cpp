@@ -42,7 +42,7 @@ int Clef::GetClefOffset ()
 	return offset;
 }
 
-bool Clef::operator==( MusObject& other )
+bool Clef::operator==( Object& other )
 {
     Clef *otherClef = dynamic_cast<Clef*>( &other );
     if ( !otherClef ) {

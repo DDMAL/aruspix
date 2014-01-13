@@ -180,12 +180,12 @@ void View::DrawBeam(  DeviceContext *dc, Layer *layer, Beam *beam, Staff *staff 
     extern_q_auto = 1; //RZ was ((Note*)chk)->m_stemLen; bit it is always 0!
     extern_queue =  ((Note*)chk)->m_stemDir;
 
-    ListOfMusObjects::iterator iter = beam->m_list.begin();
+    ListOfObjects::iterator iter = beam->m_list.begin();
     
 	do
 	{
         
-        //Mus::LogDebug("-> %s", chk->MusClassName().c_str() );
+        //Vrv::LogDebug("-> %s", chk->MusClassName().c_str() );
         
         if ( chk->IsNote() ) {
             k = ((Note*)chk)->m_colored ? ((Note*)chk)->m_dur+1 : ((Note*)chk)->m_dur;
@@ -256,7 +256,7 @@ void View::DrawBeam(  DeviceContext *dc, Layer *layer, Beam *beam, Staff *staff 
 	}
 */
     
-    //Mus::LogDebug("ct %d", ct );
+    //Vrv::LogDebug("ct %d", ct );
 
 	_ct = ct - 1;		/* compte d'entree moins 1 */
 

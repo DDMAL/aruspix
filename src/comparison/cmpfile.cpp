@@ -83,10 +83,10 @@ CmpCollation::CmpCollation( wxString id, wxString name, wxString basename  )
 	m_isColLoaded = false;
 
 
-    // new MusDoc
-    m_musDocPtr = new MusDoc();
-    m_musDocSrc1Ptr = new MusDoc();    
-    m_musDocSrc2Ptr = new MusDoc();
+    // new Doc
+    m_musDocPtr = new Doc();
+    m_musDocSrc1Ptr = new Doc();    
+    m_musDocSrc2Ptr = new Doc();
 }
 
 CmpCollation::~CmpCollation( )
@@ -313,7 +313,7 @@ bool CmpCollation::Collate( )
         wxLogMessage( _("Saving MEI collation file ... ") );
         
         // create the full mei doc
-        MusDoc collationDoc;
+        Doc collationDoc;
         collationDoc.Reset( Raw );
         Page *page = new Page( );
         System *system = new System( );
@@ -633,7 +633,7 @@ CmpBookPart::~CmpBookPart( )
 Layer *CmpBookPart::GetContentToAlign( wxString basename )
 {
     Layer *alignLayer = new Layer( 1 );
-    MusDoc doc;
+    Doc doc;
     
     MusMeiInput meiInput( &doc, (basename + this->m_id + ".mei").mb_str() );
     if ( !meiInput.ImportFile() ) {
@@ -658,7 +658,7 @@ Layer *CmpBookPart::GetContentToAlign( wxString basename )
         params.push_back( &has_ended);
         params.push_back( &new_uuid );
         
-        MusFunctor copyToLayer( &MusObject::CopyToLayer );
+        MusFunctor copyToLayer( &Object::CopyToLayer );
         currentPage->Process( &copyToLayer, params );
     }
     
@@ -966,7 +966,7 @@ bool CmpFile::LoadBooks( wxArrayPtrVoid params, AxProgressDlg *dlg )
 			CmpBookPart *part = &m_bookFiles[i].m_bookParts[j];
 			
             // Create the new MEI file    
-            MusDoc *partDoc = new MusDoc( );
+            Doc *partDoc = new Doc( );
             partDoc->Reset( Transcription );
             // we will need to change this to a more sophisticated source structure
             partDoc->m_source = part->m_book->m_bookname;

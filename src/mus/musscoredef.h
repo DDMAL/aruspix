@@ -84,7 +84,7 @@ protected:
  * This class represents a MEI scoreDef.
  * It contains MusStaffGrp objects.
 */
-class ScoreDef: public MusObject, public ScoreOrStaffDefAttrInterface, public MusObjectListInterface
+class ScoreDef: public Object, public ScoreOrStaffDefAttrInterface, public ObjectListInterface
 {
 public:
     // constructors and destructors
@@ -144,13 +144,13 @@ private:
  * This class represents a MEI staffGrp.
  * It contains MusStaffDef objects.
  */
-class MusStaffGrp: public MusObject, public MusObjectListInterface
+class MusStaffGrp: public Object, public ObjectListInterface
 {
 public:
     // constructors and destructors
     MusStaffGrp();
     virtual ~MusStaffGrp();
-    virtual MusObject* Clone() { return new MusStaffGrp(*this); };
+    virtual Object* Clone() { return new MusStaffGrp(*this); };
     
     virtual std::string MusClassName( ) { return "MusStaffGrp"; };
 	
@@ -202,13 +202,13 @@ private:
 /**
  * This class represents a MEI staffDef.
  */
-class MusStaffDef: public MusObject, public ScoreOrStaffDefAttrInterface
+class MusStaffDef: public Object, public ScoreOrStaffDefAttrInterface
 {
 public:
     // constructors and destructors
     MusStaffDef();
     virtual ~MusStaffDef();
-    virtual MusObject* Clone() { return new MusStaffDef(*this); };
+    virtual Object* Clone() { return new MusStaffDef(*this); };
     
     virtual std::string MusClassName( ) { return "MusStaffDef"; };
     

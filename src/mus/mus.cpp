@@ -25,19 +25,19 @@
 #endif
 
 // Initialize static respource path
-std::string Mus::m_respath = "/usr/local/share/aruspix";
+std::string Vrv::m_respath = "/usr/local/share/aruspix";
 
 //----------------------------------------------------------------------------
-// Mus
+// Vrv
 //----------------------------------------------------------------------------
 
 
-bool Mus::AreEqual(double dFirstVal, double dSecondVal)
+bool Vrv::AreEqual(double dFirstVal, double dSecondVal)
 {
     return std::fabs(dFirstVal - dSecondVal) < 1E-3;
 }
 
-std::string Mus::GetAxVersion() {
+std::string Vrv::GetAxVersion() {
 #ifndef AX_APP
     return std::string("command line"); // we need to add versioning
 #else
@@ -45,7 +45,7 @@ std::string Mus::GetAxVersion() {
 #endif
 }
 
-std::string Mus::GetResourcesPath() {
+std::string Vrv::GetResourcesPath() {
 #ifndef AX_APP
     //hardcode galore
     return m_respath;
@@ -54,7 +54,7 @@ std::string Mus::GetResourcesPath() {
 #endif
 }
 
-std::string Mus::GetMusicFontDescStr() {
+std::string Vrv::GetMusicFontDescStr() {
 #ifndef AX_APP
     return std::string("0;13;70;90;90;0;Leipzig 4.7;33");
 #else
@@ -62,7 +62,7 @@ std::string Mus::GetMusicFontDescStr() {
 #endif
 }
 
-std::string Mus::GetLyricFontDescStr() {
+std::string Vrv::GetLyricFontDescStr() {
 #ifndef AX_APP
     return std::string("0;12;70;93;90;0;Garamond;0");
 #else
@@ -71,7 +71,7 @@ std::string Mus::GetLyricFontDescStr() {
 }
 
 
-int Mus::GetFontPosCorrection(){
+int Vrv::GetFontPosCorrection(){
 #ifndef AX_APP
     return 0;
 #else
@@ -79,11 +79,11 @@ int Mus::GetFontPosCorrection(){
 #endif
 }
 
-std::string Mus::GetFileVersion(int vmaj, int vmin, int vrev) {
-    return Mus::StringFormat("%04d.%04d.%04d", vmaj, vmin, vrev );
+std::string Vrv::GetFileVersion(int vmaj, int vmin, int vrev) {
+    return Vrv::StringFormat("%04d.%04d.%04d", vmaj, vmin, vrev );
 }
 
-std::string Mus::StringFormat(const char *fmt, ...)
+std::string Vrv::StringFormat(const char *fmt, ...)
 {
     std::string str( 2048, 0 );
     va_list args;
@@ -94,7 +94,7 @@ std::string Mus::StringFormat(const char *fmt, ...)
     return str;
 }
 
-std::string Mus::GetFilename( std::string fullpath )
+std::string Vrv::GetFilename( std::string fullpath )
 {
     // remove extension
     std::string name = fullpath;
@@ -109,7 +109,7 @@ std::string Mus::GetFilename( std::string fullpath )
     return name;
 }
 
-void Mus::LogDebug(const char *fmt, ...)
+void Vrv::LogDebug(const char *fmt, ...)
 {
 #ifdef EMSCRIPTEN
     return;
@@ -129,7 +129,7 @@ void Mus::LogDebug(const char *fmt, ...)
 #endif
 }
 
-void Mus::LogError(const char *fmt, ...)
+void Vrv::LogError(const char *fmt, ...)
 {
 #ifdef EMSCRIPTEN
     return;
@@ -147,7 +147,7 @@ void Mus::LogError(const char *fmt, ...)
 #endif
 }
 
-void Mus::LogMessage(const char *fmt, ...)
+void Vrv::LogMessage(const char *fmt, ...)
 {
 #ifdef EMSCRIPTEN
     return;
@@ -165,7 +165,7 @@ void Mus::LogMessage(const char *fmt, ...)
 #endif
 }
 
-void Mus::LogWarning(const char *fmt, ...)
+void Vrv::LogWarning(const char *fmt, ...)
 {
 #ifdef EMSCRIPTEN
     return;
@@ -183,7 +183,7 @@ void Mus::LogWarning(const char *fmt, ...)
 #endif
 }
 
-std::string Mus::UTF16to8(const wchar_t * in)
+std::string Vrv::UTF16to8(const wchar_t * in)
 {
     std::string out;
     unsigned int codepoint = 0;
@@ -224,7 +224,7 @@ std::string Mus::UTF16to8(const wchar_t * in)
     return out;
 }
 
-std::wstring Mus::UTF8to16(const char * in)
+std::wstring Vrv::UTF8to16(const char * in)
 {
     std::wstring out;
     if (in == NULL)

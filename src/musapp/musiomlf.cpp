@@ -309,7 +309,7 @@ wxString MusMLFSymbol::GetLabelType( )
 // MusFileOutputStream
 //----------------------------------------------------------------------------
 
-MusMLFOutput::MusMLFOutput( MusDoc *doc, wxString filename, MusMLFDictionary *dict, wxString model_symbol_name ) :
+MusMLFOutput::MusMLFOutput( Doc *doc, wxString filename, MusMLFDictionary *dict, wxString model_symbol_name ) :
     wxFileOutputStream( filename )
 {
     m_doc = doc;
@@ -324,7 +324,7 @@ MusMLFOutput::MusMLFOutput( MusDoc *doc, wxString filename, MusMLFDictionary *di
 }
 
 
-MusMLFOutput::MusMLFOutput( MusDoc *doc, int fd, wxString filename, MusMLFDictionary *dict,  wxString model_symbol_name ) :
+MusMLFOutput::MusMLFOutput( Doc *doc, int fd, wxString filename, MusMLFDictionary *dict,  wxString model_symbol_name ) :
 	wxFileOutputStream( fd )
 {
     m_doc = doc;
@@ -1206,7 +1206,7 @@ LayerElement *MusMLFInput::ConvertSymbol( wxString line )
 	return NULL;
 }
 
-MusMLFInput::MusMLFInput( MusDoc *file, wxString filename ) :
+MusMLFInput::MusMLFInput( Doc *file, wxString filename ) :
     wxFileInputStream( filename )
 {
     m_doc = file;

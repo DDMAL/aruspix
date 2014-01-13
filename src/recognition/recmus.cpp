@@ -110,7 +110,7 @@ void RecMusController::LoadBitmapsForFont( )
 	wxString tmp = wxGetApp().m_workingDir + "/.bitmaps"; // ouvre un descripteur de fichier inutile,
 														  // pas terrible .....
 	
-	MusDoc mustmp;																									
+	Doc mustmp;																									
 	m_mlfBmp = new RecMLFBmp( &mustmp, tmp );
 	m_mlfBmp->m_bitmap_types.Load( builtin_font );
 }

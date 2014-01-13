@@ -93,9 +93,9 @@ public:
     virtual void DrawBackgroundImage( int x = 0, int y = 0 ) {};
     
     // 
-    virtual void StartGraphic( MusDocObject *object, std::string gClass, std::string gId );
+    virtual void StartGraphic( DocObject *object, std::string gClass, std::string gId );
     
-    virtual void EndGraphic(MusDocObject *object, View *rc );
+    virtual void EndGraphic(DocObject *object, View *rc );
     
     virtual void StartPage();
     
@@ -110,7 +110,7 @@ private:
     /**
      * The array containing the object for which the bounding box needs to be updated
      */ 
-    ArrayOfMusObjects m_objects;
+    ArrayOfObjects m_objects;
     
     FontMetricsInfo m_font;
     

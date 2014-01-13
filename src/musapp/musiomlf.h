@@ -81,8 +81,8 @@ class MusMLFOutput: public wxFileOutputStream
 {
 public:
     // constructors and destructors
-    MusMLFOutput( MusDoc *doc, wxString filename, MusMLFDictionary *dict, wxString model_symbol_name = "MusMLFSymbol" );
-	MusMLFOutput( MusDoc *doc, int fd, wxString filename,  MusMLFDictionary *dict, wxString model_symbol_name = "MusMLFSymbol" );
+    MusMLFOutput( Doc *doc, wxString filename, MusMLFDictionary *dict, wxString model_symbol_name = "MusMLFSymbol" );
+	MusMLFOutput( Doc *doc, int fd, wxString filename,  MusMLFDictionary *dict, wxString model_symbol_name = "MusMLFSymbol" );
     virtual ~MusMLFOutput();
 
     virtual bool WritePage( const Page *page, bool write_header = false );
@@ -103,7 +103,7 @@ public:
 	ArrayOfMLFSymbols *GetSymbols( ) { return &m_symbols; };
     
 protected:
-    MusDoc *m_doc;
+    Doc *m_doc;
     wxString m_filename;
 	// specific
 	ArrayOfMLFSymbols m_symbols; // symbol list
@@ -136,7 +136,7 @@ class MusMLFInput: public wxFileInputStream
 {
 public:
     // constructors and destructors
-    MusMLFInput( MusDoc *file, wxString filename );
+    MusMLFInput( Doc *file, wxString filename );
     virtual ~MusMLFInput();
     
     bool ReadPage( Page *page, bool firstLineMLF, ImPage *imPage = NULL );
@@ -160,7 +160,7 @@ public:
 
     
 protected:
-    MusDoc *m_doc;
+    Doc *m_doc;
     // page, staff index
 	int m_staff_i, m_staff_label;
     Layer *m_logLayer; // the layer to which logical elements will be added. Currently only one

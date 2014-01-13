@@ -31,7 +31,7 @@ public:
      * Comparison operator. 
      * Check if the LayerElement if a Rest and compare attributes
      */
-    virtual bool operator==(MusObject& other);
+    virtual bool operator==(Object& other);
     
     virtual std::string MusClassName( ) { return "Rest"; };
     

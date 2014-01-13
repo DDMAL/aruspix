@@ -144,7 +144,7 @@ private:
 public:
     
 private:
-    MusDoc m_doc;
+    Doc m_doc;
     View m_rc;
     int m_border;
     int m_scale;

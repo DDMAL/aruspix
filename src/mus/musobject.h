@@ -16,52 +16,52 @@
 
 #include "musdef.h"
  
-class MusDoc;
+class Doc;
 class MusFunctor;
-class MusObject;
+class Object;
 
-typedef std::vector<MusObject*> ArrayOfMusObjects;
+typedef std::vector<Object*> ArrayOfObjects;
 
-typedef std::list<MusObject*> ListOfMusObjects;
+typedef std::list<Object*> ListOfObjects;
 
 typedef std::vector<void*> ArrayPtrVoid;
 
 //----------------------------------------------------------------------------
-// MusObject
+// Object
 //----------------------------------------------------------------------------
 
 /** 
  * This class represents a basic object
  */
-class MusObject
+class Object
 {
 public:
     // constructors and destructors
-    MusObject();
-    MusObject(std::string classid);
-    virtual ~MusObject();
+    Object();
+    Object(std::string classid);
+    virtual ~Object();
     
     /**
      * Copy constructor that also copy the children.
-     * The children are copied using the MusObject::Clone virtual method that
+     * The children are copied using the Object::Clone virtual method that
      * Needs to be overwritten in the child class - we make it crash otherwise,
      * Because this will create problem if we don't check this (the parents will 
      * one the same child...)
      * UUID: the uuid is copied, is needs to be reset later if this is not wished
      */
-    MusObject( const MusObject& object );
+    Object( const Object& object );
     
     /**
      * See copy constructor.
      */
-    MusObject& operator=( const MusObject& object ); // copy assignement;
+    Object& operator=( const Object& object ); // copy assignement;
     
     /**
      * Method call for copying child classes
      */
-    virtual MusObject* Clone();
+    virtual Object* Clone();
     
-    virtual bool operator==( MusObject& other );
+    virtual bool operator==( Object& other );
     
     std::string GetUuid() { return m_uuid; };
     void SetUuid( std::string uuid );
@@ -76,7 +76,7 @@ public:
     /**
      * Child access (generic)
      */
-    MusObject *GetChild( int idx );
+    Object *GetChild( int idx );
     
     /**
      * Clear the children vector and delete all the objects.
@@ -84,10 +84,10 @@ public:
     void ClearChildren();
     
     /**
-     * Set the parent of the MusObject.
+     * Set the parent of the Object.
      * The current parent is expected to be NULL.
      */
-    void SetParent( MusObject *parent );
+    void SetParent( Object *parent );
     
     virtual std::string MusClassName( ) { return "[MISSING]"; };
 
@@ -97,20 +97,20 @@ public:
     int GetIdx() const;
 
     /**
-     * Look for the MusObject in the children and return its position (-1 if not found)
+     * Look for the Object in the children and return its position (-1 if not found)
      */
-    int GetChildIndex( const MusObject *child );
+    int GetChildIndex( const Object *child );
     
     /**
      * Insert a element at the idx position.
      */
-    void InsertChild( MusObject *element, int idx );
+    void InsertChild( Object *element, int idx );
     
     /**
      * Detach the child at the idx position (NULL if not found)
      * The parent pointer is set to NULL.
      */
-    MusObject *DetachChild( int idx );
+    Object *DetachChild( int idx );
     
     /**
      * Remove and delete the child at the idx position.
@@ -121,32 +121,32 @@ public:
      * Return the first parent of the specified type.
      * The maxSteps parameter limit the search to a certain number of level if not -1.
      */
-    MusObject *GetFirstParent( const std::type_info *elementType, int maxSteps = -1 );
+    Object *GetFirstParent( const std::type_info *elementType, int maxSteps = -1 );
     
     /**
      * Return the first of the specified type.
      */
-    MusObject *GetFirstChild( const std::type_info *elementType );
+    Object *GetFirstChild( const std::type_info *elementType );
     
     /**
      * Return the previous sibling object of the specified type.
      * If no type is specified, returns the previous object.
      * Returns NULL if not found in both cases.
      */
-    MusObject *GetPreviousSibling( const std::type_info *elementType = NULL );
+    Object *GetPreviousSibling( const std::type_info *elementType = NULL );
     
     /**
      * Return the next sibling object of the specified type.
      * If no type is specified, returns the next object.
      * Returns NULL if not found in both cases.
      */
-    MusObject *GetNextSibling( const std::type_info *elementType = NULL );
+    Object *GetNextSibling( const std::type_info *elementType = NULL );
     
     /**
      * Fill the list of all the children LayerElement.
      * This is used for navigating in a Layer (See Layer::GetPrevious and Layer::GetNext).
      */  
-    void FillList( ListOfMusObjects *list );
+    void FillList( ListOfObjects *list );
     
     /**
      * Add a sameAs attribute to the object.
@@ -189,9 +189,9 @@ public:
     virtual int CopyToLayer( ArrayPtrVoid params ) { return false; };
     
     /**
-     * Find a MusObject with a specified uuid.
+     * Find a Object with a specified uuid.
      * param 0: the uuid we are looking for.
-     * param 1: the pointer to pointer to the MusObject retrieved (if found).
+     * param 1: the pointer to pointer to the Object retrieved (if found).
      */
     virtual int FindByUuid( ArrayPtrVoid params );
     
@@ -298,8 +298,8 @@ public:
     virtual int AlignSystems( ArrayPtrVoid params ) { return FUNCTOR_CONTINUE; };
 
 public:
-    ArrayOfMusObjects m_children;
-    MusObject *m_parent;
+    ArrayOfObjects m_children;
+    Object *m_parent;
     std::string m_sameAs;
     
 protected:
@@ -323,23 +323,23 @@ private:
 
 
 //----------------------------------------------------------------------------
-// MusDocObject
+// DocObject
 //----------------------------------------------------------------------------
 
 /** 
  * This class represents a basic object in the layout domain
  */
-class MusDocObject: public MusObject
+class DocObject: public Object
 {
 public:
     // constructors and destructors
-    MusDocObject();
-    MusDocObject(std::string classid);
-    virtual ~MusDocObject();
+    DocObject();
+    DocObject(std::string classid);
+    virtual ~DocObject();
     
     /**
-     * Refreshes the views from MusDoc.
-     * From other MusDocObject, simply pass it to its parent until MusDoc is reached.
+     * Refreshes the views from Doc.
+     * From other DocObject, simply pass it to its parent until Doc is reached.
      */
     virtual void Refresh();
     
@@ -369,7 +369,7 @@ public:
 
 
 //----------------------------------------------------------------------------
-// MusObjectListInterface
+// ObjectListInterface
 //----------------------------------------------------------------------------
 
 /** 
@@ -378,37 +378,37 @@ public:
  * The list is a flatten list of pointers to children elements.
  * It is not an abstract class but should not be instanciate directly.
  */
-class MusObjectListInterface
+class ObjectListInterface
 {
 public:
     // constructors and destructors
-    MusObjectListInterface() {};
-    virtual ~MusObjectListInterface() {};
-    MusObjectListInterface( const MusObjectListInterface& interface ); // copy constructor;
-    MusObjectListInterface& operator=( const MusObjectListInterface& interface ); // copy assignement;
+    ObjectListInterface() {};
+    virtual ~ObjectListInterface() {};
+    ObjectListInterface( const ObjectListInterface& interface ); // copy constructor;
+    ObjectListInterface& operator=( const ObjectListInterface& interface ); // copy assignement;
 
     /**
-     * Look for the MusObject in the list and return its position (-1 if not found)
+     * Look for the Object in the list and return its position (-1 if not found)
      */
-    int GetListIndex( const MusObject *listElement );
+    int GetListIndex( const Object *listElement );
     
     /**
      * Returns the previous object in the list (NULL if not found)
      */
-    MusObject *GetListPrevious( const MusObject *listElement );
+    Object *GetListPrevious( const Object *listElement );
 
     /**
      * Returns the next object in the list (NULL if not found)
      */
-    MusObject *GetListNext( const MusObject *listElement );
+    Object *GetListNext( const Object *listElement );
     
     /**
      * Return the list.
-     * Before returning the list, it checks that the list is up-to-date with MusObject::IsModified
+     * Before returning the list, it checks that the list is up-to-date with Object::IsModified
      * If not, it updates the list and also calls FilterList.
      * Because this is an interface, we need to pass the object - not the best design.
      */
-    ListOfMusObjects *GetList( MusObject *node );
+    ListOfObjects *GetList( Object *node );
     
 protected:
     /**
@@ -422,9 +422,9 @@ public:
      * Reset the list of children and call FilterList().
      * As for GetList, we need to pass the object.
      */
-    void ResetList( MusObject *node );
+    void ResetList( Object *node );
         
-    ListOfMusObjects m_list;
+    ListOfObjects m_list;
     
 };
 
@@ -439,18 +439,18 @@ public:
 class MusFunctor
 {
 private:
-    int (MusObject::*obj_fpt)( ArrayPtrVoid params );   // pointer to member function
+    int (Object::*obj_fpt)( ArrayPtrVoid params );   // pointer to member function
     
 public:
     
     // constructor - takes pointer to an object and pointer to a member and stores
     // them in two private variables
     MusFunctor( );
-    MusFunctor( int(MusObject::*_obj_fpt)( ArrayPtrVoid ));
+    MusFunctor( int(Object::*_obj_fpt)( ArrayPtrVoid ));
 	virtual ~MusFunctor() {};
     
     // override function "Call"
-    virtual void Call( MusObject *ptr, ArrayPtrVoid params );
+    virtual void Call( Object *ptr, ArrayPtrVoid params );
     
     int m_returnCode;
     bool m_reverse;

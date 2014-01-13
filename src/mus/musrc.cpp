@@ -52,7 +52,7 @@ View::~View()
 {
 }
 
-void View::SetDoc( MusDoc *doc )
+void View::SetDoc( Doc *doc )
 {
 	if ( doc == NULL ) // unset file
 	{
@@ -149,7 +149,7 @@ void View::LoadPage( int nopage )
 	m_npage = nopage;
 	SetPage( &m_doc->m_pages[m_npage] );
     */
-    Mus::LogDebug( "View::LoadPage missing in ax2" );
+    Vrv::LogDebug( "View::LoadPage missing in ax2" );
 }
 
 int View::ToRendererX( int i ) { return i; }; // the same

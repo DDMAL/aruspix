@@ -82,9 +82,9 @@ public:
 	bool Collate( );
 	bool Realize( );
 	bool IsCollationLoaded( CmpCollationPart *part );
-    MusDoc *GetMusDoc() { return m_musDocPtr; };
-    MusDoc *GetMusDocSrc1() { return m_musDocSrc1Ptr; };
-    MusDoc *GetMusDocSrc2() { return m_musDocSrc2Ptr; };
+    Doc *GetMusDoc() { return m_musDocPtr; };
+    Doc *GetMusDocSrc1() { return m_musDocSrc1Ptr; };
+    Doc *GetMusDocSrc2() { return m_musDocSrc2Ptr; };
 	
 	
 protected:
@@ -127,12 +127,12 @@ private:
     wxString m_refSource;
     /** The name of the variant source */
     wxString m_varSource;
-    /** The MusDoc of the final collation */
-    MusDoc *m_musDocPtr;
-    /** The MusDoc of the source 1 in the collation */
-    MusDoc *m_musDocSrc1Ptr;
-    /** The MusDoc of the source 2 in the collation */
-    MusDoc *m_musDocSrc2Ptr;
+    /** The Doc of the final collation */
+    Doc *m_musDocPtr;
+    /** The Doc of the source 1 in the collation */
+    Doc *m_musDocSrc1Ptr;
+    /** The Doc of the source 2 in the collation */
+    Doc *m_musDocSrc2Ptr;
 
     
 	bool m_isColLoaded;

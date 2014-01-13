@@ -26,7 +26,7 @@
 //----------------------------------------------------------------------------
 
 Staff::Staff( int n ):
-	MusDocObject("staff-")
+	DocObject("staff-")
 {
 	Clear( );
     //wxASSERT ( n > 0 );

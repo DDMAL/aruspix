@@ -31,7 +31,7 @@ MultiRest::~MultiRest()
 }
 
 
-bool MultiRest::operator==( MusObject& other )
+bool MultiRest::operator==( Object& other )
 {
     MultiRest *otherM = dynamic_cast<MultiRest*>( &other );
     if ( !otherM ) {

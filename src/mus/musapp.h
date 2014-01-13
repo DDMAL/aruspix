@@ -50,7 +50,7 @@ private:
 /** 
  * This class models the MEI <rdg> element for a <app> in a <layer>
  */
-class LayerRdg: public MusObject
+class LayerRdg: public Object
 {
 public:
     // constructors and destructors

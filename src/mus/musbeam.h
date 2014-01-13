@@ -16,7 +16,7 @@
 // Beam
 //----------------------------------------------------------------------------
 
-class Beam: public LayerElement, public MusObjectListInterface
+class Beam: public LayerElement, public ObjectListInterface
 {
 public:
     // constructors and destructors

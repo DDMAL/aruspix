@@ -57,11 +57,11 @@ double DurationInterface::GetAlignementDuration( int num, int numbase )
     if ( m_dots > 0 ) {
         duration = 2 * duration - (duration / pow(2, m_dots));
     }
-    //Mus::LogDebug("Duration %d; Dot %d; Alignement %f", m_dur, m_dots, duration );
+    //Vrv::LogDebug("Duration %d; Dot %d; Alignement %f", m_dur, m_dots, duration );
     return duration;
 }
 
-bool DurationInterface::IsInBeam( MusObject *noteOrRest )
+bool DurationInterface::IsInBeam( Object *noteOrRest )
 {
     Beam *beam = dynamic_cast<Beam*>( noteOrRest->GetFirstParent( &typeid(Beam), MAX_BEAM_DEPTH ) );
     if ( !beam ) {
@@ -70,28 +70,28 @@ bool DurationInterface::IsInBeam( MusObject *noteOrRest )
     return true;
 }
 
-bool DurationInterface::IsFirstInBeam( MusObject *noteOrRest )
+bool DurationInterface::IsFirstInBeam( Object *noteOrRest )
 {
     Beam *beam = dynamic_cast<Beam*>( noteOrRest->GetFirstParent( &typeid(Beam), MAX_BEAM_DEPTH ) );
     if ( !beam ) {
         return false;
     }
-    ListOfMusObjects *notesOrRests = beam->GetList( beam );
-    ListOfMusObjects::iterator iter = notesOrRests->begin();
+    ListOfObjects *notesOrRests = beam->GetList( beam );
+    ListOfObjects::iterator iter = notesOrRests->begin();
     if ( *iter == noteOrRest ) {
         return true;
     }
     return false;    
 }
 
-bool DurationInterface::IsLastInBeam( MusObject *noteOrRest )
+bool DurationInterface::IsLastInBeam( Object *noteOrRest )
 {
     Beam *beam = dynamic_cast<Beam*>( noteOrRest->GetFirstParent( &typeid(Beam), MAX_BEAM_DEPTH ) );
     if ( !beam ) {
         return false;
     }
-    ListOfMusObjects *notesOrRests = beam->GetList( beam );
-    ListOfMusObjects::reverse_iterator iter = notesOrRests->rbegin();
+    ListOfObjects *notesOrRests = beam->GetList( beam );
+    ListOfObjects::reverse_iterator iter = notesOrRests->rbegin();
     if ( *iter == noteOrRest ) {
         return true;
     }

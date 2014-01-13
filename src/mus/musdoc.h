@@ -26,19 +26,19 @@ enum DocType {
 
 
 //----------------------------------------------------------------------------
-// MusDoc
+// Doc
 //----------------------------------------------------------------------------
 
 /** 
  * This class is a hold the data and corresponds to the model of a MVC design pattern.
  */
-class MusDoc: public MusObject
+class Doc: public Object
 {
 
 public:
     // constructors and destructors
-    MusDoc();
-    virtual ~MusDoc();
+    Doc();
+    virtual ~Doc();
 	
 	void AddPage( Page *page );
     
@@ -48,13 +48,13 @@ public:
     void Reset( DocType type );
     
     /**
-     * Refreshes the views from MusDoc.
+     * Refreshes the views from Doc.
      */
     virtual void Refresh();
     
     /**
      * Getter for the DocType.
-     * The setter is MusDoc::Reset.
+     * The setter is Doc::Reset.
      */
     DocType GetType() { return m_type; };
     
@@ -143,7 +143,7 @@ public:
     ScoreDef m_scoreDef;
     
     /*
-     * The following values are set in the MusDoc::SetRenderedPage.
+     * The following values are set in the Doc::SetRenderedPage.
      * They are all current values to be used when rendering a page in a View and 
      * reset for every page. However, most of them are based on the m_staffDefin values
      * and will remain the same. This can be optimized.

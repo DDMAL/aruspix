@@ -52,7 +52,7 @@ int LayerApp::Save( ArrayPtrVoid params )
 //----------------------------------------------------------------------------
 
 LayerRdg::LayerRdg( ):
-    MusObject()
+    Object()
 {
 
 }

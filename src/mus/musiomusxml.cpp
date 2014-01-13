@@ -32,7 +32,7 @@
 // MusXMLOutput
 //----------------------------------------------------------------------------
 
-MusXMLOutput::MusXMLOutput( MusDoc *doc, std::string filename ) :
+MusXMLOutput::MusXMLOutput( Doc *doc, std::string filename ) :
 // This is pretty bad. We open a bad fileoutputstream as we don't use it
 MusFileOutputStream( doc )
 {
@@ -76,9 +76,9 @@ bool MusXMLOutput::ExportFile( )
 	return true;    
 }
 
-bool MusXMLOutput::WriteDoc( MusDoc *doc )
+bool MusXMLOutput::WriteDoc( Doc *doc )
 {
-    Mus::LogDebug("Doc");
+    Vrv::LogDebug("Doc");
     
     // Write the partwise declaration
     // the MusicXML "score-partwise" does not map to our MusScore
@@ -116,7 +116,7 @@ bool MusXMLOutput::WriteMeasure( Measure *measure )
     
     m_measure_count++;
     num << m_measure_count;
-    Mus::LogDebug("Measure %i", m_measure_count);
+    Vrv::LogDebug("Measure %i", m_measure_count);
     
     // go on and create this measure
     m_xml_measure = new TiXmlElement("measure");
@@ -136,7 +136,7 @@ bool MusXMLOutput::WriteMeasure( Measure *measure )
 bool MusXMLOutput::WriteStaff( Staff *staff )
 //bool MusXMLOutput::WriteMeiStaff( Staff *meiStaff, Staff *staff )
 {
-    Mus::LogDebug("Staff");
+    Vrv::LogDebug("Staff");
     
     m_xml_part = new TiXmlElement("part");
     m_xml_part->SetAttribute("id", "P1");
@@ -160,13 +160,13 @@ bool MusXMLOutput::WriteStaff( Staff *staff )
 bool MusXMLOutput::WriteLayer( Layer *layer )
 //bool MusXMLOutput::WriteMeiLayer( Layer *meiLayer, Layer *layer )
 {
-    Mus::LogDebug("Layer");
+    Vrv::LogDebug("Layer");
     return true;
 }
 
 bool MusXMLOutput::WriteLayerElement( LayerElement *element )
 {
-    Mus::LogDebug("Layer Elem");
+    Vrv::LogDebug("Layer Elem");
         
     if (dynamic_cast<Clef*>(element)) {
         WriteClef(element);
@@ -185,7 +185,7 @@ bool MusXMLOutput::WriteLayerElement( LayerElement *element )
         SetTie(m_xml_last_note, false);
     }
     
- //   Mus::LogDebug("---- %s", element->MusClassName().c_str());
+ //   Vrv::LogDebug("---- %s", element->MusClassName().c_str());
     
     return true;
  }
@@ -193,39 +193,39 @@ bool MusXMLOutput::WriteLayerElement( LayerElement *element )
 
 
 
-bool MusXMLOutput::WriteLayout( MusDoc *layout )
+bool MusXMLOutput::WriteLayout( Doc *layout )
 {
-    Mus::LogDebug("Layout");
+    Vrv::LogDebug("Layout");
     return true;
 }
 
 bool MusXMLOutput::WritePage( Page *page )
 {
-    Mus::LogDebug("Page");
+    Vrv::LogDebug("Page");
     return true;
 }
 
 bool MusXMLOutput::WriteSystem( System *system )
 {
-    Mus::LogDebug("System");
+    Vrv::LogDebug("System");
     return true;
 }
 
 bool MusXMLOutput::WriteLaidOutStaff( Staff *laidOutStaff )
 {
-    Mus::LogDebug("Laid staff");
+    Vrv::LogDebug("Laid staff");
     return true;
 }
 
 bool MusXMLOutput::WriteLaidOutLayer( Layer *laidOutLayer )
-{    Mus::LogDebug("Laid layer");
+{    Vrv::LogDebug("Laid layer");
     return true;
 
 }
 
 bool MusXMLOutput::WriteLaidOutLayerElement( LayerElement *laidOutLayerElement )
 {
-    Mus::LogDebug("Laid Layer Elem");
+    Vrv::LogDebug("Laid Layer Elem");
     return true;
 }
 
@@ -439,7 +439,7 @@ void MusXMLOutput::CreateRestsForMultiMeasure() {
         m_xml_measure->SetAttribute("number", mstring.str().c_str());
         
     }
-    Mus::LogDebug("Measures incremented to %i.", m_measure_count);
+    Vrv::LogDebug("Measures incremented to %i.", m_measure_count);
     m_multimeasure_rests = 0;
     //m_measure_count--;
     // we do not want to increment this two times
@@ -592,7 +592,7 @@ void MusXMLOutput::WriteNoteOrRest(LayerElement *element) {
             // attach the beam to the note
             note->LinkEndChild(xbeam);
         } else {
-            Mus::LogDebug("Beam with no notes");
+            Vrv::LogDebug("Beam with no notes");
         }
     }
     

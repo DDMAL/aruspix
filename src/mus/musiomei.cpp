@@ -40,7 +40,7 @@
 // MusMeiOutput
 //----------------------------------------------------------------------------
 
-MusMeiOutput::MusMeiOutput( MusDoc *doc, std::string filename ) :
+MusMeiOutput::MusMeiOutput( Doc *doc, std::string filename ) :
 	MusFileOutputStream( doc )
 {
     m_filename = filename;
@@ -97,21 +97,21 @@ bool MusMeiOutput::ExportFile( )
         meiDoc->SaveFile( m_filename.c_str() );
     }
     catch( char * str ) {
-        Mus::LogError("%s", str );
+        Vrv::LogError("%s", str );
         return false;
     }
 	return true;    
 }
 
-std::string MusMeiOutput::UuidToMeiStr( MusObject *element )
+std::string MusMeiOutput::UuidToMeiStr( Object *element )
 {
     std::string out = element->GetUuid();
     std::transform(out.begin(), out.end(), out.begin(), ::tolower);
-    Mus::LogDebug("uuid: %s\n", out.c_str());
+    Vrv::LogDebug("uuid: %s\n", out.c_str());
     return out;
 }
 
-bool MusMeiOutput::WriteDoc( MusDoc *doc )
+bool MusMeiOutput::WriteDoc( Doc *doc )
 {
     assert( m_mei );
     
@@ -134,7 +134,7 @@ bool MusMeiOutput::WriteDoc( MusDoc *doc )
     TiXmlElement *p1 = new TiXmlElement("p");
     projectDesc->LinkEndChild(p1);
     
-    p1->LinkEndChild( new TiXmlText( Mus::StringFormat( "Encoded with Aruspix version %s",  Mus::GetAxVersion().c_str() ).c_str() ) );
+    p1->LinkEndChild( new TiXmlText( Vrv::StringFormat( "Encoded with Aruspix version %s",  Vrv::GetAxVersion().c_str() ).c_str() ) );
     
     // date
     time_t now = time(0);
@@ -155,11 +155,11 @@ bool MusMeiOutput::WritePage( Page *page )
     m_page->SetAttribute( "xml:id",  UuidToMeiStr( page ).c_str() );
     // size and margins but only if any - we rely on page.height only to check this
     if ( page->m_pageHeight != -1 ) {
-        m_page->SetAttribute( "page.width", Mus::StringFormat( "%d", page->m_pageWidth ).c_str() );
-        m_page->SetAttribute( "page.height", Mus::StringFormat( "%d", page->m_pageHeight ).c_str() );
-        m_page->SetAttribute( "page.leftmar", Mus::StringFormat( "%d", page->m_pageLeftMar ).c_str() );
-        m_page->SetAttribute( "page.rightmar", Mus::StringFormat( "%d", page->m_pageRightMar ).c_str() );
-        m_page->SetAttribute( "page.rightmar", Mus::StringFormat( "%d", page->m_pageRightMar ).c_str() );
+        m_page->SetAttribute( "page.width", Vrv::StringFormat( "%d", page->m_pageWidth ).c_str() );
+        m_page->SetAttribute( "page.height", Vrv::StringFormat( "%d", page->m_pageHeight ).c_str() );
+        m_page->SetAttribute( "page.leftmar", Vrv::StringFormat( "%d", page->m_pageLeftMar ).c_str() );
+        m_page->SetAttribute( "page.rightmar", Vrv::StringFormat( "%d", page->m_pageRightMar ).c_str() );
+        m_page->SetAttribute( "page.rightmar", Vrv::StringFormat( "%d", page->m_pageRightMar ).c_str() );
     }
     if ( !page->m_surface.empty() ) {
         m_page->SetAttribute( "surface", page->m_surface.c_str() );
@@ -178,10 +178,10 @@ bool MusMeiOutput::WriteSystem( System *system )
     m_system = new TiXmlElement("system");
     m_system->SetAttribute( "xml:id",  UuidToMeiStr( system ).c_str() );
     // margins
-    m_system->SetAttribute( "system.leftmar", Mus::StringFormat( "%d", system->m_systemLeftMar ).c_str() );
-    m_system->SetAttribute( "system.rightmar", Mus::StringFormat( "%d", system->m_systemRightMar ).c_str() );
+    m_system->SetAttribute( "system.leftmar", Vrv::StringFormat( "%d", system->m_systemLeftMar ).c_str() );
+    m_system->SetAttribute( "system.rightmar", Vrv::StringFormat( "%d", system->m_systemRightMar ).c_str() );
     // y positions
-    m_system->SetAttribute( "uly", Mus::StringFormat( "%d", system->m_yAbs ).c_str() );
+    m_system->SetAttribute( "uly", Vrv::StringFormat( "%d", system->m_yAbs ).c_str() );
     m_page->LinkEndChild( m_system );
     return true;
 }
@@ -228,7 +228,7 @@ bool MusMeiOutput::WriteStaffDef( MusStaffDef *staffDef )
     assert( m_staffGrp );
     m_staffDef = new TiXmlElement("staffDef");
     m_staffDef->SetAttribute( "xml:id",  UuidToMeiStr( staffDef ).c_str() );
-    m_staffDef->SetAttribute( "n", Mus::StringFormat( "%d", staffDef->GetStaffNo() ).c_str() );
+    m_staffDef->SetAttribute( "n", Vrv::StringFormat( "%d", staffDef->GetStaffNo() ).c_str() );
     if (staffDef->GetClefAttr()) {
         m_staffDef->SetAttribute( "clef.line", ClefLineToStr( staffDef->GetClefAttr()->m_clefId ).c_str() );
         m_staffDef->SetAttribute( "clef.shape", ClefShapeToStr( staffDef->GetClefAttr()->m_clefId ).c_str() );
@@ -252,8 +252,8 @@ bool MusMeiOutput::WriteStaff( Staff *staff )
     if ( staff->notAnc ) {
         m_staff->SetAttribute( "label", "mensural" );
     }
-    m_staff->SetAttribute( "uly", Mus::StringFormat( "%d", staff->m_yAbs ).c_str() );
-    m_staff->SetAttribute( "n", Mus::StringFormat( "%d", staff->GetStaffNo() ).c_str() );
+    m_staff->SetAttribute( "uly", Vrv::StringFormat( "%d", staff->m_yAbs ).c_str() );
+    m_staff->SetAttribute( "n", Vrv::StringFormat( "%d", staff->GetStaffNo() ).c_str() );
 
     m_system->LinkEndChild( m_staff );
     return true;
@@ -264,7 +264,7 @@ bool MusMeiOutput::WriteMeasure( Measure *measure )
     assert( m_staff );
     m_measure = new TiXmlElement("measure");
     m_measure->SetAttribute( "xml:id",  UuidToMeiStr( measure ).c_str() );
-    m_measure->SetAttribute( "n", Mus::StringFormat( "%d", measure->m_logMeasureNb ).c_str() );
+    m_measure->SetAttribute( "n", Vrv::StringFormat( "%d", measure->m_logMeasureNb ).c_str() );
     m_staff->LinkEndChild( m_measure );
     return true;
 }
@@ -274,7 +274,7 @@ bool MusMeiOutput::WriteLayer( Layer *layer )
     assert( m_staff );
     m_layer = new TiXmlElement("layer");
     m_layer->SetAttribute( "xml:id",  UuidToMeiStr( layer ).c_str() );
-    m_layer->SetAttribute( "n", Mus::StringFormat( "%d", layer->GetLayerNo() ).c_str() );
+    m_layer->SetAttribute( "n", Vrv::StringFormat( "%d", layer->GetLayerNo() ).c_str() );
     if ( m_measure ) {
         m_measure->LinkEndChild( m_layer );
     }
@@ -350,13 +350,13 @@ bool MusMeiOutput::WriteLayerElement( LayerElement *element )
         this->WriteSameAsAttr( xmlElement, element );
         xmlElement->SetAttribute( "xml:id",  UuidToMeiStr( element ).c_str() );
         if ( element->m_xAbs != AX_UNSET) {
-            xmlElement->SetAttribute( "ulx", Mus::StringFormat( "%d", element->m_xAbs ).c_str() );
+            xmlElement->SetAttribute( "ulx", Vrv::StringFormat( "%d", element->m_xAbs ).c_str() );
         }
         currentParent->LinkEndChild( xmlElement );
         return true;
     }
     else {
-        Mus::LogWarning( "Element class %s could not be saved", element->MusClassName().c_str() );
+        Vrv::LogWarning( "Element class %s could not be saved", element->MusClassName().c_str() );
         return false;
     }    
 }
@@ -397,10 +397,10 @@ void MusMeiOutput::WriteMeiMensur( TiXmlElement *meiMensur, Mensur *mensur )
         meiMensur->SetAttribute( "orient", "reversed" ); // only orientation
     }
     if ( mensur->m_num ) {
-        meiMensur->SetAttribute( "num", Mus::StringFormat("%d", mensur->m_num ).c_str() );
+        meiMensur->SetAttribute( "num", Vrv::StringFormat("%d", mensur->m_num ).c_str() );
     }
     if ( mensur->m_numBase ) {
-        meiMensur->SetAttribute( "numbase", Mus::StringFormat("%d", mensur->m_numBase ).c_str() );
+        meiMensur->SetAttribute( "numbase", Vrv::StringFormat("%d", mensur->m_numBase ).c_str() );
     }
     // missing m_meterSymb
     
@@ -409,7 +409,7 @@ void MusMeiOutput::WriteMeiMensur( TiXmlElement *meiMensur, Mensur *mensur )
 
 void MusMeiOutput::WriteMeiMultiRest( TiXmlElement *meiMultiRest, MultiRest *multiRest )
 {
-    meiMultiRest->SetAttribute( "num", Mus::StringFormat("%d", multiRest->GetNumber()).c_str() );
+    meiMultiRest->SetAttribute( "num", Vrv::StringFormat("%d", multiRest->GetNumber()).c_str() );
 
     return;
 }
@@ -420,7 +420,7 @@ void MusMeiOutput::WriteMeiNote( TiXmlElement *meiNote, Note *note )
     meiNote->SetAttribute( "oct", OctToStr( note->m_oct ).c_str() );
     meiNote->SetAttribute( "dur", DurToStr( note->m_dur ).c_str() );
     if ( note->m_dots ) {
-        meiNote->SetAttribute( "dots", Mus::StringFormat("%d", note->m_dots).c_str() );
+        meiNote->SetAttribute( "dots", Vrv::StringFormat("%d", note->m_dots).c_str() );
     }
     if ( note->m_accid ) {
         meiNote->SetAttribute( "accid", AccidToStr( note->m_accid ).c_str() );
@@ -448,7 +448,7 @@ void MusMeiOutput::WriteMeiRest( TiXmlElement *meiRest, Rest *rest )
 {    
     meiRest->SetAttribute( "dur", DurToStr( rest->m_dur ).c_str() );
     if ( rest->m_dots ) {
-        meiRest->SetAttribute( "dots", Mus::StringFormat("%d", rest->m_dots).c_str() );
+        meiRest->SetAttribute( "dots", Vrv::StringFormat("%d", rest->m_dots).c_str() );
     }
     // missing position
     meiRest->SetAttribute( "ploc", PitchToStr( rest->m_pname ).c_str() );
@@ -508,7 +508,7 @@ bool MusMeiOutput::WriteLayerRdg( LayerRdg *rdg )
 }
 
 
-void MusMeiOutput::WriteSameAsAttr( TiXmlElement *meiElement, MusObject *element )
+void MusMeiOutput::WriteSameAsAttr( TiXmlElement *meiElement, Object *element )
 {
     if ( !element->m_sameAs.empty() ) {
         meiElement->SetAttribute( "sameas", element->m_sameAs.c_str() );
@@ -547,7 +547,7 @@ std::string MusMeiOutput::PitchToStr(int pitch)
         case 5: value = "g"; break;
         case 6: value = "a"; break;
         default: 
-            Mus::LogWarning("Unknown pitch '%d'", pitch);
+            Vrv::LogWarning("Unknown pitch '%d'", pitch);
             value = "";
             break;
     }
@@ -566,7 +566,7 @@ std::string MusMeiOutput::AccidToStr(unsigned char accid)
         case ACCID_QUARTER_SHARP: value = "ns"; break;
         case ACCID_QUARTER_FLAT: value = "nf"; break;
         default: 
-            Mus::LogWarning("Unknown accid '%d'", accid);
+            Vrv::LogWarning("Unknown accid '%d'", accid);
             value = "";
             break;
     }
@@ -590,7 +590,7 @@ std::string MusMeiOutput::ClefLineToStr( ClefId clefId )
 		case UT4 : value = "4"; break;
 		case UT5 : value = "5"; break;
         default: 
-            Mus::LogWarning("Unknown clef '%d'", clefId);
+            Vrv::LogWarning("Unknown clef '%d'", clefId);
             value = "";
             break;
 	}
@@ -614,7 +614,7 @@ std::string MusMeiOutput::ClefShapeToStr( ClefId clefId )
 		case UT4 : 
 		case UT5 : value = "C"; break;		
         default: 
-            Mus::LogWarning("Unknown clef '%d'", clefId);
+            Vrv::LogWarning("Unknown clef '%d'", clefId);
             value = "";
             break;
 	}
@@ -628,7 +628,7 @@ std::string MusMeiOutput::MensurSignToStr(MensurSign sign)
 	{	case MENSUR_SIGN_C : value = "C"; break;
 		case MENSUR_SIGN_O : value = "O"; break;		
         default: 
-            Mus::LogWarning("Unknown mensur sign '%d'", sign);
+            Vrv::LogWarning("Unknown mensur sign '%d'", sign);
             value = "";
             break;
 	}
@@ -657,7 +657,7 @@ std::string MusMeiOutput::DurToStr( int dur )
     else if (dur == DUR_64) value = "64";
     else if (dur == DUR_128) value = "128";
 	else {
-		Mus::LogWarning("Unknown duration '%d'", dur);
+		Vrv::LogWarning("Unknown duration '%d'", dur);
         value = "4";
 	}
     return value;
@@ -672,7 +672,7 @@ std::string MusMeiOutput::DocTypeToStr(DocType type)
         case Rendering : value = "rendering"; break;
 		case Transcription : value = "transcription"; break;		
         default: 
-            Mus::LogWarning("Unknown layout type '%d'", type);
+            Vrv::LogWarning("Unknown layout type '%d'", type);
             value = "";
             break;
 	}
@@ -687,10 +687,10 @@ std::string MusMeiOutput::KeySigToStr(int num, char alter_type )
         return "0";
     }
 	switch(alter_type)
-	{	case ACCID_FLAT : value = Mus::StringFormat("%df", num); break;
-		case ACCID_SHARP : value = Mus::StringFormat("%ds", num); break;
+	{	case ACCID_FLAT : value = Vrv::StringFormat("%df", num); break;
+		case ACCID_SHARP : value = Vrv::StringFormat("%ds", num); break;
         default:
-            Mus::LogWarning("Unknown key signature values '%d' and '%d", num, alter_type);
+            Vrv::LogWarning("Unknown key signature values '%d' and '%d", num, alter_type);
             value = "0";
             break;
 	}
@@ -706,7 +706,7 @@ std::string MusMeiOutput::StaffGrpSymbolToStr(StaffGrpSymbol symbol)
 		case STAFFGRP_BRACE : value = "brace"; break;
         case STAFFGRP_BRACKET : value = "bracket"; break;
         default:
-            Mus::LogWarning("Unknown staffGrp @symbol  '%d'", symbol);
+            Vrv::LogWarning("Unknown staffGrp @symbol  '%d'", symbol);
             value = "line";
             break;
 	}
@@ -718,11 +718,11 @@ std::string MusMeiOutput::StaffGrpSymbolToStr(StaffGrpSymbol symbol)
 // MusMeiInput
 //----------------------------------------------------------------------------
 
-MusMeiInput::MusMeiInput( MusDoc *doc, std::string filename ) :
+MusMeiInput::MusMeiInput( Doc *doc, std::string filename ) :
 	MusFileInputStream( doc )
 {
     m_filename = filename;
-    m_doc->m_fname = Mus::GetFilename( filename );
+    m_doc->m_fname = Vrv::GetFilename( filename );
     m_page = NULL;
     m_scoreDef = NULL;
     m_staffDef = NULL;
@@ -758,7 +758,7 @@ bool MusMeiInput::ImportFile( )
         return ReadMei( root );
         }
     catch( char * str ) {
-        Mus::LogError("%s", str );
+        Vrv::LogError("%s", str );
         return false;
     }
 }
@@ -773,7 +773,7 @@ bool MusMeiInput::ImportString( const std::string mei )
         return ReadMei( root );
     }
     catch( char * str ) {
-        Mus::LogError("%s", str );
+        Vrv::LogError("%s", str );
         return false;
     }
 }
@@ -846,7 +846,7 @@ bool MusMeiInput::ReadMei( TiXmlElement *root )
         std::vector<Note*>::iterator iter;
         for (iter = m_openTies.begin(); iter != m_openTies.end(); ++iter)
         {
-            Mus::LogWarning("Terminal tie for note '%s' could not be matched", (*iter)->GetUuid().c_str() );
+            Vrv::LogWarning("Terminal tie for note '%s' could not be matched", (*iter)->GetUuid().c_str() );
         }
     }
     
@@ -1046,7 +1046,7 @@ bool MusMeiInput::ReadMeiStaffDef( TiXmlElement *staffDef )
         m_staffDef->SetStaffNo( atoi ( staffDef->Attribute( "n" ) ) );
     }
     else {
-        Mus::LogWarning("No @n on staffDef");
+        Vrv::LogWarning("No @n on staffDef");
     }
     if ( staffDef->Attribute( "key.sig" ) ) {
         KeySignature keysig(
@@ -1101,7 +1101,7 @@ bool MusMeiInput::ReadMeiStaff( TiXmlElement *staff )
         m_staff->SetStaffNo( atoi ( staff->Attribute( "n" ) ) );
     }
     else {
-        Mus::LogWarning("No @n on staff");
+        Vrv::LogWarning("No @n on staff");
     }
     if ( staff->Attribute( "uly" ) ) {
         m_staff->m_yAbs = atoi ( staff->Attribute( "uly" ) );
@@ -1137,7 +1137,7 @@ bool MusMeiInput::ReadMeiLayer( TiXmlElement *layer )
         m_layer->SetLayerNo( atoi ( layer->Attribute( "n" ) ) );
     }
     else {
-        Mus::LogWarning("No @n on layer");
+        Vrv::LogWarning("No @n on layer");
     }
     
     TiXmlElement *current = NULL;
@@ -1191,7 +1191,7 @@ bool MusMeiInput::ReadMeiLayerElement( TiXmlElement *xmlElement )
     }
     // unkown            
     else {
-        Mus::LogDebug("Element %s ignored", xmlElement->Value() );
+        Vrv::LogDebug("Element %s ignored", xmlElement->Value() );
     }
     
     if ( !musElement ) {
@@ -1222,7 +1222,7 @@ LayerElement *MusMeiInput::ReadMeiBeam( TiXmlElement *beam )
     // m_beam will be used for adding elements to the beam
     m_beam = new Beam();
     
-    MusObject *previousLayer = m_currentLayer;
+    Object *previousLayer = m_currentLayer;
     m_currentLayer = m_beam;
     
     TiXmlElement *current = NULL;
@@ -1231,7 +1231,7 @@ LayerElement *MusMeiInput::ReadMeiBeam( TiXmlElement *beam )
     }
     
     if ( m_beam->GetNoteCount() == 1 ) {
-        Mus::LogWarning("Beam element with only one note");
+        Vrv::LogWarning("Beam element with only one note");
     }
     // switch back to the previous one
     m_currentLayer = previousLayer;
@@ -1346,7 +1346,7 @@ LayerElement *MusMeiInput::ReadMeiNote( TiXmlElement *note )
         }
         if ( (strcmp ( note->Attribute( "tie" ), "t" ) == 0) || (strcmp ( note->Attribute( "tie" ), "m" ) == 0) ) {
             if (!FindOpenTie( musNote ) ) {
-                Mus::LogWarning("Initial tie could not be found" );
+                Vrv::LogWarning("Initial tie could not be found" );
             }
         }
     }
@@ -1386,7 +1386,7 @@ LayerElement *MusMeiInput::ReadMeiTuplet( TiXmlElement *tuplet )
     // m_tuplet will be used for adding elements to the beam
     m_tuplet = new Tuplet();
     
-    MusObject *previousLayer = m_currentLayer;
+    Object *previousLayer = m_currentLayer;
     m_currentLayer = m_tuplet;
     
     // Read in the numerator and denominator properties
@@ -1403,7 +1403,7 @@ LayerElement *MusMeiInput::ReadMeiTuplet( TiXmlElement *tuplet )
     }
     
     if ( m_tuplet->GetNoteCount() == 1 ) {
-        Mus::LogWarning("Tuplet element with only one note");
+        Vrv::LogWarning("Tuplet element with only one note");
     }
     // switch back to the previous one
     m_currentLayer = previousLayer;
@@ -1501,7 +1501,7 @@ bool MusMeiInput::ReadMeiRdg( TiXmlElement *rdg )
     }
     
     // switch to the rdg
-    MusObject *previousLayer = m_currentLayer;
+    Object *previousLayer = m_currentLayer;
     m_currentLayer = m_layerRdg;
  
     TiXmlElement *current = NULL;
@@ -1520,7 +1520,7 @@ bool MusMeiInput::ReadMeiRdg( TiXmlElement *rdg )
 }
 
 
-void MusMeiInput::ReadSameAsAttr( TiXmlElement *element, MusObject *object )
+void MusMeiInput::ReadSameAsAttr( TiXmlElement *element, Object *object )
 {
     if ( !element->Attribute( "sameas" ) ) {
         return;
@@ -1564,7 +1564,7 @@ bool MusMeiInput::ReadUnsupported( TiXmlElement *element )
         }       
     }
     else if ( std::string( element->Value() ) == "measure" ) {
-        Mus::LogDebug( "measure" );
+        Vrv::LogDebug( "measure" );
         m_measure = new Measure( );
         SetMeiUuid( element, m_measure );
         if (ReadMeiMeasure( element )) {
@@ -1577,7 +1577,7 @@ bool MusMeiInput::ReadUnsupported( TiXmlElement *element )
     }
     /*
     else if ( std::string( element->Value() ) == "staff" ) {
-        Mus::LogDebug( "staff" );
+        Vrv::LogDebug( "staff" );
         int n = 1;
         if ( element->Attribute( "n" ) ) {
             element->Attribute( "n", &n );
@@ -1596,7 +1596,7 @@ bool MusMeiInput::ReadUnsupported( TiXmlElement *element )
     }
     */
     else if ( (std::string( element->Value() ) == "pb") && (m_system->GetMeasureCount() > 0 ) ) {
-        Mus::LogDebug( "pb" );
+        Vrv::LogDebug( "pb" );
         this->m_hasLayoutInformation = true;
         m_page = new Page( );
         m_system = new System( );
@@ -1605,13 +1605,13 @@ bool MusMeiInput::ReadUnsupported( TiXmlElement *element )
         
     }
     else if ( (std::string( element->Value() ) == "sb") && (m_page->GetSystemCount() > 0 ) ) {
-        Mus::LogDebug( "sb" );
+        Vrv::LogDebug( "sb" );
         this->m_hasLayoutInformation = true;
         m_system = new System( );
         m_page->AddSystem( m_system );
     }
     else if ( (std::string( element->Value() ) == "scoreDef") && ( !m_hasScoreDef ) ) {
-        Mus::LogDebug( "scoreDef" );
+        Vrv::LogDebug( "scoreDef" );
         m_scoreDef = &m_doc->m_scoreDef;
         SetMeiUuid( element, m_scoreDef );
         if (ReadMeiScoreDef( element )) {
@@ -1622,7 +1622,7 @@ bool MusMeiInput::ReadUnsupported( TiXmlElement *element )
         }
     }
     else {
-        Mus::LogWarning( "Element %s ignored", element->Value() );
+        Vrv::LogWarning( "Element %s ignored", element->Value() );
     }
     return true;
 }
@@ -1662,7 +1662,7 @@ bool MusMeiInput::FindOpenTie( Note *terminalNote )
     return false;
 }
 
-void MusMeiInput::SetMeiUuid( TiXmlElement *element, MusObject *object )
+void MusMeiInput::SetMeiUuid( TiXmlElement *element, Object *object )
 {
     if ( !element->Attribute( "xml:id" ) ) {
         return;
@@ -1698,7 +1698,7 @@ int MusMeiInput::StrToDur(std::string dur)
     else if (dur == "64") value = DUR_64;
     else if (dur == "128") value = DUR_128;
 	else {
-		//Mus::LogWarning("Unknown duration '%s'", dur.c_str());
+		//Vrv::LogWarning("Unknown duration '%s'", dur.c_str());
         value = DUR_4;
 	}
     return value;
@@ -1720,7 +1720,7 @@ int MusMeiInput::StrToPitch(std::string pitch)
     else if (pitch == "a") value = PITCH_A;
     else if (pitch == "b") value = PITCH_B;
     else {
-		Mus::LogWarning("Unknow pname '%s'", pitch.c_str());
+		Vrv::LogWarning("Unknow pname '%s'", pitch.c_str());
         value = PITCH_C;
     }
     return value;
@@ -1738,7 +1738,7 @@ unsigned char MusMeiInput::StrToAccid(std::string accid)
     else if ( accid == "ns" ) value = ACCID_QUARTER_SHARP;
     else if ( accid == "nf" ) value = ACCID_QUARTER_FLAT;
     else {
-        Mus::LogWarning("Unknown accid '%s'", accid.c_str() );
+        Vrv::LogWarning("Unknown accid '%s'", accid.c_str() );
         value = ACCID_NATURAL;
     }
 	return value;
@@ -1761,7 +1761,7 @@ ClefId MusMeiInput::StrToClef( std::string shape, std::string line )
     else if ( clef == "C5" ) clefId = UT5; 
     else 
     {
-        Mus::LogWarning("Unknown clef shape '%s' line '%s'", shape.c_str(), line.c_str() );
+        Vrv::LogWarning("Unknown clef shape '%s' line '%s'", shape.c_str(), line.c_str() );
     }
     return clefId;
 }
@@ -1771,7 +1771,7 @@ MensurSign MusMeiInput::StrToMensurSign(std::string sign)
     if (sign == "C") return MENSUR_SIGN_C;
     else if (sign == "O") return MENSUR_SIGN_O;
     else {
-        Mus::LogWarning("Unknown mensur sign '%s'", sign.c_str() );
+        Vrv::LogWarning("Unknown mensur sign '%s'", sign.c_str() );
 	}
     // default
 	return MENSUR_SIGN_C;
@@ -1783,7 +1783,7 @@ DocType MusMeiInput::StrToDocType(std::string type)
     else if (type == "rendering") return Rendering;
     else if (type == "transcription") return Transcription;
     else {
-        Mus::LogWarning("Unknown layout type '%s'", type.c_str() );
+        Vrv::LogWarning("Unknown layout type '%s'", type.c_str() );
 	}
     // default
 	return Raw;
@@ -1795,7 +1795,7 @@ unsigned char MusMeiInput::StrToKeySigType(std::string accid)
     else if ( accid.at(1) == 'f' ) return ACCID_FLAT;
     else if ( accid.at(1) == 's' ) return ACCID_SHARP;
     else {
-        Mus::LogWarning("Unknown keysig '%s'", accid.c_str() );
+        Vrv::LogWarning("Unknown keysig '%s'", accid.c_str() );
         return ACCID_NATURAL;
     }
 }
@@ -1818,7 +1818,7 @@ BarlineType MusMeiInput::StrToBarlineType(std::string type)
     else if (type == "rptstart") return BARLINE_RPTSTART;
     else if (type == "rptboth") return BARLINE_RPTBOTH;
     else {
-        Mus::LogWarning("Unknown barline type '%s'", type.c_str() );
+        Vrv::LogWarning("Unknown barline type '%s'", type.c_str() );
 	}
     // default
 	return BARLINE_SINGLE;
@@ -1830,7 +1830,7 @@ StaffGrpSymbol MusMeiInput::StrToStaffGrpSymbol(std::string symbol)
     else if (symbol == "brace") return STAFFGRP_BRACE;
     else if (symbol == "bracket") return STAFFGRP_BRACKET;
     else {
-        Mus::LogWarning("Unknown staffGrp @symbol '%s'", symbol.c_str() );
+        Vrv::LogWarning("Unknown staffGrp @symbol '%s'", symbol.c_str() );
 	}
     // default
 	return STAFFGRP_LINE;

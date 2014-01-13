@@ -24,12 +24,12 @@ class MusStaffAlignment;
 //----------------------------------------------------------------------------
 
 /**
- * This class represents a staff in a laid-out score (MusDoc).
+ * This class represents a staff in a laid-out score (Doc).
  * A Staff is contained in a System.
  * It contains Measure objects.
  * For unmeasured music, on single Measure is added for simplifying internal processing
 */
-class Staff: public MusDocObject
+class Staff: public DocObject
 {
     
 public:
@@ -49,7 +49,7 @@ public:
     /**
      * Return the index position of the staff in its measure parent
      */
-    int GetStaffIdx() const { return MusObject::GetIdx(); };
+    int GetStaffIdx() const { return Object::GetIdx(); };
     
     /**
      * @name Set and get  the staff number which is 1-based.

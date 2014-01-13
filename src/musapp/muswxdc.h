@@ -92,9 +92,9 @@ public:
    
     // Method for starting and ending a graphic - for example for grouping shapes in <g></g> in SVG
     
-    virtual void StartGraphic( MusDocObject *object, std::string gClass, std::string gId ) {};
+    virtual void StartGraphic( DocObject *object, std::string gClass, std::string gId ) {};
     
-    virtual void EndGraphic( MusDocObject *object, View *rc  );
+    virtual void EndGraphic( DocObject *object, View *rc  );
     
     virtual void StartPage( ) { m_dc->EndPage(); };
     

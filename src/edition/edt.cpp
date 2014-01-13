@@ -210,7 +210,7 @@ void EdtEnv::ParseCmd( wxCmdLineParser *parser )
             wxLogDebug( outfile.c_str() );
             
             /*
-            MusDoc *mfile = new MusDoc();
+            Doc *mfile = new Doc();
             //MusMeiInput meiinput( mfile, file );
             if ( !meiinput.ImportFile() )
                 return;

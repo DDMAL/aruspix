@@ -28,7 +28,7 @@
 //----------------------------------------------------------------------------
 
 Layer::Layer( int n ):
-	MusDocObject("layer-"), MusObjectListInterface(), ScoreOrStaffDefAttrInterface()
+	DocObject("layer-"), ObjectListInterface(), ScoreOrStaffDefAttrInterface()
 {
     assert( n > 0 );
     m_n = n;
@@ -141,7 +141,7 @@ void Layer::AddToDrawingList( LayerElement *element )
     m_drawingList.push_back( element );
 }
 
-ListOfMusObjects *Layer::GetDrawingList( )
+ListOfObjects *Layer::GetDrawingList( )
 {
     return &m_drawingList;
 }
@@ -199,7 +199,7 @@ void Layer::Insert( LayerElement *layerElement, LayerElement *before )
 void Layer::SetDrawingValues( ScoreDef *currentScoreDef, MusStaffDef *currentStaffDef )
 {
     if (!currentStaffDef || !currentScoreDef) {
-        Mus::LogDebug("scoreDef and/or staffDef not found");
+        Vrv::LogDebug("scoreDef and/or staffDef not found");
         return;
     }
     

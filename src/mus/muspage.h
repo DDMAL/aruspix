@@ -26,11 +26,11 @@ enum {
 //----------------------------------------------------------------------------
 
 /**
- * This class represents a page in a laid-out score (MusDoc).
- * A Page is contained in a MusDoc.
+ * This class represents a page in a laid-out score (Doc).
+ * A Page is contained in a Doc.
  * It contains System objects.
 */
-class Page: public MusDocObject
+class Page: public DocObject
 {
 public:
     // constructors and destructors
@@ -56,7 +56,7 @@ public:
     /**
      * Return the index position of the page in its document parent
      */
-    int GetPageIdx() const { return MusObject::GetIdx(); };
+    int GetPageIdx() const { return Object::GetIdx(); };
     
     /**
      * Return the position of the staff on the page, from top to bottom
@@ -115,7 +115,7 @@ public:
      * Hold the top scoreDef of the page.
      * The value must be initialized by going through the whole score for finding
      * all the clef or key changes that might occur within the text.
-     * The value is initialized with by the MusObject::SetPageScoreDef functor.
+     * The value is initialized with by the Object::SetPageScoreDef functor.
      */
     ScoreDef m_drawingScoreDef;
 

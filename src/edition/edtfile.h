@@ -19,7 +19,7 @@
 #include "edt_wdr.h"
 
 class EdtEnv;
-class MusDoc;
+class Doc;
 
 
 //----------------------------------------------------------------------------
@@ -49,7 +49,7 @@ private:
     
 public:
     EdtEnv *m_envPtr;
-    MusDoc *m_musDocPtr;
+    Doc *m_musDocPtr;
 
 protected:
        

@@ -545,7 +545,7 @@ void View::DrawNote ( DeviceContext *dc, LayerElement *element, Layer *layer, St
 	//temp debug code
 //	m_currentColour = wxCYAN;
 //	rect_plein2(dc, element->m_xDrawing - 3, ynn - 3, element->m_xDrawing + 3, ynn + 3);
-//	Mus::LogDebug("xrel: %d, ynn: %d", element->m_xDrawing, ynn);
+//	Vrv::LogDebug("xrel: %d, ynn: %d", element->m_xDrawing, ynn);
 //	m_currentColour = wxBLACK;
 	//temp debug code
     
@@ -627,7 +627,7 @@ void View::DrawRest ( DeviceContext *dc, LayerElement *element, Layer *layer, St
 
 	if (rest->m_dur == VALSilSpec && rest->m_multimeasure_dur > 1) // LP: not sure what is actually does...
     {
-        Mus::LogError("Tried to set multi meausure in rest\n");
+        Vrv::LogError("Tried to set multi meausure in rest\n");
     }
 	else
 	{	
@@ -1323,12 +1323,12 @@ void View::DrawMensurFigures( DeviceContext *dc, int x, int y, int num, int numB
 	if (numBase > 9 || num > 9)	// avancer
 		x += m_doc->m_rendStep1*2;
 
-	s = Mus::StringFormat("%u",num);
+	s = Vrv::StringFormat("%u",num);
 	putstring ( dc, x, ynum, s, 1, staff->staffSize);	// '1' = centrer
 
 	if (numBase)
 	{
-        s = Mus::StringFormat("%u",numBase);
+        s = Vrv::StringFormat("%u",numBase);
 		putstring ( dc, x, yden, s, 1, staff->staffSize);	// '1' = centrer
 	}
 	return;

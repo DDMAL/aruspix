@@ -23,11 +23,11 @@ class Measure;
 //----------------------------------------------------------------------------
 
 /**
- * This class represents a system in a laid-out score (MusDoc).
+ * This class represents a system in a laid-out score (Doc).
  * A System is contained in a Page.
  * It contains Staff objects.
 */
-class System: public MusDocObject
+class System: public DocObject
 {
 public:
     // constructors and destructors
@@ -60,7 +60,7 @@ public:
     /**
      * Return the index position of the system in its page parent
      */
-    int GetSystemIdx() const { return MusObject::GetIdx(); };
+    int GetSystemIdx() const { return Object::GetIdx(); };
     
     // functors
     virtual int Save( ArrayPtrVoid params );

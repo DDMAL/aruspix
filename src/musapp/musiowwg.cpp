@@ -183,7 +183,7 @@ void MusWWGElement::WWGInitElement()
 // MusFileOutputStream
 //----------------------------------------------------------------------------
 
-MusWWGOutput::MusWWGOutput( MusDoc *doc, std::string filename ) :
+MusWWGOutput::MusWWGOutput( Doc *doc, std::string filename ) :
 	wxFileOutputStream( filename.c_str() )
 {
     m_doc = doc;
@@ -657,7 +657,7 @@ bool MusWWGOutput::WriteFooter( const MusWWGData *footer )
 // MusWWGInput
 //----------------------------------------------------------------------------
 
-MusWWGInput::MusWWGInput( MusDoc *doc, std::string filename ) :
+MusWWGInput::MusWWGInput( Doc *doc, std::string filename ) :
 	wxFileInputStream( filename.c_str() )
 {
     //
@@ -681,7 +681,7 @@ bool MusWWGInput::ImportFile( )
 		return false;
 	}
     
-    // reset the MusDoc and create the logical tree
+    // reset the Doc and create the logical tree
     m_doc->Reset( Transcription);	
     
     // read WWG header

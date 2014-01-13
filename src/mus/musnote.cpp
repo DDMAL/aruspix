@@ -43,7 +43,7 @@ Note::~Note()
     ResetTieAttrInitial();
 }
 
-bool Note::operator==( MusObject& other )
+bool Note::operator==( Object& other )
 {
     Note *otherNote = dynamic_cast<Note*>( &other );
     if ( !otherNote ) {
@@ -115,7 +115,7 @@ void Note::SetValue( int value, int flag )
 void Note::SetTieAttrInitial()
 {
     if ( m_tieAttrInitial ) {
-        Mus::LogWarning("Initial tie attribute already set for note '%s", this->GetUuid().c_str() );
+        Vrv::LogWarning("Initial tie attribute already set for note '%s", this->GetUuid().c_str() );
         return;
     }
     m_tieAttrInitial = new Tie();
@@ -125,11 +125,11 @@ void Note::SetTieAttrInitial()
 void Note::SetTieAttrTerminal( Note *previousNote )
 {
     if ( m_tieAttrTerminal ) {
-        Mus::LogWarning("Terminal tie attribute already set for note '%s", this->GetUuid().c_str() );
+        Vrv::LogWarning("Terminal tie attribute already set for note '%s", this->GetUuid().c_str() );
         return;
     }
     if ( !previousNote || !previousNote->GetTieAttrInitial() ) {
-        Mus::LogWarning("No previous note or previous note without intial or median attribute for note '%s", this->GetUuid().c_str() );
+        Vrv::LogWarning("No previous note or previous note without intial or median attribute for note '%s", this->GetUuid().c_str() );
         return;
     }
     m_tieAttrTerminal = previousNote->GetTieAttrInitial();

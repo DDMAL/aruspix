@@ -41,7 +41,7 @@ enum
 class MusPoint;
 class MusRect;
 class FontMetricsInfo;
-class MusDocObject;
+class DocObject;
 class View;
 
 // ---------------------------------------------------------------------------
@@ -128,9 +128,9 @@ public:
     
     // Method for starting and ending a graphic - for example for grouping shapes in <g></g> in SVG
     
-    virtual void StartGraphic( MusDocObject *object, std::string gClass, std::string gId ) = 0;
+    virtual void StartGraphic( DocObject *object, std::string gClass, std::string gId ) = 0;
     
-    virtual void EndGraphic( MusDocObject *object, View *rc  ) = 0;
+    virtual void EndGraphic( DocObject *object, View *rc  ) = 0;
     
     virtual void StartPage( ) = 0;
     

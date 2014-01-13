@@ -14,7 +14,7 @@
 
 #include "musio.h"
 
-class MusDoc;
+class Doc;
 class Layer;
 class Measure;
 class Staff;
@@ -35,7 +35,7 @@ class MusDarmsInput: public MusFileInputStream
 {
 public:
     // constructors and destructors
-    MusDarmsInput( MusDoc *doc, std::string filename );
+    MusDarmsInput( Doc *doc, std::string filename );
     virtual ~MusDarmsInput();
     
     virtual bool ImportFile( );

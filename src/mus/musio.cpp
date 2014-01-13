@@ -16,14 +16,14 @@
 // MusFileOutputStream
 //----------------------------------------------------------------------------
 
-MusFileOutputStream::MusFileOutputStream( MusDoc *doc, std::string filename ) :
+MusFileOutputStream::MusFileOutputStream( Doc *doc, std::string filename ) :
     std::ofstream( filename.c_str() )
 {
 	assert(doc); // Document cannot be NULL"
 	m_doc = doc;
 }
 
-MusFileOutputStream::MusFileOutputStream( MusDoc *doc ) :
+MusFileOutputStream::MusFileOutputStream( Doc *doc ) :
     std::ofstream(  )
 {
 	assert(doc); // Document cannot be NULL"
@@ -43,7 +43,7 @@ MusFileOutputStream::~MusFileOutputStream()
 // MusFileInputStream
 //----------------------------------------------------------------------------
 
-MusFileInputStream::MusFileInputStream( MusDoc *doc, std::string filename  ) :
+MusFileInputStream::MusFileInputStream( Doc *doc, std::string filename  ) :
     std::ifstream( filename.c_str() )
 {
 	assert(doc); // Document cannot be NULL"
@@ -51,7 +51,7 @@ MusFileInputStream::MusFileInputStream( MusDoc *doc, std::string filename  ) :
     m_hasLayoutInformation = false;
 }
 
-MusFileInputStream::MusFileInputStream( MusDoc *doc ) :
+MusFileInputStream::MusFileInputStream( Doc *doc ) :
     std::ifstream(  )
 {
 	assert(doc); // Document cannot be NULL"

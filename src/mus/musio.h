@@ -12,7 +12,7 @@
 #include <iostream>
 #include <string>
 
-class MusDoc;
+class Doc;
 class Layer;
 class LayerApp;
 class LayerElement;
@@ -36,10 +36,10 @@ class MusFileOutputStream: public std::ofstream
 {
 public:
     // constructors and destructors
-    MusFileOutputStream( MusDoc *doc, std::string filename );
-	MusFileOutputStream( MusDoc *doc );
+    MusFileOutputStream( Doc *doc, std::string filename );
+	MusFileOutputStream( Doc *doc );
     MusFileOutputStream() {};
-	//MusFileOutputStream( MusDoc *file, wxFile *wxfile );
+	//MusFileOutputStream( Doc *file, wxFile *wxfile );
     virtual ~MusFileOutputStream();
     
     virtual bool ExportFile( ) { return true; }
@@ -48,10 +48,10 @@ public:
      * The following methods actually write the elements.
      * They must be overriden in the child classes.
      * The children of the elements do not have to be writen from theses methods.
-     * This actually happen in the Save method of the MusObject classes
+     * This actually happen in the Save method of the Object classes
      */
     ///@{
-    virtual bool WriteDoc( MusDoc *doc ) { return true; };
+    virtual bool WriteDoc( Doc *doc ) { return true; };
     virtual bool WritePage( Page *page ) { return true; };
     virtual bool WriteSystem( System *system ) { return true; };
     virtual bool WriteStaffGrp( MusStaffGrp *system ) { return true; };
@@ -68,7 +68,7 @@ public:
 public:
     
 protected:
-    MusDoc *m_doc;
+    Doc *m_doc;
     
 private:
     
@@ -86,8 +86,8 @@ class MusFileInputStream: public std::ifstream
 {
 public:
     // constructors and destructors
-    MusFileInputStream( MusDoc *doc, std::string filename );
-    MusFileInputStream( MusDoc *doc );
+    MusFileInputStream( Doc *doc, std::string filename );
+    MusFileInputStream( Doc *doc );
     MusFileInputStream() {};
     virtual ~MusFileInputStream();
     
@@ -100,7 +100,7 @@ public:
 public:
     
 protected:
-    MusDoc *m_doc;
+    Doc *m_doc;
     
     /**
      * Becomes true if layout information is found during the import.

@@ -12,7 +12,7 @@
 #include <string>
 
 //----------------------------------------------------------------------------
-// Mus
+// Vrv
 //----------------------------------------------------------------------------
 
 /**
@@ -20,7 +20,7 @@
  * Most of them differ if they are used in Aruspix or in the command line tool
  */
 
-class Mus
+class Vrv
 {
 public:
     // Some statis utiliry functions

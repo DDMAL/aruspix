@@ -125,7 +125,7 @@ class MusWWGOutput: public wxFileOutputStream, public MusWWGElement
 {
 public:
     // constructors and destructors
-    MusWWGOutput( MusDoc *doc, std::string filename );
+    MusWWGOutput( Doc *doc, std::string filename );
     virtual ~MusWWGOutput();
     
     bool ExportFile( );
@@ -157,7 +157,7 @@ private:
     Staff *m_current_staff; // the current staff we are writing
 
 protected:
-    MusDoc *m_doc;
+    Doc *m_doc;
     MusWWGData m_wwgData;
 };
 
@@ -173,7 +173,7 @@ class MusWWGInput: public wxFileInputStream, public MusWWGElement
 {
 public:
     // constructors and destructors
-    MusWWGInput( MusDoc *doc, std::string filename);
+    MusWWGInput( Doc *doc, std::string filename);
     virtual ~MusWWGInput();
     
     bool ImportFile( );
@@ -209,7 +209,7 @@ private:
     bool m_isLastNoteInBeam;
     
 protected:
-    MusDoc *m_doc;
+    Doc *m_doc;
     MusWWGData m_wwgData;
 };
 

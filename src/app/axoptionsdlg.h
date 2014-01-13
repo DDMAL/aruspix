@@ -158,7 +158,7 @@ public:
     virtual ~AxOptMusWindow();
     
 protected:
-    MusDoc *m_docPtr;
+    Doc *m_docPtr;
     
 private:
     void OnMouse( wxMouseEvent &event );

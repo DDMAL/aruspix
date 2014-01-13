@@ -17,7 +17,7 @@
 #include "app/axfile.h"
 
 class ImPage;
-class MusDoc;
+class Doc;
 class RecEnv;
 class RecTypModel;
 class RecMusModel;
@@ -60,7 +60,7 @@ public:
 	bool GenerateMFC( wxArrayPtrVoid params, AxProgressDlg *dlg );
     //int DoCorrelation( ImPage *imPage );
 	// getters
-	MusDoc *GetMusFile() { return m_musDocPtr; }
+	Doc *GetMusFile() { return m_musDocPtr; }
 	ImPage *GetImPage() { return m_imPagePtr; }
 	//RecTypModel *GetTypModel() { return m_typModelPtr; }
 	
@@ -84,7 +84,7 @@ public:
 public:
     RecEnv *m_envPtr;
 	ImPage *m_imPagePtr;
-	MusDoc *m_musDocPtr;
+	Doc *m_musDocPtr;
 	// filename
 	// models
 	//RecTypModel *m_typModelPtr; // not used yet

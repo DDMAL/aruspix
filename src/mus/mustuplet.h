@@ -17,7 +17,7 @@
 // Beam
 //----------------------------------------------------------------------------
 
-class Tuplet: public LayerElement, public MusObjectListInterface
+class Tuplet: public LayerElement, public ObjectListInterface
 {
 public:
     // constructors and destructors

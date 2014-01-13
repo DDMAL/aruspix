@@ -24,7 +24,7 @@ Barline::~Barline()
 {
 }
 
-bool Barline::operator==( MusObject& other )
+bool Barline::operator==( Object& other )
 {
     Barline *otherBarline = dynamic_cast<Barline*>( &other );
     if ( !otherBarline ) {

@@ -85,7 +85,7 @@ char data_value[MAX_DATA_LEN]; //ditto as above
 // MusPaeInput
 //----------------------------------------------------------------------------
 
-MusPaeInput::MusPaeInput( MusDoc *doc, std::string filename ) :
+MusPaeInput::MusPaeInput( Doc *doc, std::string filename ) :
 // This is pretty bad. We open a bad fileoinputstream as we don't use it
 MusFileInputStream( doc )
 {
@@ -152,7 +152,7 @@ void MusPaeInput::convertPlainAndEasyToKern(std::istream &infile, std::ostream &
     while (!infile.eof()) {
         infile.getline(data_line, 10000);
         if (infile.eof()) {
-            Mus::LogDebug("Truncated file or ending tag missing");
+            Vrv::LogDebug("Truncated file or ending tag missing");
             //exit(1);
         }
         getAtRecordKeyValue(data_key, data_value, data_line);
@@ -544,7 +544,7 @@ int MusPaeInput::getTupletFermata(const char* incipit, NoteObject* note, int ind
                 // we should not find the parens before the ';' !
                 // FIXME find a graceful way to exit signaling this to user
                 if (incipit[t] == ')') {
-                    Mus::LogDebug("You have a ) before the ; in a tuplet!");
+                    Vrv::LogDebug("You have a ) before the ; in a tuplet!");
                     return i - index;
                 }
                 
@@ -557,7 +557,7 @@ int MusPaeInput::getTupletFermata(const char* incipit, NoteObject* note, int ind
                 
                 // If we have extraneous chars, exit here
                 if (!isdigit(incipit[t + t2])) {
-                    Mus::LogDebug("You have a non-number in a tuplet number");
+                    Vrv::LogDebug("You have a non-number in a tuplet number");
                     return i - index;
                 }
                 
@@ -814,7 +814,7 @@ int MusPaeInput::getClefInfo( const char *incipit, Clef *mclef, int index ) {
         }
     } else {
         // what the...
-        Mus::LogDebug("Clef is ??");
+        Vrv::LogDebug("Clef is ??");
     }
     
     //measure->clef = mclef;

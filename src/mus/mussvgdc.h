@@ -100,9 +100,9 @@ public:
     virtual void DrawBackgroundImage( int x = 0, int y = 0 );
     
     // 
-    virtual void StartGraphic( MusDocObject *object, std::string gClass, std::string gId );
+    virtual void StartGraphic( DocObject *object, std::string gClass, std::string gId );
     
-    virtual void EndGraphic( MusDocObject *object, View *rc  );
+    virtual void EndGraphic( DocObject *object, View *rc  );
     
     virtual void StartPage();
     

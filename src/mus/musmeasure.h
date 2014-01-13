@@ -21,12 +21,12 @@ class Staff;
 //----------------------------------------------------------------------------
 
 /**
- * This class represents a measure in a page-based score (MusDoc).
+ * This class represents a measure in a page-based score (Doc).
  * A Measure is contained in a Staff.
  * It contains Layer objects.
  * For internally simplication of processing, unmeasure music is contained in one single measure object
  */
-class Measure: public MusDocObject
+class Measure: public DocObject
 {
     
 public:
@@ -50,7 +50,7 @@ public:
     /**
      * Return the index position of the measure in its system parent
      */
-    int GetMeasureNo() const { return MusObject::GetIdx(); };
+    int GetMeasureNo() const { return Object::GetIdx(); };
     
     /**
      * @name Set and get the left and right barline types

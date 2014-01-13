@@ -52,14 +52,14 @@ BBoxDeviceContext::~BBoxDeviceContext ( )
 {
 }
 
-void BBoxDeviceContext::StartGraphic( MusDocObject *object, std::string gClass, std::string gId )
+void BBoxDeviceContext::StartGraphic( DocObject *object, std::string gClass, std::string gId )
 {
     // add object
     object->ResetBB();
     m_objects.push_back( object );
 }
       
-void BBoxDeviceContext::EndGraphic(MusDocObject *object, View *rc ) 
+void BBoxDeviceContext::EndGraphic(DocObject *object, View *rc ) 
 {
     // detach the object
     assert( m_objects.back() == object );
@@ -228,7 +228,7 @@ void BBoxDeviceContext::DrawEllipticArc(int x, int y, int width, int height, dou
     int fSweep ;
     if ( fabs(theta2 - theta1) > M_PI) fSweep = 1; else fSweep = 0 ;
 
-    //WriteLine( Mus::StringFormat("<path d=\"M%d %d A%d %d 0.0 %d %d  %d %d \" />",
+    //WriteLine( Vrv::StringFormat("<path d=\"M%d %d A%d %d 0.0 %d %d  %d %d \" />",
     //    int(xs), int(ys), int(rx), int(ry),
     //    fArc, fSweep, int(xe), int(ye) ) );
     
@@ -385,7 +385,7 @@ void BBoxDeviceContext::DrawSpline(int n, MusPoint points[])
 void BBoxDeviceContext::UpdateBB(int x1, int y1, int x2, int y2) 
 {
     /*
-    MusDocObject *first = &m_objects[m_objects.Count() - 1];
+    DocObject *first = &m_objects[m_objects.Count() - 1];
     
     first->UpdateOwnBB(x1, y1, x2, y2);
     
@@ -398,7 +398,7 @@ void BBoxDeviceContext::UpdateBB(int x1, int y1, int x2, int y2)
         
         // All the next ones, stretch using contentBB
         for (int i = m_objects.Count() - 3; i >= 0; i--) {
-            MusDocObject *precedent = &m_objects[i + 1];
+            DocObject *precedent = &m_objects[i + 1];
             m_objects[i].UpdateContentBB(precedent->m_contentBB_x1, precedent->m_contentBB_y1, precedent->m_contentBB_x2, precedent->m_contentBB_y2);
         }
     }
@@ -411,11 +411,11 @@ void BBoxDeviceContext::UpdateBB(int x1, int y1, int x2, int y2)
     
     
     // we need to store logical coordinates in the objects, we need to convert them back (this is why we need a View object)
-    ((MusDocObject*)m_objects.back())->UpdateSelfBB( m_rc->ToLogicalX(x1), m_rc->ToLogicalY(y1), m_rc->ToLogicalX(x2), m_rc->ToLogicalY(y2) );
+    ((DocObject*)m_objects.back())->UpdateSelfBB( m_rc->ToLogicalX(x1), m_rc->ToLogicalY(y1), m_rc->ToLogicalX(x2), m_rc->ToLogicalY(y2) );
     
     int i;
     for (i = 0; i < (int)m_objects.size(); i++) {
-        ((MusDocObject*)m_objects[i])->UpdateContentBB( m_rc->ToLogicalX(x1), m_rc->ToLogicalY(y1), m_rc->ToLogicalX(x2), m_rc->ToLogicalY(y2) );
+        ((DocObject*)m_objects[i])->UpdateContentBB( m_rc->ToLogicalX(x1), m_rc->ToLogicalY(y1), m_rc->ToLogicalX(x2), m_rc->ToLogicalY(y2) );
     }
 }
 

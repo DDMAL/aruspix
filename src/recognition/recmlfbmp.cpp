@@ -248,7 +248,7 @@ wxString RecMLFSymbolBmp::GetLabel( )
 // RecMLFBmp
 //----------------------------------------------------------------------------
 
-RecMLFBmp::RecMLFBmp( MusDoc *file, wxString filename, wxString model_symbol_name ) :
+RecMLFBmp::RecMLFBmp( Doc *file, wxString filename, wxString model_symbol_name ) :
     MusMLFOutput( file, filename, NULL, model_symbol_name )
 {
 	m_impage = NULL;

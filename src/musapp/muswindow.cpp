@@ -118,7 +118,7 @@ MusWindow::~MusWindow()
 // undo
 void MusWindow::Load( AxUndoFile *undoPtr )
 {
-	wxASSERT_MSG( m_doc, "MusDoc should not be NULL in UNDO");
+	wxASSERT_MSG( m_doc, "Doc should not be NULL in UNDO");
 
 	if ( !m_doc )
 		return;
@@ -202,7 +202,7 @@ void MusWindow::Load( AxUndoFile *undoPtr )
 
 void MusWindow::Store( AxUndoFile *undoPtr )
 {
-	wxASSERT_MSG( m_doc, "MusDoc should not be NULL in UNDO");
+	wxASSERT_MSG( m_doc, "Doc should not be NULL in UNDO");
 
 	if ( !m_doc )
 		return;

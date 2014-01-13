@@ -38,7 +38,7 @@ enum MusAlignmentType {
  * This class aligns the content of a system
  * It contains a vector of MusStaffAlignment
  */
-class MusSystemAligner: public MusObject
+class MusSystemAligner: public Object
 {
 public:
     // constructors and destructors
@@ -84,7 +84,7 @@ private:
 /**
  * This class stores an alignement position staves will point to
  */
-class MusStaffAlignment: public MusObject
+class MusStaffAlignment: public Object
 {
 public:
     // constructors and destructors
@@ -129,7 +129,7 @@ private:
 /** 
  * This class stores an alignement position elements will point to
  */
-class MusAlignment: public MusObject
+class MusAlignment: public Object
 {
 public:
     // constructors and destructors
@@ -187,14 +187,14 @@ public:
 private:
     /**
      * Stores the position relative to the measure.
-     * This is instanciated the MusObject::SetAligmentXPos functor.
+     * This is instanciated the Object::SetAligmentXPos functor.
      * It takes into account a non-linear according to the time interval with
      * the previous MusAlignement
      */
     int m_xRel;
     /**
      * Stores temporally the maximum amount we need to shift the element pointing to it for 
-     * avoiding collisions. This is set in MusObject::SetBoundingBoxXShift and then
+     * avoiding collisions. This is set in Object::SetBoundingBoxXShift and then
      * integrated for all aligment in MusAligment::IntegrateBoundingBoxXShift.
      */
     int m_xShift;
@@ -206,7 +206,7 @@ private:
     int m_maxWidth;
     /**
      * Stores the time at which the alignment occur.
-     * It is set by  MusObject::Align.
+     * It is set by  Object::Align.
      */
     double m_time;
     /**
@@ -227,7 +227,7 @@ private:
  * This class aligns the content of a measure
  * It contains a vector of MusAlignment
  */
-class MusMeasureAligner: public MusObject
+class MusMeasureAligner: public Object
 {
 public:
     // constructors and destructors

@@ -53,7 +53,7 @@
 #define CUSTOS 11 // ax2 double check in 1.6
 
 
-MusBinInput_1_X::MusBinInput_1_X( MusDoc *doc, wxString filename, int flag ) :
+MusBinInput_1_X::MusBinInput_1_X( Doc *doc, wxString filename, int flag ) :
 	wxFileInputStream( filename )
 {
     m_doc = doc;
@@ -75,7 +75,7 @@ bool MusBinInput_1_X::ImportFile( )
 		return false;
 	}
     
-    // reset the MusDoc and create the logical tree
+    // reset the Doc and create the logical tree
     m_doc->Reset( Transcription );	
 
     unsigned short nbpage;
@@ -168,7 +168,7 @@ bool MusBinInput_1_X::ReadFileHeader( unsigned short *nbpage )
 	Read( &m_doc->m_env.m_stemCorrection, 1 ); // hampesCorr
     m_doc->m_env.m_stemCorrection = 1;	// force it 
 
-	if ( Mus::GetFileVersion(m_vmaj, m_vmin, m_vrev) < Mus::GetFileVersion(1, 6, 1) )
+	if ( Vrv::GetFileVersion(m_vmaj, m_vmin, m_vrev) < Vrv::GetFileVersion(1, 6, 1) )
 		return true; // following values where added in 1.6.1
     // 1.6.1
     Read( &int32, 4 );

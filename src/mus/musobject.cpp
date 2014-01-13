@@ -36,26 +36,26 @@
 #include "mustuplet.h"
 
 //----------------------------------------------------------------------------
-// MusObject
+// Object
 //----------------------------------------------------------------------------
 
-MusObject::MusObject()
+Object::Object()
 {
     Init("m-");
 }
 
-MusObject::MusObject(std::string classid)
+Object::Object(std::string classid)
 {
     Init(classid);
 }
 
-MusObject *MusObject::Clone( )
+Object *Object::Clone( )
 {
     // This should new happen because the method should be overwritten
     assert( false );
 }
 
-MusObject::MusObject( const MusObject& object )
+Object::Object( const Object& object )
 {
     ClearChildren();
     m_parent = NULL;
@@ -66,15 +66,15 @@ MusObject::MusObject( const MusObject& object )
     int i;
     for (i = 0; i < (int)object.m_children.size(); i++)
     {
-        MusObject *current = object.m_children[i];
-        MusObject* copy = current->Clone();
+        Object *current = object.m_children[i];
+        Object* copy = current->Clone();
         copy->Modify();
         copy->SetParent( this );
         m_children.push_back( copy );
     }
 }
 
-MusObject& MusObject::operator=( const MusObject& object )
+Object& Object::operator=( const Object& object )
 {
 	if ( this != &object ) // not self assignement
 	{
@@ -87,8 +87,8 @@ MusObject& MusObject::operator=( const MusObject& object )
         int i;
         for (i = 0; i < (int)object.m_children.size(); i++)
         {
-            MusObject *current = object.m_children[i];
-            MusObject* copy = current->Clone();
+            Object *current = object.m_children[i];
+            Object* copy = current->Clone();
             copy->Modify();
             copy->SetParent( this );
             m_children.push_back( copy );
@@ -97,12 +97,12 @@ MusObject& MusObject::operator=( const MusObject& object )
 	return *this;
 }
 
-MusObject::~MusObject()
+Object::~Object()
 {
     ClearChildren();
 }
 
-void MusObject::Init(std::string classid)
+void Object::Init(std::string classid)
 {
     m_parent = NULL;
     m_isModified = true;
@@ -110,14 +110,14 @@ void MusObject::Init(std::string classid)
     this->GenerateUuid();
 }
 
-void MusObject::SetUuid( std::string uuid )
+void Object::SetUuid( std::string uuid )
 { 
     m_uuid = uuid;
 };
 
-void MusObject::ClearChildren()
+void Object::ClearChildren()
 {
-    ArrayOfMusObjects::iterator iter;
+    ArrayOfObjects::iterator iter;
     for (iter = m_children.begin(); iter != m_children.end(); ++iter)
     {
         delete *iter;
@@ -125,36 +125,36 @@ void MusObject::ClearChildren()
     m_children.clear();
 }
 
-int MusObject::GetIdx() const
+int Object::GetIdx() const
 {
     assert( m_parent );
     
     return m_parent->GetChildIndex( this );
 }
 
-void MusObject::InsertChild( MusObject *element, int idx )
+void Object::InsertChild( Object *element, int idx )
 {
     if ( idx >= (int)m_children.size() ) {
         m_children.push_back( element );
     }
-    ArrayOfMusObjects::iterator iter = m_children.begin();
+    ArrayOfObjects::iterator iter = m_children.begin();
     m_children.insert( iter+(idx), element );
 }
 
-MusObject *MusObject::DetachChild( int idx )
+Object *Object::DetachChild( int idx )
 {
     if ( idx >= (int)m_children.size() ) {
         return NULL;
     }
-    MusObject *child = m_children[idx];
+    Object *child = m_children[idx];
     child->m_parent = NULL;
-    ArrayOfMusObjects::iterator iter = m_children.begin();
+    ArrayOfObjects::iterator iter = m_children.begin();
     m_children.erase( iter+(idx) );
     return child;
 }
 
 
-MusObject* MusObject::GetChild( int idx )
+Object* Object::GetChild( int idx )
 {
     if ( (idx < 0) || (idx >= (int)m_children.size()) ) {
         return NULL;
@@ -162,17 +162,17 @@ MusObject* MusObject::GetChild( int idx )
     return m_children[idx];
 }
 
-void MusObject::RemoveChildAt( int idx )
+void Object::RemoveChildAt( int idx )
 {
     if ( idx >= (int)m_children.size() ) {
         return;
     }
     delete m_children[idx];
-    ArrayOfMusObjects::iterator iter = m_children.begin();
+    ArrayOfObjects::iterator iter = m_children.begin();
     m_children.erase( iter+(idx) );
 }
 
-void MusObject::GenerateUuid() {
+void Object::GenerateUuid() {
     int nr = std::rand();
     char str[17];
     // I do not want to use a stream to do this!
@@ -181,30 +181,30 @@ void MusObject::GenerateUuid() {
     m_uuid = m_classid + std::string(str);
 }
 
-void MusObject::ResetUuid()
+void Object::ResetUuid()
 {
     GenerateUuid();
 }
 
-void MusObject::SetParent( MusObject *parent )
+void Object::SetParent( Object *parent )
 {
     assert( !m_parent );
     m_parent = parent;
 }
 
 
-bool MusObject::operator==( MusObject& other )
+bool Object::operator==( Object& other )
 {
     // This should never happen.
     // The comparison is performed in the CmpFile::Align method.
     // We expect to compare only Note, Rest, etc object for which we have an overwritten method
-    Mus::LogError( "Missing comparison operator for '%s'", this->MusClassName().c_str() );
+    Vrv::LogError( "Missing comparison operator for '%s'", this->MusClassName().c_str() );
     return false;
 }
 
-int MusObject::GetChildIndex( const MusObject *child )
+int Object::GetChildIndex( const Object *child )
 {
-    ArrayOfMusObjects::iterator iter;
+    ArrayOfObjects::iterator iter;
     int i;
     for (iter = m_children.begin(), i = 0; iter != m_children.end(); ++iter, i++)
     {
@@ -216,7 +216,7 @@ int MusObject::GetChildIndex( const MusObject *child )
     return -1;
 }
 
-void MusObject::Modify( bool modified )
+void Object::Modify( bool modified )
 {    
     // if we have a parent and a new modification, propagate it
     if ( m_parent && !m_isModified && modified ) {
@@ -225,24 +225,24 @@ void MusObject::Modify( bool modified )
     m_isModified = modified;
 }
 
-void MusObject::FillList( ListOfMusObjects *list )
+void Object::FillList( ListOfObjects *list )
 {
-    MusFunctor addToList( &MusObject::AddLayerElementToList );
+    MusFunctor addToList( &Object::AddLayerElementToList );
     ArrayPtrVoid params;
     params.push_back ( &list );
     this->Process( &addToList, params );
 
     /* // For debuging
-    ListOfMusObjects::iterator iter;
+    ListOfObjects::iterator iter;
     for (iter = list->begin(); iter != list->end(); ++iter)
     {
-        MusObject *current = *iter;
-        Mus::LogDebug("%s", current->MusClassName().c_str() );
+        Object *current = *iter;
+        Vrv::LogDebug("%s", current->MusClassName().c_str() );
     }
     */
 }
 
-void MusObject::AddSameAs( std::string id, std::string filename )
+void Object::AddSameAs( std::string id, std::string filename )
 {
     std::string sameAs = filename;
     if ( !filename.empty() ) {
@@ -256,7 +256,7 @@ void MusObject::AddSameAs( std::string id, std::string filename )
     m_sameAs += sameAs;
 }
 
-MusObject *MusObject::GetFirstParent( const std::type_info *elementType, int maxSteps )
+Object *Object::GetFirstParent( const std::type_info *elementType, int maxSteps )
 {
     if ( (maxSteps == 0) || !m_parent ) {
         return NULL;
@@ -271,9 +271,9 @@ MusObject *MusObject::GetFirstParent( const std::type_info *elementType, int max
 }
 
 
-MusObject *MusObject::GetFirstChild( const std::type_info *elementType )
+Object *Object::GetFirstChild( const std::type_info *elementType )
 {
-    ArrayOfMusObjects::iterator iter;
+    ArrayOfObjects::iterator iter;
     int i;
     for (iter = m_children.begin(), i = 0; iter != m_children.end(); ++iter, i++)
     {
@@ -285,13 +285,13 @@ MusObject *MusObject::GetFirstChild( const std::type_info *elementType )
     return NULL;
 }
 
-MusObject *MusObject::GetNextSibling( const std::type_info *elementType )
+Object *Object::GetNextSibling( const std::type_info *elementType )
 {
     if (!m_parent) {
         return NULL;
     }
     
-    ArrayOfMusObjects::iterator iter;
+    ArrayOfObjects::iterator iter;
     bool foundCurrent = false;
     for (iter = this->m_parent->m_children.begin(); iter != this->m_parent->m_children.end(); ++iter)
     {
@@ -315,13 +315,13 @@ MusObject *MusObject::GetNextSibling( const std::type_info *elementType )
     return NULL;
 }
 
-MusObject *MusObject::GetPreviousSibling( const std::type_info *elementType )
+Object *Object::GetPreviousSibling( const std::type_info *elementType )
 {
     if (!m_parent) {
         return NULL;
     }
     
-    ArrayOfMusObjects::reverse_iterator iter;
+    ArrayOfObjects::reverse_iterator iter;
     bool foundCurrent = false;
     for (iter = this->m_parent->m_children.rbegin(); iter != this->m_parent->m_children.rend(); ++iter)
     {
@@ -346,7 +346,7 @@ MusObject *MusObject::GetPreviousSibling( const std::type_info *elementType )
 }
 
 
-bool MusObject::GetSameAs( std::string *id, std::string *filename, int idx )
+bool Object::GetSameAs( std::string *id, std::string *filename, int idx )
 {
     int i = 0;
     
@@ -371,7 +371,7 @@ bool MusObject::GetSameAs( std::string *id, std::string *filename, int idx )
     return false;
 }
 
-void MusObject::Process(MusFunctor *functor, ArrayPtrVoid params, MusFunctor *endFunctor )
+void Object::Process(MusFunctor *functor, ArrayPtrVoid params, MusFunctor *endFunctor )
 {
     if (functor->m_returnCode == FUNCTOR_STOP) {
         return;
@@ -385,7 +385,7 @@ void MusObject::Process(MusFunctor *functor, ArrayPtrVoid params, MusFunctor *en
         return;
     }
 
-    ArrayOfMusObjects::iterator iter;
+    ArrayOfObjects::iterator iter;
     for (iter = this->m_children.begin(); iter != m_children.end(); ++iter)
     {
         (*iter)->Process( functor, params, endFunctor );
@@ -397,42 +397,42 @@ void MusObject::Process(MusFunctor *functor, ArrayPtrVoid params, MusFunctor *en
 }
 
 //----------------------------------------------------------------------------
-// MusDocObject
+// DocObject
 //----------------------------------------------------------------------------
 
 
 // Note: since it is one line of code
 // I am not making a new function for the two
 // constructors.
-MusDocObject::MusDocObject():
-    MusObject("md-")
+DocObject::DocObject():
+    Object("md-")
 {
 	ResetBB();
 }
 
-MusDocObject::MusDocObject(std::string classid) :
-    MusObject(classid)
+DocObject::DocObject(std::string classid) :
+    Object(classid)
 {
 	//m_doc = NULL;
     ResetBB();
 }
 
-MusDocObject::~MusDocObject()
+DocObject::~DocObject()
 {
 }
 
-void MusDocObject::Refresh() 
+void DocObject::Refresh() 
 {
-    // if we have a parent MusDocObject, propagate it
-    if ( dynamic_cast<MusDocObject*>(m_parent) ) {
-        ((MusDocObject*)m_parent)->Refresh();
+    // if we have a parent DocObject, propagate it
+    if ( dynamic_cast<DocObject*>(m_parent) ) {
+        ((DocObject*)m_parent)->Refresh();
     }
 }
 
 
-void MusDocObject::UpdateContentBB( int x1, int y1, int x2, int y2) 
+void DocObject::UpdateContentBB( int x1, int y1, int x2, int y2) 
 {
-    //Mus::LogDebug("CB Was: %i %i %i %i", m_contentBB_x1, m_contentBB_y1, m_contentBB_x2 ,m_contentBB_y2);
+    //Vrv::LogDebug("CB Was: %i %i %i %i", m_contentBB_x1, m_contentBB_y1, m_contentBB_x2 ,m_contentBB_y2);
     
     int min_x = std::min( x1, x2 );
     int max_x = std::max( x1, x2 );
@@ -445,12 +445,12 @@ void MusDocObject::UpdateContentBB( int x1, int y1, int x2, int y2)
     if (m_contentBB_y2 < max_y) m_contentBB_y2 = max_y;
     
     m_updatedBB = true;
-    //Mus::LogDebug("CB Is:  %i %i %i %i", m_contentBB_x1,m_contentBB_y1, m_contentBB_x2, m_contentBB_y2);
+    //Vrv::LogDebug("CB Is:  %i %i %i %i", m_contentBB_x1,m_contentBB_y1, m_contentBB_x2, m_contentBB_y2);
 }
 
-void MusDocObject::UpdateSelfBB( int x1, int y1, int x2, int y2 ) 
+void DocObject::UpdateSelfBB( int x1, int y1, int x2, int y2 ) 
 {
-    //Mus::LogDebug("SB Was: %i %i %i %i", m_selfBB_x1,m_selfBB_y1, m_selfBB_x2 ,m_selfBB_y2);
+    //Vrv::LogDebug("SB Was: %i %i %i %i", m_selfBB_x1,m_selfBB_y1, m_selfBB_x2 ,m_selfBB_y2);
     
     int min_x = std::min( x1, x2 );
     int max_x = std::max( x1, x2 );
@@ -464,11 +464,11 @@ void MusDocObject::UpdateSelfBB( int x1, int y1, int x2, int y2 )
     
     m_updatedBB = true;
     
-    //Mus::LogDebug("SB Is:  %i %i %i %i", m_selfBB_x1,m_selfBB_y1, m_selfBB_x2 ,m_selfBB_y2);
+    //Vrv::LogDebug("SB Is:  %i %i %i %i", m_selfBB_x1,m_selfBB_y1, m_selfBB_x2 ,m_selfBB_y2);
     
 }
 
-void MusDocObject::ResetBB() 
+void DocObject::ResetBB() 
 {
     m_contentBB_x1 = 0xFFFF;
     m_contentBB_y1 = 0xFFFF;
@@ -482,29 +482,29 @@ void MusDocObject::ResetBB()
     m_updatedBB = false;
 }
 
-bool MusDocObject::HasContentBB() 
+bool DocObject::HasContentBB() 
 {
     return ( (m_contentBB_x1 != 0xFFFF) && (m_contentBB_y1 != 0xFFFF) && (m_contentBB_x2 != -0xFFFF) && (m_contentBB_y2 != -0xFFFF) );
 }
 
-bool MusDocObject::HasSelfBB() 
+bool DocObject::HasSelfBB() 
 {
     return ( (m_selfBB_x1 != 0xFFFF) && (m_selfBB_y1 != 0xFFFF) && (m_selfBB_x2 != -0xFFFF) && (m_selfBB_y2 != -0xFFFF) );
 }
 
 
 //----------------------------------------------------------------------------
-// MusObjectListInterface
+// ObjectListInterface
 //----------------------------------------------------------------------------
 
 
-MusObjectListInterface::MusObjectListInterface( const MusObjectListInterface& interface )
+ObjectListInterface::ObjectListInterface( const ObjectListInterface& interface )
 {
     // actually nothing to do, we just don't want the list to be copied
     m_list.clear();
 }
 
-MusObjectListInterface& MusObjectListInterface::operator=( const MusObjectListInterface& interface )
+ObjectListInterface& ObjectListInterface::operator=( const ObjectListInterface& interface )
 {
     // actually nothing to do, we just don't want the list to be copied
     if ( this != &interface ) {
@@ -513,7 +513,7 @@ MusObjectListInterface& MusObjectListInterface::operator=( const MusObjectListIn
 	return *this;
 }
 
-void MusObjectListInterface::ResetList( MusObject *node )
+void ObjectListInterface::ResetList( Object *node )
 {
     // nothing to do, the list if up to date
     if ( !node->IsModified() ) {
@@ -526,16 +526,16 @@ void MusObjectListInterface::ResetList( MusObject *node )
     node->Modify( false );
 }
 
-ListOfMusObjects *MusObjectListInterface::GetList( MusObject *node )
+ListOfObjects *ObjectListInterface::GetList( Object *node )
 {   
     ResetList( node );
     return &m_list;
 }
 
 
-int MusObjectListInterface::GetListIndex( const MusObject *listElement )
+int ObjectListInterface::GetListIndex( const Object *listElement )
 {
-    ListOfMusObjects::iterator iter;
+    ListOfObjects::iterator iter;
     int i;
     for (iter = m_list.begin(), i = 0; iter != m_list.end(); ++iter, i++)
     {
@@ -547,9 +547,9 @@ int MusObjectListInterface::GetListIndex( const MusObject *listElement )
     return -1;
 }
 
-MusObject *MusObjectListInterface::GetListPrevious( const MusObject *listElement )
+Object *ObjectListInterface::GetListPrevious( const Object *listElement )
 {
-    ListOfMusObjects::iterator iter;
+    ListOfObjects::iterator iter;
     int i;
     for (iter = m_list.begin(), i = 0; iter != m_list.end(); ++iter, i++)
     {
@@ -566,9 +566,9 @@ MusObject *MusObjectListInterface::GetListPrevious( const MusObject *listElement
     return NULL;
 }
 
-MusObject *MusObjectListInterface::GetListNext( const MusObject *listElement )
+Object *ObjectListInterface::GetListNext( const Object *listElement )
 {
-    ListOfMusObjects::reverse_iterator iter;
+    ListOfObjects::reverse_iterator iter;
     int i;
     for (iter = m_list.rbegin(), i = 0; iter != m_list.rend(); ++iter, i++)
     {
@@ -596,39 +596,39 @@ MusFunctor::MusFunctor( )
     obj_fpt = NULL; 
 }
 
-MusFunctor::MusFunctor( int(MusObject::*_obj_fpt)( ArrayPtrVoid ))
+MusFunctor::MusFunctor( int(Object::*_obj_fpt)( ArrayPtrVoid ))
 { 
     m_returnCode = FUNCTOR_CONTINUE;
     m_reverse = false;
     obj_fpt = _obj_fpt; 
 }
 
-void MusFunctor::Call( MusObject *ptr, ArrayPtrVoid params )
+void MusFunctor::Call( Object *ptr, ArrayPtrVoid params )
 {
     // we should have return codes (not just bool) for avoiding to go further down the tree in some cases
     m_returnCode = (*ptr.*obj_fpt)( params );
 }
 
 //----------------------------------------------------------------------------
-// MusObject functor methods
+// Object functor methods
 //----------------------------------------------------------------------------
 
-int MusObject::AddLayerElementToList( ArrayPtrVoid params )
+int Object::AddLayerElementToList( ArrayPtrVoid params )
 {
-    // param 0: the ListOfMusObjects
-    ListOfMusObjects **list = (ListOfMusObjects**)params[0];
+    // param 0: the ListOfObjects
+    ListOfObjects **list = (ListOfObjects**)params[0];
     //if ( dynamic_cast<LayerElement*>(this ) ) {
         (*list)->push_back( this );
     //}
     return FUNCTOR_CONTINUE;
 }
 
-int MusObject::FindByUuid( ArrayPtrVoid params )
+int Object::FindByUuid( ArrayPtrVoid params )
 {
     // param 0: the uuid we are looking for
-    // param 1: the pointer to pointer to the MusObject
+    // param 1: the pointer to pointer to the Object
     std::string *uuid = (std::string*)params[0];  
-    MusObject **element = (MusObject**)params[1];  
+    Object **element = (Object**)params[1];  
     
     if ( (*element) ) {
         // this should not happen, but just in case
@@ -637,15 +637,15 @@ int MusObject::FindByUuid( ArrayPtrVoid params )
     
     if ( *uuid == this->GetUuid()) {
         (*element) = this;
-        //Mus::LogDebug("Found it!");
+        //Vrv::LogDebug("Found it!");
         return FUNCTOR_STOP;
     }
-    //Mus::LogDebug("Still looking for uuid...");
+    //Vrv::LogDebug("Still looking for uuid...");
     return FUNCTOR_CONTINUE;
 }
 
 
-int MusObject::SetPageScoreDef( ArrayPtrVoid params )
+int Object::SetPageScoreDef( ArrayPtrVoid params )
 {
 
     // param 0: the current scoreDef
@@ -701,7 +701,7 @@ int MusObject::SetPageScoreDef( ArrayPtrVoid params )
 }
 
 
-int MusObject::SetBoundingBoxXShift( ArrayPtrVoid params )
+int Object::SetBoundingBoxXShift( ArrayPtrVoid params )
 {
     // param 0: the minimu position (i.e., the width of the previous element)
     // param 1: the maximum width in the current measure
@@ -730,7 +730,7 @@ int MusObject::SetBoundingBoxXShift( ArrayPtrVoid params )
         (*measure_width) = std::max( (*measure_width), (*min_pos) );
         // reset it as the minimum position to the step (if doc found)
         (*min_pos) = 0;
-        MusDoc *doc = dynamic_cast<MusDoc*>( current_layer->GetFirstParent( &typeid(MusDoc) ) );
+        Doc *doc = dynamic_cast<Doc*>( current_layer->GetFirstParent( &typeid(Doc) ) );
         if (doc) (*min_pos) = doc->m_rendStep1;
         // set scoreDef attr
         if (current_layer->GetClefAttr()) {
@@ -787,7 +787,7 @@ int MusObject::SetBoundingBoxXShift( ArrayPtrVoid params )
         current->GetAlignment()->SetXShift( overlap );
     }
     
-    //Mus::LogDebug("%s min_pos %d; negative offset %d;  x_rel %d; overlap %d", current->MusClassName().c_str(), (*min_pos), negative_offset, current->GetAlignment()->GetXRel(), overlap );
+    //Vrv::LogDebug("%s min_pos %d; negative offset %d;  x_rel %d; overlap %d", current->MusClassName().c_str(), (*min_pos), negative_offset, current->GetAlignment()->GetXRel(), overlap );
     
     // the next minimal position if given by the right side of the bounding box + the spacing of the element
     (*min_pos) = current->m_contentBB_x2 + current->GetHorizontalSpacing();
@@ -796,7 +796,7 @@ int MusObject::SetBoundingBoxXShift( ArrayPtrVoid params )
     return FUNCTOR_CONTINUE;
 }
 
-int MusObject::SetBoundingBoxXShiftEnd( ArrayPtrVoid params )
+int Object::SetBoundingBoxXShiftEnd( ArrayPtrVoid params )
 {
     // param 0: the minimu position (i.e., the width of the previous element)
     // param 1: the maximum width in the current measure
@@ -827,7 +827,7 @@ int MusObject::SetBoundingBoxXShiftEnd( ArrayPtrVoid params )
     return FUNCTOR_CONTINUE;
 }
 
-int MusObject::SetBoundingBoxYShift( ArrayPtrVoid params )
+int Object::SetBoundingBoxYShift( ArrayPtrVoid params )
 {
     // param 0: the height of the previous staff
     int *min_pos = (int*)params[0];
@@ -861,7 +861,7 @@ int MusObject::SetBoundingBoxYShift( ArrayPtrVoid params )
         current->GetAlignment()->SetYShift( overlap );
     }
     
-    //Mus::LogDebug("%s min_pos %d; negative offset %d;  x_rel %d; overlap %d", current->MusClassName().c_str(), (*min_pos), negative_offset, current->GetAlignment()->GetXRel(), overlap );
+    //Vrv::LogDebug("%s min_pos %d; negative offset %d;  x_rel %d; overlap %d", current->MusClassName().c_str(), (*min_pos), negative_offset, current->GetAlignment()->GetXRel(), overlap );
     
     // the next minimal position if given by the right side of the bounding box + the spacing of the element
     (*min_pos) = current->m_contentBB_y1;

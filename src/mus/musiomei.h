@@ -43,7 +43,7 @@ class MusMeiOutput: public MusFileOutputStream
 public:
     /** @name Constructors and destructor */
     ///@{
-    MusMeiOutput( MusDoc *doc, std::string filename );
+    MusMeiOutput( Doc *doc, std::string filename );
     virtual ~MusMeiOutput();
     ///@}
     
@@ -56,7 +56,7 @@ public:
      * Overriding methods for writing the MEI file.
      */
     ///@{
-    virtual bool WriteDoc( MusDoc *doc );
+    virtual bool WriteDoc( Doc *doc );
     virtual bool WritePage( Page *page );
     virtual bool WriteSystem( System *system );
     virtual bool WriteScoreDef( ScoreDef *scoreDef );
@@ -132,11 +132,11 @@ private:
      * Write a sameAs attribute
      * The method has to be called by classed that support it (e.g., LayerElement)
      */
-    void WriteSameAsAttr( TiXmlElement *meiElement, MusObject *element );
+    void WriteSameAsAttr( TiXmlElement *meiElement, Object *element );
 	
     /** @name Methods for converting members into MEI attributes. */
     ///@{
-    std::string UuidToMeiStr( MusObject *element );
+    std::string UuidToMeiStr( Object *element );
     std::string BoolToStr(bool value );
 	std::string DurToStr(int dur);
 	std::string OctToStr(int oct);
@@ -195,7 +195,7 @@ class MusMeiInput: public MusFileInputStream
 {
 public:
     // constructors and destructors
-    MusMeiInput( MusDoc *doc, std::string filename );
+    MusMeiInput( Doc *doc, std::string filename );
     virtual ~MusMeiInput();
     
     virtual bool ImportFile( );
@@ -233,7 +233,7 @@ private:
      * Read a sameAs attribute
      * The method has to be called by classed that support it (e.g., LayerElement)
      */
-    void ReadSameAsAttr( TiXmlElement *element, MusObject *object );
+    void ReadSameAsAttr( TiXmlElement *element, Object *object );
     
     /**
      * Add the LayerElement to the appropriate parent (e.g., Layer, LayerRdg)
@@ -254,7 +254,7 @@ private:
     bool FindOpenTie( Note *terminalNote );
     
 	//
-    void SetMeiUuid( TiXmlElement *element, MusObject *object );
+    void SetMeiUuid( TiXmlElement *element, Object *object );
     bool StrToBool(std::string value);
 	int StrToDur(std::string dur);
 	int StrToOct(std::string oct);
@@ -283,7 +283,7 @@ private:
     LayerRdg *m_layerRdg;
     Beam *m_beam;
     Tuplet *m_tuplet;
-    MusObject *m_currentLayer;
+    Object *m_currentLayer;
     LayerApp *m_layerApp;
     /**
      * This is used when reading a standard MEI file to specify if a scoreDef has already been read or not.

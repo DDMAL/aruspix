@@ -28,7 +28,7 @@ MusSymbol::~MusSymbol()
 {
 }
 
-bool MusSymbol::operator==( MusObject& other )
+bool MusSymbol::operator==( Object& other )
 {
     MusSymbol *otherSymbol = dynamic_cast<MusSymbol*>( &other );
     if ( !otherSymbol ) {

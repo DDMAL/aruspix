@@ -23,7 +23,7 @@ class MusAlignment;
  * This class is a base class for the Layer (<layer>) content.
  * It is not an abstract class but should not be instanciate directly.
  */
-class LayerElement: public MusDocObject
+class LayerElement: public DocObject
 {
 public:
     // constructors and destructors
@@ -31,7 +31,7 @@ public:
     LayerElement(std::string classid);
     virtual ~LayerElement();
     
-    LayerElement& operator=( const LayerElement& element ); // copy assignement - this need to be changed to the MusObject::Clone way;
+    LayerElement& operator=( const LayerElement& element ); // copy assignement - this need to be changed to the Object::Clone way;
     
     /**
      * Return a copy of the LayerElement (child class).

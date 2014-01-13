@@ -209,7 +209,7 @@ class MusPaeInput: public MusFileInputStream
 {
 public:
     // constructors and destructors
-    MusPaeInput( MusDoc *doc, std::string filename );
+    MusPaeInput( Doc *doc, std::string filename );
     virtual ~MusPaeInput();
     
     virtual bool ImportFile( );
