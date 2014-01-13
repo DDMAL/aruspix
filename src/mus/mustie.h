@@ -14,19 +14,19 @@
 #include "musobject.h"
 
 //----------------------------------------------------------------------------
-// MusTie
+// Tie
 // A TIE class is a simple slur - it takes in account only two notes, the first and second:
 // NOTE tie NOTE tie etc
 //----------------------------------------------------------------------------
 
-class MusTie: public MusLayerElement
+class Tie: public MusLayerElement
 {
 public:
     // constructors and destructors
-    MusTie();
-    virtual ~MusTie();
+    Tie();
+    virtual ~Tie();
     
-    virtual std::string MusClassName( ) { return "MusTie"; };
+    virtual std::string MusClassName( ) { return "Tie"; };
     
     /**
      * @name Set and get the first and second note of the tie

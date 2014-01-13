@@ -461,7 +461,7 @@ void MusWindow::SetEditorMode( MusEditorMode mode )
 			}
 			else if ( m_currentElement->IsRest() )
 			{
-				m_rest = *(MusRest*)m_currentElement;
+				m_rest = *(Rest*)m_currentElement;
 				m_newElement = &m_rest;
 			}
 			else if ( m_currentElement->IsSymbol() )

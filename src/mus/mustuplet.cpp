@@ -9,10 +9,10 @@
 #include "mustuplet.h"
 
 //----------------------------------------------------------------------------
-// MusTuplet
+// Tuplet
 //----------------------------------------------------------------------------
 
-MusTuplet::MusTuplet():
+Tuplet::Tuplet():
 MusLayerElement("tuplet-"), MusObjectListInterface()
 {
     m_num = 1;
@@ -20,11 +20,11 @@ MusLayerElement("tuplet-"), MusObjectListInterface()
 }
 
 
-MusTuplet::~MusTuplet()
+Tuplet::~Tuplet()
 {
 }
 
-void MusTuplet::AddElement(MusLayerElement *element) {
+void Tuplet::AddElement(MusLayerElement *element) {
     
     //if (!element->HasDurationInterface()) {
     //    return;
@@ -35,7 +35,7 @@ void MusTuplet::AddElement(MusLayerElement *element) {
     Modify();
 }
 
-void MusTuplet::FilterList()
+void Tuplet::FilterList()
 {
     // We want to keep only notes and rest
     // Eventually, we also need to filter out grace notes properly (e.g., with sub-beams)

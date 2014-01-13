@@ -481,7 +481,7 @@ bool MusWWGOutput::WriteLayer( const MusLayer *layer, int staffNo )
             TYPE = NOTE;
             WriteNote( );
         }
-        else if (dynamic_cast<MusRest*>(element)) {
+        else if (dynamic_cast<Rest*>(element)) {
             TYPE = NOTE;
             WriteNote( );
         }
@@ -1078,7 +1078,7 @@ bool MusWWGInput::ReadNote( MusLayer *layer )
         layer_element = custos;
     }
     else { // rest
-        MusRest *rest = new MusRest();
+        Rest *rest = new Rest();
         rest->m_dur = val;
         rest->m_oct = oct;
         rest->m_pname = code;

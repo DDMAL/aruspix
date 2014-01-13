@@ -87,22 +87,22 @@ void MusRC::DrawElement( MusDC *dc, MusLayerElement *element, MusLayer *layer, M
     else if (dynamic_cast<MusMensur*>(element)) {
         DrawMensur(dc, element, layer, staff);
     }
-    else if (dynamic_cast<MusMultiRest*>(element)) {
+    else if (dynamic_cast<MultiRest*>(element)) {
         DrawMultiRest(dc, element, layer, staff);
     }
     else if (dynamic_cast<MusNote*>(element)) {
         DrawDurationElement(dc, element, layer, staff);
     }
-    else if (dynamic_cast<MusRest*>(element)) {
+    else if (dynamic_cast<Rest*>(element)) {
         DrawDurationElement(dc, element, layer, staff);
     }
     else if (dynamic_cast<MusSymbol*>(element)) {
         DrawSymbol(dc, element, layer, staff);
     }
-    else if (dynamic_cast<MusTie*>(element)) {
+    else if (dynamic_cast<Tie*>(element)) {
         DrawTie(dc, element, layer, staff, measure);
     } 
-    else if (dynamic_cast<MusTuplet*>(element)) {
+    else if (dynamic_cast<Tuplet*>(element)) {
         DrawTupletElement(dc, element, layer, measure, staff);
     }
     else if (dynamic_cast<MusLayerApp*>(element)) {
@@ -142,8 +142,8 @@ void MusRC::DrawDurationElement( MusDC *dc, MusLayerElement *element, MusLayer *
         }
         dc->EndGraphic(element, this );
 	}
-    else if (dynamic_cast<MusRest*>(element)) {
-        MusRest *rest = dynamic_cast<MusRest*>(element);
+    else if (dynamic_cast<Rest*>(element)) {
+        Rest *rest = dynamic_cast<Rest*>(element);
         int oct = rest->m_oct - 4;
 
         dc->StartGraphic( element, "rest", element->GetUuid() );
@@ -208,7 +208,7 @@ void MusRC::DrawTupletElement(MusDC *dc, MusLayerElement *element, MusLayer *lay
     assert(layer); // Pointer to layer cannot be NULL"
     assert(staff); // Pointer to staff cannot be NULL"
     
-    MusTuplet *tuplet = dynamic_cast<MusTuplet*>(element);
+    Tuplet *tuplet = dynamic_cast<Tuplet*>(element);
     
     dc->StartGraphic( element, "tuplet", element->GetUuid() );
     
@@ -586,9 +586,9 @@ void MusRC::DrawRest ( MusDC *dc, MusLayerElement *element, MusLayer *layer, Mus
 {	
     assert(layer); // Pointer to layer cannot be NULL
     assert(staff); // Pointer to staff cannot be NULL
-    assert(dynamic_cast<MusRest*>(element)); // Element must be a MusRest
+    assert(dynamic_cast<Rest*>(element)); // Element must be a Rest
         
-    MusRest *rest = dynamic_cast<MusRest*>(element);
+    Rest *rest = dynamic_cast<Rest*>(element);
 
 	int formval = rest->m_dur;
 	int a = element->m_xDrawing + rest->m_hOffset;
@@ -707,9 +707,9 @@ void MusRC::DrawMultiRest(MusDC *dc, MusLayerElement *element, MusLayer *layer, 
 
     assert(layer); // Pointer to layer cannot be NULL"
     assert(staff); // Pointer to staff cannot be NULL"
-    assert(dynamic_cast<MusMultiRest*>(element)); // Element must be a MusSymbol"
+    assert(dynamic_cast<MultiRest*>(element)); // Element must be a MusSymbol"
     
-    MusMultiRest *multirest = dynamic_cast<MusMultiRest*>(element);
+    MultiRest *multirest = dynamic_cast<MultiRest*>(element);
     dc->StartGraphic( element, "multirest", element->GetUuid() );
     
     int a = element->m_xDrawing + multirest->m_hOffset;
@@ -1477,11 +1477,11 @@ void MusRC::DrawTie( MusDC *dc, MusLayerElement *element, MusLayer *layer, MusSt
 {
     assert(layer); // Pointer to layer cannot be NULL"
     assert(staff); // Pointer to staff cannot be NULL"
-    assert(dynamic_cast<MusTie*>(element)); // The element must be a tie
+    assert(dynamic_cast<Tie*>(element)); // The element must be a tie
     
     bool up = false;
     
-    MusTie *tie = dynamic_cast<MusTie*>(element);
+    Tie *tie = dynamic_cast<Tie*>(element);
     MusLayerElement *note1 = tie->GetFirstNote();
     MusLayerElement *note2 = tie->GetSecondNote();
     MusSystem *currentSystem = dynamic_cast<MusSystem*>( staff->GetFirstParent( &typeid(MusSystem) ) );
@@ -1620,7 +1620,7 @@ void MusRC::DrawFermata(MusDC *dc, MusLayerElement *element, MusStaff *staff) {
             
             DrawLeipzigFont ( dc, element->m_xDrawing, y, LEIPZIG_FERMATA_DOWN, staff, false );
         }
-    } else if (dynamic_cast<MusRest*>(element)) {
+    } else if (dynamic_cast<Rest*>(element)) {
         // this is a rest
         // rests for the moment are always in the staff
         // so just place the fermata above the staff + 20 px

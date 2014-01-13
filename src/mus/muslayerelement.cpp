@@ -93,7 +93,7 @@ MusLayerElement *MusLayerElement::GetChildCopy( bool newUuid )
     else if (this->IsNote() )
         element = new MusNote( *(MusNote*)this );
     else if (this->IsRest() )
-        element = new MusRest( *(MusRest*)this );
+        element = new Rest( *(Rest*)this );
     else if (this->IsSymbol() )
         element = new MusSymbol( *(MusSymbol*)this );
     else {
@@ -136,7 +136,7 @@ void MusLayerElement::SetPitchOrPosition(int pname, int oct)
         pitch->SetPitch( pname, oct );
     }
     else if ( this->HasPositionInterface() ) {
-        MusPositionInterface *position = dynamic_cast<MusPositionInterface*>(this);
+        PositionInterface *position = dynamic_cast<PositionInterface*>(this);
         position->SetPosition( pname, oct );
     }
 }
@@ -148,7 +148,7 @@ bool MusLayerElement::GetPitchOrPosition(int *pname, int *oct)
         return pitch->GetPitch( pname, oct );
     }
     else if ( this->HasPositionInterface() ) {
-        MusPositionInterface *position = dynamic_cast<MusPositionInterface*>(this);
+        PositionInterface *position = dynamic_cast<PositionInterface*>(this);
         return position->GetPosition( pname, oct );
     }
     return false;
@@ -218,7 +218,7 @@ bool MusLayerElement::IsKeySig()
 
 bool MusLayerElement::IsMultiRest() 
 {  
-    return (dynamic_cast<MusMultiRest*>(this));
+    return (dynamic_cast<MultiRest*>(this));
 }
 
 bool MusLayerElement::IsMensur() 
@@ -248,12 +248,12 @@ bool MusLayerElement::HasPitchInterface()
 
 bool MusLayerElement::HasPositionInterface() 
 {  
-    return (dynamic_cast<MusPositionInterface*>(this));
+    return (dynamic_cast<PositionInterface*>(this));
 }
 
 bool MusLayerElement::IsRest() 
 {  
-    return (dynamic_cast<MusRest*>(this));
+    return (dynamic_cast<Rest*>(this));
 }
 
 
@@ -288,7 +288,7 @@ void MusLayerElement::AdjustPname( int *pname, int *oct )
 double MusLayerElement::GetAlignementDuration()
 {
     if ( HasDurationInterface() ) {
-        MusTuplet *tuplet = dynamic_cast<MusTuplet*>( this->GetFirstParent( &typeid(MusTuplet), MAX_TUPLET_DEPTH ) );
+        Tuplet *tuplet = dynamic_cast<Tuplet*>( this->GetFirstParent( &typeid(Tuplet), MAX_TUPLET_DEPTH ) );
         int num = 1;
         int numbase = 1;
         if ( tuplet ) {

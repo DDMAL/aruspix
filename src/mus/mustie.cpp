@@ -13,10 +13,10 @@
 #include <assert.h>
 
 //----------------------------------------------------------------------------
-// MusTie
+// Tie
 //----------------------------------------------------------------------------
 
-MusTie::MusTie():
+Tie::Tie():
 MusLayerElement("tie-")
 {
     m_first = NULL;
@@ -24,7 +24,7 @@ MusLayerElement("tie-")
 }
 
 
-MusTie::~MusTie()
+Tie::~Tie()
 {
     if (m_first && m_first->GetTieAttrTerminal() == this) {
         m_first->ResetTieAttrInitial();
@@ -34,13 +34,13 @@ MusTie::~MusTie()
     }
 }
 
-void MusTie::SetFirstNote( MusNote *note )
+void Tie::SetFirstNote( MusNote *note )
 {
     assert( !m_first );
     m_first = note;
 }
 
-void MusTie::SetSecondNote( MusNote *note )
+void Tie::SetSecondNote( MusNote *note )
 {
     assert( !m_second );
     m_second = note;

@@ -136,7 +136,7 @@ public:
 	MusClef m_clef;
     MusMensur m_mensur;
     MusNote m_note;
-    MusRest m_rest;
+    Rest m_rest;
 	MusSymbol m_symbol;
 
 

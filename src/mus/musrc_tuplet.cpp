@@ -56,7 +56,7 @@ std::string MusRC::IntToObliqueFigures(unsigned int number) {
  * Analyze a tuplet object and figure out if all the notes are in the same beam
  * or not
  */
-bool MusRC::OneBeamInTuplet(MusTuplet* tuplet) {
+bool MusRC::OneBeamInTuplet(Tuplet* tuplet) {
     
     MusBeam *currentBeam, *firstBeam = NULL;
     ArrayOfMusObjects elems;
@@ -123,7 +123,7 @@ bool MusRC::OneBeamInTuplet(MusTuplet* tuplet) {
  
  */
 
-bool MusRC::GetTupletCoordinates(MusTuplet* tuplet, MusLayer *layer, MusPoint* start, MusPoint* end, MusPoint *center) {
+bool MusRC::GetTupletCoordinates(Tuplet* tuplet, MusLayer *layer, MusPoint* start, MusPoint* end, MusPoint *center) {
     MusPoint first, last;
     int x, y;
     bool direction = true; //true = up, false = down
@@ -286,7 +286,7 @@ bool MusRC::GetTupletCoordinates(MusTuplet* tuplet, MusLayer *layer, MusPoint* s
 }
 
 
-void MusRC::DrawTuplet( MusDC *dc, MusTuplet *tuplet, MusLayer *layer, MusStaff *staff)
+void MusRC::DrawTuplet( MusDC *dc, Tuplet *tuplet, MusLayer *layer, MusStaff *staff)
 {
     assert(layer); // Pointer to layer cannot be NULL"
     assert(staff); // Pointer to staff cannot be NULL"

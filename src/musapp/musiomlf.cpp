@@ -564,7 +564,7 @@ MusLayer *MusMLFOutput::GetUt1( MusLayer *layer )
 			MusLayerElement *element = (MusLayerElement*)layer->m_children[i];
 			{
 				GetUt1( layer, element, &code, &oct );
-                MusPositionInterface *positionElement = dynamic_cast<MusPositionInterface*>(element);
+                PositionInterface *positionElement = dynamic_cast<PositionInterface*>(element);
 				positionElement->m_pname = code;
 				positionElement->m_oct = oct;
 			}
@@ -593,8 +593,8 @@ void MusMLFOutput::GetUt1( MusLayer *layer, MusLayerElement *pelement, int *code
 		*code = pitchInterface->m_pname + offs;
         *oct = pitchInterface->m_oct;
     }
-	else if (dynamic_cast<MusPositionInterface*>(pelement)) {
-        MusPositionInterface *positionInterface = dynamic_cast<MusPositionInterface*>(pelement);
+	else if (dynamic_cast<PositionInterface*>(pelement)) {
+        PositionInterface *positionInterface = dynamic_cast<PositionInterface*>(pelement);
 		*code = positionInterface->m_pname + offs;
         *oct = positionInterface->m_oct;
     }
@@ -740,7 +740,7 @@ bool MusMLFOutput::WriteNote( MusLayerElement *element )
 		//silence
 		if (element->IsRest())
 		{
-            MusRest *rest = dynamic_cast<MusRest*>(element);
+            Rest *rest = dynamic_cast<Rest*>(element);
 			if ( oct % 2 )
 				mlfsb->SetValue( TYPE_REST, "", element->m_xAbs, rest->m_dur, _sil0[code],oct + _oct0[code]);	
 			else
@@ -1025,7 +1025,7 @@ MusLayerElement *MusMLFInput::ConvertNote( wxString line )
         return note;
     }
     else { // rests
-        MusRest *rest = new MusRest();
+        Rest *rest = new Rest();
         rest->m_dur = val;
         GetPitchWWG( str1.GetChar(0), &code );
         rest->m_pname = code;
@@ -1245,7 +1245,7 @@ void MusMLFInput::GetNotUt1( MusLayer *layer )
 			MusLayerElement *element = (MusLayerElement*)layer->m_children[i];
 			{
 				GetNotUt1( layer, element, &code, &oct );
-                MusPositionInterface *positionElement = dynamic_cast<MusPositionInterface*>(element);
+                PositionInterface *positionElement = dynamic_cast<PositionInterface*>(element);
 				positionElement->m_pname = code;
 				positionElement->m_oct = oct;
 			}
@@ -1267,8 +1267,8 @@ void MusMLFInput::GetNotUt1( MusLayer *layer, MusLayerElement *pelement, int *co
 		*code = pitchInterface->m_pname;
         *oct = pitchInterface->m_oct;
     }
-	else if (dynamic_cast<MusPositionInterface*>(pelement)) {
-        MusPositionInterface *positionInterface = dynamic_cast<MusPositionInterface*>(pelement);
+	else if (dynamic_cast<PositionInterface*>(pelement)) {
+        PositionInterface *positionInterface = dynamic_cast<PositionInterface*>(pelement);
 		*code = positionInterface->m_pname;
         *oct = positionInterface->m_oct;
     }

@@ -9,20 +9,20 @@
 #include "musslur.h"
 
 //----------------------------------------------------------------------------
-// MusSlur
+// Slur
 //----------------------------------------------------------------------------
 
-MusSlur::MusSlur():
+Slur::Slur():
 MusLayerElement("slur-")
 {
 }
 
 
-MusSlur::~MusSlur()
+Slur::~Slur()
 {
 }
 
-void MusSlur::AddNote(MusLayerElement *element) {
+void Slur::AddNote(MusLayerElement *element) {
     
     if (!element->HasDurationInterface()) {
         return;

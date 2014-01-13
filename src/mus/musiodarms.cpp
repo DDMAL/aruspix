@@ -324,7 +324,7 @@ int MusDarmsInput::do_Note(int pos, const char* data, bool rest) {
     }
     
     if (rest) {
-        MusRest *rest =  new MusRest;
+        Rest *rest =  new Rest;
         rest->m_dur = duration;
         rest->m_pname = REST_AUTO;
         rest->m_dots = dot;
@@ -354,7 +354,7 @@ int MusDarmsInput::do_Note(int pos, const char* data, bool rest) {
                 m_current_tie->SetSecondNote( note );
             }
             // create a new mus tie with this note
-            m_current_tie = new MusTie;
+            m_current_tie = new Tie;
             m_current_tie->SetFirstNote( note );
             m_layer->AddElement(m_current_tie);
         } else {

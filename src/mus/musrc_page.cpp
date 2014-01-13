@@ -886,9 +886,9 @@ void MusRC::DrawLayer( MusDC *dc, MusLayer *layer, MusStaff *staff, MusMeasure *
     // first draw the beams
     DrawLayerList(dc, layer, staff, measure, &typeid(MusBeam) );
     // then tuplets
-    DrawLayerList(dc, layer, staff, measure, &typeid(MusTuplet) );
+    DrawLayerList(dc, layer, staff, measure, &typeid(Tuplet) );
     // then ties
-    DrawLayerList(dc, layer, staff, measure, &typeid(MusTie) );
+    DrawLayerList(dc, layer, staff, measure, &typeid(Tie) );
     
 }
 
@@ -911,12 +911,12 @@ void MusRC::DrawLayerList( MusDC *dc, MusLayer *layer, MusStaff *staff, MusMeasu
             MusBeam *beam = dynamic_cast<MusBeam*>(element);
             DrawBeam( dc, layer, beam, staff );
         }
-        else if ( (typeid(*element) == *elementType) &&  (*elementType == typeid(MusTuplet) ) ) {
-            MusTuplet *tuplet = dynamic_cast<MusTuplet*>(element);
+        else if ( (typeid(*element) == *elementType) &&  (*elementType == typeid(Tuplet) ) ) {
+            Tuplet *tuplet = dynamic_cast<Tuplet*>(element);
             DrawTuplet( dc, tuplet, layer, staff );
         }
-        else if ( (typeid(*element) == *elementType) &&  (*elementType == typeid(MusTie) ) ) {
-            MusTie *tie = dynamic_cast<MusTie*>(element);
+        else if ( (typeid(*element) == *elementType) &&  (*elementType == typeid(Tie) ) ) {
+            Tie *tie = dynamic_cast<Tie*>(element);
             DrawTie( dc, tie, layer, staff, measure );
         }
     }

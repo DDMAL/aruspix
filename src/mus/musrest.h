@@ -14,26 +14,26 @@
 #include "muspositioninterface.h"
 
 //----------------------------------------------------------------------------
-// MusRest
+// Rest
 //----------------------------------------------------------------------------
 
 /** 
  * This class models the MEI <rest> element. 
  */
-class MusRest: public MusLayerElement, public MusDurationInterface, public MusPositionInterface
+class Rest: public MusLayerElement, public MusDurationInterface, public PositionInterface
 {
 public:
     // constructors and destructors
-    MusRest();
-    virtual ~MusRest();
+    Rest();
+    virtual ~Rest();
     
     /**
      * Comparison operator. 
-     * Check if the MusLayerElement if a MusRest and compare attributes
+     * Check if the MusLayerElement if a Rest and compare attributes
      */
     virtual bool operator==(MusObject& other);
     
-    virtual std::string MusClassName( ) { return "MusRest"; };
+    virtual std::string MusClassName( ) { return "Rest"; };
     
 private:
     

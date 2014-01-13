@@ -300,7 +300,7 @@ bool MusMeiOutput::WriteLayerElement( MusLayerElement *element )
         assert( m_beam );
         currentParent = m_beam;
     }
-    else if ( dynamic_cast<MusTuplet*>(element->m_parent) ) {
+    else if ( dynamic_cast<Tuplet*>(element->m_parent) ) {
         assert( m_tuplet );
         currentParent = m_tuplet;
     }
@@ -324,22 +324,22 @@ bool MusMeiOutput::WriteLayerElement( MusLayerElement *element )
         xmlElement = new TiXmlElement("mensur");
         WriteMeiMensur( xmlElement, dynamic_cast<MusMensur*>(element) );
     }
-    else if (dynamic_cast<MusMultiRest*>(element)) {
+    else if (dynamic_cast<MultiRest*>(element)) {
         xmlElement = new TiXmlElement("multiRest");
-        WriteMeiMultiRest( xmlElement, dynamic_cast<MusMultiRest*>(element) );
+        WriteMeiMultiRest( xmlElement, dynamic_cast<MultiRest*>(element) );
     }
     else if (dynamic_cast<MusNote*>(element)) {
         xmlElement = new TiXmlElement("note");
         WriteMeiNote( xmlElement, dynamic_cast<MusNote*>(element) );
     }
-    else if (dynamic_cast<MusRest*>(element)) {
+    else if (dynamic_cast<Rest*>(element)) {
         xmlElement = new TiXmlElement("rest");
-        WriteMeiRest( xmlElement, dynamic_cast<MusRest*>(element) );
+        WriteMeiRest( xmlElement, dynamic_cast<Rest*>(element) );
     }
-    else if (dynamic_cast<MusTuplet*>(element)) {
+    else if (dynamic_cast<Tuplet*>(element)) {
         xmlElement = new TiXmlElement("tuplet");
         m_tuplet = xmlElement;
-        WriteMeiTuplet( xmlElement, dynamic_cast<MusTuplet*>(element) );
+        WriteMeiTuplet( xmlElement, dynamic_cast<Tuplet*>(element) );
     }
     else if (dynamic_cast<MusSymbol*>(element)) {        
         xmlElement = WriteMeiSymbol( dynamic_cast<MusSymbol*>(element) );
@@ -407,7 +407,7 @@ void MusMeiOutput::WriteMeiMensur( TiXmlElement *meiMensur, MusMensur *mensur )
     return;
 }
 
-void MusMeiOutput::WriteMeiMultiRest( TiXmlElement *meiMultiRest, MusMultiRest *multiRest )
+void MusMeiOutput::WriteMeiMultiRest( TiXmlElement *meiMultiRest, MultiRest *multiRest )
 {
     meiMultiRest->SetAttribute( "num", Mus::StringFormat("%d", multiRest->GetNumber()).c_str() );
 
@@ -444,7 +444,7 @@ void MusMeiOutput::WriteMeiNote( TiXmlElement *meiNote, MusNote *note )
     return;
 }
 
-void MusMeiOutput::WriteMeiRest( TiXmlElement *meiRest, MusRest *rest )
+void MusMeiOutput::WriteMeiRest( TiXmlElement *meiRest, Rest *rest )
 {    
     meiRest->SetAttribute( "dur", DurToStr( rest->m_dur ).c_str() );
     if ( rest->m_dots ) {
@@ -485,7 +485,7 @@ TiXmlElement *MusMeiOutput::WriteMeiSymbol( MusSymbol *symbol )
 }
 
 
-void MusMeiOutput::WriteMeiTuplet( TiXmlElement *meiTuplet, MusTuplet *tuplet )
+void MusMeiOutput::WriteMeiTuplet( TiXmlElement *meiTuplet, Tuplet *tuplet )
 {
     return;
 }
@@ -1288,7 +1288,7 @@ MusLayerElement *MusMeiInput::ReadMeiMensur( TiXmlElement *mensur )
 
 MusLayerElement *MusMeiInput::ReadMeiMultiRest( TiXmlElement *multiRest )
 {
-	MusMultiRest *musMultiRest = new MusMultiRest();
+	MultiRest *musMultiRest = new MultiRest();
     
 	// pitch
     if ( multiRest->Attribute( "num" ) ) {
@@ -1357,7 +1357,7 @@ MusLayerElement *MusMeiInput::ReadMeiNote( TiXmlElement *note )
 
 MusLayerElement *MusMeiInput::ReadMeiRest( TiXmlElement *rest )
 {
-    MusRest *musRest = new MusRest();
+    Rest *musRest = new Rest();
     
 	// duration
 	if ( rest->Attribute( "dur" ) ) {
@@ -1384,7 +1384,7 @@ MusLayerElement *MusMeiInput::ReadMeiTuplet( TiXmlElement *tuplet )
     assert ( !m_tuplet );
     
     // m_tuplet will be used for adding elements to the beam
-    m_tuplet = new MusTuplet();
+    m_tuplet = new Tuplet();
     
     MusObject *previousLayer = m_currentLayer;
     m_currentLayer = m_tuplet;
@@ -1413,7 +1413,7 @@ MusLayerElement *MusMeiInput::ReadMeiTuplet( TiXmlElement *tuplet )
     }
     else {
         // set the member to NULL but keep a pointer to be returned
-        MusTuplet *musTuplet = m_tuplet;
+        Tuplet *musTuplet = m_tuplet;
         m_tuplet = NULL;
         return musTuplet;
     }
@@ -1542,8 +1542,8 @@ void MusMeiInput::AddLayerElement( MusLayerElement *element )
     else if ( dynamic_cast<MusBeam*>( m_currentLayer ) ) {
         ((MusBeam*)m_currentLayer)->AddElement( element );
     }
-    else if ( dynamic_cast<MusTuplet*>( m_currentLayer ) ) {
-        ((MusTuplet*)m_currentLayer)->AddElement( element );
+    else if ( dynamic_cast<Tuplet*>( m_currentLayer ) ) {
+        ((Tuplet*)m_currentLayer)->AddElement( element );
     }
     
 }

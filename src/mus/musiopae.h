@@ -20,8 +20,8 @@ class MusLayer;
 class MusMeasure;
 class MusMensur;
 class MusStaff;
-class MusTie;
-class MusTuplet;
+class Tie;
+class Tuplet;
 
 
 class NoteObject {
@@ -96,7 +96,7 @@ public:
     }
     
     //MusNote *mnote;
-    //MusRest *mrest; // this is not too nice
+    //Rest *mrest; // this is not too nice
 
     // tuplet stuff
     int tuplet_notes; // quantity of notes in the tuplet
@@ -257,7 +257,7 @@ private:
 	MusStaff *m_staff;
     MusMeasure *m_measure;
 	MusLayer *m_layer;
-    MusTie *m_current_tie;
+    Tie *m_current_tie;
 
     std::vector<MusLayerElement *> m_nested_objects;   
     

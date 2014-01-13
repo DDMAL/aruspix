@@ -39,7 +39,7 @@ MusNote::MusNote():
 
 MusNote::~MusNote()
 {
-    // This deletes the MusTie object if necessary
+    // This deletes the Tie object if necessary
     ResetTieAttrInitial();
 }
 
@@ -118,7 +118,7 @@ void MusNote::SetTieAttrInitial()
         Mus::LogWarning("Initial tie attribute already set for note '%s", this->GetUuid().c_str() );
         return;
     }
-    m_tieAttrInitial = new MusTie();
+    m_tieAttrInitial = new Tie();
     m_tieAttrInitial->SetFirstNote( this );
 }
 
@@ -139,7 +139,7 @@ void MusNote::SetTieAttrTerminal( MusNote *previousNote )
 void MusNote::ResetTieAttrInitial( )
 {
     if ( m_tieAttrInitial ) {
-        // Deleting the MusTie object will also reset the m_tieAttrTerminal of the second note
+        // Deleting the Tie object will also reset the m_tieAttrTerminal of the second note
         delete m_tieAttrInitial;
         m_tieAttrInitial = NULL;
     }

@@ -13,34 +13,34 @@
 #include "musdef.h"
 
 //----------------------------------------------------------------------------
-// MusPositionInterface
+// PositionInterface
 //----------------------------------------------------------------------------
 
-MusPositionInterface::MusPositionInterface()
+PositionInterface::PositionInterface()
 {
     m_oct = 5;
     m_pname = PITCH_C;
 }
 
 
-MusPositionInterface::~MusPositionInterface()
+PositionInterface::~PositionInterface()
 {
 }
 
-void MusPositionInterface::SetPosition(int pname, int oct) 
+void PositionInterface::SetPosition(int pname, int oct) 
 {
     m_oct = oct;
     m_pname = pname;
 }
 
-bool MusPositionInterface::GetPosition(int *pname, int *oct) 
+bool PositionInterface::GetPosition(int *pname, int *oct) 
 {
     *oct = m_oct;
     *pname = m_pname;
     return true;
 }
 
-bool MusPositionInterface::HasIdenticalPositionInterface( MusPositionInterface *otherPositionInterface )
+bool PositionInterface::HasIdenticalPositionInterface( PositionInterface *otherPositionInterface )
 {
     if ( !otherPositionInterface ) {
         return false;

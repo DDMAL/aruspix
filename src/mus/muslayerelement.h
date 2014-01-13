@@ -49,14 +49,14 @@ public:
     static void AdjustPname( int *pname, int *oct );
     
     /** 
-     * Set the pitch or position for MusPitchInterface or MusPositionInterface elements.
+     * Set the pitch or position for MusPitchInterface or PositionInterface elements.
      * Because MusPitchInterface and PositionInterface are not child classes of MusLayerElement,
      * the call had to be done explicitly from this method. The method can still be overriden.
      */
     virtual void SetPitchOrPosition( int pname, int oct );
     
     /**
-     * Get the pitch or position for MusPitchInterface or MusPositionInterface elements.
+     * Get the pitch or position for MusPitchInterface or PositionInterface elements.
      * See MusLayerElement::SetPitchOrPosition for more comments.
      */
     virtual bool GetPitchOrPosition( int *pname, int *oct );

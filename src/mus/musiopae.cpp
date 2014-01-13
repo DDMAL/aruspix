@@ -1096,7 +1096,7 @@ void MusPaeInput::printMeasure(std::ostream& out, MeasureObject *measure ) {
     }
     
     if ( measure->wholerest > 0 ) { 
-        MusMultiRest *mr = new MusMultiRest(measure->wholerest);
+        MultiRest *mr = new MultiRest(measure->wholerest);
         m_layer->AddElement(mr);
     }
     
@@ -1127,7 +1127,7 @@ void MusPaeInput::parseNote(NoteObject note) {
     MusLayerElement *element;
     
     if (note.rest) {
-        MusRest *rest =  new MusRest();
+        Rest *rest =  new Rest();
 
         rest->m_pname = REST_AUTO;
         rest->m_dots = note.dots;
@@ -1172,7 +1172,7 @@ void MusPaeInput::parseNote(NoteObject note) {
     // we have a tuplet, the tuplet_note is > 0
     // which means we are counting a tuplet
     if (note.tuplet_note > 0 && note.tuplet_notes == note.tuplet_note) // first elem in tuplet
-        PushContainer(new MusTuplet());
+        PushContainer(new Tuplet());
     
     if (note.appoggiatura > 0) {
         element->m_cueSize = true;
@@ -1218,8 +1218,8 @@ void MusPaeInput::AddLayerElement(MusLayerElement *element) {
         if ( dynamic_cast<MusBeam*>( bottom ) ) {
             ((MusBeam*)bottom)->AddElement( element );
         }
-        else if ( dynamic_cast<MusTuplet*>( bottom ) ) {
-            ((MusTuplet*)bottom)->AddElement( element );
+        else if ( dynamic_cast<Tuplet*>( bottom ) ) {
+            ((Tuplet*)bottom)->AddElement( element );
         }
         
     } else {

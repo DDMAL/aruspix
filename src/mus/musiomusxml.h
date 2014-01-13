@@ -25,7 +25,7 @@ class MusBeam;
 class MusClef;
 class MusMensur;
 class MusNote;
-class MusRest;
+class Rest;
 class MusSymbol;
 
 
@@ -62,7 +62,7 @@ public:
     void WriteKey(MusLayerElement *element);
     void WriteTime(MusLayerElement *element);
     void WriteNoteOrRest(MusLayerElement *element);
-    void WriteMultiMeasureRest(MusRest *r);
+    void WriteMultiMeasureRest(Rest *r);
     void CreateAttributes();
     void SetTie(TiXmlElement *xml_note, bool last);
     void CreateRestsForMultiMeasure();

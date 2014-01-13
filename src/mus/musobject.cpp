@@ -197,7 +197,7 @@ bool MusObject::operator==( MusObject& other )
 {
     // This should never happen.
     // The comparison is performed in the CmpFile::Align method.
-    // We expect to compare only MusNote, MusRest, etc object for which we have an overwritten method
+    // We expect to compare only MusNote, Rest, etc object for which we have an overwritten method
     Mus::LogError( "Missing comparison operator for '%s'", this->MusClassName().c_str() );
     return false;
 }
@@ -760,11 +760,11 @@ int MusObject::SetBoundingBoxXShift( ArrayPtrVoid params )
         return FUNCTOR_CONTINUE;
     }
     
-    if ( dynamic_cast<MusTie*>(current) ) {
+    if ( dynamic_cast<Tie*>(current) ) {
         return FUNCTOR_CONTINUE;
     }
     
-    if ( dynamic_cast<MusTuplet*>(current) ) {
+    if ( dynamic_cast<Tuplet*>(current) ) {
         return FUNCTOR_CONTINUE;
     }
     

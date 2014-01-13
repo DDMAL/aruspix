@@ -19,13 +19,13 @@
 /** 
  * This class models the MEI <musmultirest> element. 
  */
-class MusMultiRest: public MusLayerElement
+class MultiRest: public MusLayerElement
 {
 public:
     // constructors and destructors
-    MusMultiRest();
-    MusMultiRest(int number);
-    virtual ~MusMultiRest();
+    MultiRest();
+    MultiRest(int number);
+    virtual ~MultiRest();
     
     /**
      * Comparison operator. 
@@ -33,7 +33,7 @@ public:
      */
     virtual bool operator==(MusObject& other);
     
-    virtual std::string MusClassName( ) { return "MusMultiRest"; };
+    virtual std::string MusClassName( ) { return "MultiRest"; };
     
     /**
      * Get the multi measure rest number

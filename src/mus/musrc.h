@@ -24,8 +24,8 @@ class MusMeasure;
 class MusPage;
 class MusStaff;
 class MusSystem;
-class MusTie;
-class MusTuplet;
+class Tie;
+class Tuplet;
 
 //----------------------------------------------------------------------------
 // MusRC
@@ -158,7 +158,7 @@ public:
     void DrawSymbolCustos( MusDC *dc, MusLayerElement *element, MusLayer *layer, MusStaff *staff );
     void DrawSymbolDot( MusDC *dc, MusLayerElement *element, MusLayer *layer, MusStaff *staff );
     void DrawTie( MusDC *dc, MusLayerElement *element, MusLayer *layer, MusStaff *staff, MusMeasure *measure );
-    void DrawTuplet( MusDC *dc, MusTuplet *tuplet, MusLayer *layer, MusStaff *staff);
+    void DrawTuplet( MusDC *dc, Tuplet *tuplet, MusLayer *layer, MusStaff *staff);
     void DrawTrill(MusDC *dc, MusLayerElement *element, MusStaff *staff);
     void DrawLigature( MusDC *dc, int y, MusLayerElement *element, MusLayer *layer, MusStaff *staff );  
     void DrawLedgerLines( MusDC *dc, int y_n, int y_p, int xn, unsigned int smaller, int staffSize);
@@ -176,9 +176,9 @@ public:
 private:
     
     //Used for calculating tuplets
-    bool GetTupletCoordinates(MusTuplet* tuplet, MusLayer *layer, MusPoint* start, MusPoint* end, MusPoint *center);
+    bool GetTupletCoordinates(Tuplet* tuplet, MusLayer *layer, MusPoint* start, MusPoint* end, MusPoint *center);
     std::string IntToObliqueFigures(unsigned int number);
-    bool OneBeamInTuplet(MusTuplet* tuplet);
+    bool OneBeamInTuplet(Tuplet* tuplet);
     
 public:
     /** Document */

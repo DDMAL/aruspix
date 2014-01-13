@@ -18,7 +18,7 @@ class MusDoc;
 class MusLayer;
 class MusMeasure;
 class MusStaff;
-class MusTie;
+class Tie;
 
 //----------------------------------------------------------------------------
 // MusDarmsInput
@@ -56,7 +56,7 @@ private:
     MusMeasure *m_measure;
 	MusLayer *m_layer;
     
-    MusTie *m_current_tie;
+    Tie *m_current_tie;
     
     unsigned int m_clef_offset;
     bool m_antique_notation; // support square notation

@@ -9,23 +9,23 @@
 #include "musrest.h"
 
 //----------------------------------------------------------------------------
-// MusRest
+// Rest
 //----------------------------------------------------------------------------
 
-MusRest::MusRest():
-	MusLayerElement("rest-"), MusDurationInterface(), MusPositionInterface()
+Rest::Rest():
+	MusLayerElement("rest-"), MusDurationInterface(), PositionInterface()
 {
     // by default set automatic height
     m_pname = REST_AUTO;
 }
 
-MusRest::~MusRest()
+Rest::~Rest()
 {
 }
 
-bool MusRest::operator==( MusObject& other )
+bool Rest::operator==( MusObject& other )
 {
-    MusRest *otherRest = dynamic_cast<MusRest*>( &other );
+    Rest *otherRest = dynamic_cast<Rest*>( &other );
     if ( !otherRest ) {
         return false;
     }

@@ -13,27 +13,27 @@
 // MusClef
 //----------------------------------------------------------------------------
 
-MusMultiRest::MusMultiRest():
+MultiRest::MultiRest():
 MusLayerElement("multirest-")
 {
     m_number = 0;
 }
 
-MusMultiRest::MusMultiRest(int number):
+MultiRest::MultiRest(int number):
     MusLayerElement("multirest-")
 {
     m_number = number;
 }
 
 
-MusMultiRest::~MusMultiRest()
+MultiRest::~MultiRest()
 {
 }
 
 
-bool MusMultiRest::operator==( MusObject& other )
+bool MultiRest::operator==( MusObject& other )
 {
-    MusMultiRest *otherM = dynamic_cast<MusMultiRest*>( &other );
+    MultiRest *otherM = dynamic_cast<MultiRest*>( &other );
     if ( !otherM ) {
         return false;
     }

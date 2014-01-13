@@ -22,11 +22,11 @@ class MusBeam;
 class MusClef;
 class MusLayer;
 class MusMensur;
-class MusMultiRest;
+class MultiRest;
 class MusNote;
-class MusRest;
+class Rest;
 class MusSymbol;
-class MusTuplet;
+class Tuplet;
 
 
 //----------------------------------------------------------------------------
@@ -98,10 +98,10 @@ private:
     void WriteMeiMensur( TiXmlElement *meiMensur, MusMensur *mensur );
     
     /**
-     * Write a MusMultiRest. 
+     * Write a MultiRest. 
      * Callded from WriteLayerElement.
      */
-    void WriteMeiMultiRest( TiXmlElement *meiMultiRest, MusMultiRest *multiRest );
+    void WriteMeiMultiRest( TiXmlElement *meiMultiRest, MultiRest *multiRest );
     
     /**
      * Write a MusNote. 
@@ -110,16 +110,16 @@ private:
     void WriteMeiNote( TiXmlElement *meiNote, MusNote *note );
     
     /**
-     * Write a MusRest. 
+     * Write a Rest. 
      * Callded from WriteLayerElement.
      */
-    void WriteMeiRest( TiXmlElement *meiRest, MusRest *rest );
+    void WriteMeiRest( TiXmlElement *meiRest, Rest *rest );
     
     /**
-     * Write a MusTuplet. 
+     * Write a Tuplet. 
      * Callded from WriteLayerElement.
      */
-    void WriteMeiTuplet( TiXmlElement *meiTuplet, MusTuplet *tuplet );
+    void WriteMeiTuplet( TiXmlElement *meiTuplet, Tuplet *tuplet );
     
     /**
      * Write a MusSymbol. 
@@ -282,7 +282,7 @@ private:
 	MusLayer *m_layer;
     MusLayerRdg *m_layerRdg;
     MusBeam *m_beam;
-    MusTuplet *m_tuplet;
+    Tuplet *m_tuplet;
     MusObject *m_currentLayer;
     MusLayerApp *m_layerApp;
     /**

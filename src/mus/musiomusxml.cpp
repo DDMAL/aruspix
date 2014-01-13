@@ -174,11 +174,11 @@ bool MusXMLOutput::WriteLayerElement( MusLayerElement *element )
         WriteKey(element);
     } else if (dynamic_cast<MusMensur*>(element)) {
         WriteTime(element);
-    } else if (dynamic_cast<MusNote*>(element) || dynamic_cast<MusRest*>(element)) {
+    } else if (dynamic_cast<MusNote*>(element) || dynamic_cast<Rest*>(element)) {
         WriteNoteOrRest(element);
     } else if (dynamic_cast<MusBeam*>(element)) {
         m_current_beam = dynamic_cast<MusBeam*>(element);
-    } else if (dynamic_cast<MusTie*>(element)) {
+    } else if (dynamic_cast<Tie*>(element)) {
         // add tie to last note
         // continuation of ties is made with a <start> and <stop>
         // in the same note
@@ -376,7 +376,7 @@ void MusXMLOutput::WriteTime(MusLayerElement *element) {
     m_current_time = timesig;
 }
 
-void MusXMLOutput::WriteMultiMeasureRest(MusRest *r) {
+void MusXMLOutput::WriteMultiMeasureRest(Rest *r) {
     std::stringstream num;
     num << r->m_multimeasure_dur;
     
@@ -510,8 +510,8 @@ void MusXMLOutput::WriteNoteOrRest(MusLayerElement *element) {
         note->LinkEndChild(pitch);
         
         
-    } else if (dynamic_cast<MusRest*>(element)) {
-        MusRest *r = dynamic_cast<MusRest*>(element);
+    } else if (dynamic_cast<Rest*>(element)) {
+        Rest *r = dynamic_cast<Rest*>(element);
         // rests just link a <rest /> item
         TiXmlElement *rest = new TiXmlElement("rest");
         

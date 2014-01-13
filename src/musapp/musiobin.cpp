@@ -500,7 +500,7 @@ bool MusBinInput_1_X::ReadNote( MusLayer *layer )
         layer_element = note;
     }
     else { // rest
-        MusRest *rest = new MusRest();
+        Rest *rest = new Rest();
         rest->m_dur = val;
         rest->m_oct = oct;
         rest->m_pname = code;

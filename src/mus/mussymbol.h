@@ -23,7 +23,7 @@
  * The DOT type models the MEI <dot> element.
  * The ACCID type models the MEI <accid> element.
  */
-class MusSymbol: public MusLayerElement, public MusPositionInterface
+class MusSymbol: public MusLayerElement, public PositionInterface
 {
 public:
     // constructors and destructors
@@ -45,10 +45,10 @@ public:
 	virtual void SetValue( int value, int flag = 0 );
     
     /** Set the position */
-    //virtual void SetPitchOrPosition( int pname, int oct ) { MusPositionInterface::SetPosition( pname, oct ); };
+    //virtual void SetPitchOrPosition( int pname, int oct ) { PositionInterface::SetPosition( pname, oct ); };
     
     /** Get the position */
-    //virtual bool GetPitchOrPosition( int *pname, int *oct ) { return MusPositionInterface::GetPosition( pname, oct ); };
+    //virtual bool GetPitchOrPosition( int *pname, int *oct ) { return PositionInterface::GetPosition( pname, oct ); };
 
     
     void Init( SymbolType type );

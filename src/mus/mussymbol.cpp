@@ -13,13 +13,13 @@
 //----------------------------------------------------------------------------
 
 MusSymbol::MusSymbol():
-	MusLayerElement("symb-none-"), MusPositionInterface()
+	MusLayerElement("symb-none-"), PositionInterface()
 {
     Init( SYMBOL_UNDEFINED );
 }
 
 MusSymbol::MusSymbol( SymbolType type ):
-	MusLayerElement("symb-"), MusPositionInterface()
+	MusLayerElement("symb-"), PositionInterface()
 {
     Init( type );
 }

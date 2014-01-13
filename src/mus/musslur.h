@@ -14,23 +14,23 @@
 #include "musobject.h"
 
 //----------------------------------------------------------------------------
-// MusSlur
+// Slur
 //----------------------------------------------------------------------------
 
-class MusSlur: public MusLayerElement
+class Slur: public MusLayerElement
 {
 public:
     // constructors and destructors
-    MusSlur();
-    virtual ~MusSlur();
+    Slur();
+    virtual ~Slur();
     
-    virtual std::string MusClassName( ) { return "MusSlur"; };
+    virtual std::string MusClassName( ) { return "Slur"; };
     
 	int GetNoteCount() const { return (int)m_children.size(); };
     
     /**
      * Add an element (a note or a rest) to a beam.
-     * Only MusNote or MusRest elements will be actually added to the beam.
+     * Only MusNote or Rest elements will be actually added to the beam.
      */
     void AddNote(MusLayerElement *element);
     

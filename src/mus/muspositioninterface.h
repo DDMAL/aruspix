@@ -10,7 +10,7 @@
 #define __MUS_POSITION_INTERFACE_H__
 
 //----------------------------------------------------------------------------
-// MusPositionInterface
+// PositionInterface
 //----------------------------------------------------------------------------
 
 /** 
@@ -18,12 +18,12 @@
  * It is not an abstract class but should not be instanciate directly.
  * For now, the position is handled in a similar way that for MusPitchInterface, that is with a pitch and octave. 
  */
-class MusPositionInterface
+class PositionInterface
 {
 public:
     // constructors and destructors
-    MusPositionInterface();
-    virtual ~MusPositionInterface();
+    PositionInterface();
+    virtual ~PositionInterface();
     
     /** Set the position */
     virtual void SetPosition( int pname, int oct );
@@ -33,9 +33,9 @@ public:
     
     /**
      * Inteface comparison operator. 
-     * Check if the MusLayerElement has a MusPositionInterface and compare attributes
+     * Check if the MusLayerElement has a PositionInterface and compare attributes
      */
-    bool HasIdenticalPositionInterface(MusPositionInterface  *otherPitchInterface);
+    bool HasIdenticalPositionInterface(PositionInterface  *otherPitchInterface);
 
     
 private:

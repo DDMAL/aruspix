@@ -17,20 +17,20 @@
 // MusBeam
 //----------------------------------------------------------------------------
 
-class MusTuplet: public MusLayerElement, public MusObjectListInterface
+class Tuplet: public MusLayerElement, public MusObjectListInterface
 {
 public:
     // constructors and destructors
-    MusTuplet();
-    virtual ~MusTuplet();
+    Tuplet();
+    virtual ~Tuplet();
     
-    virtual std::string MusClassName( ) { return "MusTuplet"; };
+    virtual std::string MusClassName( ) { return "Tuplet"; };
 
 	int GetNoteCount() const { return (int)m_children.size(); };
     
     /**
      * Add an element (a note or a rest) to a tuplet.
-     * Only MusNote or MusRest elements will be actually added to the beam.
+     * Only MusNote or Rest elements will be actually added to the beam.
      */
     void AddElement(MusLayerElement *element);
     
