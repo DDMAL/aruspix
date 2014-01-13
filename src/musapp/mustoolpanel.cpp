@@ -376,7 +376,7 @@ void MusToolPanel::OnSymbol( wxCommandEvent &event )
 }
 
 
-// pass the value back to the MusSymbol1 static
+// pass the value back to the Symbol1 static
 void MusToolPanel::OnMeasure( wxCommandEvent &event )
 {
     Mensur::s_num = atoi(((wxTextCtrl*)FindWindow(ID_MS_BT_M32_NUM))->GetValue());

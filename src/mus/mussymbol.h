@@ -14,7 +14,7 @@
 #include "muspositioninterface.h"
 
 //----------------------------------------------------------------------------
-// MusSymbol
+// Symbol
 //----------------------------------------------------------------------------
 
 /** 
@@ -23,13 +23,13 @@
  * The DOT type models the MEI <dot> element.
  * The ACCID type models the MEI <accid> element.
  */
-class MusSymbol: public LayerElement, public PositionInterface
+class Symbol: public LayerElement, public PositionInterface
 {
 public:
     // constructors and destructors
-    MusSymbol();
-    MusSymbol( SymbolType type );
-    virtual ~MusSymbol();
+    Symbol();
+    Symbol( SymbolType type );
+    virtual ~Symbol();
     
     /**
      * Comparison operator. 
@@ -37,7 +37,7 @@ public:
      */
     virtual bool operator==(Object& other);
     
-    virtual std::string MusClassName( ) { return "MusSymbol"; };
+    virtual std::string MusClassName( ) { return "Symbol"; };
     
     /**
      * Set the value for the symbol.

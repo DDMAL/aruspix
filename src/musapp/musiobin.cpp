@@ -371,7 +371,7 @@ bool MusBinInput_1_X::ReadSymbol( Layer *layer, bool isLyric )
         
     } 
     else if ( flag == ALTER ) {
-        MusSymbol *alter = new MusSymbol( SYMBOL_ACCID );
+        Symbol *alter = new Symbol( SYMBOL_ACCID );
         alter->m_oct = oct;
         alter->m_pname = code;
         alter->m_accid = calte;
@@ -426,7 +426,7 @@ bool MusBinInput_1_X::ReadSymbol( Layer *layer, bool isLyric )
         layer_element = mensur;
     }
     else if ( flag == PNT ) {
-        MusSymbol *dot = new MusSymbol( SYMBOL_DOT );
+        Symbol *dot = new Symbol( SYMBOL_DOT );
         dot->m_oct = oct;
         dot->m_pname = code;
         layer_element = dot;
@@ -472,7 +472,7 @@ bool MusBinInput_1_X::ReadNote( Layer *layer )
 	
     LayerElement *layer_element = NULL;
     if (val == CUSTOS) {
-        MusSymbol *custos = new MusSymbol( SYMBOL_CUSTOS );
+        Symbol *custos = new Symbol( SYMBOL_CUSTOS );
         custos->m_oct = oct;
         custos->m_pname = code;
         layer_element = custos;

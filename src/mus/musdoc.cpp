@@ -81,7 +81,7 @@ void Doc::Layout( )
 {
     ScoreDef currentScoreDef;
     currentScoreDef = m_scoreDef;
-    MusStaffDef *staffDef = NULL;
+    StaffDef *staffDef = NULL;
     ArrayPtrVoid params;
     params.push_back( &currentScoreDef );
     params.push_back( &staffDef );

@@ -354,8 +354,8 @@ void PaeInput::convertPlainAndEasyToKern(std::istream &infile, std::ostream &out
     }
 
     // add miniaml scoreDef
-    MusStaffGrp *staffGrp = new MusStaffGrp();
-    MusStaffDef *staffDef = new MusStaffDef();
+    StaffGrp *staffGrp = new StaffGrp();
+    StaffDef *staffDef = new StaffDef();
     staffDef->SetStaffNo( 1 );
     staffGrp->AddStaffDef( staffDef );
     m_doc->m_scoreDef.AddStaffGrp( staffGrp );

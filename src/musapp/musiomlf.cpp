@@ -353,8 +353,8 @@ Staff *MusMLFOutput::SplitSymboles( Staff *staff )
 	Staff *nstaff = new Staff();
 	staff->CopyAttributes( nstaff );
 	Note1 *nnote = NULL;
-	MusSymbol1 *nsymbol1 = NULL;
-	MusSymbol1 *nsymbol2 = NULL;
+	Symbol1 *nsymbol1 = NULL;
+	Symbol1 *nsymbol2 = NULL;
 
     for (k = 0;k < staff->GetElementCount() ; k++ )
     {
@@ -364,7 +364,7 @@ Staff *MusMLFOutput::SplitSymboles( Staff *staff )
 			// alteration
 			if (nnote->acc != 0)
 			{
-				nsymbol2 = new MusSymbol1();
+				nsymbol2 = new Symbol1();
 				nsymbol2->flag = ALTER;
 				nsymbol2->calte = nnote->acc;
 				nsymbol2->m_xAbs = nnote->m_xAbs - 10*4; // 10 = pas par defaut
@@ -382,7 +382,7 @@ Staff *MusMLFOutput::SplitSymboles( Staff *staff )
 					wxLogWarning( _("Pointed rest not allowed, point has been removed.") );
 				else
 				{
-					nsymbol2 = new MusSymbol1();
+					nsymbol2 = new Symbol1();
 					nsymbol2->flag = PNT;
 					nsymbol2->point = 0;
 					nsymbol2->m_xAbs = nnote->m_xAbs + 30;
@@ -396,14 +396,14 @@ Staff *MusMLFOutput::SplitSymboles( Staff *staff )
 		}
 		if ( staff->m_elements[k].IsSymbol() )
 		{
-			nsymbol1 = new MusSymbol1( *(MusSymbol1*)&staff->m_elements[k] );
+			nsymbol1 = new Symbol1( *(Symbol1*)&staff->m_elements[k] );
 			nstaff->m_elements.Add( nsymbol1 );
 			// barre TODO repetion points
 			if (nsymbol1->flag == BARRE)
 			{			
 				if ( nsymbol1->code == 'D' ) // double barre
 				{
-					nsymbol2 = new MusSymbol1( *nsymbol1 );
+					nsymbol2 = new Symbol1( *nsymbol1 );
 					nsymbol2->code = '|';
 					nsymbol2->m_xAbs += 10;
 					nstaff->m_elements.Add( nsymbol2 );
@@ -415,7 +415,7 @@ Staff *MusMLFOutput::SplitSymboles( Staff *staff )
 			{
 				if ((nsymbol1->code & 1) && (nsymbol1->code != 1)) // pas chiffre seuls
 				{
-					nsymbol2 = new MusSymbol1( *nsymbol1 );
+					nsymbol2 = new Symbol1( *nsymbol1 );
 					nsymbol2->code = 1;
 					nsymbol2->m_xAbs += 10*5; // 10 = pas par defaut
 					nstaff->m_elements.Add( nsymbol2 );
@@ -793,7 +793,7 @@ bool MusMLFOutput::WriteSymbol( LayerElement *element )
 	}
 	else if (element->IsSymbol( SYMBOL_ACCID ))
 	{
-        MusSymbol *symbol = dynamic_cast<MusSymbol*>(element);
+        Symbol *symbol = dynamic_cast<Symbol*>(element);
 		int  code = 0, oct = 0;
 		GetUt1( m_layer, element, &code, &oct);
 		if (symbol->m_accid == ACCID_SHARP)
@@ -976,7 +976,7 @@ LayerElement *MusMLFInput::ConvertNote( wxString line )
 			return NULL;
 		str2 = tkz.GetNextToken();
 		
-        MusSymbol *custos = new MusSymbol( SYMBOL_CUSTOS );
+        Symbol *custos = new Symbol( SYMBOL_CUSTOS );
         GetPitchWWG( str1.GetChar(0), &code );
         custos->m_pname = code;
         custos->m_oct = atoi( str2.c_str() );
@@ -1097,7 +1097,7 @@ LayerElement *MusMLFInput::ConvertSymbol( wxString line )
 		if ( ! tkz.HasMoreTokens() )
 			return NULL;
 		wxString str2 = tkz.GetNextToken(); 
-		MusSymbol *symbol = new MusSymbol( SYMBOL_ACCID );
+		Symbol *symbol = new Symbol( SYMBOL_ACCID );
 		GetPitchWWG( str1.GetChar(0), &code );
 		symbol->m_pname = code;
 		symbol->m_oct = atoi( str2.c_str() );
@@ -1124,7 +1124,7 @@ LayerElement *MusMLFInput::ConvertSymbol( wxString line )
 		if ( ! tkz.HasMoreTokens() )
 			return NULL;
 		wxString str2 = tkz.GetNextToken();
-		MusSymbol *symbol = new MusSymbol( SYMBOL_DOT );
+		Symbol *symbol = new Symbol( SYMBOL_DOT );
 		GetPitchWWG( str1.GetChar(0), &code );
 		symbol->m_pname = code;
 		symbol->m_oct = atoi( str2.c_str() );

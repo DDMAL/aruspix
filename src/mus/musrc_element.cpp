@@ -96,7 +96,7 @@ void View::DrawElement( DeviceContext *dc, LayerElement *element, Layer *layer, 
     else if (dynamic_cast<Rest*>(element)) {
         DrawDurationElement(dc, element, layer, staff);
     }
-    else if (dynamic_cast<MusSymbol*>(element)) {
+    else if (dynamic_cast<Symbol*>(element)) {
         DrawSymbol(dc, element, layer, staff);
     }
     else if (dynamic_cast<Tie*>(element)) {
@@ -162,7 +162,7 @@ void View::DrawDurationElement( DeviceContext *dc, LayerElement *element, Layer 
     
 	/* 
 	for ( int i = 0; i < (int)m_lyrics.GetCount(); i++ ){
-		MusSymbol1 *lyric = &m_lyrics[i];
+		Symbol1 *lyric = &m_lyrics[i];
 		
 		if ( lyric != NULL )
 		{
@@ -466,7 +466,7 @@ void View::DrawNote ( DeviceContext *dc, LayerElement *element, Layer *layer, St
             {}/***x1 = x_acc_chrd (this,0);***/
 		else
 			x1 -= 1.5 * m_doc->m_rendAccidWidth[staffSize][note->m_cueSize];
-		MusSymbol accid( SYMBOL_ACCID );
+		Symbol accid( SYMBOL_ACCID );
         accid.m_oct = note->m_oct;
         accid.m_pname = note->m_pname;
 		accid.m_accid = note->m_accid;
@@ -637,7 +637,7 @@ void View::DrawRest ( DeviceContext *dc, LayerElement *element, Layer *layer, St
 			case DUR_BR: DrawBreveRest( dc, a, b, staff); break;
 			case DUR_1:
 			case DUR_2: DrawWholeRest ( dc, a, b, formval, rest->m_dots, rest->m_cueSize, staff); break;
-			//case CUSTOS: s_nr ( dc, a, b - m_doc->m_rendHalfInterl[staff->staffSize] + 1, '#' - LEIPZIG_REST_QUARTER + DUR_4 , staff); break; // Now in MusSymbol
+			//case CUSTOS: s_nr ( dc, a, b - m_doc->m_rendHalfInterl[staff->staffSize] + 1, '#' - LEIPZIG_REST_QUARTER + DUR_4 , staff); break; // Now in Symbol
 			default: DrawQuarterRest( dc, a, b, formval, rest->m_dots, rest->m_cueSize, staff);
 		}
 	}
@@ -707,7 +707,7 @@ void View::DrawMultiRest(DeviceContext *dc, LayerElement *element, Layer *layer,
 
     assert(layer); // Pointer to layer cannot be NULL"
     assert(staff); // Pointer to staff cannot be NULL"
-    assert(dynamic_cast<MultiRest*>(element)); // Element must be a MusSymbol"
+    assert(dynamic_cast<MultiRest*>(element)); // Element must be a Symbol"
     
     MultiRest *multirest = dynamic_cast<MultiRest*>(element);
     dc->StartGraphic( element, "multirest", element->GetUuid() );
@@ -1339,14 +1339,14 @@ void View::DrawSymbol( DeviceContext *dc, LayerElement *element, Layer *layer, S
 {
     assert(layer); // Pointer to layer cannot be NULL"
     assert(staff); // Pointer to staff cannot be NULL"
-    assert(dynamic_cast<MusSymbol*>(element)); // Element must be a MusSymbol"
+    assert(dynamic_cast<Symbol*>(element)); // Element must be a Symbol"
     
     // This is used when we add dynamically an element (eg. accidentals before notes)
     // So we can get the clef without adding the new elem in the list
     LayerElement *list_elem = element;
     if (parent) list_elem = parent;
     
-    MusSymbol *symbol = dynamic_cast<MusSymbol*>(element);
+    Symbol *symbol = dynamic_cast<Symbol*>(element);
     int oct = symbol->m_oct - 4;
     element->m_yRel = CalculatePitchPosY( staff, symbol->m_pname, layer->GetClefOffset( list_elem ), oct);
     
@@ -1367,9 +1367,9 @@ void View::DrawSymbolAccid( DeviceContext *dc, LayerElement *element, Layer *lay
 {
     assert(layer); // Pointer to layer cannot be NULL"
     assert(staff); // Pointer to staff cannot be NULL"
-    assert(dynamic_cast<MusSymbol*>(element)); // Element must be a MusSymbol"
+    assert(dynamic_cast<Symbol*>(element)); // Element must be a Symbol"
     
-    MusSymbol *accid = dynamic_cast<MusSymbol*>(element);
+    Symbol *accid = dynamic_cast<Symbol*>(element);
     dc->StartGraphic( element, "accid", element->GetUuid() );
     
     int x = element->m_xDrawing + accid->m_hOffset;
@@ -1401,9 +1401,9 @@ void View::DrawSymbolCustos( DeviceContext *dc, LayerElement *element, Layer *la
 {
     assert(layer); // Pointer to layer cannot be NULL"
     assert(staff); // Pointer to staff cannot be NULL"
-    assert(dynamic_cast<MusSymbol*>(element)); // Element must be a MusSymbol"
+    assert(dynamic_cast<Symbol*>(element)); // Element must be a Symbol"
     
-    MusSymbol *custos = dynamic_cast<MusSymbol*>(element);
+    Symbol *custos = dynamic_cast<Symbol*>(element);
     dc->StartGraphic( element, "custos", element->GetUuid() );
 
     int x = element->m_xDrawing + custos->m_hOffset;
@@ -1420,9 +1420,9 @@ void View::DrawSymbolDot( DeviceContext *dc, LayerElement *element, Layer *layer
 {
     assert(layer); // Pointer to layer cannot be NULL"
     assert(staff); // Pointer to staff cannot be NULL"
-    assert(dynamic_cast<MusSymbol*>(element)); // Element must be a MusSymbol"
+    assert(dynamic_cast<Symbol*>(element)); // Element must be a Symbol"
     
-    MusSymbol *dot = dynamic_cast<MusSymbol*>(element);
+    Symbol *dot = dynamic_cast<Symbol*>(element);
     dc->StartGraphic( element, "dot", element->GetUuid() );
     
     int x = element->m_xDrawing + dot->m_hOffset;
@@ -1690,10 +1690,10 @@ void View::DrawLayerApp( DeviceContext *dc, LayerElement *element, Layer *layer,
 /*
  * Lyric code not refactored in ax2
     
-void Note1::DeleteLyricFromNote( MusSymbol1 *lyric )
+void Note1::DeleteLyricFromNote( Symbol1 *lyric )
 {
 	for ( int i = 0; i < (int)this->m_lyrics.GetCount(); i++ ){
-		MusSymbol1 *tmp = &this->m_lyrics[i];
+		Symbol1 *tmp = &this->m_lyrics[i];
 		if ( lyric == tmp ){
 			this->m_lyrics.RemoveAt( i );
 			break;
@@ -1701,7 +1701,7 @@ void Note1::DeleteLyricFromNote( MusSymbol1 *lyric )
 	}
 }
 
-MusSymbol1 *Note1::GetFirstLyric( )
+Symbol1 *Note1::GetFirstLyric( )
 {
 	if ( this->m_lyrics.GetCount() == 0 ) 
 		return NULL;
@@ -1709,7 +1709,7 @@ MusSymbol1 *Note1::GetFirstLyric( )
 		return &this->m_lyrics[0];
 }
 
-MusSymbol1 *Note1::GetLastLyric( )
+Symbol1 *Note1::GetLastLyric( )
 {
 	int num = this->m_lyrics.GetCount(); 
 	if ( num == 0 ) 
@@ -1718,7 +1718,7 @@ MusSymbol1 *Note1::GetLastLyric( )
 		return &this->m_lyrics[num-1];
 }
 
-MusSymbol1 *Note1::GetLyricNo( int no )
+Symbol1 *Note1::GetLyricNo( int no )
 {
 	int num = this->m_lyrics.GetCount(); 
 	if ( (no < 0) || (num <= no) ) 

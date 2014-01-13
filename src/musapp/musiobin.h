@@ -174,7 +174,7 @@ private:
     /* type de staccato (0 a 6) */
     unsigned char typStac;
     
-    /* old MusSymbol members */
+    /* old Symbol members */
     unsigned char flag;
     /* sous - type de symbol */
     unsigned char calte;

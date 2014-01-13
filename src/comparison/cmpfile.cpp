@@ -199,14 +199,14 @@ bool CmpCollation::Realize( )
 		}
 		MusBinInput_1_X bin_input( NULL, staffname, MUS_BIN_ARUSPIX_CMP );
 		bin_input.ReadStaff( full_staff );
-		MusSymbol1 *clef = NULL; // we keep last clef for next page
+		Symbol1 *clef = NULL; // we keep last clef for next page
 		for( int j = 0; j < npages; j++ )
 		{	
 			int clef_offset = 0;
 			Staff *staff = &m_musDocPtr->m_pages[j].m_staves[i];
 			if ( clef )
 			{
-				staff->m_children.Add( new MusSymbol1( *clef ) );
+				staff->m_children.Add( new Symbol1( *clef ) );
 				clef_offset += 45;
 			}
 			//FillStaff( staff, full_staff, j, correct_lrg_lign );
@@ -222,12 +222,12 @@ bool CmpCollation::Realize( )
 				}
 				else if ( full_staff->m_children[0].IsSymbol() )
 				{
-					MusSymbol1 *nsymbol = (MusSymbol1*)full_staff->m_children.Detach( 0 );
+					Symbol1 *nsymbol = (Symbol1*)full_staff->m_children.Detach( 0 );
 					if ( nsymbol->flag == CLE ) // we keep last clef for next pages
 					{
 						if ( clef )
 							delete clef;
-						clef = new MusSymbol1( *nsymbol );
+						clef = new Symbol1( *nsymbol );
 						clef->m_im_filename = "";
 						clef->m_x_abs = 0;
 						clef->m_cmp_flag = 0;

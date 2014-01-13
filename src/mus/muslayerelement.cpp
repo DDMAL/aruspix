@@ -95,7 +95,7 @@ LayerElement *LayerElement::GetChildCopy( bool newUuid )
     else if (this->IsRest() )
         element = new Rest( *(Rest*)this );
     else if (this->IsSymbol() )
-        element = new MusSymbol( *(MusSymbol*)this );
+        element = new Symbol( *(Symbol*)this );
     else {
         Vrv::LogDebug( "Missing %s", this->MusClassName().c_str() );
         assert( false ); // Copy of this type unimplemented
@@ -201,13 +201,13 @@ bool LayerElement::HasDurationInterface()
 
 bool LayerElement::IsSymbol( SymbolType type ) 
 {  
-    MusSymbol *symbol = dynamic_cast<MusSymbol*>(this);
+    Symbol *symbol = dynamic_cast<Symbol*>(this);
     return (symbol && (symbol->m_type == type));
 }
 
 bool LayerElement::IsSymbol( ) 
 {  
-    return (dynamic_cast<MusSymbol*>(this));
+    return (dynamic_cast<Symbol*>(this));
 }
 
 

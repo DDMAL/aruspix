@@ -112,10 +112,10 @@ public:
 	void DrawPage( DeviceContext *dc, Page *page, bool background = true );
     void DrawSystem( DeviceContext *dc, System *system );
 	void DrawScoreDef( DeviceContext *dc, ScoreDef *scoreDef, Measure *measure, int x, Barline *barline = NULL );
-	void DrawStaffGrp( DeviceContext *dc, Measure *measure, MusStaffGrp *staffGrp, int x );
+	void DrawStaffGrp( DeviceContext *dc, Measure *measure, StaffGrp *staffGrp, int x );
 	void DrawBracket ( DeviceContext *dc, int x, int y1, int y2, int staffSize);
 	void DrawBrace ( DeviceContext *dc, int x, int y1, int y2, int staffSize);
-    void DrawBarlines( DeviceContext *dc, Measure *measure, MusStaffGrp *staffGrp, int x, Barline *barline );
+    void DrawBarlines( DeviceContext *dc, Measure *measure, StaffGrp *staffGrp, int x, Barline *barline );
     void DrawBarline( DeviceContext *dc, int x, int y_top, int y_bottom, Barline *barline );
 	void DrawBarlineDots ( DeviceContext *dc, int x, Staff *staff, Barline *barline );
 	void DrawPartialBarline ( DeviceContext *dc, System *system, int x, Staff *pportee);

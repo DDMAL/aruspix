@@ -206,7 +206,7 @@ bool MeiOutput::WriteScoreDef( ScoreDef *scoreDef )
     
 }
 
-bool MeiOutput::WriteStaffGrp( MusStaffGrp *staffGrp )
+bool MeiOutput::WriteStaffGrp( StaffGrp *staffGrp )
 {
     // for now only as part of a system - this needs to be fixed
     assert( m_system );
@@ -223,7 +223,7 @@ bool MeiOutput::WriteStaffGrp( MusStaffGrp *staffGrp )
     return true;
 }
 
-bool MeiOutput::WriteStaffDef( MusStaffDef *staffDef )
+bool MeiOutput::WriteStaffDef( StaffDef *staffDef )
 {
     assert( m_staffGrp );
     m_staffDef = new TiXmlElement("staffDef");
@@ -341,8 +341,8 @@ bool MeiOutput::WriteLayerElement( LayerElement *element )
         m_tuplet = xmlElement;
         WriteMeiTuplet( xmlElement, dynamic_cast<Tuplet*>(element) );
     }
-    else if (dynamic_cast<MusSymbol*>(element)) {        
-        xmlElement = WriteMeiSymbol( dynamic_cast<MusSymbol*>(element) );
+    else if (dynamic_cast<Symbol*>(element)) {        
+        xmlElement = WriteMeiSymbol( dynamic_cast<Symbol*>(element) );
     }
     
     // we have it, set the uuid we read
@@ -456,7 +456,7 @@ void MeiOutput::WriteMeiRest( TiXmlElement *meiRest, Rest *rest )
     return;
 }
 
-TiXmlElement *MeiOutput::WriteMeiSymbol( MusSymbol *symbol )
+TiXmlElement *MeiOutput::WriteMeiSymbol( Symbol *symbol )
 {
     TiXmlElement *xmlElement = NULL;
     if (symbol->m_type==SYMBOL_ACCID) {
@@ -979,7 +979,7 @@ bool MeiInput::ReadMeiScoreDef( TiXmlElement *scoreDef )
     
     TiXmlElement *current = NULL;
     for( current = scoreDef->FirstChildElement( "staffGrp" ); current; current = current->NextSiblingElement( "staffGrp" ) ) {
-        MusStaffGrp *staffGrp = new MusStaffGrp( );
+        StaffGrp *staffGrp = new StaffGrp( );
         m_staffGrps.push_back( staffGrp );
         SetMeiUuid( current , staffGrp );
         if (ReadMeiStaffGrp( current )) {
@@ -999,7 +999,7 @@ bool MeiInput::ReadMeiStaffGrp( TiXmlElement *staffGrp )
     assert( !m_staffGrps.empty() );
     assert( !m_staffDef );
     
-    MusStaffGrp *currentStaffGrp = m_staffGrps.back();
+    StaffGrp *currentStaffGrp = m_staffGrps.back();
     
     if ( staffGrp->Attribute( "symbol" ) ) {
         currentStaffGrp->SetSymbol( StrToStaffGrpSymbol( staffGrp->Attribute( "symbol" ) ) );
@@ -1011,7 +1011,7 @@ bool MeiInput::ReadMeiStaffGrp( TiXmlElement *staffGrp )
     TiXmlElement *current = NULL;
     for( current = staffGrp->FirstChildElement( ); current; current = current->NextSiblingElement( ) ) {
         if ( std::string( current->Value() ) == "staffGrp" ) {
-            MusStaffGrp *staffGrp = new MusStaffGrp( );
+            StaffGrp *staffGrp = new StaffGrp( );
             m_staffGrps.push_back( staffGrp );
             SetMeiUuid( current , staffGrp );
             if (ReadMeiStaffGrp( current )) {
@@ -1023,7 +1023,7 @@ bool MeiInput::ReadMeiStaffGrp( TiXmlElement *staffGrp )
             m_staffGrps.pop_back();            
         }
         else if ( std::string( current->Value() ) == "staffDef" ) {
-            m_staffDef = new MusStaffDef( );
+            m_staffDef = new StaffDef( );
             SetMeiUuid( current , m_staffDef );
             if (ReadMeiStaffDef( current )) {
                 currentStaffGrp->AddStaffDef( m_staffDef );
@@ -1422,7 +1422,7 @@ LayerElement *MeiInput::ReadMeiTuplet( TiXmlElement *tuplet )
 
 LayerElement *MeiInput::ReadMeiAccid( TiXmlElement *accid )
 {
-    MusSymbol *musAccid = new MusSymbol( SYMBOL_ACCID );
+    Symbol *musAccid = new Symbol( SYMBOL_ACCID );
     
     if ( accid->Attribute( "accid" ) ) {
         musAccid->m_accid = StrToAccid( accid->Attribute( "accid" ) );
@@ -1441,7 +1441,7 @@ LayerElement *MeiInput::ReadMeiAccid( TiXmlElement *accid )
 
 LayerElement *MeiInput::ReadMeiCustos( TiXmlElement *custos )
 {
-    MusSymbol *musCustos = new MusSymbol( SYMBOL_CUSTOS );
+    Symbol *musCustos = new Symbol( SYMBOL_CUSTOS );
     
 	// position (pitch)
 	if ( custos->Attribute( "pname" ) ) {
@@ -1457,7 +1457,7 @@ LayerElement *MeiInput::ReadMeiCustos( TiXmlElement *custos )
 
 LayerElement *MeiInput::ReadMeiDot( TiXmlElement *dot )
 {
-    MusSymbol *musDot = new MusSymbol( SYMBOL_DOT );
+    Symbol *musDot = new Symbol( SYMBOL_DOT );
     
     musDot->m_dot = 0;
     // missing m_dots

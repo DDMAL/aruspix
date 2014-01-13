@@ -140,21 +140,21 @@ public:
      * Set drawing clef, keysig and mensur if necessary and if available.
      * Also set the current clef.
      */
-    void SetDrawingValues( ScoreDef *currentScoreDef, MusStaffDef *currentStaffDef );
+    void SetDrawingValues( ScoreDef *currentScoreDef, StaffDef *currentStaffDef );
     
 
     //Lyric related methods
     /*
-	int GetLyricPos( MusSymbol *lyric );
-	MusSymbol *GetPreviousLyric( MusSymbol *lyric );
-	MusSymbol *GetNextLyric( MusSymbol *lyric );
-	MusSymbol *GetFirstLyric( );
-	MusSymbol *GetLastLyric( );
-	MusSymbol *GetLyricAtPos( int x );
-	void DeleteLyric( MusSymbol *symbol );
-	Note *GetNextNote( MusSymbol * lyric );
-	Note *GetPreviousNote( MusSymbol * lyric );
-	void SwitchLyricNoteAssociation( MusSymbol *lyric, Note *oldNote, Note* newNote, bool beginning );
+	int GetLyricPos( Symbol *lyric );
+	Symbol *GetPreviousLyric( Symbol *lyric );
+	Symbol *GetNextLyric( Symbol *lyric );
+	Symbol *GetFirstLyric( );
+	Symbol *GetLastLyric( );
+	Symbol *GetLyricAtPos( int x );
+	void DeleteLyric( Symbol *symbol );
+	Note *GetNextNote( Symbol * lyric );
+	Note *GetPreviousNote( Symbol * lyric );
+	void SwitchLyricNoteAssociation( Symbol *lyric, Note *oldNote, Note* newNote, bool beginning );
 	void AdjustLyricLineHeight( int delta );
     */
     

@@ -14,8 +14,8 @@
 class Clef;
 class KeySignature;
 class Mensur;
-class MusStaffGrp;
-class MusStaffDef;
+class StaffGrp;
+class StaffDef;
 
 #define STAFFDEF_DRAW_NONE  0
 #define STAFFDEF_DRAW_CLEF  (1<<0)
@@ -82,7 +82,7 @@ protected:
 
 /**
  * This class represents a MEI scoreDef.
- * It contains MusStaffGrp objects.
+ * It contains StaffGrp objects.
 */
 class ScoreDef: public Object, public ScoreOrStaffDefAttrInterface, public ObjectListInterface
 {
@@ -95,7 +95,7 @@ public:
     
     void Clear();
     
-	void AddStaffGrp( MusStaffGrp *staffGrp );
+	void AddStaffGrp( StaffGrp *staffGrp );
     
     /**
      * Replace the scoreDef with the content of the newScoreDef.
@@ -107,12 +107,12 @@ public:
      * Looks for the staffDef with the same m_n (@n) and replace the attribute set.
      * Attribute set is provided by the ScoreOrStaffDefAttrInterface.
      */
-    void Replace( MusStaffDef *newStaffDef );
+    void Replace( StaffDef *newStaffDef );
     
     /**
      * Get the staffDef with number n (NULL if not found).
      */
-    MusStaffDef *GetStaffDef( int n );
+    StaffDef *GetStaffDef( int n );
     
     /**
      * Set the redraw flag to all staffDefs.
@@ -137,26 +137,26 @@ private:
 
 
 //----------------------------------------------------------------------------
-// MusStaffGrp
+// StaffGrp
 //----------------------------------------------------------------------------
 
 /**
  * This class represents a MEI staffGrp.
- * It contains MusStaffDef objects.
+ * It contains StaffDef objects.
  */
-class MusStaffGrp: public Object, public ObjectListInterface
+class StaffGrp: public Object, public ObjectListInterface
 {
 public:
     // constructors and destructors
-    MusStaffGrp();
-    virtual ~MusStaffGrp();
-    virtual Object* Clone() { return new MusStaffGrp(*this); };
+    StaffGrp();
+    virtual ~StaffGrp();
+    virtual Object* Clone() { return new StaffGrp(*this); };
     
-    virtual std::string MusClassName( ) { return "MusStaffGrp"; };
+    virtual std::string MusClassName( ) { return "StaffGrp"; };
 	
-	void AddStaffDef( MusStaffDef *staffDef );
+	void AddStaffDef( StaffDef *staffDef );
     
-	void AddStaffGrp( MusStaffGrp *staffGrp );
+	void AddStaffGrp( StaffGrp *staffGrp );
     
     /**
      * @name Set and get the staffGrp @symbol
@@ -196,21 +196,21 @@ private:
 
 
 //----------------------------------------------------------------------------
-// MusStaffDef
+// StaffDef
 //----------------------------------------------------------------------------
 
 /**
  * This class represents a MEI staffDef.
  */
-class MusStaffDef: public Object, public ScoreOrStaffDefAttrInterface
+class StaffDef: public Object, public ScoreOrStaffDefAttrInterface
 {
 public:
     // constructors and destructors
-    MusStaffDef();
-    virtual ~MusStaffDef();
-    virtual Object* Clone() { return new MusStaffDef(*this); };
+    StaffDef();
+    virtual ~StaffDef();
+    virtual Object* Clone() { return new StaffDef(*this); };
     
-    virtual std::string MusClassName( ) { return "MusStaffDef"; };
+    virtual std::string MusClassName( ) { return "StaffDef"; };
     
     /**
      * @name Set and get  the staff number which is 1-based.

@@ -650,7 +650,7 @@ int Object::SetPageScoreDef( ArrayPtrVoid params )
 
     // param 0: the current scoreDef
     ScoreDef *currentScoreDef = (ScoreDef*)params[0];
-    MusStaffDef **currentStaffDef = (MusStaffDef**)params[1];
+    StaffDef **currentStaffDef = (StaffDef**)params[1];
     
 
     // starting a new page

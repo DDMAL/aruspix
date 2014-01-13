@@ -485,7 +485,7 @@ bool MusWWGOutput::WriteLayer( const Layer *layer, int staffNo )
             TYPE = NOTE;
             WriteNote( );
         }
-        else if (dynamic_cast<MusSymbol*>(element)) {
+        else if (dynamic_cast<Symbol*>(element)) {
             TYPE = SYMB;
             WriteSymbol( );
         }
@@ -1072,7 +1072,7 @@ bool MusWWGInput::ReadNote( Layer *layer )
         layer_element = note;
     }
     else if (val == CUSTOS) {
-        MusSymbol *custos = new MusSymbol( SYMBOL_CUSTOS );
+        Symbol *custos = new Symbol( SYMBOL_CUSTOS );
         custos->m_oct = oct;
         custos->m_pname = code;
         layer_element = custos;
@@ -1108,7 +1108,7 @@ bool MusWWGInput::ReadNote( Layer *layer )
         int nb_lyrics = (int)m_lyrics.GetCount();
         for (i = 0; i < nb_lyrics; i++) {
             // default values
-            MusSymbol1 *lyric = m_lyrics.Detach(0);
+            Symbol1 *lyric = m_lyrics.Detach(0);
             lyric->dec_y = - STAFF_OFFSET;
             lyric->m_xAbs = x_abs - 20;
             lyric->m_note_ptr = note;	
@@ -1147,7 +1147,7 @@ bool MusWWGInput::ReadSymbol( Layer *layer )
 
     } 
     else if ( flag == ALTER ) {
-        MusSymbol *alter = new MusSymbol( SYMBOL_ACCID );
+        Symbol *alter = new Symbol( SYMBOL_ACCID );
         alter->m_oct = oct;
         alter->m_pname = code;
         alter->m_accid = calte;

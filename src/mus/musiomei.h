@@ -25,7 +25,7 @@ class Mensur;
 class MultiRest;
 class Note;
 class Rest;
-class MusSymbol;
+class Symbol;
 class Tuplet;
 
 
@@ -60,8 +60,8 @@ public:
     virtual bool WritePage( Page *page );
     virtual bool WriteSystem( System *system );
     virtual bool WriteScoreDef( ScoreDef *scoreDef );
-    virtual bool WriteStaffGrp( MusStaffGrp *staffGrp );
-    virtual bool WriteStaffDef( MusStaffDef *staffDef );
+    virtual bool WriteStaffGrp( StaffGrp *staffGrp );
+    virtual bool WriteStaffDef( StaffDef *staffDef );
     virtual bool WriteMeasure( Measure *measure );
     virtual bool WriteStaff( Staff *staff );
     virtual bool WriteLayer( Layer *layer );
@@ -122,11 +122,11 @@ private:
     void WriteMeiTuplet( TiXmlElement *meiTuplet, Tuplet *tuplet );
     
     /**
-     * Write a MusSymbol. 
+     * Write a Symbol. 
      * The appropriate MeiElement is created by the method and returned.
      * Callded from WriteLayerElement.
      */
-    TiXmlElement *WriteMeiSymbol( MusSymbol *symbol ); 
+    TiXmlElement *WriteMeiSymbol( Symbol *symbol ); 
     
     /**
      * Write a sameAs attribute
@@ -275,8 +275,8 @@ private:
     Page *m_page;
     System *m_system;
     ScoreDef *m_scoreDef;
-    std::list<MusStaffGrp*> m_staffGrps;
-    MusStaffDef *m_staffDef;
+    std::list<StaffGrp*> m_staffGrps;
+    StaffDef *m_staffDef;
     Measure *m_measure;
 	Staff *m_staff;
 	Layer *m_layer;

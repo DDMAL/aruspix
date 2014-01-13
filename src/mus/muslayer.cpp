@@ -196,7 +196,7 @@ void Layer::Insert( LayerElement *layerElement, LayerElement *before )
     AddElement( layerElement , idx );
 }
 
-void Layer::SetDrawingValues( ScoreDef *currentScoreDef, MusStaffDef *currentStaffDef )
+void Layer::SetDrawingValues( ScoreDef *currentScoreDef, StaffDef *currentStaffDef )
 {
     if (!currentStaffDef || !currentScoreDef) {
         Vrv::LogDebug("scoreDef and/or staffDef not found");
@@ -393,7 +393,7 @@ void Layer::RemoveClefAndCustos()
                 elementCount--;
                 // now remove alterations (keys)
                 for (; i < elementCount; i++) {
-                    MusSymbol *accid = dynamic_cast<MusSymbol*>(m_children[i]);
+                    Symbol *accid = dynamic_cast<Symbol*>(m_children[i]);
                     if ( accid && accid->IsSymbol( SYMBOL_ACCID ) ) {
                         this->Delete( accid );
                         elementCount--;
@@ -410,7 +410,7 @@ void Layer::RemoveClefAndCustos()
             }
         }
         else if ( ((LayerElement*)m_children[i])->IsSymbol( SYMBOL_CUSTOS ) ) {
-            MusSymbol *symbol = dynamic_cast<MusSymbol*>(m_children[i]);
+            Symbol *symbol = dynamic_cast<Symbol*>(m_children[i]);
             this->Delete( symbol );
             elementCount--;
             i--;
@@ -421,9 +421,9 @@ void Layer::RemoveClefAndCustos()
 /*
 // Gets the y coordinate of the previous lyric. If lyric is NULL, it will return the y coordinate of the first lyric 
 // in the stave. If there are no lyrics in the Stave -1 is returned.
-int Layer::GetLyricPos( MusSymbol1 *lyric )
+int Layer::GetLyricPos( Symbol1 *lyric )
 {
-	MusSymbol1 *tmp;
+	Symbol1 *tmp;
 	if ( !lyric ){
 		if ( !( tmp = GetFirstLyric() ) )
 			return -1;
@@ -435,7 +435,7 @@ int Layer::GetLyricPos( MusSymbol1 *lyric )
 	return tmp->dec_y;
 }
 
-MusSymbol1 *Layer::GetPreviousLyric( MusSymbol1 *lyric )
+Symbol1 *Layer::GetPreviousLyric( Symbol1 *lyric )
 {
 	if ( !lyric || m_children.IsEmpty() || !lyric->m_note_ptr || lyric->m_note_ptr->no < 0 )
 		return NULL;
@@ -444,7 +444,7 @@ MusSymbol1 *Layer::GetPreviousLyric( MusSymbol1 *lyric )
 	if ( (int)lyric->m_note_ptr->m_lyrics.GetCount() > 1 ){
 		bool check = false; // Keeps track if we have past the pointer to this element in m_lyrics
 		for ( int i = (int)lyric->m_note_ptr->m_lyrics.GetCount() - 1; i >= 0; i-- ){
-			MusSymbol1 *previousLyric = &lyric->m_note_ptr->m_lyrics[i];
+			Symbol1 *previousLyric = &lyric->m_note_ptr->m_lyrics[i];
 			if ( check ) return previousLyric;
 			if ( previousLyric == lyric ) check = true;
 		}
@@ -454,7 +454,7 @@ MusSymbol1 *Layer::GetPreviousLyric( MusSymbol1 *lyric )
 	while ( no >= 0 ){
 		if ( m_children[ no ].IsNote() ){
 			for ( int i = (int) ((Note1*)m_children[ no ])->m_lyrics.GetCount() - 1; i >= 0 ; i-- ){
-				MusSymbol1 *previousLyric = ((Note1*)m_children[ no ])->m_lyrics[i];
+				Symbol1 *previousLyric = ((Note1*)m_children[ no ])->m_lyrics[i];
 				if ( previousLyric ) return previousLyric;
 			}
 		}
@@ -463,7 +463,7 @@ MusSymbol1 *Layer::GetPreviousLyric( MusSymbol1 *lyric )
 	return NULL;
 }
 
-MusSymbol1 *Layer::GetNextLyric( MusSymbol1 *lyric )
+Symbol1 *Layer::GetNextLyric( Symbol1 *lyric )
 {	
 	if ( !lyric || m_children.IsEmpty() || !lyric->m_note_ptr || lyric->m_note_ptr->no > (int)m_children.GetCount() - 1 )
 		return NULL;
@@ -472,7 +472,7 @@ MusSymbol1 *Layer::GetNextLyric( MusSymbol1 *lyric )
 	if ( (int)lyric->m_note_ptr->m_lyrics.GetCount() > 1 ){
 		bool check = false; // Keeps track if we have past the pointer to this element in m_lyrics
 		for ( int i = 0; i < (int)lyric->m_note_ptr->m_lyrics.GetCount(); i++ ){
-			MusSymbol1 *nextLyric = &lyric->m_note_ptr->m_lyrics[i];
+			Symbol1 *nextLyric = &lyric->m_note_ptr->m_lyrics[i];
 			if ( check ) 
 				return nextLyric;
 			if ( nextLyric == lyric ) 
@@ -484,7 +484,7 @@ MusSymbol1 *Layer::GetNextLyric( MusSymbol1 *lyric )
 	while ( no < (int)m_children.GetCount() ){
 		if ( m_children[ no ].IsNote() ){
 			for ( int i = 0; i < (int) ((Note1*)m_children[ no ])->m_lyrics.GetCount(); i++ ){
-				MusSymbol1 *nextLyric = ((Note1*)m_children[ no ])->m_lyrics[i];
+				Symbol1 *nextLyric = ((Note1*)m_children[ no ])->m_lyrics[i];
 				if ( nextLyric )
 					return nextLyric;
 			}
@@ -494,7 +494,7 @@ MusSymbol1 *Layer::GetNextLyric( MusSymbol1 *lyric )
 	return NULL;
 }
 
-MusSymbol1 *Layer::GetFirstLyric( )
+Symbol1 *Layer::GetFirstLyric( )
 {
 	if ( m_children.IsEmpty() )
 		return NULL;
@@ -502,7 +502,7 @@ MusSymbol1 *Layer::GetFirstLyric( )
 	while ( no < (int)m_children.GetCount() ){
 		if ( m_children[ no ].IsNote() ){
 			for ( int i = 0; i < (int) ((Note1*)m_children[ no ])->m_lyrics.GetCount(); i++ ){
-				MusSymbol1 *lyric = ((Note1*)m_children[ no ])->m_lyrics[i];
+				Symbol1 *lyric = ((Note1*)m_children[ no ])->m_lyrics[i];
 				if ( lyric )
 					return lyric;
 			}
@@ -512,7 +512,7 @@ MusSymbol1 *Layer::GetFirstLyric( )
 	return NULL;	
 }
 
-MusSymbol1 *Layer::GetLastLyric( )
+Symbol1 *Layer::GetLastLyric( )
 {
 	if ( m_children.IsEmpty() )
 		return NULL;
@@ -520,7 +520,7 @@ MusSymbol1 *Layer::GetLastLyric( )
 	while ( no >= 0 ){
 		if ( m_children[ no ].IsNote() ) {
 			for ( int i = (int) ((Note1*)m_children[ no ])->m_lyrics.GetCount() - 1; i >= 0 ; i-- ){
-				MusSymbol1 *lyric = ((Note1*)m_children[ no ])->m_lyrics[i];
+				Symbol1 *lyric = ((Note1*)m_children[ no ])->m_lyrics[i];
 				if ( lyric )
 					return lyric;
 			}
@@ -530,9 +530,9 @@ MusSymbol1 *Layer::GetLastLyric( )
 	return NULL;
 }
 
-MusSymbol1 *Layer::GetLyricAtPos( int x )
+Symbol1 *Layer::GetLyricAtPos( int x )
 {
-	MusSymbol1 *lyric = this->GetFirstLyric();
+	Symbol1 *lyric = this->GetFirstLyric();
 	if ( !lyric )
 		return NULL;
 	
@@ -548,13 +548,13 @@ MusSymbol1 *Layer::GetLyricAtPos( int x )
 	return lyric;
 }
 
-void Layer::DeleteLyric( MusSymbol1 *symbol )
+void Layer::DeleteLyric( Symbol1 *symbol )
 {
 	if ( !symbol ) return;
 	
 	Note1 *note = symbol->m_note_ptr;
 	for ( int i = 0; i < (int)note->m_lyrics.GetCount(); i++ ){
-		MusSymbol1 *lyric = &note->m_lyrics[i];
+		Symbol1 *lyric = &note->m_lyrics[i];
 		if ( symbol == lyric )
 			note->m_lyrics.Detach(i);
 	}
@@ -562,7 +562,7 @@ void Layer::DeleteLyric( MusSymbol1 *symbol )
 	this->Delete( symbol );
 }
 
-Note1 *Layer::GetNextNote( MusSymbol1 * lyric )
+Note1 *Layer::GetNextNote( Symbol1 * lyric )
 {
 	if ( !lyric || m_children.IsEmpty() || !lyric->m_note_ptr || lyric->m_note_ptr->no >= (int)m_children.GetCount() - 1 )
 		return NULL;
@@ -576,7 +576,7 @@ Note1 *Layer::GetNextNote( MusSymbol1 * lyric )
 	return NULL;
 }
 
-Note1 *Layer::GetPreviousNote( MusSymbol1 * lyric )
+Note1 *Layer::GetPreviousNote( Symbol1 * lyric )
 {
 	if ( !lyric || m_children.IsEmpty() || !lyric->m_note_ptr || lyric->m_note_ptr->no <= 0 )
 		return NULL;
@@ -594,7 +594,7 @@ Note1 *Layer::GetPreviousNote( MusSymbol1 * lyric )
 //bool beginning: indicates if we want to add the lyric to beginning or end of the lyric array in newNote 
 //		true = beginning of array
 //		false = end of array
-void Layer::SwitchLyricNoteAssociation( MusSymbol1 *lyric, Note1 *oldNote, Note1* newNote, bool beginning )
+void Layer::SwitchLyricNoteAssociation( Symbol1 *lyric, Note1 *oldNote, Note1* newNote, bool beginning )
 {
 	if ( !lyric || !oldNote || !newNote )
 		return;
@@ -606,7 +606,7 @@ void Layer::SwitchLyricNoteAssociation( MusSymbol1 *lyric, Note1 *oldNote, Note1
 		newNote->m_lyrics.Insert( lyric, newNote->m_lyrics.GetCount() );
 	
 	for ( int i = 0; i < (int)oldNote->m_lyrics.GetCount(); i++ ){
-		MusSymbol1 *element = &oldNote->m_lyrics[i];
+		Symbol1 *element = &oldNote->m_lyrics[i];
 		if ( element == lyric ){
 			oldNote->m_lyrics.Detach(i);
 			break;
@@ -620,7 +620,7 @@ void Layer::AdjustLyricLineHeight( int delta )
 		LayerElement *element = m_children[i];
 		if ( element->IsNote() ){
 			for ( int j = 0; j < (int)((Note1*)element)->m_lyrics.GetCount(); j++ ){
-				MusSymbol1 *lyric = &((Note1*)element)->m_lyrics[j];
+				Symbol1 *lyric = &((Note1*)element)->m_lyrics[j];
 				lyric->dec_y += delta;
 			}
 		}

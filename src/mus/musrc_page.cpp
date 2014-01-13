@@ -127,7 +127,7 @@ void View::DrawScoreDef( DeviceContext *dc, ScoreDef *scoreDef, Measure *measure
     // we need at least one measure to be able to draw the groups - we need access to the staff elements,
     assert( measure );
     
-    MusStaffGrp *staffGrp = dynamic_cast<MusStaffGrp*>(scoreDef->GetFirstChild( &typeid(MusStaffGrp) ) );
+    StaffGrp *staffGrp = dynamic_cast<StaffGrp*>(scoreDef->GetFirstChild( &typeid(StaffGrp) ) );
     if ( !staffGrp ) {
         return;
     }
@@ -146,7 +146,7 @@ void View::DrawScoreDef( DeviceContext *dc, ScoreDef *scoreDef, Measure *measure
 }
 
 
-void View::DrawStaffGrp( DeviceContext *dc, Measure *measure, MusStaffGrp *staffGrp, int x )
+void View::DrawStaffGrp( DeviceContext *dc, Measure *measure, StaffGrp *staffGrp, int x )
 {
     assert( measure );
     assert( staffGrp );
@@ -157,8 +157,8 @@ void View::DrawStaffGrp( DeviceContext *dc, Measure *measure, MusStaffGrp *staff
     }
     
     // Get the first and last staffDef of the staffGrp
-    MusStaffDef *firstDef = dynamic_cast<MusStaffDef*>(staffDefs->front());
-    MusStaffDef *lastDef = dynamic_cast<MusStaffDef*>(staffDefs->back());
+    StaffDef *firstDef = dynamic_cast<StaffDef*>(staffDefs->front());
+    StaffDef *lastDef = dynamic_cast<StaffDef*>(staffDefs->back());
     
     if (!firstDef || !lastDef ) {
         Vrv::LogDebug("Could not get staffDef while drawing staffGrp - Vrv::DrawStaffGrp");
@@ -192,9 +192,9 @@ void View::DrawStaffGrp( DeviceContext *dc, Measure *measure, MusStaffGrp *staff
     
     // recursively draw the children
     int i;
-    MusStaffGrp *childStaffGrp = NULL;
+    StaffGrp *childStaffGrp = NULL;
     for (i = 0; i < staffGrp->GetChildCount(); i++) {
-        childStaffGrp = dynamic_cast<MusStaffGrp*>(staffGrp->GetChild( i ));
+        childStaffGrp = dynamic_cast<StaffGrp*>(staffGrp->GetChild( i ));
         if ( childStaffGrp ) {
             DrawStaffGrp( dc, measure, childStaffGrp, x );
         }
@@ -324,7 +324,7 @@ void View::DrawBrace ( DeviceContext *dc, int x, int y1, int y2, int staffSize)
 }
 
 
-void View::DrawBarlines( DeviceContext *dc, Measure *measure, MusStaffGrp *staffGrp, int x, Barline *barline )
+void View::DrawBarlines( DeviceContext *dc, Measure *measure, StaffGrp *staffGrp, int x, Barline *barline )
 {
     assert( measure );
     assert( staffGrp );
@@ -332,11 +332,11 @@ void View::DrawBarlines( DeviceContext *dc, Measure *measure, MusStaffGrp *staff
     if ( !staffGrp->GetBarthru() ) {
         // recursively draw the children (staffDef or staffGrp)
         int i;
-        MusStaffGrp *childStaffGrp = NULL;
-        MusStaffDef *childStaffDef = NULL;
+        StaffGrp *childStaffGrp = NULL;
+        StaffDef *childStaffDef = NULL;
         for (i = 0; i < staffGrp->GetChildCount(); i++) {
-            childStaffGrp = dynamic_cast<MusStaffGrp*>(staffGrp->GetChild( i ));
-            childStaffDef = dynamic_cast<MusStaffDef*>(staffGrp->GetChild( i ));
+            childStaffGrp = dynamic_cast<StaffGrp*>(staffGrp->GetChild( i ));
+            childStaffDef = dynamic_cast<StaffDef*>(staffGrp->GetChild( i ));
             if ( childStaffGrp ) {
                 DrawBarlines( dc, measure, childStaffGrp, x, barline );
             }
@@ -364,8 +364,8 @@ void View::DrawBarlines( DeviceContext *dc, Measure *measure, MusStaffGrp *staff
         }
         
         // Get the first and last staffDef of the staffGrp
-        MusStaffDef *firstDef = dynamic_cast<MusStaffDef*>(staffDefs->front());
-        MusStaffDef *lastDef = dynamic_cast<MusStaffDef*>(staffDefs->back());
+        StaffDef *firstDef = dynamic_cast<StaffDef*>(staffDefs->front());
+        StaffDef *lastDef = dynamic_cast<StaffDef*>(staffDefs->back());
         
         if (!firstDef || !lastDef ) {
             Vrv::LogDebug("Could not get staffDef while drawing staffGrp - Vrv::DrawStaffGrp");
@@ -390,9 +390,9 @@ void View::DrawBarlines( DeviceContext *dc, Measure *measure, MusStaffGrp *staff
         // Now we have a barthru barline, but we have dots so we still need to go through each staff
         if ( barline->HasRepetitionDots() ) {
             int i;
-            MusStaffDef *childStaffDef = NULL;
+            StaffDef *childStaffDef = NULL;
             for (i = 0; i < staffGrp->GetChildCount(); i++) {
-                childStaffDef = dynamic_cast<MusStaffDef*>(staffGrp->GetChild( i ));
+                childStaffDef = dynamic_cast<StaffDef*>(staffGrp->GetChild( i ));
                 if ( childStaffDef ) {
                     Staff *staff = measure->GetStaffWithNo( childStaffDef->GetStaffNo() );
                     if (!staff ) {

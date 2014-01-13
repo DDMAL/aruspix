@@ -77,7 +77,7 @@ void DarmsInput::UnrollKeysig(int quantity, char alter) {
     return;
     //////
     for (int i = 0; i < quantity; i++) {
-        MusSymbol *alter = new MusSymbol( SYMBOL_ACCID );
+        Symbol *alter = new Symbol( SYMBOL_ACCID );
         alter->m_oct = 4;
         alter->m_pname = alteration_set[i];
         alter->m_accid = accid;
@@ -432,8 +432,8 @@ bool DarmsInput::ImportFile() {
     }
     
     // add miniaml scoreDef
-    MusStaffGrp *staffGrp = new MusStaffGrp();
-    MusStaffDef *staffDef = new MusStaffDef();
+    StaffGrp *staffGrp = new StaffGrp();
+    StaffDef *staffDef = new StaffDef();
     staffDef->SetStaffNo( 1 );
     staffGrp->AddStaffDef( staffDef );
     m_doc->m_scoreDef.AddStaffGrp( staffGrp );

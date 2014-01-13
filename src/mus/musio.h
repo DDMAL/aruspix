@@ -20,8 +20,8 @@ class LayerRdg;
 class Measure;
 class Page;
 class Staff;
-class MusStaffDef;
-class MusStaffGrp;
+class StaffDef;
+class StaffGrp;
 class System;
 
 //----------------------------------------------------------------------------
@@ -54,8 +54,8 @@ public:
     virtual bool WriteDoc( Doc *doc ) { return true; };
     virtual bool WritePage( Page *page ) { return true; };
     virtual bool WriteSystem( System *system ) { return true; };
-    virtual bool WriteStaffGrp( MusStaffGrp *system ) { return true; };
-    virtual bool WriteStaffDef( MusStaffDef *system ) { return true; };
+    virtual bool WriteStaffGrp( StaffGrp *system ) { return true; };
+    virtual bool WriteStaffDef( StaffDef *system ) { return true; };
     virtual bool WriteMeasure( Measure *measure ) { return true; };
     virtual bool WriteStaff( Staff *staff ) { return true; };
     virtual bool WriteLayer( Layer *layer ) { return true; };

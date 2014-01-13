@@ -126,7 +126,7 @@ void ScoreDef::Clear()
     ClearChildren();
 }
 
-void ScoreDef::AddStaffGrp( MusStaffGrp *staffGrp )
+void ScoreDef::AddStaffGrp( StaffGrp *staffGrp )
 {
     assert( m_children.empty() );
 	staffGrp->SetParent( this );
@@ -146,10 +146,10 @@ void ScoreDef::Replace( ScoreDef *newScoreDef )
     newScoreDef->Process( &replaceStaffDefsInScoreDef, params );
 }
 
-void ScoreDef::Replace( MusStaffDef *newStaffDef )
+void ScoreDef::Replace( StaffDef *newStaffDef )
 {
     // first find the staffDef with the same @n
-    MusStaffDef *staffDef = this->GetStaffDef( newStaffDef->GetStaffNo() );
+    StaffDef *staffDef = this->GetStaffDef( newStaffDef->GetStaffNo() );
     
     // if found, replace attributes
     if (staffDef) {
@@ -165,7 +165,7 @@ void ScoreDef::FilterList()
     ListOfObjects::iterator iter = m_list.begin();
     
     while ( iter != m_list.end()) {
-        MusStaffDef *currentStaffDef = dynamic_cast<MusStaffDef*>(*iter);
+        StaffDef *currentStaffDef = dynamic_cast<StaffDef*>(*iter);
         if ( !currentStaffDef )
         {
             iter = m_list.erase( iter );
@@ -176,16 +176,16 @@ void ScoreDef::FilterList()
 }
 
 
-MusStaffDef *ScoreDef::GetStaffDef( int n )
+StaffDef *ScoreDef::GetStaffDef( int n )
 {
-    MusStaffDef *staffDef = NULL;
+    StaffDef *staffDef = NULL;
     
     this->ResetList( this );
     ListOfObjects::iterator iter;
     int i;
     for (iter = m_list.begin(), i = 0; iter != m_list.end(); ++iter, i++)
     {
-        staffDef = dynamic_cast<MusStaffDef*>(*iter);
+        staffDef = dynamic_cast<StaffDef*>(*iter);
         if (staffDef && (staffDef->GetStaffNo() == n) ) {
             return staffDef;
         }
@@ -206,35 +206,35 @@ void ScoreDef::SetRedraw( bool clef, bool keysig, bool mensur )
 }
 
 //----------------------------------------------------------------------------
-// MusStaffGrp
+// StaffGrp
 //----------------------------------------------------------------------------
 
-MusStaffGrp::MusStaffGrp() :
+StaffGrp::StaffGrp() :
     Object(), ObjectListInterface()
 {
     m_symbol = STAFFGRP_NONE;
     m_barthru = false;
 }
 
-MusStaffGrp::~MusStaffGrp()
+StaffGrp::~StaffGrp()
 {
 }
 
-void MusStaffGrp::AddStaffDef( MusStaffDef *staffDef )
+void StaffGrp::AddStaffDef( StaffDef *staffDef )
 {
 	staffDef->SetParent( this );
 	m_children.push_back( staffDef );
     Modify();
 }
 
-void MusStaffGrp::AddStaffGrp( MusStaffGrp *staffGrp )
+void StaffGrp::AddStaffGrp( StaffGrp *staffGrp )
 {
 	staffGrp->SetParent( this );
 	m_children.push_back( staffGrp );
     Modify();
 }
 
-int MusStaffGrp::Save( ArrayPtrVoid params )
+int StaffGrp::Save( ArrayPtrVoid params )
 {
     // param 0: output stream
     FileOutputStream *output = (FileOutputStream*)params[0];
@@ -246,13 +246,13 @@ int MusStaffGrp::Save( ArrayPtrVoid params )
 }
 
 
-void MusStaffGrp::FilterList()
+void StaffGrp::FilterList()
 {
     // We want to keep only staffDef
     ListOfObjects::iterator iter = m_list.begin();
     
     while ( iter != m_list.end()) {
-        MusStaffDef *currentStaffDef = dynamic_cast<MusStaffDef*>(*iter);
+        StaffDef *currentStaffDef = dynamic_cast<StaffDef*>(*iter);
         if ( !currentStaffDef )
         {
             iter = m_list.erase( iter );
@@ -263,19 +263,19 @@ void MusStaffGrp::FilterList()
 }
 
 //----------------------------------------------------------------------------
-// MusStaffDef
+// StaffDef
 //----------------------------------------------------------------------------
 
-MusStaffDef::MusStaffDef() :
+StaffDef::StaffDef() :
     Object(), ScoreOrStaffDefAttrInterface()
 {
 }
 
-MusStaffDef::~MusStaffDef()
+StaffDef::~StaffDef()
 {
 }
 
-int MusStaffDef::Save( ArrayPtrVoid params )
+int StaffDef::Save( ArrayPtrVoid params )
 {
     // param 0: output stream
     FileOutputStream *output = (FileOutputStream*)params[0];
@@ -287,10 +287,10 @@ int MusStaffDef::Save( ArrayPtrVoid params )
 }
 
 //----------------------------------------------------------------------------
-// MusStaffDef functor methods
+// StaffDef functor methods
 //----------------------------------------------------------------------------
 
-int MusStaffDef::ReplaceStaffDefsInScoreDef( ArrayPtrVoid params )
+int StaffDef::ReplaceStaffDefsInScoreDef( ArrayPtrVoid params )
 {
     // param 0: the scoreDef
     ScoreDef *scoreDef = (ScoreDef*)params[0];
@@ -300,7 +300,7 @@ int MusStaffDef::ReplaceStaffDefsInScoreDef( ArrayPtrVoid params )
     return FUNCTOR_CONTINUE;
 }
 
-int MusStaffDef::SetStaffDefDraw( ArrayPtrVoid params )
+int StaffDef::SetStaffDefDraw( ArrayPtrVoid params )
 {
     // param 0: bool clef flag
     // param 1: bool keysig flag

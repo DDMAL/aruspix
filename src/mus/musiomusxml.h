@@ -26,7 +26,7 @@ class Clef;
 class Mensur;
 class Note;
 class Rest;
-class MusSymbol;
+class Symbol;
 
 
 //----------------------------------------------------------------------------

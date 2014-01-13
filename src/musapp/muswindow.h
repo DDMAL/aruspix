@@ -137,7 +137,7 @@ public:
     Mensur m_mensur;
     Note m_note;
     Rest m_rest;
-	MusSymbol m_symbol;
+	Symbol m_symbol;
 
 
 	int m_insert_x;

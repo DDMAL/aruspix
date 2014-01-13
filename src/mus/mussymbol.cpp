@@ -9,28 +9,28 @@
 #include "mussymbol.h"
 
 //----------------------------------------------------------------------------
-// MusSymbol
+// Symbol
 //----------------------------------------------------------------------------
 
-MusSymbol::MusSymbol():
+Symbol::Symbol():
 	LayerElement("symb-none-"), PositionInterface()
 {
     Init( SYMBOL_UNDEFINED );
 }
 
-MusSymbol::MusSymbol( SymbolType type ):
+Symbol::Symbol( SymbolType type ):
 	LayerElement("symb-"), PositionInterface()
 {
     Init( type );
 }
 
-MusSymbol::~MusSymbol()
+Symbol::~Symbol()
 {
 }
 
-bool MusSymbol::operator==( Object& other )
+bool Symbol::operator==( Object& other )
 {
-    MusSymbol *otherSymbol = dynamic_cast<MusSymbol*>( &other );
+    Symbol *otherSymbol = dynamic_cast<Symbol*>( &other );
     if ( !otherSymbol ) {
         return false;
     }
@@ -49,7 +49,7 @@ bool MusSymbol::operator==( Object& other )
     return true;
 }
 
-void MusSymbol::Init( SymbolType type )
+void Symbol::Init( SymbolType type )
 {
     m_type = type; 
     // DOT
@@ -59,7 +59,7 @@ void MusSymbol::Init( SymbolType type )
 }
 
 
-void MusSymbol::SetValue( int value, int flag ) 
+void Symbol::SetValue( int value, int flag ) 
 {
     Init( SYMBOL_UNDEFINED );
     if ( flag & 1 ) // control is down - alteration, double sharp or double flat
