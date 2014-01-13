@@ -12,6 +12,8 @@
 
 #include "io.h"
 
+namespace vrv {
+
 //----------------------------------------------------------------------------
 // LayerApp
 //----------------------------------------------------------------------------
@@ -85,3 +87,5 @@ int LayerRdg::Save( ArrayPtrVoid params )
     }
     return FUNCTOR_CONTINUE;
 }
+    
+} // namespace vrv

@@ -15,7 +15,9 @@
 #include <vector>
 
 #include "vrvdef.h"
- 
+
+namespace vrv {
+
 class Doc;
 class MusFunctor;
 class Object;
@@ -458,5 +460,7 @@ public:
 private:
     
 };
+
+} // namespace vrv
 
 #endif

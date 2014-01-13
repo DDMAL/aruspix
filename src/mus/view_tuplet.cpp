@@ -28,6 +28,8 @@
 #include "tie.h"
 #include "tuplet.h"
 
+namespace vrv {
+
 #define TUPLET_OFFSET 20
 #define OBLIQUE_OFFSET 0x52 //move to oblique figures
 
@@ -347,3 +349,5 @@ void View::DrawTuplet( DeviceContext *dc, Tuplet *tuplet, Layer *layer, Staff *s
     
     //rz dc->EndGraphic(element, this );
 }
+
+} // namespace vrv

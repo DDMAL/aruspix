@@ -11,6 +11,8 @@
 
 #include "object.h"
 
+namespace vrv {
+
 /*
  * This list is used for getting the bounding box of the Leipzig glyphs.
  * The values were obtained with ./varia/svg/split.xsl and boundingbox.svg.
@@ -122,4 +124,6 @@ private:
 };
 
 
+} // namespace vrv
+    
 #endif

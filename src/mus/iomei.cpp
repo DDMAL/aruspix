@@ -36,6 +36,8 @@
 #include "system.h"
 #include "tuplet.h"
 
+namespace vrv {
+
 //----------------------------------------------------------------------------
 // MeiOutput
 //----------------------------------------------------------------------------
@@ -1835,4 +1837,6 @@ StaffGrpSymbol MeiInput::StrToStaffGrpSymbol(std::string symbol)
     // default
 	return STAFFGRP_LINE;
 }
+    
+} // namespace vrv
 

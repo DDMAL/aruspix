@@ -38,6 +38,8 @@
 #include "musapp/mustoolpanel.h"
 #include "musapp/musiowwg.h"
 
+using namespace vrv;
+
 // statics
 bool RecEnv::s_check = true;
 bool RecEnv::s_deskew = true;

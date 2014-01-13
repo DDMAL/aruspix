@@ -11,6 +11,8 @@
 
 #include <string>
 
+namespace vrv {
+
 #define AxWHITE  255 << 16 | 255 << 8 | 255
 #define AxBLACK 0
 #define AxRED  255 << 16
@@ -333,5 +335,7 @@ public:
 public:
     int x, y, width, height;
 };
+
+} // namespace vrv
 
 #endif // __AX_DC_H__

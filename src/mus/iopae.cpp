@@ -58,6 +58,8 @@
 #define regfree llvm_regfree
 */
 
+namespace vrv {
+
 #define BEAM_INITIAL    0x01
 #define BEAM_MEDIAL     0x02
 #define BEAM_TERMINAL      0x04
@@ -1309,3 +1311,5 @@ void PaeInput::getAtRecordKeyValue(char *key, char* value,
         break;
     }
 }
+
+} // namespace vrv

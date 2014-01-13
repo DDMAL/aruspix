@@ -9,6 +9,8 @@
 #ifndef __MUS_PITCH_INTERFACE_H__
 #define __MUS_PITCH_INTERFACE_H__
 
+namespace vrv {
+
 //----------------------------------------------------------------------------
 // PitchInterface
 //----------------------------------------------------------------------------
@@ -51,5 +53,6 @@ private:
     
 };
 
+} // namespace vrv    
 
 #endif

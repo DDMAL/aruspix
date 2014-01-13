@@ -27,6 +27,8 @@
 
 #define NOTE_MAX_SLURS 6
 
+namespace vrv {
+
 class Tie;
 
 //----------------------------------------------------------------------------
@@ -140,5 +142,6 @@ private:
     
 };
 
-
+} // namespace vrv
+    
 #endif

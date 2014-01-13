@@ -19,6 +19,8 @@
 #include "leipzigbbox.h"
 #include "view.h"
 
+namespace vrv {
+
 extern "C" {
 static inline double DegToRad(double deg) { return (deg * M_PI) / 180.0; }
 static inline double RadToDeg(double deg) { return (deg * 180.0) / M_PI; }
@@ -459,3 +461,5 @@ void BBoxDeviceContext::FindPointsForBounds(MusPoint P0, MusPoint P1, MusPoint P
     ret[2] = (int)xMax;
     ret[3] = (int)yMax;
 }
+
+} // namespace vrv

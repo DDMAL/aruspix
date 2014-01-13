@@ -49,6 +49,8 @@ WX_DEFINE_OBJARRAY( ArrayOfMLFSymbols );
     #include "tinyxml/tinyxml.h"
 #endif
 
+using namespace vrv;
+
 // utilise pour la transposition de silences
 
 static char _sil1[] = {'A','C','C','E','E','G','G','B','B'};

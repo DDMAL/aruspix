@@ -12,6 +12,8 @@
 
 #include <assert.h>
 
+namespace vrv {
+    
 //----------------------------------------------------------------------------
 // Tie
 //----------------------------------------------------------------------------
@@ -45,3 +47,5 @@ void Tie::SetSecondNote( Note *note )
     assert( !m_second );
     m_second = note;
 }
+
+} // namespace vrv

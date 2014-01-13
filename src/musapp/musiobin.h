@@ -20,8 +20,8 @@ enum
 	MUS_BIN_ARUSPIX
 };
 
-class Staff;
-class Layer;
+class vrv::Staff;
+class vrv::Layer;
 
 
 //----------------------------------------------------------------------------
@@ -36,16 +36,16 @@ class MusBinInput_1_X: public wxFileInputStream
 {
 public:
     // constructors and destructors
-    MusBinInput_1_X( Doc *file, wxString filename, int flag = MUS_BIN_ARUSPIX );
+    MusBinInput_1_X( vrv::Doc *file, wxString filename, int flag = MUS_BIN_ARUSPIX );
     virtual ~MusBinInput_1_X();
     
     bool ImportFile( );
 	bool ReadFileHeader( unsigned short *nbpage );
 	bool ReadSeparator( );
-	bool ReadPage( Page *page );
-	bool ReadStaff( Staff *staff, Layer *layer, int staffNo );
-	bool ReadNote( Layer *layer );
-	bool ReadSymbol( Layer *layer, bool isLyric = false );
+	bool ReadPage( vrv::Page *page );
+	bool ReadStaff( vrv::Staff *staff, vrv::Layer *layer, int staffNo );
+	bool ReadNote( vrv::Layer *layer );
+	bool ReadSymbol( vrv::Layer *layer, bool isLyric = false );
     bool ReadNeume( );
     bool ReadLyric( );
 	bool ReadElementAttr( );
@@ -63,8 +63,8 @@ private:
 	int m_flag;
     int m_vmaj, m_vmin, m_vrev;
 	// logical tree
-	Staff *m_logStaff;
-    Layer *m_logLayer;
+	vrv::Staff *m_logStaff;
+    vrv::Layer *m_logLayer;
     // for reading files before 2.0.0
     unsigned short m_noLigne;
     char m_indent;
@@ -192,7 +192,7 @@ private:
     unsigned short l_ptch;
 
 protected:
-    Doc *m_doc;
+    vrv::Doc *m_doc;
 	
 };
 

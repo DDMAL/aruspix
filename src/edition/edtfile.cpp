@@ -27,6 +27,8 @@
 #include "iomei.h"
 #include "musiobin.h"
 
+using namespace vrv;
+
 enum
 {
     MUS_PAPER_A4 = 0,

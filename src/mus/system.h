@@ -13,6 +13,8 @@
 #include "barline.h"
 #include "object.h"
 
+namespace vrv {
+
 #define SYSTEM_OFFSET 190
 
 class DeviceContext;
@@ -156,5 +158,7 @@ public:
 private:
     
 };
+
+} // namespace vrv
 
 #endif

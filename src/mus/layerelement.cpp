@@ -32,6 +32,8 @@
 #include "symbol.h"
 #include "tuplet.h"
 
+namespace vrv {
+
 /**
  * Define the maximum levels between a tuplet and its notes
  */
@@ -47,6 +49,7 @@ LayerElement::LayerElement():
 {
     Init();
 }
+
 
 LayerElement::LayerElement(std::string classid):
 	DocObject(classid)
@@ -352,3 +355,4 @@ int LayerElement::Align( ArrayPtrVoid params )
     return FUNCTOR_CONTINUE;
 }
 
+} // namespace vrv

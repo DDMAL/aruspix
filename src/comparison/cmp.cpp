@@ -29,6 +29,8 @@
 
 #include "musapp/musiowwg.h"
 
+using namespace vrv;
+
 int CmpEnv::s_book_sash = 200; // batch processing
 int CmpEnv::s_view_sash = 0;
 

@@ -14,6 +14,8 @@
 
 #include <string>
 
+namespace vrv {
+
 typedef enum _file_formats {
     mei_file = 0,
     pae_file,
@@ -161,4 +163,5 @@ private:
     bool m_showBoundingBoxes;
 };
 
+} // namespace vrv
 #endif

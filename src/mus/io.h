@@ -12,6 +12,8 @@
 #include <iostream>
 #include <string>
 
+namespace vrv {
+
 class Doc;
 class Layer;
 class LayerApp;
@@ -111,5 +113,7 @@ protected:
     
     
 };
+
+} //namespace vrv
 
 #endif

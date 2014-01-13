@@ -15,6 +15,8 @@
 #include "axoptions_wdr.h"
 #include "musapp/muswindow.h"
 
+#include "mus/doc.h"
+
 // XXX: Doesn't compile if AX_RECOGNITION isn't set
 #ifdef AX_RECOGNITION
 	#include "recognition/recfile.h"
@@ -158,7 +160,7 @@ public:
     virtual ~AxOptMusWindow();
     
 protected:
-    Doc *m_docPtr;
+    vrv::Doc *m_docPtr;
     
 private:
     void OnMouse( wxMouseEvent &event );

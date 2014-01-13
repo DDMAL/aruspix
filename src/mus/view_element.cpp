@@ -36,6 +36,8 @@
 #include "tie.h"
 #include "tuplet.h"
 
+namespace vrv {
+
 //----------------------------------------------------------------------------
 // View - LayerElement
 //----------------------------------------------------------------------------
@@ -1687,6 +1689,8 @@ void View::DrawLayerApp( DeviceContext *dc, LayerElement *element, Layer *layer,
     }
 }
 
+} // namespace vrv    
+    
 /*
  * Lyric code not refactored in ax2
     

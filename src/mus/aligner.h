@@ -11,6 +11,8 @@
 
 #include "object.h"
 
+namespace vrv {
+
 class SystemAligner;
 class StaffAlignment;
 class MeasureAligner;
@@ -314,5 +316,6 @@ private:
     //int m_totalWidth;
 };
 
-
+} // namespace vrv
+    
 #endif

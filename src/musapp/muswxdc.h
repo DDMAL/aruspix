@@ -25,7 +25,7 @@
  * This class is a wrapper to wxDCs.
  * All functionnalities are not implemented yet.
 */
-class MusWxDC: public DeviceContext
+class MusWxDC: public vrv::DeviceContext
 {
 public:
 
@@ -44,7 +44,7 @@ public:
     
     virtual void SetPen( int colour, int width = 1, int style = wxSOLID );
     
-    virtual void SetFont( FontMetricsInfo *font_info );
+    virtual void SetFont( vrv::FontMetricsInfo *font_info );
         
     virtual void SetTextForeground( int colour );
     
@@ -60,7 +60,7 @@ public:
     
     virtual void GetTextExtent( const std::string& string, int *w, int *h );
     
-    virtual MusPoint GetLogicalOrigin( );
+    virtual vrv::MusPoint GetLogicalOrigin( );
 
     // Drawing methods
 
@@ -74,7 +74,7 @@ public:
     
     virtual void DrawLine(int x1, int y1, int x2, int y2);
     
-    virtual void DrawPolygon(int n, MusPoint points[], int xoffset, int yoffset, int fill_style = wxODDEVEN_RULE);
+    virtual void DrawPolygon(int n, vrv::MusPoint points[], int xoffset, int yoffset, int fill_style = wxODDEVEN_RULE);
     
     virtual void DrawRectangle(int x, int y, int width, int height);
     
@@ -86,15 +86,15 @@ public:
     
     virtual void DrawMusicText(const std::string& text, int x, int y);
     
-    virtual void DrawSpline(int n, MusPoint points[]);
+    virtual void DrawSpline(int n, vrv::MusPoint points[]);
     
     virtual void DrawBackgroundImage( int x = 0, int y = 0 );
    
     // Method for starting and ending a graphic - for example for grouping shapes in <g></g> in SVG
     
-    virtual void StartGraphic( DocObject *object, std::string gClass, std::string gId ) {};
+    virtual void StartGraphic( vrv::DocObject *object, std::string gClass, std::string gId ) {};
     
-    virtual void EndGraphic( DocObject *object, View *rc  );
+    virtual void EndGraphic( vrv::DocObject *object, vrv::View *rc  );
     
     virtual void StartPage( ) { m_dc->EndPage(); };
     

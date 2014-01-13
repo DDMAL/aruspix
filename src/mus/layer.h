@@ -15,6 +15,8 @@
 #include "object.h"
 #include "scoredef.h"
 
+namespace vrv {
+
 class DeviceContext;
 class LayerElement;
 class Note;
@@ -189,5 +191,6 @@ private:
     
 };
 
+} // namespace vrv
 
 #endif

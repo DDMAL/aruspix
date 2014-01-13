@@ -14,6 +14,8 @@
 #include "aligner.h"
 #include "barline.h"
 
+namespace vrv {
+
 class Staff;
 
 //----------------------------------------------------------------------------
@@ -153,5 +155,6 @@ private:
     ///@}
 };
 
+} // namespace vrv
 
 #endif

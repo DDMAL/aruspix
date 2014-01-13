@@ -14,6 +14,7 @@
 #include "layerelement.h"
 #include "positioninterface.h"
 
+namespace vrv {
 
 //----------------------------------------------------------------------------
 // MusKeysig
@@ -50,5 +51,6 @@ private:
     
 };
 
+} // namespace vrv    
 
 #endif

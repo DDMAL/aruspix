@@ -49,7 +49,7 @@ public:
      * The LayerElement passed as parameter is the one of the collation.
      * The LayerElement sameAs attribute is used to find the corresponding one (if any)
      **/
-    void LoadSource( LayerElement *element );
+    void LoadSource( vrv::LayerElement *element );
     /**
      * Loads the sources.
      * Called from the collationCtrl.

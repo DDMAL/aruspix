@@ -19,6 +19,8 @@
 #include "vrvdef.h"
 #include "beam.h"
 
+namespace vrv {
+
 /**
  * Define the maximum levels between a beam and its notes
  */
@@ -133,3 +135,5 @@ bool DurationInterface::HasIdenticalDurationInterface( DurationInterface *otherD
     }
     return true;
 }
+
+} // namespace vrv

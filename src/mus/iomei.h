@@ -17,6 +17,8 @@
     #include "tinyxml/tinyxml.h"
 #endif
 
+namespace vrv {
+
 class Barline;
 class Beam;
 class Clef;
@@ -296,5 +298,6 @@ private:
     std::vector<Note*> m_openTies;
 };
 
+} // namespace vrv
 
 #endif

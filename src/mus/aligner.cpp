@@ -18,6 +18,8 @@
 #include "vrv.h"
 #include "layerelement.h"
 
+namespace vrv {
+
 //----------------------------------------------------------------------------
 // SystemAligner
 //----------------------------------------------------------------------------
@@ -339,4 +341,5 @@ int Alignment::JustifyX( ArrayPtrVoid params )
 
     return FUNCTOR_CONTINUE;
 }
-
+    
+} // namespace vrv

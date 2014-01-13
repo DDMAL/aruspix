@@ -14,6 +14,9 @@
 //----------------------------------------------------------------------------
 
 #include <algorithm>
+
+namespace vrv {
+
 #define is_in(x,a,b) (((x) >= std::min((a),(b))) && ((x) <= std::max((a),(b))))
 
 #define AX_UNSET -0x7FFFFFFF
@@ -319,5 +322,7 @@ enum NeumeStem {
 #define LEIPZIG_WHOLE_NOTE_HEAD_WIDTH 405.0
 #define LEIPZIG_HALF_NOTE_HEAD_WIDTH 314.0
 #define LEIPZIG_SHARP_WIDTH 197.0
+
+} // namespace vrv
 
 #endif // __MUS_DEF_H__

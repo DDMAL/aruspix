@@ -12,6 +12,8 @@
 #include "devicecontext.h"
 #include "object.h"
 
+namespace vrv {
+
 //----------------------------------------------------------------------------
 // BBoxDeviceContext
 //----------------------------------------------------------------------------
@@ -126,5 +128,7 @@ private:
     
     void FindPointsForBounds(MusPoint P0, MusPoint P1, MusPoint P2, MusPoint P3, int *ret);
 };
+
+} // namespace vrv
 
 #endif // __MUS_BBOX_DC_H__

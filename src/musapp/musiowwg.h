@@ -14,12 +14,15 @@
 #include "wx/wfstream.h"
 
 #include "mus/doc.h"
+#include "mus/beam.h"
+#include "mus/layer.h"
+
 
 #include "muswwg.h"
 
-class Staff;
-class Layer;
-class Beam;
+class vrv::Staff;
+class vrv::Layer;
+class vrv::Beam;
 
 //----------------------------------------------------------------------------
 // MusWWGElement
@@ -125,7 +128,7 @@ class MusWWGOutput: public wxFileOutputStream, public MusWWGElement
 {
 public:
     // constructors and destructors
-    MusWWGOutput( Doc *doc, std::string filename );
+    MusWWGOutput( vrv::Doc *doc, std::string filename );
     virtual ~MusWWGOutput();
     
     bool ExportFile( );
@@ -134,8 +137,8 @@ public:
 	bool WriteParameters2( const MusWWGData *param );
 	bool WriteFonts( const MusWWGData *fonts );
 	bool WriteSeparator( );
-	bool WritePage( const Page *page );
-	bool WriteLayer( const Layer *layer, int staffNo );
+	bool WritePage( const vrv::Page *page );
+	bool WriteLayer( const vrv::Layer *layer, int staffNo );
 
 	bool WritePagination( const MusWWGData *pagination );
 	bool WriteHeader( const MusWWGData *header);
@@ -153,11 +156,11 @@ private:
 	unsigned int uint32;
 	signed int int32;
 	std::string m_filename;
-    System *m_current_system; // the current system we are writing
-    Staff *m_current_staff; // the current staff we are writing
+    vrv::System *m_current_system; // the current system we are writing
+    vrv::Staff *m_current_staff; // the current staff we are writing
 
 protected:
-    Doc *m_doc;
+    vrv::Doc *m_doc;
     MusWWGData m_wwgData;
 };
 
@@ -173,7 +176,7 @@ class MusWWGInput: public wxFileInputStream, public MusWWGElement
 {
 public:
     // constructors and destructors
-    MusWWGInput( Doc *doc, std::string filename);
+    MusWWGInput( vrv::Doc *doc, std::string filename);
     virtual ~MusWWGInput();
     
     bool ImportFile( );
@@ -182,10 +185,10 @@ public:
 	bool ReadParameters2( MusWWGData *param );
 	bool ReadFonts( MusWWGData *fonts );
 	bool ReadSeparator( );
-	bool ReadPage( Page *page );
-	bool ReadStaff( Staff *staff, Layer *layer, int staffNo );
-	bool ReadNote( Layer *layer );
-	bool ReadSymbol( Layer *layer );
+	bool ReadPage( vrv::Page *page );
+	bool ReadStaff( vrv::Staff *staff, vrv::Layer *layer, int staffNo );
+	bool ReadNote( vrv::Layer *layer );
+	bool ReadSymbol( vrv::Layer *layer );
 	bool ReadElementAttr( );
 	bool ReadDebord( );
 	bool ReadPagination( MusWWGData *pagination );
@@ -205,11 +208,11 @@ private:
     char m_indentDroite;
     
     //
-    Beam *m_currentBeam;
+    vrv::Beam *m_currentBeam;
     bool m_isLastNoteInBeam;
     
 protected:
-    Doc *m_doc;
+    vrv::Doc *m_doc;
     MusWWGData m_wwgData;
 };
 

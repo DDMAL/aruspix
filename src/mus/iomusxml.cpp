@@ -28,6 +28,8 @@
 #include "symbol.h"
 #include "tie.h"
 
+namespace vrv {
+
 //----------------------------------------------------------------------------
 // XMLOutput
 //----------------------------------------------------------------------------
@@ -641,3 +643,5 @@ void XMLOutput::CreateAttributes() {
         m_xml_part->LinkEndChild(m_xml_attributes);
     }
 }
+
+} // namespace vrv

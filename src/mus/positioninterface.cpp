@@ -12,6 +12,8 @@
 
 #include "vrvdef.h"
 
+namespace vrv {
+
 //----------------------------------------------------------------------------
 // PositionInterface
 //----------------------------------------------------------------------------
@@ -53,3 +55,5 @@ bool PositionInterface::HasIdenticalPositionInterface( PositionInterface *otherP
     }
     return true;
 }
+
+} // namespace vrv

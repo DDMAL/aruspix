@@ -13,6 +13,8 @@
 #include "vrv.h"
 #include "tie.h"
 
+namespace vrv {
+
 //----------------------------------------------------------------------------
 // Note
 //----------------------------------------------------------------------------
@@ -176,3 +178,5 @@ int Note::GetHorizontalSpacing()
     }
     return 5; // arbitrary generic value
 }
+    
+} // namespace vrv

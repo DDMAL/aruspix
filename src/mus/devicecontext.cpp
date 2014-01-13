@@ -17,6 +17,8 @@
 
 #include "doc.h"
 
+namespace vrv {
+
 //----------------------------------------------------------------------------
 // FontMetricsInfo
 //----------------------------------------------------------------------------
@@ -74,4 +76,4 @@ std::string FontMetricsInfo::ToString() const
     return s;
 }
 
-
+} // namespace vrv

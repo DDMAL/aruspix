@@ -58,7 +58,7 @@ enum
  * It also implements the view (View) because the application window is used both for interacting
  * with the user and for rendering the model.
  */
-class MusWindow: public wxScrolledWindow, public View, public AxUndo
+class MusWindow: public wxScrolledWindow, public vrv::View, public AxUndo
 {
 public:
     // constructors and destructors
@@ -72,7 +72,7 @@ public:
     // edition
     virtual void DoRefresh() { Refresh(); }
     virtual void DoResize() { Resize(); }
-    virtual void DoLyricCursor( int x, int y, DeviceContext *dc, wxString lyric );
+    virtual void DoLyricCursor( int x, int y, vrv::DeviceContext *dc, wxString lyric );
     virtual void DoReset();
 
 	// copy paste
@@ -113,7 +113,7 @@ public:
 	void UpdatePen();
     
     void ToggleEditorMode();
-	void SetEditorMode( MusEditorMode insert );
+	void SetEditorMode( vrv::MusEditorMode insert );
     
 	/**
 		Redimensionne la fenetre en fonction de la taille du parent et du zoom de la taille de la page
@@ -127,17 +127,17 @@ public:
 	/** indique si la page doit etre centree asi elle n'occupe pas toute la fenetre */
 	bool m_center;
 
-	LayerElement *m_newElement;
-	LayerElement *m_bufferElement;
-	LayerElement *m_lastEditedElement;
+    vrv::LayerElement *m_newElement;
+	vrv::LayerElement *m_bufferElement;
+	vrv::LayerElement *m_lastEditedElement;
 
 	// keep elements statically - m_newElement will point on them
-    Barline m_barline;
-	Clef m_clef;
-    Mensur m_mensur;
-    Note m_note;
-    Rest m_rest;
-	Symbol m_symbol;
+    vrv::Barline m_barline;
+	vrv::Clef m_clef;
+    vrv::Mensur m_mensur;
+    vrv::Note m_note;
+    vrv::Rest m_rest;
+	vrv::Symbol m_symbol;
 
 
 	int m_insert_x;

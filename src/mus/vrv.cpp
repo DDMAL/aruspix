@@ -24,6 +24,8 @@
 #include "app/axapp.h"
 #endif
 
+namespace vrv {
+
 // Initialize static respource path
 std::string Vrv::m_respath = "/usr/local/share/aruspix";
 
@@ -298,3 +300,5 @@ MusEnv::MusEnv()
 MusEnv::~MusEnv()
 {
 }
+
+} // namespace vrv

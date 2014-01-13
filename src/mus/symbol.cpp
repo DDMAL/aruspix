@@ -8,6 +8,8 @@
 
 #include "symbol.h"
 
+namespace vrv {
+
 //----------------------------------------------------------------------------
 // Symbol
 //----------------------------------------------------------------------------
@@ -85,3 +87,5 @@ void Symbol::SetValue( int value, int flag )
         case ('C'): this->m_type = SYMBOL_CUSTOS; break;
     }
 }
+    
+} // namespace vrv

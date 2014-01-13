@@ -12,6 +12,8 @@
 #include "object.h"
 #include "scoredef.h"
 
+namespace vrv {
+
 class DeviceContext;
 class Staff;
 class System;
@@ -122,5 +124,7 @@ public:
 private:
     
 };
+
+} // namespace vrv
 
 #endif

@@ -34,6 +34,8 @@
 #include <iostream>
 #include <cstdlib>
 
+using namespace vrv;
+
 int MusWindow::s_flats[] = {PITCH_C, PITCH_D, PITCH_D, PITCH_E, PITCH_E, PITCH_F, PITCH_G, PITCH_G, PITCH_A, PITCH_A, PITCH_B, PITCH_B};
 int MusWindow::s_sharps[] = {PITCH_C, PITCH_C, PITCH_D, PITCH_D, PITCH_E, PITCH_F, PITCH_F, PITCH_G, PITCH_G, PITCH_A, PITCH_A, PITCH_B};
 

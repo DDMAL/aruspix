@@ -17,6 +17,8 @@
 #include <string>
 #include <vector>
 
+namespace vrv {
+
 //----------------------------------------------------------------------------
 // BBoxDeviceContext
 //----------------------------------------------------------------------------
@@ -154,5 +156,7 @@ private:
     std::string GetColour( int colour );
         
 };
+
+} // namespace vrv
 
 #endif // __MUS_SVG_DC_H__

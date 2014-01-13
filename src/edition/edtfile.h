@@ -16,10 +16,12 @@
 
 #include "app/axfile.h"
 
+#include "mus/doc.h"
+
 #include "edt_wdr.h"
 
 class EdtEnv;
-class Doc;
+class vrv::Doc;
 
 
 //----------------------------------------------------------------------------
@@ -49,7 +51,7 @@ private:
     
 public:
     EdtEnv *m_envPtr;
-    Doc *m_musDocPtr;
+    vrv::Doc *m_musDocPtr;
 
 protected:
        

@@ -8,6 +8,8 @@
 
 #include "mensur.h"
 
+namespace vrv {
+
 int Mensur::s_num = 3;
 int Mensur::s_numBase = 2;
 
@@ -168,3 +170,5 @@ void Mensur::SetValue( int value, int flag )
         //case ('3'): this->code = 64; this->calte = 3; break;
     }
 }
+
+} // namespace vrv

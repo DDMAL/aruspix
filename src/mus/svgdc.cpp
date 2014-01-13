@@ -23,6 +23,7 @@
 
 #include <math.h>
 
+namespace vrv {
 
 #define space " "
 #define semicolon ";"
@@ -646,3 +647,4 @@ std::string SvgDeviceContext::GetStringSVG( bool xml_tag )
     return m_outdata.str();
 }
 
+} // namespace vrv

@@ -13,8 +13,10 @@
 #include "note.h"
 #include "object.h"
 
+namespace vrv {
+
 //----------------------------------------------------------------------------
-// Beam
+// Tuplet
 //----------------------------------------------------------------------------
 
 class Tuplet: public LayerElement, public ObjectListInterface
@@ -51,4 +53,6 @@ private:
 
 };
 
+} // namespace vrv    
+    
 #endif

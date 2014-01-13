@@ -49,6 +49,8 @@ int SortCmpBookItems( CmpBookItem **first, CmpBookItem **second )
 
 int CmpBookItem::s_index = 0;
 
+using namespace vrv;
+
 
 //----------------------------------------------------------------------------
 // CmpCollationPart

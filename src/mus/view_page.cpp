@@ -31,6 +31,8 @@
 #include "tie.h"
 #include "tuplet.h"
 
+namespace vrv {
+
 //----------------------------------------------------------------------------
 // View - Page
 //----------------------------------------------------------------------------
@@ -922,7 +924,7 @@ void View::DrawLayerList( DeviceContext *dc, Layer *layer, Staff *staff, Measure
     }
 }
 
-
+} // namespace vrv
 
 
 

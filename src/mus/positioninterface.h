@@ -9,6 +9,8 @@
 #ifndef __MUS_POSITION_INTERFACE_H__
 #define __MUS_POSITION_INTERFACE_H__
 
+namespace vrv {
+
 //----------------------------------------------------------------------------
 // PositionInterface
 //----------------------------------------------------------------------------
@@ -49,6 +51,7 @@ public:
 private:
     
 };
-
+    
+} // namespace vrv    
 
 #endif

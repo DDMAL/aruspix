@@ -19,6 +19,8 @@
 #include "measure.h"
 #include "page.h"
 
+namespace vrv {
+
 //----------------------------------------------------------------------------
 // System
 //----------------------------------------------------------------------------
@@ -306,3 +308,4 @@ int System::JustifyX( ArrayPtrVoid params )
     return FUNCTOR_CONTINUE;
 }
 
+} // namespace vrv

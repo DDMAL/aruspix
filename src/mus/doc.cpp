@@ -25,6 +25,8 @@
 // Doc
 //----------------------------------------------------------------------------
 
+namespace vrv {
+
 Doc::Doc() :
     Object("doc-")
 {
@@ -278,3 +280,4 @@ int Doc::Save( FileOutputStream *output )
     return true;
 }
 
+} // namespace vrv

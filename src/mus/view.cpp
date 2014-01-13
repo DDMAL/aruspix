@@ -19,6 +19,8 @@
 #include "layerelement.h"
 #include "note.h"
 
+namespace vrv {
+
 //----------------------------------------------------------------------------
 // View
 //----------------------------------------------------------------------------
@@ -187,3 +189,4 @@ bool View::IsNoteSelected()
 		return m_currentElement->IsNote() || m_currentElement->IsNeume();
 }
 
+} // namespace vrv

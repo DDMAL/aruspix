@@ -11,6 +11,8 @@
 
 #include "object.h"
 
+namespace vrv {
+
 class Clef;
 class KeySignature;
 class Mensur;
@@ -272,5 +274,7 @@ private:
     ///@}
     
 };
+    
+} // namespace vrv
 
 #endif

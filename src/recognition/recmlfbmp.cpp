@@ -28,6 +28,8 @@ WX_DEFINE_OBJARRAY( ArrayOfMLFBitmapTypes );
 
 IMPLEMENT_DYNAMIC_CLASS(RecMLFSymbolBmp, MusMLFSymbol)
 
+using namespace vrv;
+
 //----------------------------------------------------------------------------
 // RecMLFBmpType
 //----------------------------------------------------------------------------

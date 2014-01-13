@@ -9,6 +9,8 @@
 
 #include "keysig.h"
 
+namespace vrv {
+
 //----------------------------------------------------------------------------
 // KeySignature
 //----------------------------------------------------------------------------
@@ -97,3 +99,5 @@ int KeySignature::GetOctave(unsigned char pitch, char clef) {
     
     return octave_map[alter_set][key_set][pitch - 1];
 }
+
+} // namespace vrv

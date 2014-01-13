@@ -35,6 +35,8 @@
 #include "tie.h"
 #include "tuplet.h"
 
+namespace vrv {
+
 //----------------------------------------------------------------------------
 // Object
 //----------------------------------------------------------------------------
@@ -870,10 +872,7 @@ int Object::SetBoundingBoxYShift( ArrayPtrVoid params )
     return FUNCTOR_SIBLINGS;
 }
 
-
-
-
-
+} // namespace vrv 
 
 
 

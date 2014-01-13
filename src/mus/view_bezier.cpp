@@ -8,6 +8,8 @@
 
 #include "view.h"
 
+namespace vrv {
+
 /** static members **/
 MusPoint View::point_[];
 MusPoint View::bcoord[];
@@ -19,3 +21,4 @@ void View::pntswap (MusPoint *x1, MusPoint *x2)
 	*x2 = a;
 }
 
+} // namespace vrv

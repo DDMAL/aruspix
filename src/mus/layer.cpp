@@ -23,6 +23,8 @@
 #include "note.h"
 #include "symbol.h"
 
+namespace vrv {
+
 //----------------------------------------------------------------------------
 // Layer
 //----------------------------------------------------------------------------
@@ -418,6 +420,8 @@ void Layer::RemoveClefAndCustos()
     }
 }
 
+
+    
 /*
 // Gets the y coordinate of the previous lyric. If lyric is NULL, it will return the y coordinate of the first lyric 
 // in the stave. If there are no lyrics in the Stave -1 is returned.
@@ -707,3 +711,4 @@ int Layer::Align( ArrayPtrVoid params )
     return FUNCTOR_CONTINUE;
 }
 
+} // namespace vrv

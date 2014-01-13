@@ -14,6 +14,8 @@
 
 #include "io.h"
 
+namespace vrv {
+
 class Doc;
 class Layer;
 class Measure;
@@ -64,5 +66,6 @@ private:
     static pitchmap PitchMap[];
 };
 
+} // namespace vrv
 
 #endif // __MUS_IODARMS_H__

@@ -32,6 +32,7 @@ using std::max;
 #include "im/impage.h"
 #include "im/imstaff.h"
 
+using namespace vrv;
 
 //----------------------------------------------------------------------------
 // RecMusController

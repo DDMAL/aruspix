@@ -8,6 +8,8 @@
 
 #include "pitchinterface.h"
 
+namespace vrv {
+
 //----------------------------------------------------------------------------
 // PitchInterface
 //----------------------------------------------------------------------------
@@ -53,3 +55,5 @@ bool PitchInterface::HasIdenticalPitchInterface( PitchInterface *otherPitchInter
     }
     return true;
 }
+    
+} // namespace vrv

@@ -30,6 +30,8 @@
 using namespace jsonxx;
 #endif
 
+namespace vrv {
+
 //----------------------------------------------------------------------------
 // InterfaceController
 //----------------------------------------------------------------------------
@@ -257,3 +259,5 @@ bool InterfaceController::RenderToSvgFile( std::string filename, int pageNo )
     outfile.close();
     return true;
 }
+    
+} //namespace vrv

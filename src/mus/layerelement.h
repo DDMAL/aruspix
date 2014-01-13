@@ -13,6 +13,8 @@
 #include "vrvdef.h"
 #include "object.h"
 
+namespace vrv {
+
 class Alignment;
 
 //----------------------------------------------------------------------------
@@ -156,7 +158,7 @@ protected:
     
 };
 
-
+} // namespace vrv
 
 
 #endif

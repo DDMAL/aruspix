@@ -29,6 +29,8 @@
 #include "staff.h"
 #include "layer.h"
 
+using namespace vrv;
+
 #define WWG_SEPARATOR "#\376\364\365\376#"  // "#˛Ùı˛#"
 
 /* pour analyse de var. _param2.m_headerType, et lecture/ecriture eventuelle 

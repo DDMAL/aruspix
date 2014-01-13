@@ -30,6 +30,7 @@ using std::max;
 #include "mus/staff.h"
 #include "mus/layerelement.h"
 
+using namespace vrv;
 
 //----------------------------------------------------------------------------
 // CmpMusController

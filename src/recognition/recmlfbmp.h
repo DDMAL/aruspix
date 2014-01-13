@@ -108,15 +108,15 @@ class RecMLFBmp: public MusMLFOutput
 {
 public:
     // constructors and destructors
-    RecMLFBmp( Doc *file, wxString filename, wxString model_symbol_name = "RecMLFSymbolBmp" );
+    RecMLFBmp( vrv::Doc *file, wxString filename, wxString model_symbol_name = "RecMLFSymbolBmp" );
     virtual ~RecMLFBmp();
     
         //bool GenerateBitmaps( ImPage *impage );
-	wxBitmap GenerateBitmap( ImStaff *imstaff, Layer *musLayer, int currentElementNo = -1 );
+	wxBitmap GenerateBitmap( ImStaff *imstaff, vrv::Layer *musLayer, int currentElementNo = -1 );
 	int GetCurrentX() { return m_currentX; }
 	int GetCurrentWidth() { return m_currentWidth; }
     //virtual bool WritePage( const Page *page );
-    virtual bool WriteLayer( const Layer *layer, int currentElementNo = -1 );
+    virtual bool WriteLayer( const vrv::Layer *layer, int currentElementNo = -1 );
 	// specific
 	virtual void StartLabel( );
 	//virtual void EndLabel( );

@@ -22,6 +22,8 @@
 #include "staff.h"
 #include "system.h"
 
+namespace vrv {
+
 //----------------------------------------------------------------------------
 // Page
 //----------------------------------------------------------------------------
@@ -317,3 +319,5 @@ void Page::SetValues( int type )
     Vrv::LogDebug("TODO");
     return;
 }
+
+} // namespace vrv

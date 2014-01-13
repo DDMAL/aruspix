@@ -17,6 +17,8 @@
 #include "doc.h"
 #include "staff.h"
 
+namespace vrv {
+
 void View::v_bline ( DeviceContext *dc, int y1, int y2, int x1, int nbr)
 {
 	assert( dc ); // DC cannot be NULL
@@ -274,3 +276,4 @@ void View::DrawTieBezier(DeviceContext *dc, int x, int y, int x1, bool direction
     dc->DrawComplexBezierPath(ToRendererX(x), ToRendererY(y), bez1, bez2);
 }
 
+} // namespace vrv

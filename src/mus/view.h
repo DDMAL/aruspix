@@ -15,6 +15,8 @@
 #include "vrvdef.h"
 #include "scoredef.h"
 
+namespace vrv {
+
 class Beam;
 class Barline;
 class Doc;
@@ -219,6 +221,6 @@ private:
 
 };
 
-
+} // namespace vrv
 
 #endif

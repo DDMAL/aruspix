@@ -20,6 +20,8 @@
 
 #include "mus/iomei.h"
 
+//using namespace vrv;
+
 //----------------------------------------------------------------------------
 // RecBookFile
 //----------------------------------------------------------------------------
@@ -462,9 +464,9 @@ bool RecBookFile::ExportPages( int exportType )
         
         wxString out = outputDir + wxFileName::GetPathSeparator() + recFile.m_shortname;
         
-        FileOutputStream *outStream = NULL;
+        vrv::FileOutputStream *outStream = NULL;
         switch( exportType ) {
-            case ( REC_BOOK_EXPORT_MEI ): outStream = new MeiOutput( recFile.m_musDocPtr, (out + ".mei").c_str() ); break;
+            case ( REC_BOOK_EXPORT_MEI ): outStream = new vrv::MeiOutput( recFile.m_musDocPtr, (out + ".mei").c_str() ); break;
         }
         if ( outStream ) {
             outStream->ExportFile();

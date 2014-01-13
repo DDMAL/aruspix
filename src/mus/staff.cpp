@@ -21,6 +21,8 @@
 #include "layer.h"
 #include "system.h"
 
+namespace vrv {
+
 //----------------------------------------------------------------------------
 // Staff
 //----------------------------------------------------------------------------
@@ -250,6 +252,8 @@ int Staff::Align( ArrayPtrVoid params )
     return FUNCTOR_CONTINUE;
 }
 
+} // namespace vrv
+    
 /*
 int Staff::LayOutSystemAndStaffYPos( ArrayPtrVoid params )
 {

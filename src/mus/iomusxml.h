@@ -20,6 +20,8 @@
     #include "tinyxml/tinyxml.h"
 #endif
 
+namespace vrv {
+
 class Barline;
 class Beam;
 class Clef;
@@ -87,5 +89,7 @@ private:
     
     int m_measure_count;
 };
+
+} // namespace vrv {
 
 #endif // __MUS_IOMUSXML_H__

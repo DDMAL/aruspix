@@ -19,6 +19,8 @@
 #include "io.h"
 #include "staff.h"
 
+namespace vrv {
+
 //----------------------------------------------------------------------------
 // Measure
 //----------------------------------------------------------------------------
@@ -245,3 +247,5 @@ int Measure::AlignMeasures( ArrayPtrVoid params )
     
     return FUNCTOR_SIBLINGS;
 }
+
+} // namespace vrv

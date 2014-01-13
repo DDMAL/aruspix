@@ -11,6 +11,8 @@
 
 #include "layerelement.h"
 
+namespace vrv {
+
 class LayerRdg;
 
 //----------------------------------------------------------------------------
@@ -74,5 +76,6 @@ private:
     
 };
 
+} // namespace vrv
 
 #endif

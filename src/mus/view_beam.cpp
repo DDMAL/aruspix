@@ -25,6 +25,8 @@
 
 #include <math.h>
 
+namespace vrv {
+
 /*
 #define BEAMEDIT 50	// code arbitraire identifiant la structure de debordement pour beams
 typedef struct BeamEdit {	
@@ -790,3 +792,5 @@ if (fPente)
 
 	return;	
 }				/* fermeture de la fonction */
+
+} // namespace vrv

@@ -33,7 +33,7 @@
 #include "musapp/musiomlf.h"
 #include "musapp/musiobin.h"
 
-
+using namespace vrv;
 
 //#include "ml/mldecoder.h"
 

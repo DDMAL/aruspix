@@ -9,8 +9,10 @@
 
 #include "multirest.h"
 
+namespace vrv {
+
 //----------------------------------------------------------------------------
-// Clef
+// MultiRest
 //----------------------------------------------------------------------------
 
 MultiRest::MultiRest():
@@ -42,3 +44,5 @@ bool MultiRest::operator==( Object& other )
     }
     return true;
 }
+
+} // namespace vrv

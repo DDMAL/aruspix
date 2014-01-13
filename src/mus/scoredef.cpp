@@ -21,6 +21,8 @@
 #include "keysig.h"
 #include "mensur.h"
 
+namespace vrv {
+
 /**
  * Define the maximum levels of staffGrp within a scoreDef
  */
@@ -322,3 +324,4 @@ int StaffDef::SetStaffDefDraw( ArrayPtrVoid params )
     return FUNCTOR_CONTINUE;
 }
 
+} // namespace vrv

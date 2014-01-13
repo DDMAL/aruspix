@@ -42,8 +42,8 @@ WX_DECLARE_OBJARRAY( CmpPartPage, ArrayOfCmpPartPages);
 class CmpCollationPart;
 WX_DECLARE_OBJARRAY( CmpCollationPart, ArrayOfCmpCollationParts);
 
-class Layer;
-class LayerElement;
+class vrv::Layer;
+class vrv::LayerElement;
 
 
 //----------------------------------------------------------------------------
@@ -82,9 +82,9 @@ public:
 	bool Collate( );
 	bool Realize( );
 	bool IsCollationLoaded( CmpCollationPart *part );
-    Doc *GetMusDoc() { return m_musDocPtr; };
-    Doc *GetMusDocSrc1() { return m_musDocSrc1Ptr; };
-    Doc *GetMusDocSrc2() { return m_musDocSrc2Ptr; };
+    vrv::Doc *GetMusDoc() { return m_musDocPtr; };
+    vrv::Doc *GetMusDocSrc1() { return m_musDocSrc1Ptr; };
+    vrv::Doc *GetMusDocSrc2() { return m_musDocSrc2Ptr; };
 	
 	
 protected:
@@ -93,7 +93,7 @@ protected:
      * The alignement is performed using the edit distance.
      * The alignement is performed in-place in the layer_ref Layer
      */
-	bool Align( Layer *layer_ref, Layer *layer_var, wxString refFileId, wxString varFileId );
+	bool Align( vrv::Layer *layer_ref, vrv::Layer *layer_var, wxString refFileId, wxString varFileId );
 
     /**
      * Create a <app> element in the layer_aligned Layer.
@@ -102,7 +102,7 @@ protected:
      * A insertion means that the element position j in layer_var is missing in layer_aligned after i.
      * A substitution is element position j replacing element position i.
      */ 
-    void CreateApp( Layer *layer_aligned, int i, Layer *layer_var, int j, int appType, wxString refFileId, wxString varFileId );
+    void CreateApp( vrv::Layer *layer_aligned, int i, vrv::Layer *layer_var, int j, int appType, wxString refFileId, wxString varFileId );
     
     /**
      * Return the filename of the MEI reference file.
@@ -128,11 +128,11 @@ private:
     /** The name of the variant source */
     wxString m_varSource;
     /** The Doc of the final collation */
-    Doc *m_musDocPtr;
+    vrv::Doc *m_musDocPtr;
     /** The Doc of the source 1 in the collation */
-    Doc *m_musDocSrc1Ptr;
+    vrv::Doc *m_musDocSrc1Ptr;
     /** The Doc of the source 2 in the collation */
-    Doc *m_musDocSrc2Ptr;
+    vrv::Doc *m_musDocSrc2Ptr;
 
     
 	bool m_isColLoaded;
@@ -150,7 +150,7 @@ public:
     CmpPartPage(  wxString axfile, CmpBookPart *part );
     ~CmpPartPage() {};
     
-    void SetStartEnd( LayerElement *laidOutLayerElement, bool isStart );
+    void SetStartEnd( vrv::LayerElement *laidOutLayerElement, bool isStart );
     void SetStart( wxString uuidStr );
     void SetEnd( wxString uuidStr );
     bool HasStart();
@@ -181,7 +181,7 @@ public:
      * Return a Layer containing the content to be aligned.
      * Go through all the pages / systems and also remove clefs and custos.
      */
-    Layer *GetContentToAlign( wxString basename );
+    vrv::Layer *GetContentToAlign( wxString basename );
 
 public:
     wxString m_id;

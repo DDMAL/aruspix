@@ -23,7 +23,7 @@
 #include "app/axapp.h"
 #include "app/axprocess.h"
 
-
+using namespace vrv;
 
 //----------------------------------------------------------------------------
 // RecModel

@@ -14,6 +14,8 @@
 
 #include "io.h"
 
+namespace vrv {
+
 class Beam;
 class Clef;
 class Layer;
@@ -264,5 +266,7 @@ private:
     //unsigned char m_rest_position;
     //unsigned int m_rest_octave;
 };
+
+} // namespace vrv
 
 #endif

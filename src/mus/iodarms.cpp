@@ -30,6 +30,8 @@
 #include "tie.h"
 #include "tuplet.h"
 
+namespace vrv {
+
 // Ok, this is ugly, but since this is static data, why not?
 pitchmap DarmsInput::PitchMap[] = {
     /* 00 */ {1, PITCH_C}, {1, PITCH_D}, {1, PITCH_E}, {1, PITCH_F}, {1, PITCH_G}, {1, PITCH_A}, {1, PITCH_B},
@@ -444,3 +446,5 @@ bool DarmsInput::ImportFile() {
     
     return true;
 }
+
+} // namespace vrv

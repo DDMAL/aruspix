@@ -12,6 +12,8 @@
 
 #include "vrvdef.h"
 
+namespace vrv {
+
 bool LeipzigBBox::m_initialized =  false;
 /*
 LeipzigBBox::BoundingBox* LeipzigBBox::m_bBox = LeipzigBBox::InitializeStatic();
@@ -405,3 +407,5 @@ void LeipzigBBox::GetCharBounds(const unsigned char c, int *x, int *y, int *w, i
     
     //bBox = 0;
 }
+
+} // namespace vrv

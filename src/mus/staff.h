@@ -11,6 +11,8 @@
 
 #include "object.h"
 
+namespace vrv {
+
 #define STAFF_OFFSET 190
 #define MAXCLE 100	// maximum number of clef on one staff
 
@@ -155,5 +157,6 @@ private:
     
 };
 
+} // namespace vrv
 
 #endif

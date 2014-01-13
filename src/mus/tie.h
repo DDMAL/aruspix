@@ -13,6 +13,8 @@
 #include "note.h"
 #include "object.h"
 
+namespace vrv {
+
 //----------------------------------------------------------------------------
 // Tie
 // A TIE class is a simple slur - it takes in account only two notes, the first and second:
@@ -49,4 +51,6 @@ private:
     
 };
 
+} // namespace vrv    
+    
 #endif

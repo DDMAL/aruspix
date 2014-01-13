@@ -16,8 +16,10 @@
 #include "object.h"
 #include "scoredef.h"
 
-class Page;
+namespace vrv {
 
+class Page;    
+    
 enum DocType {
     Raw = 0,
     Rendering,
@@ -237,5 +239,6 @@ private:
 	
 };
 
+} // namespace vrv
 
 #endif
