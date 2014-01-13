@@ -22,13 +22,13 @@ using std::max;
 #include "aximage.h"
 #include "axapp.h"
 
-#include "mus/musdoc.h"
-#include "mus/muspage.h"
-#include "mus/mussystem.h"
-#include "mus/musstaff.h"
-#include "mus/musmeasure.h"
-#include "mus/muslayer.h"#include "mus/musmeasure.h"
-#include "mus/muslayerelement.h"
+#include "mus/doc.h"
+#include "mus/page.h"
+#include "mus/system.h"
+#include "mus/staff.h"
+#include "mus/measure.h"
+#include "mus/layer.h"#include "mus/measure.h"
+#include "mus/layerelement.h"
 
 #include "im/impage.h"
 

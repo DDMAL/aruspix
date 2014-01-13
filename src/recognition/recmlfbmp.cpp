@@ -19,8 +19,8 @@
 #include "im/impage.h"
 #include "im/imstaff.h"
 
-#include "mus/muslayer.h"
-#include "mus/muslayerelement.h"
+#include "mus/layer.h"
+#include "mus/layerelement.h"
 
 
 #include "wx/arrimpl.cpp"

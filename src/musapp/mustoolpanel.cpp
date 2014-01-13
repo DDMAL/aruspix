@@ -11,7 +11,7 @@
 #include "mustoolpanel.h"
 #include "muswindow.h"
 
-#include "mus/musstaff.h"
+#include "mus/staff.h"
 
 #include "app/axapp.h"
 

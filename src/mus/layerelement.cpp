@@ -6,7 +6,7 @@
 /////////////////////////////////////////////////////////////////////////////
 
 
-#include "muslayerelement.h"
+#include "layerelement.h"
 
 //----------------------------------------------------------------------------
 
@@ -15,22 +15,22 @@
 
 //----------------------------------------------------------------------------
 
-#include "mus.h"
-#include "musaligner.h"
-#include "musapp.h"
-#include "musbarline.h"
-#include "musbeam.h"
-#include "musclef.h"
-#include "musdef.h"
-#include "musdoc.h"
-#include "muskeysig.h"
-#include "musio.h"
-#include "musmensur.h"
-#include "musmultirest.h"
-#include "musnote.h"
-#include "musrest.h"
-#include "mussymbol.h"
-#include "mustuplet.h"
+#include "vrv.h"
+#include "aligner.h"
+#include "app.h"
+#include "barline.h"
+#include "beam.h"
+#include "clef.h"
+#include "vrvdef.h"
+#include "doc.h"
+#include "keysig.h"
+#include "io.h"
+#include "mensur.h"
+#include "multirest.h"
+#include "note.h"
+#include "rest.h"
+#include "symbol.h"
+#include "tuplet.h"
 
 /**
  * Define the maximum levels between a tuplet and its notes

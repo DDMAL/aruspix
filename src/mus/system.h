@@ -9,9 +9,9 @@
 #ifndef __MUS_SYSTEM_H__
 #define __MUS_SYSTEM_H__
 
-#include "musaligner.h"
-#include "musbarline.h"
-#include "musobject.h"
+#include "aligner.h"
+#include "barline.h"
+#include "object.h"
 
 #define SYSTEM_OFFSET 190
 

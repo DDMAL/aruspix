@@ -9,12 +9,12 @@
 #ifndef __MUS_DOC_H__
 #define __MUS_DOC_H__
 
-#include "mus.h"
-#include "musdc.h"
-#include "musdef.h"
-#include "musio.h"
-#include "musobject.h"
-#include "musscoredef.h"
+#include "vrv.h"
+#include "devicecontext.h"
+#include "vrvdef.h"
+#include "io.h"
+#include "object.h"
+#include "scoredef.h"
 
 class Page;
 

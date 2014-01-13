@@ -19,13 +19,13 @@
 #include "muswindow.h"
 #include "mustoolpanel.h"
 
-#include "mus/musiomei.h"
-#include "mus/muspage.h"
-#include "mus/mussystem.h"
-#include "mus/musstaff.h"
-#include "mus/musmeasure.h"
-#include "mus/muslayer.h"
-#include "mus/muslayerelement.h"
+#include "mus/iomei.h"
+#include "mus/page.h"
+#include "mus/system.h"
+#include "mus/staff.h"
+#include "mus/measure.h"
+#include "mus/layer.h"
+#include "mus/layerelement.h"
 
 #include "musapp/muswxdc.h"
 

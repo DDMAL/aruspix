@@ -8,10 +8,10 @@
 #ifndef __MUS_NOTE_H__
 #define __MUS_NOTE_H__
 
-#include "musbeam.h"
-#include "musdurationinterface.h"
-#include "muslayerelement.h"
-#include "muspitchinterface.h"
+#include "beam.h"
+#include "durationinterface.h"
+#include "layerelement.h"
+#include "pitchinterface.h"
 
 #define SLUR_INITIAL  (1<<1)
 #define SLUR_MEDIAL  (1<<2) 

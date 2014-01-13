@@ -1,5 +1,5 @@
  /////////////////////////////////////////////////////////////////////////////
-// Name:        mus.h
+// Name:        vrv.h
 // Author:      Laurent Pugin
 // Created:     2013
 // Copyright (c) Authors and others. All rights reserved.

@@ -9,8 +9,8 @@
 #ifndef __MUS_BBOX_DC_H__
 #define __MUS_BBOX_DC_H__
 
-#include "musdc.h"
-#include "musobject.h"
+#include "devicecontext.h"
+#include "object.h"
 
 //----------------------------------------------------------------------------
 // BBoxDeviceContext

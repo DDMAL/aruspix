@@ -6,7 +6,7 @@
 /////////////////////////////////////////////////////////////////////////////
 
 
-#include "musrc.h"
+#include "view.h"
 
 //----------------------------------------------------------------------------
 
@@ -14,12 +14,12 @@
 
 //----------------------------------------------------------------------------
 
-#include "musbeam.h"
-#include "musdoc.h"
-#include "muslayer.h"
-#include "muslayerelement.h"
-#include "musnote.h"
-#include "musstaff.h"
+#include "beam.h"
+#include "doc.h"
+#include "layer.h"
+#include "layerelement.h"
+#include "note.h"
+#include "staff.h"
 
 //----------------------------------------------------------------------------
 

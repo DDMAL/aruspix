@@ -18,7 +18,7 @@
 
 #include "im/impage.h"
 
-#include "mus/musiomei.h"
+#include "mus/iomei.h"
 
 //----------------------------------------------------------------------------
 // RecBookFile

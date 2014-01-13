@@ -15,8 +15,8 @@
 
 #include "musmlfdic.h"
 
-#include "mus/muslayer.h"
-#include "mus/muspage.h"
+#include "mus/layer.h"
+#include "mus/page.h"
 
 class ImPage;
 class AxProgressDlg;

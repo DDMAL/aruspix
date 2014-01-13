@@ -9,7 +9,7 @@
 #ifndef __MUS_APP_H__
 #define __MUS_APP_H__
 
-#include "muslayerelement.h"
+#include "layerelement.h"
 
 class LayerRdg;
 

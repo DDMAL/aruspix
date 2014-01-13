@@ -6,7 +6,7 @@
 /////////////////////////////////////////////////////////////////////////////
 
 
-#include "musrc.h"
+#include "view.h"
 
 /** static members **/
 MusPoint View::point_[];

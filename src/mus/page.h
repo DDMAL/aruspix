@@ -9,8 +9,8 @@
 #ifndef __MUS_PAGE_H__
 #define __MUS_PAGE_H__
 
-#include "musobject.h"
-#include "musscoredef.h"
+#include "object.h"
+#include "scoredef.h"
 
 class DeviceContext;
 class Staff;

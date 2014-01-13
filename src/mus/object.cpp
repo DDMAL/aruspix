@@ -5,7 +5,7 @@
 // Copyright (c) Authors and others. All rights reserved.
 /////////////////////////////////////////////////////////////////////////////
 
-#include "musobject.h"
+#include "object.h"
 
 //----------------------------------------------------------------------------
 
@@ -18,22 +18,22 @@
 
 //----------------------------------------------------------------------------
 
-#include "mus.h"
-#include "musaligner.h"
-#include "musbeam.h"
-#include "musclef.h"
-#include "musdoc.h"
-#include "muskeysig.h"
-#include "muslayer.h"
-#include "muslayerelement.h"
-#include "musmeasure.h"
-#include "muspage.h"
-#include "musrc.h"
-#include "musscoredef.h"
-#include "musstaff.h"
-#include "mussystem.h"
-#include "mustie.h"
-#include "mustuplet.h"
+#include "vrv.h"
+#include "aligner.h"
+#include "beam.h"
+#include "clef.h"
+#include "doc.h"
+#include "keysig.h"
+#include "layer.h"
+#include "layerelement.h"
+#include "measure.h"
+#include "page.h"
+#include "view.h"
+#include "scoredef.h"
+#include "staff.h"
+#include "system.h"
+#include "tie.h"
+#include "tuplet.h"
 
 //----------------------------------------------------------------------------
 // Object

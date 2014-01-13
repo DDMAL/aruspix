@@ -14,7 +14,7 @@
 #include <typeinfo>
 #include <vector>
 
-#include "musdef.h"
+#include "vrvdef.h"
  
 class Doc;
 class MusFunctor;

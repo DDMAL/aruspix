@@ -9,7 +9,7 @@
 #ifndef __MUS_LEIPZIGBBOX_H__
 #define __MUS_LEIPZIGBBOX_H__
 
-#include "musobject.h"
+#include "object.h"
 
 /*
  * This list is used for getting the bounding box of the Leipzig glyphs.

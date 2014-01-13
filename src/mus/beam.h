@@ -9,8 +9,8 @@
 #ifndef __MUS_BEAM_H__
 #define __MUS_BEAM_H__
 
-#include "muslayerelement.h"
-#include "musnote.h"
+#include "layerelement.h"
+#include "note.h"
 
 //----------------------------------------------------------------------------
 // Beam

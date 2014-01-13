@@ -8,7 +8,7 @@
 #ifndef __MUS_IOMEI_H__
 #define __MUS_IOMEI_H__
 
-#include "musdoc.h"
+#include "doc.h"
 
 // TINYXML
 #if defined (__WXMSW__)

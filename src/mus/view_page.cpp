@@ -6,7 +6,7 @@
 /////////////////////////////////////////////////////////////////////////////
 
 
-#include "musrc.h"
+#include "view.h"
 
 //----------------------------------------------------------------------------
 
@@ -16,20 +16,20 @@
 
 //----------------------------------------------------------------------------
 
-#include "musbeam.h"
-#include "musbarline.h"
-#include "musclef.h"
-#include "musdoc.h"
-#include "muskeysig.h"
-#include "muslayer.h"
-#include "muslayerelement.h"
-#include "musmeasure.h"
-#include "musmensur.h"
-#include "muspage.h"
-#include "musstaff.h"
-#include "mussystem.h"
-#include "mustie.h"
-#include "mustuplet.h"
+#include "beam.h"
+#include "barline.h"
+#include "clef.h"
+#include "doc.h"
+#include "keysig.h"
+#include "layer.h"
+#include "layerelement.h"
+#include "measure.h"
+#include "mensur.h"
+#include "page.h"
+#include "staff.h"
+#include "system.h"
+#include "tie.h"
+#include "tuplet.h"
 
 //----------------------------------------------------------------------------
 // View - Page

@@ -19,12 +19,12 @@
 
 #include "app/axapp.h"
 
-#include "musdoc.h"
-#include "musmeasure.h"
-#include "muspage.h"
-#include "mussystem.h"
-#include "musstaff.h"
-#include "musiomei.h"
+#include "doc.h"
+#include "measure.h"
+#include "page.h"
+#include "system.h"
+#include "staff.h"
+#include "iomei.h"
 #include "musiobin.h"
 
 enum

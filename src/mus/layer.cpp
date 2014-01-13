@@ -5,7 +5,7 @@
 // Copyright (c) Authors and others. All rights reserved.
 /////////////////////////////////////////////////////////////////////////////
 
-#include "muslayer.h"
+#include "layer.h"
 
 //----------------------------------------------------------------------------
 
@@ -14,14 +14,14 @@
 
 //----------------------------------------------------------------------------
 
-#include "musclef.h"
-#include "musdef.h"
-#include "musdoc.h"
-#include "muskeysig.h"
-#include "musio.h"
-#include "muslayerelement.h"
-#include "musnote.h"
-#include "mussymbol.h"
+#include "clef.h"
+#include "vrvdef.h"
+#include "doc.h"
+#include "keysig.h"
+#include "io.h"
+#include "layerelement.h"
+#include "note.h"
+#include "symbol.h"
 
 //----------------------------------------------------------------------------
 // Layer

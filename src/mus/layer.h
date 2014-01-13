@@ -11,9 +11,9 @@
 
 #include <typeinfo>
 
-#include "musclef.h"
-#include "musobject.h"
-#include "musscoredef.h"
+#include "clef.h"
+#include "object.h"
+#include "scoredef.h"
 
 class DeviceContext;
 class LayerElement;

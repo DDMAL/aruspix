@@ -6,16 +6,16 @@
 /////////////////////////////////////////////////////////////////////////////
 
 
-#include "musdoc.h"
+#include "doc.h"
 
 //----------------------------------------------------------------------------
 
-#include "mus.h"
-#include "muslayer.h"
-#include "muslayerelement.h"
-#include "muspage.h"
-#include "musstaff.h"
-#include "mussystem.h"
+#include "vrv.h"
+#include "layer.h"
+#include "layerelement.h"
+#include "page.h"
+#include "staff.h"
+#include "system.h"
 
 //----------------------------------------------------------------------------
 

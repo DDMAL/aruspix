@@ -6,7 +6,7 @@
 /////////////////////////////////////////////////////////////////////////////
 
 
-#include "musstaff.h"
+#include "staff.h"
 
 //----------------------------------------------------------------------------
 
@@ -14,12 +14,12 @@
 
 //----------------------------------------------------------------------------
 
-#include "mus.h"
-#include "musaligner.h"
-#include "musdef.h"
-#include "musio.h"
-#include "muslayer.h"
-#include "mussystem.h"
+#include "vrv.h"
+#include "aligner.h"
+#include "vrvdef.h"
+#include "io.h"
+#include "layer.h"
+#include "system.h"
 
 //----------------------------------------------------------------------------
 // Staff

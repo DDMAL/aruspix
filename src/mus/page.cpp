@@ -6,7 +6,7 @@
 /////////////////////////////////////////////////////////////////////////////
 
 
-#include "muspage.h"
+#include "page.h"
 
 //----------------------------------------------------------------------------
 
@@ -14,13 +14,13 @@
 
 //----------------------------------------------------------------------------
 
-#include "musaligner.h"
-#include "musbboxdc.h"
-#include "musdef.h"
-#include "musdoc.h"
-#include "musrc.h"
-#include "musstaff.h"
-#include "mussystem.h"
+#include "aligner.h"
+#include "bboxdc.h"
+#include "vrvdef.h"
+#include "doc.h"
+#include "view.h"
+#include "staff.h"
+#include "system.h"
 
 //----------------------------------------------------------------------------
 // Page

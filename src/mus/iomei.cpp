@@ -6,7 +6,7 @@
 /////////////////////////////////////////////////////////////////////////////
 
 
-#include "musiomei.h"
+#include "iomei.h"
 
 //----------------------------------------------------------------------------
 
@@ -16,25 +16,25 @@
 
 //----------------------------------------------------------------------------
 
-#include "mus.h"
-#include "musapp.h"
-#include "musbarline.h"
-#include "musbeam.h"
-#include "musclef.h"
-#include "muskeysig.h"
-#include "muslayer.h"
-#include "muslayerelement.h"
-#include "musmeasure.h"
-#include "musmensur.h"
-#include "musmultirest.h"
-#include "musnote.h"
-#include "muspage.h"
-#include "musrest.h"
-#include "musscoredef.h"
-#include "musstaff.h"
-#include "mussymbol.h"
-#include "mussystem.h"
-#include "mustuplet.h"
+#include "vrv.h"
+#include "app.h"
+#include "barline.h"
+#include "beam.h"
+#include "clef.h"
+#include "keysig.h"
+#include "layer.h"
+#include "layerelement.h"
+#include "measure.h"
+#include "mensur.h"
+#include "multirest.h"
+#include "note.h"
+#include "page.h"
+#include "rest.h"
+#include "scoredef.h"
+#include "staff.h"
+#include "symbol.h"
+#include "system.h"
+#include "tuplet.h"
 
 //----------------------------------------------------------------------------
 // MeiOutput

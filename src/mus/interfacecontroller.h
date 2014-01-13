@@ -9,8 +9,8 @@
 #ifndef __MUS_CONTROLLER_H__
 #define __MUS_CONTROLLER_H__
 
-#include "musdoc.h"
-#include "musrc.h"
+#include "doc.h"
+#include "view.h"
 
 #include <string>
 

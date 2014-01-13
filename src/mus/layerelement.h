@@ -9,9 +9,9 @@
 #ifndef __MUS_LAYER_ELEMENT_H__
 #define __MUS_LAYER_ELEMENT_H__
 
-#include "musdc.h" // for MusPoint
-#include "musdef.h"
-#include "musobject.h"
+#include "devicecontext.h" // for MusPoint
+#include "vrvdef.h"
+#include "object.h"
 
 class Alignment;
 

@@ -6,7 +6,7 @@
 /////////////////////////////////////////////////////////////////////////////
 
 
-#include "musmensur.h"
+#include "mensur.h"
 
 int Mensur::s_num = 3;
 int Mensur::s_numBase = 2;

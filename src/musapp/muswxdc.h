@@ -12,9 +12,9 @@
     #include "wx/wx.h"
 #endif
 
-#include "musdef.h"
-#include "musdc.h"
-#include "musobject.h"
+#include "vrvdef.h"
+#include "devicecontext.h"
+#include "object.h"
 
 // ---------------------------------------------------------------------------
 // DeviceContext

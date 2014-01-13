@@ -1,5 +1,5 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        musrc.h
+// Name:        view.h
 // Author:      Laurent Pugin
 // Created:     2010
 // Copyright (c) Authors and others. All rights reserved.
@@ -11,9 +11,9 @@
 
 #include <typeinfo>
 
-#include "musdc.h"
-#include "musdef.h"
-#include "musscoredef.h"
+#include "devicecontext.h"
+#include "vrvdef.h"
+#include "scoredef.h"
 
 class Beam;
 class Barline;

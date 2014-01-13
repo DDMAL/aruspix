@@ -20,8 +20,8 @@
 #include "app/axapp.h"
 
 
-#include "mus/musdoc.h"
-#include "mus/muspage.h"
+#include "mus/doc.h"
+#include "mus/page.h"
 
 #include "musapp/muswindow.h"
 #include "musapp/mustoolpanel.h"
@@ -29,10 +29,10 @@
 #include "musapp/musiomlf.h"
 
 // experimental
-#include "mus/musiopae.h"
-#include "mus/musiomei.h"
-#include "mus/mussvgdc.h"
-#include "mus/musiodarms.h"
+#include "mus/iopae.h"
+#include "mus/iomei.h"
+#include "mus/svgdc.h"
+#include "mus/iodarms.h"
 
 //----------------------------------------------------------------------------
 // EdtPanel

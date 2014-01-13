@@ -6,7 +6,7 @@
 /////////////////////////////////////////////////////////////////////////////
 
 
-#include "muscontroller.h"
+#include "controller.h"
 
 //----------------------------------------------------------------------------
 
@@ -14,16 +14,16 @@
 
 //----------------------------------------------------------------------------
 
-#include "musbboxdc.h"
-#include "musdoc.h"
-#include "musiodarms.h"
-#include "musiomei.h"
-#include "musiomusxml.h"
-#include "musiopae.h"
-#include "muspage.h"
-#include "musrc.h"
-#include "mussvgdc.h"
-#include "mussystem.h"
+#include "bboxdc.h"
+#include "doc.h"
+#include "iodarms.h"
+#include "iomei.h"
+#include "iomusxml.h"
+#include "iopae.h"
+#include "page.h"
+#include "view.h"
+#include "svgdc.h"
+#include "system.h"
 
 #ifdef USE_EMSCRIPTEN
 #include "jsonxx.h"

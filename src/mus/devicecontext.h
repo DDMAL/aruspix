@@ -1,5 +1,5 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        musdc.h 
+// Name:        devicecontext.h 
 // Author:      Laurent Pugin
 // Created:     2010
 // Copyright (c) Authors and others. All rights reserved.   

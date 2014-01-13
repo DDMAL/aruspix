@@ -6,7 +6,7 @@
 /////////////////////////////////////////////////////////////////////////////
 
 
-#include "musbboxdc.h"
+#include "bboxdc.h"
 
 //----------------------------------------------------------------------------
 
@@ -15,9 +15,9 @@
 
 //----------------------------------------------------------------------------
 
-#include "musdef.h"
-#include "musleipzigbbox.h"
-#include "musrc.h"
+#include "vrvdef.h"
+#include "leipzigbbox.h"
+#include "view.h"
 
 extern "C" {
 static inline double DegToRad(double deg) { return (deg * M_PI) / 180.0; }

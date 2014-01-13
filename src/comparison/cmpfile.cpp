@@ -16,14 +16,14 @@
 
 #include "recognition/recfile.h"
 
-#include "mus/muslayer.h"
-#include "mus/muslayerelement.h"
-#include "mus/musmeasure.h"
-#include "mus/musstaff.h"
-#include "mus/mussystem.h"
-#include "mus/muspage.h"
-#include "mus/musiomei.h"
-#include "mus/musapp.h"
+#include "mus/layer.h"
+#include "mus/layerelement.h"
+#include "mus/measure.h"
+#include "mus/staff.h"
+#include "mus/system.h"
+#include "mus/page.h"
+#include "mus/iomei.h"
+#include "mus/app.h"
 
 
 #include "wx/arrimpl.cpp"

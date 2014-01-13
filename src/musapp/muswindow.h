@@ -12,14 +12,14 @@
     #include "wx/wx.h"
 #endif
 
-#include "mus/musrc.h"
+#include "mus/view.h"
 // elements
-#include "mus/musbarline.h"
-#include "mus/musclef.h"
-#include "mus/musmensur.h"
-#include "mus/musnote.h"
-#include "mus/musrest.h"
-#include "mus/mussymbol.h"
+#include "mus/barline.h"
+#include "mus/clef.h"
+#include "mus/mensur.h"
+#include "mus/note.h"
+#include "mus/rest.h"
+#include "mus/symbol.h"
 
 #include "app/axundo.h"
 

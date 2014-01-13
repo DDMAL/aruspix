@@ -32,8 +32,8 @@
 
 #include "im/impage.h"
 
-#include "mus/musdoc.h"
-#include "mus/musiomei.h"
+#include "mus/doc.h"
+#include "mus/iomei.h"
 
 #include "musapp/mustoolpanel.h"
 #include "musapp/musiowwg.h"
@@ -1405,7 +1405,7 @@ void RecEnv::OnStaffCorrespondence( wxCommandEvent &event )
     Methode de travail !!!!!!!!! Pas DU TOUT plombee !!!!
   */ 
   
-//#include "mus/mussvg.h"
+//#include "mus/svg.h"
 
 /*
 void RecEnv::OnExportImage( wxCommandEvent &event )

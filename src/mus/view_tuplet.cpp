@@ -6,7 +6,7 @@
 /////////////////////////////////////////////////////////////////////////////
 
 
-#include "musrc.h"
+#include "view.h"
 
 //----------------------------------------------------------------------------
 
@@ -15,18 +15,18 @@
 
 //----------------------------------------------------------------------------
 
-#include "musbarline.h"
-#include "musbeam.h"
-#include "musclef.h"
-#include "muskeysig.h"
-#include "muslayerelement.h"
-#include "musleipzigbbox.h"
-#include "musmensur.h"
-#include "musnote.h"
-#include "musrest.h"
-#include "mussymbol.h"
-#include "mustie.h"
-#include "mustuplet.h"
+#include "barline.h"
+#include "beam.h"
+#include "clef.h"
+#include "keysig.h"
+#include "layerelement.h"
+#include "leipzigbbox.h"
+#include "mensur.h"
+#include "note.h"
+#include "rest.h"
+#include "symbol.h"
+#include "tie.h"
+#include "tuplet.h"
 
 #define TUPLET_OFFSET 20
 #define OBLIQUE_OFFSET 0x52 //move to oblique figures

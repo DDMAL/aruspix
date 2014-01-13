@@ -5,8 +5,8 @@
 // Copyright (c) Authors and others. All rights reserved.
 /////////////////////////////////////////////////////////////////////////////
 
-#include "mus.h"
-#include "musbeam.h"
+#include "vrv.h"
+#include "beam.h"
 
 //----------------------------------------------------------------------------
 // Beam

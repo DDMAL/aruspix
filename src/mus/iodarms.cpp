@@ -6,7 +6,7 @@
 /////////////////////////////////////////////////////////////////////////////
 
 
-#include "musiodarms.h"
+#include "iodarms.h"
 
 //----------------------------------------------------------------------------
 
@@ -16,19 +16,19 @@
 
 //----------------------------------------------------------------------------
 
-#include "musclef.h"
-#include "musdoc.h"
-#include "muskeysig.h"
-#include "musmeasure.h"
-#include "musmensur.h"
-#include "musnote.h"
-#include "muspage.h"
-#include "musrest.h"
-#include "mussymbol.h"
-#include "mussystem.h"
-#include "musstaff.h"
-#include "mustie.h"
-#include "mustuplet.h"
+#include "clef.h"
+#include "doc.h"
+#include "keysig.h"
+#include "measure.h"
+#include "mensur.h"
+#include "note.h"
+#include "page.h"
+#include "rest.h"
+#include "symbol.h"
+#include "system.h"
+#include "staff.h"
+#include "tie.h"
+#include "tuplet.h"
 
 // Ok, this is ugly, but since this is static data, why not?
 pitchmap DarmsInput::PitchMap[] = {

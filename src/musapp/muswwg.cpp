@@ -9,7 +9,7 @@
 #include "wx/wxprec.h"
 
 #include "muswwg.h"
-#include "musdef.h"
+#include "vrvdef.h"
 
 
 //----------------------------------------------------------------------------

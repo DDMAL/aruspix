@@ -9,9 +9,9 @@
 #ifndef __MUS_IOMUSXML_H__
 #define __MUS_IOMUSXML_H__
 
-#include "musdoc.h"
-#include "muslayer.h"
-#include "mustie.h"
+#include "doc.h"
+#include "layer.h"
+#include "tie.h"
 
 // TINYXML
 #if defined (__WXMSW__)

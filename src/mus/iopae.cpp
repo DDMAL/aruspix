@@ -6,7 +6,7 @@
 /////////////////////////////////////////////////////////////////////////////
 
 
-#include "musiopae.h"
+#include "iopae.h"
 
 //----------------------------------------------------------------------------
 
@@ -21,21 +21,21 @@
 
 //----------------------------------------------------------------------------
 
-#include "musbarline.h"
-#include "musclef.h"
-#include "musdoc.h"
-#include "muskeysig.h"
-#include "musmeasure.h"
-#include "musmensur.h"
-#include "musmultirest.h"
-#include "musnote.h"
-#include "muspage.h"
-#include "musrest.h"
-#include "mussymbol.h"
-#include "mussystem.h"
-#include "musstaff.h"
-#include "mustie.h"
-#include "mustuplet.h"
+#include "barline.h"
+#include "clef.h"
+#include "doc.h"
+#include "keysig.h"
+#include "measure.h"
+#include "mensur.h"
+#include "multirest.h"
+#include "note.h"
+#include "page.h"
+#include "rest.h"
+#include "symbol.h"
+#include "system.h"
+#include "staff.h"
+#include "tie.h"
+#include "tuplet.h"
 
 //----------------------------------------------------------------------------
 

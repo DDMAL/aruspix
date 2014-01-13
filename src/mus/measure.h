@@ -9,10 +9,10 @@
 #ifndef __MUS_MEASURE_H__
 #define __MUS_MEASURE_H__
 
-#include "musobject.h"
+#include "object.h"
 
-#include "musaligner.h"
-#include "musbarline.h"
+#include "aligner.h"
+#include "barline.h"
 
 class Staff;
 

@@ -9,8 +9,8 @@
 #ifndef __MUS_MENSUR_H__
 #define __MUS_MENSUR_H__
 
-#include "musdef.h"
-#include "muslayerelement.h"
+#include "vrvdef.h"
+#include "layerelement.h"
 
 //----------------------------------------------------------------------------
 // Mensur

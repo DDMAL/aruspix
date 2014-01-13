@@ -9,7 +9,7 @@
 #include "wx/wxprec.h"
 
 #include "muswxdc.h"
-#include "musrc.h"
+#include "view.h"
 
 //----------------------------------------------------------------------------
 // AxWxDc

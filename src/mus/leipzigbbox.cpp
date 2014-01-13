@@ -6,11 +6,11 @@
 /////////////////////////////////////////////////////////////////////////////
 
 
-#include "musleipzigbbox.h"
+#include "leipzigbbox.h"
 
 //----------------------------------------------------------------------------
 
-#include "musdef.h"
+#include "vrvdef.h"
 
 bool LeipzigBBox::m_initialized =  false;
 /*

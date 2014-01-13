@@ -25,10 +25,10 @@ using std::max;
 #include "im/imstaff.h"
 
 #include "musapp/muswxdc.h"
-#include "mus/musdoc.h"
-#include "mus/mussystem.h"
-#include "mus/musstaff.h"
-#include "mus/muslayerelement.h"
+#include "mus/doc.h"
+#include "mus/system.h"
+#include "mus/staff.h"
+#include "mus/layerelement.h"
 
 
 //----------------------------------------------------------------------------

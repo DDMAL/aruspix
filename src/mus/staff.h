@@ -9,7 +9,7 @@
 #ifndef __MUS_STAFF_H__
 #define __MUS_STAFF_H__
 
-#include "musobject.h"
+#include "object.h"
 
 #define STAFF_OFFSET 190
 #define MAXCLE 100	// maximum number of clef on one staff

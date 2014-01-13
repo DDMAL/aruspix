@@ -13,7 +13,7 @@
 #endif
 #include "wx/wfstream.h"
 
-#include "mus/musdoc.h"
+#include "mus/doc.h"
 
 #include "muswwg.h"
 

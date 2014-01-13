@@ -19,18 +19,18 @@
 
 #include "musiobin.h"
 
-#include "mus/muspage.h"
-#include "mus/mussystem.h"
-#include "mus/musstaff.h"
-#include "mus/musmeasure.h"
-#include "mus/muslayer.h"
-#include "mus/muslayerelement.h"
-#include "mus/musbarline.h"
-#include "mus/musclef.h"
-#include "mus/musmensur.h"
-#include "mus/musnote.h"
-#include "mus/mussymbol.h"
-#include "mus/musrest.h"
+#include "mus/page.h"
+#include "mus/system.h"
+#include "mus/staff.h"
+#include "mus/measure.h"
+#include "mus/layer.h"
+#include "mus/layerelement.h"
+#include "mus/barline.h"
+#include "mus/clef.h"
+#include "mus/mensur.h"
+#include "mus/note.h"
+#include "mus/symbol.h"
+#include "mus/rest.h"
 
 
 //----------------------------------------------------------------------------

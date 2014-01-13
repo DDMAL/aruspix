@@ -23,12 +23,12 @@
 #include "app/axapp.h"
 #include "app/axprocess.h"
 
-#include "mus/musdoc.h"
-#include "mus/mussystem.h"
-#include "mus/musstaff.h"
-#include "mus/musmeasure.h"
-#include "muslayerelement.h"
-#include "mus/musiomei.h"
+#include "mus/doc.h"
+#include "mus/system.h"
+#include "mus/staff.h"
+#include "mus/measure.h"
+#include "layerelement.h"
+#include "mus/iomei.h"
 
 #include "musapp/musiomlf.h"
 #include "musapp/musiobin.h"
@@ -412,7 +412,7 @@ void RecFile::OpenContent( )
     if ( node && (elem = node->ToElement()) && elem)
 	{
 		m_rec_typ_model = elem->Attribute("typographic_model");
-		m_rec_mus_model = elem->Attribute("music_model");
+		m_rec_mus_model = elem->Attribute("ic_model");
 	}
 
 	// decoder
@@ -470,7 +470,7 @@ void RecFile::SaveContent( )
 		// models
 		TiXmlElement models( "models" );
 		models.SetAttribute( "typographic_model",  m_rec_typ_model.c_str() );
-		models.SetAttribute( "music_model",  m_rec_mus_model.c_str() );	
+		models.SetAttribute( "ic_model",  m_rec_mus_model.c_str() );	
 		root.InsertEndChild( models );
 		
 		// decoder

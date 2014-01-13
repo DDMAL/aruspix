@@ -9,9 +9,9 @@
 #ifndef __MUS_TUPLET_H__
 #define __MUS_TUPLET_H__
 
-#include "muslayer.h"
-#include "musnote.h"
-#include "musobject.h"
+#include "layer.h"
+#include "note.h"
+#include "object.h"
 
 //----------------------------------------------------------------------------
 // Beam

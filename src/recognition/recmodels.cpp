@@ -17,8 +17,8 @@
 #include "recmodels.h"
 #include "recfile.h"
 
-#include "mus/musdoc.h"
-#include "mus/muspage.h"
+#include "mus/doc.h"
+#include "mus/page.h"
 
 #include "app/axapp.h"
 #include "app/axprocess.h"

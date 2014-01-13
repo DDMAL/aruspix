@@ -10,9 +10,9 @@
 #ifndef __MUS_KEYSIG_H__
 #define __MUS_KEYSIG_H__
 
-#include "musdef.h"
-#include "muslayerelement.h"
-#include "muspositioninterface.h"
+#include "vrvdef.h"
+#include "layerelement.h"
+#include "positioninterface.h"
 
 
 //----------------------------------------------------------------------------

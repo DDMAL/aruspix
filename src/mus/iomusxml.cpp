@@ -6,7 +6,7 @@
 /////////////////////////////////////////////////////////////////////////////
 
 
-#include "musiomusxml.h"
+#include "iomusxml.h"
 
 //----------------------------------------------------------------------------
 
@@ -16,17 +16,17 @@
 
 //----------------------------------------------------------------------------
 
-#include "musbarline.h"
-#include "musbeam.h"
-#include "musclef.h"
-#include "muskeysig.h"
-#include "muslayerelement.h"
-#include "musmensur.h"
-#include "musmensur.h"
-#include "musnote.h"
-#include "musrest.h"
-#include "mussymbol.h"
-#include "mustie.h"
+#include "barline.h"
+#include "beam.h"
+#include "clef.h"
+#include "keysig.h"
+#include "layerelement.h"
+#include "mensur.h"
+#include "mensur.h"
+#include "note.h"
+#include "rest.h"
+#include "symbol.h"
+#include "tie.h"
 
 //----------------------------------------------------------------------------
 // XMLOutput

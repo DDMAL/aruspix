@@ -9,7 +9,7 @@
 #ifndef __MUS_SVG_DC_H__
 #define __MUS_SVG_DC_H__
 
-#include "musdc.h"
+#include "devicecontext.h"
 
 #include <iostream>
 #include <fstream>

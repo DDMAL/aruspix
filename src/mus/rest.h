@@ -9,9 +9,9 @@
 #ifndef __MUS_REST_H__
 #define __MUS_REST_H__
 
-#include "musdurationinterface.h"
-#include "muslayerelement.h"
-#include "muspositioninterface.h"
+#include "durationinterface.h"
+#include "layerelement.h"
+#include "positioninterface.h"
 
 //----------------------------------------------------------------------------
 // Rest

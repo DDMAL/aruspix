@@ -9,7 +9,7 @@
 #ifndef __MUS_SCOREDEF_H__
 #define __MUS_SCOREDEF_H__
 
-#include "musobject.h"
+#include "object.h"
 
 class Clef;
 class KeySignature;

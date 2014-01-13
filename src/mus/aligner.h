@@ -9,7 +9,7 @@
 #ifndef __MUS_ALIGNER_H__
 #define __MUS_ALIGNER_H__
 
-#include "musobject.h"
+#include "object.h"
 
 class SystemAligner;
 class StaffAlignment;

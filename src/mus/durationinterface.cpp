@@ -6,7 +6,7 @@
 /////////////////////////////////////////////////////////////////////////////
 
 
-#include "musdurationinterface.h"
+#include "durationinterface.h"
 
 //----------------------------------------------------------------------------
 
@@ -15,9 +15,9 @@
 
 //----------------------------------------------------------------------------
 
-#include "mus.h"
-#include "musdef.h"
-#include "musbeam.h"
+#include "vrv.h"
+#include "vrvdef.h"
+#include "beam.h"
 
 /**
  * Define the maximum levels between a beam and its notes

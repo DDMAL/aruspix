@@ -6,7 +6,7 @@
 /////////////////////////////////////////////////////////////////////////////
 
 
-#include "musscoredef.h"
+#include "scoredef.h"
 
 //----------------------------------------------------------------------------
 
@@ -15,11 +15,11 @@
 
 //----------------------------------------------------------------------------
 
-#include "mus.h"
-#include "musclef.h"
-#include "musio.h"
-#include "muskeysig.h"
-#include "musmensur.h"
+#include "vrv.h"
+#include "clef.h"
+#include "io.h"
+#include "keysig.h"
+#include "mensur.h"
 
 /**
  * Define the maximum levels of staffGrp within a scoreDef

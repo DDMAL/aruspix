@@ -6,7 +6,7 @@
 /////////////////////////////////////////////////////////////////////////////
 
 
-#include "musrc.h"
+#include "view.h"
 
 //----------------------------------------------------------------------------
 
@@ -16,25 +16,25 @@
 
 //----------------------------------------------------------------------------
 
-#include "mus.h"
-#include "musapp.h"
-#include "musbarline.h"
-#include "musbeam.h"
-#include "musclef.h"
-#include "musdoc.h"
-#include "muskeysig.h"
-#include "muslayerelement.h"
-#include "musleipzigbbox.h"
-#include "musmeasure.h"
-#include "musmensur.h"
-#include "musmultirest.h"
-#include "musnote.h"
-#include "musrest.h"
-#include "mussymbol.h"
-#include "musstaff.h"
-#include "mussystem.h"
-#include "mustie.h"
-#include "mustuplet.h"
+#include "vrv.h"
+#include "app.h"
+#include "barline.h"
+#include "beam.h"
+#include "clef.h"
+#include "doc.h"
+#include "keysig.h"
+#include "layerelement.h"
+#include "leipzigbbox.h"
+#include "measure.h"
+#include "mensur.h"
+#include "multirest.h"
+#include "note.h"
+#include "rest.h"
+#include "symbol.h"
+#include "staff.h"
+#include "system.h"
+#include "tie.h"
+#include "tuplet.h"
 
 //----------------------------------------------------------------------------
 // View - LayerElement
