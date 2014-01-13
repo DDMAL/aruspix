@@ -31,10 +31,10 @@ using namespace jsonxx;
 #endif
 
 //----------------------------------------------------------------------------
-// MusController
+// InterfaceController
 //----------------------------------------------------------------------------
 
-MusController::MusController()
+InterfaceController::InterfaceController()
 {
     m_border = 10;
     m_scale = 100;
@@ -53,11 +53,11 @@ MusController::MusController()
 }
 
 
-MusController::~MusController()
+InterfaceController::~InterfaceController()
 {
 }
 
-bool MusController::LoadFile( std::string filename )
+bool InterfaceController::LoadFile( std::string filename )
 {
     FileInputStream *input = NULL;
     if (m_format == pae_file) {
@@ -90,7 +90,7 @@ bool MusController::LoadFile( std::string filename )
     return true;
 }
 
-bool MusController::LoadString( std::string data )
+bool InterfaceController::LoadString( std::string data )
 {
     FileInputStream *input = NULL;
     if (m_format == pae_file) {
@@ -121,7 +121,7 @@ bool MusController::LoadString( std::string data )
     return true;
 }
 
-bool MusController::ParseOptions( std::string json_options ) {
+bool InterfaceController::ParseOptions( std::string json_options ) {
 #ifdef USE_EMSCRIPTEN
     std::string in_format = "pae";
     
@@ -213,7 +213,7 @@ bool MusController::ParseOptions( std::string json_options ) {
     
 }
 
-std::string MusController::RenderToSvg( int pageNo, bool xml_tag )
+std::string InterfaceController::RenderToSvg( int pageNo, bool xml_tag )
 {
     m_doc.Layout();
     
@@ -241,7 +241,7 @@ std::string MusController::RenderToSvg( int pageNo, bool xml_tag )
 }
 
 
-bool MusController::RenderToSvgFile( std::string filename, int pageNo )
+bool InterfaceController::RenderToSvgFile( std::string filename, int pageNo )
 {
     std::string output = RenderToSvg( pageNo, true );
     

@@ -38,7 +38,7 @@ public:
      * Use to set the alignment for the Measure Barline members.
      * This is as special case where we need to add to the measure aligner.
      */
-    void SetAlignment( MusAlignment *alignment ) { m_alignment = alignment; };
+    void SetAlignment( Alignment *alignment ) { m_alignment = alignment; };
     
     /*
      * Return true if the barline type requires repetition dots to be drawn.

@@ -98,25 +98,25 @@ public:
     
     /**
      * Correct the X alignment once the the content of a system has been aligned and laid out.
-     * Special case that redirects the functor to the MusMeasureAligner.
+     * Special case that redirects the functor to the MeasureAligner.
      */
     virtual int IntegrateBoundingBoxXShift( ArrayPtrVoid params );
     
     /**
-     * Set the position of the MusAlignment.
-     * Special case that redirects the functor to the MusMeasureAligner.
+     * Set the position of the Alignment.
+     * Special case that redirects the functor to the MeasureAligner.
      */
     virtual int SetAligmentXPos( ArrayPtrVoid params );
     
     /**
-     * Align the measures by adjusting the m_xRel position looking at the MusMeasureAligner.
+     * Align the measures by adjusting the m_xRel position looking at the MeasureAligner.
      * This method also moves the end position of the measure according to the barline width.
      */
     virtual int AlignMeasures( ArrayPtrVoid params );
     
     /**
      * Justify the X positions
-     * Special case that redirects the functor to the MusMeasureAligner.
+     * Special case that redirects the functor to the MeasureAligner.
      */
     virtual int JustifyX( ArrayPtrVoid params );
         
@@ -142,7 +142,7 @@ public:
 private:
     bool m_measuredMusic;
     
-    MusMeasureAligner m_measureAligner;
+    MeasureAligner m_measureAligner;
     
     /**
      * @name The measure barlines (left and right) used when drawing

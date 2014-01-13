@@ -208,7 +208,7 @@ int System::Align( ArrayPtrVoid params )
     // param 1: the time (unused)
     // param 2: the systemAligner
     // param 3: the staffNb (unused)
-    MusSystemAligner **systemAligner = (MusSystemAligner**)params[2];
+    SystemAligner **systemAligner = (SystemAligner**)params[2];
     
     // When calculating the alignment, the position has to be 0
     m_xRel = 0;
@@ -224,7 +224,7 @@ int System::SetAligmentYPos( ArrayPtrVoid params )
     // param 0: the previous staff height
     // param 1: the staff margin (unused)
     // param 2: the staff interline sizes (int[2]) (unused)
-    // param 2: the functor to be redirected to MusSystemAligner
+    // param 2: the functor to be redirected to SystemAligner
     int *previousStaffHeight = (int*)params[0];
     MusFunctor *setAligmnentPosY = (MusFunctor*)params[3];
     
@@ -239,7 +239,7 @@ int System::SetAligmentYPos( ArrayPtrVoid params )
 int System::IntegrateBoundingBoxYShift( ArrayPtrVoid params )
 {
     // param 0: the cumulated shift
-    // param 1: the functor to be redirected to MusSystemAligner
+    // param 1: the functor to be redirected to SystemAligner
     int *shift = (int*)params[0];
     MusFunctor *integrateBoundingBoxYShift = (MusFunctor*)params[1];
     
@@ -291,7 +291,7 @@ int System::JustifyX( ArrayPtrVoid params )
 {
     // param 0: the justification ratio (unused)
     // param 1: the system full width (without system margins)
-    // param 2: the functor to be redirected to the MusMeasureAligner (unused)
+    // param 2: the functor to be redirected to the MeasureAligner (unused)
     double *ratio = (double*)params[0];
     int *systemFullWidth = (int*)params[1];
     

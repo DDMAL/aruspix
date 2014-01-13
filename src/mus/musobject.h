@@ -227,14 +227,14 @@ public:
     
     /**
      * Align the content of a system.
-     * For each LayerElement, instanciate its MusAlignment.
+     * For each LayerElement, instanciate its Alignment.
      * It creates it if no other note or event occurs at its position.
      */
     virtual int Align( ArrayPtrVoid params ) { return FUNCTOR_CONTINUE; };
     
     /**
-     * Set the position of the MusAlignment.
-     * Looks at the time different with the previous MusAlignment.
+     * Set the position of the Alignment.
+     * Looks at the time different with the previous Alignment.
      */
     virtual int SetAligmentXPos( ArrayPtrVoid params ) { return FUNCTOR_CONTINUE; };
 
@@ -277,12 +277,12 @@ public:
     virtual int IntegrateBoundingBoxYShift( ArrayPtrVoid params ) { return FUNCTOR_CONTINUE; };
     
     /**
-     * Align the measures by adjusting the m_xRel position looking at the MusMeasureAligner.
+     * Align the measures by adjusting the m_xRel position looking at the MeasureAligner.
      */
     virtual int AlignMeasures( ArrayPtrVoid params ) { return FUNCTOR_CONTINUE; };
     
     /**
-     * Store the width of the system in the MusMeasureAligner for justification
+     * Store the width of the system in the MeasureAligner for justification
      * This method is called at the end of a system
      */
     virtual int AlignMeasuresEnd( ArrayPtrVoid params ) { return FUNCTOR_CONTINUE; };
@@ -293,7 +293,7 @@ public:
     virtual int JustifyX( ArrayPtrVoid params ) { return FUNCTOR_CONTINUE; };
     
     /**
-     * Align the system by adjusting the m_yRel position looking at the MusSystemAligner.
+     * Align the system by adjusting the m_yRel position looking at the SystemAligner.
      */
     virtual int AlignSystems( ArrayPtrVoid params ) { return FUNCTOR_CONTINUE; };
 

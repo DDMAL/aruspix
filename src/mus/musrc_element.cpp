@@ -1500,10 +1500,10 @@ void View::DrawTie( DeviceContext *dc, LayerElement *element, Layer *layer, Staf
     // This is the case when the tie is split over two system of two pages.
     // In this case, we are now drawing its beginning to the end of the measure (i.e., the last aligner)
     if ( parentSystem2 && currentSystem && ( parentSystem2 != currentSystem) ) {
-        MusAlignment *nextAlignement = note1->GetAlignment();
+        Alignment *nextAlignement = note1->GetAlignment();
         while (nextAlignement) {
             if (nextAlignement->GetType() == ALIGNMENT_MEASURE_END) break;
-            nextAlignement = dynamic_cast<MusAlignment*>(nextAlignement->GetNextSibling());
+            nextAlignement = dynamic_cast<Alignment*>(nextAlignement->GetNextSibling());
         }
         if (!nextAlignement) {
             return;
@@ -1514,10 +1514,10 @@ void View::DrawTie( DeviceContext *dc, LayerElement *element, Layer *layer, Staf
     }
     // Now this is the case when the tie is split but we are drawing the end of it
     else if ( parentSystem1 && currentSystem && ( parentSystem1 != currentSystem) ) {
-        MusAlignment *previousAlignement = note2->GetAlignment();
+        Alignment *previousAlignement = note2->GetAlignment();
         while (previousAlignement) {
             if (previousAlignement->GetType() != ALIGNMENT_DEFAULT) break;
-            previousAlignement = dynamic_cast<MusAlignment*>(previousAlignement->GetPreviousSibling());
+            previousAlignement = dynamic_cast<Alignment*>(previousAlignement->GetPreviousSibling());
         }
         if (!previousAlignement) {
             return;

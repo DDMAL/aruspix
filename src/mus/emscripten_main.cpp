@@ -26,7 +26,7 @@ extern "C" {
         string notation(c_notation);
         string json_options(c_options);
         string out_str;
-        MusController controller;
+        InterfaceController controller;
         
         if (!initialized) {
             std::srand(std::time(0));

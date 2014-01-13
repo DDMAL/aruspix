@@ -83,34 +83,34 @@ public:
     
     /**
      * Correct the Y alignment once the the content of a system has been aligned and laid out.
-     * Special case that redirects the functor to the MusSystemAligner.
+     * Special case that redirects the functor to the SystemAligner.
      */
     virtual int IntegrateBoundingBoxYShift( ArrayPtrVoid params );
     
     /**
-     * Align the system by adjusting the m_yRel position looking at the MusSystemAligner.
+     * Align the system by adjusting the m_yRel position looking at the SystemAligner.
      */
     virtual int AlignSystems( ArrayPtrVoid params );
     
     /**
-     * Align the measures by adjusting the m_xRel position looking at the MusMeasureAligner.
+     * Align the measures by adjusting the m_xRel position looking at the MeasureAligner.
      * In System object resets the shift to 0;
      */
     virtual int AlignMeasures( ArrayPtrVoid params );
     
     /** 
-     * Store the width of the system in the MusMeasureAligner for justification
+     * Store the width of the system in the MeasureAligner for justification
      */
     virtual int AlignMeasuresEnd( ArrayPtrVoid params );
     
     /**
      * Justify the X positions
-     * Special case that redirects the functor to the MusMeasureAligner.
+     * Special case that redirects the functor to the MeasureAligner.
      */
     virtual int JustifyX( ArrayPtrVoid params );
     
 private:
-    MusSystemAligner m_systemAligner;
+    SystemAligner m_systemAligner;
     
 public:
     /** System left margin (MEI scoredef@system.leftmar). Saved if != 0 */

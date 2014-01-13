@@ -233,11 +233,11 @@ int Staff::Align( ArrayPtrVoid params )
     // param 1: the time (unused)
     // param 2: the systemAligner
     // param 3: the staffNb
-    MusSystemAligner **systemAligner = (MusSystemAligner**)params[2];
+    SystemAligner **systemAligner = (SystemAligner**)params[2];
 	int *staffNb = (int*)params[3];
     
     // this gets (or creates) the measureAligner for the measure
-    MusStaffAlignment *alignment = (*systemAligner)->GetStaffAlignment( *staffNb );
+    StaffAlignment *alignment = (*systemAligner)->GetStaffAlignment( *staffNb );
     
     assert( alignment );
     

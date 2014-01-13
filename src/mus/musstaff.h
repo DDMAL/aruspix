@@ -17,7 +17,7 @@
 class Clef;
 class DeviceContext;
 class Layer;
-class MusStaffAlignment;
+class StaffAlignment;
 
 //----------------------------------------------------------------------------
 // Staff
@@ -65,7 +65,7 @@ public:
      */
     int GetVerticalSpacing();
     
-    MusStaffAlignment *GetAlignment() { return m_staffAlignment; };
+    StaffAlignment *GetAlignment() { return m_staffAlignment; };
     
     int GetYRel();
 
@@ -148,9 +148,9 @@ private:
     int m_n;
     
     /**
-     * A pointer to a MusStaffAlignment for aligning the staves
+     * A pointer to a StaffAlignment for aligning the staves
      */
-    MusStaffAlignment *m_staffAlignment;
+    StaffAlignment *m_staffAlignment;
 
     
 };

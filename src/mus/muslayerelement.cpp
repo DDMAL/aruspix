@@ -317,7 +317,7 @@ int LayerElement::Align( ArrayPtrVoid params )
     // param 1: the time
     // param 2: the systemAligner (unused)
     // param 3: the staffNb (unused)
-    MusMeasureAligner **measureAligner = (MusMeasureAligner**)params[0];
+    MeasureAligner **measureAligner = (MeasureAligner**)params[0];
     double *time = (double*)params[1];
     
     MusAlignmentType type = ALIGNMENT_DEFAULT;

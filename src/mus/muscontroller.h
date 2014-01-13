@@ -21,15 +21,15 @@ typedef enum _file_formats {
 } ConvertFileFormat;
 
 //----------------------------------------------------------------------------
-// MusController
+// InterfaceController
 //----------------------------------------------------------------------------
 
-class MusController
+class InterfaceController
 {
 public:
     // constructors and destructors
-    MusController();
-    virtual ~MusController();
+    InterfaceController();
+    virtual ~InterfaceController();
     
     /**
      * Load a file with the specified type.

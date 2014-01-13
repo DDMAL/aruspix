@@ -13,7 +13,7 @@
 #include "musdef.h"
 #include "musobject.h"
 
-class MusAlignment;
+class Alignment;
 
 //----------------------------------------------------------------------------
 // LayerElement
@@ -104,7 +104,7 @@ public:
     
     virtual double GetAlignementDuration();
     
-    MusAlignment *GetAlignment() { return m_alignment; };
+    Alignment *GetAlignment() { return m_alignment; };
     
     int GetXRel();
     
@@ -152,7 +152,7 @@ public:
     bool m_drawn_stem_dir;
     
 protected:
-    MusAlignment *m_alignment;
+    Alignment *m_alignment;
     
 };
 

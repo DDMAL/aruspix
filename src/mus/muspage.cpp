@@ -163,11 +163,11 @@ void Page::Layout( )
     
     // Align the content of the page using measure and system aligners
     // After this:
-    // - each LayerElement object will have its MusAlignment pointer initialized
-    // - each Staff object will then have its MusStaffAlignment pointer initialized
-    MusMeasureAligner *measureAlignerPtr = NULL;
+    // - each LayerElement object will have its Alignment pointer initialized
+    // - each Staff object will then have its StaffAlignment pointer initialized
+    MeasureAligner *measureAlignerPtr = NULL;
     double time = 0.0;
-    MusSystemAligner *systemAlignerPtr = NULL;
+    SystemAligner *systemAlignerPtr = NULL;
     int staffNb = 0;
     params.push_back( &measureAlignerPtr );
     params.push_back( &time );
@@ -176,8 +176,8 @@ void Page::Layout( )
     MusFunctor align( &Object::Align );
     this->Process( &align, params );
     
-    // Set the X position of each MusAlignment
-    // Does a duration-based non linear spacing looking at the duration space between two MusAlignment objects
+    // Set the X position of each Alignment
+    // Does a duration-based non linear spacing looking at the duration space between two Alignment objects
     params.clear();
     double previousTime = 0.0;
     int previousXRel = 0;
@@ -194,7 +194,7 @@ void Page::Layout( )
     rc.SetDoc(doc);
     rc.DrawPage(  &bb_dc, this, false );
     
-    // Adjust the X shift of the MusAlignment looking at the bounding boxes
+    // Adjust the X shift of the Alignment looking at the bounding boxes
     // Look at each LayerElement and changes the m_xShift if the bouding box is overlapping
     params.clear();
     int min_pos = 0;
@@ -223,7 +223,7 @@ void Page::Layout( )
     MusFunctor alignMeasuresEnd( &Object::AlignMeasuresEnd );
     this->Process( &alignMeasures, params, &alignMeasuresEnd );
     
-    // Adjust the Y shift of the MusStaffAlignment looking at the bounding boxes
+    // Adjust the Y shift of the StaffAlignment looking at the bounding boxes
     // Look at each Staff and changes the m_yShift if the bounding box is overlapping 
     params.clear();
     int previous_height = 0;
@@ -231,7 +231,7 @@ void Page::Layout( )
     MusFunctor setBoundingBoxYShift( &Object::SetBoundingBoxYShift );
     this->Process( &setBoundingBoxYShift, params );
     
-    // Set the Y position of each MusStaffAlignment
+    // Set the Y position of each StaffAlignment
     // Adjusts the Y shift for making sure there is a minimal space (staffMargin) between each staff
     params.clear();
     int previousStaffHeight = 0; // 0 for the first staff, reset for each system (see System::SetAlignmentYPos)

@@ -164,7 +164,7 @@ int Measure::Align( ArrayPtrVoid params )
     // param 1: the time (unused)
     // param 2: the systemAligner (unused)
     // param 3: the staffNb
-    MusMeasureAligner **measureAligner = (MusMeasureAligner**)params[0];
+    MeasureAligner **measureAligner = (MeasureAligner**)params[0];
     int *staffNb = (int*)params[3];
     
     // clear the content of the measureAligner
@@ -214,7 +214,7 @@ int Measure::JustifyX( ArrayPtrVoid params )
 {
     // param 0: the justification ratio
     // param 1: the system full width (without system margins) (unused)
-    // param 2: the functor to be redirected to the MusMeasureAligner
+    // param 2: the functor to be redirected to the MeasureAligner
     double *ratio = (double*)params[0];
     MusFunctor *justifyX = (MusFunctor*)params[2];
     

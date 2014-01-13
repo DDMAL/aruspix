@@ -19,29 +19,29 @@
 #include "muslayerelement.h"
 
 //----------------------------------------------------------------------------
-// MusSystemAligner
+// SystemAligner
 //----------------------------------------------------------------------------
 
-MusSystemAligner::MusSystemAligner():
+SystemAligner::SystemAligner():
     Object()
 {
     m_bottomAlignment = NULL;
 }
 
-MusSystemAligner::~MusSystemAligner()
+SystemAligner::~SystemAligner()
 {
     
 }
 
 
-void MusSystemAligner::Reset()
+void SystemAligner::Reset()
 {
     this->ClearChildren();
     m_bottomAlignment = NULL;
     m_bottomAlignment = GetStaffAlignment( 0 );
 }
 
-MusStaffAlignment* MusSystemAligner::GetStaffAlignment( int idx )
+StaffAlignment* SystemAligner::GetStaffAlignment( int idx )
 {
     // The last one is always the bottomAlignment (unless if not created)
     if ( m_bottomAlignment ) {
@@ -51,15 +51,15 @@ MusStaffAlignment* MusSystemAligner::GetStaffAlignment( int idx )
     
     if (idx < GetStaffAlignmentCount()) {
         this->m_children.push_back( m_bottomAlignment );
-        return (MusStaffAlignment*)m_children[idx];
+        return (StaffAlignment*)m_children[idx];
     }
     // check that we are searching for the next one (not gap)
     assert( idx == GetStaffAlignmentCount() );
     //Vrv::LogDebug("Creating staff alignment");
     
     // This is the first time we are looking for it (e.g., first staff)
-    // We create the MusStaffAlignment
-    MusStaffAlignment *alignment = new MusStaffAlignment();
+    // We create the StaffAlignment
+    StaffAlignment *alignment = new StaffAlignment();
     alignment->SetParent( this );
     m_children.push_back( alignment );
     
@@ -72,22 +72,22 @@ MusStaffAlignment* MusSystemAligner::GetStaffAlignment( int idx )
 
 
 //----------------------------------------------------------------------------
-// MusStaffAlignment
+// StaffAlignment
 //----------------------------------------------------------------------------
 
-MusStaffAlignment::MusStaffAlignment():
+StaffAlignment::StaffAlignment():
     Object()
 {
     m_yRel = 0;
     m_yShift = 0;
 }
 
-MusStaffAlignment::~MusStaffAlignment()
+StaffAlignment::~StaffAlignment()
 {
     
 }
 
-void MusStaffAlignment::SetYShift( int yShift )
+void StaffAlignment::SetYShift( int yShift )
 {
     if ( yShift < m_yShift )
     {
@@ -96,10 +96,10 @@ void MusStaffAlignment::SetYShift( int yShift )
 }
 
 //----------------------------------------------------------------------------
-// MusMeasureAligner
+// MeasureAligner
 //----------------------------------------------------------------------------
 
-MusMeasureAligner::MusMeasureAligner():
+MeasureAligner::MeasureAligner():
     Object()
 {
     m_leftAlignment = NULL;
@@ -107,20 +107,20 @@ MusMeasureAligner::MusMeasureAligner():
     //m_totalWidth = 0;
 }
 
-MusMeasureAligner::~MusMeasureAligner()
+MeasureAligner::~MeasureAligner()
 {
 }
 
-void MusMeasureAligner::Reset()
+void MeasureAligner::Reset()
 {
     this->ClearChildren();
-    m_leftAlignment = new MusAlignment( 0.0, ALIGNMENT_MEASURE_START );
+    m_leftAlignment = new Alignment( 0.0, ALIGNMENT_MEASURE_START );
     AddAlignment( m_leftAlignment );
-    m_rightAlignment = new MusAlignment( 0.0, ALIGNMENT_MEASURE_END );
+    m_rightAlignment = new Alignment( 0.0, ALIGNMENT_MEASURE_END );
     AddAlignment( m_rightAlignment );
 }
 
-void MusMeasureAligner::AddAlignment( MusAlignment *alignment, int idx )
+void MeasureAligner::AddAlignment( Alignment *alignment, int idx )
 {
 	alignment->SetParent( this );
     if ( idx == -1 ) {
@@ -131,15 +131,15 @@ void MusMeasureAligner::AddAlignment( MusAlignment *alignment, int idx )
     }
 }
 
-MusAlignment* MusMeasureAligner::GetAlignmentAtTime( double time, MusAlignmentType type )
+Alignment* MeasureAligner::GetAlignmentAtTime( double time, MusAlignmentType type )
 {
     int i;
     int idx = -1; // the index if we reach the end.
-    MusAlignment *alignment = NULL;
+    Alignment *alignment = NULL;
     // First try to see if we already have something at the time position
     for (i = 0; i < GetAlignmentCount(); i++)
     {
-        alignment = (MusAlignment*)m_children[i];
+        alignment = (Alignment*)m_children[i];
         double alignment_time = alignment->GetTime();
         if ( Vrv::AreEqual( alignment_time, time ) && (alignment->GetType() == type) ) {
             return alignment;
@@ -156,12 +156,12 @@ MusAlignment* MusMeasureAligner::GetAlignmentAtTime( double time, MusAlignmentTy
         // we always to insert _before_ the last one - m_rightAlignment is added in Reset()
         idx = GetAlignmentCount() - 1;
     }
-    MusAlignment *newAlignement = new MusAlignment( time, type );
+    Alignment *newAlignement = new Alignment( time, type );
     AddAlignment( newAlignement, idx );
     return newAlignement;
 }
 
-void MusMeasureAligner::SetMaxTime( double time )
+void MeasureAligner::SetMaxTime( double time )
 {
     if ( m_rightAlignment->GetTime() < time ) {
         m_rightAlignment->SetTime( time );
@@ -172,7 +172,7 @@ void MusMeasureAligner::SetMaxTime( double time )
 // MusAlignement
 //----------------------------------------------------------------------------
 
-MusAlignment::MusAlignment( ):
+Alignment::Alignment( ):
     Object()
 {
     m_xRel = 0;
@@ -182,7 +182,7 @@ MusAlignment::MusAlignment( ):
     m_type = ALIGNMENT_DEFAULT;
 }
 
-MusAlignment::MusAlignment( double time, MusAlignmentType type ):
+Alignment::Alignment( double time, MusAlignmentType type ):
     Object()
 {
     m_xRel = 0;
@@ -192,17 +192,17 @@ MusAlignment::MusAlignment( double time, MusAlignmentType type ):
     m_type = type;
 }
 
-MusAlignment::~MusAlignment()
+Alignment::~Alignment()
 {
     
 }
 
-void MusAlignment::SetXRel( int x_rel )
+void Alignment::SetXRel( int x_rel )
 {
     m_xRel = x_rel;
 }
 
-void MusAlignment::SetXShift( int xShift )
+void Alignment::SetXShift( int xShift )
 {
     if ( xShift > m_xShift )
     {
@@ -210,7 +210,7 @@ void MusAlignment::SetXShift( int xShift )
     }
 }
 
-void MusAlignment::SetMaxWidth( int max_width )
+void Alignment::SetMaxWidth( int max_width )
 {
     if ( max_width > m_maxWidth )
     {
@@ -222,12 +222,12 @@ void MusAlignment::SetMaxWidth( int max_width )
 // Functors
 //----------------------------------------------------------------------------
 
-int MusStaffAlignment::SetAligmentYPos( ArrayPtrVoid params )
+int StaffAlignment::SetAligmentYPos( ArrayPtrVoid params )
 {
     // param 0: the previous staff height
     // param 1: the staff margin
     // param 2: the staff interline sizes (int[2])
-    // param 2: the functor to be redirected to MusSystemAligner (unused)
+    // param 2: the functor to be redirected to SystemAligner (unused)
     int *previousStaffHeight = (int*)params[0];
     int *staffMargin = (int*)params[1];
     int **interlineSizes = (int**)params[2];
@@ -244,10 +244,10 @@ int MusStaffAlignment::SetAligmentYPos( ArrayPtrVoid params )
     return FUNCTOR_CONTINUE;
 }
 
-int MusStaffAlignment::IntegrateBoundingBoxYShift( ArrayPtrVoid params )
+int StaffAlignment::IntegrateBoundingBoxYShift( ArrayPtrVoid params )
 {
     // param 0: the cumulated shift
-    // param 1: the functor to be redirected to the MusSystemAligner (unused)
+    // param 1: the functor to be redirected to the SystemAligner (unused)
     int *shift = (int*)params[0];
     
     // integrates the m_xShift into the m_xRel
@@ -259,24 +259,24 @@ int MusStaffAlignment::IntegrateBoundingBoxYShift( ArrayPtrVoid params )
     return FUNCTOR_CONTINUE;
 }
 
-int MusMeasureAligner::IntegrateBoundingBoxXShift( ArrayPtrVoid params )
+int MeasureAligner::IntegrateBoundingBoxXShift( ArrayPtrVoid params )
 {
     // param 0: the cumulated shift
     // param 1: the cumulated width
-    // param 2: the functor to be redirected to the MusMeasureAligner (unused)
+    // param 2: the functor to be redirected to the MeasureAligner (unused)
     int *shift = (int*)params[0];
     
-    // We start a new MusMeasureAligner
+    // We start a new MeasureAligner
     // Reset the cumulated shift to 0;
     (*shift) = 0;
     
     return FUNCTOR_CONTINUE;
 }
 
-int MusAlignment::IntegrateBoundingBoxXShift( ArrayPtrVoid params )
+int Alignment::IntegrateBoundingBoxXShift( ArrayPtrVoid params )
 {
     // param 0: the cumulated shift
-    // param 1: the functor to be redirected to the MusMeasureAligner (unused)
+    // param 1: the functor to be redirected to the MeasureAligner (unused)
     int *shift = (int*)params[0];
     
     // integrates the m_xShift into the m_xRel
@@ -290,15 +290,15 @@ int MusAlignment::IntegrateBoundingBoxXShift( ArrayPtrVoid params )
     return FUNCTOR_CONTINUE;
 }
 
-int MusMeasureAligner::SetAligmentXPos( ArrayPtrVoid params )
+int MeasureAligner::SetAligmentXPos( ArrayPtrVoid params )
 {
     // param 0: the previous time position
     // param 1: the previous x rel position
-    // param 2: the functor to be redirected to the MusMeasureAligner (unused)
+    // param 2: the functor to be redirected to the MeasureAligner (unused)
     double *previousTime = (double*)params[0];
     int *previousXRel = (int*)params[1];
     
-    // We start a new MusMeasureAligner
+    // We start a new MeasureAligner
     // Reset the previous time position and x_rel to 0;
     (*previousTime) = 0.0;
     (*previousXRel) = 0;
@@ -306,11 +306,11 @@ int MusMeasureAligner::SetAligmentXPos( ArrayPtrVoid params )
     return FUNCTOR_CONTINUE;
 }
 
-int MusAlignment::SetAligmentXPos( ArrayPtrVoid params )
+int Alignment::SetAligmentXPos( ArrayPtrVoid params )
 {
     // param 0: the previous time position
     // param 1: the previous x rel position
-    // param 2: the functor to be redirected to the MusMeasureAligner (unused)
+    // param 2: the functor to be redirected to the MeasureAligner (unused)
     double *previousTime = (double*)params[0];
     int *previousXRel = (int*)params[1];
     
@@ -328,11 +328,11 @@ int MusAlignment::SetAligmentXPos( ArrayPtrVoid params )
 }
 
 
-int MusAlignment::JustifyX( ArrayPtrVoid params )
+int Alignment::JustifyX( ArrayPtrVoid params )
 {
     // param 0: the justification ratio
     // param 1: the system full width (without system margins) (unused)
-    // param 2: the functor to be redirected to the MusMeasureAligner (unused)
+    // param 2: the functor to be redirected to the MeasureAligner (unused)
     double *ratio = (double*)params[0];
     
     this->m_xRel = ceil((*ratio) * (double)this->m_xRel);

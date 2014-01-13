@@ -121,7 +121,7 @@ int main(int argc, char** argv)
     int m_no_justification = 0;
     int m_show_bounding_boxes = 0;
       
-    MusController controller;
+    InterfaceController controller;
     
     // read pae by default
     m_type = pae_file;
@@ -269,7 +269,7 @@ int main(int argc, char** argv)
         // Write it to file
         
     } else {
-        // To be implemented in MusController
+        // To be implemented in InterfaceController
         /*
         XMLOutput meioutput(doc, m_outfile.c_str());
         if (!meioutput.ExportFile()) {

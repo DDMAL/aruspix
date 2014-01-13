@@ -11,9 +11,9 @@
 
 #include "musobject.h"
 
-class MusSystemAligner;
-class MusStaffAlignment;
-class MusMeasureAligner;
+class SystemAligner;
+class StaffAlignment;
+class MeasureAligner;
 
 /**
  * Alignment types for aligning types together.
@@ -31,19 +31,19 @@ enum MusAlignmentType {
 };
 
 //----------------------------------------------------------------------------
-// MusSystemAligner
+// SystemAligner
 //----------------------------------------------------------------------------
 
 /**
  * This class aligns the content of a system
- * It contains a vector of MusStaffAlignment
+ * It contains a vector of StaffAlignment
  */
-class MusSystemAligner: public Object
+class SystemAligner: public Object
 {
 public:
     // constructors and destructors
-    MusSystemAligner();
-    virtual ~MusSystemAligner();
+    SystemAligner();
+    virtual ~SystemAligner();
     
     int GetStaffAlignmentCount() const { return (int)m_children.size(); };
     
@@ -53,17 +53,17 @@ public:
     void Reset();
     
     /**
-     * Get bottom MusStaffAlignment for the system.
-     * For each MusSystemAligner, we keep and MusStaffAlignment for the bottom position.
+     * Get bottom StaffAlignment for the system.
+     * For each SystemAligner, we keep and StaffAlignment for the bottom position.
      */
-    MusStaffAlignment *GetBottomAlignment( ) { return m_bottomAlignment; };
+    StaffAlignment *GetBottomAlignment( ) { return m_bottomAlignment; };
     
     /**
-     * Get the MusStaffAlignment at index idx.
-     * Creates the MusStaffAlignment if not there yet.
+     * Get the StaffAlignment at index idx.
+     * Creates the StaffAlignment if not there yet.
      * Checks the they are created incrementally (without gap).
      */
-    MusStaffAlignment* GetStaffAlignment( int idx );
+    StaffAlignment* GetStaffAlignment( int idx );
     
 private:
     
@@ -71,25 +71,25 @@ public:
     
 private:
     /**
-     * A pointer to the left MusStaffAlignment object kept for the system bottom position
+     * A pointer to the left StaffAlignment object kept for the system bottom position
      */
-    MusStaffAlignment *m_bottomAlignment;
+    StaffAlignment *m_bottomAlignment;
     
 };
 
 //----------------------------------------------------------------------------
-// MusStaffAlignment
+// StaffAlignment
 //----------------------------------------------------------------------------
 
 /**
  * This class stores an alignement position staves will point to
  */
-class MusStaffAlignment: public Object
+class StaffAlignment: public Object
 {
 public:
     // constructors and destructors
-    MusStaffAlignment();
-    virtual ~MusStaffAlignment();
+    StaffAlignment();
+    virtual ~StaffAlignment();
     
     void SetYRel( int yRel ) { m_yRel = yRel; };
     int GetYRel() { return m_yRel; };
@@ -123,19 +123,19 @@ private:
 
 
 //----------------------------------------------------------------------------
-// MusAlignment
+// Alignment
 //----------------------------------------------------------------------------
 
 /** 
  * This class stores an alignement position elements will point to
  */
-class MusAlignment: public Object
+class Alignment: public Object
 {
 public:
     // constructors and destructors
-    MusAlignment( );
-    MusAlignment( double time, MusAlignmentType type = ALIGNMENT_DEFAULT );
-    virtual ~MusAlignment();
+    Alignment( );
+    Alignment( double time, MusAlignmentType type = ALIGNMENT_DEFAULT );
+    virtual ~Alignment();
     
     void SetXRel( int x_rel );
     int GetXRel() { return m_xRel; };
@@ -169,8 +169,8 @@ public:
     virtual int IntegrateBoundingBoxXShift( ArrayPtrVoid params );
     
     /**
-     * Set the position of the MusAlignment.
-     * Looks at the time different with the previous MusAlignment.
+     * Set the position of the Alignment.
+     * Looks at the time different with the previous Alignment.
      */
     virtual int SetAligmentXPos( ArrayPtrVoid params );
     
@@ -220,19 +220,19 @@ private:
 };
 
 //----------------------------------------------------------------------------
-// MusMeasureAligner
+// MeasureAligner
 //----------------------------------------------------------------------------
 
 /**
  * This class aligns the content of a measure
- * It contains a vector of MusAlignment
+ * It contains a vector of Alignment
  */
-class MusMeasureAligner: public Object
+class MeasureAligner: public Object
 {
 public:
     // constructors and destructors
-    MusMeasureAligner();
-    virtual ~MusMeasureAligner();
+    MeasureAligner();
+    virtual ~MeasureAligner();
     
     int GetAlignmentCount() const { return (int)m_children.size(); };
     
@@ -241,7 +241,7 @@ public:
      */
     void Reset();
     
-    MusAlignment* GetAlignmentAtTime( double time, MusAlignmentType type );
+    Alignment* GetAlignmentAtTime( double time, MusAlignmentType type );
     
     /**
      * Keep the maximum time of the measure.
@@ -259,18 +259,18 @@ public:
     ///@}
     
     /**
-     * Get left MusAlignment for the measure.
-     * For each MusMeasureAligner, we keep and MusAlignment for the left position.
-     * The MusAlignment time will be always stay 0.0 and be the first in the list.
+     * Get left Alignment for the measure.
+     * For each MeasureAligner, we keep and Alignment for the left position.
+     * The Alignment time will be always stay 0.0 and be the first in the list.
      */
-    MusAlignment *GetLeftAlignment( ) { return m_leftAlignment; };
+    Alignment *GetLeftAlignment( ) { return m_leftAlignment; };
     
     /**
-     * Get right MusAlignment for the measure.
-     * For each MusMeasureAligner, we keep and MusAlignment for the right position.
-     * The MusAlignment time will be increased whenever necessary when values are added.
+     * Get right Alignment for the measure.
+     * For each MeasureAligner, we keep and Alignment for the right position.
+     * The Alignment time will be increased whenever necessary when values are added.
      */
-    MusAlignment *GetRightAlignment( ) { return m_rightAlignment; };
+    Alignment *GetRightAlignment( ) { return m_rightAlignment; };
     
     /**
      * Correct the X alignment once the the content of a system has been aligned and laid out.
@@ -279,8 +279,8 @@ public:
     virtual int IntegrateBoundingBoxXShift( ArrayPtrVoid params );
     
     /**
-     * Set the position of the MusAlignment.
-     * Looks at the time different with the previous MusAlignment.
+     * Set the position of the Alignment.
+     * Looks at the time different with the previous Alignment.
      * For each MusMeasureAlignment, we need to reset the previous time position.
      */
     virtual int SetAligmentXPos( ArrayPtrVoid params );
@@ -293,20 +293,20 @@ public:
 
     
 private:
-    void AddAlignment( MusAlignment *alignment, int idx = -1 );
+    void AddAlignment( Alignment *alignment, int idx = -1 );
     
 public:
     
 private:
     /**
-     * A pointer to the left MusAlignment object kept for the measure start position
+     * A pointer to the left Alignment object kept for the measure start position
      */
-    MusAlignment *m_leftAlignment;
+    Alignment *m_leftAlignment;
     
     /**
-     * A pointer to the left MusAlignment object kept for the measure end position
+     * A pointer to the left Alignment object kept for the measure end position
      */
-    MusAlignment *m_rightAlignment;
+    Alignment *m_rightAlignment;
     
     /**
      * Store the system width in order to calculate the justification ratio
