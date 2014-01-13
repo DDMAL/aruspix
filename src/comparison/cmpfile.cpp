@@ -108,7 +108,7 @@ bool CmpCollation::IsCollationLoaded( CmpCollationPart *part )
     wxString filename = m_basename + m_id + "." + part->m_bookPart->m_id + ".mei" ;
 	if ( !wxFileExists( filename ) )
 		return false;
-	MusMeiInput mei_input( m_musDocPtr, filename.c_str()  );
+	MeiInput mei_input( m_musDocPtr, filename.c_str()  );
 	if (!mei_input.ImportFile()) {
 		return false;
     }
@@ -118,7 +118,7 @@ bool CmpCollation::IsCollationLoaded( CmpCollationPart *part )
     filename = m_basename + GetRefPartFilename() + ".mei";
 	if ( !wxFileExists( filename ) )
 		return false;
-	MusMeiInput mei_input1( m_musDocSrc1Ptr, filename.c_str()  );
+	MeiInput mei_input1( m_musDocSrc1Ptr, filename.c_str()  );
 	if (!mei_input1.ImportFile()) {
 		return false;
     }
@@ -127,7 +127,7 @@ bool CmpCollation::IsCollationLoaded( CmpCollationPart *part )
     filename = m_basename + part->m_bookPart->m_id + ".mei" ;
 	if ( !wxFileExists( filename ) )
 		return false;
-	MusMeiInput mei_input2( m_musDocSrc2Ptr, filename.mb_str()  );
+	MeiInput mei_input2( m_musDocSrc2Ptr, filename.mb_str()  );
 	if (!mei_input2.ImportFile()) {
 		return false;
     }
@@ -325,7 +325,7 @@ bool CmpCollation::Collate( )
         page->AddSystem( system );
         collationDoc.AddPage( page );
         
-        MusMeiOutput mei_output( &collationDoc, (m_basename + m_id + "." + variant->m_bookPart->m_id + ".mei").mb_str()  );
+        MeiOutput mei_output( &collationDoc, (m_basename + m_id + "." + variant->m_bookPart->m_id + ".mei").mb_str()  );
         mei_output.ExportFile();
         
         delete layer_var;
@@ -635,7 +635,7 @@ Layer *CmpBookPart::GetContentToAlign( wxString basename )
     Layer *alignLayer = new Layer( 1 );
     Doc doc;
     
-    MusMeiInput meiInput( &doc, (basename + this->m_id + ".mei").mb_str() );
+    MeiInput meiInput( &doc, (basename + this->m_id + ".mei").mb_str() );
     if ( !meiInput.ImportFile() ) {
         wxLogError( "Cannot open MEI part file");
     }
@@ -1028,7 +1028,7 @@ bool CmpFile::LoadBooks( wxArrayPtrVoid params, AxProgressDlg *dlg )
 			imCounterInc( dlg->GetCounter() );
             
             wxLogMessage( _("Saving MEI part file ...") );
-            MusMeiOutput *mei_output = new MusMeiOutput( partDoc, (m_basename + part->m_id + ".mei").mb_str()  );
+            MeiOutput *mei_output = new MeiOutput( partDoc, (m_basename + part->m_id + ".mei").mb_str()  );
             mei_output->ExportFile();
             delete mei_output;
             

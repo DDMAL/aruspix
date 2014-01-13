@@ -52,7 +52,7 @@ void Layer::Clear()
 int Layer::Save( ArrayPtrVoid params )
 {
     // param 0: output stream
-    MusFileOutputStream *output = (MusFileOutputStream*)params[0];       
+    FileOutputStream *output = (FileOutputStream*)params[0];       
     if (!output->WriteLayer( this )) {
         return FUNCTOR_STOP;
     }

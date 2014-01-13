@@ -180,7 +180,7 @@ void MusWWGElement::WWGInitElement()
 }
 
 //----------------------------------------------------------------------------
-// MusFileOutputStream
+// FileOutputStream
 //----------------------------------------------------------------------------
 
 MusWWGOutput::MusWWGOutput( Doc *doc, std::string filename ) :

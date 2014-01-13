@@ -25,22 +25,22 @@ class MusStaffGrp;
 class System;
 
 //----------------------------------------------------------------------------
-// MusFileOutputStream
+// FileOutputStream
 //----------------------------------------------------------------------------
 
 /** 
  * This class is a base class for file output stream classes.
  * It is not an abstract class but should not be instanciate directly.
  */ 
-class MusFileOutputStream: public std::ofstream
+class FileOutputStream: public std::ofstream
 {
 public:
     // constructors and destructors
-    MusFileOutputStream( Doc *doc, std::string filename );
-	MusFileOutputStream( Doc *doc );
-    MusFileOutputStream() {};
-	//MusFileOutputStream( Doc *file, wxFile *wxfile );
-    virtual ~MusFileOutputStream();
+    FileOutputStream( Doc *doc, std::string filename );
+	FileOutputStream( Doc *doc );
+    FileOutputStream() {};
+	//FileOutputStream( Doc *file, wxFile *wxfile );
+    virtual ~FileOutputStream();
     
     virtual bool ExportFile( ) { return true; }
     
@@ -75,21 +75,21 @@ private:
 };
 
 //----------------------------------------------------------------------------
-// MusFileInputStream
+// FileInputStream
 //----------------------------------------------------------------------------
 
 /** 
  * This class is a base class for file input stream classes.
  * It is not an abstract class but should not be instanciate directly.
  */ 
-class MusFileInputStream: public std::ifstream
+class FileInputStream: public std::ifstream
 {
 public:
     // constructors and destructors
-    MusFileInputStream( Doc *doc, std::string filename );
-    MusFileInputStream( Doc *doc );
-    MusFileInputStream() {};
-    virtual ~MusFileInputStream();
+    FileInputStream( Doc *doc, std::string filename );
+    FileInputStream( Doc *doc );
+    FileInputStream() {};
+    virtual ~FileInputStream();
     
     // read
     virtual bool ImportFile( ) { return true; }

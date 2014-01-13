@@ -196,8 +196,8 @@ public:
     virtual int FindByUuid( ArrayPtrVoid params );
     
     /**
-     * Save the content of and object by calling the appropriate MusFileOutputStream method
-     * param 0: a pointer to the MusFileOutputStream.
+     * Save the content of and object by calling the appropriate FileOutputStream method
+     * param 0: a pointer to the FileOutputStream.
      */
     virtual int Save( ArrayPtrVoid params ) { return FUNCTOR_CONTINUE; };
     

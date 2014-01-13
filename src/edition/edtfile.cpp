@@ -101,7 +101,7 @@ void EdtFile::SaveContent( )
 	wxASSERT( m_xml_root );
 	
     // save
-    MusMeiOutput *mei_output = new MusMeiOutput( m_musDocPtr, m_musDocPtr->m_fname );
+    MeiOutput *mei_output = new MeiOutput( m_musDocPtr, m_musDocPtr->m_fname );
     mei_output->ExportFile();
     delete mei_output; 
 }

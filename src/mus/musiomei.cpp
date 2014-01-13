@@ -37,11 +37,11 @@
 #include "mustuplet.h"
 
 //----------------------------------------------------------------------------
-// MusMeiOutput
+// MeiOutput
 //----------------------------------------------------------------------------
 
-MusMeiOutput::MusMeiOutput( Doc *doc, std::string filename ) :
-	MusFileOutputStream( doc )
+MeiOutput::MeiOutput( Doc *doc, std::string filename ) :
+	FileOutputStream( doc )
 {
     m_filename = filename;
     m_mei = NULL;
@@ -58,11 +58,11 @@ MusMeiOutput::MusMeiOutput( Doc *doc, std::string filename ) :
     m_beam = NULL;
 }
 
-MusMeiOutput::~MusMeiOutput()
+MeiOutput::~MeiOutput()
 {
 }
 
-bool MusMeiOutput::ExportFile( )
+bool MeiOutput::ExportFile( )
 {
     try {
         TiXmlDocument *meiDoc = new TiXmlDocument();
@@ -103,7 +103,7 @@ bool MusMeiOutput::ExportFile( )
 	return true;    
 }
 
-std::string MusMeiOutput::UuidToMeiStr( Object *element )
+std::string MeiOutput::UuidToMeiStr( Object *element )
 {
     std::string out = element->GetUuid();
     std::transform(out.begin(), out.end(), out.begin(), ::tolower);
@@ -111,7 +111,7 @@ std::string MusMeiOutput::UuidToMeiStr( Object *element )
     return out;
 }
 
-bool MusMeiOutput::WriteDoc( Doc *doc )
+bool MeiOutput::WriteDoc( Doc *doc )
 {
     assert( m_mei );
     
@@ -148,7 +148,7 @@ bool MusMeiOutput::WriteDoc( Doc *doc )
 }
 
 
-bool MusMeiOutput::WritePage( Page *page )
+bool MeiOutput::WritePage( Page *page )
 {
     assert( m_pages );
     m_page = new TiXmlElement("page");
@@ -172,7 +172,7 @@ bool MusMeiOutput::WritePage( Page *page )
     return true;
 }
 
-bool MusMeiOutput::WriteSystem( System *system )
+bool MeiOutput::WriteSystem( System *system )
 {
     assert( m_page );
     m_system = new TiXmlElement("system");
@@ -186,7 +186,7 @@ bool MusMeiOutput::WriteSystem( System *system )
     return true;
 }
 
-bool MusMeiOutput::WriteScoreDef( ScoreDef *scoreDef )
+bool MeiOutput::WriteScoreDef( ScoreDef *scoreDef )
 {
     assert( m_system );
     m_scoreDef = new TiXmlElement("scoreDef");
@@ -206,7 +206,7 @@ bool MusMeiOutput::WriteScoreDef( ScoreDef *scoreDef )
     
 }
 
-bool MusMeiOutput::WriteStaffGrp( MusStaffGrp *staffGrp )
+bool MeiOutput::WriteStaffGrp( MusStaffGrp *staffGrp )
 {
     // for now only as part of a system - this needs to be fixed
     assert( m_system );
@@ -223,7 +223,7 @@ bool MusMeiOutput::WriteStaffGrp( MusStaffGrp *staffGrp )
     return true;
 }
 
-bool MusMeiOutput::WriteStaffDef( MusStaffDef *staffDef )
+bool MeiOutput::WriteStaffDef( MusStaffDef *staffDef )
 {
     assert( m_staffGrp );
     m_staffDef = new TiXmlElement("staffDef");
@@ -243,7 +243,7 @@ bool MusMeiOutput::WriteStaffDef( MusStaffDef *staffDef )
     return true;
 }
 
-bool MusMeiOutput::WriteStaff( Staff *staff )
+bool MeiOutput::WriteStaff( Staff *staff )
 {
     assert( m_system );
     m_staff = new TiXmlElement("staff");
@@ -259,7 +259,7 @@ bool MusMeiOutput::WriteStaff( Staff *staff )
     return true;
 }
 
-bool MusMeiOutput::WriteMeasure( Measure *measure )
+bool MeiOutput::WriteMeasure( Measure *measure )
 {
     assert( m_staff );
     m_measure = new TiXmlElement("measure");
@@ -269,7 +269,7 @@ bool MusMeiOutput::WriteMeasure( Measure *measure )
     return true;
 }
 
-bool MusMeiOutput::WriteLayer( Layer *layer )
+bool MeiOutput::WriteLayer( Layer *layer )
 {
     assert( m_staff );
     m_layer = new TiXmlElement("layer");
@@ -284,7 +284,7 @@ bool MusMeiOutput::WriteLayer( Layer *layer )
     return true;
 }
 
-bool MusMeiOutput::WriteLayerElement( LayerElement *element )
+bool MeiOutput::WriteLayerElement( LayerElement *element )
 {
     assert( m_layer );
     
@@ -361,19 +361,19 @@ bool MusMeiOutput::WriteLayerElement( LayerElement *element )
     }    
 }
 
-void MusMeiOutput::WriteMeiBarline( TiXmlElement *meiBarline, Barline *barline )
+void MeiOutput::WriteMeiBarline( TiXmlElement *meiBarline, Barline *barline )
 {
     return;
 }
 
 
-void MusMeiOutput::WriteMeiBeam( TiXmlElement *meiBeam, Beam *beam )
+void MeiOutput::WriteMeiBeam( TiXmlElement *meiBeam, Beam *beam )
 {
     return;
 }
 
 
-void MusMeiOutput::WriteMeiClef( TiXmlElement *meiClef, Clef *clef )
+void MeiOutput::WriteMeiClef( TiXmlElement *meiClef, Clef *clef )
 {
     meiClef->SetAttribute( "line", ClefLineToStr( clef->m_clefId ).c_str() );
     meiClef->SetAttribute( "shape", ClefShapeToStr( clef->m_clefId ).c_str() );
@@ -382,7 +382,7 @@ void MusMeiOutput::WriteMeiClef( TiXmlElement *meiClef, Clef *clef )
 }
 
 
-void MusMeiOutput::WriteMeiMensur( TiXmlElement *meiMensur, Mensur *mensur )
+void MeiOutput::WriteMeiMensur( TiXmlElement *meiMensur, Mensur *mensur )
 {
     if ( mensur->m_sign ) {
         meiMensur->SetAttribute( "sign", MensurSignToStr( mensur->m_sign ).c_str() );
@@ -407,14 +407,14 @@ void MusMeiOutput::WriteMeiMensur( TiXmlElement *meiMensur, Mensur *mensur )
     return;
 }
 
-void MusMeiOutput::WriteMeiMultiRest( TiXmlElement *meiMultiRest, MultiRest *multiRest )
+void MeiOutput::WriteMeiMultiRest( TiXmlElement *meiMultiRest, MultiRest *multiRest )
 {
     meiMultiRest->SetAttribute( "num", Vrv::StringFormat("%d", multiRest->GetNumber()).c_str() );
 
     return;
 }
 
-void MusMeiOutput::WriteMeiNote( TiXmlElement *meiNote, Note *note )
+void MeiOutput::WriteMeiNote( TiXmlElement *meiNote, Note *note )
 {
     meiNote->SetAttribute( "pname", PitchToStr( note->m_pname ).c_str() );
     meiNote->SetAttribute( "oct", OctToStr( note->m_oct ).c_str() );
@@ -444,7 +444,7 @@ void MusMeiOutput::WriteMeiNote( TiXmlElement *meiNote, Note *note )
     return;
 }
 
-void MusMeiOutput::WriteMeiRest( TiXmlElement *meiRest, Rest *rest )
+void MeiOutput::WriteMeiRest( TiXmlElement *meiRest, Rest *rest )
 {    
     meiRest->SetAttribute( "dur", DurToStr( rest->m_dur ).c_str() );
     if ( rest->m_dots ) {
@@ -456,7 +456,7 @@ void MusMeiOutput::WriteMeiRest( TiXmlElement *meiRest, Rest *rest )
     return;
 }
 
-TiXmlElement *MusMeiOutput::WriteMeiSymbol( MusSymbol *symbol )
+TiXmlElement *MeiOutput::WriteMeiSymbol( MusSymbol *symbol )
 {
     TiXmlElement *xmlElement = NULL;
     if (symbol->m_type==SYMBOL_ACCID) {
@@ -485,12 +485,12 @@ TiXmlElement *MusMeiOutput::WriteMeiSymbol( MusSymbol *symbol )
 }
 
 
-void MusMeiOutput::WriteMeiTuplet( TiXmlElement *meiTuplet, Tuplet *tuplet )
+void MeiOutput::WriteMeiTuplet( TiXmlElement *meiTuplet, Tuplet *tuplet )
 {
     return;
 }
 
-bool MusMeiOutput::WriteLayerApp( LayerApp *app )
+bool MeiOutput::WriteLayerApp( LayerApp *app )
 {    
     assert( m_layer );
     m_app = new TiXmlElement("app");
@@ -498,7 +498,7 @@ bool MusMeiOutput::WriteLayerApp( LayerApp *app )
     return true;
 }
 
-bool MusMeiOutput::WriteLayerRdg( LayerRdg *rdg )
+bool MeiOutput::WriteLayerRdg( LayerRdg *rdg )
 {   
     assert( m_app );
     m_rdgLayer = new TiXmlElement("rdg");
@@ -508,20 +508,20 @@ bool MusMeiOutput::WriteLayerRdg( LayerRdg *rdg )
 }
 
 
-void MusMeiOutput::WriteSameAsAttr( TiXmlElement *meiElement, Object *element )
+void MeiOutput::WriteSameAsAttr( TiXmlElement *meiElement, Object *element )
 {
     if ( !element->m_sameAs.empty() ) {
         meiElement->SetAttribute( "sameas", element->m_sameAs.c_str() );
     }
 }
 
-std::string MusMeiOutput::BoolToStr(bool value)
+std::string MeiOutput::BoolToStr(bool value)
 {
     if (value) return "true";
     return "false";
 }
 
-std::string MusMeiOutput::OctToStr(int oct)
+std::string MeiOutput::OctToStr(int oct)
 {
 	char buf[3];
 	snprintf(buf, 2, "%d", oct);
@@ -534,7 +534,7 @@ std::string MusMeiOutput::OctToStr(int oct)
 }
 
 
-std::string MusMeiOutput::PitchToStr(int pitch)
+std::string MeiOutput::PitchToStr(int pitch)
 {
     std::string value;
     switch (pitch) {
@@ -554,7 +554,7 @@ std::string MusMeiOutput::PitchToStr(int pitch)
 	return value;
 }
 
-std::string MusMeiOutput::AccidToStr(unsigned char accid)
+std::string MeiOutput::AccidToStr(unsigned char accid)
 {
     std::string value;
     switch (accid) {
@@ -573,7 +573,7 @@ std::string MusMeiOutput::AccidToStr(unsigned char accid)
 	return value;
 }
 
-std::string MusMeiOutput::ClefLineToStr( ClefId clefId )
+std::string MeiOutput::ClefLineToStr( ClefId clefId )
 {	
 	std::string value; 
 	switch(clefId)
@@ -597,7 +597,7 @@ std::string MusMeiOutput::ClefLineToStr( ClefId clefId )
 	return value;
 }
 
-std::string MusMeiOutput::ClefShapeToStr( ClefId clefId )
+std::string MeiOutput::ClefShapeToStr( ClefId clefId )
 {	
 	std::string value; 
 	switch(clefId)
@@ -621,7 +621,7 @@ std::string MusMeiOutput::ClefShapeToStr( ClefId clefId )
 	return value;
 }
 
-std::string MusMeiOutput::MensurSignToStr(MensurSign sign)
+std::string MeiOutput::MensurSignToStr(MensurSign sign)
 {
  	std::string value; 
 	switch(sign)
@@ -636,7 +636,7 @@ std::string MusMeiOutput::MensurSignToStr(MensurSign sign)
 }
 
 
-std::string MusMeiOutput::DurToStr( int dur )
+std::string MeiOutput::DurToStr( int dur )
 {
     std::string value;
     if (dur == DUR_LG) value = "longa";
@@ -663,7 +663,7 @@ std::string MusMeiOutput::DurToStr( int dur )
     return value;
 }
 
-std::string MusMeiOutput::DocTypeToStr(DocType type)
+std::string MeiOutput::DocTypeToStr(DocType type)
 {
  	std::string value; 
 	switch(type)
@@ -680,7 +680,7 @@ std::string MusMeiOutput::DocTypeToStr(DocType type)
 }
 
 
-std::string MusMeiOutput::KeySigToStr(int num, char alter_type )
+std::string MeiOutput::KeySigToStr(int num, char alter_type )
 {
  	std::string value;
     if (num == 0) {
@@ -698,7 +698,7 @@ std::string MusMeiOutput::KeySigToStr(int num, char alter_type )
 }
 
 
-std::string MusMeiOutput::StaffGrpSymbolToStr(StaffGrpSymbol symbol)
+std::string MeiOutput::StaffGrpSymbolToStr(StaffGrpSymbol symbol)
 {
  	std::string value;
 	switch(symbol)
@@ -715,11 +715,11 @@ std::string MusMeiOutput::StaffGrpSymbolToStr(StaffGrpSymbol symbol)
 
 
 //----------------------------------------------------------------------------
-// MusMeiInput
+// MeiInput
 //----------------------------------------------------------------------------
 
-MusMeiInput::MusMeiInput( Doc *doc, std::string filename ) :
-	MusFileInputStream( doc )
+MeiInput::MeiInput( Doc *doc, std::string filename ) :
+	FileInputStream( doc )
 {
     m_filename = filename;
     m_doc->m_fname = Vrv::GetFilename( filename );
@@ -740,11 +740,11 @@ MusMeiInput::MusMeiInput( Doc *doc, std::string filename ) :
     m_hasScoreDef = false;
 }
 
-MusMeiInput::~MusMeiInput()
+MeiInput::~MeiInput()
 {
 }
 
-bool MusMeiInput::ImportFile( )
+bool MeiInput::ImportFile( )
 {
     try {
         m_doc->Reset( Raw );
@@ -763,7 +763,7 @@ bool MusMeiInput::ImportFile( )
     }
 }
 
-bool MusMeiInput::ImportString( const std::string mei )
+bool MeiInput::ImportString( const std::string mei )
 {
     try {
         m_doc->Reset( Raw );
@@ -780,7 +780,7 @@ bool MusMeiInput::ImportString( const std::string mei )
 
 
 
-bool MusMeiInput::ReadMei( TiXmlElement *root )
+bool MeiInput::ReadMei( TiXmlElement *root )
 {
     TiXmlElement *current;
     
@@ -853,13 +853,13 @@ bool MusMeiInput::ReadMei( TiXmlElement *root )
     return true;
 }
 
-bool MusMeiInput::ReadMeiHeader( TiXmlElement *meiHead )
+bool MeiInput::ReadMeiHeader( TiXmlElement *meiHead )
 {
     return true;
 }
 
 
-bool MusMeiInput::ReadMeiPage( TiXmlElement *page )
+bool MeiInput::ReadMeiPage( TiXmlElement *page )
 {
     assert( m_page );
     
@@ -898,7 +898,7 @@ bool MusMeiInput::ReadMeiPage( TiXmlElement *page )
     return (m_page->GetSystemCount() > 0);
 }
 
-bool MusMeiInput::ReadMeiSystem( TiXmlElement *system )
+bool MeiInput::ReadMeiSystem( TiXmlElement *system )
 {
     assert( m_system );
     assert( !m_measure );
@@ -959,7 +959,7 @@ bool MusMeiInput::ReadMeiSystem( TiXmlElement *system )
     return (m_system->GetMeasureCount() > 0);
 }
 
-bool MusMeiInput::ReadMeiScoreDef( TiXmlElement *scoreDef )
+bool MeiInput::ReadMeiScoreDef( TiXmlElement *scoreDef )
 {
     assert( m_scoreDef );
     assert( m_staffGrps.empty() );
@@ -994,7 +994,7 @@ bool MusMeiInput::ReadMeiScoreDef( TiXmlElement *scoreDef )
     return true;
 }
 
-bool MusMeiInput::ReadMeiStaffGrp( TiXmlElement *staffGrp )
+bool MeiInput::ReadMeiStaffGrp( TiXmlElement *staffGrp )
 {
     assert( !m_staffGrps.empty() );
     assert( !m_staffDef );
@@ -1038,7 +1038,7 @@ bool MusMeiInput::ReadMeiStaffGrp( TiXmlElement *staffGrp )
     return true;
 }
 
-bool MusMeiInput::ReadMeiStaffDef( TiXmlElement *staffDef )
+bool MeiInput::ReadMeiStaffDef( TiXmlElement *staffDef )
 {
     assert( m_staffDef );
     
@@ -1067,7 +1067,7 @@ bool MusMeiInput::ReadMeiStaffDef( TiXmlElement *staffDef )
     return true;
 }
 
-bool MusMeiInput::ReadMeiMeasure( TiXmlElement *measure )
+bool MeiInput::ReadMeiMeasure( TiXmlElement *measure )
 {
     assert( m_measure );
     assert( !m_staff );
@@ -1092,7 +1092,7 @@ bool MusMeiInput::ReadMeiMeasure( TiXmlElement *measure )
     return (m_measure->GetStaffCount() > 0);
 }
 
-bool MusMeiInput::ReadMeiStaff( TiXmlElement *staff )
+bool MeiInput::ReadMeiStaff( TiXmlElement *staff )
 {
     assert( m_staff );
     assert( !m_layer );
@@ -1129,7 +1129,7 @@ bool MusMeiInput::ReadMeiStaff( TiXmlElement *staff )
     return (m_staff->GetLayerCount() > 0);
 }
 
-bool MusMeiInput::ReadMeiLayer( TiXmlElement *layer )
+bool MeiInput::ReadMeiLayer( TiXmlElement *layer )
 {
     assert( m_layer );
     
@@ -1148,7 +1148,7 @@ bool MusMeiInput::ReadMeiLayer( TiXmlElement *layer )
     return true;
 }
 
-bool MusMeiInput::ReadMeiLayerElement( TiXmlElement *xmlElement )
+bool MeiInput::ReadMeiLayerElement( TiXmlElement *xmlElement )
 {
     LayerElement *musElement = NULL;
     if ( std::string( xmlElement->Value() )  == "barLine" ) {
@@ -1208,14 +1208,14 @@ bool MusMeiInput::ReadMeiLayerElement( TiXmlElement *xmlElement )
     return true;
 }
 
-LayerElement *MusMeiInput::ReadMeiBarline( TiXmlElement *barline )
+LayerElement *MeiInput::ReadMeiBarline( TiXmlElement *barline )
 {
     Barline *musBarline = new Barline();
     
     return musBarline;    
 }
 
-LayerElement *MusMeiInput::ReadMeiBeam( TiXmlElement *beam )
+LayerElement *MeiInput::ReadMeiBeam( TiXmlElement *beam )
 {
     assert ( !m_beam );
     
@@ -1248,7 +1248,7 @@ LayerElement *MusMeiInput::ReadMeiBeam( TiXmlElement *beam )
     }
 }
 
-LayerElement *MusMeiInput::ReadMeiClef( TiXmlElement *clef )
+LayerElement *MeiInput::ReadMeiClef( TiXmlElement *clef )
 { 
     Clef *musClef = new Clef(); 
     if ( clef->Attribute( "shape" ) && clef->Attribute( "line" ) ) {
@@ -1259,7 +1259,7 @@ LayerElement *MusMeiInput::ReadMeiClef( TiXmlElement *clef )
 }
 
 
-LayerElement *MusMeiInput::ReadMeiMensur( TiXmlElement *mensur )
+LayerElement *MeiInput::ReadMeiMensur( TiXmlElement *mensur )
 {
     Mensur *musMensur = new Mensur();
     
@@ -1286,7 +1286,7 @@ LayerElement *MusMeiInput::ReadMeiMensur( TiXmlElement *mensur )
     return musMensur;
 }
 
-LayerElement *MusMeiInput::ReadMeiMultiRest( TiXmlElement *multiRest )
+LayerElement *MeiInput::ReadMeiMultiRest( TiXmlElement *multiRest )
 {
 	MultiRest *musMultiRest = new MultiRest();
     
@@ -1298,7 +1298,7 @@ LayerElement *MusMeiInput::ReadMeiMultiRest( TiXmlElement *multiRest )
 	return musMultiRest;
 }
 
-LayerElement *MusMeiInput::ReadMeiNote( TiXmlElement *note )
+LayerElement *MeiInput::ReadMeiNote( TiXmlElement *note )
 {
 	Note *musNote = new Note();
     
@@ -1355,7 +1355,7 @@ LayerElement *MusMeiInput::ReadMeiNote( TiXmlElement *note )
 }
 
 
-LayerElement *MusMeiInput::ReadMeiRest( TiXmlElement *rest )
+LayerElement *MeiInput::ReadMeiRest( TiXmlElement *rest )
 {
     Rest *musRest = new Rest();
     
@@ -1379,7 +1379,7 @@ LayerElement *MusMeiInput::ReadMeiRest( TiXmlElement *rest )
 }
 
 
-LayerElement *MusMeiInput::ReadMeiTuplet( TiXmlElement *tuplet )
+LayerElement *MeiInput::ReadMeiTuplet( TiXmlElement *tuplet )
 {
     assert ( !m_tuplet );
     
@@ -1420,7 +1420,7 @@ LayerElement *MusMeiInput::ReadMeiTuplet( TiXmlElement *tuplet )
 }
 
 
-LayerElement *MusMeiInput::ReadMeiAccid( TiXmlElement *accid )
+LayerElement *MeiInput::ReadMeiAccid( TiXmlElement *accid )
 {
     MusSymbol *musAccid = new MusSymbol( SYMBOL_ACCID );
     
@@ -1439,7 +1439,7 @@ LayerElement *MusMeiInput::ReadMeiAccid( TiXmlElement *accid )
 	return musAccid;
 }
 
-LayerElement *MusMeiInput::ReadMeiCustos( TiXmlElement *custos )
+LayerElement *MeiInput::ReadMeiCustos( TiXmlElement *custos )
 {
     MusSymbol *musCustos = new MusSymbol( SYMBOL_CUSTOS );
     
@@ -1455,7 +1455,7 @@ LayerElement *MusMeiInput::ReadMeiCustos( TiXmlElement *custos )
 	return musCustos;    
 }
 
-LayerElement *MusMeiInput::ReadMeiDot( TiXmlElement *dot )
+LayerElement *MeiInput::ReadMeiDot( TiXmlElement *dot )
 {
     MusSymbol *musDot = new MusSymbol( SYMBOL_DOT );
     
@@ -1473,7 +1473,7 @@ LayerElement *MusMeiInput::ReadMeiDot( TiXmlElement *dot )
 	return musDot;
 }
 
-LayerElement *MusMeiInput::ReadMeiApp( TiXmlElement *app )
+LayerElement *MeiInput::ReadMeiApp( TiXmlElement *app )
 {
     m_layerApp = new LayerApp( );
    
@@ -1489,7 +1489,7 @@ LayerElement *MusMeiInput::ReadMeiApp( TiXmlElement *app )
     return layerApp;
 }
 
-bool MusMeiInput::ReadMeiRdg( TiXmlElement *rdg )
+bool MeiInput::ReadMeiRdg( TiXmlElement *rdg )
 {
     assert ( !m_layerRdg );
     assert( m_layerApp );
@@ -1520,7 +1520,7 @@ bool MusMeiInput::ReadMeiRdg( TiXmlElement *rdg )
 }
 
 
-void MusMeiInput::ReadSameAsAttr( TiXmlElement *element, Object *object )
+void MeiInput::ReadSameAsAttr( TiXmlElement *element, Object *object )
 {
     if ( !element->Attribute( "sameas" ) ) {
         return;
@@ -1530,7 +1530,7 @@ void MusMeiInput::ReadSameAsAttr( TiXmlElement *element, Object *object )
 }
 
 
-void MusMeiInput::AddLayerElement( LayerElement *element )
+void MeiInput::AddLayerElement( LayerElement *element )
 {
     assert( m_currentLayer );
     if ( dynamic_cast<Layer*>( m_currentLayer ) ) {
@@ -1549,7 +1549,7 @@ void MusMeiInput::AddLayerElement( LayerElement *element )
 }
 
 
-bool MusMeiInput::ReadUnsupported( TiXmlElement *element )
+bool MeiInput::ReadUnsupported( TiXmlElement *element )
 {
     if ( std::string( element->Value() ) == "score" ) {
         TiXmlElement *current = NULL;
@@ -1627,7 +1627,7 @@ bool MusMeiInput::ReadUnsupported( TiXmlElement *element )
     return true;
 }
 
-bool MusMeiInput::FindOpenTie( Note *terminalNote )
+bool MeiInput::FindOpenTie( Note *terminalNote )
 {
     assert( m_staff );
     assert( m_layer );
@@ -1662,7 +1662,7 @@ bool MusMeiInput::FindOpenTie( Note *terminalNote )
     return false;
 }
 
-void MusMeiInput::SetMeiUuid( TiXmlElement *element, Object *object )
+void MeiInput::SetMeiUuid( TiXmlElement *element, Object *object )
 {
     if ( !element->Attribute( "xml:id" ) ) {
         return;
@@ -1671,13 +1671,13 @@ void MusMeiInput::SetMeiUuid( TiXmlElement *element, Object *object )
     object->SetUuid( element->Attribute( "xml:id" ) );
 }
 
-bool MusMeiInput::StrToBool(std::string value)
+bool MeiInput::StrToBool(std::string value)
 {
     if (value == "false") return false;
 	return true;
 }
 
-int MusMeiInput::StrToDur(std::string dur)
+int MeiInput::StrToDur(std::string dur)
 {
     int value;
     if (dur == "longa") value = DUR_LG;
@@ -1704,12 +1704,12 @@ int MusMeiInput::StrToDur(std::string dur)
     return value;
 }
 
-int MusMeiInput::StrToOct(std::string oct)
+int MeiInput::StrToOct(std::string oct)
 {
 	return atoi(oct.c_str());
 }
 
-int MusMeiInput::StrToPitch(std::string pitch)
+int MeiInput::StrToPitch(std::string pitch)
 {
     int value;
     if (pitch == "c") value = PITCH_C;
@@ -1727,7 +1727,7 @@ int MusMeiInput::StrToPitch(std::string pitch)
 }
 
 
-unsigned char MusMeiInput::StrToAccid(std::string accid)
+unsigned char MeiInput::StrToAccid(std::string accid)
 {
     unsigned char value;
     if ( accid == "s" ) value = ACCID_SHARP;
@@ -1745,7 +1745,7 @@ unsigned char MusMeiInput::StrToAccid(std::string accid)
 }
 
 
-ClefId MusMeiInput::StrToClef( std::string shape, std::string line )
+ClefId MeiInput::StrToClef( std::string shape, std::string line )
 {
     ClefId clefId = SOL2;
     std::string clef = shape + line;
@@ -1766,7 +1766,7 @@ ClefId MusMeiInput::StrToClef( std::string shape, std::string line )
     return clefId;
 }
 
-MensurSign MusMeiInput::StrToMensurSign(std::string sign)
+MensurSign MeiInput::StrToMensurSign(std::string sign)
 {
     if (sign == "C") return MENSUR_SIGN_C;
     else if (sign == "O") return MENSUR_SIGN_O;
@@ -1777,7 +1777,7 @@ MensurSign MusMeiInput::StrToMensurSign(std::string sign)
 	return MENSUR_SIGN_C;
 }
 
-DocType MusMeiInput::StrToDocType(std::string type)
+DocType MeiInput::StrToDocType(std::string type)
 {
     if (type == "raw") return Raw;
     else if (type == "rendering") return Rendering;
@@ -1789,7 +1789,7 @@ DocType MusMeiInput::StrToDocType(std::string type)
 	return Raw;
 }
 
-unsigned char MusMeiInput::StrToKeySigType(std::string accid)
+unsigned char MeiInput::StrToKeySigType(std::string accid)
 {
     if ( accid == "0" ) return  ACCID_NATURAL;
     else if ( accid.at(1) == 'f' ) return ACCID_FLAT;
@@ -1800,7 +1800,7 @@ unsigned char MusMeiInput::StrToKeySigType(std::string accid)
     }
 }
 
-int MusMeiInput::StrToKeySigNum(std::string accid)
+int MeiInput::StrToKeySigNum(std::string accid)
 {
     if ( accid == "0" ) return  0;
     else {
@@ -1809,7 +1809,7 @@ int MusMeiInput::StrToKeySigNum(std::string accid)
     }
 }
 
-BarlineType MusMeiInput::StrToBarlineType(std::string type)
+BarlineType MeiInput::StrToBarlineType(std::string type)
 {
     if (type == "sigle") return BARLINE_SINGLE;
     else if (type == "end") return BARLINE_END;
@@ -1824,7 +1824,7 @@ BarlineType MusMeiInput::StrToBarlineType(std::string type)
 	return BARLINE_SINGLE;
 }
 
-StaffGrpSymbol MusMeiInput::StrToStaffGrpSymbol(std::string symbol)
+StaffGrpSymbol MeiInput::StrToStaffGrpSymbol(std::string symbol)
 {
     if (symbol == "line") return STAFFGRP_LINE;
     else if (symbol == "brace") return STAFFGRP_BRACE;

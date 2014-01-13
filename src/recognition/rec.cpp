@@ -1790,7 +1790,7 @@ void RecEnv::OnOpenMEI( wxCommandEvent &event )
 	//m_recFilePtr->m_musDocPtr->m_pages.Clear();
 	m_recFilePtr->SetforMEI(); //may be unnecessary
 	
-    MusMeiInput meiinput( m_recFilePtr->m_musDocPtr, filename );
+    MeiInput meiinput( m_recFilePtr->m_musDocPtr, filename );
 	if ( !meiinput.ImportFile() )
 		return;
 	
@@ -1835,7 +1835,7 @@ void RecEnv::OnSaveMEI( wxCommandEvent &event )
     if (filename.IsEmpty())
         return;
     
-    MusMeiOutput *mei_output = new MusMeiOutput( m_recFilePtr->m_musDocPtr, filename.c_str() );
+    MeiOutput *mei_output = new MeiOutput( m_recFilePtr->m_musDocPtr, filename.c_str() );
     mei_output->ExportFile();
     delete mei_output;
 }

@@ -54,7 +54,7 @@ void Page::Clear( )
 int Page::Save( ArrayPtrVoid params )
 {
     // param 0: output stream
-    MusFileOutputStream *output = (MusFileOutputStream*)params[0];       
+    FileOutputStream *output = (FileOutputStream*)params[0];       
     if (!output->WritePage( this )) {
         return FUNCTOR_STOP;
     }

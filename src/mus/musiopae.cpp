@@ -82,12 +82,12 @@ char data_value[MAX_DATA_LEN]; //ditto as above
 //////////////////////////////////////////////////////////////////////////
 
 //----------------------------------------------------------------------------
-// MusPaeInput
+// PaeInput
 //----------------------------------------------------------------------------
 
-MusPaeInput::MusPaeInput( Doc *doc, std::string filename ) :
+PaeInput::PaeInput( Doc *doc, std::string filename ) :
 // This is pretty bad. We open a bad fileoinputstream as we don't use it
-MusFileInputStream( doc )
+FileInputStream( doc )
 {
     m_filename = filename;
 	m_staff = NULL;
@@ -96,13 +96,13 @@ MusFileInputStream( doc )
     m_current_tie = NULL;
 }
 
-MusPaeInput::~MusPaeInput()
+PaeInput::~PaeInput()
 {
 }
 
 //////////////////////////////////////////////////////////////////////////
 
-bool MusPaeInput::ImportFile()
+bool PaeInput::ImportFile()
 {
     
     std::ifstream infile;
@@ -113,7 +113,7 @@ bool MusPaeInput::ImportFile()
     return true;
 }
 
-bool MusPaeInput::ImportString(std::string pae)
+bool PaeInput::ImportString(std::string pae)
 {
     
     std::istringstream in_stream(pae);
@@ -128,7 +128,7 @@ bool MusPaeInput::ImportString(std::string pae)
 // convertPlainAndEasyToKern --
 //
 
-void MusPaeInput::convertPlainAndEasyToKern(std::istream &infile, std::ostream &out) {
+void PaeInput::convertPlainAndEasyToKern(std::istream &infile, std::ostream &out) {
     // buffers
     char c_clef[1024] = {0};
     char c_key[1024] = {0};
@@ -371,7 +371,7 @@ void MusPaeInput::convertPlainAndEasyToKern(std::istream &infile, std::ostream &
 // getOctave --
 //
 #define BASE_OCT 4
-int MusPaeInput::getOctave (const char* incipit, unsigned char *octave, int index ) {
+int PaeInput::getOctave (const char* incipit, unsigned char *octave, int index ) {
     
     int i = index;
     int length = strlen(incipit);
@@ -400,7 +400,7 @@ int MusPaeInput::getOctave (const char* incipit, unsigned char *octave, int inde
 // getDuration --
 //
 
-int MusPaeInput::getDuration(const char* incipit, int *duration, int *dot, int index ) {
+int PaeInput::getDuration(const char* incipit, int *duration, int *dot, int index ) {
     
     int i = index;
     int length = strlen(incipit);
@@ -447,7 +447,7 @@ int MusPaeInput::getDuration(const char* incipit, int *duration, int *dot, int i
 // getDurations --
 //
 
-int MusPaeInput::getDurations(const char* incipit, MeasureObject* measure, int index ) {
+int PaeInput::getDurations(const char* incipit, MeasureObject* measure, int index ) {
     
     int i = index;
     int length = strlen(incipit);
@@ -481,7 +481,7 @@ int MusPaeInput::getDurations(const char* incipit, MeasureObject* measure, int i
 // getAccidental --
 //
 
-int MusPaeInput::getAccidental(const char* incipit, unsigned char *accident, int index ) {
+int PaeInput::getAccidental(const char* incipit, unsigned char *accident, int index ) {
     
     int i = index;
     int length = strlen(incipit);
@@ -511,7 +511,7 @@ int MusPaeInput::getAccidental(const char* incipit, unsigned char *accident, int
 // getTupletOrFermata --
 //
 
-int MusPaeInput::getTupletFermata(const char* incipit, NoteObject* note, int index ) {
+int PaeInput::getTupletFermata(const char* incipit, NoteObject* note, int index ) {
     
     int i = index;
     int length = strlen(incipit);
@@ -597,7 +597,7 @@ int MusPaeInput::getTupletFermata(const char* incipit, NoteObject* note, int ind
 // getTupletFermataEnd --
 //
 // this can be deleted in the future?
-int MusPaeInput::getTupletFermataEnd(const char* incipit, NoteObject *note, int index ) {
+int PaeInput::getTupletFermataEnd(const char* incipit, NoteObject *note, int index ) {
     
     int i = index;
     //int length = strlen(incipit);
@@ -615,7 +615,7 @@ int MusPaeInput::getTupletFermataEnd(const char* incipit, NoteObject *note, int 
 // getGraceNote --
 //
 
-int MusPaeInput::getGraceNote(const char* incipit, NoteObject *note, int index ) {
+int PaeInput::getGraceNote(const char* incipit, NoteObject *note, int index ) {
     
     int i = index;
     int length = strlen(incipit);
@@ -649,7 +649,7 @@ int MusPaeInput::getGraceNote(const char* incipit, NoteObject *note, int index )
 // getPitch --
 //
 
-int MusPaeInput::getPitch( char c_note ) {
+int PaeInput::getPitch( char c_note ) {
     int pitch;
     
     switch (c_note) {
@@ -687,7 +687,7 @@ int MusPaeInput::getPitch( char c_note ) {
 // getTimeInfo -- read the key signature.
 //
 
-int MusPaeInput::getTimeInfo( const char* incipit, MeasureObject *measure, int index) {
+int PaeInput::getTimeInfo( const char* incipit, MeasureObject *measure, int index) {
     
     int i = index;
     int length = strlen(incipit);
@@ -773,7 +773,7 @@ int MusPaeInput::getTimeInfo( const char* incipit, MeasureObject *measure, int i
 // getClefInfo -- read the key signature.
 //
 
-int MusPaeInput::getClefInfo( const char *incipit, Clef *mclef, int index ) {
+int PaeInput::getClefInfo( const char *incipit, Clef *mclef, int index ) {
     
     // a clef is maximum 3 character length
     // go through the 3 character and retrieve the letter (clef) and the line
@@ -829,7 +829,7 @@ int MusPaeInput::getClefInfo( const char *incipit, Clef *mclef, int index ) {
 // getWholeRest -- read the getWholeRest.
 //
 
-int MusPaeInput::getWholeRest( const char *incipit, int *wholerest, int index ) {
+int PaeInput::getWholeRest( const char *incipit, int *wholerest, int index ) {
     
     int length = strlen(incipit);
     int i = index;
@@ -852,7 +852,7 @@ int MusPaeInput::getWholeRest( const char *incipit, int *wholerest, int index ) 
 // getBarline -- read the barline.
 //
 
-int MusPaeInput::getBarline( const char *incipit, std::string *output, int index ) {
+int PaeInput::getBarline( const char *incipit, std::string *output, int index ) {
     
     regex_t re;
     regcomp(&re, "^://:", REG_EXTENDED);
@@ -895,7 +895,7 @@ int MusPaeInput::getBarline( const char *incipit, std::string *output, int index
 // getAbbreviation -- read abbreviation
 //
 
-int MusPaeInput::getAbbreviation(const char* incipit, MeasureObject *measure, int index ) {
+int PaeInput::getAbbreviation(const char* incipit, MeasureObject *measure, int index ) {
     
     int length = strlen(incipit);
     int i = index;
@@ -924,7 +924,7 @@ int MusPaeInput::getAbbreviation(const char* incipit, MeasureObject *measure, in
 // getKeyInfo -- read the key signature.
 //
 
-int MusPaeInput::getKeyInfo(const char *incipit, MeasureObject *measure, int index ) {
+int PaeInput::getKeyInfo(const char *incipit, MeasureObject *measure, int index ) {
             
     // at the key information line, extract data
     int length = strlen(incipit);
@@ -966,7 +966,7 @@ int MusPaeInput::getKeyInfo(const char *incipit, MeasureObject *measure, int ind
 // getNote --
 //
 
-int MusPaeInput::getNote( const char* incipit, NoteObject *note, MeasureObject *measure, int index ) {
+int PaeInput::getNote( const char* incipit, NoteObject *note, MeasureObject *measure, int index ) {
     
     regex_t re;
     int oct, tie;
@@ -1080,7 +1080,7 @@ int MusPaeInput::getNote( const char* incipit, NoteObject *note, MeasureObject *
 // printMeasure --
 //
 
-void MusPaeInput::printMeasure(std::ostream& out, MeasureObject *measure ) {
+void PaeInput::printMeasure(std::ostream& out, MeasureObject *measure ) {
     
     if ( measure->clef != NULL ) {
         m_layer->AddElement(measure->clef);
@@ -1122,7 +1122,7 @@ void MusPaeInput::printMeasure(std::ostream& out, MeasureObject *measure ) {
     //m_staff->AddLayer(m_layer);
 }
 
-void MusPaeInput::parseNote(NoteObject note) {
+void PaeInput::parseNote(NoteObject note) {
     
     LayerElement *element;
     
@@ -1200,17 +1200,17 @@ void MusPaeInput::parseNote(NoteObject note) {
         PopContainer();
 }
 
-void MusPaeInput::PushContainer(LayerElement *container) {
+void PaeInput::PushContainer(LayerElement *container) {
     AddLayerElement(container);
     m_nested_objects.push_back(container);
 }
 
-void MusPaeInput::PopContainer() {
+void PaeInput::PopContainer() {
     assert(m_nested_objects.size() > 0);
     m_nested_objects.pop_back();
 }
 
-void MusPaeInput::AddLayerElement(LayerElement *element) {
+void PaeInput::AddLayerElement(LayerElement *element) {
     
     if (m_nested_objects.size() > 0) {
         LayerElement *bottom = m_nested_objects.back();
@@ -1239,7 +1239,7 @@ void MusPaeInput::AddLayerElement(LayerElement *element) {
 //   only one per line
 //
 
-void MusPaeInput::getAtRecordKeyValue(char *key, char* value,
+void PaeInput::getAtRecordKeyValue(char *key, char* value,
                                       const char* input) {
     
 #define SKIPSPACE while((index<length)&&isspace(input[index])){index++;}

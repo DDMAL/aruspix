@@ -170,7 +170,7 @@ void RecFile::UpgradeTo_1_5_0()
         
     // output the new binary file
     wxLogDebug("%s", m_musDocPtr->m_fname.c_str() );
-    MusMeiOutput mei_output( m_musDocPtr, m_musDocPtr->m_fname );
+    MeiOutput mei_output( m_musDocPtr, m_musDocPtr->m_fname );
     mei_output.ExportFile();
         
     wxRemoveFile( m_basename + "rec.old.mlf" );        
@@ -215,7 +215,7 @@ void RecFile::UpgradeTo_2_0_0()
         return;
     
     // output the new binary file
-    MusMeiOutput mei_output( m_musDocPtr, m_musDocPtr->m_fname );
+    MeiOutput mei_output( m_musDocPtr, m_musDocPtr->m_fname );
     mei_output.ExportFile(); 
     wxLogMessage( "File successfully upgraded to 2.0.0");
     this->Modify();
@@ -300,7 +300,7 @@ void RecFile::UpgradeTo_2_3_0()
         return;
     
     // output the new binary file
-    MusMeiOutput mei_output( m_musDocPtr, m_musDocPtr->m_fname );
+    MeiOutput mei_output( m_musDocPtr, m_musDocPtr->m_fname );
     mei_output.ExportFile(); 
     wxLogMessage( "File successfully upgraded to 2.3.0");
     this->Modify();
@@ -373,7 +373,7 @@ void RecFile::OpenContent( )
 	{
         UpgradeTo_2_3_0();
 
-        MusMeiInput *mei_input = new MusMeiInput( m_musDocPtr, m_musDocPtr->m_fname );
+        MeiInput *mei_input = new MeiInput( m_musDocPtr, m_musDocPtr->m_fname );
         failed = !mei_input->ImportFile();
         delete mei_input;           
 		if ( failed )
@@ -454,9 +454,9 @@ void RecFile::SaveContent( )
 	else
 	{
 		//possibility of Doc being a .mei not a .bin
-		//MusMeiOutput *mei_output = new MusMeiOutput( m_musDocPtr, m_musDocPtr->m_fname );
+		//MeiOutput *mei_output = new MeiOutput( m_musDocPtr, m_musDocPtr->m_fname );
 		// save
-		MusMeiOutput *mei_output = new MusMeiOutput( m_musDocPtr, m_musDocPtr->m_fname );
+		MeiOutput *mei_output = new MeiOutput( m_musDocPtr, m_musDocPtr->m_fname );
 		mei_output->ExportFile();
 		delete mei_output;
 		

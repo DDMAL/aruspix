@@ -306,7 +306,7 @@ wxString MusMLFSymbol::GetLabelType( )
 
 
 //----------------------------------------------------------------------------
-// MusFileOutputStream
+// FileOutputStream
 //----------------------------------------------------------------------------
 
 MusMLFOutput::MusMLFOutput( Doc *doc, wxString filename, MusMLFDictionary *dict, wxString model_symbol_name ) :

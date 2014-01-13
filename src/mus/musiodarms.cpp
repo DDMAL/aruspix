@@ -31,7 +31,7 @@
 #include "mustuplet.h"
 
 // Ok, this is ugly, but since this is static data, why not?
-pitchmap MusDarmsInput::PitchMap[] = {
+pitchmap DarmsInput::PitchMap[] = {
     /* 00 */ {1, PITCH_C}, {1, PITCH_D}, {1, PITCH_E}, {1, PITCH_F}, {1, PITCH_G}, {1, PITCH_A}, {1, PITCH_B},
     /* 07 */ {2, PITCH_C}, {2, PITCH_D}, {2, PITCH_E}, {2, PITCH_F}, {2, PITCH_G}, {2, PITCH_A}, {2, PITCH_B},
     /* 14 */ {3, PITCH_C}, {3, PITCH_D}, {3, PITCH_E}, {3, PITCH_F}, {3, PITCH_G}, {3, PITCH_A}, {3, PITCH_B},
@@ -42,8 +42,8 @@ pitchmap MusDarmsInput::PitchMap[] = {
     /* 49 */ {8, PITCH_C}, {8, PITCH_D}, {8, PITCH_E}, {8, PITCH_F}, {8, PITCH_G}, {8, PITCH_A}, {8, PITCH_B},
 };
 
-MusDarmsInput::MusDarmsInput( Doc *doc, std::string filename ) :
-MusFileInputStream( doc )
+DarmsInput::DarmsInput( Doc *doc, std::string filename ) :
+FileInputStream( doc )
 {	
     m_layer = NULL;
     m_measure = NULL;
@@ -52,11 +52,11 @@ MusFileInputStream( doc )
     m_filename = filename;
 }
 
-MusDarmsInput::~MusDarmsInput() {
+DarmsInput::~DarmsInput() {
     
 }
 
-void MusDarmsInput::UnrollKeysig(int quantity, char alter) {
+void DarmsInput::UnrollKeysig(int quantity, char alter) {
     int flats[] = {PITCH_B, PITCH_E, PITCH_A, PITCH_D, PITCH_G, PITCH_C, PITCH_F};
     int sharps[] = {PITCH_F, PITCH_C, PITCH_G, PITCH_D, PITCH_A, PITCH_E, PITCH_B};
     int *alteration_set;
@@ -89,7 +89,7 @@ void MusDarmsInput::UnrollKeysig(int quantity, char alter) {
 /*
  Read the meter
  */
-int MusDarmsInput::parseMeter(int pos, const char* data) {
+int DarmsInput::parseMeter(int pos, const char* data) {
  
     Mensur *meter = new Mensur;
     
@@ -148,7 +148,7 @@ int MusDarmsInput::parseMeter(int pos, const char* data) {
 /*
  Process the various headings: !I, !K, !N, !M
 */
-int MusDarmsInput::do_globalSpec(int pos, const char* data) {
+int DarmsInput::do_globalSpec(int pos, const char* data) {
     char digit = data[++pos];
     int quantity = 0;
     
@@ -205,7 +205,7 @@ int MusDarmsInput::do_globalSpec(int pos, const char* data) {
     return pos;
 }
 
-int MusDarmsInput::do_Clef(int pos, const char* data) {
+int DarmsInput::do_Clef(int pos, const char* data) {
     int position = data[pos] - ASCII_NUMBER_OFFSET; // manual conversion from ASCII to int
     
     pos = pos + 2; // skip the '!' 3!F
@@ -246,7 +246,7 @@ int MusDarmsInput::do_Clef(int pos, const char* data) {
     return pos;
 }
 
-int MusDarmsInput::do_Note(int pos, const char* data, bool rest) {
+int DarmsInput::do_Note(int pos, const char* data, bool rest) {
     int position;
     int accidental = 0;
     int duration;
@@ -372,7 +372,7 @@ int MusDarmsInput::do_Note(int pos, const char* data, bool rest) {
     return pos;
 }
 
-bool MusDarmsInput::ImportFile() {
+bool DarmsInput::ImportFile() {
     char data[10000];
     int len, res;
     int pos = 0;

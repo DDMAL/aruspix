@@ -40,7 +40,7 @@ void LayerApp::AddLayerRdg( LayerRdg *layerRdg )
 int LayerApp::Save( ArrayPtrVoid params )
 {
     // param 0: output stream
-    MusFileOutputStream *output = (MusFileOutputStream*)params[0];         
+    FileOutputStream *output = (FileOutputStream*)params[0];         
     if (!output->WriteLayerApp( this )) {
         return FUNCTOR_STOP;
     }
@@ -79,7 +79,7 @@ void LayerRdg::AddElement( LayerElement *element, int idx )
 int LayerRdg::Save( ArrayPtrVoid params )
 {
     // param 0: output stream
-    MusFileOutputStream *output = (MusFileOutputStream*)params[0];       
+    FileOutputStream *output = (FileOutputStream*)params[0];       
     if (!output->WriteLayerRdg( this )) {
         return FUNCTOR_STOP;
     }

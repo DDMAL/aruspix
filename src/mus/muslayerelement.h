@@ -112,7 +112,7 @@ public:
     /**
      * Save the object (virtual).
      * Most of the child classes do not override it. In these cases, the actual 
-     * saving occurs in the MusFileOutputStream::WriteLayerElement method
+     * saving occurs in the FileOutputStream::WriteLayerElement method
      * A few classes, such as LayerApp, have an overriden version.
      */
     virtual int Save( ArrayPtrVoid params );

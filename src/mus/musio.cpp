@@ -13,24 +13,24 @@
 #include <assert.h>
 
 //----------------------------------------------------------------------------
-// MusFileOutputStream
+// FileOutputStream
 //----------------------------------------------------------------------------
 
-MusFileOutputStream::MusFileOutputStream( Doc *doc, std::string filename ) :
+FileOutputStream::FileOutputStream( Doc *doc, std::string filename ) :
     std::ofstream( filename.c_str() )
 {
 	assert(doc); // Document cannot be NULL"
 	m_doc = doc;
 }
 
-MusFileOutputStream::MusFileOutputStream( Doc *doc ) :
+FileOutputStream::FileOutputStream( Doc *doc ) :
     std::ofstream(  )
 {
 	assert(doc); // Document cannot be NULL"
 	m_doc = doc;
 }
 
-MusFileOutputStream::~MusFileOutputStream()
+FileOutputStream::~FileOutputStream()
 {
     if ( this->is_open()) {
         this->close();
@@ -40,10 +40,10 @@ MusFileOutputStream::~MusFileOutputStream()
 
 
 //----------------------------------------------------------------------------
-// MusFileInputStream
+// FileInputStream
 //----------------------------------------------------------------------------
 
-MusFileInputStream::MusFileInputStream( Doc *doc, std::string filename  ) :
+FileInputStream::FileInputStream( Doc *doc, std::string filename  ) :
     std::ifstream( filename.c_str() )
 {
 	assert(doc); // Document cannot be NULL"
@@ -51,7 +51,7 @@ MusFileInputStream::MusFileInputStream( Doc *doc, std::string filename  ) :
     m_hasLayoutInformation = false;
 }
 
-MusFileInputStream::MusFileInputStream( Doc *doc ) :
+FileInputStream::FileInputStream( Doc *doc ) :
     std::ifstream(  )
 {
 	assert(doc); // Document cannot be NULL"
@@ -59,7 +59,7 @@ MusFileInputStream::MusFileInputStream( Doc *doc ) :
     m_hasLayoutInformation = false;
 }
 
-MusFileInputStream::~MusFileInputStream()
+FileInputStream::~FileInputStream()
 {
     if ( this->is_open()) {
         this->close();

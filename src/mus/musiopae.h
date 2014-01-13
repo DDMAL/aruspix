@@ -201,16 +201,16 @@ public:
 
 
 //----------------------------------------------------------------------------
-// MusPaeInput
+// PaeInput
 //----------------------------------------------------------------------------
 
 
-class MusPaeInput: public MusFileInputStream
+class PaeInput: public FileInputStream
 {
 public:
     // constructors and destructors
-    MusPaeInput( Doc *doc, std::string filename );
-    virtual ~MusPaeInput();
+    PaeInput( Doc *doc, std::string filename );
+    virtual ~PaeInput();
     
     virtual bool ImportFile( );
     virtual bool ImportString(std::string pae);

@@ -305,7 +305,7 @@
 		5769E1190BF25A1D007772A6 /* axproj.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = axproj.icns; sourceTree = "<group>"; };
 		5769E11A0BF25A1D007772A6 /* axtyp.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = axtyp.icns; sourceTree = "<group>"; };
 		5769E11B0BF25A1D007772A6 /* axz.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = axz.icns; sourceTree = "<group>"; };
-		57A6686F0C331BF900622C70 /* recbookfile.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = recbookfile.cpp; sourceTree = "<group>"; };
+		57A6686F0C331BF900622C70 /* recbookfile.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; lineEnding = 0; path = recbookfile.cpp; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.cpp; };
 		57A668700C331BF900622C70 /* recbookfile.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = recbookfile.h; sourceTree = "<group>"; };
 		57A668930C333F3000622C70 /* axctrl.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = axctrl.cpp; sourceTree = "<group>"; };
 		57A668940C333F3000622C70 /* axctrl.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = axctrl.h; sourceTree = "<group>"; };
@@ -375,7 +375,7 @@
 		A58524790A1B9604002D9D8A /* resource.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = resource.h; sourceTree = "<group>"; };
 		A585247A0A1B9604002D9D8A /* wxprec.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = wxprec.cpp; sourceTree = "<group>"; };
 		A585248E0A1B9604002D9D8A /* rec_wdr.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = rec_wdr.h; sourceTree = "<group>"; };
-		A585248F0A1B9604002D9D8A /* recfile.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = recfile.cpp; sourceTree = "<group>"; };
+		A585248F0A1B9604002D9D8A /* recfile.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; lineEnding = 0; path = recfile.cpp; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.cpp; };
 		A58524900A1B9604002D9D8A /* recfile.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = recfile.h; sourceTree = "<group>"; };
 		A58524920A1B9604002D9D8A /* sup.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = sup.cpp; sourceTree = "<group>"; };
 		A58524930A1B9604002D9D8A /* sup.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = sup.h; sourceTree = "<group>"; };
@@ -398,7 +398,7 @@
 		A5D0D4B30A65628800A4B1CA /* imstaffsegment.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = imstaffsegment.h; sourceTree = "<group>"; };
 		A5D0D4F70A6576B500A4B1CA /* recim.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = recim.h; sourceTree = "<group>"; };
 		A5D0D5100A657A6300A4B1CA /* recim.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = recim.cpp; sourceTree = "<group>"; };
-		A5EFDB210A278C980019FA6A /* rec.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = rec.cpp; sourceTree = "<group>"; };
+		A5EFDB210A278C980019FA6A /* rec.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; lineEnding = 0; path = rec.cpp; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.cpp; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */

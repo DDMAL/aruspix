@@ -30,7 +30,7 @@ class Tuplet;
 
 
 //----------------------------------------------------------------------------
-// MusMeiOutput
+// MeiOutput
 //----------------------------------------------------------------------------
 
 /**
@@ -38,13 +38,13 @@ class Tuplet;
  * It uses the libmei C++ library.
  * Not implemented.
 */
-class MusMeiOutput: public MusFileOutputStream
+class MeiOutput: public FileOutputStream
 {
 public:
     /** @name Constructors and destructor */
     ///@{
-    MusMeiOutput( Doc *doc, std::string filename );
-    virtual ~MusMeiOutput();
+    MeiOutput( Doc *doc, std::string filename );
+    virtual ~MeiOutput();
     ///@}
     
     /**
@@ -183,7 +183,7 @@ private:
 
 
 //----------------------------------------------------------------------------
-// MusMeiInput
+// MeiInput
 //----------------------------------------------------------------------------
 
 /**
@@ -191,12 +191,12 @@ private:
  * It uses the libmei C++ library.
  * Under development.
 */
-class MusMeiInput: public MusFileInputStream
+class MeiInput: public FileInputStream
 {
 public:
     // constructors and destructors
-    MusMeiInput( Doc *doc, std::string filename );
-    virtual ~MusMeiInput();
+    MeiInput( Doc *doc, std::string filename );
+    virtual ~MeiInput();
     
     virtual bool ImportFile( );
     virtual bool ImportString(std::string mei);
@@ -246,7 +246,7 @@ private:
     bool ReadUnsupported( TiXmlElement *element );
     
     /**
-     * Look through the list of notes with open tie stored in MusMeiInput::m_openTies.
+     * Look through the list of notes with open tie stored in MeiInput::m_openTies.
      * The note has to be on the same staff (@n) and the same layer (@n) and
      * have the same pitch. If found, the terminal attribute is the and the note
      * is removed from the list

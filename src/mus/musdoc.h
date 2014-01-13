@@ -73,7 +73,7 @@ public:
      * Saves the document using the specified output stream.
      * Creates a functors that will parse the full tree.
      */
-    virtual int Save( MusFileOutputStream *output );
+    virtual int Save( FileOutputStream *output );
 
     
     /**

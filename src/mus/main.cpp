@@ -271,7 +271,7 @@ int main(int argc, char** argv)
     } else {
         // To be implemented in MusController
         /*
-        MusXMLOutput meioutput(doc, m_outfile.c_str());
+        XMLOutput meioutput(doc, m_outfile.c_str());
         if (!meioutput.ExportFile()) {
             cerr << "Unable to write MEI to " << m_outfile << "." << endl;
             exit(1);

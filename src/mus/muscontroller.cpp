@@ -59,13 +59,13 @@ MusController::~MusController()
 
 bool MusController::LoadFile( std::string filename )
 {
-    MusFileInputStream *input = NULL;
+    FileInputStream *input = NULL;
     if (m_format == pae_file) {
-        input = new MusPaeInput( &m_doc, filename.c_str() );
+        input = new PaeInput( &m_doc, filename.c_str() );
     } else if (m_format == darms_file) {
-        input = new MusDarmsInput( &m_doc, filename.c_str() );
+        input = new DarmsInput( &m_doc, filename.c_str() );
     } else if (m_format == mei_file) {
-        input = new MusMeiInput( &m_doc, filename.c_str() );
+        input = new MeiInput( &m_doc, filename.c_str() );
     }
     else {
         Vrv::LogError( "Unknown format" );
@@ -92,11 +92,11 @@ bool MusController::LoadFile( std::string filename )
 
 bool MusController::LoadString( std::string data )
 {
-    MusFileInputStream *input = NULL;
+    FileInputStream *input = NULL;
     if (m_format == pae_file) {
-        input = new MusPaeInput( &m_doc, "" );
+        input = new PaeInput( &m_doc, "" );
     } else if (m_format == mei_file) {
-        input = new MusMeiInput( &m_doc, "" );
+        input = new MeiInput( &m_doc, "" );
     }
     else {
         Vrv::LogError( "Unknown format" );

@@ -211,7 +211,7 @@ void EdtEnv::ParseCmd( wxCmdLineParser *parser )
             
             /*
             Doc *mfile = new Doc();
-            //MusMeiInput meiinput( mfile, file );
+            //MeiInput meiinput( mfile, file );
             if ( !meiinput.ImportFile() )
                 return;
             
@@ -473,7 +473,7 @@ void EdtEnv::OnOpenPAE( wxCommandEvent &event )
     
     m_edtFilePtr->New();
 
-    MusPaeInput paeInput( m_edtFilePtr->m_musDocPtr, filename.mb_str() );
+    PaeInput paeInput( m_edtFilePtr->m_musDocPtr, filename.mb_str() );
 	if ( !paeInput.ImportFile() )
 		return;
 
@@ -499,7 +499,7 @@ void EdtEnv::OnOpenDARMS( wxCommandEvent &event )
     
     m_edtFilePtr->New();
     
-    MusDarmsInput darmsInput( m_edtFilePtr->m_musDocPtr, filename.mb_str() );
+    DarmsInput darmsInput( m_edtFilePtr->m_musDocPtr, filename.mb_str() );
 	if ( !darmsInput.ImportFile() )
 		return;
     
@@ -678,7 +678,7 @@ void EdtEnv::OnOpenMEI( wxCommandEvent &event )
     
     m_edtFilePtr->New();
 
-    MusMeiInput meiInput( m_edtFilePtr->m_musDocPtr, filename.mb_str() );
+    MeiInput meiInput( m_edtFilePtr->m_musDocPtr, filename.mb_str() );
 	if ( !meiInput.ImportFile() )
 		return;
     
@@ -709,12 +709,12 @@ void EdtEnv::OnSaveMEI( wxCommandEvent &event )
         wxString message = _("File aldready exists. Overwrite?");
         wxMessageDialog dialog ( m_musViewPtr, message, _("File exits"), wxYES_NO|wxICON_QUESTION );
         if ( dialog.ShowModal () == wxID_YES ) {
-            MusMeiOutput *mei_output = new MusMeiOutput( m_edtFilePtr->m_musDocPtr, filename.mb_str() );
+            MeiOutput *mei_output = new MeiOutput( m_edtFilePtr->m_musDocPtr, filename.mb_str() );
             mei_output->ExportFile();
             delete mei_output;
         }
     } else {
-        MusMeiOutput *mei_output = new MusMeiOutput( m_edtFilePtr->m_musDocPtr, filename.mb_str() );
+        MeiOutput *mei_output = new MeiOutput( m_edtFilePtr->m_musDocPtr, filename.mb_str() );
         mei_output->ExportFile();
         delete mei_output;
 	}

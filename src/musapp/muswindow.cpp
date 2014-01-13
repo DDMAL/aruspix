@@ -146,7 +146,7 @@ void MusWindow::Load( AxUndoFile *undoPtr )
 	position_input.Read( &m_lyricCursor, sizeof( int ) );
     
     
-	MusMeiInput *mei_input = new MusMeiInput( m_doc, undoPtr->GetFilename().c_str() );
+	MeiInput *mei_input = new MeiInput( m_doc, undoPtr->GetFilename().c_str() );
 		
 	//if ( undoPtr->m_flags == MUS_UNDO_FILE ) // this is now the only type of undo we handle anyway...
     {
@@ -257,7 +257,7 @@ void MusWindow::Store( AxUndoFile *undoPtr )
 	position_output.Write( &m_inputLyric, sizeof( bool ) );
 	position_output.Write( &m_lyricCursor, sizeof( int ) );
 	
-    MusMeiOutput *mei_output = new MusMeiOutput( m_doc, undoPtr->GetFilename().c_str() );
+    MeiOutput *mei_output = new MeiOutput( m_doc, undoPtr->GetFilename().c_str() );
 	//if ( undoPtr->m_flags == MUS_UNDO_FILE ) // the only type of undo we handle
 	{
 	    mei_output->ExportFile();

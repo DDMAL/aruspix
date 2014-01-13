@@ -29,12 +29,12 @@
 #include "mustie.h"
 
 //----------------------------------------------------------------------------
-// MusXMLOutput
+// XMLOutput
 //----------------------------------------------------------------------------
 
-MusXMLOutput::MusXMLOutput( Doc *doc, std::string filename ) :
+XMLOutput::XMLOutput( Doc *doc, std::string filename ) :
 // This is pretty bad. We open a bad fileoutputstream as we don't use it
-MusFileOutputStream( doc )
+FileOutputStream( doc )
 {
     m_filename = filename;
     m_measure_count = 0;
@@ -51,11 +51,11 @@ MusFileOutputStream( doc )
 
 }
 
-MusXMLOutput::~MusXMLOutput()
+XMLOutput::~XMLOutput()
 {
 }
 
-bool MusXMLOutput::ExportFile( )
+bool XMLOutput::ExportFile( )
 {
 
     m_xml_doc = new TiXmlDocument;
@@ -76,7 +76,7 @@ bool MusXMLOutput::ExportFile( )
 	return true;    
 }
 
-bool MusXMLOutput::WriteDoc( Doc *doc )
+bool XMLOutput::WriteDoc( Doc *doc )
 {
     Vrv::LogDebug("Doc");
     
@@ -105,8 +105,8 @@ bool MusXMLOutput::WriteDoc( Doc *doc )
 
 
 /*
-bool MusXMLOutput::WriteMeasure( Measure *measure )
-//bool MusXMLOutput::WriteMeiMeasure( Measure *meiMeasure, Measure *measure )
+bool XMLOutput::WriteMeasure( Measure *measure )
+//bool XMLOutput::WriteMeiMeasure( Measure *meiMeasure, Measure *measure )
 {
     std::string num;
 
@@ -133,8 +133,8 @@ bool MusXMLOutput::WriteMeasure( Measure *measure )
 }
 */ // ax2.3
 
-bool MusXMLOutput::WriteStaff( Staff *staff )
-//bool MusXMLOutput::WriteMeiStaff( Staff *meiStaff, Staff *staff )
+bool XMLOutput::WriteStaff( Staff *staff )
+//bool XMLOutput::WriteMeiStaff( Staff *meiStaff, Staff *staff )
 {
     Vrv::LogDebug("Staff");
     
@@ -157,14 +157,14 @@ bool MusXMLOutput::WriteStaff( Staff *staff )
     return true;
 }
 
-bool MusXMLOutput::WriteLayer( Layer *layer )
-//bool MusXMLOutput::WriteMeiLayer( Layer *meiLayer, Layer *layer )
+bool XMLOutput::WriteLayer( Layer *layer )
+//bool XMLOutput::WriteMeiLayer( Layer *meiLayer, Layer *layer )
 {
     Vrv::LogDebug("Layer");
     return true;
 }
 
-bool MusXMLOutput::WriteLayerElement( LayerElement *element )
+bool XMLOutput::WriteLayerElement( LayerElement *element )
 {
     Vrv::LogDebug("Layer Elem");
         
@@ -193,44 +193,44 @@ bool MusXMLOutput::WriteLayerElement( LayerElement *element )
 
 
 
-bool MusXMLOutput::WriteLayout( Doc *layout )
+bool XMLOutput::WriteLayout( Doc *layout )
 {
     Vrv::LogDebug("Layout");
     return true;
 }
 
-bool MusXMLOutput::WritePage( Page *page )
+bool XMLOutput::WritePage( Page *page )
 {
     Vrv::LogDebug("Page");
     return true;
 }
 
-bool MusXMLOutput::WriteSystem( System *system )
+bool XMLOutput::WriteSystem( System *system )
 {
     Vrv::LogDebug("System");
     return true;
 }
 
-bool MusXMLOutput::WriteLaidOutStaff( Staff *laidOutStaff )
+bool XMLOutput::WriteLaidOutStaff( Staff *laidOutStaff )
 {
     Vrv::LogDebug("Laid staff");
     return true;
 }
 
-bool MusXMLOutput::WriteLaidOutLayer( Layer *laidOutLayer )
+bool XMLOutput::WriteLaidOutLayer( Layer *laidOutLayer )
 {    Vrv::LogDebug("Laid layer");
     return true;
 
 }
 
-bool MusXMLOutput::WriteLaidOutLayerElement( LayerElement *laidOutLayerElement )
+bool XMLOutput::WriteLaidOutLayerElement( LayerElement *laidOutLayerElement )
 {
     Vrv::LogDebug("Laid Layer Elem");
     return true;
 }
 
 
-void MusXMLOutput::WriteClef(LayerElement *element) {
+void XMLOutput::WriteClef(LayerElement *element) {
     std::string sign, line;
     
     // Create the attributes elem
@@ -277,7 +277,7 @@ void MusXMLOutput::WriteClef(LayerElement *element) {
     
 }
 
-void MusXMLOutput::WriteKey(LayerElement *element) {
+void XMLOutput::WriteKey(LayerElement *element) {
     KeySignature* key = dynamic_cast<KeySignature*>(element);
     
     // Check for attrib element as above
@@ -324,7 +324,7 @@ void MusXMLOutput::WriteKey(LayerElement *element) {
     
 }
 
-void MusXMLOutput::WriteTime(LayerElement *element) {
+void XMLOutput::WriteTime(LayerElement *element) {
     Mensur *timesig = dynamic_cast<Mensur*>(element);
     std::stringstream number;
     
@@ -376,7 +376,7 @@ void MusXMLOutput::WriteTime(LayerElement *element) {
     m_current_time = timesig;
 }
 
-void MusXMLOutput::WriteMultiMeasureRest(Rest *r) {
+void XMLOutput::WriteMultiMeasureRest(Rest *r) {
     std::stringstream num;
     num << r->m_multimeasure_dur;
     
@@ -402,7 +402,7 @@ void MusXMLOutput::WriteMultiMeasureRest(Rest *r) {
     
 }
 
-void MusXMLOutput::CreateRestsForMultiMeasure() {
+void XMLOutput::CreateRestsForMultiMeasure() {
     
     // unbox all the measures we need
     for (int i = 0; i < m_multimeasure_rests; i++) {
@@ -447,7 +447,7 @@ void MusXMLOutput::CreateRestsForMultiMeasure() {
     m_measure_count--;
 }
 
-void MusXMLOutput::WriteNoteOrRest(LayerElement *element) {
+void XMLOutput::WriteNoteOrRest(LayerElement *element) {
     char steps[] = {'C', 'D', 'E', 'F', 'G', 'A', 'B'};
     std::stringstream number;
     std::string t;
@@ -604,7 +604,7 @@ void MusXMLOutput::WriteNoteOrRest(LayerElement *element) {
     m_xml_last_note = note;
 }
 
-void MusXMLOutput::SetTie(TiXmlElement *xml_note, bool last) {
+void XMLOutput::SetTie(TiXmlElement *xml_note, bool last) {
     TiXmlElement *xtie = new TiXmlElement("tie");
     std::string tie_type;
     
@@ -633,7 +633,7 @@ void MusXMLOutput::SetTie(TiXmlElement *xml_note, bool last) {
         xml_note->LinkEndChild(xtie);
 }
                
-void MusXMLOutput::CreateAttributes() {
+void XMLOutput::CreateAttributes() {
     // Make new attributes as necessary
     if (m_xml_attributes == NULL) {
         m_xml_attributes = new TiXmlElement("attributes");

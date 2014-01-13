@@ -33,12 +33,12 @@ class MusSymbol;
 // 
 //----------------------------------------------------------------------------
 
-class MusXMLOutput: public MusFileOutputStream
+class XMLOutput: public FileOutputStream
 {
 public:
     // constructors and destructors
-    MusXMLOutput( Doc *doc, std::string filename );
-    virtual ~MusXMLOutput();
+    XMLOutput( Doc *doc, std::string filename );
+    virtual ~XMLOutput();
     
     virtual bool ExportFile( );
     

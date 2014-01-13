@@ -237,7 +237,7 @@ void MusStaffGrp::AddStaffGrp( MusStaffGrp *staffGrp )
 int MusStaffGrp::Save( ArrayPtrVoid params )
 {
     // param 0: output stream
-    MusFileOutputStream *output = (MusFileOutputStream*)params[0];
+    FileOutputStream *output = (FileOutputStream*)params[0];
     if (!output->WriteStaffGrp( this )) {
         return FUNCTOR_STOP;
     }
@@ -278,7 +278,7 @@ MusStaffDef::~MusStaffDef()
 int MusStaffDef::Save( ArrayPtrVoid params )
 {
     // param 0: output stream
-    MusFileOutputStream *output = (MusFileOutputStream*)params[0];
+    FileOutputStream *output = (FileOutputStream*)params[0];
     if (!output->WriteStaffDef( this )) {
         return FUNCTOR_STOP;
     }

@@ -21,7 +21,7 @@ class Staff;
 class Tie;
 
 //----------------------------------------------------------------------------
-// MusDarmsInput
+// DarmsInput
 //----------------------------------------------------------------------------
 
 #define ASCII_NUMBER_OFFSET 0x30 // for homebrewed char to int
@@ -31,12 +31,12 @@ typedef struct _pitchmap {
     unsigned int pitch; 
 } pitchmap;
 
-class MusDarmsInput: public MusFileInputStream
+class DarmsInput: public FileInputStream
 {
 public:
     // constructors and destructors
-    MusDarmsInput( Doc *doc, std::string filename );
-    virtual ~MusDarmsInput();
+    DarmsInput( Doc *doc, std::string filename );
+    virtual ~DarmsInput();
     
     virtual bool ImportFile( );
     
