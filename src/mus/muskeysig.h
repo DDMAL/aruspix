@@ -19,7 +19,7 @@
 // MusKeysig
 //----------------------------------------------------------------------------
 
-class MusKeySig: public MusLayerElement, public PositionInterface
+class MusKeySig: public LayerElement, public PositionInterface
 {
 public:
     // constructors and destructors

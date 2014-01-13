@@ -13,7 +13,7 @@
 //----------------------------------------------------------------------------
 
 Tuplet::Tuplet():
-MusLayerElement("tuplet-"), MusObjectListInterface()
+LayerElement("tuplet-"), MusObjectListInterface()
 {
     m_num = 1;
     m_numbase = 1;
@@ -24,7 +24,7 @@ Tuplet::~Tuplet()
 {
 }
 
-void Tuplet::AddElement(MusLayerElement *element) {
+void Tuplet::AddElement(LayerElement *element) {
     
     //if (!element->HasDurationInterface()) {
     //    return;
@@ -42,7 +42,7 @@ void Tuplet::FilterList()
     ListOfMusObjects::iterator iter = m_list.begin();
     
     while ( iter != m_list.end()) {
-        MusLayerElement *currentElement = dynamic_cast<MusLayerElement*>(*iter);
+        LayerElement *currentElement = dynamic_cast<LayerElement*>(*iter);
         if ( currentElement && !currentElement->HasDurationInterface() )
         {
             iter = m_list.erase( iter );

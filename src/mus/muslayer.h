@@ -16,8 +16,8 @@
 #include "musscoredef.h"
 
 class MusDC;
-class MusLayerElement;
-class MusNote;
+class LayerElement;
+class Note;
 
 //----------------------------------------------------------------------------
 // MusLayer
@@ -26,7 +26,7 @@ class MusNote;
 /**
  * This class represents a layer in a laid-out score (MusDoc).
  * A MusLayer is contained in a MusStaff.
- * It contains MusLayerElement objects.
+ * It contains LayerElement objects.
 */
 class MusLayer: public MusDocObject, public MusObjectListInterface, public MusScoreOrStaffDefAttrInterface
 {
@@ -39,7 +39,7 @@ public:
     
     void Clear();
 	
-	void AddElement( MusLayerElement *element, int idx = -1 );
+	void AddElement( LayerElement *element, int idx = -1 );
     	
 	int GetElementCount() const { return (int)m_children.size(); };
     
@@ -72,23 +72,23 @@ public:
     
 	void CopyAttributes( MusLayer *layer ); // copy all attributes but none of the elements
     
-	MusLayerElement *GetFirst( );
-	MusLayerElement *GetLast( );
-	MusLayerElement *GetNext( MusLayerElement *element );
-	MusLayerElement *GetPrevious( MusLayerElement *element );
-	MusLayerElement *GetAtPos( int x );
-	MusLayerElement *Insert( MusLayerElement *element, int x ); // return a pointer on the inserted element
+	LayerElement *GetFirst( );
+	LayerElement *GetLast( );
+	LayerElement *GetNext( LayerElement *element );
+	LayerElement *GetPrevious( LayerElement *element );
+	LayerElement *GetAtPos( int x );
+	LayerElement *Insert( LayerElement *element, int x ); // return a pointer on the inserted element
     
-    void Insert( MusLayerElement *element, MusLayerElement *before );
+    void Insert( LayerElement *element, LayerElement *before );
     
-	void Delete( MusLayerElement *element );
+	void Delete( LayerElement *element );
 	
     /**
-     * Looks for the first MusLayerElement of type elementType.
+     * Looks for the first LayerElement of type elementType.
      * Looks FORWARD of BACKWARD depending on the direction parameter.
      * Returns the retrieved element if *succ == true or the original element if not.
      */
-    MusLayerElement *GetFirst( MusLayerElement *element, unsigned int direction, const std::type_info *elementType, bool *succ );
+    LayerElement *GetFirst( LayerElement *element, unsigned int direction, const std::type_info *elementType, bool *succ );
     
     /** 
      * Get the current clef for the test element.
@@ -96,13 +96,13 @@ public:
      * This is used when inserting a note by passing a y position because we need
      * to know the clef in order to get the pitch.
      */
-	MusClef *GetClef ( MusLayerElement *test );
+	MusClef *GetClef ( LayerElement *test );
     
     /** 
      * Return the clef offset for the position x.
      * The method uses MusLayer::GetClef first to find the clef before test.
      */
-    int GetClefOffset( MusLayerElement *test  );
+    int GetClefOffset( LayerElement *test  );
     
     /**
      * Add an element to the drawing list.
@@ -110,7 +110,7 @@ public:
      * that need to be drawn in a particular order.
      * For example, we need to draw beams before tuplets
      */
-    void AddToDrawingList( MusLayerElement *element );
+    void AddToDrawingList( LayerElement *element );
 
     /**
      * Return the darwing list.
@@ -134,7 +134,7 @@ public:
      * Checks that the X position of the currentElement is not before the previous element or after the next one.
      * This works for facsimile (transcription) encodings only because it looks at the m_xAbs position
      */ 
-    void CheckXPosition( MusLayerElement *currentElement );
+    void CheckXPosition( LayerElement *currentElement );
     
     /**
      * Set drawing clef, keysig and mensur if necessary and if available.
@@ -152,9 +152,9 @@ public:
 	MusSymbol *GetLastLyric( );
 	MusSymbol *GetLyricAtPos( int x );
 	void DeleteLyric( MusSymbol *symbol );
-	MusNote *GetNextNote( MusSymbol * lyric );
-	MusNote *GetPreviousNote( MusSymbol * lyric );
-	void SwitchLyricNoteAssociation( MusSymbol *lyric, MusNote *oldNote, MusNote* newNote, bool beginning );
+	Note *GetNextNote( MusSymbol * lyric );
+	Note *GetPreviousNote( MusSymbol * lyric );
+	void SwitchLyricNoteAssociation( MusSymbol *lyric, Note *oldNote, Note* newNote, bool beginning );
 	void AdjustLyricLineHeight( int delta );
     */
     
@@ -174,7 +174,7 @@ public:
     
 protected:
     // drawing variables
-    //MusLayerElement *beamListPremier; // we need to replace this with a proper beam class that handles a list of notes/rests
+    //LayerElement *beamListPremier; // we need to replace this with a proper beam class that handles a list of notes/rests
     ListOfMusObjects m_drawingList;
     
 private:

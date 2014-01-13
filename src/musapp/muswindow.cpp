@@ -183,13 +183,13 @@ void MusWindow::Load( AxUndoFile *undoPtr )
 	{
         
         //if ( (lyric_element != -1) && (&m_currentStaff->m_elements[element])->IsNote() ) {
-        //    MusNote1 *note = (MusNote1*)&m_currentStaff->m_elements[element];
+        //    Note1 *note = (Note1*)&m_currentStaff->m_elements[element];
         //    m_currentElement = note->GetLyricNo( lyric_element);
         //} else { 
         //    m_currentElement = &m_currentStaff->m_elements[element];
         //}
         
-        m_currentElement = (MusLayerElement*)m_currentLayer->m_children[element];
+        m_currentElement = (LayerElement*)m_currentLayer->m_children[element];
 
 	}
 
@@ -451,12 +451,12 @@ void MusWindow::SetEditorMode( MusEditorMode mode )
 			}
 			else if ( m_currentElement->IsMensur() )
 			{
-				m_mensur = *(MusMensur*)m_currentElement;
+				m_mensur = *(Mensur*)m_currentElement;
 				m_newElement = &m_mensur;
 			}            
 			else if ( m_currentElement->IsNote() )
 			{
-				m_note = *(MusNote*)m_currentElement;
+				m_note = *(Note*)m_currentElement;
 				m_newElement = &m_note;
 			}
 			else if ( m_currentElement->IsRest() )
@@ -522,7 +522,7 @@ void MusWindow::UpdatePen() {
 
 int MusWindow::GetToolType()
 {
-	MusLayerElement *sync = NULL;
+	LayerElement *sync = NULL;
 
 	if (m_editorMode == MUS_EDITOR_EDIT) {
         if (m_currentElement) {
@@ -665,18 +665,18 @@ void MusWindow::OnPopupMenuNote( wxCommandEvent &event )
 	/*if ( !m_page || !m_currentStaff )
 		return;
 
-	MusNote1 *note = NULL;
+	Note1 *note = NULL;
 
 	if ( m_editElement )
 	{
 		if ( !m_currentElement || ( m_currentElement->TYPE == SYMB) )
 			return;
 		else
-			 note = (MusNote1*)m_currentElement;
+			 note = (Note1*)m_currentElement;
 	}
 	else
 	{
-		note = new MusNote1( false, DUR_LG, PITCH_G );
+		note = new Note1( false, DUR_LG, PITCH_G );
 		note->m_xAbs = m_insert_x;
 	}
 
@@ -830,7 +830,7 @@ void MusWindow::OnMouseLeftUp(wxMouseEvent &event)
 	
     /*
 	if ( m_currentElement && m_currentElement->IsSymbol() && ((MusSymbol1*)m_currentElement)->IsLyric() ){
-		MusNote1 *note = ((MusSymbol1*)m_currentElement)->m_note_ptr;
+		Note1 *note = ((MusSymbol1*)m_currentElement)->m_note_ptr;
 		if (note) {
             note->CheckLyricIntegrity();
         }
@@ -939,7 +939,7 @@ void MusWindow::OnMouseLeftDown(wxMouseEvent &event)
 			{
 				if ( tmp->IsNote() )
 				{
-					m_note = *(MusNote1*)tmp;
+					m_note = *(Note1*)tmp;
 					m_newElement = &m_note;
 				}
 				else if ( tmp->IsSymbol() )
@@ -1130,7 +1130,7 @@ bool MusWindow::MoveLeftRight( bool left )
     
     if ( left ) {
         // previous element
-        MusLayerElement *previous = NULL;
+        LayerElement *previous = NULL;
         if ( (previous = m_currentLayer->GetPrevious( m_currentElement ) ) ) {
             m_currentElement = previous;
         }
@@ -1170,7 +1170,7 @@ bool MusWindow::MoveLeftRight( bool left )
     }
     else {
         // next element
-        MusLayerElement *next = NULL;
+        LayerElement *next = NULL;
         if ( ( next =  m_currentLayer->GetNext( m_currentElement ) ) ) {
             m_currentElement = next;
         }
@@ -1484,7 +1484,7 @@ void MusWindow::MensuralEditOnKeyDown(wxKeyEvent &event) {
     if ( ((event.m_keyCode == WXK_DELETE ) || (event.m_keyCode == WXK_BACK)) && m_currentElement) //"Delete or Backspace" event
     {
         PrepareCheckPoint( UNDO_PART, MUS_UNDO_FILE );
-        MusLayerElement *del = m_currentElement;
+        LayerElement *del = m_currentElement;
         MusLayer *delLayer = m_currentLayer;
         
         if (event.m_keyCode == WXK_DELETE )		//"Delete" event
@@ -1520,7 +1520,7 @@ void MusWindow::MensuralEditOnKeyDown(wxKeyEvent &event) {
         PrepareCheckPoint( UNDO_PART, MUS_UNDO_FILE );
         m_currentElement->GetPitchOrPosition( &m_insert_pname, &m_insert_oct);
         m_insert_pname = event.m_keyCode - WXK_F1;
-        MusLayerElement::AdjustPname( &m_insert_pname, &m_insert_oct );
+        LayerElement::AdjustPname( &m_insert_pname, &m_insert_oct );
         m_currentElement->SetPitchOrPosition( m_insert_pname, m_insert_oct );
         CheckPoint( UNDO_PART, MUS_UNDO_FILE );
         OnEndEdition();
@@ -1530,7 +1530,7 @@ void MusWindow::MensuralEditOnKeyDown(wxKeyEvent &event) {
         PrepareCheckPoint( UNDO_PART, MUS_UNDO_FILE );
         m_currentElement->GetPitchOrPosition( &m_insert_pname, &m_insert_oct);
         m_insert_pname++;
-        MusLayerElement::AdjustPname( &m_insert_pname, &m_insert_oct );
+        LayerElement::AdjustPname( &m_insert_pname, &m_insert_oct );
         m_currentElement->SetPitchOrPosition( m_insert_pname, m_insert_oct );
         CheckPoint( UNDO_PART, MUS_UNDO_FILE );
         OnEndEdition();
@@ -1540,7 +1540,7 @@ void MusWindow::MensuralEditOnKeyDown(wxKeyEvent &event) {
         PrepareCheckPoint( UNDO_PART, MUS_UNDO_FILE );
         m_currentElement->GetPitchOrPosition( &m_insert_pname, &m_insert_oct);
         m_insert_pname--;
-        MusLayerElement::AdjustPname( &m_insert_pname, &m_insert_oct );
+        LayerElement::AdjustPname( &m_insert_pname, &m_insert_oct );
         m_currentElement->SetPitchOrPosition( m_insert_pname, m_insert_oct );
         CheckPoint( UNDO_PART, MUS_UNDO_FILE );
         OnEndEdition();
@@ -1548,7 +1548,7 @@ void MusWindow::MensuralEditOnKeyDown(wxKeyEvent &event) {
     else if ( m_currentElement && m_currentElement->IsNote() && 
              ( (event.m_keyCode == 'F') || (event.m_keyCode == 'S' ) ) ) // ajouter un bemol à une note
     {
-        MusNote *note = dynamic_cast<MusNote*>(m_currentElement);
+        Note *note = dynamic_cast<Note*>(m_currentElement);
         PrepareCheckPoint( UNDO_PART, MUS_UNDO_FILE );
         MusSymbol alteration( SYMBOL_ACCID );
         alteration.m_pname = note->m_pname;
@@ -1566,7 +1566,7 @@ void MusWindow::MensuralEditOnKeyDown(wxKeyEvent &event) {
     else if ( m_currentElement && m_currentElement->IsNote() && 
 			 (event.m_keyCode == '.')  ) // ajouter un point
     {
-        MusNote *note = dynamic_cast<MusNote*>(m_currentElement);
+        Note *note = dynamic_cast<Note*>(m_currentElement);
         PrepareCheckPoint( UNDO_PART, MUS_UNDO_FILE );
         MusSymbol dot( SYMBOL_DOT );
         dot.m_pname = note->m_pname;
@@ -1627,8 +1627,8 @@ void MusWindow::MensuralEditOnKeyDown(wxKeyEvent &event) {
         m_editorMode = MUS_EDITOR_INSERT;
         m_lyricMode = true;
         
-        if ( m_currentElement && m_currentElement->IsNote() && ((MusNote1*)m_currentElement)->m_lyrics.GetCount() > 0 ){
-            MusSymbol1 *lyric = &((MusNote1*)m_currentElement)->m_lyrics[0];
+        if ( m_currentElement && m_currentElement->IsNote() && ((Note1*)m_currentElement)->m_lyrics.GetCount() > 0 ){
+            MusSymbol1 *lyric = &((Note1*)m_currentElement)->m_lyrics[0];
             m_currentElement = lyric;
         }
         else if ( m_currentElement && m_currentElement->IsNote() ){
@@ -1636,11 +1636,11 @@ void MusWindow::MensuralEditOnKeyDown(wxKeyEvent &event) {
             lyric->flag = CHAINE;
             lyric->fonte = LYRIC;
             lyric->m_debord_str = "";
-            lyric->m_xAbs = ((MusNote1*)m_currentElement)->m_xAbs - 10;
+            lyric->m_xAbs = ((Note1*)m_currentElement)->m_xAbs - 10;
             lyric->dec_y = - STAFF_OFFSET;   //Add define for height
-            lyric->offset = ((MusNote1*)m_currentElement)->offset;
-            lyric->m_note_ptr = (MusNote1*)m_currentElement;
-            ((MusNote1*)m_currentElement)->m_lyrics.Add( lyric );
+            lyric->offset = ((Note1*)m_currentElement)->offset;
+            lyric->m_note_ptr = (Note1*)m_currentElement;
+            ((Note1*)m_currentElement)->m_lyrics.Add( lyric );
             m_currentElement = lyric;
             m_inputLyric = true;
         }
@@ -1804,16 +1804,16 @@ void MusWindow::LyricEntry(wxKeyEvent &event)
 			PrepareCheckPoint( UNDO_PART, MUS_UNDO_FILE );
 			if ( event.GetKeyCode() == WXK_RIGHT && m_currentElement->IsSymbol() )			//"Right arrow" event: switch lyric association to note to the right 
 			{				
-				MusNote1 *oldNote = ((MusSymbol1*)m_currentElement)->m_note_ptr;
-				MusNote1 *newNote = m_currentStaff->GetNextNote( (MusSymbol1*)m_currentElement );
+				Note1 *oldNote = ((MusSymbol1*)m_currentElement)->m_note_ptr;
+				Note1 *newNote = m_currentStaff->GetNextNote( (MusSymbol1*)m_currentElement );
 				m_currentStaff->SwitchLyricNoteAssociation( (MusSymbol1*)m_currentElement, oldNote, newNote, true );
 				oldNote->CheckLyricIntegrity();
 				newNote->CheckLyricIntegrity();
 			}
 			else if ( event.GetKeyCode() == WXK_LEFT && m_currentElement->IsSymbol() )		//"Left arrow" event: switch lyric association to note to the left
 			{
-				MusNote1 *oldNote = ((MusSymbol1*)m_currentElement)->m_note_ptr;
-				MusNote1 *newNote = m_currentStaff->GetPreviousNote( (MusSymbol1*)m_currentElement );				
+				Note1 *oldNote = ((MusSymbol1*)m_currentElement)->m_note_ptr;
+				Note1 *newNote = m_currentStaff->GetPreviousNote( (MusSymbol1*)m_currentElement );				
 				m_currentStaff->SwitchLyricNoteAssociation( (MusSymbol1*)m_currentElement, oldNote, newNote, false );
                 if ( oldNote ) {
                     oldNote->CheckLyricIntegrity();
@@ -2000,7 +2000,7 @@ void MusWindow::LyricEntry(wxKeyEvent &event)
 		{
 			if ( m_lyricCursor == (int)((MusSymbol1*)m_currentElement)->m_debord_str.Length() ){
 				if ( ((MusSymbol1*)m_currentElement)->IsLastLyricElementInNote() ){
-					MusNote1 *note = m_currentStaff->GetNextNote( (MusSymbol1*)m_currentElement );
+					Note1 *note = m_currentStaff->GetNextNote( (MusSymbol1*)m_currentElement );
 					if ( !note )
 						return;
 					
@@ -2025,7 +2025,7 @@ void MusWindow::LyricEntry(wxKeyEvent &event)
 		{
 			if ( m_lyricCursor == (int)((MusSymbol1*)m_currentElement)->m_debord_str.Length() ){
 				if ( ((MusSymbol1*)m_currentElement)->IsLastLyricElementInNote() ){
-					MusNote1 *note = m_currentStaff->GetNextNote( (MusSymbol1*)m_currentElement );
+					Note1 *note = m_currentStaff->GetNextNote( (MusSymbol1*)m_currentElement );
 					if ( !note )
 						return;
 					

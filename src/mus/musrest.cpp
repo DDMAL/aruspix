@@ -13,7 +13,7 @@
 //----------------------------------------------------------------------------
 
 Rest::Rest():
-	MusLayerElement("rest-"), MusDurationInterface(), PositionInterface()
+	LayerElement("rest-"), MusDurationInterface(), PositionInterface()
 {
     // by default set automatic height
     m_pname = REST_AUTO;

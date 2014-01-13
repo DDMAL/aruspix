@@ -13,7 +13,7 @@
 //----------------------------------------------------------------------------
 
 Slur::Slur():
-MusLayerElement("slur-")
+LayerElement("slur-")
 {
 }
 
@@ -22,7 +22,7 @@ Slur::~Slur()
 {
 }
 
-void Slur::AddNote(MusLayerElement *element) {
+void Slur::AddNote(LayerElement *element) {
     
     if (!element->HasDurationInterface()) {
         return;

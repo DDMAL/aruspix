@@ -16,28 +16,28 @@
 class MusAlignment;
 
 //----------------------------------------------------------------------------
-// MusLayerElement
+// LayerElement
 //----------------------------------------------------------------------------
 
 /** 
  * This class is a base class for the MusLayer (<layer>) content.
  * It is not an abstract class but should not be instanciate directly.
  */
-class MusLayerElement: public MusDocObject
+class LayerElement: public MusDocObject
 {
 public:
     // constructors and destructors
-    MusLayerElement();
-    MusLayerElement(std::string classid);
-    virtual ~MusLayerElement();
+    LayerElement();
+    LayerElement(std::string classid);
+    virtual ~LayerElement();
     
-    MusLayerElement& operator=( const MusLayerElement& element ); // copy assignement - this need to be changed to the MusObject::Clone way;
+    LayerElement& operator=( const LayerElement& element ); // copy assignement - this need to be changed to the MusObject::Clone way;
     
     /**
-     * Return a copy of the MusLayerElement (child class).
+     * Return a copy of the LayerElement (child class).
      * By default, a new uuid is generated
      */
-    MusLayerElement *GetChildCopy( bool newUuid = true );
+    LayerElement *GetChildCopy( bool newUuid = true );
     
     /**
      * Return the default horizontal spacing of elements.
@@ -49,36 +49,36 @@ public:
     static void AdjustPname( int *pname, int *oct );
     
     /** 
-     * Set the pitch or position for MusPitchInterface or PositionInterface elements.
-     * Because MusPitchInterface and PositionInterface are not child classes of MusLayerElement,
+     * Set the pitch or position for PitchInterface or PositionInterface elements.
+     * Because PitchInterface and PositionInterface are not child classes of LayerElement,
      * the call had to be done explicitly from this method. The method can still be overriden.
      */
     virtual void SetPitchOrPosition( int pname, int oct );
     
     /**
-     * Get the pitch or position for MusPitchInterface or PositionInterface elements.
-     * See MusLayerElement::SetPitchOrPosition for more comments.
+     * Get the pitch or position for PitchInterface or PositionInterface elements.
+     * See LayerElement::SetPitchOrPosition for more comments.
      */
     virtual bool GetPitchOrPosition( int *pname, int *oct );
     
     /**
-     * Set the value for child element of MusLayerElement.
+     * Set the value for child element of LayerElement.
      * For example, set the duration for MusDurationInterface elements (call explicitly) 
      */
 	virtual void SetValue( int value, int flag = 0 );
     
     /**
-     * Change the coloration for MusNote elements.
+     * Change the coloration for Note elements.
      */ 
 	virtual void ChangeColoration( ) {};
     
     /**
-     * Change the stem direction for MusNote elements.
+     * Change the stem direction for Note elements.
      */
 	virtual void ChangeStem( ) {};
     
     /**
-     * Set the ligature flag for MusNote elements.
+     * Set the ligature flag for Note elements.
      */
 	virtual void SetLigature( ) {};
     
@@ -134,7 +134,7 @@ public:
     int m_xDrawing;
 	/** Relative position Y. This is used internally when drawing */
 	int m_yRel;
-    /** for elements in MusLayerApp. They will be drawn from the MusLayerElement of the app (and not from the layer) */
+    /** for elements in MusLayerApp. They will be drawn from the LayerElement of the app (and not from the layer) */
     bool m_in_layer_app;
     /** Indicates if cue size */
     bool m_cueSize;

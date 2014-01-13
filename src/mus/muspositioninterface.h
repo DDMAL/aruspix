@@ -16,7 +16,7 @@
 /** 
  * This class is an interface for elements with a position on the staff, such as rests.
  * It is not an abstract class but should not be instanciate directly.
- * For now, the position is handled in a similar way that for MusPitchInterface, that is with a pitch and octave. 
+ * For now, the position is handled in a similar way that for PitchInterface, that is with a pitch and octave. 
  */
 class PositionInterface
 {
@@ -33,7 +33,7 @@ public:
     
     /**
      * Inteface comparison operator. 
-     * Check if the MusLayerElement has a PositionInterface and compare attributes
+     * Check if the LayerElement has a PositionInterface and compare attributes
      */
     bool HasIdenticalPositionInterface(PositionInterface  *otherPitchInterface);
 

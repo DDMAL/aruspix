@@ -19,7 +19,7 @@
 /** 
  * This class models the MEI <barline> element. 
  */
-class MusBarline: public MusLayerElement
+class MusBarline: public LayerElement
 {
 public:
     // constructors and destructors
@@ -28,7 +28,7 @@ public:
     
     /**
      * Comparison operator. 
-     * Check if the MusLayerElement if a MusBarline and compare attributes
+     * Check if the LayerElement if a MusBarline and compare attributes
      */
     virtual bool operator==(MusObject& other);
     

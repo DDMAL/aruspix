@@ -23,7 +23,7 @@
  * The DOT type models the MEI <dot> element.
  * The ACCID type models the MEI <accid> element.
  */
-class MusSymbol: public MusLayerElement, public PositionInterface
+class MusSymbol: public LayerElement, public PositionInterface
 {
 public:
     // constructors and destructors
@@ -33,7 +33,7 @@ public:
     
     /**
      * Comparison operator. 
-     * Check if the MusLayerElement if a Symbol and compare attributes
+     * Check if the LayerElement if a Symbol and compare attributes
      */
     virtual bool operator==(MusObject& other);
     

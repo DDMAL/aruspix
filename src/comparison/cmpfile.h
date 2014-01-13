@@ -43,7 +43,7 @@ class CmpCollationPart;
 WX_DECLARE_OBJARRAY( CmpCollationPart, ArrayOfCmpCollationParts);
 
 class MusLayer;
-class MusLayerElement;
+class LayerElement;
 
 
 //----------------------------------------------------------------------------
@@ -150,7 +150,7 @@ public:
     CmpPartPage(  wxString axfile, CmpBookPart *part );
     ~CmpPartPage() {};
     
-    void SetStartEnd( MusLayerElement *laidOutLayerElement, bool isStart );
+    void SetStartEnd( LayerElement *laidOutLayerElement, bool isStart );
     void SetStart( wxString uuidStr );
     void SetEnd( wxString uuidStr );
     bool HasStart();

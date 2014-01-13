@@ -21,9 +21,9 @@ class MusBarline;
 class MusBeam;
 class MusClef;
 class MusLayer;
-class MusMensur;
+class Mensur;
 class MultiRest;
-class MusNote;
+class Note;
 class Rest;
 class MusSymbol;
 class Tuplet;
@@ -65,7 +65,7 @@ public:
     virtual bool WriteMeasure( MusMeasure *measure );
     virtual bool WriteStaff( MusStaff *staff );
     virtual bool WriteLayer( MusLayer *layer );
-    virtual bool WriteLayerElement( MusLayerElement *element );
+    virtual bool WriteLayerElement( LayerElement *element );
     // app
     virtual bool WriteLayerApp( MusLayerApp *app );
     virtual bool WriteLayerRdg( MusLayerRdg *rdg );
@@ -92,10 +92,10 @@ private:
     void WriteMeiClef( TiXmlElement *meiClef, MusClef *clef );
     
     /**
-     * Write a MusMensur. 
+     * Write a Mensur. 
      * Callded from WriteLayerElement.
      */
-    void WriteMeiMensur( TiXmlElement *meiMensur, MusMensur *mensur );
+    void WriteMeiMensur( TiXmlElement *meiMensur, Mensur *mensur );
     
     /**
      * Write a MultiRest. 
@@ -104,10 +104,10 @@ private:
     void WriteMeiMultiRest( TiXmlElement *meiMultiRest, MultiRest *multiRest );
     
     /**
-     * Write a MusNote. 
+     * Write a Note. 
      * Callded from WriteLayerElement.
      */
-    void WriteMeiNote( TiXmlElement *meiNote, MusNote *note );
+    void WriteMeiNote( TiXmlElement *meiNote, Note *note );
     
     /**
      * Write a Rest. 
@@ -130,7 +130,7 @@ private:
     
     /**
      * Write a sameAs attribute
-     * The method has to be called by classed that support it (e.g., MusLayerElement)
+     * The method has to be called by classed that support it (e.g., LayerElement)
      */
     void WriteSameAsAttr( TiXmlElement *meiElement, MusObject *element );
 	
@@ -214,31 +214,31 @@ private:
     bool ReadMeiStaff( TiXmlElement *staff );
     bool ReadMeiLayer( TiXmlElement *layer );
     bool ReadMeiLayerElement( TiXmlElement *XmlElement );
-    MusLayerElement *ReadMeiBarline( TiXmlElement *barline );
-    MusLayerElement *ReadMeiBeam( TiXmlElement *beam );
-    MusLayerElement *ReadMeiClef( TiXmlElement *clef );
-    MusLayerElement *ReadMeiMensur( TiXmlElement *mensur );
-    MusLayerElement *ReadMeiMultiRest( TiXmlElement *multiRest );
-    MusLayerElement *ReadMeiNote( TiXmlElement *note );
-    MusLayerElement *ReadMeiRest( TiXmlElement *rest );
-    MusLayerElement *ReadMeiTuplet( TiXmlElement *tuplet );
-    MusLayerElement *ReadMeiAccid( TiXmlElement *accid );
-    MusLayerElement *ReadMeiCustos( TiXmlElement *custos );
-    MusLayerElement *ReadMeiDot( TiXmlElement *dot );
+    LayerElement *ReadMeiBarline( TiXmlElement *barline );
+    LayerElement *ReadMeiBeam( TiXmlElement *beam );
+    LayerElement *ReadMeiClef( TiXmlElement *clef );
+    LayerElement *ReadMeiMensur( TiXmlElement *mensur );
+    LayerElement *ReadMeiMultiRest( TiXmlElement *multiRest );
+    LayerElement *ReadMeiNote( TiXmlElement *note );
+    LayerElement *ReadMeiRest( TiXmlElement *rest );
+    LayerElement *ReadMeiTuplet( TiXmlElement *tuplet );
+    LayerElement *ReadMeiAccid( TiXmlElement *accid );
+    LayerElement *ReadMeiCustos( TiXmlElement *custos );
+    LayerElement *ReadMeiDot( TiXmlElement *dot );
     /** Reads <app> elements. For now, only <app> within <layer> are taken into account */
-    MusLayerElement *ReadMeiApp( TiXmlElement *app );
+    LayerElement *ReadMeiApp( TiXmlElement *app );
     bool ReadMeiRdg( TiXmlElement *rdg );
     
     /**
      * Read a sameAs attribute
-     * The method has to be called by classed that support it (e.g., MusLayerElement)
+     * The method has to be called by classed that support it (e.g., LayerElement)
      */
     void ReadSameAsAttr( TiXmlElement *element, MusObject *object );
     
     /**
      * Add the LayerElement to the appropriate parent (e.g., MusLayer, MusLayerRdg)
      */
-    void AddLayerElement( MusLayerElement *element );
+    void AddLayerElement( LayerElement *element );
     
     /**
      * Read unsupported element and try to convert them
@@ -251,7 +251,7 @@ private:
      * have the same pitch. If found, the terminal attribute is the and the note
      * is removed from the list
      */
-    bool FindOpenTie( MusNote *terminalNote );
+    bool FindOpenTie( Note *terminalNote );
     
 	//
     void SetMeiUuid( TiXmlElement *element, MusObject *object );
@@ -293,7 +293,7 @@ private:
     /**
      * A vector of keeping the notes with open ties.
      */
-    std::vector<MusNote*> m_openTies;
+    std::vector<Note*> m_openTies;
 };
 
 

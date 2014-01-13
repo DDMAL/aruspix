@@ -261,14 +261,14 @@ void RecFile::UpgradeTo_2_1_0()
         }
         for ( j = 0; j < laidOutLayer->GetElementCount(); j++ ) {
             if ( j >=  (int)currentLayer->m_elements.GetCount() ) {
-                wxLogError( "File cannot be upgraded to 2.1.0 (Too many MusLayerElement)");    
+                wxLogError( "File cannot be upgraded to 2.1.0 (Too many LayerElement)");    
                 return;
             }
             MusObject *target = &currentLayer->m_elements[ elementCount ];
             elementCount++;
-            if ( dynamic_cast<MusLayerElement*>(target) ) {
-                MusLayerElement *element = &laidOutLayer->m_elements[j];
-                element->m_layerElement = dynamic_cast<MusLayerElement*>(target);
+            if ( dynamic_cast<LayerElement*>(target) ) {
+                LayerElement *element = &laidOutLayer->m_elements[j];
+                element->m_layerElement = dynamic_cast<LayerElement*>(target);
             }
         }
         

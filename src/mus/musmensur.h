@@ -13,26 +13,26 @@
 #include "muslayerelement.h"
 
 //----------------------------------------------------------------------------
-// MusMensur
+// Mensur
 //----------------------------------------------------------------------------
 
 /** 
  * This class models the MEI <mensur> element. 
  */
-class MusMensur: public MusLayerElement
+class Mensur: public LayerElement
 {
 public:
     // constructors and destructors
-    MusMensur();
-    virtual ~MusMensur();
+    Mensur();
+    virtual ~Mensur();
     
     /**
      * Comparison operator. 
-     * Check if the MusLayerElement if a MusMensur and compare attributes
+     * Check if the LayerElement if a Mensur and compare attributes
      */
     virtual bool operator==(MusObject& other);
     
-    virtual std::string MusClassName( ) { return "MusMensur"; };
+    virtual std::string MusClassName( ) { return "Mensur"; };
     
     /**
      * Set the value for the mensur.

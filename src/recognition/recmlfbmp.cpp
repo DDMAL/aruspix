@@ -449,7 +449,7 @@ bool RecMLFBmp::WriteLayer( const MusLayer *layer, int currentElementNo )
 
     for (k = 0;k < layer->GetElementCount(); k++ )
     {
-        MusLayerElement *element = (MusLayerElement*)layer->m_children[k];
+        LayerElement *element = (LayerElement*)layer->m_children[k];
         // we could write all of the in one method, left over from version < 2.0.0
         if ( element->IsNote() || element->IsRest() || element->IsSymbol( SYMBOL_CUSTOS) )
         {

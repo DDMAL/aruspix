@@ -56,7 +56,7 @@ static struct coord {  float a;
 			float b;
 			unsigned vlr: 8;	/* valeur */
 			unsigned prov: 8;	/* ON si portee sup. */
-            MusLayerElement *chk;
+            LayerElement *chk;
 	     } 	crd[NbREL]; /* garde les coord.d'entree*/
 
 
@@ -81,7 +81,7 @@ char extern_queue = 0;
 
 void MusRC::DrawBeam(  MusDC *dc, MusLayer *layer, MusBeam *beam, MusStaff *staff )
 {
-    MusLayerElement *chk;
+    LayerElement *chk;
 	static struct fb {
 		unsigned _liaison : 1;	/* temoin pour liaison: si ON, il y a
 							   de la liaison dans l'air et beam doit
@@ -137,7 +137,7 @@ void MusRC::DrawBeam(  MusDC *dc, MusLayer *layer, MusBeam *beam, MusStaff *staf
         return;
     
     // chk point to the first Note in the layed out layer
-    chk = dynamic_cast<MusLayerElement*>(beam->m_list.front());
+    chk = dynamic_cast<LayerElement*>(beam->m_list.front());
     
     //	bch.markchrd = shortest = fb.mq_val = valref = ct = cpte_stop = fb.mrq_port = OFF;
 	bch.markchrd = 0;
@@ -152,7 +152,7 @@ void MusRC::DrawBeam(  MusDC *dc, MusLayer *layer, MusBeam *beam, MusStaff *staf
 		/* retablir a la fin si provshp existe */
 
 	low = chk->m_yRel + staff->m_yDrawing;	/* initialiser */
-    k = ((MusNote*)chk)->m_colored ? ((MusNote*)chk)->m_dur+1 : ((MusNote*)chk)->m_dur;
+    k = ((Note*)chk)->m_colored ? ((Note*)chk)->m_dur+1 : ((Note*)chk)->m_dur;
     
 	valref = k;		/* m_dur test conservee */
     //	valref = chk->m_dur;		/* m_dur test conservee */
@@ -177,8 +177,8 @@ void MusRC::DrawBeam(  MusDC *dc, MusLayer *layer, MusBeam *beam, MusStaff *staf
 	}
     ***/
     
-    extern_q_auto = 1; //RZ was ((MusNote*)chk)->m_stemLen; bit it is always 0!
-    extern_queue =  ((MusNote*)chk)->m_stemDir;
+    extern_q_auto = 1; //RZ was ((Note*)chk)->m_stemLen; bit it is always 0!
+    extern_queue =  ((Note*)chk)->m_stemDir;
 
     ListOfMusObjects::iterator iter = beam->m_list.begin();
     
@@ -188,7 +188,7 @@ void MusRC::DrawBeam(  MusDC *dc, MusLayer *layer, MusBeam *beam, MusStaff *staf
         //Mus::LogDebug("-> %s", chk->MusClassName().c_str() );
         
         if ( chk->IsNote() ) {
-            k = ((MusNote*)chk)->m_colored ? ((MusNote*)chk)->m_dur+1 : ((MusNote*)chk)->m_dur;
+            k = ((Note*)chk)->m_colored ? ((Note*)chk)->m_dur+1 : ((Note*)chk)->m_dur;
         }
 
         // if (chk->type == NOTE && /*chk->sil == _NOT &&*/ k > DUR_4)
@@ -199,9 +199,9 @@ void MusRC::DrawBeam(  MusDC *dc, MusLayer *layer, MusBeam *beam, MusStaff *staf
 
 			if (!calcBeam && chk->IsNote())	/* on ne se limite pas au calcul des queues */
 			{	
-                ((MusNote*)chk)->m_stemLen = extern_q_auto;
-				if (!extern_q_auto)	((MusNote*)chk)->m_stemDir = extern_queue;
-				if ( !fb._liaison && (((MusNote*)chk)->m_slur[0] & SLUR_TERMINAL)) {
+                ((Note*)chk)->m_stemLen = extern_q_auto;
+				if (!extern_q_auto)	((Note*)chk)->m_stemDir = extern_queue;
+				if ( !fb._liaison && (((Note*)chk)->m_slur[0] & SLUR_TERMINAL)) {
 					fb._liaison = ON;
                 }
                 /***if (chk->grp==END) {	
@@ -215,7 +215,7 @@ void MusRC::DrawBeam(  MusDC *dc, MusLayer *layer, MusBeam *beam, MusStaff *staf
 
 			(crd+ct)->a = chk->m_xDrawing + chk->m_hOffset - m_doc->m_env.m_stemWidth / 2;		/* enregistrement des coord. */
 			(crd+ct)->vlr = k;
-			if (chk->IsNote() && ((MusNote*)chk)->m_breakSec && ct)
+			if (chk->IsNote() && ((Note*)chk)->m_breakSec && ct)
                 /* enregistr. des ruptures de beaming; des la 2e note;(autrement idiot)*/
 				*(st_rl + (cpte_stop++)) = ct;
 
@@ -237,7 +237,7 @@ void MusRC::DrawBeam(  MusDC *dc, MusLayer *layer, MusBeam *beam, MusStaff *staf
             break;
         }
         
-        chk = dynamic_cast<MusLayerElement*>(*iter);
+        chk = dynamic_cast<LayerElement*>(*iter);
 		if (chk == NULL) { 
             return;
         }
@@ -245,12 +245,12 @@ void MusRC::DrawBeam(  MusDC *dc, MusLayer *layer, MusBeam *beam, MusStaff *staf
 	}	while (1);
 
     // SECURITE : EVITER DE BARRER UN ACCORD ISOLE...
-/*	if (chk->IsNote() && (((MusNote*)chk)->m_chord & CHORD_TERMINAL)  && (chk->m_xDrawing == layer->beamListPremier->m_xDrawing))
+/*	if (chk->IsNote() && (((Note*)chk)->m_chord & CHORD_TERMINAL)  && (chk->m_xDrawing == layer->beamListPremier->m_xDrawing))
 	{	chk = layer->beamListPremier;
 		do {	
-                ((MusNote*)chk)->m_beam[0] = 0;
+                ((Note*)chk)->m_beam[0] = 0;
 				chk = layer->GetNext(chk);
-			}	while (chk && chk->IsNote() && !((MusNote*)chk)->m_chord & CHORD_TERMINAL);
+			}	while (chk && chk->IsNote() && !((Note*)chk)->m_chord & CHORD_TERMINAL);
 		layer->beamListPremier = NULL;
 		return;
 	}
@@ -432,7 +432,7 @@ void MusRC::DrawBeam(  MusDC *dc, MusLayer *layer, MusBeam *beam, MusStaff *staf
 			s_x2 += crd[i].a * crd[i].a;
 			s_xy += crd[i].a * _ybeam[i];
             if ( crd[i].chk->IsNote() ) {
-                ((MusNote*)crd[i].chk)->m_stemDir = fb.dir;
+                ((Note*)crd[i].chk)->m_stemDir = fb.dir;
             }
 		}
 
@@ -542,13 +542,13 @@ if (fPente)
                 crd[i].chk->m_drawn_stem_dir = false;
 			}
 		}
-		if ((crd+i)->chk->IsNote() && ((MusNote*)(crd+i)->chk)->m_headshape != SANSQUEUE)
+		if ((crd+i)->chk->IsNote() && ((Note*)(crd+i)->chk)->m_headshape != SANSQUEUE)
 		{	
             v_bline (dc,fy2, fy1, crd[i].a, m_doc->m_env.m_stemWidth);
             
 // ICI, bon endroit pour enfiler les STACCATOS - ne sont traités ici que ceux qui sont opposés à la tête (les autres, in wgnote.cpp)
-			if (((MusNote*)(crd+i)->chk)->m_artic
-				 && (!((MusNote*)(crd+i)->chk)->m_chord || (((MusNote*)(crd+i)->chk)->m_chord & CHORD_TERMINAL)))
+			if (((Note*)(crd+i)->chk)->m_artic
+				 && (!((Note*)(crd+i)->chk)->m_chord || (((Note*)(crd+i)->chk)->m_chord & CHORD_TERMINAL)))
 			// les cas non traités par note()
 /*			{	if (fb.dir || (fb.mrq_port && m_stemLen && !crd[i].prov))
 					putStacc (dc,crd[i].a-dx[crd[i].chk->dimin],fy1+e_t->m_doc->m_rendInterl[staff->staffSize]-staff->m_yDrawing, 0,crd[i].chk->typStac);

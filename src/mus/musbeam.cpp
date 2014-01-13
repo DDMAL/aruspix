@@ -13,7 +13,7 @@
 //----------------------------------------------------------------------------
 
 MusBeam::MusBeam():
-    MusLayerElement("beam-"), MusObjectListInterface()
+    LayerElement("beam-"), MusObjectListInterface()
 {
 }
 
@@ -22,7 +22,7 @@ MusBeam::~MusBeam()
 {
 }
 
-void MusBeam::AddElement(MusLayerElement *element) {
+void MusBeam::AddElement(LayerElement *element) {
    
     element->SetParent( this );
     m_children.push_back(element);
@@ -36,7 +36,7 @@ void MusBeam::FilterList()
     ListOfMusObjects::iterator iter = m_list.begin();
     
     while ( iter != m_list.end()) {
-        MusLayerElement *currentElement = dynamic_cast<MusLayerElement*>(*iter);
+        LayerElement *currentElement = dynamic_cast<LayerElement*>(*iter);
         if ( currentElement && !currentElement->HasDurationInterface() )
         {
             //Mus::LogDebug("KILLED!!! %s", currentElement->MusClassName().c_str() );

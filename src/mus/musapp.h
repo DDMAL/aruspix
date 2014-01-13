@@ -20,7 +20,7 @@ class MusLayerRdg;
 /** 
  * This class models the MEI <app> element within a <layer> element.
  */
-class MusLayerApp: public MusLayerElement
+class MusLayerApp: public LayerElement
 {
 public:
     // constructors and destructors
@@ -57,7 +57,7 @@ public:
     MusLayerRdg( );
     virtual ~MusLayerRdg();
     
-	void AddElement( MusLayerElement *element, int idx = -1 );
+	void AddElement( LayerElement *element, int idx = -1 );
     
 	int GetElementCount() const { return (int)m_children.size(); };
     

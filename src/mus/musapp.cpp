@@ -17,7 +17,7 @@
 //----------------------------------------------------------------------------
 
 MusLayerApp::MusLayerApp():
-    MusLayerElement()
+    LayerElement()
 {
 }
 
@@ -64,7 +64,7 @@ MusLayerRdg::~MusLayerRdg()
 }
 
 
-void MusLayerRdg::AddElement( MusLayerElement *element, int idx )
+void MusLayerRdg::AddElement( LayerElement *element, int idx )
 {
 	element->SetParent( this );
     if ( idx == -1 ) {

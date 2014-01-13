@@ -284,7 +284,7 @@ bool MusMeiOutput::WriteLayer( MusLayer *layer )
     return true;
 }
 
-bool MusMeiOutput::WriteLayerElement( MusLayerElement *element )
+bool MusMeiOutput::WriteLayerElement( LayerElement *element )
 {
     assert( m_layer );
     
@@ -304,7 +304,7 @@ bool MusMeiOutput::WriteLayerElement( MusLayerElement *element )
         assert( m_tuplet );
         currentParent = m_tuplet;
     }
-    // we should do the same for any MusLayerElement container (slur, tuplet, etc. )
+    // we should do the same for any LayerElement container (slur, tuplet, etc. )
     
     TiXmlElement *xmlElement = NULL;
     if (dynamic_cast<MusBarline*>(element)) {
@@ -320,17 +320,17 @@ bool MusMeiOutput::WriteLayerElement( MusLayerElement *element )
         xmlElement = new TiXmlElement("clef");
         WriteMeiClef( xmlElement, dynamic_cast<MusClef*>(element) );
     }
-    else if (dynamic_cast<MusMensur*>(element)) {
+    else if (dynamic_cast<Mensur*>(element)) {
         xmlElement = new TiXmlElement("mensur");
-        WriteMeiMensur( xmlElement, dynamic_cast<MusMensur*>(element) );
+        WriteMeiMensur( xmlElement, dynamic_cast<Mensur*>(element) );
     }
     else if (dynamic_cast<MultiRest*>(element)) {
         xmlElement = new TiXmlElement("multiRest");
         WriteMeiMultiRest( xmlElement, dynamic_cast<MultiRest*>(element) );
     }
-    else if (dynamic_cast<MusNote*>(element)) {
+    else if (dynamic_cast<Note*>(element)) {
         xmlElement = new TiXmlElement("note");
-        WriteMeiNote( xmlElement, dynamic_cast<MusNote*>(element) );
+        WriteMeiNote( xmlElement, dynamic_cast<Note*>(element) );
     }
     else if (dynamic_cast<Rest*>(element)) {
         xmlElement = new TiXmlElement("rest");
@@ -382,7 +382,7 @@ void MusMeiOutput::WriteMeiClef( TiXmlElement *meiClef, MusClef *clef )
 }
 
 
-void MusMeiOutput::WriteMeiMensur( TiXmlElement *meiMensur, MusMensur *mensur )
+void MusMeiOutput::WriteMeiMensur( TiXmlElement *meiMensur, Mensur *mensur )
 {
     if ( mensur->m_sign ) {
         meiMensur->SetAttribute( "sign", MensurSignToStr( mensur->m_sign ).c_str() );
@@ -414,7 +414,7 @@ void MusMeiOutput::WriteMeiMultiRest( TiXmlElement *meiMultiRest, MultiRest *mul
     return;
 }
 
-void MusMeiOutput::WriteMeiNote( TiXmlElement *meiNote, MusNote *note )
+void MusMeiOutput::WriteMeiNote( TiXmlElement *meiNote, Note *note )
 {
     meiNote->SetAttribute( "pname", PitchToStr( note->m_pname ).c_str() );
     meiNote->SetAttribute( "oct", OctToStr( note->m_oct ).c_str() );
@@ -434,7 +434,7 @@ void MusMeiOutput::WriteMeiNote( TiXmlElement *meiNote, MusNote *note )
         }
     }
     if ( note->m_stemDir ) {
-        // this is not really correct because MusNote::m_stemDir indicates that it is opposite the normal position
+        // this is not really correct because Note::m_stemDir indicates that it is opposite the normal position
         meiNote->SetAttribute( "stem.dir", "up" );
     }
     if ( note->m_colored ) {
@@ -843,7 +843,7 @@ bool MusMeiInput::ReadMei( TiXmlElement *root )
     }
     
     if ( !m_openTies.empty()) {
-        std::vector<MusNote*>::iterator iter;
+        std::vector<Note*>::iterator iter;
         for (iter = m_openTies.begin(); iter != m_openTies.end(); ++iter)
         {
             Mus::LogWarning("Terminal tie for note '%s' could not be matched", (*iter)->GetUuid().c_str() );
@@ -1150,7 +1150,7 @@ bool MusMeiInput::ReadMeiLayer( TiXmlElement *layer )
 
 bool MusMeiInput::ReadMeiLayerElement( TiXmlElement *xmlElement )
 {
-    MusLayerElement *musElement = NULL;
+    LayerElement *musElement = NULL;
     if ( std::string( xmlElement->Value() )  == "barLine" ) {
         musElement = ReadMeiBarline( xmlElement );
     }
@@ -1208,14 +1208,14 @@ bool MusMeiInput::ReadMeiLayerElement( TiXmlElement *xmlElement )
     return true;
 }
 
-MusLayerElement *MusMeiInput::ReadMeiBarline( TiXmlElement *barline )
+LayerElement *MusMeiInput::ReadMeiBarline( TiXmlElement *barline )
 {
     MusBarline *musBarline = new MusBarline();
     
     return musBarline;    
 }
 
-MusLayerElement *MusMeiInput::ReadMeiBeam( TiXmlElement *beam )
+LayerElement *MusMeiInput::ReadMeiBeam( TiXmlElement *beam )
 {
     assert ( !m_beam );
     
@@ -1248,7 +1248,7 @@ MusLayerElement *MusMeiInput::ReadMeiBeam( TiXmlElement *beam )
     }
 }
 
-MusLayerElement *MusMeiInput::ReadMeiClef( TiXmlElement *clef )
+LayerElement *MusMeiInput::ReadMeiClef( TiXmlElement *clef )
 { 
     MusClef *musClef = new MusClef(); 
     if ( clef->Attribute( "shape" ) && clef->Attribute( "line" ) ) {
@@ -1259,9 +1259,9 @@ MusLayerElement *MusMeiInput::ReadMeiClef( TiXmlElement *clef )
 }
 
 
-MusLayerElement *MusMeiInput::ReadMeiMensur( TiXmlElement *mensur )
+LayerElement *MusMeiInput::ReadMeiMensur( TiXmlElement *mensur )
 {
-    MusMensur *musMensur = new MusMensur();
+    Mensur *musMensur = new Mensur();
     
     if ( mensur->Attribute( "sign" ) ) {
         musMensur->m_sign = StrToMensurSign( mensur->Attribute( "sign" ) );
@@ -1286,7 +1286,7 @@ MusLayerElement *MusMeiInput::ReadMeiMensur( TiXmlElement *mensur )
     return musMensur;
 }
 
-MusLayerElement *MusMeiInput::ReadMeiMultiRest( TiXmlElement *multiRest )
+LayerElement *MusMeiInput::ReadMeiMultiRest( TiXmlElement *multiRest )
 {
 	MultiRest *musMultiRest = new MultiRest();
     
@@ -1298,9 +1298,9 @@ MusLayerElement *MusMeiInput::ReadMeiMultiRest( TiXmlElement *multiRest )
 	return musMultiRest;
 }
 
-MusLayerElement *MusMeiInput::ReadMeiNote( TiXmlElement *note )
+LayerElement *MusMeiInput::ReadMeiNote( TiXmlElement *note )
 {
-	MusNote *musNote = new MusNote();
+	Note *musNote = new Note();
     
 	// pitch
 	if ( note->Attribute( "pname" ) ) {
@@ -1355,7 +1355,7 @@ MusLayerElement *MusMeiInput::ReadMeiNote( TiXmlElement *note )
 }
 
 
-MusLayerElement *MusMeiInput::ReadMeiRest( TiXmlElement *rest )
+LayerElement *MusMeiInput::ReadMeiRest( TiXmlElement *rest )
 {
     Rest *musRest = new Rest();
     
@@ -1379,7 +1379,7 @@ MusLayerElement *MusMeiInput::ReadMeiRest( TiXmlElement *rest )
 }
 
 
-MusLayerElement *MusMeiInput::ReadMeiTuplet( TiXmlElement *tuplet )
+LayerElement *MusMeiInput::ReadMeiTuplet( TiXmlElement *tuplet )
 {
     assert ( !m_tuplet );
     
@@ -1420,7 +1420,7 @@ MusLayerElement *MusMeiInput::ReadMeiTuplet( TiXmlElement *tuplet )
 }
 
 
-MusLayerElement *MusMeiInput::ReadMeiAccid( TiXmlElement *accid )
+LayerElement *MusMeiInput::ReadMeiAccid( TiXmlElement *accid )
 {
     MusSymbol *musAccid = new MusSymbol( SYMBOL_ACCID );
     
@@ -1439,7 +1439,7 @@ MusLayerElement *MusMeiInput::ReadMeiAccid( TiXmlElement *accid )
 	return musAccid;
 }
 
-MusLayerElement *MusMeiInput::ReadMeiCustos( TiXmlElement *custos )
+LayerElement *MusMeiInput::ReadMeiCustos( TiXmlElement *custos )
 {
     MusSymbol *musCustos = new MusSymbol( SYMBOL_CUSTOS );
     
@@ -1455,7 +1455,7 @@ MusLayerElement *MusMeiInput::ReadMeiCustos( TiXmlElement *custos )
 	return musCustos;    
 }
 
-MusLayerElement *MusMeiInput::ReadMeiDot( TiXmlElement *dot )
+LayerElement *MusMeiInput::ReadMeiDot( TiXmlElement *dot )
 {
     MusSymbol *musDot = new MusSymbol( SYMBOL_DOT );
     
@@ -1473,7 +1473,7 @@ MusLayerElement *MusMeiInput::ReadMeiDot( TiXmlElement *dot )
 	return musDot;
 }
 
-MusLayerElement *MusMeiInput::ReadMeiApp( TiXmlElement *app )
+LayerElement *MusMeiInput::ReadMeiApp( TiXmlElement *app )
 {
     m_layerApp = new MusLayerApp( );
    
@@ -1530,7 +1530,7 @@ void MusMeiInput::ReadSameAsAttr( TiXmlElement *element, MusObject *object )
 }
 
 
-void MusMeiInput::AddLayerElement( MusLayerElement *element )
+void MusMeiInput::AddLayerElement( LayerElement *element )
 {
     assert( m_currentLayer );
     if ( dynamic_cast<MusLayer*>( m_currentLayer ) ) {
@@ -1627,12 +1627,12 @@ bool MusMeiInput::ReadUnsupported( TiXmlElement *element )
     return true;
 }
 
-bool MusMeiInput::FindOpenTie( MusNote *terminalNote )
+bool MusMeiInput::FindOpenTie( Note *terminalNote )
 {
     assert( m_staff );
     assert( m_layer );
     
-    std::vector<MusNote*>::iterator iter;
+    std::vector<Note*>::iterator iter;
     for (iter = m_openTies.begin(); iter != m_openTies.end(); ++iter)
     {
         // we need to get the parent layer for comparing their number

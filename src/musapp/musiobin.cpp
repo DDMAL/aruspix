@@ -363,7 +363,7 @@ bool MusBinInput_1_X::ReadSymbol( MusLayer *layer, bool isLyric )
 	Read( &int32, 4 );
 	dec_y = wxINT32_SWAP_ON_BE( int32 );
     
-    MusLayerElement *layer_element = NULL;        
+    LayerElement *layer_element = NULL;        
     if ( flag == CLE ) {
         MusClef *clef = new MusClef();
         clef->m_clefId = (ClefId)code;
@@ -382,7 +382,7 @@ bool MusBinInput_1_X::ReadSymbol( MusLayer *layer, bool isLyric )
         layer_element = barline;
     }
     else if ( flag == IND_MES ) {
-        MusMensur *mensur = new MusMensur( );
+        Mensur *mensur = new Mensur( );
 		if ( code & 64 )
 		{
 			//symbol->code = 64; ?? // ax2
@@ -470,7 +470,7 @@ bool MusBinInput_1_X::ReadNote( MusLayer *layer )
 	Read( &tetenot, 1 );
 	Read( &typStac, 1 );
 	
-    MusLayerElement *layer_element = NULL;
+    LayerElement *layer_element = NULL;
     if (val == CUSTOS) {
         MusSymbol *custos = new MusSymbol( SYMBOL_CUSTOS );
         custos->m_oct = oct;
@@ -478,7 +478,7 @@ bool MusBinInput_1_X::ReadNote( MusLayer *layer )
         layer_element = custos;
     }
     else if ( !sil ) { // note
-        MusNote *note = new MusNote( );
+        Note *note = new Note( );
         note->m_dur = val;
         note->m_oct = oct;
         note->m_pname = code;

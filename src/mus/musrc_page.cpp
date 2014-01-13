@@ -715,8 +715,8 @@ int MusRC::CalculatePitchCode ( MusLayer *layer, int y_n, int x_pos, int *octave
 	if (y_n > plafond)
 		y_n = plafond;
 
-    MusLayerElement *previous = NULL;
-	MusLayerElement *pelement = layer->GetAtPos( x_pos );
+    LayerElement *previous = NULL;
+	LayerElement *pelement = layer->GetAtPos( x_pos );
 	if ( (previous = layer->GetPrevious( pelement ) ) )
 		pelement = previous;
 
@@ -858,7 +858,7 @@ void MusRC::DrawLayer( MusDC *dc, MusLayer *layer, MusStaff *staff, MusMeasure *
 {
 	assert( dc ); // DC cannot be NULL
 
-	MusLayerElement *element = NULL;
+	LayerElement *element = NULL;
 	int j;
     
     // first we need to clear the drawing list of postponed elements
@@ -876,7 +876,7 @@ void MusRC::DrawLayer( MusDC *dc, MusLayer *layer, MusStaff *staff, MusMeasure *
     
 	for(j = 0; j < layer->GetElementCount(); j++)
 	{
-		element = (MusLayerElement*)layer->m_children[j];
+		element = (LayerElement*)layer->m_children[j];
         
         if ( !element->m_in_layer_app ) {
             DrawElement( dc, element, layer, measure, staff );
@@ -898,13 +898,13 @@ void MusRC::DrawLayerList( MusDC *dc, MusLayer *layer, MusStaff *staff, MusMeasu
 	assert( dc ); // DC cannot be NULL
     
     ListOfMusObjects *drawingList = layer->GetDrawingList();
-	MusLayerElement *element = NULL;
+	LayerElement *element = NULL;
     
     ListOfMusObjects::iterator iter;
     
     for (iter = drawingList->begin(); iter != drawingList->end(); ++iter)
     {
-        element = dynamic_cast<MusLayerElement*>(*iter);
+        element = dynamic_cast<LayerElement*>(*iter);
         if (!element) continue; 
         
         if ( (typeid(*element) == *elementType) &&  (*elementType == typeid(MusBeam) ) ) {

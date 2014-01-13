@@ -23,8 +23,8 @@
 class MusBarline;
 class MusBeam;
 class MusClef;
-class MusMensur;
-class MusNote;
+class Mensur;
+class Note;
 class Rest;
 class MusSymbol;
 
@@ -46,22 +46,22 @@ public:
     // logical
     virtual bool WriteStaff( MusStaff *staff );
     virtual bool WriteLayer( MusLayer *layer );
-    virtual bool WriteLayerElement( MusLayerElement *element );
+    virtual bool WriteLayerElement( LayerElement *element );
     // layout
     virtual bool WriteLayout( MusDoc *layout );
     virtual bool WritePage( MusPage *page );
     virtual bool WriteSystem( MusSystem *system );
     virtual bool WriteLaidOutStaff( MusStaff *laidOutStaff );
     virtual bool WriteLaidOutLayer( MusLayer *laidOutLayer );
-    virtual bool WriteLaidOutLayerElement( MusLayerElement *laidOutLayerElement );
+    virtual bool WriteLaidOutLayerElement( LayerElement *laidOutLayerElement );
     
 private:
     
 public:
-    void WriteClef(MusLayerElement *element);
-    void WriteKey(MusLayerElement *element);
-    void WriteTime(MusLayerElement *element);
-    void WriteNoteOrRest(MusLayerElement *element);
+    void WriteClef(LayerElement *element);
+    void WriteKey(LayerElement *element);
+    void WriteTime(LayerElement *element);
+    void WriteNoteOrRest(LayerElement *element);
     void WriteMultiMeasureRest(Rest *r);
     void CreateAttributes();
     void SetTie(TiXmlElement *xml_note, bool last);
@@ -79,7 +79,7 @@ private:
     TiXmlDocument *m_xml_doc;
     TiXmlElement *m_xml_current_clef;
     
-    MusMensur *m_current_time;
+    Mensur *m_current_time;
     MusBeam *m_current_beam;
     bool m_in_beam;
     bool m_tied;

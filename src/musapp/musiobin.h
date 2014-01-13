@@ -135,7 +135,7 @@ private:
     /* note / symbol code */
     unsigned short code;
     
-    /* old MusNote members */
+    /* old Note members */
     /* silence (true) ou note (false) */
     char sil;
     /* valeur de la note */

@@ -104,7 +104,7 @@ void CmpMusController::LoadSources()
 }
 
 
-void CmpMusController::LoadSource( MusLayerElement *element )
+void CmpMusController::LoadSource( LayerElement *element )
 {
     if ( m_collationCtrl ) {
         // this should never happen because we do not load the source from the collation controller
@@ -140,8 +140,8 @@ void CmpMusController::LoadSource( MusLayerElement *element )
     MusFunctor findLayerElement( &MusObject::FindByUuid );
     m_viewPtr->m_doc->Process( &findLayerElement, params );
     
-    if ( !viewElement ) { // || !(layerElement == dynamic_cast<MusLayerElement*>(viewElement)) ) {
-        return; // we did not find it or it is not a MusLayerElement
+    if ( !viewElement ) { // || !(layerElement == dynamic_cast<LayerElement*>(viewElement)) ) {
+        return; // we did not find it or it is not a LayerElement
     }
     
     MusPage *page = dynamic_cast<MusPage*>(viewElement->GetFirstParent( &typeid(MusPage) ));
@@ -152,7 +152,7 @@ void CmpMusController::LoadSource( MusLayerElement *element )
     m_viewPtr->m_currentSystem = dynamic_cast<MusSystem*>(viewElement->GetFirstParent( &typeid(MusSystem) ));
     m_viewPtr->m_currentStaff = dynamic_cast<MusStaff*>(viewElement->GetFirstParent( &typeid(MusStaff) ));
     m_viewPtr->m_currentLayer = dynamic_cast<MusLayer*>(viewElement->GetFirstParent( &typeid(MusLayer) ));
-    m_viewPtr->m_currentElement = dynamic_cast<MusLayerElement*>(viewElement);
+    m_viewPtr->m_currentElement = dynamic_cast<LayerElement*>(viewElement);
     m_viewPtr->UpdateCmpScroll();
     m_viewPtr->Refresh();
 }

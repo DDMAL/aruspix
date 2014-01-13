@@ -68,7 +68,7 @@ bool MusRC::OneBeamInTuplet(Tuplet* tuplet) {
     
     // No we contain a beam? Go on and search for it in the children
     for (unsigned int i = 0; i < tuplet->m_children.size(); i++) {
-        if (dynamic_cast<MusNote*>(tuplet->m_children[i]))
+        if (dynamic_cast<Note*>(tuplet->m_children[i]))
             return false;
         
         currentBeam = dynamic_cast<MusBeam*>(tuplet->m_children[i]);
@@ -128,13 +128,13 @@ bool MusRC::GetTupletCoordinates(Tuplet* tuplet, MusLayer *layer, MusPoint* star
     int x, y;
     bool direction = true; //true = up, false = down
     
-    MusLayerElement *firstNote, *lastNote;
+    LayerElement *firstNote, *lastNote;
     
     // AllNotesBeamed tries to figure out if all the notes are in the same beam
     if (OneBeamInTuplet(tuplet)) {
         
-        firstNote = dynamic_cast<MusLayerElement*>(tuplet->m_list.front());
-        lastNote = dynamic_cast<MusLayerElement*>(tuplet->m_list.back());
+        firstNote = dynamic_cast<LayerElement*>(tuplet->m_list.front());
+        lastNote = dynamic_cast<LayerElement*>(tuplet->m_list.back());
 
         // yes they are in a beam
         // get the x position centered from the STEM so it looks better
@@ -159,7 +159,7 @@ bool MusRC::GetTupletCoordinates(Tuplet* tuplet, MusLayer *layer, MusPoint* star
         // We can have a mixed group of Beams and notes. Flatten it
         /*
         for (unsigned int i = 0; i < tuplet->m_children.size(); i++) {
-            if (dynamic_cast<MusNote*>(tuplet->m_children[i]))
+            if (dynamic_cast<Note*>(tuplet->m_children[i]))
                 all_notes.push_back(tuplet->m_children[i]);
             
             if (dynamic_cast<MusBeam*>(tuplet->m_children[i])) {
@@ -168,8 +168,8 @@ bool MusRC::GetTupletCoordinates(Tuplet* tuplet, MusLayer *layer, MusPoint* star
             }
         }*/
         
-        firstNote = dynamic_cast<MusLayerElement*>(tuplet->m_list.front());
-        lastNote = dynamic_cast<MusLayerElement*>(tuplet->m_list.back());
+        firstNote = dynamic_cast<LayerElement*>(tuplet->m_list.front());
+        lastNote = dynamic_cast<LayerElement*>(tuplet->m_list.back());
         
         // There are unbeamed notes of two different beams
         // treat all the notes as unbeames
@@ -188,7 +188,7 @@ bool MusRC::GetTupletCoordinates(Tuplet* tuplet, MusLayer *layer, MusPoint* star
         // cycle into the elements and count the up and down dirs
         ListOfMusObjects::iterator iter = tuplet->m_list.begin();
         while (iter != tuplet->m_list.end()) {
-            MusLayerElement *currentNote = dynamic_cast<MusLayerElement*>(*iter);
+            LayerElement *currentNote = dynamic_cast<LayerElement*>(*iter);
             
             if (currentNote->m_drawn_stem_dir == true)
                 ups++;
@@ -221,7 +221,7 @@ bool MusRC::GetTupletCoordinates(Tuplet* tuplet, MusLayer *layer, MusPoint* star
             // average. In this case we offset down or up all the points
             iter = tuplet->m_list.begin();
             while (iter != tuplet->m_list.end()) {
-                 MusLayerElement *currentNote = dynamic_cast<MusLayerElement*>(*iter);
+                 LayerElement *currentNote = dynamic_cast<LayerElement*>(*iter);
                 
                 if (direction) {
                     // The note is more than the avg, adjust to y the difference
@@ -253,7 +253,7 @@ bool MusRC::GetTupletCoordinates(Tuplet* tuplet, MusLayer *layer, MusPoint* star
             // Find the tallest stem and set y to it (with the offset distance)
             iter = tuplet->m_list.begin();
             while (iter != tuplet->m_list.end()) {
-                MusLayerElement *currentNote = dynamic_cast<MusLayerElement*>(*iter);
+                LayerElement *currentNote = dynamic_cast<LayerElement*>(*iter);
                 
                 if (currentNote->m_drawn_stem_dir == direction) {
                                         

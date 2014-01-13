@@ -14,11 +14,11 @@
 #include "mustie.h"
 
 //----------------------------------------------------------------------------
-// MusNote
+// Note
 //----------------------------------------------------------------------------
 
-MusNote::MusNote():
-	MusLayerElement("note-"), MusDurationInterface(), MusPitchInterface()
+Note::Note():
+	LayerElement("note-"), MusDurationInterface(), PitchInterface()
 {
     m_artic = 0;
     m_chord = 0;
@@ -37,15 +37,15 @@ MusNote::MusNote():
 }
 
 
-MusNote::~MusNote()
+Note::~Note()
 {
     // This deletes the Tie object if necessary
     ResetTieAttrInitial();
 }
 
-bool MusNote::operator==( MusObject& other )
+bool Note::operator==( MusObject& other )
 {
-    MusNote *otherNote = dynamic_cast<MusNote*>( &other );
+    Note *otherNote = dynamic_cast<Note*>( &other );
     if ( !otherNote ) {
         return false;
     }
@@ -93,7 +93,7 @@ bool MusNote::operator==( MusObject& other )
     return true;
 }
 
-void MusNote::SetValue( int value, int flag )
+void Note::SetValue( int value, int flag )
 {
     MusDurationInterface::SetDuration( value ); 
     
@@ -112,7 +112,7 @@ void MusNote::SetValue( int value, int flag )
     }    
 }
 
-void MusNote::SetTieAttrInitial()
+void Note::SetTieAttrInitial()
 {
     if ( m_tieAttrInitial ) {
         Mus::LogWarning("Initial tie attribute already set for note '%s", this->GetUuid().c_str() );
@@ -122,7 +122,7 @@ void MusNote::SetTieAttrInitial()
     m_tieAttrInitial->SetFirstNote( this );
 }
 
-void MusNote::SetTieAttrTerminal( MusNote *previousNote )
+void Note::SetTieAttrTerminal( Note *previousNote )
 {
     if ( m_tieAttrTerminal ) {
         Mus::LogWarning("Terminal tie attribute already set for note '%s", this->GetUuid().c_str() );
@@ -136,7 +136,7 @@ void MusNote::SetTieAttrTerminal( MusNote *previousNote )
     m_tieAttrTerminal->SetSecondNote( this );
 }
 
-void MusNote::ResetTieAttrInitial( )
+void Note::ResetTieAttrInitial( )
 {
     if ( m_tieAttrInitial ) {
         // Deleting the Tie object will also reset the m_tieAttrTerminal of the second note
@@ -145,13 +145,13 @@ void MusNote::ResetTieAttrInitial( )
     }
 }
 
-void MusNote::ChangeColoration( )
+void Note::ChangeColoration( )
 {
     this->m_colored = !this->m_colored;
 }
 
 
-void MusNote::ChangeStem( )
+void Note::ChangeStem( )
 {
 	if ( ( this->m_dur > DUR_LG ) && ( this->m_dur < DUR_2 ) )
 		return;
@@ -160,7 +160,7 @@ void MusNote::ChangeStem( )
 }
 
 
-void MusNote::SetLigature( )
+void Note::SetLigature( )
 {
 	if ( ( this->m_dur == DUR_LG ) || ( this->m_dur > DUR_1 ) ) {
 		return;
@@ -169,7 +169,7 @@ void MusNote::SetLigature( )
 	this->m_lig = true;
 }
 
-int MusNote::GetHorizontalSpacing()
+int Note::GetHorizontalSpacing()
 {
     if (this->m_cueSize) {
         return 3;

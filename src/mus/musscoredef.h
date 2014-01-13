@@ -13,7 +13,7 @@
 
 class MusClef;
 class MusKeySig;
-class MusMensur;
+class Mensur;
 class MusStaffGrp;
 class MusStaffDef;
 
@@ -29,7 +29,7 @@ class MusStaffDef;
 
 /**
  * This class is an interface for MEI scoreDef or staffDef attributes clef, keysig and mensur.
- * For simplification, the attributes are stored as MusClef, MusKeySig and MusMensur.
+ * For simplification, the attributes are stored as MusClef, MusKeySig and Mensur.
  */
 class MusScoreOrStaffDefAttrInterface
 {
@@ -53,7 +53,7 @@ public:
     /**
      * Replace the mensur (if any) with the newMensur (if any).
      */
-    void ReplaceMensur( MusMensur *newMensur );
+    void ReplaceMensur( Mensur *newMensur );
     
     /**
      * @name Get  the clef, keysig and mensure.
@@ -61,7 +61,7 @@ public:
     ///@{
     MusClef *GetClefAttr() const { return m_clef; };
     MusKeySig *GetKeySigAttr() const { return m_keySig; };
-    MusMensur *GetMensurAttr() const { return m_mensur; };
+    Mensur *GetMensurAttr() const { return m_mensur; };
     ///@}
     
 protected:
@@ -70,7 +70,7 @@ protected:
     /** The key signature */
     MusKeySig *m_keySig;
     /** The mensure (time signature */
-    MusMensur *m_mensur;
+    Mensur *m_mensur;
     
 };
 

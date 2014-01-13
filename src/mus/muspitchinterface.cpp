@@ -9,10 +9,10 @@
 #include "muspitchinterface.h"
 
 //----------------------------------------------------------------------------
-// MusPitchInterface
+// PitchInterface
 //----------------------------------------------------------------------------
 
-MusPitchInterface::MusPitchInterface()
+PitchInterface::PitchInterface()
 {
     m_accid = 0;
     m_oct = 0;
@@ -20,24 +20,24 @@ MusPitchInterface::MusPitchInterface()
 }
 
 
-MusPitchInterface::~MusPitchInterface()
+PitchInterface::~PitchInterface()
 {
 }
 
-void MusPitchInterface::SetPitch(int pname, int oct) 
+void PitchInterface::SetPitch(int pname, int oct) 
 {
     m_oct = oct;
     m_pname = pname;
 }
 
-bool MusPitchInterface::GetPitch(int *pname, int *oct) 
+bool PitchInterface::GetPitch(int *pname, int *oct) 
 {
     *oct = m_oct;
     *pname = m_pname;
     return true;
 }
 
-bool MusPitchInterface::HasIdenticalPitchInterface( MusPitchInterface *otherPitchInterface )
+bool PitchInterface::HasIdenticalPitchInterface( PitchInterface *otherPitchInterface )
 {
     if ( !otherPitchInterface ) {
         return false;

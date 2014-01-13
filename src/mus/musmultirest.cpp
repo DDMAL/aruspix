@@ -14,13 +14,13 @@
 //----------------------------------------------------------------------------
 
 MultiRest::MultiRest():
-MusLayerElement("multirest-")
+LayerElement("multirest-")
 {
     m_number = 0;
 }
 
 MultiRest::MultiRest(int number):
-    MusLayerElement("multirest-")
+    LayerElement("multirest-")
 {
     m_number = number;
 }

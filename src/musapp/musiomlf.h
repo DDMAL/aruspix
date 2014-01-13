@@ -91,12 +91,12 @@ public:
 											// write all staves if staff_numbers == NULL
 											
     bool WriteLayer( const MusLayer *layer, int offset = -1, int end_point = -1 );
-    bool WriteNote( MusLayerElement *element );
-    bool WriteSymbol( MusLayerElement *element );
+    bool WriteNote( LayerElement *element );
+    bool WriteSymbol( LayerElement *element );
 	// specific
 	//static MusStaff *SplitSymboles( MusStaff *staff );
 	static MusLayer *GetUt1( MusLayer *layer );
-	static void GetUt1( MusLayer *layer, MusLayerElement *pelement, int *code, int *oct);
+	static void GetUt1( MusLayer *layer, LayerElement *pelement, int *code, int *oct);
 	void StartLabel( );
 	void EndLabel( int offset = -1, int end_point = -1 );
 	// access
@@ -149,10 +149,10 @@ public:
      * BEGIN (if any) is set in pos
      */
     static bool ParseLine( wxString line, char *elementType, wxString *elementLine, int *pos );
-	static MusLayerElement *ConvertSymbol( wxString line );
-	static MusLayerElement *ConvertNote( wxString line  );
+	static LayerElement *ConvertSymbol( wxString line );
+	static LayerElement *ConvertNote( wxString line  );
 	static void GetNotUt1( MusLayer *layer );
-	static void GetNotUt1( MusLayer *layer, MusLayerElement *pelement, int *code, int *oct);
+	static void GetNotUt1( MusLayer *layer, LayerElement *pelement, int *code, int *oct);
 	static void GetPitchWWG( char code, int *code1);
 	bool ReadLine( wxString *line );
 	bool ReadLabelStr( wxString label );

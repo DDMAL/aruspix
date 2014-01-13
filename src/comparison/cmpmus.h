@@ -45,11 +45,11 @@ public:
 	void SetCmpFile( CmpFile *cmpFile );
     
     /** 
-     * Loads the source page by looking at the MusLayerElement from the collation.
-     * The MusLayerElement passed as parameter is the one of the collation.
-     * The MusLayerElement sameAs attribute is used to find the corresponding one (if any)
+     * Loads the source page by looking at the LayerElement from the collation.
+     * The LayerElement passed as parameter is the one of the collation.
+     * The LayerElement sameAs attribute is used to find the corresponding one (if any)
      **/
-    void LoadSource( MusLayerElement *element );
+    void LoadSource( LayerElement *element );
     /**
      * Loads the sources.
      * Called from the collationCtrl.

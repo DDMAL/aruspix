@@ -13,7 +13,7 @@
 //----------------------------------------------------------------------------
 
 MusClef::MusClef():
-	MusLayerElement("clef-")
+	LayerElement("clef-")
 {
     m_clefId = UT1;
 }

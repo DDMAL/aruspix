@@ -19,7 +19,7 @@
 /** 
  * This class models the MEI <clef> element. 
  */
-class MusClef: public MusLayerElement
+class MusClef: public LayerElement
 {
 public:
     // constructors and destructors
@@ -28,7 +28,7 @@ public:
     
     /**
      * Comparison operator. 
-     * Check if the MusLayerElement if a MusClef and compare attributes
+     * Check if the LayerElement if a MusClef and compare attributes
      */
     virtual bool operator==(MusObject& other);
     

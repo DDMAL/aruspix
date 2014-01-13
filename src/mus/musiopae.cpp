@@ -691,7 +691,7 @@ int MusPaeInput::getTimeInfo( const char* incipit, MeasureObject *measure, int i
     
     int i = index;
     int length = strlen(incipit);
-    MusMensur *meter = new MusMensur;
+    Mensur *meter = new Mensur;
     
     if (!isdigit(incipit[i]) && (incipit[i] != 'c') && (incipit[i] != 'o'))
         return 0;
@@ -1124,7 +1124,7 @@ void MusPaeInput::printMeasure(std::ostream& out, MeasureObject *measure ) {
 
 void MusPaeInput::parseNote(NoteObject note) {
     
-    MusLayerElement *element;
+    LayerElement *element;
     
     if (note.rest) {
         Rest *rest =  new Rest();
@@ -1138,7 +1138,7 @@ void MusPaeInput::parseNote(NoteObject note) {
         
         element = rest;
     } else {
-        MusNote *mnote = new MusNote();
+        Note *mnote = new Note();
         
         mnote->m_pname = note.pitch;
         mnote->m_oct = note.octave;
@@ -1160,9 +1160,9 @@ void MusPaeInput::parseNote(NoteObject note) {
     // Acciaccaturas are similar but do not get beamed (do they)
     // this case is simpler. NOTE a note can not be acciacctura AND appoggiatura
     // Acciaccatura rests do not exist
-    if (note.acciaccatura && dynamic_cast<MusNote *>(element)) {
+    if (note.acciaccatura && dynamic_cast<Note *>(element)) {
         element->m_cueSize = true;
-        dynamic_cast<MusNote *>(element)->m_acciaccatura = true;
+        dynamic_cast<Note *>(element)->m_acciaccatura = true;
     }
     
     
@@ -1200,7 +1200,7 @@ void MusPaeInput::parseNote(NoteObject note) {
         PopContainer();
 }
 
-void MusPaeInput::PushContainer(MusLayerElement *container) {
+void MusPaeInput::PushContainer(LayerElement *container) {
     AddLayerElement(container);
     m_nested_objects.push_back(container);
 }
@@ -1210,10 +1210,10 @@ void MusPaeInput::PopContainer() {
     m_nested_objects.pop_back();
 }
 
-void MusPaeInput::AddLayerElement(MusLayerElement *element) {
+void MusPaeInput::AddLayerElement(LayerElement *element) {
     
     if (m_nested_objects.size() > 0) {
-        MusLayerElement *bottom = m_nested_objects.back();
+        LayerElement *bottom = m_nested_objects.back();
         
         if ( dynamic_cast<MusBeam*>( bottom ) ) {
             ((MusBeam*)bottom)->AddElement( element );

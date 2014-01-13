@@ -156,8 +156,8 @@ void MusToolRow::UpdateTools( int type, int notation_mode )
         // other
         AddSeparator();
         AddTool(ID_MS_BT_M32, "", MusToolPanel::GetToolbarBitmap( "mes_m32.png" ));
-        AddControl( new wxTextCtrl( this, ID_MS_BT_M32_NUM, wxString::Format("%d", MusMensur::s_num), wxDefaultPosition, wxSize( 30, 20 )), "Num" );
-        AddControl( new wxTextCtrl( this, ID_MS_BT_M32_DEN, wxString::Format("%d", MusMensur::s_numBase), wxDefaultPosition, wxSize( 30, 20 )), "Den" );  
+        AddControl( new wxTextCtrl( this, ID_MS_BT_M32_NUM, wxString::Format("%d", Mensur::s_num), wxDefaultPosition, wxSize( 30, 20 )), "Num" );
+        AddControl( new wxTextCtrl( this, ID_MS_BT_M32_DEN, wxString::Format("%d", Mensur::s_numBase), wxDefaultPosition, wxSize( 30, 20 )), "Den" );  
         //AddSeparator();
         //AddTool(ID_MS_BT_M3, "", MusToolPanel::GetToolbarBitmap( "mes_m3.png" ));
         //AddTool(ID_MS_BT_M2, "", MusToolPanel::GetToolbarBitmap( "mes_m2.png" ));
@@ -379,8 +379,8 @@ void MusToolPanel::OnSymbol( wxCommandEvent &event )
 // pass the value back to the MusSymbol1 static
 void MusToolPanel::OnMeasure( wxCommandEvent &event )
 {
-    MusMensur::s_num = atoi(((wxTextCtrl*)FindWindow(ID_MS_BT_M32_NUM))->GetValue());
-    MusMensur::s_numBase = atoi(((wxTextCtrl*)FindWindow(ID_MS_BT_M32_DEN))->GetValue());
+    Mensur::s_num = atoi(((wxTextCtrl*)FindWindow(ID_MS_BT_M32_NUM))->GetValue());
+    Mensur::s_numBase = atoi(((wxTextCtrl*)FindWindow(ID_MS_BT_M32_DEN))->GetValue());
     wxKeyEvent kevent;
     kevent.SetEventType( wxEVT_KEY_DOWN );
     kevent.m_keyCode = '1';

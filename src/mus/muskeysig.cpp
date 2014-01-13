@@ -44,13 +44,13 @@ int MusKeySig::octave_map[2][9][7] = {
 };
 
 MusKeySig::MusKeySig():
-MusLayerElement(), PositionInterface()
+LayerElement(), PositionInterface()
 {
     MusKeySig(0, ACCID_NATURAL);
 }
 
 MusKeySig::MusKeySig(int num_alter, char alter):
-    MusLayerElement("ksig-"), PositionInterface()
+    LayerElement("ksig-"), PositionInterface()
 {
     m_num_alter = num_alter;
     m_alteration = alter;

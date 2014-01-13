@@ -19,7 +19,7 @@
 /** 
  * This class models the MEI <musmultirest> element. 
  */
-class MultiRest: public MusLayerElement
+class MultiRest: public LayerElement
 {
 public:
     // constructors and destructors
@@ -29,7 +29,7 @@ public:
     
     /**
      * Comparison operator. 
-     * Check if the MusLayerElement if a MusClef and compare attributes
+     * Check if the LayerElement if a MusClef and compare attributes
      */
     virtual bool operator==(MusObject& other);
     

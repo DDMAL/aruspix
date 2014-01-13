@@ -17,7 +17,7 @@
 // MusBeam
 //----------------------------------------------------------------------------
 
-class Tuplet: public MusLayerElement, public MusObjectListInterface
+class Tuplet: public LayerElement, public MusObjectListInterface
 {
 public:
     // constructors and destructors
@@ -30,9 +30,9 @@ public:
     
     /**
      * Add an element (a note or a rest) to a tuplet.
-     * Only MusNote or Rest elements will be actually added to the beam.
+     * Only Note or Rest elements will be actually added to the beam.
      */
-    void AddElement(MusLayerElement *element);
+    void AddElement(LayerElement *element);
     
 protected:
     /**

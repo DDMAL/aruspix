@@ -19,7 +19,7 @@ class MusBeam;
 class MusBarline;
 class MusDoc;
 class MusLayer;
-class MusLayerElement;
+class LayerElement;
 class MusMeasure;
 class MusPage;
 class MusStaff;
@@ -131,45 +131,45 @@ public:
     int CalculatePitchCode ( MusLayer *layer, int y_n, int x_pos, int *octave );
     
     /* musrc_element.cpp */
-    /** @name Methods for drawing MusLayerElement containing other elements */
+    /** @name Methods for drawing LayerElement containing other elements */
     ///@{
-    void DrawElement( MusDC *dc, MusLayerElement *element, MusLayer *layer, MusMeasure *measure, MusStaff *staff );
-    void DrawBeamElement(MusDC *dc, MusLayerElement *element, MusLayer *layer, MusMeasure *measure, MusStaff *staff);
-    void DrawTupletElement( MusDC *dc, MusLayerElement *element, MusLayer *layer, MusMeasure *measure, MusStaff *staff );
-    void DrawLayerApp( MusDC *dc, MusLayerElement *element, MusLayer *layer, MusMeasure *measure, MusStaff *staff );
+    void DrawElement( MusDC *dc, LayerElement *element, MusLayer *layer, MusMeasure *measure, MusStaff *staff );
+    void DrawBeamElement(MusDC *dc, LayerElement *element, MusLayer *layer, MusMeasure *measure, MusStaff *staff);
+    void DrawTupletElement( MusDC *dc, LayerElement *element, MusLayer *layer, MusMeasure *measure, MusStaff *staff );
+    void DrawLayerApp( MusDC *dc, LayerElement *element, MusLayer *layer, MusMeasure *measure, MusStaff *staff );
     ///@}
     
-    void DrawDurationElement( MusDC *dc, MusLayerElement *element, MusLayer *layer, MusStaff *staff );
-    void DrawBarline( MusDC *dc, MusLayerElement *element, MusLayer *layer, MusStaff *staff );  
-    void DrawClef( MusDC *dc, MusLayerElement *element, MusLayer *layer, MusStaff *staff );
-    void DrawMensur( MusDC *dc, MusLayerElement *element, MusLayer *layer, MusStaff *staff );
-    void DrawFermata(MusDC *dc, MusLayerElement *element, MusStaff *staff);
+    void DrawDurationElement( MusDC *dc, LayerElement *element, MusLayer *layer, MusStaff *staff );
+    void DrawBarline( MusDC *dc, LayerElement *element, MusLayer *layer, MusStaff *staff );  
+    void DrawClef( MusDC *dc, LayerElement *element, MusLayer *layer, MusStaff *staff );
+    void DrawMensur( MusDC *dc, LayerElement *element, MusLayer *layer, MusStaff *staff );
+    void DrawFermata(MusDC *dc, LayerElement *element, MusStaff *staff);
     void DrawMensurCircle( MusDC *dc, int x, int yy, MusStaff *staff );
     void DrawMensurDot( MusDC *dc, int x, int yy, MusStaff *staff ); 
     void DrawMensurFigures( MusDC *dc, int x, int y, int num, int numBase, MusStaff *staff); 
     void DrawMensurHalfCircle( MusDC *dc, int x, int yy, MusStaff *staff );
     void DrawMensurReversedHalfCircle( MusDC *dc, int x, int yy, MusStaff *staff ); 
     void DrawMensurSlash( MusDC *dc, int x, int yy, MusStaff *staff );
-    void DrawMultiRest( MusDC *dc, MusLayerElement *element, MusLayer *layer, MusStaff *staff );
-    void DrawNote( MusDC *dc, MusLayerElement *element, MusLayer *layer, MusStaff *staff );  
-    void DrawRest( MusDC *dc, MusLayerElement *element, MusLayer *layer, MusStaff *staff );
-    void DrawSymbol( MusDC *dc, MusLayerElement *element, MusLayer *layer, MusStaff *staff, MusLayerElement *parent = NULL );
-    void DrawSymbolAccid( MusDC *dc, MusLayerElement *element, MusLayer *layer, MusStaff *staff );
-    void DrawSymbolCustos( MusDC *dc, MusLayerElement *element, MusLayer *layer, MusStaff *staff );
-    void DrawSymbolDot( MusDC *dc, MusLayerElement *element, MusLayer *layer, MusStaff *staff );
-    void DrawTie( MusDC *dc, MusLayerElement *element, MusLayer *layer, MusStaff *staff, MusMeasure *measure );
+    void DrawMultiRest( MusDC *dc, LayerElement *element, MusLayer *layer, MusStaff *staff );
+    void DrawNote( MusDC *dc, LayerElement *element, MusLayer *layer, MusStaff *staff );  
+    void DrawRest( MusDC *dc, LayerElement *element, MusLayer *layer, MusStaff *staff );
+    void DrawSymbol( MusDC *dc, LayerElement *element, MusLayer *layer, MusStaff *staff, LayerElement *parent = NULL );
+    void DrawSymbolAccid( MusDC *dc, LayerElement *element, MusLayer *layer, MusStaff *staff );
+    void DrawSymbolCustos( MusDC *dc, LayerElement *element, MusLayer *layer, MusStaff *staff );
+    void DrawSymbolDot( MusDC *dc, LayerElement *element, MusLayer *layer, MusStaff *staff );
+    void DrawTie( MusDC *dc, LayerElement *element, MusLayer *layer, MusStaff *staff, MusMeasure *measure );
     void DrawTuplet( MusDC *dc, Tuplet *tuplet, MusLayer *layer, MusStaff *staff);
-    void DrawTrill(MusDC *dc, MusLayerElement *element, MusStaff *staff);
-    void DrawLigature( MusDC *dc, int y, MusLayerElement *element, MusLayer *layer, MusStaff *staff );  
+    void DrawTrill(MusDC *dc, LayerElement *element, MusStaff *staff);
+    void DrawLigature( MusDC *dc, int y, LayerElement *element, MusLayer *layer, MusStaff *staff );  
     void DrawLedgerLines( MusDC *dc, int y_n, int y_p, int xn, unsigned int smaller, int staffSize);
     void DrawLongRest ( MusDC *dc, int a, int b, MusStaff *staff);
     void DrawBreveRest ( MusDC *dc, int a, int b, MusStaff *staff);
     void DrawWholeRest ( MusDC *dc, int a, int b, int valeur, unsigned char dots, unsigned int smaller, MusStaff *staff);
     void DrawQuarterRest ( MusDC *dc, int a, int b, int valeur, unsigned char dots, unsigned int smaller, MusStaff *staff);
     void DrawDots ( MusDC *dc, int x1, int y1, int offy, unsigned char dots, MusStaff *staff );
-    void CalculateLigaturePosX ( MusLayerElement *element, MusLayer *layer, MusStaff *staff);
-    void DrawAcciaccaturaSlash(MusDC *dc, MusLayerElement *element);
-    void DrawKeySig( MusDC *dc, MusLayerElement *element, MusLayer *layer, MusStaff *staff );
+    void CalculateLigaturePosX ( LayerElement *element, MusLayer *layer, MusStaff *staff);
+    void DrawAcciaccaturaSlash(MusDC *dc, LayerElement *element);
+    void DrawKeySig( MusDC *dc, LayerElement *element, MusLayer *layer, MusStaff *staff );
     /* musrc_beam.cpp */
     void DrawBeam(  MusDC *dc, MusLayer *layer, MusBeam *beam, MusStaff *staff );
     
@@ -197,7 +197,7 @@ public:
     int m_currentColour;
     
     // element currently selected
-	MusLayerElement *m_currentElement;
+	LayerElement *m_currentElement;
     MusLayer *m_currentLayer;
     MusMeasure *m_currentMeasure;
 	MusStaff *m_currentStaff;

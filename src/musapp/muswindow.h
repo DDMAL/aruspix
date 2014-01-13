@@ -127,15 +127,15 @@ public:
 	/** indique si la page doit etre centree asi elle n'occupe pas toute la fenetre */
 	bool m_center;
 
-	MusLayerElement *m_newElement;
-	MusLayerElement *m_bufferElement;
-	MusLayerElement *m_lastEditedElement;
+	LayerElement *m_newElement;
+	LayerElement *m_bufferElement;
+	LayerElement *m_lastEditedElement;
 
 	// keep elements statically - m_newElement will point on them
     MusBarline m_barline;
 	MusClef m_clef;
-    MusMensur m_mensur;
-    MusNote m_note;
+    Mensur m_mensur;
+    Note m_note;
     Rest m_rest;
 	MusSymbol m_symbol;
 

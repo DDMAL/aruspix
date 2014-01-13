@@ -30,7 +30,7 @@
 class Tie;
 
 //----------------------------------------------------------------------------
-// MusNote
+// Note
 //----------------------------------------------------------------------------
 
 /** 
@@ -44,25 +44,25 @@ class Tie;
 #define EMB_TRILL 1
 #define EMB_MORDENT 2
 
-class MusNote: public MusLayerElement, public MusDurationInterface, public MusPitchInterface
+class Note: public LayerElement, public MusDurationInterface, public PitchInterface
 {
 public:
     // constructors and destructors
-    MusNote();
-    virtual ~MusNote();
+    Note();
+    virtual ~Note();
     
-    virtual std::string MusClassName( ) { return "MusNote"; };
+    virtual std::string MusClassName( ) { return "Note"; };
     
      /** 
       * Set the duration.
-      * Because we need to perform additonal check, this method override the MusLayerElement::SetValue method.
+      * Because we need to perform additonal check, this method override the LayerElement::SetValue method.
       * The MusDurationInterface::SetDuration method has to be called explicitly.
       */
     virtual void SetValue( int value, int flag = 0 );
     
     /**
      * Comparison operator. 
-     * Check if the MusLayerElement if a MusNote and compare attributes
+     * Check if the LayerElement if a Note and compare attributes
      */
     virtual bool operator==(MusObject& other);
     
@@ -90,7 +90,7 @@ public:
      *
      */
     void SetTieAttrInitial( );
-    void SetTieAttrTerminal( MusNote *previousNote );
+    void SetTieAttrTerminal( Note *previousNote );
     Tie *GetTieAttrInitial( ) { return m_tieAttrInitial; };
     Tie *GetTieAttrTerminal( ) { return m_tieAttrTerminal; };
     void ResetTieAttrInitial();

@@ -13,7 +13,7 @@
 //----------------------------------------------------------------------------
 
 MusBarline::MusBarline():
-	MusLayerElement("bline-")
+	LayerElement("bline-")
 {
     m_barlineType = BARLINE_SINGLE;
     m_partialBarline = false; // this was used unitialized

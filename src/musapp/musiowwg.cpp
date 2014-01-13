@@ -462,7 +462,7 @@ bool MusWWGOutput::WriteLayer( const MusLayer *layer, int staffNo )
 	{
         WWGInitElement();
     
-        MusLayerElement *element = (MusLayerElement*)layer->m_children[k];
+        LayerElement *element = (LayerElement*)layer->m_children[k];
         // position x for all elmements
         xrel = element->m_xAbs;
         if (dynamic_cast<MusBarline*>(element)) {
@@ -473,11 +473,11 @@ bool MusWWGOutput::WriteLayer( const MusLayer *layer, int staffNo )
             TYPE = SYMB;
             WriteSymbol();
         }
-        if (dynamic_cast<MusMensur*>(element)) {
+        if (dynamic_cast<Mensur*>(element)) {
             TYPE = SYMB;
             WriteSymbol();
         }
-        if (dynamic_cast<MusNote*>(element)) {
+        if (dynamic_cast<Note*>(element)) {
             TYPE = NOTE;
             WriteNote( );
         }
@@ -1033,9 +1033,9 @@ bool MusWWGInput::ReadNote( MusLayer *layer )
 	if ( existDebord ) 
 		ReadDebord( );
 
-    MusLayerElement *layer_element = NULL;
+    LayerElement *layer_element = NULL;
     if ( !sil ) { // note
-        MusNote *note = new MusNote( );
+        Note *note = new Note( );
         note->m_dur = val;
         note->m_oct = oct;
         note->m_pname = code;
@@ -1139,7 +1139,7 @@ bool MusWWGInput::ReadSymbol( MusLayer *layer )
 	if ( existDebord ) 
 		ReadDebord( );
     
-    MusLayerElement *layer_element = NULL;        
+    LayerElement *layer_element = NULL;        
     if ( flag == CLE ) {
         MusClef *clef = new MusClef();
         clef->m_clefId = (ClefId)code;
@@ -1154,7 +1154,7 @@ bool MusWWGInput::ReadSymbol( MusLayer *layer )
         layer_element = alter;
     }
     else if ( flag == IND_MES ) {
-        MusMensur *mensur = new MusMensur( );
+        Mensur *mensur = new Mensur( );
 		if ( code & 64 )
 		{
 			//symbol->code = 64; ?? // ax2

@@ -10,19 +10,19 @@
 #define __MUS_PITCH_INTERFACE_H__
 
 //----------------------------------------------------------------------------
-// MusPitchInterface
+// PitchInterface
 //----------------------------------------------------------------------------
 
 /** 
  * This class is an interface for elements with pitch, such as notes and neumes.
  * It is not an abstract class but should not be instanciate directly.
  */
-class MusPitchInterface
+class PitchInterface
 {
 public:
     // constructors and destructors
-    MusPitchInterface();
-    virtual ~MusPitchInterface();
+    PitchInterface();
+    virtual ~PitchInterface();
  
     /** Set the pitch */
     virtual void SetPitch( int pname, int oct );
@@ -32,9 +32,9 @@ public:
     
     /**
      * Interface comparison operator. 
-     * Check if the MusLayerElement has a MusPitchInterface and compare attributes
+     * Check if the LayerElement has a PitchInterface and compare attributes
      */
-    bool HasIdenticalPitchInterface(MusPitchInterface  *otherPitchInterface);
+    bool HasIdenticalPitchInterface(PitchInterface  *otherPitchInterface);
 
     
 private:

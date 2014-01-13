@@ -91,7 +91,7 @@ void MusDarmsInput::UnrollKeysig(int quantity, char alter) {
  */
 int MusDarmsInput::parseMeter(int pos, const char* data) {
  
-    MusMensur *meter = new MusMensur;
+    Mensur *meter = new Mensur;
     
     pos++;
     if (data[pos] == 'C') {
@@ -334,7 +334,7 @@ int MusDarmsInput::do_Note(int pos, const char* data, bool rest) {
         if ((position + m_clef_offset) > sizeof(PitchMap))
             position = 0;
         
-        MusNote *note = new MusNote;
+        Note *note = new Note;
         note->m_dur = duration;
         note->m_accid = accidental;
         note->m_oct = PitchMap[position + m_clef_offset].oct;

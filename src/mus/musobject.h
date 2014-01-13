@@ -143,7 +143,7 @@ public:
     MusObject *GetNextSibling( const std::type_info *elementType = NULL );
     
     /**
-     * Fill the list of all the children MusLayerElement.
+     * Fill the list of all the children LayerElement.
      * This is used for navigating in a MusLayer (See MusLayer::GetPrevious and MusLayer::GetNext).
      */  
     void FillList( ListOfMusObjects *list );
@@ -179,9 +179,9 @@ public:
     
     // functor methods
     /**
-     * Add each MusLayerElements and its children to a list
+     * Add each LayerElements and its children to a list
      */
-    virtual int AddMusLayerElementToList( ArrayPtrVoid params );
+    virtual int AddLayerElementToList( ArrayPtrVoid params );
     
     /**
      * See MusLayer::CopyToLayer
@@ -227,7 +227,7 @@ public:
     
     /**
      * Align the content of a system.
-     * For each MusLayerElement, instanciate its MusAlignment.
+     * For each LayerElement, instanciate its MusAlignment.
      * It creates it if no other note or event occurs at its position.
      */
     virtual int Align( ArrayPtrVoid params ) { return FUNCTOR_CONTINUE; };
@@ -374,7 +374,7 @@ public:
 
 /** 
  * This class is an interface for elements maintaining a list of children
- * MusLayerElement for processing.
+ * LayerElement for processing.
  * The list is a flatten list of pointers to children elements.
  * It is not an abstract class but should not be instanciate directly.
  */

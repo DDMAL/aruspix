@@ -19,7 +19,7 @@
 // NOTE tie NOTE tie etc
 //----------------------------------------------------------------------------
 
-class Tie: public MusLayerElement
+class Tie: public LayerElement
 {
 public:
     // constructors and destructors
@@ -33,10 +33,10 @@ public:
      * The setter asserts that no note was previously set.
      */
     ///@{
-    void SetFirstNote( MusNote *note );
-    void SetSecondNote( MusNote *note );
-    MusNote *GetFirstNote() { return m_first; };
-    MusNote *GetSecondNote() { return m_second; };
+    void SetFirstNote( Note *note );
+    void SetSecondNote( Note *note );
+    Note *GetFirstNote() { return m_first; };
+    Note *GetSecondNote() { return m_second; };
     ///@}
     
 private:
@@ -44,8 +44,8 @@ private:
 public:
     
 private:
-    MusNote *m_first;
-    MusNote *m_second;
+    Note *m_first;
+    Note *m_second;
     
 };
 

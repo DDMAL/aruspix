@@ -18,7 +18,7 @@ class MusBeam;
 class MusClef;
 class MusLayer;
 class MusMeasure;
-class MusMensur;
+class Mensur;
 class MusStaff;
 class Tie;
 class Tuplet;
@@ -95,7 +95,7 @@ public:
         return *this;
     }
     
-    //MusNote *mnote;
+    //Note *mnote;
     //Rest *mrest; // this is not too nice
 
     // tuplet stuff
@@ -175,7 +175,7 @@ public:
         abbreviation_offset = -1;
     };
     MusClef *clef;
-    MusMensur *time;
+    Mensur *time;
     std::vector<NoteObject> notes;
 
     std::vector<int> key;
@@ -239,11 +239,11 @@ private:
      int       getPitch            (char c_note );
      
      // output functions
-     void      AddLayerElement     (MusLayerElement *element);
+     void      AddLayerElement     (LayerElement *element);
      void      parseNote           (NoteObject note);
      void      PopContainer        ();
      void      printMeasure        (std::ostream& out, MeasureObject *measure);
-     void      PushContainer       (MusLayerElement *container);
+     void      PushContainer       (LayerElement *container);
 
 
      // input functions
@@ -259,7 +259,7 @@ private:
 	MusLayer *m_layer;
     Tie *m_current_tie;
 
-    std::vector<MusLayerElement *> m_nested_objects;   
+    std::vector<LayerElement *> m_nested_objects;   
     
     //unsigned char m_rest_position;
     //unsigned int m_rest_octave;

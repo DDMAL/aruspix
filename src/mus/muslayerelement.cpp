@@ -39,28 +39,28 @@
 
 
 //----------------------------------------------------------------------------
-// MusLayerElement
+// LayerElement
 //----------------------------------------------------------------------------
 
-MusLayerElement::MusLayerElement():
+LayerElement::LayerElement():
     MusDocObject("le-")
 {
     Init();
 }
 
-MusLayerElement::MusLayerElement(std::string classid):
+LayerElement::LayerElement(std::string classid):
 	MusDocObject(classid)
 {
     Init();
 }
 
 
-MusLayerElement::~MusLayerElement()
+LayerElement::~LayerElement()
 {
     
 }
 
-MusLayerElement& MusLayerElement::operator=( const MusLayerElement& element )
+LayerElement& LayerElement::operator=( const LayerElement& element )
 {
 	if ( this != &element ) // not self assignement
 	{
@@ -77,21 +77,21 @@ MusLayerElement& MusLayerElement::operator=( const MusLayerElement& element )
 }
 
 
-MusLayerElement *MusLayerElement::GetChildCopy( bool newUuid ) 
+LayerElement *LayerElement::GetChildCopy( bool newUuid ) 
 {
     
     // Is there another way to do this in C++ ?
     // Yes, change this to the MusObject::Clone method - however, newUuid will not be possible in this way
-    MusLayerElement *element = NULL;
+    LayerElement *element = NULL;
 
     if ( this->IsBarline() )
         element = new MusBarline( *(MusBarline*)this );
     else if (this->IsClef() )
         element = new MusClef( *(MusClef*)this );
     else if (this->IsMensur() )
-        element = new MusMensur( *(MusMensur*)this );
+        element = new Mensur( *(Mensur*)this );
     else if (this->IsNote() )
-        element = new MusNote( *(MusNote*)this );
+        element = new Note( *(Note*)this );
     else if (this->IsRest() )
         element = new Rest( *(Rest*)this );
     else if (this->IsSymbol() )
@@ -116,7 +116,7 @@ MusLayerElement *MusLayerElement::GetChildCopy( bool newUuid )
 
 
 
-int MusLayerElement::GetElementNo() const
+int LayerElement::GetElementNo() const
 {
     assert( m_parent ); // Layer cannot be NULL
     
@@ -124,15 +124,15 @@ int MusLayerElement::GetElementNo() const
 }
 
 
-int MusLayerElement::GetHorizontalSpacing()
+int LayerElement::GetHorizontalSpacing()
 {
     return 10; // arbitrary generic value
 }
 
-void MusLayerElement::SetPitchOrPosition(int pname, int oct) 
+void LayerElement::SetPitchOrPosition(int pname, int oct) 
 {
     if ( this->HasPitchInterface() ){
-        MusPitchInterface *pitch = dynamic_cast<MusPitchInterface*>(this);
+        PitchInterface *pitch = dynamic_cast<PitchInterface*>(this);
         pitch->SetPitch( pname, oct );
     }
     else if ( this->HasPositionInterface() ) {
@@ -141,10 +141,10 @@ void MusLayerElement::SetPitchOrPosition(int pname, int oct)
     }
 }
 
-bool MusLayerElement::GetPitchOrPosition(int *pname, int *oct) 
+bool LayerElement::GetPitchOrPosition(int *pname, int *oct) 
 {
     if ( this->HasPitchInterface() ){
-        MusPitchInterface *pitch = dynamic_cast<MusPitchInterface*>(this);
+        PitchInterface *pitch = dynamic_cast<PitchInterface*>(this);
         return pitch->GetPitch( pname, oct );
     }
     else if ( this->HasPositionInterface() ) {
@@ -154,7 +154,7 @@ bool MusLayerElement::GetPitchOrPosition(int *pname, int *oct)
     return false;
 }
 
-void MusLayerElement::SetValue( int value, int flag )
+void LayerElement::SetValue( int value, int flag )
 {
     if ( this->HasDurationInterface() ){
         MusDurationInterface *duration = dynamic_cast<MusDurationInterface*>(this);
@@ -162,7 +162,7 @@ void MusLayerElement::SetValue( int value, int flag )
     }
 }
 
-void MusLayerElement::Init()
+void LayerElement::Init()
 {
     m_cueSize = false;
     m_hOffset = 0;
@@ -178,86 +178,86 @@ void MusLayerElement::Init()
 }
 
 
-bool MusLayerElement::IsBarline() 
+bool LayerElement::IsBarline() 
 {  
     return (dynamic_cast<MusBarline*>(this));
 }
 
-bool MusLayerElement::IsBeam() 
+bool LayerElement::IsBeam() 
 {  
     return (dynamic_cast<MusBeam*>(this));
 }
 
-bool MusLayerElement::IsClef() 
+bool LayerElement::IsClef() 
 {  
     return (dynamic_cast<MusClef*>(this));
 }
 
 
-bool MusLayerElement::HasDurationInterface() 
+bool LayerElement::HasDurationInterface() 
 {  
     return (dynamic_cast<MusDurationInterface*>(this));
 }
 
-bool MusLayerElement::IsSymbol( SymbolType type ) 
+bool LayerElement::IsSymbol( SymbolType type ) 
 {  
     MusSymbol *symbol = dynamic_cast<MusSymbol*>(this);
     return (symbol && (symbol->m_type == type));
 }
 
-bool MusLayerElement::IsSymbol( ) 
+bool LayerElement::IsSymbol( ) 
 {  
     return (dynamic_cast<MusSymbol*>(this));
 }
 
 
-bool MusLayerElement::IsKeySig()
+bool LayerElement::IsKeySig()
 {
     return (dynamic_cast<MusKeySig*>(this));
 }
 
-bool MusLayerElement::IsMultiRest() 
+bool LayerElement::IsMultiRest() 
 {  
     return (dynamic_cast<MultiRest*>(this));
 }
 
-bool MusLayerElement::IsMensur() 
+bool LayerElement::IsMensur() 
 {  
-    return (dynamic_cast<MusMensur*>(this));
+    return (dynamic_cast<Mensur*>(this));
 }
 
-bool MusLayerElement::IsNeume() 
-{  
-    return false; //return (typeid(*m_layerElement) == typeid(MusNeume)); 
-}
-
-bool MusLayerElement::IsNeumeSymbol() 
+bool LayerElement::IsNeume() 
 {  
     return false; //return (typeid(*m_layerElement) == typeid(MusNeume)); 
 }
 
-bool MusLayerElement::IsNote() 
+bool LayerElement::IsNeumeSymbol() 
 {  
-    return (dynamic_cast<MusNote*>(this));
+    return false; //return (typeid(*m_layerElement) == typeid(MusNeume)); 
 }
 
-bool MusLayerElement::HasPitchInterface() 
+bool LayerElement::IsNote() 
 {  
-    return (dynamic_cast<MusPitchInterface*>(this));
+    return (dynamic_cast<Note*>(this));
 }
 
-bool MusLayerElement::HasPositionInterface() 
+bool LayerElement::HasPitchInterface() 
+{  
+    return (dynamic_cast<PitchInterface*>(this));
+}
+
+bool LayerElement::HasPositionInterface() 
 {  
     return (dynamic_cast<PositionInterface*>(this));
 }
 
-bool MusLayerElement::IsRest() 
+bool LayerElement::IsRest() 
 {  
     return (dynamic_cast<Rest*>(this));
 }
 
 
-int MusLayerElement::Save( ArrayPtrVoid params )
+int LayerElement::Save( ArrayPtrVoid params )
 {
     // param 0: output stream
     MusFileOutputStream *output = (MusFileOutputStream*)params[0];         
@@ -268,7 +268,7 @@ int MusLayerElement::Save( ArrayPtrVoid params )
 
 }
 
-void MusLayerElement::AdjustPname( int *pname, int *oct )
+void LayerElement::AdjustPname( int *pname, int *oct )
 {
 	if ((*pname) < PITCH_C)
 	{
@@ -285,7 +285,7 @@ void MusLayerElement::AdjustPname( int *pname, int *oct )
 	}
 }
 
-double MusLayerElement::GetAlignementDuration()
+double LayerElement::GetAlignementDuration()
 {
     if ( HasDurationInterface() ) {
         Tuplet *tuplet = dynamic_cast<Tuplet*>( this->GetFirstParent( &typeid(Tuplet), MAX_TUPLET_DEPTH ) );
@@ -303,7 +303,7 @@ double MusLayerElement::GetAlignementDuration()
     }
 }
 
-int MusLayerElement::GetXRel()
+int LayerElement::GetXRel()
 {
     if (m_alignment) {
         return m_alignment->GetXRel();
@@ -311,7 +311,7 @@ int MusLayerElement::GetXRel()
     return 0;
 }
 
-int MusLayerElement::Align( ArrayPtrVoid params )
+int LayerElement::Align( ArrayPtrVoid params )
 {
     // param 0: the measureAligner
     // param 1: the time

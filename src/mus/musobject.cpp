@@ -197,7 +197,7 @@ bool MusObject::operator==( MusObject& other )
 {
     // This should never happen.
     // The comparison is performed in the CmpFile::Align method.
-    // We expect to compare only MusNote, Rest, etc object for which we have an overwritten method
+    // We expect to compare only Note, Rest, etc object for which we have an overwritten method
     Mus::LogError( "Missing comparison operator for '%s'", this->MusClassName().c_str() );
     return false;
 }
@@ -227,7 +227,7 @@ void MusObject::Modify( bool modified )
 
 void MusObject::FillList( ListOfMusObjects *list )
 {
-    MusFunctor addToList( &MusObject::AddMusLayerElementToList );
+    MusFunctor addToList( &MusObject::AddLayerElementToList );
     ArrayPtrVoid params;
     params.push_back ( &list );
     this->Process( &addToList, params );
@@ -613,11 +613,11 @@ void MusFunctor::Call( MusObject *ptr, ArrayPtrVoid params )
 // MusObject functor methods
 //----------------------------------------------------------------------------
 
-int MusObject::AddMusLayerElementToList( ArrayPtrVoid params )
+int MusObject::AddLayerElementToList( ArrayPtrVoid params )
 {
     // param 0: the ListOfMusObjects
     ListOfMusObjects **list = (ListOfMusObjects**)params[0];
-    //if ( dynamic_cast<MusLayerElement*>(this ) ) {
+    //if ( dynamic_cast<LayerElement*>(this ) ) {
         (*list)->push_back( this );
     //}
     return FUNCTOR_CONTINUE;
@@ -742,7 +742,7 @@ int MusObject::SetBoundingBoxXShift( ArrayPtrVoid params )
         return FUNCTOR_CONTINUE;
     }
 
-    MusLayerElement *current = dynamic_cast<MusLayerElement*>(this);
+    LayerElement *current = dynamic_cast<LayerElement*>(this);
     if ( !current  ) {
         return FUNCTOR_CONTINUE;
     }

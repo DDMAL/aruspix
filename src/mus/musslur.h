@@ -17,7 +17,7 @@
 // Slur
 //----------------------------------------------------------------------------
 
-class Slur: public MusLayerElement
+class Slur: public LayerElement
 {
 public:
     // constructors and destructors
@@ -30,9 +30,9 @@ public:
     
     /**
      * Add an element (a note or a rest) to a beam.
-     * Only MusNote or Rest elements will be actually added to the beam.
+     * Only Note or Rest elements will be actually added to the beam.
      */
-    void AddNote(MusLayerElement *element);
+    void AddNote(LayerElement *element);
     
 private:
     

@@ -164,7 +164,7 @@ bool MusXMLOutput::WriteLayer( MusLayer *layer )
     return true;
 }
 
-bool MusXMLOutput::WriteLayerElement( MusLayerElement *element )
+bool MusXMLOutput::WriteLayerElement( LayerElement *element )
 {
     Mus::LogDebug("Layer Elem");
         
@@ -172,9 +172,9 @@ bool MusXMLOutput::WriteLayerElement( MusLayerElement *element )
         WriteClef(element);
     } else if (dynamic_cast<MusKeySig*>(element)) {
         WriteKey(element);
-    } else if (dynamic_cast<MusMensur*>(element)) {
+    } else if (dynamic_cast<Mensur*>(element)) {
         WriteTime(element);
-    } else if (dynamic_cast<MusNote*>(element) || dynamic_cast<Rest*>(element)) {
+    } else if (dynamic_cast<Note*>(element) || dynamic_cast<Rest*>(element)) {
         WriteNoteOrRest(element);
     } else if (dynamic_cast<MusBeam*>(element)) {
         m_current_beam = dynamic_cast<MusBeam*>(element);
@@ -223,14 +223,14 @@ bool MusXMLOutput::WriteLaidOutLayer( MusLayer *laidOutLayer )
 
 }
 
-bool MusXMLOutput::WriteLaidOutLayerElement( MusLayerElement *laidOutLayerElement )
+bool MusXMLOutput::WriteLaidOutLayerElement( LayerElement *laidOutLayerElement )
 {
     Mus::LogDebug("Laid Layer Elem");
     return true;
 }
 
 
-void MusXMLOutput::WriteClef(MusLayerElement *element) {
+void MusXMLOutput::WriteClef(LayerElement *element) {
     std::string sign, line;
     
     // Create the attributes elem
@@ -277,7 +277,7 @@ void MusXMLOutput::WriteClef(MusLayerElement *element) {
     
 }
 
-void MusXMLOutput::WriteKey(MusLayerElement *element) {
+void MusXMLOutput::WriteKey(LayerElement *element) {
     MusKeySig* key = dynamic_cast<MusKeySig*>(element);
     
     // Check for attrib element as above
@@ -324,8 +324,8 @@ void MusXMLOutput::WriteKey(MusLayerElement *element) {
     
 }
 
-void MusXMLOutput::WriteTime(MusLayerElement *element) {
-    MusMensur *timesig = dynamic_cast<MusMensur*>(element);
+void MusXMLOutput::WriteTime(LayerElement *element) {
+    Mensur *timesig = dynamic_cast<Mensur*>(element);
     std::stringstream number;
     
     CreateAttributes();
@@ -447,7 +447,7 @@ void MusXMLOutput::CreateRestsForMultiMeasure() {
     m_measure_count--;
 }
 
-void MusXMLOutput::WriteNoteOrRest(MusLayerElement *element) {
+void MusXMLOutput::WriteNoteOrRest(LayerElement *element) {
     char steps[] = {'C', 'D', 'E', 'F', 'G', 'A', 'B'};
     std::stringstream number;
     std::string t;
@@ -479,8 +479,8 @@ void MusXMLOutput::WriteNoteOrRest(MusLayerElement *element) {
     }
     
     // if note we need the <pitch> too
-    if (dynamic_cast<MusNote*>(element)) {
-        MusNote *n = dynamic_cast<MusNote*>(element);
+    if (dynamic_cast<Note*>(element)) {
+        Note *n = dynamic_cast<Note*>(element);
         // make pitch
         TiXmlElement *pitch = new TiXmlElement("pitch");
         TiXmlElement *step = new TiXmlElement("step");

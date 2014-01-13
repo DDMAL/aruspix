@@ -57,7 +57,7 @@ public:
     
     /**
      * Inteface comparison operator. 
-     * Check if the MusLayerElement has a MusDurationInterface and compare attributes
+     * Check if the LayerElement has a MusDurationInterface and compare attributes
      */
     bool HasIdenticalDurationInterface(MusDurationInterface  *otherDurationInterface);
     

@@ -352,7 +352,7 @@ MusStaff *MusMLFOutput::SplitSymboles( MusStaff *staff )
 
 	MusStaff *nstaff = new MusStaff();
 	staff->CopyAttributes( nstaff );
-	MusNote1 *nnote = NULL;
+	Note1 *nnote = NULL;
 	MusSymbol1 *nsymbol1 = NULL;
 	MusSymbol1 *nsymbol2 = NULL;
 
@@ -360,7 +360,7 @@ MusStaff *MusMLFOutput::SplitSymboles( MusStaff *staff )
     {
 		if ( staff->m_elements[k].IsNote() )
 		{
-			nnote = new MusNote1( *(MusNote1*)&staff->m_elements[k] );
+			nnote = new Note1( *(Note1*)&staff->m_elements[k] );
 			// alteration
 			if (nnote->acc != 0)
 			{
@@ -549,19 +549,19 @@ MusLayer *MusMLFOutput::GetUt1( MusLayer *layer )
 	
 	for (int i = 0; i < (int)layer->GetElementCount(); i++ )
 	{
-		if ( ((MusLayerElement*)layer->m_children[i])->HasPitchInterface() )
+		if ( ((LayerElement*)layer->m_children[i])->HasPitchInterface() )
 		{
-			MusLayerElement *element = (MusLayerElement*)layer->m_children[i];
+			LayerElement *element = (LayerElement*)layer->m_children[i];
 			{
 				GetUt1( layer, element, &code, &oct );
-                MusPitchInterface *pitchElement = dynamic_cast<MusPitchInterface*>(element);
+                PitchInterface *pitchElement = dynamic_cast<PitchInterface*>(element);
 				pitchElement->m_pname = code;
 				pitchElement->m_oct = oct;
 			}
 		}
-		else if ( ((MusLayerElement*)layer->m_children[i])->HasPositionInterface() )
+		else if ( ((LayerElement*)layer->m_children[i])->HasPositionInterface() )
 		{
-			MusLayerElement *element = (MusLayerElement*)layer->m_children[i];
+			LayerElement *element = (LayerElement*)layer->m_children[i];
 			{
 				GetUt1( layer, element, &code, &oct );
                 PositionInterface *positionElement = dynamic_cast<PositionInterface*>(element);
@@ -581,15 +581,15 @@ MusLayer *MusMLFOutput::GetUt1( MusLayer *layer )
   la ligne du bas.
 */
 
-void MusMLFOutput::GetUt1( MusLayer *layer, MusLayerElement *pelement, int *code, int *oct)
+void MusMLFOutput::GetUt1( MusLayer *layer, LayerElement *pelement, int *code, int *oct)
 {
 
 	if (!pelement || !code || !oct) return;
 
     int offs = layer->GetClefOffset( pelement );
     
-	if (dynamic_cast<MusPitchInterface*>(pelement)) {
-        MusPitchInterface *pitchInterface = dynamic_cast<MusPitchInterface*>(pelement);
+	if (dynamic_cast<PitchInterface*>(pelement)) {
+        PitchInterface *pitchInterface = dynamic_cast<PitchInterface*>(pelement);
 		*code = pitchInterface->m_pname + offs;
         *oct = pitchInterface->m_oct;
     }
@@ -681,7 +681,7 @@ bool MusMLFOutput::WriteLayer( const MusLayer *layer, int offset,  int end_point
 
     for (k = 0;k < layer->GetElementCount() ; k++ )
     {
-        MusLayerElement *element = (MusLayerElement*)layer->m_children[k];
+        LayerElement *element = (LayerElement*)layer->m_children[k];
         // we could write all of the in one method, left over from version < 2.0.0
         if ( element->IsNote() || element->IsRest() || element->IsSymbol( SYMBOL_CUSTOS) )
         {
@@ -698,7 +698,7 @@ bool MusMLFOutput::WriteLayer( const MusLayer *layer, int offset,  int end_point
 }
 
 
-bool MusMLFOutput::WriteNote( MusLayerElement *element )
+bool MusMLFOutput::WriteNote( LayerElement *element )
 {
 	int  code, oct;
 	GetUt1( m_layer, element, &code, &oct);
@@ -719,7 +719,7 @@ bool MusMLFOutput::WriteNote( MusLayerElement *element )
 		mlfsb = (MusMLFSymbol*)wxCreateDynamicObject( m_mlf_class_name );
 		int flag = 0;
         if ( element->IsNote() ) {
-            MusNote *note = dynamic_cast<MusNote*>(element);
+            Note *note = dynamic_cast<Note*>(element);
             // hampe
             if ((note->m_stemDir != 0) && ((note->m_dur ==  DUR_LG) || (note->m_dur > DUR_1 )))
                 flag += NOTE_STEM; // ?? // ax2
@@ -763,7 +763,7 @@ bool MusMLFOutput::WriteNote( MusLayerElement *element )
   autre
   */
 
-bool MusMLFOutput::WriteSymbol( MusLayerElement *element )
+bool MusMLFOutput::WriteSymbol( LayerElement *element )
 {
 	MusMLFSymbol *mlfsb = (MusMLFSymbol*)wxCreateDynamicObject( m_mlf_class_name );
 
@@ -819,7 +819,7 @@ bool MusMLFOutput::WriteSymbol( MusLayerElement *element )
 	}
 	else if (element->IsMensur())
 	{
-        MusMensur *mensur = dynamic_cast<MusMensur*>(element);
+        Mensur *mensur = dynamic_cast<Mensur*>(element);
 		// signes standard
 		//if ((int)symbol->code & 64) // ax2 ??
         if (mensur->m_meterSymb)
@@ -956,7 +956,7 @@ bool MusMLFInput::ParseLine( wxString line, char *element, wxString *elementLine
 
 
 
-MusLayerElement *MusMLFInput::ConvertNote( wxString line )
+LayerElement *MusMLFInput::ConvertNote( wxString line )
 {
 	wxStringTokenizer tkz( line , "_");
 	if ( !tkz.HasMoreTokens() )
@@ -1001,7 +1001,7 @@ MusLayerElement *MusMLFInput::ConvertNote( wxString line )
 	}
 
     if ( str == 'N') {
-        MusNote *note = new MusNote();
+        Note *note = new Note();
         note->m_dur = val;
         GetPitchWWG( str1.GetChar(0), &code );
         note->m_pname = code;
@@ -1035,7 +1035,7 @@ MusLayerElement *MusMLFInput::ConvertNote( wxString line )
 }
 
 
-MusLayerElement *MusMLFInput::ConvertSymbol( wxString line )
+LayerElement *MusMLFInput::ConvertSymbol( wxString line )
 {
 	wxStringTokenizer tkz( line , "_");
 	if ( !tkz.HasMoreTokens() )
@@ -1136,7 +1136,7 @@ MusLayerElement *MusMLFInput::ConvertSymbol( wxString line )
 		if ( ! tkz.HasMoreTokens() )
 			return NULL;
 
-		MusMensur *mensur = new MusMensur();
+		Mensur *mensur = new Mensur();
 
 		wxString str = tkz.GetNextToken();
 		wxString option1;
@@ -1230,19 +1230,19 @@ void MusMLFInput::GetNotUt1( MusLayer *layer )
 	
 	for (int i = 0; i < (int)layer->GetElementCount(); i++ )
 	{
-		if ( ((MusLayerElement*)layer->m_children[i])->HasPitchInterface() )
+		if ( ((LayerElement*)layer->m_children[i])->HasPitchInterface() )
 		{
-			MusLayerElement *element = (MusLayerElement*)layer->m_children[i];
+			LayerElement *element = (LayerElement*)layer->m_children[i];
 			{
 				GetNotUt1( layer, element, &code, &oct );
-                MusPitchInterface *pitchElement = dynamic_cast<MusPitchInterface*>(element);
+                PitchInterface *pitchElement = dynamic_cast<PitchInterface*>(element);
 				pitchElement->m_pname = code;
 				pitchElement->m_oct = oct;
 			}
 		}
-		else if ( ((MusLayerElement*)layer->m_children[i])->HasPositionInterface() )
+		else if ( ((LayerElement*)layer->m_children[i])->HasPositionInterface() )
 		{
-			MusLayerElement *element = (MusLayerElement*)layer->m_children[i];
+			LayerElement *element = (LayerElement*)layer->m_children[i];
 			{
 				GetNotUt1( layer, element, &code, &oct );
                 PositionInterface *positionElement = dynamic_cast<PositionInterface*>(element);
@@ -1254,7 +1254,7 @@ void MusMLFInput::GetNotUt1( MusLayer *layer )
 }
 
 
-void MusMLFInput::GetNotUt1( MusLayer *layer, MusLayerElement *pelement, int *code, int *oct)
+void MusMLFInput::GetNotUt1( MusLayer *layer, LayerElement *pelement, int *code, int *oct)
 {
 	if (!layer || !pelement || !code || !oct) return;
     
@@ -1262,8 +1262,8 @@ void MusMLFInput::GetNotUt1( MusLayer *layer, MusLayerElement *pelement, int *co
     
     offs = layer->GetClefOffset( pelement );
 
-	if (dynamic_cast<MusPitchInterface*>(pelement)) {
-        MusPitchInterface *pitchInterface = dynamic_cast<MusPitchInterface*>(pelement);
+	if (dynamic_cast<PitchInterface*>(pelement)) {
+        PitchInterface *pitchInterface = dynamic_cast<PitchInterface*>(pelement);
 		*code = pitchInterface->m_pname;
         *oct = pitchInterface->m_oct;
     }
@@ -1402,7 +1402,7 @@ bool MusMLFInput::ReadLabel( MusLayer *layer, int offset )
 
 	while ( ReadLine( &line ) &&  MusMLFInput::ParseLine( line, &elementType, &element_line, &pos ) )
 	{
-        MusLayerElement *layer_element = NULL;
+        LayerElement *layer_element = NULL;
         // we could convert all of the in one method, left over from version < 2.0.0
         if ((elementType == 'N') || (elementType =='R')  || (elementType =='C')) {
 			layer_element = MusMLFInput::ConvertNote( element_line );

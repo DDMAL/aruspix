@@ -61,7 +61,7 @@ int MusLayer::Save( ArrayPtrVoid params )
 }
 
 
-void MusLayer::AddElement( MusLayerElement *element, int idx )
+void MusLayer::AddElement( LayerElement *element, int idx )
 {
 	element->SetParent( this );
     if ( idx == -1 ) {
@@ -82,50 +82,50 @@ void MusLayer::CopyAttributes( MusLayer *nlayer )
 	nlayer->voix = voix;
 }
 
-MusLayerElement *MusLayer::GetFirst( )
+LayerElement *MusLayer::GetFirst( )
 {
 	if ( m_children.empty() )
 		return NULL;
-	return (MusLayerElement*)m_children[0];
+	return (LayerElement*)m_children[0];
 }
 
-MusLayerElement *MusLayer::GetLast( )
+LayerElement *MusLayer::GetLast( )
 {
 	if ( m_children.empty() )
 		return NULL;
 	int i = (int)m_children.size() - 1;
-	return (MusLayerElement*)m_children[i];
+	return (LayerElement*)m_children[i];
 }
 
-MusLayerElement *MusLayer::GetNext( MusLayerElement *element )
+LayerElement *MusLayer::GetNext( LayerElement *element )
 {	
     this->ResetList( this );
     
     if ( !element || m_list.empty() )
         return NULL;
     
-    return (MusLayerElement*)GetListNext( element );
+    return (LayerElement*)GetListNext( element );
 }
 
-MusLayerElement *MusLayer::GetPrevious( MusLayerElement *element )
+LayerElement *MusLayer::GetPrevious( LayerElement *element )
 {
     this->ResetList( this );
     
     if ( !element || m_list.empty() )
         return NULL;
     
-    return (MusLayerElement*)GetListPrevious( element );
+    return (LayerElement*)GetListPrevious( element );
 }
 
-MusLayerElement *MusLayer::GetAtPos( int x )
+LayerElement *MusLayer::GetAtPos( int x )
 {
-	MusLayerElement *element = this->GetFirst();
+	LayerElement *element = this->GetFirst();
 	if ( !element )
 		return NULL;
 
     
 	int dif = x - element->m_xDrawing;
-    MusLayerElement *next = NULL;
+    LayerElement *next = NULL;
 	while ( (next = this->GetNext( element )) && (int)element->m_xDrawing < x ){
 		element = next;
 		if ( (int)element->m_xDrawing > x && dif < (int)element->m_xDrawing - x )
@@ -136,7 +136,7 @@ MusLayerElement *MusLayer::GetAtPos( int x )
 	return element;
 }
 
-void MusLayer::AddToDrawingList( MusLayerElement *element )
+void MusLayer::AddToDrawingList( LayerElement *element )
 {
     m_drawingList.push_back( element );
 }
@@ -151,7 +151,7 @@ void MusLayer::ResetDrawingList( )
     m_drawingList.clear();
 }
 
-MusLayerElement *MusLayer::Insert( MusLayerElement *element, int x )
+LayerElement *MusLayer::Insert( LayerElement *element, int x )
 {
 	if ( !element ) { 
         return NULL;
@@ -160,13 +160,13 @@ MusLayerElement *MusLayer::Insert( MusLayerElement *element, int x )
     // This is temporary and is OK because we have only one single layout for now.
     // Inserting elements should be done from the logical tree and then update the layout
     
-    MusLayerElement *insertElement = element->GetChildCopy();
+    LayerElement *insertElement = element->GetChildCopy();
 
     // First we find the element after which we are inserting the element
     // If not, it will be NULL
     // We are also updating the section and measure ( TODO, not necessary for now )
     int idx = 0;
-	MusLayerElement *next = this->GetFirst();
+	LayerElement *next = this->GetFirst();
 	while ( next && (next->m_xDrawing < x) )
 	{
         idx++;
@@ -187,7 +187,7 @@ MusLayerElement *MusLayer::Insert( MusLayerElement *element, int x )
 }
 
 
-void MusLayer::Insert( MusLayerElement *layerElement, MusLayerElement *before )
+void MusLayer::Insert( LayerElement *layerElement, LayerElement *before )
 {
     int idx = 0;
     if ( before ) {
@@ -241,7 +241,7 @@ void MusLayer::SetDrawingValues( MusScoreDef *currentScoreDef, MusStaffDef *curr
 }
 
 
-void MusLayer::Delete( MusLayerElement *element )
+void MusLayer::Delete( LayerElement *element )
 {
 	if ( !element ) {
         return;
@@ -271,9 +271,9 @@ void MusLayer::Delete( MusLayerElement *element )
 // symbol, de la nature indiquee (flg). Retourne le ptr si succes, ou 
 // l'element de depart; le ptr succ est vrai si symb trouve.
 
-MusLayerElement *MusLayer::GetFirst( MusLayerElement *element, unsigned int direction, const std::type_info *elementType, bool *succ)
+LayerElement *MusLayer::GetFirst( LayerElement *element, unsigned int direction, const std::type_info *elementType, bool *succ)
 {	
-    MusLayerElement *original = element;
+    LayerElement *original = element;
 
 	*succ = false;
 	if (element == NULL)
@@ -295,7 +295,7 @@ MusLayerElement *MusLayer::GetFirst( MusLayerElement *element, unsigned int dire
                 break;
             }
 			i--;
-            element = (MusLayerElement*)GetListPrevious(element);
+            element = (LayerElement*)GetListPrevious(element);
 		}
 		else
 		{	if (i >= (int)GetList(this)->size() - 1 ) {
@@ -303,21 +303,21 @@ MusLayerElement *MusLayer::GetFirst( MusLayerElement *element, unsigned int dire
                 break;
             }
 			i++;
-			element = (MusLayerElement*)GetListNext(element);
+			element = (LayerElement*)GetListNext(element);
 		}
 	}	
 
 	return (*succ ? element : original);
 }
 
-void MusLayer::CheckXPosition( MusLayerElement *currentElement )
+void MusLayer::CheckXPosition( LayerElement *currentElement )
 {
     if (!currentElement) {
         return;
     }
     
-    MusLayerElement *previous = GetPrevious( currentElement );
-    MusLayerElement *next = GetNext( currentElement );
+    LayerElement *previous = GetPrevious( currentElement );
+    LayerElement *next = GetNext( currentElement );
     
     if ( previous && previous->m_xAbs >= currentElement->m_xAbs ) {
         currentElement->m_xAbs = previous->m_xAbs + 2;
@@ -327,7 +327,7 @@ void MusLayer::CheckXPosition( MusLayerElement *currentElement )
     }
 }
 
-MusClef* MusLayer::GetClef( MusLayerElement *test )
+MusClef* MusLayer::GetClef( LayerElement *test )
 {
 	bool succ=false;
 
@@ -346,7 +346,7 @@ MusClef* MusLayer::GetClef( MusLayerElement *test )
     return &m_currentClef;
 }
 
-int MusLayer::GetClefOffset( MusLayerElement *test )
+int MusLayer::GetClefOffset( LayerElement *test )
 {
     MusClef *clef = GetClef(test);
     if (!clef) {
@@ -364,14 +364,14 @@ void MusLayer::RemoveClefAndCustos()
     int elementCount =  this->GetElementCount();
     for (i = 0; i < elementCount; i++)
     {
-        if ( ((MusLayerElement*)m_children[i])->IsClef() ) {
+        if ( ((LayerElement*)m_children[i])->IsClef() ) {
             MusClef *clef = dynamic_cast<MusClef*>(m_children[i]);
             // we remove the clef because it is the same as the previous one
             if ( currentClef && ((*currentClef) == (*clef)) ) {
                 // check if it is a F clef with a Longa before
-                if ( (i > 0) && ((MusLayerElement*)m_children[i - 1])->IsNote() )
+                if ( (i > 0) && ((LayerElement*)m_children[i - 1])->IsNote() )
                 {
-                    MusNote *note = dynamic_cast<MusNote*>(m_children[i - 1]);
+                    Note *note = dynamic_cast<Note*>(m_children[i - 1]);
                     if ( note && (note->m_dur == DUR_LG) )
                     {
                         bool removeLonga = false;
@@ -409,7 +409,7 @@ void MusLayer::RemoveClefAndCustos()
                 currentClef = clef;
             }
         }
-        else if ( ((MusLayerElement*)m_children[i])->IsSymbol( SYMBOL_CUSTOS ) ) {
+        else if ( ((LayerElement*)m_children[i])->IsSymbol( SYMBOL_CUSTOS ) ) {
             MusSymbol *symbol = dynamic_cast<MusSymbol*>(m_children[i]);
             this->Delete( symbol );
             elementCount--;
@@ -453,8 +453,8 @@ MusSymbol1 *MusLayer::GetPreviousLyric( MusSymbol1 *lyric )
 	int no = lyric->m_note_ptr->no - 1;
 	while ( no >= 0 ){
 		if ( m_children[ no ].IsNote() ){
-			for ( int i = (int) ((MusNote1*)m_children[ no ])->m_lyrics.GetCount() - 1; i >= 0 ; i-- ){
-				MusSymbol1 *previousLyric = ((MusNote1*)m_children[ no ])->m_lyrics[i];
+			for ( int i = (int) ((Note1*)m_children[ no ])->m_lyrics.GetCount() - 1; i >= 0 ; i-- ){
+				MusSymbol1 *previousLyric = ((Note1*)m_children[ no ])->m_lyrics[i];
 				if ( previousLyric ) return previousLyric;
 			}
 		}
@@ -483,8 +483,8 @@ MusSymbol1 *MusLayer::GetNextLyric( MusSymbol1 *lyric )
 	int no = lyric->m_note_ptr->no + 1;
 	while ( no < (int)m_children.GetCount() ){
 		if ( m_children[ no ].IsNote() ){
-			for ( int i = 0; i < (int) ((MusNote1*)m_children[ no ])->m_lyrics.GetCount(); i++ ){
-				MusSymbol1 *nextLyric = ((MusNote1*)m_children[ no ])->m_lyrics[i];
+			for ( int i = 0; i < (int) ((Note1*)m_children[ no ])->m_lyrics.GetCount(); i++ ){
+				MusSymbol1 *nextLyric = ((Note1*)m_children[ no ])->m_lyrics[i];
 				if ( nextLyric )
 					return nextLyric;
 			}
@@ -501,8 +501,8 @@ MusSymbol1 *MusLayer::GetFirstLyric( )
 	int no = 0;
 	while ( no < (int)m_children.GetCount() ){
 		if ( m_children[ no ].IsNote() ){
-			for ( int i = 0; i < (int) ((MusNote1*)m_children[ no ])->m_lyrics.GetCount(); i++ ){
-				MusSymbol1 *lyric = ((MusNote1*)m_children[ no ])->m_lyrics[i];
+			for ( int i = 0; i < (int) ((Note1*)m_children[ no ])->m_lyrics.GetCount(); i++ ){
+				MusSymbol1 *lyric = ((Note1*)m_children[ no ])->m_lyrics[i];
 				if ( lyric )
 					return lyric;
 			}
@@ -519,8 +519,8 @@ MusSymbol1 *MusLayer::GetLastLyric( )
 	int no = (int)m_children.GetCount() - 1;
 	while ( no >= 0 ){
 		if ( m_children[ no ].IsNote() ) {
-			for ( int i = (int) ((MusNote1*)m_children[ no ])->m_lyrics.GetCount() - 1; i >= 0 ; i-- ){
-				MusSymbol1 *lyric = ((MusNote1*)m_children[ no ])->m_lyrics[i];
+			for ( int i = (int) ((Note1*)m_children[ no ])->m_lyrics.GetCount() - 1; i >= 0 ; i-- ){
+				MusSymbol1 *lyric = ((Note1*)m_children[ no ])->m_lyrics[i];
 				if ( lyric )
 					return lyric;
 			}
@@ -552,7 +552,7 @@ void MusLayer::DeleteLyric( MusSymbol1 *symbol )
 {
 	if ( !symbol ) return;
 	
-	MusNote1 *note = symbol->m_note_ptr;
+	Note1 *note = symbol->m_note_ptr;
 	for ( int i = 0; i < (int)note->m_lyrics.GetCount(); i++ ){
 		MusSymbol1 *lyric = &note->m_lyrics[i];
 		if ( symbol == lyric )
@@ -562,30 +562,30 @@ void MusLayer::DeleteLyric( MusSymbol1 *symbol )
 	this->Delete( symbol );
 }
 
-MusNote1 *MusLayer::GetNextNote( MusSymbol1 * lyric )
+Note1 *MusLayer::GetNextNote( MusSymbol1 * lyric )
 {
 	if ( !lyric || m_children.IsEmpty() || !lyric->m_note_ptr || lyric->m_note_ptr->no >= (int)m_children.GetCount() - 1 )
 		return NULL;
 	
 	int no = lyric->m_note_ptr->no + 1;
 	for ( int i = no; i < (int)m_children.GetCount(); i++ ){
-		MusLayerElement *element = m_children[i];
-		if ( element->IsNote() && ((MusNote1*)element)->sil == _NOT )
-			return (MusNote1*)element; 
+		LayerElement *element = m_children[i];
+		if ( element->IsNote() && ((Note1*)element)->sil == _NOT )
+			return (Note1*)element; 
 	}
 	return NULL;
 }
 
-MusNote1 *MusLayer::GetPreviousNote( MusSymbol1 * lyric )
+Note1 *MusLayer::GetPreviousNote( MusSymbol1 * lyric )
 {
 	if ( !lyric || m_children.IsEmpty() || !lyric->m_note_ptr || lyric->m_note_ptr->no <= 0 )
 		return NULL;
 	
 	int no = lyric->m_note_ptr->no - 1;
 	for ( int i = no; i >= 0; i-- ){
-		MusLayerElement *element = m_children[i];
-		if ( element->IsNote() && ((MusNote1*)element)->sil == _NOT )
-			return (MusNote1*)element; 
+		LayerElement *element = m_children[i];
+		if ( element->IsNote() && ((Note1*)element)->sil == _NOT )
+			return (Note1*)element; 
 	}
 	return NULL;
 }
@@ -594,7 +594,7 @@ MusNote1 *MusLayer::GetPreviousNote( MusSymbol1 * lyric )
 //bool beginning: indicates if we want to add the lyric to beginning or end of the lyric array in newNote 
 //		true = beginning of array
 //		false = end of array
-void MusLayer::SwitchLyricNoteAssociation( MusSymbol1 *lyric, MusNote1 *oldNote, MusNote1* newNote, bool beginning )
+void MusLayer::SwitchLyricNoteAssociation( MusSymbol1 *lyric, Note1 *oldNote, Note1* newNote, bool beginning )
 {
 	if ( !lyric || !oldNote || !newNote )
 		return;
@@ -617,10 +617,10 @@ void MusLayer::SwitchLyricNoteAssociation( MusSymbol1 *lyric, MusNote1 *oldNote,
 void MusLayer::AdjustLyricLineHeight( int delta ) 
 {
 	for ( int i = 0; i < (int)m_children.GetCount(); i++ ){
-		MusLayerElement *element = m_children[i];
+		LayerElement *element = m_children[i];
 		if ( element->IsNote() ){
-			for ( int j = 0; j < (int)((MusNote1*)element)->m_lyrics.GetCount(); j++ ){
-				MusSymbol1 *lyric = &((MusNote1*)element)->m_lyrics[j];
+			for ( int j = 0; j < (int)((Note1*)element)->m_lyrics.GetCount(); j++ ){
+				MusSymbol1 *lyric = &((Note1*)element)->m_lyrics[j];
 				lyric->dec_y += delta;
 			}
 		}
@@ -670,7 +670,7 @@ int MusLayer::CopyToLayer( ArrayPtrVoid params )
         }
         
         // copy and add it
-        MusLayerElement *copy = ((MusLayerElement*)m_children[i])->GetChildCopy( (*new_uuid) );
+        LayerElement *copy = ((LayerElement*)m_children[i])->GetChildCopy( (*new_uuid) );
         destinationLayer->AddElement( copy );
         
         // check if we have a end uuid and if we have reached it. 

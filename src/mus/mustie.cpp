@@ -17,7 +17,7 @@
 //----------------------------------------------------------------------------
 
 Tie::Tie():
-MusLayerElement("tie-")
+LayerElement("tie-")
 {
     m_first = NULL;
     m_second = NULL;
@@ -34,13 +34,13 @@ Tie::~Tie()
     }
 }
 
-void Tie::SetFirstNote( MusNote *note )
+void Tie::SetFirstNote( Note *note )
 {
     assert( !m_first );
     m_first = note;
 }
 
-void Tie::SetSecondNote( MusNote *note )
+void Tie::SetSecondNote( Note *note )
 {
     assert( !m_second );
     m_second = note;

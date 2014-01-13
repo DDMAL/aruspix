@@ -94,13 +94,13 @@ void MusScoreOrStaffDefAttrInterface::ReplaceKeySig( MusKeySig *newKeySig )
     }
 }
 
-void MusScoreOrStaffDefAttrInterface::ReplaceMensur( MusMensur *newMensur )
+void MusScoreOrStaffDefAttrInterface::ReplaceMensur( Mensur *newMensur )
 {
     if ( newMensur ) {
         if (m_mensur) {
             delete m_mensur;
         }
-        m_mensur = new MusMensur( *newMensur );
+        m_mensur = new Mensur( *newMensur );
     }
 }
 

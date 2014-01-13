@@ -37,13 +37,13 @@
 #include "mustuplet.h"
 
 //----------------------------------------------------------------------------
-// MusRC - MusLayerElement
+// MusRC - LayerElement
 //----------------------------------------------------------------------------
 
 int MusRC::s_drawingLigX[2], MusRC::s_drawingLigY[2];	// pour garder coord. des ligatures    
 bool MusRC::s_drawingLigObliqua = false;	// marque le 1e passage pour une oblique
 
-void MusRC::DrawElement( MusDC *dc, MusLayerElement *element, MusLayer *layer, MusMeasure *measure, MusStaff *staff )
+void MusRC::DrawElement( MusDC *dc, LayerElement *element, MusLayer *layer, MusMeasure *measure, MusStaff *staff )
 {
     assert(layer); // Pointer to layer cannot be NULL"
     assert(staff); // Pointer to staff cannot be NULL"
@@ -84,13 +84,13 @@ void MusRC::DrawElement( MusDC *dc, MusLayerElement *element, MusLayer *layer, M
     else if (dynamic_cast<MusKeySig*>(element)) {
         DrawKeySig(dc, element, layer, staff);
     }
-    else if (dynamic_cast<MusMensur*>(element)) {
+    else if (dynamic_cast<Mensur*>(element)) {
         DrawMensur(dc, element, layer, staff);
     }
     else if (dynamic_cast<MultiRest*>(element)) {
         DrawMultiRest(dc, element, layer, staff);
     }
-    else if (dynamic_cast<MusNote*>(element)) {
+    else if (dynamic_cast<Note*>(element)) {
         DrawDurationElement(dc, element, layer, staff);
     }
     else if (dynamic_cast<Rest*>(element)) {
@@ -112,7 +112,7 @@ void MusRC::DrawElement( MusDC *dc, MusLayerElement *element, MusLayer *layer, M
     m_currentColour = previousColor;
 }
 
-void MusRC::DrawDurationElement( MusDC *dc, MusLayerElement *element, MusLayer *layer, MusStaff *staff )
+void MusRC::DrawDurationElement( MusDC *dc, LayerElement *element, MusLayer *layer, MusStaff *staff )
 {
     assert(layer); // Pointer to layer cannot be NULL"
     assert(staff); // Pointer to staff cannot be NULL"
@@ -122,9 +122,9 @@ void MusRC::DrawDurationElement( MusDC *dc, MusLayerElement *element, MusLayer *
 		return;
         
 	
-    if (dynamic_cast<MusNote*>(element)) 
+    if (dynamic_cast<Note*>(element)) 
     {
-        MusNote *note = dynamic_cast<MusNote*>(element);
+        Note *note = dynamic_cast<Note*>(element);
         int oct = note->m_oct - 4;
         
         //if ( !m_lyricMode && BelongsToTheNote( m_currentElement ) ) // the current element is a lyric that belongs to the note we are drawing
@@ -180,7 +180,7 @@ void MusRC::DrawDurationElement( MusDC *dc, MusLayerElement *element, MusLayer *
 	return;
 }
 
-void MusRC::DrawBeamElement(MusDC *dc, MusLayerElement *element, MusLayer *layer, MusMeasure *measure, MusStaff *staff) {
+void MusRC::DrawBeamElement(MusDC *dc, LayerElement *element, MusLayer *layer, MusMeasure *measure, MusStaff *staff) {
     
     assert(layer); // Pointer to layer cannot be NULL"
     assert(staff); // Pointer to staff cannot be NULL"
@@ -191,8 +191,8 @@ void MusRC::DrawBeamElement(MusDC *dc, MusLayerElement *element, MusLayer *layer
     dc->StartGraphic( element, "beam", element->GetUuid() );
     
     for (unsigned int i = 0; i < beam->m_children.size(); i++) {
-        if ( dynamic_cast<MusLayerElement*>(beam->m_children[i]) ) {
-            MusLayerElement *element = dynamic_cast<MusLayerElement*>(beam->m_children[i]);
+        if ( dynamic_cast<LayerElement*>(beam->m_children[i]) ) {
+            LayerElement *element = dynamic_cast<LayerElement*>(beam->m_children[i]);
             DrawElement(dc, element, layer, measure, staff);
         }
     }
@@ -203,7 +203,7 @@ void MusRC::DrawBeamElement(MusDC *dc, MusLayerElement *element, MusLayer *layer
     dc->EndGraphic(element, this );
 }
 
-void MusRC::DrawTupletElement(MusDC *dc, MusLayerElement *element, MusLayer *layer, MusMeasure *measure, MusStaff *staff) {
+void MusRC::DrawTupletElement(MusDC *dc, LayerElement *element, MusLayer *layer, MusMeasure *measure, MusStaff *staff) {
     
     assert(layer); // Pointer to layer cannot be NULL"
     assert(staff); // Pointer to staff cannot be NULL"
@@ -214,8 +214,8 @@ void MusRC::DrawTupletElement(MusDC *dc, MusLayerElement *element, MusLayer *lay
     
     // Draw the inner elements
     for (unsigned int i = 0; i < tuplet->m_children.size(); i++) {
-        if ( dynamic_cast<MusLayerElement*>(tuplet->m_children[i]) ) {
-            MusLayerElement *element = dynamic_cast<MusLayerElement*>(tuplet->m_children[i]);
+        if ( dynamic_cast<LayerElement*>(tuplet->m_children[i]) ) {
+            LayerElement *element = dynamic_cast<LayerElement*>(tuplet->m_children[i]);
             DrawElement(dc, element, layer, measure, staff);
         }
     }
@@ -233,13 +233,13 @@ void MusRC::DrawTupletElement(MusDC *dc, MusLayerElement *element, MusLayer *lay
 // queue: le ptr *testchord extern peut garder le x et l'y.
 
 
-void MusRC::DrawNote ( MusDC *dc, MusLayerElement *element, MusLayer *layer, MusStaff *staff)
+void MusRC::DrawNote ( MusDC *dc, LayerElement *element, MusLayer *layer, MusStaff *staff)
 {
     assert(layer); // Pointer to layer cannot be NULL"
     assert(staff); // Pointer to staff cannot be NULL"
-    assert(dynamic_cast<MusNote*>(element)); // Element must be a MusNote"
+    assert(dynamic_cast<Note*>(element)); // Element must be a Note"
     
-    MusNote *note = dynamic_cast<MusNote*>(element);
+    Note *note = dynamic_cast<Note*>(element);
     
     bool inBeam = (note->GetFirstParent( &typeid( MusBeam ) ) != NULL );
     
@@ -557,7 +557,7 @@ void MusRC::DrawNote ( MusDC *dc, MusLayerElement *element, MusLayer *layer, Mus
         // we need to draw them twice. For this reason, we look if the
         // parent system is the same or not. If not, we also add to the list
         // the tie from the inital note
-        MusNote *noteTerminal = note->GetTieAttrInitial()->GetSecondNote();
+        Note *noteTerminal = note->GetTieAttrInitial()->GetSecondNote();
         if ( noteTerminal ) {
             MusSystem *parentSystem1 = dynamic_cast<MusSystem*>( note->GetFirstParent( &typeid(MusSystem) ) );
             MusSystem *parentSystem2 = dynamic_cast<MusSystem*>( noteTerminal->GetFirstParent( &typeid(MusSystem) ) );
@@ -582,7 +582,7 @@ void MusRC::DrawNote ( MusDC *dc, MusLayerElement *element, MusLayer *layer, Mus
 }
 
 
-void MusRC::DrawRest ( MusDC *dc, MusLayerElement *element, MusLayer *layer, MusStaff *staff )
+void MusRC::DrawRest ( MusDC *dc, LayerElement *element, MusLayer *layer, MusStaff *staff )
 {	
     assert(layer); // Pointer to layer cannot be NULL
     assert(staff); // Pointer to staff cannot be NULL
@@ -701,7 +701,7 @@ void MusRC::DrawLedgerLines( MusDC *dc, int y_n, int y_p, int xn, unsigned int s
 /** This function draws multi-measure rests
  **/
 #define NUMBER_REDUCTION 5
-void MusRC::DrawMultiRest(MusDC *dc, MusLayerElement *element, MusLayer *layer, MusStaff *staff)
+void MusRC::DrawMultiRest(MusDC *dc, LayerElement *element, MusLayer *layer, MusStaff *staff)
 {	
     int x, x2, y, y2, length;
 
@@ -870,18 +870,18 @@ void MusRC::DrawDots ( MusDC *dc, int x1, int y1, int offy, unsigned char dots, 
 
 
 
-void MusRC::CalculateLigaturePosX ( MusLayerElement *element, MusLayer *layer, MusStaff *staff)
+void MusRC::CalculateLigaturePosX ( LayerElement *element, MusLayer *layer, MusStaff *staff)
 {
 	if (element == NULL) 
     {
     	return;
     }
-    MusLayerElement *previous = layer->GetPrevious(element);
+    LayerElement *previous = layer->GetPrevious(element);
 	if (previous == NULL || !previous->IsNote()) 
     {
         return;
     }
-    MusNote *previousNote = dynamic_cast<MusNote*>(previous);
+    Note *previousNote = dynamic_cast<Note*>(previous);
     if (previousNote->m_lig==LIG_TERMINAL)
     {
         return;
@@ -893,13 +893,13 @@ void MusRC::CalculateLigaturePosX ( MusLayerElement *element, MusLayer *layer, M
     return;
 }
 
-void MusRC::DrawLigature ( MusDC *dc, int y, MusLayerElement *element, MusLayer *layer, MusStaff *staff )
+void MusRC::DrawLigature ( MusDC *dc, int y, LayerElement *element, MusLayer *layer, MusStaff *staff )
 {	
     assert(layer); // Pointer to layer cannot be NULL"
     assert(staff); // Pointer to staff cannot be NULL"
-    assert(dynamic_cast<MusNote*>(element)); // Element must be a MusNote"
+    assert(dynamic_cast<Note*>(element)); // Element must be a Note"
     
-    MusNote *note = dynamic_cast<MusNote*>(element);
+    Note *note = dynamic_cast<Note*>(element);
     
 
 	int xn, x1, x2, yy2, y1, y2, y3, y4, y5;
@@ -972,7 +972,7 @@ void MusRC::DrawLigature ( MusDC *dc, int y, MusLayerElement *element, MusLayer 
 	if (note->m_lig)	// memoriser positions d'une note a l'autre; relier notes par barres
 	{	
         *(MusRC::s_drawingLigX+1) = x2; *(MusRC::s_drawingLigY+1) = y;	// relie notes ligaturees par barres verticales
-		//if (in(x1,(*MusRC::s_drawingLigX)-2,(*MusRC::s_drawingLigX)+2) || (this->fligat && this->lat && !MusNote1::marq_obl))
+		//if (in(x1,(*MusRC::s_drawingLigX)-2,(*MusRC::s_drawingLigX)+2) || (this->fligat && this->lat && !Note1::marq_obl))
 			// les dernieres conditions pour permettre ligature verticale ancienne
 		//	v_bline (dc, *ligat_y, y1, (this->fligat && this->lat) ? x2: x1, m_doc->m_parameters.m_stemWidth); // ax2 - drawing vertical lines missing
 		*MusRC::s_drawingLigX = *(MusRC::s_drawingLigX + 1);
@@ -1019,7 +1019,7 @@ void MusRC::DrawLigature ( MusDC *dc, int y, MusLayerElement *element, MusLayer 
 	return;
 }
 
-void MusRC::DrawBarline( MusDC *dc, MusLayerElement *element, MusLayer *layer, MusStaff *staff )
+void MusRC::DrawBarline( MusDC *dc, LayerElement *element, MusLayer *layer, MusStaff *staff )
 {
     assert(layer); // Pointer to layer cannot be NULL"
     assert(staff); // Pointer to staff cannot be NULL"
@@ -1045,7 +1045,7 @@ void MusRC::DrawBarline( MusDC *dc, MusLayerElement *element, MusLayer *layer, M
     dc->EndGraphic(element, this ); //RZ
 }
 
-void MusRC::DrawClef( MusDC *dc, MusLayerElement *element, MusLayer *layer, MusStaff *staff )
+void MusRC::DrawClef( MusDC *dc, LayerElement *element, MusLayer *layer, MusStaff *staff )
 {
     assert(layer); // Pointer to layer cannot be NULL"
     assert(staff); // Pointer to staff cannot be NULL"
@@ -1113,13 +1113,13 @@ void MusRC::DrawClef( MusDC *dc, MusLayerElement *element, MusLayer *layer, MusS
     dc->EndGraphic(element, this ); //RZ
 }
 
-void MusRC::DrawMensur( MusDC *dc, MusLayerElement *element, MusLayer *layer, MusStaff *staff )
+void MusRC::DrawMensur( MusDC *dc, LayerElement *element, MusLayer *layer, MusStaff *staff )
 {
     assert(layer); // Pointer to layer cannot be NULL"
     assert(staff); // Pointer to staff cannot be NULL"
-    assert(dynamic_cast<MusMensur*>(element)); // Element must be a MusMensur"
+    assert(dynamic_cast<Mensur*>(element)); // Element must be a Mensur"
 
-    MusMensur *mensur = dynamic_cast<MusMensur*>(element);
+    Mensur *mensur = dynamic_cast<Mensur*>(element);
  
     dc->StartGraphic( element, "mensur", element->GetUuid() );
 	
@@ -1335,7 +1335,7 @@ void MusRC::DrawMensurFigures( MusDC *dc, int x, int y, int num, int numBase, Mu
 }
 
 
-void MusRC::DrawSymbol( MusDC *dc, MusLayerElement *element, MusLayer *layer, MusStaff *staff, MusLayerElement *parent )
+void MusRC::DrawSymbol( MusDC *dc, LayerElement *element, MusLayer *layer, MusStaff *staff, LayerElement *parent )
 {
     assert(layer); // Pointer to layer cannot be NULL"
     assert(staff); // Pointer to staff cannot be NULL"
@@ -1343,7 +1343,7 @@ void MusRC::DrawSymbol( MusDC *dc, MusLayerElement *element, MusLayer *layer, Mu
     
     // This is used when we add dynamically an element (eg. accidentals before notes)
     // So we can get the clef without adding the new elem in the list
-    MusLayerElement *list_elem = element;
+    LayerElement *list_elem = element;
     if (parent) list_elem = parent;
     
     MusSymbol *symbol = dynamic_cast<MusSymbol*>(element);
@@ -1363,7 +1363,7 @@ void MusRC::DrawSymbol( MusDC *dc, MusLayerElement *element, MusLayer *layer, Mu
 }
 
 
-void MusRC::DrawSymbolAccid( MusDC *dc, MusLayerElement *element, MusLayer *layer, MusStaff *staff )
+void MusRC::DrawSymbolAccid( MusDC *dc, LayerElement *element, MusLayer *layer, MusStaff *staff )
 {
     assert(layer); // Pointer to layer cannot be NULL"
     assert(staff); // Pointer to staff cannot be NULL"
@@ -1397,7 +1397,7 @@ void MusRC::DrawSymbolAccid( MusDC *dc, MusLayerElement *element, MusLayer *laye
 }
 
 
-void MusRC::DrawSymbolCustos( MusDC *dc, MusLayerElement *element, MusLayer *layer, MusStaff *staff )
+void MusRC::DrawSymbolCustos( MusDC *dc, LayerElement *element, MusLayer *layer, MusStaff *staff )
 {
     assert(layer); // Pointer to layer cannot be NULL"
     assert(staff); // Pointer to staff cannot be NULL"
@@ -1416,7 +1416,7 @@ void MusRC::DrawSymbolCustos( MusDC *dc, MusLayerElement *element, MusLayer *lay
 
 }
 
-void MusRC::DrawSymbolDot( MusDC *dc, MusLayerElement *element, MusLayer *layer, MusStaff *staff )
+void MusRC::DrawSymbolDot( MusDC *dc, LayerElement *element, MusLayer *layer, MusStaff *staff )
 {
     assert(layer); // Pointer to layer cannot be NULL"
     assert(staff); // Pointer to staff cannot be NULL"
@@ -1438,7 +1438,7 @@ void MusRC::DrawSymbolDot( MusDC *dc, MusLayerElement *element, MusLayer *layer,
 
 }
 
-void MusRC::DrawKeySig( MusDC *dc, MusLayerElement *element, MusLayer *layer, MusStaff *staff )
+void MusRC::DrawKeySig( MusDC *dc, LayerElement *element, MusLayer *layer, MusStaff *staff )
 {
     assert(layer); // Pointer to layer cannot be NULL"
     assert(staff); // Pointer to staff cannot be NULL"
@@ -1473,7 +1473,7 @@ void MusRC::DrawKeySig( MusDC *dc, MusLayerElement *element, MusLayer *layer, Mu
     
 }
 
-void MusRC::DrawTie( MusDC *dc, MusLayerElement *element, MusLayer *layer, MusStaff *staff, MusMeasure *measure )
+void MusRC::DrawTie( MusDC *dc, LayerElement *element, MusLayer *layer, MusStaff *staff, MusMeasure *measure )
 {
     assert(layer); // Pointer to layer cannot be NULL"
     assert(staff); // Pointer to staff cannot be NULL"
@@ -1482,8 +1482,8 @@ void MusRC::DrawTie( MusDC *dc, MusLayerElement *element, MusLayer *layer, MusSt
     bool up = false;
     
     Tie *tie = dynamic_cast<Tie*>(element);
-    MusLayerElement *note1 = tie->GetFirstNote();
-    MusLayerElement *note2 = tie->GetSecondNote();
+    LayerElement *note1 = tie->GetFirstNote();
+    LayerElement *note2 = tie->GetSecondNote();
     MusSystem *currentSystem = dynamic_cast<MusSystem*>( staff->GetFirstParent( &typeid(MusSystem) ) );
     MusSystem *parentSystem1 = NULL;
     MusSystem *parentSystem2 = NULL;
@@ -1554,9 +1554,9 @@ void MusRC::DrawTie( MusDC *dc, MusLayerElement *element, MusLayer *layer, MusSt
     
 }
 
-void MusRC::DrawAcciaccaturaSlash(MusDC *dc, MusLayerElement *element) {
+void MusRC::DrawAcciaccaturaSlash(MusDC *dc, LayerElement *element) {
     
-    MusNote *note = dynamic_cast<MusNote*>(element);
+    Note *note = dynamic_cast<Note*>(element);
     
     if (note->m_dur < DUR_8)
         return;
@@ -1578,7 +1578,7 @@ void MusRC::DrawAcciaccaturaSlash(MusDC *dc, MusLayerElement *element) {
  note - for breves and semibreves, only above the staff
       - for flagged notes, the fermata is on the side of the notehead
  */
-void MusRC::DrawFermata(MusDC *dc, MusLayerElement *element, MusStaff *staff) {
+void MusRC::DrawFermata(MusDC *dc, LayerElement *element, MusStaff *staff) {
     int x, y;
     int emb_offset = 0; // if there is and embellishment, offset the note up
     
@@ -1586,8 +1586,8 @@ void MusRC::DrawFermata(MusDC *dc, MusLayerElement *element, MusStaff *staff) {
     x = element->m_xDrawing;
     
     // First case, notes
-    if (dynamic_cast<MusNote*>(element)) {
-        MusNote *note = dynamic_cast<MusNote*>(element);
+    if (dynamic_cast<Note*>(element)) {
+        Note *note = dynamic_cast<Note*>(element);
         
         // stem down or semibreve/longa, fermata up!
         if (!element->m_drawn_stem_dir && (note->m_dur != DUR_1 || note->m_dur != DUR_BR)) {
@@ -1632,7 +1632,7 @@ void MusRC::DrawFermata(MusDC *dc, MusLayerElement *element, MusStaff *staff) {
 // Draw a trill above the notehead
 // This function works as the up-fermata portion of DrawFermata
 // if there are many symbols to draw we could make a generalized function
-void MusRC::DrawTrill(MusDC *dc, MusLayerElement *element, MusStaff *staff) {
+void MusRC::DrawTrill(MusDC *dc, LayerElement *element, MusStaff *staff) {
     int x, y;    
     x = element->m_xDrawing;
 
@@ -1645,7 +1645,7 @@ void MusRC::DrawTrill(MusDC *dc, MusLayerElement *element, MusStaff *staff) {
 }
 
 
-void MusRC::DrawLayerApp( MusDC *dc, MusLayerElement *element, MusLayer *layer, MusMeasure *measure, MusStaff *staff ){
+void MusRC::DrawLayerApp( MusDC *dc, LayerElement *element, MusLayer *layer, MusMeasure *measure, MusStaff *staff ){
     
     assert(layer); // Pointer to layer cannot be NULL"
     assert(staff); // Pointer to staff cannot be NULL"
@@ -1658,7 +1658,7 @@ void MusRC::DrawLayerApp( MusDC *dc, MusLayerElement *element, MusLayer *layer, 
         MusLayer *rdg = (MusLayer*)app->m_children[i];
         int j;
         for (j = 0; j < rdg->GetElementCount(); j++ ) {
-            MusLayerElement *lelem = (MusLayerElement*)rdg->m_children[j];
+            LayerElement *lelem = (LayerElement*)rdg->m_children[j];
             if (i == 0) {
                 m_currentColour = AxGREEN;
             }
@@ -1667,7 +1667,7 @@ void MusRC::DrawLayerApp( MusDC *dc, MusLayerElement *element, MusLayer *layer, 
             }
             DrawElement(dc, lelem, layer, measure, staff );
             /*
-            MusLayerElement rdgElement(&rdg->m_elements[j] );
+            LayerElement rdgElement(&rdg->m_elements[j] );
             rdgElement.m_layer = element->m_layer;
             rdgElement.SetLayout( m_doc );
             rdgElement.m_xDrawing = element->m_xDrawing;
@@ -1690,7 +1690,7 @@ void MusRC::DrawLayerApp( MusDC *dc, MusLayerElement *element, MusLayer *layer, 
 /*
  * Lyric code not refactored in ax2
     
-void MusNote1::DeleteLyricFromNote( MusSymbol1 *lyric )
+void Note1::DeleteLyricFromNote( MusSymbol1 *lyric )
 {
 	for ( int i = 0; i < (int)this->m_lyrics.GetCount(); i++ ){
 		MusSymbol1 *tmp = &this->m_lyrics[i];
@@ -1701,7 +1701,7 @@ void MusNote1::DeleteLyricFromNote( MusSymbol1 *lyric )
 	}
 }
 
-MusSymbol1 *MusNote1::GetFirstLyric( )
+MusSymbol1 *Note1::GetFirstLyric( )
 {
 	if ( this->m_lyrics.GetCount() == 0 ) 
 		return NULL;
@@ -1709,7 +1709,7 @@ MusSymbol1 *MusNote1::GetFirstLyric( )
 		return &this->m_lyrics[0];
 }
 
-MusSymbol1 *MusNote1::GetLastLyric( )
+MusSymbol1 *Note1::GetLastLyric( )
 {
 	int num = this->m_lyrics.GetCount(); 
 	if ( num == 0 ) 
@@ -1718,7 +1718,7 @@ MusSymbol1 *MusNote1::GetLastLyric( )
 		return &this->m_lyrics[num-1];
 }
 
-MusSymbol1 *MusNote1::GetLyricNo( int no )
+MusSymbol1 *Note1::GetLyricNo( int no )
 {
 	int num = this->m_lyrics.GetCount(); 
 	if ( (no < 0) || (num <= no) ) 

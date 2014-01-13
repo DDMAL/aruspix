@@ -8,15 +8,15 @@
 
 #include "musmensur.h"
 
-int MusMensur::s_num = 3;
-int MusMensur::s_numBase = 2;
+int Mensur::s_num = 3;
+int Mensur::s_numBase = 2;
 
 //----------------------------------------------------------------------------
-// MusMensur
+// Mensur
 //----------------------------------------------------------------------------
 
-MusMensur::MusMensur():
-	MusLayerElement("mensur-")
+Mensur::Mensur():
+	LayerElement("mensur-")
 {
     m_dot = 0;
     m_meterSymb = METER_SYMB_NONE;
@@ -28,13 +28,13 @@ MusMensur::MusMensur():
 }
 
 
-MusMensur::~MusMensur()
+Mensur::~Mensur()
 {
 }
 
-bool MusMensur::operator==( MusObject& other )
+bool Mensur::operator==( MusObject& other )
 {
-    MusMensur *otherMensur = dynamic_cast<MusMensur*>( &other );
+    Mensur *otherMensur = dynamic_cast<Mensur*>( &other );
     if ( !otherMensur ) {
         return false;
     }
@@ -62,7 +62,7 @@ bool MusMensur::operator==( MusObject& other )
     return true;
 }
 
-void MusMensur::SetValue( int value, int flag ) 
+void Mensur::SetValue( int value, int flag ) 
 {
     this->m_num = 0;
     this->m_numBase = 0;
@@ -160,8 +160,8 @@ void MusMensur::SetValue( int value, int flag )
             this->m_slash = 0;
             this->m_dot = 0;
             this->m_reversed = false;
-            this->m_num = MusMensur::s_num; 
-            this->m_numBase = MusMensur::s_numBase; 
+            this->m_num = Mensur::s_num; 
+            this->m_numBase = Mensur::s_numBase; 
             break;
             
         //case ('2'): this->code = 64; this->calte = 2; break;

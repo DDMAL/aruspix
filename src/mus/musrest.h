@@ -20,7 +20,7 @@
 /** 
  * This class models the MEI <rest> element. 
  */
-class Rest: public MusLayerElement, public MusDurationInterface, public PositionInterface
+class Rest: public LayerElement, public MusDurationInterface, public PositionInterface
 {
 public:
     // constructors and destructors
@@ -29,7 +29,7 @@ public:
     
     /**
      * Comparison operator. 
-     * Check if the MusLayerElement if a Rest and compare attributes
+     * Check if the LayerElement if a Rest and compare attributes
      */
     virtual bool operator==(MusObject& other);
     

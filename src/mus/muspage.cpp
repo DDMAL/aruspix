@@ -163,7 +163,7 @@ void MusPage::Layout( )
     
     // Align the content of the page using measure and system aligners
     // After this:
-    // - each MusLayerElement object will have its MusAlignment pointer initialized
+    // - each LayerElement object will have its MusAlignment pointer initialized
     // - each MusStaff object will then have its MusStaffAlignment pointer initialized
     MusMeasureAligner *measureAlignerPtr = NULL;
     double time = 0.0;
@@ -195,7 +195,7 @@ void MusPage::Layout( )
     rc.DrawPage(  &bb_dc, this, false );
     
     // Adjust the X shift of the MusAlignment looking at the bounding boxes
-    // Look at each MusLayerElement and changes the m_xShift if the bouding box is overlapping
+    // Look at each LayerElement and changes the m_xShift if the bouding box is overlapping
     params.clear();
     int min_pos = 0;
     int measure_width = 0;

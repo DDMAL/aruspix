@@ -216,7 +216,7 @@ bool CmpCollation::Realize( )
 					break;
 				if ( full_staff->m_children[0].IsNote() )
 				{
-					MusNote1 *nnote = (MusNote1*)full_staff->m_children.Detach( 0 );
+					Note1 *nnote = (Note1*)full_staff->m_children.Detach( 0 );
 					nnote->m_x_abs -= (j * correct_lrg_lign) - clef_offset;
 					staff->m_children.Add( nnote );
 				}
@@ -347,11 +347,11 @@ void CmpCollation::CreateApp( MusLayer *layer_aligned, int i, MusLayer *layer_va
     var->m_source = m_varSource;
     
     if ( (appType == CMP_APP_SUBST) || (appType == CMP_APP_DEL) ) {
-        ref->AddElement( (((MusLayerElement*)layer_aligned->m_children[i]))->GetChildCopy()  );
+        ref->AddElement( (((LayerElement*)layer_aligned->m_children[i]))->GetChildCopy()  );
         (ref->m_children[0])->AddSameAs( (layer_aligned->m_children[i])->GetUuid(), refFileId.mb_str() );
     }
     if ( (appType == CMP_APP_SUBST) || (appType == CMP_APP_INS) ) {
-        var->AddElement( (((MusLayerElement*)layer_var->m_children[j]))->GetChildCopy()  );
+        var->AddElement( (((LayerElement*)layer_var->m_children[j]))->GetChildCopy()  );
         (var->m_children[0])->AddSameAs( (layer_var->m_children[j])->GetUuid(), varFileId.mb_str() );
     }
     
@@ -359,11 +359,11 @@ void CmpCollation::CreateApp( MusLayer *layer_aligned, int i, MusLayer *layer_va
     app->AddLayerRdg( ref );
     app->AddLayerRdg( var );
     // insert the app in the layer
-    layer_aligned->Insert( app, (MusLayerElement*)layer_aligned->m_children[i] );
+    layer_aligned->Insert( app, (LayerElement*)layer_aligned->m_children[i] );
 
     // remove the original element (if any)
     if ( appType != CMP_APP_INS ) {
-        layer_aligned->Delete( (MusLayerElement*)layer_aligned->m_children[i+1] );
+        layer_aligned->Delete( (LayerElement*)layer_aligned->m_children[i+1] );
         //delete layer_aligned->m_children[i+1];
     }
 }
@@ -571,7 +571,7 @@ CmpPartPage::CmpPartPage(  wxString axfile, CmpBookPart *part )
 }
 
 
-void CmpPartPage::SetStartEnd( MusLayerElement *element, bool isStart ) 
+void CmpPartPage::SetStartEnd( LayerElement *element, bool isStart ) 
 { 
     wxString uuidStr;
     if ( element ) {
