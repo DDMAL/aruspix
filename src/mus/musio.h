@@ -13,16 +13,16 @@
 #include <string>
 
 class MusDoc;
-class MusLayer;
+class Layer;
 class LayerApp;
 class LayerElement;
 class LayerRdg;
-class MusMeasure;
-class MusPage;
-class MusStaff;
+class Measure;
+class Page;
+class Staff;
 class MusStaffDef;
 class MusStaffGrp;
-class MusSystem;
+class System;
 
 //----------------------------------------------------------------------------
 // MusFileOutputStream
@@ -52,13 +52,13 @@ public:
      */
     ///@{
     virtual bool WriteDoc( MusDoc *doc ) { return true; };
-    virtual bool WritePage( MusPage *page ) { return true; };
-    virtual bool WriteSystem( MusSystem *system ) { return true; };
+    virtual bool WritePage( Page *page ) { return true; };
+    virtual bool WriteSystem( System *system ) { return true; };
     virtual bool WriteStaffGrp( MusStaffGrp *system ) { return true; };
     virtual bool WriteStaffDef( MusStaffDef *system ) { return true; };
-    virtual bool WriteMeasure( MusMeasure *measure ) { return true; };
-    virtual bool WriteStaff( MusStaff *staff ) { return true; };
-    virtual bool WriteLayer( MusLayer *layer ) { return true; };
+    virtual bool WriteMeasure( Measure *measure ) { return true; };
+    virtual bool WriteStaff( Staff *staff ) { return true; };
+    virtual bool WriteLayer( Layer *layer ) { return true; };
     virtual bool WriteLayerElement( LayerElement *element ) { return true; };
     // app
     virtual bool WriteLayerApp( LayerApp *app ) { return true; };

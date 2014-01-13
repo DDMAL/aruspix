@@ -105,8 +105,8 @@ bool MusXMLOutput::WriteDoc( MusDoc *doc )
 
 
 /*
-bool MusXMLOutput::WriteMeasure( MusMeasure *measure )
-//bool MusXMLOutput::WriteMeiMeasure( Measure *meiMeasure, MusMeasure *measure )
+bool MusXMLOutput::WriteMeasure( Measure *measure )
+//bool MusXMLOutput::WriteMeiMeasure( Measure *meiMeasure, Measure *measure )
 {
     std::string num;
 
@@ -133,8 +133,8 @@ bool MusXMLOutput::WriteMeasure( MusMeasure *measure )
 }
 */ // ax2.3
 
-bool MusXMLOutput::WriteStaff( MusStaff *staff )
-//bool MusXMLOutput::WriteMeiStaff( Staff *meiStaff, MusStaff *staff )
+bool MusXMLOutput::WriteStaff( Staff *staff )
+//bool MusXMLOutput::WriteMeiStaff( Staff *meiStaff, Staff *staff )
 {
     Mus::LogDebug("Staff");
     
@@ -157,8 +157,8 @@ bool MusXMLOutput::WriteStaff( MusStaff *staff )
     return true;
 }
 
-bool MusXMLOutput::WriteLayer( MusLayer *layer )
-//bool MusXMLOutput::WriteMeiLayer( Layer *meiLayer, MusLayer *layer )
+bool MusXMLOutput::WriteLayer( Layer *layer )
+//bool MusXMLOutput::WriteMeiLayer( Layer *meiLayer, Layer *layer )
 {
     Mus::LogDebug("Layer");
     return true;
@@ -199,25 +199,25 @@ bool MusXMLOutput::WriteLayout( MusDoc *layout )
     return true;
 }
 
-bool MusXMLOutput::WritePage( MusPage *page )
+bool MusXMLOutput::WritePage( Page *page )
 {
     Mus::LogDebug("Page");
     return true;
 }
 
-bool MusXMLOutput::WriteSystem( MusSystem *system )
+bool MusXMLOutput::WriteSystem( System *system )
 {
     Mus::LogDebug("System");
     return true;
 }
 
-bool MusXMLOutput::WriteLaidOutStaff( MusStaff *laidOutStaff )
+bool MusXMLOutput::WriteLaidOutStaff( Staff *laidOutStaff )
 {
     Mus::LogDebug("Laid staff");
     return true;
 }
 
-bool MusXMLOutput::WriteLaidOutLayer( MusLayer *laidOutLayer )
+bool MusXMLOutput::WriteLaidOutLayer( Layer *laidOutLayer )
 {    Mus::LogDebug("Laid layer");
     return true;
 

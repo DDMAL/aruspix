@@ -331,8 +331,8 @@ void MusPaeInput::convertPlainAndEasyToKern(std::istream &infile, std::ostream &
     
     
     m_doc->Reset( Raw );
-    MusPage *page = new MusPage();
-    MusSystem *system = new MusSystem();
+    Page *page = new Page();
+    System *system = new System();
     
     int measure_count = 1;
     
@@ -340,9 +340,9 @@ void MusPaeInput::convertPlainAndEasyToKern(std::istream &infile, std::ostream &
     for ( it = staff.begin() ; it < staff.end(); it++ ) {
         
         
-        m_staff = new MusStaff( 1 );
-        m_measure = new MusMeasure( true, measure_count );
-        m_layer = new MusLayer( 1 );
+        m_staff = new Staff( 1 );
+        m_measure = new Measure( true, measure_count );
+        m_layer = new Layer( 1 );
         
         m_staff->AddLayer(m_layer);
         m_measure->AddStaff( m_staff );

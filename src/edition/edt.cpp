@@ -216,7 +216,7 @@ void EdtEnv::ParseCmd( wxCmdLineParser *parser )
                 return;
             
             // draw it
-            MusPage *page = &mfile->m_pages[0];
+            Page *page = &mfile->m_pages[0];
             m_musViewPtr->SetDoc( mfile );
             page->Init( m_musViewPtr );
             m_musViewPtr->SetZoom( 50 ); // this should probably be a parameter...
@@ -522,8 +522,8 @@ void EdtEnv::OnOpenMLF( wxCommandEvent &event )
     //wxGetApp().m_lastDirMLF_in = wxPathOnly( mlf );
     
     m_edtFilePtr->New();
-	//MusPage *page = new MusPage();
-	//MusStaff *staff = new MusStaff();
+	//Page *page = new Page();
+	//Staff *staff = new Staff();
 	//page->m_staves.Add( staff );
 	//m_edtFilePtr->m_pages.Add( page );
     MusMLFInput *mlfinput = new MusMLFInput( m_edtFilePtr->m_musDocPtr, mlf );

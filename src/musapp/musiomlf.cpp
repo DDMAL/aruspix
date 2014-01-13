@@ -346,11 +346,11 @@ MusMLFOutput::~MusMLFOutput()
 /*
  Removed in version 2.0.0
  
-MusStaff *MusMLFOutput::SplitSymboles( MusStaff *staff )
+Staff *MusMLFOutput::SplitSymboles( Staff *staff )
 {
 	unsigned int k;
 
-	MusStaff *nstaff = new MusStaff();
+	Staff *nstaff = new Staff();
 	staff->CopyAttributes( nstaff );
 	Note1 *nnote = NULL;
 	MusSymbol1 *nsymbol1 = NULL;
@@ -539,7 +539,7 @@ void MusMLFOutput::EndLabel( int offset, int end_point )
 // copie le portee en convertissant les symbols de la clef courante vers Ut1
 // si inPlace, directment dans staff
 
-MusLayer *MusMLFOutput::GetUt1( MusLayer *layer )
+Layer *MusMLFOutput::GetUt1( Layer *layer )
 {
 
 	if ( !layer )
@@ -581,7 +581,7 @@ MusLayer *MusMLFOutput::GetUt1( MusLayer *layer )
   la ligne du bas.
 */
 
-void MusMLFOutput::GetUt1( MusLayer *layer, LayerElement *pelement, int *code, int *oct)
+void MusMLFOutput::GetUt1( Layer *layer, LayerElement *pelement, int *code, int *oct)
 {
 
 	if (!pelement || !code || !oct) return;
@@ -614,7 +614,7 @@ void MusMLFOutput::GetUt1( MusLayer *layer, LayerElement *pelement, int *code, i
 	};
 }
 
-bool MusMLFOutput::WritePage( const MusPage *page, bool write_header )
+bool MusMLFOutput::WritePage( const Page *page, bool write_header )
 {
 	if ( write_header && m_addHeader )
 	{
@@ -625,7 +625,7 @@ bool MusMLFOutput::WritePage( const MusPage *page, bool write_header )
     m_layer = NULL;
     for (m_staff_i = 0; m_staff_i < (int)page->GetSystemCount(); m_staff_i++) 
     {
-        m_layer = (MusLayer*)page->m_children[m_staff_i]->m_children[0]->m_children[0];
+        m_layer = (Layer*)page->m_children[m_staff_i]->m_children[0]->m_children[0];
         WriteLayer( m_layer );
 		m_layer = NULL;
     }
@@ -634,9 +634,9 @@ bool MusMLFOutput::WritePage( const MusPage *page, bool write_header )
 }
 
 // idem ExportFile() puis WritePage(), mais gere la position des portee de imPage et les portee selon staff numbers
-bool MusMLFOutput::WritePage( const MusPage *page, wxString filename, ImPage *imPage, std::vector<int> *staff_numbers )
+bool MusMLFOutput::WritePage( const Page *page, wxString filename, ImPage *imPage, std::vector<int> *staff_numbers )
 {
-	wxASSERT_MSG( page, "MusPage cannot be NULL" );
+	wxASSERT_MSG( page, "Page cannot be NULL" );
 	wxASSERT_MSG( imPage, "ImPage cannot be NULL" );
 	
     m_filename = filename;
@@ -659,7 +659,7 @@ bool MusMLFOutput::WritePage( const MusPage *page, wxString filename, ImPage *im
 		//	continue; // commented in version 2.3.0
 
         // I think this is wrong, we need to loop through all the staves? maybe not
-        m_layer = (MusLayer*)page->m_children[m_staff_i]->m_children[0]->m_children[0];
+        m_layer = (Layer*)page->m_children[m_staff_i]->m_children[0]->m_children[0];
 		imPage->m_staves[m_staff_i].GetMinMax( &offset, &end_point );
         WriteLayer( m_layer, offset, end_point );
 		m_layer = NULL;
@@ -669,7 +669,7 @@ bool MusMLFOutput::WritePage( const MusPage *page, wxString filename, ImPage *im
 }
 
 
-bool MusMLFOutput::WriteLayer( const MusLayer *layer, int offset,  int end_point )
+bool MusMLFOutput::WriteLayer( const Layer *layer, int offset,  int end_point )
 {
 
 	if (layer->GetElementCount() == 0)
@@ -1221,7 +1221,7 @@ MusMLFInput::~MusMLFInput()
 // copie le portee en convertissant les symbols de Ut vers Clef courrant
 // si inPlace, directment dans staff
 
-void MusMLFInput::GetNotUt1( MusLayer *layer )
+void MusMLFInput::GetNotUt1( Layer *layer )
 {
 	if ( !layer )
 		return;
@@ -1254,7 +1254,7 @@ void MusMLFInput::GetNotUt1( MusLayer *layer )
 }
 
 
-void MusMLFInput::GetNotUt1( MusLayer *layer, LayerElement *pelement, int *code, int *oct)
+void MusMLFInput::GetNotUt1( Layer *layer, LayerElement *pelement, int *code, int *oct)
 {
 	if (!layer || !pelement || !code || !oct) return;
     
@@ -1349,13 +1349,13 @@ bool MusMLFInput::ReadLabelStr( wxString label )
 // dans ce cas la premiere ligne == #!MLF!#
 // Si imPage, ajustera les position en fonction des position x dans imPage (staff)
 
-bool MusMLFInput::ReadPage( MusPage *page, bool firstLineMLF, ImPage *imPage )
+bool MusMLFInput::ReadPage( Page *page, bool firstLineMLF, ImPage *imPage )
 {    
 	wxString line;
 	if ( firstLineMLF  && ( !ReadLine( &line )  || ( line != "#!MLF!#" )))
 		return false;
 
-	MusLayer *layer = NULL;
+	Layer *layer = NULL;
 	int offset;
 
 	while ( ReadLine( &line ) && ReadLabelStr( line ) )
@@ -1370,7 +1370,7 @@ bool MusMLFInput::ReadPage( MusPage *page, bool firstLineMLF, ImPage *imPage )
             if ( m_staff_label < (int)page->GetSystemCount() )
 			{
                 // first layer of the first staff of the system
-				layer = (MusLayer*)page->m_children[ m_staff_label ]->m_children[0]->m_children[0];
+				layer = (Layer*)page->m_children[ m_staff_label ]->m_children[0]->m_children[0];
 				m_staff_i = m_staff_label; //m_staff_i++;
 			}
 			offset = 0;
@@ -1393,7 +1393,7 @@ bool MusMLFInput::ReadPage( MusPage *page, bool firstLineMLF, ImPage *imPage )
 // offset est la position x relative du label
 // normalement donne par imPage si present
 
-bool MusMLFInput::ReadLabel( MusLayer *layer, int offset )
+bool MusMLFInput::ReadLabel( Layer *layer, int offset )
 {
 	char elementType;
 	int pos = 0;

@@ -18,12 +18,12 @@
 class Beam;
 class Barline;
 class MusDoc;
-class MusLayer;
+class Layer;
 class LayerElement;
-class MusMeasure;
-class MusPage;
-class MusStaff;
-class MusSystem;
+class Measure;
+class Page;
+class Staff;
+class System;
 class Tie;
 class Tuplet;
 
@@ -48,7 +48,7 @@ public:
     virtual void OnEndEditionClef() {}
     virtual void DoRefresh() {}
     virtual void DoResize() {}
-    virtual void DoLyricCursor( int x, int y, MusDC *dc, std::string lyric ) {}
+    virtual void DoLyricCursor( int x, int y, DeviceContext *dc, std::string lyric ) {}
     virtual void DoReset() {}
     virtual void OnPageChange() {};
 
@@ -82,24 +82,24 @@ public:
      * It should be check (currently not done)
      * A safer option would be to pass the page number.
      */
-	void SetPage( MusPage *page );
+	void SetPage( Page *page );
 
 	/* musrc_graph.cpp */
-	void v_bline ( MusDC *dc, int y1, int y2, int x1, int nbr);
-	void v_bline2 ( MusDC *dc, int y1, int y2, int x1, int nbr);
-	void h_bline ( MusDC *dc, int x1, int x2, int y1, int nbr);
-	void festa_string ( MusDC *dc, int x, int y, const std::string str, 
-					   MusStaff *staff, int dimin ); 
-	void DrawLeipzigFont ( MusDC *dc, int x, int y, unsigned char c, 
-				  MusStaff *staff, bool dimin );
-    void DrawTieBezier(MusDC *dc, int x, int y, int x1, bool direction);
-	//void putfontfast ( MusDC *dc, int x, int y, unsigned char c );
-	void putstring ( MusDC *dc, int x, int y, std::string s, int centrer, int staffSize = 0);
-	void putlyric ( MusDC *dc, int x, int y, std::string s, int staffSize = 0, bool cursor = false);
-	void box( MusDC *dc, int x1, int y1, int x2, int y2);
-	void rect_plein2( MusDC *dc, int x1, int y1, int x2, int y2);
-	int hGrosseligne ( MusDC *dc, int x1, int y1, int x2, int y2, int decal);
-	int DoDrawDot ( MusDC *dc, int x, int y );
+	void v_bline ( DeviceContext *dc, int y1, int y2, int x1, int nbr);
+	void v_bline2 ( DeviceContext *dc, int y1, int y2, int x1, int nbr);
+	void h_bline ( DeviceContext *dc, int x1, int x2, int y1, int nbr);
+	void festa_string ( DeviceContext *dc, int x, int y, const std::string str, 
+					   Staff *staff, int dimin ); 
+	void DrawLeipzigFont ( DeviceContext *dc, int x, int y, unsigned char c, 
+				  Staff *staff, bool dimin );
+    void DrawTieBezier(DeviceContext *dc, int x, int y, int x1, bool direction);
+	//void putfontfast ( DeviceContext *dc, int x, int y, unsigned char c );
+	void putstring ( DeviceContext *dc, int x, int y, std::string s, int centrer, int staffSize = 0);
+	void putlyric ( DeviceContext *dc, int x, int y, std::string s, int staffSize = 0, bool cursor = false);
+	void box( DeviceContext *dc, int x1, int y1, int x2, int y2);
+	void rect_plein2( DeviceContext *dc, int x1, int y1, int x2, int y2);
+	int hGrosseligne ( DeviceContext *dc, int x1, int y1, int x2, int y2, int decal);
+	int DoDrawDot ( DeviceContext *dc, int x, int y );
 	/* musrc_bezier.cpp */
 	static int CC(int ,int );
 	static long BBlend(int ,int ,long );
@@ -109,74 +109,74 @@ public:
 	static void pntswap (MusPoint *x1, MusPoint *x2);
     
     /* musrc_page.cpp */
-	void DrawPage( MusDC *dc, MusPage *page, bool background = true );
-    void DrawSystem( MusDC *dc, MusSystem *system );
-	void DrawScoreDef( MusDC *dc, MusScoreDef *scoreDef, MusMeasure *measure, int x, Barline *barline = NULL );
-	void DrawStaffGrp( MusDC *dc, MusMeasure *measure, MusStaffGrp *staffGrp, int x );
-	void DrawBracket ( MusDC *dc, int x, int y1, int y2, int staffSize);
-	void DrawBrace ( MusDC *dc, int x, int y1, int y2, int staffSize);
-    void DrawBarlines( MusDC *dc, MusMeasure *measure, MusStaffGrp *staffGrp, int x, Barline *barline );
-    void DrawBarline( MusDC *dc, int x, int y_top, int y_bottom, Barline *barline );
-	void DrawBarlineDots ( MusDC *dc, int x, MusStaff *staff, Barline *barline );
-	void DrawPartialBarline ( MusDC *dc, MusSystem *system, int x, MusStaff *pportee);
-    void DrawMeasure( MusDC *dc, MusMeasure *measure, MusSystem *system );
-    void DrawStaff( MusDC *dc, MusStaff *staff, MusMeasure *measure, MusSystem *system );
-	void DrawStaffLines( MusDC *dc, MusStaff *staff, MusMeasure *measure, MusSystem *system );
-    int CalculatePitchPosY ( MusStaff *staff, char pname, int dec_clef, int oct);
-	int CalculateNeumePosY ( MusStaff *staff, char note, int dec_clef, int oct);
-    int CalculateRestPosY ( MusStaff *staff, char duration);
-    void DrawLayer( MusDC *dc, MusLayer *layer, MusStaff *staff,  MusMeasure *measure );
-    void DrawLayerList( MusDC *dc, MusLayer *layer, MusStaff *staff, MusMeasure *measure, const std::type_info *elementType );
-	void DrawSlur( MusDC *dc, MusLayer *layer, int x1, int y1, int x2, int y2, bool up, int height = -1);
-    int CalculatePitchCode ( MusLayer *layer, int y_n, int x_pos, int *octave );
+	void DrawPage( DeviceContext *dc, Page *page, bool background = true );
+    void DrawSystem( DeviceContext *dc, System *system );
+	void DrawScoreDef( DeviceContext *dc, ScoreDef *scoreDef, Measure *measure, int x, Barline *barline = NULL );
+	void DrawStaffGrp( DeviceContext *dc, Measure *measure, MusStaffGrp *staffGrp, int x );
+	void DrawBracket ( DeviceContext *dc, int x, int y1, int y2, int staffSize);
+	void DrawBrace ( DeviceContext *dc, int x, int y1, int y2, int staffSize);
+    void DrawBarlines( DeviceContext *dc, Measure *measure, MusStaffGrp *staffGrp, int x, Barline *barline );
+    void DrawBarline( DeviceContext *dc, int x, int y_top, int y_bottom, Barline *barline );
+	void DrawBarlineDots ( DeviceContext *dc, int x, Staff *staff, Barline *barline );
+	void DrawPartialBarline ( DeviceContext *dc, System *system, int x, Staff *pportee);
+    void DrawMeasure( DeviceContext *dc, Measure *measure, System *system );
+    void DrawStaff( DeviceContext *dc, Staff *staff, Measure *measure, System *system );
+	void DrawStaffLines( DeviceContext *dc, Staff *staff, Measure *measure, System *system );
+    int CalculatePitchPosY ( Staff *staff, char pname, int dec_clef, int oct);
+	int CalculateNeumePosY ( Staff *staff, char note, int dec_clef, int oct);
+    int CalculateRestPosY ( Staff *staff, char duration);
+    void DrawLayer( DeviceContext *dc, Layer *layer, Staff *staff,  Measure *measure );
+    void DrawLayerList( DeviceContext *dc, Layer *layer, Staff *staff, Measure *measure, const std::type_info *elementType );
+	void DrawSlur( DeviceContext *dc, Layer *layer, int x1, int y1, int x2, int y2, bool up, int height = -1);
+    int CalculatePitchCode ( Layer *layer, int y_n, int x_pos, int *octave );
     
     /* musrc_element.cpp */
     /** @name Methods for drawing LayerElement containing other elements */
     ///@{
-    void DrawElement( MusDC *dc, LayerElement *element, MusLayer *layer, MusMeasure *measure, MusStaff *staff );
-    void DrawBeamElement(MusDC *dc, LayerElement *element, MusLayer *layer, MusMeasure *measure, MusStaff *staff);
-    void DrawTupletElement( MusDC *dc, LayerElement *element, MusLayer *layer, MusMeasure *measure, MusStaff *staff );
-    void DrawLayerApp( MusDC *dc, LayerElement *element, MusLayer *layer, MusMeasure *measure, MusStaff *staff );
+    void DrawElement( DeviceContext *dc, LayerElement *element, Layer *layer, Measure *measure, Staff *staff );
+    void DrawBeamElement(DeviceContext *dc, LayerElement *element, Layer *layer, Measure *measure, Staff *staff);
+    void DrawTupletElement( DeviceContext *dc, LayerElement *element, Layer *layer, Measure *measure, Staff *staff );
+    void DrawLayerApp( DeviceContext *dc, LayerElement *element, Layer *layer, Measure *measure, Staff *staff );
     ///@}
     
-    void DrawDurationElement( MusDC *dc, LayerElement *element, MusLayer *layer, MusStaff *staff );
-    void DrawBarline( MusDC *dc, LayerElement *element, MusLayer *layer, MusStaff *staff );  
-    void DrawClef( MusDC *dc, LayerElement *element, MusLayer *layer, MusStaff *staff );
-    void DrawMensur( MusDC *dc, LayerElement *element, MusLayer *layer, MusStaff *staff );
-    void DrawFermata(MusDC *dc, LayerElement *element, MusStaff *staff);
-    void DrawMensurCircle( MusDC *dc, int x, int yy, MusStaff *staff );
-    void DrawMensurDot( MusDC *dc, int x, int yy, MusStaff *staff ); 
-    void DrawMensurFigures( MusDC *dc, int x, int y, int num, int numBase, MusStaff *staff); 
-    void DrawMensurHalfCircle( MusDC *dc, int x, int yy, MusStaff *staff );
-    void DrawMensurReversedHalfCircle( MusDC *dc, int x, int yy, MusStaff *staff ); 
-    void DrawMensurSlash( MusDC *dc, int x, int yy, MusStaff *staff );
-    void DrawMultiRest( MusDC *dc, LayerElement *element, MusLayer *layer, MusStaff *staff );
-    void DrawNote( MusDC *dc, LayerElement *element, MusLayer *layer, MusStaff *staff );  
-    void DrawRest( MusDC *dc, LayerElement *element, MusLayer *layer, MusStaff *staff );
-    void DrawSymbol( MusDC *dc, LayerElement *element, MusLayer *layer, MusStaff *staff, LayerElement *parent = NULL );
-    void DrawSymbolAccid( MusDC *dc, LayerElement *element, MusLayer *layer, MusStaff *staff );
-    void DrawSymbolCustos( MusDC *dc, LayerElement *element, MusLayer *layer, MusStaff *staff );
-    void DrawSymbolDot( MusDC *dc, LayerElement *element, MusLayer *layer, MusStaff *staff );
-    void DrawTie( MusDC *dc, LayerElement *element, MusLayer *layer, MusStaff *staff, MusMeasure *measure );
-    void DrawTuplet( MusDC *dc, Tuplet *tuplet, MusLayer *layer, MusStaff *staff);
-    void DrawTrill(MusDC *dc, LayerElement *element, MusStaff *staff);
-    void DrawLigature( MusDC *dc, int y, LayerElement *element, MusLayer *layer, MusStaff *staff );  
-    void DrawLedgerLines( MusDC *dc, int y_n, int y_p, int xn, unsigned int smaller, int staffSize);
-    void DrawLongRest ( MusDC *dc, int a, int b, MusStaff *staff);
-    void DrawBreveRest ( MusDC *dc, int a, int b, MusStaff *staff);
-    void DrawWholeRest ( MusDC *dc, int a, int b, int valeur, unsigned char dots, unsigned int smaller, MusStaff *staff);
-    void DrawQuarterRest ( MusDC *dc, int a, int b, int valeur, unsigned char dots, unsigned int smaller, MusStaff *staff);
-    void DrawDots ( MusDC *dc, int x1, int y1, int offy, unsigned char dots, MusStaff *staff );
-    void CalculateLigaturePosX ( LayerElement *element, MusLayer *layer, MusStaff *staff);
-    void DrawAcciaccaturaSlash(MusDC *dc, LayerElement *element);
-    void DrawKeySig( MusDC *dc, LayerElement *element, MusLayer *layer, MusStaff *staff );
+    void DrawDurationElement( DeviceContext *dc, LayerElement *element, Layer *layer, Staff *staff );
+    void DrawBarline( DeviceContext *dc, LayerElement *element, Layer *layer, Staff *staff );  
+    void DrawClef( DeviceContext *dc, LayerElement *element, Layer *layer, Staff *staff );
+    void DrawMensur( DeviceContext *dc, LayerElement *element, Layer *layer, Staff *staff );
+    void DrawFermata(DeviceContext *dc, LayerElement *element, Staff *staff);
+    void DrawMensurCircle( DeviceContext *dc, int x, int yy, Staff *staff );
+    void DrawMensurDot( DeviceContext *dc, int x, int yy, Staff *staff ); 
+    void DrawMensurFigures( DeviceContext *dc, int x, int y, int num, int numBase, Staff *staff); 
+    void DrawMensurHalfCircle( DeviceContext *dc, int x, int yy, Staff *staff );
+    void DrawMensurReversedHalfCircle( DeviceContext *dc, int x, int yy, Staff *staff ); 
+    void DrawMensurSlash( DeviceContext *dc, int x, int yy, Staff *staff );
+    void DrawMultiRest( DeviceContext *dc, LayerElement *element, Layer *layer, Staff *staff );
+    void DrawNote( DeviceContext *dc, LayerElement *element, Layer *layer, Staff *staff );  
+    void DrawRest( DeviceContext *dc, LayerElement *element, Layer *layer, Staff *staff );
+    void DrawSymbol( DeviceContext *dc, LayerElement *element, Layer *layer, Staff *staff, LayerElement *parent = NULL );
+    void DrawSymbolAccid( DeviceContext *dc, LayerElement *element, Layer *layer, Staff *staff );
+    void DrawSymbolCustos( DeviceContext *dc, LayerElement *element, Layer *layer, Staff *staff );
+    void DrawSymbolDot( DeviceContext *dc, LayerElement *element, Layer *layer, Staff *staff );
+    void DrawTie( DeviceContext *dc, LayerElement *element, Layer *layer, Staff *staff, Measure *measure );
+    void DrawTuplet( DeviceContext *dc, Tuplet *tuplet, Layer *layer, Staff *staff);
+    void DrawTrill(DeviceContext *dc, LayerElement *element, Staff *staff);
+    void DrawLigature( DeviceContext *dc, int y, LayerElement *element, Layer *layer, Staff *staff );  
+    void DrawLedgerLines( DeviceContext *dc, int y_n, int y_p, int xn, unsigned int smaller, int staffSize);
+    void DrawLongRest ( DeviceContext *dc, int a, int b, Staff *staff);
+    void DrawBreveRest ( DeviceContext *dc, int a, int b, Staff *staff);
+    void DrawWholeRest ( DeviceContext *dc, int a, int b, int valeur, unsigned char dots, unsigned int smaller, Staff *staff);
+    void DrawQuarterRest ( DeviceContext *dc, int a, int b, int valeur, unsigned char dots, unsigned int smaller, Staff *staff);
+    void DrawDots ( DeviceContext *dc, int x1, int y1, int offy, unsigned char dots, Staff *staff );
+    void CalculateLigaturePosX ( LayerElement *element, Layer *layer, Staff *staff);
+    void DrawAcciaccaturaSlash(DeviceContext *dc, LayerElement *element);
+    void DrawKeySig( DeviceContext *dc, LayerElement *element, Layer *layer, Staff *staff );
     /* musrc_beam.cpp */
-    void DrawBeam(  MusDC *dc, MusLayer *layer, Beam *beam, MusStaff *staff );
+    void DrawBeam(  DeviceContext *dc, Layer *layer, Beam *beam, Staff *staff );
     
 private:
     
     //Used for calculating tuplets
-    bool GetTupletCoordinates(Tuplet* tuplet, MusLayer *layer, MusPoint* start, MusPoint* end, MusPoint *center);
+    bool GetTupletCoordinates(Tuplet* tuplet, Layer *layer, MusPoint* start, MusPoint* end, MusPoint *center);
     std::string IntToObliqueFigures(unsigned int number);
     bool OneBeamInTuplet(Tuplet* tuplet);
     
@@ -184,7 +184,7 @@ public:
     /** Document */
     MusDoc *m_doc;
     /** Page affichee */
-    MusPage *m_page;
+    Page *m_page;
     /** No Page affichee */
     int m_npage;
 
@@ -198,10 +198,10 @@ public:
     
     // element currently selected
 	LayerElement *m_currentElement;
-    MusLayer *m_currentLayer;
-    MusMeasure *m_currentMeasure;
-	MusStaff *m_currentStaff;
-    MusSystem *m_currentSystem;
+    Layer *m_currentLayer;
+    Measure *m_currentMeasure;
+	Staff *m_currentStaff;
+    System *m_currentSystem;
     
 	int m_notation_mode; // neumes or mensural notation mode
 	bool m_lyricMode;
@@ -214,7 +214,7 @@ private:
     static int s_drawingLigX[2], s_drawingLigY[2];	// pour garder coord. des ligatures    
     static bool s_drawingLigObliqua;	// marque le 1e passage pour une oblique
 
-    MusScoreDef m_drawingScoreDef;
+    ScoreDef m_drawingScoreDef;
     
 
 };

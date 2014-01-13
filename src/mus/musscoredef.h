@@ -24,21 +24,21 @@ class MusStaffDef;
 #define STAFFDEF_DRAW_ALL (1<<3) - 1
 
 //----------------------------------------------------------------------------
-// MusScoreOrStaffDefAttrInterface
+// ScoreOrStaffDefAttrInterface
 //----------------------------------------------------------------------------
 
 /**
  * This class is an interface for MEI scoreDef or staffDef attributes clef, keysig and mensur.
  * For simplification, the attributes are stored as Clef, KeySignature and Mensur.
  */
-class MusScoreOrStaffDefAttrInterface
+class ScoreOrStaffDefAttrInterface
 {
 public:
     // constructors and destructors
-    MusScoreOrStaffDefAttrInterface();
-    virtual ~MusScoreOrStaffDefAttrInterface();
-    MusScoreOrStaffDefAttrInterface( const MusScoreOrStaffDefAttrInterface& interface ); // copy contructor
-    MusScoreOrStaffDefAttrInterface& operator=( const MusScoreOrStaffDefAttrInterface& interface ); // copy assignement;
+    ScoreOrStaffDefAttrInterface();
+    virtual ~ScoreOrStaffDefAttrInterface();
+    ScoreOrStaffDefAttrInterface( const ScoreOrStaffDefAttrInterface& interface ); // copy contructor
+    ScoreOrStaffDefAttrInterface& operator=( const ScoreOrStaffDefAttrInterface& interface ); // copy assignement;
     
     /**
      * Replace the clef (if any) with the newClef (if any).
@@ -77,21 +77,21 @@ protected:
 
 
 //----------------------------------------------------------------------------
-// MusScoreDef
+// ScoreDef
 //----------------------------------------------------------------------------
 
 /**
  * This class represents a MEI scoreDef.
  * It contains MusStaffGrp objects.
 */
-class MusScoreDef: public MusObject, public MusScoreOrStaffDefAttrInterface, public MusObjectListInterface
+class ScoreDef: public MusObject, public ScoreOrStaffDefAttrInterface, public MusObjectListInterface
 {
 public:
     // constructors and destructors
-    MusScoreDef();
-    virtual ~MusScoreDef();
+    ScoreDef();
+    virtual ~ScoreDef();
         
-    virtual std::string MusClassName( ) { return "MusScoreDef"; };
+    virtual std::string MusClassName( ) { return "ScoreDef"; };
     
     void Clear();
     
@@ -100,12 +100,12 @@ public:
     /**
      * Replace the scoreDef with the content of the newScoreDef.
      */
-    void Replace( MusScoreDef *newScoreDef );
+    void Replace( ScoreDef *newScoreDef );
     
     /**
      * Replace the corresponding staffDef with the content of the newStaffDef.
      * Looks for the staffDef with the same m_n (@n) and replace the attribute set.
-     * Attribute set is provided by the MusScoreOrStaffDefAttrInterface.
+     * Attribute set is provided by the ScoreOrStaffDefAttrInterface.
      */
     void Replace( MusStaffDef *newStaffDef );
     
@@ -202,7 +202,7 @@ private:
 /**
  * This class represents a MEI staffDef.
  */
-class MusStaffDef: public MusObject, public MusScoreOrStaffDefAttrInterface
+class MusStaffDef: public MusObject, public ScoreOrStaffDefAttrInterface
 {
 public:
     // constructors and destructors
@@ -240,7 +240,7 @@ public:
     
     /**
      * Replace all the staffDefs in a scoreDef.
-     * Calls MusScoreDef::Replace.
+     * Calls ScoreDef::Replace.
      * param 0: a pointer to the scoreDef we are going to replace the staffDefs
      */
     virtual int ReplaceStaffDefsInScoreDef( ArrayPtrVoid params );

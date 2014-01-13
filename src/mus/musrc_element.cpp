@@ -43,7 +43,7 @@
 int MusRC::s_drawingLigX[2], MusRC::s_drawingLigY[2];	// pour garder coord. des ligatures    
 bool MusRC::s_drawingLigObliqua = false;	// marque le 1e passage pour une oblique
 
-void MusRC::DrawElement( MusDC *dc, LayerElement *element, MusLayer *layer, MusMeasure *measure, MusStaff *staff )
+void MusRC::DrawElement( DeviceContext *dc, LayerElement *element, Layer *layer, Measure *measure, Staff *staff )
 {
     assert(layer); // Pointer to layer cannot be NULL"
     assert(staff); // Pointer to staff cannot be NULL"
@@ -112,7 +112,7 @@ void MusRC::DrawElement( MusDC *dc, LayerElement *element, MusLayer *layer, MusM
     m_currentColour = previousColor;
 }
 
-void MusRC::DrawDurationElement( MusDC *dc, LayerElement *element, MusLayer *layer, MusStaff *staff )
+void MusRC::DrawDurationElement( DeviceContext *dc, LayerElement *element, Layer *layer, Staff *staff )
 {
     assert(layer); // Pointer to layer cannot be NULL"
     assert(staff); // Pointer to staff cannot be NULL"
@@ -180,7 +180,7 @@ void MusRC::DrawDurationElement( MusDC *dc, LayerElement *element, MusLayer *lay
 	return;
 }
 
-void MusRC::DrawBeamElement(MusDC *dc, LayerElement *element, MusLayer *layer, MusMeasure *measure, MusStaff *staff) {
+void MusRC::DrawBeamElement(DeviceContext *dc, LayerElement *element, Layer *layer, Measure *measure, Staff *staff) {
     
     assert(layer); // Pointer to layer cannot be NULL"
     assert(staff); // Pointer to staff cannot be NULL"
@@ -203,7 +203,7 @@ void MusRC::DrawBeamElement(MusDC *dc, LayerElement *element, MusLayer *layer, M
     dc->EndGraphic(element, this );
 }
 
-void MusRC::DrawTupletElement(MusDC *dc, LayerElement *element, MusLayer *layer, MusMeasure *measure, MusStaff *staff) {
+void MusRC::DrawTupletElement(DeviceContext *dc, LayerElement *element, Layer *layer, Measure *measure, Staff *staff) {
     
     assert(layer); // Pointer to layer cannot be NULL"
     assert(staff); // Pointer to staff cannot be NULL"
@@ -233,7 +233,7 @@ void MusRC::DrawTupletElement(MusDC *dc, LayerElement *element, MusLayer *layer,
 // queue: le ptr *testchord extern peut garder le x et l'y.
 
 
-void MusRC::DrawNote ( MusDC *dc, LayerElement *element, MusLayer *layer, MusStaff *staff)
+void MusRC::DrawNote ( DeviceContext *dc, LayerElement *element, Layer *layer, Staff *staff)
 {
     assert(layer); // Pointer to layer cannot be NULL"
     assert(staff); // Pointer to staff cannot be NULL"
@@ -559,8 +559,8 @@ void MusRC::DrawNote ( MusDC *dc, LayerElement *element, MusLayer *layer, MusSta
         // the tie from the inital note
         Note *noteTerminal = note->GetTieAttrInitial()->GetSecondNote();
         if ( noteTerminal ) {
-            MusSystem *parentSystem1 = dynamic_cast<MusSystem*>( note->GetFirstParent( &typeid(MusSystem) ) );
-            MusSystem *parentSystem2 = dynamic_cast<MusSystem*>( noteTerminal->GetFirstParent( &typeid(MusSystem) ) );
+            System *parentSystem1 = dynamic_cast<System*>( note->GetFirstParent( &typeid(System) ) );
+            System *parentSystem2 = dynamic_cast<System*>( noteTerminal->GetFirstParent( &typeid(System) ) );
             if ( (parentSystem1 != parentSystem2) && parentSystem1 ) {
                 layer->AddToDrawingList( note->GetTieAttrInitial() );
             }
@@ -582,7 +582,7 @@ void MusRC::DrawNote ( MusDC *dc, LayerElement *element, MusLayer *layer, MusSta
 }
 
 
-void MusRC::DrawRest ( MusDC *dc, LayerElement *element, MusLayer *layer, MusStaff *staff )
+void MusRC::DrawRest ( DeviceContext *dc, LayerElement *element, Layer *layer, Staff *staff )
 {	
     assert(layer); // Pointer to layer cannot be NULL
     assert(staff); // Pointer to staff cannot be NULL
@@ -649,7 +649,7 @@ void MusRC::DrawRest ( MusDC *dc, LayerElement *element, MusLayer *layer, MusSta
 }
 
 
-void MusRC::DrawLedgerLines( MusDC *dc, int y_n, int y_p, int xn, unsigned int smaller, int staffSize)
+void MusRC::DrawLedgerLines( DeviceContext *dc, int y_n, int y_p, int xn, unsigned int smaller, int staffSize)
 {
 	int yn, ynt, yh, yb, test, v_decal = m_doc->m_rendInterl[staffSize];
 	int dist, xng, xnd;
@@ -701,7 +701,7 @@ void MusRC::DrawLedgerLines( MusDC *dc, int y_n, int y_p, int xn, unsigned int s
 /** This function draws multi-measure rests
  **/
 #define NUMBER_REDUCTION 5
-void MusRC::DrawMultiRest(MusDC *dc, LayerElement *element, MusLayer *layer, MusStaff *staff)
+void MusRC::DrawMultiRest(DeviceContext *dc, LayerElement *element, Layer *layer, Staff *staff)
 {	
     int x, x2, y, y2, length;
 
@@ -759,7 +759,7 @@ void MusRC::DrawMultiRest(MusDC *dc, LayerElement *element, MusLayer *layer, Mus
 
 }
 
-void MusRC::DrawLongRest ( MusDC *dc, int a, int b, MusStaff *staff)
+void MusRC::DrawLongRest ( DeviceContext *dc, int a, int b, Staff *staff)
 
 {	int x, x2, y = b + staff->m_yDrawing, y2;
 
@@ -773,7 +773,7 @@ void MusRC::DrawLongRest ( MusDC *dc, int a, int b, MusStaff *staff)
 }
 
 
-void MusRC::DrawBreveRest ( MusDC *dc, int a, int b, MusStaff *staff)
+void MusRC::DrawBreveRest ( DeviceContext *dc, int a, int b, Staff *staff)
 
 {	int x, x2, y = b + staff->m_yDrawing, y2;
 
@@ -791,7 +791,7 @@ void MusRC::DrawBreveRest ( MusDC *dc, int a, int b, MusStaff *staff)
 	return;
 }
 
-void MusRC::DrawWholeRest ( MusDC *dc, int a, int b, int valeur, unsigned char dots, unsigned int smaller, MusStaff *staff)
+void MusRC::DrawWholeRest ( DeviceContext *dc, int a, int b, int valeur, unsigned char dots, unsigned int smaller, Staff *staff)
 
 {	int x, x2, y = b + staff->m_yDrawing, y2, vertic = m_doc->m_rendHalfInterl[staff->staffSize];
 	int off;
@@ -835,7 +835,7 @@ void MusRC::DrawWholeRest ( MusDC *dc, int a, int b, int valeur, unsigned char d
 }
 
 
-void MusRC::DrawQuarterRest ( MusDC *dc, int a, int b, int valeur, unsigned char dots, unsigned int smaller, MusStaff *staff)
+void MusRC::DrawQuarterRest ( DeviceContext *dc, int a, int b, int valeur, unsigned char dots, unsigned int smaller, Staff *staff)
 {
 	int _intrl = m_doc->m_rendInterl[staff->staffSize];
 
@@ -852,7 +852,7 @@ void MusRC::DrawQuarterRest ( MusDC *dc, int a, int b, int valeur, unsigned char
 }
 
 
-void MusRC::DrawDots ( MusDC *dc, int x1, int y1, int offy, unsigned char dots, MusStaff *staff )
+void MusRC::DrawDots ( DeviceContext *dc, int x1, int y1, int offy, unsigned char dots, Staff *staff )
 
 {
 	y1 += offy + staff->m_yDrawing;
@@ -870,7 +870,7 @@ void MusRC::DrawDots ( MusDC *dc, int x1, int y1, int offy, unsigned char dots, 
 
 
 
-void MusRC::CalculateLigaturePosX ( LayerElement *element, MusLayer *layer, MusStaff *staff)
+void MusRC::CalculateLigaturePosX ( LayerElement *element, Layer *layer, Staff *staff)
 {
 	if (element == NULL) 
     {
@@ -893,7 +893,7 @@ void MusRC::CalculateLigaturePosX ( LayerElement *element, MusLayer *layer, MusS
     return;
 }
 
-void MusRC::DrawLigature ( MusDC *dc, int y, LayerElement *element, MusLayer *layer, MusStaff *staff )
+void MusRC::DrawLigature ( DeviceContext *dc, int y, LayerElement *element, Layer *layer, Staff *staff )
 {	
     assert(layer); // Pointer to layer cannot be NULL"
     assert(staff); // Pointer to staff cannot be NULL"
@@ -1019,7 +1019,7 @@ void MusRC::DrawLigature ( MusDC *dc, int y, LayerElement *element, MusLayer *la
 	return;
 }
 
-void MusRC::DrawBarline( MusDC *dc, LayerElement *element, MusLayer *layer, MusStaff *staff )
+void MusRC::DrawBarline( DeviceContext *dc, LayerElement *element, Layer *layer, Staff *staff )
 {
     assert(layer); // Pointer to layer cannot be NULL"
     assert(staff); // Pointer to staff cannot be NULL"
@@ -1033,11 +1033,11 @@ void MusRC::DrawBarline( MusDC *dc, LayerElement *element, MusLayer *layer, MusS
     
     if (barline->m_partialBarline)
     {
-        DrawPartialBarline ( dc, (MusSystem*)staff->m_parent, x, staff);
+        DrawPartialBarline ( dc, (System*)staff->m_parent, x, staff);
     }
     else
     {
-        //DrawBarline( dc, (MusSystem*)staff->m_parent, x,  m_doc->m_env.m_barlineWidth, barline->m_onStaffOnly, staff);
+        //DrawBarline( dc, (System*)staff->m_parent, x,  m_doc->m_env.m_barlineWidth, barline->m_onStaffOnly, staff);
     }
     
 
@@ -1045,7 +1045,7 @@ void MusRC::DrawBarline( MusDC *dc, LayerElement *element, MusLayer *layer, MusS
     dc->EndGraphic(element, this ); //RZ
 }
 
-void MusRC::DrawClef( MusDC *dc, LayerElement *element, MusLayer *layer, MusStaff *staff )
+void MusRC::DrawClef( DeviceContext *dc, LayerElement *element, Layer *layer, Staff *staff )
 {
     assert(layer); // Pointer to layer cannot be NULL"
     assert(staff); // Pointer to staff cannot be NULL"
@@ -1113,7 +1113,7 @@ void MusRC::DrawClef( MusDC *dc, LayerElement *element, MusLayer *layer, MusStaf
     dc->EndGraphic(element, this ); //RZ
 }
 
-void MusRC::DrawMensur( MusDC *dc, LayerElement *element, MusLayer *layer, MusStaff *staff )
+void MusRC::DrawMensur( DeviceContext *dc, LayerElement *element, Layer *layer, Staff *staff )
 {
     assert(layer); // Pointer to layer cannot be NULL"
     assert(staff); // Pointer to staff cannot be NULL"
@@ -1211,7 +1211,7 @@ void MusRC::DrawMensur( MusDC *dc, LayerElement *element, MusLayer *layer, MusSt
 }
 
 
-void MusRC::DrawMensurCircle( MusDC *dc, int x, int yy, MusStaff *staff )
+void MusRC::DrawMensurCircle( DeviceContext *dc, int x, int yy, Staff *staff )
 {
 	assert( dc ); // DC cannot be NULL
 	
@@ -1229,7 +1229,7 @@ void MusRC::DrawMensurCircle( MusDC *dc, int x, int yy, MusStaff *staff )
     dc->ResetBrush();
 }	
 
-void MusRC::DrawMensurHalfCircle( MusDC *dc, int x, int yy, MusStaff *staff )
+void MusRC::DrawMensurHalfCircle( DeviceContext *dc, int x, int yy, Staff *staff )
 {
 	assert( dc ); // DC cannot be NULL
 
@@ -1251,7 +1251,7 @@ void MusRC::DrawMensurHalfCircle( MusDC *dc, int x, int yy, MusStaff *staff )
 	return;
 }	
 
-void MusRC::DrawMensurReversedHalfCircle( MusDC *dc, int x, int yy, MusStaff *staff )
+void MusRC::DrawMensurReversedHalfCircle( DeviceContext *dc, int x, int yy, Staff *staff )
 {	
 	assert( dc ); // DC cannot be NULL
 
@@ -1274,7 +1274,7 @@ void MusRC::DrawMensurReversedHalfCircle( MusDC *dc, int x, int yy, MusStaff *st
 	return;
 }	
 
-void MusRC::DrawMensurDot ( MusDC *dc, int x, int yy, MusStaff *staff )
+void MusRC::DrawMensurDot ( DeviceContext *dc, int x, int yy, Staff *staff )
 {
 	assert( dc ); // DC cannot be NULL
 
@@ -1293,7 +1293,7 @@ void MusRC::DrawMensurDot ( MusDC *dc, int x, int yy, MusStaff *staff )
 }	
 
 
-void MusRC::DrawMensurSlash ( MusDC *dc, int a, int yy, MusStaff *staff )
+void MusRC::DrawMensurSlash ( DeviceContext *dc, int a, int yy, Staff *staff )
 {	
 	assert( dc ); // DC cannot be NULL
 	
@@ -1305,7 +1305,7 @@ void MusRC::DrawMensurSlash ( MusDC *dc, int a, int yy, MusStaff *staff )
 }	
 
 
-void MusRC::DrawMensurFigures( MusDC *dc, int x, int y, int num, int numBase, MusStaff *staff)
+void MusRC::DrawMensurFigures( DeviceContext *dc, int x, int y, int num, int numBase, Staff *staff)
 {
 	assert( dc ); // DC cannot be NULL	
     	
@@ -1335,7 +1335,7 @@ void MusRC::DrawMensurFigures( MusDC *dc, int x, int y, int num, int numBase, Mu
 }
 
 
-void MusRC::DrawSymbol( MusDC *dc, LayerElement *element, MusLayer *layer, MusStaff *staff, LayerElement *parent )
+void MusRC::DrawSymbol( DeviceContext *dc, LayerElement *element, Layer *layer, Staff *staff, LayerElement *parent )
 {
     assert(layer); // Pointer to layer cannot be NULL"
     assert(staff); // Pointer to staff cannot be NULL"
@@ -1363,7 +1363,7 @@ void MusRC::DrawSymbol( MusDC *dc, LayerElement *element, MusLayer *layer, MusSt
 }
 
 
-void MusRC::DrawSymbolAccid( MusDC *dc, LayerElement *element, MusLayer *layer, MusStaff *staff )
+void MusRC::DrawSymbolAccid( DeviceContext *dc, LayerElement *element, Layer *layer, Staff *staff )
 {
     assert(layer); // Pointer to layer cannot be NULL"
     assert(staff); // Pointer to staff cannot be NULL"
@@ -1397,7 +1397,7 @@ void MusRC::DrawSymbolAccid( MusDC *dc, LayerElement *element, MusLayer *layer, 
 }
 
 
-void MusRC::DrawSymbolCustos( MusDC *dc, LayerElement *element, MusLayer *layer, MusStaff *staff )
+void MusRC::DrawSymbolCustos( DeviceContext *dc, LayerElement *element, Layer *layer, Staff *staff )
 {
     assert(layer); // Pointer to layer cannot be NULL"
     assert(staff); // Pointer to staff cannot be NULL"
@@ -1416,7 +1416,7 @@ void MusRC::DrawSymbolCustos( MusDC *dc, LayerElement *element, MusLayer *layer,
 
 }
 
-void MusRC::DrawSymbolDot( MusDC *dc, LayerElement *element, MusLayer *layer, MusStaff *staff )
+void MusRC::DrawSymbolDot( DeviceContext *dc, LayerElement *element, Layer *layer, Staff *staff )
 {
     assert(layer); // Pointer to layer cannot be NULL"
     assert(staff); // Pointer to staff cannot be NULL"
@@ -1438,7 +1438,7 @@ void MusRC::DrawSymbolDot( MusDC *dc, LayerElement *element, MusLayer *layer, Mu
 
 }
 
-void MusRC::DrawKeySig( MusDC *dc, LayerElement *element, MusLayer *layer, MusStaff *staff )
+void MusRC::DrawKeySig( DeviceContext *dc, LayerElement *element, Layer *layer, Staff *staff )
 {
     assert(layer); // Pointer to layer cannot be NULL"
     assert(staff); // Pointer to staff cannot be NULL"
@@ -1473,7 +1473,7 @@ void MusRC::DrawKeySig( MusDC *dc, LayerElement *element, MusLayer *layer, MusSt
     
 }
 
-void MusRC::DrawTie( MusDC *dc, LayerElement *element, MusLayer *layer, MusStaff *staff, MusMeasure *measure )
+void MusRC::DrawTie( DeviceContext *dc, LayerElement *element, Layer *layer, Staff *staff, Measure *measure )
 {
     assert(layer); // Pointer to layer cannot be NULL"
     assert(staff); // Pointer to staff cannot be NULL"
@@ -1484,17 +1484,17 @@ void MusRC::DrawTie( MusDC *dc, LayerElement *element, MusLayer *layer, MusStaff
     Tie *tie = dynamic_cast<Tie*>(element);
     LayerElement *note1 = tie->GetFirstNote();
     LayerElement *note2 = tie->GetSecondNote();
-    MusSystem *currentSystem = dynamic_cast<MusSystem*>( staff->GetFirstParent( &typeid(MusSystem) ) );
-    MusSystem *parentSystem1 = NULL;
-    MusSystem *parentSystem2 = NULL;
+    System *currentSystem = dynamic_cast<System*>( staff->GetFirstParent( &typeid(System) ) );
+    System *parentSystem1 = NULL;
+    System *parentSystem2 = NULL;
     
     // In order to know if we are drawing a normal tie or a tie splitted over two systems, we need
     // to look at the parent system of each note.
     if ( note1 ) {
-        parentSystem1 = dynamic_cast<MusSystem*>( note1->GetFirstParent( &typeid(MusSystem) ) );
+        parentSystem1 = dynamic_cast<System*>( note1->GetFirstParent( &typeid(System) ) );
     }
     if ( note2 ) {
-        parentSystem2 = dynamic_cast<MusSystem*>( note2->GetFirstParent( &typeid(MusSystem) ) );
+        parentSystem2 = dynamic_cast<System*>( note2->GetFirstParent( &typeid(System) ) );
     }
     
     // This is the case when the tie is split over two system of two pages.
@@ -1554,7 +1554,7 @@ void MusRC::DrawTie( MusDC *dc, LayerElement *element, MusLayer *layer, MusStaff
     
 }
 
-void MusRC::DrawAcciaccaturaSlash(MusDC *dc, LayerElement *element) {
+void MusRC::DrawAcciaccaturaSlash(DeviceContext *dc, LayerElement *element) {
     
     Note *note = dynamic_cast<Note*>(element);
     
@@ -1578,7 +1578,7 @@ void MusRC::DrawAcciaccaturaSlash(MusDC *dc, LayerElement *element) {
  note - for breves and semibreves, only above the staff
       - for flagged notes, the fermata is on the side of the notehead
  */
-void MusRC::DrawFermata(MusDC *dc, LayerElement *element, MusStaff *staff) {
+void MusRC::DrawFermata(DeviceContext *dc, LayerElement *element, Staff *staff) {
     int x, y;
     int emb_offset = 0; // if there is and embellishment, offset the note up
     
@@ -1632,7 +1632,7 @@ void MusRC::DrawFermata(MusDC *dc, LayerElement *element, MusStaff *staff) {
 // Draw a trill above the notehead
 // This function works as the up-fermata portion of DrawFermata
 // if there are many symbols to draw we could make a generalized function
-void MusRC::DrawTrill(MusDC *dc, LayerElement *element, MusStaff *staff) {
+void MusRC::DrawTrill(DeviceContext *dc, LayerElement *element, Staff *staff) {
     int x, y;    
     x = element->m_xDrawing;
 
@@ -1645,7 +1645,7 @@ void MusRC::DrawTrill(MusDC *dc, LayerElement *element, MusStaff *staff) {
 }
 
 
-void MusRC::DrawLayerApp( MusDC *dc, LayerElement *element, MusLayer *layer, MusMeasure *measure, MusStaff *staff ){
+void MusRC::DrawLayerApp( DeviceContext *dc, LayerElement *element, Layer *layer, Measure *measure, Staff *staff ){
     
     assert(layer); // Pointer to layer cannot be NULL"
     assert(staff); // Pointer to staff cannot be NULL"
@@ -1655,7 +1655,7 @@ void MusRC::DrawLayerApp( MusDC *dc, LayerElement *element, MusLayer *layer, Mus
     int i;
     for (i = 0; i < app->GetRdgCount(); i++ )
     {
-        MusLayer *rdg = (MusLayer*)app->m_children[i];
+        Layer *rdg = (Layer*)app->m_children[i];
         int j;
         for (j = 0; j < rdg->GetElementCount(); j++ ) {
             LayerElement *lelem = (LayerElement*)rdg->m_children[j];
@@ -1677,7 +1677,7 @@ void MusRC::DrawLayerApp( MusDC *dc, LayerElement *element, MusLayer *layer, Mus
         }
         
         /*
-        MusStaff *appStaff = new MusStaff( staff->m_n );
+        Staff *appStaff = new Staff( staff->m_n );
         appStaff->m_yDrawing = staff->m_yDrawing + m_doc->m_rendStaffSize[staff->staffSize];
         appStaff->m_system = staff->m_system;
         appStaff->SetLayout( m_doc );

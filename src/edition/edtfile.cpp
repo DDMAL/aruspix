@@ -171,18 +171,18 @@ bool EdtFile::Create( )
     
     // reset the MusDoc and create the logical tree
     m_musDocPtr->Reset( Transcription);	
-    MusPage *page = new MusPage();
+    Page *page = new Page();
     
 	page->m_pageWidth = width * 10;
 	page->m_pageHeight = height * 10;
   
     for (i = 0; i < nb_systems; i++) {
-        MusSystem *system = new MusSystem();
-        MusMeasure *measure = new MusMeasure();
+        System *system = new System();
+        Measure *measure = new Measure();
         //system->lrg_lign = width - 20; // we have now m_systemRightMar  
         for (j = 0; j < nb_staves_per_system; j++)
         {
-            MusStaff *staff = new MusStaff( j + 1 );
+            Staff *staff = new Staff( j + 1 );
             staff->portNbLine = EdtNewDlg::s_staffLines;
             if (EdtNewDlg::s_m_notationMode == MUS_MENSURAL_MODE)
                 staff->notAnc = true;

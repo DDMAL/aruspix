@@ -71,15 +71,15 @@ void MusRC::SetDoc( MusDoc *doc )
         //m_notation_mode = m_layout->m_env.m_notationMode;
         m_npage = 0;
         // for now we just get the first page
-        SetPage( (MusPage*)m_doc->m_children[m_npage] );
+        SetPage( (Page*)m_doc->m_children[m_npage] );
         //CheckPoint( UNDO_ALL, MUS_UNDO_FILE ); // ax2
     }
 }
 
 
-void MusRC::SetPage( MusPage *page )
+void MusRC::SetPage( Page *page )
 {
-	assert( page ); // MusPage cannot be NULL
+	assert( page ); // Page cannot be NULL
     
     m_doc->SetRendPage( page );
 
@@ -134,7 +134,7 @@ void MusRC::Next( bool forward )
 	else if ( !forward && this->HasNext( false ) )
 		m_npage--;
 
-	SetPage( (MusPage*)m_doc->m_children[m_npage] );
+	SetPage( (Page*)m_doc->m_children[m_npage] );
 }
 
 void MusRC::LoadPage( int nopage )

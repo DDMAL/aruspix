@@ -20,8 +20,8 @@ enum
 	MUS_BIN_ARUSPIX
 };
 
-class MusStaff;
-class MusLayer;
+class Staff;
+class Layer;
 
 
 //----------------------------------------------------------------------------
@@ -42,10 +42,10 @@ public:
     bool ImportFile( );
 	bool ReadFileHeader( unsigned short *nbpage );
 	bool ReadSeparator( );
-	bool ReadPage( MusPage *page );
-	bool ReadStaff( MusStaff *staff, MusLayer *layer, int staffNo );
-	bool ReadNote( MusLayer *layer );
-	bool ReadSymbol( MusLayer *layer, bool isLyric = false );
+	bool ReadPage( Page *page );
+	bool ReadStaff( Staff *staff, Layer *layer, int staffNo );
+	bool ReadNote( Layer *layer );
+	bool ReadSymbol( Layer *layer, bool isLyric = false );
     bool ReadNeume( );
     bool ReadLyric( );
 	bool ReadElementAttr( );
@@ -63,8 +63,8 @@ private:
 	int m_flag;
     int m_vmaj, m_vmin, m_vrev;
 	// logical tree
-	MusStaff *m_logStaff;
-    MusLayer *m_logLayer;
+	Staff *m_logStaff;
+    Layer *m_logLayer;
     // for reading files before 2.0.0
     unsigned short m_noLigne;
     char m_indent;

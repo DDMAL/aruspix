@@ -17,8 +17,8 @@
 
 #include "muswwg.h"
 
-class MusStaff;
-class MusLayer;
+class Staff;
+class Layer;
 class Beam;
 
 //----------------------------------------------------------------------------
@@ -134,8 +134,8 @@ public:
 	bool WriteParameters2( const MusWWGData *param );
 	bool WriteFonts( const MusWWGData *fonts );
 	bool WriteSeparator( );
-	bool WritePage( const MusPage *page );
-	bool WriteLayer( const MusLayer *layer, int staffNo );
+	bool WritePage( const Page *page );
+	bool WriteLayer( const Layer *layer, int staffNo );
 
 	bool WritePagination( const MusWWGData *pagination );
 	bool WriteHeader( const MusWWGData *header);
@@ -153,8 +153,8 @@ private:
 	unsigned int uint32;
 	signed int int32;
 	std::string m_filename;
-    MusSystem *m_current_system; // the current system we are writing
-    MusStaff *m_current_staff; // the current staff we are writing
+    System *m_current_system; // the current system we are writing
+    Staff *m_current_staff; // the current staff we are writing
 
 protected:
     MusDoc *m_doc;
@@ -182,10 +182,10 @@ public:
 	bool ReadParameters2( MusWWGData *param );
 	bool ReadFonts( MusWWGData *fonts );
 	bool ReadSeparator( );
-	bool ReadPage( MusPage *page );
-	bool ReadStaff( MusStaff *staff, MusLayer *layer, int staffNo );
-	bool ReadNote( MusLayer *layer );
-	bool ReadSymbol( MusLayer *layer );
+	bool ReadPage( Page *page );
+	bool ReadStaff( Staff *staff, Layer *layer, int staffNo );
+	bool ReadNote( Layer *layer );
+	bool ReadSymbol( Layer *layer );
 	bool ReadElementAttr( );
 	bool ReadDebord( );
 	bool ReadPagination( MusWWGData *pagination );

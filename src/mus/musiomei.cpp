@@ -148,7 +148,7 @@ bool MusMeiOutput::WriteDoc( MusDoc *doc )
 }
 
 
-bool MusMeiOutput::WritePage( MusPage *page )
+bool MusMeiOutput::WritePage( Page *page )
 {
     assert( m_pages );
     m_page = new TiXmlElement("page");
@@ -172,7 +172,7 @@ bool MusMeiOutput::WritePage( MusPage *page )
     return true;
 }
 
-bool MusMeiOutput::WriteSystem( MusSystem *system )
+bool MusMeiOutput::WriteSystem( System *system )
 {
     assert( m_page );
     m_system = new TiXmlElement("system");
@@ -186,7 +186,7 @@ bool MusMeiOutput::WriteSystem( MusSystem *system )
     return true;
 }
 
-bool MusMeiOutput::WriteScoreDef( MusScoreDef *scoreDef )
+bool MusMeiOutput::WriteScoreDef( ScoreDef *scoreDef )
 {
     assert( m_system );
     m_scoreDef = new TiXmlElement("scoreDef");
@@ -243,7 +243,7 @@ bool MusMeiOutput::WriteStaffDef( MusStaffDef *staffDef )
     return true;
 }
 
-bool MusMeiOutput::WriteStaff( MusStaff *staff )
+bool MusMeiOutput::WriteStaff( Staff *staff )
 {
     assert( m_system );
     m_staff = new TiXmlElement("staff");
@@ -259,7 +259,7 @@ bool MusMeiOutput::WriteStaff( MusStaff *staff )
     return true;
 }
 
-bool MusMeiOutput::WriteMeasure( MusMeasure *measure )
+bool MusMeiOutput::WriteMeasure( Measure *measure )
 {
     assert( m_staff );
     m_measure = new TiXmlElement("measure");
@@ -269,7 +269,7 @@ bool MusMeiOutput::WriteMeasure( MusMeasure *measure )
     return true;
 }
 
-bool MusMeiOutput::WriteLayer( MusLayer *layer )
+bool MusMeiOutput::WriteLayer( Layer *layer )
 {
     assert( m_staff );
     m_layer = new TiXmlElement("layer");
@@ -819,7 +819,7 @@ bool MusMeiInput::ReadMei( TiXmlElement *root )
             // because we are in a page-based MEI
             this->m_hasLayoutInformation = true;
             for( current = pages->FirstChildElement( "page" ); current; current = current->NextSiblingElement( "page" ) ) {
-                m_page = new MusPage( );
+                m_page = new Page( );
                 SetMeiUuid( current, m_page );
                 if (ReadMeiPage( current )) {
                     m_doc->AddPage( m_page );
@@ -832,8 +832,8 @@ bool MusMeiInput::ReadMei( TiXmlElement *root )
         }
     }
     else {
-        m_page = new MusPage( );
-        m_system = new MusSystem( );
+        m_page = new Page( );
+        m_system = new System( );
         m_page->AddSystem( m_system );
         m_doc->AddPage( m_page );
         TiXmlElement *current = NULL;
@@ -884,7 +884,7 @@ bool MusMeiInput::ReadMeiPage( TiXmlElement *page )
     
     TiXmlElement *current = NULL;
     for( current = page->FirstChildElement( "system" ); current; current = current->NextSiblingElement( "system" ) ) {
-        m_system = new MusSystem( );
+        m_system = new System( );
         SetMeiUuid( current, m_system );
         if (ReadMeiSystem( current )) {
             m_page->AddSystem( m_system );
@@ -919,10 +919,10 @@ bool MusMeiInput::ReadMeiSystem( TiXmlElement *system )
     if ( system->FirstChildElement( "staff" ) ) {
         // this is the trick for un-measured music: we add one measure ( false )
         if ( !m_measure ) {
-            m_measure = new MusMeasure( false );
+            m_measure = new Measure( false );
         }
         for( current = system->FirstChildElement( "staff" ); current; current = current->NextSiblingElement( "staff" ) ) {
-            m_staff = new MusStaff( );
+            m_staff = new Staff( );
             SetMeiUuid( current , m_staff );
             if ( ReadMeiStaff( current )) {
                 m_measure->AddStaff( m_staff );
@@ -943,7 +943,7 @@ bool MusMeiInput::ReadMeiSystem( TiXmlElement *system )
     else {
         // measured
         for( current = system->FirstChildElement( "measure" ); current; current = current->NextSiblingElement( "measure" ) ) {
-            m_measure = new MusMeasure( );
+            m_measure = new Measure( );
             SetMeiUuid( current, m_measure );
             if (ReadMeiMeasure( current )) {
                 m_system->AddMeasure( m_measure );
@@ -1078,7 +1078,7 @@ bool MusMeiInput::ReadMeiMeasure( TiXmlElement *measure )
     
     TiXmlElement *current = NULL;
     for( current = measure->FirstChildElement( "staff" ); current; current = current->NextSiblingElement( "staff" ) ) {
-        m_staff = new MusStaff( );
+        m_staff = new Staff( );
         SetMeiUuid( current , m_staff );
         if ( ReadMeiStaff( current )) {
             m_measure->AddStaff( m_staff );
@@ -1113,7 +1113,7 @@ bool MusMeiInput::ReadMeiStaff( TiXmlElement *staff )
     
     TiXmlElement *current = NULL;
     for( current = staff->FirstChildElement( "layer" ); current; current = current->NextSiblingElement( "layer" ) ) {
-        m_layer = new MusLayer( 1 );
+        m_layer = new Layer( 1 );
         m_currentLayer = m_layer;
         SetMeiUuid( current , m_layer );
         if (ReadMeiLayer( current )) {
@@ -1533,8 +1533,8 @@ void MusMeiInput::ReadSameAsAttr( TiXmlElement *element, MusObject *object )
 void MusMeiInput::AddLayerElement( LayerElement *element )
 {
     assert( m_currentLayer );
-    if ( dynamic_cast<MusLayer*>( m_currentLayer ) ) {
-        ((MusLayer*)m_currentLayer)->AddElement( element );
+    if ( dynamic_cast<Layer*>( m_currentLayer ) ) {
+        ((Layer*)m_currentLayer)->AddElement( element );
     }
     else if ( dynamic_cast<LayerRdg*>( m_currentLayer ) ) {
         ((LayerRdg*)m_currentLayer)->AddElement( element );
@@ -1565,7 +1565,7 @@ bool MusMeiInput::ReadUnsupported( TiXmlElement *element )
     }
     else if ( std::string( element->Value() ) == "measure" ) {
         Mus::LogDebug( "measure" );
-        m_measure = new MusMeasure( );
+        m_measure = new Measure( );
         SetMeiUuid( element, m_measure );
         if (ReadMeiMeasure( element )) {
             m_system->AddMeasure( m_measure );
@@ -1582,24 +1582,24 @@ bool MusMeiInput::ReadUnsupported( TiXmlElement *element )
         if ( element->Attribute( "n" ) ) {
             element->Attribute( "n", &n );
         }
-        MusStaff *staff = m_system->GetStaff( n - 1 );
+        Staff *staff = m_system->GetStaff( n - 1 );
         if ( staff ) {
             m_staff = staff;
         }
         else
         {
-            m_staff = new MusStaff( n );
+            m_staff = new Staff( n );
             m_system->AddStaff( m_staff );
         }
-        m_measure = new MusMeasure( *m_contentBasedMeasure );
+        m_measure = new Measure( *m_contentBasedMeasure );
         ReadMeiStaff( element );
     }
     */
     else if ( (std::string( element->Value() ) == "pb") && (m_system->GetMeasureCount() > 0 ) ) {
         Mus::LogDebug( "pb" );
         this->m_hasLayoutInformation = true;
-        m_page = new MusPage( );
-        m_system = new MusSystem( );
+        m_page = new Page( );
+        m_system = new System( );
         m_page->AddSystem( m_system );
         m_doc->AddPage( m_page );
         
@@ -1607,7 +1607,7 @@ bool MusMeiInput::ReadUnsupported( TiXmlElement *element )
     else if ( (std::string( element->Value() ) == "sb") && (m_page->GetSystemCount() > 0 ) ) {
         Mus::LogDebug( "sb" );
         this->m_hasLayoutInformation = true;
-        m_system = new MusSystem( );
+        m_system = new System( );
         m_page->AddSystem( m_system );
     }
     else if ( (std::string( element->Value() ) == "scoreDef") && ( !m_hasScoreDef ) ) {
@@ -1636,11 +1636,11 @@ bool MusMeiInput::FindOpenTie( Note *terminalNote )
     for (iter = m_openTies.begin(); iter != m_openTies.end(); ++iter)
     {
         // we need to get the parent layer for comparing their number
-        MusLayer *parentLayer = dynamic_cast<MusLayer*>( (*iter)->GetFirstParent( &typeid(MusLayer) ) );
+        Layer *parentLayer = dynamic_cast<Layer*>( (*iter)->GetFirstParent( &typeid(Layer) ) );
         if (!parentLayer) {
             continue;
         }
-        MusStaff *parentStaff = dynamic_cast<MusStaff*>( parentLayer->GetFirstParent( &typeid(MusStaff) ) );
+        Staff *parentStaff = dynamic_cast<Staff*>( parentLayer->GetFirstParent( &typeid(Staff) ) );
         // We assume the if the note has no parent staff it is because we are in the same layer and that
         // the layer has not been added to its parent staff yet.
         // If we have one, compare the number

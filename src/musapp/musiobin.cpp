@@ -83,7 +83,7 @@ bool MusBinInput_1_X::ImportFile( )
     
     for (i = 0; i < nbpage; i++ )
 	{
-		MusPage *page = new MusPage();
+		Page *page = new Page();
 		ReadPage( page );
         m_doc->AddPage( page );
     }
@@ -92,7 +92,7 @@ bool MusBinInput_1_X::ImportFile( )
     int j, k, l, m;
     for (j = 0; j < m_doc->GetChildCount(); j++)
     {
-        MusPage *page = (MusPage*)m_doc->m_children[j];
+        Page *page = (Page*)m_doc->m_children[j];
         
         m_doc->SetRendPage( page );
         
@@ -100,14 +100,14 @@ bool MusBinInput_1_X::ImportFile( )
         int yy =  m_doc->m_rendPageHeight;
         for (k = 0; k < page->GetSystemCount(); k++) 
         {
-            MusSystem *system = (MusSystem*)page->m_children[k];
+            System *system = (System*)page->m_children[k];
             // we always have one single measure per system
-            MusMeasure *measure = (MusMeasure*)system->m_children[0];
-            MusStaff *staff = NULL;
+            Measure *measure = (Measure*)system->m_children[0];
+            Staff *staff = NULL;
             
             for (l = 0; l < measure->GetStaffCount(); l++)
             {
-                staff = (MusStaff*)measure->m_children[l];
+                staff = (Staff*)measure->m_children[l];
                 yy -= ecarts[m] * m_doc->m_rendInterl[ staff->staffSize ];
                 staff->m_yAbs = yy;
                 m++;
@@ -193,7 +193,7 @@ bool MusBinInput_1_X::ReadSeparator( )
 		return true;
 }
 
-bool MusBinInput_1_X::ReadPage( MusPage *page )
+bool MusBinInput_1_X::ReadPage( Page *page )
 {
 	int j;
     
@@ -223,15 +223,15 @@ bool MusBinInput_1_X::ReadPage( MusPage *page )
     /*
     for (j = 0; j < page->nbrePortees; j++) 
 	{
-		MusStaff *staff = new MusStaff();
+		Staff *staff = new Staff();
 		ReadStaff( staff );
         staff->voix = (j % 2 == 0) ? 1 : 0; // add voices
 		page->m_staves.Add( staff );
 	}
     */
     
-    MusSystem *system = new MusSystem(); // first system of the page
-    MusMeasure *measure = new MusMeasure( false );
+    System *system = new System(); // first system of the page
+    Measure *measure = new Measure( false );
     system->m_systemLeftMar = indent;
     system->m_systemRightMar = indentDroite;
     //system->lrg_lign = lrg_lign;  
@@ -239,14 +239,14 @@ bool MusBinInput_1_X::ReadPage( MusPage *page )
     
     for (j = 0; j < nbrePortees; j++) 
 	{
-		MusStaff *staff = new MusStaff( j + 1 );
-        MusLayer *layer = new MusLayer( 1 ); // we have always on layer per staff
+		Staff *staff = new Staff( j + 1 );
+        Layer *layer = new Layer( 1 ); // we have always on layer per staff
 		ReadStaff( staff, layer, j );
         if ( m_noLigne > system_no + 1 ) { // we have a new system
             system->AddMeasure( measure );
             page->AddSystem( system ); // add the current one
-            system = new MusSystem(); // create the next one
-            measure = new MusMeasure( false );
+            system = new System(); // create the next one
+            measure = new Measure( false );
             system_no = m_noLigne - 1; 
             system->m_systemRightMar = indentDroite;
             //system->lrg_lign = lrg_lign;
@@ -268,7 +268,7 @@ bool MusBinInput_1_X::ReadPage( MusPage *page )
 	return true;
 
 }
-bool MusBinInput_1_X::ReadStaff( MusStaff *staff, MusLayer *layer, int staffNo )
+bool MusBinInput_1_X::ReadStaff( Staff *staff, Layer *layer, int staffNo )
 {
 	unsigned int k;
 
@@ -346,7 +346,7 @@ bool MusBinInput_1_X::ReadStaff( MusStaff *staff, MusLayer *layer, int staffNo )
 }
 
 
-bool MusBinInput_1_X::ReadSymbol( MusLayer *layer, bool isLyric )
+bool MusBinInput_1_X::ReadSymbol( Layer *layer, bool isLyric )
 {
 	ReadElementAttr(  );
 	Read( &flag , 1 );
@@ -445,7 +445,7 @@ bool MusBinInput_1_X::ReadSymbol( MusLayer *layer, bool isLyric )
 	return true;
 }
 
-bool MusBinInput_1_X::ReadNote( MusLayer *layer )
+bool MusBinInput_1_X::ReadNote( Layer *layer )
 {
 	ReadElementAttr( );
 	Read( &sil, 1 );

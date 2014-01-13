@@ -16,7 +16,7 @@
 #include "musobject.h"
 #include "musscoredef.h"
 
-class MusPage;
+class Page;
 
 enum DocType {
     Raw = 0,
@@ -40,7 +40,7 @@ public:
     MusDoc();
     virtual ~MusDoc();
 	
-	void AddPage( MusPage *page );
+	void AddPage( Page *page );
     
     /*
      * Clear the content of the document.
@@ -92,7 +92,7 @@ public:
      * If a page is given, the size of the page is taken.
      * calculFormatPapier() in Wolfgang
      */
-	void SetRendPage( MusPage *page );
+	void SetRendPage( Page *page );
 
     /**
      * Initializes fonts from the resources (music and lyrics)
@@ -140,7 +140,7 @@ public:
      * Holds the top scoreDef.
      * In a standard MEI file, this is the <scoreDef> encoded before the first <section>.
      */
-    MusScoreDef m_scoreDef;
+    ScoreDef m_scoreDef;
     
     /*
      * The following values are set in the MusDoc::SetRenderedPage.
@@ -152,7 +152,7 @@ public:
      */
   
     /** The page currently being rendered */
-    MusPage *m_rendPage;
+    Page *m_rendPage;
     /** Editor step (10 by default) */
     int m_rendStep1;
     /** Editor medium step (3 * m_rendStep1) */
@@ -194,13 +194,13 @@ public:
     /** A vertical unit corresponding to the 1/8 of an interline */
     float m_rendVerticalUnit2[2];
     /** Current Leipzig font for normal and small staff and normal and grace size */
-    MusFontInfo m_rendFonts[2][2];				
+    FontMetricsInfo m_rendFonts[2][2];				
     /** Leipzig font */
-    MusFontInfo m_rendLeipzigFont;
+    FontMetricsInfo m_rendLeipzigFont;
     /** Current lyric font for normal and small staff and normal and grace size */
-    MusFontInfo m_rendLyricFonts[2];
+    FontMetricsInfo m_rendLyricFonts[2];
     /** Lyric font by default */
-    MusFontInfo m_rendLyricFont;
+    FontMetricsInfo m_rendLyricFont;
     /** The current page height */
     int m_rendPageHeight;
     /** The current page height */

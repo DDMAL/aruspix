@@ -26,7 +26,7 @@
  * The Leipzig font is embedded by incorporating ./data/svg/xxx.xml glyphs within
  * the SVG file.
  */
-class MusSvgDC: public MusDC
+class MusSvgDC: public DeviceContext
 {
 public:
 
@@ -45,7 +45,7 @@ public:
     
     virtual void SetPen( int colour, int width = 1, int style = AxSOLID );
     
-    virtual void SetFont( MusFontInfo *font_info );
+    virtual void SetFont( FontMetricsInfo *font_info );
         
     virtual void SetTextForeground( int colour );
     
@@ -130,7 +130,7 @@ private:
     int m_width, m_height;
     int m_originX, m_originY;
     double m_userScaleX, m_userScaleY;
-    MusFontInfo m_font;
+    FontMetricsInfo m_font;
       
     // holds the list of glyphs from the leipzig font used so far
     // they will be added at the end of the file as <defs>

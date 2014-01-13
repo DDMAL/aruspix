@@ -16,7 +16,7 @@
 //----------------------------------------------------------------------------
 
 MusWxDC::MusWxDC ( wxDC *dc ):
-    MusDC()
+    DeviceContext()
 {
     m_dc = dc;
     m_backgroundImage= NULL;
@@ -63,7 +63,7 @@ void MusWxDC::SetPen( int colour, int width, int style )
     m_dc->SetPen( m_pen );
 }
         
-void MusWxDC::SetFont( MusFontInfo *font_info )
+void MusWxDC::SetFont( FontMetricsInfo *font_info )
 {
     wxFont font( font_info->pointSize, (wxFontFamily)font_info->family, font_info->style,
         (wxFontWeight)font_info->weight, font_info->underlined, font_info->faceName.c_str(),

@@ -25,7 +25,7 @@
  * drawn (the top one on the stack). The content bounding box is updated for all objects
  * the stack
  */
-class MusBBoxDC: public MusDC
+class MusBBoxDC: public DeviceContext
 {
 public:
 
@@ -44,7 +44,7 @@ public:
     
     virtual void SetPen( int colour, int width = 1, int style = AxSOLID );
     
-    virtual void SetFont( MusFontInfo *font_info );
+    virtual void SetFont( FontMetricsInfo *font_info );
         
     virtual void SetTextForeground( int colour );
     
@@ -112,7 +112,7 @@ private:
      */ 
     ArrayOfMusObjects m_objects;
     
-    MusFontInfo m_font;
+    FontMetricsInfo m_font;
     
     /**
      * The rendering context we are calling from - used to flip back the Y coordinates

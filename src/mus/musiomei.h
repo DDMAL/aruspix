@@ -20,7 +20,7 @@
 class Barline;
 class Beam;
 class Clef;
-class MusLayer;
+class Layer;
 class Mensur;
 class MultiRest;
 class Note;
@@ -57,14 +57,14 @@ public:
      */
     ///@{
     virtual bool WriteDoc( MusDoc *doc );
-    virtual bool WritePage( MusPage *page );
-    virtual bool WriteSystem( MusSystem *system );
-    virtual bool WriteScoreDef( MusScoreDef *scoreDef );
+    virtual bool WritePage( Page *page );
+    virtual bool WriteSystem( System *system );
+    virtual bool WriteScoreDef( ScoreDef *scoreDef );
     virtual bool WriteStaffGrp( MusStaffGrp *staffGrp );
     virtual bool WriteStaffDef( MusStaffDef *staffDef );
-    virtual bool WriteMeasure( MusMeasure *measure );
-    virtual bool WriteStaff( MusStaff *staff );
-    virtual bool WriteLayer( MusLayer *layer );
+    virtual bool WriteMeasure( Measure *measure );
+    virtual bool WriteStaff( Staff *staff );
+    virtual bool WriteLayer( Layer *layer );
     virtual bool WriteLayerElement( LayerElement *element );
     // app
     virtual bool WriteLayerApp( LayerApp *app );
@@ -236,7 +236,7 @@ private:
     void ReadSameAsAttr( TiXmlElement *element, MusObject *object );
     
     /**
-     * Add the LayerElement to the appropriate parent (e.g., MusLayer, LayerRdg)
+     * Add the LayerElement to the appropriate parent (e.g., Layer, LayerRdg)
      */
     void AddLayerElement( LayerElement *element );
     
@@ -272,14 +272,14 @@ public:
     
 private:
     std::string m_filename;
-    MusPage *m_page;
-    MusSystem *m_system;
-    MusScoreDef *m_scoreDef;
+    Page *m_page;
+    System *m_system;
+    ScoreDef *m_scoreDef;
     std::list<MusStaffGrp*> m_staffGrps;
     MusStaffDef *m_staffDef;
-    MusMeasure *m_measure;
-	MusStaff *m_staff;
-	MusLayer *m_layer;
+    Measure *m_measure;
+	Staff *m_staff;
+	Layer *m_layer;
     LayerRdg *m_layerRdg;
     Beam *m_beam;
     Tuplet *m_tuplet;

@@ -40,12 +40,12 @@ enum
 
 class MusPoint;
 class MusRect;
-class MusFontInfo;
+class FontMetricsInfo;
 class MusDocObject;
 class MusRC;
 
 // ---------------------------------------------------------------------------
-// MusDC
+// DeviceContext
 // ---------------------------------------------------------------------------
 
 /**
@@ -56,15 +56,15 @@ class MusRC;
  *  MusSvgDC - a non-gui file DC;
  *  MusCairoDC - a wrapper to a Cairo surface;
  * The class uses int-based colour encoding (instead of wxColour in wxDC).
- * It uses MusFontInfo (instead of wxFont in wxDC).
+ * It uses FontMetricsInfo (instead of wxFont in wxDC).
 */
 
-class MusDC
+class DeviceContext
 {
 public:
 
-    MusDC () { m_correctMusicAscent = true; m_drawBoundingBoxes = false;};
-    virtual ~MusDC() {};
+    DeviceContext () { m_correctMusicAscent = true; m_drawBoundingBoxes = false;};
+    virtual ~DeviceContext() {};
     
     // Setters
     
@@ -78,7 +78,7 @@ public:
     
     virtual void SetPen( int colour, int width = 1, int style = AxSOLID ) = 0;
     
-    virtual void SetFont( MusFontInfo *font_info ) = 0;
+    virtual void SetFont( FontMetricsInfo *font_info ) = 0;
 
     virtual void SetTextForeground( int colour ) = 0;
     
@@ -152,7 +152,7 @@ protected:
 };
 
 // ---------------------------------------------------------------------------
-// MusFontInfo
+// FontMetricsInfo
 // ---------------------------------------------------------------------------
 
 /**
@@ -160,10 +160,10 @@ protected:
  * It is very similar to wxNativeFontInfo, but we need it for non-gui AxDCs 
 */
 
-class MusFontInfo
+class FontMetricsInfo
 {
 public:
-    MusFontInfo () 
+    FontMetricsInfo () 
     {
         pointSize = 0;
         family = 0; //was wxFONTFAMILY_DEFAULT;
@@ -173,7 +173,7 @@ public:
         faceName.clear();
         encoding = 0; //was wxFONTENCODING_DEFAULT;
     }
-    virtual ~MusFontInfo() {};
+    virtual ~FontMetricsInfo() {};
     
         // accessors and modifiers for the font elements
     int GetPointSize() { return pointSize; }

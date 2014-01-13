@@ -171,11 +171,11 @@ bool CmpCollation::Realize( )
 	int npages = ceil((float)m_length / (float)correct_lrg_lign);
 	for( i = 0; i < npages; i++ )
 	{					
-		MusPage *page = new MusPage();
+		Page *page = new Page();
 		page->lrg_lign = lrg_lign;
 		for( int j = 0; j < nstaff; j++ )
 		{
-			MusStaff *staff = new MusStaff();
+			Staff *staff = new Staff();
 			staff->no = j;
 			if ( j == 0 )
 				staff->vertBarre = START;
@@ -190,7 +190,7 @@ bool CmpCollation::Realize( )
 	// fill the pages
 	for( i = 0; i < nstaff; i++ )
 	{
-		MusStaff *full_staff = new MusStaff();
+		Staff *full_staff = new Staff();
 		CmpCollationPart *part = &m_collationParts[i];
 		wxString staffname = m_basename + m_id + "." + part->m_bookPart->m_id + ".swwg";
 		if ( part->m_flags & PART_REFERENCE )
@@ -203,7 +203,7 @@ bool CmpCollation::Realize( )
 		for( int j = 0; j < npages; j++ )
 		{	
 			int clef_offset = 0;
-			MusStaff *staff = &m_musDocPtr->m_pages[j].m_staves[i];
+			Staff *staff = &m_musDocPtr->m_pages[j].m_staves[i];
 			if ( clef )
 			{
 				staff->m_children.Add( new MusSymbol1( *clef ) );
@@ -296,10 +296,10 @@ bool CmpCollation::Collate( )
         
         CmpCollationPart * variant = &m_collationParts[i];
         
-        MusLayer *layer_ref = reference->m_bookPart->GetContentToAlign( m_basename );
+        Layer *layer_ref = reference->m_bookPart->GetContentToAlign( m_basename );
         layer_ref->RemoveClefAndCustos();
 
-        MusLayer *layer_var = variant->m_bookPart->GetContentToAlign( m_basename );    
+        Layer *layer_var = variant->m_bookPart->GetContentToAlign( m_basename );    
         layer_var->RemoveClefAndCustos();
 
         
@@ -315,10 +315,10 @@ bool CmpCollation::Collate( )
         // create the full mei doc
         MusDoc collationDoc;
         collationDoc.Reset( Raw );
-        MusPage *page = new MusPage( );
-        MusSystem *system = new MusSystem( );
-        MusStaff *staff = new MusStaff( 1 );
-        MusMeasure *measure = new MusMeasure( false, 1 );
+        Page *page = new Page( );
+        System *system = new System( );
+        Staff *staff = new Staff( 1 );
+        Measure *measure = new Measure( false, 1 );
         staff->AddLayer( layer_ref );
         measure->AddStaff( staff );
         system->AddMeasure( measure );
@@ -335,7 +335,7 @@ bool CmpCollation::Collate( )
 	
 }
 
-void CmpCollation::CreateApp( MusLayer *layer_aligned, int i, MusLayer *layer_var, int j, int appType, wxString refFileId, wxString varFileId )
+void CmpCollation::CreateApp( Layer *layer_aligned, int i, Layer *layer_var, int j, int appType, wxString refFileId, wxString varFileId )
 {
     LayerApp *app = new LayerApp();
     
@@ -380,7 +380,7 @@ int minimum(int a,int b,int c)
 }
 
 	
-bool CmpCollation::Align( MusLayer *layer_ref, MusLayer *layer_var, wxString refFileId, wxString varFileId )
+bool CmpCollation::Align( Layer *layer_ref, Layer *layer_var, wxString refFileId, wxString varFileId )
 {	
 	//Step 1
 	int k,i,j,n,m,cost,*d,distance;
@@ -630,9 +630,9 @@ CmpBookPart::~CmpBookPart( )
 {
 }
 
-MusLayer *CmpBookPart::GetContentToAlign( wxString basename )
+Layer *CmpBookPart::GetContentToAlign( wxString basename )
 {
-    MusLayer *alignLayer = new MusLayer( 1 );
+    Layer *alignLayer = new Layer( 1 );
     MusDoc doc;
     
     MusMeiInput meiInput( &doc, (basename + this->m_id + ".mei").mb_str() );
@@ -645,7 +645,7 @@ MusLayer *CmpBookPart::GetContentToAlign( wxString basename )
     for ( int k = 0; k < (int)nfiles; k++ )
     {
         CmpPartPage *partPage = &this->m_partpages[k];
-        MusPage *currentPage = (MusPage*)doc.m_children[k];
+        Page *currentPage = (Page*)doc.m_children[k];
         
         bool has_started = false;
         bool has_ended = false;
@@ -1018,7 +1018,7 @@ bool CmpFile::LoadBooks( wxArrayPtrVoid params, AxProgressDlg *dlg )
 				if ( !failed && !dlg->GetCanceled() )
 				{            
                     // Detach the correspondant layout page from the file - we will not save the file, so who cares?
-                    MusPage *partPage =  (MusPage*)recFile.m_musDocPtr->DetachChild( 0 );
+                    Page *partPage =  (Page*)recFile.m_musDocPtr->DetachChild( 0 );
                     partDoc->AddPage( partPage );
                     // temporary - for now we just put the filename in the surface - this is actually wrong
                     partPage->m_surface = recFile.m_shortname + ".png";

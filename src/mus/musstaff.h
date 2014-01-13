@@ -15,34 +15,34 @@
 #define MAXCLE 100	// maximum number of clef on one staff
 
 class Clef;
-class MusDC;
-class MusLayer;
+class DeviceContext;
+class Layer;
 class MusStaffAlignment;
 
 //----------------------------------------------------------------------------
-// MusStaff
+// Staff
 //----------------------------------------------------------------------------
 
 /**
  * This class represents a staff in a laid-out score (MusDoc).
- * A MusStaff is contained in a MusSystem.
- * It contains MusMeasure objects.
- * For unmeasured music, on single MusMeasure is added for simplifying internal processing
+ * A Staff is contained in a System.
+ * It contains Measure objects.
+ * For unmeasured music, on single Measure is added for simplifying internal processing
 */
-class MusStaff: public MusDocObject
+class Staff: public MusDocObject
 {
     
 public:
     // constructors and destructors
-    MusStaff( int n = -1 );
-	MusStaff( const MusStaff& staff ); // copy contructor
-    virtual ~MusStaff();
+    Staff( int n = -1 );
+	Staff( const Staff& staff ); // copy contructor
+    virtual ~Staff();
 
-    virtual std::string MusClassName( ) { return "MusStaff"; };	
+    virtual std::string MusClassName( ) { return "Staff"; };	
     
     void Clear();
     
-    void AddLayer( MusLayer *layer );
+    void AddLayer( Layer *layer );
 	
 	int GetLayerCount() const { return (int)m_children.size(); };
     
@@ -73,14 +73,14 @@ public:
     virtual int Save( ArrayPtrVoid params );
     virtual bool GetPosOnPage( ArrayPtrVoid params );
     
-	void CopyAttributes( MusStaff *staff ); // copy all attributes but none of the elements
-	//void ClearElements( MusDC *dc , MusElement *start = NULL );
+	void CopyAttributes( Staff *staff ); // copy all attributes but none of the elements
+	//void ClearElements( DeviceContext *dc , MusElement *start = NULL );
 
-	MusLayer *GetFirst( );
-	MusLayer *GetLast( );
-	MusLayer *GetNext( MusLayer *layer );
-	MusLayer *GetPrevious( MusLayer *layer );
-    MusLayer *GetLayerWithIdx( int LayerIdx );
+	Layer *GetFirst( );
+	Layer *GetLast( );
+	Layer *GetNext( Layer *layer );
+	Layer *GetPrevious( Layer *layer );
+    Layer *GetLayerWithIdx( int LayerIdx );
     
     /**
      * Align the content of a system.

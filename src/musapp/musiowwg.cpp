@@ -213,14 +213,14 @@ bool MusWWGOutput::ExportFile( )
     WriteParameters2( &m_wwgData ); // param2
 	WriteFonts( &m_wwgData );
 	
-    MusPage *page = NULL;
+    Page *page = NULL;
     for (i = 0; i < (int)m_doc->GetChildCount(); i++)
     {
-		page = (MusPage*)m_doc->m_children[i];
+		page = (Page*)m_doc->m_children[i];
 		WritePage( page );
     }
     
-    MusStaff staff;
+    Staff staff;
     //staff.m_id = 0;
     
     if (!WriteSeparator() ) 
@@ -364,7 +364,7 @@ bool MusWWGOutput::WriteSeparator( )
 	return true;
 }
 
-bool MusWWGOutput::WritePage( const MusPage *page )
+bool MusWWGOutput::WritePage( const Page *page )
 {
 	int i, j, k, l;
 
@@ -374,8 +374,8 @@ bool MusWWGOutput::WritePage( const MusPage *page )
 	Write( &int32, 4 );
 	short nbStaves = 0;
 	for (i = 0; i < page->GetSystemCount(); i++) {
-        MusSystem *system = (MusSystem*)page->m_children[i];
-        MusMeasure *measure = (MusMeasure*)system->m_children[0];
+        System *system = (System*)page->m_children[i];
+        Measure *measure = (Measure*)system->m_children[0];
 		nbStaves += measure->GetStaffCount();
 	}
 	int16 = wxINT16_SWAP_ON_BE( nbStaves );
@@ -385,9 +385,9 @@ bool MusWWGOutput::WritePage( const MusPage *page )
 	Write( &reserve, 1 );
 	Write( &page->defin, 1 );
     // get the first system for indent information
-    MusSystem *system = NULL;
+    System *system = NULL;
     if (page->GetSystemCount() > 0) {
-        system = (MusSystem*)page->m_children[0];
+        system = (System*)page->m_children[0];
     }
     int32 = system ? wxINT32_SWAP_ON_BE( system->m_systemLeftMar ) : 0;
 	Write( &int32, 4 );
@@ -398,21 +398,21 @@ bool MusWWGOutput::WritePage( const MusPage *page )
     
     l = 0; // staff number on the page
     for (i = 0; i < page->GetSystemCount(); i++) {
-        m_current_system = (MusSystem*)page->m_children[i];
+        m_current_system = (System*)page->m_children[i];
         
         // TODO - We need to fill the ecarts[] array here because we now have m_y_abs positions for the staves
         
         for (j = 0; j < m_current_system->GetMeasureCount(); j++)
         {
-            MusMeasure *measure = (MusMeasure*)m_current_system->m_children[j];
+            Measure *measure = (Measure*)m_current_system->m_children[j];
         
             for (k = 0; k < measure->GetStaffCount(); k++)
             {
-                m_current_staff = (MusStaff*)measure->m_children[k];
+                m_current_staff = (Staff*)measure->m_children[k];
                 for (l = 0; l < m_current_staff->GetLayerCount(); l++)
                 {
                     // This needs to be fixed
-                    MusLayer *layer = (MusLayer*)m_current_staff->m_children[l];
+                    Layer *layer = (Layer*)m_current_staff->m_children[l];
                     WriteLayer( layer, k );
                 }
             }
@@ -423,7 +423,7 @@ bool MusWWGOutput::WritePage( const MusPage *page )
 
 }
 
-bool MusWWGOutput::WriteLayer( const MusLayer *layer, int staffNo )
+bool MusWWGOutput::WriteLayer( const Layer *layer, int staffNo )
 {
 	int k;
 
@@ -692,7 +692,7 @@ bool MusWWGInput::ImportFile( )
     
     for (i = 0; i <  m_wwgData.nbpage; i++ )
 	{
-		MusPage *page = new MusPage();
+		Page *page = new Page();
 		ReadPage( page );
         m_doc->AddPage( page );
     }
@@ -716,7 +716,7 @@ bool MusWWGInput::ImportFile( )
     int j, k, l, m;
     for (j = 0; j < m_doc->GetChildCount(); j++)
     {
-        MusPage *page = (MusPage*)m_doc->m_children[j];
+        Page *page = (Page*)m_doc->m_children[j];
         
         m_doc->SetRendPage( page );
         
@@ -724,14 +724,14 @@ bool MusWWGInput::ImportFile( )
         int yy =  m_doc->m_rendPageHeight + m_doc->m_rendStaffSize[ 0 ];
         for (k = 0; k < page->GetSystemCount(); k++) 
         {
-            MusSystem *system = (MusSystem*)page->m_children[k];
+            System *system = (System*)page->m_children[k];
             // only one measure per staff
-            MusMeasure *measure = (MusMeasure*)system->m_children[0];
-            MusStaff *staff = NULL;
+            Measure *measure = (Measure*)system->m_children[0];
+            Staff *staff = NULL;
             
             for (l = 0; l < measure->GetStaffCount(); l++)
             {
-                staff = (MusStaff*)measure->m_children[l];
+                staff = (Staff*)measure->m_children[l];
                 yy -= ecarts[m] * m_doc->m_rendInterl[ staff->staffSize ];;
                 staff->m_yAbs = yy;
                 m++;
@@ -877,7 +877,7 @@ bool MusWWGInput::ReadSeparator( )
 		return true;
 }
 
-bool MusWWGInput::ReadPage( MusPage *page )
+bool MusWWGInput::ReadPage( Page *page )
 {	
 	int j;
     
@@ -904,8 +904,8 @@ bool MusWWGInput::ReadPage( MusPage *page )
 	Read( &int32, 4 );
 	lrg_lign = wxINT32_SWAP_ON_BE( int32 ); // page value in wwg
 
-    MusSystem *system = new MusSystem(); // first system of the page
-    MusMeasure *measure = new MusMeasure( false );
+    System *system = new System(); // first system of the page
+    Measure *measure = new Measure( false );
     system->m_systemLeftMar = indent;
     system->m_systemRightMar = indentDroite;
     //system->lrg_lign = lrg_lign;  
@@ -913,14 +913,14 @@ bool MusWWGInput::ReadPage( MusPage *page )
     
     for (j = 0; j < nbrePortees; j++) 
 	{
-		MusStaff *staff = new MusStaff( j + 1 );
-        MusLayer *layer = new MusLayer( 1 ); // only one layer per staff
+		Staff *staff = new Staff( j + 1 );
+        Layer *layer = new Layer( 1 ); // only one layer per staff
 		ReadStaff( staff, layer, j );
         if ( m_noLigne > system_no + 1 ) { // we have a new system
             system->AddMeasure( measure );
             page->AddSystem( system ); // add the current one
-            system = new MusSystem(); // create the next one
-            measure = new MusMeasure( false );
+            system = new System(); // create the next one
+            measure = new Measure( false );
             system_no = m_noLigne - 1; 
             system->m_systemRightMar = indentDroite;
             //system->lrg_lign = lrg_lign;
@@ -941,7 +941,7 @@ bool MusWWGInput::ReadPage( MusPage *page )
 	return true;
 
 }
-bool MusWWGInput::ReadStaff( MusStaff *staff, MusLayer *layer, int staffNo )
+bool MusWWGInput::ReadStaff( Staff *staff, Layer *layer, int staffNo )
 {	
 	unsigned int k;
 
@@ -1003,7 +1003,7 @@ bool MusWWGInput::ReadStaff( MusStaff *staff, MusLayer *layer, int staffNo )
 	return true;
 }
 
-bool MusWWGInput::ReadNote( MusLayer *layer )
+bool MusWWGInput::ReadNote( Layer *layer )
 {
 	
 	ReadElementAttr( );
@@ -1120,7 +1120,7 @@ bool MusWWGInput::ReadNote( MusLayer *layer )
     return true;
 }
 
-bool MusWWGInput::ReadSymbol( MusLayer *layer )
+bool MusWWGInput::ReadSymbol( Layer *layer )
 {	
 	ReadElementAttr( );
 	Read( &flag , 1 );

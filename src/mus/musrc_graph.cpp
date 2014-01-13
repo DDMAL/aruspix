@@ -17,7 +17,7 @@
 #include "musdoc.h"
 #include "musstaff.h"
 
-void MusRC::v_bline ( MusDC *dc, int y1, int y2, int x1, int nbr)
+void MusRC::v_bline ( DeviceContext *dc, int y1, int y2, int x1, int nbr)
 {
 	assert( dc ); // DC cannot be NULL
 
@@ -33,7 +33,7 @@ void MusRC::v_bline ( MusDC *dc, int y1, int y2, int x1, int nbr)
 
 
 
-void MusRC::v_bline2 ( MusDC *dc, int y1, int y2, int x1, int nbr)	
+void MusRC::v_bline2 ( DeviceContext *dc, int y1, int y2, int x1, int nbr)	
 {
 	assert( dc ); // DC cannot be NULL
 
@@ -56,7 +56,7 @@ void MusRC::v_bline2 ( MusDC *dc, int y1, int y2, int x1, int nbr)
 }
 
 
-void MusRC::h_bline ( MusDC *dc, int x1, int x2, int y1, int nbr)
+void MusRC::h_bline ( DeviceContext *dc, int x1, int x2, int y1, int nbr)
 {		
 	assert( dc ); // DC cannot be NULL
 
@@ -71,7 +71,7 @@ void MusRC::h_bline ( MusDC *dc, int x1, int x2, int y1, int nbr)
 }
 
 //draw a box, lol. It's like a rectangle, but not filled in.
-void MusRC::box( MusDC *dc, int x1, int y1, int x2, int y2)
+void MusRC::box( DeviceContext *dc, int x1, int y1, int x2, int y2)
 {
 	assert( dc ); // DC cannot be NULL
 	
@@ -86,7 +86,7 @@ void MusRC::box( MusDC *dc, int x1, int y1, int x2, int y2)
 	return;
 }
 
-void MusRC::rect_plein2( MusDC *dc, int x1, int y1, int x2, int y2 )	/* dessine rectangle plein */
+void MusRC::rect_plein2( DeviceContext *dc, int x1, int y1, int x2, int y2 )	/* dessine rectangle plein */
 {	
 	assert( dc ); // DC cannot be NULL
 
@@ -103,7 +103,7 @@ void MusRC::rect_plein2( MusDC *dc, int x1, int y1, int x2, int y2 )	/* dessine 
 	return;
 }
 
-int MusRC::hGrosseligne ( MusDC *dc, int x1, int y1, int x2, int y2, int decal)
+int MusRC::hGrosseligne ( DeviceContext *dc, int x1, int y1, int x2, int y2, int decal)
 {	
 	MusPoint p[4];
 	int dec = decal;
@@ -129,7 +129,7 @@ int MusRC::hGrosseligne ( MusDC *dc, int x1, int y1, int x2, int y2, int decal)
 }
 
 
-int MusRC::DoDrawDot ( MusDC *dc, int x, int y )
+int MusRC::DoDrawDot ( DeviceContext *dc, int x, int y )
 {
 	int r = std::max( ToRendererX(3), 2 );
 	
@@ -144,8 +144,8 @@ int MusRC::DoDrawDot ( MusDC *dc, int x, int y )
 	return y;
 }
 
-void MusRC::DrawLeipzigFont ( MusDC *dc, int x, int y, unsigned char c, 
-						 MusStaff *staff, bool dimin )
+void MusRC::DrawLeipzigFont ( DeviceContext *dc, int x, int y, unsigned char c, 
+						 Staff *staff, bool dimin )
 {  
 	int staffSize = staff->staffSize;
 	int fontCorr = 0;
@@ -194,7 +194,7 @@ void MusRC::DrawLeipzigFont ( MusDC *dc, int x, int y, unsigned char c,
 	return;
 }
 
-void MusRC::putstring ( MusDC *dc, int x, int y, std::string s, int centrer, int staffSize)
+void MusRC::putstring ( DeviceContext *dc, int x, int y, std::string s, int centrer, int staffSize)
 { 
 	assert( dc ); // DC cannot be NULL
 
@@ -209,7 +209,7 @@ void MusRC::putstring ( MusDC *dc, int x, int y, std::string s, int centrer, int
     
 	if ( centrer )
 	{
-        Mus::LogDebug("Centering string not implemented with MusDC");
+        Mus::LogDebug("Centering string not implemented with DeviceContext");
 		
         int w, h;
 		dc->GetTextExtent( s, &w, &h );
@@ -220,7 +220,7 @@ void MusRC::putstring ( MusDC *dc, int x, int y, std::string s, int centrer, int
 	dc->DrawText( s, x, ToRendererY(y + fontCorr ));
 }
 
-void MusRC::putlyric ( MusDC *dc, int x, int y, std::string s, int staffSize, bool cursor)
+void MusRC::putlyric ( DeviceContext *dc, int x, int y, std::string s, int staffSize, bool cursor)
 { 
 	assert( dc ); // DC cannot be NULL
 
@@ -234,7 +234,7 @@ void MusRC::putlyric ( MusDC *dc, int x, int y, std::string s, int staffSize, bo
         DoLyricCursor( x, y, dc, s );	
 }
 
-void MusRC::DrawTieBezier(MusDC *dc, int x, int y, int x1, bool direction)
+void MusRC::DrawTieBezier(DeviceContext *dc, int x, int y, int x1, bool direction)
 {
     int height = std::max( MIN_TIE_HEIGHT, std::min( 1 * m_doc->m_rendInterl[0], abs( x1 - x ) / 4 ) );
     

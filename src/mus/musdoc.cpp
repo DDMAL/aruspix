@@ -65,7 +65,7 @@ int MusDoc::Save( ArrayPtrVoid params )
     return FUNCTOR_CONTINUE;
 }
 
-void MusDoc::AddPage( MusPage *page )
+void MusDoc::AddPage( Page *page )
 {
 	page->SetParent( this );
 	m_children.push_back( page );
@@ -79,7 +79,7 @@ void MusDoc::Refresh()
 
 void MusDoc::Layout( )
 {
-    MusScoreDef currentScoreDef;
+    ScoreDef currentScoreDef;
     currentScoreDef = m_scoreDef;
     MusStaffDef *staffDef = NULL;
     ArrayPtrVoid params;
@@ -89,16 +89,16 @@ void MusDoc::Layout( )
     this->Process( &setPageScoreDef, params );
     
     int i;
-	MusPage *page = NULL;
+	Page *page = NULL;
     for (i = 0; i < this->GetChildCount(); i++)
 	{
-		page = (MusPage*)this->m_children[i];
+		page = (Page*)this->m_children[i];
         page->Layout( );
         break;
      }
 }
 
-void MusDoc::SetRendPage( MusPage *page )
+void MusDoc::SetRendPage( Page *page )
 {
     if ( !page || (page == m_rendPage) ) {
         return;

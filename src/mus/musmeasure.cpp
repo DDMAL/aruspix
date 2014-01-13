@@ -20,10 +20,10 @@
 #include "musstaff.h"
 
 //----------------------------------------------------------------------------
-// MusMeasure
+// Measure
 //----------------------------------------------------------------------------
 
-MusMeasure::MusMeasure( bool measureMusic, int logMeasureNb ):
+Measure::Measure( bool measureMusic, int logMeasureNb ):
     MusDocObject("measure-")
 {
 	Clear( );
@@ -34,12 +34,12 @@ MusMeasure::MusMeasure( bool measureMusic, int logMeasureNb ):
     }
 }
 
-MusMeasure::~MusMeasure()
+Measure::~Measure()
 {
     
 }
 
-void MusMeasure::Clear()
+void Measure::Clear()
 {
 	ClearChildren();
     m_parent = NULL;
@@ -53,7 +53,7 @@ void MusMeasure::Clear()
     m_leftBarline.m_barlineType = BARLINE_NONE;
 }
 
-int MusMeasure::Save( ArrayPtrVoid params )
+int Measure::Save( ArrayPtrVoid params )
 {
     // param 0: output stream
     MusFileOutputStream *output = (MusFileOutputStream*)params[0];
@@ -64,7 +64,7 @@ int MusMeasure::Save( ArrayPtrVoid params )
 
 }
 
-void MusMeasure::AddStaff( MusStaff *staff )
+void Measure::AddStaff( Staff *staff )
 {    
 	staff->SetParent( this );
 	m_children.push_back( staff );
@@ -74,22 +74,22 @@ void MusMeasure::AddStaff( MusStaff *staff )
     }
 }
 
-MusStaff *MusMeasure::GetFirst( )
+Staff *Measure::GetFirst( )
 {
 	if ( m_children.empty() )
 		return NULL;
-	return (MusStaff*)m_children[0];
+	return (Staff*)m_children[0];
 }
 
-MusStaff *MusMeasure::GetLast( )
+Staff *Measure::GetLast( )
 {
 	if ( m_children.empty() )
 		return NULL;
 	int i = GetStaffCount() - 1;
-	return (MusStaff*)m_children[i];
+	return (Staff*)m_children[i];
 }
 
-MusStaff *MusMeasure::GetNext( MusStaff *staff )
+Staff *Measure::GetNext( Staff *staff )
 {
     if ( !staff || m_children.empty())
         return NULL;
@@ -99,10 +99,10 @@ MusStaff *MusMeasure::GetNext( MusStaff *staff )
 	if ((i == -1 ) || ( i >= GetStaffCount() - 1 ))
 		return NULL;
     
-	return (MusStaff*)m_children[i + 1];
+	return (Staff*)m_children[i + 1];
 }
 
-MusStaff *MusMeasure::GetPrevious( MusStaff *staff )
+Staff *Measure::GetPrevious( Staff *staff )
 {
     if ( !staff || m_children.empty())
         return NULL;
@@ -112,25 +112,25 @@ MusStaff *MusMeasure::GetPrevious( MusStaff *staff )
 	if ((i == -1 ) || ( i <= 0 ))
         return NULL;
 	
-    return (MusStaff*)m_children[i - 1];
+    return (Staff*)m_children[i - 1];
 }
 
 
-MusStaff *MusMeasure::GetStaffWithIdx( int staffIdx )
+Staff *Measure::GetStaffWithIdx( int staffIdx )
 {
     if ( staffIdx > (int)m_children.size() - 1 )
         return NULL;
 	
-	return (MusStaff*)m_children[staffIdx];
+	return (Staff*)m_children[staffIdx];
 }
 
 
-MusStaff *MusMeasure::GetStaffWithNo( int staffNo )
+Staff *Measure::GetStaffWithNo( int staffNo )
 {
     int i;
-    MusStaff *staff = NULL;
+    Staff *staff = NULL;
     for (i = 0; i < this->GetStaffCount(); i++ ) {
-        staff = dynamic_cast<MusStaff*>(m_children[i]);
+        staff = dynamic_cast<Staff*>(m_children[i]);
         if ( staff && (staff->GetStaffNo() == staffNo ) ) {
             return staff;
         }
@@ -138,7 +138,7 @@ MusStaff *MusMeasure::GetStaffWithNo( int staffNo )
 	return NULL;
 }
 
-int MusMeasure::GetXRel()
+int Measure::GetXRel()
 {
     if ( m_measureAligner.GetLeftAlignment() ) {
         return m_measureAligner.GetLeftAlignment()->GetXRel();
@@ -146,7 +146,7 @@ int MusMeasure::GetXRel()
     return 0;
 }
 
-int MusMeasure::GetXRelRight()
+int Measure::GetXRelRight()
 {
     if ( m_measureAligner.GetRightAlignment() ) {
         return m_measureAligner.GetRightAlignment()->GetXRel();
@@ -155,10 +155,10 @@ int MusMeasure::GetXRelRight()
 }
 
 //----------------------------------------------------------------------------
-// MusMeasure functor methods
+// Measure functor methods
 //----------------------------------------------------------------------------
 
-int MusMeasure::Align( ArrayPtrVoid params )
+int Measure::Align( ArrayPtrVoid params )
 {
     // param 0: the measureAligner
     // param 1: the time (unused)
@@ -185,7 +185,7 @@ int MusMeasure::Align( ArrayPtrVoid params )
     return FUNCTOR_CONTINUE;
 }
 
-int MusMeasure::IntegrateBoundingBoxXShift( ArrayPtrVoid params )
+int Measure::IntegrateBoundingBoxXShift( ArrayPtrVoid params )
 {
     // param 0: the cumulated shift (unused)
     // param 1: the functor to be redirected to MusAligner
@@ -196,7 +196,7 @@ int MusMeasure::IntegrateBoundingBoxXShift( ArrayPtrVoid params )
     return FUNCTOR_SIBLINGS;
 }
 
-int MusMeasure::SetAligmentXPos( ArrayPtrVoid params )
+int Measure::SetAligmentXPos( ArrayPtrVoid params )
 {
     // param 0: the previous time position (unused)
     // param 1: the previous x rel position (unused)
@@ -210,7 +210,7 @@ int MusMeasure::SetAligmentXPos( ArrayPtrVoid params )
 
 #include <math.h>
 
-int MusMeasure::JustifyX( ArrayPtrVoid params )
+int Measure::JustifyX( ArrayPtrVoid params )
 {
     // param 0: the justification ratio
     // param 1: the system full width (without system margins) (unused)
@@ -226,7 +226,7 @@ int MusMeasure::JustifyX( ArrayPtrVoid params )
 }
 
 
-int MusMeasure::AlignMeasures( ArrayPtrVoid params )
+int Measure::AlignMeasures( ArrayPtrVoid params )
 {
     // param 0: the cumulated shift
     int *shift = (int*)params[0];

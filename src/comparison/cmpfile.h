@@ -42,7 +42,7 @@ WX_DECLARE_OBJARRAY( CmpPartPage, ArrayOfCmpPartPages);
 class CmpCollationPart;
 WX_DECLARE_OBJARRAY( CmpCollationPart, ArrayOfCmpCollationParts);
 
-class MusLayer;
+class Layer;
 class LayerElement;
 
 
@@ -91,18 +91,18 @@ protected:
     /**
      * Align the two layer using a dynamic progamming approach.
      * The alignement is performed using the edit distance.
-     * The alignement is performed in-place in the layer_ref MusLayer
+     * The alignement is performed in-place in the layer_ref Layer
      */
-	bool Align( MusLayer *layer_ref, MusLayer *layer_var, wxString refFileId, wxString varFileId );
+	bool Align( Layer *layer_ref, Layer *layer_var, wxString refFileId, wxString varFileId );
 
     /**
-     * Create a <app> element in the layer_aligned MusLayer.
+     * Create a <app> element in the layer_aligned Layer.
      * The appType can be CMP_APP_DEL, CMP_APP_INS ou CMP_APP_SUBST.
      * A deletion means that the element position i in not in layer_var.
      * A insertion means that the element position j in layer_var is missing in layer_aligned after i.
      * A substitution is element position j replacing element position i.
      */ 
-    void CreateApp( MusLayer *layer_aligned, int i, MusLayer *layer_var, int j, int appType, wxString refFileId, wxString varFileId );
+    void CreateApp( Layer *layer_aligned, int i, Layer *layer_var, int j, int appType, wxString refFileId, wxString varFileId );
     
     /**
      * Return the filename of the MEI reference file.
@@ -178,10 +178,10 @@ public:
     ~CmpBookPart();
     
     /**
-     * Return a MusLayer containing the content to be aligned.
+     * Return a Layer containing the content to be aligned.
      * Go through all the pages / systems and also remove clefs and custos.
      */
-    MusLayer *GetContentToAlign( wxString basename );
+    Layer *GetContentToAlign( wxString basename );
 
 public:
     wxString m_id;

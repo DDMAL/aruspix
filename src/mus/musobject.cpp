@@ -649,12 +649,12 @@ int MusObject::SetPageScoreDef( ArrayPtrVoid params )
 {
 
     // param 0: the current scoreDef
-    MusScoreDef *currentScoreDef = (MusScoreDef*)params[0];
+    ScoreDef *currentScoreDef = (ScoreDef*)params[0];
     MusStaffDef **currentStaffDef = (MusStaffDef**)params[1];
     
 
     // starting a new page
-    MusPage *current_page = dynamic_cast<MusPage*>(this);
+    Page *current_page = dynamic_cast<Page*>(this);
     if ( current_page  ) {
         currentScoreDef->SetRedraw( true, true, false );
         current_page->m_drawingScoreDef = *currentScoreDef;
@@ -663,21 +663,21 @@ int MusObject::SetPageScoreDef( ArrayPtrVoid params )
     
    
     // starting a new system
-    MusSystem *current_system = dynamic_cast<MusSystem*>(this);
+    System *current_system = dynamic_cast<System*>(this);
     if ( current_system  ) {
         currentScoreDef->SetRedraw( true, true, false );
         return FUNCTOR_CONTINUE;
     }
 
     // starting a new staff
-    MusStaff *current_staff = dynamic_cast<MusStaff*>(this);
+    Staff *current_staff = dynamic_cast<Staff*>(this);
     if ( current_staff  ) {
         (*currentStaffDef) = currentScoreDef->GetStaffDef( current_staff->GetStaffNo() );
         return FUNCTOR_CONTINUE;
     }
 
     // starting a new layer
-    MusLayer *current_layer = dynamic_cast<MusLayer*>(this);
+    Layer *current_layer = dynamic_cast<Layer*>(this);
     if ( current_layer  ) {
         current_layer->SetDrawingValues( currentScoreDef, (*currentStaffDef) );
         return FUNCTOR_CONTINUE;
@@ -709,7 +709,7 @@ int MusObject::SetBoundingBoxXShift( ArrayPtrVoid params )
     int *measure_width = (int*)params[1];
 
     // starting a new measure
-    MusMeasure *current_measure = dynamic_cast<MusMeasure*>(this);
+    Measure *current_measure = dynamic_cast<Measure*>(this);
     if ( current_measure  ) {
         // we reset the measure width and the minimum position
         (*measure_width) = 0;
@@ -721,7 +721,7 @@ int MusObject::SetBoundingBoxXShift( ArrayPtrVoid params )
     }
     
     // starting an new layer
-    MusLayer *current_layer = dynamic_cast<MusLayer*>(this);
+    Layer *current_layer = dynamic_cast<Layer*>(this);
     if ( current_layer  ) {
         // mininimum position is the with for the last (previous) layer
         // we keep it if it is higher than what we had so far
@@ -804,7 +804,7 @@ int MusObject::SetBoundingBoxXShiftEnd( ArrayPtrVoid params )
     int *measure_width = (int*)params[1];
     
     // ending a measure
-    MusMeasure *current_measure = dynamic_cast<MusMeasure*>(this);
+    Measure *current_measure = dynamic_cast<Measure*>(this);
     if ( current_measure  ) {
         // as minimum position of the barline use the measure width
         (*min_pos) = (*measure_width);
@@ -815,7 +815,7 @@ int MusObject::SetBoundingBoxXShiftEnd( ArrayPtrVoid params )
     }
     
     // ending a layer
-    MusLayer *current_layer = dynamic_cast<MusLayer*>(this);
+    Layer *current_layer = dynamic_cast<Layer*>(this);
     if ( current_layer  ) {
         // mininimum position is the with the layer
         // we keep it if is higher than what we had so far
@@ -833,12 +833,12 @@ int MusObject::SetBoundingBoxYShift( ArrayPtrVoid params )
     int *min_pos = (int*)params[0];
     
     // starting a new measure
-    MusMeasure *current_measure = dynamic_cast<MusMeasure*>(this);
+    Measure *current_measure = dynamic_cast<Measure*>(this);
     if ( current_measure  ) {
         (*min_pos) = 0;
     }
     
-    MusStaff *current = dynamic_cast<MusStaff*>(this);
+    Staff *current = dynamic_cast<Staff*>(this);
     if ( !current  ) {
         return FUNCTOR_CONTINUE;
     }

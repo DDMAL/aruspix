@@ -391,11 +391,11 @@ bool MusDarmsInput::ImportFile() {
     Mus::LogMessage("len: %i, %s", len, data);
     
     m_doc->Reset( Raw );
-    MusSystem *system = new MusSystem();
-    MusPage *page = new MusPage();
-    m_staff = new MusStaff( 1 );
-    m_measure = new MusMeasure( false, 1 );
-    m_layer = new MusLayer( 1 );
+    System *system = new System();
+    Page *page = new Page();
+    m_staff = new Staff( 1 );
+    m_measure = new Measure( false, 1 );
+    m_layer = new Layer( 1 );
     
     m_current_tie = NULL;
     m_staff->AddLayer(m_layer);

@@ -112,11 +112,11 @@ public:
     virtual ~RecMLFBmp();
     
         //bool GenerateBitmaps( ImPage *impage );
-	wxBitmap GenerateBitmap( ImStaff *imstaff, MusLayer *musLayer, int currentElementNo = -1 );
+	wxBitmap GenerateBitmap( ImStaff *imstaff, Layer *musLayer, int currentElementNo = -1 );
 	int GetCurrentX() { return m_currentX; }
 	int GetCurrentWidth() { return m_currentWidth; }
-    //virtual bool WritePage( const MusPage *page );
-    virtual bool WriteLayer( const MusLayer *layer, int currentElementNo = -1 );
+    //virtual bool WritePage( const Page *page );
+    virtual bool WriteLayer( const Layer *layer, int currentElementNo = -1 );
 	// specific
 	virtual void StartLabel( );
 	//virtual void EndLabel( );

@@ -99,13 +99,13 @@ public:
     
     /**
      * Set the position of the StaffAlignment.
-     * Functor redirected from MusSystem.
+     * Functor redirected from System.
      */
     virtual int SetAligmentYPos( ArrayPtrVoid params );
     
     /**
      * Correct the Y alignment once the the content of a system has been aligned and laid out.
-     * Special case of functor redirected from MusSystem.
+     * Special case of functor redirected from System.
      */
     virtual int IntegrateBoundingBoxYShift( ArrayPtrVoid params );
     
@@ -164,7 +164,7 @@ public:
     
     /**
      * Correct the X alignment once the the content of a system has been aligned and laid out.
-     * Special case of functor redirected from MusMeasure.
+     * Special case of functor redirected from Measure.
      */
     virtual int IntegrateBoundingBoxXShift( ArrayPtrVoid params );
     
@@ -176,7 +176,7 @@ public:
     
     /**
      * Justify the X positions
-     * Special case of functor redirected from MusMeasure.
+     * Special case of functor redirected from Measure.
      */
     virtual int JustifyX( ArrayPtrVoid params );
     
@@ -274,7 +274,7 @@ public:
     
     /**
      * Correct the X alignment once the the content of a system has been aligned and laid out.
-     * Special case of functor redirected from MusMeasure.
+     * Special case of functor redirected from Measure.
      */
     virtual int IntegrateBoundingBoxXShift( ArrayPtrVoid params );
     
@@ -287,7 +287,7 @@ public:
     
     /**
      * Justify the X positions
-     * Special case of functor redirected from MusMeasure.
+     * Special case of functor redirected from Measure.
      */
     //virtual int JustifyX( ArrayPtrVoid params );
 

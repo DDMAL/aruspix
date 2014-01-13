@@ -27,17 +27,17 @@
 #define MAX_STAFFGRP_DEPTH 5
 
 //----------------------------------------------------------------------------
-// MusScoreOrStaffDefAttrInterface
+// ScoreOrStaffDefAttrInterface
 //----------------------------------------------------------------------------
 
-MusScoreOrStaffDefAttrInterface::MusScoreOrStaffDefAttrInterface()
+ScoreOrStaffDefAttrInterface::ScoreOrStaffDefAttrInterface()
 {
     m_clef = NULL;
     m_keySig = NULL;
     m_mensur = NULL;
 }
 
-MusScoreOrStaffDefAttrInterface::~MusScoreOrStaffDefAttrInterface()
+ScoreOrStaffDefAttrInterface::~ScoreOrStaffDefAttrInterface()
 {
     if (m_clef) {
         delete m_clef;
@@ -50,7 +50,7 @@ MusScoreOrStaffDefAttrInterface::~MusScoreOrStaffDefAttrInterface()
     }
 }
 
-MusScoreOrStaffDefAttrInterface::MusScoreOrStaffDefAttrInterface( const MusScoreOrStaffDefAttrInterface& interface )
+ScoreOrStaffDefAttrInterface::ScoreOrStaffDefAttrInterface( const ScoreOrStaffDefAttrInterface& interface )
 {
     m_clef = NULL;
     m_keySig = NULL;
@@ -60,7 +60,7 @@ MusScoreOrStaffDefAttrInterface::MusScoreOrStaffDefAttrInterface( const MusScore
     this->ReplaceMensur( interface.m_mensur );
 }
 
-MusScoreOrStaffDefAttrInterface& MusScoreOrStaffDefAttrInterface::operator=( const MusScoreOrStaffDefAttrInterface& interface )
+ScoreOrStaffDefAttrInterface& ScoreOrStaffDefAttrInterface::operator=( const ScoreOrStaffDefAttrInterface& interface )
 {
 	if ( this != &interface ) // not self assignement
 	{
@@ -74,7 +74,7 @@ MusScoreOrStaffDefAttrInterface& MusScoreOrStaffDefAttrInterface::operator=( con
 	return *this;
 }
 
-void MusScoreOrStaffDefAttrInterface::ReplaceClef( Clef *newClef )
+void ScoreOrStaffDefAttrInterface::ReplaceClef( Clef *newClef )
 {
     if ( newClef ) {
         if (m_clef) {
@@ -84,7 +84,7 @@ void MusScoreOrStaffDefAttrInterface::ReplaceClef( Clef *newClef )
     }
 }
 
-void MusScoreOrStaffDefAttrInterface::ReplaceKeySig( KeySignature *newKeySig )
+void ScoreOrStaffDefAttrInterface::ReplaceKeySig( KeySignature *newKeySig )
 {
     if ( newKeySig ) {
         if (m_keySig) {
@@ -94,7 +94,7 @@ void MusScoreOrStaffDefAttrInterface::ReplaceKeySig( KeySignature *newKeySig )
     }
 }
 
-void MusScoreOrStaffDefAttrInterface::ReplaceMensur( Mensur *newMensur )
+void ScoreOrStaffDefAttrInterface::ReplaceMensur( Mensur *newMensur )
 {
     if ( newMensur ) {
         if (m_mensur) {
@@ -105,20 +105,20 @@ void MusScoreOrStaffDefAttrInterface::ReplaceMensur( Mensur *newMensur )
 }
 
 //----------------------------------------------------------------------------
-// MusScoreDef
+// ScoreDef
 //----------------------------------------------------------------------------
 
-MusScoreDef::MusScoreDef() :
-	MusObject("scoredef-"), MusScoreOrStaffDefAttrInterface(), MusObjectListInterface()
+ScoreDef::ScoreDef() :
+	MusObject("scoredef-"), ScoreOrStaffDefAttrInterface(), MusObjectListInterface()
 {
 }
 
-MusScoreDef::~MusScoreDef()
+ScoreDef::~ScoreDef()
 {
     
 }
 
-void MusScoreDef::Clear()
+void ScoreDef::Clear()
 {
     ReplaceClef(NULL);
     ReplaceKeySig(NULL);
@@ -126,7 +126,7 @@ void MusScoreDef::Clear()
     ClearChildren();
 }
 
-void MusScoreDef::AddStaffGrp( MusStaffGrp *staffGrp )
+void ScoreDef::AddStaffGrp( MusStaffGrp *staffGrp )
 {
     assert( m_children.empty() );
 	staffGrp->SetParent( this );
@@ -134,7 +134,7 @@ void MusScoreDef::AddStaffGrp( MusStaffGrp *staffGrp )
     Modify();
 }
 
-void MusScoreDef::Replace( MusScoreDef *newScoreDef )
+void ScoreDef::Replace( ScoreDef *newScoreDef )
 {
     ReplaceClef( newScoreDef->m_clef );
     ReplaceKeySig( newScoreDef->m_keySig );
@@ -146,7 +146,7 @@ void MusScoreDef::Replace( MusScoreDef *newScoreDef )
     newScoreDef->Process( &replaceStaffDefsInScoreDef, params );
 }
 
-void MusScoreDef::Replace( MusStaffDef *newStaffDef )
+void ScoreDef::Replace( MusStaffDef *newStaffDef )
 {
     // first find the staffDef with the same @n
     MusStaffDef *staffDef = this->GetStaffDef( newStaffDef->GetStaffNo() );
@@ -159,7 +159,7 @@ void MusScoreDef::Replace( MusStaffDef *newStaffDef )
     }
 }
 
-void MusScoreDef::FilterList()
+void ScoreDef::FilterList()
 {
     // We want to keep only staffDef
     ListOfMusObjects::iterator iter = m_list.begin();
@@ -176,7 +176,7 @@ void MusScoreDef::FilterList()
 }
 
 
-MusStaffDef *MusScoreDef::GetStaffDef( int n )
+MusStaffDef *ScoreDef::GetStaffDef( int n )
 {
     MusStaffDef *staffDef = NULL;
     
@@ -195,7 +195,7 @@ MusStaffDef *MusScoreDef::GetStaffDef( int n )
 }
 
 
-void MusScoreDef::SetRedraw( bool clef, bool keysig, bool mensur )
+void ScoreDef::SetRedraw( bool clef, bool keysig, bool mensur )
 {
     ArrayPtrVoid params;
 	params.push_back( &clef );
@@ -267,7 +267,7 @@ void MusStaffGrp::FilterList()
 //----------------------------------------------------------------------------
 
 MusStaffDef::MusStaffDef() :
-    MusObject(), MusScoreOrStaffDefAttrInterface()
+    MusObject(), ScoreOrStaffDefAttrInterface()
 {
 }
 
@@ -293,7 +293,7 @@ int MusStaffDef::Save( ArrayPtrVoid params )
 int MusStaffDef::ReplaceStaffDefsInScoreDef( ArrayPtrVoid params )
 {
     // param 0: the scoreDef
-    MusScoreDef *scoreDef = (MusScoreDef*)params[0];
+    ScoreDef *scoreDef = (ScoreDef*)params[0];
     
     scoreDef->Replace( this );
     

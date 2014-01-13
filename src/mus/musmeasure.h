@@ -14,27 +14,27 @@
 #include "musaligner.h"
 #include "musbarline.h"
 
-class MusStaff;
+class Staff;
 
 //----------------------------------------------------------------------------
-// MusMeasure
+// Measure
 //----------------------------------------------------------------------------
 
 /**
  * This class represents a measure in a page-based score (MusDoc).
- * A MusMeasure is contained in a MusStaff.
- * It contains MusLayer objects.
+ * A Measure is contained in a Staff.
+ * It contains Layer objects.
  * For internally simplication of processing, unmeasure music is contained in one single measure object
  */
-class MusMeasure: public MusDocObject
+class Measure: public MusDocObject
 {
     
 public:
     // constructors and destructors
-    MusMeasure( bool measuredMusic = true, int logMeasureNb = -1 );
-    virtual ~MusMeasure();
+    Measure( bool measuredMusic = true, int logMeasureNb = -1 );
+    virtual ~Measure();
     
-    virtual std::string MusClassName( ) { return "MusMeasure"; };
+    virtual std::string MusClassName( ) { return "Measure"; };
     
     /**
      * Return true if measured music (otherwise we have fakes measures)
@@ -43,7 +43,7 @@ public:
     
     void Clear();
     
-	void AddStaff( MusStaff *staff );
+	void AddStaff( Staff *staff );
 	
 	int GetStaffCount() const { return (int)m_children.size(); };
     
@@ -76,16 +76,16 @@ public:
     // functors
     virtual int Save( ArrayPtrVoid params );
     
-	void CopyAttributes( MusMeasure *measure ); // copy all attributes but none of the elements
-	//void ClearElements( MusDC *dc , MusElement *start = NULL );
+	void CopyAttributes( Measure *measure ); // copy all attributes but none of the elements
+	//void ClearElements( DeviceContext *dc , MusElement *start = NULL );
     
-	MusStaff *GetFirst( );
-	MusStaff *GetLast( );
-	MusStaff *GetNext( MusStaff *layer );
-	MusStaff *GetPrevious( MusStaff *layer );
-    MusStaff *GetStaffWithIdx( int staffIdx );
+	Staff *GetFirst( );
+	Staff *GetLast( );
+	Staff *GetNext( Staff *layer );
+	Staff *GetPrevious( Staff *layer );
+    Staff *GetStaffWithIdx( int staffIdx );
     
-    MusStaff *GetStaffWithNo( int staffNo );
+    Staff *GetStaffWithNo( int staffNo );
     
     int GetXRel( );
     

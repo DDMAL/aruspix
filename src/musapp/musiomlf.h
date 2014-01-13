@@ -85,18 +85,18 @@ public:
 	MusMLFOutput( MusDoc *doc, int fd, wxString filename,  MusMLFDictionary *dict, wxString model_symbol_name = "MusMLFSymbol" );
     virtual ~MusMLFOutput();
 
-    virtual bool WritePage( const MusPage *page, bool write_header = false );
-	bool WritePage( const MusPage *page, wxString filename, ImPage *imPage,
+    virtual bool WritePage( const Page *page, bool write_header = false );
+	bool WritePage( const Page *page, wxString filename, ImPage *imPage,
 		std::vector<int> *staff_numbers = NULL ); // manage staves throuhg staff_numbers
 											// write all staves if staff_numbers == NULL
 											
-    bool WriteLayer( const MusLayer *layer, int offset = -1, int end_point = -1 );
+    bool WriteLayer( const Layer *layer, int offset = -1, int end_point = -1 );
     bool WriteNote( LayerElement *element );
     bool WriteSymbol( LayerElement *element );
 	// specific
-	//static MusStaff *SplitSymboles( MusStaff *staff );
-	static MusLayer *GetUt1( MusLayer *layer );
-	static void GetUt1( MusLayer *layer, LayerElement *pelement, int *code, int *oct);
+	//static Staff *SplitSymboles( Staff *staff );
+	static Layer *GetUt1( Layer *layer );
+	static void GetUt1( Layer *layer, LayerElement *pelement, int *code, int *oct);
 	void StartLabel( );
 	void EndLabel( int offset = -1, int end_point = -1 );
 	// access
@@ -109,7 +109,7 @@ protected:
 	ArrayOfMLFSymbols m_symbols; // symbol list
 	wxString m_mlf_class_name;
 	wxString m_shortname;
-	MusLayer *m_layer; // utilise pour les segments de portee, doit etre accessible dans WriteSymbol
+	Layer *m_layer; // utilise pour les segments de portee, doit etre accessible dans WriteSymbol
 	// page, staff index
 	int m_staff_i;
 	bool m_addHeader; // used to know if #MLF# header must be added (first file or not)
@@ -139,8 +139,8 @@ public:
     MusMLFInput( MusDoc *file, wxString filename );
     virtual ~MusMLFInput();
     
-    bool ReadPage( MusPage *page, bool firstLineMLF, ImPage *imPage = NULL );
-    bool ReadLabel( MusLayer *layer, int offset = 0 );
+    bool ReadPage( Page *page, bool firstLineMLF, ImPage *imPage = NULL );
+    bool ReadLabel( Layer *layer, int offset = 0 );
 	// specific
     /**
      * Parse a MLF line. Format is "[BEGIN END] LABEL". 
@@ -151,8 +151,8 @@ public:
     static bool ParseLine( wxString line, char *elementType, wxString *elementLine, int *pos );
 	static LayerElement *ConvertSymbol( wxString line );
 	static LayerElement *ConvertNote( wxString line  );
-	static void GetNotUt1( MusLayer *layer );
-	static void GetNotUt1( MusLayer *layer, LayerElement *pelement, int *code, int *oct);
+	static void GetNotUt1( Layer *layer );
+	static void GetNotUt1( Layer *layer, LayerElement *pelement, int *code, int *oct);
 	static void GetPitchWWG( char code, int *code1);
 	bool ReadLine( wxString *line );
 	bool ReadLabelStr( wxString label );
@@ -163,7 +163,7 @@ protected:
     MusDoc *m_doc;
     // page, staff index
 	int m_staff_i, m_staff_label;
-    MusLayer *m_logLayer; // the layer to which logical elements will be added. Currently only one
+    Layer *m_logLayer; // the layer to which logical elements will be added. Currently only one
 
 private:
     };

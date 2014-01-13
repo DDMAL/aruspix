@@ -30,7 +30,7 @@ static inline double RadToDeg(double deg) { return (deg * 180.0) / M_PI; }
 
 
 MusBBoxDC::MusBBoxDC ( MusRC *rc, int width, int height):
-    MusDC()
+    DeviceContext()
 {	
     m_correctMusicAscent = false; // do not correct the ascent in the Leipzig font    
     
@@ -93,7 +93,7 @@ void MusBBoxDC::SetPen( int colour, int width, int style )
     m_penWidth = width;
 }
         
-void MusBBoxDC::SetFont( MusFontInfo *font_info )
+void MusBBoxDC::SetFont( FontMetricsInfo *font_info )
 {
     m_font = *font_info;
 }

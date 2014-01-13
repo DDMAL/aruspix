@@ -32,16 +32,16 @@
 #include "mustuplet.h"
 
 //----------------------------------------------------------------------------
-// MusRC - MusPage
+// MusRC - Page
 //----------------------------------------------------------------------------
 
-void MusRC::DrawPage( MusDC *dc, MusPage *page, bool background ) 
+void MusRC::DrawPage( DeviceContext *dc, Page *page, bool background ) 
 {
 	assert( dc ); // DC cannot be NULL
     assert( page );
     
     int i;
-	MusSystem *system = NULL;
+	System *system = NULL;
     
     // Set the current score def to the page one
     // The page one has previously been set by MusObject::SetPageScoreDef
@@ -59,7 +59,7 @@ void MusRC::DrawPage( MusDC *dc, MusPage *page, bool background )
 
     for (i = 0; i < page->GetSystemCount(); i++) 
 	{
-		system = (MusSystem*)page->m_children[i];
+		system = (System*)page->m_children[i];
         DrawSystem( dc, system );
         
         // TODO here: also update x_abs and m_yDrawing positions for system. How to calculate them?
@@ -69,19 +69,19 @@ void MusRC::DrawPage( MusDC *dc, MusPage *page, bool background )
 }
 
 //----------------------------------------------------------------------------
-// MusRC - MusSystem
+// MusRC - System
 //----------------------------------------------------------------------------
 
 
 // drawing
 
 
-void MusRC::DrawSystem( MusDC *dc, MusSystem *system ) 
+void MusRC::DrawSystem( DeviceContext *dc, System *system ) 
 {
 	assert( system ); // other asserted before
     
 	int i;
-    MusMeasure *measure;
+    Measure *measure;
     
     dc->StartGraphic( system, "system", system->GetUuid() );
     
@@ -101,7 +101,7 @@ void MusRC::DrawSystem( MusDC *dc, MusSystem *system )
     
     for (i = 0; i < (int)system->GetMeasureCount(); i++)
 	{
-		measure = (MusMeasure*)system->m_children[i];
+		measure = (Measure*)system->m_children[i];
         DrawMeasure( dc , measure, system );
 	}
 
@@ -110,7 +110,7 @@ void MusRC::DrawSystem( MusDC *dc, MusSystem *system )
     // Warning: we assume for now the scoreDef occuring in the system will not change the staffGrps content
     // and @symbol values, otherwise results will be unexpected...
     // First get the first measure of the system
-    measure  = dynamic_cast<MusMeasure*>(system->GetFirstChild( &typeid(MusMeasure) ) );
+    measure  = dynamic_cast<Measure*>(system->GetFirstChild( &typeid(Measure) ) );
     if ( measure ) {
         // NULL for the Barline parameters indicates that we are drawing the scoreDef
         DrawScoreDef( dc, &m_drawingScoreDef, measure, system->m_xDrawing, NULL );
@@ -120,7 +120,7 @@ void MusRC::DrawSystem( MusDC *dc, MusSystem *system )
 
 }
 
-void MusRC::DrawScoreDef( MusDC *dc, MusScoreDef *scoreDef, MusMeasure *measure, int x, Barline *barline  )
+void MusRC::DrawScoreDef( DeviceContext *dc, ScoreDef *scoreDef, Measure *measure, int x, Barline *barline  )
 {
     assert( scoreDef ); // other asserted before
 
@@ -146,7 +146,7 @@ void MusRC::DrawScoreDef( MusDC *dc, MusScoreDef *scoreDef, MusMeasure *measure,
 }
 
 
-void MusRC::DrawStaffGrp( MusDC *dc, MusMeasure *measure, MusStaffGrp *staffGrp, int x )
+void MusRC::DrawStaffGrp( DeviceContext *dc, Measure *measure, MusStaffGrp *staffGrp, int x )
 {
     assert( measure );
     assert( staffGrp );
@@ -166,8 +166,8 @@ void MusRC::DrawStaffGrp( MusDC *dc, MusMeasure *measure, MusStaffGrp *staffGrp,
     }
     
     // Get the corresponding staff looking at the previous (or first) measure
-    MusStaff *first = measure->GetStaffWithNo( firstDef->GetStaffNo() );
-    MusStaff *last = measure->GetStaffWithNo( lastDef->GetStaffNo() );
+    Staff *first = measure->GetStaffWithNo( firstDef->GetStaffNo() );
+    Staff *last = measure->GetStaffWithNo( lastDef->GetStaffNo() );
     
     if (!first || !last ) {
         Mus::LogDebug("Could not get staff (%d; %d) while drawing staffGrp - Mus::DrawStaffGrp", firstDef->GetStaffNo(), lastDef->GetStaffNo() );
@@ -202,7 +202,7 @@ void MusRC::DrawStaffGrp( MusDC *dc, MusMeasure *measure, MusStaffGrp *staffGrp,
 }
 
 
-void MusRC::DrawBracket ( MusDC *dc, int x, int y1, int y2, int staffSize)
+void MusRC::DrawBracket ( DeviceContext *dc, int x, int y1, int y2, int staffSize)
 {
 	int xg, xd, yg, yd, ecart, centre;
 
@@ -236,7 +236,7 @@ void MusRC::DrawBracket ( MusDC *dc, int x, int y1, int y2, int staffSize)
 }
 
 
-void MusRC::DrawBrace ( MusDC *dc, int x, int y1, int y2, int staffSize)
+void MusRC::DrawBrace ( DeviceContext *dc, int x, int y1, int y2, int staffSize)
 {	
     int new_coords[2][6];
     
@@ -324,7 +324,7 @@ void MusRC::DrawBrace ( MusDC *dc, int x, int y1, int y2, int staffSize)
 }
 
 
-void MusRC::DrawBarlines( MusDC *dc, MusMeasure *measure, MusStaffGrp *staffGrp, int x, Barline *barline )
+void MusRC::DrawBarlines( DeviceContext *dc, Measure *measure, MusStaffGrp *staffGrp, int x, Barline *barline )
 {
     assert( measure );
     assert( staffGrp );
@@ -341,7 +341,7 @@ void MusRC::DrawBarlines( MusDC *dc, MusMeasure *measure, MusStaffGrp *staffGrp,
                 DrawBarlines( dc, measure, childStaffGrp, x, barline );
             }
             else if ( childStaffDef ) {
-                MusStaff *staff = measure->GetStaffWithNo( childStaffDef->GetStaffNo() );
+                Staff *staff = measure->GetStaffWithNo( childStaffDef->GetStaffNo() );
                 if (!staff ) {
                     Mus::LogDebug("Could not get staff (%d) while drawing staffGrp - Mus::DrawBarlines", childStaffDef->GetStaffNo() );
                     continue;
@@ -373,8 +373,8 @@ void MusRC::DrawBarlines( MusDC *dc, MusMeasure *measure, MusStaffGrp *staffGrp,
         }
         
         // Get the corresponding staff looking at the previous (or first) measure
-        MusStaff *first = measure->GetStaffWithNo( firstDef->GetStaffNo() );
-        MusStaff *last = measure->GetStaffWithNo( lastDef->GetStaffNo() );
+        Staff *first = measure->GetStaffWithNo( firstDef->GetStaffNo() );
+        Staff *last = measure->GetStaffWithNo( lastDef->GetStaffNo() );
         
         if (!first || !last ) {
             Mus::LogDebug("Could not get staff (%d; %d) while drawing staffGrp - Mus::DrawStaffGrp", firstDef->GetStaffNo(), lastDef->GetStaffNo() );
@@ -394,7 +394,7 @@ void MusRC::DrawBarlines( MusDC *dc, MusMeasure *measure, MusStaffGrp *staffGrp,
             for (i = 0; i < staffGrp->GetChildCount(); i++) {
                 childStaffDef = dynamic_cast<MusStaffDef*>(staffGrp->GetChild( i ));
                 if ( childStaffDef ) {
-                    MusStaff *staff = measure->GetStaffWithNo( childStaffDef->GetStaffNo() );
+                    Staff *staff = measure->GetStaffWithNo( childStaffDef->GetStaffNo() );
                     if (!staff ) {
                         Mus::LogDebug("Could not get staff (%d) while drawing staffGrp - Mus::DrawBarlines", childStaffDef->GetStaffNo() );
                         continue;
@@ -406,7 +406,7 @@ void MusRC::DrawBarlines( MusDC *dc, MusMeasure *measure, MusStaffGrp *staffGrp,
     }
 }
 
-void MusRC::DrawBarline( MusDC *dc, int x, int y_top, int y_bottom, Barline *barline )
+void MusRC::DrawBarline( DeviceContext *dc, int x, int y_top, int y_bottom, Barline *barline )
 {
     assert( dc );
 
@@ -448,7 +448,7 @@ void MusRC::DrawBarline( MusDC *dc, int x, int y_top, int y_bottom, Barline *bar
 }
 
  
-void MusRC::DrawBarlineDots ( MusDC *dc, int x, MusStaff *staff, Barline *barline )
+void MusRC::DrawBarlineDots ( DeviceContext *dc, int x, Staff *staff, Barline *barline )
 {
 	assert( dc ); // DC cannot be NULL
     
@@ -474,14 +474,14 @@ void MusRC::DrawBarlineDots ( MusDC *dc, int x, MusStaff *staff, Barline *barlin
 }
 
 
-void MusRC::DrawPartialBarline ( MusDC *dc, MusSystem *system, int x, MusStaff *pportee)
+void MusRC::DrawPartialBarline ( DeviceContext *dc, System *system, int x, Staff *pportee)
 {
 	assert( dc ); // DC cannot be NULL
 
 	int b, bb;
 
     /* ax3
-	MusStaff *next = system->GetNext( NULL );
+	Staff *next = system->GetNext( NULL );
 	if ( next )
 	{	
 		b = pportee->m_yDrawing - m_doc->m_rendStaffSize[ pportee->staffSize ]*2;
@@ -500,10 +500,10 @@ void MusRC::DrawPartialBarline ( MusDC *dc, MusSystem *system, int x, MusStaff *
 
 
 //----------------------------------------------------------------------------
-// MusRC - MusMeasure
+// MusRC - Measure
 //----------------------------------------------------------------------------
 
-void MusRC::DrawMeasure( MusDC *dc, MusMeasure *measure, MusSystem *system )
+void MusRC::DrawMeasure( DeviceContext *dc, Measure *measure, System *system )
 {
 	assert( dc ); // DC cannot be NULL
     
@@ -525,12 +525,12 @@ void MusRC::DrawMeasure( MusDC *dc, MusMeasure *measure, MusSystem *system )
         measure->m_xDrawing = measure->m_xAbs;
     }
     
-	MusStaff *staff = NULL;
+	Staff *staff = NULL;
 	int j;
     
 	for(j = 0; j < measure->GetStaffCount(); j++)
 	{
-		staff = (MusStaff*)measure->m_children[j];
+		staff = (Staff*)measure->m_children[j];
 		DrawStaff( dc, staff, measure, system );
     }
 
@@ -548,10 +548,10 @@ void MusRC::DrawMeasure( MusDC *dc, MusMeasure *measure, MusSystem *system )
 
 
 //----------------------------------------------------------------------------
-// MusRC - MusStaff
+// MusRC - Staff
 //----------------------------------------------------------------------------
 
-int MusRC::CalculateNeumePosY ( MusStaff *staff, char note, int dec_clef, int oct)
+int MusRC::CalculateNeumePosY ( Staff *staff, char note, int dec_clef, int oct)
 {
     assert(staff); // Pointer to staff cannot be NULL"
 
@@ -570,7 +570,7 @@ int MusRC::CalculateNeumePosY ( MusStaff *staff, char note, int dec_clef, int oc
 	return 0;
 }
 
-int MusRC::CalculatePitchPosY ( MusStaff *staff, char pname, int dec_clef, int oct)
+int MusRC::CalculatePitchPosY ( Staff *staff, char pname, int dec_clef, int oct)
 {
     assert(staff); // Pointer to staff cannot be NULL"
 	
@@ -592,7 +592,7 @@ int MusRC::CalculatePitchPosY ( MusStaff *staff, char pname, int dec_clef, int o
 	return 0;
 }
 
-int MusRC::CalculateRestPosY ( MusStaff *staff, char duration)
+int MusRC::CalculateRestPosY ( Staff *staff, char duration)
 {
     assert(staff); // Pointer to staff cannot be NULL"
 
@@ -619,7 +619,7 @@ int MusRC::CalculateRestPosY ( MusStaff *staff, char duration)
     return base + staff_space * offset;
 }
 
-void MusRC::DrawStaffLines( MusDC *dc, MusStaff *staff, MusMeasure *measure, MusSystem *system )
+void MusRC::DrawStaffLines( DeviceContext *dc, Staff *staff, Measure *measure, System *system )
 {
 	assert( dc ); // DC cannot be NULL
         
@@ -653,7 +653,7 @@ void MusRC::DrawStaffLines( MusDC *dc, MusStaff *staff, MusMeasure *measure, Mus
 
 
 
-void MusRC::DrawStaff( MusDC *dc, MusStaff *staff, MusMeasure *measure, MusSystem *system )
+void MusRC::DrawStaff( DeviceContext *dc, Staff *staff, Measure *measure, System *system )
 {
 	assert( dc ); // DC cannot be NULL
     
@@ -674,12 +674,12 @@ void MusRC::DrawStaff( MusDC *dc, MusStaff *staff, MusMeasure *measure, MusSyste
     
     DrawStaffLines( dc, staff, measure, system );
         
-	MusLayer *layer = NULL;
+	Layer *layer = NULL;
 	int j;
     
 	for(j = 0; j < staff->GetLayerCount(); j++)
 	{
-		layer = (MusLayer*)staff->m_children[j];
+		layer = (Layer*)staff->m_children[j];
 		DrawLayer( dc, layer, staff, measure );
 	}
     
@@ -688,14 +688,14 @@ void MusRC::DrawStaff( MusDC *dc, MusStaff *staff, MusMeasure *measure, MusSyste
 
 
 //----------------------------------------------------------------------------
-// MusRC - MusLayer
+// MusRC - Layer
 //----------------------------------------------------------------------------
 
 
 // a partir d'un y, trouve la hauteur d'une note exprimee en code touche et
 // octave. Retourne code clavier, et situe l'octave. 
 
-int MusRC::CalculatePitchCode ( MusLayer *layer, int y_n, int x_pos, int *octave )
+int MusRC::CalculatePitchCode ( Layer *layer, int y_n, int x_pos, int *octave )
 {
     assert(layer); // Pointer to layer cannot be NULL"
     assert(layer->m_parent); // Pointer to staff cannot be NULL"
@@ -705,10 +705,10 @@ int MusRC::CalculatePitchCode ( MusLayer *layer, int y_n, int x_pos, int *octave
 	int degres, octaves, position, code;
 	char clefId=0;
 
-    int staffSize = ((MusStaff*)layer->m_parent)->staffSize;
+    int staffSize = ((Staff*)layer->m_parent)->staffSize;
 	// calculer position du do central en fonction clef
 	y_n += (int) m_doc->m_rendVerticalUnit2[staffSize];
-	yb = ((MusStaff*)layer->m_parent)->m_yDrawing -  m_doc->m_rendStaffSize[((MusStaff*)layer->m_parent)->staffSize]*2; // UT1 default
+	yb = ((Staff*)layer->m_parent)->m_yDrawing -  m_doc->m_rendStaffSize[((Staff*)layer->m_parent)->staffSize]*2; // UT1 default
 	
 
 	plafond = yb + 8 *  m_doc->m_rendOctaveSize[staffSize];
@@ -771,7 +771,7 @@ MusPoint CalcPositionAfterRotation( MusPoint point , float rot_alpha, MusPoint c
   up = liaison vers le haut
   heigth = hauteur de la liaison ( ‡ plat )
   **/
-void MusRC::DrawSlur( MusDC *dc, MusLayer *layer, int x1, int y1, int x2, int y2, bool up, int height )
+void MusRC::DrawSlur( DeviceContext *dc, Layer *layer, int x1, int y1, int x2, int y2, bool up, int height )
 {
     assert(layer); // Pointer to layer cannot be NULL"
     assert(layer->m_parent); // Pointer to staff cannot be NULL"
@@ -854,7 +854,7 @@ void MusRC::DrawSlur( MusDC *dc, MusLayer *layer, int x1, int y1, int x2, int y2
 
 }
 
-void MusRC::DrawLayer( MusDC *dc, MusLayer *layer, MusStaff *staff, MusMeasure *measure)
+void MusRC::DrawLayer( DeviceContext *dc, Layer *layer, Staff *staff, Measure *measure)
 {
 	assert( dc ); // DC cannot be NULL
 
@@ -893,7 +893,7 @@ void MusRC::DrawLayer( MusDC *dc, MusLayer *layer, MusStaff *staff, MusMeasure *
 }
 
 
-void MusRC::DrawLayerList( MusDC *dc, MusLayer *layer, MusStaff *staff, MusMeasure *measure, const std::type_info *elementType )
+void MusRC::DrawLayerList( DeviceContext *dc, Layer *layer, Staff *staff, Measure *measure, const std::type_info *elementType )
 {
 	assert( dc ); // DC cannot be NULL
     

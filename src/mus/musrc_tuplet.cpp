@@ -123,7 +123,7 @@ bool MusRC::OneBeamInTuplet(Tuplet* tuplet) {
  
  */
 
-bool MusRC::GetTupletCoordinates(Tuplet* tuplet, MusLayer *layer, MusPoint* start, MusPoint* end, MusPoint *center) {
+bool MusRC::GetTupletCoordinates(Tuplet* tuplet, Layer *layer, MusPoint* start, MusPoint* end, MusPoint *center) {
     MusPoint first, last;
     int x, y;
     bool direction = true; //true = up, false = down
@@ -286,7 +286,7 @@ bool MusRC::GetTupletCoordinates(Tuplet* tuplet, MusLayer *layer, MusPoint* star
 }
 
 
-void MusRC::DrawTuplet( MusDC *dc, Tuplet *tuplet, MusLayer *layer, MusStaff *staff)
+void MusRC::DrawTuplet( DeviceContext *dc, Tuplet *tuplet, Layer *layer, Staff *staff)
 {
     assert(layer); // Pointer to layer cannot be NULL"
     assert(staff); // Pointer to staff cannot be NULL"

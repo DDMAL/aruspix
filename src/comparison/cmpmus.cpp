@@ -130,7 +130,7 @@ void CmpMusController::LoadSource( LayerElement *element )
         return;
     }
     
-    MusPage *currentPage = m_viewPtr->m_page;    
+    Page *currentPage = m_viewPtr->m_page;    
     
     MusObject *viewElement = NULL;
     ArrayPtrVoid params;
@@ -144,14 +144,14 @@ void CmpMusController::LoadSource( LayerElement *element )
         return; // we did not find it or it is not a LayerElement
     }
     
-    MusPage *page = dynamic_cast<MusPage*>(viewElement->GetFirstParent( &typeid(MusPage) ));
+    Page *page = dynamic_cast<Page*>(viewElement->GetFirstParent( &typeid(Page) ));
     if ( page != currentPage ) {
         //wxLogMessage( "load page" );
         m_viewPtr->SetPage( page );
     }
-    m_viewPtr->m_currentSystem = dynamic_cast<MusSystem*>(viewElement->GetFirstParent( &typeid(MusSystem) ));
-    m_viewPtr->m_currentStaff = dynamic_cast<MusStaff*>(viewElement->GetFirstParent( &typeid(MusStaff) ));
-    m_viewPtr->m_currentLayer = dynamic_cast<MusLayer*>(viewElement->GetFirstParent( &typeid(MusLayer) ));
+    m_viewPtr->m_currentSystem = dynamic_cast<System*>(viewElement->GetFirstParent( &typeid(System) ));
+    m_viewPtr->m_currentStaff = dynamic_cast<Staff*>(viewElement->GetFirstParent( &typeid(Staff) ));
+    m_viewPtr->m_currentLayer = dynamic_cast<Layer*>(viewElement->GetFirstParent( &typeid(Layer) ));
     m_viewPtr->m_currentElement = dynamic_cast<LayerElement*>(viewElement);
     m_viewPtr->UpdateCmpScroll();
     m_viewPtr->Refresh();

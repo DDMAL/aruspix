@@ -20,16 +20,16 @@
 #include "muspage.h"
 
 //----------------------------------------------------------------------------
-// MusSystem
+// System
 //----------------------------------------------------------------------------
 
-MusSystem::MusSystem() :
+System::System() :
 	MusDocObject("system-")
 {
 	Clear( );
 }
 
-MusSystem::MusSystem( const MusSystem& system )
+System::System( const System& system )
 {
     int i;
 
@@ -44,16 +44,16 @@ MusSystem::MusSystem( const MusSystem& system )
     
 	for (i = 0; i < this->GetMeasureCount(); i++)
 	{
-        MusMeasure *nmeasure = new MusMeasure( *(MusMeasure*)system.m_children[i] );
+        Measure *nmeasure = new Measure( *(Measure*)system.m_children[i] );
         this->AddMeasure( nmeasure );
 	}
 }
 
-MusSystem::~MusSystem()
+System::~System()
 {
 }
 
-void MusSystem::Clear( )
+void System::Clear( )
 {
 	ClearChildren();
 	m_systemLeftMar = 50;
@@ -68,7 +68,7 @@ void MusSystem::Clear( )
 }
 
 
-int MusSystem::Save( ArrayPtrVoid params )
+int System::Save( ArrayPtrVoid params )
 {
     // param 0: output stream
     MusFileOutputStream *output = (MusFileOutputStream*)params[0];       
@@ -79,34 +79,34 @@ int MusSystem::Save( ArrayPtrVoid params )
 
 }
 
-void MusSystem::AddMeasure( MusMeasure *measure )
+void System::AddMeasure( Measure *measure )
 {
 	measure->SetParent( this );
 	m_children.push_back( measure );
     Modify();
 }
 
-int MusSystem::GetVerticalSpacing()
+int System::GetVerticalSpacing()
 {
     return 0; // arbitrary generic value
 }
 
-MusMeasure *MusSystem::GetFirst( )
+Measure *System::GetFirst( )
 {
 	if ( m_children.empty() )
 		return NULL;
-	return (MusMeasure*)m_children[0];
+	return (Measure*)m_children[0];
 }
 
-MusMeasure *MusSystem::GetLast( )
+Measure *System::GetLast( )
 {
 	if ( m_children.empty() )
 		return NULL;
 	int i = (int)m_children.size() - 1;
-	return (MusMeasure*)m_children[i];
+	return (Measure*)m_children[i];
 }
 
-MusMeasure *MusSystem::GetNext( MusMeasure *measure )
+Measure *System::GetNext( Measure *measure )
 {
     if ( !measure || m_children.empty())
         return NULL;
@@ -116,11 +116,11 @@ MusMeasure *MusSystem::GetNext( MusMeasure *measure )
 	if ((i == -1 ) || ( i >= GetMeasureCount() - 1 ))
 		return NULL;
 	
-	return (MusMeasure*)m_children[i + 1];
+	return (Measure*)m_children[i + 1];
 	
 }
 
-MusMeasure *MusSystem::GetPrevious( MusMeasure *measure  )
+Measure *System::GetPrevious( Measure *measure  )
 {
     if ( !measure || m_children.empty() )
         return NULL;
@@ -130,19 +130,19 @@ MusMeasure *MusSystem::GetPrevious( MusMeasure *measure  )
 	if ((i == -1 ) || ( i <= 0 ))
         return NULL;
 	
-    return (MusMeasure*)m_children[i - 1];
+    return (Measure*)m_children[i - 1];
 }
 
 
-MusMeasure *MusSystem::GetAtPos( int x )
+Measure *System::GetAtPos( int x )
 {
 	//y += ( STAFF_OFFSET / 2 );
-	MusMeasure *measure = this->GetFirst();
+	Measure *measure = this->GetFirst();
 	if ( !measure )
 		return NULL;
 	
     
-    MusMeasure *next = NULL;
+    Measure *next = NULL;
 	while ( (next = this->GetNext(measure) ) )
 	{
 		if ( (int)measure->m_xDrawing < x )
@@ -155,7 +155,7 @@ MusMeasure *MusSystem::GetAtPos( int x )
 	return measure;
 }
 
-void MusSystem::SetValues( int type )
+void System::SetValues( int type )
 {
     /*
     int i;
@@ -185,15 +185,15 @@ void MusSystem::SetValues( int type )
 }
 
 //----------------------------------------------------------------------------
-// MusSystem functor methods
+// System functor methods
 //----------------------------------------------------------------------------
 
-int MusSystem::TrimSystem( ArrayPtrVoid params )
+int System::TrimSystem( ArrayPtrVoid params )
 {
-    if ( !m_parent || !dynamic_cast<MusPage*>(m_parent) ) {
+    if ( !m_parent || !dynamic_cast<Page*>(m_parent) ) {
         return FUNCTOR_CONTINUE;
     }
-    MusPage *page = dynamic_cast<MusPage*>(m_parent);
+    Page *page = dynamic_cast<Page*>(m_parent);
     
     int system_length = (this->m_contentBB_x2 - this->m_contentBB_x1) + page->m_pageRightMar;
     if ( page->m_pageWidth < system_length ) {
@@ -202,7 +202,7 @@ int MusSystem::TrimSystem( ArrayPtrVoid params )
     return FUNCTOR_SIBLINGS;
 }
 
-int MusSystem::Align( ArrayPtrVoid params )
+int System::Align( ArrayPtrVoid params )
 {
     // param 0: the measureAligner (unused)
     // param 1: the time (unused)
@@ -219,7 +219,7 @@ int MusSystem::Align( ArrayPtrVoid params )
 }
 
 
-int MusSystem::SetAligmentYPos( ArrayPtrVoid params )
+int System::SetAligmentYPos( ArrayPtrVoid params )
 {
     // param 0: the previous staff height
     // param 1: the staff margin (unused)
@@ -236,7 +236,7 @@ int MusSystem::SetAligmentYPos( ArrayPtrVoid params )
 }
 
 
-int MusSystem::IntegrateBoundingBoxYShift( ArrayPtrVoid params )
+int System::IntegrateBoundingBoxYShift( ArrayPtrVoid params )
 {
     // param 0: the cumulated shift
     // param 1: the functor to be redirected to MusSystemAligner
@@ -250,7 +250,7 @@ int MusSystem::IntegrateBoundingBoxYShift( ArrayPtrVoid params )
     return FUNCTOR_SIBLINGS;
 }
 
-int MusSystem::AlignMeasures( ArrayPtrVoid params )
+int System::AlignMeasures( ArrayPtrVoid params )
 {
     // param 0: the cumulated shift
     int *shift = (int*)params[0];
@@ -260,7 +260,7 @@ int MusSystem::AlignMeasures( ArrayPtrVoid params )
     return FUNCTOR_CONTINUE;
 }
 
-int MusSystem::AlignMeasuresEnd( ArrayPtrVoid params )
+int System::AlignMeasuresEnd( ArrayPtrVoid params )
 {
     // param 0: the cumulated shift
     int *shift = (int*)params[0];
@@ -270,7 +270,7 @@ int MusSystem::AlignMeasuresEnd( ArrayPtrVoid params )
     return FUNCTOR_CONTINUE;
 }
 
-int MusSystem::AlignSystems( ArrayPtrVoid params )
+int System::AlignSystems( ArrayPtrVoid params )
 {
     // param 0: the cumulated shift
     // param 1: the system margin
@@ -287,7 +287,7 @@ int MusSystem::AlignSystems( ArrayPtrVoid params )
 }
 
 
-int MusSystem::JustifyX( ArrayPtrVoid params )
+int System::JustifyX( ArrayPtrVoid params )
 {
     // param 0: the justification ratio (unused)
     // param 1: the system full width (without system margins)

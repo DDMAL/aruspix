@@ -12,9 +12,9 @@
 #include "musobject.h"
 #include "musscoredef.h"
 
-class MusDC;
-class MusStaff;
-class MusSystem;
+class DeviceContext;
+class Staff;
+class System;
 
 enum {
     PAGE_VALUES_VOICES = 0,
@@ -22,32 +22,32 @@ enum {
 };
 
 //----------------------------------------------------------------------------
-// MusPage
+// Page
 //----------------------------------------------------------------------------
 
 /**
  * This class represents a page in a laid-out score (MusDoc).
- * A MusPage is contained in a MusDoc.
- * It contains MusSystem objects.
+ * A Page is contained in a MusDoc.
+ * It contains System objects.
 */
-class MusPage: public MusDocObject
+class Page: public MusDocObject
 {
 public:
     // constructors and destructors
-    MusPage();
-    virtual ~MusPage();
+    Page();
+    virtual ~Page();
     
-    virtual std::string MusClassName( ) { return "MusPage"; };
+    virtual std::string MusClassName( ) { return "Page"; };
     
     void Clear();
 	
-	void AddSystem( MusSystem *system );
+	void AddSystem( System *system );
     
-	MusSystem *GetFirst( );
-	MusSystem *GetLast( );
-	MusSystem *GetNext( MusSystem *system );
-	MusSystem *GetPrevious( MusSystem *system );
-	MusSystem *GetAtPos( int y );
+	System *GetFirst( );
+	System *GetLast( );
+	System *GetNext( System *system );
+	System *GetPrevious( System *system );
+	System *GetAtPos( int y );
 
     void SetValues( int type );
 	
@@ -61,7 +61,7 @@ public:
     /**
      * Return the position of the staff on the page, from top to bottom
      */
-    int GetStaffPosOnPage( MusStaff *staff );
+    int GetStaffPosOnPage( Staff *staff );
     
     /**
      * Do the layout of the page
@@ -117,7 +117,7 @@ public:
      * all the clef or key changes that might occur within the text.
      * The value is initialized with by the MusObject::SetPageScoreDef functor.
      */
-    MusScoreDef m_drawingScoreDef;
+    ScoreDef m_drawingScoreDef;
 
 private:
     

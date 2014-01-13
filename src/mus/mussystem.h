@@ -15,38 +15,38 @@
 
 #define SYSTEM_OFFSET 190
 
-class MusDC;
-class MusMeasure;
+class DeviceContext;
+class Measure;
 
 //----------------------------------------------------------------------------
-// MusSystem
+// System
 //----------------------------------------------------------------------------
 
 /**
  * This class represents a system in a laid-out score (MusDoc).
- * A MusSystem is contained in a MusPage.
- * It contains MusStaff objects.
+ * A System is contained in a Page.
+ * It contains Staff objects.
 */
-class MusSystem: public MusDocObject
+class System: public MusDocObject
 {
 public:
     // constructors and destructors
-    MusSystem();
-	MusSystem( const MusSystem& system ); // copy contructor
-    virtual ~MusSystem();
+    System();
+	System( const System& system ); // copy contructor
+    virtual ~System();
         
-    virtual std::string MusClassName( ) { return "MusSystem"; };
+    virtual std::string MusClassName( ) { return "System"; };
     
     void Clear();
 	
-	void AddMeasure( MusMeasure *measure );
+	void AddMeasure( Measure *measure );
 	
-	MusMeasure *GetFirst( );
-	MusMeasure *GetLast( );
-	MusMeasure *GetNext( MusMeasure *measure );
-	MusMeasure *GetPrevious( MusMeasure *measure );
-    //MusMeasure *GetMeasure( int MeasureNo );
-	MusMeasure *GetAtPos( int x );
+	Measure *GetFirst( );
+	Measure *GetLast( );
+	Measure *GetNext( Measure *measure );
+	Measure *GetPrevious( Measure *measure );
+    //Measure *GetMeasure( int MeasureNo );
+	Measure *GetAtPos( int x );
     
     /**
      * Return the default horizontal spacing of system.
@@ -94,7 +94,7 @@ public:
     
     /**
      * Align the measures by adjusting the m_xRel position looking at the MusMeasureAligner.
-     * In MusSystem object resets the shift to 0;
+     * In System object resets the shift to 0;
      */
     virtual int AlignMeasures( ArrayPtrVoid params );
     

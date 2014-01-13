@@ -79,7 +79,7 @@ char extern_queue = 0;
 
 /* This need to be put into a beam class */
 
-void MusRC::DrawBeam(  MusDC *dc, MusLayer *layer, Beam *beam, MusStaff *staff )
+void MusRC::DrawBeam(  DeviceContext *dc, Layer *layer, Beam *beam, Staff *staff )
 {
     LayerElement *chk;
 	static struct fb {

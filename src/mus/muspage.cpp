@@ -23,20 +23,20 @@
 #include "mussystem.h"
 
 //----------------------------------------------------------------------------
-// MusPage
+// Page
 //----------------------------------------------------------------------------
 
-MusPage::MusPage() :
+Page::Page() :
 	MusDocObject("page-")
 {
 	Clear( );
 }
 
-MusPage::~MusPage()
+Page::~Page()
 {
 }
 
-void MusPage::Clear( )
+void Page::Clear( )
 {
 	ClearChildren( );
     m_drawingScoreDef.Clear();
@@ -51,7 +51,7 @@ void MusPage::Clear( )
 }
 
 
-int MusPage::Save( ArrayPtrVoid params )
+int Page::Save( ArrayPtrVoid params )
 {
     // param 0: output stream
     MusFileOutputStream *output = (MusFileOutputStream*)params[0];       
@@ -62,14 +62,14 @@ int MusPage::Save( ArrayPtrVoid params )
 }
 
 
-void MusPage::AddSystem( MusSystem *system )
+void Page::AddSystem( System *system )
 {
 	system->SetParent( this );
 	m_children.push_back( system );
     Modify();
 }
 
-int MusPage::GetStaffPosOnPage( MusStaff *staff )
+int Page::GetStaffPosOnPage( Staff *staff )
 {
     /*
     int position = -1;
@@ -78,7 +78,7 @@ int MusPage::GetStaffPosOnPage( MusStaff *staff )
     params.Add( staff );
     params.Add( &position );
     params.Add( &success );
-    MusStaffFunctor getStaffPosOnPage( &MusStaff::GetPosOnPage );
+    MusStaffFunctor getStaffPosOnPage( &Staff::GetPosOnPage );
     Process( &getStaffPosOnPage, params );    
     return position;
     */ // ax2.3
@@ -86,22 +86,22 @@ int MusPage::GetStaffPosOnPage( MusStaff *staff )
 }
 
 
-MusSystem *MusPage::GetFirst( )
+System *Page::GetFirst( )
 {
 	if ( m_children.empty() )
 		return NULL;
-	return (MusSystem*)m_children[0];
+	return (System*)m_children[0];
 }
 
-MusSystem *MusPage::GetLast( )
+System *Page::GetLast( )
 {
 	if ( m_children.empty() )
 		return NULL;
 	int i = GetSystemCount() - 1;
-	return (MusSystem*)m_children[i];
+	return (System*)m_children[i];
 }
 
-MusSystem *MusPage::GetNext( MusSystem *system )
+System *Page::GetNext( System *system )
 {
     if ( !system || m_children.empty())
         return NULL;
@@ -111,10 +111,10 @@ MusSystem *MusPage::GetNext( MusSystem *system )
 	if ((i == -1 ) || ( i >= GetSystemCount() - 1 ))
 		return NULL;
 	
-	return (MusSystem*)m_children[i + 1];
+	return (System*)m_children[i + 1];
 }
 
-MusSystem *MusPage::GetPrevious( MusSystem *system  )
+System *Page::GetPrevious( System *system  )
 {
     if ( !system || m_children.empty())
         return NULL;
@@ -124,19 +124,19 @@ MusSystem *MusPage::GetPrevious( MusSystem *system  )
 	if ((i == -1 ) || ( i <= 0 ))
         return NULL;
 	
-    return (MusSystem*)m_children[i - 1];
+    return (System*)m_children[i - 1];
 }
 
 
-MusSystem *MusPage::GetAtPos( int y )
+System *Page::GetAtPos( int y )
 {
 
 	y -= ( SYSTEM_OFFSET / 2 );
-    MusSystem *system = this->GetFirst();
+    System *system = this->GetFirst();
 	if ( !system )
 		return NULL;
 	
-    MusSystem *next = NULL;
+    System *next = NULL;
 	while ( (next = this->GetNext(system)) )
 	{
 		if ( (int)next->m_yAbs < y )
@@ -149,7 +149,7 @@ MusSystem *MusPage::GetAtPos( int y )
 	return system;
 }
 
-void MusPage::Layout( )
+void Page::Layout( )
 {
     if (!dynamic_cast<MusDoc*>(m_parent)) {
         assert( false );
@@ -164,7 +164,7 @@ void MusPage::Layout( )
     // Align the content of the page using measure and system aligners
     // After this:
     // - each LayerElement object will have its MusAlignment pointer initialized
-    // - each MusStaff object will then have its MusStaffAlignment pointer initialized
+    // - each Staff object will then have its MusStaffAlignment pointer initialized
     MusMeasureAligner *measureAlignerPtr = NULL;
     double time = 0.0;
     MusSystemAligner *systemAlignerPtr = NULL;
@@ -224,7 +224,7 @@ void MusPage::Layout( )
     this->Process( &alignMeasures, params, &alignMeasuresEnd );
     
     // Adjust the Y shift of the MusStaffAlignment looking at the bounding boxes
-    // Look at each MusStaff and changes the m_yShift if the bounding box is overlapping 
+    // Look at each Staff and changes the m_yShift if the bounding box is overlapping 
     params.clear();
     int previous_height = 0;
     params.push_back( &previous_height );
@@ -234,7 +234,7 @@ void MusPage::Layout( )
     // Set the Y position of each MusStaffAlignment
     // Adjusts the Y shift for making sure there is a minimal space (staffMargin) between each staff
     params.clear();
-    int previousStaffHeight = 0; // 0 for the first staff, reset for each system (see MusSystem::SetAlignmentYPos)
+    int previousStaffHeight = 0; // 0 for the first staff, reset for each system (see System::SetAlignmentYPos)
     int staffMargin = doc->m_rendStaffSize[0]; // the minimal space we want to have between each staff
     int* interlineSizes = doc->m_rendInterl; // the interline sizes to be used for calculating the (previous) staff height
     params.push_back( &previousStaffHeight );
@@ -289,7 +289,7 @@ void MusPage::Layout( )
     //rc.DrawPage(  &bb_dc, this , false );
 }
 
-void MusPage::SetValues( int type )
+void Page::SetValues( int type )
 {
 /* 
     int i;

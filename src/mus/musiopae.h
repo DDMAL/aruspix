@@ -16,10 +16,10 @@
 
 class Beam;
 class Clef;
-class MusLayer;
-class MusMeasure;
+class Layer;
+class Measure;
 class Mensur;
-class MusStaff;
+class Staff;
 class Tie;
 class Tuplet;
 
@@ -254,9 +254,9 @@ public:
     
 private:
     std::string m_filename;
-	MusStaff *m_staff;
-    MusMeasure *m_measure;
-	MusLayer *m_layer;
+	Staff *m_staff;
+    Measure *m_measure;
+	Layer *m_layer;
     Tie *m_current_tie;
 
     std::vector<LayerElement *> m_nested_objects;   

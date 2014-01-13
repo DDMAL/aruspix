@@ -20,7 +20,7 @@ class MusAlignment;
 //----------------------------------------------------------------------------
 
 /** 
- * This class is a base class for the MusLayer (<layer>) content.
+ * This class is a base class for the Layer (<layer>) content.
  * It is not an abstract class but should not be instanciate directly.
  */
 class LayerElement: public MusDocObject

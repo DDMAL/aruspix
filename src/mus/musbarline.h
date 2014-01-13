@@ -35,7 +35,7 @@ public:
     virtual std::string MusClassName( ) { return "Barline"; };
     
     /**
-     * Use to set the alignment for the MusMeasure Barline members.
+     * Use to set the alignment for the Measure Barline members.
      * This is as special case where we need to add to the measure aligner.
      */
     void SetAlignment( MusAlignment *alignment ) { m_alignment = alignment; };

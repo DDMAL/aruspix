@@ -18,10 +18,10 @@
 #include "musdoc.h"
 
 //----------------------------------------------------------------------------
-// MusFontInfo
+// FontMetricsInfo
 //----------------------------------------------------------------------------
 
-bool MusFontInfo::FromString(const std::string& ss)
+bool FontMetricsInfo::FromString(const std::string& ss)
 {
     std::istringstream iss( ss );
     std::string token;
@@ -59,7 +59,7 @@ bool MusFontInfo::FromString(const std::string& ss)
     return true;
 }
 
-std::string MusFontInfo::ToString() const
+std::string FontMetricsInfo::ToString() const
 {
     std::string s = Mus::StringFormat( "%d;%d;%d;%d;%d;%d;%s;%d",
              0,                                 // version

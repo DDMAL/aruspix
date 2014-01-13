@@ -267,7 +267,7 @@ void RecMLFBmp::StartLabel( )
 	m_currentWidth = -1;
 }
 
-wxBitmap RecMLFBmp::GenerateBitmap( ImStaff *imstaff, MusLayer *musLayer, int currentElementNo )
+wxBitmap RecMLFBmp::GenerateBitmap( ImStaff *imstaff, Layer *musLayer, int currentElementNo )
 {
 	int mn, mx;
 	int bx, by;
@@ -408,7 +408,7 @@ bool RecMLFBmp::GenerateBitmaps( ImPage *impage )
 {
 	m_impage = impage;
 
-    MusPage *page = NULL;
+    Page *page = NULL;
 
     for (m_page_i = 0; m_page_i < m_file->m_parameters.nbpage; m_page_i++ )
     {
@@ -421,13 +421,13 @@ bool RecMLFBmp::GenerateBitmaps( ImPage *impage )
 */
 
 /*
-bool RecMLFBmp::WritePage( const MusPage *page )
+bool RecMLFBmp::WritePage( const Page *page )
 {
     m_staff = NULL;
     for (m_staff_i = 0; m_staff_i < page->GetStaffCount(); m_staff_i++) 
     {
-        MusStaff *staff = &page->m_staves[m_staff_i];
-		MusStaff *ut1_staff = MusMLFOutput::GetUt1( staff );
+        Staff *staff = &page->m_staves[m_staff_i];
+		Staff *ut1_staff = MusMLFOutput::GetUt1( staff );
         WriteStaff( ut1_staff );
 		delete ut1_staff;
     }
@@ -436,7 +436,7 @@ bool RecMLFBmp::WritePage( const MusPage *page )
 }
 */
 
-bool RecMLFBmp::WriteLayer( const MusLayer *layer, int currentElementNo )
+bool RecMLFBmp::WriteLayer( const Layer *layer, int currentElementNo )
 {
 
 	if (layer->GetElementCount() == 0)

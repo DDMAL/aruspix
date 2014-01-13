@@ -44,15 +44,15 @@ public:
     
     virtual bool WriteDoc( MusDoc *doc );
     // logical
-    virtual bool WriteStaff( MusStaff *staff );
-    virtual bool WriteLayer( MusLayer *layer );
+    virtual bool WriteStaff( Staff *staff );
+    virtual bool WriteLayer( Layer *layer );
     virtual bool WriteLayerElement( LayerElement *element );
     // layout
     virtual bool WriteLayout( MusDoc *layout );
-    virtual bool WritePage( MusPage *page );
-    virtual bool WriteSystem( MusSystem *system );
-    virtual bool WriteLaidOutStaff( MusStaff *laidOutStaff );
-    virtual bool WriteLaidOutLayer( MusLayer *laidOutLayer );
+    virtual bool WritePage( Page *page );
+    virtual bool WriteSystem( System *system );
+    virtual bool WriteLaidOutStaff( Staff *laidOutStaff );
+    virtual bool WriteLaidOutLayer( Layer *laidOutLayer );
     virtual bool WriteLaidOutLayerElement( LayerElement *laidOutLayerElement );
     
 private:

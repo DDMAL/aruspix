@@ -72,7 +72,7 @@ public:
     // edition
     virtual void DoRefresh() { Refresh(); }
     virtual void DoResize() { Resize(); }
-    virtual void DoLyricCursor( int x, int y, MusDC *dc, wxString lyric );
+    virtual void DoLyricCursor( int x, int y, DeviceContext *dc, wxString lyric );
     virtual void DoReset();
 
 	// copy paste

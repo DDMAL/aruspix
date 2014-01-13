@@ -17,7 +17,7 @@
 #include "musobject.h"
 
 // ---------------------------------------------------------------------------
-// MusDC
+// DeviceContext
 // ---------------------------------------------------------------------------
 
 
@@ -25,7 +25,7 @@
  * This class is a wrapper to wxDCs.
  * All functionnalities are not implemented yet.
 */
-class MusWxDC: public MusDC
+class MusWxDC: public DeviceContext
 {
 public:
 
@@ -44,7 +44,7 @@ public:
     
     virtual void SetPen( int colour, int width = 1, int style = wxSOLID );
     
-    virtual void SetFont( MusFontInfo *font_info );
+    virtual void SetFont( FontMetricsInfo *font_info );
         
     virtual void SetTextForeground( int colour );
     

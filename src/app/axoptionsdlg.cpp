@@ -523,17 +523,17 @@ AxOptMusWindow::AxOptMusWindow( wxWindow *parent, wxWindowID id,
     
     
     // create a new layout and the page
-    MusPage *page = new MusPage();
+    Page *page = new Page();
     page->m_pageWidth = 150;
     page->m_pageHeight = 150;
     page->m_pageLeftMar = 0;
     page->m_pageRightMar = 0;
-    MusSystem *system = new MusSystem();
+    System *system = new System();
     system->m_yAbs = 120;
-    MusStaff *staff = new MusStaff( 1 );
-    MusMeasure *measure = new MusMeasure( false, 1 );
+    Staff *staff = new Staff( 1 );
+    Measure *measure = new Measure( false, 1 );
     staff->m_yAbs = 120;
-    MusLayer *layer = new MusLayer( 1 );
+    Layer *layer = new Layer( 1 );
     
     Clef *clef = new Clef();
     clef->m_clefId = UT3;

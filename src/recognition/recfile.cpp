@@ -243,20 +243,20 @@ void RecFile::UpgradeTo_2_1_0()
         return;
     }
     
-    MusPage *page = &m_musDocPtr->m_layouts[0].m_pages[0];
+    Page *page = &m_musDocPtr->m_layouts[0].m_pages[0];
     
     int i, j;
     int elementCount = 0;
     
     for ( i = 0; i < (int)page->m_systems.GetCount(); i++ ) {
-        MusLayer *laidOutLayer = &page->m_systems[i].m_staves[0].m_layers[0];
+        Layer *laidOutLayer = &page->m_systems[i].m_staves[0].m_layers[0];
         if ( !laidOutLayer ) {
-            wxLogError( "File cannot be upgraded to 2.1.0 (Missing MusLayer)");    
+            wxLogError( "File cannot be upgraded to 2.1.0 (Missing Layer)");    
             return;
         }
-        MusLayer *currentLayer = laidOutLayer->GetSection()->GetStaff( laidOutLayer->m_n - 1 )->GetLayer( laidOutLayer->m_n - 1 );
+        Layer *currentLayer = laidOutLayer->GetSection()->GetStaff( laidOutLayer->m_n - 1 )->GetLayer( laidOutLayer->m_n - 1 );
         if ( !currentLayer ) {
-            wxLogError( "File cannot be upgraded to 2.1.0 (Missing MusLayer)");    
+            wxLogError( "File cannot be upgraded to 2.1.0 (Missing Layer)");    
             return;
         }
         for ( j = 0; j < laidOutLayer->GetElementCount(); j++ ) {
@@ -463,7 +463,7 @@ void RecFile::SaveContent( )
 		MusMLFOutput *mlfoutput = new MusMLFOutput( m_musDocPtr, m_basename + "page.mlf", NULL );
 		mlfoutput->m_pagePosition = true;
         // !!! No check if layout and page exist!
-		mlfoutput->WritePage( (MusPage*)m_musDocPtr->m_children[0] , "staff", m_imPagePtr );
+		mlfoutput->WritePage( (Page*)m_musDocPtr->m_children[0] , "staff", m_imPagePtr );
 		delete mlfoutput;
 		TiXmlElement root( "recpage" );
     
@@ -849,7 +849,7 @@ bool RecFile::RealizeFromMLF( wxArrayPtrVoid params, AxProgressDlg *dlg )
     
     m_musDocPtr->Reset( Transcription );
     // here we need to create the logical tree 
-    MusPage *musPage = new MusPage();
+    Page *musPage = new Page();
     
     // dimensions
 	musPage->m_pageWidth = m_imPagePtr->m_size.GetWidth();
@@ -861,11 +861,11 @@ bool RecFile::RealizeFromMLF( wxArrayPtrVoid params, AxProgressDlg *dlg )
     for (int i = 0; i < nb; i++)
     {
         imStaff = &m_imPagePtr->m_staves[i];
-        MusSystem *musSystem = new MusSystem();
-        MusStaff *musStaff = new MusStaff( 1 );
+        System *musSystem = new System();
+        Staff *musStaff = new Staff( 1 );
         musStaff->m_mensuralNotation = true;
-        MusMeasure *musMeasure = new MusMeasure( false, 1 );
-        MusLayer *musLayer = new MusLayer( 1 ); // only one layer per staff
+        Measure *musMeasure = new Measure( false, 1 );
+        Layer *musLayer = new Layer( 1 ); // only one layer per staff
         //musLayer->no = nb; ?? // ax2
         musSystem->m_systemLeftMar = imStaff->m_x1;  
         musSystem->m_systemRightMar = musPage->m_pageWidth - imStaff->m_x2;

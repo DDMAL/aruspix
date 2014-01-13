@@ -218,8 +218,8 @@ std::string MusController::RenderToSvg( int pageNo, bool xml_tag )
     m_doc.Layout();
     
     // Get the current system for the SVG clipping size
-    MusPage *page = dynamic_cast<MusPage*>(m_doc.m_children[0]);
-    //MusSystem *system = dynamic_cast<MusSystem*>(page->m_children[0]);
+    Page *page = dynamic_cast<Page*>(m_doc.m_children[0]);
+    //System *system = dynamic_cast<System*>(page->m_children[0]);
     
     // Create the SVG object, h & w come from the system
     // we add border*2 so it is centered into the image

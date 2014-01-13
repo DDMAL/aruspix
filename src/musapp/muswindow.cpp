@@ -160,7 +160,7 @@ void MusWindow::Load( AxUndoFile *undoPtr )
 		return;
 	}
 	
-    SetPage( (MusPage*)m_doc->m_children[page] );
+    SetPage( (Page*)m_doc->m_children[page] );
 	m_npage = page;
 
 	delete mei_input;
@@ -171,13 +171,13 @@ void MusWindow::Load( AxUndoFile *undoPtr )
     m_currentElement = NULL;
 
     if ( system != -1 ) {
-		m_currentSystem = (MusSystem*)m_page->m_children[system];
+		m_currentSystem = (System*)m_page->m_children[system];
     }	
 	if ( m_currentSystem && (staff != -1) ) {
-		m_currentStaff = (MusStaff*)m_currentSystem->m_children[staff];
+		m_currentStaff = (Staff*)m_currentSystem->m_children[staff];
     }	
 	if ( m_currentStaff && (layer != -1) ) {
-		m_currentLayer = (MusLayer*)m_currentStaff->m_children[layer];
+		m_currentLayer = (Layer*)m_currentStaff->m_children[layer];
     }		
 	if ( m_currentLayer && (element != -1) )
 	{
@@ -281,7 +281,7 @@ void MusWindow::InitDC( wxDC *dc )
 	dc->SetAxisOrientation( true, false );
 }
 
-void MusWindow::DoLyricCursor( int x, int y, MusDC *dc, wxString lyric )
+void MusWindow::DoLyricCursor( int x, int y, DeviceContext *dc, wxString lyric )
 {
     int xCursor = x;
     if ( m_lyricCursor > 0 ){
@@ -371,7 +371,7 @@ void MusWindow::Goto( )
     if ( dlg->ShowModal() == wxID_OK )
 	{
 		m_npage = dlg->GetPage();
-		SetPage( (MusPage*)m_doc->m_children[m_npage] );
+		SetPage( (Page*)m_doc->m_children[m_npage] );
     }
 	dlg->Destroy();
     wxLogError( "MusWindow::Goto missing in ax2" );
@@ -882,7 +882,7 @@ void MusWindow::OnMouseLeftDown(wxMouseEvent &event)
 		
         /* ax2
 		// Checking if there is a Lyric element closer to click location then default note
-		MusStaff *lyricStaff;
+		Staff *lyricStaff;
 		if ( noteStaff->m_yDrawing <= (uint)(y + 80)){
 			if ((lyricStaff = m_page->GetPrevious( noteStaff )) == NULL) lyricStaff = noteStaff;
 		} else {
@@ -1028,11 +1028,11 @@ bool MusWindow::MoveUpDown( bool up )
 		return false;
     } 
     
-    MusPage *page = m_page;
-    MusSystem *system = m_currentSystem;
-    MusStaff *staff = m_currentStaff;
-    MusMeasure *measure = m_currentMeasure;
-    MusLayer *layer = m_currentLayer;
+    Page *page = m_page;
+    System *system = m_currentSystem;
+    Staff *staff = m_currentStaff;
+    Measure *measure = m_currentMeasure;
+    Layer *layer = m_currentLayer;
     
     int x = 0;
     if ( m_currentElement ) {
@@ -1122,11 +1122,11 @@ bool MusWindow::MoveLeftRight( bool left )
 		return false;
     } 
     
-    MusPage *page = m_page;
-    MusSystem *system = m_currentSystem;
-    MusStaff *staff = m_currentStaff;
-    MusMeasure *measure = m_currentMeasure;
-    MusLayer *layer = m_currentLayer;
+    Page *page = m_page;
+    System *system = m_currentSystem;
+    Staff *staff = m_currentStaff;
+    Measure *measure = m_currentMeasure;
+    Layer *layer = m_currentLayer;
     
     if ( left ) {
         // previous element
@@ -1312,7 +1312,7 @@ void MusWindow::NeumeEditOnKeyDown(wxKeyEvent &event) {
     {
         PrepareCheckPoint( UNDO_PART, MUS_UNDO_FILE );
         MusElement *del = m_currentElement;
-        MusStaff *delstaff = m_currentStaff;
+        Staff *delstaff = m_currentStaff;
         
         if (event.m_keyCode == WXK_DELETE )		//"Delete" event
         {
@@ -1344,7 +1344,7 @@ void MusWindow::NeumeEditOnKeyDown(wxKeyEvent &event) {
         if ( m_currentStaff != delstaff )
         {
             // reset previous staff with no element before checkpoint and then swap again
-            MusStaff *tmp = m_currentStaff;
+            Staff *tmp = m_currentStaff;
             m_currentStaff = delstaff;
             del = m_currentElement;
             m_currentElement = NULL;
@@ -1485,7 +1485,7 @@ void MusWindow::MensuralEditOnKeyDown(wxKeyEvent &event) {
     {
         PrepareCheckPoint( UNDO_PART, MUS_UNDO_FILE );
         LayerElement *del = m_currentElement;
-        MusLayer *delLayer = m_currentLayer;
+        Layer *delLayer = m_currentLayer;
         
         if (event.m_keyCode == WXK_DELETE )		//"Delete" event
         {
@@ -1497,7 +1497,7 @@ void MusWindow::MensuralEditOnKeyDown(wxKeyEvent &event) {
         }
         
         // we have moved, currentLayer is now the layer we will be after deletion
-        MusLayer *nextLayer = m_currentLayer;
+        Layer *nextLayer = m_currentLayer;
         m_currentLayer = delLayer; // we swap it to do the deletion
         
         // in case we failed moving
@@ -1840,7 +1840,7 @@ void MusWindow::LyricEntry(wxKeyEvent &event)
 			
 			PrepareCheckPoint( UNDO_PART, MUS_UNDO_FILE );
 			MusElement *del = m_currentElement;
-			MusStaff *delstaff = m_currentStaff;
+			Staff *delstaff = m_currentStaff;
 			
 			// Find next element to select
 			if (event.m_keyCode == WXK_DELETE )												//"Delete" event
@@ -1872,7 +1872,7 @@ void MusWindow::LyricEntry(wxKeyEvent &event)
 			if ( m_currentStaff != delstaff )
 			{
 				// Reset previous staff with no element before checkpoint and then swap again
-				MusStaff *tmp = m_currentStaff;
+				Staff *tmp = m_currentStaff;
 				m_currentStaff = delstaff;
 				del = m_currentElement;
 				m_currentElement = NULL;

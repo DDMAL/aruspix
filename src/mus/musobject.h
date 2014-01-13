@@ -144,7 +144,7 @@ public:
     
     /**
      * Fill the list of all the children LayerElement.
-     * This is used for navigating in a MusLayer (See MusLayer::GetPrevious and MusLayer::GetNext).
+     * This is used for navigating in a Layer (See Layer::GetPrevious and Layer::GetNext).
      */  
     void FillList( ListOfMusObjects *list );
     
@@ -184,7 +184,7 @@ public:
     virtual int AddLayerElementToList( ArrayPtrVoid params );
     
     /**
-     * See MusLayer::CopyToLayer
+     * See Layer::CopyToLayer
      */ 
     virtual int CopyToLayer( ArrayPtrVoid params ) { return false; };
     
@@ -203,7 +203,7 @@ public:
     
     /**
      * Adjust the size of a system according to its content
-     * See MusSystem::TrimSystem for actual implementation.
+     * See System::TrimSystem for actual implementation.
      */
     virtual int TrimSystem( ArrayPtrVoid params ) { return FUNCTOR_CONTINUE; };
 
@@ -266,13 +266,13 @@ public:
     
     /**
      * Correct the X alignment once the the content of a system has been aligned and laid out
-     * See MusMeasure::IntegrateBoundingBoxXShift for actual implementation
+     * See Measure::IntegrateBoundingBoxXShift for actual implementation
      */
     virtual int IntegrateBoundingBoxXShift( ArrayPtrVoid params ) { return FUNCTOR_CONTINUE; };
     
     /**
      * Correct the Y alignment once the the content of a system has been aligned and laid out
-     * See MusSystem::IntegrateBoundingBoxYShift for actual implementation
+     * See System::IntegrateBoundingBoxYShift for actual implementation
      */
     virtual int IntegrateBoundingBoxYShift( ArrayPtrVoid params ) { return FUNCTOR_CONTINUE; };
     

@@ -22,10 +22,10 @@
 #include "mussystem.h"
 
 //----------------------------------------------------------------------------
-// MusStaff
+// Staff
 //----------------------------------------------------------------------------
 
-MusStaff::MusStaff( int n ):
+Staff::Staff( int n ):
 	MusDocObject("staff-")
 {
 	Clear( );
@@ -33,7 +33,7 @@ MusStaff::MusStaff( int n ):
     m_n = n;
 }
 
-MusStaff::MusStaff( const MusStaff& staff )
+Staff::Staff( const Staff& staff )
 {
     m_parent = NULL;
 	totGrp = staff.totGrp;
@@ -56,19 +56,19 @@ MusStaff::MusStaff( const MusStaff& staff )
     int i;
 	for (i = 0; i < staff.GetLayerCount(); i++)
 	{
-        MusLayer *nlayer = new MusLayer( *(MusLayer*)staff.m_children[i] );
+        Layer *nlayer = new Layer( *(Layer*)staff.m_children[i] );
         this->AddLayer( nlayer );
 	}
     
     this->ResetUuid();
 }
 
-MusStaff::~MusStaff()
+Staff::~Staff()
 {
     
 }
 
-void MusStaff::Clear()
+void Staff::Clear()
 {
 	ClearChildren();
     m_parent = NULL;
@@ -91,7 +91,7 @@ void MusStaff::Clear()
     m_staffAlignment = NULL;
 }
 
-int MusStaff::Save( ArrayPtrVoid params )
+int Staff::Save( ArrayPtrVoid params )
 {
     // param 0: output stream
     MusFileOutputStream *output = (MusFileOutputStream*)params[0];         
@@ -102,7 +102,7 @@ int MusStaff::Save( ArrayPtrVoid params )
 
 }
 
-void MusStaff::AddLayer( MusLayer *layer )
+void Staff::AddLayer( Layer *layer )
 {
 	layer->SetParent( this );
 	m_children.push_back( layer );
@@ -112,7 +112,7 @@ void MusStaff::AddLayer( MusLayer *layer )
     }
 }
 
-void MusStaff::CopyAttributes( MusStaff *nstaff )
+void Staff::CopyAttributes( Staff *nstaff )
 {
 	if ( !nstaff )
 		return;
@@ -136,22 +136,22 @@ void MusStaff::CopyAttributes( MusStaff *nstaff )
 	nstaff->m_yDrawing = m_yDrawing;
 }
 
-MusLayer *MusStaff::GetFirst( )
+Layer *Staff::GetFirst( )
 {
 	if ( m_children.empty() )
 		return NULL;
-	return (MusLayer*)m_children[0];
+	return (Layer*)m_children[0];
 }
 
-MusLayer *MusStaff::GetLast( )
+Layer *Staff::GetLast( )
 {
 	if ( m_children.empty() )
 		return NULL;
 	int i = GetLayerCount() - 1;
-	return (MusLayer*)m_children[i];
+	return (Layer*)m_children[i];
 }
 
-MusLayer *MusStaff::GetNext( MusLayer *layer )
+Layer *Staff::GetNext( Layer *layer )
 {	
     if ( !layer || m_children.empty())
         return NULL;
@@ -161,10 +161,10 @@ MusLayer *MusStaff::GetNext( MusLayer *layer )
 	if ((i == -1 ) || ( i >= GetLayerCount() - 1 ))
 		return NULL;
 
-	return (MusLayer*)m_children[i + 1];
+	return (Layer*)m_children[i + 1];
 }
 
-MusLayer *MusStaff::GetPrevious( MusLayer *layer )
+Layer *Staff::GetPrevious( Layer *layer )
 {
     if ( !layer || m_children.empty())
         return NULL;
@@ -174,30 +174,30 @@ MusLayer *MusStaff::GetPrevious( MusLayer *layer )
 	if ((i == -1 ) || ( i <= 0 ))
         return NULL;
 	
-    return (MusLayer*)m_children[i - 1];
+    return (Layer*)m_children[i - 1];
 }
 
 
-MusLayer *MusStaff::GetLayerWithIdx( int LayerIdx )
+Layer *Staff::GetLayerWithIdx( int LayerIdx )
 {
     if ( LayerIdx > (int)m_children.size() - 1 )
         return NULL;
 	
-	return (MusLayer*)m_children[LayerIdx];
+	return (Layer*)m_children[LayerIdx];
 }
 
 
-int MusStaff::GetVerticalSpacing()
+int Staff::GetVerticalSpacing()
 {
     return 160; // arbitrary generic value
 }
 
-bool MusStaff::GetPosOnPage( ArrayPtrVoid params )
+bool Staff::GetPosOnPage( ArrayPtrVoid params )
 {
-    // param 0: the MusStaff we are looking for
+    // param 0: the Staff we are looking for
     // param 1: the position on the page (int)
     // param 2; the success flag (bool)
-    MusStaff *staff = (MusStaff*)params[0];
+    Staff *staff = (Staff*)params[0];
 	int *position = (int*)params[1];
     bool *success = (bool*)params[2];
     
@@ -214,7 +214,7 @@ bool MusStaff::GetPosOnPage( ArrayPtrVoid params )
 }
 
 
-int MusStaff::GetYRel()
+int Staff::GetYRel()
 {
     if (m_staffAlignment) {
         return m_staffAlignment->GetYRel();
@@ -223,11 +223,11 @@ int MusStaff::GetYRel()
 }
 
 //----------------------------------------------------------------------------
-// MusStaff functor methods
+// Staff functor methods
 //----------------------------------------------------------------------------
 
 
-int MusStaff::Align( ArrayPtrVoid params )
+int Staff::Align( ArrayPtrVoid params )
 {
     // param 0: the measureAligner (unused)
     // param 1: the time (unused)
@@ -251,7 +251,7 @@ int MusStaff::Align( ArrayPtrVoid params )
 }
 
 /*
-int MusStaff::LayOutSystemAndStaffYPos( ArrayPtrVoid params )
+int Staff::LayOutSystemAndStaffYPos( ArrayPtrVoid params )
 {
     // param 0: the current y system shift
     // param 1: the current y staff shift
@@ -263,8 +263,8 @@ int MusStaff::LayOutSystemAndStaffYPos( ArrayPtrVoid params )
     
     // reset the x position if we are starting a new system
     if ( this->m_parent->GetChildIndex( this ) == 0 ) {
-        MusSystem *system = dynamic_cast<MusSystem*>( this->m_parent );
-        // The parent is a MusSystem, we need to reset the y staff shift
+        System *system = dynamic_cast<System*>( this->m_parent );
+        // The parent is a System, we need to reset the y staff shift
         if ( system ) {
             // the staff position is the same as the one of the system
             (*current_y_staff_shift) = 0;

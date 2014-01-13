@@ -15,27 +15,27 @@
 #include "musobject.h"
 #include "musscoredef.h"
 
-class MusDC;
+class DeviceContext;
 class LayerElement;
 class Note;
 
 //----------------------------------------------------------------------------
-// MusLayer
+// Layer
 //----------------------------------------------------------------------------
 
 /**
  * This class represents a layer in a laid-out score (MusDoc).
- * A MusLayer is contained in a MusStaff.
+ * A Layer is contained in a Staff.
  * It contains LayerElement objects.
 */
-class MusLayer: public MusDocObject, public MusObjectListInterface, public MusScoreOrStaffDefAttrInterface
+class Layer: public MusDocObject, public MusObjectListInterface, public ScoreOrStaffDefAttrInterface
 {
 public:
     // constructors and destructors
-    MusLayer( int n );
-    virtual ~MusLayer();
+    Layer( int n );
+    virtual ~Layer();
     
-    virtual std::string MusClassName( ) { return "MusLayer"; };
+    virtual std::string MusClassName( ) { return "Layer"; };
     
     void Clear();
 	
@@ -61,7 +61,7 @@ public:
 
     // functors
     /**
-     * Copy the elements to a MusLayer passed in parameters. 
+     * Copy the elements to a Layer passed in parameters. 
      * Also take into account a start and end uuid for the page (if any)
      */ 
     virtual int CopyToLayer( ArrayPtrVoid params );
@@ -70,7 +70,7 @@ public:
     virtual int Save( ArrayPtrVoid params );
     void CheckAndResetSectionOrMeasure( ArrayPtrVoid params ); // unused
     
-	void CopyAttributes( MusLayer *layer ); // copy all attributes but none of the elements
+	void CopyAttributes( Layer *layer ); // copy all attributes but none of the elements
     
 	LayerElement *GetFirst( );
 	LayerElement *GetLast( );
@@ -100,7 +100,7 @@ public:
     
     /** 
      * Return the clef offset for the position x.
-     * The method uses MusLayer::GetClef first to find the clef before test.
+     * The method uses Layer::GetClef first to find the clef before test.
      */
     int GetClefOffset( LayerElement *test  );
     
@@ -140,7 +140,7 @@ public:
      * Set drawing clef, keysig and mensur if necessary and if available.
      * Also set the current clef.
      */
-    void SetDrawingValues( MusScoreDef *currentScoreDef, MusStaffDef *currentStaffDef );
+    void SetDrawingValues( ScoreDef *currentScoreDef, MusStaffDef *currentStaffDef );
     
 
     //Lyric related methods

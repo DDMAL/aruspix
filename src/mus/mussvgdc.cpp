@@ -40,7 +40,7 @@ static inline double RadToDeg(double deg) { return (deg * 180.0) / M_PI; }
 
 
 MusSvgDC::MusSvgDC(int width, int height):
-    MusDC()
+    DeviceContext()
 {	
 	
     m_correctMusicAscent = false; // do not correct the ascent in the Leipzig font
@@ -222,7 +222,7 @@ void MusSvgDC::SetPen( int colour, int width, int style )
     }
 }
         
-void MusSvgDC::SetFont( MusFontInfo *font_info )
+void MusSvgDC::SetFont( FontMetricsInfo *font_info )
 {
     m_font = *font_info;
     //wxFont font( font_info->pointSize, (wxFontFamily)font_info->family, font_info->style,
