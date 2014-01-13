@@ -72,16 +72,16 @@ void MusRC::DrawElement( MusDC *dc, LayerElement *element, MusLayer *layer, MusM
         element->m_xDrawing = element->m_xAbs;
     }
     
-    if (dynamic_cast<MusBarline*>(element)) {
+    if (dynamic_cast<Barline*>(element)) {
         DrawBarline(dc, element, layer, staff);
     }
-    else if (dynamic_cast<MusBeam*>(element)) {
+    else if (dynamic_cast<Beam*>(element)) {
         DrawBeamElement(dc, element, layer, measure, staff);
     }
-    else if (dynamic_cast<MusClef*>(element)) {
+    else if (dynamic_cast<Clef*>(element)) {
         DrawClef(dc, element, layer, staff);
     }
-    else if (dynamic_cast<MusKeySig*>(element)) {
+    else if (dynamic_cast<KeySignature*>(element)) {
         DrawKeySig(dc, element, layer, staff);
     }
     else if (dynamic_cast<Mensur*>(element)) {
@@ -105,7 +105,7 @@ void MusRC::DrawElement( MusDC *dc, LayerElement *element, MusLayer *layer, MusM
     else if (dynamic_cast<Tuplet*>(element)) {
         DrawTupletElement(dc, element, layer, measure, staff);
     }
-    else if (dynamic_cast<MusLayerApp*>(element)) {
+    else if (dynamic_cast<LayerApp*>(element)) {
         DrawLayerApp(dc, element, layer, measure, staff);
     }
     
@@ -117,7 +117,7 @@ void MusRC::DrawDurationElement( MusDC *dc, LayerElement *element, MusLayer *lay
     assert(layer); // Pointer to layer cannot be NULL"
     assert(staff); // Pointer to staff cannot be NULL"
 
-    MusDurationInterface *durElement = dynamic_cast<MusDurationInterface*>(element);
+    DurationInterface *durElement = dynamic_cast<DurationInterface*>(element);
 	if ( !durElement )
 		return;
         
@@ -185,8 +185,8 @@ void MusRC::DrawBeamElement(MusDC *dc, LayerElement *element, MusLayer *layer, M
     assert(layer); // Pointer to layer cannot be NULL"
     assert(staff); // Pointer to staff cannot be NULL"
     
-    MusBeam *beam = dynamic_cast
-    <MusBeam*>(element);
+    Beam *beam = dynamic_cast
+    <Beam*>(element);
 
     dc->StartGraphic( element, "beam", element->GetUuid() );
     
@@ -241,7 +241,7 @@ void MusRC::DrawNote ( MusDC *dc, LayerElement *element, MusLayer *layer, MusSta
     
     Note *note = dynamic_cast<Note*>(element);
     
-    bool inBeam = (note->GetFirstParent( &typeid( MusBeam ) ) != NULL );
+    bool inBeam = (note->GetFirstParent( &typeid( Beam ) ) != NULL );
     
 	int staffSize = staff->staffSize;
 
@@ -1024,9 +1024,9 @@ void MusRC::DrawBarline( MusDC *dc, LayerElement *element, MusLayer *layer, MusS
     assert(layer); // Pointer to layer cannot be NULL"
     assert(staff); // Pointer to staff cannot be NULL"
     assert(staff->m_parent); // Pointer to system cannot be NULL"
-    assert(dynamic_cast<MusBarline*>(element)); // Element must be a MusBarline"
+    assert(dynamic_cast<Barline*>(element)); // Element must be a Barline"
     
-    MusBarline *barline = dynamic_cast<MusBarline*>(element);
+    Barline *barline = dynamic_cast<Barline*>(element);
     int x = element->m_xDrawing + barline->m_hOffset;
 
     dc->StartGraphic( element, "barline", element->GetUuid() );
@@ -1049,9 +1049,9 @@ void MusRC::DrawClef( MusDC *dc, LayerElement *element, MusLayer *layer, MusStaf
 {
     assert(layer); // Pointer to layer cannot be NULL"
     assert(staff); // Pointer to staff cannot be NULL"
-    assert(dynamic_cast<MusClef*>(element)); // Element must be a MusClef"
+    assert(dynamic_cast<Clef*>(element)); // Element must be a Clef"
     
-    MusClef *clef = dynamic_cast<MusClef*>(element);
+    Clef *clef = dynamic_cast<Clef*>(element);
 
     dc->StartGraphic( element, "clef", element->GetUuid() );
 	
@@ -1443,11 +1443,11 @@ void MusRC::DrawKeySig( MusDC *dc, LayerElement *element, MusLayer *layer, MusSt
     assert(layer); // Pointer to layer cannot be NULL"
     assert(staff); // Pointer to staff cannot be NULL"
 
-    MusKeySig *ks = dynamic_cast<MusKeySig*>(element);
+    KeySignature *ks = dynamic_cast<KeySignature*>(element);
     int symb;
     int x, y;
     
-    MusClef *c = layer->GetClef(element);
+    Clef *c = layer->GetClef(element);
     if (!c) {
         return;
     }
@@ -1651,7 +1651,7 @@ void MusRC::DrawLayerApp( MusDC *dc, LayerElement *element, MusLayer *layer, Mus
     assert(staff); // Pointer to staff cannot be NULL"
     assert(staff->m_parent); // Pointer to staff system cannot be NULL"
     
-    MusLayerApp *app = dynamic_cast<MusLayerApp*>(element);    
+    LayerApp *app = dynamic_cast<LayerApp*>(element);    
     int i;
     for (i = 0; i < app->GetRdgCount(); i++ )
     {

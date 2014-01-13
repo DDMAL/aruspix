@@ -64,13 +64,13 @@ int calcBeam = 0;
 /**
  * This structure is used for calculating the beam internally.
 */
-struct MusBeamFlag {	unsigned beam_chrd:3;	/* retournee par beam() a input() */
+struct BeamFlag {	unsigned beam_chrd:3;	/* retournee par beam() a input() */
 		unsigned beamchrd:3;	/* accord() et note() */
 		unsigned inpt:1;	/* usage in input(),beam(),accord() */
 		unsigned markchrd:1;	/* in beam() */
         unsigned niaf:8;
 };
-struct MusBeamFlag bch;
+struct BeamFlag bch;
 double sy_up = 0.0;
 float hauteurBarreMoyenne = 3.0;
 double dA, dB;
@@ -79,7 +79,7 @@ char extern_queue = 0;
 
 /* This need to be put into a beam class */
 
-void MusRC::DrawBeam(  MusDC *dc, MusLayer *layer, MusBeam *beam, MusStaff *staff )
+void MusRC::DrawBeam(  MusDC *dc, MusLayer *layer, Beam *beam, MusStaff *staff )
 {
     LayerElement *chk;
 	static struct fb {

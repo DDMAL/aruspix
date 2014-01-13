@@ -58,11 +58,11 @@ std::string MusRC::IntToObliqueFigures(unsigned int number) {
  */
 bool MusRC::OneBeamInTuplet(Tuplet* tuplet) {
     
-    MusBeam *currentBeam, *firstBeam = NULL;
+    Beam *currentBeam, *firstBeam = NULL;
     ArrayOfMusObjects elems;
     
     // Are we contained in a beam?
-    if (dynamic_cast<MusBeam*>(tuplet->GetFirstParent(&typeid(MusBeam), 3)) && !tuplet->m_children.empty())
+    if (dynamic_cast<Beam*>(tuplet->GetFirstParent(&typeid(Beam), 3)) && !tuplet->m_children.empty())
         return true;
 
     
@@ -71,7 +71,7 @@ bool MusRC::OneBeamInTuplet(Tuplet* tuplet) {
         if (dynamic_cast<Note*>(tuplet->m_children[i]))
             return false;
         
-        currentBeam = dynamic_cast<MusBeam*>(tuplet->m_children[i]);
+        currentBeam = dynamic_cast<Beam*>(tuplet->m_children[i]);
         
         if (!currentBeam)
             continue;
@@ -162,8 +162,8 @@ bool MusRC::GetTupletCoordinates(Tuplet* tuplet, MusLayer *layer, MusPoint* star
             if (dynamic_cast<Note*>(tuplet->m_children[i]))
                 all_notes.push_back(tuplet->m_children[i]);
             
-            if (dynamic_cast<MusBeam*>(tuplet->m_children[i])) {
-                MusBeam* beam = dynamic_cast<MusBeam*>(tuplet->m_children[i]);
+            if (dynamic_cast<Beam*>(tuplet->m_children[i])) {
+                Beam* beam = dynamic_cast<Beam*>(tuplet->m_children[i]);
                 std::copy( beam->m_list.begin(), beam->m_list.end(), std::back_inserter( all_notes ) );
             }
         }*/

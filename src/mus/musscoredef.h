@@ -11,8 +11,8 @@
 
 #include "musobject.h"
 
-class MusClef;
-class MusKeySig;
+class Clef;
+class KeySignature;
 class Mensur;
 class MusStaffGrp;
 class MusStaffDef;
@@ -29,7 +29,7 @@ class MusStaffDef;
 
 /**
  * This class is an interface for MEI scoreDef or staffDef attributes clef, keysig and mensur.
- * For simplification, the attributes are stored as MusClef, MusKeySig and Mensur.
+ * For simplification, the attributes are stored as Clef, KeySignature and Mensur.
  */
 class MusScoreOrStaffDefAttrInterface
 {
@@ -43,12 +43,12 @@ public:
     /**
      * Replace the clef (if any) with the newClef (if any).
      */
-    void ReplaceClef( MusClef *newClef );
+    void ReplaceClef( Clef *newClef );
     
     /**
      * Replace the keysig (if any) with the newKeysig (if any).
      */
-    void ReplaceKeySig( MusKeySig *newKeySig );
+    void ReplaceKeySig( KeySignature *newKeySig );
     
     /**
      * Replace the mensur (if any) with the newMensur (if any).
@@ -59,16 +59,16 @@ public:
      * @name Get  the clef, keysig and mensure.
      */
     ///@{
-    MusClef *GetClefAttr() const { return m_clef; };
-    MusKeySig *GetKeySigAttr() const { return m_keySig; };
+    Clef *GetClefAttr() const { return m_clef; };
+    KeySignature *GetKeySigAttr() const { return m_keySig; };
     Mensur *GetMensurAttr() const { return m_mensur; };
     ///@}
     
 protected:
     /** The clef attribute */
-    MusClef *m_clef;
+    Clef *m_clef;
     /** The key signature */
-    MusKeySig *m_keySig;
+    KeySignature *m_keySig;
     /** The mensure (time signature */
     Mensur *m_mensur;
     

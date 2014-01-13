@@ -63,7 +63,7 @@ public:
     
     /**
      * Set the value for child element of LayerElement.
-     * For example, set the duration for MusDurationInterface elements (call explicitly) 
+     * For example, set the duration for DurationInterface elements (call explicitly) 
      */
 	virtual void SetValue( int value, int flag = 0 );
     
@@ -113,7 +113,7 @@ public:
      * Save the object (virtual).
      * Most of the child classes do not override it. In these cases, the actual 
      * saving occurs in the MusFileOutputStream::WriteLayerElement method
-     * A few classes, such as MusLayerApp, have an overriden version.
+     * A few classes, such as LayerApp, have an overriden version.
      */
     virtual int Save( ArrayPtrVoid params );
     
@@ -134,7 +134,7 @@ public:
     int m_xDrawing;
 	/** Relative position Y. This is used internally when drawing */
 	int m_yRel;
-    /** for elements in MusLayerApp. They will be drawn from the LayerElement of the app (and not from the layer) */
+    /** for elements in LayerApp. They will be drawn from the LayerElement of the app (and not from the layer) */
     bool m_in_layer_app;
     /** Indicates if cue size */
     bool m_cueSize;

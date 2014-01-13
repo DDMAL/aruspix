@@ -176,7 +176,7 @@ void MusPaeInput::convertPlainAndEasyToKern(std::istream &infile, std::ostream &
     }
     
     if (strlen(c_clef)) {
-        MusClef *c = new MusClef;
+        Clef *c = new Clef;
         getClefInfo(c_clef, c );    // do we need to put a default clef?
         current_measure.clef = c;
     }
@@ -298,7 +298,7 @@ void MusPaeInput::convertPlainAndEasyToKern(std::istream &infile, std::ostream &
         
 		//clef change
 		else if ((incipit[i] == '%') && (i+1 < length)) {
-            MusClef *c = new MusClef;
+            Clef *c = new Clef;
             i += getClefInfo(incipit, c, i + 1);
             current_note.clef = c;
         }
@@ -773,7 +773,7 @@ int MusPaeInput::getTimeInfo( const char* incipit, MeasureObject *measure, int i
 // getClefInfo -- read the key signature.
 //
 
-int MusPaeInput::getClefInfo( const char *incipit, MusClef *mclef, int index ) {
+int MusPaeInput::getClefInfo( const char *incipit, Clef *mclef, int index ) {
     
     // a clef is maximum 3 character length
     // go through the 3 character and retrieve the letter (clef) and the line
@@ -1087,7 +1087,7 @@ void MusPaeInput::printMeasure(std::ostream& out, MeasureObject *measure ) {
     }
     
     if ( measure->key.size() > 0 ) {
-        MusKeySig *key = new MusKeySig(measure->key.size(), measure->key_alteration);
+        KeySignature *key = new KeySignature(measure->key.size(), measure->key_alteration);
         m_layer->AddElement(key);
     }
     
@@ -1110,7 +1110,7 @@ void MusPaeInput::printMeasure(std::ostream& out, MeasureObject *measure ) {
     // Set barline
     // FIXME use flags for proper barline identification
     if ( measure->barline.length() ) {
-        MusBarline *bline = m_measure->GetRightBarline();
+        Barline *bline = m_measure->GetRightBarline();
         if (measure->barline == "=")
             bline->m_barlineType = BARLINE_SINGLE;
         else 
@@ -1167,7 +1167,7 @@ void MusPaeInput::parseNote(NoteObject note) {
     
     
     if (note.beam == BEAM_INITIAL)
-        PushContainer(new MusBeam());
+        PushContainer(new Beam());
     
     // we have a tuplet, the tuplet_note is > 0
     // which means we are counting a tuplet
@@ -1178,7 +1178,7 @@ void MusPaeInput::parseNote(NoteObject note) {
         element->m_cueSize = true;
         
         if (note.appoggiatura_multiple && note.appoggiatura > 1)
-            PushContainer(new MusBeam());
+            PushContainer(new Beam());
 
     }
     
@@ -1215,8 +1215,8 @@ void MusPaeInput::AddLayerElement(LayerElement *element) {
     if (m_nested_objects.size() > 0) {
         LayerElement *bottom = m_nested_objects.back();
         
-        if ( dynamic_cast<MusBeam*>( bottom ) ) {
-            ((MusBeam*)bottom)->AddElement( element );
+        if ( dynamic_cast<Beam*>( bottom ) ) {
+            ((Beam*)bottom)->AddElement( element );
         }
         else if ( dynamic_cast<Tuplet*>( bottom ) ) {
             ((Tuplet*)bottom)->AddElement( element );

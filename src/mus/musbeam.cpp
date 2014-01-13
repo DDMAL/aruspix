@@ -9,27 +9,27 @@
 #include "musbeam.h"
 
 //----------------------------------------------------------------------------
-// MusBeam
+// Beam
 //----------------------------------------------------------------------------
 
-MusBeam::MusBeam():
+Beam::Beam():
     LayerElement("beam-"), MusObjectListInterface()
 {
 }
 
 
-MusBeam::~MusBeam()
+Beam::~Beam()
 {
 }
 
-void MusBeam::AddElement(LayerElement *element) {
+void Beam::AddElement(LayerElement *element) {
    
     element->SetParent( this );
     m_children.push_back(element);
     Modify();
 }
 
-void MusBeam::FilterList()
+void Beam::FilterList()
 {
     // We want to keep only notes and rest
     // Eventually, we also need to filter out grace notes properly (e.g., with sub-beams)

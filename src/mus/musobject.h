@@ -314,7 +314,7 @@ private:
     /**
      * Indicated whether the object content is up-to-date or not.
      * This is usefull for object using sub-lists of objects when drawing.
-     * For example, MusBeam has a list of children notes and this value indicates if the
+     * For example, Beam has a list of children notes and this value indicates if the
      * list needs to be updated or not. Is is moslty and optimization feature.
      */
     bool m_isModified;
@@ -413,7 +413,7 @@ public:
 protected:
     /**
      * Filter the list for a specific class.
-     * For example, keep only notes in MusBeam
+     * For example, keep only notes in Beam
      */
     virtual void FilterList() {};
 

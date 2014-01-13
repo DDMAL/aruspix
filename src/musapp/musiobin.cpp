@@ -365,7 +365,7 @@ bool MusBinInput_1_X::ReadSymbol( MusLayer *layer, bool isLyric )
     
     LayerElement *layer_element = NULL;        
     if ( flag == CLE ) {
-        MusClef *clef = new MusClef();
+        Clef *clef = new Clef();
         clef->m_clefId = (ClefId)code;
         layer_element = clef;
         
@@ -378,7 +378,7 @@ bool MusBinInput_1_X::ReadSymbol( MusLayer *layer, bool isLyric )
         layer_element = alter;
     }
     else if ( flag == BARRE ) {
-        MusBarline *barline = new MusBarline();
+        Barline *barline = new Barline();
         layer_element = barline;
     }
     else if ( flag == IND_MES ) {

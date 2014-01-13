@@ -20,9 +20,9 @@
     #include "tinyxml/tinyxml.h"
 #endif
 
-class MusBarline;
-class MusBeam;
-class MusClef;
+class Barline;
+class Beam;
+class Clef;
 class Mensur;
 class Note;
 class Rest;
@@ -80,7 +80,7 @@ private:
     TiXmlElement *m_xml_current_clef;
     
     Mensur *m_current_time;
-    MusBeam *m_current_beam;
+    Beam *m_current_beam;
     bool m_in_beam;
     bool m_tied;
     int m_multimeasure_rests;

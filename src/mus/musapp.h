@@ -11,23 +11,23 @@
 
 #include "muslayerelement.h"
 
-class MusLayerRdg;
+class LayerRdg;
 
 //----------------------------------------------------------------------------
-// MusLayerApp
+// LayerApp
 //----------------------------------------------------------------------------
 
 /** 
  * This class models the MEI <app> element within a <layer> element.
  */
-class MusLayerApp: public LayerElement
+class LayerApp: public LayerElement
 {
 public:
     // constructors and destructors
-    MusLayerApp();
-    virtual ~MusLayerApp();
+    LayerApp();
+    virtual ~LayerApp();
     
-    void AddLayerRdg( MusLayerRdg *layerRdg );
+    void AddLayerRdg( LayerRdg *layerRdg );
     
     int GetRdgCount() { return (int)m_children.size(); };
     
@@ -44,18 +44,18 @@ private:
 
 
 //----------------------------------------------------------------------------
-// MusLayerRdg
+// LayerRdg
 //----------------------------------------------------------------------------
 
 /** 
  * This class models the MEI <rdg> element for a <app> in a <layer>
  */
-class MusLayerRdg: public MusObject
+class LayerRdg: public MusObject
 {
 public:
     // constructors and destructors
-    MusLayerRdg( );
-    virtual ~MusLayerRdg();
+    LayerRdg( );
+    virtual ~LayerRdg();
     
 	void AddElement( LayerElement *element, int idx = -1 );
     

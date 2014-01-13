@@ -337,11 +337,11 @@ bool CmpCollation::Collate( )
 
 void CmpCollation::CreateApp( MusLayer *layer_aligned, int i, MusLayer *layer_var, int j, int appType, wxString refFileId, wxString varFileId )
 {
-    MusLayerApp *app = new MusLayerApp();
+    LayerApp *app = new LayerApp();
     
     // we create two <rdg> because we are going to have an empty rdg for insertions and deletions
-    MusLayerRdg *ref = new MusLayerRdg( );
-    MusLayerRdg *var = new MusLayerRdg( );
+    LayerRdg *ref = new LayerRdg( );
+    LayerRdg *var = new LayerRdg( );
     // set the source ids available as member variables
     ref->m_source = m_refSource;
     var->m_source = m_varSource;

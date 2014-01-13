@@ -17,9 +17,9 @@
     #include "tinyxml/tinyxml.h"
 #endif
 
-class MusBarline;
-class MusBeam;
-class MusClef;
+class Barline;
+class Beam;
+class Clef;
 class MusLayer;
 class Mensur;
 class MultiRest;
@@ -67,29 +67,29 @@ public:
     virtual bool WriteLayer( MusLayer *layer );
     virtual bool WriteLayerElement( LayerElement *element );
     // app
-    virtual bool WriteLayerApp( MusLayerApp *app );
-    virtual bool WriteLayerRdg( MusLayerRdg *rdg );
+    virtual bool WriteLayerApp( LayerApp *app );
+    virtual bool WriteLayerRdg( LayerRdg *rdg );
     ///@}
 
 private:
     
     /**
-     * Write a MusBarline. 
+     * Write a Barline. 
      * Callded from WriteLayerElement.
      */
-    void WriteMeiBarline( TiXmlElement *meiBarline, MusBarline *barline );
+    void WriteMeiBarline( TiXmlElement *meiBarline, Barline *barline );
     
     /**
-     * Write a MusBeam. 
+     * Write a Beam. 
      * Callded from WriteLayerElement.
      */
-    void WriteMeiBeam( TiXmlElement *meiBeam, MusBeam *beam );
+    void WriteMeiBeam( TiXmlElement *meiBeam, Beam *beam );
     
     /**
-     * Write a MusClef.  
+     * Write a Clef.  
      * Callded from WriteLayerElement.
      */
-    void WriteMeiClef( TiXmlElement *meiClef, MusClef *clef );
+    void WriteMeiClef( TiXmlElement *meiClef, Clef *clef );
     
     /**
      * Write a Mensur. 
@@ -170,7 +170,7 @@ private:
     TiXmlElement *m_staff;
     /** The pointer for the layer within a staff */
     TiXmlElement *m_layer;
-    /** The pointer for the rdg within an app (MusLayerRdg) */
+    /** The pointer for the rdg within an app (LayerRdg) */
     TiXmlElement *m_rdgLayer;
     /** The pointer for a beam */
     TiXmlElement *m_beam;
@@ -236,7 +236,7 @@ private:
     void ReadSameAsAttr( TiXmlElement *element, MusObject *object );
     
     /**
-     * Add the LayerElement to the appropriate parent (e.g., MusLayer, MusLayerRdg)
+     * Add the LayerElement to the appropriate parent (e.g., MusLayer, LayerRdg)
      */
     void AddLayerElement( LayerElement *element );
     
@@ -280,11 +280,11 @@ private:
     MusMeasure *m_measure;
 	MusStaff *m_staff;
 	MusLayer *m_layer;
-    MusLayerRdg *m_layerRdg;
-    MusBeam *m_beam;
+    LayerRdg *m_layerRdg;
+    Beam *m_beam;
     Tuplet *m_tuplet;
     MusObject *m_currentLayer;
-    MusLayerApp *m_layerApp;
+    LayerApp *m_layerApp;
     /**
      * This is used when reading a standard MEI file to specify if a scoreDef has already been read or not.
      */

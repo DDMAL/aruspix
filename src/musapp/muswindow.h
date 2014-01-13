@@ -132,8 +132,8 @@ public:
 	LayerElement *m_lastEditedElement;
 
 	// keep elements statically - m_newElement will point on them
-    MusBarline m_barline;
-	MusClef m_clef;
+    Barline m_barline;
+	Clef m_clef;
     Mensur m_mensur;
     Note m_note;
     Rest m_rest;

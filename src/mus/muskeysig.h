@@ -19,15 +19,15 @@
 // MusKeysig
 //----------------------------------------------------------------------------
 
-class MusKeySig: public LayerElement, public PositionInterface
+class KeySignature: public LayerElement, public PositionInterface
 {
 public:
     // constructors and destructors
-    MusKeySig();
-    MusKeySig(int num_alter, char alter);
-    virtual ~MusKeySig();
+    KeySignature();
+    KeySignature(int num_alter, char alter);
+    virtual ~KeySignature();
     
-    virtual std::string MusClassName( ) { return "MusKeySig"; };
+    virtual std::string MusClassName( ) { return "KeySignature"; };
     
     /**
      * Return the default horizontal spacing after a keysig.

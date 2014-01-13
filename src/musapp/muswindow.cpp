@@ -441,12 +441,12 @@ void MusWindow::SetEditorMode( MusEditorMode mode )
 			m_lastEditedElement = m_currentElement;
             if ( m_currentElement->IsBarline() )
 			{
-				m_barline = *(MusBarline*)m_currentElement;
+				m_barline = *(Barline*)m_currentElement;
 				m_newElement = &m_barline;
 			}
             else if ( m_currentElement->IsClef() )
 			{
-				m_clef = *(MusClef*)m_currentElement;
+				m_clef = *(Clef*)m_currentElement;
 				m_newElement = &m_clef;
 			}
 			else if ( m_currentElement->IsMensur() )

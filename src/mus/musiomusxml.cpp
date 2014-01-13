@@ -168,16 +168,16 @@ bool MusXMLOutput::WriteLayerElement( LayerElement *element )
 {
     Mus::LogDebug("Layer Elem");
         
-    if (dynamic_cast<MusClef*>(element)) {
+    if (dynamic_cast<Clef*>(element)) {
         WriteClef(element);
-    } else if (dynamic_cast<MusKeySig*>(element)) {
+    } else if (dynamic_cast<KeySignature*>(element)) {
         WriteKey(element);
     } else if (dynamic_cast<Mensur*>(element)) {
         WriteTime(element);
     } else if (dynamic_cast<Note*>(element) || dynamic_cast<Rest*>(element)) {
         WriteNoteOrRest(element);
-    } else if (dynamic_cast<MusBeam*>(element)) {
-        m_current_beam = dynamic_cast<MusBeam*>(element);
+    } else if (dynamic_cast<Beam*>(element)) {
+        m_current_beam = dynamic_cast<Beam*>(element);
     } else if (dynamic_cast<Tie*>(element)) {
         // add tie to last note
         // continuation of ties is made with a <start> and <stop>
@@ -238,7 +238,7 @@ void MusXMLOutput::WriteClef(LayerElement *element) {
     // go in the same <attributes>
     CreateAttributes();
     
-    MusClef *clef = dynamic_cast<MusClef*>(element);
+    Clef *clef = dynamic_cast<Clef*>(element);
     
     switch (clef->m_clefId) {
         case SOL1: sign = "G"; line = "1"; break;
@@ -278,7 +278,7 @@ void MusXMLOutput::WriteClef(LayerElement *element) {
 }
 
 void MusXMLOutput::WriteKey(LayerElement *element) {
-    MusKeySig* key = dynamic_cast<MusKeySig*>(element);
+    KeySignature* key = dynamic_cast<KeySignature*>(element);
     
     // Check for attrib element as above
     // or use existing one, all the attribute changes
@@ -454,7 +454,7 @@ void MusXMLOutput::WriteNoteOrRest(LayerElement *element) {
     std::string dur;
     std::string num_of_beams;
     
-    MusDurationInterface *di = dynamic_cast<MusDurationInterface*>(element);
+    DurationInterface *di = dynamic_cast<DurationInterface*>(element);
     
     // toplevel note element
     TiXmlElement *note = new TiXmlElement("note");

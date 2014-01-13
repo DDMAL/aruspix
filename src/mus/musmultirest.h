@@ -13,7 +13,7 @@
 #include "muslayerelement.h"
 
 //----------------------------------------------------------------------------
-// MusClef
+// Clef
 //----------------------------------------------------------------------------
 
 /** 
@@ -29,7 +29,7 @@ public:
     
     /**
      * Comparison operator. 
-     * Check if the LayerElement if a MusClef and compare attributes
+     * Check if the LayerElement if a Clef and compare attributes
      */
     virtual bool operator==(MusObject& other);
     

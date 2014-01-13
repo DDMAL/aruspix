@@ -13,29 +13,29 @@
 #include "muslayerelement.h"
 
 //----------------------------------------------------------------------------
-// MusBarline
+// Barline
 //----------------------------------------------------------------------------
 
 /** 
  * This class models the MEI <barline> element. 
  */
-class MusBarline: public LayerElement
+class Barline: public LayerElement
 {
 public:
     // constructors and destructors
-    MusBarline();
-    virtual ~MusBarline();
+    Barline();
+    virtual ~Barline();
     
     /**
      * Comparison operator. 
-     * Check if the LayerElement if a MusBarline and compare attributes
+     * Check if the LayerElement if a Barline and compare attributes
      */
     virtual bool operator==(MusObject& other);
     
-    virtual std::string MusClassName( ) { return "MusBarline"; };
+    virtual std::string MusClassName( ) { return "Barline"; };
     
     /**
-     * Use to set the alignment for the MusMeasure MusBarline members.
+     * Use to set the alignment for the MusMeasure Barline members.
      * This is as special case where we need to add to the measure aligner.
      */
     void SetAlignment( MusAlignment *alignment ) { m_alignment = alignment; };

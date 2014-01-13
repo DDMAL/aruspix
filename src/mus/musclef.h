@@ -13,26 +13,26 @@
 #include "muslayerelement.h"
 
 //----------------------------------------------------------------------------
-// MusClef
+// Clef
 //----------------------------------------------------------------------------
 
 /** 
  * This class models the MEI <clef> element. 
  */
-class MusClef: public LayerElement
+class Clef: public LayerElement
 {
 public:
     // constructors and destructors
-    MusClef();
-    virtual ~MusClef();
+    Clef();
+    virtual ~Clef();
     
     /**
      * Comparison operator. 
-     * Check if the LayerElement if a MusClef and compare attributes
+     * Check if the LayerElement if a Clef and compare attributes
      */
     virtual bool operator==(MusObject& other);
     
-    virtual std::string MusClassName( ) { return "MusClef"; };
+    virtual std::string MusClassName( ) { return "Clef"; };
     
     /**
      * Return the offset of the clef

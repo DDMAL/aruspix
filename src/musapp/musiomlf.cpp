@@ -774,7 +774,7 @@ bool MusMLFOutput::WriteSymbol( LayerElement *element )
 	}
 	else if (element->IsClef())
 	{
-        MusClef *clef = dynamic_cast<MusClef*>(element);
+        Clef *clef = dynamic_cast<Clef*>(element);
 		switch(clef->m_clefId)
 		{	case SOL2 : mlfsb->SetValue( TYPE_KEY, "S",  element->m_xAbs, 2 ); break;
 			case SOL1 : mlfsb->SetValue( TYPE_KEY, "S",  element->m_xAbs, 1 ); break;
@@ -1051,7 +1051,7 @@ LayerElement *MusMLFInput::ConvertSymbol( wxString line )
 		str = tkz.GetNextToken();
 		if ( str == "B" )
 		{
-			MusBarline *barline = new MusBarline();
+			Barline *barline = new Barline();
 			return barline;
 		}
 	}
@@ -1060,7 +1060,7 @@ LayerElement *MusMLFInput::ConvertSymbol( wxString line )
 		if ( ! tkz.HasMoreTokens() )
 			return NULL;
 		str = tkz.GetNextToken(); 
-		MusClef *clef = new MusClef();
+		Clef *clef = new Clef();
 		if ( str == "S2" )
 			clef->m_clefId = SOL2;
 		else if ( str == "S1" )

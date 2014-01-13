@@ -15,8 +15,8 @@
 #include "musdef.h"
 #include "musscoredef.h"
 
-class MusBeam;
-class MusBarline;
+class Beam;
+class Barline;
 class MusDoc;
 class MusLayer;
 class LayerElement;
@@ -111,13 +111,13 @@ public:
     /* musrc_page.cpp */
 	void DrawPage( MusDC *dc, MusPage *page, bool background = true );
     void DrawSystem( MusDC *dc, MusSystem *system );
-	void DrawScoreDef( MusDC *dc, MusScoreDef *scoreDef, MusMeasure *measure, int x, MusBarline *barline = NULL );
+	void DrawScoreDef( MusDC *dc, MusScoreDef *scoreDef, MusMeasure *measure, int x, Barline *barline = NULL );
 	void DrawStaffGrp( MusDC *dc, MusMeasure *measure, MusStaffGrp *staffGrp, int x );
 	void DrawBracket ( MusDC *dc, int x, int y1, int y2, int staffSize);
 	void DrawBrace ( MusDC *dc, int x, int y1, int y2, int staffSize);
-    void DrawBarlines( MusDC *dc, MusMeasure *measure, MusStaffGrp *staffGrp, int x, MusBarline *barline );
-    void DrawBarline( MusDC *dc, int x, int y_top, int y_bottom, MusBarline *barline );
-	void DrawBarlineDots ( MusDC *dc, int x, MusStaff *staff, MusBarline *barline );
+    void DrawBarlines( MusDC *dc, MusMeasure *measure, MusStaffGrp *staffGrp, int x, Barline *barline );
+    void DrawBarline( MusDC *dc, int x, int y_top, int y_bottom, Barline *barline );
+	void DrawBarlineDots ( MusDC *dc, int x, MusStaff *staff, Barline *barline );
 	void DrawPartialBarline ( MusDC *dc, MusSystem *system, int x, MusStaff *pportee);
     void DrawMeasure( MusDC *dc, MusMeasure *measure, MusSystem *system );
     void DrawStaff( MusDC *dc, MusStaff *staff, MusMeasure *measure, MusSystem *system );
@@ -171,7 +171,7 @@ public:
     void DrawAcciaccaturaSlash(MusDC *dc, LayerElement *element);
     void DrawKeySig( MusDC *dc, LayerElement *element, MusLayer *layer, MusStaff *staff );
     /* musrc_beam.cpp */
-    void DrawBeam(  MusDC *dc, MusLayer *layer, MusBeam *beam, MusStaff *staff );
+    void DrawBeam(  MusDC *dc, MusLayer *layer, Beam *beam, MusStaff *staff );
     
 private:
     

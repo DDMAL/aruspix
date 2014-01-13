@@ -684,14 +684,14 @@ int MusObject::SetPageScoreDef( ArrayPtrVoid params )
     }
     
     // starting a new clef
-    MusClef *current_clef = dynamic_cast<MusClef*>(this);
+    Clef *current_clef = dynamic_cast<Clef*>(this);
     if ( current_clef  ) {
         currentScoreDef->ReplaceClef( current_clef );
         return FUNCTOR_CONTINUE;
     }
     
     // starting a new keysig
-    MusKeySig *current_keysig = dynamic_cast<MusKeySig*>(this);
+    KeySignature *current_keysig = dynamic_cast<KeySignature*>(this);
     if ( current_keysig  ) {
         currentScoreDef->ReplaceKeySig( current_keysig );
         return FUNCTOR_CONTINUE;
@@ -756,7 +756,7 @@ int MusObject::SetBoundingBoxXShift( ArrayPtrVoid params )
         return FUNCTOR_CONTINUE;
     }
     
-    if ( dynamic_cast<MusBeam*>(current) ) {
+    if ( dynamic_cast<Beam*>(current) ) {
         return FUNCTOR_CONTINUE;
     }
     

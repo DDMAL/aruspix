@@ -19,7 +19,7 @@
 
 class MusStaff;
 class MusLayer;
-class MusBeam;
+class Beam;
 
 //----------------------------------------------------------------------------
 // MusWWGElement
@@ -205,7 +205,7 @@ private:
     char m_indentDroite;
     
     //
-    MusBeam *m_currentBeam;
+    Beam *m_currentBeam;
     bool m_isLastNoteInBeam;
     
 protected:

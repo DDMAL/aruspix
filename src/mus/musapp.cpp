@@ -13,20 +13,20 @@
 #include "musio.h"
 
 //----------------------------------------------------------------------------
-// MusLayerApp
+// LayerApp
 //----------------------------------------------------------------------------
 
-MusLayerApp::MusLayerApp():
+LayerApp::LayerApp():
     LayerElement()
 {
 }
 
-MusLayerApp::~MusLayerApp()
+LayerApp::~LayerApp()
 {
     
 }
 
-void MusLayerApp::AddLayerRdg( MusLayerRdg *layerRdg )
+void LayerApp::AddLayerRdg( LayerRdg *layerRdg )
 {
     //assert(this->m_layer->m_staff); // Layer staff cannot be NULL when adding and <rdg>" 
     // The the to the parent staff will be NULL!
@@ -37,7 +37,7 @@ void MusLayerApp::AddLayerRdg( MusLayerRdg *layerRdg )
     Modify();
 }
 
-int MusLayerApp::Save( ArrayPtrVoid params )
+int LayerApp::Save( ArrayPtrVoid params )
 {
     // param 0: output stream
     MusFileOutputStream *output = (MusFileOutputStream*)params[0];         
@@ -48,23 +48,23 @@ int MusLayerApp::Save( ArrayPtrVoid params )
 }
 
 //----------------------------------------------------------------------------
-// MusLayerRdg
+// LayerRdg
 //----------------------------------------------------------------------------
 
-MusLayerRdg::MusLayerRdg( ):
+LayerRdg::LayerRdg( ):
     MusObject()
 {
 
 }
 
 
-MusLayerRdg::~MusLayerRdg()
+LayerRdg::~LayerRdg()
 {
     
 }
 
 
-void MusLayerRdg::AddElement( LayerElement *element, int idx )
+void LayerRdg::AddElement( LayerElement *element, int idx )
 {
 	element->SetParent( this );
     if ( idx == -1 ) {
@@ -76,7 +76,7 @@ void MusLayerRdg::AddElement( LayerElement *element, int idx )
 }
 
 
-int MusLayerRdg::Save( ArrayPtrVoid params )
+int LayerRdg::Save( ArrayPtrVoid params )
 {
     // param 0: output stream
     MusFileOutputStream *output = (MusFileOutputStream*)params[0];       

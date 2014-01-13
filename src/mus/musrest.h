@@ -20,7 +20,7 @@
 /** 
  * This class models the MEI <rest> element. 
  */
-class Rest: public LayerElement, public MusDurationInterface, public PositionInterface
+class Rest: public LayerElement, public DurationInterface, public PositionInterface
 {
 public:
     // constructors and destructors

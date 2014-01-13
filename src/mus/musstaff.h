@@ -14,7 +14,7 @@
 #define STAFF_OFFSET 190
 #define MAXCLE 100	// maximum number of clef on one staff
 
-class MusClef;
+class Clef;
 class MusDC;
 class MusLayer;
 class MusStaffAlignment;

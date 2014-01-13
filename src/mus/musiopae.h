@@ -14,8 +14,8 @@
 
 #include "musio.h"
 
-class MusBeam;
-class MusClef;
+class Beam;
+class Clef;
 class MusLayer;
 class MusMeasure;
 class Mensur;
@@ -117,7 +117,7 @@ public:
     unsigned int dots;
     bool rest;
     
-    MusClef *clef;
+    Clef *clef;
 };
 
 
@@ -174,7 +174,7 @@ public:
         wholerest = 0; 
         abbreviation_offset = -1;
     };
-    MusClef *clef;
+    Clef *clef;
     Mensur *time;
     std::vector<NoteObject> notes;
 
@@ -223,7 +223,7 @@ private:
      // parsing functions
      int       getKeyInfo          (const char* incipit, MeasureObject *measure, int index = 0);
      int       getTimeInfo         (const char* incipit, MeasureObject *measure, int index = 0);
-     int       getClefInfo         (const char* incipit, MusClef *mus_clef, int index = 0 );
+     int       getClefInfo         (const char* incipit, Clef *mus_clef, int index = 0 );
      int       getBarline          (const char* incipit, std::string *output, int index = 0 );
      int       getAccidental       (const char* incipit, unsigned char *accident, int index = 0);
      int       getOctave           (const char* incipit, unsigned char *octave, int index = 0 );

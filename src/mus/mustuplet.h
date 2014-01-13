@@ -14,7 +14,7 @@
 #include "musobject.h"
 
 //----------------------------------------------------------------------------
-// MusBeam
+// Beam
 //----------------------------------------------------------------------------
 
 class Tuplet: public LayerElement, public MusObjectListInterface
@@ -37,7 +37,7 @@ public:
 protected:
     /**
      * Filter the list for a specific class.
-     * For example, keep only notes in MusBeam
+     * For example, keep only notes in Beam
      */
     virtual void FilterList();
     

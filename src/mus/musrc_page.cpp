@@ -112,7 +112,7 @@ void MusRC::DrawSystem( MusDC *dc, MusSystem *system )
     // First get the first measure of the system
     measure  = dynamic_cast<MusMeasure*>(system->GetFirstChild( &typeid(MusMeasure) ) );
     if ( measure ) {
-        // NULL for the MusBarline parameters indicates that we are drawing the scoreDef
+        // NULL for the Barline parameters indicates that we are drawing the scoreDef
         DrawScoreDef( dc, &m_drawingScoreDef, measure, system->m_xDrawing, NULL );
     }
     
@@ -120,7 +120,7 @@ void MusRC::DrawSystem( MusDC *dc, MusSystem *system )
 
 }
 
-void MusRC::DrawScoreDef( MusDC *dc, MusScoreDef *scoreDef, MusMeasure *measure, int x, MusBarline *barline  )
+void MusRC::DrawScoreDef( MusDC *dc, MusScoreDef *scoreDef, MusMeasure *measure, int x, Barline *barline  )
 {
     assert( scoreDef ); // other asserted before
 
@@ -324,7 +324,7 @@ void MusRC::DrawBrace ( MusDC *dc, int x, int y1, int y2, int staffSize)
 }
 
 
-void MusRC::DrawBarlines( MusDC *dc, MusMeasure *measure, MusStaffGrp *staffGrp, int x, MusBarline *barline )
+void MusRC::DrawBarlines( MusDC *dc, MusMeasure *measure, MusStaffGrp *staffGrp, int x, Barline *barline )
 {
     assert( measure );
     assert( staffGrp );
@@ -406,7 +406,7 @@ void MusRC::DrawBarlines( MusDC *dc, MusMeasure *measure, MusStaffGrp *staffGrp,
     }
 }
 
-void MusRC::DrawBarline( MusDC *dc, int x, int y_top, int y_bottom, MusBarline *barline )
+void MusRC::DrawBarline( MusDC *dc, int x, int y_top, int y_bottom, Barline *barline )
 {
     assert( dc );
 
@@ -448,7 +448,7 @@ void MusRC::DrawBarline( MusDC *dc, int x, int y_top, int y_bottom, MusBarline *
 }
 
  
-void MusRC::DrawBarlineDots ( MusDC *dc, int x, MusStaff *staff, MusBarline *barline )
+void MusRC::DrawBarlineDots ( MusDC *dc, int x, MusStaff *staff, Barline *barline )
 {
 	assert( dc ); // DC cannot be NULL
     
@@ -720,7 +720,7 @@ int MusRC::CalculatePitchCode ( MusLayer *layer, int y_n, int x_pos, int *octave
 	if ( (previous = layer->GetPrevious( pelement ) ) )
 		pelement = previous;
 
-	MusClef *clef = layer->GetClef (pelement);
+	Clef *clef = layer->GetClef (pelement);
     if (clef) {
         clefId = clef->m_clefId;
         yb += (clef->GetClefOffset()) * m_doc->m_rendHalfInterl[staffSize];	// UT1 reel
@@ -884,7 +884,7 @@ void MusRC::DrawLayer( MusDC *dc, MusLayer *layer, MusStaff *staff, MusMeasure *
 	}
     
     // first draw the beams
-    DrawLayerList(dc, layer, staff, measure, &typeid(MusBeam) );
+    DrawLayerList(dc, layer, staff, measure, &typeid(Beam) );
     // then tuplets
     DrawLayerList(dc, layer, staff, measure, &typeid(Tuplet) );
     // then ties
@@ -907,8 +907,8 @@ void MusRC::DrawLayerList( MusDC *dc, MusLayer *layer, MusStaff *staff, MusMeasu
         element = dynamic_cast<LayerElement*>(*iter);
         if (!element) continue; 
         
-        if ( (typeid(*element) == *elementType) &&  (*elementType == typeid(MusBeam) ) ) {
-            MusBeam *beam = dynamic_cast<MusBeam*>(element);
+        if ( (typeid(*element) == *elementType) &&  (*elementType == typeid(Beam) ) ) {
+            Beam *beam = dynamic_cast<Beam*>(element);
             DrawBeam( dc, layer, beam, staff );
         }
         else if ( (typeid(*element) == *elementType) &&  (*elementType == typeid(Tuplet) ) ) {

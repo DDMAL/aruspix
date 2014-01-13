@@ -69,8 +69,8 @@ public:
      * not for creating other measure objects.
      */
     ///@{
-    MusBarline *GetLeftBarline() { return &m_leftBarline; };
-    MusBarline *GetRightBarline() { return &m_rightBarline; };
+    Barline *GetLeftBarline() { return &m_leftBarline; };
+    Barline *GetRightBarline() { return &m_rightBarline; };
     ///@}
        
     // functors
@@ -148,8 +148,8 @@ private:
      * @name The measure barlines (left and right) used when drawing
      */
     ///@{
-    MusBarline m_leftBarline;
-    MusBarline m_rightBarline;
+    Barline m_leftBarline;
+    Barline m_rightBarline;
     ///@}
 };
 

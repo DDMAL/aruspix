@@ -72,7 +72,7 @@ void MusDarmsInput::UnrollKeysig(int quantity, char alter) {
         accid = ACCID_SHARP;
     }
     
-    MusKeySig *k = new MusKeySig(quantity, accid);
+    KeySignature *k = new KeySignature(quantity, accid);
     m_layer->AddElement(k);
     return;
     //////
@@ -210,7 +210,7 @@ int MusDarmsInput::do_Clef(int pos, const char* data) {
     
     pos = pos + 2; // skip the '!' 3!F
     
-    MusClef *mclef = new MusClef();
+    Clef *mclef = new Clef();
     
     if (data[pos] == 'C') {
         switch (position) {

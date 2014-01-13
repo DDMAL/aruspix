@@ -96,7 +96,7 @@ public:
      * This is used when inserting a note by passing a y position because we need
      * to know the clef in order to get the pitch.
      */
-	MusClef *GetClef ( LayerElement *test );
+	Clef *GetClef ( LayerElement *test );
     
     /** 
      * Return the clef offset for the position x.
@@ -185,7 +185,7 @@ private:
      * The current clef.
      * This is used for getting the clef when interacting, for example by clicking in order to get the pitch from a position
      */
-    MusClef m_currentClef;
+    Clef m_currentClef;
     
 };
 

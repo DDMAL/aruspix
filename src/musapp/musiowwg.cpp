@@ -465,11 +465,11 @@ bool MusWWGOutput::WriteLayer( const MusLayer *layer, int staffNo )
         LayerElement *element = (LayerElement*)layer->m_children[k];
         // position x for all elmements
         xrel = element->m_xAbs;
-        if (dynamic_cast<MusBarline*>(element)) {
+        if (dynamic_cast<Barline*>(element)) {
             TYPE = SYMB;
             WriteSymbol();
         }
-        if (dynamic_cast<MusClef*>(element)) {
+        if (dynamic_cast<Clef*>(element)) {
             TYPE = SYMB;
             WriteSymbol();
         }
@@ -1041,7 +1041,7 @@ bool MusWWGInput::ReadNote( MusLayer *layer )
         note->m_pname = code;
         if ( drel ) {
             wxASSERT( !m_currentBeam );
-            m_currentBeam = new MusBeam();
+            m_currentBeam = new Beam();
             m_isLastNoteInBeam = false;
         }
         if ( rel ) {
@@ -1141,7 +1141,7 @@ bool MusWWGInput::ReadSymbol( MusLayer *layer )
     
     LayerElement *layer_element = NULL;        
     if ( flag == CLE ) {
-        MusClef *clef = new MusClef();
+        Clef *clef = new Clef();
         clef->m_clefId = (ClefId)code;
         layer_element = clef;
 

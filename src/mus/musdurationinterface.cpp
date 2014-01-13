@@ -26,10 +26,10 @@
 
 
 //----------------------------------------------------------------------------
-// MusDurationInterface
+// DurationInterface
 //----------------------------------------------------------------------------
 
-MusDurationInterface::MusDurationInterface()
+DurationInterface::DurationInterface()
 {
     m_breakSec = 0;
     m_dots = 0;
@@ -41,17 +41,17 @@ MusDurationInterface::MusDurationInterface()
 }
 
 
-MusDurationInterface::~MusDurationInterface()
+DurationInterface::~DurationInterface()
 {
 }
 
-void MusDurationInterface::SetDuration( int value )
+void DurationInterface::SetDuration( int value )
 {
     this->m_dur = value;
 }
 
 
-double MusDurationInterface::GetAlignementDuration( int num, int numbase )
+double DurationInterface::GetAlignementDuration( int num, int numbase )
 {
     double duration = DUR_MAX / pow (2.0, (double)(m_dur - 2.0)) * numbase / num;
     if ( m_dots > 0 ) {
@@ -61,18 +61,18 @@ double MusDurationInterface::GetAlignementDuration( int num, int numbase )
     return duration;
 }
 
-bool MusDurationInterface::IsInBeam( MusObject *noteOrRest )
+bool DurationInterface::IsInBeam( MusObject *noteOrRest )
 {
-    MusBeam *beam = dynamic_cast<MusBeam*>( noteOrRest->GetFirstParent( &typeid(MusBeam), MAX_BEAM_DEPTH ) );
+    Beam *beam = dynamic_cast<Beam*>( noteOrRest->GetFirstParent( &typeid(Beam), MAX_BEAM_DEPTH ) );
     if ( !beam ) {
         return false;
     }
     return true;
 }
 
-bool MusDurationInterface::IsFirstInBeam( MusObject *noteOrRest )
+bool DurationInterface::IsFirstInBeam( MusObject *noteOrRest )
 {
-    MusBeam *beam = dynamic_cast<MusBeam*>( noteOrRest->GetFirstParent( &typeid(MusBeam), MAX_BEAM_DEPTH ) );
+    Beam *beam = dynamic_cast<Beam*>( noteOrRest->GetFirstParent( &typeid(Beam), MAX_BEAM_DEPTH ) );
     if ( !beam ) {
         return false;
     }
@@ -84,9 +84,9 @@ bool MusDurationInterface::IsFirstInBeam( MusObject *noteOrRest )
     return false;    
 }
 
-bool MusDurationInterface::IsLastInBeam( MusObject *noteOrRest )
+bool DurationInterface::IsLastInBeam( MusObject *noteOrRest )
 {
-    MusBeam *beam = dynamic_cast<MusBeam*>( noteOrRest->GetFirstParent( &typeid(MusBeam), MAX_BEAM_DEPTH ) );
+    Beam *beam = dynamic_cast<Beam*>( noteOrRest->GetFirstParent( &typeid(Beam), MAX_BEAM_DEPTH ) );
     if ( !beam ) {
         return false;
     }
@@ -100,7 +100,7 @@ bool MusDurationInterface::IsLastInBeam( MusObject *noteOrRest )
 }
 
 
-bool MusDurationInterface::HasIdenticalDurationInterface( MusDurationInterface *otherDurationInterface )
+bool DurationInterface::HasIdenticalDurationInterface( DurationInterface *otherDurationInterface )
 {
     if ( !otherDurationInterface ) {
         return false;

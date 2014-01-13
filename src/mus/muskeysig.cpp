@@ -10,13 +10,13 @@
 #include "muskeysig.h"
 
 //----------------------------------------------------------------------------
-// MusKeySig
+// KeySignature
 //----------------------------------------------------------------------------
 
-unsigned char MusKeySig::flats[] = {PITCH_B, PITCH_E, PITCH_A, PITCH_D, PITCH_G, PITCH_C, PITCH_F};
-unsigned char MusKeySig::sharps[] = {PITCH_F, PITCH_C, PITCH_G, PITCH_D, PITCH_A, PITCH_E, PITCH_B};
+unsigned char KeySignature::flats[] = {PITCH_B, PITCH_E, PITCH_A, PITCH_D, PITCH_G, PITCH_C, PITCH_F};
+unsigned char KeySignature::sharps[] = {PITCH_F, PITCH_C, PITCH_G, PITCH_D, PITCH_A, PITCH_E, PITCH_B};
 
-int MusKeySig::octave_map[2][9][7] = {
+int KeySignature::octave_map[2][9][7] = {
     {// flats
        //C,  D,  E,  F,  G,  A,  B 
         {01, 01, 01, 00, 00, 00, 00}, // treble
@@ -43,24 +43,24 @@ int MusKeySig::octave_map[2][9][7] = {
     },
 };
 
-MusKeySig::MusKeySig():
+KeySignature::KeySignature():
 LayerElement(), PositionInterface()
 {
-    MusKeySig(0, ACCID_NATURAL);
+    KeySignature(0, ACCID_NATURAL);
 }
 
-MusKeySig::MusKeySig(int num_alter, char alter):
+KeySignature::KeySignature(int num_alter, char alter):
     LayerElement("ksig-"), PositionInterface()
 {
     m_num_alter = num_alter;
     m_alteration = alter;
 }
 
-MusKeySig::~MusKeySig()
+KeySignature::~KeySignature()
 {
 }
 
-unsigned char MusKeySig::GetAlterationAt(int pos) {
+unsigned char KeySignature::GetAlterationAt(int pos) {
     unsigned char *alteration_set;
     
     if (pos > 6)
@@ -74,7 +74,7 @@ unsigned char MusKeySig::GetAlterationAt(int pos) {
     return alteration_set[pos];
 }
 
-int MusKeySig::GetOctave(unsigned char pitch, char clef) {
+int KeySignature::GetOctave(unsigned char pitch, char clef) {
     int alter_set = 0; // flats
     int key_set = 0;
     

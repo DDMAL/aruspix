@@ -18,7 +18,7 @@
 //----------------------------------------------------------------------------
 
 Note::Note():
-	LayerElement("note-"), MusDurationInterface(), PitchInterface()
+	LayerElement("note-"), DurationInterface(), PitchInterface()
 {
     m_artic = 0;
     m_chord = 0;
@@ -95,7 +95,7 @@ bool Note::operator==( MusObject& other )
 
 void Note::SetValue( int value, int flag )
 {
-    MusDurationInterface::SetDuration( value ); 
+    DurationInterface::SetDuration( value ); 
     
 	// remove ligature flag for  inadequate values	
 	if ( ( value < DUR_BR ) || ( value > DUR_1 ) ) {

@@ -13,17 +13,17 @@
 #include "musnote.h"
 
 //----------------------------------------------------------------------------
-// MusBeam
+// Beam
 //----------------------------------------------------------------------------
 
-class MusBeam: public LayerElement, public MusObjectListInterface
+class Beam: public LayerElement, public MusObjectListInterface
 {
 public:
     // constructors and destructors
-    MusBeam();
-    virtual ~MusBeam();
+    Beam();
+    virtual ~Beam();
     
-    virtual std::string MusClassName( ) { return "MusBeam"; };
+    virtual std::string MusClassName( ) { return "Beam"; };
     
     int GetNoteCount() const { return (int)m_children.size(); };
     
@@ -39,7 +39,7 @@ public:
 protected:
     /**
      * Filter the list for a specific class.
-     * For example, keep only notes in MusBeam
+     * For example, keep only notes in Beam
      */
     virtual void FilterList();
     

@@ -535,7 +535,7 @@ AxOptMusWindow::AxOptMusWindow( wxWindow *parent, wxWindowID id,
     staff->m_yAbs = 120;
     MusLayer *layer = new MusLayer( 1 );
     
-    MusClef *clef = new MusClef();
+    Clef *clef = new Clef();
     clef->m_clefId = UT3;
     clef->m_xAbs = 80;
     

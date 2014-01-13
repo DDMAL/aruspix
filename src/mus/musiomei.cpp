@@ -292,11 +292,11 @@ bool MusMeiOutput::WriteLayerElement( LayerElement *element )
     // For example, if we are in a beam, we must attach it to the beam xml element (m_beam)
     // By default, we attach it to m_layer
     TiXmlElement *currentParent = m_layer;
-    if ( dynamic_cast<MusLayerRdg*>(element->m_parent) ) {
+    if ( dynamic_cast<LayerRdg*>(element->m_parent) ) {
         assert( m_rdgLayer );
         currentParent = m_rdgLayer;
     }
-    else if ( dynamic_cast<MusBeam*>(element->m_parent) ) {
+    else if ( dynamic_cast<Beam*>(element->m_parent) ) {
         assert( m_beam );
         currentParent = m_beam;
     }
@@ -307,18 +307,18 @@ bool MusMeiOutput::WriteLayerElement( LayerElement *element )
     // we should do the same for any LayerElement container (slur, tuplet, etc. )
     
     TiXmlElement *xmlElement = NULL;
-    if (dynamic_cast<MusBarline*>(element)) {
+    if (dynamic_cast<Barline*>(element)) {
         xmlElement = new TiXmlElement( "barline" );
-        WriteMeiBarline( xmlElement, dynamic_cast<MusBarline*>(element) );
+        WriteMeiBarline( xmlElement, dynamic_cast<Barline*>(element) );
     }
-    else if (dynamic_cast<MusBeam*>(element)) {
+    else if (dynamic_cast<Beam*>(element)) {
         xmlElement = new TiXmlElement("beam");
         m_beam = xmlElement;
-        WriteMeiBeam( xmlElement, dynamic_cast<MusBeam*>(element) );
+        WriteMeiBeam( xmlElement, dynamic_cast<Beam*>(element) );
     }
-    else if (dynamic_cast<MusClef*>(element)) {
+    else if (dynamic_cast<Clef*>(element)) {
         xmlElement = new TiXmlElement("clef");
-        WriteMeiClef( xmlElement, dynamic_cast<MusClef*>(element) );
+        WriteMeiClef( xmlElement, dynamic_cast<Clef*>(element) );
     }
     else if (dynamic_cast<Mensur*>(element)) {
         xmlElement = new TiXmlElement("mensur");
@@ -361,19 +361,19 @@ bool MusMeiOutput::WriteLayerElement( LayerElement *element )
     }    
 }
 
-void MusMeiOutput::WriteMeiBarline( TiXmlElement *meiBarline, MusBarline *barline )
+void MusMeiOutput::WriteMeiBarline( TiXmlElement *meiBarline, Barline *barline )
 {
     return;
 }
 
 
-void MusMeiOutput::WriteMeiBeam( TiXmlElement *meiBeam, MusBeam *beam )
+void MusMeiOutput::WriteMeiBeam( TiXmlElement *meiBeam, Beam *beam )
 {
     return;
 }
 
 
-void MusMeiOutput::WriteMeiClef( TiXmlElement *meiClef, MusClef *clef )
+void MusMeiOutput::WriteMeiClef( TiXmlElement *meiClef, Clef *clef )
 {
     meiClef->SetAttribute( "line", ClefLineToStr( clef->m_clefId ).c_str() );
     meiClef->SetAttribute( "shape", ClefShapeToStr( clef->m_clefId ).c_str() );
@@ -490,7 +490,7 @@ void MusMeiOutput::WriteMeiTuplet( TiXmlElement *meiTuplet, Tuplet *tuplet )
     return;
 }
 
-bool MusMeiOutput::WriteLayerApp( MusLayerApp *app )
+bool MusMeiOutput::WriteLayerApp( LayerApp *app )
 {    
     assert( m_layer );
     m_app = new TiXmlElement("app");
@@ -498,7 +498,7 @@ bool MusMeiOutput::WriteLayerApp( MusLayerApp *app )
     return true;
 }
 
-bool MusMeiOutput::WriteLayerRdg( MusLayerRdg *rdg )
+bool MusMeiOutput::WriteLayerRdg( LayerRdg *rdg )
 {   
     assert( m_app );
     m_rdgLayer = new TiXmlElement("rdg");
@@ -965,13 +965,13 @@ bool MusMeiInput::ReadMeiScoreDef( TiXmlElement *scoreDef )
     assert( m_staffGrps.empty() );
     
     if ( scoreDef->Attribute( "key.sig" ) ) {
-        MusKeySig keysig(
+        KeySignature keysig(
                 StrToKeySigNum( scoreDef->Attribute( "key.sig" ) ),
                 StrToKeySigType( scoreDef->Attribute( "key.sig" ) ) );
         m_scoreDef->ReplaceKeySig( &keysig );
     }
     if ( scoreDef->Attribute( "clef.line" ) && scoreDef->Attribute( "clef.shape" ) ) {
-        MusClef clef;
+        Clef clef;
         clef.m_clefId = StrToClef( scoreDef->Attribute( "clef.shape" ) , scoreDef->Attribute( "clef.line" ) );
         m_scoreDef->ReplaceClef( &clef );
         // add other attributes for SOLva
@@ -1049,13 +1049,13 @@ bool MusMeiInput::ReadMeiStaffDef( TiXmlElement *staffDef )
         Mus::LogWarning("No @n on staffDef");
     }
     if ( staffDef->Attribute( "key.sig" ) ) {
-        MusKeySig keysig(
+        KeySignature keysig(
                          StrToKeySigNum( staffDef->Attribute( "key.sig" ) ),
                          StrToKeySigType( staffDef->Attribute( "key.sig" ) ) );
         m_staffDef->ReplaceKeySig( &keysig );
     }
     if ( staffDef->Attribute( "clef.line" ) && staffDef->Attribute( "clef.shape" ) ) {
-        MusClef clef;
+        Clef clef;
         clef.m_clefId = StrToClef( staffDef->Attribute( "clef.shape" ) , staffDef->Attribute( "clef.line" ) );
         // this is obviously a short cut - assuming @clef.dis being SOLva
         if ( staffDef->Attribute( "clef.dis" ) ) {
@@ -1210,7 +1210,7 @@ bool MusMeiInput::ReadMeiLayerElement( TiXmlElement *xmlElement )
 
 LayerElement *MusMeiInput::ReadMeiBarline( TiXmlElement *barline )
 {
-    MusBarline *musBarline = new MusBarline();
+    Barline *musBarline = new Barline();
     
     return musBarline;    
 }
@@ -1220,7 +1220,7 @@ LayerElement *MusMeiInput::ReadMeiBeam( TiXmlElement *beam )
     assert ( !m_beam );
     
     // m_beam will be used for adding elements to the beam
-    m_beam = new MusBeam();
+    m_beam = new Beam();
     
     MusObject *previousLayer = m_currentLayer;
     m_currentLayer = m_beam;
@@ -1242,7 +1242,7 @@ LayerElement *MusMeiInput::ReadMeiBeam( TiXmlElement *beam )
     } 
     else {
         // set the member to NULL but keep a pointer to be returned        
-        MusBeam *musBeam = m_beam;
+        Beam *musBeam = m_beam;
         m_beam = NULL;
         return musBeam;
     }
@@ -1250,7 +1250,7 @@ LayerElement *MusMeiInput::ReadMeiBeam( TiXmlElement *beam )
 
 LayerElement *MusMeiInput::ReadMeiClef( TiXmlElement *clef )
 { 
-    MusClef *musClef = new MusClef(); 
+    Clef *musClef = new Clef(); 
     if ( clef->Attribute( "shape" ) && clef->Attribute( "line" ) ) {
         musClef->m_clefId = StrToClef( clef->Attribute( "shape" ) , clef->Attribute( "line" ) );
     }
@@ -1475,7 +1475,7 @@ LayerElement *MusMeiInput::ReadMeiDot( TiXmlElement *dot )
 
 LayerElement *MusMeiInput::ReadMeiApp( TiXmlElement *app )
 {
-    m_layerApp = new MusLayerApp( );
+    m_layerApp = new LayerApp( );
    
     TiXmlElement *current = NULL;
     for( current = app->FirstChildElement( "rdg" ); current; current = current->NextSiblingElement( "rdg" ) ) {
@@ -1483,7 +1483,7 @@ LayerElement *MusMeiInput::ReadMeiApp( TiXmlElement *app )
 	}
 	
     // set the member to NULL but keep a pointer to be returned
-    MusLayerApp *layerApp = m_layerApp;
+    LayerApp *layerApp = m_layerApp;
     m_layerApp = NULL;
     
     return layerApp;
@@ -1494,7 +1494,7 @@ bool MusMeiInput::ReadMeiRdg( TiXmlElement *rdg )
     assert ( !m_layerRdg );
     assert( m_layerApp );
     
-    m_layerRdg = new MusLayerRdg( );
+    m_layerRdg = new LayerRdg( );
     
     if ( rdg->Attribute( "source" ) ) {
         m_layerRdg->m_source = rdg->Attribute( "source" );
@@ -1513,7 +1513,7 @@ bool MusMeiInput::ReadMeiRdg( TiXmlElement *rdg )
     m_currentLayer = previousLayer;
 
     // set the member to NULL but keep a pointer to be returned
-    MusLayerRdg *layerRdg = m_layerRdg;
+    LayerRdg *layerRdg = m_layerRdg;
     m_layerRdg = NULL;
     
     return layerRdg;
@@ -1536,11 +1536,11 @@ void MusMeiInput::AddLayerElement( LayerElement *element )
     if ( dynamic_cast<MusLayer*>( m_currentLayer ) ) {
         ((MusLayer*)m_currentLayer)->AddElement( element );
     }
-    else if ( dynamic_cast<MusLayerRdg*>( m_currentLayer ) ) {
-        ((MusLayerRdg*)m_currentLayer)->AddElement( element );
+    else if ( dynamic_cast<LayerRdg*>( m_currentLayer ) ) {
+        ((LayerRdg*)m_currentLayer)->AddElement( element );
     }
-    else if ( dynamic_cast<MusBeam*>( m_currentLayer ) ) {
-        ((MusBeam*)m_currentLayer)->AddElement( element );
+    else if ( dynamic_cast<Beam*>( m_currentLayer ) ) {
+        ((Beam*)m_currentLayer)->AddElement( element );
     }
     else if ( dynamic_cast<Tuplet*>( m_currentLayer ) ) {
         ((Tuplet*)m_currentLayer)->AddElement( element );

@@ -85,9 +85,9 @@ LayerElement *LayerElement::GetChildCopy( bool newUuid )
     LayerElement *element = NULL;
 
     if ( this->IsBarline() )
-        element = new MusBarline( *(MusBarline*)this );
+        element = new Barline( *(Barline*)this );
     else if (this->IsClef() )
-        element = new MusClef( *(MusClef*)this );
+        element = new Clef( *(Clef*)this );
     else if (this->IsMensur() )
         element = new Mensur( *(Mensur*)this );
     else if (this->IsNote() )
@@ -157,7 +157,7 @@ bool LayerElement::GetPitchOrPosition(int *pname, int *oct)
 void LayerElement::SetValue( int value, int flag )
 {
     if ( this->HasDurationInterface() ){
-        MusDurationInterface *duration = dynamic_cast<MusDurationInterface*>(this);
+        DurationInterface *duration = dynamic_cast<DurationInterface*>(this);
         duration->SetDuration( value );
     }
 }
@@ -180,23 +180,23 @@ void LayerElement::Init()
 
 bool LayerElement::IsBarline() 
 {  
-    return (dynamic_cast<MusBarline*>(this));
+    return (dynamic_cast<Barline*>(this));
 }
 
 bool LayerElement::IsBeam() 
 {  
-    return (dynamic_cast<MusBeam*>(this));
+    return (dynamic_cast<Beam*>(this));
 }
 
 bool LayerElement::IsClef() 
 {  
-    return (dynamic_cast<MusClef*>(this));
+    return (dynamic_cast<Clef*>(this));
 }
 
 
 bool LayerElement::HasDurationInterface() 
 {  
-    return (dynamic_cast<MusDurationInterface*>(this));
+    return (dynamic_cast<DurationInterface*>(this));
 }
 
 bool LayerElement::IsSymbol( SymbolType type ) 
@@ -213,7 +213,7 @@ bool LayerElement::IsSymbol( )
 
 bool LayerElement::IsKeySig()
 {
-    return (dynamic_cast<MusKeySig*>(this));
+    return (dynamic_cast<KeySignature*>(this));
 }
 
 bool LayerElement::IsMultiRest() 
@@ -295,7 +295,7 @@ double LayerElement::GetAlignementDuration()
             num = tuplet->m_num;
             numbase = tuplet->m_numbase;
         }
-        MusDurationInterface *duration = dynamic_cast<MusDurationInterface*>(this);
+        DurationInterface *duration = dynamic_cast<DurationInterface*>(this);
         return duration->GetAlignementDuration( num, numbase );
     }
     else {

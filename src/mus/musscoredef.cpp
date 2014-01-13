@@ -74,23 +74,23 @@ MusScoreOrStaffDefAttrInterface& MusScoreOrStaffDefAttrInterface::operator=( con
 	return *this;
 }
 
-void MusScoreOrStaffDefAttrInterface::ReplaceClef( MusClef *newClef )
+void MusScoreOrStaffDefAttrInterface::ReplaceClef( Clef *newClef )
 {
     if ( newClef ) {
         if (m_clef) {
             delete m_clef;
         }
-        m_clef = new MusClef( *newClef );
+        m_clef = new Clef( *newClef );
     }
 }
 
-void MusScoreOrStaffDefAttrInterface::ReplaceKeySig( MusKeySig *newKeySig )
+void MusScoreOrStaffDefAttrInterface::ReplaceKeySig( KeySignature *newKeySig )
 {
     if ( newKeySig ) {
         if (m_keySig) {
             delete m_keySig;
         }
-        m_keySig = new MusKeySig( *newKeySig );
+        m_keySig = new KeySignature( *newKeySig );
     }
 }
 

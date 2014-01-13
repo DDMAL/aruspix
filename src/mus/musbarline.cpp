@@ -9,10 +9,10 @@
 #include "musbarline.h"
 
 //----------------------------------------------------------------------------
-// MusBarline
+// Barline
 //----------------------------------------------------------------------------
 
-MusBarline::MusBarline():
+Barline::Barline():
 	LayerElement("bline-")
 {
     m_barlineType = BARLINE_SINGLE;
@@ -20,20 +20,20 @@ MusBarline::MusBarline():
     m_onStaffOnly = false; // is this good?
 }
 
-MusBarline::~MusBarline()
+Barline::~Barline()
 {
 }
 
-bool MusBarline::operator==( MusObject& other )
+bool Barline::operator==( MusObject& other )
 {
-    MusBarline *otherBarline = dynamic_cast<MusBarline*>( &other );
+    Barline *otherBarline = dynamic_cast<Barline*>( &other );
     if ( !otherBarline ) {
         return false;
     }
     return true;
 }
 
-bool MusBarline::HasRepetitionDots()
+bool Barline::HasRepetitionDots()
 {
     if (m_barlineType == BARLINE_RPTSTART || m_barlineType == BARLINE_RPTEND || m_barlineType == BARLINE_RPTBOTH) {
         return true;

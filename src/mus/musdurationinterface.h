@@ -18,19 +18,19 @@
 class MusObject;
 
 //----------------------------------------------------------------------------
-// MusDurationInterface
+// DurationInterface
 //----------------------------------------------------------------------------
 
 /** 
  * This class is an interface for elements with duration, such as notes and rests.
  * It is not an abstract class but should not be instanciate directly.
  */
-class MusDurationInterface
+class DurationInterface
 {
 public:
     // constructors and destructors
-    MusDurationInterface();
-    virtual ~MusDurationInterface();
+    DurationInterface();
+    virtual ~DurationInterface();
     
     virtual void SetDuration( int value );
     
@@ -57,9 +57,9 @@ public:
     
     /**
      * Inteface comparison operator. 
-     * Check if the LayerElement has a MusDurationInterface and compare attributes
+     * Check if the LayerElement has a DurationInterface and compare attributes
      */
-    bool HasIdenticalDurationInterface(MusDurationInterface  *otherDurationInterface);
+    bool HasIdenticalDurationInterface(DurationInterface  *otherDurationInterface);
     
 private:
     

@@ -44,7 +44,7 @@ class Tie;
 #define EMB_TRILL 1
 #define EMB_MORDENT 2
 
-class Note: public LayerElement, public MusDurationInterface, public PitchInterface
+class Note: public LayerElement, public DurationInterface, public PitchInterface
 {
 public:
     // constructors and destructors
@@ -56,7 +56,7 @@ public:
      /** 
       * Set the duration.
       * Because we need to perform additonal check, this method override the LayerElement::SetValue method.
-      * The MusDurationInterface::SetDuration method has to be called explicitly.
+      * The DurationInterface::SetDuration method has to be called explicitly.
       */
     virtual void SetValue( int value, int flag = 0 );
     

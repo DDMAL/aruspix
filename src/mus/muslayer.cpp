@@ -327,7 +327,7 @@ void MusLayer::CheckXPosition( LayerElement *currentElement )
     }
 }
 
-MusClef* MusLayer::GetClef( LayerElement *test )
+Clef* MusLayer::GetClef( LayerElement *test )
 {
 	bool succ=false;
 
@@ -337,10 +337,10 @@ MusClef* MusLayer::GetClef( LayerElement *test )
 	
     if ( !test->IsClef() )
     {	
-        test = GetFirst(test, BACKWARD, &typeid(MusClef), &succ);
+        test = GetFirst(test, BACKWARD, &typeid(Clef), &succ);
     }
-    if ( dynamic_cast<MusClef*>(test) ) {
-        return dynamic_cast<MusClef*>(test);
+    if ( dynamic_cast<Clef*>(test) ) {
+        return dynamic_cast<Clef*>(test);
     }
 
     return &m_currentClef;
@@ -348,7 +348,7 @@ MusClef* MusLayer::GetClef( LayerElement *test )
 
 int MusLayer::GetClefOffset( LayerElement *test )
 {
-    MusClef *clef = GetClef(test);
+    Clef *clef = GetClef(test);
     if (!clef) {
         return 0;
     }
@@ -358,14 +358,14 @@ int MusLayer::GetClefOffset( LayerElement *test )
 
 void MusLayer::RemoveClefAndCustos()
 {
-    MusClef *currentClef = NULL;
+    Clef *currentClef = NULL;
     
     int i;
     int elementCount =  this->GetElementCount();
     for (i = 0; i < elementCount; i++)
     {
         if ( ((LayerElement*)m_children[i])->IsClef() ) {
-            MusClef *clef = dynamic_cast<MusClef*>(m_children[i]);
+            Clef *clef = dynamic_cast<Clef*>(m_children[i]);
             // we remove the clef because it is the same as the previous one
             if ( currentClef && ((*currentClef) == (*clef)) ) {
                 // check if it is a F clef with a Longa before

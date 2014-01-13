@@ -9,21 +9,21 @@
 #include "musclef.h"
 
 //----------------------------------------------------------------------------
-// MusClef
+// Clef
 //----------------------------------------------------------------------------
 
-MusClef::MusClef():
+Clef::Clef():
 	LayerElement("clef-")
 {
     m_clefId = UT1;
 }
 
 
-MusClef::~MusClef()
+Clef::~Clef()
 {
 }
 
-int MusClef::GetClefOffset ()
+int Clef::GetClefOffset ()
 {	
 	int offset = 0;		// case 5: UT 1e ligne par default, valable pour PERC
 	switch(m_clefId)
@@ -42,9 +42,9 @@ int MusClef::GetClefOffset ()
 	return offset;
 }
 
-bool MusClef::operator==( MusObject& other )
+bool Clef::operator==( MusObject& other )
 {
-    MusClef *otherClef = dynamic_cast<MusClef*>( &other );
+    Clef *otherClef = dynamic_cast<Clef*>( &other );
     if ( !otherClef ) {
         return false;
     }
@@ -54,7 +54,7 @@ bool MusClef::operator==( MusObject& other )
     return true;
 }
 
-void MusClef::SetValue( int value, int flag ) 
+void Clef::SetValue( int value, int flag ) 
 {
    switch ( value )
    {
