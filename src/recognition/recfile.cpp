@@ -23,12 +23,12 @@
 #include "app/axapp.h"
 #include "app/axprocess.h"
 
-#include "mus/doc.h"
-#include "mus/system.h"
-#include "mus/staff.h"
-#include "mus/measure.h"
+#include "verovio/doc.h"
+#include "verovio/system.h"
+#include "verovio/staff.h"
+#include "verovio/measure.h"
 #include "layerelement.h"
-#include "mus/iomei.h"
+#include "verovio/iomei.h"
 
 #include "musapp/musiomlf.h"
 #include "musapp/musiobin.h"

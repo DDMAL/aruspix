@@ -22,13 +22,13 @@ using std::max;
 #include "aximage.h"
 #include "axapp.h"
 
-#include "mus/doc.h"
-#include "mus/page.h"
-#include "mus/system.h"
-#include "mus/staff.h"
-#include "mus/measure.h"
-#include "mus/layer.h"#include "mus/measure.h"
-#include "mus/layerelement.h"
+#include "verovio/doc.h"
+#include "verovio/page.h"
+#include "verovio/system.h"
+#include "verovio/staff.h"
+#include "verovio/measure.h"
+#include "verovio/layer.h"#include "verovio/measure.h"
+#include "verovio/layerelement.h"
 
 #include "im/impage.h"
 

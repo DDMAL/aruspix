@@ -25,7 +25,7 @@
 
 #include "recognition/recfile.h"
 
-#include "mus/doc.h"
+#include "verovio/doc.h"
 
 #include "musapp/musiowwg.h"
 

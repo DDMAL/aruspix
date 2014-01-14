@@ -17,8 +17,8 @@
 #include "recmodels.h"
 #include "recfile.h"
 
-#include "mus/doc.h"
-#include "mus/page.h"
+#include "verovio/doc.h"
+#include "verovio/page.h"
 
 #include "app/axapp.h"
 #include "app/axprocess.h"

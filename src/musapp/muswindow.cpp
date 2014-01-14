@@ -19,13 +19,13 @@
 #include "muswindow.h"
 #include "mustoolpanel.h"
 
-#include "mus/iomei.h"
-#include "mus/page.h"
-#include "mus/system.h"
-#include "mus/staff.h"
-#include "mus/measure.h"
-#include "mus/layer.h"
-#include "mus/layerelement.h"
+#include "verovio/iomei.h"
+#include "verovio/page.h"
+#include "verovio/system.h"
+#include "verovio/staff.h"
+#include "verovio/measure.h"
+#include "verovio/layer.h"
+#include "verovio/layerelement.h"
 
 #include "musapp/muswxdc.h"
 

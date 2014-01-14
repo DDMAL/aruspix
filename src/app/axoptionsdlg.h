@@ -15,7 +15,7 @@
 #include "axoptions_wdr.h"
 #include "musapp/muswindow.h"
 
-#include "mus/doc.h"
+#include "verovio/doc.h"
 
 // XXX: Doesn't compile if AX_RECOGNITION isn't set
 #ifdef AX_RECOGNITION

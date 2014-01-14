@@ -19,8 +19,8 @@
 #include "im/impage.h"
 #include "im/imstaff.h"
 
-#include "mus/layer.h"
-#include "mus/layerelement.h"
+#include "verovio/layer.h"
+#include "verovio/layerelement.h"
 
 
 #include "wx/arrimpl.cpp"

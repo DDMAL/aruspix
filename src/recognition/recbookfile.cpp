@@ -18,7 +18,7 @@
 
 #include "im/impage.h"
 
-#include "mus/iomei.h"
+#include "verovio/iomei.h"
 
 //using namespace vrv;
 

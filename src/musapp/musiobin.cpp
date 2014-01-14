@@ -19,18 +19,18 @@
 
 #include "musiobin.h"
 
-#include "mus/page.h"
-#include "mus/system.h"
-#include "mus/staff.h"
-#include "mus/measure.h"
-#include "mus/layer.h"
-#include "mus/layerelement.h"
-#include "mus/barline.h"
-#include "mus/clef.h"
-#include "mus/mensur.h"
-#include "mus/note.h"
-#include "mus/symbol.h"
-#include "mus/rest.h"
+#include "verovio/page.h"
+#include "verovio/system.h"
+#include "verovio/staff.h"
+#include "verovio/measure.h"
+#include "verovio/layer.h"
+#include "verovio/layerelement.h"
+#include "verovio/barline.h"
+#include "verovio/clef.h"
+#include "verovio/mensur.h"
+#include "verovio/note.h"
+#include "verovio/symbol.h"
+#include "verovio/rest.h"
 
 
 using namespace vrv;

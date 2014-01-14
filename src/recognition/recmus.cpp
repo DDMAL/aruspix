@@ -23,9 +23,9 @@ using std::max;
 
 #include "app/axapp.h"
 
-#include "mus/doc.h"
-#include "mus/page.h"
-#include "mus/layerelement.h"
+#include "verovio/doc.h"
+#include "verovio/page.h"
+#include "verovio/layerelement.h"
 
 #include "musapp/mustoolpanel.h"
 

@@ -16,14 +16,14 @@
 
 #include "recognition/recfile.h"
 
-#include "mus/layer.h"
-#include "mus/layerelement.h"
-#include "mus/measure.h"
-#include "mus/staff.h"
-#include "mus/system.h"
-#include "mus/page.h"
-#include "mus/iomei.h"
-#include "mus/app.h"
+#include "verovio/layer.h"
+#include "verovio/layerelement.h"
+#include "verovio/measure.h"
+#include "verovio/staff.h"
+#include "verovio/system.h"
+#include "verovio/page.h"
+#include "verovio/iomei.h"
+#include "verovio/app.h"
 
 
 #include "wx/arrimpl.cpp"

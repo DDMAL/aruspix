@@ -16,7 +16,7 @@
 
 #include "app/axfile.h"
 
-#include "mus/doc.h"
+#include "verovio/doc.h"
 
 #include "edt_wdr.h"
 

@@ -20,8 +20,8 @@
 #include "app/axapp.h"
 
 
-#include "mus/doc.h"
-#include "mus/page.h"
+#include "verovio/doc.h"
+#include "verovio/page.h"
 
 #include "musapp/muswindow.h"
 #include "musapp/mustoolpanel.h"
@@ -29,10 +29,10 @@
 #include "musapp/musiomlf.h"
 
 // experimental
-#include "mus/iopae.h"
-#include "mus/iomei.h"
-#include "mus/svgdc.h"
-#include "mus/iodarms.h"
+#include "verovio/iopae.h"
+#include "verovio/iomei.h"
+#include "verovio/svgdc.h"
+#include "verovio/iodarms.h"
 
 using namespace vrv;
 

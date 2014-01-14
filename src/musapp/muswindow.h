@@ -12,14 +12,14 @@
     #include "wx/wx.h"
 #endif
 
-#include "mus/view.h"
+#include "verovio/view.h"
 // elements
-#include "mus/barline.h"
-#include "mus/clef.h"
-#include "mus/mensur.h"
-#include "mus/note.h"
-#include "mus/rest.h"
-#include "mus/symbol.h"
+#include "verovio/barline.h"
+#include "verovio/clef.h"
+#include "verovio/mensur.h"
+#include "verovio/note.h"
+#include "verovio/rest.h"
+#include "verovio/symbol.h"
 
 #include "app/axundo.h"
 

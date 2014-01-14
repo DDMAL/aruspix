@@ -11,7 +11,7 @@
 #include "mustoolpanel.h"
 #include "muswindow.h"
 
-#include "mus/staff.h"
+#include "verovio/staff.h"
 
 #include "app/axapp.h"
 
