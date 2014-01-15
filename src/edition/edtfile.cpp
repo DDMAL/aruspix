@@ -44,7 +44,7 @@ enum
 
 int EdtNewDlg::s_staffLines = 5;
 int EdtNewDlg::s_nbStaves = 12;
-int EdtNewDlg::s_m_notationMode = MUS_MENSURAL_MODE;
+int EdtNewDlg::s_m_notationMode = vrv::MENSURAL_MODE;
 int EdtNewDlg::s_paperSize = MUS_PAPER_A4;
 wxString EdtNewDlg::s_paperHeight = "297";
 wxString EdtNewDlg::s_paperWidth = "210";
@@ -125,7 +125,7 @@ bool EdtFile::Create( )
     if (dlg.ShowModal() != wxID_OK) 
         return false;
         
-    if (EdtNewDlg::s_m_notationMode == MUS_CMN_MODE) {
+    if (EdtNewDlg::s_m_notationMode == vrv::CMN_MODE) {
         wxLogMessage("This is not implemented");
         return false;
     }
@@ -186,7 +186,7 @@ bool EdtFile::Create( )
         {
             Staff *staff = new Staff( j + 1 );
             staff->portNbLine = EdtNewDlg::s_staffLines;
-            if (EdtNewDlg::s_m_notationMode == MUS_MENSURAL_MODE)
+            if (EdtNewDlg::s_m_notationMode == vrv::MENSURAL_MODE)
                 staff->notAnc = true;
             if (nb_staves_per_system == 1) {
                 staff->vertBarre = START_END;
@@ -249,11 +249,9 @@ EdtNewDlg::EdtNewDlg( wxWindow *parent, wxWindowID id, const wxString &title,
 void EdtNewDlg::OnNotationChange(wxCommandEvent& event) {
 	int id = event.GetInt();
 	wxSpinCtrl* spin = (wxSpinCtrl*) FindWindow( ID5_STAFF_LINES );
-	if (id == MUS_MENSURAL_MODE) {
+	if (id == vrv::MENSURAL_MODE) {
 		spin->SetValue(5);
-	} else if (id == MUS_NEUMATIC_MODE) {
-		spin->SetValue(4);
-	} else if (id == MUS_CMN_MODE) {
+	} else if (id == vrv::CMN_MODE) {
 		spin->SetValue(5);
 	}
 }

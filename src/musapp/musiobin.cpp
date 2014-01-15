@@ -170,7 +170,7 @@ bool MusBinInput_1_X::ReadFileHeader( unsigned short *nbpage )
 	Read( &m_doc->m_env.m_stemCorrection, 1 ); // hampesCorr
     m_doc->m_env.m_stemCorrection = 1;	// force it 
 
-	if ( Vrv::GetFileVersion(m_vmaj, m_vmin, m_vrev) < Vrv::GetFileVersion(1, 6, 1) )
+	if ( vrv::GetFileVersion(m_vmaj, m_vmin, m_vrev) < vrv::GetFileVersion(1, 6, 1) )
 		return true; // following values where added in 1.6.1
     // 1.6.1
     Read( &int32, 4 );

@@ -113,7 +113,7 @@ public:
 	void UpdatePen();
     
     void ToggleEditorMode();
-	void SetEditorMode( vrv::MusEditorMode insert );
+	void SetEditorMode( vrv::EditorMode insert );
     
 	/**
 		Redimensionne la fenetre en fonction de la taille du parent et du zoom de la taille de la page

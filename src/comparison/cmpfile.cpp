@@ -486,7 +486,7 @@ bool CmpCollation::Align( Layer *layer_ref, Layer *layer_var, wxString refFileId
 				j--;
 				///ii = ((CmpMLFSymb*)&reference->Item(i))->m_index;
 				///jj = ((CmpMLFSymb*)&variant->Item(j))->m_index;
-				printf("I |\t%10s\t%10s\n", "-", (layer_var->m_children[j])->MusClassName().c_str() );
+				printf("I |\t%10s\t%10s\n", "-", (layer_var->m_children[j])->GetClassName().c_str() );
                 CreateApp( layer_ref, i, layer_var, j, CMP_APP_INS, refFileId, varFileId );
 				n_insert++;
 			}

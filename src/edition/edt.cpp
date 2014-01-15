@@ -481,7 +481,7 @@ void EdtEnv::OnOpenPAE( wxCommandEvent &event )
 
     m_edtFilePtr->m_musDocPtr->Layout();
     
-	m_musViewPtr->SetEditorMode(MUS_EDITOR_EDIT);
+	m_musViewPtr->SetEditorMode(vrv::EDITOR_EDIT);
     UpdateViews( 0 );
 }
 
@@ -507,7 +507,7 @@ void EdtEnv::OnOpenDARMS( wxCommandEvent &event )
     
     m_edtFilePtr->m_musDocPtr->Layout();
     
-	m_musViewPtr->SetEditorMode(MUS_EDITOR_EDIT);
+	m_musViewPtr->SetEditorMode(vrv::EDITOR_EDIT);
     UpdateViews( 0 );
 }
 
@@ -690,7 +690,7 @@ void EdtEnv::OnOpenMEI( wxCommandEvent &event )
         m_edtFilePtr->m_musDocPtr->Layout();
     }
     
-	m_musViewPtr->SetEditorMode(MUS_EDITOR_EDIT);
+	m_musViewPtr->SetEditorMode(vrv::EDITOR_EDIT);
     UpdateViews( 0 );
 }
 

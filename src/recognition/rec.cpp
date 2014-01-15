@@ -1382,10 +1382,10 @@ void RecEnv::OnTools( wxCommandEvent &event )
 
     if ( event.GetId() == ID4_INSERT_MODE )
         
-        m_musViewPtr->SetEditorMode( event.IsChecked() ? MUS_EDITOR_INSERT : MUS_EDITOR_EDIT );
+        m_musViewPtr->SetEditorMode( event.IsChecked() ? vrv::EDITOR_INSERT : vrv::EDITOR_EDIT );
     else 
     {
-        m_musViewPtr->SetEditorMode( MUS_EDITOR_INSERT );
+        m_musViewPtr->SetEditorMode( vrv::EDITOR_INSERT );
         if ( event.GetId() == ID4_NOTES )
             m_musViewPtr->SetToolType( MUS_TOOLS_NOTES );
         else if ( event.GetId() == ID4_KEYS)
@@ -1798,7 +1798,7 @@ void RecEnv::OnOpenMEI( wxCommandEvent &event )
 	
 	m_recFilePtr->m_musDocPtr->m_parameters.m_notationMode = MUS_NEUMATIC_MODE; //temporary for liber usualis project
 	
-	m_musViewPtr->SetEditorMode(MUS_EDITOR_EDIT);
+	m_musViewPtr->SetEditorMode(vrv::EDITOR_EDIT);
     
     */
     wxLogMessage("Fix me"); // ax2
@@ -1975,7 +1975,7 @@ void RecEnv::OnUpdateUI( wxUpdateUIEvent &event )
     else if ( event.GetId() == ID4_INSERT_MODE )
     {
         event.Enable( m_musViewPtr->IsShown() );
-        event.Check( m_musViewPtr && m_musViewPtr->m_editorMode == MUS_EDITOR_INSERT );
+        event.Check( m_musViewPtr && m_musViewPtr->m_editorMode == vrv::EDITOR_INSERT );
     }
     else
         event.Enable(true);

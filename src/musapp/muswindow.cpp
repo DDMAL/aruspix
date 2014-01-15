@@ -142,7 +142,7 @@ void MusWindow::Load( AxUndoFile *undoPtr )
     // edition state
     bool editor;
     position_input.Read( &editor, sizeof( bool ) );
-    m_editorMode = editor ? MUS_EDITOR_EDIT : MUS_EDITOR_INSERT;
+    m_editorMode = editor ? vrv::EDITOR_EDIT : vrv::EDITOR_INSERT;
 	position_input.Read( &m_lyricMode, sizeof( bool ) );
 	position_input.Read( &m_inputLyric, sizeof( bool ) );
 	position_input.Read( &m_lyricCursor, sizeof( int ) );
@@ -253,7 +253,7 @@ void MusWindow::Store( AxUndoFile *undoPtr )
     position_output.Write( &element, sizeof( int ) );
     position_output.Write( &lyric_element, sizeof( int ) );
     // edition state
-    bool editor = m_editorMode == MUS_EDITOR_EDIT;
+    bool editor = m_editorMode == vrv::EDITOR_EDIT;
     position_output.Write( &editor, sizeof( bool ) );
 	position_output.Write( &m_lyricMode, sizeof( bool ) );
 	position_output.Write( &m_inputLyric, sizeof( bool ) );
@@ -421,21 +421,21 @@ void MusWindow::SetToolPanel( MusToolPanel *toolpanel )
 }
 
 void MusWindow::ToggleEditorMode() {
-    if (m_editorMode == MUS_EDITOR_INSERT) {
-        SetEditorMode(MUS_EDITOR_EDIT);
+    if (m_editorMode == vrv::EDITOR_INSERT) {
+        SetEditorMode(vrv::EDITOR_EDIT);
     } else {
-        SetEditorMode(MUS_EDITOR_INSERT);
+        SetEditorMode(vrv::EDITOR_INSERT);
     }
 }
 
-void MusWindow::SetEditorMode( MusEditorMode mode )
+void MusWindow::SetEditorMode( vrv::EditorMode mode )
 {
 	if ( mode == m_editorMode ) {
 		return; // nothing to change
 	}
 	
 	m_editorMode = mode;
-	if ( m_editorMode == MUS_EDITOR_INSERT ) // edition -> insertion
+	if ( m_editorMode == vrv::EDITOR_INSERT ) // edition -> insertion
 	{
 		if ( m_currentElement )
 		{
@@ -515,7 +515,7 @@ void MusWindow::SetToolType( int type )
 }
 
 void MusWindow::UpdatePen() {
-	if ( m_editorMode == MUS_EDITOR_EDIT ) {
+	if ( m_editorMode == vrv::EDITOR_EDIT ) {
 		this->SetCursor( wxCURSOR_ARROW );
 	} else {
 		this->SetCursor( wxCURSOR_PENCIL );
@@ -526,7 +526,7 @@ int MusWindow::GetToolType()
 {
 	LayerElement *sync = NULL;
 
-	if (m_editorMode == MUS_EDITOR_EDIT) {
+	if (m_editorMode == vrv::EDITOR_EDIT) {
         if (m_currentElement) {
             sync = m_currentElement;
         }
@@ -538,7 +538,7 @@ int MusWindow::GetToolType()
         return -1;
     }
     
-    if (m_notation_mode == MUS_MENSURAL_MODE) {
+    if (m_notation_mode == vrv::MENSURAL_MODE) {
         if ( sync->IsClef() ) {
             return MUS_TOOLS_CLEFS;
         }
@@ -551,16 +551,6 @@ int MusWindow::GetToolType()
         else {
             return MUS_TOOLS_OTHER;
         } 
-    }
-    else if (m_notation_mode == MUS_NEUMATIC_MODE) {
-        if ( sync->IsNeumeSymbol() )
-        {
-			return NEUME_TOOLS_SYMBOLS;
-        } 
-        else if (sync->IsNeume() )
-        {
-            return NEUME_TOOLS_NOTES;
-        }
     }
     return -1;
 
@@ -576,7 +566,7 @@ void MusWindow::SyncToolPanel()
     //if ( tool == -1 )
     //    tool = MUS_TOOLS_NOTES;
 
-	m_toolpanel->SetTools( tool, m_editorMode == MUS_EDITOR_EDIT );
+	m_toolpanel->SetTools( tool, m_editorMode == vrv::EDITOR_EDIT );
 
 	this->SetFocus();
 }
@@ -611,7 +601,7 @@ void MusWindow::Paste()
 	if ( !m_currentElement || !m_bufferElement || !m_currentLayer)
 		return;
 
-	if ( m_editorMode == MUS_EDITOR_INSERT ) // can paste in edition mode only
+	if ( m_editorMode == vrv::EDITOR_INSERT ) // can paste in edition mode only
 		return;
 			
 	// arbitrary x value after the current element
@@ -794,9 +784,9 @@ void MusWindow::OnMouseDClick(wxMouseEvent &event)
 		m_insert_pname = CalculatePitchCode( m_currentLayer, y, m_insert_x, &m_insert_oct );
 		//m_newElement->m_xAbs = m_insert_x;
 	}
-	if ( m_editorMode == MUS_EDITOR_EDIT )
+	if ( m_editorMode == vrv::EDITOR_EDIT )
 	{
-		SetEditorMode(MUS_EDITOR_INSERT);
+		SetEditorMode(vrv::EDITOR_INSERT);
 	}
 	else  // insertion
 	{
@@ -818,7 +808,7 @@ void MusWindow::OnMouseDClick(wxMouseEvent &event)
 
 void MusWindow::OnMouseLeftUp(wxMouseEvent &event)
 {
-	if ( m_editorMode == MUS_EDITOR_EDIT || m_lyricMode )
+	if ( m_editorMode == vrv::EDITOR_EDIT || m_lyricMode )
 	{
 		m_dragging_x = 0;
 		m_dragging_y_offset = 0;
@@ -851,7 +841,7 @@ void MusWindow::OnMouseLeave(wxMouseEvent &event)
 void MusWindow::OnMouseLeftDown(wxMouseEvent &event)
 {
 
-    if ( m_editorMode == MUS_EDITOR_EDIT || m_lyricMode )
+    if ( m_editorMode == vrv::EDITOR_EDIT || m_lyricMode )
 	{
         // If we select a new item and the last item was a neume, close it
 		//if (m_currentElement && m_currentElement->IsNeume()) {
@@ -880,7 +870,7 @@ void MusWindow::OnMouseLeftDown(wxMouseEvent &event)
         
 		m_lyricMode = false;
 		m_inputLyric = false;
-		m_editorMode = MUS_EDITOR_EDIT;
+		m_editorMode = vrv::EDITOR_EDIT;
 		
         /* ax2
 		// Checking if there is a Lyric element closer to click location then default note
@@ -901,7 +891,7 @@ void MusWindow::OnMouseLeftDown(wxMouseEvent &event)
 			if ( abs( y_lyric - y ) <= abs( y_note - y ) ){				// Checking if lyric element is closer than note element
 				m_lyricMode = true;
 				m_inputLyric = false;
-				m_editorMode = MUS_EDITOR_INSERT;
+				m_editorMode = vrv::EDITOR_INSERT;
 				
 				m_currentStaff = lyricStaff;
 				m_currentElement = lyricElement;
@@ -981,7 +971,7 @@ void MusWindow::OnMouseMotion(wxMouseEvent &event)
 		m_insert_x = ToLogicalX( dc.DeviceToLogicalX( event.m_x ) );
 		int y = ToLogicalY( dc.DeviceToLogicalY( event.m_y ) ) - m_dragging_y_offset;
 		
-		if ( m_editorMode == MUS_EDITOR_EDIT )
+		if ( m_editorMode == vrv::EDITOR_EDIT )
 		{
 			m_insert_pname = CalculatePitchCode( m_currentLayer, y, m_insert_x, &m_insert_oct );
 			m_currentElement->SetPitchOrPosition( m_insert_pname, m_insert_oct );
@@ -998,7 +988,7 @@ void MusWindow::OnMouseMotion(wxMouseEvent &event)
 			m_currentElement->m_xAbs += ( m_insert_x - m_dragging_x );
             m_currentLayer->CheckXPosition( m_currentElement );
 			m_dragging_x = m_insert_x;
-			if ( m_editorMode == MUS_EDITOR_EDIT ) {
+			if ( m_editorMode == vrv::EDITOR_EDIT ) {
 				//m_currentStaff->CheckIntegrity();
 			}
 		}
@@ -1626,7 +1616,7 @@ void MusWindow::MensuralEditOnKeyDown(wxKeyEvent &event) {
     /*
     else if ( (event.m_keyCode == 'T') && m_currentElement && m_currentElement->IsNote() )
     {
-        m_editorMode = MUS_EDITOR_INSERT;
+        m_editorMode = vrv::EDITOR_INSERT;
         m_lyricMode = true;
         
         if ( m_currentElement && m_currentElement->IsNote() && ((Note1*)m_currentElement)->m_lyrics.GetCount() > 0 ){
@@ -1651,7 +1641,7 @@ void MusWindow::MensuralEditOnKeyDown(wxKeyEvent &event) {
         else if ( m_currentStaff->GetFirstLyric() )
             m_currentElement = m_currentStaff->GetFirstLyric();
         else{
-            m_editorMode = MUS_EDITOR_EDIT;
+            m_editorMode = vrv::EDITOR_EDIT;
             m_lyricMode = false;
         }
         this->Refresh();
@@ -1752,21 +1742,17 @@ void MusWindow::OnKeyDown(wxKeyEvent &event)
 	{
 		ToggleEditorMode();
 	}
-	else if ( m_editorMode == MUS_EDITOR_EDIT ) // mode edition
+	else if ( m_editorMode == vrv::EDITOR_EDIT ) // mode edition
 	{
         SharedEditOnKeyDown(event);
-        if (m_notation_mode == MUS_MENSURAL_MODE) {
+        if (m_notation_mode == vrv::MENSURAL_MODE) {
             MensuralEditOnKeyDown(event);
-        } else if (m_notation_mode == MUS_NEUMATIC_MODE) {
-            NeumeEditOnKeyDown(event);
         }
 	}
 	else /*** Note insertion mode ***/
 	{
-        if (m_notation_mode == MUS_MENSURAL_MODE) {
+        if (m_notation_mode == vrv::MENSURAL_MODE) {
             MensuralInsertOnKeyDown(event);
-        } else if (m_notation_mode == MUS_NEUMATIC_MODE) {
-            NeumeInsertOnKeyDown(event);
         }
 	}
 	
@@ -1781,7 +1767,7 @@ void MusWindow::LyricEntry(wxKeyEvent &event)
 		{
 			m_lyricMode = false;
 			m_inputLyric = false;
-			m_editorMode = MUS_EDITOR_EDIT;
+			m_editorMode = vrv::EDITOR_EDIT;
 			if ( m_currentElement && m_currentElement->IsSymbol() && ((Symbol1*)m_currentElement)->m_note_ptr )
 				m_currentElement = ((Symbol1*)m_currentElement)->m_note_ptr;
 			else if ( m_currentElement && m_currentStaff->GetAtPos( m_currentElement->m_xAbs ) )

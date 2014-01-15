@@ -28,7 +28,7 @@ END_EVENT_TABLE()
 MusToolRow::MusToolRow( wxWindow *parent, wxWindowID id ) :
     wxAuiToolBar( parent, id, wxDefaultPosition, wxDefaultSize, wxAUI_TB_HORZ_TEXT) //  | wxAUI_TB_PLAIN_BACKGROUND) // we might it add when switching to wx2.9
 {
-    m_notation_mode = MUS_MENSURAL_MODE;
+    m_notation_mode = vrv::MENSURAL_MODE;
 
     SetToolBitmapSize(wxSize(32,32));
     SetFont(*wxSMALL_FONT);
@@ -59,7 +59,7 @@ void MusToolRow::UpdateTools( int type, int notation_mode )
     
     switch(notation_mode) 
     {
-    case (MUS_MENSURAL_MODE):
+    case (vrv::MENSURAL_MODE):
         AddTool(ID_MS_BT_INSERT, wxT(""), MusToolPanel::GetToolbarBitmap( "tool_insert.png" ), "", wxITEM_CHECK);
         AddSeparator();   
         //AddSeparator();       
@@ -70,15 +70,7 @@ void MusToolRow::UpdateTools( int type, int notation_mode )
         AddTool(ID_MS_BT_TEXT, wxT("Text"), MusToolPanel::GetToolbarBitmap( "tool_text.png" ), "", wxITEM_CHECK);
         AddSeparator(); 
         break;
-    case (MUS_NEUMATIC_MODE):
-        AddTool(ID_MS_BT_INSERT, wxT(""), MusToolPanel::GetToolbarBitmap( "tool_insert.png" ), "", wxITEM_CHECK);
-        AddSeparator();   
-        //AddSeparator();       
-        AddTool(ID_MS_BT_NEUMES, wxT("Neumes"), MusToolPanel::GetToolbarBitmap( "tool_neumes.png" ), "", wxITEM_CHECK);
-        AddTool(ID_MS_BT_SYMBOLS_NEUMES, wxT("Symbols"), MusToolPanel::GetToolbarBitmap( "clef_neume_c.png" ), "", wxITEM_CHECK);
-        AddSeparator(); 
-        break;
-    case (MUS_CMN_MODE):
+    case (vrv::CMN_MODE):
     /*
         AddTool(ID_MS_BT_INSERT, wxT(""), MusToolPanel::GetToolbarBitmap( "tool_insert.png" ), "", wxITEM_CHECK);
         AddSeparator();   
@@ -339,7 +331,7 @@ void MusToolPanel::OnChangeTool( wxCommandEvent &event )
 	case (ID_MS_BT_SYMBOLS_NEUMES): value = NEUME_TOOLS_SYMBOLS; break;
     }
 
-	m_w->SetEditorMode( MUS_EDITOR_INSERT );
+	m_w->SetEditorMode( vrv::EDITOR_INSERT );
 	m_w->SetToolType( value );
     m_w->SetFocus();   
 }
