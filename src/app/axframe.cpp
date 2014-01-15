@@ -27,6 +27,8 @@
 
 #include "im/impage.h"
 
+#include "verovio/vrv.h"
+
 #include "wx/arrimpl.cpp"
 WX_DEFINE_OBJARRAY(AxEnvArray);
 
@@ -466,8 +468,12 @@ void AxFrame::LoadConfig()
 	wxGetApp().m_neumeFontDesc = pConfig->Read("NeumeFontDesc", "0;53;70;90;90;0;Festa Dies A;0" );
 	wxGetApp().m_lyricFontDesc = pConfig->Read("LyricFontDesc", "0;12;70;93;90;0;Garamond;0" );
 #endif
-    pConfig->Read("FontSizeCorrection",&wxGetApp().m_fontSizeCorrection,100);
-    pConfig->Read("FontPosCorrection",&wxGetApp().m_fontPosCorrection,0);
+    pConfig->Read("FontSizeCorrection",&wxGetApp().m_fontSizeCorrection,100); // unused
+    pConfig->Read("FontPosCorrection",&wxGetApp().m_fontPosCorrection,0); // unused
+    
+    vrv::Resources::SetPath( wxGetApp().m_resourcesPath.mb_str() );
+    vrv::Resources::SetMusicFontDescStr( wxGetApp().m_musicFontDesc.mb_str() );
+    vrv::Resources::SetLyricFontDescStr( wxGetApp().m_lyricFontDesc.mb_str() );
 
 	// check directories
 	this->CheckOptions();

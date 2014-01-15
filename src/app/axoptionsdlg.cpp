@@ -27,8 +27,10 @@ using std::max;
 #include "verovio/system.h"
 #include "verovio/staff.h"
 #include "verovio/measure.h"
-#include "verovio/layer.h"#include "verovio/measure.h"
+#include "verovio/layer.h"
+#include "verovio/measure.h"
 #include "verovio/layerelement.h"
+#include "verovio/vrv.h"
 
 #include "im/impage.h"
 
@@ -465,9 +467,11 @@ void AxOptionsDlg::OnOk(wxCommandEvent &event)
             const wxNativeFontInfo *info;
 			info = m_font.GetNativeFontInfo();
             wxGetApp().m_musicFontDesc = info->ToString();
+            vrv::Resources::SetMusicFontDescStr( wxGetApp().m_musicFontDesc.mb_str() );
 			
             info = m_lyric_font.GetNativeFontInfo();
             wxGetApp().m_lyricFontDesc = info->ToString();
+            vrv::Resources::SetLyricFontDescStr( wxGetApp().m_lyricFontDesc.mb_str() );
 
         }
 		
