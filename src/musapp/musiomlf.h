@@ -15,8 +15,8 @@
 
 #include "musmlfdic.h"
 
-#include "verovio/layer.h"
-#include "verovio/page.h"
+#include "vrv/layer.h"
+#include "vrv/page.h"
 
 class ImPage;
 class AxProgressDlg;

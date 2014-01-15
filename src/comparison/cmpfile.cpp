@@ -16,14 +16,14 @@
 
 #include "recognition/recfile.h"
 
-#include "verovio/layer.h"
-#include "verovio/layerelement.h"
-#include "verovio/measure.h"
-#include "verovio/staff.h"
-#include "verovio/system.h"
-#include "verovio/page.h"
-#include "verovio/iomei.h"
-#include "verovio/app.h"
+#include "vrv/layer.h"
+#include "vrv/layerelement.h"
+#include "vrv/measure.h"
+#include "vrv/staff.h"
+#include "vrv/system.h"
+#include "vrv/page.h"
+#include "vrv/iomei.h"
+#include "vrv/app.h"
 
 
 #include "wx/arrimpl.cpp"

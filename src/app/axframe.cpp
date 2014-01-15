@@ -27,7 +27,7 @@
 
 #include "im/impage.h"
 
-#include "verovio/vrv.h"
+#include "vrv/vrv.h"
 
 #include "wx/arrimpl.cpp"
 WX_DEFINE_OBJARRAY(AxEnvArray);

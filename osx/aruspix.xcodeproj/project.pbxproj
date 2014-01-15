@@ -52,10 +52,6 @@
 		57CA54260D34139D001FC334 /* axapp_wdr.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 57CA541F0D34139D001FC334 /* axapp_wdr.cpp */; };
 		57CA54270D34139D001FC334 /* axabout_wdr.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 57CA54210D34139D001FC334 /* axabout_wdr.cpp */; };
 		57EA3DE50C00BDEB00414247 /* recbookctrl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 57EA3DE30C00BDEB00414247 /* recbookctrl.cpp */; };
-		8FE5FE0E1594952400B44674 /* tinystr.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A58524980A1B9604002D9D8A /* tinystr.cpp */; };
-		8FE5FE0F1594952400B44674 /* tinyxml.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A585249A0A1B9604002D9D8A /* tinyxml.cpp */; };
-		8FE5FE101594952400B44674 /* tinyxmlerror.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A585249C0A1B9604002D9D8A /* tinyxmlerror.cpp */; };
-		8FE5FE111594952400B44674 /* tinyxmlparser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A585249D0A1B9604002D9D8A /* tinyxmlparser.cpp */; };
 		8FEC2F8E18854D390059601B /* liblibverovio.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 8F3DD315188549000051330C /* liblibverovio.dylib */; };
 		A58524CE0A1B9604002D9D8A /* axapp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A58524560A1B9604002D9D8A /* axapp.cpp */; };
 		A58524CF0A1B9604002D9D8A /* axenv.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A58524580A1B9604002D9D8A /* axenv.cpp */; };
@@ -99,18 +95,6 @@
 			remoteInfo = libverovio;
 		};
 /* End PBXContainerItemProxy section */
-
-/* Begin PBXCopyFilesBuildPhase section */
-		8F238169159462AF00C04D47 /* CopyFiles */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = /usr/share/man/man1/;
-			dstSubfolderSpec = 0;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 1;
-		};
-/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		0A5FB2790DD49D2D001E460E /* imbrink3classes.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = imbrink3classes.cpp; sourceTree = "<group>"; };
@@ -195,7 +179,6 @@
 		57CA54210D34139D001FC334 /* axabout_wdr.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = axabout_wdr.cpp; sourceTree = "<group>"; };
 		57EA3DE30C00BDEB00414247 /* recbookctrl.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = recbookctrl.cpp; sourceTree = "<group>"; };
 		57EA3DE40C00BDEB00414247 /* recbookctrl.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = recbookctrl.h; sourceTree = "<group>"; };
-		8F23816B159462AF00C04D47 /* aruspix_cmd_line */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = aruspix_cmd_line; sourceTree = BUILT_PRODUCTS_DIR; };
 		8F3DD309188549000051330C /* Verovio.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Verovio.xcodeproj; path = ../../verovio/Verovio.xcodeproj; sourceTree = "<group>"; };
 		A50FE1390A6D6E240038D682 /* rec.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = rec.h; sourceTree = "<group>"; };
 		A58523900A1B9504002D9D8A /* Aruspix.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Aruspix.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -248,13 +231,6 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		8F238168159462AF00C04D47 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		8F3DD31618854A7B0051330C /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -366,7 +342,6 @@
 				5769E11B0BF25A1D007772A6 /* axz.icns */,
 				A585251B0A1B983B002D9D8A /* ax.icns */,
 				A58523900A1B9504002D9D8A /* Aruspix.app */,
-				8F23816B159462AF00C04D47 /* aruspix_cmd_line */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -511,23 +486,6 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		8F23816A159462AF00C04D47 /* aruspix_cmd_line */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 8F238175159462AF00C04D47 /* Build configuration list for PBXNativeTarget "aruspix_cmd_line" */;
-			buildPhases = (
-				8F238167159462AF00C04D47 /* Sources */,
-				8F238168159462AF00C04D47 /* Frameworks */,
-				8F238169159462AF00C04D47 /* CopyFiles */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-			);
-			name = aruspix_cmd_line;
-			productName = aruspix_headless;
-			productReference = 8F23816B159462AF00C04D47 /* aruspix_cmd_line */;
-			productType = "com.apple.product-type.tool";
-		};
 		A58508C00A00113C006E82B1 /* Aruspix */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = A58508C50A00113C006E82B1 /* Build configuration list for PBXNativeTarget "Aruspix" */;
@@ -577,7 +535,6 @@
 			projectRoot = ../;
 			targets = (
 				A58508C00A00113C006E82B1 /* Aruspix */,
-				8F23816A159462AF00C04D47 /* aruspix_cmd_line */,
 			);
 		};
 /* End PBXProject section */
@@ -632,17 +589,6 @@
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
-		8F238167159462AF00C04D47 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				8FE5FE0E1594952400B44674 /* tinystr.cpp in Sources */,
-				8FE5FE0F1594952400B44674 /* tinyxml.cpp in Sources */,
-				8FE5FE101594952400B44674 /* tinyxmlerror.cpp in Sources */,
-				8FE5FE111594952400B44674 /* tinyxmlparser.cpp in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		A58508BE0A00113C006E82B1 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -716,68 +662,6 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin XCBuildConfiguration section */
-		8F238172159462AF00C04D47 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = YES;
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
-				FRAMEWORK_SEARCH_PATHS = "";
-				GCC_C_LANGUAGE_STANDARD = gnu99;
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_ENABLE_OBJC_EXCEPTIONS = NO;
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"DEBUG=1",
-					"$(inherited)",
-				);
-				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
-				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
-				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES;
-				GCC_WARN_UNINITIALIZED_AUTOS = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
-				HEADER_SEARCH_PATHS = ../src;
-				KEEP_PRIVATE_EXTERNS = YES;
-				LIBRARY_SEARCH_PATHS = "";
-				MACOSX_DEPLOYMENT_TARGET = 10.6;
-				ONLY_ACTIVE_ARCH = NO;
-				OTHER_CFLAGS = "-fexceptions";
-				OTHER_LDFLAGS = "";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = macosx10.7;
-				USER_HEADER_SEARCH_PATHS = "";
-			};
-			name = Debug;
-		};
-		8F238173159462AF00C04D47 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = YES;
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				GCC_C_LANGUAGE_STANDARD = gnu99;
-				GCC_ENABLE_OBJC_EXCEPTIONS = NO;
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"DEBUG=0",
-					"$(inherited)",
-				);
-				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
-				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES;
-				GCC_WARN_UNINITIALIZED_AUTOS = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
-				HEADER_SEARCH_PATHS = ../src;
-				KEEP_PRIVATE_EXTERNS = YES;
-				LIBRARY_SEARCH_PATHS = "";
-				MACOSX_DEPLOYMENT_TARGET = 10.6;
-				ONLY_ACTIVE_ARCH = NO;
-				OTHER_CFLAGS = "-fexceptions";
-				OTHER_LDFLAGS = "";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = macosx10.7;
-				USER_HEADER_SEARCH_PATHS = "";
-			};
-			name = Release;
-		};
 		A58508B60A001129006E82B1 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -1013,15 +897,6 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		8F238175159462AF00C04D47 /* Build configuration list for PBXNativeTarget "aruspix_cmd_line" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				8F238172159462AF00C04D47 /* Debug */,
-				8F238173159462AF00C04D47 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Debug;
-		};
 		A58508B50A001129006E82B1 /* Build configuration list for PBXProject "aruspix" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (

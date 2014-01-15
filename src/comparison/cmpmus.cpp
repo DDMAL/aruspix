@@ -25,10 +25,10 @@ using std::max;
 #include "im/imstaff.h"
 
 #include "musapp/muswxdc.h"
-#include "verovio/doc.h"
-#include "verovio/system.h"
-#include "verovio/staff.h"
-#include "verovio/layerelement.h"
+#include "vrv/doc.h"
+#include "vrv/system.h"
+#include "vrv/staff.h"
+#include "vrv/layerelement.h"
 
 using namespace vrv;
 

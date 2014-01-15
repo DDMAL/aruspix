@@ -32,8 +32,8 @@
 
 #include "im/impage.h"
 
-#include "verovio/doc.h"
-#include "verovio/iomei.h"
+#include "vrv/doc.h"
+#include "vrv/iomei.h"
 
 #include "musapp/mustoolpanel.h"
 #include "musapp/musiowwg.h"
@@ -1407,7 +1407,7 @@ void RecEnv::OnStaffCorrespondence( wxCommandEvent &event )
     Methode de travail !!!!!!!!! Pas DU TOUT plombee !!!!
   */ 
   
-//#include "verovio/svg.h"
+//#include "vrv/svg.h"
 
 /*
 void RecEnv::OnExportImage( wxCommandEvent &event )

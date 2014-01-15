@@ -13,7 +13,7 @@
 #endif
 #include "wx/wfstream.h"
 
-#include "verovio/doc.h"
+#include "vrv/doc.h"
 
 enum
 {

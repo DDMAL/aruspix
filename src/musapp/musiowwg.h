@@ -13,9 +13,9 @@
 #endif
 #include "wx/wfstream.h"
 
-#include "verovio/doc.h"
-#include "verovio/beam.h"
-#include "verovio/layer.h"
+#include "vrv/doc.h"
+#include "vrv/beam.h"
+#include "vrv/layer.h"
 
 
 #include "muswwg.h"

@@ -16,7 +16,7 @@
 
 #include "app/axfile.h"
 
-#include "verovio/doc.h"
+#include "vrv/doc.h"
 
 class ImPage;
 class vrv::Doc;
