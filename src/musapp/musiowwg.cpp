@@ -281,8 +281,10 @@ bool MusWWGOutput::WriteFileHeader( const MusWWGData *wwgData )
 	Write( &m_doc->m_env.m_staffLineWidth, 1 ); // param - epLignesPortee
 	Write( &m_doc->m_env.m_stemWidth, 1 ); // param - epQueueNotes
 	Write( &m_doc->m_env.m_barlineWidth, 1 ); // param - epBarreMesure
-	Write( &m_doc->m_env.m_beamWidth, 1 ); // param - epBarreValeur
-	Write( &m_doc->m_env.m_beamWhiteWidth, 1 ); // param - epBlancBarreValeur
+    unsigned char beamWidth = 12;
+	Write( &beamWidth, 1 ); // param - epBarreValeur
+    unsigned char beamWhiteWidth = 8;
+	Write( &beamWhiteWidth, 1 ); // param - epBlancBarreValeur
 	Write( &m_doc->m_env.m_beamMaxSlope, 1 ); // param - m_beamMaxSlope
 	Write( &m_doc->m_env.m_beamMinSlope, 1 ); // param - m_beamMinSlope
 	int32 = wxINT32_SWAP_ON_BE( m_doc->m_rendPageWidth / 10 ); // param - m_paperWidth
@@ -337,7 +339,8 @@ bool MusWWGOutput::WriteParameters2( const MusWWGData *param )
 	Write( &param->nbPagesEncontinu, 1 ); // nbPagesEnContinu
 	Write( &param->vertCorrEcr, 1 ); // vertCorrEcr
 	Write( &param->vertCorrPrn, 1 ); // vertCorrPrn
-	Write( &m_doc->m_env.m_stemCorrection, 1 ); // m_stemCorrection
+    unsigned char stemCorrection = 0;
+	Write( &stemCorrection, 1 ); // m_stemCorrection
 	Write( &param->epaisBezier, 1 ); // epaisBezier
 	uint32 = wxUINT32_SWAP_ON_BE( m_doc->m_env.m_headerType ); // m_headerType
 	Write( &uint32, 4 );
@@ -720,7 +723,7 @@ bool MusWWGInput::ImportFile( )
     {
         Page *page = (Page*)m_doc->m_children[j];
         
-        m_doc->SetRendPage( page );
+        m_doc->SetRendPage( j );
         
         m = 0; // staff number on the page
         int yy =  m_doc->m_rendPageHeight + m_doc->m_rendStaffSize[ 0 ];
@@ -753,6 +756,7 @@ bool MusWWGInput::ReadFileHeader( MusWWGData *wwgData )
 {
 
 	char buffer[WIN_MAX_FNAME + WIN_MAX_EXT + 1];
+    unsigned char unused;
 	Read( buffer, 9 ); // (version 6)
 
 	Read( &uint16, 2 );
@@ -780,8 +784,8 @@ bool MusWWGInput::ReadFileHeader( MusWWGData *wwgData )
     Read( &m_doc->m_env.m_staffLineWidth, 1 ); // ~param - ~epLignesPortee
 	Read( &m_doc->m_env.m_stemWidth, 1 ); // ~param - ~epQueueNotes
 	Read( &m_doc->m_env.m_barlineWidth, 1 ); // ~param - ~epBarreMesure
-	Read( &m_doc->m_env.m_beamWidth, 1 ); // ~param - ~epBarreValeur
-	Read( &m_doc->m_env.m_beamWhiteWidth, 1 ); // ~param - ~epBlancBarreValeur
+	Read( &unused, 1 ); // ~param - ~epBarreValeur
+	Read( &unused, 1 ); // ~param - ~epBlancBarreValeur
 	Read( &m_doc->m_env.m_beamMaxSlope, 1 ); // ~param - ~m_beamMaxSlope
 	Read( &m_doc->m_env.m_beamMinSlope, 1 ); // ~param - ~m_beamMinSlope
 	Read( &int32, 4 );
@@ -830,6 +834,7 @@ bool MusWWGInput::ReadParametersMidi( MusWWGData *midi )
 bool MusWWGInput::ReadParameters2( MusWWGData *param )
 {
 	int i;
+    unsigned char unused;
     
 	Read( &param->transp_sil, 1 );// ~transpSil
 	Read( &m_doc->m_env.m_smallStaffNum, 1 ); // ~rpPorteesNum
@@ -840,7 +845,7 @@ bool MusWWGInput::ReadParameters2( MusWWGData *param )
 	Read( &param->nbPagesEncontinu, 1 ); // ~nbPagesEnContinu
 	Read( &param->vertCorrEcr, 1 ); // ~vertCorrEcr
 	Read( &param->vertCorrPrn, 1 ); // ~vertCorrPrn	
-	Read( &m_doc->m_env.m_stemCorrection, 1 ); // ~m_stemCorrection	
+	Read( &unused, 1 ); // ~m_stemCorrection	
 	Read( &param->epaisBezier, 1 ); // ~epaisBezier
 	Read( &uint32, 4 );
 	m_doc->m_env.m_headerType = wxUINT32_SWAP_ON_BE( uint32 ); // ~m_headerType

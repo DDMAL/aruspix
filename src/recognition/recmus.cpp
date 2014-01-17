@@ -141,10 +141,10 @@ void RecMusController::SyncStaffBitmap( )
 	if ( !m_recFilePtr->GetImPage() || !m_recFilePtr->GetMusFile() )
         return;
 
-    if ( !m_viewPtr->m_currentStaff || !m_viewPtr->m_currentLayer )
+    if ( !m_viewPtr->m_currentPage || !m_viewPtr->m_currentStaff || !m_viewPtr->m_currentLayer )
         return;
 
-    int staff_pos = m_viewPtr->m_page->GetStaffPosOnPage( m_viewPtr->m_currentStaff );
+    int staff_pos = m_viewPtr->m_currentPage->GetStaffPosOnPage( m_viewPtr->m_currentStaff );
     if ( (staff_pos < 0) || (staff_pos > (int)m_recFilePtr->GetImPage()->m_staves.GetCount() - 1) )
         return;
 

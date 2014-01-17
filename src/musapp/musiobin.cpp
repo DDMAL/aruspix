@@ -96,7 +96,7 @@ bool MusBinInput_1_X::ImportFile( )
     {
         Page *page = (Page*)m_doc->m_children[j];
         
-        m_doc->SetRendPage( page );
+        m_doc->SetRendPage( j );
         
         m = 0; // staff number on the page
         int yy =  m_doc->m_rendPageHeight;
@@ -127,6 +127,8 @@ bool MusBinInput_1_X::ImportFile( )
 
 bool MusBinInput_1_X::ReadFileHeader( unsigned short *nbpage )
 {
+    unsigned char unused;
+    
 	Read( &int32, 4 ); 
 	m_flag = wxINT32_SWAP_ON_BE( int32 ); 
 	Read( &int32, 4 ); 
@@ -150,8 +152,8 @@ bool MusBinInput_1_X::ReadFileHeader( unsigned short *nbpage )
 	Read( &m_doc->m_env.m_stemWidth, 1 ); // param - epQueueNotes
     m_doc->m_env.m_stemWidth = 2; // force it
 	Read( &m_doc->m_env.m_barlineWidth, 1 ); // param - epBarreMesure
-	Read( &m_doc->m_env.m_beamWidth, 1 ); // param - epBarreValeur
-	Read( &m_doc->m_env.m_beamWhiteWidth, 1 ); // param - epBlancBarreValeur
+	Read( &unused, 1 ); // param - epBarreValeur
+	Read( &unused, 1 ); // param - epBlancBarreValeur
 	Read( &int32, 4 );
 	m_doc->SetPageHeight( wxINT32_SWAP_ON_BE( int32 ) * 10 ); // param - pageFormatHor
 	Read( &int32, 4 );
@@ -167,8 +169,7 @@ bool MusBinInput_1_X::ReadFileHeader( unsigned short *nbpage )
 	Read( &m_doc->m_env.m_smallStaffDen, 1 ); // rpPorteesDen
 	Read( &m_doc->m_env.m_graceNum, 1 ); // rpDiminNum
 	Read( &m_doc->m_env.m_graceDen, 1 ); // rpDiminDen	
-	Read( &m_doc->m_env.m_stemCorrection, 1 ); // hampesCorr
-    m_doc->m_env.m_stemCorrection = 1;	// force it 
+	Read( &unused, 1 ); // hampesCorr
 
 	if ( vrv::GetFileVersion(m_vmaj, m_vmin, m_vrev) < vrv::GetFileVersion(1, 6, 1) )
 		return true; // following values where added in 1.6.1

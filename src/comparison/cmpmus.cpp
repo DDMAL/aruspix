@@ -112,7 +112,7 @@ void CmpMusController::LoadSource( LayerElement *element )
         return;
     }
     
-    if ( !m_viewPtr->m_page ) {
+    if ( !m_viewPtr->m_currentPage ) {
         // this happen when we load a source when clicking during delimiter selection
         return;
     }
@@ -131,7 +131,7 @@ void CmpMusController::LoadSource( LayerElement *element )
         return;
     }
     
-    Page *currentPage = m_viewPtr->m_page;    
+    Page *currentPage = m_viewPtr->m_currentPage;
     
     Object *viewElement = NULL;
     ArrayPtrVoid params;
@@ -148,7 +148,7 @@ void CmpMusController::LoadSource( LayerElement *element )
     Page *page = dynamic_cast<Page*>(viewElement->GetFirstParent( &typeid(Page) ));
     if ( page != currentPage ) {
         //wxLogMessage( "load page" );
-        m_viewPtr->SetPage( page );
+        m_viewPtr->SetPage( page->GetIdx() );
     }
     m_viewPtr->m_currentSystem = dynamic_cast<System*>(viewElement->GetFirstParent( &typeid(System) ));
     m_viewPtr->m_currentStaff = dynamic_cast<Staff*>(viewElement->GetFirstParent( &typeid(Staff) ));
@@ -241,13 +241,13 @@ void CmpMusWindow::SetCmpFile( CmpFile *cmpFile )
 
 void CmpMusWindow::OnPageChange( )
 {
-    if ( !m_page || m_page->m_surface.empty() ){
+    if ( !m_currentPage || m_currentPage->m_surface.empty() ){
         m_backgroundImage.Destroy();
         return;
     }
     
-    if ( !m_backgroundImage.LoadFile( m_cmpFilePtr->m_basename +  wxString( m_page->m_surface.c_str() ) )  ) {
-        wxLogDebug("Cannot load image '%s'", m_page->m_surface.c_str() );
+    if ( !m_backgroundImage.LoadFile( m_cmpFilePtr->m_basename +  wxString( m_currentPage->m_surface.c_str() ) )  ) {
+        wxLogDebug("Cannot load image '%s'", m_currentPage->m_surface.c_str() );
     }
 }
 
@@ -333,10 +333,7 @@ void CmpMusWindow::OnMouse(wxMouseEvent &event)
 
 void CmpMusWindow::OnPaint(wxPaintEvent &event)
 {
-	if ( !m_page )
-		return;
-    
-	// calculate scroll position
+    // calculate scroll position
     int scrollX, scrollY;
     this->GetViewStart(&scrollX,&scrollY);
     int unitX, unitY;
@@ -360,7 +357,7 @@ void CmpMusWindow::OnPaint(wxPaintEvent &event)
         ax_dc.DrawBackgroundImage();
     }
     else {
-        DrawPage( &ax_dc, m_page );
+        this->DrawCurrentPage( &ax_dc );
     }
 }
 

@@ -255,6 +255,7 @@ void EdtEnv::UpdateViews( int flags )
 {
     m_musViewPtr->SetDoc( m_edtFilePtr->m_musDocPtr );
     m_musViewPtr->SetToolPanel( ((EdtPanel*)m_envWindowPtr)->GetMusToolPanel()  );
+    m_musViewPtr->SetPage( 0 );
     m_musViewPtr->Resize( );
     wxYield();
     //m_musViewPtr->Goto( 1 );
@@ -344,13 +345,13 @@ void EdtEnv::OnClose( wxCommandEvent &event )
 
 void EdtEnv::OnValues( wxCommandEvent &event )
 {
-    if ( !m_musViewPtr )
+    if ( !m_musViewPtr || !m_musViewPtr->m_currentPage )
         return;
     
     if ( event.GetId() == ID5_VOICES ) {
-        m_musViewPtr->m_page->SetValues( PAGE_VALUES_VOICES );   
+        m_musViewPtr->m_currentPage->SetValues( PAGE_VALUES_VOICES );
     } else if ( event.GetId() == ID5_INDENT ) {
-        m_musViewPtr->m_page->SetValues( PAGE_VALUES_INDENT );  
+        m_musViewPtr->m_currentPage->SetValues( PAGE_VALUES_INDENT );
     }
 }
 
@@ -608,8 +609,8 @@ void EdtEnv::OnSaveSVG( wxCommandEvent &event )
     m_musViewPtr->m_currentElement = NULL;
 	//svgDC.SetAxisOrientation( true, false );
     View rc;
-    rc.SetDoc(m_musViewPtr->m_doc );
-    rc.DrawPage(  &svgDC, m_musViewPtr->m_page, false );
+    rc.SetDoc( m_musViewPtr->m_doc );
+    rc.DrawCurrentPage(  &svgDC, false );
     
     wxString svg = wxString( svgDC.GetStringSVG().c_str() ); // ax3
     // we still need to write the SVG to the file...

@@ -162,8 +162,7 @@ void MusWindow::Load( AxUndoFile *undoPtr )
 		return;
 	}
 	
-    SetPage( (Page*)m_doc->m_children[page] );
-	m_npage = page;
+    SetPage( page );
 
 	delete mei_input;
 	
@@ -173,7 +172,7 @@ void MusWindow::Load( AxUndoFile *undoPtr )
     m_currentElement = NULL;
 
     if ( system != -1 ) {
-		m_currentSystem = (System*)m_page->m_children[system];
+		m_currentSystem = (System*)m_currentPage->m_children[system];
     }	
 	if ( m_currentSystem && (staff != -1) ) {
 		m_currentStaff = (Staff*)m_currentSystem->m_children[staff];
@@ -216,8 +215,8 @@ void MusWindow::Store( AxUndoFile *undoPtr )
 	int element = -1;
     int lyric_element = -1;
     
-	if ( m_page ) {
-		page = m_page->GetPageIdx();
+	if ( m_currentPage ) {
+		page = m_currentPage->GetPageIdx();
     }
 	if ( m_currentSystem ) {
 		system = m_currentSystem->GetSystemIdx();
@@ -368,12 +367,11 @@ void MusWindow::Goto( )
 {
 	if ( !m_doc )
 		return;
-    AxGotoDlg *dlg = new AxGotoDlg(this, -1, _("Go to page ..."), m_doc->m_children.size(), m_npage );
+    AxGotoDlg *dlg = new AxGotoDlg(this, -1, _("Go to page ..."), m_doc->m_children.size(), m_pageIdx );
     dlg->Center(wxBOTH);
     if ( dlg->ShowModal() == wxID_OK )
 	{
-		m_npage = dlg->GetPage();
-		SetPage( (Page*)m_doc->m_children[m_npage] );
+		SetPage( dlg->GetPage() );
     }
 	dlg->Destroy();
     wxLogError( "MusWindow::Goto missing in ax2" );
@@ -861,8 +859,8 @@ void MusWindow::OnMouseLeftDown(wxMouseEvent &event)
 		// Picking element closest to mouse click location
 		
 		// Default selection of closest note
-        m_currentSystem = m_page->GetAtPos( y );
         // we certainly need to check pointers here!
+        m_currentSystem = m_currentPage->GetAtPos( y );
         m_currentMeasure = m_currentSystem->GetAtPos( x );
         m_currentStaff = m_currentMeasure->GetFirst();
         m_currentLayer = m_currentStaff->GetFirst();
@@ -949,8 +947,8 @@ void MusWindow::OnMouseLeftDown(wxMouseEvent &event)
 
 			int y = ToLogicalY( dc.DeviceToLogicalY( event.m_y ) );
             // Default selection of closest note
-            m_currentSystem = m_page->GetAtPos( y );
             // we certainly need to check pointers here!
+            m_currentSystem = m_currentPage->GetAtPos( y );
             m_currentMeasure = m_currentSystem->GetAtPos( y );
             m_currentStaff = m_currentMeasure->GetFirst();
             m_currentLayer = m_currentStaff->GetFirst();
@@ -1016,11 +1014,11 @@ void MusWindow::OnMidiInput(wxCommandEvent &event)
 
 bool MusWindow::MoveUpDown( bool up )
 {
-	if ( !m_page || !m_currentSystem || !m_currentStaff || !m_currentLayer ) {
+	if ( !m_currentPage || !m_currentSystem || !m_currentStaff || !m_currentLayer ) {
 		return false;
     } 
     
-    Page *page = m_page;
+    Page *page = m_currentPage;
     System *system = m_currentSystem;
     Staff *staff = m_currentStaff;
     Measure *measure = m_currentMeasure;
@@ -1046,9 +1044,9 @@ bool MusWindow::MoveUpDown( bool up )
             }
         }
         // previous system
-        else if ( m_page->GetPrevious( m_currentSystem ) )
+        else if ( m_currentPage->GetPrevious( m_currentSystem ) )
         {
-            system = m_page->GetPrevious( m_currentSystem );
+            system = m_currentPage->GetPrevious( m_currentSystem );
             // we should look at the x position
             measure = system->GetLast();
             if ( measure ) {
@@ -1077,9 +1075,9 @@ bool MusWindow::MoveUpDown( bool up )
             
         }
         // next system
-        else if ( m_page->GetNext( m_currentSystem ) )
+        else if ( m_currentPage->GetNext( m_currentSystem ) )
         {
-            system = m_page->GetNext( m_currentSystem );
+            system = m_currentPage->GetNext( m_currentSystem );
             // we should look for the x position
             measure = system->GetFirst();
             if ( measure ) {
@@ -1101,7 +1099,7 @@ bool MusWindow::MoveUpDown( bool up )
     m_currentMeasure = measure;
     m_currentStaff = staff;
     m_currentSystem = system;
-    m_page = page;
+    m_currentPage = page;
     
     // now try to get the element - still success if no element at all
     m_currentElement = m_currentLayer->GetAtPos(x);
@@ -1110,11 +1108,11 @@ bool MusWindow::MoveUpDown( bool up )
 
 bool MusWindow::MoveLeftRight( bool left )
 {
-	if ( !m_page || !m_currentSystem || !m_currentStaff || !m_currentLayer ) {
+	if ( !m_currentPage || !m_currentSystem || !m_currentStaff || !m_currentLayer ) {
 		return false;
     } 
     
-    Page *page = m_page;
+    Page *page = m_currentPage;
     System *system = m_currentSystem;
     Staff *staff = m_currentStaff;
     Measure *measure = m_currentMeasure;
@@ -1141,11 +1139,11 @@ bool MusWindow::MoveLeftRight( bool left )
             }
         }
         // previous system
-        else if ( m_page->GetPrevious( m_currentSystem ) )
+        else if ( m_currentPage->GetPrevious( m_currentSystem ) )
         {
             int currentStaffIdx = m_currentStaff->GetStaffIdx();
             int currentLayerIdx = m_currentLayer->GetLayerIdx();
-            system = m_page->GetPrevious( m_currentSystem );
+            system = m_currentPage->GetPrevious( m_currentSystem );
             measure = system->GetLast();
             if ( measure ) {
                 staff = measure->GetStaffWithIdx( currentStaffIdx );
@@ -1181,11 +1179,11 @@ bool MusWindow::MoveLeftRight( bool left )
             }
         }
         // next system
-        else if ( m_page->GetNext( m_currentSystem ) )
+        else if ( m_currentPage->GetNext( m_currentSystem ) )
         {
             int currentStaffIdx = m_currentStaff->GetStaffIdx();
             int currentLayerIdx = m_currentLayer->GetLayerIdx();
-            system = m_page->GetNext( m_currentSystem );
+            system = m_currentPage->GetNext( m_currentSystem );
             measure = system->GetFirst();
             if ( measure ) {
                 staff = measure->GetStaffWithIdx( currentStaffIdx );
@@ -1209,7 +1207,7 @@ bool MusWindow::MoveLeftRight( bool left )
     m_currentMeasure = measure;
     m_currentStaff = staff;
     m_currentSystem = system;
-    m_page = page;
+    m_currentPage = page;
     
     return true;
 }
@@ -1730,7 +1728,7 @@ void MusWindow::MensuralInsertOnKeyDown(wxKeyEvent &event) {
 
 void MusWindow::OnKeyDown(wxKeyEvent &event)
 {
-	if ( !m_page || !m_currentSystem || !m_currentStaff || !m_currentLayer ) {
+	if ( !m_currentPage || !m_currentSystem || !m_currentStaff || !m_currentLayer ) {
 		return;
     }
 
@@ -2112,7 +2110,7 @@ void MusWindow::OnChar(wxKeyEvent &event)
 
 void MusWindow::OnPaint(wxPaintEvent &event)
 {
-	if ( !m_page )
+	if ( !m_currentPage )
 		return;
 
 	// calculate scroll position
@@ -2140,7 +2138,7 @@ void MusWindow::OnPaint(wxPaintEvent &event)
     MusWxDC ax_dc( &dc );
     ax_dc.SetDrawBoundingBoxes(true);
     
-    DrawPage( &ax_dc, m_page );
+    DrawCurrentPage( &ax_dc );
 
     // TODO for cursor
     // Draw the cursor if we are in insertion mode, we have a m_newElement and a m_currentStaff
