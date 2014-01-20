@@ -31,7 +31,7 @@
 // experimental
 #include "vrv/iopae.h"
 #include "vrv/iomei.h"
-#include "vrv/svgdc.h"
+#include "vrv/svgdevicecontext.h"
 #include "vrv/iodarms.h"
 
 using namespace vrv;
