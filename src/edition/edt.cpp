@@ -227,8 +227,8 @@ void EdtEnv::ParseCmd( wxCmdLineParser *parser )
             m_musViewPtr->m_currentElement = NULL; // !fix it!! deselect elemnts
 
             //MusSVGFileDC svgDC (outfile, mfile->m_parameters.param.m_paperWidth, mfile->m_parameters.param.m_paperHeight );
-            MusSVGFileDC svgDC (outfile, m_musViewPtr->ToRendererX( m_musViewPtr->m_pageWidth )  ,
-                m_musViewPtr->ToRendererX( m_musViewPtr->m_paperHeight )) ;
+            MusSVGFileDC svgDC (outfile, m_musViewPtr->ToDeviceContextX( m_musViewPtr->m_pageWidth )  ,
+                m_musViewPtr->ToDeviceContextX( m_musViewPtr->m_paperHeight )) ;
             
             svgDC.SetUserScale( 1, 1 );
             svgDC.SetLogicalScale( 1.0, 1.0 );  
@@ -348,11 +348,13 @@ void EdtEnv::OnValues( wxCommandEvent &event )
     if ( !m_musViewPtr || !m_musViewPtr->m_currentPage )
         return;
     
+    /*
     if ( event.GetId() == ID5_VOICES ) {
         m_musViewPtr->m_currentPage->SetValues( PAGE_VALUES_VOICES );
     } else if ( event.GetId() == ID5_INDENT ) {
         m_musViewPtr->m_currentPage->SetValues( PAGE_VALUES_INDENT );
     }
+    */
 }
 
 void EdtEnv::OnZoomOut( wxCommandEvent &event )
@@ -589,8 +591,8 @@ void EdtEnv::OnSaveSVG( wxCommandEvent &event )
     m_musViewPtr->SetZoom( 100 );
     
     
-    SvgDeviceContext svgDC (m_musViewPtr->ToRendererX( m_musViewPtr->m_doc->m_rendPageWidth + 30 )  ,
-        m_musViewPtr->ToRendererX( m_musViewPtr->m_doc->m_rendPageHeight + 10 )) ;
+    SvgDeviceContext svgDC (m_musViewPtr->ToDeviceContextX( m_musViewPtr->m_doc->m_drawingPageWidth + 30 )  ,
+        m_musViewPtr->ToDeviceContextX( m_musViewPtr->m_doc->m_drawingPageHeight + 10 )) ;
         
     //svgDC.SetUserScale( 1, 1 );
     //svgDC.SetLogicalScale( 1.0, 1.0 );  

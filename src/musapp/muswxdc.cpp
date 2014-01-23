@@ -209,16 +209,16 @@ void MusWxDC::EndGraphic( DocObject *object, View *rc )
     if (GetDrawBoundingBoxes()) {
         SetPen( AxRED, 1, wxDOT_DASH );
         if ( object->HasSelfBB() ) {
-           m_dc->DrawRectangle( rc->ToRendererX( object->m_selfBB_x1 ), rc->ToRendererY( object->m_selfBB_y1 ), 
-                rc->ToRendererX( object->m_selfBB_x2 ) - rc->ToRendererX( object->m_selfBB_x1 ), 
-                rc->ToRendererY( object->m_selfBB_y2 ) - rc->ToRendererY( object->m_selfBB_y1 ));
+           m_dc->DrawRectangle( rc->ToDeviceContextX( object->m_selfBB_x1 ), rc->ToDeviceContextY( object->m_selfBB_y1 ), 
+                rc->ToDeviceContextX( object->m_selfBB_x2 ) - rc->ToDeviceContextX( object->m_selfBB_x1 ), 
+                rc->ToDeviceContextY( object->m_selfBB_y2 ) - rc->ToDeviceContextY( object->m_selfBB_y1 ));
         }
 
         SetPen( AxBLUE, 1, wxDOT);
         if ( object->HasContentBB() ) {
-            m_dc->DrawRectangle( rc->ToRendererX( object->m_contentBB_x1 ), rc->ToRendererY( object->m_contentBB_y1 ), 
-                rc->ToRendererX( object->m_contentBB_x2 ) - rc->ToRendererX( object->m_contentBB_x1 ), 
-                rc->ToRendererY( object->m_contentBB_y2 ) - rc->ToRendererY( object->m_contentBB_y1 )); 
+            m_dc->DrawRectangle( rc->ToDeviceContextX( object->m_contentBB_x1 ), rc->ToDeviceContextY( object->m_contentBB_y1 ), 
+                rc->ToDeviceContextX( object->m_contentBB_x2 ) - rc->ToDeviceContextX( object->m_contentBB_x1 ), 
+                rc->ToDeviceContextY( object->m_contentBB_y2 ) - rc->ToDeviceContextY( object->m_contentBB_y1 )); 
         }
     }
 }

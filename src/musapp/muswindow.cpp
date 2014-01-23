@@ -143,8 +143,6 @@ void MusWindow::Load( AxUndoFile *undoPtr )
     bool editor;
     position_input.Read( &editor, sizeof( bool ) );
     m_editorMode = editor ? vrv::EDITOR_EDIT : vrv::EDITOR_INSERT;
-	position_input.Read( &m_lyricMode, sizeof( bool ) );
-	position_input.Read( &m_inputLyric, sizeof( bool ) );
 	position_input.Read( &m_lyricCursor, sizeof( int ) );
     
     
@@ -237,7 +235,7 @@ void MusWindow::Store( AxUndoFile *undoPtr )
             element = m_currentElement->no;
         }
         */
-        element = m_currentElement->GetElementNo();
+        element = m_currentElement->GetElementIdx();
     }
 		
     // we have a file with extension .pos for storing the current position (page,system, etc.)
@@ -254,8 +252,6 @@ void MusWindow::Store( AxUndoFile *undoPtr )
     // edition state
     bool editor = m_editorMode == vrv::EDITOR_EDIT;
     position_output.Write( &editor, sizeof( bool ) );
-	position_output.Write( &m_lyricMode, sizeof( bool ) );
-	position_output.Write( &m_inputLyric, sizeof( bool ) );
 	position_output.Write( &m_lyricCursor, sizeof( int ) );
 	
     MeiOutput *mei_output = new MeiOutput( m_doc, undoPtr->GetFilename().c_str() );
@@ -292,7 +288,7 @@ void MusWindow::DoLyricCursor( int x, int y, DeviceContext *dc, wxString lyric )
             xCursor += lyricPos[m_lyricCursor-1];			
     }
     // the cursor witdh
-    int wCursor = std::max( 1, ToRendererX( 2 ) );
+    int wCursor = std::max( 1, ToDeviceContextX( 2 ) );
     
     // get the bounding box and draw it
     int wBox, hBox, wBox_empty;
@@ -303,7 +299,7 @@ void MusWindow::DoLyricCursor( int x, int y, DeviceContext *dc, wxString lyric )
         dc->GetTextExtent( empty.mb_str(), &wBox_empty, &hBox );
     }
     dc->SetPen( AxBLACK, 1, wxSHORT_DASH );
-    dc->DrawRectangle( x - 2 * wCursor, ToRendererY( y ) - wCursor, 
+    dc->DrawRectangle( x - 2 * wCursor, ToDeviceContextY( y ) - wCursor, 
         wBox + 4 * wCursor, hBox + 2 * wCursor  ); 
     
     // draw the cursor
@@ -311,7 +307,7 @@ void MusWindow::DoLyricCursor( int x, int y, DeviceContext *dc, wxString lyric )
     dc->SetPen( AxBLACK, 1, wxSOLID );
     dc->SetBrush( m_currentColour, wxSOLID );
     
-    dc->DrawRectangle( xCursor, ToRendererY( y ), wCursor , hBox  );
+    dc->DrawRectangle( xCursor, ToDeviceContextY( y ), wCursor , hBox  );
 
     // reset the pens
     dc->ResetPen();
@@ -333,8 +329,8 @@ void MusWindow::Resize( )
 	
 	Show( false );
 	wxSize parent_s = parent->GetClientSize();
-	int page_w = (ToRendererX(m_doc->m_rendPageWidth) + MUS_BORDER_AROUND_PAGE) * GetZoom() / 100;
-	int page_h = (ToRendererX(m_doc->m_rendPageHeight) + MUS_BORDER_AROUND_PAGE) * GetZoom() / 100;
+	int page_w = (ToDeviceContextX(m_doc->m_drawingPageWidth) + MUS_BORDER_AROUND_PAGE) * GetZoom() / 100;
+	int page_h = (ToDeviceContextX(m_doc->m_drawingPageHeight) + MUS_BORDER_AROUND_PAGE) * GetZoom() / 100;
 	int win_w = std::min( page_w, parent_s.GetWidth() );
 	int win_h = std::min( page_h, parent_s.GetHeight() );
 
@@ -536,7 +532,7 @@ int MusWindow::GetToolType()
         return -1;
     }
     
-    if (m_notation_mode == vrv::MENSURAL_MODE) {
+    if (m_notationMode == vrv::MENSURAL_MODE) {
         if ( sync->IsClef() ) {
             return MUS_TOOLS_CLEFS;
         }
@@ -603,7 +599,7 @@ void MusWindow::Paste()
 		return;
 			
 	// arbitrary x value after the current element
-	m_currentElement = m_currentLayer->Insert( m_bufferElement, m_currentElement->m_xAbs + m_doc->m_rendStep1 * 3 );
+	m_currentElement = m_currentLayer->Insert( m_bufferElement, m_currentElement->m_xAbs + m_doc->m_drawingStep1 * 3 );
 
 	this->Refresh();
 	OnEndEdition();
@@ -616,8 +612,8 @@ void MusWindow::UpdateScroll()
 		
 	int x = 0;
 	if ( m_currentElement )
-		x = ToRendererX( m_currentElement->m_xAbs );
-	int y = ToRendererY(  m_currentStaff->m_yAbs + m_doc->m_rendStaffSize[0] );
+		x = ToDeviceContextX( m_currentElement->m_xAbs );
+	int y = ToDeviceContextY(  m_currentStaff->m_yAbs + m_doc->m_drawingStaffSize[0] );
     
     x *= (double)m_zoomNum / m_zoomDen;
     y *= (double)m_zoomNum / m_zoomDen;
@@ -640,7 +636,7 @@ void MusWindow::UpdateScroll()
 		x = -1;
 	else
 		x /= xu;
-	if ( (y > ys ) && (y < ys + h - 2 * ToRendererX(m_doc->m_rendStaffSize[0])) )
+	if ( (y > ys ) && (y < ys + h - 2 * ToDeviceContextX(m_doc->m_drawingStaffSize[0])) )
 		y = -1;
 	else
 		y /= yu;
@@ -806,7 +802,7 @@ void MusWindow::OnMouseDClick(wxMouseEvent &event)
 
 void MusWindow::OnMouseLeftUp(wxMouseEvent &event)
 {
-	if ( m_editorMode == vrv::EDITOR_EDIT || m_lyricMode )
+	if ( m_editorMode == vrv::EDITOR_EDIT )
 	{
 		m_dragging_x = 0;
 		m_dragging_y_offset = 0;
@@ -839,7 +835,7 @@ void MusWindow::OnMouseLeave(wxMouseEvent &event)
 void MusWindow::OnMouseLeftDown(wxMouseEvent &event)
 {
 
-    if ( m_editorMode == vrv::EDITOR_EDIT || m_lyricMode )
+    if ( m_editorMode == vrv::EDITOR_EDIT )
 	{
         // If we select a new item and the last item was a neume, close it
 		//if (m_currentElement && m_currentElement->IsNeume()) {
@@ -866,8 +862,6 @@ void MusWindow::OnMouseLeftDown(wxMouseEvent &event)
         m_currentLayer = m_currentStaff->GetFirst();
 		m_currentElement = m_currentLayer->GetAtPos( x );				
         
-		m_lyricMode = false;
-		m_inputLyric = false;
 		m_editorMode = vrv::EDITOR_EDIT;
 		
         /* ax2
@@ -899,7 +893,7 @@ void MusWindow::OnMouseLeftDown(wxMouseEvent &event)
 		
 		// Track motion on y-axis
 		if ( m_currentElement )
-			m_dragging_y_offset = y - m_currentStaff->m_yDrawing - m_currentElement->m_yRel;
+			m_dragging_y_offset = y - m_currentStaff->m_drawingY - m_currentElement->m_drawingYRel;
 		else
 			m_dragging_y_offset = 0;
 
@@ -974,10 +968,6 @@ void MusWindow::OnMouseMotion(wxMouseEvent &event)
 			m_insert_pname = CalculatePitchCode( m_currentLayer, y, m_insert_x, &m_insert_oct );
 			m_currentElement->SetPitchOrPosition( m_insert_pname, m_insert_oct );
 		} 
-		else if ( m_lyricMode )					// Movement of lyric element on y-axis
-		{
-			m_currentElement->m_yRel = y - m_currentStaff->m_yDrawing;
-		} 
 		
 		if ( m_insert_x != m_dragging_x  )		// If element has moved in the x-axis
 		{
@@ -1026,7 +1016,7 @@ bool MusWindow::MoveUpDown( bool up )
     
     int x = 0;
     if ( m_currentElement ) {
-        x = m_currentElement->m_xDrawing;
+        x = m_currentElement->m_drawingX;
     }
     
     if ( up ) {
@@ -1549,7 +1539,7 @@ void MusWindow::MensuralEditOnKeyDown(wxKeyEvent &event) {
         else {
             alteration.m_accid = ACCID_SHARP;
         }
-        m_currentLayer->Insert( &alteration, m_currentElement->m_xAbs - m_doc->m_rendStep1 * 3 );
+        m_currentLayer->Insert( &alteration, m_currentElement->m_xAbs - m_doc->m_drawingStep1 * 3 );
         CheckPoint( UNDO_PART, MUS_UNDO_FILE );
         OnEndEdition();
     }
@@ -1561,7 +1551,7 @@ void MusWindow::MensuralEditOnKeyDown(wxKeyEvent &event) {
         Symbol dot( SYMBOL_DOT );
         dot.m_pname = note->m_pname;
         dot.m_oct = note->m_oct;
-        m_currentLayer->Insert( &dot, m_currentElement->m_xAbs + m_doc->m_rendStep1 * 2 );
+        m_currentLayer->Insert( &dot, m_currentElement->m_xAbs + m_doc->m_drawingStep1 * 2 );
         CheckPoint( UNDO_PART, MUS_UNDO_FILE );
         OnEndEdition();
     }
@@ -1732,24 +1722,21 @@ void MusWindow::OnKeyDown(wxKeyEvent &event)
 		return;
     }
 
-    if ( m_lyricMode ) {
-        LyricEntry( event );
-    }
 	// change mode edition -- insertion
-	else if ( event.GetKeyCode() == WXK_RETURN )
+	if ( event.GetKeyCode() == WXK_RETURN )
 	{
 		ToggleEditorMode();
 	}
 	else if ( m_editorMode == vrv::EDITOR_EDIT ) // mode edition
 	{
         SharedEditOnKeyDown(event);
-        if (m_notation_mode == vrv::MENSURAL_MODE) {
+        if (m_notationMode == vrv::MENSURAL_MODE) {
             MensuralEditOnKeyDown(event);
         }
 	}
 	else /*** Note insertion mode ***/
 	{
-        if (m_notation_mode == vrv::MENSURAL_MODE) {
+        if (m_notationMode == vrv::MENSURAL_MODE) {
             MensuralInsertOnKeyDown(event);
         }
 	}

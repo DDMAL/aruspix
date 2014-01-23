@@ -152,7 +152,7 @@ void RecMusController::SyncStaffBitmap( )
 
     int currentElementNo = -1;
     if ( m_viewPtr->m_currentElement )
-        currentElementNo = m_viewPtr->m_currentElement->GetElementNo();
+        currentElementNo = m_viewPtr->m_currentElement->GetElementIdx();
     
     m_staffbmp = wxBitmap(); // clear bitmap;
     m_staffbmp = m_mlfBmp->GenerateBitmap( imstaff, m_viewPtr->m_currentLayer, currentElementNo );

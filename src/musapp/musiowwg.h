@@ -47,6 +47,7 @@ protected:
     char noMasqueFixe;
     char noMasqueVar;
     unsigned char reserve;
+    char defin;
     
     // WWG Note members
     char sil;

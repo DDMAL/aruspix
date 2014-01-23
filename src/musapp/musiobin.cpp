@@ -96,10 +96,10 @@ bool MusBinInput_1_X::ImportFile( )
     {
         Page *page = (Page*)m_doc->m_children[j];
         
-        m_doc->SetRendPage( j );
+        m_doc->SetDrawingPage( j );
         
         m = 0; // staff number on the page
-        int yy =  m_doc->m_rendPageHeight;
+        int yy =  m_doc->m_drawingPageHeight;
         for (k = 0; k < page->GetSystemCount(); k++) 
         {
             System *system = (System*)page->m_children[k];
@@ -110,7 +110,7 @@ bool MusBinInput_1_X::ImportFile( )
             for (l = 0; l < measure->GetStaffCount(); l++)
             {
                 staff = (Staff*)measure->m_children[l];
-                yy -= ecarts[m] * m_doc->m_rendInterl[ staff->staffSize ];
+                yy -= ecarts[m] * m_doc->m_drawingInterl[ staff->staffSize ];
                 staff->m_yAbs = yy;
                 m++;
                 
@@ -215,7 +215,7 @@ bool MusBinInput_1_X::ReadPage( Page *page )
     Read( &unused, 1 );	
 	Read( &unused, 1 );
 	Read( &unused, 1 );
-	Read( &page->defin, 1 );
+	Read( &unused, 1 );
 	Read( &int32, 4 );
 	indent = wxINT32_SWAP_ON_BE( int32 );	
 	Read( &int32, 4 );

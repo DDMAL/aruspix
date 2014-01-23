@@ -115,6 +115,7 @@ void MusWWGElement::WWGInitElement()
     noMasqueFixe = 0;
     noMasqueVar = 0;
     reserve = 0;
+    defin = 18;
     
     // WWG Note
     sil = false;
@@ -287,13 +288,13 @@ bool MusWWGOutput::WriteFileHeader( const MusWWGData *wwgData )
 	Write( &beamWhiteWidth, 1 ); // param - epBlancBarreValeur
 	Write( &m_doc->m_env.m_beamMaxSlope, 1 ); // param - m_beamMaxSlope
 	Write( &m_doc->m_env.m_beamMinSlope, 1 ); // param - m_beamMinSlope
-	int32 = wxINT32_SWAP_ON_BE( m_doc->m_rendPageWidth / 10 ); // param - m_paperWidth
+	int32 = wxINT32_SWAP_ON_BE( m_doc->m_drawingPageWidth / 10 ); // param - m_paperWidth
 	Write( &int32, 4 );
-	int32 = wxINT32_SWAP_ON_BE( m_doc->m_rendPageHeight / 10 ); // param - m_paperHeight
+	int32 = wxINT32_SWAP_ON_BE( m_doc->m_drawingPageHeight / 10 ); // param - m_paperHeight
 	Write( &int32, 4 );
-	int16 = wxINT16_SWAP_ON_BE( m_doc->m_rendPageTopMar ); // param - margeSommet
+	int16 = wxINT16_SWAP_ON_BE( m_doc->m_drawingPageTopMar ); // param - margeSommet
 	Write( &int16, 2 );
-	int16 = wxINT16_SWAP_ON_BE( m_doc->m_rendPageLeftMar ); // param - margeGaucheImpaire
+	int16 = wxINT16_SWAP_ON_BE( m_doc->m_drawingPageLeftMar ); // param - margeGaucheImpaire
 	Write( &int16, 2 );
 	//int16 = wxINT16_SWAP_ON_BE( m_doc->m_env.m_leftMarginEvenPage ); // write the same value
 	Write( &int16, 2 );
@@ -388,7 +389,7 @@ bool MusWWGOutput::WritePage( const Page *page )
     Write( &noMasqueFixe, 1 );    
 	Write( &noMasqueVar, 1 );
 	Write( &reserve, 1 );
-	Write( &page->defin, 1 );
+	Write( &defin, 1 );
     // get the first system for indent information
     System *system = NULL;
     if (page->GetSystemCount() > 0) {
@@ -723,10 +724,10 @@ bool MusWWGInput::ImportFile( )
     {
         Page *page = (Page*)m_doc->m_children[j];
         
-        m_doc->SetRendPage( j );
+        m_doc->SetDrawingPage( j );
         
         m = 0; // staff number on the page
-        int yy =  m_doc->m_rendPageHeight + m_doc->m_rendStaffSize[ 0 ];
+        int yy =  m_doc->m_drawingPageHeight + m_doc->m_drawingStaffSize[ 0 ];
         for (k = 0; k < page->GetSystemCount(); k++) 
         {
             System *system = (System*)page->m_children[k];
@@ -737,7 +738,7 @@ bool MusWWGInput::ImportFile( )
             for (l = 0; l < measure->GetStaffCount(); l++)
             {
                 staff = (Staff*)measure->m_children[l];
-                yy -= ecarts[m] * m_doc->m_rendInterl[ staff->staffSize ];;
+                yy -= ecarts[m] * m_doc->m_drawingInterl[ staff->staffSize ];;
                 staff->m_yAbs = yy;
                 m++;
                 
@@ -902,7 +903,7 @@ bool MusWWGInput::ReadPage( Page *page )
     Read( &noMasqueFixe, 1 );	
 	Read( &noMasqueVar, 1 );
 	Read( &reserve, 1 );
-	Read( &page->defin, 1 );
+	Read( &defin, 1 );
     //page->defin = 16;
 	Read( &int32, 4 );
 	indent = wxINT32_SWAP_ON_BE( int32 );	// page value in wwg

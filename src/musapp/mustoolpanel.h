@@ -215,7 +215,7 @@ private:
     // sizers used to vertical / horizontal change
 	bool m_edition;
 	int m_current_tools;
-	int m_notation_mode;
+	int m_notationMode;
 
 public:
     

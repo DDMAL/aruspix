@@ -256,7 +256,7 @@ void MusToolPanel::SetMusWindow( MusWindow *w )
     m_current_tools = -1; // forces the toolbar to be recreated 
     m_w = w;
 	if (m_w) {
-		m_notation_mode = m_w->m_notation_mode;
+		m_notationMode = m_w->m_notationMode;
 	}
 }
 
@@ -274,7 +274,7 @@ void MusToolPanel::OnUpdateUI( wxUpdateUIEvent &event )
     } else if (id == ID_MS_BT_SYMBOLS) {
         event.Check( m_current_tools == MUS_TOOLS_OTHER);
     } else if (id == ID_MS_BT_TEXT) {
-        event.Check( m_w && m_w->m_lyricMode );
+        event.Check( false );
     // neumatic notation
     } else if (id == ID_MS_BT_NEUMES) {
         event.Check( m_current_tools == NEUME_TOOLS_NOTES);
@@ -287,7 +287,7 @@ void MusToolPanel::SetTools( int tools, bool edition )
 {
 	if ( (tools == -1) || (tools != m_current_tools) ) // change tools
 	{ 
-		m_tools->UpdateTools( tools, m_notation_mode );
+		m_tools->UpdateTools( tools, m_notationMode );
         //wxYield( );
         this->Fit(); // resize
 		this->Refresh();

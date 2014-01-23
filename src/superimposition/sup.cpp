@@ -787,8 +787,8 @@ void SupEnv::OnExportImage( wxCommandEvent &event )
     wxGetApp().m_lastDirTIFF_out = wxPathOnly( filename );
 
     wxMemoryDC memDC;
-    wxBitmap bitmap( m_musViewPtr->ToRendererX( m_musViewPtr->m_pageWidth + 30 )  ,
-        m_musViewPtr->ToRendererX( m_musViewPtr->m_paperHeight + 10 )); // marges bricolees ...
+    wxBitmap bitmap( m_musViewPtr->ToDeviceContextX( m_musViewPtr->m_pageWidth + 30 )  ,
+        m_musViewPtr->ToDeviceContextX( m_musViewPtr->m_paperHeight + 10 )); // marges bricolees ...
     memDC.SelectObject(bitmap);
     memDC.SetBackground(*wxWHITE_BRUSH);
     memDC.Clear();
