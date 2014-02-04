@@ -117,6 +117,17 @@ void MusWWGElement::WWGInitElement()
     reserve = 0;
     defin = 18;
     
+    noGrp = 0;
+    totGrp = 0;
+    armTyp = 0;
+    armNbr = 0;
+    vertBarre = 0;
+    brace = 0;
+    portNbLine = 0;
+    accol = 0;
+    accessoire = 0;
+    notAnc = 0;
+    
     // WWG Note
     sil = false;
     val = 0;
@@ -437,31 +448,31 @@ bool MusWWGOutput::WriteLayer( const Layer *layer, int staffNo )
 	Write( &uint32, 4 );
 	uint16 = wxUINT16_SWAP_ON_BE( layer->voix );
 	Write( &uint16, 2 );
-	uint16 = wxUINT16_SWAP_ON_BE( m_current_staff->noGrp );
+	uint16 = wxUINT16_SWAP_ON_BE( noGrp );
 	Write( &uint16, 2 );
-	uint16 = wxUINT16_SWAP_ON_BE( m_current_staff->totGrp );
+	uint16 = wxUINT16_SWAP_ON_BE( totGrp );
 	Write( &uint16, 2 );
 	uint16 = wxUINT16_SWAP_ON_BE( m_current_system->GetSystemIdx() ); // we don't have noLigne anymore - given by the current system being written
 	Write( &uint16, 2 );
 	uint16 = wxUINT16_SWAP_ON_BE( m_current_staff->GetStaffIdx() );
 	Write( &uint16, 2 );
-	Write( &m_current_staff->armTyp, 1 );
-	Write( &m_current_staff->armNbr, 1 );
+	Write( &armTyp, 1 );
+	Write( &armNbr, 1 );
 	Write( &m_current_staff->notAnc, 1 );
 	Write( &m_current_staff->grise, 1 );
 	Write( &m_current_staff->invisible, 1 );
 	uint16 = wxUINT16_SWAP_ON_BE( ecarts[staffNo] );
 	Write( &uint16, 2 );
-	Write( &m_current_staff->vertBarre, 1 );
-	Write( &m_current_staff->brace, 1 );
+	Write( &vertBarre, 1 );
+	Write( &brace, 1 );
 	Write( &m_current_staff->staffSize, 1 );
     char indent = ( m_current_system->m_systemLeftMar > 0 );
     Write( &indent, 1 );
     indent = 0;
 	Write( &indent, 1 ); // fake it
-	Write( &m_current_staff->portNbLine, 1 );
-	Write( &m_current_staff->accol, 1 );
-	Write( &m_current_staff->accessoire, 1 );
+	Write( &portNbLine, 1 );
+	Write( &accol, 1 );
+	Write( &accessoire, 1 );
 	uint16 = wxUINT16_SWAP_ON_BE( 0 ); // reserve
 	Write( &uint16, 2 );
 	for (k = 0;k < layer->GetElementCount() ; k++ )
@@ -959,29 +970,29 @@ bool MusWWGInput::ReadStaff( Staff *staff, Layer *layer, int staffNo )
 	layer->voix = wxUINT16_SWAP_ON_BE( uint16 );
 	//wxLogDebug("voix: %d", layer->voix);
 	Read( &uint16, 2 );
-	staff->noGrp = wxUINT16_SWAP_ON_BE( uint16 );
+    noGrp = wxUINT16_SWAP_ON_BE( uint16 );
 	Read( &uint16, 2 );
-	staff->totGrp = wxUINT16_SWAP_ON_BE( uint16 );
+	totGrp = wxUINT16_SWAP_ON_BE( uint16 );
 	Read( &uint16, 2 );
 	m_noLigne = wxUINT16_SWAP_ON_BE( uint16 );
 	Read( &uint16, 2 );
 	//staff->no = wxUINT16_SWAP_ON_BE( uint16 );
-	Read( &staff->armTyp, 1 );
-	Read( &staff->armNbr, 1 );
-	Read( &staff->notAnc, 1 );
+	Read( &armTyp, 1 );
+	Read( &armNbr, 1 );
+	Read( &notAnc, 1 );
 	//staff->notAnc = true;// force notation ancienne
 	Read( &staff->grise, 1 );
 	Read( &staff->invisible, 1 );
 	Read( &uint16, 2 );
 	ecarts[staffNo] = wxUINT16_SWAP_ON_BE( uint16 );
-	Read( &staff->vertBarre, 1 );
-	Read( &staff->brace, 1 );
+	Read( &vertBarre, 1 );
+	Read( &brace, 1 );
 	Read( &staff->staffSize, 1 );
     Read( &m_indent, 1 );
 	Read( &m_indentDroite, 1 );
-	Read( &staff->portNbLine, 1 );
-	Read( &staff->accol, 1 );
-	Read( &staff->accessoire, 1 );
+	Read( &portNbLine, 1 );
+	Read( &accol, 1 );
+	Read( &accessoire, 1 );
 	Read( &uint16, 2 );
 	//staff->reserve = wxUINT16_SWAP_ON_BE( uint16 );
 	

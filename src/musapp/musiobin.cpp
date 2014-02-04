@@ -274,6 +274,7 @@ bool MusBinInput_1_X::ReadPage( Page *page )
 bool MusBinInput_1_X::ReadStaff( Staff *staff, Layer *layer, int staffNo )
 {
 	unsigned int k;
+    unsigned char unused;
 
 	Read( &uint32, 4 );
 	unsigned int nblement  = wxUINT32_SWAP_ON_BE( uint32 );
@@ -281,30 +282,30 @@ bool MusBinInput_1_X::ReadStaff( Staff *staff, Layer *layer, int staffNo )
 	layer->voix = wxUINT16_SWAP_ON_BE( uint16 );
 	//wxLogDebug("voix: %d", layer->voix);
 	Read( &uint16, 2 );
-	staff->noGrp = wxUINT16_SWAP_ON_BE( uint16 );
+	//staff->noGrp = wxUINT16_SWAP_ON_BE( uint16 );
 	Read( &uint16, 2 );
-	staff->totGrp = wxUINT16_SWAP_ON_BE( uint16 );
+	//staff->totGrp = wxUINT16_SWAP_ON_BE( uint16 );
 	Read( &uint16, 2 );
 	m_noLigne = wxUINT16_SWAP_ON_BE( uint16 );
 	Read( &uint16, 2 );
 	//staff->no = wxUINT16_SWAP_ON_BE( uint16 ); // ignored
-	Read( &staff->armTyp, 1 );
-	Read( &staff->armNbr, 1 );
+	Read( &unused, 1 ); // armTyp
+	Read( &unused, 1 ); // armNbr
 	Read( &staff->notAnc, 1 );
 	//staff->notAnc = true;// force notation ancienne
 	Read( &staff->grise, 1 );
 	Read( &staff->invisible, 1 );
 	Read( &uint16, 2 );
 	ecarts[staffNo] = wxUINT16_SWAP_ON_BE( uint16 );
-	Read( &staff->vertBarre, 1 );
-	Read( &staff->brace, 1 );
+	Read( &unused, 1 ); // vertBarre
+	Read( &unused, 1 ); // brace
 	Read( &staff->staffSize, 1 );
     Read( &int32, 4 );
     m_indent = wxINT32_SWAP_ON_BE( int32 );
 	Read( &m_indentDroite, 1 );
-	Read( &staff->portNbLine, 1 );
-	Read( &staff->accol, 1 );
-	Read( &staff->accessoire, 1 );
+	Read( &unused, 1 ); // portNbLine
+	Read( &unused, 1 ); // accol
+	Read( &unused, 1 ); // accessoire
 	Read( &uint16, 2 );
 	//staff->reserve = wxUINT16_SWAP_ON_BE( uint16 ); // ignored
 	

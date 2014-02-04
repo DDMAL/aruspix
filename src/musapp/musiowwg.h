@@ -49,6 +49,18 @@ protected:
     unsigned char reserve;
     char defin;
     
+    unsigned short noGrp;
+    unsigned short totGrp;
+    unsigned char armTyp;
+    unsigned char armNbr;
+    unsigned char vertBarre;
+    unsigned char brace;
+    unsigned char portNbLine;
+    unsigned char accol;
+    unsigned char accessoire;
+    unsigned char notAnc;
+    
+    
     // WWG Note members
     char sil;
     unsigned char val;

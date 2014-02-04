@@ -184,6 +184,7 @@ bool EdtFile::Create( )
         //system->lrg_lign = width - 20; // we have now m_systemRightMar  
         for (j = 0; j < nb_staves_per_system; j++)
         {
+            /*
             Staff *staff = new Staff( j + 1 );
             staff->portNbLine = EdtNewDlg::s_staffLines;
             if (EdtNewDlg::s_m_notationMode == vrv::MENSURAL_MODE)
@@ -199,10 +200,11 @@ bool EdtFile::Create( )
                 staff->vertBarre = END;
                 staff->brace = END;
             }
+            */
             // We also need to create the layers!
             // ...
             // We also need to add pageBreaks and systemBreak to the layers
-            measure->AddStaff( staff );
+            //measure->AddStaff( staff );
         }
         system->AddMeasure( measure );
         page->AddSystem( system );
