@@ -19,6 +19,7 @@
 #include "muswindow.h"
 #include "mustoolpanel.h"
 
+#include "vrv/bboxdevicecontext.h"
 #include "vrv/iomei.h"
 #include "vrv/page.h"
 #include "vrv/system.h"
