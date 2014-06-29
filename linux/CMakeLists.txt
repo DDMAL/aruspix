@@ -3,22 +3,25 @@ CMAKE_MINIMUM_REQUIRED( VERSION 2.8 )
 
 SET( CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH}" "${CMAKE_SOURCE_DIR}" )
 
+OPTION(wxDir "/usr/lib/wx")
+SET(wxWidgets_ROOT_DIR "${wxDir}")
+SET(wxWidgets_CONFIG_EXECUTABLE "${wxDir}/wx-config") 
 FIND_PACKAGE(wxWidgets COMPONENTS base core net html adv aui )
+
 FIND_PACKAGE( LibXml2 )
-FIND_PACKAGE( LibMei )
 
-option(AX_BUILD_TESTS "Build all unit tests" ON)
+OPTION(imDir "/usr")
+FIND_LIBRARY(IM_LIBRARY im "${imDir}/lib")
+FIND_LIBRARY(IM_PROCESS_LIBRARY im_process "${imDir}/lib")
+FIND_LIBRARY(IM_PROCESS_FFTW im_fftw "${imDir}/lib")
 
-if(AX_BUILD_TESTS)
-      enable_testing()
-endif(AX_BUILD_TESTS)
+set(ARCH i386)
 
 SET( aruspixSources ${aruspixSources}
 	../src/app/axabout_wdr.cpp
 	../src/app/axapp.cpp
 	../src/app/axapp_wdr.cpp
 	../src/app/axctrl.cpp
-	../src/app/axdc.cpp
 	../src/app/axenv.cpp
 	../src/app/axfile.cpp
 	../src/app/axframe.cpp
@@ -32,20 +35,17 @@ SET( aruspixSources ${aruspixSources}
 	../src/app/axprogressdlg.cpp
 	../src/app/axscrolledwindow.cpp
 	../src/app/axundo.cpp
-	../src/app/axwxdc.cpp
 	../src/app/wxprec.cpp
 
 	../src/comparison/cmp.cpp
 	../src/comparison/cmpctrl.cpp
 	../src/comparison/cmpfile.cpp
-	../src/comparison/cmpim.cpp
-	../src/comparison/cmpmlf.cpp
 	../src/comparison/cmpmus.cpp
 	../src/comparison/cmp_wdr.cpp
 
 	../src/edition/edt.cpp
 	../src/edition/edtfile.cpp
-	../src/edition/edt_wdr.cpp
+	../src/edition/edt_wdr_inc.cpp
 
 	../src/im/imbrink3classes.cpp
 	../src/im/imbrink.cpp
@@ -57,39 +57,44 @@ SET( aruspixSources ${aruspixSources}
 	../src/im/imstaff.cpp
 	../src/im/imstaffsegment.cpp
 
-	../src/ml/mldecoderpage.cpp
-	../src/ml/mldecoderstaff.cpp
-	../src/ml/mlhmm.cpp
-	../src/ml/mlngrambuilder.cpp
-	../src/ml/mlngramentry.cpp
-
-	../src/mus/musbarlines.cpp
+	../src/mus/musapp.cpp
+	../src/mus/musbarline.cpp 
+	../src/mus/musbboxdc.cpp 
 	../src/mus/musbeam.cpp
-	../src/mus/musbezier.cpp
-	../src/mus/musclef.cpp
-	../src/mus/mus.cpp
-	../src/mus/muselement.cpp
-	../src/mus/musfile.cpp
-	../src/mus/musgraph.cpp
-	../src/mus/musiobin.cpp
-	../src/mus/musiocmme.cpp
-    #../src/mus/musiomei.cpp
-	../src/mus/musiomei2.cpp
-	../src/mus/musiomlf.cpp
-	../src/mus/musiowwg.cpp
-	../src/mus/musioxml.cpp
-	../src/mus/musmlfdic.cpp
-	../src/mus/musneume.cpp
-	../src/mus/musneumesymbol.cpp
-	../src/mus/musnote.cpp
-	../src/mus/musobject.cpp
-	../src/mus/muspage.cpp
-	../src/mus/musrc.cpp
-	../src/mus/musstaff.cpp
-	../src/mus/mussvgdc.cpp
-	../src/mus/mussymbol.cpp
-	../src/mus/mustoolpanel.cpp
-	../src/mus/muswindow.cpp
+	../src/mus/musclef.cpp 
+	../src/mus/musdc.cpp 
+	../src/mus/musdoc.cpp 	
+	../src/mus/musdurationinterface.cpp 
+	../src/mus/musio.cpp 
+	../src/mus/musiodarms.cpp
+	../src/mus/musiomei.cpp 
+	../src/mus/musiomusxml.cpp
+	../src/mus/musiopae.cpp 
+	../src/mus/muskeysig.cpp
+	../src/mus/muslayer.cpp
+	../src/mus/muslayerelement.cpp 
+	../src/mus/musleipzigbbox.cpp
+	../src/mus/musmensur.cpp 
+	../src/mus/musnote.cpp 
+	../src/mus/musobject.cpp 
+	../src/mus/muspage.cpp 
+	../src/mus/muspitchinterface.cpp 
+	../src/mus/muspositioninterface.cpp 
+	../src/mus/musrc.cpp 
+	../src/mus/musrc_beam.cpp  
+	../src/mus/musrc_bezier.cpp 
+	../src/mus/musrc_element.cpp 
+	../src/mus/musrc_graph.cpp 
+	../src/mus/musrc_page.cpp
+	../src/mus/musrc_tuplet.cpp
+	../src/mus/musrest.cpp 
+	../src/mus/musslur.cpp
+	../src/mus/musstaff.cpp 
+	../src/mus/mussvgdc.cpp 
+	../src/mus/mussymbol.cpp 
+	../src/mus/mussystem.cpp 
+	../src/mus/mustie.cpp
+	../src/mus/mustuplet.cpp
 
 	../src/recognition/recbookctrl.cpp
 	../src/recognition/recbookfile.cpp
@@ -100,8 +105,6 @@ SET( aruspixSources ${aruspixSources}
 	../src/recognition/recmodels.cpp
 	../src/recognition/recmus.cpp
 	../src/recognition/rec_wdr.cpp
-
-	../src/rtmidi/RtMidi.cpp
 
 	../src/superimposition/supbookctrl.cpp
 	../src/superimposition/supbookfile.cpp
@@ -129,9 +132,8 @@ INCLUDE_DIRECTORIES(
 	../src/ml
 	../src/mus
 
-	/usr/include/im
+	${imDir}/include
 	${LIBXML2_INCLUDE_DIR}
-    ${LIBMEI_INCLUDE_DIR}
 	/usr/include/torch
 )
 
@@ -154,54 +156,13 @@ ADD_DEFINITIONS(
 
 ADD_EXECUTABLE( aruspix ${aruspixSources} )
 
+
 TARGET_LINK_LIBRARIES( aruspix
 	-lz
 	-lpthread
-	-lasound
-	-lim
-	-lim_process
-	-lim_fftw
-	-ltorch
+	${IM_LIBRARY}
+	${IM_PROCESS_LIBRARY}
+	${IM_FFTW_LIBRARY}
 	${wxWidgets_LIBRARIES}
 	${LIBXML2_LIBRARIES}
-    ${LIBMEI_LIBRARY}
 )
-
-if( AX_BUILD_TESTS )
-    set( EXECUTABLE_OUTPUT_PATH ${CMAKE_CURRENT_BINARY_DIR} )
-    include_directories( ${CMAKE_CURRENT_BINARY_DIR})
-
-    find_package( GoogleTest )
-
-    macro(add_ax_test _source)
-        get_filename_component(_name ${_source} NAME_WE)
-        add_executable(${_name} ${ARGV} ../test/gtest_main.cc)
-        target_link_libraries(${_name} 
-            ${GTEST_LIBRARIES}
-            -lpthread
-        	${wxWidgets_LIBRARIES}
-        	${LIBXML2_LIBRARIES}
-            ${LIBMEI_LIBRARY}
-            )
-        # tests depend on the latest version of the library
-        add_test(${_name}-test ${EXECUTABLE_OUTPUT_PATH}/${_name})
-    endmacro(add_ax_test)
-
-    add_ax_test ( ../test/mus/musneume_test.cpp
-                  ../src/mus/musobject.cpp
-                  ../src/mus/muselement.cpp
-                  ../src/mus/musneume.cpp
-                  ../test/fakemus.cpp )
-
-    add_ax_test ( ../test/mus/musiomei2_test.cpp
-                  ../src/mus/musiomei2.cpp
-                  ../src/mus/musfile.cpp
-                  ../test/fakemus.cpp )
-
-    add_ax_test ( ../test/mus/musneumesymbol_test.cpp
-                  ../src/mus/musneumesymbol.cpp
-                  ../src/mus/musobject.cpp
-                  ../src/mus/muselement.cpp 
-                  ../test/fakemus.cpp )
-
-endif( AX_BUILD_TESTS )
