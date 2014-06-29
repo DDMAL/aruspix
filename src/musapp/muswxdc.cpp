@@ -205,20 +205,24 @@ void MusWxDC::EndGraphic( DocObject *object, View *rc )
     // bounding boxes are given in logical coordinates - we need to convert them
     // this is why we have a View object
     
-    //return;
+    return;
     if (GetDrawBoundingBoxes()) {
         SetPen( AxRED, 1, wxDOT_DASH );
         if ( object->HasSelfBB() ) {
-           m_dc->DrawRectangle( rc->ToDeviceContextX( object->m_selfBB_x1 ), rc->ToDeviceContextY( object->m_selfBB_y1 ), 
+           m_dc->DrawRectangle(
+                rc->ToDeviceContextX( object->m_selfBB_x1 + object->GetDrawingX() ),
+                rc->ToDeviceContextY( object->m_selfBB_y1 + object->GetDrawingY() ),
                 rc->ToDeviceContextX( object->m_selfBB_x2 ) - rc->ToDeviceContextX( object->m_selfBB_x1 ), 
                 rc->ToDeviceContextY( object->m_selfBB_y2 ) - rc->ToDeviceContextY( object->m_selfBB_y1 ));
         }
 
         SetPen( AxBLUE, 1, wxDOT);
         if ( object->HasContentBB() ) {
-            m_dc->DrawRectangle( rc->ToDeviceContextX( object->m_contentBB_x1 ), rc->ToDeviceContextY( object->m_contentBB_y1 ), 
+            m_dc->DrawRectangle(
+                rc->ToDeviceContextX( object->m_contentBB_x1 + object->GetDrawingX() ),
+                rc->ToDeviceContextY( object->m_contentBB_y1 + object->GetDrawingY() ),
                 rc->ToDeviceContextX( object->m_contentBB_x2 ) - rc->ToDeviceContextX( object->m_contentBB_x1 ), 
-                rc->ToDeviceContextY( object->m_contentBB_y2 ) - rc->ToDeviceContextY( object->m_contentBB_y1 )); 
+                rc->ToDeviceContextY( object->m_contentBB_y2 ) - rc->ToDeviceContextY( object->m_contentBB_y1 ) ); 
         }
     }
 }

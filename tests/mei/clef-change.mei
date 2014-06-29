@@ -22,61 +22,14 @@
                 <pages type="raw">
                     <!--Coordinates in MEI axis direction-->
                     <page page.width="2108" page.height="2970" page.leftmar="20" page.rightmar="20" page.topmar="20">
-                        <system system.leftmar="200" system.rightmar="0">
-
-                            <measure n="1">
-                                <staff n="1">
-                                    <layer n="1">
-                                        <note pname="d" oct="5" dur="minima" />
-                                        <note pname="d" oct="5" dur="minima" />
-                                        <beam>
-                                            <note pname="c" oct="4" dur="semifusa" />
-                                            <note pname="c" oct="4" dur="semifusa" />
-                                            <note pname="c" oct="4" dur="fusa" accid="s" />
-                                            <note pname="c" oct="4" dur="fusa" />
-                                            <note pname="c" oct="3" dur="fusa" accid="s" />
-                                        </beam>
-                                        <note pname="c" oct="4" dur="semiminima" />
-                                        <note pname="g" oct="4" dur="semiminima" />
-                                    </layer>
-                                </staff>
-                                <staff n="2">
-                                    <layer n="1">
-                                        <note pname="d" oct="4" accid="s" dur="minima" />
-                                        <note pname="d" oct="4" dur="semiminima" />
-                                        <note pname="d" oct="4" dur="semiminima" />
-                                        
-                                        <beam>
-                                            <note pname="c" oct="4" dur="fusa" dots="2" />
-                                            <note pname="c" oct="4" dur="32" />
-                                        </beam>
-                                        <beam>
-                                            <note pname="c" oct="4" dur="semifusa" accid="s" />
-                                            <note pname="a" oct="4" dur="semifusa" />
-                                            <note pname="c" oct="4" dur="semifusa" />
-                                            <note pname="a" oct="3" dur="semifusa" />
-                                        </beam>
-                                        <note pname="c" oct="4" dur="minima" />
-                                    </layer>
-                                </staff>
-                                <staff n="3">
-                                    <layer n="1">
-                                        <note pname="d" oct="4" accid="s" dur="minima" />
-                                        <note pname="d" oct="4" dur="semiminima" />
-                                        <note pname="d" oct="4" dur="semiminima" />
-                                        
-                                        <note pname="d" oct="4" accid="s" dur="minima" />
-                                        <note pname="d" oct="4" dur="semiminima" />
-                                        <note pname="c" oct="0" dur="semiminima" />
-                                    </layer>
-                                </staff>
-                                
-                            </measure>
-                         
-                        </system>  
-                       
                         <system system.leftmar="0" system.rightmar="0">
-                            
+                            <scoreDef clef.shape="G" clef.line="1" meter.count="3" meter.unit="4" key.sig="0">
+                                <staffGrp symbol="line">
+                                    <staffGrp xml:id="P1" symbol="bracket">
+                                        <staffDef n="1" lines="5" clef.line="2" clef.shape="G" key.sig="5s"/>
+                                    </staffGrp>
+                                </staffGrp>
+                            </scoreDef>
                             <measure n="1">
                                 <staff n="1">
                                     <layer n="1">
@@ -93,29 +46,45 @@
                                         <note pname="g" oct="4" dur="semiminima" />
                                     </layer>
                                 </staff>
-                                <staff n="2">
+                            </measure>  
+                            <measure n="2">
+                                <staff n="1">
                                     <layer n="1">
-                                        <note pname="d" oct="4" accid="s" dur="minima" />
-                                        <note pname="d" oct="4" dur="semiminima" />
-                                        <note pname="d" oct="4" dur="semiminima" />
-                                        
+                                        <note pname="d" oct="5" dur="minima" />
+                                        <clef shape="C" line="1"/>
+                                        <note pname="d" oct="5" dur="minima" />
                                         <beam>
-                                            <note pname="c" oct="4" dur="fusa" dots="2" />
-                                            <note pname="c" oct="4" dur="32" />
-                                        </beam>
-                                        <beam>
-                                            <note pname="c" oct="4" dur="semifusa" accid="s" />
-                                            <note pname="a" oct="4" dur="semifusa" />
                                             <note pname="c" oct="4" dur="semifusa" />
-                                            <note pname="a" oct="3" dur="semifusa" />
+                                            <note pname="c" oct="4" dur="semifusa" />
+                                            <note pname="c" oct="4" dur="fusa" accid="s" />
+                                            <note pname="c" oct="4" dur="fusa" />
+                                            <note pname="c" oct="3" dur="fusa" accid="s" />
                                         </beam>
-                                        <note pname="c" oct="4" dur="minima" />
+                                        <note pname="c" oct="4" dur="semiminima" />
+                                        <note pname="g" oct="4" dur="semiminima" />
                                     </layer>
                                 </staff>
-                            </measure>
-                            
+                            </measure>  
+                        </system>  
+                        <system system.leftmar="0" system.rightmar="0">
+                            <measure n="1">
+                                <staff n="1">
+                                    <layer n="1">
+                                        <note pname="d" oct="5" dur="minima" />
+                                        <note pname="d" oct="5" dur="minima" />
+                                        <beam>
+                                            <note pname="c" oct="4" dur="semifusa" />
+                                            <note pname="c" oct="4" dur="semifusa" />
+                                            <note pname="c" oct="4" dur="fusa" accid="s" />
+                                            <note pname="c" oct="4" dur="fusa" />
+                                            <note pname="c" oct="3" dur="fusa" accid="s" />
+                                        </beam>
+                                        <note pname="c" oct="4" dur="semiminima" />
+                                        <note pname="g" oct="4" dur="semiminima" />
+                                    </layer>
+                                </staff>
+                            </measure>                
                         </system>
-                       
                     </page>
                 </pages>
             </mdiv>

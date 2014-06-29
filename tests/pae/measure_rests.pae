@@ -1,7 +1,7 @@
-@start:measure_rests
+@start:test
 @clef:G-2
 @keysig:xFC
 @key:
 @timesig:c/
-@data:''2C/=5/''4E'B''C/=3/''4DC'8BA/4.G
-@end:measure_rests
+@data:='4D'qq{6EEE}r8CA
+@end:test

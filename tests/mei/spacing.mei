@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<?xml-model href="./mei-page-based.rng" type="application/xml" schematypens="http://relaxng.org/ns/structure/1.0"?>
+<mei xmlns="http://www.music-encoding.org/ns/mei" meiversion="2013">
+    <meiHead>
+        <fileDesc>
+            <titleStmt>
+                <title />
+            </titleStmt>
+            <pubStmt>
+                <date>Sat Oct 19 21:41:50 2013</date>
+            </pubStmt>
+        </fileDesc>
+        <encodingDesc>
+            <projectDesc>
+                <p>Encoded with Aruspix version 2.3.0</p>
+            </projectDesc>
+        </encodingDesc>
+    </meiHead>
+    <music>
+        <body>
+            <mdiv>
+                <pages type="raw">
+                    <!--Coordinates in MEI axis direction-->
+                    <page page.width="2108" page.height="2970" page.leftmar="20" page.rightmar="20">
+                        <system system.leftmar="0" system.rightmar="0">
+                            <scoreDef>
+                                <staffGrp symbol="line">
+                                    <staffDef n="1" clef.line="2" clef.shape="G" /> 
+                                </staffGrp>
+                            </scoreDef>
+                            <measure n="1">
+                                <staff n="1">
+                                    <layer n="1">
+                                        <clef shape="G" line="2" />
+                                        <beam>
+                                            <note pname="e" oct="4" dur="16" />
+                                            <note pname="e" oct="4" dur="16" />
+                                            <note pname="e" oct="4" dur="16" />
+                                            <note pname="e" oct="4" dur="16" />
+                                        </beam>
+                                        <beam>
+                                            <note pname="e" oct="4" dur="8" />
+                                            <note pname="e" oct="4" dur="8" />
+                                        </beam>
+                                        <beam>
+                                            <note pname="e" oct="4" dur="8" dots="1" />
+                                            <note pname="e" oct="4" dur="8" dots="1" />
+                                        </beam>
+                                        <note pname="e" oct="4" dur="4" />
+                                        <note pname="e" oct="4" dur="4" />
+                                        <note pname="e" oct="4" dur="4" dots="1" />
+                                        <note pname="e" oct="4" dur="4" dots="1" />
+                                        <note pname="e" oct="4" dur="2" />
+                                        <note pname="e" oct="4" dur="2" />
+                                        <note pname="e" oct="4" dur="2" dots="1" />
+                                        <note pname="e" oct="4" dur="2" dots="1" />
+                                        <note pname="e" oct="4" dur="1" />
+                                        <note pname="e" oct="4" dur="1" />
+                                    </layer>
+                                </staff>
+                            </measure>
+                        </system>
+                    </page>
+                </pages>
+            </mdiv>
+        </body>
+    </music>
+</mei>

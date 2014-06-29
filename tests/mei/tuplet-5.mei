@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<?xml-model href="./mei-page-based.rng" type="application/xml" schematypens="http://relaxng.org/ns/structure/1.0"?>
+<mei xmlns="http://www.music-encoding.org/ns/mei" meiversion="2013">
+    <meiHead>
+        <fileDesc>
+            <titleStmt>
+                <title />
+            </titleStmt>
+            <pubStmt>
+                <date>4 December 2013</date>
+            </pubStmt>
+        </fileDesc>
+        <encodingDesc>
+            <projectDesc>
+                <p>Tuplets example</p>
+            </projectDesc>
+        </encodingDesc>
+    </meiHead>
+    <music>
+        <body>
+            <mdiv>
+                <score>
+                    <scoreDef clef.shape="G" clef.line="2" meter.count="3" meter.unit="4" key.sig="0">
+                        <staffGrp symbol="line">
+                            <staffGrp xml:id="P1" symbol="brace" label="Part_1">
+                                <staffDef n="1" lines="5" clef.line="2" clef.shape="G" key.sig="5s"/>
+                                <staffDef n="2" lines="5" clef.line="4" clef.shape="F" key.sig="5s"/>
+                            </staffGrp>
+                        </staffGrp>
+                    </scoreDef>
+                    <section>
+                     <measure n="1" xml:id="m1">
+                            <staff n="1" xml:id="s1">
+                                <layer n="1" xml:id="l1">
+                                    <barLine />
+                                    
+                                    <tuplet xml:id="t1" num="3" numbase="2">
+                                        
+                                        <beam xml:id="b1">
+                                            <note xml:id="n2" pname="e" oct="4" dur="16" dots="1"/>
+                                            <note xml:id="n3" pname="d" oct="5" dur="32" />
+                                            <note xml:id="n4" pname="c" oct="5" dur="8"/>
+                                        </beam>
+                                    </tuplet>
+                                    <tuplet num="3" numbase="2">
+                                        <note xml:id="d648110e34040" pname="b" oct="4" dur="4" stem.dir="down" accid.ges="f"/>
+                                        <note xml:id="d648110e34065" pname="a" oct="4" dur="8" stem.dir="up" accid.ges="f"/>
+                                    </tuplet>
+                                </layer>
+                            </staff>
+                        </measure>
+                    </section>
+                </score>
+            </mdiv>
+        </body>
+    </music>
+</mei>

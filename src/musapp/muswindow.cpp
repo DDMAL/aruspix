@@ -893,7 +893,7 @@ void MusWindow::OnMouseLeftDown(wxMouseEvent &event)
 		
 		// Track motion on y-axis
 		if ( m_currentElement )
-			m_dragging_y_offset = y - m_currentStaff->m_drawingY - m_currentElement->m_drawingYRel;
+			m_dragging_y_offset = y - m_currentElement->GetDrawingY();
 		else
 			m_dragging_y_offset = 0;
 
@@ -1016,7 +1016,7 @@ bool MusWindow::MoveUpDown( bool up )
     
     int x = 0;
     if ( m_currentElement ) {
-        x = m_currentElement->m_drawingX;
+        x = m_currentElement->GetDrawingX();
     }
     
     if ( up ) {
@@ -2124,6 +2124,16 @@ void MusWindow::OnPaint(wxPaintEvent &event)
 	//m_page->Init( this );
     MusWxDC ax_dc( &dc );
     ax_dc.SetDrawBoundingBoxes(true);
+    
+    // Render it for filling the bounding boxing
+    /*
+    View view;
+    BBoxDeviceContext bb_dc( &view, 0, 0 );
+    view.SetDoc(this->m_doc);
+    // Do not do the layout in this view - otherwise we will loop...
+    view.SetPage( 0, false );
+    view.DrawCurrentPage(  &bb_dc, false );
+    */
     
     DrawCurrentPage( &ax_dc );
 
