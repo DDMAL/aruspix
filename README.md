@@ -55,21 +55,21 @@ file is used by Xcode to set the following environment variables for linking pur
 
 
 environment.plist prototype:
-	
-		<?xml version="1.0" encoding="UTF-8"?>
-		<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-		<plist version="1.0">
-		<dict>
-		    <key>ARUSPIX_IMLIB</key>
-		    <string>/Users/puginl/libs/imlib</string>
-		    <key>ARUSPIX_TORCH</key>
-		    <string>/Users/puginl/libs/Torch3</string>
-		    <key>ARUSPIX_WX</key>
-		    <string>/Users/puginl/libs/wx2.8.11</string>
-		    <key>ARUSPIX_WX_VERSION</key>
-		    <string>2.8</string>
-		</dict>
-		</plist>
+
+	<?xml version="1.0" encoding="UTF-8"?>
+	<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+	<plist version="1.0">
+	<dict>
+	    <key>ARUSPIX_IMLIB</key>
+	    <string>/Users/puginl/libs/imlib</string>
+	    <key>ARUSPIX_TORCH</key>
+	    <string>/Users/puginl/libs/Torch3</string>
+	    <key>ARUSPIX_WX</key>
+	    <string>/Users/puginl/libs/wx2.8.11</string>
+	    <key>ARUSPIX_WX_VERSION</key>
+	    <string>2.8</string>
+	</dict>
+	</plist>
 
 
 * You must modify the paths within this file to match your directory structure and rename it environment.plist.

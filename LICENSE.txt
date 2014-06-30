@@ -1,4 +1,4 @@
-Copyright (C) 2004-2012 Laurent Pugin and others
+Copyright (C) 2004-2014 Laurent Pugin and others
 
 Aruspix is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
