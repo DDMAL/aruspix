@@ -8,6 +8,8 @@
 // For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"
 
+#include "wx/graphics.h"
+
 #include "muswxdc.h"
 #include "musrc.h"
 
@@ -139,6 +141,7 @@ void MusWxDC::DrawPolygon(int n, MusPoint points[], int xoffset, int yoffset, in
 
 void MusWxDC::DrawComplexBezierPath(int x, int y, int bezier1_coord[6], int bezier2_coord[6])
 {
+/*
     wxGraphicsContext* gc = m_dc->GetGraphicsContext(); 
     wxGraphicsPath gp;
     gp = gc->CreatePath();
@@ -156,6 +159,7 @@ void MusWxDC::DrawComplexBezierPath(int x, int y, int bezier1_coord[6], int bezi
     
     gc->SetPen(wxNullPen); 
     gc->SetBrush(wxNullBrush);  
+*/
 }
 
 void MusWxDC::DrawRectangle(int x, int y, int width, int height)

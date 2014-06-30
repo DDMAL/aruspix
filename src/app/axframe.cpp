@@ -317,7 +317,7 @@ void AxFrame::InitMidi()
 {
 
     // midi input
-    m_midiIn = new RtMidiIn();
+    //m_midiIn = new RtMidiIn();
 //	wxString portName;
 	
 //    // Check available ports.
@@ -334,6 +334,7 @@ void AxFrame::InitMidi()
 //		std::cout << "  Input Port #" << i+1 << ": " << portName << '\n';
 //	}
 //	
+/*
     if ( nPorts == 0 ) {
         wxLogDebug("Midi init failed, nPorts == 0");
         delete m_midiIn;
@@ -345,6 +346,7 @@ void AxFrame::InitMidi()
         // Don't ignore sysex, timing, or active sensing messages.
         m_midiIn->ignoreTypes( false, false, false );        
     }
+*/
 }
 
 

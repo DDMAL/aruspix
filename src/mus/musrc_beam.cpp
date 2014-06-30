@@ -5,6 +5,8 @@
 // Copyright (c) Author and others. All rights reserved.
 /////////////////////////////////////////////////////////////////////////////
 
+#pragma implementation "musrc.h" 
+
 // For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"
 
@@ -48,7 +50,7 @@ void traiteQueue (int *hautqueue, Element *chk)
 #define MAX_MIF 20	/* nombre max de sous-groupes de beams */
 
 
-static struct coord {  float a;
+struct coord {  float a;
 			float b;
 			unsigned vlr: 8;	/* valeur */
 			unsigned prov: 8;	/* ON si portee sup. */

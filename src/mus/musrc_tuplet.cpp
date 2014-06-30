@@ -6,6 +6,8 @@
 //  Copyright (c) 2012 com.aruspix.www. All rights reserved.
 //
 
+#pragma implementation "musrc.h" 
+
 #include "wx/wxprec.h"
 
 #include "musrc.h"

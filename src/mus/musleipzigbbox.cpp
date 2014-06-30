@@ -15,7 +15,7 @@ MusLeipzigBBox::BoundingBox* MusLeipzigBBox::m_bBox = MusLeipzigBBox::Initialize
 // Statically initialize the struct
 MusLeipzigBBox::BoundingBox* MusLeipzigBBox::InitializeStatic() {
     
-    MusLeipzigBBox::BoundingBox* bBox = (MusLeipzigBBox::BoundingBox*)malloc(sizeof(MusLeipzigBBox::BoundingBox) * 67);
+    MusLeipzigBBox::BoundingBox* bBox = (MusLeipzigBBox::BoundingBox*)malloc(sizeof(MusLeipzigBBox::BoundingBox) * 68);
     
     bBox[LEIPZIG_BBOX_ORN_MORDENT].m_x = 0.0;
     bBox[LEIPZIG_BBOX_ORN_MORDENT].m_y = -2.0;

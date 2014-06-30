@@ -3,9 +3,9 @@ CMAKE_MINIMUM_REQUIRED( VERSION 2.8 )
 
 SET( CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH}" "${CMAKE_SOURCE_DIR}" )
 
-OPTION(wxDir "/usr/lib/wx")
-SET(wxWidgets_ROOT_DIR "${wxDir}")
-SET(wxWidgets_CONFIG_EXECUTABLE "${wxDir}/wx-config") 
+OPTION(wxDir "")
+# SET(wxWidgets_ROOT_DIR "${wxDir}")
+SET(wxWidgets_CONFIG_EXECUTABLE "${wxDir}wx-config") 
 FIND_PACKAGE(wxWidgets COMPONENTS base core net html adv aui )
 
 FIND_PACKAGE( LibXml2 )
@@ -13,9 +13,8 @@ FIND_PACKAGE( LibXml2 )
 OPTION(imDir "/usr")
 FIND_LIBRARY(IM_LIBRARY im "${imDir}/lib")
 FIND_LIBRARY(IM_PROCESS_LIBRARY im_process "${imDir}/lib")
-FIND_LIBRARY(IM_PROCESS_FFTW im_fftw "${imDir}/lib")
+FIND_LIBRARY(IM_FFTW_LIBRARY im_fftw "${imDir}/lib")
 
-set(ARCH i386)
 
 SET( aruspixSources ${aruspixSources}
 	../src/app/axabout_wdr.cpp
@@ -65,17 +64,23 @@ SET( aruspixSources ${aruspixSources}
 	../src/mus/musdc.cpp 
 	../src/mus/musdoc.cpp 	
 	../src/mus/musdurationinterface.cpp 
+	../src/mus/musiobin.cpp
 	../src/mus/musio.cpp 
 	../src/mus/musiodarms.cpp
-	../src/mus/musiomei.cpp 
+	../src/mus/musiomei.cpp
+	../src/mus/musiomlf.cpp 
 	../src/mus/musiomusxml.cpp
 	../src/mus/musiopae.cpp 
+	../src/mus/musiowwg.cpp
 	../src/mus/muskeysig.cpp
 	../src/mus/muslayer.cpp
 	../src/mus/muslayerelement.cpp 
 	../src/mus/musleipzigbbox.cpp
-	../src/mus/musmensur.cpp 
+	../src/mus/musmensur.cpp
+	../src/mus/musneume.cpp
+	../src/mus/musneumesymbol.cpp 
 	../src/mus/musnote.cpp 
+	../src/mus/musmlfdic.cpp
 	../src/mus/musobject.cpp 
 	../src/mus/muspage.cpp 
 	../src/mus/muspitchinterface.cpp 
@@ -86,6 +91,7 @@ SET( aruspixSources ${aruspixSources}
 	../src/mus/musrc_element.cpp 
 	../src/mus/musrc_graph.cpp 
 	../src/mus/musrc_page.cpp
+	../src/mus/musrc_neume.cpp
 	../src/mus/musrc_tuplet.cpp
 	../src/mus/musrest.cpp 
 	../src/mus/musslur.cpp
@@ -94,7 +100,11 @@ SET( aruspixSources ${aruspixSources}
 	../src/mus/mussymbol.cpp 
 	../src/mus/mussystem.cpp 
 	../src/mus/mustie.cpp
+	../src/mus/mustoolpanel.cpp
 	../src/mus/mustuplet.cpp
+	../src/mus/muswindow.cpp
+	../src/mus/muswwg.cpp
+	../src/mus/muswxdc.cpp
 
 	../src/recognition/recbookctrl.cpp
 	../src/recognition/recbookfile.cpp
@@ -117,6 +127,7 @@ SET( aruspixSources ${aruspixSources}
 	../src/tinyxml/tinyxml.cpp
 	../src/tinyxml/tinyxmlerror.cpp
 	../src/tinyxml/tinyxmlparser.cpp
+
 )
 
 INCLUDE_DIRECTORIES(
@@ -143,15 +154,16 @@ ADD_DEFINITIONS(
 	-DAX_SUPERIMPOSITION 
 	-DAX_COMPARISON
 	-DAX_EDT
-	-DWX_PRECOMP
 	-DAX_RECOGNITION
 	-D__AXDEBUG__
-	${LIBXML2_DEFINITIONS}
-	-D__LINUX_ALSASEQ__
 	-g
+	-D_FILE_OFFSET_BITS=64 	
+	-D_LARGE_FILES 	
+	-D__WXGTK__
+	-pthread
+	${LIBXML2_DEFINITIONS}
 	-Wno-write-strings
 	-Wno-format-security
-	-Wextra
 	)
 
 ADD_EXECUTABLE( aruspix ${aruspixSources} )
@@ -160,6 +172,7 @@ ADD_EXECUTABLE( aruspix ${aruspixSources} )
 TARGET_LINK_LIBRARIES( aruspix
 	-lz
 	-lpthread
+	-luuid
 	${IM_LIBRARY}
 	${IM_PROCESS_LIBRARY}
 	${IM_FFTW_LIBRARY}
