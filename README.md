@@ -92,7 +92,7 @@ Aruspix should be ready to be compiled in both Debug and Release mode.
 
 ### wxWidgets Compilation ###
 
-Because Aruspix is not a Unicode application, wxWidgets cannot be installed using apt-get and needs to be compiled. The latest 2.8 version is available from [http://sourceforge.net/projects/wxwindows/files/2.8.12/wxGTK-2.8.12.tar.gz/download](SourceForge). 	
+Because Aruspix is not a Unicode application, wxWidgets cannot be installed using apt-get and needs to be compiled. The latest 2.8 version is available from [SourceForge](http://sourceforge.net/projects/wxwindows/files/2.8.12/wxGTK-2.8.12.tar.gz/download). 	
 
 Configure command:
 
@@ -104,7 +104,7 @@ Configure command:
 
 ### IM Library ###
 
-* IMlib is available from [http://www.tecgraf.puc-rio.br/im/](http://www.tecgraf.puc-rio.br/im/)
+IMlib is available from [http://www.tecgraf.puc-rio.br/im/](http://www.tecgraf.puc-rio.br/im/). The version currently used (3.6) is available from [SourceForge](http://downloads.sourceforge.net/project/imtoolkit/3.6.3/Docs%20and%20Sources/im-3.6.3_Sources.tar.gz).
 
 ### Other dependencies ###
 
