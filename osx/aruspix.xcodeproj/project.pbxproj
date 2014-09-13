@@ -14,6 +14,7 @@
 		4D1676650D8B765000F4D912 /* supbookfile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D1676610D8B765000F4D912 /* supbookfile.cpp */; };
 		4D1676660D8B765000F4D912 /* supfile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D1676630D8B765000F4D912 /* supfile.cpp */; };
 		4D246C391684AA82008F421B /* musapp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4DB3AE691608C26000D1273C /* musapp.cpp */; };
+		4D249C7319C465D900D3414F /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D249C7219C465D900D3414F /* main.cpp */; };
 		4D25BF5914A3BBB500596392 /* cmp_wdr_inc.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D25BF5814A3BBB500596392 /* cmp_wdr_inc.cpp */; };
 		4D25BF5C14A3BCB600596392 /* sup_wdr_inc.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D25BF5B14A3BCB600596392 /* sup_wdr_inc.cpp */; };
 		4D25BF5E14A3BD0300596392 /* edt_wdr_inc.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D25BF5D14A3BD0300596392 /* edt_wdr_inc.cpp */; };
@@ -85,7 +86,6 @@
 		57EA3DE50C00BDEB00414247 /* recbookctrl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 57EA3DE30C00BDEB00414247 /* recbookctrl.cpp */; };
 		8F0576A515C43053002F761C /* mustie.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8F0576A415C43053002F761C /* mustie.cpp */; };
 		8F0576A615C43053002F761C /* mustie.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8F0576A415C43053002F761C /* mustie.cpp */; };
-		8F23817A1594632C00C04D47 /* headless_main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8F2381791594632C00C04D47 /* headless_main.cpp */; };
 		8F3367F215A1E42F009AAB69 /* musiodarms.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8F3367F115A1E42F009AAB69 /* musiodarms.cpp */; };
 		8F3367F315A1E42F009AAB69 /* musiodarms.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8F3367F115A1E42F009AAB69 /* musiodarms.cpp */; };
 		8F4FA6E015AC0C4000CF9FD8 /* muskeysig.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8F4FA6DF15AC0C4000CF9FD8 /* muskeysig.cpp */; };
@@ -193,6 +193,7 @@
 		4D1676620D8B765000F4D912 /* supbookfile.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = supbookfile.h; sourceTree = "<group>"; };
 		4D1676630D8B765000F4D912 /* supfile.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = supfile.cpp; sourceTree = "<group>"; };
 		4D1676640D8B765000F4D912 /* supfile.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = supfile.h; sourceTree = "<group>"; };
+		4D249C7219C465D900D3414F /* main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = main.cpp; path = ../src/cmdline/main.cpp; sourceTree = "<group>"; };
 		4D25BF5814A3BBB500596392 /* cmp_wdr_inc.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = cmp_wdr_inc.cpp; sourceTree = "<group>"; };
 		4D25BF5B14A3BCB600596392 /* sup_wdr_inc.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = sup_wdr_inc.cpp; sourceTree = "<group>"; };
 		4D25BF5D14A3BD0300596392 /* edt_wdr_inc.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = edt_wdr_inc.cpp; path = ../src/edition/edt_wdr_inc.cpp; sourceTree = "<group>"; };
@@ -403,6 +404,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		4D249C7119C465B400D3414F /* cmdline */ = {
+			isa = PBXGroup;
+			children = (
+				4D249C7219C465D900D3414F /* main.cpp */,
+			);
+			name = cmdline;
+			sourceTree = "<group>";
+		};
 		4D2E465313FBE99100023B02 /* elements */ = {
 			isa = PBXGroup;
 			children = (
@@ -587,6 +596,7 @@
 		A58508B20A001129006E82B1 = {
 			isa = PBXGroup;
 			children = (
+				4D249C7119C465B400D3414F /* cmdline */,
 				A585244E0A1B9603002D9D8A /* application */,
 				A5D0D4AB0A65628800A4B1CA /* im */,
 				4D3A8FCD0D3585AB00BBC1FB /* mus */,
@@ -894,7 +904,6 @@
 				8FE5FE051594943600B44674 /* musdoc.cpp in Sources */,
 				8FE5FE061594943600B44674 /* musobject.cpp in Sources */,
 				8FE5FE071594943600B44674 /* muswwg.cpp in Sources */,
-				8F23817A1594632C00C04D47 /* headless_main.cpp in Sources */,
 				8FE5FE281599FA0600B44674 /* musbeam.cpp in Sources */,
 				8F3367F315A1E42F009AAB69 /* musiodarms.cpp in Sources */,
 				8F4FA6E115AC0C4000CF9FD8 /* muskeysig.cpp in Sources */,
@@ -905,6 +914,7 @@
 				8FD2847D15D4F14F0038D07D /* musiomusxml.cpp in Sources */,
 				8FAB8B1115E3A54F0061532C /* musrc_tuplet.cpp in Sources */,
 				4D246C391684AA82008F421B /* musapp.cpp in Sources */,
+				4D249C7319C465D900D3414F /* main.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

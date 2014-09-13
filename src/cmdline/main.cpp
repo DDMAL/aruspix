@@ -19,11 +19,7 @@
 // Used to check if a dir exists
 #include <sys/stat.h>
 
-#include "vrv.h"
-#include "interfacecontroller.h"
-
 using namespace std;
-using namespace vrv;
 
 // Some redundant code to get basenames
 // and remove extensions
@@ -65,8 +61,8 @@ bool dir_exists (string dir) {
 
 void display_usage() {
     
-    cerr << "Verovio " << GetVersion() << endl << "Usage:" << endl << endl;
-    cerr << " verovio [-f format] [-s scale] [-t type] [-r resources] [-o outfile] infile" << endl << endl;
+    //cerr << "Aruspix " << GetVersion() << endl << "Usage:" << endl << endl;
+    cerr << " aruspix-cmdline [-f format] [-s scale] [-t type] [-r resources] [-o outfile] infile" << endl << endl;
     
     // These need to be kept in alphabetical order:
     // -short options first
@@ -76,6 +72,7 @@ void display_usage() {
     // Options
     cerr << "Options" << endl;
     
+    /*
     cerr << " -b, --border=BORDER        Add border (default is " << DEFAULT_PAGE_LEFT_MAR << ")" << endl;
     
     cerr << " -f, --format=INPUT_FORMAT  Select input format: darms, mei, pae (default is pae)" << endl;
@@ -117,6 +114,7 @@ void display_usage() {
     cerr << " --no-justification         Do not justify the system" << endl;
     
     cerr << " --show-bounding-boxes      Show symbol bounding boxes" << endl;
+    */
 }
 
 
@@ -131,7 +129,6 @@ int main(int argc, char** argv)
     // Init random number generator for uuids
     std::srand(std::time(0));
     
-    ConvertFileFormat type;
     int no_mei_hdr = 0;
     int adjust_page_height = 0;
     int all_pages = 0;
@@ -141,11 +138,6 @@ int main(int argc, char** argv)
     int show_bounding_boxes = 0;
     int page = 1;
     int show_help = 0;
-      
-    InterfaceController controller;
-    
-    // read pae by default
-    type = pae_file;
     
     if (argc < 2) {
         cerr << "Expecting one input file." << endl << endl;
@@ -156,7 +148,7 @@ int main(int argc, char** argv)
         
     static struct option long_options[] =
     {
-        
+        /*
         {"adjust-page-height",  no_argument,        &adjust_page_height, 1},
         {"all-pages",           no_argument,        &all_pages, 1},
         {"border",              required_argument,  0, 'b'},
@@ -177,6 +169,7 @@ int main(int argc, char** argv)
         {"spacing-system",      required_argument,  0, 0},
         {"type",                required_argument,  0, 't'},
         {0, 0, 0, 0}
+        */
     };
     
     int option_index = 0;
@@ -184,6 +177,7 @@ int main(int argc, char** argv)
     {                
         switch (c)
         {
+            /*
             case 0:
                 if (long_options[option_index].flag != 0)
                     break;
@@ -242,6 +236,7 @@ int main(int argc, char** argv)
                     exit(1);
                 }
                 break;
+            */
             
             case '?':
                 display_usage();
@@ -258,13 +253,6 @@ int main(int argc, char** argv)
         exit(0);
     }
     
-    // Set the various flags
-    controller.SetAdjustPageHeight(adjust_page_height);
-    controller.SetNoLayout(no_layout);
-    controller.SetIgnoreLayout(ignore_layout);
-    controller.SetNoJustification(no_justification);
-    controller.SetShowBoundingBoxes(show_bounding_boxes);
-    
     if (optind <= argc - 1) {
         infile = string(argv[optind]);
     }
@@ -276,10 +264,12 @@ int main(int argc, char** argv)
     
     // Make sure the user uses a valid Resource path
     // Save many headaches for empty SVGs
+    /*
     if(!dir_exists(vrv::Resources::GetPath())) {
         cerr << "The resources path " << vrv::Resources::GetPath() << " could not be found, please use -r option." << endl;
         exit(1);
     }
+    */
     
     if (outformat != "svg" && outformat != "mei") {
         cerr << "Output format can only be: mei svg" << endl;
@@ -296,30 +286,7 @@ int main(int argc, char** argv)
     
     cerr << "Reading " << infile << "..." << endl;
     
-    if ( !controller.LoadFile( infile ) ) {
-        cerr << "The file '" << infile << "' could not be open" << endl;
-        exit(1);
-    }
-    
-    // Check the page range
-    if (page > controller.GetPageCount()) {
-        cerr << "The page requested (" << page << ") is not in the page range (max is " << controller.GetPageCount() << ")" << endl;
-        exit(1);
-    }
-    if (page < 1) {
-        cerr << "The page number has to be greater than 0" << endl;
-        exit(1);
-    }
-    
-    //cerr << "G1" << G1 << " C1=" << C1 << " C2=" << C2 << " C3=" << C3 << " F3=" << F3 << endl;
-    
-    int from = page;
-    int to = page + 1;
-    if (all_pages) {
-        to = controller.GetPageCount() + 1;
-    }
-    
-        
+    /*
     int p;
     for (p = from; p < to; p++) {
         std::string cur_outfile = outfile;
@@ -345,6 +312,7 @@ int main(int argc, char** argv)
         }
         cerr << "Output written to " << cur_outfile << endl;
     }
+    */
     
     return 0;
 }
