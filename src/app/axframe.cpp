@@ -315,26 +315,26 @@ wxBitmap AxFrame::GetToolbarBitmap( wxString name )
 
 void AxFrame::InitMidi()
 {
-
-    // midi input
-    //m_midiIn = new RtMidiIn();
-//	wxString portName;
-	
-//    // Check available ports.
-    unsigned int nPorts = m_midiIn->getPortCount();
-//	m_midiIn->openVirtualPort("test");
-//	
-//	for ( unsigned int i=0; i<nPorts; i++ ) {
-//		try {
-//			portName = m_midiIn->getPortName(i);
-//		}
-//		catch ( RtError &error ) {
-//			error.printMessage();
-//		}
-//		std::cout << "  Input Port #" << i+1 << ": " << portName << '\n';
-//	}
-//	
 /*
+    // midi input
+    m_midiIn = new RtMidiIn();
+	wxString portName;
+	
+    // Check available ports.
+    unsigned int nPorts = m_midiIn->getPortCount();
+	m_midiIn->openVirtualPort("test");
+	
+	for ( unsigned int i=0; i<nPorts; i++ ) {
+		try {
+			portName = m_midiIn->getPortName(i);
+		}
+		catch ( RtError &error ) {
+			error.printMessage();
+		}
+		std::cout << "  Input Port #" << i+1 << ": " << portName << '\n';
+	}
+	
+
     if ( nPorts == 0 ) {
         wxLogDebug("Midi init failed, nPorts == 0");
         delete m_midiIn;

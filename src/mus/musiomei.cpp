@@ -34,7 +34,7 @@ using std::max;
 #include "muslayer.h"
 #include "muslayerelement.h"
 
-//#include "app/axapp.h"
+#include "app/axapp.h"
 
 //----------------------------------------------------------------------------
 // MusMeiOutput
@@ -135,7 +135,7 @@ bool MusMeiOutput::WriteDoc( MusDoc *doc )
     TiXmlElement *p1 = new TiXmlElement("p");
     projectDesc->LinkEndChild(p1);
     
-    p1->LinkEndChild( new TiXmlText( wxString::Format( "Encoded with Aruspix version %s",  MusDoc::GetAxVersion().c_str() ).c_str() ) );
+    p1->LinkEndChild( new TiXmlText( wxString::Format( "Encoded with Aruspix version %s",  AxApp::GetAxVersion().c_str() ).c_str() ) );
     date->LinkEndChild( new TiXmlText( wxNow().c_str() ) );
     
     meiHead->LinkEndChild(fileDesc);

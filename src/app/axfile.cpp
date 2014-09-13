@@ -9,9 +9,13 @@
 #include "wx/wxprec.h"
 
 #include "wx/file.h"
+
+#ifndef AX_CMDLINE
 #include "wx/filedlg.h"
+#endif
 
 #include "axfile.h"
+
 #include "axapp.h"
 
 #include "wx/ptr_scpd.h"
@@ -109,7 +113,7 @@ AxFile::AxFile( wxString name, int type, int envtype )
 	
 	m_xml_root = NULL;
 	
-	m_basename = wxGetApp().m_workingDir + "/" + name + "/";
+	m_basename = AxApp::GetWorkingDir() + "/" + name + "/";
 	
 	if ( wxDirExists( m_basename ) )
 		AxDirTraverser clean( m_basename );
@@ -135,6 +139,7 @@ wxString AxFile::GetEnvName( int envtype )
 }
 
 // static method
+#ifndef AX_CMDLINE
 wxString AxFile::Open( int file_type )
 {
 	wxString *defaultFile = NULL;
@@ -159,6 +164,7 @@ wxString AxFile::Open( int file_type )
 	
 	return filename;
 }
+#endif
 
 bool AxFile::New()
 {
@@ -237,7 +243,8 @@ bool AxFile::Save(  bool askUser )
 {
 	if ( !m_isOpened || !m_isModified )
 		return true;
-		
+
+#ifndef AX_CMDLINE
 	if ( askUser )
 	{	
 		wxString msg = wxString::Format(_("Do you want to save changes made to Aruspix file '%s'?"), m_shortname.c_str() );
@@ -250,7 +257,8 @@ bool AxFile::Save(  bool askUser )
 		else if ( res == wxCANCEL )
 			return false;
 	}
-		
+#endif
+    
 	if ( m_isNew )
 		return this->SaveAs();
 
@@ -312,6 +320,10 @@ bool AxFile::SaveAs( wxString filename )
 		
 	if ( filename.IsEmpty() )
 	{
+#ifdef AX_CMDLINE
+        wxLogWarning("Filename should not be empty");
+        return false;
+#else
 		wxString *defaultFile = NULL;
 		if ( m_type == AX_FILE_DEFAULT )
 			defaultFile = &wxGetApp().m_lastDirAX0_out;
@@ -331,6 +343,7 @@ bool AxFile::SaveAs( wxString filename )
 			return false;
 		
 		(*defaultFile) = wxPathOnly( filename );
+#endif
 	}
     
 	m_filename = filename;
@@ -342,7 +355,6 @@ bool AxFile::SaveAs( wxString filename )
 	return this->Save();
 }
 
-	
 bool AxFile::Close( bool askUser )
 {
 	// save file if needed
@@ -431,7 +443,7 @@ bool AxFile::Check( wxString filename, int *type, int *envtype, int *vmajPtr, in
 	// *envtype = 0;
 	// return true;
 
-	wxString basename = wxGetApp().m_workingDir + "/axfile/";
+	wxString basename = AxApp::GetWorkingDir() + "/axfile/";
 	
 	if ( wxDirExists( basename ) )
 		AxDirTraverser clean( basename );
@@ -502,7 +514,7 @@ wxString AxFile::GetPreview( wxString filename, wxString preview )
 	if ( !wxFileExists( filename ) )
 		return "";
 		
-	wxString basename = wxGetApp().m_workingDir + "/axfile/";
+	wxString basename = AxApp::GetWorkingDir() + "/axfile/";
 	
 	if ( wxDirExists( basename ) )
 		AxDirTraverser clean( basename );
@@ -549,7 +561,7 @@ bool AxFile::ContainsFile( wxString filename, wxString search_filename )
 	if ( !wxFileExists( filename ) )
 		return false;
 		
-	wxString basename = wxGetApp().m_workingDir + "/axfile/";
+	wxString basename = AxApp::GetWorkingDir() + "/axfile/";
 	
 	if ( wxDirExists( basename ) )
 		AxDirTraverser clean( basename );
@@ -609,6 +621,7 @@ bool AxFile::Terminate( int code, ... )
 // File selector function
 //----------------------------------------------------------------------------
 
+#ifndef AX_CMDLINE
 int AxFileSelector( int type, wxArrayString *filenames, wxArrayString *paths, wxWindow* parent )
 {
 	int i, nbOfFiles2;
@@ -703,5 +716,66 @@ int AxFileSelector( int type, wxArrayString *filenames, wxArrayString *paths, wx
 	return nbOfFiles;
 
 }
+#endif
+
+//----------------------------------------------------------------------------
+// AxDirTraverser
+//----------------------------------------------------------------------------
+
+AxDirTraverser::AxDirTraverser( wxString directory ) // clean directory
+{
+    int i;
+    // delete files
+    wxDir::GetAllFiles( directory, &m_names, wxEmptyString, wxDIR_DEFAULT );
+    for( i = m_names.GetCount() - 1; i >=0; i-- )
+        wxRemoveFile( m_names[i] );
+    
+    // delete directories
+    m_names.Clear();
+    wxDir dir( directory );
+    dir.Traverse( *this, wxEmptyString, wxDIR_DIRS | wxDIR_HIDDEN  );
+    for( i = m_names.GetCount() - 1; i >=0; i-- )
+        wxRmdir( m_names[i] );
+}
+
+
+AxDirTraverser::AxDirTraverser( wxString from, wxString to ) // copy directory
+{
+    int i;
+    // create directories
+    wxDir dir( from );
+    dir.Traverse( *this, wxEmptyString, wxDIR_DIRS | wxDIR_HIDDEN );
+    for( i = 0; i < (int)m_names.GetCount(); i++ )
+	{
+		m_names[i].Replace( from, to, false );
+		if ( !wxDirExists( m_names[i] ) )
+            wxMkdir( m_names[i], 0755 );
+	}
+	
+    // copy files
+	m_names.Clear();
+    wxDir::GetAllFiles( from, &m_names, wxEmptyString, wxDIR_DEFAULT );
+    for( i = 0; i < (int)m_names.GetCount(); i++ )
+	{
+		wxString file = m_names[i];
+		m_names[i].Replace( from, to, false );
+		wxCopyFile( file, m_names[i], true );
+        
+	}
+}
+
+wxDirTraverseResult AxDirTraverser::OnFile(const wxString& filename)
+{
+    //wxRemoveFile( filename );
+    //wxLogMessage( filename );
+    return wxDIR_CONTINUE;
+}
+
+wxDirTraverseResult AxDirTraverser::OnDir(const wxString& dirname)
+{
+    m_names.Add( dirname );
+    return wxDIR_CONTINUE;
+}
+
 
 

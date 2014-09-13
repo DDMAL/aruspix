@@ -11,8 +11,9 @@
 #include "wx/txtstrm.h"
 #include "wx/wfstream.h"
 
-#include "axprocess.h"
 #include "axapp.h"
+#include "axprocess.h"
+#include "axprogressdlg.h"
 
 
 //----------------------------------------------------------------------------
@@ -26,7 +27,7 @@ AxProcess::AxProcess( wxString cmd, wxString args, AxProgressDlg *dlg )
 	Redirect();
 	m_pid = 0;
 	m_status = 0;
-	m_cmd = wxGetApp().m_appPath + "/" + cmd + " "  + args;
+	m_cmd = AxApp::GetAppPath() + "/" + cmd + " "  + args;
 	m_log = NULL;
 	m_logStream = NULL;
 }

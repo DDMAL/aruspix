@@ -5,19 +5,19 @@
 // Copyright (c) Authors and others. All rights reserved.
 /////////////////////////////////////////////////////////////////////////////
 
-#include <cstdlib>
-#include <iostream>
-#include <ctime>
-
-#include <sstream>
-#include <string>
 
 #include <assert.h>
-
+#include <cstdlib>
+#include <ctime>
 #include <getopt.h>
-
-// Used to check if a dir exists
+#include <iostream>
+#include <sstream>
+#include <string>
 #include <sys/stat.h>
+
+
+#include "im/impage.h"
+#include "recognition/recmodels.h"
 
 using namespace std;
 
@@ -120,6 +120,8 @@ void display_usage() {
 
 int main(int argc, char** argv)
 {
+    ImPage impage( "test" );
+    RecTypModel model( "test" );
     
     string infile;
     string svgdir;

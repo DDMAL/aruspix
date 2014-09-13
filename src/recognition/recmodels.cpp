@@ -10,6 +10,7 @@
 // For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"
 
+#include "wx/dir.h"
 #include "wx/file.h"
 #include "wx/txtstrm.h"
 #include "wx/stdpaths.h"
@@ -21,8 +22,8 @@
 #include "mus/muspage.h"
 
 #include "app/axapp.h"
+#include "app/axprogressdlg.h"
 #include "app/axprocess.h"
-
 
 
 //----------------------------------------------------------------------------
@@ -80,6 +81,7 @@ void RecModel::SaveContent( )
 	SaveModelContent();
 }
 
+#ifndef AX_CMDLINE
 bool RecModel::AddFiles( wxArrayPtrVoid params, AxProgressDlg *dlg )
 {
 	wxASSERT_MSG( dlg, "AxProgressDlg cannot be NULL" );
@@ -111,9 +113,7 @@ bool RecModel::AddFiles( wxArrayPtrVoid params, AxProgressDlg *dlg )
 
 	return !failed;
 }
-
-
-
+#endif
 
 
 //----------------------------------------------------------------------------
@@ -191,6 +191,7 @@ void RecTypModel::SaveModelContent( )
 	m_mlfDic.Save( m_xml_root );
 }
 
+#ifndef AX_CMDLINE
 void RecTypModel::UpdateInputFiles( )
 {
 	wxRemoveFile( m_basename + "mfcs" );
@@ -222,7 +223,6 @@ void RecTypModel::UpdateInputFiles( )
 	labs.Close();
 	alis.Close();
 }
-
 
 
 bool RecTypModel::AddFile( wxArrayPtrVoid params, AxProgressDlg *dlg )
@@ -449,19 +449,13 @@ bool RecTypModel::Adapt( wxArrayPtrVoid params, AxProgressDlg *dlg )
 		wxString cmd = "AdaptD.exe";
 	#else
 		wxString cmd = "Adapt.exe";
-	#endif   
-#elif __WXGTK__
-	#if defined(__DEBUG__)
-		wxString cmd = "adaptd";
-	#else
-		wxString cmd = "adapt";
-	#endif   
-#elif __WXMAC__
-	#ifdef __AXDEBUG__
-		wxString cmd = "adaptd";
-	#else
-		wxString cmd = "adapt";
-	#endif   
+	#endif    
+#else
+    #ifdef __AXDEBUG__
+        wxString cmd = "adaptd";
+    #else
+        wxString cmd = "adapt";
+    #endif
 #endif
 
 	wxString args = " ";
@@ -556,7 +550,7 @@ bool RecTypModel::Adapt( wxArrayPtrVoid params, AxProgressDlg *dlg )
 
 	return true;
 }
-
+#endif
 
 //----------------------------------------------------------------------------
 // RecMusModel
@@ -613,7 +607,7 @@ void RecMusModel::SaveModelContent( )
 }
 
 
-
+#ifndef AX_CMDLINE
 bool RecMusModel::AddFile( wxArrayPtrVoid params, AxProgressDlg *dlg )
 {
     
@@ -697,18 +691,12 @@ bool RecMusModel::Train( wxArrayPtrVoid params, AxProgressDlg *dlg )
 	#else
 		wxString cmd = "Ngram.exe";
 	#endif   
-#elif __WXGTK__
-	#if defined(_DEBUG)
-		wxString cmd = "ngramd";
-	#else
-		wxString cmd = "ngram";
-	#endif   
-#elif __WXMAC__
-	#if defined(__AXDEBUG__)
-		wxString cmd = "ngramd";
-	#else
-		wxString cmd = "ngram";
-	#endif   
+#else
+    #if defined(__AXDEBUG__)
+        wxString cmd = "ngramd";
+    #else
+        wxString cmd = "ngram";
+    #endif
 #endif
 
 	wxString args = " ";
@@ -792,14 +780,8 @@ bool RecMusModel::Adapt( wxArrayPtrVoid params, AxProgressDlg *dlg )
 	#else
 		wxString cmd = "Ngram.exe";
 	#endif   
-#elif __WXGTK__
+#else
 	#if defined(_DEBUG)
-		wxString cmd = "ngramd";
-	#else
-		wxString cmd = "ngram";
-	#endif   
-#elif __WXMAC__
-	#if defined(__AXDEBUG__)
 		wxString cmd = "ngramd";
 	#else
 		wxString cmd = "ngram";
@@ -856,6 +838,6 @@ bool RecMusModel::Adapt( wxArrayPtrVoid params, AxProgressDlg *dlg )
 	
 	return true;
 }
-
+#endif
 
 #endif //AX_RECOGNITION

@@ -46,8 +46,11 @@ public:
 	
 	virtual void OpenModelContent( ) {}; // Open content after archive extraction
 	virtual void SaveModelContent( ) {}; // Save content before archive creation
+    
+#ifndef AX_CMDLINE
 	virtual bool AddFile( wxArrayPtrVoid params, AxProgressDlg *dlg ) = 0;
 	virtual bool AddFiles( wxArrayPtrVoid params, AxProgressDlg *dlg );
+#endif
 
 public:
        
@@ -75,6 +78,7 @@ public:
 	virtual void SaveModelContent( ); // Save content before archive creation
 	virtual void CloseContent( ); // Desactivate content before deletion
 	
+#ifndef AX_CMDLINE
 	virtual bool AddFile( wxArrayPtrVoid params, AxProgressDlg *dlg );
 	bool Adapt( wxArrayPtrVoid params, AxProgressDlg *dlg );
 	bool Train( wxArrayPtrVoid params, AxProgressDlg *dlg ); // train a new model, to be implemented
@@ -82,6 +86,7 @@ public:
 															// the trained typographic model
 	bool Commit( AxProgressDlg *dlg );
 	void UpdateInputFiles( );
+#endif
         
 public:
     
@@ -108,10 +113,12 @@ public:
 	virtual void SaveModelContent( ); // Save content before archive creation
 	virtual void CloseContent( ); // Desactivate content before deletion
 	
+#ifndef AX_CMDLINE
 	virtual bool AddFile( wxArrayPtrVoid params, AxProgressDlg *dlg );
 	bool Adapt( wxArrayPtrVoid params, AxProgressDlg *dlg );
 	bool Train( wxArrayPtrVoid params, AxProgressDlg *dlg );
 	bool Commit( AxProgressDlg *dlg );
+#endif
 
 public:
        

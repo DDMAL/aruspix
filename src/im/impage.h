@@ -90,9 +90,7 @@ public:
     bool StaffCurvatures( );    
 	bool GenerateMFC( wxString output_dir = "" );
 	bool GenerateLyricMFC( wxString output_dir );
-	bool ChangeClassification( int x1, int y1, int x2, int y2, int plane_number  );
-	bool ChangeClassification( int plane_number  );
-	bool MagicSelection( int x, int y, AxImage *selection, int *xmin, int *ymin );
+
 	// Working methods
 	bool SaveStaffImages(); // enregistre les images de portees dans working dir
     // moulinette
@@ -107,8 +105,14 @@ public:
     int ToViewY( int y ) { return m_size.GetHeight() - y;}
 	
 	// undo
+    
+#ifndef AX_CMDLINE
+	bool MagicSelection( int x, int y, AxImage *selection, int *xmin, int *ymin );
 	virtual void Load( AxUndoFile *undoPtr );
     virtual void Store( AxUndoFile *undoPtr );
+    bool ChangeClassification( int x1, int y1, int x2, int y2, int plane_number  );
+	bool ChangeClassification( int plane_number  );
+#endif
     
 private:
         int GetMedianStavesSpace( );

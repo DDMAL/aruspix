@@ -989,7 +989,7 @@ void ImStaff::CalcFeatures(const int staff, wxArrayPtrVoid params )
 	// params 4: fichier contenant la liste des fichiers mfc
 	// params 5: taille de la portee
 
-	if ( m_progressDlg && m_progressDlg->GetCancel() )
+	if ( m_progressDlg && m_progressDlg->GetCanceled() )
 	{
         this->Terminate( ERR_NONE ); // do not print cancel message since it doesn't return a value
 		return;
@@ -1063,7 +1063,7 @@ void ImStaff::CalcLyricFeatures( const int staff, wxArrayPtrVoid params )
 	// params 5: array holding offsets for all the lyric images
 	// params 6: window width used for feature extraction
 	
-	if ( m_progressDlg && m_progressDlg->GetCancel() )
+	if ( m_progressDlg && m_progressDlg->GetCanceled() )
 	{
         this->Terminate( ERR_NONE ); // do not print cancel message since it doesn't return a value
 		return;

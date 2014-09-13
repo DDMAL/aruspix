@@ -8,17 +8,6 @@
 #ifndef __axprogressdlg_H__
 #define __axprogressdlg_H__
 
-#ifndef WX_PRECOMP
-    #include "wx/wx.h"
-#endif
-#include "wx/timer.h"
-#include "wx/datetime.h"
-
-// IMLIB
-#include <im_counter.h>
-
-#include "axapp_wdr.h"
-
 #define TIMER_DECODING 0
 #define TIMER_MODEL_BIGRAM 1
 #define TIMER_FULL_ADAPTING 2
@@ -31,6 +20,49 @@
 #define ERR_FILE 4
 #define ERR_READING 5
 #define ERR_WRITING 6
+
+#ifdef AX_CMDLINE
+
+//----------------------------------------------------------------------------
+// Commandline replacement class
+//----------------------------------------------------------------------------
+
+#include <im_counter.h>
+
+class AxProgressDlg
+{
+public:
+    // constructors and destructors
+    AxProgressDlg();
+    
+    bool SetOperation( wxString msg ) { return true; };
+    bool GetCanceled() { return false; };
+    int GetCounter() { return 1; };
+    bool SetJob( wxString msg  ) { return true; };
+    void SetMaxJobBar( int value ) { };
+    void StartTimerOperation( int code, int nb_units = 1 ) {};
+    void EndTimerOperation( int code ) {};
+    bool IncTimerOperation( ) { return true; };
+    
+};
+
+#else
+
+//----------------------------------------------------------------------------
+// Gui
+//----------------------------------------------------------------------------
+
+#ifndef WX_PRECOMP
+    #include "wx/wx.h"
+#endif
+#include "wx/timer.h"
+#include "wx/datetime.h"
+
+// IMLIB
+#include <im_counter.h>
+
+#include "axapp_wdr.h"
+
 
 class wxConfigBase;
 
@@ -132,5 +164,7 @@ private:
 
 // Callback function pour IMLIB
 int imDlgCounter(int counter, void* user_data, const char* text, int progress);
+
+#endif // AX_CMDLINE
 
 #endif

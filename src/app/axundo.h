@@ -8,6 +8,26 @@
 #ifndef __axundo_H__
 #define __axundo_H__
 
+#ifdef AX_CMDLINE
+
+//----------------------------------------------------------------------------
+// Commandline replacement class
+//----------------------------------------------------------------------------
+
+class AxUndo
+{
+public:
+    // constructors and destructors
+    AxUndo( int i ) {};
+    
+};
+
+#else
+
+//----------------------------------------------------------------------------
+// Gui
+//----------------------------------------------------------------------------
+
 #ifndef WX_PRECOMP
     #include "wx/wx.h"
 #endif
@@ -129,5 +149,7 @@ private:
 	static bool s_isOk;
 
 };
+
+#endif // AX_CMDLINE
 
 #endif
