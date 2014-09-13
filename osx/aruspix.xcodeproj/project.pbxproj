@@ -321,7 +321,7 @@
 		57EA3DE40C00BDEB00414247 /* recbookctrl.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = recbookctrl.h; sourceTree = "<group>"; };
 		8F0576A415C43053002F761C /* mustie.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = mustie.cpp; path = ../src/mus/mustie.cpp; sourceTree = "<group>"; };
 		8F0576A715C43064002F761C /* mustie.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = mustie.h; path = ../src/mus/mustie.h; sourceTree = "<group>"; };
-		8F23816B159462AF00C04D47 /* aruspix_headless */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = aruspix_headless; sourceTree = BUILT_PRODUCTS_DIR; };
+		8F23816B159462AF00C04D47 /* aruspix-cmdline */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "aruspix-cmdline"; sourceTree = BUILT_PRODUCTS_DIR; };
 		8F2381791594632C00C04D47 /* headless_main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = headless_main.cpp; path = ../src/mus/headless_main.cpp; sourceTree = "<group>"; };
 		8F3367F015A1E417009AAB69 /* musiodarms.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = musiodarms.h; path = ../src/mus/musiodarms.h; sourceTree = "<group>"; };
 		8F3367F115A1E42F009AAB69 /* musiodarms.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = musiodarms.cpp; path = ../src/mus/musiodarms.cpp; sourceTree = "<group>"; };
@@ -609,7 +609,7 @@
 				5769E11B0BF25A1D007772A6 /* axz.icns */,
 				A585251B0A1B983B002D9D8A /* ax.icns */,
 				A58523900A1B9504002D9D8A /* Aruspix.app */,
-				8F23816B159462AF00C04D47 /* aruspix_headless */,
+				8F23816B159462AF00C04D47 /* aruspix-cmdline */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -754,9 +754,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		8F23816A159462AF00C04D47 /* aruspix_headless */ = {
+		8F23816A159462AF00C04D47 /* aruspix-cmdline */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 8F238175159462AF00C04D47 /* Build configuration list for PBXNativeTarget "aruspix_headless" */;
+			buildConfigurationList = 8F238175159462AF00C04D47 /* Build configuration list for PBXNativeTarget "aruspix-cmdline" */;
 			buildPhases = (
 				8F238167159462AF00C04D47 /* Sources */,
 				8F238168159462AF00C04D47 /* Frameworks */,
@@ -766,9 +766,9 @@
 			);
 			dependencies = (
 			);
-			name = aruspix_headless;
+			name = "aruspix-cmdline";
 			productName = aruspix_headless;
-			productReference = 8F23816B159462AF00C04D47 /* aruspix_headless */;
+			productReference = 8F23816B159462AF00C04D47 /* aruspix-cmdline */;
 			productType = "com.apple.product-type.tool";
 		};
 		A58508C00A00113C006E82B1 /* Aruspix */ = {
@@ -813,7 +813,7 @@
 			projectRoot = ../;
 			targets = (
 				A58508C00A00113C006E82B1 /* Aruspix */,
-				8F23816A159462AF00C04D47 /* aruspix_headless */,
+				8F23816A159462AF00C04D47 /* aruspix-cmdline */,
 			);
 		};
 /* End PBXProject section */
@@ -1050,7 +1050,11 @@
 					../src,
 				);
 				KEEP_PRIVATE_EXTERNS = YES;
-				LIBRARY_SEARCH_PATHS = "$(ARUSPIX_WX)/osx-static-debug/lib";
+				LIBRARY_SEARCH_PATHS = (
+					"$(ARUSPIX_TORCH)/lib",
+					"$(ARUSPIX_IMLIB)/lib",
+					"$(ARUSPIX_WX)/osx-static-debug/lib",
+				);
 				MACOSX_DEPLOYMENT_TARGET = 10.6;
 				ONLY_ACTIVE_ARCH = NO;
 				OTHER_CFLAGS = (
@@ -1063,10 +1067,6 @@
 					"-framework",
 					carbon,
 					"-liconv",
-					"-lwx_base_carbond_net-$(ARUSPIX_WX_VERSION)",
-					"-lxml2",
-					"-force_load",
-					"$(ARUSPIX_MEI)/libmei.a",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx10.7;
@@ -1100,7 +1100,11 @@
 					../src,
 				);
 				KEEP_PRIVATE_EXTERNS = YES;
-				LIBRARY_SEARCH_PATHS = "$(ARUSPIX_WX)/osx-static/lib";
+				LIBRARY_SEARCH_PATHS = (
+					"$(ARUSPIX_TORCH)/lib",
+					"$(ARUSPIX_IMLIB)/lib",
+					"$(ARUSPIX_WX)/osx-static-debug/lib",
+				);
 				MACOSX_DEPLOYMENT_TARGET = 10.6;
 				ONLY_ACTIVE_ARCH = NO;
 				OTHER_CFLAGS = (
@@ -1109,11 +1113,10 @@
 					"-fexceptions",
 				);
 				OTHER_LDFLAGS = (
-					"-lwx_base_carbon-$(ARUSPIX_WX_VERSION)",
+					"-lwx_base_carbond-$(ARUSPIX_WX_VERSION)",
 					"-framework",
 					carbon,
 					"-liconv",
-					"-lwx_base_carbon_net-$(ARUSPIX_WX_VERSION)",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx10.7;
@@ -1156,7 +1159,16 @@
 				COPY_PHASE_STRIP = YES;
 				GCC_VERSION = com.apple.compilers.llvmgcc42;
 				GCC_WARN_TYPECHECK_CALLS_TO_PRINTF = NO;
-				HEADER_SEARCH_PATHS = "";
+				HEADER_SEARCH_PATHS = (
+					"$(ARUSPIX_IMLIB)/include",
+					"$(ARUSPIX_TORCH)/include",
+					"$(ARUSPIX_WX)",
+				);
+				LIBRARY_SEARCH_PATHS = (
+					"$(ARUSPIX_TORCH)/lib",
+					"$(ARUSPIX_IMLIB)/lib",
+					"$(ARUSPIX_WX)/osx-static-debug/lib",
+				);
 				MACOSX_DEPLOYMENT_TARGET = 10.7;
 				OBJROOT = "$(PROJECT_DIR)/../obj";
 				OTHER_CFLAGS = "";
@@ -1352,7 +1364,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		8F238175159462AF00C04D47 /* Build configuration list for PBXNativeTarget "aruspix_headless" */ = {
+		8F238175159462AF00C04D47 /* Build configuration list for PBXNativeTarget "aruspix-cmdline" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				8F238172159462AF00C04D47 /* Debug */,
