@@ -14,6 +14,61 @@
     #include "wx/wx.h"
 #endif
 
+#ifdef AX_CMDLINE
+
+//----------------------------------------------------------------------------
+// Commandline replacement class
+//----------------------------------------------------------------------------
+
+class RecEnv
+{
+public:
+    // constructors and destructors
+    RecEnv();
+    
+public:
+    // these values cannot be changed from the interface
+    static bool s_check;
+    static bool s_deskew;
+    static bool s_staves_position;
+    static bool s_crop;
+    static bool s_binarize_and_clean;
+    static bool s_save_images;
+    // batch
+    static int s_last_batch;
+    static int s_book_sash;
+    //
+    static bool s_find_borders;
+    static bool s_find_text;
+    static bool s_find_ornate_letters;
+    static bool s_find_text_in_staves;
+    // decoder
+    static wxString s_rec_typ_model;
+    static wxString s_rec_mus_model;
+    
+    // static values not changed
+    static double s_rec_phone_pen; // am_phone_del_pen
+    static double s_rec_end_prune; // dec_end_prune_window
+    static double s_rec_word_pen; // dec_word_entr_pen
+    static double s_rec_int_prune; // dec_int_prune_window
+    // training - idem
+    static wxString s_train_dir;
+    static bool s_train_mlf;
+    static bool s_train_positions;
+    //
+    static wxString s_rec_wrdtrns;
+    static bool s_rec_delayed; // dec_delayed_lm
+    static int s_rec_lm_order; // lm_ngram_order
+    static double s_rec_lm_scaling; // lm_scaling_factor
+    
+};
+
+#else
+
+//----------------------------------------------------------------------------
+// Gui
+//----------------------------------------------------------------------------
+
 #include "app/axapp.h"
 #include "app/axenv.h"
 
@@ -205,7 +260,8 @@ public:
     static bool s_rec_delayed; // dec_delayed_lm
     static int s_rec_lm_order; // lm_ngram_order
     static double s_rec_lm_scaling; // lm_scaling_factor
-	// tree
+	
+    // tree
     static bool s_expand_root;
 	static bool s_expand_book;
     static bool s_expand_img;   
@@ -275,6 +331,8 @@ public:
 	wxSpinCtrl* GetScBinRgnSize()  { return (wxSpinCtrl*) FindWindow( ID4_RGN_SIZE_SPINCTRL ); }
 	wxCheckBox* GetCbDeactivateDlg()  { return (wxCheckBox*) FindWindow( ID4_DEACTIVATE_DIALOG_CHECKBOX ); }
 };
+
+#endif // AX_CMDLINE
 
 #endif //AX_RECOGNITION
 

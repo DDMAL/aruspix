@@ -16,7 +16,7 @@
 #include <sys/stat.h>
 
 
-#include "im/impage.h"
+#include "recognition/recfile.h"
 #include "recognition/recmodels.h"
 
 using namespace std;
