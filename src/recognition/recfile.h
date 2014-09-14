@@ -48,9 +48,6 @@ public:
 	
 	void SetforMEI(); //needs to be fooled into thinking it's been preprocessed and recognized
 	void SetImage( wxString filename );
-	void SetImage( AxImage *image );
-	void GetImage0( AxImage *image );
-	void GetImage1( AxImage *image );
 	bool CancelRecognition( bool ask_user ); // remove all recognition files
 	// functor
 	bool Preprocess( wxArrayPtrVoid params, AxProgressDlg *dlg );
@@ -80,6 +77,12 @@ public:
 	
 	// setter
 	void SetBinarization( int image_binarization_method, int page_binarization_method, int page_binarization_size );
+    
+#ifndef AX_CMDLINE
+	void SetImage( AxImage *image );
+	void GetImage0( AxImage *image );
+	void GetImage1( AxImage *image );
+#endif
     
 public:
     RecEnv *m_envPtr;

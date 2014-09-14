@@ -33,8 +33,6 @@
 
 //#include "ml/mldecoder.h"
 
-
-
 //----------------------------------------------------------------------------
 // RecFile
 //----------------------------------------------------------------------------
@@ -515,6 +513,12 @@ bool RecFile::IsRecognized( wxString filename )
         || AxFile::ContainsFile( filename, "page.wwg"  ); // page.wwg for files before 1.5
 }
 
+void RecFile::SetImage( wxString filename )
+{
+    
+}
+
+#ifndef AX_CMDLINE
 void RecFile::GetImage1( AxImage *image )
 {
 	wxASSERT_MSG( image, "AxImage cannot be NULL" );
@@ -527,7 +531,9 @@ void RecFile::GetImage1( AxImage *image )
 	else
 		SetImImage( m_imPagePtr->m_img0, image );
 }
+#endif
 
+#ifndef AX_CMDLINE
 void RecFile::GetImage0( AxImage *image )
 {
 	wxASSERT_MSG( image, "AxImage cannot be NULL" );
@@ -536,20 +542,18 @@ void RecFile::GetImage0( AxImage *image )
 	
 	SetImImage( m_imPagePtr->m_img0, image );
 }
+#endif
 
-void RecFile::SetImage( wxString filename )
-{
-
-}
-
-
+#ifndef AX_CMDLINE
 void RecFile::SetImage( AxImage *image )
 {
 
 }
+#endif
 
 bool RecFile::CancelRecognition( bool ask_user )
 {
+#ifndef AX_CMDLINE
 	if ( ask_user )
 	{	
 		wxString msg = wxString::Format(_("This will erase previous recognition results. Do you want to continue ?") );
@@ -557,7 +561,8 @@ bool RecFile::CancelRecognition( bool ask_user )
 		if ( res != wxYES )
 			return false;
 	}
-
+#endif
+    
 	wxArrayString names;
 	wxDir::GetAllFiles( m_basename, &names , "staff*", wxDIR_FILES );
 	for( int i = names.GetCount() - 1; i >=0; i-- )
@@ -669,47 +674,7 @@ bool RecFile::Recognize( wxArrayPtrVoid params, AxProgressDlg *dlg )
 
     if ( !failed )
         failed = !this->GenerateMFC( mfc_params, dlg ); // 2 operations
-	
-	// just pre-classification
-	/*
-	wxLogMessage("Modified method RecFile::Recognize Pre-classification");
-	if ( RecEnv::s_binarize_and_clean  && !failed ) 
-        failed = !m_imPagePtr->BinarizeAndClean( );
 
-    if ( RecEnv::s_find_borders && !failed ) 
-        failed = !m_imPagePtr->FindBorders( );
-    //op.m_inputfile = output + "/border." + shortname + ".tif";
-        
-    if ( RecEnv::s_find_ornate_letters && !failed ) 
-        failed = !m_imPagePtr->FindOrnateLetters( );
-
-    if ( RecEnv::s_find_text_in_staves && !failed ) 
-        failed = !m_imPagePtr->FindTextInStaves( );
-
-    if ( RecEnv::s_find_text && !failed ) 
-        failed = !m_imPagePtr->FindText( );
-	
-	wxArrayString names;
-	wxDir::GetAllFiles( m_basename, &names , "staff*", wxDIR_FILES );
-	for( int i = names.GetCount() - 1; i >=0; i-- )
-		wxRemoveFile( names[i] );
-	wxRemoveFile( m_basename + "rec.mlf" );
-	wxRemoveFile( m_basename + "rec.xml" );
-	wxRemoveFile( m_basename + "mfc.input" );
-	wxRemoveFile( m_basename + "staves.tif" );
-		
-    if ( !failed ) 
-        failed = !m_imPagePtr->StaffSegments( ); // 1 operation
-	
-    if ( RecEnv::s_save_images && !failed )
-        failed = !m_imPagePtr->SaveSegmentsImages( );
-
-    if ( !failed )
-        failed = !this->GenerateMFC( mfc_params, dlg ); // 2 operations
-		
-	return !failed;
-	*/
-    
 	if ( !failed )
         failed = !this->Decode( params, dlg );
  
@@ -767,13 +732,13 @@ bool RecFile::Decode( wxArrayPtrVoid params, AxProgressDlg *dlg )
 	#else
 		wxString cmd = "Decoder.exe";
 	#endif   
-#elif __WXGTK__ || __WXMAC__
+#else
     wxString cmd = "julius";  
 #endif
 
 	wxString args = " ";
 	
-	wxString log = wxGetApp().m_logDir + "/julius.log";
+	wxString log = AxApp::GetLogDir() + "/julius.log";
     args << " -logfile " << "\"" << log.c_str() << "\"";
 	
     args << " -input mfcfile ";

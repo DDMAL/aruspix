@@ -36,6 +36,7 @@ wxString AxApp::s_build_time = __TIME__;
 #ifdef AX_CMDLINE
 wxString AxApp::m_respath = "/usr/local/share/aruspix";
 wxString AxApp::m_workingDir = ".";
+wxString AxApp::m_logDir = ".";
 #endif
 
 wxString AxApp::GetAxVersion() {
@@ -48,7 +49,6 @@ wxString AxApp::GetAxVersion() {
 
 wxString AxApp::GetAppPath() {
 #ifdef AX_CMDLINE
-    //hardcode galore
     return ".";
 #else
     return wxGetApp().m_appPath;
@@ -57,7 +57,6 @@ wxString AxApp::GetAppPath() {
 
 wxString AxApp::GetResourcesPath() {
 #ifdef AX_CMDLINE
-    //hardcode galore
     return m_respath;
 #else
     return wxGetApp().m_resourcesPath;
@@ -66,10 +65,18 @@ wxString AxApp::GetResourcesPath() {
 
 wxString AxApp::GetWorkingDir() {
 #ifdef AX_CMDLINE
-    //hardcode galore
     return m_workingDir;
 #else
     return wxGetApp().m_workingDir;
+#endif
+}
+
+
+wxString AxApp::GetLogDir() {
+#ifdef AX_CMDLINE
+    return m_logDir;
+#else
+    return wxGetApp().m_logDir;
 #endif
 }
 

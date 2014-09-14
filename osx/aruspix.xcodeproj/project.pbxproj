@@ -29,6 +29,7 @@
 		4D249C8219C4A4A600D3414F /* axfile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D2994D512C7F2B500D0514B /* axfile.cpp */; };
 		4D249C8519C4C69A00D3414F /* axapp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A58524560A1B9604002D9D8A /* axapp.cpp */; };
 		4D249C8719C5818B00D3414F /* rec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A5EFDB210A278C980019FA6A /* rec.cpp */; };
+		4D249C8819C585E300D3414F /* recfile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A585248F0A1B9604002D9D8A /* recfile.cpp */; };
 		4D25BF5914A3BBB500596392 /* cmp_wdr_inc.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D25BF5814A3BBB500596392 /* cmp_wdr_inc.cpp */; };
 		4D25BF5C14A3BCB600596392 /* sup_wdr_inc.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D25BF5B14A3BCB600596392 /* sup_wdr_inc.cpp */; };
 		4D25BF5E14A3BD0300596392 /* edt_wdr_inc.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D25BF5D14A3BD0300596392 /* edt_wdr_inc.cpp */; };
@@ -943,6 +944,7 @@
 				4D249C8219C4A4A600D3414F /* axfile.cpp in Sources */,
 				4D249C8519C4C69A00D3414F /* axapp.cpp in Sources */,
 				4D249C8719C5818B00D3414F /* rec.cpp in Sources */,
+				4D249C8819C585E300D3414F /* recfile.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

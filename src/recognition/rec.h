@@ -24,7 +24,7 @@ class RecEnv
 {
 public:
     // constructors and destructors
-    RecEnv();
+    RecEnv() {};
     
 public:
     // these values cannot be changed from the interface

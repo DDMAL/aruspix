@@ -29,6 +29,7 @@ public:
     static wxString GetAppPath();
     static wxString GetResourcesPath();
     static wxString GetWorkingDir();
+    static wxString GetLogDir();
     static void SetResourcesPath(wxString p) {m_respath = p;}
     static wxString GetMusicFontDescStr();
     static wxString GetNeumeFontDescStr();
@@ -48,6 +49,7 @@ public:
 private:
     static wxString m_respath;
     static wxString m_workingDir;
+    static wxString m_logDir;
     
 };
 

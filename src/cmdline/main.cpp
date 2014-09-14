@@ -16,6 +16,7 @@
 #include <sys/stat.h>
 
 
+#include "recognition/rec.h"
 #include "recognition/recfile.h"
 #include "recognition/recmodels.h"
 
@@ -120,7 +121,7 @@ void display_usage() {
 
 int main(int argc, char** argv)
 {
-    ImPage impage( "test" );
+    RecFile file( "test" );
     RecTypModel model( "test" );
     
     string infile;
