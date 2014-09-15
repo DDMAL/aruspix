@@ -198,6 +198,7 @@ public:
     static wxString GetAppPath();
     static wxString GetResourcesPath();
     static wxString GetWorkingDir();
+    static wxString GetLogDir();
     static wxString GetMusicFontDescStr();
     static wxString GetNeumeFontDescStr();
     static wxString GetLyricFontDescStr();

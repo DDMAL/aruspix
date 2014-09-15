@@ -591,8 +591,9 @@
 				COPY_PHASE_STRIP = NO;
 				GCC_VERSION = com.apple.compilers.llvmgcc42;
 				OBJROOT = "$(PROJECT_DIR)/../obj";
-				SDKROOT = macosx10.6;
+				SDKROOT = macosx10.7;
 				SYMROOT = "$(PROJECT_DIR)/../bin";
+				VALID_ARCHS = i386;
 			};
 			name = Debug;
 		};
@@ -603,8 +604,9 @@
 				COPY_PHASE_STRIP = YES;
 				GCC_VERSION = com.apple.compilers.llvmgcc42;
 				OBJROOT = "$(PROJECT_DIR)/../obj";
-				SDKROOT = macosx10.6;
+				SDKROOT = macosx10.7;
 				SYMROOT = "$(PROJECT_DIR)/../bin";
+				VALID_ARCHS = i386;
 			};
 			name = Release;
 		};

@@ -706,6 +706,227 @@ bool RecFile::Decode( wxArrayPtrVoid params, AxProgressDlg *dlg )
 	
 	RecTypModel *typModelPtr = (RecTypModel*)params[0];
 	RecMusModel *musModelPtr = (RecMusModel*)params[1];
+	bool rec_delayed =  *(bool*)params[2];
+	int rec_lm_order =  *(int*)params[3];
+	if ( rec_lm_order > MUS_NGRAM_ORDER )
+		rec_lm_order = MUS_NGRAM_ORDER;
+	double rec_lm_scaling =  *(double*)params[4];
+	wxString rec_wrdtrns =  *(wxString*)params[5];
+	
+	wxString input = m_basename + "mfc.input";
+	input.Replace( "\\/", "/" );
+	wxString rec_models = typModelPtr->m_basename + "hmm";
+	wxString rec_dict = typModelPtr->m_basename + "dic";
+	wxString rec_lm = musModelPtr->m_basename + "ngram.gram";
+	wxString rec_output = m_basename + "rec.mlf";
+	// cannot be changed from interface
+	double rec_phone_pen = RecEnv::s_rec_phone_pen;
+	double rec_int_prune = RecEnv::s_rec_int_prune;
+	double rec_word_pen = RecEnv::s_rec_word_pen;
+	
+	/*
+     wxString log = wxGetApp().m_logDir + "/decoder.log";
+     
+     MlDecoder *decoder = new MlDecoder( input, rec_models, rec_dict );
+     
+     decoder->log_fname = log;
+     decoder->am_models_fname = rec_models;
+     decoder->am_sil_phone = "{s}";
+     decoder->am_phone_del_pen = rec_phone_pen;
+     
+     decoder->lex_dict_fname = rec_dict;
+     
+     if ( rec_lm_order && !rec_lm.IsEmpty() )
+     {
+     decoder->lm_fname = musModelPtr->m_basename + "ngram.gram";
+     decoder->lm_ngram_order = rec_lm_order;
+     decoder->lm_scaling_factor = rec_lm_scaling;
+     }
+     
+     if ( rec_int_prune != 0.0 )
+     decoder->dec_int_prune_window = rec_int_prune;
+     
+     if ( rec_word_pen != 0.0 )
+     decoder->dec_word_entr_pen = rec_word_pen;
+     
+     if ( rec_delayed )
+     decoder->dec_delayed_lm = true;
+     
+     if ( !rec_output.IsEmpty() )
+     decoder->output_fname = rec_output;
+     
+     if ( !rec_wrdtrns.IsEmpty() )
+     decoder->wrdtrns_fname = rec_wrdtrns;
+     
+     decoder->Create();
+     decoder->Run();
+     
+     //wxMilliSleep( 10000 );
+     
+     while  ( decoder->IsAlive()  )
+     {
+     wxMilliSleep( 200 );
+     if( !dlg->IncTimerOperation( ) )
+     {
+     //process->m_deleteOnTerminate = true;
+     //process->m_canceled = true;
+     //wxKill( pid, wxSIGKILL );
+     decoder->Delete();
+     return this->Terminate( ERR_CANCELED );
+     }
+     }
+     */
+	
+#ifdef __WXMSW__
+#if defined(_DEBUG)
+    wxString cmd = "Decoder.exe";
+#else
+    wxString cmd = "Decoder.exe";
+#endif
+#elif __WXGTK__
+#if defined(__DEBUG__)
+    wxString cmd = "decoderd";
+#else
+    wxString cmd = "decoder";
+#endif
+#else
+#ifdef __AXDEBUG__
+    wxString cmd = "decoderd";
+#else
+    wxString cmd = "decoder";
+#endif
+#endif
+    
+	wxString args = " ";
+	
+	wxString log = AxApp::GetLogDir() + "/decoder.log";
+	
+	args << " -am_models_fname " << "\"" << rec_models.c_str() << "\"";
+	args << " -am_sil_phone \"{s}\" ";
+	args << " -am_phone_del_pen " << rec_phone_pen;
+    
+	args << " -lex_dict_fname " << "\"" << rec_dict.c_str() << "\"";
+    
+	if ( rec_lm_order && !rec_lm.IsEmpty() )
+	{
+		args << " -lm_fname " << "\"" << rec_lm << "\"";
+		args << " -lm_ngram_order " << rec_lm_order;
+		args << " -lm_scaling_factor " << rec_lm_scaling;
+	}
+	
+	if ( rec_int_prune != 0.0 )
+		args << " -dec_int_prune_window " << rec_int_prune;
+    
+	if ( rec_word_pen != 0.0 )
+		args << " -dec_word_entr_pen " << rec_word_pen;
+    
+	if ( rec_delayed )
+		args << " -dec_delayed_lm";
+    
+	args << " -input_fname " << "\"" << input.c_str() << "\"";
+	
+	if ( !rec_output.IsEmpty() )
+		args << " -output_fname " << "\"" << rec_output.c_str() << "\"";
+    
+	if ( !rec_wrdtrns.IsEmpty() )
+		args << " -wrdtrns_fname " << "\"" << rec_wrdtrns.c_str() << "\"";
+    
+	wxLogDebug( args.c_str() );
+    
+	if (!dlg->SetOperation( _("Recognition...") ) )
+		return this->Terminate( ERR_CANCELED );
+    
+	dlg->StartTimerOperation( TIMER_DECODING, m_imPagePtr->GetStaffCount() );
+	int pid;
+	AxProcess *process = new AxProcess( cmd, args, NULL );
+	process->SetLog( log );
+	if ( process->Start() )
+	{
+		pid = process->GetPid();
+		while  ( !process->HasEnded() )
+		{
+			if( !dlg->IncTimerOperation( ) )
+			{
+				wxKill( pid, wxSIGKILL );
+				wxYield();
+				delete process;
+				return this->Terminate( ERR_CANCELED );
+			}
+			wxMilliSleep( 200 );
+		}
+		
+	}
+	wxYield(); // flush termination event before deleting the process.
+	if ( process->m_status != 0 )
+	{
+		delete process;
+		return this->Terminate( ERR_UNKNOWN );
+	}
+	dlg->EndTimerOperation( TIMER_DECODING );
+	delete process;
+    
+    
+    
+	/*Torch::DiskXFile::setBigEndianMode() ;
+     
+     wxString input = wxGetApp().m_workingDir + "/" + imPage->GetShortName() + ".input";
+     input.Replace( "\\/", "/" );
+     
+     Torch::LexiconInfo lex_info( m_rec_models.c_str() , "{s}" , "" , m_rec_dict.c_str() ,
+     "" , "" , "" ) ;
+     
+     Torch::PhoneModels phone_models ( lex_info.phone_info , (char*) m_rec_models.c_str(),
+     true , m_rec_phone_pen ,
+     false , "" , "" ,
+     9 , "" , false ,
+     (real)0.005 , (real)0.005 ) ;
+     
+     Torch::LinearLexicon lexicon( &lex_info , &phone_models ) ;
+     
+     Torch::LanguageModel *lang_model;
+     if ( m_rec_lm_order <= 0 )
+     lang_model = NULL ;
+     else
+     {
+     lang_model = new Torch::LanguageModel( m_rec_lm_order , lex_info.vocabulary ,
+     (char*)m_rec_lm.c_str() , m_rec_ls_scaling ) ;
+     }
+     
+     real end_prune = m_rec_end_prune;
+     if ( end_prune == 0 )
+     end_prune = LOG_ZERO;
+     Torch::BeamSearchDecoder bs_decoder( &lexicon , lang_model , m_rec_word_pen ,
+     LOG_ZERO, end_prune ,
+     m_rec_delayed , false ) ;
+     
+     
+     Torch::DecoderBatchTest batch_tester( (char*)input.c_str() , Torch::DST_FEATS_HTK , (char*)m_rec_wrdtrns.c_str()  , &bs_decoder ,
+     true , true , (char*)m_rec_output.c_str() , false , 10.0 ) ;
+     
+     batch_tester.run() ;
+     
+     if ( lang_model != NULL )
+     delete lang_model ; 
+     return(0) ;*/
+    
+	return true;
+}
+
+/* - Method for the use of julius (instead of torch) - was beta for Arupsix 3.0
+bool RecFile::Decode( wxArrayPtrVoid params, AxProgressDlg *dlg )
+{
+	wxASSERT_MSG( m_imPagePtr, "ImPage cannot be NULL" );
+	wxASSERT_MSG( dlg, "AxProgressDlg cannot be NULL" );
+	
+    // params 0: RecTypModel: typModelPtr
+	// params 1: RecMusModel: musModelPtr
+	// params 2: bool: rec_delayed
+	// params 3: int: rec_lm_order
+	// params 4: double: rec_lm_scaling
+	// params 5: wxString: rec_wrdtrns
+	
+	RecTypModel *typModelPtr = (RecTypModel*)params[0];
+	RecMusModel *musModelPtr = (RecMusModel*)params[1];
 	//bool rec_delayed =  *(bool*)params[2];
 	int rec_lm_order =  *(int*)params[3];
 	if ( rec_lm_order > MUS_NGRAM_ORDER )
@@ -797,7 +1018,8 @@ bool RecFile::Decode( wxArrayPtrVoid params, AxProgressDlg *dlg )
 
 	return true;
 }
-
+*/
+ 
 bool RecFile::RealizeFromMLF( wxArrayPtrVoid params, AxProgressDlg *dlg )
 {
     wxASSERT_MSG( m_imPagePtr , "Page cannot be NULL");
@@ -859,6 +1081,7 @@ bool RecFile::RealizeFromMLF( wxArrayPtrVoid params, AxProgressDlg *dlg )
 
     return true;
 }
+
 
 bool RecFile::GenerateMFC( wxArrayPtrVoid params, AxProgressDlg *dlg )
 {
