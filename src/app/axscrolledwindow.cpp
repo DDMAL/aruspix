@@ -465,12 +465,12 @@ void AxScrolledWindow::GetSelectionPoints(wxPoint *start, wxPoint *end)
 
 void AxScrolledWindow::OnKeyUp( wxKeyEvent &event )
 {
-    if (event.GetKeyCode() == WXK_SHIFT) m_shiftDown = FALSE;    
+    if (event.GetKeyCode() == WXK_SHIFT) m_shiftDown = false;    
 }
 
 void AxScrolledWindow::OnKeyDown( wxKeyEvent &event )
 {
-    if (event.GetKeyCode() == WXK_SHIFT) m_shiftDown = TRUE;
+    if (event.GetKeyCode() == WXK_SHIFT) m_shiftDown = true;
 }
 
 void AxScrolledWindow::OnMouseEvent( wxMouseEvent &event )

@@ -12,6 +12,10 @@
     #include "wx/wx.h"
 #endif
 
+#include "wx/ffile.h"
+#include "wx/file.h"
+#include "wx/gdicmn.h"
+
 #include "app/axprogressdlg.h"
 //struct _imImage;
 

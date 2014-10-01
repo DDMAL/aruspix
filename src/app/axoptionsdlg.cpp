@@ -74,7 +74,7 @@ AxOptionsDlg::AxOptionsDlg( wxWindow *parent, wxWindowID id, const wxString &tit
 
     this->SetExtraStyle(wxWS_EX_VALIDATE_RECURSIVELY);
 		
-    //OptionsDlgFunc( this, TRUE ); do it manually to allow conditionnal adds
+    //OptionsDlgFunc( this, true ); do it manually to allow conditionnal adds
     wxBoxSizer *item0 = new wxBoxSizer( wxVERTICAL );
     m_notebook = new wxNotebook( this, ID_NOTEBOOK_OP, wxDefaultPosition, wxSize(50,50) );//, 0 );
 	m_min_size.Set( 0, 0 );

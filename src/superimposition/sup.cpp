@@ -983,7 +983,7 @@ SupAdjustDlg::SupAdjustDlg( wxWindow *parent, wxWindowID id, const wxString &tit
                      const wxPoint &position, const wxSize& size, long style ) :
 wxDialog( parent, id, title, position, size, style )
 {
-    SupAdjustDlgFunc2( this, TRUE );
+    SupAdjustDlgFunc2( this, true );
     
     this->GetSrc1B()->SetValidator(
         wxGenericValidator(&controller->m_greenBrightness));

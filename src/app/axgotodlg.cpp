@@ -33,7 +33,7 @@ AxGotoDlg::AxGotoDlg( wxWindow *parent, wxWindowID id, const wxString &title,
     const wxPoint &position, const wxSize& size, long style ) :
     wxDialog( parent, id, title, position, size, style )
 {
-    GotoDlgFunc( this, TRUE );
+    GotoDlgFunc( this, true );
 
     m_pageNo = currentPage + 1;
     m_nbOfPages = nbOfPages;

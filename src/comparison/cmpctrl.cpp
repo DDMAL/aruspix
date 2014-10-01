@@ -55,7 +55,7 @@ CmpCtrlPanel::CmpCtrlPanel( wxWindow *parent, wxWindowID id,
                             const wxPoint &position, const wxSize& size, long style ) :
 wxPanel( parent, id, position, size, style )
 {
-        CmpFunc6( this, TRUE );
+        CmpFunc6( this, true );
     this->GetPreviewCB( )->SetValue( true );
 	m_show_preview = true;
 	m_filename = "";

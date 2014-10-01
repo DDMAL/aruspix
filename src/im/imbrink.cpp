@@ -19,8 +19,10 @@
 */
 
 #include "imext.h"
-//#include <stdlib.h>
-//#include <math.h>
+
+#include <stdlib.h>
+#include <math.h>
+#include <memory.h>
 
 // IMLIB
 #include <im.h>
@@ -31,8 +33,8 @@
 // define some global constants
 
 static unsigned short const MAX_GRAY = 256; // always used as a size variable, hence 255+1
-//static unsigned short const TRUE = 1;
-//static unsigned short const FALSE = 0;
+//static unsigned short const true = 1;
+//static unsigned short const false = 0;
 static unsigned short const NON_CUMULATIVE = 0;
 static const size_t VEC_DBL_SZ = sizeof(double) * MAX_GRAY;
 
@@ -55,7 +57,7 @@ int calcTopt(double m_f[MAX_GRAY], double m_b[MAX_GRAY], double vec[MAX_GRAY])
 {
 	int i; 
 	double locMin;
-	int isMinInit = FALSE;
+	int isMinInit = false;
 	int Topt = 0;
 
 	for (i = 0; i < MAX_GRAY; ++i)
@@ -64,7 +66,7 @@ int calcTopt(double m_f[MAX_GRAY], double m_b[MAX_GRAY], double vec[MAX_GRAY])
 		{
 			if (!isMinInit || vec[i] < locMin)
 			{
-				isMinInit = TRUE;
+				isMinInit = true;
 				locMin = vec[i];	// gets a new minimum
 				Topt = i;
 			}
@@ -202,7 +204,7 @@ int imProcessBrinkThreshold(const imImage* image, imImage* dest, bool white_is_2
 
 	Topt = calcTopt(m_f, m_b, tmpVec1);		// DO I NEED TO ADD ONE?
 
-	imProcessThreshold(src, dest, Topt, TRUE);
+	imProcessThreshold(src, dest, Topt, true);
 	imProcessBitwiseNot(dest, dest);		// HACK ALERT: HAVE TO FLIP BITS
 
 	return Topt;

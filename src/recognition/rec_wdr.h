@@ -31,17 +31,17 @@
 // Declare window functions
 
 const int ID4_SPLITTER1 = 14000;
-wxSizer *WindowFunc4( wxWindow *parent, bool call_fit = TRUE, bool set_sizer = TRUE );
+wxSizer *WindowFunc4( wxWindow *parent, bool call_fit = true, bool set_sizer = true );
 
 const int ID4_TOOLPANEL = 14001;
 const int ID4_MUSPANEL = 14002;
-wxSizer *MusOutputFunc4( wxWindow *parent, bool call_fit = TRUE, bool set_sizer = TRUE );
+wxSizer *MusOutputFunc4( wxWindow *parent, bool call_fit = true, bool set_sizer = true );
 
 const int ID4_TREEBOOK = 14003;
 const int ID4_LINE2 = 14004;
 const int ID4_PREVIEW = 14005;
 const int ID4_CB_PREVIEW = 14006;
-wxSizer *RecBookFunc4( wxWindow *parent, bool call_fit = TRUE, bool set_sizer = TRUE );
+wxSizer *RecBookFunc4( wxWindow *parent, bool call_fit = true, bool set_sizer = true );
 
 const int ID4_TEXT = 14007;
 const int ID4_RISM = 14008;
@@ -57,14 +57,14 @@ const int ID4_ON_BOOK_AXFILES = 14017;
 const int ID4_PAGE_BIN_CHOICE = 14018;
 const int ID4_RGN_SIZE_SPINCTRL = 14019;
 const int ID4_BIN_SELECT_CHECKBOX = 14020;
-wxSizer *RecBookDataFunc4( wxWindow *parent, bool call_fit = TRUE, bool set_sizer = TRUE );
+wxSizer *RecBookDataFunc4( wxWindow *parent, bool call_fit = true, bool set_sizer = true );
 
 const int ID4_TEXTPgBin = 14021;
 const int ID4_BIN_CHOICE = 14022;
 const int ID4_TEXTRgnSize = 14023;
 const int ID4_LINE1 = 14024;
 const int ID4_DEACTIVATE_DIALOG_CHECKBOX = 14025;
-wxSizer *RecBinSelectDlgFunc( wxWindow *parent, bool call_fit = TRUE, bool set_sizer = TRUE );
+wxSizer *RecBinSelectDlgFunc( wxWindow *parent, bool call_fit = true, bool set_sizer = true );
 
 // Declare menubar functions
 

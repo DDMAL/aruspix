@@ -15,6 +15,12 @@
 #include <string>
 #include <sys/stat.h>
 
+#include "wx/string.h"
+
+#include "app/axapp.h"
+#include "app/axprogressdlg.h"
+
+#include "im/impage.h"
 
 #include "recognition/rec.h"
 #include "recognition/recfile.h"
@@ -121,9 +127,6 @@ void display_usage() {
 
 int main(int argc, char** argv)
 {
-    RecFile file( "test" );
-    RecTypModel model( "test" );
-    
     string infile;
     string svgdir;
     string outfile;
@@ -289,33 +292,49 @@ int main(int argc, char** argv)
     
     cerr << "Reading " << infile << "..." << endl;
     
-    /*
-    int p;
-    for (p = from; p < to; p++) {
-        std::string cur_outfile = outfile;
-        if (all_pages) {
-            cur_outfile += StringFormat("_%03d", p);
-        }
-        // Create SVG or mei
-        if (outformat == "svg") {
-            cur_outfile += ".svg";
-            if ( !controller.RenderToSvgFile( cur_outfile, p) ) {
-                cerr << "Unable to write SVG to " << cur_outfile << "." << endl;
-                exit(1);
-            }
-            // Write it to file
-            
-        } else {
-            // To be implemented in InterfaceController
-            cur_outfile += ".mei";
-            if ( !controller.SaveFile( cur_outfile ) ) {
-                cerr << "Unable to write MEI to " << cur_outfile << "." << endl;
-                exit(1);
-            }
-        }
-        cerr << "Output written to " << cur_outfile << endl;
-    }
-    */
+    if ( !AxApp::CheckDir( AxApp::GetWorkingDir(), 0755 ) )
+        wxLogWarning( _("Unable to create or write in the working directory '%s'. Please verify the access permissions or change it in the preferences."),
+                     AxApp::GetWorkingDir().c_str() );
+    if ( !AxApp::CheckDir( AxApp::GetLogDir(), 0755 ) )
+        wxLogDebug( _("Unable to create or write in the log directory '%s'. Please verify the access permissions."), AxApp::GetLogDir().c_str() );
+    
+    RecFile file( "test" );
+    RecTypModel typ_model( "typ_model" );
+    RecMusModel mus_model( "mus_model" );
+    typ_model.Open( "./models/builtin.axtyp" );
+    mus_model.Open( "./models/builtin.axmus" );
+    
+    // Create a fake progress dialog
+    AxProgressDlg *dlg = new AxProgressDlg( );
+    
+    wxArrayPtrVoid pre_params;
+    pre_params.Add( &infile );
+    
+    bool failed = false;
+    
+    file.New();
+    failed = !file.Preprocess( pre_params, dlg );
+    
+    // params 0: RecTypModel: typModelPtr
+    // params 1: RecMusModel: musModelPtr
+    // params 2: bool: rec_delayed
+    // params 3: int: rec_lm_order
+    // params 4: double: rec_lm_scaling
+    // params 5: wxString: rec_wrdtrns
+    wxArrayPtrVoid rec_params;
+    rec_params.Add( &typ_model );
+    rec_params.Add( &mus_model );
+    rec_params.Add( &RecEnv::s_rec_delayed );
+    rec_params.Add( &RecEnv::s_rec_lm_order );
+    rec_params.Add( &RecEnv::s_rec_lm_scaling );
+    wxString rec_wrdtrns = "";
+    rec_params.Add( &rec_wrdtrns );
+    
+    failed = false;
+    
+    failed = !file.Recognize( rec_params, dlg );
+    
+    file.SaveAs( outfile + ".axz" );
     
     return 0;
 }

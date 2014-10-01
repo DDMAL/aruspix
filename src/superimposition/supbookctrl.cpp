@@ -36,7 +36,7 @@ SupBookDataDlg::SupBookDataDlg( wxWindow *parent, wxWindowID id, const wxString 
     SupBookFile *supBookFile ) :
     wxDialog( parent, id, title )
 {
-        SupBookDataFunc2( this, TRUE );
+        SupBookDataFunc2( this, true );
     m_supBookFile = supBookFile;
     m_loadAxfiles = false;
     m_loadImages1 = false;
@@ -68,12 +68,12 @@ SupBookDataDlg::SupBookDataDlg( wxWindow *parent, wxWindowID id, const wxString 
 /*
 bool SupBookDataDlg::Validate()
 {
-    return TRUE;
+    return true;
 }
 
 bool SupBookDataDlg::TransferDataToWindow()
 {
-    return TRUE;
+    return true;
 }
 */
 
@@ -166,7 +166,7 @@ SupBookPanel::SupBookPanel( wxWindow *parent, wxWindowID id,
                             const wxPoint &position, const wxSize& size, long style ) :
 wxPanel( parent, id, position, size, style )
 {
-        SupBookFunc2( this, TRUE );
+        SupBookFunc2( this, true );
     this->GetPreviewCB( )->SetValue( true );
 	m_show_preview = true;
 	m_filename = "";

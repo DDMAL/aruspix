@@ -34,8 +34,12 @@ wxString AxApp::s_build_time = __TIME__;
 //----------------------------------------------------------------------------
 
 #ifdef AX_CMDLINE
+bool wxYield() { return true; };
+#endif
+
+#ifdef AX_CMDLINE
 wxString AxApp::m_respath = "/usr/local/share/aruspix";
-wxString AxApp::m_workingDir = ".";
+wxString AxApp::m_workingDir = "./tmp";
 wxString AxApp::m_logDir = ".";
 #endif
 
@@ -115,6 +119,30 @@ int AxApp::GetFontPosCorrection(){
 
 wxString AxApp::GetFileVersion(int vmaj, int vmin, int vrev) {
     return wxString::Format("%04d.%04d.%04d", vmaj, vmin, vrev );
+}
+
+bool AxApp::CheckDir( wxString dirname, int permission )
+{
+    // check if exists
+    wxLogNull *logNo = new wxLogNull();
+    if ( !wxDirExists( dirname ) && !wxMkdir( dirname, permission ) )
+    {
+        delete logNo;
+        return false;
+    }
+    
+    // check if writable
+    wxString test_filename = dirname + "/.test";
+    wxFile test_file( test_filename, wxFile::write );
+    if ( !test_file.IsOpened() )
+    {
+        delete logNo;
+        return false;
+    }
+    test_file.Close();
+    wxRemoveFile( test_filename );
+    delete logNo;
+    return true;
 }
 
 
@@ -276,7 +304,7 @@ bool AxApp::OnInit()
 #endif
     if ( m_language == -1 ) // never choosen before, it is the first time the user run aruspix, run setup
     {
-		SetExitOnFrameDelete(FALSE);
+		SetExitOnFrameDelete(false);
 #if defined(__WXMSW__)
     AxSetup setup( wxBitmap( m_resourcesPath + "/logo.win.png", wxBITMAP_TYPE_PNG ) );
 #else // OS X
@@ -290,7 +318,7 @@ bool AxApp::OnInit()
         else
             m_language = setup.m_language;
 			
-		SetExitOnFrameDelete(TRUE);
+		SetExitOnFrameDelete(true);
     }
 	else // splash screen,but not shown in Debug mode
 	{
@@ -379,7 +407,7 @@ bool AxApp::OnInit()
     }
 
     m_mainFrame->InitMidi();
-    m_mainFrame->Show(TRUE);
+    m_mainFrame->Show(true);
  
 #if !defined(__WXMSW__)
 	m_mainFrame->Lower( ); 	// again, stay on top did not work for OS X	
@@ -392,7 +420,7 @@ bool AxApp::OnInit()
     }
     dlg->Destroy();
  
-    return TRUE;
+    return true;
 }
 
 int AxApp::OnExit()
@@ -522,33 +550,6 @@ wxString AxApp::FindAppPath()
     return wxEmptyString;
 }
 */
-
-
-    
-bool AxApp::CheckDir( wxString dirname, int permission )
-{
-    // check if exists
-    wxLogNull *logNo = new wxLogNull();
-    if ( !wxDirExists( dirname ) && !wxMkdir( dirname, permission ) )
-    {
-        delete logNo;
-        return false;
-    }
-
-    // check if writable
-    wxString test_filename = dirname + "/.test";
-    wxFile test_file( test_filename, wxFile::write );
-    if ( !test_file.IsOpened() )
-    {
-        delete logNo;
-        return false;
-    }
-    test_file.Close();
-    wxRemoveFile( test_filename );
-    delete logNo;
-    return true;
-}
-
 
 
 #ifdef __WXMAC__

@@ -563,7 +563,7 @@ void MusRC::DrawPartialBarline ( MusDC *dc, MusSystem *system, int x, MusStaff *
 
 	int b, bb;
 
-	MusStaff *next = system->GetNext( false );	
+	MusStaff *next = system->GetNext( NULL );
 	if ( next )
 	{	
 		b = pportee->m_y_drawing - m_doc->m_staffSize[ pportee->staffSize ]*2;

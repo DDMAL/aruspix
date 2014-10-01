@@ -23,6 +23,8 @@
 
 #ifdef AX_CMDLINE
 
+#include "wx/string.h"
+
 //----------------------------------------------------------------------------
 // Commandline replacement class
 //----------------------------------------------------------------------------
@@ -33,7 +35,7 @@ class AxProgressDlg
 {
 public:
     // constructors and destructors
-    AxProgressDlg();
+    AxProgressDlg() {};
     
     bool SetOperation( wxString msg ) { return true; };
     bool GetCanceled() { return false; };

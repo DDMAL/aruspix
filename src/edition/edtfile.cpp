@@ -221,7 +221,7 @@ EdtNewDlg::EdtNewDlg( wxWindow *parent, wxWindowID id, const wxString &title,
     const wxPoint &position, const wxSize& size, long style ) :
     wxDialog( parent, id, title, position, size, style )
 {
-    EdtNewDlgFunc( this, TRUE );
+    EdtNewDlgFunc( this, true );
     
     this->GetScStaffLines()->SetValidator(
         wxGenericValidator(&EdtNewDlg::s_staffLines));

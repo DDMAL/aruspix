@@ -68,6 +68,9 @@
 		4D72429C132012A00023497A /* mussvgdc.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D72429B132012A00023497A /* mussvgdc.cpp */; };
 		4D7362820D35C7D30030DFA6 /* recmus.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D7362800D35C7D30030DFA6 /* recmus.cpp */; };
 		4D7362A40D35CECC0030DFA6 /* cmpmus.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D7362A20D35CECC0030DFA6 /* cmpmus.cpp */; };
+		4D7A09E419DAF24300FF8C5F /* mldecoder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D7A09DE19DAF24300FF8C5F /* mldecoder.cpp */; };
+		4D7A09E519DAF24300FF8C5F /* mldecoderpage.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D7A09E019DAF24300FF8C5F /* mldecoderpage.cpp */; };
+		4D7A09E619DAF24300FF8C5F /* mldecoderstaff.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D7A09E219DAF24300FF8C5F /* mldecoderstaff.cpp */; };
 		4D862EDA144DF72700483E57 /* musbboxdc.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D862ED8144DF72700483E57 /* musbboxdc.cpp */; };
 		4DA0004512CA26E300B65740 /* musrc.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4DA0004312CA26E300B65740 /* musrc.cpp */; };
 		4DA9FDDD0D90984E000E7BA6 /* supbookctrl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4DA9FDDB0D90984E000E7BA6 /* supbookctrl.cpp */; };
@@ -276,6 +279,13 @@
 		4D7362810D35C7D30030DFA6 /* recmus.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = recmus.h; sourceTree = "<group>"; };
 		4D7362A20D35CECC0030DFA6 /* cmpmus.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = cmpmus.cpp; sourceTree = "<group>"; };
 		4D7362A30D35CECC0030DFA6 /* cmpmus.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = cmpmus.h; sourceTree = "<group>"; };
+		4D7A09DD19DAF24300FF8C5F /* ml.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ml.h; path = ../src/ml/ml.h; sourceTree = "<group>"; };
+		4D7A09DE19DAF24300FF8C5F /* mldecoder.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = mldecoder.cpp; path = ../src/ml/mldecoder.cpp; sourceTree = "<group>"; };
+		4D7A09DF19DAF24300FF8C5F /* mldecoder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = mldecoder.h; path = ../src/ml/mldecoder.h; sourceTree = "<group>"; };
+		4D7A09E019DAF24300FF8C5F /* mldecoderpage.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = mldecoderpage.cpp; path = ../src/ml/mldecoderpage.cpp; sourceTree = "<group>"; };
+		4D7A09E119DAF24300FF8C5F /* mldecoderpage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = mldecoderpage.h; path = ../src/ml/mldecoderpage.h; sourceTree = "<group>"; };
+		4D7A09E219DAF24300FF8C5F /* mldecoderstaff.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = mldecoderstaff.cpp; path = ../src/ml/mldecoderstaff.cpp; sourceTree = "<group>"; };
+		4D7A09E319DAF24300FF8C5F /* mldecoderstaff.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = mldecoderstaff.h; path = ../src/ml/mldecoderstaff.h; sourceTree = "<group>"; };
 		4D862ED8144DF72700483E57 /* musbboxdc.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = musbboxdc.cpp; path = ../src/mus/musbboxdc.cpp; sourceTree = SOURCE_ROOT; };
 		4D862ED9144DF72700483E57 /* musbboxdc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = musbboxdc.h; path = ../src/mus/musbboxdc.h; sourceTree = SOURCE_ROOT; };
 		4D88751A132013D500D4CB86 /* mussvgdc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = mussvgdc.h; path = ../src/mus/mussvgdc.h; sourceTree = SOURCE_ROOT; };
@@ -565,6 +575,20 @@
 			name = edition;
 			sourceTree = "<group>";
 		};
+		4D7A09DC19DAF21400FF8C5F /* ml */ = {
+			isa = PBXGroup;
+			children = (
+				4D7A09DD19DAF24300FF8C5F /* ml.h */,
+				4D7A09DE19DAF24300FF8C5F /* mldecoder.cpp */,
+				4D7A09DF19DAF24300FF8C5F /* mldecoder.h */,
+				4D7A09E019DAF24300FF8C5F /* mldecoderpage.cpp */,
+				4D7A09E119DAF24300FF8C5F /* mldecoderpage.h */,
+				4D7A09E219DAF24300FF8C5F /* mldecoderstaff.cpp */,
+				4D7A09E319DAF24300FF8C5F /* mldecoderstaff.h */,
+			);
+			name = ml;
+			sourceTree = "<group>";
+		};
 		4DA86239140AC2B400BF052A /* dc */ = {
 			isa = PBXGroup;
 			children = (
@@ -614,6 +638,7 @@
 				4D249C7119C465B400D3414F /* cmdline */,
 				A585244E0A1B9603002D9D8A /* application */,
 				A5D0D4AB0A65628800A4B1CA /* im */,
+				4D7A09DC19DAF21400FF8C5F /* ml */,
 				4D3A8FCD0D3585AB00BBC1FB /* mus */,
 				A58524970A1B9604002D9D8A /* tinyxml */,
 				A58524910A1B9604002D9D8A /* superimposition */,
@@ -819,7 +844,7 @@
 		A58508B40A001129006E82B1 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0460;
+				LastUpgradeCheck = 0600;
 				ORGANIZATIONNAME = com.aruspix.www;
 			};
 			buildConfigurationList = A58508B50A001129006E82B1 /* Build configuration list for PBXProject "aruspix" */;
@@ -895,6 +920,7 @@
 				8FE5FDE71594943600B44674 /* musiowwg.cpp in Sources */,
 				8FE5FDE81594943600B44674 /* muslayer.cpp in Sources */,
 				8FE5FDEA1594943600B44674 /* musstaff.cpp in Sources */,
+				4D7A09E419DAF24300FF8C5F /* mldecoder.cpp in Sources */,
 				8FE5FDEC1594943600B44674 /* muspage.cpp in Sources */,
 				8FE5FDED1594943600B44674 /* mussystem.cpp in Sources */,
 				8FE5FDEE1594943600B44674 /* musbarline.cpp in Sources */,
@@ -905,6 +931,7 @@
 				8FE5FDF51594943600B44674 /* musneume.cpp in Sources */,
 				8FE5FDF61594943600B44674 /* musneumesymbol.cpp in Sources */,
 				8FE5FDF71594943600B44674 /* musnote.cpp in Sources */,
+				4D7A09E619DAF24300FF8C5F /* mldecoderstaff.cpp in Sources */,
 				8FE5FDF81594943600B44674 /* muspitchinterface.cpp in Sources */,
 				8FE5FDF91594943600B44674 /* muspositioninterface.cpp in Sources */,
 				8FE5FDFA1594943600B44674 /* musrest.cpp in Sources */,
@@ -934,6 +961,7 @@
 				4D249C7519C46A1900D3414F /* imbrink3classes.cpp in Sources */,
 				4D249C7619C46A2A00D3414F /* imstaffsegment.cpp in Sources */,
 				4D249C7719C46A2E00D3414F /* imstaff.cpp in Sources */,
+				4D7A09E519DAF24300FF8C5F /* mldecoderpage.cpp in Sources */,
 				4D249C7819C46A3100D3414F /* impage.cpp in Sources */,
 				4D249C7919C46A3300D3414F /* imoperator.cpp in Sources */,
 				4D249C7A19C46A3900D3414F /* imkmeans.cpp in Sources */,
@@ -1066,7 +1094,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = YES;
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				FRAMEWORK_SEARCH_PATHS = "";
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
@@ -1077,7 +1104,7 @@
 					"wxUSE_GUI=0",
 				);
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
-				GCC_VERSION = com.apple.compilers.llvmgcc42;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = (
@@ -1111,7 +1138,7 @@
 					"-lim_fftw",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = macosx10.7;
+				SDKROOT = macosx;
 				USER_HEADER_SEARCH_PATHS = "$(ARUSPIX_WX)/osx-static-debug/lib $(ARUSPIX_MEI)/..";
 			};
 			name = Debug;
@@ -1120,7 +1147,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = YES;
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
 				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
 				GCC_PREPROCESSOR_DEFINITIONS = (
@@ -1128,7 +1154,7 @@
 					"$(inherited)",
 					"wxUSE_GUI=0",
 				);
-				GCC_VERSION = com.apple.compilers.llvmgcc42;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = (
@@ -1162,7 +1188,7 @@
 					"-lim_fftw",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = macosx10.7;
+				SDKROOT = macosx;
 				USER_HEADER_SEARCH_PATHS = "$(ARUSPIX_WX)/osx-static-debug/lib $(ARUSPIX_MEI)/..";
 			};
 			name = Release;
@@ -1170,11 +1196,10 @@
 		A58508B60A001129006E82B1 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				COPY_PHASE_STRIP = NO;
 				FRAMEWORK_SEARCH_PATHS = "$(BUILD_PRODUCTS_DIR)/$(TARGET_NAME).app/Contents/Frameworks";
 				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_VERSION = com.apple.compilers.llvmgcc42;
+				GCC_VERSION = "";
 				GCC_WARN_TYPECHECK_CALLS_TO_PRINTF = NO;
 				HEADER_SEARCH_PATHS = (
 					"$(ARUSPIX_IMLIB)/include",
@@ -1188,19 +1213,18 @@
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.7;
 				OBJROOT = "$(PROJECT_DIR)/../obj";
+				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = "";
-				SDKROOT = macosx10.7;
+				SDKROOT = macosx;
 				SYMROOT = "$(PROJECT_DIR)/../bin";
-				VALID_ARCHS = i386;
 			};
 			name = Debug;
 		};
 		A58508B70A001129006E82B1 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				COPY_PHASE_STRIP = YES;
-				GCC_VERSION = com.apple.compilers.llvmgcc42;
+				GCC_VERSION = "";
 				GCC_WARN_TYPECHECK_CALLS_TO_PRINTF = NO;
 				HEADER_SEARCH_PATHS = (
 					"$(ARUSPIX_IMLIB)/include",
@@ -1215,9 +1239,8 @@
 				MACOSX_DEPLOYMENT_TARGET = 10.7;
 				OBJROOT = "$(PROJECT_DIR)/../obj";
 				OTHER_CFLAGS = "";
-				SDKROOT = macosx10.7;
+				SDKROOT = macosx;
 				SYMROOT = "$(PROJECT_DIR)/../bin";
-				VALID_ARCHS = i386;
 			};
 			name = Release;
 		};
@@ -1225,7 +1248,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = YES;
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = YES;
 				FRAMEWORK_SEARCH_PATHS = "";
 				GCC_DEBUGGING_SYMBOLS = default;
@@ -1235,7 +1258,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/Carbon.framework/Headers/Carbon.h";
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
-				GCC_VERSION = com.apple.compilers.llvmgcc42;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				HEADER_SEARCH_PATHS = (
 					../src,
 					"$(ARUSPIX_IMLIB)/include",
@@ -1301,7 +1324,7 @@
 					"-lwxjpegd-$(ARUSPIX_WX_VERSION)",
 				);
 				PRODUCT_NAME = Aruspix;
-				SDKROOT = macosx10.7;
+				SDKROOT = macosx;
 				SECTORDER_FLAGS = "";
 				STRIP_INSTALLED_PRODUCT = NO;
 				STRIP_STYLE = debugging;
@@ -1317,7 +1340,7 @@
 		A58508C70A00113C006E82B1 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = YES;
 				FRAMEWORK_SEARCH_PATHS = "";
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
@@ -1326,7 +1349,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/Carbon.framework/Headers/Carbon.h";
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
-				GCC_VERSION = com.apple.compilers.llvmgcc42;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				HEADER_SEARCH_PATHS = (
 					../src,
 					"$(ARUSPIX_IMLIB)/include",
@@ -1389,7 +1412,7 @@
 					"-lwxjpeg-$(ARUSPIX_WX_VERSION)",
 				);
 				PRODUCT_NAME = Aruspix;
-				SDKROOT = macosx10.7;
+				SDKROOT = macosx;
 				SECTORDER_FLAGS = "";
 				SYMROOT = "$(PROJECT_DIR)/../bin";
 				WARNING_CFLAGS = (

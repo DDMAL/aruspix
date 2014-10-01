@@ -46,7 +46,7 @@ RecMusController::RecMusController( wxWindow *parent, wxWindowID id,
     const wxPoint &position, const wxSize& size, long style ) :
     wxPanel( parent, id, position, size, style )
 {
-    //MusOutputFunc4( this, TRUE );	
+    //MusOutputFunc4( this, true );	
 	m_envPtr = NULL;
 	m_viewPtr = NULL;
 	

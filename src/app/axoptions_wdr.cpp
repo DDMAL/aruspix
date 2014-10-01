@@ -46,11 +46,11 @@ wxSizer *OptionsDlgFunc( wxWindow *parent, bool call_fit, bool set_sizer )
 #endif
 
     wxPanel *item3 = new wxPanel( item2, -1 );
-    Rec1DlgFunc( item3, FALSE );
+    Rec1DlgFunc( item3, false );
     item2->AddPage( item3, _("Images") );
 
     wxPanel *item4 = new wxPanel( item2, -1 );
-    Sup1DlgFunc( item4, FALSE );
+    Sup1DlgFunc( item4, false );
     item2->AddPage( item4, _("System") );
 
     item0->Add( item1, 0, wxALIGN_CENTER|wxALL, 5 );
@@ -199,14 +199,14 @@ wxSizer *System1DlgFunc( wxWindow *parent, bool call_fit, bool set_sizer )
     item34->Add( item35, 0, wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
     wxCheckBox *item36 = new wxCheckBox( parent, ID_CB_GRAY_OPI, wxT(""), wxDefaultPosition, wxDefaultSize, 0 );
-    item36->SetValue( TRUE );
+    item36->SetValue( true );
     item34->Add( item36, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
     wxStaticText *item37 = new wxStaticText( parent, IDO_TEXT, _("Reduce big images"), wxDefaultPosition, wxDefaultSize, 0 );
     item34->Add( item37, 0, wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
     wxCheckBox *item38 = new wxCheckBox( parent, ID_CB_REDUCE_OPI, wxT(""), wxDefaultPosition, wxDefaultSize, 0 );
-    item38->SetValue( TRUE );
+    item38->SetValue( true );
     item34->Add( item38, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
     wxStaticText *item39 = new wxStaticText( parent, IDO_TEXT, _("Maximum size"), wxDefaultPosition, wxDefaultSize, 0 );
@@ -219,7 +219,7 @@ wxSizer *System1DlgFunc( wxWindow *parent, bool call_fit, bool set_sizer )
     item34->Add( item41, 0, wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
     wxCheckBox *item42 = new wxCheckBox( parent, ID_CB_NEGATIVE_OPI, wxT(""), wxDefaultPosition, wxDefaultSize, 0 );
-    item42->SetValue( TRUE );
+    item42->SetValue( true );
     item34->Add( item42, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
     wxStaticText *item43 = new wxStaticText( parent, IDO_TEXT, 
@@ -405,7 +405,7 @@ wxSizer *Rec1DlgFunc( wxWindow *parent, bool call_fit, bool set_sizer )
     item44->Add( item45, 0, wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
     wxCheckBox *item46 = new wxCheckBox( parent, ID4_REC_DELAYED, wxT(""), wxDefaultPosition, wxDefaultSize, 0 );
-    item46->SetValue( TRUE );
+    item46->SetValue( true );
     item44->Add( item46, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
     wxStaticText *item47 = new wxStaticText( parent, IDO_TEXT, _("Order"), wxDefaultPosition, wxDefaultSize, 0 );
@@ -474,14 +474,14 @@ wxSizer *Sup1DlgFunc( wxWindow *parent, bool call_fit, bool set_sizer )
     item1->Add( item12, 0, wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
     wxCheckBox *item13 = new wxCheckBox( parent, ID2_CH_FILTER1_OPS1, wxT(""), wxDefaultPosition, wxDefaultSize, 0 );
-    item13->SetValue( TRUE );
+    item13->SetValue( true );
     item1->Add( item13, 0, wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxTOP, 10 );
 
     wxStaticText *item14 = new wxStaticText( parent, IDO_TEXT, _("Filter image 2"), wxDefaultPosition, wxDefaultSize, 0 );
     item1->Add( item14, 0, wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
     wxCheckBox *item15 = new wxCheckBox( parent, ID2_CH_FILTER2_OPS1, wxT(""), wxDefaultPosition, wxDefaultSize, 0 );
-    item15->SetValue( TRUE );
+    item15->SetValue( true );
     item1->Add( item15, 0, wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxTOP, 10 );
 
     wxStaticText *item16 = new wxStaticText( parent, IDO_TEXT, _("Interpolation"), wxDefaultPosition, wxDefaultSize, 0 );

@@ -1,27 +1,60 @@
 PROJECT( aruspix )
 CMAKE_MINIMUM_REQUIRED( VERSION 2.8 )
 
+SET(CMAKE_OSX_ARCHITECTURES i386 CACHE STRING "change to needed architecture for a smaller library" FORCE)
+
+
 SET( CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH}" "${CMAKE_SOURCE_DIR}" )
 
 OPTION(wxDir "")
 SET(wxWidgets_CONFIG_EXECUTABLE "${wxDir}wx-config") 
 
+
 if(APPLE)
-  SET(wxWidgets_ROOT_DIR "${wxDir}") 
-  MESSAGE( STATUS "CMAKE_ROOT_DIR: " ${wxWidgets_ROOT_DIR} )
+    # Since FIND_PACKAGE did not work, we do it by hand...
+
+    EXEC_PROGRAM(${wxDir}/wx-config ARGS --cppflags OUTPUT_VARIABLE wxWidgets_CXX_FLAGS)
+    
+    # parse definitions from cxxflags; drop -D* from CXXFLAGS and the -D prefix
+    STRING(REGEX MATCHALL "-D[^ ]+"
+        wxWidgets_DEFINITIONS  "${wxWidgets_CXX_FLAGS}")
+    STRING(REGEX REPLACE "-D[^ ]+" ""
+        wxWidgets_CXX_FLAGS "${wxWidgets_CXX_FLAGS}")
+    STRING(REPLACE "-D" ""
+        wxWidgets_DEFINITIONS "${wxWidgets_DEFINITIONS}")
+
+    # parse include dirs from cxxflags; drop -I prefix
+    STRING(REGEX MATCHALL "-I[^ ]+"
+      wxWidgets_INCLUDE_DIRS "${wxWidgets_CXX_FLAGS}")
+    STRING(REGEX REPLACE "-I[^ ]+ " ";"
+      wxWidgets_CXX_FLAGS "${wxWidgets_CXX_FLAGS}")
+    STRING(REPLACE "-I" ""
+      wxWidgets_INCLUDE_DIRS "${wxWidgets_INCLUDE_DIRS}")
+    
+    FIND_LIBRARY(wxWidgets_LIBRARIES wx_base-3.0 "${wxDir}/lib") 
+    
+    # additional frameworks for wx_base
+    SET( OSX_LIBRARIES "-framework IOKit -framework CoreServices -framework System -framework ApplicationServices")
+    
+else()
+    FIND_PACKAGE(wxWidgets COMPONENTS base )
 endif()
-
-FIND_PACKAGE(wxWidgets COMPONENTS base )
-
-FIND_PACKAGE( LibXml2 )
 
 OPTION(imDir "/usr")
 FIND_LIBRARY(IM_LIBRARY im "${imDir}/lib")
 FIND_LIBRARY(IM_PROCESS_LIBRARY im_process "${imDir}/lib")
 FIND_LIBRARY(IM_FFTW_LIBRARY im_fftw "${imDir}/lib")
 
+OPTION(torchDir "/usr")
+FIND_LIBRARY(TORCH_LIBRARY torch "${torchDir}/lib")
 
 SET( aruspixSources ${aruspixSources}
+
+    ../src/cmdline/main.cpp
+
+    ../src/app/axapp.cpp
+    ../src/app/axfile.cpp
+    ../src/app/axprocess.cpp
 
 	../src/im/imbrink3classes.cpp
 	../src/im/imbrink.cpp
@@ -32,6 +65,10 @@ SET( aruspixSources ${aruspixSources}
 	../src/im/imregister.cpp
 	../src/im/imstaff.cpp
 	../src/im/imstaffsegment.cpp
+    
+    ../src/ml/mldecoder.cpp
+    ../src/ml/mldecoderpage.cpp
+    ../src/ml/mldecoderstaff.cpp
 
 	../src/mus/musapp.cpp
 	../src/mus/musbarline.cpp 
@@ -41,7 +78,6 @@ SET( aruspixSources ${aruspixSources}
 	../src/mus/musdc.cpp 
 	../src/mus/musdoc.cpp 	
 	../src/mus/musdurationinterface.cpp 
-	../src/mus/musiobin.cpp
 	../src/mus/musio.cpp 
 	../src/mus/musiodarms.cpp
 	../src/mus/musiomei.cpp
@@ -77,13 +113,11 @@ SET( aruspixSources ${aruspixSources}
 	../src/mus/mussymbol.cpp 
 	../src/mus/mussystem.cpp 
 	../src/mus/mustie.cpp
-	../src/mus/mustoolpanel.cpp
 	../src/mus/mustuplet.cpp
-	../src/mus/muswindow.cpp
 	../src/mus/muswwg.cpp
-	../src/mus/muswxdc.cpp
 
-	../src/recognition/recmlfbmp.cpp
+    ../src/recognition/rec.cpp
+    ../src/recognition/recfile.cpp
 	../src/recognition/recmodels.cpp
 
 	../src/tinyxml/tinystr.cpp
@@ -101,26 +135,25 @@ INCLUDE_DIRECTORIES(
 	../src/tinyxml
 	../src/im
 	../src/mus
-
+    ../src/ml
+    ${wxWidgets_INCLUDE_DIRS}
 	${imDir}/include
-	${LIBXML2_INCLUDE_DIR}
-	/usr/include/torch
+    ${torchDir}/include
+    /usr/local/include
 )
-
-INCLUDE(${wxWidgets_USE_FILE})
 
 ADD_DEFINITIONS(
 	-DAX_RECOGNITION
-    -DAX_CMD_LINE
+    -DAX_CMDLINE
 	-D__AXDEBUG__
 	-g
 	-D_FILE_OFFSET_BITS=64 	
 	-D_LARGE_FILES 	
 	-D__WXGTK__
 	-pthread
-	${LIBXML2_DEFINITIONS}
 	-Wno-write-strings
 	-Wno-format-security
+    -Wno-non-pod-varargs
 	)
 
 ADD_EXECUTABLE( aruspix-cmdline ${aruspixSources} )
@@ -128,12 +161,13 @@ ADD_EXECUTABLE( aruspix-cmdline ${aruspixSources} )
 TARGET_LINK_LIBRARIES( aruspix-cmdline
 	-lz
 	-lpthread
-	-luuid
+    -liconv
+    ${TORCH_LIBRARY}
+    "${OSX_LIBRARIES}"
+	${wxWidgets_LIBRARIES}
 	${IM_LIBRARY}
 	${IM_PROCESS_LIBRARY}
 	${IM_FFTW_LIBRARY}
-	${wxWidgets_LIBRARIES}
-	${LIBXML2_LIBRARIES}
 )
 
 install (TARGETS aruspix-cmdline DESTINATION bin)

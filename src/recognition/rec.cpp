@@ -315,7 +315,7 @@ void RecEnv::LoadWindow()
 
     m_musPanelPtr = new MusPanel( m_pageSplitterPtr, ID4_DISPLAY );
 	//m_musPanelPtr = new wxPanel( m_pageSplitterPtr, ID4_DISPLAY );
-    //wxFlexGridSizer *mussizer = (wxFlexGridSizer*)MusOutputFunc4( m_musPanelPtr, TRUE );
+    //wxFlexGridSizer *mussizer = (wxFlexGridSizer*)MusOutputFunc4( m_musPanelPtr, true );
     m_musControlPtr = (RecMusController*)m_envWindowPtr->FindWindowById( ID4_MUSPANEL );
     m_musViewPtr = new RecMusWindow( m_musControlPtr, ID4_MUSWINDOW, wxDefaultPosition,
             wxDefaultSize, wxHSCROLL |wxVSCROLL | wxNO_BORDER  /*| wxSIMPLE_BORDER */ , false);
@@ -1987,7 +1987,7 @@ void RecEnv::OnUpdateUI( wxUpdateUIEvent &event )
 RecBinSelectDlg::RecBinSelectDlg(wxWindow *parent, wxWindowID id, const wxString &title, RecFile *recfile, RecBookFile *recbookfile ) : 
 wxDialog( parent, id, title )
 {
-	RecBinSelectDlgFunc( this, TRUE );
+	RecBinSelectDlgFunc( this, true );
 
 	GetCPageBin()->SetString(0, BRINK_2CLASSES_DESCRIPTION);
 	GetCPageBin()->SetString(1, SAUVOLA_DESCRIPTION);

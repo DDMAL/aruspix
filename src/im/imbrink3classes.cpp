@@ -135,7 +135,7 @@ int imProcessBrink2ClassesThreshold(const imImage* image, imImage* dest, bool wh
 		} 
 	}
 	
-	imProcessThreshold( src, dest, T, TRUE );
+	imProcessThreshold( src, dest, T, true );
 	imProcessBitwiseNot( dest, dest );
 	
 	return T;
@@ -326,7 +326,7 @@ int imProcessBrink3ClassesThreshold( const imImage* image, imImage* dest, bool w
 		}
 	}
 	
-	imProcessThreshold( src, dest, T, TRUE );
+	imProcessThreshold( src, dest, T, true );
 	imProcessBitwiseNot( dest, dest );
     
     free2DArray( count_f, MAX_GREY );

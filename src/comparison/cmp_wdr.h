@@ -34,7 +34,7 @@ const int ID6_TREEBOOK = 16000;
 const int ID6_LINE2 = 16001;
 const int ID6_PREVIEW = 16002;
 const int ID6_CB_PREVIEW = 16003;
-wxSizer *CmpFunc6( wxWindow *parent, bool call_fit = TRUE, bool set_sizer = TRUE );
+wxSizer *CmpFunc6( wxWindow *parent, bool call_fit = true, bool set_sizer = true );
 
 const int ID6_TEXT = 16004;
 const int ID6_RISM = 16005;
@@ -47,7 +47,7 @@ const int ID6_BOOK_IMAGES = 16011;
 const int ID6_ON_BOOK_IMAGES = 16012;
 const int ID6_BOOK_AXFILES = 16013;
 const int ID6_ON_BOOK_AXFILES = 16014;
-wxSizer *CmpDataFunc6( wxWindow *parent, bool call_fit = TRUE, bool set_sizer = TRUE );
+wxSizer *CmpDataFunc6( wxWindow *parent, bool call_fit = true, bool set_sizer = true );
 
 // Declare menubar functions
 

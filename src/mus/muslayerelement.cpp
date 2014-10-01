@@ -85,7 +85,7 @@ MusLayerElement *MusLayerElement::GetChildCopy( bool newUuid )
         element = new MusSymbol( *(MusSymbol*)this );
     else {
         wxLogDebug( "Missing %s", this->MusClassName().c_str() );
-        wxYield();
+        //wxYield();
         wxASSERT_MSG( false , "Copy of this type unimplemented" );
         return NULL;
     }

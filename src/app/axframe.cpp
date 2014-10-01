@@ -273,7 +273,7 @@ void AxFrame::RealizeToolbar()
 	if ( pos != -1 )
 	{
 		envRow = &m_envArray[pos];
-		m_toolBarPtr->AddTool( envRow->m_menuId, EnvBitmapFunc(3), wxNullBitmap, TRUE, NULL, envRow->m_menuItem, envRow->m_helpStr );
+		m_toolBarPtr->AddTool( envRow->m_menuId, EnvBitmapFunc(3), wxNullBitmap, true, NULL, envRow->m_menuItem, envRow->m_helpStr );
     }
 #endif //AX_RECOGNITION
 
@@ -282,7 +282,7 @@ void AxFrame::RealizeToolbar()
 	if ( pos != -1 )
 	{
 		envRow = &m_envArray[pos];
-		m_toolBarPtr->AddTool( envRow->m_menuId, EnvBitmapFunc(1), wxNullBitmap, TRUE, NULL, envRow->m_menuItem, envRow->m_helpStr );
+		m_toolBarPtr->AddTool( envRow->m_menuId, EnvBitmapFunc(1), wxNullBitmap, true, NULL, envRow->m_menuItem, envRow->m_helpStr );
     }
 #endif //AX_SUPERIMPOSITION
 
@@ -291,7 +291,7 @@ void AxFrame::RealizeToolbar()
 	if ( pos != -1 )
 	{
 		envRow = &m_envArray[pos];
-		m_toolBarPtr->AddTool( envRow->m_menuId, EnvBitmapFunc(4), wxNullBitmap, TRUE, NULL, envRow->m_menuItem, envRow->m_helpStr );
+		m_toolBarPtr->AddTool( envRow->m_menuId, EnvBitmapFunc(4), wxNullBitmap, true, NULL, envRow->m_menuItem, envRow->m_helpStr );
 	}
 #endif //AX_EDITION
 

@@ -109,8 +109,8 @@ public:
     virtual ~AxUndo();
 	
     // WDR: method declarations for AxUndo
-    bool CanUndo();      // Returns TRUE if can Undo
-    bool CanRedo();      // Returns TRUE if can Redo
+    bool CanUndo();      // Returns true if can Undo
+    bool CanRedo();      // Returns true if can Redo
     void Undo();         // Restore next Undo state
     void Redo();         // Restore next Redo state
     void ResetUndos();        // Reset the Undo and Redo, for example when opening a new file

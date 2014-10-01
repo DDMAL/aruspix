@@ -4,7 +4,9 @@
 #define __AX_CORE_IM_EXT_H__
 
 
-#include "app/aximage.h"
+#include <stddef.h>
+#include <stdbool.h>
+#include <stdlib.h>
 
 #if	defined(__cplusplus)
 extern "C" {

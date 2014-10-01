@@ -44,7 +44,7 @@ AxProgressDlg::AxProgressDlg( wxWindow *parent, wxWindowID id, const wxString &t
 	wxASSERT_MSG( !AxProgressDlg::s_instance_existing , "Single instance checker should be false" );
 	m_parent = parent;
 
-    ProgressDlgFunc( this, TRUE );
+    ProgressDlgFunc( this, true );
 	this->GetCbCloseAtEnd()->SetValue( AxProgressDlg::s_close_at_end );
 
     m_stopWatch.Start();
