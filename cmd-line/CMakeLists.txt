@@ -139,7 +139,6 @@ INCLUDE_DIRECTORIES(
     ${wxWidgets_INCLUDE_DIRS}
 	${imDir}/include
     ${torchDir}/include
-    /usr/local/include
 )
 
 ADD_DEFINITIONS(
