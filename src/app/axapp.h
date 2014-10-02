@@ -30,7 +30,7 @@ public:
     static wxString GetResourcesPath();
     static wxString GetWorkingDir();
     static wxString GetLogDir();
-    static void SetResourcesPath(wxString p) {m_respath = p;}
+    static void SetResourcesPath(wxString p) {s_respath = p;}
     static wxString GetMusicFontDescStr();
     static wxString GetNeumeFontDescStr();
     static wxString GetLyricFontDescStr();
@@ -46,11 +46,9 @@ public:
     static wxString s_version;
     static wxString s_build_date;
     static wxString s_build_time;
-    
-private:
-    static wxString m_respath;
-    static wxString m_workingDir;
-    static wxString m_logDir;
+    static wxString s_respath;
+    static wxString s_workingDir;
+    static wxString s_logDir;
     
 };
 

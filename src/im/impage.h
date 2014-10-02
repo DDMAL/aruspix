@@ -27,6 +27,8 @@ WX_DECLARE_OBJARRAY( ImStaff, ArrayOfStaves);
 class ImRLE;
 WX_DECLARE_OBJARRAY(ImRLE, ArrayOfRLE);
 
+class AxImage;
+
 // levels of undo
 // save either staff, page or file depending on operation
 enum

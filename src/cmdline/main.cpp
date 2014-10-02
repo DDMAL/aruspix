@@ -57,6 +57,16 @@ std::string removeExtension( std::string const& filename )
     : std::string( filename.begin(), pivot.base() - 1 );
 }
 
+std::string removePath( std::string const& filename )
+{
+    std::string::const_reverse_iterator
+    pivot
+    = std::find( filename.rbegin(), filename.rend(), '/' );
+    return pivot == filename.rend()
+    ? filename
+    : std::string( pivot.base(), filename.end() );
+}
+
 bool dir_exists (string dir) {
     struct stat st;
     if ((stat(dir.c_str(), &st) == 0) && (((st.st_mode) & S_IFMT) == S_IFDIR)) {
@@ -69,80 +79,28 @@ bool dir_exists (string dir) {
 void display_usage() {
     
     //cerr << "Aruspix " << GetVersion() << endl << "Usage:" << endl << endl;
-    cerr << " aruspix-cmdline [-f format] [-s scale] [-t type] [-r resources] [-o outfile] infile" << endl << endl;
-    
-    // These need to be kept in alphabetical order:
-    // -short options first
-    // -then long options only
-    // -then debugging options
+    cerr << " aruspix-cmdline [-d outdir] [-o outfile] [-t tmpdir] infile" << endl << endl;
 
     // Options
     cerr << "Options" << endl;
-    
-    /*
-    cerr << " -b, --border=BORDER        Add border (default is " << DEFAULT_PAGE_LEFT_MAR << ")" << endl;
-    
-    cerr << " -f, --format=INPUT_FORMAT  Select input format: darms, mei, pae (default is pae)" << endl;
-    
-    cerr << " -h, --page-height=HEIGHT   Specify the page height (default is " << DEFAULT_PAGE_HEIGHT << ")" << endl;
-    
-    cerr << " -o, --outfile=FILE_NAME    Output file name" << endl;
-    
-    cerr << " -r, --recources=PATH       Path to SVG resources (default is " <<  vrv::Resources::GetPath() << ")" << endl;
-    
-    cerr << " -s, --scale=FACTOR         Scale percent (default is " << DEFAULT_SCALE << ")" << endl;
-    
-    cerr << " -t, --type=OUTPUT_TYPE     Select output format: mei, svg (default is svg)" << endl;
 
-    cerr << " -w, --page-width=WIDTH     Specify the page width (default is " << DEFAULT_PAGE_WIDTH << ")" << endl;
+    cerr << " -d, --outdir=OUTDIR       Output directory (Default is '.')" << endl;
     
-    // long options only
-    cerr << endl << "Additional options" << endl;
+    cerr << " -o, --outfile=FILENAME    Output file name (Default is input file name as .axz" << endl;
     
-    cerr << " --adjust-page-height       Crop the page height to the height of the content" << endl;
-    
-    cerr << " --all-pages                Output all pages with one output file per page" << endl;
-    
-    cerr << " --page=PAGE                Select the page to engrave (default is 1)" << endl;
-    
-    cerr << " --help                     Display this message" << endl;
-    
-    cerr << " --ignore-layout            Ignore all encoded layout information (if any)" << endl;
-    cerr << "                            and fully recalculate the layout" << endl;
-    
-    cerr << " --no-layout                Ignore all encoded layout information (if any)" << endl;
-    cerr << "                            and output one single page with one single system" << endl;
-    
-    cerr << " --page=PAGE                Select the page to engrave (default is 1)" << endl;
-
-    // Debugging options
-    cerr << endl << "Debugging options" << endl;
-    
-    cerr << " --no-justification         Do not justify the system" << endl;
-    
-    cerr << " --show-bounding-boxes      Show symbol bounding boxes" << endl;
-    */
+    cerr << " -t, --tmpdir=TMPDIR       Directory for temporary files (default is './tmp')" << endl;
 }
 
 
 int main(int argc, char** argv)
 {
+    string outdir;
     string infile;
-    string svgdir;
     string outfile;
-    string outformat = "svg";
     
     // Init random number generator for uuids
     std::srand(std::time(0));
     
-    int no_mei_hdr = 0;
-    int adjust_page_height = 0;
-    int all_pages = 0;
-    int no_layout = 0;
-    int ignore_layout = 0;
-    int no_justification = 0;
-    int show_bounding_boxes = 0;
-    int page = 1;
     int show_help = 0;
     
     if (argc < 2) {
@@ -154,95 +112,32 @@ int main(int argc, char** argv)
         
     static struct option long_options[] =
     {
-        /*
-        {"adjust-page-height",  no_argument,        &adjust_page_height, 1},
-        {"all-pages",           no_argument,        &all_pages, 1},
-        {"border",              required_argument,  0, 'b'},
-        {"format",              required_argument,  0, 'f'},
+        {"outdir",              required_argument,  0, 'd'},
         {"help",                no_argument,        &show_help, 1},
-        {"ignore-layout",       no_argument,        &ignore_layout, 1},
-        {"no-layout",           no_argument,        &no_layout, 1},
-        {"no-mei-hdr",          no_argument,        &no_mei_hdr, 1},
-        {"no-justification",    no_argument,        &no_justification, 1},
         {"outfile",             required_argument,  0, 'o'},
-        {"page",                required_argument,  0, 0},
-        {"page-height",         required_argument,  0, 'h'},
-        {"page-width",          required_argument,  0, 'w'},
-        {"resources",           required_argument,  0, 'r'},
-        {"scale",               required_argument,  0, 's'},
-        {"show-bounding-boxes", no_argument,        &show_bounding_boxes, 1},
-        {"spacing-staff",       required_argument,  0, 0},
-        {"spacing-system",      required_argument,  0, 0},
-        {"type",                required_argument,  0, 't'},
+        {"tmpdir",              required_argument,  0, 't'},
         {0, 0, 0, 0}
-        */
     };
     
     int option_index = 0;
-    while ((c = getopt_long(argc, argv, "b:f:h:o:p:r:s:t:w:", long_options, &option_index)) != -1)
+    while ((c = getopt_long(argc, argv, "d:o:t:", long_options, &option_index)) != -1)
     {                
         switch (c)
         {
-            /*
+            case 'd':
+                outdir = string(optarg);
+                break;
+                
             case 0:
-                if (long_options[option_index].flag != 0)
-                    break;
-                if (strcmp(long_options[option_index].name,"page") == 0)
-                    page = atoi(optarg);
-                else if (strcmp(long_options[option_index].name,"spacing-staff") == 0) {
-                    if ( !controller.SetSpacingStaff( atoi(optarg) ) ) {
-                        exit(1);
-                    }
-                }
-                else if (strcmp(long_options[option_index].name,"spacing-system") == 0) {
-                    if ( !controller.SetSpacingSystem( atoi(optarg) ) ) {
-                        exit(1);
-                    }
-                }
-                break;
-                
-            case 'b':
-                if ( !controller.SetBorder( atoi(optarg) ) ) {
-                    exit(1);
-                }
-                break;
-            
-            case 'f':
-                if ( !controller.SetFormat ( string(optarg) ) ) {
-                    exit(1);
-                };
-                break;
-                
-            case 'h':
-                if ( !controller.SetPageHeight( atoi(optarg) ) ) {
-                    exit(1);
-                };
                 break;
                 
             case 'o':
                 outfile = string(optarg);
                 break;
                 
-            case 'r':
-                vrv::Resources::SetPath(optarg);
-                break;
-                
             case 't':
-                outformat = string(optarg);
+                AxApp::s_workingDir = string(optarg);
                 break;
-                
-            case 's':
-                if( !controller.SetScale( atoi(optarg) ) ) {
-                     exit(1);
-                }
-                break;
-            
-            case 'w':
-                if ( !controller.SetPageWidth( atoi(optarg) ) ) {
-                    exit(1);
-                }
-                break;
-            */
             
             case '?':
                 display_usage();
@@ -268,26 +163,15 @@ int main(int argc, char** argv)
         exit(1);
     }
     
-    // Make sure the user uses a valid Resource path
-    // Save many headaches for empty SVGs
-    /*
-    if(!dir_exists(vrv::Resources::GetPath())) {
-        cerr << "The resources path " << vrv::Resources::GetPath() << " could not be found, please use -r option." << endl;
-        exit(1);
-    }
-    */
-    
-    if (outformat != "svg" && outformat != "mei") {
-        cerr << "Output format can only be: mei svg" << endl;
-        exit(1);
-    }
-    
     // Hardcode svg ext for now
     if (outfile.empty()) {
         outfile = removeExtension(infile);
+        outfile += ".axz";
     }
-    else {
-        outfile = removeExtension(outfile);
+    
+    // Hardcode svg ext for now
+    if (!outdir.empty()) {
+        outfile = outdir + "/" + removePath(outfile);
     }
     
     cerr << "Reading " << infile << "..." << endl;
@@ -313,7 +197,12 @@ int main(int argc, char** argv)
     bool failed = false;
     
     file.New();
+    
     failed = !file.Preprocess( pre_params, dlg );
+    
+    if (failed) {
+        
+    }
     
     // params 0: RecTypModel: typModelPtr
     // params 1: RecMusModel: musModelPtr
@@ -334,7 +223,7 @@ int main(int argc, char** argv)
     
     failed = !file.Recognize( rec_params, dlg );
     
-    file.SaveAs( outfile + ".axz" );
+    file.SaveAs( outfile );
     
     return 0;
 }

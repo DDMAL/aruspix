@@ -18,6 +18,7 @@
 #include "im/imregister.h"
 
 #include "app/axapp.h"
+#include "app/aximage.h"
 #include "app/axprocess.h"
 
 // IMLIB

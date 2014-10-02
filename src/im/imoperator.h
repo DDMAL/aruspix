@@ -115,7 +115,7 @@ protected:
     inline double deg2rad( double deg ) { return deg * AX_PI / 180.0; }
 
 protected:
-        AxProgressDlg *m_progressDlg;
+    AxProgressDlg *m_progressDlg;
     int m_error;
 
     _imImage *m_opImMap;

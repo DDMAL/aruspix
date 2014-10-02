@@ -22,6 +22,10 @@ using std::max;
 
 #include "app/axprogressdlg.h"
 
+#ifndef AX_CMDLINE
+#include "app/aximage.h"
+#endif
+
 //#include "recognition/rec.h" // not optimal, should be restructured...
 
 #include "wx/arrimpl.cpp"

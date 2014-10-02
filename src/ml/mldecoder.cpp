@@ -164,7 +164,7 @@ void MlDecoder::Run()
     
 	page_decoder.run();
     
-    wxLogMessage("done");
+    wxLogMessage("Recognition done");
 	
 	if ( out_fd )
 		fclose( out_fd );

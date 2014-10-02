@@ -38,9 +38,9 @@ bool wxYield() { return true; };
 #endif
 
 #ifdef AX_CMDLINE
-wxString AxApp::m_respath = "/usr/local/share/aruspix";
-wxString AxApp::m_workingDir = "./tmp";
-wxString AxApp::m_logDir = ".";
+wxString AxApp::s_respath = "/usr/local/share/aruspix";
+wxString AxApp::s_workingDir = "./tmp";
+wxString AxApp::s_logDir = ".";
 #endif
 
 wxString AxApp::GetAxVersion() {
@@ -61,7 +61,7 @@ wxString AxApp::GetAppPath() {
 
 wxString AxApp::GetResourcesPath() {
 #ifdef AX_CMDLINE
-    return m_respath;
+    return s_respath;
 #else
     return wxGetApp().m_resourcesPath;
 #endif
@@ -69,7 +69,7 @@ wxString AxApp::GetResourcesPath() {
 
 wxString AxApp::GetWorkingDir() {
 #ifdef AX_CMDLINE
-    return m_workingDir;
+    return s_workingDir;
 #else
     return wxGetApp().m_workingDir;
 #endif
@@ -78,7 +78,7 @@ wxString AxApp::GetWorkingDir() {
 
 wxString AxApp::GetLogDir() {
 #ifdef AX_CMDLINE
-    return m_logDir;
+    return s_logDir;
 #else
     return wxGetApp().m_logDir;
 #endif
