@@ -11,34 +11,34 @@ SET(wxWidgets_CONFIG_EXECUTABLE "${wxDir}wx-config")
 
 
 if(APPLE)
-    # Since FIND_PACKAGE did not work, we do it by hand...
+	# Since FIND_PACKAGE did not work, we do it by hand...
 
-    EXEC_PROGRAM(${wxDir}/wx-config ARGS --cppflags OUTPUT_VARIABLE wxWidgets_CXX_FLAGS)
-    
-    # parse definitions from cxxflags; drop -D* from CXXFLAGS and the -D prefix
-    STRING(REGEX MATCHALL "-D[^ ]+"
-        wxWidgets_DEFINITIONS  "${wxWidgets_CXX_FLAGS}")
-    STRING(REGEX REPLACE "-D[^ ]+" ""
-        wxWidgets_CXX_FLAGS "${wxWidgets_CXX_FLAGS}")
-    STRING(REPLACE "-D" ""
-        wxWidgets_DEFINITIONS "${wxWidgets_DEFINITIONS}")
+	EXEC_PROGRAM(${wxDir}/wx-config ARGS --cppflags OUTPUT_VARIABLE wxWidgets_CXX_FLAGS)
+	
+	# parse definitions from cxxflags; drop -D* from CXXFLAGS and the -D prefix
+	STRING(REGEX MATCHALL "-D[^ ]+"
+		wxWidgets_DEFINITIONS  "${wxWidgets_CXX_FLAGS}")
+	STRING(REGEX REPLACE "-D[^ ]+" ""
+		wxWidgets_CXX_FLAGS "${wxWidgets_CXX_FLAGS}")
+	STRING(REPLACE "-D" ""
+		wxWidgets_DEFINITIONS "${wxWidgets_DEFINITIONS}")
 
-    # parse include dirs from cxxflags; drop -I prefix
-    STRING(REGEX MATCHALL "-I[^ ]+"
-      wxWidgets_INCLUDE_DIRS "${wxWidgets_CXX_FLAGS}")
-    STRING(REGEX REPLACE "-I[^ ]+ " ";"
-      wxWidgets_CXX_FLAGS "${wxWidgets_CXX_FLAGS}")
-    STRING(REPLACE "-I" ""
-      wxWidgets_INCLUDE_DIRS "${wxWidgets_INCLUDE_DIRS}")
-    
-    FIND_LIBRARY(wxWidgets_LIBRARIES wx_base-3.0 "${wxDir}/lib") 
-    
-    # additional frameworks for wx_base
-    SET( OSX_LIBRARIES "-liconv -framework IOKit -framework CoreServices -framework System -framework ApplicationServices")
-    
+	# parse include dirs from cxxflags; drop -I prefix
+	STRING(REGEX MATCHALL "-I[^ ]+"
+	  wxWidgets_INCLUDE_DIRS "${wxWidgets_CXX_FLAGS}")
+	STRING(REGEX REPLACE "-I[^ ]+ " ";"
+	  wxWidgets_CXX_FLAGS "${wxWidgets_CXX_FLAGS}")
+	STRING(REPLACE "-I" ""
+	  wxWidgets_INCLUDE_DIRS "${wxWidgets_INCLUDE_DIRS}")
+	
+	FIND_LIBRARY(wxWidgets_LIBRARIES wx_base-3.0 "${wxDir}/lib") 
+	
+	# additional frameworks for wx_base
+	SET( OSX_LIBRARIES "-liconv -framework IOKit -framework CoreServices -framework System -framework ApplicationServices")
+	
 else()
-    SET( LINUX_LIBRARIES "-luuid")    
-    FIND_PACKAGE(wxWidgets COMPONENTS base )
+	SET( LINUX_LIBRARIES "-luuid")	  
+	FIND_PACKAGE(wxWidgets COMPONENTS base )
 endif()
 
 OPTION(imDir "/usr")
@@ -51,11 +51,11 @@ FIND_LIBRARY(TORCH_LIBRARY torch "${torchDir}/lib")
 
 SET( aruspixSources ${aruspixSources}
 
-    ../src/cmdline/main.cpp
+	../src/cmdline/main.cpp
 
-    ../src/app/axapp.cpp
-    ../src/app/axfile.cpp
-    ../src/app/axprocess.cpp
+	../src/app/axapp.cpp
+	../src/app/axfile.cpp
+	../src/app/axprocess.cpp
 
 	../src/im/imbrink3classes.cpp
 	../src/im/imbrink.cpp
@@ -66,10 +66,10 @@ SET( aruspixSources ${aruspixSources}
 	../src/im/imregister.cpp
 	../src/im/imstaff.cpp
 	../src/im/imstaffsegment.cpp
-    
-    ../src/ml/mldecoder.cpp
-    ../src/ml/mldecoderpage.cpp
-    ../src/ml/mldecoderstaff.cpp
+	
+	../src/ml/mldecoder.cpp
+	../src/ml/mldecoderpage.cpp
+	../src/ml/mldecoderstaff.cpp
 
 	../src/mus/musapp.cpp
 	../src/mus/musbarline.cpp 
@@ -77,7 +77,7 @@ SET( aruspixSources ${aruspixSources}
 	../src/mus/musbeam.cpp
 	../src/mus/musclef.cpp 
 	../src/mus/musdc.cpp 
-	../src/mus/musdoc.cpp 	
+	../src/mus/musdoc.cpp	
 	../src/mus/musdurationinterface.cpp 
 	../src/mus/musio.cpp 
 	../src/mus/musiodarms.cpp
@@ -117,8 +117,8 @@ SET( aruspixSources ${aruspixSources}
 	../src/mus/mustuplet.cpp
 	../src/mus/muswwg.cpp
 
-    ../src/recognition/rec.cpp
-    ../src/recognition/recfile.cpp
+	../src/recognition/rec.cpp
+	../src/recognition/recfile.cpp
 	../src/recognition/recmodels.cpp
 
 	../src/tinyxml/tinystr.cpp
@@ -136,25 +136,25 @@ INCLUDE_DIRECTORIES(
 	../src/tinyxml
 	../src/im
 	../src/mus
-    ../src/ml
-    ${wxWidgets_INCLUDE_DIRS}
+	../src/ml
+	${wxWidgets_INCLUDE_DIRS}
 	${imDir}/include
-    ${torchDir}/include
-    /usr/include
+	${torchDir}/include
+	/usr/include
 )
 
 ADD_DEFINITIONS(
 	-DAX_RECOGNITION
-    -DAX_CMDLINE
+	-DAX_CMDLINE
 	-D__AXDEBUG__
 	-g
-	-D_FILE_OFFSET_BITS=64 	
-	-D_LARGE_FILES 	
+	-D_FILE_OFFSET_BITS=64	
+	-D_LARGE_FILES	
 	-D__WXGTK__
 	-pthread
 	-Wno-write-strings
 	-Wno-format-security
-    -Wno-non-pod-varargs
+	-Wno-non-pod-varargs
 	)
 
 ADD_EXECUTABLE( aruspix-cmdline ${aruspixSources} )
@@ -162,9 +162,9 @@ ADD_EXECUTABLE( aruspix-cmdline ${aruspixSources} )
 TARGET_LINK_LIBRARIES( aruspix-cmdline
 	-lz
 	-lpthread
-    ${TORCH_LIBRARY}
-    "${OSX_LIBRARIES}"
-    "${LINUX_LIBRARIES}"
+	${TORCH_LIBRARY}
+	"${OSX_LIBRARIES}"
+	"${LINUX_LIBRARIES}"
 	${wxWidgets_LIBRARIES}
 	${IM_LIBRARY}
 	${IM_PROCESS_LIBRARY}
