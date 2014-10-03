@@ -14,8 +14,6 @@
 #include "wx/gdicmn.h"
 #include "wx/utils.h"
 
-#include "RtMidi.h"
-
 #include "axapp.h"
 #include "axfile.h"
 #include "axframe.h"
@@ -54,6 +52,7 @@ DEFINE_EVENT_TYPE( AX_EVT_MIDI )
 #define MIDI_OFF 128
 
 // MIDI CALLBACK
+/*
 void midi_callback( double deltatime, std::vector< unsigned char > *message, void *userData )
 {
   unsigned int nBytes = message->size();
@@ -79,7 +78,7 @@ void midi_callback( double deltatime, std::vector< unsigned char > *message, voi
   event.SetInt( (int)message->at(1) );
   wxPostEvent( wxGetApp().GetTopWindow(), event );
 }
-
+*/
 
 
 //----------------------------------------------------------------------------

@@ -161,7 +161,7 @@ ADD_EXECUTABLE( aruspix-cmdline ${aruspixSources} )
 TARGET_LINK_LIBRARIES( aruspix-cmdline
 	-lz
 	-lpthread
-	-luuid
+    -liconv
     ${TORCH_LIBRARY}
     "${OSX_LIBRARIES}"
 	${wxWidgets_LIBRARIES}

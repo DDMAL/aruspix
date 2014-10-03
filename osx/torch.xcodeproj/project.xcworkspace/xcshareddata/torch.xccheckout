@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
+	<false/>
+	<key>IDESourceControlProjectIdentifier</key>
+	<string>0543DF70-C7C5-4003-9FD0-DDD924B1B5CB</string>
+	<key>IDESourceControlProjectName</key>
+	<string>torch</string>
+	<key>IDESourceControlProjectOriginsDictionary</key>
+	<dict>
+		<key>14019A4B7A4E0C90121A7F3680C62566C284D811</key>
+		<string>https://github.com/DDMAL/aruspix.git</string>
+	</dict>
+	<key>IDESourceControlProjectPath</key>
+	<string>osx/torch.xcodeproj</string>
+	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
+	<dict>
+		<key>14019A4B7A4E0C90121A7F3680C62566C284D811</key>
+		<string>../../..</string>
+	</dict>
+	<key>IDESourceControlProjectURL</key>
+	<string>https://github.com/DDMAL/aruspix.git</string>
+	<key>IDESourceControlProjectVersion</key>
+	<integer>111</integer>
+	<key>IDESourceControlProjectWCCIdentifier</key>
+	<string>14019A4B7A4E0C90121A7F3680C62566C284D811</string>
+	<key>IDESourceControlProjectWCConfigurations</key>
+	<array>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>14019A4B7A4E0C90121A7F3680C62566C284D811</string>
+			<key>IDESourceControlWCCName</key>
+			<string>aruspix_master</string>
+		</dict>
+	</array>
+</dict>
+</plist>
