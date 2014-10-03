@@ -34,7 +34,7 @@ if(APPLE)
     FIND_LIBRARY(wxWidgets_LIBRARIES wx_base-3.0 "${wxDir}/lib") 
     
     # additional frameworks for wx_base
-    SET( OSX_LIBRARIES "-liconv-framework IOKit -framework CoreServices -framework System -framework ApplicationServices")
+    SET( OSX_LIBRARIES "-liconv -framework IOKit -framework CoreServices -framework System -framework ApplicationServices")
     
 else()
     SET( LINUX_LIBRARIES "-luuid")    
