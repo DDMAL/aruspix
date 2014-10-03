@@ -34,9 +34,10 @@ if(APPLE)
     FIND_LIBRARY(wxWidgets_LIBRARIES wx_base-3.0 "${wxDir}/lib") 
     
     # additional frameworks for wx_base
-    SET( OSX_LIBRARIES "-framework IOKit -framework CoreServices -framework System -framework ApplicationServices")
+    SET( OSX_LIBRARIES "-liconv-framework IOKit -framework CoreServices -framework System -framework ApplicationServices")
     
 else()
+    SET( LINUX_LIBRARIES "-luuid")    
     FIND_PACKAGE(wxWidgets COMPONENTS base )
 endif()
 
@@ -161,9 +162,9 @@ ADD_EXECUTABLE( aruspix-cmdline ${aruspixSources} )
 TARGET_LINK_LIBRARIES( aruspix-cmdline
 	-lz
 	-lpthread
-    -liconv
     ${TORCH_LIBRARY}
     "${OSX_LIBRARIES}"
+    "${LINUX_LIBRARIES}"
 	${wxWidgets_LIBRARIES}
 	${IM_LIBRARY}
 	${IM_PROCESS_LIBRARY}
