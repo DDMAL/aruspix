@@ -2,8 +2,6 @@
 #ifndef __IM_KMEANS_H__
 #define __IM_KMEANS_H__
 
-#include "app/aximage.h"
-
 #if	defined(__cplusplus)
 extern "C" {
 #endif

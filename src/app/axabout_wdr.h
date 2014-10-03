@@ -44,13 +44,13 @@ const int TX_APP_COPYRIGHT = 9010;
 const int TX_APP_LICENSE = 9011;
 const int TX_APP_CONTRIBUTORS = 9012;
 const int ID0_CONTRIBUTORS = 9013;
-wxSizer *AboutDlgFunc( wxWindow *parent, bool call_fit = TRUE, bool set_sizer = TRUE );
+wxSizer *AboutDlgFunc( wxWindow *parent, bool call_fit = true, bool set_sizer = true );
 
 const int TX_APP_NEW_VERSION = 9014;
 const int ID0_UPDATE_LINK = 9015;
 const int TX_APP_NEW_FEATURES = 9016;
 const int ID0_NEW_FEATURES = 9017;
-wxSizer *UpdateDlgFunc( wxWindow *parent, bool call_fit = TRUE, bool set_sizer = TRUE );
+wxSizer *UpdateDlgFunc( wxWindow *parent, bool call_fit = true, bool set_sizer = true );
 
 // Declare menubar functions
 

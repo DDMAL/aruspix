@@ -8,6 +8,26 @@
 #ifndef __axundo_H__
 #define __axundo_H__
 
+#ifdef AX_CMDLINE
+
+//----------------------------------------------------------------------------
+// Commandline replacement class
+//----------------------------------------------------------------------------
+
+class AxUndo
+{
+public:
+    // constructors and destructors
+    AxUndo( int i ) {};
+    
+};
+
+#else
+
+//----------------------------------------------------------------------------
+// Gui
+//----------------------------------------------------------------------------
+
 #ifndef WX_PRECOMP
     #include "wx/wx.h"
 #endif
@@ -89,8 +109,8 @@ public:
     virtual ~AxUndo();
 	
     // WDR: method declarations for AxUndo
-    bool CanUndo();      // Returns TRUE if can Undo
-    bool CanRedo();      // Returns TRUE if can Redo
+    bool CanUndo();      // Returns true if can Undo
+    bool CanRedo();      // Returns true if can Redo
     void Undo();         // Restore next Undo state
     void Redo();         // Restore next Redo state
     void ResetUndos();        // Reset the Undo and Redo, for example when opening a new file
@@ -129,5 +149,7 @@ private:
 	static bool s_isOk;
 
 };
+
+#endif // AX_CMDLINE
 
 #endif

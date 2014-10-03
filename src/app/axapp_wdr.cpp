@@ -425,7 +425,7 @@ wxBitmap ToolBarBitmapFunc( size_t index )
             221,221,221,221,221,221,221,221,221,221,221,221,221,221,221,221,221,221,221,221,221,221,221,221,221,
             221,221,221,221,221,221,221,221,221,221,221,221,221,221,221,221,221,221,221,221
         };
-        wxImage image( 16, 15, (unsigned char*)data, TRUE );
+        wxImage image( 16, 15, (unsigned char*)data, true );
         image.SetMaskColour( 221, 221, 221);
         wxBitmap bitmap( image );
         return bitmap;
@@ -464,7 +464,7 @@ wxBitmap ToolBarBitmapFunc( size_t index )
             221,221,221,221,221,221,221,221,221,221,221,221,221,221,221,221,221,221,221,221,221,221,221,221,221,
             221,221,221,221,221,221,221,221,221,221,221,221,221,221,221,221,221,221,221,221
         };
-        wxImage image( 16, 15, (unsigned char*)data, TRUE );
+        wxImage image( 16, 15, (unsigned char*)data, true );
         image.SetMaskColour( 221, 221, 221);
         wxBitmap bitmap( image );
         return bitmap;
@@ -503,7 +503,7 @@ wxBitmap ToolBarBitmapFunc( size_t index )
             221,221,221,221,221,221,221,221,221,221,221,221,221,221,221,221,221,221,221,221,221,221,221,221,221,
             221,221,221,221,221,221,221,221,221,221,221,221,221,221,221,221,221,221,221,221
         };
-        wxImage image( 16, 15, (unsigned char*)data, TRUE );
+        wxImage image( 16, 15, (unsigned char*)data, true );
         image.SetMaskColour( 221, 221, 221);
         wxBitmap bitmap( image );
         return bitmap;
@@ -542,7 +542,7 @@ wxBitmap ToolBarBitmapFunc( size_t index )
             221,221,221,221,221,221,221,221,221,221,221,221,221,221,221,221,221,221,221,221,221,221,221,221,221,
             221,221,221,221,221,221,221,221,221,221,221,221,221,221,221,221,221,221,221,221
         };
-        wxImage image( 16, 15, (unsigned char*)data, TRUE );
+        wxImage image( 16, 15, (unsigned char*)data, true );
         image.SetMaskColour( 221, 221, 221);
         wxBitmap bitmap( image );
         return bitmap;
@@ -581,7 +581,7 @@ wxBitmap ToolBarBitmapFunc( size_t index )
             221,221,221,221,221,221,221,221,221,221,221,221,221,221,221,221,221,221,221,221,221,221,221,221,221,
             221,221,221,221,221,221,221,221,221,221,221,221,221,221,221,221,221,221,221,221
         };
-        wxImage image( 16, 15, (unsigned char*)data, TRUE );
+        wxImage image( 16, 15, (unsigned char*)data, true );
         image.SetMaskColour( 221, 221, 221);
         wxBitmap bitmap( image );
         return bitmap;
@@ -620,7 +620,7 @@ wxBitmap ToolBarBitmapFunc( size_t index )
             255,0,255,255,0,255,255,0,255,255,0,255,255,0,255,255,0,255,255,0,255,255,0,255,255,
             0,255,255,0,255,255,0,255,255,0,255,255,0,255,255,0,255,255,0,255
         };
-        wxImage image( 16, 15, (unsigned char*)data, TRUE );
+        wxImage image( 16, 15, (unsigned char*)data, true );
         image.SetMaskColour( 255, 0, 255);
         wxBitmap bitmap( image );
         return bitmap;
@@ -659,7 +659,7 @@ wxBitmap ToolBarBitmapFunc( size_t index )
             255,0,255,255,0,255,255,0,255,255,0,255,255,0,255,255,0,255,255,0,255,255,0,255,255,
             0,255,255,0,255,255,0,255,255,0,255,255,0,255,255,0,255,255,0,255
         };
-        wxImage image( 16, 15, (unsigned char*)data, TRUE );
+        wxImage image( 16, 15, (unsigned char*)data, true );
         image.SetMaskColour( 255, 0, 255);
         wxBitmap bitmap( image );
         return bitmap;
@@ -698,7 +698,7 @@ wxBitmap ToolBarBitmapFunc( size_t index )
             255,0,255,255,0,255,255,0,255,255,0,255,255,0,255,255,0,255,255,0,255,255,0,255,255,
             0,255,255,0,255,255,0,255,255,0,255,255,0,255,255,0,255,255,0,255
         };
-        wxImage image( 16, 15, (unsigned char*)data, TRUE );
+        wxImage image( 16, 15, (unsigned char*)data, true );
         image.SetMaskColour( 255, 0, 255);
         wxBitmap bitmap( image );
         return bitmap;

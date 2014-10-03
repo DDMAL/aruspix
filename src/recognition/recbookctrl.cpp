@@ -39,7 +39,7 @@ RecBookDataDlg::RecBookDataDlg( wxWindow *parent, wxWindowID id, const wxString 
     RecBookFile *recBookFile ) :
     wxDialog( parent, id, title )
 {
-        RecBookDataFunc4( this, TRUE );
+        RecBookDataFunc4( this, true );
     m_recBookFile = recBookFile;
     m_loadAxfiles = false;
     m_loadImages = false;
@@ -77,12 +77,12 @@ RecBookDataDlg::RecBookDataDlg( wxWindow *parent, wxWindowID id, const wxString 
 /*
 bool RecBookDataDlg::Validate()
 {
-    return TRUE;
+    return true;
 }
 
 bool RecBookDataDlg::TransferDataToWindow()
 {
-    return TRUE;
+    return true;
 }
 */
 
@@ -161,7 +161,7 @@ RecBookPanel::RecBookPanel( wxWindow *parent, wxWindowID id,
                             const wxPoint &position, const wxSize& size, long style ) :
 wxPanel( parent, id, position, size, style )
 {
-        RecBookFunc4( this, TRUE );
+        RecBookFunc4( this, true );
     this->GetPreviewCB( )->SetValue( true );
 	m_show_preview = true;
 	m_filename = "";

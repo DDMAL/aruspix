@@ -31,13 +31,13 @@
 // Declare window functions
 
 const int ID2_SPLITTER1 = 12000;
-wxSizer *WindowFunc2( wxWindow *parent, bool call_fit = TRUE, bool set_sizer = TRUE );
+wxSizer *WindowFunc2( wxWindow *parent, bool call_fit = true, bool set_sizer = true );
 
 const int ID2_TREEBOOK = 12001;
 const int ID2_LINE2 = 12002;
 const int ID2_PREVIEW = 12003;
 const int ID2_CB_PREVIEW = 12004;
-wxSizer *SupBookFunc2( wxWindow *parent, bool call_fit = TRUE, bool set_sizer = TRUE );
+wxSizer *SupBookFunc2( wxWindow *parent, bool call_fit = true, bool set_sizer = true );
 
 const int ID2_TEXT = 12005;
 const int ID2_RISM = 12006;
@@ -53,7 +53,7 @@ const int ID2_BOOK_IMAGES2 = 12015;
 const int ID2_ON_BOOK_IMAGES2 = 12016;
 const int ID2_BOOK_AXFILES = 12017;
 const int ID2_ON_BOOK_AXFILES = 12018;
-wxSizer *SupBookDataFunc2( wxWindow *parent, bool call_fit = TRUE, bool set_sizer = TRUE );
+wxSizer *SupBookDataFunc2( wxWindow *parent, bool call_fit = true, bool set_sizer = true );
 
 const int ID_TEXT2 = 12019;
 const int ID2_SRC1_B = 12020;
@@ -62,7 +62,7 @@ const int ID_LINE2 = 12022;
 const int ID2_SRC2_B = 12023;
 const int ID2_SRC2_C = 12024;
 const int ID2_RESET_ADJ = 12025;
-wxSizer *SupAdjustDlgFunc2( wxWindow *parent, bool call_fit = TRUE, bool set_sizer = TRUE );
+wxSizer *SupAdjustDlgFunc2( wxWindow *parent, bool call_fit = true, bool set_sizer = true );
 
 // Declare menubar functions
 

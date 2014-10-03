@@ -15,8 +15,8 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "8F23816A159462AF00C04D47"
-               BuildableName = "aruspix_headless"
-               BlueprintName = "aruspix_headless"
+               BuildableName = "aruspix-cmdline"
+               BlueprintName = "aruspix-cmdline"
                ReferencedContainer = "container:aruspix.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -33,8 +33,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "8F23816A159462AF00C04D47"
-            BuildableName = "aruspix_headless"
-            BlueprintName = "aruspix_headless"
+            BuildableName = "aruspix-cmdline"
+            BlueprintName = "aruspix-cmdline"
             ReferencedContainer = "container:aruspix.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
@@ -52,8 +52,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "8F23816A159462AF00C04D47"
-            BuildableName = "aruspix_headless"
-            BlueprintName = "aruspix_headless"
+            BuildableName = "aruspix-cmdline"
+            BlueprintName = "aruspix-cmdline"
             ReferencedContainer = "container:aruspix.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
@@ -70,8 +70,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "8F23816A159462AF00C04D47"
-            BuildableName = "aruspix_headless"
-            BlueprintName = "aruspix_headless"
+            BuildableName = "aruspix-cmdline"
+            BlueprintName = "aruspix-cmdline"
             ReferencedContainer = "container:aruspix.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>

@@ -12,14 +12,13 @@
 
 #include "wx/filefn.h"
 
-//#include "wx/docview.h"
-//#include "wx/timer.h"
-
 #include "musleipzigbbox.h"
 #include "mussvgdc.h"
 #include "musdef.h"
 #include "musdoc.h"
 #include "musrc.h"
+
+#include "app/axapp.h"
 
 #define space " "
 #define semicolon ";"
@@ -136,7 +135,7 @@ void MusSvgDC::Commit() {
         for (i = 0; i < (int)m_leipzig_glyphs.Count(); i++) {
             s = "\t\t";
             outfile.Write(s, strlen(s));
-            copy_wxTransferFileToStream( MusDoc::GetResourcesPath() + "/svg/" + m_leipzig_glyphs[i] + ".xml", outfile );
+            copy_wxTransferFileToStream( AxApp::GetResourcesPath() + "/svg/" + m_leipzig_glyphs[i] + ".xml", outfile );
         }
         s = "\t</defs>\n";
         outfile.Write(s, strlen(s));

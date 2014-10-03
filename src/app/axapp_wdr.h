@@ -39,13 +39,13 @@ const int ID_GAUGE2_PROGRESS = 6005;
 const int ID_TX_MSG3_PROGRESS = 6006;
 const int ID_GAUGE3_PROGRESS = 6007;
 const int ID_CB_CLOSE_AT_END = 6008;
-wxSizer *ProgressDlgFunc( wxWindow *parent, bool call_fit = TRUE, bool set_sizer = TRUE );
+wxSizer *ProgressDlgFunc( wxWindow *parent, bool call_fit = true, bool set_sizer = true );
 
 const int ID_RB_FIRST_GOTO = 6009;
 const int ID_RB_LAST_GOTO = 6010;
 const int ID_RB_NO_GOTO = 6011;
 const int ID_SC_NO_GOTO = 6012;
-wxSizer *GotoDlgFunc( wxWindow *parent, bool call_fit = TRUE, bool set_sizer = TRUE );
+wxSizer *GotoDlgFunc( wxWindow *parent, bool call_fit = true, bool set_sizer = true );
 
 // Declare menubar functions
 

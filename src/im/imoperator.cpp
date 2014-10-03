@@ -12,9 +12,6 @@ using std::max;
 // For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"
 
-#include "wx/ffile.h"
-#include "wx/file.h"
-
 #include "imoperator.h"
 
 int ImOperator::s_pre_image_binarization_method = IM_BINARIZATION_OTSU;
@@ -152,13 +149,13 @@ bool ImOperator::Read( wxString file, _imImage **image, int index )
 
     imFile* ifile = imFileOpen( file.c_str(), &error );
     if ( !ifile )
-        return this->Terminate( ERR_FILE , file.c_str());
+        return this->Terminate( ERR_FILE , file.c_str() );
 
     imFileReadImageInfo( ifile, index, &width, &height, &color_mode, &data_type );
     *image = imFileLoadBitmap( ifile, index, &error);
     imFileClose(ifile);
     if (!*image)
-        return this->Terminate( ERR_READING , index, file.c_str());
+        return this->Terminate( ERR_READING , index, file.c_str() );
     else 
         return true;
 }

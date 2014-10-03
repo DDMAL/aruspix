@@ -8,6 +8,10 @@
 /////////////////////////////////////////////////////////////////////////////
 
 #include <algorithm>
+#include <math.h>
+#include <memory.h>
+#include <stdio.h>
+
 using std::min;
 using std::max;
 

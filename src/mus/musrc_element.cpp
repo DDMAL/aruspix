@@ -949,7 +949,7 @@ void MusRC::DrawLigature ( MusDC *dc, int y, MusLayerElement *element, MusLayer 
 		// ENZ
 		up = (y < milieu) ? ON : OFF;
 		// ENZ
-		if ( !note->m_stemDir == 0 )
+		if ( note->m_stemDir != 0 )
 			up = (up == ON) ? OFF : ON;
 			
 		if (up)

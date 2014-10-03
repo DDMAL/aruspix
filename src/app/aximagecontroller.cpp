@@ -95,7 +95,7 @@ AxImageController::AxImageController( wxWindow *parent, wxWindowID id,
     }
 	
 
-    this->SetAutoLayout( TRUE );
+    this->SetAutoLayout( true );
     this->SetSizer( m_sizerPtr );
 
     m_sizerPtr->Fit( this );

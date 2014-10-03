@@ -10,33 +10,7 @@
 // For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"
 
-//#include "wx/config.h"
-#include "wx/valgen.h"
-#include "wx/file.h"
-//#include "wx/filename.h"
-//#include "wx/dir.h"
-#include "wx/log.h"
-
 #include "rec.h"
-#include "recim.h"
-#include "recmus.h"
-#include "recfile.h"
-#include "recbookfile.h"
-#include "recbookctrl.h"
-#include "recmodels.h"
-#include "recmlfbmp.h"
-
-#include "app/axapp.h"
-#include "app/axframe.h"
-#include "app/axoptionsdlg.h"
-
-#include "im/impage.h"
-
-#include "mus/musdoc.h"
-#include "mus/musiowwg.h"
-//#include "mus/musiocmme.h" // ax2
-#include "mus/musiomei.h" // ax2
-#include "mus/mustoolpanel.h"
 
 // statics
 bool RecEnv::s_check = true;
@@ -71,15 +45,39 @@ wxString RecEnv::s_train_dir;
 bool RecEnv::s_train_mlf;
 bool RecEnv::s_train_positions;
 
+#ifndef AX_CMDLINE
+
+#include "wx/valgen.h"
+#include "wx/file.h"
+#include "wx/log.h"
+
+#include "recim.h"
+#include "recmus.h"
+#include "recfile.h"
+#include "recbookfile.h"
+#include "recbookctrl.h"
+#include "recmodels.h"
+#include "recmlfbmp.h"
+
+#include "app/axapp.h"
+#include "app/axframe.h"
+#include "app/axoptionsdlg.h"
+
+#include "im/impage.h"
+
+#include "mus/musdoc.h"
+#include "mus/musiowwg.h"
+//#include "mus/musiocmme.h" // ax2
+#include "mus/musiomei.h" // ax2
+#include "mus/mustoolpanel.h"
+
+
 // tree
 bool RecEnv::s_expand_root = true;
 bool RecEnv::s_expand_book = true;
 bool RecEnv::s_expand_img = true;  
 bool RecEnv::s_expand_ax = true;
 bool RecEnv::s_expand_opt = true;
-
-
-
 
 
 //----------------------------------------------------------------------------
@@ -317,7 +315,7 @@ void RecEnv::LoadWindow()
 
     m_musPanelPtr = new MusPanel( m_pageSplitterPtr, ID4_DISPLAY );
 	//m_musPanelPtr = new wxPanel( m_pageSplitterPtr, ID4_DISPLAY );
-    //wxFlexGridSizer *mussizer = (wxFlexGridSizer*)MusOutputFunc4( m_musPanelPtr, TRUE );
+    //wxFlexGridSizer *mussizer = (wxFlexGridSizer*)MusOutputFunc4( m_musPanelPtr, true );
     m_musControlPtr = (RecMusController*)m_envWindowPtr->FindWindowById( ID4_MUSPANEL );
     m_musViewPtr = new RecMusWindow( m_musControlPtr, ID4_MUSWINDOW, wxDefaultPosition,
             wxDefaultSize, wxHSCROLL |wxVSCROLL | wxNO_BORDER  /*| wxSIMPLE_BORDER */ , false);
@@ -1989,7 +1987,7 @@ void RecEnv::OnUpdateUI( wxUpdateUIEvent &event )
 RecBinSelectDlg::RecBinSelectDlg(wxWindow *parent, wxWindowID id, const wxString &title, RecFile *recfile, RecBookFile *recbookfile ) : 
 wxDialog( parent, id, title )
 {
-	RecBinSelectDlgFunc( this, TRUE );
+	RecBinSelectDlgFunc( this, true );
 
 	GetCPageBin()->SetString(0, BRINK_2CLASSES_DESCRIPTION);
 	GetCPageBin()->SetString(1, SAUVOLA_DESCRIPTION);
@@ -2003,6 +2001,7 @@ wxDialog( parent, id, title )
 		this->GetCbDeactivateDlg()->SetValidator( wxGenericValidator( &recbookfile->m_pre_page_binarization_select ) );
 }
 
+#endif // AX_CMDLINE
 
 #endif // AX_RECOGNITION
 

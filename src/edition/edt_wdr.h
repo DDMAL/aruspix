@@ -33,7 +33,7 @@
 const int ID5_LINE = 15000;
 const int ID5_TOOLPANEL = 15001;
 const int ID5_MUSPANEL = 15002;
-wxSizer *WindowFunc5( wxWindow *parent, bool call_fit = TRUE, bool set_sizer = TRUE );
+wxSizer *WindowFunc5( wxWindow *parent, bool call_fit = true, bool set_sizer = true );
 
 const int ID5_NOTATION = 15003;
 const int ID5_TEXT = 15004;
@@ -43,7 +43,7 @@ const int ID5_RB_SIZE = 15007;
 const int ID5_TX_HEIGHT = 15008;
 const int ID5_TX_WIDTH = 15009;
 const int ID5_RB_ORIENTATION = 15010;
-wxSizer *EdtNewDlgFunc( wxWindow *parent, bool call_fit = TRUE, bool set_sizer = TRUE );
+wxSizer *EdtNewDlgFunc( wxWindow *parent, bool call_fit = true, bool set_sizer = true );
 
 // Declare menubar functions
 

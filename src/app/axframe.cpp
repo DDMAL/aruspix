@@ -14,8 +14,6 @@
 #include "wx/gdicmn.h"
 #include "wx/utils.h"
 
-#include "RtMidi.h"
-
 #include "axapp.h"
 #include "axfile.h"
 #include "axframe.h"
@@ -54,6 +52,7 @@ DEFINE_EVENT_TYPE( AX_EVT_MIDI )
 #define MIDI_OFF 128
 
 // MIDI CALLBACK
+/*
 void midi_callback( double deltatime, std::vector< unsigned char > *message, void *userData )
 {
   unsigned int nBytes = message->size();
@@ -79,7 +78,7 @@ void midi_callback( double deltatime, std::vector< unsigned char > *message, voi
   event.SetInt( (int)message->at(1) );
   wxPostEvent( wxGetApp().GetTopWindow(), event );
 }
-
+*/
 
 
 //----------------------------------------------------------------------------
@@ -273,7 +272,7 @@ void AxFrame::RealizeToolbar()
 	if ( pos != -1 )
 	{
 		envRow = &m_envArray[pos];
-		m_toolBarPtr->AddTool( envRow->m_menuId, EnvBitmapFunc(3), wxNullBitmap, TRUE, NULL, envRow->m_menuItem, envRow->m_helpStr );
+		m_toolBarPtr->AddTool( envRow->m_menuId, EnvBitmapFunc(3), wxNullBitmap, true, NULL, envRow->m_menuItem, envRow->m_helpStr );
     }
 #endif //AX_RECOGNITION
 
@@ -282,7 +281,7 @@ void AxFrame::RealizeToolbar()
 	if ( pos != -1 )
 	{
 		envRow = &m_envArray[pos];
-		m_toolBarPtr->AddTool( envRow->m_menuId, EnvBitmapFunc(1), wxNullBitmap, TRUE, NULL, envRow->m_menuItem, envRow->m_helpStr );
+		m_toolBarPtr->AddTool( envRow->m_menuId, EnvBitmapFunc(1), wxNullBitmap, true, NULL, envRow->m_menuItem, envRow->m_helpStr );
     }
 #endif //AX_SUPERIMPOSITION
 
@@ -291,7 +290,7 @@ void AxFrame::RealizeToolbar()
 	if ( pos != -1 )
 	{
 		envRow = &m_envArray[pos];
-		m_toolBarPtr->AddTool( envRow->m_menuId, EnvBitmapFunc(4), wxNullBitmap, TRUE, NULL, envRow->m_menuItem, envRow->m_helpStr );
+		m_toolBarPtr->AddTool( envRow->m_menuId, EnvBitmapFunc(4), wxNullBitmap, true, NULL, envRow->m_menuItem, envRow->m_helpStr );
 	}
 #endif //AX_EDITION
 
@@ -315,26 +314,26 @@ wxBitmap AxFrame::GetToolbarBitmap( wxString name )
 
 void AxFrame::InitMidi()
 {
-
-    // midi input
-    //m_midiIn = new RtMidiIn();
-//	wxString portName;
-	
-//    // Check available ports.
-    unsigned int nPorts = m_midiIn->getPortCount();
-//	m_midiIn->openVirtualPort("test");
-//	
-//	for ( unsigned int i=0; i<nPorts; i++ ) {
-//		try {
-//			portName = m_midiIn->getPortName(i);
-//		}
-//		catch ( RtError &error ) {
-//			error.printMessage();
-//		}
-//		std::cout << "  Input Port #" << i+1 << ": " << portName << '\n';
-//	}
-//	
 /*
+    // midi input
+    m_midiIn = new RtMidiIn();
+	wxString portName;
+	
+    // Check available ports.
+    unsigned int nPorts = m_midiIn->getPortCount();
+	m_midiIn->openVirtualPort("test");
+	
+	for ( unsigned int i=0; i<nPorts; i++ ) {
+		try {
+			portName = m_midiIn->getPortName(i);
+		}
+		catch ( RtError &error ) {
+			error.printMessage();
+		}
+		std::cout << "  Input Port #" << i+1 << ": " << portName << '\n';
+	}
+	
+
     if ( nPorts == 0 ) {
         wxLogDebug("Midi init failed, nPorts == 0");
         delete m_midiIn;

@@ -12,8 +12,9 @@
     #include "wx/wx.h"
 #endif
 
-#include "wx/zipstrm.h"
+#include "wx/dir.h"
 #include "wx/wfstream.h"
+#include "wx/zipstrm.h"
 
 #include "axprogressdlg.h"
 
@@ -114,7 +115,7 @@ public:
     bool New();
 	bool Open( wxString filename );
 	bool Save( bool askUser = false );
-	bool SaveAs( wxString filename = "" ); // overwrite if filename exists
+    bool SaveAs( wxString filename = "" ); // overwrite if filename exists
 	bool Close( bool askUser = false );
 	bool Check( wxString filename ); // check the version, but also type and envtype ; uses the static version Check
 	// status
@@ -138,12 +139,16 @@ public:
 	static wxString FormatVersion( int vmaj, int vmin, int vrev );
     static int GetAllFiles( wxString dirname, wxArrayString *files, int file_type );
 	// file chooser
-	static wxString Open( int file_type );
+
 	//
 	static wxString GetEnvName( int envtype );
 	static bool ContainsFile( wxString filename, wxString search_filename );
 	// unzip the preview file into the working directory and return path to it if success ("" otherwise)
 	static wxString GetPreview( wxString filename, wxString preview );
+    
+#ifndef AX_CMDLINE
+    static wxString Open( int file_type );
+#endif
 
 protected:
     static void GetVersion( TiXmlElement *root, int *vmaj, int *vmin, int *vrev );
@@ -191,10 +196,33 @@ public:
 };
 
 
+
+//----------------------------------------------------------------------------
+// AxDirTraverser
+//----------------------------------------------------------------------------
+
+// remove all files recursively in a directory
+
+class AxDirTraverser : public wxDirTraverser
+{
+    
+public:
+    AxDirTraverser( wxString directory ); // clean directory
+	AxDirTraverser( wxString from, wxString to ); // copy directory
+    
+    virtual wxDirTraverseResult OnFile(const wxString& filename);
+    virtual wxDirTraverseResult OnDir(const wxString& WXUNUSED(dirname));
+    
+private:
+    wxArrayString m_names;
+};
+
 //----------------------------------------------------------------------------
 // File selector function
 //----------------------------------------------------------------------------
 
+#ifndef AX_CMDLINE
 int AxFileSelector( int type, wxArrayString *filenames, wxArrayString *paths, wxWindow* parent );
+#endif
 
 #endif

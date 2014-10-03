@@ -31,7 +31,7 @@
 // Declare window functions
 
 const int ID_NOTEBOOK_OP = 8000;
-wxSizer *OptionsDlgFunc( wxWindow *parent, bool call_fit = TRUE, bool set_sizer = TRUE );
+wxSizer *OptionsDlgFunc( wxWindow *parent, bool call_fit = true, bool set_sizer = true );
 
 const int IDO_TEXT = 8001;
 const int ID_CB_LANGUAGE_OPS = 8002;
@@ -52,7 +52,7 @@ const int ID_CB_REDUCE_OPI = 8016;
 const int ID_TC_MAXSIZE_OPI = 8017;
 const int ID_CB_NEGATIVE_OPI = 8018;
 const int ID_C_IMAGE_BINARIZATION = 8019;
-wxSizer *System1DlgFunc( wxWindow *parent, bool call_fit = TRUE, bool set_sizer = TRUE );
+wxSizer *System1DlgFunc( wxWindow *parent, bool call_fit = true, bool set_sizer = true );
 
 const int ID4_CHB_BORDERS_POS = 8020;
 const int ID4_CHB_TEXT_POS = 8021;
@@ -73,7 +73,7 @@ const int ID4_REC_BT_MUS_MODELS = 8035;
 const int ID4_REC_DELAYED = 8036;
 const int ID4_REC_LMORDER = 8037;
 const int ID4_LMSCALING = 8038;
-wxSizer *Rec1DlgFunc( wxWindow *parent, bool call_fit = TRUE, bool set_sizer = TRUE );
+wxSizer *Rec1DlgFunc( wxWindow *parent, bool call_fit = true, bool set_sizer = true );
 
 const int ID2_SC_CORRY_OPS1 = 8039;
 const int ID2_SC_CORRX_OPS1 = 8040;
@@ -83,7 +83,7 @@ const int ID2_SC_SPLITY_OPS1 = 8043;
 const int ID2_CH_FILTER1_OPS1 = 8044;
 const int ID2_CH_FILTER2_OPS1 = 8045;
 const int ID2_CC_INTERP_OPS1 = 8046;
-wxSizer *Sup1DlgFunc( wxWindow *parent, bool call_fit = TRUE, bool set_sizer = TRUE );
+wxSizer *Sup1DlgFunc( wxWindow *parent, bool call_fit = true, bool set_sizer = true );
 
 // Declare menubar functions
 

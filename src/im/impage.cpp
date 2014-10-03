@@ -20,9 +20,13 @@ using std::max;
 
 #include <math.h>
 
-#include "app/axapp.h"
+#include "app/axprogressdlg.h"
 
-#include "recognition/rec.h" // not optimal, should be restructured...
+#ifndef AX_CMDLINE
+#include "app/aximage.h"
+#endif
+
+//#include "recognition/rec.h" // not optimal, should be restructured...
 
 #include "wx/arrimpl.cpp"
 WX_DEFINE_OBJARRAY( ArrayOfStaves );
@@ -303,6 +307,7 @@ bool ImPage::Save( TiXmlElement *file_root )
 
 
 // undo
+#ifndef AX_CMDLINE
 void ImPage::Load( AxUndoFile *undoPtr )
 {
 	if ( undoPtr->m_flags == IM_UNDO_CLASSIFICATION )
@@ -333,8 +338,9 @@ void ImPage::Load( AxUndoFile *undoPtr )
 		}
 	}
 }
+#endif
 
-
+#ifndef AX_CMDLINE
 void ImPage::Store( AxUndoFile *undoPtr )
 {
 	if ( undoPtr->m_flags == IM_UNDO_CLASSIFICATION )
@@ -353,7 +359,7 @@ void ImPage::Store( AxUndoFile *undoPtr )
 		}
 	}
 }
-
+#endif
 
 
 void ImPage::CalcLeftRight( int *x1, int *x2)
@@ -520,10 +526,11 @@ bool ImPage::Check( wxString infile, int max_size, int min_size, int index )
         imCalcImageStatistics( m_opImMain, &istats );
         wxLogDebug("RBG image mean %f", istats.mean );
         bool invert = true;
-        if ( AxImage::s_checkIfNegative )
-            invert = (istats.mean > 127) ? true : false;
-        else if ( istats.mean < 127 )
-            wxLogWarning( _("Image is negative according to the mean, check the option in 'Preferences' to have it corrected") );
+        //if ( AxImage::s_checkIfNegative )
+        //    invert = (istats.mean > 127) ? true : false;
+        //else if ( istats.mean < 127 )
+        //    wxLogWarning( _("Image is negative according to the mean, check the option in 'Preferences' to have it corrected") );
+        wxLogWarning( "Check if negative disabled" );
         
         if ( invert )
         {
@@ -2128,7 +2135,7 @@ bool ImPage::ExtractStaves( )
 	return this->Terminate( ERR_NONE );
 }
 
-
+#ifndef AX_CMDLINE
 bool ImPage::MagicSelection( int x, int y, AxImage *selection, int *xmin, int *ymin )
 {
 	wxASSERT_MSG( m_img0, "Img0 cannot be NULL");
@@ -2214,9 +2221,10 @@ bool ImPage::MagicSelection( int x, int y, AxImage *selection, int *xmin, int *y
 	return this->Terminate( ERR_NONE );
 
 }
+#endif
 
 
-
+#ifndef AX_CMDLINE
 bool ImPage::ChangeClassification( int _x1, int _y1, int _x2, int _y2, int plane_number  )
 {
 	wxASSERT_MSG( m_img0, "Img0 cannot be NULL");
@@ -2261,8 +2269,9 @@ bool ImPage::ChangeClassification( int _x1, int _y1, int _x2, int _y2, int plane
 	SwapImages( &m_img0, &m_opImMap );
 	return this->Terminate( ERR_NONE );
 }
+#endif
 
-
+#ifndef AX_CMDLINE
 bool ImPage::ChangeClassification( int plane_number  )
 {
 	wxASSERT_MSG( m_img0, "Img0 cannot be NULL");
@@ -2323,7 +2332,7 @@ bool ImPage::ChangeClassification( int plane_number  )
 	SwapImages( &m_img0, &m_opImMap );
 	return this->Terminate( ERR_NONE );
 }
-
+#endif
 
 int ImPage::GetMedianStavesSpace( )
 {

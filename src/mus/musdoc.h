@@ -83,19 +83,6 @@ public:
 
     MeiDocument *GetMeiDocument();
     void SetMeiDocument(MeiDocument *doc);
-        
-    // Some statis utiliry functions
-    static wxString GetAxVersion();
-    static wxString GetResourcesPath();
-    static void SetResourcesPath(wxString p) {m_respath = p;}
-    static wxString GetMusicFontDescStr();
-    static wxString GetNeumeFontDescStr();
-    static wxString GetLyricFontDescStr();
-    static int GetFontPosCorrection();
-    static wxString GetFileVersion(int vmaj, int vmin, int vrev);
-    
-private:
-    static wxString m_respath;
     
 public:
     /** nom complet du fichier */

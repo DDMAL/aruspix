@@ -12,15 +12,149 @@
 #include "wx/filename.h"
 #include "wx/intl.h"
 #include "wx/fs_zip.h"   // ZIP filesystem support
-#include "wx/hyperlink.h"
 #include "wx/stdpaths.h"
-#include "wx/splash.h"
 #include "wx/tokenzr.h"
 #include "wx/txtstrm.h"
 #include "wx/url.h"
 #include "wx/protocol/http.h"
 
 #include "axapp.h"
+
+
+// Initialize statics
+int AxApp::s_version_major = 2;
+int AxApp::s_version_minor = 3;
+int AxApp::s_version_revision = 0;
+wxString AxApp::s_version = wxString::Format("%d.%d.%d", AxApp::s_version_major, AxApp::s_version_minor, AxApp::s_version_revision);
+wxString AxApp::s_build_date = __DATE__;
+wxString AxApp::s_build_time = __TIME__;
+
+//----------------------------------------------------------------------------
+// Commandline replacement class
+//----------------------------------------------------------------------------
+
+#ifdef AX_CMDLINE
+bool wxYield() { return true; };
+#endif
+
+#ifdef AX_CMDLINE
+wxString AxApp::s_respath = "/usr/local/share/aruspix";
+wxString AxApp::s_workingDir = "./tmp";
+wxString AxApp::s_logDir = ".";
+#endif
+
+wxString AxApp::GetAxVersion() {
+#ifdef AX_CMDLINE
+    return wxString("command line"); // we need to add versioning
+#else
+    return AxApp::s_version;
+#endif
+}
+
+wxString AxApp::GetAppPath() {
+#ifdef AX_CMDLINE
+    return ".";
+#else
+    return wxGetApp().m_appPath;
+#endif
+}
+
+wxString AxApp::GetResourcesPath() {
+#ifdef AX_CMDLINE
+    return s_respath;
+#else
+    return wxGetApp().m_resourcesPath;
+#endif
+}
+
+wxString AxApp::GetWorkingDir() {
+#ifdef AX_CMDLINE
+    return s_workingDir;
+#else
+    return wxGetApp().m_workingDir;
+#endif
+}
+
+
+wxString AxApp::GetLogDir() {
+#ifdef AX_CMDLINE
+    return s_logDir;
+#else
+    return wxGetApp().m_logDir;
+#endif
+}
+
+wxString AxApp::GetMusicFontDescStr() {
+#ifdef AX_CMDLINE
+    return wxString("0;13;70;90;90;0;Leipzig 4.7;33");
+#else
+    return wxGetApp().m_musicFontDesc;
+#endif
+}
+
+wxString AxApp::GetNeumeFontDescStr() {
+#ifdef AX_CMDLINE
+    return wxString("0;53;70;90;90;0;Festa Dies A;0");
+#else
+    return wxGetApp().m_neumeFontDesc;
+#endif
+}
+
+wxString AxApp::GetLyricFontDescStr() {
+#ifdef AX_CMDLINE
+    return wxString("0;12;70;93;90;0;Garamond;0");
+#else
+    return wxGetApp().m_lyricFontDesc;
+#endif
+}
+
+
+int AxApp::GetFontPosCorrection(){
+#ifdef AX_CMDLINE
+    return 0;
+#else
+    return wxGetApp().m_fontPosCorrection;
+#endif
+}
+
+wxString AxApp::GetFileVersion(int vmaj, int vmin, int vrev) {
+    return wxString::Format("%04d.%04d.%04d", vmaj, vmin, vrev );
+}
+
+bool AxApp::CheckDir( wxString dirname, int permission )
+{
+    // check if exists
+    wxLogNull *logNo = new wxLogNull();
+    if ( !wxDirExists( dirname ) && !wxMkdir( dirname, permission ) )
+    {
+        delete logNo;
+        return false;
+    }
+    
+    // check if writable
+    wxString test_filename = dirname + "/.test";
+    wxFile test_file( test_filename, wxFile::write );
+    if ( !test_file.IsOpened() )
+    {
+        delete logNo;
+        return false;
+    }
+    test_file.Close();
+    wxRemoveFile( test_filename );
+    delete logNo;
+    return true;
+}
+
+
+//----------------------------------------------------------------------------
+// Gui
+//----------------------------------------------------------------------------
+
+#ifndef AX_CMDLINE
+
+#include "wx/hyperlink.h"
+#include "wx/splash.h"
+
 #include "axframe.h"
 #include "axfile.h"
 #include "axundo.h"
@@ -29,12 +163,6 @@
 
 const wxString IPC_START = "StartOther";
 
-int AxApp::s_version_major = 2;
-int AxApp::s_version_minor = 3;
-int AxApp::s_version_revision = 0;
-wxString AxApp::s_version = wxString::Format("%d.%d.%d", AxApp::s_version_major, AxApp::s_version_minor, AxApp::s_version_revision);
-wxString AxApp::s_build_date = __DATE__;
-wxString AxApp::s_build_time = __TIME__;
 
 #define COPYRIGHT "Copyright © 2004-2013 Laurent Pugin and others"
 #define LICENSE "Published under the GNU General Public License 3"
@@ -176,7 +304,7 @@ bool AxApp::OnInit()
 #endif
     if ( m_language == -1 ) // never choosen before, it is the first time the user run aruspix, run setup
     {
-		SetExitOnFrameDelete(FALSE);
+		SetExitOnFrameDelete(false);
 #if defined(__WXMSW__)
     AxSetup setup( wxBitmap( m_resourcesPath + "/logo.win.png", wxBITMAP_TYPE_PNG ) );
 #else // OS X
@@ -190,7 +318,7 @@ bool AxApp::OnInit()
         else
             m_language = setup.m_language;
 			
-		SetExitOnFrameDelete(TRUE);
+		SetExitOnFrameDelete(true);
     }
 	else // splash screen,but not shown in Debug mode
 	{
@@ -279,7 +407,7 @@ bool AxApp::OnInit()
     }
 
     m_mainFrame->InitMidi();
-    m_mainFrame->Show(TRUE);
+    m_mainFrame->Show(true);
  
 #if !defined(__WXMSW__)
 	m_mainFrame->Lower( ); 	// again, stay on top did not work for OS X	
@@ -292,7 +420,7 @@ bool AxApp::OnInit()
     }
     dlg->Destroy();
  
-    return TRUE;
+    return true;
 }
 
 int AxApp::OnExit()
@@ -422,33 +550,6 @@ wxString AxApp::FindAppPath()
     return wxEmptyString;
 }
 */
-
-
-    
-bool AxApp::CheckDir( wxString dirname, int permission )
-{
-    // check if exists
-    wxLogNull *logNo = new wxLogNull();
-    if ( !wxDirExists( dirname ) && !wxMkdir( dirname, permission ) )
-    {
-        delete logNo;
-        return false;
-    }
-
-    // check if writable
-    wxString test_filename = dirname + "/.test";
-    wxFile test_file( test_filename, wxFile::write );
-    if ( !test_file.IsOpened() )
-    {
-        delete logNo;
-        return false;
-    }
-    test_file.Close();
-    wxRemoveFile( test_filename );
-    delete logNo;
-    return true;
-}
-
 
 
 #ifdef __WXMAC__
@@ -654,66 +755,6 @@ wxConnectionBase *AxIPCServer::OnAcceptConnection (const wxString& topic)
     return new AxIPCConnection;
 }
 
-
-//----------------------------------------------------------------------------
-// AxDirTraverser
-//----------------------------------------------------------------------------
-
-AxDirTraverser::AxDirTraverser( wxString directory ) // clean directory
-{
-    int i;
-    // delete files
-    wxDir::GetAllFiles( directory, &m_names, wxEmptyString, wxDIR_DEFAULT );
-    for( i = m_names.GetCount() - 1; i >=0; i-- )
-        wxRemoveFile( m_names[i] );
-
-    // delete directories
-    m_names.Clear();
-    wxDir dir( directory );
-    dir.Traverse( *this, wxEmptyString, wxDIR_DIRS | wxDIR_HIDDEN  );
-    for( i = m_names.GetCount() - 1; i >=0; i-- )
-        wxRmdir( m_names[i] );
-}
-
-
-AxDirTraverser::AxDirTraverser( wxString from, wxString to ) // copy directory
-{
-    int i;
-    // create directories
-    wxDir dir( from );
-    dir.Traverse( *this, wxEmptyString, wxDIR_DIRS | wxDIR_HIDDEN );
-    for( i = 0; i < (int)m_names.GetCount(); i++ )
-	{
-		m_names[i].Replace( from, to, false );
-		if ( !wxDirExists( m_names[i] ) )
-				wxMkdir( m_names[i], 0755 );   
-	}
-	
-    // copy files
-	m_names.Clear();
-    wxDir::GetAllFiles( from, &m_names, wxEmptyString, wxDIR_DEFAULT );
-    for( i = 0; i < (int)m_names.GetCount(); i++ )
-	{
-		wxString file = m_names[i];
-		m_names[i].Replace( from, to, false );
-		wxCopyFile( file, m_names[i], true );
-     
-	}
-}
-
-wxDirTraverseResult AxDirTraverser::OnFile(const wxString& filename)
-{
-    //wxRemoveFile( filename );
-    //wxLogMessage( filename );
-    return wxDIR_CONTINUE;
-}
-
-wxDirTraverseResult AxDirTraverser::OnDir(const wxString& dirname)
-{
-    m_names.Add( dirname );
-    return wxDIR_CONTINUE;
-}
-
 // ----------------------------------------------------------------------------
 // AxSetupPage1
 // ----------------------------------------------------------------------------
@@ -823,6 +864,6 @@ AxSetup::AxSetup( wxBitmap logo )
     wxWizardPageSimple::Chain(m_page1, page2);;
 #endif
 
-
 }
 
+#endif // AX_CMDLINE

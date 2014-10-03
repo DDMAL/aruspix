@@ -12,6 +12,53 @@
     #include "wx/wx.h"
 #endif
 
+#ifdef AX_CMDLINE
+
+//----------------------------------------------------------------------------
+// Commandline replacement class
+//----------------------------------------------------------------------------
+
+class AxApp
+{
+public:
+    // constructors and destructors
+    AxApp();
+    
+    // Some statis utiliry functions
+    static wxString GetAxVersion();
+    static wxString GetAppPath();
+    static wxString GetResourcesPath();
+    static wxString GetWorkingDir();
+    static wxString GetLogDir();
+    static void SetResourcesPath(wxString p) {s_respath = p;}
+    static wxString GetMusicFontDescStr();
+    static wxString GetNeumeFontDescStr();
+    static wxString GetLyricFontDescStr();
+    static int GetFontPosCorrection();
+    static wxString GetFileVersion(int vmaj, int vmin, int vrev);
+    static bool CheckDir( wxString dirname, int permission );
+ 
+public:
+	// statics
+    static int s_version_major;
+    static int s_version_minor;
+    static int s_version_revision;
+    static wxString s_version;
+    static wxString s_build_date;
+    static wxString s_build_time;
+    static wxString s_respath;
+    static wxString s_workingDir;
+    static wxString s_logDir;
+    
+};
+
+#else
+
+//----------------------------------------------------------------------------
+// Gui
+//----------------------------------------------------------------------------
+
+
 #include "wx/config.h"
 #include "wx/ipc.h"     // IPC support
 #include "wx/snglinst.h" // single instance checker
@@ -96,10 +143,6 @@ public:
     wxTextCtrl* GetTxAppContributors()  { return (wxTextCtrl*) FindWindow( ID0_CONTRIBUTORS ); }
     
 private:
-        
-private:
-    
-private:
     DECLARE_EVENT_TABLE()
 };
 
@@ -148,7 +191,19 @@ public:
     static bool CheckDir( wxString dirname, int permission );
     void AxBeginBusyCursor();
     void AxEndBusyCursor();
-	
+    
+    // Some statis utiliry functions
+    static wxString GetAxVersion();
+    static wxString GetAppPath();
+    static wxString GetResourcesPath();
+    static wxString GetWorkingDir();
+    static wxString GetLogDir();
+    static wxString GetMusicFontDescStr();
+    static wxString GetNeumeFontDescStr();
+    static wxString GetLyricFontDescStr();
+    static int GetFontPosCorrection();
+    static wxString GetFileVersion(int vmaj, int vmin, int vrev);
+
 #ifdef __WXMAC__
 	virtual void MacOpenFile(const wxString &fileName);
 #endif
@@ -158,7 +213,7 @@ private:
     bool ProcessRemote (char** argv, int argc = 0);
     
 private:
-        wxSingleInstanceChecker *m_singleInstance; 
+    wxSingleInstanceChecker *m_singleInstance; 
     wxServerBase *m_serverIPC; //! the wxIPC server
     AxFrame *m_mainFrame;
     int m_busyCursor;
@@ -199,14 +254,13 @@ public:
     
     int m_toolbar_toolsize;
 	
-	// versions
+	// statics
     static int s_version_major;
     static int s_version_minor;
     static int s_version_revision;
     static wxString s_version;
     static wxString s_build_date;
     static wxString s_build_time;
-
     
 private:
     
@@ -247,27 +301,6 @@ public:
 };
 
 
-
-//----------------------------------------------------------------------------
-// AxDirTraverser
-//----------------------------------------------------------------------------
-
-// remove all files recursively in a directory
-
-class AxDirTraverser : public wxDirTraverser
-{
-
-public:
-    AxDirTraverser( wxString directory ); // clean directory
-	AxDirTraverser( wxString from, wxString to ); // copy directory
-
-    virtual wxDirTraverseResult OnFile(const wxString& filename);
-    virtual wxDirTraverseResult OnDir(const wxString& WXUNUSED(dirname));
-        
-private:
-    wxArrayString m_names;
-};
-
 // ----------------------------------------------------------------------------
 // AxSetup
 // ----------------------------------------------------------------------------
@@ -285,5 +318,7 @@ private:
 public:
 	int m_language;
 };
+
+#endif // AX_CMDLINE
 
 #endif

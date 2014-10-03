@@ -10,6 +10,7 @@
 
 
 #include "wx/defs.h"
+#include "wx/gdicmn.h"
 
 
 #define AxWHITE  255 << 16 | 255 << 8 | 255
