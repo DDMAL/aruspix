@@ -1,0 +1,70 @@
+#
+# What you have to check...
+#
+
+# Packages you want to use
+PACKAGES = gradients kernels distributions convolutions matrix datasets nonparametrics speech decoder
+
+# Magik key if you have several makefile
+# for the same platform
+MAGIK_KEY = 
+
+# Compiler, linker and archiver
+CC = c++
+LD = c++
+AR = ar ru
+
+# Command for creating dependencies
+DEP = c++ -MM
+
+# Your librairies
+# (for example "-lm", but not needed on most systems...)
+MYLIBS = 
+
+# Your includes
+# (for example -I/usr/local/special)
+MYINCS = 
+
+# optimize mode
+DEBUG = OPT
+# debug mode
+DEBUG = DBG
+
+# double version
+#FLOATING = DOUBLE
+# floating version
+FLOATING = FLOAT
+
+# Debug double mode
+CFLAGS_DBG_DOUBLE = -g -Wall -DUSE_DOUBLE -DDEBUG
+
+# Debug float mode
+CFLAGS_DBG_FLOAT = -g -Wall -DDEBUG -arch i386
+# CFLAGS_DBG_FLOAT = -g -Wall -DDEBUG
+
+# Optimized double mode
+CFLAGS_OPT_DOUBLE = -Wall -O2 -ffast-math -DUSE_DOUBLE
+
+# Optimized float mode
+CFLAGS_OPT_FLOAT = -Wall -O2 -ffast-math
+
+#
+#
+# Variables that you may find useful inside your Makefile
+# Do not touch.
+#
+#
+
+MODE = $(DEBUG)_$(FLOATING)
+VERSION_KEY = $(MAGIK_KEY)$(OS)_$(MODE)
+LIBS_DIR = $(TORCHDIR)/lib/$(VERSION_KEY)
+OBJS_DIR = $(TORCHDIR)/objs/$(VERSION_KEY)
+LIBTORCH = $(LIBS_DIR)/libtorch.a
+LIBS = -L$(TORCHDIR)/lib/$(VERSION_KEY) -ltorch $(MYLIBS)
+INCS := -I$(TORCHDIR)/core $(MYINCS)
+INCS += $(foreach f,$(PACKAGES),-I$(TORCHDIR)/$(f))
+
+lib:	all
+	@echo ">> ...do a ranlib... <<"
+	@ranlib $(LIBTORCH)
+	@echo ">> ... ok !!! <<"
