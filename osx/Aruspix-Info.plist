@@ -92,7 +92,7 @@
 	<key>CFBundleIconFile</key>
 	<string>ax</string>
 	<key>CFBundleIdentifier</key>
-	<string>net.aruspix.www</string>
+	<string>www.aruspix.net</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundlePackageType</key>
@@ -101,5 +101,7 @@
 	<string>ARPX</string>
 	<key>CFBundleVersion</key>
 	<string>2.3.0</string>
+	<key>LSApplicationCategoryType</key>
+	<string>public.app-category.music</string>
 </dict>
 </plist>
