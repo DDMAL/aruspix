@@ -297,6 +297,7 @@ private:
     void OnExportImage( wxCommandEvent &event );
     void OnExportCmme( wxCommandEvent &event );
     void OnExportWWG( wxCommandEvent &event );
+    void OnExportMusicXML( wxCommandEvent &event );
     void OnAdjust( wxCommandEvent &event );
     void OnZoom( wxCommandEvent &event );
     void OnPaste( wxCommandEvent &event );

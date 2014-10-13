@@ -326,9 +326,7 @@ wxMenuBar *MenuBarFunc4()
     item1->Append( ID4_IMPORT_MEI, _("Import MEI"), _("Import MEI file") );
     item1->AppendSeparator();
     item1->Append( ID4_EXPORT_MEI, _("Export to MEI"), _("Export file as a MEI file") );
-    item1->Append( ID4_EXPORT_WWG, _("Export to WWG"), _("Save music part as a Wolfgang WWG file") );
-    item1->Append( ID4_EXPORT_CMME, _("Export to CMME"), _("Save music part as a CMME XML file") );
-    item1->Append( ID4_EXPORT_IMAGE, _("Export as image (beta)"), _("Save music part in an image file") );
+    item1->Append( ID4_EXPORT_MUSICXML, _("Export to MusicXML"), _("Save music part as a MusicXML file") );
     item0->Append( item1, _("commun1") );
     
     wxMenu* item2 = new wxMenu;

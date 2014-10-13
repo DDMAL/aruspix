@@ -177,20 +177,19 @@ AxFrame::AxFrame( wxWindow *parent, wxWindowID id, const wxString &title,
 
     wxASSERT_MSG(menuEnv,"Environment menu cannot be NULL");
 
-
-#ifdef AX_SUPERIMPOSITION
-    envRow = new AxEnvRow( "SupEnv", _("Superimposition"), menuId++, _("Preparation and superimpostition workspace") );
-    menuEnv->Insert( menuPos++, envRow->m_menuId, envRow->m_menuItem, envRow->m_helpStr, wxITEM_CHECK );
-    m_envArray.Add( envRow );
-	SupEnv::LoadConfig();
-#endif //AX_SUPERIMPOSITION
-
 #ifdef AX_RECOGNITION
     envRow = new AxEnvRow( "RecEnv", _("Recognition"), menuId++, _("Recognition workspace") );
     menuEnv->Insert( menuPos++, envRow->m_menuId, envRow->m_menuItem, envRow->m_helpStr, wxITEM_CHECK );
     m_envArray.Add( envRow );
 	RecEnv::LoadConfig();
 #endif //AX_RECOGNITION
+    
+#ifdef AX_SUPERIMPOSITION
+    envRow = new AxEnvRow( "SupEnv", _("Superimposition"), menuId++, _("Preparation and superimpostition workspace") );
+    menuEnv->Insert( menuPos++, envRow->m_menuId, envRow->m_menuItem, envRow->m_helpStr, wxITEM_CHECK );
+    m_envArray.Add( envRow );
+    SupEnv::LoadConfig();
+#endif //AX_SUPERIMPOSITION
 
 #ifdef AX_COMPARISON
     envRow = new AxEnvRow( "CmpEnv", _("Collation"), menuId++, _("Sources collation workspace") );

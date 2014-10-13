@@ -66,9 +66,10 @@ bool RecEnv::s_train_positions;
 #include "im/impage.h"
 
 #include "mus/musdoc.h"
-#include "mus/musiowwg.h"
-//#include "mus/musiocmme.h" // ax2
-#include "mus/musiomei.h" // ax2
+#include "mus/musiomei.h"
+//#include "mus/musiocmme.h"
+//#include "mus/musiowwg.h"
+#include "mus/musiomusxml.h"
 #include "mus/mustoolpanel.h"
 
 
@@ -198,9 +199,10 @@ BEGIN_EVENT_TABLE(RecEnv,AxEnv)
     EVT_MENU( ID4_ADJUST, RecEnv::OnAdjust )
     EVT_MENU( ID4_ADJUST_H, RecEnv::OnAdjust )
     EVT_MENU( ID4_ADJUST_V, RecEnv::OnAdjust )
-    EVT_MENU( ID4_EXPORT_IMAGE, RecEnv::OnExportImage )
-    EVT_MENU( ID4_EXPORT_CMME, RecEnv::OnExportCmme )
-    EVT_MENU( ID4_EXPORT_WWG, RecEnv::OnExportWWG )
+    //EVT_MENU( ID4_EXPORT_IMAGE, RecEnv::OnExportImage )
+    //EVT_MENU( ID4_EXPORT_CMME, RecEnv::OnExportCmme )
+    //EVT_MENU( ID4_EXPORT_WWG, RecEnv::OnExportWWG )
+    EVT_MENU( ID4_EXPORT_MUSICXML, RecEnv::OnExportMusicXML )
     EVT_MENU( ID4_SHOW_STAFF_BMP, RecEnv::OnStaffCorrespondence )
     EVT_MENU_RANGE( ID4_INSERT_MODE, ID4_SYMBOLES, RecEnv::OnTools )
     EVT_MENU( ID4_SAVE_BOOK, RecEnv::OnSaveBook )
@@ -1398,13 +1400,6 @@ void RecEnv::OnStaffCorrespondence( wxCommandEvent &event )
     m_musControlPtr->InverseShowStaffBitmap( );
 }
 
-
-/* 
-    Methode de travail !!!!!!!!! Pas DU TOUT plombee !!!!
-  */ 
-  
-//#include "mus/mussvg.h"
-
 /*
 void RecEnv::OnExportImage( wxCommandEvent &event )
 {
@@ -1429,7 +1424,8 @@ void RecEnv::OnExportImage( wxCommandEvent &event )
     wxImage image = bitmap.ConvertToImage().ConvertToMono( 255 ,255 , 255 );
     image.SaveFile( filename );
     //bitmap.SaveFile( filename, wxBITMAP_TYPE_BMP );
-}*/
+}
+*/
 
 void RecEnv::OnExportImage( wxCommandEvent &event )
 {
@@ -1450,7 +1446,6 @@ void RecEnv::OnExportImage( wxCommandEvent &event )
    */
    wxLogWarning( "Not implemented");
 }
-  
 
 void RecEnv::OnExportCmme( wxCommandEvent &event )
 {
@@ -1475,6 +1470,7 @@ void RecEnv::OnExportCmme( wxCommandEvent &event )
 
 void RecEnv::OnExportWWG( wxCommandEvent &event )
 {
+    /*
    	if ( !m_recFilePtr->IsRecognized() )
 		return;
    
@@ -1489,6 +1485,25 @@ void RecEnv::OnExportWWG( wxCommandEvent &event )
     MusWWGOutput *wwg_output = new MusWWGOutput( m_recFilePtr->m_musDocPtr, filename );
     wwg_output->ExportFile();
     delete wwg_output;
+    */
+    wxLogWarning( "Not implemented");
+}
+
+void RecEnv::OnExportMusicXML( wxCommandEvent &event )
+{
+    if ( !m_recFilePtr->IsRecognized() )
+    return;
+
+    wxString filename;
+    filename = wxFileSelector( _("Save"), wxGetApp().m_lastDirAX0_out, m_recFilePtr->m_shortname + ".xml", "xml", "MusicXML|*.xml", wxFD_SAVE);
+    if (filename.IsEmpty()) return;
+
+    wxGetApp().m_lastDirAX0_out = wxPathOnly( filename );
+
+    // save
+    MusXMLOutput *xml_output = new MusXMLOutput( m_recFilePtr->m_musDocPtr, filename );
+    xml_output->ExportFile();
+    delete xml_output;
 }
 
 void RecEnv::OnAdjust( wxCommandEvent &event )
@@ -1925,13 +1940,13 @@ void RecEnv::OnUpdateUI( wxUpdateUIEvent &event )
         event.Enable( m_recFilePtr->IsPreprocessed() );
     else if (id == ID_CLOSE )
         event.Enable( m_recFilePtr->IsPreprocessed() );
-    else if (id == ID4_EXPORT_IMAGE )
-        event.Enable( false ); // not implemented
+    //else if (id == ID4_EXPORT_IMAGE )
         //event.Enable( m_recFilePtr->IsRecognized() );
-    else if (id == ID4_EXPORT_CMME )
-        event.Enable( false ); // not implemented
+    //else if (id == ID4_EXPORT_CMME )
         //event.Enable( m_recFilePtr->IsRecognized() );
-    else if (id == ID4_EXPORT_WWG )
+    //else if (id == ID4_EXPORT_WWG )
+        //event.Enable( m_recFilePtr->IsRecognized() );
+    else if (id == ID4_EXPORT_MUSICXML )
         event.Enable( m_recFilePtr->IsRecognized() );
     else if (id == ID4_EXPORT_MEI )
         event.Enable( m_recFilePtr->IsRecognized() );
