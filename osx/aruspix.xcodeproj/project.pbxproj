@@ -1236,6 +1236,7 @@
 				OTHER_LDFLAGS = "";
 				SDKROOT = macosx;
 				SYMROOT = "$(PROJECT_DIR)/../bin";
+				VALID_ARCHS = i386;
 			};
 			name = Debug;
 		};
@@ -1261,6 +1262,7 @@
 				OTHER_CFLAGS = "";
 				SDKROOT = macosx;
 				SYMROOT = "$(PROJECT_DIR)/../bin";
+				VALID_ARCHS = i386;
 			};
 			name = Release;
 		};
