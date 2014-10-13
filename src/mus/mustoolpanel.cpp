@@ -322,7 +322,7 @@ void MusToolPanel::SendEvent( wxKeyEvent kevent, bool set_focus )
 
     kevent.SetId( m_w->GetId() );
     kevent.SetEventObject( m_w );
-    m_w->ProcessEvent( kevent );
+    m_w->GetEventHandler()->ProcessEvent( kevent );
     if (set_focus)
         m_w->SetFocus();
 }

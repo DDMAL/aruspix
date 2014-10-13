@@ -144,7 +144,7 @@ void SupEnv::LoadWindow()
     if (!m_pageSplitterPtr)
         return;
 
-    m_pageSplitterPtr->SetWindowStyleFlag( wxSP_FULLSASH );
+    m_pageSplitterPtr->SetWindowStyleFlag( wxSP_3D ); // wxSP_FULLSASH deprecated in 2.8
     m_pageSplitterPtr->SetMinimumPaneSize( 100 );
 
     m_imControl1Ptr = new SupImController( m_pageSplitterPtr, ID2_CONTROLLER1  );
@@ -168,7 +168,7 @@ void SupEnv::LoadWindow()
     if (!m_srcSplitterPtr)
         return;
 
-    m_srcSplitterPtr->SetWindowStyleFlag( wxSP_FULLSASH );
+    m_srcSplitterPtr->SetWindowStyleFlag( wxSP_3D );  // wxSP_FULLSASH deprecated in 2.8
     m_srcSplitterPtr->SetMinimumPaneSize( 100 );
 
     m_srcControl1Ptr = new AxImageController( m_srcSplitterPtr, ID2_SRC_CONTROLLER1  );

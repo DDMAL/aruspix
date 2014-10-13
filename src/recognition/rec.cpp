@@ -303,7 +303,7 @@ void RecEnv::LoadWindow()
     m_bookSplitterPtr->SplitVertically( m_recBookPanelPtr, m_pageSplitterPtr, RecEnv::s_book_sash );
     m_bookSplitterPtr->Unsplit( m_recBookPanelPtr );
 
-    m_pageSplitterPtr->SetWindowStyleFlag( wxSP_FULLSASH );
+    m_pageSplitterPtr->SetWindowStyleFlag( wxSP_3D ); // wxSP_FULLSASH deprecated in 2.8
     m_pageSplitterPtr->SetMinimumPaneSize( 100 );
 
     m_imControlPtr = new RecImController( m_pageSplitterPtr, ID4_CONTROLLER, wxDefaultPosition, wxDefaultSize, 0,

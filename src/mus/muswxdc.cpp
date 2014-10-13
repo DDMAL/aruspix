@@ -136,7 +136,7 @@ void MusWxDC::DrawLine(int x1, int y1, int x2, int y2)
         
 void MusWxDC::DrawPolygon(int n, MusPoint points[], int xoffset, int yoffset, int fill_style)
 {
-    m_dc->DrawPolygon( n, (wxPoint*)points, xoffset, yoffset, fill_style );
+    m_dc->DrawPolygon( n, (wxPoint*)points, xoffset, yoffset ); // fill_style ); // deprecated in 2.8
 }
 
 void MusWxDC::DrawComplexBezierPath(int x, int y, int bezier1_coord[6], int bezier2_coord[6])

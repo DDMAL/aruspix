@@ -719,7 +719,7 @@ void EdtEnv::OnSaveModel( wxCommandEvent &event )
 void EdtEnv::OnMidiInput( wxCommandEvent &event )
 {
 	if ( m_edtFilePtr->IsOpened() ) {
-        m_musViewPtr->ProcessEvent( event );
+        m_musViewPtr->GetEventHandler()->ProcessEvent( event );
     }
 }
 

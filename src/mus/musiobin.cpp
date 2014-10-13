@@ -570,8 +570,11 @@ bool MusBinInput_1_X::ReadLyric( )
 {
 	Read( &int32, 4 );
     wxString to_be_ignored;
-	Read( to_be_ignored.GetWriteBuf( wxINT32_SWAP_ON_BE( int32 ) + 1 ) , wxINT32_SWAP_ON_BE( int32 ) + 1 );
-	to_be_ignored.UngetWriteBuf();
+    wxStringBuffer buffer( to_be_ignored, wxINT32_SWAP_ON_BE( int32 ) + 1 );
+    Read( buffer , wxINT32_SWAP_ON_BE( int32 ) + 1 );
+	//to_be_ignored.UngetWriteBuf();
+    //Read( to_be_ignored.wxStringBuffer( wxINT32_SWAP_ON_BE( int32 ) + 1 ) , wxINT32_SWAP_ON_BE( int32 ) + 1 );
+    //to_be_ignored.UngetWriteBuf();
 	return true;
 }
 
