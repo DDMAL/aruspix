@@ -494,7 +494,7 @@ bool ImPage::Check( wxString infile, int max_size, int min_size, int index )
 	int error;
 	imFile* ifile = imFileOpen( infile.c_str(), &error);
 	if (!ifile) 
-		return this->Terminate( ERR_FILE , infile.c_str());
+		return this->Terminate( ERR_FILE , (const char*)infile.c_str());
 	
 	int attrib_data_type, attrib_count;
 	imFileReadImageInfo( ifile, 0, NULL, NULL, NULL, NULL);
@@ -2516,7 +2516,7 @@ bool ImPage::GenerateMFC( wxString output_dir )
 	wxString filename = output_dir + "staff";
 	wxFile finput( input, wxFile::write );
 	if ( !finput.IsOpened() )
-		return this->Terminate( ERR_FILE, input.c_str() );
+		return this->Terminate( ERR_FILE, (const char*)input.c_str() );
 	int win = WIN_WIDTH;
 	int overlap = WIN_OVERLAP;
 	params.Clear();
@@ -2607,7 +2607,7 @@ bool ImPage::GenerateLyricMFC( wxString output_dir )
 	wxString filename = output_dir + "staff";
 	wxFile finput( input, wxFile::write );
 	if ( !finput.IsOpened() )
-		return this->Terminate( ERR_FILE, input.c_str() );
+		return this->Terminate( ERR_FILE,(const char*)input.c_str() );
 
 	params.Clear();
     params.Add( m_opImMain );
