@@ -1,8 +1,8 @@
 PROJECT( aruspix )
 CMAKE_MINIMUM_REQUIRED( VERSION 2.8 )
 
-SET(CMAKE_OSX_ARCHITECTURES i386 CACHE STRING "change to needed architecture for a smaller library" FORCE)
-
+# Uncomment this to build for i386
+#SET(CMAKE_OSX_ARCHITECTURES i386 CACHE STRING "change to needed architecture for a smaller library" FORCE)
 
 SET( CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH}" "${CMAKE_SOURCE_DIR}" )
 
@@ -146,10 +146,9 @@ INCLUDE_DIRECTORIES(
 ADD_DEFINITIONS(
 	-DAX_RECOGNITION
 	-DAX_CMDLINE
-	-D__AXDEBUG__
-	-g
 	-D_FILE_OFFSET_BITS=64	
 	-D_LARGE_FILES	
+	-DwxDEBUG_LEVEL=0
 	-D__WXGTK__
 	-pthread
 	-Wno-write-strings

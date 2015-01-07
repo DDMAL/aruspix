@@ -149,13 +149,13 @@ bool ImOperator::Read( wxString file, _imImage **image, int index )
 
     imFile* ifile = imFileOpen( file.c_str(), &error );
     if ( !ifile )
-        return this->Terminate( ERR_FILE , file.c_str() );
+        return this->Terminate( ERR_FILE , (const char*)file.c_str() );
 
     imFileReadImageInfo( ifile, index, &width, &height, &color_mode, &data_type );
     *image = imFileLoadBitmap( ifile, index, &error);
     imFileClose(ifile);
     if (!*image)
-        return this->Terminate( ERR_READING , index, file.c_str() );
+        return this->Terminate( ERR_READING , index, (const char*)file.c_str() );
     else 
         return true;
 }
@@ -243,7 +243,7 @@ bool ImOperator::WriteAsMAP( wxString file, _imImage **image )
     if (error == IM_ERR_NONE)
         return true;
     else
-        return this->Terminate( ERR_WRITING , file.c_str());
+        return this->Terminate( ERR_WRITING , (const char*)file.c_str());
 }
 
 
@@ -278,10 +278,10 @@ bool ImOperator::Write( wxString file, _imImage **image )
         if (error == IM_ERR_NONE)
             return true;
         else
-            return this->Terminate( ERR_WRITING , file.c_str());
+            return this->Terminate( ERR_WRITING , (const char*)file.c_str());
     }
     else
-        return this->Terminate( ERR_WRITING , file.c_str());
+        return this->Terminate( ERR_WRITING , (const char*)file.c_str());
 }
 
 bool ImOperator::GetImagePlane( _imImage **image , int plane, int factor )

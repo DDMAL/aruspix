@@ -38,9 +38,9 @@ FLOATING = FLOAT
 # Debug double mode
 CFLAGS_DBG_DOUBLE = -g -Wall -DUSE_DOUBLE -DDEBUG
 
-# Debug float mode
-CFLAGS_DBG_FLOAT = -g -Wall -DDEBUG -arch i386
-# CFLAGS_DBG_FLOAT = -g -Wall -DDEBUG
+# Debug float mode (add -arch i386 for forcing architecture)
+# CFLAGS_DBG_FLOAT = -g -Wall -DDEBUG -arch i386
+CFLAGS_DBG_FLOAT = -g -Wall -DDEBUG
 
 # Optimized double mode
 CFLAGS_OPT_DOUBLE = -Wall -O2 -ffast-math -DUSE_DOUBLE
