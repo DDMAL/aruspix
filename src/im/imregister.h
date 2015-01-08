@@ -35,14 +35,14 @@ public:
     bool Load( TiXmlElement *file_root );
     bool Save( TiXmlElement *file_root );
     // Processing
-	bool DetectPoints( wxPoint *points1, wxPoint *points2 );
+	bool DetectPoints( imPoint *points1, imPoint *points2 );
 	bool Init( wxString filename1, wxString filename2 );
-    bool Register( wxPoint *points1, wxPoint *points2 );
+    bool Register( imPoint *points1, imPoint *points2 );
     
 private:
-    wxPoint CalcPositionAfterRotation( wxPoint point , float rot_alpha, 
+    imPoint CalcPositionAfterRotation( imPoint point , float rot_alpha, 
                                   int w, int h, int new_w, int new_h);
-	bool SubRegister( wxPoint origine, wxSize window, wxSize size, int level, int row, int column );
+	bool SubRegister( imPoint origine, imSize window, imSize size, int level, int row, int column );
 
 
 public:
@@ -52,8 +52,8 @@ public:
 	// additional images for processing
 	_imImage *m_im1;
     _imImage *m_im2;
-	wxPoint m_reg_points1[4];
-    wxPoint m_reg_points2[4];
+	imPoint m_reg_points1[4];
+    imPoint m_reg_points2[4];
 	bool *m_isModified;
 	wxString m_path; // path of the SupFile
 	// impage

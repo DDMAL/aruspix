@@ -266,11 +266,11 @@ bool ImRegister::Init( wxString filename1, wxString filename2 )
 
 
 
-wxPoint ImRegister::CalcPositionAfterRotation( wxPoint point , float rot_alpha, 
+imPoint ImRegister::CalcPositionAfterRotation( imPoint point , float rot_alpha, 
                                   int w, int h, int new_w, int new_h)
 {
 
-    wxPoint center( w/2, h/2);
+    imPoint center( w/2, h/2);
     int distCenterX = point.x - center.x;
     int distCenterY = point.y - center.y;
     // pythagore, distance entre le point d'origine et le centre
@@ -279,7 +279,7 @@ wxPoint ImRegister::CalcPositionAfterRotation( wxPoint point , float rot_alpha,
     // angle d'origine entre l'axe x et la droite passant par le point et le centre
     float alpha = atan ( (float)distCenterX / (float)(distCenterY) );
     
-    wxPoint new_p = center;
+    imPoint new_p = center;
     int new_distCenterX, new_distCenterY;
 
     new_distCenterX = abs( (int)( sin( alpha - rot_alpha ) * distCenter ) );
@@ -301,7 +301,7 @@ wxPoint ImRegister::CalcPositionAfterRotation( wxPoint point , float rot_alpha,
     return new_p;
 }
 
-bool ImRegister::DetectPoints( wxPoint *points1, wxPoint *points2)
+bool ImRegister::DetectPoints( imPoint *points1, imPoint *points2)
 {
     wxASSERT_MSG( m_progressDlg, "Progress dialog cannot be NULL");
 	wxASSERT_MSG( m_src1, "Src1 cannot be NULL");
@@ -362,15 +362,15 @@ bool ImRegister::DetectPoints( wxPoint *points1, wxPoint *points2)
 	}
 	
 	
-	points1[1] = wxPoint( m_imPage1Ptr->m_x1, bottom_y1 );
-	points1[3] = wxPoint( m_imPage1Ptr->m_x2, bottom_y1 );
-	points1[0] = wxPoint( m_imPage1Ptr->m_x1, top_y1 );
-	points1[2] = wxPoint( m_imPage1Ptr->m_x2, top_y1 );
+	points1[1] = imPoint( m_imPage1Ptr->m_x1, bottom_y1 );
+	points1[3] = imPoint( m_imPage1Ptr->m_x2, bottom_y1 );
+	points1[0] = imPoint( m_imPage1Ptr->m_x1, top_y1 );
+	points1[2] = imPoint( m_imPage1Ptr->m_x2, top_y1 );
 
-	points2[1] = wxPoint( m_imPage2Ptr->m_x1, bottom_y2 );
-	points2[3] = wxPoint( m_imPage2Ptr->m_x2, bottom_y2 );
-	points2[0] = wxPoint( m_imPage2Ptr->m_x1, top_y2 );
-	points2[2] = wxPoint( m_imPage2Ptr->m_x2, top_y2 );
+	points2[1] = imPoint( m_imPage2Ptr->m_x1, bottom_y2 );
+	points2[3] = imPoint( m_imPage2Ptr->m_x2, bottom_y2 );
+	points2[0] = imPoint( m_imPage2Ptr->m_x1, top_y2 );
+	points2[2] = imPoint( m_imPage2Ptr->m_x2, top_y2 );
 	
 	ImageDestroy( &m_src1 );
     m_src1 = imImageDuplicate( m_imPage1Ptr->m_img1 );
@@ -407,7 +407,7 @@ bool ImRegister::DetectPoints( wxPoint *points1, wxPoint *points2)
 }
 
 #ifdef AX_SUPERIMPOSITION
-bool ImRegister::Register( wxPoint *points1, wxPoint *points2)
+bool ImRegister::Register( imPoint *points1, imPoint *points2)
 {
     
     /*
@@ -666,7 +666,7 @@ bool ImRegister::Register( wxPoint *points1, wxPoint *points2)
     // largeur et hauteur de la zone de superposition + point d'orgine
     int width = min( ( im1_mx2 - im1_mx1 ), ( im2_mx2 - im2_mx1 ) );
     int height = min( ( im1_my2 - im1_my1 ), ( im2_my2 - im2_my1 ) );
-    wxPoint origine( min ( im1_mx1, im2_mx1 ), min ( im1_my1, im2_my1 ) );
+    imPoint origine( min ( im1_mx1, im2_mx1 ), min ( im1_my1, im2_my1 ) );
 
     // largeur et hauteur des nouvelles images (zone de superposition + marge minimale )
     int im_width = origine.x + width + min( m_im1->width - im1_mx1 - width, m_im2->width - im2_mx1 - width );
@@ -699,7 +699,7 @@ bool ImRegister::Register( wxPoint *points1, wxPoint *points2)
 	imProcessNegative( m_im2, m_src2 );
     
     // we can start with a fairly wide window
-    wxSize window( max( SupEnv::s_corr_x, width / 25 ), max( SupEnv::s_corr_y, height / 25 ) );
+    imSize window( max( SupEnv::s_corr_x, width / 25 ), max( SupEnv::s_corr_y, height / 25 ) );
 	wxLogDebug( "Window %d x %d", window.GetWidth(), window.GetHeight() );
 
     m_opImAlign = imImageCreate( m_im2->width + 2 * window.GetWidth(), m_im2->height + 2 * window.GetHeight(),
@@ -723,7 +723,7 @@ bool ImRegister::Register( wxPoint *points1, wxPoint *points2)
 	m_counter = imCounterBegin("Image registration");
 	imCounterTotal(m_counter, m_sub_register_total, "Image registration");
     
-    if ( !SubRegister( origine, window, wxSize( width, height ), 0, 1, 1 ) )
+    if ( !SubRegister( origine, window, imSize( width, height ), 0, 1, 1 ) )
             return this->Terminate( ERR_CANCELED );
     
     imCounterEnd( m_counter );
@@ -762,12 +762,12 @@ bool ImRegister::Register( wxPoint *points1, wxPoint *points2)
 #endif
 
 #ifdef AX_SUPERIMPOSITION
-bool ImRegister::SubRegister( wxPoint origine, wxSize window, wxSize size, int level, int row, int column )
+bool ImRegister::SubRegister( imPoint origine, imSize window, imSize size, int level, int row, int column )
 {
     
 	int x = 0, y = 0, maxCorr;
     
-    wxSize subwindow = window;
+    imSize subwindow = window;
     
     if (!imProcessSafeCrop(m_im1, &size.x, &size.y, &origine.x, &origine.y))
         return this->Terminate( ERR_UNKNOWN );
@@ -796,7 +796,7 @@ bool ImRegister::SubRegister( wxPoint origine, wxSize window, wxSize size, int l
     //wxLogDebug( "Correlation decalage %d %d", x, y );
     
     // use the detected shift to determine the next window size (but at least 5 pixels)
-    subwindow = wxSize( max(abs(3*x), SupEnv::s_split_x), max(abs(3*y), SupEnv::s_split_y) );
+    subwindow = imSize( max(abs(3*x), SupEnv::s_split_x), max(abs(3*y), SupEnv::s_split_y) );
 
 	if ( level > SupEnv::s_subWindowLevel )
     // end of the recursion
@@ -890,15 +890,15 @@ bool ImRegister::SubRegister( wxPoint origine, wxSize window, wxSize size, int l
 	origine.y -= y;
 
 	// for subsize as we done what to loose pixels because of odd values
-	wxSize subsize1 = size / 2;
-	wxSize subsize2 = size - subsize1;
-	wxSize subsize3( subsize1.GetWidth(), subsize2.GetHeight() ); 
-	wxSize subsize4( subsize2.GetWidth(), subsize1.GetHeight() );
+	imSize subsize1 = size / 2;
+	imSize subsize2 = size - subsize1;
+	imSize subsize3( subsize1.GetWidth(), subsize2.GetHeight() ); 
+	imSize subsize4( subsize2.GetWidth(), subsize1.GetHeight() );
     
-    wxPoint origine1 = origine;
-    wxPoint origine2 = origine + subsize1;
-    wxPoint origine3 = wxPoint( origine.x, origine.y + subsize1.GetHeight() );
-    wxPoint origine4 = wxPoint( origine.x + subsize1.GetWidth(), origine.y );
+    imPoint origine1 = origine;
+    imPoint origine2 = origine + subsize1;
+    imPoint origine3 = imPoint( origine.x, origine.y + subsize1.GetHeight() );
+    imPoint origine4 = imPoint( origine.x + subsize1.GetWidth(), origine.y );
 
     level++;
     row *= 2;
