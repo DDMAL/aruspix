@@ -10,8 +10,6 @@
 
 
 #include "wx/defs.h"
-#include "wx/gdicmn.h"
-
 
 #define AxWHITE  255 << 16 | 255 << 8 | 255
 #define AxBLACK 0
@@ -20,6 +18,11 @@
 #define AxGREEN  255 << 8
 #define AxCYAN 255 << 8 | 255
 #define AxLIGHT_GREY 127 << 16 | 127 << 8 | 127
+
+// avoid inclusion of wx/gdicmn.h
+#ifndef wxODDEVEN_RULE
+#define wxODDEVEN_RULE 1
+#endif
 
 
 class MusPoint;

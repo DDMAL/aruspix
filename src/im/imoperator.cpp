@@ -523,7 +523,7 @@ void ImOperator::MoveElements( _imImage *src, _imImage *dest, int boxes[], int c
 // FFT don't works on binary images !!!!!!!
 
 void ImOperator::DistByCorrelation( _imImage *im1,  _imImage *im2,
-                                wxSize window, int *decalageX, int *decalageY, int *maxCorr)
+                                imSize window, int *decalageX, int *decalageY, int *maxCorr)
 {
     wxASSERT_MSG(decalageX, wxT("decalageX cannot be NULL") );
     wxASSERT_MSG(decalageY, wxT("decalagY cannot be NULL") );

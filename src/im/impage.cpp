@@ -1113,7 +1113,7 @@ bool ImPage::FindStaves( int min, int max, bool normalize, bool crop )
 		m_opImTmp1 = imImageCreate( x2 - x1, y2 - y1, m_opImMain->color_space, m_opImMain->data_type );    
 		imProcessCrop( m_opImMain, m_opImTmp1, x1, y1);
 		SwapImages( &m_opImMain, &m_opImTmp1 );
-		this->m_size = wxSize( m_opImMain->width, m_opImMain->height );
+		this->m_size = imSize( m_opImMain->width, m_opImMain->height );
 		SwapImages( &m_img0, &m_opImMain );
 		if ( m_isModified ) 
 			*m_isModified = true;
@@ -1130,7 +1130,7 @@ bool ImPage::FindStaves( int min, int max, bool normalize, bool crop )
 		if ( m_isModified ) 
 			*m_isModified = true;
             
-        this->m_size = wxSize( m_img0->width, m_img0->height );
+        this->m_size = imSize( m_img0->width, m_img0->height );
         //x1 = 0;
         //x2 = m_img0->width - 1;
         //this->m_x1 = x1;

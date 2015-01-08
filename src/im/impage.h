@@ -128,7 +128,7 @@ public:
     _imImage *m_img0; // processed image, with pre-classification
 	_imImage *m_img1; // processed image, greyscale (alternative)
 	_imImage *m_selection; // buffer used to change classification
-	wxPoint m_selection_pos;
+	imPoint m_selection_pos;
 	bool *m_isModified;
 	wxString m_path; // path of the RecFile
     ArrayOfStaves m_staves;
@@ -140,7 +140,7 @@ public:
     int m_original_width, m_original_height;
     int m_rotated_width, m_rotated_height;
     int m_x1, m_x2, m_y1;
-    wxSize m_size; // taille de l'image à reconnaitre
+    imSize m_size; // taille de l'image à reconnaitre
     int m_line_width;
     int m_space_width;
 	int m_staff_height; // taille de la portee (calculee par correlation dans StaffCurvatures())
