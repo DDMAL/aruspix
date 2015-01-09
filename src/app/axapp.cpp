@@ -142,7 +142,7 @@ bool AxApp::CheckDir( wxString dirname, int permission )
 }
 
 
-#ifndef AX_CMDLINE
+#ifdef AX_CMDLINE
     bool AxYield() { return true; };
 #else
     bool AxYield() { return wxYield(); };
@@ -167,7 +167,7 @@ bool AxApp::CheckDir( wxString dirname, int permission )
 const wxString IPC_START = "StartOther";
 
 
-#define COPYRIGHT "Copyright © 2004-2014 Laurent Pugin and others"
+#define COPYRIGHT "Copyright Â© 2004-2014 Laurent Pugin and others"
 #define LICENSE "Published under the GNU General Public License 3"
 #define CONTRIBUTORS "John Ashley Burgoyne;Greg Eustace;Andrew Hankinson;Tristan Himmelman;Tristan Matthews;Christopher Niven;Alastair Porter;Marnie Reckenberg;Gabriel Vigliensoni;Rodolfo Zitellini"
 #define UPDATE_URL "http://www.aruspix.net/downloads/changes.txt"
