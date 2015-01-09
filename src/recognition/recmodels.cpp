@@ -308,7 +308,7 @@ bool RecTypModel::Commit( AxProgressDlg *dlg )
 	
 	dlg->SetMaxJobBar( 3 );
 	dlg->SetJob( _("Commit the data set") );
-    wxYield();
+    AxYield();
 	// counter
     int counter = dlg->GetCounter();
     int count = m_nbfiles;
@@ -511,7 +511,7 @@ bool RecTypModel::Adapt( wxArrayPtrVoid params, AxProgressDlg *dlg )
 	
 	dlg->SetMaxJobBar( 1 ); 
 	dlg->SetJob( _("Generate the optimized typographic model") );
-    wxYield();
+    AxYield();
 	if (!dlg->SetOperation( _("Optimizing...") ) )
 		return this->Terminate( ERR_CANCELED );
 		
@@ -529,7 +529,7 @@ bool RecTypModel::Adapt( wxArrayPtrVoid params, AxProgressDlg *dlg )
 			if( !dlg->IncTimerOperation( ) )
 			{
 				wxKill( pid, wxSIGKILL );
-				wxYield();
+				AxYield();
 				delete process; 
 				return this->Terminate( ERR_CANCELED );
 			}
@@ -537,7 +537,7 @@ bool RecTypModel::Adapt( wxArrayPtrVoid params, AxProgressDlg *dlg )
 		}
 		
 	}
-	wxYield(); // flush termination event before deleting the process.
+	AxYield(); // flush termination event before deleting the process.
 	if ( process->m_status != 0 )
 	{
 		delete process;
@@ -713,7 +713,7 @@ bool RecMusModel::Train( wxArrayPtrVoid params, AxProgressDlg *dlg )
 	
 	dlg->SetMaxJobBar( 1 );
 	dlg->SetJob( "Generate the new model" );
-	wxYield();
+	AxYield();
 	if (!dlg->SetOperation(_("Generate the new model") ) )
 		return this->Terminate( ERR_CANCELED );
 
@@ -729,7 +729,7 @@ bool RecMusModel::Train( wxArrayPtrVoid params, AxProgressDlg *dlg )
 			if( !dlg->IncTimerOperation( ) )
 			{
 				wxKill( pid, wxSIGKILL );
-				wxYield();
+				AxYield();
 				delete process; 
 				return this->Terminate( ERR_CANCELED );
 			}
@@ -737,7 +737,7 @@ bool RecMusModel::Train( wxArrayPtrVoid params, AxProgressDlg *dlg )
 		}
 		
 	}
-	wxYield(); // flush termination event before deleting the process.
+	AxYield(); // flush termination event before deleting the process.
 	if ( process->m_status != 0 )
 	{
 		delete process;
@@ -803,7 +803,7 @@ bool RecMusModel::Adapt( wxArrayPtrVoid params, AxProgressDlg *dlg )
 	
 	dlg->SetMaxJobBar( 1 );
 	dlg->SetJob( "Generate the optimized music model" );
-	wxYield();
+	AxYield();
 	if (!dlg->SetOperation(_("Optimizing...") ) )
 		return this->Terminate( ERR_CANCELED );
 
@@ -819,7 +819,7 @@ bool RecMusModel::Adapt( wxArrayPtrVoid params, AxProgressDlg *dlg )
 			if( !dlg->IncTimerOperation( ) )
 			{
 				wxKill( pid, wxSIGKILL );
-				wxYield();
+				AxYield();
 				delete process; 
 				return this->Terminate( ERR_CANCELED );
 			}
@@ -827,7 +827,7 @@ bool RecMusModel::Adapt( wxArrayPtrVoid params, AxProgressDlg *dlg )
 		}
 		
 	}
-	wxYield(); // flush termination event before deleting the process.
+	AxYield(); // flush termination event before deleting the process.
 	if ( process->m_status != 0 )
 	{
 		delete process;

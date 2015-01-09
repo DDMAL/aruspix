@@ -17,6 +17,7 @@
 #include "app/aximagecontroller.h"
 #include "app/axscrolledwindow.h"
 
+#include "im/imoperator.h"
 
 class SupEnv;
 class SupFile;
@@ -107,8 +108,8 @@ public:
     void ResetImage( AxImage image );
 	void SetSupFile( SupFile *supFile ) { m_supFilePtr = supFile; }
     void SetInitialPoints( );
-    wxPoint ToLogical( wxPoint p );
-    wxPoint ToRender( wxPoint p );
+    imPoint ToLogical( wxPoint p );
+    wxPoint ToRender( imPoint p );
     
 private:
     _imImage *m_greenIm;

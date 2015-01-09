@@ -12,6 +12,8 @@
     #include "wx/wx.h"
 #endif
 
+extern bool AxYield();
+
 #ifdef AX_CMDLINE
 
 //----------------------------------------------------------------------------

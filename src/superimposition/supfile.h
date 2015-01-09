@@ -16,6 +16,8 @@
 
 #include "app/axfile.h"
 
+#include "im/imoperator.h"
+
 class ImRegister;
 class SupEnv;
 class AxImage;
@@ -67,8 +69,8 @@ public:
 	ImRegister *m_imRegisterPtr;
 	wxString m_original1, m_original2;
 	bool m_hasNewPoints1, m_hasNewPoints2;
-	wxPoint m_points1[4];
-    wxPoint m_points2[4];
+	imPoint m_points1[4];
+    imPoint m_points2[4];
 	bool m_hasManualPoints1;
 	bool m_hasManualPoints2;
 

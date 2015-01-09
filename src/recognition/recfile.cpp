@@ -600,7 +600,8 @@ bool RecFile::Preprocess( wxArrayPtrVoid params, AxProgressDlg *dlg )
 
     dlg->SetMaxJobBar( 17 );
     dlg->SetJob( shortname );
-    wxYield();
+    
+    AxYield();
 		
     bool failed = false;
 		
@@ -666,7 +667,7 @@ bool RecFile::Recognize( wxArrayPtrVoid params, AxProgressDlg *dlg )
 	
     dlg->SetMaxJobBar( 5 );
     dlg->SetJob( m_shortname );
-    wxYield();	
+    AxYield();	
 	
     bool failed = false;
 	
@@ -838,7 +839,7 @@ bool RecFile::Decode( wxArrayPtrVoid params, AxProgressDlg *dlg )
 			if( !dlg->IncTimerOperation( ) )
 			{
 				wxKill( pid, wxSIGKILL );
-				wxYield();
+				AxYield();
 				delete process;
 				return this->Terminate( ERR_CANCELED );
 			}
@@ -846,7 +847,7 @@ bool RecFile::Decode( wxArrayPtrVoid params, AxProgressDlg *dlg )
 		}
 		
 	}
-	wxYield(); // flush termination event before deleting the process.
+	AxYield(); // flush termination event before deleting the process.
 	if ( process->m_status != 0 )
 	{
 		delete process;
@@ -990,7 +991,7 @@ bool RecFile::Decode( wxArrayPtrVoid params, AxProgressDlg *dlg )
 			if( !dlg->IncTimerOperation( ) )
 			{
 				wxKill( pid, wxSIGKILL );
-				wxYield();
+				AxYield();
 				delete process; 
 				return this->Terminate( ERR_CANCELED );
 			}
@@ -998,7 +999,7 @@ bool RecFile::Decode( wxArrayPtrVoid params, AxProgressDlg *dlg )
 		}
 		
 	}
-	wxYield(); // flush termination event before deleting the process.
+	AxYield(); // flush termination event before deleting the process.
 	if ( process->m_status != 0 )
 	{
 		delete process;

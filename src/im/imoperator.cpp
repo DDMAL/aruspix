@@ -257,7 +257,7 @@ bool ImOperator::Write( wxString file, _imImage **image )
     //wxFFile f( file, "w" ); // necessaire sous Linux pour les masques de fichiers
     //f.Flush();
     //f.Close();
-    //wxYield();
+    //AxYield();
 #endif
 
 	//printf(file.c_str());

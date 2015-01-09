@@ -199,7 +199,7 @@ void SupImWindow::OnPaint(wxPaintEvent &event)
             
             wxPen pen;
             pen.SetWidth( max( ToZoomedRender( 4 ), 1 ) );
-            wxPoint *points;
+            imPoint *points;
             if ( controller->GetId() == ID2_CONTROLLER1) {
                 points = controller->m_supFilePtr->m_points1;
                 pen.SetColour( *wxGREEN );
@@ -473,16 +473,19 @@ void SupImController::DrawCircles( bool clear )
     }
 }
 
-wxPoint SupImController::ToLogical( wxPoint p )
+imPoint SupImController::ToLogical( wxPoint p )
+{
+    wxASSERT( this->IsOk() );
+    
+    return imPoint( p.x, this->GetHeight() - p.y );
+}
+
+wxPoint SupImController::ToRender( imPoint p )
 {
     wxASSERT( this->IsOk() );
     
     return wxPoint( p.x, this->GetHeight() - p.y );
-}
 
-wxPoint SupImController::ToRender( wxPoint p )
-{
-    return ToLogical(p);
 }
 
 
@@ -494,7 +497,7 @@ void SupImController::CloseDraggingSelection(wxPoint start, wxPoint end)
         return;
     }
     
-    wxPoint *points;
+    imPoint *points;
     if ( this->GetId() == ID2_CONTROLLER1) {
         points = m_supFilePtr->m_points1;
     }
@@ -525,7 +528,7 @@ void SupImController::SetInitialPoints()
 {
     wxASSERT( m_supFilePtr );
 
-    wxPoint *points;
+    imPoint *points;
     if ( this->GetId() == ID2_CONTROLLER1) {
         points = m_supFilePtr->m_points1;
     }
@@ -537,10 +540,10 @@ void SupImController::SetInitialPoints()
         return;
     
     int margin = 40;
-    points[0] = wxPoint( margin, margin );    
-    points[1] = wxPoint( margin, this->GetHeight() - margin );
-    points[2] = wxPoint( GetWidth() - margin, margin );
-    points[3] = wxPoint( GetWidth() - margin, this->GetHeight() - margin );
+    points[0] = imPoint( margin, margin );
+    points[1] = imPoint( margin, this->GetHeight() - margin );
+    points[2] = imPoint( GetWidth() - margin, margin );
+    points[3] = imPoint( GetWidth() - margin, this->GetHeight() - margin );
 }
 
 

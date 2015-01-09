@@ -34,10 +34,6 @@ wxString AxApp::s_build_time = __TIME__;
 //----------------------------------------------------------------------------
 
 #ifdef AX_CMDLINE
-bool wxYield() { return true; };
-#endif
-
-#ifdef AX_CMDLINE
 wxString AxApp::s_respath = "/usr/local/share/aruspix";
 wxString AxApp::s_workingDir = "./tmp";
 wxString AxApp::s_logDir = ".";
@@ -144,6 +140,13 @@ bool AxApp::CheckDir( wxString dirname, int permission )
     delete logNo;
     return true;
 }
+
+
+#ifndef AX_CMDLINE
+    bool AxYield() { return true; };
+#else
+    bool AxYield() { return wxYield(); };
+#endif
 
 
 //----------------------------------------------------------------------------

@@ -252,7 +252,7 @@ void EdtEnv::UpdateViews( int flags )
     m_musViewPtr->SetDoc( m_edtFilePtr->m_musDocPtr );
     m_musViewPtr->SetToolPanel( ((EdtPanel*)m_envWindowPtr)->GetMusToolPanel()  );
     m_musViewPtr->Resize( );
-    wxYield();
+    AxYield();
     //m_musViewPtr->Goto( 1 );
     //m_musControlPtr->SyncZoom();  
 }

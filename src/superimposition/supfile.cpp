@@ -46,7 +46,7 @@ SupFile::SupFile( wxString name, SupEnv *env )
 	
 	m_isSuperimposed = false;
 	m_hasManualPoints1 = false;
-    m_points1[0] = wxPoint(-1,-1);
+    m_points1[0] = imPoint(-1,-1);
 }
 
 
@@ -67,7 +67,7 @@ void SupFile::NewContent( )
 	
 	m_isSuperimposed = false;
 	m_hasManualPoints1 = false;
-    m_points1[0] = wxPoint(-1,-1);
+    m_points1[0] = imPoint(-1,-1);
 }
 
 
@@ -127,7 +127,7 @@ void SupFile::OpenContent( )
 			elem = node->ToElement();
 			if (!elem || !elem->Attribute("x") || !elem->Attribute( "y" ) ) 
 				continue;
-			m_points1[i] = wxPoint( atoi( elem->Attribute( "x" ) ), atoi( elem->Attribute( "y" ) ) );
+			m_points1[i] = imPoint( atoi( elem->Attribute( "x" ) ), atoi( elem->Attribute( "y" ) ) );
 		}
 		i = 0;
 		for( node = root->FirstChild( "point2" ); node && i < 4; node = node->NextSibling( "point2" ), i++ )
@@ -135,7 +135,7 @@ void SupFile::OpenContent( )
 			elem = node->ToElement();
 			if (!elem || !elem->Attribute("x") || !elem->Attribute( "y" ) ) 
 				continue;
-			m_points2[i] = wxPoint( atoi( elem->Attribute( "x" ) ), atoi( elem->Attribute( "y" ) ) );
+			m_points2[i] = imPoint( atoi( elem->Attribute( "x" ) ), atoi( elem->Attribute( "y" ) ) );
 		}
 	}
     // points
@@ -286,7 +286,7 @@ bool SupFile::Superimpose( wxArrayPtrVoid params, AxProgressDlg *dlg )
 
     dlg->SetMaxJobBar( 32 );
     dlg->SetJob( shortname1 );
-    wxYield();
+    AxYield();
 		
     bool failed = false;
 	
