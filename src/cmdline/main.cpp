@@ -119,6 +119,7 @@ int main(int argc, char** argv)
         {0, 0, 0, 0}
     };
     
+    printf("Reading options...\n");
     int option_index = 0;
     while ((c = getopt_long(argc, argv, "d:o:t:", long_options, &option_index)) != -1)
     {                
@@ -154,6 +155,7 @@ int main(int argc, char** argv)
         exit(0);
     }
     
+    printf("Reading infile...\n");
     if (optind <= argc - 1) {
         infile = string(argv[optind]);
     }
@@ -163,12 +165,14 @@ int main(int argc, char** argv)
         exit(1);
     }
     
+    printf("Preparing outfile...\n");
     // Hardcode svg ext for now
     if (outfile.empty()) {
         outfile = removeExtension(infile);
         outfile += ".axz";
     }
     
+    printf("Preparing outfile path...\n");
     // Hardcode svg ext for now
     if (!outdir.empty()) {
         outfile = outdir + "/" + removePath(outfile);
@@ -176,9 +180,11 @@ int main(int argc, char** argv)
     
     cerr << "Reading " << infile << "..." << endl;
     
+    printf("Checking working dir...\n");
     if ( !AxApp::CheckDir( AxApp::GetWorkingDir(), 0755 ) )
         wxLogWarning( _("Unable to create or write in the working directory '%s'. Please verify the access permissions or change it in the preferences."),
                      AxApp::GetWorkingDir().c_str() );
+    printf("Checking log dir...\n");
     if ( !AxApp::CheckDir( AxApp::GetLogDir(), 0755 ) )
         wxLogDebug( _("Unable to create or write in the log directory '%s'. Please verify the access permissions."), AxApp::GetLogDir().c_str() );
     
