@@ -973,7 +973,7 @@ void MusRC::DrawBarline( MusDC *dc, MusLayerElement *element, MusLayer *layer, M
     MusBarline *barline = dynamic_cast<MusBarline*>(element);
     int x = element->m_x_abs + barline->m_hOffset;
 
-    dc->StartGraphic( element, "barline", wxString::Format("s_%d_%d_%d", staff->GetId(), layer->voix, element->GetId()) );
+    dc->StartGraphic( element, "barLine", wxString::Format("s_%d_%d_%d", staff->GetId(), layer->voix, element->GetId()) );
     
     if (barline->m_barlineType==BARLINE_SINGLE)			
     {	

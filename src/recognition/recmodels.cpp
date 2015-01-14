@@ -452,7 +452,7 @@ bool RecTypModel::Adapt( wxArrayPtrVoid params, AxProgressDlg *dlg )
 	#endif    
 #else
     #ifdef __AXDEBUG__
-        wxString cmd = "adaptd";
+        wxString cmd = "adapt";
     #else
         wxString cmd = "adapt";
     #endif
@@ -782,7 +782,7 @@ bool RecMusModel::Adapt( wxArrayPtrVoid params, AxProgressDlg *dlg )
 	#endif   
 #else
 	#if defined(_DEBUG)
-		wxString cmd = "ngramd";
+		wxString cmd = "ngram";
 	#else
 		wxString cmd = "ngram";
 	#endif   
