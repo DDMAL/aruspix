@@ -277,9 +277,9 @@ void RecFile::UpgradeTo_2_1_0()
     this->Modify();
 }
 
-void RecFile::UpgradeTo_2_3_0()
+void RecFile::UpgradeTo_2_4_0()
 {
-    if ( AxFile::FormatVersion(m_vmaj, m_vmin, m_vrev) >= AxFile::FormatVersion(2, 3, 0) )
+    if ( AxFile::FormatVersion(m_vmaj, m_vmin, m_vrev) >= AxFile::FormatVersion(2, 4, 0) )
 		return; // when do not need to upgrade the file
     if ( AxFile::FormatVersion(m_vmaj, m_vmin, m_vrev) < AxFile::FormatVersion(2, 0, 0) )
         return; // the file has been upgraded by Upgrade_2_0_0
@@ -300,9 +300,10 @@ void RecFile::UpgradeTo_2_3_0()
     // output the new binary file
     MusMeiOutput mei_output( m_musDocPtr, m_musDocPtr->m_fname );
     mei_output.ExportFile(); 
-    wxLogMessage( "File successfully upgraded to 2.3.0");
+    wxLogMessage( "File successfully upgraded to 2.4.0");
     this->Modify();
 }
+
 
 void RecFile::NewContent( )
 {
@@ -369,7 +370,7 @@ void RecFile::OpenContent( )
 		
 	if ( wxFileExists( m_basename + "page.mei") )
 	{
-        UpgradeTo_2_3_0();
+        UpgradeTo_2_4_0();
 
         MusMeiInput *mei_input = new MusMeiInput( m_musDocPtr, m_musDocPtr->m_fname );
         failed = !mei_input->ImportFile();
@@ -782,7 +783,7 @@ bool RecFile::Decode( wxArrayPtrVoid params, AxProgressDlg *dlg )
 #endif
 #else
 #ifdef __AXDEBUG__
-    wxString cmd = "decoderd";
+    wxString cmd = "decoder";
 #else
     wxString cmd = "decoder";
 #endif

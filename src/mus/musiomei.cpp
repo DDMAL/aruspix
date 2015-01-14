@@ -69,7 +69,7 @@ bool MusMeiOutput::ExportFile( )
         m_mei->SetAttribute( "meiversion", "2013" );
 
         // element to place the pages
-        m_score = new TiXmlElement("score");
+        m_score = new TiXmlElement("pages");
         m_score->SetAttribute( "type",  DocTypeToStr( m_doc->GetType() ).c_str() );
         
         
@@ -86,7 +86,7 @@ bool MusMeiOutput::ExportFile( )
         m_mei->LinkEndChild( music );
         
         TiXmlUnknown *schema = new TiXmlUnknown();
-        schema->SetValue("?xml-model href=\"http://www.aruspix.net/mei-page-based-2013-08-29.rng\" type=\"application/xml\" schematypens=\"http://relaxng.org/ns/structure/1.0\"?");
+        schema->SetValue("?xml-model href=\"http://www.aruspix.net/mei-page-based-2013-11-05.rng\" type=\"application/xml\" schematypens=\"http://relaxng.org/ns/structure/1.0\"?");
         
         meiDoc->LinkEndChild( new TiXmlDeclaration( "1.0", "UTF-8", "" ) );
         meiDoc->LinkEndChild(schema);
@@ -229,7 +229,7 @@ bool MusMeiOutput::WriteLayerElement( MusLayerElement *element )
     
     TiXmlElement *xmlElement = NULL;
     if (dynamic_cast<MusBarline*>(element)) {
-        xmlElement = new TiXmlElement( "barline" );
+        xmlElement = new TiXmlElement( "barLine" );
         WriteMeiBarline( xmlElement, dynamic_cast<MusBarline*>(element) );
     }
     else if (dynamic_cast<MusBeam*>(element)) {
@@ -642,7 +642,7 @@ bool MusMeiInput::ImportFile( )
             mdiv = body->FirstChildElement("mdiv");
         }
         if ( mdiv ) {
-            score = mdiv->FirstChildElement("score");
+            score = mdiv->FirstChildElement("pages");
         }
         if ( score ) {
             
