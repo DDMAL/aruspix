@@ -79,12 +79,14 @@ bool dir_exists (string dir) {
 void display_usage() {
     
     //cerr << "Aruspix " << GetVersion() << endl << "Usage:" << endl << endl;
-    cerr << " aruspix-cmdline [-d outdir] [-o outfile] [-t tmpdir] infile" << endl << endl;
+    cerr << " aruspix-cmdline [-d outdir] [-m modeldir] [-o outfile] [-t tmpdir] infile" << endl << endl;
 
     // Options
     cerr << "Options" << endl;
 
     cerr << " -d, --outdir=OUTDIR       Output directory (Default is '.')" << endl;
+    
+    cerr << " -m, --modeldir=MODELDIR   Directory for model files (default is './models')" << endl;
     
     cerr << " -o, --outfile=FILENAME    Output file name (Default is input file name as .axz" << endl;
     
@@ -97,6 +99,7 @@ int main(int argc, char** argv)
     string outdir;
     string infile;
     string outfile;
+    string modeldir;
     
     // Init random number generator for uuids
     std::srand(std::time(0));
@@ -114,13 +117,14 @@ int main(int argc, char** argv)
     {
         {"outdir",              required_argument,  0, 'd'},
         {"help",                no_argument,        &show_help, 1},
+        {"modeldir",            required_argument,  0, 'm'},
         {"outfile",             required_argument,  0, 'o'},
         {"tmpdir",              required_argument,  0, 't'},
         {0, 0, 0, 0}
     };
     
     int option_index = 0;
-    while ((c = getopt_long(argc, argv, "d:o:t:", long_options, &option_index)) != -1)
+    while ((c = getopt_long(argc, argv, "d:m:o:t:", long_options, &option_index)) != -1)
     {                
         switch (c)
         {
@@ -129,6 +133,10 @@ int main(int argc, char** argv)
                 break;
                 
             case 0:
+                break;
+                
+            case 'm':
+                modeldir = string(optarg);
                 break;
                 
             case 'o':
@@ -163,13 +171,15 @@ int main(int argc, char** argv)
         exit(1);
     }
     
-    // Hardcode svg ext for now
+    if (modeldir.empty()) {
+        modeldir = "./models/";
+    }
+    
     if (outfile.empty()) {
         outfile = removeExtension(infile);
         outfile += ".axz";
     }
     
-    // Hardcode svg ext for now
     if (!outdir.empty()) {
         outfile = outdir + "/" + removePath(outfile);
     }
@@ -185,8 +195,22 @@ int main(int argc, char** argv)
     RecFile file( "test" );
     RecTypModel typ_model( "typ_model" );
     RecMusModel mus_model( "mus_model" );
-    typ_model.Open( "./models/builtin.axtyp" );
-    mus_model.Open( "./models/builtin.axmus" );
+    
+    bool failed = false;
+    
+    wxString typModel = modeldir + "/builtin.axtyp";
+    failed = !typ_model.Open( typModel );
+    if (failed) {
+        wxLogError( _("Unable to open the typographic model '%s'. Please verify the path."), typModel.c_str() );
+        exit(1);
+    }
+    
+    wxString musModel = modeldir + "/builtin.axmus";
+    failed = !mus_model.Open( musModel );
+    if (failed) {
+        wxLogError( _("Unable to open the music model '%s'. Please verify the path."), musModel.c_str() );
+        exit(1);
+    }
     
     // Create a fake progress dialog
     AxProgressDlg *dlg = new AxProgressDlg( );
@@ -194,14 +218,13 @@ int main(int argc, char** argv)
     wxArrayPtrVoid pre_params;
     pre_params.Add( &infile );
     
-    bool failed = false;
-    
     file.New();
     
     failed = !file.Preprocess( pre_params, dlg );
     
     if (failed) {
-        
+        wxLogError( _("Unable to pre-process the image") );
+        exit(1);
     }
     
     // params 0: RecTypModel: typModelPtr
@@ -218,10 +241,13 @@ int main(int argc, char** argv)
     rec_params.Add( &RecEnv::s_rec_lm_scaling );
     wxString rec_wrdtrns = "";
     rec_params.Add( &rec_wrdtrns );
-    
-    failed = false;
-    
+
     failed = !file.Recognize( rec_params, dlg );
+    
+    if (failed) {
+        wxLogError( _("Unable to recognize the image") );
+        exit(1);
+    }
     
     file.SaveAs( outfile );
     
