@@ -1,0 +1,29 @@
+---
+
+---
+
+body {
+  padding-top: 50px;
+}
+
+@media (min-width: 768px) {
+    .navbar {
+        background: url("../images/header.png"), url("../images/bg.png");
+        background-position: left top, left top;
+        background-repeat: no-repeat, repeat-x;
+    }
+}
+
+#topbarlogo {
+    float: left;
+    clear: both;
+    width: 278px;
+    height: 98px;
+    margin: 0;
+    padding: 0;
+    background: url("../images/logo.png");
+}
+
+#logo-padding {
+    padding-top: 80px;
+}

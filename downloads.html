@@ -1,0 +1,111 @@
+---
+layout: default
+title: About – Downloads
+active: downloads
+---
+
+<div class="row">
+    <div class="col-sm-12 col-md-8 hidden-xs osx">
+        <h3 class="page-header">
+            Desktop application (Mac OS X)
+        </h3>
+        
+        <p>
+            The desktop application of Aruspix is available for download for Mac OS X (version 10.7 or later is required). If no previous version of Aruspix was installed before on your machine, you need first to download and install the Leipzig font using the Aruspix Font Installer.
+        </p>
+        
+		<div class="text-left">
+            <p>
+                <a href="http://www.aruspix.net/downloads/Aruspix2.3FontInstaller.dmg" target="_blank">
+                    <button type="button" class="btn btn-primary btn-lg">
+                        Download
+                        <span class="glyphicon glyphicon-download"></span>
+                </button></a>
+                <img src="{{ site.baseurl }}/images/pkg.png" style="padding: 0px 12px;"/>
+                <strong>Aruspix Font Installer</strong>
+            </p>
+        </div>
+    
+        <p>
+            The latest version of the destkop application of Aruspix can then be downloaded below. Aruspix will eventually automatically check if a new version is available.
+        </p>    
+		<div class="text-left">
+            <p>
+                <a href="http://www.aruspix.net/downloads" target="_blank">
+                    <button type="button" class="btn btn-primary btn-lg">
+                        Download
+                        <span class="glyphicon glyphicon-download"></span>
+                </button></a>
+                <img src="{{ site.baseurl }}/images/ax.png" style="padding: 0px 12px;"/>
+                <strong>Aruspix App</strong>
+            </p>
+        </div>
+        
+        <p>
+            Finally, the following zip archive containing a set of example images and processed files can be dowloaded.
+        </p>    
+		<div class="text-left">
+            <p>
+                <a href="http://www.aruspix.net/downloads/SampleImages.zip" target="_blank">
+                    <button type="button" class="btn btn-primary btn-lg">
+                        Download
+                        <span class="glyphicon glyphicon-download"></span>
+                </button></a>
+                <img src="{{ site.baseurl }}/images/zip.png" style="padding: 0px 12px;"/>
+                <strong>Example Images</strong>
+            </p>
+        </div>
+        
+        <h3 class="page-header"></h3>
+        
+        <div class="alert alert-warning" role="alert">Because both the App and the Font Installer are not distributed through the official Apple Store, you need to open then using the "Right-click" and then "Open" from the pop-up menu the first time you run them. See <a href="http://support.apple.com/kb/PH14369" target="_blank">here</a> for more information on how to proceed.</div>
+        
+    </div>
+    
+    <div class="col-sm-12 col-md-8 hidden-xs non-osx" style="display: none">
+        <h3 class="page-header">
+            Desktop application
+        </h3>
+        
+        <p>
+            The Aruspix desktop application is currently available for download only on Mac OS X.
+        </p>
+    </div>
+    
+    <div class="col-sm-12 col-md-4">
+        <h3 class="page-header">
+            Source code
+        </h3>
+        
+        <p>
+            Aruspix source code is available on GitHub. Building instructions for both the desktop application and the command-line version are providing in the repository wiki.
+        </p>
+        
+		<div class="panel panel-default">
+			<div class="panel-body">
+				<table>
+					<tr>
+						<td>
+							<img src="{{ site.baseurl }}/images/github.png" style="padding: 0px 10px;"/>
+						</td>
+						<td>
+							<a href="https://github.com/DDMAL/aruspix">https://github.com/DDMAL/aruspix</a>
+						</td>
+					</tr>
+				</table>
+			</div>
+		</div>
+        
+    </div>
+</div>
+
+<script type="text/javascript">
+//<![CDATA[
+	$( document ).ready(function() {
+        if (navigator.appVersion.indexOf("Mac")==-1) {
+            $(".osx").hide();
+            $(".non-osx").show();
+        }
+    });
+//]]>
+</script>
