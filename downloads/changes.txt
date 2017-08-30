@@ -1,0 +1,69 @@
+Version 2.4.0
+-------------
+- Upate to latest version of the MEI page-based module
+
+Version 2.3.0
+-------------
+- Switch to MEI page-based module
+
+Version 2.1.2
+-------------
+- Bug fix in 3-class binarization
+
+Version 2.1.1
+-------------
+- Bug fix in saving notes (coloration and stem direction)
+
+Version 2.1.0
+-------------
+- Bug fix mouse position
+- Bug fix copy / paste
+- Bug fix with single figure proportion
+- Upgrade to 2.1.0
+- Correction of dot offset
+
+Version 2.0.7
+-------------
+- Bug fix in dragging area
+- Bug fix in book adaptation
+- Bug fix in book model export
+- Changing contrast / brightness adjustment steps
+- New function for importing models to be used in book recognition
+- New function for exporting book pages in MEI
+
+Version 2.0.6
+-------------
+- Bug fix in application menu
+- Open upgraded files as modified
+- New collation features
+
+Version 2.0.5
+-------------
+- Bug fix in image representation
+- Bug fix in photometric detection
+- New file name patterns for book superimpositions
+- New contrast / brightness adjust option for superimposition
+
+Version 2.0.4
+-------------
+- New batch full process (preprocessing and recognition)
+- Bug fixes (export MEI menu and new books left unsaved)
+
+Version 2.0.3
+-------------
+- Bug fix for superimposition (correlation method)
+
+Version 2.0.2
+--------------
+- Automatic update checker
+- Adding PNG image support for recognition
+
+Version 2.0.1
+-------------
+- Bug fixes in Superimposition workspace
+
+Version 2.0.0
+-------------
+- MEI integration
+- Command-line tool (basics)
+- MusicXML export (basics)
