@@ -10,9 +10,9 @@ FIND_PACKAGE(wxWidgets COMPONENTS base core net html adv aui )
 FIND_PACKAGE( LibXml2 )
 
 OPTION(imDir "/usr")
-FIND_LIBRARY(IM_LIBRARY im "${imDir}/lib")
-FIND_LIBRARY(IM_PROCESS_LIBRARY im_process "${imDir}/lib")
-FIND_LIBRARY(IM_FFTW_LIBRARY im_fftw "${imDir}/lib")
+FIND_LIBRARY(IM_LIBRARY libim.a "${imDir}/lib")
+FIND_LIBRARY(IM_PROCESS_LIBRARY libim_process.a "${imDir}/lib")
+FIND_LIBRARY(IM_FFTW_LIBRARY libim_fftw.a "${imDir}/lib")
 
 
 SET( aruspixSources ${aruspixSources}
