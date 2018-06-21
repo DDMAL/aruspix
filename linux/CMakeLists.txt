@@ -4,7 +4,7 @@ CMAKE_MINIMUM_REQUIRED( VERSION 2.8 )
 SET( CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH}" "${CMAKE_SOURCE_DIR}" )
 
 OPTION(wxDir "")
-SET(wxWidgets_CONFIG_EXECUTABLE "${wxDir}wx-config") 
+SET(wxWidgets_CONFIG_EXECUTABLE "${wxDir}/wx-config")
 FIND_PACKAGE(wxWidgets COMPONENTS base core net html adv aui )
 
 FIND_PACKAGE( LibXml2 )
