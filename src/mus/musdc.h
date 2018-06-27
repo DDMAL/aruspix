@@ -19,6 +19,14 @@
 #define AxCYAN 255 << 8 | 255
 #define AxLIGHT_GREY 127 << 16 | 127 << 8 | 127
 
+#ifdef AX_CMDLINE
+#define wxFONTFAMILY_DEFAULT 0
+#define wxFONTSTYLE_NORMAL 0
+#define wxFONTWEIGHT_NORMAL 0
+#else 
+#include "wx/fontutil.h"
+#endif
+
 // avoid inclusion of wx/gdicmn.h
 #ifndef wxODDEVEN_RULE
 #define wxODDEVEN_RULE 1
