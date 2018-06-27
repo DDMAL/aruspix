@@ -186,7 +186,7 @@ int MusDoc::GetSystemRightX( MusSystem *system )
 int MusDoc::CalcMusicFontSize( )
 {
     // we just have the Leipzig font for now
-    return round((double)m_charDefin * LEIPZIG_UNITS_PER_EM / LEIPZIG_WHOLE_NOTE_HEAD_HEIGHT);
+    return round((double)m_charDefin * AxApp::GetFontSizeCorrection() / 100 * LEIPZIG_UNITS_PER_EM / LEIPZIG_WHOLE_NOTE_HEAD_HEIGHT);
 }
 
 int MusDoc::CalcNeumesFontSize( )

@@ -105,6 +105,14 @@ wxString AxApp::GetLyricFontDescStr() {
 }
 
 
+int AxApp::GetFontSizeCorrection(){
+#ifdef AX_CMDLINE
+    return 100;
+#else
+    return wxGetApp().m_fontSizeCorrection;
+#endif
+}
+
 int AxApp::GetFontPosCorrection(){
 #ifdef AX_CMDLINE
     return 0;
