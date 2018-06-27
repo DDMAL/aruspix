@@ -462,7 +462,7 @@ void AxFrame::LoadConfig()
 #else // OS X
     // From version 2.0.0, with windows encoding (33, should be wxFONTENCODING_CP1252, WinLatin1)
     // From version 2.0.0, get version 4.9
-	wxGetApp().m_musicFontDesc = pConfig->Read("MusicFontDesc-2.0.0", "0;13;70;90;90;0;Leipzig 4.9;33" ); // on OS X
+	wxGetApp().m_musicFontDesc = pConfig->Read("MusicFontDesc", "0;13;70;90;90;0;Leipzig 4.9;33" ); // on OS X
 	wxGetApp().m_neumeFontDesc = pConfig->Read("NeumeFontDesc", "0;53;70;90;90;0;Festa Dies A;0" );
 	wxGetApp().m_lyricFontDesc = pConfig->Read("LyricFontDesc", "0;12;70;93;90;0;Garamond;0" );
 #endif
@@ -563,7 +563,7 @@ void AxFrame::SaveConfig(int lastEnvId)
 	pConfig->Write("LastDirMusModel_in", wxGetApp().m_lastDirMusModel_in );
 	pConfig->Write("LastDirTypModel_in", wxGetApp().m_lastDirTypModel_in );
 
-	pConfig->Write("MusicFontDesc-2.0.0", wxGetApp().m_musicFontDesc );
+	pConfig->Write("MusicFontDesc", wxGetApp().m_musicFontDesc );
 	pConfig->Write("LyricFontDesc", wxGetApp().m_lyricFontDesc );
     pConfig->Write("FontSizeCorrection", wxGetApp().m_fontSizeCorrection );
     pConfig->Write("FontPosCorrection", wxGetApp().m_fontPosCorrection );
