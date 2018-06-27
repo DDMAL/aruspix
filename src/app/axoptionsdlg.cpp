@@ -456,13 +456,27 @@ void AxOptionsDlg::OnOk(wxCommandEvent &event)
 
         if ( m_changeFont )
         {
-            const wxNativeFontInfo *info;
-			info = m_font.GetNativeFontInfo();
-            wxGetApp().m_musicFontDesc = info->ToString();
+            MusFontInfo info;
+	    
+	    info.pointSize = m_font.GetPointSize();
+            info.family = m_font.GetFamily();
+            info.style = m_font.GetStyle(); 
+            info.weight = m_font.GetWeight();
+            info.underlined = m_font.GetUnderlined();
+            info.faceName = m_font.GetFaceName();
+            info.encoding = m_font.GetEncoding();
+		
+            wxGetApp().m_musicFontDesc = info.ToString();
 			
-            info = m_lyric_font.GetNativeFontInfo();
-            wxGetApp().m_lyricFontDesc = info->ToString();
+	    info.pointSize = m_lyric_font.GetPointSize();
+            info.family = m_lyric_font.GetFamily();
+            info.style = m_lyric_font.GetStyle(); 
+            info.weight = m_lyric_font.GetWeight();
+            info.underlined = m_lyric_font.GetUnderlined();
+            info.faceName = m_lyric_font.GetFaceName();
+            info.encoding = m_lyric_font.GetEncoding();
 
+            wxGetApp().m_lyricFontDesc = info.ToString();
         }
 		
 	#ifdef AX_SUPERIMPOSITION

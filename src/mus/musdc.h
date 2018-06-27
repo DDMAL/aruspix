@@ -156,9 +156,9 @@ public:
     MusFontInfo () 
     {
         pointSize = 0;
-        family = 0; //was wxFONTFAMILY_DEFAULT;
-        style = 0; //was wxFONTSTYLE_NORMAL;
-        weight = 0; //was wxFONTWEIGHT_NORMAL;
+        family = wxFONTFAMILY_DEFAULT;
+        style = wxFONTSTYLE_NORMAL;
+        weight = wxFONTWEIGHT_NORMAL;
         underlined = false;
         faceName.clear();
         encoding = wxFONTENCODING_DEFAULT;    
