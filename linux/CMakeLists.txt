@@ -14,6 +14,8 @@ FIND_LIBRARY(IM_LIBRARY libim.a "${imDir}/lib")
 FIND_LIBRARY(IM_PROCESS_LIBRARY libim_process.a "${imDir}/lib")
 FIND_LIBRARY(IM_FFTW_LIBRARY libim_fftw.a "${imDir}/lib")
 
+OPTION(torchDir "/usr")
+FIND_LIBRARY(TORCH_LIBRARY torch "${torchDir}/lib")
 
 SET( aruspixSources ${aruspixSources}
 	../src/app/axabout_wdr.cpp
@@ -54,6 +56,10 @@ SET( aruspixSources ${aruspixSources}
 	../src/im/imregister.cpp
 	../src/im/imstaff.cpp
 	../src/im/imstaffsegment.cpp
+
+	../src/ml/mldecoder.cpp
+	../src/ml/mldecoderpage.cpp
+	../src/ml/mldecoderstaff.cpp
 
 	../src/mus/musapp.cpp
 	../src/mus/musbarline.cpp 
@@ -143,6 +149,7 @@ INCLUDE_DIRECTORIES(
 	../src/mus
 
 	${imDir}/include
+	${torchDir}/include
 	${LIBXML2_INCLUDE_DIR}
 	/usr/include/torch
 )
@@ -170,6 +177,7 @@ ADD_EXECUTABLE( aruspix ${aruspixSources} )
 TARGET_LINK_LIBRARIES( aruspix
 	-lz
 	-lpthread
+	${TORCH_LIBRARY}
 	-luuid
 	${IM_LIBRARY}
 	${IM_PROCESS_LIBRARY}
