@@ -36,6 +36,7 @@ public:
     static wxString GetMusicFontDescStr();
     static wxString GetNeumeFontDescStr();
     static wxString GetLyricFontDescStr();
+    static int GetFontSizeCorrection();
     static int GetFontPosCorrection();
     static wxString GetFileVersion(int vmaj, int vmin, int vrev);
     static bool CheckDir( wxString dirname, int permission );
