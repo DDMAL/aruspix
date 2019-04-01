@@ -149,7 +149,6 @@ ADD_DEFINITIONS(
 	-D_FILE_OFFSET_BITS=64	
 	-D_LARGE_FILES	
 	-DwxDEBUG_LEVEL=0
-	-D__WXGTK__
 	-pthread
 	-Wno-write-strings
 	-Wno-format-security
