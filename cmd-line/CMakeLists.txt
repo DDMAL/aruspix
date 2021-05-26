@@ -7,7 +7,7 @@ CMAKE_MINIMUM_REQUIRED( VERSION 2.8 )
 SET( CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH}" "${CMAKE_SOURCE_DIR}" )
 
 OPTION(wxDir "")
-SET(wxWidgets_CONFIG_EXECUTABLE "${wxDir}wx-config") 
+SET(wxWidgets_CONFIG_EXECUTABLE "${wxDir}/wx-config")
 
 
 if(APPLE)
@@ -149,7 +149,6 @@ ADD_DEFINITIONS(
 	-D_FILE_OFFSET_BITS=64	
 	-D_LARGE_FILES	
 	-DwxDEBUG_LEVEL=0
-	-D__WXGTK__
 	-pthread
 	-Wno-write-strings
 	-Wno-format-security
