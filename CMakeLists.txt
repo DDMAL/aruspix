@@ -43,6 +43,7 @@ set(aruspixSources
     src/edition/edtfile.cpp
     src/edition/edt_wdr_inc.cpp
 
+    src/im/binarize.cpp
     src/im/imbrink3classes.cpp
     src/im/imbrink.cpp
     src/im/imext.cpp
@@ -215,6 +216,7 @@ endif()
 enable_testing()
 
 add_executable(aruspix_tests
+    src/im/binarize.cpp
     src/im/imext.cpp
     src/im/imbrink.cpp
     src/im/imbrink3classes.cpp
@@ -225,6 +227,7 @@ add_executable(aruspix_tests
     tests/test_imext_image.cpp
     tests/test_imext_threshold.cpp
     tests/test_imkmeans.cpp
+    tests/test_binarize.cpp
 )
 
 target_include_directories(aruspix_tests PRIVATE src/im)

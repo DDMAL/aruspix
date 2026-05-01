@@ -14,6 +14,7 @@ using std::max;
 
 #include "wx/file.h"
 
+#include "binarize.h"
 #include "impage.h"
 #include "imstaff.h"
 #include "imstaffsegment.h"
@@ -1278,136 +1279,54 @@ bool ImPage::BinarizeAndClean( )
 	if ( !GetImage( &m_opImMain ) )
       return false;
 
-	// binarisation APRES filtrage
-	// pas de difference sensible, mais mieux niveau bruit selon Bunke
-
-    m_opImTmp1 = imImageClone( m_opImMain );
-    if ( !m_opImTmp1 )
-        return this->Terminate( ERR_MEMORY );
-    if ( !imProcessMedianConvolve( m_opImMain ,m_opImTmp1, 3 ) )
+    if ( !m_progressDlg->SetOperation( _("Binarization ...") ) )
         return this->Terminate( ERR_CANCELED );
-    SwapImages( &m_opImMain, &m_opImTmp1 );
-		
-    m_opImTmp1 = imImageCreate( m_opImMain->width, m_opImMain->height, IM_BINARY, IM_BYTE );
-    if ( !m_opImTmp1 )
-        return this->Terminate( ERR_MEMORY );
 
-	if ( *ImPage::m_pre_page_binarization_methodPtr == PRE_BINARIZATION_SAUVOLA )
-	{
-		if ( !m_progressDlg->SetOperation( _("Binarization ...") ) )
-			return this->Terminate( ERR_CANCELED );
-		wxLogMessage("Sauvola binarization (region size is %d)", ImPage::s_pre_page_binarization_method_size );
-		imProcessSauvolaThreshold( m_opImMain, m_opImTmp1, ImPage::s_pre_page_binarization_method_size, 0.5, 128, 20, 150, false );
-	}
-	else if ( *ImPage::m_pre_page_binarization_methodPtr == PRE_BINARIZATION_BRINK )
-	{
-		if ( !m_progressDlg->SetOperation( _("Binarization ...") ) )
-			return this->Terminate( ERR_CANCELED );
-		wxLogMessage( "Brink (2 classes) binarization" );
-		int T = imProcessBrink2ClassesThreshold( m_opImMain, m_opImTmp1, false, BRINK_AND_PENDOCK );
-		wxLogMessage("Binarization threshold: %d", T );
-	}
-	else if ( *ImPage::m_pre_page_binarization_methodPtr == PRE_BINARIZATION_BRINK3CLASSES )
-	{
-		if ( !m_progressDlg->SetOperation( _("Binarization ...") ) )
-			return this->Terminate( ERR_CANCELED );
-		wxLogMessage( "Brink (3 classes) binarization" );
-		int T = imProcessBrink3ClassesThreshold( m_opImMain, m_opImTmp1, false, BRINK_AND_PENDOCK );	
-		wxLogMessage( "Binarization threshold: %d", T );
-	}
-	else // should not happen, but just in case
-	{	
-		wxLogWarning("Fix threshold used" );
-		imProcessThreshold( m_opImMain, m_opImTmp1, 127, 1);
-	}
-	//int otsu = imProcessKittlerThreshold( m_opImMain, m_opImTmp1 );
-    //imProcessPercentThreshold(m_opImMap, m_opImMain, 15);
-    SwapImages( &m_opImMain, &m_opImTmp1 );
-
-    // nettoyage par pruning
-    imStats istats;
-    imCalcImageStatistics( m_opImMain, &istats );
-	
-    // verifier negatif - positif : mean < 0.5
-	// just in case, usually should not happen. It was the case when using 
-	// impages binarized externally using another algorithm
-    if ( istats.mean > 0.5 )
-    {
-        m_opImTmp1 = imImageClone( m_opImMain );
-        if ( !m_opImTmp1 )
-            return this->Terminate( ERR_MEMORY );
-        imProcessNegative( m_opImMain, m_opImTmp1 );
-        SwapImages( &m_opImMain, &m_opImTmp1 );
-		imCalcImageStatistics( m_opImMain, &istats );
+    // Build params from ImPage state. The algorithm itself lives in
+    // ax::binarize_and_clean (src/im/binarize.cpp) — pure cv::Mat,
+    // OpenCV-backed, doctest-covered.
+    ax::BinarizeAndCleanParams params;
+    switch ( *ImPage::m_pre_page_binarization_methodPtr ) {
+        case PRE_BINARIZATION_SAUVOLA:
+            params.method = ax::BinarizationMethod::Sauvola;
+            params.sauvola_region_size = ImPage::s_pre_page_binarization_method_size;
+            wxLogMessage("Sauvola binarization (region size is %d)",
+                         ImPage::s_pre_page_binarization_method_size);
+            break;
+        case PRE_BINARIZATION_BRINK:
+            params.method = ax::BinarizationMethod::Brink2Classes;
+            wxLogMessage("Brink (2 classes) binarization");
+            break;
+        case PRE_BINARIZATION_BRINK3CLASSES:
+            params.method = ax::BinarizationMethod::Brink3Classes;
+            wxLogMessage("Brink (3 classes) binarization");
+            break;
+        default:
+            wxLogWarning("Fix threshold used");
+            params.method = ax::BinarizationMethod::FixedAt127;
+            break;
     }
+    params.space_width = this->m_space_width;
+    params.line_width = this->m_line_width;
 
-    double ink_factor = (double)this->m_space_width / (double)this->m_line_width;
-    if ( !ink_factor )
-        ink_factor = 1.0;
-    double mean_factor = 1.0 - istats.mean;
-    if ( !mean_factor )
-        mean_factor = 1.0;
-    double threshold_d = 10 * (pow( 1.0 / ink_factor + 1.0 / mean_factor, 2 ));
-	int threshold = min( (int)threshold_d, TP_MAX_SMALL_ELEMENT );
+    cv::Mat src_view(m_opImMain->height, m_opImMain->width, CV_8UC1, m_opImMain->data[0]);
+    cv::Mat dst;
+    if ( !ax::binarize_and_clean(src_view, dst, params) )
+        return this->Terminate( ERR_CANCELED );
 
-    // add margin - bug si des elements touche le bord dans imProcessPrune  
-    m_opImTmp1 = imImageCreate( m_opImMain->width + 2, m_opImMain->height + 2, 
-        m_opImMain->color_space, m_opImMain->data_type );
-    if ( !m_opImTmp1 )
+    // Replace m_opImMain with a fresh IM_BINARY image holding the
+    // pruned result.
+    imImageDestroy( m_opImMain );
+    m_opImMain = imImageCreate( dst.cols, dst.rows, IM_BINARY, IM_BYTE );
+    if ( !m_opImMain )
         return this->Terminate( ERR_MEMORY );
-    imProcessAddMargins( m_opImMain, m_opImTmp1, 1, 1 );
-    SwapImages( &m_opImMain, &m_opImTmp1 );
-
-	// debug values
-	/*wxString clean_morph = m_path + "clean_morph.csv";
-	fid = fopen(clean_morph.c_str(), "a" );
-	if ( fid )
-	{
-		fprintf(fid,"%s;%f;%f;%f\n",
-			this->m_shortname.c_str(),
-			istats.mean,
-			istats.stddev,
-			(1 - istats.mean) / istats.stddev);
-		fclose( fid );
-	}*/
-
-    if ( (1 - istats.mean) / istats.stddev  < 2.0 )
-    {
-		if ( !m_progressDlg->SetOperation( _("Cleaning ...") ) )
-			return this->Terminate( ERR_CANCELED );
-	
-        wxLogMessage("Cleaning by morphological opening (mean / stddev = %f)" , istats.mean / istats.stddev  );
-        m_opImTmp1 = imImageClone( m_opImMain );
-        if ( !m_opImTmp1 )
-            return this->Terminate( ERR_MEMORY );
-        imProcessBinMorphOpen( m_opImMain, m_opImTmp1, 3, 1);
-        SwapImages( &m_opImMain, &m_opImTmp1 );
-
-    }
-
-    /*imImage *NewImage = imImageCreate(m_opImMain->width, m_opImMain->height, IM_GRAY, IM_USHORT);
-    imAnalyzeFindRegions ( m_opImMain, NewImage, 8, 1);
-    imImageDestroy( NewImage );*/
-
-    wxLogMessage("Removing small elements (minimal size = %d)" , threshold );
-    m_opImTmp1 = imImageClone( m_opImMain );
-    if ( !m_opImTmp1 )
-        return this->Terminate( ERR_MEMORY );
-    imProcessRemoveByArea( m_opImMain, m_opImTmp1, 8, threshold, 0 , 0);
-    SwapImages( &m_opImMain, &m_opImTmp1 );
-    
-    m_opImTmp1 = imImageCreate( m_opImMain->width - 2, m_opImMain->height - 2, 
-        m_opImMain->color_space, m_opImMain->data_type );
-    if ( !m_opImTmp1 )
-        return this->Terminate( ERR_MEMORY );
-    imProcessCrop( m_opImMain, m_opImTmp1, 1, 1);
-    SwapImages( &m_opImMain, &m_opImTmp1 );
+    memcpy( m_opImMain->data[0], dst.data, m_opImMain->count );
 
     if ( !ConvertToMAP( &m_opImMain ) )
         return false;
-		
+
 	SwapImages( &m_img0, &m_opImMain );
-	if ( m_isModified ) 
+	if ( m_isModified )
 		*m_isModified = true;
 	return this->Terminate( ERR_NONE );
 }
