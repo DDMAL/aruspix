@@ -8,6 +8,7 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 # Dependencies are provided by Conan; see conanfile.py + recipes/im/.
 # Configure with `cmake --preset conan-release` after `conan install`.
 find_package(im REQUIRED)
+find_package(OpenCV REQUIRED)
 find_package(wxWidgets REQUIRED)
 find_package(LibXml2 REQUIRED)
 find_package(doctest REQUIRED)
@@ -168,6 +169,7 @@ endif()
 
 target_link_libraries(aruspix PRIVATE
     im::im
+    opencv::opencv
     wxWidgets::wxWidgets
     LibXml2::LibXml2
 )
@@ -229,6 +231,7 @@ target_include_directories(aruspix_tests PRIVATE src/im)
 
 target_link_libraries(aruspix_tests PRIVATE
     im::im
+    opencv::opencv
     doctest::doctest
 )
 

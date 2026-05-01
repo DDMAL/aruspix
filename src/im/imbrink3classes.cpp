@@ -16,8 +16,31 @@
 #include <im_process_ana.h>
 #include <im_process_pnt.h>
 
+#include <opencv2/core.hpp>
+#include <opencv2/imgproc.hpp>
+
 #define MAX_GREY 256
 static unsigned short const NON_CUMULATIVE = 0;
+
+namespace {
+inline cv::Mat as_mat_8u(const _imImage *image) {
+    return cv::Mat(image->height, image->width, CV_8UC1,
+                   const_cast<void *>(image->data[0]));
+}
+inline cv::Mat as_mat_8u(_imImage *image) {
+    return cv::Mat(image->height, image->width, CV_8UC1, image->data[0]);
+}
+void calc_gray_hist_256(const cv::Mat &src, unsigned long out[MAX_GREY]) {
+    int histSize = 256;
+    float range[] = {0.0f, 256.0f};
+    const float *histRange = range;
+    cv::Mat histMat;
+    cv::calcHist(&src, 1, nullptr, cv::Mat(), histMat, 1,
+                 &histSize, &histRange);
+    for (int i = 0; i < MAX_GREY; ++i)
+        out[i] = static_cast<unsigned long>(histMat.at<float>(i));
+}
+}  // namespace
 
 double sum( double *array, int size){
 	double sum = 0;
@@ -38,10 +61,8 @@ void cumSum( double *array, int size, double *dest ){
 
 int imProcessBrink2ClassesThreshold(const imImage* image, imImage* dest, bool white_is_255, int algorithm )
 {
-	imImage *src = imImageDuplicate(image);
-		
-	if ( !white_is_255 )
-		imProcessNegative( src, src );
+	cv::Mat src = as_mat_8u(image).clone();
+	if (!white_is_255) src = 255 - src;
 
 	int i;
 	unsigned long imhist[MAX_GREY];
@@ -50,8 +71,8 @@ int imProcessBrink2ClassesThreshold(const imImage* image, imImage* dest, bool wh
 	double mu_f[MAX_GREY], mu_b[MAX_GREY];
 	double KL_f_base[MAX_GREY], KL_b_base[MAX_GREY];
 	double KL_f[MAX_GREY], KL_b[MAX_GREY];
-	
-	imCalcGrayHistogram( src, imhist, NON_CUMULATIVE );    //Compute gray histogram
+
+	calc_gray_hist_256(src, imhist);
 	for ( i = 0; i< MAX_GREY; i++) h[i] = imhist[i];
 	
 	double N = sum(h, MAX_GREY);	
@@ -135,21 +156,21 @@ int imProcessBrink2ClassesThreshold(const imImage* image, imImage* dest, bool wh
 		} 
 	}
 	
-	imProcessThreshold( src, dest, T, true );
-	imProcessBitwiseNot( dest, dest );
-	
+	{
+		cv::Mat dst = as_mat_8u(dest);
+		cv::threshold(src, dst, T, 1, cv::THRESH_BINARY_INV);
+	}
+
 	return T;
 }
 
 
 
 int imProcessBrink3ClassesThreshold( const imImage* image, imImage* dest, bool white_is_255, int algorithm )
-{	
-	imImage *src = imImageDuplicate( image );
-	
-	if ( !white_is_255 )
-		imProcessNegative( src, src );
-		
+{
+	cv::Mat src = as_mat_8u(image).clone();
+	if (!white_is_255) src = 255 - src;
+
 	int G = 256; 
 	int i , j;
 	unsigned long imhist[MAX_GREY];
@@ -182,8 +203,8 @@ int imProcessBrink3ClassesThreshold( const imImage* image, imImage* dest, bool w
 		  the heap.
 	 */
 	
-	imCalcGrayHistogram( src, imhist, NON_CUMULATIVE );			//Compute gray histogram
-	for ( i = 0; i < MAX_GREY; i++ ) 
+	calc_gray_hist_256(src, imhist);
+	for ( i = 0; i < MAX_GREY; i++ )
 		h[i] = imhist[i];
 	
 	double N = sum( h, MAX_GREY );	
@@ -326,9 +347,11 @@ int imProcessBrink3ClassesThreshold( const imImage* image, imImage* dest, bool w
 		}
 	}
 	
-	imProcessThreshold( src, dest, T, true );
-	imProcessBitwiseNot( dest, dest );
-    
+	{
+		cv::Mat dst = as_mat_8u(dest);
+		cv::threshold(src, dst, T, 1, cv::THRESH_BINARY_INV);
+	}
+
     free2DArray( count_f, MAX_GREY );
     free2DArray( count_b, MAX_GREY );
     free2DArray( count_t, MAX_GREY );

@@ -30,6 +30,19 @@
 #include <im_process_ana.h>
 #include <im_process_pnt.h>
 
+#include <opencv2/core.hpp>
+#include <opencv2/imgproc.hpp>
+
+namespace {
+inline cv::Mat as_mat_8u(const _imImage *image) {
+    return cv::Mat(image->height, image->width, CV_8UC1,
+                   const_cast<void *>(image->data[0]));
+}
+inline cv::Mat as_mat_8u(_imImage *image) {
+    return cv::Mat(image->height, image->width, CV_8UC1, image->data[0]);
+}
+}  // namespace
+
 // define some global constants
 
 static unsigned short const MAX_GRAY = 256; // always used as a size variable, hence 255+1
@@ -113,29 +126,36 @@ void sumMinusDiagCumSum(double resultVec[MAX_GRAY], const double mat[MAX_GRAY][M
 
 int imProcessBrinkThreshold(const imImage* image, imImage* dest, bool white_is_255 )
 {
-	imImage *src = imImageDuplicate( image );
-     
-	if ( !white_is_255 )
-		imProcessNegative( src, src );
-	
+	cv::Mat src = as_mat_8u(image).clone();
+	if (!white_is_255) src = 255 - src;
+
 	int i, j;
 	int Topt = 0;
 
 	double p[MAX_GRAY];				// pmf (i.e. normalized histogram)
-	unsigned long histo[MAX_GRAY];			// from imlib: "Histogram is always 256 positions long"
+	unsigned long histo[MAX_GRAY];			// gray histogram (256 bins)
 
 	double m_f[MAX_GRAY];			// first foreground moment
 	double m_b[MAX_GRAY];			// first background moment
 
-	double tmp0[MAX_GRAY][MAX_GRAY];			
-	double tmp1[MAX_GRAY][MAX_GRAY];			
-	double tmp3[MAX_GRAY][MAX_GRAY];			
-	double tmp4[MAX_GRAY][MAX_GRAY];			
+	double tmp0[MAX_GRAY][MAX_GRAY];
+	double tmp1[MAX_GRAY][MAX_GRAY];
+	double tmp3[MAX_GRAY][MAX_GRAY];
+	double tmp4[MAX_GRAY][MAX_GRAY];
 
 	double tmpVec1[MAX_GRAY];
 	double tmpVec2[MAX_GRAY];
 
-	imCalcGrayHistogram(src, histo, NON_CUMULATIVE);  	// gray histogram computed
+	{
+		int histSize = 256;
+		float range[] = {0.0f, 256.0f};
+		const float *histRange = range;
+		cv::Mat histMat;
+		cv::calcHist(&src, 1, nullptr, cv::Mat(), histMat, 1,
+		             &histSize, &histRange);
+		for (int k = 0; k < MAX_GRAY; ++k)
+			histo[k] = static_cast<unsigned long>(histMat.at<float>(k));
+	}
 
 	double invHistSum = 1.0 / vecSum(histo, MAX_GRAY);	// inverse of the sum
 
@@ -204,8 +224,13 @@ int imProcessBrinkThreshold(const imImage* image, imImage* dest, bool white_is_2
 
 	Topt = calcTopt(m_f, m_b, tmpVec1);		// DO I NEED TO ADD ONE?
 
-	imProcessThreshold(src, dest, Topt, true);
-	imProcessBitwiseNot(dest, dest);		// HACK ALERT: HAVE TO FLIP BITS
+	{
+		// IM original did imProcessThreshold (>level → 1) followed by
+		// imProcessBitwiseNot to flip the result; THRESH_BINARY_INV
+		// produces the same post-flip values (≤level → 1, >level → 0).
+		cv::Mat dst = as_mat_8u(dest);
+		cv::threshold(src, dst, Topt, 1, cv::THRESH_BINARY_INV);
+	}
 
 	return Topt;
 }

@@ -26,6 +26,29 @@ using std::max;
 #include <im_binfile.h>
 #include <im_counter.h>
 
+#include <opencv2/core.hpp>
+#include <opencv2/imgproc.hpp>
+
+namespace {
+
+// Wrap an imImage's first plane as an in-place cv::Mat view (no copy).
+// Currently we only need the IM_BYTE / IM_USHORT cases used by the
+// thresholding algorithms below; extend as more functions are migrated.
+inline cv::Mat as_mat(_imImage *image) {
+    int cv_type = (image->data_type == IM_USHORT) ? CV_16UC1 : CV_8UC1;
+    return cv::Mat(image->height, image->width, cv_type, image->data[0]);
+}
+inline cv::Mat as_mat(const _imImage *image) {
+    int cv_type = (image->data_type == IM_USHORT) ? CV_16UC1 : CV_8UC1;
+    // cv::Mat's data pointer is non-const, but imgproc treats input
+    // mats as const where it matters. The const_cast here mirrors how
+    // OpenCV's own InputArray adapters work.
+    return cv::Mat(image->height, image->width, cv_type,
+                   const_cast<void *>(image->data[0]));
+}
+
+}  // namespace
+
 // Function taken from im_convolve_rank.cpp in imlib
 template <class T, class DT> 
 static int DoConvolveRankFunc(T *map, DT* new_map, int width, int height, int kw, int kh, DT (*func)(T* value, int count, int center), int counter)
@@ -638,7 +661,17 @@ static unsigned char Kittler(const imImage* src_image, double *mu_1, double *mu_
   double sigma_1_T, sigma_2_T;
   double J_T;
 
-  imCalcHistogram(src_image, h, 0, 0);
+  {
+    cv::Mat src = as_mat(src_image);
+    int histSize = 256;
+    float range[] = {0.0f, 256.0f};
+    const float *histRange = range;
+    cv::Mat histMat;
+    cv::calcHist(&src, 1, /*channels=*/nullptr, cv::Mat(),
+                 histMat, 1, &histSize, &histRange);
+    for (int i = 0; i < 256; ++i)
+      h[i] = static_cast<unsigned long>(histMat.at<float>(i));
+  }
 
   criterion = 1e10;
   threshold = 127;
@@ -870,58 +903,49 @@ int imProcessSauvolaThreshold( const imImage* image, imImage* dest, int region_s
 {
     if ((region_size < 1) || (region_size > min(image->width, image->height)))
 		return 0;
-	
-	imImage *src = imImageDuplicate( image );
-     
-	if ( !white_is_255 )
-		imProcessNegative( src, src );
 
-	float* means = (float*)malloc( src->height * src->width * sizeof( float ) );
-	memset( means, 0, src->height * src->width * sizeof( float ) );
-	float* std_dev = (float*)malloc( src->height * src->width * sizeof( float ) );
-	memset( std_dev, 0, src->height * src->width * sizeof( float ) );
-	
-	int counter = imCounterBegin("Sauvola threshold");
-	imCounterTotal(counter, src->size + src->height, "Sauvola threshold");
+	// Local mean / stddev via O(1)-per-pixel box filters (the previous
+	// IM-based implementation called imProcessCrop + imCalcImageStatistics
+	// once per output pixel — orders of magnitude slower).
+	cv::Mat src = as_mat(image).clone();
+	if (!white_is_255) src = 255 - src;
+	cv::Mat src32f;
+	src.convertTo(src32f, CV_32F);
 
-	int ret = 0;
-    // Compute regional statistics.
-    ret = imMeanAndStdDevFilter(src, region_size, means, std_dev, counter );
+	cv::Size kernel(region_size, region_size);
+	cv::Mat means, mean_of_sq, variance, stddev;
+	cv::boxFilter(src32f, means, CV_32F, kernel,
+	              cv::Point(-1, -1), /*normalize=*/true,
+	              cv::BORDER_REPLICATE);
+	cv::sqrBoxFilter(src32f, mean_of_sq, CV_32F, kernel,
+	                 cv::Point(-1, -1), /*normalize=*/true,
+	                 cv::BORDER_REPLICATE);
+	variance = mean_of_sq - means.mul(means);
+	cv::max(variance, 0.0, variance);
+	cv::sqrt(variance, stddev);
 
-	imbyte* src_data = (imbyte*)src->data[0];
-	imbyte* dest_data = (imbyte*)dest->data[0];
-	
-	int offset, pixel_value;
-	float mean, deviation, adjusted_deviation, threshold;
-
-    for (int y = 0; y < src->height; y++) {
-		if ( !ret ) // aborted or error
-			break; 
-        for (int x = 0; x < src->width; x++) {
-			offset = y * src->width + x;
-			pixel_value = src_data[ offset ];
-            // Check global thresholds and then threshold adaptively.
-            if (pixel_value < lower_bound) {
-                dest_data[ offset ] = 1; // black, 1 in the destination image
-            } else if (pixel_value >= upper_bound) {
-                dest_data[ offset ] = 0; // white
-            } else {
-                mean = means[ offset ];
-                deviation = std_dev[ offset ];
-                adjusted_deviation
-                    = deviation / (float)dynamic_range - 1.0;
-                threshold
-                    = mean + (1.0 + sensitivity * adjusted_deviation);
-                dest_data[ offset ] = (pixel_value > threshold) ? 0 : 1;
-            }
-        }
-		ret = imCounterInc(counter);
-    }
-	imImageDestroy( src );
-    free(means);
-    free(std_dev);
-	imCounterEnd( counter );
-	return ret;
+	cv::Mat dst = as_mat(dest);
+	for (int y = 0; y < src.rows; ++y) {
+		const uchar *src_row = src.ptr<uchar>(y);
+		const float *mean_row = means.ptr<float>(y);
+		const float *std_row = stddev.ptr<float>(y);
+		uchar *dst_row = dst.ptr<uchar>(y);
+		for (int x = 0; x < src.cols; ++x) {
+			int pixel_value = src_row[x];
+			if (pixel_value < lower_bound) {
+				dst_row[x] = 1;  // black
+			} else if (pixel_value >= upper_bound) {
+				dst_row[x] = 0;  // white
+			} else {
+				float adjusted_deviation =
+				    std_row[x] / (float)dynamic_range - 1.0f;
+				float threshold =
+				    mean_row[x] + (1.0f + sensitivity * adjusted_deviation);
+				dst_row[x] = (pixel_value > threshold) ? 0 : 1;
+			}
+		}
+	}
+	return 1;
 }
 
 int imProcessPuginThreshold(const imImage* image, imImage* dest, bool white_is_255 )
@@ -980,7 +1004,12 @@ int imProcessKittlerThreshold(const imImage* image, imImage* NewImage )
 {
   double dummy_1, dummy_2, dummy_3;
   int level = Kittler(image , &dummy_1, &dummy_2, &dummy_3);
-  imProcessThreshold(image, NewImage, level, 1);
+  cv::Mat src = as_mat(image);
+  cv::Mat dst = as_mat(NewImage);
+  // imProcessThreshold semantics: dst = (src <= level) ? 0 : 1.
+  // cv::threshold with THRESH_BINARY: dst = (src > thresh) ? maxval : 0.
+  // Same behavior with thresh=level, maxval=1.
+  cv::threshold(src, dst, level, 1, cv::THRESH_BINARY);
   return level;
 }
 
