@@ -10,6 +10,7 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 find_package(im REQUIRED)
 find_package(wxWidgets REQUIRED)
 find_package(LibXml2 REQUIRED)
+find_package(doctest REQUIRED)
 
 set(aruspixSources
     src/app/axabout_wdr.cpp
@@ -198,3 +199,42 @@ elseif(WIN32)
         COMMAND_EXPAND_LISTS
     )
 endif()
+
+# ---------------------------------------------------------------------------
+# Tests
+#
+# A separate target that exercises the wx-free leaf functions in src/im/
+# (imext.cpp, imbrink.cpp, imbrink3classes.cpp, imkmeans.cpp). These pin
+# down current IM behavior so we can swap IM for OpenCV without regressions.
+# The wx-coupled wrapper classes (ImPage, ImStaff, ImRegister, ImOperator)
+# are intentionally not covered here — they need real-image fixtures and
+# belong in an integration-test target.
+# ---------------------------------------------------------------------------
+enable_testing()
+
+add_executable(aruspix_tests
+    src/im/imext.cpp
+    src/im/imbrink.cpp
+    src/im/imbrink3classes.cpp
+    src/im/imkmeans.cpp
+
+    tests/test_main.cpp
+    tests/test_imext_helpers.cpp
+    tests/test_imext_image.cpp
+    tests/test_imext_threshold.cpp
+    tests/test_imkmeans.cpp
+)
+
+target_include_directories(aruspix_tests PRIVATE src/im)
+
+target_link_libraries(aruspix_tests PRIVATE
+    im::im
+    doctest::doctest
+)
+
+if(WIN32)
+    # Same libtiff/libpng duplicate-symbol issue as the main exe.
+    target_link_options(aruspix_tests PRIVATE /FORCE:MULTIPLE /IGNORE:4006 /IGNORE:4088)
+endif()
+
+add_test(NAME aruspix_tests COMMAND aruspix_tests)

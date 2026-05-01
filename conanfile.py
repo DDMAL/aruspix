@@ -14,6 +14,7 @@ class AruspixConan(ConanFile):
         self.requires("im/3.15")
         self.requires("wxwidgets/[~3.2]")
         self.requires("libxml2/[>=2.10 <3]")
+        self.requires("doctest/[~2.4]")
 
     def configure(self):
         # IM's upstream Windows prebuilt im_fftw3.lib references
