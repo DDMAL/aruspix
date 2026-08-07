@@ -17,6 +17,7 @@ using std::max;
 
 #include "imext.h"
 #include "imkmeans.h"
+#include "thresholds.h"
 
 #include <im.h>
 #include <im_image.h>
@@ -898,16 +899,21 @@ int imMeanAndStdDevFilter(const imImage *image, int region_size, float *means, f
 	return 1;
 }
 
-int imProcessSauvolaThreshold( const imImage* image, imImage* dest, int region_size,
-	float sensitivity, int dynamic_range, int lower_bound, int upper_bound, bool white_is_255 )
+namespace ax {
+
+int sauvola_threshold(const cv::Mat& src_in, cv::Mat& dst, int region_size,
+                      float sensitivity, int dynamic_range,
+                      int lower_bound, int upper_bound, bool white_is_255)
 {
-    if ((region_size < 1) || (region_size > min(image->width, image->height)))
+	if ((region_size < 1) || (region_size > std::min(src_in.cols, src_in.rows)))
+		return 0;
+	if (src_in.type() != CV_8UC1)
 		return 0;
 
 	// Local mean / stddev via O(1)-per-pixel box filters (the previous
 	// IM-based implementation called imProcessCrop + imCalcImageStatistics
 	// once per output pixel — orders of magnitude slower).
-	cv::Mat src = as_mat(image).clone();
+	cv::Mat src = src_in.clone();
 	if (!white_is_255) src = 255 - src;
 	cv::Mat src32f;
 	src.convertTo(src32f, CV_32F);
@@ -924,7 +930,7 @@ int imProcessSauvolaThreshold( const imImage* image, imImage* dest, int region_s
 	cv::max(variance, 0.0, variance);
 	cv::sqrt(variance, stddev);
 
-	cv::Mat dst = as_mat(dest);
+	dst.create(src.rows, src.cols, CV_8UC1);
 	for (int y = 0; y < src.rows; ++y) {
 		const uchar *src_row = src.ptr<uchar>(y);
 		const float *mean_row = means.ptr<float>(y);
@@ -946,6 +952,17 @@ int imProcessSauvolaThreshold( const imImage* image, imImage* dest, int region_s
 		}
 	}
 	return 1;
+}
+
+}  // namespace ax
+
+int imProcessSauvolaThreshold( const imImage* image, imImage* dest, int region_size,
+	float sensitivity, int dynamic_range, int lower_bound, int upper_bound, bool white_is_255 )
+{
+	cv::Mat dst = as_mat(dest);
+	return ax::sauvola_threshold(as_mat(image), dst, region_size, sensitivity,
+	                             dynamic_range, lower_bound, upper_bound,
+	                             white_is_255);
 }
 
 int imProcessPuginThreshold(const imImage* image, imImage* dest, bool white_is_255 )

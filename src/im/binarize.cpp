@@ -1,14 +1,10 @@
 #include "binarize.h"
 
 #include <algorithm>
-#include <cstring>
 
 #include <opencv2/imgproc.hpp>
 
-#include <im.h>
-#include <im_image.h>
-
-#include "imext.h"
+#include "thresholds.h"
 
 namespace ax {
 
@@ -19,58 +15,31 @@ namespace {
 // computed from staff-line geometry but capped.
 constexpr int kMaxSmallElement = 100;
 
-// Run the chosen threshold method. The migrated im* threshold
-// implementations already use OpenCV internally, but they keep the
-// imImage* surface for compatibility with the rest of the codebase
-// and the doctest suite. We allocate a pair of imImages, copy the
-// cv::Mat data through them, and copy the result back. Cheap on
-// page-sized images and avoids duplicating the algorithms here.
+// Run the chosen threshold method. Foreground is 1, background is 0.
+// Input is assumed dark-foreground / bright-background so all methods
+// are invoked with white_is_255=false.
 bool run_threshold(const cv::Mat &src8u, cv::Mat &dst_bin,
                    BinarizationMethod method, int sauvola_region) {
-    imImage *src_im = imImageCreate(src8u.cols, src8u.rows, IM_GRAY, IM_BYTE);
-    imImage *dst_im = imImageCreate(src8u.cols, src8u.rows, IM_BINARY, IM_BYTE);
-    if (!src_im || !dst_im) {
-        if (src_im) imImageDestroy(src_im);
-        if (dst_im) imImageDestroy(dst_im);
-        return false;
-    }
-    std::memcpy(src_im->data[0], src8u.data, src_im->count);
-
-    bool ok = true;
     switch (method) {
         case BinarizationMethod::Sauvola:
-            ok = imProcessSauvolaThreshold(src_im, dst_im, sauvola_region,
-                                           0.5f, 128, 20, 150,
-                                           /*white_is_255=*/false) != 0;
-            break;
+            return ax::sauvola_threshold(src8u, dst_bin, sauvola_region,
+                                         0.5f, 128, 20, 150,
+                                         /*white_is_255=*/false) != 0;
         case BinarizationMethod::Brink2Classes:
-            imProcessBrink2ClassesThreshold(src_im, dst_im,
-                                            /*white_is_255=*/false,
-                                            BRINK_AND_PENDOCK);
-            break;
+            ax::brink2_classes_threshold(src8u, dst_bin,
+                                         /*white_is_255=*/false,
+                                         BRINK_AND_PENDOCK);
+            return true;
         case BinarizationMethod::Brink3Classes:
-            imProcessBrink3ClassesThreshold(src_im, dst_im,
-                                            /*white_is_255=*/false,
-                                            BRINK_AND_PENDOCK);
-            break;
-        case BinarizationMethod::FixedAt127: {
-            // Fallback: cv::threshold with THRESH_BINARY_INV gives the
-            // same convention as the rest (foreground=1).
-            cv::Mat src_view(src_im->height, src_im->width, CV_8UC1,
-                             src_im->data[0]);
-            cv::Mat dst_view(dst_im->height, dst_im->width, CV_8UC1,
-                             dst_im->data[0]);
-            cv::threshold(src_view, dst_view, 127, 1, cv::THRESH_BINARY_INV);
-            break;
-        }
+            ax::brink3_classes_threshold(src8u, dst_bin,
+                                         /*white_is_255=*/false,
+                                         BRINK_AND_PENDOCK);
+            return true;
+        case BinarizationMethod::FixedAt127:
+            cv::threshold(src8u, dst_bin, 127, 1, cv::THRESH_BINARY_INV);
+            return true;
     }
-
-    dst_bin.create(src8u.rows, src8u.cols, CV_8UC1);
-    std::memcpy(dst_bin.data, dst_im->data[0], dst_im->count);
-
-    imImageDestroy(src_im);
-    imImageDestroy(dst_im);
-    return ok;
+    return false;
 }
 
 }  // namespace

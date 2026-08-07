@@ -8,14 +8,13 @@
 #include <stdbool.h>
 #include <stdlib.h>
 
+// BRINK_AND_PENDOCK / LI_AND_LEE live here so existing callers of the
+// imProcessBrink*Threshold functions keep compiling unchanged.
+#include "thresholds.h"
+
 #if	defined(__cplusplus)
 extern "C" {
 #endif
-
-enum{
-	BRINK_AND_PENDOCK = 0,
-	LI_AND_LEE	
-};	
 
 struct _imImage;
 

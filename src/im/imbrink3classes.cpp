@@ -8,6 +8,7 @@
  */
 
 #include "imext.h"
+#include "thresholds.h"
 #include <math.h>
 
 // IMLIB
@@ -59,9 +60,13 @@ void cumSum( double *array, int size, double *dest ){
 		dest[i] = array[i] + dest[i-1];
 }
 
-int imProcessBrink2ClassesThreshold(const imImage* image, imImage* dest, bool white_is_255, int algorithm )
+namespace ax {
+
+int brink2_classes_threshold(const cv::Mat& src_in, cv::Mat& dst,
+                             bool white_is_255, int algorithm)
 {
-	cv::Mat src = as_mat_8u(image).clone();
+	if (src_in.type() != CV_8UC1) return 0;
+	cv::Mat src = src_in.clone();
 	if (!white_is_255) src = 255 - src;
 
 	int i;
@@ -156,22 +161,20 @@ int imProcessBrink2ClassesThreshold(const imImage* image, imImage* dest, bool wh
 		} 
 	}
 	
-	{
-		cv::Mat dst = as_mat_8u(dest);
-		cv::threshold(src, dst, T, 1, cv::THRESH_BINARY_INV);
-	}
+	dst.create(src.rows, src.cols, CV_8UC1);
+	cv::threshold(src, dst, T, 1, cv::THRESH_BINARY_INV);
 
 	return T;
 }
 
-
-
-int imProcessBrink3ClassesThreshold( const imImage* image, imImage* dest, bool white_is_255, int algorithm )
+int brink3_classes_threshold(const cv::Mat& src_in, cv::Mat& dst,
+                             bool white_is_255, int algorithm)
 {
-	cv::Mat src = as_mat_8u(image).clone();
+	if (src_in.type() != CV_8UC1) return 0;
+	cv::Mat src = src_in.clone();
 	if (!white_is_255) src = 255 - src;
 
-	int G = 256; 
+	int G = 256;
 	int i , j;
 	unsigned long imhist[MAX_GREY];
 	double h[MAX_GREY]; 
@@ -347,10 +350,8 @@ int imProcessBrink3ClassesThreshold( const imImage* image, imImage* dest, bool w
 		}
 	}
 	
-	{
-		cv::Mat dst = as_mat_8u(dest);
-		cv::threshold(src, dst, T, 1, cv::THRESH_BINARY_INV);
-	}
+	dst.create(src.rows, src.cols, CV_8UC1);
+	cv::threshold(src, dst, T, 1, cv::THRESH_BINARY_INV);
 
     free2DArray( count_f, MAX_GREY );
     free2DArray( count_b, MAX_GREY );
@@ -364,6 +365,24 @@ int imProcessBrink3ClassesThreshold( const imImage* image, imImage* dest, bool w
     free2DArray( KL_f, MAX_GREY );
     free2DArray( KL_b, MAX_GREY );
     free2DArray( KL_t, MAX_GREY );
-	
+
 	return T;
+}
+
+}  // namespace ax
+
+int imProcessBrink2ClassesThreshold(const imImage* image, imImage* dest,
+                                    bool white_is_255, int algorithm)
+{
+	cv::Mat dst = as_mat_8u(dest);
+	return ax::brink2_classes_threshold(as_mat_8u(image), dst,
+	                                    white_is_255, algorithm);
+}
+
+int imProcessBrink3ClassesThreshold(const imImage* image, imImage* dest,
+                                    bool white_is_255, int algorithm)
+{
+	cv::Mat dst = as_mat_8u(dest);
+	return ax::brink3_classes_threshold(as_mat_8u(image), dst,
+	                                    white_is_255, algorithm);
 }
