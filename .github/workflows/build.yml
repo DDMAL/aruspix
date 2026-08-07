@@ -1,0 +1,161 @@
+name: Build
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+  workflow_dispatch:
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      # uuid is the only system library Aruspix links directly that Conan
+      # doesn't see. Everything else (GTK, X11, xcb, OpenGL, ...) is
+      # listed by Conan's wxwidgets/xorg/egl/opengl recipes; we let Conan
+      # apt-install those itself further down via the
+      # tools.system.package_manager:mode=install conf.
+      - name: Install system dependencies (Linux)
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y uuid-dev
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install Conan
+        run: pip install --upgrade "conan>=2.0,<3"
+
+      # Cache Conan downloads + binary packages. Key on the recipe files
+      # so a change to the IM recipe or project requirements triggers a
+      # rebuild; everyday source edits reuse cached binaries.
+      #
+      # Restore the cache BEFORE running `conan profile detect` and
+      # writing global.conf, so the restore can't clobber a fresh profile
+      # that matches this runner or the download-urls setting below.
+      - name: Cache Conan packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.conan2
+          key: conan-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('conanfile.py', 'recipes/**/conanfile.py') }}
+          restore-keys: |
+            conan-${{ runner.os }}-${{ runner.arch }}-
+
+      - name: Detect Conan profile
+        run: conan profile detect --force
+
+      # core.sources:download_urls falls back to Conan Center's backup
+      # source mirror when a recipe's origin URL is unreachable. Matters
+      # for chronically flaky upstreams like tukaani.org (xz). The
+      # "origin" sentinel means "the URL declared in the recipe" — we
+      # try the mirror first, then origin as a final fallback.
+      #
+      # core.* config has to live in global.conf; it can't be passed as
+      # `-c core.sources:...` on the command line (Conan rejects it).
+      # Idempotent append (grep -qxF) so re-runs on a warm cache don't
+      # accumulate duplicate lines.
+      - name: Configure Conan backup sources
+        shell: bash
+        run: |
+          mkdir -p ~/.conan2
+          LINE='core.sources:download_urls=["https://c3i.jfrog.io/artifactory/conan-center-backup-sources/", "origin"]'
+          touch ~/.conan2/global.conf
+          grep -qxF "$LINE" ~/.conan2/global.conf || echo "$LINE" >> ~/.conan2/global.conf
+
+      - name: Export local IM recipe
+        run: conan export recipes/im
+
+      # MSVC needs vcvars sourced before cl.exe is callable; the action
+      # below makes it available to subsequent steps.
+      - name: Set up MSVC (Windows)
+        if: runner.os == 'Windows'
+        uses: ilammy/msvc-dev-cmd@v1
+
+      - name: Compute build parallelism
+        id: jobs
+        # 2x the logical CPU count, applied to both Conan's tools.build:jobs
+        # (controls compiles inside dependency builds) and to cmake --build -j
+        # for our own targets. getconf works on Linux/macOS; Windows runners
+        # have NUMBER_OF_PROCESSORS in the environment.
+        run: |
+          if command -v getconf >/dev/null 2>&1; then
+            cores=$(getconf _NPROCESSORS_ONLN)
+          else
+            cores=${NUMBER_OF_PROCESSORS:-4}
+          fi
+          echo "n=$((cores * 2))" >> "$GITHUB_OUTPUT"
+        shell: bash
+
+      - name: Install dependencies
+        # On Linux, several Conan recipes (xorg, egl, opengl, ...) expect
+        # apt-installed system packages. Switching the package manager
+        # mode from `check` to `install` lets Conan run apt-get itself
+        # so we don't have to keep our own list in sync with the recipes.
+        # Force Ninja everywhere so the same `conan-release` preset name
+        # works on all platforms (Conan defaults to the Visual Studio
+        # multi-config generator on Windows otherwise).
+        run: |
+          if [ "$RUNNER_OS" = "Linux" ]; then
+            conan install . --build=missing \
+              -c tools.build:jobs=${{ steps.jobs.outputs.n }} \
+              -c tools.cmake.cmaketoolchain:generator=Ninja \
+              -c tools.system.package_manager:mode=install \
+              -c tools.system.package_manager:sudo=True
+          else
+            conan install . --build=missing \
+              -c tools.build:jobs=${{ steps.jobs.outputs.n }} \
+              -c tools.cmake.cmaketoolchain:generator=Ninja
+          fi
+        shell: bash
+
+      # On Windows, source Conan's generated conanbuild.bat before cmake.
+      # It applies vcvars for the arch Conan actually built the deps with,
+      # so an ambient x86 shell can't quietly downgrade the aruspix target
+      # to Win32 and produce an x86/x64 link mismatch.
+      - name: Configure
+        shell: bash
+        run: |
+          if [ "$RUNNER_OS" = "Windows" ]; then
+            cmd //c "build\\Release\\generators\\conanbuild.bat && cmake --preset conan-release"
+          else
+            cmake --preset conan-release
+          fi
+
+      - name: Build
+        shell: bash
+        run: |
+          if [ "$RUNNER_OS" = "Windows" ]; then
+            cmd //c "build\\Release\\generators\\conanbuild.bat && cmake --build build/Release -j ${{ steps.jobs.outputs.n }}"
+          else
+            cmake --build build/Release -j ${{ steps.jobs.outputs.n }}
+          fi
+
+      - name: Inspect binary
+        # Just confirm the architecture/format. Don't try to run it: as
+        # a wxWidgets GUI app it hangs on the headless runner waiting
+        # for a display.
+        shell: bash
+        run: |
+          if [ "$RUNNER_OS" = "Windows" ]; then
+            ls -lh build/Release/aruspix.exe
+          else
+            file build/Release/aruspix
+          fi
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: aruspix-${{ runner.os }}-${{ runner.arch }}
+          path: build/Release/aruspix*
+          if-no-files-found: error
+          retention-days: 14

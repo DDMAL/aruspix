@@ -497,7 +497,7 @@ void MusToolPanel::OnNote( wxCommandEvent &event )
  
     int r0 = ID_MS_BT_R0;
     int r6 = ID_MS_BT_R6;
-    if ( in ( event.GetId(), r0, r6 ) )
+    if ( INRANGE( event.GetId(), r0, r6 ) )
         kevent.m_controlDown = true;
     kevent.m_keyCode = value;
     SendEvent( kevent );
@@ -520,7 +520,7 @@ void MusToolPanel::OnNeume( wxCommandEvent &event )
     }
     int n0 = ID_NU_BT_N0;
     int n5 = ID_NU_BT_N5;
-    if (in(event.GetId(), n0, n5)) {
+    if (INRANGE(event.GetId(), n0, n5)) {
         kevent.m_controlDown = true;
     }
     kevent.m_keyCode = value;

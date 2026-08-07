@@ -413,7 +413,8 @@ void ImOperator::PruneElementsZone( _imImage *image, int min_threshold, int max_
     if (!region_image)
         return;
 
-    int region_count = imAnalyzeFindRegions(image, region_image, 4, 1);
+    int region_count = 0;
+    imAnalyzeFindRegions(image, region_image, 4, 1, &region_count);
     if (region_count)
     {
         if  ( type == IM_PRUNE_CLEAR_HEIGHT ) // min height
@@ -473,7 +474,7 @@ void ImOperator::MoveElements( _imImage *src, _imImage *dest, int boxes[], int c
             return;
         }
         imProcessCrop( src, box_m1, mx1, my1); // copie de l'image d'origine
-        imSetData( box_m1, box, mmx1, mmy1 );  // zone blanche à l'interieure des marges
+        imSetData( box_m1, box, mmx1, mmy1 );  // zone blanche ï¿½ l'interieure des marges
 
         // box avec marges d'effacement + 1 pixels supplementaire de marge -> les zones ne doivent pas
         // toucher le bord pour Prune

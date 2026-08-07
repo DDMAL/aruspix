@@ -277,7 +277,7 @@ void MusRC::DrawNote ( MusDC *dc, MusLayerElement *element, MusLayer *layer, Mus
  	}
 	else if (note->m_dur==DUR_1)
 	{	
-        if (in (note->m_headshape, LOSANGEVIDE, OPTIONLIBRE))
+        if (INRANGE(note->m_headshape, LOSANGEVIDE, OPTIONLIBRE))
 			fontNo = LEIPZIG_OFFSET_NOTE_HEAD+note->m_headshape;
 		else if (note->m_colored) // && !note->m_ligObliqua) // in WG, use of obliq for coloration? 
 			fontNo = LEIPZIG_HEAD_WHOLE_FILLED;
@@ -289,7 +289,7 @@ void MusRC::DrawNote ( MusDC *dc, MusLayerElement *element, MusLayer *layer, Mus
 	}
 	else
 	{	
-        if (in (note->m_headshape, LOSANGEVIDE, OPTIONLIBRE))
+        if (INRANGE(note->m_headshape, LOSANGEVIDE, OPTIONLIBRE))
 			fontNo = LEIPZIG_OFFSET_NOTE_HEAD+note->m_headshape;
 
 		else if (note->m_colored || formval == DUR_2)
@@ -610,12 +610,12 @@ void MusRC::DrawLedgerLines( MusDC *dc, int y_n, int y_p, int xn, unsigned int s
 {
 	int yn, ynt, yh, yb, test, v_decal = m_doc->m_interl[staffSize];
 	int dist, xng, xnd;
-	register int i;
+	int i;
 
 
 	yh = y_p + m_doc->m_halfInterl[staffSize]; yb = y_p- m_doc->m_staffSize[staffSize]- m_doc->m_halfInterl[staffSize];
 
-	if (!in(y_n,yh,yb))                           // note hors-portee?
+	if (!INRANGE(y_n,yh,yb))                           // note hors-portee?
 	{
 		xng = xn - smaller;
 		xnd = xn + smaller;

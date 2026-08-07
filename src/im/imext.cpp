@@ -638,7 +638,7 @@ static unsigned char Kittler(const imImage* src_image, double *mu_1, double *mu_
   double sigma_1_T, sigma_2_T;
   double J_T;
 
-  imCalcHistogram((imbyte*)src_image->data[0], src_image->count, h, 0);
+  imCalcHistogram(src_image, h, 0, 0);
 
   criterion = 1e10;
   threshold = 127;

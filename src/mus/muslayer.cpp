@@ -704,9 +704,9 @@ bool MusLayer::CopyToLayer( ArrayPtrVoid params )
     // param 0: the MusLayer we need to copy to
 	MusLayer *destinationLayer = (MusLayer*)params[0]; 
     // param 1: the uuid of the start element (if any)
-    uuid_t *start = (uuid_t*)params[1];
+    ax_uuid_t *start = (ax_uuid_t*)params[1];
     // param 2: the uuid of the end element (if any)
-    uuid_t *end = (uuid_t*)params[2];
+    ax_uuid_t *end = (ax_uuid_t*)params[2];
     // param 3: we have a start element and have started
     bool *has_started = (bool*)params[3];
     // param 4: we have an end element and have ended

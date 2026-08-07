@@ -133,7 +133,7 @@ void CmpMusController::LoadSource( MusLayerElement *element )
     
     MusObject *viewElement = NULL;
     ArrayPtrVoid params;
-    uuid_t uuid;
+    ax_uuid_t uuid;
     uuid_parse( id.c_str(), uuid );
 	params.push_back( uuid );
     params.push_back( &viewElement );

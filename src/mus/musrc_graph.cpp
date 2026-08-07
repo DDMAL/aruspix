@@ -137,7 +137,7 @@ int MusRC::hGrosseligne ( MusDC *dc, int x1, int y1, int x2, int y2, int decal)
 int MusRC::DrawDot ( MusDC *dc, int x, int b, int decal, MusStaff *staff )
 {	int y = b + staff->m_y_drawing;
 
-	if (decal > 600 || in (y, (int)staff->m_y_drawing - m_doc->m_staffSize[staff->staffSize], 
+	if (decal > 600 || INRANGE(y, (int)staff->m_y_drawing - m_doc->m_staffSize[staff->staffSize],
 		(int)staff->m_y_drawing - m_doc->m_staffSize[staff->staffSize]*2))
 	{	decal += m_doc->m_halfInterl[staff->staffSize];
 		if (decal > 600)
@@ -221,7 +221,7 @@ void MusRC::DrawLeipzigFont ( MusDC *dc, int x, int y, unsigned char c,
 	if (staff->notAnc && (unsigned char)c >= LEIPZIG_OFFSET_IN_FONT)
 	{	
 		c+= LEIPZIG_OFFSET_MENSURAL;
-		if (dimin && in (c, 227, 229))	// les trois clefs
+		if (dimin && INRANGE(c, 227, 229))	// les trois clefs
 		{	
 			c+= 14;	// les cles d===e tablature
             if (dc->CorrectMusicAscent()) {
@@ -229,7 +229,7 @@ void MusRC::DrawLeipzigFont ( MusDC *dc, int x, int y, unsigned char c,
             }
 		}
 	}
-	if (!staff->notAnc || !in (c, 241, 243))	// tout sauf clefs de tablature
+	if (!staff->notAnc || !INRANGE(c, 241, 243))	// tout sauf clefs de tablature
 	{
         dc->SetFont( &m_doc->m_activeFonts[ staffSize ][ dimin ] );
 	}

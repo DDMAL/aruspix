@@ -14,7 +14,7 @@
     #include "wx/wx.h"
 #endif
 
-#include <uuid/uuid.h>
+#include "aruspix_uuid.h"
 #include <typeinfo>
 #include <vector>
 #include <list>
@@ -46,9 +46,9 @@ public:
     virtual bool operator==( MusObject& other );
     
     int GetId() { return 0; }; // used in SVG - TODO
-    uuid_t* GetUuid() { return &m_uuid; };
+    ax_uuid_t* GetUuid() { return &m_uuid; };
     wxString GetUuidStr();
-    void SetUuid( uuid_t uuid );
+    void SetUuid( ax_uuid_t uuid );
     void ResetUuid( );
     
     /**
@@ -149,7 +149,7 @@ public:
     wxString m_sameAs;
     
 protected:
-    uuid_t m_uuid;
+    ax_uuid_t m_uuid;
 
 private:
     /**

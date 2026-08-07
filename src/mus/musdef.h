@@ -6,7 +6,7 @@
 //----------------------------------------------------------------------------
 
 #include <algorithm>
-#define in(x,a,b) (((x) >= std::min((a),(b))) && ((x) <= std::max((a),(b)))) 
+#define INRANGE(x,a,b) (((x) >= std::min((a),(b))) && ((x) <= std::max((a),(b))))
 
 // Is this score for Mensural, neumes, or CMN
 enum MusNotationMode {
@@ -71,7 +71,7 @@ enum MusEditorMode {
 // TODO // ax2
 
 // RESTS
-#define VALSilSpec 15	/* val indiquant silence sp‚cial avec chiffre */ // ???
+#define VALSilSpec 15	/* val indiquant silence spï¿½cial avec chiffre */ // ???
 
 // pour le flag tetenote
 #define LOSANGEVIDE 1

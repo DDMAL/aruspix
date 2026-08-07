@@ -17,7 +17,7 @@
 #include "muslayer.h"
 #include "musapp.h"
 
-#include <uuid/uuid.h>
+#include "aruspix_uuid.h"
 
 // TINYXML
 #if defined (__WXMSW__)
@@ -232,7 +232,7 @@ private:
     
 	//
     void SetMeiUuid( TiXmlElement *element, MusObject *object );
-    void StrToUuid(wxString uuid, uuid_t dest);
+    void StrToUuid(wxString uuid, ax_uuid_t dest);
 	int StrToDur(wxString dur);
 	int StrToOct(wxString oct);
 	int StrToPitch(wxString pitch ); 

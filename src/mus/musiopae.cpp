@@ -29,7 +29,7 @@
 //#include "app/axapp.h"
 
 #include <vector>
-#include <regex.h>
+#include <regex>
 
 using std::vector;
 
@@ -82,7 +82,7 @@ bool MusPaeInput::ImportFile()
 {
     
     std::ifstream infile;
-    infile.open(m_filename);
+    infile.open(static_cast<const char*>(m_filename.mb_str()));
     
     convertPlainAndEasyToKern(infile, std::cout);
     
@@ -471,10 +471,8 @@ int MusPaeInput::getTupletFermata(const char* incipit, MeasureObject *measure, N
     int length = strlen(incipit);
     
     // detect if it is a fermata or a tuplet
-    regex_t re;
-    regcomp(&re, "^([^)]*[ABCDEFG-][^)]*[ABCDEFG-][^)]*)", REG_EXTENDED);
-    int is_tuplet = regexec(&re, incipit + i, 0, NULL, 0);
-    regfree(&re);
+    std::regex re_tuplet("^([^)]*[ABCDEFG-][^)]*[ABCDEFG-][^)]*)", std::regex::extended);
+    int is_tuplet = std::regex_search(incipit + i, re_tuplet) ? 0 : 1;
     
     if (is_tuplet == 0) {
         int t = i;
@@ -670,15 +668,12 @@ int MusPaeInput::getTimeInfo( const char* incipit, MeasureObject *measure, int i
     strncpy( timesig_str, incipit + index, i - index); 
     
     std::ostringstream sout;
-    regex_t re;
-    
+
     // check if format X/X or one digit only
-    regcomp(&re, "^[0-9]*/[0-9]*$", REG_EXTENDED);
-    int is_standard = regexec(&re, timesig_str, 0, NULL, 0);
-    regfree(&re);
-    regcomp(&re, "^[0-9]*$", REG_EXTENDED);
-    int is_one_number = regexec(&re, timesig_str, 0, NULL, 0);
-    regfree(&re);
+    std::regex re_standard("^[0-9]*/[0-9]*$", std::regex::extended);
+    int is_standard = std::regex_match(timesig_str, re_standard) ? 0 : 1;
+    std::regex re_one("^[0-9]*$", std::regex::extended);
+    int is_one_number = std::regex_match(timesig_str, re_one) ? 0 : 1;
     
     if ( is_standard == 0) {
         char buf_str[1024];
@@ -812,19 +807,13 @@ int MusPaeInput::getWholeRest( const char *incipit, int *wholerest, int index ) 
 
 int MusPaeInput::getBarline( const char *incipit, wxString *output, int index ) {
     
-    regex_t re;
-    regcomp(&re, "^://:", REG_EXTENDED);
-    int is_rep_db_rep = regexec(&re, incipit + index, 0, NULL, 0);
-    regfree(&re);
-    regcomp(&re, "^://", REG_EXTENDED);
-    int is_rep_db = regexec(&re, incipit + index, 0, NULL, 0);
-    regfree(&re);
-    regcomp(&re, "^//:", REG_EXTENDED);
-    int is_db_rep = regexec(&re, incipit + index, 0, NULL, 0);
-    regfree(&re);
-    regcomp(&re, "^//", REG_EXTENDED);
-    int is_db = regexec(&re, incipit + index, 0, NULL, 0);
-    regfree(&re);
+    auto match = [&](const char* pat) {
+        return std::regex_search(incipit + index, std::regex(pat, std::regex::extended)) ? 0 : 1;
+    };
+    int is_rep_db_rep = match("^://:");
+    int is_rep_db    = match("^://");
+    int is_db_rep    = match("^//:");
+    int is_db        = match("^//");
     
     int i = 0; // number of characters
     if (is_rep_db_rep == 0) {
@@ -925,8 +914,7 @@ int MusPaeInput::getKeyInfo(const char *incipit, MeasureObject *measure, int ind
 //
 
 int MusPaeInput::getNote( const char* incipit, NoteObject *note, MeasureObject *measure, int index ) {
-    
-    regex_t re;
+
     int oct, tie;
     int i = index;
     bool acc;
@@ -951,9 +939,8 @@ int MusPaeInput::getNote( const char* incipit, NoteObject *note, MeasureObject *
     // beaming
     // detect if it is a fermata or a tuplet
     if (note->beam > 0) {
-        regcomp(&re, "^[^}/]*[ABCDEFG-].*", REG_EXTENDED);
-        int is_not_last_note = regexec(&re, incipit + i + 1, 0, NULL, 0);
-        regfree(&re);
+        std::regex re_not_last("^[^}/]*[ABCDEFG-].*", std::regex::extended);
+        int is_not_last_note = std::regex_search(incipit + i + 1, re_not_last) ? 0 : 1;
         //std::cout << "regexp " << is_not_last_note << std::endl;
         if ( is_not_last_note != 0 ) {
             //note->beam = -1; // close the beam
@@ -964,17 +951,15 @@ int MusPaeInput::getNote( const char* incipit, NoteObject *note, MeasureObject *
     }
     
     // trills
-    regcomp(&re, "^[^ABCDEFG]*t", REG_EXTENDED);
-    int has_trill = regexec(&re, incipit + i + 1, 0, NULL, 0);
-    regfree(&re);
+    std::regex re_trill("^[^ABCDEFG]*t", std::regex::extended);
+    int has_trill = std::regex_search(incipit + i + 1, re_trill) ? 0 : 1;
     if ( has_trill == 0 ) {
         note->trill = true;
     }
     
     // tie
-    regcomp(&re, "^[^ABCDEFG]*\\+", REG_EXTENDED);
-    int has_tie = regexec(&re, incipit + i + 1, 0, NULL, 0);
-    regfree(&re);
+    std::regex re_tie("^[^ABCDEFG]*\\+", std::regex::extended);
+    int has_tie = std::regex_search(incipit + i + 1, re_tie) ? 0 : 1;
     //std::cout << "regexp " << has_tie << std::endl;
     if ( has_tie == 0) {
         if (note->tie == 0)

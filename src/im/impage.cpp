@@ -52,7 +52,7 @@ int SortRLE( ImRLE **first, ImRLE **second )
 #define RESIZE_FACTOR 2
 #define TIP_FACTOR_1 3
 
-#define TP_STAFF_ROI_H 120 // hauteur de la zone des elements appartenant à la portee
+#define TP_STAFF_ROI_H 120 // hauteur de la zone des elements appartenant ï¿½ la portee
 #define TP_MARGIN_MIN 10 // marge minimal entre la portee et un element texte
 #define TP_MARGIN_Y1 20 // marge inferieure depuis le centroid du texte
 #define TP_MARGIN_Y2 35 // marge superieure depuis le centroid du texte
@@ -605,7 +605,7 @@ bool ImPage::Deskew( double max_alpha )
     // detection de l'inclinaison
     int counter = m_progressDlg->GetCounter();
     int count = ((int)max_alpha / 2 + 11 ) * m_opIm->height;
-        // count = nb d'approximation : 5x à 0.25 + 5x à 1 + Xx à 4 selon max_alpha
+        // count = nb d'approximation : 5x ï¿½ 0.25 + 5x ï¿½ 1 + Xx ï¿½ 4 selon max_alpha
         // counter incremente  par ligne dans la methode GetAlignement
     imCounterTotal( counter, count , "Skew detection ..." );
 
@@ -807,7 +807,7 @@ bool ImPage::FindStaves( int min, int max, bool normalize, bool crop )
     int w = m_opIm->width;
     min = h * min / 1000; // parameters in 0/00
     max = h * max / 1000;
-    int* maxRLE = new int[max]; // tableau du nombre de runs ; index = valeur du run ( 0 à max - 1)
+    int* maxRLE = new int[max]; // tableau du nombre de runs ; index = valeur du run ( 0 ï¿½ max - 1)
     memset( maxRLE, 0, max * sizeof(int) );
 
     if (!m_progressDlg->SetOperation( _("Detecting staff size ...") ) )
@@ -992,7 +992,7 @@ bool ImPage::FindStaves( int min, int max, bool normalize, bool crop )
     double normalization_factor = 100.0 / (double)(num_spaces * this->m_space_width + num_lines * this->m_line_width) ; 
         // 6 lines to correct approximation error ( empiric ! )
     double factor = (double)resize_factor / (double)RESIZE_FACTOR; 
-        // toujours 2 une fois que l'image à ete normalisee
+        // toujours 2 une fois que l'image ï¿½ ete normalisee
         // EX si 4 avant normalisation, image des staves X2
 	this->m_resize = normalization_factor;
 
@@ -1174,7 +1174,7 @@ void ImPage::GetHorizontalStavesPosition( int values[], int size, int avg, int *
     *x1 = 0;
     *x2 = 0;
     int x_new = 0; // to keep new bloc;
-    int threshold = avg * 50 / 100; // seuil à 50 %
+    int threshold = avg * 50 / 100; // seuil ï¿½ 50 %
 
     bool bloc = false;
     int i;
@@ -1229,7 +1229,7 @@ void ImPage::GetVerticalStavesPosition( int values[], int size, int avg, int sta
 
     //for ( i = 0; i < size; i++ )
     int start = 60 / RESIZE_FACTOR / STAVES_CONV_REDUCTION;
-        // pas de portee au minimum à 10 px du bord ! -> centre à 10 + 50 ( demi portee ) 
+        // pas de portee au minimum ï¿½ 10 px du bord ! -> centre ï¿½ 10 + 50 ( demi portee ) 
     if ( start > size )
         start = size;
     int end = size - start;
@@ -1505,7 +1505,8 @@ bool ImPage::FindOrnateLetters( )
     if (!m_opImTmp1)
         return this->Terminate( ERR_MEMORY );
 
-    int region_count = imAnalyzeFindRegions(m_opIm, m_opImTmp1, 4, 1);
+    int region_count = 0;
+    imAnalyzeFindRegions(m_opIm, m_opImTmp1, 4, 1, &region_count);
     if (region_count)
     {
         int* boxes = (int*)malloc(4 * region_count * sizeof(int));
@@ -1584,15 +1585,16 @@ bool ImPage::FindText( )
     if (!m_opImTmp1)
         return this->Terminate( ERR_MEMORY );
 
-    int region_count = imAnalyzeFindRegions(m_opImMain, m_opImTmp1, 4, 1);
+    int region_count = 0;
+    imAnalyzeFindRegions(m_opImMain, m_opImTmp1, 4, 1, &region_count);
     if (!region_count)
         return this->Terminate( ERR_NONE );
 
     // calcul des centroids
-    float* cx = (float*)malloc(region_count*sizeof(float));
-    memset(cx, 0, region_count*sizeof(float));
-    float* cy = (float*)malloc(region_count*sizeof(float));
-    memset(cy, 0, region_count*sizeof(float));
+    double* cx = (double*)malloc(region_count*sizeof(double));
+    memset(cx, 0, region_count*sizeof(double));
+    double* cy = (double*)malloc(region_count*sizeof(double));
+    memset(cy, 0, region_count*sizeof(double));
     imAnalyzeMeasureCentroid (m_opImTmp1, NULL, region_count, cx, cy);
     
     int y_min, y_max, i;
@@ -1702,20 +1704,20 @@ bool ImPage::FindBorders( )
 	delete[] m_opHist;
 	m_opHist = NULL;*/
 
-    // buffer avec les colonnes à traiter ( toutes, initialiser à 1 )
+    // buffer avec les colonnes ï¿½ traiter ( toutes, initialiser ï¿½ 1 )
     int i;
     int w1 = m_opIm->width;
     m_opCols1 = new int[ w1 ];
     for ( i = 0; i < w1; i++ )
         m_opCols1[i] = 1;
 
-    // buffer avec les lignes à traiter == 1 - initialiser à toutes
+    // buffer avec les lignes ï¿½ traiter == 1 - initialiser ï¿½ toutes
     int h1 = m_opIm->height;
     m_opLines1 = new int[ h1 ];
     for ( i = 0; i < h1; i++ )
         m_opLines1[i] = 1;
 
-    // mettre à zero les zones à ignorer : staff position -60 / + 60
+    // mettre ï¿½ zero les zones ï¿½ ignorer : staff position -60 / + 60
     for( i = 0; i < (int)this->m_staves.GetCount(); i++)
     {
         int staff_height = 120;
@@ -1726,7 +1728,7 @@ bool ImPage::FindBorders( )
         memset( m_opLines1 + pos - staff_height / 2, 0, staff_height * sizeof(int) );
     }
 
-    // images avec les lignes à considerer uniquement -> somme de m_opLines1
+    // images avec les lignes ï¿½ considerer uniquement -> somme de m_opLines1
     int h2 = sum( m_opLines1, h1 );
     m_opImTmp1 = imImageCreate( m_opIm->width, h2, m_opIm->color_space, m_opIm->data_type );
     if ( !m_opImTmp1 )
@@ -1890,7 +1892,7 @@ void ImPage::CleanBorder( int rows[], int size, _imImage *border, _imImage *imag
         else
             has_border = true;
 
-        // mettre les pixels du bord à max à 1 = remplissage jusq'au bord detecte
+        // mettre les pixels du bord ï¿½ max ï¿½ 1 = remplissage jusq'au bord detecte
         //bufIm = (imbyte*)m_opIm->data[0];
         bufImTmp = (imbyte*)tmp->data[0];
         for (y = y1; y < y2; y++)
@@ -1898,7 +1900,7 @@ void ImPage::CleanBorder( int rows[], int size, _imImage *border, _imImage *imag
             for (x = 0; x < x_border + 15; x++) // adaptation empirique de 15 pixels
             {
                 if (x >= tmp->width)
-                    break; // verification à cause de 15 pixels ajoutes
+                    break; // verification ï¿½ cause de 15 pixels ajoutes
                 int offset = y * tmp->width + x;
                 bufImTmp[ offset ] = px;
             }
@@ -2157,10 +2159,11 @@ bool ImPage::MagicSelection( int x, int y, AxImage *selection, int *xmin, int *y
     if (!m_opImTmp1)
         return this->Terminate( ERR_MEMORY );
 	
-    int region_count = imAnalyzeFindRegions(m_opImMain, m_opImTmp1, 4, 1);
+    int region_count = 0;
+    imAnalyzeFindRegions(m_opImMain, m_opImTmp1, 4, 1, &region_count);
     if (!region_count)
         return this->Terminate( ERR_NONE );
-		
+
 	imushort* img_data = (imushort*)m_opImTmp1->data[0];
 	imbyte* img_data_main = (imbyte*)m_opImMain->data[0];
 	imushort pixel = *(img_data + (y * m_opImTmp1->width) + x);

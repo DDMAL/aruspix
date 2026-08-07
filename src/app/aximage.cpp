@@ -92,7 +92,7 @@ AxImage::AxImage() : wxImage()
 
 bool AxImage::LoadFile(const wxString& name, long type, int index)
 {
-	bool res = wxImage::LoadFile( name, type, index);
+	bool res = wxImage::LoadFile( name, (wxBitmapType)type, index);
 
 	if (AxImage::s_reduceBigImages 
 		&& (max(this->GetWidth(),this->GetHeight()) > AxImage::s_imageSizeToReduce))

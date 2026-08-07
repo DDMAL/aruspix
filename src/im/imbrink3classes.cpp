@@ -14,7 +14,7 @@
 #include <im.h>
 #include <im_image.h>
 #include <im_process_ana.h>
-#include <im_process_pon.h>
+#include <im_process_pnt.h>
 
 #define MAX_GREY 256
 static unsigned short const NON_CUMULATIVE = 0;

@@ -1,0 +1,7 @@
+build/
+third_party/
+compile_commands.json
+CMakeUserPresets.json
+*.o
+*.a
+.DS_Store

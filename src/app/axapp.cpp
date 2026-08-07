@@ -475,7 +475,7 @@ bool AxApp::ProcessCmdLine (char** argv, int argc)
 
     // get and process command line
     static const wxCmdLineEntryDesc cmdLineDesc[] = {
-        { wxCMD_LINE_SWITCH, _T("h"), _T("help"), _T("show this help message"),
+        { wxCMD_LINE_SWITCH, "h", "help", "show this help message",
             wxCMD_LINE_VAL_NONE, wxCMD_LINE_OPTION_HELP },
         {wxCMD_LINE_PARAM,  NULL, NULL, _("input files"),
             wxCMD_LINE_VAL_STRING,

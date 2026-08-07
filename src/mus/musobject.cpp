@@ -39,7 +39,7 @@ MusObject::~MusObject()
 {
 }
 
-void MusObject::SetUuid( uuid_t uuid )
+void MusObject::SetUuid( ax_uuid_t uuid )
 { 
     uuid_copy( m_uuid, uuid );
 };
@@ -465,7 +465,7 @@ bool MusObject::FindByUuid( ArrayPtrVoid params )
 {
     // param 0: the uuid we are looking for
     // parma 1: the pointer to the element
-    uuid_t *uuid = (uuid_t*)params[0];  
+    ax_uuid_t *uuid = (ax_uuid_t*)params[0];  
     MusObject **element = (MusObject**)params[1];  
     
     if ( (*element) ) {

@@ -1164,12 +1164,12 @@ void MusMeiInput::SetMeiUuid( TiXmlElement *element, MusObject *object )
         return;
     }
     
-    uuid_t uuid;
+    ax_uuid_t uuid;
     StrToUuid( element->Attribute( "xml:id" ), uuid );
     object->SetUuid( uuid );
 }
 
-void MusMeiInput::StrToUuid(wxString uuid, uuid_t dest)
+void MusMeiInput::StrToUuid(wxString uuid, ax_uuid_t dest)
 {
     uuid_clear( dest );
     if ( uuid.length() != 38 ) {

@@ -377,7 +377,7 @@ bool MusDarmsInput::ImportFile() {
     int pos = 0;
     std::ifstream infile;
     
-    infile.open(m_filename);
+    infile.open(static_cast<const char*>(m_filename.mb_str()));
     
     if (infile.eof()) {
         infile.close();

@@ -90,14 +90,14 @@ void AxEnv::Show()
 		wxMenu *frameMenu1 = frameMenuBar->GetMenu(0);
 		int frameMenu1Count = frameMenu1->GetMenuItemCount();
 		wxMenuItemList *list1 = &menu1->GetMenuItems();
-		for ( wxMenuItemList::Node* node1 = list1->GetLast(); node1; node1 = node1->GetPrevious() )
+		for ( wxMenuItemList::compatibility_iterator node1 = list1->GetLast(); node1; node1 = node1->GetPrevious() )
 		{
 			wxMenuItem *item = node1->GetData();
 			if (!item)
 				continue;
-			wxString text = item->GetText(); // necessaire sous GTK, sinon remplace les racourcis par _
+			wxString text = item->GetItemLabelText(); // necessaire sous GTK, sinon remplace les racourcis par _
 			text.Replace("_","&");
-			frameMenu1->Insert(frameMenu1Count - AX_MENUS_1_ITEMS,item->GetId(), text,item->GetHelp(),item->GetKind());			
+			frameMenu1->Insert(frameMenu1Count - AX_MENUS_1_ITEMS,item->GetId(), text,item->GetHelp(),item->GetKind());
 			m_commonMenuItems1.Add(item->GetId()); // tableau des ids a supprimer quand decharge
             //wxLogDebug("M1 %d", item->GetId() );
 		}
@@ -108,14 +108,14 @@ void AxEnv::Show()
 		wxMenu *frameMenu2 = frameMenuBar->GetMenu(1);
 		int frameMenu2Count = frameMenu2->GetMenuItemCount();
 		wxMenuItemList *list2 = &menu2->GetMenuItems();
-		for ( wxMenuItemList::Node* node2 = list2->GetLast(); node2; node2 = node2->GetPrevious() )
+		for ( wxMenuItemList::compatibility_iterator node2 = list2->GetLast(); node2; node2 = node2->GetPrevious() )
 		{
 			wxMenuItem *item = node2->GetData();
 			if (!item)
 				continue;
-			wxString text = item->GetText(); // necessaire sous GTK, sinon remplace les racourcis par _
+			wxString text = item->GetItemLabelText(); // necessaire sous GTK, sinon remplace les racourcis par _
 			text.Replace("_","&");
-			frameMenu2->Insert(frameMenu2Count - AX_MENUS_2_ITEMS, item->GetId(), text, item->GetHelp(),item->GetKind());			
+			frameMenu2->Insert(frameMenu2Count - AX_MENUS_2_ITEMS, item->GetId(), text, item->GetHelp(),item->GetKind());
 			m_commonMenuItems2.Add(item->GetId()); // tableau des ids a supprimer quand decharge
             //wxLogDebug("M2 %d", item->GetId() );
 		}
@@ -125,9 +125,9 @@ void AxEnv::Show()
         int env_count = menuBar->GetMenuCount();
         for (i = env_count; i > AX_MENUS_COMMON; i--)
         {
-            wxString title = menuBar->GetLabelTop(i-1); 
+            wxString title = menuBar->GetMenuLabel(i-1);
             // ne devrait pas marcher d'apres la doc wx (GetLabelTop)
-            // appeler uniquement si dejà associe à une frame ???
+            // appeler uniquement si dejï¿½ associe ï¿½ une frame ???
             wxMenu *menu = menuBar->Remove(i-1);
             frameMenuBar->Insert(position ,menu , title);
             m_envMenuCount++;

@@ -587,7 +587,7 @@ void RecEnv::UpdateTitle( )
     else if ( m_imControlPtr->Ok() )
         msg += m_imControlPtr->GetTitleMsg().c_str();
 
-    SetTitle( "%s", msg.c_str() );
+    SetTitle( msg );
 }
 
 

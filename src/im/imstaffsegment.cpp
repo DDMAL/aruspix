@@ -50,12 +50,13 @@ bool ImStaffSegment::AnalyzeSegment()
 
     
     m_opIm = imImageCreate(m_opImMain->width, m_opImMain->height, IM_GRAY, IM_USHORT);
-    int region_count = imAnalyzeFindRegions ( m_opImMain, m_opIm, 8, 1);
-    
+    int region_count = 0;
+    imAnalyzeFindRegions ( m_opImMain, m_opIm, 8, 1, &region_count);
+
     int* area = (int*)malloc( region_count * sizeof(int) );
     memset(area, 0, region_count * sizeof(int) );
-    float* perim = (float*)malloc( region_count * sizeof(float) );
-    memset(perim, 0, region_count * sizeof(float) );
+    double* perim = (double*)malloc( region_count * sizeof(double) );
+    memset(perim, 0, region_count * sizeof(double) );
 
     imAnalyzeMeasureArea( m_opIm, area, 1 );
     imAnalyzeMeasurePerimeter( m_opIm, perim, 1 );

@@ -281,7 +281,7 @@ void CmpEnv::UpdateTitle( )
 		//	(int)m_cmpCollationPtr->GetMusFile()->m_pages.GetCount()  );
         msg += wxString::Format("- %s", m_cmpCollationPtr->m_name.c_str() );
 
-    SetTitle( _T("%s"), msg.c_str() );
+    SetTitle( msg );
 }
 
 
@@ -332,7 +332,7 @@ void CmpEnv::AddPart( CmpBookItem *book )
     }
     
     char uuidStr[37];
-    uuid_t id;
+    ax_uuid_t id;
     uuid_generate( id );
     uuid_unparse( id, uuidStr ); 
     
@@ -572,7 +572,7 @@ void CmpEnv::OnCmpAddCollation( wxCommandEvent &event )
     }
     
     char uuidStr[37];
-    uuid_t id;
+    ax_uuid_t id;
     uuid_generate( id );
     uuid_unparse( id, uuidStr );
     

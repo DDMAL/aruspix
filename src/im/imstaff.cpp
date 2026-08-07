@@ -42,14 +42,9 @@ enum
 	VALUES_LINE_M
 };
 
-// probleme de link avec im_lib ???
-#ifdef __WXMSW__
-	extern "C" 
-	{
-		int __mb_cur_max;
-		unsigned short* _pctype;
-	}
-#endif
+// (Old workaround for an MSVC/im_lib link issue; modern MSVC declares
+// __mb_cur_max and _pctype as functions, so the manual extern "C"
+// forward declarations no longer compile and are unnecessary.)
 
 
 //imImage* imdebug = NULL;
@@ -87,7 +82,7 @@ void CalcWinFeatures(const imImage* image, float *features, int position_v, int 
 	features[6] = 0.5; // bigest black cy
 
 	int half_staff_height = STAFF_HEIGHT / 2;
-	int pos[8]; // line positions ; 90 au lieu de 89 à cause de margins
+	int pos[8]; // line positions ; 90 au lieu de 89 ï¿½ cause de margins
 	pos[0] = half_staff_height + height / 2 + height / 4 + position_v;
 	pos[1] = half_staff_height + height / 2 + position_v;
 	pos[2] = half_staff_height + height / 4 + position_v;
@@ -116,10 +111,11 @@ void CalcWinFeatures(const imImage* image, float *features, int position_v, int 
 
 	//global
     imImage *imRegions = imImageCreate(image->width, image->height, IM_GRAY, IM_USHORT);
-    int region_count = imAnalyzeFindRegions ( image, imRegions, 8, 1 );
+    int region_count = 0;
+    imAnalyzeFindRegions ( image, imRegions, 8, 1, &region_count );
 
 	if (region_count == 0)
-	{	
+	{
 		imImageDestroy( imRegions );
 		return;
 	}
@@ -128,10 +124,10 @@ void CalcWinFeatures(const imImage* image, float *features, int position_v, int 
 	features[0] = 1.0 / (region_count + 1); // global
 
 	// centroid
-	float *cx = (float*)malloc(region_count*sizeof(float));
-	memset( cx, 0, region_count*sizeof(float));
-	float *cy = (float*)malloc(region_count*sizeof(float));
-	memset( cy, 0, region_count*sizeof(float));
+	double *cx = (double*)malloc(region_count*sizeof(double));
+	memset( cx, 0, region_count*sizeof(double));
+	double *cy = (double*)malloc(region_count*sizeof(double));
+	memset( cy, 0, region_count*sizeof(double));
 	imAnalyzeMeasureCentroid( imRegions, NULL, region_count, cx, cy );
 
 	// remove staff lines from area
@@ -160,7 +156,7 @@ void CalcWinFeatures(const imImage* image, float *features, int position_v, int 
 	
 	int tot_area = 0;
 	int max_area = 0;
-	float max_black_cy = 0.5;
+	double max_black_cy = 0.5;
 	for (i = 0; i < region_count; i++)
 	{
 		tot_area += area[i];
@@ -199,7 +195,7 @@ void CalcWinFeatures(const imImage* image, float *features, int position_v, int 
 	free(area);
 	
 	// get biggest black
-    region_count = imAnalyzeFindRegions ( image, imRegions, 8, 1 );
+    imAnalyzeFindRegions ( image, imRegions, 8, 1, &region_count );
 
 	if (region_count != 0)
 	{
@@ -222,7 +218,7 @@ void CalcWinFeatures(const imImage* image, float *features, int position_v, int 
 	// get smallest white
 	imImage *negate = imImageClone( image );
 	imProcessNegative( image, negate );
-    region_count = imAnalyzeFindRegions ( negate, imRegions, 8, 1 );
+    imAnalyzeFindRegions ( negate, imRegions, 8, 1, &region_count );
 
 	if (region_count != 0)
 	{	
@@ -761,7 +757,7 @@ void ImStaff::CalcMask( int height, int numstafflines, int mask[] )
 	
 	/*
 	int pos2[5] = {39, 64, 89, 114, 139}; // centre des lignes avec height = 100 px 
-										 // 100 px de hauteur correspond à 104 px avec l'epaisseur des lignes
+										 // 100 px de hauteur correspond ï¿½ 104 px avec l'epaisseur des lignes
 	if ( height != 104 ) // adapter les position si different de 100
 	{
 		height -= 4; // supprimer l'epaisseur de ligne;
@@ -910,7 +906,7 @@ void ImStaff::CalcCorrelation(const int staff, wxArrayPtrVoid params )
 	
 	int peak_val, median_val;
 
-	wxArrayInt positions_tosave; // positions à conserver dans le fichier xml - pas tous les px mais 1 par POSITION_STEP
+	wxArrayInt positions_tosave; // positions ï¿½ conserver dans le fichier xml - pas tous les px mais 1 par POSITION_STEP
 	wxArrayInt line_p_tosave; // line width (peak in run lengths)
 	wxArrayInt line_m_tosave; // line width (median in run lengths)
     //wxLogMessage("Segment %d - %d", staff, segment);

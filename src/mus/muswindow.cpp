@@ -737,7 +737,7 @@ void MusWindow::OnPopupMenuSymbole( wxCommandEvent &event )
 
 	int id = event.GetId();
 
-	if ( in(id , ID_MS_G1, ID_MS_F5) )
+	if ( INRANGE(id , ID_MS_G1, ID_MS_F5) )
 	{
 		symbol->flag = CLE; 
 		switch ( id )
@@ -754,7 +754,7 @@ void MusWindow::OnPopupMenuSymbole( wxCommandEvent &event )
 		case ( ID_MS_F5 ): symbol->code = FA5; break;
 		}
 	}
-	else if ( in(id , ID_MS_DIESE, ID_MS_DBEMOL) )
+	else if ( INRANGE(id , ID_MS_DIESE, ID_MS_DBEMOL) )
 	{
 		symbol->flag = ALTER;
 		symbol->code = PITCH_G;
@@ -921,7 +921,7 @@ void MusWindow::OnMouseLeftDown(wxMouseEvent &event)
 	}
 	else  // not edit
 	{
-		if ( event.RightIsDown() ) // copier l'element à la position du click 
+		if ( event.RightIsDown() ) // copier l'element ï¿½ la position du click 
 		{
             wxLogDebug( "MusWindow::OnMouseLeftDown missing in insert mode in ax2" );
             // Do we need this?
@@ -1328,7 +1328,7 @@ void MusWindow::NeumeEditOnKeyDown(wxKeyEvent &event) {
         CheckPoint( UNDO_PART, MUS_UNDO_FILE );
     }
     else if ( m_currentElement && m_currentElement->IsNeume() && 
-             ( (event.m_keyCode == 'B') || (event.m_keyCode == 'D' ) ) ) // ajouter un bemol à une note
+             ( (event.m_keyCode == 'B') || (event.m_keyCode == 'D' ) ) ) // ajouter un bemol ï¿½ une note
     {
         PrepareCheckPoint( UNDO_PART, MUS_UNDO_FILE );
         MusSymbol1 alteration;
@@ -1357,7 +1357,7 @@ void MusWindow::NeumeEditOnKeyDown(wxKeyEvent &event) {
         CheckPoint( UNDO_PART, MUS_UNDO_FILE );
     }
     else if ( m_currentElement && m_currentElement->IsNeume() &&
-             (in( noteKeyCode, 0, 5 )))
+             (INRANGE( noteKeyCode, 0, 5 )))
     {
         PrepareCheckPoint( UNDO_PART, MUS_UNDO_FILE );
         int vflag = ( event.m_controlDown || (noteKeyCode == CUSTOS)) ? 1 : 0;
@@ -1376,7 +1376,7 @@ void MusWindow::NeumeEditOnKeyDown(wxKeyEvent &event) {
         CheckPoint( UNDO_PART, MUS_UNDO_FILE );
     }
     else if ( m_currentElement && m_currentElement->IsNeumeSymbol() &&
-             in( event.m_keyCode, 33, 125) ) // any other keycode on symbol (ascii codes)
+             INRANGE( event.m_keyCode, 33, 125) ) // any other keycode on symbol (ascii codes)
     {
         PrepareCheckPoint( UNDO_PART, MUS_UNDO_FILE );
         int vflag = ( event.m_controlDown ) ? 1 : 0;
@@ -1405,13 +1405,13 @@ void MusWindow::NeumeInsertOnKeyDown(wxKeyEvent &event) {
         m_newElement = &m_neumesymbol;
     }
     else if ( m_newElement && m_newElement->IsNeume() &&
-             (in( noteKeyCode, 0, 5 )))
+             (INRANGE( noteKeyCode, 0, 5 )))
     {
         int vflag = ( event.m_controlDown || (noteKeyCode == CUSTOS)) ? 1 : 0;
         m_newElement->SetValue( noteKeyCode , NULL, vflag );
     }
     else if ( m_newElement && m_newElement->IsNeumeSymbol() &&
-			 in( event.m_keyCode, 33, 125) ) // any other keycode on symbol (ascii codes)
+			 INRANGE( event.m_keyCode, 33, 125) ) // any other keycode on symbol (ascii codes)
     {
         int vflag = ( event.m_controlDown ) ? 1 : 0;
         m_newElement->SetValue( event.m_keyCode, NULL, vflag );
@@ -1464,7 +1464,7 @@ void MusWindow::MensuralEditOnKeyDown(wxKeyEvent &event) {
         OnEndEdition();
         SyncToolPanel();
     }
-    else if ( in ( event.m_keyCode, WXK_F2, WXK_F8 ) && m_currentElement ) // Change hauteur
+    else if ( INRANGE( event.m_keyCode, WXK_F2, WXK_F8 ) && m_currentElement ) // Change hauteur
     {
         PrepareCheckPoint( UNDO_PART, MUS_UNDO_FILE );
         m_currentElement->GetPitchOrPosition( &m_insert_pname, &m_insert_oct);
@@ -1495,7 +1495,7 @@ void MusWindow::MensuralEditOnKeyDown(wxKeyEvent &event) {
         OnEndEdition();
     }
     else if ( m_currentElement && m_currentElement->IsNote() && 
-             ( (event.m_keyCode == 'F') || (event.m_keyCode == 'S' ) ) ) // ajouter un bemol à une note
+             ( (event.m_keyCode == 'F') || (event.m_keyCode == 'S' ) ) ) // ajouter un bemol ï¿½ une note
     {
         MusNote *note = dynamic_cast<MusNote*>(m_currentElement);
         PrepareCheckPoint( UNDO_PART, MUS_UNDO_FILE );
@@ -1525,7 +1525,7 @@ void MusWindow::MensuralEditOnKeyDown(wxKeyEvent &event) {
         OnEndEdition();
     }
     else if ( m_currentElement && (m_currentElement->IsNote() || m_currentElement->IsRest()) &&
-             ( in( noteKeyCode, 0, 7 ) ) ) // change duration on a note or a rest
+             ( INRANGE( noteKeyCode, 0, 7 ) ) ) // change duration on a note or a rest
     {
         PrepareCheckPoint( UNDO_PART, MUS_UNDO_FILE );
         //int vflag = ( event.m_controlDown || (noteKeyCode == CUSTOS)) ? 1 : 0;
@@ -1605,7 +1605,7 @@ void MusWindow::MensuralEditOnKeyDown(wxKeyEvent &event) {
     } 
     */
     else if ( m_currentElement && (m_currentElement->IsMensur() || m_currentElement->IsClef() || m_currentElement->IsSymbol())
-        && in( event.m_keyCode, 33, 125) ) // any other keycode on symbol (ascii codes)
+        && INRANGE( event.m_keyCode, 33, 125) ) // any other keycode on symbol (ascii codes)
     {
         PrepareCheckPoint( UNDO_PART, MUS_UNDO_FILE );
         // we might be editing a clef - see method for doc
@@ -1648,11 +1648,11 @@ void MusWindow::MensuralInsertOnKeyDown(wxKeyEvent &event) {
     else if ( m_newElement && (m_newElement->IsNote() || m_newElement->IsRest()) ) 
     // change duree sur une note ou un silence
     {
-        if ( event.m_controlDown && in( noteKeyCode, 0, 6 ) ) {
+        if ( event.m_controlDown && INRANGE( noteKeyCode, 0, 6 ) ) {
             m_newElement = &m_rest;
             m_newElement->SetValue( noteKeyCode , 0 );
         }
-        else if ( in( noteKeyCode, 0, 7 ) ){
+        else if ( INRANGE( noteKeyCode, 0, 7 ) ){
             m_newElement = &m_note;
             m_newElement->SetValue( noteKeyCode , 0 );
         }
@@ -1664,12 +1664,12 @@ void MusWindow::MensuralInsertOnKeyDown(wxKeyEvent &event) {
     else if ( m_newElement && m_newElement->IsNote() && (noteKeyCode == 'A') )
         m_newElement->ChangeStem( );
     else if ( m_newElement && (m_newElement->IsClef() || m_newElement->IsMensur()) &&
-        in( event.m_keyCode, 33, 125) ) // any other keycode on clef and mensur (ascii codes)
+        INRANGE( event.m_keyCode, 33, 125) ) // any other keycode on clef and mensur (ascii codes)
     {
         m_newElement->SetValue( event.m_keyCode, 0 );
     }
     else if ( m_newElement && (m_newElement->IsSymbol() || m_newElement->IsBarline()) &&
-             in( event.m_keyCode, 33, 125) ) // any other keycode on symbol (ascii codes)
+             INRANGE( event.m_keyCode, 33, 125) ) // any other keycode on symbol (ascii codes)
     {
         if (noteKeyCode == '|') {
             m_newElement = &m_barline;
@@ -1748,7 +1748,7 @@ void MusWindow::LyricEntry(wxKeyEvent &event)
 			m_lyricCursor = m_currentElement->m_debord_str.Length();
 			this->Refresh();
 		}
-		else if ( event.m_controlDown && in( event.m_keyCode, WXK_LEFT, WXK_DOWN ) && m_currentElement)		//"Ctr + navigation arrow" event
+		else if ( event.m_controlDown && INRANGE( event.m_keyCode, WXK_LEFT, WXK_DOWN ) && m_currentElement)		//"Ctr + navigation arrow" event
 		{
 			PrepareCheckPoint( UNDO_PART, MUS_UNDO_FILE );
 			if ( event.GetKeyCode() == WXK_RIGHT && m_currentElement->IsSymbol() )			//"Right arrow" event: switch lyric association to note to the right 

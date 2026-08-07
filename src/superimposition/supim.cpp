@@ -405,14 +405,14 @@ void SupImController::UpdateBrightness( )
     imImage *g_buf = imImageDuplicate( m_greenIm );
     imImage *imTmp = imImageCreate( w, h, IM_GRAY, IM_BYTE );
 
-    float param[2] = { 0, 0 }; // %
+    double param[2] = { 0, 0 }; // %
 
     if ( (m_greenBrightness != 0)  || (m_greenContrast != 0))
     {   
         param[0] = 5.0 * (float)m_greenBrightness;
         param[1] = 5.0 * (float)m_greenContrast;
         imProcessToneGamut( r_buf , imTmp, IM_GAMUT_BRIGHTCONT, param);
-        imProcessBitwiseOp( r_buf, g_buf, r_buf, IM_BIT_OR ); // valeurs communes doivent rester à 100%
+        imProcessBitwiseOp( r_buf, g_buf, r_buf, IM_BIT_OR ); // valeurs communes doivent rester ï¿½ 100%
         imProcessBitwiseOp( imTmp, r_buf, r_buf, IM_BIT_AND ); // AND entre valeurs communes et brightness ajuste
     }
     if ( (m_redBrightness != 0)  || (m_redContrast != 0))
@@ -420,7 +420,7 @@ void SupImController::UpdateBrightness( )
         param[0] = 5.0 * (float)m_redBrightness;
         param[1] = 5.0 * (float)m_redContrast;
         imProcessToneGamut( g_buf , imTmp, IM_GAMUT_BRIGHTCONT, param);
-        imProcessBitwiseOp( g_buf, r_buf, g_buf, IM_BIT_OR ); // valeurs communes doivent rester à 100%
+        imProcessBitwiseOp( g_buf, r_buf, g_buf, IM_BIT_OR ); // valeurs communes doivent rester ï¿½ 100%
         imProcessBitwiseOp( imTmp, g_buf, g_buf, IM_BIT_AND ); // AND entre valeurs communes et brightness ajuste
     }
     imProcessBitwiseOp( r_buf, g_buf, imTmp, IM_BIT_AND );
