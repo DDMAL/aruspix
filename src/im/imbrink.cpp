@@ -19,6 +19,7 @@
 */
 
 #include "imext.h"
+#include "thresholds.h"
 
 #include <stdlib.h>
 #include <math.h>
@@ -124,9 +125,12 @@ void sumMinusDiagCumSum(double resultVec[MAX_GRAY], const double mat[MAX_GRAY][M
 		resultVec[i] -= tmp[i];
 }
 
-int imProcessBrinkThreshold(const imImage* image, imImage* dest, bool white_is_255 )
+namespace ax {
+
+int brink_threshold(const cv::Mat& src_in, cv::Mat& dst, bool white_is_255)
 {
-	cv::Mat src = as_mat_8u(image).clone();
+	if (src_in.type() != CV_8UC1) return 0;
+	cv::Mat src = src_in.clone();
 	if (!white_is_255) src = 255 - src;
 
 	int i, j;
@@ -224,13 +228,19 @@ int imProcessBrinkThreshold(const imImage* image, imImage* dest, bool white_is_2
 
 	Topt = calcTopt(m_f, m_b, tmpVec1);		// DO I NEED TO ADD ONE?
 
-	{
-		// IM original did imProcessThreshold (>level → 1) followed by
-		// imProcessBitwiseNot to flip the result; THRESH_BINARY_INV
-		// produces the same post-flip values (≤level → 1, >level → 0).
-		cv::Mat dst = as_mat_8u(dest);
-		cv::threshold(src, dst, Topt, 1, cv::THRESH_BINARY_INV);
-	}
+	// IM original did imProcessThreshold (>level → 1) followed by
+	// imProcessBitwiseNot to flip the result; THRESH_BINARY_INV
+	// produces the same post-flip values (≤level → 1, >level → 0).
+	dst.create(src.rows, src.cols, CV_8UC1);
+	cv::threshold(src, dst, Topt, 1, cv::THRESH_BINARY_INV);
 
 	return Topt;
+}
+
+}  // namespace ax
+
+int imProcessBrinkThreshold(const imImage* image, imImage* dest, bool white_is_255)
+{
+	cv::Mat dst = as_mat_8u(dest);
+	return ax::brink_threshold(as_mat_8u(image), dst, white_is_255);
 }

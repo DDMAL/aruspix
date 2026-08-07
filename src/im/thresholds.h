@@ -29,6 +29,13 @@ int sauvola_threshold(const cv::Mat& src, cv::Mat& dst, int region_size,
                       int lower_bound = 20, int upper_bound = 150,
                       bool white_is_255 = true);
 
+// Brink cross-entropy threshold. Picks a single threshold value T that
+// minimizes the cross-entropy between the foreground and background
+// distributions of `src`. `src` 8-bit single-channel; `dst` 8-bit
+// single-channel, values 0/1. Returns the chosen T.
+int brink_threshold(const cv::Mat& src, cv::Mat& dst,
+                    bool white_is_255 = true);
+
 // Brink-Pendock / Li-Lee two-class KL-divergence threshold.
 // `src` 8-bit single-channel; `dst` 8-bit single-channel, values 0/1.
 // Returns the chosen threshold value T (0..255).
